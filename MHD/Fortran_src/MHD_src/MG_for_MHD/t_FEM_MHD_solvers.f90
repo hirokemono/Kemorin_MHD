@@ -7,6 +7,17 @@
 !
 !>     DJDS ordering table for MHD dynamo model
 !
+!!      subroutine set_MHD_connectivities(DJDS_param, mesh, fluid,      &
+!!     &          solver_C, next_tbl, rhs_tbl, MHD_mat, DJDS_comm_fl)
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(mpi_4_solver), intent(in) :: solver_C
+!!
+!!        type(next_nod_ele_table), intent(inout) :: next_tbl
+!!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+!!         type(communication_table), intent(inout) :: DJDS_comm_fl
+!
       module t_FEM_MHD_solvers
 !
       use m_precision
@@ -55,9 +66,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_MHD_connectivities(DJDS_param, mesh, fluid,        &
-     &          solver_C, next_tbl, rhs_tbl, MHD_mat, DJDS_comm_fl)
-!
+≈!
       use t_mesh_data
       use t_geometry_data_MHD
 !

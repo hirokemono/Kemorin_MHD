@@ -16,21 +16,6 @@
       implicit none
 !
 !>      Matrix structure for FEM_MHD
-!      type(FEM_MHD_solvers), save :: MHD_CG1
-!MHD_CG1%MGCG_MHD_FEM
-!
-!>        Structure of matrices for MHD dynamo simulation
-      type(MHD_MG_matrices), save :: MHD1_matrices
-!
-!>        Structure of matrices for all fields
-      type(MHD_matrices_pack), save :: solver_pack1
-!
-!
-!>      Structure for MPI communicator
-      type(mpi_4_solver), save :: solver_C
-!
-!>      Communication table structure for fluid
-      type(communication_table), save :: DJDS_comm_fl
-!
+      type(FEM_MHD_solvers), save :: MHD_CG1
 !
       end module m_solver_djds_MHD

@@ -180,8 +180,7 @@
      &          MHD_prop, ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD,    &
      &          MHD_mat_tbls, rhs_mat, mhd_fem_wk, MHD_matrices)
 !
-      use m_type_AMG_data
-      use m_type_AMG_data_4_MHD
+      use m_solver_djds_MHD
 !
       use set_aiccg_matrices_type
       use precond_djds_MHD
@@ -234,7 +233,8 @@
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         call const_MGCG_MHD_matrices(MHD_prop%iflag_all_scheme, dt,     &
      &      FEM_prm, SGS_param, cmt_param, Csims_FEM_MHD%ifld_diff,     &
-     &      MHD_prop, MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1, MHD_matrices)
+     &      MHD_prop, MHD_CG1%MGCG_WK, MHD_CG1%MGCG_FEM,                &
+     &      MHD_CG1%MGCG_MHD_FEM, MHD_matrices)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'

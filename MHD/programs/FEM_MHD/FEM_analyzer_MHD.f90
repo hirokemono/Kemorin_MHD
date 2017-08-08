@@ -64,7 +64,6 @@
       use m_work_4_dynamic_model
       use m_solver_djds_MHD
       use m_flexible_time_step
-      use m_type_AMG_data
       use t_boundary_field_IO
 !
       use initialization_4_MHD
@@ -127,14 +126,14 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices                                    &
-     &   (mesh1, MHD_mesh1, MHD_prop1, fem_int1,                        &
-     &    MGCG_WK1, MHD1_mat_tbls, MHD1_matrices, solver_pack1)
+     &   (mesh1, MHD_mesh1, MHD_prop1, fem_int1, MHD_CG1%MGCG_WK,       &
+     &    MHD1_mat_tbls, MHD_CG1%MHD_mat, MHD_CG1%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
      &    SGS_par1%model_p, SGS_par1%commute_p, mesh1, group1,          &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1,           &
      &    ak_MHD, fem_int1, FEM1_elen, Csims_FEM_MHD1,                  &
-     &    MHD1_mat_tbls, rhs_mat1, mhd_fem1_wk, MHD1_matrices)
+     &    MHD1_mat_tbls, rhs_mat1, mhd_fem1_wk, MHD_CG1%MHD_mat)
 !
 !   time evolution loop start!
 !
@@ -198,7 +197,6 @@
       use m_3d_filter_coef_MHD
       use m_bc_data_velo
       use m_solver_djds_MHD
-      use m_type_AMG_data
       use m_flexible_time_step
 !
       use construct_matrices
@@ -244,9 +242,9 @@
      &  (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,            &
      &   ele_mesh1, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,            &
      &   iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,                 &
-     &   filtering1, wide_filtering, layer_tbl1, solver_pack1,          &
-     &   MGCG_WK1, wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,     &
-     &   mhd_fem1_wk, rhs_mat1, nod_fld1, fld_ele1,                     &
+     &   filtering1, wide_filtering, layer_tbl1, MHD_CG1%solver_pack,   &
+     &   MHD_CG1%MGCG_WK, wk_cor1, wk_lsq1, wk_sgs1, wk_diff1,          &
+     &   wk_filter1, mhd_fem1_wk, rhs_mat1, nod_fld1, fld_ele1,         &
      &   Csims_FEM_MHD1, fem_sq)
 !
 !     ----- Evaluate model coefficients
@@ -395,7 +393,7 @@
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
      &     MHD_prop1, ak_MHD, fem_int1, FEM1_elen, Csims_FEM_MHD1,      &
      &     MHD1_mat_tbls, flex_p1, rhs_mat1, mhd_fem1_wk,               &
-     &     MHD1_matrices)
+     &     MHD_CG1%MHD_mat)
       end if
 !
       end subroutine FEM_analyze_MHD

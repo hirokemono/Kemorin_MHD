@@ -7,9 +7,9 @@
 !!     &        (MGCG_WK, MG_mesh, MG_MHD_mesh, ele_1st, MHD_matrices)
 !!        type(MGCG_data), intent(in) :: MGCG_WK
 !!        type(mesh_data), intent(in), target                           &
-!!     &                    :: MG_mesh(MGCG_WK1%num_MG_level)
+!!     &                    :: MG_mesh(MGCG_WK%num_MG_level)
 !!        type(mesh_data_MHD), intent(in), target                       &
-!!     &                    :: MG_MHD_mesh(MGCG_WK1%num_MG_level)
+!!     &                    :: MG_MHD_mesh(MGCG_WK%num_MG_level)
 !!        type(element_data), intent(inout) :: ele_1st
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
