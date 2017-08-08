@@ -16,7 +16,7 @@
       use t_geometry_data_MHD
       use t_coefs_element_4_MHD
       use t_finite_element_mat
-      use t_finite_element_mat_MHD
+      use t_MHD_mass_matricxes
       use t_nodal_bc_data
       use t_MHD_boundary_data
       use t_filter_elength

@@ -10,21 +10,13 @@
 !!     &         (numele, max_nod_smp, SGS_param, nod_fld, mhd_fem_wk)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!      subroutine alloc_int_vol_dvx(numele, mhd_fem_wk)
-!!      subroutine alloc_mass_mat_fluid(numnod, mhd_fem_wk)
-!!      subroutine alloc_mass_mat_conduct(mhd_fem_wk)
 !!
 !!      subroutine dealloc_int_vol_data(nod_fld, mhd_fem_wk)
 !!      subroutine dealloc_int_vol_dvx(mhd_fem_wk)
-!!      subroutine dealloc_mass_mat_fluid(mhd_fem_wk)
-!!      subroutine dealloc_mass_mat_conduct(mhd_fem_wk)
 !!
 !!      subroutine reset_ff_t_smp(max_nod_smp, mhd_fem_wk)
 !!      subroutine reset_ff_m_smp(max_nod_smp, mhd_fem_wk)
 !!
-!!      subroutine check_mass_martix_conduct                            &
-!!     &         (my_rank, numnod, mhd_fem_wk)
-!!      subroutine check_mass_martix_insulate                           &
-!!     &         (my_rank, numnod, mhd_fem_wk)
 !!      subroutine check_ff_m_smp                                       &
 !!     &         (my_rank, numdir, max_nod_smp, mhd_fem_wk)
 !!      subroutine check_diff_elemental_data                            &
@@ -39,13 +31,6 @@
 !
 !>      Work array for FEM assemble in MHD model
       type work_MHD_fe_mat
-!>      Lumped mass matrix for fluid
-        type(lumped_mass_matrices) :: mlump_fl
-!>        Lumped mass matrix for counductor
-        type(lumped_mass_matrices) :: mlump_cd
-!>        Lumped mass matrix for insulator
-        type(lumped_mass_matrices) :: mlump_ins
-!
 !>        Nodal work area for multi-pass
         real (kind=kreal), allocatable  ::  ff_m_smp(:,:,:)
 !>        Nodal work area for multi-pass
@@ -143,31 +128,6 @@
       end subroutine alloc_int_vol_dvx
 !
 !  ------------------------------------------------------------------
-!
-      subroutine alloc_mass_mat_fluid(numnod, mhd_fem_wk)
-!
-      integer(kind = kint), intent(in) :: numnod
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!
-!
-      call alloc_type_fem_lumped_mass(numnod, mhd_fem_wk%mlump_fl)
-!
-      end subroutine alloc_mass_mat_fluid
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine alloc_mass_mat_conduct(numnod, mhd_fem_wk)
-!
-      integer(kind = kint), intent(in) :: numnod
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!
-!
-      call alloc_type_fem_lumped_mass(numnod, mhd_fem_wk%mlump_cd)
-      call alloc_type_fem_lumped_mass(numnod, mhd_fem_wk%mlump_ins)
-!
-      end subroutine alloc_mass_mat_conduct
-!
-!   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
       subroutine dealloc_int_vol_data(nod_fld, mhd_fem_wk)
@@ -208,29 +168,6 @@
       end subroutine dealloc_int_vol_dvx
 !
 !  ------------------------------------------------------------------
-!
-      subroutine dealloc_mass_mat_fluid(mhd_fem_wk)
-!
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!
-!
-      call dealloc_type_fem_lumped_mass(mhd_fem_wk%mlump_fl)
-!
-      end subroutine dealloc_mass_mat_fluid
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine dealloc_mass_mat_conduct(mhd_fem_wk)
-!
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!
-!
-      call dealloc_type_fem_lumped_mass(mhd_fem_wk%mlump_cd)
-      call dealloc_type_fem_lumped_mass(mhd_fem_wk%mlump_ins)
-!
-      end subroutine dealloc_mass_mat_conduct
-!
-!   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
       subroutine reset_ff_t_smp(max_nod_smp, mhd_fem_wk)
@@ -277,48 +214,6 @@
       end subroutine reset_ff_m_smp
 !
 !   ---------------------------------------------------------------------
-!   ---------------------------------------------------------------------
-!
-      subroutine check_mass_martix_fluid                                &
-     &         (my_rank, numnod, mhd_fem_wk)
-!
-      integer(kind = kint), intent(in) :: my_rank, numnod
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!
-!
-      write(50+my_rank,*) 'Check ml_fl'
-      call check_mass_martix(my_rank, numnod, mhd_fem_wk%mlump_fl)
-!
-      end subroutine check_mass_martix_fluid
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine check_mass_martix_conduct                              &
-     &         (my_rank, numnod, mhd_fem_wk)
-!
-      integer(kind = kint), intent(in) :: my_rank, numnod
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!
-!
-      write(50+my_rank,*) 'Check ml_ins'
-      call check_mass_martix(my_rank, numnod, mhd_fem_wk%mlump_cd)
-!
-      end subroutine check_mass_martix_conduct
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine check_mass_martix_insulate                             &
-     &         (my_rank, numnod, mhd_fem_wk)
-!
-      integer(kind = kint), intent(in) :: my_rank, numnod
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!
-!
-      write(50+my_rank,*) 'Check ml_ins'
-      call check_mass_martix(my_rank, numnod, mhd_fem_wk%mlump_ins)
-!
-      end subroutine check_mass_martix_insulate
-!
 !   ---------------------------------------------------------------------
 !
       subroutine check_ff_m_smp                                         &

@@ -82,8 +82,8 @@
       call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
      &    SGS_par1%model_p, SGS_par1%commute_p, mesh1, group1,          &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1, ak_MHD,   &
-     &    fem_int1, FEM1_elen, Csims_FEM_MHD1, MHD1_mat_tbls,           &
-     &    rhs_mat1, mhd_fem1_wk, MHD_CG1%MHD_mat)
+     &    fem_int1, FEM1_elen, Csims_FEM_MHD1, MHD1_mat_tbls, mk_MHD1,  &
+     &    rhs_mat1, MHD_CG1%MHD_mat)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD                                         &

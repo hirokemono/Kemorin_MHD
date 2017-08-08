@@ -7,8 +7,8 @@
 !!     &          nod_comm, node, ele, surf, sf_grp,                    &
 !!     &          fluid, conduct, fl_prop, cd_prop, ht_prop, cp_prop,   &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
-!!     &          fem_int, FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk,&
-!!     &          rhs_mat, nod_fld, ele_fld)
+!!     &          fem_int, FEM_elens, ifld_diff, diff_coefs, mk_MHD,    &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !!      subroutine cal_true_sgs_terms_post(filter_param,                &
 !!     &          nod_comm, node, iphys, filtering, wk_filter, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -31,6 +31,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -65,6 +66,7 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_MHD_finite_element_mat
+      use t_MHD_mass_matricxes
       use t_work_FEM_integration
 !
       use cal_fluxes
@@ -91,8 +93,8 @@
      &          nod_comm, node, ele, surf, sf_grp,                      &
      &          fluid, conduct, fl_prop, cd_prop, ht_prop, cp_prop,     &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
-     &          fem_int, FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk,  &
-     &          rhs_mat, nod_fld, ele_fld)
+     &          fem_int, FEM_elens, ifld_diff, diff_coefs, mk_MHD,      &
+     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       use calypso_mpi
       use m_phys_labels
@@ -119,6 +121,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -136,7 +139,7 @@
      &         iphys%i_h_flux, iphys%i_h_flux_div,                      &
      &         iphys%i_filter_temp, iphys%i_filter_velo, FEM_prm,       &
      &         nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,   &
-     &         iphys_ele, ele_fld, fem_int, mhd_fem_wk%mlump_fl,        &
+     &         iphys_ele, ele_fld, fem_int, mk_MHD%mlump_fl,            &
      &         mhd_fem_wk, rhs_mat, nod_fld)
          else if(nod_fld%phys_name(i).eq.fhd_SGS_div_c_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -146,7 +149,7 @@
      &         iphys%i_c_flux, iphys%i_c_flux_div,                      &
      &         iphys%i_filter_comp, iphys%i_filter_velo, FEM_prm,       &
      &         nod_comm, node, ele, fluid, cp_prop, nod_bcs%Cnod_bcs,   &
-     &         iphys_ele, ele_fld, fem_int, mhd_fem_wk%mlump_fl,        &
+     &         iphys_ele, ele_fld, fem_int, mk_MHD%mlump_fl,            &
      &         mhd_fem_wk, rhs_mat, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_div_m_flux_true)     &
      &          then
@@ -158,8 +161,7 @@
      &         surf, sf_grp, fluid, fl_prop, cd_prop,                   &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,    &
      &         ak_MHD, fem_int, FEM_elens, diff_coefs,                  &
-     &         mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat,                &
-     &         nod_fld, ele_fld)
+     &         mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_Lorentz_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
@@ -169,8 +171,7 @@
      &         surf, sf_grp, fluid, fl_prop, cd_prop,                   &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,    &
      &         ak_MHD, fem_int, FEM_elens, diff_coefs,                  &
-     &         mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat,                &
-     &         nod_fld, ele_fld)
+     &         mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_mag_induct_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -180,7 +181,7 @@
      &        nod_comm, node, ele, surf, sf_grp, conduct, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, ak_MHD, fem_int,               &
-     &        FEM_elens, diff_coefs, mhd_fem_wk%mlump_cd,               &
+     &        FEM_elens, diff_coefs, mk_MHD%mlump_cd,                   &
      &        mhd_fem_wk, rhs_mat, nod_fld)
          end if
        end do

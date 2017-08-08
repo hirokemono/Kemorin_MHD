@@ -105,7 +105,7 @@
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
      &    fem_int1, FEM1_elen, filtering1, wide_filtering, layer_tbl1,  &
-     &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk,          &
+     &    mk_MHD1, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, &
      &    rhs_mat1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
 !
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
@@ -127,8 +127,8 @@
       call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
      &    SGS_par1%model_p, SGS_par1%commute_p, mesh1, group1,          &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1, ak_MHD,   &
-     &    fem_int1, FEM1_elen, Csims_FEM_MHD1, MHD1_mat_tbls,           &
-     &    rhs_mat1, mhd_fem1_wk, MHD_CG1%MHD_mat)
+     &    fem_int1, FEM1_elen, Csims_FEM_MHD1, MHD1_mat_tbls, mk_MHD1,  &
+     &    rhs_mat1, MHD_CG1%MHD_mat)
 !
 !   time evolution loop start!
 !
@@ -138,7 +138,7 @@
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
      &      mesh1, group1, ele_mesh1, MHD_mesh1, MHD_prop1,             &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1, FEM1_elen, filtering1, wide_filtering,            &
+     &      fem_int1, FEM1_elen, filtering1, wide_filtering, mk_MHD1,   &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
      &      mhd_fem1_wk, rhs_mat1, nod_fld1, Csims_FEM_MHD1)
       end if
@@ -150,7 +150,7 @@
      &     (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,         &
      &      ele_mesh1, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,         &
      &      iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,              &
-     &      filtering1, wide_filtering, layer_tbl1,                     &
+     &      filtering1, wide_filtering, layer_tbl1, mk_MHD1,            &
      &      wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk,        &
      &      rhs_mat1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
       end if
@@ -249,7 +249,7 @@
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
      &      mesh1, group1, ele_mesh1, MHD_mesh1, MHD_prop1,             &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1, FEM1_elen, filtering1, wide_filtering,            &
+     &      fem_int1, FEM1_elen, filtering1, wide_filtering, mk_MHD1,   &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
      &      mhd_fem1_wk, rhs_mat1, nod_fld1, Csims_FEM_MHD1)
       end if
@@ -273,7 +273,7 @@
      &       (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,       &
      &        ele_mesh1, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,       &
      &        iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,            &
-     &        filtering1, wide_filtering, layer_tbl1,                   &
+     &        filtering1, wide_filtering, layer_tbl1, mk_MHD1,          &
      &        wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk,      &
      &        rhs_mat1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
         end if
@@ -383,8 +383,7 @@
         call update_matrices(MHD_step%time_d, FEM_prm1, SGS_par1,       &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
      &     MHD_prop1, ak_MHD, fem_int1, FEM1_elen, Csims_FEM_MHD1,      &
-     &     MHD1_mat_tbls, flex_p1, rhs_mat1, mhd_fem1_wk,               &
-     &     MHD_CG1%MHD_mat)
+     &     MHD1_mat_tbls, flex_p1, mk_MHD1, rhs_mat1, MHD_CG1%MHD_mat)
       end if
 !
       end subroutine FEM_analyze_MHD

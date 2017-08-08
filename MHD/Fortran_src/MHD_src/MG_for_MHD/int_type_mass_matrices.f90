@@ -42,7 +42,7 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use t_finite_element_mat_MHD
+      use t_MHD_mass_matricxes
 !
       type(FEM_MHD_paremeters), intent(in) ::     FEM_prm
       type(mesh_geometry), intent(in) ::          mesh
@@ -72,7 +72,7 @@
      &          jac_3d, rhs_tbl, fem_mat, fem_int, mk_MHD)
 !
       use m_machine_parameter
-      use t_finite_element_mat_MHD
+      use t_MHD_mass_matricxes
       use int_vol_mass_matrix
 !
       type(FEM_MHD_paremeters), intent(in) ::     FEM_prm
@@ -119,7 +119,7 @@
      &          jac_3d, rhs_tbl, fem_mat, fem_int, mk_MHD)
 !
       use m_machine_parameter
-      use t_finite_element_mat_MHD
+      use t_MHD_mass_matricxes
       use int_vol_mass_matrix
 !
       type(FEM_MHD_paremeters), intent(in) ::     FEM_prm

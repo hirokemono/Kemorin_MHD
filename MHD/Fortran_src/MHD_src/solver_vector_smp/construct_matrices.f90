@@ -10,11 +10,11 @@
 !!     &         (time_d, FEM_prm, SGS_par, mesh, group, ele_mesh,      &
 !!     &          MHD_mesh, nod_bcs, surf_bcs, MHD_prop, ak_MHD,        &
 !!     &          fem_int, FEM_elens, Csims_FEM_MHD, MHD_mat_tbls,      &
-!!     &          flex_p, rhs_mat, mhd_fem_wk, MHD_matrices)
+!!     &          flex_p, mk_MHD, rhs_mat, MHD_matrices)
 !!      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,&
 !!     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          MHD_prop, ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD,  &
-!!     &          MHD_mat_tbls, rhs_mat, mhd_fem_wk, MHD_matrices)
+!!     &          MHD_mat_tbls, mk_MHD, rhs_mat, MHD_matrices)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -34,7 +34,7 @@
 !!        type(MGCG_data), intent(in) :: MGCG_WK
 !!        type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
 !!        type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
-!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
@@ -57,7 +57,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
-      use t_MHD_finite_element_mat
+      use t_MHD_mass_matricxes
       use t_work_FEM_integration
       use t_filter_elength
       use t_material_property
@@ -121,7 +121,7 @@
      &         (time_d, FEM_prm, SGS_par, mesh, group, ele_mesh,        &
      &          MHD_mesh, nod_bcs, surf_bcs, MHD_prop, ak_MHD,          &
      &          fem_int, FEM_elens, Csims_FEM_MHD, MHD_mat_tbls,        &
-     &          flex_p, rhs_mat, mhd_fem_wk, MHD_matrices)
+     &          flex_p, mk_MHD, rhs_mat, MHD_matrices)
 !
       use t_time_data
       use t_SGS_control_parameter
@@ -143,9 +143,9 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
+      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(flexible_stepping_parameter), intent(inout) :: flex_p
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
@@ -166,8 +166,8 @@
         call set_aiccg_matrices(time_d%dt, FEM_prm,                     &
      &      SGS_par%model_p, SGS_par%commute_p, mesh, group, ele_mesh,  &
      &      MHD_mesh, nod_bcs, surf_bcs, MHD_prop, ak_MHD, fem_int,     &
-     &      FEM_elens, Csims_FEM_MHD, MHD_mat_tbls, rhs_mat,            &
-     &      mhd_fem_wk, MHD_matrices)
+     &      FEM_elens, Csims_FEM_MHD, MHD_mat_tbls, mk_MHD, rhs_mat,    &
+     &      MHD_matrices)
         flex_p%iflag_flex_step_changed = 0
       end if
 !
@@ -178,7 +178,7 @@
       subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,  &
      &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
      &          MHD_prop, ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD,    &
-     &          MHD_mat_tbls, rhs_mat, mhd_fem_wk, MHD_matrices)
+     &          MHD_mat_tbls, mk_MHD, rhs_mat, MHD_matrices)
 !
       use m_solver_djds_MHD
 !
@@ -204,9 +204,9 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
+      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
 !
@@ -222,7 +222,7 @@
      &    MHD_matrices%MG_DJDS_lin_fl(0), MHD_mat_tbls%base,            &
      &    MHD_mat_tbls%fluid_q, MHD_mat_tbls%full_conduct_q,            &
      &    MHD_mat_tbls%linear, MHD_mat_tbls%fluid_l,                    &
-     &    mhd_fem_wk%mlump_fl, mhd_fem_wk%mlump_cd,                     &
+     &    mk_MHD%mlump_fl, mk_MHD%mlump_cd,                             &
      &    rhs_mat%surf_wk, rhs_mat%fem_wk,                              &
      &    MHD_matrices%Vmat_MG_DJDS(0), MHD_matrices%Bmat_MG_DJDS(0),   &
      &    MHD_matrices%Tmat_MG_DJDS(0), MHD_matrices%Cmat_MG_DJDS(0),   &

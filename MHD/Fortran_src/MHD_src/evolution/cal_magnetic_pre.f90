@@ -24,7 +24,7 @@
 !!      subroutine cal_magnetic_co_outside(iak_diff_b, FEM_prm,         &
 !!     &          SGS_param, cmt_param, nod_comm, node, ele,            &
 !!     &          surf, insulate, sf_grp, Bnod_bcs, Fsf_bcs, iphys,     &
-!!     &          jacobians, rhs_tbl, FEM_elens, diff_coefs,            &
+!!     &          jacobians, rhs_tbl, FEM_elens, diff_coefs, mlump_ins, &
 !!     &          mhd_fem_wk, fem_wk,  surf_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -53,6 +53,7 @@
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
+!!        type(lumped_mass_matrices), intent(in) :: mlump_ins
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(MHD_MG_matrix), intent(in) :: Bmatrix
 !!        type(vectors_4_solver), intent(inout)                         &
@@ -360,7 +361,7 @@
       subroutine cal_magnetic_co_outside(iak_diff_b, FEM_prm,           &
      &          SGS_param, cmt_param, nod_comm, node, ele,              &
      &          surf, insulate, sf_grp, Bnod_bcs, Fsf_bcs, iphys,       &
-     &          jacobians, rhs_tbl, FEM_elens, diff_coefs,              &
+     &          jacobians, rhs_tbl, FEM_elens, diff_coefs, mlump_ins,   &
      &          mhd_fem_wk, fem_wk,  surf_wk, f_l, f_nl, nod_fld)
 !
       use set_boundary_scalars
@@ -389,6 +390,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_ins
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -419,7 +421,7 @@
 !
 !
       call cal_multi_pass_4_vector_ff                                   &
-     &   (insulate%istack_ele_fld_smp, FEM_prm, mhd_fem_wk%mlump_ins,   &
+     &   (insulate%istack_ele_fld_smp, FEM_prm, mlump_ins,              &
      &    nod_comm, node, ele, jacobians%jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !

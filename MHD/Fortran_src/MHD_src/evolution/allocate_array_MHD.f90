@@ -7,8 +7,8 @@
 !        Modified by H. Matsui on May, 2007
 !
 !!      subroutine allocate_array(SGS_par, mesh, MHD_prop,              &
-!!     &          iphys, nod_fld, iphys_elediff, mhd_fem_wk, rhs_mat,   &
-!!     &          fem_int, fem_sq, label_sim)
+!!     &          iphys, nod_fld, iphys_elediff, mk_MHD,                &
+!!     &          mhd_fem_wk, rhs_mat, fem_int, fem_sq, label_sim)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -17,6 +17,7 @@
 !!        type(SGS_terms_address), intent(inout) :: iphys_elediff
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(finite_element_integration), intent(inout) :: fem_int
+!!        type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
@@ -33,6 +34,7 @@
       use t_SGS_control_parameter
       use t_physical_property
       use t_MHD_finite_element_mat
+      use t_MHD_mass_matricxes
 !
       implicit none
 !
@@ -45,8 +47,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine allocate_array(SGS_par, mesh, MHD_prop,                &
-     &          iphys, nod_fld, iphys_elediff, mhd_fem_wk, rhs_mat,     &
-     &          fem_int, fem_sq, label_sim)
+     &          iphys, nod_fld, iphys_elediff, mk_MHD,                  &
+     &          mhd_fem_wk, rhs_mat, fem_int, fem_sq, label_sim)
 !
       use m_element_phys_data
       use m_phys_constants
@@ -71,6 +73,7 @@
       type(SGS_terms_address), intent(inout) :: iphys_elediff
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_element_integration), intent(inout) :: fem_int
+      type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
@@ -82,8 +85,8 @@
       if (iflag_debug.ge.1) write(*,*) 'alloc_finite_elem_mat'
       call alloc_finite_elem_mat(mesh, rhs_mat)
       call alloc_fem_int_base_type(mesh, fem_int)
-      call alloc_mass_mat_fluid(mesh%node%numnod, mhd_fem_wk)
-      call alloc_mass_mat_conduct(mesh%node%numnod, mhd_fem_wk)
+      call alloc_mass_mat_fluid(mesh%node%numnod, mk_MHD)
+      call alloc_mass_mat_conduct(mesh%node%numnod, mk_MHD)
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
       call alloc_int_vol_data(mesh%ele%numele, mesh%node%max_nod_smp,   &

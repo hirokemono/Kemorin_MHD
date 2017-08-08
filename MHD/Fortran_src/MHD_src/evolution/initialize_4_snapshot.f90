@@ -207,7 +207,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(SGS_par, mesh, MHD_prop,                      &
-     &    iphys, nod_fld, Csims_FEM_MHD%iphys_elediff,                  &
+     &    iphys, nod_fld, Csims_FEM_MHD%iphys_elediff, mk_MHD1,         &
      &    mhd_fem1_wk, rhs_mat1, fem_int1, fem_sq, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
@@ -286,7 +286,7 @@
 !
       call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
      &     mesh, MHD_mesh, fem_int1%jcs, fem_int1%rhs_tbl,              &
-     &     mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%f_l, fem_int1%m_lump)
+     &     rhs_mat1%fem_wk, rhs_mat1%f_l, fem_int1%m_lump, mk_MHD1)
 !
 !     ---------------------
 !

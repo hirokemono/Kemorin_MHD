@@ -12,8 +12,8 @@
 !!     &          nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
 !!     &          cd_prop, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
-!!     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,    &
-!!     &          surf_wk, f_l, f_nl, nod_fld)
+!!     &          ifld_diff, diff_coefs, m_lump, mk_MHD,                &
+!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -36,6 +36,7 @@
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
+!!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -65,6 +66,7 @@
       use t_finite_element_mat
       use t_int_surface_data
       use t_MHD_finite_element_mat
+      use t_MHD_mass_matricxes
       use t_filter_elength
       use t_bc_data_MHD
       use t_MHD_boundary_data
@@ -84,8 +86,8 @@
      &          nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
      &          cd_prop, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
-     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,      &
-     &          surf_wk, f_l, f_nl, nod_fld)
+     &          ifld_diff, diff_coefs, m_lump, mk_MHD,                  &
+     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use cal_rotation_sgs
 !
@@ -113,6 +115,7 @@
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(lumped_mass_matrices), intent(in) :: m_lump
+      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -128,7 +131,7 @@
           call choose_cal_rotation_sgs(cmt_param%iflag_c_velo,          &
      &       FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,     &
      &       ifld_diff%i_velo, iphys%i_velo, iphys%i_vort,              &
-     &       fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,             &
+     &       fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,                 &
      &       SGS_param, nod_comm, node, ele, surf, sf_grp,              &
      &       iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,         &
      &       diff_coefs, nod_bcs%Vnod_bcs%nod_bc_w,                     &
@@ -154,7 +157,7 @@
 !             call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,     &
 !     &           FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,   &
 !     &           dt, ifld_diff%i_magne, iphys%i_magne, iphys%i_current,&
-!     &           conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,      &
+!     &           conduct%istack_ele_fld_smp, mk_MHD%mlump_cd,          &
 !     &           SGS_param, nod_comm, node, ele, surf, sf_grp,         &
 !     &           iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,    &
 !     &           diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,                &
@@ -180,7 +183,7 @@
 !           call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
 !     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt, &
 !     &         ifld_diff%i_magne, iphys%i_magne, iphys%i_current,      &
-!     &         conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,        &
+!     &         conduct%istack_ele_fld_smp, mk_MHD%mlump_cd,            &
 !     &         SGS_param, nod_comm, node, ele, surf, sf_grp,           &
 !     &         iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,      &
 !     &         diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,                  &

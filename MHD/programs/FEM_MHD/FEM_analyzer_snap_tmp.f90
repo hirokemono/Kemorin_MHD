@@ -182,7 +182,7 @@
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
      &    fem_int1, FEM1_elen, filtering1, wide_filtering, layer_tbl1,  &
-     &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk,          &
+     &    mk_MHD1, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, &
      &    rhs_mat1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
 !
 !     ----- Evaluate model coefficients
@@ -193,7 +193,7 @@
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
      &      mesh1, group1, ele_mesh1, MHD_mesh1, MHD_prop1,             &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1, FEM1_elen, filtering1, wide_filtering,            &
+     &      fem_int1, FEM1_elen, filtering1, wide_filtering, mk_MHD1,   &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
      &      mhd_fem1_wk, rhs_mat1, nod_fld1, Csims_FEM_MHD1)
       end if
@@ -206,7 +206,7 @@
      &     (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,         &
      &      ele_mesh1, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,         &
      &      iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,              &
-     &      filtering1, wide_filtering, layer_tbl1,                     &
+     &      filtering1, wide_filtering, layer_tbl1, mk_MHD1,            &
      &      wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk,        &
      &     rhs_mat1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
       end if
@@ -332,7 +332,7 @@
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
      &      sf1_bcs%Vsf_bcs, sf1_bcs%Bsf_bcs, iphys, iphys_ele, ak_MHD, &
      &      fem_int1, FEM1_elen, Csims_FEM_MHD1%diff_coefs,             &
-     &      mhd_fem1_wk%mlump_fl, mhd_fem1_wk, rhs_mat1,                &
+     &      mk_MHD1%mlump_fl, mhd_fem1_wk, rhs_mat1,                    &
      &      nod_fld1, fld_ele1)
       end if
 !
@@ -367,7 +367,7 @@
      &      MHD_mesh1%conduct, MHD_prop1%cd_prop,                       &
      &      iphys, iphys_ele, fld_ele1, fem_int1%jcs%jac_3d,            &
      &      fem_int1%rhs_tbl, FEM1_elen, filtering1,                    &
-     &      Csims_FEM_MHD1%sgs_coefs, mhd_fem1_wk%mlump_cd,             &
+     &      Csims_FEM_MHD1%sgs_coefs, mk_MHD1%mlump_cd,                 &
      &      wk_filter1, mhd_fem1_wk, rhs_mat1%fem_wk,                   &
      &      rhs_mat1%f_l, rhs_mat1%f_nl, nod_fld1)
 
@@ -379,7 +379,7 @@
         call int_vol_sgs_induction(FEM_prm1,                            &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,   &
      &      iphys, fem_int1%jcs%jac_3d, fem_int1%rhs_tbl,               &
-     &      mhd_fem1_wk%mlump_cd, mhd_fem1_wk,                          &
+     &      mk_MHD1%mlump_cd, mhd_fem1_wk,                              &
      &      rhs_mat1%fem_wk, rhs_mat1%f_nl, nod_fld1)
       end if
 !

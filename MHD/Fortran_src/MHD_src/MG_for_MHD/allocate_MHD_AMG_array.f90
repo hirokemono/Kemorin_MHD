@@ -34,7 +34,7 @@
       use m_machine_parameter
       use t_work_FEM_integration
       use t_finite_element_mat
-      use t_finite_element_mat_MHD
+      use t_MHD_mass_matricxes
       use t_vector_for_solver
 !
       type(mesh_data), intent(in) :: femmesh
@@ -48,10 +48,8 @@
 !
       call alloc_finite_elem_mat(femmesh%mesh, rhs_mat)
       call alloc_fem_int_base_type(femmesh%mesh, fem_int)
-      call alloc_fem_mat_fluid_type(femmesh%mesh%node%numnod,           &
-     &    mk_MHD)
-      call alloc_fem_mat_conduct_type(femmesh%mesh%node%numnod,         &
-     &    mk_MHD)
+      call alloc_mass_mat_fluid(femmesh%mesh%node%numnod, mk_MHD)
+      call alloc_mass_mat_conduct(femmesh%mesh%node%numnod, mk_MHD)
 !
       if (iflag_debug.ge.1 ) write(*,*) 'alloc_iccgN_vec_type'
       MG_vector%isize_solver_vect = -1
