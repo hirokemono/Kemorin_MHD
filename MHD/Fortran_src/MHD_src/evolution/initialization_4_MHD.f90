@@ -6,7 +6,7 @@
 !!      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par, &
 !!     &          flex_p, flex_data, MHD_step, mesh, group, ele_mesh,   &
 !!     &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD, &
-!!     &          iphys, nod_fld, fem_sq, label_sim)
+!!     &          iphys, nod_fld, MHD_CG, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -23,6 +23,7 @@
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       module initialization_4_MHD
@@ -48,6 +49,7 @@
       use t_material_property
       use t_flex_delta_t_data
       use t_FEM_MHD_mean_square
+      use t_FEM_MHD_solvers
 !
       implicit none
 !
@@ -60,7 +62,7 @@
       subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par,   &
      &          flex_p, flex_data, MHD_step, mesh, group, ele_mesh,     &
      &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,   &
-     &          iphys, nod_fld, fem_sq, label_sim)
+     &          iphys, nod_fld, MHD_CG, fem_sq, label_sim)
 !
       use m_flexible_time_step
 !
@@ -69,7 +71,6 @@
       use m_boundary_condition_IDs
       use m_flags_4_solvers
       use m_array_for_send_recv
-      use m_solver_djds_MHD
       use m_3d_filter_coef_MHD
       use t_work_4_MHD_layering
 !
@@ -131,6 +132,7 @@
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+      type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       character(len=kchara), intent(inout)   :: label_sim
 !
       integer(kind = kint) :: iflag
@@ -141,9 +143,9 @@
 !
 !  -----   ordering by regions ---------------------------------------
 !
-      call reordering_by_layers_MHD(SGS_par, MHD_CG1%MGCG_WK,           &
-     &    MHD_CG1%MGCG_FEM, MHD_CG1%MGCG_MHD_FEM, FEM_prm,              &
-     &    mesh%ele, group, MHD_mesh, MHD_CG1%MHD_mat%MG_interpolate)
+      call reordering_by_layers_MHD(SGS_par, MHD_CG%MGCG_WK,            &
+     &    MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM, FEM_prm,                &
+     &    mesh%ele, group, MHD_mesh, MHD_CG%MHD_mat%MG_interpolate)
 !
       call set_layers                                                   &
      &   (FEM_prm, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
@@ -257,12 +259,12 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_communicator_4_MHD'
-      call copy_communicator_4_solver(MHD_CG1%solver_C)
+      call copy_communicator_4_solver(MHD_CG%solver_C)
 !
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
       call s_const_comm_table_fluid                                     &
      &   (nprocs, MHD_mesh%fluid%istack_ele_fld_smp,                    &
-     &    mesh%node, mesh%ele, mesh%nod_comm, MHD_CG1%DJDS_comm_fl)
+     &    mesh%node, mesh%ele, mesh%nod_comm, MHD_CG%DJDS_comm_fl)
 !
 !  -------------------------------
 !
@@ -313,9 +315,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
       call set_MHD_connectivities                                       &
-     &   (FEM_prm%DJDS_param, mesh, MHD_mesh%fluid, MHD_CG1%solver_C,   &
+     &   (FEM_prm%DJDS_param, mesh, MHD_mesh%fluid, MHD_CG%solver_C,    &
      &    fem_int1%next_tbl, fem_int1%rhs_tbl,                          &
-     &    MHD_CG1%MHD_mat, MHD_CG1%DJDS_comm_fl)
+     &    MHD_CG%MHD_mat, MHD_CG%DJDS_comm_fl)
 !
 !     ---------------------
 !
@@ -347,15 +349,15 @@
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, FEM_prm)
       if (iflag_debug.eq.1 ) write(*,*) 'alloc_MHD_MGCG_matrices'
       call alloc_MHD_MGCG_matrices                                      &
-     &   (izero, mesh%node, MHD_prop, MHD_CG1%MHD_mat)
+     &   (izero, mesh%node, MHD_prop, MHD_CG%MHD_mat)
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG                                     &
      &     (MHD_step%time_d%dt, FEM_prm, mesh%node, mesh%ele,           &
      &      Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs,          &
-     &      MHD_prop, MHD_BC1, FEM_prm%DJDS_param, MHD_CG1%MGCG_WK,     &
-     &      MHD_CG1%MGCG_FEM, MHD_CG1%MGCG_MHD_FEM, MHD_CG1%MHD_mat)
+     &      MHD_prop, MHD_BC1, FEM_prm%DJDS_param, MHD_CG%MGCG_WK,      &
+     &      MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM, MHD_CG%MHD_mat)
       end if
 !
 !     --------------------- 

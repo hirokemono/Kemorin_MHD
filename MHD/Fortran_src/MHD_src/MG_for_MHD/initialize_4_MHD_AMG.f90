@@ -6,13 +6,10 @@
 !!      subroutine s_initialize_4_MHD_AMG                               &
 !!     &         (dt, FEM_prm, node_1st, ele_1st, ifld_diff, diff_coefs,&
 !!     &          MHD_prop, MHD_BC, DJDS_param, MGCG_WK,                &
-!!     &          MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
+!!     &          MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(inout) :: node_1st
 !!        type(element_data), intent(inout) :: ele_1st
-!!      subroutine const_MGCG_MHD_matrices(iflag_scheme, dt, FEM_prm,   &
-!!     &          SGS_param, cmt_param, Csims_FEM_MHD, MHD_prop,        &
-!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -25,7 +22,7 @@
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
-!!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
+!!        type(MHD_MG_matrices), intent(inout) :: MHD_mat
 !
       module initialize_4_MHD_AMG
 !
@@ -57,7 +54,7 @@
       subroutine s_initialize_4_MHD_AMG                                 &
      &         (dt, FEM_prm, node_1st, ele_1st, ifld_diff, diff_coefs,  &
      &          MHD_prop, MHD_BC, DJDS_param, MGCG_WK,                  &
-     &          MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
+     &          MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !
       use t_geometry_data
       use t_edge_data
@@ -97,7 +94,7 @@
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
-      type(MHD_MG_matrices), intent(inout) :: MHD_matrices
+      type(MHD_MG_matrices), intent(inout) :: MHD_mat
 !
       integer(kind = kint) :: i_level
 !
@@ -224,14 +221,14 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
       call set_MG_djds_connect_type(DJDS_param,                         &
-     &    MGCG_WK, MGCG_MHD_FEM, MGCG_FEM, MHD_matrices)
+     &    MGCG_WK, MGCG_MHD_FEM, MGCG_FEM, MHD_mat)
 !
 !     --------------------- 
 !
       if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
       call s_link_MG_MHD_mesh_data                                      &
      &   (MGCG_WK, MGCG_FEM%MG_mesh, MGCG_MHD_FEM%MG_MHD_mesh,          &
-     &    ele_1st, MHD_matrices)
+     &    ele_1st, MHD_mat)
 !
 !     --------------------- 
 !
@@ -245,11 +242,7 @@
      &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
      &      MGCG_FEM%MG_mesh(i_level)%group,                            &
      &      MGCG_FEM%MG_FEM_mat(i_level)%surf_wk)
-      end do
 !
-!     --------------------- 
-!
-      do i_level = 1, MGCG_WK%num_MG_level
         call set_bc_id_data                                             &
      &     (dt, MGCG_MHD_FEM%IO_MG_bc(i_level),                         &
      &      MGCG_FEM%MG_mesh(i_level)%mesh,                             &
@@ -265,11 +258,7 @@
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_nod_grp,               &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_geom,              &
      &      MHD_prop, MHD_BC, MGCG_MHD_FEM%MG_surf_bc(i_level) )
-      end do
 !
-!     --------------------- 
-!
-      do i_level = 1, MGCG_WK%num_MG_level
         if(iflag_debug .gt. 0) write(*,*) 's_int_type_mass_matrices'
         call s_int_type_mass_matrices                                   &
      &     (FEM_prm, MGCG_FEM%MG_mesh(i_level)%mesh,                    &
@@ -279,11 +268,7 @@
      &      MGCG_FEM%MG_FEM_mat(i_level),                               &
      &      MGCG_FEM%MG_FEM_int(i_level),                               &
      &      MGCG_MHD_FEM%MG_mk_MHD(i_level) )
-      end do
 !
-!     ---------------------
-!
-      do i_level = 1, MGCG_WK%num_MG_level
         if(iflag_debug .gt. 0) write(*,*) 's_set_MHD_idx_4_mat_type'
         call s_set_MHD_idx_4_mat_type                                   &
      &     (MGCG_FEM%MG_mesh(i_level)%mesh,                             &
@@ -291,30 +276,27 @@
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
      &      MGCG_FEM%MG_FEM_int(i_level)%rhs_tbl,                       &
-     &      MHD_matrices%MG_DJDS_table(i_level),                        &
-     &      MHD_matrices%MG_DJDS_fluid(i_level),                        &
-     &      MHD_matrices%MG_DJDS_linear(i_level),                       &
-     &      MHD_matrices%MG_DJDS_lin_fl(i_level),                       &
-     &      MHD_matrices%MG_mat_tbls(i_level)%base,                     &
-     &      MHD_matrices%MG_mat_tbls(i_level)%fluid_q,                  &
-     &      MHD_matrices%MG_mat_tbls(i_level)%full_conduct_q,           &
-     &      MHD_matrices%MG_mat_tbls(i_level)%linear,                   &
-     &      MHD_matrices%MG_mat_tbls(i_level)%fluid_l)
-      end do
+     &      MHD_mat%MG_DJDS_table(i_level),                             &
+     &      MHD_mat%MG_DJDS_fluid(i_level),                             &
+     &      MHD_mat%MG_DJDS_linear(i_level),                            &
+     &      MHD_mat%MG_DJDS_lin_fl(i_level),                            &
+     &      MHD_mat%MG_mat_tbls(i_level)%base,                          &
+     &      MHD_mat%MG_mat_tbls(i_level)%fluid_q,                       &
+     &      MHD_mat%MG_mat_tbls(i_level)%full_conduct_q,                &
+     &      MHD_mat%MG_mat_tbls(i_level)%linear,                        &
+     &      MHD_mat%MG_mat_tbls(i_level)%fluid_l)
 !
-!     ---------------------
 !
-      do i_level = 1, MGCG_WK%num_MG_level
         if(my_rank .lt. MGCG_WK%MG_mpi(i_level)%nprocs) then
           if(iflag_debug .gt. 0) write(*,*) 'alloc_MHD_MGCG_matrices'
           call alloc_MHD_MGCG_matrices                                  &
      &       (i_level, MGCG_FEM%MG_mesh(i_level)%mesh%node,             &
-     &        MHD_prop, MHD_matrices)
+     &        MHD_prop, MHD_mat)
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                                 'alloc_MHD_MGCG_zero_matrices'
           call alloc_MHD_MGCG_zero_matrices                             &
-     &       (i_level, MHD_prop, MHD_matrices)
+     &       (i_level, MHD_prop, MHD_mat)
         end if
       end do
 !
@@ -324,7 +306,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_MG_djds_connect_type(DJDS_param,                   &
-     &          MGCG_WK, MGCG_MHD_FEM, MGCG_FEM, MHD_matrices)
+     &          MGCG_WK, MGCG_MHD_FEM, MGCG_FEM, MHD_mat)
 !
       use t_mesh_data
       use t_geometry_data_MHD
@@ -335,7 +317,7 @@
       type(MGCG_data), intent(in) :: MGCG_WK
       type(MGCG_MHD_data), intent(in) :: MGCG_MHD_FEM
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
-      type(MHD_MG_matrices), intent(inout) :: MHD_matrices
+      type(MHD_MG_matrices), intent(inout) :: MHD_mat
 !
       integer(kind = kint) :: i_level
 !
@@ -346,34 +328,34 @@
      &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
      &        MGCG_FEM%MG_FEM_int(i_level)%next_tbl,                    &
      &        MGCG_FEM%MG_FEM_int(i_level)%rhs_tbl,                     &
-     &        MHD_matrices%MG_DJDS_table(i_level))
+     &        MHD_mat%MG_DJDS_table(i_level))
           call empty_MHD_djds_connectivities                            &
      &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
-     &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
-     &        MHD_matrices%MG_DJDS_linear(i_level),                     &
-     &        MHD_matrices%MG_DJDS_lin_fl(i_level))
+     &        MHD_mat%MG_DJDS_fluid(i_level),                           &
+     &        MHD_mat%MG_DJDS_linear(i_level),                          &
+     &        MHD_mat%MG_DJDS_lin_fl(i_level))
         else
           call set_MHD_whole_connectivity(DJDS_param,                   &
      &        MGCG_FEM%MG_mesh(i_level)%mesh, MGCG_WK%MG_mpi(i_level),  &
      &        MGCG_FEM%MG_FEM_int(i_level)%next_tbl,                    &
      &        MGCG_FEM%MG_FEM_int(i_level)%rhs_tbl,                     &
-     &        MHD_matrices%MG_DJDS_table(i_level),                      &
-     &        MHD_matrices%MG_comm_table(i_level))
+     &        MHD_mat%MG_DJDS_table(i_level),                           &
+     &        MHD_mat%MG_comm_table(i_level))
 !
           call set_MHD_djds_connectivities(DJDS_param,                  &
      &        MGCG_FEM%MG_mesh(i_level)%mesh,                           &
      &        MGCG_MHD_FEM%MG_MHD_mesh(i_level)%fluid,                  &
      &        MGCG_MHD_FEM%MG_MHD_mesh(i_level)%nod_fl_comm,            &
      &        MGCG_WK%MG_mpi(i_level),                                  &
-     &        MHD_matrices%MG_DJDS_table(i_level),                      &
-     &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
-     &        MHD_matrices%MG_DJDS_linear(i_level),                     &
-     &        MHD_matrices%MG_DJDS_lin_fl(i_level))
+     &        MHD_mat%MG_DJDS_table(i_level),                           &
+     &        MHD_mat%MG_DJDS_fluid(i_level),                           &
+     &        MHD_mat%MG_DJDS_linear(i_level),                          &
+     &        MHD_mat%MG_DJDS_lin_fl(i_level))
         end if
 !
         call link_comm_tbl_types                                        &
      &     (MGCG_MHD_FEM%MG_MHD_mesh(i_level)%nod_fl_comm,              &
-     &      MHD_matrices%MG_comm_fluid(i_level))
+     &      MHD_mat%MG_comm_fluid(i_level))
 !
         call dealloc_iele_belonged                                      &
      &    (MGCG_FEM%MG_FEM_int(i_level)%next_tbl%neib_ele)
@@ -384,93 +366,5 @@
       end subroutine set_MG_djds_connect_type
 !
 !-----------------------------------------------------------------------
-!
-      subroutine const_MGCG_MHD_matrices(iflag_scheme, dt, FEM_prm,     &
-     &          SGS_param, cmt_param, Csims_FEM_MHD, MHD_prop,          &
-     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
-!
-      use t_FEM_control_parameter
-      use t_SGS_control_parameter
-      use t_fem_sgs_model_coefs
-      use set_aiccg_matrices_type
-      use precond_djds_MHD
-!
-      integer(kind = kint), intent(in) :: iflag_scheme
-      real(kind = kreal), intent(in) :: dt
-      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
-      type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(MGCG_data), intent(in) :: MGCG_WK
-!
-      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
-      type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
-      type(MHD_MG_matrices), intent(inout) :: MHD_matrices
-!
-      integer(kind = kint) :: i_level
-!
-!
-      do i_level = 1, MGCG_WK%num_MG_level
-        if(my_rank .lt. MGCG_WK%MG_mpi(i_level)%nprocs) then
-          if (iflag_debug.eq.1) write(*,*) 'set MG matrices', i_level
-          call s_set_aiccg_matrices                                     &
-     &       (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,          &
-     &        MGCG_FEM%MG_mesh(i_level)%mesh,                           &
-     &        MGCG_FEM%MG_mesh(i_level)%group,                          &
-     &        MGCG_FEM%MG_ele_mesh(i_level),                            &
-     &        MGCG_MHD_FEM%MG_MHD_mesh(i_level),                        &
-     &        MGCG_MHD_FEM%MG_node_bc(i_level),                         &
-     &        MGCG_MHD_FEM%MG_surf_bc(i_level),                         &
-     &        MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
-     &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
-     &        MGCG_MHD_FEM%ak_MHD_AMG(i_level),                         &
-     &        MGCG_FEM%MG_FEM_int(i_level)%jcs,                         &
-     &        MGCG_MHD_FEM%MG_filter_MHD(i_level),                      &
-     &        Csims_FEM_MHD%ifld_diff,                                  &
-     &        MGCG_MHD_FEM%MG_diff_coefs(i_level),                      &
-     &        MGCG_FEM%MG_FEM_int(i_level)%rhs_tbl,                     &
-     &        MHD_matrices%MG_DJDS_table(i_level),                      &
-     &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
-     &        MHD_matrices%MG_DJDS_linear(i_level),                     &
-     &        MHD_matrices%MG_DJDS_lin_fl(i_level),                     &
-     &        MHD_matrices%MG_mat_tbls(i_level)%base,                   &
-     &        MHD_matrices%MG_mat_tbls(i_level)%fluid_q,                &
-     &        MHD_matrices%MG_mat_tbls(i_level)%full_conduct_q,         &
-     &        MHD_matrices%MG_mat_tbls(i_level)%linear,                 &
-     &        MHD_matrices%MG_mat_tbls(i_level)%fluid_l,                &
-     &        MGCG_MHD_FEM%MG_mk_MHD(i_level)%mlump_fl,                 &
-     &        MGCG_MHD_FEM%MG_mk_MHD(i_level)%mlump_cd,                 &
-     &        MGCG_FEM%MG_FEM_mat(i_level)%surf_wk,                     &
-     &        MGCG_FEM%MG_FEM_mat(i_level)%fem_wk,                      &
-     &        MHD_matrices%Vmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Bmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Tmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Cmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Pmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Fmat_MG_DJDS(i_level))
-!
-          if (iflag_debug.gt.0) write(*,*) 'preconditioning', i_level
-          call matrix_precondition                                      &
-     &       (FEM_prm%MG_param%PRECOND_MG, FEM_prm%MG_param%PRECOND_MG, &
-     &        FEM_prm%CG11_param%sigma_diag,                            &
-     &        MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
-     &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
-     &        MHD_matrices%MG_DJDS_table(i_level),                      &
-     &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
-     &        MHD_matrices%MG_DJDS_linear(i_level),                     &
-     &        MHD_matrices%MG_DJDS_lin_fl(i_level),                     &
-     &        MHD_matrices%Vmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Bmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Tmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Cmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Pmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Fmat_MG_DJDS(i_level))
-        end if
-      end do
-!
-      end subroutine const_MGCG_MHD_matrices
-!
-! ---------------------------------------------------------------------
 !
       end module initialize_4_MHD_AMG

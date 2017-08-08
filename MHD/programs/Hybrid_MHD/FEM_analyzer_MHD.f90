@@ -92,7 +92,7 @@
      &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, flex_data,  &
      &    MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,    &
      &    MHD_prop1, ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1,           &
-     &    fem_sq, label_sim)
+     &    MHD_CG1, fem_sq, label_sim)
 !
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
 !
@@ -128,7 +128,7 @@
      &    SGS_par1%model_p, SGS_par1%commute_p, mesh1, group1,          &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1, ak_MHD,   &
      &    fem_int1, FEM1_elen, Csims_FEM_MHD1, MHD1_mat_tbls, mk_MHD1,  &
-     &    rhs_mat1, MHD_CG1%MHD_mat)
+     &    rhs_mat1, MHD_CG1)
 !
 !   time evolution loop start!
 !
@@ -383,7 +383,7 @@
         call update_matrices(MHD_step%time_d, FEM_prm1, SGS_par1,       &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
      &     MHD_prop1, ak_MHD, fem_int1, FEM1_elen, Csims_FEM_MHD1,      &
-     &     MHD1_mat_tbls, flex_p1, mk_MHD1, rhs_mat1, MHD_CG1%MHD_mat)
+     &     MHD1_mat_tbls, flex_p1, mk_MHD1, rhs_mat1, MHD_CG1)
       end if
 !
       end subroutine FEM_analyze_MHD
