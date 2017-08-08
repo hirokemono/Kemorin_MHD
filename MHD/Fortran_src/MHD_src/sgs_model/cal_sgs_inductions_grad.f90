@@ -7,12 +7,13 @@
 !!     &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx, dt,        &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, conduct,     &
 !!     &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
-!!     &          FEM_elen, sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
+!!     &          FEM_elen, sgs_coefs, mlump_cd, fem_wk, mhd_fem_wk,    &
+!!     &          f_l, nod_fld)
 !!      subroutine cal_sgs_induct_t_grad_no_coef                        &
 !!     &         (i_filter, i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,  &
 !!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,        &
-!!     &          fem_wk, mhd_fem_wk, f_l, nod_fld)
+!!     &          mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -26,6 +27,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -61,7 +63,8 @@
      &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx, dt,          &
      &          FEM_prm, SGS_param, nod_comm, node, ele, conduct,       &
      &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
-     &          FEM_elen, sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &          FEM_elen, sgs_coefs, mlump_cd, fem_wk, mhd_fem_wk,      &
+     &          f_l, nod_fld)
 !
       use int_vol_sgs_induct_t
       use cal_ff_smp_to_ffs
@@ -82,6 +85,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       integer (kind=kint), intent(in) :: i_filter, icomp_sgs_uxb
       integer (kind=kint), intent(in) :: i_sgs, ifield_v, ifield_b
@@ -111,9 +115,8 @@
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
      &    cd_prop%coef_induct, fem_wk%sk6, f_l%ff_smp)
-      call cal_ff_smp_2_vector(node, rhs_tbl,                           &
-     &    f_l%ff_smp, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,        &
-     &    i_sgs, nod_fld%d_fld)
+      call cal_ff_smp_2_vector(node, rhs_tbl, f_l%ff_smp, mlump_cd%ml,  &
+     &    nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications
 !
@@ -127,7 +130,7 @@
      &         (i_filter, i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,    &
      &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,          &
-     &          fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &          mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
       use int_vol_sgs_induct_t
       use cal_ff_smp_to_ffs
@@ -145,6 +148,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       integer (kind=kint), intent(in) :: i_filter
       integer (kind=kint), intent(in) :: i_sgs, ifield_v, ifield_b
@@ -168,9 +172,8 @@
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
      &    cd_prop%coef_induct, fem_wk%sk6, f_l%ff_smp)
-      call cal_ff_smp_2_vector(node, rhs_tbl,                           &
-     &    f_l%ff_smp, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,        &
-     &    i_sgs, nod_fld%d_fld)
+      call cal_ff_smp_2_vector(node, rhs_tbl, f_l%ff_smp, mlump_cd%ml,  &
+     &    nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications
 !

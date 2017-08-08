@@ -219,21 +219,21 @@
       if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%i_magne, dt,                     &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,              &
-     &      f_l, f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_cd,             &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams(iphys%i_magne, iphys%i_pre_uxb, dt,    &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,              &
-     &      f_l, f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_cd,             &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
      &      Bnod_bcs%nod_bc_b, dt, FEM_prm, nod_comm, node, ele,        &
      &      conduct, cd_prop, iphys_ele, ele_fld, jacobians%jac_3d,     &
-     &      rhs_tbl, FEM_elens, diff_coefs, Bmatrix, MG_vector,         &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk%mlump_cd,        &
+     &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_magne_pre_consist_crank                                &

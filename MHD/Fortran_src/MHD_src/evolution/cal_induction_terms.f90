@@ -6,12 +6,12 @@
 !!      subroutine cal_vecp_induction                                   &
 !!     &         (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          Bnod_bcs, iphys, iphys_ele, ele_fld, fem_int,         &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld)
+!!     &          mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
 !!      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne,           &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, surf, sf_grp,&
 !!     &          Bnod_bcs, Asf_bcs,iphys, jac_3d, jac_sf_grp, rhs_tbl, &
 !!     &          Bnod_bcs, Asf_bcs,iphys, fem_int, FEM_elens,          &
-!!     &          diff_coefs, mhd_fem_wk, rhs_mat, nod_fld)
+!!     &          diff_coefs, mlump_cd, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -28,6 +28,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -74,7 +75,7 @@
       subroutine cal_vecp_induction                                     &
      &         (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          Bnod_bcs, iphys, iphys_ele, ele_fld, fem_int,           &
-     &          mhd_fem_wk, rhs_mat, nod_fld)
+     &          mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
 !
 !
       use int_vol_vect_p_pre
@@ -93,6 +94,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(finite_element_integration), intent(in) :: fem_int
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -117,15 +119,15 @@
 !
       call cal_t_evo_4_vector_cd(FEM_prm%iflag_magne_supg,              &
      &    conduct%istack_ele_fld_smp, dt, FEM_prm,                      &
-     &    mhd_fem_wk%mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &    mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,            &
      &    fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk%ff_m_smp,     &
      &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl)
       call delete_vector_ffs_on_bc(node, Bnod_bcs%nod_bc_a,             &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
-     &    rhs_mat%f_nl%ff, mhd_fem_wk%mlump_cd%ml,                      &
-     &    nod_fld%ntot_phys, iphys%i_vp_induct, nod_fld%d_fld)
+     &    rhs_mat%f_nl%ff, mlump_cd%ml, nod_fld%ntot_phys,              &
+     &    iphys%i_vp_induct, nod_fld%d_fld)
       call vector_send_recv(iphys%i_vp_induct, nod_comm, nod_fld)
 !
       end subroutine cal_vecp_induction
@@ -135,7 +137,7 @@
       subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne,             &
      &          FEM_prm, SGS_param, nod_comm, node, ele, surf, sf_grp,  &
      &          Bnod_bcs, Asf_bcs,iphys, fem_int, FEM_elens,            &
-     &          diff_coefs, mhd_fem_wk, rhs_mat, nod_fld)
+     &          diff_coefs, mlump_cd, rhs_mat, nod_fld)
 !
       use t_SGS_control_parameter
       use t_surface_bc_data
@@ -157,11 +159,11 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       integer(kind=kint), intent(in) :: iak_diff_b
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -187,8 +189,8 @@
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
-     &    rhs_mat%f_l%ff, mhd_fem_wk%mlump_cd%ml,                       &
-     &    nod_fld%ntot_phys, iphys%i_vp_diffuse, nod_fld%d_fld)
+     &    rhs_mat%f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,               &
+     &    iphys%i_vp_diffuse, nod_fld%d_fld)
 !
       call vector_send_recv(iphys%i_vp_diffuse, nod_comm, nod_fld)
 !

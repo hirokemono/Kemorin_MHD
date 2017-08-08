@@ -8,8 +8,8 @@
 !!     &         FEM_prm, SGS_param, cmt_param,                         &
 !!     &         nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,   &
 !!     &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld, &
-!!     &         fem_int, FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat,   &
-!!     &         nod_fld)
+!!     &         fem_int, FEM_elens, diff_coefs, mlump_cd,              &
+!!     &         mhd_fem_wk, rhs_mat, nod_fld)
 !!      subroutine cal_magnetic_diffusion                               &
 !!     &         (iak_diff_b, iak_diff_uxb, ak_d_magne,                 &
 !!     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,   &
@@ -35,6 +35,7 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -86,8 +87,8 @@
      &         FEM_prm, SGS_param, cmt_param,                           &
      &         nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,     &
      &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
-     &         fem_int, FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat,     &
-     &         nod_fld)
+     &         fem_int, FEM_elens, diff_coefs, mlump_cd,                &
+     &         mhd_fem_wk, rhs_mat, nod_fld)
 !
       use int_vol_magne_monitor
       use set_boundary_scalars
@@ -111,6 +112,7 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       integer (kind=kint), intent(in) :: i_field, iak_diff_uxb
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
@@ -148,8 +150,7 @@
 !
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
-     &    FEM_prm, mhd_fem_wk%mlump_cd,                                 &
-     &    nod_comm, node, ele, iphys_ele, ele_fld,                      &
+     &    FEM_prm, mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,   &
      &    fem_int%jcs%jac_3d, fem_int%rhs_tbl,                          &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)
@@ -157,7 +158,7 @@
      &   (node, Bnod_bcs%nod_bc_b, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
-     &    rhs_mat%f_nl%ff, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,   &
+     &    rhs_mat%f_nl%ff, mlump_cd%ml, nod_fld%ntot_phys,              &
      &    i_field, nod_fld%d_fld)
       call vector_send_recv(i_field, nod_comm, nod_fld)
 !

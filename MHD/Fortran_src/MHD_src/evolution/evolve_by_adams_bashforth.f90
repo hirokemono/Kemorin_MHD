@@ -11,7 +11,7 @@
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_adams(i_field, i_previous, dt,         &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
-!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, mlump_cd,        &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_scalar_pre_adams                                 &
 !!     &         (iflag_supg, i_field, i_previous, dt,                  &
@@ -29,6 +29,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -116,7 +117,7 @@
 !
       subroutine cal_magne_pre_adams(i_field, i_previous, dt,           &
      &          FEM_prm, nod_comm, node, ele, conduct,                  &
-     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, mlump_cd,          &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sol_field_explicit
@@ -134,6 +135,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -143,15 +145,13 @@
 !
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
-     &    FEM_prm, mhd_fem_wk%mlump_cd,                                 &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
-     &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    FEM_prm, mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,   &
+     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
       call cal_sol_vect_pre_conduct_adams                               &
      &   (dt, node%numnod, conduct%istack_inter_fld_smp,                &
-     &    conduct%numnod_fld, conduct%inod_fld,                         &
-     &    mhd_fem_wk%mlump_cd%ml, f_l%ff, f_nl%ff,                      &
-     &    nod_fld%ntot_phys, n_vector, i_field, i_previous,             &
-     &    nod_fld%d_fld)
+     &    conduct%numnod_fld, conduct%inod_fld, mlump_cd%ml,            &
+     &    f_l%ff, f_nl%ff, nod_fld%ntot_phys, n_vector,                 &
+     &    i_field, i_previous, nod_fld%d_fld)
 !
       end subroutine cal_magne_pre_adams
 !

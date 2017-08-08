@@ -16,15 +16,15 @@
 !!     &          i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,  &
 !!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          diff_coefs, mlump_cd, Bmatrix, MG_vector,             &
+!!     &          mhd_fem_wk, fem_wk,  f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_lumped_crank                           &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
 !!     &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b, &
 !!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          diff_coefs, mlump_cd, Bmatrix, MG_vector,             &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_temp_pre_lumped_crank(iflag_supg,                &
 !!     &          iflag_commute_field, ifilter_final, i_field,          &
@@ -51,6 +51,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
@@ -196,8 +197,8 @@
      &          i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,    &
      &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
-     &          f_l, f_nl, nod_fld)
+     &          diff_coefs, mlump_cd, Bmatrix, MG_vector,               &
+     &          mhd_fem_wk, fem_wk,  f_l, f_nl, nod_fld)
 !
       use m_array_for_send_recv
 !
@@ -225,6 +226,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
@@ -249,16 +251,14 @@
 !
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
-     &    FEM_prm, mhd_fem_wk%mlump_cd,                                 &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
-     &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    FEM_prm, mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,   &
+     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       call delete_vector_ffs_on_bc(node, nod_bc_a, f_l, f_nl)
 !
       call cal_sol_vec_conduct_linear(dt, node%numnod,                  &
      &    node%istack_internal_smp, conduct%istack_inter_fld_smp,       &
-     &    conduct%numnod_fld, conduct%inod_fld,                         &
-     &    mhd_fem_wk%mlump_cd%ml_o, f_nl%ff,                            &
+     &    conduct%numnod_fld, conduct%inod_fld, mlump_cd%ml_o, f_nl%ff, &
      &    nod_fld%ntot_phys, n_vector, i_vecp, i_pre_uxb,               &
      &    nod_fld%d_fld, f_l%ff)
 !
@@ -279,8 +279,8 @@
      &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b,   &
      &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
-     &          f_l, f_nl, nod_fld)
+     &          diff_coefs, mlump_cd, Bmatrix, MG_vector,               &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_array_for_send_recv
 !
@@ -307,6 +307,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
@@ -331,17 +332,15 @@
 !
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
-     &    FEM_prm, mhd_fem_wk%mlump_cd,                                 &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
-     &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    FEM_prm, mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,   &
+     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node, nod_bc_b, f_l, f_nl)
 !
       call cal_sol_vec_conduct_linear(dt, node%numnod,                  &
      &    node%istack_internal_smp, conduct%istack_inter_fld_smp,       &
-     &    conduct%numnod_fld, conduct%inod_fld,                         &
-     &    mhd_fem_wk%mlump_cd%ml_o, f_nl%ff,                            &
+     &    conduct%numnod_fld, conduct%inod_fld, mlump_cd%ml_o, f_nl%ff, &
      &    nod_fld%ntot_phys, n_vector, i_magne, i_pre_uxb,              &
      &    nod_fld%d_fld, f_l%ff)
 !

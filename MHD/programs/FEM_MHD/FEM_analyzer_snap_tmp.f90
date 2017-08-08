@@ -367,8 +367,9 @@
      &      MHD_mesh1%conduct, MHD_prop1%cd_prop,                       &
      &      iphys, iphys_ele, fld_ele1, fem_int1%jcs%jac_3d,            &
      &      fem_int1%rhs_tbl, FEM1_elen, filtering1,                    &
-     &      Csims_FEM_MHD1%sgs_coefs, wk_filter1, mhd_fem1_wk,          &
-     &      rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl, nod_fld1)
+     &      Csims_FEM_MHD1%sgs_coefs, mhd_fem1_wk%mlump_cd,             &
+     &      wk_filter1, mhd_fem1_wk, rhs_mat1%fem_wk,                   &
+     &      rhs_mat1%f_l, rhs_mat1%f_nl, nod_fld1)
 
       end if
 !
@@ -378,7 +379,8 @@
         call int_vol_sgs_induction(FEM_prm1,                            &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,   &
      &      iphys, fem_int1%jcs%jac_3d, fem_int1%rhs_tbl,               &
-     &      mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%f_nl, nod_fld1)
+     &      mhd_fem1_wk%mlump_cd, mhd_fem1_wk,                          &
+     &      rhs_mat1%fem_wk, rhs_mat1%f_nl, nod_fld1)
       end if
 !
 !$omp parallel

@@ -346,7 +346,7 @@
      &      iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt,            &
      &      FEM_prm, SGS_param, nod_comm, node, ele, conduct, cd_prop,  &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, sgs_coefs,  &
-     &      fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &      mhd_fem_wk%mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &

@@ -7,13 +7,14 @@
 !
 !!      subroutine s_int_magne_induction                                &
 !!     &         (num_int, nod_comm, node, ele, iphys, jac_3d, rhs_tbl, &
-!!     &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
+!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -43,7 +44,7 @@
 !
       subroutine s_int_magne_induction                                  &
      &         (num_int, nod_comm, node, ele, iphys, jac_3d, rhs_tbl,   &
-     &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use int_vol_vect_differences
       use cal_ff_smp_to_ffs
@@ -56,6 +57,7 @@
       type(phys_address), intent(in) :: iphys
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -72,10 +74,9 @@
 !     &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,    &
 !     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,           &
-!     &   rhs_mat1%f_l%ff, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,           &
+!     &   rhs_mat1%f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,              &
 !     &   iphys%i_magne, nod_fld%d_fld)
-      call cal_ff_smp_2_vector(node, rhs_tbl,                           &
-     &    f_nl%ff_smp, mhd_fem_wk%mlump_cd%ml,                          &
+      call cal_ff_smp_2_vector(node, rhs_tbl, f_nl%ff_smp, mlump_cd%ml, &
      &    nod_fld%ntot_phys, iphys%i_induction, nod_fld%d_fld)
 !
 !    communication

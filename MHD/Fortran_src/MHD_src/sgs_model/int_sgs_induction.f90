@@ -6,12 +6,12 @@
 !
 !!      subroutine int_vol_sgs_induction                                &
 !!     &         (FEM_prm, nod_comm, node, ele, conduct, iphys, jac_3d, &
-!!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+!!     &          rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx, dt,     &
 !!     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,&
 !!     &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,  &
-!!     &          rhs_tbl, FEM_elen, filtering, sgs_coefs, wk_filter,   &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          rhs_tbl, FEM_elen, filtering, sgs_coefs, mlump_cd,    &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -28,6 +28,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type (lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -67,7 +68,7 @@
 !
       subroutine int_vol_sgs_induction                                  &
      &         (FEM_prm, nod_comm, node, ele, conduct, iphys, jac_3d,   &
-     &          rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &          rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use int_vol_vect_differences
       use cal_ff_smp_to_ffs
@@ -82,6 +83,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -97,11 +99,10 @@
 !      call cal_multi_pass_4_vector_ff                                  &
 !     &   (ele%istack_ele_smp, FEM_prm, m1_lump, nod_comm, node, ele,   &
 !     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
-!      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,           &
-!     &    f_l%ff, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,           &
-!     &    iphys%i_magne, nod_fld%d_fld)
+!      call cal_ff_2_vector(node%numnod, node%istack_nod_smp, f_l%ff,   &
+!     &    mlump_cd%ml, nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld)
        call cal_ff_smp_2_vector                                         &
-     &    (node, rhs_tbl, f_nl%ff_smp, mhd_fem_wk%mlump_cd%ml,          &
+     &    (node, rhs_tbl, f_nl%ff_smp, mlump_cd%ml,                     &
      &     nod_fld%ntot_phys, iphys%i_SGS_induction, nod_fld%d_fld)
 !
        call vector_send_recv                                            &
@@ -114,8 +115,8 @@
       subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx, dt,       &
      &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
      &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
-     &          rhs_tbl, FEM_elen, filtering, sgs_coefs, wk_filter,     &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          rhs_tbl, FEM_elen, filtering, sgs_coefs, mlump_cd,      &
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sgs_fluxes
       use cal_ff_smp_to_ffs
@@ -141,6 +142,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type (lumped_mass_matrices), intent(in) :: mlump_cd
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -157,9 +159,9 @@
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
-      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
-     &    f_nl%ff, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,           &
-     &    iphys%i_SGS_vp_induct, nod_fld%d_fld)
+      call cal_ff_2_vector                                              &
+     &   (node%numnod, node%istack_nod_smp, f_nl%ff, mlump_cd%ml,       &
+     &    nod_fld%ntot_phys, iphys%i_SGS_vp_induct, nod_fld%d_fld)
       call vector_send_recv                                             &
      &   (iphys%i_SGS_vp_induct, nod_comm, nod_fld)
 !

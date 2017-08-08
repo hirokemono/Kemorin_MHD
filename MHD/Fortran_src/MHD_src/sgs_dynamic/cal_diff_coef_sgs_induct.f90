@@ -149,7 +149,8 @@
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
      &    dt, FEM_prm, SGS_par%model_p, nod_comm, node, ele, conduct,   &
      &    cd_prop, iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,       &
-     &    FEM_elens, sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &    FEM_elens, sgs_coefs, mhd_fem_wk%mlump_cd,                    &
+     &    fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !

@@ -313,7 +313,8 @@
      &        nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, fem_int, FEM_elens,            &
-     &        diff_coefs, mhd_fem_wk, rhs_mat, nod_fld)
+     &        diff_coefs, mhd_fem_wk%mlump_cd, mhd_fem_wk,              &
+     &        rhs_mat, nod_fld)
         end if
       end do
 !
@@ -324,7 +325,7 @@
         call cal_vecp_induction                                         &
      &     (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
      &      nod_bcs%Bnod_bcs, iphys, iphys_ele, ele_fld, fem_int,       &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      mhd_fem_wk%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
 !
@@ -368,7 +369,8 @@
         call cal_vecp_diffusion(ifld_diff%i_magne, ak_MHD%ak_d_magne,   &
      &      FEM_prm, SGS_par%model_p, nod_comm, node, ele, surf,        &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
-     &      FEM_elens,  diff_coefs, mhd_fem_wk, rhs_mat, nod_fld)
+     &      FEM_elens, diff_coefs, mhd_fem_wk%mlump_cd,                 &
+     &      rhs_mat, nod_fld)
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
@@ -440,7 +442,7 @@
      &             write(*,*) 'lead  ', trim(fhd_mag_induct)
         call s_int_magne_induction(FEM_prm%npoint_poisson_int,          &
      &      nod_comm, node, ele, iphys, jacobians%jac_3d, rhs_tbl,      &
-     &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &      mhd_fem_wk%mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
@@ -449,7 +451,7 @@
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call s_int_magne_diffusion(FEM_prm%npoint_poisson_int,          &
      &      nod_comm, node, ele, iphys, jacobians%jac_3d, rhs_tbl,      &
-     &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &      mhd_fem_wk%mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
 !$omp parallel

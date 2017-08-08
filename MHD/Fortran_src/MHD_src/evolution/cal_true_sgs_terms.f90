@@ -447,7 +447,8 @@
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
-     &    fem_int, FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat, nod_fld)
+     &    fem_int, FEM_elens, diff_coefs, mhd_fem_wk%mlump_cd,          &
+     &    mhd_fem_wk, rhs_mat, nod_fld)
       call copy_vector_component(nod_fld,                               &
      &    iphys%i_induct_div, iphys%i_SGS_idct_true)
 !

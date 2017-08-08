@@ -210,15 +210,15 @@
       if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%i_vecp, dt,                      &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,              &
-     &      f_l, f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_cd,             &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !  -----for Adams_Bashforth
       else if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams(iphys%i_vecp, iphys%i_pre_uxb, dt,     &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,              &
-     &      f_l, f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_cd,             &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !  -----for Ceank-nicolson
       else if (cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson) then
@@ -227,8 +227,8 @@
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, dt, FEM_prm, nod_comm, node, ele,        &
      &      conduct, cd_prop, iphys_ele, ele_fld, jacobians%jac_3d,     &
-     &      rhs_tbl, FEM_elens, diff_coefs, Bmatrix, MG_vector,         &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk%mlump_cd,        &
+     &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_vect_p_pre_consist_crank                               &

@@ -200,8 +200,8 @@
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld,                &
      &      jacobians%jac_3d,  rhs_tbl, FEM_elens, filtering,           &
-     &      sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,                   &
-     &      f_l, f_nl, nod_fld)
+     &      sgs_coefs, mhd_fem_wk%mlump_cd, wk_filter, mhd_fem_wk,      &
+     &      fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       end subroutine cal_sgs_terms_4_monitor
@@ -309,7 +309,7 @@
      &      surf, conduct, sf_grp, cd_prop,                             &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, iphys_ele, ele_fld, fem_int, FEM_elens, diff_coefs,  &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      mhd_fem_wk%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
 !
@@ -361,8 +361,8 @@
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction                                      &
      &     (FEM_prm, nod_comm, node, ele, conduct, iphys,               &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,              &
-     &      f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_cd,             &
+     &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
 !

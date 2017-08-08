@@ -146,12 +146,16 @@
 !
 !
       call cal_sgs_uxb_2_monitor
-     &   (icomp_sgs%i_induction, iphys_elediff%i_velo, dt,              &
-     &    FEM_prm, SGS_param, mesh1%nod_comm, mesh1%node, mesh1%ele,    &
-     &    conduct, MHD_prop1%cd_prop, iphys, iphys_ele, fld_ele1,       &
-     &    jacobians%jac_3d, fem_int1%rhs_tbl, FEM1_elen, filtering1,    &
-     &    wk_filter1, mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%f_l,       &
-     &    rhs_mat1%f_nl, nod_fld1)
+     &     (Csims_FEM_MHD1%icomp_sgs%i_induction,                       &
+     &      Csims_FEM_MHD1%iphys_elediff%i_velo, MHD_step1%time_d%dt,   &
+     &      FEM_prm1, SGS_par1%model_p, SGS_par1%filter_p,              &
+     &      mesh1%nod_comm, mesh1%node, mesh1%ele,                      &
+     &      MHD_mesh1%conduct, MHD_prop1%cd_prop,                       &
+     &      iphys, iphys_ele, fld_ele1, fem_int1%jcs%jac_3d,            &
+     &      fem_int1%rhs_tbl, FEM1_elen, filtering1,                    &
+     &      Csims_FEM_MHD1%sgs_coefs, mhd1_fem_wk%mlump_cd,             &
+     &      wk_filter1, mhd_fem1_wk, rhs_mat1%fem_wk,                   &
+     &      rhs_mat1%f_l, rhs_mat1%f_nl, nod_fld1)
 !
       call interpolate_vector_type                                      &
      &   (iphys%i_vp_induct,  iphys_sph%i_vp_induct,                    &
@@ -213,7 +217,7 @@
       call cal_vecp_induction
      &   (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,           &
      &    nod_bcs%Bnod_bcs, iphys, iphys_ele, ele_fld, fem_int,         &
-     &    mhd_fem_wk, rhs_mat, nod_fld)
+     &    mhd_fem_wk%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
 !
       call interpolate_vector_type                                      &
      &   (iphys%i_vp_induct, iphys_sph%i_vp_induct,                     &

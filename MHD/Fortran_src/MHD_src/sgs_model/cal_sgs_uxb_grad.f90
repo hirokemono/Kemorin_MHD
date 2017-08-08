@@ -12,7 +12,7 @@
 !!     &         (i_filter,  i_sgs, i_field, id_dx, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
 !!     &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
-!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
+!!     &          FEM_elens, mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -26,6 +26,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -114,7 +115,7 @@
      &         (i_filter,  i_sgs, i_field, id_dx, dt,                   &
      &          FEM_prm, nod_comm, node, ele, conduct,                  &
      &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
-     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &          FEM_elens, mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -133,6 +134,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       integer (kind=kint), intent(in) :: i_filter
       integer (kind=kint), intent(in) :: i_sgs, i_field
@@ -155,9 +157,8 @@
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
      &    cd_prop%coef_induct, fem_wk%sk6, f_l%ff_smp)
-      call cal_ff_smp_2_vector(node, rhs_tbl,                           &
-     &    f_l%ff_smp, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,        &
-     &    i_sgs, nod_fld%d_fld)
+      call cal_ff_smp_2_vector(node, rhs_tbl, f_l%ff_smp, mlump_cd%ml,  &
+     &    nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications
 !

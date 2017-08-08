@@ -148,7 +148,7 @@
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfvx, dt,        &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
      &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
-     &    mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &    mhd_fem_wk%mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
 !
@@ -157,7 +157,7 @@
      &    iphys%i_SGS_vp_induct, iphys%i_magne, ie_dvx, dt,             &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
      &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
-     &    mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &    mhd_fem_wk%mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !      filtering
 !
@@ -262,7 +262,7 @@
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
      &    dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,           &
      &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
-     &    fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &    mhd_fem_wk%mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
 !
@@ -272,7 +272,7 @@
      &    iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt,              &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
      &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
-     &    fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &    mhd_fem_wk%mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
 !      filtering
 !
