@@ -446,11 +446,7 @@
      &        MHD_matrices%Cmat_MG_DJDS(i_level),                       &
      &        MHD_matrices%Pmat_MG_DJDS(i_level),                       &
      &        MHD_matrices%Fmat_MG_DJDS(i_level))
-        end if
-      end do
 !
-      do i_level = 1, MGCG_WK%num_MG_level
-        if(my_rank .lt. MGCG_WK%MG_mpi(i_level)%nprocs) then
           if (iflag_debug.gt.0) write(*,*) 'preconditioning', i_level
           call matrix_precondition                                      &
      &       (FEM_prm%MG_param%PRECOND_MG, FEM_prm%MG_param%PRECOND_MG, &
