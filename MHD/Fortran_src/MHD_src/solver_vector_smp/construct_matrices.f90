@@ -228,15 +228,6 @@
      &    MHD_matrices%Tmat_MG_DJDS(0), MHD_matrices%Cmat_MG_DJDS(0),   &
      &    MHD_matrices%Pmat_MG_DJDS(0), MHD_matrices%Fmat_MG_DJDS(0))
 !
-!     set marrix for the Multigrid
-!
-      if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
-        call const_MGCG_MHD_matrices(MHD_prop%iflag_all_scheme, dt,     &
-     &      FEM_prm, SGS_param, cmt_param, Csims_FEM_MHD%ifld_diff,     &
-     &      MHD_prop, MHD_CG1%MGCG_WK, MHD_CG1%MGCG_FEM,                &
-     &      MHD_CG1%MGCG_MHD_FEM, MHD_matrices)
-      end if
-!
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'
       call matrix_precondition                                          &
      &   (FEM_PRM%CG11_param%PRECOND, FEM_PRM%precond_33,               &
@@ -250,6 +241,15 @@
      &    MHD_matrices%Vmat_MG_DJDS(0), MHD_matrices%Bmat_MG_DJDS(0),   &
      &    MHD_matrices%Tmat_MG_DJDS(0), MHD_matrices%Cmat_MG_DJDS(0),   &
      &    MHD_matrices%Pmat_MG_DJDS(0), MHD_matrices%Fmat_MG_DJDS(0))
+!
+!     set marrix for the Multigrid
+!
+      if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
+        call const_MGCG_MHD_matrices(MHD_prop%iflag_all_scheme, dt,     &
+     &      FEM_prm, SGS_param, cmt_param, Csims_FEM_MHD%ifld_diff,     &
+     &      MHD_prop, MHD_CG1%MGCG_WK, MHD_CG1%MGCG_FEM,                &
+     &      MHD_CG1%MGCG_MHD_FEM, MHD_matrices)
+      end if
 !
       end subroutine set_aiccg_matrices
 !
