@@ -10,15 +10,14 @@
 !> @brief Call restart data IO routines
 !!
 !!@verbatim
-!!      subroutine output_MHD_restart_file_ctl(SGS_par, MHD_files,      &
-!!     &          time_d, rst_step, node, nod_comm, iphys,              &
+!!      subroutine output_MHD_restart_file_ctl                          &
+!!     &         (SGS_par, MHD_files, time_d, rst_step, mesh, iphys,    &
 !!     &          wk_sgs, wk_diff, nod_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(in) :: rst_step
-!!        type(node_data), intent(in) :: node
-!!        type(communication_table), intent(in) :: nod_comm
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_address), intent(in) :: iphys
 !!        type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -49,10 +48,8 @@
 !
       use t_SGS_control_parameter
       use t_time_data
-      use t_comm_table
-      use t_geometry_data
+      use t_mesh_data
       use t_phys_data
-      use t_time_data
       use t_field_data_IO
       use t_layering_ele_list
       use t_ele_info_4_dynamic
@@ -68,8 +65,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_MHD_restart_file_ctl(SGS_par, MHD_files,        &
-     &          time_d, rst_step, node, nod_comm, iphys,                &
+      subroutine output_MHD_restart_file_ctl                            &
+     &         (SGS_par, MHD_files, time_d, rst_step, mesh, iphys,      &
      &          wk_sgs, wk_diff, nod_fld)
 !
       use m_fem_mhd_restart
@@ -79,8 +76,7 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(time_data), intent(in) :: time_d
       type(IO_step_param), intent(in) :: rst_step
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: nod_comm
+      type(mesh_geometry), intent(in) :: mesh
       type(phys_address), intent(in) :: iphys
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
@@ -89,7 +85,7 @@
 !
       call output_restart_files                                         &
      &   (rst_step%istep_file, MHD_files%fst_file_IO,                   &
-     &    time_d, node, nod_comm, iphys, nod_fld)
+     &    time_d, mesh%node, mesh%nod_comm, iphys, nod_fld)
       call write_FEM_Csim_file(SGS_par%i_step_sgs_coefs,                &
      &    MHD_files%Csim_file_IO, MHD_files%Cdiff_file_IO,              &
      &    time_d, rst_step, SGS_par%model_p, SGS_par%commute_p,         &

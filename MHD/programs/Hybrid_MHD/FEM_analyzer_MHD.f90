@@ -329,8 +329,7 @@
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
         call output_MHD_restart_file_ctl                                &
      &     (SGS_par1, MHD_files, MHD_step%time_d, MHD_step%rst_step,    &
-     &      mesh1%node, mesh1%nod_comm, iphys,                          &
-     &      wk_sgs1, wk_diff1, nod_fld1)
+     &      mesh1, iphys, wk_sgs1, wk_diff1, nod_fld1)
        end if
 !
 !     ----
@@ -343,8 +342,7 @@
           call start_elapsed_time(4)
           call output_MHD_restart_file_ctl                              &
      &       (SGS_par1, MHD_files, MHD_step%time_d, MHD_step%rst_step,  &
-     &        mesh1%node, mesh1%nod_comm, iphys,                        &
-     &        wk_sgs1, wk_diff1, nod_fld1)
+     &        mesh1, iphys, wk_sgs1, wk_diff1, nod_fld1)
           call end_elapsed_time(4)
         end if
 !
