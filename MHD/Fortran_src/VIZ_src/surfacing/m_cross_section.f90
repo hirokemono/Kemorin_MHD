@@ -135,19 +135,14 @@
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_psf_control'
-      call set_psf_control(num_psf, ele_grp%num_grp, ele_grp%grp_name,  &
-     &    sf_grp%num_grp, sf_grp%grp_name,                              &
-     &    nod_fld%num_phys, nod_fld%phys_name, psf_param, psf_mesh)
+      call set_psf_control                                              &
+     &   (num_psf, ele_grp, sf_grp, nod_fld, psf_param, psf_mesh)
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
-      call set_search_mesh_list_4_psf(num_psf, node%numnod, ele%numele, &
-     &    surf%numsurf, edge%numedge, edge%nnod_4_edge, edge%ie_edge,   &
-     &    surf%isf_4_ele, edge%iedge_4_sf, ele%interior_ele,            &
-     &    node%istack_nod_smp, ele%istack_ele_smp,                      &
-     &    surf%istack_surf_smp, edge%istack_edge_smp,                   &
-     &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
-     &    ele_grp%item_grp, psf_param, psf_search)
+      call set_search_mesh_list_4_psf                                   &
+     &   (num_psf, node, ele, surf, edge,                               &
+     &    ele_grp, psf_param, psf_search)
 !
 !
       do i_psf = 1, num_psf
@@ -158,20 +153,13 @@
       end do
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_crossections'
-      call set_const_4_crossections                                     &
-     &   (num_psf, node%numnod, node%istack_nod_smp, node%xx, psf_list)
+      call set_const_4_crossections(num_psf, node, psf_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
       call set_node_and_patch_psf                                       &
-     &   (num_psf, node%numnod, node%internal_node,                     &
-     &    ele%numele, edge%numedge, ele%nnod_4_ele,                     &
-     &    edge%nnod_4_edge, node%xx, ele%ie, edge%ie_edge,              &
-     &    edge%interior_edge, edge%iedge_4_ele,                         &
-     &    nod_comm, edge_comm, sf_grp%num_grp, sf_grp%num_item,         &
-     &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
-     &    sf_grp_nod%ntot_node_sf_grp, sf_grp_nod%inod_stack_sf_grp,    &
-     &    sf_grp_nod%inod_surf_grp, psf_search, psf_list, psf_grp_list, &
-     &    psf_mesh)
+     &   (num_psf, node, ele, edge,                                     &
+     &    nod_comm, edge_comm, sf_grp, sf_grp_nod,                      &
+     &    psf_search, psf_list, psf_grp_list, psf_mesh)
 !
       call alloc_psf_field_data(num_psf, psf_mesh)
 !
@@ -202,11 +190,8 @@
       if (num_psf.le.0 .or. istep_psf.le.0) return
 !
 !      call start_elapsed_time(20)
-      call set_field_4_psf                                              &
-     &   (num_psf, nod_fld%n_point, edge%numedge, edge%nnod_4_edge,     &
-     &    edge%ie_edge, nod_fld%num_phys, nod_fld%ntot_phys,            &
-     &    nod_fld%istack_component, nod_fld%d_fld, psf_param,           &
-     &    psf_list, psf_grp_list, psf_mesh)
+      call set_field_4_psf(num_psf, edge, nod_fld,                      &
+     &    psf_param, psf_list, psf_grp_list, psf_mesh)
 !      call end_elapsed_time(20)
 !
 !      call start_elapsed_time(21)

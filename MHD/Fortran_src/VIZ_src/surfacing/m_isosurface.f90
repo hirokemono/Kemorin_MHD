@@ -102,18 +102,13 @@
       call alloc_iso_field_type
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
-      call set_iso_control(num_iso, ele_grp%num_grp, ele_grp%grp_name,  &
-     &    nod_fld%num_phys, nod_fld%phys_name, iso_param, iso_mesh)
+      call set_iso_control                                              &
+     &   (num_iso, ele_grp, nod_fld, iso_param, iso_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
       call set_search_mesh_list_4_psf                                   &
-     &   (num_iso, node%numnod, ele%numele, surf%numsurf,               &
-     &    edge%numedge, edge%nnod_4_edge, edge%ie_edge, surf%isf_4_ele, &
-     &    edge%iedge_4_sf, ele%interior_ele,                            &
-     &    node%istack_nod_smp, ele%istack_ele_smp,                      &
-     &    surf%istack_surf_smp, edge%istack_edge_smp,                   &
-     &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
-     &    ele_grp%item_grp, iso_param, iso_search)
+     &   (num_iso, node, ele, surf, edge, ele_grp,                      &
+     &    iso_param, iso_search)
 !
       do i_iso = 1, num_iso
         call allocate_node_param_smp_type(iso_mesh(i_iso)%node)
@@ -158,24 +153,16 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_isosurfaces'
       call set_const_4_isosurfaces                                      &
-     &   (num_iso, node%numnod, node%istack_nod_smp,                    &
-     &    node%xx, node%rr, node%a_r, node%ss, node%a_s,                &
-     &    nod_fld%num_phys, nod_fld%ntot_phys,                          &
-     &    nod_fld%istack_component, nod_fld%d_fld, iso_list)
+     &   (num_iso, node, nod_fld, iso_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso                                       &
-     &   (num_iso, node%numnod, ele%numele, edge%numedge,               &
-     &    ele%nnod_4_ele, edge%nnod_4_edge, node%xx, ele%ie,            &
-     &    edge%ie_edge, edge%interior_edge, edge%iedge_4_ele,           &
+     &   (num_iso, node, ele, edge,                                     &
      &    edge_comm, iso_search, iso_list, iso_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
       call alloc_psf_field_data(num_iso, iso_mesh)
-      call set_field_4_iso(num_iso, node%numnod,                        &
-     &   edge%numedge, edge%nnod_4_edge, edge%ie_edge,                  &
-     &    nod_fld%num_phys, nod_fld%ntot_phys,                          &
-     &    nod_fld%istack_component, nod_fld%d_fld,                      &
+      call set_field_4_iso(num_iso, edge, nod_fld,                      &
      &    iso_param, iso_list, iso_mesh)
 !
       call output_isosurface(num_iso, iso_file_IO, istep_iso,           &
