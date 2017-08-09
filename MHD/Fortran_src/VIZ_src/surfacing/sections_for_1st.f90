@@ -25,11 +25,8 @@
       use t_VIZ_step_parameter
       use t_time_data
       use t_mesh_data
-      use t_comm_table
-      use t_geometry_data
       use t_surface_data
       use t_edge_data
-      use t_group_data
       use t_surface_group_connect
       use t_phys_data
       use t_time_data

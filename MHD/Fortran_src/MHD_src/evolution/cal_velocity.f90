@@ -113,6 +113,7 @@
       use int_rms_div_MHD
       use int_norm_div_MHD
       use cal_rms_potentials
+      use cal_sol_pressure_MHD
 !
       real(kind = kreal), intent(in) :: time, dt
 !

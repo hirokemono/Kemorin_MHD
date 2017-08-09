@@ -11,7 +11,7 @@
 !!@verbatim
 !!      subroutine input_control_4_FEM_MHD                              &
 !!     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,        &
-!!     &          MHD_prop, MHD_BC, mesh, group, ele_mesh, nod_fld,     &
+!!     &          MHD_prop, MHD_BC, femmesh, ele_mesh, nod_fld,         &
 !!     &          IO_bc, filtering, wide_filtering, wk_filter,          &
 !!     &          MHD_matrices, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!      subroutine input_control_4_FEM_snap                             &
@@ -32,8 +32,7 @@
 !!        type(takepiro_model_param), intent(inout) :: takepito_T
 !!        type(takepiro_model_param), intent(inout) :: takepito_C
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
-!!        type(mesh_geometry), intent(inout) :: mesh
-!!        type(mesh_groups), intent(inout) ::   group
+!!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(IO_boundary), intent(inout) :: IO_bc
@@ -91,7 +90,7 @@
 !
       subroutine input_control_4_FEM_MHD                                &
      &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,          &
-     &          MHD_prop, MHD_BC, mesh, group, ele_mesh, nod_fld,       &
+     &          MHD_prop, MHD_BC, femmesh, ele_mesh, nod_fld,           &
      &          IO_bc, filtering, wide_filtering, wk_filter,            &
      &          MHD_matrices, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
@@ -106,8 +105,7 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) ::   group
+      type(mesh_data), intent(inout) :: femmesh
       type(element_geometry), intent(inout) :: ele_mesh
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -136,11 +134,12 @@
      &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
-      call mpi_input_mesh(MHD_files%mesh_file_IO, nprocs, mesh, group,  &
+      call mpi_input_mesh                                               &
+     &   (MHD_files%mesh_file_IO, nprocs, femmesh%mesh, femmesh%group,  &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
-      call input_meshes_4_MHD                                           &
-     &   (SGS_par%model_p, MHD_prop, MHD_BC, mesh, group, IO_bc,        &
+      call input_meshes_4_MHD(SGS_par%model_p, MHD_prop, MHD_BC,        &
+     &    femmesh%mesh, femmesh%group, IO_bc,                           &
      &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then

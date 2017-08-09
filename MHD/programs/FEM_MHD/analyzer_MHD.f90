@@ -73,7 +73,7 @@
       call start_elapsed_time(4)
       call input_control_4_FEM_MHD                                      &
      &   (MHD_files1, FEM_prm1, SGS_par1, flex_p1, MHD_step1,           &
-     &    MHD_prop1, MHD_BC1, mesh1, group1, ele_mesh1, nod_fld1,       &
+     &    MHD_prop1, MHD_BC1, femmesh1, ele_mesh1, nod_fld1,            &
      &    bc_FEM_IO1, filtering1, wide_filtering, wk_filter1,           &
      &    MHD_CG1%MHD_mat, MHD_CG1%MGCG_WK, MHD_CG1%MGCG_FEM,           &
      &    MHD_CG1%MGCG_MHD_FEM)
@@ -85,7 +85,8 @@
      &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1,       &
      &    femmesh1, ele_mesh1, range1, fem_ucd1, fem_sq1)
 !
-      call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
+      call init_visualize_surface                                       &
+     &   (femmesh1%mesh, femmesh1%group, ele_mesh1, nod_fld1)
       call end_elapsed_time(2)
 !
       end subroutine initialization_MHD
@@ -112,7 +113,7 @@
         if (visval.eq.0) then
           call start_elapsed_time(4)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        mesh1, ele_mesh1, nod_fld1)
+     &        femmesh1%mesh, ele_mesh1, nod_fld1)
           call end_elapsed_time(4)
         end if
 !

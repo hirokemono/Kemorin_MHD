@@ -42,7 +42,7 @@
 !
       call input_control_4_FEM_MHD                                      &
      &   (MHD_files1, FEM_prm1, SGS_par1, flex_p1, MHD_step1,           &
-     &    MHD_prop1, MHD_BC1, mesh1, group1, ele_mesh1, nod_fld1,       &
+     &    MHD_prop1, MHD_BC1, femmesh1, ele_mesh1, nod_fld1,            &
      &    bc_FEM_IO1, filtering1, wide_filtering, wk_filter1,           &
      &    MHD_CG1%MHD_mat, MHD_CG1%MGCG_WK, MHD_CG1%MGCG_FEM,           &
      &    MHD_CG1%MGCG_MHD_FEM)
