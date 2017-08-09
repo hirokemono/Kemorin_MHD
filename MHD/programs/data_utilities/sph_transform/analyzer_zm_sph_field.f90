@@ -88,8 +88,7 @@
 !
 !  -------------------------------
 !
-      call init_visualize(femmesh_STR%mesh, femmesh_STR%group,          &
-     &    elemesh_STR, field_STR)
+      call init_visualize(femmesh_STR, elemesh_STR, field_STR)
 !
       end subroutine init_zm_sph_field
 !
@@ -123,8 +122,8 @@
 !
         if(visval .eq. 0) then
           call visualize_all(viz_step_STR, t_STR%time_d,                &
-     &        femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,         &
-     &        field_STR, ele_4_nod_SPH_TRANS, jacobians_STR)
+     &        femmesh_STR, elemesh_STR, field_STR,                      &
+     &        ele_4_nod_SPH_TRANS, jacobians_STR)
         end if
       end do
 !

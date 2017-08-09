@@ -60,8 +60,7 @@
       call FEM_initialize_surface(ucd_file_VIZ)
 !
 !  VIZ Initialization
-      call init_visualize_surface(femmesh_VIZ%mesh, femmesh_VIZ%group,  &
-     &    elemesh_VIZ, field_VIZ)
+      call init_visualize_surface(femmesh_VIZ, elemesh_VIZ, field_VIZ)
 !
       end subroutine init_analyzer
 !
@@ -81,9 +80,8 @@
 !
 !  Generate field lines
         call start_elapsed_time(12)
-        call visualize_surface                                          &
-     &     (viz_step_V, t_VIZ%time_d, femmesh_VIZ%mesh,                 &
-     &      elemesh_VIZ, field_VIZ)
+        call visualize_surface(viz_step_V, t_VIZ%time_d,                 &
+     &      femmesh_VIZ, elemesh_VIZ, field_VIZ)
         call end_elapsed_time(12)
       end do
 !

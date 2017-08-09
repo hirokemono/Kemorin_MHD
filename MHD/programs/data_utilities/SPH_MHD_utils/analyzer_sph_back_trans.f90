@@ -87,7 +87,7 @@
       call SPH_init_sph_back_trans(MHD_files1, bc_sph_IO1, iphys)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)
+      call init_visualize(femmesh1, ele_mesh1, nod_fld1)
 !
       call calypso_MPI_barrier
       call end_elapsed_time(2)
@@ -149,7 +149,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           call start_elapsed_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        mesh1, group1, ele_mesh1, nod_fld1,                       &
+     &        femmesh1, ele_mesh1, nod_fld1,                            &
      &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1)
           call end_elapsed_time(12)
         end if

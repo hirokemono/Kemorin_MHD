@@ -3,13 +3,12 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine init_visualize(mesh, group, ele_mesh, nod_fld)
+!!      subroutine init_visualize(femmesh, ele_mesh, nod_fld)
 !!      subroutine visualize_all(viz_step, time_d,                     &
-!!     &          mesh, group, ele_mesh, nod_fld, ele_4_nod, jacobians)
+!!     &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacobians)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) ::   group
+!!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(element_around_node), intent(in) :: ele_4_nod
@@ -26,12 +25,6 @@
       use t_VIZ_step_parameter
       use t_time_data
       use t_mesh_data
-      use t_comm_table
-      use t_geometry_data
-      use t_surface_data
-      use t_edge_data
-      use t_group_data
-      use t_surface_group_connect
       use t_phys_data
       use t_next_node_ele_4_node
       use t_jacobians
@@ -44,7 +37,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize(mesh, group, ele_mesh, nod_fld)
+      subroutine init_visualize(femmesh, ele_mesh, nod_fld)
 !
       use m_cross_section
       use m_isosurface
@@ -52,8 +45,7 @@
       use volume_rendering
       use fieldline
 !
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) ::   group
+      type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
 !
       type(phys_data), intent(in) :: nod_fld
@@ -63,20 +55,24 @@
       if (iflag_debug.eq.1)  write(*,*) 'set_sectioning_case_table'
       call set_sectioning_case_table
 !
-      call SECTIONING_initialize(mesh, group, ele_mesh, nod_fld)
+      call SECTIONING_initialize                                        &
+     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld)
       call end_elapsed_time(60)
 !
       call start_elapsed_time(61)
-      call ISOSURF_initialize(mesh, group, ele_mesh, nod_fld)
+      call ISOSURF_initialize                                           &
+     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld)
       call end_elapsed_time(61)
 !
       call start_elapsed_time(62)
-      call PVR_initialize(mesh, group, ele_mesh, nod_fld)
+      call PVR_initialize                                               &
+     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld)
       call calypso_MPI_barrier
       call end_elapsed_time(62)
 !
       call start_elapsed_time(63)
-      call FLINE_initialize(mesh, group, nod_fld)
+      call FLINE_initialize                                             &
+     &   (femmesh%mesh, femmesh%group, nod_fld)
       call end_elapsed_time(63)
 !
       end subroutine init_visualize
@@ -84,7 +80,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_all(viz_step, time_d,                       &
-     &          mesh, group, ele_mesh, nod_fld, ele_4_nod, jacobians)
+     &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacobians)
 !
       use m_cross_section
       use m_isosurface
@@ -93,8 +89,7 @@
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) ::   group
+      type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
 !
       type(phys_data), intent(in) :: nod_fld
@@ -109,22 +104,21 @@
       call end_elapsed_time(65)
 !
       call start_elapsed_time(66)
-      call ISOSURF_visualize                                            &
-     &   (viz_step%ISO_t%istep_file, time_d, mesh, ele_mesh, nod_fld)
+      call ISOSURF_visualize(viz_step%ISO_t%istep_file, time_d,         &
+     &    femmesh%mesh, ele_mesh, nod_fld)
       call calypso_MPI_barrier
       call end_elapsed_time(66)
 !
       call start_elapsed_time(67)
-      call PVR_visualize                                                &
-     &   (viz_step%PVR_t%istep_file, mesh, group, ele_mesh,             &
+      call PVR_visualize(viz_step%PVR_t%istep_file,                    &
+     &    femmesh%mesh, femmesh%group, ele_mesh,                       &
      &    jacobians%jac_3d, nod_fld)
       call calypso_MPI_barrier
       call end_elapsed_time(67)
 !
       call start_elapsed_time(68)
-      call FLINE_visualize                                              &
-     &   (viz_step%FLINE_t%istep_file, mesh, group, ele_mesh,           &
-     &    ele_4_nod, nod_fld)
+      call FLINE_visualize(viz_step%FLINE_t%istep_file,                &
+     &   femmesh%mesh, femmesh%group, ele_mesh, ele_4_nod, nod_fld)
       call calypso_MPI_barrier
       call end_elapsed_time(68)
 !

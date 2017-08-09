@@ -78,7 +78,7 @@
       call FEM_initialize_snapshot                                      &
      &   (MHD_files1, bc_FEM_IO1, MHD_step1, range1, fem_ucd1, fem_sq1)
 !
-      call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)
+      call init_visualize(femmesh1, ele_mesh1, nod_fld1)
 !
       end subroutine init_analyzer
 !
@@ -102,7 +102,7 @@
         if (visval.eq.0) then
           call start_elapsed_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        mesh1, group1, ele_mesh1, nod_fld1,                       &
+     &        femmesh1, ele_mesh1, nod_fld1,                            &
      &        fem_int1%next_tbl%neib_ele, fem_int1%jcs)
           call end_elapsed_time(12)
         end if

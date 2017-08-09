@@ -113,7 +113,7 @@
         if (visval.eq.0) then
           call start_elapsed_time(4)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        femmesh1%mesh, ele_mesh1, nod_fld1)
+     &        femmesh1, ele_mesh1, nod_fld1)
           call end_elapsed_time(4)
         end if
 !
