@@ -4,14 +4,17 @@
 !        programmed by H.Matsui on May. 2006
 !
 !!      subroutine count_control_4_fline                                &
-!!     &       (i_fln, fln, numele, interior_ele, num_mat, mat_name,    &
-!!     &        num_surf, num_surf_bc, surf_name, surf_istack, surf_item)
-!!      subroutine set_control_4_fline(i_fln, fln,                      &
-!!     &          numele, interior_ele, num_mat, mat_name,              &
-!!     &          num_surf, num_surf_bc, surf_istack, surf_item,        &
-!!     &          num_nod_phys, phys_nod_name)
-!!      subroutine set_iflag_fline_used_ele(i_fln, numele, interior_ele,&
-!!     &          num_mat, num_mat_bc, mat_istack, mat_item)
+!!     &         (i_fln, fln, ele, ele_grp, sf_grp)
+!!      subroutine set_control_4_fline                                  &
+!!     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld)
+!!        type(element_data), intent(in) :: ele
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(fline_ctl), intent(inout) :: fln
+!!      subroutine set_iflag_fline_used_ele(i_fln, ele, ele_grp)
+!!        type(element_data), intent(in) :: ele
+!!        type(group_data), intent(in) :: ele_grp
 !
       module set_control_each_fline
 !
@@ -21,8 +24,10 @@
       use m_constants
       use m_error_IDs
       use m_machine_parameter
-      use t_control_data_4_fline
       use m_control_params_4_fline
+      use t_control_data_4_fline
+      use t_geometry_data
+      use t_group_data
 !
       use set_area_4_viz
       use set_field_comp_for_viz
@@ -37,21 +42,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_control_4_fline                                  &
-     &       (i_fln, fln, numele, interior_ele, num_mat, mat_name,      &
-     &        num_surf, num_surf_bc, surf_name, surf_istack, surf_item)
+     &         (i_fln, fln, ele, ele_grp, sf_grp)
 !
       use set_area_4_viz
 !
-      integer(kind=kint), intent(in) :: numele
-      integer(kind=kint), intent(in) :: interior_ele(numele)
-!
-      integer(kind = kint), intent(in) :: num_mat
-      character(len=kchara), intent(in) :: mat_name(num_mat)
-!
-      integer(kind=kint), intent(in) :: num_surf, num_surf_bc
-      integer(kind=kint), intent(in) :: surf_istack(0:num_surf)
-      integer(kind=kint), intent(in) :: surf_item(2,num_surf_bc)
-      character(len=kchara), intent(in) :: surf_name(num_surf)
+      type(element_data), intent(in) :: ele
+      type(group_data), intent(in) :: ele_grp
+      type(surface_group_data), intent(in) :: sf_grp
 !
       integer(kind = kint), intent(in) :: i_fln
       type(fline_ctl), intent(in) :: fln
@@ -75,7 +72,7 @@
         id_fline_file_type(i_fln) = 1
       end if
 !
-      call count_area_4_viz(num_mat, mat_name,                          &
+      call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
      &     nele_grp_area_fline(i_fln) )
       istack_grp_area_fline(i_fln) = istack_grp_area_fline(i_fln-1)     &
@@ -142,13 +139,12 @@
         end if
 !
         if(fln%start_surf_grp_ctl%iflag .gt. 0) then
-          call set_surf_grp_id_4_viz(num_surf, surf_name,               &
+          call set_surf_grp_id_4_viz(sf_grp%num_grp, sf_grp%grp_name,   &
      &        fln%start_surf_grp_ctl%charavalue,                        &
      &        igrp_start_fline_surf_grp(i_fln))
         end if
 !
-        call count_nsurf_for_starting(i_fln, numele, interior_ele,      &
-     &      num_surf, num_surf_bc, surf_istack, surf_item)
+        call count_nsurf_for_starting(i_fln, ele, sf_grp)
 !
       else if(id_fline_start_type(i_fln) .eq.  1) then
         if(fln%seed_surface_ctl%num .gt. 0) then
@@ -167,26 +163,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_fline(i_fln, fln,                        &
-     &          numele, interior_ele, num_mat, mat_name,                &
-     &          num_surf, num_surf_bc, surf_istack, surf_item,          &
-     &          num_nod_phys, phys_nod_name)
+      subroutine set_control_4_fline                                    &
+     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld)
 !
       use set_components_flags
       use set_area_4_viz
 !
-      integer(kind = kint), intent(in) :: numele
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-!
-      integer(kind = kint), intent(in) :: num_mat
-      character(len=kchara), intent(in) :: mat_name(num_mat)
-!
-      integer(kind=kint), intent(in) :: num_surf, num_surf_bc
-      integer(kind=kint), intent(in) :: surf_istack(0:num_surf)
-      integer(kind=kint), intent(in) :: surf_item(2,num_surf_bc)
-!
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      type(element_data), intent(in) :: ele
+      type(group_data), intent(in) :: ele_grp
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_data), intent(in) :: nod_fld
 !
       integer(kind = kint), intent(in) :: i_fln
       type(fline_ctl), intent(inout) :: fln
@@ -200,7 +186,7 @@
       tmpfield(1) = fln%fline_field_ctl%charavalue
       tmpcomp(1) =  'vector'
       call set_components_4_viz                                         &
-     &   (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp,         &
+     &   (nod_fld%num_phys, nod_fld%phys_name, ione, tmpfield, tmpcomp,         &
      &    ione, ifield_4_fline(i_fln), icomp_4_fline(i_fln),            &
      &    ncomp, ncomp_org, tmpchara)
       if(icomp_4_fline(i_fln) .ne. icomp_VECTOR) then
@@ -211,7 +197,7 @@
       tmpfield(1) = fln%fline_color_field_ctl%charavalue
       tmpcomp(1) = fln%fline_color_comp_ctl%charavalue
       call set_components_4_viz                                         &
-     &   (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp,         &
+     &   (nod_fld%num_phys, nod_fld%phys_name, ione, tmpfield, tmpcomp,         &
      &    ione, ifield_linecolor(i_fln), icomp_linecolor(i_fln),        &
      &    ncomp, ncomp_org, name_color_output(i_fln))
       if(ncomp(1) .ne. ione) then
@@ -219,15 +205,14 @@
       end if
 !
       ist = istack_grp_area_fline(i_fln-1) + 1
-      call s_set_area_4_viz(num_mat, mat_name,                          &
+      call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
      &    istack_grp_area_fline(i_fln), id_ele_grp_area_fline(ist) )
 !
 !
       ist = istack_each_field_line(i_fln-1)
       if(id_fline_start_type(i_fln) .eq.  0) then
-        call set_isurf_for_starting(i_fln, numele, interior_ele,        &
-     &          num_surf, num_surf_bc, surf_istack, surf_item)
+        call set_isurf_for_starting(i_fln, ele, sf_grp)
       else if(id_fline_start_type(i_fln) .eq.  1) then
         do i = 1, num_each_field_line(i_fln)
           id_gl_surf_start_fline(1,i+ist)                               &
@@ -247,26 +232,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_iflag_fline_used_ele(i_fln, numele, interior_ele,  &
-     &          num_mat, num_mat_bc, mat_istack, mat_item)
+      subroutine set_iflag_fline_used_ele(i_fln, ele, ele_grp)
 !
       use set_iflag_for_used_ele
 !
       integer(kind = kint), intent(in) :: i_fln
 !
-      integer(kind = kint), intent(in) :: numele
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      integer(kind = kint), intent(in) :: num_mat, num_mat_bc
-      integer(kind = kint), intent(in) :: mat_istack(0:num_mat)
-      integer(kind = kint), intent(in) :: mat_item(num_mat_bc)
+      type(element_data), intent(in) :: ele
+      type(group_data), intent(in) :: ele_grp
 !
 !
       integer(kind = kint) :: jst_grp
 !
 !
       jst_grp = istack_grp_area_fline(i_fln-1) + 1
-      call s_set_iflag_for_used_ele(numele, interior_ele,               &
-     &    num_mat, num_mat_bc, mat_istack, mat_item,                    &
+      call s_set_iflag_for_used_ele                                     &
+     &   (ele%numele, ele%interior_ele, ele_grp%num_grp,                &
+     &    ele_grp%num_item, ele_grp%istack_grp, ele_grp%item_grp,       &
      &    nele_grp_area_fline(i_fln), id_ele_grp_area_fline(jst_grp),   &
      &    iflag_fline_used_ele(1,i_fln))
 !

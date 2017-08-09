@@ -42,9 +42,7 @@
 !
 !  VIZ Initialization
       call FLINE_initialize                                             &
-     &   (femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                  &
-     &    femmesh_VIZ%group%ele_grp, femmesh_VIZ%group%surf_grp,        &
-     &    field_VIZ)
+     &   (femmesh_VIZ%mesh, femmesh_VIZ%group, field_VIZ)
 !
       end subroutine initialize_fline
 !
@@ -64,9 +62,8 @@
 !
 !  Generate field lines
         call FLINE_visualize( viz_step_V%FLINE_t%istep_file,            &
-     &      femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                &
-     &      elemesh_VIZ%surf, femmesh_VIZ%group%ele_grp,                &
-     &      ele_4_nod_VIZ, field_VIZ, femmesh_VIZ%mesh%nod_comm)
+     &      femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ,           &
+     &      ele_4_nod_VIZ, field_VIZ)
       end do
 !
       end subroutine analyze

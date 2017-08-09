@@ -3,19 +3,19 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!      subroutine field_line_init_only(mesh, group, fld_nod)
+!      subroutine field_line_init_only(mesh, group, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(phys_data), intent(in) :: fld_nod
+!!        type(phys_data), intent(in) :: nod_fld
 !!
 !!      subroutine field_line_main_only                                 &
-!!     &         (istep_fline, mesh, group, surf, next_tbl, fld_nod)
+!!     &         (istep_fline, mesh, group, ele_mesh, next_tbl, nod_fld)
 !!        integer(kind = kint), intent(in) :: istep_fline
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
+!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(element_around_node), intent(in) :: ele_4_nod
-!!        type(phys_data), intent(in) :: fld_nod
+!!        type(phys_data), intent(in) :: nod_fld
 !
       module fieldline_only
 !
@@ -34,38 +34,36 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine field_line_init_only(mesh, group, fld_nod)
+      subroutine field_line_init_only(mesh, group, nod_fld)
 !
       use fieldline
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(phys_data), intent(in) :: fld_nod
+      type(phys_data), intent(in) :: nod_fld
 !
 !
-      call FLINE_initialize(mesh%node, mesh%ele,                        &
-     &    group%ele_grp, group%surf_grp, fld_nod)
+      call FLINE_initialize(mesh, group, nod_fld)
 !
       end subroutine field_line_init_only
 !
 !  ---------------------------------------------------------------------
 !
       subroutine field_line_main_only                                   &
-     &         (istep_fline, mesh, group, surf, ele_4_nod, fld_nod)
+     &         (istep_fline, mesh, group, ele_mesh, ele_4_nod, nod_fld)
 !
       use fieldline
 !
       integer(kind = kint), intent(in) :: istep_fline
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
+      type(element_geometry), intent(in) :: ele_mesh
       type(element_around_node), intent(in) :: ele_4_nod
-      type(phys_data), intent(in) :: fld_nod
+      type(phys_data), intent(in) :: nod_fld
 !
 !
-      call FLINE_visualize(istep_fline,                                 &
-     &    mesh%node, mesh%ele, surf, group%ele_grp,                     &
-     &    ele_4_nod, fld_nod, mesh%nod_comm)
+      call FLINE_visualize(istep_fline, mesh, group, ele_mesh,          &
+     &    ele_4_nod, nod_fld)
 !
       end subroutine field_line_main_only
 !

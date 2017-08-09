@@ -76,8 +76,7 @@
       call end_elapsed_time(62)
 !
       call start_elapsed_time(63)
-      call FLINE_initialize                                             &
-     &   (mesh%node, mesh%ele, group%ele_grp, group%surf_grp, nod_fld)
+      call FLINE_initialize(mesh, group, nod_fld)
       call end_elapsed_time(63)
 !
       end subroutine init_visualize
@@ -124,9 +123,8 @@
 !
       call start_elapsed_time(68)
       call FLINE_visualize                                              &
-     &   (viz_step%FLINE_t%istep_file, mesh%node, mesh%ele,             &
-     &    ele_mesh%surf, group%ele_grp, ele_4_nod, nod_fld,             &
-     &    mesh%nod_comm)
+     &   (viz_step%FLINE_t%istep_file, mesh, group, ele_mesh,           &
+     &    ele_4_nod, nod_fld)
       call calypso_MPI_barrier
       call end_elapsed_time(68)
 !

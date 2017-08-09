@@ -4,19 +4,16 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine set_local_field_4_fline(numnod, inod_smp_stack,      &
-!!     &          xx, radius, a_radius, s_cylinder, a_s_cylinder,       &
-!!     &          num_nod_phys, num_tot_nod_phys, istack_nod_component, &
-!!     &          d_nod)
-!!      subroutine count_nsurf_for_starting(i_fln, numele, interior_ele,&
-!!     &          num_surf, num_surf_bc, surf_istack, surf_item)
-!!      subroutine set_isurf_for_starting(i_fln, numele, interior_ele,  &
-!!     &          num_surf, num_surf_bc, surf_istack, surf_item)
-!!      subroutine s_set_fields_for_fieldline(i_fln,                    &
-!!     &        numnod, numele, numsurf, nnod_4_surf, iele_global,      &
-!!     &        interior_ele, ie_surf, isf_4_ele, iele_4_surf,          &
-!!     &        x_surf, vnorm_surf, area_surf,                          &
-!!     &        num_mat, num_mat_bc, mat_istack, mat_item)
+!!      subroutine set_local_field_4_fline(node, nod_fld)
+!!      subroutine count_nsurf_for_starting(i_fln, ele, sf_grp)
+!!      subroutine set_isurf_for_starting(i_fln, ele, sf_grp)
+!!      subroutine s_set_fields_for_fieldline                           &
+!!     &         (i_fln, node, ele, surf, ele_grp)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(surface_group_data), intent(in) :: sf_grp
 !
       module set_fields_for_fieldline
 !
@@ -28,6 +25,11 @@
       use m_control_params_4_fline
       use m_source_4_filed_line
 !
+      use t_phys_data
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+!
       implicit  none
 !
       private :: cnt_start_surface_by_gl_table, cal_flux_for_1sgrp
@@ -38,26 +40,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_local_field_4_fline(numnod, inod_smp_stack,        &
-     &          xx, radius, a_radius, s_cylinder, a_s_cylinder,         &
-     &          num_nod_phys, num_tot_nod_phys, istack_nod_component,   &
-     &          d_nod)
+      subroutine set_local_field_4_fline(node, nod_fld)
 !
       use convert_components_4_viz
 !
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: radius(numnod)
-      real(kind = kreal), intent(in) :: a_radius(numnod)
-      real(kind = kreal), intent(in) :: s_cylinder(numnod)
-      real(kind = kreal), intent(in) :: a_s_cylinder(numnod)
-!
-      integer(kind = kint), intent(in) :: num_nod_phys
-      integer(kind = kint), intent(in) :: num_tot_nod_phys
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_nod_component(0:num_nod_phys)
-      real(kind = kreal), intent(in)  :: d_nod(numnod,num_tot_nod_phys)
+      type(node_data), intent(in) :: node
+      type(phys_data), intent(in) :: nod_fld
 !
       integer(kind = kint) :: i_fln
       integer(kind = kint) :: i_field, ist_fld, num_comp
@@ -65,25 +53,25 @@
 !
       do i_fln = 1, num_fline
         i_field = ifield_4_fline(i_fln)
-        ist_fld = istack_nod_component(i_field-1)
-        num_comp = istack_nod_component(i_field) - ist_fld
+        ist_fld = nod_fld%istack_component(i_field-1)
+        num_comp = nod_fld%istack_component(i_field) - ist_fld
 !
         if (iflag_debug .gt. 0) write(*,*)                              &
      &    'convert_comps_4_viz ifield_4_fline', i_field
-        call convert_comps_4_viz(numnod, inod_smp_stack, xx, radius,    &
-     &      a_radius, s_cylinder, a_s_cylinder, ithree,                 &
-     &      num_comp, icomp_4_fline(i_fln), d_nod(1,ist_fld+1),         &
-     &      vector_nod_fline(1,1,i_fln) )
+        call convert_comps_4_viz(node%numnod, node%istack_nod_smp,      &
+     &      node%xx, node%rr,node%a_r, node%ss, node%a_s, ithree,       &
+     &      num_comp, icomp_4_fline(i_fln),                             &
+     &      nod_fld%d_fld(1,ist_fld+1), vector_nod_fline(1,1,i_fln) )
 !
         i_field = ifield_linecolor(i_fln)
-        ist_fld = istack_nod_component(i_field-1)
-        num_comp = istack_nod_component(i_field) - ist_fld
+        ist_fld = nod_fld%istack_component(i_field-1)
+        num_comp = nod_fld%istack_component(i_field) - ist_fld
         if (iflag_debug .gt. 0) write(*,*)                              &
      &     'convert_comps_4_viz ifield_linecolor', i_field
-        call convert_comps_4_viz(numnod, inod_smp_stack, xx, radius,    &
-     &      a_radius, s_cylinder, a_s_cylinder, ione,                   &
-     &      num_comp, icomp_linecolor(i_fln), d_nod(1,ist_fld+1),       &
-     &      color_nod_fline(1,i_fln) )
+        call convert_comps_4_viz(node%numnod, node%istack_nod_smp,      &
+     &      node%xx, node%rr, node%a_r, node%ss, node%a_s, ione,        &
+     &      num_comp, icomp_linecolor(i_fln),                           &
+     &      nod_fld%d_fld(1,ist_fld+1), color_nod_fline(1,i_fln) )
       end do
 !
 !
@@ -91,26 +79,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_nsurf_for_starting(i_fln, numele, interior_ele,  &
-     &          num_surf, num_surf_bc, surf_istack, surf_item)
+      subroutine count_nsurf_for_starting(i_fln, ele, sf_grp)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
-      integer(kind = kint), intent(in) :: numele
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      integer(kind = kint), intent(in) :: num_surf, num_surf_bc
-      integer(kind = kint), intent(in) :: surf_istack(0:num_surf)
-      integer(kind = kint), intent(in) :: surf_item(2,num_surf_bc)
+      type(element_data), intent(in) :: ele
+      type(surface_group_data), intent(in) :: sf_grp
 !
-      integer(kind = kint) :: igrp, isurf, iele, icou
+      integer(kind = kint) :: igrp, isurf, iele, icou, ist, ied
 !
 !
       igrp = igrp_start_fline_surf_grp(i_fln)
 !
       icou = 0
-      do isurf = surf_istack(igrp-1)+1, surf_istack(igrp)
-        iele = surf_item(1,isurf)
-        if(interior_ele(iele) .ne. izero) icou = icou + 1
+      ist = sf_grp%istack_grp(igrp-1) + 1
+      ied = sf_grp%istack_grp(igrp)
+      do isurf = ist, ied
+        iele = sf_grp%item_sf_grp(1,isurf)
+        if(ele%interior_ele(iele) .ne. izero) icou = icou + 1
       end do
 !
       nele_start_grp(i_fln) = icou
@@ -122,29 +108,27 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_isurf_for_starting(i_fln, numele, interior_ele,    &
-     &          num_surf, num_surf_bc, surf_istack, surf_item)
+      subroutine set_isurf_for_starting(i_fln, ele, sf_grp)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
-      integer(kind = kint), intent(in) :: numele
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      integer(kind = kint), intent(in) :: num_surf, num_surf_bc
-      integer(kind = kint), intent(in) :: surf_istack(0:num_surf)
-      integer(kind = kint), intent(in) :: surf_item(2,num_surf_bc)
+      type(element_data), intent(in) :: ele
+      type(surface_group_data), intent(in) :: sf_grp
 !
-      integer(kind = kint) :: igrp, isurf, inum, iele
+      integer(kind = kint) :: igrp, isurf, inum, iele, ist, ied
 !
 !
       igrp = igrp_start_fline_surf_grp(i_fln)
 !
       inum = istack_ele_start_grp(i_fln-1)
-      do isurf = surf_istack(igrp-1)+1, surf_istack(igrp)
-        iele = surf_item(1,isurf)
-        if(interior_ele(iele) .ne. izero) then
+      ist = sf_grp%istack_grp(igrp-1) + 1
+      ied = sf_grp%istack_grp(igrp)
+      do isurf = ist, ied
+        iele = sf_grp%item_sf_grp(1,isurf)
+        if(ele%interior_ele(iele) .ne. izero) then
           inum = inum + 1
-          iele_start_item(1,inum) = surf_item(1,isurf)
-          iele_start_item(2,inum) = surf_item(2,isurf)
+          iele_start_item(1,inum) = sf_grp%item_sf_grp(1,isurf)
+          iele_start_item(2,inum) = sf_grp%item_sf_grp(2,isurf)
         end if
       end do
 !
@@ -152,11 +136,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_fields_for_fieldline(i_fln,                      &
-     &        numnod, numele, numsurf, nnod_4_surf, iele_global,        &
-     &        interior_ele, ie_surf, isf_4_ele, iele_4_surf,            &
-     &        x_surf, vnorm_surf, area_surf,                            &
-     &        num_mat, num_mat_bc, mat_istack, mat_item)
+      subroutine s_set_fields_for_fieldline                             &
+     &         (i_fln, node, ele, surf, ele_grp)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -164,21 +145,10 @@
 !
       integer(kind = kint), intent(in) :: i_fln
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint_gl), intent(in) :: iele_global(numele)
-      integer(kind=kint), intent(in) :: interior_ele(numele)
-!
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      real(kind = kreal), intent(in) :: x_surf(numsurf,3)
-      real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
-      real(kind = kreal), intent(in) :: area_surf(numsurf)
-!
-      integer(kind=kint), intent(in) :: num_mat, num_mat_bc
-      integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
-      integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(group_data), intent(in) :: ele_grp
 !
       integer(kind = kint) :: ist_grp, num_grp, i, ist, ied, ip, inum
       integer(kind = kint) :: ist_line, iele, isf, isurf, num
@@ -203,9 +173,9 @@
         ist_grp = istack_ele_start_grp(i_fln-1) + 1
         num_grp = nele_start_grp(i_fln)
 !
-        call cal_flux_for_1sgrp(numnod, numele, numsurf,                &
-     &      nnod_4_surf, ie_surf, isf_4_ele, interior_ele,              &
-     &      vnorm_surf, area_surf, num_grp,                             &
+        call cal_flux_for_1sgrp(node%numnod, ele%numele, surf%numsurf,  &
+     &      surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele,             &
+     &      ele%interior_ele, surf%vnorm_surf, surf%area_surf, num_grp, &
      &      iele_start_item(1,ist_grp), vector_nod_fline(1,1,i_fln),    &
      &      flux_start(ist_grp) )
 !
@@ -297,12 +267,14 @@
         deallocate(rnd_flux, r_rnd, seed)
 !
       else if(id_fline_start_type(i_fln) .eq. 1) then
-        call cnt_start_surface_by_gl_table(i_fln, numele,               &
-     &          iele_global, interior_ele, num_mat, num_mat_bc,         &
-     &          mat_istack, mat_item)
-        call set_start_surface_by_gl_table(i_fln, numele,               &
-     &          iele_global, interior_ele, num_mat, num_mat_bc,         &
-     &          mat_istack, mat_item)
+        call cnt_start_surface_by_gl_table                              &
+     &     (i_fln, ele%numele, ele%iele_global,        &
+     &      ele%interior_ele, ele_grp%num_grp, ele_grp%num_item,        &
+     &      ele_grp%istack_grp, ele_grp%item_grp)
+        call set_start_surface_by_gl_table                              &
+     &     (i_fln, ele%numele, ele%iele_global,  &
+     &      ele%interior_ele, ele_grp%num_grp, ele_grp%num_item,        &
+     &      ele_grp%istack_grp, ele_grp%item_grp)
       end if
 !
       ist_line = istack_each_field_line(i_fln-1)
@@ -310,16 +282,18 @@
         inum = i + ist_line
         iele = id_surf_start_fline(1,inum)
         isf =  id_surf_start_fline(2,inum)
-        isurf = abs(isf_4_ele(iele,isf))
-        xx_start_fline(1:3,inum) =   x_surf(isurf,1:3)
+        isurf = abs(surf%isf_4_ele(iele,isf))
+        xx_start_fline(1:3,inum) =   surf%x_surf(isurf,1:3)
         xi(1:2) = zero
-        call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf, xi, vector_nod_fline(1,1,i_fln), vec_surf)
+        call cal_field_on_surf_vector                                   &
+     &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
+     &      isurf, xi, vector_nod_fline(1,1,i_fln), vec_surf)
 !
-        flux_start_fline(inum)  = (vec_surf(1) * vnorm_surf(isurf,1)    &
-     &                           + vec_surf(2) * vnorm_surf(isurf,2)    &
-     &                           + vec_surf(3) * vnorm_surf(isurf,3))   &
-     &                           * dble(isf_4_ele(iele,isf) / isurf)
+        flux_start_fline(inum)                                          &
+     &                     = (vec_surf(1) * surf%vnorm_surf(isurf,1)    &
+     &                      + vec_surf(2) * surf%vnorm_surf(isurf,2)    &
+     &                      + vec_surf(3) * surf%vnorm_surf(isurf,3))   &
+     &                     * dble(surf%isf_4_ele(iele,isf) / isurf)
 !
         if(flux_start_fline(inum) .gt. zero) then
           iflag_outward_flux_fline(inum) = 1
@@ -343,8 +317,8 @@
       ntot_gl_fline = istack_all_fline(nprocs,i_fln)
 !
       call set_fline_start_surf(my_rank, i_fln,                         &
-     &    numnod, numele, numsurf, nnod_4_surf,                         &
-     &    ie_surf, isf_4_ele, iele_4_surf)
+     &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
+     &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf)
 !
       if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'ntot_gl_fline', ntot_gl_fline
@@ -373,6 +347,7 @@
 !
       end subroutine s_set_fields_for_fieldline
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine cnt_start_surface_by_gl_table(i_fln, numele,           &

@@ -13,12 +13,13 @@
 !> @brief Routines to construct field lines
 !!
 !!@verbatim
-!!      subroutine s_const_field_lines(i_fln,                           &
-!!     &          numnod, numele, numsurf, nnod_4_surf,                 &
-!!     &          inod_global, xx, iele_global, ie_surf,                &
-!!     &          isf_4_ele, iele_4_surf, interior_surf, vnorm_surf,    &
-!!     &          ntot_ele_4_node, iele_stack_4_node, iele_4_node,      &
-!!     &          nod_comm)
+!!      subroutine s_const_field_lines                                  &
+!!     &         (i_fln, node, ele, surf, ele_4_nod, nod_comm)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(element_around_node), intent(in) :: ele_4_nod
+!!        type(communication_table), intent(in) :: nod_comm
 !!@endverbatim
 !
       module const_field_lines
@@ -32,42 +33,33 @@
 !
       implicit  none
 !
+      private :: set_fline_start_2_bcast
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_field_lines(i_fln,                             &
-     &          numnod, numele, numsurf, nnod_4_surf,                   &
-     &          inod_global, xx, iele_global, ie_surf,                  &
-     &          isf_4_ele, iele_4_surf, interior_surf, vnorm_surf,      &
-     &          ntot_ele_4_node, iele_stack_4_node, iele_4_node,        &
-     &          nod_comm)
+      subroutine s_const_field_lines                                    &
+     &         (i_fln, node, ele, surf, ele_4_nod, nod_comm)
 !
 !
       use m_control_params_4_fline
       use m_local_fline
       use t_comm_table
+      use t_geometry_data
+      use t_surface_data
+      use t_comm_table
+      use t_next_node_ele_4_node
       use extend_field_line
 !
       integer(kind= kint), intent(in) :: i_fln
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint_gl), intent(in) :: inod_global(numnod)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-      integer(kind = kint_gl), intent(in) :: iele_global(numele)
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      integer(kind = kint), intent(in) :: interior_surf(numsurf)
-      real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
-!
-      integer (kind=kint), intent(in) :: ntot_ele_4_node
-      integer (kind=kint), intent(in) :: iele_stack_4_node(0:numnod)
-      integer (kind=kint), intent(in) :: iele_4_node(ntot_ele_4_node)
-!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(element_around_node), intent(in) :: ele_4_nod
       type(communication_table), intent(in) :: nod_comm
 !
       integer(kind = kint) :: iflag_comm
@@ -76,7 +68,8 @@
 !
       if(i_debug .gt. iflag_full_msg) then
         write(my_rank+50,*) 'num_all_fline', num_all_fline(:,i_fln)
-        write(my_rank+50,*) 'istack_all_fline', istack_all_fline(:,i_fln)
+        write(my_rank+50,*)                                             &
+     &         'istack_all_fline', istack_all_fline(:,i_fln)
         ist = istack_all_fline(my_rank,i_fln) + 1
         ied = istack_all_fline(my_rank+1,i_fln)
         write(my_rank+50,*) 'isf_fline_start(1:3,i)'
@@ -94,18 +87,19 @@
         ist = istack_all_fline(my_rank,i_fln) + 1
         ied = istack_all_fline(my_rank+1,i_fln)
         do i = ist, ied
-          call s_extend_field_line(numnod, numele, numsurf,             &
-     &        nnod_4_surf, xx, ie_surf, isf_4_ele,                      &
-     &        iele_4_surf, interior_surf, vnorm_surf,                   &
+          call s_extend_field_line                                      &
+     &       (node%numnod, ele%numele, surf%numsurf,                    &
+     &        surf%nnod_4_surf, node%xx, surf%ie_surf, surf%isf_4_ele,  &
+     &        surf%iele_4_surf, surf%interior_surf, surf%vnorm_surf,    &
      &        max_line_stepping(i_fln), iflag_fline_used_ele(1,i_fln),  &
      &        iflag_fline(i), vector_nod_fline(1,1,i_fln),              &
      &        color_nod_fline(1,i_fln), isf_fline_start(1,i),           &
      &        xx_fline_start(1,i), v_fline_start(1,i),                  &
-     &         c_fline_start(i), icount_fline(i), iflag_comm)
+     &        c_fline_start(i), icount_fline(i), iflag_comm)
           write(50+my_rank,*) 'extension end for ', i, iflag_comm
 !
-          call set_fline_start_2_bcast(iflag_comm, i,                   &
-     &          numnod, numele,  inod_global, iele_global,              &
+          call set_fline_start_2_bcast(iflag_comm, i, node%numnod,      &
+     &          ele%numele, node%inod_global, ele%iele_global,          &
      &          nod_comm%num_neib, nod_comm%id_neib,                    &
      &          nod_comm%ntot_import,  nod_comm%istack_import,          &
      &          nod_comm%item_import)
@@ -135,11 +129,11 @@
         end if
 !
         call recover_local_fline_start(i_fln,                           &
-     &          numnod, numele, numsurf, iele_global,                   &
-     &          isf_4_ele, iele_4_surf, ntot_ele_4_node,                &
-     &          iele_stack_4_node, iele_4_node, nod_comm%num_neib,      &
-     &          nod_comm%id_neib, nod_comm%ntot_export,                 &
-     &          nod_comm%istack_export, nod_comm%item_export)
+     &      node%numnod, ele%numele, surf%numsurf, ele%iele_global,     &
+     &      surf%isf_4_ele, surf%iele_4_surf, ele_4_nod%ntot,           &
+     &      ele_4_nod%istack_4_node, ele_4_nod%iele_4_node,             &
+     &      nod_comm%num_neib, nod_comm%id_neib, nod_comm%ntot_export,  &
+     &      nod_comm%istack_export, nod_comm%item_export)
         call set_fline_start_from_neib(i_fln)
 !
         nline = istack_all_fline(nprocs,i_fln)                          &
