@@ -57,6 +57,9 @@
 !
       use t_ucd_file
       use t_time_data
+      use t_mesh_data
+      use t_phys_data
+      use t_phys_address
       use t_MHD_step_parameter
       use t_file_IO_parameter
       use t_ucd_file
@@ -73,12 +76,8 @@
      &          mesh, group, ele_mesh, iphys, nod_fld, range, fem_ucd)
 !
       use m_array_for_send_recv
-      use t_phys_data
-      use t_phys_address
       use t_FEM_phys_data
       use t_cal_max_indices
-!
-      use t_mesh_data
 !
       use nod_phys_send_recv
       use node_monitor_IO
@@ -185,9 +184,6 @@
      &         (sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
 !
       use t_spheric_parameter
-      use t_mesh_data
-      use t_phys_data
-      use t_phys_address
       use t_sph_trans_arrays_MHD
 !
       use copy_snap_4_sph_trans

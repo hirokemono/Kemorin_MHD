@@ -70,7 +70,7 @@
       call input_control_SPH_dynamo(MHD_files1, bc_sph_IO1,             &
      &    MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
      &    pwr1, SGS_par1, dynamic_SPH1, flex_p1, MHD_step1,             &
-     &    MHD_prop1, MHD_BC1, trns_WK1, mesh1, group1, ele_mesh1)
+     &    MHD_prop1, MHD_BC1, trns_WK1, femmesh1, ele_mesh1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
 !
@@ -79,7 +79,8 @@
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1%ucd_file_IO, MHD_step1,    &
-     &    mesh1, group1, ele_mesh1, iphys, nod_fld1, range1, fem_ucd1)
+     &    femmesh1%mesh1, femmesh1%group1, ele_mesh1, iphys, nod_fld1,  &
+     &    range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'

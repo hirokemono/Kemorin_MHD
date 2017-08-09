@@ -10,7 +10,7 @@
 !!      subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,  &
 !!     &          sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,       &
 !!     &          SGS_par, dynamic_SPH, flex_p, MHD_step, MHD_prop,     &
-!!     &          MHD_BC, WK, mesh, group, ele_mesh)
+!!     &          MHD_BC, WK, femmesh, ele_mesh)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
@@ -23,8 +23,7 @@
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
-!!        type(mesh_geometry), intent(inout) :: mesh
-!!        type(mesh_groups), intent(inout) ::   group
+!!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -74,7 +73,7 @@
       subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,    &
      &          sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,         &
      &          SGS_par, dynamic_SPH, flex_p, MHD_step, MHD_prop,       &
-     &          MHD_BC, WK, mesh, group, ele_mesh)
+     &          MHD_BC, WK, femmesh, ele_mesh)
 !
       use m_error_IDs
 !
@@ -102,8 +101,7 @@
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) ::   group
+      type(mesh_data), intent(inout) :: femmesh
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
@@ -121,7 +119,7 @@
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
      &    sph, comms_sph, sph_grps, sph_maker2,                         &
-     &    mesh, group, ele_mesh, MHD_files%mesh_file_IO)
+     &    femmesh%mesh, femmesh%group, ele_mesh, MHD_files%mesh_file_IO)
 !
       call sph_boundary_IO_control(MHD_prop, MHD_BC, bc_IO)
 !
