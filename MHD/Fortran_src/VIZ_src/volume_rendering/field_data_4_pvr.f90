@@ -8,8 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine cal_field_4_each_pvr(node, ele, jac_3d,              &
-!!     &          n_point, num_nod_phys, num_tot_nod_phys,              &
-!!     &          istack_nod_component, d_nod, fld_params, field_pvr)
+!!     &          nod_fld, fld_params, field_pvr)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(pvr_field_parameter), intent(in) :: fld_params
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(pvr_projected_field), intent(inout) :: field_pvr
 !!      subroutine set_pixel_on_pvr_screen(view, pixel_xy, pvr_rgb)
 !!      subroutine flush_pixel_on_pvr_screen(pixel_xy, pvr_rgb)
 !!        type(pvr_view_parameter), intent(in) :: view
@@ -33,10 +38,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_field_4_each_pvr(node, ele, jac_3d,                &
-     &          n_point, num_nod_phys, num_tot_nod_phys,                &
-     &          istack_nod_component, d_nod, fld_params, field_pvr)
+     &          nod_fld, fld_params, field_pvr)
 !
       use t_geometry_data
+      use t_phys_data
       use t_jacobian_3d
       use t_geometries_in_pvr_screen
       use cal_gradient_on_element
@@ -46,12 +51,7 @@
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
       type(pvr_field_parameter), intent(in) :: fld_params
-!
-      integer(kind = kint), intent(in) :: n_point, num_nod_phys
-      integer(kind = kint), intent(in) :: num_tot_nod_phys
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_nod_component(0:num_nod_phys)
-      real(kind = kreal), intent(in) :: d_nod(n_point,num_tot_nod_phys)
+      type(phys_data), intent(in) :: nod_fld
 !
       type(pvr_projected_field), intent(inout) :: field_pvr
 !
@@ -60,12 +60,12 @@
 !
 !
       i_field = fld_params%id_pvr_output
-      ist_fld = istack_nod_component(i_field-1)
-      num_comp = istack_nod_component(i_field) - ist_fld
+      ist_fld = nod_fld%istack_component(i_field-1)
+      num_comp = nod_fld%istack_component(i_field) - ist_fld
       call convert_comps_4_viz                                          &
      &   (node%numnod, node%istack_nod_smp, node%xx, node%rr,           &
      &    node%a_r, node%ss, node%a_s, ione, num_comp,                  &
-     &    fld_params%icomp_pvr_output, d_nod(1,ist_fld+1),              &
+     &    fld_params%icomp_pvr_output, nod_fld%d_fld(1,ist_fld+1),      &
      &    field_pvr%d_pvr)
 !
       call fem_gradient_on_element(ele%istack_ele_smp, node%numnod,     &

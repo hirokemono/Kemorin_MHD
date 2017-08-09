@@ -46,8 +46,7 @@
       type(phys_data), intent(in) :: nod_fld
 !
 !
-      call PVR_initialize(mesh%node, mesh%ele, ele_mesh%surf,           &
-     &    group, nod_fld)
+      call PVR_initialize(mesh, group, ele_mesh, nod_fld)
       call calypso_MPI_barrier
 !
       end subroutine init_visualize_pvr_only
@@ -68,8 +67,8 @@
       type(jacobians_type), intent(in) :: jacobians
 !
 !
-      call PVR_visualize(istep_pvr, mesh%node, mesh%ele,                &
-     &    ele_mesh%surf, group, jacobians%jac_3d, nod_fld)
+      call PVR_visualize(istep_pvr, mesh, group, ele_mesh,              &
+     &    jacobians%jac_3d, nod_fld)
 !
       end subroutine visualize_pvr_only
 !
