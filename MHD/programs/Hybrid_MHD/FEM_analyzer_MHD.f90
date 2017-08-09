@@ -102,7 +102,7 @@
      &    Csims_FEM_MHD1%sgs_coefs, Csims_FEM_MHD1%diff_coefs)
       if (iflag_debug.eq.1) write(*,*) 'update_fields'
       call update_fields                                                &
-     &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
+     &   (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh1,                &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
      &    fem_int1, FEM1_elen, filtering1, wide_filtering, layer_tbl1,  &
      &    mk_MHD1, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, &
@@ -234,7 +234,7 @@
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution_4_FEM_SPH'
       call fields_evolution_4_FEM_SPH                                   &
      &   (MHD_step%time_d, FEM_prm1, SGS_par1,                          &
-     &    mesh1, group1, ele_mesh1, MHD_mesh1%fluid, MHD_prop1,         &
+     &    femmesh1, ele_mesh1, MHD_mesh1%fluid, MHD_prop1,              &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD, fem_int1,        &
      &    FEM1_elen, filtering1, wide_filtering, layer_tbl1,            &
      &    MHD_CG1%solver_pack, MHD_CG1%MGCG_WK, wk_cor1, wk_lsq1,       &

@@ -134,8 +134,7 @@
      &    ele_mesh%edge, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'update_fields'
-      call update_fields                                                &
-     &   (time_d, FEM_prm, SGS_par, femmesh%mesh, femmesh%group,        &
+      call update_fields(time_d, FEM_prm, SGS_par, femmesh,             &
      &    ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,      &
      &    fem_int, FEM_elens, filtering, wide_filtering,                &
      &    layer_tbl, mk_MHD, wk_cor, wk_lsq,  wk_diff, wk_filter,       &
