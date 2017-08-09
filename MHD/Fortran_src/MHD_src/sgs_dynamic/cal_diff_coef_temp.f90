@@ -7,8 +7,8 @@
 !!     &          ifield, ifield_f, iak_diff_t, icomp_diff_t,           &
 !!     &          SGS_par, nod_comm, node, ele, surf, sf_grp,           &
 !!     &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid, layer_tbl, &
-!!     &          jacobians, rhs_tbl, FEM_elens, filtering, wk_filter,  &
-!!     &          wk_cor, wk_lsq, wk_diff, mlump_fl, fem_wk, surf_wk,   &
+!!     &          jacobians, rhs_tbl, FEM_elens, filtering, mlump_fl,   &
+!!     &          wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,  &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -77,8 +77,8 @@
      &          ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
      &          SGS_par, nod_comm, node, ele, surf, sf_grp,             &
      &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid, layer_tbl,   &
-     &          jacobians, rhs_tbl, FEM_elens, filtering, wk_filter,    &
-     &          wk_cor, wk_lsq, wk_diff, mlump_fl, fem_wk, surf_wk,     &
+     &          jacobians, rhs_tbl, FEM_elens, filtering, mlump_fl,     &
+     &          wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,    &
      &          f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter

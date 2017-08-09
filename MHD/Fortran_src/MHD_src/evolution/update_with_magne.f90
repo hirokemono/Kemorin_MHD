@@ -7,21 +7,19 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!       subroutine update_with_magnetic_field                          &
-!!     &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt, &
-!!     &         FEM_prm, SGS_par, nod_comm, node, ele, surf,           &
-!!     &         fluid, conduct, layer_tbl, sf_grp, Bsf_bcs, Fsf_bcs,   &
-!!     &         iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,    &
-!!     &         rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump, &
-!!     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,&
-!!     &         surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
+!!      subroutine update_with_magnetic_field                           &
+!!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,&
+!!     &          FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,  &
+!!     &          layer_tbl, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,        &
+!!     &          jacobians, rhs_tbl, FEM_elens,                        &
+!!     &          filtering, wide_filtering, m_lump, wk_cor, wk_lsq,    &
+!!     &          wk_diff, wk_filter, mhd_fem_wk, fem_wk, surf_wk,      &
+!!     &          f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(communication_table), intent(in) :: nod_comm
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
 !!        type(surface_data), intent(in) :: surf
-!!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
@@ -55,11 +53,9 @@
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
-      use t_comm_table
+      use t_mesh_data
       use t_geometry_data_MHD
-      use t_geometry_data
       use t_surface_data
-      use t_group_data
       use t_phys_data
       use t_phys_address
       use t_jacobians
@@ -85,13 +81,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_magnetic_field                             &
-     &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,   &
-     &         FEM_prm, SGS_par, nod_comm, node, ele, surf,             &
-     &         fluid, conduct, layer_tbl, sf_grp, Bsf_bcs, Fsf_bcs,     &
-     &         iphys, iphys_ele, jacobians,      &
-     &         rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,   &
-     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,  &
-     &         surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
+     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,  &
+     &          FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,    &
+     &          layer_tbl, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,          &
+     &          jacobians, rhs_tbl, FEM_elens,                          &
+     &          filtering, wide_filtering, m_lump, wk_cor, wk_lsq,      &
+     &          wk_diff, wk_filter, mhd_fem_wk, fem_wk, surf_wk,        &
+     &          f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -107,11 +103,9 @@
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
-      type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
@@ -141,8 +135,9 @@
 !
 !
       if (iphys_ele%i_magne .ne. 0) then
-        call vector_on_element_1st(node, ele, jacobians%jac_3d,         &
-     &      ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,               &
+        call vector_on_element_1st                                      &
+     &     (mesh%node, mesh%ele, jacobians%jac_3d,                      &
+     &      mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,          &
      &      nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld,            &
      &      ele_fld%ntot_phys, iphys_ele%i_magne,                       &
      &      ele_fld%iflag_update, ele_fld%d_fld)
@@ -178,7 +173,7 @@
           if(iflag_debug.gt.0) write(*,*)                               &
      &         'cal_filtered_vector_whole',  iphys%i_filter_magne
           call cal_filtered_vector_whole                                &
-     &       (SGS_par%filter_p, nod_comm, node, filtering,              &
+     &       (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,    &
      &        iphys%i_filter_magne, iphys%i_magne, wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_magne  ) = 1
           nod_fld%iflag_update(iphys%i_filter_magne+1) = 1
@@ -187,8 +182,9 @@
 !
         if (iflag2.eq.2 .and. iphys_ele%i_filter_magne.ne.0) then
           if (iflag_debug.gt.0) write(*,*) 'filtered_magne_on_ele'
-          call vector_on_element_1st(node, ele, jacobians%jac_3d,       &
-     &        ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,             &
+          call vector_on_element_1st                                    &
+     &       (mesh%node, mesh%ele, jacobians%jac_3d,                    &
+     &        mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,        &
      &        nod_fld%ntot_phys, iphys%i_filter_magne,                  &
      &        nod_fld%d_fld, ele_fld%ntot_phys,                         &
      &        iphys_ele%i_filter_magne, ele_fld%iflag_update,           &
@@ -198,14 +194,14 @@
         if (iflag2.eq.2 .and. ie_dfbx.ne.0) then
           if (iflag_debug.gt.0) write(*,*) 'diff_filter_b_on_ele'
           call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,     &
-     &        ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,        &
-     &        node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l, &
-     &        mhd_fem_wk)
+     &        mesh%ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,   &
+     &        mesh%node, mesh%ele, nod_fld,                             &
+     &        jacobians%jac_3d, jacobians%jac_3d_l, mhd_fem_wk)
         end if
 !
         if (iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
-          call cal_filtered_vector_whole                                &
-     &        (SGS_par%filter_p, nod_comm, node, wide_filtering,        &
+          call cal_filtered_vector_whole(SGS_par%filter_p,              &
+     &         mesh%nod_comm, mesh%node, wide_filtering,                &
      &         iphys%i_wide_fil_magne, iphys%i_filter_magne,            &
      &         wk_filter, nod_fld)
            nod_fld%iflag_update(iphys%i_wide_fil_magne  ) = 1
@@ -221,11 +217,11 @@
           if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
           call s_cal_diff_coef_magne                                    &
      &       (iak_diff_b, icomp_diff_b, dt, FEM_prm, SGS_par,           &
-     &        nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,      &
-     &        iphys, iphys_ele, ele_fld, fluid, layer_tbl, jacobians,   &
-     &        rhs_tbl, FEM_elens, filtering, m_lump, wk_filter,         &
-     &        wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk, f_l, f_nl,      &
-     &        nod_fld, diff_coefs)
+     &        mesh%nod_comm, mesh%node, mesh%ele, surf, group%surf_grp, &
+     &        Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, fluid,       &
+     &        layer_tbl, jacobians, rhs_tbl, FEM_elens, filtering,      &
+     &        m_lump, wk_filter, wk_cor, wk_lsq, wk_diff,               &
+     &        fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
         end if
       end if
  !
@@ -235,8 +231,8 @@
         if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
             call sel_int_diff_vector_on_ele                             &
-     &         (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,           &
-     &          iphys%i_magne, ie_dbx, node, ele, nod_fld,              &
+     &         (FEM_prm%npoint_t_evo_int, mesh%ele%istack_ele_smp,      &
+     &          iphys%i_magne, ie_dbx, mesh%node, mesh%ele, nod_fld,    &
      &          jacobians%jac_3d, jacobians%jac_3d_l, mhd_fem_wk)
         end if
       end if
@@ -244,15 +240,17 @@
       if (iphys_ele%i_current .ne. 0                                    &
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
          if (iflag_debug.gt.0)  write(*,*) 'current_on_element'
-        call rotation_on_element_1st(node, ele, jacobians%jac_3d,       &
+        call rotation_on_element_1st                                    &
+     &     (mesh%node, mesh%ele, jacobians%jac_3d,                      &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld,            &
      &      ele_fld%ntot_phys, iphys_ele%i_current,                     &
      &      ele_fld%iflag_update, ele_fld%d_fld)
       end if
 !
-!      call rotation_on_element_1st(node, ele, jacobians%jac_3d,        &
-!     &    ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,                &
+!      call rotation_on_element_1st                                     &
+!     &   (mesh%node, mesh%ele, jacobians%jac_3d,                       &
+!     &    mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,           &
 !     &    nod_fld%ntot_phys, iphys%i_filter_vecp, nod_fld%d_fld,       &
 !     &    ele_fld%ntot_phys, iphys_ele%i_filter_magne,                 &
 !     &    ele_fld%iflag_update, ele_fld%d_fld)

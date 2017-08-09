@@ -131,8 +131,8 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_sf_simi'
       call cal_sgs_sf_simi                                              &
      &   (i_sgs, ifield, ifield_f, ivelo, ivelo_f, icomp_sgs_flux,      &
-     &    SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering, sgs_coefs_nod,   &
-     &    wk_filter, nod_fld)
+     &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
+     &    filtering, sgs_coefs_nod, wk_filter, nod_fld)
 !
 !    copy to work array
 !
@@ -144,23 +144,23 @@
       call cal_sgs_s_flux_grad_no_coef                                  &
      &   (iflag_supg, num_int, dt, ifilter_4delta,                      &
      &    iphys%i_sgs_grad_f, ifield_f, ie_dfvx,                        &
-     &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele, ele_fld,               &
-     &    jacobians%jac_3d, rhs_tbl, FEM_elens, mlump_fl,               &
-     &    mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
+     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
+     &    mlump_fl, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_h_flux_grad_4_dyn'
       call cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt,         &
      &    ifilter_2delta, i_sgs, ifield, ie_dvx,                        &
-     &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele, ele_fld,               &
-     &    jacobians%jac_3d, rhs_tbl, FEM_elens, mlump_fl,               &
-     &    mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
+     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
+     &    mlump_fl, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !      filtering
 !
       call cal_filtered_vector_whole                                    &
-     &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,                  &
+     &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,        &
      &    iphys%i_sgs_grad, i_sgs, wk_filter, nod_fld)
 !
 !   Change coordinate
@@ -172,7 +172,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_vector, iak_sgs_hlux, icomp_sgs_flux
-      call cal_model_coefs(SGS_par, layer_tbl, mesh%node, mesh%ele,               &
+      call cal_model_coefs(SGS_par, layer_tbl, mesh%node, mesh%ele,     &
      &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux, icomp_sgs_flux,      &
      &    num_int, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
@@ -180,7 +180,7 @@
       call reduce_model_coefs_layer(SGS_flux_factor,                    &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_hlux,                &
      &    wk_sgs%fld_clip, wk_sgs%fld_whole_clip)
-      call reduce_ele_vect_model_coefs(mesh%ele, SGS_flux_factor,            &
+      call reduce_ele_vect_model_coefs(mesh%ele, SGS_flux_factor,       &
      &    sgs_coefs%ntot_comp, icomp_sgs_flux, sgs_coefs%ak)
 !
       end subroutine cal_sgs_sf_dynamic

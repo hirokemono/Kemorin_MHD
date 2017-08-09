@@ -7,30 +7,25 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine update_with_temperature                              &
-!!     &       (iak_diff_t, icomp_diff_t, i_step, dt,                   &
-!!     &        FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,     &
-!!     &        sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld, jacobians,  &
+!!      subroutine update_with_temperature(iak_diff_t, icomp_diff_t,    &
+!!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid, &
+!!     &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,           &
 !!     &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,&
 !!     &        mlump_fl, wk_cor, wk_lsq, wk_diff, wk_filter,           &
 !!     &        fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
-!!      subroutine update_with_dummy_scalar                             &
-!!     &       (iak_diff_c, icomp_diff_c, i_step, dt,                   &
-!!     &        FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,     &
-!!     &        sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld, jacobians,  &
+!!      subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,   &
+!!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid, &
+!!     &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,           &
 !!     &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,&
 !!     &        mlump_fl, wk_cor, wk_lsq, wk_diff, wk_filter,           &
 !!     &        fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(communication_table), intent(in) :: nod_comm
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
 !!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid
-!!        type(surface_group_data), intent(in) :: sf_grp
-!!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
-!!        type(scaler_surf_bc_type), intent(in) :: Csf_bcs
+!!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -60,11 +55,9 @@
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
-      use t_comm_table
+      use t_mesh_data
       use t_geometry_data_MHD
-      use t_geometry_data
       use t_surface_data
-      use t_group_data
       use t_phys_data
       use t_phys_address
       use t_jacobians
@@ -88,10 +81,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_temperature                                &
-     &       (iak_diff_t, icomp_diff_t, i_step, dt,                     &
-     &        FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,       &
-     &        sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld, jacobians,    &
+      subroutine update_with_temperature(iak_diff_t, icomp_diff_t,      &
+     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid,   &
+     &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,             &
      &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,  &
      &        mlump_fl, wk_cor, wk_lsq, wk_diff, wk_filter,             &
      &        fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
@@ -110,13 +102,11 @@
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid
-      type(surface_group_data), intent(in) :: sf_grp
-      type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
+      type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -179,7 +169,7 @@
           if (iflag2 .eq. 1) then
             if (iflag_debug.gt.0) write(*,*) 'cal_filtered_temperature'
             call cal_filtered_scalar_whole                              &
-     &         (SGS_par%filter_p, nod_comm, node, filtering,            &
+     &         (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,  &
      &          iphys%i_filter_temp, iphys%i_sgs_temp,                  &
      &          wk_filter, nod_fld)
             nod_fld%iflag_update(iphys%i_filter_temp) = 1
@@ -188,8 +178,8 @@
           if (iphys%i_wide_fil_temp.ne.0 .and. iflag_dmc .eq. 0) then
             if (iflag_debug.gt.0)                                       &
      &        write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
-            call cal_filtered_scalar_whole                              &
-     &         (SGS_par%filter_p, nod_comm, node, wide_filtering,       &
+            call cal_filtered_scalar_whole(SGS_par%filter_p,            &
+     &          mesh%nod_comm, mesh%node, wide_filtering,               &
      &          iphys%i_wide_fil_temp, iphys%i_filter_temp,             &
      &          wk_filter, nod_fld)
           end if
@@ -198,7 +188,7 @@
         if( (iphys%i_filter_buo+iphys%i_f_buo_gen) .gt. 0) then
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar_whole                                &
-     &       (SGS_par%filter_p, nod_comm, node, filtering,              &
+     &       (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,    &
      &        iphys%i_filter_temp, iphys%i_temp, wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_temp) = 1
         end if
@@ -217,11 +207,12 @@
      &            (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,   &
      &             dt, iphys%i_sgs_temp, iphys%i_filter_temp,           &
      &             iak_diff_t, icomp_diff_t, SGS_par,                   &
-     &             nod_comm, node, ele, surf, sf_grp, Tsf_bcs,          &
-     &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &
-     &             jacobians, rhs_tbl, FEM_elen, filtering, wk_filter,  &
-     &             wk_cor, wk_lsq, wk_diff, mlump_fl,                   &
-     &             fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+     &             mesh%nod_comm, mesh%node, mesh%ele, surf,            &
+     &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
+     &             fluid, layer_tbl, jacobians, rhs_tbl, FEM_elen,      &
+     &             filtering, mlump_fl, wk_filter, wk_cor, wk_lsq,      &
+     &             wk_diff, fem_wk, surf_wk, f_l, f_nl,                 &
+     &             nod_fld, diff_coefs)
              end if
            end if
 !
@@ -232,10 +223,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_dummy_scalar                               &
-     &       (iak_diff_c, icomp_diff_c, i_step, dt,                     &
-     &        FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,       &
-     &        sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld, jacobians,    &
+      subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,     &
+     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid,   &
+     &        Csf_bcs, iphys, iphys_ele, ele_fld, jacobians,            &
      &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,  &
      &        mlump_fl, wk_cor, wk_lsq, wk_diff, wk_filter,             &
      &        fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
@@ -254,11 +244,9 @@
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
-      type(surface_group_data), intent(in) :: sf_grp
       type(scaler_surf_bc_type), intent(in) :: Csf_bcs
       type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
@@ -305,7 +293,7 @@
         if (iflag2.eq.1) then
           if (iflag_debug.gt.0)   write(*,*) 'cal_filtered_composition'
           call cal_filtered_scalar_whole                                &
-     &       (SGS_par%filter_p, nod_comm, node, filtering,              &
+     &       (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,    &
      &        iphys%i_filter_comp, iphys%i_sgs_composit,                &
      &        wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_comp) = 1
@@ -314,8 +302,8 @@
         if (iphys%i_wide_fil_temp.ne.0 .and. iflag_dmc .eq. 0) then
           if (iflag_debug.gt.0)                                         &
      &      write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
-          call cal_filtered_scalar_whole                                &
-     &       (SGS_par%filter_p, nod_comm, node, wide_filtering,         &
+          call cal_filtered_scalar_whole (SGS_par%filter_p,             &
+     &        mesh%nod_comm, mesh%node, wide_filtering,                 &
      &        iphys%i_wide_fil_temp, iphys%i_filter_comp,               &
      &        wk_filter, nod_fld)
         end if
@@ -336,11 +324,12 @@
      &            (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,   &
      &             dt, iphys%i_sgs_composit, iphys%i_filter_comp,       &
      &             iak_diff_c, icomp_diff_c, SGS_par,                   &
-     &             nod_comm, node, ele, surf, sf_grp, Csf_bcs,          &
-     &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &
-     &             jacobians, rhs_tbl, FEM_elen, filtering, wk_filter,  &
-     &             wk_cor, wk_lsq, wk_diff, mlump_fl, fem_wk, surf_wk,  &
-     &             f_l, f_nl, nod_fld, diff_coefs)
+     &             mesh%nod_comm, mesh%node, mesh%ele, surf,            &
+     &             group%surf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,  &
+     &             fluid, layer_tbl, jacobians, rhs_tbl, FEM_elen,      &
+     &             filtering, mlump_fl, wk_filter, wk_cor, wk_lsq,      &
+     &             wk_diff, fem_wk, surf_wk, f_l, f_nl,                 &
+     &              nod_fld, diff_coefs)
              end if
 
            end if

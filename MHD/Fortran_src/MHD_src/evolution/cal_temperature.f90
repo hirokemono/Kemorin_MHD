@@ -5,10 +5,9 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_temperature_field(i_field, dt,                   &
-!!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
-!!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
-!!     &          property, ref_param, nod_bcs, sf_bcs,                 &
+!!      subroutine cal_temperature_field(i_field, dt, FEM_prm,          &
+!!     &          SGS_param, cmt_param, filter_param, mesh, group,      &
+!!     &          surf, fluid, property, ref_param, nod_bcs, sf_bcs,    &
 !!     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,        &
 !!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
@@ -18,11 +17,9 @@
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
-!!        type(communication_table), intent(in) :: nod_comm
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
 !!        type(surface_data), intent(in) :: surf
-!!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(scalar_property), intent(in) :: property
 !!        type(reference_scalar_param), intent(in) :: ref_param
@@ -62,11 +59,9 @@
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
-      use t_comm_table
+      use t_mesh_data
       use t_geometry_data_MHD
-      use t_geometry_data
       use t_surface_data
-      use t_group_data
       use t_phys_data
       use t_phys_address
       use t_jacobians
@@ -91,10 +86,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_temperature_field(i_field, dt,                     &
-     &          FEM_prm, SGS_param, cmt_param, filter_param,            &
-     &          nod_comm, node, ele, surf, fluid, sf_grp,               &
-     &          property, ref_param, nod_bcs, sf_bcs,                   &
+      subroutine cal_temperature_field(i_field, dt, FEM_prm,            &
+     &          SGS_param, cmt_param, filter_param, mesh, group,        &
+     &          surf, fluid, property, ref_param, nod_bcs, sf_bcs,      &
      &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,          &
      &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
@@ -121,11 +115,9 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_filtering_params), intent(in) :: filter_param
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
-      type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
       type(reference_scalar_param), intent(in) :: ref_param
@@ -147,7 +139,7 @@
       type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: Smatrix
 !
-      real(kind = kreal), intent(in) :: ak_diffuse(ele%numele)
+      real(kind = kreal), intent(in) :: ak_diffuse(mesh%ele%numele)
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -158,7 +150,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-!      call check_jacobians_triquad(ele, jacobians%jac_3d)
+!      call check_jacobians_triquad(mesh%ele, jacobians%jac_3d)
 !
       if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
         call cal_sgs_heat_flux                                          &
@@ -167,9 +159,9 @@
      &      i_field, iphys%i_filter_temp,                               &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param,     &
-     &      filter_param, nod_comm, node, ele, fluid, iphys_ele,        &
-     &      ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens, filtering,   &
-     &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,              &
+     &      filter_param, mesh%nod_comm, mesh%node, mesh%ele, fluid,    &
+     &      iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,   &
+     &      filtering,  sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -178,7 +170,7 @@
 !
 !  ----------  clear the vector and lumped mass matrix
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(mesh%node%max_nod_smp, f_l, f_nl)
 !
 !  ----------  lead diffusion term
 !
@@ -186,9 +178,9 @@
      &     .and. property%coef_exp .gt. zero) then
         call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      node, ele, nod_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,   &
-     &      diff_coefs, ifld_diff%i_temp, property%coef_exp,            &
-     &      ak_diffuse, i_field, fem_wk, f_l)
+     &      mesh%node, mesh%ele, nod_fld, jacobians%jac_3d,             &
+     &      rhs_tbl, FEM_elens, diff_coefs, ifld_diff%i_temp,           &
+     &      property%coef_exp,  ak_diffuse, i_field, fem_wk, f_l)
       end if
 !
 !  ----------  lead advection term
@@ -199,7 +191,7 @@
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      dt, iphys%i_temp, iphys%i_velo,                             &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
-     &      node, ele, fluid, property, nod_fld,                        &
+     &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      mhd_fem_wk, fem_wk, f_nl)
@@ -209,24 +201,25 @@
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
-     &      node, ele, fluid, property, nod_fld,                        &
+     &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
      &      jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      mhd_fem_wk, fem_wk, f_nl)
       end if
 !
-!      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
-!      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
+!      call check_ff_smp(my_rank, n_scalar, mesh%node%max_nod_smp, f_l)
+!      call check_ff_smp(my_rank, n_scalar, mesh%node%max_nod_smp, f_nl)
 !
       call int_sf_scalar_flux                                           &
-     &   (node, ele, surf, sf_grp, jacobians%jac_sf_grp, rhs_tbl,       &
-     &    sf_bcs%flux, FEM_prm%npoint_t_evo_int, ak_diffuse,            &
-     &    fem_wk, f_l)
+     &   (mesh%node, mesh%ele, surf, group%surf_grp, &
+     &    jacobians%jac_sf_grp, rhs_tbl, sf_bcs%flux,                   &
+     &    FEM_prm%npoint_t_evo_int, ak_diffuse, fem_wk, f_l)
 !
       if(cmt_param%iflag_c_temp .ne. id_SGS_commute_OFF                 &
           .and. SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux                                  &
-     &     (node, ele, surf, sf_grp, nod_fld, jacobians%jac_sf_grp,     &
+     &     (mesh%node, mesh%ele, surf, &
+     &      group%surf_grp, nod_fld, jacobians%jac_sf_grp,              &
      &      rhs_tbl, FEM_elens, FEM_prm%npoint_t_evo_int,               &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
      &      SGS_param%ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,  &
@@ -238,20 +231,20 @@
 !     &   ((50+my_rank), nod_fld, n_scalar, i_field)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), ele_fld, n_vector, iphys_ele%i_velo)
-!      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
-!      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
+!      call check_ff_smp(my_rank, n_scalar, mesh%node%max_nod_smp, f_l)
+!      call check_ff_smp(my_rank, n_scalar, mesh%node%max_nod_smp, f_nl)
 !
       if (ref_param%iflag_reference .eq. id_takepiro_temp) then
         if (FEM_prm%iflag_temp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
      &       (iphys%i_gref_t, FEM_prm%npoint_t_evo_int, dt,             &
-     &        node, ele, fluid, nod_fld,                                &
+     &        mesh%node, mesh%ele, fluid, nod_fld,                      &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
      &        jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
         else
           call cal_stratified_layer                                     &
      &       (iphys%i_gref_t, FEM_prm%npoint_t_evo_int,                 &
-     &        node, ele, fluid, nod_fld,                                &
+     &        mesh%node, mesh%ele, fluid, nod_fld,                      &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
      &        jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
         end if
@@ -260,38 +253,38 @@
 !
       if (property%iflag_scheme .eq. id_explicit_euler) then
         call cal_scalar_pre_euler(FEM_prm%iflag_temp_supg, i_field, dt, &
-     &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
-     &      jacobians%jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
+     &      iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, mlump_fl,    &
+     &      mhd_fem_wk, fem_wk,  f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &     (FEM_prm%iflag_temp_supg, i_field, iphys%i_pre_heat, dt,     &
-     &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
-     &      jacobians%jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,   &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
+     &      iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, mlump_fl,    &
+     &       mhd_fem_wk, fem_wk,  f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_temp_supg,         &
      &      cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
      &      i_field, iphys%i_pre_heat, ifld_diff%i_temp,                &
-     &      ak_diffuse, FEM_prm%eps_4_temp_crank, dt,                   &
-     &      FEM_prm, nod_comm, node, ele, fluid, property, nod_bcs,     &
-     &      iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,   &
-     &      diff_coefs, mlump_fl, Smatrix, MGCG_WK%MG_vector,           &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      ak_diffuse, FEM_prm%eps_4_temp_crank, dt, FEM_prm,          &
+     &      mesh%nod_comm, mesh%node, mesh%ele, fluid, property,        &
+     &      nod_bcs, iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,     &
+     &      FEM_elens, diff_coefs, mlump_fl, Smatrix,                   &
+     &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
      &      i_field, iphys%i_pre_heat, ifld_diff%i_temp,                &
      &      ak_diffuse, FEM_prm%eps_4_temp_crank, dt, FEM_prm,          &
-     &      node, ele, fluid, property, nod_bcs, jacobians%jac_3d,      &
-     &      rhs_tbl, FEM_elens, diff_coefs, Smatrix,                    &
+     &      mesh%node, mesh%ele, fluid, property, nod_bcs,              &
+     &      jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,  &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_scalar                                          &
      &   (nod_bcs%nod_bc_s, i_field, nod_fld)
 !
-      call scalar_send_recv(i_field, nod_comm, nod_fld)
+      call scalar_send_recv(i_field, mesh%nod_comm, nod_fld)
 !
       end subroutine cal_temperature_field
 !
