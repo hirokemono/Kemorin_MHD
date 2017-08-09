@@ -76,8 +76,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'init_send_recv'
-      call init_send_recv(org_femmesh%mesh%nod_comm)
+      if (iflag_debug.eq.1) write(*,*) 'init_nod_send_recv'
+      call init_nod_send_recv(org_femmesh%mesh)
 !
 !     --------------------- 
 !
@@ -122,8 +122,7 @@
           call set_data_by_read_ucd_once(my_rank, istep,                &
      &        org_ucd_IO, nod_fld_ITP, itp_time_IO)
 !
-          call nod_fields_send_recv                                     &
-     &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
+          call nod_fields_send_recv(org_femmesh%mesh, nod_fld_ITP)
         end if
 !
 !    interpolation

@@ -87,7 +87,7 @@
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver                                   &
      &   (isix, femmesh_FUTIL%mesh%node%numnod)
-      call init_send_recv(femmesh_FUTIL%mesh%nod_comm)
+      call init_nod_send_recv(femmesh_FUTIL%mesh)
 !
 !     --------------------- 
 !

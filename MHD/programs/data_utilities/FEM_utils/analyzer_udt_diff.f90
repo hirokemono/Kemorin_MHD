@@ -88,8 +88,7 @@
 !
         call s_divide_phys_by_delta_t(time_U%time_d%dt, field_FUTIL)
 !
-        call nod_fields_send_recv                                       &
-     &     (femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
+        call nod_fields_send_recv(femmesh_FUTIL%mesh, field_FUTIL)
 !
 !    output udt data
         call link_output_ucd_file_once                                  &

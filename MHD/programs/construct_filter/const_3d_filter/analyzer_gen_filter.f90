@@ -200,7 +200,7 @@
       if(iflag_debug.eq.1)  write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(ithree, mesh_filter%node%numnod)
 !
-      call init_send_recv(mesh_filter%nod_comm)
+      call init_nod_send_recv(mesh_filter)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size(mesh_filter, ele_filter,                  &

@@ -98,8 +98,8 @@
       call allocate_vector_for_solver                                   &
      &   (isix, femmesh_STR%mesh%node%numnod)
 !
-      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv(femmesh_STR%mesh%nod_comm)
+      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
+      call init_nod_send_recv(femmesh_STR%mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos                                             &

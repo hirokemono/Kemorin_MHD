@@ -96,8 +96,7 @@
       if(visval .eq. 0) then
         call set_data_by_read_ucd                                       &
      &    (my_rank, i_step, udt_file_param, t_IO, input_ucd, field_STR)
-        call nod_fields_send_recv                                       &
-     &    (femmesh_STR%mesh%nod_comm, field_STR)
+        call nod_fields_send_recv(femmesh_STR%mesh, field_STR)
       end if
 !
       end subroutine FEM_analyze_sph_trans

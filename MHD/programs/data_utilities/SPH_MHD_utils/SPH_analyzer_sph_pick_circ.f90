@@ -98,8 +98,8 @@
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, sph1%sph_rtp%nnod_rtp)
 !
-      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv(mesh1%nod_comm)
+      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
+      call init_nod_send_recv(femmesh1%mesh)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr(sph1%sph_params,                       &

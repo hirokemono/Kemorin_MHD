@@ -82,8 +82,9 @@
      &    MHD_prop1, ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1,           &
      &    SNAP_time_IO, MHD_step%rst_step, fem_sq, label_sim)
 !
-      call output_grd_file_w_org_connect(MHD_step%ucd_step,             &
-     &    mesh1, MHD_mesh1, nod_fld1, MHD_files%ucd_file_IO, fem_ucd)
+      call output_grd_file_w_org_connect                                &
+     &   (MHD_step%ucd_step, femmesh1%mesh, MHD_mesh1, nod_fld1,        &
+     &    MHD_files%ucd_file_IO, fem_ucd)
 !
       call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !
@@ -175,7 +176,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
+      call nod_fields_send_recv(femmesh1%mesh, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
       call update_fields                                                &

@@ -98,7 +98,7 @@
      &    MHD_mesh1, layer_tbl1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,     &
      &    iphys, nod_fld1, MHD_CG1, fem_sq, label_sim)
 !
-      call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
+      call nod_fields_send_recv(femmesh1%mesh, nod_fld1)
 !
 !   obtain elemental averages
 !
@@ -164,7 +164,8 @@
 !
       SGS_par1%iflag_SGS_initial = 0
 !
-      call s_check_deltat_by_prev_rms(flex_p1, MHD_step%time_d, mesh1,  &
+      call s_check_deltat_by_prev_rms                                   &
+     &   (flex_p1, MHD_step%time_d, femmesh1%mesh,                      &
      &    MHD_mesh1, MHD_prop1%cd_prop, iphys, nod_fld1,                &
      &    fem_int1%jcs, rhs_mat1%fem_wk, flex_data1)
 !
@@ -173,11 +174,12 @@
       call end_elapsed_time(2)
       call start_elapsed_time(4)
 !
-      call output_grd_file_w_org_connect(MHD_step%ucd_step,             &
-     &    mesh1, MHD_mesh1, nod_fld1, MHD_files%ucd_file_IO, fem_ucd)
+      call output_grd_file_w_org_connect                               &
+     &   (MHD_step%ucd_step, femmesh1%mesh, MHD_mesh1, nod_fld1,       &
+     &    MHD_files%ucd_file_IO, fem_ucd)
 !
       call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
-!       call s_open_boundary_monitor(my_rank, group1%sf_grp)
+!       call s_open_boundary_monitor(my_rank, femmesh1%group%sf_grp)
       call end_elapsed_time(4)
 !
       end subroutine FEM_initialize_MHD

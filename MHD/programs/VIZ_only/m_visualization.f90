@@ -149,8 +149,8 @@
       call allocate_vector_for_solver                                   &
      &   (isix, femmesh_VIZ%mesh%node%numnod)
 !
-      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv(femmesh_VIZ%mesh%nod_comm)
+      if(iflag_debug.gt.0) write(*,*) 'init_nod_send_recv'
+      call init_nod_send_recv(femmesh_VIZ%mesh)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
       call const_element_comm_tbls(femmesh_VIZ%mesh, elemesh_VIZ)
@@ -212,8 +212,7 @@
       call copy_time_step_size_data(VIZ_time_IO, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv                                         &
-     &   (femmesh_VIZ%mesh%nod_comm, field_VIZ)
+      call nod_fields_send_recv(femmesh_VIZ%mesh, field_VIZ)
 !
       end subroutine set_field_data_4_VIZ
 !

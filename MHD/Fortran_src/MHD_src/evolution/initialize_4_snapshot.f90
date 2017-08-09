@@ -150,7 +150,7 @@
       if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(n_sym_tensor, mesh%node%numnod)
 !
-      call init_send_recv(mesh%nod_comm)
+      call init_nod_send_recv(mesh)
 !
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank, mesh, group, ele_mesh)

@@ -104,8 +104,8 @@
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, mesh%node%numnod)
 !
-      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv(mesh%nod_comm)
+      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
+      call init_nod_send_recv(mesh)
 !
 !  -----    construct geometry informations
 !
@@ -168,7 +168,7 @@
 !*  ----------- Data communication  --------------
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(mesh%nod_comm, nod_fld)
+      call nod_fields_send_recv(mesh, nod_fld)
 !
 !*  -----------  Output volume data --------------
 !*

@@ -108,7 +108,7 @@
       call allocate_cflag_collect_diff
       call allocate_vector_for_solver(ithree, test_fem%mesh%node%numnod)
 !
-      call init_send_recv(test_fem%mesh%nod_comm)
+      call init_nod_send_recv(test_fem%mesh)
 !
 !  -----    construct geometry informations
 !

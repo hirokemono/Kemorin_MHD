@@ -78,7 +78,7 @@
 !
 !     --------------------- 
 !
-      call init_send_recv(org_femmesh%mesh%nod_comm)
+      call init_nod_send_recv(org_femmesh%mesh)
 !
 !     ---------------------
 !
@@ -149,8 +149,7 @@
           call dealloc_phys_data_IO(itp_fld_IO)
 !
           call copy_time_step_data(itp_time_IO, t_ITP%init_d)
-          call nod_fields_send_recv                                     &
-     &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
+          call nod_fields_send_recv(org_femmesh%mesh, nod_fld_ITP)
         end if
 !
         call MPI_Bcast(t_ITP%init_d%time, ione, CALYPSO_REAL,           &
