@@ -7,12 +7,18 @@
 !> @brief Set mesh outline for PVR
 !!
 !!@verbatim
-!!      subroutine cal_mesh_outline_pvr(numnod, xx, outline)
+!!      subroutine pvr_mesh_outline(node, outline)
+!!        type(node_data), intent(in) :: node
+!!        type(pvr_domain_outline), intent(inout) :: outline
 !!@endverbatim
 !
       module mesh_outline_4_pvr
 !
       use m_precision
+      use m_constants
+      use m_machine_parameter
+      use calypso_mpi
+!
       use t_surf_grp_4_pvr_domain
 !
       implicit  none
@@ -21,6 +27,7 @@
       real(kind = kreal), allocatable :: xx_minmax_l(:,:,:)
       real(kind = kreal), allocatable :: xx_minmax_tbl(:,:,:)
       private :: xx_minmax_l, xx_minmax_tbl
+      private :: cal_mesh_outline_pvr
 !
 ! -----------------------------------------------------------------------
 !
@@ -28,11 +35,34 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_mesh_outline_pvr(numnod, xx, outline)
+      subroutine pvr_mesh_outline(node, outline)
 !
-      use calypso_mpi
-      use m_constants
-      use m_machine_parameter
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: node
+      type(pvr_domain_outline), intent(inout) :: outline
+!
+      allocate( xx_minmax_l(2,3,nprocs) )
+      allocate( xx_minmax_tbl(2,3,nprocs) )
+      xx_minmax_l =     0.0d0
+      xx_minmax_tbl =   0.0d0
+!
+      call cal_mesh_outline_pvr(node%numnod, node%xx, outline)
+!
+      if (iflag_debug .gt. 0) then
+        write(*,*) 'xx_min_g', outline%xx_minmax_g(1,1:3)
+        write(*,*) 'xx_max_g', outline%xx_minmax_g(2,1:3)
+        write(*,*) 'center_g', outline%center_g(1:3)
+        write(*,*) 'rmax_g', outline%rmax_g
+      end if
+!
+      deallocate(xx_minmax_l, xx_minmax_tbl)
+!
+      end subroutine pvr_mesh_outline
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_mesh_outline_pvr(numnod, xx, outline)
 !
       integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
@@ -42,11 +72,6 @@
       integer(kind = kint) :: inod, ip
       real(kind = kreal) :: rmax_l, r_from_ct
 !
-!
-      allocate( xx_minmax_l(2,3,nprocs) )
-      allocate( xx_minmax_tbl(2,3,nprocs) )
-      xx_minmax_l =     0.0d0
-      xx_minmax_tbl =   0.0d0
 !
       ip = my_rank + 1
 !
@@ -101,15 +126,6 @@
 !
       call MPI_allREDUCE( rmax_l, outline%rmax_g, ione,                 &
      &    CALYPSO_REAL,  MPI_MAX, CALYPSO_COMM, ierr_MPI)
-!
-      if (iflag_debug .gt. 0) then
-        write(*,*) 'xx_min_g', outline%xx_minmax_g(1,1:3)
-        write(*,*) 'xx_max_g', outline%xx_minmax_g(2,1:3)
-        write(*,*) 'center_g', outline%center_g(1:3)
-        write(*,*) 'rmax_g', outline%rmax_g
-      end if
-!
-      deallocate(xx_minmax_l, xx_minmax_tbl)
 !
       end subroutine cal_mesh_outline_pvr
 !

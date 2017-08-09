@@ -171,8 +171,7 @@
       call deallocate_imark_4_surface
 !
       do i_pvr = 1, num_pvr
-        call cal_mesh_outline_pvr                                       &
-     &     (node%numnod, node%xx, pvr_param(i_pvr)%outline)
+        call pvr_mesh_outline(node, pvr_param(i_pvr)%outline)
         call check_pvr_parameters(pvr_param(i_pvr)%outline,             &
      &      pvr_data(i_pvr)%view, pvr_data(i_pvr)%color,                &
      &      pvr_data(i_pvr)%screen)
@@ -191,7 +190,7 @@
 !        call set_pvr_orthogonal_params(i_pvr, pvr_data(i_pvr)%view)
 !
         call alloc_projected_position                                   &
-     &     (node%numnod, surf%numsurf, pvr_data(i_pvr)%screen)
+     &     (node, surf, pvr_data(i_pvr)%screen)
 !
         if(pvr_data(i_pvr)%view%iflag_rotate_snap .eq. 0) then
           if(pvr_data(i_pvr)%view%iflag_stereo_pvr .eq. 0) then

@@ -8,6 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine alloc_projected_position(nnod, nsurf, pvr_screen)
+!!        type(node_data), intent(in) :: node
+!!        type(surface_data), intent(in) :: surf
 !!      subroutine dealloc_projected_position(pvr_screen)
 !!      subroutine copy_projected_position(pvr_scr_org, pvr_screen)
 !!
@@ -114,17 +116,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_projected_position(nnod, nsurf, pvr_screen)
+      subroutine alloc_projected_position(node, surf, pvr_screen)
 !
-      integer(kind = kint), intent(in) :: nnod, nsurf
+      use t_geometry_data
+      use t_surface_data
+!
+      type(node_data), intent(in) :: node
+      type(surface_data), intent(in) :: surf
       type(pvr_projected_data), intent(inout) :: pvr_screen
 !
 !
-      pvr_screen%nnod_screen = nnod
+      pvr_screen%nnod_screen = node%numnod
       allocate(pvr_screen%x_nod_model(pvr_screen%nnod_screen,4))
       if(pvr_screen%nnod_screen .gt. 0) pvr_screen%x_nod_model =  0.0d0
 !
-      pvr_screen%nsurf_screen = nsurf
+      pvr_screen%nsurf_screen = surf%numsurf
       allocate(pvr_screen%arccos_sf(pvr_screen%nsurf_screen))
       if(pvr_screen%nsurf_screen .gt. 0) pvr_screen%arccos_sf = 0.0d0
 !
