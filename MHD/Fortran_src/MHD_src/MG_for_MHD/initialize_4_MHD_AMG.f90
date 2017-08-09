@@ -4,12 +4,11 @@
 !        programmed H.Matsui on Dec., 2008
 !
 !!      subroutine s_initialize_4_MHD_AMG                               &
-!!     &         (dt, FEM_prm, node_1st, ele_1st, ifld_diff, diff_coefs,&
+!!     &         (dt, FEM_prm, mesh_1st, ele_1st, ifld_diff, diff_coefs,&
 !!     &          MHD_prop, MHD_BC, DJDS_param, MGCG_WK,                &
 !!     &          MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-!!        type(node_data), intent(inout) :: node_1st
-!!        type(element_data), intent(inout) :: ele_1st
+!!        type(mesh_geometry), intent(inout) :: mesh_1st
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -52,11 +51,11 @@
 ! ---------------------------------------------------------------------
 !
       subroutine s_initialize_4_MHD_AMG                                 &
-     &         (dt, FEM_prm, node_1st, ele_1st, ifld_diff, diff_coefs,  &
+     &         (dt, FEM_prm, mesh_1st, ifld_diff, diff_coefs,           &
      &          MHD_prop, MHD_BC, DJDS_param, MGCG_WK,                  &
      &          MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !
-      use t_geometry_data
+      use t_mesh_data
       use t_edge_data
       use t_surface_data
       use t_bc_data_MHD
@@ -88,9 +87,8 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MHD_BC_lists), intent(in) :: MHD_BC
       type(DJDS_poarameter), intent(in) :: DJDS_param
+      type(mesh_geometry), intent(in) :: mesh_1st
 !
-      type(node_data), intent(inout) :: node_1st
-      type(element_data), intent(inout) :: ele_1st
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
@@ -104,7 +102,7 @@
       if (iflag_debug .gt. 0) write(*,*) 'alloc_iccgN_vec_type'
       MGCG_WK%MG_vector(0)%isize_solver_vect = -1
       call alloc_iccgN_vec_type                                         &
-     &   (isix, node_1st%numnod,  MGCG_WK%MG_vector(0))
+     &   (isix, mesh_1st%node%numnod,  MGCG_WK%MG_vector(0))
 !
 !     --------------------- 
 !
@@ -228,7 +226,7 @@
       if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
       call s_link_MG_MHD_mesh_data                                      &
      &   (MGCG_WK, MGCG_FEM%MG_mesh, MGCG_MHD_FEM%MG_MHD_mesh,          &
-     &    ele_1st, MHD_mat)
+     &    mesh_1st%ele, MHD_mat)
 !
 !     --------------------- 
 !

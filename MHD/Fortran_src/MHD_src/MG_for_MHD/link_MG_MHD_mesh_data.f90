@@ -10,7 +10,7 @@
 !!     &                    :: MG_mesh(MGCG_WK%num_MG_level)
 !!        type(mesh_data_MHD), intent(in), target                       &
 !!     &                    :: MG_MHD_mesh(MGCG_WK%num_MG_level)
-!!        type(element_data), intent(inout) :: ele_1st
+!!        type(element_data), intent(in) :: ele_1st
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
       module link_MG_MHD_mesh_data
@@ -41,7 +41,7 @@
      &                    :: MG_mesh(MGCG_WK%num_MG_level)
       type(mesh_data_MHD), intent(in), target                           &
      &                    :: MG_MHD_mesh(MGCG_WK%num_MG_level)
-      type(element_data), intent(inout) :: ele_1st
+      type(element_data), intent(in) :: ele_1st
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
       integer(kind = kint) :: i_level
 !

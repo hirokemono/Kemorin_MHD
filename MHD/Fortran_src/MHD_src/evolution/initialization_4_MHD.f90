@@ -353,8 +353,7 @@
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG                                     &
-     &     (MHD_step%time_d%dt, FEM_prm, mesh%node, mesh%ele,           &
+        call s_initialize_4_MHD_AMG(MHD_step%time_d%dt, FEM_prm, mesh,  &
      &      Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs,          &
      &      MHD_prop, MHD_BC1, FEM_prm%DJDS_param, MHD_CG%MGCG_WK,      &
      &      MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM, MHD_CG%MHD_mat)
