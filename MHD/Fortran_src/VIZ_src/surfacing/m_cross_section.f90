@@ -9,22 +9,15 @@
 !!
 !!@verbatim
 !!      subroutine SECTIONING_initialize                                &
-!!     &         (node, ele, surf, edge, nod_comm, edge_comm,           &
-!!     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
-!!      subroutine SECTIONING_visualize(istep_psf, time_d, edge, nod_fld)
+!!     &         (mesh, group, ele_mesh, nod_fld)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
+!!        type(element_geometry), intent(in) :: ele_mesh
+!!        type(phys_data), intent(in) :: nod_fld
+!!      subroutine SECTIONING_visualize                                 &
+!!     &         (istep_psf, time_d, ele_mesh, nod_fld)
 !!        type(time_data), intent(in) :: time_d
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(surface_data), intent(in) :: surf
-!!        type(edge_data), intent(in) :: edge
-!!
-!!        type(communication_table), intent(in) :: nod_comm
-!!        type(communication_table), intent(in) :: edge_comm
-!!
-!!        type(group_data), intent(in) :: ele_grp
-!!        type(surface_group_data), intent(in) :: sf_grp
-!!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
-!!
+!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!      subroutine dealloc_psf_field_type
 !!@endverbatim
@@ -46,13 +39,7 @@
       use t_psf_patch_data
       use t_ucd_data
 !
-      use t_comm_table
-      use t_geometry_data
-      use t_surface_data
-      use t_edge_data
-      use t_group_data
       use t_surface_group_connect
-      use t_time_data
       use t_file_IO_parameter
 !
       implicit  none
@@ -88,8 +75,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine SECTIONING_initialize                                  &
-     &         (node, ele, surf, edge, nod_comm, edge_comm,             &
-     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
+     &         (mesh, group, ele_mesh, nod_fld)
 !
       use m_geometry_constants
       use m_control_data_sections
@@ -103,18 +89,9 @@
       use set_fields_for_psf
       use output_4_psf
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(communication_table), intent(in) :: edge_comm
-!
-      type(group_data), intent(in) :: ele_grp
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_node_grp_data), intent(in) :: sf_grp_nod
-!
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
+      type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
 !
       integer(kind = kint) :: i_psf
@@ -135,30 +112,30 @@
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_psf_control'
-      call set_psf_control                                              &
-     &   (num_psf, ele_grp, sf_grp, nod_fld, psf_param, psf_mesh)
+      call set_psf_control(num_psf, group%ele_grp, group%surf_grp,      &
+     &    nod_fld, psf_param, psf_mesh)
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
       call set_search_mesh_list_4_psf                                   &
-     &   (num_psf, node, ele, surf, edge,                               &
-     &    ele_grp, psf_param, psf_search)
+     &   (num_psf, mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,   &
+     &    group%ele_grp, psf_param, psf_search)
 !
 !
       do i_psf = 1, num_psf
         call allocate_node_param_smp_type(psf_mesh(i_psf)%node)
         call allocate_ele_param_smp_type(psf_mesh(i_psf)%patch)
 !
-        call alloc_ref_field_4_psf(node%numnod, psf_list(i_psf))
+        call alloc_ref_field_4_psf(mesh%node%numnod, psf_list(i_psf))
       end do
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_crossections'
-      call set_const_4_crossections(num_psf, node, psf_list)
+      call set_const_4_crossections(num_psf, mesh%node, psf_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
       call set_node_and_patch_psf                                       &
-     &   (num_psf, node, ele, edge,                                     &
-     &    nod_comm, edge_comm, sf_grp, sf_grp_nod,                      &
+     &   (num_psf, mesh%node, mesh%ele, ele_mesh%edge, mesh%nod_comm,   &
+     &    ele_mesh%edge_comm, group%surf_grp, group%surf_nod_grp,       &
      &    psf_search, psf_list, psf_grp_list, psf_mesh)
 !
       call alloc_psf_field_data(num_psf, psf_mesh)
@@ -173,7 +150,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SECTIONING_visualize(istep_psf, time_d, edge, nod_fld)
+      subroutine SECTIONING_visualize                                   &
+     &         (istep_psf, time_d, ele_mesh, nod_fld)
 !
       use m_control_params_4_psf
       use set_fields_for_psf
@@ -183,14 +161,14 @@
       integer(kind = kint), intent(in) :: istep_psf
 !
       type(time_data), intent(in) :: time_d
-      type(edge_data), intent(in) :: edge
+      type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
 !
 !
       if (num_psf.le.0 .or. istep_psf.le.0) return
 !
 !      call start_elapsed_time(20)
-      call set_field_4_psf(num_psf, edge, nod_fld,                      &
+      call set_field_4_psf(num_psf, ele_mesh%edge, nod_fld,             &
      &    psf_param, psf_list, psf_grp_list, psf_mesh)
 !      call end_elapsed_time(20)
 !

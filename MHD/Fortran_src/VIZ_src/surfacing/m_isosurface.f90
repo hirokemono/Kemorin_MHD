@@ -8,17 +8,17 @@
 !>@brief Structure for isosurfacing
 !!
 !!@verbatim
-!!      subroutine ISOSURF_initialize                                   &
-!!     &         (node, ele, surf, edge, ele_grp, nod_fld)
+!!      subroutine ISOSURF_initialize(mesh, group, ele_mesh, nod_fld)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
+!!        type(element_geometry), intent(in) :: ele_mesh
+!!
+!!        type(phys_data), intent(in) :: nod_fld
 !!      subroutine ISOSURF_visualize                                    &
-!!     &         (istep_iso, time_d, node, ele, edge, edge_comm, nod_fld)
+!!     &         (istep_iso, time_d, mesh, ele_mesh, nod_fld)
 !!        type(time_data), intent(in) :: time_d
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(surface_data), intent(in) :: surf
-!!        type(edge_data), intent(in) :: edge
-!!        type(group_data), intent(in) :: ele_grp
-!!        type(communication_table), intent(in) :: edge_comm
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!
 !!      subroutine dealloc_iso_field_type
@@ -69,28 +69,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine ISOSURF_initialize                                     &
-     &         (node, ele, surf, edge, ele_grp, nod_fld)
+      subroutine ISOSURF_initialize(mesh, group, ele_mesh, nod_fld)
 !
       use m_geometry_constants
       use m_control_data_sections
       use m_control_params_4_iso
 !
-      use t_geometry_data
-      use t_surface_data
-      use t_edge_data
-      use t_group_data
-      use t_phys_data
-!
       use set_psf_iso_control
       use search_ele_list_for_psf
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
+      type(element_geometry), intent(in) :: ele_mesh
 !
-      type(group_data), intent(in) :: ele_grp
       type(phys_data), intent(in) :: nod_fld
 !
       integer(kind = kint) :: i_iso
@@ -103,18 +94,18 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
       call set_iso_control                                              &
-     &   (num_iso, ele_grp, nod_fld, iso_param, iso_mesh)
+     &   (num_iso, group%ele_grp, nod_fld, iso_param, iso_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
       call set_search_mesh_list_4_psf                                   &
-     &   (num_iso, node, ele, surf, edge, ele_grp,                      &
-     &    iso_param, iso_search)
+     &   (num_iso, mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,   &
+     &    group%ele_grp, iso_param, iso_search)
 !
       do i_iso = 1, num_iso
         call allocate_node_param_smp_type(iso_mesh(i_iso)%node)
         call allocate_ele_param_smp_type(iso_mesh(i_iso)%patch)
 !
-        call alloc_ref_field_4_psf(node%numnod, iso_list(i_iso))
+        call alloc_ref_field_4_psf(mesh%node%numnod, iso_list(i_iso))
       end do
 !
       end subroutine ISOSURF_initialize
@@ -123,15 +114,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ISOSURF_visualize                                      &
-     &         (istep_iso, time_d, node, ele, edge, edge_comm, nod_fld)
+     &         (istep_iso, time_d, mesh, ele_mesh, nod_fld)
 !
 !
       use m_geometry_constants
       use m_control_params_4_iso
       use t_time_data
-      use t_comm_table
-      use t_edge_data
-      use t_phys_data
       use t_ucd_data
 !
       use set_const_4_sections
@@ -142,10 +130,8 @@
       integer(kind = kint), intent(in) :: istep_iso
 !
       type(time_data), intent(in) :: time_d
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(edge_data), intent(in) :: edge
-      type(communication_table), intent(in) :: edge_comm
+      type(mesh_geometry), intent(in) :: mesh
+      type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
 !
 !
@@ -153,16 +139,16 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_isosurfaces'
       call set_const_4_isosurfaces                                      &
-     &   (num_iso, node, nod_fld, iso_list)
+     &   (num_iso, mesh%node, nod_fld, iso_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso                                       &
-     &   (num_iso, node, ele, edge,                                     &
-     &    edge_comm, iso_search, iso_list, iso_mesh)
+     &   (num_iso, mesh%node, mesh%ele, ele_mesh%edge,                  &
+     &    ele_mesh%edge_comm, iso_search, iso_list, iso_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
       call alloc_psf_field_data(num_iso, iso_mesh)
-      call set_field_4_iso(num_iso, edge, nod_fld,                      &
+      call set_field_4_iso(num_iso, ele_mesh%edge, nod_fld,             &
      &    iso_param, iso_list, iso_mesh)
 !
       call output_isosurface(num_iso, iso_file_IO, istep_iso,           &

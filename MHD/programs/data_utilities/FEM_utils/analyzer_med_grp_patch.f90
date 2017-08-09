@@ -151,11 +151,8 @@
 !
       call set_sectioning_case_table
       call SECTIONING_initialize                                        &
-     &   (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele,              &
-     &    elemesh_FUTIL%surf, elemesh_FUTIL%edge,                       &
-     &    femmesh_FUTIL%mesh%nod_comm, elemesh_FUTIL%edge_comm,         &
-     &    femmesh_FUTIL%group%ele_grp, femmesh_FUTIL%group%surf_grp,    &
-     &    femmesh_FUTIL%group%surf_nod_grp, field_FUTIL)
+     &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group, elemesh_FUTIL,       &
+     &    field_FUTIL)
 !
       end subroutine analyze_med_grp_patch
 !
