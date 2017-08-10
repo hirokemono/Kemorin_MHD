@@ -10,8 +10,8 @@
 !!     &          iak_sgs_hlux, icomp_sgs_flux, ie_dvx, ie_dfvx,        &
 !!     &          SGS_par, mesh, iphys, iphys_ele, ele_fld, fluid,      &
 !!     &          layer_tbl, jacobians, rhs_tbl, FEM_elens, filtering,  &
-!!     &          sgs_coefs_nod, mlump_fl, wk_filter, wk_cor, wk_lsq,   &
-!!     &          wk_sgs, mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
+!!     &          sgs_coefs_nod, mlump_fl, FEM_SGS_wk,                  &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, sgs_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_address), intent(in) :: iphys
@@ -25,13 +25,9 @@
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type (lumped_mass_matrices), intent(in) :: mlump_fl
-!!        type(filtering_work_type), intent(inout) :: wk_filter
-!!        type(dynamic_correlation_data), intent(inout) :: wk_cor
-!!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!!        type(finite_ele_mat_node), intent(inout) :: f_l
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
@@ -47,17 +43,15 @@
       use t_geometry_data_MHD
       use t_phys_data
       use t_phys_address
-      use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
-      use t_ele_info_4_dynamic
-      use t_work_4_dynamic_model
-      use t_work_layer_correlate
       use t_material_property
       use t_SGS_model_coefs
+      use t_work_FEM_integration
+      use t_work_FEM_dynamic_SGS
 !
       implicit none
 !
@@ -73,8 +67,8 @@
      &          iak_sgs_hlux, icomp_sgs_flux, ie_dvx, ie_dfvx,          &
      &          SGS_par, mesh, iphys, iphys_ele, ele_fld, fluid,        &
      &          layer_tbl, jacobians, rhs_tbl, FEM_elens, filtering,    &
-     &          sgs_coefs_nod, mlump_fl, wk_filter, wk_cor, wk_lsq,     &
-     &          wk_sgs, mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
+     &          sgs_coefs_nod, mlump_fl, FEM_SGS_wk,                    &
+     &          mhd_fem_wk, rhs_mat, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -110,13 +104,9 @@
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
-      type(filtering_work_type), intent(inout) :: wk_filter
-      type(dynamic_correlation_data), intent(inout) :: wk_cor
-      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
-      type(dynamic_model_data), intent(inout) :: wk_sgs
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
@@ -132,7 +122,7 @@
       call cal_sgs_sf_simi                                              &
      &   (i_sgs, ifield, ifield_f, ivelo, ivelo_f, icomp_sgs_flux,      &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
-     &    filtering, sgs_coefs_nod, wk_filter, nod_fld)
+     &    filtering, sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld)
 !
 !    copy to work array
 !
@@ -146,7 +136,7 @@
      &    iphys%i_sgs_grad_f, ifield_f, ie_dfvx,                        &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
      &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
-     &    mlump_fl, mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &    mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
 !
 !   gradient model by original field
 !
@@ -155,13 +145,13 @@
      &    ifilter_2delta, i_sgs, ifield, ie_dvx,                        &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
      &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
-     &    mlump_fl, mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &    mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
 !
 !      filtering
 !
       call cal_filtered_vector_whole                                    &
      &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,        &
-     &    iphys%i_sgs_grad, i_sgs, wk_filter, nod_fld)
+     &    iphys%i_sgs_grad, i_sgs, FEM_SGS_wk%wk_filter, nod_fld)
 !
 !   Change coordinate
 !
@@ -175,11 +165,11 @@
       call cal_model_coefs(SGS_par, layer_tbl, mesh%node, mesh%ele,     &
      &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux, icomp_sgs_flux,      &
-     &    num_int, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
+     &    num_int, FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
+     &    FEM_SGS_wk%wk_sgs, sgs_coefs)
 !
-      call reduce_model_coefs_layer(SGS_flux_factor,                    &
-     &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_hlux,                &
-     &    wk_sgs%fld_clip, wk_sgs%fld_whole_clip)
+      call reduce_model_coefs_layer                                     &
+     &   (SGS_flux_factor, iak_sgs_hlux, FEM_SGS_wk%wk_sgs)
       call reduce_ele_vect_model_coefs(mesh%ele, SGS_flux_factor,       &
      &    sgs_coefs%ntot_comp, icomp_sgs_flux, sgs_coefs%ak)
 !

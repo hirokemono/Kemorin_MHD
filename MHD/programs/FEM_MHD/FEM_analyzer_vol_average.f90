@@ -74,7 +74,7 @@
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
      &    layer_tbl1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,                &
      &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step,             &
-     &    fem_sq, label_sim)
+     &    fem_sq, FEM_SGS_wk, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
@@ -147,7 +147,7 @@
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
      &      iphys, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,         &
      &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
-     &      rhs_mat1%fem_wk, mhd_fem1_wk, fem_sq%msq)
+     &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
       end if
 !
       end subroutine FEM_analyze_vol_average

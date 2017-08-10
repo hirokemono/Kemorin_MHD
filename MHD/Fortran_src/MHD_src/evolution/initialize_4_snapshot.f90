@@ -6,7 +6,8 @@
 !!      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,    &
 !!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
 !!     &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,           &
-!!     &          iphys, nod_fld, t_IO, rst_step, fem_sq, label_sim)
+!!     &          iphys, nod_fld, t_IO, rst_step, fem_sq, FEM_SGS_wk,   &
+!!     &          label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -50,6 +51,7 @@
       use t_FEM_SGS_model_coefs
       use t_material_property
       use t_FEM_MHD_mean_square
+      use t_work_FEM_dynamic_SGS
 !
       implicit none
 !
@@ -62,11 +64,11 @@
       subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,      &
      &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
      &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,             &
-     &          iphys, nod_fld, t_IO, rst_step, fem_sq, label_sim)
+     &          iphys, nod_fld, t_IO, rst_step, fem_sq, FEM_SGS_wk,     &
+     &          label_sim)
 !
       use m_fem_mhd_restart
 !
-      use m_work_4_dynamic_model
       use m_boundary_condition_IDs
       use m_array_for_send_recv
       use m_finite_element_matrix
@@ -122,6 +124,7 @@
       type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: rst_step
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       character(len=kchara), intent(inout)   :: label_sim
 !
       integer(kind = kint) :: iflag
@@ -139,9 +142,7 @@
       if (SGS_par%model_p%iflag_dynamic  .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
         call const_layers_4_dynamic(group%ele_grp, layer_tbl)
-        call alloc_work_4_dynamic(layer_tbl%e_grp%num_grp, wk_lsq1)
-        call alloc_work_layer_correlate                                 &
-     &     (layer_tbl%e_grp%num_grp, inine, wk_cor1)
+        call alloc_work_FEM_dynamic(layer_tbl, FEM_SGS_wk)
       end if
 !
 !
@@ -227,13 +228,13 @@
 !
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele,                            &
-     &    SGS_par%model_p, layer_tbl, MHD_prop,                         &
-     &    Csims_FEM_MHD%ifld_sgs, Csims_FEM_MHD%icomp_sgs, wk_sgs1,     &
+     &    SGS_par%model_p, layer_tbl, MHD_prop, Csims_FEM_MHD%ifld_sgs, &
+     &    Csims_FEM_MHD%icomp_sgs, FEM_SGS_wk%wk_sgs,                   &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
       call define_sgs_diff_coefs(mesh%ele%numele,                       &
      &    SGS_par%model_p, SGS_par%commute_p, layer_tbl, MHD_prop,      &
      &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,            &
-     &    wk_diff1, Csims_FEM_MHD%diff_coefs)
+     &    FEM_SGS_wk%wk_diff, Csims_FEM_MHD%diff_coefs)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
       call deallocate_edge_geom_type(ele_mesh%edge)

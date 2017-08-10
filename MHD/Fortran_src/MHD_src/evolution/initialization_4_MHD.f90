@@ -6,7 +6,7 @@
 !!      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par, &
 !!     &          flex_p, flex_data, MHD_step, mesh, group, ele_mesh,   &
 !!     &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD, &
-!!     &          iphys, nod_fld, MHD_CG, fem_sq, label_sim)
+!!     &          iphys, nod_fld, MHD_CG, FEM_SGS_wk, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -24,6 +24,7 @@
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
+!!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       module initialization_4_MHD
@@ -42,7 +43,6 @@
       use t_mesh_data
       use t_geometry_data_MHD
       use t_layering_ele_list
-      use t_work_layer_correlate
       use t_MHD_file_parameter
       use t_boundary_field_IO
       use t_FEM_SGS_model_coefs
@@ -50,6 +50,7 @@
       use t_flex_delta_t_data
       use t_FEM_MHD_mean_square
       use t_FEM_MHD_solvers
+      use t_work_FEM_dynamic_SGS
 !
       implicit none
 !
@@ -62,12 +63,11 @@
       subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par,   &
      &          flex_p, flex_data, MHD_step, mesh, group, ele_mesh,     &
      &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,   &
-     &          iphys, nod_fld, MHD_CG, fem_sq, label_sim)
+     &          iphys, nod_fld, MHD_CG, FEM_SGS_wk, fem_sq, label_sim)
 !
       use m_flexible_time_step
 !
       use m_finite_element_matrix
-      use m_work_4_dynamic_model
       use m_boundary_condition_IDs
       use m_flags_4_solvers
       use m_array_for_send_recv
@@ -133,6 +133,7 @@
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       character(len=kchara), intent(inout)   :: label_sim
 !
       integer(kind = kint) :: iflag
@@ -152,9 +153,7 @@
 !
       if (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call const_layers_4_dynamic(group%ele_grp, layer_tbl)
-        call alloc_work_4_dynamic(layer_tbl%e_grp%num_grp, wk_lsq1)
-        call alloc_work_layer_correlate                                 &
-     &     (layer_tbl%e_grp%num_grp, inine, wk_cor1)
+        call alloc_work_FEM_dynamic(layer_tbl, FEM_SGS_wk)
       end if
 !
 !     ---------------------
@@ -248,13 +247,13 @@
 !
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele,                            &
-     &    SGS_par%model_p, layer_tbl, MHD_prop,                         &
-     &    Csims_FEM_MHD%ifld_sgs, Csims_FEM_MHD%icomp_sgs, wk_sgs1,     &
+     &    SGS_par%model_p, layer_tbl, MHD_prop, Csims_FEM_MHD%ifld_sgs, &
+     &    Csims_FEM_MHD%icomp_sgs, FEM_SGS_wk%wk_sgs,                   &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
       call define_sgs_diff_coefs(mesh%ele%numele,                       &
      &    SGS_par%model_p, SGS_par%commute_p, layer_tbl, MHD_prop,      &
      &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,            &
-     &    wk_diff1, Csims_FEM_MHD%diff_coefs)
+     &    FEM_SGS_wk%wk_diff, Csims_FEM_MHD%diff_coefs)
 !
 !  -------------------------------
 !
@@ -275,10 +274,10 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
-      call initial_data_control                                         &
-     &   (MHD_files, MHD_step%rst_step, MHD_prop%ref_param_T,           &
-     &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_prop%cd_prop,        &
-     &    iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,                 &
+      call initial_data_control(MHD_files, MHD_step%rst_step,           &
+     &    MHD_prop%ref_param_T, mesh%node, mesh%ele,                    &
+     &    MHD_mesh%fluid, MHD_prop%cd_prop, iphys, layer_tbl,           &
+     &    SGS_par, FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_diff,               &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs,            &
      &    nod_fld, flex_p, MHD_step%init_d, MHD_step%time_d)
       MHD_step%iflag_initial_step = 0

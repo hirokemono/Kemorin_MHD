@@ -12,14 +12,14 @@
 !!@verbatim
 !!      subroutine output_MHD_restart_file_ctl                          &
 !!     &         (SGS_par, MHD_files, time_d, rst_step, mesh, iphys,    &
-!!     &          wk_sgs, wk_diff, nod_fld)
+!!     &          FEM_SGS_wk, nod_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_address), intent(in) :: iphys
-!!        type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
+!!        type(work_FEM_dynamic_SGS), intent(in) :: FEM_SGS_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !!
 !!      subroutine input_MHD_restart_file_ctl(MHD_files, rst_step,      &
@@ -54,6 +54,7 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_flex_delta_t_data
+      use t_work_FEM_dynamic_SGS
       use t_MHD_file_parameter
       use t_IO_step_parameter
 !
@@ -67,7 +68,7 @@
 !
       subroutine output_MHD_restart_file_ctl                            &
      &         (SGS_par, MHD_files, time_d, rst_step, mesh, iphys,      &
-     &          wk_sgs, wk_diff, nod_fld)
+     &          FEM_SGS_wk, nod_fld)
 !
       use m_fem_mhd_restart
       use sgs_ini_model_coefs_IO
@@ -78,7 +79,7 @@
       type(IO_step_param), intent(in) :: rst_step
       type(mesh_geometry), intent(in) :: mesh
       type(phys_address), intent(in) :: iphys
-      type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
+      type(work_FEM_dynamic_SGS), intent(in) :: FEM_SGS_wk
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -89,7 +90,7 @@
       call write_FEM_Csim_file(SGS_par%i_step_sgs_coefs,                &
      &    MHD_files%Csim_file_IO, MHD_files%Cdiff_file_IO,              &
      &    time_d, rst_step, SGS_par%model_p, SGS_par%commute_p,         &
-     &    wk_sgs, wk_diff)
+     &    FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_diff)
 !
       end subroutine output_MHD_restart_file_ctl
 !

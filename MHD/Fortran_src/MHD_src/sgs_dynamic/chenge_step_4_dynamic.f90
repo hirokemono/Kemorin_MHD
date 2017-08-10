@@ -5,15 +5,11 @@
 !
 !!      subroutine s_chenge_step_4_dynamic                              &
 !!     &         (my_rank, i_step_MHD, SGS_param, cmt_param,            &
-!!     &          i_step_sgs_coefs, wk_sgs, wk_diff)
-!!      subroutine copy_model_coef_2_previous(cmt_param,                &
-!!     &          nlayer_SGS, num_sgs_kind,  sgs_f_coef,                &
-!!     &          nlayer_diff, num_diff_kind, diff_f_coef, diff_f_whole,&
-!!     &          coef_sgs_p, coef_diff_p, coef_diff_wp)
+!!     &          i_step_sgs_coefs, FEM_SGS_wk)
+!!      subroutine copy_model_coef_2_previous(cmt_param, FEM_SGS_wk)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!        type(dynamic_model_data), intent(inout) :: wk_diff
+!!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !
       module chenge_step_4_dynamic
 !
@@ -29,7 +25,8 @@
 !
       private :: sgs_diff_max_code, sgs_diff_max_name
 !
-      private :: find_maximum_model_ceoefs
+      private :: find_maximum_model_coefs
+      private :: find_maximum_Csim, copy_Csim_2_previous
 !
 !-----------------------------------------------------------------------
 !
@@ -58,9 +55,9 @@
 !
       subroutine s_chenge_step_4_dynamic                                &
      &         (my_rank, i_step_MHD, SGS_param, cmt_param,              &
-     &          i_step_sgs_coefs, wk_sgs, wk_diff)
+     &          i_step_sgs_coefs, FEM_SGS_wk)
 !
-      use t_ele_info_4_dynamic
+      use t_work_FEM_dynamic_SGS
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -68,7 +65,7 @@
       integer(kind=kint), intent(in) :: i_step_MHD
 !
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
-      type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !
       real(kind = kreal) ::  diff_max
 !
@@ -76,18 +73,10 @@
       if(mod(i_step_MHD, i_step_sgs_coefs) .eq. 0) then
         call open_sgs_diff_monitor(my_rank)
 !
-        call find_maximum_model_ceoefs(cmt_param,                       &
-     &      wk_sgs%nlayer, wk_sgs%num_kinds,                            &
-     &      wk_sgs%fld_coef, wk_sgs%coef_p,                             &
-     &      wk_diff%nlayer, wk_diff%num_kinds,                          &
-     &      wk_diff%fld_coef, wk_diff%fld_whole,                        &
-     &      wk_diff%coef_p, wk_diff%coef_wp, diff_max)
+        call find_maximum_model_coefs                                   &
+     &     (cmt_param, FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_diff, diff_max)
 !
-        call copy_model_coef_2_previous(cmt_param,                      &
-     &      wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%fld_coef,           &
-     &      wk_diff%nlayer, wk_diff%num_kinds,                          &
-     &      wk_diff%fld_coef, wk_diff%fld_whole,                        &
-     &      wk_sgs%coef_p, wk_diff%coef_p, wk_diff%coef_wp)
+        call copy_model_coef_2_previous(cmt_param, FEM_SGS_wk)
 !
         if (my_rank .eq. 0) write(sgs_diff_max_code,*)                  &
      &    'difference from previous step: ', i_step_MHD, diff_max
@@ -154,7 +143,49 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine find_maximum_model_ceoefs(cmt_param,                   &
+      subroutine copy_model_coef_2_previous(cmt_param, FEM_SGS_wk)
+!
+      use t_work_FEM_dynamic_SGS
+!
+      type(commutation_control_params), intent(in) :: cmt_param
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
+!
+!
+      call copy_Csim_2_previous(cmt_param, FEM_SGS_wk%wk_sgs%nlayer,    &
+     &    FEM_SGS_wk%wk_sgs%num_kinds, FEM_SGS_wk%wk_sgs%fld_coef,      &
+     &    FEM_SGS_wk%wk_diff%nlayer, FEM_SGS_wk%wk_diff%num_kinds,      &
+     &    FEM_SGS_wk%wk_diff%fld_coef, FEM_SGS_wk%wk_diff%fld_whole,    &
+     &    FEM_SGS_wk%wk_sgs%coef_p, FEM_SGS_wk%wk_diff%coef_p,          &
+     &    FEM_SGS_wk%wk_diff%coef_wp)
+!
+      end subroutine copy_model_coef_2_previous
+!
+!-----------------------------------------------------------------------
+!
+      subroutine find_maximum_model_coefs                               &
+     &         (cmt_param, wk_sgs, wk_diff, diff_max)
+!
+      use t_ele_info_4_dynamic
+!
+      type(commutation_control_params), intent(in) :: cmt_param
+      type(dynamic_model_data), intent(inout) :: wk_sgs
+      type(dynamic_model_data), intent(inout) :: wk_diff
+!
+      real(kind = kreal), intent(inout) :: diff_max
+!
+      call find_maximum_Csim(cmt_param,                                 &
+     &      wk_sgs%nlayer, wk_sgs%num_kinds,                            &
+     &      wk_sgs%fld_coef, wk_sgs%coef_p,                             &
+     &      wk_diff%nlayer, wk_diff%num_kinds,                          &
+     &      wk_diff%fld_coef, wk_diff%fld_whole,                        &
+     &      wk_diff%coef_p, wk_diff%coef_wp, diff_max)
+!
+      end subroutine find_maximum_model_coefs
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine find_maximum_Csim(cmt_param,                           &
      &          nlayer_sgs, num_sgs_kind, sgs_f_coef, coef_sgs_p,       &
      &          nlayer_diff, num_diff_kind, diff_f_coef, diff_f_whole,  &
      &          coef_diff_p, coef_diff_wp, diff_max)
@@ -206,11 +237,11 @@
         end if
       end if
 !
-      end subroutine find_maximum_model_ceoefs
+      end subroutine find_maximum_Csim
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_model_coef_2_previous(cmt_param,                  &
+      subroutine copy_Csim_2_previous(cmt_param,                        &
      &          nlayer_SGS, num_sgs_kind,  sgs_f_coef,                  &
      &          nlayer_diff, num_diff_kind, diff_f_coef, diff_f_whole,  &
      &          coef_sgs_p, coef_diff_p, coef_diff_wp)
@@ -254,7 +285,7 @@
         end if
       end if
 !
-      end subroutine copy_model_coef_2_previous
+      end subroutine copy_Csim_2_previous
 !
 !-----------------------------------------------------------------------
 !

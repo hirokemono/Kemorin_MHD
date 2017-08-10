@@ -3,8 +3,8 @@
 !
 !     Modified by H. Matsui on June., 2012
 !
-!!      subroutine reduce_model_coefs_layer(SGS_factor, n_layer_d,      &
-!!     &          num_kinds, iak_sgs, coef, coef_w)
+!!      subroutine reduce_model_coefs_layer(SGS_factor, iak_sgs, wk_sgs)
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!      subroutine reduce_ele_vect_model_coefs                          &
 !!     &         (ele, SGS_factor, ntot_comp_ele, ifield_ele, ak_sgs)
 !!      subroutine reduce_ele_tensor_model_coefs                        &
@@ -20,13 +20,34 @@
 !
       implicit none
 !
+      private :: reduce_Csim_layer
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine reduce_model_coefs_layer(SGS_factor, n_layer_d,        &
+      subroutine reduce_model_coefs_layer(SGS_factor, iak_sgs, wk_sgs)
+!
+      use t_ele_info_4_dynamic
+!
+      real (kind = kreal), intent(in) :: SGS_factor
+      integer (kind = kint), intent(in) :: iak_sgs
+!
+      type(dynamic_model_data), intent(inout) :: wk_sgs
+!
+!
+      call reduce_Csim_layer                                            &
+     &   (SGS_factor, wk_sgs%nlayer, wk_sgs%num_kinds,                  &
+     &    iak_sgs, wk_sgs%fld_clip, wk_sgs%fld_whole_clip)
+!
+      end subroutine reduce_model_coefs_layer
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine reduce_Csim_layer(SGS_factor, n_layer_d,               &
      &          num_kinds, iak_sgs, coef, coef_w)
 !
       integer (kind = kint), intent(in) :: n_layer_d
@@ -43,7 +64,7 @@
 !$omp end parallel workshare
       coef_w(iak_sgs) = coef_w(iak_sgs) * SGS_factor
 !
-      end subroutine reduce_model_coefs_layer
+      end subroutine reduce_Csim_layer
 !
 !  ---------------------------------------------------------------------
 !

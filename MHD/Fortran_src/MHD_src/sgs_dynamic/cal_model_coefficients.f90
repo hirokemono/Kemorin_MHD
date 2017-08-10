@@ -11,8 +11,7 @@
 !!     &        femmesh, ele_mesh, MHD_mesh, MHD_prop, layer_tbl,       &
 !!     &        nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, fem_int,  &
 !!     &        FEM_elens, filtering, wide_filtering, mk_MHD,           &
-!!     &        wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter, mhd_fem_wk, &
-!!     &        rhs_mat, nod_fld, Csims_FEM_MHD)
+!!     &        SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -32,13 +31,7 @@
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!
-!!        type(dynamic_correlation_data), intent(inout) :: wk_cor
-!!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type(filtering_work_type), intent(inout) :: wk_filter
-!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+!!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!@endverbatim
@@ -66,20 +59,17 @@
       use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
-      use t_MHD_finite_element_mat
       use t_MHD_mass_matricxes
       use t_finite_element_mat
-      use t_work_FEM_integration
       use t_int_surface_data
       use t_filter_elength
       use t_filtering_data
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic
-      use t_work_4_dynamic_model
-      use t_work_layer_correlate
       use t_bc_data_MHD
       use t_MHD_boundary_data
       use t_FEM_SGS_model_coefs
+      use t_work_FEM_SGS_MHD
 !
       implicit none
 !
@@ -93,8 +83,7 @@
      &        femmesh, ele_mesh, MHD_mesh, MHD_prop, layer_tbl,         &
      &        nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, fem_int,    &
      &        FEM_elens, filtering, wide_filtering, mk_MHD,             &
-     &        wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter, mhd_fem_wk,   &
-     &        rhs_mat, nod_fld, Csims_FEM_MHD)
+     &        SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !
       use cal_sgs_heat_flux_dynamic
       use cal_sgs_h_flux_dynamic_simi
@@ -127,13 +116,7 @@
       type(filtering_data_type), intent(in) :: wide_filtering
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
-      type(dynamic_correlation_data), intent(inout) :: wk_cor
-      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
-      type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(dynamic_model_data), intent(inout) :: wk_diff
-      type(filtering_work_type), intent(inout) :: wk_filter
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+      type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
@@ -160,8 +143,8 @@
      &        SGS_par, femmesh%mesh, iphys, iphys_ele, ele_fld,         &
      &        MHD_mesh%fluid, layer_tbl, fem_int%jcs, fem_int%rhs_tbl,  &
      &        FEM_elens, filtering, Csims_FEM_MHD%sgs_coefs_nod,        &
-     &        mk_MHD%mlump_fl, wk_filter, wk_cor, wk_lsq, wk_sgs,       &
-     &        mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,         &
+     &        mk_MHD%mlump_fl, SGS_MHD_wk%FEM_SGS_wk,                   &
+     &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        Csims_FEM_MHD%sgs_coefs)
 !
         else if(SGS_par%model_p%iflag_SGS_h_flux                        &
@@ -176,8 +159,8 @@
      &        Csims_FEM_MHD%icomp_sgs%i_heat_flux, SGS_par,             &
      &        femmesh%mesh, iphys, layer_tbl, fem_int%jcs,              &
      &        fem_int%rhs_tbl, filtering, wide_filtering,               &
-     &        fem_int%m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs,        &
-     &        rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,                     &
+     &        fem_int%m_lump, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &        SGS_MHD_wk%rhs_mat, nod_fld,                              &
      &        Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
         end if
 !
@@ -197,10 +180,8 @@
      &        ele_fld, MHD_mesh%fluid, layer_tbl,                       &
      &        fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,       &
      &        Csims_FEM_MHD%sgs_coefs, mk_MHD%mlump_fl,                 &
-     &        wk_filter, wk_cor, wk_lsq, wk_diff, mhd_fem_wk,           &
-     &        rhs_mat%fem_wk, rhs_mat%surf_wk,                          &
-     &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                       &
-     &        Csims_FEM_MHD%diff_coefs)
+     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
+     &        SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs)
         end if
       end if
 !
@@ -221,8 +202,8 @@
      &        SGS_par, femmesh%mesh, iphys,iphys_ele, ele_fld,          &
      &        MHD_mesh%fluid, layer_tbl, fem_int%jcs, fem_int%rhs_tbl,  &
      &        FEM_elens, filtering, Csims_FEM_MHD%sgs_coefs_nod,        &
-     &        mk_MHD%mlump_fl, wk_filter, wk_cor, wk_lsq, wk_sgs,       &
-     &        mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,         &
+     &        mk_MHD%mlump_fl, SGS_MHD_wk%FEM_SGS_wk,                   &
+     &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        Csims_FEM_MHD%sgs_coefs)
 !
         else if(SGS_par%model_p%iflag_SGS_c_flux                        &
@@ -237,8 +218,8 @@
      &        Csims_FEM_MHD%icomp_sgs%i_comp_flux, SGS_par,             &
      &        femmesh%mesh, iphys, layer_tbl, fem_int%jcs,              &
      &        fem_int%rhs_tbl, filtering, wide_filtering,               &
-     &        fem_int%m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs,        &
-     &        rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,                     &
+     &        fem_int%m_lump, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &        SGS_MHD_wk%rhs_mat, nod_fld,                              &
      &        Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
         end if
 !
@@ -258,10 +239,8 @@
      &        ele_fld, MHD_mesh%fluid, layer_tbl,                       &
      &        fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,       &
      &        Csims_FEM_MHD%sgs_coefs, mk_MHD%mlump_fl,                 &
-     &        wk_filter, wk_cor, wk_lsq, wk_diff, mhd_fem_wk,           &
-     &        rhs_mat%fem_wk, rhs_mat%surf_wk,                          &
-     &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                       &
-     &        Csims_FEM_MHD%diff_coefs)
+     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
+     &        SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs)
         end if
       end if
 !
@@ -277,8 +256,8 @@
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid,                &
      &        layer_tbl, fem_int%jcs, fem_int%rhs_tbl,                  &
      &        FEM_elens, filtering, Csims_FEM_MHD%sgs_coefs_nod,        &
-     &        mk_MHD%mlump_fl, wk_filter, wk_cor, wk_lsq, wk_sgs,       &
-     &        mhd_fem_wk, rhs_mat%fem_wk, nod_fld,                      &
+     &        mk_MHD%mlump_fl, SGS_MHD_wk%FEM_SGS_wk,                   &
+     &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        Csims_FEM_MHD%sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_m_flux                        &
      &                        .eq. id_SGS_similarity) then
@@ -289,9 +268,9 @@
      &        Csims_FEM_MHD%icomp_sgs%i_mom_flux,                       &
      &        FEM_prm, SGS_par, femmesh%mesh, iphys, layer_tbl,         &
      &        fem_int%jcs, fem_int%rhs_tbl, filtering, wide_filtering,  &
-     &        fem_int%m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs,        &
-     &        rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,                     &
-     &        Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
+     &        fem_int%m_lump, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &        SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%sgs_coefs,     &
+     &        Csims_FEM_MHD%sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_mf .eq. id_SGS_commute_ON) then
@@ -306,9 +285,8 @@
      &      iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,              &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
      &      Csims_FEM_MHD%sgs_coefs, mk_MHD%mlump_fl,                   &
-     &      wk_filter, wk_cor, wk_lsq, wk_diff, mhd_fem_wk,             &
-     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
-     &      nod_fld, Csims_FEM_MHD%diff_coefs)
+     &      SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,               &
+     &      SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs)
         end if
       end if
 !
@@ -326,10 +304,9 @@
      &        time_d%dt, FEM_prm, SGS_par, femmesh%mesh,                &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid,                &
      &        layer_tbl, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,       &
-     &        filtering, Csims_FEM_MHD%sgs_coefs_nod,                   &
-     &        mk_MHD%mlump_fl, wk_filter, wk_cor, wk_lsq,               &
-     &        wk_sgs, mhd_fem_wk, rhs_mat%fem_wk, nod_fld,              &
-     &        Csims_FEM_MHD%sgs_coefs)
+     &        filtering, Csims_FEM_MHD%sgs_coefs_nod, mk_MHD%mlump_fl,  &
+     &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
+     &        SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_lorentz                       &
      &                        .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
@@ -339,9 +316,9 @@
      &       Csims_FEM_MHD%icomp_sgs%i_lorentz,                         &
      &       FEM_prm, SGS_par, femmesh%mesh, iphys, layer_tbl,          &
      &       fem_int%jcs, fem_int%rhs_tbl, filtering, wide_filtering,   &
-     &       fem_int%m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
-     &       rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,                      &
-     &       Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
+     &       fem_int%m_lump, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, &
+     &       nod_fld, Csims_FEM_MHD%sgs_coefs,                          &
+     &       Csims_FEM_MHD%sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_lorentz .eq. id_SGS_commute_ON)    &
@@ -357,9 +334,8 @@
      &      nod_bcs%Vnod_bcs, surf_bcs%Bsf_bcs, iphys,                  &
      &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
      &      FEM_elens, filtering, Csims_FEM_MHD%sgs_coefs,              &
-     &      mk_MHD%mlump_fl, wk_filter, wk_cor, wk_lsq, wk_diff,        &
-     &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,                &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                         &
+     &      mk_MHD%mlump_fl, SGS_MHD_wk%FEM_SGS_wk,                     &
+     &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,         &
      &      Csims_FEM_MHD%diff_coefs)
         end if
       end if
@@ -380,22 +356,21 @@
      &       time_d%dt, FEM_prm, SGS_par, femmesh%mesh, iphys,          &
      &       iphys_ele, ele_fld, MHD_mesh%conduct, MHD_prop%cd_prop,    &
      &       layer_tbl, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,        &
-     &       filtering, Csims_FEM_MHD%sgs_coefs_nod,                    &
-     &       mk_MHD%mlump_cd, wk_filter, wk_cor, wk_lsq, wk_sgs,        &
-     &       mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,                   &
-     &       nod_fld, Csims_FEM_MHD%sgs_coefs)
+     &       filtering, Csims_FEM_MHD%sgs_coefs_nod, mk_MHD%mlump_cd,   &
+     &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
+     &       SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_uxb                           &
      &                            .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic_simi'
           call cal_sgs_induct_t_dynamic_simi                            &
-     &       (Csims_FEM_MHD%ifld_sgs%i_induction,                       &
-     &        Csims_FEM_MHD%icomp_sgs%i_induction,                      &
-     &        FEM_prm, SGS_par, femmesh%mesh, iphys, layer_tbl,         &
-     &        fem_int%jcs, fem_int%rhs_tbl, filtering, wide_filtering,  &
-     &        fem_int%m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs,        &
-     &        rhs_mat%fem_wk, rhs_mat%f_l, nod_fld,                     &
-     &        Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
+     &      (Csims_FEM_MHD%ifld_sgs%i_induction,                        &
+     &       Csims_FEM_MHD%icomp_sgs%i_induction,                       &
+     &       FEM_prm, SGS_par, femmesh%mesh, iphys, layer_tbl,          &
+     &       fem_int%jcs, fem_int%rhs_tbl, filtering, wide_filtering ,  &
+     &       fem_int%m_lump, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, &
+     &       nod_fld, Csims_FEM_MHD%sgs_coefs,                          &
+     &       Csims_FEM_MHD%sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_uxb .eq. id_SGS_commute_ON) then
@@ -411,9 +386,8 @@
      &       MHD_prop%cd_prop, layer_tbl, surf_bcs%Bsf_bcs, iphys,      &
      &       iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,          &
      &       FEM_elens, Csims_FEM_MHD%sgs_coefs, filtering,             &
-     &       mk_MHD%mlump_cd, wk_filter, wk_cor, wk_lsq, wk_diff,       &
-     &       mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,               &
-     &       rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                        &
+     &       mk_MHD%mlump_cd, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,        &
      &       Csims_FEM_MHD%diff_coefs)
         end if
 !
@@ -430,8 +404,8 @@
      &        FEM_prm, SGS_par, femmesh%mesh, iphys, iphys_ele,         &
      &        ele_fld, MHD_mesh%conduct, MHD_prop%cd_prop, layer_tbl,   &
      &        fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,       &
-     &        mk_MHD%mlump_cd, wk_filter, wk_cor, wk_lsq, wk_sgs,       &
-     &        mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,                  &
+     &        mk_MHD%mlump_cd, SGS_MHD_wk%FEM_SGS_wk,                   &
+     &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                &
      &        nod_fld, Csims_FEM_MHD%sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_uxb                           &
      &                         .eq. id_SGS_similarity) then
@@ -441,8 +415,8 @@
      &       (Csims_FEM_MHD%ifld_sgs%i_induction,                       &
      &        Csims_FEM_MHD%icomp_sgs%i_induction,                      &
      &        FEM_prm, SGS_par, femmesh%mesh, iphys, layer_tbl,         &
-     &        fem_int%jcs,filtering, wide_filtering, wk_filter, wk_cor, &
-     &        wk_lsq, wk_sgs, nod_fld, Csims_FEM_MHD%sgs_coefs)
+     &        fem_int%jcs,filtering, wide_filtering,                    &
+     &        SGS_MHD_wk%FEM_SGS_wk, nod_fld, Csims_FEM_MHD%sgs_coefs)
         end if
       end if
 !

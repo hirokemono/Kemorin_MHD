@@ -11,6 +11,7 @@
       module t_work_FEM_dynamic_SGS
 !
       use m_precision
+      use m_constants
 !
       use t_work_layer_correlate
       use t_work_4_dynamic_model
@@ -28,5 +29,28 @@
 !
         type(filtering_work_type) :: wk_filter
       end type work_FEM_dynamic_SGS
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_work_FEM_dynamic(layer_tbl, FEM_SGS_wk)
+!
+      use t_layering_ele_list
+!
+      type(layering_tbl), intent(in) :: layer_tbl
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
+!
+!
+      call alloc_work_4_dynamic                                         &
+     &     (layer_tbl%e_grp%num_grp, FEM_SGS_wk%wk_lsq)
+      call alloc_work_layer_correlate                                   &
+     &     (layer_tbl%e_grp%num_grp, inine, FEM_SGS_wk%wk_cor)
+!
+      end subroutine alloc_work_FEM_dynamic
+!
+! ----------------------------------------------------------------------
 !
       end module t_work_FEM_dynamic_SGS

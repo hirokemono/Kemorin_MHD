@@ -8,7 +8,7 @@
 !!      subroutine output_time_step_control                             &
 !!     &         (FEM_prm, time_d, mesh, MHD_mesh, fl_prop, cd_prop,    &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld, jacobians,        &
-!!     &          i_rms, j_ave, ifld_msq, fem_wk, mhd_fem_wk, fem_msq)
+!!     &          i_rms, j_ave, ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
@@ -21,7 +21,7 @@
 !!        type(jacobians_type), intent(in) :: jacobians
 !!        type(phys_address), intent(in) :: i_rms
 !!        type(mean_square_address), intent(in) :: ifld_msq
-!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(mean_square_values), intent(inout) :: fem_msq
 !
@@ -39,6 +39,7 @@
       use t_phys_address
       use t_jacobians
       use t_finite_element_mat
+      use t_work_fem_integration
       use t_MHD_finite_element_mat
       use t_IO_step_parameter
 !
@@ -53,7 +54,7 @@
       subroutine output_time_step_control                               &
      &         (FEM_prm, time_d, mesh, MHD_mesh, fl_prop, cd_prop,      &
      &          iphys, nod_fld, iphys_ele, ele_fld, jacobians,          &
-     &          i_rms, j_ave, ifld_msq, fem_wk, mhd_fem_wk, fem_msq)
+     &          i_rms, j_ave, ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
 !
       use calypso_mpi
       use t_mean_square_values
@@ -75,7 +76,7 @@
       type(phys_address), intent(in) :: i_rms, j_ave
       type(mean_square_address), intent(in) :: ifld_msq
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(mean_square_values), intent(inout) :: fem_msq
 !
@@ -88,11 +89,11 @@
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
      &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
      &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
-     &    i_rms, j_ave, ifld_msq, fem_wk, mhd_fem_wk, fem_msq)
+     &    i_rms, j_ave, ifld_msq, rhs_mat%fem_wk, mhd_fem_wk, fem_msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
      &    mesh%node, mesh%ele, fl_prop, cd_prop, iphys, nod_fld,        &
      &    iphys_ele, ele_fld, MHD_mesh%fluid, jacobians%jac_3d,         &
-     &    i_rms, j_ave, fem_wk, fem_msq)
+     &    i_rms, j_ave, rhs_mat%fem_wk, fem_msq)
 !
       call MPI_allREDUCE                                                &
      &   (fem_msq%ave_local, fem_msq%ave_global, fem_msq%num_ave,       &

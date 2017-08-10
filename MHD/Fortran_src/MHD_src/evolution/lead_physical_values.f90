@@ -11,8 +11,7 @@
 !!     &          ele_mesh, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,      &
 !!     &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,         &
 !!     &          filtering, wide_filtering, layer_tbl, mk_MHD,         &
-!!     &          wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,       &
-!!     &          rhs_mat, nod_fld, ele_fld, Csims_FEM_MHD)
+!!     &          SGS_MHD_wk, nod_fld, ele_fld, Csims_FEM_MHD)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -31,12 +30,7 @@
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
-!!        type(filtering_work_type), intent(inout) :: wk_filter
-!!        type(dynamic_correlation_data), intent(inout) :: wk_cor
-!!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
-!!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+!!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
@@ -58,11 +52,7 @@
       use t_edge_data
       use t_phys_data
       use t_phys_address
-      use t_jacobians
       use t_table_FEM_const
-      use t_finite_element_mat
-      use t_int_surface_data
-      use t_MHD_finite_element_mat
       use t_MHD_mass_matricxes
       use t_filter_elength
       use t_filtering_data
@@ -71,11 +61,10 @@
       use t_MHD_boundary_data
       use t_material_property
       use t_SGS_model_coefs
-      use t_ele_info_4_dynamic
       use t_FEM_SGS_model_coefs
       use t_work_4_dynamic_model
       use t_work_layer_correlate
-      use t_work_FEM_integration
+      use t_work_FEM_SGS_MHD
 !
       implicit none
 !
@@ -91,8 +80,7 @@
      &          ele_mesh, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,        &
      &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,           &
      &          filtering, wide_filtering, layer_tbl, mk_MHD,           &
-     &          wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,         &
-     &          rhs_mat, nod_fld, ele_fld, Csims_FEM_MHD)
+     &          SGS_MHD_wk, nod_fld, ele_fld, Csims_FEM_MHD)
 !
       use update_after_evolution
       use itp_potential_on_edge
@@ -118,12 +106,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
-      type(dynamic_correlation_data), intent(inout) :: wk_cor
-      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
-      type(dynamic_model_data), intent(inout) :: wk_diff
-      type(filtering_work_type), intent(inout) :: wk_filter
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+      type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
@@ -136,9 +119,8 @@
       if (iflag_debug.gt.0) write(*,*) 'update_fields'
       call update_fields(time_d, FEM_prm, SGS_par, femmesh,             &
      &    ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,      &
-     &    fem_int, FEM_elens, filtering, wide_filtering,                &
-     &    layer_tbl, mk_MHD, wk_cor, wk_lsq,  wk_diff, wk_filter,       &
-     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, Csims_FEM_MHD)
+     &    fem_int, FEM_elens, filtering, wide_filtering, layer_tbl,     &
+     &    mk_MHD, SGS_MHD_wk, nod_fld, ele_fld, Csims_FEM_MHD)
 !
       call cal_field_by_rotation                                        &
      &   (time_d%dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,       &
@@ -147,9 +129,8 @@
      &    nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,                 &
      &    fem_int%jcs%jac_3d, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,  &
      &    FEM_elens, Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs, &
-     &    fem_int%m_lump, mk_MHD, mhd_fem_wk,                           &
-     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
-     &    nod_fld)
+     &    fem_int%m_lump, mk_MHD, SGS_MHD_wk%mhd_fem_wk,                &
+     &    SGS_MHD_wk%rhs_mat, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
       call cal_helicity(iphys, nod_fld)
@@ -159,7 +140,8 @@
      &    femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh,              &
      &    MHD_prop, nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,        &
      &    fem_int, FEM_elens, Csims_FEM_MHD, filtering, mk_MHD,         &
-     &    wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &    SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                 &
+     &    SGS_MHD_wk%rhs_mat, nod_fld, ele_fld)
 !
       end subroutine lead_fields_by_FEM
 !
@@ -169,7 +151,7 @@
      &        (dt, FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,   &
      &         MHD_prop, nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,   &
      &         fem_int, FEM_elens, Csims_FEM_MHD, filtering, mk_MHD,    &
-     &         wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &         FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       use cal_MHD_forces_4_monitor
       use cal_sgs_4_monitor
@@ -194,7 +176,7 @@
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
-      type(filtering_work_type), intent(inout) :: wk_filter
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
@@ -217,7 +199,7 @@
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,  &
      &    Csims_FEM_MHD%icomp_sgs, Csims_FEM_MHD%iphys_elediff,         &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
-     &    filtering, mk_MHD, wk_filter, mhd_fem_wk,                     &
+     &    filtering, mk_MHD, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &
      &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       call cal_fluxes_4_monitor                                         &
@@ -243,7 +225,7 @@
 !
       call cal_true_sgs_terms_post                                      &
      &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, iphys,            &
-     &    filtering, wk_filter, nod_fld)
+     &    filtering, FEM_SGS_wk%wk_filter, nod_fld)
 !
       call cal_work_4_forces                                            &
      &  (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, MHD_prop%fl_prop, &

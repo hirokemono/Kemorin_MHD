@@ -4,8 +4,8 @@
 !      Written by H. Matsui on Nov., 2009
 !
 !!      subroutine s_check_deltat_by_prev_rms(flex_p, time_d,           &
-!!     &          mesh, MHD_mesh, cd_prop, iphys, nod_fld,  jacobians,  &
-!!     &          fem_wk, flex_data)
+!!     &          mesh, MHD_mesh, cd_prop, iphys, nod_fld, jacobians,   &
+!!     &          rhs_mat, flex_data)
 !!      subroutine check_difference_by_prev_rms                         &
 !!     &         (time, node, ele, fluid, cd_prop, iphys, nod_fld,      &
 !!     &          jac_3d_q, jac_3d_l, fem_wk, flex_data)
@@ -19,6 +19,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(flexible_stepping_data), intent(inout) :: flex_data
 !
@@ -38,8 +39,7 @@
       use t_phys_data
       use t_phys_address
       use t_jacobians
-      use t_jacobian_3d
-      use t_finite_element_mat
+      use t_work_FEM_integration
       use t_flex_delta_t_data
 !
       use int_all_energy
@@ -55,8 +55,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_check_deltat_by_prev_rms(flex_p, time_d,             &
-     &          mesh, MHD_mesh, cd_prop, iphys, nod_fld,  jacobians,    &
-     &          fem_wk, flex_data)
+     &          mesh, MHD_mesh, cd_prop, iphys, nod_fld, jacobians,     &
+     &          rhs_mat, flex_data)
 !
       type(flexible_stepping_parameter), intent(in) :: flex_p
       type(time_data), intent(in) :: time_d
@@ -67,18 +67,19 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacobians
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(flexible_stepping_data), intent(inout) :: flex_data
 !
 !
       if (flex_p%iflag_flexible_step .ne. iflag_flex_step) return
       call set_ele_rms_4_previous_step                                  &
      &   (time_d, mesh%node, mesh%ele, MHD_mesh%fluid, iphys, nod_fld,  &
-     &    jacobians%jac_3d, jacobians%jac_3d_l, fem_wk, flex_data)
+     &    jacobians%jac_3d, jacobians%jac_3d_l, rhs_mat%fem_wk,         &
+     &    flex_data)
       call check_difference_by_prev_rms                                 &
      &   (time_d%time, mesh%node, mesh%ele, MHD_mesh%fluid, cd_prop,    &
      &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
-     &    fem_wk, flex_data)
+     &    rhs_mat%fem_wk, flex_data)
 !
       end subroutine s_check_deltat_by_prev_rms
 !

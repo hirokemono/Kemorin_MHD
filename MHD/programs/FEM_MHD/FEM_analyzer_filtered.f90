@@ -135,8 +135,7 @@
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,                 &
      &    ele_mesh, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,     &
      &    fem_int1, FEM1_elen, filtering1, wide_filtering, layer_tbl1,  &
-     &    mk_MHD1, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, &
-     &    rhs_mat1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
+     &    mk_MHD1, SGS_MHD_wk1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -144,11 +143,10 @@
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
-     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                    &
-     &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1, FEM1_elen, filtering1, wide_filtering, mk_MHD1,   &
-     &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
-     &      mhd_fem1_wk, rhs_mat1, nod_fld1, Csims_FEM_MHD1)
+     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1, layer_tbl1,        &
+     &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1, fem_int1,    &
+     &      FEM1_elen, filtering1, wide_filtering, mk_MHD1,             &
+     &      SGS_MHD_wk1, nod_fld1, Csims_FEM_MHD1)
       end if
 !
 !     ========  Data output
@@ -160,8 +158,7 @@
      &     ele_mesh, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,           &
      &     iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,               &
      &     filtering1, wide_filtering, layer_tbl1, mk_MHD1,             &
-     &     wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk,         &
-     &     rhs_mat1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
+     &     SGS_MHD_wk1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
       end if
 !
 !     ----Filtering
@@ -180,7 +177,7 @@
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
      &      iphys, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,         &
      &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
-     &      rhs_mat1%fem_wk, mhd_fem1_wk, fem_sq%msq)
+     &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
       end if
 !
       iflag = output_IO_flag(flex_p1%istep_max_dt,MHD_step%point_step)
@@ -191,8 +188,9 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-      call s_output_sgs_model_coefs(flex_p1%istep_max_dt, MHD_step,     &
-     &    SGS_par1, MHD_prop1%cd_prop, wk_sgs1, wk_diff1)
+      call s_output_sgs_model_coefs(flex_p1%istep_max_dt,               &
+     &    MHD_step, SGS_par1, MHD_prop1%cd_prop,                        &
+     &    SGS_MHD_wk1%FEM_SGS_wk)
 !
 !     ---- Output voulme field data
 !

@@ -11,8 +11,8 @@
 !!     &          iphys_ele, ak_MHD, fem_int, FEM_elens,                &
 !!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
 !!     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,      &
-!!     &          mlump_fl, Vmatrix, Pmatrix, MGCG_WK, wk_lsq, wk_sgs,  &
-!!     &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,     &
+!!     &          mlump_fl, Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk,      &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                &
 !!     &          sgs_coefs, fem_sq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -42,9 +42,7 @@
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
-!!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!        type(filtering_work_type), intent(inout) :: wk_filter
+!!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -65,12 +63,8 @@
       use t_surface_group_connect
       use t_phys_data
       use t_phys_address
-      use t_jacobians
       use t_table_FEM_const
-      use t_finite_element_mat
-      use t_int_surface_data
       use t_filter_elength
-      use t_filtering_data
       use t_layering_ele_list
       use t_bc_data_velo
       use t_surface_bc_data
@@ -83,6 +77,7 @@
       use t_MGCG_data
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
+      use t_work_FEM_dynamic_SGS
       use t_FEM_MHD_mean_square
 !
       implicit none
@@ -104,8 +99,8 @@
      &          iphys_ele, ak_MHD, fem_int, FEM_elens,                  &
      &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
      &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,        &
-     &          mlump_fl, Vmatrix, Pmatrix, MGCG_WK, wk_lsq, wk_sgs,    &
-     &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,       &
+     &          mlump_fl, Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk,        &
+     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                  &
      &          sgs_coefs, fem_sq)
 !
       use cal_velocity_pre
@@ -147,9 +142,7 @@
       type(MHD_MG_matrix), intent(in) :: Pmatrix
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
-      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
-      type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(filtering_work_type), intent(inout) :: wk_filter
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
@@ -173,9 +166,10 @@
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
      &    iphys_ele, ak_MHD, fem_int, FEM_elens,                        &
      &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff, sgs_coefs_nod, &
-     &    diff_coefs, filtering, layer_tbl, mlump_fl,                   &
-     &    Vmatrix, MGCG_WK%MG_vector, wk_lsq, wk_sgs, wk_filter,        &
-     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
+     &    diff_coefs, filtering, layer_tbl, mlump_fl, Vmatrix,          &
+     &    MGCG_WK%MG_vector, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs,      &
+     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat,                    &
+     &    nod_fld, ele_fld, sgs_coefs)
 !
 !     --------------------- 
 !
