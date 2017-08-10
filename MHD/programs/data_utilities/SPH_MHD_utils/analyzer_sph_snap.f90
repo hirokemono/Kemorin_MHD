@@ -269,9 +269,9 @@
 !
           call start_elapsed_time(12)
           call init_visualize_pvr_only                                  &
-     &       (mesh1, group1, ele_mesh1, nod_fld1)
+     &       (femmesh1, ele_mesh1, nod_fld1)
           call visualize_pvr_only(MHD_step1%viz_step%PVR_t%istep_file,  &
-     &        mesh1, group1, ele_mesh1, jacobians_VIZ1, nod_fld1)
+     &        femmesh1, ele_mesh1, jacobians_VIZ1, nod_fld1)
           call deallocate_pvr_data
           call end_elapsed_time(12)
         end if

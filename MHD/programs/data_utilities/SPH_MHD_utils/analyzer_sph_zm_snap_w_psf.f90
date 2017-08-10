@@ -135,7 +135,7 @@
           if(iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_zm_snap'
           call SPH_to_FEM_bridge_zm_snap                                &
      &       (sph1%sph_params, sph1%sph_rtp, trns_WK1,                  &
-     &        mesh1, iphys, nod_fld1)
+     &        femmesh1%mesh, iphys, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

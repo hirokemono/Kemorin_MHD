@@ -22,6 +22,7 @@
       use m_MHD_step_parameter
       use m_SGS_control_parameter
       use m_physical_property
+      use t_mesh_data
       use t_sph_filtering_data
       use t_step_parameter
       use t_MHD_file_parameter
@@ -29,6 +30,7 @@
       implicit none
 !
       private :: SPH_analyze_special_snap
+      private :: SPH_to_FEM_bridge_special_snap
       private :: lead_special_fields_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
@@ -81,7 +83,7 @@
         if(iflag .eq. 0) then
           if(iflag_debug.eq.1)                                          &
      &       write(*,*) 'SPH_to_FEM_bridge_special_snap'
-          call SPH_to_FEM_bridge_special_snap
+          call SPH_to_FEM_bridge_special_snap(femmesh1%mesh)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
@@ -226,9 +228,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_special_snap
+      subroutine SPH_to_FEM_bridge_special_snap(mesh)
 !
-      use m_mesh_data
       use m_node_phys_data
       use m_spheric_parameter
       use m_sph_spectr_data
@@ -237,22 +238,24 @@
       use copy_MHD_4_sph_trans
       use sph_rtp_zonal_rms_data
 !*
+      type(mesh_geometry), intent(in) :: mesh
+!
 !*  -----------  data transfer to FEM array --------------
 !*
       call copy_forces_to_snapshot_rtp                                  &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_MHD,   &
-     &    mesh1%node, iphys, nod_fld1)
+     &    mesh%node, iphys, nod_fld1)
       call copy_snap_vec_fld_from_trans                                 &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_snap,  &
-     &    mesh1%node, iphys, nod_fld1)
+     &    mesh%node, iphys, nod_fld1)
       call copy_snap_vec_force_from_trans                               &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_snap,  &
-     &    mesh1%node, iphys, nod_fld1)
+     &    mesh%node, iphys, nod_fld1)
 !
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
-      call zonal_mean_all_rtp_field(sph1%sph_rtp, mesh1%node, nod_fld1)
+      call zonal_mean_all_rtp_field(sph1%sph_rtp, mesh%node, nod_fld1)
 !
       end subroutine SPH_to_FEM_bridge_special_snap
 !

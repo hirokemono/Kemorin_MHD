@@ -2,7 +2,8 @@
 !!      subroutine induction_SPH_initialize(SGS_param,                  &
 !!     &         ipol, idpdr, itor, comms_sph, sph, trans_p, rj_fld)
 !!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_param,     &
-!!     &          sph, comms_sph, trans_p, conduct, ipol, rj_fld)
+!!     &          mesh, sph, comms_sph, trans_p, conduct, jacobians,    &
+!!     &          ipol, rj_fld)
 !!      subroutine cal_magneitc_field_by_SPH(SGS_param, cd_prop,        &
 !!     &          sph, comms_sph, trans_p, ipol, itor, rj_fld)
 !
@@ -122,7 +123,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_param,       &
-     &          sph, comms_sph, trans_p, conduct, jacobians,            &
+     &          mesh, sph, comms_sph, trans_p, conduct, jacobians,      &
      &          ipol, rj_fld)
 !
       use m_solver_SR
@@ -135,6 +136,7 @@
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
+      type(mesh_geometry), intent(in) :: mesh
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
@@ -149,7 +151,7 @@
      &     (Csims_FEM_MHD1%icomp_sgs%i_induction,                       &
      &      Csims_FEM_MHD1%iphys_elediff%i_velo, MHD_step1%time_d%dt,   &
      &      FEM_prm1, SGS_par1%model_p, SGS_par1%filter_p,              &
-     &      mesh1%nod_comm, mesh1%node, mesh1%ele,                      &
+     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      MHD_mesh1%conduct, MHD_prop1%cd_prop,                       &
      &      iphys, iphys_ele, fld_ele1, fem_int1%jcs%jac_3d,            &
      &      fem_int1%rhs_tbl, FEM1_elen, filtering1,                    &

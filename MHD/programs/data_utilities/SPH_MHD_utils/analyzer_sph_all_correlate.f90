@@ -142,7 +142,7 @@
         if (iflag_debug.gt.0) write(*,*) 'copy_all_field_from_trans'
         call copy_all_field_from_trans                                  &
      &     (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_MHD, &
-     &      mesh1%node, nod_fld1)
+     &      femmesh1%mesh, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &

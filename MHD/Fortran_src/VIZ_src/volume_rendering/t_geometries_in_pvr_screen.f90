@@ -7,7 +7,7 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine alloc_projected_position(nnod, nsurf, pvr_screen)
+!!      subroutine alloc_projected_position(node, surf, pvr_screen)
 !!        type(node_data), intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
 !!      subroutine dealloc_projected_position(pvr_screen)

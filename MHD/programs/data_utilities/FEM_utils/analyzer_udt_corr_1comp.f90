@@ -87,7 +87,7 @@
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver                                   &
      &   (isix, femmesh_p_FUT%mesh%node%numnod)
-      call init_nod_send_recv(femmesh_p_FUT%mesh)
+      call init_send_recv(femmesh_p_FUT%mesh%nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos_p(my_rank, femmesh_p_FUT, elemesh_FUT)
@@ -168,7 +168,7 @@
      &     (my_rank, time_U%ucd_step%istep_file,                        &
      &      first_ucd_param, field_FUTIL, time_IO_FUTIL)
 !
-        call nod_fields_send_recv(femmesh_p_FUT%mesh, field_FUTIL)
+        call fields_send_recv(femmesh_p_FUT%mesh%nod_comm, field_FUTIL)
 !
 !    output udt data
 !

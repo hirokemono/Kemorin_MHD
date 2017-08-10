@@ -9,16 +9,16 @@
 !!
 !!@verbatim
 !!      subroutine copy_all_field_from_trans(m_folding, sph_rtp,       &
-!!     &          trns_MHD, node, nod_fld)
+!!     &          trns_MHD, mesh, nod_fld)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
-!!        type(node_data), intent(in) :: node
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(inout) :: nod_fld
 !!
 !!      subroutine copy_all_field_to_trans                              &
-!!     &         (node, sph_rtp, nod_fld, trns_MHD)
+!!     &         (mesh, sph_rtp, nod_fld, trns_MHD)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(node_data), intent(in) :: node
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!@endverbatim
@@ -32,7 +32,7 @@
 !
       use t_sph_trans_comm_tbl
       use t_spheric_rtp_data
-      use t_geometry_data
+      use t_mesh_data
       use t_phys_address
       use t_phys_data
       use t_addresses_sph_transform
@@ -46,12 +46,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_all_field_from_trans(m_folding, sph_rtp,       &
-     &          trns_MHD, node, nod_fld)
+     &          trns_MHD, mesh, nod_fld)
 !
       integer(kind = kint), intent(in) :: m_folding
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(address_4_sph_trans), intent(in) :: trns_MHD
-      type(node_data), intent(in) :: node
+      type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: j, j_fld, i_fld
@@ -71,7 +71,7 @@
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_vec_from_trans_wpole(sph_rtp, m_folding,      &
      &          trns_MHD%ncomp_rj_2_rtp, jcomp, trns_MHD%fld_rtp,       &
-     &          trns_MHD%fld_pole, icomp, node, nod_fld)
+     &          trns_MHD%fld_pole, icomp, mesh%node, nod_fld)
           end if
         end do
       end do
@@ -88,7 +88,7 @@
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_scl_from_trans_wpole(sph_rtp, m_folding,      &
      &          trns_MHD%ncomp_rj_2_rtp, jcomp, trns_MHD%fld_rtp,       &
-     &          trns_MHD%fld_pole, icomp, node, nod_fld)
+     &          trns_MHD%fld_pole, icomp, mesh%node, nod_fld)
           end if
         end do
       end do
@@ -107,7 +107,7 @@
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_tsr_from_trans_wpole(sph_rtp, m_folding,      &
      &          trns_MHD%ncomp_rj_2_rtp, jcomp, trns_MHD%fld_rtp,       &
-     &          trns_MHD%fld_pole, icomp, node, nod_fld)
+     &          trns_MHD%fld_pole, icomp, mesh%node, nod_fld)
           end if
         end do
       end do
@@ -117,10 +117,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_all_field_to_trans                                &
-     &         (node, sph_rtp, nod_fld, trns_MHD)
+     &         (mesh, sph_rtp, nod_fld, trns_MHD)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(node_data), intent(in) :: node
+      type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
       type(address_4_sph_trans), intent(inout) :: trns_MHD
 !
@@ -137,8 +137,8 @@
 !
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
-            call copy_nod_vec_to_sph_trans(node, sph_rtp, nod_fld,      &
-     &          icomp, trns_MHD%frc_rtp(1,jcomp))
+            call copy_nod_vec_to_sph_trans(mesh%node, sph_rtp,          &
+     &          nod_fld, icomp, trns_MHD%frc_rtp(1,jcomp))
           end if
         end do
       end do
@@ -153,7 +153,7 @@
 !
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
-            call copy_nod_scl_to_sph_trans(node, sph_rtp,               &
+            call copy_nod_scl_to_sph_trans(mesh%node, sph_rtp,          &
      &          nod_fld, icomp, trns_MHD%frc_rtp(1,jcomp))
           end if
         end do
@@ -171,8 +171,8 @@
 !
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
-            call copy_nod_tsr_to_sph_trans(node, sph_rtp, nod_fld,      &
-     &          icomp, trns_MHD%frc_rtp(1,jcomp))
+            call copy_nod_tsr_to_sph_trans(mesh%node, sph_rtp,          &
+     &          nod_fld, icomp, trns_MHD%frc_rtp(1,jcomp))
           end if
         end do
       end do

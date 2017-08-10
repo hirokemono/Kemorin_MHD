@@ -79,7 +79,7 @@
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1%ucd_file_IO, MHD_step1,    &
-     &    femmesh1%mesh1, femmesh1%group1, ele_mesh1, iphys, nod_fld1,  &
+     &    femmesh1%mesh, femmesh1%group, ele_mesh1, iphys, nod_fld1,    &
      &    range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
