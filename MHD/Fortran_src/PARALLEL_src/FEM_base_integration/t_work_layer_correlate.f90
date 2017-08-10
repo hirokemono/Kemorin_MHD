@@ -20,7 +20,7 @@
       implicit none
 !
 !
-      type dynamis_correlation_data
+      type dynamic_correlation_data
         integer(kind = kint) :: nlayer
         integer(kind = kint) :: ncomp_sgl
         integer(kind = kint) :: ncomp_dble
@@ -46,7 +46,7 @@
         real(kind = kreal), allocatable :: rms_l_smp(:,:)
         real(kind = kreal), allocatable :: sig_l_smp(:,:)
         real(kind = kreal), allocatable :: cor_l_smp(:,:)
-      end type dynamis_correlation_data
+      end type dynamic_correlation_data
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@
       use m_machine_parameter
 !
       integer (kind = kint), intent(in) :: n_layer_d, ncomp_correlate
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       wk_cor%nlayer =    n_layer_d
@@ -121,7 +121,7 @@
 !
       subroutine dealloc_work_layer_correlate(wk_cor)
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       deallocate(wk_cor%ave_w, wk_cor%rms_w)
@@ -145,7 +145,7 @@
       use calypso_mpi
 !
       integer (kind = kint), intent(in) :: n_layer_d
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
       integer (kind = kint) :: num
 !
 !
@@ -168,7 +168,7 @@
       use calypso_mpi
 !
       integer (kind = kint), intent(in) :: n_layer_d
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
       integer (kind = kint) :: num_1, num_2
 !
 !
@@ -192,7 +192,7 @@
 !
       use calypso_mpi
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       wk_cor%ave_wg(1:wk_cor%ncomp_dble) = 0.0d0
@@ -213,7 +213,7 @@
 !
       use calypso_mpi
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       wk_cor%sig_wg(1:wk_cor%ncomp_dble) = 0.0d0

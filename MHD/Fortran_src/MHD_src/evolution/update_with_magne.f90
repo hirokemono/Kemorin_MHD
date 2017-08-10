@@ -32,7 +32,7 @@
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamic_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(filtering_work_type), intent(inout) :: wk_filter
@@ -119,7 +119,7 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(layering_tbl), intent(in) :: layer_tbl
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(filtering_work_type), intent(inout) :: wk_filter

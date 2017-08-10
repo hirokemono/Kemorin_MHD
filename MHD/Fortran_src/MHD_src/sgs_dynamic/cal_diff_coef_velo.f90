@@ -30,7 +30,7 @@
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(filtering_work_type), intent(inout) :: wk_filter
-!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamic_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -120,7 +120,7 @@
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(filtering_work_type), intent(inout) :: wk_filter
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(work_finite_element_mat), intent(inout) :: fem_wk

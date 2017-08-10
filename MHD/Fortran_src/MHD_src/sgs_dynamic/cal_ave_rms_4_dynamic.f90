@@ -21,7 +21,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
       module cal_ave_rms_4_dynamic
 !
@@ -83,7 +83,7 @@
       real(kind = kreal), intent(inout) :: rms_sgs_grad_w(num_sgs_coefs)
       real(kind = kreal), intent(inout) :: ratio_sgs_w(num_sgs_coefs)
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       call int_vol_rms_ave_dynamic(layer_tbl, node, ele,                &
@@ -141,7 +141,7 @@
       real(kind = kreal), intent(inout)                                 &
      &          :: ratio_diff_w(num_diff_coefs)
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       call int_vol_rms_ave_diff(iele_fsmp_stack,                        &

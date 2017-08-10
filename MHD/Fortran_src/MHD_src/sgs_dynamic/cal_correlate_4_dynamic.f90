@@ -20,7 +20,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!
-!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
       module cal_correlate_4_dynamic
 !
@@ -77,7 +77,7 @@
       real(kind = kreal), intent(inout) :: cor_sgs_w(num_sgs_coefs)
       real(kind = kreal), intent(inout) :: cov_sgs_w(num_sgs_coefs)
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
 !  Volume integration:                        int_vol_layer_correlate
@@ -127,7 +127,7 @@
       real(kind = kreal), intent(inout) :: cor_diff_w(num_sgs_coefs)
       real(kind = kreal), intent(inout) :: cov_diff_w(num_sgs_coefs)
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
 !  Volume integration:                      int_vol_diff_correlate

@@ -26,7 +26,7 @@
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type (lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(filtering_work_type), intent(inout) :: wk_filter
-!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamic_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -111,7 +111,7 @@
       type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(filtering_work_type), intent(inout) :: wk_filter
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk

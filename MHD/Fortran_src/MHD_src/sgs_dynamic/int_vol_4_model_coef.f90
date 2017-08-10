@@ -30,7 +30,7 @@
 !!      subroutine int_vol_diff_correlate(iele_fsmp_stack,              &
 !!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
 !!     &          numdir, n_int, ave_s, ave_g, wk_cor)
-!!        type(dynamis_correlation_data), intent(inout) :: wk_cor
+!!        type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
       module int_vol_4_model_coef
 !
@@ -192,7 +192,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: n_tensor, n_int
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       if(layer_tbl%minlayer_4_smp                                       &
@@ -271,7 +271,7 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: n_tensor, n_int
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       if (ele%nnod_4_ele .eq. num_t_quad) then
@@ -316,7 +316,7 @@
       real(kind = kreal), intent(in)                                    &
      &                   :: ave_g(layer_tbl%e_grp%num_grp,n_tensor)
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       if(layer_tbl%minlayer_4_smp                                       &
@@ -399,7 +399,7 @@
       real(kind = kreal), intent(in) :: ave_s(numdir)
       real(kind = kreal), intent(in) :: ave_g(numdir)
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       wk_cor%sig_w(1:18) = 0.0d0

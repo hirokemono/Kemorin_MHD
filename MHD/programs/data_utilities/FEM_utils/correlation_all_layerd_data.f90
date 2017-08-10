@@ -74,7 +74,7 @@
       type(phys_data), intent(in) :: phys_2nd
       type(layering_tbl), intent(in) :: layer_tbl
 !
-      type(dynamis_correlation_data), intent(inout) :: wk_cor
+      type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
       call int_vol_rms_ave_all_layer(node, ele, nod_fld,                &

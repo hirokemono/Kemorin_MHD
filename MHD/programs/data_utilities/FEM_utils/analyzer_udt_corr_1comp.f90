@@ -33,7 +33,7 @@
       type(phys_data), save :: phys_ref
 !
       type(layering_tbl), save :: layer_tbl_corr
-      type(dynamis_correlation_data), save :: wk_correlate
+      type(dynamic_correlation_data), save :: wk_correlate
 !
 ! ----------------------------------------------------------------------
 !
