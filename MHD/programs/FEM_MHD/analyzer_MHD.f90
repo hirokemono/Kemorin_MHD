@@ -85,8 +85,7 @@
      &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1,       &
      &    femmesh1, ele_mesh1, range1, fem_ucd1, fem_sq1)
 !
-      call init_visualize_surface                                       &
-     &   (femmesh1%mesh, femmesh1%group, ele_mesh1, nod_fld1)
+      call init_visualize_surface(femmesh1, ele_mesh1, nod_fld1)
       call end_elapsed_time(2)
 !
       end subroutine initialization_MHD

@@ -4,12 +4,13 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_vol_average                           &
-!!     &         (MHD_files, bc_FEM_IO, MHD_step)
+!!     &         (MHD_files, bc_FEM_IO, MHD_step,                       &
+!!     &          femmesh, ele_mesh, fem_sq)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_analyze_vol_average                              &
-!!     &         (i_step, MHD_files, MHD_step, fem_sq)
+!!     &         (i_step, MHD_files, femmesh, MHD_step, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
@@ -20,6 +21,7 @@
       use m_machine_parameter
       use m_work_time
       use m_SGS_control_parameter
+      use t_mesh_data
       use t_time_data
       use t_MHD_file_parameter
       use t_MHD_step_parameter
@@ -39,9 +41,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_vol_average                             &
-     &         (MHD_files, bc_FEM_IO, MHD_step, fem_sq)
+     &         (MHD_files, bc_FEM_IO, MHD_step,                         &
+     &          femmesh, ele_mesh, fem_sq)
 !
-      use m_mesh_data
       use m_node_phys_data
       use m_control_parameter
       use m_layering_ele_list
@@ -59,6 +61,8 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(IO_boundary), intent(in) :: bc_FEM_IO
 !
+      type(mesh_data), intent(inout) :: femmesh
+      type(element_geometry), intent(inout) :: ele_mesh
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_step_param), intent(inout) :: MHD_step
 !
@@ -67,20 +71,20 @@
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap                                           &
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
-     &    MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,    &
-     &    MHD_prop1, ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1,           &
-     &    SNAP_time_IO, MHD_step%rst_step, fem_sq, label_sim)
+     &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
+     &    layer_tbl1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,                &
+     &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step,             &
+     &    fem_sq, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_vol_average                                &
-     &         (i_step, MHD_files, MHD_step, fem_sq)
+     &         (i_step, MHD_files, femmesh, MHD_step, fem_sq)
 !
       use m_control_parameter
       use m_physical_property
-      use m_mesh_data
       use m_node_phys_data
       use m_geometry_data_MHD
       use m_element_phys_data
@@ -96,6 +100,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(mesh_data), intent(in) :: femmesh
 !
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -130,7 +135,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(femmesh1%mesh, nod_fld1)
+      call nod_fields_send_recv(femmesh%mesh, nod_fld1)
 !
 !     -----Output monitor date
 !
@@ -138,7 +143,7 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control                                   &
-     &     (FEM_prm1, MHD_step%time_d, femmesh1%mesh, MHD_mesh1,        &
+     &     (FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,         &
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
      &      iphys, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,         &
      &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &

@@ -88,7 +88,7 @@
 !        Initialize visualization
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
-      call init_visualize_surface(femmesh1%mesh, ele_mesh1, nod_fld1)
+      call init_visualize_surface(femmesh1, ele_mesh1, nod_fld1)
 !
       call calypso_MPI_barrier
       call end_elapsed_time(2)

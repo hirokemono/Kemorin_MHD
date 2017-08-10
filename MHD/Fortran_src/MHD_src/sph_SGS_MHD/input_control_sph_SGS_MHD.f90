@@ -119,7 +119,8 @@
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
      &    sph, comms_sph, sph_grps, sph_maker2,                         &
-     &    femmesh%mesh, femmesh%group, ele_mesh, MHD_files%mesh_file_IO)
+     &    femmesh%mesh, femmesh%group, ele_mesh,                        &
+     &    MHD_files%mesh_file_IO)
 !
       call sph_boundary_IO_control(MHD_prop, MHD_BC, bc_IO)
 !

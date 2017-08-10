@@ -67,15 +67,15 @@
 !
       call input_control_4_FEM_snap                                     &
      &   (MHD_files1, FEM_prm1, SGS_par1, flex_p1, MHD_step1,           &
-     &    MHD_prop1, MHD_BC1, mesh1, group1, ele_mesh1, nod_fld1,       &
+     &    MHD_prop1, MHD_BC1, femmesh1, ele_mesh1, nod_fld1,            &
      &    bc_FEM_IO1, filtering1, wide_filtering, wk_filter1,           &
      &    MHD_CG1%MGCG_WK, MHD_CG1%MGCG_FEM, MHD_CG1%MGCG_MHD_FEM)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
 !     --------------------- 
 !
-      call FEM_initialize_snapshot                                      &
-     &   (MHD_files1, bc_FEM_IO1, MHD_step1, range1, fem_ucd1, fem_sq1)
+      call FEM_initialize_snapshot(MHD_files1, bc_FEM_IO1, MHD_step1,   &
+     &    femmesh1, ele_mesh1, range1, fem_ucd1, fem_sq1)
 !
       call init_visualize(femmesh1, ele_mesh1, nod_fld1)
 !
@@ -96,7 +96,8 @@
 !
 !  Read and generate fields
         call FEM_analyze_filtered                                       &
-     &     (i_step, MHD_files1, MHD_step1, visval, fem_ucd1, fem_sq1)
+     &     (i_step, MHD_files1, femmesh1, ele_mesh1,                    &
+     &      MHD_step1, visval, fem_ucd1, fem_sq1)
 !
 !  Visualization
         if (visval.eq.0) then

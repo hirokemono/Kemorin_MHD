@@ -10,6 +10,10 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data),intent(inout) :: nod_fld
 !!
+!!      subroutine init_send_recv(nod_comm)
+!!      subroutine fields_send_recv(nod_comm, nod_fld)
+!!        type(communication_table), intent(in) :: nod_comm
+!!
 !!      subroutine scalar_send_recv(id_phys, nod_comm, nod_fld)
 !!      subroutine vector_send_recv(id_phys, nod_comm, nod_fld)
 !!      subroutine sym_tensor_send_recv(id_phys, nod_comm, nod_fld)
@@ -31,8 +35,6 @@
       use t_phys_data
 !
       implicit none
-!
-      private :: init_send_recv
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,25 +64,7 @@
       integer (kind=kint) :: i, ist
 !
 !
-      do i = 1, nod_fld%num_phys
-        ist = nod_fld%istack_component(i-1) + 1
-!
-        if (nod_fld%num_component(i) .eq. n_vector) then
-          if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
-     &      'comm. for vector of ', trim(nod_fld%phys_name(i))
-          call vector_send_recv(ist, mesh%nod_comm, nod_fld)
-!
-        else if (nod_fld%num_component(i) .eq. n_scalar) then
-          if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
-     &      'comm. for scaler of ', trim(nod_fld%phys_name(i))
-          call scalar_send_recv(ist, mesh%nod_comm, nod_fld)
-!
-        else if (nod_fld%num_component(i) .eq. n_sym_tensor) then
-          if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
-     &      'comm. for tensor of ', trim(nod_fld%phys_name(i))
-          call sym_tensor_send_recv(ist, mesh%nod_comm, nod_fld)
-        end if
-      end do
+      call fields_send_recv(mesh%nod_comm, nod_fld)
 !
       end subroutine nod_fields_send_recv
 !
@@ -105,6 +89,42 @@
 !
       end subroutine init_send_recv
 !
+! ----------------------------------------------------------------------
+!
+      subroutine fields_send_recv(nod_comm, nod_fld)
+!
+      use m_machine_parameter
+      use m_phys_constants
+      use t_phys_data
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(phys_data),intent(inout) :: nod_fld
+      integer (kind=kint) :: i, ist
+!
+!
+      do i = 1, nod_fld%num_phys
+        ist = nod_fld%istack_component(i-1) + 1
+!
+        if (nod_fld%num_component(i) .eq. n_vector) then
+          if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
+     &      'comm. for vector of ', trim(nod_fld%phys_name(i))
+          call vector_send_recv(ist, nod_comm, nod_fld)
+!
+        else if (nod_fld%num_component(i) .eq. n_scalar) then
+          if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
+     &      'comm. for scaler of ', trim(nod_fld%phys_name(i))
+          call scalar_send_recv(ist, nod_comm, nod_fld)
+!
+        else if (nod_fld%num_component(i) .eq. n_sym_tensor) then
+          if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
+     &      'comm. for tensor of ', trim(nod_fld%phys_name(i))
+          call sym_tensor_send_recv(ist, nod_comm, nod_fld)
+        end if
+      end do
+!
+      end subroutine fields_send_recv
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine scalar_send_recv(id_phys, nod_comm, nod_fld)
