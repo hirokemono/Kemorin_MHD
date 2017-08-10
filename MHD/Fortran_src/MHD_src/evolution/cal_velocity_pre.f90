@@ -52,7 +52,7 @@
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(vectors_4_solver), intent(inout)                         &
 !!       &           :: MG_vector(0:num_MG_level)
-!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
@@ -166,7 +166,7 @@
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Vmatrix%nlevel_MG)
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(filtering_work_type), intent(inout) :: wk_filter

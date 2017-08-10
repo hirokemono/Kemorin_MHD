@@ -22,7 +22,7 @@
 !
       type work_FEM_dynamic_SGS
         type(dynamic_correlation_data) :: wk_cor
-        type(dynamis_least_suare_data) :: wk_lsq
+        type(dynamic_least_suare_data) :: wk_lsq
         type(dynamic_model_data) :: wk_sgs
         type(dynamic_model_data) :: wk_diff
 !

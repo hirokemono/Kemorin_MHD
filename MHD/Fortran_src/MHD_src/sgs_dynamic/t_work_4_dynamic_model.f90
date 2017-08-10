@@ -17,7 +17,7 @@
 !
       integer(kind = kint), parameter :: ncomp_lsq = 18
 !
-      type dynamis_least_suare_data
+      type dynamic_least_suare_data
         integer(kind = kint) :: nlayer
 !
         real(kind=kreal), allocatable :: slocal(:,:)
@@ -29,7 +29,7 @@
         real(kind=kreal), allocatable :: dnorm(:)
 !
         real(kind = kreal), allocatable :: slocal_smp(:,:)
-      end type dynamis_least_suare_data
+      end type dynamic_least_suare_data
 !
 ! ----------------------------------------------------------------------
 !
@@ -42,7 +42,7 @@
       use m_machine_parameter
 !
       integer(kind = kint), intent(in) :: n_layer_d
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !
 !
       wk_lsq%nlayer = n_layer_d
@@ -67,7 +67,7 @@
 !
       subroutine dealloc_work_4_dynamic(wk_lsq)
 !
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !
 !
       deallocate(wk_lsq%wlsq, wk_lsq%wlocal)
@@ -84,7 +84,7 @@
       use calypso_mpi
 !
       integer(kind = kint), intent(in) :: ncomp_sgs
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
       integer(kind = kint) :: num
 !
 !
@@ -102,7 +102,7 @@
       use calypso_mpi
 !
       integer(kind = kint), intent(in) :: ncomp_sgs
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !
 !
       wk_lsq%wlsq(1:ncomp_sgs) = 0.0d0

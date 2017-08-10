@@ -20,7 +20,7 @@
 !
         type(dynamic_model_data), save :: wk_diff1
 !
-        type(dynamis_least_suare_data), save :: wk_lsq1
+        type(dynamic_least_suare_data), save :: wk_lsq1
 !
         type(dynamic_correlation_data), save :: wk_cor1
 !

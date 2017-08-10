@@ -17,7 +17,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !!      subroutine int_vol_rms_ave_dynamic(layer_tbl,                   &
 !!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
 !!     &          n_tensor, n_int, wk_cor)
@@ -72,7 +72,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !
 !
       wk_lsq%wlocal(1:18) =   0.0d0
@@ -150,7 +150,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !
 !
       wk_lsq%wlocal(1:18) =              0.0d0

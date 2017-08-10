@@ -51,7 +51,7 @@
 !!        type(MHD_matrices_pack), intent(in) :: s_package
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(dynamic_correlation_data), intent(inout) :: wk_cor
-!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(filtering_work_type), intent(inout) :: wk_filter
@@ -155,7 +155,7 @@
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(dynamic_correlation_data), intent(inout) :: wk_cor
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -423,7 +423,7 @@
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(dynamic_correlation_data), intent(inout) :: wk_cor
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -571,7 +571,7 @@
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(dynamic_correlation_data), intent(inout) :: wk_cor
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(filtering_work_type), intent(inout) :: wk_filter

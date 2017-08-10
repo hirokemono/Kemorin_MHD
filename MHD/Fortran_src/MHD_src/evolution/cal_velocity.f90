@@ -42,7 +42,7 @@
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
-!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -147,7 +147,7 @@
       type(MHD_MG_matrix), intent(in) :: Pmatrix
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk

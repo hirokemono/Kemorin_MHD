@@ -30,9 +30,9 @@
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(dynamic_correlation_data), intent(inout) :: wk_cor
-!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type (lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -114,11 +114,11 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type (lumped_mass_matrices), intent(in) :: mlump_fl
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(dynamic_correlation_data), intent(inout) :: wk_cor
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk

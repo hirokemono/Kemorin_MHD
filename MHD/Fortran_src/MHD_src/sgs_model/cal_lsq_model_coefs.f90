@@ -22,7 +22,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
-!!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+!!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !
       module cal_lsq_model_coefs
 !
@@ -85,7 +85,7 @@
       real(kind = kreal), intent(inout) :: sgs_f_whole(num_sgs_kinds)
       real(kind = kreal), intent(inout) :: sgs_c_whole(num_sgs_coefs)
 !
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !
 !
 !  Volume integration:                      int_vol_model_coef
@@ -136,7 +136,7 @@
       real(kind = kreal), intent(inout) :: diff_f_whole(num_diff_kinds)
       real(kind = kreal), intent(inout) :: diff_c_whole(num_diff_coefs)
 !
-      type(dynamis_least_suare_data), intent(inout) :: wk_lsq
+      type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !
 !
 !  Volume integration: int_vol_diff_coef
