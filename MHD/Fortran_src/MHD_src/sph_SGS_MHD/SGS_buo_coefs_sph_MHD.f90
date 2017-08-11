@@ -78,10 +78,9 @@
       call calypso_mpi_barrier
 !
       call sel_sph_model_coefs                                          &
-     &   (ione, nnod_med, stablize_weight,                              &
-     &    wk_sgs%comp_coef(1,icomp_SGS_buo),                            &
-     &    wk_sgs%comp_clip(1,icomp_SGS_buo),                            &
-     &    wk_sgs%fld_coef(1,ifld_SGS_buo))
+     &   (ione, nnod_med, stablize_weight, ifld_SGS_buo, icomp_SGS_buo, &
+     &    wk_sgs%num_kinds, wk_sgs%ntot_comp, wk_sgs%comp_coef,         &
+     &    wk_sgs%comp_clip, wk_sgs%fld_coef)
 !
       end subroutine cal_SGS_buo_coefs_sph_MHD
 !
