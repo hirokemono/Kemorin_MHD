@@ -7,11 +7,10 @@
 !     modified by H. Matsui on May, 2008
 !
 !!      subroutine s_read_filtering_data(SGS_param, filter_param,       &
-!!     &          node, ele, FEM_elens, filtering, wide_filtering, wk_filter)
+!!     &          node, ele, FEM_filters, wk_filter)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(filtering_data_type), intent(inout) :: filtering
-!!        type(filtering_data_type), intent(inout) :: wide_filtering
+!!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !
       module read_filtering_data
@@ -23,7 +22,7 @@
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data
-      use t_filtering_data
+      use t_FEM_MHD_filter_data
 !
       implicit none
 !
@@ -37,11 +36,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_read_filtering_data(SGS_param, filter_param,         &
-     &          node, ele, FEM_elens, filtering, wide_filtering, wk_filter)
+     &          node, ele, FEM_filters, wk_filter)
 !
       use m_nod_filter_comm_table
       use m_filter_file_names
-      use t_filter_elength
       use t_geometry_data
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -49,28 +47,28 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
 !
-      type(gradient_model_data_type), intent(inout) :: FEM_elens
-      type(filtering_data_type), intent(inout) :: filtering
-      type(filtering_data_type), intent(inout) :: wide_filtering
+      type(filters_on_FEM), intent(inout) :: FEM_filters
       type(filtering_work_type), intent(inout) :: wk_filter
 !
 !
       if(filter_param%iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
-        call read_line_filtering_data(node%numnod, ele%numele,          &
-     &     SGS_param, FEM_elens, filtering%fil_l)
+        call read_line_filtering_data                                   &
+     &     (node%numnod, ele%numele, SGS_param,                         &
+     &      FEM_filters%FEM_elens, FEM_filters%filtering%fil_l)
       else
         call read_3d_filter_moments                                     &
-     &     (node%numnod, ele%numele, SGS_param, FEM_elens)
+     &     (node%numnod, ele%numele, SGS_param, FEM_filters%FEM_elens)
         if(filter_param%iflag_SGS_filter .gt. id_turn_OFF) then
           call read_3d_filtering_data                                   &
-     &       (filter_3d_head, ifmt_3d_filter, filtering)
+     &       (filter_3d_head, ifmt_3d_filter, FEM_filters%filtering)
           call alloc_nod_data_4_filter(nnod_filtering, wk_filter)
         end if
 !
-        if       (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
+        if       (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
      &      .and. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
           call read_3d_filtering_data                                   &
-     &       (filter_wide_head, ifmt_wide_filter, wide_filtering)
+     &       (filter_wide_head, ifmt_wide_filter,                       &
+     &        FEM_filters%wide_filtering)
         end if
       end if
 !

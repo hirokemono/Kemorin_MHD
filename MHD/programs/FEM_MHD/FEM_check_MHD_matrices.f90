@@ -21,6 +21,7 @@
       use t_MHD_file_parameter
       use t_MHD_step_parameter
       use t_flex_delta_t_data
+      use t_FEM_MHD_filter_data
       use t_FEM_MHD_mean_square
 !
       implicit none
@@ -41,13 +42,12 @@
       use m_node_phys_data
       use m_physical_property
       use m_finite_element_matrix
-      use m_layering_ele_list
-      use m_3d_filter_coef_MHD
       use m_sorted_node_MHD
       use m_bc_data_velo
       use m_solver_djds_MHD
       use m_element_phys_data
       use m_finite_element_matrix
+      use m_3d_filter_coef_MHD
       use m_work_4_dynamic_model
       use t_boundary_field_IO
 !
@@ -71,9 +71,9 @@
       call init_analyzer_fl                                             &
      &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, flex_data,  &
      &    MHD_step, femmesh1%mesh, femmesh1%group, ele_mesh1,           &
-     &    MHD_mesh1, layer_tbl1, FEM1_elen, filtering1, wide_filtering, MHD_prop1, &
-     &    ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1, fem_int1, mk_MHD1,   &
-     &    MHD_CG1, SGS_MHD_wk1, fem_sq, label_sim)
+     &    MHD_mesh1, FEM_filters1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,   &
+     &    iphys, nod_fld1, fem_int1, mk_MHD1, MHD_CG1, SGS_MHD_wk1,     &
+     &    fem_sq, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !
@@ -85,8 +85,8 @@
       call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
      &    SGS_par1%model_p, SGS_par1%commute_p, femmesh1,               &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1, ak_MHD,   &
-     &    fem_int1, FEM1_elen, Csims_FEM_MHD1, MHD1_mat_tbls, mk_MHD1,  &
-     &    SGS_MHD_wk1%rhs_mat, MHD_CG1)
+     &    fem_int1, FEM_filters1%FEM_elens, Csims_FEM_MHD1,             &
+     &    MHD1_mat_tbls, mk_MHD1, SGS_MHD_wk1%rhs_mat, MHD_CG1)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD                                         &

@@ -8,12 +8,11 @@
 !!      subroutine velocity_evolution(time, dt, FEM_prm, SGS_par,       &
 !!     &          mesh, group, surf, fluid, fl_prop, cd_prop,           &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,           &
-!!     &          iphys_ele, ak_MHD, fem_int, FEM_elens,                &
+!!     &          iphys_ele, ak_MHD, fem_int, FEM_filters,              &
 !!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
-!!     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,      &
-!!     &          mlump_fl, Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk,      &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                &
-!!     &          sgs_coefs, fem_sq)
+!!     &          sgs_coefs_nod, diff_coefs, mlump_fl,                  &
+!!     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,    &
+!!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -29,15 +28,13 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
-!!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_terms_address), intent(in) :: iphys_elediff
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
-!!        type(filtering_data_type), intent(in) :: filtering
-!!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix
@@ -64,8 +61,7 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
-      use t_filter_elength
-      use t_layering_ele_list
+      use t_FEM_MHD_filter_data
       use t_bc_data_velo
       use t_surface_bc_data
       use t_material_property
@@ -96,12 +92,11 @@
       subroutine velocity_evolution(time, dt, FEM_prm, SGS_par,         &
      &          mesh, group, surf, fluid, fl_prop, cd_prop,             &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,             &
-     &          iphys_ele, ak_MHD, fem_int, FEM_elens,                  &
+     &          iphys_ele, ak_MHD, fem_int, FEM_filters,                &
      &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
-     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,        &
-     &          mlump_fl, Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk,        &
-     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                  &
-     &          sgs_coefs, fem_sq)
+     &          sgs_coefs_nod, diff_coefs, mlump_fl,                    &
+     &          Vmatrix, Pmatrix, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,      &
+     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, fem_sq)
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -128,15 +123,13 @@
       type(phys_address), intent(in) :: iphys_ele
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
-      type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_terms_address), intent(in) :: ifld_sgs
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: iphys_elediff
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(filtering_data_type), intent(in) :: filtering
-      type(layering_tbl), intent(in) :: layer_tbl
       type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: Vmatrix
       type(MHD_MG_matrix), intent(in) :: Pmatrix
@@ -164,11 +157,11 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, surf,                     &
      &    fluid, group%surf_grp, group%surf_nod_grp,                    &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
-     &    iphys_ele, ak_MHD, fem_int, FEM_elens,                        &
+     &    iphys_ele, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
      &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff, sgs_coefs_nod, &
-     &    diff_coefs, filtering, layer_tbl, mlump_fl, Vmatrix,          &
-     &    MGCG_WK%MG_vector, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs,      &
-     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat,                    &
+     &    diff_coefs, FEM_filters%filtering, FEM_filters%layer_tbl,     &
+     &    mlump_fl, Vmatrix, MGCG_WK%MG_vector, FEM_SGS_wk%wk_lsq,      &
+     &    FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat, &
      &    nod_fld, ele_fld, sgs_coefs)
 !
 !     --------------------- 
@@ -186,10 +179,9 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%node, mesh%ele, surf, fluid,                           &
      &      group%surf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs,                 &
-     &      iphys, fem_int%jcs, fem_int%rhs_tbl,                        &
-     &      FEM_elens, diff_coefs, Pmatrix, MGCG_WK%MG_vector,          &
-     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
-     &      nod_fld)
+     &      iphys, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
+     &      diff_coefs, Pmatrix, MGCG_WK%MG_vector, rhs_mat%fem_wk,     &
+     &      rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
      &     (dt, mesh%node%numnod, mesh%node%istack_internal_smp,        &
@@ -200,8 +192,8 @@
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      surf, fluid, group%surf_grp, group%surf_nod_grp,            &
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele,      &
-     &      ele_fld, ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs, &
-     &      mlump_fl, Vmatrix, MGCG_WK%MG_vector,                       &
+     &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens, ifld_diff, &
+     &      diff_coefs, mlump_fl, Vmatrix, MGCG_WK%MG_vector,           &
      &      mhd_fem_wk, rhs_mat, nod_fld)
 !
 !

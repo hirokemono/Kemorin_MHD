@@ -5,17 +5,19 @@
 !
 !!      subroutine FEM_initialize_snap_tmp                              &
 !!     &         (MHD_files, bc_FEM_IO, MHD_step, femmesh, ele_mesh,    &
-!!     &          SGS_MHD_wk, range, fem_ucd, fem_sq)
+!!     &          FEM_filters, SGS_MHD_wk, range, fem_ucd, fem_sq)
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(maximum_informations), intent(inout) :: range
 !!        type(ucd_file_data), intent(inout) :: fem_ucd
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
-!!     &         (i_step, MHD_files, femmesh, ele_mesh,                 &
+!!      subroutine FEM_analyze_snap_tmp                                 &
+!!     &         (i_step, MHD_files, femmesh, ele_mesh, FEM_filters,    &
 !!     &          MHD_step, visval, SGS_MHD_wk, fem_ucd, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(VIZ_step_params), intent(inout) :: MHD_step
@@ -39,6 +41,7 @@
       use t_ucd_file
       use t_cal_max_indices
       use t_FEM_MHD_mean_square
+      use t_FEM_MHD_filter_data
       use t_work_FEM_SGS_MHD
 !
       use calypso_mpi
@@ -55,11 +58,10 @@
 !
       subroutine FEM_initialize_snap_tmp                                &
      &         (MHD_files, bc_FEM_IO, MHD_step, femmesh, ele_mesh,      &
-     &          SGS_MHD_wk, range, fem_ucd, fem_sq)
+     &          FEM_filters, SGS_MHD_wk, range, fem_ucd, fem_sq)
 !
       use m_node_phys_data
       use m_geometry_data_MHD
-      use m_layering_ele_list
       use m_3d_filter_coef_MHD
       use m_physical_property
       use m_element_phys_data
@@ -78,6 +80,7 @@
 !
       type(mesh_data), intent(inout) :: femmesh
       type(element_geometry), intent(inout) :: ele_mesh
+      type(filters_on_FEM), intent(inout) :: FEM_filters
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -91,10 +94,9 @@
       call init_analyzer_snap                                           &
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
-     &    layer_tbl1, FEM1_elen, filtering1, wide_filtering, MHD_prop1, &
-     &    ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1, SNAP_time_IO,        &
-     &    MHD_step%rst_step, fem_int1, mk_MHD1, SGS_MHD_wk,             &
-     &    fem_sq, label_sim)
+     &    FEM_filters, MHD_prop1, ak_MHD, Csims_FEM_MHD1,               &
+     &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step,             &
+     &    fem_int1, mk_MHD1, SGS_MHD_wk, fem_sq, label_sim)
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, femmesh%mesh, MHD_mesh1, nod_fld1,         &
@@ -107,7 +109,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_snap_tmp                                   &
-     &         (i_step, MHD_files, femmesh, ele_mesh,                   &
+     &         (i_step, MHD_files, femmesh, ele_mesh, FEM_filters,      &
      &          MHD_step, visval, SGS_MHD_wk, fem_ucd, fem_sq)
 !
       use m_physical_property
@@ -116,7 +118,6 @@
       use m_element_phys_data
       use m_finite_element_matrix
       use m_3d_filter_coef_MHD
-      use m_layering_ele_list
       use m_bc_data_velo
       use m_flexible_time_step
       use m_fem_mhd_restart
@@ -141,6 +142,7 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
+      type(filters_on_FEM), intent(in) :: FEM_filters
 !
       integer(kind=kint ), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -200,8 +202,8 @@
       call update_fields                                                &
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,                 &
      &    ele_mesh, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,     &
-     &    fem_int1, FEM1_elen, filtering1, wide_filtering, layer_tbl1,  &
-     &    mk_MHD1, SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
+     &    fem_int1, FEM_filters, mk_MHD1, SGS_MHD_wk, nod_fld1,         &
+     &    fld_ele1, Csims_FEM_MHD1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -209,9 +211,8 @@
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
-     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1, layer_tbl1,        &
-     &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1, fem_int1,    &
-     &      FEM1_elen, filtering1, wide_filtering, mk_MHD1,             &
+     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs, &
+     &      iphys, iphys_ele, fld_ele1, fem_int1, FEM_filters, mk_MHD1, &
      &      SGS_MHD_wk, nod_fld1, Csims_FEM_MHD1)
       end if
 !
@@ -222,8 +223,7 @@
         call lead_fields_by_FEM                                         &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,               &
      &      ele_mesh, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,          &
-     &      iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,              &
-     &      filtering1, wide_filtering, layer_tbl1, mk_MHD1,            &
+     &      iphys, iphys_ele, ak_MHD, fem_int1, FEM_filters, mk_MHD1,   &
      &      SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
       end if
 !
@@ -231,9 +231,10 @@
       call lead_specital_SGS(MHD_step, FEM_prm1, SGS_par1,              &
      &      femmesh%mesh, ele_mesh, femmesh%group,                      &
      &      MHD_mesh1, MHD_prop1, sf1_bcs, iphys, iphys_ele, ak_MHD,    &
-     &      fem_int1, FEM1_elen, filtering1, Csims_FEM_MHD1, mk_MHD1,   &
-     &      SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,               &
-     &      SGS_MHD_wk%rhs_mat, nod_fld1, fld_ele1)
+     &      fem_int1, FEM_filters%FEM_elens, FEM_filters%filtering,     &
+     &      Csims_FEM_MHD1, mk_MHD1, SGS_MHD_wk%FEM_SGS_wk,             &
+     &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                  &
+     &      nod_fld1, fld_ele1)
 !
 !     -----Output monitor date
 !

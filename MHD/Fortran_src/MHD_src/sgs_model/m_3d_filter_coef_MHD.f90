@@ -6,16 +6,12 @@
       module m_3d_filter_coef_MHD
 !
       use m_precision
-      use t_filter_elength
-      use t_filtering_data
+      use t_FEM_MHD_filter_data
 !
       implicit none
 !
 !
-      type(gradient_model_data_type), save :: FEM1_elen
-!
-      type(filtering_data_type), save :: filtering1
-!
-      type(filtering_data_type), save :: wide_filtering
+!> Structure of grouping of elements
+      type(filters_on_FEM), save :: FEM_filters1
 !
       end module m_3d_filter_coef_MHD

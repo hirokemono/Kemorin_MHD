@@ -7,9 +7,9 @@
 !!      subroutine cal_sgs_maxwell_t_dynamic                            &
 !!     &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx, dt,      &
 !!     &          FEM_prm, SGS_par, mesh, iphys, iphys_ele, fld_ele,    &
-!!     &          fluid, layer_tbl, jacobians, rhs_tbl, FEM_elens,      &
-!!     &          filtering, sgs_coefs_nod, mlump_fl, FEM_SGS_wk,       &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld, sgs_coefs)
+!!     &          fluid, jacobians, rhs_tbl, FEM_filters, sgs_coefs_nod,&
+!!     &          mlump_fl, FEM_SGS_wk, mhd_fem_wk, rhs_mat,            &
+!!     &          nod_fld, sgs_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -17,11 +17,9 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: fld_ele
 !!        type(field_geometry_data), intent(in) :: fluid
-!!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(filtering_data_type), intent(in) :: filtering
+!!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -44,10 +42,8 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
-      use t_layering_ele_list
+      use t_FEM_MHD_filter_data
       use t_MHD_finite_element_mat
-      use t_filter_elength
-      use t_filtering_data
       use t_material_property
       use t_SGS_model_coefs
       use t_work_FEM_integration
@@ -64,9 +60,9 @@
       subroutine cal_sgs_maxwell_t_dynamic                              &
      &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx, dt,        &
      &          FEM_prm, SGS_par, mesh, iphys, iphys_ele, fld_ele,      &
-     &          fluid, layer_tbl, jacobians, rhs_tbl, FEM_elens,        &
-     &          filtering, sgs_coefs_nod, mlump_fl, FEM_SGS_wk,         &
-     &          mhd_fem_wk, rhs_mat, nod_fld, sgs_coefs)
+     &          fluid, jacobians, rhs_tbl, FEM_filters, sgs_coefs_nod,  &
+     &          mlump_fl, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
+     &          nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -88,11 +84,9 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: fld_ele
       type(field_geometry_data), intent(in) :: fluid
-      type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(filtering_data_type), intent(in) :: filtering
+      type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -106,7 +100,7 @@
 !    reset model coefficients
 !
       call reset_tensor_sgs_model_coefs                                 &
-     &   (mesh%ele, layer_tbl, icomp_sgs_lor, sgs_coefs)
+     &   (mesh%ele, FEM_filters%layer_tbl, icomp_sgs_lor, sgs_coefs)
       call clear_work_4_dynamic_model(iphys, nod_fld)
 !
 !    SGS term by similarity model
@@ -115,8 +109,8 @@
      &        'cal_sgs_mf_simi i_SGS_maxwell', iphys%i_SGS_maxwell
       call cal_sgs_mf_simi(iphys%i_SGS_maxwell, iphys%i_magne,          &
      &    iphys%i_filter_magne, icomp_sgs_lor, SGS_par%filter_p,        &
-     &    mesh%nod_comm, mesh%node, filtering, sgs_coefs_nod,           &
-     &    FEM_SGS_wk%wk_filter, nod_fld)
+     &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
+     &    sgs_coefs_nod, FEM_SGS_wk%wk_filter, nod_fld)
 !
 !    copy to work array
 !
@@ -129,8 +123,8 @@
       call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx, dt,        &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
-     &    iphys_ele, fld_ele, jacobians%jac_3d, FEM_elens, rhs_tbl,     &
-     &    mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld)
+     &    iphys_ele, fld_ele, jacobians%jac_3d, FEM_filters%FEM_elens,  &
+     &    rhs_tbl, mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld)
 !
 !   gradient model by original field
 !
@@ -138,13 +132,13 @@
       call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
      &    iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx, dt,               &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
-     &    iphys_ele, fld_ele,jacobians%jac_3d, FEM_elens, rhs_tbl,      &
-     &    mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld)
+     &    iphys_ele, fld_ele,jacobians%jac_3d, FEM_filters%FEM_elens,   &
+     &    rhs_tbl, mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld)
 !
 !      filtering
 !
-      call cal_filtered_sym_tensor_whole                                &
-     &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,        &
+      call cal_filtered_sym_tensor_whole(SGS_par%filter_p,              &
+     &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, FEM_SGS_wk%wk_filter,  &
      &    nod_fld)
 !
@@ -158,8 +152,8 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_sym_tensor, iak_sgs_lor, icomp_sgs_lor
       call cal_model_coefs                                              &
-     &   (SGS_par, layer_tbl, mesh%node, mesh%ele, iphys, nod_fld,      &
-     &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
+     &   (SGS_par, FEM_filters%layer_tbl, mesh%node, mesh%ele,          &
+     &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
      &    SGS_par%model_p%itype_Csym_maxwell, n_sym_tensor,             &
      &    iak_sgs_lor, icomp_sgs_lor, FEM_prm%npoint_t_evo_int,         &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs,      &

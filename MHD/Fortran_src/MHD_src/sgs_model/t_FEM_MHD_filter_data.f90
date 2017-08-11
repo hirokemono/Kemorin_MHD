@@ -20,6 +20,7 @@
       implicit none
 !
 !
+!>      Structure of filtering data for FEM
       type filters_on_FEM
 !>        Structure of grouping of elements
         type(layering_tbl) :: layer_tbl

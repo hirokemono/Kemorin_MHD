@@ -8,10 +8,9 @@
 !!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
 !!     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,&
 !!     &          SGS_par, mesh, group, surf, Snod_bcs, sf_bcs,         &
-!!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
-!!     &          jacobians, rhs_tbl, FEM_elens, filtering, sgs_coefs,  &
-!!     &          mlump_fl, FEM_SGS_wk, mhd_fem_wk, rhs_mat,            &
-!!     &          nod_fld, diff_coefs)
+!!     &          iphys, iphys_ele, ele_fld, fluid, jacobians, rhs_tbl, &
+!!     &          FEM_filters, sgs_coefs, mlump_fl, FEM_SGS_wk,         &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
@@ -22,11 +21,9 @@
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
 !!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
-!!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(filtering_data_type), intent(in) :: filtering
+!!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -46,11 +43,8 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
-      use t_layering_ele_list
+      use t_FEM_MHD_filter_data
       use t_MHD_finite_element_mat
-      use t_filter_elength
-      use t_filtering_data
-      use t_ele_info_4_dynamic
       use t_bc_data_temp
       use t_surface_bc_data
       use t_work_FEM_integration
@@ -69,10 +63,9 @@
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,  &
      &          SGS_par, mesh, group, surf, Snod_bcs, sf_bcs,           &
-     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
-     &          jacobians, rhs_tbl, FEM_elens, filtering, sgs_coefs,    &
-     &          mlump_fl, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
-     &          nod_fld, diff_coefs)
+     &          iphys, iphys_ele, ele_fld, fluid, jacobians, rhs_tbl,   &
+     &          FEM_filters, sgs_coefs, mlump_fl, FEM_SGS_wk,           &
+     &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -108,11 +101,9 @@
       type(field_geometry_data), intent(in) :: fluid
       type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
-      type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(filtering_data_type), intent(in) :: filtering
+      type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -136,8 +127,9 @@
      &    itype_Csym_flux, SGS_par%model_p%icoord_Csim, ifilter_4delta, &
      &    icomp_sgs_flux, iphys%i_sgs_grad_f, ifield_f, ie_dfvx,        &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele,         &
-     &    ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens, sgs_coefs,     &
-     &    mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
+     &    ele_fld, jacobians%jac_3d, rhs_tbl, FEM_filters%FEM_elens,    &
+     &    sgs_coefs, mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, &
+     &    nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
@@ -160,8 +152,8 @@
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_scalar_whole                                    &
-     &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,        &
+      call cal_filtered_scalar_whole(SGS_par%filter_p,                  &
+     &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, FEM_SGS_wk%wk_filter,     &
      &    nod_fld)
 !
@@ -180,7 +172,7 @@
       call cal_commute_error_4_sf(num_int, fluid%istack_ele_fld_smp,    &
      &    mlump_fl, mesh%node, mesh%ele, surf, group%surf_grp,          &
      &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
-     &    rhs_tbl, FEM_elens, sf_bcs%sgs, ifilter_4delta,               &
+     &    rhs_tbl, FEM_filters%FEM_elens, sf_bcs%sgs, ifilter_4delta,   &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, ivelo_f, ifield_f,    &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
@@ -197,7 +189,7 @@
       call cal_commute_error_4_sf(num_int, fluid%istack_ele_fld_smp,    &
      &    mlump_fl, mesh%node, mesh%ele, surf, group%surf_grp,          &
      &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
-     &    rhs_tbl, FEM_elens, sf_bcs%sgs, ifilter_2delta,               &
+     &    rhs_tbl, FEM_filters%FEM_elens, sf_bcs%sgs, ifilter_2delta,   &
      &    iphys%i_sgs_grad, i_sgs, ivelo, ifield,                       &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
@@ -206,8 +198,8 @@
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_scalar_whole                                    &
-     &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,        &
+      call cal_filtered_scalar_whole(SGS_par%filter_p,                  &
+     &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, FEM_SGS_wk%wk_filter,     &
      &    nod_fld)
       call delete_field_by_fixed_s_bc                                   &
@@ -220,7 +212,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_scalar, iak_diff_flux, icomp_diff_sf
-      call cal_diff_coef_fluid(SGS_par, layer_tbl,                      &
+      call cal_diff_coef_fluid(SGS_par, FEM_filters%layer_tbl,          &
      &    mesh%node, mesh%ele, fluid, iphys, nod_fld,                   &
      &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
      &    n_scalar, iak_diff_flux, icomp_diff_sf, num_int,              &

@@ -10,9 +10,8 @@
 !!      subroutine update_with_vector_potential                         &
 !!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,&
 !!     &          FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,  &
-!!     &          layer_tbl, Bnod_bcs, Asf_bcs, Fsf_bcs,                &
-!!     &          iphys, iphys_ele, jacobians, rhs_tbl, FEM_elen,       &
-!!     &          filtering, wide_filtering, m_lump, FEM_SGS_wk,        &
+!!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,         &
+!!     &          jacobians, rhs_tbl, FEM_filters, m_lump, FEM_SGS_wk,  &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -26,10 +25,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(jacobians_type), intent(in) :: jacobians
-!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(gradient_model_data_type), intent(in) :: FEM_elen
-!!        type(filtering_data_type), intent(in) :: filtering
-!!        type(filtering_data_type), intent(in) :: wide_filtering
+!!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -55,8 +51,7 @@
       use t_phys_address
       use t_table_FEM_const
       use t_MHD_finite_element_mat
-      use t_filter_elength
-      use t_layering_ele_list
+      use t_FEM_MHD_filter_data
       use t_material_property
       use t_work_layer_correlate
       use t_bc_data_magne
@@ -75,9 +70,8 @@
       subroutine update_with_vector_potential                           &
      &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,  &
      &          FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,    &
-     &          layer_tbl, Bnod_bcs, Asf_bcs, Fsf_bcs,                  &
-     &          iphys, iphys_ele, jacobians, rhs_tbl, FEM_elen,         &
-     &          filtering, wide_filtering, m_lump, FEM_SGS_wk,          &
+     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,           &
+     &          jacobians, rhs_tbl, FEM_filters, m_lump, FEM_SGS_wk,    &
      &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, diff_coefs)
 !
       use average_on_elements
@@ -106,11 +100,8 @@
       type(phys_address), intent(in) :: iphys_ele
       type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elen
-      type(filtering_data_type), intent(in) :: filtering
-      type(filtering_data_type), intent(in) :: wide_filtering
+      type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: m_lump
-      type(layering_tbl), intent(in) :: layer_tbl
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -132,8 +123,8 @@
 !
         if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
-          call cal_filtered_vector_whole                                &
-     &       (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,    &
+          call cal_filtered_vector_whole(SGS_par%filter_p,              &
+     &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys%i_filter_vecp, iphys%i_vecp, FEM_SGS_wk%wk_filter,  &
      &        nod_fld)
           nod_fld%iflag_update(iphys%i_filter_vecp  ) = 1
@@ -147,7 +138,7 @@
           if (iflag_debug.gt.0)                                         &
      &         write(*,*) 'cal_filtered_vector_p i_wide_fil_vecp'
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
-     &        mesh%nod_comm, mesh%node, wide_filtering,                 &
+     &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
      &        iphys%i_wide_fil_vecp, iphys%i_filter_vecp,               &
      &        FEM_SGS_wk%wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_wide_fil_vecp  ) = 1
@@ -164,13 +155,13 @@
      &       then
               call s_cal_diff_coef_vector_p                             &
      &           (iak_diff_b, icomp_diff_b, dt, FEM_prm, SGS_par,       &
-     &            mesh%nod_comm, mesh%node, mesh%ele,                   &
-     &            surf, fluid, layer_tbl,group%surf_grp,                &
+     &            mesh%nod_comm, mesh%node, mesh%ele, surf, fluid,      &
+     &            FEM_filters%layer_tbl, group%surf_grp,                &
      &            Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,          &
-     &            jacobians, rhs_tbl, FEM_elen, filtering, m_lump,      &
-     &            FEM_SGS_wk%wk_filter, FEM_SGS_wk%wk_cor,              &
-     &            FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,                &
-     &            rhs_mat%fem_wk, rhs_mat%surf_wk,                      &
+     &            jacobians, rhs_tbl, FEM_filters%FEM_elens,            &
+     &            FEM_filters%filtering, m_lump, FEM_SGS_wk%wk_filter,  &
+     &            FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                 &
+     &            FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
      &            rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
             end if
 !
@@ -188,8 +179,9 @@
      &      mesh%ele%istack_ele_smp, m_lump, SGS_par%model_p,           &
      &      mesh%nod_comm, mesh%node, mesh%ele, surf, group%surf_grp,   &
      &      iphys_ele, ele_fld, jacobians%jac_3d, jacobians%jac_sf_grp, &
-     &      FEM_elen, diff_coefs, Bnod_bcs%nod_bc_b, Asf_bcs%sgs,       &
-     &      rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
+     &      FEM_filters%FEM_elens, diff_coefs, Bnod_bcs%nod_bc_b,       &
+     &      Asf_bcs%sgs,  rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,     &
+     &      rhs_mat%f_nl, nod_fld)
       end if
       if (iphys_ele%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'
@@ -244,8 +236,8 @@
          if (iphys%i_filter_magne .ne. 0) then
            if (iflag_debug.gt.0)                                        &
      &        write(*,*) 'cal_filtered_vector', iphys%i_filter_magne
-           call cal_filtered_vector_whole                               &
-     &        (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,   &
+           call cal_filtered_vector_whole(SGS_par%filter_p,             &
+     &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
      &         iphys%i_filter_magne, iphys%i_magne,                     &
      &         FEM_SGS_wk%wk_filter, nod_fld)
            nod_fld%iflag_update(iphys%i_filter_magne  ) = 1
@@ -276,7 +268,7 @@
 !
          if(iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
            call cal_filtered_vector_whole(SGS_par%filter_p,             &
-     &          mesh%nod_comm, mesh%node, wide_filtering,               &
+     &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
      &         iphys%i_wide_fil_magne, iphys%i_filter_magne,            &
      &         FEM_SGS_wk%wk_filter, nod_fld)
            nod_fld%iflag_update(iphys%i_wide_fil_magne  ) = 1

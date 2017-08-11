@@ -10,13 +10,13 @@
 !!      subroutine update_with_temperature(iak_diff_t, icomp_diff_t,    &
 !!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid, &
 !!     &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,           &
-!!     &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,&
-!!     &        mlump_fl, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+!!     &        rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk, rhs_mat,    &
+!!     &        nod_fld, diff_coefs)
 !!      subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,   &
 !!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid, &
 !!     &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,           &
-!!     &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,&
-!!     &        mlump_fl, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+!!     &        rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk, rhs_mat,    &
+!!     &        nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -29,10 +29,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(gradient_model_data_type), intent(in) :: FEM_elen
-!!        type(filtering_data_type), intent(in) :: filtering
-!!        type(filtering_data_type), intent(in) :: wide_filtering
-!!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -54,8 +51,7 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
-      use t_filter_elength
-      use t_layering_ele_list
+      use t_FEM_MHD_filter_data
       use t_material_property
       use t_ele_info_4_dynamic
       use t_surface_bc_data
@@ -73,8 +69,8 @@
       subroutine update_with_temperature(iak_diff_t, icomp_diff_t,      &
      &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid,   &
      &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,             &
-     &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,  &
-     &        mlump_fl, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+     &        rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk, rhs_mat,      &
+     &        nod_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -100,10 +96,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elen
-      type(filtering_data_type), intent(in) :: filtering
-      type(filtering_data_type), intent(in) :: wide_filtering
-      type(layering_tbl), intent(in) :: layer_tbl
+      type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -151,8 +144,8 @@
 !
           if (iflag2 .eq. 1) then
             if (iflag_debug.gt.0) write(*,*) 'cal_filtered_temperature'
-            call cal_filtered_scalar_whole                              &
-     &         (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,  &
+            call cal_filtered_scalar_whole(SGS_par%filter_p,            &
+     &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
      &          iphys%i_filter_temp, iphys%i_sgs_temp,                  &
      &          FEM_SGS_wk%wk_filter, nod_fld)
             nod_fld%iflag_update(iphys%i_filter_temp) = 1
@@ -162,7 +155,7 @@
             if (iflag_debug.gt.0)                                       &
      &        write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
-     &          mesh%nod_comm, mesh%node, wide_filtering,               &
+     &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
      &          iphys%i_wide_fil_temp, iphys%i_filter_temp,             &
      &          FEM_SGS_wk%wk_filter, nod_fld)
           end if
@@ -170,8 +163,8 @@
 !
         if( (iphys%i_filter_buo+iphys%i_f_buo_gen) .gt. 0) then
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
-          call cal_filtered_scalar_whole                                &
-     &       (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,    &
+          call cal_filtered_scalar_whole(SGS_par%filter_p,              &
+     &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys%i_filter_temp, iphys%i_temp, FEM_SGS_wk%wk_filter,  &
      &        nod_fld)
           nod_fld%iflag_update(iphys%i_filter_temp) = 1
@@ -193,8 +186,9 @@
      &             iak_diff_t, icomp_diff_t, SGS_par,                   &
      &             mesh%nod_comm, mesh%node, mesh%ele, surf,            &
      &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
-     &             fluid, layer_tbl, jacobians, rhs_tbl, FEM_elen,      &
-     &             filtering, mlump_fl, FEM_SGS_wk%wk_filter,           &
+     &             fluid, FEM_filters%layer_tbl, jacobians, rhs_tbl,    &
+     &             FEM_filters%FEM_elens, FEM_filters%filtering,        &
+     &             mlump_fl, FEM_SGS_wk%wk_filter,                      &
      &             FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
      &             FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk, &
      &             rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
@@ -210,9 +204,9 @@
 !
       subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,     &
      &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid,   &
-     &        Csf_bcs, iphys, iphys_ele, ele_fld, jacobians,            &
-     &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,  &
-     &        mlump_fl, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
+     &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,             &
+     &        rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk, rhs_mat,      &
+     &        nod_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -231,17 +225,14 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
-      type(scaler_surf_bc_type), intent(in) :: Csf_bcs
+      type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elen
-      type(filtering_data_type), intent(in) :: filtering
-      type(filtering_data_type), intent(in) :: wide_filtering
-      type(layering_tbl), intent(in) :: layer_tbl
+      type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -271,8 +262,8 @@
      &       .and. iphys%i_filter_comp .ne. 0) then
         if (iflag2.eq.1) then
           if (iflag_debug.gt.0)   write(*,*) 'cal_filtered_composition'
-          call cal_filtered_scalar_whole                                &
-     &       (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,    &
+          call cal_filtered_scalar_whole(SGS_par%filter_p,              &
+     &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys%i_filter_comp, iphys%i_sgs_composit,                &
      &        FEM_SGS_wk%wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_comp) = 1
@@ -282,7 +273,7 @@
           if (iflag_debug.gt.0)                                         &
      &      write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
           call cal_filtered_scalar_whole (SGS_par%filter_p,             &
-     &        mesh%nod_comm, mesh%node, wide_filtering,                 &
+     &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
      &        iphys%i_wide_fil_temp, iphys%i_filter_comp,               &
      &        FEM_SGS_wk%wk_filter, nod_fld)
         end if
@@ -304,9 +295,10 @@
      &             dt, iphys%i_sgs_composit, iphys%i_filter_comp,       &
      &             iak_diff_c, icomp_diff_c, SGS_par,                   &
      &             mesh%nod_comm, mesh%node, mesh%ele, surf,            &
-     &             group%surf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,  &
-     &             fluid, layer_tbl, jacobians, rhs_tbl, FEM_elen,      &
-     &             filtering, mlump_fl, FEM_SGS_wk%wk_filter,           &
+     &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
+     &             fluid, FEM_filters%layer_tbl, jacobians, rhs_tbl,    &
+     &             FEM_filters%FEM_elens, FEM_filters%filtering,        &
+     &             mlump_fl, FEM_SGS_wk%wk_filter,                      &
      &             FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
      &             FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk, &
      &             rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)

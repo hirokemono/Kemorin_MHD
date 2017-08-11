@@ -5,10 +5,9 @@
 !
 !!      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,    &
 !!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
-!!     &          layer_tbl, FEM_elen, filtering, wide_filtering,       &
-!!     &          MHD_prop, ak_MHD, Csims_FEM_MHD, iphys, nod_fld,      &
-!!     &          t_IO, rst_step, fem_int, mk_MHD, SGS_MHD_wk, fem_sq,  &
-!!     &          label_sim)
+!!     &          FEM_filters, MHD_prop, ak_MHD, Csims_FEM_MHD,         &
+!!     &          iphys, nod_fld, t_IO, rst_step, fem_int, mk_MHD,      &
+!!     &          SGS_MHD_wk, fem_sq, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -18,7 +17,7 @@
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
-!!        type(layering_tbl), intent(inout) :: layer_tbl
+!!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(phys_address), intent(inout) :: iphys
@@ -58,9 +57,7 @@
       use t_work_FEM_SGS_MHD
       use t_MHD_mass_matricxes
       use t_FEM_MHD_filter_data
-      use t_filtering_data
       use t_work_4_MHD_layering
-      use t_filter_elength
 !
       implicit none
 !
@@ -72,10 +69,9 @@
 !
       subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,      &
      &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
-     &          layer_tbl, FEM_elen, filtering, wide_filtering,         &
-     &          MHD_prop, ak_MHD, Csims_FEM_MHD, iphys, nod_fld,        &
-     &          t_IO, rst_step, fem_int, mk_MHD, SGS_MHD_wk, fem_sq,    &
-     &          label_sim)
+     &          FEM_filters, MHD_prop, ak_MHD, Csims_FEM_MHD,           &
+     &          iphys, nod_fld, t_IO, rst_step, fem_int, mk_MHD,        &
+     &          SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_fem_mhd_restart
 !
@@ -122,10 +118,7 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
-      type(layering_tbl), intent(inout) :: layer_tbl
-      type(gradient_model_data_type), intent(inout) :: FEM_elen
-      type(filtering_data_type), intent(inout)  :: filtering
-      type(filtering_data_type), intent(inout)  :: wide_filtering
+      type(filters_on_FEM), intent(inout) :: FEM_filters
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(coefs_4_MHD_type), intent(inout) :: ak_MHD
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
@@ -142,8 +135,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' reordering_by_layers_snap'
-      call reordering_by_layers_snap                                    &
-     &   (FEM_prm, SGS_par, mesh%ele, group, MHD_mesh, FEM_elen)
+      call reordering_by_layers_snap(FEM_prm, SGS_par,                  &
+     &    mesh%ele, group, MHD_mesh, FEM_filters%FEM_elens)
 !
       if (iflag_debug.eq.1) write(*,*)' set_layers'
       call set_layers                                                   &
@@ -151,8 +144,10 @@
 !
       if (SGS_par%model_p%iflag_dynamic  .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
-        call const_layers_4_dynamic(group%ele_grp, layer_tbl)
-        call alloc_work_FEM_dynamic(layer_tbl, SGS_MHD_wk%FEM_SGS_wk)
+        call const_layers_4_dynamic                                     &
+      &    (group%ele_grp, FEM_filters%layer_tbl)
+        call alloc_work_FEM_dynamic                                     &
+      &    (FEM_filters%layer_tbl, SGS_MHD_wk%FEM_SGS_wk)
       end if
 !
 !
@@ -175,8 +170,8 @@
 !
 !     ---------------------
 !
-      call const_FEM_3d_filtering_tables                                &
-     &   (SGS_par, mesh, filtering, wide_filtering)
+      call const_FEM_3d_filtering_tables(SGS_par, mesh,                 &
+     &    FEM_filters%filtering, FEM_filters%wide_filtering)
 !
 !     ---------------------
 !
@@ -201,7 +196,8 @@
       call s_init_ele_material_property                                 &
      &   (mesh%ele%numele, MHD_prop, ak_MHD)
 !
-      call def_sgs_commute_component(SGS_par, mesh, layer_tbl,          &
+      call def_sgs_commute_component                                    &
+     &   (SGS_par, mesh, FEM_filters%layer_tbl,                         &
      &    MHD_prop, Csims_FEM_MHD, SGS_MHD_wk%FEM_SGS_wk)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
@@ -224,8 +220,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes(SGS_par%model_p, ele_mesh,    &
-     &    group, fem_sq%i_msq, mesh, layer_tbl, fem_int%jcs,            &
-     &    MHD_mesh, fem_sq%msq)
+     &    group, fem_sq%i_msq, mesh, FEM_filters%layer_tbl,             &
+     &    fem_int%jcs, MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
 !

@@ -9,9 +9,8 @@
 !!     &         (i_field, dt, FEM_prm, SGS_par, femmesh, surf, fluid,  &
 !!     &          property, ref_param, nod_bcs, sf_bcs,                 &
 !!     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,        &
-!!     &          FEM_elens, Csims_FEM_MHD, filtering, mlump_fl,        &
-!!     &          Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,                 &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld)
+!!     &          FEM_filters, Csims_FEM_MHD, mlump_fl, Smatrix, ak_MHD,&
+!!     &          MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_data), intent(in) :: femmesh
@@ -27,9 +26,8 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
-!!        type(filtering_data_type), intent(in) :: filtering
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(MHD_MG_matrix), intent(in) :: Smatrix
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
@@ -55,10 +53,9 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
-      use t_jacobians
       use t_table_FEM_const
       use t_MHD_finite_element_mat
-      use t_filter_elength
+      use t_FEM_MHD_filter_data
       use t_bc_data_temp
       use t_surface_bc_data
       use t_material_property
@@ -80,9 +77,8 @@
      &         (i_field, dt, FEM_prm, SGS_par, femmesh, surf, fluid,    &
      &          property, ref_param, nod_bcs, sf_bcs,                   &
      &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,          &
-     &          FEM_elens, Csims_FEM_MHD, filtering, mlump_fl,          &
-     &          Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,                   &
-     &          mhd_fem_wk, rhs_mat, nod_fld)
+     &          FEM_filters, Csims_FEM_MHD, mlump_fl, Smatrix, ak_MHD,  &
+     &          MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
 !
       use nod_phys_send_recv
       use set_boundary_scalars
@@ -116,9 +112,8 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
-      type(filtering_data_type), intent(in) :: filtering
       type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: Smatrix
 !
@@ -133,14 +128,15 @@
       call s_cal_light_element_pre                                      &
      &   (i_field, dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,     &
      &    SGS_par%filter_p, femmesh%mesh, femmesh%group, surf, fluid,   &
-     &    property, ref_param, nod_bcs, sf_bcs,                         &
-     &    iphys,iphys_ele, ele_fld, jacobians, rhs_tbl, FEM_elens,      &
+     &    property, ref_param, nod_bcs, sf_bcs, iphys, iphys_ele,       &
+     &    ele_fld, jacobians, rhs_tbl, FEM_filters%FEM_elens,           &
      &    Csims_FEM_MHD%icomp_sgs, Csims_FEM_MHD%ifld_diff,             &
      &    Csims_FEM_MHD%iphys_elediff, Csims_FEM_MHD%sgs_coefs,         &
      &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,        &
-     &    filtering, mlump_fl, Smatrix, ak_MHD%ak_d_composit, MGCG_WK,  &
-     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
-     &    rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &    FEM_filters%filtering, mlump_fl, Smatrix,                     &
+     &    ak_MHD%ak_d_composit, MGCG_WK, FEM_SGS_wk%wk_filter,          &
+     &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,                  &
+     &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       end subroutine s_cal_light_element
 !
