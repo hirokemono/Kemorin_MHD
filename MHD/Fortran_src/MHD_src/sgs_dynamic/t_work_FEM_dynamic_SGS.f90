@@ -58,7 +58,7 @@
 !
       use t_mesh_data
       use t_control_parameter
-      use t_sgs_control_parameter
+      use t_SGS_control_parameter
       use t_layering_ele_list
       use t_FEM_SGS_model_coefs
       use count_sgs_components

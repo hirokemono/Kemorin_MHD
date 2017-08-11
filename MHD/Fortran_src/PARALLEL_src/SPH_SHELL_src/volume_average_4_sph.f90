@@ -13,8 +13,9 @@
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!
 !!      subroutine ave_one_scalar_sph_spectr                            &
-!!     &         (n_point, nidx_rj, idx_rj_degree_zero, inod_rj_center, &
-!!     &          d_rj, radius_1d_rj_r, nri_ave, ave_sph)
+!!     &         (icomp, nidx_rj, idx_rj_degree_zero, inod_rj_center,   &
+!!     &          rj_fld, radius_1d_rj_r, nri_ave, nave, iave, ave)
+!!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !!
 !!@n @param istep         time step number
@@ -210,30 +211,33 @@
 ! -----------------------------------------------------------------------
 !
       subroutine ave_one_scalar_sph_spectr                              &
-     &         (n_point, nidx_rj, idx_rj_degree_zero, inod_rj_center,   &
-     &          d_rj, radius_1d_rj_r, nri_ave, ave_sph)
+     &         (icomp, nidx_rj, idx_rj_degree_zero, inod_rj_center,     &
+     &          rj_fld, radius_1d_rj_r, nri_ave, nave, iave, ave)
+!
+      use t_phys_data
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: inod_rj_center
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
 !
-      integer(kind = kint), intent(in) :: n_point
-      real(kind = kreal), intent(in) :: d_rj(n_point)
+      integer(kind = kint), intent(in) :: icomp, iave
+      type(phys_data), intent(in) :: rj_fld
 !
-      integer(kind = kint), intent(in) :: nri_ave
+      integer(kind = kint), intent(in) :: nri_ave, nave
 !
-      real(kind = kreal), intent(inout) :: ave_sph(0:nri_ave)
+      real(kind = kreal), intent(inout) :: ave(0:nri_ave,nave)
 !
       integer(kind = kint) :: k, inod
 !
 !
       do k = 1, nidx_rj(1)
         inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
-        ave_sph(k) = d_rj(inod) * radius_1d_rj_r(k)**2
+        ave(k,iave) = rj_fld%d_fld(inod,icomp) * radius_1d_rj_r(k)**2
       end do
 !
-      if(inod_rj_center .gt. 0) ave_sph(0) = d_rj(inod_rj_center)
+      if(inod_rj_center .eq. 0) return
+      ave(0,iave) = rj_fld%d_fld(inod_rj_center,icomp)
 !
       end subroutine ave_one_scalar_sph_spectr
 !
