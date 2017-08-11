@@ -154,20 +154,20 @@
       if(sph_rj%idx_rj_degree_zero .gt. izero) then
 !
         if(ipol%i_Csim_SGS_buoyancy .gt. 0) then
-          call cal_ave_scalar_sph_spectr                                &
-     &       (ione, ione, rj_fld%n_point, sph_rj%nidx_rj,               &
+          call ave_one_scalar_sph_spectr                                &
+     &       (rj_fld%n_point, sph_rj%nidx_rj,                           &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
-     &        ione, rj_fld%d_fld(1,ipol%i_Csim_SGS_buoyancy),           &
-     &        sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1), ione,          &
+     &        rj_fld%d_fld(1,ipol%i_Csim_SGS_buoyancy),                 &
+     &        sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1),                &
      &        wk_sgs_buo%Cbuo_ave_sph_lc(0,1))
         end if
 !
         if(ipol%i_Csim_SGS_comp_buo .gt. 0) then
-          call cal_ave_scalar_sph_spectr                                &
-     &       (ione, ione, rj_fld%n_point, sph_rj%nidx_rj,               &
+          call ave_one_scalar_sph_spectr                                &
+     &       (rj_fld%n_point, sph_rj%nidx_rj,                           &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
-     &        ione, rj_fld%d_fld(1,ipol%i_Csim_SGS_comp_buo),           &
-     &        sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1), ione,          &
+     &        rj_fld%d_fld(1,ipol%i_Csim_SGS_comp_buo),                 &
+     &        sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1),                &
      &        wk_sgs_buo%Cbuo_ave_sph_lc(0,2))
         end if
       end if
@@ -213,20 +213,20 @@
         wk_sgs_buo%Cbuo_ave_sph_lc(1:sph_rj%nidx_rj(1),1:2) = 0.0d0
 !
         if(ipol%i_Csim_SGS_buoyancy .gt. 0) then
-          call cal_ave_scalar_sph_spectr                                &
-     &       (ione, ione, rj_fld%n_point, sph_rj%nidx_rj,               &
+          call ave_one_scalar_sph_spectr                                &
+     &       (rj_fld%n_point, sph_rj%nidx_rj,                           &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
-     &        ione, rj_fld%d_fld(1,ipol%i_Csim_SGS_buoyancy),           &
-     &        sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1), ione,          &
+     &        rj_fld%d_fld(1,ipol%i_Csim_SGS_buoyancy),                 &
+     &        sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1),                &
      &        wk_sgs_buo%Cbuo_ave_sph_lc(0,1))
         end if
 !
         if(ipol%i_Csim_SGS_comp_buo .gt. 0) then
-          call cal_ave_scalar_sph_spectr                                &
-     &       (ione, ione, rj_fld%n_point, sph_rj%nidx_rj,               &
+          call ave_one_scalar_sph_spectr                                &
+     &       (rj_fld%n_point, sph_rj%nidx_rj,                           &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
-     &        ione, rj_fld%d_fld(1,ipol%i_Csim_SGS_comp_buo),           &
-     &        sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1), ione,          &
+     &        rj_fld%d_fld(1,ipol%i_Csim_SGS_comp_buo),                 &
+     &        sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1),                &
      &        wk_sgs_buo%Cbuo_ave_sph_lc(0,2))
         end if
 !

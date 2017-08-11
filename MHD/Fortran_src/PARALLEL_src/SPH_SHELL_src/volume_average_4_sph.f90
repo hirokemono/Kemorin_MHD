@@ -12,11 +12,9 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!
-!!      subroutine cal_ave_scalar_sph_spectr(icomp, jcomp,              &
-!!     &          n_point, nidx_rj, idx_rj_degree_zero, inod_rj_center, &
-!!     &          ntot_phys_rj, d_rj, radius_1d_rj_r,                   &
-!!     &          nri_ave, ntot_rms_rj, ave_sph)
-!
+!!      subroutine ave_one_scalar_sph_spectr                            &
+!!     &         (n_point, nidx_rj, idx_rj_degree_zero, inod_rj_center, &
+!!     &          d_rj, radius_1d_rj_r, nri_ave, ave_sph)
 !!@endverbatim
 !!
 !!@n @param istep         time step number
@@ -32,7 +30,7 @@
 !
 !
       private :: cal_sphere_average_sph, averaging_4_sph_ave_int
-      private :: cal_ave_vector_sph_spectr
+      private :: cal_ave_vector_sph_spectr, cal_ave_scalar_sph_spectr
 !
 ! -----------------------------------------------------------------------
 !
@@ -207,6 +205,37 @@
       ave_sph(0,jcomp+2) = ave_sph(0,jcomp  )
 !
       end subroutine cal_ave_vector_sph_spectr
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine ave_one_scalar_sph_spectr                              &
+     &         (n_point, nidx_rj, idx_rj_degree_zero, inod_rj_center,   &
+     &          d_rj, radius_1d_rj_r, nri_ave, ave_sph)
+!
+      integer(kind = kint), intent(in) :: nidx_rj(2)
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: inod_rj_center
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
+!
+      integer(kind = kint), intent(in) :: n_point
+      real(kind = kreal), intent(in) :: d_rj(n_point)
+!
+      integer(kind = kint), intent(in) :: nri_ave
+!
+      real(kind = kreal), intent(inout) :: ave_sph(0:nri_ave)
+!
+      integer(kind = kint) :: k, inod
+!
+!
+      do k = 1, nidx_rj(1)
+        inod = idx_rj_degree_zero + (k-1) * nidx_rj(2)
+        ave_sph(k) = d_rj(inod) * radius_1d_rj_r(k)**2
+      end do
+!
+      if(inod_rj_center .gt. 0) ave_sph(0) = d_rj(inod_rj_center)
+!
+      end subroutine ave_one_scalar_sph_spectr
 !
 ! -----------------------------------------------------------------------
 !
