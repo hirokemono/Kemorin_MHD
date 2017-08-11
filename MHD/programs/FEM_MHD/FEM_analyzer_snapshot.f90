@@ -61,6 +61,7 @@
       use m_node_phys_data
       use m_geometry_data_MHD
       use m_layering_ele_list
+      use m_3d_filter_coef_MHD
       use m_physical_property
       use m_element_phys_data
       use m_finite_element_matrix
@@ -88,9 +89,10 @@
       call init_analyzer_snap                                           &
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
-     &    layer_tbl1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,                &
-     &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step,             &
-     &    fem_int1, mk_MHD1, SGS_MHD_wk, fem_sq, label_sim)
+     &    layer_tbl1, FEM1_elen, filtering1, wide_filtering, MHD_prop1, &
+     &    ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1, SNAP_time_IO,        &
+     &    MHD_step%rst_step, fem_int1, mk_MHD1, SGS_MHD_wk,             &
+     &    fem_sq, label_sim)
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, femmesh%mesh, MHD_mesh1, nod_fld1,         &
@@ -111,7 +113,6 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_finite_element_matrix
-      use m_filter_elength
       use m_3d_filter_coef_MHD
       use m_layering_ele_list
       use m_work_4_dynamic_model

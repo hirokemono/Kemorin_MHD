@@ -7,7 +7,7 @@
 !     modified by H. Matsui on May, 2008
 !
 !!      subroutine s_read_filtering_data(SGS_param, filter_param,       &
-!!     &          node, ele, filtering, wide_filtering, wk_filter)
+!!     &          node, ele, FEM_elens, filtering, wide_filtering, wk_filter)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(filtering_data_type), intent(inout) :: filtering
@@ -37,11 +37,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_read_filtering_data(SGS_param, filter_param,         &
-     &          node, ele, filtering, wide_filtering, wk_filter)
+     &          node, ele, FEM_elens, filtering, wide_filtering, wk_filter)
 !
       use m_nod_filter_comm_table
-      use m_filter_elength
       use m_filter_file_names
+      use t_filter_elength
       use t_geometry_data
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -49,6 +49,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
 !
+      type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_data_type), intent(inout) :: wide_filtering
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -56,10 +57,10 @@
 !
       if(filter_param%iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
         call read_line_filtering_data(node%numnod, ele%numele,          &
-     &     SGS_param, FEM1_elen, filtering%fil_l)
+     &     SGS_param, FEM_elens, filtering%fil_l)
       else
         call read_3d_filter_moments                                     &
-     &     (node%numnod, ele%numele, SGS_param, FEM1_elen)
+     &     (node%numnod, ele%numele, SGS_param, FEM_elens)
         if(filter_param%iflag_SGS_filter .gt. id_turn_OFF) then
           call read_3d_filtering_data                                   &
      &       (filter_3d_head, ifmt_3d_filter, filtering)

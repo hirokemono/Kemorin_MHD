@@ -50,7 +50,6 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_finite_element_matrix
-      use m_filter_elength
       use m_3d_filter_coef_MHD
       use m_layering_ele_list
       use m_bc_data_velo

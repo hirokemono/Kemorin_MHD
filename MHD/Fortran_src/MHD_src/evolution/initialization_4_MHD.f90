@@ -3,11 +3,12 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par, &
-!!     &          flex_p, flex_data, MHD_step, mesh, group, ele_mesh,   &
-!!     &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD, &
-!!     &          iphys, nod_fld, fem_int, mk_MHD, MHD_CG, SGS_MHD_wk,  &
-!!     &          fem_sq, label_sim)
+!!      subroutine init_analyzer_fl                                     &
+!!     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data, &
+!!     &         MHD_step, mesh, group, ele_mesh, MHD_mesh,             &
+!!     &         layer_tbl, FEM_elen, filtering, wide_filtering,        &
+!!     &         MHD_prop, ak_MHD, Csims_FEM_MHD, iphys, nod_fld,       &
+!!     &         fem_int, mk_MHD, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -57,6 +58,9 @@
       use t_work_FEM_SGS_MHD
       use t_MHD_mass_matricxes
       use t_FEM_MHD_filter_data
+      use t_filtering_data
+      use t_work_4_MHD_layering
+      use t_filter_elength
 !
       implicit none
 !
@@ -66,19 +70,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par,   &
-     &          flex_p, flex_data, MHD_step, mesh, group, ele_mesh,     &
-     &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,   &
-     &          iphys, nod_fld, fem_int, mk_MHD, MHD_CG, SGS_MHD_wk,    &
-     &          fem_sq, label_sim)
+      subroutine init_analyzer_fl                                       &
+     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data,   &
+     &         MHD_step, mesh, group, ele_mesh, MHD_mesh,               &
+     &         layer_tbl, FEM_elen, filtering, wide_filtering,          &
+     &         MHD_prop, ak_MHD, Csims_FEM_MHD, iphys, nod_fld,         &
+     &         fem_int, mk_MHD, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_flexible_time_step
 !
       use m_boundary_condition_IDs
       use m_flags_4_solvers
       use m_array_for_send_recv
-      use m_3d_filter_coef_MHD
-      use t_work_4_MHD_layering
 !
       use m_bc_data_velo
       use m_bc_data_list
@@ -132,6 +135,9 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(layering_tbl), intent(inout) :: layer_tbl
+      type(gradient_model_data_type), intent(inout) :: FEM_elen
+      type(filtering_data_type), intent(inout)  :: filtering
+      type(filtering_data_type), intent(inout)  :: wide_filtering
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(coefs_4_MHD_type), intent(inout) :: ak_MHD
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
@@ -152,7 +158,8 @@
 !
       call reordering_by_layers_MHD(SGS_par, MHD_CG%MGCG_WK,            &
      &    MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM, FEM_prm,                &
-     &    mesh%ele, group, MHD_mesh, MHD_CG%MHD_mat%MG_interpolate)
+     &    mesh%ele, group, MHD_mesh, MHD_CG%MHD_mat%MG_interpolate,     &
+     &    FEM_elen)
 !
       call set_layers                                                   &
      &   (FEM_prm, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
@@ -187,7 +194,7 @@
 !     ---------------------
 !
       call const_FEM_3d_filtering_tables                                &
-     &   (SGS_par, mesh, filtering1, wide_filtering)
+     &   (SGS_par, mesh, filtering, wide_filtering)
 !
 !     ---------------------
 !

@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!!      subroutine set_ctl_params_gen_filter(FEM_elen)
+!!      subroutine set_ctl_params_gen_filter(FEM_elens)
 !!      subroutine set_file_heads_3d_comm_filter(ffile_ctl, mesh_file)
 !!        type(filter_file_control), intent(in) :: ffile_ctl
 !
@@ -25,7 +25,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_gen_filter(FEM_elen)
+      subroutine set_ctl_params_gen_filter(FEM_elens)
 !
       use calypso_mpi
       use m_error_IDs
@@ -36,7 +36,7 @@
 !
       use skip_comment_f
 !
-      type(gradient_model_data_type), intent(inout) :: FEM_elen
+      type(gradient_model_data_type), intent(inout) :: FEM_elens
 !
       integer(kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -84,13 +84,13 @@
 !
 !
       num_ref_filter = reference_filter_ctl%num
-      FEM_elen%filter_conf%nf_type = num_ref_filter
+      FEM_elens%filter_conf%nf_type = num_ref_filter
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'num_ref_filter', num_ref_filter
 !
       if ( num_ref_filter .gt. 0) then
         call allocate_ref_filter_type
-        call alloc_ref_1d_mom_type(FEM_elen%filter_conf)
+        call alloc_ref_1d_mom_type(FEM_elens%filter_conf)
         
         do i = 1, num_ref_filter
           iref_filter_type(i) = iflag_tophat_filter
@@ -101,11 +101,11 @@
           if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Tophat')       &
      &          ) iref_filter_type(i) = iflag_tophat_filter
 !
-          FEM_elen%filter_conf%filter_type(i)                           &
+          FEM_elens%filter_conf%filter_type(i)                          &
      &          = reference_filter_ctl%c_tbl(i)
 !
           ref_filter_width(i) = reference_filter_ctl%vect(i)
-          FEM_elen%filter_conf%f_width(i) = ref_filter_width(i)
+          FEM_elens%filter_conf%f_width(i) = ref_filter_width(i)
         end do
 !
         call dealloc_control_array_c_r(reference_filter_ctl)

@@ -57,7 +57,7 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_finite_element_matrix
-      use m_filter_elength
+      use m_3d_filter_coef_MHD
       use m_control_parameter
       use m_layering_ele_list
       use m_bc_data_velo
@@ -101,9 +101,9 @@
       call init_analyzer_fl                                             &
      &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, flex_data,  &
      &    MHD_step, femmesh1%mesh, femmesh1%group, ele_mesh, MHD_mesh1, &
-     &    layer_tbl1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,                &
-     &    iphys, nod_fld1, fem_int1, mk_MHD1, MHD_CG1, SGS_MHD_wk1,     &
-     &    fem_sq, label_sim)
+     &    layer_tbl1, FEM1_elen, filtering1, wide_filtering, MHD_prop1, ak_MHD,    &
+     &    Csims_FEM_MHD1, iphys, nod_fld1, fem_int1, mk_MHD1, MHD_CG1,  &
+     &    SGS_MHD_wk1, fem_sq, label_sim)
 !
       call nod_fields_send_recv(femmesh1%mesh, nod_fld1)
 !
@@ -194,7 +194,7 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_finite_element_matrix
-      use m_filter_elength
+      use m_3d_filter_coef_MHD
       use m_layering_ele_list
       use m_work_4_dynamic_model
       use m_solver_djds_MHD
