@@ -12,12 +12,12 @@
 !!      subroutine input_control_4_FEM_MHD                              &
 !!     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,        &
 !!     &          MHD_prop, MHD_BC, femmesh, ele_mesh, nod_fld,         &
-!!     &          IO_bc, filtering, wide_filtering, wk_filter,          &
+!!     &          IO_bc, filtering, wide_filtering, FEM_SGS_wk,         &
 !!     &          MHD_matrices, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!      subroutine input_control_4_FEM_snap                             &
 !!     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,        &
 !!     &          MHD_prop, MHD_BC, femmesh, ele_mesh, nod_fld,         &
-!!     &          IO_bc, filtering, wide_filtering, wk_filter,          &
+!!     &          IO_bc, filtering, wide_filtering, FEM_SGS_wk,         &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -38,7 +38,7 @@
 !!        type(IO_boundary), intent(inout) :: IO_bc
 !!        type(filtering_data_type), intent(inout) :: filtering
 !!        type(filtering_data_type), intent(inout) :: wide_filtering
-!!        type(filtering_work_type), intent(inout) :: wk_filter
+!!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
@@ -60,7 +60,6 @@
       use t_control_parameter
       use t_mesh_data
       use t_boundary_field_IO
-      use t_filtering_data
       use t_solver_djds_MHD
       use t_phys_data
       use t_field_data_IO
@@ -69,6 +68,7 @@
       use t_MGCG_data_4_MHD
       use t_bc_data_list
       use t_flex_delta_t_data
+      use t_work_FEM_dynamic_SGS
 !
       implicit none
 !
@@ -91,7 +91,7 @@
       subroutine input_control_4_FEM_MHD                                &
      &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,          &
      &          MHD_prop, MHD_BC, femmesh, ele_mesh, nod_fld,           &
-     &          IO_bc, filtering, wide_filtering, wk_filter,            &
+     &          IO_bc, filtering, wide_filtering, FEM_SGS_wk,           &
      &          MHD_matrices, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use m_flags_4_solvers
@@ -116,7 +116,7 @@
       type(IO_boundary), intent(inout) :: IO_bc
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_data_type), intent(inout) :: wide_filtering
-      type(filtering_work_type), intent(inout) :: wk_filter
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
@@ -139,8 +139,8 @@
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD(SGS_par%model_p, MHD_prop, MHD_BC,        &
-     &    femmesh%mesh, femmesh%group, IO_bc,                           &
-     &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
+     &    femmesh%mesh, femmesh%group, IO_bc, SGS_par%filter_p,         &
+     &    filtering, wide_filtering, FEM_SGS_wk%wk_filter)
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_matrices)
@@ -165,7 +165,7 @@
       subroutine input_control_4_FEM_snap                               &
      &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,          &
      &          MHD_prop, MHD_BC, femmesh, ele_mesh, nod_fld,           &
-     &          IO_bc, filtering, wide_filtering, wk_filter,            &
+     &          IO_bc, filtering, wide_filtering, FEM_SGS_wk,           &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use set_control_FEM_MHD
@@ -187,7 +187,7 @@
       type(IO_boundary), intent(inout) :: IO_bc
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_data_type), intent(inout) :: wide_filtering
-      type(filtering_work_type), intent(inout) :: wk_filter
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
@@ -209,8 +209,8 @@
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD(SGS_par%model_p, MHD_prop,                &
-     &    MHD_BC, femmesh%mesh, femmesh%group, IO_bc,                   &
-     &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
+     &    MHD_BC, femmesh%mesh, femmesh%group, IO_bc, SGS_par%filter_p, &
+     &    filtering, wide_filtering, FEM_SGS_wk%wk_filter)
 !
       call count_field_4_monitor                                        &
      &   (nod_fld%num_phys, nod_fld%num_component,                      &
@@ -261,7 +261,8 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 's_read_filtering_data'
       call s_read_filtering_data(SGS_param, filter_param,               &
-     &    mesh%node, mesh%ele, filtering, wide_filtering, wk_filter)
+     &    mesh%node, mesh%ele, filtering, wide_filtering,               &
+     &    wk_filter)
 !
       iflag = filter_param%iflag_SGS_filter
       if     (iflag .eq. id_SGS_3D_FILTERING                            &

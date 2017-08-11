@@ -15,6 +15,4 @@
 !
       type(filtering_data_type), save :: wide_filtering
 !
-      type(filtering_work_type), save :: wk_filter1
-!
       end module m_3d_filter_coef_MHD

@@ -47,6 +47,8 @@
       use m_bc_data_velo
       use m_solver_djds_MHD
       use m_element_phys_data
+      use m_finite_element_matrix
+      use m_work_4_dynamic_model
       use t_boundary_field_IO
 !
       use initialization_4_MHD
@@ -84,7 +86,7 @@
      &    SGS_par1%model_p, SGS_par1%commute_p, femmesh1,               &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1, ak_MHD,   &
      &    fem_int1, FEM1_elen, Csims_FEM_MHD1, MHD1_mat_tbls, mk_MHD1,  &
-     &    rhs_mat1, MHD_CG1)
+     &    SGS_MHD_wk1%rhs_mat, MHD_CG1)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD                                         &
