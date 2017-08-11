@@ -148,7 +148,8 @@
      &          nc_SGS_rtp_2_rj, fSGS_rtp)
       else
         call SGS_buoyancies_to_Reynolds_pout(sph_rtp, fg_trns,          &
-     &          ifld_sgs, wk_sgs, nnod_med, nc_SGS_rtp_2_rj, fSGS_rtp)
+     &          ifld_sgs, nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,  &
+     &          nc_SGS_rtp_2_rj, fSGS_rtp)
       end if
 !
       end subroutine prod_SGS_buoyancy_to_Reynolds
@@ -200,15 +201,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SGS_buoyancies_to_Reynolds_pout(sph_rtp, fg_trns,      &
-     &          ifld_sgs, wk_sgs, nnod_med, nc_SGS_rtp_2_rj, fSGS_rtp)
+     &          ifld_sgs, nnod_med, nfld_sgs, fld_coef,                 &
+     &          nc_SGS_rtp_2_rj, fSGS_rtp)
 !
       use prod_SGS_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(phys_address), intent(in) :: fg_trns
       type(SGS_terms_address), intent(in) :: ifld_sgs
-      type(dynamic_model_data), intent(in) :: wk_sgs
-      integer(kind = kint), intent(in) :: nnod_med
+      integer(kind = kint), intent(in) :: nnod_med, nfld_sgs
+      real(kind = kreal), intent(in) :: fld_coef(nnod_med,nfld_sgs)
       integer(kind = kint), intent(in) :: nc_SGS_rtp_2_rj
 !
       real(kind = kreal), intent(inout)                                 &
@@ -220,18 +222,18 @@
      &  .and. ifld_sgs%i_comp_buoyancy .gt. 0) then
         call product_double_buo_coefs_pout                              &
      &     (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),            &
-     &      wk_sgs%fld_coef(1,ifld_sgs%i_buoyancy),                     &
-     &      wk_sgs%fld_coef(1,ifld_sgs%i_comp_buoyancy),                &
+     &      fld_coef(1,ifld_sgs%i_buoyancy),                            &
+     &      fld_coef(1,ifld_sgs%i_comp_buoyancy),                       &
      &      fSGS_rtp(1,fg_trns%i_SGS_inertia))
       else if(ifld_sgs%i_buoyancy .gt. 0) then
         call product_single_buo_coefs_pout                              &
      &     (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),            &
-     &      wk_sgs%fld_coef(1,ifld_sgs%i_buoyancy),                     &
+     &      fld_coef(1,ifld_sgs%i_buoyancy),                            &
      &      fSGS_rtp(1,fg_trns%i_SGS_inertia))
       else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
         call product_single_buo_coefs_pout                              &
      &     (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),            &
-     &      wk_sgs%fld_coef(1,ifld_sgs%i_comp_buoyancy),                &
+     &      fld_coef(1,ifld_sgs%i_comp_buoyancy),                       &
      &      fSGS_rtp(1,fg_trns%i_SGS_inertia))
       end if
 !$omp end parallel
