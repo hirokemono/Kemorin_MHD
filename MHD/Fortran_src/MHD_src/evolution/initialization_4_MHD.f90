@@ -46,7 +46,6 @@
 !
       use t_mesh_data
       use t_geometry_data_MHD
-      use t_layering_ele_list
       use t_MHD_file_parameter
       use t_boundary_field_IO
       use t_FEM_SGS_model_coefs
@@ -57,6 +56,7 @@
       use t_work_FEM_dynamic_SGS
       use t_work_FEM_SGS_MHD
       use t_MHD_mass_matricxes
+      use t_FEM_MHD_filter_data
 !
       implicit none
 !
@@ -144,8 +144,6 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       character(len=kchara), intent(inout)   :: label_sim
 !
-      integer(kind = kint) :: iflag
-!
 !     --------------------------------
 !       set up for mesh information
 !     --------------------------------
@@ -188,44 +186,8 @@
 !
 !     ---------------------
 !
-      iflag = SGS_par%filter_p%iflag_SGS_filter
-      if(    (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF     &
-     &   .or. SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity)) then
-!
-        if    (iflag .eq. id_SGS_3D_FILTERING                           &
-     &    .or. iflag .eq. id_SGS_3D_EZ_FILTERING) then
-          if (iflag_debug .gt. 0)                                       &
-     &      write(*,*) ' s_set_istart_3d_filtering'
-          call s_set_istart_3d_filtering(filtering1%filter)
-!
-        else if (iflag .eq. id_SGS_3D_SMP_FILTERING                     &
-     &      .or. iflag .eq. id_SGS_3D_EZ_SMP_FILTERING) then
-          if (iflag_debug .gt. 0)                                       &
-     &      write(*,*) ' const_tbl_3d_filtering_smp'
-          call const_tbl_3d_filtering_smp(filtering1)
-!
-        else if (iflag .eq. id_SGS_LINE_FILTERING) then
-          if (iflag_debug.gt.0) write(*,*)' ordering_l_filter_smp'
-          call ordering_l_filter_smp(mesh%node%istack_nod_smp,          &
-     &        filtering1%fil_l, filtering1%fil_l_smp)
-        end if
-      end if
-!
-      if(    (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF     &
-     &  .and. SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity) ) then
-        if    (iflag .eq. id_SGS_3D_FILTERING                           &
-     &    .or. iflag .eq. id_SGS_3D_EZ_FILTERING) then
-          if (iflag_debug .gt. 0) write(*,*)' s_set_istart_w_filtering'
-          call s_set_istart_3d_filtering(wide_filtering%filter)
-!
-        else if (iflag.eq.id_SGS_3D_SMP_FILTERING                       &
-     &     .or. iflag.eq.id_SGS_3D_EZ_SMP_FILTERING) then
-!
-          if (iflag_debug .gt. 0)                                       &
-     &      write(*,*)' s_const_tbl_w_filtering_smp'
-          call const_tbl_3d_filtering_smp(wide_filtering)
-        end if
-      end if
+      call const_FEM_3d_filtering_tables                                &
+     &   (SGS_par, mesh, filtering1, wide_filtering)
 !
 !     ---------------------
 !
