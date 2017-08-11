@@ -157,9 +157,9 @@
           call ave_one_scalar_sph_spectr                                &
      &       (rj_fld%n_point, sph_rj%nidx_rj,                           &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
-     &        rj_fld%d_fld(1,ipol%i_Csim_SGS_buoyancy),                 &
+     &        rj_fld%d_fld(1:rj_fld%n_point,ipol%i_Csim_SGS_buoyancy),                 &
      &        sph_rj%radius_1d_rj_r,  sph_rj%nidx_rj(1),                &
-     &        wk_sgs_buo%Cbuo_ave_sph_lc(0,1))
+     &        wk_sgs_buo%Cbuo_ave_sph_lc(0:sph_rj%nidx_rj(1),1))
         end if
 !
         if(ipol%i_Csim_SGS_comp_buo .gt. 0) then
