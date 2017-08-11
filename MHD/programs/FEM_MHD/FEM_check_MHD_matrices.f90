@@ -42,7 +42,6 @@
       use m_node_phys_data
       use m_physical_property
       use m_finite_element_matrix
-      use m_sorted_node_MHD
       use m_bc_data_velo
       use m_solver_djds_MHD
       use m_element_phys_data

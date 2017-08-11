@@ -29,7 +29,7 @@
 !
       use m_SGS_control_parameter
       use m_physical_property
-      use m_sorted_node_MHD
+      use m_finite_element_matrix
       use t_mesh_data
       use t_ucd_file
       use t_MHD_step_parameter
@@ -56,7 +56,6 @@
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
-      use m_finite_element_matrix
       use m_3d_filter_coef_MHD
       use m_control_parameter
       use m_bc_data_velo
@@ -189,7 +188,6 @@
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
-      use m_finite_element_matrix
       use m_3d_filter_coef_MHD
       use m_solver_djds_MHD
       use m_flexible_time_step
