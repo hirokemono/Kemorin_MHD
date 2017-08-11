@@ -271,7 +271,8 @@
 !$omp end parallel
 !
       call sel_mag_sph_ave_SGS_buo_rtp                                  &
-     &   (sph_rtp, wk_sgs_buo%Cbuo_ave_sph_rtp, trns_SGS)
+     &   (sph_rtp, wk_sgs_buo%Cbuo_ave_sph_rtp, trns_SGS%f_trns,        &
+     &    trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
 !
       end subroutine magnify_sph_ave_SGS_buoyancy
 !
