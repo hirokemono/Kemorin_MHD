@@ -44,7 +44,7 @@
      &         (SGS_par, mesh, filtering, wide_filtering)
 !
       use t_mesh_data
-      use t_sgs_control_parameter
+      use t_SGS_control_parameter
       use ordering_line_filter_smp
 !
       type(SGS_paremeters), intent(in) :: SGS_par
