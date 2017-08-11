@@ -73,8 +73,8 @@
       call sel_int_zonal_for_buo_coefs                                  &
      &   (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),              &
      &    frc_rtp(1,if_trns_reynolds), frc_rtp(1,if_trns_buo_wk),       &
-     &    wk_sgs%comp_coef(1,icomp_SGS_buo),                            &
-     &    wk_sgs%comp_clip(1,icomp_SGS_buo))
+     &    icomp_SGS_buo, wk_sgs%ntot_comp,                              &
+     &    wk_sgs%comp_coef, wk_sgs%comp_clip)
       call calypso_mpi_barrier
 !
       call sel_sph_model_coefs                                          &

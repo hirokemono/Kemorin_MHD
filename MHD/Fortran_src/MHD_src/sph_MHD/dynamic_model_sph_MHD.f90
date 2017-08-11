@@ -151,7 +151,8 @@
         call sel_int_zonal_for_model_coefs                              &
      &   (numdir, sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),      &
      &    trns_SGS%frc_rtp(1,irtp_sgs), trns_SGS%fld_rtp(1,irtp_wide),  &
-     &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs))
+     &    icomp_sgs, wk_sgs%ntot_comp,                                  &
+     &    wk_sgs%comp_coef, wk_sgs%comp_clip)
 !
         if(iflag_debug .gt. 0)                                          &
            write(*,*) 'sel_sph_model_coefs', stab_weight

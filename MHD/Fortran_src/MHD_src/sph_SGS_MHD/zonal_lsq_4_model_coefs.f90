@@ -8,10 +8,10 @@
 !!@verbatim
 !!      subroutine sel_int_zonal_for_model_coefs                        &
 !!     &         (numdir, nnod_rtp, nnod_med, nphi, frc_simi, frc_wide, &
-!!     &          sgs_zl, sgs_zt)
+!!     &          ntot, isgs, sgs_zl, sgs_zt)
 !!      subroutine sel_int_zonal_for_buo_coefs                          &
 !!     &         (nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,         &
-!!     &          sgs_zl, sgs_zt)
+!!     &          ntot, isgs, sgs_zl, sgs_zt)
 !!@endverbatim
 !
       module zonal_lsq_4_model_coefs
@@ -23,6 +23,7 @@
 !
       implicit none
 !
+      private :: sel_int_zonal_4_model_coefs, sel_int_zonal_4_buo_coefs
       private :: int_zonal_for_model_coefs_pin
       private :: int_zonal_for_model_coefs_pout
       private :: int_zonal_buo_coefs_pin, int_zonal_buo_coefs_pout
@@ -34,6 +35,52 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_int_zonal_for_model_coefs                          &
+     &         (numdir, nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,   &
+     &          ntot, isgs, sgs_zl, sgs_zt)
+!
+      integer(kind = kint), intent(in) :: numdir
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
+      integer(kind = kint), intent(in) :: ntot, isgs
+!
+      real(kind = kreal), intent(in) :: frc_simi(nnod_rtp,numdir)
+      real(kind = kreal), intent(in) :: frc_wide(nnod_rtp,numdir)
+!
+      real(kind = kreal), intent(inout) :: sgs_zl(nnod_med,ntot)
+      real(kind = kreal), intent(inout) :: sgs_zt(nnod_med,ntot)
+!
+!
+      call sel_int_zonal_4_model_coefs                                  &
+     &   (numdir, nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,         &
+     &    sgs_zl(1,isgs), sgs_zt(1,isgs))
+!
+      end subroutine sel_int_zonal_for_model_coefs
+!
+! ----------------------------------------------------------------------
+!
+      subroutine sel_int_zonal_for_buo_coefs                            &
+     &         (nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,           &
+     &          isgs, ntot, sgs_zl, sgs_zt)
+!
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
+      integer(kind = kint), intent(in) :: ntot, isgs
+!
+      real(kind = kreal), intent(in) :: frc_simi(nnod_rtp)
+      real(kind = kreal), intent(in) :: frc_wide(nnod_rtp)
+!
+      real(kind = kreal), intent(inout) :: sgs_zl(nnod_med,ntot)
+      real(kind = kreal), intent(inout) :: sgs_zt(nnod_med,ntot)
+!
+!
+      call sel_int_zonal_4_buo_coefs                                    &
+     &   (nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,                 &
+     &    sgs_zl(1,isgs), sgs_zt(1,isgs))
+!
+      end subroutine sel_int_zonal_for_buo_coefs
+!
+! ----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine sel_int_zonal_4_model_coefs                            &
      &         (numdir, nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,   &
      &          sgs_zl, sgs_zt)
 !
@@ -67,11 +114,11 @@
       end if
 !$omp end parallel
 !
-      end subroutine sel_int_zonal_for_model_coefs
+      end subroutine sel_int_zonal_4_model_coefs
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_int_zonal_for_buo_coefs                            &
+      subroutine sel_int_zonal_4_buo_coefs                              &
      &         (nnod_rtp, nnod_med, nphi, frc_simi, frc_wide,           &
      &          sgs_zl, sgs_zt)
 !
@@ -96,7 +143,7 @@
       end if
 !$omp end parallel
 !
-      end subroutine sel_int_zonal_for_buo_coefs
+      end subroutine sel_int_zonal_4_buo_coefs
 !
 ! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
