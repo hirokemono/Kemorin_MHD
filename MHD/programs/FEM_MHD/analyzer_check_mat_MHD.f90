@@ -10,7 +10,7 @@
       use m_precision
       use m_machine_parameter
       use m_physical_property
-      use m_work_4_dynamic_model
+      use m_3d_filter_coef_MHD
       use calypso_mpi
 !
       use FEM_check_MHD_matrices
@@ -31,7 +31,6 @@
       use m_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data
-      use m_3d_filter_coef_MHD
       use m_boundary_field_IO
       use m_solver_djds_MHD
       use m_flexible_time_step

@@ -13,7 +13,7 @@
       use m_physical_property
       use m_mesh_data
       use m_mean_square_values
-      use m_work_4_dynamic_model
+      use m_3d_filter_coef_MHD
       use FEM_analyzer_vol_average
 !
       implicit none
@@ -30,7 +30,6 @@
       use m_bc_data_list
       use m_SGS_control_parameter
       use m_node_phys_data
-      use m_3d_filter_coef_MHD
       use m_boundary_field_IO
       use m_MHD_step_parameter
       use m_solver_djds_MHD

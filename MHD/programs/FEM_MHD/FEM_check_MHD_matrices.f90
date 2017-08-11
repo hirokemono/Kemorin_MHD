@@ -48,7 +48,6 @@
       use m_element_phys_data
       use m_finite_element_matrix
       use m_3d_filter_coef_MHD
-      use m_work_4_dynamic_model
       use t_boundary_field_IO
 !
       use initialization_4_MHD
