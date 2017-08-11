@@ -33,7 +33,6 @@
 !
       subroutine init_analyzer
 !
-      use m_3d_filter_coef_MHD
       use m_bc_data_list
       use m_boundary_field_IO
       use m_solver_djds_MHD

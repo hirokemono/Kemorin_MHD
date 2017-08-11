@@ -5,9 +5,10 @@
 !
 !!      subroutine FEM_initialize_vol_average                           &
 !!     &         (MHD_files, bc_FEM_IO, MHD_step,                       &
-!!     &          femmesh, ele_mesh, SGS_MHD_wk, fem_sq)
+!!     &          femmesh, ele_mesh, FEM_filters, SGS_MHD_wk, fem_sq)
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
@@ -30,6 +31,7 @@
       use t_MHD_step_parameter
       use t_ucd_file
       use t_FEM_MHD_mean_square
+      use t_FEM_MHD_filter_data
       use t_work_FEM_SGS_MHD
 !
       use calypso_mpi
@@ -46,11 +48,10 @@
 !
       subroutine FEM_initialize_vol_average                             &
      &         (MHD_files, bc_FEM_IO, MHD_step,                         &
-     &          femmesh, ele_mesh, SGS_MHD_wk, fem_sq)
+     &          femmesh, ele_mesh, FEM_filters, SGS_MHD_wk, fem_sq)
 !
       use m_node_phys_data
       use m_control_parameter
-      use m_3d_filter_coef_MHD
       use m_geometry_data_MHD
       use m_physical_property
       use m_element_phys_data
@@ -68,6 +69,7 @@
 !
       type(mesh_data), intent(inout) :: femmesh
       type(element_geometry), intent(inout) :: ele_mesh
+      type(filters_on_FEM), intent(inout) :: FEM_filters
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -78,7 +80,7 @@
       call init_analyzer_snap                                           &
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
-     &    FEM_filters1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,              &
+     &    FEM_filters, MHD_prop1, ak_MHD, Csims_FEM_MHD1,               &
      &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step,             &
      &    fem_int1, mk_MHD1, SGS_MHD_wk, fem_sq, label_sim)
 !
