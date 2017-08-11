@@ -86,7 +86,7 @@
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
      &    layer_tbl1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,                &
      &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step,             &
-     &    fem_sq, FEM_SGS_wk, label_sim)
+     &    fem_int1, mk_MHD1, SGS_MHD_wk1, fem_sq, label_sim)
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, femmesh%mesh, MHD_mesh1, nod_fld1,         &
@@ -192,7 +192,7 @@
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,                 &
      &    ele_mesh, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,     &
      &    fem_int1, FEM1_elen, filtering1, wide_filtering, layer_tbl1,  &
-     &    mk_MHD1, FSGS_MHD_wk1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
+     &    mk_MHD1, SGS_MHD_wk1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
 !
 !     ----- Evaluate model coefficients
 !

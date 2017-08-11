@@ -6,8 +6,8 @@
 !!      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,    &
 !!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
 !!     &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,           &
-!!     &          iphys, nod_fld, t_IO, rst_step, fem_sq, FEM_SGS_wk,   &
-!!     &          label_sim)
+!!     &          iphys, nod_fld, t_IO, rst_step,                       &
+!!     &          fem_int, mk_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -25,6 +25,9 @@
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+!!        type(finite_element_integration), intent(inout) :: fem_int
+!!        type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
+!!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !
       module initialize_4_snapshot
 !
@@ -51,7 +54,9 @@
       use t_FEM_SGS_model_coefs
       use t_material_property
       use t_FEM_MHD_mean_square
-      use t_work_FEM_dynamic_SGS
+      use t_MHD_finite_element_mat
+      use t_work_FEM_SGS_MHD
+      use t_MHD_mass_matricxes
 !
       implicit none
 !
@@ -64,14 +69,13 @@
       subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,      &
      &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
      &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,             &
-     &          iphys, nod_fld, t_IO, rst_step, fem_sq, FEM_SGS_wk,     &
-     &          label_sim)
+     &          iphys, nod_fld, t_IO, rst_step,                         &
+     &          fem_int, mk_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_fem_mhd_restart
 !
       use m_boundary_condition_IDs
       use m_array_for_send_recv
-      use m_finite_element_matrix
       use m_bc_data_velo
       use m_3d_filter_coef_MHD
       use m_bc_data_list
@@ -124,7 +128,9 @@
       type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: rst_step
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
-      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
+      type(finite_element_integration), intent(inout) :: fem_int
+      type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
+      type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       character(len=kchara), intent(inout)   :: label_sim
 !
       integer(kind = kint) :: iflag
@@ -142,7 +148,7 @@
       if (SGS_par%model_p%iflag_dynamic  .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
         call const_layers_4_dynamic(group%ele_grp, layer_tbl)
-        call alloc_work_FEM_dynamic(layer_tbl, FEM_SGS_wk)
+        call alloc_work_FEM_dynamic(layer_tbl, SGS_MHD_wk%FEM_SGS_wk)
       end if
 !
 !
@@ -208,8 +214,9 @@
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(SGS_par, mesh, MHD_prop,                      &
-     &    iphys, nod_fld, Csims_FEM_MHD%iphys_elediff, mk_MHD1,         &
-     &    mhd_fem1_wk, rhs_mat1, fem_int1, fem_sq, label_sim)
+     &    iphys, nod_fld, Csims_FEM_MHD%iphys_elediff, mk_MHD,          &
+     &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, fem_int,           &
+     &    fem_sq, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
@@ -226,15 +233,8 @@
       call s_init_ele_material_property                                 &
      &   (mesh%ele%numele, MHD_prop, ak_MHD)
 !
-      call define_sgs_components                                        &
-     &   (mesh%node%numnod, mesh%ele%numele,                            &
-     &    SGS_par%model_p, layer_tbl, MHD_prop, Csims_FEM_MHD%ifld_sgs, &
-     &    Csims_FEM_MHD%icomp_sgs, FEM_SGS_wk%wk_sgs,                   &
-     &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
-      call define_sgs_diff_coefs(mesh%ele%numele,                       &
-     &    SGS_par%model_p, SGS_par%commute_p, layer_tbl, MHD_prop,      &
-     &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,            &
-     &    FEM_SGS_wk%wk_diff, Csims_FEM_MHD%diff_coefs)
+      call def_sgs_commute_component(SGS_par, mesh, layer_tbl,          &
+     &    MHD_prop, Csims_FEM_MHD, SGS_MHD_wk%FEM_SGS_wk)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
       call deallocate_edge_geom_type(ele_mesh%edge)
@@ -256,25 +256,25 @@
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes(SGS_par%model_p, ele_mesh,    &
-     &    group, fem_sq%i_msq, mesh, layer_tbl, fem_int1%jcs,           &
+     &    group, fem_sq%i_msq, mesh, layer_tbl, fem_int%jcs,            &
      &    MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
       call s_set_RHS_assemble_table                                     &
-     &   (mesh%node, mesh%ele, fem_int1%next_tbl, fem_int1%rhs_tbl)
+     &   (mesh%node, mesh%ele, fem_int%next_tbl, fem_int%rhs_tbl)
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector                                          &
      &   (my_rank, nprocs, mesh%node, ele_mesh%surf,                    &
-     &    fem_int1%jcs)
+     &    fem_int%jcs)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
       call int_surface_parameters                                       &
-     &   (mesh, ele_mesh%surf, group, rhs_mat1%surf_wk)
+     &   (mesh, ele_mesh%surf, group, SGS_MHD_wk%rhs_mat%surf_wk)
 !
 !     --------------------- 
 !
@@ -286,8 +286,9 @@
 !     ---------------------
 !
       call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
-     &     mesh, MHD_mesh, fem_int1%jcs, fem_int1%rhs_tbl,              &
-     &     rhs_mat1%fem_wk, rhs_mat1%f_l, fem_int1%m_lump, mk_MHD1)
+     &     mesh, MHD_mesh, fem_int%jcs, fem_int%rhs_tbl,                &
+     &     SGS_MHD_wk%rhs_mat%fem_wk, SGS_MHD_wk%rhs_mat%f_l,           &
+     &     fem_int%m_lump, mk_MHD)
 !
 !     ---------------------
 !

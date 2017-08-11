@@ -46,5 +46,4 @@
         type(SGS_terms_address) :: iphys_elediff
       end type SGS_coefficients_data
 !
-!
       end module t_FEM_SGS_model_coefs

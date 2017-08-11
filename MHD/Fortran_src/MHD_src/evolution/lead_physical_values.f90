@@ -62,8 +62,6 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_FEM_SGS_model_coefs
-      use t_work_4_dynamic_model
-      use t_work_layer_correlate
       use t_work_FEM_SGS_MHD
 !
       implicit none

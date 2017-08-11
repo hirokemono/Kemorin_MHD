@@ -74,7 +74,7 @@
 !     &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,    &
 !     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,           &
-!     &   rhs_mat1%f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,              &
+!     &   f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,                       &
 !     &   iphys%i_magne, nod_fld%d_fld)
       call cal_ff_smp_2_vector(node, rhs_tbl, f_nl%ff_smp, mlump_cd%ml, &
      &    nod_fld%ntot_phys, iphys%i_induction, nod_fld%d_fld)

@@ -102,7 +102,8 @@
      &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, flex_data,  &
      &    MHD_step, femmesh1%mesh, femmesh1%group, ele_mesh, MHD_mesh1, &
      &    layer_tbl1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,                &
-     &    iphys, nod_fld1, MHD_CG1, FEM_SGS_wk, fem_sq, label_sim)
+     &    iphys, nod_fld1, fem_int1, mk_MHD1, MHD_CG1, SGS_MHD_wk1,     &
+     &    fem_sq, label_sim)
 !
       call nod_fields_send_recv(femmesh1%mesh, nod_fld1)
 !

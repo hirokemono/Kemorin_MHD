@@ -8,7 +8,7 @@
 !!      subroutine initial_data_control                                 &
 !!     &         (MHD_files, rst_step, ref_param_T,                     &
 !!     &          node, ele, fluid, cd_prop, iphys, layer_tbl,          &
-!!     &          SGS_par, wk_sgs, wk_diff, sgs_coefs, diff_coefs,      &
+!!     &          SGS_par, FEM_SGS_wk, sgs_coefs, diff_coefs,           &
 !!     &          nod_fld, flex_p, init_d, time_d)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_step_param), intent(in) :: rst_step
@@ -22,8 +22,7 @@
 !!        type(time_data), intent(inout) :: init_d, time_d
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!        type(dynamic_model_data), intent(inout) :: wk_diff
+!!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
@@ -60,7 +59,7 @@
       subroutine initial_data_control                                   &
      &         (MHD_files, rst_step, ref_param_T,                       &
      &          node, ele, fluid, cd_prop, iphys, layer_tbl,            &
-     &          SGS_par, wk_sgs, wk_diff, sgs_coefs, diff_coefs,        &
+     &          SGS_par, FEM_SGS_wk, sgs_coefs, diff_coefs,             &
      &          nod_fld, flex_p, init_d, time_d)
 !
       use m_initial_field_control
@@ -70,6 +69,7 @@
       use t_SGS_control_parameter
       use t_layering_ele_list
       use t_flex_delta_t_data
+      use t_work_FEM_SGS_MHD
 !
       use set_restart_data
       use fem_mhd_rst_IO_control
@@ -85,7 +85,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
-      type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
+      type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
       type(time_data), intent(inout) :: init_d, time_d
@@ -95,8 +95,9 @@
 !
       if(iflag_restart .eq. i_rst_by_file) then
         call input_MHD_restart_file_ctl(MHD_files, rst_step,            &
-     &      layer_tbl, node, ele, fluid, SGS_par, wk_sgs, wk_diff,      &
-     &      sgs_coefs, diff_coefs, nod_fld, init_d, time_d, flex_p)
+     &      layer_tbl, node, ele, fluid, SGS_par,                       &
+     &      FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_diff, sgs_coefs,           &
+     &      diff_coefs, nod_fld, init_d, time_d, flex_p)
       else
         call set_initial_data                                           &
      &     (cd_prop, ref_param_T, node, fluid, iphys, nod_fld)
