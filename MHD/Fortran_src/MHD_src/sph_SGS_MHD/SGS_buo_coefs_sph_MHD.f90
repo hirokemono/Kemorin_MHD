@@ -88,8 +88,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_mag_sph_ave_SGS_buo_rtp                            &
-     &         (sph_rtp, Cbuo_ave_sph_rtp, f_trns,                      &
-     &          ncomp_SGS_rtp_2_rj, frc_rtp)
+     &         (sph_rtp, Cbuo_ave_sph_rtp, trns_SGS)
 !
       use t_rms_4_sph_spectr
       use t_spheric_parameter
@@ -98,27 +97,24 @@
       use volume_average_4_sph
       use prod_SGS_model_coefs_sph
 !
-      integer(kind = kint), intent(in)  :: ncomp_SGS_rtp_2_rj
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(phys_address), intent(in) :: f_trns
       real(kind = kreal), intent(in)                                    &
      &                   :: Cbuo_ave_sph_rtp(sph_rtp%nidx_rtp(1),2)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &               :: frc_rtp(sph_rtp%nnod_rtp,ncomp_SGS_rtp_2_rj)
+      type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
 !
 !$omp parallel
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_dbl_radial_buo_coefs_pin                              &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      Cbuo_ave_sph_rtp(1,1), Cbuo_ave_sph_rtp(1,2),               &
-     &      frc_rtp(1,f_trns%i_SGS_inertia))
+     &     (sph_rtp%nidx_rtp, Cbuo_ave_sph_rtp,                         &
+     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
+     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
       else
         call prod_dbl_radial_buo_coefs_pout                             &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      Cbuo_ave_sph_rtp(1,1), Cbuo_ave_sph_rtp(1,2),               &
-     &      frc_rtp(1,f_trns%i_SGS_inertia))
+     &     (sph_rtp%nidx_rtp, Cbuo_ave_sph_rtp,                         &
+     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
+     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
       end if
 !$omp end parallel
 !

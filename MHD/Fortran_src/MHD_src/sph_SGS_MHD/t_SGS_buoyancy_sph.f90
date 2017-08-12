@@ -264,15 +264,13 @@
 !
 !
 !$omp parallel
-      call prod_dbl_radial_buo_coefs_rj(rj_fld%n_point, sph_rj%nidx_rj, &
-     &    wk_sgs_buo%Cbuo_ave_sph_gl(0,1),                              &
-     &    wk_sgs_buo%Cbuo_ave_sph_gl(0,2),                              &
-     &    rj_fld%d_fld(1,ipol%i_SGS_inertia))
+      call prod_dbl_radial_buo_coefs_rj(sph_rj%nidx_rj,                 &
+     &    wk_sgs_buo%Cbuo_ave_sph_gl, ipol%i_SGS_inertia,               &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !$omp end parallel
 !
       call sel_mag_sph_ave_SGS_buo_rtp                                  &
-     &   (sph_rtp, wk_sgs_buo%Cbuo_ave_sph_rtp, trns_SGS%f_trns,        &
-     &    trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+     &   (sph_rtp, wk_sgs_buo%Cbuo_ave_sph_rtp, trns_SGS)
 !
       end subroutine magnify_sph_ave_SGS_buoyancy
 !
@@ -296,16 +294,12 @@
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
 !
-!$omp parallel
-      call product_double_vol_buo_coefs(rj_fld%n_point,                 &
-     &    wk_sgs_buo%Cbuo_vol_gl(1), wk_sgs_buo%Cbuo_vol_gl(2),         &
-     &    rj_fld%d_fld(1,ipol%i_SGS_inertia))
-!$omp end parallel
-!$omp parallel
-      call product_double_vol_buo_coefs(sph_rtp%nnod_rtp,               &
-     &    wk_sgs_buo%Cbuo_vol_gl(1), wk_sgs_buo%Cbuo_vol_gl(2),         &
-     &    trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_inertia))
-!$omp end parallel
+      call product_double_vol_buo_coefs                                 &
+     &   (wk_sgs_buo%Cbuo_vol_gl, ipol%i_SGS_inertia,                   &
+     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      call product_double_vol_buo_coefs                                 &
+     &   (wk_sgs_buo%Cbuo_vol_gl, trns_SGS%f_trns%i_SGS_inertia,        &
+     &    sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
 !
       end subroutine magnify_vol_ave_SGS_buoyancy
 !
