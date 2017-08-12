@@ -39,7 +39,7 @@
       use t_phys_address
       use t_jacobians
       use t_finite_element_mat
-      use t_work_fem_integration
+      use t_work_FEM_integration
       use t_MHD_finite_element_mat
       use t_IO_step_parameter
 !

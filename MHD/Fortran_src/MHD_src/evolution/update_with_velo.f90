@@ -48,7 +48,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
-      use t_work_fem_integration
+      use t_work_FEM_integration
       use t_MHD_finite_element_mat
       use t_FEM_MHD_filter_data
       use t_material_property
