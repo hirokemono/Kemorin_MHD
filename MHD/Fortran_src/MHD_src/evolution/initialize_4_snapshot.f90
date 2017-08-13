@@ -5,9 +5,9 @@
 !
 !!      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,    &
 !!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
-!!     &          FEM_filters, MHD_prop, ak_MHD, Csims_FEM_MHD,         &
-!!     &          iphys, nod_fld, t_IO, rst_step, fem_int, mk_MHD,      &
-!!     &          SGS_MHD_wk, fem_sq, label_sim)
+!!     &&          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,  &
+!!     &&          Csims_FEM_MHD, iphys, nod_fld, t_IO, rst_step,       &
+!!     &&          fem_int, mk_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -19,6 +19,8 @@
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
+!!        type(MHD_BC_lists), intent(inout) :: MHD_BC
+!!        type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -50,6 +52,8 @@
       use t_boundary_field_IO
       use t_IO_step_parameter
       use t_file_IO_parameter
+      use t_bc_data_list
+      use t_FEM_MHD_boundary_data
       use t_FEM_SGS_model_coefs
       use t_material_property
       use t_FEM_MHD_mean_square
@@ -69,19 +73,15 @@
 !
       subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,      &
      &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
-     &          FEM_filters, MHD_prop, ak_MHD, Csims_FEM_MHD,           &
-     &          iphys, nod_fld, t_IO, rst_step, fem_int, mk_MHD,        &
-     &          SGS_MHD_wk, fem_sq, label_sim)
-!
-      use m_fem_mhd_restart
+     &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,     &
+     &          Csims_FEM_MHD, iphys, nod_fld, t_IO, rst_step,          &
+     &          fem_int, mk_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_boundary_condition_IDs
       use m_array_for_send_recv
-      use m_bc_data_velo
-      use m_bc_data_list
+      use m_fem_mhd_restart
 !
       use count_whole_num_element
-!
       use cal_volume_node_MHD
       use int_MHD_mass_matrices
       use int_surface_params_MHD
@@ -121,6 +121,8 @@
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(coefs_4_MHD_type), intent(inout) :: ak_MHD
+      type(MHD_BC_lists), intent(inout) :: MHD_BC
+      type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
@@ -245,7 +247,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data                                            &
      &   (MHD_step%time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,      &
-     &    MHD_prop, MHD_BC1, iphys, nod_fld)
+     &    MHD_prop, MHD_BC, iphys, nod_fld, FEM_MHD_BCs)
 !
 !     ---------------------
 !
@@ -256,7 +258,7 @@
 !
 !     ---------------------
 !
-      call deallocate_surf_bc_lists(MHD_prop, MHD_BC1)
+      call deallocate_surf_bc_lists(MHD_prop, MHD_BC)
 !
       end subroutine init_analyzer_snap
 !

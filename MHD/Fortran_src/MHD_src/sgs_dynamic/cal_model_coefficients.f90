@@ -57,7 +57,7 @@
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_bc_data_MHD
-      use t_MHD_boundary_data
+      use t_surface_bc_data_MHD
       use t_FEM_SGS_model_coefs
       use t_work_FEM_SGS_MHD
 !

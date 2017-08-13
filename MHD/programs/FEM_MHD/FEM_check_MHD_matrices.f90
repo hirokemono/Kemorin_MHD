@@ -69,9 +69,9 @@
       call init_analyzer_fl                                             &
      &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, flex_data,  &
      &    MHD_step, femmesh1%mesh, femmesh1%group, ele_mesh1,           &
-     &    MHD_mesh1, FEM_filters1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,   &
-     &    iphys, nod_fld1, fem_int1, mk_MHD1, MHD_CG1, SGS_MHD_wk1,     &
-     &    fem_sq, label_sim)
+     &    MHD_mesh1, FEM_filters1, MHD_prop1, ak_MHD, FEM_MHD1_BCs,     &
+     &    Csims_FEM_MHD1, iphys, nod_fld1, fem_int1, mk_MHD1, MHD_CG1,  &
+     &    SGS_MHD_wk1, fem_sq, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !
@@ -82,7 +82,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
      &    SGS_par1%model_p, SGS_par1%commute_p, femmesh1,               &
-     &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1, ak_MHD,   &
+     &    ele_mesh1, MHD_mesh1, FEM_MHD1_BCs, MHD_prop1, ak_MHD,        &
      &    fem_int1, FEM_filters1%FEM_elens, Csims_FEM_MHD1,             &
      &    MHD1_mat_tbls, mk_MHD1, SGS_MHD_wk1%rhs_mat, MHD_CG1)
 !

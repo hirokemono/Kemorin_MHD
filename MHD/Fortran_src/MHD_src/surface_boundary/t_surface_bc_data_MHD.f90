@@ -1,5 +1,5 @@
-!>@file   t_MHD_boundary_data.f90
-!!@brief  module t_MHD_boundary_data
+!>@file   t_surface_bc_data_MHD.f90
+!!@brief  module t_surface_bc_data_MHD
 !!
 !!@author H. Matsui
 !!@date Programmed by H. Matsui in 2009
@@ -25,7 +25,7 @@
 !!      subroutine dealloc_surf_vector(Bsf_bcs)
 !!@endverbatim
 !
-      module t_MHD_boundary_data
+      module t_surface_bc_data_MHD
 !
       use m_precision
       use t_surface_bc_data
@@ -223,4 +223,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module t_MHD_boundary_data
+      end module t_surface_bc_data_MHD

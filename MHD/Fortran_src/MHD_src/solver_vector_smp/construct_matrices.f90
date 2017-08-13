@@ -8,11 +8,11 @@
 !!     &          MGCG_WK, MHD_mat_tbls, MHD_mat, s_package)
 !!      subroutine update_matrices                                      &
 !!     &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh,          &
-!!     &          MHD_mesh, nod_bcs, surf_bcs, MHD_prop, ak_MHD,        &
+!!     &          MHD_mesh, FEM_MHD_BCs, MHD_prop, ak_MHD,              &
 !!     &          fem_int, FEM_elens, Csims_FEM_MHD, MHD_mat_tbls,      &
 !!     &          flex_p, mk_MHD, rhs_mat, MHD_CG)
 !!      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,&
-!!     &          femmesh, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,       &
+!!     &          femmesh, ele_mesh, MHD_mesh, FEM_MHD_BCs,             &
 !!     &          MHD_prop, ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD,  &
 !!     &          MHD_mat_tbls, mk_MHD, rhs_mat, MHD_CG)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -22,8 +22,7 @@
 !!        type(mesh_data), intent(in) ::   femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
-!!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
-!!        type(surface_boundarty_conditions), intent(in)  :: surf_bcs
+!!        type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -62,8 +61,7 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_sorted_node_MHD
-      use t_bc_data_MHD
-      use t_MHD_boundary_data
+      use t_FEM_MHD_boundary_data
       use t_solver_djds_MHD
       use t_MHD_matrices_pack
       use t_MGCG_data
@@ -121,7 +119,7 @@
 !
       subroutine update_matrices                                        &
      &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh,            &
-     &          MHD_mesh, nod_bcs, surf_bcs, MHD_prop, ak_MHD,          &
+     &          MHD_mesh, FEM_MHD_BCs, MHD_prop, ak_MHD,                &
      &          fem_int, FEM_elens, Csims_FEM_MHD, MHD_mat_tbls,        &
      &          flex_p, mk_MHD, rhs_mat, MHD_CG)
 !
@@ -134,8 +132,7 @@
       type(mesh_data), intent(in) ::   femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
-      type(nodal_boundarty_conditions), intent(in) :: nod_bcs
-      type(surface_boundarty_conditions), intent(in)  :: surf_bcs
+      type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
@@ -165,7 +162,7 @@
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
         call set_aiccg_matrices(time_d%dt, FEM_prm,                     &
      &      SGS_par%model_p, SGS_par%commute_p, femmesh, ele_mesh,      &
-     &      MHD_mesh, nod_bcs, surf_bcs, MHD_prop, ak_MHD, fem_int,     &
+     &      MHD_mesh, FEM_MHD_BCs, MHD_prop, ak_MHD, fem_int,           &
      &      FEM_elens, Csims_FEM_MHD, MHD_mat_tbls, mk_MHD, rhs_mat,    &
      &      MHD_CG)
         flex_p%iflag_flex_step_changed = 0
@@ -176,7 +173,7 @@
 !  ----------------------------------------------------------------------
 !
       subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,  &
-     &          femmesh, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,         &
+     &          femmesh, ele_mesh, MHD_mesh, FEM_MHD_BCs,               &
      &          MHD_prop, ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD,    &
      &          MHD_mat_tbls, mk_MHD, rhs_mat, MHD_CG)
 !
@@ -193,8 +190,7 @@
       type(mesh_data), intent(in) ::   femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
-      type(nodal_boundarty_conditions), intent(in) :: nod_bcs
-      type(surface_boundarty_conditions), intent(in)  :: surf_bcs
+      type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
@@ -208,8 +204,8 @@
 !
 !
       call const_MHD_aiccg_matrices                                     &
-     &   (izero, dt, FEM_prm, SGS_param, cmt_param,                     &
-     &    femmesh, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,               &
+     &   (izero, dt, FEM_prm, SGS_param, cmt_param, femmesh, ele_mesh,  &
+     &    MHD_mesh, FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,          &
      &    MHD_prop, ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD,          &
      &    MHD_mat_tbls, mk_MHD, rhs_mat, MHD_CG%MHD_mat)
 !

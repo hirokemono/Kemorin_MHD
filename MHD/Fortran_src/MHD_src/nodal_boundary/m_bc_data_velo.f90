@@ -4,100 +4,13 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_boundary_data                                    &
-!!     &         (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,       &
-!!     &          MHD_prop, MHD_BC, iphys, nod_fld)
-!!        type(time_data), intent(in) :: time_d
-!!        type(IO_boundary), intent(in) :: IO_bc
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(element_geometry), intent(in) :: ele_mesh
-!!        type(mesh_data_MHD), intent(in) :: MHD_mesh
-!!        type(mesh_groups), intent(in) ::   group
-!!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(MHD_BC_lists), intent(in) :: MHD_BC
-!!        type(phys_address), intent(in) :: iphys
-!!        type(phys_data), intent(inout) :: nod_fld
-!
       module m_bc_data_velo
 !
       use m_precision
-      use t_bc_data_MHD
-      use t_MHD_boundary_data
+      use t_FEM_MHD_boundary_data
 !
       implicit  none
 !
-      type(nodal_boundarty_conditions), save :: nod1_bcs
-!
-      type(surface_boundarty_conditions), save :: sf1_bcs
-!
-!
-!  ---------------------------------------------------------------------
-!
-      contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_boundary_data                                      &
-     &         (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,         &
-     &          MHD_prop, MHD_BC, iphys, nod_fld)
-!
-      use m_machine_parameter
-!
-      use t_time_data
-      use t_control_parameter
-      use t_mesh_data
-      use t_geometry_data_MHD
-      use t_surface_group_connect
-      use t_surface_group_geometry
-      use t_phys_data
-      use t_phys_address
-      use t_boundary_field_IO
-      use t_physical_property
-      use t_reference_scalar_param
-      use t_bc_data_MHD
-      use t_bc_data_list
-!
-      use set_nodal_bc_id_data
-      use set_surface_id_MHD
-      use set_surface_values
-      use set_normal_field
-!
-      type(time_data), intent(in) :: time_d
-      type(IO_boundary), intent(in) :: IO_bc
-      type(mesh_geometry), intent(in) :: mesh
-      type(element_geometry), intent(in) :: ele_mesh
-      type(mesh_data_MHD), intent(in) :: MHD_mesh
-      type(mesh_groups), intent(in) ::   group
-      type(phys_address), intent(in) :: iphys
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(MHD_BC_lists), intent(in) :: MHD_BC
-!
-      type(phys_data), intent(inout) :: nod_fld
-!
-!
-      if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
-      call set_bc_id_data(time_d%dt, IO_bc, mesh, group, MHD_mesh,      &
-     &    MHD_prop, MHD_BC, nod1_bcs)
-!
-      if (iflag_debug.eq.1) write(*,*)' set_bc_fields'
-      call set_bc_fields(time_d%time, mesh,                             &
-     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
-     &    iphys, nod_fld, nod1_bcs)
-!
-      call set_bc_surface_data                                          &
-     &   (IO_bc, mesh%node, mesh%ele, ele_mesh%surf,                    &
-     &    group%surf_grp, group%surf_nod_grp, group%surf_grp_geom,      &
-     &    MHD_prop, MHD_BC, sf1_bcs)
-!
-!     set normal velocity
-      call set_normal_velocity                                          &
-     &   (group%surf_grp, group%surf_nod_grp, MHD_prop%fl_prop,         &
-     &    sf1_bcs%Vsf_bcs%normal, iphys%i_velo, nod_fld)
-!
-      end subroutine set_boundary_data
-!
-!  ---------------------------------------------------------------------
+      type(FEM_MHD_BC_data), save :: FEM_MHD1_BCs
 !
       end module m_bc_data_velo

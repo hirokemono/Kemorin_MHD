@@ -32,7 +32,7 @@
       use t_surface_group_geometry
       use t_phys_data
       use t_phys_address
-      use t_MHD_boundary_data
+      use t_surface_bc_data_MHD
       use t_boundary_field_IO
       use t_bc_data_list
 !

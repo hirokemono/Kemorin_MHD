@@ -55,6 +55,8 @@
       use m_geometry_data_MHD
       use m_physical_property
       use m_element_phys_data
+      use m_bc_data_list
+      use m_bc_data_velo
       use m_SGS_control_parameter
       use m_finite_element_matrix
       use t_boundary_field_IO
@@ -80,9 +82,10 @@
       call init_analyzer_snap                                           &
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
-     &    FEM_filters, MHD_prop1, ak_MHD, Csims_FEM_MHD1,               &
-     &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step,             &
-     &    fem_int1, mk_MHD1, SGS_MHD_wk, fem_sq, label_sim)
+     &    FEM_filters, MHD_prop1, ak_MHD, MHD_BC1, FEM_MHD1_BCs,        &
+     &    Csims_FEM_MHD1, iphys, nod_fld1, SNAP_time_IO,                &
+     &    MHD_step%rst_step,  fem_int1, mk_MHD1, SGS_MHD_wk,            &
+     &    fem_sq, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !

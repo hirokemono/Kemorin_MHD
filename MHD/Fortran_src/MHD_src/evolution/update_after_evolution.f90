@@ -72,7 +72,7 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_FEM_MHD_filter_data
-      use t_MHD_boundary_data
+      use t_surface_bc_data_MHD
       use t_bc_data_MHD
       use t_MHD_matrices_pack
       use t_MGCG_data

@@ -36,6 +36,7 @@
       use m_work_time
       use m_control_parameter
       use m_SGS_control_parameter
+      use m_bc_data_velo
       use t_mesh_data
       use t_ucd_file
       use t_time_data
@@ -69,6 +70,7 @@
       use m_geometry_data_MHD
       use m_physical_property
       use m_element_phys_data
+      use m_bc_data_list
       use m_finite_element_matrix
       use m_SGS_control_parameter
       use t_boundary_field_IO
@@ -95,9 +97,10 @@
       call init_analyzer_snap                                           &
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
-     &    FEM_filters, MHD_prop1, ak_MHD, Csims_FEM_MHD1,               &
-     &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step,             &
-     &    fem_int1, mk_MHD1, SGS_MHD_wk, fem_sq, label_sim)
+     &    FEM_filters, MHD_prop1, ak_MHD, MHD_BC1, FEM_MHD1_BCs,        &
+     &    Csims_FEM_MHD1, iphys, nod_fld1, SNAP_time_IO,                &
+     &    MHD_step%rst_step, fem_int1, mk_MHD1, SGS_MHD_wk,             &
+     &    fem_sq, label_sim)
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, femmesh%mesh, MHD_mesh1, nod_fld1,         &
@@ -200,11 +203,11 @@
       call nod_fields_send_recv(femmesh%mesh, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields                                                &
-     &   (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,                 &
-     &    ele_mesh, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,     &
-     &    fem_int1, FEM_filters, mk_MHD1, SGS_MHD_wk, nod_fld1,         &
-     &    fld_ele1, Csims_FEM_MHD1)
+      call update_fields(MHD_step%time_d,                               &
+     &    FEM_prm1, SGS_par1, femmesh, ele_mesh, MHD_mesh1,             &
+     &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
+     &    iphys, iphys_ele, fem_int1, FEM_filters, mk_MHD1,             &
+     &    SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -212,7 +215,8 @@
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
-     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs, &
+     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                    &
+     &      FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                &
      &      iphys, iphys_ele, fld_ele1, fem_int1, FEM_filters, mk_MHD1, &
      &      SGS_MHD_wk, nod_fld1, Csims_FEM_MHD1)
       end if
@@ -223,7 +227,7 @@
       if(iflag .eq. 0) then
         call lead_fields_by_FEM                                         &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,               &
-     &      ele_mesh, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,          &
+     &      ele_mesh, MHD_mesh1, MHD_prop1, FEM_MHD1_BCs,               &
      &      iphys, iphys_ele, ak_MHD, fem_int1, FEM_filters, mk_MHD1,   &
      &      SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
       end if

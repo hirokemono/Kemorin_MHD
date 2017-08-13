@@ -17,6 +17,8 @@
       implicit  none
 !
 !
+      character(len=kchara), parameter :: default_psf_prefix = 'psf'
+!
         character(len = kchara), allocatable :: psf_header(:)
         integer(kind = kint), allocatable :: itype_psf_file(:)
 !
@@ -25,7 +27,7 @@
 !
         real(kind = kreal), allocatable :: const_psf(:,:)
 !
-      integer(kind = kint), allocatable :: id_psf_group(:)
+        integer(kind = kint), allocatable :: id_psf_group(:)
 !
 !  ---------------------------------------------------------------------
 !

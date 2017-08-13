@@ -49,7 +49,7 @@
       use t_table_FEM_const
       use t_solver_djds
       use t_bc_data_MHD
-      use t_MHD_boundary_data
+      use t_surface_bc_data_MHD
 !
       implicit none
 !

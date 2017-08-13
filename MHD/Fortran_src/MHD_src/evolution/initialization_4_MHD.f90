@@ -6,8 +6,9 @@
 !!      subroutine init_analyzer_fl                                     &
 !!     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data, &
 !!     &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters.&
-!!     &         MHD_prop, ak_MHD, Csims_FEM_MHD, iphys, nod_fld,       &
-!!     &         fem_int, mk_MHD, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
+!!     &         MHD_prop, ak_MHD, FEM_MHD_BCs, Csims_FEM_MHD,          &
+!!     &         iphys, nod_fld, fem_int, mk_MHD, MHD_CG,               &
+!!     &         SGS_MHD_wk, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -22,6 +23,7 @@
 !!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(coefs_4_MHD_type), intent(inout) :: ak_MHD
+!!        type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -53,6 +55,7 @@
       use t_flex_delta_t_data
       use t_FEM_MHD_mean_square
       use t_FEM_MHD_solvers
+      use t_MHD_boundary_data
       use t_work_FEM_dynamic_SGS
       use t_work_FEM_SGS_MHD
       use t_MHD_mass_matricxes
@@ -70,10 +73,9 @@
       subroutine init_analyzer_fl                                       &
      &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data,   &
      &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters,  &
-     &         MHD_prop, ak_MHD, Csims_FEM_MHD, iphys, nod_fld,         &
-     &         fem_int, mk_MHD, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
-!
-      use m_flexible_time_step
+     &         MHD_prop, ak_MHD, FEM_MHD_BCs, Csims_FEM_MHD,            &
+     &         iphys, nod_fld, fem_int, mk_MHD, MHD_CG,                 &
+     &         SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_boundary_condition_IDs
       use m_flags_4_solvers
@@ -133,6 +135,7 @@
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(coefs_4_MHD_type), intent(inout) :: ak_MHD
+      type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
@@ -300,7 +303,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
       call set_boundary_data                                            &
      &   (MHD_step%time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,      &
-     &    MHD_prop, MHD_BC1, iphys, nod_fld)
+     &    MHD_prop, MHD_BC1, iphys, nod_fld, FEM_MHD_BCs)
 !
 !     ---------------------
 !

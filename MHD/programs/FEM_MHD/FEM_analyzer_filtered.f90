@@ -136,11 +136,11 @@
       call nod_fields_send_recv(femmesh%mesh, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields                                                &
-     &   (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,                 &
-     &    ele_mesh, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,     &
-     &    fem_int1, FEM_filters, mk_MHD1, SGS_MHD_wk, nod_fld1,         &
-     &    fld_ele1, Csims_FEM_MHD1)
+      call update_fields(MHD_step%time_d,                               &
+     &    FEM_prm1, SGS_par1, femmesh, ele_mesh, MHD_mesh1,             &
+     &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
+     &    iphys, iphys_ele, fem_int1, FEM_filters, mk_MHD1,             &
+     &    SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -148,9 +148,10 @@
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
-     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs, &
-     &      iphys, iphys_ele, fld_ele1, fem_int1, FEM_filters, mk_MHD1, &
-     &      SGS_MHD_wk, nod_fld1, Csims_FEM_MHD1)
+     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                    &
+     &      FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                &
+     &      iphys, iphys_ele, fld_ele1, fem_int1, FEM_filters,          &
+     &      mk_MHD1, SGS_MHD_wk, nod_fld1, Csims_FEM_MHD1)
       end if
 !
 !     ========  Data output
@@ -159,7 +160,7 @@
       if(iflag .eq. 0) then
         call lead_fields_by_FEM                                         &
      &    (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,                &
-     &     ele_mesh, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,           &
+     &     ele_mesh, MHD_mesh1, MHD_prop1, FEM_MHD1_BCs,                &
      &     iphys, iphys_ele, ak_MHD, fem_int1, FEM_filters, mk_MHD1,    &
      &     SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
       end if
