@@ -11,12 +11,12 @@
 !!@verbatim
 !!      subroutine input_control_4_FEM_MHD(MHD_files, FEM_prm, SGS_par, &
 !!     &          flex_p, MHD_step, MHD_prop, MHD_BC, femmesh, ele_mesh,&
-!!     &          nod_fld, IO_bc, FEM_filters, FEM_SGS_wk, MHD_mat,     &
-!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
+!!     &          nod_fld, ele_fld, IO_bc, FEM_filters, FEM_SGS_wk,     &
+!!     &          MHD_mat, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!      subroutine input_control_4_FEM_snap(MHD_files, FEM_prm, SGS_par,&
 !!     &          flex_p, MHD_step, MHD_prop, MHD_BC, femmesh, ele_mesh,&
-!!     &          nod_fld, IO_bc, FEM_filters, FEM_SGS_wk, MGCG_WK,     &
-!!     &          MGCG_FEM, MGCG_MHD_FEM)
+!!     &          nod_fld, ele_fld, IO_bc, FEM_filters, FEM_SGS_wk,     &
+!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
@@ -32,7 +32,7 @@
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
-!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_data), intent(inout) :: nod_fld, ele_fld
 !!        type(IO_boundary), intent(inout) :: IO_bc
 !!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -88,8 +88,8 @@
 !
       subroutine input_control_4_FEM_MHD(MHD_files, FEM_prm, SGS_par,   &
      &          flex_p, MHD_step, MHD_prop, MHD_BC, femmesh, ele_mesh,  &
-     &          nod_fld, IO_bc, FEM_filters, FEM_SGS_wk, MHD_mat,       &
-     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
+     &          nod_fld, ele_fld, IO_bc, FEM_filters, FEM_SGS_wk,       &
+     &          MHD_mat, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use m_flags_4_solvers
       use set_control_FEM_MHD
@@ -108,7 +108,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
-      type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: nod_fld, ele_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
       type(filters_on_FEM), intent(inout) :: FEM_filters
@@ -127,7 +127,7 @@
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,       &
      &    FEM_prm, SGS_par, flex_p, MHD_step, MHD_prop, MHD_BC,         &
-     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh                                               &
@@ -160,8 +160,8 @@
 !
       subroutine input_control_4_FEM_snap(MHD_files, FEM_prm, SGS_par,  &
      &          flex_p, MHD_step, MHD_prop, MHD_BC, femmesh, ele_mesh,  &
-     &          nod_fld, IO_bc, FEM_filters, FEM_SGS_wk, MGCG_WK,       &
-     &          MGCG_FEM, MGCG_MHD_FEM)
+     &          nod_fld, ele_fld, IO_bc, FEM_filters, FEM_SGS_wk,       &
+     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -177,7 +177,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
-      type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: nod_fld, ele_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
       type(filters_on_FEM), intent(inout) :: FEM_filters
@@ -195,7 +195,7 @@
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,       &
      &    FEM_prm, SGS_par, flex_p, MHD_step, MHD_prop, MHD_BC,         &
-     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh                                               &

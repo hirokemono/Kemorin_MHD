@@ -10,7 +10,7 @@
 !!      subroutine set_control_4_FEM_MHD(plt, org_plt, model_ctl,       &
 !!     &          fmctl_ctl, nmtr_ctl, MHD_files, FEM_prm, SGS_par,     &
 !!     &          flex_p, MHD_step, MHD_prop, MHD_BC,                   &
-!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -26,7 +26,7 @@
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
-!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_data), intent(inout) :: nod_fld, ele_fld
 !!@endverbatim
 !
       module set_control_FEM_MHD
@@ -57,7 +57,7 @@
       subroutine set_control_4_FEM_MHD(plt, org_plt, model_ctl,         &
      &          fmctl_ctl, nmtr_ctl, MHD_files, FEM_prm, SGS_par,       &
      &          flex_p, MHD_step, MHD_prop, MHD_BC,                     &
-     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
 !
       use calypso_mpi
       use m_default_file_prefix
@@ -102,7 +102,7 @@
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
-      type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: nod_fld, ele_fld
 !
 !
 !   set parameters for data files
@@ -159,7 +159,7 @@
 !
       call set_control_4_fields                                         &
      &   (FEM_prm, SGS_par, MHD_prop, model_ctl%fld_ctl%field_ctl,      &
-     &    nod_fld)
+     &    nod_fld, ele_fld)
 !
 !   set control parameters
 !

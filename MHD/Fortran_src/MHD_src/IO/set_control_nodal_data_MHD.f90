@@ -8,13 +8,13 @@
 !> @brief Set field information for MHD simulation from control data
 !!
 !!@verbatim
-!!      subroutine set_control_4_fields                                 &
-!!     &         (FEM_prm, SGS_par, MHD_prop, field_ctl, nod_fld)
+!!      subroutine set_control_4_fields(FEM_prm, SGS_par, MHD_prop,     &
+!!     &          field_ctl, nod_fld, ele_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
-!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_data), intent(inout) :: nod_fld, ele_fld
 !!@endverbatim
 !
       module set_control_nodal_data_MHD
@@ -35,25 +35,25 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_fields                                   &
-     &         (FEM_prm, SGS_par, MHD_prop, field_ctl, nod_fld)
+      subroutine set_control_4_fields(FEM_prm, SGS_par, MHD_prop,       &
+     &          field_ctl, nod_fld, ele_fld)
 !
       use calypso_mpi
       use m_error_IDs
-      use m_element_phys_data
       use t_FEM_control_parameter
       use t_SGS_control_parameter
 !
       use set_control_nodal_data
       use add_nodal_fields_4_MHD
       use add_nodal_fields_4_SGS
+      use initialize_element_field
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
-      type(phys_data), intent(inout) :: nod_fld
+      type(phys_data), intent(inout) :: nod_fld, ele_fld
 !
       integer(kind = kint) :: ierr
 !
@@ -89,7 +89,8 @@
         call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
       end if
 !
-      call set_ele_field_names_MHD(FEM_prm, SGS_par%model_p, nod_fld)
+      call set_ele_field_names_MHD                                      &
+     &   (FEM_prm, SGS_par%model_p, nod_fld, ele_fld)
 !
       end subroutine set_control_4_fields
 !

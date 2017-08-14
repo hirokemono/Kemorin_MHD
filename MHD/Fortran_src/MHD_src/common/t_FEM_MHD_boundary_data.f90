@@ -26,15 +26,16 @@
       module t_FEM_MHD_boundary_data
 !
       use m_precision
-      use t_surface_bc_data
+      use t_bc_data_MHD
+      use t_surface_bc_data_MHD
 !
       implicit  none
 !
       type FEM_MHD_BC_data
 !         Nodal boundary condition data for FEM_MHD
-        type(nodal_boundarty_conditions), save :: nod_bcs
+        type(nodal_boundarty_conditions) :: nod_bcs
 !         Surface boundary condition data for FEM_MHD
-        type(surface_boundarty_conditions), save :: sf_bcs
+        type(surface_boundarty_conditions) :: surf_bcs
       end type FEM_MHD_BC_data
 !
 !-----------------------------------------------------------------------
@@ -96,12 +97,12 @@
       call set_bc_surface_data                                          &
      &   (IO_bc, mesh%node, mesh%ele, ele_mesh%surf,                    &
      &    group%surf_grp, group%surf_nod_grp, group%surf_grp_geom,      &
-     &    MHD_prop, MHD_BC, FEM_MHD_BCs%sf_bcs)
+     &    MHD_prop, MHD_BC, FEM_MHD_BCs%surf_bcs)
 !
 !     set normal velocity
       call set_normal_velocity                                          &
      &   (group%surf_grp, group%surf_nod_grp, MHD_prop%fl_prop,         &
-     &    FEM_MHD_BCs%sf1_bcs%Vsf_bcs%normal, iphys%i_velo, nod_fld)
+     &    FEM_MHD_BCs%surf_bcs%Vsf_bcs%normal, iphys%i_velo, nod_fld)
 !
       end subroutine set_boundary_data
 !
