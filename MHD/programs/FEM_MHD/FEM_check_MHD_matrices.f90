@@ -70,8 +70,8 @@
      &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, flex_data,  &
      &    MHD_step, femmesh1%mesh, femmesh1%group, ele_mesh1,           &
      &    MHD_mesh1, FEM_filters1, MHD_prop1, ak_MHD, FEM_MHD1_BCs,     &
-     &    Csims_FEM_MHD1, iphys, nod_fld1, fem_int1, mk_MHD1, MHD_CG1,  &
-     &    SGS_MHD_wk1, fem_sq, label_sim)
+     &    Csims_FEM_MHD1, iphys_nod1, nod_fld1, fem_int1, mk_MHD1,      &
+     &    MHD_CG1, SGS_MHD_wk1, fem_sq, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !

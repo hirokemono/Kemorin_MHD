@@ -101,7 +101,7 @@
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle                                     &
-     &   (MHD_files1, bc_sph_IO1, iphys, cdat1)
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, cdat1)
       call calypso_MPI_barrier
 !
       call end_elapsed_time(2)

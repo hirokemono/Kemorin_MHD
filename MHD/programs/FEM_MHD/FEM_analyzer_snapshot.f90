@@ -98,7 +98,7 @@
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
      &    FEM_filters, MHD_prop1, ak_MHD, MHD_BC1, FEM_MHD1_BCs,        &
-     &    Csims_FEM_MHD1, iphys, nod_fld1, SNAP_time_IO,                &
+     &    Csims_FEM_MHD1, iphys_nod1, nod_fld1, SNAP_time_IO,           &
      &    MHD_step%rst_step, fem_int1, mk_MHD1, SGS_MHD_wk,             &
      &    fem_sq, label_sim)
 !
@@ -188,13 +188,15 @@
      & .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
         call subtract_2_nod_scalars(nod_fld1,                           &
-     &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
+     &      iphys_nod1%i_temp, iphys_nod1%i_ref_t,                      &
+     &      iphys_nod1%i_par_temp)
       end if
       if (MHD_prop1%ref_param_C%iflag_reference                         &
      & .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
         call subtract_2_nod_scalars(nod_fld1,                           &
-     &      iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
+     &      iphys_nod1%i_light, iphys_nod1%i_ref_c,                     &
+     &      iphys_nod1%i_par_light)
       end if
 !
 !     ---------------------
@@ -206,7 +208,7 @@
       call update_fields(MHD_step%time_d,                               &
      &    FEM_prm1, SGS_par1, femmesh, ele_mesh, MHD_mesh1,             &
      &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
-     &    iphys, iphys_ele, fem_int1, FEM_filters, mk_MHD1,             &
+     &    iphys_nod1, iphys_ele, fem_int1, FEM_filters, mk_MHD1,        &
      &    SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
 !
 !     ----- Evaluate model coefficients
@@ -217,8 +219,8 @@
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
      &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                    &
      &      FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                &
-     &      iphys, iphys_ele, fld_ele1, fem_int1, FEM_filters, mk_MHD1, &
-     &      SGS_MHD_wk, nod_fld1, Csims_FEM_MHD1)
+     &      iphys_nod1, iphys_ele, fld_ele1, fem_int1, FEM_filters,     &
+     &      mk_MHD1, SGS_MHD_wk, nod_fld1, Csims_FEM_MHD1)
       end if
 !
 !     ========  Data output
@@ -228,8 +230,8 @@
         call lead_fields_by_FEM                                         &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,               &
      &      ele_mesh, MHD_mesh1, MHD_prop1, FEM_MHD1_BCs,               &
-     &      iphys, iphys_ele, ak_MHD, fem_int1, FEM_filters, mk_MHD1,   &
-     &      SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
+     &      iphys_nod1, iphys_ele, ak_MHD, fem_int1, FEM_filters,       &
+     &      mk_MHD1, SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
       end if
 !
 !     -----Output monitor date
@@ -242,7 +244,7 @@
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,         &
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
-     &      iphys, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,         &
+     &      iphys_nod1, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,    &
      &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
      &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
       end if

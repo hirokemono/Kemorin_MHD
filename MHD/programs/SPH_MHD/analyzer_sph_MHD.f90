@@ -81,13 +81,14 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz(MHD_files1%ucd_file_IO, MHD_step1,      &
-     &    femmesh1%mesh, femmesh1%group, ele_mesh1, iphys, nod_fld1,    &
-     &    next_tbl_VIZ1, jacobians_VIZ1, range1, fem_ucd1)
+     &    femmesh1%mesh, femmesh1%group, ele_mesh1,                     &
+     &    iphys_nod1, nod_fld1, next_tbl_VIZ1, jacobians_VIZ1,          &
+     &    range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
-      call SPH_initialize_SGS_MHD(MHD_files1, bc_sph_IO1, iphys,        &
+      call SPH_initialize_SGS_MHD(MHD_files1, bc_sph_IO1, iphys_nod1,   &
      &    MHD_step1, SGS_par1, dynamic_SPH1)
 !
 !        Initialize visualization
@@ -145,7 +146,7 @@
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
           call SPH_to_FEM_bridge_SGS_MHD                                &
      &       (SGS_par1, sph1%sph_params, sph1%sph_rtp, trns_WK1,        &
-     &        femmesh1%mesh, iphys, nod_fld1)
+     &        femmesh1%mesh, iphys_nod1, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

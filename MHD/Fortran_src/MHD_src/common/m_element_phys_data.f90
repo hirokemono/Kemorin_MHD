@@ -7,7 +7,6 @@
 !> @brief Field data in element for FEM
 !
 !!      subroutine initialize_ele_field_data(numele)
-!!      subroutine deallocate_ele_data_arrays
 !
 !
       module m_element_phys_data
@@ -47,16 +46,6 @@
       call set_element_field_address(fld_ele1, iphys_ele)
 !
       end subroutine initialize_ele_field_data
-!
-!  --------------------------------------------------------------------
-!
-      subroutine deallocate_ele_data_arrays
-!
-!
-      call dealloc_phys_data_type(fld_ele1)
-      call dealloc_phys_name_type(fld_ele1)
-!
-      end subroutine deallocate_ele_data_arrays
 !
 !  --------------------------------------------------------------------
 !

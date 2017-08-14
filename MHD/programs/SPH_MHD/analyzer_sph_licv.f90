@@ -70,7 +70,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_linear_conv'
       call SPH_initialize_linear_conv                                   &
-     &   (MHD_files1, bc_sph_IO1, iphys, MHD_step1)
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_step1)
       call calypso_MPI_barrier
 !
       call end_elapsed_time(2)

@@ -23,7 +23,7 @@
       type(phys_data), save :: nod_fld1
 !
 !>       address for nodal fields
-      type(phys_address), save :: iphys
+      type(phys_address), save :: iphys_nod1
 !
 !
 !   ---------------------------------------------------------------------
