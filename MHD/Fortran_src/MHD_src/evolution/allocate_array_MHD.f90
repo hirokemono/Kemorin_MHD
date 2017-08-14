@@ -7,13 +7,14 @@
 !        Modified by H. Matsui on May, 2007
 !
 !!      subroutine allocate_array(SGS_par, mesh, MHD_prop,              &
-!!     &          iphys, nod_fld, iphys_elediff, mk_MHD,                &
-!!     &          mhd_fem_wk, rhs_mat, fem_int, fem_sq, label_sim)
+!!     &          iphys, nod_fld, iphys_ele, ele_fld, iphys_elediff,    &
+!!     &          mk_MHD, mhd_fem_wk, rhs_mat, fem_int, fem_sq,         &
+!!     &          label_sim)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(phys_address), intent(inout) :: iphys
-!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_address), intent(inout) :: iphys, iphys_ele
+!!        type(phys_data), intent(inout) :: nod_fld, ele_fld
 !!        type(SGS_terms_address), intent(inout) :: iphys_elediff
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(finite_element_integration), intent(inout) :: fem_int
@@ -47,10 +48,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine allocate_array(SGS_par, mesh, MHD_prop,                &
-     &          iphys, nod_fld, iphys_elediff, mk_MHD,                  &
-     &          mhd_fem_wk, rhs_mat, fem_int, fem_sq, label_sim)
+     &          iphys, nod_fld, iphys_ele, ele_fld, iphys_elediff,      &
+     &          mk_MHD, mhd_fem_wk, rhs_mat, fem_int, fem_sq,           &
+     &          label_sim)
 !
-      use m_element_phys_data
       use m_phys_constants
 !
       use t_SGS_control_parameter
@@ -63,13 +64,13 @@
 !
       use count_sgs_components
       use node_monitor_IO
-      use check_dependency_SGS_MHD
+      use dependency_FEM_SGS_MHD
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(phys_address), intent(inout) :: iphys
-      type(phys_data), intent(inout) :: nod_fld
+      type(phys_address), intent(inout) :: iphys, iphys_ele
+      type(phys_data), intent(inout) :: nod_fld, ele_fld
       type(SGS_terms_address), intent(inout) :: iphys_elediff
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_element_integration), intent(inout) :: fem_int
@@ -100,10 +101,9 @@
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_SGS_MHD_field_data'
       call set_FEM_SGS_MHD_field_data                                   &
-     &   (SGS_par%model_p, SGS_par%commute_p, mesh%node,                &
-     &    MHD_prop, iphys, nod_fld)
+     &   (SGS_par%model_p, SGS_par%commute_p, mesh%node, mesh%ele,      &
+     &    MHD_prop, iphys, nod_fld, iphys_ele, ele_fld)
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
-      call initialize_ele_field_data(mesh%ele%numele)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'set_mean_square_values'
       call init_FEM_MHD_mean_square(nod_fld, fem_sq)

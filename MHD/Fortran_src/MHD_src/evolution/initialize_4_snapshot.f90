@@ -6,8 +6,9 @@
 !!      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,    &
 !!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
 !!     &&          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,  &
-!!     &&          Csims_FEM_MHD, iphys, nod_fld, t_IO, rst_step,       &
-!!     &&          fem_int, mk_MHD, SGS_MHD_wk, fem_sq, label_sim)
+!!     &          Csims_FEM_MHD, iphys, nod_fld, iphys_ele, ele_fld,    &
+!!     &          t_IO, rst_step, fem_int, mk_MHD, SGS_MHD_wk,          &
+!!     &          fem_sq, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -22,8 +23,8 @@
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!        type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
-!!        type(phys_address), intent(inout) :: iphys
-!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(phys_address), intent(inout) :: iphys, iphys_ele
+!!        type(phys_data), intent(inout) :: nod_fld, ele_fld
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
@@ -74,8 +75,9 @@
       subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,      &
      &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
      &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,     &
-     &          Csims_FEM_MHD, iphys, nod_fld, t_IO, rst_step,          &
-     &          fem_int, mk_MHD, SGS_MHD_wk, fem_sq, label_sim)
+     &          Csims_FEM_MHD, iphys, nod_fld, iphys_ele, ele_fld,      &
+     &          t_IO, rst_step, fem_int, mk_MHD, SGS_MHD_wk,            &
+     &          fem_sq, label_sim)
 !
       use m_boundary_condition_IDs
       use m_array_for_send_recv
@@ -124,8 +126,8 @@
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
-      type(phys_address), intent(inout) :: iphys
-      type(phys_data), intent(inout) :: nod_fld
+      type(phys_address), intent(inout) :: iphys, iphys_ele
+      type(phys_data), intent(inout) :: nod_fld, ele_fld
       type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: rst_step
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
@@ -179,7 +181,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(SGS_par, mesh, MHD_prop,                      &
-     &    iphys, nod_fld, Csims_FEM_MHD%iphys_elediff, mk_MHD,          &
+     &    iphys, nod_fld, iphys_ele, ele_fld,                           &
+     &    Csims_FEM_MHD%iphys_elediff, mk_MHD,                          &
      &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, fem_int,           &
      &    fem_sq, label_sim)
 !

@@ -117,8 +117,9 @@
       call init_analyzer_fl(MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1,   &
      &    flex_p, flex_data, MHD_step, femmesh%mesh, femmesh%group,     &
      &    ele_mesh, MHD_mesh1, FEM_filters, MHD_prop1, ak_MHD,          &
-     &    FEM_MHD1_BCs, Csims_FEM_MHD1, iphys_nod1, nod_fld1, fem_int1, &
-     &    mk_MHD1, MHD_CG1, SGS_MHD_wk, fem_sq, label_sim)
+     &    FEM_MHD1_BCs, Csims_FEM_MHD1, iphys_nod1, nod_fld1,           &
+     &    iphys_ele, fld_ele1, fem_int1, mk_MHD1, MHD_CG1, SGS_MHD_wk,  &
+     &    fem_sq, label_sim)
 !
       call nod_fields_send_recv(femmesh%mesh, nod_fld1)
 !

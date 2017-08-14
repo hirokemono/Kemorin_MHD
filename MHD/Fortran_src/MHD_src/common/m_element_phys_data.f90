@@ -6,9 +6,6 @@
 !
 !> @brief Field data in element for FEM
 !
-!!      subroutine initialize_ele_field_data(numele)
-!
-!
       module m_element_phys_data
 !
       use m_precision
@@ -27,26 +24,5 @@
 !
 !>      Strucutre of coefficients for each element
       type(coefs_4_MHD_type), save :: ak_MHD
-!
-! -------------------------------------------------------------------
-!
-      contains
-!
-! -------------------------------------------------------------------
-!
-      subroutine initialize_ele_field_data(numele)
-!
-      use initialize_element_field
-!
-      integer(kind = kint), intent(in) :: numele
-!
-!  allocatie element field
-!
-      call alloc_phys_data_type(numele, fld_ele1)
-      call set_element_field_address(fld_ele1, iphys_ele)
-!
-      end subroutine initialize_ele_field_data
-!
-!  --------------------------------------------------------------------
 !
       end module m_element_phys_data
