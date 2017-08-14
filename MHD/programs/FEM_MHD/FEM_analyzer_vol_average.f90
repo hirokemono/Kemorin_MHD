@@ -83,7 +83,7 @@
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
      &    FEM_filters, MHD_prop1, ak_MHD, MHD_BC1, FEM_MHD1_BCs,        &
-     &    Csims_FEM_MHD1, iphys_nod1, nod_fld1, iphys_ele, fld_ele1,    &
+     &    Csims_FEM_MHD1, iphys_nod1, nod_fld1, iphys_ele, ele_fld1,    &
      &    SNAP_time_IO, MHD_step%rst_step, fem_int1, mk_MHD1,           &
      &    SGS_MHD_wk, fem_sq, label_sim)
 !
@@ -159,7 +159,7 @@
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,         &
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
-     &      iphys_nod1, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,    &
+     &      iphys_nod1, nod_fld1, iphys_ele, ele_fld1, fem_int1%jcs,    &
      &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
      &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
       end if

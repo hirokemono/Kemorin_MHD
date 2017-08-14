@@ -17,7 +17,7 @@
 !
 !
 !>       Structure for field data on element
-      type(phys_data), save :: fld_ele1
+      type(phys_data), save :: ele_fld1
 !
 !>   address for element fields
       type(phys_address), save :: iphys_ele

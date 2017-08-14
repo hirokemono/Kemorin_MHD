@@ -142,7 +142,7 @@
      &    FEM_prm1, SGS_par1, femmesh, ele_mesh, MHD_mesh1,             &
      &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
      &    iphys_nod1, iphys_ele, fem_int1, FEM_filters, mk_MHD1,        &
-     &    SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
+     &    SGS_MHD_wk, nod_fld1, ele_fld1, Csims_FEM_MHD1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -152,7 +152,7 @@
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
      &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                    &
      &      FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                &
-     &      iphys_nod1, iphys_ele, fld_ele1, fem_int1, FEM_filters,     &
+     &      iphys_nod1, iphys_ele, ele_fld1, fem_int1, FEM_filters,     &
      &      mk_MHD1, SGS_MHD_wk, nod_fld1, Csims_FEM_MHD1)
       end if
 !
@@ -164,7 +164,7 @@
      &    (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,                &
      &     ele_mesh, MHD_mesh1, MHD_prop1, FEM_MHD1_BCs,                &
      &     iphys_nod1, iphys_ele, ak_MHD, fem_int1, FEM_filters,        &
-     &     mk_MHD1, SGS_MHD_wk, nod_fld1, fld_ele1, Csims_FEM_MHD1)
+     &     mk_MHD1, SGS_MHD_wk, nod_fld1, ele_fld1, Csims_FEM_MHD1)
       end if
 !
 !     ----Filtering
@@ -182,7 +182,7 @@
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,         &
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
-     &      iphys_nod1, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,    &
+     &      iphys_nod1, nod_fld1, iphys_ele, ele_fld1, fem_int1%jcs,    &
      &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
      &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
       end if
