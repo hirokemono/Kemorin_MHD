@@ -30,7 +30,7 @@
 !
       use m_array_for_send_recv
       use input_control_udt_diff
-      use t_FEM_phys_data
+      use set_field_address
 !
 !
       if (my_rank.eq.0) then

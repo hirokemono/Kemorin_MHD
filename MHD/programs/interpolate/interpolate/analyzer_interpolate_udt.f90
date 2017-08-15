@@ -15,7 +15,6 @@
 !
       use t_mesh_data
       use t_geometry_data
-      use t_FEM_phys_data
       use t_phys_data
       use t_phys_address
       use t_step_parameter
@@ -56,6 +55,7 @@
       use m_ctl_data_gen_table
       use m_ctl_params_4_gen_table
 !
+      use set_field_address
       use input_control_interpolate
       use const_mesh_information
       use set_size_4_smp_types

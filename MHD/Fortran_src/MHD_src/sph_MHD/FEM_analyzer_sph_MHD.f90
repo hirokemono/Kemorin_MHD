@@ -76,9 +76,9 @@
      &          mesh, group, ele_mesh, iphys, nod_fld, range, fem_ucd)
 !
       use m_array_for_send_recv
-      use t_FEM_phys_data
       use t_cal_max_indices
 !
+      use set_field_address
       use nod_phys_send_recv
       use node_monitor_IO
       use const_mesh_information

@@ -44,8 +44,8 @@
       subroutine initialize_udt_correlate
 !
       use m_array_for_send_recv
-      use t_FEM_phys_data
 !
+      use set_field_address
       use copy_mesh_structures
       use input_control_udt_diff
       use mpi_load_mesh_data
