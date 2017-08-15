@@ -70,7 +70,6 @@
       use FEM_MHD_evolution
 !
       use nod_phys_send_recv
-      use cal_model_coefficients
       use check_deltat_by_prev_rms
       use construct_matrices
 !
@@ -138,8 +137,8 @@
 !   time evolution loop start!
 !
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients                                   &
+        if (iflag_debug.eq.1) write(*,*) 'cal_FEM_model_coefficients'
+        call cal_FEM_model_coefficients                                 &
      &    (MHD_step%time_d, FEM_prm1, SGS_par1,                         &
      &     femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                     &
      &     FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                 &
@@ -197,7 +196,6 @@
       use construct_matrices
       use lead_physical_values
       use update_after_evolution
-      use cal_model_coefficients
       use chenge_step_4_dynamic
       use copy_nodal_fields
 !
@@ -246,8 +244,8 @@
 !     ----- Evaluate model coefficients
 !
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients                                   &
+        if (iflag_debug.eq.1) write(*,*) 'cal_FEM_model_coefficients'
+        call cal_FEM_model_coefficients                                 &
      &    (MHD_step%time_d, FEM_prm1, SGS_par1,                         &
      &     femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                     &
      &     FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                 &
