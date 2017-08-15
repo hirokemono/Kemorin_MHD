@@ -5,9 +5,6 @@
 !
 !     Written by H. Matsui
 !
-!       subroutine deallocate_phys_name
-!       subroutine deallocate_data_arrays
-!
       module m_node_phys_data
 !
       use m_precision
@@ -24,28 +21,5 @@
 !
 !>       address for nodal fields
       type(phys_address), save :: iphys_nod1
-!
-!
-!   ---------------------------------------------------------------------
-!
-      contains
-!
-!   ---------------------------------------------------------------------
-!
-       subroutine deallocate_phys_name
-!
-       call dealloc_phys_name_type(nod_fld1)
-!
-       end subroutine deallocate_phys_name
-!
-!  --------------------------------------------------------------------
-!
-       subroutine deallocate_data_arrays
-!
-       call dealloc_phys_data_type(nod_fld1)
-!
-       end subroutine deallocate_data_arrays
-!
-!  --------------------------------------------------------------------
 !
       end module m_node_phys_data
