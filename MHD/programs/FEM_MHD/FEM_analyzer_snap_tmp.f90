@@ -127,6 +127,7 @@
       use nod_phys_send_recv
       use lead_physical_values
       use update_after_evolution
+      use FEM_MHD_evolution
       use cal_model_coefficients
       use chenge_step_4_dynamic
       use copy_nodal_fields
@@ -201,8 +202,8 @@
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(femmesh%mesh, nod_fld1)
 !
-      if (iflag_debug .eq. 1)  write(*,*) 'update_fields'
-      call update_fields(MHD_step%time_d,                               &
+      if (iflag_debug .eq. 1)  write(*,*) 'update_FEM_fields'
+      call update_FEM_fields(MHD_step%time_d,                           &
      &    FEM_prm1, SGS_par1, femmesh, ele_mesh, MHD_mesh1,             &
      &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
      &    iphys_nod1, iphys_ele, fem_int1, FEM_filters, mk_MHD1,        &

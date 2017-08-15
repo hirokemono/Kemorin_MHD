@@ -9,8 +9,10 @@
 !!     &         (i_field, dt, FEM_prm, SGS_par, femmesh, surf, fluid,  &
 !!     &          property, ref_param, nod_bcs, sf_bcs,                 &
 !!     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,        &
-!!     &          FEM_filters, Csims_FEM_MHD, mlump_fl, Smatrix, ak_MHD,&
-!!     &          MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
+!!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
+!!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
+!!     &          mlump_fl, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,       &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_data), intent(in) :: femmesh
@@ -22,12 +24,18 @@
 !!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
+!!        type(SGS_terms_address), intent(in) :: icomp_sgs
+!!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(SGS_terms_address), intent(in) :: iphys_elediff
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
+!!        type(filtering_data_type), intent(in) :: filtering
+!!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(MHD_MG_matrix), intent(in) :: Smatrix
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
@@ -55,11 +63,13 @@
       use t_phys_address
       use t_table_FEM_const
       use t_MHD_finite_element_mat
-      use t_FEM_MHD_filter_data
+      use t_layering_ele_list
+      use t_filter_elength
+      use t_filtering_data
       use t_bc_data_temp
       use t_surface_bc_data
       use t_material_property
-      use t_FEM_SGS_model_coefs
+      use t_SGS_model_coefs
       use t_solver_djds_MHD
       use t_MGCG_data
       use t_work_FEM_integration
@@ -77,8 +87,10 @@
      &         (i_field, dt, FEM_prm, SGS_par, femmesh, surf, fluid,    &
      &          property, ref_param, nod_bcs, sf_bcs,                   &
      &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,          &
-     &          FEM_filters, Csims_FEM_MHD, mlump_fl, Smatrix, ak_MHD,  &
-     &          MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
+     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
+     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
+     &          mlump_fl, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,         &
+     &          mhd_fem_wk, rhs_mat, nod_fld)
 !
       integer(kind = kint), intent(in) :: i_field
       real(kind = kreal), intent(in) :: dt
@@ -94,13 +106,19 @@
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
+      type(SGS_terms_address), intent(in) :: icomp_sgs
+      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(SGS_terms_address), intent(in) :: iphys_elediff
       type(phys_data), intent(in) :: ele_fld
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(filters_on_FEM), intent(in) :: FEM_filters
-      type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
       type(lumped_mass_matrices), intent(in) :: mlump_fl
+      type(filtering_data_type), intent(in) :: filtering
+      type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: Smatrix
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
@@ -114,11 +132,9 @@
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    femmesh%mesh, femmesh%group, surf, fluid,                     &
      &    property, ref_param, nod_bcs, sf_bcs, iphys, iphys_ele,       &
-     &    ele_fld, jacobians, rhs_tbl, FEM_filters%FEM_elens,           &
-     &    Csims_FEM_MHD%icomp_sgs, Csims_FEM_MHD%ifld_diff,             &
-     &    Csims_FEM_MHD%iphys_elediff, Csims_FEM_MHD%sgs_coefs,         &
-     &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,        &
-     &    FEM_filters%filtering, mlump_fl, Smatrix, ak_MHD%ak_d_temp,   &
+     &    ele_fld, jacobians, rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, &
+     &    iphys_elediff, sgs_coefs, sgs_coefs_nod, diff_coefs,          &
+     &    filtering, mlump_fl, Smatrix, ak_MHD%ak_d_temp,               &
      &    MGCG_WK, FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,    &
      &    rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !

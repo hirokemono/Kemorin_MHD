@@ -101,11 +101,12 @@
       call cal_potential_on_edge(femmesh%mesh%node, femmesh%mesh%ele,   &
      &    ele_mesh%edge, iphys, nod_fld)
 !
-      if (iflag_debug.gt.0) write(*,*) 'update_fields'
-      call update_fields(time_d, FEM_prm, SGS_par, femmesh, ele_mesh,   &
-     &    MHD_mesh, FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,          &
-     &    iphys, iphys_ele, fem_int, FEM_filters, mk_MHD, SGS_MHD_wk,   &
-     &    nod_fld, ele_fld, Csims_FEM_MHD)
+      if (iflag_debug.gt.0) write(*,*) 'update_FEM_fields'
+      call update_FEM_fields                                            &
+     &   (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,        &
+     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_ele,  &
+     &    fem_int, FEM_filters, mk_MHD, SGS_MHD_wk, nod_fld, ele_fld,   &
+     &    Csims_FEM_MHD)
 !
       call cal_field_by_rotation                                        &
      &   (time_d%dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,       &
