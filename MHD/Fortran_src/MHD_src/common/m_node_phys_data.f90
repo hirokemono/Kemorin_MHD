@@ -8,10 +8,14 @@
       module m_node_phys_data
 !
       use m_precision
-      use t_phys_data
-      use t_phys_address
+      use t_FEM_phys_data
 !
       implicit  none
+!
+!
+!>      Base structure for FEM_MHD
+!      type(FEM_phys_data), save :: FEM_MHD1
+!
 !
 !>       label   for simulation
       character(len=kchara)   :: label_sim

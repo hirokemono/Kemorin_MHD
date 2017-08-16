@@ -20,7 +20,9 @@
 !>        label   for simulation
         character(len=kchara)   :: label_sim
 !
+!>        structure of FEM mesh data
         type(mesh_data) :: femmesh
+!>        structure of FEM element data
         type(element_geometry) :: ele_mesh
 !
 !>        address for nodal fields
