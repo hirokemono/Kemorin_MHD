@@ -15,7 +15,9 @@
 !!
 !!@verbatim
 !!      subroutine SPH_init_sph_pick_circle                             &
-!!     &         (MHD_files, bc_IO, iphys, cdat)
+!!     &         (MHD_files, bc_IO, femmesh, iphys, cdat)
+!!        type(boundary_spectra), intent(in) :: bc_IO
+!!        type(mesh_data), intent(in) :: femmesh
 !!        type(phys_address), intent(in) :: iphys
 !!      subroutine SPH_analyze_pick_circle(i_step, MHD_files, cdat)
 !!        type(boundary_spectra), intent(in) :: bc_IO
@@ -31,6 +33,7 @@
       use m_physical_property
       use m_boundary_data_sph_MHD
       use m_radial_matrices_sph
+      use t_mesh_data
       use t_phys_address
       use t_MHD_file_parameter
       use t_sph_filtering
@@ -45,14 +48,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_init_sph_pick_circle                               &
-     &         (MHD_files, bc_IO, iphys, cdat)
+     &         (MHD_files, bc_IO, femmesh, iphys, cdat)
 !
       use m_constants
       use m_array_for_send_recv
       use calypso_mpi
       use m_machine_parameter
 !
-      use m_mesh_data
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_fdm_coefs
@@ -86,6 +88,7 @@
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(boundary_spectra), intent(in) :: bc_IO
+      type(mesh_data), intent(in) :: femmesh
       type(phys_address), intent(in) :: iphys
 !
       type(circle_fld_maker), intent(inout) :: cdat
@@ -99,7 +102,7 @@
       call allocate_vector_for_solver(isix, sph1%sph_rtp%nnod_rtp)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(femmesh1%mesh)
+      call init_nod_send_recv(femmesh%mesh)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr(sph1%sph_params,                       &
