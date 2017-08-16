@@ -11,7 +11,6 @@
       use t_mesh_data
       use t_phys_data
       use t_phys_address
-      use t_material_property
 !
       implicit  none
 !
@@ -33,9 +32,6 @@
         type(phys_address) :: iphys_ele
 !>        Structure for field data on element
         type(phys_data) :: ele_fld
-!
-!>        Strucutre of coefficients for each element
-        type(coefs_4_MHD_type) :: ak_MHD
       end type FEM_phys_data
 !
       end module t_FEM_phys_data

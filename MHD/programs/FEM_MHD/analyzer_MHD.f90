@@ -83,8 +83,8 @@
       call FEM_initialize_MHD                                           &
      &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1,       &
      &    femmesh1, ele_mesh1, iphys_nod1, nod_fld1,                    &
-     &    iphys_ele, ele_fld1, ak_MHD, FEM_filters1, MHD_CG1,           &
-     &    SGS_MHD_wk1, range1, fem_ucd1, fem_sq1, label_sim)
+     &    iphys_ele, ele_fld1, FEM_filters1, MHD_CG1, SGS_MHD_wk1,      &
+     &    range1, fem_ucd1, fem_sq1, label_sim)
 !
       call init_visualize_surface(femmesh1, ele_mesh1, nod_fld1)
       call end_elapsed_time(2)
@@ -106,7 +106,7 @@
 !  Time evolution
         call FEM_analyze_MHD                                            &
      &     (MHD_files1, femmesh1, ele_mesh1, iphys_nod1, iphys_ele,     &
-     &      ak_MHD, FEM_filters1, MHD_step1, visval, retval, MHD_CG1,   &
+     &      FEM_filters1, MHD_step1, visval, retval, MHD_CG1,           &
      &      SGS_MHD_wk1, nod_fld1, ele_fld1, fem_ucd1, fem_sq1)
 !
 !     ---------------------

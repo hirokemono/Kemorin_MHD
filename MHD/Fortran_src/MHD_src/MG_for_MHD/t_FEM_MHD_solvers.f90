@@ -30,6 +30,7 @@
       use t_solver_djds_MHD
       use t_MHD_matrices_pack
       use t_physical_property
+      use t_material_property
 !
       use t_MGCG_data
       use t_MGCG_data_4_MHD
@@ -39,6 +40,9 @@
 !
 !>      Matrix structure for FEM_MHD
       type FEM_MHD_solvers
+!>        Strucutre of coefficients for each element
+        type(coefs_4_MHD_type) :: ak_MHD
+!
 !>        Structure of matrices for MHD dynamo simulation
         type(MHD_MG_matrices) :: MHD_mat
 !>          Structure of matrices for all fields

@@ -20,6 +20,7 @@
       use m_physical_property
       use m_mean_square_values
       use m_3d_filter_coef_MHD
+      use m_solver_djds_MHD
       use FEM_analyzer_filtered
       use visualizer_all
 !
@@ -37,7 +38,6 @@
       use input_control
       use m_bc_data_list
       use m_boundary_field_IO
-      use m_solver_djds_MHD
       use m_flexible_time_step
 !
 !
@@ -76,7 +76,7 @@
 !
       call FEM_initialize_snapshot                                      &
      &   (MHD_files1, bc_FEM_IO1, MHD_step1, femmesh1, ele_mesh1,       &
-     &    iphys_nod1, nod_fld1, iphys_ele, ele_fld1, ak_MHD,            &
+     &    iphys_nod1, nod_fld1, iphys_ele, ele_fld1, MHD_CG1%ak_MHD,    &
      &    FEM_filters1, SGS_MHD_wk1, range1, fem_ucd1, fem_sq1,         &
      &    label_sim)
 !
@@ -99,7 +99,7 @@
 !
 !  Read and generate fields
         call FEM_analyze_filtered(i_step, MHD_files1,                   &
-     &      femmesh1, ele_mesh1, iphys_nod1, iphys_ele, ak_MHD,         &
+     &      femmesh1, ele_mesh1, iphys_nod1, iphys_ele, MHD_CG1%ak_MHD, &
      &      FEM_filters1, MHD_step1, visval, SGS_MHD_wk1,               &
      &      nod_fld1, ele_fld1, fem_ucd1, fem_sq1)
 !

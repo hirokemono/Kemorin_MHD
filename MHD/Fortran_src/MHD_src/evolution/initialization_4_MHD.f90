@@ -5,8 +5,8 @@
 !
 !!      subroutine init_analyzer_fl                                     &
 !!     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data, &
-!!     &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters.&
-!!     &         MHD_prop, ak_MHD, FEM_MHD_BCs, Csims_FEM_MHD,          &
+!!     &         MHD_step, mesh, group, ele_mesh, MHD_mesh,             &
+!!     &         FEM_filters, MHD_prop, FEM_MHD_BCs, Csims_FEM_MHD,     &
 !!     &         iphys, nod_fld, iphys_ele, ele_fld, fem_int, mk_MHD,   &
 !!     &         MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -22,7 +22,6 @@
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
-!!        type(coefs_4_MHD_type), intent(inout) :: ak_MHD
 !!        type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(phys_address), intent(inout) :: iphys, iphys_ele
@@ -72,8 +71,8 @@
 !
       subroutine init_analyzer_fl                                       &
      &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data,   &
-     &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters,  &
-     &         MHD_prop, ak_MHD, FEM_MHD_BCs, Csims_FEM_MHD,            &
+     &         MHD_step, mesh, group, ele_mesh, MHD_mesh,               &
+     &         FEM_filters, MHD_prop, FEM_MHD_BCs, Csims_FEM_MHD,       &
      &         iphys, nod_fld, iphys_ele, ele_fld, fem_int, mk_MHD,     &
      &         MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
 !
@@ -134,7 +133,6 @@
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(MHD_evolution_param), intent(inout) :: MHD_prop
-      type(coefs_4_MHD_type), intent(inout) :: ak_MHD
       type(FEM_MHD_BC_data), intent(inout) :: FEM_MHD_BCs
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(phys_address), intent(inout) :: iphys, iphys_ele
@@ -220,7 +218,7 @@
      &   (iphys, MHD_prop%ref_param_T%depth_top,                        &
      &    MHD_prop%ref_param_T%depth_bottom, MHD_prop)
       call s_init_ele_material_property                                 &
-     &   (mesh%ele%numele, MHD_prop, ak_MHD)
+     &   (mesh%ele%numele, MHD_prop, MHD_CG%ak_MHD)
 !
       call def_sgs_commute_component                                    &
      &   (SGS_par, mesh, FEM_filters%layer_tbl, MHD_prop,               &

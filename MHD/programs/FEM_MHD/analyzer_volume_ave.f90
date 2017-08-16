@@ -55,7 +55,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'FEM_initialize_vol_average'
       call FEM_initialize_vol_average                                   &
      &   (MHD_files1, bc_FEM_IO1, MHD_step1, femmesh1, ele_mesh1,       &
-     &    iphys_nod1, nod_fld1, iphys_ele, ele_fld1, ak_MHD,            &
+     &    iphys_nod1, nod_fld1, iphys_ele, ele_fld1, MHD_CG1%ak_MHD,    &
      &    FEM_filters1, SGS_MHD_wk1, fem_sq1, label_sim)
 !
       end subroutine init_analyzer

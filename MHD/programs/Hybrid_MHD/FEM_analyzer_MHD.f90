@@ -9,7 +9,7 @@
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!      subroutine FEM_analyze_MHD(MHD_files, femmesh, ele_mesh,        &
-!!     &         iphys_nod, iphys_ele, ak_MHD, MHD_step, visval, retval,&
+!!     &         iphys_nod, iphys_ele, MHD_step, visval, retval,        &
 !!     &         nod_fld, ele_fld, MHD_CG, fem_ucd, fem_sq)
 !!      subroutine FEM_finalize_MHD(MHD_files, MHD_step, range, fem_ucd)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -92,7 +92,6 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(phys_address), intent(inout) :: iphys_nod, iphys_ele
       type(phys_data), intent(inout) :: nod_fld, ele_fld
-      type(coefs_4_MHD_type), intent(inout) :: ak_MHD
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !
       type(maximum_informations), intent(inout) :: range
@@ -106,7 +105,7 @@
       call init_analyzer_fl                                             &
      &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, flex_data,  &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh,              &
-     &    MHD_mesh1, FEM_filters1, MHD_prop1, ak_MHD, FEM_MHD1_BCs,     &
+     &    MHD_mesh1, FEM_filters1, MHD_prop1, FEM_MHD1_BCs,             &
      &    Csims_FEM_MHD1, iphys_nod, nod_fld, iphys_ele, ele_fld,       &
      &    fem_int1, mk_MHD1, MHD_CG, SGS_MHD_wk1,fem_sq, label_sim)
 !
@@ -137,10 +136,10 @@
      &    MHD_CG%MGCG_WK, MHD1_mat_tbls, MHD_CG%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
-     &    SGS_par1%model_p, SGS_par1%commute_p, femmesh,                &
-     &    ele_mesh, MHD_mesh1, FEM_MHD1_BCs, MHD_prop1, ak_MHD,         &
-     &    fem_int1, FEM_filters%FEM_elens, Csims_FEM_MHD1,              &
-     &    MHD1_mat_tbls, mk_MHD1, rhs_mat1, MHD_CG)
+     &    SGS_par1%model_p, SGS_par1%commute_p, femmesh, ele_mesh,      &
+     &    MHD_mesh1, FEM_MHD1_BCs, MHD_prop1, fem_int1,                 &
+     &    FEM_filters%FEM_elens, Csims_FEM_MHD1, MHD1_mat_tbls,         &
+     &    mk_MHD1, rhs_mat1, MHD_CG)
 !
 !   time evolution loop start!
 !
@@ -160,7 +159,7 @@
         call lead_fields_by_FEM                                         &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,               &
      &      ele_mesh, MHD_mesh1, MHD_prop1, FEM_MHD1_BCs,               &
-     &      iphys_nod, iphys_ele, ak_MHD, fem_int1, FEM_filters,        &
+     &      iphys_nod, iphys_ele, MHD_CG%ak_MHD, fem_int1, FEM_filters, &
      &      mk_MHD1,SGS_MHD_wk1, nod_fld, ele_fld, Csims_FEM_MHD1)
       end if
 !
@@ -190,7 +189,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_MHD(MHD_files, femmesh, ele_mesh,          &
-     &         iphys_nod, iphys_ele, ak_MHD, MHD_step, visval, retval,  &
+     &         iphys_nod, iphys_ele, MHD_step, visval, retval,          &
      &         nod_fld, ele_fld, MHD_CG, fem_ucd, fem_sq)
 !
       use m_control_parameter
@@ -220,7 +219,6 @@
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_address), intent(in) :: iphys_nod, iphys_ele
-      type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !
       integer(kind=kint), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -248,7 +246,7 @@
      &   (MHD_step%time_d, FEM_prm1, SGS_par1,                          &
      &    femmesh, ele_mesh, MHD_mesh1%fluid, MHD_prop1,                &
      &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
-     &    iphys_nod, iphys_ele, ak_MHD, fem_int1,                       &
+     &    iphys_nod, iphys_ele, MHD_CG%ak_MHD, fem_int1,                &
      &    FEM_filters1, MHD_CG%solver_pack, MHD_CG%MGCG_WK,             &
      &    SGS_MHD_wk1, nod_fld, ele_fld, Csims_FEM_MHD1, fem_sq)
 !
@@ -279,10 +277,10 @@
         iflag = lead_field_data_flag(flex_p1%istep_max_dt, MHD_step)
         if(iflag .eq. 0) then
           call lead_fields_by_FEM                                       &
-     &       (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh,             &
-     &        ele_mesh, MHD_mesh1, MHD_prop1, FEM_MHD1_BCs,             &
-     &        iphys_nod, iphys_ele, ak_MHD, fem_int1, FEM_filters,      &
-     &        mk_MHD1, SGS_MHD_wk1, nod_fld, ele_fld, Csims_FEM_MHD1)
+     &       (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh, ele_mesh,   &
+     &        MHD_mesh1, MHD_prop1, FEM_MHD1_BCs, iphys_nod, iphys_ele, &
+     &        MHD_CG%ak_MHD, fem_int1, FEM_filters, mk_MHD1,            &
+     &        SGS_MHD_wk1, nod_fld, ele_fld, Csims_FEM_MHD1)
         end if
 !
 !     -----Output monitor date
@@ -388,7 +386,7 @@
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices(MHD_step%time_d, FEM_prm1, SGS_par1,       &
      &     femmesh, ele_mesh, MHD_mesh1, FEM_MHD1_BCs, MHD_prop1,       &
-     &     ak_MHD, fem_int1, FEM_filters%FEM_elens, Csims_FEM_MHD1,     &
+     &     fem_int1, FEM_filters%FEM_elens, Csims_FEM_MHD1,             &
      &     MHD1_mat_tbls, flex_p1, mk_MHD1, rhs_mat1, MHD_CG)
       end if
 !
