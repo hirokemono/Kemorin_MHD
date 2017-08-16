@@ -18,6 +18,7 @@
       use m_mesh_data
       use m_node_phys_data
       use m_element_phys_data
+      use m_solver_djds_MHD
       use m_mean_square_values
       use m_3d_filter_coef_MHD
 !
@@ -38,7 +39,6 @@
       use m_control_parameter
       use m_bc_data_list
       use m_boundary_field_IO
-      use m_solver_djds_MHD
       use m_flexible_time_step
 !
 !
@@ -85,8 +85,8 @@
       call FEM_initialize_MHD                                           &
      &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1,       &
      &    femmesh1, ele_mesh1, iphys_nod1, nod_fld1,                    &
-     &    iphys_ele, ele_fld1, ak_MHD, FEM_filters1, SGS_MHD_wk1,       &
-     &    range1, fem_ucd1, fem_sq1, label_sim)
+     &    iphys_ele, ele_fld1, ak_MHD, FEM_filters1, MHD_CG1,           &
+     &    SGS_MHD_wk1, range1, fem_ucd1, fem_sq1, label_sim)
 !
       call init_visualize_surface(femmesh1, ele_mesh1, nod_fld1)
       call end_elapsed_time(2)
@@ -108,7 +108,7 @@
 !  Time evolution
         call FEM_analyze_MHD                                            &
      &     (MHD_files1, femmesh1, ele_mesh1, iphys_nod1, iphys_ele,     &
-     &      ak_MHD, FEM_filters1, MHD_step1, visval, retval,            &
+     &      ak_MHD, FEM_filters1, MHD_step1, visval, retval, MHD_CG1,   &
      &      SGS_MHD_wk1, nod_fld1, ele_fld1, fem_ucd1, fem_sq1)
 !
 !     ---------------------
