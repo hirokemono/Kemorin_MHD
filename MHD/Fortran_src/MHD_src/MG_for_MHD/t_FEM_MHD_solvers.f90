@@ -25,7 +25,6 @@
       use t_iccg_parameter
       use t_FEM_control_parameter
       use t_mesh_data
-      use t_comm_table
       use t_solver_djds
       use t_vector_for_solver
       use t_solver_djds_MHD

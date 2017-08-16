@@ -9,14 +9,14 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_FEM_MHD(MHD_files, FEM_prm, SGS_par, &
-!!     &          flex_p, MHD_step, MHD_prop, MHD_BC, femmesh, ele_mesh,&
-!!     &          nod_fld, ele_fld, IO_bc, FEM_filters, FEM_SGS_wk,     &
-!!     &          MHD_mat, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
-!!      subroutine input_control_4_FEM_snap(MHD_files, FEM_prm, SGS_par,&
-!!     &          flex_p, MHD_step, MHD_prop, MHD_BC, femmesh, ele_mesh,&
-!!     &          nod_fld, ele_fld, IO_bc, FEM_filters, FEM_SGS_wk,     &
-!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
+!!      subroutine input_control_4_FEM_MHD                              &
+!!     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,        &
+!!     &          MHD_prop, MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,&
+!!     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG)
+!!      subroutine input_control_4_FEM_snap                             &
+!!     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,        &
+!!     &          MHD_prop, MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,&
+!!     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
@@ -37,9 +37,7 @@
 !!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_mat
-!!        type(MGCG_data), intent(inout) :: MGCG_WK
-!!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
-!!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
+!!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!@endverbatim
 !
 !
@@ -57,12 +55,10 @@
       use t_control_parameter
       use t_mesh_data
       use t_boundary_field_IO
-      use t_solver_djds_MHD
       use t_phys_data
       use t_field_data_IO
       use t_ctl_data_FEM_MHD
-      use t_MGCG_data
-      use t_MGCG_data_4_MHD
+      use t_FEM_MHD_solvers
       use t_bc_data_list
       use t_flex_delta_t_data
       use t_FEM_MHD_filter_data
@@ -79,6 +75,7 @@
 !
       private :: FEM_MHD_ctl
       private :: input_meshes_4_MHD, boundary_file_IO_control
+      private :: input_MG_mesh_4_FEM_MHD
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,15 +83,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_FEM_MHD(MHD_files, FEM_prm, SGS_par,   &
-     &          flex_p, MHD_step, MHD_prop, MHD_BC, femmesh, ele_mesh,  &
-     &          nod_fld, ele_fld, IO_bc, FEM_filters, FEM_SGS_wk,       &
-     &          MHD_mat, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
+      subroutine input_control_4_FEM_MHD                                &
+     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,          &
+     &          MHD_prop, MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,  &
+     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG)
 !
-      use m_flags_4_solvers
       use set_control_FEM_MHD
       use mpi_load_mesh_data
-      use input_MG_data
       use skip_comment_f
       use ordering_field_by_viz
       use node_monitor_IO
@@ -111,12 +106,9 @@
       type(phys_data), intent(inout) :: nod_fld, ele_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
+      type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
-      type(MHD_MG_matrices), intent(inout) :: MHD_mat
-      type(MGCG_data), intent(inout) :: MGCG_WK
-      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
-      type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
@@ -127,7 +119,8 @@
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,       &
      &    FEM_prm, SGS_par, flex_p, MHD_step, MHD_prop, MHD_BC,         &
-     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
+     &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
+     &    nod_fld, ele_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh                                               &
@@ -138,30 +131,21 @@
      &    femmesh%mesh, femmesh%group, IO_bc, SGS_par%filter_p,         &
      &    FEM_filters, FEM_SGS_wk%wk_filter)
 !
-      if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then
-        call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_mat)
-        call input_MG_mesh                                              &
-     &     (FEM_prm%MG_file, MGCG_WK, MGCG_FEM, MHD_files%mesh_file_IO)
-        call input_MG_itp_tables(FEM_prm%MG_file, MGCG_WK, MGCG_FEM,    &
-     &      MHD_mat%MG_interpolate)
-      else
-        MGCG_WK%num_MG_level = 0
-        call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_mat)
-      end if
+      call input_MG_mesh_4_FEM_MHD(MHD_files, FEM_prm,                  &
+     &     MHD_CG%MHD_mat,  MHD_CG%MGCG_WK,  MHD_CG%MGCG_FEM)
 !
       call count_field_4_monitor                                        &
      &   (nod_fld%num_phys, nod_fld%num_component,                      &
      &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
 !
-!
       end subroutine input_control_4_FEM_MHD
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_FEM_snap(MHD_files, FEM_prm, SGS_par,  &
-     &          flex_p, MHD_step, MHD_prop, MHD_BC, femmesh, ele_mesh,  &
-     &          nod_fld, ele_fld, IO_bc, FEM_filters, FEM_SGS_wk,       &
-     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
+      subroutine input_control_4_FEM_snap                               &
+     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,          &
+     &          MHD_prop, MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,  &
+     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -182,9 +166,7 @@
       type(IO_boundary), intent(inout) :: IO_bc
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
-      type(MGCG_data), intent(inout) :: MGCG_WK
-      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
-      type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
+      type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
@@ -195,7 +177,8 @@
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,       &
      &    FEM_prm, SGS_par, flex_p, MHD_step, MHD_prop, MHD_BC,         &
-     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
+     &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
+     &    nod_fld, ele_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh                                               &
@@ -302,6 +285,36 @@
      &     (my_rank, group%nod_grp, group%surf_grp, IO_bc)
 !
       end subroutine boundary_file_IO_control
+!
+!----------------------------------------------------------------------
+!----------------------------------------------------------------------
+!
+      subroutine input_MG_mesh_4_FEM_MHD(MHD_files, FEM_prm,            &
+     &          MHD_mat, MGCG_WK, MGCG_FEM)
+!
+      use m_flags_4_solvers
+      use input_MG_data
+!
+      type(MHD_file_IO_params), intent(inout) :: MHD_files
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+!
+      type(MHD_MG_matrices), intent(inout) :: MHD_mat
+      type(MGCG_data), intent(inout) :: MGCG_WK
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
+!
+!
+      if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then
+        call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_mat)
+        call input_MG_mesh                                              &
+     &     (FEM_prm%MG_file, MGCG_WK, MGCG_FEM, MHD_files%mesh_file_IO)
+        call input_MG_itp_tables(FEM_prm%MG_file, MGCG_WK, MGCG_FEM,    &
+     &      MHD_mat%MG_interpolate)
+      else
+        MGCG_WK%num_MG_level = 0
+        call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_mat)
+      end if
+!
+      end subroutine input_MG_mesh_4_FEM_MHD
 !
 ! ----------------------------------------------------------------------
 !
