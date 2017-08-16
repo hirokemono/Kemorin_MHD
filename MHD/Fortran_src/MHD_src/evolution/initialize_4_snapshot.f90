@@ -101,7 +101,7 @@
       use init_sgs_diff_coefs
       use set_layer_list_by_table
       use set_normal_vectors
-      use set_table_type_RHS_assemble
+      use set_table_4_RHS_assemble
       use const_jacobians_sf_grp
       use const_element_comm_tables
       use const_mesh_information
@@ -232,7 +232,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
       call s_set_RHS_assemble_table                                     &
-     &   (mesh%node, mesh%ele, fem_int%next_tbl, fem_int%rhs_tbl)
+     &   (mesh, fem_int%next_tbl, fem_int%rhs_tbl)
 !
 !     ---------------------
 !

@@ -68,7 +68,7 @@
       use t_filter_elength
       use t_filter_dxdxi
 !
-      use set_table_type_RHS_assemble
+      use set_table_4_RHS_assemble
       use cal_diff_elesize_on_ele
       use cal_filter_moms_ele_by_elen
       use int_consist_mass_mat_filter
@@ -97,8 +97,7 @@
 !  ---------------------------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 's_set_RHS_assemble_table'
-      call s_set_RHS_assemble_table                                     &
-     &   (mesh%node, mesh%ele, next_tbl_f, fem_int%rhs_tbl)
+      call s_set_RHS_assemble_table(mesh, next_tbl_f, fem_int%rhs_tbl)
 !
 !  ---------------------------------------------------
 !        cal element size for each node

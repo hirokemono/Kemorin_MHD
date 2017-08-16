@@ -234,10 +234,8 @@
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter(file_name,                             &
-    &       mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,    &
-    &       fem_int_f, tbl_crs_f, rhs_mat_f, FEM_elen_f,                &
-    &       dxidxs1, FEM_momenet1)
+        call select_const_filter(file_name, mesh_filter, fem_int_f,     &
+    &       tbl_crs_f, rhs_mat_f, FEM_elen_f, dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !

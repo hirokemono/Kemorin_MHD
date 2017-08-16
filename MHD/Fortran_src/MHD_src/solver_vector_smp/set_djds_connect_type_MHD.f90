@@ -56,7 +56,7 @@
       use t_next_node_ele_4_node
       use t_table_FEM_const
 !
-      use set_table_type_RHS_assemble
+      use set_table_4_RHS_assemble
       use set_djds_connectivity_type
       use copy_mesh_structures
 !
@@ -72,8 +72,7 @@
 !C +-------------------------------+
 !  +   set RHS assemble table      +
 !C +-------------------------------+
-      call s_set_RHS_assemble_table                                     &
-     &   (mesh%node, mesh%ele, next_tbl, rhs_tbl)
+      call s_set_RHS_assemble_table(mesh, next_tbl, rhs_tbl)
 !
 !C +-------------------------------+
 !  +   set Matrix assemble table   +
@@ -139,7 +138,7 @@
       use t_mesh_data
       use t_geometry_data_MHD
       use t_next_node_ele_4_node
-      use set_table_type_RHS_assemble
+      use set_table_4_RHS_assemble
       use set_djds_connectivity_type
 !
       type(mesh_geometry), intent(in) :: mesh

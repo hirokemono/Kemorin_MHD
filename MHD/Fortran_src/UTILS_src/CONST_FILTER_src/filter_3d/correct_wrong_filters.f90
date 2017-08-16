@@ -4,11 +4,16 @@
 !     Written by H. Matsui on Nov., 2008
 !
 !!      subroutine s_correct_wrong_filters                              &
-!!     &         (id_org_filter, fixed_file_name, node, ele,            &
+!!     &         (id_org_filter, fixed_file_name, mesh,                 &
 !!     &          jac_3d, FEM_elen, dxidxs, mom_nod)
 !!      subroutine correct_wrong_fluid_filters                          &
-!!     &         (id_org_filter, fixed_file_name, node, ele,            &
+!!     &         (id_org_filter, fixed_file_name, mesh,                 &
 !!     &          jac_3d, FEM_elen, dxidxs, mom_nod)
+!!       type(mesh_geometry), intent(in) :: mesh
+!!       type(jacobians_3d), intent(in) :: jac_3d
+!!       type(gradient_model_data_type), intent(in) :: FEM_elen
+!!       type(dxidx_data_type), intent(inout) :: dxidxs
+!!       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !
       module correct_wrong_filters
 !
@@ -18,7 +23,7 @@
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
 !
-      use t_geometry_data
+      use t_mesh_data
       use t_jacobians
       use t_next_node_ele_4_node
       use t_filter_elength
@@ -47,7 +52,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_correct_wrong_filters                                &
-     &         (id_org_filter, fixed_file_name, node, ele,              &
+     &         (id_org_filter, fixed_file_name, mesh,                   &
      &          jac_3d, FEM_elen, dxidxs, mom_nod)
 !
       use set_simple_filters
@@ -55,8 +60,7 @@
       character(len = kchara), intent(in) :: fixed_file_name
       integer(kind = kint), intent(in) :: id_org_filter
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
@@ -67,10 +71,10 @@
 !
 !
       if (inod_end_filter .eq. -1) then
-        inod_end_filter = node%internal_node
+        inod_end_filter = mesh%node%internal_node
       end if
 !
-      call init_4_cal_fileters(node, ele, ele_4_nod_f, neib_nod_f)
+      call init_4_cal_fileters(mesh, ele_4_nod_f, neib_nod_f)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !
@@ -95,7 +99,7 @@
           if(iflag_tgt_filter_type .ge. -4                              &
      &      .and. iflag_tgt_filter_type.le. -2) then
             call s_cal_filter_moments_again                             &
-     &         (node, ele, jac_3d, FEM_elen,                            &
+     &         (mesh%node, mesh%ele, jac_3d, FEM_elen,                  &
      &          inod, ele_4_nod_f, neib_nod_f, mom_nod)
           end if
         else
@@ -103,12 +107,12 @@
           if (iflag_tgt_filter_type .eq. -1) then
             call copy_filter_coefs_to_tmp
             call const_filter_func_nod_by_nod                           &
-     &         (fixed_file_name, inod, node, ele,                       &
+     &         (fixed_file_name, inod, mesh%node, mesh%ele,             &
      &          ele_4_nod_f, neib_nod_f, jac_3d, FEM_elen, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
             call set_simple_filter_nod_by_nod                           &
-     &         (fixed_file_name, node, ele, jac_3d, FEM_elen,           &
+     &         (fixed_file_name, mesh%node, mesh%ele, jac_3d, FEM_elen, &
      &           dxidxs%dx_nod, inod, ele_4_nod_f, neib_nod_f)
           end if
 !
@@ -126,14 +130,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine correct_wrong_fluid_filters                            &
-     &         (id_org_filter, fixed_file_name, node, ele,              &
+     &         (id_org_filter, fixed_file_name, mesh,                   &
      &          jac_3d, FEM_elen, dxidxs, mom_nod)
 !
       character(len = kchara), intent(in) :: fixed_file_name
       integer(kind = kint), intent(in) :: id_org_filter
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
@@ -144,8 +147,7 @@
 !
 !
 !
-      call init_4_cal_fluid_fileters                                    &
-     &   (node, ele, ele_4_nod_f, neib_nod_f)
+      call init_4_cal_fluid_fileters(mesh, ele_4_nod_f, neib_nod_f)
 !
       write(70+my_rank,*) ' Best condition for fluid filter'
 !
@@ -182,12 +184,12 @@
           if (iflag_tgt_filter_type .eq. -1) then
             call copy_filter_coefs_to_tmp
             call const_fluid_filter_nod_by_nod                          &
-     &         (fixed_file_name, inod, node, ele,                       &
+     &         (fixed_file_name, inod, mesh%node, mesh%ele,             &
      &          ele_4_nod_f, neib_nod_f, jac_3d, FEM_elen, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
             call set_simple_fl_filter_nod_by_nod                        &
-     &         (fixed_file_name, node, ele, jac_3d, FEM_elen,           &
+     &         (fixed_file_name, mesh%node, mesh%ele, jac_3d, FEM_elen, &
      &          dxidxs%dx_nod, inod, ele_4_nod_f, neib_nod_f, mom_nod)
           end if
 !

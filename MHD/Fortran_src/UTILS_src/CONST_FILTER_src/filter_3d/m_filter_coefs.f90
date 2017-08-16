@@ -220,18 +220,26 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_correct_filter_flag(numnod, numele)
+      subroutine allocate_correct_filter_flag(node, ele)
 !
-      integer(kind = kint), intent(in) :: numnod, numele
+      use t_geometry_data
 !
-      allocate(iflag_make_whole_filter(numnod))
-      allocate(iflag_make_fluid_filter(numnod))
-      allocate(iflag_make_moment_ele(numele))
-      allocate(iele_make_moment_again(numele))
-      iflag_make_whole_filter = 0
-      iflag_make_fluid_filter = 0
-      iflag_make_moment_ele =  0
-      iele_make_moment_again = 0
+      type(node_data),           intent(in) :: node
+      type(element_data),        intent(in) :: ele
+!
+      allocate(iflag_make_whole_filter(node%numnod))
+      allocate(iflag_make_fluid_filter(node%numnod))
+      allocate(iflag_make_moment_ele(ele%numele))
+      allocate(iele_make_moment_again(ele%numele))
+!
+      if(node%numnod .gt. 0) then
+        iflag_make_whole_filter = 0
+        iflag_make_fluid_filter = 0
+      end if
+      if(ele%numele .gt. 0) then
+        iflag_make_moment_ele =  0
+        iele_make_moment_again = 0
+      end if
 !
       end subroutine allocate_correct_filter_flag
 !

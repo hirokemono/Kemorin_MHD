@@ -1,14 +1,12 @@
-!set_table_type_RHS_assemble.f90
-!      module set_table_type_RHS_assemble
+!set_table_4_RHS_assemble.f90
+!      module set_table_4_RHS_assemble
 !
 !       Written by H. Matsui on Dec., 2008
 !
-!!      subroutine s_set_RHS_assemble_table                             &
-!!    &         (node, ele, neib_tbl, rhs_tbl)
+!!      subroutine s_set_RHS_assemble_table(mesh, neib_tbl, rhs_tbl)
 !!      subroutine set_belonged_ele_and_next_nod                        &
-!!     &         (node, ele, neib_ele, neib_nod)
-!!        type(node_data),           intent(in) :: node
-!!        type(element_data),        intent(in) :: ele
+!!     &         (mesh, neib_ele, neib_nod)
+!!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(next_nod_ele_table), intent(inout) ::    neib_tbl
 !!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
 !!
@@ -17,7 +15,7 @@
 !!        type(next_nod_ele_table),     intent(inout) :: next_tbl
 !!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
 !
-      module set_table_type_RHS_assemble
+      module set_table_4_RHS_assemble
 !
       use m_precision
       use m_machine_parameter
@@ -30,51 +28,49 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_RHS_assemble_table                               &
-     &         (node, ele, neib_tbl, rhs_tbl)
+      subroutine s_set_RHS_assemble_table(mesh, neib_tbl, rhs_tbl)
 !
-      use t_geometry_data
+      use t_mesh_data
       use t_next_node_ele_4_node
       use t_table_FEM_const
       use set_ele_id_4_node_type
       use ordering_rhs_assemble_type
 !
-      type(node_data),           intent(in) :: node
-      type(element_data),        intent(in) :: ele
+      type(mesh_geometry),       intent(in) :: mesh
       type(next_nod_ele_table), intent(inout) ::    neib_tbl
       type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
 !
 !
 !  found surrounding node and element
       call set_belonged_ele_and_next_nod                                &
-     &   (node, ele, neib_tbl%neib_ele, neib_tbl%neib_nod)
+     &   (mesh, neib_tbl%neib_ele, neib_tbl%neib_nod)
 !
 !      set RHS assemble table
-      call s_sort_node_index_type(node, neib_tbl%neib_ele, rhs_tbl)
+      call s_sort_node_index_type                                       &
+     &   (mesh%node, neib_tbl%neib_ele, rhs_tbl)
 !
       end subroutine s_set_RHS_assemble_table
 !
 !-----------------------------------------------------------------------
 !
       subroutine set_belonged_ele_and_next_nod                          &
-     &         (node, ele, neib_ele, neib_nod)
+     &         (mesh, neib_ele, neib_nod)
 !
-      use t_geometry_data
+      use t_mesh_data
       use t_next_node_ele_4_node
       use t_table_FEM_const
       use set_ele_id_4_node_type
 !
-      type(node_data),           intent(in) :: node
-      type(element_data),        intent(in) :: ele
+      type(mesh_geometry),       intent(in) :: mesh
       type(element_around_node), intent(inout) :: neib_ele
       type(next_nod_id_4_nod), intent(inout) ::   neib_nod
 !
 !
 !  found surrounding node and element
 !
-      call set_ele_id_4_node(node, ele, neib_ele)
-!
-      call const_next_nod_id_4_node(node, ele, neib_ele, neib_nod)
+      call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
+      call const_next_nod_id_4_node                                     &
+     &   (mesh%node, mesh%ele, neib_ele, neib_nod)
 !
       end subroutine set_belonged_ele_and_next_nod
 !
@@ -117,5 +113,5 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module set_table_type_RHS_assemble
+      end module set_table_4_RHS_assemble
       

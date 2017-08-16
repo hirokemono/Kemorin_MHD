@@ -3,20 +3,18 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine init_4_cal_fileters(node, ele, ele_4_nod, neib_nod)
-!        type(node_data),           intent(in) :: node
-!        type(element_data),        intent(in) :: ele
-!      subroutine init_4_cal_fluid_fileters                             &
-!     &         (node, ele, ele_4_nod, neib_nod)
-!      subroutine finalize_4_cal_fileters
-!      subroutine resize_matrix_size_gen_filter(nnod_4_ele)
-!      subroutine s_expand_filter_area_4_1node                          &
-!     &         (inod, node, ele, ele_4_nod, FEM_elen)
-!      subroutine copy_next_nod_ele_4_each                              &
-!     &         (inod, numnod, ele_4_nod, neib_nod)
-!        type(next_nod_id_4_nod), intent(in) :: neib_nod
-!        type(element_around_node), intent(in) :: ele_4_nod
-!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!      subroutine init_4_cal_fileters(mesh, ele_4_nod, neib_nod)
+!!      subroutine init_4_cal_fluid_fileters(mesh, ele_4_nod, neib_nod)
+!!        type(mesh_geometry),       intent(in) :: mesh
+!!      subroutine finalize_4_cal_fileters
+!!      subroutine resize_matrix_size_gen_filter(nnod_4_ele)
+!!      subroutine s_expand_filter_area_4_1node                         &
+!!     &         (inod, node, ele, ele_4_nod, FEM_elen)
+!!      subroutine copy_next_nod_ele_4_each                             &
+!!     &         (inod, numnod, ele_4_nod, neib_nod)
+!!        type(next_nod_id_4_nod), intent(in) :: neib_nod
+!!        type(element_around_node), intent(in) :: ele_4_nod
+!!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !
       module expand_filter_area_4_1node
 !
@@ -31,13 +29,71 @@
 !
       integer(kind = kint), private :: nnod_filetering
 !
+      private :: allocate_work_4_fileters
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_cal_fileters(node, ele, ele_4_nod, neib_nod)
+      subroutine init_4_cal_fileters(mesh, ele_4_nod, neib_nod)
+!
+      use t_mesh_data
+      use t_next_node_ele_4_node
+      use set_table_4_RHS_assemble
+!
+      type(mesh_geometry),       intent(in) :: mesh
+      type(element_around_node), intent(inout) :: ele_4_nod
+      type(next_nod_id_4_nod),   intent(inout) :: neib_nod
+!
+!
+      call allocate_work_4_fileters(mesh%node, mesh%ele)
+!
+!  ---------------------------------------------------
+!       set belonged node and element for each node
+!  ---------------------------------------------------
+!
+       if(iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
+      call set_belonged_ele_and_next_nod(mesh, ele_4_nod, neib_nod)
+!
+      end subroutine init_4_cal_fileters
+!
+! -----------------------------------------------------------------------
+!
+      subroutine init_4_cal_fluid_fileters(mesh, ele_4_nod, neib_nod)
+!
+      use t_mesh_data
+      use t_next_node_ele_4_node
+!
+      use m_filter_file_names
+      use m_field_file_format
+      use set_ele_id_4_node_type
+      use set_element_list_4_filter
+!
+      type(mesh_geometry),       intent(in) :: mesh
+      type(next_nod_id_4_nod), intent(inout) :: neib_nod
+      type(element_around_node), intent(inout) :: ele_4_nod
+!
+!
+      if (ifmt_3d_filter .eq. iflag_ascii) then
+        write(filter_coef_code,'(a)') '!'
+        write(filter_coef_code,'(a)') '! filter coefficients for fluid'
+        write(filter_coef_code,'(a)') '!'
+      end if
+!
+      call set_grouped_ele_id_4_node(nele_4_filter, iele_4_filter,      &
+     &    mesh%node, mesh%ele, ele_4_nod)
+!
+      call const_next_nod_id_4_node                                     &
+     &   (mesh%node, mesh%ele, ele_4_nod, neib_nod)
+!
+      end subroutine init_4_cal_fluid_fileters
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine allocate_work_4_fileters(node, ele)
 !
       use t_geometry_data
       use t_next_node_ele_4_node
@@ -46,7 +102,6 @@
       use m_filter_file_names
       use m_field_file_format
       use m_crs_matrix_4_filter
-      use set_table_type_RHS_assemble
       use fem_const_filter_matrix
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
@@ -54,8 +109,6 @@
 !
       type(node_data),           intent(in) :: node
       type(element_data),        intent(in) :: ele
-      type(element_around_node), intent(inout) :: ele_4_nod
-      type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
 !
       if (inod_end_filter .eq. -1) then
@@ -91,47 +144,7 @@
         write(filter_coef_code,'(a)') '!'
       end if
 !
-!  ---------------------------------------------------
-!       set belonged node and element for each node
-!  ---------------------------------------------------
-!
-       if(iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
-      call set_belonged_ele_and_next_nod                                &
-     &   (node, ele, ele_4_nod, neib_nod)
-!
-      end subroutine init_4_cal_fileters
-!
-! -----------------------------------------------------------------------
-!
-      subroutine init_4_cal_fluid_fileters                              &
-     &          (node, ele, ele_4_nod, neib_nod)
-!
-      use t_geometry_data
-      use t_next_node_ele_4_node
-!
-      use m_filter_file_names
-      use m_field_file_format
-      use set_ele_id_4_node_type
-      use set_element_list_4_filter
-!
-      type(node_data),    intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(next_nod_id_4_nod), intent(inout) :: neib_nod
-      type(element_around_node), intent(inout) :: ele_4_nod
-!
-!
-      if (ifmt_3d_filter .eq. iflag_ascii) then
-        write(filter_coef_code,'(a)') '!'
-        write(filter_coef_code,'(a)') '! filter coefficients for fluid'
-        write(filter_coef_code,'(a)') '!'
-      end if
-!
-      call set_grouped_ele_id_4_node(nele_4_filter, iele_4_filter,      &
-     &    node, ele, ele_4_nod)
-!
-      call const_next_nod_id_4_node(node, ele, ele_4_nod, neib_nod)
-!
-      end subroutine init_4_cal_fluid_fileters
+      end subroutine allocate_work_4_fileters
 !
 ! -----------------------------------------------------------------------
 !

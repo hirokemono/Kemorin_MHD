@@ -4,15 +4,14 @@
 !     Written by H. Matsui on Mar., 2008
 !
 !!      subroutine const_commute_filter_coefs                           &
-!!     &         (file_name, node, ele, jac_3d, FEM_elen, mom_nod)
+!!     &         (file_name, mesh, jac_3d, FEM_elen, mom_nod)
 !!      subroutine const_fluid_filter_coefs                             &
-!!     &         (file_name, node, ele, jac_3d, FEM_elen)
-!!      subroutine set_simple_filter (file_name, node, ele,             &
+!!     &         (file_name, mesh, jac_3d, FEM_elen)
+!!      subroutine set_simple_filter (file_name, mesh,                  &
 !!     &          jac_3d, FEM_elen, dxidxs, mom_nod)
-!!      subroutine set_simple_fluid_filter(file_name, node, ele,        &
+!!      subroutine set_simple_fluid_filter(file_name, mesh,             &
 !!     &          jac_3d, FEM_elen, dxidxs, mom_nod)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
+!!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
@@ -23,7 +22,7 @@
       use m_precision
 !
       use m_constants
-      use t_geometry_data
+      use t_mesh_data
       use t_jacobians
       use t_filter_elength
       use t_next_node_ele_4_node
@@ -45,7 +44,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_commute_filter_coefs                             &
-     &         (file_name, node, ele, jac_3d, FEM_elen, mom_nod)
+     &         (file_name, mesh, jac_3d, FEM_elen, mom_nod)
 !
       use t_filter_moments
       use m_ctl_params_4_gen_filter
@@ -55,8 +54,7 @@
       use set_simple_filters
 !
       character(len = kchara), intent(in) :: file_name
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry),       intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
@@ -65,12 +63,13 @@
       integer(kind = kint) :: inod, ierr
 !
 !
-      call init_4_cal_fileters(node, ele, ele_4_nod_s, neib_nod_s)
+      call init_4_cal_fileters(mesh, ele_4_nod_s, neib_nod_s)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !
       do inod = inod_start_filter, inod_end_filter
-        call const_filter_func_nod_by_nod(file_name, inod, node, ele,   &
+        call const_filter_func_nod_by_nod                               &
+     &     (file_name, inod, mesh%node, mesh%ele,                       &
      &      ele_4_nod_s, neib_nod_s, jac_3d, FEM_elen, ierr)
 !
         nnod_near_nod_weight(inod) = nnod_near_1nod_weight
@@ -85,7 +84,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_fluid_filter_coefs                               &
-     &         (file_name, node, ele, jac_3d, FEM_elen)
+     &         (file_name, mesh, jac_3d, FEM_elen)
 !
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
@@ -93,21 +92,20 @@
       use expand_filter_area_4_1node
 !
       character(len = kchara), intent(in) :: file_name
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry),       intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
       integer(kind = kint) :: inod, ierr
 !
 !
-      call init_4_cal_fluid_fileters                                    &
-     &   (node, ele, ele_4_nod_s, neib_nod_s)
+      call init_4_cal_fluid_fileters(mesh, ele_4_nod_s, neib_nod_s)
 !
       write(70+my_rank,*) ' Best condition for fluid filter'
 !
       do inod = inod_start_filter, inod_end_filter
-        call const_fluid_filter_nod_by_nod(file_name, inod, node, ele,  &
+        call const_fluid_filter_nod_by_nod                              &
+     &     (file_name, inod, mesh%node, mesh%ele,                       &
      &      ele_4_nod_s, neib_nod_s, jac_3d, FEM_elen, ierr)
       end do
 !
@@ -119,7 +117,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_filter (file_name, node, ele,               &
+      subroutine set_simple_filter (file_name, mesh,                    &
      &          jac_3d, FEM_elen, dxidxs, mom_nod)
 !
       use t_filter_dxdxi
@@ -131,8 +129,7 @@
       use set_simple_filters
 !
       character(len = kchara), intent(in) :: file_name
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry),       intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
@@ -142,12 +139,12 @@
       integer(kind = kint) :: inod
 !
 !
-      call init_4_cal_fileters(node, ele, ele_4_nod_s, neib_nod_s)
+      call init_4_cal_fileters(mesh, ele_4_nod_s, neib_nod_s)
 !
       i_exp_level_1nod_weight = maximum_neighbour
       do inod = inod_start_filter, inod_end_filter
         call set_simple_filter_nod_by_nod                               &
-     &     (file_name, node, ele, jac_3d, FEM_elen,                     &
+     &     (file_name, mesh%node, mesh%ele, jac_3d, FEM_elen,           &
      &      dxidxs%dx_nod, inod, ele_4_nod_s, neib_nod_s)
 !
         nnod_near_nod_weight(inod) = nnod_near_1nod_weight
@@ -161,7 +158,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_fluid_filter(file_name, node, ele,          &
+      subroutine set_simple_fluid_filter(file_name, mesh,               &
      &          jac_3d, FEM_elen, dxidxs, mom_nod)
 !
       use t_filter_dxdxi
@@ -172,8 +169,7 @@
       use expand_filter_area_4_1node
 !
       character(len = kchara), intent(in) :: file_name
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry),       intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
@@ -183,16 +179,15 @@
       integer(kind = kint) :: inod
 !
 !
-      call init_4_cal_fluid_fileters                                    &
-     &   (node, ele, ele_4_nod_s, neib_nod_s)
+      call init_4_cal_fluid_fileters(mesh, ele_4_nod_s, neib_nod_s)
 !
       write(80+my_rank,*) ' Best condition for filter'
 !
       i_exp_level_1nod_weight = maximum_neighbour
       do inod = inod_start_filter, inod_end_filter
         call set_simple_fl_filter_nod_by_nod                            &
-     &     (file_name, node, ele, jac_3d, FEM_elen, dxidxs%dx_nod,      &
-     &      inod, ele_4_nod_s, neib_nod_s, mom_nod)
+     &     (file_name, mesh%node, mesh%ele, jac_3d, FEM_elen,           &
+     &      dxidxs%dx_nod, inod, ele_4_nod_s, neib_nod_s, mom_nod)
       end do
 !
       call dealloc_iele_belonged(ele_4_nod_s)

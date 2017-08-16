@@ -44,7 +44,7 @@
 !
       use input_control_gen_table
       use const_mesh_information
-      use set_table_type_RHS_assemble
+      use set_table_4_RHS_assemble
       use element_posi_2_nodal_array
       use set_2nd_geometry_4_table
       use const_jacobians_3d
@@ -82,8 +82,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
-     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
-     &    next_tbl_i%neib_ele, next_tbl_i%neib_nod)
+     &   (org_femmesh%mesh, next_tbl_i%neib_ele, next_tbl_i%neib_nod)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobians_element'
       call max_int_point_by_etype(org_femmesh%mesh%ele%nnod_4_ele)
