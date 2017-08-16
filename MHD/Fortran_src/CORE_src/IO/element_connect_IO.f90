@@ -15,6 +15,9 @@
 !!      subroutine read_element_info(id_file, ele_IO)
 !!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!      subroutine read_surface_4_element(id_file, sfed_IO)
+!!      subroutine read_edge_4_element(id_file, sfed_IO)
+!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!@endverbatim
 !!
 !!@param  id_file  File ID
@@ -147,6 +150,45 @@
        end do
 !
        end subroutine read_element_info
+!
+!------------------------------------------------------------------
+!
+      subroutine read_surface_4_element(id_file, sfed_IO)
+!
+      integer (kind = kint), intent(in) :: id_file
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
+      integer(kind = kint) :: i, itmp, nsf_4_ele, nsurf_in_ele
+!
+      read(id_file,*) nsf_4_ele, nsurf_in_ele
+      call alloc_surface_connect_IO                                     &
+     &   (nsf_4_ele, nsurf_in_ele, sfed_IO)
+!
+      do i = 1, sfed_IO%nsf_4_ele
+        read(id_file,*)                                                 &
+     &        itmp, sfed_IO%isf_for_ele(i,1:sfed_IO%nsurf_in_ele)
+      end do
+!
+      end subroutine read_surface_4_element
+!
+!------------------------------------------------------------------
+!
+      subroutine read_edge_4_element(id_file, sfed_IO)
+!
+      integer (kind = kint), intent(in) :: id_file
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
+      integer(kind = kint) :: i, itmp, ned_4_ele, nedge_in_ele
+!
+      read(id_file,*) ned_4_ele, nedge_in_ele
+      call alloc_edge_connect_IO(ned_4_ele, nedge_in_ele, sfed_IO)
+!
+      do i = 1, sfed_IO%ned_4_ele
+        read(id_file,*)                                                 &
+     &         itmp, sfed_IO%iedge_for_ele(i,1:sfed_IO%nedge_in_ele)
+      end do
+!
+      end subroutine read_edge_4_element
 !
 !------------------------------------------------------------------
 !

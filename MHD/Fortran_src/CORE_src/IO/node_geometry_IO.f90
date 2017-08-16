@@ -17,6 +17,8 @@
 !!
 !!      subroutine read_number_of_node(id_file, nod_IO)
 !!      subroutine read_geometry_info(id_file, nod_IO)
+!!      subroutine read_scalar_in_element(id_file, nod_IO, sfed_IO)
+!!      subroutine read_vector_in_element(id_file, nod_IO, sfed_IO)
 !!        type(node_data), intent(inout) :: nod_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!@endverbatim
@@ -165,6 +167,48 @@
       end do
 !
       end subroutine read_geometry_info
+!
+!------------------------------------------------------------------
+!
+      subroutine read_scalar_in_element(id_file, nod_IO, sfed_IO)
+!
+      integer (kind = kint), intent(in) :: id_file
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
+      integer(kind = kint) :: i, itmp
+!
+!
+      read(id_file,*) nod_IO%numnod, nod_IO%internal_node
+      call alloc_ele_scalar_IO(nod_IO, sfed_IO)
+!
+      do i = 1, nod_IO%numnod
+        read(id_file,*) itmp, sfed_IO%ele_scalar(i)
+      end do
+!
+!
+      end subroutine read_scalar_in_element
+!
+!------------------------------------------------------------------
+!
+      subroutine read_vector_in_element(id_file, nod_IO, sfed_IO)
+!
+      integer (kind = kint), intent(in) :: id_file
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
+      integer(kind = kint) :: i, itmp
+!
+!
+      read(id_file,*) nod_IO%numnod, nod_IO%internal_node
+      call alloc_ele_vector_IO(nod_IO, sfed_IO)
+!
+      do i = 1, nod_IO%numnod
+        read(id_file,*) itmp, sfed_IO%ele_vector(i,1:3)
+      end do
+!
+!
+      end subroutine read_vector_in_element
 !
 !------------------------------------------------------------------
 !

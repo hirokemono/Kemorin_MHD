@@ -7,9 +7,12 @@
 !>@brief data IO orutines for edge
 !!
 !!@verbatim
+!!      subroutine read_edge_connection                                 &
+!!     &         (id_file, my_rank_IO, comm_IO, ele_IO, sfed_IO, ierr)
 !!      subroutine write_edge_connection                                &
-!!     &         (id_file, my_rank_IO, comm_IO, nod_IO, ele_IO, sfed_IO)
+!!     &         (id_file, my_rank_IO, comm_IO, ele_IO, sfed_IO)
 !!
+!!      subroutine read_edge_geometry(id_file, nod_IO, sfed_IO)
 !!      subroutine write_edge_geometry(id_file, nod_IO, sfed_IO)
 !!      subroutine write_edge_geometry_sph(id_file, nod_IO, sfed_IO)
 !!      subroutine write_edge_geometry_cyl(id_file, nod_IO, sfed_IO)
@@ -36,8 +39,8 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_edge_connection                                  &
-     &         (id_file, my_rank_IO, comm_IO, nod_IO, ele_IO, sfed_IO)
+      subroutine read_edge_connection                                   &
+     &         (id_file, my_rank_IO, comm_IO, ele_IO, sfed_IO, ierr)
 !
       use m_fem_mesh_labels
       use domain_data_IO
@@ -46,7 +49,68 @@
       integer (kind = kint), intent(in) :: id_file
       integer (kind = kint), intent(in) :: my_rank_IO
       type(communication_table), intent(inout) :: comm_IO
-      type(node_data), intent(inout) :: nod_IO
+      type(element_data), intent(inout) :: ele_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      integer(kind = kint), intent(inout) :: ierr
+!
+!
+!      write(id_file,'(a)') '!' 
+!      write(id_file,'(a)') '!  edge connectivity '
+!      write(id_file,'(a)') '!  and communication table '
+!      write(id_file,'(a)') '!' 
+!      write(id_file,'(a)', advance='NO') hd_fem_para()
+!
+      call read_domain_info(id_file, my_rank_IO, comm_IO, ierr)
+!
+!      write(id_file,'(a)') '!'
+!      write(id_file,'(a)') '!  2  edge connectivity'
+!      write(id_file,'(a)') '!  2.1  edge connectivity '
+!      write(id_file,'(a)') '!      (type and connection) '
+!      write(id_file,'(a)') '!'
+!
+      call read_element_info(id_file, ele_IO)
+!
+!      write(id_file,'(a)') '!'
+!      write(id_file,'(a)') '!  2.2  edge id for each surface'
+!      write(id_file,'(a)') '!'
+!
+      call read_surface_4_element(id_file, sfed_IO)
+!
+!      write(id_file,'(a)') '!'
+!      write(id_file,'(a)') '!  2.3   edge id for each element'
+!      write(id_file,'(a)') '!'
+!
+      call read_edge_4_element(id_file, sfed_IO)
+!
+!
+!
+!      write(id_file,'(a)') '!'
+!      write(id_file,'(a)') '! 3.import / export information '
+!      write(id_file,'(a)') '! 3.1 edge ID for import '
+!      write(id_file,'(a)') '!'
+!
+      call read_import_data(id_file, comm_IO)
+!
+!      write(id_file,'(a)') '!'
+!      write(id_file,'(a)') '! 3.2 edge ID for export '
+!      write(id_file,'(a)') '!'
+!
+      call read_export_data(id_file, comm_IO)
+!
+      end subroutine read_edge_connection
+!
+!------------------------------------------------------------------
+!
+      subroutine write_edge_connection                                  &
+     &         (id_file, my_rank_IO, comm_IO, ele_IO, sfed_IO)
+!
+      use m_fem_mesh_labels
+      use domain_data_IO
+      use element_connect_IO
+!
+      integer (kind = kint), intent(in) :: id_file
+      integer (kind = kint), intent(in) :: my_rank_IO
+      type(communication_table), intent(inout) :: comm_IO
       type(element_data), intent(inout) :: ele_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
@@ -99,6 +163,39 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
+      subroutine read_edge_geometry(id_file, nod_IO, sfed_IO)
+!
+      use node_geometry_IO
+!
+      integer (kind = kint), intent(in) :: id_file
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
+!
+!      write(id_file,'(a)') '!'
+!      write(id_file,'(a)') '! 4.   geometry of edge'
+!      write(id_file,'(a)') '!  4.1. center of edge'
+!      write(id_file,'(a)') '!'
+!
+      call read_geometry_info(id_file, nod_IO)
+!
+!      write(id_file,'(a)') '!'
+!      write(id_file,'(a)') '!  4.2  direction of edge'
+!      write(id_file,'(a)') '!'
+!
+      call read_vector_in_element(id_file, nod_IO, sfed_IO)
+!
+!      write(id_file,'(a)') '!'
+!      write(id_file,'(a)') '!  4.3  length of edge'
+!      write(id_file,'(a)') '!'
+!
+      call read_scalar_in_element(id_file, nod_IO, sfed_IO)
+!
+      end subroutine read_edge_geometry
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
       subroutine write_edge_geometry(id_file, nod_IO, sfed_IO)
 !
       use node_geometry_IO
@@ -129,7 +226,6 @@
 !
       end subroutine write_edge_geometry
 !
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine write_edge_geometry_sph(id_file, nod_IO, sfed_IO)
