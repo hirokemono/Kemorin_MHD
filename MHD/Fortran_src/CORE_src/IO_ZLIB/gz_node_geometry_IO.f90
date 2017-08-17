@@ -70,8 +70,7 @@
       call gz_write_textbuf_w_lf
 !
       do i = 1, nod_IO%numnod
-        write(textbuf,'(i16,1p3e23.15,a1)')                             &
-     &      i, sfed_IO%ele_scalar(i), char(0)
+        write(textbuf,'(1p3e23.15,a1)') sfed_IO%ele_scalar(i), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
@@ -93,8 +92,8 @@
       call gz_write_textbuf_w_lf
 !
       do i = 1, nod_IO%numnod
-        write(textbuf,'(i16,1p3e23.15,a1)')                             &
-     &      i, sfed_IO%ele_vector(i,1:3), char(0)
+        write(textbuf,'(1p3e23.15,a1)')                                 &
+     &       sfed_IO%ele_vector(i,1:3), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
@@ -140,7 +139,7 @@
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: i, itmp
+      integer(kind = kint) :: i
 !
 !
       call skip_gz_comment_int(nod_IO%numnod)
@@ -149,7 +148,7 @@
 !
       do i = 1, nod_IO%numnod
         call get_one_line_from_gz_f
-        read(textbuf,*) itmp, sfed_IO%ele_scalar(i)
+        read(textbuf,*) sfed_IO%ele_scalar(i)
       end do
 !
       end subroutine gz_read_scalar_in_element
@@ -161,7 +160,7 @@
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: i, itmp
+      integer(kind = kint) :: i
 !
 !
       call skip_gz_comment_int(nod_IO%numnod)
@@ -170,7 +169,7 @@
 !
       do i = 1, nod_IO%numnod
         call get_one_line_from_gz_f
-        read(textbuf,*) itmp, sfed_IO%ele_vector(i,1:3)
+        read(textbuf,*) sfed_IO%ele_vector(i,1:3)
       end do
 !
       end subroutine gz_read_vector_in_element

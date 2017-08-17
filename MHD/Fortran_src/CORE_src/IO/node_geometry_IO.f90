@@ -107,7 +107,7 @@
 !
       write(id_file,'(2i16)') nod_IO%numnod, nod_IO%internal_node
       do i = 1, nod_IO%numnod
-        write(id_file,'(i16, 1p3e23.15)') i, sfed_IO%ele_scalar(i)
+        write(id_file,'(1p3e23.15)') sfed_IO%ele_scalar(i)
       end do
 !
       call dealloc_ele_scalar_IO(sfed_IO)
@@ -126,7 +126,7 @@
 !
       write(id_file,'(2i16)') nod_IO%numnod, nod_IO%internal_node
       do i = 1, nod_IO%numnod
-        write(id_file,'(i16,1p3e23.15)') i, sfed_IO%ele_vector(i,1:3)
+        write(id_file,'(1p3e23.15)') sfed_IO%ele_vector(i,1:3)
       end do
 !
       call dealloc_ele_vector_IO(sfed_IO)
@@ -176,14 +176,14 @@
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: i, itmp
+      integer(kind = kint) :: i
 !
 !
       read(id_file,*) nod_IO%numnod, nod_IO%internal_node
       call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
       do i = 1, nod_IO%numnod
-        read(id_file,*) itmp, sfed_IO%ele_scalar(i)
+        read(id_file,*) sfed_IO%ele_scalar(i)
       end do
 !
 !
@@ -197,14 +197,14 @@
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: i, itmp
+      integer(kind = kint) :: i
 !
 !
       read(id_file,*) nod_IO%numnod, nod_IO%internal_node
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
 !
       do i = 1, nod_IO%numnod
-        read(id_file,*) itmp, sfed_IO%ele_vector(i,1:3)
+        read(id_file,*) sfed_IO%ele_vector(i,1:3)
       end do
 !
 !

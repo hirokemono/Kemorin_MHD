@@ -57,7 +57,7 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_ele_comm_file_name(file_prefix, id_gzip_txt_file_fmt,    &
+      call set_ele_comm_file_name(file_prefix, id_gzip_bin_file_fmt,    &
      &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -85,7 +85,7 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_surf_mesh_file_name(file_prefix, id_gzip_txt_file_fmt,   &
+      call set_surf_mesh_file_name(file_prefix, id_gzip_bin_file_fmt,   &
      &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -113,7 +113,7 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_edge_mesh_file_name(file_prefix, id_gzip_txt_file_fmt,   &
+      call set_edge_mesh_file_name(file_prefix, id_gzip_bin_file_fmt,   &
      &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -141,7 +141,7 @@
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !
 !
-      call set_ele_comm_file_name(file_prefix, id_gzip_txt_file_fmt,    &
+      call set_ele_comm_file_name(file_prefix, id_gzip_bin_file_fmt,    &
      &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -167,7 +167,7 @@
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !
 !
-      call set_surf_mesh_file_name(file_prefix, id_gzip_txt_file_fmt,   &
+      call set_surf_mesh_file_name(file_prefix, id_gzip_bin_file_fmt,   &
      &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -194,7 +194,7 @@
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !
 !
-      call set_edge_mesh_file_name(file_prefix, id_gzip_txt_file_fmt,   &
+      call set_edge_mesh_file_name(file_prefix, id_gzip_bin_file_fmt,   &
      &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &

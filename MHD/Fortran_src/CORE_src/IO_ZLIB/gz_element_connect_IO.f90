@@ -73,8 +73,8 @@
       call gz_write_textbuf_w_lf
 !
       do i = 1, sfed_IO%nsf_4_ele
-        write(textbuf,'(10i16,a1)')                                     &
-     &     i, sfed_IO%isf_for_ele(i,1:sfed_IO%nsurf_in_ele), char(0)
+        write(textbuf,'(6i16,a1)')                                      &
+     &         sfed_IO%isf_for_ele(i,1:sfed_IO%nsurf_in_ele), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
@@ -95,8 +95,8 @@
       call gz_write_textbuf_w_lf
 !
       do i = 1, sfed_IO%ned_4_ele
-        write(textbuf,'(15i16,a1)')                                     &
-     &     i, sfed_IO%iedge_for_ele(i,1:sfed_IO%nedge_in_ele), char(0)
+        write(textbuf,'(12i16,a1)')                                     &
+     &        sfed_IO%iedge_for_ele(i,1:sfed_IO%nedge_in_ele), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
@@ -154,7 +154,7 @@
 !
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: i, itmp, nsf_4_ele, nsurf_in_ele
+      integer(kind = kint) :: i, nsf_4_ele, nsurf_in_ele
 !
 !
       call skip_gz_comment_int(nsf_4_ele)
@@ -163,8 +163,7 @@
 !
       do i = 1, sfed_IO%nsf_4_ele
         call get_one_line_from_gz_f
-        read(textbuf,*)                                                 &
-     &        itmp, sfed_IO%isf_for_ele(i,1:sfed_IO%nsurf_in_ele)
+        read(textbuf,*) sfed_IO%isf_for_ele(i,1:sfed_IO%nsurf_in_ele)
       end do
 !
       end subroutine gz_read_surface_4_element
@@ -175,7 +174,7 @@
 !
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
-      integer(kind = kint) :: i, itmp, ned_4_ele, nedge_in_ele
+      integer(kind = kint) :: i, ned_4_ele, nedge_in_ele
 !
 !
       call skip_gz_comment_int(ned_4_ele)
@@ -185,7 +184,7 @@
       do i = 1, sfed_IO%ned_4_ele
         call get_one_line_from_gz_f
         read(textbuf,*)                                                 &
-     &         itmp, sfed_IO%iedge_for_ele(i,1:sfed_IO%nedge_in_ele)
+     &         sfed_IO%iedge_for_ele(i,1:sfed_IO%nedge_in_ele)
       end do
 !
       end subroutine gz_read_edge_4_element
