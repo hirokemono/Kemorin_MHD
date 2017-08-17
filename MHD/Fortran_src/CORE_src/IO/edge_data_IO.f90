@@ -30,6 +30,8 @@
       use t_comm_table
       use t_geometry_data
       use t_read_mesh_data
+      use t_surf_edge_IO
+      use m_fem_surface_labels
 !
       implicit none
 !
@@ -115,47 +117,24 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      write(id_file,'(a)') '!' 
-      write(id_file,'(a)') '!  edge connectivity '
-      write(id_file,'(a)') '!  and communication table '
-      write(id_file,'(a)') '!' 
+      write(id_file,'(a)', advance='NO') hd_edge_para()
       write(id_file,'(a)', advance='NO') hd_fem_para()
-!
       call write_domain_info(id_file, my_rank_IO, comm_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  2  edge connectivity'
-      write(id_file,'(a)') '!  2.1  edge connectivity '
-      write(id_file,'(a)') '!      (type and connection) '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_connect()
       call write_element_info(id_file, ele_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  2.2  edge id for each surface'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_on_surf()
       call write_surface_4_element(id_file, sfed_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  2.3   edge id for each element'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_on_ele()
       call write_edge_4_element(id_file, sfed_IO)
 !
 !
-!
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 3.import / export information '
-      write(id_file,'(a)') '! 3.1 edge ID for import '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_import()
       call write_import_data(id_file, comm_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 3.2 edge ID for export '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_export()
       call write_export_data(id_file, comm_IO)
 !
       end subroutine write_edge_connection
@@ -205,23 +184,13 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 4.   geometry of edge'
-      write(id_file,'(a)') '!  4.1. center of edge'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_point()
       call write_geometry_info(id_file, nod_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  4.2  direction of edge'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_dir()
       call write_vector_in_element(id_file, nod_IO, sfed_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  4.3  length of edge'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_length()
       call write_scalar_in_element(id_file, nod_IO, sfed_IO)
 !
       end subroutine write_edge_geometry
@@ -245,16 +214,10 @@
 !
       call write_geometry_info(id_file, nod_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  4.2  direction of edge'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_dir()
       call write_vector_in_element(id_file, nod_IO, sfed_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  4.3  length of edge'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_length()
       call write_scalar_in_element(id_file, nod_IO, sfed_IO)
 !
       end subroutine write_edge_geometry_sph
@@ -278,16 +241,10 @@
 !
       call write_geometry_info(id_file, nod_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  4.2  direction of edge'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_dir()
       call write_vector_in_element(id_file, nod_IO, sfed_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  4.3  length of edge'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_edge_length()
       call write_scalar_in_element(id_file, nod_IO, sfed_IO)
 !
       end subroutine write_edge_geometry_cyl

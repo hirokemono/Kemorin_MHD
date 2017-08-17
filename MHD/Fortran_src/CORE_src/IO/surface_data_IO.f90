@@ -31,6 +31,8 @@
       use t_comm_table
       use t_geometry_data
       use t_read_mesh_data
+      use t_surf_edge_IO
+      use m_fem_surface_labels
 !
       implicit none
 !
@@ -113,43 +115,21 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      write(id_file,'(a)') '!' 
-      write(id_file,'(a)') '!  surface connectivity '
-      write(id_file,'(a)') '!  and communication table '
-      write(id_file,'(a)') '!' 
+      write(id_file,'(a)', advance='NO') hd_surf_para()
       write(id_file,'(a)', advance='NO') hd_fem_para()
-!
       call write_domain_info(id_file, my_rank_IO, comm_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  2  surface connectivity'
-      write(id_file,'(a)') '!  2.1  surface connectivity '
-      write(id_file,'(a)') '!      (type and connection) '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_surf_connect()
       call write_element_info(id_file, ele_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  2.2 surface id for each element'
-      write(id_file,'(a)') '!        positive: outward normal'
-      write(id_file,'(a)') '!        normal: inward normal'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_surf_on_ele()
       call write_surface_4_element(id_file, sfed_IO)
 !
 !
-!
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 3.import / export information '
-      write(id_file,'(a)') '! 3.1 surface ID for import '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_surf_import()
       call write_import_data(id_file, comm_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 3.2 surface ID for export '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_surf_export()
       call write_export_data(id_file, comm_IO)
 !
       end subroutine write_surface_connection
@@ -199,23 +179,13 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 4.  geometry of surface'
-      write(id_file,'(a)') '! 4.1 center of surface'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_surf_point()
       call write_geometry_info(id_file, nod_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  4.2 normal vector of surface'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_surf_norm()
       call write_vector_in_element(id_file, nod_IO, sfed_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 4.3 area of surface'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_surf_area()
       call write_scalar_in_element(id_file, nod_IO, sfed_IO)
 !
       end subroutine write_surface_geometry
@@ -246,10 +216,7 @@
 !
       call write_vector_in_element(id_file, nod_IO, sfed_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  4.3 area of surface'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_surf_area()
       call write_scalar_in_element(id_file, nod_IO, sfed_IO)
 !
       end subroutine write_surface_geometry_sph
@@ -280,10 +247,7 @@
 !
       call write_vector_in_element(id_file, nod_IO, sfed_IO)
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 4.3 area of surface'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_surf_area()
       call write_scalar_in_element(id_file, nod_IO, sfed_IO)
 !
       end subroutine write_surface_geometry_cyl
