@@ -131,7 +131,7 @@
 !  ----  read element data -------
 !
       call mpi_skip_read(IO_param, len(hd_fem_elem()))
-      call mpi_read_num_of_data(IO_param, mesh_IO%ele%numele)
+      call mpi_read_num_element(IO_param, mesh_IO%ele)
 !
       end subroutine mpi_read_num_node_ele
 !

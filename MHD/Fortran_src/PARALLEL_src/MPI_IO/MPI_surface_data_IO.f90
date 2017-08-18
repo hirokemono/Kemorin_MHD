@@ -61,7 +61,7 @@
       call mpi_read_domain_info(IO_param, comm_IO)
 !
       call mpi_skip_read(IO_param, len(hd_surf_connect()))
-      call mpi_read_num_of_data(IO_param, ele_IO%numele)
+      call mpi_read_num_element(IO_param, ele_IO)
       call mpi_read_element_info(IO_param, ele_IO)
 !
       call mpi_skip_read(IO_param, len(hd_surf_on_ele()))

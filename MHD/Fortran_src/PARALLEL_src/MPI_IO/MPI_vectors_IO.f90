@@ -11,14 +11,11 @@
 !!     &         (IO_param, nnod, numdir, id_global, xx)
 !!      subroutine mpi_read_scalar(IO_param, nnod, scalar)
 !!      subroutine mpi_read_vector(IO_param, nnod, numdir, vect)
-!!      subroutine mpi_read_1d_gl_address                               &
-!!     &         (IO_param, nnod, numdir, idx)
+!!
 !!      subroutine mpi_write_node_position                              &
 !!     &         (IO_param, nnod, numdir, id_global, xx)
 !!      subroutine mpi_write_scalar(IO_param, nnod, scalar)
 !!      subroutine mpi_write_vector(IO_param, nnod, numdir, vect)
-!!      subroutine mpi_write_1d_gl_address                              &
-!!     &         (IO_param, nnod, numdir, idx)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!@endverbatim
 !
@@ -127,7 +124,7 @@
 !
           ilength = len_vector_textline(ione)
           do i = 1, nnod
-            call read_vector_textline                          &
+            call read_vector_textline                                   &
      &         (calypso_mpi_seek_read_chara(IO_param%id_file,           &
      &                                      ioffset, ilength),          &
      &          ione, vect_tmp)
@@ -178,7 +175,7 @@
 !
           ilength = len_vector_textline(numdir)
           do i = 1, nnod
-            call read_vector_textline                          &
+            call read_vector_textline                                   &
      &         (calypso_mpi_seek_read_chara(IO_param%id_file,           &
      &                                      ioffset, ilength),          &
      &          numdir, vect_tmp)
@@ -190,58 +187,6 @@
      &         + IO_param%istack_merged(IO_param%nprocs_in)
 !
       end subroutine mpi_read_vector
-!
-! -----------------------------------------------------------------------
-!
-      subroutine mpi_read_1d_gl_address                                 &
-     &         (IO_param, nnod, numdir, idx)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod, numdir
-      integer(kind=kint), intent(inout) :: idx(nnod, numdir)
-!
-      integer(kind = kint) :: idx_tmp(numdir)
-
-      integer(kind = kint) :: i, led, ilength, n_item
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
-!
-      call mpi_skip_read                                                &
-     &   (IO_param, len_multi_int_textline(IO_param%nprocs_in))
-!
-      IO_param%istack_merged(0) = 0
-      do i = 1, IO_param%nprocs_in
-        n_item = int(IO_param%istack_merged(i))
-        if(n_item .le. 0) then
-          led = ione
-        else if(n_item .gt. 0) then
-          led = len_multi_int_textline(numdir) * n_item
-        end if
-        IO_param%istack_merged(i) = IO_param%istack_merged(i-1)         &
-     &                             + led
-      end do
-!
-      if(IO_param%id_rank .lt. IO_param%nprocs_in) then
-        if(nnod .eq. 0) then
-          led = ione
-        else
-          ioffset = IO_param%ioff_gl                                    &
-     &             + IO_param%istack_merged(IO_param%id_rank)
-!
-          ilength = len_multi_int_textline(numdir)
-          do i = 1, nnod
-            call read_multi_int_textline                                &
-     &         (calypso_mpi_seek_read_chara(IO_param%id_file,           &
-     &                                      ioffset, ilength),          &
-     &          numdir, idx_tmp)
-            idx(i,1:numdir) = idx_tmp(1:numdir)
-          end do
-        end if
-      end if
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &         + IO_param%istack_merged(IO_param%nprocs_in)
-!
-      end subroutine mpi_read_1d_gl_address
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -365,51 +310,6 @@
       call calypso_mpi_barrier
 !
       end subroutine mpi_write_vector
-!
-! -----------------------------------------------------------------------
-!
-      subroutine mpi_write_1d_gl_address                                &
-     &         (IO_param, nnod, numdir, idx)
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      integer(kind=kint), intent(in) :: nnod, numdir
-      integer(kind=kint), intent(in) :: idx(nnod, numdir)
-!
-      integer(kind = kint) :: i, led, ilength
-      integer(kind = kint) :: idx_tmp(numdir)
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
-!
-      call mpi_write_num_of_data(IO_param, nnod)
-!
-      ilength = len_multi_int_textline(numdir)
-      if(nnod .le. 0) then
-        led = ione
-      else if(nnod .gt. 0) then
-        led = nnod * len_multi_int_textline(numdir)
-      end if
-!
-      call mpi_write_stack_over_domain(IO_param, led)
-!
-      ioffset = IO_param%ioff_gl                                        &
-     &         + IO_param%istack_merged(IO_param%id_rank)
-      IO_param%ioff_gl = IO_param%ioff_gl                               &
-     &         + IO_param%istack_merged(IO_param%nprocs_in)
-!
-      if(nnod .le. 0) then
-        call calypso_mpi_seek_write_chara                               &
-     &     (IO_param%id_file, ioffset, ione, char(10))
-      else
-        do i = 1, nnod
-          idx_tmp(1:numdir) = idx(i,1:numdir)
-          call calypso_mpi_seek_write_chara                             &
-     &       (IO_param%id_file, ioffset, ilength,                       &
-     &        multi_int_textline(numdir, idx_tmp))
-        end do
-      end if
-      call calypso_mpi_barrier
-!
-      end subroutine mpi_write_1d_gl_address
 !
 ! -----------------------------------------------------------------------
 !

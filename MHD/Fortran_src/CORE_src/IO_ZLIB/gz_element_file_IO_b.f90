@@ -11,14 +11,14 @@
 !!     &         (my_rank_IO, file_prefix, ele_mesh_IO, ierr)
 !!      subroutine gz_input_surface_file_b                              &
 !!     &         (my_rank_IO, file_prefix, surf_mesh_IO, ierr)
-!!      subroutine gz_input_edge_geometries_b                           &
+!!      subroutine gz_input_edge_file_b                                 &
 !!     &         (my_rank_IO, file_prefix, edge_mesh_IO, ierr)
 !!
 !!      subroutine gz_output_element_file_b                             &
 !!     &         (my_rank_IO, ele_mesh_IO)
 !!      subroutine gz_output_surface_file_b                             &
 !!     &         (my_rank_IO, file_prefix, surf_mesh_IO)
-!!      subroutine gz_output_edge_geometries_b                          &
+!!      subroutine gz_output_edge_file_b                                &
 !!     &         (my_rank_IO, file_prefix, edge_mesh_IO)
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
@@ -102,7 +102,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_input_edge_geometries_b                             &
+      subroutine gz_input_edge_file_b                                   &
      &         (my_rank_IO, file_prefix, edge_mesh_IO, ierr)
 !
       use gz_edge_data_IO_b
@@ -126,7 +126,7 @@
      &   (edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_gzfile_f
 !
-      end subroutine gz_input_edge_geometries_b
+      end subroutine gz_input_edge_file_b
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
@@ -184,7 +184,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_output_edge_geometries_b                            &
+      subroutine gz_output_edge_file_b                                  &
      &         (my_rank_IO, file_prefix, edge_mesh_IO)
 !
       use gz_edge_data_IO_b
@@ -207,7 +207,7 @@
      &   (edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_gzfile_f
 !
-      end subroutine gz_output_edge_geometries_b
+      end subroutine gz_output_edge_file_b
 !
 !------------------------------------------------------------------
 !
