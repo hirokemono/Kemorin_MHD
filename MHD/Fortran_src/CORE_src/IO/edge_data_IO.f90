@@ -44,7 +44,6 @@
       subroutine read_edge_connection                                   &
      &         (id_file, my_rank_IO, comm_IO, ele_IO, sfed_IO, ierr)
 !
-      use m_fem_mesh_labels
       use domain_data_IO
       use element_connect_IO
 !
@@ -156,6 +155,7 @@
 !      write(id_file,'(a)') '!  4.1. center of edge'
 !      write(id_file,'(a)') '!'
 !
+      call read_number_of_node(id_file, nod_IO)
       call read_geometry_info(id_file, nod_IO)
 !
 !      write(id_file,'(a)') '!'

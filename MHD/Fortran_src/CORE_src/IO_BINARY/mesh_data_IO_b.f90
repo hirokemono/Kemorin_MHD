@@ -10,10 +10,12 @@
 !!@verbatim
 !!      subroutine write_geometry_data_b(my_rank_IO, mesh_IO)
 !!      subroutine write_mesh_groups_b(mesh_group_IO)
-!!      subroutine read_geometry_data_b(my_rank_IO, mesh_IO, ierr)
-!!      subroutine read_mesh_groups_b(mesh_group_IO)
-!!      subroutine read_num_node_ele_b(my_rank_IO, mesh_IO, ierr)
+!!
 !!      subroutine read_num_node_b(my_rank_IO, mesh_IO, ierr)
+!!      subroutine read_num_node_ele_b(my_rank_IO, mesh_IO, ierr)
+!!      subroutine read_geometry_data_b(my_rank_IO, mesh_IO, ierr)
+!!
+!!      subroutine read_mesh_groups_b(mesh_group_IO)
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!
@@ -103,6 +105,46 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
+      subroutine read_num_node_b(my_rank_IO, mesh_IO, ierr)
+!
+      use domain_data_IO_b
+      use node_geometry_IO_b
+!
+      integer(kind = kint), intent(in) :: my_rank_IO
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      integer(kind = kint), intent(inout) :: ierr
+!
+!
+      call read_domain_info_b(my_rank_IO, mesh_IO%nod_comm, ierr)
+      call read_number_of_node_b(mesh_IO%node)
+!
+      end subroutine read_num_node_b
+!
+!------------------------------------------------------------------
+!
+      subroutine read_num_node_ele_b(my_rank_IO, mesh_IO, ierr)
+!
+      use domain_data_IO_b
+      use node_geometry_IO_b
+      use element_connect_IO_b
+!
+      integer(kind = kint), intent(in) :: my_rank_IO
+!
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      integer(kind = kint), intent(inout) :: ierr
+!
+!
+      call read_num_node_b(my_rank_IO, mesh_IO, ierr)
+      call read_geometry_info_b(mesh_IO%node)
+!
+!  ----  read element data -------
+!
+      call read_number_of_element_b(mesh_IO%ele)
+!
+      end subroutine read_num_node_ele_b
+!
+!------------------------------------------------------------------
+!
       subroutine read_geometry_data_b(my_rank_IO, mesh_IO, ierr)
 !
       use domain_data_IO_b
@@ -115,13 +157,10 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call read_domain_info_b(my_rank_IO, mesh_IO%nod_comm, ierr)
-      call read_number_of_node_b(mesh_IO%node)
-      call read_geometry_info_b(mesh_IO%node)
+      call read_num_node_ele_b(my_rank_IO, mesh_IO, ierr)
 !
 !  ----  read element data -------
 !
-      call read_number_of_element_b(mesh_IO%ele)
       call read_element_info_b(mesh_IO%ele)
 !
 ! ----  import & export 
@@ -148,47 +187,6 @@
       call read_surf_grp_data_b(mesh_group_IO%surf_grp)
 !
       end subroutine read_mesh_groups_b
-!
-!------------------------------------------------------------------
-!
-      subroutine read_num_node_ele_b(my_rank_IO, mesh_IO, ierr)
-!
-      use domain_data_IO_b
-      use node_geometry_IO_b
-      use element_connect_IO_b
-!
-      integer(kind = kint), intent(in) :: my_rank_IO
-!
-      type(mesh_geometry), intent(inout) :: mesh_IO
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-      call read_domain_info_b(my_rank_IO, mesh_IO%nod_comm, ierr)
-      call read_number_of_node_b(mesh_IO%node)
-      call read_geometry_info_b(mesh_IO%node)
-!
-!  ----  read element data -------
-!
-      call read_number_of_element_b(mesh_IO%ele)
-!
-      end subroutine read_num_node_ele_b
-!
-!------------------------------------------------------------------
-!
-      subroutine read_num_node_b(my_rank_IO, mesh_IO, ierr)
-!
-      use domain_data_IO_b
-      use node_geometry_IO_b
-!
-      integer(kind = kint), intent(in) :: my_rank_IO
-      type(mesh_geometry), intent(inout) :: mesh_IO
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-      call read_domain_info_b(my_rank_IO, mesh_IO%nod_comm, ierr)
-      call read_number_of_node_b(mesh_IO%node)
-!
-      end subroutine read_num_node_b
 !
 !------------------------------------------------------------------
 !

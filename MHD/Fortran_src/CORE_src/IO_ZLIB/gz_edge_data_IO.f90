@@ -67,6 +67,7 @@
 !      write(id_file,'(a,a1)') '!      (type and connection) ', char(0)
 !      write(id_file,'(a,a1)') '!', char(0)
 !
+      call gz_read_number_of_element(ele_IO)
       call gz_read_element_info(ele_IO)
 !
 !      write(id_file,'(a,a1)') '!', char(0)
@@ -165,6 +166,7 @@
 !      write(id_file,'(a,a1)') '!  4.1. center of edge', char(0)
 !      write(id_file,'(a,a1)') '!', char(0)
 !
+      call gz_read_number_of_node(nod_IO)
       call gz_read_geometry_info(nod_IO)
 !
 !      write(id_file,'(a,a1)') '!', char(0)

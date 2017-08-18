@@ -54,6 +54,7 @@
 !
       call read_domain_info_b(my_rank_IO, comm_IO, ierr)
 !
+      call read_number_of_element_b(ele_IO)
       call read_element_info_b(ele_IO)
       call read_surface_4_element_b(sfed_IO)
       call read_edge_4_element_b(sfed_IO)
@@ -100,6 +101,7 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
+      call read_number_of_node_b(nod_IO)
       call read_geometry_info_b(nod_IO)
       call read_vector_in_element_b(nod_IO, sfed_IO)
       call read_scalar_in_element_b(nod_IO, sfed_IO)

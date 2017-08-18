@@ -54,44 +54,24 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-!      write(id_file,'(a)') '!' 
-!      write(id_file,'(a)') '!  surface connectivity '
-!      write(id_file,'(a)') '!  and communication table '
-!      write(id_file,'(a)') '!' 
-!      write(id_file,'(a)', advance='NO') hd_fem_para()
+!      textbuf = hd_surf_para() // char(0)
+!      textbuf = hd_fem_para() // char(0)
+      call gz_read_domain_info_b(my_rank_IO, comm_IO, ierr)
 !
-      call gz_read_domain_info(my_rank_IO, comm_IO, ierr)
+!      textbuf = hd_surf_connect() // char(0)
+      call gz_read_number_of_element_b(ele_IO)
+      call gz_read_element_info_b(ele_IO)
 !
-!      write(id_file,'(a)') '!'
-!      write(id_file,'(a)') '!  2  surface connectivity'
-!      write(id_file,'(a)') '!  2.1  surface connectivity '
-!      write(id_file,'(a)') '!      (type and connection) '
-!      write(id_file,'(a)') '!'
-!
-      call gz_read_element_info(ele_IO)
-!
-!      write(id_file,'(a)') '!'
-!      write(id_file,'(a)') '!  2.2 surface id for each element'
-!      write(id_file,'(a)') '!        positive: outward normal'
-!      write(id_file,'(a)') '!        normal: inward normal'
-!      write(id_file,'(a)') '!'
-!
-      call gz_read_surface_4_element(sfed_IO)
+!      textbuf = hd_surf_on_ele() // char(0)
+      call gz_read_surface_4_element_b(sfed_IO)
 !
 !
 !
-!      write(id_file,'(a)') '!'
-!      write(id_file,'(a)') '! 3.import / export information '
-!      write(id_file,'(a)') '! 3.1 surface ID for import '
-!      write(id_file,'(a)') '!'
+!      textbuf = hd_surf_import() // char(0)
+      call read_import_data_gz_b(comm_IO)
 !
-      call read_import_data_gz(comm_IO)
-!
-!      write(id_file,'(a)') '!'
-!      write(id_file,'(a)') '! 3.2 surface ID for export '
-!      write(id_file,'(a)') '!'
-!
-      call gz_read_export_data(comm_IO)
+!      textbuf = hd_surf_export() // char(0)
+      call gz_read_export_data_b(comm_IO)
 !
       end subroutine gz_read_surface_connection_b
 !
@@ -111,34 +91,23 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      textbuf = hd_surf_para() // char(0)
-      call gz_write_textbuf_no_lf
-      textbuf = hd_fem_para() // char(0)
-      call gz_write_textbuf_no_lf
+!      textbuf = hd_surf_para() // char(0)
+!      textbuf = hd_fem_para() // char(0)
+      call gz_write_domain_info_b(my_rank_IO, comm_IO)
 !
-      call gz_write_domain_info(my_rank_IO, comm_IO)
+!      textbuf = hd_surf_connect() // char(0)
+      call gz_write_element_info_b(ele_IO)
 !
-      textbuf = hd_surf_connect() // char(0)
-      call gz_write_textbuf_no_lf
-!
-      call gz_write_element_info(ele_IO)
-!
-      textbuf = hd_surf_on_ele() // char(0)
-      call gz_write_textbuf_no_lf
-!
-      call gz_write_surface_4_element(sfed_IO)
+!      textbuf = hd_surf_on_ele() // char(0)
+      call gz_write_surface_4_element_b(sfed_IO)
 !
 !
 !
-      textbuf = hd_surf_import() // char(0)
-      call gz_write_textbuf_no_lf
+!      textbuf = hd_surf_import() // char(0)
+      call gz_write_import_data_b(comm_IO)
 !
-      call gz_write_import_data(comm_IO)
-!
-      textbuf = hd_surf_export() // char(0)
-      call gz_write_textbuf_no_lf
-!
-      call gz_write_export_data(comm_IO)
+!      textbuf = hd_surf_export() // char(0)
+      call gz_write_export_data_b(comm_IO)
 !
       end subroutine gz_write_surface_connection_b
 !
@@ -153,24 +122,15 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-!      write(id_file,'(a)') '!'
-!      write(id_file,'(a)') '! 4.  geometry of surface'
-!      write(id_file,'(a)') '! 4.1 center of surface'
-!      write(id_file,'(a)') '!'
+!      textbuf = hd_surf_point() // char(0)
+      call gz_read_number_of_node_b(nod_IO)
+      call gz_read_geometry_info_b(nod_IO)
 !
-      call gz_read_geometry_info(nod_IO)
+!      textbuf = hd_surf_norm() // char(0)
+      call gz_read_vector_in_element_b(nod_IO, sfed_IO)
 !
-!      write(id_file,'(a)') '!'
-!      write(id_file,'(a)') '!  4.2 normal vector of surface'
-!      write(id_file,'(a)') '!'
-!
-      call gz_read_vector_in_element(nod_IO, sfed_IO)
-!
-!      write(id_file,'(a)') '!'
-!      write(id_file,'(a)') '! 4.3 area of surface'
-!      write(id_file,'(a)') '!'
-!
-      call gz_read_scalar_in_element(nod_IO, sfed_IO)
+!      textbuf = hd_surf_area() // char(0)
+      call gz_read_scalar_in_element_b(nod_IO, sfed_IO)
 !
       end subroutine gz_read_surface_geometry_b
 !
@@ -185,20 +145,14 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      textbuf = hd_surf_point() // char(0)
-      call gz_write_textbuf_no_lf
+!      textbuf = hd_surf_point() // char(0)
+      call gz_write_geometry_info_b(nod_IO)
 !
-      call gz_write_geometry_info(nod_IO)
+!      textbuf = hd_surf_norm() // char(0)
+      call gz_write_vector_in_element_b(nod_IO, sfed_IO)
 !
-      textbuf = hd_surf_norm() // char(0)
-      call gz_write_textbuf_no_lf
-!
-      call gz_write_vector_in_element(nod_IO, sfed_IO)
-!
-      textbuf = hd_surf_area() // char(0)
-      call gz_write_textbuf_no_lf
-!
-      call gz_write_scalar_in_element(nod_IO, sfed_IO)
+!      textbuf = hd_surf_area() // char(0)
+      call gz_write_scalar_in_element_b(nod_IO, sfed_IO)
 !
       end subroutine gz_write_surface_geometry_b
 !

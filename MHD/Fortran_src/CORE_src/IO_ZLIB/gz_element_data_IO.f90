@@ -118,6 +118,7 @@
 !     &                       char(0)
 !      write(textbuf,'(a,a1)') '!', char(0)
 !
+      call gz_read_number_of_node(nod_IO)
       call gz_read_geometry_info(nod_IO)
 !
 !      write(textbuf,'(a,a1)') '!', char(0)

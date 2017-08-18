@@ -138,7 +138,6 @@
       integer (kind = kint) :: i
 !
 !
-      call gz_read_number_of_element_b(ele_IO)
       call alloc_element_types(ele_IO)
       call gz_read_mul_integer_b(ele_IO%numele, ele_IO%elmtyp)
 !

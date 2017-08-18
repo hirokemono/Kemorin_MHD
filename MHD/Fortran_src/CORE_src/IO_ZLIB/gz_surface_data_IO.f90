@@ -68,6 +68,7 @@
 !      write(id_file,'(a)') '!      (type and connection) '
 !      write(id_file,'(a)') '!'
 !
+      call gz_read_number_of_element(ele_IO)
       call gz_read_element_info(ele_IO)
 !
 !      write(id_file,'(a)') '!'
@@ -158,6 +159,7 @@
 !      write(id_file,'(a)') '! 4.1 center of surface'
 !      write(id_file,'(a)') '!'
 !
+      call gz_read_number_of_node(nod_IO)
       call gz_read_geometry_info(nod_IO)
 !
 !      write(id_file,'(a)') '!'

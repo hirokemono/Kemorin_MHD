@@ -179,7 +179,7 @@
       integer(kind = kint) :: i
 !
 !
-      read(id_file,*) nod_IO%numnod, nod_IO%internal_node
+      call read_number_of_node(id_file, nod_IO)
       call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
       do i = 1, nod_IO%numnod
@@ -200,7 +200,7 @@
       integer(kind = kint) :: i
 !
 !
-      read(id_file,*) nod_IO%numnod, nod_IO%internal_node
+      call read_number_of_node(id_file, nod_IO)
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
 !
       do i = 1, nod_IO%numnod

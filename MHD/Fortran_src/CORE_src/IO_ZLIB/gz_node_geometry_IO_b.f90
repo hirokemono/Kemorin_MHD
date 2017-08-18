@@ -116,7 +116,6 @@
       type(node_data), intent(inout) :: nod_IO
 !
 !
-      call gz_read_number_of_node_b(nod_IO)
       call alloc_node_geometry_base(nod_IO)
 !
       call gz_read_mul_int8_b(nod_IO%numnod, nod_IO%inod_global)

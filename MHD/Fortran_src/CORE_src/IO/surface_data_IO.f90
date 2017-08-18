@@ -151,6 +151,7 @@
 !      write(id_file,'(a)') '! 4.1 center of surface'
 !      write(id_file,'(a)') '!'
 !
+      call read_number_of_node(id_file, nod_IO)
       call read_geometry_info(id_file, nod_IO)
 !
 !      write(id_file,'(a)') '!'

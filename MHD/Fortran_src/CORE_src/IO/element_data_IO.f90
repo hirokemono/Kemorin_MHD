@@ -118,6 +118,7 @@
 !      write(id_file,'(a)') '! 3.1 center of element (position) '
 !      write(id_file,'(a)') '!'
 !
+      call read_number_of_node(id_file, nod_IO)
       call read_geometry_info(id_file, nod_IO)
 !
 !      write(id_file,'(a)') '!'

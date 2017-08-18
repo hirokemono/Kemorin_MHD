@@ -12,10 +12,10 @@
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!
+!!      subroutine gz_read_num_node(my_rank_IO, mesh_IO, ierr)
+!!      subroutine gz_read_num_node_ele(my_rank_IO, mesh_IO, ierr)
 !!      subroutine gz_read_geometry_data(my_rank_IO, mesh_IO, ierr)
 !!      subroutine gz_read_mesh_groups(mesh_group_IO)
-!!      subroutine gz_read_num_node_ele(my_rank_IO, mesh_IO, ierr)
-!!      subroutine gz_read_num_node(my_rank_IO, mesh_IO, ierr)
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!
@@ -150,7 +150,7 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-       subroutine gz_read_geometry_data(my_rank_IO, mesh_IO, ierr)
+      subroutine gz_read_num_node(my_rank_IO, mesh_IO, ierr)
 !
       integer(kind = kint), intent(in) :: my_rank_IO
 !
@@ -158,28 +158,59 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-!        write(*,*) 'gz_read_domain_info'
-        call gz_read_domain_info(my_rank_IO, mesh_IO%nod_comm, ierr)
-!        write(*,*) 'gz_read_number_of_node'
-        call gz_read_number_of_node(mesh_IO%node)
-!        write(*,*) 'gz_read_geometry_info'
-        call gz_read_geometry_info(mesh_IO%node)
+!      write(*,*) 'gz_read_domain_info'
+       call gz_read_domain_info(my_rank_IO, mesh_IO%nod_comm, ierr)
+!      write(*,*) 'gz_read_number_of_node'
+       call gz_read_number_of_node(mesh_IO%node)
+!
+       end subroutine gz_read_num_node
+!
+!------------------------------------------------------------------
+!
+      subroutine gz_read_num_node_ele(my_rank_IO, mesh_IO, ierr)
+!
+      integer(kind = kint), intent(in) :: my_rank_IO
+!
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      integer(kind = kint), intent(inout) :: ierr
+!
+!
+      call gz_read_num_node(my_rank_IO, mesh_IO, ierr)
+!      write(*,*) 'gz_read_geometry_info'
+      call gz_read_geometry_info(mesh_IO%node)
 !
 !  ----  read element data -------
 !
-!        write(*,*) 'gz_read_number_of_element'
-        call gz_read_number_of_element(mesh_IO%ele)
-!        write(*,*) 'gz_read_element_info'
-        call gz_read_element_info(mesh_IO%ele)
+!      write(*,*) 'gz_read_number_of_element'
+      call gz_read_number_of_element(mesh_IO%ele)
+!
+      end subroutine gz_read_num_node_ele
+!
+!------------------------------------------------------------------
+!
+      subroutine gz_read_geometry_data(my_rank_IO, mesh_IO, ierr)
+!
+      integer(kind = kint), intent(in) :: my_rank_IO
+!
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      integer(kind = kint), intent(inout) :: ierr
+!
+!
+      call gz_read_num_node_ele(my_rank_IO, mesh_IO, ierr)
+!
+!  ----  read element data -------
+!
+!      write(*,*) 'gz_read_element_info'
+      call gz_read_element_info(mesh_IO%ele)
 !
 ! ----  import & export 
 !
-!        write(*,*) 'gz_read_import_data'
-        call gz_read_import_data(mesh_IO%nod_comm)
-!        write(*,*) 'gz_read_export_data'
-        call gz_read_export_data(mesh_IO%nod_comm)
+!      write(*,*) 'gz_read_import_data'
+      call gz_read_import_data(mesh_IO%nod_comm)
+!      write(*,*) 'gz_read_export_data'
+      call gz_read_export_data(mesh_IO%nod_comm)
 !
-       end subroutine gz_read_geometry_data
+      end subroutine gz_read_geometry_data
 !
 !------------------------------------------------------------------
 !
@@ -199,47 +230,6 @@
       call read_surf_grp_data_gz(mesh_group_IO%surf_grp)
 !
       end subroutine gz_read_mesh_groups
-!
-!------------------------------------------------------------------
-!
-       subroutine gz_read_num_node_ele(my_rank_IO, mesh_IO, ierr)
-!
-      integer(kind = kint), intent(in) :: my_rank_IO
-!
-      type(mesh_geometry), intent(inout) :: mesh_IO
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-!        write(*,*) 'gz_read_domain_info'
-        call gz_read_domain_info(my_rank_IO, mesh_IO%nod_comm, ierr)
-!        write(*,*) 'gz_read_number_of_node'
-        call gz_read_number_of_node(mesh_IO%node)
-!        write(*,*) 'gz_read_geometry_info'
-        call gz_read_geometry_info(mesh_IO%node)
-!
-!  ----  read element data -------
-!
-!        write(*,*) 'gz_read_number_of_element'
-        call gz_read_number_of_element(mesh_IO%ele)
-!
-       end subroutine gz_read_num_node_ele
-!
-!------------------------------------------------------------------
-!
-       subroutine gz_read_num_node(my_rank_IO, mesh_IO, ierr)
-!
-      integer(kind = kint), intent(in) :: my_rank_IO
-!
-      type(mesh_geometry), intent(inout) :: mesh_IO
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-!        write(*,*) 'gz_read_domain_info'
-        call gz_read_domain_info(my_rank_IO, mesh_IO%nod_comm, ierr)
-!        write(*,*) 'gz_read_number_of_node'
-        call gz_read_number_of_node(mesh_IO%node)
-!
-       end subroutine gz_read_num_node
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

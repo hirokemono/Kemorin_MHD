@@ -86,6 +86,7 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
+      call read_number_of_node_b(nod_IO)
       call read_geometry_info_b(nod_IO)
       call read_scalar_in_element_b(nod_IO, sfed_IO)
 !
