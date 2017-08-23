@@ -54,7 +54,6 @@
       use t_flex_delta_t_data
       use t_FEM_MHD_mean_square
       use t_FEM_MHD_solvers
-      use t_MHD_boundary_data
       use t_work_FEM_dynamic_SGS
       use t_work_FEM_SGS_MHD
       use t_MHD_mass_matricxes

@@ -10,6 +10,7 @@ LIB_PARA_FILE = libkemo_parallel.a
 SUBDIRS = \
 COMM_src             \
 MPI_IO               \
+MPI_ZLIB_IO          \
 FEM_base_integration \
 ORDERING_4_DJDS      \
 INTERPOLATE_PARA     \
@@ -61,8 +62,8 @@ lib_archve:
 mod_list:
 	@echo  MOD_PARALLEL= \\ >> $(MAKENAME)
 	@echo  \
-	'$$(MOD_COMM)       $$(MOD_MPI_IO)'           \
-	'$$(MOD_FEM_INT)'                             \
+	'$$(MOD_COMM)       $$(MOD_FEM_INT)'          \
+	'$$(MOD_MPI_IO)     $$(MOD_MPI_ZLIB_IO)'      \
 	'$$(MOD_MULTIGRID)  $$(MOD_FILTERING)'        \
 	'$$(MOD_COMM_SPH)   $$(MOD_SOLVER_SET_ORDER)' \
 	'$$(MOD_ITP_PARA)   $$(MOD_SPH_GRID)'         >> $(MAKENAME)
