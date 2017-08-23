@@ -82,8 +82,6 @@
       use m_bc_data_velo
       use m_bc_data_list
 !
-      use count_whole_num_element
-!
       use init_iccg_matrices
       use copy_nodal_fields
       use cal_volume_node_MHD
@@ -108,8 +106,7 @@
       use reordering_MG_ele_by_layers
       use initialize_4_MHD_AMG
       use const_jacobians_sf_grp
-      use const_mesh_information
-      use const_element_comm_tables
+      use parallel_FEM_mesh_init
       use init_check_delta_t_data
       use init_ele_material_property
       use precond_djds_MHD
@@ -166,22 +163,7 @@
 !
 !     ---------------------
 !
-      if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, mesh%node%numnod)
-!
-      call init_nod_send_recv(mesh)
-!
-!  -----    construct geometry informations
-!
-      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls(mesh, ele_mesh)
-!
-      if(i_debug .eq. iflag_full_msg) then
-        call check_whole_num_of_elements(mesh%ele)
-      end if
+      call FEM_mesh_initialization(mesh, group, ele_mesh)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
       call deallocate_edge_geom_type(ele_mesh%edge)
@@ -229,7 +211,7 @@
       call copy_communicator_4_solver(MHD_CG%solver_C)
 !
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
-      call s_const_comm_table_fluid                                     &
+      call set_const_comm_table_fluid                                   &
      &   (nprocs, MHD_mesh%fluid%istack_ele_fld_smp,                    &
      &    mesh%node, mesh%ele, mesh%nod_comm, MHD_CG%DJDS_comm_fl)
 !

@@ -40,7 +40,6 @@
       use m_array_for_send_recv
       use m_default_file_prefix
 !
-      use const_mesh_information
       use copy_mesh_structures
       use set_element_data_4_IO
       use set_surface_data_4_IO
@@ -62,7 +61,7 @@
       use set_control_test_mesh
       use mpi_load_mesh_data
       use const_jacobians_3d
-      use const_element_comm_tables
+      use parallel_FEM_mesh_init
 !
       use t_file_IO_parameter
       use t_mesh_data
@@ -98,21 +97,10 @@
       call mpi_input_mesh(tested_mesh_file, nprocs, mesh, group,        &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
-!
 !  -------------------------------
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, mesh%node%numnod)
-!
-      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(mesh)
-!
-!  -----    construct geometry informations
-!
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls(mesh, ele_mesh)
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(mesh, group, ele_mesh)
 !
 !  -------------------------------
 !

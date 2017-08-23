@@ -11,6 +11,8 @@
 !!      subroutine allocate_type_comm_tbl_item(comm_tbl)
 !!      subroutine deallocate_type_comm_tbl(comm_tbl)
 !!
+!!      subroutine empty_comm_table(comm_tbl)
+!!
 !!      subroutine allocate_type_neib_id(comm_tbl)
 !!      subroutine allocate_type_import_num(comm_tbl)
 !!      subroutine allocate_type_export_num(comm_tbl)
@@ -109,6 +111,23 @@
       call deallocate_type_export(comm_tbl)
 !
       end subroutine deallocate_type_comm_tbl
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine empty_comm_table(comm_tbl)
+!
+      type(communication_table), intent(inout) :: comm_tbl
+!
+!
+      comm_tbl%num_neib = 0
+      call allocate_type_comm_tbl_num(comm_tbl)
+!
+      comm_tbl%ntot_import = 0
+      comm_tbl%ntot_export = 0
+      call allocate_type_comm_tbl_item(comm_tbl)
+!
+      end subroutine empty_comm_table
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

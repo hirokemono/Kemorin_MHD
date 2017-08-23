@@ -11,13 +11,10 @@
 !>     Construct communication table for fluid region
 !!
 !!@verbatim
-!!      subroutine s_const_comm_table_fluid(num_pe, iele_fl_smp_stack,  &
-!!     &          node, ele, nod_comm, fluid_comm)
-!!      subroutine set_empty_comm_table_fluid(fluid_comm)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(communication_table), intent(in) :: nod_comm
-!!        type(communication_table), intent(inout) :: fluid_comm
+!!      subroutine s_const_comm_table_fluid(solver_C, mesh, MHD_mesh)
+!!        type(mpi_4_solver), intent(in) :: solver_C
+!!        type(mesh_geometry),    intent(in) :: mesh
+!!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!@endverbatim
 !
       module const_comm_table_fluid
@@ -33,7 +30,32 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_const_comm_table_fluid(num_pe, iele_fl_smp_stack,    &
+      subroutine s_const_comm_table_fluid(solver_C, mesh, MHD_mesh)
+!
+      use t_vector_for_solver
+      use t_mesh_data
+      use t_geometry_data_MHD
+!
+      type(mpi_4_solver), intent(in) :: solver_C
+      type(mesh_geometry),    intent(in) :: mesh
+!
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!
+!
+      if (mesh%node%numnod .eq. 0) then
+        call empty_comm_table(MHD_mesh%nod_fl_comm)
+      else
+        call set_const_comm_table_fluid                                 &
+     &   (solver_C%nprocs, MHD_mesh%fluid%istack_ele_fld_smp,           &
+     &    mesh%node, mesh%ele, mesh%nod_comm, MHD_mesh%nod_fl_comm)
+      end if
+!
+      end subroutine s_const_comm_table_fluid
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine set_const_comm_table_fluid(num_pe, iele_fl_smp_stack,  &
      &          node, ele, nod_comm, fluid_comm)
 !
       use calypso_mpi
@@ -124,25 +146,7 @@
 !
       call deallocate_flags_reduced_comm
 !
-      end subroutine s_const_comm_table_fluid
-!
-!------------------------------------------------------------------
-!
-      subroutine set_empty_comm_table_fluid(fluid_comm)
-!
-      use t_comm_table
-!
-      type(communication_table), intent(inout) :: fluid_comm
-!
-!
-      fluid_comm%num_neib = 0
-      call allocate_type_comm_tbl_num(fluid_comm)
-!
-      fluid_comm%ntot_import = 0
-      fluid_comm%ntot_export = 0
-      call allocate_type_comm_tbl_item(fluid_comm)
-!
-      end subroutine set_empty_comm_table_fluid
+      end subroutine set_const_comm_table_fluid
 !
 !------------------------------------------------------------------
 !

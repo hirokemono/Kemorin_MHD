@@ -49,7 +49,7 @@
       use t_work_4_sph_trans
       use m_addresses_trans_hbd_MHD
       use interpolate_by_module
-      use const_element_comm_tables
+      use parallel_FEM_mesh_init
       use mpi_load_mesh_data
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -87,8 +87,10 @@
       call mpi_input_mesh                                               &
      &   (mesh_file_H, nprocs, mesh_sph%mesh, mesh_sph%group,           &
      &    ele_mesh_sph%surf%nnod_4_surf, ele_mesh_sph%edge%nnod_4_edge)
-      call const_mesh_infos                                             &
-     &   (my_rank, mesh_sph%mesh, mesh_sph%group, ele_mesh_sph)
+!
+      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization                                      &
+     &   (mesh_sph%mesh, mesh_sph%group, ele_mesh_sph)
 !
       call alloc_phys_name_type(sph_fld)
       call alloc_phys_data_type(mesh_sph%node%numnod, sph_fld)
@@ -115,8 +117,6 @@
      &    sph, comms_sph, trans_p, WK1_sph)
 !
 !     ---------------------
-!
-      call const_element_comm_tbls(mesh_sph, ele_mesh_sph)
 !
       end subroutine induction_SPH_initialize
 !

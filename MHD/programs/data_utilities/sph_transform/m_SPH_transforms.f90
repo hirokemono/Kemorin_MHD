@@ -87,26 +87,15 @@
       use m_array_for_send_recv
       use load_mesh_data
       use nod_phys_send_recv
-      use const_mesh_information
       use set_parallel_file_name
-      use const_element_comm_tables
+      use parallel_FEM_mesh_init
       use set_ucd_data_to_type
 !
 !  -----    construct geometry informations
 !
-      if (iflag_debug.gt.0) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver                                   &
-     &   (isix, femmesh_STR%mesh%node%numnod)
-!
-      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(femmesh_STR%mesh)
-!
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos                                             &
-     &   (my_rank, femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls(femmesh_STR%mesh, elemesh_STR)
+      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization                                     &
+     &    (femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type                                         &

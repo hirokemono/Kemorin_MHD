@@ -83,7 +83,6 @@
       use m_array_for_send_recv
       use m_fem_mhd_restart
 !
-      use count_whole_num_element
       use cal_volume_node_MHD
       use int_MHD_mass_matrices
       use int_surface_params_MHD
@@ -103,8 +102,7 @@
       use set_normal_vectors
       use set_table_4_RHS_assemble
       use const_jacobians_sf_grp
-      use const_element_comm_tables
-      use const_mesh_information
+      use parallel_FEM_mesh_init
       use init_ele_material_property
       use reordering_by_layers
 !
@@ -157,20 +155,8 @@
 !
 !     ---------------------
 !
-      if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, mesh%node%numnod)
-!
-      call init_nod_send_recv(mesh)
-!
-      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls(mesh, ele_mesh)
-!
-      if(i_debug .eq. iflag_full_msg) then
-        call check_whole_num_of_elements(mesh%ele)
-      end if
+      if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(mesh, group, ele_mesh)
 !
 !     ---------------------
 !

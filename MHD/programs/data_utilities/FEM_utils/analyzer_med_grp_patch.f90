@@ -30,10 +30,8 @@
       use m_FEM_utils
       use input_control_udt_diff
       use nod_phys_send_recv
-      use count_whole_num_element
       use mpi_load_mesh_data
-      use const_mesh_information
-      use const_element_comm_tables
+      use parallel_FEM_mesh_init
 !
 !
       if (my_rank.eq.0) then
@@ -53,26 +51,9 @@
 !
 !     --------------------- 
 !
-!      if (iflag_debug.eq.1) write(*,*) 'const_layers_4_dynamic'
-!      call const_layers_4_dynamic                                      &
-!     &   (femmesh_FUTIL%group%ele_grp, layer_tbl_corr)
-!
-!     --------------------- 
-!
-!
-      if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver                                   &
-     &   (isix, femmesh_FUTIL%mesh%node%numnod)
-      call init_nod_send_recv(femmesh_FUTIL%mesh)
-!
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank,                                    &
-     &   femmesh_FUTIL%mesh, femmesh_FUTIL%group, elemesh_FUTIL)
-      call const_element_comm_tbls(femmesh_FUTIL%mesh, elemesh_FUTIL)
-!
-      if(i_debug .eq. iflag_full_msg) then
-        call check_whole_num_of_elements(femmesh_FUTIL%mesh%ele)
-      end if
+      if (iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization                                      &
+     &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group, elemesh_FUTIL)
 !
       field_FUTIL%num_phys = 1
       call alloc_phys_name_type(field_FUTIL)

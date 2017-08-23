@@ -67,7 +67,7 @@
       use const_mesh_information
       use allocate_MHD_AMG_array
       use set_diffusivities_MHD_AMG
-      use const_comm_tbl_type_fluid
+      use const_comm_table_fluid
       use const_bc_infty_surf_type
       use set_table_4_RHS_assemble
       use set_djds_connectivity_type
@@ -121,6 +121,10 @@
      &       (my_rank, MGCG_FEM%MG_mesh(i_level)%mesh,                  &
      &        MGCG_FEM%MG_mesh(i_level)%group,                          &
      &        MGCG_FEM%MG_ele_mesh(i_level))
+!
+          call const_element_comm_tbls                                  &
+     &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
+     &        MGCG_FEM%MG_ele_mesh(i_level))
         else
           call set_empty_layers_type_4_MHD                              &
      &       (MGCG_MHD_FEM%MG_MHD_mesh(i_level) )
@@ -128,6 +132,7 @@
      &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
      &        MGCG_FEM%MG_mesh(i_level)%group,                          &
      &        MGCG_FEM%MG_ele_mesh(i_level))
+          call empty_element_comm_tbls(MGCG_FEM%MG_ele_mesh(i_level))
         end if
 !
         call deallocate_edge_geom_type                                  &
@@ -170,14 +175,10 @@
 !
       do i_level = 1, MGCG_WK%num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &            's_const_comm_tbl_type_fluid', i_level
-        call s_const_comm_tbl_type_fluid(MGCG_WK%MG_mpi(i_level),       &
+     &            's_const_comm_table_fluid', i_level
+        call s_const_comm_table_fluid(MGCG_WK%MG_mpi(i_level),          &
      &      MGCG_FEM%MG_mesh(i_level)%mesh,                             &
      &      MGCG_MHD_FEM%MG_MHD_mesh(i_level) )
-!
-        call const_element_comm_tbls                                    &
-     &     (MGCG_FEM%MG_mesh(i_level)%mesh,                             &
-     &      MGCG_FEM%MG_ele_mesh(i_level))
       end do
 !
 !     ---------------------

@@ -124,9 +124,8 @@
       use m_array_for_send_recv
       use mpi_load_mesh_data
       use nod_phys_send_recv
-      use const_mesh_information
+      use parallel_FEM_mesh_init
       use set_parallel_file_name
-      use const_element_comm_tables
       use set_ucd_data_to_type
       use ucd_IO_select
 !
@@ -142,18 +141,9 @@
      &    femmesh_VIZ%mesh, femmesh_VIZ%group,                          &
      &    elemesh_VIZ%surf%nnod_4_surf, elemesh_VIZ%edge%nnod_4_edge)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos                                             &
-     &   (my_rank, femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ)
-!
-      call allocate_vector_for_solver                                   &
-     &   (isix, femmesh_VIZ%mesh%node%numnod)
-!
-      if(iflag_debug.gt.0) write(*,*) 'init_nod_send_recv'
-      call init_nod_send_recv(femmesh_VIZ%mesh)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls(femmesh_VIZ%mesh, elemesh_VIZ)
+       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+       call FEM_mesh_initialization                                     &
+     &    (femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ)
 !
 !     ---------------------
 !

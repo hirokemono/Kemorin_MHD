@@ -7,6 +7,7 @@
 !> @brief Belonged element list for each node
 !!
 !!@verbatim
+!!      subroutine empty_element_comm_tbls(ele_mesh)
 !!      subroutine const_element_comm_tbls(mesh, ele_mesh)
 !!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
 !!        type(mesh_geometry), intent(inout) ::    mesh
@@ -45,6 +46,19 @@
 !-----------------------------------------------------------------------
 !
       contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine empty_element_comm_tbls(ele_mesh)
+!
+      type(element_geometry), intent(inout) :: ele_mesh
+!
+!
+      call empty_comm_table(ele_mesh%ele_comm)
+      call empty_comm_table(ele_mesh%surf_comm)
+      call empty_comm_table(ele_mesh%edge_comm)
+!
+      end subroutine empty_element_comm_tbls
 !
 !-----------------------------------------------------------------------
 !

@@ -81,8 +81,7 @@
       use set_field_address
       use nod_phys_send_recv
       use node_monitor_IO
-      use const_mesh_information
-      use const_element_comm_tables
+      use parallel_FEM_mesh_init
 !
       type(field_IO_params), intent(in) :: ucd_param
       type(MHD_step_param), intent(in) :: MHD_step
@@ -100,19 +99,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, mesh%node%numnod)
-!
-      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(mesh)
-!
-!  -----    construct geometry informations
-!
-      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls(mesh, ele_mesh)
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(mesh, group, ele_mesh)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
       call deallocate_edge_geom_type(ele_mesh%edge)
