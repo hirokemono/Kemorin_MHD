@@ -8,18 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine gz_input_element_file                                &
-!!     &         (my_rank_IO, file_prefix, ele_mesh_IO, ierr)
+!!     &         (my_rank_IO, file_name, ele_mesh_IO, ierr)
 !!      subroutine gz_input_surface_file                                &
-!!     &         (my_rank_IO, file_prefix, surf_mesh_IO, ierr)
-!!      subroutine gz_input_edge_geometries                             &
-!!     &         (my_rank_IO, file_prefix, edge_mesh_IO, ierr)
+!!     &         (my_rank_IO, file_name, surf_mesh_IO, ierr)
+!!      subroutine gz_input_edge_file                                   &
+!!     &         (my_rank_IO, file_name, edge_mesh_IO, ierr)
 !!
 !!      subroutine gz_output_element_file                               &
-!!     &         (my_rank_IO, ele_mesh_IO)
+!!     &         (my_rank_IO, file_name, ele_mesh_IO)
 !!      subroutine gz_output_surface_file                               &
-!!     &         (my_rank_IO, file_prefix, surf_mesh_IO)
-!!      subroutine gz_output_edge_geometries                            &
-!!     &         (my_rank_IO, file_prefix, edge_mesh_IO)
+!!     &         (my_rank_IO, file_name, surf_mesh_IO)
+!!      subroutine gz_output_edge_file                                  &
+!!     &         (my_rank_IO, file_name, edge_mesh_IO)
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
@@ -34,11 +34,8 @@
 !
       use m_file_format_switch
       use t_read_mesh_data
-      use set_mesh_file_names
 !
       implicit none
-!
-      character(len=kchara), private :: file_name
 !
 !------------------------------------------------------------------
 !
@@ -47,18 +44,15 @@
 !------------------------------------------------------------------
 !
       subroutine gz_input_element_file                                  &
-     &         (my_rank_IO, file_prefix, ele_mesh_IO, ierr)
+     &         (my_rank_IO, file_name, ele_mesh_IO, ierr)
 !
       use gz_element_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
-!
-      call set_ele_comm_file_name(file_prefix, id_gzip_txt_file_fmt,    &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read gzipped ascii element comm file: ', trim(file_name)
@@ -75,18 +69,15 @@
 !------------------------------------------------------------------
 !
       subroutine gz_input_surface_file                                  &
-     &         (my_rank_IO, file_prefix, surf_mesh_IO, ierr)
+     &         (my_rank_IO, file_name, surf_mesh_IO, ierr)
 !
       use gz_surface_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
-!
-      call set_surf_mesh_file_name(file_prefix, id_gzip_txt_file_fmt,   &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read gzipped ascii surface mesh file: ', trim(file_name)
@@ -102,19 +93,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_input_edge_geometries                               &
-     &         (my_rank_IO, file_prefix, edge_mesh_IO, ierr)
+      subroutine gz_input_edge_file                                     &
+     &         (my_rank_IO, file_name, edge_mesh_IO, ierr)
 !
       use gz_edge_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
-!
-      call set_edge_mesh_file_name(file_prefix, id_gzip_txt_file_fmt,   &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read gzipped ascii edge mesh file: ', trim(file_name)
@@ -126,23 +114,20 @@
      &   (edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_gzfile_f
 !
-      end subroutine gz_input_edge_geometries
+      end subroutine gz_input_edge_file
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine gz_output_element_file                                 &
-     &         (my_rank_IO, file_prefix, ele_mesh_IO)
+     &         (my_rank_IO, file_name, ele_mesh_IO)
 !
       use gz_element_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !
-!
-      call set_ele_comm_file_name(file_prefix, id_gzip_txt_file_fmt,    &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write gzipped ascii element comm file: ', trim(file_name)
@@ -158,17 +143,14 @@
 !------------------------------------------------------------------
 !
       subroutine gz_output_surface_file                                 &
-     &         (my_rank_IO, file_prefix, surf_mesh_IO)
+     &         (my_rank_IO, file_name, surf_mesh_IO)
 !
       use gz_surface_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !
-!
-      call set_surf_mesh_file_name(file_prefix, id_gzip_txt_file_fmt,   &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write gzipped ascii surface mesh file: ', trim(file_name)
@@ -184,18 +166,15 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_output_edge_geometries                              &
-     &         (my_rank_IO, file_prefix, edge_mesh_IO)
+      subroutine gz_output_edge_file                                    &
+     &         (my_rank_IO, file_name, edge_mesh_IO)
 !
       use gz_edge_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !
-!
-      call set_edge_mesh_file_name(file_prefix, id_gzip_txt_file_fmt,   &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write gzipped ascii edge mesh file: ', trim(file_name)
@@ -206,7 +185,7 @@
       call gz_write_edge_geometry(edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_gzfile_f
 !
-      end subroutine gz_output_edge_geometries
+      end subroutine gz_output_edge_file
 !
 !------------------------------------------------------------------
 !

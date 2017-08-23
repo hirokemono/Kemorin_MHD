@@ -320,7 +320,7 @@
 #endif
 !
       else
-        call output_edge_file_b                                         &
+        call output_edge_file                                           &
      &     (my_rank_IO, file_name, edge_mesh_IO)
       end if
 !
@@ -341,7 +341,7 @@
       call ele_mesh_file_name_by_param                                  &
      &   (mesh_file, my_rank_IO, file_name)
 !
-      check_exist_mesh = check_file_exist(file_name)
+      check_exist_ele_mesh = check_file_exist(file_name)
 !
       return
       end function check_exist_ele_mesh
@@ -360,7 +360,7 @@
       call surf_mesh_file_name_by_param                                 &
      &   (mesh_file, my_rank_IO, file_name)
 !
-      check_exist_mesh = check_file_exist(file_name)
+      check_exist_surf_mesh = check_file_exist(file_name)
 !
       return
       end function check_exist_surf_mesh
@@ -379,7 +379,7 @@
       call edge_mesh_file_name_by_param                                 &
      &   (mesh_file, my_rank_IO, file_name)
 !
-      check_exist_mesh = check_file_exist(file_name)
+      check_exist_edge_mesh = check_file_exist(file_name)
 !
       return
       end function check_exist_edge_mesh

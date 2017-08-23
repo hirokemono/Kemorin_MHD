@@ -35,6 +35,7 @@
       use gz_MPI_ascii_data_IO
       use gz_MPI_domain_data_IO
       use gz_MPI_node_geometry_IO
+      use gz_MPI_element_connect_IO
 !
       implicit  none
 !

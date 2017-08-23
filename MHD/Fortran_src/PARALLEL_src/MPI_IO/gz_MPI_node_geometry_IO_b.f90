@@ -28,8 +28,9 @@
       use t_geometry_data
       use t_read_mesh_data
       use t_surf_edge_IO
-      use gz_MPI_vectors_IO
-      use gz_MPI_integer_list_IO
+!
+      use gz_MPI_binary_data_IO
+      use gz_MPI_binary_datum_IO
 !
       implicit none
 !
@@ -40,9 +41,6 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_write_geometry_info_b(IO_param, nod_IO)
-!
-      use gz_MPI_binary_data_IO
-      use gz_MPI_binary_datum_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(inout) :: nod_IO
@@ -71,7 +69,7 @@
 !
       call gz_mpi_write_one_integer_b(IO_param, nod_IO%numnod)
       call gz_mpi_write_one_integer_b(IO_param, nod_IO%internal_node)
-      call gz_mpi_write_2d_vector_b                                     &
+      call gz_mpi_write_1d_vector_b                                     &
      &   (IO_param, nod_IO%numnod, sfed_IO%ele_scalar)
 !
       call dealloc_ele_scalar_IO(sfed_IO)
@@ -101,9 +99,6 @@
 !
       subroutine gz_mpi_read_number_of_node_b(IO_param, nod_IO)
 !
-      use gz_MPI_binary_data_IO
-      use gz_MPI_binary_datum_IO
-!
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(inout) :: nod_IO
 !
@@ -116,8 +111,6 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_read_geometry_info_b(IO_param, nod_IO)
-!
-      use gz_MPI_binary_data_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(node_data), intent(inout) :: nod_IO
@@ -141,7 +134,7 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call gz_mpi_read_number_of_node(IO_param, nod_IO)
+      call gz_mpi_read_number_of_node_b(IO_param, nod_IO)
       call alloc_ele_scalar_IO(nod_IO, sfed_IO)
 !
       call gz_mpi_read_1d_vector_b                                      &
@@ -158,7 +151,7 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call mpi_read_number_of_node(IO_param, nod_IO)
+      call gz_mpi_read_number_of_node_b(IO_param, nod_IO)
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
 !
       call gz_mpi_read_2d_vector_b                                      &

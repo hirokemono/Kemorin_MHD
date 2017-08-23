@@ -198,8 +198,8 @@
       call copy_edge_geometry_to_IO(ele_mesh%edge,                      &
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
 !
-      if (iflag_debug.gt.0) write(*,*) 'output_edge_geometries'
-      call output_edge_geometries(my_rank, file_prefix, ele_mesh_IO)
+      if (iflag_debug.gt.0) write(*,*) 'output_edge_file'
+      call output_edge_file(my_rank, file_prefix, ele_mesh_IO)
 !
       write(file_prefix,'(a,a4)') def_edge_mesh_head, '_sph'
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_sph'
@@ -209,8 +209,8 @@
       call copy_edge_geometry_to_IO_sph(ele_mesh%edge,                  &
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
 !
-      if (iflag_debug.gt.0) write(*,*) 'output_edge_geometries_sph'
-      call output_edge_geometries_sph                                   &
+      if (iflag_debug.gt.0) write(*,*) 'output_edge_sph_file'
+      call output_edge_sph_file                                         &
      &   (my_rank, file_prefix, ele_mesh_IO)
 !
       write(file_prefix,'(a,a4)') def_edge_mesh_head, '_cyl'
@@ -220,8 +220,8 @@
      &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
       call copy_edge_geometry_to_IO_cyl(ele_mesh%edge,                  &
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
-      if (iflag_debug.gt.0) write(*,*) 'output_edge_geometries_cyl'
-      call output_edge_geometries_cyl                                   &
+      if (iflag_debug.gt.0) write(*,*) 'output_edge_cyl_file'
+      call output_edge_cyl_file                                         &
      &   (my_rank, file_prefix, ele_mesh_IO)
 !
        end subroutine init_analyzer

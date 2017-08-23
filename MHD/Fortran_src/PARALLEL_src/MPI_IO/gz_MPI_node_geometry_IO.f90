@@ -143,7 +143,7 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call mpi_read_number_of_node(IO_param, nod_IO)
+      call gz_mpi_read_number_of_node(IO_param, nod_IO)
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
 !
       call gz_mpi_read_vector                                           &

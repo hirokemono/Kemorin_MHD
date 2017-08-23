@@ -31,6 +31,10 @@
       use t_geometry_data
       use t_calypso_mpi_IO_param
 !
+      use gz_MPI_domain_data_IO_b
+      use gz_MPI_node_geometry_IO_b
+      use gz_MPI_element_connect_IO_b
+!
       implicit  none
 !
 !------------------------------------------------------------------
@@ -40,8 +44,6 @@
 !------------------------------------------------------------------
 !
       subroutine gz_mpi_write_geometry_data_b(IO_param, mesh_IO)
-!
-      use gz_MPI_domain_data_IO_b
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -84,7 +86,6 @@
       subroutine gz_mpi_read_num_node_b(IO_param, mesh_IO)
 !
       use m_error_IDs
-      use gz_MPI_domain_data_IO_b
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -101,7 +102,6 @@
       subroutine gz_mpi_read_num_node_ele_b(IO_param, mesh_IO)
 !
       use m_error_IDs
-      use gz_MPI_domain_data_IO_b
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(mesh_geometry), intent(inout) :: mesh_IO
@@ -121,7 +121,6 @@
       subroutine gz_mpi_read_geometry_data_b(IO_param, mesh_IO)
 !
       use m_error_IDs
-      use gz_MPI_domain_data_IO_b
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(mesh_geometry), intent(inout) :: mesh_IO

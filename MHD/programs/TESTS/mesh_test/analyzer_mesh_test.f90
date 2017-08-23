@@ -214,8 +214,8 @@
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call calypso_mpi_barrier
 !
-      if (iflag_debug.gt.0) write(*,*) 'output_edge_geometries'
-      call output_edge_geometries(my_rank, file_prefix, ele_mesh_IO)
+      if (iflag_debug.gt.0) write(*,*) 'output_edge_file'
+      call output_edge_file(my_rank, file_prefix, ele_mesh_IO)
       call calypso_mpi_barrier
 !
       end subroutine initialize_mesh_test

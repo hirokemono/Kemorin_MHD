@@ -56,16 +56,16 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call gz_mpi_read_domain_info(IO_param, comm_IO)
+      call gz_mpi_read_domain_info_b(IO_param, comm_IO)
 !
-      call gz_mpi_read_num_element(IO_param, ele_IO)
-      call gz_mpi_read_element_info(IO_param, ele_IO)
+      call gz_mpi_read_num_element_b(IO_param, ele_IO)
+      call gz_mpi_read_element_info_b(IO_param, ele_IO)
 !
-      call gz_mpi_read_surface_4_element(IO_param, sfed_IO)
-      call gz_mpi_read_edge_4_element(IO_param, sfed_IO)
+      call gz_mpi_read_surface_4_element_b(IO_param, sfed_IO)
+      call gz_mpi_read_edge_4_element_b(IO_param, sfed_IO)
 !
-      call gz_mpi_mpi_read_import_data(IO_param, comm_IO)
-      call gz_mpi_mpi_read_export_data(IO_param, comm_IO)
+      call gz_mpi_mpi_read_import_data_b(IO_param, comm_IO)
+      call gz_mpi_mpi_read_export_data_b(IO_param, comm_IO)
 !
       end subroutine gz_mpi_read_edge_connect_b
 !
@@ -82,14 +82,14 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call gz_mpi_write_domain_info(IO_param, comm_IO)
+      call gz_mpi_write_domain_info_b(IO_param, comm_IO)
 !
-      call gz_mpi_write_element_info(IO_param, ele_IO)
-      call gz_mpi_write_surface_4_element(IO_param, sfed_IO)
-      call gz_mpi_write_edge_4_element(IO_param, sfed_IO)
+      call gz_mpi_write_element_info_b(IO_param, ele_IO)
+      call gz_mpi_write_surface_4_element_b(IO_param, sfed_IO)
+      call gz_mpi_write_edge_4_element_b(IO_param, sfed_IO)
 !
-      call gz_mpi_write_import_data(IO_param, comm_IO)
-      call gz_mpi_write_export_data(IO_param, comm_IO)
+      call gz_mpi_write_import_data_b(IO_param, comm_IO)
+      call gz_mpi_write_export_data__b(IO_param, comm_IO)
 !
       end subroutine gz_mpi_write_edge_connect_b
 !
@@ -104,11 +104,11 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call gz_mpi_read_number_of_node(IO_param, nod_IO)
-      call gz_mpi_read_geometry_info(IO_param, nod_IO)
+      call gz_mpi_read_number_of_node_b(IO_param, nod_IO)
+      call gz_mpi_read_geometry_info_b(IO_param, nod_IO)
 !
-      call gz_mpi_read_vect_in_ele(IO_param, nod_IO, sfed_IO)
-      call gz_mpi_read_scl_in_ele(IO_param, nod_IO, sfed_IO)
+      call gz_mpi_read_vect_in_ele_b(IO_param, nod_IO, sfed_IO)
+      call gz_mpi_read_scl_in_ele_b(IO_param, nod_IO, sfed_IO)
 !
       end subroutine gz_mpi_read_edge_geometry_b
 !
@@ -123,10 +123,10 @@
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
 !
-      call gz_mpi_write_geometry_info(IO_param, nod_IO)
+      call gz_mpi_write_geometry_info_b(IO_param, nod_IO)
 !
-      call gz_mpi_write_vect_in_ele(IO_param, nod_IO, sfed_IO)
-      call gz_mpi_write_scl_in_ele(IO_param, nod_IO, sfed_IO)
+      call gz_mpi_write_vect_in_ele_b(IO_param, nod_IO, sfed_IO)
+      call gz_mpi_write_scl_in_ele_b(IO_param, nod_IO, sfed_IO)
 !
       end subroutine gz_mpi_write_edge_geometry_b
 !

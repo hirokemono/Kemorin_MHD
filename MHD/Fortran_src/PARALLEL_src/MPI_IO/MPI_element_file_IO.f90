@@ -8,18 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine mpi_input_element_file                               &
-!!     &         (nprocs_in, my_rank_IO, file_prefix, ele_mesh_IO, ierr)
+!!     &         (nprocs_in, my_rank_IO, file_name, ele_mesh_IO, ierr)
 !!      subroutine mpi_input_surface_file                               &
-!!     &         (nprocs_in, my_rank_IO, file_prefix, surf_mesh_IO, ierr)
-!!      subroutine mpi_input_edge_geometries                            &
-!!     &         (nprocs_in, my_rank_IO, file_prefix, edge_mesh_IO, ierr)
+!!     &         (nprocs_in, my_rank_IO, file_name, surf_mesh_IO, ierr)
+!!      subroutine mpi_input_edge_file                                  &
+!!     &         (nprocs_in, my_rank_IO, file_name, edge_mesh_IO, ierr)
 !!
 !!      subroutine mpi_output_element_file                              &
 !!     &         (nprocs_in, my_rank_IO, ele_mesh_IO)
 !!      subroutine mpi_output_surface_file                              &
-!!     &         (nprocs_in, my_rank_IO, file_prefix, surf_mesh_IO)
-!!      subroutine mpi_output_edge_geometries                           &
-!!     &         (nprocs_in, my_rank_IO, file_prefix, edge_mesh_IO)
+!!     &         (nprocs_in, my_rank_IO, file_name, surf_mesh_IO)
+!!      subroutine mpi_output_edge_file                                 &
+!!     &         (nprocs_in, my_rank_IO, file_name, edge_mesh_IO)
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
@@ -35,7 +35,6 @@
       use m_file_format_switch
       use t_calypso_mpi_IO_param
       use t_read_mesh_data
-      use set_mesh_file_names
 !
       implicit none
 !
@@ -49,18 +48,15 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_input_element_file                                 &
-     &         (nprocs_in, my_rank_IO, file_prefix, ele_mesh_IO, ierr)
+     &         (nprocs_in, my_rank_IO, file_name, ele_mesh_IO, ierr)
 !
       use MPI_element_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
-!
-      call set_ele_comm_file_name(file_prefix, iflag_single,            &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read ascii element comm file: ', trim(file_name)
@@ -78,18 +74,15 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_input_surface_file                                 &
-     &         (nprocs_in, my_rank_IO, file_prefix, surf_mesh_IO, ierr)
+     &         (nprocs_in, my_rank_IO, file_name, surf_mesh_IO, ierr)
 !
       use MPI_surface_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
-!
-      call set_surf_mesh_file_name(file_prefix, iflag_single,           &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read ascii surface mesh file: ', trim(file_name)
@@ -107,19 +100,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_input_edge_geometries                              &
-     &         (nprocs_in, my_rank_IO, file_prefix, edge_mesh_IO, ierr)
+      subroutine mpi_input_edge_file                                    &
+     &         (nprocs_in, my_rank_IO, file_name, edge_mesh_IO, ierr)
 !
       use MPI_edge_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
-!
-      call set_edge_mesh_file_name(file_prefix, iflag_single,           &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read ascii edge mesh file: ', trim(file_name)
@@ -133,23 +123,20 @@
      &    edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
-      end subroutine mpi_input_edge_geometries
+      end subroutine mpi_input_edge_file
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine mpi_output_element_file                                &
-     &         (nprocs_in, my_rank_IO, file_prefix, ele_mesh_IO)
+     &         (nprocs_in, my_rank_IO, file_name, ele_mesh_IO)
 !
       use MPI_element_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !
-!
-      call set_ele_comm_file_name(file_prefix, iflag_single,            &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii element comm file: ', trim(file_name)
@@ -167,17 +154,14 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_output_surface_file                                &
-     &         (nprocs_in, my_rank_IO, file_prefix, surf_mesh_IO)
+     &         (nprocs_in, my_rank_IO, file_name, surf_mesh_IO)
 !
       use MPI_surface_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !
-!
-      call set_surf_mesh_file_name(file_prefix, iflag_single,           &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii surface mesh file: ', trim(file_name)
@@ -195,18 +179,15 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_output_edge_geometries                             &
-     &         (nprocs_in, my_rank_IO, file_prefix, edge_mesh_IO)
+      subroutine mpi_output_edge_file                                   &
+     &         (nprocs_in, my_rank_IO, file_name, edge_mesh_IO)
 !
       use MPI_edge_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !
-!
-      call set_edge_mesh_file_name(file_prefix, iflag_single,           &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii edge mesh file: ', trim(file_name)
@@ -220,7 +201,7 @@
      &   edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
-      end subroutine mpi_output_edge_geometries
+      end subroutine mpi_output_edge_file
 !
 !------------------------------------------------------------------
 !

@@ -11,7 +11,7 @@
 !!     &         (my_rank_IO, file_prefix, ele_mesh_IO, ierr)
 !!      subroutine input_surface_file                                   &
 !!     &         (my_rank_IO, file_prefix, surf_mesh_IO, ierr)
-!!      subroutine input_edge_geometries                                &
+!!      subroutine input_edge_file                                      &
 !!     &         (my_rank_IO, file_prefix, edge_mesh_IO, ierr)
 !!
 !!      subroutine output_element_file                                  &
@@ -30,11 +30,11 @@
 !!     &         (my_rank_IO, file_prefix, surf_mesh_IO)
 !!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !!
-!!      subroutine output_edge_geometries                               &
+!!      subroutine output_edge_file                                     &
 !!     &         (my_rank_IO, file_prefix, edge_mesh_IO)
-!!      subroutine output_edge_geometries_sph                           &
+!!      subroutine output_edge_sph_file                                 &
 !!     &         (my_rank_IO, file_prefix, edge_mesh_IO)
-!!      subroutine output_edge_geometries_cyl                           &
+!!      subroutine output_edge_cyl_file                                 &
 !!     &         (my_rank_IO, file_prefix, edge_mesh_IO)
 !!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !!@endverbatim
@@ -122,7 +122,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine input_edge_geometries                                  &
+      subroutine input_edge_file                                        &
      &         (my_rank_IO, file_prefix, edge_mesh_IO, ierr)
 !
       use edge_data_IO
@@ -147,7 +147,7 @@
      &    edge_mesh_IO%node, edge_mesh_IO%sfed)
       close (input_file_code)
 !
-      end subroutine input_edge_geometries
+      end subroutine input_edge_file
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
@@ -313,7 +313,7 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine output_edge_geometries                                 &
+      subroutine output_edge_file                                       &
      &         (my_rank_IO, file_prefix, edge_mesh_IO)
 !
       use edge_data_IO
@@ -337,11 +337,11 @@
      &   edge_mesh_IO%node, edge_mesh_IO%sfed)
       close (input_file_code)
 !
-      end subroutine output_edge_geometries
+      end subroutine output_edge_file
 !
 !------------------------------------------------------------------
 !
-      subroutine output_edge_geometries_sph                             &
+      subroutine output_edge_sph_file                                   &
      &         (my_rank_IO, file_prefix, edge_mesh_IO)
 !
       use edge_data_IO
@@ -362,11 +362,11 @@
      &    edge_mesh_IO%node, edge_mesh_IO%sfed)
       close (input_file_code)
 !
-      end subroutine output_edge_geometries_sph
+      end subroutine output_edge_sph_file
 !
 !------------------------------------------------------------------
 !
-      subroutine output_edge_geometries_cyl                             &
+      subroutine output_edge_cyl_file                                   &
      &         (my_rank_IO, file_prefix, edge_mesh_IO)
 !
       use edge_data_IO
@@ -388,7 +388,7 @@
      &   edge_mesh_IO%node, edge_mesh_IO%sfed)
       close (input_file_code)
 !
-      end subroutine output_edge_geometries_cyl
+      end subroutine output_edge_cyl_file
 !
 !------------------------------------------------------------------
 !
