@@ -108,7 +108,6 @@
 !
       call dealloc_numnod_stack(mesh%node)
       call dealloc_numele_stack(mesh%ele)
-      call dealloc_numsurf_stack(ele_mesh%surf)
       call dealloc_numedge_stack(ele_mesh%edge)
 !
       end subroutine dealloc_ele_comm_tbls_gl_nele
@@ -187,6 +186,8 @@
       call set_global_ele_id                                            &
      &   (txt, surf%numsurf, surf%istack_intersurf,                     &
      &    surf%interior_surf, sf_comm, surf%isurf_global)
+!
+      call dealloc_numsurf_stack(surf)
 !
       end subroutine const_global_surface_id
 !

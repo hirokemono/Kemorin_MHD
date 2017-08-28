@@ -58,7 +58,6 @@
       use set_filter_geometry_4_IO
       use set_filters_4_new_domains
       use sel_part_nod_comm_input
-      use set_comm_table_4_IO
 !
       use t_comm_table
       use t_filter_file_data

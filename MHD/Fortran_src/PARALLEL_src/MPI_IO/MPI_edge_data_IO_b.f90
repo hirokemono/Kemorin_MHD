@@ -62,8 +62,8 @@
       call mpi_read_edge_4_element_b(IO_param, sfed_IO)
 !
 !
-      call mpi_mpi_read_import_data_b(IO_param, comm_IO)
-      call mpi_mpi_read_export_data_b(IO_param, comm_IO)
+      call mpi_read_import_data_b(IO_param, comm_IO)
+      call mpi_read_export_data_b(IO_param, comm_IO)
 !
       end subroutine mpi_read_edge_connection_b
 !

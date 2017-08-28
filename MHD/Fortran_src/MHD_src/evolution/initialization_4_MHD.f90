@@ -166,7 +166,7 @@
       call FEM_mesh_initialization(mesh, group, ele_mesh)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
-      call deallocate_edge_geom_type(ele_mesh%edge)
+      call dealloc_edge_geometory(ele_mesh%edge)
 !
 !     ---------------------
 !

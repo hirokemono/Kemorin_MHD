@@ -94,8 +94,8 @@
      &    test_ele_mesh%surf%nnod_4_surf,                               &
      &    test_ele_mesh%edge%nnod_4_edge)
 !
-      call FEM_mesh_initialization                                      &
-     &   (test_fem%mesh, test_fem%group, test_ele_mesh)
+      call FEM_mesh_init_with_IO                                        &
+     &   (mesh_file_test, test_fem%mesh, test_fem%group, test_ele_mesh)
 !
 !  -------------------------------------------
 !

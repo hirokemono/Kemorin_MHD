@@ -59,7 +59,7 @@
       call open_read_binary_file(file_name, my_rank_IO)
       call read_element_comm_table_b                                    &
      &   (my_rank_IO, ele_mesh_IO%comm, ierr)
-      call read_element_geometry_b(ele_mesh_IO%node, ele_mesh_IO%sfed)
+!      call read_element_geometry_b(ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_binary_file
 !
       end subroutine input_element_file_b
@@ -83,8 +83,8 @@
       call open_read_binary_file(file_name, my_rank_IO)
       call read_surface_connection_b(my_rank_IO, surf_mesh_IO%comm,     &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed, ierr)
-      call read_surface_geometry_b                                      &
-     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
+!      call read_surface_geometry_b                                     &
+!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_binary_file
 !
       end subroutine input_surface_file_b
@@ -108,7 +108,7 @@
       call open_read_binary_file(file_name, my_rank_IO)
       call read_edge_connection_b(my_rank_IO, edge_mesh_IO%comm,        &
      &    edge_mesh_IO%ele, edge_mesh_IO%sfed, ierr)
-      call read_edge_geometry_b(edge_mesh_IO%node, edge_mesh_IO%sfed)
+!      call read_edge_geometry_b(edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_binary_file
 !
       end subroutine input_edge_file_b
@@ -131,7 +131,7 @@
 !
       call open_write_binary_file(file_name)
       call write_element_comm_table_b(my_rank_IO, ele_mesh_IO%comm)
-      call write_element_geometry_b(ele_mesh_IO%node, ele_mesh_IO%sfed)
+!      call write_element_geometry_b(ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_binary_file
 !
       end subroutine output_element_file_b
@@ -154,8 +154,8 @@
       call open_write_binary_file(file_name)
       call write_surface_connection_b(my_rank_IO, surf_mesh_IO%comm,    &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
-      call write_surface_geometry_b                                     &
-     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
+!      call write_surface_geometry_b                                    &
+!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_binary_file
 !
       end subroutine output_surface_file_b
@@ -178,7 +178,7 @@
       call open_write_binary_file(file_name)
       call write_edge_connection_b(my_rank_IO, edge_mesh_IO%comm,       &
      &   edge_mesh_IO%ele, edge_mesh_IO%sfed)
-      call write_edge_geometry_b(edge_mesh_IO%node, edge_mesh_IO%sfed)
+!      call write_edge_geometry_b(edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_binary_file
 !
       end subroutine output_edge_file_b

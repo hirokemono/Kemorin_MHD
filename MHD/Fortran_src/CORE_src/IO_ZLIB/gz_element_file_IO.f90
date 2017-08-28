@@ -34,6 +34,7 @@
 !
       use m_file_format_switch
       use t_read_mesh_data
+      use skip_gz_comment
 !
       implicit none
 !
@@ -60,8 +61,8 @@
       call open_rd_gzfile_f(file_name)
       call gz_read_element_comm_table                                   &
      &   (my_rank_IO, ele_mesh_IO%comm, ierr)
-      call gz_read_element_geometry                                     &
-     &   (ele_mesh_IO%node, ele_mesh_IO%sfed)
+!      call gz_read_element_geometry                                    &
+!     &   (ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_gzfile_f
 !
       end subroutine gz_input_element_file
@@ -85,8 +86,8 @@
       call open_rd_gzfile_f(file_name)
       call gz_read_surface_connection(my_rank_IO, surf_mesh_IO%comm,    &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed, ierr)
-      call gz_read_surface_geometry                                     &
-     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
+!      call gz_read_surface_geometry                                    &
+!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_gzfile_f
 !
       end subroutine gz_input_surface_file
@@ -110,8 +111,8 @@
       call open_rd_gzfile_f(file_name)
       call gz_read_edge_connection(my_rank_IO, edge_mesh_IO%comm,       &
      &    edge_mesh_IO%ele, edge_mesh_IO%sfed, ierr)
-      call gz_read_edge_geometry                                        &
-     &   (edge_mesh_IO%node, edge_mesh_IO%sfed)
+!      call gz_read_edge_geometry                                       &
+!     &   (edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_gzfile_f
 !
       end subroutine gz_input_edge_file
@@ -134,8 +135,8 @@
 !
       call open_wt_gzfile_f(file_name)
       call gz_write_element_comm_table(my_rank_IO, ele_mesh_IO%comm)
-      call gz_write_element_geometry                                    &
-     &   (ele_mesh_IO%node, ele_mesh_IO%sfed)
+!      call gz_write_element_geometry                                   &
+!     &   (ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_gzfile_f
 !
       end subroutine gz_output_element_file
@@ -158,8 +159,8 @@
       call open_wt_gzfile_f(file_name)
       call gz_write_surface_connection(my_rank_IO, surf_mesh_IO%comm,   &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
-      call gz_write_surface_geometry                                    &
-     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
+!      call gz_write_surface_geometry                                   &
+!     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_gzfile_f
 !
       end subroutine gz_output_surface_file
@@ -182,7 +183,7 @@
       call open_wt_gzfile_f(file_name)
       call gz_write_edge_connection(my_rank_IO, edge_mesh_IO%comm,      &
      &   edge_mesh_IO%ele, edge_mesh_IO%sfed)
-      call gz_write_edge_geometry(edge_mesh_IO%node, edge_mesh_IO%sfed)
+!      call gz_write_edge_geometry(edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_gzfile_f
 !
       end subroutine gz_output_edge_file

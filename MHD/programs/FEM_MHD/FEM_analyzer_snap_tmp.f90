@@ -103,7 +103,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap                                           &
-     &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
+     &   (MHD_files, FEM_prm1, SGS_par1, bc_FEM_IO,                     &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
      &    FEM_filters, MHD_prop1, ak_MHD, MHD_BC1, FEM_MHD1_BCs,        &
      &    Csims_FEM_MHD1, iphys_nod, nod_fld, iphys_ele, ele_fld,       &

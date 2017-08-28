@@ -35,13 +35,15 @@
 !
       use mesh_IO_select
 !
-      use MPI_mesh_file_IO
-      use MPI_mesh_file_IO_b
+      use MPI_element_file_IO
+      use MPI_element_file_IO_b
       use set_mesh_file_names
+      use mesh_file_name_by_param
+      use element_mesh_IO_select
 !
 #ifdef ZLIB_IO
-      use gz_MPI_mesh_file_IO
-      use gz_MPI_mesh_file_IO_b
+      use gz_MPI_element_file_IO
+      use gz_MPI_element_file_IO_b
 #endif
 !
       implicit none
@@ -67,7 +69,7 @@
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
         call mpi_input_element_file_b                                   &
-     &     (nprocs, my_rank, file_name, ele_mesh_IO)
+     &     (nprocs, my_rank, file_name, ele_mesh_IO, ierr)
       else if(mesh_file%iflag_format .eq. iflag_single) then
         call mpi_input_element_file                                     &
      &     (nprocs, my_rank, file_name, ele_mesh_IO, ierr)
@@ -76,11 +78,11 @@
       else if(mesh_file%iflag_format                                    &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_mpi_input_element_file_b                                &
-     &     (nprocs, my_rank, file_name, ele_mesh_IO)
+     &     (nprocs, my_rank, file_name, ele_mesh_IO, ierr)
       else if(mesh_file%iflag_format                                    &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_input_element_file                                  &
-     &     (nprocs, my_rank, file_name, ele_mesh_IO)
+     &     (nprocs, my_rank, file_name, ele_mesh_IO, ierr)
 #endif
 !
       else
@@ -108,7 +110,7 @@
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
         call mpi_input_surface_file_b                                   &
-     &     (nprocs, my_rank, file_name, surf_mesh_IO)
+     &     (nprocs, my_rank, file_name, surf_mesh_IO, ierr)
       else if(mesh_file%iflag_format .eq. iflag_single) then
         call mpi_input_surface_file                                     &
      &     (nprocs, my_rank, file_name, surf_mesh_IO, ierr)
@@ -117,11 +119,11 @@
       else if(mesh_file%iflag_format                                    &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_mpi_input_surface_file_b                                &
-     &     (nprocs, my_rank, file_name, surf_mesh_IO)
+     &     (nprocs, my_rank, file_name, surf_mesh_IO, ierr)
       else if(mesh_file%iflag_format                                    &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_input_surface_file                                  &
-     &     (nprocs, my_rank, file_name, surf_mesh_IO)
+     &     (nprocs, my_rank, file_name, surf_mesh_IO, ierr)
 #endif
 !
       else
@@ -149,7 +151,7 @@
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
         call mpi_input_edge_file_b                                      &
-     &     (nprocs, my_rank, file_name, edge_mesh_IO)
+     &     (nprocs, my_rank, file_name, edge_mesh_IO, ierr)
       else if(mesh_file%iflag_format .eq. iflag_single) then
         call mpi_input_edge_file                                        &
      &     (nprocs, my_rank, file_name, edge_mesh_IO, ierr)
@@ -158,11 +160,11 @@
       else if(mesh_file%iflag_format                                    &
      &        .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_mpi_input_edge_file_b                                   &
-     &     (nprocs, my_rank, file_name, edge_mesh_IO)
+     &     (nprocs, my_rank, file_name, edge_mesh_IO, ierr)
       else if(mesh_file%iflag_format                                    &
      &        .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_input_edge_file                                     &
-     &     (nprocs, my_rank, file_name, edge_mesh_IO)
+     &     (nprocs, my_rank, file_name, edge_mesh_IO, ierr)
 #endif
 !
       else

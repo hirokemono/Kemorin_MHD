@@ -94,8 +94,8 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization                                     &
-     &    (femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
+      call FEM_mesh_init_with_IO(mesh_file_STR,                         &
+     &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type                                         &

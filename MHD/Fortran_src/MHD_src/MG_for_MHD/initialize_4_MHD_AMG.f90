@@ -135,8 +135,7 @@
           call empty_element_comm_tbls(MGCG_FEM%MG_ele_mesh(i_level))
         end if
 !
-        call deallocate_edge_geom_type                                  &
-     &     (MGCG_FEM%MG_ele_mesh(i_level)%edge)
+        call dealloc_edge_geometory(MGCG_FEM%MG_ele_mesh(i_level)%edge)
       end do
 !
 !     ---------------------

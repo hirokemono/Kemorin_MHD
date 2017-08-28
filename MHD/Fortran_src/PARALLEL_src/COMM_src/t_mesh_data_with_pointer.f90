@@ -348,8 +348,8 @@
 !
 !
        if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
-      call const_nod_ele_infos                                          &
-     &   (my_rank, femmesh_p%mesh%node, femmesh_p%mesh%ele,             &
+      call const_nod_ele_infos(my_rank,                                 &
+     &    femmesh_p%mesh%node, femmesh_p%mesh%ele,                      &
      &    femmesh_p%group%nod_grp, femmesh_p%group%ele_grp,             &
      &    femmesh_p%group%surf_grp)
 !

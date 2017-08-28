@@ -86,7 +86,7 @@
 !      write(id_file,'(a)') '! 3.1 surface ID for import '
 !      write(id_file,'(a)') '!'
 !
-      call read_import_data_gz(comm_IO)
+      call gz_read_import_data(comm_IO)
 !
 !      write(id_file,'(a)') '!'
 !      write(id_file,'(a)') '! 3.2 surface ID for export '

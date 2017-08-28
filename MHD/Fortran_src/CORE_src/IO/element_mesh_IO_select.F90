@@ -7,13 +7,6 @@
 !>@brief  Choose mesh file to read
 !!
 !!@verbatim
-!!      subroutine ele_mesh_file_name_by_param                          &
-!!     &         (mesh_file, my_rank_IO, mesh_file_name)
-!!      subroutine surf_mesh_file_name_by_param                         &
-!!     &         (mesh_file, my_rank_IO, mesh_file_name)
-!!      subroutine edge_mesh_file_name_by_param                         &
-!!     &         (mesh_file, my_rank_IO, mesh_file_name)
-!!
 !!      subroutine sel_read_ele_mesh                                    &
 !!     &         (mesh_file, my_rank_IO, ele_mesh_IO, ierr)
 !!      subroutine sel_read_surf_mesh                                   &
@@ -33,13 +26,6 @@
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
-!!
-!!      integer(kind = kint) function check_exist_ele_mesh              &
-!!     &                            (mesh_file, my_rank_IO)
-!!      integer(kind = kint) function check_exist_surf_mesh             &
-!!     &                            (mesh_file, my_rank_IO)
-!!      integer(kind = kint) function check_exist_edge_mesh             &
-!!     &                            (mesh_file, my_rank_IO)
 !!@endverbatim
 !
       module element_mesh_IO_select
@@ -50,10 +36,13 @@
       use t_mesh_data
       use m_file_format_switch
 !
+      use mesh_file_name_by_param
       use element_file_IO
       use element_file_IO_b
+#ifdef ZLIB_IO
       use gz_element_file_IO
       use gz_element_file_IO_b
+#endif
 !
       implicit none
 !
@@ -64,61 +53,6 @@
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine ele_mesh_file_name_by_param                            &
-     &         (mesh_file, my_rank_IO, mesh_file_name)
-!
-      use set_mesh_file_names
-!
-      integer(kind= kint), intent(in) :: my_rank_IO
-      type(field_IO_params), intent(in) ::  mesh_file
-      character(len=kchara), intent(inout) :: mesh_file_name
-!
-!
-      call set_ele_comm_file_name                                       &
-     &   (mesh_file%file_prefix, mesh_file%iflag_format,                &
-     &    my_rank_IO, mesh_file_name)
-!
-      end subroutine ele_mesh_file_name_by_param
-!
-!------------------------------------------------------------------
-!
-      subroutine surf_mesh_file_name_by_param                           &
-     &         (mesh_file, my_rank_IO, mesh_file_name)
-!
-      use set_mesh_file_names
-!
-      integer(kind= kint), intent(in) :: my_rank_IO
-      type(field_IO_params), intent(in) ::  mesh_file
-      character(len=kchara), intent(inout) :: mesh_file_name
-!
-!
-      call set_surf_mesh_file_name                                      &
-     &   (mesh_file%file_prefix, mesh_file%iflag_format,                &
-     &    my_rank_IO, mesh_file_name)
-!
-      end subroutine surf_mesh_file_name_by_param
-!
-!------------------------------------------------------------------
-!
-      subroutine edge_mesh_file_name_by_param                           &
-     &         (mesh_file, my_rank_IO, mesh_file_name)
-!
-      use set_mesh_file_names
-!
-      integer(kind= kint), intent(in) :: my_rank_IO
-      type(field_IO_params), intent(in) ::  mesh_file
-      character(len=kchara), intent(inout) :: mesh_file_name
-!
-!
-      call set_edge_mesh_file_name                                      &
-     &   (mesh_file%file_prefix, mesh_file%iflag_format,                &
-     &    my_rank_IO, mesh_file_name)
-!
-      end subroutine edge_mesh_file_name_by_param
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
 !
       subroutine sel_read_ele_mesh                                      &
      &         (mesh_file, my_rank_IO, ele_mesh_IO, ierr)
@@ -325,64 +259,6 @@
       end if
 !
       end subroutine sel_write_edge_mesh_file
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function check_exist_ele_mesh                &
-     &                            (mesh_file, my_rank_IO)
-!
-      use delete_data_files
-!
-      integer(kind= kint), intent(in) :: my_rank_IO
-      type(field_IO_params), intent(in) ::  mesh_file
-!
-!
-      call ele_mesh_file_name_by_param                                  &
-     &   (mesh_file, my_rank_IO, file_name)
-!
-      check_exist_ele_mesh = check_file_exist(file_name)
-!
-      return
-      end function check_exist_ele_mesh
-!
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function check_exist_surf_mesh               &
-     &                            (mesh_file, my_rank_IO)
-!
-      use delete_data_files
-!
-      integer(kind= kint), intent(in) :: my_rank_IO
-      type(field_IO_params), intent(in) ::  mesh_file
-!
-!
-      call surf_mesh_file_name_by_param                                 &
-     &   (mesh_file, my_rank_IO, file_name)
-!
-      check_exist_surf_mesh = check_file_exist(file_name)
-!
-      return
-      end function check_exist_surf_mesh
-!
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function check_exist_edge_mesh               &
-     &                            (mesh_file, my_rank_IO)
-!
-      use delete_data_files
-!
-      integer(kind= kint), intent(in) :: my_rank_IO
-      type(field_IO_params), intent(in) ::  mesh_file
-!
-!
-      call edge_mesh_file_name_by_param                                 &
-     &   (mesh_file, my_rank_IO, file_name)
-!
-      check_exist_edge_mesh = check_file_exist(file_name)
-!
-      return
-      end function check_exist_edge_mesh
 !
 !  ---------------------------------------------------------------------
 !

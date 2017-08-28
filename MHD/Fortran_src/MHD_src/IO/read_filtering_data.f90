@@ -85,7 +85,6 @@
       use filter_moment_IO_select
       use set_filter_geometry_4_IO
       use set_parallel_file_name
-      use set_comm_table_4_IO
 !
       character(len=kchara), intent(in) :: filter_head
       integer(kind = kint) , intent(in) :: ifmt_filter

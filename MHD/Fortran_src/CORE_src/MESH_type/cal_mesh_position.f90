@@ -53,6 +53,8 @@
       type(element_data), intent(inout) :: ele
 !
 !
+      call alloc_ele_geometry(ele)
+!
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call set_quad_ele_position(nod%numnod, ele%numele, ele%ie,      &
      &      nod%xx, ele%x_ele)

@@ -116,7 +116,6 @@
       use filter_coefs_file_IO_b
       use mesh_data_IO
       use mesh_data_IO_b
-      use set_comm_table_4_IO
       use binary_IO
 !
       use t_mesh_data

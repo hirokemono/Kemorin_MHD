@@ -18,7 +18,7 @@
 !!      subroutine alloc_element_types(ele)
 !!      subroutine alloc_ele_connectivity(ele)
 !!      subroutine allocate_overlaped_ele_type(ele)
-!!      subroutine allocate_ele_geometry_type(ele)
+!!      subroutine alloc_ele_geometry(ele)
 !!      subroutine allocate_node_param_smp_type(node)
 !!      subroutine allocate_ele_param_smp_type(ele)
 !!        type(element_data), intent(inout) :: ele
@@ -292,7 +292,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_ele_geometry_type(ele)
+      subroutine alloc_ele_geometry(ele)
 !
       type(element_data), intent(inout) :: ele
 !
@@ -324,7 +324,7 @@
         ele%a_vol_ele = 0.0d0
       end if
 !
-      end subroutine allocate_ele_geometry_type
+      end subroutine alloc_ele_geometry
 !
 !  ---------------------------------------------------------------------
 !

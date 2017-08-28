@@ -72,10 +72,10 @@
 !
 !
       call gz_mpi_skip_header(IO_param, len(hd_edge_import()))
-      call gz_mpi_mpi_read_import_data(IO_param, comm_IO)
+      call gz_mpi_read_import_data(IO_param, comm_IO)
 !
       call gz_mpi_skip_header(IO_param, len(hd_edge_export()))
-      call gz_mpi_mpi_read_export_data(IO_param, comm_IO)
+      call gz_mpi_read_export_data(IO_param, comm_IO)
 !
       end subroutine gz_mpi_read_edge_connect
 !

@@ -86,7 +86,7 @@
 !  -------------------------------
 !  -------------------------------
 !
-      call deallocate_edge_geom_type(elemesh_STR%edge)
+      call dealloc_edge_geometory(elemesh_STR%edge)
 !
 !  connect grid data to volume output
 !

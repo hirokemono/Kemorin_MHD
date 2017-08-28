@@ -59,7 +59,7 @@
 !
       call mpi_read_domain_info_b(IO_param, comm_IO)
 !
-      call mpi_read_num_of_data_b(IO_param, ele_IO%numele)
+      call mpi_read_number_of_element_b(IO_param, ele_IO)
       call mpi_read_element_info_b(IO_param, ele_IO)
       call mpi_read_surface_4_element_b(IO_param, sfed_IO)
 !

@@ -9,9 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_w_viz                                 &
-!!     &         (ucd_param, MHD_step, mesh, group, ele_mesh,           &
+!!     &         (MHD_files, MHD_step, mesh, group, ele_mesh,           &
 !!     &          iphys, nod_fld, next_tbl, jacobians, range, fem_ucd)
-!!        type(field_IO_params), intent(in) :: ucd_param
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
@@ -44,7 +44,7 @@
       use t_jacobians
       use t_VIZ_step_parameter
       use t_MHD_step_parameter
-      use t_file_IO_parameter
+      use t_MHD_file_parameter
       use t_cal_max_indices
       use t_ucd_file
 !
@@ -57,7 +57,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_w_viz                                   &
-     &         (ucd_param, MHD_step, mesh, group, ele_mesh,             &
+     &         (MHD_files, MHD_step, mesh, group, ele_mesh,             &
      &          iphys, nod_fld, next_tbl, jacobians, range, fem_ucd)
 !
       use m_fem_gauss_int_coefs
@@ -67,7 +67,7 @@
       use int_volume_of_domain
       use set_normal_vectors
 !
-      type(field_IO_params), intent(in) :: ucd_param
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -86,7 +86,7 @@
 !  --  init FEM mesh data
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(ucd_param, MHD_step,                  &
+      call FEM_initialize_sph_MHD(MHD_files, MHD_step,                  &
      &    mesh, group, ele_mesh, iphys, nod_fld, range, fem_ucd)
 !
 !  -------------------------------

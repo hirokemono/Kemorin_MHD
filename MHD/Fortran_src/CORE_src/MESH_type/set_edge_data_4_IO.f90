@@ -20,9 +20,11 @@
 !!
 !!      subroutine copy_edge_connect_from_IO                            &
 !!     &          (ele_IO, sfed_IO, edge, nele, nsurf)
-!!      type(element_data), intent(inout) :: ele_IO
-!!      type(surf_edge_IO_data), intent(inout) :: sfed_IO
-!!      type(edge_data), intent(inout) :: edge
+!!      subroutine copy_edge_geometry_from_IO(nod_IO, sfed_IO, edge)
+!!        type(node_data), intent(inout) :: nod_IO
+!!        type(element_data), intent(inout) :: ele_IO
+!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!        type(edge_data), intent(inout) :: edge
 !!@endverbatim
 !
       module set_edge_data_4_IO
@@ -100,7 +102,7 @@
 !
       subroutine copy_edge_geometry_to_IO(edge, nod_IO, sfed_IO)
 !
-      type(edge_data), intent(inout) :: edge
+      type(edge_data), intent(in) :: edge
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
@@ -133,7 +135,7 @@
 !
       subroutine copy_edge_geometry_to_IO_sph(edge, nod_IO, sfed_IO)
 !
-      type(edge_data), intent(inout) :: edge
+      type(edge_data), intent(in) :: edge
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
@@ -166,7 +168,7 @@
 !
       subroutine copy_edge_geometry_to_IO_cyl(edge, nod_IO, sfed_IO)
 !
-      type(edge_data), intent(inout) :: edge
+      type(edge_data), intent(in) :: edge
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
@@ -212,8 +214,8 @@
 !
       edge%numedge = ele_IO%numele
 !
-      call allocate_edge_connect_type(edge, nsurf)
-      call allocate_edge_4_ele_type(edge, nele)
+      call alloc_edge_connect(edge, nsurf)
+      call alloc_edge_4_ele(edge, nele)
 !
       do iedge = 1, edge%numedge
         edge%iedge_global(iedge) = ele_IO%iele_global(iedge)
@@ -236,6 +238,38 @@
       call dealloc_edge_connect_IO(sfed_IO)
 !
       end subroutine copy_edge_connect_from_IO
+!
+!------------------------------------------------------------------
+!
+      subroutine copy_edge_geometry_from_IO(nod_IO, sfed_IO, edge)
+!
+      type(edge_data), intent(inout) :: edge
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!
+      integer(kind = kint) :: iedge
+!
+!
+       edge%internal_edge = nod_IO%internal_node
+       call alloc_edge_geometory(edge)
+!
+!omp parallel do
+      do iedge = 1, edge%numedge
+        edge%x_edge(iedge,1) = nod_IO%xx(iedge,1)
+        edge%x_edge(iedge,2) = nod_IO%xx(iedge,2)
+        edge%x_edge(iedge,3) = nod_IO%xx(iedge,3)
+        edge%edge_length(iedge) = sfed_IO%ele_scalar(iedge)
+        edge%edge_vect(iedge,1) = sfed_IO%ele_vector(iedge,1)
+        edge%edge_vect(iedge,2) = sfed_IO%ele_vector(iedge,2)
+        edge%edge_vect(iedge,3) = sfed_IO%ele_vector(iedge,3)
+      end do
+!omp end parallel do
+!
+      call dealloc_node_geometry_base(nod_IO)
+      call dealloc_ele_vector_IO(sfed_IO)
+      call dealloc_ele_scalar_IO(sfed_IO)
+!
+      end subroutine copy_edge_geometry_from_IO
 !
 !------------------------------------------------------------------
 !

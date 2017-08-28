@@ -31,7 +31,6 @@
 !
       use filter_coefs_file_IO
       use set_filter_geometry_4_IO
-      use set_comm_table_4_IO
 !
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_work_type), intent(inout) :: wk_filter

@@ -150,8 +150,8 @@
 !
       new_edge%numedge = numedge_4_subdomain(ip)
       new_edge%nnod_4_edge = nnod_4_edge
-      call allocate_edge_connect_type(new_edge, new_surf%numsurf)
-      call allocate_edge_4_ele_type(new_edge, new_ele%numele)
+      call alloc_edge_connect(new_edge, new_surf%numsurf)
+      call alloc_edge_4_ele(new_edge, new_ele%numele)
 !
       call set_local_edge(ip, new_edge)
 !

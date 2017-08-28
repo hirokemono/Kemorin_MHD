@@ -52,7 +52,7 @@
       call set_numnod_z_commute(node, ele, surf, edge)
 !
       call allocate_node_geometry_type(node)
-      call allocate_edge_connect_type(edge, surf%numsurf)
+      call alloc_edge_connect(edge, surf%numsurf)
 !
       call set_element_z_commute(node, edge)
       call set_global_id_z_commute(node, ele, edge)

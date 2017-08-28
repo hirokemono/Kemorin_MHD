@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,    &
+!!      subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,      &
 !!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
 !!     &&          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,  &
 !!     &          Csims_FEM_MHD, iphys, nod_fld, iphys_ele, ele_fld,    &
@@ -52,7 +52,7 @@
       use t_time_data
       use t_boundary_field_IO
       use t_IO_step_parameter
-      use t_file_IO_parameter
+      use t_MHD_file_parameter
       use t_bc_data_list
       use t_FEM_MHD_boundary_data
       use t_FEM_SGS_model_coefs
@@ -72,7 +72,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,      &
+      subroutine init_analyzer_snap(MHD_files, FEM_prm, SGS_par,        &
      &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
      &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,     &
      &          Csims_FEM_MHD, iphys, nod_fld, iphys_ele, ele_fld,      &
@@ -108,7 +108,7 @@
 !
       use nod_phys_send_recv
 !
-      type(field_IO_params), intent(in) :: fst_file_IO
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(SGS_paremeters), intent(in) :: SGS_par
       type(IO_boundary), intent(in) :: IO_bc
       type(MHD_step_param), intent(in) :: MHD_step
@@ -192,14 +192,14 @@
      &    MHD_prop, Csims_FEM_MHD, SGS_MHD_wk%FEM_SGS_wk)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
-      call deallocate_edge_geom_type(ele_mesh%edge)
+      call dealloc_edge_geometory(ele_mesh%edge)
 !
 !     --------------------- 
 !
       if (rst_step%increment .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)' init_restart_4_snapshot'
         call init_restart_4_snapshot(MHD_step%init_d%i_time_step,       &
-     &      fst_file_IO, mesh%node, t_IO, rst_step)
+     &      MHD_files%fst_file_IO, mesh%node, t_IO, rst_step)
       end if
 !
 !     ---------------------

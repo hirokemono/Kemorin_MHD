@@ -78,7 +78,7 @@
 !
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz(MHD_files1%ucd_file_IO, MHD_step1,      &
+      call FEM_initialize_w_viz(MHD_files1, MHD_step1,                  &
      &    femmesh1%mesh, femmesh1%group, ele_mesh1,                     &
      &    iphys_nod1, nod_fld1, next_tbl_VIZ1, jacobians_VIZ1,          &
      &    range1, fem_ucd1)
@@ -139,7 +139,7 @@
      &      femmesh1%mesh, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
+        call FEM_analyze_sph_MHD(MHD_files1,                            &
      &      femmesh1%mesh, nod_fld1, MHD_step1, visval, fem_ucd1)
 !
         call end_elapsed_time(4)
@@ -167,8 +167,7 @@
       call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize                                                 &
-     &   (MHD_files1%ucd_file_IO, MHD_step1, range1, fem_ucd1)
+      call FEM_finalize(MHD_files1, MHD_step1, range1, fem_ucd1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap

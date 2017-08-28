@@ -60,7 +60,7 @@
       call gz_mpi_read_domain_info_b(IO_param, comm_IO)
 !
       call gz_mpi_read_num_element_b(IO_param, ele_IO)
-      call gz_mpi_read_element_info_b(IO_param, ele_IO)
+      call gz_mpi_read_ele_info_b(IO_param, ele_IO)
       call gz_mpi_read_surf_4_elem_b(IO_param, sfed_IO)
 !
       call gz_mpi_read_import_data_b(IO_param, comm_IO)

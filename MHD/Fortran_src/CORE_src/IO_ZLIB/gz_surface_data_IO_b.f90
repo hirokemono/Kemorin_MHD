@@ -68,7 +68,7 @@
 !
 !
 !      textbuf = hd_surf_import() // char(0)
-      call read_import_data_gz_b(comm_IO)
+      call gz_read_import_data_b(comm_IO)
 !
 !      textbuf = hd_surf_export() // char(0)
       call gz_read_export_data_b(comm_IO)

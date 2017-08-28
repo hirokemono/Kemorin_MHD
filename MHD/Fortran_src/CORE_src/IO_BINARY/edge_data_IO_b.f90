@@ -38,7 +38,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_edge_connection                                   &
+      subroutine read_edge_connection_b                                 &
      &         (my_rank_IO, comm_IO, ele_IO, sfed_IO, ierr)
 !
       use m_fem_mesh_labels
@@ -62,11 +62,11 @@
       call read_import_data_b(comm_IO)
       call read_export_data_b(comm_IO)
 !
-      end subroutine read_edge_connection
+      end subroutine read_edge_connection_b
 !
 !------------------------------------------------------------------
 !
-      subroutine write_edge_connection                                  &
+      subroutine write_edge_connection_b                                &
      &         (my_rank_IO, comm_IO, ele_IO, sfed_IO)
 !
       use m_fem_mesh_labels
@@ -88,12 +88,12 @@
       call write_import_data_b(comm_IO)
       call write_export_data_b(comm_IO)
 !
-      end subroutine write_edge_connection
+      end subroutine write_edge_connection_b
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_edge_geometry(nod_IO, sfed_IO)
+      subroutine read_edge_geometry_b(nod_IO, sfed_IO)
 !
       use node_geometry_IO_b
 !
@@ -106,14 +106,14 @@
       call read_vector_in_element_b(nod_IO, sfed_IO)
       call read_scalar_in_element_b(nod_IO, sfed_IO)
 !
-      end subroutine read_edge_geometry
+      end subroutine read_edge_geometry_b
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_edge_geometry(nod_IO, sfed_IO)
+      subroutine write_edge_geometry_b(nod_IO, sfed_IO)
 !
-      use node_geometry_IO
+      use node_geometry_IO_b
 !
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
@@ -123,7 +123,7 @@
       call write_vector_in_element_b(nod_IO, sfed_IO)
       call write_scalar_in_element_b(nod_IO, sfed_IO)
 !
-      end subroutine write_edge_geometry
+      end subroutine write_edge_geometry_b
 !
 !------------------------------------------------------------------
 !

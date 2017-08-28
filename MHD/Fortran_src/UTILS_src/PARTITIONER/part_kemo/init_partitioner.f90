@@ -47,7 +47,8 @@
 !    construct element and surface data
 !
       if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
-      call const_nod_ele_infos(my_rank, org_mesh%node, org_mesh%ele,    &
+      call const_nod_ele_infos                                          &
+     &   (my_rank, org_mesh%node, org_mesh%ele,                         &
      &    org_group%nod_grp, org_group%ele_grp, org_group%surf_grp)
 !
 !   set numbers of global mesh

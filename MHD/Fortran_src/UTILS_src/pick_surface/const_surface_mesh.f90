@@ -57,7 +57,7 @@
 !
       use t_file_IO_parameter
       use m_file_format_switch
-      use mesh_IO_select
+      use mesh_file_name_by_param
 !
       type(field_IO_params), intent(inout) ::  mesh_file
 !
@@ -197,7 +197,7 @@
       call set_inod_in_surf                                             &
      &   (surf%nnod_4_surf, surf%node_on_sf, surf%node_on_sf_n)
 !
-      call allocate_inod_in_edge(edge)
+      call alloc_inod_in_edge(edge)
       call copy_inod_in_edge(edge%nnod_4_edge,                          &
      &    edge%node_on_edge, edge%node_on_edge_sf)
 !

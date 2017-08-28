@@ -117,6 +117,7 @@
       use const_FEM_mesh_sph_mhd
       use gen_sph_grids_modes
       use mesh_IO_select
+      use mesh_file_name_by_param
 !
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp

@@ -16,26 +16,12 @@
 !!
 !!      subroutine output_element_file                                  &
 !!     &         (my_rank_IO, ele_mesh_IO)
-!!      subroutine output_element_sph_file                              &
-!!     &         (my_rank_IO, ele_mesh_IO)
-!!      subroutine output_element_cyl_file                              &
-!!     &         (my_rank_IO, ele_mesh_IO)
-!!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
-!!
 !!      subroutine output_surface_file                                  &
 !!     &         (my_rank_IO, file_prefix, surf_mesh_IO)
-!!      subroutine output_surface_sph_file                              &
-!!     &         (my_rank_IO, file_prefix, surf_mesh_IO)
-!!      subroutine output_surface_cyl_file                              &
-!!     &         (my_rank_IO, file_prefix, surf_mesh_IO)
-!!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
-!!
 !!      subroutine output_edge_file                                     &
 !!     &         (my_rank_IO, file_prefix, edge_mesh_IO)
-!!      subroutine output_edge_sph_file                                 &
-!!     &         (my_rank_IO, file_prefix, edge_mesh_IO)
-!!      subroutine output_edge_cyl_file                                 &
-!!     &         (my_rank_IO, file_prefix, edge_mesh_IO)
+!!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
+!!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !!@endverbatim
 !!
@@ -85,8 +71,8 @@
       open(input_file_code, file = file_name, form = 'formatted')
       call read_element_comm_table                                      &
      &   (input_file_code, my_rank_IO, ele_mesh_IO%comm, ierr)
-      call read_element_geometry(input_file_code,                       &
-     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
+!      call read_element_geometry(input_file_code,                      &
+!     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)
 !
       end subroutine input_element_file
@@ -114,8 +100,8 @@
       call read_surface_connection                                      &
      &  (input_file_code, my_rank_IO, surf_mesh_IO%comm,                &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed, ierr)
-      call read_surface_geometry(input_file_code,                       &
-     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
+!      call read_surface_geometry(input_file_code,                      &
+!     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
       close (input_file_code)
 !
       end subroutine input_surface_file
@@ -143,8 +129,8 @@
       call read_edge_connection                                         &
      &   (input_file_code, my_rank_IO, edge_mesh_IO%comm,               &
      &    edge_mesh_IO%ele, edge_mesh_IO%sfed, ierr)
-      call read_edge_geometry(input_file_code,                          &
-     &    edge_mesh_IO%node, edge_mesh_IO%sfed)
+!      call read_edge_geometry(input_file_code,                         &
+!     &    edge_mesh_IO%node, edge_mesh_IO%sfed)
       close (input_file_code)
 !
       end subroutine input_edge_file
@@ -171,67 +157,12 @@
       open(input_file_code, file = file_name, form = 'formatted')
       call write_element_comm_table                                     &
      &   (input_file_code, my_rank_IO, ele_mesh_IO%comm)
-      call write_element_geometry(input_file_code,                      &
-     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
+!      call write_element_geometry(input_file_code,                     &
+!     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)
 !
       end subroutine output_element_file
 !
-!------------------------------------------------------------------
-!
-      subroutine output_element_sph_file                                &
-     &         (my_rank_IO, file_prefix, ele_mesh_IO)
-!
-      use element_data_IO
-!
-      character(len=kchara), intent(in) :: file_prefix
-      integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
-!
-!
-      call set_ele_comm_file_name(file_prefix, id_ascii_file_fmt,       &
-     &    my_rank_IO, file_name)
-!
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Write ascii element comm file: ', trim(file_name)
-!
-      open(input_file_code, file = file_name, form = 'formatted')
-      call write_element_comm_table                                     &
-     &   (input_file_code, my_rank_IO, ele_mesh_IO%comm)
-      call write_element_geometry_sph(input_file_code,                  &
-     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
-      close(input_file_code)
-!
-      end subroutine output_element_sph_file
-!
-!------------------------------------------------------------------
-!
-      subroutine output_element_cyl_file                                &
-     &         (my_rank_IO, file_prefix, ele_mesh_IO)
-!
-      use element_data_IO
-!
-      character(len=kchara), intent(in) :: file_prefix
-      integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
-!
-!
-      call set_ele_comm_file_name(file_prefix, id_ascii_file_fmt,       &
-     &    my_rank_IO, file_name)
-!
-      if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
-     &  'Write ascii element comm file: ', trim(file_name)
-!
-      open(input_file_code, file = file_name, form = 'formatted')
-      call write_element_comm_table                                     &
-     &   (input_file_code, my_rank_IO, ele_mesh_IO%comm)
-      call write_element_geometry_cyl(input_file_code,                  &
-     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
-      close(input_file_code)
-!
-      end subroutine output_element_cyl_file
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine output_surface_file                                    &
@@ -254,63 +185,12 @@
       call write_surface_connection                                     &
      &  (input_file_code, my_rank_IO, surf_mesh_IO%comm,                &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
-      call write_surface_geometry(input_file_code,                      &
-     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
+!      call write_surface_geometry(input_file_code,                     &
+!     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
       close (input_file_code)
 !
       end subroutine output_surface_file
 !
-!------------------------------------------------------------------
-!
-      subroutine output_surface_sph_file                                &
-     &         (my_rank_IO, file_prefix, surf_mesh_IO)
-!
-      use surface_data_IO
-!
-      character(len=kchara), intent(in) :: file_prefix
-      integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
-!
-!
-      call set_surf_mesh_file_name(file_prefix, id_ascii_file_fmt,      &
-     &    my_rank_IO, file_name)
-!
-      open (input_file_code, file = file_name, form = 'formatted')
-      call write_surface_connection                                     &
-     &  (input_file_code, my_rank_IO, surf_mesh_IO%comm,                &
-     &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
-      call write_surface_geometry_sph(input_file_code,                  &
-     &   surf_mesh_IO%node, surf_mesh_IO%sfed)
-      close (input_file_code)
-!
-      end subroutine output_surface_sph_file
-!
-!------------------------------------------------------------------
-!
-      subroutine output_surface_cyl_file                                &
-     &         (my_rank_IO, file_prefix, surf_mesh_IO)
-!
-      use surface_data_IO
-!
-      character(len=kchara), intent(in) :: file_prefix
-      integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
-!
-!
-      call set_surf_mesh_file_name(file_prefix, id_ascii_file_fmt,      &
-     &    my_rank_IO, file_name)
-!
-      open (input_file_code, file = file_name, form = 'formatted')
-      call write_surface_connection                                     &
-     &  (input_file_code, my_rank_IO, surf_mesh_IO%comm,                &
-     &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
-      call write_surface_geometry_cyl(input_file_code,                  &
-     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
-      close (input_file_code)
-!
-      end subroutine output_surface_cyl_file
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine output_edge_file                                       &
@@ -333,62 +213,11 @@
       call write_edge_connection                                        &
      &  (input_file_code, my_rank_IO, edge_mesh_IO%comm,                &
      &   edge_mesh_IO%ele, edge_mesh_IO%sfed)
-      call write_edge_geometry(input_file_code,                         &
-     &   edge_mesh_IO%node, edge_mesh_IO%sfed)
+!      call write_edge_geometry(input_file_code,                        &
+!     &   edge_mesh_IO%node, edge_mesh_IO%sfed)
       close (input_file_code)
 !
       end subroutine output_edge_file
-!
-!------------------------------------------------------------------
-!
-      subroutine output_edge_sph_file                                   &
-     &         (my_rank_IO, file_prefix, edge_mesh_IO)
-!
-      use edge_data_IO
-!
-      character(len=kchara), intent(in) :: file_prefix
-      integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
-!
-!
-      call set_edge_mesh_file_name(file_prefix, id_ascii_file_fmt,      &
-     &    my_rank_IO, file_name)
-!
-      open (input_file_code, file = file_name, form = 'formatted')
-      call write_edge_connection                                        &
-     &   (input_file_code, my_rank_IO, edge_mesh_IO%comm,               &
-     &    edge_mesh_IO%ele, edge_mesh_IO%sfed)
-      call write_edge_geometry_sph(input_file_code,                     &
-     &    edge_mesh_IO%node, edge_mesh_IO%sfed)
-      close (input_file_code)
-!
-      end subroutine output_edge_sph_file
-!
-!------------------------------------------------------------------
-!
-      subroutine output_edge_cyl_file                                   &
-     &         (my_rank_IO, file_prefix, edge_mesh_IO)
-!
-      use edge_data_IO
-!
-      character(len=kchara), intent(in) :: file_prefix
-      integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
-!
-!
-      call set_edge_mesh_file_name(file_prefix, id_ascii_file_fmt,      &
-     &    my_rank_IO, file_name)
-!
-      open (input_file_code, file = file_name, form = 'formatted')
-!
-      call write_edge_connection                                        &
-     &   (input_file_code, my_rank_IO, edge_mesh_IO%comm,               &
-     &    edge_mesh_IO%ele, edge_mesh_IO%sfed)
-      call write_edge_geometry_cyl(input_file_code,                     &
-     &   edge_mesh_IO%node, edge_mesh_IO%sfed)
-      close (input_file_code)
-!
-      end subroutine output_edge_cyl_file
 !
 !------------------------------------------------------------------
 !

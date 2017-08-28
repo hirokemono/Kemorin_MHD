@@ -90,7 +90,7 @@
       ele_l%nnod_4_ele = num_t_linear
 !
       call allocate_ele_connect_type(ele_l)
-      call allocate_ele_geometry_type(ele_l)
+      call alloc_ele_geometry(ele_l)
 !
       allocate(ie_4_333(ele_q%numele,27) )
 !
@@ -124,7 +124,7 @@
       ele_l%nnod_4_ele = num_t_linear
 !
       call allocate_ele_connect_type(ele_l)
-      call allocate_ele_geometry_type(ele_l)
+      call alloc_ele_geometry(ele_l)
 !
       call set_27quad_2_8x8linear(ele_q%numele, ele_q%ie,               &
      &    node_l%numnod, ele_l%ie)

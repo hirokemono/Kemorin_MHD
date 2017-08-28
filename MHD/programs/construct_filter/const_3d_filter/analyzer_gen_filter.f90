@@ -180,7 +180,6 @@
       use filter_moment_IO_select
       use construct_filters
       use copy_mesh_structures
-      use set_comm_table_4_IO
       use set_filter_geometry_4_IO
       use filter_moment_IO_select
       use filter_coefs_file_IO

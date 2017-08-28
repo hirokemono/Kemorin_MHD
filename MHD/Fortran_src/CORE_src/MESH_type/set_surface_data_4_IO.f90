@@ -18,6 +18,7 @@
 !!
 !!      subroutine copy_surf_connect_from_IO                            &
 !!     &         (ele_IO, sfed_IO, surf, nele)
+!!      subroutine copy_surf_geometry_from_IO(nod_IO, sfed_IO, surf)
 !!        integer(kind = kint), intent(in) :: nele
 !!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
@@ -88,7 +89,7 @@
 !
       subroutine copy_surf_geometry_to_IO(surf, nod_IO, sfed_IO)
 !
-      type(surface_data), intent(inout) :: surf
+      type(surface_data), intent(in) :: surf
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
@@ -123,7 +124,7 @@
 !
       subroutine copy_surf_geometry_to_IO_sph(surf, nod_IO, sfed_IO)
 !
-      type(surface_data), intent(inout) :: surf
+      type(surface_data), intent(in) :: surf
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
@@ -157,7 +158,7 @@
 !
       subroutine copy_surf_geometry_to_IO_cyl(surf, nod_IO, sfed_IO)
 !
-      type(surface_data), intent(inout) :: surf
+      type(surface_data), intent(in) :: surf
       type(node_data), intent(inout) :: nod_IO
       type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !
@@ -222,6 +223,42 @@
       call deallocate_ele_connect_type(ele_IO)
 !
       end subroutine copy_surf_connect_from_IO
+!
+!------------------------------------------------------------------
+!
+      subroutine copy_surf_geometry_from_IO(nod_IO, sfed_IO, surf)
+!
+      type(node_data), intent(inout) :: nod_IO
+      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(surface_data), intent(inout) :: surf
+!
+      integer(kind = kint) :: isurf
+!
+!
+!      surf%numsurf =       nod_IO%numnod
+      surf%internal_surf = nod_IO%internal_node
+      call allocate_surface_geom_type(surf)
+      call allocate_normal_vect_type(surf)
+!
+!
+!omp parallel do
+      do isurf = 1, surf%numsurf
+        surf%x_surf(isurf,1) = nod_IO%xx(isurf,1)
+        surf%x_surf(isurf,2) = nod_IO%xx(isurf,2)
+        surf%x_surf(isurf,3) = nod_IO%xx(isurf,3)
+!
+        surf%area_surf(isurf) = sfed_IO%ele_scalar(isurf)
+        surf%vnorm_surf(isurf,1) = sfed_IO%ele_vector(isurf,1)
+        surf%vnorm_surf(isurf,2) = sfed_IO%ele_vector(isurf,2)
+        surf%vnorm_surf(isurf,3) = sfed_IO%ele_vector(isurf,3)
+      end do
+!omp end parallel do
+!
+      call dealloc_node_geometry_base(nod_IO)
+      call dealloc_ele_vector_IO(sfed_IO)
+      call dealloc_ele_scalar_IO(sfed_IO)
+!
+      end subroutine copy_surf_geometry_from_IO
 !
 !------------------------------------------------------------------
 !

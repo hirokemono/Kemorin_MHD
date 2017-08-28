@@ -49,7 +49,8 @@
 !
       call mpi_input_mesh(original_mesh_file, nprocs,                   &
      &    mesh_add, group_add, nnod_4_surf, nnod_4_edge)
-      call const_nod_ele_infos(my_rank, mesh_add%node, mesh_add%ele,    &
+      call const_nod_ele_infos                                          &
+     &   (my_rank, mesh_add%node, mesh_add%ele,                         &
      &    group_add%nod_grp, group_add%ele_grp, group_add%surf_grp)
 !
       call alloc_r_ele_cubed_sph(mesh_add%ele%numele)

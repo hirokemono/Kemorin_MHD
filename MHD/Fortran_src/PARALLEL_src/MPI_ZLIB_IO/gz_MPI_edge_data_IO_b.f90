@@ -59,13 +59,13 @@
       call gz_mpi_read_domain_info_b(IO_param, comm_IO)
 !
       call gz_mpi_read_num_element_b(IO_param, ele_IO)
-      call gz_mpi_read_element_info_b(IO_param, ele_IO)
+      call gz_mpi_read_ele_info_b(IO_param, ele_IO)
 !
-      call gz_mpi_read_surface_4_element_b(IO_param, sfed_IO)
+      call gz_mpi_read_surf_4_elem_b(IO_param, sfed_IO)
       call gz_mpi_read_edge_4_element_b(IO_param, sfed_IO)
 !
-      call gz_mpi_mpi_read_import_data_b(IO_param, comm_IO)
-      call gz_mpi_mpi_read_export_data_b(IO_param, comm_IO)
+      call gz_mpi_read_import_data_b(IO_param, comm_IO)
+      call gz_mpi_read_export_data_b(IO_param, comm_IO)
 !
       end subroutine gz_mpi_read_edge_connect_b
 !
@@ -85,11 +85,11 @@
       call gz_mpi_write_domain_info_b(IO_param, comm_IO)
 !
       call gz_mpi_write_element_info_b(IO_param, ele_IO)
-      call gz_mpi_write_surface_4_element_b(IO_param, sfed_IO)
-      call gz_mpi_write_edge_4_element_b(IO_param, sfed_IO)
+      call gz_mpi_write_surf_4_ele_b(IO_param, sfed_IO)
+      call gz_mpi_write_edge_4_ele_b(IO_param, sfed_IO)
 !
       call gz_mpi_write_import_data_b(IO_param, comm_IO)
-      call gz_mpi_write_export_data__b(IO_param, comm_IO)
+      call gz_mpi_write_export_data_b(IO_param, comm_IO)
 !
       end subroutine gz_mpi_write_edge_connect_b
 !

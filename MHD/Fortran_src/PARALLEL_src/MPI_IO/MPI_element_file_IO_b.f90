@@ -64,8 +64,8 @@
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
 !
       call mpi_read_element_comm_table_b(IO_param, ele_mesh_IO%comm)
-      call mpi_read_element_geometry_b(IO_param,                        &
-     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
+!      call mpi_read_element_geometry_b(IO_param,                       &
+!     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
       end subroutine mpi_input_element_file_b
@@ -91,8 +91,8 @@
 !
       call mpi_read_surface_connection_b(IO_param, surf_mesh_IO%comm,   &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
-      call mpi_read_surface_geometry_b(IO_param,                        &
-     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
+!      call mpi_read_surface_geometry_b(IO_param,                       &
+!     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
       end subroutine mpi_input_surface_file_b
@@ -118,8 +118,8 @@
 !
       call mpi_read_edge_connection_b(IO_param, edge_mesh_IO%comm,      &
      &    edge_mesh_IO%ele, edge_mesh_IO%sfed)
-      call mpi_read_edge_geometry_b(IO_param,                           &
-     &    edge_mesh_IO%node, edge_mesh_IO%sfed)
+!      call mpi_read_edge_geometry_b(IO_param,                          &
+!     &    edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
       end subroutine mpi_input_edge_file_b
@@ -144,8 +144,8 @@
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
 !
       call mpi_write_element_comm_table_b(IO_param, ele_mesh_IO%comm)
-      call mpi_write_element_geometry_b(IO_param,                       &
-     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
+!      call mpi_write_element_geometry_b(IO_param,                      &
+!     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
       end subroutine mpi_output_element_file_b
@@ -170,8 +170,8 @@
 !
       call mpi_write_surface_connection_b(IO_param, surf_mesh_IO%comm,  &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
-      call mpi_write_surface_geometry_b(IO_param,                       &
-     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
+!      call mpi_write_surface_geometry_b(IO_param,                      &
+!     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
       end subroutine mpi_output_surface_file_b
@@ -196,8 +196,8 @@
 !
       call mpi_write_edge_connection_b(IO_param, edge_mesh_IO%comm,     &
      &   edge_mesh_IO%ele, edge_mesh_IO%sfed)
-      call mpi_write_edge_geometry_b(IO_param,                          &
-     &   edge_mesh_IO%node, edge_mesh_IO%sfed)
+!      call mpi_write_edge_geometry_b(IO_param,                         &
+!     &   edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
       end subroutine mpi_output_edge_file_b

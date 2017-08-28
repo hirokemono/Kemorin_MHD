@@ -72,10 +72,10 @@
 !
 !
       call mpi_skip_read(IO_param, len(hd_edge_import()))
-      call mpi_mpi_read_import_data(IO_param, comm_IO)
+      call mpi_read_import_data(IO_param, comm_IO)
 !
       call mpi_skip_read(IO_param, len(hd_edge_export()))
-      call mpi_mpi_read_export_data(IO_param, comm_IO)
+      call mpi_read_export_data(IO_param, comm_IO)
 !
       end subroutine mpi_read_edge_connection
 !

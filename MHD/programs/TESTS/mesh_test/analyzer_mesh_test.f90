@@ -55,13 +55,14 @@
       use nod_phys_send_recv
       use sum_normal_4_surf_group
       use set_parallel_file_name
-      use set_comm_table_4_IO
 !
       use m_ctl_data_test_mesh
       use set_control_test_mesh
       use mpi_load_mesh_data
       use const_jacobians_3d
       use parallel_FEM_mesh_init
+      use load_element_mesh_data
+      use output_test_mesh
 !
       use t_file_IO_parameter
       use t_mesh_data
@@ -74,7 +75,6 @@
       type(field_IO_params) ::  tested_mesh_file
       type(mesh_geometry) :: mesh_IO
       type(surf_edge_IO_file) :: ele_mesh_IO
-      character(len=kchara) :: file_prefix
 !
 !     --------------------- 
 !
@@ -100,7 +100,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(mesh, group, ele_mesh)
+      call FEM_mesh_init_with_IO                                        &
+     &   (tested_mesh_file, mesh, group, ele_mesh)
 !
 !  -------------------------------
 !
@@ -116,6 +117,10 @@
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    mesh, ele_mesh%surf, group, jacobians1)
 !
+      if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
+      call const_edge_vector(my_rank, nprocs,                           &
+     &    mesh%node, ele_mesh%edge, jacobians1)
+!
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_spherical'
@@ -125,86 +130,18 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
-      call const_edge_vector(my_rank, nprocs,                           &
-     &    mesh%node, ele_mesh%edge, jacobians1)
-!
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_spherical'
       call s_cal_edge_vector_spherical(ele_mesh%edge)
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_cylindrical'
       call s_cal_edge_vector_cylindrical(ele_mesh%edge)
 !
 !  ---------------------------------------------
-!     output node data
-!      spherical and cylindrical coordinate
+!     output element, surface, edge data
 !  ---------------------------------------------
 !
-      mesh_IO%nod_comm%num_neib = 0
-      call allocate_type_neib_id(mesh_IO%nod_comm)
-      call copy_node_sph_to_xx(mesh%node, mesh_IO%node)
-!
-      call write_node_position_sph(my_rank, def_sph_mesh_head, mesh_IO)
-!
-      mesh_IO%nod_comm%num_neib = 0
-      call allocate_type_neib_id(mesh_IO%nod_comm)
-      call copy_node_cyl_to_xx(mesh%node, mesh_IO%node)
-!
-      call write_node_position_cyl(my_rank, def_cyl_mesh_head, mesh_IO)
-!
-!  -------------------------------
-!     output element data
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'
-      call copy_comm_tbl_type(ele_mesh%ele_comm, ele_mesh_IO%comm)
-      call calypso_mpi_barrier
-      file_prefix = def_ele_mesh_head
-!
-      call copy_ele_geometry_to_IO                                      &
-     &   (mesh%ele, ele_mesh_IO%node, ele_mesh_IO%sfed)
-      call calypso_mpi_barrier
-!
-      call output_element_file(my_rank, file_prefix, ele_mesh_IO)
-      call calypso_mpi_barrier
-!
-!  -------------------------------
-!     output surface data
-!  -------------------------------
-!
-      file_prefix = def_surf_mesh_head
-      call copy_comm_tbl_type(ele_mesh%surf_comm, ele_mesh_IO%comm)
-      call calypso_mpi_barrier
-      if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
-      call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele,      &
-     &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
-      call calypso_mpi_barrier
-      call copy_surf_geometry_to_IO(ele_mesh%surf,                      &
-     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
-      call calypso_mpi_barrier
-!
-      if (iflag_debug.gt.0) write(*,*) 'output_surface_file'
-      call output_surface_file(my_rank, file_prefix, ele_mesh_IO)
-      call calypso_mpi_barrier
-!
-!  -------------------------------
-!     output edge data
-!  -------------------------------
-!
-      file_prefix = def_edge_mesh_head
-      call copy_comm_tbl_type(ele_mesh%edge_comm, ele_mesh_IO%comm)
-      if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO'
-      call calypso_mpi_barrier
-      call copy_edge_connect_to_IO                                      &
-     &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf,        &
-     &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
-      call calypso_mpi_barrier
-      call copy_edge_geometry_to_IO(ele_mesh%edge,                      &
-     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
-      call calypso_mpi_barrier
-!
-      if (iflag_debug.gt.0) write(*,*) 'output_edge_file'
-      call output_edge_file(my_rank, file_prefix, ele_mesh_IO)
-      call calypso_mpi_barrier
+      if (iflag_debug.gt.0) write(*,*) 'output_test_mesh_informations'
+      call output_test_mesh_informations                               &
+     &   (mesh, ele_mesh, mesh_IO, ele_mesh_IO)
 !
       end subroutine initialize_mesh_test
 !

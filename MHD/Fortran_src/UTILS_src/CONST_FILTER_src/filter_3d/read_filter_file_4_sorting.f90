@@ -33,7 +33,6 @@
       use m_filter_file_names
       use m_filter_coefs
       use m_filter_func_4_sorting
-      use set_comm_table_4_IO
       use filter_IO_for_sorting
       use set_parallel_file_name
       use filter_coefs_file_IO

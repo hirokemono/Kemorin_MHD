@@ -43,7 +43,7 @@
 !
       call const_jacobians_edge(my_rank, nprocs, node, edge, jacobians)
 !
-      call allocate_edge_vect_type(edge)
+      call alloc_edge_vect(edge)
       call s_int_edge_vector(max_int_point, jacobians%jac_1d, edge)
 !
       call dealloc_jacobians_edge(edge, jacobians)
@@ -60,7 +60,7 @@
       type(edge_data), intent(inout) :: edge
 !
 !
-      call allocate_edge_vect_sph_type(edge)
+      call alloc_edge_vect_sph(edge)
 !
 !$omp parallel
       call cvt_vector_2_sph_smp                                         &
@@ -82,7 +82,7 @@
       type(edge_data), intent(inout) :: edge
 !
 !
-      call allocate_edge_vect_cyl_type(edge)
+      call alloc_edge_vect_cyl(edge)
 !
 !$omp parallel
       call cvt_vector_2_cyl_smp                                         &

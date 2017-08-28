@@ -70,7 +70,6 @@
       use filter_moment_IO_select
       use read_filter_file_4_sorting
       use set_filter_geometry_4_IO
-      use set_comm_table_4_IO
 !
       integer(kind=kint ) :: ip, ierr
       type (filter_file_data), save :: filter_IO
