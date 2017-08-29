@@ -77,7 +77,7 @@
       subroutine FEM_analyze_sph_trans                                  &
      &         (i_step, udt_file_param, t_IO, visval)
 !
-      use m_ctl_params_sph_trans
+      use t_ctl_params_sph_trans
       use set_ucd_data_to_type
       use nod_phys_send_recv
 !
@@ -126,7 +126,7 @@
 !
       subroutine FEM_finalize_sph_trans(udt_file_param, m_ucd)
 !
-      use m_ctl_params_sph_trans
+      use t_ctl_params_sph_trans
       use t_ucd_data
       use output_parallel_ucd_file
 !

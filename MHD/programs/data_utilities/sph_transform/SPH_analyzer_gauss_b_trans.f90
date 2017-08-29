@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_init_gauss_back_trans(sph_mesh, ipol, rj_fld)
+!!      subroutine SPH_init_gauss_back_trans                            &
+!!     &         (files_param, sph_mesh, ipol, rj_fld)
 !!      subroutine SPH_analyze_gauss_back_trans                         &
 !!     &         (i_step, viz_step, sph_mesh, ipol, rj_fld, visval)
 !
@@ -30,10 +31,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_gauss_back_trans(sph_mesh, ipol, rj_fld)
+      subroutine SPH_init_gauss_back_trans                              &
+     &         (files_param, sph_mesh, ipol, rj_fld)
 !
-      use m_ctl_params_sph_trans
       use m_legendre_transform_list
+      use t_ctl_params_sph_trans
 !
       use r_interpolate_sph_data
       use count_num_sph_smp
@@ -42,6 +44,7 @@
       use pole_sph_transform
       use sph_transfer_all_field
 !
+      type(SPH_TRNS_file_IO_params), intent(in) :: files_param
       type(sph_mesh_data), intent(inout) :: sph_mesh
       type(phys_address), intent(inout) :: ipol
       type(phys_data), intent(inout) :: rj_fld
@@ -54,7 +57,8 @@
 !  ------    set original spectr modes
 !
       call set_sph_magne_address(rj_fld, ipol)
-      call set_cmb_icb_radial_point(cmb_radial_grp, icb_radial_grp,     &
+      call set_cmb_icb_radial_point                                     &
+     &   (files_param%cmb_radial_grp, files_param%icb_radial_grp,       &
      &    sph_mesh%sph_grps%radial_rj_grp)
 !
 !  ---- allocate spectr data
@@ -79,7 +83,7 @@
       subroutine SPH_analyze_gauss_back_trans                           &
      &         (i_step, viz_step, sph_mesh, ipol, rj_fld, visval)
 !
-      use m_ctl_params_sph_trans
+      use t_ctl_params_sph_trans
       use t_VIZ_step_parameter
 !
       use r_interpolate_sph_data

@@ -38,9 +38,14 @@
 !     Label for the entry
 !
       character(len=kchara), parameter                                  &
+     &         :: hd_mesh_test_ctl = 'mesh_test'
+      integer (kind=kint) :: i_mesh_test_ctl = 0
+!
+      character(len=kchara), parameter                                  &
      &                    :: hd_platform = 'data_files_def'
       integer (kind=kint) :: i_platform =   0
 !
+      private :: hd_mesh_test_ctl, i_mesh_test_ctl
       private :: hd_platform, i_platform
 !
 !   --------------------------------------------------------------------
@@ -61,8 +66,7 @@
         open(ctl_file_code, file = fname_test_mesh_ctl, status='old')
 !
         call load_ctl_label_and_line
-        call read_control_platforms                                     &
-     &     (hd_platform, i_platform, comm_test_plt)
+        call read_test_comm_ctl_data
 !
         close(ctl_file_code)
       end if
@@ -71,6 +75,29 @@
       call bcast_ctl_data_4_platform(comm_test_plt)
 !
       end subroutine read_control_4_comm_test
+!
+!   --------------------------------------------------------------------
+!
+      subroutine read_test_comm_ctl_data
+!
+      use m_machine_parameter
+      use m_read_control_elements
+      use skip_comment_f
+!
+!
+      if(right_begin_flag(hd_mesh_test_ctl) .eq. 0) return
+      if (i_mesh_test_ctl .gt. 0) return
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_mesh_test_ctl, i_mesh_test_ctl)
+        if(i_mesh_test_ctl .gt. 0) exit
+!
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, comm_test_plt)
+      end do
+!
+      end subroutine read_test_comm_ctl_data
 !
 !   --------------------------------------------------------------------
 !

@@ -3,10 +3,10 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_analyze_zm_streamfunc                          &
-!!     &         (i_step, rj_org_param, sph_fst_param,                &
-!!     &          viz_step, sph_mesh, ipol, idpdr, itor, rj_fld,      &
-!!     &          t_IO, fld_IO, visval)
+!!      subroutine SPH_analyze_zm_streamfunc                            &
+!!     &         (i_step, files_param, viz_step, sph_mesh,              &
+!!     &          ipol, idpdr, itor, rj_fld, t_IO, fld_IO, visval)
+!!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
 !!        type(sph_mesh_data), intent(in) :: sph_mesh
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -38,16 +38,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_zm_streamfunc                              &
-     &         (i_step, rj_org_param, sph_fst_param,                    &
-     &          viz_step, sph_mesh, ipol, idpdr, itor, rj_fld,          &
-     &          t_IO, fld_IO, visval)
+     &         (i_step, files_param, viz_step, sph_mesh,                &
+     &          ipol, idpdr, itor, rj_fld, t_IO, fld_IO, visval)
 !
       use t_spheric_mesh
       use t_phys_address
       use t_phys_data
       use t_time_data
       use t_field_data_IO
-      use t_file_IO_parameter
+      use t_ctl_params_sph_trans
       use t_VIZ_step_parameter
 !
       use field_IO_select
@@ -59,7 +58,7 @@
 !
 !
       integer(kind = kint), intent(in) :: i_step
-      type(field_IO_params), intent(in) :: rj_org_param, sph_fst_param
+      type(SPH_TRNS_file_IO_params), intent(in) :: files_param
       type(VIZ_step_params), intent(in) :: viz_step
       type(sph_mesh_data), intent(in) :: sph_mesh
       type(phys_address), intent(in) :: ipol, idpdr, itor
@@ -77,12 +76,12 @@
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-        call sel_read_step_SPH_field_file                               &
-     &     (nprocs, my_rank, i_step, sph_fst_param, t_IO, fld_IO)
+        call sel_read_step_SPH_field_file(nprocs, my_rank, i_step,      &
+     &      files_param%fst_file_IO, t_IO, fld_IO)
 !
 !    copy and extend magnetic field to outside
 !
-        if(rj_org_param%iflag_IO .eq. 0) then
+        if(files_param%org_rj_file_IO%iflag_IO .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
           call set_rj_phys_data_from_IO(fld_IO, rj_fld)
         else

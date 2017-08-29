@@ -36,7 +36,7 @@ MOD_COMM_TEST = \
 m_ctl_data_comm_test.o \
 mesh_send_recv_test.o \
 \
-input_control_comm_test.o \
+t_control_param_comm_test.o \
 analyzer_comm_test.o \
 main_comm_test.o
 

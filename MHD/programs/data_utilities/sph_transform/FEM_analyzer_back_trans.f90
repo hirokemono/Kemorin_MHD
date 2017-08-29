@@ -40,7 +40,7 @@
       use t_next_node_ele_4_node
       use t_jacobians
 !
-      use m_ctl_params_sph_trans
+      use t_ctl_params_sph_trans
       use m_array_for_send_recv
 !
       use nod_phys_send_recv
@@ -105,7 +105,7 @@
       subroutine FEM_analyze_back_trans                                 &
      &         (ucd_param, t_IO, ucd, i_step, viz_step, visval)
 !
-      use m_ctl_params_sph_trans
+      use t_ctl_params_sph_trans
       use t_time_data
       use t_ucd_data
       use t_IO_step_parameter

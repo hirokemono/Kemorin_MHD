@@ -33,7 +33,7 @@
       subroutine init_analyzer
 !
       use m_ctl_data_4_sph_trans
-      use m_ctl_params_sph_trans
+      use t_ctl_params_sph_trans
       use parallel_load_data_4_sph
 !
 !     --------------------- 
@@ -61,22 +61,22 @@
       call read_control_data_sph_trans
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans                                   &
-     &   (t_STR, mesh_file_STR, ucd_file_param, sph_fst_param,          &
+      call s_set_ctl_data_4_sph_trans(t_STR, viz_step_STR, files_STR,   &
      &    rj_fld_trans, d_gauss_trans, field_STR, WK_sph_TRNS)
-      call set_ctl_data_4_pick_zm
+      call set_ctl_data_4_pick_zm(files_STR%zm_source_file_param)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh(sph_mesh_trans%sph,               &
+      call load_para_SPH_and_FEM_mesh                                   &
+     &   (files_STR%iflag_access_FEM, sph_mesh_trans%sph,               &
      &    sph_mesh_trans%sph_comms, sph_mesh_trans%sph_grps,            &
      &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,             &
-     &    mesh_file_STR, gen_sph_TRNS)
+     &    files_STR%mesh_file_IO, gen_sph_TRNS)
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
       call FEM_initialize_back_trans                                    &
-     &   (ucd_file_param, viz_step_STR, ele_4_nod_SPH_TRANS,            &
+     &   (files_STR%ucd_file_IO, viz_step_STR, ele_4_nod_SPH_TRANS,     &
      &    jacobians_STR, ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
 !    Initialization for spherical tranform
@@ -97,7 +97,7 @@
 !
       subroutine analyze
 !
-      use m_ctl_params_sph_trans
+      use t_ctl_params_sph_trans
       use sph_rtp_zonal_rms_data
       use coordinate_convert_4_sph
 !
@@ -108,7 +108,7 @@
 !
 !   Input field data
         call FEM_analyze_sph_trans                                      &
-     &     (i_step, udt_org_param, time_IO_TRNS, visval)
+     &     (i_step, files_STR%org_ucd_file_IO, time_IO_TRNS, visval)
 !
 !   Take zonal RMS
         if (iflag_debug.gt.0) write(*,*) 'zonal_rms_all_rtp_field'
@@ -118,8 +118,8 @@
      &      femmesh_STR%mesh%node, field_STR)
 !
         call FEM_analyze_back_trans                                     &
-     &     (zonal_ucd_param, time_IO_TRNS, ucd_SPH_TRNS, i_step,        &
-     &      viz_step_STR, visval)
+     &     (files_STR%zonal_ucd_param, time_IO_TRNS, ucd_SPH_TRNS,      &
+     &      i_step, viz_step_STR, visval)
 !
         if(visval .eq. 0) then
           call visualize_all(viz_step_STR, t_STR%time_d,                &
@@ -128,7 +128,8 @@
         end if
       end do
 !
-      call FEM_finalize_sph_trans(udt_org_param, m_ucd_SPH_TRNS)
+      call FEM_finalize_sph_trans                                       &
+     &   (files_STR%org_ucd_file_IO, m_ucd_SPH_TRNS)
 !
       call output_elapsed_times
 !

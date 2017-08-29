@@ -3,7 +3,6 @@
 !
 !      Written by H. Matsui on May, 2008
 !
-!      subroutine read_control_4_comm_test
 !
 !!   --------------------------------------------------------------------
 !!    Example of control block

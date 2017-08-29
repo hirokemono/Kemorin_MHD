@@ -70,7 +70,8 @@
       character(len=kchara) :: fhead_tmp
 !
 !
-      write(fhead_tmp,'(a,a4)') file_prefix, '_xyz'
+      write(*,*) 'file_prefix: ', file_prefix
+      write(fhead_tmp,'(a,a4)') trim(file_prefix), '_xyz'
       call set_ele_comm_file_name(fhead_tmp, id_ascii_file_fmt,         &
      &    my_rank_IO, file_name)
 !
@@ -100,7 +101,7 @@
       character(len=kchara) :: fhead_tmp
 !
 !
-      write(fhead_tmp,'(a,a4)') file_prefix, '_sph'
+      write(fhead_tmp,'(a,a4)') trim(file_prefix), '_sph'
       call set_ele_comm_file_name(fhead_tmp, id_ascii_file_fmt,       &
      &    my_rank_IO, file_name)
 !
@@ -130,7 +131,7 @@
       character(len=kchara) :: fhead_tmp
 !
 !
-      write(fhead_tmp,'(a,a4)') file_prefix, '_cyl'
+      write(fhead_tmp,'(a,a4)') trim(file_prefix), '_cyl'
       call set_ele_comm_file_name(fhead_tmp, id_ascii_file_fmt,         &
      &    my_rank_IO, file_name)
 !
@@ -161,7 +162,7 @@
       character(len=kchara) :: fhead_tmp
 !
 !
-      write(fhead_tmp,'(a,a4)') file_prefix, '_xyz'
+      write(fhead_tmp,'(a,a4)') trim(file_prefix), '_xyz'
       call set_surf_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
      &    my_rank_IO, file_name)
 !
@@ -192,7 +193,7 @@
       character(len=kchara) :: fhead_tmp
 !
 !
-      write(fhead_tmp,'(a,a4)') file_prefix, '_sph'
+      write(fhead_tmp,'(a,a4)') trim(file_prefix), '_sph'
       call set_surf_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
      &    my_rank_IO, file_name)
 !
@@ -220,7 +221,7 @@
       character(len=kchara) :: fhead_tmp
 !
 !
-      write(fhead_tmp,'(a,a4)') file_prefix, '_cyl'
+      write(fhead_tmp,'(a,a4)') trim(file_prefix), '_cyl'
       call set_surf_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
      &    my_rank_IO, file_name)
 !
@@ -249,7 +250,7 @@
       character(len=kchara) :: fhead_tmp
 !
 !
-      write(fhead_tmp,'(a,a4)') file_prefix, '_xyz'
+      write(fhead_tmp,'(a,a4)') trim(file_prefix), '_xyz'
       call set_edge_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
      &    my_rank_IO, file_name)
 !
@@ -280,7 +281,7 @@
       character(len=kchara) :: fhead_tmp
 !
 !
-      write(fhead_tmp,'(a,a4)') file_prefix, '_sph'
+      write(fhead_tmp,'(a,a4)') trim(file_prefix), '_sph'
       call set_edge_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
      &    my_rank_IO, file_name)
 !
@@ -308,7 +309,7 @@
       character(len=kchara) :: fhead_tmp
 !
 !
-      write(fhead_tmp,'(a,a4)') file_prefix, '_cyl'
+      write(fhead_tmp,'(a,a4)') trim(file_prefix), '_cyl'
       call set_edge_mesh_file_name(fhead_tmp, id_ascii_file_fmt,        &
      &    my_rank_IO, file_name)
 !

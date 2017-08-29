@@ -28,6 +28,10 @@
 !
       implicit  none
 !
+!>      small number
+      real(kind = kreal), parameter :: TINY = 1.0d-14
+!
+      private :: TINY
       private :: compare_ele_comm_test, count_ele_comm_test
 !
 ! ----------------------------------------------------------------------
@@ -130,14 +134,14 @@
       integer(kind = kint), intent(inout) :: num_diff_l
 !
       integer(kind = kint) :: inod
+      real(kind = kreal) :: diff
 !
       num_diff_l = 0
       do inod = inter_d+1, num_d
-        if (   x_comm(3*inod-2)  .ne. x_org(inod,1)                     &
-     &    .or. x_comm(3*inod-1)  .ne. x_org(inod,2)                     &
-     &    .or. x_comm(3*inod  )  .ne. x_org(inod,3) ) then
-          num_diff_l = num_diff_l + 1
-        end if
+        diff =  abs(x_comm(3*inod-2) - x_org(inod,1))                   &
+     &        + abs(x_comm(3*inod-1) - x_org(inod,2))                   &
+     &        + abs(x_comm(3*inod  ) - x_org(inod,3))
+        if (diff .gt. TINY) num_diff_l = num_diff_l + 1
       end do
 !
       end subroutine count_node_comm_test
@@ -157,12 +161,14 @@
       real(kind = kreal), intent(inout) :: x_diff(6*num_diff_l)
 !
       integer(kind = kint) :: inod, icou
+      real(kind = kreal) :: diff
 !
       icou = 0
       do inod = inter_d+1, num_d
-        if (   x_comm(3*inod-2) .ne. x_org(inod,1)                      &
-     &    .or. x_comm(3*inod-1) .ne. x_org(inod,2)                      &
-     &    .or. x_comm(3*inod  ) .ne. x_org(inod,3) ) then
+        diff =  abs(x_comm(3*inod-2) - x_org(inod,1))                   &
+     &        + abs(x_comm(3*inod-1) - x_org(inod,2))                   &
+     &        + abs(x_comm(3*inod  ) - x_org(inod,3))
+        if(diff .gt. TINY) then
           icou = icou + 1
           id_diff(icou) =        inod
           x_diff(6*icou-5) =      x_org(inod,1)
@@ -193,15 +199,15 @@
       integer(kind = kint), intent(inout) :: num_diff_l
 !
       integer(kind = kint) :: inum, iele
+      real(kind = kreal) :: diff
 !
       num_diff_l = 0
       do inum = 1, ntot_import_e
         iele = item_import_e(inum)
-        if (   x_comm(3*iele-2) .ne. x_org(iele,1)                      &
-     &    .or. x_comm(3*iele-1) .ne. x_org(iele,2)                      &
-     &    .or. x_comm(3*iele  ) .ne. x_org(iele,3) ) then
-          num_diff_l = num_diff_l + 1
-        end if
+        diff =  abs(x_comm(3*iele-2) - x_org(iele,1))                   &
+     &        + abs(x_comm(3*iele-1) - x_org(iele,2))                   &
+     &        + abs(x_comm(3*iele  ) - x_org(iele,3))
+        if (diff .gt. TINY) num_diff_l = num_diff_l + 1
       end do
 !
       end subroutine count_ele_comm_test
@@ -225,13 +231,15 @@
       real(kind = kreal), intent(inout) :: x_diff(6*num_diff_l)
 !
       integer(kind = kint) :: inum, iele, icou
+      real(kind = kreal) :: diff
 !
       icou = 0
       do inum = 1, ntot_import_e
         iele = item_import_e(inum)
-        if (   x_comm(3*iele-2) .ne. x_org(iele,1)                      &
-     &    .or. x_comm(3*iele-1) .ne. x_org(iele,2)                      &
-     &    .or. x_comm(3*iele  ) .ne. x_org(iele,3) ) then
+        diff =  abs(x_comm(3*iele-2) - x_org(iele,1))                   &
+     &        + abs(x_comm(3*iele-1) - x_org(iele,2))                   &
+     &        + abs(x_comm(3*iele  ) - x_org(iele,3))
+        if (diff .gt. TINY) then
           icou = icou + 1
           id_diff(icou) =        iele
           x_diff(6*icou-5) =      x_org(iele,1)

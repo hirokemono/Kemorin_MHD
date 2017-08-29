@@ -1,17 +1,25 @@
 !
-!      module input_control_comm_test
+!      module t_control_param_comm_test
 !
 !     Written by H. Matsui on July, 2006
 !
-!!     subroutine s_input_control_comm_test(mesh_file)
-!!      type(field_IO_params), intent(inout) ::  mesh_file
+!!     subroutine s_input_control_comm_test(T_files)
+!!      type(comm_test_files_param), intent(inout) ::  T_files
 !
-      module input_control_comm_test
+      module t_control_param_comm_test
 !
       use m_precision
       use t_file_IO_parameter
 !
       implicit none
+!
+!
+      type comm_test_files_param
+!>        Integer flag to output surface data
+        integer(kind = kint) :: iflag_output_SURF = 0
+!>        Structure of mesh file IO paramters
+        type(field_IO_params) :: mesh_file_IO
+      end type comm_test_files_param
 !
       private :: set_ctl_params_4_comm_test
 !
@@ -21,7 +29,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_comm_test(mesh_file)
+      subroutine s_input_control_comm_test(T_files)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -30,34 +38,35 @@
       use set_surface_data_4_IO
       use set_edge_data_4_IO
 !
-      type(field_IO_params), intent(inout) ::  mesh_file
+      type(comm_test_files_param), intent(inout) ::  T_files
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_comm_test'
       call read_control_4_comm_test
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
-      call set_ctl_params_4_comm_test(comm_test_plt, mesh_file)
+      call set_ctl_params_4_comm_test(comm_test_plt, T_files)
 !
       end subroutine s_input_control_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_comm_test(plt, mesh_file)
+      subroutine set_ctl_params_4_comm_test(plt, T_files)
 !
       use calypso_mpi
       use set_control_platform_data
       use t_ctl_data_4_platforms
 !
       type(platform_data_control), intent(in) :: plt
-      type(field_IO_params), intent(inout) ::  mesh_file
+      type(comm_test_files_param), intent(inout) :: T_files
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call set_control_smp_def(my_rank, plt)
-      call set_control_mesh_def(plt, mesh_file)
+      call set_control_mesh_def(plt, T_files%mesh_file_IO)
+      call set_FEM_surface_output_flag(plt, T_files%iflag_output_SURF)
 !
       end subroutine set_ctl_params_4_comm_test
 !
 !   --------------------------------------------------------------------
 !
-      end module input_control_comm_test
+      end module t_control_param_comm_test

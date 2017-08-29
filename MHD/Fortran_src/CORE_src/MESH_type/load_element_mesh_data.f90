@@ -168,7 +168,8 @@
       call copy_surf_connect_from_IO                                    &
      &   (surf_mesh_IO%ele, surf_mesh_IO%sfed, surf, ele%numele)
 !
-      if (iflag_debug.eq.1)  write(*,*) 'set_surf_rotation_flag'
+      if (iflag_debug.eq.1) write(*,*)                                  &
+     &                    'set_surf_rotation_flag after load'
       call set_surf_rotation_flag(ele%numele, surf%numsurf,             &
      &    ele%nnod_4_ele, surf%nnod_4_surf, ele%ie, surf%ie_surf,       &
      &    surf%isf_4_ele, surf%isf_rot_ele)

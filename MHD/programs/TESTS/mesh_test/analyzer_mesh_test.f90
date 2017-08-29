@@ -39,6 +39,7 @@
 !
       use m_array_for_send_recv
       use m_default_file_prefix
+      use t_control_param_mesh_test
 !
       use copy_mesh_structures
       use set_element_data_4_IO
@@ -57,7 +58,6 @@
       use set_parallel_file_name
 !
       use m_ctl_data_test_mesh
-      use set_control_test_mesh
       use mpi_load_mesh_data
       use const_jacobians_3d
       use parallel_FEM_mesh_init
@@ -72,36 +72,34 @@
 !>     Stracture for Jacobians
       type(jacobians_type), save :: jacobians1
 !
-      type(field_IO_params) ::  tested_mesh_file
+      type(mesh_test_files_param) ::  T_meshes
       type(mesh_geometry) :: mesh_IO
       type(surf_edge_IO_file) :: ele_mesh_IO
 !
 !     --------------------- 
 !
       if (my_rank.eq.0) then
-        write(*,*) 'Construct commutation filter'
+        write(*,*) 'Test mesh commnucations'
         write(*,*) 'Input file: mesh data'
       end if
 !
 !     ----- read control data
 !
-      if (iflag_debug.gt.0) write(*,*) 'read_control_4_mesh_test'
       call read_control_4_mesh_test
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_4_test_mesh'
-      call set_ctl_params_4_test_mesh(mesh_test_plt, tested_mesh_file)
+      call set_ctl_params_4_test_mesh(mesh_test_plt, T_meshes)
 !
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(tested_mesh_file, nprocs, mesh, group,        &
+      call mpi_input_mesh(T_meshes%mesh_file_IO, nprocs, mesh, group,   &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_init_with_IO                                        &
-     &   (tested_mesh_file, mesh, group, ele_mesh)
+      call FEM_mesh_init_with_IO(T_meshes%iflag_output_SURF,            &
+     &    T_meshes%mesh_file_IO, mesh, group, ele_mesh)
 !
 !  -------------------------------
 !

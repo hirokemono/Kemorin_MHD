@@ -59,8 +59,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, t_SHR%init_d%i_time_step, sph_file_spec_p,   &
-     &    spec_time_IO, sph_spec_IO)
+     &   (nprocs, my_rank, t_SHR%init_d%i_time_step,                    &
+     &    files_SHR%sph_file_IO, spec_time_IO, sph_spec_IO)
 !
 !  -------------------------------
 !

@@ -18,10 +18,11 @@
       use t_mesh_data
       use t_belonged_element_4_node
       use t_file_IO_parameter
+      use t_control_param_comm_test
 !
       implicit none
 !
-      type(field_IO_params), save ::  mesh_file_test
+      type(comm_test_files_param), save ::  T_files
       type(mesh_data), save :: test_fem
       type(element_geometry), save :: test_ele_mesh
 !
@@ -36,7 +37,6 @@
       subroutine initialize_communication_test
 !
       use m_array_for_send_recv
-      use input_control_comm_test
       use parallel_FEM_mesh_init
       use mesh_send_recv_test
       use collect_diff_4_comm_test
@@ -84,18 +84,19 @@
 !     --------------------- 
 !
       if (iflag_debug.gt.0) write(*,*) 's_input_control_comm_test'
-      call s_input_control_comm_test(mesh_file_test)
+      call s_input_control_comm_test(T_files)
 !
 !  --  read geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
-     &   (mesh_file_test, nprocs, test_fem%mesh, test_fem%group,        &
+     &   (T_files%mesh_file_IO, nprocs, test_fem%mesh, test_fem%group,  &
      &    test_ele_mesh%surf%nnod_4_surf,                               &
      &    test_ele_mesh%edge%nnod_4_edge)
 !
       call FEM_mesh_init_with_IO                                        &
-     &   (mesh_file_test, test_fem%mesh, test_fem%group, test_ele_mesh)
+     &   (T_files%iflag_output_SURF, T_files%mesh_file_IO,              &
+     &    test_fem%mesh, test_fem%group, test_ele_mesh)
 !
 !  -------------------------------------------
 !

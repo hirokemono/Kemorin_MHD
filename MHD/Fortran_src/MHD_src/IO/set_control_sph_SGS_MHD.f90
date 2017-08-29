@@ -78,6 +78,7 @@
       use t_sph_trans_arrays_MHD
       use t_const_spherical_grid
       use t_sph_boundary_input_data
+      use t_ctl_params_gen_sph_shell
 !
       use m_flexible_time_step
 !
@@ -92,7 +93,6 @@
       use set_control_4_time_steps
 !
       use set_control_4_pickup_sph
-      use set_ctl_gen_shell_grids
       use parallel_ucd_IO_select
       use set_control_4_SGS
 !
@@ -143,10 +143,9 @@
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call check_control_num_domains(plt)
       call set_control_smp_def(my_rank, plt)
-      call set_control_mesh_def(plt, MHD_files%mesh_file_IO)
-      call set_FEM_mesh_switch_4_SPH(plt, iflag_output_mesh)
       call set_control_sph_mesh                                         &
-     &   (plt, MHD_files%mesh_file_IO, MHD_files%sph_file_IO)
+     &   (plt, MHD_files%mesh_file_IO, MHD_files%sph_file_IO,           &
+     &    MHD_files%iflag_access_FEM, MHD_files%iflag_output_SURF)
       call set_control_restart_file_def(plt, MHD_files%fst_file_IO)
       call set_merged_ucd_file_define(plt, MHD_files%ucd_file_IO)
       call set_control_org_sph_files(org_plt, MHD_files)

@@ -64,7 +64,7 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, my_rank, file_name)
+      call ele_mesh_file_name_by_param(mesh_file, my_rank, file_name)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -105,7 +105,7 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, my_rank, file_name)
+      call surf_mesh_file_name_by_param(mesh_file, my_rank, file_name)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -146,7 +146,7 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, my_rank, file_name)
+      call edge_mesh_file_name_by_param(mesh_file, my_rank, file_name)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -186,7 +186,7 @@
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, my_rank, file_name)
+      call ele_mesh_file_name_by_param(mesh_file, my_rank, file_name)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -221,7 +221,7 @@
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, my_rank, file_name)
+      call surf_mesh_file_name_by_param(mesh_file, my_rank, file_name)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then
@@ -256,7 +256,7 @@
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !
 !
-      call set_mesh_file_name_by_param(mesh_file, my_rank, file_name)
+      call edge_mesh_file_name_by_param(mesh_file, my_rank, file_name)
 !
       if(mesh_file%iflag_format                                         &
      &     .eq. iflag_single+id_binary_file_fmt) then

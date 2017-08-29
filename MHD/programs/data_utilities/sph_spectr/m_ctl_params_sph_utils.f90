@@ -22,12 +22,31 @@
 !
       implicit  none
 !
+!>      Structure of file name and format for spectr data utilities
+      type SPH_UTIL_file_IO_params
+!>        Integer flag to access FEM mesh
+        integer(kind = kint) :: iflag_FEM_mesh =    0
+!>        Integer flag to output surface data
+        integer(kind = kint) :: iflag_output_SURF = 0
+!
+!>        Structure of mesh file IO paramters
+        type(field_IO_params) :: mesh_file_IO
+!>        Structure of file name and format for spectr data file
+        type(field_IO_params) :: sph_file_IO
+!
+!>        Structure of old spherical shell mesh file
+        type(field_IO_params) :: org_rj_file_IO
+!>        Structure for original restart file  paramters
+        type(field_IO_params) :: org_rst_file_IO
+      end type SPH_UTIL_file_IO_params
+!
+!
 !       Structure for time stepping parameters
       type(time_step_param), save :: t_SHR
+!       Structure for time stepping parameters
+      type(SPH_UTIL_file_IO_params), save :: files_SHR
 !
       type(phys_data), save :: nod_fld
-!
-      type(field_IO_params), save :: sph_file_spec_p
 !
       type(field_IO_params), save :: spec_fst_param
       type(field_IO_params), save :: zm_sph_fst_param
@@ -97,21 +116,18 @@
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
 !
-      type(field_IO_params) :: mesh_file
-      type(field_IO_params) :: rj_org_param
-      type(field_IO_params) :: rst_org_param
-!
       integer(kind = kint) :: ierr
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, su_plt)
       call set_control_smp_def(my_rank, su_plt)
-      call set_control_mesh_def(su_plt, mesh_file)
-      call set_control_sph_mesh(su_plt, mesh_file, sph_file_spec_p)
+      call set_control_sph_mesh                                         &
+     &   (su_plt, files_SHR%mesh_file_IO, files_SHR%sph_file_IO,        &
+     &    files_SHR%iflag_FEM_mesh, files_SHR%iflag_output_SURF)
       call set_control_mesh_file_def                                    &
-     &   (def_org_sph_rj_head, org_su_plt, rj_org_param)
+     &   (def_org_sph_rj_head, org_su_plt, files_SHR%org_rj_file_IO)
       call set_control_mesh_file_def                                    &
-     &   (def_org_rst_header, org_su_plt, rst_org_param)
+     &   (def_org_rst_header, org_su_plt, files_SHR%org_rst_file_IO)
 !
 !      stepping parameter
 !
@@ -142,7 +158,7 @@
         time_SHR%ucd_step%increment = time_SHR%rst_step%increment
       end if
 !
-      if( (rj_org_param%iflag_IO) .gt. 0) then
+      if( (files_SHR%org_rj_file_IO%iflag_IO) .gt. 0) then
         call set_parallel_file_ctl_params(org_sph_file_head,            &
      &      org_su_plt%restart_file_prefix,                             &
      &      org_su_plt%sph_file_fmt_ctl, spec_fst_param)

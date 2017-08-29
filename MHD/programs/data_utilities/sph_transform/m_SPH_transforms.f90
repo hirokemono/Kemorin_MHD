@@ -15,6 +15,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use t_ctl_params_sph_trans
       use t_step_parameter
       use t_time_data
       use t_mesh_data
@@ -25,7 +26,6 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_global_gauss_coefs
-      use t_file_IO_parameter
       use t_sph_transforms
       use t_phys_name_4_sph_trans
       use t_const_spherical_grid
@@ -36,7 +36,7 @@
       type(time_step_param), save :: t_STR
 !
 !>      Structure for field data IO paramters
-      type(field_IO_params), save ::  mesh_file_STR
+      type(SPH_TRNS_file_IO_params), save ::  files_STR
 !
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
@@ -55,6 +55,9 @@
 !
 !>        Instance for FEM field data IO
       type(time_data), save :: time_IO_TRNS
+!>      Increment for visualizations
+      type(VIZ_step_params), save :: viz_step_STR
+!
       type(ucd_data), save :: ucd_SPH_TRNS
 !>        Instance for numbers of FEM mesh for merged IO
       type(merged_ucd_data), save :: m_ucd_SPH_TRNS
@@ -94,7 +97,8 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_init_with_IO(mesh_file_STR,                         &
+      call FEM_mesh_init_with_IO                                        &
+     &   (files_STR%iflag_output_SURF, files_STR%mesh_file_IO,          &
      &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'

@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine FEM_mesh_init_with_IO                                &
-!!     &        (mesh_file, mesh, group, ele_mesh)
+!!     &        (iflag_output_SURF, mesh_file, mesh, group, ele_mesh)
 !!      subroutine FEM_mesh_initialization(mesh, group, ele_mesh)
 !!        type(field_io_params), intent(in) :: mesh_file
 !!        type(mesh_geometry), intent(inout) :: mesh
@@ -39,7 +39,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_mesh_init_with_IO                                  &
-     &        (mesh_file, mesh, group, ele_mesh)
+     &         (iflag_output_SURF, mesh_file, mesh, group, ele_mesh)
 !
       use t_file_io_parameter
       use t_read_mesh_data
@@ -52,6 +52,7 @@
       use const_element_comm_tables
       use mesh_file_name_by_param
 !
+      integer(kind = kint), intent(in) :: iflag_output_SURF
       type(field_io_params), intent(in) :: mesh_file
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -64,11 +65,12 @@
       iflag_ele_mesh =  check_exist_ele_mesh(mesh_file, izero)          &
      &                + check_exist_surf_mesh(mesh_file, izero)         &
      &                + check_exist_edge_mesh(mesh_file, izero)
-      if (iflag_debug.gt.0) write(*,*) 'mpi_load_element_surface_edge'
       if(iflag_ele_mesh .eq. 0) then
+        if(iflag_debug.gt.0) write(*,*) 'mpi_load_element_surface_edge'
         call mpi_load_element_surface_edge                              &
      &     (mesh_file, mesh, ele_mesh, ele_mesh_IO)
       end if
+      call calypso_mpi_barrier
 !
 !  -------------------------------
 !      if (iflag_debug.gt.0) write(*,*) 'set_local_node_id_4_monitor'
@@ -96,7 +98,7 @@
         call check_whole_num_of_elements(mesh%ele)
       end if
 !
-      if(iflag_ele_mesh .ne. 0) then
+      if(iflag_ele_mesh .ne. 0 .and. iflag_output_SURF .gt. 0) then
         call mpi_output_element_surface_edge                            &
      &         (mesh_file, mesh, ele_mesh, ele_mesh_IO)
       end if
