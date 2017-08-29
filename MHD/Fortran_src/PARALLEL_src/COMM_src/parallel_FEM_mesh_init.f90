@@ -41,7 +41,7 @@
       subroutine FEM_mesh_init_with_IO                                  &
      &         (iflag_output_SURF, mesh_file, mesh, group, ele_mesh)
 !
-      use t_file_io_parameter
+      use t_file_IO_parameter
       use t_read_mesh_data
 !
       use m_array_for_send_recv
@@ -112,7 +112,7 @@
 !
       subroutine FEM_mesh_initialization(mesh, group, ele_mesh)
 !
-      use t_file_io_parameter
+      use t_file_IO_parameter
       use t_read_mesh_data
 !
       use m_array_for_send_recv
@@ -162,7 +162,7 @@
       subroutine mpi_load_element_surface_edge                          &
      &         (mesh_file, mesh, ele_mesh, ele_mesh_IO)
 !
-      use t_file_io_parameter
+      use t_file_IO_parameter
       use t_read_mesh_data
       use load_element_mesh_data
       use element_mesh_MPI_IO_select
@@ -194,7 +194,7 @@
       subroutine mpi_output_element_surface_edge                        &
      &         (mesh_file, mesh, ele_mesh, ele_mesh_IO)
 !
-      use t_file_io_parameter
+      use t_file_IO_parameter
       use t_read_mesh_data
       use load_element_mesh_data
       use element_mesh_MPI_IO_select
