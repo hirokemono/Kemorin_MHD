@@ -1,5 +1,5 @@
 !
-!      module m_scalar_surf_id
+!      module scalar_surf_id
 !
 !      Written by H. Matsui on Sep. 2005
 !
@@ -17,7 +17,7 @@
 !!        type(boundary_condition_list), intent(in) :: scalar_surf
 !!        type(scaler_surf_bc_type),  intent(inout) :: Ssf_bcs
 !
-      module m_scalar_surf_id
+      module scalar_surf_id
 !
       use m_precision
 !
@@ -164,4 +164,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module m_scalar_surf_id
+      end module scalar_surf_ids

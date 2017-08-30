@@ -96,8 +96,8 @@
      &         (IO_bc, sf_grp, sf_grp_nod, MHD_BC, surf_bcs)
 !
       use m_machine_parameter
-      use m_scalar_surf_id
-      use m_vector_surf_id
+      use scalar_surf_id
+      use vector_surf_id
 !
       type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
@@ -159,8 +159,8 @@
      &          fl_prop, cd_prop, ht_prop, cp_prop, MHD_BC,             &
      &          surf_bcs)
 !
-      use m_scalar_surf_id
-      use m_vector_surf_id
+      use scalar_surf_id
+      use vector_surf_id
 !
       use set_normal_field
 !

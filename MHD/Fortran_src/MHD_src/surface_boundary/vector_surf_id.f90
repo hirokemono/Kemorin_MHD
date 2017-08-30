@@ -1,5 +1,5 @@
 !
-!      module m_vector_surf_id
+!      module vector_surf_id
 !
 !      Written by H. Matsui on Sep. 2005
 !
@@ -24,7 +24,7 @@
 !!        type(boundary_condition_list), intent(in) :: vector_surf
 !!        type(vector_surf_bc_type), intent(inout) :: Bsf_bcs
 !
-      module m_vector_surf_id
+      module vector_surf_id
 !
       use m_precision
 !
@@ -192,4 +192,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module m_vector_surf_id
+      end module vector_surf_id
