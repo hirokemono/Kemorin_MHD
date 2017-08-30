@@ -139,7 +139,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'output_test_mesh_informations'
       call output_test_mesh_informations                               &
-     &   (mesh, ele_mesh, mesh_IO, ele_mesh_IO)
+     &   (my_rank, mesh, ele_mesh, mesh_IO, ele_mesh_IO)
 !
       end subroutine initialize_mesh_test
 !

@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine output_test_mesh_informations                        &
-!!     &         (mesh, ele_mesh, mesh_IO, ele_mesh_IO)
+!!     &         (my_rank, mesh, ele_mesh, mesh_IO, ele_mesh_IO)
 !!@endverbatim
 !
       module output_test_mesh
@@ -19,7 +19,6 @@
       use m_default_file_prefix
       use t_mesh_data
       use t_read_mesh_data
-      use calypso_mpi
 !
       implicit none
 !
@@ -30,7 +29,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_test_mesh_informations                          &
-     &         (mesh, ele_mesh, mesh_IO, ele_mesh_IO)
+     &         (my_rank, mesh, ele_mesh, mesh_IO, ele_mesh_IO)
 !
       use copy_mesh_structures
       use mesh_file_IO
@@ -40,6 +39,7 @@
       use element_file_IO
       use element_geometry_file_IO
 !
+      integer(kind = kint), intent(in) :: my_rank
       type(mesh_geometry), intent(in) :: mesh
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_geometry), intent(inout) :: mesh_IO
