@@ -10,7 +10,7 @@
 !!      subroutine input_control_SPH_dynamobench                        &
 !!     &          (MHD_files, bc_IO, DMHD_ctl, sph, comms_sph, sph_grps,&
 !!     &           rj_fld, nod_fld, pwr, flex_p, MHD_step,              &
-!!     &           MHD_prop, MHD_BC, WK, cdat)
+!!     &           MHD_prop, MHD_BC, WK, cdat, bench)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
@@ -30,6 +30,7 @@
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!        type(circle_fld_maker), intent(inout) :: cdat
+!!        type(dynamobench_monitor), intent(inout) :: bench
 !!@endverbatim
 !
 !
@@ -40,7 +41,6 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_field_4_dynamobench
       use t_control_parameter
       use t_const_spherical_grid
       use t_MHD_file_parameter
@@ -57,6 +57,7 @@
       use t_bc_data_list
       use t_select_make_SPH_mesh
       use t_flex_delta_t_data
+      use t_field_4_dynamobench
 !
       implicit none
 !
@@ -75,7 +76,7 @@
       subroutine input_control_SPH_dynamobench                          &
      &          (MHD_files, bc_IO, DMHD_ctl, sph, comms_sph, sph_grps,  &
      &           rj_fld, nod_fld, pwr, flex_p, MHD_step,                &
-     &           MHD_prop, MHD_BC, WK, cdat)
+     &           MHD_prop, MHD_BC, WK, cdat, bench)
 !
       use t_ctl_data_MHD
       use t_field_on_circle
@@ -100,6 +101,7 @@
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(circle_fld_maker), intent(inout) :: cdat
+      type(dynamobench_monitor), intent(inout) :: bench
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
@@ -114,7 +116,8 @@
      &   (DMHD_ctl%psph_ctl%spctl, sph%sph_params, rj_fld, nod_fld)
       call set_ctl_params_dynamobench                                   &
      &   (DMHD_ctl%Dmodel_ctl%fld_ctl%field_ctl,                        &
-     &    DMHD_ctl%smonitor_ctl%meq_ctl, cdat%circle, cdat%d_circle)
+     &    DMHD_ctl%smonitor_ctl%meq_ctl, cdat%circle, cdat%d_circle,    &
+     &    bench)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -124,7 +127,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ctl_params_dynamobench                             &
-     &         (field_ctl, meq_ctl, circle, d_circle)
+     &         (fld_ctl, meq_ctl, circle, d_circle, bench)
 !
       use t_ctl_data_sph_vol_spectr
       use t_read_control_arrays
@@ -133,11 +136,12 @@
       use m_phys_labels
       use m_phys_constants
 !
-      type(ctl_array_c3), intent(in) :: field_ctl
+      type(ctl_array_c3), intent(in) :: fld_ctl
       type(mid_equator_control), intent(in) :: meq_ctl
 !
       type(fields_on_circle), intent(inout) :: circle
       type(phys_data), intent(inout) :: d_circle
+      type(dynamobench_monitor), intent(inout) :: bench
 !
       integer(kind = kint) :: ifld
 !
@@ -149,35 +153,36 @@
         circle%mphi_circle = meq_ctl%nphi_mid_eq_ctl%intvalue
       end if
 !
-      do ifld = 1, field_ctl%num
-        if(field_ctl%c1_tbl(ifld) .eq. fhd_temp) ibench_temp = 1
-        if(field_ctl%c1_tbl(ifld) .eq. fhd_velo) ibench_velo = 1
-        if(field_ctl%c1_tbl(ifld) .eq. fhd_magne) ibench_magne = 1
+      do ifld = 1, fld_ctl%num
+        if(fld_ctl%c1_tbl(ifld) .eq. fhd_temp) bench%ibench_temp =   1
+        if(fld_ctl%c1_tbl(ifld) .eq. fhd_velo) bench%ibench_velo =   1
+        if(fld_ctl%c1_tbl(ifld) .eq. fhd_magne) bench%ibench_magne = 1
       end do
 !
-      d_circle%num_phys = ibench_velo + ibench_temp + ibench_magne
+      d_circle%num_phys = bench%ibench_velo + bench%ibench_temp         &
+     &                   + bench%ibench_magne
       call alloc_phys_name_type(d_circle)
 !
       ifld = 0
-      if(ibench_temp .gt. 0) then
+      if(bench%ibench_temp .gt. 0) then
         ifld = ifld + 1
-        ibench_temp = d_circle%istack_component(ifld-1) + 1
+        bench%ibench_temp = d_circle%istack_component(ifld-1) + 1
         d_circle%phys_name(ifld) =     fhd_temp
         d_circle%num_component(ifld) = n_scalar
         d_circle%istack_component(ifld)                                 &
      &        = d_circle%istack_component(ifld-1) + n_scalar
       end if
-      if(ibench_velo .gt. 0) then
+      if(bench%ibench_velo .gt. 0) then
         ifld = ifld + 1
-        ibench_velo = d_circle%istack_component(ifld-1) + 1
+        bench%ibench_velo = d_circle%istack_component(ifld-1) + 1
         d_circle%phys_name(ifld) =     fhd_velo
         d_circle%num_component(ifld) = n_vector
         d_circle%istack_component(ifld)                                 &
      &        = d_circle%istack_component(ifld-1) + n_vector
       end if
-      if(ibench_magne .gt. 0) then
+      if(bench%ibench_magne .gt. 0) then
         ifld = ifld + 1
-        ibench_magne = d_circle%istack_component(ifld-1) + 1
+        bench%ibench_magne = d_circle%istack_component(ifld-1) + 1
         d_circle%phys_name(ifld) =     fhd_magne
         d_circle%num_component(ifld) = n_vector
         d_circle%istack_component(ifld)                                 &
