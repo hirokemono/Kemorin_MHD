@@ -1,10 +1,10 @@
 !t_shape_functions.f90
 !   module   t_shape_functions
 !
-!      subroutine allocate_integrate_parameters
+!      subroutine alloc_integrate_parameters
 !      subroutine set_num_of_int_points
 !      subroutine alloc_gauss_point_id_to_4
-!      subroutine deallocate_gauss_point_id
+!      subroutine dealloc_gauss_point_id
 !
 !>  arrays for shape functions in element coordinate
       module t_shape_functions
@@ -68,7 +68,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_integrate_parameters(sp_3d, sp_2d, sp_1d)
+      subroutine alloc_integrate_parameters(sp_3d, sp_2d, sp_1d)
 !
       use m_fem_gauss_int_coefs
 !
@@ -83,7 +83,7 @@
       call alloc_2d_gauss_point_id(maxtot_int_2d, max_int_point, sp_2d)
       call alloc_1d_gauss_point_id(maxtot_int_1d, max_int_point, sp_1d)
 !
-      end subroutine allocate_integrate_parameters
+      end subroutine alloc_integrate_parameters
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -182,7 +182,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_gauss_point_id(sp_3d, sp_2d, sp_1d)
+      subroutine dealloc_gauss_point_id(sp_3d, sp_2d, sp_1d)
 !
       type(volume_shape_function), intent(inout) :: sp_3d
       type(surface_shape_function), intent(inout) :: sp_2d
@@ -193,7 +193,7 @@
       call dealloc_2d_gauss_point_id(sp_2d)
       call dealloc_1d_gauss_point_id(sp_1d)
 !
-      end subroutine deallocate_gauss_point_id
+      end subroutine dealloc_gauss_point_id
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

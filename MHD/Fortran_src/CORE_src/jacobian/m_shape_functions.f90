@@ -3,8 +3,6 @@
 !
 !      subroutine allocate_integrate_parameters
 !
-!      subroutine set_num_of_int_points
-!
 !      subroutine allocate_gauss_point_id
 !      subroutine allocate_gauss_point_id_to_4
 !      subroutine allocate_gen_position_to_4
@@ -18,6 +16,7 @@
       module   m_shape_functions
 !
       use m_precision
+      use t_shape_functions
 !
       implicit  none
 !
@@ -60,19 +59,6 @@
       real (kind=kreal), allocatable :: dnxi_ed1(:,:)
 ! 
       real (kind=kreal), allocatable :: dnxi_ed20(:,:)
-!
-!
-      real (kind=kreal), allocatable :: dnxi_infty(:,:,:)
-      real (kind=kreal), allocatable :: dnei_infty(:,:,:)
-      real (kind=kreal), allocatable :: dnzi_infty(:,:,:)
-! 
-      real (kind=kreal), allocatable :: dnxi_infty20(:,:,:)
-      real (kind=kreal), allocatable :: dnei_infty20(:,:,:)
-      real (kind=kreal), allocatable :: dnzi_infty20(:,:,:)
-! 
-      real (kind=kreal), allocatable :: dnxi_infty27(:,:,:)
-      real (kind=kreal), allocatable :: dnei_infty27(:,:,:)
-      real (kind=kreal), allocatable :: dnzi_infty27(:,:,:)
 ! 
 ! ----------------------------------------------------------------------
 !
@@ -93,26 +79,6 @@
       end subroutine allocate_integrate_parameters
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_num_of_int_points
-!
-      use m_fem_gauss_int_coefs
-!
-      integer(kind = kint) :: n
-!
-!
-      maxtot_int_3d = 0
-      maxtot_int_2d = 0
-      maxtot_int_1d = 0
-      do n = 1, max_int_point
-        maxtot_int_3d = maxtot_int_3d + n*n*n
-        maxtot_int_2d = maxtot_int_2d + n*n
-        maxtot_int_1d = maxtot_int_1d + n
-      end do
-!
-      end subroutine set_num_of_int_points
-!
 ! ----------------------------------------------------------------------
 !
       subroutine allocate_gauss_point_id
@@ -220,18 +186,6 @@
         allocate ( dnxi_ed20(num_quad_edge,maxtot_int_1d) )
 !
 !
-        allocate ( dnxi_infty(num_t_linear,nsurf_4_ele,maxtot_int_3d) )
-        allocate ( dnei_infty(num_t_linear,nsurf_4_ele,maxtot_int_3d) )
-        allocate ( dnzi_infty(num_t_linear,nsurf_4_ele,maxtot_int_3d) )
-! 
-        allocate ( dnxi_infty20(num_t_quad,nsurf_4_ele,maxtot_int_3d) )
-        allocate ( dnei_infty20(num_t_quad,nsurf_4_ele,maxtot_int_3d) )
-        allocate ( dnzi_infty20(num_t_quad,nsurf_4_ele,maxtot_int_3d) )
-! 
-        allocate ( dnxi_infty27(num_t_lag,nsurf_4_ele,maxtot_int_3d) )
-        allocate ( dnei_infty27(num_t_lag,nsurf_4_ele,maxtot_int_3d) )
-        allocate ( dnzi_infty27(num_t_lag,nsurf_4_ele,maxtot_int_3d) )
-! 
        dnxi_1 = 0.0d0
        dnei_1 = 0.0d0
        dnzi_1 = 0.0d0
@@ -252,19 +206,6 @@
 !
        dnxi_sf27 = 0.0d0
        dnei_sf27 = 0.0d0
-!
-!
-       dnxi_infty = 0.0d0
-       dnei_infty = 0.0d0
-       dnzi_infty = 0.0d0
-!
-       dnxi_infty20 = 0.0d0
-       dnei_infty20 = 0.0d0
-       dnzi_infty20 = 0.0d0
-!
-       dnxi_infty27 = 0.0d0
-       dnei_infty27 = 0.0d0
-       dnzi_infty27 = 0.0d0
 !
 !
        end subroutine allocate_shape_functions
@@ -306,10 +247,6 @@
       deallocate ( dnxi_ed1 )
       deallocate ( dnxi_ed20 )
 !
-      deallocate ( dnxi_infty, dnei_infty, dnzi_infty )
-      deallocate ( dnxi_infty20, dnei_infty20, dnzi_infty20 )
-      deallocate ( dnxi_infty27, dnei_infty27, dnzi_infty27 )
-! 
       end subroutine deallocate_shape_functions
 !
 ! ----------------------------------------------------------------------

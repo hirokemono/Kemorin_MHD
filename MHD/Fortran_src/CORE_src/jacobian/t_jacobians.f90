@@ -146,7 +146,7 @@
 !
         if(my_rank .lt. nprocs) then
           call cal_jacobian_trilinear(node, ele, jacobians%jac_3d_l)
-          call cal_jacobian_infty_linear(node, ele,                     &
+          call const_linear_jacobian_infinity(node, ele,                &
      &        surf_grp, infinity_list, jacobians%jac_3d_l)
         end if
 !
