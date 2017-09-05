@@ -208,8 +208,8 @@
 !
       call alloc_pvr_subimage_flags(num_pixel_xy, pvr_img)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'cont_overlap_in_each_domain'
-      call cont_overlap_in_each_domain(pvr_start%num_pvr_ray,           &
+      if(iflag_debug .gt. 0) write(*,*) 'count_overlap_in_each_domain'
+      call count_overlap_in_each_domain(pvr_start%num_pvr_ray,          &
      &    pvr_start%id_pixel_start,  pvr_img%num_pixel_xy,              &
      &    pvr_img%iflag_img_pe, pvr_img%iflag_mapped,                   &
      &    pvr_img%num_overlap)
