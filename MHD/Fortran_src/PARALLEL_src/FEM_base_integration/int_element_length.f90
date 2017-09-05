@@ -36,6 +36,7 @@
       use t_geometry_data
       use t_filter_dxdxi
       use t_filter_elength
+      use m_shape_functions
 !
 !
       integer(kind = kint), intent(in) :: nele_filter
@@ -50,6 +51,7 @@
         call fem_element_length_linear                                  &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      ele%istack_ele_smp, max_int_point, nele_filter,             &
+     &      maxtot_int_3d, dnxi_1, dnei_1, dnzi_1,                      &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
@@ -57,6 +59,7 @@
         call fem_element_length_quad                                    &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      ele%istack_ele_smp, max_int_point, nele_filter,             &
+     &      maxtot_int_3d, dnxi_20, dnei_20, dnzi_20,                   &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
@@ -64,6 +67,7 @@
         call fem_element_length_lag                                     &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      ele%istack_ele_smp, max_int_point, nele_filter,             &
+     &      maxtot_int_3d, dnxi_27, dnei_27, dnzi_27,                   &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
@@ -88,8 +92,6 @@
      &          dzdxi_ele, dzdei_ele, dzdzi_ele,                        &
      &          elen_dx2_ele,  elen_dy2_ele,  elen_dz2_ele,             &
      &          elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele)
-!
-      use m_shape_functions
 !
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: nele_filter
@@ -163,16 +165,20 @@
 !
       subroutine fem_element_length_linear(numnod, numele, xx,          &
      &          ie, iele_smp_stack, n_int, nele_filter,                 &
+     &          maxtot_int, dnxi_1, dnei_1, dnzi_1,                     &
      &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
      &          dzdxi_ele, dzdei_ele, dzdzi_ele)
-!
-      use m_shape_functions
 !
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      integer(kind = kint), intent(in) :: maxtot_int
+      real(kind = kreal), intent(in) :: dnxi_1(num_t_linear,maxtot_int)
+      real(kind = kreal), intent(in) :: dnei_1(num_t_linear,maxtot_int)
+      real(kind = kreal), intent(in) :: dnzi_1(num_t_linear,maxtot_int)
 !
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: nele_filter
@@ -334,16 +340,20 @@
 !
       subroutine fem_element_length_quad(numnod, numele, xx,            &
      &          ie, iele_smp_stack, n_int, nele_filter,                 &
+     &          maxtot_int, dnxi_20, dnei_20, dnzi_20,                  &
      &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
      &          dzdxi_ele, dzdei_ele, dzdzi_ele)
-!
-      use m_shape_functions
 !
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: ie(numele,num_t_quad)
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      integer(kind = kint), intent(in) :: maxtot_int
+      real(kind = kreal), intent(in) :: dnxi_20(num_t_quad,maxtot_int)
+      real(kind = kreal), intent(in) :: dnei_20(num_t_quad,maxtot_int)
+      real(kind = kreal), intent(in) :: dnzi_20(num_t_quad,maxtot_int)
 !
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: nele_filter
@@ -629,16 +639,20 @@
 !
       subroutine fem_element_length_lag(numnod, numele, xx,             &
      &          ie, iele_smp_stack, n_int, nele_filter,                 &
+     &          maxtot_int, dnxi_27, dnei_27, dnzi_27,                  &
      &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
      &          dzdxi_ele, dzdei_ele, dzdzi_ele)
-!
-      use m_shape_functions
 !
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: ie(numele,num_t_lag)
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      integer(kind = kint), intent(in) :: maxtot_int
+      real(kind = kreal), intent(in) :: dnxi_27(num_t_lag,maxtot_int)
+      real(kind = kreal), intent(in) :: dnei_27(num_t_lag,maxtot_int)
+      real(kind = kreal), intent(in) :: dnzi_27(num_t_lag,maxtot_int)
 !
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: nele_filter
