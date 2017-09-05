@@ -7,7 +7,7 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine cont_overlap_in_each_domain                          &
+!!      subroutine count_overlap_in_each_domain                         &
 !!     &         (num_pvr_ray, id_pixel_start,                          &
 !!     &          num_pixel_xy, iflag_img_pe, iflag_mapped, num_overlap)
 !!      subroutine count_pixel_for_composit(num_pixel_xy,               &
@@ -45,7 +45,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cont_overlap_in_each_domain                            &
+      subroutine count_overlap_in_each_domain                           &
      &         (num_pvr_ray, id_pixel_start,                            &
      &          num_pixel_xy, iflag_img_pe, iflag_mapped, num_overlap)
 !
@@ -71,7 +71,7 @@
       end do
       num_overlap = maxval(iflag_mapped,1)
 !
-      end subroutine cont_overlap_in_each_domain
+      end subroutine count_overlap_in_each_domain
 !
 !  ---------------------------------------------------------------------
 !
