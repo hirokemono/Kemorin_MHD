@@ -11,7 +11,7 @@
 !      subroutine allocate_shape_functions
 !
 !      subroutine deallocate_gauss_point_id
-!      subroutine deallocate_gen_position_to_4
+!      subroutine deallocate_gen_position
 !      subroutine deallocate_shape_functions
 !
 !>  arrays for shape functions in element coordinate
@@ -283,14 +283,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_gen_position_to_4
+      subroutine deallocate_gen_position
 !
 !
       deallocate ( xi1 )
       deallocate ( xi2, ei2 )
       deallocate ( xi3, ei3, zi3 )
 !
-      end subroutine deallocate_gen_position_to_4
+      end subroutine deallocate_gen_position
 !
 ! ----------------------------------------------------------------------
 !

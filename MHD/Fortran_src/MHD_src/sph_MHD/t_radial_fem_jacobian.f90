@@ -76,7 +76,7 @@
       call cal_quad_radiaul_jacobian                                    &
      &   (nri, maxtot_int_1d, radius, jacs_r%j_quad)
 !
-      call deallocate_gen_position_to_4
+      call deallocate_gen_position
       call deallocate_shape_functions
 !
       end subroutine cal_radial_jacobians
