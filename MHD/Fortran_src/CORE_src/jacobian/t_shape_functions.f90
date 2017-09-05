@@ -58,8 +58,6 @@
         real (kind=kreal), allocatable :: dnxi_ed(:,:)
       end type edge_shape_function
 !
-      real (kind=kreal) :: bc_vec_e(8)
-!
       private :: alloc_3d_gauss_point_id, dealloc_3d_gauss_point_id
       private :: alloc_2d_gauss_point_id, dealloc_2d_gauss_point_id
       private :: alloc_1d_gauss_point_id, dealloc_1d_gauss_point_id

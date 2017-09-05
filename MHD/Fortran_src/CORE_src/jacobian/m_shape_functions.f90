@@ -74,8 +74,6 @@
       real (kind=kreal), allocatable :: dnei_infty27(:,:,:)
       real (kind=kreal), allocatable :: dnzi_infty27(:,:,:)
 ! 
-      real (kind=kreal) :: bc_vec_e(8)
-! 
 ! ----------------------------------------------------------------------
 !
       contains
