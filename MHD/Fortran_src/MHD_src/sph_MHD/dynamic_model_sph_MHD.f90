@@ -151,7 +151,7 @@
         call sel_int_zonal_for_model_coefs                              &
      &   (numdir, sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),      &
      &    trns_SGS%frc_rtp(1,irtp_sgs), trns_SGS%fld_rtp(1,irtp_wide),  &
-     &    icomp_sgs, wk_sgs%ntot_comp,                                  &
+     &    wk_sgs%ntot_comp, icomp_sgs,                                  &
      &    wk_sgs%comp_coef, wk_sgs%comp_clip)
 !
         if(iflag_debug .gt. 0)                                          &
