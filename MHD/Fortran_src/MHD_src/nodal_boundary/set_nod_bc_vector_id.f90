@@ -18,8 +18,7 @@
 !!     &          bc_field_name, ibc_field_type, bc_field_mag,          &
 !!     &          ibc, ibc2, num_bc_nod, ibc_id, bc_apt, iref, ii)
 !!      subroutine set_sph_magne_id                                     &
-!!     &         (node, nod_grp, magne_nod, num_bc_field,               &
-!!     &          bc_field_name, ibc_field_type, nod_bc_b, l_f)
+!!     &         (node, nod_grp, bc_list, nod_bc_b, l_f)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
@@ -195,8 +194,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_sph_magne_id                                       &
-     &         (node, nod_grp, magne_nod, num_bc_field,                 &
-     &          bc_field_name, ibc_field_type, nod_bc_b, l_f)
+     &         (node, nod_grp, bc_list, nod_bc_b, l_f)
 !
       use t_nodal_bc_data
       use t_phys_data
@@ -205,10 +203,7 @@
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(boundary_condition_list), intent(in) :: magne_nod
-      integer (kind=kint), intent(in) :: num_bc_field
-      integer (kind=kint), intent(in) :: ibc_field_type(num_bc_field)
-      character (len=kchara), intent(in) :: bc_field_name(num_bc_field)
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       integer (kind = kint), intent(inout) :: l_f(3)
       type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
@@ -217,13 +212,13 @@
 !
 !
       do i = 1, nod_grp%num_grp 
-        do j = 1, num_bc_field 
+        do j = 1, bc_list%num_bc 
 !
-          if (nod_grp%grp_name(i) .eq. bc_field_name(j)) then
+          if (nod_grp%grp_name(i) .eq. bc_list%bc_name(j)) then
 !
-            if ( ibc_field_type(j) == 999 ) then
+            if ( bc_list%ibc_type(j) == 999 ) then
               call set_r_magne_sph                                      &
-     &           (node, nod_grp, magne_nod, l_f, i, j, nod_bc_b)
+     &           (node, nod_grp, bc_list, l_f, i, j, nod_bc_b)
             end if
 !
           end if

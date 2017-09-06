@@ -144,8 +144,7 @@
       call set_bc_fixed_vect_id                                         &
      &   (IO_bc, node, nod_grp, bc_list, nod_bc_b, l_f)
 !
-      call set_sph_magne_id(node, nod_grp, bc_list, bc_list%num_bc,     &
-     &    bc_list%bc_name, bc_list%ibc_type, nod_bc_b, l_f)
+      call set_sph_magne_id(node, nod_grp, bc_list, nod_bc_b, l_f)
 !
       l_s(1:3) = 0
       call set_bc_sgs_vect_id(node, nod_grp, bc_list, sgs_bc_b, l_s)
