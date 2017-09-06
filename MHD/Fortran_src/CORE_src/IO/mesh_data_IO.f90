@@ -137,6 +137,8 @@
       call read_num_node(id_file, my_rank_IO, mesh_IO, ierr)
       if(ierr .ne. 0) return
 !
+      call read_geometry_info(id_file, mesh_IO%node)
+!
 !  ----  read element data -------
 !
 !        write(*,*) 'read_number_of_element'

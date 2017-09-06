@@ -69,6 +69,7 @@
 !      write(id_file,'(a)') '!      (type and connection) '
 !      write(id_file,'(a)') '!'
 !
+      call read_number_of_element(id_file, ele_IO)
       call read_element_info(id_file, ele_IO)
 !
 !      write(id_file,'(a)') '!'

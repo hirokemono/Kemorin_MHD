@@ -144,8 +144,7 @@
        call alloc_ele_connectivity(ele_IO)
 !
        do i=1, ele_IO%numele
-!
-        read(id_file,*) ele_IO%iele_global(i),                          &
+         read(id_file,*) ele_IO%iele_global(i),                         &
      &                  ele_IO%ie(i,1:ele_IO%nodelm(i))
        end do
 !
