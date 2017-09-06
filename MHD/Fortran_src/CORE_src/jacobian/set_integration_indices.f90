@@ -3,13 +3,19 @@
 !
 !       Written by H. Matsui on March. 2006
 !
-!      subroutine set_integrate_indices_3d
-!      subroutine set_integrate_indices_2d
-!      subroutine set_integrate_indices_1d
-!
-!      subroutine set_integration_indices_3d_mesh
-!      subroutine set_integration_indices_2d_mesh
-!      subroutine set_integration_indices_1d_mesh
+!!      subroutine set_integrate_indices_3d                             &
+!!     &         (ntot_int_3d, max_int_point, l_int)
+!!      subroutine set_integrate_indices_2d                             &
+!!     &         (ntot_int_2d, max_int_point, l_int2d)
+!!      subroutine set_integrate_indices_1d                             &
+!!     &         (ntot_int_1d, max_int_point, l_int1d)
+!!
+!!      subroutine set_integration_indices_3d_mesh                      &
+!!     &         (ntot_int_3d, max_int_point, l_int)
+!!      subroutine set_integration_indices_2d_mesh                      &
+!!     &         (ntot_int_2d, max_int_point, l_int2d)
+!!      subroutine set_integration_indices_1d_mesh                      &
+!!     &         (ntot_int_1d, max_int_point, l_int1d)
 !
       module set_integration_indices
 !
@@ -17,7 +23,6 @@
 !
       use m_fem_gauss_int_coefs
       use m_gauss_int_parameters
-      use m_shape_functions
 !
       implicit none
 !
@@ -28,7 +33,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_integrate_indices_3d
+      subroutine set_integrate_indices_3d                               &
+     &         (ntot_int_3d, max_int_point, l_int)
+!
+      integer(kind = kint), intent(in) :: ntot_int_3d
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(inout)                               &
+     &                     :: l_int(3,ntot_int_3d,max_int_point)
 !
       integer(kind = kint) :: n, i, kx, ky, kz
 !
@@ -50,7 +61,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_integrate_indices_2d
+      subroutine set_integrate_indices_2d                               &
+     &         (ntot_int_2d, max_int_point, l_int2d)
+!
+      integer(kind = kint), intent(in) :: ntot_int_2d
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(inout)                               &
+     &                     :: l_int2d(2,ntot_int_2d,max_int_point)
 !
       integer(kind = kint) :: n, i, kx, ky
 !
@@ -69,7 +86,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_integrate_indices_1d
+      subroutine set_integrate_indices_1d                               &
+     &         (ntot_int_1d, max_int_point, l_int1d)
+!
+      integer(kind = kint), intent(in) :: ntot_int_1d
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(inout)                               &
+     &                     :: l_int1d(1,ntot_int_1d,max_int_point)
 !
       integer(kind = kint) :: n, kx
 !
@@ -84,7 +107,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_integration_indices_3d_mesh
+      subroutine set_integration_indices_3d_mesh                        &
+     &         (ntot_int_3d, max_int_point, l_int)
+!
+      integer(kind = kint), intent(in) :: ntot_int_3d
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(inout)                               &
+     &                     :: l_int(3,ntot_int_3d,max_int_point)
 !
       integer(kind = kint) :: nd, ii, j
 !
@@ -118,7 +147,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_integration_indices_2d_mesh
+      subroutine set_integration_indices_2d_mesh                        &
+     &         (ntot_int_2d, max_int_point, l_int2d)
+!
+      integer(kind = kint), intent(in) :: ntot_int_2d
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(inout)                               &
+     &                     :: l_int2d(2,ntot_int_2d,max_int_point)
 !
       integer(kind = kint) :: nd, ii, j
 !
@@ -152,7 +187,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_integration_indices_1d_mesh
+      subroutine set_integration_indices_1d_mesh                        &
+     &         (ntot_int_1d, max_int_point, l_int1d)
+!
+      integer(kind = kint), intent(in) :: ntot_int_1d
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(inout)                               &
+     &                     :: l_int1d(1,ntot_int_1d,max_int_point)
 !
       integer(kind = kint) :: ii
 !

@@ -3,16 +3,17 @@
 !
 !       Written by H. Matsui on March. 2006
 !
-!      subroutine set_gauss_coefs_4_3d
-!      subroutine set_gauss_coefs_4_2d
-!      subroutine set_gauss_coefs_4_1d
+!!      subroutine set_gauss_coefs_4_3d(ntot_int_1d, xi1, ntot_int_3d,  &
+!!     &          max_int_point, l_int, xi3, ei3, zi3)
+!!      subroutine set_gauss_coefs_4_2d(ntot_int_1d, xi1, ntot_int_2d,  &
+!!     &          max_int_point, l_int2d, xi2, ei2)
+!!      subroutine set_gauss_coefs_4_1d(ntot_int_1d, xi1)
 !
       module set_gauss_int_parameters
 !
       use m_precision
 !
       use m_fem_gauss_int_coefs
-      use m_shape_functions
 !
       implicit none
 !
@@ -24,8 +25,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_gauss_coefs_4_3d
+      subroutine set_gauss_coefs_4_3d(ntot_int_1d, xi1, ntot_int_3d,    &
+     &          max_int_point, l_int, xi3, ei3, zi3)
 !
+      integer(kind = kint), intent(in) :: ntot_int_1d, ntot_int_3d
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in)                                  &
+     &                     :: l_int(3,ntot_int_3d,max_int_point)
+      real(kind= kreal), intent(in) :: xi1(ntot_int_1d)
+!
+      real(kind= kreal), intent(inout) :: xi3(ntot_int_3d)
+      real(kind= kreal), intent(inout) :: ei3(ntot_int_3d)
+      real(kind= kreal), intent(inout) :: zi3(ntot_int_3d)
 !
       integer(kind = kint) :: n, ix, ii, i1, i2, i3
 !
@@ -47,15 +58,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_gauss_coefs_4_2d
+      subroutine set_gauss_coefs_4_2d(ntot_int_1d, xi1, ntot_int_2d,    &
+     &          max_int_point, l_int2d, xi2, ei2)
+!
+      integer(kind = kint), intent(in) :: ntot_int_1d, ntot_int_2d
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in)                                  &
+     &                     :: l_int2d(2,ntot_int_2d,max_int_point)
+      real(kind= kreal), intent(in) :: xi1(ntot_int_1d)
+!
+      real(kind= kreal), intent(inout) :: xi2(ntot_int_2d)
+      real(kind= kreal), intent(inout) :: ei2(ntot_int_2d)
 !
       integer(kind = kint) :: n, ii, ix, i1, i2
 !
       do n = 1, max_int_point
         do ii = 1, n*n
           ix = ii + int_start2(n)
-          i1 = l_int(1,ii,n) + int_start1(n)
-          i2 = l_int(2,ii,n) + int_start1(n)
+          i1 = l_int2d(1,ii,n) + int_start1(n)
+          i2 = l_int2d(2,ii,n) + int_start1(n)
           xi2(ix) = xi1(i1)
           ei2(ix) = xi1(i2)
           owe2d(ix) = owe(i1) * owe(i2)
@@ -66,30 +87,37 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_gauss_coefs_4_1d
+      subroutine set_gauss_coefs_4_1d(ntot_int_1d, xi1)
 !
       use m_constants
       use m_gauss_int_parameters
       use t_gauss_points
+!
+      integer(kind = kint), intent(in) :: ntot_int_1d
+      real(kind= kreal), intent(inout) :: xi1(ntot_int_1d)
 !
       integer(kind = kint) :: n
       type(gauss_points) :: gauss_1d
 !
 !
       if (max_int_point .ge. ione) then
-        call set_gauss_coefs_1d_n(ione,   pt1d_1g, wt1d_1g)
+        call set_gauss_coefs_1d_n                                       &
+     &     (ione,   pt1d_1g, wt1d_1g, ntot_int_1d, xi1)
       end if
 !
       if (max_int_point .ge. itwo) then
-        call set_gauss_coefs_1d_n(itwo,   pt1d_2g, wt1d_2g)
+        call set_gauss_coefs_1d_n                                       &
+     &     (itwo,   pt1d_2g, wt1d_2g, ntot_int_1d, xi1)
       end if
 !
       if (max_int_point .ge. ithree) then
-        call set_gauss_coefs_1d_n(ithree, pt1d_3g, wt1d_3g)
+        call set_gauss_coefs_1d_n                                       &
+     &     (ithree, pt1d_3g, wt1d_3g, ntot_int_1d, xi1)
       end if
 !
       if (max_int_point .ge. ifour) then
-        call set_gauss_coefs_1d_n(ifour,  pt1d_4g, wt1d_4g)
+        call set_gauss_coefs_1d_n                                       &
+     &     (ifour,  pt1d_4g, wt1d_4g, ntot_int_1d, xi1)
       end if
 !
 !
@@ -98,7 +126,8 @@
         do n = 5, max_int_point
           call construct_gauss_coefs(n, gauss_1d)
 !
-          call set_gauss_coefs_1d_n(n, gauss_1d%point, gauss_1d%weight)
+          call set_gauss_coefs_1d_n                                     &
+     &       (n, gauss_1d%point, gauss_1d%weight, ntot_int_1d, xi1)
 !
           call dealloc_gauss_points(gauss_1d)
         end do
@@ -109,10 +138,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_gauss_coefs_1d_n(n, pt1d, wt1d)
+      subroutine set_gauss_coefs_1d_n(n, pt1d, wt1d, ntot_int_1d, xi1)
 !
       integer(kind = kint), intent(in) :: n
       real(kind = kreal), intent(in) :: pt1d(n), wt1d(n)
+      integer(kind = kint), intent(in) :: ntot_int_1d
+      real(kind= kreal), intent(inout) :: xi1(ntot_int_1d)
+!
       integer(kind = kint) :: ix, ii
 !
 !

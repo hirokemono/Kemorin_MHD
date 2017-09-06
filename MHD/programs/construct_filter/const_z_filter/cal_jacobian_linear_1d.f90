@@ -58,11 +58,12 @@
 !
 !  set indices for gauss integration
 !
-      call set_integration_indices_1d_mesh
+      call set_integration_indices_1d_mesh                              &
+     &   (maxtot_int_1d, max_int_point, l_int1d)
 !
 !  set weighting for integration
 !
-      call set_gauss_coefs_4_1d
+      call set_gauss_coefs_4_1d(maxtot_int_1d, xi1)
 !
       call alloc_edge_shape_func                                        &
      &   (edge%nnod_4_edge, maxtot_int_1d, spf_1d)

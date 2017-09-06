@@ -70,8 +70,9 @@
       call allocate_gauss_coef_4_fem
 !
       call init_gauss_int_parameters
-      call set_integrate_indices_1d
-      call set_gauss_coefs_4_1d
+      call set_integrate_indices_1d                                     &
+     &   (maxtot_int_2d, max_int_point, l_int1d)
+      call set_gauss_coefs_4_1d(maxtot_int_1d, xi1)
 !
       call alloc_edge_shape_func                                        &
      &   (num_linear_edge, maxtot_int_1d, spf_1d_r)
@@ -79,7 +80,8 @@
      &   (nri, maxtot_int_1d, radius, spf_1d_r, jacs_r%j_lin)
       call dealloc_edge_shape_func(spf_1d_r)
 !
-      call alloc_edge_shape_func(num_quad_edge, maxtot_int_1d, spf_1d_r)
+      call alloc_edge_shape_func                                        &
+     &   (num_quad_edge, maxtot_int_1d, spf_1d_r)
       call cal_quad_radiaul_jacobian                                    &
      &   (nri, maxtot_int_1d, radius, spf_1d_r, jacs_r%j_quad)
       call dealloc_edge_shape_func(spf_1d_r)

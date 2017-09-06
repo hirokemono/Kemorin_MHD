@@ -63,16 +63,20 @@
 !
 !  set indices for gauss integration
 !
-      call set_integrate_indices_1d
-      call set_integrate_indices_2d
-      call set_integrate_indices_3d
+      call set_integrate_indices_1d                                     &
+     &   (maxtot_int_1d, max_int_point, l_int1d)
+      call set_integrate_indices_2d                                     &
+     &   (maxtot_int_2d, max_int_point, l_int2d)
+      call set_integrate_indices_3d                                     &
+     &   (maxtot_int_3d, max_int_point, l_int)
 !
 !  set weighting for integration
 !
-      call set_gauss_coefs_4_1d
-      call set_gauss_coefs_4_2d
-      call set_gauss_coefs_4_3d
-!
+      call set_gauss_coefs_4_1d(maxtot_int_1d, xi1)
+      call set_gauss_coefs_4_2d(maxtot_int_1d, xi1, maxtot_int_2d,      &
+     &    max_int_point, l_int2d, xi2, ei2)
+      call set_gauss_coefs_4_3d(maxtot_int_1d, xi1, maxtot_int_3d,      &
+     &    max_int_point, l_int, xi3, ei3, zi3)
 !
       end subroutine initialize_FEM_integration
 !
