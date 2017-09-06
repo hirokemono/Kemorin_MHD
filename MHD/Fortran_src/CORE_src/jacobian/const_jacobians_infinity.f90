@@ -26,7 +26,6 @@
 !
       use m_geometry_constants
       use m_fem_gauss_int_coefs
-      use m_shape_functions
 !
       use t_mesh_data
       use t_geometry_data
@@ -122,7 +121,7 @@
       call s_cal_shape_func_infty_linear                                &
      &   (jac_3d%ntot_int, infty_grp%sf_apt(1), jac_3d%an_infty,        &
      &    spf_inf8%dnxi_inf, spf_inf8%dnei_inf, spf_inf8%dnzi_inf,      &
-     &    xi3, ei3, zi3)
+     &    spf_3d_8%xi, spf_3d_8%ei, spf_3d_8%zi)
 !
       call cal_jacobian_3d_inf_8(node%numnod, ele%numele,               &
      &    ele%nnod_4_ele, np_smp, ele%ie, node%xx,                      &
@@ -153,7 +152,7 @@
       call s_cal_shape_func_infty_quad(jac_3d%ntot_int,                 &
      &    infty_grp%sf_apt(1), jac_3d%an_infty,                         &
      &    spf_inf20%dnxi_inf, spf_inf20%dnei_inf, spf_inf20%dnzi_inf,   &
-     &    xi3, ei3, zi3)
+     &    spf_3d_20%xi, spf_3d_20%ei, spf_3d_20%zi)
 !
       call cal_jacobian_3d_inf_20(node%numnod, ele%numele,              &
      &    ele%nnod_4_ele, np_smp, ele%ie, node%xx,                      &
@@ -184,7 +183,7 @@
       call s_cal_shape_func_infty_lag                                   &
      &   (jac_3d%ntot_int, infty_grp%sf_apt(1), jac_3d%an_infty,        &
      &    spf_inf27%dnxi_inf, spf_inf27%dnei_inf, spf_inf27%dnzi_inf,   &
-     &    xi3, ei3, zi3)
+     &    spf_3d_27%xi, spf_3d_27%ei, spf_3d_27%zi)
 !
       call cal_jacobian_3d_inf_27(node%numnod, ele%numele,              &
      &    ele%nnod_4_ele, np_smp, ele%ie, node%xx,                      &
@@ -218,7 +217,7 @@
       call s_cal_shape_func_infty_quad(jac_3d%ntot_int,                 &
      &    infty_grp%sf_apt(1), jac_3d%an_infty,                         &
      &    spf_infty%dnxi_inf, spf_infty%dnei_inf, spf_infty%dnzi_inf,   &
-     &    xi3, ei3, zi3)
+     &    spf_3d_20%xi, spf_3d_20%ei, spf_3d_20%zi)
 !
       call cal_jacobian_3d_inf_8_20(node%numnod, ele%numele,            &
      &    ele%nnod_4_ele, np_smp, ele%ie, node%xx,                      &

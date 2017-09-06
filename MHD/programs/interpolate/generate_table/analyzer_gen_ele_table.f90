@@ -28,7 +28,7 @@
 !
       type(next_nod_ele_table), save :: next_tbl_i
 !
-      type(volume_shape_function), save :: spf_3d_I
+      type(shape_finctions_at_points), save :: spfs_I
       type(jacobians_type), save :: jacobians_I
 !
       type(interpolate_table), save :: itp_ele
@@ -89,14 +89,15 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobians_element'
       call max_int_point_by_etype(org_femmesh%mesh%ele%nnod_4_ele)
-      call initialize_FEM_integration
-      call alloc_vol_shape_func                                         &
-     &   (org_femmesh%mesh%ele%nnod_4_ele, maxtot_int_3d, spf_3d_I)
+      call initialize_FEM_integration                                   &
+     &   (spfs_I%spf_3d, spfs_I%spf_2d, spfs_I%spf_1d)
+      call alloc_vol_shape_func(org_femmesh%mesh%ele%nnod_4_ele,        &
+     &    maxtot_int_3d, spfs_I%spf_3d)
       call const_jacobians_element(my_rank, nprocs,                     &
      &    org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
      &    org_femmesh%group%surf_grp, org_femmesh%group%infty_grp,      &
-     &    spf_3d_I, jacobians_I)
-      call dealloc_vol_shape_func(spf_3d_I)
+     &    spfs_I%spf_3d, jacobians_I)
+      call dealloc_vol_shape_func(spfs_I%spf_3d)
 !
 !  -------------------------------
 !

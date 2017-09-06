@@ -17,7 +17,7 @@
       use m_constants
 !
       use m_fem_gauss_int_coefs
-      use m_shape_functions
+      use t_shape_functions
       use cal_shape_function_1d
       use cal_jacobian_1d
 !
@@ -66,13 +66,15 @@
 !
       call set_num_radial_element(nri, jacs_r%j_lin, jacs_r%j_quad)
 !
-      call allocate_integrate_parameters
+      call set_num_of_int_points
       call allocate_gauss_coef_4_fem
 !
       call init_gauss_int_parameters
+      call alloc_1d_gauss_point_id                                      &
+     &   (maxtot_int_1d, max_int_point, spf_1d_r)
       call set_integrate_indices_1d                                     &
-     &   (maxtot_int_2d, max_int_point, l_int1d)
-      call set_gauss_coefs_4_1d(maxtot_int_1d, xi1)
+     &   (maxtot_int_1d, max_int_point, spf_1d_r%l_int)
+      call set_gauss_coefs_4_1d(maxtot_int_1d, spf_1d_r%xi)
 !
       call alloc_edge_shape_func                                        &
      &   (num_linear_edge, maxtot_int_1d, spf_1d_r)
@@ -86,7 +88,7 @@
      &   (nri, maxtot_int_1d, radius, spf_1d_r, jacs_r%j_quad)
       call dealloc_edge_shape_func(spf_1d_r)
 !
-      call deallocate_gen_position
+      call dealloc_1d_gauss_point_id(spf_1d_r)
 !
       end subroutine cal_radial_jacobians
 !
@@ -182,7 +184,7 @@
       call alloc_radial_jac(num_linear_edge, ntot_int, j_lin)
       call set_radial_linear_fem_connect(j_lin)
       call s_cal_shape_function_1d_linear(j_lin%ntot_int, j_lin%an_r,   &
-     &    spf_1d_8%dnxi_ed, xi1)
+     &    spf_1d_8%dnxi_ed, spf_1d_8%xi)
 !
 !   jacobian for quadrature elaments
 !
@@ -218,7 +220,7 @@
       call alloc_radial_jac(num_quad_edge, ntot_int, j_quad)
       call set_radial_quad_fem_connect(j_quad)
       call s_cal_shape_function_1d_quad(j_quad%ntot_int, j_quad%an_r,   &
-     &    spf_1d_20%dnxi_ed, xi1)
+     &    spf_1d_20%dnxi_ed, spf_1d_20%xi)
 !
 !   jacobian for quadrature elaments
 !

@@ -67,10 +67,12 @@
       use t_file_IO_parameter
       use t_mesh_data
       use t_read_mesh_data
+      use t_shape_functions
       use t_jacobians
 !
 !>     Stracture for Jacobians
-      type(jacobians_type), save :: jacobians1
+      type(jacobians_type), save :: jacobians_T
+      type(shape_finctions_at_points), save :: spfs_T
 !
       type(mesh_test_files_param) ::  T_meshes
       type(mesh_geometry) :: mesh_IO
@@ -113,11 +115,11 @@
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
       call max_int_point_by_etype(mesh%ele%nnod_4_ele)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    mesh, ele_mesh%surf, group, jacobians1)
+     &    mesh, ele_mesh%surf, group, spfs_T, jacobians_T)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
       call const_edge_vector(my_rank, nprocs,                           &
-     &    mesh%node, ele_mesh%edge, jacobians1)
+     &    mesh%node, ele_mesh%edge, spfs_T%spf_1d, jacobians_T)
 !
 !  -------------------------------
 !

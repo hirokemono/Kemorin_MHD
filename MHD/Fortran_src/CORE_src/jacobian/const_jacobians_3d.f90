@@ -24,10 +24,9 @@
 !
       use m_geometry_constants
       use m_fem_gauss_int_coefs
-      use m_shape_functions
 !
-      use t_shape_functions
       use t_geometry_data
+      use t_shape_functions
       use t_jacobian_3d
       use t_group_data
       use t_surface_boundary
@@ -47,14 +46,18 @@
 !> Construct shape function, difference of shape function, and Jacobian
 !> for hexadedral element
 !
-      subroutine initialize_FEM_integration
+      subroutine initialize_FEM_integration(spf_3d, spf_2d, spf_1d)
 !
       use set_gauss_int_parameters
       use set_integration_indices
 !
+      type(volume_shape_function), intent(inout) :: spf_3d
+      type(surface_shape_function), intent(inout) :: spf_2d
+      type(edge_shape_function), intent(inout) :: spf_1d
+!
 !  data allocation
 !
-      call allocate_integrate_parameters
+      call set_num_of_int_points
       call allocate_gauss_coef_4_fem
 !
 !  set constant for gauss integration with roots
@@ -63,20 +66,29 @@
 !
 !  set indices for gauss integration
 !
+      call alloc_1d_gauss_point_id                                      &
+     &   (maxtot_int_1d, max_int_point, spf_1d)
+      call alloc_2d_gauss_point_id                                      &
+     &   (maxtot_int_2d, max_int_point, spf_2d)
+      call alloc_3d_gauss_point_id                                      &
+     &   (maxtot_int_3d, max_int_point, spf_3d)
+!
       call set_integrate_indices_1d                                     &
-     &   (maxtot_int_1d, max_int_point, l_int1d)
+     &   (maxtot_int_1d, max_int_point, spf_1d%l_int)
       call set_integrate_indices_2d                                     &
-     &   (maxtot_int_2d, max_int_point, l_int2d)
+     &   (maxtot_int_2d, max_int_point, spf_2d%l_int)
       call set_integrate_indices_3d                                     &
-     &   (maxtot_int_3d, max_int_point, l_int)
+     &   (maxtot_int_3d, max_int_point, spf_3d%l_int)
 !
 !  set weighting for integration
 !
-      call set_gauss_coefs_4_1d(maxtot_int_1d, xi1)
-      call set_gauss_coefs_4_2d(maxtot_int_1d, xi1, maxtot_int_2d,      &
-     &    max_int_point, l_int2d, xi2, ei2)
-      call set_gauss_coefs_4_3d(maxtot_int_1d, xi1, maxtot_int_3d,      &
-     &    max_int_point, l_int, xi3, ei3, zi3)
+      call set_gauss_coefs_4_1d(maxtot_int_1d, spf_1d%xi)
+      call set_gauss_coefs_4_2d                                         &
+     &   (maxtot_int_1d, spf_1d%xi, maxtot_int_2d, max_int_point,       &
+     &    spf_2d%l_int, spf_2d%xi, spf_2d%ei)
+      call set_gauss_coefs_4_3d                                         &
+     &   (maxtot_int_1d, spf_1d%xi, maxtot_int_3d, max_int_point,       &
+     &    spf_3d%l_int, spf_3d%xi, spf_3d%ei, spf_3d%zi)
 !
       end subroutine initialize_FEM_integration
 !
@@ -114,7 +126,8 @@
 !
 !
       call s_cal_shape_function_linear(jac_3d%ntot_int, jac_3d%an,      &
-     &    spf_3d_8%dnxi, spf_3d_8%dnei, spf_3d_8%dnzi, xi3, ei3, zi3)
+     &    spf_3d_8%dnxi, spf_3d_8%dnei, spf_3d_8%dnzi,                  &
+     &    spf_3d_8%xi, spf_3d_8%ei, spf_3d_8%zi)
 !
 !   jacobian for tri-linear elaments
 !
@@ -139,7 +152,7 @@
 !
       call s_cal_shape_function_quad(jac_3d%ntot_int, jac_3d%an,        &
      &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi,               &
-     &    xi3, ei3, zi3)
+     &    spf_3d_20%xi, spf_3d_20%ei, spf_3d_20%zi)
 !
 !   jacobian for tri-linear elaments
 !
@@ -164,7 +177,7 @@
 !
       call s_cal_shape_function_lag(jac_3d%ntot_int, jac_3d%an,         &
      &    spf_3d_27%dnxi, spf_3d_27%dnei, spf_3d_27%dnzi,               &
-     &     xi3, ei3, zi3)
+     &    spf_3d_27%xi, spf_3d_27%ei, spf_3d_27%zi)
 !
 !   jacobian for tri-linear elaments
 !
@@ -191,7 +204,7 @@
 !
       call s_cal_shape_function_quad(jac_3d%ntot_int, jac_3d%an,        &
      &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi,               &
-     &    xi3, ei3, zi3)
+     &    spf_3d_20%xi, spf_3d_20%ei, spf_3d_20%zi)
 !
 !   jacobian for quadrature elaments
 !

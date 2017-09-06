@@ -24,10 +24,10 @@
 !
       use m_geometry_constants
       use m_fem_gauss_int_coefs
-      use m_shape_functions
 !
       use t_geometry_data
       use t_edge_data
+      use t_shape_functions
       use t_jacobian_1d
 !
       implicit none
@@ -72,7 +72,8 @@
 !
 !
       call s_cal_shape_function_1d_linear                               &
-     &   (jac_1d%ntot_int, jac_1d%an_edge, spf_1d_8%dnxi_ed, xi1)
+     &   (jac_1d%ntot_int, jac_1d%an_edge,                              &
+     &    spf_1d_8%dnxi_ed, spf_1d_8%xi)
 !
 !   jacobian for tri-linear elaments
       call cal_jacobian_1d_2                                            &
@@ -97,7 +98,8 @@
 !
 !
       call s_cal_shape_function_1d_quad                                 &
-     &   (jac_1d%ntot_int, jac_1d%an_edge, spf_1d_20%dnxi_ed, xi1)
+     &   (jac_1d%ntot_int, jac_1d%an_edge,                              &
+     &    spf_1d_20%dnxi_ed, spf_1d_20%xi)
 !
 !   jacobian for quadrature elaments
 !
@@ -124,7 +126,7 @@
 !
 !
       call s_cal_shape_function_1d_quad(jac_1d%ntot_int,                &
-     &    jac_1d%an_edge, spf_1d_20%dnxi_ed, xi1)
+     &    jac_1d%an_edge, spf_1d_20%dnxi_ed, spf_1d_20%xi)
 !
 !   jacobian for quadrature elaments
       call cal_jacobian_1d_2_3                                          &

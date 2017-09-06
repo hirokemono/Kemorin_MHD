@@ -5,8 +5,8 @@
 !
 !!      subroutine s_initialize_4_MHD_AMG                               &
 !!     &         (dt, FEM_prm, mesh_1st, ele_1st, ifld_diff, diff_coefs,&
-!!     &          MHD_prop, MHD_BC, DJDS_param, MGCG_WK,                &
-!!     &          MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
+!!     &          MHD_prop, MHD_BC, DJDS_param, spfs,                   &
+!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(inout) :: mesh_1st
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -18,6 +18,7 @@
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
+!!        type(shape_finctions_at_points), intent(inout) :: spfs
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
@@ -52,8 +53,8 @@
 !
       subroutine s_initialize_4_MHD_AMG                                 &
      &         (dt, FEM_prm, mesh_1st, ifld_diff, diff_coefs,           &
-     &          MHD_prop, MHD_BC, DJDS_param, MGCG_WK,                  &
-     &          MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
+     &          MHD_prop, MHD_BC, DJDS_param, spfs,                     &
+     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !
       use t_mesh_data
       use t_edge_data
@@ -90,14 +91,13 @@
       type(DJDS_poarameter), intent(in) :: DJDS_param
       type(mesh_geometry), intent(in) :: mesh_1st
 !
+      type(shape_finctions_at_points), intent(inout) :: spfs
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
       type(MHD_MG_matrices), intent(inout) :: MHD_mat
 !
       integer(kind = kint) :: i_level
-      type(volume_shape_function) :: spf_3d_MG
-      type(surface_shape_function) :: spf_2d_MG
 !
 !
       call split_multigrid_comms(MGCG_WK)
@@ -202,27 +202,27 @@
       do i_level = 1, MGCG_WK%num_MG_level
         call alloc_vol_shape_func                                       &
      &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele%nnod_4_ele,              &
-     &      maxtot_int_3d, spf_3d_MG)
+     &      maxtot_int_3d, spfs%spf_3d)
         call const_jacobians_element                                    &
      &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%node,                        &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%ele,                         &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
      &      MGCG_FEM%MG_mesh(i_level)%group%infty_grp,                  &
-     &      spf_3d_MG, MGCG_FEM%MG_FEM_int(i_level)%jcs)
+     &      spfs%spf_3d, MGCG_FEM%MG_FEM_int(i_level)%jcs)
 !
         call alloc_surf_shape_func                                      &
      &     (MGCG_FEM%MG_ele_mesh(i_level)%surf%nnod_4_surf,             &
-     &      maxtot_int_2d, spf_2d_MG)
+     &      maxtot_int_2d, spfs%spf_2d)
         call const_jacobians_surf_group                                 &
      &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%node,                        &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%ele,                         &
      &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
-     &      spf_2d_MG, MGCG_FEM%MG_FEM_int(i_level)%jcs)
-        call dealloc_surf_shape_func(spf_2d_MG)
-        call dealloc_vol_shape_func(spf_3d_MG)
+     &      spfs%spf_2d, MGCG_FEM%MG_FEM_int(i_level)%jcs)
+        call dealloc_surf_shape_func(spfs%spf_2d)
+        call dealloc_vol_shape_func(spfs%spf_3d)
       end do
 !
 !

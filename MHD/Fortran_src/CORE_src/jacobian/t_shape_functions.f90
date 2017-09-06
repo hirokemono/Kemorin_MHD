@@ -58,37 +58,17 @@
         real (kind=kreal), allocatable :: dnxi_ed(:,:)
       end type edge_shape_function
 !
-      private :: alloc_3d_gauss_point_id, dealloc_3d_gauss_point_id
-      private :: alloc_2d_gauss_point_id, dealloc_2d_gauss_point_id
-      private :: alloc_1d_gauss_point_id, dealloc_1d_gauss_point_id
+!
+      type shape_finctions_at_points
+        type(volume_shape_function)  :: spf_3d
+        type(surface_shape_function)  :: spf_2d
+        type(edge_shape_function)  :: spf_1d
+      end type shape_finctions_at_points
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine alloc_integrate_parameters(spf_3d, spf_2d, spf_1d)
-!
-      use m_fem_gauss_int_coefs
-!
-      type(volume_shape_function), intent(inout) :: spf_3d
-      type(surface_shape_function), intent(inout) :: spf_2d
-      type(edge_shape_function), intent(inout) :: spf_1d
-!
-!
-      call set_num_of_int_points
-!
-      call alloc_3d_gauss_point_id                                      &
-     &   (maxtot_int_3d, max_int_point, spf_3d)
-      call alloc_2d_gauss_point_id                                      &
-     &   (maxtot_int_2d, max_int_point, spf_2d)
-      call alloc_1d_gauss_point_id                                      &
-     &   (maxtot_int_1d, max_int_point, spf_1d)
-!
-      end subroutine alloc_integrate_parameters
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_num_of_int_points
@@ -260,23 +240,23 @@
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_shape_func_infty                                 &
-     &         (nnod_4_ele, nsurf_4_ele, ntot_int, sp_infty)
+     &         (nnod_4_ele, nsurf_4_ele, ntot_int, spf_inf)
 !
       integer(kind = kint), intent(in) :: nnod_4_ele, nsurf_4_ele
       integer(kind = kint), intent(in) :: ntot_int
-      type(infty_shape_function), intent(inout) :: sp_infty
+      type(infty_shape_function), intent(inout) :: spf_inf
 !
 !
-      sp_infty%nnod_4_ele =  nnod_4_ele
-      sp_infty%nsurf_4_ele = nsurf_4_ele
-      sp_infty%ntot_int =     ntot_int
-      allocate(sp_infty%dnxi_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
-      allocate(sp_infty%dnei_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
-      allocate(sp_infty%dnzi_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
+      spf_inf%nnod_4_ele =  nnod_4_ele
+      spf_inf%nsurf_4_ele = nsurf_4_ele
+      spf_inf%ntot_int =     ntot_int
+      allocate(spf_inf%dnxi_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
+      allocate(spf_inf%dnei_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
+      allocate(spf_inf%dnzi_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
 ! 
-      sp_infty%dnxi_inf = 0.0d0
-      sp_infty%dnei_inf = 0.0d0
-      sp_infty%dnzi_inf = 0.0d0
+      spf_inf%dnxi_inf = 0.0d0
+      spf_inf%dnei_inf = 0.0d0
+      spf_inf%dnzi_inf = 0.0d0
 !
       end subroutine alloc_shape_func_infty
 !
@@ -332,14 +312,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_shape_func_infty(sp_infty)
+      subroutine dealloc_shape_func_infty(spf_inf)
 !
-      type(infty_shape_function), intent(inout) :: sp_infty
+      type(infty_shape_function), intent(inout) :: spf_inf
 !
 !
-      deallocate(sp_infty%dnxi_inf)
-      deallocate(sp_infty%dnei_inf)
-      deallocate(sp_infty%dnzi_inf)
+      deallocate(spf_inf%dnxi_inf)
+      deallocate(spf_inf%dnei_inf)
+      deallocate(spf_inf%dnzi_inf)
 ! 
       end subroutine dealloc_shape_func_infty
 !

@@ -4,9 +4,10 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !!      subroutine const_edge_vector                                    &
-!!     &         (my_rank, nprocs, node, edge, jacobians)
+!!     &         (my_rank, nprocs, node, edge, spf_1d, jacobians)
 !!        type(node_data), intent(in) :: node
 !!        type(edge_data), intent(inout) :: edge
+!!        type(edge_shape_function), intent(inout) :: spf_1d
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!      subroutine s_cal_edge_vector_spherical(edge)
 !!      subroutine s_cal_edge_vector_cylindrical(edge)
@@ -24,8 +25,6 @@
 !
       implicit none
 !
-      type(edge_shape_function), save, private :: spf_1d_1
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -33,7 +32,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_edge_vector                                      &
-     &         (my_rank, nprocs, node, edge, jacobians)
+     &         (my_rank, nprocs, node, edge, spf_1d, jacobians)
 !
       use m_fem_gauss_int_coefs
       use int_edge_vector
@@ -41,14 +40,15 @@
       integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(edge_data), intent(inout) :: edge
+      type(edge_shape_function), intent(inout) :: spf_1d
       type(jacobians_type), intent(inout) :: jacobians
 !
 !
       call alloc_edge_shape_func                                        &
-     &   (num_linear_edge, maxtot_int_1d, spf_1d_1)
+     &   (num_linear_edge, maxtot_int_1d, spf_1d)
       call const_jacobians_edge                                         &
-     &   (my_rank, nprocs, node, edge, spf_1d_1, jacobians)
-      call dealloc_edge_shape_func(spf_1d_1)
+     &   (my_rank, nprocs, node, edge, spf_1d, jacobians)
+      call dealloc_edge_shape_func(spf_1d)
 !
       call alloc_edge_vect(edge)
       call s_int_edge_vector(max_int_point, jacobians%jac_1d, edge)

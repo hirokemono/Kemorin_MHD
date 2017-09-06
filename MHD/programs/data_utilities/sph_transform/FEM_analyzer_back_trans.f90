@@ -24,8 +24,11 @@
       use m_SPH_transforms
       use t_VIZ_step_parameter
       use t_file_IO_parameter
+      use t_shape_functions
 !
       implicit none
+!
+      type(shape_finctions_at_points), save, private :: spfs_TRNS
 !
 !-----------------------------------------------------------------------
 !
@@ -80,7 +83,7 @@
         call max_int_point_by_etype(femmesh_STR%mesh%ele%nnod_4_ele)
         call const_jacobian_volume_normals(my_rank, nprocs,             &
      &      femmesh_STR%mesh, elemesh_STR%surf, femmesh_STR%group,      &
-     &      jacobians)
+     &      spfs_TRNS, jacobians)
       end if
 !
 !  -------------------------------

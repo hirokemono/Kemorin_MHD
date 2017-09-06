@@ -28,6 +28,7 @@
       use t_phys_data
       use t_ucd_data
       use t_next_node_ele_4_node
+      use t_shape_functions
       use t_jacobians
       use t_file_IO_parameter
       use t_time_data
@@ -69,6 +70,7 @@
 !>   Structure of included element list for each node
       type(element_around_node), save :: ele_4_nod_VIZ
 !
+      type(shape_finctions_at_points), save :: spfs_VIZ
 !>      Stracture for Jacobians
       type(jacobians_type), save :: jacobians_VIZ
 !
@@ -178,7 +180,7 @@
       call max_int_point_by_etype(femmesh_VIZ%mesh%ele%nnod_4_ele)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    femmesh_VIZ%mesh, elemesh_VIZ%surf, femmesh_VIZ%group,        &
-     &    jacobians_VIZ)
+     &    spfs_VIZ, jacobians_VIZ)
 !
       end subroutine element_normals_4_VIZ
 !

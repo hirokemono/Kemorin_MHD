@@ -140,7 +140,7 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       character(len=kchara), intent(inout)   :: label_sim
 !
-      type(surface_shape_function), save :: spf_2d_1
+      type(shape_finctions_at_points), save :: spfs_1
 !
 !     --------------------------------
 !       set up for mesh information
@@ -260,7 +260,7 @@
       if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes(SGS_par%model_p, ele_mesh,    &
      &    group, fem_sq%i_msq, mesh, FEM_filters%layer_tbl,             &
-     &    fem_int%jcs, MHD_mesh, fem_sq%msq)
+     &    spfs_1, fem_int%jcs, MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
 !
@@ -274,8 +274,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector(my_rank, nprocs,                         &
-     &    mesh%node, ele_mesh%surf, spf_2d_1, fem_int%jcs)
-      call dealloc_surf_shape_func(spf_2d_1)
+     &    mesh%node, ele_mesh%surf, spfs_1%spf_2d, fem_int%jcs)
+      call dealloc_surf_shape_func(spfs_1%spf_2d)
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'
       call int_surface_parameters                                       &
@@ -308,8 +308,9 @@
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG(MHD_step%time_d%dt, FEM_prm, mesh,  &
      &      Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs,          &
-     &      MHD_prop, MHD_BC1, FEM_prm%DJDS_param, MHD_CG%MGCG_WK,      &
-     &      MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM, MHD_CG%MHD_mat)
+     &      MHD_prop, MHD_BC1, FEM_prm%DJDS_param, spfs_1,              &
+     &      MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM,                            &
+     &      MHD_CG%MGCG_MHD_FEM, MHD_CG%MHD_mat)
       end if
 !
 !     --------------------- 

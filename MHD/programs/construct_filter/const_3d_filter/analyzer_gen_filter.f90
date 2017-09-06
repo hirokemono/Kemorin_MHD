@@ -38,7 +38,7 @@
       type(mesh_groups), save :: group_filter
       type(element_geometry), save :: ele_filter
 !
-      type(volume_shape_function), save :: spf_3d_f
+      type(shape_finctions_at_points), save :: spfs_f
 !>      Stracture for FEM assembling
       type(finite_element_integration), save :: fem_int_f
 !
@@ -142,10 +142,12 @@
 !
       if (iflag_debug.eq.1)  write(*,*)  'const_jacobian_and_volume'
       call maximum_integration_points(num_int_points)
+      call initialize_FEM_integration                                   &
+     &   (spfs_f%spf_3d, spfs_f%spf_2d, spfs_f%spf_1d)
       call const_jacobian_and_volume(my_rank, nprocs,                   &
      &    mesh_filter%node, group_filter%surf_grp,                      &
      &    group_filter%infty_grp, mesh_filter%ele,                      &
-     &    spf_3d_f, fem_int_f%jcs)
+     &    spfs_f%spf_3d, fem_int_f%jcs)
 !
 !      call check_jacobians_trilinear                                   &
 !     &   (my_rank, mesh_filter%ele, fem_int_f%jcs%jac_3d_l)
@@ -161,9 +163,9 @@
      &   (FEM_elen_f%nele_filter_mom, FEM_elen_f%elen_ele)
 !
       call s_int_element_length(FEM_elen_f%nele_filter_mom,             &
-     &    mesh_filter%node, mesh_filter%ele, spf_3d_f,                  &
+     &    mesh_filter%node, mesh_filter%ele, spfs_f%spf_3d,             &
      &    filter_dxi1%dxi_ele, FEM_elen_f%elen_ele%moms)
-      call dealloc_vol_shape_func(spf_3d_f)
+      call dealloc_vol_shape_func(spfs_f%spf_3d)
 !
        end subroutine generate_filter_init
 !

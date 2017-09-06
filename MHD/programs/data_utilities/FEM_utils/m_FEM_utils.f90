@@ -58,7 +58,7 @@
 !>        Instance for numbers of FEM mesh for merged IO
       type(merged_ucd_data), save :: m_ucd_FUTIL
 !
-      type(volume_shape_function), save :: spf_3d_FUTIL
+      type(shape_finctions_at_points), save :: spfs_FUTIL
 !>      Stracture for Jacobians
       type(jacobians_type), save :: jacobians_FUTIL
 !

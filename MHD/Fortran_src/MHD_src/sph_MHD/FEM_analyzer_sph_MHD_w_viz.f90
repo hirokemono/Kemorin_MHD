@@ -41,6 +41,7 @@
       use t_phys_data
       use t_phys_address
       use t_next_node_ele_4_node
+      use t_shape_functions
       use t_jacobians
       use t_VIZ_step_parameter
       use t_MHD_step_parameter
@@ -49,6 +50,8 @@
       use t_ucd_file
 !
       implicit none
+!
+      type(shape_finctions_at_points), save, private :: spfs_M
 !
 !-----------------------------------------------------------------------
 !
@@ -104,7 +107,7 @@
       if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
       call maximum_integration_points(ione)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    mesh, ele_mesh%surf, group, jacobians)
+     &    mesh, ele_mesh%surf, group, spfs_M, jacobians)
 !
       end subroutine FEM_initialize_w_viz
 !

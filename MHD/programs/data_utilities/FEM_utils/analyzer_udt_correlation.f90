@@ -128,8 +128,8 @@
       call const_jacobian_and_vol_layer(my_rank, nprocs,                &
      &    femmesh_p_FUT%mesh%node, femmesh_p_FUT%group%surf_grp,        &
      &    femmesh_p_FUT%group%infty_grp, femmesh_p_FUT%mesh%ele,        &
-     &    spf_3d_FUTIL, jacobians_FUTIL, layer_tbl_corr)
-      call dealloc_vol_shape_func(spf_3d_FUTIL)
+     &    spfs_FUTIL, jacobians_FUTIL, layer_tbl_corr)
+      call dealloc_vol_shape_func(spfs_FUTIL%spf_3d)
 !
       end subroutine initialize_udt_correlate
 !

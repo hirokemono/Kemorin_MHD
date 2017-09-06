@@ -48,7 +48,7 @@
       call count_edge_size_smp_type(edge)
 !
       call maximum_integration_points(num_int)
-      call allocate_integrate_parameters
+      call set_num_of_int_points
 !
       call allocate_gauss_coef_4_fem
 !
@@ -58,12 +58,14 @@
 !
 !  set indices for gauss integration
 !
+      call alloc_1d_gauss_point_id                                      &
+     &   (maxtot_int_1d, max_int_point, spf_1d)
       call set_integration_indices_1d_mesh                              &
-     &   (maxtot_int_1d, max_int_point, l_int1d)
+     &   (maxtot_int_1d, max_int_point, spf_1d%l_int)
 !
 !  set weighting for integration
 !
-      call set_gauss_coefs_4_1d(maxtot_int_1d, xi1)
+      call set_gauss_coefs_4_1d(maxtot_int_1d, spf_1d%xi)
 !
       call alloc_edge_shape_func                                        &
      &   (edge%nnod_4_edge, maxtot_int_1d, spf_1d)

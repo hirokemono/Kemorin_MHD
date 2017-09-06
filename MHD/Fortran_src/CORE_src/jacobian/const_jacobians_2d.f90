@@ -26,7 +26,6 @@
 !
       use m_geometry_constants
       use m_fem_gauss_int_coefs
-      use m_shape_functions
 !
       use t_geometry_data
       use t_surface_data
@@ -78,7 +77,8 @@
 !
 !
       call s_cal_shape_function_2d_linear(jac_2d%ntot_int,              &
-     &    jac_2d%an_sf, spf_2d_8%dnxi_sf, spf_2d_8%dnei_sf, xi2, ei2)
+     &    jac_2d%an_sf, spf_2d_8%dnxi_sf, spf_2d_8%dnei_sf,             &
+     &    spf_2d_8%xi, spf_2d_8%ei)
 !
 !   jacobian for tri-linear elaments
       call cal_jacobian_2d_4                                            &
@@ -104,7 +104,8 @@
 !
 !
       call s_cal_shape_function_2d_quad(jac_2d%ntot_int,                &
-     &    jac_2d%an_sf, spf_2d_20%dnxi_sf, spf_2d_20%dnei_sf, xi2, ei2)
+     &    jac_2d%an_sf, spf_2d_20%dnxi_sf, spf_2d_20%dnei_sf,           &
+     &    spf_2d_20%xi, spf_2d_20%ei)
 !
 !   jacobian for quadrature  elaments
       call cal_jacobian_2d_8                                            &
@@ -130,7 +131,8 @@
 !
 !
       call s_cal_shape_function_2d_lag(jac_2d%ntot_int,                 &
-     &    jac_2d%an_sf, spf_2d_27%dnxi_sf, spf_2d_27%dnei_sf, xi2, ei2)
+     &    jac_2d%an_sf, spf_2d_27%dnxi_sf, spf_2d_27%dnei_sf,           &
+     &    spf_2d_27%xi, spf_2d_27%ei)
 !
 !   jacobian for quadrature  elaments
       call cal_jacobian_2d_9                                            &
@@ -157,7 +159,8 @@
 !
 !
       call s_cal_shape_function_2d_quad(jac_2d%ntot_int,                &
-     &    jac_2d%an_sf, spf_2d_20%dnxi_sf, spf_2d_20%dnei_sf, xi2, ei2)
+     &    jac_2d%an_sf, spf_2d_20%dnxi_sf, spf_2d_20%dnei_sf,           &
+     &    spf_2d_20%xi, spf_2d_20%ei)
 !
 !   jacobian for quadrature elaments
       call cal_jacobian_2d_4_8                                          &

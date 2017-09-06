@@ -10,7 +10,7 @@
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!
 !!      subroutine const_jacobians_element(my_rank, nprocs,             &
-!!     &          node, ele, surf_grp, infinity_list, spf_3d, jacobians)
+!!     &          node, ele, surf_grp, infinity_list, jacobians)
 !!      subroutine const_jacobians_surf_group (my_rank, nprocs,         &
 !!     &          node, ele, surf, surf_grp, spf_2d, jacobians)
 !!      subroutine const_jacobians_surface                              &
