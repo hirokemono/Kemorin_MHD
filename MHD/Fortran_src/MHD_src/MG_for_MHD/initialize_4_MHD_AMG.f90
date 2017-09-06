@@ -60,6 +60,7 @@
       use t_surface_data
       use t_bc_data_MHD
       use t_jacobians
+      use t_shape_functions
       use t_bc_data_list
 !
       use m_boundary_condition_IDs
@@ -95,6 +96,7 @@
       type(MHD_MG_matrices), intent(inout) :: MHD_mat
 !
       integer(kind = kint) :: i_level
+      type(volume_shape_function) :: spf_3d_MG
 !
 !
       call split_multigrid_comms(MGCG_WK)
@@ -197,13 +199,16 @@
 !     --------------------- 
 !
       do i_level = 1, MGCG_WK%num_MG_level
+        call alloc_vol_shape_func                                       &
+     &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele%nnod_4_ele,              &
+     &      maxtot_int_3d, spf_3d_MG)
         call const_jacobians_element                                    &
      &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%node,                        &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%ele,                         &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
      &      MGCG_FEM%MG_mesh(i_level)%group%infty_grp,                  &
-     &      MGCG_FEM%MG_FEM_int(i_level)%jcs)
+     &      spf_3d_MG, MGCG_FEM%MG_FEM_int(i_level)%jcs)
 !
         call const_jacobians_surf_group                                 &
      &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
@@ -212,6 +217,7 @@
      &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
      &      MGCG_FEM%MG_FEM_int(i_level)%jcs)
+        call dealloc_vol_shape_func(spf_3d_MG)
       end do
 !
 !

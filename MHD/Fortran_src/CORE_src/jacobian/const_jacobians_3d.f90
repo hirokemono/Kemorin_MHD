@@ -7,11 +7,10 @@
 !
 !!      subroutine initialize_FEM_integration
 !!
-!!      subroutine sel_jacobian_type(node, ele, jac_3d)
+!!      subroutine sel_jacobian_type(node, ele, spf_3d, jac_3d)
 !!      subroutine cal_jacobian_trilinear(node, ele, jac_3d)
-!!      subroutine cal_jacobian_quad(node, ele, jac_3d)
-!!      subroutine cal_jacobian_lag(node, ele, jac_3d)
-!!      subroutine cal_jacobian_quad_on_linear(node, ele, jac_3d)
+!!      subroutine cal_jacobian_quad_on_linear                          &
+!!     &         (node, ele, spf_3d_20, jac_3d)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -27,6 +26,7 @@
       use m_fem_gauss_int_coefs
       use m_shape_functions
 !
+      use t_shape_functions
       use t_geometry_data
       use t_jacobian_3d
       use t_group_data
@@ -36,6 +36,8 @@
       use cal_shape_function_3d
 !
       implicit none
+!
+      private :: cal_jacobian_quad, cal_jacobian_lag
 !
 !-----------------------------------------------------------------------
 !
@@ -77,20 +79,21 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_jacobian_type(node, ele, jac_3d)
+      subroutine sel_jacobian_type(node, ele, spf_3d, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(volume_shape_function), intent(inout) :: spf_3d
       type(jacobians_3d), intent(inout) :: jac_3d
 !
 !  set jacobians
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
-        call cal_jacobian_trilinear(node, ele, jac_3d)
+        call cal_jacobian_trilinear(node, ele, spf_3d, jac_3d)
       else if (ele%nnod_4_ele .eq. num_t_quad) then
-        call cal_jacobian_quad(node, ele, jac_3d)
+        call cal_jacobian_quad(node, ele, spf_3d, jac_3d)
       else if (ele%nnod_4_ele .eq. num_t_lag) then
-        call cal_jacobian_lag(node, ele, jac_3d)
+        call cal_jacobian_lag(node, ele, spf_3d, jac_3d)
       end if
 !
       end subroutine sel_jacobian_type
@@ -98,15 +101,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_trilinear(node, ele, jac_3d)
+      subroutine cal_jacobian_trilinear(node, ele, spf_3d_8, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(volume_shape_function), intent(inout) :: spf_3d_8
       type(jacobians_3d), intent(inout) :: jac_3d
 !
 !
       call s_cal_shape_function_linear(jac_3d%ntot_int, jac_3d%an,      &
-     &    dnxi_1, dnei_1, dnzi_1, xi3, ei3, zi3)
+     &    spf_3d_8%dnxi, spf_3d_8%dnei, spf_3d_8%dnzi, xi3, ei3, zi3)
 !
 !   jacobian for tri-linear elaments
 !
@@ -114,21 +118,24 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele,                      &
      &    np_smp, ele%istack_ele_smp, ele%ie, node%xx,                  &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
-     &    jac_3d%dnx, jac_3d%dxidx_3d, dnxi_1, dnei_1, dnzi_1)
+     &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
+     &    spf_3d_8%dnxi, spf_3d_8%dnei, spf_3d_8%dnzi)
 !
       end subroutine cal_jacobian_trilinear
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_quad(node, ele, jac_3d)
+      subroutine cal_jacobian_quad(node, ele, spf_3d_20, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(volume_shape_function), intent(inout) :: spf_3d_20
       type(jacobians_3d), intent(inout) :: jac_3d
 !
 !
       call s_cal_shape_function_quad(jac_3d%ntot_int, jac_3d%an,        &
-     &    dnxi_20, dnei_20, dnzi_20, xi3, ei3, zi3)
+     &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi,               &
+     &    xi3, ei3, zi3)
 !
 !   jacobian for tri-linear elaments
 !
@@ -136,21 +143,24 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele,                      &
      &    np_smp, ele%istack_ele_smp, ele%ie, node%xx,                  &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
-     &    jac_3d%dnx, jac_3d%dxidx_3d, dnxi_20, dnei_20, dnzi_20)
+     &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
+     &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi)
 !
       end subroutine cal_jacobian_quad
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_lag(node, ele, jac_3d)
+      subroutine cal_jacobian_lag(node, ele, spf_3d_27, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(volume_shape_function), intent(inout) :: spf_3d_27
       type(jacobians_3d), intent(inout) :: jac_3d
 !
 !
       call s_cal_shape_function_lag(jac_3d%ntot_int, jac_3d%an,         &
-     &    dnxi_27, dnei_27, dnzi_27, xi3, ei3, zi3)
+     &    spf_3d_27%dnxi, spf_3d_27%dnei, spf_3d_27%dnzi,               &
+     &     xi3, ei3, zi3)
 !
 !   jacobian for tri-linear elaments
 !
@@ -158,30 +168,35 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele,                      &
      &    np_smp, ele%istack_ele_smp, ele%ie, node%xx,                  &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
-     &    jac_3d%dnx, jac_3d%dxidx_3d,  dnxi_27, dnei_27, dnzi_27)
+     &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
+     &    spf_3d_27%dnxi, spf_3d_27%dnei, spf_3d_27%dnzi)
 !
       end subroutine cal_jacobian_lag
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_quad_on_linear(node, ele, jac_3d)
+      subroutine cal_jacobian_quad_on_linear                            &
+     &         (node, ele, spf_3d_20, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(volume_shape_function), intent(inout) :: spf_3d_20
       type(jacobians_3d), intent(inout) :: jac_3d
 !
 !
       call s_cal_shape_function_quad(jac_3d%ntot_int, jac_3d%an,        &
-     &    dnxi_20, dnei_20, dnzi_20, xi3, ei3, zi3)
+     &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi,               &
+     &    xi3, ei3, zi3)
 !
 !   jacobian for quadrature elaments
 !
       call cal_jacobian_3d_8_20                                         &
-     &       (node%numnod, ele%numele, ele%nnod_4_ele,                  &
-     &        np_smp, ele%istack_ele_smp, ele%ie, node%xx,              &
-     &        jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,               &
-     &        jac_3d%dnx, jac_3d%dxidx_3d, dnxi_20, dnei_20, dnzi_20)
+     &   (node%numnod, ele%numele, ele%nnod_4_ele,                      &
+     &    np_smp, ele%istack_ele_smp, ele%ie, node%xx,                  &
+     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
+     &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
+     &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi)
 !
       end subroutine cal_jacobian_quad_on_linear
 !

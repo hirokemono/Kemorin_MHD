@@ -22,6 +22,7 @@
       use t_phys_address
       use t_ucd_data
       use t_file_IO_parameter
+      use t_shape_functions
       use t_jacobians
       use t_IO_step_parameter
       use t_VIZ_step_parameter
@@ -57,6 +58,7 @@
 !>        Instance for numbers of FEM mesh for merged IO
       type(merged_ucd_data), save :: m_ucd_FUTIL
 !
+      type(volume_shape_function), save :: spf_3d_FUTIL
 !>      Stracture for Jacobians
       type(jacobians_type), save :: jacobians_FUTIL
 !

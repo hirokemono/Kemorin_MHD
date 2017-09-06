@@ -20,6 +20,7 @@
       use t_mesh_data_with_pointer
       use t_layering_ele_list
       use t_work_layer_correlate
+      use t_shape_functions
       use m_FEM_utils
 !
       use transfer_correlate_field
@@ -127,7 +128,8 @@
       call const_jacobian_and_vol_layer(my_rank, nprocs,                &
      &    femmesh_p_FUT%mesh%node, femmesh_p_FUT%group%surf_grp,        &
      &    femmesh_p_FUT%group%infty_grp, femmesh_p_FUT%mesh%ele,        &
-     &    jacobians_FUTIL, layer_tbl_corr)
+     &    spf_3d_FUTIL, jacobians_FUTIL, layer_tbl_corr)
+      call dealloc_vol_shape_func(spf_3d_FUTIL)
 !
       end subroutine initialize_udt_correlate
 !

@@ -53,6 +53,7 @@
       use t_mean_square_values
       use t_jacobians
       use t_layering_ele_list
+      use t_shape_functions
 !
       use const_jacobians_3d
       use int_volume_of_domain
@@ -70,13 +71,18 @@
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(mean_square_values), intent(inout) :: fem_msq
 !
+      type(volume_shape_function), save :: spf_3d_M
+!
 !    Construct Jacobians
 !
       call max_int_point_by_etype(mesh%ele%nnod_4_ele)
       call initialize_FEM_integration
+      call alloc_vol_shape_func                                         &
+     &   (mesh%ele%nnod_4_ele, maxtot_int_3d, spf_3d_M)
       call const_jacobians_element(my_rank, nprocs,                     &
      &    mesh%node, mesh%ele, group%surf_grp, group%infty_grp,         &
-     &    jacobians)
+     &    spf_3d_M, jacobians)
+      call dealloc_vol_shape_func(spf_3d_M)
 !
       if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
       call const_jacobians_surf_group(my_rank, nprocs,                  &

@@ -6,7 +6,7 @@
 !        Modified by H. Matsui on Aug., 2006
 !
 !!      subroutine s_int_element_length                                 &
-!!     &         (nele_filter, node, ele, dxi_ele, elen_ele)
+!!     &         (nele_filter, node, ele, spf_3d, dxi_ele, elen_ele)
 !
       module int_element_length
 !
@@ -31,18 +31,19 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_int_element_length                                   &
-     &         (nele_filter, node, ele, dxi_ele, elen_ele)
+     &         (nele_filter, node, ele, spf_3d, dxi_ele, elen_ele)
 !
       use t_geometry_data
       use t_filter_dxdxi
       use t_filter_elength
-      use m_shape_functions
+      use t_shape_functions
 !
 !
       integer(kind = kint), intent(in) :: nele_filter
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(volume_shape_function), intent(in) :: spf_3d
       type(dxdxi_direction_type), intent(inout) :: dxi_ele
       type(elen_on_ele_type), intent(inout) :: elen_ele
 !
@@ -51,7 +52,7 @@
         call fem_element_length_linear                                  &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      ele%istack_ele_smp, max_int_point, nele_filter,             &
-     &      maxtot_int_3d, dnxi_1, dnei_1, dnzi_1,                      &
+     &      maxtot_int_3d, spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,       &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
@@ -59,7 +60,7 @@
         call fem_element_length_quad                                    &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      ele%istack_ele_smp, max_int_point, nele_filter,             &
-     &      maxtot_int_3d, dnxi_20, dnei_20, dnzi_20,                   &
+     &      maxtot_int_3d, spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,       &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
@@ -67,7 +68,7 @@
         call fem_element_length_lag                                     &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      ele%istack_ele_smp, max_int_point, nele_filter,             &
-     &      maxtot_int_3d, dnxi_27, dnei_27, dnzi_27,                   &
+     &      maxtot_int_3d, spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,       &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)

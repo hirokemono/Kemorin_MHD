@@ -10,7 +10,7 @@
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!
 !!      subroutine const_jacobians_element(my_rank, nprocs,             &
-!!     &          node, ele, surf_grp, infinity_list, jacobians)
+!!     &          node, ele, surf_grp, infinity_list, spf_3d, jacobians)
 !!      subroutine const_jacobians_surf_group                           &
 !!     &         (my_rank, nprocs, node, ele, surf, surf_grp, jacobians)
 !!      subroutine const_jacobians_surface                              &
@@ -111,7 +111,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_jacobians_element(my_rank, nprocs,               &
-     &          node, ele, surf_grp, infinity_list, jacobians)
+     &          node, ele, surf_grp, infinity_list, spf_3d, jacobians)
 !
       use const_jacobians_3d
       use const_jacobians_infinity
@@ -121,6 +121,7 @@
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
       type(scalar_surf_BC_list), intent(in) :: infinity_list
+      type(volume_shape_function), intent(inout) :: spf_3d
       type(jacobians_type), intent(inout) :: jacobians
 !
 !
@@ -130,9 +131,9 @@
       call alloc_dxi_dx_type(ele%numele, jacobians%jac_3d)
 !
       if(my_rank .lt. nprocs) then
-        call sel_jacobian_type(node, ele, jacobians%jac_3d)
-        call sel_jacobian_infinity                                      &
-     &     (node, ele, surf_grp, infinity_list, jacobians%jac_3d)
+        call sel_jacobian_type(node, ele, spf_3d, jacobians%jac_3d)
+        call sel_jacobian_infinity(node, ele, surf_grp,                 &
+     &      infinity_list, spf_3d, jacobians%jac_3d)
       end if
       call dealloc_inv_jac_type(jacobians%jac_3d)
 !
@@ -145,9 +146,10 @@
         call alloc_dxi_dx_type(ele%numele, jacobians%jac_3d_l)
 !
         if(my_rank .lt. nprocs) then
-          call cal_jacobian_trilinear(node, ele, jacobians%jac_3d_l)
+          call cal_jacobian_trilinear                                   &
+     &       (node, ele, spf_3d, jacobians%jac_3d_l)
           call const_linear_jacobian_infinity(node, ele,                &
-     &        surf_grp, infinity_list, jacobians%jac_3d_l)
+     &        surf_grp, infinity_list, spf_3d, jacobians%jac_3d_l)
         end if
 !
         call dealloc_inv_jac_type(jacobians%jac_3d_l)

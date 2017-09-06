@@ -33,18 +33,6 @@
       real (kind=kreal), allocatable :: ei3(:)
       real (kind=kreal), allocatable :: zi3(:)
 !
-      real (kind=kreal), allocatable :: dnxi_1(:,:)
-      real (kind=kreal), allocatable :: dnei_1(:,:)
-      real (kind=kreal), allocatable :: dnzi_1(:,:)
-! 
-      real (kind=kreal), allocatable :: dnxi_20(:,:)
-      real (kind=kreal), allocatable :: dnei_20(:,:)
-      real (kind=kreal), allocatable :: dnzi_20(:,:)
-! 
-      real (kind=kreal), allocatable :: dnxi_27(:,:)
-      real (kind=kreal), allocatable :: dnei_27(:,:)
-      real (kind=kreal), allocatable :: dnzi_27(:,:)
-! 
 !
       real (kind=kreal), allocatable :: dnxi_sf1(:,:)
       real (kind=kreal), allocatable :: dnei_sf1(:,:)
@@ -158,19 +146,6 @@
       use m_geometry_constants
 !
 !
-        allocate ( dnxi_1(num_t_linear,maxtot_int_3d) )
-        allocate ( dnei_1(num_t_linear,maxtot_int_3d) )
-        allocate ( dnzi_1(num_t_linear,maxtot_int_3d) )
-! 
-        allocate ( dnxi_20(num_t_quad,maxtot_int_3d) )
-        allocate ( dnei_20(num_t_quad,maxtot_int_3d) )
-        allocate ( dnzi_20(num_t_quad,maxtot_int_3d) )
-! 
-        allocate ( dnxi_27(num_t_lag,maxtot_int_3d) )
-        allocate ( dnei_27(num_t_lag,maxtot_int_3d) )
-        allocate ( dnzi_27(num_t_lag,maxtot_int_3d) )
-!
-! 
         allocate ( dnxi_sf1(num_linear_sf,maxtot_int_2d) )
         allocate ( dnei_sf1(num_linear_sf,maxtot_int_2d) )
 !
@@ -185,18 +160,6 @@
 !
         allocate ( dnxi_ed20(num_quad_edge,maxtot_int_1d) )
 !
-!
-       dnxi_1 = 0.0d0
-       dnei_1 = 0.0d0
-       dnzi_1 = 0.0d0
-!
-       dnxi_20 = 0.0d0
-       dnei_20 = 0.0d0
-       dnzi_20 = 0.0d0
-!
-       dnxi_27 = 0.0d0
-       dnei_27 = 0.0d0
-       dnzi_27 = 0.0d0
 !
        dnxi_sf1 = 0.0d0
        dnei_sf1 = 0.0d0
@@ -235,10 +198,6 @@
 !
       subroutine deallocate_shape_functions
 !
-!
-      deallocate ( dnxi_1, dnei_1, dnzi_1 )
-      deallocate ( dnxi_20, dnei_20, dnzi_20 )
-      deallocate ( dnxi_27, dnei_27, dnzi_27 )
 !
       deallocate ( dnxi_sf1, dnei_sf1 )
       deallocate ( dnxi_sf20, dnei_sf20 )
