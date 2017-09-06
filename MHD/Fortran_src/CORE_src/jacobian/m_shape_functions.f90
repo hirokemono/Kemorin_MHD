@@ -34,16 +34,6 @@
       real (kind=kreal), allocatable :: zi3(:)
 !
 !
-      real (kind=kreal), allocatable :: dnxi_sf1(:,:)
-      real (kind=kreal), allocatable :: dnei_sf1(:,:)
-! 
-      real (kind=kreal), allocatable :: dnxi_sf20(:,:)
-      real (kind=kreal), allocatable :: dnei_sf20(:,:)
-!
-      real (kind=kreal), allocatable :: dnxi_sf27(:,:)
-      real (kind=kreal), allocatable :: dnei_sf27(:,:)
-!
-!
       real (kind=kreal), allocatable :: dnxi_ed1(:,:)
 ! 
       real (kind=kreal), allocatable :: dnxi_ed20(:,:)
@@ -146,30 +136,12 @@
       use m_geometry_constants
 !
 !
-        allocate ( dnxi_sf1(num_linear_sf,maxtot_int_2d) )
-        allocate ( dnei_sf1(num_linear_sf,maxtot_int_2d) )
-!
-        allocate ( dnxi_sf20(num_quad_sf,maxtot_int_2d) )
-        allocate ( dnei_sf20(num_quad_sf,maxtot_int_2d) )
-!
-        allocate ( dnxi_sf27(num_lag_sf,maxtot_int_2d) )
-        allocate ( dnei_sf27(num_lag_sf,maxtot_int_2d) )
-!
-!
         allocate ( dnxi_ed1(num_linear_edge,maxtot_int_1d) )
-!
         allocate ( dnxi_ed20(num_quad_edge,maxtot_int_1d) )
 !
 !
-       dnxi_sf1 = 0.0d0
-       dnei_sf1 = 0.0d0
-!
-       dnxi_sf20 = 0.0d0
-       dnei_sf20 = 0.0d0
-!
-       dnxi_sf27 = 0.0d0
-       dnei_sf27 = 0.0d0
-!
+       dnxi_ed1 = 0.0d0
+       dnxi_ed20 = 0.0d0
 !
        end subroutine allocate_shape_functions
 !
@@ -198,10 +170,6 @@
 !
       subroutine deallocate_shape_functions
 !
-!
-      deallocate ( dnxi_sf1, dnei_sf1 )
-      deallocate ( dnxi_sf20, dnei_sf20 )
-      deallocate ( dnxi_sf27, dnei_sf27 )
 !
       deallocate ( dnxi_ed1 )
       deallocate ( dnxi_ed20 )

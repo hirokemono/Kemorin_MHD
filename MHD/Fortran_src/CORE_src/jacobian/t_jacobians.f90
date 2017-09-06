@@ -11,10 +11,10 @@
 !!
 !!      subroutine const_jacobians_element(my_rank, nprocs,             &
 !!     &          node, ele, surf_grp, infinity_list, spf_3d, jacobians)
-!!      subroutine const_jacobians_surf_group                           &
-!!     &         (my_rank, nprocs, node, ele, surf, surf_grp, jacobians)
+!!      subroutine const_jacobians_surf_group (my_rank, nprocs,         &
+!!     &          node, ele, surf, surf_grp, spf_2d, jacobians)
 !!      subroutine const_jacobians_surface                              &
-!!     &         (my_rank, nprocs, node, surf, jacobians)
+!!     &         (my_rank, nprocs, node, surf, spf_2d, jacobians)
 !!      subroutine const_jacobians_edge                                 &
 !!     &         (my_rank, nprocs, node, edge, jacobians)
 !!        type(node_data), intent(in) :: node
@@ -22,6 +22,7 @@
 !!        type(surface_data), intent(in)  :: surf
 !!        type(surface_group_data), intent(in) :: surf_grp
 !!        type(scalar_surf_BC_list), intent(in) :: infinity_list
+!!        type(surface_shape_function), intent(inout) :: spf_2d
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!
 !!      subroutine dealloc_dxi_dx_element(ele, jacobians)
@@ -41,6 +42,7 @@
       use t_surface_data
       use t_edge_data
       use t_group_data
+      use t_shape_functions
       use t_jacobian_3d
       use t_jacobian_2d
       use t_jacobian_1d
@@ -161,8 +163,8 @@
 !> Construct shape function, difference of shape function, and Jacobian
 !> for surface group
 !
-      subroutine const_jacobians_surf_group                             &
-     &         (my_rank, nprocs, node, ele, surf, surf_grp, jacobians)
+      subroutine const_jacobians_surf_group (my_rank, nprocs,           &
+     &          node, ele, surf, surf_grp, spf_2d, jacobians)
 !
       use const_jacobians_sf_grp
 !
@@ -171,7 +173,9 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in)  :: surf
       type(surface_group_data), intent(in) :: surf_grp
+      type(surface_shape_function), intent(inout) :: spf_2d
       type(jacobians_type), intent(inout) :: jacobians
+!
 !
 !
       allocate(jacobians%jac_sf_grp)
@@ -179,9 +183,9 @@
      &    surf%nnod_4_surf, maxtot_int_2d, jacobians%jac_sf_grp)
 !
       if(my_rank .lt. nprocs) then
-        call sel_jacobian_surf_grp_type                                 &
-     &     (node, ele, surf, surf_grp, jacobians%jac_sf_grp)
-       end if
+        call sel_jacobian_surface_grp                                   &
+     &     (node, ele, surf, surf_grp, spf_2d, jacobians%jac_sf_grp)
+      end if
 !
       if(surf%nnod_4_surf .eq. num_linear_sf) then
         jacobians%jac_sf_grp_l => jacobians%jac_sf_grp
@@ -192,7 +196,7 @@
 !
         if(my_rank .lt. nprocs) then
           call const_jacobian_sf_grp_linear(node, ele, surf_grp,        &
-     &        jacobians%jac_sf_grp_l)
+     &        spf_2d, jacobians%jac_sf_grp_l)
         end if
       end if
 !
@@ -203,13 +207,14 @@
 !> for surface element
 !
       subroutine const_jacobians_surface                                &
-     &         (my_rank, nprocs, node, surf, jacobians)
+     &         (my_rank, nprocs, node, surf, spf_2d, jacobians)
 !
       use const_jacobians_2d
 !
       integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(surface_data), intent(in)  :: surf
+      type(surface_shape_function), intent(inout) :: spf_2d
       type(jacobians_type), intent(inout) :: jacobians
 !
 !
@@ -218,7 +223,7 @@
      &    surf%nnod_4_surf, maxtot_int_2d, jacobians%jac_2d)
 !
       if(my_rank .lt. nprocs) then
-        call sel_jacobian_surface_type(node, surf, jacobians%jac_2d)
+        call sel_jacobian_surface(node, surf, spf_2d, jacobians%jac_2d)
       end if
 !
       if(surf%nnod_4_surf .eq. num_linear_sf) then
@@ -229,7 +234,7 @@
      &      maxtot_int_2d, jacobians%jac_2d_l)
         if(my_rank .lt. nprocs) then
           call cal_jacobian_surface_linear                              &
-     &       (node, surf, jacobians%jac_2d_l)
+     &       (node, surf, spf_2d, jacobians%jac_2d_l)
         end if
       end if
 !

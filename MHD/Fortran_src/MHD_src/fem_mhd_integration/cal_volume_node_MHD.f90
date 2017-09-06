@@ -72,6 +72,7 @@
       type(mean_square_values), intent(inout) :: fem_msq
 !
       type(volume_shape_function), save :: spf_3d_M
+      type(surface_shape_function), save :: spf_2d_M
 !
 !    Construct Jacobians
 !
@@ -85,9 +86,12 @@
       call dealloc_vol_shape_func(spf_3d_M)
 !
       if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
+      call alloc_surf_shape_func                                        &
+     &     (ele_mesh%surf%nnod_4_surf, maxtot_int_2d, spf_2d_M)
       call const_jacobians_surf_group(my_rank, nprocs,                  &
      &    mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
-     &    jacobians)
+     &    spf_2d_M, jacobians)
+      call dealloc_surf_shape_func(spf_2d_M)
 !
 !    Construct volumes
 !

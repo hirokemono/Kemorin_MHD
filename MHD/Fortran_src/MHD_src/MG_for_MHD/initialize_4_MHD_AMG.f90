@@ -97,6 +97,7 @@
 !
       integer(kind = kint) :: i_level
       type(volume_shape_function) :: spf_3d_MG
+      type(surface_shape_function) :: spf_2d_MG
 !
 !
       call split_multigrid_comms(MGCG_WK)
@@ -210,13 +211,17 @@
      &      MGCG_FEM%MG_mesh(i_level)%group%infty_grp,                  &
      &      spf_3d_MG, MGCG_FEM%MG_FEM_int(i_level)%jcs)
 !
+        call alloc_surf_shape_func                                      &
+     &     (MGCG_FEM%MG_ele_mesh(i_level)%surf%nnod_4_surf,             &
+     &      maxtot_int_2d, spf_2d_MG)
         call const_jacobians_surf_group                                 &
      &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%node,                        &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%ele,                         &
      &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
-     &      MGCG_FEM%MG_FEM_int(i_level)%jcs)
+     &      spf_2d_MG, MGCG_FEM%MG_FEM_int(i_level)%jcs)
+        call dealloc_surf_shape_func(spf_2d_MG)
         call dealloc_vol_shape_func(spf_3d_MG)
       end do
 !

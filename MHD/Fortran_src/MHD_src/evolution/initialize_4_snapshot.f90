@@ -134,6 +134,8 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       character(len=kchara), intent(inout)   :: label_sim
 !
+      type(surface_shape_function), save :: spf_2d_1
+!
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' reordering_by_layers_snap'
@@ -225,7 +227,8 @@
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector                                          &
      &   (my_rank, nprocs, mesh%node, ele_mesh%surf,                    &
-     &    fem_int%jcs)
+     &    spf_2d_1, fem_int%jcs)
+      call dealloc_surf_shape_func(spf_2d_1)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
       call int_surface_parameters                                       &

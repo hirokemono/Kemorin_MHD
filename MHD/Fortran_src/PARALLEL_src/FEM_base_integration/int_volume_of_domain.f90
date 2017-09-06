@@ -64,6 +64,7 @@
       type(jacobians_type), intent(inout) :: jacobians
 !
       type(volume_shape_function), save :: spf_3d_1
+      type(surface_shape_function), save :: spf_2d_1
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
@@ -76,7 +77,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector                                          &
-     &   (my_rank, nprocs, mesh%node, surf, jacobians)
+     &   (my_rank, nprocs, mesh%node, surf, spf_2d_1, jacobians)
+      call dealloc_surf_shape_func(spf_2d_1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
       call pick_normal_of_surf_group(surf, group%surf_grp,              &
