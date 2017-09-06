@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine int_edge_moment(numnod, numele, edge, n_int, jac_1d)
+!!      subroutine int_edge_moment                                      &
+!!     &         (numnod, numele, edge, n_int, spf_1d, jac_1d)
 !
       module int_edge_moment_z_filter
 !
@@ -18,18 +19,20 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_moment(numnod, numele, edge, n_int, jac_1d)
+      subroutine int_edge_moment                                        &
+     &         (numnod, numele, edge, n_int, spf_1d, jac_1d)
 !
       use t_edge_data
+      use t_shape_functions
       use t_jacobian_1d
 !
       use m_fem_gauss_int_coefs
-      use m_shape_functions
       use m_int_edge_data
       use m_int_commtative_filter
       use m_commute_filter_z
 !
       type(edge_data), intent(in) :: edge
+      type(edge_shape_function), intent(in) :: spf_1d
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind= kint), intent(in) :: n_int
       integer (kind= kint), intent(in) :: numnod, numele
@@ -49,11 +52,11 @@
            ix = i + int_start1(n_int)
            xmom_dt(inod2,kf) = xmom_dt(inod2,kf)                        &
      &                        + xmom_int_t(inod1,kf) * owe(ix)          &
-     &                         * dnxi_ed1(j1,ix)                        &
+     &                         * spf_1d%dnxi_ed(j1,ix)                  &
      &                         * jac_1d%an_edge(j2,ix)
            xmom_dot(inod2,kf) = xmom_dot(inod2,kf)                      &
      &                        + xmom_int_to(inod1,kf) * owe(ix)         &
-     &                         * dnxi_ed1(j1,ix)                        &
+     &                         * spf_1d%dnxi_ed(j1,ix)                  &
      &                         * jac_1d%an_edge(j2,ix)
           end do
          end do

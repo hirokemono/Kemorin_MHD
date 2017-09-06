@@ -5,7 +5,7 @@
 !
 !!      subroutine cal_delta_z                                          &
 !!     &         (CG_param, DJDS_param, nod_comm, node, ele, edge,      &
-!!     &          jac_1d, tbl_crs, mat_crs)
+!!     &          spf_1d, jac_1d, tbl_crs, mat_crs)
 !
       module cal_delta_z_4_z_filter
 !
@@ -18,6 +18,7 @@
       use t_crs_connect
       use t_crs_matrix
 !
+      use t_shape_functions
       use t_jacobian_1d
 !
       implicit none
@@ -30,7 +31,7 @@
 !
       subroutine cal_delta_z                                            &
      &         (CG_param, DJDS_param, nod_comm, node, ele, edge,        &
-     &          jac_1d, tbl_crs, mat_crs)
+     &          spf_1d, jac_1d, tbl_crs, mat_crs)
 !
       use m_int_edge_vart_width
       use m_int_edge_data
@@ -47,6 +48,7 @@
       type(node_data), intent(inout) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
+      type(edge_shape_function), intent(in) :: spf_1d
       type(jacobians_1d), intent(in) :: jac_1d
 !
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
@@ -87,7 +89,7 @@
        end if
 !
        write(*,*) 'int_edge_diff_vart_w'
-       call int_edge_diff_vart_w(ele, edge, num_int, jac_1d)
+       call int_edge_diff_vart_w(ele, edge, num_int, spf_1d, jac_1d)
        write(*,*) 'set_rhs_vart_width'
        call set_rhs_vart_width(node%numnod)
 
@@ -102,8 +104,9 @@
 !$omp end workshare
         end if
 !
-       call int_edge_d2_vart_w(node, ele, edge, num_int, jac_1d)
-!       call int_edge_d2_vart_w2(ele, edge, num_int, jac_1d)
+       call int_edge_d2_vart_w                                          &
+     &    (node, ele, edge, num_int, spf_1d, jac_1d)
+!       call int_edge_d2_vart_w2(ele, edge, num_int, spf_1d, jac_1d)
        call set_rhs_vart_width(node%numnod)
 
        if ( mat_crs%METHOD_crs .eq. 'LU' ) then
@@ -124,10 +127,11 @@
         call int_edge_vart_width(ele%numele, edge, num_int, jac_1d)
         call cal_sol_vart_width(node%numnod)
 !
-        call int_edge_diff_vart_w(ele, edge, num_int, jac_1d)
+        call int_edge_diff_vart_w(ele, edge, num_int, spf_1d, jac_1d)
         call cal_sol_diff_vart_width(node%numnod)
 !
-        call int_edge_d2_vart_w(node, ele, edge, num_int, jac_1d)
+        call int_edge_d2_vart_w                                         &
+     &     (node, ele, edge, num_int, spf_1d, jac_1d)
         call cal_sol_d2_vart_width(node%numnod)
 !
       end if

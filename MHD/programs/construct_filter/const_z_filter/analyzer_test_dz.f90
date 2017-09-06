@@ -16,6 +16,7 @@
       use t_iccg_parameter
       use t_crs_connect
       use t_crs_matrix
+      use t_shape_functions
 !
       implicit none
 !
@@ -24,6 +25,7 @@
 !
       type(CG_poarameter), save :: CG_param_z
       type(DJDS_poarameter), save :: DJDS_param_z
+      type(edge_shape_function), save :: spf_1d_z
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,8 +65,8 @@
       n_int = i_int_z_filter
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
       call s_cal_jacobian_linear_1d                                     &
-     &   (n_int, z_filter_mesh%node, z_filter_mesh%ele,                 &
-     &    surf_z_filter, edge_z_filter, jacobians_z)
+     &   (n_int, z_filter_mesh%node,                                    &
+     &    surf_z_filter, edge_z_filter, spf_1d_z, jacobians_z)
 !
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
       call set_crs_connect_commute_z(z_filter_mesh%node, tbl_crs_z)
@@ -78,7 +80,9 @@
 !
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &
      &   z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
-     &   edge_z_filter, jacobians_z%jac_1d_l, tbl_crs_z, mat_crs_z)
+     &   edge_z_filter, spf_1d_z, jacobians_z%jac_1d_l,                 &
+     &   tbl_crs_z, mat_crs_z)
+      call dealloc_edge_shape_func(spf_1d_z)
 !
 !C===
 !

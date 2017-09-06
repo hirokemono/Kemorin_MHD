@@ -18,10 +18,13 @@
       use m_geometry_constants
       use t_geometry_data
       use t_edge_data
+      use t_shape_functions
       use t_jacobians
       use t_jacobian_1d
 !
       implicit none
+!
+      type(edge_shape_function), save, private :: spf_1d_1
 !
 ! -----------------------------------------------------------------------
 !
@@ -41,7 +44,11 @@
       type(jacobians_type), intent(inout) :: jacobians
 !
 !
-      call const_jacobians_edge(my_rank, nprocs, node, edge, jacobians)
+      call alloc_edge_shape_func                                        &
+     &   (num_linear_edge, maxtot_int_1d, spf_1d_1)
+      call const_jacobians_edge                                         &
+     &   (my_rank, nprocs, node, edge, spf_1d_1, jacobians)
+      call dealloc_edge_shape_func(spf_1d_1)
 !
       call alloc_edge_vect(edge)
       call s_int_edge_vector(max_int_point, jacobians%jac_1d, edge)

@@ -18,6 +18,7 @@
       use t_crs_connect
       use t_crs_matrix
       use t_gauss_points
+      use t_shape_functions
 !
       implicit none
 !
@@ -29,6 +30,7 @@
 !
       type(CG_poarameter), save :: CG_param_z
       type(DJDS_poarameter), save :: DJDS_param_z
+      type(edge_shape_function), save :: spf_1d_z
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,9 +105,9 @@
 !    set shape functions for 1 dimensional
 !
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
-      call s_cal_jacobian_linear_1d(i_int_z_filter,                     &
-     &    z_filter_mesh%node, z_filter_mesh%ele,                        &
-     &    surf_z_filter, edge_z_filter, jacobians_z)
+      call s_cal_jacobian_linear_1d                                     &
+     &   (i_int_z_filter, z_filter_mesh%node,                           &
+     &    surf_z_filter, edge_z_filter, spf_1d_z, jacobians_z)
 !
 !   construct FEM mesh for x direction
 !
@@ -127,7 +129,8 @@
      &     edge_z_filter, jacobians_z%jac_1d_l)
 !      call cal_delta_z(CG_param_z, DJDS_param_z,                       &
 !     &  z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
-!     &  edge_z_filter, jacobians_z%jac_1d_l, tbl_crs_z, mat_crs_z)
+!     &  edge_z_filter, spf_1d_z, jacobians_z%jac_1d_l,                 &
+!     &  tbl_crs_z, mat_crs_z)
 !
 !      call check_crs_connect                                           &
 !     &   (my_rank, z_filter_mesh%node%numnod, tbl_crs_z)
@@ -272,7 +275,9 @@
        if(my_rank.eq.0) write(*,*) 'int_edge_moment'
        call int_edge_moment                                             &
      &    (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele,         &
-     &     edge_z_filter, i_int_z_filter, jacobians_z%jac_1d_l)
+     &     edge_z_filter, i_int_z_filter, spf_1d_z,                     &
+     &     jacobians_z%jac_1d_l)
+       call dealloc_edge_shape_func(spf_1d_z)
 !
 !    output results
 !

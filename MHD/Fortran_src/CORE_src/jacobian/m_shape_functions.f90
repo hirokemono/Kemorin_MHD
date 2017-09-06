@@ -10,7 +10,6 @@
 !
 !      subroutine deallocate_gauss_point_id
 !      subroutine deallocate_gen_position
-!      subroutine deallocate_shape_functions
 !
 !>  arrays for shape functions in element coordinate
       module   m_shape_functions
@@ -33,11 +32,6 @@
       real (kind=kreal), allocatable :: ei3(:)
       real (kind=kreal), allocatable :: zi3(:)
 !
-!
-      real (kind=kreal), allocatable :: dnxi_ed1(:,:)
-! 
-      real (kind=kreal), allocatable :: dnxi_ed20(:,:)
-! 
 ! ----------------------------------------------------------------------
 !
       contains
@@ -51,8 +45,6 @@
 !
       call allocate_gauss_point_id
       call allocate_gen_position
-!
-      call allocate_shape_functions
 !
       end subroutine allocate_integrate_parameters
 !
@@ -129,23 +121,6 @@
       end subroutine allocate_gen_position_to_4
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine allocate_shape_functions
-!
-      use m_fem_gauss_int_coefs
-      use m_geometry_constants
-!
-!
-        allocate ( dnxi_ed1(num_linear_edge,maxtot_int_1d) )
-        allocate ( dnxi_ed20(num_quad_edge,maxtot_int_1d) )
-!
-!
-       dnxi_ed1 = 0.0d0
-       dnxi_ed20 = 0.0d0
-!
-       end subroutine allocate_shape_functions
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine deallocate_gauss_point_id
@@ -165,16 +140,6 @@
       deallocate ( xi3, ei3, zi3 )
 !
       end subroutine deallocate_gen_position
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_shape_functions
-!
-!
-      deallocate ( dnxi_ed1 )
-      deallocate ( dnxi_ed20 )
-!
-      end subroutine deallocate_shape_functions
 !
 ! ----------------------------------------------------------------------
 !

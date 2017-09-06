@@ -4,7 +4,7 @@
 !        programmed by H. Matsui on June, 2007
 !
 !      subroutine s_cal_jacobian_linear_1d(num_int,                     &
-!     &          node, ele, surf, edge, jacobians)
+!     &          node, surf, edge, spf_1d, jacobians)
 !
       module cal_jacobian_linear_1d
 !
@@ -19,9 +19,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_jacobian_linear_1d(num_int,                      &
-     &          node, ele, surf, edge, jacobians)
+     &          node, surf, edge, spf_1d, jacobians)
 !
       use calypso_mpi
+      use t_shape_functions
       use t_jacobians
       use t_geometry_data
       use t_surface_data
@@ -35,10 +36,10 @@
 !
       integer(kind = kint), intent(in) :: num_int
       type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
 !
       type(surface_data), intent(inout)  :: surf
       type(edge_data), intent(inout)  :: edge
+      type(edge_shape_function), intent(inout) :: spf_1d
       type(jacobians_type), intent(inout) :: jacobians
 !
 !  data allocation
@@ -63,7 +64,10 @@
 !
       call set_gauss_coefs_4_1d
 !
-      call const_jacobians_edge(my_rank, nprocs, node, edge, jacobians)
+      call alloc_edge_shape_func                                        &
+     &   (edge%nnod_4_edge, maxtot_int_1d, spf_1d)
+      call const_jacobians_edge                                         &
+     &   (my_rank, nprocs, node, edge, spf_1d, jacobians)
 !
       end subroutine s_cal_jacobian_linear_1d
 !

@@ -16,7 +16,7 @@
 !!      subroutine const_jacobians_surface                              &
 !!     &         (my_rank, nprocs, node, surf, spf_2d, jacobians)
 !!      subroutine const_jacobians_edge                                 &
-!!     &         (my_rank, nprocs, node, edge, jacobians)
+!!     &         (my_rank, nprocs, node, edge, spf_1d, jacobians)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in)  :: surf
@@ -245,13 +245,14 @@
 !> for edge element
 !
       subroutine const_jacobians_edge                                   &
-     &         (my_rank, nprocs, node, edge, jacobians)
+     &         (my_rank, nprocs, node, edge, spf_1d, jacobians)
 !
       use const_jacobians_1d
 !
       integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
+      type(edge_shape_function), intent(inout) :: spf_1d
       type(jacobians_type), intent(inout) :: jacobians
 !
 !
@@ -260,7 +261,7 @@
      &    maxtot_int_1d, jacobians%jac_1d)
 !
       if(my_rank .lt. nprocs) then
-        call sel_jacobian_edge_type(node, edge, jacobians%jac_1d)
+        call sel_jacobian_edge(node, edge, spf_1d, jacobians%jac_1d)
       end if
 !
       if(edge%nnod_4_edge .eq. num_linear_edge) then
@@ -270,7 +271,8 @@
         call alloc_1d_jac_type(edge%numedge, num_linear_edge,           &
      &      maxtot_int_1d, jacobians%jac_1d_l)
         if(my_rank .lt. nprocs) then
-          call cal_jacobian_edge_linear(node, edge, jacobians%jac_1d_l)
+          call cal_jacobian_edge_linear                                 &
+     &       (node, edge, spf_1d, jacobians%jac_1d_l)
         end if
       end if
 !

@@ -2,9 +2,10 @@
 !     module m_int_edge_vart_width
 !
 !      subroutine int_edge_vart_width(n_int, jac_1d)
-!      subroutine int_edge_diff_vart_w(n_int, jac_1d)
-!      subroutine int_edge_d2_vart_w(n_int, jac_1d)
-!      subroutine int_edge_d2_vart_w2(n_int, jac_1d)
+!!      subroutine int_edge_diff_vart_w(ele, edge, n_int, spf_1d, jac_1d)
+!!      subroutine int_edge_d2_vart_w                                   &
+!!     &         (node, ele, edge, n_int, spf_1d, jac_1d)
+!      subroutine int_edge_d2_vart_w2(n_int, spf_1d, jac_1d)
 !
       module m_int_edge_vart_width
 !
@@ -196,18 +197,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_diff_vart_w(ele, edge, n_int, jac_1d)
+      subroutine int_edge_diff_vart_w(ele, edge, n_int, spf_1d, jac_1d)
 !
       use t_geometry_data
       use t_edge_data
       use t_jacobian_1d
+      use t_shape_functions
       use m_fem_gauss_int_coefs
-      use m_shape_functions
       use m_commute_filter_z
       use m_int_edge_data
 !
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
+      type(edge_shape_function), intent(in) :: spf_1d
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
 !
@@ -224,7 +226,7 @@
               inod1 = edge%ie_edge(iele,k1)
               inod2 = edge%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2)                             &
-     &                       + delta_z(inod1) * dnxi_ed1(k1,ix)         &
+     &                       + delta_z(inod1) * spf_1d%dnxi_ed(k1,ix)   &
      &                        * jac_1d%an_edge(k2,ix) * owe(ix)
             end do
           end do
@@ -236,22 +238,25 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_d2_vart_w(node, ele, edge, n_int, jac_1d)
+      subroutine int_edge_d2_vart_w                                     &
+     &         (node, ele, edge, n_int, spf_1d, jac_1d)
 !
       use calypso_mpi
       use t_geometry_data
       use t_edge_data
       use t_jacobian_1d
+      use t_shape_functions
       use m_fem_gauss_int_coefs
-      use m_shape_functions
       use m_commute_filter_z
       use m_int_edge_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
+      type(edge_shape_function), intent(in) :: spf_1d
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
+!
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !
 !
@@ -265,8 +270,8 @@
               inod1 = edge%ie_edge(iele,k1)
               inod2 = edge%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) - delta_z(inod1)            &
-     &                     * dnxi_ed1(k1,ix)* dnxi_ed1(k2,ix) * owe(ix) &
-     &                      / jac_1d%xeg_edge(iele,ix,3)
+     &                  * spf_1d%dnxi_ed(k1,ix) * spf_1d%dnxi_ed(k2,ix) &
+     &                  * owe(ix)  / jac_1d%xeg_edge(iele,ix,3)
             end do
           end do
         end do
@@ -280,22 +285,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_d2_vart_w2(ele, edge, n_int, jac_1d)
+      subroutine int_edge_d2_vart_w2(ele, edge, n_int, spf_1d, jac_1d)
 !
       use calypso_mpi
       use t_geometry_data
       use t_edge_data
       use t_jacobian_1d
+      use t_shape_functions
       use m_fem_gauss_int_coefs
-      use m_shape_functions
       use m_commute_filter_z
       use m_int_edge_data
 !
 !      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
+      type(edge_shape_function), intent(in) :: spf_1d
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
+!
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !
 !
@@ -309,8 +316,8 @@
               inod1 = edge%ie_edge(iele,k1)
               inod2 = edge%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) + delta_dz(inod1)           &
-     &                    * dnxi_ed1(k1,ix) * jac_1d%an_edge(k2,ix)     &
-     &                    * owe(ix)
+     &                  * spf_1d%dnxi_ed(k1,ix) * jac_1d%an_edge(k2,ix) &
+     &                  * owe(ix)
             end do
           end do
         end do

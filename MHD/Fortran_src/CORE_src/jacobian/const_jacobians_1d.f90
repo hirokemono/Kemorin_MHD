@@ -7,10 +7,11 @@
 !> @brief  Construct Jacobians on edge
 !!
 !!@verbatim
-!!      subroutine sel_jacobian_edge_type(node, edge, jac_1d)
-!!      subroutine cal_jacobian_edge_linear(node, edge, jac_1d)
-!!      subroutine cal_jacobian_edge_quad(node, edge, jac_1d)
-!!      subroutine cal_jacobian_edge_quad_on_l(node, edge, jac_1d)
+!!      subroutine sel_jacobian_edge(node, edge, spf_1d, jac_1d)
+!!      subroutine cal_jacobian_edge_linear                             &
+!!     &         (node, edge, spf_1d_8, jac_1d)
+!!      subroutine cal_jacobian_edge_quad_on_l                          &
+!!     &         (node, edge, spf_1d_20, jac_1d)
 !!        type(node_data), intent(in) :: node
 !!        type(edge_data), intent(in)  :: edge
 !!        type(jacobians_1d), intent(inout) :: jac_1d
@@ -31,66 +32,72 @@
 !
       implicit none
 !
+      private :: cal_jacobian_edge_quad
+!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_jacobian_edge_type(node, edge, jac_1d)
+      subroutine sel_jacobian_edge(node, edge, spf_1d, jac_1d)
 !
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
+      type(edge_shape_function), intent(inout) :: spf_1d
       type(jacobians_1d), intent(inout) :: jac_1d
 !
 !
       if      (edge%nnod_4_edge .eq. num_linear_edge) then
-        call cal_jacobian_edge_linear(node, edge, jac_1d)
+        call cal_jacobian_edge_linear(node, edge, spf_1d, jac_1d)
       else if (edge%nnod_4_edge .eq. num_quad_edge) then
-        call cal_jacobian_edge_quad(node, edge, jac_1d)
+        call cal_jacobian_edge_quad(node, edge, spf_1d, jac_1d)
       end if
 !
-      end subroutine sel_jacobian_edge_type
+      end subroutine sel_jacobian_edge
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_edge_linear(node, edge, jac_1d)
+      subroutine cal_jacobian_edge_linear                               &
+     &         (node, edge, spf_1d_8, jac_1d)
 !
       use cal_1edge_jacobians
       use cal_shape_function_1d
 !
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
+      type(edge_shape_function), intent(inout) :: spf_1d_8
       type(jacobians_1d), intent(inout) :: jac_1d
 !
 !
       call s_cal_shape_function_1d_linear                               &
-     &   (jac_1d%ntot_int, jac_1d%an_edge, dnxi_ed1, xi1)
+     &   (jac_1d%ntot_int, jac_1d%an_edge, spf_1d_8%dnxi_ed, xi1)
 !
 !   jacobian for tri-linear elaments
       call cal_jacobian_1d_2                                            &
      &   (node%numnod, edge%numedge, edge%nnod_4_edge, edge%ie_edge,    &
      &    node%xx, np_smp, edge%istack_edge_smp,                        &
      &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
-     &    jac_1d%xeg_edge, dnxi_ed1)
+     &    jac_1d%xeg_edge, spf_1d_8%dnxi_ed)
 !
       end subroutine cal_jacobian_edge_linear
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_edge_quad(node, edge, jac_1d)
+      subroutine cal_jacobian_edge_quad(node, edge, spf_1d_20, jac_1d)
 !
       use cal_1edge_jacobians
       use cal_shape_function_1d
 !
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
+      type(edge_shape_function), intent(inout) :: spf_1d_20
       type(jacobians_1d), intent(inout) :: jac_1d
 !
 !
       call s_cal_shape_function_1d_quad                                 &
-     &   (jac_1d%ntot_int, jac_1d%an_edge, dnxi_ed20, xi1)
+     &   (jac_1d%ntot_int, jac_1d%an_edge, spf_1d_20%dnxi_ed, xi1)
 !
 !   jacobian for quadrature elaments
 !
@@ -98,31 +105,33 @@
      &   (node%numnod, edge%numedge, edge%nnod_4_edge, edge%ie_edge,    &
      &    node%xx, np_smp, edge%istack_edge_smp,                        &
      &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
-     &    jac_1d%xeg_edge, dnxi_ed20)
+     &    jac_1d%xeg_edge, spf_1d_20%dnxi_ed)
 !
       end subroutine cal_jacobian_edge_quad
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_edge_quad_on_l(node, edge, jac_1d)
+      subroutine cal_jacobian_edge_quad_on_l                            &
+     &         (node, edge, spf_1d_20, jac_1d)
 !
       use cal_1edge_jacobians
       use cal_shape_function_1d
 !
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
+      type(edge_shape_function), intent(inout) :: spf_1d_20
       type(jacobians_1d), intent(inout) :: jac_1d
 !
 !
       call s_cal_shape_function_1d_quad(jac_1d%ntot_int,                &
-     &    jac_1d%an_edge, dnxi_ed20, xi1)
+     &    jac_1d%an_edge, spf_1d_20%dnxi_ed, xi1)
 !
 !   jacobian for quadrature elaments
       call cal_jacobian_1d_2_3                                          &
      &   (node%numnod, edge%numedge, edge%nnod_4_edge,                  &
      &    edge%ie_edge, node%xx, np_smp, edge%istack_edge_smp,          &
      &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
-     &    jac_1d%xeg_edge, dnxi_ed20)
+     &    jac_1d%xeg_edge, spf_1d_20%dnxi_ed)
 !
       end subroutine cal_jacobian_edge_quad_on_l
 !

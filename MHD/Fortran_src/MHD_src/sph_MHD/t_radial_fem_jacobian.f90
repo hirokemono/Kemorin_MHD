@@ -61,6 +61,8 @@
 !
       type(radial_fem_jacobians), intent(inout) :: jacs_r
 !
+      type(edge_shape_function) :: spf_1d_r
+!
 !
       call set_num_radial_element(nri, jacs_r%j_lin, jacs_r%j_quad)
 !
@@ -71,13 +73,18 @@
       call set_integrate_indices_1d
       call set_gauss_coefs_4_1d
 !
+      call alloc_edge_shape_func                                        &
+     &   (num_linear_edge, maxtot_int_1d, spf_1d_r)
       call cal_linear_radiaul_jacobian                                  &
-     &   (nri, maxtot_int_1d, radius, jacs_r%j_lin)
+     &   (nri, maxtot_int_1d, radius, spf_1d_r, jacs_r%j_lin)
+      call dealloc_edge_shape_func(spf_1d_r)
+!
+      call alloc_edge_shape_func(num_quad_edge, maxtot_int_1d, spf_1d_r)
       call cal_quad_radiaul_jacobian                                    &
-     &   (nri, maxtot_int_1d, radius, jacs_r%j_quad)
+     &   (nri, maxtot_int_1d, radius, spf_1d_r, jacs_r%j_quad)
+      call dealloc_edge_shape_func(spf_1d_r)
 !
       call deallocate_gen_position
-      call deallocate_shape_functions
 !
       end subroutine cal_radial_jacobians
 !
@@ -159,11 +166,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_linear_radiaul_jacobian                            &
-     &         (nri, ntot_int, radius, j_lin)
+     &         (nri, ntot_int, radius, spf_1d_8, j_lin)
 !
       integer(kind = kint), intent(in) :: nri, ntot_int
       real(kind = kreal), intent(in) :: radius(nri)
 !
+      type(edge_shape_function), intent(inout) :: spf_1d_8
       type(radial_fem_jacobian), intent(inout) :: j_lin
 !
       integer(kind = kint) :: i0, ii, ix
@@ -172,7 +180,7 @@
       call alloc_radial_jac(num_linear_edge, ntot_int, j_lin)
       call set_radial_linear_fem_connect(j_lin)
       call s_cal_shape_function_1d_linear(j_lin%ntot_int, j_lin%an_r,   &
-     &    dnxi_ed1, xi1)
+     &    spf_1d_8%dnxi_ed, xi1)
 !
 !   jacobian for quadrature elaments
 !
@@ -181,8 +189,8 @@
           ix = int_start1(i0) + ii
           call cal_x_jacobian_1d_2                                      &
     &        (nri, j_lin%nedge_r, num_quad_edge, j_lin%ie_r, radius,    &
-    &          j_lin%rjac(1,ix), j_lin%arjac(1,ix), j_lin%reg(1,ix),    &
-    &         dnxi_ed1(1,ix))
+    &         j_lin%rjac(1,ix), j_lin%arjac(1,ix), j_lin%reg(1,ix),     &
+    &         spf_1d_8%dnxi_ed(1,ix))
 !
         end do
       end do
@@ -192,11 +200,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_quad_radiaul_jacobian                              &
-     &         (nri, ntot_int, radius, j_quad)
+     &         (nri, ntot_int, radius, spf_1d_20, j_quad)
 !
       integer(kind = kint), intent(in) :: nri, ntot_int
       real(kind = kreal), intent(in) :: radius(nri)
 !
+      type(edge_shape_function), intent(inout) :: spf_1d_20
       type(radial_fem_jacobian), intent(inout) :: j_quad
 !
       integer(kind = kint) :: i0, ii, ix
@@ -207,7 +216,7 @@
       call alloc_radial_jac(num_quad_edge, ntot_int, j_quad)
       call set_radial_quad_fem_connect(j_quad)
       call s_cal_shape_function_1d_quad(j_quad%ntot_int, j_quad%an_r,   &
-     &    dnxi_ed20, xi1)
+     &    spf_1d_20%dnxi_ed, xi1)
 !
 !   jacobian for quadrature elaments
 !
@@ -217,7 +226,7 @@
           call cal_x_jacobian_1d_3                                      &
     &        (nri, j_quad%nedge_r, num_quad_edge, j_quad%ie_r, radius,  &
     &         j_quad%rjac(1,ix), j_quad%arjac(1,ix), j_quad%reg(1,ix),  &
-    &         dnxi_ed20(1,ix))
+    &         spf_1d_20%dnxi_ed(1,ix))
 !
         end do
       end do
