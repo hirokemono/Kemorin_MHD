@@ -92,15 +92,13 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !
-      real(kind = kreal) :: tmp_stab_wt = one
+      real(kind = kreal), save :: tmp_stab_wt = one
 !
 !
-!      write(*,*) 'SGS_par%model_p%stab_weight A ', SGS_par%model_p%stab_weight
       if(SGS_par%model_p%iflag_rst_sgs_coef_code .eq. 0) then
         tmp_stab_wt = SGS_par%model_p%stab_weight
         SGS_par%model_p%stab_weight = one
       end if
-!      write(*,*) 'SGS_par%model_p%stab_weight B ', SGS_par%model_p%stab_weight
 !
       call nonlinear_w_SGS(i_step, SGS_par, sph, comms_sph,             &
      &    omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,              &
@@ -109,7 +107,6 @@
       if(SGS_par%model_p%iflag_rst_sgs_coef_code .eq. 0) then
         SGS_par%model_p%stab_weight = tmp_stab_wt
       end if
-!      write(*,*) 'SGS_par%model_p%stab_weight C ', SGS_par%model_p%stab_weight
 !
       end subroutine nonlinear_SGS_first
 !*
