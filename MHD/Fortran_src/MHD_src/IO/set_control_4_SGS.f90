@@ -174,10 +174,15 @@
         i_step_sgs_coefs = sgs_ctl%istep_dynamic_ctl%intvalue
       end if
 !
+      write(*,*) 'sgs_ctl%stabilize_weight_ctl%iflag ',   &
+     &          sgs_ctl%stabilize_weight_ctl%iflag 
+      write(*,*) 'sgs_ctl%stabilize_weight_ctl%realvalue ',   &
+     &          sgs_ctl%stabilize_weight_ctl%realvalue 
       SGS_param%stab_weight = one
       if (sgs_ctl%stabilize_weight_ctl%iflag .gt. 0) then
         SGS_param%stab_weight = sgs_ctl%stabilize_weight_ctl%realvalue
       end if
+      write(*,*) 'SGS_param%stab_weight',  SGS_param%stab_weight
 !
       if (iflag_debug .gt. 0) then
         write(*,*) 'iflag_SGS_model',   SGS_param%iflag_SGS
