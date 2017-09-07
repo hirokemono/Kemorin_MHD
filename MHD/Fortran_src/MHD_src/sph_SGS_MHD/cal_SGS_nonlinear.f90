@@ -341,8 +341,6 @@
 !
         istep_dynamic = mod(i_step, i_step_sgs_coefs)
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-          if(my_rank .eq. 0) write(*,*) 'Dynamic model:',               &
-     &                      i_step, i_step_sgs_coefs
           call start_elapsed_time(83)
 !
           if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
@@ -362,6 +360,8 @@
 !
           if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none               &
      &       .and. istep_dynamic .eq. 0) then
+            if(my_rank .eq. 0) write(*,*) 'Dynamic model:',             &
+     &                      i_step, i_step_sgs_coefs
             if(iflag_debug .gt. 0) write(*,*)                           &
      &           'const_dynamic_SGS_4_buo_sph', iflag_debug
             call const_dynamic_SGS_4_buo_sph                            &
