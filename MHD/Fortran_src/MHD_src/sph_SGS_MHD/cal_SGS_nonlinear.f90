@@ -340,11 +340,10 @@
      &      trns_SGS%fld_rtp, trns_SGS%frc_rtp)
 !
         istep_dynamic = mod(i_step, i_step_sgs_coefs)
-      if(my_rank .eq. 0) write(*,*) 'istep_dynamic',                    &
-     &                  istep_dynamic, i_step_sgs_coefs
-      if(my_rank .eq. 0) write(*,*) 'SGS_param%stab_weight',            &
-     &                  SGS_param%stab_weight
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+          if(my_rank .eq. 0) write(*,*) 'Dynamic model:',               &
+     &                      i_step, i_step_sgs_coefs
+          call start_elapsed_time(83)
 !
           if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
           call wider_similarity_SGS_rtp(istep_dynamic, sph%sph_rtp,     &
@@ -355,7 +354,7 @@
      &        trns_MHD%fld_rtp, trns_SGS%fld_rtp)
 !
           if (iflag_debug.eq.1) write(*,*)                              &
-     &                   'const_model_coefs_4_sph', istep_dynamic
+     &                   'SGS_param%stab_weight', SGS_param%stab_weight
           call const_model_coefs_4_sph                                  &
      &       (istep_dynamic, SGS_param%stab_weight, sph%sph_rtp,        &
      &        dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,              &
@@ -372,6 +371,7 @@
             call copy_Csim_buo_4_sph_trans(sph%sph_rtp,                 &
      &          dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs, trns_SGS)
           end if
+          call end_elapsed_time(83)
         end if
         call end_elapsed_time(15)
 !
@@ -382,6 +382,7 @@
         call end_elapsed_time(16)
 !
         call start_elapsed_time(17)
+        call start_elapsed_time(84)
         if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
           if(istep_dynamic .eq. 0) then
             if (iflag_debug.eq.1) write(*,*)                            &
@@ -407,6 +408,7 @@
           call magnify_vol_ave_SGS_buoyancy(sph%sph_rtp, ipol,          &
      &        dynamic_SPH%wk_sgs_buo, rj_fld, trns_SGS)
         end if
+        call end_elapsed_time(84)
 !
         if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'
         call rot_SGS_terms_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,       &
