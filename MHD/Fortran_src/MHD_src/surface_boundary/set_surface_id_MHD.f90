@@ -199,7 +199,7 @@
      &      MHD_BC%current_BC%surf_BC, surf_bcs%Jsf_bcs)
 !
         call set_wall_potential_id                                      &
-     &     (IO_bc, sf_grp, MHD_BC%e_potential_BC%surf_BC,              &
+     &     (IO_bc, sf_grp, MHD_BC%e_potential_BC%surf_BC,               &
      &      surf_bcs%Fsf_bcs)
       end if
 !
