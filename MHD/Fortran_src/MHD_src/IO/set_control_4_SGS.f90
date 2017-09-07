@@ -170,9 +170,13 @@
       end if
 !
       i_step_sgs_coefs = 1
+      write(*,*) 'sgs_ctl%istep_dynamic_ctl%iflag',  sgs_ctl%istep_dynamic_ctl%iflag
+      write(*,*) 'sgs_ctl%istep_dynamic_ctl%intvalue',  sgs_ctl%istep_dynamic_ctl%intvalue
+      write(*,*) 'i_step_sgs_coefs A',  i_step_sgs_coefs
       if (sgs_ctl%istep_dynamic_ctl%iflag .gt. 0) then
         i_step_sgs_coefs = sgs_ctl%istep_dynamic_ctl%intvalue
       end if
+      write(*,*) 'i_step_sgs_coefs B',  i_step_sgs_coefs
 !
       SGS_param%stab_weight = one
       if (sgs_ctl%stabilize_weight_ctl%iflag .gt. 0) then
