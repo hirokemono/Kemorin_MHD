@@ -4,18 +4,22 @@
 !     Written by H. Matsui
 !     Modified by H. Matsui on July, 2007
 !
-!      subroutine fem_skv_sgs_uxb_pg(numele, nnod_4_e1, nnod_4_e2,      &
-!     &          iele_fsmp_stack, n_int, k2, ntot_int_3d, xjac, an, dnx,&
-!     &          xmom_order2, nele_filter_mom,                          &
-!     &          elen_dx2_ele,  elen_dy2_ele,  elen_dz2_ele,            &
-!     &          elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele,           &
-!     &           vect_1, dvx, nd, sk_v)
-!      subroutine fem_skv_sgs_uxb_upw(numele, nnod_4_e1, nnod_4_e2,     &
-!     &          iele_fsmp_stack, n_int, k2, ntot_int_3d, xjac, an, dnx,&
-!     &          dt, xmom_order2, nele_filter_mom,                      &
-!     &          elen_dx2_ele,  elen_dy2_ele,  elen_dz2_ele,            &
-!     &          elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele,           &
-!     &          vect_1, vxe, dvx, nd, sk_v)
+!!      subroutine fem_skv_sgs_uxb_pg                                   &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, iele_fsmp_stack,        &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          n_int, k2, ntot_int_3d, xjac, an, dnx,                &
+!!     &          xmom_order2, nele_filter_mom,                         &
+!!     &          elen_dx2_ele,  elen_dy2_ele,  elen_dz2_ele,           &
+!!     &          elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele,          &
+!!     &           vect_1, dvx, nd, sk_v)
+!!      subroutine fem_skv_sgs_uxb_upw                                  &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, iele_fsmp_stack,        &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          n_int, k2, ntot_int_3d, xjac, an, dnx, dt,            &
+!!     &          xmom_order2, nele_filter_mom,                         &
+!!     &          elen_dx2_ele,  elen_dy2_ele,  elen_dz2_ele,           &
+!!     &          elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele,          &
+!!     &          vect_1, vxe, dvx, nd, sk_v)
 !
       module fem_skv_sgs_uxb
 !
@@ -24,7 +28,6 @@
       use m_constants
       use m_machine_parameter
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -34,8 +37,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_sgs_uxb_pg(numele, nnod_4_e1, nnod_4_e2,       &
-     &          iele_fsmp_stack, n_int, k2, ntot_int_3d, xjac, an, dnx, &
+      subroutine fem_skv_sgs_uxb_pg                                     &
+     &         (numele, nnod_4_e1, nnod_4_e2, iele_fsmp_stack,          &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          n_int, k2, ntot_int_3d, xjac, an, dnx,                  &
      &          xmom_order2, nele_filter_mom,                           &
      &          elen_dx2_ele,  elen_dy2_ele,  elen_dz2_ele,             &
      &          elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele,            &
@@ -45,6 +50,10 @@
       integer (kind=kint), intent(in) :: n_int, ntot_int_3d
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
       real (kind=kreal), intent(in) :: an(nnod_4_e1,ntot_int_3d)
@@ -139,9 +148,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_sgs_uxb_upw(numele, nnod_4_e1, nnod_4_e2,      &
-     &          iele_fsmp_stack, n_int, k2, ntot_int_3d, xjac, an, dnx, &
-     &          dt, xmom_order2, nele_filter_mom,                       &
+      subroutine fem_skv_sgs_uxb_upw                                    &
+     &         (numele, nnod_4_e1, nnod_4_e2, iele_fsmp_stack,          &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          n_int, k2, ntot_int_3d, xjac, an, dnx, dt,              &
+     &          xmom_order2, nele_filter_mom,                           &
      &          elen_dx2_ele,  elen_dy2_ele,  elen_dz2_ele,             &
      &          elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele,            &
      &          vect_1, vxe, dvx, nd, sk_v)
@@ -150,6 +161,10 @@
       integer (kind=kint), intent(in) :: n_int, ntot_int_3d
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
       real (kind=kreal), intent(in) :: an(nnod_4_e1,ntot_int_3d)

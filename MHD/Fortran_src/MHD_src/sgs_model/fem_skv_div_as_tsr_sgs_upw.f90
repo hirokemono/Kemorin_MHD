@@ -4,13 +4,14 @@
 !        programmed by H.Matsui on July, 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine fem_skv_div_ast_sgs_upw                               &
-!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp,                  &
-!     &          iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,           &
-!     &          xjac, an1, dnx1, dnx2, xmom_order2, nele_fmom,         &
-!     &          elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,   &
-!     &          elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,  &
-!     &          ak_diff, vxe, as_tsr_1, sk_v)
+!!      subroutine fem_skv_div_ast_sgs_upw                              &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          n_int, k2, dt, ntot_int_3d, xjac,                     &
+!!     &          an1, dnx1, dnx2, xmom_order2, nele_fmom,              &
+!!     &          elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,  &
+!!     &          elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx, &
+!!     &          ak_diff, vxe, as_tsr_1, sk_v)
 !
       module fem_skv_div_as_tsr_sgs_upw
 !
@@ -18,7 +19,6 @@
 !
       use m_constants
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -29,9 +29,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_div_ast_sgs_upw                                &
-     &         (numele, nnod_4_e1, nnod_4_e2, np_smp,                   &
-     &          iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,            &
-     &          xjac, an1, dnx1, dnx2, xmom_order2, nele_fmom,          &
+     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          n_int, k2, dt, ntot_int_3d, xjac,                       &
+     &          an1, dnx1, dnx2, xmom_order2, nele_fmom,                &
      &          elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,    &
      &          elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,   &
      &          ak_diff, vxe, as_tsr_1, sk_v)
@@ -40,6 +41,10 @@
       integer(kind=kint), intent(in) :: np_smp, ntot_int_3d, n_int
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: k2
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
       real (kind=kreal), intent(in) :: an1(nnod_4_e1,ntot_int_3d)

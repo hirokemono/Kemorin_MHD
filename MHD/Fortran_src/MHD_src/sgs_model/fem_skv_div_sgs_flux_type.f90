@@ -76,7 +76,8 @@
 !
       call fem_skv_div_sgs_vector_pg                                    &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
@@ -114,7 +115,8 @@
 !
       call fem_skv_div_tensor_w_sgs_pg                                  &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
@@ -152,7 +154,8 @@
 !
       call fem_skv_div_sgs_asym_t_pg                                    &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
@@ -185,10 +188,10 @@
      &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_scalar_inertia_sgs                                   &
-     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx,                           &
+      call fem_skv_scalar_inertia_sgs(ele%numele,                       &
+     &    ele%nnod_4_ele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,      &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
+     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx,          &
      &    scalar_e, sgs_e, vxe, sk_v)
 !
       end subroutine fem_skv_scl_inertia_sgs_pg
@@ -214,10 +217,10 @@
      &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_vector_inertia_sgs                                   &
-     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx,                           &
+      call fem_skv_vector_inertia_sgs(ele%numele,                       &
+     &    ele%nnod_4_ele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,      &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
+     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx,          &
      &    vector_e, sgs_e, vxe, sk_v)
 !
       end subroutine fem_skv_vec_inertia_sgs_pg
@@ -243,11 +246,11 @@
      &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_inertia_rot_sgs                                      &
-     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%an, jac_3d%dnx,                &
-     &    vector_e, sgs_e, wxe, sk_v)
+      call fem_skv_inertia_rot_sgs(ele%numele,                          &
+     &    ele%nnod_4_ele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,      &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
+     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,                      &
+     &    jac_3d%an, jac_3d%dnx, vector_e, sgs_e, wxe, sk_v)
 !
       end subroutine fem_skv_inertia_rot_sgs_pg
 !
@@ -281,7 +284,8 @@
 !
       call fem_skv_scalar_inertia_sgsmod                                &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
@@ -321,7 +325,8 @@
 !
       call fem_skv_vector_inertia_sgsmod                                &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &

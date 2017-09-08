@@ -28,6 +28,7 @@
 !
       use m_precision
 !
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_finite_element_mat
       use t_jacobians
@@ -62,8 +63,9 @@
      &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_sgs_flux_pg(ele%numele, ele%nnod_4_ele,              &
-     &    ele%nnod_4_ele, iele_fsmp_stack, n_int, k2,                   &
+      call fem_skv_sgs_flux_pg                                          &
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx,          &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
@@ -99,8 +101,9 @@
      &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_sgs_flux_upw(ele%numele, ele%nnod_4_ele,             &
-     &    ele%nnod_4_ele, iele_fsmp_stack, n_int, k2,                   &
+      call fem_skv_sgs_flux_upw                                         &
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx, dt,      &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
@@ -134,9 +137,10 @@
      &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_sgs_uxb_pg(ele%numele, ele%nnod_4_ele,               &
-     &    ele%nnod_4_ele, iele_fsmp_stack, n_int, k2,                   &
-     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx,          &
+      call fem_skv_sgs_uxb_pg                                           &
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int,       &
+     &    k2, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx,      &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%moms%f_x2, FEM_elens%elen_ele%moms%f_y2,   &
@@ -170,8 +174,9 @@
      &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_sgs_uxb_upw(ele%numele, ele%nnod_4_ele,              &
-     &    ele%nnod_4_ele, iele_fsmp_stack, n_int, k2,                   &
+      call fem_skv_sgs_uxb_upw                                          &
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx, dt,      &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
@@ -206,8 +211,9 @@
      &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_sgs_induct_t_pg(ele%numele, ele%nnod_4_ele,          &
-     &    ele%nnod_4_ele, iele_fsmp_stack, n_int, k2,                   &
+      call fem_skv_sgs_induct_t_pg                                      &
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx,          &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
@@ -243,8 +249,9 @@
      &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_sgs_induct_t_upw(ele%numele, ele%nnod_4_ele,         &
-     &    ele%nnod_4_ele, iele_fsmp_stack, n_int, k2,                   &
+      call fem_skv_sgs_induct_t_upw                                     &
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx, dt,      &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &

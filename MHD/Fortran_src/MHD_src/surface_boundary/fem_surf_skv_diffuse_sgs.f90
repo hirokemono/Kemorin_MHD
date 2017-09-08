@@ -3,22 +3,24 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!      subroutine fem_surf_skv_poisson_sgs                              &
-!     &        (np_smp, numele, nnod_4_e1, nnod_4_e2, nnod_4_sf1,       &
-!     &         node_on_sf, num_surf_bc, surf_item,                     &
-!     &         num_surf_smp, isurf_grp_smp_stack,                      &
-!     &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,  &
-!     &         elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2, &
-!     &         elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,&
-!     &         igrp, k2, n_int, ak_diff, phi_sf, sk_v)
-!      subroutine fem_surf_skv_diffusion_sgs                            &
-!     &        (np_smp, numele, nnod_4_e1, nnod_4_e2, nnod_4_sf1,       &
-!     &         node_on_sf, num_surf_bc, surf_item,                     &
-!     &         num_surf_smp, isurf_grp_smp_stack,                      &
-!     &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,  &
-!     &         elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2, &
-!     &         elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,&
-!     &         igrp, k2, n_int, ak_diff, vect_sf, ak_d, nd_v, sk_v)
+!!      subroutine fem_surf_skv_poisson_sgs                             &
+!!     &       (np_smp, numele, nnod_4_e1, nnod_4_e2, nnod_4_sf1,       &
+!!     &        node_on_sf, num_surf_bc, surf_item,                     &
+!!     &        num_surf_smp, isurf_grp_smp_stack,                      &
+!!     &         max_int_point, maxtot_int_3d, int_start3, owe3d,       &
+!!     &        ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,  &
+!!     &        elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2, &
+!!     &        elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,&
+!!     &        igrp, k2, n_int, ak_diff, phi_sf, sk_v)
+!!      subroutine fem_surf_skv_diffusion_sgs                           &
+!!     &       (np_smp, numele, nnod_4_e1, nnod_4_e2, nnod_4_sf1,       &
+!!     &        node_on_sf, num_surf_bc, surf_item,                     &
+!!     &        num_surf_smp, isurf_grp_smp_stack,                      &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &        ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,  &
+!!     &        elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2, &
+!!     &        elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,&
+!!     &        igrp, k2, n_int, ak_diff, vect_sf, ak_d, nd_v, sk_v)
 !
       module fem_surf_skv_diffuse_sgs
 !
@@ -27,7 +29,6 @@
       use m_constants
       use m_geometry_constants
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -41,6 +42,7 @@
      &        (np_smp, numele, nnod_4_e1, nnod_4_e2, nnod_4_sf1,        &
      &         node_on_sf, num_surf_bc, surf_item,                      &
      &         num_surf_smp, isurf_grp_smp_stack,                       &
+     &         max_int_point, maxtot_int_3d, int_start3, owe3d,         &
      &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,   &
      &         elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,  &
      &         elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2, &
@@ -58,6 +60,10 @@
      &                       :: isurf_grp_smp_stack(0:num_surf_smp)
 !
       integer (kind = kint), intent(in) :: igrp, k2
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind=kint), intent(in) :: n_int, ntot_int_3d
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)
@@ -175,6 +181,7 @@
      &        (np_smp, numele, nnod_4_e1, nnod_4_e2, nnod_4_sf1,        &
      &         node_on_sf, num_surf_bc, surf_item,                      &
      &         num_surf_smp, isurf_grp_smp_stack,                       &
+     &         max_int_point, maxtot_int_3d, int_start3, owe3d,         &
      &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,   &
      &         elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,  &
      &         elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2, &
@@ -192,6 +199,10 @@
      &                       :: isurf_grp_smp_stack(0:num_surf_smp)
 !
       integer (kind = kint), intent(in) :: igrp, k2, nd_v
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind=kint), intent(in) :: n_int, ntot_int_3d
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)

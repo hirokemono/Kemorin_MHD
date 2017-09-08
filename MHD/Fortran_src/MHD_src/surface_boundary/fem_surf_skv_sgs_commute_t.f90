@@ -52,6 +52,7 @@
       use m_geometry_constants
       use m_phys_constants
 !
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -437,6 +438,7 @@
      &  num_t_linear, num_linear_sf, surf%node_on_sf,                   &
      &  sf_grp%num_item, sf_grp%item_sf_grp,                            &
      &  sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                      &
+     &  max_int_point, maxtot_int_3d, int_start3, owe3d,                &
      &  jac_3d_l%ntot_int, jac_3d_l%xjac, jac_3d_l%dnx, jac_3d_l%dnx,   &
      &  FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM_elens%nele_filter_mom,                                      &
@@ -476,6 +478,7 @@
      & (np_smp, ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,             &
      &  surf%nnod_4_surf, surf%node_on_sf, sf_grp%num_item,             &
      &  sf_grp%item_sf_grp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp,  &
+     &  max_int_point, maxtot_int_3d, int_start3, owe3d,                &
      &  jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,           &
      &  FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM_elens%nele_filter_mom,                                      &

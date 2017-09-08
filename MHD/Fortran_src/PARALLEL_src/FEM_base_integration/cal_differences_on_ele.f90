@@ -45,6 +45,7 @@
 !
       use t_geometry_data
       use t_jacobians
+      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -72,6 +73,7 @@
 !
       call fem_difference_on_element(iele_fsmp_stack, node%numnod,      &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
      &    nd, d_ele, d_nod)
 !
@@ -226,6 +228,7 @@
       call fem_difference_grp_on_element                                &
      &   (iele_fsmp_stack, node%numnod, ele%numele, ele%nnod_4_ele,     &
      &    ele%ie, ele%a_vol_ele, nele_grp, iele_grp,                    &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac, nd,          &
      &    d_ele, d_nod)
 !
