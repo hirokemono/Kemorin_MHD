@@ -6,12 +6,14 @@
 !  Volume integration:
 !!      subroutine int_vol_model_coef_l                                 &
 !!     &        (numnod, numele, ie, interior_ele, n_tensor,            &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
 !!     &         ntot_int_3d, n_int, xjac, an,                          &
 !!     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,&
 !!     &         ntot_phys, d_nod, sgs_l_smp, sgs_l, sgs_w)
 !!
 !!      subroutine int_vol_model_coef_q                                 &
 !!     &        (numnod, numele, ie, interior_ele, n_tensor,            &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
 !!     &         ntot_int_3d, n_int, xjac, aw,                          &
 !!     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,&
 !!     &         ntot_phys, d_nod, sgs_l_smp, sgs_l, sgs_w)
@@ -22,7 +24,6 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -34,6 +35,7 @@
 !
       subroutine int_vol_model_coef_l                                   &
      &        (numnod, numele, ie, interior_ele, n_tensor,              &
+     &         max_int_point, maxtot_int_3d, int_start3, owe3d,         &
      &         ntot_int_3d, n_int, xjac, an,                            &
      &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,  &
      &         ntot_phys, d_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f,  &
@@ -44,6 +46,10 @@
       integer (kind = kint), intent(in) :: interior_ele(numele)
 !
       integer (kind = kint), intent(in) :: n_tensor
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
@@ -165,6 +171,7 @@
 !
       subroutine int_vol_model_coef_q                                   &
      &        (numnod, numele, ie, interior_ele, n_tensor,              &
+     &         max_int_point, maxtot_int_3d, int_start3, owe3d,         &
      &         ntot_int_3d, n_int, xjac, aw,                            &
      &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,  &
      &         ntot_phys, d_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f,  &
@@ -175,6 +182,10 @@
       integer (kind = kint), intent(in) :: interior_ele(numele)
 !
       integer (kind = kint), intent(in) :: n_tensor
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)

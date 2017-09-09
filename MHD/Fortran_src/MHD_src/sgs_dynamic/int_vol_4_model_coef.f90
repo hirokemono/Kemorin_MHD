@@ -84,6 +84,7 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then 
           call int_vol_model_coef_q(node%numnod,                        &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
@@ -94,6 +95,7 @@
         else
           call int_vol_model_coef_l(node%numnod,                        &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
@@ -109,6 +111,7 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call int_vol_model_coef_grpsmp_q(node%numnod,                 &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp,                                 &
@@ -120,6 +123,7 @@
         else
           call int_vol_model_coef_grpsmp_l(node%numnod,                 &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp,                                 &
@@ -159,6 +163,7 @@
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_diff_coef_q(node%numnod, ele%numele,               &
      &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
      &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
@@ -166,6 +171,7 @@
         else
         call int_vol_diff_coef_l(node%numnod, ele%numele,               &
      &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
@@ -201,6 +207,7 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call int_vol_rms_ave_dynamic_q(node%numnod,                   &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
@@ -212,6 +219,7 @@
         else
           call int_vol_rms_ave_dynamic_l(node%numnod,                   &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
@@ -227,6 +235,7 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call int_vol_rms_dynamic_grpsmp_q(node%numnod,                &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp,                                 &
@@ -239,6 +248,7 @@
         else
           call int_vol_rms_dynamic_grpsmp_l(node%numnod,                &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp,                                 &
@@ -277,6 +287,7 @@
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_rms_ave_d_q(node%numnod, ele%numele, ele%ie,       &
      &      ele%interior_ele, iele_fsmp_stack, n_tensor,                &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
      &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
@@ -285,6 +296,7 @@
       else
         call int_vol_rms_ave_d_l(node%numnod, ele%numele, ele%ie,       &
      &      ele%interior_ele, iele_fsmp_stack, n_tensor,                &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
@@ -325,6 +337,7 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call int_vol_layer_cor_q(node%numnod,                         &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp, &
@@ -336,6 +349,7 @@
         else
           call int_vol_layer_cor_l(node%numnod,                         &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp, &
@@ -351,6 +365,7 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call int_vol_layer_cor_grpsmp_q(node%numnod,                  &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp,                                 &
@@ -364,6 +379,7 @@
         else
           call int_vol_layer_cor_grpsmp_l(node%numnod,                  &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
      &      layer_tbl%e_grp%istack_grp,                                 &
@@ -408,6 +424,7 @@
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_diff_correlate_q(node%numnod, ele%numele,          &
      &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
@@ -416,6 +433,7 @@
         else
         call int_vol_diff_correlate_l(node%numnod, ele%numele,          &
      &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &

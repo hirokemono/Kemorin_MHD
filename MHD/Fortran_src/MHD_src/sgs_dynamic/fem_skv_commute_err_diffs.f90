@@ -53,10 +53,10 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
-      call fem_skv_commute_error_grad                                   &
-     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,           &
-     &    iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,                  &
-     &    jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,                          &
+      call fem_skv_commute_error_grad(ele%numele, ele%nnod_4_ele,       &
+     &    ele%nnod_4_ele, np_smp, iele_fsmp_stack,                      &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
+     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,         &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
@@ -84,10 +84,10 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
-      call fem_skv_commute_error_div                                    &
-     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,           &
-     &    iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,                  &
-     &    jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,                          &
+      call fem_skv_commute_error_div(ele%numele,                        &
+     &    ele%nnod_4_ele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,      &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
+     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,         &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
@@ -115,10 +115,10 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
-      call fem_skv_commute_error_rot                                    &
-     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,           &
-     &    iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,                  &
-     &    jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,                          &
+      call fem_skv_commute_error_rot(ele%numele,                        &
+     &    ele%nnod_4_ele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,      &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
+     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,         &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
@@ -146,10 +146,10 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
-      call fem_skv_commute_error_div_tsr                                &
-     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,           &
-     &    iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,                  &
-     &    jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,                          &
+      call fem_skv_commute_error_div_tsr(ele%numele,                    &
+     &    ele%nnod_4_ele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,      &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
+     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,         &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
@@ -177,10 +177,10 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
-      call fem_skv_commute_error_div_ast                                &
-     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,           &
-     &    iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,                  &
-     &    jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,                          &
+      call fem_skv_commute_error_div_ast(ele%numele,                    &
+     &    ele%nnod_4_ele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,      &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
+     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,         &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &

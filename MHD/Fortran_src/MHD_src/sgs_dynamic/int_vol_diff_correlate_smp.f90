@@ -4,19 +4,21 @@
 !     Written by H. Matsui
 !
 !!      subroutine int_vol_diff_correlate_l(numnod, numele, ie,         &
-!!     &         interior_ele, iele_fsmp_stack, numdir,                 &
-!!     &         ntot_int_3d, n_int, xjac, an,                          &
-!!     &         ave_s, ave_g, ntot_phys, d_nod,                        &
-!!     &         i_sgs_simi, i_sgs_grad, i_sgs_grad_f,                  &
-!!     &         ncomp_cor, ncomp_cor2, sig_l_smp, cor_l_smp,           &
-!!     &         sig_w, cov_w)
+!!     &          interior_ele, iele_fsmp_stack, numdir,                &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, xjac, an,                         &
+!!     &          ave_s, ave_g, ntot_phys, d_nod,                       &
+!!     &          i_sgs_simi, i_sgs_grad, i_sgs_grad_f,                 &
+!!     &          ncomp_cor, ncomp_cor2, sig_l_smp, cor_l_smp,          &
+!!     &          sig_w, cov_w)
 !!      subroutine int_vol_diff_correlate_q(numnod, numele, ie,         &
-!!     &         interior_ele, iele_fsmp_stack, numdir,                 &
-!!     &         ntot_int_3d, n_int, xjac, aw,                          &
-!!     &         ave_s, ave_g, ntot_phys, d_nod,                        &
-!!     &         i_sgs_simi, i_sgs_grad, i_sgs_grad_f,                  &
-!!     &         ncomp_cor, ncomp_cor2, sig_l_smp, cor_l_smp,           &
-!!     &         sig_w, cov_w)
+!!     &          interior_ele, iele_fsmp_stack, numdir,                &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, xjac, aw,                         &
+!!     &          ave_s, ave_g, ntot_phys, d_nod,                       &
+!!     &          i_sgs_simi, i_sgs_grad, i_sgs_grad_f,                 &
+!!     &          ncomp_cor, ncomp_cor2, sig_l_smp, cor_l_smp,          &
+!!     &          sig_w, cov_w)
 !
       module int_vol_diff_correlate_smp
 !
@@ -24,7 +26,6 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -35,12 +36,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_diff_correlate_l(numnod, numele, ie,           &
-     &         interior_ele, iele_fsmp_stack, numdir,                   &
-     &         ntot_int_3d, n_int, xjac, an,                            &
-     &         ave_s, ave_g, ntot_phys, d_nod,                          &
-     &         i_sgs_simi, i_sgs_grad, i_sgs_grad_f,                    &
-     &         ncomp_cor, ncomp_cor2, sig_l_smp, cor_l_smp,             &
-     &         sig_w, cov_w)
+     &          interior_ele, iele_fsmp_stack, numdir,                  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, xjac, an,                           &
+     &          ave_s, ave_g, ntot_phys, d_nod,                         &
+     &          i_sgs_simi, i_sgs_grad, i_sgs_grad_f,                   &
+     &          ncomp_cor, ncomp_cor2, sig_l_smp, cor_l_smp,            &
+     &          sig_w, cov_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
@@ -48,6 +50,10 @@
 !
       integer(kind=kint), intent(in) :: numdir
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
@@ -184,12 +190,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_diff_correlate_q(numnod, numele, ie,           &
-     &         interior_ele, iele_fsmp_stack, numdir,                   &
-     &         ntot_int_3d, n_int, xjac, aw,                            &
-     &         ave_s, ave_g, ntot_phys, d_nod,                          &
-     &         i_sgs_simi, i_sgs_grad, i_sgs_grad_f,                    &
-     &         ncomp_cor, ncomp_cor2, sig_l_smp, cor_l_smp,             &
-     &         sig_w, cov_w)
+     &          interior_ele, iele_fsmp_stack, numdir,                  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, xjac, aw,                           &
+     &          ave_s, ave_g, ntot_phys, d_nod,                         &
+     &          i_sgs_simi, i_sgs_grad, i_sgs_grad_f,                   &
+     &          ncomp_cor, ncomp_cor2, sig_l_smp, cor_l_smp,            &
+     &          sig_w, cov_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
@@ -197,6 +204,10 @@
 !
       integer(kind=kint), intent(in) :: numdir
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
