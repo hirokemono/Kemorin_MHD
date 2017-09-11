@@ -60,11 +60,13 @@
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_surf_area_1_surf_grp(ele%numele, surf%numsurf,         &
      &      surf%isf_4_ele, ele%interior_ele,                           &
+     &      max_int_point, maxtot_int_2d, int_start2, owe2d,            &
      &      jac_2d_q%ntot_int, num_int, jac_2d_q%xj_sf, num_sgrp,       &
      &      isurf_grp, area)
       else
         call int_surf_area_1_surf_grp(ele%numele, surf%numsurf,         &
      &      surf%isf_4_ele, ele%interior_ele,                           &
+     &      max_int_point, maxtot_int_2d, int_start2, owe2d,            &
      &      jac_2d_l%ntot_int, num_int, jac_2d_l%xj_sf, num_sgrp,       &
      &      isurf_grp, area)
       end if
@@ -107,6 +109,7 @@
         call int_surf_ave_1sgrp_4(node%numnod, ele%numele,              &
      &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
      &      surf%isf_4_ele, ele%interior_ele,                           &
+     &      max_int_point, maxtot_int_2d, int_start2, owe2d,            &
      &      jac_2d_l%ntot_int, num_int, jac_2d_l%an_sf,                 &
      &      jac_2d_l%xj_sf, num_sgrp, isurf_grp, istack_sf_grp_smp,     &
      &      d1_nod, ave_l)
@@ -148,12 +151,13 @@
      &      num_int, jac_2d_q%an_sf, jac_2d_q%xsf_sf,                   &
      &      d1_nod, flux)
       else
-        call int_vec_flux_1sgrp_4(node%numnod, ele%numele,              &
-     &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
-     &      surf%isf_4_ele, ele%interior_ele, num_sgrp,                 &
-     &      isurf_grp, istack_sf_grp_smp, jac_2d_l%ntot_int,            &
-     &      num_int, jac_2d_l%an_sf, jac_2d_l%xsf_sf,                   &
-     &      d1_nod, flux)
+        call int_vec_flux_1sgrp_4                                       &
+     &     (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,    &
+     &      surf%ie_surf, surf%isf_4_ele, ele%interior_ele,             &
+     &      num_sgrp, isurf_grp, istack_sf_grp_smp,                     &
+     &      max_int_point, maxtot_int_2d, int_start2, owe2d,            &
+     &      jac_2d_l%ntot_int, num_int, jac_2d_l%an_sf,                 &
+     &      jac_2d_l%xsf_sf, d1_nod, flux)
       end if
 !
       end subroutine s_int_vec_flux_1sgrp
@@ -191,12 +195,13 @@
      &      num_int, jac_2d_q%an_sf, jac_2d_q%xsf_sf,                   &
      &      d1_nod, flux_l)
       else
-        call int_vec_tflux_1sgrp_4(node%numnod, ele%numele,             &
-     &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
-     &      surf%isf_4_ele, ele%interior_ele, num_sgrp,                 &
-     &      isurf_grp, istack_sf_grp_smp, jac_2d_l%ntot_int,            &
-     &      num_int, jac_2d_l%an_sf, jac_2d_l%xsf_sf,                   &
-     &      d1_nod, flux_l)
+        call int_vec_tflux_1sgrp_4                                      &
+     &     (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,    &
+     &      surf%ie_surf, surf%isf_4_ele, ele%interior_ele,             &
+     &      num_sgrp, isurf_grp, istack_sf_grp_smp,                     &
+     &      max_int_point, maxtot_int_2d, int_start2, owe2d,            &
+     &      jac_2d_l%ntot_int, num_int, jac_2d_l%an_sf,                 &
+     &      jac_2d_l%xsf_sf, d1_nod, flux_l)
       end if
 !
       end subroutine s_int_vec_total_flux_1sgrp

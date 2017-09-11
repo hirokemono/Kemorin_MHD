@@ -67,6 +67,7 @@
       call allocate_normal_vect_type(surf)
 !
       call int_normal_all_surf(surf%numsurf, surf%istack_surf_smp,      &
+     &    max_int_point, maxtot_int_2d, int_start2, owe2d,              &
      &    jac_2d%ntot_int, max_int_point, jac_2d%xj_sf,                 &
      &    jac_2d%xsf_sf, surf%area_surf, surf%a_area_surf,              &
      &    surf%vnorm_surf)
