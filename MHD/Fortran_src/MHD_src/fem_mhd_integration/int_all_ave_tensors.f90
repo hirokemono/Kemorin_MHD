@@ -140,11 +140,13 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_sym_tensor_1(ele%numele, ele%nnod_4_ele,     &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        k2, fem_wk%vector_1, rms_local, ave_local)
         else
           call fem_vol_ave_sym_tensor_1(ele%numele, ele%nnod_4_ele,     &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        k2, fem_wk%vector_1, rms_local, ave_local)
         end if
@@ -155,11 +157,13 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_sym_tensor_2(ele%numele, ele%nnod_4_ele,     &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        k2, fem_wk%vector_1, rms_local, ave_local)
         else
           call fem_vol_ave_sym_tensor_2(ele%numele, ele%nnod_4_ele,     &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        k2, fem_wk%vector_1, rms_local, ave_local)
         end if
@@ -202,11 +206,13 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_asym_tensor(ele%numele, ele%nnod_4_ele,      &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        k2, fem_wk%vector_1, rms_local, ave_local)
         else
           call fem_vol_ave_asym_tensor(ele%numele, ele%nnod_4_ele,      &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        k2, fem_wk%vector_1, rms_local, ave_local)
         end if

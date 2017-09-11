@@ -54,7 +54,8 @@
 !
       call fem_skv_scalar_inertia_upw                                   &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, dt, jac_3d%ntot_int,            &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    scalar_1, vxe, vxe_up, sk_v)
 !
@@ -83,7 +84,8 @@
 !
       call fem_skv_vector_inertia_upw                                   &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, dt, jac_3d%ntot_int,            &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    vector_1, vxe, vxe_up, sk_v)
 !
@@ -112,7 +114,8 @@
 !
       call fem_skv_inertia_rot_upw                                      &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, dt, jac_3d%ntot_int,            &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%an,                &
      &    vector_1, wxe, vxe_up, sk_v)
 !
@@ -141,7 +144,8 @@
 !
       call fem_skv_coriolis_upw                                         &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, dt, jac_3d%ntot_int,            &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%an,                &
      &    vector_1, angular, vxe_up, sk_v)
 !

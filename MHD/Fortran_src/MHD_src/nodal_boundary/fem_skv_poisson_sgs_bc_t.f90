@@ -20,6 +20,7 @@
       use m_machine_parameter
       use m_geometry_constants
 !
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_jacobians
       use t_filter_elength
@@ -57,7 +58,8 @@
 !
       call fem_skv_poisson_sgs_fixed                                    &
      & (ele%numele, num_t_linear, num_t_linear, np_smp,                 &
-     &  num_index_ibc, ele_bc_id, ibc_stack_smp, k2, n_int,             &
+     &  num_index_ibc, ele_bc_id, ibc_stack_smp,                        &
+     &  max_int_point, maxtot_int_3d, int_start3, owe3d, k2, n_int,     &
      &  jac_3d_l%ntot_int, jac_3d_l%xjac, jac_3d_l%dnx, jac_3d_l%dnx,   &
      &  FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM_elens%nele_filter_mom,                                      &
@@ -97,8 +99,9 @@
 !
       call fem_skv_diffuse_sgs_fixed                                    &
      & (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,             &
-     &  num_index_ibc, ele_bc_id, ibc_stack_smp, k2, nd, n_int,         &
-     &  jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,           &
+     &  num_index_ibc, ele_bc_id, ibc_stack_smp,                        &
+     &  max_int_point, maxtot_int_3d, int_start3, owe3d, k2, nd,        &
+     &  n_int, jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,    &
      &  FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM_elens%nele_filter_mom,                                      &
      &  FEM_elens%elen_ele%diff2%df_x2, FEM_elens%elen_ele%diff2%df_y2, &

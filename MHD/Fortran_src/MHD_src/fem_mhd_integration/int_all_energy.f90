@@ -177,11 +177,13 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_all_energy(ele%numele, ele%nnod_4_ele,           &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        k2, fem_wk%vector_1, rms_local, ave_local)
         else
           call fem_vol_all_energy(ele%numele, ele%nnod_4_ele,           &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        k2, fem_wk%vector_1, rms_local, ave_local)
         end if
@@ -227,11 +229,13 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_rms_4_scalar(ele%numele, ele%nnod_4_ele,     &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        k2, fem_wk%scalar_1, rms_local, ave_local)
         else
           call fem_vol_ave_rms_4_scalar(ele%numele, ele%nnod_4_ele,     &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        k2, fem_wk%scalar_1, rms_local, ave_local)
         end if
@@ -277,11 +281,13 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_angular_momentum(ele%numele, ele%nnod_4_ele,     &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        k2, mhd_fem_wk%xx_e, fem_wk%vector_1, amom_local)
         else
           call fem_vol_angular_momentum(ele%numele, ele%nnod_4_ele,     &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        k2, mhd_fem_wk%xx_e, fem_wk%vector_1, amom_local)
         end if
@@ -323,11 +329,13 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call fem_ave_rms_4_scalar(ele%numele, ele%nnod_4_ele,         &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%an, k2,                &
      &        fem_wk%scalar_1, rms_local, ave_local)
         else
           call fem_ave_rms_4_scalar(ele%numele, ele%nnod_4_ele,         &
      &        iele_fsmp_stack, ele%interior_ele,                        &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%an, k2,                &
      &        fem_wk%scalar_1, rms_local, ave_local)
         end if

@@ -18,6 +18,7 @@
       use calypso_mpi
       use m_machine_parameter
 !
+      use m_fem_gauss_int_coefs
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_address
@@ -188,7 +189,8 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%vector_1)
         call fem_skv_div_normal_pg(ele%numele, ele%nnod_4_ele,          &
-     &      np_smp, iele_fsmp_stack, jac_3d%ntot_int, nint_single,      &
+     &      np_smp, iele_fsmp_stack,  max_int_point, maxtot_int_3d,     &
+     &      int_start3, owe3d, jac_3d%ntot_int, nint_single,            &
      &      jac_3d%xjac, jac_3d%dnx, k2, fem_wk%vector_1,               &
      &      fem_wk%scalar_1)
       end do

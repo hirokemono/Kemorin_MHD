@@ -5,24 +5,28 @@
 !     modified by H. Matsui on Aug., 2005
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine fem_skv_lorentz_rot(numele, nnod_4_e1, nnod_4_e2,     &
-!     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2,       &
-!     &          xjac, dnx1, dnx2,  vect_1, bxe_ex, sk_v)
-!
-!      subroutine fem_skv_lorentz_full_pg(numele, nnod_4_e1, nnod_4_e2, &
-!     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, xjac, &
-!     &          an1, dnx2, coef_lor, magne_1, bxe, ex_magne, sk_v)
-!      subroutine fem_skv_lorentz_full_upw(numele, nnod_4_e1, nnod_4_e2,&
-!     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, dt,   &
-!     &          xjac, an1, dnx1, dnx2, coef_lor, magne_1,              &
-!     &          vxe, bxe, ex_magne, sk_v)
+!!      subroutine fem_skv_lorentz_rot                                  &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, k2, xjac, dnx1, dnx2,             &
+!!     &          vect_1, bxe_ex, sk_v)
+!!
+!!      subroutine fem_skv_lorentz_full_pg                              &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, k2, xjac, an1, dnx2,              &
+!!     &          coef_lor, magne_1, bxe, ex_magne, sk_v)
+!!      subroutine fem_skv_lorentz_full_upw                             &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, k2, dt, xjac, an1, dnx1, dnx2,    &
+!!     &          coef_lor, magne_1, vxe, bxe, ex_magne, sk_v)
 !
       module fem_skv_lorentz_full
 !
       use m_precision
       use m_constants
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -32,13 +36,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_lorentz_rot(numele, nnod_4_e1, nnod_4_e2,      &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2,        &
-     &          xjac, dnx1, dnx2,  vect_1, bxe_ex, sk_v)
+      subroutine fem_skv_lorentz_rot                                    &
+     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, k2, xjac, dnx1, dnx2,               &
+     &          vect_1, bxe_ex, sk_v)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
       integer (kind=kint), intent(in) :: np_smp, ntot_int_3d
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
+!
       integer (kind=kint), intent(in) :: n_int, k2
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
       real (kind=kreal), intent(in)                                     &
@@ -111,13 +122,20 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_lorentz_full_pg(numele, nnod_4_e1, nnod_4_e2,  &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, xjac,  &
-     &          an1, dnx2, coef_lor, magne_1, bxe, ex_magne, sk_v)
+      subroutine fem_skv_lorentz_full_pg                                &
+     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, k2, xjac, an1, dnx2,                &
+     &          coef_lor, magne_1, bxe, ex_magne, sk_v)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
       integer (kind=kint), intent(in) :: np_smp, ntot_int_3d
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
+!
       integer (kind=kint), intent(in) :: n_int, k2
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
       real (kind=kreal), intent(in) :: an1(nnod_4_e1,ntot_int_3d)
@@ -192,15 +210,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_lorentz_full_upw(numele, nnod_4_e1, nnod_4_e2, &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, dt,    &
-     &          xjac, an1, dnx1, dnx2, coef_lor, magne_1,               &
-     &          vxe, bxe, ex_magne, sk_v)
+      subroutine fem_skv_lorentz_full_upw                               &
+     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, k2, dt, xjac, an1, dnx1, dnx2,      &
+     &          coef_lor, magne_1, vxe, bxe, ex_magne, sk_v)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
       integer (kind=kint), intent(in) :: np_smp, ntot_int_3d
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: n_int, k2
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
       real (kind=kreal), intent(in) :: an1(nnod_4_e1,ntot_int_3d)

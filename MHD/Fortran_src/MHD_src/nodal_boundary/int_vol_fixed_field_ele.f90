@@ -39,6 +39,7 @@
 !
       use m_phys_constants
       use m_geometry_constants
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_phys_data
       use t_jacobians
@@ -103,9 +104,10 @@
 !
         call fem_skv_poisson_fixed                                      &
      &     (ele%numele, num_t_linear, num_t_linear, np_smp,             &
-     &    num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),          &
-     &    k2, n_int, jac_3d_l%ntot_int, jac_3d_l%xjac,                  &
-     &    jac_3d_l%dnx, jac_3d_l%dnx, fem_wk%scalar_1, fem_wk%sk6)
+     &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),        &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      k2, n_int, jac_3d_l%ntot_int, jac_3d_l%xjac,                &
+     &      jac_3d_l%dnx, jac_3d_l%dnx, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -166,8 +168,9 @@
 !
         call fem_skv_scalar_diffuse_fixed                               &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,         &
-     &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp), k2,    &
-     &      ione, n_int, jac_3d%ntot_int, jac_3d%xjac,                  &
+     &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),        &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      k2, ione, n_int, jac_3d%ntot_int, jac_3d%xjac,              &
      &      jac_3d%dnx, jac_3d%dnx, ak_d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
@@ -235,9 +238,11 @@
             call fem_skv_scalar_diffuse_fixed                           &
      &         (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,             &
      &          np_smp, num_index_ibc(nd), ele_bc_id(1,nd),             &
-     &          ibc_stack_smp(istart_smp,nd), k2, nd, n_int,            &
-     &          jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,   &
-     &          ak_d, fem_wk%scalar_1, fem_wk%sk6)
+     &          ibc_stack_smp(istart_smp,nd),                           &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          k2, nd, n_int, jac_3d%ntot_int, jac_3d%xjac,            &
+     &          jac_3d%dnx, jac_3d%dnx, ak_d,                           &
+     &          fem_wk%scalar_1, fem_wk%sk6)
           end do
         end if
       end do
@@ -303,6 +308,7 @@
             call fem_skv_scalar_diffuse_fixed                           &
      &         (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,     &
      &          num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),    &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          k2, nd, n_int, jac_3d%ntot_int, jac_3d%xjac,            &
      &          jac_3d%dnx, jac_3d%dnx, ak_d,                           &
      &          fem_wk%scalar_1, fem_wk%sk6)

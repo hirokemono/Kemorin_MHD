@@ -4,20 +4,21 @@
 !        programmed by H.Matsui on July, 2005
 !        modified by H.Matsui on AUg., 2007
 !
-!      subroutine fem_skv_diffuse_sgs_fixed                             &
-!     &        (numele, nnod_4_e1, nnod_4_e2, np_smp,                   &
-!     &         num_index_ibc, ele_bc_id, ibc_stack_smp, k2, nd, n_int, &
-!     &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,  &
-!     &         elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2, &
-!     &         elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,&
-!     &         ak_diff, ak_d, phi_e, sk_v)
+!!      subroutine fem_skv_diffuse_sgs_fixed                            &
+!!     &       (numele, nnod_4_e1, nnod_4_e2, np_smp,                   &
+!!     &        num_index_ibc, ele_bc_id, ibc_stack_smp,                &
+!!     &        max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+!!     &        k2, nd, n_int, ntot_int_3d, xjac, dnx1, dnx2,           &
+!!     &        xmom_order2, nele_fmom,                                 &
+!!     &        elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2, &
+!!     &        elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,&
+!!     &        ak_diff, ak_d, phi_e, sk_v)
 !
       module fem_skv_diffuse_sgs_bc
 !
       use m_precision
       use m_constants
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -28,18 +29,24 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_diffuse_sgs_fixed                              &
-     &        (numele, nnod_4_e1, nnod_4_e2, np_smp,                    &
-     &         num_index_ibc, ele_bc_id, ibc_stack_smp, k2, nd, n_int,  &
-     &         ntot_int_3d, xjac, dnx1, dnx2, xmom_order2, nele_fmom,   &
-     &         elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,  &
-     &         elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2, &
-     &         ak_diff, ak_d, phi_e, sk_v)
+     &       (numele, nnod_4_e1, nnod_4_e2, np_smp,                     &
+     &        num_index_ibc, ele_bc_id, ibc_stack_smp,                  &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
+     &        k2, nd, n_int, ntot_int_3d, xjac, dnx1, dnx2,             &
+     &        xmom_order2, nele_fmom,                                   &
+     &        elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,   &
+     &        elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,  &
+     &        ak_diff, ak_d, phi_e, sk_v)
 !
       integer(kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
       integer(kind=kint), intent(in) :: n_int, k2, nd, np_smp
       integer(kind=kint), intent(in) :: num_index_ibc
       integer(kind=kint), intent(in) :: ele_bc_id(num_index_ibc)
       integer(kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind=kint), intent(in) :: ntot_int_3d
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)

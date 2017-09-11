@@ -5,22 +5,27 @@
 !                                    on July 2000 (ver 1.1)
 !      Modified by H. Matsui on Aug, 2007
 !
-!!      subroutine int_vol_all_energy                                   &
+!!      subroutine fem_vol_all_energy                                   &
 !!     &         (numele, nnod_4_ele, iele_fsmp_stack, interior_ele,    &
-!!     &          ntot_int_3d, n_int, xjac, aw, k2,                     &
-!!     &          vect_e, rms_local, ave_local)
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, xjac, aw, k2, vect_e,             &
+!!     &          rms_local, ave_local)
 !!      subroutine fem_vol_angular_momentum                             &
 !!     &         (numele, nnod_4_ele, iele_fsmp_stack, interior_ele,    &
-!!     &          ntot_int_3d, n_int, xjac, aw, k2,                     &
-!!     &          xe, vect_e, amom_local)
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, xjac, aw, k2, xe, vect_e,         &
+!!     &          amom_local)
 !!
 !!      subroutine fem_vol_ave_rms_4_scalar                             &
 !!     &         (numele, nnod_4_ele, iele_fsmp_stack, interior_ele,    &
-!!     &          ntot_int_3d, n_int, xjac, aw, k2,                     &
-!!     &          phi_e, rms_local, ave_local)
-!!      subroutine fem_ave_rms_4_scalar(numele, nnod_4_ele,             &
-!!     &          iele_fsmp_stack, interior_ele, ntot_int_3d, n_int, aw,&
-!!     &          k2, phi_e, rms_local, ave_local)
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, xjac, aw, k2, phi_e,              &
+!!     &          rms_local, ave_local)
+!!      subroutine fem_ave_rms_4_scalar                                 &
+!!     &         (numele, nnod_4_ele, iele_fsmp_stack, interior_ele,    &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, aw, k2, phi_e,                    &
+!!     &          rms_local, ave_local)
 !
       module fem_vol_average_energy
 !
@@ -28,7 +33,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -40,13 +44,18 @@
 !
       subroutine fem_vol_all_energy                                     &
      &         (numele, nnod_4_ele, iele_fsmp_stack, interior_ele,      &
-     &          ntot_int_3d, n_int, xjac, aw, k2,                       &
-     &          vect_e, rms_local, ave_local)
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, xjac, aw, k2, vect_e,               &
+     &          rms_local, ave_local)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_ele
       integer (kind=kint), intent(in) :: interior_ele(numele)
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: k2
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
@@ -112,13 +121,18 @@
 !
       subroutine fem_vol_angular_momentum                               &
      &         (numele, nnod_4_ele, iele_fsmp_stack, interior_ele,      &
-     &          ntot_int_3d, n_int, xjac, aw, k2,                       &
-     &          xe, vect_e, amom_local)
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, xjac, aw, k2, xe, vect_e,           &
+     &          amom_local)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_ele
       integer (kind=kint), intent(in) :: interior_ele(numele)
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: k2
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
@@ -182,13 +196,18 @@
 !
       subroutine fem_vol_ave_rms_4_scalar                               &
      &         (numele, nnod_4_ele, iele_fsmp_stack, interior_ele,      &
-     &          ntot_int_3d, n_int, xjac, aw, k2,                       &
-     &          phi_e, rms_local, ave_local)
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, xjac, aw, k2, phi_e,                &
+     &          rms_local, ave_local)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_ele
       integer (kind=kint), intent(in) :: interior_ele(numele)
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: k2
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
@@ -242,14 +261,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_ave_rms_4_scalar(numele, nnod_4_ele,               &
-     &          iele_fsmp_stack, interior_ele, ntot_int_3d, n_int, aw,  &
-     &          k2, phi_e, rms_local, ave_local)
+      subroutine fem_ave_rms_4_scalar                                   &
+     &         (numele, nnod_4_ele, iele_fsmp_stack, interior_ele,      &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, aw, k2, phi_e,                      &
+     &          rms_local, ave_local)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_ele
       integer (kind=kint), intent(in) :: interior_ele(numele)
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: k2
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int

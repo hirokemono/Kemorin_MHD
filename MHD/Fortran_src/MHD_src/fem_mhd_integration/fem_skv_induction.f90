@@ -8,17 +8,20 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine cal_mag_induct_vec_nod(numnod, np_smp, inod_smp_stack,&
-!     &          ex_magne, coef_uxb, ml_o_cd, velo, magne, ff)
-!
-!      subroutine fem_skv_induction_pg(numele, nnod_4_e1, nnod_4_e2,    &
-!     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, xjac, &
-!     &          an1, dnx2, velo_1, magne_1, vxe, bxe_ex, coef_uxb,     &
-!     &          sk_v)
-!      subroutine fem_skv_induction_upm(numele, nnod_4_e1, nnod_4_e2,   &
-!     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, dt,   &
-!     &          xjac, an1, dnx1, dnx2, velo_1, magne_1, vxe, bxe_ex,   &
-!     &          bxe_up, coef_uxb, sk_v)
+!!      subroutine cal_mag_induct_vec_nod                               &
+!!     &         (numnod, np_smp, inod_smp_stack, ex_magne, coef_uxb,   &
+!!     &          ml_o_cd, velo, magne, ff)
+!!
+!!      subroutine fem_skv_induction_pg                                 &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, k2, xjac, an1, dnx2,              &
+!!     &          velo_1, magne_1, vxe, bxe_ex, coef_uxb, sk_v)
+!!      subroutine fem_skv_induction_upm                                &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, k2, dt, xjac, an1, dnx1, dnx2,    &
+!!     &          velo_1, magne_1, vxe, bxe_ex, bxe_up, coef_uxb, sk_v)
 !
       module fem_skv_induction
 !
@@ -34,8 +37,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_mag_induct_vec_nod(numnod, np_smp, inod_smp_stack, &
-     &          ex_magne, coef_uxb, ml_o_cd, velo, magne, ff)
+      subroutine cal_mag_induct_vec_nod                                 &
+     &         (numnod, np_smp, inod_smp_stack, ex_magne, coef_uxb,     &
+     &          ml_o_cd, velo, magne, ff)
 !
       integer (kind=kint), intent(in) :: numnod, np_smp
       integer (kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -85,16 +89,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_induction_pg(numele, nnod_4_e1, nnod_4_e2,     &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, xjac,  &
-     &          an1, dnx2, velo_1, magne_1, vxe, bxe_ex, coef_uxb,      &
-     &          sk_v)
-!
-      use m_fem_gauss_int_coefs
+      subroutine fem_skv_induction_pg                                   &
+     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, k2, xjac, an1, dnx2,                &
+     &          velo_1, magne_1, vxe, bxe_ex, coef_uxb, sk_v)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
       integer (kind=kint), intent(in) :: np_smp, n_int, k2
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind=kint), intent(in) :: ntot_int_3d
       real(kind=kreal),   intent(in) :: xjac(numele,ntot_int_3d)
@@ -167,16 +174,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_induction_upm(numele, nnod_4_e1, nnod_4_e2,    &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, dt,    &
-     &          xjac, an1, dnx1, dnx2, velo_1, magne_1, vxe,            &
-     &          bxe_ex, bxe_up, coef_uxb, sk_v)
-!
-      use m_fem_gauss_int_coefs
+      subroutine fem_skv_induction_upm                                  &
+     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, k2, dt, xjac, an1, dnx1, dnx2,      &
+     &          velo_1, magne_1, vxe, bxe_ex, bxe_up, coef_uxb, sk_v)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
       integer (kind=kint), intent(in) :: np_smp, n_int, k2
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind=kint), intent(in) :: ntot_int_3d
       real(kind=kreal),   intent(in) :: xjac(numele,ntot_int_3d)

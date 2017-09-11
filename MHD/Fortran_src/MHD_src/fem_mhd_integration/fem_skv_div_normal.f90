@@ -4,18 +4,19 @@
 !      Written by H. Matsui
 !      Modified by H. Matsui on Aug, 2006
 !
-!      subroutine fem_skv_div_normal_pg(numele, nnod_4_e2,              &
-!     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int,           &
-!     &          xjac, dnx2, k2, vect_e, sk1)
-!      subroutine fem_skv_rms_flux_pg(numele, nnod_4_e2,                &
-!     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int,           &
-!     &          xjac, dnx2, k2, vect_e, sk1)
+!!      subroutine fem_skv_div_normal_pg                                &
+!!     &         (numele, nnod_4_e2, np_smp, iele_fsmp_stack,           &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, xjac, dnx2, k2, vect_e, sk1)
+!!      subroutine fem_skv_rms_flux_pg                                  &
+!!     &         (numele, nnod_4_e2, np_smp, iele_fsmp_stack,           &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, xjac, dnx2, k2, vect_e, sk1)
 !
       module fem_skv_div_normal
 !
       use m_precision
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -25,13 +26,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_div_normal_pg(numele, nnod_4_e2,               &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int,            &
-     &          xjac, dnx2, k2, vect_e, sk1)
+      subroutine fem_skv_div_normal_pg                                  &
+     &         (numele, nnod_4_e2, np_smp, iele_fsmp_stack,             &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, xjac, dnx2, k2, vect_e, sk1)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e2, np_smp
       integer (kind=kint), intent(in) :: n_int, k2
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind=kint), intent(in) :: ntot_int_3d
       real(kind=kreal),   intent(in) :: xjac(numele,ntot_int_3d)
@@ -74,13 +80,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_rms_flux_pg(numele, nnod_4_e2,                 &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int,            &
-     &          xjac, dnx2, k2, vect_e, sk1)
+      subroutine fem_skv_rms_flux_pg                                    &
+     &         (numele, nnod_4_e2, np_smp, iele_fsmp_stack,             &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, xjac, dnx2, k2, vect_e, sk1)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e2, np_smp
       integer (kind=kint), intent(in) :: n_int, k2
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind=kint), intent(in) :: ntot_int_3d
       real(kind=kreal),   intent(in) :: xjac(numele,ntot_int_3d)

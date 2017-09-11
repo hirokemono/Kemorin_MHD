@@ -4,22 +4,23 @@
 !     programmed by H.Matsui on July 2005
 !     Modified by H. Matsui on Oct., 2006
 !
-!      subroutine fem_skv_all_div_flux_upw                              &
-!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack, &
-!     &          n_int, k2, dt, ntot_int_3d, xjac, an, dnx1, dnx2,      &
-!     &          vxe, flux_1, sk_v)
-!      subroutine fem_skv_grp_div_flux_upw                              &
-!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack, &
-!     &          nele_grp, iele_grp, n_int, k2, dt, ntot_int_3d,        &
-!     &          xjac, an, dnx1, dnx2, vxe, flux_1, sk_v)
+!!      subroutine fem_skv_all_div_flux_upw                             &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          n_int, k2, dt, ntot_int_3d, xjac, an, dnx1, dnx2,     &
+!!     &          vxe, flux_1, sk_v)
+!!      subroutine fem_skv_grp_div_flux_upw                             &
+!!     &         (numele, nnod_4_e1, nnod_4_e2,                         &
+!!     &          np_smp, iele_fsmp_stack, nele_grp, iele_grp,          &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          n_int, k2, dt, ntot_int_3d, xjac, an, dnx1, dnx2,     &
+!!     &          vxe, flux_1, sk_v)
 !
       module fem_skv_div_flux_upw
 !
       use m_precision
       use m_constants
-!
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -31,6 +32,7 @@
 !
       subroutine fem_skv_all_div_flux_upw                               &
      &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          n_int, k2, dt, ntot_int_3d, xjac, an, dnx1, dnx2,       &
      &          vxe, flux_1, sk_v)
 !
@@ -38,6 +40,11 @@
       integer(kind=kint), intent(in) :: np_smp, ntot_int_3d
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
+!
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)
       real(kind=kreal),   intent(in) :: an(nnod_4_e1, ntot_int_3d)
       real(kind=kreal),   intent(in)                                    &
@@ -101,9 +108,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_grp_div_flux_upw                               &
-     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,  &
-     &          nele_grp, iele_grp, n_int, k2, dt, ntot_int_3d,         &
-     &          xjac, an, dnx1, dnx2, vxe, flux_1, sk_v)
+     &         (numele, nnod_4_e1, nnod_4_e2,                           &
+     &          np_smp, iele_fsmp_stack, nele_grp, iele_grp,            &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          n_int, k2, dt, ntot_int_3d, xjac, an, dnx1, dnx2,       &
+     &          vxe, flux_1, sk_v)
 !
       integer(kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
       integer(kind=kint), intent(in) :: np_smp, ntot_int_3d
@@ -111,6 +120,11 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: nele_grp
       integer(kind=kint), intent(in) :: iele_grp(nele_grp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
+!
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)
       real(kind=kreal),   intent(in) :: an(nnod_4_e1, ntot_int_3d)
       real(kind=kreal),   intent(in)                                    &

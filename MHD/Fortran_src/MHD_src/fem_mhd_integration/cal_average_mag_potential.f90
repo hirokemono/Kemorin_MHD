@@ -31,6 +31,8 @@
       real(kind=kreal), private :: ave_mp_core_local
       real(kind=kreal), private :: ave_mp_core
 !
+      private :: fem_icore_mag_potential_icore
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -41,6 +43,7 @@
      &          iphys, nod_fld, inner_core, jac_3d_l)
 !
       use calypso_mpi
+      use m_fem_gauss_int_coefs
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
@@ -53,11 +56,13 @@
 !
       if ( inner_core%numele_fld .eq. 0 ) return
 !
-        call fem_icore_mag_potential_icore(node%numnod,                 &
-     &      ele%numele, ele%nnod_4_ele, ele%ie, ele%interior_ele,       &
-     &      inner_core%numele_fld, inner_core%istack_ele_fld_smp,       &
-     &      inner_core%iele_fld, jac_3d_l%ntot_int,                     &
-     &      FEM_prm%npoint_t_evo_int, jac_3d_l%xjac, jac_3d_l%an,       &
+        call fem_icore_mag_potential_icore                              &
+     &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
+     &      ele%interior_ele, inner_core%numele_fld,                    &
+     &      inner_core%istack_ele_fld_smp, inner_core%iele_fld,         &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      jac_3d_l%ntot_int, FEM_prm%npoint_t_evo_int,                &
+     &      jac_3d_l%xjac, jac_3d_l%an,                                 &
      &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%i_mag_p,            &
      &      ave_mp_core_local)
 !
@@ -75,12 +80,12 @@
       subroutine fem_icore_mag_potential_icore                          &
      &         (numnod, numele, nnod_4_ele, ie, interior_ele,           &
      &          numele_in_core, iele_in_core_smp_stack, iele_in_core,   &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          ntot_int_3d, n_int, xjac, an, ntot_phys, d_nod, i_mphi, &
      &          ave_mp_core_local)
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       integer(kind=kint), intent(in) :: numele, nnod_4_ele
       integer(kind=kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -90,6 +95,10 @@
       integer(kind=kint), intent(in)                                    &
      &                    :: iele_in_core_smp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: iele_in_core(numele_in_core)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)

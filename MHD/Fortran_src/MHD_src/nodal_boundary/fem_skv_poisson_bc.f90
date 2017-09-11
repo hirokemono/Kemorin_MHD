@@ -5,21 +5,22 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H.Matsui on Aug., 2007
 !
-!      subroutine fem_skv_scalar_diffuse_fixed                          &
-!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp,                  &
-!     &          num_index_ibc, ele_bc_id, ibc_stack_smp,               &
-!     &          k2, nd, n_int, ntot_int_3d, xjac, dnx1, dnx2,          &
-!     &          ak_d, phi_e, sk_v)
-!
-!      subroutine fem_skv_poisson_fixed(numele, nnod_4_e1, nnod_4_e2,   &
-!     &          np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,       &
-!     &          k2, n_int, ntot_int_3d, xjac, dnx1, dnx2, phi_e, sk_v)
+!!      subroutine fem_skv_scalar_diffuse_fixed                         &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp,                 &
+!!     &          num_index_ibc, ele_bc_id, ibc_stack_smp,              &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          k2, nd, n_int, ntot_int_3d, xjac, dnx1, dnx2,         &
+!!     &          ak_d, phi_e, sk_v)
+!!
+!!      subroutine fem_skv_poisson_fixed(numele, nnod_4_e1, nnod_4_e2,  &
+!!     &          np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,      &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          k2, n_int, ntot_int_3d, xjac, dnx1, dnx2, phi_e, sk_v)
 !
       module fem_skv_poisson_bc
 !
       use m_precision
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -32,6 +33,7 @@
       subroutine fem_skv_scalar_diffuse_fixed                           &
      &         (numele, nnod_4_e1, nnod_4_e2, np_smp,                   &
      &          num_index_ibc, ele_bc_id, ibc_stack_smp,                &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          k2, nd, n_int, ntot_int_3d, xjac, dnx1, dnx2,           &
      &          ak_d, phi_e, sk_v)
 !
@@ -40,6 +42,10 @@
       integer (kind=kint), intent(in) :: num_index_ibc
       integer (kind=kint), intent(in) :: ele_bc_id(num_index_ibc)
       integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind=kint), intent(in) :: ntot_int_3d
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)
@@ -94,6 +100,7 @@
 !
       subroutine fem_skv_poisson_fixed(numele, nnod_4_e1, nnod_4_e2,    &
      &          np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,        &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          k2, n_int, ntot_int_3d, xjac, dnx1, dnx2, phi_e, sk_v)
 !
       integer(kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
@@ -101,6 +108,10 @@
       integer (kind=kint), intent(in) :: num_index_ibc
       integer (kind=kint), intent(in) :: ele_bc_id(num_index_ibc)
       integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind=kint), intent(in) :: ntot_int_3d
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)

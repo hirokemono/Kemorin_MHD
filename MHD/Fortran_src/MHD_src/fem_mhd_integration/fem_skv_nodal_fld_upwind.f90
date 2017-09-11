@@ -47,10 +47,10 @@
 !
 !
       call fem_skv_scalar_field_upw                                     &
-     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
-     &      jac_3d%ntot_int, iele_fsmp_stack, n_int, k2,                &
-     &      jac_3d%xjac, jac_3d%an, jac_3d%an, jac_3d%dnx,              &
-     &      dt, vxe, scalar_1, sk_v) 
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, k2, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%an, jac_3d%dnx, dt, vxe, scalar_1, sk_v) 
 !
       end subroutine fem_skv_scalar_field_upwind
 !
@@ -75,10 +75,10 @@
 !
 !
       call fem_skv_vector_field_upw                                     &
-     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
-     &      jac_3d%ntot_int, iele_fsmp_stack, n_int, k2,                &
-     &      jac_3d%xjac, jac_3d%an, jac_3d%an, jac_3d%dnx,              &
-     &      dt, vxe, vector_1, sk_v) 
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, k2, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%an, jac_3d%dnx, dt, vxe, vector_1, sk_v) 
 !
       end subroutine fem_skv_vector_field_upwind
 !
@@ -104,10 +104,10 @@
 !
 !
       call fem_skv_tensor_field_upw                                     &
-     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
-     &      jac_3d%ntot_int, iele_fsmp_stack, n_int, k2,                &
-     &      jac_3d%xjac, jac_3d%an, jac_3d%an, jac_3d%dnx,              &
-     &      dt, vxe, tensor_1, sk_v) 
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, k2, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%an, jac_3d%dnx, dt, vxe, tensor_1, sk_v) 
 !
       end subroutine fem_skv_tensor_field_upwind
 !

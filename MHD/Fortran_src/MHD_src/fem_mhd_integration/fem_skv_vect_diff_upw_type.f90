@@ -81,7 +81,8 @@
 !
       call fem_skv_all_grad_upw                                         &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &     int_start3, owe3d, n_int, k2, dt, jac_3d%ntot_int,           &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    vxe, scalar_1, sk_v)
 !
@@ -109,7 +110,8 @@
 !
       call fem_skv_all_div_upw                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, dt, jac_3d%ntot_int,            &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    vxe, vector_1, sk_v)
 !
@@ -137,7 +139,8 @@
 !
       call fem_all_skv_rot_upw                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, dt, jac_3d%ntot_int,            &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    vxe, vector_1, sk_v)
 !
@@ -165,7 +168,8 @@
 !
       call fem_skv_all_div_flux_upw                                     &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, dt, jac_3d%ntot_int,            &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    vxe, flux_1, sk_v)
 !
@@ -193,7 +197,8 @@
 !
       call fem_skv_all_div_asym_t_upw                                   &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, dt, jac_3d%ntot_int,            &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
      &    vxe, flux_1, sk_v)
 !
@@ -226,6 +231,7 @@
       call fem_skv_grp_grad_upw                                         &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                  &
      &    jac_3d%an, jac_3d%dnx, jac_3d%dnx,                            &
      &    vxe, scalar_1, sk_v)
@@ -258,6 +264,7 @@
       call fem_skv_grp_div_upw                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                  &
      &    jac_3d%an, jac_3d%dnx, jac_3d%dnx, vxe, vector_1, sk_v)
 !
@@ -289,6 +296,7 @@
       call fem_skv_grp_rot_upw                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                  &
      &    jac_3d%an, jac_3d%dnx, jac_3d%dnx, vxe, vector_1, sk_v)
 !
@@ -320,6 +328,7 @@
       call fem_skv_grp_div_flux_upw                                     &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                  &
      &    jac_3d%an, jac_3d%dnx, jac_3d%dnx, vxe, flux_1, sk_v)
 !
@@ -351,6 +360,7 @@
       call fem_skv_grp_div_asym_t_upw                                   &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                  &
      &    jac_3d%an, jac_3d%dnx, jac_3d%dnx, vxe, flux_1, sk_v)
 !
@@ -380,7 +390,8 @@
 !
       call fem_skv_all_grad_upw                                         &
      &   (ele%numele, ele%nnod_4_ele, num_t_linear,                     &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, dt, jac_3d%ntot_int,            &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d_l%dnx,             &
      &    vxe, scalar_1, sk_v)
 !
