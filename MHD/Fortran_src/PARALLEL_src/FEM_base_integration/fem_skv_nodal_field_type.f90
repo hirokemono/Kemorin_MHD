@@ -80,9 +80,10 @@
 !
 !
       call fem_skv_scalar_field                                         &
-     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
-     &     jac_3d%ntot_int, iele_fsmp_stack, n_int, k2,                 &
-     &     jac_3d%xjac, jac_3d%an, jac_3d%an, scalar_1, sk_v)
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, k2, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%an, scalar_1, sk_v)
 !
       end subroutine fem_skv_scalar_type
 !
@@ -104,9 +105,10 @@
 !
 !
       call fem_skv_vector_field                                         &
-     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
-     &     jac_3d%ntot_int, iele_fsmp_stack, n_int, k2,                 &
-     &     jac_3d%xjac, jac_3d%an, jac_3d%an, vector_1, sk_v)
+     &    (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack, &
+     &     max_int_point, maxtot_int_3d, int_start3, owe3d,             &
+     &     jac_3d%ntot_int, n_int, k2, jac_3d%xjac,                     &
+     &     jac_3d%an, jac_3d%an, vector_1, sk_v)
 !
       end subroutine fem_skv_vector_type
 !
@@ -129,9 +131,10 @@
 !
 !
       call fem_skv_tensor_field                                         &
-     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
-     &     jac_3d%ntot_int, iele_fsmp_stack, n_int, k2,                 &
-     &     jac_3d%xjac, jac_3d%an, jac_3d%an, tensor_1, sk_v)
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, k2,                                   &
+     &    jac_3d%xjac, jac_3d%an, jac_3d%an, tensor_1, sk_v)
 !
       end subroutine fem_skv_tensor_type
 !
@@ -153,9 +156,11 @@
      &               :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_scalar_on_ele_m(ele%numele, ele%nnod_4_ele,          &
-     &    iele_fsmp_stack, jac_3d%ntot_int, n_int,                      &
-     &    jac_3d%xjac, jac_3d%an, scalar_1, sk_v)
+      call fem_skv_scalar_on_ele_m                                      &
+     &   (ele%numele, ele%nnod_4_ele, iele_fsmp_stack,                  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%an, scalar_1,     &
+     &    sk_v)
 !
       end subroutine fem_skv_scalar_on_ele_type
 !
@@ -176,9 +181,11 @@
      &              :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_vector_on_ele_m(ele%numele, ele%nnod_4_ele,          &
-     &    iele_fsmp_stack, jac_3d%ntot_int, n_int,                      &
-     &    jac_3d%xjac, jac_3d%an, vector_1, sk_v)
+      call fem_skv_vector_on_ele_m                                      &
+     &   (ele%numele, ele%nnod_4_ele, iele_fsmp_stack,                  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%an, vector_1,     &
+     &    sk_v)
 !
       end subroutine fem_skv_vector_on_ele_type
 !
@@ -199,9 +206,11 @@
      &              :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_tensor_on_ele_m(ele%numele, ele%nnod_4_ele,          &
-     &    iele_fsmp_stack, jac_3d%ntot_int, n_int,                      &
-     &    jac_3d%xjac, jac_3d%an, tensor_1, sk_v)
+      call fem_skv_tensor_on_ele_m                                      &
+     &   (ele%numele, ele%nnod_4_ele, iele_fsmp_stack,                  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%an, tensor_1,     &
+     &    sk_v)
 !
       end subroutine fem_skv_tensor_on_ele_type
 !
@@ -291,8 +300,10 @@
 !
 !
       call fem_skv_scalar_on_ele_grp_m(ele%numele, ele%nnod_4_ele,      &
-     &    iele_fsmp_stack, nele_grp, iele_grp, jac_3d%ntot_int, n_int,  &
-     &    jac_3d%xjac, jac_3d%an, scalar_1, sk_v)
+     &    iele_fsmp_stack, nele_grp, iele_grp,                          &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%an, scalar_1,     &
+     &    sk_v)
 !
       end subroutine fem_skv_scalar_on_ele_grp_type
 !
@@ -317,8 +328,10 @@
 !
 !
       call fem_skv_vector_on_ele_grp_m(ele%numele, ele%nnod_4_ele,      &
-     &    iele_fsmp_stack, nele_grp, iele_grp, jac_3d%ntot_int, n_int,  &
-     &    jac_3d%xjac, jac_3d%an, vector_1, sk_v)
+     &    iele_fsmp_stack, nele_grp, iele_grp,                          &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%an, vector_1,     &
+     &    sk_v)
 !
       end subroutine fem_skv_vector_on_ele_grp_type
 !
@@ -343,8 +356,10 @@
 !
 !
       call fem_skv_tensor_on_ele_grp_m(ele%numele, ele%nnod_4_ele,      &
-     &    iele_fsmp_stack, nele_grp, iele_grp, jac_3d%ntot_int, n_int,  &
-     &    jac_3d%xjac, jac_3d%an, tensor_1, sk_v)
+     &    iele_fsmp_stack, nele_grp, iele_grp,                          &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%an, tensor_1,     &
+     &    sk_v)
 !
       end subroutine fem_skv_tensor_on_ele_grp_type
 !

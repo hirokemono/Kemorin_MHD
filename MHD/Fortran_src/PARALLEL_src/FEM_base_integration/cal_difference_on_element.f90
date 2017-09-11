@@ -3,9 +3,10 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
-!      subroutine fem_difference_on_element(iele_fsmp_stack,            &
-!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,             &
-!     &          ntot_int_3d, n_int, dnx, xjac, nd, d_ele, d_nod)
+!!      subroutine fem_difference_on_element(iele_fsmp_stack,           &
+!!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,            &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, dnx, xjac, nd, d_ele, d_nod)
 !!      subroutine fem_difference_grp_on_element                        &
 !!     &         (iele_fsmp_stack, numnod, numele, nnod_4_ele, ie,      &
 !!     &          a_vol_ele, nele_grp, iele_grp,                        &

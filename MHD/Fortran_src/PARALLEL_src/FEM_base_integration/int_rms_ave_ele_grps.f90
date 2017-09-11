@@ -234,15 +234,17 @@
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_2rms_ave_1egrp_q                                   &
      &     (node%numnod, ele%numele, ele%ie, ele%interior_ele,          &
-     &      nitem_grp, iele_grp(ist_grp), num_int,                      &
-     &      jac_3d_q%ntot_int, jac_3d_q%xjac, jac_3d_q%an,              &
+     &      nitem_grp, iele_grp(ist_grp),                               &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      num_int, jac_3d_q%ntot_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, rms_1, ave_2,    &
      &      rms_2)
       else
         call int_vol_2rms_ave_1egrp_l                                   &
      &     (node%numnod, ele%numele, ele%ie, ele%interior_ele,          &
-     &      nitem_grp, iele_grp(ist_grp), num_int,                      &
-     &      jac_3d_l%ntot_int, jac_3d_l%xjac, jac_3d_l%an,              &
+     &      nitem_grp, iele_grp(ist_grp),                               &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      num_int, jac_3d_l%ntot_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, rms_1, ave_2,    &
      &      rms_2)
       end if
@@ -282,15 +284,17 @@
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_dev_cor_1egrp_q                                    &
      &     (node%numnod, ele%numele, ele%ie, ele%interior_ele,          &
-     &      nitem_grp, iele_grp(ist_grp), num_int,                      &
-     &      jac_3d_q%ntot_int, jac_3d_q%xjac, jac_3d_q%an,              &
+     &      nitem_grp, iele_grp(ist_grp),                               &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      num_int, jac_3d_q%ntot_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, ave_2,           &
      &      sig_1, sig_2, cov_l)
       else
         call int_vol_dev_cor_1egrp_l                                    &
      &     (node%numnod, ele%numele, ele%ie, ele%interior_ele,          &
-     &      nitem_grp, iele_grp(ist_grp), num_int,                      &
-     &      jac_3d_l%ntot_int, jac_3d_l%xjac, jac_3d_l%an,              &
+     &      nitem_grp, iele_grp(ist_grp),                               &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      num_int, jac_3d_l%ntot_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, ave_2,           &
      &      sig_1, sig_2, cov_l)
       end if

@@ -5,22 +5,22 @@
 !                                    on July 2000 (ver 1.1)
 !      Modified by H. Matsui on Aug, 2007
 !
-!      subroutine fem_skv_scalar_diffuse(numele, nedge_4_e1, nedge_4_e2,&
-!     &          np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,       &
-!     &          xjac, an1, an2, dnx1, dnx2, ar1, ar2, ltr, j, g3,      &
-!     &          ak_d, scalar_e, sk_v)
-!      subroutine fem_skv_vector_diffuse(numele, nedge_4_e1, nedge_4_e2,&
-!     &          np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,       &
-!     &          xjac, an1, an2, dnx1, dnx2, ar2, ltr, j, g3, ak_d,     &
-!     &          vector_e, sk_v)
+!!      subroutine fem_skv_scalar_sph_diffuse                           &
+!!     &       (numele, nedge_4_e1, nedge_4_e2, np_smp, iele_fsmp_stack,&
+!!     &        max_int_point, maxtot_int_1d, int_start1, owe,          &
+!!     &        n_int, k2, ntot_int_3d, xjac, an1, an2, dnx1, dnx2,     &
+!!     &        ar1, ar2, ltr, j, g3, ak_d, scalar_e, sk_v)
+!!      subroutine fem_skv_vector_sph_diffuse                           &
+!!     &       (numele, nedge_4_e1, nedge_4_e2, np_smp, iele_fsmp_stack,&
+!!     &        max_int_point, maxtot_int_1d, int_start1, owe,          &
+!!     &        n_int, k2, ntot_int_3d, xjac, an1, an2, dnx1, dnx2,     &
+!!     &        ar2, ltr, j, g3, ak_d, vector_e, sk_v)
 !
       module fem_skv_diffusion_sph
 !
       use m_precision
       use m_constants
-!
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -30,15 +30,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_scalar_diffuse(numele, nedge_4_e1, nedge_4_e2, &
-     &          np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,        &
-     &          xjac, an1, an2, dnx1, dnx2, ar1, ar2, ltr, j, g3,       &
-     &          ak_d, scalar_e, sk_v)
+      subroutine fem_skv_scalar_sph_diffuse                             &
+     &       (numele, nedge_4_e1, nedge_4_e2, np_smp, iele_fsmp_stack,  &
+     &        max_int_point, maxtot_int_1d, int_start1, owe,            &
+     &        n_int, k2, ntot_int_3d, xjac, an1, an2, dnx1, dnx2,       &
+     &        ar1, ar2, ltr, j, g3, ak_d, scalar_e, sk_v)
 !
       integer(kind=kint), intent(in) :: numele, nedge_4_e1, nedge_4_e2
       integer(kind=kint), intent(in) :: np_smp, ntot_int_3d
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_1d
+      integer(kind = kint), intent(in) :: int_start1(max_int_point)
+      real(kind = kreal),   intent(in) :: owe(maxtot_int_1d)
 !
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)
       real(kind=kreal),   intent(in)                                    &
@@ -99,19 +104,24 @@
       end do
 !$omp end parallel do
 !
-      end subroutine fem_skv_scalar_diffuse
+      end subroutine fem_skv_scalar_sph_diffuse
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_vector_diffuse(numele, nedge_4_e1, nedge_4_e2, &
-     &          np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,        &
-     &          xjac, an1, an2, dnx1, dnx2, ar2, ltr, j, g3, ak_d,      &
-     &          vector_e, sk_v)
+      subroutine fem_skv_vector_sph_diffuse                             &
+     &       (numele, nedge_4_e1, nedge_4_e2, np_smp, iele_fsmp_stack,  &
+     &        max_int_point, maxtot_int_1d, int_start1, owe,            &
+     &        n_int, k2, ntot_int_3d, xjac, an1, an2, dnx1, dnx2,       &
+     &        ar2, ltr, j, g3, ak_d, vector_e, sk_v)
 !
       integer(kind=kint), intent(in) :: numele, nedge_4_e1, nedge_4_e2
       integer(kind=kint), intent(in) :: np_smp, ntot_int_3d
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_1d
+      integer(kind = kint), intent(in) :: int_start1(max_int_point)
+      real(kind = kreal),   intent(in) :: owe(maxtot_int_1d)
 !
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)
       real(kind=kreal),   intent(in)                                    &
@@ -173,7 +183,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine fem_skv_vector_diffuse
+      end subroutine fem_skv_vector_sph_diffuse
 !
 ! ----------------------------------------------------------------------
 !

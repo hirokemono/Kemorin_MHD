@@ -33,6 +33,7 @@
      &         (node, ele, jac_3d, iele_fsmp_stack, n_int,              &
      &          ncomp_nod, i_fld, d_nod, ncomp_ele, i_diff, dvx)
 !
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_jacobian_3d
 !
@@ -52,6 +53,7 @@
 !
       call int_vol_diff_scalar_on_ele(node%numnod, ele%numele,          &
      &    ele%nnod_4_ele, ele%ie, ele%a_vol_ele, iele_fsmp_stack,       &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%dnx,              &
      &    d_nod(1,i_fld), dvx(1,i_diff))
 !
@@ -63,6 +65,7 @@
      &         (node, ele, jac_3d, iele_fsmp_stack, n_int,              &
      &          ncomp_nod, i_fld, d_nod, ncomp_ele, i_diff, dvx)
 !
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_jacobian_3d
 !
@@ -82,6 +85,7 @@
 !
       call int_vol_diff_vector_on_ele(node%numnod, ele%numele,          &
      &    ele%nnod_4_ele, ele%ie, ele%a_vol_ele, iele_fsmp_stack,       &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%dnx,              &
      &    d_nod(1,i_fld), dvx(1,i_diff))
 !
@@ -90,17 +94,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine int_vol_diff_scalar_on_ele                             &
-     &         (numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
-     &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, dnx,         &
-     &          d_nod, dvx)
-!
-      use m_fem_gauss_int_coefs
+      subroutine int_vol_diff_scalar_on_ele(numnod, numele,             &
+     &          nnod_4_ele, ie, a_vol_ele, iele_fsmp_stack,             &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, xjac, dnx, d_nod, dvx)
 !
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: a_vol_ele(numele)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
@@ -161,17 +167,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine int_vol_diff_vector_on_ele                             &
-     &         (numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
-     &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, dnx,         &
-     &          d_nod, dvx)
-!
-      use m_fem_gauss_int_coefs
+      subroutine int_vol_diff_vector_on_ele(numnod, numele,             &
+     &          nnod_4_ele, ie, a_vol_ele, iele_fsmp_stack,             &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, xjac, dnx, d_nod, dvx)
 !
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: a_vol_ele(numele)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)

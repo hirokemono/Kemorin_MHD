@@ -56,6 +56,7 @@
 !
       call fem_scalar_on_element(iele_fsmp_stack, node%numnod,          &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%an, jac_3d%xjac, d_ele, d_nod)
 !
       end subroutine scalar_on_element
@@ -80,6 +81,7 @@
 !
       call fem_vector_on_element(iele_fsmp_stack, node%numnod,          &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%an, jac_3d%xjac, d_ele, d_nod)
 !
       end subroutine vector_on_element
@@ -104,6 +106,7 @@
 !
       call fem_sym_tensor_on_element(iele_fsmp_stack, node%numnod,      &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%an, jac_3d%xjac, d_ele, d_nod)
 !
       end subroutine sym_tensor_on_element
@@ -132,6 +135,7 @@
       call fem_scalar_grp_on_element                                    &
      &   (iele_fsmp_stack, node%numnod, ele%numele, ele%nnod_4_ele,     &
      &    ele%ie, ele%a_vol_ele, nele_grp, iele_grp,                    &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%an, jac_3d%xjac, d_ele, d_nod)
 !
       end subroutine scalar_grp_on_element
@@ -160,6 +164,7 @@
       call fem_vector_grp_on_element                                    &
      &   (iele_fsmp_stack, node%numnod, ele%numele, ele%nnod_4_ele,     &
      &    ele%ie, ele%a_vol_ele,  nele_grp, iele_grp,                   &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%an, jac_3d%xjac, d_ele, d_nod)
 !
       end subroutine vector_grp_on_element
@@ -188,6 +193,7 @@
       call fem_sym_tensor_grp_on_element                                &
      &   (iele_fsmp_stack, node%numnod, ele%numele, ele%nnod_4_ele,     &
      &    ele%ie, ele%a_vol_ele, nele_grp, iele_grp,                    &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%an, jac_3d%xjac, d_ele, d_nod)
 !
       end subroutine sym_tensor_grp_on_element

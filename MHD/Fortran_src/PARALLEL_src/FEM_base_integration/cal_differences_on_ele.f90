@@ -99,6 +99,7 @@
 !
       call fem_gradient_on_element(iele_fsmp_stack, node%numnod,        &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
      &    d_ele, d_nod)
 !
@@ -123,6 +124,7 @@
 !
       call fem_divergence_on_element(iele_fsmp_stack, node%numnod,      &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
      &    d_ele, d_nod)
 !
@@ -148,6 +150,7 @@
 !
       call fem_rotation_on_element(iele_fsmp_stack, node%numnod,        &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
      &    d_ele, d_nod)
 !
@@ -174,8 +177,9 @@
 !
       call fem_div_sym_tensor_on_ele(iele_fsmp_stack, node%numnod,      &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
-     &     d_ele, d_nod)
+     &    d_ele, d_nod)
 !
       end subroutine div_sym_tensor_on_element
 !
@@ -198,6 +202,7 @@
 !
       call fem_div_asym_tensor_on_ele(iele_fsmp_stack, node%numnod,     &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
      &    d_ele, d_nod)
 !
@@ -258,6 +263,7 @@
       call fem_gradient_grp_on_element                                  &
      &   (iele_fsmp_stack, node%numnod, ele%numele, ele%nnod_4_ele,     &
      &    ele%ie, ele%a_vol_ele, nele_grp, iele_grp,                    &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
      &    d_ele, d_nod)
 !
@@ -286,6 +292,7 @@
       call fem_divergence_grp_on_element                                &
      &   (iele_fsmp_stack, node%numnod, ele%numele, ele%nnod_4_ele,     &
      &    ele%ie, ele%a_vol_ele, nele_grp, iele_grp,                    &
+     &     max_int_point, maxtot_int_3d, int_start3, owe3d,             &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
      &    d_ele, d_nod)
 !
@@ -315,6 +322,7 @@
       call fem_rotation_grp_on_element                                  &
      &   (iele_fsmp_stack, node%numnod, ele%numele, ele%nnod_4_ele,     &
      &    ele%ie, ele%a_vol_ele, nele_grp, iele_grp,                    &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
      &    d_ele, d_nod)
 !
@@ -341,9 +349,10 @@
       real(kind = kreal), intent(inout) :: d_ele(ele%numele,3)
 !
 !
-      call fem_div_sym_tensor_grp_on_ele&
+      call fem_div_sym_tensor_grp_on_ele                                &
      &   (iele_fsmp_stack, node%numnod, ele%numele, ele%nnod_4_ele,     &
      &    ele%ie, ele%a_vol_ele, nele_grp, iele_grp,                    &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
      &    d_ele, d_nod)
 !
@@ -372,6 +381,7 @@
       call fem_div_asym_tensor_grp_on_ele                               &
      &   (iele_fsmp_stack, node%numnod, ele%numele, ele%nnod_4_ele,     &
      &    ele%ie, ele%a_vol_ele, nele_grp, iele_grp,                    &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%dnx, jac_3d%xjac,              &
      &    d_ele, d_nod)
 !

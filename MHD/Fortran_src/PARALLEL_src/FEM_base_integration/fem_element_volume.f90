@@ -11,6 +11,7 @@
       module fem_element_volume
 !
       use m_precision
+      use m_machine_parameter
 !
       implicit none
 !
@@ -24,6 +25,7 @@
 !
        subroutine fem_element_volume_pg(ele, jac_3d, n_int)
 !
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_jacobians
 !
@@ -32,7 +34,8 @@
       type(element_data), intent(inout) :: ele
 !
 !
-      call s_fem_element_volume(ele%numele, ele%istack_ele_smp, n_int,  &
+      call s_fem_element_volume(ele%numele, ele%istack_ele_smp,         &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int,       &
      &   jac_3d%ntot_int, jac_3d%xjac, ele%volume_ele, ele%a_vol_ele)
 !
       end subroutine fem_element_volume_pg
@@ -41,13 +44,16 @@
 !-----------------------------------------------------------------------
 !
        subroutine s_fem_element_volume(numele, iele_smp_stack,          &
+     &           max_int_point, maxtot_int_3d, int_start3, owe3d,       &
      &           n_int, ntot_int_3d, xjac, volume_ele, a_vol_ele)
-!
-      use m_machine_parameter
-      use m_fem_gauss_int_coefs
 !
       integer(kind=kint), intent(in) :: numele
       integer(kind=kint), intent(in) :: iele_smp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
+!
       integer(kind=kint), intent(in) :: ntot_int_3d, n_int
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)
 !

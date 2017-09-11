@@ -97,9 +97,11 @@
 !
 !
       call fem_skv_mass_matrix                                          &
-     &    (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,          &
-     &     iele_fsmp_stack, jac_3d%ntot_int, num_int,                   &
-     &     jac_3d%xjac, jac_3d%an, jac_3d%an, k2, sk_v)
+     &    (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                  &
+     &     np_smp, iele_fsmp_stack,                                     &
+     &     max_int_point, maxtot_int_3d, int_start3, owe3d,             &
+     &     jac_3d%ntot_int, num_int, jac_3d%xjac, jac_3d%an, jac_3d%an, &
+     &     k2, sk_v)
 !
       end  subroutine fem_skv_mass_matrix_type
 !
@@ -121,9 +123,10 @@
      &               :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_mass_matrix_diag(ele%numele, ele%nnod_4_ele,         &
-     &    np_smp, iele_fsmp_stack, jac_3d%ntot_int, num_int,            &
-     &    jac_3d%xjac, jac_3d%an, sk_v)
+      call fem_skv_mass_matrix_diag                                     &
+     &   (ele%numele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,          &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, num_int, jac_3d%xjac, jac_3d%an, sk_v)
 !
       end  subroutine fem_skv_mass_matrix_diag_type
 !
@@ -144,9 +147,10 @@
      &               :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_mass_mat_diag_HRZ(ele%numele, ele%nnod_4_ele,        &
-     &    np_smp, iele_fsmp_stack, jac_3d%ntot_int, num_int,            &
-     &    jac_3d%an, jac_3d%xjac, sk_v)
+      call fem_skv_mass_mat_diag_HRZ                                    &
+     &   (ele%numele, ele%nnod_4_ele, np_smp, iele_fsmp_stack,          &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
+     &    jac_3d%ntot_int, num_int, jac_3d%an, jac_3d%xjac, sk_v)
 !
       end  subroutine fem_skv_mass_mat_diag_HRZ_type
 !
@@ -215,6 +219,7 @@
 !
       call fem_grp_skv_mass_matrix(ele%numele, ele%nnod_4_ele,          &
      &    ele%nnod_4_ele, np_smp, iele_fsmp_stack, nele_grp, iele_grp,  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, num_int, jac_3d%xjac, jac_3d%an, jac_3d%an,  &
      &    k2, sk_v)
 !
@@ -242,6 +247,7 @@
 !
       call fem_grp_skv_mass_matrix_diag(ele%numele, ele%nnod_4_ele,     &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, num_int, jac_3d%xjac, jac_3d%an, sk_v)
 !
       end  subroutine fem_grp_skv_mass_matrix_diag_t
@@ -268,6 +274,7 @@
 !
       call fem_grp_skv_mass_mat_diag_HRZ(ele%numele, ele%nnod_4_ele,    &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, num_int, jac_3d%xjac, jac_3d%an, sk_v)
 !
       end  subroutine fem_grp_skv_mass_mat_diag_HRZ_t

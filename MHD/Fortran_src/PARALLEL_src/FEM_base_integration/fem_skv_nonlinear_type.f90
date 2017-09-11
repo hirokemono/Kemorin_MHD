@@ -51,7 +51,8 @@
 !
       call fem_skv_scalar_inertia                                       &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, scalar_1, vxe, sk_v)
 !
       end subroutine fem_skv_scalar_inertia_type
@@ -77,7 +78,8 @@
 !
       call fem_skv_vector_inertia                                       &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, vector_1, vxe, sk_v)
 !
       end subroutine fem_skv_vector_inertia_type
@@ -103,7 +105,8 @@
 !
       call fem_skv_rot_inertia                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
      &    jac_3d%xjac, jac_3d%an, jac_3d%an, vector_1, wxe, sk_v)
 !
       end subroutine fem_skv_rot_inertia_type
@@ -129,7 +132,8 @@
 !
       call fem_skv_coriolis                                             &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,          &
+     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
+     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
      &    jac_3d%xjac, jac_3d%an, jac_3d%an, vector_1, anglar, sk_v)
 !
       end subroutine fem_skv_coriolis_type

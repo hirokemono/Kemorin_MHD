@@ -58,8 +58,9 @@
 !
 !
       call fem_skv_scalar_diffuse                                       &
-     &    (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,          &
-     &     iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,                 &
+     &    (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                  &
+     &     np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,       &
+     &     int_start3, owe3d, n_int, k2, jac_3d%ntot_int,               &
      &     jac_3d%xjac, jac_3d%dnx, jac_3d%dnx, ak_d, scalar_1, sk_v)
 !
       end subroutine fem_skv_scalar_diffuse_type
@@ -84,8 +85,9 @@
 !
 !
       call fem_skv_vector_diffuse                                       &
-     &    (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,          &
-     &     iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,                 &
+     &    (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                  &
+     &     np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,       &
+     &     int_start3, owe3d, n_int, k2, jac_3d%ntot_int,               &
      &     jac_3d%xjac, jac_3d%dnx, jac_3d%dnx, ak_d, vect_1, sk_v)
 !
       end subroutine fem_skv_vector_diffuse_type
@@ -108,8 +110,9 @@
 !
 !
       call fem_skv_poisson                                              &
-     &    (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,          &
-     &     iele_fsmp_stack, n_int, k2, jac_3d%ntot_int,                 &
+     &    (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                  &
+     &     np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,       &
+     &     int_start3, owe3d, n_int, k2, jac_3d%ntot_int,               &
      &     jac_3d%xjac, jac_3d%dnx, jac_3d%dnx, sk_v)
 !
       end subroutine fem_skv_poisson_type
@@ -131,8 +134,9 @@
 !
 !
       call fem_skv_poisson                                              &
-     &    (ele%numele, num_t_linear, num_t_linear, np_smp,              &
-     &     iele_fsmp_stack, n_int, k2, jac_3d_l%ntot_int,               &
+     &    (ele%numele, num_t_linear, num_t_linear,                      &
+     &     np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,       &
+     &     int_start3, owe3d, n_int, k2, jac_3d_l%ntot_int,             &
      &     jac_3d_l%xjac, jac_3d_l%dnx, jac_3d_l%dnx, sk_v)
 !
       end subroutine fem_skv_poisson_linear_type

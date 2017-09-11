@@ -7,26 +7,29 @@
 !     Modified by H. Matsui on March, 2006
 !     Modified by H. Matsui on March, 2009
 !
-!      subroutine fem_skv_mass_matrix(numele, nnod_4_e1, nnod_4_e2,     &
-!     &          np_smp, iele_fsmp_stack, ntot_int_3d, num_int,         &
-!     &          xjac, an1, an2, k2, sk_v)
-!      subroutine fem_skv_mass_matrix_diag(numele, nnod_4_e1, np_smp,   &
-!     &          iele_fsmp_stack, ntot_int_3d, num_int, xjac, an, sk_v)
-!
-!      subroutine fem_skv_mass_mat_diag_HRZ(numele, nnod_4_e1, np_smp,  &
-!     &          iele_fsmp_stack, ntot_int_3d, num_int, an, xjac, sk_v)
-!      subroutine sum_skv_diagonal_4_HRZ(numele, nnod_4_e1, np_smp,     &
-!     &           iele_fsmp_stack, sk_v, ml_e)
-!      subroutine volume_average_skv_HRZ(numele, nnod_4_e1, np_smp,     &
-!     &          iele_fsmp_stack, volume_ele, sk_v, ml_e)
+!!      subroutine fem_skv_mass_matrix                                  &
+!!     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, num_int, xjac, an1, an2, k2, sk_v)
+!!      subroutine fem_skv_mass_matrix_diag                             &
+!!     &         (numele, nnod_4_e1, np_smp, iele_fsmp_stack,           &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, num_int, xjac, an, sk_v)
+!!
+!!      subroutine fem_skv_mass_mat_diag_HRZ                            &
+!!     &         (numele, nnod_4_e1, np_smp, iele_fsmp_stack,           &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, num_int, an, xjac, sk_v)
+!!      subroutine sum_skv_diagonal_4_HRZ(numele, nnod_4_e1, np_smp,    &
+!!     &           iele_fsmp_stack, sk_v, ml_e)
+!!      subroutine volume_average_skv_HRZ(numele, nnod_4_e1, np_smp,    &
+!!     &          iele_fsmp_stack, volume_ele, sk_v, ml_e)
 !
       module fem_skv_mass_mat
 !
       use m_precision
       use m_constants
-!
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -38,14 +41,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_mass_matrix(numele, nnod_4_e1, nnod_4_e2,      &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, num_int,          &
-     &          xjac, an1, an2, k2, sk_v)
-!
+      subroutine fem_skv_mass_matrix                                    &
+     &         (numele, nnod_4_e1, nnod_4_e2, np_smp, iele_fsmp_stack,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, num_int, xjac, an1, an2, k2, sk_v)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, nnod_4_e2
       integer (kind=kint), intent(in) :: np_smp
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: k2
       integer (kind=kint), intent(in) :: num_int, ntot_int_3d
@@ -87,11 +94,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_mass_matrix_diag(numele, nnod_4_e1, np_smp,    &
-     &          iele_fsmp_stack, ntot_int_3d, num_int, xjac, an, sk_v)
+      subroutine fem_skv_mass_matrix_diag                               &
+     &         (numele, nnod_4_e1, np_smp, iele_fsmp_stack,             &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, num_int, xjac, an, sk_v)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, np_smp
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: num_int, ntot_int_3d
       real (kind=kreal), intent(in)  :: xjac(numele,ntot_int_3d)
@@ -130,11 +143,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_mass_mat_diag_HRZ(numele, nnod_4_e1, np_smp,   &
-     &          iele_fsmp_stack, ntot_int_3d, num_int, an, xjac, sk_v)
+      subroutine fem_skv_mass_mat_diag_HRZ                              &
+     &         (numele, nnod_4_e1, np_smp, iele_fsmp_stack,             &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, num_int, an, xjac, sk_v)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, np_smp
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: num_int, ntot_int_3d
       real (kind=kreal), intent(in)  :: xjac(numele,ntot_int_3d)

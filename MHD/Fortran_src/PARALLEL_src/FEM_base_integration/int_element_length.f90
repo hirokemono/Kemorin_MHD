@@ -13,9 +13,7 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-!
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -33,6 +31,7 @@
       subroutine s_int_element_length                                   &
      &         (nele_filter, node, ele, spf_3d, dxi_ele, elen_ele)
 !
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_filter_dxdxi
       use t_filter_elength
@@ -52,6 +51,7 @@
         call fem_element_length_linear                                  &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      ele%istack_ele_smp, max_int_point, nele_filter,             &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      maxtot_int_3d, spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,       &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
@@ -60,6 +60,7 @@
         call fem_element_length_quad                                    &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      ele%istack_ele_smp, max_int_point, nele_filter,             &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      maxtot_int_3d, spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,       &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
@@ -68,6 +69,7 @@
         call fem_element_length_lag                                     &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      ele%istack_ele_smp, max_int_point, nele_filter,             &
+     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
      &      maxtot_int_3d, spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,       &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
@@ -166,6 +168,7 @@
 !
       subroutine fem_element_length_linear(numnod, numele, xx,          &
      &          ie, iele_smp_stack, n_int, nele_filter,                 &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          maxtot_int, dnxi_1, dnei_1, dnzi_1,                     &
      &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
@@ -175,6 +178,10 @@
       integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind = kint), intent(in) :: maxtot_int
       real(kind = kreal), intent(in) :: dnxi_1(num_t_linear,maxtot_int)
@@ -341,6 +348,7 @@
 !
       subroutine fem_element_length_quad(numnod, numele, xx,            &
      &          ie, iele_smp_stack, n_int, nele_filter,                 &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          maxtot_int, dnxi_20, dnei_20, dnzi_20,                  &
      &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
@@ -350,6 +358,10 @@
       integer(kind = kint), intent(in) :: ie(numele,num_t_quad)
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind = kint), intent(in) :: maxtot_int
       real(kind = kreal), intent(in) :: dnxi_20(num_t_quad,maxtot_int)
@@ -640,6 +652,7 @@
 !
       subroutine fem_element_length_lag(numnod, numele, xx,             &
      &          ie, iele_smp_stack, n_int, nele_filter,                 &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          maxtot_int, dnxi_27, dnei_27, dnzi_27,                  &
      &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
@@ -649,6 +662,10 @@
       integer(kind = kint), intent(in) :: ie(numele,num_t_lag)
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer(kind = kint), intent(in) :: maxtot_int
       real(kind = kreal), intent(in) :: dnxi_27(num_t_lag,maxtot_int)

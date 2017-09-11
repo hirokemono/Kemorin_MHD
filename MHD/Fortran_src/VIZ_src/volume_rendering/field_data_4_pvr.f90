@@ -27,6 +27,7 @@
       use m_precision
       use m_constants
 !
+      use m_fem_gauss_int_coefs
       use t_control_params_4_pvr
 !
       implicit  none
@@ -70,6 +71,7 @@
 !
       call fem_gradient_on_element(ele%istack_ele_smp, node%numnod,     &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, ione, jac_3d%dnx, jac_3d%xjac,               &
      &    field_pvr%grad_ele, field_pvr%d_pvr)
 !

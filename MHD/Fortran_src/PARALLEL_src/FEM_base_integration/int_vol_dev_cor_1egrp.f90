@@ -5,20 +5,21 @@
 !     Modified by H. Matsui on Nov., 2008
 !
 !!      subroutine int_vol_dev_cor_1egrp_l                              &
-!!     &         (numnod, numele, ie, interior_ele,                     &
-!!     &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,  &
-!!     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
+!!     &         (numnod, numele, ie, interior_ele, nitem_grp, iele_grp,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          num_int, ntot_int_3d, xjac, an, d1_nod, d2_nod,       &
+!!     &          ave_1, ave_2, sig_1, sig_2, cov_l)
 !!      subroutine int_vol_dev_cor_1egrp_q                              &
-!!     &         (numnod, numele, ie, interior_ele,                     &
-!!     &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,  &
-!!     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
+!!     &         (numnod, numele, ie, interior_ele, nitem_grp, iele_grp,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          num_int, ntot_int_3d, xjac, aw, d1_nod, d2_nod,       &
+!!     &          ave_1, ave_2, sig_1, sig_2, cov_l)
 !
       module int_vol_dev_cor_1egrp
 !
       use m_precision
       use m_constants
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -29,9 +30,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_dev_cor_1egrp_l                                &
-     &         (numnod, numele, ie, interior_ele,                       &
-     &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,    &
-     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
+     &         (numnod, numele, ie, interior_ele, nitem_grp, iele_grp,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          num_int, ntot_int_3d, xjac, an, d1_nod, d2_nod,         &
+     &          ave_1, ave_2, sig_1, sig_2, cov_l)
 !
       integer (kind = kint), intent(in) :: numnod, numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
@@ -39,6 +41,10 @@
 !
       integer (kind = kint), intent(in) :: nitem_grp
       integer (kind = kint), intent(in) :: iele_grp(nitem_grp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind = kint), intent(in) :: ntot_int_3d, num_int
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)
@@ -122,9 +128,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_dev_cor_1egrp_q                                &
-     &         (numnod, numele, ie, interior_ele,                       &
-     &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,    &
-     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
+     &         (numnod, numele, ie, interior_ele, nitem_grp, iele_grp,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          num_int, ntot_int_3d, xjac, aw, d1_nod, d2_nod,         &
+     &          ave_1, ave_2, sig_1, sig_2, cov_l)
 !
       integer (kind = kint), intent(in) :: numnod, numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
@@ -132,6 +139,10 @@
 !
       integer (kind = kint), intent(in) :: nitem_grp
       integer (kind = kint), intent(in) :: iele_grp(nitem_grp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind = kint), intent(in) :: ntot_int_3d, num_int
       real(kind=kreal),   intent(in) :: xjac(numele, ntot_int_3d)

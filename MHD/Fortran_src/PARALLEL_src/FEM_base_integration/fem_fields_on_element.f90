@@ -3,36 +3,40 @@
 !
 !     Written by H. Matsui on Oct., 2005
 !
-!      subroutine fem_scalar_on_element(iele_fsmp_stack,                &
-!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,             &
-!     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
-!      subroutine fem_vector_on_element(iele_fsmp_stack,                &
-!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,             &
-!     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
-!      subroutine fem_sym_tensor_on_element(iele_fsmp_stack,            &
-!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,             &
-!     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
-!
-!      subroutine fem_scalar_grp_on_element(iele_fsmp_stack,            &
-!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,             &
-!     &          nele_grp, iele_grp, ntot_int_3d, n_int, aw, xjac,      &
-!     &          d_ele, d_nod)
-!      subroutine fem_vector_grp_on_element(iele_fsmp_stack,            &
-!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,             &
-!     &          nele_grp, iele_grp, ntot_int_3d, n_int, aw, xjac,      &
-!     &          d_ele, d_nod)
-!      subroutine fem_sym_tensor_grp_on_element(iele_fsmp_stack,        &
-!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,             &
-!     &          nele_grp, iele_grp, ntot_int_3d, n_int, aw, xjac,      &
-!     &          d_ele, d_nod)
+!!      subroutine fem_scalar_on_element(iele_fsmp_stack,               &
+!!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,            &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
+!!      subroutine fem_vector_on_element(iele_fsmp_stack,               &
+!!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,            &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
+!!      subroutine fem_sym_tensor_on_element(iele_fsmp_stack,           &
+!!     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,            &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
+!!
+!!      subroutine fem_scalar_grp_on_element                            &
+!!     &         (iele_fsmp_stack, numnod, numele, nnod_4_ele, ie,      &
+!!     &          a_vol_ele, nele_grp, iele_grp,                        &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
+!!      subroutine fem_vector_grp_on_element                            &
+!!     &         (iele_fsmp_stack, numnod, numele, nnod_4_ele, ie,      &
+!!     &          a_vol_ele, nele_grp, iele_grp,                        &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
+!!      subroutine fem_sym_tensor_grp_on_element                        &
+!!     &         (iele_fsmp_stack, numnod, numele, nnod_4_ele, ie,      &
+!!     &          a_vol_ele,  nele_grp, iele_grp,                       &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
 !
       module fem_fields_on_element
 !
       use m_precision
-!
       use m_constants
       use m_machine_parameter
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -44,12 +48,17 @@
 !
       subroutine fem_scalar_on_element(iele_fsmp_stack,                 &
      &          numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
 !
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       real(kind = kreal), intent(in) :: a_vol_ele(numele)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind = kint), intent(in) :: ntot_int_3d, n_int
       real(kind=kreal),   intent(in) :: aw(nnod_4_ele,ntot_int_3d)
@@ -100,12 +109,17 @@
 !
       subroutine fem_vector_on_element(iele_fsmp_stack,                 &
      &          numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
 !
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       real(kind = kreal), intent(in) :: a_vol_ele(numele)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind = kint), intent(in) :: ntot_int_3d, n_int
       real(kind=kreal),   intent(in) :: aw(nnod_4_ele,ntot_int_3d)
@@ -166,12 +180,17 @@
 !
       subroutine fem_sym_tensor_on_element(iele_fsmp_stack,             &
      &          numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
 !
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       real(kind = kreal), intent(in) :: a_vol_ele(numele)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind = kint), intent(in) :: ntot_int_3d, n_int
       real(kind=kreal),   intent(in) :: aw(nnod_4_ele,ntot_int_3d)
@@ -246,10 +265,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_scalar_grp_on_element(iele_fsmp_stack,             &
-     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
-     &          nele_grp, iele_grp, ntot_int_3d, n_int, aw, xjac,       &
-     &          d_ele, d_nod)
+      subroutine fem_scalar_grp_on_element                              &
+     &         (iele_fsmp_stack, numnod, numele, nnod_4_ele, ie,        &
+     &          a_vol_ele, nele_grp, iele_grp,                          &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
 !
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, numele, nnod_4_ele
@@ -258,6 +278,10 @@
 !
       integer (kind = kint), intent(in) :: nele_grp
       integer (kind = kint), intent(in) :: iele_grp(nele_grp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind = kint), intent(in) :: ntot_int_3d, n_int
       real(kind=kreal),   intent(in) :: aw(nnod_4_ele,ntot_int_3d)
@@ -307,10 +331,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_vector_grp_on_element(iele_fsmp_stack,             &
-     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
-     &          nele_grp, iele_grp, ntot_int_3d, n_int, aw, xjac,       &
-     &          d_ele, d_nod)
+      subroutine fem_vector_grp_on_element                              &
+     &         (iele_fsmp_stack, numnod, numele, nnod_4_ele, ie,        &
+     &          a_vol_ele, nele_grp, iele_grp,                          &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
 !
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, numele, nnod_4_ele
@@ -319,6 +344,10 @@
 !
       integer (kind = kint), intent(in) :: nele_grp
       integer (kind = kint), intent(in) :: iele_grp(nele_grp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind = kint), intent(in) :: ntot_int_3d, n_int
       real(kind=kreal),   intent(in) :: aw(nnod_4_ele,ntot_int_3d)
@@ -378,10 +407,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_sym_tensor_grp_on_element(iele_fsmp_stack,         &
-     &          numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
-     &          nele_grp, iele_grp, ntot_int_3d, n_int, aw, xjac,       &
-     &          d_ele, d_nod)
+      subroutine fem_sym_tensor_grp_on_element                          &
+     &         (iele_fsmp_stack, numnod, numele, nnod_4_ele, ie,        &
+     &          a_vol_ele,  nele_grp, iele_grp,                         &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
 !
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, numele, nnod_4_ele
@@ -390,6 +420,10 @@
 !
       integer (kind = kint), intent(in) :: nele_grp
       integer (kind = kint), intent(in) :: iele_grp(nele_grp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind = kint), intent(in) :: ntot_int_3d, n_int
       real(kind=kreal),   intent(in) :: aw(nnod_4_ele,ntot_int_3d)

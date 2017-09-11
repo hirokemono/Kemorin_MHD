@@ -3,19 +3,21 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine fem_skv_tensor_on_ele_m(numele, nnod_4_e1,            &
-!     &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, an1,        &
-!     &          tensor_ele, sk_v)
-!      subroutine fem_skv_tensor_on_ele_HRZ_m(numele, nnod_4_e1,        &
-!     &          iele_fsmp_stack, volume_ele, ml_ele_diag, tensor_ele,  &
-!     &          sk_v)
-!
-!      subroutine fem_skv_tensor_on_ele_grp_m(numele, nnod_4_e1,        &
-!     &          iele_fsmp_stack, nele_grp, iele_grp,                   &
-!     &          ntot_int_3d, n_int, xjac, an1, tensor_ele, sk_v)
-!      subroutine fem_skv_tensor_on_ele_grp_HRZ(numele, nnod_4_e1,      &
-!     &          iele_fsmp_stack, volume_ele, nele_grp, iele_grp,       &
-!     &          ml_ele_diag, tensor_ele, sk_v)
+!!      subroutine fem_skv_tensor_on_ele_m                              &
+!!     &         (numele, nnod_4_e1, iele_fsmp_stack,                   &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, xjac, an1, tensor_ele, sk_v)
+!!      subroutine fem_skv_tensor_on_ele_HRZ_m(numele, nnod_4_e1,       &
+!!     &          iele_fsmp_stack, volume_ele, ml_ele_diag, tensor_ele, &
+!!     &          sk_v)
+!!
+!!      subroutine fem_skv_tensor_on_ele_grp_m(numele, nnod_4_e1,       &
+!!     &          iele_fsmp_stack, nele_grp, iele_grp,                  &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
+!!     &          ntot_int_3d, n_int, xjac, an1, tensor_ele, sk_v)
+!!      subroutine fem_skv_tensor_on_ele_grp_HRZ(numele, nnod_4_e1,     &
+!!     &          iele_fsmp_stack, volume_ele, nele_grp, iele_grp,      &
+!!     &          ml_ele_diag, tensor_ele, sk_v)
 !
       module fem_skv_tensor_on_ele
 !
@@ -31,15 +33,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_tensor_on_ele_m(numele, nnod_4_e1,             &
-     &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, an1,         &
-     &          tensor_ele, sk_v)
-!
-      use m_fem_gauss_int_coefs
+      subroutine fem_skv_tensor_on_ele_m                                &
+     &         (numele, nnod_4_e1, iele_fsmp_stack,                     &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ntot_int_3d, n_int, xjac, an1, tensor_ele, sk_v)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in) :: tensor_ele(numele,6)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
@@ -144,15 +149,18 @@
 !
       subroutine fem_skv_tensor_on_ele_grp_m(numele, nnod_4_e1,         &
      &          iele_fsmp_stack, nele_grp, iele_grp,                    &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          ntot_int_3d, n_int, xjac, an1, tensor_ele, sk_v)
-!
-      use m_fem_gauss_int_coefs
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       integer (kind=kint), intent(in) :: nele_grp
       integer (kind=kint), intent(in) :: iele_grp(nele_grp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
