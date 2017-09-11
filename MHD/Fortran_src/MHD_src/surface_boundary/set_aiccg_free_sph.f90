@@ -27,6 +27,7 @@
 !
       use m_precision
 !
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -82,11 +83,12 @@
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
 !
           if (num .gt. 0) then
-            call fem_surf_crank_free_inside(igrp, k2, num_int, dt,       &
+            call fem_surf_crank_free_inside(igrp, k2, num_int, dt,      &
      &          ele%numele, ele%nnod_4_ele,                             &
      &          surf%nnod_4_surf, surf%node_on_sf,                      &
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
+     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
      &          jac_sf_grp%ntot_int, jac_sf_grp%an_sf,                  &
      &          jac_sf_grp%xj_sf, surf_wk%xe_sf,                        &
      &          ak_d_velo, coef_imp, fem_wk%sk6)
@@ -143,6 +145,7 @@
      &          surf%nnod_4_surf, surf%node_on_sf,                      &
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
+     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
      &          jac_sf_grp%ntot_int, jac_sf_grp%an_sf,                  &
      &          jac_sf_grp%xj_sf, surf_wk%xe_sf,                        &
      &          ak_d_velo, coef_imp, fem_wk%sk6)

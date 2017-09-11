@@ -36,6 +36,7 @@
       use m_geometry_constants
       use m_phys_constants
 !
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -68,12 +69,12 @@
 !
 !
       call fem_surf_skv_poisson_wall_pg                                 &
-     &   (np_smp, ele%numele, ele%nnod_4_ele, surf%nnod_4_surf,         &
-     &    surf%nnod_4_surf, surf%node_on_sf, sf_grp%num_item,           &
-     &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
-     &    sf_grp%istack_grp_smp, igrp, k2, n_int,                       &
-     &    jac_sf_grp_l%ntot_int, jac_sf_grp_l%xsf_sf,                   &
-     &    jac_sf_grp_l%an_sf, jac_sf_grp_l%an_sf, vect_sf, sk_v)
+     &  (np_smp, ele%numele, ele%nnod_4_ele, surf%nnod_4_surf,          &
+     &   surf%nnod_4_surf, surf%node_on_sf, sf_grp%num_item,            &
+     &   sf_grp%item_sf_grp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp, &
+     &   max_int_point, maxtot_int_2d, int_start2, owe2d,               &
+     &   igrp, k2, n_int, jac_sf_grp_l%ntot_int, jac_sf_grp_l%xsf_sf,   &
+     &   jac_sf_grp_l%an_sf, jac_sf_grp_l%an_sf, vect_sf, sk_v)
 !
       end subroutine fem_surf_skv_poisson_wall
 !
@@ -100,12 +101,12 @@
 !
 !
       call fem_surf_skv_poisson_sph_out_pg                              &
-     &   (np_smp, ele%numele,  ele%nnod_4_ele, surf%nnod_4_surf,        &
-     &    surf%nnod_4_surf, surf%node_on_sf, sf_grp%num_item,           &
-     &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
-     &    sf_grp%istack_grp_smp, igrp, k2, n_int,                       &
-     &    jac_sf_grp_l%ntot_int, jac_sf_grp_l%xj_sf,                    &
-     &    jac_sf_grp_l%an_sf, jac_sf_grp_l%an_sf, xe_sf, vect_sf, sk_v)
+     &  (np_smp, ele%numele,  ele%nnod_4_ele, surf%nnod_4_surf,         &
+     &   surf%nnod_4_surf, surf%node_on_sf, sf_grp%num_item,            &
+     &   sf_grp%item_sf_grp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp, &
+     &   max_int_point, maxtot_int_2d, int_start2, owe2d,               &
+     &   igrp, k2, n_int, jac_sf_grp_l%ntot_int, jac_sf_grp_l%xj_sf,    &
+     &   jac_sf_grp_l%an_sf, jac_sf_grp_l%an_sf, xe_sf, vect_sf, sk_v)
 !
       end subroutine fem_surf_skv_poisson_sph_out
 !
@@ -205,6 +206,7 @@
      &    surf%nnod_4_surf, surf%nnod_4_surf, surf%node_on_sf,          &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    max_int_point, maxtot_int_2d, int_start2, owe2d,              &
      &    igrp, k2, n_int, jac_sf_grp%ntot_int, jac_sf_grp%xj_sf,       &
      &    jac_sf_grp%an_sf, jac_sf_grp%an_sf,                           &
      &    ak_d_velo, xe_sf, vect_sf, sk_v)
@@ -241,7 +243,8 @@
      &   sf_grp%item_sf_grp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp, &
      &   grad_sf%ngrp_sf_fix_fx, grad_sf%nitem_sf_fix_fx,               &
      &   grad_sf%ngrp_sf_fix_fx, grad_sf%id_grp_sf_fix_fx,              &
-     &   grad_sf%ist_ele_sf_fix_fx, grad_sf%sf_apt_fix_fx, n_int, nd,   &
+     &   grad_sf%ist_ele_sf_fix_fx, grad_sf%sf_apt_fix_fx,              &
+     &   max_int_point, maxtot_int_2d, int_start2, owe2d, n_int, nd,    &
      &   jac_sf_grp%ntot_int, jac_sf_grp%xj_sf, jac_sf_grp%an_sf,       &
      &   ak_d, sk_v)
 !
@@ -272,7 +275,8 @@
      &   sf_grp%item_sf_grp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp, &
      &   grad_sf%ngrp_sf_fix_fx, grad_sf%nitem_sf_fix_fx,               &
      &   grad_sf%ngrp_sf_fix_fx, grad_sf%id_grp_sf_fix_fx,              &
-     &   grad_sf%ist_ele_sf_fix_fx, grad_sf%sf_apt_fix_fx, n_int,       &
+     &   grad_sf%ist_ele_sf_fix_fx, grad_sf%sf_apt_fix_fx,              &
+     &   max_int_point, maxtot_int_2d, int_start2, owe2d, n_int,        &
      &   jac_sf_grp%ntot_int, jac_sf_grp%xj_sf, jac_sf_grp%an_sf, sk_v)
 !
       end subroutine fem_surf_skv_norm_poisson_pg

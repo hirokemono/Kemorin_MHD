@@ -3,34 +3,34 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!      subroutine fem_surf_skv_norm_grad_pg(np_smp, numele,             &
-!     &          nnod_4_e1, nnod_4_sf1, node_on_sf,                     &
-!     &          num_surf, num_surf_bc, surf_istack, surf_item,         &
-!     &          num_surf_smp, isurf_grp_smp_stack,                     &
-!     &          nmax_surf, nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf,&
-!     &          sf_apt, n_int, nd, ntot_int_sf_grp, xj_sf, an1_sf,     &
-!     &          ak_d, sk_v)
-!      subroutine fem_surf_skv_norm_poisson(np_smp, numele,             &
-!     &          nnod_4_e1, nnod_4_sf1, node_on_sf,                     &
-!     &          num_surf, num_surf_bc, surf_istack, surf_item,         &
-!     &          num_surf_smp, isurf_grp_smp_stack, nmax_surf,          &
-!     &          nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf, sf_apt,   &
-!     &          n_int, ntot_int_sf_grp, xj_sf, an1_sf, sk_v)
-!
-!      subroutine fem_surf_skv_trq_sph_out_pg                           &
-!     &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,     &
-!     &          node_on_sf, num_surf_bc, surf_item, num_surf_smp,      &
-!     &          isurf_grp_smp_stack, igrp, k2, n_int,                  &
-!     &          ntot_int_sf_grp, xj_sf, an1_sf, an2_sf,                &
-!     &          ak_d_velo, xe_sf, vect_sf, sk_v)
+!!      subroutine fem_surf_skv_norm_grad_pg(np_smp, numele,            &
+!!     &          nnod_4_e1, nnod_4_sf1, node_on_sf,                    &
+!!     &          num_surf, num_surf_bc, surf_istack, surf_item,        &
+!!     &          num_surf_smp, isurf_grp_smp_stack,  nmax_surf,        &
+!!     &          nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf, sf_apt,  &
+!!     &          max_int_point, maxtot_int_2d, int_start2, owe2d,      &
+!!     &          n_int, nd, ntot_int_sf_grp, xj_sf, an1_sf, ak_d, sk_v)
+!!      subroutine fem_surf_skv_norm_poisson(np_smp, numele,            &
+!!     &          nnod_4_e1, nnod_4_sf1, node_on_sf,                    &
+!!     &          num_surf, num_surf_bc, surf_istack, surf_item,        &
+!!     &          num_surf_smp, isurf_grp_smp_stack, nmax_surf,         &
+!!     &          nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf, sf_apt,  &
+!!     &          max_int_point, maxtot_int_2d, int_start2, owe2d,      &
+!!     &          n_int, ntot_int_sf_grp, xj_sf, an1_sf, sk_v)
+!!
+!!      subroutine fem_surf_skv_trq_sph_out_pg                          &
+!!     &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,    &
+!!     &          node_on_sf, num_surf_bc, surf_item,                   &
+!!     &          num_surf_smp,  isurf_grp_smp_stack,                   &
+!!     &          max_int_point, maxtot_int_2d, int_start2, owe2d,      &
+!!     &          igrp, k2, n_int, ntot_int_sf_grp, xj_sf,              &
+!!     &          an1_sf, an2_sf, ak_d_velo, xe_sf, vect_sf, sk_v)
 !
       module fem_surf_skv_norm_grad
 !
       use m_precision
       use m_constants
-!
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use m_phys_constants
 !
       implicit none
@@ -44,10 +44,10 @@
       subroutine fem_surf_skv_norm_grad_pg(np_smp, numele,              &
      &          nnod_4_e1, nnod_4_sf1, node_on_sf,                      &
      &          num_surf, num_surf_bc, surf_istack, surf_item,          &
-     &          num_surf_smp, isurf_grp_smp_stack,                      &
-     &          nmax_surf, nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf, &
-     &          sf_apt, n_int, nd, ntot_int_sf_grp, xj_sf, an1_sf,      &
-     &          ak_d, sk_v)
+     &          num_surf_smp, isurf_grp_smp_stack,  nmax_surf,          &
+     &          nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf, sf_apt,    &
+     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
+     &          n_int, nd, ntot_int_sf_grp, xj_sf, an1_sf, ak_d, sk_v)
 !
       integer(kind = kint), intent(in) :: np_smp, numele, nnod_4_e1
       integer(kind = kint), intent(in) :: nnod_4_sf1
@@ -65,6 +65,10 @@
       integer (kind = kint), intent(in) :: nmax_ele_surf
       integer (kind = kint), intent(in) :: id_grp_sf(nmax_surf)
       integer (kind = kint), intent(in) :: ist_surf(0:nmax_surf)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_2d
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+      real(kind = kreal),   intent(in) :: owe2d(maxtot_int_2d)
 !
       integer (kind = kint), intent(in) :: ntot_int_sf_grp, n_int
       real (kind=kreal), intent(in)                                     &
@@ -134,6 +138,7 @@
      &          num_surf, num_surf_bc, surf_istack, surf_item,          &
      &          num_surf_smp, isurf_grp_smp_stack, nmax_surf,           &
      &          nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf, sf_apt,    &
+     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
      &          n_int, ntot_int_sf_grp, xj_sf, an1_sf, sk_v)
 !
       integer(kind = kint), intent(in) :: np_smp, numele, nnod_4_e1
@@ -152,6 +157,10 @@
       integer (kind = kint), intent(in) :: nmax_ele_surf
       integer (kind = kint), intent(in) :: id_grp_sf(nmax_surf)
       integer (kind = kint), intent(in) :: ist_surf(0:nmax_surf)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_2d
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+      real(kind = kreal),   intent(in) :: owe2d(maxtot_int_2d)
 !
       integer (kind = kint), intent(in) :: ntot_int_sf_grp, n_int
       real (kind=kreal), intent(in)                                     &
@@ -217,10 +226,11 @@
 !
       subroutine fem_surf_skv_trq_sph_out_pg                            &
      &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,      &
-     &          node_on_sf, num_surf_bc, surf_item, num_surf_smp,       &
-     &          isurf_grp_smp_stack, igrp, k2, n_int,                   &
-     &          ntot_int_sf_grp, xj_sf, an1_sf, an2_sf,                 &
-     &          ak_d_velo, xe_sf, vect_sf, sk_v)
+     &          node_on_sf, num_surf_bc, surf_item,                     &
+     &          num_surf_smp,  isurf_grp_smp_stack,                     &
+     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
+     &          igrp, k2, n_int, ntot_int_sf_grp, xj_sf,                &
+     &          an1_sf, an2_sf, ak_d_velo, xe_sf, vect_sf, sk_v)
 !
       integer(kind = kint), intent(in) :: np_smp, numele, nnod_4_e1
       integer(kind = kint), intent(in) :: nnod_4_sf1, nnod_4_sf2
@@ -231,6 +241,10 @@
       integer (kind = kint), intent(in) :: surf_item(2,num_surf_bc)
       integer (kind = kint), intent(in)                                 &
      &                       :: isurf_grp_smp_stack(0:num_surf_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_2d
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+      real(kind = kreal),   intent(in) :: owe2d(maxtot_int_2d)
 !
       integer (kind = kint), intent(in) :: igrp, k2
       integer (kind = kint), intent(in) :: ntot_int_sf_grp, n_int

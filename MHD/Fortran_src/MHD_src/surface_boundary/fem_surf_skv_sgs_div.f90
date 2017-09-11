@@ -3,24 +3,28 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!      subroutine fem_sf_skv_div_flux_commute_p                         &
-!     &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,     &
-!     &          node_on_sf, num_surf_bc, surf_item, num_surf_smp,      &
-!     &          isurf_grp_smp_stack, ntot_int_sf_grp,                  &
-!     &          xsf_sf, axj_sf, an1_sf, an2_sf, xmom_order2, nele_fmom,&
-!     &          elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,   &
-!     &          elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,  &
-!     &          igrp, k2, nd, n_int, dxe_sf, vect_sf, sk_v)
-!
-!      subroutine fem_sf_skv_sgs_div_flux_posi                          &
-!     &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,     &
-!     &          node_on_sf, num_surf_bc, surf_item, num_surf_smp,      &
-!     &          isurf_grp_smp_stack, ntot_int_sf_grp,                  &
-!     &          xsf_sf, axj_sf, an1_sf, an2_sf, xmom_order2, nele_fmom,&
-!     &          elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,   &
-!     &          elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,  &
-!     &          igrp, k2, nd, n_int, dxe_sf, vect_sf, ak_diff,         &
-!     &          coef, sk_v)
+!!      subroutine fem_sf_skv_div_flux_commute_p                        &
+!!     &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,    &
+!!     &          node_on_sf, num_surf_bc, surf_item,                   &
+!!     &          num_surf_smp,  isurf_grp_smp_stack,                   &
+!!     &          max_int_point, maxtot_int_2d, int_start2, owe2d,      &
+!!     &          ntot_int_sf_grp, xsf_sf, axj_sf, an1_sf, an2_sf,      &
+!!     &          xmom_order2, nele_fmom,                               &
+!!     &          elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,  &
+!!     &          elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx, &
+!!     &          igrp, k2, nd, n_int, dxe_sf, vect_sf, sk_v)
+!!
+!!      subroutine fem_sf_skv_sgs_div_flux_posi                         &
+!!     &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,    &
+!!     &          node_on_sf, num_surf_bc, surf_item,                   &
+!!     &          num_surf_smp, isurf_grp_smp_stack,                    &
+!!     &          max_int_point, maxtot_int_2d, int_start2, owe2d,      &
+!!     &          ntot_int_sf_grp, xsf_sf, axj_sf, an1_sf, an2_sf,      &
+!!     &          xmom_order2, nele_fmom,                               &
+!!     &          elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,  &
+!!     &          elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx, &
+!!     &          igrp, k2, nd, n_int, dxe_sf, vect_sf, ak_diff,        &
+!!     &          coef, sk_v)
 !
       module fem_surf_skv_sgs_div
 !
@@ -29,7 +33,6 @@
       use m_constants
       use m_geometry_constants
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -41,9 +44,11 @@
 !
       subroutine fem_sf_skv_div_flux_commute_p                          &
      &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,      &
-     &          node_on_sf, num_surf_bc, surf_item, num_surf_smp,       &
-     &          isurf_grp_smp_stack, ntot_int_sf_grp,                   &
-     &          xsf_sf, axj_sf, an1_sf, an2_sf, xmom_order2, nele_fmom, &
+     &          node_on_sf, num_surf_bc, surf_item,                     &
+     &          num_surf_smp,  isurf_grp_smp_stack,                     &
+     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
+     &          ntot_int_sf_grp, xsf_sf, axj_sf, an1_sf, an2_sf,        &
+     &          xmom_order2, nele_fmom,                                 &
      &          elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,    &
      &          elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,   &
      &          igrp, k2, nd, n_int, dxe_sf, vect_sf, sk_v)
@@ -57,6 +62,10 @@
       integer (kind = kint), intent(in) :: surf_item(2,num_surf_bc)
       integer (kind = kint), intent(in)                                 &
      &                       :: isurf_grp_smp_stack(0:num_surf_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_2d
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+      real(kind = kreal),   intent(in) :: owe2d(maxtot_int_2d)
 !
       integer (kind = kint), intent(in) :: ntot_int_sf_grp, n_int
       real (kind=kreal), intent(in)                                     &
@@ -188,9 +197,11 @@
 !
       subroutine fem_sf_skv_sgs_div_flux_posi                           &
      &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,      &
-     &          node_on_sf, num_surf_bc, surf_item, num_surf_smp,       &
-     &          isurf_grp_smp_stack, ntot_int_sf_grp,                   &
-     &          xsf_sf, axj_sf, an1_sf, an2_sf, xmom_order2, nele_fmom, &
+     &          node_on_sf, num_surf_bc, surf_item,                     &
+     &          num_surf_smp, isurf_grp_smp_stack,                      &
+     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
+     &          ntot_int_sf_grp, xsf_sf, axj_sf, an1_sf, an2_sf,        &
+     &          xmom_order2, nele_fmom,                                 &
      &          elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,    &
      &          elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,   &
      &          igrp, k2, nd, n_int, dxe_sf, vect_sf, ak_diff,          &
@@ -205,6 +216,10 @@
       integer (kind = kint), intent(in) :: surf_item(2,num_surf_bc)
       integer (kind = kint), intent(in)                                 &
      &                       :: isurf_grp_smp_stack(0:num_surf_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_2d
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+      real(kind = kreal),   intent(in) :: owe2d(maxtot_int_2d)
 !
       integer (kind = kint), intent(in) :: ntot_int_sf_grp, n_int
       real (kind=kreal), intent(in)                                     &
