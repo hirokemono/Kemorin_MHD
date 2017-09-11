@@ -12,9 +12,11 @@
 !!     &          nele_grp, iele_grp, nnod_mat_tbl, inod_mat_tbl,       &
 !!     &          nnod_filter_mat)
 !!      subroutine fem_sk_filter_moments(numnod, numele, nnod_4_ele, xx,&
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
 !!     &          ntot_int_3d, xjac, aw, nele_grp, iele_grp,            &
 !!     &          inod, ix, k_order)
 !!      subroutine fem_sk_filter_weights(numele, nnod_4_ele,            &
+!!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
 !!     &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp)
 !!      subroutine sum_sk_2_filter_mat(nnod_4_ele, nele_grp, k_order)
 !!      subroutine sum_sk_2_filter_weight(nnod_4_ele, nele_grp)
@@ -153,14 +155,18 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_sk_filter_moments(numnod, numele, nnod_4_ele, xx,  &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          ntot_int_3d, xjac, aw, nele_grp, iele_grp,              &
      &          inod, ix, k_order)
 !
       use m_reference_moments
-      use m_fem_gauss_int_coefs
 !
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       real(kind = kreal), intent(in) :: xx(numnod, 3)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
@@ -192,12 +198,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_sk_filter_weights(numele, nnod_4_ele,              &
+     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
      &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp)
 !
-      use m_fem_gauss_int_coefs
       use m_filter_coefs
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_ele
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_3d
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
+      real(kind = kreal),   intent(in) :: owe3d(maxtot_int_3d)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d, n_int
       real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)

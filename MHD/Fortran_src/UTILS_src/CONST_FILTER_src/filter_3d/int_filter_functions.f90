@@ -64,6 +64,7 @@
 !
           call fem_sk_filter_moments                                    &
      &       (node%numnod, ele%numele, ele%nnod_4_ele, node%xx,         &
+     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
      &        jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,                  &
      &        nele_grp, iele_grp, inod, ix, k_order)
 !
@@ -93,6 +94,7 @@
 !
 !
       call fem_sk_filter_weights(ele%numele, ele%nnod_4_ele,            &
+     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
      &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%an,               &
      &    nele_grp, iele_grp)
 !
