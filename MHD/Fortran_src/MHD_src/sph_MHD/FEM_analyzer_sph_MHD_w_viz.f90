@@ -104,8 +104,8 @@
 !
 !  -----  If there is no volume rendering... return
 !
-      if (iflag_debug.eq.1) write(*,*)  'set_max_integration_points'
-      call set_max_integration_points(ione, spfs_M%g_FEM)
+      if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
+      call maximum_integration_points(ione)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    mesh, ele_mesh%surf, group, spfs_M, jacobians)
 !

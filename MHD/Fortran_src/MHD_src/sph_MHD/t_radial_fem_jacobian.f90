@@ -62,39 +62,29 @@
 !
       type(radial_fem_jacobians), intent(inout) :: jacs_r
 !
-      type(FEM_gauss_int_coefs) :: g_FEM_r
       type(edge_shape_function) :: spf_1d_r
 !
 !
       call set_num_radial_element(nri, jacs_r%j_lin, jacs_r%j_quad)
 !
-!
-      if( mod(nri,itwo) .eq. ione) then
-        call set_max_integration_points(ithree, g_FEM_r)
-      else
-        call set_max_integration_points(itwo, g_FEM_r)
-      end if
-!
-      call set_num_of_int_points(g_FEM_r)
-      call alloc_gauss_coef_4_fem(g_FEM_r)
+      call set_num_of_int_points
+      call allocate_gauss_coef_4_fem
 !
       call init_gauss_int_parameters
       call alloc_1d_gauss_point_id                                      &
      &   (maxtot_int_1d, max_int_point, spf_1d_r)
       call set_integrate_indices_1d                                     &
      &   (maxtot_int_1d, max_int_point, spf_1d_r%l_int)
-      call set_gauss_coefs_4_1d                                         &
-     &   (g_FEM_r%max_int_point, g_FEM_r%maxtot_int_1d,                 &
-     &    g_FEM_r%int_start1, g_FEM_r%owe, spf_1d_r%xi)
+      call set_gauss_coefs_4_1d(maxtot_int_1d, spf_1d_r%xi)
 !
-      call copy_fem_gauss_int_coefs(g_FEM_r)
-!
-      call alloc_edge_shape_func(num_linear_edge, g_FEM_r, spf_1d_r)
+      call alloc_edge_shape_func                                        &
+     &   (num_linear_edge, maxtot_int_1d, spf_1d_r)
       call cal_linear_radiaul_jacobian                                  &
      &   (nri, maxtot_int_1d, radius, spf_1d_r, jacs_r%j_lin)
       call dealloc_edge_shape_func(spf_1d_r)
 !
-      call alloc_edge_shape_func(num_quad_edge, g_FEM_r, spf_1d_r)
+      call alloc_edge_shape_func                                        &
+     &   (num_quad_edge, maxtot_int_1d, spf_1d_r)
       call cal_quad_radiaul_jacobian                                    &
      &   (nri, maxtot_int_1d, radius, spf_1d_r, jacs_r%j_quad)
       call dealloc_edge_shape_func(spf_1d_r)
@@ -167,8 +157,10 @@
       type(radial_fem_jacobian), intent(inout) :: j_lin, j_quad
 !
       if( mod(nri,itwo) .eq. ione) then
+        call maximum_integration_points(ithree)
         j_quad%nedge_r = (nri - 1) / 2
       else
+        call maximum_integration_points(itwo)
         j_quad%nedge_r = 0
       end if
       j_lin%nedge_r = nri - 1

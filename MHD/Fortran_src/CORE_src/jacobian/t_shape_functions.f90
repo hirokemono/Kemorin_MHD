@@ -1,27 +1,22 @@
 !t_shape_functions.f90
 !   module   t_shape_functions
 !
-!!      subroutine alloc_integrate_parameters
-!!      subroutine alloc_gauss_point_id_to_4
-!!
-!!      subroutine alloc_vol_shape_func(nnod_4_ele, g_FEM, spf_3d)
-!!      subroutine alloc_shape_func_infty                               &
-!!     &         (nnod_4_ele, nsurf_4_ele, g_FEM, spf_inf)
-!!      subroutine alloc_surf_shape_func(nnod_4_sf, g_FEM, spf_2d)
-!!      subroutine alloc_edge_shape_func(nnod_4_ed, g_FEM, spf_1d)
-!!      subroutine dealloc_gauss_point_id
+!      subroutine alloc_integrate_parameters
+!      subroutine set_num_of_int_points
+!      subroutine alloc_gauss_point_id_to_4
+!      subroutine dealloc_gauss_point_id
 !
 !>  arrays for shape functions in element coordinate
       module t_shape_functions
 !
       use m_precision
-      use t_fem_gauss_int_coefs
 !
       implicit  none
 !
 !
       type volume_shape_function
         integer(kind = kint) :: nnod_4_ele
+        integer(kind = kint) :: ntot_int
         integer(kind = kint), allocatable :: l_int(:,:,:)
 !
         real(kind=kreal), allocatable :: xi(:)
@@ -36,6 +31,7 @@
       type infty_shape_function
         integer(kind = kint) :: nnod_4_ele
         integer(kind = kint) :: nsurf_4_ele
+        integer(kind = kint) :: ntot_int
         real(kind=kreal), allocatable :: dnxi_inf(:,:,:)
         real(kind=kreal), allocatable :: dnei_inf(:,:,:)
         real(kind=kreal), allocatable :: dnzi_inf(:,:,:)
@@ -43,6 +39,7 @@
 !
       type surface_shape_function
         integer(kind = kint) :: nnod_4_surf
+        integer(kind = kint) :: ntot_int
         integer (kind=kint), allocatable :: l_int(:,:,:)
 !
         real(kind=kreal), allocatable :: xi(:)
@@ -54,6 +51,7 @@
 !
       type edge_shape_function
         integer(kind = kint) :: nnod_4_edge
+        integer(kind = kint) :: ntot_int
         integer (kind=kint), allocatable :: l_int(:,:,:)
         real (kind=kreal), allocatable :: xi(:)
 !
@@ -62,8 +60,6 @@
 !
 !
       type shape_finctions_at_points
-        type(FEM_gauss_int_coefs) :: g_FEM
-!
         type(volume_shape_function)  :: spf_3d
         type(surface_shape_function)  :: spf_2d
         type(edge_shape_function)  :: spf_1d
@@ -72,6 +68,26 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_num_of_int_points
+!
+      use m_fem_gauss_int_coefs
+!
+      integer(kind = kint) :: n
+!
+!
+      maxtot_int_3d = 0
+      maxtot_int_2d = 0
+      maxtot_int_1d = 0
+      do n = 1, max_int_point
+        maxtot_int_3d = maxtot_int_3d + n*n*n
+        maxtot_int_2d = maxtot_int_2d + n*n
+        maxtot_int_1d = maxtot_int_1d + n
+      end do
+!
+      end subroutine set_num_of_int_points
 !
 ! ----------------------------------------------------------------------
 !
@@ -202,17 +218,18 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_vol_shape_func(nnod_4_ele, g_FEM, spf_3d)
+      subroutine alloc_vol_shape_func(nnod_4_ele, ntot_int, spf_3d)
 !
       integer(kind = kint), intent(in) :: nnod_4_ele
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+      integer(kind = kint), intent(in) :: ntot_int
       type(volume_shape_function), intent(inout) :: spf_3d
 !
 !
       spf_3d%nnod_4_ele =  nnod_4_ele
-      allocate(spf_3d%dnxi(spf_3d%nnod_4_ele,g_FEM%maxtot_int_3d) )
-      allocate(spf_3d%dnei(spf_3d%nnod_4_ele,g_FEM%maxtot_int_3d) )
-      allocate(spf_3d%dnzi(spf_3d%nnod_4_ele,g_FEM%maxtot_int_3d) )
+      spf_3d%ntot_int =     ntot_int
+      allocate(spf_3d%dnxi(spf_3d%nnod_4_ele,spf_3d%ntot_int) )
+      allocate(spf_3d%dnei(spf_3d%nnod_4_ele,spf_3d%ntot_int) )
+      allocate(spf_3d%dnzi(spf_3d%nnod_4_ele,spf_3d%ntot_int) )
 !
        spf_3d%dnxi = 0.0d0
        spf_3d%dnei = 0.0d0
@@ -223,18 +240,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_shape_func_infty                                 &
-     &         (nnod_4_ele, nsurf_4_ele, g_FEM, spf_inf)
+     &         (nnod_4_ele, nsurf_4_ele, ntot_int, spf_inf)
 !
       integer(kind = kint), intent(in) :: nnod_4_ele, nsurf_4_ele
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+      integer(kind = kint), intent(in) :: ntot_int
       type(infty_shape_function), intent(inout) :: spf_inf
-!
-      integer(kind = kint) :: ntot_int
 !
 !
       spf_inf%nnod_4_ele =  nnod_4_ele
       spf_inf%nsurf_4_ele = nsurf_4_ele
-      ntot_int = g_FEM%maxtot_int_3d
+      spf_inf%ntot_int =     ntot_int
       allocate(spf_inf%dnxi_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
       allocate(spf_inf%dnei_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
       allocate(spf_inf%dnzi_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
@@ -247,16 +262,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_surf_shape_func(nnod_4_sf, g_FEM, spf_2d)
+      subroutine alloc_surf_shape_func(nnod_4_sf, ntot_int, spf_2d)
 !
       integer(kind = kint), intent(in) :: nnod_4_sf
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+      integer(kind = kint), intent(in) :: ntot_int
       type(surface_shape_function), intent(inout) :: spf_2d
 !
 !
       spf_2d%nnod_4_surf =  nnod_4_sf
-      allocate(spf_2d%dnxi_sf(spf_2d%nnod_4_surf,g_FEM%maxtot_int_2d) )
-      allocate(spf_2d%dnei_sf(spf_2d%nnod_4_surf,g_FEM%maxtot_int_2d) )
+      spf_2d%ntot_int =     ntot_int
+      allocate(spf_2d%dnxi_sf(spf_2d%nnod_4_surf,spf_2d%ntot_int) )
+      allocate(spf_2d%dnei_sf(spf_2d%nnod_4_surf,spf_2d%ntot_int) )
 !
       spf_2d%dnxi_sf = 0.0d0
       spf_2d%dnei_sf = 0.0d0
@@ -265,15 +281,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_edge_shape_func(nnod_4_ed, g_FEM, spf_1d)
+      subroutine alloc_edge_shape_func(nnod_4_ed, ntot_int, spf_1d)
 !
       integer(kind = kint), intent(in) :: nnod_4_ed
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+      integer(kind = kint), intent(in) :: ntot_int
       type(edge_shape_function), intent(inout) :: spf_1d
 !
 !
       spf_1d%nnod_4_edge =  nnod_4_ed
-      allocate(spf_1d%dnxi_ed(spf_1d%nnod_4_edge,g_FEM%maxtot_int_1d))
+      spf_1d%ntot_int =     ntot_int
+      allocate(spf_1d%dnxi_ed(spf_1d%nnod_4_edge,spf_1d%ntot_int) )
 !
       spf_1d%dnxi_ed = 0.0d0
 !

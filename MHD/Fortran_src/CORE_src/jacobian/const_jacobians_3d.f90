@@ -5,12 +5,7 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H. Matsui on June. 2006
 !
-!!      subroutine initialize_FEM_integration                           &
-!!     &         (g_FEM, spf_3d, spf_2d, spf_1d)
-!!        type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
-!!        type(volume_shape_function), intent(inout) :: spf_3d
-!!        type(surface_shape_function), intent(inout) :: spf_2d
-!!        type(edge_shape_function), intent(inout) :: spf_1d
+!!      subroutine initialize_FEM_integration
 !!
 !!      subroutine sel_jacobian_type(node, ele, spf_3d, jac_3d)
 !!      subroutine cal_jacobian_trilinear(node, ele, jac_3d)
@@ -28,10 +23,10 @@
       use m_machine_parameter
 !
       use m_geometry_constants
+      use m_fem_gauss_int_coefs
 !
       use t_geometry_data
       use t_shape_functions
-      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_group_data
       use t_surface_boundary
@@ -51,26 +46,23 @@
 !> Construct shape function, difference of shape function, and Jacobian
 !> for hexadedral element
 !
-      subroutine initialize_FEM_integration                             &
-     &         (g_FEM, spf_3d, spf_2d, spf_1d)
+      subroutine initialize_FEM_integration(spf_3d, spf_2d, spf_1d)
 !
       use set_gauss_int_parameters
       use set_integration_indices
-      use m_fem_gauss_int_coefs
 !
-      type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
       type(volume_shape_function), intent(inout) :: spf_3d
       type(surface_shape_function), intent(inout) :: spf_2d
       type(edge_shape_function), intent(inout) :: spf_1d
 !
+!  data allocation
+!
+      call set_num_of_int_points
+      call allocate_gauss_coef_4_fem
+!
 !  set constant for gauss integration with roots
 !
       call init_gauss_int_parameters
-!
-!  data allocation
-!
-      call set_num_of_int_points(g_FEM)
-      call alloc_gauss_coef_4_fem(g_FEM)
 !
 !  set indices for gauss integration
 !
@@ -90,19 +82,13 @@
 !
 !  set weighting for integration
 !
-      call set_gauss_coefs_4_1d                                         &
-     &   (g_FEM%max_int_point, g_FEM%maxtot_int_1d,                     &
-     &    g_FEM%int_start1, g_FEM%owe, spf_1d%xi)
-      call set_gauss_coefs_4_2d(g_FEM%maxtot_int_1d, g_FEM%owe,         &
-     &    spf_1d%xi, g_FEM%maxtot_int_2d, g_FEM%max_int_point,          &
-     &    g_FEM%int_start1, g_FEM%int_start2, spf_2d%l_int,             &
-     &    g_FEM%owe2d, spf_2d%xi, spf_2d%ei)
-      call set_gauss_coefs_4_3d(g_FEM%maxtot_int_1d, g_FEM%owe,         &
-     &    spf_1d%xi, g_FEM%maxtot_int_3d, g_FEM%max_int_point,          &
-     &    g_FEM%int_start1, g_FEM%int_start3, spf_3d%l_int,             &
-     &    g_FEM%owe3d, spf_3d%xi, spf_3d%ei, spf_3d%zi)
-!
-      call copy_fem_gauss_int_coefs(g_FEM)
+      call set_gauss_coefs_4_1d(maxtot_int_1d, spf_1d%xi)
+      call set_gauss_coefs_4_2d                                         &
+     &   (maxtot_int_1d, spf_1d%xi, maxtot_int_2d, max_int_point,       &
+     &    spf_2d%l_int, spf_2d%xi, spf_2d%ei)
+      call set_gauss_coefs_4_3d                                         &
+     &   (maxtot_int_1d, spf_1d%xi, maxtot_int_3d, max_int_point,       &
+     &    spf_3d%l_int, spf_3d%xi, spf_3d%ei, spf_3d%zi)
 !
       end subroutine initialize_FEM_integration
 !
