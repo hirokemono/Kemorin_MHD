@@ -3,8 +3,8 @@
 !
 !        programmed by H. Matsui on June, 2007
 !
-!!      subroutine s_cal_jacobian_linear_1d(num_int,                    &
-!!     &          node, surf, edge, g_FEM, spf_1d, jacobians)
+!      subroutine s_cal_jacobian_linear_1d(num_int,                     &
+!     &          node, surf, edge, spf_1d, jacobians)
 !
       module cal_jacobian_linear_1d
 !
@@ -19,11 +19,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_jacobian_linear_1d(num_int,                      &
-     &          node, surf, edge, g_FEM, spf_1d, jacobians)
+     &          node, surf, edge, spf_1d, jacobians)
 !
       use calypso_mpi
       use t_shape_functions
-      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_geometry_data
       use t_surface_data
@@ -40,7 +39,6 @@
 !
       type(surface_data), intent(inout)  :: surf
       type(edge_data), intent(inout)  :: edge
-      type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
       type(edge_shape_function), intent(inout) :: spf_1d
       type(jacobians_type), intent(inout) :: jacobians
 !
@@ -49,9 +47,10 @@
       call count_surf_size_smp_type(surf)
       call count_edge_size_smp_type(edge)
 !
-      call set_max_integration_points(num_int, g_FEM)
-      call set_num_of_int_points(g_FEM)
-      call alloc_gauss_coef_4_fem(g_FEM)
+      call maximum_integration_points(num_int)
+      call set_num_of_int_points
+!
+      call allocate_gauss_coef_4_fem
 !
 !  set constant for gauss integration with roots
 !
@@ -66,13 +65,10 @@
 !
 !  set weighting for integration
 !
-      call set_gauss_coefs_4_1d                                         &
-     &   (g_FEM%max_int_point, g_FEM%maxtot_int_1d,                     &
-     &    g_FEM%int_start1, g_FEM%owe, spf_1d%xi)
+      call set_gauss_coefs_4_1d(maxtot_int_1d, spf_1d%xi)
 !
-      call copy_fem_gauss_int_coefs(g_FEM)
-!
-      call alloc_edge_shape_func(edge%nnod_4_edge, g_FEM, spf_1d)
+      call alloc_edge_shape_func                                        &
+     &   (edge%nnod_4_edge, maxtot_int_1d, spf_1d)
       call const_jacobians_edge                                         &
      &   (my_rank, nprocs, node, edge, spf_1d, jacobians)
 !
