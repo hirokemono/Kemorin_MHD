@@ -4,12 +4,11 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !!      subroutine const_normal_vector                                  &
-!!     &         (my_rank, nprocs, node, surf, g_FEM, spf_2d, jacobians)
-!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-!!        type(jacobians_type), intent(inout) :: jacobians
+!!     &         (my_rank, nprocs, node, surf, spf_2d, jacobians)
 !!      subroutine int_normal_4_all_surface(surf, jac_2d)
 !!        type(jacobians_2d), intent(in) :: jac_2d
 !!        type(surface_data), intent(inout) :: surf
+!!        type(jacobians_type), intent(inout) :: jacobians
 !!      subroutine s_cal_normal_vector_spherical(surf)
 !!      subroutine s_cal_normal_vector_cylindrical(surf)
 !
@@ -21,7 +20,6 @@
       use t_geometry_data
       use t_surface_data
       use t_shape_functions
-      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_jacobian_2d
 !
@@ -34,17 +32,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_normal_vector                                    &
-     &         (my_rank, nprocs, node, surf, g_FEM, spf_2d, jacobians)
+     &         (my_rank, nprocs, node, surf, spf_2d, jacobians)
+!
+      use m_fem_gauss_int_coefs
 !
       integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(surface_data), intent(inout) :: surf
       type(surface_shape_function), intent(inout) :: spf_2d
       type(jacobians_type), intent(inout) :: jacobians
 !
 !
-      call alloc_surf_shape_func(surf%nnod_4_surf, g_FEM, spf_2d)
+      call alloc_surf_shape_func                                        &
+     &   (surf%nnod_4_surf, maxtot_int_2d, spf_2d)
       call const_jacobians_surface                                      &
      &   (my_rank, nprocs, node, surf, spf_2d, jacobians)
       call int_normal_4_all_surface(surf, jacobians%jac_2d)
