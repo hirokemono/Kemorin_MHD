@@ -124,7 +124,6 @@
 !     --------------------- 
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_vol_layer'
-      call max_int_point_by_etype(femmesh_p_FUT%mesh%ele%nnod_4_ele)
       call const_jacobian_and_vol_layer(my_rank, nprocs,                &
      &    femmesh_p_FUT%mesh%node, femmesh_p_FUT%group%surf_grp,        &
      &    femmesh_p_FUT%group%infty_grp, femmesh_p_FUT%mesh%ele,        &

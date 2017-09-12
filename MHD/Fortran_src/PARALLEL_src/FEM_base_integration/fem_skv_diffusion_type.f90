@@ -31,6 +31,7 @@
       use m_machine_parameter
       use m_geometry_constants
 !
+      use m_fem_gauss_int_coefs
 !
       implicit none
 !

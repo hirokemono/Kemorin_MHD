@@ -14,8 +14,9 @@
 !!@verbatim
 !!      subroutine const_jacobian_volume_normals(my_rank, nprocs,       &
 !!     &          mesh, surf, group, spfs, jacobians)
-!!      subroutine const_jacobian_and_volume(my_rank, nprocs,           &
-!!     &          node, sf_grp, infinity_list, ele, spf_3d, jacobians)
+!!      subroutine const_jacobian_and_volume                            &
+!!     &         (my_rank, nprocs, node, sf_grp, infinity_list, ele,    &
+!!     &          spfs, jacobians)
 !!      subroutine const_jacobian_and_vol_layer                         &
 !!     &         (my_rank, nprocs, node, sf_grp, infinity_list, ele,    &
 !!     &          spfs, jacobians, layer_tbl)
@@ -24,7 +25,6 @@
 !!        type(scalar_surf_BC_list), intent(in) :: infinity_list
 !!        type(element_data), intent(inout) :: ele
 !!        type(shape_finctions_at_points), intent(inout) :: spfs
-!!        type(volume_shape_function), intent(inout) :: spf_3d
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !!      subroutine s_int_volume_of_domain(ele, jac_3d)
@@ -67,19 +67,17 @@
       type(jacobians_type), intent(inout) :: jacobians
 !
 !
-      call initialize_FEM_integration                                   &
-     &  (spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
       call const_jacobian_and_volume(my_rank, nprocs,                   &
      &    mesh%node, group%surf_grp, group%infty_grp,                   &
-     &    mesh%ele, spfs%spf_3d, jacobians)
+     &    mesh%ele, spfs, jacobians)
       call dealloc_vol_shape_func(spfs%spf_3d)
 !
 !     --------------------- Surface jacobian for fieldline
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector                                          &
-     &   (my_rank, nprocs, mesh%node, surf, spfs%spf_2d, jacobians)
+      call const_normal_vector(my_rank, nprocs, mesh%node,              &
+     &    surf, spfs%g_FEM, spfs%spf_2d, jacobians)
       call dealloc_surf_shape_func(spfs%spf_2d)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
@@ -102,8 +100,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_jacobian_and_volume(my_rank, nprocs,             &
-     &          node, sf_grp, infinity_list, ele, spf_3d, jacobians)
+      subroutine const_jacobian_and_volume                              &
+     &         (my_rank, nprocs, node, sf_grp, infinity_list, ele,      &
+     &          spfs, jacobians)
 !
       use t_shape_functions
       use sum_volume_of_domain
@@ -115,13 +114,17 @@
       type(scalar_surf_BC_list), intent(in) :: infinity_list
 !
       type(element_data), intent(inout) :: ele
-      type(volume_shape_function), intent(inout) :: spf_3d
+      type(shape_finctions_at_points), intent(inout) :: spfs
       type(jacobians_type), intent(inout) :: jacobians
 !
 !
-      call alloc_vol_shape_func(ele%nnod_4_ele, maxtot_int_3d, spf_3d)
-      call const_jacobians_element(my_rank, nprocs,                     &
-     &    node, ele, sf_grp, infinity_list, spf_3d, jacobians)
+      call initialize_FEM_integration                                   &
+     &   (spfs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+!
+      call alloc_vol_shape_func                                         &
+     &   (ele%nnod_4_ele, spfs%g_FEM, spfs%spf_3d)
+      call const_jacobians_element(my_rank, nprocs, node, ele, sf_grp,  &
+     &    infinity_list, spfs%g_FEM, spfs%spf_3d, jacobians)
 !
       call allocate_volume_4_smp
       call s_int_volume_of_domain(ele, jacobians%jac_3d)
@@ -137,6 +140,7 @@
      &         (my_rank, nprocs, node, sf_grp, infinity_list, ele,      &
      &          spfs, jacobians, layer_tbl)
 !
+      use m_fem_gauss_int_coefs
       use t_shape_functions
       use t_layering_ele_list
       use const_jacobians_3d
@@ -154,12 +158,14 @@
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !
+      call sel_max_int_point_by_etype(ele%nnod_4_ele, spfs%g_FEM)
+!
       call initialize_FEM_integration                                   &
-     &   (spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+     &   (spfs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
       call alloc_vol_shape_func                                         &
-     &   (ele%nnod_4_ele, maxtot_int_3d, spfs%spf_3d)
-      call const_jacobians_element(my_rank, nprocs,                     &
-     &    node, ele, sf_grp, infinity_list, spfs%spf_3d, jacobians)
+     &   (ele%nnod_4_ele, spfs%g_FEM, spfs%spf_3d)
+      call const_jacobians_element(my_rank, nprocs, node, ele, sf_grp,  &
+     &    infinity_list, spfs%g_FEM, spfs%spf_3d, jacobians)
 !
       call allocate_volume_4_smp
       call s_int_volume_of_domain(ele, jacobians%jac_3d)

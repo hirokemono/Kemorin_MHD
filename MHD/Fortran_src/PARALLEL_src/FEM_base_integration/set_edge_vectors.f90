@@ -4,9 +4,10 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !!      subroutine const_edge_vector                                    &
-!!     &         (my_rank, nprocs, node, edge, spf_1d, jacobians)
+!!     &         (my_rank, nprocs, node, edge, g_FEM, spf_1d, jacobians)
 !!        type(node_data), intent(in) :: node
 !!        type(edge_data), intent(inout) :: edge
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(edge_shape_function), intent(inout) :: spf_1d
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!      subroutine s_cal_edge_vector_spherical(edge)
@@ -19,6 +20,7 @@
       use m_geometry_constants
       use t_geometry_data
       use t_edge_data
+      use t_fem_gauss_int_coefs
       use t_shape_functions
       use t_jacobians
       use t_jacobian_1d
@@ -32,7 +34,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_edge_vector                                      &
-     &         (my_rank, nprocs, node, edge, spf_1d, jacobians)
+     &         (my_rank, nprocs, node, edge, g_FEM, spf_1d, jacobians)
 !
       use m_fem_gauss_int_coefs
       use int_edge_vector
@@ -40,12 +42,12 @@
       integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(edge_data), intent(inout) :: edge
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(edge_shape_function), intent(inout) :: spf_1d
       type(jacobians_type), intent(inout) :: jacobians
 !
 !
-      call alloc_edge_shape_func                                        &
-     &   (num_linear_edge, maxtot_int_1d, spf_1d)
+      call alloc_edge_shape_func(num_linear_edge, g_FEM, spf_1d)
       call const_jacobians_edge                                         &
      &   (my_rank, nprocs, node, edge, spf_1d, jacobians)
       call dealloc_edge_shape_func(spf_1d)

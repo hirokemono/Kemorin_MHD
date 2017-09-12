@@ -75,19 +75,19 @@
 !
 !    Construct Jacobians
 !
-      call max_int_point_by_etype(mesh%ele%nnod_4_ele)
+      call sel_max_int_point_by_etype(mesh%ele%nnod_4_ele, spfs%g_FEM)
       call initialize_FEM_integration                                   &
-     &   (spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+     &   (spfs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
       call alloc_vol_shape_func                                         &
-     &   (mesh%ele%nnod_4_ele, maxtot_int_3d, spfs%spf_3d)
+     &   (mesh%ele%nnod_4_ele, spfs%g_FEM, spfs%spf_3d)
       call const_jacobians_element(my_rank, nprocs,                     &
      &    mesh%node, mesh%ele, group%surf_grp, group%infty_grp,         &
-     &    spfs%spf_3d, jacobians)
+     &    spfs%g_FEM, spfs%spf_3d, jacobians)
       call dealloc_vol_shape_func(spfs%spf_3d)
 !
       if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
       call alloc_surf_shape_func                                        &
-     &     (ele_mesh%surf%nnod_4_surf, maxtot_int_2d, spfs%spf_2d)
+     &     (ele_mesh%surf%nnod_4_surf, spfs%g_FEM, spfs%spf_2d)
       call const_jacobians_surf_group(my_rank, nprocs,                  &
      &    mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
      &    spfs%spf_2d, jacobians)

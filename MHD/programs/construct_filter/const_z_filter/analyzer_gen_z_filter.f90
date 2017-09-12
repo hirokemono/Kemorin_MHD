@@ -18,6 +18,7 @@
       use t_crs_connect
       use t_crs_matrix
       use t_gauss_points
+      use t_fem_gauss_int_coefs
       use t_shape_functions
 !
       implicit none
@@ -30,6 +31,7 @@
 !
       type(CG_poarameter), save :: CG_param_z
       type(DJDS_poarameter), save :: DJDS_param_z
+      type(FEM_gauss_int_coefs), save :: g_FEM_z
       type(edge_shape_function), save :: spf_1d_z
 !
 ! ----------------------------------------------------------------------
@@ -107,7 +109,7 @@
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
       call s_cal_jacobian_linear_1d                                     &
      &   (i_int_z_filter, z_filter_mesh%node,                           &
-     &    surf_z_filter, edge_z_filter, spf_1d_z, jacobians_z)
+     &    surf_z_filter, edge_z_filter, g_FEM_z, spf_1d_z, jacobians_z)
 !
 !   construct FEM mesh for x direction
 !

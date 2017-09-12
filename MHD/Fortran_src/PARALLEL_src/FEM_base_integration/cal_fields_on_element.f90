@@ -30,6 +30,8 @@
       use t_geometry_data
       use t_jacobians
 !
+      use m_fem_gauss_int_coefs
+!
       implicit none
 !
 ! ----------------------------------------------------------------------

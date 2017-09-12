@@ -6,12 +6,14 @@
 !      Written by H. Matsui on Dec. 2003
 !      Modified by H. Matsui on Oct., 2006
 !
-!      subroutine sel_max_int_point_by_etype(nnod_4_ele, g_FEM)
-!      subroutine set_max_integration_points(num_int, g_FEM)
-!      subroutine alloc_gauss_coef_4_fem(g_FEM)
-!      subroutine alloc_gauss_coef_to_4th(g_FEM)
-!
-!      subroutine dealloc_gauss_coef_4_fem(g_FEM)
+!!      subroutine sel_max_int_point_by_etype(nnod_4_ele, g_FEM)
+!!      subroutine set_max_integration_points(num_int, g_FEM)
+!!      subroutine alloc_gauss_coef_4_fem(g_FEM)
+!!      subroutine alloc_gauss_coef_to_4th(g_FEM)
+!!
+!!      subroutine dealloc_gauss_coef_4_fem(g_FEM)
+!!
+!!      subroutine set_num_of_int_points(g_FEM)
 !
       module t_fem_gauss_int_coefs
 !
@@ -40,6 +42,7 @@
       contains
 !
 !-----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !> Set maximum number for integration points of FEM
 !
       subroutine sel_max_int_point_by_etype(nnod_4_ele, g_FEM)
@@ -116,5 +119,26 @@
       end subroutine dealloc_gauss_coef_4_fem
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_num_of_int_points(g_FEM)
+!
+      type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
+!
+      integer(kind = kint) :: n
+!
+!
+      g_FEM%maxtot_int_3d = 0
+      g_FEM%maxtot_int_2d = 0
+      g_FEM%maxtot_int_1d = 0
+      do n = 1, g_FEM%max_int_point
+        g_FEM%maxtot_int_3d = g_FEM%maxtot_int_3d + n*n*n
+        g_FEM%maxtot_int_2d = g_FEM%maxtot_int_2d + n*n
+        g_FEM%maxtot_int_1d = g_FEM%maxtot_int_1d + n
+      end do
+!
+      end subroutine set_num_of_int_points
+!
+! ----------------------------------------------------------------------
 !
       end module t_fem_gauss_int_coefs

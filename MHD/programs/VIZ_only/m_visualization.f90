@@ -177,7 +177,8 @@
      &   (femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele, ele_4_nod_VIZ)
 !
       if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-      call max_int_point_by_etype(femmesh_VIZ%mesh%ele%nnod_4_ele)
+      call sel_max_int_point_by_etype                                   &
+     &   (femmesh_VIZ%mesh%ele%nnod_4_ele, spfs_VIZ%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    femmesh_VIZ%mesh, elemesh_VIZ%surf, femmesh_VIZ%group,        &
      &    spfs_VIZ, jacobians_VIZ)

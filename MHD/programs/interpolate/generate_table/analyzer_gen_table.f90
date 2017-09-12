@@ -88,15 +88,16 @@
      &   (org_femmesh%mesh, next_tbl_i%neib_ele, next_tbl_i%neib_nod)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobians_element'
-      call max_int_point_by_etype(org_femmesh%mesh%ele%nnod_4_ele)
+      call sel_max_int_point_by_etype                                   &
+     &   (org_femmesh%mesh%ele%nnod_4_ele, spfs_I%g_FEM)
       call initialize_FEM_integration                                   &
-     &   (spfs_I%spf_3d, spfs_I%spf_2d, spfs_I%spf_1d)
+     &   (spfs_I%g_FEM, spfs_I%spf_3d, spfs_I%spf_2d, spfs_I%spf_1d)
       call alloc_vol_shape_func(org_femmesh%mesh%ele%nnod_4_ele,        &
-     &    maxtot_int_3d, spfs_I%spf_3d)
+     &    spfs_I%g_FEM, spfs_I%spf_3d)
       call const_jacobians_element(my_rank, nprocs,                     &
      &    org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
      &    org_femmesh%group%surf_grp, org_femmesh%group%infty_grp,      &
-     &    spfs_I%spf_3d, jacobians_I)
+     &    spfs_I%g_FEM, spfs_I%spf_3d, jacobians_I)
       call dealloc_vol_shape_func(spfs_I%spf_3d)
 !
 !  -------------------------------
