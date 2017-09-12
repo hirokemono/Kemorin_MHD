@@ -13,7 +13,7 @@
 !!
 !!      subroutine dealloc_gauss_coef_4_fem(g_FEM)
 !!
-!!      subroutine set_num_of_int_points(g_FEM)
+!!      subroutine num_of_int_points(g_FEM)
 !
       module t_fem_gauss_int_coefs
 !
@@ -121,7 +121,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_num_of_int_points(g_FEM)
+      subroutine num_of_int_points(g_FEM)
 !
       type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
 !
@@ -137,7 +137,7 @@
         g_FEM%maxtot_int_1d = g_FEM%maxtot_int_1d + n
       end do
 !
-      end subroutine set_num_of_int_points
+      end subroutine num_of_int_points
 !
 ! ----------------------------------------------------------------------
 !

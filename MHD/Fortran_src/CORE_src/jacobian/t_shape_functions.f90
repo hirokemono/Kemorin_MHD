@@ -2,7 +2,6 @@
 !   module   t_shape_functions
 !
 !      subroutine alloc_integrate_parameters
-!      subroutine set_num_of_int_points
 !      subroutine alloc_gauss_point_id_to_4
 !      subroutine dealloc_gauss_point_id
 !
@@ -68,26 +67,6 @@
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_num_of_int_points
-!
-      use m_fem_gauss_int_coefs
-!
-      integer(kind = kint) :: n
-!
-!
-      maxtot_int_3d = 0
-      maxtot_int_2d = 0
-      maxtot_int_1d = 0
-      do n = 1, max_int_point
-        maxtot_int_3d = maxtot_int_3d + n*n*n
-        maxtot_int_2d = maxtot_int_2d + n*n
-        maxtot_int_1d = maxtot_int_1d + n
-      end do
-!
-      end subroutine set_num_of_int_points
 !
 ! ----------------------------------------------------------------------
 !

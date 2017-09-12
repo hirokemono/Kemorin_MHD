@@ -12,6 +12,7 @@
 !      subroutine allocate_gauss_coef_to_4th
 !
 !      subroutine deallocate_gauss_coef_4_fem
+!      subroutine set_num_of_int_points
 !
       module   m_fem_gauss_int_coefs
 !
@@ -142,7 +143,27 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
+      subroutine set_num_of_int_points
+!
+      integer(kind = kint) :: n
+!
+!
+      maxtot_int_3d = 0
+      maxtot_int_2d = 0
+      maxtot_int_1d = 0
+      do n = 1, max_int_point
+        maxtot_int_3d = maxtot_int_3d + n*n*n
+        maxtot_int_2d = maxtot_int_2d + n*n
+        maxtot_int_1d = maxtot_int_1d + n
+      end do
+!
+      end subroutine set_num_of_int_points
+!
+! ----------------------------------------------------------------------
+!
       subroutine copy_fem_gauss_int_coefs(g_FEM)
+!
+      use t_fem_gauss_int_coefs
 !
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !
