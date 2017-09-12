@@ -141,11 +141,13 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*)  'const_jacobian_and_volume'
-      call set_max_integration_points(num_int_points, spfs_f%g_FEM)
-      call const_jacobian_and_volume                                    &
-     &   (my_rank, nprocs, mesh_filter%node,                            &
-     &    group_filter%surf_grp, group_filter%infty_grp,                &
-     &    mesh_filter%ele, spfs_f, fem_int_f%jcs)
+      call maximum_integration_points(num_int_points)
+      call initialize_FEM_integration                                   &
+     &   (spfs_f%spf_3d, spfs_f%spf_2d, spfs_f%spf_1d)
+      call const_jacobian_and_volume(my_rank, nprocs,                   &
+     &    mesh_filter%node, group_filter%surf_grp,                      &
+     &    group_filter%infty_grp, mesh_filter%ele,                      &
+     &    spfs_f%spf_3d, fem_int_f%jcs)
 !
 !      call check_jacobians_trilinear                                   &
 !     &   (my_rank, mesh_filter%ele, fem_int_f%jcs%jac_3d_l)

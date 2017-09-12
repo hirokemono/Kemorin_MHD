@@ -80,8 +80,7 @@
      &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele, ele_4_nod)
 !
         if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-        call sel_max_int_point_by_etype                                 &
-     &     (femmesh_STR%mesh%ele%nnod_4_ele, spfs_TRNS%g_FEM)
+        call max_int_point_by_etype(femmesh_STR%mesh%ele%nnod_4_ele)
         call const_jacobian_volume_normals(my_rank, nprocs,             &
      &      femmesh_STR%mesh, elemesh_STR%surf, femmesh_STR%group,      &
      &      spfs_TRNS, jacobians)

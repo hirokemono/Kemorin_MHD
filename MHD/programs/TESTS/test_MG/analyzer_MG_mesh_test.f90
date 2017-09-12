@@ -96,8 +96,7 @@
 !  -------------------------------
 !
       if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-      call sel_max_int_point_by_etype                                   &
-     &   (mesh%ele%nnod_4_ele, spfs_T%g_FEM)
+      call max_int_point_by_etype(mesh%ele%nnod_4_ele)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    mesh, ele_mesh%surf, group, spfs_T, jacobians_T)
 !
@@ -112,8 +111,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
       call const_edge_vector(my_rank, nprocs,                           &
-     &    mesh%node, ele_mesh%edge, spfs_T%g_FEM, spfs_T%spf_1d,        &
-     &    jacobians_T)
+     &    mesh%node, ele_mesh%edge, spfs_T%spf_1d, jacobians_T)
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_spherical'
       call s_cal_edge_vector_spherical(ele_mesh%edge)

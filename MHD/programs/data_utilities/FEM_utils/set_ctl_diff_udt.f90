@@ -41,6 +41,7 @@
      &         (mesh_file, udt_org_param, nod_fld, time_U)
 !
       use m_ctl_data_diff_udt
+      use m_fem_gauss_int_coefs
       use set_control_nodal_data
       use set_control_ele_layering
 !
@@ -63,6 +64,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
       call s_set_ctl_4_diff_udt_steps(t_d_ctl, time_U)
+!
+      if(fint_d_ctl%integration_points_ctl%iflag .gt. 0) then
+        call maximum_integration_points                                 &
+     &     (fint_d_ctl%integration_points_ctl%intvalue)
+      end if
 !
       end subroutine set_ctl_params_correlate_udt
 !
