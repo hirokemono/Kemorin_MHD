@@ -21,6 +21,7 @@
       use m_machine_parameter
       use m_phys_constants
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_table_FEM_const
       use t_filter_elength
       use t_solver_djds
@@ -59,9 +60,9 @@
 !
       do  k2 = 1, ele%nnod_4_ele
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
-        call fem_skv_poisson_linear_sgs_type(ele%istack_ele_smp,        &
-     &      n_int, k2, i_filter, ak_diff, ele, jac_3d_l, FEM_elens,     &
-     &      fem_wk%sk6)
+        call fem_skv_poisson_linear_sgs_type                            &
+     &     (ele%istack_ele_smp, n_int, k2, i_filter, ak_diff,           &
+     &      ele, g_FEM1, jac_3d_l, FEM_elens, fem_wk%sk6)
         call add_skv1_to_crs_matrix11(ele, rhs_tbl, MG_mat_tbl,         &
      &      k2, fem_wk%sk6, mat11%num_non0, mat11%aiccg)
       end do
@@ -98,8 +99,9 @@
 !
       do  k2 = 1, ele%nnod_4_ele
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
-        call fem_skv_poisson_sgs_type(ele%istack_ele_smp, n_int, k2,    &
-     &      i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk%sk6)
+        call fem_skv_poisson_sgs_type                                   &
+     &     (ele%istack_ele_smp, n_int, k2, i_filter, ak_diff,           &
+     &      ele, g_FEM1, jac_3d, FEM_elens, fem_wk%sk6)
         call cal_scalar_diffuse_mat(ele, rhs_tbl, MG_mat_tbl, fem_wk,   &
      &      k2, dt, coef_imp, ak_d, mat11)
       end do
@@ -135,8 +137,9 @@
 !
       do  k2 = 1, ele%nnod_4_ele
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
-        call fem_skv_poisson_sgs_type(ele%istack_ele_smp, n_int, k2,    &
-     &      i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk%sk6)
+        call fem_skv_poisson_sgs_type                                   &
+     &     (ele%istack_ele_smp, n_int, k2, i_filter, ak_diff,           &
+     &      ele, g_FEM1, jac_3d, FEM_elens, fem_wk%sk6)
         call cal_vect_diffuse_mat(ele, rhs_tbl, MG_mat_tbl, fem_wk,     &
      &      k2, dt, coef_imp, ak_d, mat33)
       end do

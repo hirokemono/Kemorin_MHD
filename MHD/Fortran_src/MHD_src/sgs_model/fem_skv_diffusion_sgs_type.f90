@@ -4,29 +4,34 @@
 !     programmed by H.Matsui on July 2005
 !     Modified by H. Matsui on Oct., 2006
 !
-!      subroutine fem_skv_scalar_diffuse_sgs_type(iele_fsmp_stack,      &
-!     &          n_int, k2, i_filter, ak_diff, ak_d,                    &
-!     &          ele, jac_3d, FEM_elens, fem_wk)
-!      subroutine fem_skv_vector_diffuse_sgs_type(iele_fsmp_stack,      &
-!     &          n_int, k2, i_filter, ak_diff, ak_d, vect_1, sk_v)
-!
-!      subroutine fem_skv_poisson_sgs_type(iele_fsmp_stack, n_int, k2,  &
-!     &          i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
-!      subroutine fem_skv_poisson_linear_sgs_type(iele_fsmp_stack,      &
-!     &          n_int, k2, i_filter, ak_diff, ele, jac_3d_l, FEM_elens,&
-!     &          fem_wk)
+!!      subroutine fem_skv_scalar_diffuse_sgs_type                      &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter, ak_diff, ak_d,  &
+!!     &          ele, g_FEM, jac_3d, FEM_elens, scalar_1, sk_v)
+!!      subroutine fem_skv_vector_diffuse_sgs_type                      &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter, ak_diff, ak_d,  &
+!!     &          ele, g_FEM, jac_3d, FEM_elens, vector_1, sk_v)
+!!
+!!      subroutine fem_skv_poisson_sgs_type(iele_fsmp_stack, n_int, k2, &
+!!     &        i_filter, ak_diff, ele, g_FEM, jac_3d, FEM_elens, fem_wk)
+!!      subroutine fem_skv_poisson_linear_sgs_type(iele_fsmp_stack,     &
+!!     &          n_int, k2, i_filter, ak_diff, ele, g_FEM, jac_3d_l,   &
+!!     &          FEM_elens, fem_wk)
+!!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       module fem_skv_diffusion_sgs_type
 !
       use m_precision
-!
-      use t_geometry_data
-      use t_filter_elength
-      use t_jacobians
       use m_machine_parameter
       use m_geometry_constants
       use m_phys_constants
-      use m_fem_gauss_int_coefs
+!
+      use t_geometry_data
+      use t_filter_elength
+      use t_fem_gauss_int_coefs
+      use t_jacobians
 !
       implicit none
 !
@@ -36,13 +41,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_scalar_diffuse_sgs_type(iele_fsmp_stack,       &
-     &          n_int, k2, i_filter, ak_diff, ak_d,                     &
-     &          ele, jac_3d, FEM_elens, scalar_1, sk_v)
+      subroutine fem_skv_scalar_diffuse_sgs_type                        &
+     &         (iele_fsmp_stack, n_int, k2, i_filter, ak_diff, ak_d,    &
+     &          ele, g_FEM, jac_3d, FEM_elens, scalar_1, sk_v)
 !
       use fem_skv_diffusion_sgs
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -58,8 +64,8 @@
 !
 !
       call fem_skv_scalar_diffuse_sgs(ele%numele, ele%nnod_4_ele,       &
-     &  ele%nnod_4_ele, np_smp, iele_fsmp_stack,                        &
-     &  max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,     &
+     &  ele%nnod_4_ele, np_smp, iele_fsmp_stack, g_FEM%max_int_point,   &
+     &  g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d, n_int, k2,  &
      &  jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,           &
      &  FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM_elens%nele_filter_mom,                                      &
@@ -72,13 +78,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_vector_diffuse_sgs_type(iele_fsmp_stack,       &
-     &          n_int, k2, i_filter, ak_diff, ak_d,                     &
-     &          ele, jac_3d, FEM_elens, vector_1, sk_v)
+      subroutine fem_skv_vector_diffuse_sgs_type                        &
+     &         (iele_fsmp_stack, n_int, k2, i_filter, ak_diff, ak_d,    &
+     &          ele, g_FEM, jac_3d, FEM_elens, vector_1, sk_v)
 !
       use fem_skv_diffusion_sgs
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -94,8 +101,8 @@
 !
 !
       call fem_skv_vector_diffuse_sgs(ele%numele, ele%nnod_4_ele,       &
-     &  ele%nnod_4_ele, np_smp, iele_fsmp_stack,                        &
-     &  max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,     &
+     &  ele%nnod_4_ele, np_smp, iele_fsmp_stack, g_FEM%max_int_point,   &
+     &  g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d, n_int, k2,  &
      &  jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,           &
      &  FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM_elens%nele_filter_mom,                                      &
@@ -109,11 +116,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_poisson_sgs_type(iele_fsmp_stack, n_int, k2,   &
-     &          i_filter, ak_diff, ele, jac_3d, FEM_elens, sk_v)
+     &         i_filter, ak_diff, ele, g_FEM, jac_3d, FEM_elens, sk_v)
 !
       use fem_skv_poisson_sgs
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -127,8 +135,8 @@
 !
 !
       call fem_skv_poisson_sgs_pg(ele%numele, ele%nnod_4_ele,           &
-     &  ele%nnod_4_ele, np_smp, iele_fsmp_stack,                        &
-     &  max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,     &
+     &  ele%nnod_4_ele, np_smp, iele_fsmp_stack, g_FEM%max_int_point,   &
+     &  g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d, n_int, k2,  &
      &  jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,           &
      &  FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM_elens%nele_filter_mom,                                      &
@@ -142,12 +150,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_poisson_linear_sgs_type(iele_fsmp_stack,       &
-     &          n_int, k2, i_filter, ak_diff, ele, jac_3d_l, FEM_elens, &
-     &          sk_v)
+     &          n_int, k2, i_filter, ak_diff, ele, g_FEM, jac_3d_l,     &
+     &          FEM_elens, sk_v)
 !
       use fem_skv_poisson_sgs
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -161,8 +170,8 @@
 !
 !
       call fem_skv_poisson_sgs_pg(ele%numele, num_t_linear,             &
-     &  num_t_linear, np_smp, iele_fsmp_stack,                          &
-     &  max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,     &
+     &  num_t_linear, np_smp, iele_fsmp_stack, g_FEM%max_int_point,     &
+     &  g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d, n_int, k2,  &
      &  jac_3d_l%ntot_int, jac_3d_l%xjac, jac_3d_l%dnx, jac_3d_l%dnx,   &
      &  FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM_elens%nele_filter_mom,                                      &
