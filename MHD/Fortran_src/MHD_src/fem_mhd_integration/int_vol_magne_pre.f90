@@ -245,7 +245,7 @@
      &        mhd_fem_wk%sgs_v1)
           call fem_skv_div_as_tsr_upw                                   &
      &       (conduct%istack_ele_fld_smp, num_int, k2, dt,              &
-     &        d_ele(1,iphys_ele%i_magne), ele, jac_3d,                  &
+     &        d_ele(1,iphys_ele%i_magne), ele, g_FEM1, jac_3d,          &
      &        mhd_fem_wk%sgs_v1, fem_wk%sk6)
         end if
 !

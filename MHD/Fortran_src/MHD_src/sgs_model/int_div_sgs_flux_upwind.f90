@@ -38,6 +38,7 @@
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -52,7 +53,7 @@
 !
       subroutine int_div_sgs_mf_simi_upwind                             &
      &         (i_flux, i_vect, num_int, dt,                            &
-     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,            &
+     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,             &
      &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
 !
       use sgs_terms_2_each_ele
@@ -88,9 +89,9 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_flux, nod_fld%d_fld, fem_wk%tensor_1)
-        call fem_skv_div_tsr_upw(fluid%istack_ele_fld_smp, num_int,     &
-     &      k2, dt, d_ele(1,ie_upw), ele, jac_3d, fem_wk%tensor_1,      &
-     &      fem_wk%sk6)
+        call fem_skv_div_tsr_upw                                        &
+     &     (fluid%istack_ele_fld_smp, num_int, k2, dt, d_ele(1,ie_upw), &
+     &      ele, g_FEM1, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
       end do
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_nl%ff_smp)
@@ -137,7 +138,7 @@
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_scalar, i_flux, nod_fld%d_fld, fem_wk%vector_1)
         call fem_skv_divergence_upw(fluid%istack_ele_fld_smp,           &
-     &      num_int, k2, dt, d_ele(1,iele_velo), ele, jac_3d,           &
+     &      num_int, k2, dt, d_ele(1,iele_velo), ele, g_FEM1, jac_3d,   &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
@@ -183,7 +184,7 @@
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_b, i_v, i_flux, nod_fld%d_fld, fem_wk%vector_1)
         call fem_skv_div_as_tsr_upw(conduct%istack_ele_fld_smp,         &
-     &      num_int, k2, dt, d_ele(1,iele_velo), ele, jac_3d,           &
+     &      num_int, k2, dt, d_ele(1,iele_velo), ele, g_FEM1, jac_3d,   &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !

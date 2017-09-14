@@ -40,6 +40,7 @@
       use m_phys_constants
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -89,8 +90,9 @@
       do k2 = 1, ele%nnod_4_ele
         call scalar_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%scalar_1)
-        call fem_skv_gradient_upw(iele_fsmp_stack, num_int, k2, dt,     &
-     &      d_ele(1,iv_up), ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+        call fem_skv_gradient_upw                                       &
+     &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,iv_up),           &
+     &      ele, g_FEM1, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -133,8 +135,9 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%vector_1)
-        call fem_skv_divergence_upw(iele_fsmp_stack, num_int, k2, dt,   &
-     &      d_ele(1,iv_up), ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_divergence_upw                                     &
+     &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,iv_up),           &
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -177,8 +180,9 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%vector_1)
-        call fem_skv_rotation_upw(iele_fsmp_stack, num_int, k2, dt,     &
-     &      d_ele(1,iv_up), ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_rotation_upw                                       &
+     &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,iv_up),           &
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -222,8 +226,9 @@
       do k2 = 1, ele%nnod_4_ele
         call tensor_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%tensor_1)
-        call fem_skv_div_tsr_upw(iele_fsmp_stack, num_int, k2, dt,      &
-     &      d_ele(1,iv_up), ele, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
+        call fem_skv_div_tsr_upw                                        &
+     &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,iv_up),           &
+     &      ele, g_FEM1, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -266,8 +271,9 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%vector_1)
-        call fem_skv_div_as_tsr_upw(iele_fsmp_stack, num_int, k2, dt,   &
-     &      d_ele(1,iv_up), ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_div_as_tsr_upw                                     &
+     &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,iv_up),           &
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

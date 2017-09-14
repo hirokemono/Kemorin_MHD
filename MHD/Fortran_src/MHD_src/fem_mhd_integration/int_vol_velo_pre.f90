@@ -53,6 +53,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -458,8 +459,8 @@
      &            fem_wk%tensor_1)
               call fem_skv_div_tsr_upw                                  &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            d_ele(1,ie_upw), ele, jac_3d, fem_wk%tensor_1,        &
-     &            fem_wk%sk6)
+     &            d_ele(1,ie_upw), ele, g_FEM1, jac_3d,                 &
+     &            fem_wk%tensor_1, fem_wk%sk6)
             end if
           end if
         end if
@@ -514,8 +515,8 @@
      &            fl_prop%coef_lor, fem_wk%tensor_1)
               call fem_skv_div_tsr_upw                                  &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            d_ele(1,ie_upw), ele, jac_3d, fem_wk%tensor_1,        &
-     &            fem_wk%sk6)
+     &            d_ele(1,ie_upw), ele, g_FEM1, jac_3d,                 &
+     &            fem_wk%tensor_1, fem_wk%sk6)
             end if
           end if
         end if
