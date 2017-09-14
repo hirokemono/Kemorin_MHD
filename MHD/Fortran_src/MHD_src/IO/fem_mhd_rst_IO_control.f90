@@ -71,7 +71,7 @@
      &          FEM_SGS_wk, nod_fld)
 !
       use m_fem_mhd_restart
-      use sgs_ini_model_coefs_IO
+      use FEM_sgs_ini_model_coefs_IO
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -104,7 +104,7 @@
       use t_geometry_data_MHD
       use t_SGS_model_coefs
       use m_fem_mhd_restart
-      use sgs_ini_model_coefs_IO
+      use FEM_sgs_ini_model_coefs_IO
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(IO_step_param), intent(in) :: rst_step

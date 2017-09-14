@@ -73,6 +73,7 @@
 !
       use set_restart_data
       use fem_mhd_rst_IO_control
+      use FEM_sgs_ini_model_coefs_IO
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(IO_step_param), intent(in) :: rst_step
@@ -105,6 +106,9 @@
 !
       if (iflag_debug .gt. 1)  write(*,*) 'init_MHD_restart_output'
       call init_MHD_restart_output(node, nod_fld)
+      if (iflag_debug .gt. 1)  write(*,*) 'init_FEM_Csim_file'
+      call init_FEM_Csim_file(SGS_par%model_p, SGS_par%commute_p,       &
+     &    FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_diff)
 !
       call copy_time_step_data(init_d, time_d)
 !

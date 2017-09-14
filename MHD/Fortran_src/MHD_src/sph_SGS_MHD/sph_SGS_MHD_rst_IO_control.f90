@@ -31,7 +31,7 @@
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!
-!!      subroutine sst_initial_Csim_control                             &
+!!      subroutine set_initial_Csim_control                             &
 !!     &         (MHD_files, MHD_step, SGS_par, dynamic_SPH)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
@@ -142,7 +142,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sst_initial_Csim_control                               &
+      subroutine set_initial_Csim_control                               &
      &         (MHD_files, MHD_step, SGS_par, dynamic_SPH)
 !
       use m_machine_parameter
@@ -158,9 +158,9 @@
       use sgs_ini_model_coefs_IO
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(MHD_step_param), intent(in) :: MHD_step
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
-      type(MHD_step_param), intent(inout) :: MHD_step
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
@@ -179,7 +179,9 @@
       if(iflag_debug .gt. 0) write(*,*) 'iflag_rst_sgs_coef_code',      &
      &                        SGS_par%model_p%iflag_rst_sgs_coef_code
 !
-      end subroutine sst_initial_Csim_control
+      call init_SPH_Csim_file(dynamic_SPH)
+!
+      end subroutine set_initial_Csim_control
 !
 !-----------------------------------------------------------------------
 !

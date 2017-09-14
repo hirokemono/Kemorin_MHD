@@ -124,7 +124,7 @@
      &   (MHD_files, ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,      &
      &    MHD_prop1%ref_param_T, sph_MHD_bc1%sph_bc_B,                  &
      &    ipol, idpdr, itor, rj_fld1, MHD_step)
-      call sst_initial_Csim_control                                     &
+      call set_initial_Csim_control                                     &
      &   (MHD_files, MHD_step, SGS_par, dynamic_SPH)
       MHD_step%iflag_initial_step = 0
 !
