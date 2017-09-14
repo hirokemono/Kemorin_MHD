@@ -27,6 +27,7 @@
       use t_geometry_data
       use t_phys_address
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_finite_element_mat
 !
       use cal_coriolis
@@ -96,7 +97,7 @@
      &      k2, i_velo, fl_prop%coef_cor, fem_wk%vector_1)
         call fem_skv_coriolis_type                                      &
      &     (fluid%istack_ele_fld_smp, num_int, k2, fem_wk%vector_1,     &
-     &      fl_prop%sys_rot, ele, jac_3d, fem_wk%sk6)
+     &      fl_prop%sys_rot, ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

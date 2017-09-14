@@ -131,7 +131,7 @@
         else
           call fem_skv_scalar_inertia_type(fluid%istack_ele_fld_smp,    &
      &        num_int, k2, fem_wk%scalar_1, d_ele(1,iele_velo),         &
-     &        ele, jac_3d, fem_wk%sk6)
+     &        ele, g_FEM1, jac_3d, fem_wk%sk6)
         end if
       end do
 !

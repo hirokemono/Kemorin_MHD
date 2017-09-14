@@ -45,6 +45,7 @@
 !
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_finite_element_mat
 !
@@ -91,7 +92,7 @@
         call scalar_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_scalar, coef, fem_wk%scalar_1)
         call fem_skv_scalar_inertia_type(iele_fsmp_stack, n_int, k2,    &
-     &      fem_wk%scalar_1, d_ele(1,iele_velo), ele, jac_3d,           &
+     &      fem_wk%scalar_1, d_ele(1,iele_velo), ele, g_FEM1, jac_3d,   &
      &      fem_wk%sk6)
       end do
 !
@@ -137,7 +138,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_vector, coef, fem_wk%vector_1)
         call fem_skv_vector_inertia_type(iele_fsmp_stack, n_int, k2,    &
-     &      fem_wk%vector_1, d_ele(1,iele_velo), ele, jac_3d,           &
+     &      fem_wk%vector_1, d_ele(1,iele_velo), ele, g_FEM1, jac_3d,   &
      &      fem_wk%sk6)
       end do
 !
@@ -183,7 +184,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_vector, coef, fem_wk%vector_1)
         call fem_skv_rot_inertia_type(iele_fsmp_stack, n_int, k2,       &
-     &      fem_wk%vector_1, d_ele(1,iele_vort), ele, jac_3d,           &
+     &      fem_wk%vector_1, d_ele(1,iele_vort), ele, g_FEM1, jac_3d,   &
      &      fem_wk%sk6)
       end do
 !

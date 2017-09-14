@@ -52,6 +52,7 @@
       use t_physical_property
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -110,7 +111,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_magne, fl_prop%coef_lor, fem_wk%vector_1)
         call fem_skv_vector_inertia_type(iele_fsmp_stack, n_int, k2,    &
-     &      fem_wk%vector_1, mhd_fem_wk%magne_1, ele, jac_3d,           &
+     &      fem_wk%vector_1, mhd_fem_wk%magne_1, ele, g_FEM1, jac_3d,   &
      &      fem_wk%sk6)
       end do
 !

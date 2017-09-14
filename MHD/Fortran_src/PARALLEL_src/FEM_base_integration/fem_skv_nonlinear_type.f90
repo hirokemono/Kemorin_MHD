@@ -5,24 +5,27 @@
 !     Modified by H. Matsui on Oct., 2006
 !
 !!      subroutine fem_skv_scalar_inertia_type(iele_fsmp_stack,         &
-!!     &          n_int, k2, scalar_1, vxe, ele, jac_3d, sk_v)
+!!     &          n_int, k2, scalar_1, vxe, ele, g_FEM, jac_3d, sk_v)
 !!      subroutine fem_skv_vector_inertia_type(iele_fsmp_stack,         &
-!!     &          n_int, k2, vector_1, vxe, ele, jac_3d, sk_v)
+!!     &          n_int, k2, vector_1, vxe, ele, g_FEM, jac_3d, sk_v)
 !!      subroutine fem_skv_rot_inertia_type(iele_fsmp_stack, n_int, k2, &
-!!     &          vector_1, wxe, ele, jac_3d, sk_v)
+!!     &          vector_1, wxe, ele, g_FEM, jac_3d, sk_v)
 !!
 !!      subroutine fem_skv_coriolis_type(iele_fsmp_stack, n_int, k2,    &
-!!     &          vector_1, anglar, ele, jac_3d, sk_v)
+!!     &          vector_1, anglar, ele, g_FEM, jac_3d, sk_v)
+!!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d
 !
       module fem_skv_nonlinear_type
 !
       use m_precision
-!
-      use t_geometry_data
-      use t_jacobians
       use m_machine_parameter
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
+!
+      use t_geometry_data
+      use t_fem_gauss_int_coefs
+      use t_jacobians
 !
       implicit none
 !
@@ -33,11 +36,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_scalar_inertia_type(iele_fsmp_stack,           &
-     &          n_int, k2, scalar_1, vxe, ele, jac_3d, sk_v)
+     &          n_int, k2, scalar_1, vxe, ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_inertia
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -51,20 +55,22 @@
 !
       call fem_skv_scalar_inertia                                       &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, scalar_1, vxe, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    n_int, k2, jac_3d%ntot_int, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%dnx, scalar_1, vxe, sk_v)
 !
       end subroutine fem_skv_scalar_inertia_type
 !
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_vector_inertia_type(iele_fsmp_stack,           &
-     &          n_int, k2, vector_1, vxe, ele, jac_3d, sk_v)
+     &          n_int, k2, vector_1, vxe, ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_inertia
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -78,20 +84,22 @@
 !
       call fem_skv_vector_inertia                                       &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, vector_1, vxe, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    n_int, k2, jac_3d%ntot_int, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%dnx, vector_1, vxe, sk_v)
 !
       end subroutine fem_skv_vector_inertia_type
 !
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_rot_inertia_type(iele_fsmp_stack, n_int, k2,   &
-     &          vector_1, wxe, ele, jac_3d, sk_v)
+     &          vector_1, wxe, ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_inertia
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -105,20 +113,22 @@
 !
       call fem_skv_rot_inertia                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%an, vector_1, wxe, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    n_int, k2, jac_3d%ntot_int, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%an, vector_1, wxe, sk_v)
 !
       end subroutine fem_skv_rot_inertia_type
 !
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_coriolis_type(iele_fsmp_stack, n_int, k2,      &
-     &          vector_1, anglar, ele, jac_3d, sk_v)
+     &          vector_1, anglar, ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_inertia
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -132,9 +142,10 @@
 !
       call fem_skv_coriolis                                             &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, n_int, k2, jac_3d%ntot_int,                &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%an, vector_1, anglar, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    n_int, k2, jac_3d%ntot_int, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%an, vector_1, anglar, sk_v)
 !
       end subroutine fem_skv_coriolis_type
 !
