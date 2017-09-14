@@ -185,7 +185,7 @@
 !
 !
 !      write(*,*) 'fem_element_volume_pg', max_int_point
-       call fem_element_volume_pg(ele, jac_3d, max_int_point)
+       call fem_element_volume_pg(ele, g_FEM1, jac_3d, max_int_point)
 !
 !     ---  lead total volume
 !

@@ -6,7 +6,10 @@
 !        Modified by H. Matsui on Aug., 2006
 !        Modified by H. Matsui on June, 2007
 !
-!       subroutine fem_element_volume_pg(ele, jac_3d, n_int)
+!!       subroutine fem_element_volume_pg(ele, g_FEM, jac_3d, n_int)
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(element_data), intent(inout) :: ele
 !
       module fem_element_volume
 !
@@ -23,20 +26,22 @@
 !
 !-----------------------------------------------------------------------
 !
-       subroutine fem_element_volume_pg(ele, jac_3d, n_int)
+       subroutine fem_element_volume_pg(ele, g_FEM, jac_3d, n_int)
 !
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_geometry_data
       use t_jacobians
 !
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer (kind=kint), intent(in) :: n_int
       type(element_data), intent(inout) :: ele
 !
 !
       call s_fem_element_volume(ele%numele, ele%istack_ele_smp,         &
-     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int,       &
-     &   jac_3d%ntot_int, jac_3d%xjac, ele%volume_ele, ele%a_vol_ele)
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, n_int, jac_3d%ntot_int, jac_3d%xjac,             &
+     &    ele%volume_ele, ele%a_vol_ele)
 !
       end subroutine fem_element_volume_pg
 !
