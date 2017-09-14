@@ -90,6 +90,8 @@
      &   (maxtot_int_1d, spf_1d%xi, maxtot_int_3d, max_int_point,       &
      &    spf_3d%l_int, spf_3d%xi, spf_3d%ei, spf_3d%zi)
 !
+      call copy_fem_gauss_int_coef_type(g_FEM1)
+!
       end subroutine initialize_FEM_integration
 !
 !-----------------------------------------------------------------------

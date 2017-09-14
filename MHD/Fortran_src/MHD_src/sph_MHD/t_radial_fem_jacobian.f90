@@ -77,6 +77,9 @@
      &   (maxtot_int_1d, max_int_point, spf_1d_r%l_int)
       call set_gauss_coefs_4_1d(maxtot_int_1d, spf_1d_r%xi)
 !
+      call copy_fem_gauss_int_coef_type(g_FEM1)
+
+!
       call alloc_edge_shape_func                                        &
      &   (num_linear_edge, maxtot_int_1d, spf_1d_r)
       call cal_linear_radiaul_jacobian                                  &

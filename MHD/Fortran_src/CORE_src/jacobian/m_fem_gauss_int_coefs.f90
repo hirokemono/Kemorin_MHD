@@ -9,7 +9,6 @@
 !      subroutine max_int_point_by_etype(nnod_4_ele)
 !      subroutine maximum_integration_points(num_int)
 !      subroutine allocate_gauss_coef_4_fem
-!      subroutine allocate_gauss_coef_to_4th
 !
 !      subroutine deallocate_gauss_coef_4_fem
 !      subroutine set_num_of_int_points
@@ -18,8 +17,11 @@
 !
       use m_precision
       use m_constants
+      use t_fem_gauss_int_coefs
 !
       implicit  none
+!
+      type(FEM_gauss_int_coefs), save :: g_FEM1
 !
       integer (kind=kint), save :: max_int_point = 4
       integer (kind=kint), save :: maxtot_int_3d= 100
@@ -100,37 +102,6 @@
       end subroutine allocate_gauss_coef_4_fem
 !
 !-----------------------------------------------------------------------
-!
-      subroutine allocate_gauss_coef_to_4th
-!
-      integer(kind = kint) :: n
-!
-!
-      allocate( owe(10) )
-      allocate( owe2d(30) )
-      allocate( owe3d(100) )
-!
-      allocate( int_start1(4) )
-      allocate( int_start2(4) )
-      allocate( int_start3(4) )
-!
-      owe =   0.0d0
-      owe2d = 0.0d0
-      owe3d = 0.0d0
-!
-      int_start3(1) = 0
-      int_start2(1) = 0
-      int_start1(1) = 0
-      do n = 2, 4
-        int_start3(n) = int_start3(n-1) + (n-1)*(n-1)*(n-1)
-        int_start2(n) = int_start2(n-1) + (n-1)*(n-1)
-        int_start1(n) = int_start1(n-1) + (n-1)
-      end do
-
-!
-      end subroutine allocate_gauss_coef_to_4th
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine deallocate_gauss_coef_4_fem
@@ -160,10 +131,9 @@
       end subroutine set_num_of_int_points
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine copy_fem_gauss_int_coefs(g_FEM)
-!
-      use t_fem_gauss_int_coefs
 !
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !
@@ -194,5 +164,26 @@
 !
 !-----------------------------------------------------------------------
 !
+!
+      subroutine copy_fem_gauss_int_coef_type(g_FEM)
+!
+      type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
+!
+!
+      g_FEM%max_int_point = max_int_point
+!
+      g_FEM%maxtot_int_3d = maxtot_int_3d
+      g_FEM%maxtot_int_2d = maxtot_int_2d
+      g_FEM%maxtot_int_1d = maxtot_int_1d
+!
+      call alloc_gauss_coef_4_fem(g_FEM)
+!
+      g_FEM%owe(1:maxtot_int_1d) =   owe(1:maxtot_int_1d)
+      g_FEM%owe2d(1:maxtot_int_2d) = owe2d(1:maxtot_int_2d)
+      g_FEM%owe3d(1:maxtot_int_3d) = owe3d(1:maxtot_int_3d)
+!
+      end subroutine copy_fem_gauss_int_coef_type
+!
+!-----------------------------------------------------------------------
 !
       end module   m_fem_gauss_int_coefs
