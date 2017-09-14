@@ -256,7 +256,7 @@
      &   (node%numnod, nod_comm, mom_nod)
 !
       call cal_filter_moms_ele_by_nod                                   &
-     &   (node, ele, jac_3d_q, mom_nod, mom_ele)
+     &   (node, ele, g_FEM1, jac_3d_q, mom_nod, mom_ele)
       call cal_1st_diffs_filter_ele                                     &
      &   (node, ele, g_FEM1, jac_3d_q, mom_nod, mom_ele)
       call cal_2nd_diffs_filter_ele                                     &

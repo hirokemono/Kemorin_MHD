@@ -6,7 +6,7 @@
 !
 !
 !!      subroutine cal_filter_moms_ele_by_nod                           &
-!!     &         (node, ele, jac_3d, mom_nod, mom_ele)
+!!     &         (node, ele, g_FEM, jac_3d, mom_nod, mom_ele)
 !!
 !!      subroutine cal_diffs_delta_on_element                           &
 !!     &         (node, ele, g_FEM, jac_3d, FEM_elen)
@@ -41,7 +41,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_filter_moms_ele_by_nod                             &
-     &         (node, ele, jac_3d, mom_nod, mom_ele)
+     &         (node, ele, g_FEM, jac_3d, mom_nod, mom_ele)
 !
       use m_ctl_params_4_gen_filter
       use t_filter_moments
@@ -49,39 +49,40 @@
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(nod_mom_diffs_type), intent(in) :: mom_nod
 !
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
       call scalar_on_element                                            &
-     &   (node, ele, jac_3d, ele%istack_ele_smp, num_int_points,        &
+     &   (node, ele, g_FEM, jac_3d, ele%istack_ele_smp, num_int_points, &
      &    mom_nod%moms%f_x, mom_ele%moms%f_x)
       call scalar_on_element                                            &
-     &   (node, ele, jac_3d, ele%istack_ele_smp, num_int_points,        &
+     &   (node, ele, g_FEM, jac_3d, ele%istack_ele_smp, num_int_points, &
      &    mom_nod%moms%f_y, mom_ele%moms%f_y)
       call scalar_on_element                                            &
-     &   (node, ele, jac_3d, ele%istack_ele_smp, num_int_points,        &
+     &   (node, ele, g_FEM, jac_3d, ele%istack_ele_smp, num_int_points, &
      &    mom_nod%moms%f_z, mom_ele%moms%f_z)
 !
       call scalar_on_element                                            &
-     &   (node, ele, jac_3d, ele%istack_ele_smp, num_int_points,        &
+     &   (node, ele, g_FEM, jac_3d, ele%istack_ele_smp, num_int_points, &
      &    mom_nod%moms%f_x2, mom_ele%moms%f_x2)
       call scalar_on_element                                            &
-     &   (node, ele, jac_3d, ele%istack_ele_smp, num_int_points,        &
+     &   (node, ele, g_FEM, jac_3d, ele%istack_ele_smp, num_int_points, &
      &    mom_nod%moms%f_y2, mom_ele%moms%f_y2)
       call scalar_on_element                                            &
-     &   (node, ele, jac_3d, ele%istack_ele_smp, num_int_points,        &
+     &   (node, ele, g_FEM, jac_3d, ele%istack_ele_smp, num_int_points, &
      &    mom_nod%moms%f_z2, mom_ele%moms%f_z2)
 !
       call scalar_on_element                                            &
-     &   (node, ele, jac_3d, ele%istack_ele_smp, num_int_points,        &
+     &   (node, ele, g_FEM, jac_3d, ele%istack_ele_smp, num_int_points, &
      &    mom_nod%moms%f_xy, mom_ele%moms%f_xy)
       call scalar_on_element                                            &
-     &   (node, ele, jac_3d, ele%istack_ele_smp, num_int_points,        &
+     &   (node, ele, g_FEM, jac_3d, ele%istack_ele_smp, num_int_points, &
      &    mom_nod%moms%f_yz, mom_ele%moms%f_yz)
       call scalar_on_element                                            &
-     &   (node, ele, jac_3d, ele%istack_ele_smp, num_int_points,        &
+     &   (node, ele, g_FEM, jac_3d, ele%istack_ele_smp, num_int_points, &
      &    mom_nod%moms%f_zx, mom_ele%moms%f_zx)
 !
       end subroutine cal_filter_moms_ele_by_nod

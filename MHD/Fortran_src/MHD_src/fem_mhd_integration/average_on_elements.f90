@@ -57,7 +57,7 @@
 !
 !
       call vector_on_element                                            &
-     &   (node, ele, jac_3d, iele_fsmp_stack,                    &
+     &   (node, ele, g_FEM, jac_3d, iele_fsmp_stack,                    &
      &    n_int, nod_fld%d_fld(1,ifld_nod), ele_fld%d_fld(1,ifld_ele))
       ele_fld%iflag_update(ifld_ele:ifld_ele+2) = 1
 !
