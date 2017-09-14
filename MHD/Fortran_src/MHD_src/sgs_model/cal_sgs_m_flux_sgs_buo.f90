@@ -60,6 +60,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -280,7 +281,7 @@
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
-     &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
+     &     (node, ele, layer_tbl%e_grp, g_FEM1, jac_3d_q, jac_3d_l,     &
      &      num_int, nod_fld%ntot_phys, iphys%i_reynolds_wk,            &
      &      nod_fld%d_fld, nod_fld%ntot_phys, iphys%i_SGS_buo_wk,       &
      &      nod_fld%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,2),          &
@@ -295,7 +296,7 @@
         end if
       else if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
-     &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
+     &     (node, ele, layer_tbl%e_grp, g_FEM1, jac_3d_q, jac_3d_l,     &
      &      num_int, nod_fld%ntot_phys, iphys%i_reynolds_wk,            &
      &      nod_fld%d_fld, nod_fld%ntot_phys,                           &
      &      iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                     &

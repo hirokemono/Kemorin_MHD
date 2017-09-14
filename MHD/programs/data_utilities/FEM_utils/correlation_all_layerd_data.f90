@@ -144,7 +144,7 @@
      &          = phys_2nd%d_fld(1:phys_2nd%n_point,icomp)
 !
         call int_vol_2rms_ave_ele_grps                                  &
-     &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
+     &     (node, ele, layer_tbl%e_grp, g_FEM1, jac_3d_q, jac_3d_l,     &
      &      max_int_point, nod_fld%ntot_phys, icomp, nod_fld%d_fld,     &
      &      ione, ione, d_nod_trans2(1,1), ave_l(1,icomp),              &
      &      rms_l(1,icomp), ave_l(1,icomp_2), rms_l(1,icomp_2))
@@ -182,7 +182,7 @@
         d_nod_trans2(1:node%numnod,1)                                   &
      &          = phys_2nd%d_fld(1:node%numnod,icomp)
         call int_vol_dev_cor_ele_grps                                   &
-     &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
+     &     (node, ele, layer_tbl%e_grp, g_FEM1, jac_3d_q, jac_3d_l,     &
      &      max_int_point, nod_fld%ntot_phys, icomp, nod_fld%d_fld,     &
      &      ione, ione, d_nod_trans2(1,1),                              &
      &      ave_ref(1,icomp), ave_tgt(1,icomp),                         &

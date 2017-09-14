@@ -10,23 +10,28 @@
 !!     &          ncomp_nod, i_fld, d_nod, ave_l, rms_l)
 !!
 !!      subroutine int_vol_2rms_ave_ele_grps                            &
-!!     &         (node, ele, ele_grp, jac_3d_q, jac_3d_l, num_int,      &
-!!     &          ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,     &
-!!     &          ave_1, rms_1, ave_2, rms_2)
+!!     &        (node, ele, ele_grp, g_FEM, jac_3d_q, jac_3d_l, num_int,&
+!!     &         ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,      &
+!!     &         ave_1, rms_1, ave_2, rms_2)
 !!
 !!      subroutine int_vol_dev_cor_ele_grps                             &
-!!     &         (node, ele, ele_grp, jac_3d_q, jac_3d_l, num_int,      &
-!!     &          ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,     &
-!!     &          ave_1, ave_2, sig_1, sig_2, cov_l)
+!!     &        (node, ele, ele_grp, g_FEM, jac_3d_q, jac_3d_l, num_int,&
+!!     &         ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,      &
+!!     &         ave_1, ave_2, sig_1, sig_2, cov_l)
+!!        type(node_data),    intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       module int_rms_ave_ele_grps
 !
       use m_precision
       use m_constants
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       use t_geometry_data
+      use t_fem_gauss_int_coefs
       use t_jacobians
 !
       implicit none
@@ -77,15 +82,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_2rms_ave_ele_grps                              &
-     &         (node, ele, ele_grp, jac_3d_q, jac_3d_l, num_int,        &
-     &          ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,       &
-     &          ave_1, rms_1, ave_2, rms_2)
+     &        (node, ele, ele_grp, g_FEM, jac_3d_q, jac_3d_l, num_int,  &
+     &         ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,        &
+     &         ave_1, rms_1, ave_2, rms_2)
 ! 
       use t_group_data
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
       type(group_data), intent(in)   :: ele_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       integer (kind = kint), intent(in) :: num_int
@@ -106,7 +112,7 @@
 !$omp parallel do private(igrp)
       do igrp = 1, ele_grp%num_grp
         call sel_int_vol_2rms_ave_1egrp                                 &
-     &     (node, ele, jac_3d_q, jac_3d_l, num_int, igrp,               &
+     &     (node, ele, g_FEM, jac_3d_q, jac_3d_l, num_int, igrp,        &
      &      ele_grp%num_grp, ele_grp%num_item,                          &
      &      ele_grp%istack_grp, ele_grp%item_grp,                       &
      &      ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,           &
@@ -120,15 +126,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_dev_cor_ele_grps                               &
-     &         (node, ele, ele_grp, jac_3d_q, jac_3d_l, num_int,        &
-     &          ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,       &
-     &          ave_1, ave_2, sig_1, sig_2, cov_l)
+     &        (node, ele, ele_grp, g_FEM, jac_3d_q, jac_3d_l, num_int,  &
+     &         ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,        &
+     &         ave_1, ave_2, sig_1, sig_2, cov_l)
 !
       use t_group_data
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       integer (kind = kint), intent(in) :: num_int
@@ -150,7 +157,7 @@
 !$omp parallel do private(igrp)
       do igrp = 1, ele_grp%num_grp
         call sel_int_vol_dev_cor_1egrp                                &
-     &     (node, ele, jac_3d_q, jac_3d_l, num_int, igrp,             &
+     &     (node, ele, g_FEM, jac_3d_q, jac_3d_l, num_int, igrp,      &
      &      ele_grp%num_grp, ele_grp%num_item,                        &
      &      ele_grp%istack_grp, ele_grp%item_grp,                     &
      &      ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,         &
@@ -205,7 +212,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_int_vol_2rms_ave_1egrp                             &
-     &         (node, ele, jac_3d_q, jac_3d_l, num_int, igrp,           &
+     &         (node, ele, g_FEM, jac_3d_q, jac_3d_l, num_int, igrp,    &
      &          num_egrp, ntot_egrp, istack_egrp, iele_grp,             &
      &          ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,       &
      &          ave_1, rms_1, ave_2, rms_2)
@@ -214,6 +221,7 @@
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       integer (kind = kint), intent(in) :: num_int
@@ -234,16 +242,16 @@
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_2rms_ave_1egrp_q                                   &
      &     (node%numnod, ele%numele, ele%ie, ele%interior_ele,          &
-     &      nitem_grp, iele_grp(ist_grp),                               &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      nitem_grp, iele_grp(ist_grp), g_FEM%max_int_point,          &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
      &      num_int, jac_3d_q%ntot_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, rms_1, ave_2,    &
      &      rms_2)
       else
         call int_vol_2rms_ave_1egrp_l                                   &
      &     (node%numnod, ele%numele, ele%ie, ele%interior_ele,          &
-     &      nitem_grp, iele_grp(ist_grp),                               &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      nitem_grp, iele_grp(ist_grp),g_FEM%max_int_point,           &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
      &      num_int, jac_3d_l%ntot_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, rms_1, ave_2,    &
      &      rms_2)
@@ -254,7 +262,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_int_vol_dev_cor_1egrp                              &
-     &         (node, ele, jac_3d_q, jac_3d_l, num_int, igrp,           &
+     &         (node, ele, g_FEM, jac_3d_q, jac_3d_l, num_int, igrp,    &
      &          num_egrp, ntot_egrp, istack_egrp, iele_grp,             &
      &          ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,       &
      &          ave_1, ave_2, sig_1, sig_2, cov_l)
@@ -263,6 +271,7 @@
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       integer (kind = kint), intent(in) :: num_int
@@ -284,16 +293,16 @@
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_dev_cor_1egrp_q                                    &
      &     (node%numnod, ele%numele, ele%ie, ele%interior_ele,          &
-     &      nitem_grp, iele_grp(ist_grp),                               &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      nitem_grp, iele_grp(ist_grp), g_FEM%max_int_point,          &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
      &      num_int, jac_3d_q%ntot_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, ave_2,           &
      &      sig_1, sig_2, cov_l)
       else
         call int_vol_dev_cor_1egrp_l                                    &
      &     (node%numnod, ele%numele, ele%ie, ele%interior_ele,          &
-     &      nitem_grp, iele_grp(ist_grp),                               &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+     &      nitem_grp, iele_grp(ist_grp), g_FEM%max_int_point,          &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
      &      num_int, jac_3d_l%ntot_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, ave_2,           &
      &      sig_1, sig_2, cov_l)
