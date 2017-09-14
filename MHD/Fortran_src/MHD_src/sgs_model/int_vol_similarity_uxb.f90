@@ -35,6 +35,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -82,8 +83,9 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys%i_sgs_simi, fem_wk%vector_1)
-        call fem_skv_vector_type(conduct%istack_ele_fld_smp,            &
-     &      num_int, k2, ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_vector_type                                        &
+     &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
         call scalar_prod_to_tensor_skv                                  &
      &     (ele, conduct%istack_ele_fld_smp, sgs_coefs%ntot_comp,       &
      &      icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)

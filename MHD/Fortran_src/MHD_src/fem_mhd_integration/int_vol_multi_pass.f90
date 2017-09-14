@@ -31,6 +31,7 @@
       use m_phys_constants
 !
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -74,7 +75,7 @@
         call scalar_2_each_element(node, ele,                           &
      &      k2, f_nl%ff(1:node%numnod,1), fem_wk%scalar_1)
         call fem_skv_scalar_type(iele_fsmp_stack, num_int, k2,          &
-     &      ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call sub1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -118,7 +119,7 @@
         call vector_2_each_element(node, ele,                           &
      &      k2, f_nl%ff, fem_wk%vector_1)
         call fem_skv_vector_type(iele_fsmp_stack, num_int, k2,          &
-     &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
