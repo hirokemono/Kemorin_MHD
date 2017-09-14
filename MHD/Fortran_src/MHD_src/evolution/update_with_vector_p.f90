@@ -186,22 +186,18 @@
       if (iphys_ele%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'
         call rotation_on_element_1st                                    &
-     &     (mesh%node, mesh%ele, jacobians%jac_3d,                      &
+     &     (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d,              &
      &      mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,          &
-     &      nod_fld%ntot_phys, iphys%i_vecp, nod_fld%d_fld,             &
-     &      ele_fld%ntot_phys, iphys_ele%i_magne,                       &
-     &      ele_fld%iflag_update, ele_fld%d_fld)
+     &      iphys%i_vecp, nod_fld, iphys_ele%i_magne, ele_fld)
       end if
 !
       if (iphys_ele%i_current .ne. 0                                    &
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
         if (iflag_debug.gt.0) write(*,*) 'current_on_element'
         call rotation_on_element_1st                                    &
-     &     (mesh%node, mesh%ele, jacobians%jac_3d,                      &
+     &     (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d,              &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
-     &      nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld,            &
-     &      ele_fld%ntot_phys, iphys_ele%i_current,                     &
-     &      ele_fld%iflag_update, ele_fld%d_fld)
+     &      iphys%i_magne, nod_fld, iphys_ele%i_current, ele_fld)
       end if
 !
 !   required field for explicit filtering
@@ -249,12 +245,10 @@
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'filtered_magne_on_ele'
             call vector_on_element_1st                                  &
-     &         (mesh%node, mesh%ele, jacobians%jac_3d,                  &
+     &         (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d,          &
      &          mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,      &
-     &          nod_fld%ntot_phys, iphys%i_filter_magne,                &
-     &          nod_fld%d_fld, ele_fld%ntot_phys,                       &
-     &          iphys_ele%i_filter_magne, ele_fld%iflag_update,         &
-     &          ele_fld%d_fld)
+     &          iphys%i_filter_magne, nod_fld,                          &
+     &          iphys_ele%i_filter_magne, ele_fld)
          end if
 !
          if(iflag2.eq.2 .and. ie_dfbx.ne.0) then

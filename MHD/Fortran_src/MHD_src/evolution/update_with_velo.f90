@@ -112,11 +112,9 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'velocity_on_element'
         call vector_on_element_1st                                      &
-     &     (mesh%node, mesh%ele, jacobians%jac_3d,                      &
+     &     (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d,              &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      nod_fld%ntot_phys, iphys%i_velo, nod_fld%d_fld,             &
-     &      ele_fld%ntot_phys, iphys_ele%i_velo,                        &
-     &      ele_fld%iflag_update, ele_fld%d_fld)
+     &      iphys%i_velo, nod_fld, iphys_ele%i_velo, ele_fld)
       end if
 !
       if( FEM_prm%iflag_rotate_form .eq. id_turn_ON                     &
@@ -124,11 +122,9 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'vorticity_on_element'
         call rotation_on_element_1st                                    &
-     &     (mesh%node, mesh%ele, jacobians%jac_3d,                      &
+     &     (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d,              &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      nod_fld%ntot_phys, iphys%i_velo, nod_fld%d_fld,             &
-     &      ele_fld%ntot_phys, iphys_ele%i_vort,                        &
-     &      ele_fld%iflag_update, ele_fld%d_fld)
+     &      iphys%i_velo, nod_fld, iphys_ele%i_vort, ele_fld)
       end if
 !
 !   required field for explicit filtering

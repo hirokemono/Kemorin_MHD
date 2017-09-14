@@ -198,11 +198,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_diffs_delta_on_element'
       call cal_diffs_delta_on_element                                   &
-     &   (mesh%node, mesh%ele, fem_int%jcs%jac_3d, FEM_elen)
+     &   (mesh%node, mesh%ele, g_FEM1, fem_int%jcs%jac_3d, FEM_elen)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_2nd_diffs_delta_on_element'
       call cal_2nd_diffs_delta_on_element                               &
-     &   (mesh%node, mesh%ele, fem_int%jcs%jac_3d, FEM_elen)
+     &   (mesh%node, mesh%ele, g_FEM1, fem_int%jcs%jac_3d, FEM_elen)
 !
       if (iflag_momentum_type .eq. 1) then
         call delete_x_products_of_elen(FEM_elen)
@@ -221,6 +221,8 @@
      &          rhs_tbl, tbl_crs, m_lump, rhs_mat, mom_nod, mom_ele)
 !
       use t_filter_moments
+      use t_fem_gauss_int_coefs
+      use m_fem_gauss_int_coefs
       use m_ctl_params_4_gen_filter
       use cal_diff_elesize_on_ele
       use cal_1st_diff_deltax_4_nod
@@ -256,9 +258,9 @@
       call cal_filter_moms_ele_by_nod                                   &
      &   (node, ele, jac_3d_q, mom_nod, mom_ele)
       call cal_1st_diffs_filter_ele                                     &
-     &   (node, ele, jac_3d_q, mom_nod, mom_ele)
+     &   (node, ele, g_FEM1, jac_3d_q, mom_nod, mom_ele)
       call cal_2nd_diffs_filter_ele                                     &
-     &   (node, ele, jac_3d_q, mom_nod, mom_ele)
+     &   (node, ele, g_FEM1, jac_3d_q, mom_nod, mom_ele)
 !
       end subroutine s_const_filter_mom_ele
 !
