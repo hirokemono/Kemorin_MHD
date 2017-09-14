@@ -34,6 +34,7 @@
       use t_geometry_data
       use t_phys_data
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_finite_element_mat
 !
       implicit none
@@ -160,7 +161,7 @@
         call scalar_phys_2_each_element(node, ele, nod_fld,   &
      &      k2, i_scalar, fem_wk%scalar_1)
         call fem_skv_scalar_diffuse_type(iele_fsmp_stack, n_int, k2,    &
-     &      ak_d, ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+     &      ak_d, ele, g_FEM1, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add1_skv_coef_to_ff_v_smp                                    &
@@ -203,7 +204,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,   &
      &      k2, i_vector, fem_wk%vector_1)
         call fem_skv_vector_diffuse_type(iele_fsmp_stack, n_int, k2,    &
-     &      ak_d, ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ak_d, ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_coef_to_ff_v_smp                                    &

@@ -36,7 +36,7 @@
 !!     &          nele_grp, iele_grp, n_int, d_nod, d_ele)
 !!        type(node_data), intent(in) ::    node
 !!        type(element_data), intent(in) :: ele
-!!       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !
 !

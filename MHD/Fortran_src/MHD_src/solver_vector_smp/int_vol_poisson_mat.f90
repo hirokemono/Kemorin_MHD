@@ -23,6 +23,7 @@
 !
       use t_geometry_data
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_finite_element_mat
       use t_solver_djds
@@ -57,7 +58,7 @@
       do  k2 = 1, ele%nnod_4_ele
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
         call fem_skv_poisson_linear_type(ele%istack_ele_smp,            &
-     &      n_int, k2, ele, jac_3d_l, fem_wk%sk6)
+     &      n_int, k2, ele, g_FEM1, jac_3d_l, fem_wk%sk6)
         call add_skv1_to_crs_matrix11(ele, rhs_tbl, MG_mat_tbl,         &
      &      k2, fem_wk%sk6, mat11%num_non0, mat11%aiccg)
       end do
@@ -95,7 +96,7 @@
       do  k2 = 1, ele%nnod_4_ele
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
         call fem_skv_poisson_type(ele%istack_ele_smp, n_int, k2,        &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
         call cal_scalar_diffuse_mat(ele, rhs_tbl, MG_mat_tbl, fem_wk,   &
      &      k2, dt, coef_imp, ak_d, mat11)
       end do
@@ -132,7 +133,7 @@
       do  k2 = 1, ele%nnod_4_ele
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
         call fem_skv_poisson_type(ele%istack_ele_smp, n_int, k2,       &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
         call cal_vect_diffuse_mat(ele, rhs_tbl, MG_mat_tbl, fem_wk,    &
      &      k2, dt, coef_imp, ak_d, mat33)
       end do
