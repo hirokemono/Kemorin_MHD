@@ -160,7 +160,7 @@
      &      k2, i_magne, fem_wk%vector_1)
         call fem_skv_lorentz_full_galerkin(iele_fsmp_stack, n_int, k2,  &
      &      fl_prop%coef_lor, fem_wk%vector_1, d_ele(1,iele_magne),     &
-     &      cd_prop%ex_magne, ele, jac_3d, fem_wk%sk6)
+     &      cd_prop%ex_magne, ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -214,7 +214,7 @@
      &      k2, i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
         call fem_skv_lorentz_rot_galerkin(iele_fsmp_stack,              &
      &      n_int, k2, mhd_fem_wk%vecp_1, fem_wk%vector_1,              &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -322,7 +322,7 @@
         call fem_skv_lorentz_full_upwind(iele_fsmp_stack,               &
      &      n_int, k2, dt, fl_prop%coef_lor, fem_wk%vector_1,           &
      &      d_ele(1,ie_upw), d_ele(1,iele_magne), cd_prop%ex_magne,     &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

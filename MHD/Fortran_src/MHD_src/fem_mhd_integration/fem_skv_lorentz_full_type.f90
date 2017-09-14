@@ -5,28 +5,33 @@
 !     modified by H. Matsui on Aug., 2005
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine fem_skv_lorentz_rot_galerkin(iele_fsmp_stack,         &
-!     &           n_int, k2, vector_1, bxe_ex, ele, jac_3d, sk_v)
-!
-!      subroutine fem_skv_lorentz_full_galerkin(iele_fsmp_stack,        &
-!     &          n_int, k2, coef_lor, magne_1, bxe, ex_magne,           &
-!     &          ele, jac_3d, sk_v)
-!      subroutine fem_skv_induction_galerkin(iele_fsmp_stack,           &
-!     &          n_int, k2, coef_uxb, velo_1, magne_1, vxe, bxe_ex,     &
-!     &          ele, jac_3d, sk_v)
-!
-!      subroutine fem_skv_stratified_galerkin(iele_fsmp_stack,          &
-!     &          n_int, k2, temp_1, vxe, xe, ele, jac_3d, sk_v)
-!
-!      subroutine fem_skv_lorentz_full_upwind(iele_fsmp_stack,          &
-!     &          n_int, k2, dt, coef_lor, magne_1, vxe, bxe, ex_magne,  &
-!     &          ele, jac_3d, sk_v)
-!      subroutine fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2, &
-!     &          dt, coef_uxb, velo_1, magne_1, vxe, bxe_ex, bxe_up,    &
-!     &          ele, jac_3d, sk_v)
-!
-!      subroutine fem_skv_stratified_upwind(iele_fsmp_stack,            &
-!     &          n_int, k2, dt, temp_1, vxe, xe, ele, jac_3d, sk_v)
+!!      subroutine fem_skv_lorentz_rot_galerkin                         &
+!!     &         (iele_fsmp_stack, n_int, k2, vector_1, bxe_ex,         &
+!!     &          ele, g_FEM, jac_3d, sk_v)
+!!
+!!      subroutine fem_skv_lorentz_full_galerkin(iele_fsmp_stack,       &
+!!     &          n_int, k2, coef_lor, magne_1, bxe, ex_magne,          &
+!!     &          ele,g_FEM,  jac_3d, sk_v)
+!!      subroutine fem_skv_induction_galerkin(iele_fsmp_stack,          &
+!!     &          n_int, k2, coef_uxb, velo_1, magne_1, vxe, bxe_ex,    &
+!!     &          ele, g_FEM, jac_3d, sk_v)
+!!
+!!      subroutine fem_skv_stratified_galerkin(iele_fsmp_stack,         &
+!!     &          n_int, k2, temp_1, vxe, xe, ele, g_FEM, jac_3d, sk_v)
+!!
+!!      subroutine fem_skv_lorentz_full_upwind(iele_fsmp_stack,         &
+!!     &          n_int, k2, dt, coef_lor, magne_1, vxe, bxe, ex_magne, &
+!!     &          ele, g_FEM, jac_3d, sk_v)
+!!      subroutine fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2,&
+!!     &          dt, coef_uxb, velo_1, magne_1, vxe, bxe_ex, bxe_up,   &
+!!     &          ele, g_FEM, jac_3d, sk_v)
+!!
+!!      subroutine fem_skv_stratified_upwind                            &
+!!     &         (iele_fsmp_stack, n_int, k2, dt, temp_1, vxe, xe,      &
+!!     &          ele, g_FEM, jac_3d, sk_v)
+!!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d
 !
       module fem_skv_lorentz_full_type
 !
@@ -34,11 +39,11 @@
       use m_constants
       use m_machine_parameter
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       use t_geometry_data
-      use t_finite_element_mat
+      use t_fem_gauss_int_coefs
       use t_jacobians
+      use t_finite_element_mat
 !
       implicit none
 !
@@ -48,12 +53,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_lorentz_rot_galerkin(iele_fsmp_stack,          &
-     &           n_int, k2, vector_1, bxe_ex, ele, jac_3d, sk_v)
+      subroutine fem_skv_lorentz_rot_galerkin                           &
+     &         (iele_fsmp_stack, n_int, k2, vector_1, bxe_ex,           &
+     &          ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_lorentz_full
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: n_int, k2
@@ -67,10 +74,10 @@
 !
       call fem_skv_lorentz_rot                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, jac_3d%ntot_int, n_int, k2,                &
-     &    jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,                          &
-     &    vector_1, bxe_ex, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    jac_3d%ntot_int, n_int, k2, jac_3d%xjac,                      &
+     &    jac_3d%dnx, jac_3d%dnx, vector_1, bxe_ex, sk_v)
 !
       end subroutine fem_skv_lorentz_rot_galerkin
 !
@@ -79,11 +86,12 @@
 !
       subroutine fem_skv_lorentz_full_galerkin(iele_fsmp_stack,         &
      &          n_int, k2, coef_lor, magne_1, bxe, ex_magne,            &
-     &          ele, jac_3d, sk_v)
+     &          ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_lorentz_full
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: n_int, k2
@@ -99,10 +107,11 @@
 !
       call fem_skv_lorentz_full_pg                                      &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, jac_3d%ntot_int, n_int, k2,                &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, coef_lor,                 &
-     &    magne_1, bxe, ex_magne, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    jac_3d%ntot_int, n_int, k2, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%dnx, coef_lor, magne_1, bxe,                &
+     &    ex_magne, sk_v)
 !
       end subroutine fem_skv_lorentz_full_galerkin
 !
@@ -110,11 +119,12 @@
 !
       subroutine fem_skv_induction_galerkin(iele_fsmp_stack,            &
      &          n_int, k2, coef_uxb, velo_1, magne_1, vxe, bxe_ex,      &
-     &          ele, jac_3d, sk_v)
+     &          ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_induction
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: n_int, k2
@@ -131,10 +141,11 @@
 !
       call fem_skv_induction_pg                                         &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, jac_3d%ntot_int, n_int, k2,                &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx,                           &
-     &    velo_1, magne_1, vxe, bxe_ex, coef_uxb, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    jac_3d%ntot_int, n_int, k2, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%dnx, velo_1, magne_1, vxe, bxe_ex,          &
+     &    coef_uxb, sk_v)
 !
       end subroutine fem_skv_induction_galerkin
 !
@@ -142,11 +153,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_stratified_galerkin(iele_fsmp_stack,           &
-     &          n_int, k2, temp_1, vxe, xe, ele, jac_3d, sk_v)
+     &          n_int, k2, temp_1, vxe, xe, ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_stratified
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -161,9 +173,10 @@
 !
       call fem_skv_stratified_pg                                        &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, jac_3d%ntot_int, n_int, k2,                &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%an, temp_1, vxe, xe, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    jac_3d%ntot_int, n_int, k2, jac_3d%xjac,                      &
+     &    jac_3d%an, jac_3d%an, temp_1, vxe, xe, sk_v)
 !
       end subroutine fem_skv_stratified_galerkin
 !
@@ -172,11 +185,12 @@
 !
       subroutine fem_skv_lorentz_full_upwind(iele_fsmp_stack,           &
      &          n_int, k2, dt, coef_lor, magne_1, vxe, bxe, ex_magne,   &
-     &          ele, jac_3d, sk_v)
+     &          ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_lorentz_full
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: n_int, k2
@@ -194,10 +208,11 @@
 !
       call fem_skv_lorentz_full_upw                                     &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, jac_3d%ntot_int, n_int, k2, dt,            &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx, coef_lor,     &
-     &    magne_1, vxe, bxe, ex_magne, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    jac_3d%ntot_int, n_int, k2, dt, jac_3d%xjac,                  &
+     &    jac_3d%an, jac_3d%dnx, jac_3d%dnx, coef_lor, magne_1,         &
+     &    vxe, bxe, ex_magne, sk_v)
 !
       end subroutine fem_skv_lorentz_full_upwind
 !
@@ -205,11 +220,12 @@
 !
       subroutine fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2,  &
      &          dt, coef_uxb, velo_1, magne_1, vxe, bxe_ex, bxe_up,     &
-     &          ele, jac_3d, sk_v)
+     &          ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_induction
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: n_int, k2
@@ -228,22 +244,25 @@
 !
       call fem_skv_induction_upm                                        &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, jac_3d%ntot_int, n_int, k2, dt,            &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
-     &    velo_1, magne_1, vxe, bxe_ex, bxe_up, coef_uxb, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    jac_3d%ntot_int, n_int, k2, dt, jac_3d%xjac,                  &
+     &    jac_3d%an, jac_3d%dnx, jac_3d%dnx, velo_1, magne_1,           &
+     &    vxe, bxe_ex, bxe_up, coef_uxb, sk_v)
 !
       end subroutine fem_skv_induction_upmagne
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_stratified_upwind(iele_fsmp_stack,             &
-     &          n_int, k2, dt, temp_1, vxe, xe, ele, jac_3d, sk_v)
+      subroutine fem_skv_stratified_upwind                              &
+     &         (iele_fsmp_stack, n_int, k2, dt, temp_1, vxe, xe,        &
+     &          ele, g_FEM, jac_3d, sk_v)
 !
       use fem_skv_stratified
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -259,10 +278,10 @@
 !
       call fem_skv_stratified_upw                                       &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
-     &    np_smp, iele_fsmp_stack, max_int_point, maxtot_int_3d,        &
-     &    int_start3, owe3d, jac_3d%ntot_int, n_int, k2, dt,            &
-     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%an, temp_1,        &
-     &    vxe, xe, sk_v)
+     &    np_smp, iele_fsmp_stack, g_FEM%max_int_point,                 &
+     &    g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,           &
+     &    jac_3d%ntot_int, n_int, k2, dt, jac_3d%xjac,                  &
+     &    jac_3d%an, jac_3d%dnx, jac_3d%an, temp_1, vxe, xe, sk_v)
 !
       end subroutine fem_skv_stratified_upwind
 !

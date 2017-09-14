@@ -50,6 +50,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -131,7 +132,7 @@
      &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
      &      cd_prop%coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1, &
      &      d_ele(1,iphys_ele%i_velo),  fem_wk%vector_1,                &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
 !
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                    &
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
@@ -224,7 +225,8 @@
      &     (conduct%istack_ele_fld_smp, num_int, k2, dt,                &
      &      cd_prop%coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1, &
      &      d_ele(1,iphys_ele%i_velo), fem_wk%vector_1,                 &
-     &      d_ele(1,iphys_ele%i_magne), ele, jac_3d, fem_wk%sk6)
+     &      d_ele(1,iphys_ele%i_magne), ele, g_FEM1, jac_3d,            &
+     &      fem_wk%sk6)
 !
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                    &
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then

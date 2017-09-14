@@ -214,7 +214,7 @@
             call fem_skv_lorentz_rot_galerkin                           &
      &         (fluid%istack_ele_fld_smp, num_int, k2,                  &
      &          mhd_fem_wk%vecp_1, fem_wk%vector_1,                     &
-     &          ele, jac_3d, fem_wk%sk6)
+     &          ele, g_FEM1, jac_3d, fem_wk%sk6)
           else if (iflag_4_rotate .eq. id_turn_OFF) then
             call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
      &          iphys%i_magne, fl_prop%coef_lor, mhd_fem_wk%magne_1)
@@ -479,7 +479,7 @@
             call fem_skv_lorentz_rot_galerkin                           &
      &         (fluid%istack_ele_fld_smp, num_int, k2,                  &
      &          mhd_fem_wk%vecp_1, fem_wk%vector_1,                     &
-     &          ele, jac_3d, fem_wk%sk6)
+     &          ele, g_FEM1, jac_3d, fem_wk%sk6)
           else
             call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
      &          iphys%i_magne, fl_prop%coef_lor, mhd_fem_wk%magne_1)

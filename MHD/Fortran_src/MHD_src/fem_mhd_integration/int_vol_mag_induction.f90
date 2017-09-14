@@ -39,6 +39,7 @@
       use t_geometry_data
       use t_phys_address
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -101,7 +102,7 @@
         call fem_skv_induction_galerkin(iele_fsmp_stack, n_int, k2,     &
      &      cd_prop%coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,    &
      &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -161,7 +162,8 @@
         call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2, dt,  &
      &      cd_prop%coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,    &
      &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
-     &      d_ele(1,iphys_ele%i_magne), ele, jac_3d, fem_wk%sk6)
+     &      d_ele(1,iphys_ele%i_magne), ele, g_FEM1, jac_3d,            &
+     &      fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

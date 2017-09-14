@@ -41,6 +41,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -95,7 +96,7 @@
 !
         call fem_skv_stratified_galerkin(fluid%istack_ele_fld_smp,      &
      &      num_int, k2, fem_wk%scalar_1, d_ele(1,iele_velo),           &
-     &      mhd_fem_wk%xx_e, ele, jac_3d, fem_wk%sk6)
+     &      mhd_fem_wk%xx_e, ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -148,7 +149,7 @@
 !
         call fem_skv_stratified_upwind(fluid%istack_ele_fld_smp,        &
      &      num_int, k2, dt, fem_wk%scalar_1, d_ele(1,iele_velo),       &
-     &      mhd_fem_wk%xx_e, ele, jac_3d, fem_wk%sk6)
+     &      mhd_fem_wk%xx_e, ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
