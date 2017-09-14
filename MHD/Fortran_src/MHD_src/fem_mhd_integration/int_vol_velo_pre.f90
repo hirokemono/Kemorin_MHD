@@ -147,7 +147,7 @@
               call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
      &            num_int, k2, SGS_param%ifilter_final,                 &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
-     &            ele, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,            &
+     &            ele, g_FEM1, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,    &
      &            fem_wk%tensor_1, fem_wk%sk6)
             else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
@@ -155,7 +155,7 @@
      &            mhd_fem_wk%sgs_t1)
               call fem_skv_inertia_rot_sgs_pg                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            ele, jac_3d, mhd_fem_wk%velo_1,                       &
+     &            ele, g_FEM1, jac_3d, mhd_fem_wk%velo_1,               &
      &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%i_vort),         &
      &            fem_wk%sk6)
             else
@@ -177,7 +177,7 @@
      &           (fluid%istack_ele_fld_smp, num_int,                    &
      &            k2, SGS_param%ifilter_final,                          &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
-     &            ele, jac_3d, FEM_elens, mhd_fem_wk%velo_1,            &
+     &            ele, g_FEM1, jac_3d, FEM_elens, mhd_fem_wk%velo_1,    &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                   &
      &            d_ele(1,iphys_ele%i_velo), fem_wk%sk6)
             else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
@@ -186,7 +186,7 @@
      &            mhd_fem_wk%sgs_t1)
               call fem_skv_vec_inertia_sgs_pg                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            ele, jac_3d, mhd_fem_wk%velo_1,                       &
+     &            ele, g_FEM1, jac_3d, mhd_fem_wk%velo_1,               &
      &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%i_velo),         &
      &            fem_wk%sk6)
             else
@@ -239,7 +239,7 @@
               call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
      &            num_int, k2, SGS_param%ifilter_final,                 &
      &            diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,    &
-     &            ele, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,            &
+     &            ele, g_FEM1, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,    &
      &            fem_wk%tensor_1, fem_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele                           &

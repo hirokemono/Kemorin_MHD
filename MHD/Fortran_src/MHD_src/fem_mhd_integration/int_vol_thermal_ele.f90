@@ -117,7 +117,7 @@
           call fem_skv_scl_inertia_modsgs_pg                            &
      &       (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final,     &
      &        diff_coefs%num_field, iak_diff_flux, diff_coefs%ak,       &
-     &        ele, jac_3d, FEM_elens, fem_wk%scalar_1,                  &
+     &        ele, g_FEM1, jac_3d, FEM_elens, fem_wk%scalar_1,          &
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, d_ele(1,iele_velo),   &
      &        fem_wk%sk6)
         else if(iflug_SGS_term .ne. id_SGS_none) then
@@ -125,7 +125,7 @@
      &        i_SGS_flux, property%coef_nega_adv,                       &
      &        mhd_fem_wk%sgs_v1)
           call fem_skv_scl_inertia_sgs_pg(fluid%istack_ele_fld_smp,     &
-     &        num_int, k2, ele, jac_3d,                                 &
+     &        num_int, k2, ele, g_FEM1, jac_3d,                         &
      &        fem_wk%scalar_1, mhd_fem_wk%sgs_v1, d_ele(1,iele_velo),   &
      &        fem_wk%sk6)
         else

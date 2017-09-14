@@ -31,6 +31,7 @@
       use m_phys_constants
       use t_mesh_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
@@ -90,7 +91,7 @@
         call fem_skv_div_sgs_vector                                     &
      &     (iele_fsmp_stack, n_int, k2, i_filter,                       &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak,              &
-     &      ele, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,                  &
+     &      ele, g_FEM1, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,          &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
@@ -142,7 +143,7 @@
         call fem_skv_div_sgs_tensor                                     &
      &     (iele_fsmp_stack, n_int, k2, i_filter,                       &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak,              &
-     &      ele, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,                  &
+     &      ele, g_FEM1, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,          &
      &      fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
