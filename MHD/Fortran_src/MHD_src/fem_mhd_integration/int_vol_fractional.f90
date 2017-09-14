@@ -76,7 +76,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,   &
      &      k2, i_vector, fem_wk%vector_1)
         call fem_skv_div_to_linear(iele_fsmp_stack, n_int, k2,          &
-     &      ele, jac_3d, jac_3d_l, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, jac_3d_l, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,           &
@@ -117,7 +117,7 @@
         call scalar_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_scalar, fem_wk%scalar_1)
         call fem_skv_linear_gradient(iele_fsmp_stack, n_int, k2,        &
-     &      ele, jac_3d, jac_3d_l, fem_wk%scalar_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, jac_3d_l, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

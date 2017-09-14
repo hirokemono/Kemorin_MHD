@@ -149,7 +149,7 @@
      &        mhd_fem_wk%sgs_v1)
           call fem_skv_div_asym_tsr                                     &
      &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
-     &        ele, jac_3d, mhd_fem_wk%sgs_v1, fem_wk%sk6)
+     &        ele, g_FEM1, jac_3d, mhd_fem_wk%sgs_v1, fem_wk%sk6)
         end if
       end do
 !

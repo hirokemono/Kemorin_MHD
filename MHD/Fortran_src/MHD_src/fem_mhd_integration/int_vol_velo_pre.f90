@@ -247,7 +247,7 @@
      &            fl_prop%coef_lor, fem_wk%tensor_1)
               call fem_skv_div_tensor                                   &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            ele, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
+     &            ele, g_FEM1, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
             end if
           end if
 !

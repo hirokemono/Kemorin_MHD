@@ -59,6 +59,7 @@
       use t_group_data
       use t_phys_address
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_jacobian_2d
       use t_table_FEM_const
@@ -166,8 +167,9 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element                                 &
      &     (node, ele, nod_fld, k2, i_vecp, fem_wk%vector_1)
-        call fem_skv_rot_rot_by_laplace(ele%istack_ele_smp,             &
-     &      num_int, k2, ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_rot_rot_by_laplace                                 &
+     &     (ele%istack_ele_smp, num_int, k2,                            &
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

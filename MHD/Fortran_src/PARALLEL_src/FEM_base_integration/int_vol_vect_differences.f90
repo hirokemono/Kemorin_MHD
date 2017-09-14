@@ -34,6 +34,7 @@
 !
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -77,7 +78,7 @@
         call scalar_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%scalar_1)
         call fem_skv_gradient(iele_fsmp_stack, num_int, k2,             &
-     &      ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -114,7 +115,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%vector_1)
         call fem_skv_divergence(iele_fsmp_stack, num_int, k2,           &
-     &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -151,7 +152,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%vector_1)
         call fem_skv_rotation(iele_fsmp_stack, num_int, k2,             &
-     &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -189,7 +190,7 @@
         call tensor_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%tensor_1)
         call fem_skv_div_tensor(iele_fsmp_stack, num_int, k2,           &
-     &      ele, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -225,7 +226,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld ,            &
      &      k2, i_field, fem_wk%vector_1)
         call fem_skv_div_asym_tsr(iele_fsmp_stack, num_int, k2,         &
-     &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

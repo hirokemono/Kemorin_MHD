@@ -36,6 +36,7 @@
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -81,8 +82,9 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_flux, nod_fld%d_fld, fem_wk%tensor_1)
-        call fem_skv_div_tensor(fluid%istack_ele_fld_smp,               &
-     &      num_int, k2, ele, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
+        call fem_skv_div_tensor                                         &
+     &     (fluid%istack_ele_fld_smp, num_int, k2,                      &
+     &      ele, g_FEM1, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
       end do
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_nl%ff_smp)
@@ -125,8 +127,9 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_scalar, i_flux, nod_fld%d_fld, fem_wk%vector_1)
-        call fem_skv_divergence(fluid%istack_ele_fld_smp,               &
-     &      num_int, k2, ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_divergence                                         &
+     &     (fluid%istack_ele_fld_smp, num_int, k2,                      &
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -166,8 +169,9 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_b, i_v, i_flux, nod_fld%d_fld, fem_wk%vector_1)
-        call fem_skv_div_asym_tsr(conduct%istack_ele_fld_smp,           &
-     &      num_int, k2, ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_div_asym_tsr                                       &
+     &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

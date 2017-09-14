@@ -118,6 +118,7 @@
      &          rhs_tbl, fem_wk, f_nl, elen_org_nod)
 !
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
 !
       use t_table_FEM_const
@@ -145,7 +146,7 @@
         call scalar_2_each_element(node, ele,                          &
      &      k2, elen_org_nod, scalar_ele)
         call fem_skv_gradient(ele%istack_ele_smp, num_int_points,      &
-     &      k2, ele, jac_3d, scalar_ele, fem_wk%sk6)
+     &      k2, ele, g_FEM1, jac_3d, scalar_ele, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                    &
