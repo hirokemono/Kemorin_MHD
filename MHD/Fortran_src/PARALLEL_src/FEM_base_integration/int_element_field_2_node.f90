@@ -43,9 +43,9 @@
 !
       use m_geometry_constants
       use m_phys_constants
-      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -192,7 +192,7 @@
      &      max_int_point, ele, jac_3d, scalar_ele, fem_wk%sk6)
       else
         call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
-     &      max_int_point, ele, jac_3d, fem_wk%sk6)
+     &      max_int_point, ele, g_FEM1, jac_3d, fem_wk%sk6)
         call fem_skv_scalar_on_ele_HRZ_type(iele_fsmp_stack,            &
      &      fem_wk%me_diag, ele, scalar_ele, fem_wk%sk6)
       end if
@@ -228,7 +228,7 @@
      &      max_int_point, ele, jac_3d, vector_ele, fem_wk%sk6)
       else
         call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
-     &      max_int_point, ele, jac_3d, fem_wk%sk6)
+     &      max_int_point, ele, g_FEM1, jac_3d, fem_wk%sk6)
         call fem_skv_vector_on_ele_HRZ_type(iele_fsmp_stack,            &
      &      fem_wk%me_diag, ele, vector_ele, fem_wk%sk6)
       end if
@@ -268,7 +268,7 @@
      &      scalar_ele, fem_wk%sk6)
       else
         call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp, max_int_point, ele, jac_3d,             &
+     &      nele_grp, iele_grp, max_int_point, ele, g_FEM1, jac_3d,     &
      &      fem_wk%sk6)
         call fem_skv_scalar_on_egrp_HRZ_type(iele_fsmp_stack,           &
      &      nele_grp, iele_grp, fem_wk%me_diag, ele, scalar_ele,        &
@@ -309,7 +309,7 @@
      &      vector_ele, fem_wk%sk6)
       else
         call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp,  max_int_point, ele, jac_3d,            &
+     &      nele_grp, iele_grp,  max_int_point, ele, g_FEM1, jac_3d,    &
      &      fem_wk%sk6)
         call fem_skv_vector_on_egrp_HRZ_type(iele_fsmp_stack,           &
      &      nele_grp, iele_grp, fem_wk%me_diag, ele, vector_ele,        &

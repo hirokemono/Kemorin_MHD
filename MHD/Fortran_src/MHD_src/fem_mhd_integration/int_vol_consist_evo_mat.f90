@@ -30,6 +30,7 @@
       use t_physical_property
       use t_mesh_data
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_sorted_node_MHD
@@ -77,7 +78,7 @@
       do  k2 = 1, mesh%ele%nnod_4_ele
         call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
         call fem_skv_mass_matrix_type(mesh%ele%istack_ele_smp,          &
-     &      num_int, k2, mesh%ele, jac_3d, fem_wk%sk6)
+     &      num_int, k2, mesh%ele, g_FEM1, jac_3d, fem_wk%sk6)
 !
         if (fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass           &
      &      .and. fl_prop%coef_velo.gt.0.0d0 ) then

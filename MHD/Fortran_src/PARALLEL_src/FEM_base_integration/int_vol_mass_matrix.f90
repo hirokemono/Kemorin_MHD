@@ -42,6 +42,7 @@
 !
       use m_phys_constants
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -132,8 +133,8 @@
       call reset_ff_smp(node%max_nod_smp, rhs_l)
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
-      call fem_skv_mass_mat_diag_HRZ_type                               &
-     &   (ele%istack_ele_smp, num_int, ele, jac_3d_q, fem_wk%sk6)
+      call fem_skv_mass_mat_diag_HRZ_type(ele%istack_ele_smp, num_int,  &
+     &    ele, g_FEM1, jac_3d_q, fem_wk%sk6)
       call sum_skv_diagonal_4_HRZ_type(ele%istack_ele_smp, ele,         &
      &    fem_wk%sk6, fem_wk%me_diag)
 !
@@ -179,7 +180,7 @@
       do k2 = 1, ele%nnod_4_ele
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
         call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
         call add_skv1_to_crs_matrix11(ele, rhs_tbl, mat_tbl,            &
      &      k2, fem_wk%sk6, nmat_size, aiccg)
       end do
@@ -218,7 +219,7 @@
 !
       do k2 = 1, ele%nnod_4_ele
         call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -253,7 +254,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_skv_mass_matrix_diag_type                                &
-     &   (iele_fsmp_stack, num_int, ele, jac_3d, fem_wk%sk6)
+     &   (iele_fsmp_stack, num_int, ele, g_FEM1, jac_3d, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, rhs_l%ff_smp)
@@ -287,7 +288,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_skv_mass_mat_diag_HRZ_type                               &
-     &   (iele_fsmp_stack, num_int, ele, jac_3d_q, fem_wk%sk6)
+     &   (iele_fsmp_stack, num_int, ele, g_FEM1, jac_3d_q, fem_wk%sk6)
       call vol_average_skv_HRZ_type                                     &
      &   (iele_fsmp_stack, ele, fem_wk%sk6, fem_wk%me_diag)
 !

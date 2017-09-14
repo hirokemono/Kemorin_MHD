@@ -19,7 +19,7 @@
 !!      subroutine fem_skv_mass_mat_diag_HRZ                            &
 !!     &         (numele, nnod_4_e1, np_smp, iele_fsmp_stack,           &
 !!     &          max_int_point, maxtot_int_3d, int_start3, owe3d,      &
-!!     &          ntot_int_3d, num_int, an, xjac, sk_v)
+!!     &          ntot_int_3d, num_int, xjac, an, sk_v)
 !!      subroutine sum_skv_diagonal_4_HRZ(numele, nnod_4_e1, np_smp,    &
 !!     &           iele_fsmp_stack, sk_v, ml_e)
 !!      subroutine volume_average_skv_HRZ(numele, nnod_4_e1, np_smp,    &
@@ -146,7 +146,7 @@
       subroutine fem_skv_mass_mat_diag_HRZ                              &
      &         (numele, nnod_4_e1, np_smp, iele_fsmp_stack,             &
      &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
-     &          ntot_int_3d, num_int, an, xjac, sk_v)
+     &          ntot_int_3d, num_int, xjac, an, sk_v)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, np_smp
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)

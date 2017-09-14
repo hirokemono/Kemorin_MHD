@@ -29,6 +29,7 @@
 !
       use m_phys_constants
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -72,9 +73,9 @@
 !
       do k2 = 1, ele%nnod_4_ele
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
-        call fem_grp_skv_mass_matrix_t(iele_fsmp_stack,                 &
-     &      nele_grp, iele_grp, n_int, k2, ele, jac_3d,                 &
-     &      fem_wk%sk6)
+        call fem_grp_skv_mass_matrix_t                                  &
+     &     (iele_fsmp_stack, nele_grp, iele_grp, n_int, k2,             &
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
         call add_skv1_to_crs_matrix11(ele, rhs_tbl, mat_tbl,            &
      &      k2, fem_wk%sk6, nmat_size, aiccg)
       end do
@@ -112,8 +113,9 @@
 ! -------- loop for shape function for the phsical values
 !
       do k2 = 1, ele%nnod_4_ele
-       call fem_grp_skv_mass_matrix_t(iele_fsmp_stack,                  &
-     &     nele_grp, iele_grp, n_int, k2, ele, jac_3d, fem_wk%sk6)
+       call fem_grp_skv_mass_matrix_t                                   &
+     &    (iele_fsmp_stack, nele_grp, iele_grp, n_int, k2,              &
+     &     ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -148,7 +150,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_grp_skv_mass_matrix_diag_t(iele_fsmp_stack,              &
-     &    nele_grp, iele_grp, n_int, ele, jac_3d, fem_wk%sk6)
+     &    nele_grp, iele_grp, n_int, ele, g_FEM1, jac_3d, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, rhs_l%ff_smp)
@@ -182,7 +184,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
-     &    nele_grp, iele_grp, n_int, ele, jac_3d_q, fem_wk%sk6)
+     &    nele_grp, iele_grp, n_int, ele, g_FEM1, jac_3d_q, fem_wk%sk6)
       call sum_skv_diagonal_4_HRZ_type(iele_fsmp_stack, ele,            &
      &    fem_wk%sk6, fem_wk%me_diag)
 !
@@ -221,7 +223,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
-     &    nele_grp, iele_grp, n_int, ele, jac_3d_q, fem_wk%sk6)
+     &    nele_grp, iele_grp, n_int, ele, g_FEM1, jac_3d_q, fem_wk%sk6)
       call grp_volume_average_skv_HRZ_t(iele_fsmp_stack,                &
      &    nele_grp, iele_grp, ele, fem_wk%sk6, fem_wk%me_diag)
 !
