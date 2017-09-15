@@ -47,6 +47,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -100,11 +101,11 @@
 !
         do k2 = 1, surf%nnod_4_surf
           call vector_phys_2_each_surface                               &
-     &         (node, ele, surf, sf_grp, nod_fld, igrp, k2, i_field,    &
-     &          surf_wk%vect_sf)
+     &       (node, ele, surf, sf_grp, nod_fld, igrp, k2, i_field,      &
+     &        surf_wk%vect_sf)
           call fem_surf_skv_trq_sph_out                                 &
-     &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
-     &          ak_d, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
+     &       (ele, surf, sf_grp, g_FEM1, jac_sf_grp, igrp, k2, n_int,   &
+     &        ak_d, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
         end do
       end do
 !
@@ -151,11 +152,11 @@
 !
         do k2 = 1, surf%nnod_4_surf
           call vector_phys_2_each_surf_cst                              &
-     &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
-     &          i_field, dminus, surf_wk%vect_sf)
+     &       (node, ele, surf, sf_grp, nod_fld, igrp, k2,               &
+     &        i_field, dminus, surf_wk%vect_sf)
           call fem_surf_skv_trq_sph_out                                 &
-     &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
-     &          ak_d, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
+     &       (ele, surf, sf_grp, g_FEM1, jac_sf_grp, igrp, k2, n_int,   &
+     &        ak_d, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
         end do
       end do
 !

@@ -35,6 +35,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -90,8 +91,8 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_vect, surf_wk%vect_sf)
             call fem_surf_skv_poisson_wall                              &
-     &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2, n_int,       &
-     &          surf_wk%vect_sf, fem_wk%sk6)
+     &         (ele, surf, sf_grp, g_FEM1, jac_sf_grp_l, igrp, k2,      &
+     &          n_int, surf_wk%vect_sf, fem_wk%sk6)
           end do
 !
         end if
@@ -141,7 +142,7 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_vect, dminus, surf_wk%vect_sf)
             call fem_surf_skv_poisson_sph_out                           &
-     &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2,              &
+     &         (ele, surf, sf_grp, g_FEM1, jac_sf_grp_l, igrp, k2,      &
      &          n_int, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
           end do
 !
@@ -194,8 +195,8 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_vect, surf_wk%vect_sf)
             call fem_surf_skv_poisson_sph_out                           &
-     &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2, n_int,       &
-     &          surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
+     &         (ele, surf, sf_grp, g_FEM1, jac_sf_grp_l, igrp, k2,      &
+     &          n_int, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
           end do
 !
         end if

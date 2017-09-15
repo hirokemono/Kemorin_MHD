@@ -34,6 +34,7 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -92,8 +93,8 @@
               call dlt_scl_phys_2_each_surface                          &
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2,           &
      &            i_comp, surf_wk%scalar_sf)
-              call fem_surf_skv_current_by_vecp                         &
-     &           (ele, surf, sf_grp, jac_sf_grp, igrp, k2, nd, n_int,   &
+              call fem_surf_skv_current_by_vecp(ele, surf, sf_grp,      &
+     &            g_FEM1, jac_sf_grp, igrp, k2, nd, n_int,              &
      &            surf_wk%dxe_sf, surf_wk%scalar_sf, fem_wk%sk6)
             end do
 !
@@ -149,7 +150,7 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_field, surf_wk%scalar_sf)
             call fem_surf_skv_diffuse_galerkin                          &
-     &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2,                &
+     &         (ele, surf, sf_grp, g_FEM1, jac_sf_grp, igrp, k2,        &
      &          ione, n_int, surf_wk%dxe_sf, surf_wk%scalar_sf,         &
      &          ak_d, fem_wk%sk6)
           end do
@@ -209,7 +210,7 @@
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2,           &
      &            i_comp, surf_wk%scalar_sf)
               call fem_surf_skv_diffuse_galerkin                        &
-     &           (ele, surf, sf_grp, jac_sf_grp, igrp, k2,              &
+     &           (ele, surf, sf_grp, g_FEM1, jac_sf_grp, igrp, k2,      &
      &            nd, n_int, surf_wk%dxe_sf, surf_wk%scalar_sf,         &
      &            ak_d, fem_wk%sk6)
             end do

@@ -35,6 +35,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -74,7 +75,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_surf_skv_norm_grad_galerkin                              &
-     &   (ele, surf, sf_grp, jac_sf_grp, grad_sf,                       &
+     &   (ele, surf, sf_grp, g_FEM1, jac_sf_grp, grad_sf,               &
      &    n_int, ione, ak_d, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -113,7 +114,7 @@
       do nd = 1, n_vector
         if (grad_sf(nd)%ngrp_sf_fix_fx .gt. 0) then
           call fem_surf_skv_norm_grad_galerkin                          &
-     &       (ele, surf, sf_grp, jac_sf_grp, grad_sf(nd),               &
+     &       (ele, surf, sf_grp, g_FEM1, jac_sf_grp, grad_sf(nd),       &
      &        n_int, nd, ak_d, fem_wk%sk6)
         end if
       end do
@@ -146,8 +147,8 @@
       if (grad_sf%ngrp_sf_fix_fx .eq. 0) return
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
-      call fem_surf_skv_norm_poisson_pg                                 &
-     &   (ele, surf, sf_grp, jac_sf_grp_l, grad_sf, n_int, fem_wk%sk6)
+      call fem_surf_skv_norm_poisson_pg(ele, surf, sf_grp,              &
+     &    g_FEM1, jac_sf_grp_l, grad_sf, n_int, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, f_l%ff_smp)
