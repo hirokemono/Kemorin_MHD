@@ -148,7 +148,7 @@
         call fem_skv_div_sgs_asym_t_upwind                              &
      &     (iele_fsmp_stack, n_int, k2, i_filter, dt,                   &
      &      diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,          &
-     &      ele, jac_3d, FEM_elens, d_ele(1,i_magne),                   &
+     &      ele, g_FEM1, jac_3d, FEM_elens, d_ele(1,i_magne),           &
      &      mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
       end do
 !

@@ -237,8 +237,9 @@
      &       (conduct%istack_ele_fld_smp, num_int,                      &
      &        k2, SGS_param%ifilter_final, dt,                          &
      &        diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,        &
-     &        ele, jac_3d, FEM_elens, d_ele(1,iphys_ele%i_magne),       &
-     &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
+     &        ele, g_FEM1, jac_3d, FEM_elens,                           &
+     &        d_ele(1,iphys_ele%i_magne), mhd_fem_wk%sgs_v1,            &
+     &        fem_wk%vector_1, fem_wk%sk6)
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        iphys%i_SGS_induct_t, cd_prop%coef_induct,                &
