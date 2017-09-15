@@ -10,15 +10,16 @@
 !        modified by H. Matsui on Aug., 2012
 !
 !!      subroutine int_vol_buoyancy_pg                                  &
-!!     &         (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,         &
+!!     &         (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,  &
 !!     &          iele_fsmp_stack, n_int, i_source, ak_buo,             &
 !!     &          fem_wk, f_nl)
 !!      subroutine int_vol_buoyancy_upw                                 &
-!!     &         (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,         &
+!!     &         (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,  &
 !!     &          iele_fsmp_stack, n_int, dt, i_source, ak_buo,         &
 !!     &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_data),    intent(in) :: nod_fld
@@ -36,7 +37,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_physical_property
       use t_table_FEM_const
@@ -51,7 +52,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_buoyancy_pg                                    &
-     &         (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,           &
+     &         (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,    &
      &          iele_fsmp_stack, n_int, i_source, ak_buo,               &
      &          fem_wk, f_nl)
 !
@@ -61,6 +62,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(fluid_property), intent(in) :: fl_prop
       type(phys_data),    intent(in) :: nod_fld
@@ -84,7 +86,7 @@
         call set_gravity_vec_each_ele(node, ele, nod_fld, k2, i_source, &
      &      fl_prop%i_grav, fl_prop%grav, ak_buo, fem_wk%vector_1)
         call fem_skv_vector_type(iele_fsmp_stack, n_int, k2,            &
-     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -95,7 +97,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_buoyancy_upw                                   &
-     &         (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,           &
+     &         (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,    &
      &          iele_fsmp_stack, n_int, dt, i_source, ak_buo,           &
      &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
 !
@@ -105,6 +107,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(fluid_property), intent(in) :: fl_prop
       type(phys_data),    intent(in) :: nod_fld
@@ -133,7 +136,7 @@
      &      fl_prop%i_grav, fl_prop%grav, ak_buo, fem_wk%vector_1)
         call fem_skv_vector_field_upwind                                &
      &     (iele_fsmp_stack, n_int, k2, dt, d_ele(1,ie_upw),            &
-     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

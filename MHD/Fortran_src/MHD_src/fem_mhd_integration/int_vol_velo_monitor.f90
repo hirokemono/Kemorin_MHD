@@ -55,6 +55,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -144,37 +145,37 @@
 !
       if(i_field .eq. iphys%i_buoyancy) then
         call int_vol_buoyancy_pg                                        &
-     &     (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,               &
+     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_temp, ak_MHD%ak_buo, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_comp_buo) then
         call int_vol_buoyancy_pg                                        &
-     &     (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,               &
+     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_light, ak_MHD%ak_comp_buo, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_filter_buo) then
         call int_vol_buoyancy_pg                                        &
-     &     (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,               &
+     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_filter_temp, ak_MHD%ak_buo, fem_wk, f_nl)
       end if
 !
       if(i_field .eq. iphys%i_m_tension) then
-        call int_vol_Lorentz_pg                                         &
-     &     (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,      &
+        call int_vol_Lorentz_pg(node, ele,                              &
+     &      fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,         &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_magne, ele_fld%ntot_phys, iphys_ele%i_magne,        &
      &      ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
       else if(i_field .eq. iphys%i_lorentz) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
-          call int_vol_full_rot_Lorentz_pg                              &
-     &       (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,    &
+          call int_vol_full_rot_Lorentz_pg(node, ele,                   &
+     &        fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_vecp, ele_fld%ntot_phys, iphys_ele%i_magne,       &
      &        ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
         else
-          call int_vol_full_Lorentz_pg                                  &
-     &       (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,    &
+          call int_vol_full_Lorentz_pg(node, ele,                       &
+     &        fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_magne, ele_fld%ntot_phys, iphys_ele%i_magne,      &
      &        ele_fld%d_fld, fem_wk, f_nl)
@@ -298,19 +299,19 @@
 !
       if(i_field .eq. iphys%i_buoyancy) then
         call int_vol_buoyancy_upw                                       &
-     &     (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,               &
+     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_temp, ak_MHD%ak_buo, ele_fld%ntot_phys,             &
      &      iv_upw, ele_fld%d_fld, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_comp_buo) then
         call int_vol_buoyancy_upw                                       &
-     &     (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,               &
+     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_light, ak_MHD%ak_comp_buo, ele_fld%ntot_phys,       &
      &      iv_upw, ele_fld%d_fld, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_filter_buo) then
         call int_vol_buoyancy_upw                                       &
-     &     (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,               &
+     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_filter_temp, ak_MHD%ak_buo, ele_fld%ntot_phys,      &
      &      iv_upw, ele_fld%d_fld, fem_wk, f_nl)
@@ -318,21 +319,21 @@
 !
 !
       if(i_field .eq. iphys%i_m_tension) then
-        call int_vol_Lorentz_upw                                        &
-     &     (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,      &
+        call int_vol_Lorentz_upw(node, ele,                             &
+     &      fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,         &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_magne, ele_fld%ntot_phys, iphys_ele%i_magne,        &
      &      iv_upw, ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
       else if(i_field .eq. iphys%i_lorentz) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
-          call int_vol_full_rot_Lorentz_pg                              &
-     &       (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,    &
+          call int_vol_full_rot_Lorentz_pg(node, ele,                   &
+     &        fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_vecp, ele_fld%ntot_phys, iphys_ele%i_magne,       &
      &        ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
         else
-          call int_vol_full_Lorentz_upw                                 &
-     &       (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,    &
+          call int_vol_full_Lorentz_upw(node, ele,                      &
+     &        fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_magne, ele_fld%ntot_phys,iphys_ele%i_magne,       &
      &        iv_upw, ele_fld%d_fld, fem_wk, f_nl)
