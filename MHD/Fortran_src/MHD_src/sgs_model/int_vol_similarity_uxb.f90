@@ -136,7 +136,7 @@
      &      k2, iphys%i_sgs_simi, fem_wk%vector_1)
 !
         call fem_skv_vector_field_upwind(conduct%istack_ele_fld_smp,    &
-     &      num_int, k2, dt, d_ele(1,iele_magne), ele, jac_3d,          &
+     &      num_int, k2, dt, d_ele(1,iele_magne), ele, g_FEM1, jac_3d,  &
      &      fem_wk%vector_1, fem_wk%sk6)
 !
         call scalar_prod_to_tensor_skv(ele, conduct%istack_ele_fld_smp, &

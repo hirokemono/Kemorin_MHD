@@ -133,7 +133,7 @@
      &      fl_prop%i_grav, fl_prop%grav, ak_buo, fem_wk%vector_1)
         call fem_skv_vector_field_upwind                                &
      &     (iele_fsmp_stack, n_int, k2, dt, d_ele(1,ie_upw),            &
-     &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

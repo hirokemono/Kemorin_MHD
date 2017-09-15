@@ -169,7 +169,7 @@
      &      k2, f_nl%ff(1:node%numnod,1), fem_wk%scalar_1)
         call fem_skv_scalar_field_upwind                                &
      &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,ie_up),           &
-     &      ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call sub1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -218,7 +218,7 @@
      &      k2, f_nl%ff, fem_wk%vector_1)
         call fem_skv_vector_field_upwind                                &
      &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,ie_up),           &
-     &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
