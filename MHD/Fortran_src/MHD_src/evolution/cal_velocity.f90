@@ -172,7 +172,7 @@
      &    iphys, nod_fld, g_FEM1, fem_int%jcs%jac_3d, fem_sq%j_ave,     &
      &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !      call int_rms_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,    &
-!     &    iphys, nod_fld, fem_int%jcs%jac_3d, fem_sqi_rms,             &
+!     &    iphys, nod_fld, g_FEM1, fem_int%jcs%jac_3d, fem_sqi_rms,     &
 !     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
       do iloop = 0, FEM_prm%maxiter_stokes
@@ -215,7 +215,7 @@
      &      iphys, nod_fld, g_FEM1, fem_int%jcs%jac_3d, fem_sq%j_ave,   &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,  &
-!     &      iphys, nod_fld, fem_int%jcs%jac_3d, fem_sq%i_rms,          &
+!     &      iphys, nod_fld, g_FEM1, fem_int%jcs%jac_3d, fem_sq%i_rms,  &
 !     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_stokes) go to 10

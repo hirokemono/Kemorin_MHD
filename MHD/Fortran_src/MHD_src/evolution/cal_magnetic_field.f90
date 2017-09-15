@@ -176,7 +176,7 @@
      &    iphys, nod_fld, g_FEM1, jacobians%jac_3d, fem_sq%j_ave,       &
      &    rhs_mat%fem_wk,fem_sq%msq, rel_correct)
 !      call int_rms_div_a_monitor(iloop, mesh%node, mesh%ele,           &
-!     &    iphys, nod_fld, jacobians%jac_3d, fem_sq%i_rms,              &
+!     &    iphys, nod_fld, g_FEM1, jacobians%jac_3d, fem_sq%i_rms,      &
 !     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
       call init_sol_potential                                           &
@@ -228,7 +228,7 @@
      &      iphys, nod_fld, g_FEM1, jacobians%jac_3d, fem_sq%j_ave,     &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_a_monitor(iloop, mesh%node, mesh%ele,         &
-!     &      iphys, nod_fld, jacobians%jac_3d, fem_sq%i_rms,            &
+!     &      iphys, nod_fld, g_FEM1, jacobians%jac_3d, fem_sq%i_rms,    &
 !     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
         if(abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
@@ -372,7 +372,7 @@
      &      iphys, nod_fld, g_FEM1, jacobians%jac_3d, fem_sq%j_ave,     &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_b_monitor(iloop, mesh%node, mesh%ele,         &
-!     &      iphys, nod_fld, jacobians%jac_3d, fem_sq%i_rms,            &
+!     &      iphys, nod_fld, g_FEM1, jacobians%jac_3d, fem_sq%i_rms,    &
 !     &      rhs_mat%fem_wk,fem_sq%msq, rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit

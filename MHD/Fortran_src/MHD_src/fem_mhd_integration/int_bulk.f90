@@ -39,6 +39,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_finite_element_mat
       use t_MHD_finite_element_mat
@@ -59,7 +60,6 @@
 !
       use m_constants
       use calypso_mpi
-      use m_fem_gauss_int_coefs
       use m_phys_labels
       use int_all_energy
       use int_all_ave_tensors
@@ -736,7 +736,7 @@
      &      g_FEM1, jac_3d_q, fem_wk, fem_msq%ave_local(j_ave%i_div_v))
         call int_rms_divergence                                         &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo, node, ele, nod_fld, &
-     &      jac_3d_q, fem_wk, fem_msq%rms_local(i_rms%i_div_v))
+     &      g_FEM1, jac_3d_q, fem_wk, fem_msq%rms_local(i_rms%i_div_v))
         call cal_stability_4_advect(i_step, dt, ele, fluid,             &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
       end if
@@ -747,7 +747,7 @@
      &      g_FEM1, jac_3d_q, fem_wk, fem_msq%ave_local(j_ave%i_div_a))
         call int_rms_divergence                                         &
      &     (ele%istack_ele_smp, iphys%i_vecp, node, ele, nod_fld,       &
-     &      jac_3d_q, fem_wk, fem_msq%rms_local(i_rms%i_div_a))
+     &      g_FEM1, jac_3d_q, fem_wk, fem_msq%rms_local(i_rms%i_div_a))
       end if
 !
       if      (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
@@ -757,7 +757,7 @@
      &      g_FEM1, jac_3d_q, fem_wk, fem_msq%ave_local(j_ave%i_div_b))
         call int_rms_divergence                                         &
      &     (ele%istack_ele_smp, iphys%i_magne, node, ele, nod_fld,      &
-     &      jac_3d_q, fem_wk, fem_msq%rms_local(i_rms%i_div_b))
+     &      g_FEM1, jac_3d_q, fem_wk, fem_msq%rms_local(i_rms%i_div_b))
       end if
 !
       end subroutine int_no_evo_mean_squares
