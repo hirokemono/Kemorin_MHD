@@ -129,7 +129,7 @@
      &      k2, i_velo, fl_prop%coef_cor, fem_wk%vector_1)
         call fem_skv_coriolis_upwind(iele_fsmp_stack, n_int, k2, dt,    &
      &      fem_wk%vector_1, fl_prop%sys_rot, d_ele(1,ie_upw),          &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

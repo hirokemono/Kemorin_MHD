@@ -272,7 +272,7 @@
         call fem_skv_vector_inertia_upwind                              &
      &     (iele_fsmp_stack, n_int, k2, dt,                             &
      &      fem_wk%vector_1, mhd_fem_wk%magne_1, d_ele(1,ie_upw),       &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

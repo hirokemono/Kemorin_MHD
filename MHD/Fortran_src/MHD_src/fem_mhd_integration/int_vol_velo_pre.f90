@@ -384,7 +384,7 @@
               call fem_skv_rot_inertia_upwind                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
-     &            d_ele(1,ie_upw), ele, jac_3d, fem_wk%sk6)
+     &            d_ele(1,ie_upw), ele, g_FEM1, jac_3d, fem_wk%sk6)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int,                    &
      &            k2, SGS_param%ifilter_final, dt,                      &
@@ -404,7 +404,7 @@
               call fem_skv_rot_inertia_upwind                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
-     &            d_ele(1,ie_upw), ele, jac_3d, fem_wk%sk6)
+     &            d_ele(1,ie_upw), ele, g_FEM1, jac_3d, fem_wk%sk6)
             end if
 !
 !  -----  Inertia including Reynolds stress --------
@@ -436,7 +436,7 @@
               call fem_skv_vector_inertia_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_velo),         &
-     &            d_ele(1,ie_upw), ele, jac_3d, fem_wk%sk6)
+     &            d_ele(1,ie_upw), ele, g_FEM1, jac_3d, fem_wk%sk6)
             end if
           end if
 !
@@ -493,7 +493,7 @@
             call fem_skv_vector_inertia_upwind                          &
      &         (fluid%istack_ele_fld_smp, num_int, k2, dt,              &
      &          mhd_fem_wk%magne_1, fem_wk%vector_1,                    &
-     &          d_ele(1,ie_upw), ele, jac_3d, fem_wk%sk6)
+     &          d_ele(1,ie_upw), ele, g_FEM1, jac_3d, fem_wk%sk6)
           end if
 !
 !    set SGS Lorentz force
@@ -528,7 +528,7 @@
      &        k2, iphys%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)
           call fem_skv_coriolis_upwind(fluid%istack_ele_fld_smp,        &
      &        num_int, k2, dt, mhd_fem_wk%velo_1, fl_prop%sys_rot,      &
-     &        d_ele(1,ie_upw), ele, jac_3d, fem_wk%sk6)
+     &        d_ele(1,ie_upw), ele, g_FEM1, jac_3d, fem_wk%sk6)
         end if
 !
 ! ---------  set buoyancy

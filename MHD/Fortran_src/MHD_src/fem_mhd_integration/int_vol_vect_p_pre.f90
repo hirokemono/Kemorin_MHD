@@ -155,7 +155,7 @@
 !
         call fem_skv_rot_inertia_upwind(conduct%istack_ele_fld_smp,     &
      &      num_int, k2, dt, mhd_fem_wk%velo_1, fem_wk%vector_1,        &
-     &      d_ele(1,iele_magne), ele, jac_3d, fem_wk%sk6)
+     &      d_ele(1,iele_magne), ele, g_FEM1, jac_3d, fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
