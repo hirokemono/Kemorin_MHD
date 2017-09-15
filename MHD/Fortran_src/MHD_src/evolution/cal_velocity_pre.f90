@@ -76,6 +76,7 @@
       use t_surface_group_connect
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_jacobian_3d
       use t_jacobian_2d
@@ -279,7 +280,7 @@
      &    SGS_par%model_p, SGS_par%commute_p,                           &
      &    node, ele, surf, sf_grp, fl_prop,                             &
      &    Vsf_bcs, Bsf_bcs, iphys, nod_fld,                             &
-     &    fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,                      &
+     &    g_FEM1, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,              &
      &    FEM_elens, diff_coefs,                                        &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
@@ -394,7 +395,7 @@
                              'int_surf_sgs_velo_co_ele', iphys%i_p_phi
         call int_surf_sgs_velo_co_ele                                   &
      &     (node, ele, surf, sf_grp, nod_fld,                           &
-     &      fem_int%jcs%jac_sf_grp,                                     &
+     &      g_FEM1, fem_int%jcs%jac_sf_grp,                             &
      &      fem_int%jcs%jac_sf_grp_l, fem_int%rhs_tbl,                  &
      &      FEM_elens, FEM_prm%npoint_poisson_int,                      &
      &      Psf_bcs%sgs%ngrp_sf_dat, Psf_bcs%sgs%id_grp_sf_dat,         &

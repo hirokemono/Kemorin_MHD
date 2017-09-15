@@ -268,7 +268,7 @@
 !      call check_ff_smp(my_rank, n_scalar, mesh%node%max_nod_smp, f_nl)
 !
       call int_sf_scalar_flux                                           &
-     &   (mesh%node, mesh%ele, surf, group%surf_grp, &
+     &   (mesh%node, mesh%ele, surf, group%surf_grp, g_FEM1,            &
      &    jacobians%jac_sf_grp, rhs_tbl, sf_bcs%flux,                   &
      &    FEM_prm%npoint_t_evo_int, ak_diffuse, fem_wk, f_l)
 !

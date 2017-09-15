@@ -4,21 +4,19 @@
 !      Written by H. Matsui on Sep., 2005
 !
 !!      subroutine int_sf_scalar_flux                                   &
-!!     &         (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl, grad_sf,&
-!!     &          n_int, ak_d, fem_wk, f_l)
+!!     &         (node, ele, surf, sf_grp, g_FEM, jac_sf_grp, rhs_tbl,  &
+!!     &          grad_sf, n_int, ak_d, fem_wk, f_l)
 !!      subroutine int_sf_grad_velocity                                 &
-!!     &         (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl, grad_sf,&
-!!     &          n_int, ak_d, fem_wk, f_l)
-!!      subroutine int_sf_grad_velocity                                 &
-!!     &         (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl, grad_sf,&
-!!     &          n_int, ak_d, fem_wk, f_l)
+!!     &         (node, ele, surf, sf_grp, g_FEM, jac_sf_grp, rhs_tbl,  &
+!!     &          grad_sf, n_int, ak_d, fem_wk, f_l)
 !!
-!!      subroutine int_sf_grad_press(node, ele, surf, sf_grp,           &
+!!      subroutine int_sf_grad_press(node, ele, surf, sf_grp, g_FEM,    &
 !!     &          jac_sf_grp_l, rhs_tbl, grad_sf, n_int, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(scaler_surf_flux_bc_type), intent(in) :: grad_sf(3)
@@ -35,7 +33,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -53,13 +51,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_sf_scalar_flux                                     &
-     &         (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl, grad_sf,  &
-     &          n_int, ak_d, fem_wk, f_l)
+     &         (node, ele, surf, sf_grp, g_FEM, jac_sf_grp, rhs_tbl,    &
+     &          grad_sf, n_int, ak_d, fem_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(scaler_surf_flux_bc_type), intent(in) :: grad_sf
@@ -75,7 +74,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_surf_skv_norm_grad_galerkin                              &
-     &   (ele, surf, sf_grp, g_FEM1, jac_sf_grp, grad_sf,               &
+     &   (ele, surf, sf_grp, g_FEM, jac_sf_grp, grad_sf,                &
      &    n_int, ione, ak_d, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -86,13 +85,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_sf_grad_velocity                                   &
-     &         (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl, grad_sf,  &
-     &          n_int, ak_d, fem_wk, f_l)
+     &         (node, ele, surf, sf_grp, g_FEM, jac_sf_grp, rhs_tbl,    &
+     &          grad_sf, n_int, ak_d, fem_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(scaler_surf_flux_bc_type), intent(in) :: grad_sf(3)
@@ -114,7 +114,7 @@
       do nd = 1, n_vector
         if (grad_sf(nd)%ngrp_sf_fix_fx .gt. 0) then
           call fem_surf_skv_norm_grad_galerkin                          &
-     &       (ele, surf, sf_grp, g_FEM1, jac_sf_grp, grad_sf(nd),       &
+     &       (ele, surf, sf_grp, g_FEM, jac_sf_grp, grad_sf(nd),        &
      &        n_int, nd, ak_d, fem_wk%sk6)
         end if
       end do
@@ -127,13 +127,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_sf_grad_press(node, ele, surf, sf_grp,             &
+      subroutine int_sf_grad_press(node, ele, surf, sf_grp, g_FEM,      &
      &          jac_sf_grp_l, rhs_tbl, grad_sf, n_int, fem_wk, f_l)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(scaler_surf_flux_bc_type), intent(in) :: grad_sf
@@ -148,7 +149,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_surf_skv_norm_poisson_pg(ele, surf, sf_grp,              &
-     &    g_FEM1, jac_sf_grp_l, grad_sf, n_int, fem_wk%sk6)
+     &    g_FEM, jac_sf_grp_l, grad_sf, n_int, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, f_l%ff_smp)

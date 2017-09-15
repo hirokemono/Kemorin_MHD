@@ -67,6 +67,7 @@
       use t_group_data
       use t_phys_address
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -149,8 +150,8 @@
       call int_surf_normal_vector                                       &
      &   (iphys%i_velo, FEM_prm%npoint_poisson_int,                     &
      &    Psf_bcs%wall, Psf_bcs%sph_in, Psf_bcs%sph_out,                &
-     &    node, ele, surf, sf_grp, nod_fld, jacobians%jac_sf_grp_l,     &
-     &    rhs_tbl, fem_wk, surf_wk, f_l)
+     &    node, ele, surf, sf_grp, nod_fld, g_FEM1,                     &
+     &    jacobians%jac_sf_grp_l, rhs_tbl, fem_wk, surf_wk, f_l)
 !
 !      if (cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
@@ -165,7 +166,7 @@
 !   set boundary condition for wall
 !
       call int_sf_grad_press(node, ele, surf, sf_grp,                   &
-     &    jacobians%jac_sf_grp_l, rhs_tbl, Psf_bcs%grad,                &
+     &    g_FEM1, jacobians%jac_sf_grp_l, rhs_tbl, Psf_bcs%grad,        &
      &    FEM_prm%npoint_poisson_int, fem_wk, f_l)
 !
 !   add boundary term for fixed velocity
@@ -261,8 +262,8 @@
       call int_surf_normal_vector                                       &
      &   (iphys%i_vecp, FEM_prm%npoint_poisson_int,                     &
      &    Fsf_bcs%wall, Fsf_bcs%sph_in, Fsf_bcs%sph_out,                &
-     &    node, ele, surf, sf_grp, nod_fld, jacobians%jac_sf_grp_l,     &
-     &    rhs_tbl, fem_wk, surf_wk, f_l)
+     &    node, ele, surf, sf_grp, nod_fld, g_FEM1,                     &
+     &    jacobians%jac_sf_grp_l, rhs_tbl, fem_wk, surf_wk, f_l)
 !
       call int_vol_sk_mp_bc                                             &
      &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
@@ -354,10 +355,10 @@
       call int_surf_normal_vector                                       &
      &   (iphys%i_magne, FEM_prm%npoint_poisson_int,                    &
      &    Fsf_bcs%wall, Fsf_bcs%sph_in, Fsf_bcs%sph_out,                &
-     &    node, ele, surf, sf_grp, nod_fld, jacobians%jac_sf_grp_l,     &
-     &    rhs_tbl, fem_wk, surf_wk, f_l)
-      call int_sf_grad_press                                            &
-     &   (node, ele, surf, sf_grp, jacobians%jac_sf_grp_l, rhs_tbl,     &
+     &    node, ele, surf, sf_grp, nod_fld, g_FEM1,                     &
+     &    jacobians%jac_sf_grp_l, rhs_tbl, fem_wk, surf_wk, f_l)
+      call int_sf_grad_press(node, ele, surf, sf_grp,                   &
+     &    g_FEM1, jacobians%jac_sf_grp_l, rhs_tbl,                      &
      &    Fsf_bcs%grad, FEM_prm%npoint_poisson_int, fem_wk, f_l)
 !
       call int_vol_sk_mp_bc                                             &

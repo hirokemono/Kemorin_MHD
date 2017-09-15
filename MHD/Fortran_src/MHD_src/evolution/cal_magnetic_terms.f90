@@ -56,6 +56,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_jacobian_2d
       use t_table_FEM_const
@@ -144,7 +145,7 @@
       call int_surf_magne_monitor(SGS_param, cmt_param,                 &
      &    FEM_prm%npoint_t_evo_int,i_field, iak_diff_uxb, ak_d_magne,   &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl, FEM_elens,           &
+     &    g_FEM1, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl, FEM_elens,   &
      &    diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,                  &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
@@ -213,7 +214,7 @@
      &  (SGS_param, cmt_param, FEM_prm%npoint_t_evo_int,                &
      &   iphys%i_b_diffuse, iak_diff_uxb, ak_d_magne,                   &
      &   node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,     &
-     &   fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,                       &
+     &   g_FEM1, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,               &
      &   FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,        &
      &   rhs_mat%f_l, rhs_mat%f_nl)
 !

@@ -48,6 +48,7 @@
       use t_surface_bc_data
       use t_phys_address
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_jacobian_2d
       use t_table_FEM_const
@@ -200,7 +201,7 @@
       end if
 !
       call int_surf_rotation_sgs(node, ele, surf, sf_grp,               &
-     &    nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,              &
+     &    nod_fld, g_FEM1, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,      &
      &    num_int, ifilter_final, diff_coefs%num_field, iak_diff,       &
      &    diff_coefs%ak, i_vector, fem_wk, surf_wk, f_nl)
 !

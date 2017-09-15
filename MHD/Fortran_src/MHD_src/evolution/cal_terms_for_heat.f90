@@ -262,7 +262,7 @@
      &    FEM_elens, diff_coefs, iak_diffuse, one, ak_diffuse,          &
      &    i_scalar, rhs_mat%fem_wk, rhs_mat%f_l)
 !
-      call int_sf_scalar_flux(node, ele, surf, sf_grp,                  &
+      call int_sf_scalar_flux(node, ele, surf, sf_grp, g_FEM1,          &
      &    fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl, Ssf_bcs%flux,        &
      &    num_int, ak_diffuse, rhs_mat%fem_wk, rhs_mat%f_l)
 !

@@ -48,6 +48,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_jacobian_2d
       use t_table_FEM_const
@@ -178,7 +179,7 @@
      &    iphys%i_vecp, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
-     &    fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,                      &
+     &    g_FEM1, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,              &
      &    Asf_bcs%grad, FEM_prm%npoint_t_evo_int, ak_d_magne,           &
      &    rhs_mat%fem_wk, rhs_mat%f_l)
 !

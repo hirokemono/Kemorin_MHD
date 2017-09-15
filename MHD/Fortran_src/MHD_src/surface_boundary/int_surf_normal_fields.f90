@@ -5,13 +5,14 @@
 !
 !!      subroutine int_surf_normal_vector                               &
 !!     &         (i_field, num_int, sf_bc_wall, sf_bc_spin, sf_bc_spout,&
-!!     &          node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l,       &
+!!     &          node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp_l,&
 !!     &          rhs_tbl, fem_wk, surf_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data),    intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(scaler_surf_bc_data_type), intent(in) :: sf_bc_wall
@@ -28,6 +29,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use t_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -44,7 +46,7 @@
 !
       subroutine int_surf_normal_vector                                 &
      &         (i_field, num_int, sf_bc_wall, sf_bc_spin, sf_bc_spout,  &
-     &          node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l,         &
+     &          node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp_l,  &
      &          rhs_tbl, fem_wk, surf_wk, f_l)
 !
       use int_surf_poisson_walls
@@ -57,6 +59,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -71,21 +74,21 @@
 !
       if (sf_bc_wall%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_wall(node, ele, surf, sf_grp,             &
-     &      nod_fld, jac_sf_grp_l, rhs_tbl, num_int,                    &
+     &      nod_fld, g_FEM, jac_sf_grp_l, rhs_tbl, num_int,             &
      &      sf_bc_wall%ngrp_sf_dat, sf_bc_wall%id_grp_sf_dat,           &
      &      i_field, fem_wk, surf_wk, f_l)
       end if
 !
       if (sf_bc_spin%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_sph_in(node, ele, surf, sf_grp,           &
-     &      nod_fld, jac_sf_grp_l, rhs_tbl, num_int,                    &
+     &      nod_fld, g_FEM, jac_sf_grp_l, rhs_tbl, num_int,             &
      &      sf_bc_spin%ngrp_sf_dat, sf_bc_spin%id_grp_sf_dat,           &
      &      i_field, fem_wk, surf_wk, f_l)
       end if
 !
       if (sf_bc_spout%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_sph_out(node, ele, surf, sf_grp,          &
-     &      nod_fld, jac_sf_grp_l, rhs_tbl, num_int,                    &
+     &      nod_fld, g_FEM, jac_sf_grp_l, rhs_tbl, num_int,             &
      &      sf_bc_spout%ngrp_sf_dat, sf_bc_spout%id_grp_sf_dat,         &
      &      i_field, fem_wk, surf_wk, f_l)
       end if

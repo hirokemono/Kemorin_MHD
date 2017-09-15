@@ -4,15 +4,15 @@
 !      Written by H. Matsui on Sep. 2005
 !
 !!      subroutine int_surf_poisson_wall(node, ele, surf, sf_grp,       &
-!!     &          nod_fld, jac_sf_grp_l, rhs_tbl,                       &
+!!     &          nod_fld, g_FEM, jac_sf_grp_l, rhs_tbl,                &
 !!     &          n_int, ngrp_sf, id_grp_sf, i_vect,                    &
 !!     &          fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_poisson_sph_in(node, ele, surf, sf_grp,     &
-!!     &          nod_fld, jac_sf_grp_l, rhs_tbl,                       &
+!!     &          nod_fld, g_FEM, jac_sf_grp_l, rhs_tbl,                &
 !!     &          n_int, ngrp_sf, id_grp_sf, i_vect,                    &
 !!     &          fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_poisson_sph_out(node, ele, surf, sf_grp,    &
-!!     &           nod_fld, jac_sf_grp_l, rhs_tbl,                      &
+!!     &           nod_fld, g_FEM, jac_sf_grp_l, rhs_tbl,               &
 !!     &           n_int, ngrp_sf, id_grp_sf, i_vect,                   &
 !!     &           fem_wk, surf_wk, f_l)
 !!        type(node_data), intent(in) :: node
@@ -20,6 +20,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data),    intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!
@@ -35,7 +36,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -54,7 +55,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_poisson_wall(node, ele, surf, sf_grp,         &
-     &          nod_fld, jac_sf_grp_l, rhs_tbl,                         &
+     &          nod_fld, g_FEM, jac_sf_grp_l, rhs_tbl,                  &
      &          n_int, ngrp_sf, id_grp_sf, i_vect,                      &
      &          fem_wk, surf_wk, f_l)
 !
@@ -63,6 +64,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -91,7 +93,7 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_vect, surf_wk%vect_sf)
             call fem_surf_skv_poisson_wall                              &
-     &         (ele, surf, sf_grp, g_FEM1, jac_sf_grp_l, igrp, k2,      &
+     &         (ele, surf, sf_grp, g_FEM, jac_sf_grp_l, igrp, k2,       &
      &          n_int, surf_wk%vect_sf, fem_wk%sk6)
           end do
 !
@@ -106,7 +108,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_poisson_sph_in(node, ele, surf, sf_grp,       &
-     &          nod_fld, jac_sf_grp_l, rhs_tbl,                         &
+     &          nod_fld, g_FEM, jac_sf_grp_l, rhs_tbl,                  &
      &          n_int, ngrp_sf, id_grp_sf, i_vect,                      &
      &          fem_wk, surf_wk, f_l)
 !
@@ -115,6 +117,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -142,7 +145,7 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_vect, dminus, surf_wk%vect_sf)
             call fem_surf_skv_poisson_sph_out                           &
-     &         (ele, surf, sf_grp, g_FEM1, jac_sf_grp_l, igrp, k2,      &
+     &         (ele, surf, sf_grp, g_FEM, jac_sf_grp_l, igrp, k2,       &
      &          n_int, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
           end do
 !
@@ -157,7 +160,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_poisson_sph_out(node, ele, surf, sf_grp,      &
-     &           nod_fld, jac_sf_grp_l, rhs_tbl,                        &
+     &           nod_fld, g_FEM, jac_sf_grp_l, rhs_tbl,                 &
      &           n_int, ngrp_sf, id_grp_sf, i_vect,                     &
      &           fem_wk, surf_wk, f_l)
 !
@@ -166,6 +169,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -195,7 +199,7 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_vect, surf_wk%vect_sf)
             call fem_surf_skv_poisson_sph_out                           &
-     &         (ele, surf, sf_grp, g_FEM1, jac_sf_grp_l, igrp, k2,      &
+     &         (ele, surf, sf_grp, g_FEM, jac_sf_grp_l, igrp, k2,       &
      &          n_int, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
           end do
 !

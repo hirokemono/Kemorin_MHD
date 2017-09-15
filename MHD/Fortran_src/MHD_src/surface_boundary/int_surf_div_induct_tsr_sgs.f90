@@ -3,12 +3,14 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!!      subroutine int_surf_div_induct_t_sgs(node, ele, surf,           &
-!!     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,      &
+!!      subroutine int_surf_div_induct_t_sgs                            &
+!!     &         (node, ele, surf, sf_grp, nod_fld,                     &
+!!     &          g_FEM, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
 !!     &          n_int, i_filter, ncomp_diff, iak_diff_uxb,            &
 !!     &          ak_diff, i_flux, i_v, i_b, fem_wk, surf_wk, f_nl)
-!!      subroutine int_surf_commute_induct_t(node, ele, surf, sf_grp,   &
-!!     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,      &
+!!      subroutine int_surf_commute_induct_t                            &
+!!     &         (node, ele, surf, sf_grp, nod_fld,                     &
+!!     &          g_FEM, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
 !!     &          n_int, i_flux, i_filter, i_v, i_b,                    &
 !!     &          fem_wk, surf_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -16,6 +18,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data),    intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -33,7 +36,7 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -49,8 +52,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_div_induct_t_sgs(node, ele, surf, sf_grp,     &
-     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
+      subroutine int_surf_div_induct_t_sgs                              &
+     &         (node, ele, surf, sf_grp, nod_fld,                       &
+     &          g_FEM, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,          &
      &          n_int, i_filter, ncomp_diff, iak_diff_uxb,              &
      &          ak_diff, i_flux, i_v, i_b, fem_wk, surf_wk, f_nl)
 !
@@ -67,6 +71,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -98,7 +103,7 @@
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2, nd,       &
      &            i_flux, i_b, i_v, surf_wk%vect_sf)
               call fem_sf_grp_skv_sgs_div_flux_p                        &
-     &           (ele, surf, sf_grp, g_FEM1, jac_sf_grp, FEM_elens,     &
+     &           (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,      &
      &            igrp, k2, nd, n_int, i_filter,                        &
      &            surf_wk%dxe_sf, surf_wk%vect_sf,                      &
      &            ak_diff(1,iak_diff_uxb), dminus, fem_wk%sk6)
@@ -115,8 +120,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_commute_induct_t(node, ele, surf, sf_grp,     &
-     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
+      subroutine int_surf_commute_induct_t                              &
+     &         (node, ele, surf, sf_grp, nod_fld,                       &
+     &          g_FEM, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,          &
      &          n_int, i_flux, i_filter, i_v, i_b,                      &
      &          fem_wk, surf_wk, f_nl)
 !
@@ -129,6 +135,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -161,7 +168,7 @@
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2, nd,       &
      &            i_flux, i_b, i_v, surf_wk%vect_sf)
               call fem_sf_grp_skv_div_f_commute_p                       &
-     &           (ele, surf, sf_grp, g_FEM1, jac_sf_grp, FEM_elens,     &
+     &           (ele, surf, sf_grp, g_FEM, jac_sf_grp, FEM_elens,      &
      &            igrp, k2, nd, n_int, i_filter,                        &
      &            surf_wk%dxe_sf, surf_wk%vect_sf, fem_wk%sk6)
             end do

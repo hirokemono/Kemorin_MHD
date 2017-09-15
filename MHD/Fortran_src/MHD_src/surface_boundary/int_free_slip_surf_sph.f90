@@ -10,17 +10,18 @@
 !!
 !!
 !!@verbatim
-!!      subroutine int_free_slip_surf_sph_out                           &
-!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,&
+!!      subroutine int_free_slip_surf_sph_out(node, ele, surf, sf_grp,  &
+!!     &          nod_fld, g_FEM, jac_sf_grp, rhs_tbl,                  &
 !!     &          n_int, ngrp_surf_outside, id_grp_outside, i_field,    &
 !!     &          ak_d, fem_wk, surf_wk, f_l)
-!!      subroutine int_free_slip_surf_sph_in                            &
-!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,&
+!!      subroutine int_free_slip_surf_sph_in(node, ele, surf, sf_grp,   &
+!!     &          nod_fld, g_FEM, jac_sf_grp, rhs_tbl,                  &
 !!     &          n_int, ngrp_surf_inside, id_grp_inside, i_field,      &
 !!     &          ak_d, fem_wk, surf_wk, f_l)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -47,7 +48,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -65,8 +66,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_free_slip_surf_sph_out                             &
-     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,  &
+      subroutine int_free_slip_surf_sph_out(node, ele, surf, sf_grp,    &
+     &          nod_fld, g_FEM, jac_sf_grp, rhs_tbl,                    &
      &          n_int, ngrp_surf_outside, id_grp_outside, i_field,      &
      &          ak_d, fem_wk, surf_wk, f_l)
 !
@@ -75,6 +76,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -104,7 +106,7 @@
      &       (node, ele, surf, sf_grp, nod_fld, igrp, k2, i_field,      &
      &        surf_wk%vect_sf)
           call fem_surf_skv_trq_sph_out                                 &
-     &       (ele, surf, sf_grp, g_FEM1, jac_sf_grp, igrp, k2, n_int,   &
+     &       (ele, surf, sf_grp, g_FEM, jac_sf_grp, igrp, k2, n_int,    &
      &        ak_d, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
         end do
       end do
@@ -116,8 +118,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_free_slip_surf_sph_in                              &
-     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,  &
+      subroutine int_free_slip_surf_sph_in(node, ele, surf, sf_grp,     &
+     &          nod_fld, g_FEM, jac_sf_grp, rhs_tbl,                    &
      &          n_int, ngrp_surf_inside, id_grp_inside, i_field,        &
      &          ak_d, fem_wk, surf_wk, f_l)
 !
@@ -126,6 +128,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -155,7 +158,7 @@
      &       (node, ele, surf, sf_grp, nod_fld, igrp, k2,               &
      &        i_field, dminus, surf_wk%vect_sf)
           call fem_surf_skv_trq_sph_out                                 &
-     &       (ele, surf, sf_grp, g_FEM1, jac_sf_grp, igrp, k2, n_int,   &
+     &       (ele, surf, sf_grp, g_FEM, jac_sf_grp, igrp, k2, n_int,    &
      &        ak_d, surf_wk%xe_sf, surf_wk%vect_sf, fem_wk%sk6)
         end do
       end do

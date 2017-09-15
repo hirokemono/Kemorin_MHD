@@ -40,6 +40,7 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_jacobian_3d
       use t_table_FEM_const
@@ -95,7 +96,7 @@
      &    i_filter, i_scalar, fem_wk, f_nl)
 !
       call int_surf_grad_commute_sgs(node, ele, surf, sf_grp,           &
-     &    nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, num_int,             &
+     &    nod_fld, g_FEM1, jac_sf_grp, rhs_tbl, FEM_elens, num_int,     &
      &    sgs_sf%ngrp_sf_dat, sgs_sf%id_grp_sf_dat, i_filter, i_scalar, &
      &    fem_wk, surf_wk, f_nl)
 !
@@ -147,7 +148,7 @@
      &    i_filter, i_vect, fem_wk, f_nl)
 !
       call int_surf_rot_commute_sgs(node, ele, surf, sf_grp, nod_fld,   &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf, num_int,              &
+     &    g_FEM1, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf, num_int,      &
      &    i_filter, i_vect, fem_wk, surf_wk, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

@@ -4,19 +4,19 @@
 !      Written by H. Matsui on Sep., 2005
 !
 !!      subroutine int_surf_sgs_div_velo_ele                            &
-!!     &          (node, ele, surf, sf_grp, nod_fld,                    &
+!!     &          (node, ele, surf, sf_grp, nod_fld, g_FEM,             &
 !!     &           jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,      &
 !!     &           n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,    &
 !!     &           ncomp_diff, iak_diff, ak_diff, i_vect,               &
 !!     &           fem_wk, surf_wk, f_l)
 !!
 !!      subroutine int_surf_divergence_sgs(node, ele, surf, sf_grp,     &
-!!     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,            &
+!!     &          nod_fld, g_FEM, jac_sf_grp_q, rhs_tbl, FEM_elens,     &
 !!     &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,     &
 !!     &          ncomp_diff, iak_diff, ak_diff, i_vect,                &
 !!     &          fem_wk, surf_wk, f_nl)
 !!      subroutine int_surf_div_commute_sgs(node, ele, surf, sf_grp,    &
-!!     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,            &
+!!     &          nod_fld, g_FEM, jac_sf_grp_q, rhs_tbl, FEM_elens,     &
 !!     &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,     &
 !!     &          i_vect, fem_wk, surf_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -24,6 +24,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data),    intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -43,7 +44,7 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -59,7 +60,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_sgs_div_velo_ele                              &
-     &          (node, ele, surf, sf_grp, nod_fld,                      &
+     &          (node, ele, surf, sf_grp, nod_fld, g_FEM,               &
      &           jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,        &
      &           n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,      &
      &           ncomp_diff, iak_diff, ak_diff, i_vect,                 &
@@ -74,6 +75,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -110,7 +112,7 @@
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2,           &
      &            i_comp, surf_wk%scalar_sf)
               call fem_sf_grp_skv_sgs_div_lin_p(ele, surf, sf_grp,      &
-     &            g_FEM1, jac_sf_grp_q, jac_sf_grp_l, FEM_elens,        &
+     &            g_FEM, jac_sf_grp_q, jac_sf_grp_l, FEM_elens,         &
      &            igrp, k2, nd, n_int, i_filter,                        &
      &            surf_wk%dxe_sf, surf_wk%scalar_sf,                    &
      &            ak_diff(1,iak_diff), fem_wk%sk6)
@@ -129,7 +131,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_divergence_sgs(node, ele, surf, sf_grp,       &
-     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,              &
+     &          nod_fld, g_FEM, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,       &
      &          ncomp_diff, iak_diff, ak_diff, i_vect,                  &
      &          fem_wk, surf_wk, f_nl)
@@ -143,6 +145,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -178,7 +181,7 @@
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2,           &
      &            i_comp, surf_wk%scalar_sf)
               call fem_sf_grp_skv_sgs_vect_diff_p                       &
-     &           (ele, surf, sf_grp, g_FEM1, jac_sf_grp_q, FEM_elens,   &
+     &           (ele, surf, sf_grp, g_FEM, jac_sf_grp_q, FEM_elens,    &
      &            igrp, k2, ione, n_int, i_filter, nd,                  &
      &            surf_wk%dxe_sf, surf_wk%scalar_sf,                    &
      &            ak_diff(1,iak_diff), one, fem_wk%sk6)
@@ -195,7 +198,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_div_commute_sgs(node, ele, surf, sf_grp,      &
-     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,              &
+     &          nod_fld, g_FEM, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,       &
      &          i_vect, fem_wk, surf_wk, f_nl)
 !
@@ -208,6 +211,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -241,7 +245,7 @@
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2,           &
      &            i_comp, surf_wk%scalar_sf)
               call fem_sf_grp_skv_commute_err_p                         &
-     &           (ele, surf, sf_grp, g_FEM1, jac_sf_grp_q, FEM_elens,   &
+     &           (ele, surf, sf_grp, g_FEM, jac_sf_grp_q, FEM_elens,    &
      &            igrp, k2, ione, n_int, i_filter, nd,                  &
      &            surf_wk%dxe_sf, surf_wk%scalar_sf, fem_wk%sk6)
             end do

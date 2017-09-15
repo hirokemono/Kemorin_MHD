@@ -71,6 +71,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_jacobians
       use t_table_FEM_const
@@ -195,7 +196,7 @@
       end if
 !
       call int_sf_grad_velocity                                         &
-     &   (node, ele, surf, sf_grp, jacobians%jac_sf_grp,                &
+     &   (node, ele, surf, sf_grp, g_FEM1, jacobians%jac_sf_grp,        &
      &    rhs_tbl, Asf_bcs%grad, FEM_prm%npoint_t_evo_int, ak_d_magne,  &
      &    fem_wk, f_l)
 !
@@ -318,8 +319,9 @@
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi
-         call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,         &
-     &       nod_fld, jacobians%jac_sf_grp, jacobians%jac_sf_grp_l,     &
+         call int_surf_sgs_velo_co_ele                                  &
+     &      (node, ele, surf, sf_grp, nod_fld,                          &
+     &       g_FEM1, jacobians%jac_sf_grp, jacobians%jac_sf_grp_l,      &
      &       rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,            &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
      &       SGS_param%ifilter_final, diff_coefs%num_field,             &

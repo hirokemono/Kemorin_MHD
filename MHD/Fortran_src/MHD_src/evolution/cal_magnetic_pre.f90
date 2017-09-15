@@ -82,6 +82,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -216,7 +217,7 @@
       call int_surf_magne_pre_ele(SGS_param, cmt_param,                 &
      &    FEM_prm%npoint_t_evo_int, iak_diff_uxb, ak_d_magne,           &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jacobians%jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
+     &    g_FEM1, jacobians%jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs, &
      &    fem_wk, surf_wk, f_l, f_nl)
 !
       if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
@@ -320,8 +321,9 @@
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi
-         call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,         &
-     &       nod_fld, jacobians%jac_sf_grp, jacobians%jac_sf_grp_l,     &
+         call int_surf_sgs_velo_co_ele                                  &
+     &      (node, ele, surf, sf_grp, nod_fld,                          &
+     &       g_FEM1, jacobians%jac_sf_grp, jacobians%jac_sf_grp_l,      &
      &       rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,            &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
      &       SGS_param%ifilter_final, diff_coefs%num_field,             &
@@ -411,8 +413,9 @@
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi
-         call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,         &
-     &      nod_fld, jacobians%jac_sf_grp, jacobians%jac_sf_grp_l,      &
+         call int_surf_sgs_velo_co_ele                                  &
+     &     (node, ele, surf, sf_grp, nod_fld,                           &
+     &      g_FEM1, jacobians%jac_sf_grp, jacobians%jac_sf_grp_l,       &
      &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
      &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
      &      SGS_param%ifilter_final, diff_coefs%num_field, iak_diff_b,  &
