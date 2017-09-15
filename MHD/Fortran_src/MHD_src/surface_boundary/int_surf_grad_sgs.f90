@@ -43,6 +43,7 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -108,8 +109,8 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_comp, dminus, surf_wk%scalar_sf)
             call fem_sf_grp_skv_sgs_velo_co_p(ele, surf, sf_grp,        &
-     &          jac_sf_grp_q, jac_sf_grp_l, FEM_elens, igrp, k2, n_int, &
-     &          i_filter, surf_wk%dxe_sf, surf_wk%scalar_sf,            &
+     &          g_FEM1, jac_sf_grp_q, jac_sf_grp_l, FEM_elens, igrp,    &
+     &          k2, n_int, i_filter, surf_wk%dxe_sf, surf_wk%scalar_sf, &
      &          ak_diff(1,iak_diff), fem_wk%sk6)
           end do
 !
@@ -171,9 +172,9 @@
             call dlt_scl_phys_2_each_surface                            &
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_scalar, surf_wk%scalar_sf)
-            call fem_sf_grp_skv_sgs_grad_p                              &
-     &         (ele, surf, sf_grp, jac_sf_grp_q, FEM_elens, igrp, k2,   &
-     &          n_int, i_filter, surf_wk%dxe_sf, surf_wk%scalar_sf,     &
+            call fem_sf_grp_skv_sgs_grad_p(ele, surf, sf_grp,           &
+     &          g_FEM1, jac_sf_grp_q, FEM_elens, igrp, k2, n_int,       &
+     &          i_filter, surf_wk%dxe_sf, surf_wk%scalar_sf,            &
      &          ak_diff(1,iak_diff), one, fem_wk%sk6)
           end do
 !
@@ -231,8 +232,8 @@
             call dlt_scl_phys_2_each_surface                            &
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_scalar, surf_wk%scalar_sf)
-            call fem_sf_grp_skv_grad_commute_p                          &
-     &         (ele, surf, sf_grp, jac_sf_grp_q, FEM_elens, igrp, k2,   &
+            call fem_sf_grp_skv_grad_commute_p(ele, surf, sf_grp,       &
+     &          g_FEM1, jac_sf_grp_q, FEM_elens, igrp, k2,              &
      &          n_int, i_filter, surf_wk%dxe_sf, surf_wk%scalar_sf,     &
      &          fem_wk%sk6)
           end do

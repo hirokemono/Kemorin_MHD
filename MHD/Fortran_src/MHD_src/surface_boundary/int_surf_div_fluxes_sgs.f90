@@ -44,6 +44,7 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -109,7 +110,7 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2, ione,       &
      &          i_vect, i_scalar, i_tensor, dminus, surf_wk%vect_sf)
             call fem_sf_grp_skv_sgs_div_flux_p                          &
-     &         (ele, surf, sf_grp, jac_sf_grp, FEM_elens,               &
+     &         (ele, surf, sf_grp, g_FEM1, jac_sf_grp, FEM_elens,       &
      &          igrp, k2, ione, n_int, i_filter,                        &
      &          surf_wk%dxe_sf, surf_wk%vect_sf,                        &
      &          ak_diff(1,i_diff), coef_field, fem_wk%sk6)
@@ -178,7 +179,7 @@
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2, nd,       &
      &            i_vect, i_scalar, i_tensor, dminus, surf_wk%vect_sf)
               call fem_sf_grp_skv_sgs_div_flux_p                        &
-     &           (ele, surf, sf_grp, jac_sf_grp, FEM_elens,             &
+     &           (ele, surf, sf_grp, g_FEM1, jac_sf_grp, FEM_elens,     &
      &            igrp, k2, nd, n_int, i_filter,                        &
      &            surf_wk%dxe_sf, surf_wk%vect_sf,                      &
      &            ak_diff(1,i_diff), coef_field, fem_wk%sk6)
@@ -240,7 +241,7 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2, ione,       &
      &          i_vect, i_scalar, i_tensor, surf_wk%vect_sf)
             call fem_sf_grp_skv_div_f_commute_p                         &
-     &         (ele, surf, sf_grp, jac_sf_grp, FEM_elens,               &
+     &         (ele, surf, sf_grp, g_FEM1, jac_sf_grp, FEM_elens,       &
      &          igrp, k2, ione, n_int, i_filter,                        &
      &          surf_wk%dxe_sf, surf_wk%vect_sf,fem_wk%sk6)
           end do
@@ -303,7 +304,7 @@
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2,           &
      &            nd, i_vect, i_scalar, i_tensor, surf_wk%vect_sf)
               call fem_sf_grp_skv_div_f_commute_p                       &
-     &           (ele, surf, sf_grp, jac_sf_grp, FEM_elens,             &
+     &           (ele, surf, sf_grp, g_FEM1, jac_sf_grp, FEM_elens,     &
      &            igrp, k2, nd, n_int, i_filter,                        &
      &            surf_wk%dxe_sf, surf_wk%vect_sf, fem_wk%sk6)
             end do
