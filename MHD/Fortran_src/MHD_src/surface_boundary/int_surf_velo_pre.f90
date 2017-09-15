@@ -43,6 +43,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -99,7 +100,7 @@
       if(SGS_param%iflag_SGS_m_flux  .ne. id_SGS_none) then
         if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
-     &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
+     &        nod_fld, g_FEM1, jac_sf_grp, rhs_tbl, FEM_elens,          &
      &        Vsf_bcs%sgs, num_int, SGS_param%ifilter_final,            &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
@@ -110,7 +111,7 @@
       if (SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
-     &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
+     &        nod_fld, g_FEM1, jac_sf_grp, rhs_tbl, FEM_elens,          &
      &        Bsf_bcs%sgs, num_int, SGS_param%ifilter_final,            &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
@@ -173,7 +174,7 @@
       if (i_field .eq. iphys%i_SGS_div_m_flux) then
         if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
-     &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
+     &        nod_fld, g_FEM1, jac_sf_grp, rhs_tbl, FEM_elens,          &
      &        Vsf_bcs%sgs, num_int, SGS_param%ifilter_final,            &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
@@ -184,7 +185,7 @@
       if (i_field .eq. iphys%i_SGS_Lorentz) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
-     &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
+     &        nod_fld, g_FEM1, jac_sf_grp, rhs_tbl, FEM_elens,          &
      &        Bsf_bcs%sgs, num_int, SGS_param%ifilter_final,            &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &

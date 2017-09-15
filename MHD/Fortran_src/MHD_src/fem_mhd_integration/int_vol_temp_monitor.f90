@@ -55,6 +55,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_jacobian_2d
       use t_table_FEM_const
@@ -139,7 +140,7 @@
           .and. iflag_SGS_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux                                  &
      &    (node, ele, surf, sf_grp, nod_fld,                            &
-     &     fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl, FEM_elens,          &
+     &     g_FEM1, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl, FEM_elens,  &
      &     num_int, Ssf_bcs%sgs%ngrp_sf_dat, Ssf_bcs%sgs%id_grp_sf_dat, &
      &     ifilter_final, i_SGS_flux, i_velo, i_field,                  &
      &     diff_coefs%num_field,iak_diff_flux, diff_coefs%ak,           &

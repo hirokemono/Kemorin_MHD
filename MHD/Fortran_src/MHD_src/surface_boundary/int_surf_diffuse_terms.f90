@@ -4,19 +4,20 @@
 !      Written by H. Matsui on Sep., 2005
 !
 !!      subroutine int_surf_current_diffuse(node, ele, surf, sf_grp,    &
-!!     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                &
+!!     &          nod_fld, g_FEM, jac_sf_grp, rhs_tbl, lead_sf,         &
 !!     &          n_int, i_vecp, fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_diffuse_term(node, ele, surf, sf_grp,       &
-!!     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                &
+!!     &          nod_fld, g_FEM, jac_sf_grp, rhs_tbl, lead_sf,         &
 !!     &          n_int, ak_d, i_field, fem_wk, surf_wk, f_l)
 !!      subroutine int_surf_vect_diffuse_term(node, ele, surf, sf_grp,  &
-!!     &          jac_sf_grp, nod_fld, rhs_tbl, lead_sf                 &
+!!     &          g_FEM, jac_sf_grp, nod_fld, rhs_tbl, lead_sf,         &
 !!     &          n_int, ak_d, i_field, fem_wk, surf_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data),    intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(scaler_surf_bc_data_type),  intent(in) :: lead_sf
@@ -34,7 +35,7 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -50,7 +51,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_current_diffuse(node, ele, surf, sf_grp,      &
-     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                  &
+     &          nod_fld, g_FEM, jac_sf_grp, rhs_tbl, lead_sf,           &
      &          n_int, i_vecp, fem_wk, surf_wk, f_l)
 !
       use delta_phys_2_each_surface
@@ -61,6 +62,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -94,7 +96,7 @@
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2,           &
      &            i_comp, surf_wk%scalar_sf)
               call fem_surf_skv_current_by_vecp(ele, surf, sf_grp,      &
-     &            g_FEM1, jac_sf_grp, igrp, k2, nd, n_int,              &
+     &            g_FEM, jac_sf_grp, igrp, k2, nd, n_int,               &
      &            surf_wk%dxe_sf, surf_wk%scalar_sf, fem_wk%sk6)
             end do
 !
@@ -111,7 +113,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_diffuse_term(node, ele, surf, sf_grp,         &
-     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                  &
+     &          nod_fld, g_FEM, jac_sf_grp, rhs_tbl, lead_sf,           &
      &          n_int, ak_d, i_field, fem_wk, surf_wk, f_l)
 !
       use delta_phys_2_each_surface
@@ -123,6 +125,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(scaler_surf_bc_data_type),  intent(in) :: lead_sf
@@ -150,7 +153,7 @@
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_field, surf_wk%scalar_sf)
             call fem_surf_skv_diffuse_galerkin                          &
-     &         (ele, surf, sf_grp, g_FEM1, jac_sf_grp, igrp, k2,        &
+     &         (ele, surf, sf_grp, g_FEM, jac_sf_grp, igrp, k2,         &
      &          ione, n_int, surf_wk%dxe_sf, surf_wk%scalar_sf,         &
      &          ak_d, fem_wk%sk6)
           end do
@@ -165,7 +168,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_vect_diffuse_term(node, ele, surf, sf_grp,    &
-     &          jac_sf_grp, nod_fld, rhs_tbl, lead_sf,                  &
+     &          g_FEM, jac_sf_grp, nod_fld, rhs_tbl, lead_sf,           &
      &          n_int, ak_d, i_field, fem_wk, surf_wk, f_l)
 !
       use delta_phys_2_each_surface
@@ -177,6 +180,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(scaler_surf_bc_data_type),  intent(in) :: lead_sf(3)
@@ -210,7 +214,7 @@
      &           (node, ele, surf, sf_grp, nod_fld, igrp, k2,           &
      &            i_comp, surf_wk%scalar_sf)
               call fem_surf_skv_diffuse_galerkin                        &
-     &           (ele, surf, sf_grp, g_FEM1, jac_sf_grp, igrp, k2,      &
+     &           (ele, surf, sf_grp, g_FEM, jac_sf_grp, igrp, k2,       &
      &            nd, n_int, surf_wk%dxe_sf, surf_wk%scalar_sf,         &
      &            ak_d, fem_wk%sk6)
             end do

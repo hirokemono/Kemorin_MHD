@@ -49,6 +49,7 @@
       use t_surface_data
       use t_group_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_jacobian_3d
       use t_table_FEM_const
@@ -104,8 +105,9 @@
       call int_vol_commute_div_v_flux(iele_fsmp_stack, num_int,         &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
      &    i_filter, i_flux, i_vect, i_scalar, fem_wk, f_nl)
-      call int_sf_skv_commute_sgs_v_flux(node, ele, surf, sf_grp,       &
-     &    nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, num_int, sgs_sf,     &
+      call int_sf_skv_commute_sgs_v_flux                                &
+     &   (node, ele, surf, sf_grp, nod_fld, g_FEM1, jac_sf_grp,         &
+     &    rhs_tbl, FEM_elens, num_int, sgs_sf,                          &
      &    i_filter, i_flux, i_vect, i_scalar, fem_wk, surf_wk, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
@@ -157,8 +159,9 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
      &    i_filter, i_flux, i_vect, fem_wk, f_nl)
 !
-      call int_sf_skv_commute_sgs_t_flux(node, ele, surf, sf_grp,       &
-     &    nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf, num_int,     &
+      call int_sf_skv_commute_sgs_t_flux                                &
+     &   (node, ele, surf, sf_grp, nod_fld, g_FEM1, jac_sf_grp,         &
+     &    rhs_tbl, FEM_elens, sgs_sf, num_int,                          &
      &    i_filter, i_flux, i_vect, i_vect, fem_wk, surf_wk, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

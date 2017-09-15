@@ -61,6 +61,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_table_FEM_const
       use t_MHD_finite_element_mat
       use t_layering_ele_list
@@ -284,7 +285,7 @@
       if(cmt_param%iflag_c_light .ne. id_SGS_commute_OFF                &
           .and. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux(mesh%node, mesh%ele, surf,       &
-     &     group%surf_grp, nod_fld, jacobians%jac_sf_grp,               &
+     &     group%surf_grp, nod_fld, g_FEM1, jacobians%jac_sf_grp,       &
      &      rhs_tbl, FEM_elens, FEM_prm%npoint_t_evo_int,               &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
      &      SGS_param%ifilter_final, iphys%i_SGS_c_flux, iphys%i_velo,  &

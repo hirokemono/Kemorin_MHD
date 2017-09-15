@@ -55,6 +55,7 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_MHD_finite_element_mat
       use t_MHD_mass_matricxes
       use t_filter_elength
@@ -155,8 +156,8 @@
 !             call int_current_diffuse                                  &
 !     &         (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,           &
 !     &          surf, group%surf_grp, surf_bcs%Asf_bcs, iphys,         &
-!     &          jac_3d, jac_sf_grp, rhs_tbl, m_lump, mhd_fem_wk,       &
-!     &          rhs_mat%fem_wk, rhs_mat%surf_wk,                       &
+!     &          g_FEM1, jac_3d, jac_sf_grp, rhs_tbl, m_lump,           &
+!     &          mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,           &
 !     &          rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
           else
             if (iflag_debug .ge. iflag_routine_msg)                     &
