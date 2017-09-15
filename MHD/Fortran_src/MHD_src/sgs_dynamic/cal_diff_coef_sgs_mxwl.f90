@@ -43,6 +43,7 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_MHD_finite_element_mat
       use t_FEM_MHD_filter_data
       use t_bc_data_velo
@@ -133,7 +134,7 @@
       call cal_div_sgs_mf_simi(iphys%i_sgs_simi,                        &
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, dt,                 &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
-     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,                &
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,        &
      &    rhs_mat%fem_wk, mlump_fl, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
@@ -142,7 +143,7 @@
       call cal_div_sgs_mf_simi                                          &
      &   (iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne, dt,     &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
-     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,                &
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,        &
      &    rhs_mat%fem_wk, mlump_fl, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)

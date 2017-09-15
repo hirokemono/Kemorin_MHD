@@ -180,21 +180,21 @@
 !
       if(iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_sgs_rotation_upw                                       &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,             &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld, FEM_elens,     &
      &      iele_fsmp_stack, num_int, dt, ifilter_final,                &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, f_nl)
       else if(iflag_4_supg .eq. id_turn_ON) then
         call int_sgs_rotation_upw                                       &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,             &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld, FEM_elens,     &
      &      iele_fsmp_stack, num_int, dt, ifilter_final,                &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      fem_wk, f_nl)
       else
         call int_sgs_rotation                                           &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,             &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld, FEM_elens,     &
      &      iele_fsmp_stack, num_int, ifilter_final,                    &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
      &      fem_wk, f_nl)
