@@ -50,6 +50,7 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_MHD_finite_element_mat
       use t_FEM_MHD_filter_data
       use t_material_property
@@ -256,7 +257,7 @@
      &                         'diff_filter_b_on_ele'
            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
      &         mesh%ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,  &
-     &         mesh%node, mesh%ele, nod_fld,                            &
+     &         mesh%node, mesh%ele, nod_fld, g_FEM1,                    &
      &         jacobians%jac_3d, jacobians%jac_3d_l, mhd_fem_wk)
          end if
 !
@@ -281,7 +282,7 @@
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
      &        mesh%ele%istack_ele_smp, iphys%i_magne, ie_dbx,           &
-     &        mesh%node, mesh%ele, nod_fld,                             &
+     &        mesh%node, mesh%ele, nod_fld, g_FEM1,                     &
      &        jacobians%jac_3d, jacobians%jac_3d_l, mhd_fem_wk)
         end if
        end if

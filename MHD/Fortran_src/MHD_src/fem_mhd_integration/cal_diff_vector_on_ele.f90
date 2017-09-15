@@ -5,13 +5,14 @@
 !
 !!      subroutine sel_int_diff_vector_on_ele                           &
 !!     &         (num_int, iele_fsmp_stack, i_fld, i_diff, node, ele,   &
-!!     &          nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
+!!     &          nod_fld, g_FEM, jac_3d_q, jac_3d_l, mhd_fem_wk)
 !!      subroutine sel_int_diff_scalar_on_ele                           &
 !!     &         (num_int, iele_fsmp_stack, i_fld, i_diff, node, ele,   &
-!!     &          nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
+!!     &          nod_fld, g_FEM, jac_3d_q, jac_3d_l, mhd_fem_wk)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
@@ -23,7 +24,7 @@
 !
       use t_geometry_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_MHD_finite_element_mat
 !
@@ -39,7 +40,7 @@
 !
       subroutine sel_int_diff_vector_on_ele                             &
      &         (num_int, iele_fsmp_stack, i_fld, i_diff, node, ele,     &
-     &          nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
+     &          nod_fld, g_FEM, jac_3d_q, jac_3d_l, mhd_fem_wk)
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: i_fld, i_diff
@@ -48,18 +49,19 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
       if (ele%nnod_4_ele .eq. num_t_quad) then
-        call int_diff_vector_on_ele(node, ele, g_FEM1, jac_3d_q,        &
+        call int_diff_vector_on_ele(node, ele, g_FEM, jac_3d_q,         &
      &      iele_fsmp_stack, num_int,                                   &
      &      nod_fld%ntot_phys, i_fld, nod_fld%d_fld,                    &
      &      mhd_fem_wk%n_dvx, i_diff, mhd_fem_wk%dvx)
       else
-        call int_diff_vector_on_ele(node, ele, g_FEM1, jac_3d_l,        &
+        call int_diff_vector_on_ele(node, ele, g_FEM, jac_3d_l,         &
      &      iele_fsmp_stack, num_int,                                   &
      &      nod_fld%ntot_phys, i_fld, nod_fld%d_fld,                    &
      &      mhd_fem_wk%n_dvx, i_diff, mhd_fem_wk%dvx)
@@ -71,7 +73,7 @@
 !
       subroutine sel_int_diff_scalar_on_ele                             &
      &         (num_int, iele_fsmp_stack, i_fld, i_diff, node, ele,     &
-     &          nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
+     &          nod_fld, g_FEM, jac_3d_q, jac_3d_l, mhd_fem_wk)
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: i_fld, i_diff
@@ -80,18 +82,19 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
       if (ele%nnod_4_ele .eq. num_t_quad) then
-        call int_diff_scalar_on_ele(node, ele, g_FEM1, jac_3d_q,        &
+        call int_diff_scalar_on_ele(node, ele, g_FEM, jac_3d_q,         &
      &      iele_fsmp_stack, num_int,                                   &
      &      nod_fld%ntot_phys, i_fld, nod_fld%d_fld,                    &
      &      mhd_fem_wk%n_dvx, i_diff, mhd_fem_wk%dvx)
       else
-        call int_diff_scalar_on_ele(node, ele, g_FEM1, jac_3d_l,        &
+        call int_diff_scalar_on_ele(node, ele, g_FEM, jac_3d_l,         &
      &      iele_fsmp_stack, num_int,                                   &
      &      nod_fld%ntot_phys, i_fld, nod_fld%d_fld,                    &
      &      mhd_fem_wk%n_dvx, i_diff, mhd_fem_wk%dvx)
