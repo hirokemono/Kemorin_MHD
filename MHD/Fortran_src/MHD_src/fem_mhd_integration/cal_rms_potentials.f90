@@ -24,6 +24,7 @@
 !
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_finite_element_mat
       use t_mean_square_values
@@ -66,7 +67,8 @@
       fem_msq%ave_local(ja_phi) = zero
       call int_all_4_scalar                                             &
      &   (iele_fsmp_stack, num_int, ir_phi, ja_phi, i_phi,              &
-     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk, fem_msq)
+     &    node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l,               &
+     &    fem_wk, fem_msq)
 !
       call MPI_allREDUCE(fem_msq%ave_local(ja_phi) , ave_mp, ione,      &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

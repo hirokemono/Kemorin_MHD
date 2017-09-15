@@ -38,6 +38,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_work_FEM_integration
       use t_flex_delta_t_data
@@ -116,17 +117,17 @@
       if(flex_data%i_drmax_v .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_velo  ),           &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_v  ),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_v  ))
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_velo+1),           &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_v+1),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_v+1))
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_velo+2),           &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_v+2),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_v+2))
       end if
@@ -134,7 +135,7 @@
       if(flex_data%i_drmax_p .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, iphys%i_press,              &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_p),                &
      &      flex_data%ave_dt_local(flex_data%i_drmax_p))
       end if
@@ -144,33 +145,33 @@
      & then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_vecp  ),           &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b  ),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b  ))
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_vecp+1),           &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b+1),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b+1))
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_vecp+2),           &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b+2),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b+2))
       else if(flex_data%i_drmax_b .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_magne  ),          &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b  ),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b  ))
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_magne+1),          &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b+1),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b+1))
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_magne+2),          &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b+2),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b+2))
       end if
@@ -178,7 +179,7 @@
       if(flex_data%i_drmax_f .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, iphys%i_mag_p,              &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_f),                &
      &      flex_data%ave_dt_local(flex_data%i_drmax_f))
       end if
@@ -187,7 +188,7 @@
       if(flex_data%i_drmax_t .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, iphys%i_temp,               &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_t),                &
      &      flex_data%ave_dt_local(flex_data%i_drmax_t))
       end if
@@ -195,7 +196,7 @@
       if(flex_data%i_drmax_d .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, iphys%i_light,              &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_d),                &
      &      flex_data%ave_dt_local(flex_data%i_drmax_d))
       end if
@@ -271,17 +272,17 @@
       if(flex_data%i_drmax_v .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_chk_mom  ),        &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_v  ),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_v  ))
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_chk_mom+1),        &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_v+1),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_v+1))
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_chk_mom+2),        &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_v+2),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_v+2))
       end if
@@ -289,7 +290,7 @@
       if(flex_data%i_drmax_p .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, iphys%i_chk_press,          &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_p),                &
      &      flex_data%ave_dt_local(flex_data%i_drmax_p))
       end if
@@ -298,17 +299,17 @@
       if(flex_data%i_drmax_b .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_chk_uxb  ),        &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b  ),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b  ))
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_chk_uxb+1),        &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b+1),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b+1))
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_chk_uxb+2),        &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_b+2),              &
      &      flex_data%ave_dt_local(flex_data%i_drmax_b+2))
       end if
@@ -316,7 +317,7 @@
       if(flex_data%i_drmax_f .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, iphys%i_chk_potential,      &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_f),                &
      &      flex_data%ave_dt_local(flex_data%i_drmax_f))
       end if
@@ -325,7 +326,7 @@
       if(flex_data%i_drmax_t .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, iphys%i_chk_heat,           &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_t),                &
      &      flex_data%ave_dt_local(flex_data%i_drmax_t))
       end if
@@ -333,7 +334,7 @@
       if(flex_data%i_drmax_d .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, iphys%i_chk_composit,       &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l, fem_wk,     &
      &      flex_data%rms_dt_local(flex_data%i_drmax_d),                &
      &      flex_data%ave_dt_local(flex_data%i_drmax_d))
       end if
