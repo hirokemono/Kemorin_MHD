@@ -55,6 +55,7 @@
       use t_SGS_control_parameter
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -105,7 +106,7 @@
      &      fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
-     &    (node, ele, nod_fld, jac_3d_l, rhs_tbl, num_int,              &
+     &    (node, ele, nod_fld, g_FEM1, jac_3d_l, rhs_tbl, num_int,      &
      &     nod_bc_p%ibc_end, nod_bc_p%num_idx_ibc,                      &
      &     nod_bc_p%ele_bc_id, nod_bc_p%ibc_stack_smp,                  &
      &     nod_bc_p%ibc_shape, i_p_phi, fem_wk, f_l)
@@ -152,7 +153,7 @@
      &      fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
-     &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, num_int,             &
+     &     (node, ele, nod_fld, g_FEM1, jac_3d_l, rhs_tbl, num_int,     &
      &      nod_bc_f%ibc_end, nod_bc_f%num_idx_ibc,                     &
      &      nod_bc_f%ele_bc_id, nod_bc_f%ibc_stack_smp,                 &
      &      nod_bc_f%ibc_shape, i_m_phi, fem_wk, f_l)
@@ -201,7 +202,7 @@
      &      fem_wk, f_l)
       else
         call int_vol_fixed_poisson_surf                                 &
-     &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, num_int,             &
+     &     (node, ele, nod_fld, g_FEM1, jac_3d_l, rhs_tbl, num_int,     &
      &      nod_bc_fins%ibc_end, nod_bc_fins%num_idx_ibc,               &
      &      nod_bc_fins%ele_bc_id, nod_bc_fins%ibc_stack_smp,           &
      &      nod_bc_fins%ibc_shape, i_m_phi, fem_wk, f_l)
@@ -252,7 +253,7 @@
      &      ak_d, coef_imp, fem_wk, f_l)
       else
         call int_vol_fixed_scalar_surf                                  &
-     &     (node, ele, nod_fld, jac_3d, rhs_tbl, num_int,               &
+     &     (node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, num_int,       &
      &      nod_bc_t%ibc_end, nod_bc_t%num_idx_ibc,                     &
      &      nod_bc_t%ele_bc_id, nod_bc_t%ibc_stack_smp,                 &
      &      nod_bc_t%ibc_shape, i_temp, ak_d, coef_imp, fem_wk, f_l)
@@ -306,7 +307,7 @@
      &      diff_coefs%ak, ak_d, fl_prop%coef_imp, fem_wk, f_l)
       else
         call int_vol_fixed_rotate_surf                                  &
-     &     (node, ele, nod_fld, jac_3d, rhs_tbl, num_int,               &
+     &     (node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, num_int,       &
      &      nod_bc_rot%ibc_end, nod_bc_rot%num_idx_ibc,                 &
      &      nod_bc_rot%ele_bc_id, nod_bc_rot%ibc_stack_smp,             &
      &      nod_bc_rot%ibc_shape, i_velo, ak_d, fl_prop%coef_imp,       &
@@ -354,7 +355,7 @@
      &      ak_d, coef_imp, fem_wk, f_l)
       else
         call int_vol_fixed_vector_surf(node, ele, nod_fld,              &
-     &      jac_3d, rhs_tbl, num_int, nod_bc%nmax_idx_ibc2,             &
+     &      g_FEM1, jac_3d, rhs_tbl, num_int, nod_bc%nmax_idx_ibc2,     &
      &      nod_bc%ibc_end, nod_bc%num_idx_ibc, nod_bc%ele_bc_id,       &
      &      nod_bc%ibc_stack_smp,  nod_bc%ibc_shape,                    &
      &      i_field, ak_d, coef_imp, fem_wk, f_l)

@@ -5,26 +5,27 @@
 !        modified by H.Matsui on AUg., 2007
 !
 !!      subroutine int_vol_fixed_poisson_surf                           &
-!!     &         (node, ele, nod_fld, jac_3d_l, rhs_tbl, n_int,         &
+!!     &         (node, ele, nod_fld, g_FEM, jac_3d_l, rhs_tbl, n_int,  &
 !!     &          ibc_end, num_index_ibc, ele_bc_id, ibc_stack_smp,     &
 !!     &          ibc_shape, i_field, fem_wk, f_l)
 !!      subroutine int_vol_fixed_scalar_surf                            &
-!!     &         (node, ele, nod_fld, jac_3d, rhs_tbl, n_int,           &
+!!     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, n_int,    &
 !!     &          ibc_end, num_index_ibc, ele_bc_id, ibc_stack_smp,     &
 !!     &          ibc_shape, i_field, ak_d, coef_implicit, fem_wk, f_l)
 !!      subroutine int_vol_fixed_vector_surf                            &
-!!     &         (node, ele, nod_fld, jac_3d, rhs_tbl, n_int,           &
+!!     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, n_int,    &
 !!     &          nmax_index_ibc, ibc_end, num_index_ibc, ele_bc_id,    &
 !!     &          ibc_stack_smp, ibc_shape, i_field, ak_d,              &
 !!     &          coef_implicit, fem_wk, f_l)
 !!
 !!      subroutine int_vol_fixed_rotate_surf                            &
-!!     &         (node, ele, nod_fld, jac_3d, rhs_tbl, n_int,           &
+!!     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, n_int,    &
 !!     &          ibc_end, num_index_ibc, ele_bc_id, ibc_stack_smp,     &
 !!     &          ibc_shape, i_field, ak_d, coef_implicit, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data),    intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!
@@ -36,12 +37,12 @@
 !
       use m_precision
       use m_machine_parameter
-!
       use m_phys_constants
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
+!
       use t_geometry_data
       use t_phys_data
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -58,7 +59,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_fixed_poisson_surf                             &
-     &         (node, ele, nod_fld, jac_3d_l, rhs_tbl, n_int,           &
+     &         (node, ele, nod_fld, g_FEM, jac_3d_l, rhs_tbl, n_int,    &
      &          ibc_end, num_index_ibc, ele_bc_id, ibc_stack_smp,       &
      &          ibc_shape, i_field, fem_wk, f_l)
 !
@@ -67,6 +68,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -105,8 +107,8 @@
         call fem_skv_poisson_fixed                                      &
      &     (ele%numele, num_t_linear, num_t_linear, np_smp,             &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),        &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      k2, n_int, jac_3d_l%ntot_int, jac_3d_l%xjac,                &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, k2, n_int, jac_3d_l%ntot_int, jac_3d_l%xjac,   &
      &      jac_3d_l%dnx, jac_3d_l%dnx, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
@@ -118,7 +120,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_fixed_scalar_surf                              &
-     &         (node, ele, nod_fld, jac_3d, rhs_tbl, n_int,             &
+     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, n_int,      &
      &          ibc_end, num_index_ibc, ele_bc_id, ibc_stack_smp,       &
      &          ibc_shape, i_field, ak_d, coef_implicit, fem_wk, f_l)
 !
@@ -127,6 +129,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -169,8 +172,8 @@
         call fem_skv_scalar_diffuse_fixed                               &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,         &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),        &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      k2, ione, n_int, jac_3d%ntot_int, jac_3d%xjac,              &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, k2, ione, n_int, jac_3d%ntot_int, jac_3d%xjac, &
      &      jac_3d%dnx, jac_3d%dnx, ak_d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
@@ -182,7 +185,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_fixed_vector_surf                              &
-     &         (node, ele, nod_fld, jac_3d, rhs_tbl, n_int,             &
+     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, n_int,      &
      &          nmax_index_ibc, ibc_end, num_index_ibc, ele_bc_id,      &
      &          ibc_stack_smp, ibc_shape, i_field, ak_d,                &
      &          coef_implicit, fem_wk, f_l)
@@ -192,6 +195,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -238,8 +242,8 @@
             call fem_skv_scalar_diffuse_fixed                           &
      &         (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,             &
      &          np_smp, num_index_ibc(nd), ele_bc_id(1,nd),             &
-     &          ibc_stack_smp(istart_smp,nd),                           &
-     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
+     &          ibc_stack_smp(istart_smp,nd), g_FEM%max_int_point,      &
+     &          g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,     &
      &          k2, nd, n_int, jac_3d%ntot_int, jac_3d%xjac,            &
      &          jac_3d%dnx, jac_3d%dnx, ak_d,                           &
      &          fem_wk%scalar_1, fem_wk%sk6)
@@ -255,7 +259,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_fixed_rotate_surf                              &
-     &         (node, ele, nod_fld, jac_3d, rhs_tbl, n_int,             &
+     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, n_int,      &
      &          ibc_end, num_index_ibc, ele_bc_id, ibc_stack_smp,       &
      &          ibc_shape, i_field, ak_d, coef_implicit, fem_wk, f_l)
 !
@@ -264,6 +268,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -308,10 +313,10 @@
             call fem_skv_scalar_diffuse_fixed                           &
      &         (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, np_smp,     &
      &          num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),    &
-     &          max_int_point, maxtot_int_3d, int_start3, owe3d,        &
-     &          k2, nd, n_int, jac_3d%ntot_int, jac_3d%xjac,            &
-     &          jac_3d%dnx, jac_3d%dnx, ak_d,                           &
-     &          fem_wk%scalar_1, fem_wk%sk6)
+     &          g_FEM%max_int_point, g_FEM%maxtot_int_3d,               &
+     &          g_FEM%int_start3, g_FEM%owe3d, k2, nd, n_int,           &
+     &          jac_3d%ntot_int, jac_3d%xjac, jac_3d%dnx, jac_3d%dnx,   &
+     &          ak_d, fem_wk%scalar_1, fem_wk%sk6)
           end do
       end do
 !
