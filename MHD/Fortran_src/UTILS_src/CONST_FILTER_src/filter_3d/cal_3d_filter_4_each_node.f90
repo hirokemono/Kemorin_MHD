@@ -69,6 +69,7 @@
       subroutine cal_filter_and_coefficients(ele, jac_3d)
 !
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
@@ -82,7 +83,7 @@
       weight_1nod = 0.0d0
       call copy_filter_coefs(nnod_near_1nod_weight)
 !
-      call int_node_filter_weights(ele, jac_3d, num_int_points,         &
+      call int_node_filter_weights(ele, g_FEM1, jac_3d, num_int_points, &
      &    nele_near_1nod_weight, iele_near_1nod_weight(1) )
 !
       end subroutine cal_filter_and_coefficients

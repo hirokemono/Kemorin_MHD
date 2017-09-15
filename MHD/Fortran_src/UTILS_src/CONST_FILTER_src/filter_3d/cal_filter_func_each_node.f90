@@ -28,6 +28,7 @@
 !
       use t_geometry_data
       use t_next_node_ele_4_node
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_filter_elength
 !
@@ -97,7 +98,7 @@
 !    set nxn matrix
 !
         call int_node_filter_matrix                                     &
-     &      (node, ele, jac_3d, inod, num_int_points,                   &
+     &      (node, ele, g_FEM1, jac_3d, inod, num_int_points,           &
      &       nele_near_1nod_weight, iele_near_1nod_weight(1),           &
      &       nnod_near_1nod_weight, inod_near_1nod_weight(1),           &
      &       nnod_near_1nod_filter)
@@ -256,7 +257,7 @@
             vec_mat = 0.0d0
 !
             call int_node_filter_matrix                                 &
-     &         (node, ele, jac_3d, inod, num_int_points,                &
+     &         (node, ele, g_FEM1, jac_3d, inod, num_int_points,        &
      &          nele_near_1nod_weight, iele_near_1nod_weight(1),        &
      &          nnod_near_1nod_weight, inod_near_1nod_weight(1),        &
      &          nnod_near_1nod_filter)

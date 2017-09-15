@@ -22,6 +22,7 @@
       use m_constants
 !
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_filter_elength
       use t_filter_dxdxi
@@ -95,7 +96,7 @@
 !    set nxn matrix
 !
       call int_node_filter_matrix                                       &
-     &   (node, ele, jac_3d, inod, num_int_points,                      &
+     &   (node, ele, g_FEM1, jac_3d, inod, num_int_points,              &
      &    nele_near_1nod_weight, iele_near_1nod_weight(1),              &
      &    nnod_near_1nod_weight, inod_near_1nod_weight(1),              &
      &    nnod_near_1nod_filter)
@@ -200,7 +201,7 @@
 !
         else
           call int_node_filter_matrix                                   &
-     &       (node, ele, jac_3d, inod, num_int_points,                  &
+     &       (node, ele, g_FEM1, jac_3d, inod, num_int_points,          &
      &        nele_near_1nod_weight, iele_near_1nod_weight(1),          &
      &        nnod_near_1nod_weight, inod_near_1nod_weight(1),          &
      &        nnod_near_1nod_filter)
