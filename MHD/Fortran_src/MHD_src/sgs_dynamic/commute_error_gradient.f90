@@ -92,7 +92,7 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_commute_grad(iele_fsmp_stack, num_int,               &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
+     &    node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,       &
      &    i_filter, i_scalar, fem_wk, f_nl)
 !
       call int_surf_grad_commute_sgs(node, ele, surf, sf_grp,           &
@@ -144,7 +144,7 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_commute_rot(iele_fsmp_stack, num_int,                &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
+     &    node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,       &
      &    i_filter, i_vect, fem_wk, f_nl)
 !
       call int_surf_rot_commute_sgs(node, ele, surf, sf_grp, nod_fld,   &

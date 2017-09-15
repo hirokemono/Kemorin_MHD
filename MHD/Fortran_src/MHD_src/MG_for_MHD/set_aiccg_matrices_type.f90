@@ -147,7 +147,7 @@
 !
       call int_MHD_poisson_matrices(FEM_prm%npoint_poisson_int,         &
      &    SGS_param%ifilter_final, cmt_param%iflag_c_magne,             &
-     &    mesh, fl_prop, cd_prop, jacobians%jac_3d_l,                   &
+     &    mesh, fl_prop, cd_prop, g_FEM1, jacobians%jac_3d_l,           &
      &    rhs_tbl, MG_mat_linear, MG_mat_fl_l,                          &
      &    FEM_elens, ifld_diff, diff_coefs, fem_wk,                     &
      &    mat_press, mat_magp)
@@ -162,7 +162,7 @@
         call int_MHD_crank_matrices                                     &
      &     (FEM_prm%npoint_t_evo_int, dt, SGS_param%ifilter_final,      &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
-     &      jacobians%jac_3d, rhs_tbl,                                  &
+     &      g_FEM1, jacobians%jac_3d, rhs_tbl,                          &
      &      MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                    &
      &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
      &      mat_velo, mat_magne, mat_temp, mat_light)
@@ -175,7 +175,7 @@
         call int_MHD_crank_matrices                                     &
      &     (FEM_prm%npoint_t_evo_int, dt, SGS_param%ifilter_final,      &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
-     &      jacobians%jac_3d, rhs_tbl, MG_mat_q, MG_mat_fl_q,           &
+     &      g_FEM1, jacobians%jac_3d, rhs_tbl, MG_mat_q, MG_mat_fl_q,   &
      &      MG_mat_full_cd_q, FEM_elens, ifld_diff, diff_coefs,         &
      &      fem_wk, mat_velo, mat_magne, mat_temp, mat_light)
       end if

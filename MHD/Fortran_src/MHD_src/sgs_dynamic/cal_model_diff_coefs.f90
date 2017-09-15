@@ -47,6 +47,7 @@
       use t_phys_address
       use t_phys_data
       use t_layering_ele_list
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_material_property
       use t_SGS_model_coefs
@@ -106,7 +107,7 @@
 !
       call cal_model_coef_4_flux                                        &
      &   (SGS_par%model_p%iflag_Csim_marging, layer_tbl,                &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+     &    node, ele, iphys, nod_fld, g_FEM1, jac_3d_q, jac_3d_l,        &
      &    n_tensor, ifield_d, icomp_f, n_int,                           &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%ntot_comp,            &
      &    wk_sgs%corrilate, wk_sgs%corrilate_w, wk_sgs%fld_coef,        &
@@ -291,7 +292,7 @@
 !
       call cal_model_coef_4_flux                                        &
     &    (SGS_par%model_p%iflag_Csim_marging, layer_tbl,                &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+     &    node, ele, iphys, nod_fld, g_FEM1, jac_3d_q, jac_3d_l,        &
      &    numdir, ifield_d, icomp_f, n_int,                             &
      &    wk_diff%nlayer, wk_diff%num_kinds, wk_diff%ntot_comp,         &
      &    wk_diff%corrilate, wk_diff%corrilate_w, wk_diff%fld_coef,     &
@@ -353,7 +354,7 @@
 !
       call cal_lsq_diff_coef                                            &
      &   (SGS_par%model_p%iflag_Csim_marging, iele_fsmp_stack,          &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+     &    node, ele, iphys, nod_fld, g_FEM1, jac_3d_q, jac_3d_l,        &
      &    numdir, ifield_d, icomp_f, n_int,                             &
      &    wk_diff%num_kinds, wk_diff%ntot_comp, wk_diff%corrilate_w,    &
      &    wk_diff%fld_whole, wk_diff%comp_whole, wk_lsq)

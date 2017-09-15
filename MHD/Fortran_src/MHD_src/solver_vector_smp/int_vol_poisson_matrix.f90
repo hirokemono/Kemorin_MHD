@@ -10,13 +10,14 @@
 !
 !!      subroutine int_MHD_poisson_matrices                             &
 !!     &         (num_int, ifilter_final, iflag_commute_magne,          &
-!!     &          mesh, fl_prop, cd_prop, jac_3d_l, rhs_tbl,            &
+!!     &          mesh, fl_prop, cd_prop, g_FEM, jac_3d_l, rhs_tbl,     &
 !!     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                &
 !!     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
 !!      subroutine int_MHD_crank_matrices                               &
 !!     &         (num_int, dt, ifilter_final, mesh,                     &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,   &
-!!     &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,     &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
+!!     &          g_FEM, jac_3d, rhs_tbl,                               &
+!!     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,              &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -24,6 +25,7 @@
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(table_mat_const), intent(in) :: MG_mat_linear
@@ -50,6 +52,7 @@
       use t_SGS_control_parameter
       use t_mesh_data
       use t_geometry_data
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_filter_elength
@@ -73,7 +76,7 @@
 !
       subroutine int_MHD_poisson_matrices                               &
      &         (num_int, ifilter_final, iflag_commute_magne,            &
-     &          mesh, fl_prop, cd_prop, jac_3d_l, rhs_tbl,              &
+     &          mesh, fl_prop, cd_prop, g_FEM, jac_3d_l, rhs_tbl,       &
      &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                  &
      &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
 !
@@ -83,6 +86,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const),  intent(in) :: MG_mat_linear
@@ -98,8 +102,8 @@
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call sel_int_poisson_mat                                        &
-     &     (mesh%ele, jac_3d_l, rhs_tbl, MG_mat_fl_l, FEM_elens,        &
-     &      iflag_commute_magne, num_int,                               &
+     &     (mesh%ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_fl_l,            &
+     &      FEM_elens, iflag_commute_magne, num_int,                    &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
      &      ifilter_final, fem_wk, mat_press)
       end if
@@ -107,8 +111,8 @@
       if (     cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
      &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call sel_int_poisson_mat                                        &
-     &     (mesh%ele, jac_3d_l, rhs_tbl, MG_mat_linear, FEM_elens,      &
-     &      iflag_commute_magne, num_int,                               &
+     &     (mesh%ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_linear,          &
+     &      FEM_elens, iflag_commute_magne, num_int,                    &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
      &      ifilter_final, fem_wk, mat_magp)
       end if
@@ -120,8 +124,9 @@
 !
       subroutine int_MHD_crank_matrices                                 &
      &         (num_int, dt, ifilter_final, mesh,                       &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,     &
-     &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,       &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,             &
+     &          g_FEM, jac_3d, rhs_tbl,                                 &
+     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                &
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
@@ -132,6 +137,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_q
@@ -149,7 +155,7 @@
 !
 !
       if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
+        call sel_int_diffuse3_crank_mat(mesh%ele, g_FEM, jac_3d,        &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
      &      dt, fl_prop%coef_imp, ak_MHD%ak_d_velo, ifilter_final,      &
@@ -157,7 +163,7 @@
       end if
 !
       if (cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson) then
-        call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
+        call sel_int_diffuse3_crank_mat(mesh%ele, g_FEM, jac_3d,        &
      &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, num_int,              &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
      &      dt, cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,     &
@@ -165,7 +171,7 @@
       end if
 !
       if (cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
-        call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
+        call sel_int_diffuse3_crank_mat(mesh%ele, g_FEM, jac_3d,        &
      &      rhs_tbl, MG_mat_q, FEM_elens, num_int,                      &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
      &      dt, cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,     &
@@ -173,7 +179,7 @@
       end if
 !
       if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
+        call choose_int_diffuse1_crank_mat(mesh%ele, g_FEM, jac_3d,     &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_temp, diff_coefs%ak,      &
      &      dt, ht_prop%coef_imp, ak_MHD%ak_d_temp, ifilter_final,      &
@@ -181,7 +187,7 @@
       end if
 !
       if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
+        call choose_int_diffuse1_crank_mat(mesh%ele, g_FEM, jac_3d,     &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_light, diff_coefs%ak,     &
      &      dt, cp_prop%coef_imp, ak_MHD%ak_d_composit, ifilter_final,  &
@@ -194,7 +200,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_int_poisson_mat                                    &
-     &         (ele, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens,          &
+     &         (ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens,   &
      &          iflag_commute_magne, n_int, num_diff_kinds,             &
      &          iak_diff, ak_diff, i_filter, fem_wk, mat11_DJDS)
 !
@@ -202,6 +208,7 @@
       use int_vol_poisson_sgs_matrix
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -219,10 +226,11 @@
 !
       if (iflag_commute_magne .eq. id_SGS_commute_ON) then
         call int_vol_poisson_sgs_mat11                                  &
-     &     (ele, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens, n_int,       &
-     &      i_filter, ak_diff(1,iak_diff), fem_wk, mat11_DJDS)
+     &     (ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens,       &
+     &      n_int, i_filter, ak_diff(1,iak_diff), fem_wk, mat11_DJDS)
       else
-        call int_vol_poisson_mat11(ele, jac_3d_l, rhs_tbl, MG_mat_tbl,  &
+        call int_vol_poisson_mat11                                      &
+     &     (ele, g_FEM, jac_3d_l, rhs_tbl, MG_mat_tbl,                  &
      &      n_int, fem_wk, mat11_DJDS)
       end if
 !
@@ -231,7 +239,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_int_diffuse3_crank_mat                             &
-     &         (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,            &
+     &         (ele, g_FEM, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,     &
      &          n_int, num_diff_kinds, iak_diff, ak_diff,               &
      &          dt, coef_imp, ak_d, i_filter, fem_wk, mat33_DJDS)
 !
@@ -239,6 +247,7 @@
       use int_vol_poisson_sgs_matrix
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -258,11 +267,12 @@
 !
       if(iak_diff .gt. 0) then
         call int_vol_diffuse_sgs_mat33                                  &
-     &     (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,                &
+     &     (ele, g_FEM, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,         &
      &      n_int, dt, coef_imp, i_filter, ak_diff(1,iak_diff),         &
      &      ak_d, fem_wk, mat33_DJDS)
       else
-        call int_vol_diffuse_mat33(ele, jac_3d, rhs_tbl, MG_mat_tbl,    &
+        call int_vol_diffuse_mat33                                      &
+     &     (ele, g_FEM, jac_3d, rhs_tbl, MG_mat_tbl,                    &
      &      n_int, dt, coef_imp, ak_d, fem_wk, mat33_DJDS)
       end if
 !
@@ -271,7 +281,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine choose_int_diffuse1_crank_mat                          &
-     &         (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,            &
+     &         (ele, g_FEM, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,     &
      &          n_int, num_diff_kinds, iak_diff, ak_diff,               &
      &          dt, coef_imp, ak_d, i_filter, fem_wk, mat11_DJDS)
 !
@@ -279,6 +289,7 @@
       use int_vol_poisson_sgs_matrix
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -298,11 +309,12 @@
 !
       if(iak_diff .gt. 0) then
         call int_vol_diffuse_sgs_mat11                                  &
-     &     (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,                &
+     &     (ele, g_FEM, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,         &
      &      n_int, dt, coef_imp, i_filter, ak_diff(1,iak_diff),         &
      &      ak_d, fem_wk, mat11_DJDS)
       else
-        call int_vol_diffuse_mat11(ele, jac_3d, rhs_tbl, MG_mat_tbl,    &
+        call int_vol_diffuse_mat11                                      &
+     &     (ele, g_FEM, jac_3d, rhs_tbl, MG_mat_tbl,                    &
      &      n_int, dt, coef_imp, ak_d, fem_wk, mat11_DJDS)
       end if
 !

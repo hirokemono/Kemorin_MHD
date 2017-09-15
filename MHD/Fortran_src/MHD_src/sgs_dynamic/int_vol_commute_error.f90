@@ -4,27 +4,28 @@
 !     Written by H. Matsui
 !
 !!      subroutine int_vol_commute_grad(iele_fsmp_stack, n_int,         &
-!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          i_filter, i_scalar, fem_wk, f_nl)
 !!      subroutine int_vol_commute_div(iele_fsmp_stack, n_int,          &
-!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          i_filter, i_vect, fem_wk, f_nl)
 !!      subroutine int_vol_commute_rot(iele_fsmp_stack, n_int,          &
-!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          i_filter, i_vect, fem_wk, f_nl)
 !!
 !!      subroutine int_vol_commute_div_v_flux(iele_fsmp_stack, n_int,   &
-!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          i_filter, i_flux, i_vect, i_scalar, fem_wk, f_nl)
 !!      subroutine int_vol_commute_div_m_flux(iele_fsmp_stack, n_int,   &
-!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          i_filter, i_flux, i_vect, fem_wk, f_nl)
 !!      subroutine int_vol_commute_induct_t(iele_fsmp_stack, n_int,     &
-!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          i_filter, i_flux, i_v, i_b, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -40,7 +41,7 @@
 !
       use t_geometry_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -58,7 +59,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_commute_grad(iele_fsmp_stack, n_int,           &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          i_filter, i_scalar, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -66,6 +67,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -91,7 +93,7 @@
      &      k2, i_scalar, fem_wk%scalar_1)
 !
         call fem_skv_commute_err_grad_t(iele_fsmp_stack, n_int,         &
-     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
+     &      k2, i_filter, ele, g_FEM, jac_3d, FEM_elens, fem_wk)
        end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -102,7 +104,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_commute_div(iele_fsmp_stack, n_int,            &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          i_filter, i_vect, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -110,6 +112,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -132,7 +135,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_vect, fem_wk%vector_1)
         call fem_skv_commute_err_div_t(iele_fsmp_stack, n_int,          &
-     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
+     &      k2, i_filter, ele, g_FEM, jac_3d, FEM_elens, fem_wk)
        end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -143,7 +146,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_commute_rot(iele_fsmp_stack, n_int,            &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          i_filter, i_vect, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -151,6 +154,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -170,7 +174,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_vect, fem_wk%vector_1)
         call fem_skv_commute_err_rot_t(iele_fsmp_stack, n_int,          &
-     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
+     &      k2, i_filter, ele, g_FEM, jac_3d, FEM_elens, fem_wk)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -182,7 +186,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_commute_div_v_flux(iele_fsmp_stack, n_int,     &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          i_filter, i_flux, i_vect, i_scalar, fem_wk, f_nl)
 !
       use sgs_terms_2_each_ele
@@ -190,6 +194,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -211,7 +216,7 @@
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_scalar, i_flux, nod_fld%d_fld, fem_wk%vector_1)
         call fem_skv_commute_err_div_t(iele_fsmp_stack, n_int,          &
-     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
+     &      k2, i_filter, ele, g_FEM, jac_3d, FEM_elens, fem_wk)
        end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -222,7 +227,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_commute_div_m_flux(iele_fsmp_stack, n_int,     &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          i_filter, i_flux, i_vect, fem_wk, f_nl)
 !
       use sgs_terms_2_each_ele
@@ -230,6 +235,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -252,7 +258,7 @@
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_flux, nod_fld%d_fld, fem_wk%tensor_1)
         call fem_skv_commute_err_div_tsr_t(iele_fsmp_stack, n_int,      &
-     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
+     &      k2, i_filter, ele, g_FEM, jac_3d, FEM_elens, fem_wk)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -263,7 +269,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_commute_induct_t(iele_fsmp_stack, n_int,       &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          i_filter, i_flux, i_v, i_b, fem_wk, f_nl)
 !
       use sgs_terms_2_each_ele
@@ -271,6 +277,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -292,7 +299,7 @@
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_b, i_v, i_flux, nod_fld%d_fld, fem_wk%vector_1)
         call fem_skv_commute_err_div_ast_t(iele_fsmp_stack, n_int,      &
-     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
+     &      k2, i_filter, ele, g_FEM, jac_3d, FEM_elens, fem_wk)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

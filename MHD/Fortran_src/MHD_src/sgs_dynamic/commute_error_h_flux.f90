@@ -103,7 +103,7 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_commute_div_v_flux(iele_fsmp_stack, num_int,         &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
+     &    node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,       &
      &    i_filter, i_flux, i_vect, i_scalar, fem_wk, f_nl)
       call int_sf_skv_commute_sgs_v_flux                                &
      &   (node, ele, surf, sf_grp, nod_fld, g_FEM1, jac_sf_grp,         &
@@ -156,7 +156,7 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_commute_div_m_flux(iele_fsmp_stack, num_int,         &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
+     &    node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,       &
      &    i_filter, i_flux, i_vect, fem_wk, f_nl)
 !
       call int_sf_skv_commute_sgs_t_flux                                &
@@ -210,7 +210,7 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_commute_induct_t(iele_fsmp_stack, num_int,           &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
+     &    node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,       &
      &    i_filter, i_flux, i_v, i_b, fem_wk, f_nl)
 !
       call int_surf_commute_induct_t(node, ele, surf, sf_grp,           &
