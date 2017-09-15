@@ -47,6 +47,7 @@
 !
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -112,7 +113,8 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
 !
-        call fem_skv_poisson_sgs_fix_bc(ele, jac_3d_l, FEM_elens,       &
+        call fem_skv_poisson_sgs_fix_bc                                 &
+     &     (ele, g_FEM1, jac_3d_l, FEM_elens,                           &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp), k2,    &
      &      n_int, i_filter, ak_diff(1,iak_diff),                       &
      &      fem_wk%scalar_1, fem_wk%sk6)
@@ -176,7 +178,7 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
 !
-        call fem_skv_diffuse_sgs_fix_bc(ele, jac_3d, FEM_elens,         &
+        call fem_skv_diffuse_sgs_fix_bc(ele, g_FEM1, jac_3d, FEM_elens, &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),        &
      &      k2, ione, n_int, i_filter, ak_diff(1,iak_diff), ak_d,       &
      &      fem_wk%scalar_1, fem_wk%sk6)
@@ -246,7 +248,7 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
             call fem_skv_diffuse_sgs_fix_bc                             &
-     &         (ele, jac_3d, FEM_elens, nmax_index_ibc,                 &
+     &         (ele, g_FEM1, jac_3d, FEM_elens, nmax_index_ibc,         &
      &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd), k2, nd,  &
      &          n_int, i_filter, ak_diff(1,iak_diff), ak_d,             &
      &          fem_wk%scalar_1, fem_wk%sk6)
@@ -316,7 +318,7 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
             call fem_skv_diffuse_sgs_fix_bc                             &
-     &         (ele, jac_3d, FEM_elens, num_index_ibc,                  &
+     &         (ele, g_FEM1, jac_3d, FEM_elens, num_index_ibc,          &
      &          ele_bc_id, ibc_stack_smp(istart_smp), k2, nd,           &
      &          n_int, i_filter, ak_diff(1,iak_diff), ak_d,             &
      &          fem_wk%scalar_1, fem_wk%sk6)
