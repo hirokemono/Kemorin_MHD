@@ -40,6 +40,7 @@
 !
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -89,8 +90,8 @@
         call scalar_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_scalar, fem_wk%scalar_1)
 !
-        call fem_skv_commute_err_grad_t(iele_fsmp_stack,                &
-     &      n_int, k2, i_filter, ele, jac_3d, FEM_elens, fem_wk)
+        call fem_skv_commute_err_grad_t(iele_fsmp_stack, n_int,         &
+     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
        end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -130,8 +131,8 @@
 !
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_vect, fem_wk%vector_1)
-        call fem_skv_commute_err_div_t(iele_fsmp_stack,                 &
-     &      n_int, k2, i_filter, ele, jac_3d, FEM_elens, fem_wk)
+        call fem_skv_commute_err_div_t(iele_fsmp_stack, n_int,          &
+     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
        end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -168,8 +169,8 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_vect, fem_wk%vector_1)
-        call fem_skv_commute_err_rot_t(iele_fsmp_stack,                 &
-     &      n_int, k2, i_filter, ele, jac_3d, FEM_elens, fem_wk)
+        call fem_skv_commute_err_rot_t(iele_fsmp_stack, n_int,          &
+     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -209,8 +210,8 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_scalar, i_flux, nod_fld%d_fld, fem_wk%vector_1)
-        call fem_skv_commute_err_div_t(iele_fsmp_stack,                 &
-     &      n_int, k2, i_filter, ele, jac_3d, FEM_elens, fem_wk)
+        call fem_skv_commute_err_div_t(iele_fsmp_stack, n_int,          &
+     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
        end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -250,8 +251,8 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_flux, nod_fld%d_fld, fem_wk%tensor_1)
-        call fem_skv_commute_err_div_tsr_t(iele_fsmp_stack,             &
-     &      n_int, k2, i_filter, ele, jac_3d, FEM_elens, fem_wk)
+        call fem_skv_commute_err_div_tsr_t(iele_fsmp_stack, n_int,      &
+     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -290,8 +291,8 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_b, i_v, i_flux, nod_fld%d_fld, fem_wk%vector_1)
-        call fem_skv_commute_err_div_ast_t(iele_fsmp_stack,             &
-     &      n_int, k2, i_filter, ele, jac_3d, FEM_elens, fem_wk)
+        call fem_skv_commute_err_div_ast_t(iele_fsmp_stack, n_int,      &
+     &      k2, i_filter, ele, g_FEM1, jac_3d, FEM_elens, fem_wk)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
