@@ -103,7 +103,7 @@
 !
       if (i_field .eq. iphys%i_induction) then
         call int_vol_mag_induct_pg(node, ele, cd_prop,                  &
-     &      jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,                 &
+     &      g_FEM1, jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,         &
      &      conduct%istack_ele_fld_smp, num_int,                        &
      &      ele_fld%ntot_phys, ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
 !
@@ -169,7 +169,7 @@
 !
       if (i_field .eq. iphys%i_induction) then
         call int_vol_mag_induct_upm(node, ele, cd_prop,                 &
-     &      jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,                 &
+     &      g_FEM1, jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,         &
      &      conduct%istack_ele_fld_smp, num_int, dt,                    &
      &      ele_fld%ntot_phys, ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
 !

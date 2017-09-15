@@ -8,17 +8,18 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_mag_induct_pg(node, ele, cd_prop, jac_3d,    &
-!!     &          rhs_tbl, nod_fld, iphys_nod, iphys_ele,               &
+!!      subroutine int_vol_mag_induct_pg(node, ele, cd_prop,            &
+!!     &          g_FEM, jac_3d,rhs_tbl, nod_fld, iphys_nod, iphys_ele, &
 !!     &          iele_fsmp_stack, n_int, ncomp_ele, d_ele,             &
 !!     &          fem_wk, mhd_fem_wk, f_nl)
-!!      subroutine int_vol_mag_induct_upm(node, ele, cd_prop, jac_3d,   &
-!!     &          rhs_tbl, nod_fld, iphys_nod, iphys_ele,               &
+!!      subroutine int_vol_mag_induct_upm(node, ele, cd_prop,           &
+!!     &          g_FEM, jac_3d, rhs_tbl, nod_fld, iphys_nod, iphys_ele,&
 !!     &          iele_fsmp_stack, n_int, dt, ncomp_ele, d_ele,         &
 !!     &          fem_wk, mhd_fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(phys_data),    intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_nod
@@ -39,7 +40,7 @@
       use t_geometry_data
       use t_phys_address
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -53,8 +54,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_mag_induct_pg(node, ele, cd_prop, jac_3d,      &
-     &          rhs_tbl, nod_fld, iphys_nod, iphys_ele,                 &
+      subroutine int_vol_mag_induct_pg(node, ele, cd_prop,              &
+     &          g_FEM, jac_3d,rhs_tbl, nod_fld, iphys_nod, iphys_ele,   &
      &          iele_fsmp_stack, n_int, ncomp_ele, d_ele,               &
      &          fem_wk, mhd_fem_wk, f_nl)
 !
@@ -66,6 +67,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(conductive_property), intent(in) :: cd_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_nod
@@ -102,7 +104,7 @@
         call fem_skv_induction_galerkin(iele_fsmp_stack, n_int, k2,     &
      &      cd_prop%coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,    &
      &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
-     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -112,8 +114,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_mag_induct_upm(node, ele, cd_prop, jac_3d,     &
-     &          rhs_tbl, nod_fld, iphys_nod, iphys_ele,                 &
+      subroutine int_vol_mag_induct_upm(node, ele, cd_prop,             &
+     &          g_FEM, jac_3d, rhs_tbl, nod_fld, iphys_nod, iphys_ele,  &
      &          iele_fsmp_stack, n_int, dt, ncomp_ele, d_ele,           &
      &          fem_wk, mhd_fem_wk, f_nl)
 !
@@ -125,6 +127,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(conductive_property), intent(in) :: cd_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_nod
@@ -162,8 +165,7 @@
         call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2, dt,  &
      &      cd_prop%coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,    &
      &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
-     &      d_ele(1,iphys_ele%i_magne), ele, g_FEM1, jac_3d,            &
-     &      fem_wk%sk6)
+     &      d_ele(1,iphys_ele%i_magne), ele, g_FEM, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

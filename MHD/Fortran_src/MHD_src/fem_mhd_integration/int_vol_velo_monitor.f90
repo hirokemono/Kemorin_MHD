@@ -116,13 +116,13 @@
       if(i_field .eq. iphys%i_m_advect) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_rot_inertia                                      &
-     &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
+     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%i_vort,        &
      &        ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
         else
           call int_vol_vector_inertia                                   &
-     &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
+     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%i_velo,        &
      &        ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
@@ -267,14 +267,14 @@
       if(i_field .eq. iphys%i_m_advect) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_rot_inertia_upw                                  &
-     &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
+     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%i_vort,        &
      &        iv_upw, ele_fld%d_fld, fl_prop%coef_nega_v,               &
      &        fem_wk, f_nl)
         else
           call int_vol_vector_inertia_upw                               &
-     &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
+     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%i_velo,        &
      &        iv_upw, ele_fld%d_fld, fl_prop%coef_nega_v,               &

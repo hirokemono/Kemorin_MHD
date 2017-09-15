@@ -57,6 +57,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_jacobian_2d
       use t_table_FEM_const
@@ -116,14 +117,14 @@
 !
       if (iflag_supg .gt. id_turn_OFF) then
         call int_vol_scalar_inertia_upw(node, ele,                      &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,               &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, num_int, dt, i_scalar,            &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, iphys_ele%i_velo,      &
      &      ele_fld%d_fld, property%coef_nega_adv,                      &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_scalar_inertia (node, ele,                         &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,               &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, num_int, i_scalar,                &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      property%coef_nega_adv, rhs_mat%fem_wk, rhs_mat%f_nl)
