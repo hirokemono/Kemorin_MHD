@@ -4,13 +4,14 @@
 !     Written by H.Matsui
 !
 !!      subroutine int_diff_scalar_on_ele                               &
-!!     &         (node, ele, jac_3d, iele_fsmp_stack, n_int,            &
+!!     &         (node, ele, g_FEM, jac_3d, iele_fsmp_stack, n_int,     &
 !!     &          ncomp_nod, i_fld, d_nod, ncomp_ele, i_diff, dvx)
 !!      subroutine int_diff_vector_on_ele                               &
-!!     &         (node, ele, jac_3d, iele_fsmp_stack, n_int,            &
+!!     &         (node, ele, g_FEM, jac_3d, iele_fsmp_stack, n_int,     &
 !!     &          ncomp_nod, i_fld, d_nod, ncomp_ele, i_diff, dvx)
 !!        type(node_data), intent(inout) :: node
 !!        type(element_data), intent(inout) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(inout) :: jac_3d
 !
 !
@@ -30,15 +31,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine int_diff_scalar_on_ele                                 &
-     &         (node, ele, jac_3d, iele_fsmp_stack, n_int,              &
+     &         (node, ele, g_FEM, jac_3d, iele_fsmp_stack, n_int,       &
      &          ncomp_nod, i_fld, d_nod, ncomp_ele, i_diff, dvx)
 !
-      use m_fem_gauss_int_coefs
       use t_geometry_data
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
 !
       integer (kind=kint), intent(in) :: n_int
@@ -53,8 +55,8 @@
 !
       call int_vol_diff_scalar_on_ele(node%numnod, ele%numele,          &
      &    ele%nnod_4_ele, ele%ie, ele%a_vol_ele, iele_fsmp_stack,       &
-     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
-     &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%dnx,              &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%dnx, &
      &    d_nod(1,i_fld), dvx(1,i_diff))
 !
       end subroutine int_diff_scalar_on_ele
@@ -62,15 +64,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine int_diff_vector_on_ele                                 &
-     &         (node, ele, jac_3d, iele_fsmp_stack, n_int,              &
+     &         (node, ele, g_FEM, jac_3d, iele_fsmp_stack, n_int,       &
      &          ncomp_nod, i_fld, d_nod, ncomp_ele, i_diff, dvx)
 !
-      use m_fem_gauss_int_coefs
       use t_geometry_data
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
 !
       integer (kind=kint), intent(in) :: n_int
@@ -85,8 +88,8 @@
 !
       call int_vol_diff_vector_on_ele(node%numnod, ele%numele,          &
      &    ele%nnod_4_ele, ele%ie, ele%a_vol_ele, iele_fsmp_stack,       &
-     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
-     &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%dnx,              &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%dnx, &
      &    d_nod(1,i_fld), dvx(1,i_diff))
 !
       end subroutine int_diff_vector_on_ele

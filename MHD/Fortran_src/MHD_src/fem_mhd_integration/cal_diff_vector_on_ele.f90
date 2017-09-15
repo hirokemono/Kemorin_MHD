@@ -23,6 +23,7 @@
 !
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_MHD_finite_element_mat
 !
@@ -53,12 +54,12 @@
 !
 !
       if (ele%nnod_4_ele .eq. num_t_quad) then
-        call int_diff_vector_on_ele(node, ele, jac_3d_q,                &
+        call int_diff_vector_on_ele(node, ele, g_FEM1, jac_3d_q,        &
      &      iele_fsmp_stack, num_int,                                   &
      &      nod_fld%ntot_phys, i_fld, nod_fld%d_fld,                    &
      &      mhd_fem_wk%n_dvx, i_diff, mhd_fem_wk%dvx)
       else
-        call int_diff_vector_on_ele(node, ele, jac_3d_l,                &
+        call int_diff_vector_on_ele(node, ele, g_FEM1, jac_3d_l,        &
      &      iele_fsmp_stack, num_int,                                   &
      &      nod_fld%ntot_phys, i_fld, nod_fld%d_fld,                    &
      &      mhd_fem_wk%n_dvx, i_diff, mhd_fem_wk%dvx)
@@ -85,12 +86,12 @@
 !
 !
       if (ele%nnod_4_ele .eq. num_t_quad) then
-        call int_diff_scalar_on_ele(node, ele, jac_3d_q,                &
+        call int_diff_scalar_on_ele(node, ele, g_FEM1, jac_3d_q,        &
      &      iele_fsmp_stack, num_int,                                   &
      &      nod_fld%ntot_phys, i_fld, nod_fld%d_fld,                    &
      &      mhd_fem_wk%n_dvx, i_diff, mhd_fem_wk%dvx)
       else
-        call int_diff_scalar_on_ele(node, ele, jac_3d_l,                &
+        call int_diff_scalar_on_ele(node, ele, g_FEM1, jac_3d_l,        &
      &      iele_fsmp_stack, num_int,                                   &
      &      nod_fld%ntot_phys, i_fld, nod_fld%d_fld,                    &
      &      mhd_fem_wk%n_dvx, i_diff, mhd_fem_wk%dvx)
