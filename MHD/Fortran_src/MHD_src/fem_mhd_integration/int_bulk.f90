@@ -733,7 +733,7 @@
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo, node, ele, nod_fld, &
-     &      jac_3d_q, fem_wk, fem_msq%ave_local(j_ave%i_div_v))
+     &      g_FEM1, jac_3d_q, fem_wk, fem_msq%ave_local(j_ave%i_div_v))
         call int_rms_divergence                                         &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo, node, ele, nod_fld, &
      &      jac_3d_q, fem_wk, fem_msq%rms_local(i_rms%i_div_v))
@@ -744,7 +744,7 @@
       if  (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
      &     (ele%istack_ele_smp, iphys%i_vecp, node, ele, nod_fld,       &
-     &      jac_3d_q, fem_wk, fem_msq%ave_local(j_ave%i_div_a))
+     &      g_FEM1, jac_3d_q, fem_wk, fem_msq%ave_local(j_ave%i_div_a))
         call int_rms_divergence                                         &
      &     (ele%istack_ele_smp, iphys%i_vecp, node, ele, nod_fld,       &
      &      jac_3d_q, fem_wk, fem_msq%rms_local(i_rms%i_div_a))
@@ -754,7 +754,7 @@
      &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
      &     (ele%istack_ele_smp, iphys%i_magne, node, ele, nod_fld,      &
-     &      jac_3d_q, fem_wk, fem_msq%ave_local(j_ave%i_div_b))
+     &      g_FEM1, jac_3d_q, fem_wk, fem_msq%ave_local(j_ave%i_div_b))
         call int_rms_divergence                                         &
      &     (ele%istack_ele_smp, iphys%i_magne, node, ele, nod_fld,      &
      &      jac_3d_q, fem_wk, fem_msq%rms_local(i_rms%i_div_b))

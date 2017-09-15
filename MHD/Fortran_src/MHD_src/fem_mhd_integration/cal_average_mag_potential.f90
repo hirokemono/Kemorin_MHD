@@ -6,13 +6,14 @@
 !      Modified by H. Matsui on Aug, 2007
 !
 !!      subroutine s_cal_average_mag_potential(FEM_prm, node, ele,      &
-!!     &          iphys, nod_fld, inner_core, jac_3d_l)
+!!     &          iphys, nod_fld, inner_core, g_FEM, jac_3d_l)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(field_geometry_data), intent(in) :: inner_core
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d_l
 !
       module cal_average_mag_potential
@@ -24,6 +25,7 @@
       use t_geometry_data
       use t_phys_address
       use t_phys_data
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
 !
       implicit none
@@ -40,10 +42,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_cal_average_mag_potential(FEM_prm, node, ele,        &
-     &          iphys, nod_fld, inner_core, jac_3d_l)
+     &          iphys, nod_fld, inner_core, g_FEM, jac_3d_l)
 !
       use calypso_mpi
-      use m_fem_gauss_int_coefs
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
@@ -51,6 +52,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: inner_core
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_l
 !
 !
@@ -60,8 +62,8 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%interior_ele, inner_core%numele_fld,                    &
      &      inner_core%istack_ele_fld_smp, inner_core%iele_fld,         &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_l%ntot_int, FEM_prm%npoint_t_evo_int,                &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d_l%ntot_int, FEM_prm%npoint_t_evo_int,   &
      &      jac_3d_l%xjac, jac_3d_l%an,                                 &
      &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%i_mag_p,            &
      &      ave_mp_core_local)

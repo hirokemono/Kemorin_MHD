@@ -69,6 +69,7 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_MHD_finite_element_mat
       use t_FEM_MHD_filter_data
       use t_bc_data_magne
@@ -172,7 +173,7 @@
 !
       iloop = -1
       call int_norm_div_a_monitor(iloop, mesh%node, mesh%ele,           &
-     &    iphys, nod_fld, jacobians%jac_3d, fem_sq%j_ave,               &
+     &    iphys, nod_fld, g_FEM1, jacobians%jac_3d, fem_sq%j_ave,       &
      &    rhs_mat%fem_wk,fem_sq%msq, rel_correct)
 !      call int_rms_div_a_monitor(iloop, mesh%node, mesh%ele,           &
 !     &    iphys, nod_fld, jacobians%jac_3d, fem_sq%i_rms,              &
@@ -224,7 +225,7 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'int_norm_div_a_monitor'
         call int_norm_div_a_monitor(iloop, mesh%node, mesh%ele,         &
-     &      iphys, nod_fld, jacobians%jac_3d, fem_sq%j_ave,             &
+     &      iphys, nod_fld, g_FEM1, jacobians%jac_3d, fem_sq%j_ave,     &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_a_monitor(iloop, mesh%node, mesh%ele,         &
 !     &      iphys, nod_fld, jacobians%jac_3d, fem_sq%i_rms,            &
@@ -327,7 +328,7 @@
 !
       iloop = -1
       call int_norm_div_b_monitor(iloop, mesh%node, mesh%ele,           &
-     &    iphys, nod_fld, jacobians%jac_3d, fem_sq%j_ave,               &
+     &    iphys, nod_fld, g_FEM1, jacobians%jac_3d, fem_sq%j_ave,       &
      &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
 !
@@ -368,7 +369,7 @@
 !
 !
         call int_norm_div_b_monitor(iloop, mesh%node, mesh%ele,         &
-     &      iphys, nod_fld, jacobians%jac_3d, fem_sq%j_ave,             &
+     &      iphys, nod_fld, g_FEM1, jacobians%jac_3d, fem_sq%j_ave,     &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_b_monitor(iloop, mesh%node, mesh%ele,         &
 !     &      iphys, nod_fld, jacobians%jac_3d, fem_sq%i_rms,            &

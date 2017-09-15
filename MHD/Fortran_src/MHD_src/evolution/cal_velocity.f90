@@ -71,6 +71,7 @@
       use t_solver_djds_MHD
       use t_physical_property
       use t_MGCG_data
+      use m_fem_gauss_int_coefs
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
@@ -168,7 +169,7 @@
 !
       iloop = -1
       call int_norm_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,    &
-     &    iphys, nod_fld, fem_int%jcs%jac_3d, fem_sq%j_ave,             &
+     &    iphys, nod_fld, g_FEM1, fem_int%jcs%jac_3d, fem_sq%j_ave,     &
      &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !      call int_rms_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,    &
 !     &    iphys, nod_fld, fem_int%jcs%jac_3d, fem_sqi_rms,             &
@@ -211,7 +212,7 @@
 !
 !
         call int_norm_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,  &
-     &      iphys, nod_fld, fem_int%jcs%jac_3d, fem_sq%j_ave,           &
+     &      iphys, nod_fld, g_FEM1, fem_int%jcs%jac_3d, fem_sq%j_ave,   &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,  &
 !     &      iphys, nod_fld, fem_int%jcs%jac_3d, fem_sq%i_rms,          &
