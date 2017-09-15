@@ -34,6 +34,7 @@
       use t_phys_address
       use t_phys_data
       use t_layering_ele_list
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_work_layer_correlate
 !
@@ -86,8 +87,8 @@
       type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
 !
-      call int_vol_rms_ave_dynamic(layer_tbl, node, ele,                &
-     &    iphys, nod_fld, jac_3d_q, jac_3d_l, numdir, n_int, wk_cor)
+      call int_vol_rms_ave_dynamic(layer_tbl, node, ele, iphys,         &
+     &    nod_fld, g_FEM1, jac_3d_q, jac_3d_l, numdir, n_int, wk_cor)
 !
       call sum_layerd_averages(layer_tbl%e_grp%num_grp, wk_cor)
       call divide_layers_ave_by_vol                                     &
@@ -145,7 +146,7 @@
 !
 !
       call int_vol_rms_ave_diff(iele_fsmp_stack,                        &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+     &    node, ele, iphys, nod_fld, g_FEM1, jac_3d_q, jac_3d_l,        &
      &    numdir, n_int, wk_cor)
 !
       call sum_whole_averages(wk_cor)

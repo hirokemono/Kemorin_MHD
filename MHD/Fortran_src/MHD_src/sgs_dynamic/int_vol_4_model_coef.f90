@@ -5,10 +5,10 @@
 !
 !  Volume integration: int_vol_model_coef
 !!      subroutine int_vol_model_coef(layer_tbl,                        &
-!!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
+!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
 !!     &          n_tensor, n_int, wk_lsq)
 !!      subroutine int_vol_diff_coef(iele_fsmp_stack,                   &
-!!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
+!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
 !!     &          numdir, n_int, wk_lsq)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -19,16 +19,16 @@
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !!      subroutine int_vol_rms_ave_dynamic(layer_tbl,                   &
-!!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
+!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
 !!     &          n_tensor, n_int, wk_cor)
 !!      subroutine int_vol_rms_ave_diff(iele_fsmp_stack,                &
-!!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
+!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
 !!     &          n_tensor, n_int, wk_cor)
 !!      subroutine int_vol_layer_correlate (layer_tbl,                  &
-!!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
+!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
 !!     &          n_tensor, n_int, ave_s, ave_g, wk_cor)
 !!      subroutine int_vol_diff_correlate(iele_fsmp_stack,              &
-!!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
+!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
 !!     &          numdir, n_int, ave_s, ave_g, wk_cor)
 !!        type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
@@ -39,12 +39,12 @@
       use calypso_mpi
       use m_machine_parameter
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       use t_geometry_data
       use t_phys_address
       use t_phys_data
       use t_layering_ele_list
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_work_4_dynamic_model
       use t_work_layer_correlate
@@ -58,7 +58,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_model_coef(layer_tbl,                          &
-     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,          &
+     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
      &          n_tensor, n_int, wk_lsq)
 !
       use int_vol_model_coef_smp
@@ -70,6 +70,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq
@@ -82,9 +83,9 @@
      &     .gt. layer_tbl%min_item_layer_d_smp) then
 !
         if (ele%nnod_4_ele .eq. num_t_quad) then 
-          call int_vol_model_coef_q(node%numnod,                        &
-     &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
-     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
+          call int_vol_model_coef_q(node%numnod, ele%numele,            &
+     &        ele%ie, ele%interior_ele, n_tensor, g_FEM%max_int_point,  &
+     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
@@ -93,9 +94,9 @@
      &        iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,   &
      &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         else
-          call int_vol_model_coef_l(node%numnod,                        &
-     &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
-     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
+          call int_vol_model_coef_l(node%numnod, ele%numele,            &
+     &        ele%ie, ele%interior_ele, n_tensor, g_FEM%max_int_point,  &
+     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
@@ -109,29 +110,29 @@
 !
         wk_lsq%slocal_smp(1:np_smp,1:18) = 0.0d0
         if (ele%nnod_4_ele .eq. num_t_quad) then
-          call int_vol_model_coef_grpsmp_q(node%numnod,                 &
-     &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
-     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
-     &      layer_tbl%e_grp%istack_grp,                                 &
-     &      layer_tbl%istack_item_layer_d_smp,                          &
-     &      layer_tbl%e_grp%item_grp,                                   &
-     &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
-     &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
-     &      wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
+          call int_vol_model_coef_grpsmp_q(node%numnod, ele%numele,     &
+     &        ele%ie, ele%interior_ele, n_tensor, g_FEM%max_int_point,  &
+     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
+     &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
+     &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
+     &        layer_tbl%e_grp%istack_grp,                               &
+     &        layer_tbl%istack_item_layer_d_smp,                        &
+     &        layer_tbl%e_grp%item_grp,                                 &
+     &        nod_fld%ntot_phys, nod_fld%d_fld,                         &
+     &        iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,   &
+     &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         else
-          call int_vol_model_coef_grpsmp_l(node%numnod,                 &
-     &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
-     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
-     &      layer_tbl%e_grp%istack_grp,                                 &
-     &      layer_tbl%istack_item_layer_d_smp,                          &
-     &      layer_tbl%e_grp%item_grp,                                   &
-     &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
-     &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
-     &      wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
+          call int_vol_model_coef_grpsmp_l(node%numnod, ele%numele,     &
+     &        ele%ie, ele%interior_ele, n_tensor, g_FEM%max_int_point,  &
+     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
+     &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
+     &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
+     &        layer_tbl%e_grp%istack_grp,                               &
+     &        layer_tbl%istack_item_layer_d_smp,                        &
+     &        layer_tbl%e_grp%item_grp,                                 &
+     &        nod_fld%ntot_phys, nod_fld%d_fld,                         &
+     &        iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,   &
+     &        wk_lsq%slocal_smp, wk_lsq%slocal, wk_lsq%wlocal)
         end if
       end if
 !
@@ -141,7 +142,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_diff_coef(iele_fsmp_stack,                     &
-     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,          &
+     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
      &          numdir, n_int, wk_lsq)
 !
       use int_vol_4_diff_coef
@@ -152,6 +153,7 @@
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq
@@ -163,17 +165,17 @@
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_diff_coef_q(node%numnod, ele%numele,               &
      &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
-     &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d_q%ntot_int, n_int, jac_3d_q%xjac,       &
+     &      jac_3d_q%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
      &      wk_lsq%slocal_smp, wk_lsq%wlocal)
         else
         call int_vol_diff_coef_l(node%numnod, ele%numele,               &
      &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
-     &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d_l%ntot_int, n_int, jac_3d_l%xjac,       &
+     &      jac_3d_l%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
      &      wk_lsq%slocal_smp, wk_lsq%wlocal)
       end if
@@ -184,7 +186,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_rms_ave_dynamic(layer_tbl,                     &
-     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,          &
+     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
      &          n_tensor, n_int, wk_cor)
 !
       use int_vol_rms_dynamic_smp
@@ -194,6 +196,7 @@
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: n_tensor, n_int
@@ -207,7 +210,8 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call int_vol_rms_ave_dynamic_q(node%numnod,                   &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
-     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
+     &        g_FEM%max_int_point, g_FEM%maxtot_int_3d,                 &
+     &        g_FEM%int_start3, g_FEM%owe3d,                            &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
@@ -219,7 +223,8 @@
         else
           call int_vol_rms_ave_dynamic_l(node%numnod,                   &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
-     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
+     &        g_FEM%max_int_point, g_FEM%maxtot_int_3d,                 &
+     &        g_FEM%int_start3, g_FEM%owe3d,                            &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp,                           &
@@ -235,10 +240,10 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call int_vol_rms_dynamic_grpsmp_q(node%numnod,                &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
-     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
-     &      layer_tbl%e_grp%istack_grp,                                 &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d_q%ntot_int, n_int, jac_3d_q%xjac,       &
+     &      jac_3d_q%an, layer_tbl%e_grp%num_grp,                       &
+     &      layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp,       &
      &      layer_tbl%istack_item_layer_d_smp,                          &
      &      layer_tbl%e_grp%item_grp,                                   &
      &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
@@ -248,10 +253,10 @@
         else
           call int_vol_rms_dynamic_grpsmp_l(node%numnod,                &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
-     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
-     &      layer_tbl%e_grp%istack_grp,                                 &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d_l%ntot_int, n_int, jac_3d_l%xjac,       &
+     &      jac_3d_l%an, layer_tbl%e_grp%num_grp,                       &
+     &      layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp,       &
      &      layer_tbl%istack_item_layer_d_smp,                          &
      &      layer_tbl%e_grp%item_grp,                                   &
      &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
@@ -267,7 +272,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_rms_ave_diff(iele_fsmp_stack,                  &
-     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,          &
+     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
      &          n_tensor, n_int, wk_cor)
 !
       use t_work_layer_correlate
@@ -277,6 +282,7 @@
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: n_tensor, n_int
@@ -287,18 +293,18 @@
       if (ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_rms_ave_d_q(node%numnod, ele%numele, ele%ie,       &
      &      ele%interior_ele, iele_fsmp_stack, n_tensor,                &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
-     &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d_q%ntot_int, n_int, jac_3d_q%xjac,       &
+     &      jac_3d_q%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
      &      wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,      &
      &      wk_cor%ave_w, wk_cor%rms_w)
       else
         call int_vol_rms_ave_d_l(node%numnod, ele%numele, ele%ie,       &
      &      ele%interior_ele, iele_fsmp_stack, n_tensor,                &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
-     &      nod_fld%ntot_phys, nod_fld%d_fld,                           &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d_l%ntot_int, n_int, jac_3d_l%xjac,       &
+     &      jac_3d_l%an, nod_fld%ntot_phys, nod_fld%d_fld,              &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
      &      wk_cor%ncomp_dble, wk_cor%ave_l_smp, wk_cor%rms_l_smp,      &
      &      wk_cor%ave_w, wk_cor%rms_w)
@@ -309,7 +315,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_layer_correlate (layer_tbl,                    &
-     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,          &
+     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
      &          n_tensor, n_int, ave_s, ave_g, wk_cor)
 !
       use t_work_layer_correlate
@@ -320,6 +326,7 @@
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: n_tensor, n_int
@@ -337,7 +344,8 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call int_vol_layer_cor_q(node%numnod,                         &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
-     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
+     &        g_FEM%max_int_point, g_FEM%maxtot_int_3d,                 &
+     &        g_FEM%int_start3, g_FEM%owe3d,                            &
      &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp, &
@@ -349,7 +357,8 @@
         else
           call int_vol_layer_cor_l(node%numnod,                         &
      &        ele%numele, ele%ie, ele%interior_ele, n_tensor,           &
-     &        max_int_point, maxtot_int_3d, int_start3, owe3d,          &
+     &        g_FEM%max_int_point, g_FEM%maxtot_int_3d,                 &
+     &        g_FEM%int_start3, g_FEM%owe3d,                            &
      &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
      &        layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,        &
      &        layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp, &
@@ -365,10 +374,10 @@
         if (ele%nnod_4_ele .eq. num_t_quad) then
           call int_vol_layer_cor_grpsmp_q(node%numnod,                  &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
-     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
-     &      layer_tbl%e_grp%istack_grp,                                 &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d_q%ntot_int, n_int,                      &
+     &      jac_3d_q%xjac, jac_3d_q%an, layer_tbl%e_grp%num_grp,        &
+     &      layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp,       &
      &      layer_tbl%istack_item_layer_d_smp,                          &
      &      layer_tbl%e_grp%item_grp,                                   &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
@@ -379,10 +388,10 @@
         else
           call int_vol_layer_cor_grpsmp_l(node%numnod,                  &
      &      ele%numele, ele%ie, ele%interior_ele, n_tensor,             &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
-     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
-     &      layer_tbl%e_grp%istack_grp,                                 &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, jac_3d_l%ntot_int, n_int,                      &
+     &      jac_3d_l%xjac, jac_3d_l%an, layer_tbl%e_grp%num_grp,        &
+     &      layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp,       &
      &      layer_tbl%istack_item_layer_d_smp,                          &
      &      layer_tbl%e_grp%item_grp,                                   &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
@@ -399,7 +408,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_diff_correlate(iele_fsmp_stack,                &
-     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,          &
+     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
      &          numdir, n_int, ave_s, ave_g, wk_cor)
 !
       use int_vol_diff_correlate_smp
@@ -408,6 +417,7 @@
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       integer(kind=kint), intent(in) :: numdir, n_int
@@ -422,18 +432,20 @@
       wk_cor%cov_w(1:9) =  0.0d0
 !
       if (ele%nnod_4_ele .eq. num_t_quad) then
-        call int_vol_diff_correlate_q(node%numnod, ele%numele,          &
-     &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+        call int_vol_diff_correlate_q                                   &
+     &     (node%numnod, ele%numele, ele%ie, ele%interior_ele,          &
+     &      iele_fsmp_stack, numdir, g_FEM%max_int_point,               &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
      &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
      &      wk_cor%ncomp_sgl, wk_cor%ncomp_dble, wk_cor%sig_l_smp,      &
      &      wk_cor%cor_l_smp, wk_cor%sig_w, wk_cor%cov_w)
         else
-        call int_vol_diff_correlate_l(node%numnod, ele%numele,          &
-     &      ele%ie, ele%interior_ele, iele_fsmp_stack, numdir,          &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
+        call int_vol_diff_correlate_l                                   &
+     &     (node%numnod, ele%numele, ele%ie, ele%interior_ele,          &
+     &      iele_fsmp_stack, numdir, g_FEM%max_int_point,               &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
      &      jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      ave_s, ave_g, nod_fld%ntot_phys, nod_fld%d_fld,             &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &

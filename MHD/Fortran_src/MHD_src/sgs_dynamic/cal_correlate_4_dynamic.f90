@@ -33,6 +33,7 @@
       use t_phys_address
       use t_phys_data
       use t_layering_ele_list
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_work_layer_correlate
 !
@@ -82,7 +83,7 @@
 !
 !  Volume integration:                        int_vol_layer_correlate
       call int_vol_layer_correlate(layer_tbl,                           &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+     &    node, ele, iphys, nod_fld, g_FEM1, jac_3d_q, jac_3d_l,        &
      &    n_tensor, n_int, ave_sgs_simi(1,icomp_f),                     &
      &    ave_sgs_grad(1,icomp_f), wk_cor)
 !
@@ -132,7 +133,7 @@
 !
 !  Volume integration:                      int_vol_diff_correlate
       call int_vol_diff_correlate(iele_fsmp_stack,                      &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+     &    node, ele, iphys, nod_fld, g_FEM1, jac_3d_q, jac_3d_l,        &
      &    n_tensor, n_int, ave_diff_simi_w(icomp_f),                    &
      &    ave_diff_grad_w(icomp_f), wk_cor)
 !
