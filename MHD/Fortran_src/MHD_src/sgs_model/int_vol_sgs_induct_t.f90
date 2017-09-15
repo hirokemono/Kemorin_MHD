@@ -31,6 +31,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -142,7 +143,7 @@
 !
           call fem_skv_sgs_induct_t_galerkin                            &
      &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
-     &        i_filter, nd, ele, jac_3d, FEM_elens,                     &
+     &        i_filter, nd, ele, g_FEM1, jac_3d, FEM_elens,             &
      &        fem_wk%vector_1, diff_ele(1,id_dvx2),                     &
      &        diff_ele(1,id_dbx2), fem_wk%sk6)
         end do
@@ -202,7 +203,7 @@
 !
           call fem_skv_sgs_induct_t_upwind                              &
      &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
-     &        i_filter, dt, nd, ele, jac_3d, FEM_elens,                 &
+     &        i_filter, dt, nd, ele, g_FEM1, jac_3d, FEM_elens,         &
      &        fem_wk%vector_1, d_ele(1,i_magne),                        &
      &        diff_ele(1,id_dvx2), diff_ele(1,id_dbx2), fem_wk%sk6)
         end do

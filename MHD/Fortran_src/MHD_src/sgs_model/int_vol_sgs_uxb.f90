@@ -30,6 +30,7 @@
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_finite_element_mat
       use t_filter_elength
@@ -123,7 +124,7 @@
      &        k2, i_field, fem_wk%vector_1)
           call fem_skv_sgs_uxb_galerkin                                 &
      &       (conduct%istack_ele_fld_smp, num_int, k2, i_filter, nd,    &
-     &        ele, jac_3d, FEM_elens, fem_wk%vector_1,                  &
+     &        ele, g_FEM1, jac_3d, FEM_elens, fem_wk%vector_1,          &
      &        diff_ele(1,id_dx), fem_wk%sk6)
         end do
       end do
@@ -167,7 +168,7 @@
      &        k2, i_field, fem_wk%vector_1)
           call fem_skv_sgs_uxb_upwind                                   &
      &       (conduct%istack_ele_fld_smp, num_int, k2, i_filter, dt,    &
-     &        nd, ele, jac_3d, FEM_elens, fem_wk%vector_1,              &
+     &        nd, ele, g_FEM1, jac_3d, FEM_elens, fem_wk%vector_1,      &
      &        d_ele(1,i_magne), diff_ele(1,id_dx), fem_wk%sk6)
         end do
       end do

@@ -32,6 +32,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_filter_elength
       use t_finite_element_mat
@@ -135,7 +136,7 @@
      &          k2, icomp, fem_wk%scalar_1)
             call fem_skv_sgs_flux_galerkin                              &
      &         (fluid%istack_ele_fld_smp, num_int, k2, i_filter, nd_t,  &
-     &          ele, jac_3d, FEM_elens, fem_wk%scalar_1,                &
+     &          ele, g_FEM1, jac_3d, FEM_elens, fem_wk%scalar_1,        &
      &          diff_ele(1,id_dvx2), fem_wk%sk6)
           end do
 !
@@ -192,7 +193,7 @@
      &          k2, icomp, fem_wk%scalar_1)
             call fem_skv_sgs_flux_upwind                                &
      &         (fluid%istack_ele_fld_smp, num_int, k2, i_filter, dt,    &
-     &          nd_t, ele, jac_3d, FEM_elens, fem_wk%scalar_1,          &
+     &          nd_t, ele, g_FEM1, jac_3d, FEM_elens, fem_wk%scalar_1,  &
      &          d_ele(1,ie_upw), diff_ele(1,id_dvx2), fem_wk%sk6)
           end do
         end do

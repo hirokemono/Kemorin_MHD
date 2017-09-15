@@ -3,34 +3,39 @@
 !
 !     programmed by H. Matsui in April, 2012
 !
-!      subroutine fem_skv_sgs_flux_galerkin(iele_fsmp_stack, n_int, k2, &
-!     &          i_filter, nd_t, ele, jac_3d, FEM_elens,                &
-!     &          scalar_1, dvx, sk_v)
-!      subroutine fem_skv_sgs_flux_upwind(iele_fsmp_stack, n_int, k2,   &
-!     &          i_filter, dt, nd_t, ele, jac_3d, FEM_elens,            &
-!     &          scalar_1, vxe, dvx, sk_v)
-!
-!      subroutine fem_skv_sgs_uxb_galerkin(iele_fsmp_stack, n_int, k2,  &
-!     &          i_filter, nd, ele, jac_3d, FEM_elens,                  &
-!     &          vector_1, dvx, sk_v)
-!      subroutine fem_skv_sgs_uxb_upwind(iele_fsmp_stack, n_int, k2,    &
-!     &          i_filter, dt, nd, ele, jac_3d, FEM_elens,              &
-!     &          vect_1, vxe, dvx, sk_v)
-!
-!      subroutine fem_skv_sgs_induct_t_galerkin(iele_fsmp_stack,        &
-!     &          n_int, k2, i_filter, nd, ele, jac_3d, FEM_elens,       &
-!     &          vect_sgs, dvx, dbx, sk_v)
-!      subroutine fem_skv_sgs_induct_t_upwind(iele_fsmp_stack,          &
-!     &          n_int, k2, i_filter, dt, nd, ele, jac_3d, FEM_elens,   &
-!     &          vect_sgs, vxe, dvx, dbx, sk_v)
+!!      subroutine fem_skv_sgs_flux_galerkin(iele_fsmp_stack, n_int, k2,&
+!!     &          i_filter, nd_t, ele, g_FEM, jac_3d, FEM_elens,        &
+!!     &          scalar_1, dvx, sk_v)
+!!      subroutine fem_skv_sgs_flux_upwind(iele_fsmp_stack, n_int, k2,  &
+!!     &          i_filter, dt, nd_t, ele, g_FEM, jac_3d, FEM_elens,    &
+!!     &          scalar_1, vxe, dvx, sk_v)
+!!
+!!      subroutine fem_skv_sgs_uxb_galerkin(iele_fsmp_stack, n_int, k2, &
+!!     &          i_filter, nd, ele, g_FEM, jac_3d, FEM_elens,          &
+!!     &          vector_1, dvx, sk_v)
+!!      subroutine fem_skv_sgs_uxb_upwind(iele_fsmp_stack, n_int, k2,   &
+!!     &          i_filter, dt, nd, ele, g_FEM, jac_3d, FEM_elens,      &
+!!     &          vect_1, vxe, dvx, sk_v)
+!!
+!!      subroutine fem_skv_sgs_induct_t_galerkin                        &
+!!     &         (iele_fsmp_stack,  n_int, k2, i_filter, nd, ele,       &
+!!     &          g_FEM, jac_3d, FEM_elens, vect_sgs, dvx, dbx, sk_v)
+!!      subroutine fem_skv_sgs_induct_t_upwind                          &
+!!     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, nd,         &
+!!     &          ele, g_FEM, jac_3d, FEM_elens, vect_sgs, vxe,         &
+!!     &          dvx, dbx, sk_v)
+!!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       module fem_skv_sgs_flux_type
 !
       use m_precision
 !
-      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_finite_element_mat
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_filter_elength
 !
@@ -43,12 +48,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine fem_skv_sgs_flux_galerkin(iele_fsmp_stack, n_int, k2,  &
-     &          i_filter, nd_t, ele, jac_3d, FEM_elens,                 &
+     &          i_filter, nd_t, ele, g_FEM, jac_3d, FEM_elens,          &
      &          scalar_1, dvx, sk_v)
 !
       use fem_skv_sgs_flux
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -65,8 +71,9 @@
 !
       call fem_skv_sgs_flux_pg                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
-     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
-     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx,          &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, n_int, k2, jac_3d%ntot_int,                      &
+     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx,                           &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%moms%f_x2, FEM_elens%elen_ele%moms%f_y2,   &
@@ -79,12 +86,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine fem_skv_sgs_flux_upwind(iele_fsmp_stack, n_int, k2,    &
-     &          i_filter, dt, nd_t, ele, jac_3d, FEM_elens,             &
+     &          i_filter, dt, nd_t, ele, g_FEM, jac_3d, FEM_elens,      &
      &          scalar_1, vxe, dvx, sk_v)
 !
       use fem_skv_sgs_flux
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -103,8 +111,9 @@
 !
       call fem_skv_sgs_flux_upw                                         &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
-     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
-     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx, dt,      &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, n_int, k2, jac_3d%ntot_int,                      &
+     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, dt,                       &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%moms%f_x2, FEM_elens%elen_ele%moms%f_y2,   &
@@ -118,12 +127,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_sgs_uxb_galerkin(iele_fsmp_stack, n_int, k2,   &
-     &          i_filter, nd, ele, jac_3d, FEM_elens,                   &
+     &          i_filter, nd, ele, g_FEM, jac_3d, FEM_elens,            &
      &          vector_1, dvx, sk_v)
 !
       use fem_skv_sgs_uxb
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -139,8 +149,9 @@
 !
       call fem_skv_sgs_uxb_pg                                           &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
-     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int,       &
-     &    k2, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx,      &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, n_int, k2, jac_3d%ntot_int,                      &
+     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx,                           &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%moms%f_x2, FEM_elens%elen_ele%moms%f_y2,   &
@@ -153,12 +164,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_sgs_uxb_upwind(iele_fsmp_stack, n_int, k2,     &
-     &          i_filter, dt, nd, ele, jac_3d, FEM_elens,               &
+     &          i_filter, dt, nd, ele, g_FEM, jac_3d, FEM_elens,               &
      &          vect_1, vxe, dvx, sk_v)
 !
       use fem_skv_sgs_uxb
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -176,8 +188,9 @@
 !
       call fem_skv_sgs_uxb_upw                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
-     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
-     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx, dt,      &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, n_int, k2, jac_3d%ntot_int,                      &
+     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, dt,                       &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%moms%f_x2, FEM_elens%elen_ele%moms%f_y2,   &
@@ -190,13 +203,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_sgs_induct_t_galerkin(iele_fsmp_stack,         &
-     &          n_int, k2, i_filter, nd, ele, jac_3d, FEM_elens,        &
-     &          vect_sgs, dvx, dbx, sk_v)
+      subroutine fem_skv_sgs_induct_t_galerkin                          &
+     &         (iele_fsmp_stack,  n_int, k2, i_filter, nd, ele,         &
+     &          g_FEM, jac_3d, FEM_elens, vect_sgs, dvx, dbx, sk_v)
 !
       use fem_skv_sgs_induct_t
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -213,8 +227,9 @@
 !
       call fem_skv_sgs_induct_t_pg                                      &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
-     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
-     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx,          &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, n_int, k2, jac_3d%ntot_int,                      &
+     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx,                           &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%moms%f_x2, FEM_elens%elen_ele%moms%f_y2,   &
@@ -226,13 +241,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_sgs_induct_t_upwind(iele_fsmp_stack,           &
-     &          n_int, k2, i_filter, dt, nd, ele, jac_3d, FEM_elens,    &
-     &          vect_sgs, vxe, dvx, dbx, sk_v)
+      subroutine fem_skv_sgs_induct_t_upwind                            &
+     &         (iele_fsmp_stack, n_int, k2, i_filter, dt, nd,           &
+     &          ele, g_FEM, jac_3d, FEM_elens, vect_sgs, vxe,           &
+     &          dvx, dbx, sk_v)
 !
       use fem_skv_sgs_induct_t
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -251,8 +268,9 @@
 !
       call fem_skv_sgs_induct_t_upw                                     &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele, iele_fsmp_stack,  &
-     &    max_int_point, maxtot_int_3d, int_start3, owe3d, n_int, k2,   &
-     &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%an, jac_3d%dnx, dt,      &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, n_int, k2, jac_3d%ntot_int,                      &
+     &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, dt,                       &
      &    FEM_elens%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM_elens%nele_filter_mom,                                    &
      &    FEM_elens%elen_ele%moms%f_x2, FEM_elens%elen_ele%moms%f_y2,   &
