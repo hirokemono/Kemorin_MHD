@@ -78,6 +78,7 @@
       use m_boundary_condition_IDs
       use m_flags_4_solvers
       use m_array_for_send_recv
+      use m_fem_gauss_int_coefs
 !
       use m_bc_data_velo
       use m_bc_data_list
@@ -274,7 +275,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector(my_rank, nprocs,                         &
-     &    mesh%node, ele_mesh%surf, spfs_1%spf_2d, fem_int%jcs)
+     &    mesh%node, g_FEM1, ele_mesh%surf, spfs_1%spf_2d, fem_int%jcs)
       call dealloc_surf_shape_func(spfs_1%spf_2d)
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'

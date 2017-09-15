@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !!      subroutine const_normal_vector                                  &
-!!     &         (my_rank, nprocs, node, surf, spf_2d, jacobians)
+!!     &         (my_rank, nprocs, node, g_FEM, surf, spf_2d, jacobians)
 !!      subroutine int_normal_4_all_surface(g_FEM, surf, jac_2d)
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_2d), intent(in) :: jac_2d
@@ -34,23 +34,21 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_normal_vector                                    &
-     &         (my_rank, nprocs, node, surf, spf_2d, jacobians)
-!
-      use m_fem_gauss_int_coefs
+     &         (my_rank, nprocs, node, g_FEM, surf, spf_2d, jacobians)
 !
       integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
-!      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(surface_data), intent(inout) :: surf
       type(surface_shape_function), intent(inout) :: spf_2d
       type(jacobians_type), intent(inout) :: jacobians
 !
 !
       call alloc_surf_shape_func                                        &
-     &   (surf%nnod_4_surf, maxtot_int_2d, spf_2d)
+     &   (surf%nnod_4_surf, g_FEM%maxtot_int_2d, spf_2d)
       call const_jacobians_surface                                      &
      &   (my_rank, nprocs, node, surf, spf_2d, jacobians)
-      call int_normal_4_all_surface(g_FEM1, surf, jacobians%jac_2d)
+      call int_normal_4_all_surface(g_FEM, surf, jacobians%jac_2d)
 !
       call dealloc_jacobians_surface(surf, jacobians)
 !
