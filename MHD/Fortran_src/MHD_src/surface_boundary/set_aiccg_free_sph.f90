@@ -4,15 +4,18 @@
 !      stress free boundary in a spherical shell
 !     Written by H. Matsui on Sep. 2005
 !
-!!      subroutine set_aiccg_bc_free_sph_in(ele, surf, sf_grp,          &
-!!     &          free_in_sf, jac_sf_grp, rhs_tbl, MG_mat_tbl, surf_wk, &
-!!     &          dt, coef_imp, num_int, ak_d_velo, fem_wk, mat33)
-!!      subroutine set_aiccg_bc_free_sph_out(ele, surf, sf_grp,         &
-!!     &          free_out_sf, jac_sf_grp, rhs_tbl, MG_mat_tbl, surf_wk,&
-!!     &          dt, coef_imp, num_int, ak_d_velo, fem_wk, mat33)
+!!      subroutine set_aiccg_bc_free_sph_in                             &
+!!     &         (ele, surf, sf_grp, free_in_sf, g_FEM, jac_sf_grp,     &
+!!     &          rhs_tbl, MG_mat_tbl, surf_wk, dt, coef_imp,           &
+!!     &          num_int, ak_d_velo, fem_wk, mat33)
+!!      subroutine set_aiccg_bc_free_sph_out                            &
+!!     &         (ele, surf, sf_grp, free_out_sf, g_FEM, jac_sf_grp,    &
+!!     &          rhs_tbl, MG_mat_tbl, surf_wk, dt, coef_imp,           &
+!!     &          num_int, ak_d_velo, fem_wk, mat33)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(table_mat_const), intent(in) :: MG_mat_tbl
@@ -27,10 +30,10 @@
 !
       use m_precision
 !
-      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use t_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -46,9 +49,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_free_sph_in(ele, surf, sf_grp,            &
-     &          free_in_sf, jac_sf_grp, rhs_tbl, MG_mat_tbl, surf_wk,   &
-     &          dt, coef_imp, num_int, ak_d_velo, fem_wk, mat33)
+      subroutine set_aiccg_bc_free_sph_in                               &
+     &         (ele, surf, sf_grp, free_in_sf, g_FEM, jac_sf_grp,       &
+     &          rhs_tbl, MG_mat_tbl, surf_wk, dt, coef_imp,             &
+     &          num_int, ak_d_velo, fem_wk, mat33)
 !
       use fem_surf_crank_free_sph
       use cal_skv_to_ff_smp
@@ -57,6 +61,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_tbl
@@ -88,7 +93,8 @@
      &          surf%nnod_4_surf, surf%node_on_sf,                      &
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
-     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
+     &          g_FEM%max_int_point, g_FEM%maxtot_int_2d,               &
+     &          g_FEM%int_start2, g_FEM%owe2d,                          &
      &          jac_sf_grp%ntot_int, jac_sf_grp%an_sf,                  &
      &          jac_sf_grp%xj_sf, surf_wk%xe_sf,                        &
      &          ak_d_velo, coef_imp, fem_wk%sk6)
@@ -103,9 +109,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_free_sph_out(ele, surf, sf_grp,           &
-     &          free_out_sf, jac_sf_grp, rhs_tbl, MG_mat_tbl, surf_wk,  &
-     &          dt, coef_imp, num_int, ak_d_velo, fem_wk, mat33)
+      subroutine set_aiccg_bc_free_sph_out                              &
+     &         (ele, surf, sf_grp, free_out_sf, g_FEM, jac_sf_grp,      &
+     &          rhs_tbl, MG_mat_tbl, surf_wk, dt, coef_imp,             &
+     &          num_int, ak_d_velo, fem_wk, mat33)
 !
       use fem_surf_crank_free_sph
       use cal_skv_to_ff_smp
@@ -114,6 +121,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_tbl
@@ -145,7 +153,8 @@
      &          surf%nnod_4_surf, surf%node_on_sf,                      &
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
-     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
+     &          g_FEM%max_int_point, g_FEM%maxtot_int_2d,               &
+     &          g_FEM%int_start2, g_FEM%owe2d,                          &
      &          jac_sf_grp%ntot_int, jac_sf_grp%an_sf,                  &
      &          jac_sf_grp%xj_sf, surf_wk%xe_sf,                        &
      &          ak_d_velo, coef_imp, fem_wk%sk6)

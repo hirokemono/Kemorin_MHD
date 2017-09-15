@@ -42,6 +42,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_nodal_bc_data
       use t_finite_element_mat
@@ -183,11 +184,11 @@
 !
 !
 !      matrix setting for free slip on sphere
-      call set_aiccg_bc_free_sph_in(ele, surf, sf_grp,                  &
-     &    free_in_sf, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,        &
+      call set_aiccg_bc_free_sph_in(ele, surf, sf_grp, free_in_sf,      &
+     &    g_FEM1, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,            &
      &    dt, fl_prop%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
-      call set_aiccg_bc_free_sph_out(ele, surf, sf_grp,                 &
-     &    free_out_sf, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,       &
+      call set_aiccg_bc_free_sph_out(ele, surf, sf_grp, free_out_sf,    &
+     &    g_FEM1, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,            &
      &    dt, fl_prop%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
 !
 !      matrix setting for fixed boundaries
