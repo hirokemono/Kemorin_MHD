@@ -33,6 +33,7 @@
       use m_phys_constants
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -86,7 +87,7 @@
         call scalar_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef,  fem_wk%scalar_1)
         call fem_skv_grad_sgs_upwind(iele_fsmp_stack, num_int, k2,      &
-     &      i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,              &
+     &      i_filter, dt, ak_diff, ele, g_FEM1, jac_3d, FEM_elens,      &
      &      d_ele(1,iv_up), fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
@@ -133,7 +134,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_div_sgs_upwind(iele_fsmp_stack, num_int, k2,       &
-     &      i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,              &
+     &      i_filter, dt, ak_diff, ele, g_FEM1, jac_3d, FEM_elens,      &
      &      d_ele(1,iv_up), fem_wk%vector_1, fem_wk%sk6)
    end do
 !
@@ -180,7 +181,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_rot_sgs_upwind(iele_fsmp_stack, num_int, k2,       &
-     &      i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,              &
+     &      i_filter, dt, ak_diff, ele, g_FEM1, jac_3d, FEM_elens,      &
      &      d_ele(1,iv_up), fem_wk%vector_1, fem_wk%sk6)
       end do
 !
@@ -228,7 +229,7 @@
         call tensor_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%tensor_1)
         call fem_skv_div_tsr_sgs_upwind(iele_fsmp_stack, num_int, k2,   &
-     &      i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,              &
+     &      i_filter, dt, ak_diff, ele, g_FEM1, jac_3d, FEM_elens,      &
      &      d_ele(1,iv_up), fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
@@ -276,7 +277,7 @@
      &      k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_div_as_tsr_sgs_upwind                              &
      &     (iele_fsmp_stack, num_int, k2, i_filter, dt,                 &
-     &      ak_diff, ele, jac_3d, FEM_elens, d_ele(1,iv_up),            &
+     &      ak_diff, ele, g_FEM1, jac_3d, FEM_elens, d_ele(1,iv_up),    &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
