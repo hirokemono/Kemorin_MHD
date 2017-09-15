@@ -78,6 +78,7 @@
       use t_nodal_bc_data
       use t_surface_bc_data_MHD
       use t_coefs_element_4_MHD
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_MHD_mass_matricxes
       use t_work_FEM_integration
@@ -168,7 +169,7 @@
 !
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist(FEM_prm%npoint_t_evo_int,        &
-     &      mesh, fl_prop, cd_prop, ht_prop, cp_prop,                   &
+     &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, g_FEM1,           &
      &      jacobians%jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q,   &
      &      fem_wk, mat_velo, mat_magne, mat_temp, mat_light)
         call int_MHD_crank_matrices                                     &

@@ -6,8 +6,18 @@
 !!      subroutine int_coriolis_nod_exp(node, fl_prop, mlump_fl,        &
 !!     &          i_velo, nod_fld, f_l, f_nl)
 !!      subroutine int_vol_coriolis_crank_ele                           &
-!!     &         (num_int, node, ele, fluid, fl_prop,                   &
-!!     &          jac_3d, rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
+!!     &         (num_int, node, ele, fluid, fl_prop, g_FEM, jac_3d,    &
+!!     &          rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!
 !!      subroutine int_buoyancy_nod_exp(node, fl_prop, mlump_fl,        &
 !!     &          iphys, nod_fld, f_nl)
@@ -27,7 +37,6 @@
       use t_geometry_data
       use t_phys_address
       use t_phys_data
-      use m_fem_gauss_int_coefs
       use t_finite_element_mat
 !
       use cal_coriolis
@@ -67,10 +76,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_coriolis_crank_ele                             &
-     &         (num_int, node, ele, fluid, fl_prop,                     &
-     &          jac_3d, rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
+     &         (num_int, node, ele, fluid, fl_prop, g_FEM, jac_3d,      &
+     &          rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
 !
       use t_geometry_data_MHD
+      use t_fem_gauss_int_coefs
       use t_jacobians
 !
       use nodal_fld_cst_to_element
@@ -83,6 +93,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -97,7 +108,7 @@
      &      k2, i_velo, fl_prop%coef_cor, fem_wk%vector_1)
         call fem_skv_coriolis_type                                      &
      &     (fluid%istack_ele_fld_smp, num_int, k2, fem_wk%vector_1,     &
-     &      fl_prop%sys_rot, ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &      fl_prop%sys_rot, ele, g_FEM, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

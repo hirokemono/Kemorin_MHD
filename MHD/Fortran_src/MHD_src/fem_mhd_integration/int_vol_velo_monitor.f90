@@ -138,7 +138,7 @@
 !
       if(i_field .eq. iphys%i_coriolis) then
         call int_vol_coriolis_pg                                        &
-     &     (node, ele, fl_prop, jac_3d, rhs_tbl, nod_fld,               &
+     &     (node, ele, fl_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_velo, fem_wk, f_nl)
       end if
@@ -291,7 +291,7 @@
 !
       if(i_field .eq. iphys%i_coriolis) then
         call int_vol_coriolis_upw                                       &
-     &     (node, ele, fl_prop, jac_3d, rhs_tbl, nod_fld,               &
+     &     (node, ele, fl_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_velo, ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,     &
      &      fem_wk, f_nl)

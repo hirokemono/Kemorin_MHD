@@ -7,12 +7,13 @@
 !
 !!      subroutine int_vol_crank_mat_consist                            &
 !!     &        (num_int, mesh, fl_prop, cd_prop, ht_prop, cp_prop,     &
-!!     &         jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,&
-!!     &         mat_velo, mat_magne, mat_temp, mat_light)
+!!     &          g_FEM, jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q,&
+!!     &          fem_wk, mat_velo, mat_magne, mat_temp, mat_light)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(table_mat_const), intent(in) :: MG_mat_fl_q
@@ -26,11 +27,12 @@
       module int_vol_consist_evo_mat
 !
       use m_precision
+      use m_phys_constants
 !
       use t_physical_property
       use t_mesh_data
       use t_geometry_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_sorted_node_MHD
@@ -47,10 +49,8 @@
 !
       subroutine int_vol_crank_mat_consist                              &
      &         (num_int, mesh, fl_prop, cd_prop, ht_prop, cp_prop,      &
-     &          jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk, &
-     &          mat_velo, mat_magne, mat_temp, mat_light)
-!
-      use m_phys_constants
+     &          g_FEM, jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q,  &
+     &          fem_wk, mat_velo, mat_magne, mat_temp, mat_light)
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp
@@ -61,6 +61,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_fl_q
@@ -78,7 +79,7 @@
       do  k2 = 1, mesh%ele%nnod_4_ele
         call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
         call fem_skv_mass_matrix_type(mesh%ele%istack_ele_smp,          &
-     &      num_int, k2, mesh%ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &      num_int, k2, mesh%ele, g_FEM, jac_3d, fem_wk%sk6)
 !
         if (fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass           &
      &      .and. fl_prop%coef_velo.gt.0.0d0 ) then
