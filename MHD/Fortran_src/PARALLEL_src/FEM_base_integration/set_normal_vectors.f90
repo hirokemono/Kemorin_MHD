@@ -5,7 +5,8 @@
 !
 !!      subroutine const_normal_vector                                  &
 !!     &         (my_rank, nprocs, node, surf, spf_2d, jacobians)
-!!      subroutine int_normal_4_all_surface(surf, jac_2d)
+!!      subroutine int_normal_4_all_surface(g_FEM, surf, jac_2d)
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_2d), intent(in) :: jac_2d
 !!        type(surface_data), intent(inout) :: surf
 !!        type(jacobians_type), intent(inout) :: jacobians
@@ -20,6 +21,7 @@
       use t_geometry_data
       use t_surface_data
       use t_shape_functions
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_jacobian_2d
 !
@@ -38,6 +40,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
+!      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(surface_data), intent(inout) :: surf
       type(surface_shape_function), intent(inout) :: spf_2d
       type(jacobians_type), intent(inout) :: jacobians
@@ -47,7 +50,7 @@
      &   (surf%nnod_4_surf, maxtot_int_2d, spf_2d)
       call const_jacobians_surface                                      &
      &   (my_rank, nprocs, node, surf, spf_2d, jacobians)
-      call int_normal_4_all_surface(surf, jacobians%jac_2d)
+      call int_normal_4_all_surface(g_FEM1, surf, jacobians%jac_2d)
 !
       call dealloc_jacobians_surface(surf, jacobians)
 !
@@ -55,20 +58,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_normal_4_all_surface(surf, jac_2d)
+      subroutine int_normal_4_all_surface(g_FEM, surf, jac_2d)
 !
-      use m_fem_gauss_int_coefs
       use int_area_normal_4_surface
 !
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_2d
       type(surface_data), intent(inout) :: surf
+!
+      integer(kind = kint) :: num_int
 !
 !
       call allocate_normal_vect_type(surf)
 !
+      num_int = g_FEM%max_int_point
       call int_normal_all_surf(surf%numsurf, surf%istack_surf_smp,      &
-     &    max_int_point, maxtot_int_2d, int_start2, owe2d,              &
-     &    jac_2d%ntot_int, max_int_point, jac_2d%xj_sf,                 &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_2d, g_FEM%int_start2,   &
+     &    g_FEM%owe2d, jac_2d%ntot_int, num_int, jac_2d%xj_sf,          &
      &    jac_2d%xsf_sf, surf%area_surf, surf%a_area_surf,              &
      &    surf%vnorm_surf)
 !

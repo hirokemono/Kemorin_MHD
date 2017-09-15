@@ -4,30 +4,29 @@
 !     Written by H. Matsui on Aug., 2007
 !     Modified by H. Matsui on Nov., 2008
 !
-!!      subroutine int_surf_ave_1sgrp_8                                 &
-!!     &         (numnod, numele, numsurf, nnod_4_surf, ie_surf,        &
-!!     &          isf_4_ele, interior_ele, ntot_int_2d,                 &
-!!     &          num_int, an_surf, xj_surf, num_sgrp, isurf_grp,       &
-!!     &          istack_sf_grp_smp, d1_nod, ave_l)
+!!      subroutine int_surf_ave_1sgrp_8(numnod, numele, numsurf,        &
+!!     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,        &
+!!     &          max_int_point, maxtot_int_2d, int_start2, owe2d,      &
+!!     &          ntot_int_2d, num_int, an_surf, xj_surf,               &
+!!     &          num_sgrp, isurf_grp, istack_sf_grp_smp, d1_nod, ave_l)
 !!
-!!      subroutine int_vec_flux_1sgrp_8                                 &
-!!     &         (numnod, numele, numsurf, nnod_4_surf, ie_surf,        &
-!!     &          isf_4_ele, interior_ele, num_sgrp,                    &
-!!     &          isurf_grp, istack_sf_grp_smp, ntot_int_2d, num_int,   &
-!!     &          an_surf, xsf_surf, d1_nod, flux)
-!!      subroutine int_vec_tflux_1sgrp_8                                &
-!!     &         (numnod, numele, numsurf, nnod_4_surf, ie_surf,        &
-!!     &          isf_4_ele, interior_ele, num_sgrp,                    &
-!!     &          isurf_grp, istack_sf_grp_smp, ntot_int_2d, num_int,   &
-!!     &          an_surf, xsf_surf, d1_nod, flux_l)
+!!      subroutine int_vec_flux_1sgrp_8(numnod, numele, numsurf,        &
+!!     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,        &
+!!     &          num_sgrp, isurf_grp, istack_sf_grp_smp,               &
+!!     &          max_int_point, maxtot_int_2d, int_start2, owe2d,      &
+!!     &          ntot_int_2d, num_int, an_surf, xsf_surf, d1_nod, flux)
+!!      subroutine int_vec_tflux_1sgrp_8(numnod, numele, numsurf,       &
+!!     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,        &
+!!     &          num_sgrp, isurf_grp, istack_sf_grp_smp,               &
+!!     &          max_int_point, maxtot_int_2d, int_start2, owe2d,      &
+!!     &          ntot_int_2d, num_int, an_surf, xsf_surf, d1_nod,      &
+!!     &          flux_l)
 !
       module int_surf_ave_fluxes_8
 !
       use m_precision
-!
       use m_machine_parameter
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -37,11 +36,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_surf_ave_1sgrp_8                                   &
-     &         (numnod, numele, numsurf, nnod_4_surf, ie_surf,          &
-     &          isf_4_ele, interior_ele, ntot_int_2d,                   &
-     &          num_int, an_surf, xj_surf, num_sgrp, isurf_grp,         &
-     &          istack_sf_grp_smp, d1_nod, ave_l)
+      subroutine int_surf_ave_1sgrp_8(numnod, numele, numsurf,          &
+     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,          &
+     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
+     &          ntot_int_2d, num_int, an_surf, xj_surf,                 &
+     &          num_sgrp, isurf_grp, istack_sf_grp_smp, d1_nod, ave_l)
 !
       integer (kind = kint), intent(in) :: numnod, numele, numsurf
       integer (kind = kint), intent(in) :: nnod_4_surf
@@ -52,6 +51,11 @@
       integer (kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
       integer (kind = kint), intent(in) :: istack_sf_grp_smp(0:np_smp)
       integer (kind = kint), intent(in) :: interior_ele(numele)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_2d
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+      real(kind = kreal),   intent(in) :: owe2d(maxtot_int_2d)
+!
       real(kind= kreal), intent(in) :: an_surf(nnod_4_surf,ntot_int_2d)
       real(kind= kreal), intent(in) :: xj_surf(numsurf,ntot_int_2d)
       real(kind= kreal), intent(in) :: d1_nod(numnod)
@@ -114,11 +118,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vec_flux_1sgrp_8                                   &
-     &         (numnod, numele, numsurf, nnod_4_surf, ie_surf,          &
-     &          isf_4_ele, interior_ele, num_sgrp,                      &
-     &          isurf_grp, istack_sf_grp_smp, ntot_int_2d, num_int,     &
-     &          an_surf, xsf_surf, d1_nod, flux)
+      subroutine int_vec_flux_1sgrp_8(numnod, numele, numsurf,          &
+     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,          &
+     &          num_sgrp, isurf_grp, istack_sf_grp_smp,                 &
+     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
+     &          ntot_int_2d, num_int, an_surf, xsf_surf, d1_nod, flux)
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -129,6 +133,11 @@
       integer(kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
       integer(kind = kint), intent(in) :: istack_sf_grp_smp(0:np_smp)
       integer(kind = kint), intent(in) :: interior_ele(numele)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_2d
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+      real(kind = kreal),   intent(in) :: owe2d(maxtot_int_2d)
+!
       real(kind= kreal), intent(in) :: an_surf(nnod_4_surf,ntot_int_2d)
       real(kind = kreal), intent(in)                                    &
      &           :: xsf_surf(numsurf,ntot_int_2d,3)
@@ -211,11 +220,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vec_tflux_1sgrp_8                                  &
-     &         (numnod, numele, numsurf, nnod_4_surf, ie_surf,          &
-     &          isf_4_ele, interior_ele, num_sgrp,                      &
-     &          isurf_grp, istack_sf_grp_smp, ntot_int_2d, num_int,     &
-     &          an_surf, xsf_surf, d1_nod, flux_l)
+      subroutine int_vec_tflux_1sgrp_8(numnod, numele, numsurf,         &
+     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,          &
+     &          num_sgrp, isurf_grp, istack_sf_grp_smp,                 &
+     &          max_int_point, maxtot_int_2d, int_start2, owe2d,        &
+     &          ntot_int_2d, num_int, an_surf, xsf_surf, d1_nod,        &
+     &          flux_l)
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -226,6 +236,11 @@
       integer(kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
       integer(kind = kint), intent(in) :: istack_sf_grp_smp(0:np_smp)
       integer (kind = kint), intent(in) :: interior_ele(numele)
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_2d
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+      real(kind = kreal),   intent(in) :: owe2d(maxtot_int_2d)
+!
       real(kind= kreal), intent(in) :: an_surf(nnod_4_surf,ntot_int_2d)
       real(kind = kreal), intent(in)                                    &
      &           :: xsf_surf(numsurf,ntot_int_2d,3)
