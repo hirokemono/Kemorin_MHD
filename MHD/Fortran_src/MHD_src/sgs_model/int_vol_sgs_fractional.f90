@@ -86,9 +86,10 @@
       do k2=1, num_t_linear
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_vector, fem_wk%vector_1)
-        call fem_skv_div_sgs_linear(iele_fsmp_stack, n_int, k2,         &
-     &      i_filter, ak_diff(1,iak_diff), ele, jac_3d, jac_3d_l,       &
-     &      FEM_elens, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_div_sgs_linear                                     &
+     &     (iele_fsmp_stack, n_int, k2, i_filter, ak_diff(1,iak_diff),  &
+     &      ele, g_FEM1, jac_3d, jac_3d_l, FEM_elens, fem_wk%vector_1,  &
+     &      fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -133,9 +134,9 @@
       do k2=1, num_t_linear
         call scalar_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_scalar, fem_wk%scalar_1)
-        call fem_skv_grad_sgs_linear(iele_fsmp_stack,                   &
-     &      n_int, k2, i_filter, ak_diff(1,iak_diff),                   &
-     &      ele, jac_3d, jac_3d_l, FEM_elens, fem_wk%scalar_1,          &
+        call fem_skv_grad_sgs_linear                                    &
+     &     (iele_fsmp_stack, n_int, k2, i_filter, ak_diff(1,iak_diff),  &
+     &      ele, g_FEM1, jac_3d, jac_3d_l, FEM_elens, fem_wk%scalar_1,  &
      &      fem_wk%sk6)
       end do
 !

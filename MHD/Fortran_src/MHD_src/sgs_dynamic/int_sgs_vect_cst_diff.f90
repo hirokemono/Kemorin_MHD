@@ -33,6 +33,7 @@
       use m_phys_constants
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -83,7 +84,8 @@
      &      k2, i_field, coef, fem_wk%scalar_1)
         call fem_skv_grad_sgs_galerkin                                  &
      &     (iele_fsmp_stack, num_int, k2, i_filter, ak_diff,            &
-     &      ele, jac_3d, FEM_elens, fem_wk%scalar_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, FEM_elens, fem_wk%scalar_1,            &
+     &      fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -126,7 +128,8 @@
      &      k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_div_sgs_galerkin                                   &
      &     (iele_fsmp_stack, num_int, k2, i_filter, ak_diff,            &
-     &      ele, jac_3d, FEM_elens, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, FEM_elens, fem_wk%vector_1,            &
+     &      fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -169,7 +172,8 @@
      &      k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_rot_sgs_galerkin                                   &
      &     (iele_fsmp_stack, num_int, k2, i_filter, ak_diff,            &
-     &      ele, jac_3d, FEM_elens, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, FEM_elens, fem_wk%vector_1,            &
+     &      fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -213,7 +217,8 @@
      &      k2, i_field, coef, fem_wk%tensor_1)
         call fem_skv_div_tensor_sgs_galerkin                            &
      &     (iele_fsmp_stack, num_int, k2, i_filter, ak_diff,            &
-     &      ele, jac_3d, FEM_elens, fem_wk%tensor_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, FEM_elens, fem_wk%tensor_1,            &
+     &      fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -256,7 +261,8 @@
      &      k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_div_as_tsr_sgs_galerkin                            &
      &     (iele_fsmp_stack, num_int, k2, i_filter, ak_diff,            &
-     &      ele, jac_3d, FEM_elens, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM1, jac_3d, FEM_elens, fem_wk%vector_1,            &
+     &      fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
