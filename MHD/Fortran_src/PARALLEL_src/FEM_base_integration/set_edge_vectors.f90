@@ -51,7 +51,8 @@
       call dealloc_edge_shape_func(spf_1d)
 !
       call alloc_edge_vect(edge)
-      call s_int_edge_vector(max_int_point, jacobians%jac_1d, edge)
+      call s_int_edge_vector                                            &
+     &   (max_int_point, g_FEM1, jacobians%jac_1d, edge)
 !
       call dealloc_jacobians_edge(edge, jacobians)
 !

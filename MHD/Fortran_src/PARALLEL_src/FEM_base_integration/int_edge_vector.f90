@@ -7,7 +7,8 @@
 !> @brief  Structure of 1D Jacobian and difference of shape functions
 !!
 !!@verbatim
-!!      subroutine s_int_edge_vector(num_int, jac_1d, edge)
+!!      subroutine s_int_edge_vector(num_int, g_FEM, jac_1d, edge)
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_1d), intent(in) :: jac_1d
 !!        type(edge_data), intent(inout) :: edge
 !!@endverbatim
@@ -17,6 +18,7 @@
       use m_precision
       use m_machine_parameter
       use t_edge_data
+      use t_fem_gauss_int_coefs
       use t_jacobian_1d
 !
       implicit none
@@ -29,14 +31,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_int_edge_vector(num_int, jac_1d, edge)
+      subroutine s_int_edge_vector(num_int, g_FEM, jac_1d, edge)
 !
       integer(kind = kint), intent(in) :: num_int
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       type(edge_data), intent(inout) :: edge
 !
 !
-      call int_edge_vect(edge%numedge, edge%istack_edge_smp,            &
+      call int_edge_vect                                                &
+     &   (edge%numedge, edge%istack_edge_smp, g_FEM%max_int_point,      &
+     &    g_FEM%maxtot_int_1d, g_FEM%int_start1, g_FEM%owe,             &
      &    jac_1d%ntot_int, num_int, jac_1d%xj_edge, jac_1d%xeg_edge,    &
      &    edge%edge_vect, edge%edge_length, edge%a_edge_length)
 !
@@ -45,15 +50,19 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_edge_vect(numedge, iedge_smp_stack,                &
+     &          max_int_point, maxtot_int_1d, int_start1, owe,          &
      &          ntot_int_1d, num_int, xj_edge, xeg_edge,                &
      &          edge_vect, edge_length, a_edge_length)
-!
-      use m_fem_gauss_int_coefs
 !
       integer(kind = kint), intent(in) :: numedge
       integer(kind = kint), intent(in) :: iedge_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: ntot_int_1d
       integer(kind = kint), intent(in) :: num_int
+!
+      integer(kind = kint), intent(in) :: max_int_point, maxtot_int_1d
+      integer(kind = kint), intent(in) :: int_start1(max_int_point)
+      real(kind = kreal),   intent(in) :: owe(maxtot_int_1d)
+!
       real(kind = kreal), intent(in) :: xj_edge(numedge,ntot_int_1d)
       real(kind = kreal), intent(in) :: xeg_edge(numedge,ntot_int_1d,3)
 !
