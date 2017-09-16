@@ -214,7 +214,7 @@
      &   'cal_diff_coef_fluid', n_scalar, iak_diff_flux, icomp_diff_sf
       call cal_diff_coef_fluid(SGS_par, FEM_filters%layer_tbl,          &
      &    mesh%node, mesh%ele, fluid, iphys, nod_fld,                   &
-     &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_3d_l,                 &
      &    n_scalar, iak_diff_flux, icomp_diff_sf, num_int,              &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,     &
      &    diff_coefs)

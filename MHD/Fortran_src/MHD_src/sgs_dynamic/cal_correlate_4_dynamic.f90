@@ -5,11 +5,11 @@
 !
 !!      subroutine cal_correlate_sgs_dynamic                            &
 !!     &         (layer_tbl, node, ele, iphys, nod_fld,                 &
-!!     &          jac_3d_q, jac_3d_l, n_tensor, icomp_f, n_int,         &
+!!     &          g_FEM, jac_3d_q, jac_3d_l, n_tensor, icomp_f, n_int,  &
 !!     &          nlayer_SGS, num_sgs_coefs, ave_sgs_simi, ave_sgs_grad,&
 !!     &          cor_sgs, cov_sgs, cor_sgs_w, cov_sgs_w, wk_cor)
 !!      subroutine cal_correlate_diff_area(layer_tbl, iele_fsmp_stack,  &
-!!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
+!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
 !!     &          n_tensor, icomp_f, n_int, num_sgs_coefs,              &
 !!     &          ave_diff_simi_w, ave_diff_grad_w,                     &
 !!     &          cor_diff_w, cov_diff_w, wk_cor)
@@ -18,6 +18,7 @@
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!
 !!        type(dynamic_correlation_data), intent(inout) :: wk_cor
@@ -33,7 +34,7 @@
       use t_phys_address
       use t_phys_data
       use t_layering_ele_list
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_work_layer_correlate
 !
@@ -51,7 +52,7 @@
 !
       subroutine cal_correlate_sgs_dynamic                              &
      &         (layer_tbl, node, ele, iphys, nod_fld,                   &
-     &          jac_3d_q, jac_3d_l, n_tensor, icomp_f, n_int,           &
+     &          g_FEM, jac_3d_q, jac_3d_l, n_tensor, icomp_f, n_int,    &
      &          nlayer_SGS, num_sgs_coefs, ave_sgs_simi, ave_sgs_grad,  &
      &          cor_sgs, cov_sgs, cor_sgs_w, cov_sgs_w, wk_cor)
 !
@@ -60,6 +61,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       integer (kind = kint), intent(in) :: nlayer_SGS, num_sgs_coefs
@@ -83,7 +85,7 @@
 !
 !  Volume integration:                        int_vol_layer_correlate
       call int_vol_layer_correlate(layer_tbl,                           &
-     &    node, ele, iphys, nod_fld, g_FEM1, jac_3d_q, jac_3d_l,        &
+     &    node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,         &
      &    n_tensor, n_int, ave_sgs_simi(1,icomp_f),                     &
      &    ave_sgs_grad(1,icomp_f), wk_cor)
 !
@@ -105,7 +107,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_correlate_diff_area(layer_tbl, iele_fsmp_stack,    &
-     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,          &
+     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
      &          n_tensor, icomp_f, n_int, num_sgs_coefs,                &
      &          ave_diff_simi_w, ave_diff_grad_w,                       &
      &          cor_diff_w, cov_diff_w, wk_cor)
@@ -117,6 +119,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       integer (kind = kint), intent(in) :: n_tensor
       integer (kind = kint), intent(in) :: n_int, icomp_f
@@ -133,7 +136,7 @@
 !
 !  Volume integration:                      int_vol_diff_correlate
       call int_vol_diff_correlate(iele_fsmp_stack,                      &
-     &    node, ele, iphys, nod_fld, g_FEM1, jac_3d_q, jac_3d_l,        &
+     &    node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,         &
      &    n_tensor, n_int, ave_diff_simi_w(icomp_f),                    &
      &    ave_diff_grad_w(icomp_f), wk_cor)
 !

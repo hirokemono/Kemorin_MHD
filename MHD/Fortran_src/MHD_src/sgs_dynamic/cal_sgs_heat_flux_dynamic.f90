@@ -162,7 +162,7 @@
      &   'cal_model_coefs', n_vector, iak_sgs_hlux, icomp_sgs_flux
       call cal_model_coefs                                              &
      &   (SGS_par, FEM_filters%layer_tbl, mesh%node, mesh%ele,          &
-     &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
+     &    iphys, nod_fld, g_FEM1, jacobians%jac_3d, jacobians%jac_3d_l, &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux, icomp_sgs_flux,      &
      &    num_int, FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
      &    FEM_SGS_wk%wk_sgs, sgs_coefs)

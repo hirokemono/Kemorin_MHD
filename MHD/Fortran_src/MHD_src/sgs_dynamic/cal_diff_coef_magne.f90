@@ -257,7 +257,7 @@
      &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_b, icomp_diff_b
       call cal_diff_coef_fluid(SGS_par, layer_tbl,                      &
      &    node, ele, fluid, iphys, nod_fld,                             &
-     &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_3d_l,                 &
      &    n_sym_tensor, iak_diff_b, icomp_diff_b,                       &
      &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff,            &
      &    diff_coefs)

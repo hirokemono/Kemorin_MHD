@@ -192,7 +192,7 @@
 !    filtering (to iphys%i_sgs_grad)
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
-     &   mesh%nod_comm, mesh%node, FEM_filters%filtering,               &
+     &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, FEM_SGS_wk%wk_filter,     &
      &    nod_fld)
 !
@@ -204,8 +204,8 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_uxb, icomp_diff_uxb
       call cal_diff_coef_fluid(SGS_par, FEM_filters%layer_tbl,          &
-     &     mesh%node, mesh%ele,  fluid, iphys, nod_fld,                 &
-     &    jacobians%jac_3d, jacobians%jac_3d_l, n_vector,               &
+     &    mesh%node, mesh%ele,  fluid, iphys, nod_fld,                  &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_3d_l, n_vector,       &
      &    iak_diff_uxb, icomp_diff_uxb, FEM_prm%npoint_t_evo_int,       &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,     &
      &    diff_coefs)
