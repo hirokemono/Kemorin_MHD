@@ -19,9 +19,9 @@
 !!     &          wk_filter, nod_fld)
 !!
 !!      subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb, dt,             &
-!!     &          FEM_prm, filter_param, nod_comm, node, ele, conduct,  &
-!!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering,&
-!!     &          sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
+!!     &         FEM_prm, filter_param, nod_comm, node, ele, conduct,   &
+!!     &         iphys, iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
+!!     &         filtering, sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -31,6 +31,7 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -50,7 +51,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -221,9 +222,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb, dt,               &
-     &          FEM_prm, filter_param, nod_comm, node, ele, conduct,    &
-     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering,  &
-     &          sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
+     &         FEM_prm, filter_param, nod_comm, node, ele, conduct,     &
+     &         iphys, iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl,       &
+     &         filtering, sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
 !
       use int_vol_similarity_uxb
 !
@@ -239,6 +240,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(filtering_data_type), intent(in) :: filtering
@@ -259,13 +261,13 @@
         call int_simi_vp_induct_upm                                     &
      &     (FEM_prm%npoint_t_evo_int, dt, icomp_sgs_uxb,                &
      &      node, ele, conduct, iphys, nod_fld,                         &
-     &      g_FEM1, jac_3d, rhs_tbl, sgs_coefs,                         &
+     &      g_FEM, jac_3d, rhs_tbl, sgs_coefs,                          &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, f_nl)
       else
         call int_simi_vp_induct                                         &
      &     (FEM_prm%npoint_t_evo_int, icomp_sgs_uxb,                    &
-     &      node, ele, conduct, iphys, nod_fld, g_FEM1, jac_3d,         &
+     &      node, ele, conduct, iphys, nod_fld, g_FEM, jac_3d,          &
      &      rhs_tbl, sgs_coefs, fem_wk, f_nl)
       end if
 !

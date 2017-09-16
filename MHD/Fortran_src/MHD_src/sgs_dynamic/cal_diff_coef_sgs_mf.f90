@@ -126,9 +126,9 @@
      &   (ifilter_4delta, icomp_sgs_mf, iphys%i_sgs_grad_f,             &
      &    iphys%i_filter_velo, ie_dfvx, dt, FEM_prm, SGS_par%model_p,   &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
-     &    iphys_ele, ele_fld, jacobians%jac_3d, FEM_filters%FEM_elens,  &
-     &    sgs_coefs, rhs_tbl, mlump_fl, rhs_mat%fem_wk, mhd_fem_wk,     &
-     &    nod_fld)
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d,                 &
+     &    FEM_filters%FEM_elens, sgs_coefs, rhs_tbl, mlump_fl,          &
+     &    rhs_mat%fem_wk, mhd_fem_wk, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !

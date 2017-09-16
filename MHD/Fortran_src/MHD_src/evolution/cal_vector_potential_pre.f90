@@ -179,8 +179,8 @@
         call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx, dt,               &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld,                &
-     &      jacobians%jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs, &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &      g_FEM1, jacobians%jac_3d, rhs_tbl, FEM_elens, filtering,    &
+     &      sgs_coefs, wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then

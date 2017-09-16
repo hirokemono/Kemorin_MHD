@@ -42,6 +42,7 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_MHD_finite_element_mat
       use t_FEM_MHD_filter_data
       use t_material_property
@@ -130,7 +131,7 @@
      &   (iflag_supg, num_int, dt, ifilter_4delta,                      &
      &    iphys%i_sgs_grad_f, ifield_f, ie_dfvx,                        &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
-     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,                &
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,        &
      &    FEM_filters%FEM_elens, mlump_fl, mhd_fem_wk, rhs_mat%fem_wk,  &
      &    rhs_mat%f_l, nod_fld)
 !
@@ -140,7 +141,7 @@
       call cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt,         &
      &    ifilter_2delta, i_sgs, ifield, ie_dvx,                        &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
-     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,                &
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,        &
      &    FEM_filters%FEM_elens, mlump_fl, mhd_fem_wk, rhs_mat%fem_wk,  &
      &    rhs_mat%f_l, nod_fld)
 !

@@ -43,6 +43,7 @@
       use t_phys_address
       use t_jacobians
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_FEM_MHD_filter_data
       use t_MHD_finite_element_mat
       use t_material_property
@@ -126,8 +127,9 @@
       call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
      &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx, dt,         &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
-     &    iphys_ele, ele_fld, jacobians%jac_3d, FEM_filters%FEM_elens,  &
-     &    rhs_tbl, mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld)
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d,                 &
+     &    FEM_filters%FEM_elens, rhs_tbl, mlump_fl, rhs_mat%fem_wk,     &
+     &    mhd_fem_wk, nod_fld)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
 !
@@ -137,8 +139,9 @@
       call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
      &    iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx, dt,                 &
      &    FEM_prm,  mesh%nod_comm, mesh%node, mesh%ele, fluid,          &
-     &    iphys_ele, ele_fld, jacobians%jac_3d, FEM_filters%FEM_elens,  &
-     &    rhs_tbl, mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld)
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d,                 &
+     &    FEM_filters%FEM_elens, rhs_tbl, mlump_fl, rhs_mat%fem_wk,     &
+     &    mhd_fem_wk, nod_fld)
 !
 !      filtering
 !

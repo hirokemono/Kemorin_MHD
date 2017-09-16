@@ -217,9 +217,9 @@
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param,     &
      &      filter_param, mesh%nod_comm, mesh%node, mesh%ele, fluid,    &
-     &      iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,   &
-     &      filtering,  sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,  &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,      &
+     &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, mlump_fl,   &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !      call check_nodal_data                                            &

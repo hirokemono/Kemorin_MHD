@@ -157,8 +157,8 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
       call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx, dt,                 &
      &    FEM_prm, SGS_param, filter_param, nod_comm, node, ele,        &
-     &    conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
-     &    FEM_elen, filtering, sgs_coefs, wk_filter,                    &
+     &    conduct, cd_prop, iphys, iphys_ele, ele_fld, g_FEM1, jac_3d,  &
+     &    rhs_tbl, FEM_elen, filtering, sgs_coefs, wk_filter,           &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

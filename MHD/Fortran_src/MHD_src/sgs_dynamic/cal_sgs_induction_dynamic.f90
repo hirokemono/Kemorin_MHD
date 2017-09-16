@@ -51,6 +51,7 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_MHD_finite_element_mat
       use t_FEM_MHD_filter_data
       use t_ele_info_4_dynamic
@@ -126,8 +127,9 @@
       call cal_sgs_vp_induct_grad_no_coef                               &
      &   (ifilter_4delta, iphys%i_sgs_grad_f, iphys%i_filter_magne,     &
      &    ie_dfvx, dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,     &
-     &    conduct, cd_prop, iphys_ele, ele_fld, jacobians%jac_3d,       &
-     &    rhs_tbl, FEM_filters%FEM_elens, mlump_cd, mhd_fem_wk,         &
+     &    conduct, cd_prop, iphys_ele, ele_fld,                         &
+     &    g_FEM1, jacobians%jac_3d, rhs_tbl,                            &
+     &    FEM_filters%FEM_elens, mlump_cd, mhd_fem_wk,                  &
      &    rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
 !
 !   gradient model by original field
@@ -136,8 +138,9 @@
       call cal_sgs_vp_induct_grad_no_coef                               &
      &   (ifilter_2delta, iphys%i_SGS_vp_induct, iphys%i_magne,         &
      &    ie_dvx, dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,      &
-     &    conduct, cd_prop, iphys_ele, ele_fld, jacobians%jac_3d,       &
-     &    rhs_tbl, FEM_filters%FEM_elens, mlump_cd, mhd_fem_wk,         &
+     &    conduct, cd_prop, iphys_ele, ele_fld,                         &
+     &    g_FEM1, jacobians%jac_3d, rhs_tbl,                            &
+     &    FEM_filters%FEM_elens, mlump_cd, mhd_fem_wk,                  &
      &    rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
 !
 !      filtering
@@ -238,7 +241,7 @@
      &   (ifilter_4delta, iphys%i_sgs_grad_f, iphys%i_filter_velo,      &
      &    iphys%i_filter_magne, ie_dfvx, ie_dfbx, dt, FEM_prm,          &
      &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
-     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,                &
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,        &
      &    FEM_filters%FEM_elens, mlump_cd, rhs_mat%fem_wk, mhd_fem_wk,  &
      &    rhs_mat%f_l, nod_fld)
 !
@@ -249,7 +252,7 @@
      &   (ifilter_2delta,  iphys%i_SGS_induct_t,                        &
      &    iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt, FEM_prm,     &
      &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
-     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,                &
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,        &
      &    FEM_filters%FEM_elens, mlump_cd, rhs_mat%fem_wk, mhd_fem_wk,  &
      &    rhs_mat%f_l, nod_fld)
 !

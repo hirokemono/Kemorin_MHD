@@ -120,8 +120,8 @@
      &   (ifilter_4delta, icomp_sgs_uxb, iphys%i_sgs_grad_f,            &
      &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
      &    ie_dfvx, ie_dfbx, dt, FEM_prm, SGS_par%model_p,               &
-     &    mesh%nod_comm, mesh%node, mesh%ele, conduct,                  &
-     &    cd_prop, iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,       &
+     &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,        &
      &    FEM_filters%FEM_elens, sgs_coefs, mlump_cd, rhs_mat%fem_wk,   &
      &    mhd_fem_wk, rhs_mat%f_l, nod_fld)
 !

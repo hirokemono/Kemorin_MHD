@@ -6,12 +6,12 @@
 !!      subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,   &
 !!     &          i_filter, icomp_sgs_uxb, ie_dvx, dt,                  &
 !!     &          FEM_prm, node, ele, conduct, cd_prop, iphys, nod_fld, &
-!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine cal_sgs_vp_induct_grad_no_coef                       &
 !!     &         (i_filter,  i_sgs, i_field, id_dx, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
-!!     &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
+!!     &          cd_prop, iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl,  &
 !!     &          FEM_elens, mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
@@ -22,6 +22,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -44,7 +45,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_finite_element_mat
       use t_filter_elength
@@ -63,7 +64,7 @@
       subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,     &
      &          i_filter, icomp_sgs_uxb, ie_dvx, dt,                    &
      &          FEM_prm, node, ele, conduct, cd_prop, iphys, nod_fld,   &
-     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_sgs_uxb
@@ -84,6 +85,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -98,7 +100,7 @@
 !
       call sel_int_vol_sgs_uxb(i_filter, iphys%i_magne, ie_dvx, dt,     &
      &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
-     &    g_FEM1, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    g_FEM, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
 !
@@ -115,7 +117,7 @@
       subroutine cal_sgs_vp_induct_grad_no_coef                         &
      &         (i_filter,  i_sgs, i_field, id_dx, dt,                   &
      &          FEM_prm, nod_comm, node, ele, conduct,                  &
-     &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
+     &          cd_prop, iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl,    &
      &          FEM_elens, mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       use cal_ff_smp_to_ffs
@@ -132,6 +134,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -154,7 +157,7 @@
 !
       call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, dt,            &
      &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
-     &    g_FEM1, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    g_FEM, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
      &    cd_prop%coef_induct, fem_wk%sk6, f_l%ff_smp)
