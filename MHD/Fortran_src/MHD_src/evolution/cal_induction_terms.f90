@@ -174,7 +174,7 @@
       call int_vol_vector_diffuse_ele                                   &
      &   (SGS_param%ifilter_final, ele%istack_ele_smp,                  &
      &    FEM_prm%npoint_t_evo_int,  node, ele, nod_fld,                &
-     &    fem_int%jcs%jac_3d, fem_int%rhs_tbl,                          &
+     &    g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                  &
      &    FEM_elens, diff_coefs, iak_diff_b, one, ak_d_magne,           &
      &    iphys%i_vecp, rhs_mat%fem_wk, rhs_mat%f_l)
 !

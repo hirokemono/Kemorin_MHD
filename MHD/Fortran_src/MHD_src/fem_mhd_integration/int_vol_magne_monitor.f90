@@ -50,6 +50,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -175,7 +176,7 @@
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_as_tsr_upw                                     &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
      &      conduct%istack_ele_fld_smp, num_int, dt,                    &
      &      iphys%i_induct_t, ele_fld%ntot_phys, iphys_ele%i_magne,     &
      &      ele_fld%d_fld, fem_wk, f_nl)
@@ -191,7 +192,7 @@
      &        mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_cst_upw                               &
-     &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
+     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
      &        conduct%istack_ele_fld_smp, num_int, dt,                  &
      &        iphys%i_SGS_induct_t, ele_fld%ntot_phys,                  &
      &        iphys_ele%i_magne, ele_fld%d_fld, cd_prop%coef_induct,    &

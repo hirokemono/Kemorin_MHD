@@ -124,13 +124,13 @@
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_divergence_upw                                     &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
      &      iele_fsmp_stack, num_int, dt, i_vector,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, f_nl)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_divergence_upw                                     &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
      &      iele_fsmp_stack, num_int, dt, i_vector,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      fem_wk, f_nl)

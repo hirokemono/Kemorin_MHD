@@ -265,7 +265,7 @@
       if (fl_prop%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,     &
      &      diff_coefs, iak_diff_v, fl_prop%coef_imp, ak_d_velo,        &
      &      i_velo, fem_wk, f_l)
       end if
@@ -366,7 +366,7 @@
       if (cd_prop%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,               &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,     &
      &      diff_coefs, iak_diff_b, cd_prop%coef_imp, ak_d_magne,       &
      &      i_vecp, fem_wk, f_l)
       end if
@@ -457,7 +457,7 @@
       if (cd_prop%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
+     &      node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,     &
      &      diff_coefs, iak_diff_b, cd_prop%coef_imp, ak_d_magne,       &
      &      i_magne, fem_wk, f_l)
       end if

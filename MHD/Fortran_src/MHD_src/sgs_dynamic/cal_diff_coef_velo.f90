@@ -52,6 +52,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
@@ -167,7 +168,8 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_sgs_grad_fp, i_sgs_simi_p, fluid%istack_ele_fld_smp,        &
      &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
-     &     jacobians%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &    g_FEM1, jacobians%jac_3d, rhs_tbl, fem_wk, f_l, f_nl,         &
+     &    nod_fld)
 !      if (iflag_debug.gt.0)   write(*,*)                               &
 !     &    'cal_divergence_in_fluid', iphys%i_sgs_simi+6,               &
 !     &    iphys%i_filter_velo
@@ -194,8 +196,8 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    iphys%i_press, i_sgs_grad_p,                                  &
      &    fluid%istack_ele_fld_smp, mlump_fl, nod_comm, node, ele,      &
-     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, fem_wk,        &
-     &    f_l, f_nl, nod_fld)
+     &    iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,        &
+     &    fem_wk, f_l, f_nl, nod_fld)
 !      if (iflag_debug.gt.0)                                            &
 !     &   write(*,*) 'cal_divergence_in_fluid', iphys%i_sgs_grad+6,     &
 !     &               iphys%i_velo

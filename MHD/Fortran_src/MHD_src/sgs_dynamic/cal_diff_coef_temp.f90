@@ -51,6 +51,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
@@ -139,8 +140,8 @@
       call choose_cal_gradient                                          &
      &   (iflag_supg, num_int, dt, ifield_f, iphys%i_sgs_simi,          &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jacobians%jac_3d,    &
-     &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &    nod_comm, node, ele, iphys_ele, ele_fld, g_FEM1,              &
+     &    jacobians%jac_3d,  rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !   take gradient of temperature (to iphys%i_sgs_grad)
 !
@@ -149,8 +150,8 @@
       call choose_cal_gradient                                          &
      &   (iflag_supg, num_int, dt, ifield, iphys%i_sgs_grad,            &
      &    fluid%istack_ele_fld_smp, mlump_fl,                           &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jacobians%jac_3d,    &
-     &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &    nod_comm, node, ele, iphys_ele, ele_fld, g_FEM1,              &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

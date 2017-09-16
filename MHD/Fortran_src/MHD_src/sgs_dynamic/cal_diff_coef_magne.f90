@@ -53,6 +53,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
@@ -164,8 +165,8 @@
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    i_sgs_grad_fp, i_sgs_simi_p, ele%istack_ele_smp, m_lump,      &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jacobians%jac_3d,    &
-     &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &    nod_comm, node, ele, iphys_ele, ele_fld, g_FEM1,              &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !      call choose_cal_divergence                                       &
 !     &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,      &
 !     &    iphys%i_sgs_grad_f, iphys%i_sgs_simi+6, node%istack_nod_smp, &
@@ -185,8 +186,8 @@
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump,      &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jacobians%jac_3d,    &
-     &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &    nod_comm, node, ele, iphys_ele, ele_fld, g_FEM1,              &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !      call choose_cal_divergence                                       &
 !     &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,      &
 !     &    iphys%i_magne, iphys%i_sgs_grad+6, node%istack_nod_smp,      &

@@ -168,9 +168,9 @@
      &     .and. cd_prop%coef_exp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,               &
-     &      node, ele, nod_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,   &
-     &      diff_coefs, iak_diff_b, cd_prop%coef_exp, ak_d_magne,       &
-     &      iphys%i_vecp, fem_wk, f_l)
+     &      node, ele, nod_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,      &
+     &      FEM_elens, diff_coefs, iak_diff_b, cd_prop%coef_exp,        &
+     &      ak_d_magne, iphys%i_vecp, fem_wk, f_l)
       end if
 !
 !  lead induction terms
@@ -312,7 +312,8 @@
       call int_vol_solenoid_co                                          &
      &   (FEM_prm%npoint_poisson_int, SGS_param%ifilter_final,          &
      &    ele%istack_ele_smp, iphys%i_m_phi, iak_diff_b,                &
-     &    node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,     &
+     &    node, ele, nod_fld, g_FEM1,                                   &
+     &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !
       if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON                &

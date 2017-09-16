@@ -224,7 +224,7 @@
         call int_vol_vector_diffuse_ele                                 &
      &     (SGS_par%model_p%ifilter_final, fluid%istack_ele_fld_smp,    &
      &      FEM_prm%npoint_t_evo_int, node, ele, nod_fld,               &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl,                        &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                &
      &      FEM_elens, diff_coefs, ifld_diff%i_velo, fl_prop%coef_exp,  &
      &      ak_MHD%ak_d_velo, iphys%i_velo, rhs_mat%fem_wk,             &
      &      rhs_mat%f_l)
@@ -385,7 +385,7 @@
       call int_vol_solenoid_co(FEM_prm%npoint_poisson_int,              &
      &    SGS_par%model_p%ifilter_final, fluid%istack_ele_fld_smp,      &
      &    iphys%i_p_phi, ifld_diff%i_velo, node, ele, nod_fld,          &
-     &    fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,                     &
+     &    g_FEM1, fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,             &
      &    fem_int%rhs_tbl, FEM_elens, diff_coefs,                       &
      &    rhs_mat%fem_wk, rhs_mat%f_nl)
 !

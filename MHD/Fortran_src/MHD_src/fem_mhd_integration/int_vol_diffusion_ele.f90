@@ -6,17 +6,18 @@
 !
 !!      subroutine int_vol_scalar_diffuse_ele                           &
 !!     &         (ifilter_final, iele_fsmp_stack, num_int,              &
-!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          diff_coefs, iak_diff, coef_crank, ak_d,               &
 !!     &          i_scalar, fem_wk, f_l)
 !!      subroutine int_vol_vector_diffuse_ele                           &
 !!     &         (ifilter_final, iele_fsmp_stack, num_int,              &
-!!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          diff_coefs, iak_diff, coef_crank, ak_d,               &
 !!     &          i_vector, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -34,7 +35,7 @@
 !
       use t_geometry_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -52,7 +53,7 @@
 !
       subroutine int_vol_scalar_diffuse_ele                             &
      &         (ifilter_final, iele_fsmp_stack, num_int,                &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          diff_coefs, iak_diff, coef_crank, ak_d,                 &
      &          i_scalar, fem_wk, f_l)
 !
@@ -62,6 +63,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -79,13 +81,13 @@
 !
       if (iak_diff .gt. 0) then
         call int_vol_scalar_sgs_diffuse                                 &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, FEM_elens, nod_fld,     &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,      &
      &      iele_fsmp_stack, num_int, coef_crank, ak_d,                 &
      &      i_scalar, ifilter_final, diff_coefs%num_field,              &
      &      iak_diff, diff_coefs%ak, fem_wk, f_l)
       else
         call int_vol_scalar_diffuse                                     &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      iele_fsmp_stack, num_int, coef_crank, ak_d, i_scalar,       &
      &      fem_wk, f_l)
       end if
@@ -96,7 +98,7 @@
 !
       subroutine int_vol_vector_diffuse_ele                             &
      &         (ifilter_final, iele_fsmp_stack, num_int,                &
-     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          diff_coefs, iak_diff, coef_crank, ak_d,                 &
      &          i_vector, fem_wk, f_l)
 !
@@ -106,6 +108,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -123,13 +126,13 @@
 !
       if (iak_diff .gt. 0) then
         call int_vol_vector_sgs_diffuse                                 &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, FEM_elens, nod_fld,     &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,      &
      &      iele_fsmp_stack, num_int, coef_crank, ak_d,                 &
      &      i_vector, ifilter_final, diff_coefs%num_field,              &
      &      iak_diff, diff_coefs%ak, fem_wk, f_l)
       else
         call int_vol_vector_diffuse                                     &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      iele_fsmp_stack, num_int, coef_crank, ak_d, i_vector,       &
      &      fem_wk, f_l)
       end if

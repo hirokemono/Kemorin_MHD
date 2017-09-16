@@ -60,6 +60,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -403,7 +404,7 @@
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        i_src, i_fld, fluid%istack_ele_fld_smp,                   &
      &        mk_MHD%mlump_fl, nod_comm, node, ele, iphys_ele,          &
-     &        ele_fld, fem_int%jcs%jac_3d, fem_int%rhs_tbl,             &
+     &        ele_fld, g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
       end do

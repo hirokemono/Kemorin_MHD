@@ -235,7 +235,7 @@
      &     .and. property%coef_exp .gt. zero) then
         call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      mesh%node, mesh%ele, nod_fld, jacobians%jac_3d,             &
+     &      mesh%node, mesh%ele, nod_fld, g_FEM1, jacobians%jac_3d,     &
      &      rhs_tbl, FEM_elens, diff_coefs, ifld_diff%i_temp,           &
      &      property%coef_exp,  ak_diffuse, i_field, fem_wk, f_l)
       end if

@@ -72,6 +72,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -159,7 +160,7 @@
         call choose_cal_gradient_w_const                                &
      &     (iflag_supg, num_int, dt, ifleld, i_sgs, dminus,             &
      &      fluid%istack_ele_fld_smp, mlump_fl,                         &
-     &      nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,            &
+     &      nod_comm, node, ele, iphys_ele, ele_fld, g_FEM1, jac_3d,    &
      &      rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -467,18 +468,18 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_vect, i_sgs, dminus, fluid%istack_ele_fld_smp,              &
      &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
-     &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &    g_FEM1, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       call choose_cal_gradient_w_const                                  &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    (i_vect+1),  i_sgs_diffuse, dminus, fluid%istack_ele_fld_smp, &
      &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
-     &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &    g_FEM1, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       call choose_cal_gradient_w_const                                  &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    (i_vect+2), (i_sgs_diffuse+3),                                &
      &    dminus, fluid%istack_ele_fld_smp,                             &
      &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
-     &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &    g_FEM1, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !
       call const_viscosity_tensor(nod_fld%n_point, nod_fld%ntot_phys,   &

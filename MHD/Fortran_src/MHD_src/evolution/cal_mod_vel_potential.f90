@@ -144,7 +144,8 @@
       call int_vol_fractional_div_ele                                   &
      &   (SGS_param%ifilter_final, fluid%istack_ele_fld_smp,            &
      &    FEM_prm%npoint_poisson_int, iphys%i_velo, iak_diff_v,         &
-     &    node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,     &
+     &    node, ele, nod_fld, g_FEM1,                                   &
+     &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
       call int_surf_normal_vector                                       &
@@ -246,7 +247,8 @@
       call int_vol_fractional_div_ele                                   &
      &   (SGS_param%ifilter_final, ele%istack_ele_smp,                  &
      &    FEM_prm%npoint_poisson_int, iphys%i_vecp, iak_diff_b,         &
-     &    node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,     &
+     &    node, ele, nod_fld, g_FEM1,                                   &
+     &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
 !      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
@@ -339,7 +341,8 @@
       call int_vol_fractional_div_ele                                   &
      &   (SGS_param%ifilter_final, ele%istack_ele_smp,                  &
      &    FEM_prm%npoint_poisson_int, iphys%i_magne, iak_diff_b,        &
-     &    node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,     &
+     &    node, ele, nod_fld, g_FEM1,                                   &
+     &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
 !      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then

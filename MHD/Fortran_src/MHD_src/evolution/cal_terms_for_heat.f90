@@ -191,7 +191,7 @@
      &      property%coef_nega_adv, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_div_w_const_upw(node, ele,                         &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,               &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, num_int, dt,                      &
      &      i_vector, ele_fld%ntot_phys, iphys_ele%i_velo,              &
      &      ele_fld%d_fld, property%coef_nega_adv,                      &
@@ -258,7 +258,7 @@
 !
       call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,          &
      &    fluid%istack_ele_fld_smp, num_int, node, ele, nod_fld,        &
-     &    fem_int%jcs%jac_3d, fem_int%rhs_tbl,                          &
+     &    g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                  &
      &    FEM_elens, diff_coefs, iak_diffuse, one, ak_diffuse,          &
      &    i_scalar, rhs_mat%fem_wk, rhs_mat%f_l)
 !

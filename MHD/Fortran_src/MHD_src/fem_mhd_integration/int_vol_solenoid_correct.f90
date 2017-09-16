@@ -5,11 +5,12 @@
 !
 !!      subroutine int_vol_solenoid_co(num_int, ifilter_final,          &
 !!     &          iele_fsmp_stack, i_scalar, iak_diff,                  &
-!!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,               &
+!!     &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,        &
 !!     &          rhs_tbl, FEM_elen, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -23,7 +24,7 @@
 !
       use t_geometry_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -41,7 +42,7 @@
 !
       subroutine int_vol_solenoid_co(num_int, ifilter_final,            &
      &          iele_fsmp_stack, i_scalar, iak_diff,                    &
-     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,                 &
+     &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
      &          rhs_tbl, FEM_elen, diff_coefs, fem_wk, f_nl)
 !
       use int_vol_fractional
@@ -50,6 +51,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -66,12 +68,12 @@
 !
       if (iak_diff .gt. 0) then
         call int_vol_sgs_div_v_linear                                   &
-     &    (node, ele, g_FEM1, jac_3d_q, jac_3d_l, rhs_tbl, FEM_elen,    &
+     &    (node, ele, g_FEM, jac_3d_q, jac_3d_l, rhs_tbl, FEM_elen,     &
      &     nod_fld, iele_fsmp_stack, num_int, i_scalar, ifilter_final,  &
      &     diff_coefs%num_field, iak_diff, diff_coefs%ak, fem_wk, f_nl)
       else
         call int_vol_solenoidal_co                                      &
-     &     (node, ele, jac_3d_q, jac_3d_l, rhs_tbl, nod_fld,            &
+     &     (node, ele, g_FEM, jac_3d_q, jac_3d_l, rhs_tbl, nod_fld,     &
      &      iele_fsmp_stack, num_int, i_scalar, fem_wk, f_nl)
       end if
 !
