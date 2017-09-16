@@ -25,6 +25,7 @@
       use t_geometry_data_MHD
       use t_work_FEM_integration
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_jacobians
 !
       implicit none
@@ -88,25 +89,29 @@
 !
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'int_mass_matrix_diag whole'
-      call int_mass_matrix_diag(mesh%node, mesh%ele, jac_3d, rhs_tbl,   &
+      call int_mass_matrix_diag                                         &
+     &   (mesh%node, mesh%ele, g_FEM1, jac_3d, rhs_tbl,                 &
      &    mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,            &
      &    fem_mat%fem_wk, fem_mat%f_l, fem_int%m_lump)
 !
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'int_mass_matrix_diag fluid'
-      call int_mass_matrix_diag(mesh%node, mesh%ele, jac_3d, rhs_tbl,   &
+      call int_mass_matrix_diag                                         &
+     &   (mesh%node, mesh%ele, g_FEM1, jac_3d, rhs_tbl,                 &
      &    MHD_mesh%fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,  &
      &    fem_mat%fem_wk, fem_mat%f_l, mk_MHD%mlump_fl)
 !
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'int_mass_matrix_diag conduct'
-      call int_mass_matrix_diag(mesh%node, mesh%ele, jac_3d, rhs_tbl,   &
+      call int_mass_matrix_diag                                         &
+     &  (mesh%node, mesh%ele, g_FEM1, jac_3d, rhs_tbl,                  &
      &   MHD_mesh%conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, &
      &   fem_mat%fem_wk, fem_mat%f_l, mk_MHD%mlump_cd)
 !
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'int_mass_matrix_diag insulator'
-      call int_mass_matrix_diag(mesh%node, mesh%ele, jac_3d, rhs_tbl,   &
+      call int_mass_matrix_diag                                         &
+     &   (mesh%node, mesh%ele, g_FEM1, jac_3d, rhs_tbl,                 &
      &    MHD_mesh%insulate%istack_ele_fld_smp,                         &
      &    FEM_prm%npoint_t_evo_int, fem_mat%fem_wk, fem_mat%f_l,        &
      &    mk_MHD%mlump_ins)
@@ -135,27 +140,30 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_lump_mass_matrix_quad'
       call int_lump_mass_matrix_quad(mesh%node, mesh%ele,               &
-     &    jac_3d, rhs_tbl, FEM_prm%npoint_t_evo_int,                    &
+     &    g_FEM1, jac_3d, rhs_tbl, FEM_prm%npoint_t_evo_int,            &
      &    fem_mat%fem_wk, fem_mat%f_l, fem_int%m_lump)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &    'int_mass_matrix_HRZ fluid'
-       call int_mass_matrix_HRZ(mesh%node, mesh%ele, jac_3d, rhs_tbl,   &
+       call int_mass_matrix_HRZ                                         &
+     &    (mesh%node, mesh%ele, g_FEM1, jac_3d, rhs_tbl,                &
      &     MHD_mesh%fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, &
      &     fem_mat%fem_wk, fem_mat%f_l, mk_MHD%mlump_fl)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &    'int_mass_matrix_HRZ conduct'
-       call int_mass_matrix_HRZ(mesh%node, mesh%ele, jac_3d, rhs_tbl,   &
+       call int_mass_matrix_HRZ                                         &
+     &  (mesh%node, mesh%ele, g_FEM1, jac_3d, rhs_tbl,                  &
      &   MHD_mesh%conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, &
      &   fem_mat%fem_wk, fem_mat%f_l, mk_MHD%mlump_cd)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &    'int_mass_matrix_HRZ insulator'
-       call int_mass_matrix_HRZ(mesh%node, mesh%ele, jac_3d, rhs_tbl,   &
+       call int_mass_matrix_HRZ                                         &
+     &    (mesh%node, mesh%ele, g_FEM1, jac_3d, rhs_tbl,                &
      &     MHD_mesh%insulate%istack_ele_fld_smp,                        &
      &     FEM_prm%npoint_t_evo_int, fem_mat%fem_wk, fem_mat%f_l,       &
-     &      mk_MHD%mlump_ins)
+     &     mk_MHD%mlump_ins)
 !
       end subroutine int_mass_matrices_quad
 !

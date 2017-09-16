@@ -7,29 +7,37 @@
 !     Modified by H. Matsui on Oct. 2005
 !
 !!      subroutine int_grp_consist_mass_matrix                          &
-!!     &         (ele, jac_3d, rhs_tbl, mat_tbl, iele_fsmp_stack,       &
+!!     &         (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, iele_fsmp_stack,&
 !!     &          nele_grp, iele_grp, n_int, fem_wk, nmat_size, aiccg)
 !!
-!!      subroutine int_grp_mass_matrix(node, ele, jac_3d, rhs_tbl,      &
+!!      subroutine int_grp_mass_matrix                                  &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl,                    &
 !!     &          iele_fsmp_stack, nele_grp, iele_grp, n_int,           &
 !!     &          fem_wk, rhs_l, m_lump)
 !!      subroutine int_grp_mass_matrix_diag                             &
-!!     &         (node, ele, jac_3d, rhs_tbl, iele_fsmp_stack,          &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,   &
 !!     &          nele_grp, iele_grp, n_int, fem_wk, rhs_l, m_lump)
 !!      subroutine int_grp_mass_matrix_HRZ_full                         &
-!!     &         (node, ele, jac_3d_q, rhs_tbl, iele_fsmp_stack,        &
+!!     &         (node, ele, g_FEM, jac_3d_q, rhs_tbl, iele_fsmp_stack, &
 !!     &          nele_grp, iele_grp, n_int, fem_wk, rhs_l, m_lump)
-!!      subroutine int_grp_mass_matrix_HRZ(node, ele, jac_3d_q, rhs_tbl,&
+!!      subroutine int_grp_mass_matrix_HRZ                              &
+!!     &         (node, ele, g_FEM, jac_3d_q, rhs_tbl,                  &
 !!     &          iele_fsmp_stack, nele_grp, iele_grp, n_int,           &
 !!     &          fem_wk, rhs_l, m_lump)
+!!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(table_mat_const), intent(in) :: mat_tbl
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !
       module int_grouped_mass_matrix
 !
       use m_precision
-!
       use m_phys_constants
+!
       use t_geometry_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -47,12 +55,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_grp_consist_mass_matrix                            &
-     &         (ele, jac_3d, rhs_tbl, mat_tbl, iele_fsmp_stack,         &
+     &         (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, iele_fsmp_stack,  &
      &          nele_grp, iele_grp, n_int, fem_wk, nmat_size, aiccg)
 !
       use add_skv1_to_crs_matrix
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
@@ -75,7 +84,7 @@
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
         call fem_grp_skv_mass_matrix_t                                  &
      &     (iele_fsmp_stack, nele_grp, iele_grp, n_int, k2,             &
-     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%sk6)
         call add_skv1_to_crs_matrix11(ele, rhs_tbl, mat_tbl,            &
      &      k2, fem_wk%sk6, nmat_size, aiccg)
       end do
@@ -85,7 +94,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_grp_mass_matrix(node, ele, jac_3d, rhs_tbl,        &
+      subroutine int_grp_mass_matrix                                    &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl,                      &
      &          iele_fsmp_stack, nele_grp, iele_grp, n_int,             &
      &          fem_wk, rhs_l, m_lump)
 !
@@ -96,6 +106,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -115,7 +126,7 @@
       do k2 = 1, ele%nnod_4_ele
        call fem_grp_skv_mass_matrix_t                                   &
      &    (iele_fsmp_stack, nele_grp, iele_grp, n_int, k2,              &
-     &     ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &     ele, g_FEM, jac_3d, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -128,7 +139,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_grp_mass_matrix_diag                               &
-     &         (node, ele, jac_3d, rhs_tbl, iele_fsmp_stack,            &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,     &
      &          nele_grp, iele_grp, n_int, fem_wk, rhs_l, m_lump)
 !
       integer (kind=kint), intent(in) :: n_int
@@ -138,6 +149,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -150,7 +162,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_grp_skv_mass_matrix_diag_t(iele_fsmp_stack,              &
-     &    nele_grp, iele_grp, n_int, ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &    nele_grp, iele_grp, n_int, ele, g_FEM, jac_3d, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, rhs_l%ff_smp)
@@ -162,7 +174,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_grp_mass_matrix_HRZ_full                           &
-     &         (node, ele, jac_3d_q, rhs_tbl, iele_fsmp_stack,          &
+     &         (node, ele, g_FEM, jac_3d_q, rhs_tbl, iele_fsmp_stack,   &
      &          nele_grp, iele_grp, n_int, fem_wk, rhs_l, m_lump)
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -172,6 +184,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -184,7 +197,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
-     &    nele_grp, iele_grp, n_int, ele, g_FEM1, jac_3d_q, fem_wk%sk6)
+     &    nele_grp, iele_grp, n_int, ele, g_FEM, jac_3d_q, fem_wk%sk6)
       call sum_skv_diagonal_4_HRZ_type(iele_fsmp_stack, ele,            &
      &    fem_wk%sk6, fem_wk%me_diag)
 !
@@ -200,7 +213,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_grp_mass_matrix_HRZ(node, ele, jac_3d_q, rhs_tbl,  &
+      subroutine int_grp_mass_matrix_HRZ                                &
+     &         (node, ele, g_FEM, jac_3d_q, rhs_tbl,                    &
      &          iele_fsmp_stack, nele_grp, iele_grp, n_int,             &
      &          fem_wk, rhs_l, m_lump)
 !
@@ -211,6 +225,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -223,7 +238,7 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
-     &    nele_grp, iele_grp, n_int, ele, g_FEM1, jac_3d_q, fem_wk%sk6)
+     &    nele_grp, iele_grp, n_int, ele, g_FEM, jac_3d_q, fem_wk%sk6)
       call grp_volume_average_skv_HRZ_t(iele_fsmp_stack,                &
      &    nele_grp, iele_grp, ele, fem_wk%sk6, fem_wk%me_diag)
 !

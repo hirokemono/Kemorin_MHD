@@ -5,23 +5,24 @@
 !     Modified by H. Matsui on Oct., 2006
 !
 !!      subroutine int_vol_grad_w_const                                 &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          num_int, i_field, coef, fem_wk, f_nl)
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,           &
+!!     &          iele_fsmp_stack, num_int, i_field, coef, fem_wk, f_nl)
 !!      subroutine int_vol_div_w_const                                  &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          num_int, i_field, coef, fem_wk, f_nl)
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,           &
+!!     &          iele_fsmp_stack, num_int, i_field, coef, fem_wk, f_nl)
 !!      subroutine int_vol_rot_w_const                                  &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          num_int, i_field, coef, fem_wk, f_nl)
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,           &
+!!     &          iele_fsmp_stack, num_int, i_field, coef, fem_wk, f_nl)
 !!
 !!      subroutine int_vol_div_tsr_w_const                              &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          num_int, i_field, coef, fem_wk, f_nl)
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,           &
+!!     &          iele_fsmp_stack,  num_int, i_field, coef, fem_wk, f_nl)
 !!      subroutine int_vol_div_as_tsr_w_const                           &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          num_int, i_field, coef, fem_wk, f_nl)
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,           &
+!!     &          iele_fsmp_stack, num_int, i_field, coef, fem_wk, f_nl)
 !!        type(node_data), intent(in) ::    node
 !!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(phys_data),intent(in) ::     nod_fld
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -36,7 +37,7 @@
 !
       use t_geometry_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -54,8 +55,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_grad_w_const                                   &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          num_int, i_field, coef, fem_wk, f_nl)
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,             &
+     &          iele_fsmp_stack, num_int, i_field, coef, fem_wk, f_nl)
 !
       integer(kind=kint), intent(in) :: num_int
       integer(kind=kint), intent(in) :: i_field
@@ -64,6 +65,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),intent(in) ::     nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -82,7 +84,7 @@
         call scalar_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%scalar_1)
         call fem_skv_gradient(iele_fsmp_stack, num_int, k2,             &
-     &      ele, g_FEM1, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -93,8 +95,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_div_w_const                                    &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          num_int, i_field, coef, fem_wk, f_nl)
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,             &
+     &          iele_fsmp_stack, num_int, i_field, coef, fem_wk, f_nl)
 !
       integer(kind=kint), intent(in) :: num_int
       integer(kind=kint), intent(in) :: i_field
@@ -103,6 +105,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),intent(in) ::     nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -121,7 +124,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_divergence(iele_fsmp_stack, num_int, k2,           &
-     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -132,8 +135,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_rot_w_const                                    &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          num_int, i_field, coef, fem_wk, f_nl)
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,             &
+     &          iele_fsmp_stack, num_int, i_field, coef, fem_wk, f_nl)
 !
       integer(kind=kint), intent(in) :: num_int
       integer(kind=kint), intent(in) :: i_field
@@ -142,6 +145,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),intent(in) ::     nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -160,7 +164,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_rotation(iele_fsmp_stack, num_int, k2,             &
-     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -172,8 +176,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_div_tsr_w_const                                &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          num_int, i_field, coef, fem_wk, f_nl)
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,             &
+     &          iele_fsmp_stack,  num_int, i_field, coef, fem_wk, f_nl)
 !
       integer(kind=kint), intent(in) :: num_int
       integer(kind=kint), intent(in) :: i_field
@@ -182,6 +186,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),intent(in) ::     nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -200,7 +205,7 @@
         call tensor_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%tensor_1)
         call fem_skv_div_tensor(iele_fsmp_stack, num_int, k2,           &
-     &      ele, g_FEM1, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -211,8 +216,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_div_as_tsr_w_const                             &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          num_int, i_field, coef, fem_wk, f_nl)
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,             &
+     &          iele_fsmp_stack, num_int, i_field, coef, fem_wk, f_nl)
 !
       integer(kind=kint), intent(in) :: num_int
       integer(kind=kint), intent(in) :: i_field
@@ -221,6 +226,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),intent(in) ::     nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -239,7 +245,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_div_asym_tsr(iele_fsmp_stack, num_int, k2,         &
-     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

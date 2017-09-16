@@ -230,7 +230,7 @@
      &        ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
         else
           call int_vol_div_w_const                                      &
-     &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
+     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
      &        fluid%istack_ele_fld_smp, num_int,                        &
      &        i_SGS_flux, property%coef_nega_adv, fem_wk, f_nl)
         end if

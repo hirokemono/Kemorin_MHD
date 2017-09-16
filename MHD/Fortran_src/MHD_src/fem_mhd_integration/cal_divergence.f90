@@ -33,6 +33,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -135,8 +136,8 @@
      &      fem_wk, f_nl)
       else
         call int_vol_divergence                                         &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,       &
-     &      num_int, i_vector, fem_wk, f_nl)
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
+     &      iele_fsmp_stack, num_int, i_vector, fem_wk, f_nl)
       end if
 !
       end subroutine choose_int_vol_divs

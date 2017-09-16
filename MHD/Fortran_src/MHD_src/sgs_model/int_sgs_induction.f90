@@ -49,6 +49,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -92,7 +93,8 @@
 !
       call reset_ff_smp(node%max_nod_smp, f_nl)
 !
-      call int_vol_rotation(node, ele, jac_3d, rhs_tbl, nod_fld,        &
+      call int_vol_rotation                                             &
+     &   (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                  &
      &    conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &    iphys%i_SGS_vp_induct, fem_wk, f_nl)
 !

@@ -22,6 +22,7 @@
       use m_ctl_params_4_gen_filter
 !
       use t_geometry_data
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_next_node_ele_4_node
       use t_table_FEM_const
@@ -42,6 +43,8 @@
 !
       subroutine set_consist_mass_matrix(node, ele, jac_3d,             &
      &          neib_nod, rhs_tbl, tbl_crs, mat_tbl, fem_wk, mass)
+!
+      use m_fem_gauss_int_coefs
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -71,7 +74,7 @@
 !  ---------------------------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_consist_mass_matrix'
-      call int_vol_consist_mass_matrix(node, ele, jac_3d,               &
+      call int_vol_consist_mass_matrix(node, ele, g_FEM1, jac_3d,       &
      &    tbl_crs, rhs_tbl, mat_tbl, fem_wk, mass)
 !
       end subroutine set_consist_mass_matrix
@@ -79,13 +82,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_consist_mass_matrix(node, ele, jac_3d,         &
+      subroutine int_vol_consist_mass_matrix(node, ele, g_FEM, jac_3d,  &
      &          tbl_crs, rhs_tbl, mat_tbl, fem_wk, mass)
 !
       use matrix_initialization
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -105,12 +109,12 @@
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'int_whole_consist_mass_matrix'
         call int_whole_consist_mass_matrix                              &
-     &     (ele, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
+     &     (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
 !      else
 !        if (iflag_debug.eq.1)                                          &
 !     &    write(*,*) 'int_group_consist_mass_matrix'
 !        call int_group_consist_mass_matrix                             &
-!     &     (ele, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
+!     &     (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
 !      end if
 !
       end subroutine int_vol_consist_mass_matrix
@@ -118,11 +122,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_whole_consist_mass_matrix                          &
-     &         (ele, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
+     &         (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
 !
       use int_vol_mass_matrix
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
@@ -131,7 +136,8 @@
       type(CRS_matrix), intent(inout) :: mass
 !
 !
-      call int_consist_mass_matrix(ele, jac_3d, rhs_tbl, mat_tbl,       &
+      call int_consist_mass_matrix                                      &
+     &   (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl,                         &
      &    ele%istack_ele_smp, num_int_points, fem_wk,                   &
      &    mass%ntot_A, mass%A_crs)
 !
@@ -140,12 +146,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_group_consist_mass_matrix                          &
-     &         (ele, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
+     &         (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, fem_wk, mass)
 !
       use m_element_list_4_filter
       use int_grouped_mass_matrix
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
@@ -155,7 +162,7 @@
 !
 !
       call int_grp_consist_mass_matrix                                  &
-     &   (ele, jac_3d, rhs_tbl, mat_tbl, iele_filter_smp_stack,         &
+     &   (ele, g_FEM, jac_3d, rhs_tbl, mat_tbl, iele_filter_smp_stack,  &
      &    nele_4_filter, iele_4_filter, num_int_points,                 &
      &    fem_wk, mass%ntot_A, mass%A_crs)
 !

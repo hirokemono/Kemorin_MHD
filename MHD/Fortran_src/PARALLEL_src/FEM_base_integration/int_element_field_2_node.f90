@@ -40,9 +40,9 @@
       module int_element_field_2_node
 !
       use m_precision
-!
       use m_geometry_constants
       use m_phys_constants
+!
       use t_geometry_data
       use t_phys_data
       use m_fem_gauss_int_coefs

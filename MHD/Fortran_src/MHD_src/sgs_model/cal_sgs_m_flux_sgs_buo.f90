@@ -289,7 +289,7 @@
 !
         if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call int_vol_rms_ave_ele_grps                                 &
-     &       (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,           &
+     &       (node, ele, layer_tbl%e_grp, g_FEM1, jac_3d_q, jac_3d_l,   &
      &        num_int, nod_fld%ntot_phys,                               &
      &        iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                   &
      &        sgs_l(1,3), sgs_l(1,6))

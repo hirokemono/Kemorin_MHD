@@ -16,6 +16,7 @@
       use m_geometry_constants
 !
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -46,7 +47,7 @@
 !
 !
 !      if (id_filter_area_grp(1) .eq. -1) then
-      call int_lumped_mass_matrix(node, ele, jac_3d, rhs_tbl,           &
+      call int_lumped_mass_matrix(node, ele, g_FEM1, jac_3d, rhs_tbl,   &
      &    num_int_points, fem_wk, f_l, m_lump)
 !      else
 !        call int_grped_mass_matrix_filter                              &
@@ -80,11 +81,12 @@
       if     (ele%nnod_4_ele.eq.num_t_quad                              &
      &   .or. ele%nnod_4_ele.eq.num_t_lag) then
         call int_grp_mass_matrix_HRZ_full                               &
-     &     (node, ele, jac_3d, rhs_tbl, iele_filter_smp_stack,          &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, iele_filter_smp_stack,  &
      &      nele_4_filter, iele_4_filter, num_int_points,               &
      &      fem_wk, f_l, m_lump)
       else
-        call int_grp_mass_matrix_diag(node, ele, jac_3d, rhs_tbl,       &
+        call int_grp_mass_matrix_diag                                   &
+     &    (node, ele, g_FEM1, jac_3d, rhs_tbl,                          &
      &     iele_filter_smp_stack, nele_4_filter, iele_4_filter,         &
      &     num_int_points, fem_wk, f_l, m_lump)
       end if

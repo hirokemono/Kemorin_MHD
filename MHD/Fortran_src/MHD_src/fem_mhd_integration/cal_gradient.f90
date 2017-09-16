@@ -38,6 +38,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -192,7 +193,7 @@
      &      fem_wk, f_nl)
       else
         call int_vol_gradient                                           &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
      &      iele_fsmp_stack, num_int, i_scalar, fem_wk, f_nl)
       end if
 !
@@ -241,7 +242,7 @@
      &      const, fem_wk, f_nl)
       else
         call int_vol_grad_w_const                                       &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
      &      iele_fsmp_stack, num_int, i_scalar, const, fem_wk, f_nl)
       end if
 !

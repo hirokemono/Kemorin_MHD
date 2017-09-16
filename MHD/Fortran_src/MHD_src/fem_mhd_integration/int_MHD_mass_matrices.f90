@@ -27,9 +27,10 @@
 !
       use int_vol_mass_matrix
 !
-      use t_mesh_data
+      use t_mesh_data 
       use t_geometry_data_MHD
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -97,29 +98,29 @@
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_lump_mass_matrix_linear'
-      call int_lump_mass_matrix_linear                                  &
-     &   (node, ele, jac_3d, rhs_tbl, n_int, fem_wk, f_l, m_lump)
+      call int_lump_mass_matrix_linear(node, ele, g_FEM1, jac_3d,       &
+     &    rhs_tbl, n_int, fem_wk, f_l, m_lump)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_diag fluid'
-      call int_mass_matrix_diag                                         &
-     &   (node, ele, jac_3d, rhs_tbl, fluid%istack_ele_fld_smp,         &
-     &    n_int, fem_wk, f_l, mk_MHD%mlump_fl)
+      call int_mass_matrix_diag(node, ele, g_FEM1, jac_3d, rhs_tbl,     &
+     &    fluid%istack_ele_fld_smp, n_int, fem_wk, f_l,                 &
+     &     mk_MHD%mlump_fl)
 !      call check_mass_martix_fluid(my_rank, node%numnod, mk_MHD)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_diag conductor'
-      call int_mass_matrix_diag                                         &
-     &   (node, ele, jac_3d, rhs_tbl, conduct%istack_ele_fld_smp,       &
-     &    n_int, fem_wk, f_l, mk_MHD%mlump_cd)
+      call int_mass_matrix_diag(node, ele, g_FEM1, jac_3d, rhs_tbl,     &
+     &    conduct%istack_ele_fld_smp, n_int, fem_wk, f_l,               &
+     &    mk_MHD%mlump_cd)
 !      call check_mass_martix_conduct                                   &
 !     &   (my_rank, node%numnod, mk_MHD)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_diag insulator'
-      call int_mass_matrix_diag                                         &
-     &   (node, ele, jac_3d, rhs_tbl, insulate%istack_ele_fld_smp,      &
-     &    n_int, fem_wk, f_l, mk_MHD%mlump_ins)
+      call int_mass_matrix_diag(node, ele, g_FEM1, jac_3d, rhs_tbl,     &
+     &    insulate%istack_ele_fld_smp, n_int, fem_wk, f_l,              &
+     &    mk_MHD%mlump_ins)
 !
       end subroutine int_mass_matrix_trilinear
 !
@@ -146,31 +147,32 @@
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_lump_mass_matrix_quad'
-      call int_lump_mass_matrix_quad(node, ele, jac_3d, rhs_tbl,        &
+      call int_lump_mass_matrix_quad                                    &
+     &   (node, ele, g_FEM1, jac_3d, rhs_tbl,                           &
      &    n_int, fem_wk, f_l, m_lump)
 !      call check_mass_martix(my_rank, node%numnod, m_lump)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_HRZ fluid'
-      call int_mass_matrix_HRZ                                          &
-     &   (node, ele, jac_3d, rhs_tbl, fluid%istack_ele_fld_smp,         &
-     &    n_int, fem_wk, f_l, mk_MHD%mlump_fl)
+      call int_mass_matrix_HRZ(node, ele, g_FEM1, jac_3d, rhs_tbl,      &
+     &    fluid%istack_ele_fld_smp, n_int, fem_wk, f_l,                 &
+     &    mk_MHD%mlump_fl)
 !      call check_mass_martix_fluid(my_rank, node%numnod, mk_MHD)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_HRZ conduct'
-      call int_mass_matrix_HRZ                                          &
-     &   (node, ele, jac_3d, rhs_tbl, conduct%istack_ele_fld_smp,       &
-     &    n_int, fem_wk, f_l, mk_MHD%mlump_cd)
+      call int_mass_matrix_HRZ(node, ele, g_FEM1, jac_3d, rhs_tbl,      &
+     &    conduct%istack_ele_fld_smp, n_int, fem_wk, f_l,               &
+     &    mk_MHD%mlump_cd)
 !      call check_mass_martix_conduct                                   &
 !     &   (my_rank, node%numnod, mk_MHD)
 !
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_HRZ insulator'
-      call int_mass_matrix_HRZ                                          &
-     &   (node, ele, jac_3d, rhs_tbl, insulate%istack_ele_fld_smp,      &
-     &    n_int, fem_wk, f_l, mk_MHD%mlump_ins)
+      call int_mass_matrix_HRZ(node, ele, g_FEM1, jac_3d, rhs_tbl,      &
+     &    insulate%istack_ele_fld_smp, n_int, fem_wk, f_l,              &
+     &    mk_MHD%mlump_ins)
 !
       end subroutine int_mass_matrices_quad
 !

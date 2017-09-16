@@ -109,7 +109,7 @@
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_asym_tsr                                       &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
      &      conduct%istack_ele_fld_smp, num_int,                        &
      &      iphys%i_induct_t, fem_wk, f_nl)
 !
@@ -122,7 +122,7 @@
      &        cd_prop%coef_induct, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_w_const                               &
-     &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
+     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
      &        conduct%istack_ele_fld_smp, num_int,                      &
      &        iphys%i_SGS_induct_t, cd_prop%coef_induct, fem_wk, f_nl)
         end if

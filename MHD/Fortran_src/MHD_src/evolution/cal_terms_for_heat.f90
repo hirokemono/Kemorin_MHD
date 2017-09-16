@@ -186,7 +186,7 @@
 !
       if (iflag_supg .gt. id_turn_OFF) then
         call int_vol_div_w_const(node, ele,                             &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,               &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,       &
      &      fluid%istack_ele_fld_smp, num_int, i_vector,                &
      &      property%coef_nega_adv, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
