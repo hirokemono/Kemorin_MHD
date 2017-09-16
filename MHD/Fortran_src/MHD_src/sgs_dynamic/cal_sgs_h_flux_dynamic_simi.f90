@@ -34,6 +34,7 @@
       use t_mesh_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_material_property
@@ -143,7 +144,7 @@
      &    FEM_SGS_wk%wk_sgs, sgs_coefs)
 !
       call cal_ele_vector_2_node                                        &
-     &   (mesh%node, mesh%ele, jacobians%jac_3d, rhs_tbl,               &
+     &   (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d, rhs_tbl,       &
      &    m_lump, sgs_coefs%ntot_comp, icomp_sgs_flux, sgs_coefs%ak,    &
      &    sgs_coefs_nod%ntot_comp, icomp_sgs_flux, sgs_coefs_nod%ak,    &
      &    rhs_mat%fem_wk, rhs_mat%f_l)

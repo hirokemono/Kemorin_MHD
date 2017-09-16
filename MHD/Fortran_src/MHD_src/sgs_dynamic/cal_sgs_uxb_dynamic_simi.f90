@@ -38,6 +38,7 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
+      use m_fem_gauss_int_coefs
       use t_MHD_finite_element_mat
       use t_FEM_MHD_filter_data
       use t_material_property
@@ -224,8 +225,8 @@
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs,      &
      &    sgs_coefs)
 !
-      call cal_ele_vector_2_node                                        &
-     &   (mesh%node, mesh%ele, jacobians%jac_3d, rhs_tbl, m_lump,       &
+      call cal_ele_vector_2_node(mesh%node, mesh%ele,                   &
+     &    g_FEM1, jacobians%jac_3d, rhs_tbl, m_lump,                    &
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak,             &
      &    sgs_coefs_nod%ntot_comp, icomp_sgs_uxb, sgs_coefs_nod%ak,     &
      &    rhs_mat%fem_wk, rhs_mat%f_l)

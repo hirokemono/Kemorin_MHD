@@ -24,6 +24,7 @@
       use m_phys_constants
 !
       use t_geometry_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -57,7 +58,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      call int_area_ele_scalar_2_node(node, ele, jac_3d, rhs_tbl,       &
+      call int_area_ele_scalar_2_node                                   &
+     &   (node, ele, g_FEM1, jac_3d, rhs_tbl,                           &
      &    iele_fsmp_stack, scalar_ele, fem_wk, f_l)
       call cal_ff_smp_2_scalar(node, rhs_tbl,                           &
      &    f_l%ff_smp, m_lump%ml, n_scalar, ione, scalar_nod)
@@ -89,7 +91,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      call int_area_ele_vector_2_node(node, ele, jac_3d, rhs_tbl,       &
+      call int_area_ele_vector_2_node                                   &
+     &   (node, ele, g_FEM1, jac_3d, rhs_tbl,                           &
      &    iele_fsmp_stack, vector_ele, fem_wk, f_l)
       call cal_ff_smp_2_vector(node, rhs_tbl,                           &
      &    f_l%ff_smp, m_lump%ml, n_vector, ione, vector_nod)

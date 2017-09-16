@@ -89,11 +89,11 @@
 !
       if (id_filter_area_grp(1) .eq. -1) then
         call int_area_ele_scalar_2_node                                 &
-     &     (node, ele, jac_3d, rhs_tbl,  ele%istack_ele_smp,            &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl,  ele%istack_ele_smp,    &
      &      elen_ele, fem_wk, f_l)
       else
         call int_grp_ele_scalar_2_node                                  &
-     &     (node, ele, jac_3d, rhs_tbl, iele_filter_smp_stack,          &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, iele_filter_smp_stack,  &
      &      nele_4_filter, iele_4_filter, elen_ele, fem_wk, f_l)
       end if
 !

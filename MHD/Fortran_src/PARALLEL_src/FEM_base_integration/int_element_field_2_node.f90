@@ -4,31 +4,31 @@
 !     Written by H. Matsui on Oct., 2006
 !
 !!      subroutine cal_ele_scalar_2_node                                &
-!!     &         (node, ele, jac_3d, rhs_tbl, m_lump,                   &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,            &
 !!     &          ntot_comp_ele, ifield_ele, scalar_ele,                &
 !!     &          ntot_comp_nod, ifield_nod, scalar_nod, fem_wk, rhs_l)
 !!      subroutine cal_ele_vector_2_node                                &
-!!     &         (node, ele, jac_3d, rhs_tbl, m_lump,                   &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,            &
 !!     &          ntot_comp_ele, ifield_ele, vector_ele,                &
 !!     &          ntot_comp_nod, ifield_nod, vector_nod, fem_wk, rhs_l)
 !!      subroutine cal_ele_sym_tensor_2_node                            &
-!!     &         (node, ele, jac_3d, rhs_tbl, m_lump,                   &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,            &
 !!     &          ntot_comp_ele, ifield_ele, tensor_ele,                &
 !!     &          ntot_comp_nod, ifield_nod, tensor_nod, fem_wk, rhs_l)
 !!
 !!      subroutine int_area_ele_scalar_2_node                           &
-!!     &         (node, ele, jac_3d, rhs_tbl, iele_fsmp_stack,          &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,   &
 !!     &          scalar_ele, fem_wk, rhs_l)
 !!      subroutine int_area_ele_vector_2_node                           &
-!!     &         (node, ele, jac_3d, rhs_tbl, iele_fsmp_stack,          &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,   &
 !!     &          vector_ele, fem_wk, rhs_l)
 !!
-!!      subroutine int_grp_ele_scalar_2_node(node, ele, jac_3d, rhs_tbl,&
-!!     &          iele_fsmp_stack, nele_grp, iele_grp, scalar_ele,      &
-!!     &          fem_wk, rhs_l)
-!!      subroutine int_grp_ele_vector_2_node(node, ele, jac_3d, rhs_tbl,&
-!!     &          iele_fsmp_stack, nele_grp, iele_grp, vector_ele,      &
-!!     &          fem_wk, rhs_l)
+!!      subroutine int_grp_ele_scalar_2_node                            &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,   &
+!!     &          nele_grp, iele_grp, scalar_ele, fem_wk, rhs_l)
+!!      subroutine int_grp_ele_vector_2_node                            &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,   &
+!!     &          nele_grp, iele_grp, vector_ele, fem_wk, rhs_l)
 !!        type(node_data), intent(in) ::    node
 !!        type(element_data), intent(in) :: ele
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -45,19 +45,16 @@
 !
       use t_geometry_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
-!
 !
       use fem_skv_mass_mat_type
       use fem_skv_nodal_field_type
       use cal_skv_to_ff_smp
 !
       implicit none
-!
-      private :: int_grp_ele_vector_2_node
 !
 !-----------------------------------------------------------------------
 !
@@ -66,7 +63,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_ele_scalar_2_node                                  &
-     &         (node, ele, jac_3d, rhs_tbl, m_lump,                     &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,              &
      &          ntot_comp_ele, ifield_ele, scalar_ele,                  &
      &          ntot_comp_nod, ifield_nod, scalar_nod, fem_wk, rhs_l)
 !
@@ -74,6 +71,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
@@ -89,7 +87,8 @@
       type(finite_ele_mat_node), intent(inout) :: rhs_l
 !
 !
-      call int_area_ele_scalar_2_node(node, ele, jac_3d, rhs_tbl,       &
+      call int_area_ele_scalar_2_node                                   &
+     &   (node, ele, g_FEM, jac_3d, rhs_tbl,                            &
      &    ele%istack_ele_smp,  scalar_ele(1,ifield_ele), fem_wk, rhs_l)
       call cal_ff_smp_2_scalar(node, rhs_tbl, rhs_l%ff_smp,             &
      &    m_lump%ml, n_scalar, ione, scalar_nod(1,ifield_nod))
@@ -99,7 +98,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_ele_vector_2_node                                  &
-     &         (node, ele, jac_3d, rhs_tbl, m_lump,                     &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,              &
      &          ntot_comp_ele, ifield_ele, vector_ele,                  &
      &          ntot_comp_nod, ifield_nod, vector_nod, fem_wk, rhs_l)
 !
@@ -107,6 +106,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
@@ -123,7 +123,8 @@
       type(finite_ele_mat_node), intent(inout) :: rhs_l
 !
 !
-      call int_area_ele_vector_2_node(node, ele, jac_3d, rhs_tbl,       &
+      call int_area_ele_vector_2_node                                   &
+     &   (node, ele, g_FEM, jac_3d, rhs_tbl,                            &
      &    ele%istack_ele_smp, vector_ele(1,ifield_ele), fem_wk, rhs_l)
       call cal_ff_smp_2_vector(node, rhs_tbl, rhs_l%ff_smp,             &
      &    m_lump%ml, n_vector, ione, vector_nod(1,ifield_nod))
@@ -133,7 +134,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_ele_sym_tensor_2_node                              &
-     &         (node, ele, jac_3d, rhs_tbl, m_lump,                     &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,              &
      &          ntot_comp_ele, ifield_ele, tensor_ele,                  &
      &          ntot_comp_nod, ifield_nod, tensor_nod, fem_wk, rhs_l)
 !
@@ -141,6 +142,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
@@ -156,10 +158,12 @@
       type(finite_ele_mat_node), intent(inout) :: rhs_l
 !
 !
-      call cal_ele_vector_2_node(node, ele, jac_3d, rhs_tbl, m_lump,    &
+      call cal_ele_vector_2_node                                        &
+     &   (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,                    &
      &    n_sym_tensor, ione,  tensor_ele(1,ifield_ele),                &
      &    n_sym_tensor, ione, tensor_nod, fem_wk, rhs_l)
-      call cal_ele_vector_2_node(node, ele, jac_3d, rhs_tbl, m_lump,    &
+      call cal_ele_vector_2_node                                        &
+     &   (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,                    &
      &    n_sym_tensor, ifour, tensor_ele(1,ifield_nod),                &
      &    n_sym_tensor, ifour, tensor_nod, fem_wk, rhs_l)
 !
@@ -169,11 +173,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_area_ele_scalar_2_node                             &
-     &         (node, ele, jac_3d, rhs_tbl, iele_fsmp_stack,            &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,     &
      &          scalar_ele, fem_wk, rhs_l)
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -189,10 +194,10 @@
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_scalar_on_ele_type(iele_fsmp_stack,                &
-     &      max_int_point, ele, g_FEM1, jac_3d, scalar_ele, fem_wk%sk6)
+     &      max_int_point, ele, g_FEM, jac_3d, scalar_ele, fem_wk%sk6)
       else
         call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
-     &      max_int_point, ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &      max_int_point, ele, g_FEM, jac_3d, fem_wk%sk6)
         call fem_skv_scalar_on_ele_HRZ_type(iele_fsmp_stack,            &
      &      fem_wk%me_diag, ele, scalar_ele, fem_wk%sk6)
       end if
@@ -205,11 +210,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_area_ele_vector_2_node                             &
-     &         (node, ele, jac_3d, rhs_tbl, iele_fsmp_stack,            &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,     &
      &          vector_ele, fem_wk, rhs_l)
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -225,10 +231,10 @@
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_vector_on_ele_type(iele_fsmp_stack,                &
-     &      max_int_point, ele, g_FEM1, jac_3d, vector_ele, fem_wk%sk6)
+     &      max_int_point, ele, g_FEM, jac_3d, vector_ele, fem_wk%sk6)
       else
         call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
-     &      max_int_point, ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &      max_int_point, ele, g_FEM, jac_3d, fem_wk%sk6)
         call fem_skv_vector_on_ele_HRZ_type(iele_fsmp_stack,            &
      &      fem_wk%me_diag, ele, vector_ele, fem_wk%sk6)
       end if
@@ -241,12 +247,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_grp_ele_scalar_2_node(node, ele, jac_3d, rhs_tbl,  &
-     &          iele_fsmp_stack, nele_grp, iele_grp, scalar_ele,        &
-     &          fem_wk, rhs_l)
+      subroutine int_grp_ele_scalar_2_node                              &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,     &
+     &          nele_grp, iele_grp, scalar_ele, fem_wk, rhs_l)
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -264,11 +271,11 @@
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_scalar_on_ele_grp_type(iele_fsmp_stack,            &
-     &      nele_grp, iele_grp, max_int_point, ele, g_FEM1, jac_3d,     &
+     &      nele_grp, iele_grp, max_int_point, ele, g_FEM, jac_3d,      &
      &      scalar_ele, fem_wk%sk6)
       else
         call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp, max_int_point, ele, g_FEM1, jac_3d,     &
+     &      nele_grp, iele_grp, max_int_point, ele, g_FEM, jac_3d,      &
      &      fem_wk%sk6)
         call fem_skv_scalar_on_egrp_HRZ_type(iele_fsmp_stack,           &
      &      nele_grp, iele_grp, fem_wk%me_diag, ele, scalar_ele,        &
@@ -282,12 +289,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_grp_ele_vector_2_node(node, ele, jac_3d, rhs_tbl,  &
-     &          iele_fsmp_stack, nele_grp, iele_grp, vector_ele,        &
-     &          fem_wk, rhs_l)
+      subroutine int_grp_ele_vector_2_node                              &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, iele_fsmp_stack,     &
+     &          nele_grp, iele_grp, vector_ele, fem_wk, rhs_l)
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -305,11 +313,11 @@
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_vector_on_ele_grp_type(iele_fsmp_stack,            &
-     &      nele_grp, iele_grp, max_int_point, ele, g_FEM1, jac_3d,     &
+     &      nele_grp, iele_grp, max_int_point, ele, g_FEM, jac_3d,      &
      &      vector_ele, fem_wk%sk6)
       else
         call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp,  max_int_point, ele, g_FEM1, jac_3d,    &
+     &      nele_grp, iele_grp,  max_int_point, ele, g_FEM, jac_3d,     &
      &      fem_wk%sk6)
         call fem_skv_vector_on_egrp_HRZ_type(iele_fsmp_stack,           &
      &      nele_grp, iele_grp, fem_wk%me_diag, ele, vector_ele,        &
