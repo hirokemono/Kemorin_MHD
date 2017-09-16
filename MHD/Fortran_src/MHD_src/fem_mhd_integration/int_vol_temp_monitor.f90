@@ -209,14 +209,14 @@
       if(iflag_commute_flux .eq. id_SGS_commute_ON) then
         if(iflag_supg .gt. id_turn_OFF) then
           call int_vol_div_SGS_vec_flux_upw(node, ele, nod_fld,         &
-     &       jac_3d, rhs_tbl, FEM_elens, diff_coefs,                    &
+     &       g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &       fluid%istack_ele_fld_smp, num_int, dt,                     &
      &       i_velo, i_field, i_SGS_flux, ifilter_final, iak_diff_flux, &
      &       ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,        &
      &       property%coef_nega_adv, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_SGS_vec_flux(node, ele, nod_fld,             &
-     &       jac_3d, rhs_tbl, FEM_elens, diff_coefs,                    &
+     &       g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &       fluid%istack_ele_fld_smp, num_int,                         &
      &       i_velo, i_field, i_SGS_flux, ifilter_final, iak_diff_flux, &
      &       property%coef_nega_adv, fem_wk, mhd_fem_wk, f_nl)

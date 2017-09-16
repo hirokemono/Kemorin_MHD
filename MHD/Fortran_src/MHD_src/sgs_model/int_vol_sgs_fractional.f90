@@ -4,26 +4,27 @@
 !      Written by H. Matsui on june, 2005
 !
 !!      subroutine int_vol_sgs_div_v_linear(node, ele,                  &
-!!     &          jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld,        &
+!!     &          g_FEM, jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld, &
 !!     &          iele_fsmp_stack, n_int, i_vector, i_filter,           &
 !!     &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_l)
 !!      subroutine int_vol_sgs_solenoidal_co(node, ele,                 &
-!!     &          jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld,        &
+!!     &          g_FEM, jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld, &
 !!     &          iele_fsmp_stack, n_int, i_scalar, i_filter,           &
 !!     &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_nl)
 !!
 !!      subroutine int_vol_scalar_sgs_diffuse                           &
-!!     &         (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,       &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,&
 !!     &          iele_fsmp_stack, n_int, coef_crank, ak_d,             &
 !!     &          i_scalar, i_filter, ncomp_diff, iak_diff, ak_diff,    &
 !!     &          fem_wk, f_l)
 !!      subroutine int_vol_vector_sgs_diffuse                           &
-!!     &         (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,       &
+!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,&
 !!     &          iele_fsmp_stack, n_int, coef_crank, ak_d,             &
 !!     &          i_vector, i_filter, ncomp_diff, iak_diff, ak_diff,    &
 !!     &          fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(phys_data),    intent(in) :: nod_fld
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -37,7 +38,7 @@
 !
       use t_geometry_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_filter_elength
       use t_table_FEM_const
@@ -52,7 +53,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_sgs_div_v_linear(node, ele,                    &
-     &          jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld,          &
+     &          g_FEM, jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld,   &
      &          iele_fsmp_stack, n_int, i_vector, i_filter,             &
      &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_l)
 !
@@ -62,6 +63,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(phys_data),    intent(in) :: nod_fld
@@ -88,7 +90,7 @@
      &      k2, i_vector, fem_wk%vector_1)
         call fem_skv_div_sgs_linear                                     &
      &     (iele_fsmp_stack, n_int, k2, i_filter, ak_diff(1,iak_diff),  &
-     &      ele, g_FEM1, jac_3d, jac_3d_l, FEM_elens, fem_wk%vector_1,  &
+     &      ele, g_FEM, jac_3d, jac_3d_l, FEM_elens, fem_wk%vector_1,   &
      &      fem_wk%sk6)
       end do
 !
@@ -100,7 +102,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_sgs_solenoidal_co(node, ele,                   &
-     &          jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld,          &
+     &          g_FEM, jac_3d, jac_3d_l, rhs_tbl, FEM_elens, nod_fld,   &
      &          iele_fsmp_stack, n_int, i_scalar, i_filter,             &
      &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_nl)
 !
@@ -110,6 +112,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(phys_data),    intent(in) :: nod_fld
@@ -136,7 +139,7 @@
      &      k2, i_scalar, fem_wk%scalar_1)
         call fem_skv_grad_sgs_linear                                    &
      &     (iele_fsmp_stack, n_int, k2, i_filter, ak_diff(1,iak_diff),  &
-     &      ele, g_FEM1, jac_3d, jac_3d_l, FEM_elens, fem_wk%scalar_1,  &
+     &      ele, g_FEM, jac_3d, jac_3d_l, FEM_elens, fem_wk%scalar_1,   &
      &      fem_wk%sk6)
       end do
 !
@@ -149,7 +152,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_scalar_sgs_diffuse                             &
-     &         (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,         &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,  &
      &          iele_fsmp_stack, n_int, coef_crank, ak_d,               &
      &          i_scalar, i_filter, ncomp_diff, iak_diff, ak_diff,      &
      &          fem_wk, f_l)
@@ -160,6 +163,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -187,7 +191,7 @@
      &      k2, i_scalar, fem_wk%scalar_1)
         call fem_skv_scalar_diffuse_sgs_type(iele_fsmp_stack, n_int,    &
      &      k2, i_filter, ak_diff(1,iak_diff), ak_d,                    &
-     &      ele, g_FEM1, jac_3d, FEM_elens, fem_wk%scalar_1,            &
+     &      ele, g_FEM, jac_3d, FEM_elens, fem_wk%scalar_1,             &
      &      fem_wk%sk6)
       end do
 !
@@ -199,7 +203,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_vector_sgs_diffuse                             &
-     &         (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,         &
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, FEM_elens, nod_fld,  &
      &          iele_fsmp_stack, n_int, coef_crank, ak_d,               &
      &          i_vector, i_filter, ncomp_diff, iak_diff, ak_diff,      &
      &          fem_wk, f_l)
@@ -210,6 +214,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -237,7 +242,7 @@
      &      k2, i_vector, fem_wk%vector_1)
         call fem_skv_vector_diffuse_sgs_type(iele_fsmp_stack, n_int,    &
      &      k2, i_filter, ak_diff(1,iak_diff), ak_d,                    &
-     &      ele, g_FEM1, jac_3d, FEM_elens, fem_wk%vector_1,            &
+     &      ele, g_FEM, jac_3d, FEM_elens, fem_wk%vector_1,             &
      &      fem_wk%sk6)
       end do
 !

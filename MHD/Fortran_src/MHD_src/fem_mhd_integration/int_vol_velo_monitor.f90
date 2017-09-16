@@ -191,7 +191,7 @@
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then
         if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
-     &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &        g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_velo, iphys%i_SGS_m_flux,                         &
      &        SGS_param%ifilter_final, iak_diff_mf,                     &
@@ -206,7 +206,7 @@
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
-     &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &        g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_magne, iphys%i_SGS_maxwell,                       &
      &        SGS_param%ifilter_final, iak_diff_lor,                    &
@@ -351,7 +351,7 @@
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then 
         if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
-     &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &        g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_velo, iphys%i_SGS_m_flux,                         &
      &        SGS_param%ifilter_final, iak_diff_mf,                     &
@@ -368,7 +368,7 @@
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
-     &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &        g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_magne, iphys%i_SGS_maxwell,                       &
      &        SGS_param%ifilter_final, iak_diff_lor,                    &

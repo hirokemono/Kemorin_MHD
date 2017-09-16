@@ -50,6 +50,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -258,14 +259,14 @@
         call int_simi_vp_induct_upm                                     &
      &     (FEM_prm%npoint_t_evo_int, dt, icomp_sgs_uxb,                &
      &      node, ele, conduct, iphys, nod_fld,                         &
-     &      jac_3d, rhs_tbl, sgs_coefs,                                 &
+     &      g_FEM1, jac_3d, rhs_tbl, sgs_coefs,                         &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, f_nl)
       else
         call int_simi_vp_induct                                         &
      &     (FEM_prm%npoint_t_evo_int, icomp_sgs_uxb,                    &
-     &      node, ele, conduct, iphys, nod_fld, jac_3d, rhs_tbl,        &
-     &      sgs_coefs, fem_wk, f_nl)
+     &      node, ele, conduct, iphys, nod_fld, g_FEM1, jac_3d,         &
+     &      rhs_tbl, sgs_coefs, fem_wk, f_nl)
       end if
 !
       end subroutine cal_sgs_uxb_2_ff_simi

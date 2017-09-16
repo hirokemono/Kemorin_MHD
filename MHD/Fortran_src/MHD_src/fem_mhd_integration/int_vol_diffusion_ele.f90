@@ -34,6 +34,7 @@
 !
       use t_geometry_data
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -78,7 +79,7 @@
 !
       if (iak_diff .gt. 0) then
         call int_vol_scalar_sgs_diffuse                                 &
-     &     (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,             &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, FEM_elens, nod_fld,     &
      &      iele_fsmp_stack, num_int, coef_crank, ak_d,                 &
      &      i_scalar, ifilter_final, diff_coefs%num_field,              &
      &      iak_diff, diff_coefs%ak, fem_wk, f_l)
@@ -122,7 +123,7 @@
 !
       if (iak_diff .gt. 0) then
         call int_vol_vector_sgs_diffuse                                 &
-     &     (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,             &
+     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, FEM_elens, nod_fld,     &
      &      iele_fsmp_stack, num_int, coef_crank, ak_d,                 &
      &      i_vector, ifilter_final, diff_coefs%num_field,              &
      &      iak_diff, diff_coefs%ak, fem_wk, f_l)

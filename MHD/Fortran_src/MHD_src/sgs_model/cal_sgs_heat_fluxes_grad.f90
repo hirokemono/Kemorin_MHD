@@ -42,6 +42,7 @@
       use t_geometry_data_MHD
       use t_phys_address
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -101,7 +102,7 @@
       call sel_int_vol_sgs_flux                                         &
      &   (iflag_supg, num_int, dt, i_filter, n_vector, i_field, ie_dvx, &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
-     &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    g_FEM1, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
 !
@@ -161,7 +162,7 @@
       call sel_int_vol_sgs_flux                                         &
      &   (iflag_supg, num_int, dt, i_filter, n_vector, i_field, ie_dvx, &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
-     &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    g_FEM1, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_l%ff_smp)

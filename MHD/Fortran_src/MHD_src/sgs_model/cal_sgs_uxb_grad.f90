@@ -44,6 +44,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_finite_element_mat
       use t_filter_elength
@@ -97,7 +98,7 @@
 !
       call sel_int_vol_sgs_uxb(i_filter, iphys%i_magne, ie_dvx, dt,     &
      &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
-     &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    g_FEM1, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
 !
@@ -153,7 +154,7 @@
 !
       call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, dt,            &
      &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
-     &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    g_FEM1, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
      &    cd_prop%coef_induct, fem_wk%sk6, f_l%ff_smp)

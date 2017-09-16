@@ -44,6 +44,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -103,7 +104,7 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
-     &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    g_FEM1, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
 !
@@ -164,7 +165,7 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
-     &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    g_FEM1, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add6_skv_to_ff_t_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, mhd_fem_wk%ff_t_smp)

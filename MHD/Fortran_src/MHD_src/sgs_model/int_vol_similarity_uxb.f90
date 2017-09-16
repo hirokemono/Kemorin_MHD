@@ -5,10 +5,11 @@
 !     Modified by H. Matsui on July, 2007
 !
 !!      subroutine int_simi_vp_induct(num_int, icomp_sgs_uxb,           &
-!!     &          node, ele, conduct, iphys, nod_fld, jac_3d,           &
+!!     &          node, ele, conduct, iphys, nod_fld, g_FEM, jac_3d,    &
 !!     &          rhs_tbl, sgs_coefs, fem_wk, f_nl)
-!!      subroutine int_simi_vp_induct_upm(num_int, dt, icomp_sgs_uxb,   &
-!!     &          node, ele, conduct, iphys, nod_fld, jac_3d, rhs_tbl,  &
+!!      subroutine int_simi_vp_induct_upm                               &
+!!     &         (num_int, dt, icomp_sgs_uxb, node, ele, conduct,       &
+!!     &          iphys, nod_fld, g_FEM, jac_3d, rhs_tbl,               &
 !!     &          sgs_coefs, ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -17,6 +18,7 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
@@ -35,7 +37,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -51,7 +53,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_simi_vp_induct(num_int, icomp_sgs_uxb,             &
-     &          node, ele, conduct, iphys, nod_fld, jac_3d,             &
+     &          node, ele, conduct, iphys, nod_fld, g_FEM, jac_3d,      &
      &          rhs_tbl, sgs_coefs, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -67,6 +69,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: conduct
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
@@ -85,7 +88,7 @@
      &      k2, iphys%i_sgs_simi, fem_wk%vector_1)
         call fem_skv_vector_type                                        &
      &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
-     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
         call scalar_prod_to_tensor_skv                                  &
      &     (ele, conduct%istack_ele_fld_smp, sgs_coefs%ntot_comp,       &
      &      icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)
@@ -98,8 +101,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_simi_vp_induct_upm(num_int, dt, icomp_sgs_uxb,     &
-     &          node, ele, conduct, iphys, nod_fld, jac_3d, rhs_tbl,    &
+      subroutine int_simi_vp_induct_upm                                 &
+     &         (num_int, dt, icomp_sgs_uxb, node, ele, conduct,         &
+     &          iphys, nod_fld, g_FEM, jac_3d, rhs_tbl,                 &
      &          sgs_coefs, ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -115,6 +119,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: conduct
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
@@ -136,7 +141,7 @@
      &      k2, iphys%i_sgs_simi, fem_wk%vector_1)
 !
         call fem_skv_vector_field_upwind(conduct%istack_ele_fld_smp,    &
-     &      num_int, k2, dt, d_ele(1,iele_magne), ele, g_FEM1, jac_3d,  &
+     &      num_int, k2, dt, d_ele(1,iele_magne), ele, g_FEM, jac_3d,   &
      &      fem_wk%vector_1, fem_wk%sk6)
 !
         call scalar_prod_to_tensor_skv(ele, conduct%istack_ele_fld_smp, &

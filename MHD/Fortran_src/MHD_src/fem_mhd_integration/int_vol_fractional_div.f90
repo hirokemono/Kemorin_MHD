@@ -20,12 +20,12 @@
       module int_vol_fractional_div
 !
       use m_precision
-!
       use m_machine_parameter
 !
       use t_geometry_data
       use t_phys_address
       use t_phys_data
+      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -66,9 +66,9 @@
 !
 !
       if (iak_diff .gt. 0) then
-        call int_vol_sgs_div_v_linear(node, ele, jac_3d_q, jac_3d_l,    &
-     &      rhs_tbl, FEM_elen, nod_fld, iele_fsmp_stack,                &
-     &      num_int, i_vector, ifilter_final,                           &
+        call int_vol_sgs_div_v_linear                                   &
+     &     (node, ele, g_FEM1, jac_3d_q, jac_3d_l, rhs_tbl, FEM_elen,   &
+     &      nod_fld, iele_fsmp_stack, num_int, i_vector, ifilter_final, &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak, fem_wk, f_l)
       else
         call int_vol_div_vect_linear                                    &
