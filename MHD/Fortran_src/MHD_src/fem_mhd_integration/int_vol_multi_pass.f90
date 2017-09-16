@@ -6,18 +6,21 @@
 !     Modified by H. Matsui on Oct. 2005
 !
 !!      subroutine int_vol_multi_pass_scalar(num_int, iele_fsmp_stack,  &
-!!     &          node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+!!     &          node, ele, g_FEM, jac_3d, rhs_tbl, ff_m_smp,          &
+!!     &          fem_wk, f_nl)
 !!      subroutine int_vol_multi_pass_vector(num_int, iele_fsmp_stack,  &
-!!     &          node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+!!     &          node, ele, g_FEM, jac_3d, rhs_tbl, ff_m_smp,          &
+!!     &          fem_wk, f_nl)
 !!
 !!      subroutine int_vol_multi_pass_scalar_upw(num_int, dt,           &
-!!     &          iele_fsmp_stack, node, ele, jac_3d, rhs_tbl,          &
+!!     &          iele_fsmp_stack, node, ele, g_FEM, jac_3d, rhs_tbl,   &
 !!     &          ncomp_ele, ie_up, d_ele, ff_m_smp, fem_wk, f_nl)
 !!      subroutine int_vol_multi_pass_vector_upw(num_int, dt,           &
-!!     &          iele_fsmp_stack, node, ele, jac_3d, rhs_tbl,          &
+!!     &          iele_fsmp_stack, node, ele, g_FEM, jac_3d, rhs_tbl,   &
 !!     &          ncomp_ele, ie_up, d_ele, ff_m_smp, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
@@ -31,7 +34,7 @@
       use m_phys_constants
 !
       use t_geometry_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -45,7 +48,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_multi_pass_scalar(num_int, iele_fsmp_stack,    &
-     &          node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+     &          node, ele, g_FEM, jac_3d, rhs_tbl, ff_m_smp,            &
+     &          fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
@@ -54,6 +58,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -75,7 +80,7 @@
         call scalar_2_each_element(node, ele,                           &
      &      k2, f_nl%ff(1:node%numnod,1), fem_wk%scalar_1)
         call fem_skv_scalar_type(iele_fsmp_stack, num_int, k2,          &
-     &      ele, g_FEM1, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call sub1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -89,7 +94,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_multi_pass_vector(num_int, iele_fsmp_stack,    &
-     &          node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+     &          node, ele, g_FEM, jac_3d, rhs_tbl, ff_m_smp,            &
+     &          fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
@@ -98,6 +104,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -119,7 +126,7 @@
         call vector_2_each_element(node, ele,                           &
      &      k2, f_nl%ff, fem_wk%vector_1)
         call fem_skv_vector_type(iele_fsmp_stack, num_int, k2,          &
-     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -134,7 +141,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_multi_pass_scalar_upw(num_int, dt,             &
-     &          iele_fsmp_stack, node, ele, jac_3d, rhs_tbl,            &
+     &          iele_fsmp_stack, node, ele, g_FEM, jac_3d, rhs_tbl,     &
      &          ncomp_ele, ie_up, d_ele, ff_m_smp, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -144,6 +151,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -169,7 +177,7 @@
      &      k2, f_nl%ff(1:node%numnod,1), fem_wk%scalar_1)
         call fem_skv_scalar_field_upwind                                &
      &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,ie_up),           &
-     &      ele, g_FEM1, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call sub1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -183,7 +191,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_multi_pass_vector_upw(num_int, dt,             &
-     &          iele_fsmp_stack, node, ele, jac_3d, rhs_tbl,            &
+     &          iele_fsmp_stack, node, ele, g_FEM, jac_3d, rhs_tbl,     &
      &          ncomp_ele, ie_up, d_ele, ff_m_smp, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -193,6 +201,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -218,7 +227,7 @@
      &      k2, f_nl%ff, fem_wk%vector_1)
         call fem_skv_vector_field_upwind                                &
      &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,ie_up),           &
-     &      ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

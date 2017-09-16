@@ -97,7 +97,8 @@
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
-     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    g_FEM1, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
+     &    fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp                                         &
@@ -146,7 +147,8 @@
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
      &    FEM_prm, mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,   &
-     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    g_FEM1, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
+     &    fem_wk, f_l, f_nl)
       call cal_sol_vect_pre_conduct_euler                               &
      &   (dt, node%numnod, conduct%istack_inter_fld_smp,                &
      &    conduct%numnod_fld, conduct%inod_fld, mlump_cd%ml,            &
@@ -188,7 +190,8 @@
 !
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp, dt, &
      &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
-     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    g_FEM1, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
+     &    fem_wk, f_l, f_nl)
       call cal_sol_vect_pre_fluid_euler                                 &
      &   (dt, node%numnod, node%istack_internal_smp, mlump_fl%ml,       &
      &    f_l%ff, f_nl%ff, nod_fld%ntot_phys, n_scalar, i_field,        &

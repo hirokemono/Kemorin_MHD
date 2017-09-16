@@ -430,7 +430,7 @@
      &      (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &       conduct%istack_ele_fld_smp, iphys%i_magne,                 &
      &       node, ele, nod_fld, iphys_ele, ele_fld,                    &
-     &       jac_3d, rhs_tbl, fem_wk, f_nl)
+     &       g_FEM1, jac_3d, rhs_tbl, fem_wk, f_nl)
       end if
 !
       end subroutine cal_sgs_uxb_2_evo

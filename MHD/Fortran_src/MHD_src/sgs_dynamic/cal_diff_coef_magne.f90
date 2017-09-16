@@ -159,7 +159,7 @@
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_simi, ele%istack_ele_smp,     &
      &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld,              &
-     &    jacobians%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &    g_FEM1, jacobians%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
@@ -167,10 +167,6 @@
      &    i_sgs_grad_fp, i_sgs_simi_p, ele%istack_ele_smp, m_lump,      &
      &    nod_comm, node, ele, iphys_ele, ele_fld, g_FEM1,              &
      &    jacobians%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
-!      call choose_cal_divergence                                       &
-!     &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,      &
-!     &    iphys%i_sgs_grad_f, iphys%i_sgs_simi+6, node%istack_nod_smp, &
-!     &    m_lump,)
 !
 !   take rotation and gradient of B (to iphys%i_sgs_grad)
 !
@@ -180,7 +176,7 @@
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys%i_magne, iphys%i_sgs_grad, ele%istack_ele_smp,          &
      &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld,              &
-     &    jacobians%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &    g_FEM1, jacobians%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_mag_p
       call choose_cal_gradient                                          &
@@ -188,10 +184,6 @@
      &    iphys%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump,      &
      &    nod_comm, node, ele, iphys_ele, ele_fld, g_FEM1,              &
      &    jacobians%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
-!      call choose_cal_divergence                                       &
-!     &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,      &
-!     &    iphys%i_magne, iphys%i_sgs_grad+6, node%istack_nod_smp,      &
-!     &    m_lump, )
 !
 !    filtering (to iphys%i_sgs_grad)
 !

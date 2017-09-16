@@ -122,8 +122,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_multi_pass_4_vector_fl'
       call cal_multi_pass_4_vector_ff(fluid%istack_ele_fld_smp,         &
-     &    FEM_prm, mlump_fl, nod_comm, node, ele, jac_3d, rhs_tbl,      &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    FEM_prm, mlump_fl, nod_comm, node, ele, g_FEM1, jac_3d,       &
+     &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co'
       call cal_sol_velocity_co                                          &
@@ -161,7 +161,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_multi_pass_4_vector_ff'
       call cal_multi_pass_4_vector_ff                                   &
      &   (ele%istack_ele_smp, FEM_prm, m_lump,                          &
-     &    nod_comm, node, ele, jac_3d, rhs_tbl,                         &
+     &    nod_comm, node, ele, g_FEM1, jac_3d, rhs_tbl,                 &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_co'
@@ -200,7 +200,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'cal_multi_pass_4_vector_ff'
       call cal_multi_pass_4_vector_ff                                   &
      &   (ele%istack_ele_smp, FEM_prm, m_lump,                          &
-     &    nod_comm, node, ele, jac_3d, rhs_tbl,                         &
+     &    nod_comm, node, ele, g_FEM1, jac_3d, rhs_tbl,                 &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_co'

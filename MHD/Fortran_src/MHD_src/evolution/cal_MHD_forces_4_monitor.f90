@@ -447,8 +447,9 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_induct)
         call s_int_magne_induction(FEM_prm%npoint_poisson_int,          &
-     &      nod_comm, node, ele, iphys, jacobians%jac_3d, rhs_tbl,      &
-     &      mk_MHD%mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &      nod_comm, node, ele, iphys, g_FEM1, jacobians%jac_3d,       &
+     &      rhs_tbl, mk_MHD%mlump_cd, mhd_fem_wk, fem_wk,               &
+     &      f_nl, nod_fld)
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
@@ -456,8 +457,9 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call s_int_magne_diffusion(FEM_prm%npoint_poisson_int,          &
-     &      nod_comm, node, ele, iphys, jacobians%jac_3d, rhs_tbl,      &
-     &      mk_MHD%mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &      nod_comm, node, ele, iphys, g_FEM1, jacobians%jac_3d,       &
+     &      rhs_tbl, mk_MHD%mlump_cd, mhd_fem_wk, fem_wk,               &
+     &      f_nl, nod_fld)
       end if
 !
 !$omp parallel

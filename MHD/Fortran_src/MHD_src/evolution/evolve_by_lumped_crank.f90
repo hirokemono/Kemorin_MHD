@@ -81,6 +81,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use m_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -163,7 +164,8 @@
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
-     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    g_FEM1, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
+     &    fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp(node, fl_prop, mlump_fl,                &
@@ -252,7 +254,8 @@
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
      &    FEM_prm, mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,   &
-     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    g_FEM1, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
+     &    fem_wk, f_l, f_nl)
 !
       call delete_vector_ffs_on_bc(node, nod_bc_a, f_l, f_nl)
 !
@@ -333,7 +336,8 @@
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
      &    FEM_prm, mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,   &
-     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    g_FEM1, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
+     &    fem_wk, f_l, f_nl)
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node, nod_bc_b, f_l, f_nl)
@@ -424,7 +428,8 @@
       if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp, dt, &
      &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
-     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    g_FEM1, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
+     &    fem_wk, f_l, f_nl)
 !
       call set_boundary_rhs_scalar(node, Snod_bcs%nod_bc_s, f_l, f_nl)
 !

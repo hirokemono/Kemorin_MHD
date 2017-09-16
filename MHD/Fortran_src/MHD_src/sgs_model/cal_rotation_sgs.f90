@@ -125,7 +125,7 @@
         call choose_int_vol_rotations                                   &
      &     (iflag_4_supg, num_int, dt, iele_fsmp_stack,                 &
      &      i_vector, node, ele, nod_fld, iphys_ele, ele_fld,           &
-     &      jac_3d, rhs_tbl, fem_wk, f_nl)
+     &      g_FEM1, jac_3d, rhs_tbl, fem_wk, f_nl)
       end if
 !
       call cal_ff_smp_2_vector(node, rhs_tbl, f_nl%ff_smp,              &

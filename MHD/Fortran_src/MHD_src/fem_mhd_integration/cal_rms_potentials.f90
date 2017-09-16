@@ -5,11 +5,12 @@
 !
 !!      subroutine cal_rms_scalar_potential                             &
 !!     &         (iloop, iele_fsmp_stack, i_phi, ir_phi, ja_phi,        &
-!!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,       &
+!!     &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l, fem_wk,&
 !!     &          fem_msq, rsig, ave_0, rms_0)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(mean_square_values), intent(inout)  :: fem_msq
@@ -24,7 +25,7 @@
 !
       use t_geometry_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_finite_element_mat
       use t_mean_square_values
@@ -39,7 +40,7 @@
 !
       subroutine cal_rms_scalar_potential                               &
      &         (iloop, iele_fsmp_stack, i_phi, ir_phi, ja_phi,          &
-     &          node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,         &
+     &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l, fem_wk,  &
      &          fem_msq, rsig, ave_0, rms_0)
 !
       use int_all_energy
@@ -50,6 +51,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -67,7 +69,7 @@
       fem_msq%ave_local(ja_phi) = zero
       call int_all_4_scalar                                             &
      &   (iele_fsmp_stack, num_int, ir_phi, ja_phi, i_phi,              &
-     &    node, ele, nod_fld, g_FEM1, jac_3d_q, jac_3d_l,               &
+     &    node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,                &
      &    fem_wk, fem_msq)
 !
       call MPI_allREDUCE(fem_msq%ave_local(ja_phi) , ave_mp, ione,      &

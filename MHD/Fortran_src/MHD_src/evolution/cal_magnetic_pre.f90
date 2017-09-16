@@ -427,7 +427,7 @@
 !
       call cal_multi_pass_4_vector_ff                                   &
      &   (insulate%istack_ele_fld_smp, FEM_prm, mlump_ins,              &
-     &    nod_comm, node, ele, jacobians%jac_3d, rhs_tbl,               &
+     &    nod_comm, node, ele, g_FEM1, jacobians%jac_3d, rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       call cal_sol_magne_insulate                                       &

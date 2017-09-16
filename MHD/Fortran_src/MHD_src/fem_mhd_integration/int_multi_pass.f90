@@ -7,23 +7,24 @@
 !
 !!      subroutine int_multi_pass_vector                                &
 !!     &         (iele_fsmp_stack, FEM_prm, m_lump, nod_comm, node, ele,&
-!!     &          jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
 !!      subroutine int_multi_pass_scalar                                &
 !!     &         (iele_fsmp_stack, FEM_prm, m_lump, nod_comm, node, ele,&
-!!     &          jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
 !!
 !!      subroutine int_multi_pass_vector_upw                            &
-!!     &          (iele_fsmp_stack, iphys_upw, dt, FEM_prm, m_lump,     &
-!!     &           nod_comm, node, ele, ele_fld, jac_3d, rhs_tbl,       &
-!!     &           ff_m_smp, fem_wk, f_nl)
+!!     &         (iele_fsmp_stack, iphys_upw, dt, FEM_prm, m_lump,      &
+!!     &          nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl, &
+!!     &          ff_m_smp, fem_wk, f_nl)
 !!      subroutine int_multi_pass_scalar_upw                            &
 !!     &         (iele_fsmp_stack, iphys_upw, dt, FEM_prm, m_lump,      &
-!!     &          nod_comm, node, ele, ele_fld, jac_3d, rhs_tbl,        &
+!!     &          nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl, &
 !!     &          ff_m_smp, fem_wk, f_nl)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
@@ -42,6 +43,7 @@
       use t_comm_table
       use t_geometry_data
       use t_phys_data
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -56,7 +58,7 @@
 !
       subroutine int_multi_pass_vector                                  &
      &         (iele_fsmp_stack, FEM_prm, m_lump, nod_comm, node, ele,  &
-     &          jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
 !
       use int_vol_multi_pass
       use cal_ff_smp_to_ffs
@@ -66,6 +68,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
@@ -89,7 +92,7 @@
 !
         call int_vol_multi_pass_vector                                  &
      &     (FEM_prm%npoint_t_evo_int, iele_fsmp_stack,                  &
-     &      node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+     &      node, ele, g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
       end do
 !
       end subroutine int_multi_pass_vector
@@ -98,7 +101,7 @@
 !
       subroutine int_multi_pass_scalar                                  &
      &         (iele_fsmp_stack, FEM_prm, m_lump, nod_comm, node, ele,  &
-     &          jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
 !
       use int_vol_multi_pass
       use cal_ff_smp_to_ffs
@@ -108,6 +111,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
@@ -131,7 +135,7 @@
 !
         call int_vol_multi_pass_scalar                                  &
      &     (FEM_prm%npoint_t_evo_int, iele_fsmp_stack,                  &
-     &      node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+     &      node, ele, g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
       end do
 !
       end subroutine int_multi_pass_scalar
@@ -141,7 +145,7 @@
 !
       subroutine int_multi_pass_vector_upw                              &
      &          (iele_fsmp_stack, iphys_upw, dt, FEM_prm, m_lump,       &
-     &           nod_comm, node, ele, ele_fld, jac_3d, rhs_tbl,         &
+     &           nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,  &
      &           ff_m_smp, fem_wk, f_nl)
 !
       use int_vol_multi_pass
@@ -152,6 +156,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
@@ -178,7 +183,7 @@
 !
         call int_vol_multi_pass_vector_upw                              &
      &     (FEM_prm%npoint_t_evo_int, dt, iele_fsmp_stack,              &
-     &      node, ele, jac_3d, rhs_tbl,                                 &
+     &      node, ele, g_FEM, jac_3d, rhs_tbl,                          &
      &      ele_fld%ntot_phys, iphys_upw, ele_fld%d_fld,                &
      &      ff_m_smp, fem_wk, f_nl)
       end do
@@ -189,7 +194,7 @@
 !
       subroutine int_multi_pass_scalar_upw                              &
      &         (iele_fsmp_stack, iphys_upw, dt, FEM_prm, m_lump,        &
-     &          nod_comm, node, ele, ele_fld, jac_3d, rhs_tbl,          &
+     &          nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,   &
      &          ff_m_smp, fem_wk, f_nl)
 !
       use int_vol_multi_pass
@@ -200,6 +205,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
@@ -226,7 +232,7 @@
 !
         call int_vol_multi_pass_scalar_upw                              &
      &     (FEM_prm%npoint_t_evo_int, dt, iele_fsmp_stack,              &
-     &      node, ele, jac_3d, rhs_tbl,                                 &
+     &      node, ele, g_FEM, jac_3d, rhs_tbl,                          &
      &      ele_fld%ntot_phys, iphys_upw, ele_fld%d_fld,                &
      &      ff_m_smp, fem_wk, f_nl)
       end do
