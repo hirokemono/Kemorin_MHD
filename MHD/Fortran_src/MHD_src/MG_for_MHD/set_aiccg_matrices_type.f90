@@ -185,7 +185,7 @@
       call set_aiccg_bc_phys(FEM_prm%npoint_t_evo_int, dt,              &
      &    mesh%ele, ele_mesh%surf, group%surf_grp,                      &
      &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
-     &    jacobians%jac_sf_grp, rhs_tbl, MG_mat_fl_q, nod_bcs,          &
+     &    g_FEM1, jacobians%jac_sf_grp, rhs_tbl, MG_mat_fl_q, nod_bcs,  &
      &    surf_bcs, djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,   &
      &    ak_MHD%ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,       &
      &    mat_temp, mat_light, mat_press, mat_magp)

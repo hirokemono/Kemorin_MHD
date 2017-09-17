@@ -108,13 +108,13 @@
         call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int, dt,   &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,            &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,    &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_vect_p_pre_ele(FEM_prm%npoint_t_evo_int,           &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,            &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,    &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !

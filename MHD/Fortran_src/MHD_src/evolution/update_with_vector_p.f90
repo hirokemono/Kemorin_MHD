@@ -178,8 +178,9 @@
      &      FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,     &
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
      &      mesh%ele%istack_ele_smp, m_lump, SGS_par%model_p,           &
-     &      mesh%nod_comm, mesh%node, mesh%ele, surf, group%surf_grp,   &
-     &      iphys_ele, ele_fld, jacobians%jac_3d, jacobians%jac_sf_grp, &
+     &      mesh%nod_comm, mesh%node, mesh%ele, surf,                   &
+     &      group%surf_grp, iphys_ele, ele_fld, g_FEM1,                 &
+     &      jacobians%jac_3d, jacobians%jac_sf_grp,                     &
      &      FEM_filters%FEM_elens, diff_coefs, Bnod_bcs%nod_bc_b,       &
      &      Asf_bcs%sgs,  rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,     &
      &      rhs_mat%f_nl, nod_fld)

@@ -12,13 +12,13 @@
 !!     &         (i_field, iak_diff_mf, iak_diff_lor,                   &
 !!     &          FEM_prm, SGS_param, cmt_param, node, ele, fluid,      &
 !!     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,  &
-!!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
+!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
 !!     &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !!      subroutine int_vol_velo_monitor_upwind                          &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor, iv_upw, dt,       &
 !!     &          FEM_prm, SGS_param, cmt_param, node, ele, fluid,      &
 !!     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,  &
-!!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
+!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
 !!     &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -32,6 +32,7 @@
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -55,7 +56,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -77,7 +78,7 @@
      &         (i_field, iak_diff_mf, iak_diff_lor,                     &
      &          FEM_prm, SGS_param, cmt_param, node, ele, fluid,        &
      &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,    &
-     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
+     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
      &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !
       use int_vol_inertia
@@ -102,6 +103,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -116,13 +118,13 @@
       if(i_field .eq. iphys%i_m_advect) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_rot_inertia                                      &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%i_vort,        &
      &        ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
         else
           call int_vol_vector_inertia                                   &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%i_velo,        &
      &        ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
@@ -130,7 +132,7 @@
 !
       else if(i_field .eq. iphys%i_m_flux_div) then
         call int_vol_div_tsr_w_const                                    &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_m_flux, fl_prop%coef_nega_v, fem_wk, f_nl)
 !
@@ -138,44 +140,44 @@
 !
       if(i_field .eq. iphys%i_coriolis) then
         call int_vol_coriolis_pg                                        &
-     &     (node, ele, fl_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
+     &     (node, ele, fl_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_velo, fem_wk, f_nl)
       end if
 !
       if(i_field .eq. iphys%i_buoyancy) then
         call int_vol_buoyancy_pg                                        &
-     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
+     &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_temp, ak_MHD%ak_buo, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_comp_buo) then
         call int_vol_buoyancy_pg                                        &
-     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
+     &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_light, ak_MHD%ak_comp_buo, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_filter_buo) then
         call int_vol_buoyancy_pg                                        &
-     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
+     &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_filter_temp, ak_MHD%ak_buo, fem_wk, f_nl)
       end if
 !
       if(i_field .eq. iphys%i_m_tension) then
         call int_vol_Lorentz_pg(node, ele,                              &
-     &      fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,         &
+     &      fl_prop, cd_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,          &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_magne, ele_fld%ntot_phys, iphys_ele%i_magne,        &
      &      ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
       else if(i_field .eq. iphys%i_lorentz) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg(node, ele,                   &
-     &        fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
+     &        fl_prop, cd_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,        &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_vecp, ele_fld%ntot_phys, iphys_ele%i_magne,       &
      &        ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_full_Lorentz_pg(node, ele,                       &
-     &        fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
+     &        fl_prop, cd_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,        &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_magne, ele_fld%ntot_phys, iphys_ele%i_magne,      &
      &        ele_fld%d_fld, fem_wk, f_nl)
@@ -184,21 +186,21 @@
 !
       if(i_field .eq. iphys%i_maxwell_div) then
         call int_vol_div_tsr_w_const                                    &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_maxwell, fl_prop%coef_lor, fem_wk, f_nl)
 !
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then
         if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
-     &        g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
+     &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_velo, iphys%i_SGS_m_flux,                         &
      &        SGS_param%ifilter_final, iak_diff_mf,                     &
      &        fl_prop%coef_nega_v, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_SGS_m_flux, fl_prop%coef_nega_v, fem_wk, f_nl)
         end if
@@ -206,14 +208,14 @@
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
-     &        g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
+     &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_magne, iphys%i_SGS_maxwell,                       &
      &        SGS_param%ifilter_final, iak_diff_lor,                    &
      &        fl_prop%coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_SGS_maxwell, fl_prop%coef_lor, fem_wk, f_nl)
         end if
@@ -227,7 +229,7 @@
      &         (i_field, iak_diff_mf, iak_diff_lor, iv_upw, dt,         &
      &          FEM_prm, SGS_param, cmt_param, node, ele, fluid,        &
      &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,    &
-     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
+     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
      &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !
       use int_vol_inertia
@@ -253,6 +255,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -267,14 +270,14 @@
       if(i_field .eq. iphys%i_m_advect) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_rot_inertia_upw                                  &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%i_vort,        &
      &        iv_upw, ele_fld%d_fld, fl_prop%coef_nega_v,               &
      &        fem_wk, f_nl)
         else
           call int_vol_vector_inertia_upw                               &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_velo, ele_fld%ntot_phys, iphys_ele%i_velo,        &
      &        iv_upw, ele_fld%d_fld, fl_prop%coef_nega_v,               &
@@ -283,7 +286,7 @@
 !
       else if(i_field .eq. iphys%i_m_flux_div) then
         call int_vol_div_tsr_w_const_upw                                &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_m_flux, ele_fld%ntot_phys, iv_upw,                  &
      &      ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
@@ -291,7 +294,7 @@
 !
       if(i_field .eq. iphys%i_coriolis) then
         call int_vol_coriolis_upw                                       &
-     &     (node, ele, fl_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
+     &     (node, ele, fl_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_velo, ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,     &
      &      fem_wk, f_nl)
@@ -299,19 +302,19 @@
 !
       if(i_field .eq. iphys%i_buoyancy) then
         call int_vol_buoyancy_upw                                       &
-     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
+     &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_temp, ak_MHD%ak_buo, ele_fld%ntot_phys,             &
      &      iv_upw, ele_fld%d_fld, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_comp_buo) then
         call int_vol_buoyancy_upw                                       &
-     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
+     &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_light, ak_MHD%ak_comp_buo, ele_fld%ntot_phys,       &
      &      iv_upw, ele_fld%d_fld, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_filter_buo) then
         call int_vol_buoyancy_upw                                       &
-     &     (node, ele, g_FEM1, jac_3d, fl_prop, rhs_tbl, nod_fld,       &
+     &     (node, ele, g_FEM, jac_3d, fl_prop, rhs_tbl, nod_fld,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_filter_temp, ak_MHD%ak_buo, ele_fld%ntot_phys,      &
      &      iv_upw, ele_fld%d_fld, fem_wk, f_nl)
@@ -320,20 +323,20 @@
 !
       if(i_field .eq. iphys%i_m_tension) then
         call int_vol_Lorentz_upw(node, ele,                             &
-     &      fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,         &
+     &      fl_prop, cd_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,          &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_magne, ele_fld%ntot_phys, iphys_ele%i_magne,        &
      &      iv_upw, ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
       else if(i_field .eq. iphys%i_lorentz) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg(node, ele,                   &
-     &        fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
+     &        fl_prop, cd_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,        &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &        iphys%i_vecp, ele_fld%ntot_phys, iphys_ele%i_magne,       &
      &        ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_full_Lorentz_upw(node, ele,                      &
-     &        fl_prop, cd_prop, g_FEM1, jac_3d, rhs_tbl, nod_fld,       &
+     &        fl_prop, cd_prop, g_FEM, jac_3d, rhs_tbl, nod_fld,        &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_magne, ele_fld%ntot_phys,iphys_ele%i_magne,       &
      &        iv_upw, ele_fld%d_fld, fem_wk, f_nl)
@@ -343,7 +346,7 @@
 !
       if(i_field .eq. iphys%i_maxwell_div)  then
         call int_vol_div_tsr_w_const_upw                                &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,     &
      &      iphys%i_maxwell, ele_fld%ntot_phys, iv_upw,                 &
      &      ele_fld%d_fld, fl_prop%coef_lor, fem_wk, f_nl)
@@ -351,7 +354,7 @@
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then 
         if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
-     &        g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
+     &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_velo, iphys%i_SGS_m_flux,                         &
      &        SGS_param%ifilter_final, iak_diff_mf,                     &
@@ -359,7 +362,7 @@
      &        fl_prop%coef_nega_v, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const_upw                              &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_SGS_m_flux, ele_fld%ntot_phys, iv_upw,            &
      &        ele_fld%d_fld, fl_prop%coef_nega_v, fem_wk, f_nl)
@@ -368,7 +371,7 @@
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
-     &        g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
+     &        g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_magne, iphys%i_SGS_maxwell,                       &
      &        SGS_param%ifilter_final, iak_diff_lor,                    &
@@ -376,7 +379,7 @@
      &        fl_prop%coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const_upw                              &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int, dt,   &
      &        iphys%i_SGS_maxwell, ele_fld%ntot_phys, iv_upw,           &
      &        ele_fld%d_fld, fl_prop%coef_lor, fem_wk, f_nl)

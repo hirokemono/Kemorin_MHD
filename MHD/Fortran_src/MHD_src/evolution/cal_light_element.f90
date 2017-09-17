@@ -262,7 +262,7 @@
      &      dt, iphys%i_light, iphys%i_velo,                            &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
-     &      jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
+     &      g_FEM1, jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      mhd_fem_wk, fem_wk, f_nl)
       else
@@ -272,7 +272,7 @@
      &      iphys%i_light, iphys%i_velo,                                &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
-     &      jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
+     &      g_FEM1, jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      mhd_fem_wk, fem_wk, f_nl)
       end if
@@ -304,13 +304,15 @@
      &       (iphys%i_gref_c, FEM_prm%npoint_t_evo_int, dt,             &
      &        mesh%node, mesh%ele, fluid, nod_fld,                      &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
-     &        jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+     &        g_FEM1, jacobians%jac_3d, rhs_tbl, mhd_fem_wk,            &
+     &        fem_wk, f_nl)
         else
           call cal_stratified_layer                                     &
      &       (iphys%i_gref_t, FEM_prm%npoint_t_evo_int,                 &
      &        mesh%node, mesh%ele, fluid, nod_fld,                      &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
-     &        jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+     &        g_FEM1, jacobians%jac_3d, rhs_tbl, mhd_fem_wk,            &
+     &        fem_wk, f_nl)
         end if
       end if
 !
@@ -334,8 +336,8 @@
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_diffuse, FEM_prm%eps_4_comp_crank, dt, FEM_prm,          &
      &      mesh%nod_comm, mesh%node, mesh%ele, fluid, property,        &
-     &      nod_bcs, iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,     &
-     &      FEM_elens,  diff_coefs, mlump_fl, Smatrix,                  &
+     &      nod_bcs, iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d,      &
+     &      rhs_tbl, FEM_elens,  diff_coefs, mlump_fl, Smatrix,         &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(property%iflag_scheme .eq. id_Crank_nicolson_cmass) then
@@ -343,7 +345,7 @@
      &     (cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_diffuse, FEM_prm%eps_4_comp_crank, dt, FEM_prm,          &
-     &      mesh%node, mesh%ele, fluid, property, nod_bcs,              &
+     &      mesh%node, mesh%ele, fluid, property, nod_bcs, g_FEM1,      &
      &      jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,  &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if

@@ -90,7 +90,7 @@
       subroutine cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,    &
      &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
-     &          ak_MHD, fem_int,  FEM_elens, filtering,                 &
+     &          ak_MHD, fem_int, FEM_elens, filtering,                  &
      &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
      &          sgs_coefs_nod, diff_coefs, mlump_fl,                    &
      &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,         &

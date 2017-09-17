@@ -247,7 +247,7 @@
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl,                        &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
@@ -257,7 +257,7 @@
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl,                        &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
@@ -267,7 +267,7 @@
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele,                &
      &      ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                  &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl,                        &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                &
      &      FEM_elens, diff_coefs,                                      &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
@@ -302,7 +302,7 @@
      &      SGS_par%model_p%ifilter_final,                              &
      &      ifld_diff%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,            &
      &      nod_comm, node, ele, fluid, fl_prop,                        &
-     &      Vnod_bcs, iphys, iphys_ele, ele_fld,                        &
+     &      Vnod_bcs, iphys, iphys_ele, ele_fld, g_FEM1,                &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, diff_coefs, &
      &      mlump_fl, Vmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,   &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
@@ -312,7 +312,7 @@
      &      SGS_par%model_p%ifilter_final,                              &
      &      iphys%i_velo, iphys%i_pre_mom, ifld_diff%i_velo,            &
      &      ak_MHD%ak_d_velo, dt, FEM_prm, node, ele, fluid, fl_prop,   &
-     &      Vnod_bcs, fem_int%jcs%jac_3d, fem_int%rhs_tbl,              &
+     &      Vnod_bcs, g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,      &
      &      FEM_elens, diff_coefs, Vmatrix, MG_vector, mhd_fem_wk,      &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       end if
@@ -412,13 +412,13 @@
      &     (iphys%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo, dt,       &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, fluid, fl_prop,                        &
-     &      Vnod_bcs, iphys_ele, ele_fld,                               &
+     &      Vnod_bcs, iphys_ele, ele_fld, g_FEM1,                       &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, diff_coefs, &
      &      mlump_fl, Vmatrix, MG_vector, mhd_fem_wk,                   &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       else
         call cal_velocity_co_exp(iphys%i_velo, iphys%i_p_phi,           &
-     &      FEM_prm, nod_comm, node, ele, fluid,                        &
+     &      FEM_prm, nod_comm, node, ele, fluid, g_FEM1,                &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mlump_fl, mhd_fem_wk,  &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       end if

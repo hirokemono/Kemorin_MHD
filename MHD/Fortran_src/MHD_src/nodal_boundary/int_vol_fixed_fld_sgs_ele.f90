@@ -4,27 +4,27 @@
 !        programmed by H.Matsui on July, 2005
 !        modified by H.Matsui on AUg., 2007
 !
-!!      subroutine int_vol_fixed_sgs_poisson_surf                       &
-!!     &         (node, ele, nod_fld, jac_3d_l, rhs_tbl,                &
+!!      subroutine int_vol_fixed_sgs_poisson_surf(node, ele, nod_fld,   &
+!!     &          g_FEM, jac_3d_l, rhs_tbl, FEM_elens,                  &
 !!     &          n_int, ibc_end, num_index_ibc, ele_bc_id,             &
 !!     &          ibc_stack_smp, ibc_shape, i_filter, i_field,          &
 !!     &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_l)
 !!
 !!      subroutine int_vol_fixed_sgs_scalar_surf                        &
-!!     &         (node, ele, nod_fld, jac_3d, rhs_tbl,                  &
+!!     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          n_int, ibc_end, num_index_ibc, ele_bc_id,             &
 !!     &          ibc_stack_smp, ibc_shape, i_filter, i_field,          &
 !!     &          ncomp_diff, iak_diff, ak_diff, ak_d, coef_implicit,   &
 !!     &          fem_wk, f_l)
 !!      subroutine int_vol_fixed_sgs_vector_surf                        &
-!!     &         (node, ele, nod_fld, jac_3d, rhs_tbl,                  &
+!!     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          n_int, nmax_index_ibc, ibc_end, num_index_ibc,        &
 !!     &          ele_bc_id, ibc_stack_smp, ibc_shape, i_filter,        &
 !!     &          i_field,  ncomp_diff, iak_diff, ak_diff, ak_d,        &
 !!     &          coef_implicit, fem_wk, f_l)
 !!
 !!      subroutine int_vol_fixed_rotate_sgs_surf                        &
-!!     &         (node, ele, nod_fld, jac_3d, rhs_tbl,                  &
+!!     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          n_int, ibc_end, num_index_ibc, ele_bc_id,             &
 !!     &          ibc_stack_smp, ibc_shape, i_filter, i_field,          &
 !!     &          ncomp_diff, iak_diff, ak_diff, ak_d, coef_implicit,   &
@@ -32,6 +32,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data),    intent(in) :: nod_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -47,7 +48,7 @@
 !
       use t_geometry_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -65,8 +66,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_fixed_sgs_poisson_surf                         &
-     &         (node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,       &
+      subroutine int_vol_fixed_sgs_poisson_surf(node, ele, nod_fld,     &
+     &          g_FEM, jac_3d_l, rhs_tbl, FEM_elens,                    &
      &          n_int, ibc_end, num_index_ibc, ele_bc_id,               &
      &          ibc_stack_smp, ibc_shape, i_filter, i_field,            &
      &          ncomp_diff, iak_diff, ak_diff, fem_wk, f_l)
@@ -74,6 +75,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -114,7 +116,7 @@
 !
 !
         call fem_skv_poisson_sgs_fix_bc                                 &
-     &     (ele, g_FEM1, jac_3d_l, FEM_elens,                           &
+     &     (ele, g_FEM, jac_3d_l, FEM_elens,                            &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp), k2,    &
      &      n_int, i_filter, ak_diff(1,iak_diff),                       &
      &      fem_wk%scalar_1, fem_wk%sk6)
@@ -128,7 +130,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_fixed_sgs_scalar_surf                          &
-     &         (node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          n_int, ibc_end, num_index_ibc, ele_bc_id,               &
      &          ibc_stack_smp, ibc_shape, i_filter, i_field,            &
      &          ncomp_diff, iak_diff, ak_diff, ak_d, coef_implicit,     &
@@ -137,6 +139,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -178,7 +181,7 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
 !
-        call fem_skv_diffuse_sgs_fix_bc(ele, g_FEM1, jac_3d, FEM_elens, &
+        call fem_skv_diffuse_sgs_fix_bc(ele, g_FEM, jac_3d, FEM_elens,  &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),        &
      &      k2, ione, n_int, i_filter, ak_diff(1,iak_diff), ak_d,       &
      &      fem_wk%scalar_1, fem_wk%sk6)
@@ -192,7 +195,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_fixed_sgs_vector_surf                          &
-     &         (node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          n_int, nmax_index_ibc, ibc_end, num_index_ibc,          &
      &          ele_bc_id, ibc_stack_smp, ibc_shape, i_filter,          &
      &          i_field,  ncomp_diff, iak_diff, ak_diff, ak_d,          &
@@ -201,6 +204,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -248,7 +252,7 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
             call fem_skv_diffuse_sgs_fix_bc                             &
-     &         (ele, g_FEM1, jac_3d, FEM_elens, nmax_index_ibc,         &
+     &         (ele, g_FEM, jac_3d, FEM_elens, nmax_index_ibc,          &
      &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd), k2, nd,  &
      &          n_int, i_filter, ak_diff(1,iak_diff), ak_d,             &
      &          fem_wk%scalar_1, fem_wk%sk6)
@@ -264,7 +268,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_fixed_rotate_sgs_surf                          &
-     &         (node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &         (node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          n_int, ibc_end, num_index_ibc, ele_bc_id,               &
      &          ibc_stack_smp, ibc_shape, i_filter, i_field,            &
      &          ncomp_diff, iak_diff, ak_diff, ak_d, coef_implicit,     &
@@ -273,6 +277,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data),    intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -318,7 +323,7 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
             call fem_skv_diffuse_sgs_fix_bc                             &
-     &         (ele, g_FEM1, jac_3d, FEM_elens, num_index_ibc,          &
+     &         (ele, g_FEM, jac_3d, FEM_elens, num_index_ibc,           &
      &          ele_bc_id, ibc_stack_smp(istart_smp), k2, nd,           &
      &          n_int, i_filter, ak_diff(1,iak_diff), ak_d,             &
      &          fem_wk%scalar_1, fem_wk%sk6)

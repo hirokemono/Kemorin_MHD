@@ -101,6 +101,7 @@
       use t_flex_delta_t_data
       use t_physical_property
       use t_work_FEM_integration
+      use m_fem_gauss_int_coefs
 !
       use check_deltat_by_prev_rms
 !
@@ -121,8 +122,9 @@
 !        call s_check_deltat_by_previous                                &
 !     &     (mesh%node, MHD_prop1%cd_prop, iphys, nod_fld, flex_data)
         call check_difference_by_prev_rms                               &
-     &     (time_d%time, mesh%node, mesh%ele, MHD_mesh%fluid, cd_prop,  &
-     &      iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,       &
+     &     (time_d%time, mesh%node, mesh%ele,                           &
+     &      MHD_mesh%fluid, cd_prop, iphys, nod_fld,                    &
+     &      g_FEM1, jacobians%jac_3d, jacobians%jac_3d_l,               &
      &      rhs_mat%fem_wk, flex_data)
 !
         if(flex_data%d_ratio_allmax .gt. flex_p%min_eps_to_expand)      &

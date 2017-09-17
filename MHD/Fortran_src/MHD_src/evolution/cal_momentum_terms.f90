@@ -133,7 +133,7 @@
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_velo, dt,   &
      &      FEM_prm, SGS_param, cmt_param, node, ele, fluid,            &
      &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl,                        &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                &
      &      FEM_elens, diff_coefs, mhd_fem_wk,                          &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
@@ -141,14 +141,14 @@
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_magne, dt,  &
      &      FEM_prm, SGS_param, cmt_param, node, ele, fluid,            &
      &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl,                        &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                &
      &      FEM_elens, diff_coefs, mhd_fem_wk,                          &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg(i_field, iak_diff_mf, iak_diff_lor, &
      &     FEM_prm, SGS_param, cmt_param, node, ele, fluid,             &
      &     fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,         &
-     &     fem_int%jcs%jac_3d, fem_int%rhs_tbl,                         &
+     &     g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                 &
      &     FEM_elens, diff_coefs, mhd_fem_wk,                           &
      &     rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       end if

@@ -8,7 +8,7 @@
 !        modified by H. Matsui on Feb. 2009
 !
 !!      subroutine set_aiccg_bc_phys(num_int, dt, ele, surf, sf_grp,    &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop, jac_sf_grp,       &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, g_FEM, jac_sf_grp,&
 !!     &          rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs,             &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          surf_wk, fem_wk, mat_velo, mat_magne,                 &
@@ -21,7 +21,8 @@
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(nodal_boundarty_conditions), intent(in) ::   node_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
-!!        type(jacobians_2d), intent(in) ::          jac_sf_grp
+!!        type(FEM_gauss_int_coefs), intent(in) ::  g_FEM
+!!        type(jacobians_2d), intent(in) ::         jac_sf_grp
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
@@ -42,7 +43,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_nodal_bc_data
       use t_finite_element_mat
@@ -63,7 +64,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_aiccg_bc_phys(num_int, dt, ele, surf, sf_grp,      &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, jac_sf_grp,         &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, g_FEM, jac_sf_grp,  &
      &          rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs,               &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
      &          ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,        &
@@ -78,6 +79,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(nodal_boundarty_conditions), intent(in) ::   node_bcs
+      type(FEM_gauss_int_coefs), intent(in) ::  g_FEM
       type(jacobians_2d), intent(in) ::         jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_fl_q
@@ -113,14 +115,14 @@
      &      node_bcs%Vnod_bcs%nod_bc_v, node_bcs%Vnod_bcs%nod_bc_rot,   &
      &      surf_bcs%Vsf_bcs%free_sph_in,                               &
      &      surf_bcs%Vsf_bcs%free_sph_out,                              &
-     &      jac_sf_grp, rhs_tbl, MG_mat_fl_q, djds_tbl_fl, ak_d_velo,   &
-     &      surf_wk, fem_wk, mat_velo)
+     &      g_FEM, jac_sf_grp, rhs_tbl, MG_mat_fl_q, djds_tbl_fl,       &
+     &      ak_d_velo, surf_wk, fem_wk, mat_velo)
         end if
       end if
 !
       if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call set_aiccg_bc_scalar_nod(ele%nnod_4_ele,                    &
-     &      ele, node_bcs%Tnod_bcs%nod_bc_s,  djds_tbl_fl, mat_temp)
+     &      ele, node_bcs%Tnod_bcs%nod_bc_s, djds_tbl_fl, mat_temp)
       end if
 !
       if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
@@ -152,7 +154,7 @@
 !
       subroutine set_aiccg_bc_velo                                      &
      &         (num_int, dt, ele, surf, sf_grp, fl_prop,                &
-     &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf,          &
+     &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf, g_FEM,   &
      &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, DJDS_tbl, ak_d_velo,  &
      &          surf_wk, fem_wk, Vmat_DJDS)
 !
@@ -163,6 +165,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_2d), intent(in) :: jac_sf_grp
 !
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_v
@@ -185,10 +188,10 @@
 !
 !      matrix setting for free slip on sphere
       call set_aiccg_bc_free_sph_in(ele, surf, sf_grp, free_in_sf,      &
-     &    g_FEM1, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,            &
+     &    g_FEM, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,             &
      &    dt, fl_prop%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
       call set_aiccg_bc_free_sph_out(ele, surf, sf_grp, free_out_sf,    &
-     &    g_FEM1, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,            &
+     &    g_FEM, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,             &
      &    dt, fl_prop%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
 !
 !      matrix setting for fixed boundaries

@@ -173,7 +173,7 @@
      &   write(*,*) 'cal_commute_error_f_temp', iphys%i_sgs_grad_f
       call cal_grad_commute(num_int, fluid%istack_ele_fld_smp,          &
      &    mlump_fl, node, ele, surf, sf_grp,                            &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,              &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,      &
      &    FEM_elens, Tsf_bcs%sgs, ifilter_4delta, iphys%i_sgs_grad_f,   &
      &    ifield_f, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
@@ -189,7 +189,7 @@
      &     write(*,*) 'cal_commute_error_temp', iphys%i_sgs_grad
       call cal_grad_commute(num_int, fluid%istack_ele_fld_smp,          &
      &    mlump_fl, node, ele, surf, sf_grp,                            &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,              &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,      &
      &    FEM_elens, Tsf_bcs%sgs, ifilter_2delta, iphys%i_sgs_grad,     &
      &    ifield, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !

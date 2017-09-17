@@ -11,13 +11,15 @@
 !!      subroutine int_vol_magne_monitor_pg                             &
 !!     &         (i_field, iak_diff_uxb, num_int,                       &
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
-!!     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
-!!     &           FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
+!!     &          iphys, nod_fld, iphys_ele, ele_fld, g_FEM, jac_3d,    &
+!!     &          rhs_tbl, FEM_elen, diff_coefs, mhd_fem_wk, fem_wk,    &
+!!     &          f_nl)
 !!      subroutine int_vol_magne_monitor_upm                            &
 !!     &         (i_field, iak_diff_uxb, num_int, dt,                   &
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
-!!     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
-!!     &          FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
+!!     &          iphys, nod_fld, iphys_ele, ele_fld, g_FEM, jac_3d,    &
+!!     &          rhs_tbl, FEM_elen, diff_coefs, mhd_fem_wk, fem_wk,    &
+!!     &          f_nl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
@@ -28,6 +30,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -39,10 +42,8 @@
       module int_vol_magne_monitor
 !
       use m_precision
-!
       use m_machine_parameter
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       use t_SGS_control_parameter
       use t_physical_property
@@ -50,7 +51,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -71,8 +72,9 @@
       subroutine int_vol_magne_monitor_pg                               &
      &         (i_field, iak_diff_uxb, num_int,                         &
      &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
-     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
-     &          FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
+     &          iphys, nod_fld, iphys_ele, ele_fld, g_FEM, jac_3d,      &
+     &          rhs_tbl, FEM_elen, diff_coefs, mhd_fem_wk, fem_wk,      &
+     &          f_nl)
 !
       use int_vol_vect_differences
       use int_vol_vect_cst_difference
@@ -92,6 +94,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -104,26 +107,26 @@
 !
       if (i_field .eq. iphys%i_induction) then
         call int_vol_mag_induct_pg(node, ele, cd_prop,                  &
-     &      g_FEM1, jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,         &
+     &      g_FEM, jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,          &
      &      conduct%istack_ele_fld_smp, num_int,                        &
      &      ele_fld%ntot_phys, ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_asym_tsr                                       &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      conduct%istack_ele_fld_smp, num_int,                        &
      &      iphys%i_induct_t, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_pg(node, ele, nod_fld, iphys,   &
-     &        g_FEM1, jac_3d, rhs_tbl, FEM_elen, diff_coefs,            &
+     &        g_FEM, jac_3d, rhs_tbl, FEM_elen, diff_coefs,             &
      &        conduct%istack_ele_fld_smp, num_int,                      &
      &        SGS_param%ifilter_final, iak_diff_uxb,                    &
      &        cd_prop%coef_induct, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_w_const                               &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        conduct%istack_ele_fld_smp, num_int,                      &
      &        iphys%i_SGS_induct_t, cd_prop%coef_induct, fem_wk, f_nl)
         end if
@@ -136,8 +139,9 @@
       subroutine int_vol_magne_monitor_upm                              &
      &         (i_field, iak_diff_uxb, num_int, dt,                     &
      &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
-     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
-     &          FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
+     &          iphys, nod_fld, iphys_ele, ele_fld, g_FEM, jac_3d,      &
+     &          rhs_tbl, FEM_elen, diff_coefs, mhd_fem_wk, fem_wk,      &
+     &          f_nl)
 !
       use int_vol_vect_diff_upw
       use int_vol_vect_cst_diff_upw
@@ -158,6 +162,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -170,13 +175,13 @@
 !
       if (i_field .eq. iphys%i_induction) then
         call int_vol_mag_induct_upm(node, ele, cd_prop,                 &
-     &      g_FEM1, jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,         &
+     &      g_FEM, jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,          &
      &      conduct%istack_ele_fld_smp, num_int, dt,                    &
      &      ele_fld%ntot_phys, ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_as_tsr_upw                                     &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                 &
      &      conduct%istack_ele_fld_smp, num_int, dt,                    &
      &      iphys%i_induct_t, ele_fld%ntot_phys, iphys_ele%i_magne,     &
      &      ele_fld%d_fld, fem_wk, f_nl)
@@ -184,7 +189,7 @@
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_upm(node, ele, nod_fld, iphys,  &
-     &        g_FEM1, jac_3d, rhs_tbl, FEM_elen, diff_coefs,            &
+     &        g_FEM, jac_3d, rhs_tbl, FEM_elen, diff_coefs,             &
      &        conduct%istack_ele_fld_smp, num_int, dt,                  &
      &        SGS_param%ifilter_final, iak_diff_uxb,                    &
      &        cd_prop%coef_induct, ele_fld%ntot_phys,                   &
@@ -192,7 +197,7 @@
      &        mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_cst_upw                               &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        conduct%istack_ele_fld_smp, num_int, dt,                  &
      &        iphys%i_SGS_induct_t, ele_fld%ntot_phys,                  &
      &        iphys_ele%i_magne, ele_fld%d_fld, cd_prop%coef_induct,    &

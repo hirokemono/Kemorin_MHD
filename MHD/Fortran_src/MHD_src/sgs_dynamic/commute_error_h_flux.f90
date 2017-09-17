@@ -4,18 +4,18 @@
 !     Written by H. Matsui
 !
 !!      subroutine cal_commute_error_4_sf                               &
-!!     &         (num_int, iele_fsmp_stack, m_lump,                     &
-!!     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp, rhs_tbl, &
+!!     &         (num_int, iele_fsmp_stack, m_lump, node, ele, surf,    &
+!!     &          sf_grp, g_FEM, jac_3d, jac_sf_grp, rhs_tbl,           &
 !!     &          FEM_elens, sgs_sf, i_filter, i_sgs, i_flux, i_vect,   &
 !!     &          i_scalar, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_commute_error_4_mf                               &
-!!     &         (num_int, iele_fsmp_stack, m_lump,                     &
-!!     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp, rhs_tbl, &
+!!     &         (num_int, iele_fsmp_stack, m_lump, node, ele, surf,    &
+!!     &          sf_grp, g_FEM, jac_3d, jac_sf_grp, rhs_tbl,           &
 !!     &          FEM_elens, sgs_sf, i_filter, i_sgs, i_flux, i_vect,   &
 !!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_commute_error_4_idct                             &
-!!     &         (num_int, iele_fsmp_stack, m_lump,                     &
-!!     &          node, ele, surf, sf_grp, Bsf_bcs, jac_3d, jac_sf_grp, &
+!!     &         (num_int, iele_fsmp_stack, m_lump, node, ele, surf,    &
+!!     &          sf_grp, Bsf_bcs, g_FEM, jac_3d, jac_sf_grp,           &
 !!     &          rhs_tbl, FEM_elens, i_filter, i_sgs, i_flux, i_v, i_b,&
 !!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(node_data), intent(in) :: node
@@ -23,6 +23,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -42,14 +43,13 @@
 !
       use m_precision
       use m_machine_parameter
-!
       use m_phys_constants
 !
       use t_geometry_data
       use t_surface_data
       use t_group_data
       use t_phys_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_2d
       use t_jacobian_3d
       use t_table_FEM_const
@@ -68,8 +68,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_commute_error_4_sf                                 &
-     &         (num_int, iele_fsmp_stack, m_lump,                       &
-     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp, rhs_tbl,   &
+     &         (num_int, iele_fsmp_stack, m_lump, node, ele, surf,      &
+     &          sf_grp, g_FEM, jac_3d, jac_sf_grp, rhs_tbl,             &
      &          FEM_elens, sgs_sf, i_filter, i_sgs, i_flux, i_vect,     &
      &          i_scalar, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
@@ -82,6 +82,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -103,10 +104,10 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_commute_div_v_flux(iele_fsmp_stack, num_int,         &
-     &    node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,       &
+     &    node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,        &
      &    i_filter, i_flux, i_vect, i_scalar, fem_wk, f_nl)
       call int_sf_skv_commute_sgs_v_flux                                &
-     &   (node, ele, surf, sf_grp, nod_fld, g_FEM1, jac_sf_grp,         &
+     &   (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,          &
      &    rhs_tbl, FEM_elens, num_int, sgs_sf,                          &
      &    i_filter, i_flux, i_vect, i_scalar, fem_wk, surf_wk, f_nl)
 !
@@ -119,8 +120,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_commute_error_4_mf                                 &
-     &         (num_int, iele_fsmp_stack, m_lump,                       &
-     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp, rhs_tbl,   &
+     &         (num_int, iele_fsmp_stack, m_lump, node, ele, surf,      &
+     &          sf_grp, g_FEM, jac_3d, jac_sf_grp, rhs_tbl,             &
      &          FEM_elens, sgs_sf, i_filter, i_sgs, i_flux, i_vect,     &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
@@ -135,6 +136,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -156,11 +158,11 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_commute_div_m_flux(iele_fsmp_stack, num_int,         &
-     &    node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,       &
+     &    node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,        &
      &    i_filter, i_flux, i_vect, fem_wk, f_nl)
 !
       call int_sf_skv_commute_sgs_t_flux                                &
-     &   (node, ele, surf, sf_grp, nod_fld, g_FEM1, jac_sf_grp,         &
+     &   (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,          &
      &    rhs_tbl, FEM_elens, sgs_sf, num_int,                          &
      &    i_filter, i_flux, i_vect, i_vect, fem_wk, surf_wk, f_nl)
 !
@@ -173,8 +175,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_commute_error_4_idct                               &
-     &         (num_int, iele_fsmp_stack, m_lump,                       &
-     &          node, ele, surf, sf_grp, Bsf_bcs, jac_3d, jac_sf_grp,   &
+     &         (num_int, iele_fsmp_stack, m_lump, node, ele, surf,      &
+     &          sf_grp, Bsf_bcs, g_FEM, jac_3d, jac_sf_grp,             &
      &          rhs_tbl, FEM_elens, i_filter, i_sgs, i_flux, i_v, i_b,  &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
@@ -190,6 +192,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -210,11 +213,11 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_commute_induct_t(iele_fsmp_stack, num_int,           &
-     &    node, ele, nod_fld, g_FEM1, jac_3d, rhs_tbl, FEM_elens,       &
+     &    node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,        &
      &    i_filter, i_flux, i_v, i_b, fem_wk, f_nl)
 !
       call int_surf_commute_induct_t(node, ele, surf, sf_grp,           &
-     &    nod_fld, g_FEM1, jac_sf_grp, rhs_tbl, FEM_elens, Bsf_bcs%sgs, &
+     &    nod_fld, g_FEM, jac_sf_grp, rhs_tbl, FEM_elens, Bsf_bcs%sgs,  &
      &    num_int, i_flux, i_filter, i_v, i_b, fem_wk, surf_wk, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

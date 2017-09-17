@@ -171,7 +171,7 @@
 !
       call cal_commute_error_4_sf(num_int, fluid%istack_ele_fld_smp,    &
      &    mlump_fl, mesh%node, mesh%ele, surf, group%surf_grp,          &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_sf_grp,               &
      &    rhs_tbl, FEM_filters%FEM_elens, sf_bcs%sgs, ifilter_4delta,   &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, ivelo_f, ifield_f,    &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
@@ -188,7 +188,7 @@
 !
       call cal_commute_error_4_sf(num_int, fluid%istack_ele_fld_smp,    &
      &    mlump_fl, mesh%node, mesh%ele, surf, group%surf_grp,          &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_sf_grp,               &
      &    rhs_tbl, FEM_filters%FEM_elens, sf_bcs%sgs, ifilter_2delta,   &
      &    iphys%i_sgs_grad, i_sgs, ivelo, ifield,                       &
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &

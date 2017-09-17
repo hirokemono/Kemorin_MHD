@@ -187,12 +187,14 @@
         call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int, dt,   &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+     &      g_FEM1, jacobians%jac_3d, rhs_tbl, mhd_fem_wk,              &
+     &      fem_wk, f_nl)
       else
         call int_vol_vect_p_pre_ele(FEM_prm%npoint_t_evo_int,           &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+     &      g_FEM1, jacobians%jac_3d, rhs_tbl, mhd_fem_wk,              &
+     &      fem_wk, f_nl)
       end if
 !
       call int_sf_grad_velocity                                         &
@@ -229,8 +231,8 @@
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, dt, FEM_prm, nod_comm, node, ele,        &
-     &      conduct, cd_prop, iphys_ele, ele_fld, jacobians%jac_3d,     &
-     &      rhs_tbl, FEM_elens, diff_coefs, mlump_cd,                   &
+     &      conduct, cd_prop, iphys_ele, ele_fld, g_FEM1,               &
+     &      jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs, mlump_cd, &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
@@ -238,8 +240,9 @@
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, dt, FEM_prm, node, ele, conduct,         &
-     &      cd_prop, jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
-     &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      cd_prop, g_FEM1, jacobians%jac_3d, rhs_tbl, FEM_elens,      &
+     &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
+     &      f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_vect(Bnod_bcs%nod_bc_a, iphys%i_vecp, nod_fld)
@@ -336,13 +339,13 @@
      & then
         call cal_vector_p_co_imp(iphys%i_vecp, iak_diff_b, ak_d_magne,  &
      &      dt, FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
-     &      conduct, cd_prop, Bnod_bcs, iphys_ele, ele_fld,             &
+     &      conduct, cd_prop, Bnod_bcs, iphys_ele, ele_fld, g_FEM1,     &
      &      jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs, m_lump,   &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call clear_field_data(nod_fld, n_scalar, iphys%i_m_phi)
       else
         call cal_vector_p_co_exp                                        &
-     &     (iphys%i_vecp, FEM_prm, nod_comm, node, ele,                 &
+     &     (iphys%i_vecp, FEM_prm, nod_comm, node, ele, g_FEM1,         &
      &      jacobians%jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,      &
      &      f_l, f_nl, nod_fld)
       end if

@@ -5,19 +5,19 @@
 !
 !!      subroutine cal_velo_co_lumped_crank(i_velo, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, fluid, fl_prop,         &
-!!     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,        &
+!!     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, g_FEM, jac_3d, &
 !!     &          rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_lumped_crank(i_magne, dt,               &
 !!     &          FEM_prm, nod_comm, node, ele, nod_fld,                &
-!!     &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,        &
+!!     &          iphys_ele, fld_ele, nod_bc_b, g_FEM, jac_3d, rhs_tbl, &
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!
 !!      subroutine cal_velo_co_consist_crank(i_velo, coef_velo, dt,     &
-!!     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld, jac_3d, &
-!!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld,         &
+!!     &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_consist_crank(i_magne, coef_magne, dt,  &
-!!     &         FEM_prm, node, ele, conduct, nod_fld, nod_bc_b, jac_3d,&
-!!     &         rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &          FEM_prm, node, ele, conduct, nod_fld, nod_bc_b,       &
+!!     &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -45,6 +45,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -61,7 +62,7 @@
 !
       subroutine cal_velo_co_lumped_crank(i_velo, dt,                   &
      &          FEM_prm, nod_comm, node, ele, fluid, fl_prop,           &
-     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,          &
+     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, g_FEM, jac_3d,   &
      &          rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_coriolis_term
@@ -82,6 +83,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: fld_ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: mlump_fl
@@ -95,7 +97,7 @@
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, fld_ele,   &
-     &    g_FEM1, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
+     &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                  &
      &    fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
@@ -116,7 +118,7 @@
 !
       subroutine cal_magne_co_lumped_crank(i_magne, dt,                 &
      &          FEM_prm, nod_comm, node, ele, nod_fld,                  &
-     &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,          &
+     &          iphys_ele, fld_ele, nod_bc_b, g_FEM, jac_3d, rhs_tbl,   &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use cal_multi_pass
@@ -133,6 +135,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: fld_ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
@@ -146,7 +149,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
       call cal_t_evo_4_vector(FEM_prm%iflag_magne_supg,                 &
      &    ele%istack_ele_smp, dt, FEM_prm, m_lump,                      &
-     &    nod_comm, node, ele, iphys_ele, fld_ele, g_FEM1, jac_3d,      &
+     &    nod_comm, node, ele, iphys_ele, fld_ele, g_FEM, jac_3d,       &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne_4_rhs'
@@ -164,8 +167,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_co_consist_crank(i_velo, coef_velo, dt,       &
-     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,   &
-     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld,           &
+     &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_initial_MHD
       use cal_ff_smp_to_ffs
@@ -182,6 +185,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -195,7 +199,8 @@
       if (iflag_debug.eq.1) write(*,*) 'int_vol_initial_velo'
       call int_vol_initial_vector(FEM_prm%npoint_t_evo_int,             &
      &    fluid%istack_ele_fld_smp, i_velo, coef_velo,                  &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
+     &    node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl,                   &
+     &    fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo_4_rhs'
@@ -214,8 +219,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_magne_co_consist_crank(i_magne, coef_magne, dt,    &
-     &         FEM_prm, node, ele, conduct, nod_fld, nod_bc_b, jac_3d,  &
-     &         rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &          FEM_prm, node, ele, conduct, nod_fld, nod_bc_b,         &
+     &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_initial_MHD
       use cal_ff_smp_to_ffs
@@ -231,6 +236,7 @@
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
@@ -245,7 +251,8 @@
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_initial_magne'
       call int_vol_initial_vector(FEM_prm%npoint_t_evo_int,             &
      &    conduct%istack_ele_fld_smp, i_magne, coef_magne,              &
-     &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
+     &    node, ele, nod_fld, g_FEM, jac_3d, rhs_tbl,                   &
+     &    fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
       if(iflag_debug.eq.1)  write(*,*) 'set_boundary_magne_4_rhs'

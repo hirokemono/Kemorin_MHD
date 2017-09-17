@@ -11,17 +11,18 @@
 !!      subroutine int_vol_vect_p_pre_ele                               &
 !!     &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld, &
 !!     &          ncomp_ele, iele_magne, d_ele,                         &
-!!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+!!     &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_vect_p_pre_ele_upm                           &
 !!     &         (num_int, dt, node, ele, conduct, cd_prop,             &
 !!     &          iphys, nod_fld, ncomp_ele, iele_magne, d_ele,         &
-!!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+!!     &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -31,7 +32,6 @@
       module int_vol_vect_p_pre
 !
       use m_precision
-!
       use m_machine_parameter
       use m_phys_constants
 !
@@ -40,7 +40,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -58,7 +58,7 @@
       subroutine int_vol_vect_p_pre_ele                                 &
      &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld,   &
      &          ncomp_ele, iele_magne, d_ele,                           &
-     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
@@ -71,6 +71,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -100,7 +101,7 @@
 !
         call fem_skv_rot_inertia_type(conduct%istack_ele_fld_smp,       &
      &      num_int, k2, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
-     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -113,7 +114,7 @@
       subroutine int_vol_vect_p_pre_ele_upm                             &
      &         (num_int, dt, node, ele, conduct, cd_prop,               &
      &          iphys, nod_fld, ncomp_ele, iele_magne, d_ele,           &
-     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
@@ -126,6 +127,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -155,7 +157,7 @@
 !
         call fem_skv_rot_inertia_upwind(conduct%istack_ele_fld_smp,     &
      &      num_int, k2, dt, mhd_fem_wk%velo_1, fem_wk%vector_1,        &
-     &      d_ele(1,iele_magne), ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &      d_ele(1,iele_magne), ele, g_FEM, jac_3d, fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

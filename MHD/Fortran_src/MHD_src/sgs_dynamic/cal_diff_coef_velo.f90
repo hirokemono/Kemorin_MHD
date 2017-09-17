@@ -214,14 +214,14 @@
       call cal_rotation_commute                                         &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
      &    mlump_fl, node, ele, surf, sf_grp,                            &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_sf_grp,               &
      &    rhs_tbl, FEM_elen, Vsf_bcs%sgs, ifilter_4delta,               &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,                       &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
      &    mlump_fl, node, ele, surf, sf_grp,                            &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_sf_grp,               &
      &    rhs_tbl, FEM_elen, Psf_bcs%sgs, ifilter_4delta,               &
      &    i_sgs_grad_fp, i_sgs_grad_fp, fem_wk, surf_wk,                &
      &    f_l, f_nl, nod_fld)
@@ -237,14 +237,14 @@
       call cal_rotation_commute                                         &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
      &    mlump_fl, node, ele, surf, sf_grp,                            &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_sf_grp,               &
      &    rhs_tbl, FEM_elen, Vsf_bcs%sgs, ifilter_2delta,               &
      &    iphys%i_sgs_grad, iphys%i_velo, fem_wk, surf_wk,              &
      &    f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
      &    mlump_fl, node, ele, surf, sf_grp,                            &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_sf_grp,               &
      &    rhs_tbl, FEM_elen, Psf_bcs%sgs, ifilter_2delta,               &
      &    i_sgs_grad_p, iphys%i_press, fem_wk, surf_wk,                 &
      &    f_l, f_nl, nod_fld)

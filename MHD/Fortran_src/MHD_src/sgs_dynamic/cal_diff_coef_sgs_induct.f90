@@ -163,7 +163,7 @@
       call cal_commute_error_4_idct                                     &
      &   (FEM_prm%npoint_t_evo_int, conduct%istack_ele_fld_smp,         &
      &    mlump_cd, mesh%node, mesh%ele, surf, group%surf_grp, Bsf_bcs, &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_sf_grp,               &
      &    rhs_tbl, FEM_filters%FEM_elens,                               &
      &    ifilter_4delta, iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,       &
      &    iphys%i_filter_velo, iphys%i_filter_magne, rhs_mat%fem_wk,    &
@@ -180,7 +180,7 @@
       call cal_commute_error_4_idct                                     &
      &   (FEM_prm%npoint_t_evo_int, conduct%istack_ele_fld_smp,         &
      &    mlump_cd, mesh%node, mesh%ele, surf, group%surf_grp, Bsf_bcs, &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
+     &    g_FEM1, jacobians%jac_3d, jacobians%jac_sf_grp,               &
      &    rhs_tbl, FEM_filters%FEM_elens,                               &
      &    ifilter_2delta, iphys%i_sgs_grad, iphys%i_SGS_induct_t,       &
      &    iphys%i_velo, iphys%i_magne, rhs_mat%fem_wk, rhs_mat%surf_wk, &

@@ -5,13 +5,15 @@
 !        modified by H.Matsui on AUg., 2007
 !
 !!      subroutine int_vol_sgs_induction                                &
-!!     &         (FEM_prm, nod_comm, node, ele, conduct, iphys, jac_3d, &
-!!     &          rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+!!     &         (FEM_prm, nod_comm, node, ele, conduct, iphys,         &
+!!     &          g_FEM, jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk, &
+!!     &          f_nl, nod_fld)
 !!      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx, dt,     &
 !!     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,&
-!!     &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,  &
-!!     &          rhs_tbl, FEM_elen, filtering, sgs_coefs, mlump_cd,    &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          conduct, cd_prop, iphys, iphys_ele, ele_fld,          &
+!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elen, filtering,          &
+!!     &          sgs_coefs, mlump_cd, wk_filter, mhd_fem_wk, fem_wk,   &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -23,6 +25,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -49,7 +52,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -68,8 +71,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_sgs_induction                                  &
-     &         (FEM_prm, nod_comm, node, ele, conduct, iphys, jac_3d,   &
-     &          rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &         (FEM_prm, nod_comm, node, ele, conduct, iphys,           &
+     &          g_FEM, jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk,   &
+     &          f_nl, nod_fld)
 !
       use int_vol_vect_differences
       use cal_ff_smp_to_ffs
@@ -81,6 +85,7 @@
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
       type(phys_address), intent(in) :: iphys
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
@@ -94,13 +99,13 @@
       call reset_ff_smp(node%max_nod_smp, f_nl)
 !
       call int_vol_rotation                                             &
-     &   (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,                  &
+     &   (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                   &
      &    conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &    iphys%i_SGS_vp_induct, fem_wk, f_nl)
 !
 !      call cal_multi_pass_4_vector_ff                                  &
 !     &   (ele%istack_ele_smp, FEM_prm, m1_lump, nod_comm, node, ele,   &
-!     &    g_FEM1, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                &
+!     &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
 !     &    fem_wk, f_l, f_nl)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp, f_l%ff,   &
 !     &    mlump_cd%ml, nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld)
@@ -117,9 +122,10 @@
 !
       subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx, dt,       &
      &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
-     &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
-     &          rhs_tbl, FEM_elen, filtering, sgs_coefs, mlump_cd,      &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          conduct, cd_prop, iphys, iphys_ele, ele_fld,            &
+     &          g_FEM, jac_3d, rhs_tbl, FEM_elen, filtering,            &
+     &          sgs_coefs, mlump_cd, wk_filter, mhd_fem_wk, fem_wk,     &
+     &          f_l, f_nl, nod_fld)
 !
       use cal_sgs_fluxes
       use cal_ff_smp_to_ffs
@@ -140,6 +146,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
@@ -157,7 +164,7 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
       call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx, dt,                 &
      &    FEM_prm, SGS_param, filter_param, nod_comm, node, ele,        &
-     &    conduct, cd_prop, iphys, iphys_ele, ele_fld, g_FEM1, jac_3d,  &
+     &    conduct, cd_prop, iphys, iphys_ele, ele_fld, g_FEM, jac_3d,   &
      &    rhs_tbl, FEM_elen, filtering, sgs_coefs, wk_filter,           &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !

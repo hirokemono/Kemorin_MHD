@@ -12,15 +12,15 @@
 !!     &         SGS_param, cmt_param, node, ele, fluid,                &
 !!     &         fl_prop, cd_prop, iphys, nod_fld, ak_MHD,              &
 !!     &         ncomp_ele, d_ele, iphys_ele, iak_diff_mf, iak_diff_lor,&
-!!     &         jac_3d, rhs_tbl, FEM_elens, diff_coefs,                &
+!!     &         g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,         &
 !!     &         mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_velo_pre_ele_upwind                          &
 !!     &         (iflag_4_rotate, num_int, dt, SGS_param, cmt_param,    &
 !!     &          node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,   &
 !!     &          ak_MHD, ncomp_ele, ie_upw, d_ele, iphys_ele,          &
 !!     &          iak_diff_mf, iak_diff_lor,                            &
-!!     &          jac_3d,  rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,  &
-!!     &          fem_wk, f_nl)
+!!     &          g_FEM, jac_3d,  rhs_tbl, FEM_elens, diff_coefs,       &
+!!     &          mhd_fem_wk, fem_wk, f_nl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
@@ -31,6 +31,7 @@
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -43,9 +44,7 @@
       module int_vol_velo_pre
 !
       use m_precision
-!
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       use t_SGS_control_parameter
       use t_physical_property
@@ -53,7 +52,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -75,7 +74,7 @@
      &         SGS_param, cmt_param, node, ele, fluid,                  &
      &         fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                &
      &         ncomp_ele, d_ele, iphys_ele, iak_diff_mf, iak_diff_lor,  &
-     &         jac_3d, rhs_tbl, FEM_elens, diff_coefs,                  &
+     &         g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,           &
      &         mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
@@ -99,6 +98,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -144,11 +144,11 @@
               call fem_skv_rot_inertia_type                             &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
-     &            ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &            ele, g_FEM, jac_3d, fem_wk%sk6)
               call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
      &            num_int, k2, SGS_param%ifilter_final,                 &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
-     &            ele, g_FEM1, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,    &
+     &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,     &
      &            fem_wk%tensor_1, fem_wk%sk6)
             else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
@@ -156,14 +156,14 @@
      &            mhd_fem_wk%sgs_t1)
               call fem_skv_inertia_rot_sgs_pg                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            ele, g_FEM1, jac_3d, mhd_fem_wk%velo_1,               &
+     &            ele, g_FEM, jac_3d, mhd_fem_wk%velo_1,                &
      &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%i_vort),         &
      &            fem_wk%sk6)
             else
               call fem_skv_rot_inertia_type                             &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
-     &            ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &            ele, g_FEM, jac_3d, fem_wk%sk6)
             end if
 !
 !  -----  Inertia including Reynolds stress --------
@@ -178,7 +178,7 @@
      &           (fluid%istack_ele_fld_smp, num_int,                    &
      &            k2, SGS_param%ifilter_final,                          &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
-     &            ele, g_FEM1, jac_3d, FEM_elens, mhd_fem_wk%velo_1,    &
+     &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%velo_1,     &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                   &
      &            d_ele(1,iphys_ele%i_velo), fem_wk%sk6)
             else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
@@ -187,14 +187,14 @@
      &            mhd_fem_wk%sgs_t1)
               call fem_skv_vec_inertia_sgs_pg                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            ele, g_FEM1, jac_3d, mhd_fem_wk%velo_1,               &
+     &            ele, g_FEM, jac_3d, mhd_fem_wk%velo_1,                &
      &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%i_velo),         &
      &            fem_wk%sk6)
             else
               call fem_skv_vector_inertia_type                          &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_velo),         &
-     &            ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &            ele, g_FEM, jac_3d, fem_wk%sk6)
             end if
           end if
         end if
@@ -215,7 +215,7 @@
             call fem_skv_lorentz_rot_galerkin                           &
      &         (fluid%istack_ele_fld_smp, num_int, k2,                  &
      &          mhd_fem_wk%vecp_1, fem_wk%vector_1,                     &
-     &          ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &          ele, g_FEM, jac_3d, fem_wk%sk6)
           else if (iflag_4_rotate .eq. id_turn_OFF) then
             call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
      &          iphys%i_magne, fl_prop%coef_lor, mhd_fem_wk%magne_1)
@@ -227,7 +227,7 @@
 !
             call fem_skv_vector_inertia_type(fluid%istack_ele_fld_smp,  &
      &          num_int, k2, mhd_fem_wk%magne_1, fem_wk%vector_1,       &
-     &          ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &          ele, g_FEM, jac_3d, fem_wk%sk6)
           end if
 !
 !    set SGS Lorentz force
@@ -240,7 +240,7 @@
               call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
      &            num_int, k2, SGS_param%ifilter_final,                 &
      &            diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,    &
-     &            ele, g_FEM1, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,    &
+     &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,     &
      &            fem_wk%tensor_1, fem_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele                           &
@@ -248,7 +248,7 @@
      &            fl_prop%coef_lor, fem_wk%tensor_1)
               call fem_skv_div_tensor                                   &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
-     &            ele, g_FEM1, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
+     &            ele, g_FEM, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
             end if
           end if
 !
@@ -261,7 +261,7 @@
      &        k2, iphys%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)
           call fem_skv_coriolis_type                                    &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
-     &        mhd_fem_wk%velo_1, fl_prop%sys_rot, ele, g_FEM1, jac_3d,  &
+     &        mhd_fem_wk%velo_1, fl_prop%sys_rot, ele, g_FEM, jac_3d,   &
      &        fem_wk%sk6)
         end if
 !
@@ -275,14 +275,14 @@
      &        ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
           call fem_skv_vector_type                                      &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
-     &        ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &        ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
         else if (fl_prop%iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld, k2,         &
      &        iphys%i_temp, fl_prop%i_grav, fl_prop%grav,               &
      &        ak_MHD%ak_buo, fem_wk%vector_1)
           call fem_skv_vector_type                                      &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
-     &        ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &        ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
         else if(fl_prop%iflag_4_composit_buo .eq. id_FORCE_ele_int)     &
      &      then
           call set_gravity_vec_each_ele(node, ele, nod_fld, k2,         &
@@ -290,7 +290,7 @@
      &        ak_MHD%ak_comp_buo, fem_wk%vector_1)
           call fem_skv_vector_type                                      &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
-     &        ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &        ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
         else if(fl_prop%iflag_4_filter_gravity .eq. id_FORCE_ele_int)   &
      &      then
           call set_gravity_vec_each_ele(node, ele, nod_fld, k2,         &
@@ -298,7 +298,7 @@
      &        ak_MHD%ak_buo, fem_wk%vector_1)
           call fem_skv_vector_type                                      &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
-     &        ele, g_FEM1, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+     &        ele, g_FEM, jac_3d, fem_wk%vector_1, fem_wk%sk6)
         end if
 !
       end do
@@ -316,8 +316,8 @@
      &          node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,     &
      &          ak_MHD, ncomp_ele, ie_upw, d_ele, iphys_ele,            &
      &          iak_diff_mf, iak_diff_lor,                              &
-     &          jac_3d,  rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,    &
-     &          fem_wk, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
+     &          mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
@@ -341,6 +341,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -384,12 +385,12 @@
               call fem_skv_rot_inertia_upwind                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
-     &            d_ele(1,ie_upw), ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &            d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int,                    &
      &            k2, SGS_param%ifilter_final, dt,                      &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
-     &            ele, g_FEM1, jac_3d, FEM_elens, d_ele(1,ie_upw),      &
+     &            ele, g_FEM, jac_3d, FEM_elens, d_ele(1,ie_upw),       &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
             else if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
@@ -397,14 +398,14 @@
      &            mhd_fem_wk%sgs_t1)
               call fem_skv_inertia_rot_sgs_upwind                       &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            ele, g_FEM1, jac_3d, mhd_fem_wk%velo_1,               &
+     &            ele, g_FEM, jac_3d, mhd_fem_wk%velo_1,                &
      &            mhd_fem_wk%sgs_t1, d_ele(1,ie_upw), d_ele(1,ie_upw),  &
      &            fem_wk%sk6)
             else
               call fem_skv_rot_inertia_upwind                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
-     &            d_ele(1,ie_upw), ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &            d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
             end if
 !
 !  -----  Inertia including Reynolds stress --------
@@ -419,7 +420,7 @@
      &           (fluid%istack_ele_fld_smp, num_int,                    &
      &            k2, SGS_param%ifilter_final, dt,                      &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
-     &            ele, g_FEM1, jac_3d, FEM_elens, mhd_fem_wk%velo_1,    &
+     &            ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%velo_1,     &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                   &
      &            d_ele(1,iphys_ele%i_velo), d_ele(1,ie_upw),           &
      &            fem_wk%sk6)
@@ -429,14 +430,14 @@
      &            mhd_fem_wk%sgs_t1)
               call fem_skv_vcl_inertia_sgs_upwind                       &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            ele, g_FEM1, jac_3d, mhd_fem_wk%velo_1,               &
+     &            ele, g_FEM, jac_3d, mhd_fem_wk%velo_1,                &
      &            mhd_fem_wk%sgs_t1, d_ele(1,iphys_ele%i_velo),         &
      &            d_ele(1,ie_upw), fem_wk%sk6)
             else
               call fem_skv_vector_inertia_upwind                        &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_velo),         &
-     &            d_ele(1,ie_upw), ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &            d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
             end if
           end if
 !
@@ -451,7 +452,7 @@
      &           (fluid%istack_ele_fld_smp, num_int,                    &
      &            k2, SGS_param%ifilter_final, dt,                      &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
-     &            ele, g_FEM1, jac_3d, FEM_elens, d_ele(1,ie_upw),      &
+     &            ele, g_FEM, jac_3d, FEM_elens, d_ele(1,ie_upw),       &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
@@ -459,7 +460,7 @@
      &            fem_wk%tensor_1)
               call fem_skv_div_tsr_upw                                  &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            d_ele(1,ie_upw), ele, g_FEM1, jac_3d,                 &
+     &            d_ele(1,ie_upw), ele, g_FEM, jac_3d,                  &
      &            fem_wk%tensor_1, fem_wk%sk6)
             end if
           end if
@@ -480,7 +481,7 @@
             call fem_skv_lorentz_rot_galerkin                           &
      &         (fluid%istack_ele_fld_smp, num_int, k2,                  &
      &          mhd_fem_wk%vecp_1, fem_wk%vector_1,                     &
-     &          ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &          ele, g_FEM, jac_3d, fem_wk%sk6)
           else
             call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,     &
      &          iphys%i_magne, fl_prop%coef_lor, mhd_fem_wk%magne_1)
@@ -493,7 +494,7 @@
             call fem_skv_vector_inertia_upwind                          &
      &         (fluid%istack_ele_fld_smp, num_int, k2, dt,              &
      &          mhd_fem_wk%magne_1, fem_wk%vector_1,                    &
-     &          d_ele(1,ie_upw), ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &          d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
           end if
 !
 !    set SGS Lorentz force
@@ -507,7 +508,7 @@
      &           (fluid%istack_ele_fld_smp, num_int,                    &
      &            k2, SGS_param%ifilter_final, dt,                      &
      &            diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,    &
-     &            ele, g_FEM1, jac_3d, FEM_elens, d_ele(1,ie_upw),      &
+     &            ele, g_FEM, jac_3d, FEM_elens, d_ele(1,ie_upw),       &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele                           &
@@ -515,7 +516,7 @@
      &            fl_prop%coef_lor, fem_wk%tensor_1)
               call fem_skv_div_tsr_upw                                  &
      &           (fluid%istack_ele_fld_smp, num_int, k2, dt,            &
-     &            d_ele(1,ie_upw), ele, g_FEM1, jac_3d,                 &
+     &            d_ele(1,ie_upw), ele, g_FEM, jac_3d,                  &
      &            fem_wk%tensor_1, fem_wk%sk6)
             end if
           end if
@@ -528,7 +529,7 @@
      &        k2, iphys%i_velo, fl_prop%coef_cor, mhd_fem_wk%velo_1)
           call fem_skv_coriolis_upwind(fluid%istack_ele_fld_smp,        &
      &        num_int, k2, dt, mhd_fem_wk%velo_1, fl_prop%sys_rot,      &
-     &        d_ele(1,ie_upw), ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &        d_ele(1,ie_upw), ele, g_FEM, jac_3d, fem_wk%sk6)
         end if
 !
 ! ---------  set buoyancy
@@ -540,14 +541,14 @@
      &        fl_prop%i_grav, fl_prop%grav,                             &
      &        ak_MHD%ak_buo, ak_MHD%ak_comp_buo, fem_wk%vector_1)
           call fem_skv_vector_field_upwind(fluid%istack_ele_fld_smp,    &
-     &        num_int, k2, dt, d_ele(1,ie_upw), ele, g_FEM1, jac_3d,    &
+     &        num_int, k2, dt, d_ele(1,ie_upw), ele, g_FEM, jac_3d,     &
      &        fem_wk%vector_1, fem_wk%sk6)
         else if (fl_prop%iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld, k2,         &
      &        iphys%i_temp, fl_prop%i_grav, fl_prop%grav,               &
      &        ak_MHD%ak_buo, fem_wk%vector_1)
           call fem_skv_vector_field_upwind(fluid%istack_ele_fld_smp,    &
-     &        num_int, k2, dt, d_ele(1,ie_upw), ele, g_FEM1, jac_3d,    &
+     &        num_int, k2, dt, d_ele(1,ie_upw), ele, g_FEM, jac_3d,     &
      &        fem_wk%vector_1, fem_wk%sk6)
         else if (fl_prop%iflag_4_composit_buo .eq. id_FORCE_ele_int)    &
      &      then
@@ -555,7 +556,7 @@
      &        iphys%i_light, fl_prop%i_grav, fl_prop%grav,              &
      &        ak_MHD%ak_comp_buo, fem_wk%vector_1)
           call fem_skv_vector_field_upwind(fluid%istack_ele_fld_smp,    &
-     &        num_int, k2, dt, d_ele(1,ie_upw), ele, g_FEM1, jac_3d,    &
+     &        num_int, k2, dt, d_ele(1,ie_upw), ele, g_FEM, jac_3d,     &
      &        fem_wk%vector_1, fem_wk%sk6)
         else if(fl_prop%iflag_4_filter_gravity .eq. id_FORCE_ele_int)   &
      &      then
@@ -563,7 +564,7 @@
      &        iphys%i_filter_temp, fl_prop%i_grav, fl_prop%grav,        &
      &        ak_MHD%ak_buo, fem_wk%vector_1)
           call fem_skv_vector_field_upwind(fluid%istack_ele_fld_smp,    &
-     &        num_int, k2, dt, d_ele(1,ie_upw), ele, g_FEM1, jac_3d,    &
+     &        num_int, k2, dt, d_ele(1,ie_upw), ele, g_FEM, jac_3d,     &
      &        fem_wk%vector_1, fem_wk%sk6)
         end if
 !

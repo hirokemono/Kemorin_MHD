@@ -206,7 +206,7 @@
      &     (icomp_sgs%i_induction, iphys_elediff%i_velo, dt,            &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld,                &
-     &      jacobians%jac_3d,  rhs_tbl, FEM_elens, filtering,           &
+     &      g_FEM1, jacobians%jac_3d,  rhs_tbl, FEM_elens, filtering,   &
      &      sgs_coefs, mk_MHD%mlump_cd, wk_filter, mhd_fem_wk,          &
      &      fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -370,7 +370,7 @@
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction                                      &
      &     (FEM_prm, nod_comm, node, ele, conduct, iphys,               &
-     &      jacobians%jac_3d, rhs_tbl, mk_MHD%mlump_cd,                 &
+     &      g_FEM1, jacobians%jac_3d, rhs_tbl, mk_MHD%mlump_cd,         &
      &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !

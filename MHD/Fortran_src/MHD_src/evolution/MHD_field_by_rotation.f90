@@ -121,7 +121,7 @@
      &       ifld_diff%i_velo, iphys%i_velo, iphys%i_vort,              &
      &       fluid%istack_ele_fld_smp, mk_MHD%mlump_fl, SGS_param,      &
      &       mesh%nod_comm, mesh%node, mesh%ele, surf, group%surf_grp,  &
-     &       iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,         &
+     &       iphys_ele, ele_fld, g_FEM1, jac_3d, jac_sf_grp, FEM_elens, &
      &       diff_coefs, nod_bcs%Vnod_bcs%nod_bc_w,                     &
      &       surf_bcs%Vsf_bcs%sgs, rhs_tbl,                             &
      &       rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
@@ -139,7 +139,7 @@
      &           mesh%ele%istack_ele_smp, m_lump, SGS_param,            &
      &           mesh%nod_comm, mesh%node, mesh%ele, surf,              &
      &           group%surf_grp, iphys_ele, ele_fld,                    &
-     &           jac_3d, jac_sf_grp, FEM_elens, diff_coefs,             &
+     &           g_FEM1, jac_3d, jac_sf_grp, FEM_elens, diff_coefs,     &
      &           nod_bcs%Bnod_bcs%nod_bc_j, surf_bcs%Bsf_bcs%sgs,       &
      &           rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,              &
      &           rhs_mat%f_nl, nod_fld)
@@ -149,7 +149,8 @@
 !     &          dt, ifld_diff%i_magne, iphys%i_magne, iphys%i_current, &
 !     &          conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param,&
 !     &          mesh%nod_comm, mesh%node, mesh%ele, surf,              &
-!     &          group%surf_grp, iphys_ele, ele_fld, jac_3d, jac_sf_grp,&
+!     &          group%surf_grp, iphys_ele, ele_fld,                    &
+!     &          g_FEM1, jac_3d, jac_sf_grp,                            &
 !     &          FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,      &
 !     &          surf_bcs%Bsf_bcs%sgs, rhs_tbl,                         &
 !     &          rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
@@ -168,7 +169,7 @@
      &         iphys%i_magne, iphys%i_current, mesh%ele%istack_ele_smp, &
      &         m_lump, SGS_param, mesh%nod_comm, mesh%node, mesh%ele,   &
      &         surf, group%surf_grp, iphys_ele, ele_fld,                &
-     &         jac_3d, jac_sf_grp, FEM_elens, diff_coefs,               &
+     &         g_FEM1, jac_3d, jac_sf_grp, FEM_elens, diff_coefs,       &
      &         nod_bcs%Bnod_bcs%nod_bc_j, surf_bcs%Bsf_bcs%sgs,         &
      &         rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,                &
      &         rhs_mat%f_nl, nod_fld)
@@ -177,10 +178,11 @@
 !     &         ifld_diff%i_magne, iphys%i_magne, iphys%i_current,      &
 !     &         conduct%istack_ele_fld_smp, mk_MHD%mlump_cd, SGS_param, &
 !     &         mesh%nod_comm, mesh%node, mesh%ele, surf,               &
-!     &         group%surf_grp,iphys_ele, ele_fld, jac_3d, jac_sf_grp,  &
+!     &         group%surf_grp,iphys_ele, ele_fld,                      &
+!     &         g_FEM1, jac_3d, jac_sf_grp,                             &
 !     &         FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,       &
 !     &         surf_bcs%Bsf_bcs%sgs, rhs_tbl,                          &
-!     &          rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
+!     &         rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld)
           end if
         end if
       end if

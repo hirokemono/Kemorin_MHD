@@ -6,21 +6,22 @@
 !!      subroutine int_vol_temp_ele                                     &
 !!     &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,&
 !!     &          i_field, i_velo, i_SGS_flux, iak_diff_flux,           &
-!!     &          node, ele, fluid, property, nod_fld, jac_3d, rhs_tbl, &
-!!     &          FEM_elens, diff_coefs, ncomp_ele, iele_velo, d_ele,   &
-!!     &          iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
+!!     &          node, ele, fluid, property, nod_fld, g_FEM, jac_3d,   &
+!!     &          rhs_tbl,FEM_elens, diff_coefs, ncomp_ele, iele_velo,  &
+!!     &          d_ele, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_temp_ele_upw                                 &
 !!     &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,&
 !!     &          dt, i_field, i_velo, i_SGS_flux, iak_diff_flux,       &
-!!     &          node, ele, fluid, property, nod_fld, jac_3d, rhs_tbl, &
-!!     &          FEM_elens, diff_coefs, ncomp_ele, iele_velo, d_ele,   &
-!!     &          mhd_fem_wk, fem_wk, f_nl)
+!!     &          node, ele, fluid, property, nod_fld, g_FEM, jac_3d,   &
+!!     &          rhs_tbl, FEM_elens, diff_coefs, ncomp_ele, iele_velo, &
+!!     &          d_ele, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(scalar_property), intent(in) :: property
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -32,16 +33,15 @@
       module int_vol_thermal_ele
 !
       use m_precision
-!
       use m_machine_parameter
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -62,9 +62,9 @@
       subroutine int_vol_temp_ele                                       &
      &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,  &
      &          i_field, i_velo, i_SGS_flux, iak_diff_flux,             &
-     &          node, ele, fluid, property, nod_fld, jac_3d, rhs_tbl,   &
-     &          FEM_elens, diff_coefs, ncomp_ele, iele_velo, d_ele,     &
-     &          mhd_fem_wk, fem_wk, f_nl)
+     &          node, ele, fluid, property, nod_fld, g_FEM, jac_3d,     &
+     &          rhs_tbl,FEM_elens, diff_coefs, ncomp_ele, iele_velo,    &
+     &          d_ele, mhd_fem_wk, fem_wk, f_nl)
 !
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele
@@ -82,6 +82,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -117,7 +118,7 @@
           call fem_skv_scl_inertia_modsgs_pg                            &
      &       (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final,     &
      &        diff_coefs%num_field, iak_diff_flux, diff_coefs%ak,       &
-     &        ele, g_FEM1, jac_3d, FEM_elens, fem_wk%scalar_1,          &
+     &        ele, g_FEM, jac_3d, FEM_elens, fem_wk%scalar_1,           &
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, d_ele(1,iele_velo),   &
      &        fem_wk%sk6)
         else if(iflug_SGS_term .ne. id_SGS_none) then
@@ -125,13 +126,13 @@
      &        i_SGS_flux, property%coef_nega_adv,                       &
      &        mhd_fem_wk%sgs_v1)
           call fem_skv_scl_inertia_sgs_pg(fluid%istack_ele_fld_smp,     &
-     &        num_int, k2, ele, g_FEM1, jac_3d,                         &
+     &        num_int, k2, ele, g_FEM, jac_3d,                          &
      &        fem_wk%scalar_1, mhd_fem_wk%sgs_v1, d_ele(1,iele_velo),   &
      &        fem_wk%sk6)
         else
           call fem_skv_scalar_inertia_type(fluid%istack_ele_fld_smp,    &
      &        num_int, k2, fem_wk%scalar_1, d_ele(1,iele_velo),         &
-     &        ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &        ele, g_FEM, jac_3d, fem_wk%sk6)
         end if
       end do
 !
@@ -146,9 +147,9 @@
       subroutine int_vol_temp_ele_upw                                   &
      &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,  &
      &          dt, i_field, i_velo, i_SGS_flux, iak_diff_flux,         &
-     &          node, ele, fluid, property, nod_fld, jac_3d, rhs_tbl,   &
-     &          FEM_elens, diff_coefs, ncomp_ele, iele_velo, d_ele,     &
-     &          mhd_fem_wk, fem_wk, f_nl)
+     &          node, ele, fluid, property, nod_fld, g_FEM, jac_3d,     &
+     &          rhs_tbl, FEM_elens, diff_coefs, ncomp_ele, iele_velo,   &
+     &          d_ele, mhd_fem_wk, fem_wk, f_nl)
 !
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele
@@ -166,6 +167,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -202,7 +204,7 @@
           call fem_skv_scl_inertia_msgs_upw                             &
      &       (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final, dt, &
      &        diff_coefs%num_field, iak_diff_flux, diff_coefs%ak,       &
-     &        ele, g_FEM1, jac_3d, FEM_elens, fem_wk%scalar_1,          &
+     &        ele, g_FEM, jac_3d, FEM_elens, fem_wk%scalar_1,           &
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, d_ele(1,iele_velo),   &
      &        d_ele(1,iele_velo), fem_wk%sk6)
         else if(iflug_SGS_term .ne. id_SGS_none) then
@@ -210,12 +212,12 @@
      &        i_SGS_flux, property%coef_nega_adv, mhd_fem_wk%sgs_v1)
           call fem_skv_scl_inertia_sgs_upwind                           &
      &       (fluid%istack_ele_fld_smp, num_int, k2, dt,                &
-     &        ele, g_FEM1, jac_3d, fem_wk%scalar_1, mhd_fem_wk%sgs_v1,  &
+     &        ele, g_FEM, jac_3d, fem_wk%scalar_1, mhd_fem_wk%sgs_v1,   &
      &        d_ele(1,iele_velo), d_ele(1,iele_velo), fem_wk%sk6)
         else
           call fem_skv_scalar_inertia_upwind(fluid%istack_ele_fld_smp,  &
      &       num_int, k2, dt, fem_wk%scalar_1, d_ele(1,iele_velo),      &
-     &       d_ele(1,iele_velo), ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &       d_ele(1,iele_velo), ele, g_FEM, jac_3d, fem_wk%sk6)
         end if
       end do
 !

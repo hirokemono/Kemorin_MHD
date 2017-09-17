@@ -175,8 +175,8 @@
       call int_vol_sk_po_bc                                             &
      &   (cmt_param%iflag_c_velo, SGS_param%ifilter_final,              &
      &    FEM_prm%npoint_poisson_int, iphys%i_p_phi, iak_diff_v,        &
-     &    node, ele, nod_fld, jacobians%jac_3d_l, rhs_tbl, FEM_elens,   &
-     &    diff_coefs, Vnod_bcs%nod_bc_p, fem_wk, f_l)
+     &    node, ele, nod_fld, g_FEM1, jacobians%jac_3d_l, rhs_tbl,      &
+     &    FEM_elens, diff_coefs, Vnod_bcs%nod_bc_p, fem_wk, f_l)
 !
 !   add boundary term for fixed pressure
 !
@@ -270,8 +270,8 @@
       call int_vol_sk_mp_bc                                             &
      &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
      &    FEM_prm%npoint_poisson_int, iphys%i_m_phi, iak_diff_b,        &
-     &    node, ele, nod_fld, jacobians%jac_3d_l, rhs_tbl, FEM_elens,   &
-     &    diff_coefs, Bnod_bcs%nod_bc_f, fem_wk, f_l)
+     &    node, ele, nod_fld, g_FEM1, jacobians%jac_3d_l, rhs_tbl,      &
+     &    FEM_elens, diff_coefs, Bnod_bcs%nod_bc_f, fem_wk, f_l)
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !
@@ -367,8 +367,8 @@
       call int_vol_sk_mp_bc                                             &
      &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
      &    FEM_prm%npoint_poisson_int, iphys%i_m_phi, iak_diff_b,        &
-     &    node, ele, nod_fld, jacobians%jac_3d_l, rhs_tbl, FEM_elens,   &
-     &    diff_coefs, Bnod_bcs%nod_bc_f, fem_wk, f_l)
+     &    node, ele, nod_fld, g_FEM1, jacobians%jac_3d_l, rhs_tbl,      &
+     &    FEM_elens, diff_coefs, Bnod_bcs%nod_bc_f, fem_wk, f_l)
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !

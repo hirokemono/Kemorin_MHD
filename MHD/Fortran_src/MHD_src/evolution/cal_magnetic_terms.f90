@@ -131,14 +131,14 @@
      &     (i_field, iak_diff_uxb, FEM_prm%npoint_t_evo_int, dt,        &
      &      SGS_param, cmt_param, node, ele, conduct, cd_prop,          &
      &      iphys, nod_fld, iphys_ele, ele_fld,                         &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,             &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,     &
      &      diff_coefs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_magne_monitor_pg                                   &
      &     (i_field, iak_diff_uxb, FEM_prm%npoint_t_evo_int,            &
      &      SGS_param, cmt_param, node, ele, conduct, cd_prop,          &
      &      iphys, nod_fld, iphys_ele, ele_fld,                         &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,             &
+     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,     &
      &      diff_coefs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !

@@ -55,7 +55,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_jacobian_2d
       use t_table_FEM_const
@@ -88,6 +88,7 @@
      &          fem_int, FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk,   &
      &          rhs_mat, nod_fld)
 !
+      use m_fem_gauss_int_coefs
       use int_surf_div_fluxes_sgs
       use cal_multi_pass
       use cal_ff_smp_to_ffs
@@ -133,7 +134,7 @@
      &    (iflag_supg, num_int, ifilter_final, iflag_commute_flux,      &
      &     i_velo, i_field, i_SGS_flux, iak_diff_flux, dt,              &
      &     node, ele, fluid, property, nod_fld, iphys_ele, ele_fld,     &
-     &     fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,              &
+     &     g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,      &
      &     diff_coefs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
 !
       if(iflag_commute_field .ne. id_SGS_commute_OFF                    &
@@ -176,7 +177,7 @@
      &         (iflag_supg, num_int, ifilter_final, iflag_commute_flux, &
      &          i_velo, i_field, i_SGS_flux, iak_diff_flux, dt,         &
      &          node, ele, fluid, property, nod_fld,                    &
-     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          iphys_ele, ele_fld, g_FEM, jac_3d, rhs_tbl, FEM_elens,  &
      &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_SGS_div_flux
@@ -197,6 +198,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -210,14 +212,14 @@
       if(iflag_commute_flux .eq. id_SGS_commute_ON) then
         if(iflag_supg .gt. id_turn_OFF) then
           call int_vol_div_SGS_vec_flux_upw(node, ele, nod_fld,         &
-     &       g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
+     &       g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,             &
      &       fluid%istack_ele_fld_smp, num_int, dt,                     &
      &       i_velo, i_field, i_SGS_flux, ifilter_final, iak_diff_flux, &
      &       ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,        &
      &       property%coef_nega_adv, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_SGS_vec_flux(node, ele, nod_fld,             &
-     &       g_FEM1, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
+     &       g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,             &
      &       fluid%istack_ele_fld_smp, num_int,                         &
      &       i_velo, i_field, i_SGS_flux, ifilter_final, iak_diff_flux, &
      &       property%coef_nega_adv, fem_wk, mhd_fem_wk, f_nl)
@@ -225,13 +227,13 @@
       else
         if(iflag_supg .gt. id_turn_OFF) then
           call int_vol_div_w_const_upw                                  &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
               fluid%istack_ele_fld_smp, num_int, dt,                    &
      &        i_SGS_flux, ele_fld%ntot_phys, iphys_ele%i_velo,          &
      &        ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
         else
           call int_vol_div_w_const                                      &
-     &       (node, ele, g_FEM1, jac_3d, rhs_tbl, nod_fld,              &
+     &       (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,               &
      &        fluid%istack_ele_fld_smp, num_int,                        &
      &        i_SGS_flux, property%coef_nega_adv, fem_wk, f_nl)
         end if

@@ -12,13 +12,13 @@
 !!     &         (num_int, SGS_param, cmt_param,                        &
 !!     &          node, ele, conduct, cd_prop, iphys, nod_fld,          &
 !!     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,            &
-!!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
+!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_magne_pre_ele_upm                            &
 !!     &         (num_int, dt, SGS_param, cmt_param,                    &
 !!     &          node, ele, conduct, cd_prop, iphys, nod_fld,          &
 !!     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,            &
-!!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
+!!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -39,10 +39,8 @@
       module int_vol_magne_pre
 !
       use m_precision
-!
       use m_machine_parameter
       use m_phys_constants
-      use m_fem_gauss_int_coefs
 !
       use t_SGS_control_parameter
       use t_physical_property
@@ -50,7 +48,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -72,7 +70,7 @@
      &         (num_int, SGS_param, cmt_param,                          &
      &          node, ele, conduct, cd_prop, iphys, nod_fld,            &
      &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,              &
-     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
+     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
@@ -93,6 +91,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -132,7 +131,7 @@
      &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
      &      cd_prop%coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1, &
      &      d_ele(1,iphys_ele%i_velo),  fem_wk%vector_1,                &
-     &      ele, g_FEM1, jac_3d, fem_wk%sk6)
+     &      ele, g_FEM, jac_3d, fem_wk%sk6)
 !
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                    &
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
@@ -142,7 +141,7 @@
            call fem_skv_div_sgs_asym_tsr(conduct%istack_ele_fld_smp,    &
      &         num_int, k2, SGS_param%ifilter_final,                    &
      &         diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,       &
-     &         ele, g_FEM1, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,       &
+     &         ele, g_FEM, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,        &
      &         fem_wk%vector_1, fem_wk%sk6)
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
@@ -150,7 +149,7 @@
      &        mhd_fem_wk%sgs_v1)
           call fem_skv_div_asym_tsr                                     &
      &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
-     &        ele, g_FEM1, jac_3d, mhd_fem_wk%sgs_v1, fem_wk%sk6)
+     &        ele, g_FEM, jac_3d, mhd_fem_wk%sgs_v1, fem_wk%sk6)
         end if
       end do
 !
@@ -165,7 +164,7 @@
      &         (num_int, dt, SGS_param, cmt_param,                      &
      &          node, ele, conduct, cd_prop, iphys, nod_fld,            &
      &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,              &
-     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
+     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
@@ -185,6 +184,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: conduct
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(conductive_property), intent(in) :: cd_prop
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -225,7 +225,7 @@
      &     (conduct%istack_ele_fld_smp, num_int, k2, dt,                &
      &      cd_prop%coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1, &
      &      d_ele(1,iphys_ele%i_velo), fem_wk%vector_1,                 &
-     &      d_ele(1,iphys_ele%i_magne), ele, g_FEM1, jac_3d,            &
+     &      d_ele(1,iphys_ele%i_magne), ele, g_FEM, jac_3d,             &
      &      fem_wk%sk6)
 !
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                    &
@@ -237,7 +237,7 @@
      &       (conduct%istack_ele_fld_smp, num_int,                      &
      &        k2, SGS_param%ifilter_final, dt,                          &
      &        diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,        &
-     &        ele, g_FEM1, jac_3d, FEM_elens,                           &
+     &        ele, g_FEM, jac_3d, FEM_elens,                            &
      &        d_ele(1,iphys_ele%i_magne), mhd_fem_wk%sgs_v1,            &
      &        fem_wk%vector_1, fem_wk%sk6)
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
@@ -246,7 +246,7 @@
      &        mhd_fem_wk%sgs_v1)
           call fem_skv_div_as_tsr_upw                                   &
      &       (conduct%istack_ele_fld_smp, num_int, k2, dt,              &
-     &        d_ele(1,iphys_ele%i_magne), ele, g_FEM1, jac_3d,          &
+     &        d_ele(1,iphys_ele%i_magne), ele, g_FEM, jac_3d,           &
      &        mhd_fem_wk%sgs_v1, fem_wk%sk6)
         end if
 !
