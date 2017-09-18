@@ -97,7 +97,6 @@
         int_start2(n) = int_start2(n-1) + (n-1)*(n-1)
         int_start1(n) = int_start1(n-1) + (n-1)
       end do
-
 !
       end subroutine allocate_gauss_coef_4_fem
 !
@@ -132,38 +131,6 @@
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-!
-      subroutine copy_fem_gauss_int_coefs(g_FEM)
-!
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-!
-!
-      max_int_point = g_FEM%max_int_point
-!
-      maxtot_int_3d = g_FEM%maxtot_int_3d
-      maxtot_int_2d = g_FEM%maxtot_int_2d
-      maxtot_int_1d = g_FEM%maxtot_int_1d
-!
-      allocate( owe(maxtot_int_1d)   )
-      allocate( owe2d(maxtot_int_2d) )
-      allocate( owe3d(maxtot_int_3d) )
-!
-      allocate( int_start1(max_int_point) )
-      allocate( int_start2(max_int_point) )
-      allocate( int_start3(max_int_point) )
-!
-      int_start1(1:max_int_point) = g_FEM%int_start1(1:max_int_point)
-      int_start2(1:max_int_point) = g_FEM%int_start2(1:max_int_point)
-      int_start3(1:max_int_point) = g_FEM%int_start3(1:max_int_point)
-!
-      owe(1:maxtot_int_1d) =   g_FEM%owe(1:maxtot_int_1d)
-      owe2d(1:maxtot_int_2d) = g_FEM%owe2d(1:maxtot_int_2d)
-      owe3d(1:maxtot_int_3d) = g_FEM%owe3d(1:maxtot_int_3d)
-!
-      end subroutine copy_fem_gauss_int_coefs
-!
-!-----------------------------------------------------------------------
-!
 !
       subroutine copy_fem_gauss_int_coef_type(g_FEM)
 !

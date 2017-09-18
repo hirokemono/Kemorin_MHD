@@ -43,6 +43,7 @@
       subroutine init_analyzer
 !
       use m_ctl_params_4_gen_table
+      use m_fem_gauss_int_coefs
       use t_shape_functions
 !
       use input_control_gen_table
@@ -90,7 +91,9 @@
       if (iflag_debug.gt.0) write(*,*) 'const_jacobians_element'
       call max_int_point_by_etype(org_femmesh%mesh%ele%nnod_4_ele)
       call initialize_FEM_integration                                   &
-     &   (spfs_I%spf_3d, spfs_I%spf_2d, spfs_I%spf_1d)
+     &   (g_FEM1, spfs_I%spf_3d, spfs_I%spf_2d, spfs_I%spf_1d)
+      call copy_fem_gauss_int_coefs(g_FEM1, jacobians_I%g_FEM)
+!
       call alloc_vol_shape_func(org_femmesh%mesh%ele%nnod_4_ele,        &
      &    maxtot_int_3d, spfs_I%spf_3d)
       call const_jacobians_element(my_rank, nprocs,                     &

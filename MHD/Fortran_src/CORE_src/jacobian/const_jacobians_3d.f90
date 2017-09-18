@@ -5,7 +5,8 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H. Matsui on June. 2006
 !
-!!      subroutine initialize_FEM_integration
+!!      subroutine initialize_FEM_integration                           &
+!!     &         (g_FEM, spf_3d, spf_2d, spf_1d)
 !!
 !!      subroutine sel_jacobian_type(node, ele, spf_3d, jac_3d)
 !!      subroutine cal_jacobian_trilinear(node, ele, jac_3d)
@@ -23,10 +24,10 @@
       use m_machine_parameter
 !
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       use t_geometry_data
       use t_shape_functions
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_group_data
       use t_surface_boundary
@@ -46,11 +47,14 @@
 !> Construct shape function, difference of shape function, and Jacobian
 !> for hexadedral element
 !
-      subroutine initialize_FEM_integration(spf_3d, spf_2d, spf_1d)
+      subroutine initialize_FEM_integration                             &
+     &         (g_FEM, spf_3d, spf_2d, spf_1d)
 !
+      use m_fem_gauss_int_coefs
       use set_gauss_int_parameters
       use set_integration_indices
 !
+      type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
       type(volume_shape_function), intent(inout) :: spf_3d
       type(surface_shape_function), intent(inout) :: spf_2d
       type(edge_shape_function), intent(inout) :: spf_1d
@@ -90,7 +94,7 @@
      &   (maxtot_int_1d, spf_1d%xi, maxtot_int_3d, max_int_point,       &
      &    spf_3d%l_int, spf_3d%xi, spf_3d%ei, spf_3d%zi)
 !
-      call copy_fem_gauss_int_coef_type(g_FEM1)
+      call copy_fem_gauss_int_coef_type(g_FEM)
 !
       end subroutine initialize_FEM_integration
 !

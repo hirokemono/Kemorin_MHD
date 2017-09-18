@@ -14,6 +14,7 @@
 !!      subroutine dealloc_gauss_coef_4_fem(g_FEM)
 !!
 !!      subroutine num_of_int_points(g_FEM)
+!!      subroutine copy_fem_gauss_int_coefs(org_g_FEM, new_g_FEM)
 !
       module t_fem_gauss_int_coefs
 !
@@ -41,7 +42,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !> Set maximum number for integration points of FEM
 !
@@ -80,7 +80,6 @@
       subroutine alloc_gauss_coef_4_fem(g_FEM)
 !
       type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
-      integer(kind = kint) :: n
 !
       allocate(g_FEM%owe(g_FEM%maxtot_int_1d)  )
       allocate(g_FEM%owe2d(g_FEM%maxtot_int_2d))
@@ -94,14 +93,7 @@
       g_FEM%owe2d = 0.0d0
       g_FEM%owe3d = 0.0d0
 !
-      g_FEM%int_start3(1) = 0
-      g_FEM%int_start2(1) = 0
-      g_FEM%int_start1(1) = 0
-      do n = 2, g_FEM%max_int_point
-        g_FEM%int_start3(n) = g_FEM%int_start3(n-1) + (n-1)*(n-1)*(n-1)
-        g_FEM%int_start2(n) = g_FEM%int_start2(n-1) + (n-1)*(n-1)
-        g_FEM%int_start1(n) = g_FEM%int_start1(n-1) + (n-1)
-      end do
+      call set_start_addres_4_FEM_int(g_FEM)
 !
       end subroutine alloc_gauss_coef_4_fem
 !
@@ -140,5 +132,49 @@
       end subroutine num_of_int_points
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine set_start_addres_4_FEM_int(g_FEM)
+!
+      type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
+      integer(kind = kint) :: n
+!
+!
+      g_FEM%int_start3(1) = 0
+      g_FEM%int_start2(1) = 0
+      g_FEM%int_start1(1) = 0
+      do n = 2, g_FEM%max_int_point
+        g_FEM%int_start3(n) = g_FEM%int_start3(n-1) + (n-1)*(n-1)*(n-1)
+        g_FEM%int_start2(n) = g_FEM%int_start2(n-1) + (n-1)*(n-1)
+        g_FEM%int_start1(n) = g_FEM%int_start1(n-1) + (n-1)
+      end do
+!
+      end subroutine set_start_addres_4_FEM_int
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_fem_gauss_int_coefs(org_g_FEM, new_g_FEM)
+!
+      type(FEM_gauss_int_coefs), intent(in) :: org_g_FEM
+      type(FEM_gauss_int_coefs), intent(inout) :: new_g_FEM
+!
+!
+      new_g_FEM%max_int_point = org_g_FEM%max_int_point
+!
+      new_g_FEM%maxtot_int_3d = org_g_FEM%maxtot_int_3d
+      new_g_FEM%maxtot_int_2d = org_g_FEM%maxtot_int_2d
+      new_g_FEM%maxtot_int_1d = org_g_FEM%maxtot_int_1d
+!
+      call alloc_gauss_coef_4_fem(new_g_FEM)
+!
+      new_g_FEM%owe(1:new_g_FEM%maxtot_int_1d) =                        &
+     &      org_g_FEM%owe(1:new_g_FEM%maxtot_int_1d)
+      new_g_FEM%owe2d(1:new_g_FEM%maxtot_int_2d) =                      &
+     &      org_g_FEM%owe2d(1:new_g_FEM%maxtot_int_2d)
+      new_g_FEM%owe3d(1:new_g_FEM%maxtot_int_3d) =                      &
+     &      org_g_FEM%owe3d(1:new_g_FEM%maxtot_int_3d)
+!
+      end subroutine copy_fem_gauss_int_coefs
+!
+!-----------------------------------------------------------------------
 !
       end module t_fem_gauss_int_coefs

@@ -69,7 +69,9 @@
 !
 !
       call initialize_FEM_integration                                   &
-     &  (spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+     &   (g_FEM1, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+      call copy_fem_gauss_int_coefs(g_FEM1, jacobians%g_FEM)
+!
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
       call const_jacobian_and_volume(my_rank, nprocs,                   &
      &    mesh%node, group%surf_grp, group%infty_grp,                   &
@@ -156,7 +158,9 @@
 !
 !
       call initialize_FEM_integration                                   &
-     &   (spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+     &   (g_FEM1, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+      call copy_fem_gauss_int_coefs(g_FEM1, jacobians%g_FEM)
+!
       call alloc_vol_shape_func                                         &
      &   (ele%nnod_4_ele, maxtot_int_3d, spfs%spf_3d)
       call const_jacobians_element(my_rank, nprocs,                     &

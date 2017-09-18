@@ -37,6 +37,7 @@
       use m_geometry_constants
       use m_fem_gauss_int_coefs
 !
+      use t_fem_gauss_int_coefs
       use t_geometry_data
       use t_surface_data
       use t_edge_data
@@ -51,6 +52,9 @@
 !
 !>     Stracture for Jacobians for FEM grid
       type jacobians_type
+!>     Gauss points and weights
+        type(FEM_gauss_int_coefs), pointer :: g_FEM
+!
 !>     Stracture for Jacobians for element
         type(jacobians_3d), pointer :: jac_3d
 !>     Stracture for Jacobians for surface

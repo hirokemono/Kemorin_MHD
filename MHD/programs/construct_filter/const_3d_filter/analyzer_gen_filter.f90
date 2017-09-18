@@ -143,7 +143,9 @@
       if (iflag_debug.eq.1)  write(*,*)  'const_jacobian_and_volume'
       call maximum_integration_points(num_int_points)
       call initialize_FEM_integration                                   &
-     &   (spfs_f%spf_3d, spfs_f%spf_2d, spfs_f%spf_1d)
+     &   (g_FEM1, spfs_f%spf_3d, spfs_f%spf_2d, spfs_f%spf_1d)
+      call copy_fem_gauss_int_coefs(g_FEM1, fem_int_f%jcs%g_FEM)
+!
       call const_jacobian_and_volume(my_rank, nprocs,                   &
      &    mesh_filter%node, group_filter%surf_grp,                      &
      &    group_filter%infty_grp, mesh_filter%ele,                      &
