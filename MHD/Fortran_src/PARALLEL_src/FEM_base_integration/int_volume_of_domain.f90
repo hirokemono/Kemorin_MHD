@@ -70,6 +70,8 @@
 !
       call initialize_FEM_integration                                   &
      &   (g_FEM1, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+!
+      allocate(jacobians%g_FEM)
       call copy_fem_gauss_int_coefs(g_FEM1, jacobians%g_FEM)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
@@ -159,6 +161,8 @@
 !
       call initialize_FEM_integration                                   &
      &   (g_FEM1, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+!
+      allocate(jacobians%g_FEM)
       call copy_fem_gauss_int_coefs(g_FEM1, jacobians%g_FEM)
 !
       call alloc_vol_shape_func                                         &

@@ -144,6 +144,8 @@
       call maximum_integration_points(num_int_points)
       call initialize_FEM_integration                                   &
      &   (g_FEM1, spfs_f%spf_3d, spfs_f%spf_2d, spfs_f%spf_1d)
+!
+      allocate(fem_int_f%jcs%g_FEM)
       call copy_fem_gauss_int_coefs(g_FEM1, fem_int_f%jcs%g_FEM)
 !
       call const_jacobian_and_volume(my_rank, nprocs,                   &

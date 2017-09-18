@@ -92,6 +92,8 @@
       call max_int_point_by_etype(org_femmesh%mesh%ele%nnod_4_ele)
       call initialize_FEM_integration                                   &
      &   (g_FEM1, spfs_I%spf_3d, spfs_I%spf_2d, spfs_I%spf_1d)
+!
+      allocate(jacobians_I%g_FEM)
       call copy_fem_gauss_int_coefs(g_FEM1, jacobians_I%g_FEM)
 !
       call alloc_vol_shape_func(org_femmesh%mesh%ele%nnod_4_ele,        &
