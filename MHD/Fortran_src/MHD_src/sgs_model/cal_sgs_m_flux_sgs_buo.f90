@@ -60,7 +60,6 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -165,10 +164,10 @@
      &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,               &
      &    FEM_prm, SGS_par%model_p, SGS_par%filter_p,                   &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
-     &    g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,       &
-     &    filtering, sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,     &
-     &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,        &
-     &    nod_fld)
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
+     &    FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, mlump_fl,     &
+     &    wk_filter, mhd_fem_wk, rhs_mat%fem_wk,                        &
+     &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
 !   lead work of Reynolds stress
 !
@@ -202,7 +201,7 @@
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
       call select_int_vol_sgs_buoyancy(FEM_prm%npoint_t_evo_int,        &
      &    node, ele, fl_prop, layer_tbl, iphys, nod_fld,                &
-     &    fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,                     &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,  &
      &    wk_lsq%nlayer, wk_lsq%slocal)
 !
       call sum_lsq_coefs_4_comps(ncomp_sgs_buo, wk_lsq)
@@ -260,7 +259,7 @@
 !
       subroutine select_int_vol_sgs_buoyancy                            &
      &         (num_int, node, ele, fl_prop, layer_tbl, iphys, nod_fld, &
-     &          jac_3d_q, jac_3d_l, n_layer_d, sgs_l)
+     &          g_FEM, jac_3d_q, jac_3d_l, n_layer_d, sgs_l)
 !
       use int_rms_ave_ele_grps
 !
@@ -269,6 +268,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(phys_data), intent(in) :: nod_fld
 !
@@ -282,7 +282,7 @@
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
-     &     (node, ele, layer_tbl%e_grp, g_FEM1, jac_3d_q, jac_3d_l,     &
+     &     (node, ele, layer_tbl%e_grp, g_FEM, jac_3d_q, jac_3d_l,      &
      &      num_int, nod_fld%ntot_phys, iphys%i_reynolds_wk,            &
      &      nod_fld%d_fld, nod_fld%ntot_phys, iphys%i_SGS_buo_wk,       &
      &      nod_fld%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,2),          &
@@ -290,14 +290,14 @@
 !
         if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call int_vol_rms_ave_ele_grps                                 &
-     &       (node, ele, layer_tbl%e_grp, g_FEM1, jac_3d_q, jac_3d_l,   &
+     &       (node, ele, layer_tbl%e_grp, g_FEM, jac_3d_q, jac_3d_l,    &
      &        num_int, nod_fld%ntot_phys,                               &
      &        iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                   &
      &        sgs_l(1,3), sgs_l(1,6))
         end if
       else if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
-     &     (node, ele, layer_tbl%e_grp, g_FEM1, jac_3d_q, jac_3d_l,     &
+     &     (node, ele, layer_tbl%e_grp, g_FEM, jac_3d_q, jac_3d_l,      &
      &      num_int, nod_fld%ntot_phys, iphys%i_reynolds_wk,            &
      &      nod_fld%d_fld, nod_fld%ntot_phys,                           &
      &      iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                     &

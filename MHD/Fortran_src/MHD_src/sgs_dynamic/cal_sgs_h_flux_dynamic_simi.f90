@@ -6,13 +6,13 @@
 !!      subroutine s_cal_sgs_s_flux_dynamic_simi                        &
 !!     &        (num_int, itype_Csym_flux, ifield, ifield_f, ifield_w,  &
 !!     &         ivelo, ivelo_f, i_sgs, iak_sgs_hlux, icomp_sgs_flux,   &
-!!     &         SGS_par, mesh, iphys, jacobians, rhs_tbl, FEM_filters, &
+!!     &         SGS_par, mesh, iphys, jacs, rhs_tbl, FEM_filters,      &
 !!     &         m_lump, FEM_SGS_wk, rhs_mat, nod_fld,                  &
 !!     &         sgs_coefs, sgs_coefs_nod)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_address), intent(in) :: iphys
-!!        type(jacobians_type), intent(in) :: jacobians
+!!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
@@ -34,7 +34,6 @@
       use t_mesh_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_material_property
@@ -54,7 +53,7 @@
       subroutine s_cal_sgs_s_flux_dynamic_simi                          &
      &        (num_int, itype_Csym_flux, ifield, ifield_f, ifield_w,    &
      &         ivelo, ivelo_f, i_sgs, iak_sgs_hlux, icomp_sgs_flux,     &
-     &         SGS_par, mesh, iphys, jacobians, rhs_tbl, FEM_filters,   &
+     &         SGS_par, mesh, iphys, jacs, rhs_tbl, FEM_filters,        &
      &         m_lump, FEM_SGS_wk, rhs_mat, nod_fld,                    &
      &         sgs_coefs, sgs_coefs_nod)
 !
@@ -76,7 +75,7 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(phys_address), intent(in) :: iphys
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: m_lump
@@ -138,13 +137,13 @@
      &   n_vector, iak_sgs_hlux, icomp_sgs_flux
       call cal_model_coefs                                              &
      &   (SGS_par, FEM_filters%layer_tbl, mesh%node, mesh%ele,          &
-     &    iphys, nod_fld, g_FEM1, jacobians%jac_3d, jacobians%jac_3d_l, &
+     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,       &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux, icomp_sgs_flux,      &
      &    num_int, FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
      &    FEM_SGS_wk%wk_sgs, sgs_coefs)
 !
       call cal_ele_vector_2_node                                        &
-     &   (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d, rhs_tbl,       &
+     &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, rhs_tbl,        &
      &    m_lump, sgs_coefs%ntot_comp, icomp_sgs_flux, sgs_coefs%ak,    &
      &    sgs_coefs_nod%ntot_comp, icomp_sgs_flux, sgs_coefs_nod%ak,    &
      &    rhs_mat%fem_wk, rhs_mat%f_l)
