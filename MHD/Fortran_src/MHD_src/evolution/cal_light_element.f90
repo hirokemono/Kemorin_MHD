@@ -8,7 +8,7 @@
 !!      subroutine s_cal_light_element                                  &
 !!     &         (i_field, dt, FEM_prm, SGS_par, femmesh, surf, fluid,  &
 !!     &          property, ref_param, nod_bcs, sf_bcs,                 &
-!!     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,        &
+!!     &          iphys, iphys_ele, ele_fld, fem_int,                   &
 !!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
 !!     &          mlump_fl, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,       &
@@ -29,8 +29,7 @@
 !!        type(SGS_terms_address), intent(in) :: iphys_elediff
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
-!!        type(jacobians_type), intent(in) :: jacobians
-!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
@@ -61,7 +60,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
+      use t_jacobians
       use t_table_FEM_const
       use t_MHD_finite_element_mat
       use t_layering_ele_list
@@ -87,7 +86,7 @@
       subroutine s_cal_light_element                                    &
      &         (i_field, dt, FEM_prm, SGS_par, femmesh, surf, fluid,    &
      &          property, ref_param, nod_bcs, sf_bcs,                   &
-     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,          &
+     &          iphys, iphys_ele, ele_fld, fem_int,                     &
      &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
      &          mlump_fl, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,         &
@@ -126,8 +125,7 @@
       type(SGS_terms_address), intent(in) :: iphys_elediff
       type(phys_data), intent(in) :: ele_fld
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
-      type(jacobians_type), intent(in) :: jacobians
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(finite_element_integration), intent(in) :: fem_int
       type(filtering_data_type), intent(in) :: filtering
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
@@ -147,7 +145,7 @@
      &   (i_field, dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,     &
      &    SGS_par%filter_p, femmesh%mesh, femmesh%group, surf, fluid,   &
      &    property, ref_param, nod_bcs, sf_bcs, iphys, iphys_ele,       &
-     &    ele_fld, jacobians, rhs_tbl, FEM_elens,                       &
+     &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,             &
      &    icomp_sgs, ifld_diff, iphys_elediff, sgs_coefs,               &
      &    sgs_coefs_nod, diff_coefs, filtering, mlump_fl, Smatrix,      &
      &    ak_MHD%ak_d_composit, MGCG_WK, FEM_SGS_wk%wk_filter,          &
@@ -163,7 +161,7 @@
      &         (i_field, dt, FEM_prm, SGS_param, cmt_param,             &
      &          filter_param, mesh, group, surf, fluid,                 &
      &          property, ref_param, nod_bcs, sf_bcs,                   &
-     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,          &
+     &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl,               &
      &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
      &          sgs_coefs, sgs_coefs_nod,  diff_coefs, filtering,       &
      &          mlump_fl, Smatrix, ak_diffuse, MGCG_WK, wk_filter,      &
@@ -201,7 +199,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: icomp_sgs
@@ -234,7 +232,7 @@
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,      &
      &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo, SGS_param,     &
      &      filter_param, mesh%nod_comm, mesh%node, mesh%ele, fluid,    &
-     &      iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,      &
+     &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
      &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, mlump_fl,   &
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -248,7 +246,7 @@
      &     .and. property%coef_exp.gt.zero) then
         call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
-     &      mesh%node, mesh%ele, nod_fld, g_FEM1, jacobians%jac_3d,     &
+     &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
      &      rhs_tbl, FEM_elens, diff_coefs, ifld_diff%i_light,          &
      &      property%coef_exp,  ak_diffuse, i_field, fem_wk, f_l)
       end if
@@ -262,7 +260,7 @@
      &      dt, iphys%i_light, iphys%i_velo,                            &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
-     &      g_FEM1, jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      mhd_fem_wk, fem_wk, f_nl)
       else
@@ -272,7 +270,7 @@
      &      iphys%i_light, iphys%i_velo,                                &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      mesh%node, mesh%ele, fluid, property, nod_fld,              &
-     &      g_FEM1, jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      mhd_fem_wk, fem_wk, f_nl)
       end if
@@ -280,13 +278,13 @@
 !
       call int_sf_scalar_flux                                           &
      &   (mesh%node, mesh%ele, surf, group%surf_grp,                    &
-     &    g_FEM1, jacobians%jac_sf_grp, rhs_tbl, sf_bcs%flux,           &
+     &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, sf_bcs%flux,            &
      &    FEM_prm%npoint_t_evo_int, ak_diffuse, fem_wk, f_l)
 !
       if(cmt_param%iflag_c_light .ne. id_SGS_commute_OFF                &
           .and. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux(mesh%node, mesh%ele, surf,       &
-     &     group%surf_grp, nod_fld, g_FEM1, jacobians%jac_sf_grp,       &
+     &     group%surf_grp, nod_fld, jacs%g_FEM, jacs%jac_sf_grp,        &
      &      rhs_tbl, FEM_elens, FEM_prm%npoint_t_evo_int,               &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
      &      SGS_param%ifilter_final, iphys%i_SGS_c_flux, iphys%i_velo,  &
@@ -304,14 +302,14 @@
      &       (iphys%i_gref_c, FEM_prm%npoint_t_evo_int, dt,             &
      &        mesh%node, mesh%ele, fluid, nod_fld,                      &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
-     &        g_FEM1, jacobians%jac_3d, rhs_tbl, mhd_fem_wk,            &
+     &        jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,             &
      &        fem_wk, f_nl)
         else
           call cal_stratified_layer                                     &
      &       (iphys%i_gref_t, FEM_prm%npoint_t_evo_int,                 &
      &        mesh%node, mesh%ele, fluid, nod_fld,                      &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
-     &        g_FEM1, jacobians%jac_3d, rhs_tbl, mhd_fem_wk,            &
+     &        jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,             &
      &        fem_wk, f_nl)
         end if
       end if
@@ -320,14 +318,14 @@
       if     (property%iflag_scheme .eq. id_explicit_euler) then
         call cal_scalar_pre_euler(FEM_prm%iflag_comp_supg, i_field, dt, &
      &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
-     &      iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,      &
+     &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
      &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(property%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &     (FEM_prm%iflag_comp_supg, i_field, iphys%i_pre_composit, dt, &
      &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
-     &      iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,      &
+     &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
      &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(property%iflag_scheme .eq. id_Crank_nicolson) then
@@ -336,7 +334,7 @@
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_diffuse, FEM_prm%eps_4_comp_crank, dt, FEM_prm,          &
      &      mesh%nod_comm, mesh%node, mesh%ele, fluid, property,        &
-     &      nod_bcs, iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d,      &
+     &      nod_bcs, iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,       &
      &      rhs_tbl, FEM_elens,  diff_coefs, mlump_fl, Smatrix,         &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -345,8 +343,8 @@
      &     (cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_diffuse, FEM_prm%eps_4_comp_crank, dt, FEM_prm,          &
-     &      mesh%node, mesh%ele, fluid, property, nod_bcs, g_FEM1,      &
-     &      jacobians%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,  &
+     &      mesh%node, mesh%ele, fluid, property, nod_bcs, jacs%g_FEM,  &
+     &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,  &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !

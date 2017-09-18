@@ -11,7 +11,7 @@
 !!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,&
 !!     &          FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,  &
 !!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,         &
-!!     &          jacobians, rhs_tbl, FEM_filters, m_lump, FEM_SGS_wk,  &
+!!     &          jacs, rhs_tbl, FEM_filters, m_lump, FEM_SGS_wk,       &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -24,7 +24,7 @@
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(jacobians_type), intent(in) :: jacobians
+!!        type(jacobians_type), intent(in) :: jacs
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(layering_tbl), intent(in) :: layer_tbl
@@ -50,7 +50,7 @@
       use t_phys_data
       use t_phys_address
       use t_table_FEM_const
-      use m_fem_gauss_int_coefs
+      use t_jacobians
       use t_MHD_finite_element_mat
       use t_FEM_MHD_filter_data
       use t_material_property
@@ -72,7 +72,7 @@
      &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,  &
      &          FEM_prm, SGS_par, mesh, group, surf, fluid, conduct,    &
      &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,           &
-     &          jacobians, rhs_tbl, FEM_filters, m_lump, FEM_SGS_wk,    &
+     &          jacs, rhs_tbl, FEM_filters, m_lump, FEM_SGS_wk,         &
      &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, diff_coefs)
 !
       use average_on_elements
@@ -99,7 +99,7 @@
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: m_lump
@@ -159,7 +159,7 @@
      &            mesh%nod_comm, mesh%node, mesh%ele, surf, fluid,      &
      &            FEM_filters%layer_tbl, group%surf_grp,                &
      &            Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,          &
-     &            jacobians, rhs_tbl, FEM_filters%FEM_elens,            &
+     &            jacs, rhs_tbl, FEM_filters%FEM_elens,                 &
      &            FEM_filters%filtering, m_lump, FEM_SGS_wk%wk_filter,  &
      &            FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                 &
      &            FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
@@ -179,8 +179,8 @@
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
      &      mesh%ele%istack_ele_smp, m_lump, SGS_par%model_p,           &
      &      mesh%nod_comm, mesh%node, mesh%ele, surf,                   &
-     &      group%surf_grp, iphys_ele, ele_fld, g_FEM1,                 &
-     &      jacobians%jac_3d, jacobians%jac_sf_grp,                     &
+     &      group%surf_grp, iphys_ele, ele_fld,                         &
+     &      jacs%g_FEM, jacs%jac_3d, jacs%jac_sf_grp,                   &
      &      FEM_filters%FEM_elens, diff_coefs, Bnod_bcs%nod_bc_b,       &
      &      Asf_bcs%sgs,  rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,     &
      &      rhs_mat%f_nl, nod_fld)
@@ -188,7 +188,7 @@
       if (iphys_ele%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'
         call rotation_on_element_1st                                    &
-     &     (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d,              &
+     &     (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d,               &
      &      mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,          &
      &      iphys%i_vecp, nod_fld, iphys_ele%i_magne, ele_fld)
       end if
@@ -197,7 +197,7 @@
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
         if (iflag_debug.gt.0) write(*,*) 'current_on_element'
         call rotation_on_element_1st                                    &
-     &     (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d,              &
+     &     (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d,               &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      iphys%i_magne, nod_fld, iphys_ele%i_current, ele_fld)
       end if
@@ -247,7 +247,7 @@
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'filtered_magne_on_ele'
             call vector_on_element_1st                                  &
-     &         (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d,          &
+     &         (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d,           &
      &          mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,      &
      &          iphys%i_filter_magne, nod_fld,                          &
      &          iphys_ele%i_filter_magne, ele_fld)
@@ -258,8 +258,8 @@
      &                         'diff_filter_b_on_ele'
            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
      &         mesh%ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,  &
-     &         mesh%node, mesh%ele, nod_fld, g_FEM1,                    &
-     &         jacobians%jac_3d, jacobians%jac_3d_l, mhd_fem_wk)
+     &         mesh%node, mesh%ele, nod_fld, jacs%g_FEM,                &
+     &         jacs%jac_3d, jacs%jac_3d_l, mhd_fem_wk)
          end if
 !
          if(iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
@@ -283,8 +283,8 @@
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
      &        mesh%ele%istack_ele_smp, iphys%i_magne, ie_dbx,           &
-     &        mesh%node, mesh%ele, nod_fld, g_FEM1,                     &
-     &        jacobians%jac_3d, jacobians%jac_3d_l, mhd_fem_wk)
+     &        mesh%node, mesh%ele, nod_fld, jacs%g_FEM,                 &
+     &        jacs%jac_3d, jacs%jac_3d_l, mhd_fem_wk)
         end if
        end if
 !

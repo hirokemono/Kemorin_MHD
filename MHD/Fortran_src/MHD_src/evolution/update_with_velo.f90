@@ -10,7 +10,7 @@
 !!      subroutine update_with_velocity                                 &
 !!     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx, i_step, dt,&
 !!     &          FEM_prm, SGS_par, mesh, group, surf, fluid,           &
-!!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, jacobians,        &
+!!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, jacs,             &
 !!     &          rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk,           &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -23,7 +23,7 @@
 !!        type(potential_surf_bc_type), intent(in) :: Psf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(jacobians_type), intent(in) :: jacobians
+!!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
@@ -49,7 +49,7 @@
       use t_phys_data
       use t_phys_address
       use t_work_FEM_integration
-      use m_fem_gauss_int_coefs
+      use t_jacobians
       use t_MHD_finite_element_mat
       use t_FEM_MHD_filter_data
       use t_material_property
@@ -67,7 +67,7 @@
       subroutine update_with_velocity                                   &
      &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx, i_step, dt,  &
      &          FEM_prm, SGS_par, mesh, group, surf, fluid,             &
-     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, jacobians,          &
+     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, jacs,               &
      &          rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk,             &
      &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, diff_coefs)
 !
@@ -92,7 +92,7 @@
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: mlump_fl
@@ -113,7 +113,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'velocity_on_element'
         call vector_on_element_1st                                      &
-     &     (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d,              &
+     &     (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d,               &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_velo, nod_fld, iphys_ele%i_velo, ele_fld)
       end if
@@ -123,7 +123,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'vorticity_on_element'
         call rotation_on_element_1st                                    &
-     &     (mesh%node, mesh%ele, g_FEM1, jacobians%jac_3d,              &
+     &     (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d,               &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      iphys%i_velo, nod_fld, iphys_ele%i_vort, ele_fld)
       end if
@@ -178,9 +178,9 @@
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_filter_v_on_ele'
            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
-     &        fluid%istack_ele_fld_smp, iphys%i_filter_velo, ie_dfvx,   &
-     &        mesh%node, mesh%ele, nod_fld, g_FEM1,                     &
-     &        jacobians%jac_3d, jacobians%jac_3d_l, mhd_fem_wk)
+     &        fluid%istack_ele_fld_smp, iphys%i_filter_velo,            &
+     &        ie_dfvx, mesh%node, mesh%ele, nod_fld,                    &
+     &        jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, mhd_fem_wk)
          end if
 !
         if (SGS_par%commute_p%iflag_c_velo .eq. id_SGS_commute_ON       &
@@ -191,7 +191,7 @@
      &       (iak_diff_v, icomp_diff_v, dt, FEM_prm, SGS_par,           &
      &        mesh%nod_comm, mesh%node, mesh%ele, surf, group%surf_grp, &
      &        Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, fluid,       &
-     &        FEM_filters%layer_tbl, jacobians, rhs_tbl,                &
+     &        FEM_filters%layer_tbl, jacs, rhs_tbl,                     &
      &        FEM_filters%FEM_elens, FEM_filters%filtering,             &
      &        FEM_SGS_wk%wk_filter, FEM_SGS_wk%wk_cor,                  &
      &        FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, mlump_fl,          &
@@ -210,7 +210,7 @@
            call sel_int_diff_vector_on_ele                              &
      &        (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,      &
      &        iphys%i_velo, ie_dvx,mesh%node, mesh%ele, nod_fld,        &
-     &        g_FEM1, jacobians%jac_3d, jacobians%jac_3d_l, mhd_fem_wk)
+     &        jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, mhd_fem_wk)
          end if
        end if
 !

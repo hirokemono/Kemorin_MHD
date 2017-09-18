@@ -9,14 +9,12 @@
 !!@verbatim
 !!      subroutine update_with_temperature(iak_diff_t, icomp_diff_t,    &
 !!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid, &
-!!     &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,           &
-!!     &        rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk, rhs_mat,    &
-!!     &        nod_fld, diff_coefs)
+!!     &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,&
+!!     &        mlump_fl, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !!      subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,   &
 !!     &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid, &
-!!     &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,           &
-!!     &        rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk, rhs_mat,    &
-!!     &        nod_fld, diff_coefs)
+!!     &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,&
+!!     &        mlump_fl, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -27,8 +25,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
-!!        type(jacobians_type), intent(in) :: jacobians
-!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -50,6 +47,7 @@
       use t_surface_data
       use t_phys_data
       use t_phys_address
+      use t_jacobians
       use t_table_FEM_const
       use t_FEM_MHD_filter_data
       use t_material_property
@@ -68,9 +66,8 @@
 !
       subroutine update_with_temperature(iak_diff_t, icomp_diff_t,      &
      &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid,   &
-     &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,             &
-     &        rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk, rhs_mat,      &
-     &        nod_fld, diff_coefs)
+     &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,  &
+     &        mlump_fl, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -94,8 +91,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_type), intent(in) :: jacobians
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -186,7 +182,8 @@
      &             iak_diff_t, icomp_diff_t, SGS_par,                   &
      &             mesh%nod_comm, mesh%node, mesh%ele, surf,            &
      &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
-     &             fluid, FEM_filters%layer_tbl, jacobians, rhs_tbl,    &
+     &             fluid, FEM_filters%layer_tbl,                        &
+     &             fem_int%jcs, fem_int%rhs_tbl,                        &
      &             FEM_filters%FEM_elens, FEM_filters%filtering,        &
      &             mlump_fl, FEM_SGS_wk%wk_filter,                      &
      &             FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
@@ -204,9 +201,8 @@
 !
       subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,     &
      &        i_step, dt, FEM_prm, SGS_par, mesh, group, surf, fluid,   &
-     &        sf_bcs, iphys, iphys_ele, ele_fld, jacobians,             &
-     &        rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk, rhs_mat,      &
-     &        nod_fld, diff_coefs)
+     &        sf_bcs, iphys, iphys_ele, ele_fld, fem_int, FEM_filters,  &
+     &        mlump_fl, FEM_SGS_wk, rhs_mat, nod_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -230,8 +226,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_type), intent(in) :: jacobians
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
@@ -296,7 +291,8 @@
      &             iak_diff_c, icomp_diff_c, SGS_par,                   &
      &             mesh%nod_comm, mesh%node, mesh%ele, surf,            &
      &             group%surf_grp, sf_bcs, iphys, iphys_ele, ele_fld,   &
-     &             fluid, FEM_filters%layer_tbl, jacobians, rhs_tbl,    &
+     &             fluid, FEM_filters%layer_tbl,                        &
+     &             fem_int%jcs, fem_int%rhs_tbl,                        &
      &             FEM_filters%FEM_elens, FEM_filters%filtering,        &
      &             mlump_fl, FEM_SGS_wk%wk_filter,                      &
      &             FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &

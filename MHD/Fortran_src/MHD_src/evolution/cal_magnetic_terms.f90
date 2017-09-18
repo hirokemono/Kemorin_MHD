@@ -56,9 +56,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
-      use t_jacobian_3d
-      use t_jacobian_2d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -131,28 +129,30 @@
      &     (i_field, iak_diff_uxb, FEM_prm%npoint_t_evo_int, dt,        &
      &      SGS_param, cmt_param, node, ele, conduct, cd_prop,          &
      &      iphys, nod_fld, iphys_ele, ele_fld,                         &
-     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,     &
-     &      diff_coefs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
+     &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
+     &      FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat%fem_wk,          &
+     &      rhs_mat%f_nl)
       else
         call int_vol_magne_monitor_pg                                   &
      &     (i_field, iak_diff_uxb, FEM_prm%npoint_t_evo_int,            &
      &      SGS_param, cmt_param, node, ele, conduct, cd_prop,          &
      &      iphys, nod_fld, iphys_ele, ele_fld,                         &
-     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,     &
-     &      diff_coefs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
+     &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
+     &      FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat%fem_wk,          &
+     &      rhs_mat%f_nl)
       end if
 !
       call int_surf_magne_monitor(SGS_param, cmt_param,                 &
      &    FEM_prm%npoint_t_evo_int,i_field, iak_diff_uxb, ak_d_magne,   &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    g_FEM1, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl, FEM_elens,   &
-     &    diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,                  &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
+     &    FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
      &    FEM_prm, mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld,   &
-     &    g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                  &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)
       call delete_vector_ffs_on_bc                                      &
@@ -206,7 +206,7 @@
       call int_vol_vector_diffuse_ele                                   &
      &   (SGS_param%ifilter_final, conduct%istack_ele_fld_smp,          &
      &    FEM_prm%npoint_t_evo_int, node, ele, nod_fld,                 &
-     &    g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                  &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    FEM_elens, diff_coefs, iak_diff_b, one, ak_d_magne,           &
      &    iphys%i_magne, rhs_mat%fem_wk, rhs_mat%f_l)
 !
@@ -214,7 +214,7 @@
      &  (SGS_param, cmt_param, FEM_prm%npoint_t_evo_int,                &
      &   iphys%i_b_diffuse, iak_diff_uxb, ak_d_magne,                   &
      &   node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,     &
-     &   g_FEM1, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,               &
+     &   fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,    &
      &   FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,        &
      &   rhs_mat%f_l, rhs_mat%f_nl)
 !
