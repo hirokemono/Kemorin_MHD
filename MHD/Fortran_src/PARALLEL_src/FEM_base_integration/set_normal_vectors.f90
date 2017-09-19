@@ -42,8 +42,7 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      call alloc_surf_shape_func                                        &
-     &   (surf%nnod_4_surf, jacs%g_FEM%maxtot_int_2d, spf_2d)
+      call alloc_surf_shape_func(surf%nnod_4_surf, jacs%g_FEM, spf_2d)
       call const_jacobians_surface                                      &
      &   (my_rank, nprocs, node, surf, spf_2d, jacs)
       call int_normal_4_all_surface(jacs%g_FEM, surf, jacs%jac_2d)

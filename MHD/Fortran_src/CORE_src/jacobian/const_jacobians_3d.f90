@@ -71,12 +71,9 @@
 !
 !  set indices for gauss integration
 !
-      call alloc_1d_gauss_point_id                                      &
-     &   (g_FEM%maxtot_int_1d, g_FEM%max_int_point, spf_1d)
-      call alloc_2d_gauss_point_id                                      &
-     &   (g_FEM%maxtot_int_2d, g_FEM%max_int_point, spf_2d)
-      call alloc_3d_gauss_point_id                                      &
-     &   (g_FEM%maxtot_int_3d, g_FEM%max_int_point, spf_3d)
+      call alloc_1d_gauss_point_id(g_FEM, spf_1d)
+      call alloc_2d_gauss_point_id(g_FEM, spf_2d)
+      call alloc_3d_gauss_point_id(g_FEM, spf_3d)
 !
       call set_integrate_indices_1d                                     &
      &   (g_FEM%maxtot_int_1d, g_FEM%max_int_point, spf_1d%l_int)

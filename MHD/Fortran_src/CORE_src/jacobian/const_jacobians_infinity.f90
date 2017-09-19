@@ -68,7 +68,7 @@
       if(infty_grp%ngrp_sf .le. 0) return
 !
       call alloc_shape_func_infty                                       &
-     &   (ele%nnod_4_ele, nsurf_4_ele, g_FEM%maxtot_int_3d, spf_infty)
+     &   (ele%nnod_4_ele, nsurf_4_ele, g_FEM, spf_infty)
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
         call cal_jacobian_infty_linear(node, ele, surf_grp, infty_grp,  &
@@ -102,7 +102,7 @@
       if(infty_grp%ngrp_sf .le. 0) return
 !
       call alloc_shape_func_infty                                       &
-     &   (num_t_linear, nsurf_4_ele, g_FEM%maxtot_int_3d, spf_infty)
+     &   (num_t_linear, nsurf_4_ele, g_FEM, spf_infty)
       call cal_jacobian_infty_linear(node, ele, surf_grp, infty_grp,    &
      &    g_FEM, spf_3d_8, spf_infty, jac_3d)
       call dealloc_shape_func_infty(spf_infty)
@@ -227,7 +227,7 @@
 !
 !
       call alloc_shape_func_infty                                       &
-     &   (ele%nnod_4_ele, nsurf_4_ele, g_FEM%maxtot_int_3d, spf_infty)
+     &   (ele%nnod_4_ele, nsurf_4_ele, g_FEM, spf_infty)
 !
       call s_cal_shape_func_infty_quad(jac_3d%ntot_int,                 &
      &    infty_grp%sf_apt(1), jac_3d%an_infty,                         &

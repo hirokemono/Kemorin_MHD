@@ -18,9 +18,6 @@
       implicit  none
 !
       integer (kind=kint), save :: max_int_point = 4
-!      integer (kind=kint), save :: maxtot_int_3d= 100
-!      integer (kind=kint), save :: maxtot_int_2d= 30
-!      integer (kind=kint), save :: maxtot_int_1d= 10
 !
 !-----------------------------------------------------------------------
 !

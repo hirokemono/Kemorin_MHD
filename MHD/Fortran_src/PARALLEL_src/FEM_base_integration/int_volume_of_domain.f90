@@ -124,8 +124,7 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      call alloc_vol_shape_func                                         &
-     &   (ele%nnod_4_ele, jacs%g_FEM%maxtot_int_3d, spf_3d)
+      call alloc_vol_shape_func(ele%nnod_4_ele, jacs%g_FEM, spf_3d)
       call const_jacobians_element(my_rank, nprocs,                     &
      &    node, ele, sf_grp, infinity_list, spf_3d, jacs)
 !
@@ -165,7 +164,7 @@
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
 !
       call alloc_vol_shape_func                                         &
-     &   (ele%nnod_4_ele, jacs%g_FEM%maxtot_int_3d, spfs%spf_3d)
+     &   (ele%nnod_4_ele, jacs%g_FEM, spfs%spf_3d)
       call const_jacobians_element(my_rank, nprocs,                     &
      &    node, ele, sf_grp, infinity_list, spfs%spf_3d, jacs)
 !

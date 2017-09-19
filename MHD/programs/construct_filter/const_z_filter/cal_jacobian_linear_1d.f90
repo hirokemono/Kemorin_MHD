@@ -46,8 +46,7 @@
       call init_jacobian_linear_1d(num_int,                             &
      &    node, surf, edge, jacs%g_FEM, spf_1d)
 !
-      call alloc_edge_shape_func                                        &
-     &   (edge%nnod_4_edge, jacs%g_FEM%maxtot_int_1d, spf_1d)
+      call alloc_edge_shape_func(edge%nnod_4_edge, jacs%g_FEM, spf_1d)
       call const_jacobians_edge                                         &
      &   (my_rank, nprocs, node, edge, spf_1d, jacs)
 !
@@ -96,8 +95,7 @@
 !
 !  set indices for gauss integration
 !
-      call alloc_1d_gauss_point_id                                      &
-     &   (g_FEM%maxtot_int_1d, g_FEM%max_int_point, spf_1d)
+      call alloc_1d_gauss_point_id(g_FEM, spf_1d)
       call set_integration_indices_1d_mesh                              &
      &   (g_FEM%maxtot_int_1d, g_FEM%max_int_point, spf_1d%l_int)
 !
