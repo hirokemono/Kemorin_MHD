@@ -13,7 +13,7 @@
 !!     &          rhs_mat, nod_fld, ele_fld)
 !!      subroutine cal_work_4_forces                                    &
 !!     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,&
-!!     &          jacobians, rhs_tbl, mk_MHD, mhd_fem_wk, fem_wk,       &
+!!     &          jacs, rhs_tbl, mk_MHD, mhd_fem_wk, fem_wk,            &
 !!     &          f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
@@ -31,7 +31,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
-!!        type(jacobians_type), intent(in) :: jacobians
+!!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
@@ -60,7 +60,6 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -403,8 +402,8 @@
           call choose_cal_gradient                                      &
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        i_src, i_fld, fluid%istack_ele_fld_smp,                   &
-     &        mk_MHD%mlump_fl, nod_comm, node, ele, iphys_ele,          &
-     &        ele_fld, g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
+     &        mk_MHD%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
       end do
@@ -415,7 +414,7 @@
 !
       subroutine cal_work_4_forces                                      &
      &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,  &
-     &          jacobians, rhs_tbl, mk_MHD, mhd_fem_wk, fem_wk,         &
+     &          jacs, rhs_tbl, mk_MHD, mhd_fem_wk, fem_wk,              &
      &          f_nl, nod_fld)
 !
       use buoyancy_flux
@@ -432,7 +431,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -447,7 +446,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_induct)
         call s_int_magne_induction(FEM_prm%npoint_poisson_int,          &
-     &      nod_comm, node, ele, iphys, g_FEM1, jacobians%jac_3d,       &
+     &      nod_comm, node, ele, iphys, jacs%g_FEM, jacs%jac_3d,       &
      &      rhs_tbl, mk_MHD%mlump_cd, mhd_fem_wk, fem_wk,               &
      &      f_nl, nod_fld)
       end if
@@ -457,7 +456,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call s_int_magne_diffusion(FEM_prm%npoint_poisson_int,          &
-     &      nod_comm, node, ele, iphys, g_FEM1, jacobians%jac_3d,       &
+     &      nod_comm, node, ele, iphys, jacs%g_FEM, jacs%jac_3d,        &
      &      rhs_tbl, mk_MHD%mlump_cd, mhd_fem_wk, fem_wk,               &
      &      f_nl, nod_fld)
       end if
