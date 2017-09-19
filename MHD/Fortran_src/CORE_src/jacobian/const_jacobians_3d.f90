@@ -63,7 +63,6 @@
 !  data allocation
 !
       call set_num_of_int_points
-      call allocate_gauss_coef_4_fem
 !
 !  set constant for gauss integration with roots
 !
@@ -87,19 +86,22 @@
 !
 !  set weighting for integration
 !
-      call copy_fem_gauss_int_coef_type(g_FEM)
+      g_FEM%max_int_point = max_int_point
+      call num_of_int_points(g_FEM)
       call alloc_gauss_coef_4_fem(g_FEM)
+      call set_start_addres_4_FEM_int(g_FEM)
 !
       call set_gauss_coefs_4_1d                                         &
-     &   (max_int_point, maxtot_int_1d, int_start1, spf_1d%xi, g_FEM%owe)
+     &   (g_FEM%max_int_point, g_FEM%maxtot_int_1d, g_FEM%int_start1,   &
+     &    spf_1d%xi, g_FEM%owe)
       call set_gauss_coefs_4_2d                                         &
-     &   (max_int_point, maxtot_int_1d, int_start1, spf_1d%xi, g_FEM%owe,     &
-     &    maxtot_int_2d, int_start2, spf_2d%l_int,                      &
-     &    spf_2d%xi, spf_2d%ei, g_FEM%owe2d)
+     &   (g_FEM%max_int_point, g_FEM%maxtot_int_1d, g_FEM%int_start1,   &
+     &    spf_1d%xi, g_FEM%owe, g_FEM%maxtot_int_2d, g_FEM%int_start2,  &
+     &    spf_2d%l_int, spf_2d%xi, spf_2d%ei, g_FEM%owe2d)
       call set_gauss_coefs_4_3d                                         &
-     &   (max_int_point, maxtot_int_1d, int_start1, spf_1d%xi, g_FEM%owe,     &
-     &    maxtot_int_3d, int_start3, spf_3d%l_int,                      &
-     &    spf_3d%xi, spf_3d%ei, spf_3d%zi, g_FEM%owe3d)
+     &   (g_FEM%max_int_point, g_FEM%maxtot_int_1d, g_FEM%int_start1,   &
+     &    spf_1d%xi, g_FEM%owe, g_FEM%maxtot_int_3d, g_FEM%int_start3,  &
+     &    spf_3d%l_int, spf_3d%xi, spf_3d%ei, spf_3d%zi, g_FEM%owe3d)
 !
       end subroutine initialize_FEM_integration
 !

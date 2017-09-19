@@ -50,8 +50,6 @@
       call maximum_integration_points(num_int)
       call set_num_of_int_points
 !
-      call allocate_gauss_coef_4_fem
-!
 !  set constant for gauss integration with roots
 !
       call init_gauss_int_parameters
@@ -66,11 +64,15 @@
 !  set weighting for integration
 !
       allocate(jacobians%g_FEM)
-      call copy_fem_gauss_int_coef_type(jacobians%g_FEM)
+      jacobians%g_FEM%max_int_point = max_int_point
+!
+      call num_of_int_points(jacobians%g_FEM)
       call alloc_gauss_coef_4_fem(jacobians%g_FEM)
+      call set_start_addres_4_FEM_int(jacobians%g_FEM)
+!
       call set_gauss_coefs_4_1d                                         &
-     &   (max_int_point, maxtot_int_1d, int_start1, spf_1d%xi,          &
-     &    jacobians%g_FEM%owe)
+     &   (jacobians%g_FEM%max_int_point, jacobians%g_FEM%maxtot_int_1d, &
+     &    jacobians%g_FEM%int_start1, spf_1d%xi, jacobians%g_FEM%owe)
 !
       call alloc_edge_shape_func                                        &
      &   (edge%nnod_4_edge, maxtot_int_1d, spf_1d)

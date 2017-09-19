@@ -93,8 +93,6 @@
       g_FEM%owe2d = 0.0d0
       g_FEM%owe3d = 0.0d0
 !
-      call set_start_addres_4_FEM_int(g_FEM)
-!
       end subroutine alloc_gauss_coef_4_fem
 !
 !-----------------------------------------------------------------------

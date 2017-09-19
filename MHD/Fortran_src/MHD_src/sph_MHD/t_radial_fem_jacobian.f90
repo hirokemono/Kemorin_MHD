@@ -18,7 +18,6 @@
       use m_precision
       use m_constants
 !
-      use m_fem_gauss_int_coefs
       use t_fem_gauss_int_coefs
       use t_shape_functions
       use cal_shape_function_1d
@@ -55,6 +54,7 @@
 !
       subroutine cal_radial_jacobians(nri, radius, g_FEM, jacs_r)
 !
+      use m_fem_gauss_int_coefs
       use m_gauss_int_parameters
       use set_integration_indices
       use set_gauss_int_parameters
@@ -69,9 +69,7 @@
 !
 !
       call set_num_radial_element(nri, jacs_r%j_lin, jacs_r%j_quad)
-!
       call set_num_of_int_points
-      call allocate_gauss_coef_4_fem
 !
       call init_gauss_int_parameters
       call alloc_1d_gauss_point_id                                      &
@@ -79,22 +77,26 @@
       call set_integrate_indices_1d                                     &
      &   (maxtot_int_1d, max_int_point, spf_1d_r%l_int)
 !
-      call copy_fem_gauss_int_coef_type(g_FEM)
+      g_FEM%max_int_point = max_int_point
+      call num_of_int_points(g_FEM)
       call alloc_gauss_coef_4_fem(g_FEM)
+      call set_start_addres_4_FEM_int(g_FEM)
+!
       call set_gauss_coefs_4_1d                                         &
-     &   (max_int_point, maxtot_int_1d, int_start1, spf_1d_r%xi, g_FEM%owe)
+     &   (g_FEM%max_int_point, g_FEM%maxtot_int_1d, g_FEM%int_start1,   &
+     &    spf_1d_r%xi, g_FEM%owe)
 
 !
       call alloc_edge_shape_func                                        &
      &   (num_linear_edge, maxtot_int_1d, spf_1d_r)
       call cal_linear_radiaul_jacobian                                  &
-     &   (nri, maxtot_int_1d, radius, spf_1d_r, jacs_r%j_lin)
+     &   (nri, maxtot_int_1d, radius, g_FEM, spf_1d_r, jacs_r%j_lin)
       call dealloc_edge_shape_func(spf_1d_r)
 !
       call alloc_edge_shape_func                                        &
      &   (num_quad_edge, maxtot_int_1d, spf_1d_r)
       call cal_quad_radiaul_jacobian                                    &
-     &   (nri, maxtot_int_1d, radius, spf_1d_r, jacs_r%j_quad)
+     &   (nri, maxtot_int_1d, radius, g_FEM, spf_1d_r, jacs_r%j_quad)
       call dealloc_edge_shape_func(spf_1d_r)
 !
       call dealloc_1d_gauss_point_id(spf_1d_r)
@@ -179,10 +181,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_linear_radiaul_jacobian                            &
-     &         (nri, ntot_int, radius, spf_1d_8, j_lin)
+     &         (nri, ntot_int, radius, g_FEM, spf_1d_8, j_lin)
 !
       integer(kind = kint), intent(in) :: nri, ntot_int
       real(kind = kreal), intent(in) :: radius(nri)
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !
       type(edge_shape_function), intent(inout) :: spf_1d_8
       type(radial_fem_jacobian), intent(inout) :: j_lin
@@ -197,9 +200,9 @@
 !
 !   jacobian for quadrature elaments
 !
-      do i0 = 1, max_int_point
+      do i0 = 1, g_FEM%max_int_point
         do ii = 1, i0
-          ix = int_start1(i0) + ii
+          ix = g_FEM%int_start1(i0) + ii
           call cal_x_jacobian_1d_2                                      &
     &        (nri, j_lin%nedge_r, num_quad_edge, j_lin%ie_r, radius,    &
     &         j_lin%rjac(1,ix), j_lin%arjac(1,ix), j_lin%reg(1,ix),     &
@@ -213,10 +216,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_quad_radiaul_jacobian                              &
-     &         (nri, ntot_int, radius, spf_1d_20, j_quad)
+     &         (nri, ntot_int, radius, g_FEM, spf_1d_20, j_quad)
 !
       integer(kind = kint), intent(in) :: nri, ntot_int
       real(kind = kreal), intent(in) :: radius(nri)
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !
       type(edge_shape_function), intent(inout) :: spf_1d_20
       type(radial_fem_jacobian), intent(inout) :: j_quad
@@ -233,9 +237,9 @@
 !
 !   jacobian for quadrature elaments
 !
-      do i0 = 1, max_int_point
+      do i0 = 1, g_FEM%max_int_point
         do ii = 1, i0
-          ix = int_start1(i0) + ii
+          ix = g_FEM%int_start1(i0) + ii
           call cal_x_jacobian_1d_3                                      &
     &        (nri, j_quad%nedge_r, num_quad_edge, j_quad%ie_r, radius,  &
     &         j_quad%rjac(1,ix), j_quad%arjac(1,ix), j_quad%reg(1,ix),  &
