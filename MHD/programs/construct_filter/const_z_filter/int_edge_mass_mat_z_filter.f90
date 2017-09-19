@@ -4,7 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine int_edge_mass_matrix                                 &
-!!     &         (numnod, numele, edge, n_int, jac_1d)
+!!     &         (numnod, numele, edge, n_int, g_FEM, jac_1d)
 !
       module int_edge_mass_mat_z_filter
 !
@@ -20,16 +20,17 @@
 !   --------------------------------------------------------------------
 !
       subroutine int_edge_mass_matrix                                   &
-     &         (numnod, numele, edge, n_int, jac_1d)
+     &         (numnod, numele, edge, n_int, g_FEM, jac_1d)
 !
       use t_edge_data
+      use t_fem_gauss_int_coefs
       use t_jacobian_1d
 !
-      use m_fem_gauss_int_coefs
       use m_int_edge_data
       use m_commute_filter_z
 !
       type(edge_data), intent(in) :: edge
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
       integer (kind= kint), intent(in) :: numnod, numele
@@ -44,13 +45,13 @@
 !
       do iele = 1, numele
         do i = 1, n_int
-         ix = i + int_start1(n_int)
+         ix = i + g_FEM%int_start1(n_int)
          do k1 = 1, 2
           do k2 = 1, 2
            inod1 = edge%ie_edge(iele,k1)
            inod2 = edge%ie_edge(iele,k2)
            wk = jac_1d%an_edge(k1,ix) * jac_1d%an_edge(k2,ix)           &
-     &         * jac_1d%xeg_edge(iele,ix,3) * owe(ix)
+     &         * jac_1d%xeg_edge(iele,ix,3) * g_FEM%owe(ix)
            mk_c(inod1,inod2) = mk_c(inod1,inod2) + wk
            mk(inod2) = mk(inod2) + wk
          end do

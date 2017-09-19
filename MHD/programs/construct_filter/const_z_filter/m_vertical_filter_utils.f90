@@ -30,6 +30,6 @@
 !
 !
 !>     Stracture for Jacobians
-      type(jacobians_type), save :: jacobians_z
+      type(jacobians_type), save :: jacs_z
 !
       end module m_vertical_filter_utils

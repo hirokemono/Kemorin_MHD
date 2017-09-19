@@ -1,11 +1,14 @@
 !
 !     module m_int_edge_vart_width
 !
-!      subroutine int_edge_vart_width(n_int, jac_1d)
-!!      subroutine int_edge_diff_vart_w(ele, edge, n_int, spf_1d, jac_1d)
+!!     subroutine int_edge_vart_width                                   &
+!!    &         (numele, edge, n_int, g_FEM, jac_1d)
+!!      subroutine int_edge_diff_vart_w                                 &
+!!     &         (ele, edge, n_int, spf_1d, g_FEM, jac_1d)
 !!      subroutine int_edge_d2_vart_w                                   &
-!!     &         (node, ele, edge, n_int, spf_1d, jac_1d)
-!      subroutine int_edge_d2_vart_w2(n_int, spf_1d, jac_1d)
+!!     &         (node, ele, edge, n_int, spf_1d, g_FEM, jac_1d)
+!!      subroutine int_edge_d2_vart_w2                                  &
+!!     &         (ele, edge, n_int, spf_1d, g_FEM, jac_1d)
 !
       module m_int_edge_vart_width
 !
@@ -59,17 +62,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-     subroutine int_edge_vart_width(numele, edge, n_int, jac_1d)
+     subroutine int_edge_vart_width                                     &
+    &         (numele, edge, n_int, g_FEM, jac_1d)
 !
       use t_edge_data
+      use t_fem_gauss_int_coefs
       use t_jacobian_1d
 !
-      use m_fem_gauss_int_coefs
       use m_commute_filter_z
       use m_int_edge_data
 !
       integer(kind = kint), intent(in) :: numele
       type(edge_data), intent(in) :: edge
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
 !
@@ -80,13 +85,13 @@
 !
       do iele = 1, numele
         do i = 1, n_int
-          ix = i + int_start1(n_int)
+          ix = i + g_FEM%int_start1(n_int)
           do k2 = 1, 2
            inod2 = edge%ie_edge(iele,k2)
            rhs_dz(inod2) = rhs_dz(inod2)                                &
      &                    + abs(jac_1d%xeg_edge(iele,ix,3))             &
      &                     * jac_1d%an_edge(k2,ix)                      &
-     &                     * jac_1d%xeg_edge(iele,ix,3) * owe(ix)
+     &                     * jac_1d%xeg_edge(iele,ix,3) * g_FEM%owe(ix)
          end do
        end do
       end do
@@ -197,19 +202,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_diff_vart_w(ele, edge, n_int, spf_1d, jac_1d)
+      subroutine int_edge_diff_vart_w                                   &
+     &         (ele, edge, n_int, spf_1d, g_FEM, jac_1d)
 !
       use t_geometry_data
       use t_edge_data
       use t_jacobian_1d
       use t_shape_functions
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use m_commute_filter_z
       use m_int_edge_data
 !
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
       type(edge_shape_function), intent(in) :: spf_1d
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
 !
@@ -220,14 +227,14 @@
 !
       do iele = 1, ele%numele
         do i = 1, n_int
-          ix = i + int_start1(n_int)
+          ix = i + g_FEM%int_start1(n_int)
           do k1 = 1, 2
             do k2 = 1, 2
               inod1 = edge%ie_edge(iele,k1)
               inod2 = edge%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2)                             &
      &                       + delta_z(inod1) * spf_1d%dnxi_ed(k1,ix)   &
-     &                        * jac_1d%an_edge(k2,ix) * owe(ix)
+     &                        * jac_1d%an_edge(k2,ix) * g_FEM%owe(ix)
             end do
           end do
         end do
@@ -239,14 +246,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_edge_d2_vart_w                                     &
-     &         (node, ele, edge, n_int, spf_1d, jac_1d)
+     &         (node, ele, edge, n_int, spf_1d, g_FEM, jac_1d)
 !
       use calypso_mpi
       use t_geometry_data
       use t_edge_data
       use t_jacobian_1d
       use t_shape_functions
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use m_commute_filter_z
       use m_int_edge_data
 !
@@ -254,6 +261,7 @@
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
       type(edge_shape_function), intent(in) :: spf_1d
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
 !
@@ -264,14 +272,14 @@
 !
       do iele = 1, ele%numele
         do i = 1, n_int
-          ix = i + int_start1(n_int)
+          ix = i + g_FEM%int_start1(n_int)
           do k1 = 1, 2
             do k2 = 1, 2
               inod1 = edge%ie_edge(iele,k1)
               inod2 = edge%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) - delta_z(inod1)            &
      &                  * spf_1d%dnxi_ed(k1,ix) * spf_1d%dnxi_ed(k2,ix) &
-     &                  * owe(ix)  / jac_1d%xeg_edge(iele,ix,3)
+     &                  * g_FEM%owe(ix)  / jac_1d%xeg_edge(iele,ix,3)
             end do
           end do
         end do
@@ -285,21 +293,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_d2_vart_w2(ele, edge, n_int, spf_1d, jac_1d)
+      subroutine int_edge_d2_vart_w2                                    &
+     &         (ele, edge, n_int, spf_1d, g_FEM, jac_1d)
 !
       use calypso_mpi
       use t_geometry_data
       use t_edge_data
       use t_jacobian_1d
       use t_shape_functions
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use m_commute_filter_z
       use m_int_edge_data
 !
-!      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
       type(edge_shape_function), intent(in) :: spf_1d
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint), intent(in) :: n_int
 !
@@ -310,14 +319,14 @@
 !
       do iele = 1, ele%numele
         do i = 1, n_int
-          ix = i + int_start1(n_int)
+          ix = i + g_FEM%int_start1(n_int)
           do k1 = 1, 2
             do k2 = 1, 2
               inod1 = edge%ie_edge(iele,k1)
               inod2 = edge%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) + delta_dz(inod1)           &
      &                  * spf_1d%dnxi_ed(k1,ix) * jac_1d%an_edge(k2,ix) &
-     &                  * owe(ix)
+     &                  * g_FEM%owe(ix)
             end do
           end do
         end do

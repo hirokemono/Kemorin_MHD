@@ -61,7 +61,6 @@
 !
       subroutine generate_filter_init
 !
-      use m_fem_gauss_int_coefs
       use m_filter_file_names
       use m_ctl_data_gen_3d_filter
 !

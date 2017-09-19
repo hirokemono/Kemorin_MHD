@@ -4,7 +4,7 @@
 !     Written by Hiroaki Matsui
 !
 !      subroutine set_connect_2_n_filter(node)
-!      subroutine set_spatial_difference(numele, n_int, jac_1d)
+!      subroutine set_spatial_difference(numele, n_int, g_FEM, jac_1d)
 !      subroutine set_crs_connect_commute_z(node, tbl_crs)
 !
       module const_crs_connect_commute_z
@@ -50,23 +50,25 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_spatial_difference(numele, n_int, jac_1d)
+      subroutine set_spatial_difference(numele, n_int, g_FEM, jac_1d)
 !
-      use m_fem_gauss_int_coefs
       use m_commute_filter_z
       use m_int_edge_data
 !
+      use t_fem_gauss_int_coefs
       use t_jacobian_1d
 !
       integer (kind = kint), intent(in) :: numele, n_int
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint) :: iele, k, ix
 !
 !
        do k = 1, n_int
-         ix = k + int_start1(n_int)
+         ix = k + g_FEM%int_start1(n_int)
          do iele = 1, numele
-           dz(iele) = dz(iele) + jac_1d%xeg_edge(iele,ix,3) * owe(ix)
+           dz(iele) = dz(iele)                                          &
+     &               + jac_1d%xeg_edge(iele,ix,3) * g_FEM%owe(ix)
          end do
        end do
        do iele = 1, numele

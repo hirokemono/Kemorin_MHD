@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine cal_delta_z_analytical(jac_1d)
+!!      subroutine cal_delta_z_analytical                               &
+!!     &         (node, ele, edge, g_FEM, jac_1d)
 !
       module  const_delta_z_analytical
 !
@@ -29,21 +30,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_delta_z_analytical(node, ele, edge, jac_1d)
+      subroutine cal_delta_z_analytical                                 &
+     &         (node, ele, edge, g_FEM, jac_1d)
 !
       use int_edge_mass_mat_z_filter
       use m_spheric_constants
+      use t_fem_gauss_int_coefs
       use t_jacobian_1d
 !
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
       type(edge_data), intent(inout) :: edge
 !
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_1d), intent(in) :: jac_1d
 !
 !
       call int_edge_mass_matrix(node%numnod, ele%numele, edge,          &
-     &                          i_int_z_filter, jac_1d)
+     &                          i_int_z_filter, g_FEM, jac_1d)
       call allocate_delta_z(node%numnod, ele%numele)
 !
       if (iflag_grid .eq. igrid_Chebyshev) then

@@ -37,7 +37,6 @@
 !
       use calypso_mpi
 !
-      use m_fem_gauss_int_coefs
       use m_commute_filter_z
       use m_int_edge_data
       use m_int_edge_vart_width
@@ -66,7 +65,7 @@
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
       call s_cal_jacobian_linear_1d                                     &
      &   (n_int, z_filter_mesh%node,                                    &
-     &    surf_z_filter, edge_z_filter, spf_1d_z, jacobians_z)
+     &    surf_z_filter, edge_z_filter, spf_1d_z, jacs_z)
 !
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
       call set_crs_connect_commute_z(z_filter_mesh%node, tbl_crs_z)
@@ -75,12 +74,12 @@
       call allocate_int_edge_data                                       &
      &   (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele)
       call set_spatial_difference(z_filter_mesh%ele%numele,             &
-     &                            n_int, jacobians_z%jac_1d_l)
+     &    n_int, jacs_z%g_FEM, jacs_z%jac_1d_l)
 !
 !
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &
      &   z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
-     &   edge_z_filter, spf_1d_z, jacobians_z%jac_1d_l,                 &
+     &   edge_z_filter, spf_1d_z, jacs_z%g_FEM, jacs_z%jac_1d_l,        &
      &   tbl_crs_z, mat_crs_z)
       call dealloc_edge_shape_func(spf_1d_z)
 !

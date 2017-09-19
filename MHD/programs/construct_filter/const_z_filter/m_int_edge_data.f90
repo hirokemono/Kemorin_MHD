@@ -26,8 +26,6 @@
 !
       subroutine allocate_int_edge_data(numnod, numele)
 !
-      use m_fem_gauss_int_coefs
-!
       integer(kind = kint), intent(in) :: numnod, numele
 !
 !
