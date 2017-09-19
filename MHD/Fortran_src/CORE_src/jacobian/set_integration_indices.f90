@@ -20,8 +20,6 @@
       module set_integration_indices
 !
       use m_precision
-!
-      use m_fem_gauss_int_coefs
       use m_gauss_int_parameters
 !
       implicit none
