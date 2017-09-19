@@ -186,8 +186,8 @@
      &    surf%nnod_4_surf, maxtot_int_2d, jacs%jac_sf_grp)
 !
       if(my_rank .lt. nprocs) then
-        call sel_jacobian_surface_grp                                   &
-     &     (node, ele, surf, surf_grp, spf_2d, jacs%jac_sf_grp)
+        call sel_jacobian_surface_grp (node, ele, surf, surf_grp,       &
+     &      jacs%g_FEM, spf_2d, jacs%jac_sf_grp)
       end if
 !
       if(surf%nnod_4_surf .eq. num_linear_sf) then
@@ -199,7 +199,7 @@
 !
         if(my_rank .lt. nprocs) then
           call const_jacobian_sf_grp_linear(node, ele, surf_grp,        &
-     &        spf_2d, jacs%jac_sf_grp_l)
+     &        jacs%g_FEM, spf_2d, jacs%jac_sf_grp_l)
         end if
       end if
 !

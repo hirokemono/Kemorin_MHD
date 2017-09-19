@@ -9,11 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine sel_jacobian_surface_grp(node, ele, surf,            &
-!!     &          surf_grp, spf_2d, jac_sf_grp)
+!!     &          surf_grp, g_FEM, spf_2d, jac_sf_grp)
 !!      subroutine const_jacobian_sf_grp_linear(node, ele, surf_grp,    &
-!!     &          spf_2d_8, jac_sf_grp)
+!!     &          g_FEM, spf_2d_8, jac_sf_grp)
 !!      subroutine const_jacobian_sf_grp_l_quad(node, ele, surf_grp,    &
-!!     &          spf_2d_20, jac_sf_grp)
+!!     &          g_FEM, spf_2d_20, jac_sf_grp)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_group_data), intent(in) :: surf_grp
@@ -24,13 +24,12 @@
 !
       use m_precision
       use m_machine_parameter
-!
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use t_fem_gauss_int_coefs
       use t_shape_functions
       use t_jacobian_2d
 !
@@ -45,12 +44,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_jacobian_surface_grp(node, ele, surf,              &
-     &          surf_grp, spf_2d, jac_sf_grp)
+     &          surf_grp, g_FEM, spf_2d, jac_sf_grp)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
       type(surface_data), intent(in)  :: surf
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(surface_shape_function), intent(inout) :: spf_2d
       type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
@@ -58,13 +58,13 @@
       if (surf_grp%num_grp .gt. 0) then
         if      (surf%nnod_4_surf .eq. num_linear_sf) then
           call const_jacobian_sf_grp_linear(node, ele,                  &
-     &        surf_grp, spf_2d, jac_sf_grp)
+     &        surf_grp, g_FEM, spf_2d, jac_sf_grp)
         else if (surf%nnod_4_surf .eq. num_quad_sf)   then
           call const_jacobian_sf_grp_quad(node, ele,                    &
-     &        surf_grp, spf_2d, jac_sf_grp)
+     &        surf_grp, g_FEM, spf_2d, jac_sf_grp)
         else if (surf%nnod_4_surf .eq. num_lag_sf)   then
           call const_jacobian_sf_grp_lag(node, ele,                     &
-     &        surf_grp, spf_2d, jac_sf_grp)
+     &        surf_grp, g_FEM, spf_2d, jac_sf_grp)
         end if
       end if
 !
@@ -74,7 +74,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_jacobian_sf_grp_linear(node, ele, surf_grp,      &
-     &          spf_2d_8, jac_sf_grp)
+     &          g_FEM, spf_2d_8, jac_sf_grp)
 !
       use cal_1surf_grp_jacobians
       use cal_shape_function_2d
@@ -82,6 +82,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(surface_shape_function), intent(inout) :: spf_2d_8
       type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
@@ -95,7 +96,7 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie, node%xx,     &
      &    surf_grp%num_grp, surf_grp%num_item, surf_grp%item_sf_grp,    &
      &    np_smp, surf_grp%num_grp_smp, surf_grp%istack_grp_smp,        &
-     &    max_int_point, int_start2, &
+     &    g_FEM%max_int_point, g_FEM%int_start2,                        &
      &    jac_sf_grp%ntot_int, jac_sf_grp%xj_sf, jac_sf_grp%axj_sf,     &
      &    jac_sf_grp%xsf_sf, spf_2d_8%dnxi_sf, spf_2d_8%dnei_sf)
 !
@@ -104,7 +105,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_jacobian_sf_grp_quad(node, ele, surf_grp,        &
-     &          spf_2d_20, jac_sf_grp)
+     &          g_FEM, spf_2d_20, jac_sf_grp)
 !
       use cal_1surf_grp_jacobians
       use cal_shape_function_2d
@@ -112,6 +113,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(surface_shape_function), intent(inout) :: spf_2d_20
       type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
@@ -125,7 +127,7 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie, node%xx,     &
      &    surf_grp%num_grp, surf_grp%num_item, surf_grp%item_sf_grp,    &
      &    np_smp, surf_grp%num_grp_smp, surf_grp%istack_grp_smp,        &
-     &    max_int_point, int_start2, &
+     &    g_FEM%max_int_point, g_FEM%int_start2,                        &
      &    jac_sf_grp%ntot_int, jac_sf_grp%xj_sf, jac_sf_grp%axj_sf,     &
      &    jac_sf_grp%xsf_sf, spf_2d_20%dnxi_sf, spf_2d_20%dnei_sf)
 !
@@ -134,7 +136,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_jacobian_sf_grp_lag(node, ele, surf_grp,         &
-     &          spf_2d_27, jac_sf_grp)
+     &          g_FEM, spf_2d_27, jac_sf_grp)
 !
       use m_geometry_constants
       use cal_1surf_grp_jacobians
@@ -143,6 +145,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(surface_shape_function), intent(inout) :: spf_2d_27
       type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
@@ -156,7 +159,7 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie, node%xx,     &
      &    surf_grp%num_grp, surf_grp%num_item, surf_grp%item_sf_grp,    &
      &    np_smp, surf_grp%num_grp_smp, surf_grp%istack_grp_smp,        &
-     &    max_int_point, int_start2, &
+     &    g_FEM%max_int_point, g_FEM%int_start2,                        &
      &    jac_sf_grp%ntot_int, jac_sf_grp%xj_sf, jac_sf_grp%axj_sf,     &
      &    jac_sf_grp%xsf_sf, spf_2d_27%dnxi_sf, spf_2d_27%dnei_sf)
 !
@@ -167,7 +170,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_jacobian_sf_grp_l_quad(node, ele, surf_grp,      &
-     &          spf_2d_20, jac_sf_grp)
+     &          g_FEM, spf_2d_20, jac_sf_grp)
 !
       use cal_1surf_grp_jacobians
       use cal_shape_function_2d
@@ -175,6 +178,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(surface_shape_function), intent(inout) :: spf_2d_20
       type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
@@ -189,7 +193,7 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie, node%xx,     &
      &    surf_grp%num_grp, surf_grp%num_item, surf_grp%item_sf_grp,    &
      &    np_smp, surf_grp%num_grp_smp, surf_grp%istack_grp_smp,        &
-     &    max_int_point, int_start2, &
+     &    g_FEM%max_int_point, g_FEM%int_start2,                        &
      &    jac_sf_grp%ntot_int, jac_sf_grp%xj_sf, jac_sf_grp%axj_sf,     &
      &    jac_sf_grp%xsf_sf, spf_2d_20%dnxi_sf, spf_2d_20%dnei_sf)
 !
