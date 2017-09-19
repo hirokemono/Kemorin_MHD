@@ -4,11 +4,12 @@
 !        programmed H.Matsui on Dec., 2008
 !
 !!      subroutine s_initialize_4_MHD_AMG                               &
-!!     &         (dt, FEM_prm, mesh_1st, ele_1st, ifld_diff, diff_coefs,&
-!!     &          MHD_prop, MHD_BC, DJDS_param, spfs,                   &
+!!     &         (dt, FEM_prm, mesh_1st, jacs_1st, ifld_diff,           &
+!!     &          diff_coefs, MHD_prop, MHD_BC, DJDS_param, spfs,       &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-!!        type(mesh_geometry), intent(inout) :: mesh_1st
+!!        type(mesh_geometry), intent(in) :: mesh_1st
+!!        type(jacobians_type), intent(in) :: jacs_1st
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -52,15 +53,15 @@
 ! ---------------------------------------------------------------------
 !
       subroutine s_initialize_4_MHD_AMG                                 &
-     &         (dt, FEM_prm, mesh_1st, ifld_diff, diff_coefs,           &
-     &          MHD_prop, MHD_BC, DJDS_param, spfs,                     &
+     &         (dt, FEM_prm, mesh_1st, jacs_1st, ifld_diff,             &
+     &          diff_coefs, MHD_prop, MHD_BC, DJDS_param, spfs,         &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_mat)
 !
       use t_mesh_data
       use t_edge_data
       use t_surface_data
       use t_bc_data_MHD
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_shape_functions
       use t_bc_data_list
@@ -91,6 +92,7 @@
       type(MHD_BC_lists), intent(in) :: MHD_BC
       type(DJDS_poarameter), intent(in) :: DJDS_param
       type(mesh_geometry), intent(in) :: mesh_1st
+      type(jacobians_type), intent(in) :: jacs_1st
 !
       type(shape_finctions_at_points), intent(inout) :: spfs
       type(MGCG_data), intent(inout) :: MGCG_WK
@@ -201,6 +203,7 @@
 !     --------------------- 
 !
       do i_level = 1, MGCG_WK%num_MG_level
+        MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM => jacs_1st%g_FEM
         call alloc_vol_shape_func                                       &
      &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele%nnod_4_ele,              &
      &      maxtot_int_3d, spfs%spf_3d)
@@ -243,7 +246,6 @@
 !     --------------------- 
 !
       do i_level = 1, MGCG_WK%num_MG_level
-        MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM => g_FEM1
         if(iflag_debug .gt. 0) write(*,*)                               &
      &         'int_normal_4_all_surface', i_level
         call int_normal_4_all_surface                                   &

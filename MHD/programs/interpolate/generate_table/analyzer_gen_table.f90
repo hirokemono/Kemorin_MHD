@@ -89,12 +89,10 @@
      &   (org_femmesh%mesh, next_tbl_i%neib_ele, next_tbl_i%neib_nod)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobians_element'
-      call max_int_point_by_etype(org_femmesh%mesh%ele%nnod_4_ele)
-      call initialize_FEM_integration                                   &
-     &   (g_FEM1, spfs_I%spf_3d, spfs_I%spf_2d, spfs_I%spf_1d)
-!
       allocate(jacobians_I%g_FEM)
-      call copy_fem_gauss_int_coefs(g_FEM1, jacobians_I%g_FEM)
+      call max_int_point_by_etype(org_femmesh%mesh%ele%nnod_4_ele)
+      call initialize_FEM_integration(jacobians_I%g_FEM,                &
+     &    spfs_I%spf_3d, spfs_I%spf_2d, spfs_I%spf_1d)
 !
       call alloc_vol_shape_func(org_femmesh%mesh%ele%nnod_4_ele,        &
      &    maxtot_int_3d, spfs_I%spf_3d)

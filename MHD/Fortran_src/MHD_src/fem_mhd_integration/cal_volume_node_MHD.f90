@@ -77,11 +77,9 @@
 !    Construct Jacobians
 !
       call max_int_point_by_etype(mesh%ele%nnod_4_ele)
-      call initialize_FEM_integration                                   &
-     &   (g_FEM1, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
-!
       allocate(jacobians%g_FEM)
-      call copy_fem_gauss_int_coefs(g_FEM1, jacobians%g_FEM)
+      call initialize_FEM_integration                                   &
+     &   (jacobians%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
 !
       call alloc_vol_shape_func                                         &
      &   (mesh%ele%nnod_4_ele, maxtot_int_3d, spfs%spf_3d)
