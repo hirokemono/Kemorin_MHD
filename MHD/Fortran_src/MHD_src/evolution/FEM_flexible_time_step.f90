@@ -6,14 +6,14 @@
 !!      subroutine set_new_time_and_step                                &
 !!     &         (cd_prop, iphys, nod_fld, time_d)
 !!      subroutine s_check_flexible_time_step                           &
-!!     &         (mesh, MHD_mesh, cd_prop, iphys, nod_fld, jacobians,   &
+!!     &         (mesh, MHD_mesh, cd_prop, iphys, nod_fld, jacs,        &
 !!     &          rhs_mat, flex_data, flex_p, time_d)
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(jacobians_type), intent(in) :: jacobians
+!!        type(jacobians_type), intent(in) :: jacs
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(time_data), intent(inout) :: time_d
 !
@@ -89,7 +89,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_check_flexible_time_step                             &
-     &         (mesh, MHD_mesh, cd_prop, iphys, nod_fld, jacobians,     &
+     &         (mesh, MHD_mesh, cd_prop, iphys, nod_fld, jacs,          &
      &          rhs_mat, flex_data, flex_p, time_d)
 !
       use t_mesh_data
@@ -101,7 +101,6 @@
       use t_flex_delta_t_data
       use t_physical_property
       use t_work_FEM_integration
-      use m_fem_gauss_int_coefs
 !
       use check_deltat_by_prev_rms
 !
@@ -110,7 +109,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(flexible_stepping_data), intent(inout) :: flex_data
@@ -124,7 +123,7 @@
         call check_difference_by_prev_rms                               &
      &     (time_d%time, mesh%node, mesh%ele,                           &
      &      MHD_mesh%fluid, cd_prop, iphys, nod_fld,                    &
-     &      g_FEM1, jacobians%jac_3d, jacobians%jac_3d_l,               &
+     &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                     &
      &      rhs_mat%fem_wk, flex_data)
 !
         if(flex_data%d_ratio_allmax .gt. flex_p%min_eps_to_expand)      &

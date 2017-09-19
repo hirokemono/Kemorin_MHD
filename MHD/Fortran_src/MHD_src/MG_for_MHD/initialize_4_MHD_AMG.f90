@@ -270,6 +270,7 @@
      &      MHD_prop, MHD_BC, MGCG_MHD_FEM%MG_surf_bc(i_level) )
 !
         if(iflag_debug .gt. 0) write(*,*) 's_int_type_mass_matrices'
+        MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM => g_FEM1
         call s_int_type_mass_matrices                                   &
      &     (FEM_prm, MGCG_FEM%MG_mesh(i_level)%mesh,                    &
      &      MGCG_MHD_FEM%MG_MHD_mesh(i_level),                          &

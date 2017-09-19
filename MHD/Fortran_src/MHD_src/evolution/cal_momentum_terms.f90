@@ -57,9 +57,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use m_fem_gauss_int_coefs
-      use t_jacobian_3d
-      use t_jacobian_2d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -133,7 +131,7 @@
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_velo, dt,   &
      &      FEM_prm, SGS_param, cmt_param, node, ele, fluid,            &
      &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
-     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                &
+     &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, mhd_fem_wk,                          &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
@@ -141,14 +139,14 @@
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_magne, dt,  &
      &      FEM_prm, SGS_param, cmt_param, node, ele, fluid,            &
      &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
-     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                &
+     &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, mhd_fem_wk,                          &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg(i_field, iak_diff_mf, iak_diff_lor, &
      &     FEM_prm, SGS_param, cmt_param, node, ele, fluid,             &
      &     fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,         &
-     &     g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                 &
+     &     fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,      &
      &     FEM_elens, diff_coefs, mhd_fem_wk,                           &
      &     rhs_mat%fem_wk, rhs_mat%f_nl, ele_fld)
       end if
@@ -157,14 +155,14 @@
      &    ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                   &
      &    SGS_param, cmt_param, node, ele, surf, sf_grp, fl_prop,       &
      &    Vsf_bcs, Bsf_bcs, iphys, nod_fld,                             &
-     &    g_FEM1, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,              &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,   &
      &    FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
-     &    g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                  &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !       call set_boundary_velo_4_rhs                                    &
@@ -221,16 +219,16 @@
       call int_vol_vector_diffuse_ele                                   &
      &   (SGS_param%ifilter_final, fluid%istack_ele_fld_smp,            &
      &    FEM_prm%npoint_t_evo_int, node, ele, nod_fld,                 &
-     &    g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,       &
-     &    diff_coefs, iak_diff_v, one, ak_MHD%ak_d_velo, iphys%i_velo,  &
-     &    rhs_mat%fem_wk, rhs_mat%f_l)
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
+     &    FEM_elens, diff_coefs, iak_diff_v, one, ak_MHD%ak_d_velo,     &
+     &    iphys%i_velo, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_surf_velo_monitor                                        &
      &  (iphys%i_v_diffuse, iak_diff_mf, iak_diff_lor,                  &
      &   ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                    &
      &   SGS_param, cmt_param, node, ele, surf,                         &
      &   sf_grp, fl_prop, Vsf_bcs, Bsf_bcs, iphys, nod_fld,             &
-     &   g_FEM1,fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,                &
+     &   fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,    &
      &   FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%surf_wk,        &
      &   rhs_mat%f_l, rhs_mat%f_nl)
 !

@@ -60,6 +60,7 @@
       use t_surface_group_connect
       use t_phys_data
       use t_phys_address
+      use t_jacobians
       use t_table_FEM_const
       use t_FEM_MHD_filter_data
       use t_bc_data_velo
@@ -71,7 +72,6 @@
       use t_solver_djds_MHD
       use t_physical_property
       use t_MGCG_data
-      use m_fem_gauss_int_coefs
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
@@ -169,11 +169,11 @@
 !
       iloop = -1
       call int_norm_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,    &
-     &    iphys, nod_fld, g_FEM1, fem_int%jcs%jac_3d, fem_sq%j_ave,     &
-     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
+     &    iphys, nod_fld, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,        &
+     &    fem_sq%j_ave, rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !      call int_rms_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,    &
-!     &    iphys, nod_fld, g_FEM1, fem_int%jcs%jac_3d, fem_sqi_rms,     &
-!     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
+!     &    iphys, nod_fld, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,       &
+!     &    fem_sqi_rms, rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
       do iloop = 0, FEM_prm%maxiter_stokes
         call cal_mod_potential(ifld_diff%i_velo,                        &
@@ -201,8 +201,8 @@
         call cal_rms_scalar_potential                                   &
      &     (iloop, fluid%istack_ele_fld_smp, iphys%i_press,             &
      &      fem_sq%i_rms%i_press, fem_sq%j_ave%i_press,                 &
-     &      mesh%node, mesh%ele, nod_fld,                               &
-     &      g_FEM1, fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,           &
+     &      mesh%node, mesh%ele, nod_fld, fem_int%jcs%g_FEM,            &
+     &      fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,                   &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct, ave_pr0, rms_pr0)
 !
 !
@@ -212,11 +212,11 @@
 !
 !
         call int_norm_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,  &
-     &      iphys, nod_fld, g_FEM1, fem_int%jcs%jac_3d, fem_sq%j_ave,   &
-     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
+     &      iphys, nod_fld, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,      &
+     &      fem_sq%j_ave, rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_v_monitor(iloop, mesh%node, mesh%ele, fluid,  &
-!     &      iphys, nod_fld, g_FEM1, fem_int%jcs%jac_3d, fem_sq%i_rms,  &
-!     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
+!     &      iphys, nod_fld, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,     &
+!     &      fem_sq%i_rms, rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_stokes) go to 10
 !

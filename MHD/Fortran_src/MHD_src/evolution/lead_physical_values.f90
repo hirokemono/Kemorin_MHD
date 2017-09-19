@@ -112,8 +112,9 @@
      &   (time_d%dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,       &
      &    femmesh%mesh, femmesh%group, ele_mesh%surf,                   &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
-     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_ele,  &
-     &    ele_fld, fem_int%jcs%jac_3d, fem_int%jcs%jac_sf_grp,          &
+     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,                    &
+     &    iphys, iphys_ele, ele_fld, fem_int%jcs%g_FEM,                 &
+     &    fem_int%jcs%jac_3d, fem_int%jcs%jac_sf_grp,                   &
      &    fem_int%rhs_tbl, FEM_filters%FEM_elens,                       &
      &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs,            &
      &    fem_int%m_lump, mk_MHD, SGS_MHD_wk%mhd_fem_wk,                &

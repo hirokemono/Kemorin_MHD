@@ -21,7 +21,7 @@
 !
       implicit  none
 !
-      type(FEM_gauss_int_coefs), save :: g_FEM1
+      type(FEM_gauss_int_coefs), target, save :: g_FEM1
 !
       integer (kind=kint), save :: max_int_point = 4
       integer (kind=kint), save :: maxtot_int_3d= 100

@@ -56,8 +56,7 @@
       use t_phys_data
       use t_phys_address
       use t_fem_gauss_int_coefs
-      use t_jacobian_3d
-      use t_jacobian_2d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -88,7 +87,6 @@
      &          fem_int, FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk,   &
      &          rhs_mat, nod_fld)
 !
-      use m_fem_gauss_int_coefs
       use int_surf_div_fluxes_sgs
       use cal_multi_pass
       use cal_ff_smp_to_ffs
@@ -134,15 +132,17 @@
      &    (iflag_supg, num_int, ifilter_final, iflag_commute_flux,      &
      &     i_velo, i_field, i_SGS_flux, iak_diff_flux, dt,              &
      &     node, ele, fluid, property, nod_fld, iphys_ele, ele_fld,     &
-     &     g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,      &
-     &     diff_coefs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
+     &     fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,      &
+     &     FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat%fem_wk,           &
+     &     rhs_mat%f_nl)
 !
       if(iflag_commute_field .ne. id_SGS_commute_OFF                    &
           .and. iflag_SGS_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux                                  &
      &    (node, ele, surf, sf_grp, nod_fld,                            &
-     &     g_FEM1, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl, FEM_elens,  &
-     &     num_int, Ssf_bcs%sgs%ngrp_sf_dat, Ssf_bcs%sgs%id_grp_sf_dat, &
+     &     fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,  &
+     &     FEM_elens, num_int,                                          &
+     &     Ssf_bcs%sgs%ngrp_sf_dat, Ssf_bcs%sgs%id_grp_sf_dat,          &
      &     ifilter_final, i_SGS_flux, i_velo, i_field,                  &
      &     diff_coefs%num_field,iak_diff_flux, diff_coefs%ak,           &
      &     property%coef_advect, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
@@ -151,7 +151,7 @@
 !
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp, dt, &
      &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
-     &    g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                  &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
