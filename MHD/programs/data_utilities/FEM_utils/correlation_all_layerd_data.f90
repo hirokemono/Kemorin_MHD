@@ -3,15 +3,15 @@
 !
 !     Written by H. Matsui on Nov., 2009
 !
-!      subroutine allocate_vec_transfer(numnod)
-!      subroutine s_correlation_all_layerd_data(node, ele, nod_fld,     &
-!     &          jac_3d_l, jac_3d_q, layer_tbl, phys_2nd, wk_cor)
-!        type(node_data), intent(in) :: node
-!        type(element_data), intent(in) :: ele
-!        type(phys_data), intent(in) :: nod_fld
-!        type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
-!        type(phys_data), intent(in) :: phys_2nd
-!        type(layering_tbl), intent(in) :: layer_tbl
+!!      subroutine allocate_vec_transfer(numnod)
+!!      subroutine s_correlation_all_layerd_data(node, ele, nod_fld,    &
+!!     &          jacs, layer_tbl, phys_2nd, wk_cor)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
+!!        type(phys_data), intent(in) :: phys_2nd
+!!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module correlation_all_layerd_data
 !
@@ -63,14 +63,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_correlation_all_layerd_data(node, ele, nod_fld,      &
-     &          jacobians, layer_tbl, phys_2nd, wk_cor)
+     &          jacs, layer_tbl, phys_2nd, wk_cor)
 !
       use cal_layerd_ave_correlate
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_type), intent(inout) :: jacobians
+      type(jacobians_type), intent(inout) :: jacs
       type(phys_data), intent(in) :: phys_2nd
       type(layering_tbl), intent(in) :: layer_tbl
 !
@@ -78,7 +78,7 @@
 !
 !
       call int_vol_rms_ave_all_layer(node, ele, nod_fld,                &
-     &    jacobians%jac_3d_l, jacobians%jac_3d, layer_tbl, phys_2nd,    &
+     &    jacs%g_FEM, jacs%jac_3d_l, jacs%jac_3d, layer_tbl, phys_2nd,  &
      &    wk_cor%nlayer, wk_cor%ncomp_sgl, wk_cor%ncomp_dble,           &
      &    wk_cor%ave_l, wk_cor%rms_l)
       call sum_layerd_averages(layer_tbl%e_grp%num_grp, wk_cor)
@@ -95,7 +95,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'int_vol_dev_cor_all_layer'
       call int_vol_dev_cor_all_layer(node, ele, nod_fld,                &
-     &    jacobians%jac_3d_l, jacobians%jac_3d, layer_tbl, phys_2nd,    &
+     &    jacs%g_FEM, jacs%jac_3d_l, jacs%jac_3d, layer_tbl, phys_2nd,  &
      &    wk_cor%nlayer, wk_cor%ncomp_sgl, wk_cor%ncomp_dble,           &
      &    wk_cor%sig_l, wk_cor%cov_l)
 !
@@ -116,7 +116,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_rms_ave_all_layer(node, ele, nod_fld,          &
-     &          jac_3d_l, jac_3d_q, layer_tbl, phys_2nd,                &
+     &          g_FEM, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd,         &
      &          n_layer, ncomp_sgl, ncomp_dble, ave_l, rms_l)
 !
       use m_fem_gauss_int_coefs
@@ -126,6 +126,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_data), intent(in) :: phys_2nd
@@ -144,7 +145,7 @@
      &          = phys_2nd%d_fld(1:phys_2nd%n_point,icomp)
 !
         call int_vol_2rms_ave_ele_grps                                  &
-     &     (node, ele, layer_tbl%e_grp, g_FEM1, jac_3d_q, jac_3d_l,     &
+     &     (node, ele, layer_tbl%e_grp, g_FEM, jac_3d_q, jac_3d_l,      &
      &      max_int_point, nod_fld%ntot_phys, icomp, nod_fld%d_fld,     &
      &      ione, ione, d_nod_trans2(1,1), ave_l(1,icomp),              &
      &      rms_l(1,icomp), ave_l(1,icomp_2), rms_l(1,icomp_2))
@@ -155,7 +156,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_dev_cor_all_layer(node, ele, nod_fld,          &
-     &          jac_3d_l, jac_3d_q, layer_tbl, phys_2nd,                &
+     &          g_FEM, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd,         &
      &          n_layer, ncomp_sgl, ncomp_dble, sig_l, cov_l)
 !
       use m_fem_gauss_int_coefs
@@ -165,6 +166,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
       type(phys_data), intent(in) :: phys_2nd
       type(layering_tbl), intent(in) :: layer_tbl
@@ -182,7 +184,7 @@
         d_nod_trans2(1:node%numnod,1)                                   &
      &          = phys_2nd%d_fld(1:node%numnod,icomp)
         call int_vol_dev_cor_ele_grps                                   &
-     &     (node, ele, layer_tbl%e_grp, g_FEM1, jac_3d_q, jac_3d_l,     &
+     &     (node, ele, layer_tbl%e_grp, g_FEM, jac_3d_q, jac_3d_l,      &
      &      max_int_point, nod_fld%ntot_phys, icomp, nod_fld%d_fld,     &
      &      ione, ione, d_nod_trans2(1,1),                              &
      &      ave_ref(1,icomp), ave_tgt(1,icomp),                         &

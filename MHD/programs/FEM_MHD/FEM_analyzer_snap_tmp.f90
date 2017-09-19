@@ -419,20 +419,20 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      MHD_mesh%conduct, MHD_prop%cd_prop,                         &
-     &      iphys, iphys_ele, ele_fld, g_FEM1, fem_int%jcs%jac_3d,      &
-     &      fem_int%rhs_tbl, FEM_elens, filtering,                      &
-     &      Csims_FEM_MHD%sgs_coefs, mk_MHD%mlump_cd,                   &
-     &      FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,           &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      iphys, iphys_ele, ele_fld,                                  &
+     &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
+     &      FEM_elens, filtering, Csims_FEM_MHD%sgs_coefs,              &
+     &      mk_MHD%mlump_cd, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 
       end if
 !
       if (iphys%i_SGS_induction .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
-        call int_vol_sgs_induction(FEM_prm,                             &
-     &      mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,       &
-     &      iphys, g_FEM1, fem_int%jcs%jac_3d, fem_int%rhs_tbl,         &
+        call int_vol_sgs_induction(FEM_prm, mesh%nod_comm,              &
+     &      mesh%node, mesh%ele, MHD_mesh%conduct, iphys,               &
+     &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl,  &
      &      nod_fld)
       end if
