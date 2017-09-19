@@ -78,10 +78,11 @@
      &   (maxtot_int_1d, max_int_point, spf_1d_r)
       call set_integrate_indices_1d                                     &
      &   (maxtot_int_1d, max_int_point, spf_1d_r%l_int)
-      call set_gauss_coefs_4_1d                                         &
-     &   (max_int_point, maxtot_int_1d, int_start1, spf_1d_r%xi, owe)
 !
       call copy_fem_gauss_int_coef_type(g_FEM)
+      call alloc_gauss_coef_4_fem(g_FEM)
+      call set_gauss_coefs_4_1d                                         &
+     &   (max_int_point, maxtot_int_1d, int_start1, spf_1d_r%xi, g_FEM%owe)
 
 !
       call alloc_edge_shape_func                                        &
