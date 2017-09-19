@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Apr., 2008
 !
 !!      subroutine cal_filter_moments_on_node_1st                       &
-!!     &         (nod_comm, node, ele, jac_3d, rhs_tbl, tbl_crs,        &
+!!     &         (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl, tbl_crs, &
 !!     &          m_lump, FEM_elen, mass, fem_wk, f_l)
 !!      subroutine cal_filter_moments_on_ele(FEM_elen)
 !
@@ -18,6 +18,7 @@
 !
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -30,7 +31,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_filter_moments_on_node_1st                         &
-     &         (nod_comm, node, ele, jac_3d, rhs_tbl, tbl_crs,          &
+     &         (nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl, tbl_crs,   &
      &          m_lump, FEM_elen, mass, fem_wk, f_l)
 !
       use t_geometry_data
@@ -42,6 +43,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(CRS_matrix_connect), intent(in) :: tbl_crs
@@ -53,7 +55,8 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      call cal_filter_moments_on_node(nod_comm, node, ele, jac_3d,      &
+      call cal_filter_moments_on_node                                   &
+     &   (nod_comm, node, ele, g_FEM, jac_3d,                           &
      &    rhs_tbl, tbl_crs, m_lump, FEM_elen%nnod_filter_mom,           &
      &    FEM_elen%elen_nod%moms%f_x2, FEM_elen%elen_nod%moms%f_y2,     &
      &    FEM_elen%elen_nod%moms%f_z2, FEM_elen%elen_nod%moms%f_xy,     &
@@ -106,7 +109,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_filter_moments_on_node                             &
-     &         (nod_comm, node, ele, jac_3d,                            &
+     &         (nod_comm, node, ele, g_FEM, jac_3d,                     &
      &          rhs_tbl, tbl_crs, m_lump, nnod_filter_mom,              &
      &          elen_dx2_nod,  elen_dy2_nod,  elen_dz2_nod,             &
      &          elen_dxdy_nod, elen_dydz_nod, elen_dzdx_nod,            &
@@ -125,6 +128,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(CRS_matrix_connect), intent(in) :: tbl_crs
@@ -191,8 +195,8 @@
 !
         else
 !
-          call int_dx_ele2_node(nod_comm, node, ele,                    &
-     &        jac_3d, rhs_tbl, tbl_crs, m_lump, itype_mass_matrix,      &
+          call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,     &
+     &        rhs_tbl, tbl_crs, m_lump, itype_mass_matrix,              &
      &        mass, seed_moments_ele(1,n),                              &
      &        seed_moments_nod(1,n), fem_wk, f_l)
           call nod_scalar_send_recv                                     &

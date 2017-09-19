@@ -3,13 +3,15 @@
 !
 !     Written by H. Matsui on Apr., 2008
 !
-!!      subroutine const_filter_func_nod_by_nod(file_name, inod,        &
-!!     &         node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen, ierr)
+!!      subroutine const_filter_func_nod_by_nod                         &
+!!     &         (file_name, inod, node, ele, ele_4_nod, neib_nod,      &
+!!     &          g_FEM, jac_3d, FEM_elen, ierr)
 !!      subroutine const_fluid_filter_nod_by_nod                        &
 !!     &         (file_name, inod, node, ele, ele_4_nod, neib_nod,      &
-!!     &          jac_3d, FEM_elen, ierr)
+!!     &          g_FEM, jac_3d, FEM_elen, ierr)
 !!        type(node_data),           intent(in) :: node
 !!        type(element_data),        intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(element_around_node), intent(inout) :: ele_4_nod
@@ -28,7 +30,7 @@
 !
       use t_geometry_data
       use t_next_node_ele_4_node
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_filter_elength
 !
@@ -50,14 +52,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_filter_func_nod_by_nod(file_name, inod,          &
-     &         node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen, ierr)
+      subroutine const_filter_func_nod_by_nod                           &
+     &         (file_name, inod, node, ele, ele_4_nod, neib_nod,        &
+     &          g_FEM, jac_3d, FEM_elen, ierr)
 !
       use cal_1d_moments_4_fliter
 !
       character(len = kchara), intent(in) :: file_name
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
@@ -98,7 +102,7 @@
 !    set nxn matrix
 !
         call int_node_filter_matrix                                     &
-     &      (node, ele, g_FEM1, jac_3d, inod, num_int_points,           &
+     &      (node, ele, g_FEM, jac_3d, inod, num_int_points,            &
      &       nele_near_1nod_weight, iele_near_1nod_weight(1),           &
      &       nnod_near_1nod_weight, inod_near_1nod_weight(1),           &
      &       nnod_near_1nod_filter)
@@ -144,7 +148,7 @@
             call s_cal_sol_filter_func_nod(inod, ierr)
             if (ierr .gt. 0) goto 20
 
-            call cal_filter_and_coefficients(ele, jac_3d)
+            call cal_filter_and_coefficients(ele, g_FEM, jac_3d)
             call cal_rms_filter_coefs(rms_weight, ierr)
 !
 !              write(70+my_rank,*) 'det_mat', mat_size, num_fixed_point,&
@@ -203,11 +207,12 @@
 !
       subroutine const_fluid_filter_nod_by_nod                          &
      &         (file_name, inod, node, ele, ele_4_nod, neib_nod,        &
-     &          jac_3d, FEM_elen, ierr)
+     &          g_FEM, jac_3d, FEM_elen, ierr)
 !
       character(len = kchara), intent(in) :: file_name
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
 !
@@ -257,7 +262,7 @@
             vec_mat = 0.0d0
 !
             call int_node_filter_matrix                                 &
-     &         (node, ele, g_FEM1, jac_3d, inod, num_int_points,        &
+     &         (node, ele, g_FEM, jac_3d, inod, num_int_points,         &
      &          nele_near_1nod_weight, iele_near_1nod_weight(1),        &
      &          nnod_near_1nod_weight, inod_near_1nod_weight(1),        &
      &          nnod_near_1nod_filter)
@@ -302,7 +307,7 @@
                 call s_cal_sol_filter_func_nod(inod, ierr)
                 if (ierr .gt. 0) goto 21
 !
-                call cal_filter_and_coefficients(ele, jac_3d)
+                call cal_filter_and_coefficients(ele, g_FEM, jac_3d)
                 call cal_rms_filter_coefs(rms_weight, ierr)
 !
                 if ( rms_weight .lt. min_rms_weight                     &

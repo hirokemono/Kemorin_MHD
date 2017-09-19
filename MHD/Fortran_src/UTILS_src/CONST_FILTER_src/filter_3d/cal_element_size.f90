@@ -14,11 +14,13 @@
 !!        type(dxdxi_data_type), intent(inout) :: filter_dxi
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
 !!
-!!      subroutine s_const_filter_mom_ele(nod_comm, node, ele, jac_3d_q,&
-!!     &          rhs_tbl, tbl_crs, rhs_mat, mom_nod, mom_ele)
+!!      subroutine s_const_filter_mom_ele                               &
+!!     &         (nod_comm, node, ele, g_FEM, jac_3d_q, rhs_tbl,        &
+!!     &          tbl_crs, m_lump, rhs_mat, mom_nod, mom_ele)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d_q
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -121,14 +123,14 @@
       if (itype_mass_matrix .eq. 1) then
         if (iflag_debug.eq.1) write(*,*) 'set_consist_mass_matrix'
         call set_consist_mass_matrix                                    &
-     &     (mesh%node, mesh%ele, fem_int%jcs%jac_3d,                    &
+     &     (mesh%node, mesh%ele, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, &
      &      next_tbl_f%neib_nod, fem_int%rhs_tbl, tbl_crs, mat_tbl,     &
      &      rhs_mat%fem_wk, mass1)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_mass_matrix_4_filter'
       call int_mass_matrix_4_filter                                     &
-     &   (mesh%node, mesh%ele, fem_int%jcs%jac_3d,                      &
+     &   (mesh%node, mesh%ele, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,   &
      &    fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%f_l, fem_int%m_lump)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_dxidx_ele_type'
@@ -139,14 +141,14 @@
 !        cal element size for each node
 !  ---------------------------------------------------
 !
-      call cal_dx2_on_node                                              &
-     &   (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jcs%jac_3d,       &
-     &    fem_int%rhs_tbl, tbl_crs, fem_int%m_lump, itype_mass_matrix,  &
-     &    mass1, FEM_elen, rhs_mat%fem_wk, rhs_mat%f_l)
-      call cal_dxi_dxes_node                                            &
-     &   (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jcs%jac_3d,       &
-     &    fem_int%rhs_tbl, tbl_crs, fem_int%m_lump, itype_mass_matrix,  &
-     &    mass1, dxidxs, rhs_mat%fem_wk, rhs_mat%f_l)
+      call cal_dx2_on_node(mesh%nod_comm, mesh%node, mesh%ele,          &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
+     &    tbl_crs, fem_int%m_lump, itype_mass_matrix, mass1,            &
+     &    FEM_elen, rhs_mat%fem_wk, rhs_mat%f_l)
+      call cal_dxi_dxes_node(mesh%nod_comm, mesh%node, mesh%ele,        &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
+     &    tbl_crs, fem_int%m_lump, itype_mass_matrix, mass1,            &
+     &    dxidxs, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call elength_nod_send_recv                                        &
      &   (mesh%node%numnod, mesh%nod_comm, FEM_elen%elen_nod)
@@ -160,13 +162,13 @@
       if (itype_mass_matrix .eq. 1) then
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_consist'
         call cal_1st_diffs_dx_by_consist                                &
-     &    (mesh%nod_comm, mesh%node, mesh%ele,                          &
+     &    (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jcs%g_FEM,       &
      &     fem_int%jcs%jac_3d, fem_int%rhs_tbl, tbl_crs, mass1,         &
      &     FEM_elen, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_lump'
         call cal_1st_diffs_dx_by_lump                                   &
-     &     (mesh%node, mesh%ele, fem_int%jcs%jac_3d,                    &
+     &     (mesh%node, mesh%ele, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, &
      &      fem_int%rhs_tbl, fem_int%m_lump, FEM_elen,                  &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
@@ -188,7 +190,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_node_1st'
       call cal_filter_moments_on_node_1st                               &
-     &   (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jcs%jac_3d,       &
+     &   (mesh%nod_comm, mesh%node, mesh%ele,                           &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,                        &
      &    fem_int%rhs_tbl, tbl_crs, fem_int%m_lump, FEM_elen, mass1,    &
      &    rhs_mat%fem_wk, rhs_mat%f_l)
 !
@@ -197,12 +200,12 @@
 !  ---------------------------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_diffs_delta_on_element'
-      call cal_diffs_delta_on_element                                   &
-     &   (mesh%node, mesh%ele, g_FEM1, fem_int%jcs%jac_3d, FEM_elen)
+      call cal_diffs_delta_on_element(mesh%node, mesh%ele,              &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, FEM_elen)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_2nd_diffs_delta_on_element'
-      call cal_2nd_diffs_delta_on_element                               &
-     &   (mesh%node, mesh%ele, g_FEM1, fem_int%jcs%jac_3d, FEM_elen)
+      call cal_2nd_diffs_delta_on_element(mesh%node, mesh%ele,          &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, FEM_elen)
 !
       if (iflag_momentum_type .eq. 1) then
         call delete_x_products_of_elen(FEM_elen)
@@ -217,12 +220,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_const_filter_mom_ele(nod_comm, node, ele, jac_3d_q,  &
-     &          rhs_tbl, tbl_crs, m_lump, rhs_mat, mom_nod, mom_ele)
+      subroutine s_const_filter_mom_ele                                 &
+     &         (nod_comm, node, ele, g_FEM, jac_3d_q, rhs_tbl,          &
+     &          tbl_crs, m_lump, rhs_mat, mom_nod, mom_ele)
 !
       use t_filter_moments
       use t_fem_gauss_int_coefs
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use m_ctl_params_4_gen_filter
       use cal_diff_elesize_on_ele
       use cal_1st_diff_deltax_4_nod
@@ -231,6 +235,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(CRS_matrix_connect), intent(in) :: tbl_crs
@@ -245,10 +250,10 @@
 !
       if (itype_mass_matrix .eq. 1) then
         call cal_diffs_filter_nod_consist                               &
-     &     (nod_comm, node, ele, jac_3d_q, rhs_tbl,                     &
+     &     (nod_comm, node, ele, g_FEM, jac_3d_q, rhs_tbl,              &
      &      tbl_crs, mass1, rhs_mat%fem_wk, rhs_mat%f_nl, mom_nod)
       else
-        call cal_diffs_filter_nod_lump(node, ele, jac_3d_q,             &
+        call cal_diffs_filter_nod_lump(node, ele, g_FEM, jac_3d_q,      &
      &     rhs_tbl, m_lump, rhs_mat%fem_wk, rhs_mat%f_nl, mom_nod)
       end if
 !
@@ -256,11 +261,11 @@
      &   (node%numnod, nod_comm, mom_nod)
 !
       call cal_filter_moms_ele_by_nod                                   &
-     &   (node, ele, g_FEM1, jac_3d_q, mom_nod, mom_ele)
+     &   (node, ele, g_FEM, jac_3d_q, mom_nod, mom_ele)
       call cal_1st_diffs_filter_ele                                     &
-     &   (node, ele, g_FEM1, jac_3d_q, mom_nod, mom_ele)
+     &   (node, ele, g_FEM, jac_3d_q, mom_nod, mom_ele)
       call cal_2nd_diffs_filter_ele                                     &
-     &   (node, ele, g_FEM1, jac_3d_q, mom_nod, mom_ele)
+     &   (node, ele, g_FEM, jac_3d_q, mom_nod, mom_ele)
 !
       end subroutine s_const_filter_mom_ele
 !

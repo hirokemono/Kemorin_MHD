@@ -3,10 +3,11 @@
 !
 !     Written by H. Matsui on Oct., 2006
 !
-!!      subroutine set_consist_mass_matrix(node, ele, jac_3d,           &
+!!      subroutine set_consist_mass_matrix(node, ele, g_FEM, jac_3d,    &
 !!     &          tbl_crs, rhs_tbl, mat_tbl, fem_wk, mass)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
@@ -41,13 +42,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_consist_mass_matrix(node, ele, jac_3d,             &
+      subroutine set_consist_mass_matrix(node, ele, g_FEM, jac_3d,      &
      &          neib_nod, rhs_tbl, tbl_crs, mat_tbl, fem_wk, mass)
-!
-      use m_fem_gauss_int_coefs
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -74,7 +74,7 @@
 !  ---------------------------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_consist_mass_matrix'
-      call int_vol_consist_mass_matrix(node, ele, g_FEM1, jac_3d,       &
+      call int_vol_consist_mass_matrix(node, ele, g_FEM, jac_3d,        &
      &    tbl_crs, rhs_tbl, mat_tbl, fem_wk, mass)
 !
       end subroutine set_consist_mass_matrix

@@ -4,10 +4,10 @@
 !     Written by H. Matsui on Nov., 2008
 !
 !!      subroutine set_simple_filter_nod_by_nod                         &
-!!     &         (file_name, node, ele, jac_3d, FEM_elen, dx_nod,       &
+!!     &         (file_name, node, ele, g_FEM, jac_3d, FEM_elen, dx_nod,&
 !!     &          inod, ele_4_nod, neib_nod)
 !!      subroutine set_simple_fl_filter_nod_by_nod                      &
-!!     &         (file_name, node, ele, jac_3d, FEM_elen, dx_nod,       &
+!!     &         (file_name, node, ele, g_FEM, jac_3d, FEM_elen, dx_nod,&
 !!     &          inod, ele_4_nod, neib_nod, mom_nod)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -22,7 +22,7 @@
       use m_constants
 !
       use t_geometry_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_filter_elength
       use t_filter_dxdxi
@@ -40,7 +40,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_simple_filter_nod_by_nod                           &
-     &         (file_name, node, ele, jac_3d, FEM_elen, dx_nod,         &
+     &         (file_name, node, ele, g_FEM, jac_3d, FEM_elen, dx_nod,  &
      &          inod, ele_4_nod, neib_nod)
 !
       use m_ctl_params_4_gen_filter
@@ -59,6 +59,7 @@
       integer(kind = kint), intent(in) :: inod
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_direction_type), intent(in) :: dx_nod
@@ -96,7 +97,7 @@
 !    set nxn matrix
 !
       call int_node_filter_matrix                                       &
-     &   (node, ele, g_FEM1, jac_3d, inod, num_int_points,              &
+     &   (node, ele, g_FEM, jac_3d, inod, num_int_points,               &
      &    nele_near_1nod_weight, iele_near_1nod_weight(1),              &
      &    nnod_near_1nod_weight, inod_near_1nod_weight(1),              &
      &    nnod_near_1nod_filter)
@@ -119,7 +120,7 @@
      &      dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
       end if
 !
-      call cal_filter_and_coefficients(ele, jac_3d)
+      call cal_filter_and_coefficients(ele, g_FEM, jac_3d)
       call normalize_each_filter_weight
 !
       call s_delete_small_weighting(node%numnod)
@@ -130,7 +131,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_simple_fl_filter_nod_by_nod                        &
-     &         (file_name, node, ele, jac_3d, FEM_elen, dx_nod,         &
+     &         (file_name, node, ele, g_FEM, jac_3d, FEM_elen, dx_nod,  &
      &          inod, ele_4_nod, neib_nod, mom_nod)
 !
       use m_ctl_params_4_gen_filter
@@ -151,6 +152,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_direction_type), intent(in) :: dx_nod
@@ -201,7 +203,7 @@
 !
         else
           call int_node_filter_matrix                                   &
-     &       (node, ele, g_FEM1, jac_3d, inod, num_int_points,          &
+     &       (node, ele, g_FEM, jac_3d, inod, num_int_points,           &
      &        nele_near_1nod_weight, iele_near_1nod_weight(1),          &
      &        nnod_near_1nod_weight, inod_near_1nod_weight(1),          &
      &        nnod_near_1nod_filter)
@@ -224,7 +226,7 @@
      &          dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
           end if
 !
-          call cal_filter_and_coefficients(ele, jac_3d)
+          call cal_filter_and_coefficients(ele, g_FEM, jac_3d)
           call normalize_each_filter_weight
 !
           call s_delete_small_weighting(node%numnod)

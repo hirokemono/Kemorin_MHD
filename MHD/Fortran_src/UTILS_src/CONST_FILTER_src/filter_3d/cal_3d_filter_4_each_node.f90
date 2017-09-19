@@ -5,7 +5,7 @@
 !
 !      subroutine const_filter_mat_each_nod                             &
 !     &         (node, FEM_elen, inod, num_fixed_point, ierr)
-!      subroutine cal_filter_and_coefficients(ele, jac_3d)
+!      subroutine cal_filter_and_coefficients(ele, g_FEM, jac_3d)
 !      subroutine cal_rms_filter_coefs(rms_weight, rms_filter)
 !
       module cal_3d_filter_4_each_node
@@ -66,10 +66,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_filter_and_coefficients(ele, jac_3d)
+      subroutine cal_filter_and_coefficients(ele, g_FEM, jac_3d)
 !
       use t_geometry_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
@@ -77,13 +77,14 @@
       use int_filter_functions
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
 !
 !
       weight_1nod = 0.0d0
       call copy_filter_coefs(nnod_near_1nod_weight)
 !
-      call int_node_filter_weights(ele, g_FEM1, jac_3d, num_int_points, &
+      call int_node_filter_weights(ele, g_FEM, jac_3d, num_int_points,  &
      &    nele_near_1nod_weight, iele_near_1nod_weight(1) )
 !
       end subroutine cal_filter_and_coefficients

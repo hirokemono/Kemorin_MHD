@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on an., 2006
 !
-!      subroutine int_mass_matrix_4_filter                              &
-!     &         (jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
+!!      subroutine int_mass_matrix_4_filter                             &
+!!     &        (node, ele, g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
 !
       module int_mass_matrix_gen_filter
 !
@@ -16,7 +16,7 @@
       use m_geometry_constants
 !
       use t_geometry_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
@@ -32,12 +32,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_mass_matrix_4_filter                               &
-     &         (node, ele, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
+     &        (node, ele, g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
 !
       use int_vol_mass_matrix
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -47,11 +48,11 @@
 !
 !
 !      if (id_filter_area_grp(1) .eq. -1) then
-      call int_lumped_mass_matrix(node, ele, g_FEM1, jac_3d, rhs_tbl,   &
+      call int_lumped_mass_matrix(node, ele, g_FEM, jac_3d, rhs_tbl,    &
      &    num_int_points, fem_wk, f_l, m_lump)
 !      else
 !        call int_grped_mass_matrix_filter                              &
-!     &     (node, ele, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
+!     &     (node, ele, g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
 !      end if
 !
 !      call check_mass_martix(my_rank, node%numnod, m_lump)
@@ -62,7 +63,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_grped_mass_matrix_filter                           &
-     &         (node, ele, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
+     &         (node, ele, g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
 !
       use m_element_list_4_filter
       use int_grouped_mass_matrix
@@ -70,6 +71,7 @@
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -81,12 +83,12 @@
       if     (ele%nnod_4_ele.eq.num_t_quad                              &
      &   .or. ele%nnod_4_ele.eq.num_t_lag) then
         call int_grp_mass_matrix_HRZ_full                               &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, iele_filter_smp_stack,  &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, iele_filter_smp_stack,   &
      &      nele_4_filter, iele_4_filter, num_int_points,               &
      &      fem_wk, f_l, m_lump)
       else
         call int_grp_mass_matrix_diag                                   &
-     &    (node, ele, g_FEM1, jac_3d, rhs_tbl,                          &
+     &    (node, ele, g_FEM, jac_3d, rhs_tbl,                           &
      &     iele_filter_smp_stack, nele_4_filter, iele_4_filter,         &
      &     num_int_points, fem_wk, f_l, m_lump)
       end if

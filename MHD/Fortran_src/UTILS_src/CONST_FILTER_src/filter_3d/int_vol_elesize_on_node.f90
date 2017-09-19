@@ -7,11 +7,11 @@
 !      subroutine allocate_scalar_ele_4_int
 !      subroutine deallocate_scalar_ele_4_int
 !
-!      subroutine int_dx_ele2_node(nod_comm, node, ele,                 &
-!     &          jac_3d, rhs_tbl, tbl_crs, m_lump, itype_mass,          &
-!     &          mass, elen_ele, elen_nod, fem_wk, f_l)
-!      subroutine int_vol_diff_dxs(node, ele, jac_3d,                   &
-!     &          rhs_tbl, fem_wk, f_nl, elen_org_nod)
+!!      subroutine int_dx_ele2_node(nod_comm, node, ele,                &
+!!     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, itype_mass,  &
+!!     &          mass, elen_ele, elen_nod, fem_wk, f_l)
+!!      subroutine int_vol_diff_dxs(node, ele, g_FEM, jac_3d,           &
+!!     &          rhs_tbl, fem_wk, f_nl, elen_org_nod)
 !
       module int_vol_elesize_on_node
 !
@@ -54,7 +54,7 @@
 !---------------------------------------------------------------------
 !
       subroutine int_dx_ele2_node(nod_comm, node, ele,                  &
-     &          jac_3d, rhs_tbl, tbl_crs, m_lump, itype_mass,           &
+     &          g_FEM, jac_3d, rhs_tbl, tbl_crs, m_lump, itype_mass,    &
      &          mass, elen_ele, elen_nod, fem_wk, f_l)
 !
       use m_element_list_4_filter
@@ -73,6 +73,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(CRS_matrix_connect), intent(in) :: tbl_crs
@@ -89,17 +90,17 @@
 !
       if (id_filter_area_grp(1) .eq. -1) then
         call int_area_ele_scalar_2_node                                 &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl,  ele%istack_ele_smp,    &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl,  ele%istack_ele_smp,     &
      &      elen_ele, fem_wk, f_l)
       else
         call int_grp_ele_scalar_2_node                                  &
-     &     (node, ele, g_FEM1, jac_3d, rhs_tbl, iele_filter_smp_stack,  &
+     &     (node, ele, g_FEM, jac_3d, rhs_tbl, iele_filter_smp_stack,   &
      &      nele_4_filter, iele_4_filter, elen_ele, fem_wk, f_l)
       end if
 !
 !
       if (itype_mass .eq. 1) then
-        call cal_ff_smp_2_scalar(node, rhs_tbl, f_l%ff_smp,           &
+        call cal_ff_smp_2_scalar(node, rhs_tbl, f_l%ff_smp,             &
      &      m_lump%ml, n_scalar, ione, elen_nod)
       else
         call reset_ff(node%numnod, f_l)
@@ -114,11 +115,11 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_diff_dxs(node, ele, jac_3d,                    &
+      subroutine int_vol_diff_dxs(node, ele, g_FEM, jac_3d,             &
      &          rhs_tbl, fem_wk, f_nl, elen_org_nod)
 !
       use t_geometry_data
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
       use t_jacobians
 !
       use t_table_FEM_const
@@ -130,6 +131,7 @@
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -146,7 +148,7 @@
         call scalar_2_each_element(node, ele,                          &
      &      k2, elen_org_nod, scalar_ele)
         call fem_skv_gradient(ele%istack_ele_smp, num_int_points,      &
-     &      k2, ele, g_FEM1, jac_3d, scalar_ele, fem_wk%sk6)
+     &      k2, ele, g_FEM, jac_3d, scalar_ele, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                    &
