@@ -28,8 +28,6 @@
 !
 !
       type volume_shape_function
-        integer(kind = kint) :: nnod_4_ele
-        integer(kind = kint) :: ntot_int
         integer(kind = kint), allocatable :: l_int(:,:,:)
 !
         real(kind=kreal), allocatable :: xi(:)
@@ -42,17 +40,12 @@
       end type volume_shape_function
 !
       type infty_shape_function
-        integer(kind = kint) :: nnod_4_ele
-        integer(kind = kint) :: nsurf_4_ele
-        integer(kind = kint) :: ntot_int
         real(kind=kreal), allocatable :: dnxi_inf(:,:,:)
         real(kind=kreal), allocatable :: dnei_inf(:,:,:)
         real(kind=kreal), allocatable :: dnzi_inf(:,:,:)
       end type infty_shape_function
 !
       type surface_shape_function
-        integer(kind = kint) :: nnod_4_surf
-        integer(kind = kint) :: ntot_int
         integer (kind=kint), allocatable :: l_int(:,:,:)
 !
         real(kind=kreal), allocatable :: xi(:)
@@ -63,8 +56,6 @@
       end type surface_shape_function
 !
       type edge_shape_function
-        integer(kind = kint) :: nnod_4_edge
-        integer(kind = kint) :: ntot_int
         integer (kind=kint), allocatable :: l_int(:,:,:)
         real (kind=kreal), allocatable :: xi(:)
 !
@@ -197,11 +188,9 @@
       type(volume_shape_function), intent(inout) :: spf_3d
 !
 !
-      spf_3d%nnod_4_ele =  nnod_4_ele
-      spf_3d%ntot_int =    g_FEM%maxtot_int_3d
-      allocate(spf_3d%dnxi(spf_3d%nnod_4_ele,spf_3d%ntot_int) )
-      allocate(spf_3d%dnei(spf_3d%nnod_4_ele,spf_3d%ntot_int) )
-      allocate(spf_3d%dnzi(spf_3d%nnod_4_ele,spf_3d%ntot_int) )
+      allocate(spf_3d%dnxi(nnod_4_ele,g_FEM%maxtot_int_3d) )
+      allocate(spf_3d%dnei(nnod_4_ele,g_FEM%maxtot_int_3d) )
+      allocate(spf_3d%dnzi(nnod_4_ele,g_FEM%maxtot_int_3d) )
 !
        spf_3d%dnxi = 0.0d0
        spf_3d%dnei = 0.0d0
@@ -221,10 +210,7 @@
       integer(kind = kint) :: ntot_int
 !
 !
-      spf_inf%nnod_4_ele =  nnod_4_ele
-      spf_inf%nsurf_4_ele = nsurf_4_ele
-      spf_inf%ntot_int =    g_FEM%maxtot_int_3d
-      ntot_int = spf_inf%ntot_int
+      ntot_int = g_FEM%maxtot_int_3d
       allocate(spf_inf%dnxi_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
       allocate(spf_inf%dnei_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
       allocate(spf_inf%dnzi_inf(nnod_4_ele,nsurf_4_ele,ntot_int) )
@@ -244,10 +230,8 @@
       type(surface_shape_function), intent(inout) :: spf_2d
 !
 !
-      spf_2d%nnod_4_surf =  nnod_4_sf
-      spf_2d%ntot_int =     g_FEM%maxtot_int_2d
-      allocate(spf_2d%dnxi_sf(spf_2d%nnod_4_surf,spf_2d%ntot_int) )
-      allocate(spf_2d%dnei_sf(spf_2d%nnod_4_surf,spf_2d%ntot_int) )
+      allocate(spf_2d%dnxi_sf(nnod_4_sf,g_FEM%maxtot_int_2d) )
+      allocate(spf_2d%dnei_sf(nnod_4_sf,g_FEM%maxtot_int_2d) )
 !
       spf_2d%dnxi_sf = 0.0d0
       spf_2d%dnei_sf = 0.0d0
@@ -263,9 +247,7 @@
       type(edge_shape_function), intent(inout) :: spf_1d
 !
 !
-      spf_1d%nnod_4_edge =  nnod_4_ed
-      spf_1d%ntot_int =     g_FEM%maxtot_int_1d
-      allocate(spf_1d%dnxi_ed(spf_1d%nnod_4_edge,spf_1d%ntot_int) )
+      allocate(spf_1d%dnxi_ed(nnod_4_ed,g_FEM%maxtot_int_1d) )
 !
       spf_1d%dnxi_ed = 0.0d0
 !
