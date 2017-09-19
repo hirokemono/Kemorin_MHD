@@ -7,13 +7,15 @@
 !> @brief  Construct Jacobians on edge
 !!
 !!@verbatim
-!!      subroutine sel_jacobian_edge(node, edge, spf_1d, jac_1d)
+!!      subroutine sel_jacobian_edge(node, edge, g_FEM, spf_1d, jac_1d)
 !!      subroutine cal_jacobian_edge_linear                             &
-!!     &         (node, edge, spf_1d_8, jac_1d)
+!!     &         (node, edge, g_FEM, spf_1d_8, jac_1d)
 !!      subroutine cal_jacobian_edge_quad_on_l                          &
-!!     &         (node, edge, spf_1d_20, jac_1d)
+!!     &         (node, edge, g_FEM, spf_1d_20, jac_1d)
 !!        type(node_data), intent(in) :: node
 !!        type(edge_data), intent(in)  :: edge
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(edge_shape_function), intent(inout) :: spf_1d
 !!        type(jacobians_1d), intent(inout) :: jac_1d
 !!@endverbatim
 !
@@ -21,12 +23,11 @@
 !
       use m_precision
       use m_machine_parameter
-!
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       use t_geometry_data
       use t_edge_data
+      use t_fem_gauss_int_coefs
       use t_shape_functions
       use t_jacobian_1d
 !
@@ -40,18 +41,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_jacobian_edge(node, edge, spf_1d, jac_1d)
+      subroutine sel_jacobian_edge(node, edge, g_FEM, spf_1d, jac_1d)
 !
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(edge_shape_function), intent(inout) :: spf_1d
       type(jacobians_1d), intent(inout) :: jac_1d
 !
 !
       if      (edge%nnod_4_edge .eq. num_linear_edge) then
-        call cal_jacobian_edge_linear(node, edge, spf_1d, jac_1d)
+        call cal_jacobian_edge_linear                                   &
+     &     (node, edge, g_FEM, spf_1d, jac_1d)
       else if (edge%nnod_4_edge .eq. num_quad_edge) then
-        call cal_jacobian_edge_quad(node, edge, spf_1d, jac_1d)
+        call cal_jacobian_edge_quad                                     &
+     &     (node, edge, g_FEM, spf_1d, jac_1d)
       end if
 !
       end subroutine sel_jacobian_edge
@@ -60,13 +64,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_edge_linear                               &
-     &         (node, edge, spf_1d_8, jac_1d)
+     &         (node, edge, g_FEM, spf_1d_8, jac_1d)
 !
       use cal_1edge_jacobians
       use cal_shape_function_1d
 !
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(edge_shape_function), intent(inout) :: spf_1d_8
       type(jacobians_1d), intent(inout) :: jac_1d
 !
@@ -79,7 +84,7 @@
       call cal_jacobian_1d_2                                            &
      &   (node%numnod, edge%numedge, edge%nnod_4_edge, edge%ie_edge,    &
      &    node%xx, np_smp, edge%istack_edge_smp,                        &
-     &    max_int_point, int_start1,  &
+     &    g_FEM%max_int_point, g_FEM%int_start1,                        &
      &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
      &    jac_1d%xeg_edge, spf_1d_8%dnxi_ed)
 !
@@ -87,13 +92,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_edge_quad(node, edge, spf_1d_20, jac_1d)
+      subroutine cal_jacobian_edge_quad                                 &
+     &         (node, edge, g_FEM, spf_1d_20, jac_1d)
 !
       use cal_1edge_jacobians
       use cal_shape_function_1d
 !
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(edge_shape_function), intent(inout) :: spf_1d_20
       type(jacobians_1d), intent(inout) :: jac_1d
 !
@@ -107,7 +114,7 @@
       call cal_jacobian_1d_3                                            &
      &   (node%numnod, edge%numedge, edge%nnod_4_edge, edge%ie_edge,    &
      &    node%xx, np_smp, edge%istack_edge_smp,                        &
-     &    max_int_point, int_start1,  &
+     &    g_FEM%max_int_point, g_FEM%int_start1,                        &
      &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
      &    jac_1d%xeg_edge, spf_1d_20%dnxi_ed)
 !
@@ -116,13 +123,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_edge_quad_on_l                            &
-     &         (node, edge, spf_1d_20, jac_1d)
+     &         (node, edge, g_FEM, spf_1d_20, jac_1d)
 !
       use cal_1edge_jacobians
       use cal_shape_function_1d
 !
       type(node_data), intent(in) :: node
       type(edge_data), intent(in)  :: edge
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(edge_shape_function), intent(inout) :: spf_1d_20
       type(jacobians_1d), intent(inout) :: jac_1d
 !
@@ -134,7 +142,7 @@
       call cal_jacobian_1d_2_3                                          &
      &   (node%numnod, edge%numedge, edge%nnod_4_edge,                  &
      &    edge%ie_edge, node%xx, np_smp, edge%istack_edge_smp,          &
-     &    max_int_point, int_start1,  &
+     &    g_FEM%max_int_point, g_FEM%int_start1,                        &
      &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
      &    jac_1d%xeg_edge, spf_1d_20%dnxi_ed)
 !
