@@ -58,8 +58,8 @@
      &          node, surf, edge, g_FEM, spf_1d)
 !
       use calypso_mpi
-      use m_fem_gauss_int_coefs
       use m_gauss_int_parameters
+      use t_fem_gauss_int_coefs
       use t_shape_functions
       use t_jacobians
       use t_geometry_data
@@ -88,9 +88,7 @@
       call count_surf_size_smp_type(surf)
       call count_edge_size_smp_type(edge)
 !
-      call maximum_integration_points(num_int)
-!
-      g_FEM%max_int_point = max_int_point
+      call set_max_integration_points(num_int, g_FEM)
       call num_of_int_points(g_FEM)
 !
 !  set indices for gauss integration

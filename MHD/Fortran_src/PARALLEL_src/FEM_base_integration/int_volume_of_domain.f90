@@ -71,9 +71,6 @@
       call initialize_FEM_integration                                   &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
 !
-      allocate(jacs%g_FEM)
-      call copy_fem_gauss_int_coefs(jacs%g_FEM, jacs%g_FEM)
-!
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
       call const_jacobian_and_volume(my_rank, nprocs,                   &
      &    mesh%node, group%surf_grp, group%infty_grp,                   &

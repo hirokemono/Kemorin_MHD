@@ -7,7 +7,8 @@
 !>@brief  Jacobians for radial FEM 
 !!
 !!@verbatim
-!!      subroutine cal_radial_jacobians(nri, radius, g_FEM, jacs_r)
+!!      subroutine cal_radial_jacobians                                 &
+!!     &         (max_int_point, nri, radius, g_FEM, jacs_r)
 !!      subroutine dealloc_radial_jacobians(jacs_r)
 !!        type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
 !!        type(radial_fem_jacobians), intent(inout) :: jacs_r
@@ -52,13 +53,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_radial_jacobians(nri, radius, g_FEM, jacs_r)
+      subroutine cal_radial_jacobians                                   &
+     &         (max_int_point, nri, radius, g_FEM, jacs_r)
 !
-      use m_fem_gauss_int_coefs
       use m_gauss_int_parameters
       use set_integration_indices
       use set_gauss_int_parameters
 !
+      integer(kind = kint), intent(in) :: max_int_point
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: radius(nri)
 !
@@ -72,7 +74,7 @@
 !
       call set_num_radial_element(nri, jacs_r%j_lin, jacs_r%j_quad)
 !
-      g_FEM%max_int_point = max_int_point
+      call set_max_integration_points(max_int_point, g_FEM)
       call num_of_int_points(g_FEM)
 !
       call alloc_1d_gauss_point_id(g_FEM, spf_1d_r)
