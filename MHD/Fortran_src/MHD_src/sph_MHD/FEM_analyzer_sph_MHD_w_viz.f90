@@ -63,8 +63,6 @@
      &         (MHD_files, MHD_step, mesh, group, ele_mesh,             &
      &          iphys, nod_fld, next_tbl, jacobians, range, fem_ucd)
 !
-      use m_fem_gauss_int_coefs
-!
       use set_ele_id_4_node_type
       use FEM_analyzer_sph_MHD
       use int_volume_of_domain
@@ -104,8 +102,9 @@
 !
 !  -----  If there is no volume rendering... return
 !
-      if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
-      call maximum_integration_points(ione)
+      if (iflag_debug.eq.1) write(*,*)  'set_max_integration_points'
+      allocate(jacobians%g_FEM)
+      call set_max_integration_points(ione, jacobians%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    mesh, ele_mesh%surf, group, spfs_M, jacobians)
 !

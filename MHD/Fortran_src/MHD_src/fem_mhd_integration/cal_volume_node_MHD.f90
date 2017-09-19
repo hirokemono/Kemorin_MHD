@@ -55,7 +55,6 @@
       use t_jacobians
       use t_layering_ele_list
       use t_shape_functions
-      use m_fem_gauss_int_coefs
 !
       use const_jacobians_3d
       use int_volume_of_domain
@@ -76,8 +75,8 @@
 !
 !    Construct Jacobians
 !
-      call max_int_point_by_etype(mesh%ele%nnod_4_ele)
       allocate(jacs%g_FEM)
+      call sel_max_int_point_by_etype(mesh%ele%nnod_4_ele, jacs%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
 !

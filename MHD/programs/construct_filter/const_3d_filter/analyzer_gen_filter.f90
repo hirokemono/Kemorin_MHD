@@ -63,7 +63,6 @@
 !
       use m_filter_file_names
       use m_ctl_data_gen_3d_filter
-      use m_fem_gauss_int_coefs
 !
       use const_mesh_information
       use cal_1d_moments_4_fliter
@@ -142,7 +141,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*)  'const_jacobian_and_volume'
       allocate(fem_int_f%jcs%g_FEM)
-      call maximum_integration_points(num_int_points)
+      call set_max_integration_points                                   &
+     &   (num_int_points, fem_int_f%jcs%g_FEM)
       call initialize_FEM_integration(fem_int_f%jcs%g_FEM,              &
      &    spfs_f%spf_3d, spfs_f%spf_2d, spfs_f%spf_1d)
 !

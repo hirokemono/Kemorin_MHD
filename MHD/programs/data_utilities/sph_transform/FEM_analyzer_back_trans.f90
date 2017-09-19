@@ -41,11 +41,10 @@
 !
       use t_ucd_data
       use t_next_node_ele_4_node
+      use t_ctl_params_sph_trans
       use t_jacobians
 !
-      use t_ctl_params_sph_trans
       use m_array_for_send_recv
-      use m_fem_gauss_int_coefs
 !
       use nod_phys_send_recv
       use set_ele_id_4_node_type
@@ -81,7 +80,9 @@
      &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele, ele_4_nod)
 !
         if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-        call max_int_point_by_etype(femmesh_STR%mesh%ele%nnod_4_ele)
+        allocate(jacobians%g_FEM)
+        call sel_max_int_point_by_etype                                 &
+     &     (femmesh_STR%mesh%ele%nnod_4_ele, jacobians%g_FEM)
         call const_jacobian_volume_normals(my_rank, nprocs,             &
      &      femmesh_STR%mesh, elemesh_STR%surf, femmesh_STR%group,      &
      &      spfs_TRNS, jacobians)

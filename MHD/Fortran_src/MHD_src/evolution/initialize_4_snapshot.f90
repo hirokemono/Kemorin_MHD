@@ -82,7 +82,6 @@
       use m_boundary_condition_IDs
       use m_array_for_send_recv
       use m_fem_mhd_restart
-      use m_fem_gauss_int_coefs
 !
       use cal_volume_node_MHD
       use int_MHD_mass_matrices

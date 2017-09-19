@@ -51,7 +51,6 @@
       subroutine initialize_FEM_integration                             &
      &         (g_FEM, spf_3d, spf_2d, spf_1d)
 !
-      use m_fem_gauss_int_coefs
       use set_gauss_int_parameters
       use set_integration_indices
 !
@@ -66,7 +65,6 @@
 !
 !  data allocation
 !
-      g_FEM%max_int_point = max_int_point
       call num_of_int_points(g_FEM)
 !
 !  set indices for gauss integration

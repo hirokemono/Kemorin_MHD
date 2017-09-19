@@ -119,7 +119,6 @@
      &          g_FEM, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd,         &
      &          n_layer, ncomp_sgl, ncomp_dble, ave_l, rms_l)
 !
-      use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps
       use transfer_correlate_field
 !
@@ -144,11 +143,11 @@
         d_nod_trans2(1:phys_2nd%n_point,1)                              &
      &          = phys_2nd%d_fld(1:phys_2nd%n_point,icomp)
 !
-        call int_vol_2rms_ave_ele_grps                                  &
-     &     (node, ele, layer_tbl%e_grp, g_FEM, jac_3d_q, jac_3d_l,      &
-     &      max_int_point, nod_fld%ntot_phys, icomp, nod_fld%d_fld,     &
-     &      ione, ione, d_nod_trans2(1,1), ave_l(1,icomp),              &
-     &      rms_l(1,icomp), ave_l(1,icomp_2), rms_l(1,icomp_2))
+        call int_vol_2rms_ave_ele_grps(node, ele, layer_tbl%e_grp,      &
+     &      g_FEM, jac_3d_q, jac_3d_l, g_FEM%max_int_point,             &
+     &      nod_fld%ntot_phys, icomp, nod_fld%d_fld, ione, ione,        &
+     &      d_nod_trans2(1,1), ave_l(1,icomp), rms_l(1,icomp),          &
+     &      ave_l(1,icomp_2), rms_l(1,icomp_2))
       end do
 !
       end subroutine int_vol_rms_ave_all_layer
@@ -159,7 +158,6 @@
      &          g_FEM, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd,         &
      &          n_layer, ncomp_sgl, ncomp_dble, sig_l, cov_l)
 !
-      use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps
       use transfer_correlate_field
 !
@@ -185,8 +183,8 @@
      &          = phys_2nd%d_fld(1:node%numnod,icomp)
         call int_vol_dev_cor_ele_grps                                   &
      &     (node, ele, layer_tbl%e_grp, g_FEM, jac_3d_q, jac_3d_l,      &
-     &      max_int_point, nod_fld%ntot_phys, icomp, nod_fld%d_fld,     &
-     &      ione, ione, d_nod_trans2(1,1),                              &
+     &      g_FEM%max_int_point, nod_fld%ntot_phys, icomp,              &
+     &      nod_fld%d_fld, ione, ione, d_nod_trans2(1,1),               &
      &      ave_ref(1,icomp), ave_tgt(1,icomp),                         &
      &      sig_l(1,icomp), sig_l(1,icomp_2),  cov_l(1,icomp) )
       end do

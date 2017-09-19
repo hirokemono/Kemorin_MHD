@@ -161,8 +161,6 @@
 !
       subroutine element_normals_4_VIZ
 !
-      use m_fem_gauss_int_coefs
-!
       use int_volume_of_domain
       use set_ele_id_4_node_type
       use set_normal_vectors
@@ -177,7 +175,9 @@
      &   (femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele, ele_4_nod_VIZ)
 !
       if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-      call max_int_point_by_etype(femmesh_VIZ%mesh%ele%nnod_4_ele)
+      allocate(jacobians_VIZ%g_FEM)
+      call sel_max_int_point_by_etype                                   &
+     &   (femmesh_VIZ%mesh%ele%nnod_4_ele, jacobians_VIZ%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    femmesh_VIZ%mesh, elemesh_VIZ%surf, femmesh_VIZ%group,        &
      &    spfs_VIZ, jacobians_VIZ)

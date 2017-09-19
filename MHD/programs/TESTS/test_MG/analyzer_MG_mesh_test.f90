@@ -36,7 +36,6 @@
 !
       use m_file_format_switch
       use m_default_file_prefix
-      use m_fem_gauss_int_coefs
 !
       use copy_mesh_structures
       use set_element_data_4_IO
@@ -97,7 +96,9 @@
 !  -------------------------------
 !
       if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-      call max_int_point_by_etype(mesh%ele%nnod_4_ele)
+      allocate(jacobians_T%g_FEM)
+      call sel_max_int_point_by_etype                                   &
+     &   (mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    mesh, ele_mesh%surf, group, spfs_T, jacobians_T)
 !

@@ -78,7 +78,6 @@
       use m_boundary_condition_IDs
       use m_flags_4_solvers
       use m_array_for_send_recv
-      use m_fem_gauss_int_coefs
 !
       use m_bc_data_velo
       use m_bc_data_list

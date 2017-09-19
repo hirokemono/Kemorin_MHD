@@ -44,7 +44,6 @@
 !
       use m_ctl_params_4_gen_table
       use m_2nd_pallalel_vector
-      use m_fem_gauss_int_coefs
       use t_shape_functions
 !
       use input_control_gen_table
@@ -90,7 +89,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobians_element'
       allocate(jacobians_I%g_FEM)
-      call max_int_point_by_etype(org_femmesh%mesh%ele%nnod_4_ele)
+      call sel_max_int_point_by_etype                                   &
+     &   (org_femmesh%mesh%ele%nnod_4_ele, jacobians_I%g_FEM)
       call initialize_FEM_integration(jacobians_I%g_FEM,                &
      &    spfs_I%spf_3d, spfs_I%spf_2d, spfs_I%spf_1d)
 !

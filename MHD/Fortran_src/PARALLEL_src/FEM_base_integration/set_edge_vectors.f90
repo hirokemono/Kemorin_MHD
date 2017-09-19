@@ -34,7 +34,6 @@
       subroutine const_edge_vector                                      &
      &         (my_rank, nprocs, node, edge, spf_1d, jacs)
 !
-      use m_fem_gauss_int_coefs
       use int_edge_vector
 !
       integer(kind = kint), intent(in) :: my_rank, nprocs
@@ -51,7 +50,7 @@
 !
       call alloc_edge_vect(edge)
       call s_int_edge_vector                                            &
-     &   (max_int_point, jacs%g_FEM, jacs%jac_1d, edge)
+     &   (jacs%g_FEM%max_int_point, jacs%g_FEM, jacs%jac_1d, edge)
 !
       call dealloc_jacobians_edge(edge, jacs)
 !

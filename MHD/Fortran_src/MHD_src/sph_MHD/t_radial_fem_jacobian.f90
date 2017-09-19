@@ -7,8 +7,7 @@
 !>@brief  Jacobians for radial FEM 
 !!
 !!@verbatim
-!!      subroutine cal_radial_jacobians                                 &
-!!     &         (max_int_point, nri, radius, g_FEM, jacs_r)
+!!      subroutine cal_radial_jacobians(nri, radius, g_FEM, jacs_r)
 !!      subroutine dealloc_radial_jacobians(jacs_r)
 !!        type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
 !!        type(radial_fem_jacobians), intent(inout) :: jacs_r
@@ -53,14 +52,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_radial_jacobians                                   &
-     &         (max_int_point, nri, radius, g_FEM, jacs_r)
+      subroutine cal_radial_jacobians(nri, radius, g_FEM, jacs_r)
 !
       use m_gauss_int_parameters
       use set_integration_indices
       use set_gauss_int_parameters
 !
-      integer(kind = kint), intent(in) :: max_int_point
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: radius(nri)
 !
@@ -72,9 +69,9 @@
 !
       call init_gauss_int_parameters
 !
-      call set_num_radial_element(nri, jacs_r%j_lin, jacs_r%j_quad)
+      call set_num_radial_element                                       &
+     &   (nri, g_FEM, jacs_r%j_lin, jacs_r%j_quad)
 !
-      call set_max_integration_points(max_int_point, g_FEM)
       call num_of_int_points(g_FEM)
 !
       call alloc_1d_gauss_point_id(g_FEM, spf_1d_r)
@@ -122,7 +119,6 @@
       subroutine alloc_radial_jac(nnod_4_edge, ntot_int, j_radius)
 !
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       integer(kind = kint), intent(in) :: nnod_4_edge, ntot_int
       type(radial_fem_jacobian), intent(inout) :: j_radius
@@ -161,18 +157,19 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_num_radial_element(nri, j_lin, j_quad)
+      subroutine set_num_radial_element(nri, g_FEM, j_lin, j_quad)
 !
-      use m_fem_gauss_int_coefs
+      use t_fem_gauss_int_coefs
 !
       integer(kind = kint), intent(in) :: nri
+      type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
       type(radial_fem_jacobian), intent(inout) :: j_lin, j_quad
 !
       if( mod(nri,itwo) .eq. ione) then
-        call maximum_integration_points(ithree)
+        call set_max_integration_points(ithree, g_FEM)
         j_quad%nedge_r = (nri - 1) / 2
       else
-        call maximum_integration_points(itwo)
+        call set_max_integration_points(itwo, g_FEM)
         j_quad%nedge_r = 0
       end if
       j_lin%nedge_r = nri - 1
