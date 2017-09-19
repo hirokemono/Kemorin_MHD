@@ -8,13 +8,13 @@
 !
 !!      subroutine const_MHD_jacobian_and_volumes                       &
 !!     &         (SGS_param, ele_mesh, group, ifld_msq, mesh, layer_tbl,&
-!!     &          spfs, jacobians, MHD_mesh, fem_msq)
+!!     &          spfs, jacs, MHD_mesh, fem_msq)
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(mean_square_address), intent(in) :: ifld_msq
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(shape_finctions_at_points), intent(inout) :: spfs
-!!        type(jacobians_type), intent(inout) :: jacobians
+!!        type(jacobians_type), intent(inout) :: jacs
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(mean_square_values), intent(inout) :: fem_msq
@@ -49,7 +49,7 @@
 !
       subroutine const_MHD_jacobian_and_volumes                         &
      &         (SGS_param, ele_mesh, group, ifld_msq, mesh, layer_tbl,  &
-     &          spfs, jacobians, MHD_mesh, fem_msq)
+     &          spfs, jacs, MHD_mesh, fem_msq)
 !
       use t_mean_square_values
       use t_jacobians
@@ -69,7 +69,7 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(shape_finctions_at_points), intent(inout) :: spfs
-      type(jacobians_type), intent(inout) :: jacobians
+      type(jacobians_type), intent(inout) :: jacs
       type(layering_tbl), intent(inout) :: layer_tbl
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(mean_square_values), intent(inout) :: fem_msq
@@ -77,23 +77,23 @@
 !    Construct Jacobians
 !
       call max_int_point_by_etype(mesh%ele%nnod_4_ele)
-      allocate(jacobians%g_FEM)
+      allocate(jacs%g_FEM)
       call initialize_FEM_integration                                   &
-     &   (jacobians%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+     &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
 !
       call alloc_vol_shape_func                                         &
-     &   (mesh%ele%nnod_4_ele, maxtot_int_3d, spfs%spf_3d)
+     &   (mesh%ele%nnod_4_ele, jacs%g_FEM%maxtot_int_3d, spfs%spf_3d)
       call const_jacobians_element(my_rank, nprocs,                     &
      &    mesh%node, mesh%ele, group%surf_grp, group%infty_grp,         &
-     &    spfs%spf_3d, jacobians)
+     &    spfs%spf_3d, jacs)
       call dealloc_vol_shape_func(spfs%spf_3d)
 !
       if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
-      call alloc_surf_shape_func                                        &
-     &     (ele_mesh%surf%nnod_4_surf, maxtot_int_2d, spfs%spf_2d)
+      call alloc_surf_shape_func(ele_mesh%surf%nnod_4_surf,             &
+     &    jacs%g_FEM%maxtot_int_2d, spfs%spf_2d)
       call const_jacobians_surf_group(my_rank, nprocs,                  &
      &    mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
-     &    spfs%spf_2d, jacobians)
+     &    spfs%spf_2d, jacs)
       call dealloc_surf_shape_func(spfs%spf_2d)
 !
 !    Construct volumes
@@ -102,7 +102,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_int_volume_of_domain'
       call s_int_volume_of_domain                                       &
-     &   (mesh%ele, jacobians%g_FEM, jacobians%jac_3d)
+     &   (mesh%ele, jacs%g_FEM, jacs%jac_3d)
 !
 !     ---  lead total volume of each area
 !
@@ -129,7 +129,7 @@
 !       call s_int_volume_insulate_core(mesh%ele, inner_core)
 !
       call deallocate_volume_4_smp
-      call dealloc_dxi_dx_element(mesh%ele, jacobians)
+      call dealloc_dxi_dx_element(mesh%ele, jacs)
 !
 !
       if (iflag_debug.eq.1) then

@@ -3,8 +3,13 @@
 !
 !        programmed by H. Matsui on June, 2007
 !
-!      subroutine s_cal_jacobian_linear_1d(num_int,                     &
-!     &          node, surf, edge, spf_1d, jacobians)
+!!      subroutine s_cal_jacobian_linear_1d(num_int,                    &
+!!     &          node, surf, edge, spf_1d, jacs)
+!!        type(node_data), intent(in) :: node
+!!        type(surface_data), intent(inout)  :: surf
+!!        type(edge_data), intent(inout)  :: edge
+!!        type(edge_shape_function), intent(inout) :: spf_1d
+!!        type(jacobians_type), intent(inout) :: jacs
 !
       module cal_jacobian_linear_1d
 !
@@ -19,7 +24,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_jacobian_linear_1d(num_int,                      &
-     &          node, surf, edge, spf_1d, jacobians)
+     &          node, surf, edge, spf_1d, jacs)
 !
       use calypso_mpi
       use t_shape_functions
@@ -27,8 +32,40 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+!
+      integer(kind = kint), intent(in) :: num_int
+      type(node_data), intent(in) :: node
+!
+      type(surface_data), intent(inout)  :: surf
+      type(edge_data), intent(inout)  :: edge
+      type(edge_shape_function), intent(inout) :: spf_1d
+      type(jacobians_type), intent(inout) :: jacs
+!
+!
+      allocate(jacs%g_FEM)
+      call init_jacobian_linear_1d(num_int,                             &
+     &    node, surf, edge, jacs%g_FEM, spf_1d)
+!
+      call alloc_edge_shape_func                                        &
+     &   (edge%nnod_4_edge, jacs%g_FEM%maxtot_int_1d, spf_1d)
+      call const_jacobians_edge                                         &
+     &   (my_rank, nprocs, node, edge, spf_1d, jacs)
+!
+      end subroutine s_cal_jacobian_linear_1d
+!
+!-----------------------------------------------------------------------
+!
+      subroutine init_jacobian_linear_1d(num_int,                       &
+     &          node, surf, edge, g_FEM, spf_1d)
+!
+      use calypso_mpi
       use m_fem_gauss_int_coefs
       use m_gauss_int_parameters
+      use t_shape_functions
+      use t_jacobians
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
       use set_size_4_smp_types
       use set_integration_indices
       use set_gauss_int_parameters
@@ -39,8 +76,13 @@
 !
       type(surface_data), intent(inout)  :: surf
       type(edge_data), intent(inout)  :: edge
+      type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
       type(edge_shape_function), intent(inout) :: spf_1d
-      type(jacobians_type), intent(inout) :: jacobians
+!
+!
+!  set constant for gauss integration with roots
+!
+      call init_gauss_int_parameters
 !
 !  data allocation
 !
@@ -48,38 +90,27 @@
       call count_edge_size_smp_type(edge)
 !
       call maximum_integration_points(num_int)
-      call set_num_of_int_points
 !
-!  set constant for gauss integration with roots
-!
-      call init_gauss_int_parameters
+      g_FEM%max_int_point = max_int_point
+      call num_of_int_points(g_FEM)
 !
 !  set indices for gauss integration
 !
       call alloc_1d_gauss_point_id                                      &
-     &   (maxtot_int_1d, max_int_point, spf_1d)
+     &   (g_FEM%maxtot_int_1d, g_FEM%max_int_point, spf_1d)
       call set_integration_indices_1d_mesh                              &
-     &   (maxtot_int_1d, max_int_point, spf_1d%l_int)
+     &   (g_FEM%maxtot_int_1d, g_FEM%max_int_point, spf_1d%l_int)
 !
 !  set weighting for integration
 !
-      allocate(jacobians%g_FEM)
-      jacobians%g_FEM%max_int_point = max_int_point
-!
-      call num_of_int_points(jacobians%g_FEM)
-      call alloc_gauss_coef_4_fem(jacobians%g_FEM)
-      call set_start_addres_4_FEM_int(jacobians%g_FEM)
+      call alloc_gauss_coef_4_fem(g_FEM)
+      call set_start_addres_4_FEM_int(g_FEM)
 !
       call set_gauss_coefs_4_1d                                         &
-     &   (jacobians%g_FEM%max_int_point, jacobians%g_FEM%maxtot_int_1d, &
-     &    jacobians%g_FEM%int_start1, spf_1d%xi, jacobians%g_FEM%owe)
+     &   (g_FEM%max_int_point, g_FEM%maxtot_int_1d, g_FEM%int_start1,   &
+     &    spf_1d%xi, g_FEM%owe)
 !
-      call alloc_edge_shape_func                                        &
-     &   (edge%nnod_4_edge, maxtot_int_1d, spf_1d)
-      call const_jacobians_edge                                         &
-     &   (my_rank, nprocs, node, edge, spf_1d, jacobians)
-!
-      end subroutine s_cal_jacobian_linear_1d
+      end subroutine init_jacobian_linear_1d
 !
 !-----------------------------------------------------------------------
 !

@@ -68,17 +68,18 @@
       type(edge_shape_function) :: spf_1d_r
 !
 !
-      call set_num_radial_element(nri, jacs_r%j_lin, jacs_r%j_quad)
-      call set_num_of_int_points
-!
       call init_gauss_int_parameters
-      call alloc_1d_gauss_point_id                                      &
-     &   (maxtot_int_1d, max_int_point, spf_1d_r)
-      call set_integrate_indices_1d                                     &
-     &   (maxtot_int_1d, max_int_point, spf_1d_r%l_int)
+!
+      call set_num_radial_element(nri, jacs_r%j_lin, jacs_r%j_quad)
 !
       g_FEM%max_int_point = max_int_point
       call num_of_int_points(g_FEM)
+!
+      call alloc_1d_gauss_point_id                                      &
+     &   (g_FEM%maxtot_int_1d, g_FEM%max_int_point, spf_1d_r)
+      call set_integrate_indices_1d                                     &
+     &   (g_FEM%maxtot_int_1d, g_FEM%max_int_point, spf_1d_r%l_int)
+!
       call alloc_gauss_coef_4_fem(g_FEM)
       call set_start_addres_4_FEM_int(g_FEM)
 !
@@ -88,15 +89,17 @@
 
 !
       call alloc_edge_shape_func                                        &
-     &   (num_linear_edge, maxtot_int_1d, spf_1d_r)
+     &   (num_linear_edge, g_FEM%maxtot_int_1d, spf_1d_r)
       call cal_linear_radiaul_jacobian                                  &
-     &   (nri, maxtot_int_1d, radius, g_FEM, spf_1d_r, jacs_r%j_lin)
+     &   (nri, g_FEM%maxtot_int_1d, radius, g_FEM, spf_1d_r,            &
+     &    jacs_r%j_lin)
       call dealloc_edge_shape_func(spf_1d_r)
 !
       call alloc_edge_shape_func                                        &
-     &   (num_quad_edge, maxtot_int_1d, spf_1d_r)
+     &   (num_quad_edge, g_FEM%maxtot_int_1d, spf_1d_r)
       call cal_quad_radiaul_jacobian                                    &
-     &   (nri, maxtot_int_1d, radius, g_FEM, spf_1d_r, jacs_r%j_quad)
+     &   (nri, g_FEM%maxtot_int_1d, radius, g_FEM, spf_1d_r,            &
+     &    jacs_r%j_quad)
       call dealloc_edge_shape_func(spf_1d_r)
 !
       call dealloc_1d_gauss_point_id(spf_1d_r)

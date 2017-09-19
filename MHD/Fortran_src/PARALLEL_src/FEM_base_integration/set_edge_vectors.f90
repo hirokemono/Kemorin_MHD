@@ -45,7 +45,7 @@
 !
 !
       call alloc_edge_shape_func                                        &
-     &   (num_linear_edge, maxtot_int_1d, spf_1d)
+     &   (num_linear_edge, jacs%g_FEM%maxtot_int_1d, spf_1d)
       call const_jacobians_edge                                         &
      &   (my_rank, nprocs, node, edge, spf_1d, jacs)
       call dealloc_edge_shape_func(spf_1d)

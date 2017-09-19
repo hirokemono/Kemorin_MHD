@@ -60,34 +60,33 @@
       type(surface_shape_function), intent(inout) :: spf_2d
       type(edge_shape_function), intent(inout) :: spf_1d
 !
-!  data allocation
-!
-      call set_num_of_int_points
-!
 !  set constant for gauss integration with roots
 !
       call init_gauss_int_parameters
 !
-!  set indices for gauss integration
-!
-      call alloc_1d_gauss_point_id                                      &
-     &   (maxtot_int_1d, max_int_point, spf_1d)
-      call alloc_2d_gauss_point_id                                      &
-     &   (maxtot_int_2d, max_int_point, spf_2d)
-      call alloc_3d_gauss_point_id                                      &
-     &   (maxtot_int_3d, max_int_point, spf_3d)
-!
-      call set_integrate_indices_1d                                     &
-     &   (maxtot_int_1d, max_int_point, spf_1d%l_int)
-      call set_integrate_indices_2d                                     &
-     &   (maxtot_int_2d, max_int_point, spf_2d%l_int)
-      call set_integrate_indices_3d                                     &
-     &   (maxtot_int_3d, max_int_point, spf_3d%l_int)
-!
-!  set weighting for integration
+!  data allocation
 !
       g_FEM%max_int_point = max_int_point
       call num_of_int_points(g_FEM)
+!
+!  set indices for gauss integration
+!
+      call alloc_1d_gauss_point_id                                      &
+     &   (g_FEM%maxtot_int_1d, g_FEM%max_int_point, spf_1d)
+      call alloc_2d_gauss_point_id                                      &
+     &   (g_FEM%maxtot_int_2d, g_FEM%max_int_point, spf_2d)
+      call alloc_3d_gauss_point_id                                      &
+     &   (g_FEM%maxtot_int_3d, g_FEM%max_int_point, spf_3d)
+!
+      call set_integrate_indices_1d                                     &
+     &   (g_FEM%maxtot_int_1d, g_FEM%max_int_point, spf_1d%l_int)
+      call set_integrate_indices_2d                                     &
+     &   (g_FEM%maxtot_int_2d, g_FEM%max_int_point, spf_2d%l_int)
+      call set_integrate_indices_3d                                     &
+     &   (g_FEM%maxtot_int_3d, g_FEM%max_int_point, spf_3d%l_int)
+!
+!  set weighting for integration
+!
       call alloc_gauss_coef_4_fem(g_FEM)
       call set_start_addres_4_FEM_int(g_FEM)
 !
