@@ -62,7 +62,7 @@
       mat_work = 0.0d0
 !
       do ii = 1, n_int*n_int*n_int
-        ix = int_start3(n_int) + ii
+        ix = g_FEM%int_start3(n_int) + ii
 !
         call set_integration_position(node, ele,                        &
      &      nele_grp, iele_grp, jac_3d%an(1:ele%nnod_4_ele,ix),         &

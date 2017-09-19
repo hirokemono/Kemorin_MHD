@@ -36,6 +36,7 @@
 !
       use m_file_format_switch
       use m_default_file_prefix
+      use m_fem_gauss_int_coefs
 !
       use copy_mesh_structures
       use set_element_data_4_IO

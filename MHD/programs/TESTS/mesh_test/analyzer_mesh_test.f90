@@ -39,6 +39,8 @@
 !
       use m_array_for_send_recv
       use m_default_file_prefix
+      use m_ctl_data_test_mesh
+      use m_fem_gauss_int_coefs
       use t_control_param_mesh_test
 !
       use copy_mesh_structures
@@ -57,7 +59,6 @@
       use sum_normal_4_surf_group
       use set_parallel_file_name
 !
-      use m_ctl_data_test_mesh
       use mpi_load_mesh_data
       use const_jacobians_3d
       use parallel_FEM_mesh_init

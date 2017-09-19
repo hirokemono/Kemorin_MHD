@@ -124,7 +124,8 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      call alloc_vol_shape_func(ele%nnod_4_ele, maxtot_int_3d, spf_3d)
+      call alloc_vol_shape_func                                         &
+     &   (ele%nnod_4_ele, jacs%g_FEM%maxtot_int_3d, spf_3d)
       call const_jacobians_element(my_rank, nprocs,                     &
      &    node, ele, sf_grp, infinity_list, spf_3d, jacs)
 !
@@ -164,7 +165,7 @@
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
 !
       call alloc_vol_shape_func                                         &
-     &   (ele%nnod_4_ele, maxtot_int_3d, spfs%spf_3d)
+     &   (ele%nnod_4_ele, jacs%g_FEM%maxtot_int_3d, spfs%spf_3d)
       call const_jacobians_element(my_rank, nprocs,                     &
      &    node, ele, sf_grp, infinity_list, spfs%spf_3d, jacs)
 !
@@ -191,8 +192,9 @@
       type(element_data), intent(inout) :: ele
 !
 !
-!      write(*,*) 'fem_element_volume_pg', max_int_point
-       call fem_element_volume_pg(ele, g_FEM, jac_3d, max_int_point)
+!      write(*,*) 'fem_element_volume_pg', g_FEM%max_int_point
+       call fem_element_volume_pg                                       &
+     &    (ele, g_FEM, jac_3d, g_FEM%max_int_point)
 !
 !     ---  lead total volume
 !

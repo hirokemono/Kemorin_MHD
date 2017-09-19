@@ -193,11 +193,12 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_scalar_on_ele_type(iele_fsmp_stack,                &
-     &      max_int_point, ele, g_FEM, jac_3d, scalar_ele, fem_wk%sk6)
+        call fem_skv_scalar_on_ele_type                                 &
+     &     (iele_fsmp_stack, g_FEM%max_int_point, ele, g_FEM, jac_3d,   &
+     &      scalar_ele, fem_wk%sk6)
       else
         call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
-     &      max_int_point, ele, g_FEM, jac_3d, fem_wk%sk6)
+     &      g_FEM%max_int_point, ele, g_FEM, jac_3d, fem_wk%sk6)
         call fem_skv_scalar_on_ele_HRZ_type(iele_fsmp_stack,            &
      &      fem_wk%me_diag, ele, scalar_ele, fem_wk%sk6)
       end if
@@ -230,11 +231,12 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_vector_on_ele_type(iele_fsmp_stack,                &
-     &      max_int_point, ele, g_FEM, jac_3d, vector_ele, fem_wk%sk6)
+        call fem_skv_vector_on_ele_type                                 &
+     &     (iele_fsmp_stack, g_FEM%max_int_point, ele, g_FEM, jac_3d,   &
+     &      vector_ele, fem_wk%sk6)
       else
         call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
-     &      max_int_point, ele, g_FEM, jac_3d, fem_wk%sk6)
+     &      g_FEM%max_int_point, ele, g_FEM, jac_3d, fem_wk%sk6)
         call fem_skv_vector_on_ele_HRZ_type(iele_fsmp_stack,            &
      &      fem_wk%me_diag, ele, vector_ele, fem_wk%sk6)
       end if
@@ -270,13 +272,13 @@
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_scalar_on_ele_grp_type(iele_fsmp_stack,            &
-     &      nele_grp, iele_grp, max_int_point, ele, g_FEM, jac_3d,      &
-     &      scalar_ele, fem_wk%sk6)
+        call fem_skv_scalar_on_ele_grp_type                             &
+     &     (iele_fsmp_stack, nele_grp, iele_grp, g_FEM%max_int_point,   &
+     &      ele, g_FEM, jac_3d, scalar_ele, fem_wk%sk6)
       else
-        call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp, max_int_point, ele, g_FEM, jac_3d,      &
-     &      fem_wk%sk6)
+        call fem_grp_skv_mass_mat_diag_HRZ_t                            &
+     &     (iele_fsmp_stack, nele_grp, iele_grp, g_FEM%max_int_point,   &
+     &      ele, g_FEM, jac_3d, fem_wk%sk6)
         call fem_skv_scalar_on_egrp_HRZ_type(iele_fsmp_stack,           &
      &      nele_grp, iele_grp, fem_wk%me_diag, ele, scalar_ele,        &
      &      fem_wk%sk6)
@@ -312,13 +314,13 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_vector_on_ele_grp_type(iele_fsmp_stack,            &
-     &      nele_grp, iele_grp, max_int_point, ele, g_FEM, jac_3d,      &
-     &      vector_ele, fem_wk%sk6)
+        call fem_skv_vector_on_ele_grp_type                             &
+     &     (iele_fsmp_stack, nele_grp, iele_grp, g_FEM%max_int_point,   &
+     &      ele, g_FEM, jac_3d, vector_ele, fem_wk%sk6)
       else
         call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp,  max_int_point, ele, g_FEM, jac_3d,     &
-     &      fem_wk%sk6)
+     &      nele_grp, iele_grp, g_FEM%max_int_point,                    &
+     &      ele, g_FEM, jac_3d, fem_wk%sk6)
         call fem_skv_vector_on_egrp_HRZ_type(iele_fsmp_stack,           &
      &      nele_grp, iele_grp, fem_wk%me_diag, ele, vector_ele,        &
      &      fem_wk%sk6)

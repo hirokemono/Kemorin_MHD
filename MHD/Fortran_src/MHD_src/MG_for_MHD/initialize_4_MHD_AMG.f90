@@ -206,7 +206,8 @@
         MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM => jacs_1st%g_FEM
         call alloc_vol_shape_func                                       &
      &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele%nnod_4_ele,              &
-     &      maxtot_int_3d, spfs%spf_3d)
+     &      MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM%maxtot_int_3d,       &
+     &      spfs%spf_3d)
         call const_jacobians_element                                    &
      &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%node,                        &
@@ -217,7 +218,8 @@
 !
         call alloc_surf_shape_func                                      &
      &     (MGCG_FEM%MG_ele_mesh(i_level)%surf%nnod_4_surf,             &
-     &      maxtot_int_2d, spfs%spf_2d)
+     &      MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM%maxtot_int_2d,       &
+     &      spfs%spf_2d)
         call const_jacobians_surf_group                                 &
      &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%node,                        &

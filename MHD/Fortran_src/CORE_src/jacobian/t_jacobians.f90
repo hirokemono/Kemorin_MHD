@@ -33,9 +33,7 @@
       module t_jacobians
 !
       use m_precision
-!
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       use t_fem_gauss_int_coefs
       use t_geometry_data
@@ -132,7 +130,7 @@
 !
       allocate(jacs%jac_3d)
       call alloc_jacobians_type(ele%numele, ele%nnod_4_ele,             &
-     &    maxtot_int_3d, jacs%jac_3d)
+     &    jacs%g_FEM%maxtot_int_3d, jacs%jac_3d)
       call alloc_dxi_dx_type(ele%numele, jacs%jac_3d)
 !
       if(my_rank .lt. nprocs) then
@@ -148,7 +146,7 @@
       else
         allocate(jacs%jac_3d_l)
         call alloc_jacobians_type(ele%numele, num_t_linear,             &
-     &      maxtot_int_3d, jacs%jac_3d_l)
+     &      jacs%g_FEM%maxtot_int_3d, jacs%jac_3d_l)
         call alloc_dxi_dx_type(ele%numele, jacs%jac_3d_l)
 !
         if(my_rank .lt. nprocs) then
@@ -184,7 +182,7 @@
 !
       allocate(jacs%jac_sf_grp)
       call alloc_2d_jac_type(surf_grp%num_item,                         &
-     &    surf%nnod_4_surf, maxtot_int_2d, jacs%jac_sf_grp)
+     &    surf%nnod_4_surf, jacs%g_FEM%maxtot_int_2d, jacs%jac_sf_grp)
 !
       if(my_rank .lt. nprocs) then
         call sel_jacobian_surface_grp (node, ele, surf, surf_grp,       &
@@ -196,7 +194,7 @@
       else
         allocate(jacs%jac_sf_grp_l)
         call alloc_2d_jac_type(surf_grp%num_item, num_linear_sf,        &
-     &      maxtot_int_2d, jacs%jac_sf_grp_l)
+     &      jacs%g_FEM%maxtot_int_2d, jacs%jac_sf_grp_l)
 !
         if(my_rank .lt. nprocs) then
           call const_jacobian_sf_grp_linear(node, ele, surf_grp,        &
@@ -224,7 +222,7 @@
 !
       allocate(jacs%jac_2d)
       call alloc_2d_jac_type(surf%numsurf,                              &
-     &    surf%nnod_4_surf, maxtot_int_2d, jacs%jac_2d)
+     &    surf%nnod_4_surf, jacs%g_FEM%maxtot_int_2d, jacs%jac_2d)
 !
       if(my_rank .lt. nprocs) then
         call sel_jacobian_surface                                       &
@@ -236,7 +234,7 @@
       else
         allocate(jacs%jac_2d_l)
         call alloc_2d_jac_type(surf%numsurf, num_linear_sf,             &
-     &      maxtot_int_2d, jacs%jac_2d_l)
+     &      jacs%g_FEM%maxtot_int_2d, jacs%jac_2d_l)
         if(my_rank .lt. nprocs) then
           call cal_jacobian_surface_linear                              &
      &       (node, surf, jacs%g_FEM, spf_2d, jacs%jac_2d_l)
@@ -263,7 +261,7 @@
 !
       allocate(jacs%jac_1d)
       call alloc_1d_jac_type(edge%numedge, edge%nnod_4_edge,            &
-     &    maxtot_int_1d, jacs%jac_1d)
+     &    jacs%g_FEM%maxtot_int_1d, jacs%jac_1d)
 !
       if(my_rank .lt. nprocs) then
         call sel_jacobian_edge                                          &
@@ -275,7 +273,7 @@
       else
         allocate(jacs%jac_1d_l)
         call alloc_1d_jac_type(edge%numedge, num_linear_edge,           &
-     &      maxtot_int_1d, jacs%jac_1d_l)
+     &      jacs%g_FEM%maxtot_int_1d, jacs%jac_1d_l)
         if(my_rank .lt. nprocs) then
           call cal_jacobian_edge_linear                                 &
      &       (node, edge, jacs%g_FEM, spf_1d, jacs%jac_1d_l)

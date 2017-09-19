@@ -44,6 +44,8 @@
       subroutine initialize_udt_corre_1comp
 !
       use m_array_for_send_recv
+      use m_2nd_pallalel_vector
+      use m_fem_gauss_int_coefs
 !
       use set_field_address
       use copy_mesh_structures
@@ -52,7 +54,6 @@
       use const_mesh_information
       use nod_phys_send_recv
 !
-      use m_2nd_pallalel_vector
       use const_ele_layering_table
       use int_volume_of_domain
       use correlation_all_layerd_data

@@ -45,6 +45,7 @@
 !
       use t_ctl_params_sph_trans
       use m_array_for_send_recv
+      use m_fem_gauss_int_coefs
 !
       use nod_phys_send_recv
       use set_ele_id_4_node_type
