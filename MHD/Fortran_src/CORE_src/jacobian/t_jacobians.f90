@@ -136,9 +136,10 @@
       call alloc_dxi_dx_type(ele%numele, jacs%jac_3d)
 !
       if(my_rank .lt. nprocs) then
-        call sel_jacobian_type(node, ele, spf_3d, jacs%jac_3d)
+        call sel_jacobian_type                                          &
+     &     (node, ele, jacs%g_FEM, spf_3d, jacs%jac_3d)
         call sel_jacobian_infinity(node, ele, surf_grp,                 &
-     &      infinity_list, spf_3d, jacs%jac_3d)
+     &      infinity_list, jacs%g_FEM, spf_3d, jacs%jac_3d)
       end if
       call dealloc_inv_jac_type(jacs%jac_3d)
 !
@@ -152,9 +153,9 @@
 !
         if(my_rank .lt. nprocs) then
           call cal_jacobian_trilinear                                   &
-     &       (node, ele, spf_3d, jacs%jac_3d_l)
-          call const_linear_jacobian_infinity(node, ele,                &
-     &        surf_grp, infinity_list, spf_3d, jacs%jac_3d_l)
+     &       (node, ele, jacs%g_FEM, spf_3d, jacs%jac_3d_l)
+          call const_linear_jacobian_infinity(node, ele, surf_grp,      &
+     &        infinity_list, jacs%g_FEM, spf_3d, jacs%jac_3d_l)
         end if
 !
         call dealloc_inv_jac_type(jacs%jac_3d_l)

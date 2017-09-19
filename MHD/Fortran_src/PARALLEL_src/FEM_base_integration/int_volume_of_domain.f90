@@ -159,11 +159,9 @@
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !
+      allocate(jacs%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
-!
-      allocate(jacs%g_FEM)
-      call copy_fem_gauss_int_coefs(jacs%g_FEM, jacs%g_FEM)
 !
       call alloc_vol_shape_func                                         &
      &   (ele%nnod_4_ele, maxtot_int_3d, spfs%spf_3d)

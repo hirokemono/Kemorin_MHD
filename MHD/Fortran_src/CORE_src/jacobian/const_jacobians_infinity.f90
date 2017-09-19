@@ -5,13 +5,20 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H. Matsui on June. 2006
 !
-!!      subroutine sel_jacobian_infinity                                &
-!!     &         (node, ele, surf_grp, infty_grp, spf_3d, jac_3d)
-!!      subroutine const_linear_jacobian_infinity                       &
-!!     &         (node, ele, surf_grp, infty_grp, spf_3d_8, jac_3d)
+!!      subroutine sel_jacobian_infinity(node, ele,                     &
+!!     &          surf_grp, infty_grp, g_FEM, spf_3d, jac_3d)
+!!      subroutine const_linear_jacobian_infinity(node, ele,            &
+!!     &          surf_grp, infty_grp, g_FEM, spf_3d_8, jac_3d)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_group_data), intent(in) :: surf_grp
+!!        type(scalar_surf_BC_list), intent(in) :: infty_grp
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(volume_shape_function), intent(in) :: spf_3d
+!!        type(jacobians_3d), intent(inout) :: jac_3d
 !!
-!!      subroutine cal_jacobian_infty_l_quad                            &
-!!     &         (node, ele, sf_grp, infty_grp, spf_3d_20, jac_3d)
+!!      subroutine cal_jacobian_infty_l_quad(node, ele, sf_grp,         &
+!!     &          infty_grp, g_FEM, spf_3d_20, jac_3d)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(volume_shape_function), intent(in) :: spf_3d_20
 !!        type(jacobians_3d), intent(inout) :: jac_3d
@@ -23,13 +30,12 @@
 !
       use m_precision
       use m_machine_parameter
-!
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
 !
       use t_mesh_data
       use t_geometry_data
       use t_group_data
+      use t_fem_gauss_int_coefs
       use t_shape_functions
       use t_jacobian_3d
       use cal_1ele_jacobians_infinte
@@ -47,13 +53,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_jacobian_infinity                                  &
-     &         (node, ele, surf_grp, infty_grp, spf_3d, jac_3d)
+      subroutine sel_jacobian_infinity(node, ele,                       &
+     &          surf_grp, infty_grp, g_FEM, spf_3d, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
       type(scalar_surf_BC_list), intent(in) :: infty_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(volume_shape_function), intent(in) :: spf_3d
       type(jacobians_3d), intent(inout) :: jac_3d
 !
@@ -61,17 +68,17 @@
       if(infty_grp%ngrp_sf .le. 0) return
 !
       call alloc_shape_func_infty                                       &
-     &   (ele%nnod_4_ele, nsurf_4_ele, maxtot_int_3d, spf_infty)
+     &   (ele%nnod_4_ele, nsurf_4_ele, g_FEM%maxtot_int_3d, spf_infty)
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
-        call cal_jacobian_infty_linear                                  &
-     &     (node, ele, surf_grp, infty_grp, spf_3d, spf_infty, jac_3d)
+        call cal_jacobian_infty_linear(node, ele, surf_grp, infty_grp,  &
+     &      g_FEM, spf_3d, spf_infty, jac_3d)
       else if (ele%nnod_4_ele .eq. num_t_quad) then
-        call cal_jacobian_infty_quad                                    &
-     &     (node, ele, surf_grp, infty_grp, spf_3d, spf_infty, jac_3d)
+        call cal_jacobian_infty_quad(node, ele, surf_grp, infty_grp,    &
+     &      g_FEM, spf_3d, spf_infty, jac_3d)
       else if (ele%nnod_4_ele .eq. num_t_lag) then
-        call cal_jacobian_infty_lag                                     &
-     &    (node, ele, surf_grp, infty_grp, spf_3d, spf_infty, jac_3d)
+        call cal_jacobian_infty_lag(node, ele, surf_grp, infty_grp,     &
+     &      g_FEM, spf_3d, spf_infty, jac_3d)
       end if
 !
       call dealloc_shape_func_infty(spf_infty)
@@ -80,13 +87,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_linear_jacobian_infinity                         &
-     &         (node, ele, surf_grp, infty_grp, spf_3d_8, jac_3d)
+      subroutine const_linear_jacobian_infinity(node, ele,              &
+     &          surf_grp, infty_grp, g_FEM, spf_3d_8, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
       type(scalar_surf_BC_list), intent(in) :: infty_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(volume_shape_function), intent(in) :: spf_3d_8
       type(jacobians_3d), intent(inout) :: jac_3d
 !
@@ -94,9 +102,9 @@
       if(infty_grp%ngrp_sf .le. 0) return
 !
       call alloc_shape_func_infty                                       &
-     &   (num_t_linear, nsurf_4_ele, maxtot_int_3d, spf_infty)
-      call cal_jacobian_infty_linear                                    &
-     &   (node, ele, surf_grp, infty_grp, spf_3d_8, spf_infty, jac_3d)
+     &   (num_t_linear, nsurf_4_ele, g_FEM%maxtot_int_3d, spf_infty)
+      call cal_jacobian_infty_linear(node, ele, surf_grp, infty_grp,    &
+     &    g_FEM, spf_3d_8, spf_infty, jac_3d)
       call dealloc_shape_func_infty(spf_infty)
 !
       end subroutine const_linear_jacobian_infinity
@@ -105,12 +113,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_infty_linear(node, ele, sf_grp,           &
-     &          infty_grp, spf_3d_8, spf_inf8, jac_3d)
+     &          infty_grp, g_FEM, spf_3d_8, spf_inf8, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
       type(scalar_surf_BC_list), intent(in) :: infty_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(volume_shape_function), intent(in) :: spf_3d_8
       type(infty_shape_function), intent(inout) :: spf_inf8
       type(jacobians_3d), intent(inout) :: jac_3d
@@ -128,7 +137,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    infty_grp%ngrp_sf, infty_grp%igrp_sf,                         &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    max_int_point, int_start3, &
+     &    g_FEM%max_int_point, g_FEM%int_start3,                        &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_8%dnxi, spf_3d_8%dnei, spf_3d_8%dnzi,                  &
@@ -139,12 +148,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_infty_quad(node, ele, sf_grp, infty_grp,  &
-     &          spf_3d_20, spf_inf20, jac_3d)
+     &          g_FEM, spf_3d_20, spf_inf20, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
       type(scalar_surf_BC_list), intent(in) :: infty_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(volume_shape_function), intent(in) :: spf_3d_20
       type(infty_shape_function), intent(inout) :: spf_inf20
       type(jacobians_3d), intent(inout) :: jac_3d
@@ -160,7 +170,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    infty_grp%ngrp_sf, infty_grp%igrp_sf,                         &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    max_int_point, int_start3, &
+     &    g_FEM%max_int_point, g_FEM%int_start3,                        &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi,               &
@@ -171,12 +181,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_infty_lag(node, ele, sf_grp, infty_grp,   &
-     &          spf_3d_27, spf_inf27, jac_3d)
+     &          g_FEM, spf_3d_27, spf_inf27, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
       type(scalar_surf_BC_list), intent(in) :: infty_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(volume_shape_function), intent(in) :: spf_3d_27
       type(infty_shape_function), intent(inout) :: spf_inf27
       type(jacobians_3d), intent(inout) :: jac_3d
@@ -192,7 +203,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    infty_grp%ngrp_sf, infty_grp%igrp_sf,                         &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    max_int_point, int_start3, &
+     &    g_FEM%max_int_point, g_FEM%int_start3,                        &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_27%dnxi, spf_3d_27%dnei, spf_3d_27%dnzi,               &
@@ -203,19 +214,20 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_infty_l_quad                              &
-     &         (node, ele, sf_grp, infty_grp, spf_3d_20, jac_3d)
+      subroutine cal_jacobian_infty_l_quad(node, ele, sf_grp,           &
+     &          infty_grp, g_FEM, spf_3d_20, jac_3d)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
       type(scalar_surf_BC_list), intent(in) :: infty_grp
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(volume_shape_function), intent(in) :: spf_3d_20
       type(jacobians_3d), intent(inout) :: jac_3d
 !
 !
       call alloc_shape_func_infty                                       &
-     &   (ele%nnod_4_ele, nsurf_4_ele, maxtot_int_3d, spf_infty)
+     &   (ele%nnod_4_ele, nsurf_4_ele, g_FEM%maxtot_int_3d, spf_infty)
 !
       call s_cal_shape_func_infty_quad(jac_3d%ntot_int,                 &
      &    infty_grp%sf_apt(1), jac_3d%an_infty,                         &
@@ -227,7 +239,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    infty_grp%ngrp_sf, infty_grp%igrp_sf,                         &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    max_int_point, int_start3, &
+     &    g_FEM%max_int_point, g_FEM%int_start3,                        &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi,               &
