@@ -66,7 +66,8 @@
 !  set weighting for integration
 !
       allocate(jacobians%g_FEM)
-      call set_gauss_coefs_4_1d(maxtot_int_1d, spf_1d%xi)
+      call set_gauss_coefs_4_1d                                         &
+     &   (max_int_point, maxtot_int_1d, int_start1, spf_1d%xi, owe)
       call copy_fem_gauss_int_coef_type(jacobians%g_FEM)
 !
       call alloc_edge_shape_func                                        &
