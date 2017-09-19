@@ -79,6 +79,7 @@
       call cal_jacobian_1d_2                                            &
      &   (node%numnod, edge%numedge, edge%nnod_4_edge, edge%ie_edge,    &
      &    node%xx, np_smp, edge%istack_edge_smp,                        &
+     &    max_int_point, int_start1,  &
      &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
      &    jac_1d%xeg_edge, spf_1d_8%dnxi_ed)
 !
@@ -106,6 +107,7 @@
       call cal_jacobian_1d_3                                            &
      &   (node%numnod, edge%numedge, edge%nnod_4_edge, edge%ie_edge,    &
      &    node%xx, np_smp, edge%istack_edge_smp,                        &
+     &    max_int_point, int_start1,  &
      &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
      &    jac_1d%xeg_edge, spf_1d_20%dnxi_ed)
 !
@@ -132,6 +134,7 @@
       call cal_jacobian_1d_2_3                                          &
      &   (node%numnod, edge%numedge, edge%nnod_4_edge,                  &
      &    edge%ie_edge, node%xx, np_smp, edge%istack_edge_smp,          &
+     &    max_int_point, int_start1,  &
      &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
      &    jac_1d%xeg_edge, spf_1d_20%dnxi_ed)
 !

@@ -128,6 +128,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    infty_grp%ngrp_sf, infty_grp%igrp_sf,                         &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    max_int_point, int_start3, &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_8%dnxi, spf_3d_8%dnei, spf_3d_8%dnzi,                  &
@@ -159,6 +160,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    infty_grp%ngrp_sf, infty_grp%igrp_sf,                         &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    max_int_point, int_start3, &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi,               &
@@ -190,6 +192,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    infty_grp%ngrp_sf, infty_grp%igrp_sf,                         &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    max_int_point, int_start3, &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_27%dnxi, spf_3d_27%dnei, spf_3d_27%dnzi,               &
@@ -224,6 +227,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    infty_grp%ngrp_sf, infty_grp%igrp_sf,                         &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    max_int_point, int_start3, &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi,               &

@@ -10,21 +10,26 @@
 !!@verbatim
 !!      subroutine cal_jacobian_2d_4(numnod, numsurf, nnod_4_surf,      &
 !!     &          ie_surf, xx, np_smp, isurf_smp_stack,                 &
-!!     &          ntot_int_2d, xjac, axjac, xsf, dnxi, dnei)
+!!     &          max_int_point, int_start2, ntot_int_2d,               &
+!!     &          xjac, axjac, xsf, dnxi, dnei)
 !!      subroutine cal_jacobian_2d_8(numnod, numsurf, nnod_4_surf,      &
 !!     &          ie_surf, xx, np_smp, isurf_smp_stack,                 &
-!!     &          ntot_int_2d, xjac, axjac, xsf, dnxi, dnei)
+!!     &          max_int_point, int_start2, ntot_int_2d,               &
+!!     &          xjac, axjac, xsf, dnxi, dnei)
 !!      subroutine cal_jacobian_2d_9(numnod, numsurf, nnod_4_surf,      &
 !!     &          ie_surf, xx, np_smp, isurf_smp_stack,                 &
-!!     &          ntot_int_2d, xjac, axjac, xsf, dnxi, dnei)
+!!     &          max_int_point, int_start2, ntot_int_2d,               &
+!!     &          xjac, axjac, xsf, dnxi, dnei)
 !!      subroutine cal_jacobian_2d_4_8(numnod, numsurf, nnod_4_surf,    &
 !!     &          ie_surf, xx, np_smp, isurf_smp_stack,                 &
-!!     &          ntot_int_2d, xjac, axjac, xsf, dnxi, dnei)
+!!     &          max_int_point, int_start2, ntot_int_2d,               &
+!!     &          xjac, axjac, xsf, dnxi, dnei)
 !!@end verbatim
 !
       module cal_1surf_jacobians
 !
       use m_precision
+      use m_geometry_constants
 !
       implicit none
 !
@@ -36,10 +41,9 @@
 !
       subroutine cal_jacobian_2d_4(numnod, numsurf, nnod_4_surf,        &
      &          ie_surf, xx, np_smp, isurf_smp_stack,                   &
-     &          ntot_int_2d, xjac, axjac, xsf, dnxi, dnei)
+     &          max_int_point, int_start2, ntot_int_2d,                 &
+     &          xjac, axjac, xsf, dnxi, dnei)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_2d_linear
 !
       integer(kind = kint), intent(in) :: numnod
@@ -50,10 +54,13 @@
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: isurf_smp_stack(0:np_smp)
 !
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+!
+      integer(kind = kint), intent(in) :: ntot_int_2d
       real(kind = kreal), intent(in) :: dnxi(num_linear_sf,ntot_int_2d)
       real(kind = kreal), intent(in) :: dnei(num_linear_sf,ntot_int_2d)
 !
-      integer(kind = kint), intent(in) :: ntot_int_2d
       real(kind = kreal), intent(inout) :: xjac(numsurf,ntot_int_2d)
       real(kind = kreal), intent(inout) :: axjac(numsurf,ntot_int_2d)
       real(kind = kreal), intent(inout) :: xsf(numsurf,ntot_int_2d,3)
@@ -78,10 +85,9 @@
 !
       subroutine cal_jacobian_2d_8(numnod, numsurf, nnod_4_surf,        &
      &          ie_surf, xx, np_smp, isurf_smp_stack,                   &
-     &          ntot_int_2d, xjac, axjac, xsf, dnxi, dnei)
+     &          max_int_point, int_start2, ntot_int_2d,                 &
+     &          xjac, axjac, xsf, dnxi, dnei)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_2d_quad
 !
       integer(kind = kint), intent(in) :: numnod
@@ -92,10 +98,13 @@
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: isurf_smp_stack(0:np_smp)
 !
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+!
+      integer(kind = kint), intent(in) :: ntot_int_2d
       real(kind = kreal), intent(in) :: dnxi(num_quad_sf,ntot_int_2d)
       real(kind = kreal), intent(in) :: dnei(num_quad_sf,ntot_int_2d)
 !
-      integer(kind = kint), intent(in) :: ntot_int_2d
       real(kind = kreal), intent(inout) :: xjac(numsurf,ntot_int_2d)
       real(kind = kreal), intent(inout) :: axjac(numsurf,ntot_int_2d)
       real(kind = kreal), intent(inout) :: xsf(numsurf,ntot_int_2d,3)
@@ -120,10 +129,9 @@
 !
       subroutine cal_jacobian_2d_9(numnod, numsurf, nnod_4_surf,        &
      &          ie_surf, xx, np_smp, isurf_smp_stack,                   &
-     &          ntot_int_2d, xjac, axjac, xsf, dnxi, dnei)
+     &          max_int_point, int_start2, ntot_int_2d,                 &
+     &          xjac, axjac, xsf, dnxi, dnei)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_2d_lag
 !
       integer(kind = kint), intent(in) :: numnod
@@ -134,10 +142,13 @@
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: isurf_smp_stack(0:np_smp)
 !
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+!
+      integer(kind = kint), intent(in) :: ntot_int_2d
       real(kind = kreal), intent(in) :: dnxi(num_lag_sf,ntot_int_2d)
       real(kind = kreal), intent(in) :: dnei(num_lag_sf,ntot_int_2d)
 !
-      integer(kind = kint), intent(in) :: ntot_int_2d
       real(kind = kreal), intent(inout) :: xjac(numsurf,ntot_int_2d)
       real(kind = kreal), intent(inout) :: axjac(numsurf,ntot_int_2d)
       real(kind = kreal), intent(inout) :: xsf(numsurf,ntot_int_2d,3)
@@ -162,10 +173,9 @@
 !
       subroutine cal_jacobian_2d_4_8(numnod, numsurf, nnod_4_surf,      &
      &          ie_surf, xx, np_smp, isurf_smp_stack,                   &
-     &          ntot_int_2d, xjac, axjac, xsf, dnxi, dnei)
+     &          max_int_point, int_start2, ntot_int_2d,                 &
+     &          xjac, axjac, xsf, dnxi, dnei)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_2d_linear_quad
 !
       integer(kind = kint), intent(in) :: numnod
@@ -176,10 +186,13 @@
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: isurf_smp_stack(0:np_smp)
 !
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start2(max_int_point)
+!
+      integer(kind = kint), intent(in) :: ntot_int_2d
       real(kind = kreal), intent(in) :: dnxi(num_lag_sf,ntot_int_2d)
       real(kind = kreal), intent(in) :: dnei(num_lag_sf,ntot_int_2d)
 !
-      integer(kind = kint), intent(in) :: ntot_int_2d
       real(kind = kreal), intent(inout) :: xjac(numsurf,ntot_int_2d)
       real(kind = kreal), intent(inout) :: axjac(numsurf,ntot_int_2d)
       real(kind = kreal), intent(inout) :: xsf(numsurf,ntot_int_2d,3)

@@ -9,37 +9,37 @@
 !!
 !!@verbatim
 !!      subroutine cal_jacobian_3d_inf_8(numnod, numele, nnod_4_ele,    &
-!!     &          np_smp, ie, xx, num_surf_bc, surf_item,               &
-!!     &          ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,         &
-!!     &          isurf_grp_smp_stack, ntot_int_3d, xjac, axjac, dnx,   &
-!!     &          dxidx, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
+!!     &          np_smp, ie, xx, num_surf_bc, surf_item, ngrp_sf_infty,&
+!!     &          id_grp_sf_infty, num_surf_smp, isurf_grp_smp_stack,   &
+!!     &          max_int_point, int_start3, ntot_int_3d,               &
+!!     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi,            &
+!!     &          dnxi_inf, dnei_inf, dnzi_inf)
 !!      subroutine cal_jacobian_3d_inf_20(numnod, numele, nnod_4_ele,   &
-!!     &          np_smp, ie, xx, num_surf_bc, surf_item,               &
-!!     &          ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,         &
-!!     &          isurf_grp_smp_stack, ntot_int_3d, xjac, axjac, dnx,   &
-!!     &          dxidx, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
+!!     &          np_smp, ie, xx, num_surf_bc, surf_item, ngrp_sf_infty,&
+!!     &          id_grp_sf_infty, num_surf_smp, isurf_grp_smp_stack,   &
+!!     &          max_int_point, int_start3, ntot_int_3d,               &
+!!     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi,            &
+!!     &          dnxi_inf, dnei_inf, dnzi_inf)
 !!      subroutine cal_jacobian_3d_inf_27(numnod, numele, nnod_4_ele,   &
-!!     &          np_smp, ie, xx, num_surf_bc, surf_item,               &
-!!     &          ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,         &
-!!     &          isurf_grp_smp_stack, ntot_int_3d, xjac, axjac, dnx,   &
-!!     &          dxidx, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
+!!     &          np_smp, ie, xx, num_surf_bc, surf_item, ngrp_sf_infty,&
+!!     &          id_grp_sf_infty, num_surf_smp, isurf_grp_smp_stack,   &
+!!     &          max_int_point, int_start3, ntot_int_3d,               &
+!!     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi,            &
+!!     &          dnxi_inf, dnei_inf, dnzi_inf)
 !!
 !!      subroutine cal_jacobian_3d_inf_8_20(numnod, numele, nnod_4_ele, &
-!!     &          np_smp, ie, xx, num_surf_bc, surf_item,               &
-!!     &          ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,         &
-!!     &          isurf_grp_smp_stack, ntot_int_3d, xjac, axjac, dnx,   &
-!!     &          dxidx, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
+!!     &          np_smp, ie, xx, num_surf_bc, surf_item, ngrp_sf_infty,&
+!!     &          id_grp_sf_infty, num_surf_smp, isurf_grp_smp_stack,   &
+!!     &          max_int_point, int_start3, ntot_int_3d,               &
+!!     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi,            &
+!!     &          dnxi_inf, dnei_inf, dnzi_inf)
 !!@end verbatim
 !
       module cal_1ele_jacobians_infinte
 !
       use m_precision
-!
       use m_machine_parameter
       use m_geometry_constants
-      use m_fem_gauss_int_coefs
-!
-      use t_group_data
 !
       use cal_shape_func_infty_3d
 !
@@ -52,10 +52,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_3d_inf_8(numnod, numele, nnod_4_ele,      &
-     &          np_smp, ie, xx, num_surf_bc, surf_item,                 &
-     &          ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,           &
-     &          isurf_grp_smp_stack, ntot_int_3d, xjac, axjac, dnx,     &
-     &          dxidx, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
+     &          np_smp, ie, xx, num_surf_bc, surf_item, ngrp_sf_infty,  &
+     &          id_grp_sf_infty, num_surf_smp, isurf_grp_smp_stack,     &
+     &          max_int_point, int_start3, ntot_int_3d,                 &
+     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi,              &
+     &          dnxi_inf, dnei_inf, dnzi_inf)
 !
       use cal_jacobian_3d_inf_linear
 !
@@ -72,6 +73,9 @@
       integer(kind = kint), intent(in) :: np_smp, num_surf_smp
       integer(kind = kint), intent(in)                                  &
      &              :: isurf_grp_smp_stack(0:num_surf_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d
       real(kind = kreal), intent(in) :: dnxi(num_t_linear,ntot_int_3d)
@@ -118,10 +122,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_3d_inf_20(numnod, numele, nnod_4_ele,     &
-     &          np_smp, ie, xx, num_surf_bc, surf_item,                 &
-     &          ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,           &
-     &          isurf_grp_smp_stack, ntot_int_3d, xjac, axjac, dnx,     &
-     &          dxidx, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
+     &          np_smp, ie, xx, num_surf_bc, surf_item, ngrp_sf_infty,  &
+     &          id_grp_sf_infty, num_surf_smp, isurf_grp_smp_stack,     &
+     &          max_int_point, int_start3, ntot_int_3d,                 &
+     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi,              &
+     &          dnxi_inf, dnei_inf, dnzi_inf)
 !
       use cal_jacobian_3d_inf_quad
 !
@@ -138,6 +143,9 @@
       integer(kind = kint), intent(in) :: np_smp, num_surf_smp
       integer(kind = kint), intent(in)                                  &
      &              :: isurf_grp_smp_stack(0:num_surf_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d
       real(kind = kreal), intent(in) :: dnxi(num_t_quad,ntot_int_3d)
@@ -184,10 +192,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_3d_inf_27(numnod, numele, nnod_4_ele,     &
-     &          np_smp, ie, xx, num_surf_bc, surf_item,                 &
-     &          ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,           &
-     &          isurf_grp_smp_stack, ntot_int_3d, xjac, axjac, dnx,     &
-     &          dxidx, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
+     &          np_smp, ie, xx, num_surf_bc, surf_item, ngrp_sf_infty,  &
+     &          id_grp_sf_infty, num_surf_smp, isurf_grp_smp_stack,     &
+     &          max_int_point, int_start3, ntot_int_3d,                 &
+     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi,              &
+     &          dnxi_inf, dnei_inf, dnzi_inf)
 !
       use cal_jacobian_3d_inf_lag
 !
@@ -204,6 +213,9 @@
       integer(kind = kint), intent(in) :: np_smp, num_surf_smp
       integer(kind = kint), intent(in)                                  &
      &              :: isurf_grp_smp_stack(0:num_surf_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d
       real(kind = kreal), intent(in) :: dnxi(num_t_lag,ntot_int_3d)
@@ -250,10 +262,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_3d_inf_8_20(numnod, numele, nnod_4_ele,   &
-     &          np_smp, ie, xx, num_surf_bc, surf_item,                 &
-     &          ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,           &
-     &          isurf_grp_smp_stack, ntot_int_3d, xjac, axjac, dnx,     &
-     &          dxidx, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
+     &          np_smp, ie, xx, num_surf_bc, surf_item, ngrp_sf_infty,  &
+     &          id_grp_sf_infty, num_surf_smp, isurf_grp_smp_stack,     &
+     &          max_int_point, int_start3, ntot_int_3d,                 &
+     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi,              &
+     &          dnxi_inf, dnei_inf, dnzi_inf)
 !
       use cal_jacobian_3d_inf_l_quad
 !
@@ -270,6 +283,9 @@
       integer(kind = kint), intent(in) :: np_smp, num_surf_smp
       integer(kind = kint), intent(in)                                  &
      &              :: isurf_grp_smp_stack(0:num_surf_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
 !
       integer (kind=kint), intent(in) :: ntot_int_3d
       real(kind = kreal), intent(in) :: dnxi(num_t_quad,ntot_int_3d)

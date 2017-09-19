@@ -10,19 +10,23 @@
 !!@verbatim
 !!      subroutine cal_jacobian_1d_2(numnod, numedge, nnod_4_edge,      &
 !!     &           ie_edge, xx, np_smp, iedge_smp_stack,                &
-!!     &           ntot_int_1d, xjac, axjac, xeg, dnxi)
+!!     &           max_int_point, int_start1, ntot_int_1d,              &
+!!     &           xjac, axjac, xeg, dnxi)
 !!      subroutine cal_jacobian_1d_3(numnod, numedge, nnod_4_edge,      &
 !!     &           ie_edge, xx, np_smp, iedge_smp_stack,                &
-!!     &           ntot_int_1d, xjac, axjac, xeg, dnxi)
+!!     &           max_int_point, int_start1, ntot_int_1d,              &
+!!     &           xjac, axjac, xeg, dnxi)
 !!
 !!      subroutine cal_jacobian_1d_2_3(numnod, numedge, nnod_4_edge,    &
 !!     &           ie_edge, xx, np_smp, iedge_smp_stack,                &
-!!     &           ntot_int_1d, xjac, axjac, xeg, dnxi)
+!!     &           max_int_point, int_start1, ntot_int_1d,              &
+!!     &           xjac, axjac, xeg, dnxi)
 !!@end verbatim
 !
       module cal_1edge_jacobians
 !
       use m_precision
+      use m_geometry_constants
 !
       implicit none
 !
@@ -34,10 +38,9 @@
 !
       subroutine cal_jacobian_1d_2(numnod, numedge, nnod_4_edge,        &
      &           ie_edge, xx, np_smp, iedge_smp_stack,                  &
-     &           ntot_int_1d, xjac, axjac, xeg, dnxi)
+     &           max_int_point, int_start1, ntot_int_1d,                &
+     &           xjac, axjac, xeg, dnxi)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_1d
 !
       integer(kind = kint), intent(in) :: numnod
@@ -49,10 +52,13 @@
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: iedge_smp_stack(0:np_smp)
 !
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start1(max_int_point)
+!
+      integer(kind = kint), intent(in) :: ntot_int_1d
       real(kind = kreal), intent(in)                                    &
      &              :: dnxi(num_linear_edge,ntot_int_1d)
 !
-      integer(kind = kint), intent(in) :: ntot_int_1d
       real(kind = kreal), intent(inout) :: xjac(numedge,ntot_int_1d)
       real(kind = kreal), intent(inout) :: axjac(numedge,ntot_int_1d)
       real(kind = kreal), intent(inout) :: xeg(numedge,ntot_int_1d,3)
@@ -76,10 +82,9 @@
 !
       subroutine cal_jacobian_1d_3(numnod, numedge, nnod_4_edge,        &
      &           ie_edge, xx, np_smp, iedge_smp_stack,                  &
-     &           ntot_int_1d, xjac, axjac, xeg, dnxi)
+     &           max_int_point, int_start1, ntot_int_1d,                &
+     &           xjac, axjac, xeg, dnxi)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_1d
 !
       integer(kind = kint), intent(in) :: numnod
@@ -91,10 +96,13 @@
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: iedge_smp_stack(0:np_smp)
 !
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start1(max_int_point)
+!
+      integer(kind = kint), intent(in) :: ntot_int_1d
       real(kind = kreal), intent(in)                                    &
      &              :: dnxi(num_quad_edge,ntot_int_1d)
 !
-      integer(kind = kint), intent(in) :: ntot_int_1d
       real(kind = kreal), intent(inout) :: xjac(numedge,ntot_int_1d)
       real(kind = kreal), intent(inout) :: axjac(numedge,ntot_int_1d)
       real(kind = kreal), intent(inout) :: xeg(numedge,ntot_int_1d,3)
@@ -118,10 +126,9 @@
 !
       subroutine cal_jacobian_1d_2_3(numnod, numedge, nnod_4_edge,      &
      &           ie_edge, xx, np_smp, iedge_smp_stack,                  &
-     &           ntot_int_1d, xjac, axjac, xeg, dnxi)
+     &           max_int_point, int_start1, ntot_int_1d,                &
+     &           xjac, axjac, xeg, dnxi)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_1d
 !
       integer(kind = kint), intent(in) :: numnod
@@ -133,10 +140,13 @@
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: iedge_smp_stack(0:np_smp)
 !
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start1(max_int_point)
+!
+      integer(kind = kint), intent(in) :: ntot_int_1d
       real(kind = kreal), intent(in)                                    &
      &              :: dnxi(num_quad_edge,ntot_int_1d)
 !
-      integer(kind = kint), intent(in) :: ntot_int_1d
       real(kind = kreal), intent(inout) :: xjac(numedge,ntot_int_1d)
       real(kind = kreal), intent(inout) :: axjac(numedge,ntot_int_1d)
       real(kind = kreal), intent(inout) :: xeg(numedge,ntot_int_1d,3)

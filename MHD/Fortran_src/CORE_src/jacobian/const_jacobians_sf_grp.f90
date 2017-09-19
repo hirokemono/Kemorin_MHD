@@ -95,6 +95,7 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie, node%xx,     &
      &    surf_grp%num_grp, surf_grp%num_item, surf_grp%item_sf_grp,    &
      &    np_smp, surf_grp%num_grp_smp, surf_grp%istack_grp_smp,        &
+     &    max_int_point, int_start2, &
      &    jac_sf_grp%ntot_int, jac_sf_grp%xj_sf, jac_sf_grp%axj_sf,     &
      &    jac_sf_grp%xsf_sf, spf_2d_8%dnxi_sf, spf_2d_8%dnei_sf)
 !
@@ -124,6 +125,7 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie, node%xx,     &
      &    surf_grp%num_grp, surf_grp%num_item, surf_grp%item_sf_grp,    &
      &    np_smp, surf_grp%num_grp_smp, surf_grp%istack_grp_smp,        &
+     &    max_int_point, int_start2, &
      &    jac_sf_grp%ntot_int, jac_sf_grp%xj_sf, jac_sf_grp%axj_sf,     &
      &    jac_sf_grp%xsf_sf, spf_2d_20%dnxi_sf, spf_2d_20%dnei_sf)
 !
@@ -154,6 +156,7 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie, node%xx,     &
      &    surf_grp%num_grp, surf_grp%num_item, surf_grp%item_sf_grp,    &
      &    np_smp, surf_grp%num_grp_smp, surf_grp%istack_grp_smp,        &
+     &    max_int_point, int_start2, &
      &    jac_sf_grp%ntot_int, jac_sf_grp%xj_sf, jac_sf_grp%axj_sf,     &
      &    jac_sf_grp%xsf_sf, spf_2d_27%dnxi_sf, spf_2d_27%dnei_sf)
 !
@@ -186,6 +189,7 @@
      &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie, node%xx,     &
      &    surf_grp%num_grp, surf_grp%num_item, surf_grp%item_sf_grp,    &
      &    np_smp, surf_grp%num_grp_smp, surf_grp%istack_grp_smp,        &
+     &    max_int_point, int_start2, &
      &    jac_sf_grp%ntot_int, jac_sf_grp%xj_sf, jac_sf_grp%axj_sf,     &
      &    jac_sf_grp%xsf_sf, spf_2d_20%dnxi_sf, spf_2d_20%dnei_sf)
 !

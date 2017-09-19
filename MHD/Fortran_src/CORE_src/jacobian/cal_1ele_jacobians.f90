@@ -8,23 +8,28 @@
 !> @brief  obtain jacobian at one gauss point for linear element
 !!
 !!@verbatim
-!!      subroutine cal_jacobian_3d_8(numnod, numele, nnod_4_ele,        &
-!!     &        np_smp, iele_smp_stack, ie, xx,                         &
-!!     &        ntot_int_3d, xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
-!!      subroutine cal_jacobian_3d_20(numnod, numele, nnod_4_ele,       &
-!!     &        np_smp, iele_smp_stack, ie, xx,                         &
-!!     &        ntot_int_3d, xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
-!!      subroutine cal_jacobian_3d_27(numnod, numele, nnod_4_ele,       &
-!!     &        np_smp, iele_smp_stack, ie, xx,                         &
-!!     &        ntot_int_3d, xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
-!!      subroutine cal_jacobian_3d_8_20(numnod, numele, nnod_4_ele,     &
-!!     &        np_smp, iele_smp_stack, ie, xx,                         &
-!!     &        ntot_int_3d, xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
+!!      subroutine cal_jacobian_3d_8                                    &
+!!     &         (numnod, numele, nnod_4_ele, np_smp, iele_smp_stack,   &
+!!     &          ie, xx, max_int_point, int_start3, ntot_int_3d,       &
+!!     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
+!!      subroutine cal_jacobian_3d_20                                   &
+!!     &         (numnod, numele, nnod_4_ele,  np_smp, iele_smp_stack,  &
+!!     &          ie, xx, max_int_point, int_start3, ntot_int_3d,       &
+!!     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
+!!      subroutine cal_jacobian_3d_27                                   &
+!!     &         (numnod, numele, nnod_4_ele, np_smp, iele_smp_stack,   &
+!!     &          ie, xx, max_int_point, int_start3, ntot_int_3d,       &
+!!     &          xjac, axjac, dnx,  dxidx, dnxi, dnei, dnzi)
+!!      subroutine cal_jacobian_3d_8_20                                 &
+!!     &         (numnod, numele, nnod_4_ele, np_smp, iele_smp_stack,   &
+!!     &          ie, xx, max_int_point, int_start3, ntot_int_3d,       &
+!!     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
 !!@end verbatim
 !
       module cal_1ele_jacobians
 !
       use m_precision
+      use m_geometry_constants
 !
       implicit none
 !
@@ -34,12 +39,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_3d_8(numnod, numele, nnod_4_ele,          &
-     &        np_smp, iele_smp_stack, ie, xx,                           &
-     &        ntot_int_3d, xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
+      subroutine cal_jacobian_3d_8                                      &
+     &         (numnod, numele, nnod_4_ele, np_smp, iele_smp_stack,     &
+     &          ie, xx, max_int_point, int_start3, ntot_int_3d,         &
+     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_3d_linear
 !
       integer(kind = kint), intent(in) :: numnod
@@ -49,6 +53,9 @@
 !
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
 !
       integer(kind = kint), intent(in) :: ntot_int_3d
       real(kind = kreal), intent(in) :: dnxi(num_t_linear,ntot_int_3d)
@@ -85,12 +92,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_3d_20(numnod, numele, nnod_4_ele,         &
-     &        np_smp, iele_smp_stack, ie, xx,                           &
-     &        ntot_int_3d, xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
+      subroutine cal_jacobian_3d_20                                     &
+     &         (numnod, numele, nnod_4_ele,  np_smp, iele_smp_stack,    &
+     &          ie, xx, max_int_point, int_start3, ntot_int_3d,         &
+     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_3d_quad
 !
       integer(kind = kint), intent(in) :: numnod
@@ -100,6 +106,9 @@
 !
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
 !
       integer(kind = kint), intent(in) :: ntot_int_3d
       real(kind = kreal), intent(in) :: dnxi(num_t_quad,ntot_int_3d)
@@ -137,12 +146,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_3d_27(numnod, numele, nnod_4_ele,         &
-     &        np_smp, iele_smp_stack, ie, xx,                           &
-     &        ntot_int_3d, xjac, axjac, dnx,  dxidx, dnxi, dnei, dnzi)
+      subroutine cal_jacobian_3d_27                                     &
+     &         (numnod, numele, nnod_4_ele, np_smp, iele_smp_stack,     &
+     &          ie, xx, max_int_point, int_start3, ntot_int_3d,         &
+     &          xjac, axjac, dnx,  dxidx, dnxi, dnei, dnzi)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_3d_lag
 !
       integer(kind = kint), intent(in) :: numnod
@@ -152,6 +160,9 @@
 !
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
 !
       integer(kind = kint), intent(in) :: ntot_int_3d
       real(kind = kreal), intent(in) :: dnxi(num_t_lag,ntot_int_3d)
@@ -188,12 +199,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_3d_8_20(numnod, numele, nnod_4_ele,       &
-     &        np_smp, iele_smp_stack, ie, xx,                           &
-     &        ntot_int_3d, xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
+      subroutine cal_jacobian_3d_8_20                                   &
+     &         (numnod, numele, nnod_4_ele, np_smp, iele_smp_stack,     &
+     &          ie, xx, max_int_point, int_start3, ntot_int_3d,         &
+     &          xjac, axjac, dnx, dxidx, dnxi, dnei, dnzi)
 !
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use cal_jacobian_3d_linear_quad
 !
       integer(kind = kint), intent(in) :: numnod
@@ -203,6 +213,9 @@
 !
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: max_int_point
+      integer(kind = kint), intent(in) :: int_start3(max_int_point)
 !
       integer(kind = kint), intent(in) :: ntot_int_3d
       real(kind = kreal), intent(in) :: dnxi(num_t_quad,ntot_int_3d)

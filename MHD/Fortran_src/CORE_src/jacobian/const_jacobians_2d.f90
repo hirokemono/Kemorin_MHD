@@ -84,6 +84,7 @@
       call cal_jacobian_2d_4                                            &
      &    (node%numnod, surf%numsurf, surf%nnod_4_surf,                 &
      &     surf%ie_surf, node%xx, np_smp, surf%istack_surf_smp,         &
+     &     max_int_point, int_start2,   &
      &     jac_2d%ntot_int, jac_2d%xj_sf, jac_2d%axj_sf, jac_2d%xsf_sf, &
      &     spf_2d_8%dnxi_sf, spf_2d_8%dnei_sf)
 
@@ -111,6 +112,7 @@
       call cal_jacobian_2d_8                                            &
      &    (node%numnod, surf%numsurf, surf%nnod_4_surf,                 &
      &     surf%ie_surf, node%xx, np_smp, surf%istack_surf_smp,         &
+     &     max_int_point, int_start2,   &
      &     jac_2d%ntot_int, jac_2d%xj_sf, jac_2d%axj_sf, jac_2d%xsf_sf, &
      &     spf_2d_20%dnxi_sf, spf_2d_20%dnei_sf)
 !
@@ -138,6 +140,7 @@
       call cal_jacobian_2d_9                                            &
      &    (node%numnod, surf%numsurf, surf%nnod_4_surf,                 &
      &     surf%ie_surf, node%xx, np_smp, surf%istack_surf_smp,         &
+     &     max_int_point, int_start2,   &
      &     jac_2d%ntot_int, jac_2d%xj_sf, jac_2d%axj_sf, jac_2d%xsf_sf, &
      &     spf_2d_27%dnxi_sf, spf_2d_27%dnei_sf)
 !
@@ -166,6 +169,7 @@
       call cal_jacobian_2d_4_8                                          &
      &    (node%numnod, surf%numsurf, surf%nnod_4_surf,                 &
      &     surf%ie_surf, node%xx, np_smp, surf%istack_surf_smp,         &
+     &     max_int_point, int_start2,   &
      &     jac_2d%ntot_int, jac_2d%xj_sf, jac_2d%axj_sf, jac_2d%xsf_sf, &
      &     spf_2d_20%dnxi_sf, spf_2d_20%dnei_sf)
 !

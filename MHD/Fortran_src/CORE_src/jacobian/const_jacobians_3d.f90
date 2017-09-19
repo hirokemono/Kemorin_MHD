@@ -11,11 +11,12 @@
 !!      subroutine sel_jacobian_type(node, ele, spf_3d, jac_3d)
 !!      subroutine cal_jacobian_trilinear(node, ele, jac_3d)
 !!      subroutine cal_jacobian_quad_on_linear                          &
-!!     &         (node, ele, spf_3d_20, jac_3d)
+!!     &         (node, ele, g_FEM, spf_3d_20, jac_3d)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(scalar_surf_BC_list), intent(in) :: infinity_list
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(inout) :: jac_3d
 !
       module const_jacobians_3d
@@ -24,6 +25,7 @@
       use m_machine_parameter
 !
       use m_geometry_constants
+      use m_fem_gauss_int_coefs
 !
       use t_geometry_data
       use t_shape_functions
@@ -140,6 +142,7 @@
       call cal_jacobian_3d_8                                            &
      &   (node%numnod, ele%numele, ele%nnod_4_ele,                      &
      &    np_smp, ele%istack_ele_smp, ele%ie, node%xx,                  &
+     &    max_int_point, int_start3,    &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_8%dnxi, spf_3d_8%dnei, spf_3d_8%dnzi)
@@ -165,6 +168,7 @@
       call cal_jacobian_3d_20                                           &
      &   (node%numnod, ele%numele, ele%nnod_4_ele,                      &
      &    np_smp, ele%istack_ele_smp, ele%ie, node%xx,                  &
+     &    max_int_point, int_start3,    &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi)
@@ -190,6 +194,7 @@
       call cal_jacobian_3d_27                                           &
      &   (node%numnod, ele%numele, ele%nnod_4_ele,                      &
      &    np_smp, ele%istack_ele_smp, ele%ie, node%xx,                  &
+     &    max_int_point, int_start3,                          &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_27%dnxi, spf_3d_27%dnei, spf_3d_27%dnzi)
@@ -204,6 +209,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+!      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(volume_shape_function), intent(inout) :: spf_3d_20
       type(jacobians_3d), intent(inout) :: jac_3d
 !
@@ -217,6 +223,7 @@
       call cal_jacobian_3d_8_20                                         &
      &   (node%numnod, ele%numele, ele%nnod_4_ele,                      &
      &    np_smp, ele%istack_ele_smp, ele%ie, node%xx,                  &
+     &    max_int_point, int_start3,                          &
      &    jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac,                   &
      &    jac_3d%dnx, jac_3d%dxidx_3d,                                  &
      &    spf_3d_20%dnxi, spf_3d_20%dnei, spf_3d_20%dnzi)
