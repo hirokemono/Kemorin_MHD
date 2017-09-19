@@ -18,6 +18,9 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_group_data), intent(in) :: surf_grp
 !!        type(jacobians_2d), intent(inout) :: jac_sf_grp
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(surface_shape_function), intent(inout) :: spf_2d
+!!        type(jacobians_2d), intent(inout) :: jac_sf_grp
 !!@endverbatim
 !
       module const_jacobians_sf_grp

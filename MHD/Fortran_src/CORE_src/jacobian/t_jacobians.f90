@@ -226,7 +226,8 @@
      &    surf%nnod_4_surf, maxtot_int_2d, jacs%jac_2d)
 !
       if(my_rank .lt. nprocs) then
-        call sel_jacobian_surface(node, surf, spf_2d, jacs%jac_2d)
+        call sel_jacobian_surface                                       &
+     &     (node, surf, jacs%g_FEM, spf_2d, jacs%jac_2d)
       end if
 !
       if(surf%nnod_4_surf .eq. num_linear_sf) then
@@ -237,7 +238,7 @@
      &      maxtot_int_2d, jacs%jac_2d_l)
         if(my_rank .lt. nprocs) then
           call cal_jacobian_surface_linear                              &
-     &       (node, surf, spf_2d, jacs%jac_2d_l)
+     &       (node, surf, jacs%g_FEM, spf_2d, jacs%jac_2d_l)
         end if
       end if
 !
