@@ -103,7 +103,8 @@
       call allocate_volume_4_smp
 !
       if (iflag_debug.eq.1) write(*,*) 's_int_volume_of_domain'
-      call s_int_volume_of_domain(mesh%ele, jacobians%jac_3d)
+      call s_int_volume_of_domain                                       &
+     &   (mesh%ele, jacobians%g_FEM, jacobians%jac_3d)
 !
 !     ---  lead total volume of each area
 !
