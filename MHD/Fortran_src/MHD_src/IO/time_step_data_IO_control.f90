@@ -7,7 +7,7 @@
 !
 !!      subroutine output_time_step_control                             &
 !!     &         (FEM_prm, time_d, mesh, MHD_mesh, fl_prop, cd_prop,    &
-!!     &          iphys, nod_fld, iphys_ele, ele_fld, jacobians,        &
+!!     &          iphys, nod_fld, iphys_ele, ele_fld, jacs,             &
 !!     &          i_rms, j_ave, ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -18,7 +18,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
-!!        type(jacobians_type), intent(in) :: jacobians
+!!        type(jacobians_type), intent(in) :: jacs
 !!        type(phys_address), intent(in) :: i_rms
 !!        type(mean_square_address), intent(in) :: ifld_msq
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -53,7 +53,7 @@
 !
       subroutine output_time_step_control                               &
      &         (FEM_prm, time_d, mesh, MHD_mesh, fl_prop, cd_prop,      &
-     &          iphys, nod_fld, iphys_ele, ele_fld, jacobians,          &
+     &          iphys, nod_fld, iphys_ele, ele_fld, jacs,               &
      &          i_rms, j_ave, ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
 !
       use calypso_mpi
@@ -72,7 +72,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
       type(phys_address), intent(in) :: i_rms, j_ave
       type(mean_square_address), intent(in) :: ifld_msq
 !
@@ -88,11 +88,11 @@
 !
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
      &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
-     &    iphys, nod_fld, g_FEM1, jacobians%jac_3d, jacobians%jac_3d_l, &
+     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,       &
      &    i_rms, j_ave, ifld_msq, rhs_mat%fem_wk, mhd_fem_wk, fem_msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
      &    mesh%node, mesh%ele, fl_prop, cd_prop, iphys, nod_fld,        &
-     &    iphys_ele, ele_fld, MHD_mesh%fluid, g_FEM1, jacobians%jac_3d, &
+     &    iphys_ele, ele_fld, MHD_mesh%fluid, jacs%g_FEM, jacs%jac_3d,  &
      &    i_rms, j_ave, rhs_mat%fem_wk, fem_msq)
 !
       call MPI_allREDUCE                                                &

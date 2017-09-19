@@ -6,7 +6,7 @@
 !!      subroutine cal_sgs_terms_4_monitor                              &
 !!     &         (dt, FEM_prm, SGS_param, filter_param,                 &
 !!     &          nod_comm, node, ele, fluid, conduct, cd_prop,         &
-!!     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,        &
+!!     &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl,             &
 !!     &          FEM_elens, icomp_sgs, iphys_elediff,                  &
 !!     &          sgs_coefs, sgs_coefs_nod, filtering, mk_MHD,          &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -19,7 +19,7 @@
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !!      subroutine cal_work_4_sgs_terms                                 &
 !!     &         (FEM_prm, nod_comm, node, ele, conduct,                &
-!!     &          fl_prop, cd_prop, iphys, jacobians, rhs_tbl, mk_MHD,  &
+!!     &          fl_prop, cd_prop, iphys, jacs, rhs_tbl, mk_MHD,       &
 !!     &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -37,7 +37,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
-!!        type(jacobians_type), intent(in) :: jacobians
+!!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
@@ -97,7 +97,7 @@
       subroutine cal_sgs_terms_4_monitor                                &
      &         (dt, FEM_prm, SGS_param, filter_param,                   &
      &          nod_comm, node, ele, fluid, conduct, cd_prop,           &
-     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,          &
+     &          iphys, iphys_ele, ele_fld, jacs, rhs_tbl,               &
      &          FEM_elens, icomp_sgs, iphys_elediff,                    &
      &          sgs_coefs, sgs_coefs_nod, filtering, mk_MHD,            &
      &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -118,7 +118,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
@@ -144,7 +144,7 @@
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
-     &      iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,      &
+     &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
      &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,             &
      &      mk_MHD%mlump_fl, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,  &
      &      nod_fld)
@@ -159,7 +159,7 @@
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,      &
      &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
-     &      iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, rhs_tbl,      &
+     &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
      &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,             &
      &      mk_MHD%mlump_fl, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,  &
      &      nod_fld)
@@ -170,7 +170,7 @@
         call cal_sgs_momentum_flux                                      &
      &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,             &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
-     &      fluid, iphys, iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, &
+     &      fluid, iphys, iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,    &
      &      mk_MHD%mlump_fl, wk_filter, mhd_fem_wk, fem_wk,             &
      &      f_l, f_nl, nod_fld)
@@ -182,7 +182,7 @@
         call cal_sgs_maxwell                                            &
      &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne, dt,             &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
-     &      fluid, iphys, iphys_ele, ele_fld, g_FEM1, jacobians%jac_3d, &
+     &      fluid, iphys, iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,    &
      &      mk_MHD%mlump_fl, wk_filter, mhd_fem_wk, fem_wk,             &
      &      f_l, f_nl, nod_fld)
@@ -194,7 +194,7 @@
      &      iphys_elediff%i_velo, iphys_elediff%i_magne, dt,            &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld,                &
-     &      g_FEM1, jacobians%jac_3d, rhs_tbl, FEM_elens, filtering,    &
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, filtering,     &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_cd,                  &
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
@@ -206,7 +206,7 @@
      &     (icomp_sgs%i_induction, iphys_elediff%i_velo, dt,            &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld,                &
-     &      g_FEM1, jacobians%jac_3d,  rhs_tbl, FEM_elens, filtering,   &
+     &      jacs%g_FEM, jacs%jac_3d,  rhs_tbl, FEM_elens, filtering,    &
      &      sgs_coefs, mk_MHD%mlump_cd, wk_filter, mhd_fem_wk,          &
      &      fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -339,7 +339,7 @@
 !
       subroutine cal_work_4_sgs_terms                                   &
      &         (FEM_prm, nod_comm, node, ele, conduct,                  &
-     &          fl_prop, cd_prop, iphys, jacobians, rhs_tbl, mk_MHD,    &
+     &          fl_prop, cd_prop, iphys, jacs, rhs_tbl, mk_MHD,         &
      &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use products_nodal_fields_smp
@@ -354,7 +354,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -370,7 +370,7 @@
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction                                      &
      &     (FEM_prm, nod_comm, node, ele, conduct, iphys,               &
-     &      g_FEM1, jacobians%jac_3d, rhs_tbl, mk_MHD%mlump_cd,         &
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mk_MHD%mlump_cd,          &
      &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
