@@ -6,7 +6,7 @@
 !!      integer(kind = kint), function check_PVR_update
 !!      subroutine PVR_initialize(mesh, group, ele_mesh, nod_fld)
 !!      subroutine PVR_visualize                                        &
-!!     &         (istep_pvr, mesh, group, ele_mesh, jac_3d, nod_fld)
+!!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -14,7 +14,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(jacobians_type), intent(in) :: jacs
 !
 !      subroutine deallocate_pvr_data
 !
@@ -30,7 +30,7 @@
 !
       use t_mesh_data
       use t_phys_data
-      use t_jacobian_3d
+      use t_jacobians
 !
       use t_rendering_vr_image
       use t_control_params_4_pvr
@@ -209,7 +209,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine PVR_visualize                                          &
-     &         (istep_pvr, mesh, group, ele_mesh, jac_3d, nod_fld)
+     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld)
 !
       use cal_pvr_modelview_mat
 !
@@ -219,7 +219,7 @@
       type(mesh_groups), intent(in) :: group
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_type), intent(in) :: jacs
 !
       integer(kind = kint) :: i_pvr
 !
@@ -228,7 +228,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       do i_pvr = 1, num_pvr
-        call cal_field_4_each_pvr(mesh%node, mesh%ele, jac_3d, nod_fld, &
+        call cal_field_4_each_pvr                                       &
+     &     (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,      &
      &      pvr_param(i_pvr)%field_def, pvr_param(i_pvr)%field)
       end do
 !

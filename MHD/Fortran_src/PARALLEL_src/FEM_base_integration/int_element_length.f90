@@ -5,8 +5,14 @@
 !                                    on July 2000 (ver 1.1)
 !        Modified by H. Matsui on Aug., 2006
 !
-!!      subroutine s_int_element_length                                 &
-!!     &         (nele_filter, node, ele, spf_3d, dxi_ele, elen_ele)
+!!      subroutine s_int_element_length(nele_filter, node, ele,         &
+!!   &          g_FEM, spf_3d, dxi_ele, elen_ele)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(volume_shape_function), intent(in) :: spf_3d
+!!        type(dxdxi_direction_type), intent(inout) :: dxi_ele
+!!        type(elen_on_ele_type), intent(inout) :: elen_ele
 !
       module int_element_length
 !
@@ -28,13 +34,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_int_element_length                                   &
-     &         (nele_filter, node, ele, spf_3d, dxi_ele, elen_ele)
+      subroutine s_int_element_length(nele_filter, node, ele,           &
+     &          g_FEM, spf_3d, dxi_ele, elen_ele)
 !
-      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_filter_dxdxi
       use t_filter_elength
+      use t_fem_gauss_int_coefs
       use t_shape_functions
 !
 !
@@ -42,6 +48,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(volume_shape_function), intent(in) :: spf_3d
       type(dxdxi_direction_type), intent(inout) :: dxi_ele
       type(elen_on_ele_type), intent(inout) :: elen_ele
@@ -50,27 +57,30 @@
       if      (ele%nnod_4_ele .eq. num_t_linear) then
         call fem_element_length_linear                                  &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
-     &      ele%istack_ele_smp, max_int_point, nele_filter,             &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      maxtot_int_3d, spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,       &
+     &      ele%istack_ele_smp, g_FEM%max_int_point, nele_filter,       &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, g_FEM%maxtot_int_3d,                           &
+     &      spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,                      &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
       else if (ele%nnod_4_ele .eq. num_t_quad) then
         call fem_element_length_quad                                    &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
-     &      ele%istack_ele_smp, max_int_point, nele_filter,             &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      maxtot_int_3d, spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,       &
+     &      ele%istack_ele_smp, g_FEM%max_int_point, nele_filter,       &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, g_FEM%maxtot_int_3d,                           &
+     &      spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,                      &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
       else if (ele%nnod_4_ele .eq. num_t_lag) then
         call fem_element_length_lag                                     &
      &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
-     &      ele%istack_ele_smp, max_int_point, nele_filter,             &
-     &      max_int_point, maxtot_int_3d, int_start3, owe3d,            &
-     &      maxtot_int_3d, spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,       &
+     &      ele%istack_ele_smp, g_FEM%max_int_point, nele_filter,       &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3, &
+     &      g_FEM%owe3d, g_FEM%maxtot_int_3d,                           &
+     &      spf_3d%dnxi, spf_3d%dnei, spf_3d%dnzi,                      &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)

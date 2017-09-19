@@ -6,13 +6,13 @@
 !!      subroutine init_visualize_pvr_only                              &
 !!     &         (femmesh, ele_mesh, nod_fld)
 !!      subroutine visualize_pvr_only                                   &
-!!     &         (istep_pvr, femmesh, ele_mesh, jacobians, nod_fld)
+!!     &         (istep_pvr, femmesh, ele_mesh, jacs, nod_fld)
 !!        integer(kind = kint), intent(in) :: istep_pvr
 !!        integer(kind = kint), intent(inout) :: ierror
 !!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(jacobians_type), intent(in) :: jacobians
+!!        type(jacobians_type), intent(in) :: jacs
 !
       module volume_rendering_only
 !
@@ -52,7 +52,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_pvr_only                                     &
-     &         (istep_pvr, femmesh, ele_mesh, jacobians, nod_fld)
+     &         (istep_pvr, femmesh, ele_mesh, jacs, nod_fld)
 !
       use volume_rendering
 !
@@ -61,12 +61,12 @@
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
 !
 !
       call PVR_visualize                                                &
      &   (istep_pvr, femmesh%mesh, femmesh%group, ele_mesh,             &
-     &    jacobians%jac_3d, nod_fld)
+     &    jacs, nod_fld)
 !
       end subroutine visualize_pvr_only
 !

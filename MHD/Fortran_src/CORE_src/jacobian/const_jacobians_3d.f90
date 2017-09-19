@@ -96,7 +96,7 @@
       call set_gauss_coefs_4_3d                                         &
      &   (max_int_point, maxtot_int_1d, int_start1, spf_1d%xi, owe,     &
      &    maxtot_int_3d, int_start3, spf_3d%l_int,                      &
-     &    spf_3d%xi, spf_3d%ei, spf_3d%zi, owe3d)
+     &    spf_3d%xi, spf_3d%ei, spf_3d%zi, g_FEM%owe3d)
 !
       call copy_fem_gauss_int_coef_type(g_FEM)
 !

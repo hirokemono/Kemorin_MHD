@@ -7,10 +7,11 @@
 !> @brief Set field data for volume rendering
 !!
 !!@verbatim
-!!      subroutine cal_field_4_each_pvr(node, ele, jac_3d,              &
+!!      subroutine cal_field_4_each_pvr(node, ele, g_FEM, jac_3d,       &
 !!     &          nod_fld, fld_params, field_pvr)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(pvr_field_parameter), intent(in) :: fld_params
 !!        type(phys_data), intent(in) :: nod_fld
@@ -27,7 +28,6 @@
       use m_precision
       use m_constants
 !
-      use m_fem_gauss_int_coefs
       use t_control_params_4_pvr
 !
       implicit  none
@@ -38,11 +38,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_field_4_each_pvr(node, ele, jac_3d,                &
+      subroutine cal_field_4_each_pvr(node, ele, g_FEM, jac_3d,         &
      &          nod_fld, fld_params, field_pvr)
 !
       use t_geometry_data
       use t_phys_data
+      use t_fem_gauss_int_coefs
       use t_jacobian_3d
       use t_geometries_in_pvr_screen
       use cal_gradient_on_element
@@ -50,6 +51,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
       type(pvr_field_parameter), intent(in) :: fld_params
       type(phys_data), intent(in) :: nod_fld
@@ -71,8 +73,8 @@
 !
       call fem_gradient_on_element(ele%istack_ele_smp, node%numnod,     &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
-     &    max_int_point, maxtot_int_3d, int_start3, owe3d,              &
-     &    jac_3d%ntot_int, ione, jac_3d%dnx, jac_3d%xjac,               &
+     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
+     &    g_FEM%owe3d, jac_3d%ntot_int, ione, jac_3d%dnx, jac_3d%xjac,  &
      &    field_pvr%grad_ele, field_pvr%d_pvr)
 !
       end subroutine cal_field_4_each_pvr

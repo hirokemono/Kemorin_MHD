@@ -5,14 +5,14 @@
 !
 !!      subroutine init_visualize(femmesh, ele_mesh, nod_fld)
 !!      subroutine visualize_all(viz_step, time_d,                     &
-!!     &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacobians)
+!!     &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacs)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(element_around_node), intent(in) :: ele_4_nod
-!!        type(jacobians_type), intent(in) :: jacobians
+!!        type(jacobians_type), intent(in) :: jacs
 !
       module visualizer_all
 !
@@ -80,7 +80,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_all(viz_step, time_d,                       &
-     &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacobians)
+     &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacs)
 !
       use m_cross_section
       use m_isosurface
@@ -94,7 +94,7 @@
 !
       type(phys_data), intent(in) :: nod_fld
       type(element_around_node), intent(in) :: ele_4_nod
-      type(jacobians_type), intent(in) :: jacobians
+      type(jacobians_type), intent(in) :: jacs
 !
 !
       call start_elapsed_time(65)
@@ -111,8 +111,7 @@
 !
       call start_elapsed_time(67)
       call PVR_visualize(viz_step%PVR_t%istep_file,                    &
-     &    femmesh%mesh, femmesh%group, ele_mesh,                       &
-     &    jacobians%jac_3d, nod_fld)
+     &    femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld)
       call calypso_MPI_barrier
       call end_elapsed_time(67)
 !

@@ -165,7 +165,8 @@
      &   (FEM_elen_f%nele_filter_mom, FEM_elen_f%elen_ele)
 !
       call s_int_element_length(FEM_elen_f%nele_filter_mom,             &
-     &    mesh_filter%node, mesh_filter%ele, spfs_f%spf_3d,             &
+     &    mesh_filter%node, mesh_filter%ele,                            &
+     &    fem_int_f%jcs%g_FEM, spfs_f%spf_3d,                           &
      &    filter_dxi1%dxi_ele, FEM_elen_f%elen_ele%moms)
       call dealloc_vol_shape_func(spfs_f%spf_3d)
 !
