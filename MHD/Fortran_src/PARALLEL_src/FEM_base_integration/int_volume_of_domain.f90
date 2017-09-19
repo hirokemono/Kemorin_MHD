@@ -84,7 +84,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector(my_rank, nprocs,                         &
-     &    mesh%node, g_FEM1, surf, spfs%spf_2d, jacobians)
+     &    mesh%node, surf, spfs%spf_2d, jacobians)
       call dealloc_surf_shape_func(spfs%spf_2d)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'

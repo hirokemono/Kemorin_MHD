@@ -227,7 +227,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector                                          &
-     &   (my_rank, nprocs, mesh%node, g_FEM1, ele_mesh%surf,            &
+     &   (my_rank, nprocs, mesh%node, ele_mesh%surf,                    &
      &    spfs_1%spf_2d, fem_int%jcs)
       call dealloc_surf_shape_func(spfs_1%spf_2d)
 !

@@ -247,7 +247,8 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &         'int_normal_4_all_surface', i_level
         call int_normal_4_all_surface                                   &
-     &     (g_FEM1, MGCG_FEM%MG_ele_mesh(i_level)%surf,                 &
+     &     (MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM,                     &
+     &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
      &      MGCG_FEM%MG_FEM_int(i_level)%jcs%jac_2d)
         call int_surface_parameters(MGCG_FEM%MG_mesh(i_level)%mesh,     &
      &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
