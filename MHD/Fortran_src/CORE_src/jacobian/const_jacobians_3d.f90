@@ -92,7 +92,7 @@
       call set_gauss_coefs_4_2d                                         &
      &   (max_int_point, maxtot_int_1d, int_start1, spf_1d%xi, owe,     &
      &    maxtot_int_2d, int_start2, spf_2d%l_int,                      &
-     &    spf_2d%xi, spf_2d%ei, owe2d)
+     &    spf_2d%xi, spf_2d%ei, g_FEM%owe2d)
       call set_gauss_coefs_4_3d                                         &
      &   (max_int_point, maxtot_int_1d, int_start1, spf_1d%xi, owe,     &
      &    maxtot_int_3d, int_start3, spf_3d%l_int,                      &

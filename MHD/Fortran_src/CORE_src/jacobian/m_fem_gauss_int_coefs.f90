@@ -32,7 +32,6 @@
       integer (kind=kint), allocatable :: int_start3(:)
 !
       real (kind=kreal), allocatable :: owe(:)
-      real (kind=kreal), allocatable :: owe2d(:)
 ! 
 !-----------------------------------------------------------------------
 !
@@ -75,14 +74,12 @@
       integer(kind = kint) :: n
 !
       allocate( owe(maxtot_int_1d)   )
-      allocate( owe2d(maxtot_int_2d) )
 !
       allocate( int_start1(max_int_point) )
       allocate( int_start2(max_int_point) )
       allocate( int_start3(max_int_point) )
 !
       owe =   0.0d0
-      owe2d = 0.0d0
 !
       int_start3(1) = 0
       int_start2(1) = 0
@@ -100,7 +97,7 @@
 !
       subroutine deallocate_gauss_coef_4_fem
 !
-      deallocate( owe, owe2d )
+      deallocate( owe )
       deallocate( int_start1, int_start2, int_start3 )
 !
       end subroutine deallocate_gauss_coef_4_fem
@@ -141,7 +138,6 @@
       call alloc_gauss_coef_4_fem(g_FEM)
 !
       g_FEM%owe(1:maxtot_int_1d) =   owe(1:maxtot_int_1d)
-      g_FEM%owe2d(1:maxtot_int_2d) = owe2d(1:maxtot_int_2d)
 !
       end subroutine copy_fem_gauss_int_coef_type
 !

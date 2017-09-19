@@ -134,8 +134,8 @@
      &    fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%f_l, fem_int%m_lump)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_dxidx_ele_type'
-      call cal_dxidx_ele_type                                           &
-     &   (mesh%ele, fem_int%jcs%jac_3d, dxidxs%dx_ele)
+      call cal_dxidx_ele_type(mesh%ele,                                 &
+     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, dxidxs%dx_ele)
 !
 !  ---------------------------------------------------
 !        cal element size for each node

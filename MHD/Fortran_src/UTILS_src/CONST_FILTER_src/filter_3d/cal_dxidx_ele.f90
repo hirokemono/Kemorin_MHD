@@ -3,7 +3,11 @@
 !
 !        programmed by H.Matsui on Nov., 2008
 !
-!!      subroutine cal_dxidx_ele_type(ele, jac_3d, dx_ele)
+!!      subroutine cal_dxidx_ele_type(ele, g_FEM, jac_3d, dx_ele)
+!!        type(element_data), intent(in) :: ele
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(dxidx_direction_type), intent(inout) :: dx_ele
 !!
       module cal_dxidx_ele
 !
@@ -22,23 +26,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_dxidx_ele_type(ele, jac_3d, dx_ele)
+      subroutine cal_dxidx_ele_type(ele, g_FEM, jac_3d, dx_ele)
 !
-      use m_fem_gauss_int_coefs
 !
       use t_geometry_data
+      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_filter_dxdxi
 !
       type(element_data), intent(in) :: ele
+      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
       type(jacobians_3d), intent(in) :: jac_3d
 !
       type(dxidx_direction_type), intent(inout) :: dx_ele
 !
 !
       call s_cal_dxidx_ele(ele%numele, ele%istack_ele_smp,              &
-     &      max_int_point, maxtot_int_2d, int_start2, owe2d,            &
-     &      jac_3d%ntot_int, jac_3d%dxidx_3d,                           &
+     &      g_FEM%max_int_point, g_FEM%maxtot_int_2d, g_FEM%int_start2, &
+     &      g_FEM%owe2d, jac_3d%ntot_int, jac_3d%dxidx_3d,              &
      &      dx_ele%dxi%df_dx, dx_ele%dxi%df_dy, dx_ele%dxi%df_dz,       &
      &      dx_ele%dei%df_dx, dx_ele%dei%df_dy, dx_ele%dei%df_dz,       &
      &      dx_ele%dzi%df_dx, dx_ele%dzi%df_dy, dx_ele%dzi%df_dz)
