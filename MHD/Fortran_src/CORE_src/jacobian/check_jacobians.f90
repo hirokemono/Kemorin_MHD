@@ -11,11 +11,10 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_fem_gauss_int_coefs
       use m_geometry_constants
+!
       use t_geometry_data
       use t_jacobians
-!
 !
       implicit  none
 !
@@ -42,13 +41,13 @@
 !
 !
       do ii = 1, jac_3d%ntot_int
-       do nd = 1, 3
-        write(50+my_rank,*) 'iele, integration point, dnx', ii, nd
-        do iele = 1, ele%numele
-          write(50+my_rank,'(i16,1p20e25.14)') iele,                    &
+        do nd = 1, 3
+          write(50+my_rank,*) 'iele, integration point, dnx', ii, nd
+          do iele = 1, ele%numele
+            write(50+my_rank,'(i16,1p20e25.14)') iele,                  &
      &           (jac_3d%dnx(iele,k1,ii,nd), k1 = 1, num_t_linear)
+          end do
         end do
-       end do
       end do
 !
       write(50+my_rank,*) 'iele, jacobian'
@@ -78,13 +77,13 @@
 !
 !
       do ii = 1, jac_3d%ntot_int
-       do nd = 1, 3
-        write(50+my_rank,*) 'iele, integration point, dwx', ii, nd
-        do iele = 1, ele%numele
-          write(50+my_rank,'(i16,1p20e25.14)') iele,                    &
-     &       (jac_3d%dnx(iele,k1,ii,nd), k1 = 1, ele%nnod_4_ele)
+        do nd = 1, 3
+          write(50+my_rank,*) 'iele, integration point, dwx', ii, nd
+          do iele = 1, ele%numele
+            write(50+my_rank,'(i16,1p20e25.14)') iele,                  &
+     &           (jac_3d%dnx(iele,k1,ii,nd), k1 = 1, ele%nnod_4_ele)
+          end do
         end do
-       end do
       end do
 !
 !      write(50+my_rank,*) 'iele, jacobian'
