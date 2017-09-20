@@ -68,9 +68,10 @@
 !     --------------------- 
 !
       call input_control_4_FEM_snap                                     &
-     &   (MHD_files1, FEM_prm1, SGS_par1, flex_p1, MHD_step1,           &
+     &   (MHD_files1, FEM_prm1, FEM_SGS1%SGS_par, flex_p1, MHD_step1,   &
      &    MHD_prop1, MHD_BC1, femmesh1, ele_mesh1, nod_fld1, ele_fld1,  &
-     &    bc_FEM_IO1, FEM_filters1, SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1)
+     &    bc_FEM_IO1, FEM_SGS1%FEM_filters, SGS_MHD_wk1%FEM_SGS_wk,     &
+     &    MHD_CG1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
 !     --------------------- 
@@ -78,8 +79,7 @@
       call FEM_initialize_snapshot                                      &
      &   (MHD_files1, bc_FEM_IO1, MHD_step1, femmesh1, ele_mesh1,       &
      &    iphys_nod1, nod_fld1, iphys_ele, ele_fld1, MHD_CG1%ak_MHD,    &
-     &    FEM_filters1, SGS_MHD_wk1, range1, fem_ucd1, fem_sq1,         &
-     &    label_sim)
+     &    FEM_SGS1, SGS_MHD_wk1, range1, fem_ucd1, fem_sq1, label_sim)
 !
       call init_visualize(femmesh1, ele_mesh1, nod_fld1)
 !
@@ -100,7 +100,7 @@
 !  Read and generate fields
         call FEM_analyze_snapshot(i_step, MHD_files1,                   &
      &      femmesh1, ele_mesh1, iphys_nod1, iphys_ele, MHD_CG1%ak_MHD, &
-     &      FEM_filters1, MHD_step1, visval, SGS_MHD_wk1,               &
+     &      MHD_step1, visval, FEM_SGS1, SGS_MHD_wk1,                   &
      &      nod_fld1, ele_fld1, fem_ucd1, fem_sq1)
 !
 !  Visualization

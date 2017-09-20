@@ -16,7 +16,6 @@
       use t_SGS_control_parameter
       use t_FEM_SGS_model_coefs
       use t_FEM_MHD_filter_data
-      use t_work_FEM_SGS_MHD
 !
       implicit none
 !
@@ -27,12 +26,10 @@
         type(SGS_paremeters) :: SGS_par
 !
 !>        Structure of model coefficieints for FEM MHD
-        type(SGS_coefficients_data) :: Csims_FEM_MHD
+        type(SGS_coefficients_data) :: Csims
 !
 !>        Structure of grouping of elements
         type(filters_on_FEM) :: FEM_filters
-!>        Structure of Work area for dynamics model
-        type(work_FEM_SGS_MHD) :: SGS_MHD_wk
       end type FEM_SGS_structure
 !
       end module t_FEM_SGS_structure

@@ -1,9 +1,9 @@
 !!
 !!      subroutine induction_SPH_initialize(SGS_param,                  &
 !!     &         ipol, idpdr, itor, comms_sph, sph, trans_p, rj_fld)
-!!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_param,     &
+!!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,       &
 !!     &          mesh, sph, comms_sph, trans_p, conduct, jacobians,    &
-!!     &          ipol, rj_fld)
+!!     &          Csims_FEM_MHD, ipol, rj_fld)
 !!      subroutine cal_magneitc_field_by_SPH(SGS_param, cd_prop,        &
 !!     &          sph, comms_sph, trans_p, ipol, itor, rj_fld)
 !
@@ -122,41 +122,43 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_param,       &
+      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,         &
      &          mesh, sph, comms_sph, trans_p, conduct, jacobians,      &
-     &          ipol, rj_fld)
+     &          Csims_FEM_MHD, ipol, rj_fld)
 !
       use m_solver_SR
       use m_schmidt_poly_on_rtm
 !
       use t_geometry_data_MHD
+      use t_FEM_SGS_model_coefs
 !
       use spherical_SRs_N
       use copy_nodal_fld_4_sph_trans
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
       type(jacobians_type), intent(in) :: jacobians
+      type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
 !
       type(field_geometry_data), intent(in) :: conduct
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call cal_sgs_uxb_2_monitor
-     &     (Csims_FEM_MHD1%icomp_sgs%i_induction,                       &
-     &      Csims_FEM_MHD1%iphys_elediff%i_velo, MHD_step1%time_d%dt,   &
-     &      FEM_prm1, SGS_par1%model_p, SGS_par1%filter_p,              &
+     &     (Csims_FEM_MHD%icomp_sgs%i_induction,                        &
+     &      Csims_FEM_MHD%iphys_elediff%i_velo, MHD_step1%time_d%dt,    &
+     &      FEM_prm1, SGS_par%model_p, SGS_par%filter_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      MHD_mesh1%conduct, MHD_prop1%cd_prop,                       &
      &      iphys, iphys_ele, ele_fld1,                                 &
      &      fem_int1%jcs%g_FEM, fem_int1%jcs%jac_3d,                    &
      &      fem_int1%rhs_tbl, FEM1_elen, filtering1,                    &
-     &      Csims_FEM_MHD1%sgs_coefs, mhd1_fem_wk%mlump_cd,             &
+     &      Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,              &
      &      SGS_MHD_wk1%FEM_SGS_wk%wk_filter, mhd_fem1_wk,              &
      &      rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl, nod_fld1)
 !

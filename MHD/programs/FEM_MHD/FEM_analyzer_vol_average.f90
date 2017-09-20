@@ -6,13 +6,13 @@
 !!      subroutine FEM_initialize_vol_average                           &
 !!     &         (MHD_files, bc_FEM_IO, MHD_step, femmesh, ele_mesh,    &
 !!     &          iphys_nod, nod_fld,  iphys_ele, ele_fld, ak_MHD,      &
-!!     &          FEM_filters, SGS_MHD_wk, fem_sq, label_sim)
+!!     &          FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod, iphys_ele
 !!        type(phys_data), intent(inout) :: nod_fld, ele_fld
 !!        type(coefs_4_MHD_type), intent(inout) :: ak_MHD
-!!        type(filters_on_FEM), intent(inout) :: FEM_filters
+!!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
@@ -39,7 +39,7 @@
       use t_MHD_step_parameter
       use t_ucd_file
       use t_FEM_MHD_mean_square
-      use t_FEM_MHD_filter_data
+      use t_FEM_SGS_structure
       use t_work_FEM_SGS_MHD
 !
       use calypso_mpi
@@ -57,7 +57,7 @@
       subroutine FEM_initialize_vol_average                             &
      &         (MHD_files, bc_FEM_IO, MHD_step, femmesh, ele_mesh,      &
      &          iphys_nod, nod_fld, iphys_ele, ele_fld, ak_MHD,         &
-     &          FEM_filters, SGS_MHD_wk, fem_sq, label_sim)
+     &          FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_control_parameter
       use m_geometry_data_MHD
@@ -81,7 +81,7 @@
       type(phys_address), intent(inout) :: iphys_nod, iphys_ele
       type(phys_data), intent(inout) :: nod_fld, ele_fld
       type(coefs_4_MHD_type), intent(inout) :: ak_MHD
-      type(filters_on_FEM), intent(inout) :: FEM_filters
+      type(FEM_SGS_structure), intent(inout) :: FEM_SGS
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -91,12 +91,12 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap                                           &
-     &   (MHD_files, FEM_prm1, SGS_par1, bc_FEM_IO,                     &
-     &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
-     &    FEM_filters, MHD_prop1, ak_MHD, MHD_BC1, FEM_MHD1_BCs,        &
-     &    Csims_FEM_MHD1, iphys_nod, nod_fld, iphys_ele, ele_fld,       &
-     &    SNAP_time_IO, MHD_step%rst_step, fem_int1, mk_MHD1,           &
-     &    SGS_MHD_wk, fem_sq, label_sim)
+     &  (MHD_files, FEM_prm1, FEM_SGS%SGS_par, bc_FEM_IO,               &
+     &   MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,    &
+     &   FEM_SGS%FEM_filters, MHD_prop1, ak_MHD, MHD_BC1, FEM_MHD1_BCs, &
+     &   FEM_SGS%Csims, iphys_nod, nod_fld, iphys_ele, ele_fld,         &
+     &   SNAP_time_IO, MHD_step%rst_step, fem_int1, mk_MHD1,            &
+     &   SGS_MHD_wk, fem_sq, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
