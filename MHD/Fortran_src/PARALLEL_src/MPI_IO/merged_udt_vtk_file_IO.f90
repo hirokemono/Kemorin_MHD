@@ -68,17 +68,21 @@
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
+      write(*,*) 'link_nnod_stacks_2_ucd in'
       call link_nnod_stacks_2_ucd(nprocs, node, ele, m_ucd)
 !
       call allocate_merged_ucd_data(node%numnod)
+      write(*,*) 'set_node_double_address in'
       call set_node_double_address                                      &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export)
 !
+      write(*,*) 'update_ele_by_double_address in'
       call update_ele_by_double_address                                 &
      &   (node%istack_internod, m_ucd, ucd)
 !
+      write(*,*) 'parallel_init_hdf5 in'
       if(iflag_format .eq. iflag_sgl_hdf5) then
         call parallel_init_hdf5(ucd, m_ucd)
       end if
