@@ -23,6 +23,7 @@
       use m_MHD_step_parameter
       use m_mesh_data
       use m_sph_trans_arrays_MHD
+      use m_SPH_SGS_structure
       use t_step_parameter
 !
       use FEM_analyzer_sph_MHD
@@ -44,7 +45,6 @@
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
       use m_spheric_parameter
-      use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
       use m_sph_spectr_data
@@ -84,7 +84,8 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(MHD_files1, bc_sph_IO1, iphys_nod1)
+      call SPH_init_sph_snap                                            &
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, SPH_SGS1)
 !
       call calypso_MPI_barrier
 !
@@ -122,8 +123,8 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-        call SPH_analyze_snap                                           &
-     &     (MHD_step1%time_d%i_time_step, MHD_files1, MHD_step1)
+        call SPH_analyze_snap(MHD_step1%time_d%i_time_step,             &
+     &      MHD_files1, MHD_step1, SPH_SGS1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -135,8 +136,8 @@
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
           call SPH_to_FEM_bridge_SGS_MHD                                &
-     &       (SGS_par1, sph1%sph_params, sph1%sph_rtp, trns_WK1,        &
-     &        femmesh1%mesh, iphys_nod1, nod_fld1)
+     &       (SPH_SGS1%SGS_par, sph1%sph_params, sph1%sph_rtp,          &
+     &        trns_WK1, femmesh1%mesh, iphys_nod1, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

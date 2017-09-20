@@ -13,7 +13,6 @@
 !
       use m_control_parameter
       use m_MHD_step_parameter
-      use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
       use m_element_phys_data

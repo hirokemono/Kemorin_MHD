@@ -53,7 +53,6 @@
      &         iphys_ele, ele_fld, MHD_CG, FEM_SGS, SGS_MHD_wk,         &
      &         fem_sq, label_sim)
 !
-      use m_SGS_control_parameter
       use m_control_parameter
       use m_geometry_data_MHD
       use m_physical_property

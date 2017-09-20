@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine SPH_initialize_SGS_MHD(MHD_files, bc_IO,             &
-!!     &          iphys, MHD_step, SGS_par, dynamic_SPH)
+!!     &          iphys, MHD_step, SPH_SGS)
 !!      subroutine SPH_analyze_SGS_MHD                                  &
-!!     &         (i_step, MHD_files, SGS_par, iflag_finish, MHD_step,   &
-!!     &          dynamic_SPH)
+!!     &         (i_step, MHD_files, iflag_finish, MHD_step, SPH_SGS)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -27,10 +26,9 @@
       use m_physical_property
       use m_radial_matrices_sph
       use t_phys_address
-      use t_SGS_control_parameter
       use t_MHD_step_parameter
       use t_MHD_file_parameter
-      use t_sph_filtering
+      use t_SPH_SGS_structure
 !
       implicit none
 !
@@ -41,7 +39,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_initialize_SGS_MHD(MHD_files, bc_IO,               &
-     &          iphys, MHD_step, SGS_par, dynamic_SPH)
+     &          iphys, MHD_step, SPH_SGS)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -84,13 +82,13 @@
       type(phys_address), intent(in) :: iphys
 !
       type(MHD_step_param), intent(inout) :: MHD_step
-      type(SGS_paremeters), intent(inout) :: SGS_par
-      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !
 !
 !   Allocate spectr field data
 !
-      call set_sph_SGS_MHD_sprctr_data(SGS_par%model_p, sph1%sph_rj,    &
+      call set_sph_SGS_MHD_sprctr_data                                  &
+     &   (SPH_SGS%SGS_par%model_p, sph1%sph_rj,                         &
      &    MHD_prop1, ipol, idpdr, itor, rj_fld1)
 !
 ! ---------------------------------
@@ -105,17 +103,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
       call init_sph_transform_SGS_MHD                                   &
-     &   (SGS_par%model_p, MHD_prop1, sph_MHD_bc1,                      &
+     &   (SPH_SGS%SGS_par%model_p, MHD_prop1, sph_MHD_bc1,              &
      &    ipol, idpdr, itor, iphys, sph1, comms_sph1, omega_sph1,       &
      &    trans_p1, trns_WK1, rj_fld1)
 !
 !  -------------------------------
 !
-      if(SGS_par%model_p%iflag_SGS .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-        call init_SGS_model_sph_mhd(SGS_par, sph1, sph_grps1,           &
-     &      MHD_prop1, dynamic_SPH)
-      end if
+      call init_SGS_model_sph_mhd(SPH_SGS%SGS_par, sph1, sph_grps1,     &
+     &    MHD_prop1, SPH_SGS%dynamic)
 !
 !  -------------------------------
 !
@@ -125,7 +120,7 @@
      &    MHD_prop1%ref_param_T, sph_MHD_bc1%sph_bc_B,                  &
      &    ipol, idpdr, itor, rj_fld1, MHD_step)
       call set_initial_Csim_control                                     &
-     &   (MHD_files, MHD_step, SGS_par, dynamic_SPH)
+     &   (MHD_files, MHD_step, SPH_SGS%SGS_par, SPH_SGS%dynamic)
       MHD_step%iflag_initial_step = 0
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
@@ -150,7 +145,8 @@
       call nonlinear_SGS_first(MHD_step%init_d%i_time_step,             &
      &    sph1, comms_sph1, omega_sph1, r_2nd,                          &
      &    MHD_prop1, sph_MHD_bc1, trans_p1, ref_temp1, ref_comp1,       &
-     &    ipol, itor, trns_WK1, SGS_par, dynamic_SPH, rj_fld1)
+     &    ipol, itor, trns_WK1, SPH_SGS%SGS_par, SPH_SGS%dynamic,       &
+     &    rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -166,8 +162,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_SGS_MHD                                    &
-     &         (i_step, MHD_files, SGS_par, iflag_finish, MHD_step,     &
-     &          dynamic_SPH)
+     &         (i_step, MHD_files, iflag_finish, MHD_step, SPH_SGS)
 !
       use m_work_time
       use m_spheric_parameter
@@ -188,11 +183,10 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(SGS_paremeters), intent(in) :: SGS_par
 !
       integer(kind = kint), intent(inout) :: iflag_finish
       type(MHD_step_param), intent(inout) :: MHD_step
-      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !
       integer(kind = kint) :: iflag
       real(kind = kreal) :: total_max
@@ -204,7 +198,7 @@
       call start_elapsed_time(6)
       if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph_SGS_MHD'
       call sel_explicit_sph_SGS_MHD                                     &
-     &   (i_step, MHD_step%time_d%dt, SGS_par%model_p,                  &
+     &   (i_step, MHD_step%time_d%dt, SPH_SGS%SGS_par%model_p,          &
      &    MHD_prop1, sph_MHD_bc1, sph1%sph_rj, ipol, itor, rj_fld1)
 !*
 !*  ----------  time evolution by inplicit method ----------
@@ -219,10 +213,10 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_elapsed_time(8)
-      call nonlinear_w_SGS(i_step, SGS_par, sph1, comms_sph1,           &
+      call nonlinear_w_SGS(i_step, SPH_SGS%SGS_par, sph1, comms_sph1,   &
      &    omega_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,          &
      &    ref_temp1, ref_comp1, ipol, itor,                             &
-     &    trns_WK1, dynamic_SPH, rj_fld1)
+     &    trns_WK1, SPH_SGS%dynamic, rj_fld1)
       call end_elapsed_time(8)
       call end_elapsed_time(5)
 !
@@ -236,9 +230,9 @@
       iflag = lead_field_data_flag(i_step, MHD_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
-        call lead_fields_4_SPH_SGS_MHD(SGS_par%model_p, sph1,           &
+        call lead_fields_4_SPH_SGS_MHD(SPH_SGS%SGS_par%model_p, sph1,   &
      &      comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,        &
-     &      ipol, sph_MHD_mat1, trns_WK1, dynamic_SPH, rj_fld1)
+     &      ipol, sph_MHD_mat1, trns_WK1, SPH_SGS%dynamic, rj_fld1)
       end if
       call end_elapsed_time(9)
 !
@@ -253,7 +247,8 @@
      &     'output_sph_SGS_MHD_rst_control'
         call output_sph_SGS_MHD_rst_control                             &
      &     (MHD_files, MHD_step%time_d, rj_fld1, MHD_step%rst_step,     &
-     &      SGS_par%i_step_sgs_coefs, SGS_par%model_p, dynamic_SPH)
+     &      SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,  &
+     &      SPH_SGS%dynamic)
       end if
 !
       total_time = MPI_WTIME() - total_start
@@ -265,7 +260,8 @@
         iflag_finish = 1
         call output_sph_SGS_MHD_rst_control                             &
      &     (MHD_files, MHD_step%time_d, rj_fld1, MHD_step%rst_step,     &
-     &      SGS_par%i_step_sgs_coefs, SGS_par%model_p, dynamic_SPH)
+     &      SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,  &
+     &      SPH_SGS%dynamic)
       end if
       call end_elapsed_time(10)
 !

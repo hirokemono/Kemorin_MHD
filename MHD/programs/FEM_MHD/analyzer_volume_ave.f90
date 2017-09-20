@@ -30,7 +30,6 @@
 !
       use m_control_parameter
       use m_bc_data_list
-      use m_SGS_control_parameter
       use m_node_phys_data
       use m_element_phys_data
       use m_boundary_field_IO

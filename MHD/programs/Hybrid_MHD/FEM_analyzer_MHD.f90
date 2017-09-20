@@ -33,7 +33,6 @@
       use m_work_time
       use m_machine_parameter
 !
-      use m_SGS_control_parameter
       use m_physical_property
       use m_finite_element_matrix
       use t_mesh_data

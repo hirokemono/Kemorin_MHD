@@ -22,6 +22,7 @@
       use m_sph_trans_arrays_MHD
       use m_physical_property
       use m_bc_data_list
+      use m_SPH_SGS_structure
       use t_field_on_circle
       use t_spheric_parameter
       use t_file_IO_parameter
@@ -50,7 +51,6 @@
       use t_const_spherical_grid
       use m_mesh_data
       use m_ctl_data_sph_SGS_MHD
-      use m_SGS_control_parameter
       use m_node_phys_data
       use m_spheric_parameter
       use m_sph_spectr_data
@@ -81,8 +81,8 @@
      &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%smonitor_ctl,                    &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
-     &    MHD_files1, bc_sph_IO1, pwr1, SGS_par1,                       &
-     &    dynamic_SPH1%sph_filters, flex_p1, MHD_step1, MHD_prop1,      &
+     &    MHD_files1, bc_sph_IO1, pwr1, SPH_SGS1%SGS_par,               &
+     &    SPH_SGS1%dynamic, flex_p1, MHD_step1, MHD_prop1,              &
      &    MHD_BC1, trns_WK1%WK_sph, gen_sph_c)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
@@ -102,7 +102,7 @@
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle                                     &
-     &   (MHD_files1, bc_sph_IO1, femmesh1, iphys_nod1, cdat1)
+     &  (MHD_files1, bc_sph_IO1, femmesh1, iphys_nod1, SPH_SGS1, cdat1)
       call calypso_MPI_barrier
 !
       call end_elapsed_time(2)
@@ -134,7 +134,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
         call SPH_analyze_pick_circle                                    &
-     &     (MHD_step1%time_d%i_time_step, MHD_files1, cdat1)
+     &     (MHD_step1%time_d%i_time_step, MHD_files1, SPH_SGS1, cdat1)
 !*
 !*  -----------  exit loop --------------
 !*

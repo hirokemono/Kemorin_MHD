@@ -42,7 +42,6 @@
       use m_machine_parameter
       use m_work_time
       use m_control_parameter
-      use m_SGS_control_parameter
       use m_bc_data_velo
       use t_time_data
       use t_mesh_data
@@ -79,7 +78,6 @@
       use m_physical_property
       use m_bc_data_list
       use m_finite_element_matrix
-      use m_SGS_control_parameter
       use t_boundary_field_IO
 !
       use initialize_4_snapshot

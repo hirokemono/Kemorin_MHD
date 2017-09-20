@@ -19,7 +19,7 @@
       use m_machine_parameter
       use m_work_time
       use m_MHD_step_parameter
-      use m_SGS_control_parameter
+      use m_SPH_SGS_structure
       use m_mesh_data
       use m_node_phys_data
       use m_jacobians_VIZ
@@ -73,8 +73,8 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
       call input_control_SPH_dynamo(MHD_files1, bc_sph_IO1,             &
      &    MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
-     &    pwr1, SGS_par1, dynamic_SPH1, flex_p1, MHD_step1,             &
-     &    MHD_prop1, MHD_BC1, trns_WK1, femmesh1, ele_mesh1)
+     &    pwr1, SPH_SGS1, flex_p1, MHD_step1, MHD_prop1, MHD_BC1,       &
+     &    trns_WK1, femmesh1, ele_mesh1)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)

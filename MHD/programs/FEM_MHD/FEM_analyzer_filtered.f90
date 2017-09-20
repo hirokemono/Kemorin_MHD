@@ -23,7 +23,6 @@
 !
       use m_precision
       use m_work_time
-      use m_SGS_control_parameter
       use t_time_data
       use t_mesh_data
       use t_phys_data

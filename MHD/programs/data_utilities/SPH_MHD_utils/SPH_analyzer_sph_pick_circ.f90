@@ -15,20 +15,21 @@
 !!
 !!@verbatim
 !!      subroutine SPH_init_sph_pick_circle                             &
-!!     &         (MHD_files, bc_IO, femmesh, iphys, cdat)
+!!     &         (MHD_files, bc_IO, femmesh, iphys, SPH_SGS, cdat)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(mesh_data), intent(in) :: femmesh
 !!        type(phys_address), intent(in) :: iphys
-!!      subroutine SPH_analyze_pick_circle(i_step, MHD_files, cdat)
+!!      subroutine SPH_analyze_pick_circle                              &
+!!     &         (i_step, MHD_files, SPH_SGS, cdat)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!      subroutine SPH_finalize_pick_circle
 !!@endverbatim
 !
       module SPH_analyzer_sph_pick_circ
 !
       use m_precision
-      use m_SGS_control_parameter
       use m_MHD_step_parameter
       use m_physical_property
       use m_boundary_data_sph_MHD
@@ -36,7 +37,7 @@
       use t_mesh_data
       use t_phys_address
       use t_MHD_file_parameter
-      use t_sph_filtering
+      use t_SPH_SGS_structure
       use t_field_on_circle
 !
       implicit none
@@ -48,7 +49,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_init_sph_pick_circle                               &
-     &         (MHD_files, bc_IO, femmesh, iphys, cdat)
+     &         (MHD_files, bc_IO, femmesh, iphys, SPH_SGS, cdat)
 !
       use m_constants
       use m_array_for_send_recv
@@ -91,11 +92,13 @@
       type(mesh_data), intent(in) :: femmesh
       type(phys_address), intent(in) :: iphys
 !
+      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(circle_fld_maker), intent(inout) :: cdat
 !
 !   Allocate spectr field data
 !
-      call set_sph_SGS_MHD_sprctr_data(SGS_par1%model_p, sph1%sph_rj,   &
+      call set_sph_SGS_MHD_sprctr_data                                  &
+     &   (SPH_SGS%SGS_par%model_p, sph1%sph_rj,                         &
      &    MHD_prop1, ipol, idpdr, itor, rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
@@ -120,17 +123,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
       call init_sph_transform_SGS_MHD                                   &
-     &   (SGS_par1%model_p, MHD_prop1, sph_MHD_bc1,                     &
+     &   (SPH_SGS%SGS_par%model_p, MHD_prop1, sph_MHD_bc1,              &
      &    ipol, idpdr, itor, iphys, sph1, comms_sph1, omega_sph1,       &
      &    trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
 !
-      if(SGS_par1%model_p%iflag_SGS .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-        call init_SGS_model_sph_mhd(SGS_par1, sph1, sph_grps1,          &
-     &      MHD_prop1, dynamic_SPH1)
-      end if
+      call init_SGS_model_sph_mhd(SPH_SGS%SGS_par, sph1, sph_grps1,     &
+     &    MHD_prop1, SPH_SGS%dynamic)
 !
 !  -------------------------------
 !
@@ -154,7 +154,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_pick_circle(i_step, MHD_files, cdat)
+      subroutine SPH_analyze_pick_circle                                &
+     &         (i_step, MHD_files, SPH_SGS, cdat)
 !
       use m_work_time
       use m_spheric_parameter
@@ -175,6 +176,7 @@
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
+      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(circle_fld_maker), intent(inout) :: cdat
 !
       integer(kind = kint) :: iflag
@@ -197,10 +199,10 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_elapsed_time(8)
-      call nonlinear_w_SGS(i_step, SGS_par1, sph1, comms_sph1,          &
+      call nonlinear_w_SGS(i_step, SPH_SGS%SGS_par, sph1, comms_sph1,   &
      &    omega_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,          &
      &    ref_temp1, ref_comp1, ipol, itor,                             &
-     &    trns_WK1, dynamic_SPH1, rj_fld1)
+     &    trns_WK1, SPH_SGS%dynamic, rj_fld1)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -213,9 +215,9 @@
       iflag = lead_field_data_flag(i_step, MHD_step1)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
-        call lead_fields_4_SPH_SGS_MHD(SGS_par1%model_p, sph1,          &
+        call lead_fields_4_SPH_SGS_MHD(SPH_SGS%SGS_par%model_p, sph1,   &
      &      comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,        &
-     &      ipol, sph_MHD_mat1, trns_WK1, dynamic_SPH1, rj_fld1)
+     &      ipol, sph_MHD_mat1, trns_WK1, SPH_SGS%dynamic, rj_fld1)
       end if
       call end_elapsed_time(9)
 !

@@ -81,7 +81,7 @@
      &    iphys_nod1, nod_fld1, range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
-      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
+      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap_psf'
       call SPH_init_sph_snap_psf(MHD_files1, bc_sph_IO1, iphys_nod1)
 !
 !        Initialize visualization

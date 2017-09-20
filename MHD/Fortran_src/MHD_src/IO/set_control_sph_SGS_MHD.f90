@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, model_ctl,   &
 !!     &         smctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, sph_gen,  &
-!!     &         rj_fld, MHD_files, bc_IO, pwr, SGS_par, sph_filters,   &
+!!     &         rj_fld, MHD_files, bc_IO, pwr, SGS_par, dynamic_SPH,   &
 !!     &         flex_p, MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
@@ -23,7 +23,7 @@
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
-!!        type(sph_filters_type), intent(inout) :: sph_filters(1)
+!!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -65,7 +65,7 @@
 !
       subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, model_ctl,     &
      &         smctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, sph_gen,    &
-     &         rj_fld, MHD_files, bc_IO, pwr, SGS_par, sph_filters,     &
+     &         rj_fld, MHD_files, bc_IO, pwr, SGS_par, dynamic_SPH,     &
      &         flex_p, MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
       use sph_mhd_rms_IO
@@ -74,7 +74,7 @@
       use t_spheric_parameter
       use t_phys_data
       use t_rms_4_sph_spectr
-      use t_sph_filtering_data
+      use t_sph_filtering
       use t_sph_trans_arrays_MHD
       use t_const_spherical_grid
       use t_sph_boundary_input_data
@@ -110,7 +110,7 @@
       type(boundary_spectra), intent(inout) :: bc_IO
       type(sph_mean_squares), intent(inout) :: pwr
       type(SGS_paremeters), intent(inout) :: SGS_par
-      type(sph_filters_type), intent(inout) :: sph_filters(1)
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -129,9 +129,10 @@
      &    SGS_par%i_step_sgs_coefs)
 !
       if(SGS_par%model_p%iflag_SGS .ne. id_SGS_none) then
-        call set_control_SPH_SGS                                        &
+        call set_control_SPH_SGS_1filter                                &
      &     (model_ctl%sgs_ctl%num_sph_filter_ctl,                       &
-     &      model_ctl%sgs_ctl%sph_filter_ctl(1), sph_filters(1))
+     &      model_ctl%sgs_ctl%sph_filter_ctl(1),                        &
+     &      dynamic_SPH%sph_filters(1))
       end if
       if(model_ctl%sgs_ctl%num_sph_filter_ctl .gt. 0) then
         call dealloc_sph_filter_ctl(model_ctl%sgs_ctl)

@@ -62,6 +62,8 @@
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
+      if(SGS_par%model_p%iflag_SGS .eq. 0) return
+!
       call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj,            &
      &    sph_grps, dynamic_SPH%sph_filters)
 !

@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,  &
 !!     &          sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,       &
-!!     &          SGS_par, dynamic_SPH, flex_p, MHD_step, MHD_prop,     &
-!!     &          MHD_BC, WK, femmesh, ele_mesh)
+!!     &          SPH_SGS, flex_p, MHD_step, MHD_prop, MHD_BC, WK,      &
+!!     &          femmesh, ele_mesh)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
@@ -21,8 +21,7 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
-!!        type(SGS_paremeters), intent(inout) :: SGS_par
-!!        type(sph_filters_type), intent(inout) :: sph_filters(1)
+!!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
@@ -53,7 +52,7 @@
       use t_sph_trans_arrays_MHD
       use t_sph_boundary_input_data
       use t_bc_data_list
-      use t_sph_filtering
+      use t_SPH_SGS_structure
       use t_select_make_SPH_mesh
       use t_flex_delta_t_data
 !
@@ -72,12 +71,11 @@
 !
       subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,    &
      &          sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,         &
-     &          SGS_par, dynamic_SPH, flex_p, MHD_step, MHD_prop,       &
-     &          MHD_BC, WK, femmesh, ele_mesh)
+     &          SPH_SGS, flex_p, MHD_step, MHD_prop, MHD_BC, WK,        &
+     &          femmesh, ele_mesh)
 !
       use m_error_IDs
 !
-      use t_SGS_control_parameter
       use t_ctl_data_SGS_MHD
       use set_control_sph_SGS_MHD
       use sph_file_IO_select
@@ -93,8 +91,7 @@
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
       type(sph_mean_squares), intent(inout) :: pwr
-      type(SGS_paremeters), intent(inout) :: SGS_par
-      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -110,7 +107,7 @@
      &    MHD_ctl%model_ctl, MHD_ctl%smctl_ctl, MHD_ctl%smonitor_ctl,   &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_maker2%sph_tmp,       &
      &    rj_fld, MHD_files, bc_IO, pwr,                                &
-     &    SGS_par, dynamic_SPH%sph_filters, flex_p, MHD_step,           &
+     &    SPH_SGS%SGS_par, SPH_SGS%dynamic, flex_p, MHD_step,           &
      &    MHD_prop, MHD_BC, WK%WK_sph, sph_maker2%gen_sph)
 !
       call s_set_control_4_SPH_to_FEM                                   &

@@ -27,7 +27,6 @@
 !
       use m_control_parameter
       use m_bc_data_list
-      use m_SGS_control_parameter
       use m_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data

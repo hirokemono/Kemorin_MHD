@@ -52,7 +52,6 @@
       use m_machine_parameter
 !
       use m_control_parameter
-      use m_SGS_control_parameter
       use m_finite_element_matrix
       use m_physical_property
       use t_mesh_data

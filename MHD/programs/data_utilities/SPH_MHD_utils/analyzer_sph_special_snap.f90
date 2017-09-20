@@ -20,10 +20,10 @@
       use m_machine_parameter
       use m_work_time
       use m_MHD_step_parameter
-      use m_SGS_control_parameter
+      use m_SPH_SGS_structure
       use m_physical_property
       use t_mesh_data
-      use t_sph_filtering_data
+      use t_SPH_SGS_structure
       use t_step_parameter
       use t_MHD_file_parameter
 !
@@ -71,8 +71,8 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_special_snap'
-        call SPH_analyze_special_snap                                   &
-     &     (MHD_step1%time_d%i_time_step, MHD_files1, MHD_step1)
+        call SPH_analyze_special_snap(MHD_step1%time_d%i_time_step,     &
+     &      MHD_files1, MHD_step1, SPH_SGS1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -132,7 +132,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_special_snap(i_step, MHD_files, MHD_step)
+      subroutine SPH_analyze_special_snap                               &
+     &         (i_step, MHD_files, MHD_step, SPH_SGS)
 !
       use m_work_time
       use m_spheric_parameter
@@ -156,13 +157,16 @@
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+!
       integer(kind = kint) :: iflag
 !
 !
       call read_alloc_sph_rst_SGS_snap                                  &
      &   (i_step, MHD_files%org_rj_file_IO, MHD_files, sph1%sph_rj,     &
      &    ipol, rj_fld1, MHD_step%rst_step, MHD_step1%init_d,           &
-     &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p, dynamic_SPH1)
+     &    SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,    &
+     &    SPH_SGS%dynamic)
 
       call copy_time_data(MHD_step1%init_d, MHD_step1%time_d)
 !
@@ -183,10 +187,10 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_elapsed_time(8)
-      call nonlinear_w_SGS(i_step, SGS_par1, sph1, comms_sph1,          &
+      call nonlinear_w_SGS(i_step, SPH_SGS%SGS_par, sph1, comms_sph1,   &
      &    omega_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,          &
      &    ref_temp1, ref_comp1, ipol, itor,                             &
-     &    trns_WK1, dynamic_SPH1, rj_fld1)
+     &    trns_WK1, SPH_SGS%dynamic, rj_fld1)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -199,7 +203,7 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd(i_step, sph1, comms_sph1,      &
-     &    omega_sph1, r_2nd, ipol, trns_WK1, dynamic_SPH1,              &
+     &    omega_sph1, r_2nd, ipol, trns_WK1, SPH_SGS%dynamic,           &
      &    sph_MHD_mat1, rj_fld1, MHD_step)
       call end_elapsed_time(9)
 !
@@ -348,7 +352,7 @@
 !
       iflag = lead_field_data_flag(i_step, MHD_step)
       if(iflag .eq. 0) then
-        call lead_fields_4_SPH_SGS_MHD(SGS_par1%model_p, sph,           &
+        call lead_fields_4_SPH_SGS_MHD(SPH_SGS1%SGS_par%model_p, sph,   &
      &      comms_sph, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,         &
      &      ipol, sph_MHD_mat, trns_WK, dynamic_SPH, rj_fld)
       end if

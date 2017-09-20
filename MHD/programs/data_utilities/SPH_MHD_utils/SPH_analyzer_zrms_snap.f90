@@ -12,9 +12,11 @@
 !>@brief  main routines to evaluate zonal root mean square field
 !!
 !!@verbatim
-!!      subroutine SPH_analyze_zRMS_snap(i_step, MHD_files, MHD_step)
+!!      subroutine SPH_analyze_zRMS_snap                                &
+!!     &          (i_step, MHD_files, MHD_step, SPH_SGS)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!@endverbatim
 !!
 !!@param i_step  time step number
@@ -28,6 +30,7 @@
       use m_physical_property
       use m_radial_matrices_sph
       use t_MHD_file_parameter
+      use t_SPH_SGS_structure
 !
       implicit none
 !
@@ -37,10 +40,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zRMS_snap(i_step, MHD_files, MHD_step)
+      subroutine SPH_analyze_zRMS_snap                                  &
+     &          (i_step, MHD_files, MHD_step, SPH_SGS)
 !
       use m_work_time
-      use m_SGS_control_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_fdm_coefs
@@ -58,6 +61,7 @@
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !
       integer(kind = kint) :: iflag
 !
@@ -65,7 +69,8 @@
       call read_alloc_sph_rst_SGS_snap                                  &
      &   (i_step, MHD_files%org_rj_file_IO, MHD_files, sph1%sph_rj,     &
      &    ipol, rj_fld1, MHD_step%rst_step, MHD_step%init_d,            &
-     &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p, dynamic_SPH1)
+     &    SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,    &
+     &    SPH_SGS%dynamic)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
@@ -81,10 +86,10 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_elapsed_time(8)
-      call nonlinear_w_SGS(i_step, SGS_par1, sph1, comms_sph1,          &
+      call nonlinear_w_SGS(i_step, SPH_SGS%SGS_par, sph1, comms_sph1,   &
      &    omega_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,          &
      &    ref_temp1, ref_comp1, ipol, itor,                             &
-     &    trns_WK1, dynamic_SPH1, rj_fld1)
+     &    trns_WK1, SPH_SGS%dynamic, rj_fld1)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -97,9 +102,9 @@
       iflag = lead_field_data_flag(i_step, MHD_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
-        call lead_fields_4_SPH_SGS_MHD(SGS_par1%model_p, sph1,          &
+        call lead_fields_4_SPH_SGS_MHD(SPH_SGS%SGS_par%model_p, sph1,   &
      &      comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,        &
-     &      ipol, sph_MHD_mat1, trns_WK1, dynamic_SPH1, rj_fld1)
+     &      ipol, sph_MHD_mat1, trns_WK1, SPH_SGS%dynamic, rj_fld1)
       end if
       call end_elapsed_time(9)
 !
