@@ -146,12 +146,8 @@
      &    iphys_nod, iphys_ele, fem_int1, FEM_filters, mk_MHD1,         &
      &    SGS_MHD_wk, nod_fld, ele_fld, Csims_FEM_MHD1)
 !
-      if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 'copy_model_coef_2_previous'
-        call copy_model_coef_2_previous                                 &
-     &     (SGS_par1%commute_p, SGS_MHD_wk%FEM_SGS_wk)
-!
-      end if
+      call copy_model_coef_2_previous                                   &
+     &   (SGS_par1%model_p, SGS_par1%commute_p, SGS_MHD_wk%FEM_SGS_wk)
 !
 !   construct matrix for Poisson and diffusion terms
 !
@@ -160,23 +156,20 @@
      &   (femmesh, MHD_mesh1, MHD_prop1, fem_int1, MHD_CG%MGCG_WK,      &
      &    MHD1_mat_tbls, MHD_CG%MHD_mat, MHD_CG%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
-     &    SGS_par1%model_p, SGS_par1%commute_p, femmesh, ele_mesh,      &
+      call set_aiccg_matrices                                           &
+     &   (MHD_step%time_d%dt, FEM_prm1, SGS_par1, femmesh, ele_mesh,    &
      &    MHD_mesh1, FEM_MHD1_BCs, MHD_prop1, fem_int1,                 &
      &    FEM_filters%FEM_elens, Csims_FEM_MHD1, MHD1_mat_tbls,         &
      &    mk_MHD1, SGS_MHD_wk%rhs_mat, MHD_CG)
 !
 !   time evolution loop start!
-!
-      if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_FEM_model_coefficients'
-        call cal_FEM_model_coefficients                                 &
-     &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
-     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                    &
-     &      FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                &
-     &      iphys_nod, iphys_ele, ele_fld, fem_int1, FEM_filters,       &
-     &      mk_MHD1, SGS_MHD_wk, nod_fld, Csims_FEM_MHD1)
-      end if
+!  
+      call cal_FEM_model_coefficients                                   &
+     &   (MHD_step%time_d, FEM_prm1, SGS_par1,                          &
+     &    femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                      &
+     &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
+     &    iphys_nod, iphys_ele, ele_fld, fem_int1, FEM_filters,         &
+     &    mk_MHD1, SGS_MHD_wk, nod_fld, Csims_FEM_MHD1)
 !
       iflag = lead_field_data_flag(flex_p1%istep_max_dt, MHD_step)
       if(iflag .eq. 0) then
@@ -279,15 +272,12 @@
 !
 !     ----- Evaluate model coefficients
 !
-      if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_FEM_model_coefficients'
-        call cal_FEM_model_coefficients                                 &
-     &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
-     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                    &
-     &      FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                &
-     &      iphys_nod, iphys_ele, ele_fld, fem_int1, FEM_filters,       &
-     &      mk_MHD1, SGS_MHD_wk, nod_fld, Csims_FEM_MHD1)
-      end if
+      call cal_FEM_model_coefficients                                   &
+     &   (MHD_step%time_d, FEM_prm1, SGS_par1,                          &
+     &    femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                      &
+     &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
+     &    iphys_nod, iphys_ele, ele_fld, fem_int1, FEM_filters,         &
+     &    mk_MHD1, SGS_MHD_wk, nod_fld, Csims_FEM_MHD1)
 !
 !     ---------------------
 !
@@ -404,13 +394,8 @@
 !
 !     --------------------- 
 !
-      if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 's_chenge_step_4_dynamic'
-        call s_chenge_step_4_dynamic                                    &
-     &     (my_rank, MHD_step%time_d%i_time_step, SGS_par1%model_p,     &
-     &      SGS_par1%commute_p, SGS_par1%i_step_sgs_coefs,              &
-     &      SGS_MHD_wk%FEM_SGS_wk)
-      end if
+      call s_chenge_step_4_dynamic                                      &
+     &   (my_rank, MHD_step%time_d%i_time_step, SGS_par1, SGS_MHD_wk)
 !
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'

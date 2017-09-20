@@ -11,13 +11,12 @@
 !!     &          MHD_mesh, FEM_MHD_BCs, MHD_prop, fem_int, FEM_elens,  &
 !!     &          Csims_FEM_MHD, MHD_mat_tbls, flex_p, mk_MHD,          &
 !!     &          rhs_mat, MHD_CG)
-!!      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,&
+!!      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_par,             &
 !!     &          femmesh, ele_mesh, MHD_mesh, FEM_MHD_BCs, MHD_prop,   &
 !!     &          fem_int, FEM_elens, Csims_FEM_MHD, MHD_mat_tbls,      &
 !!     &          mk_MHD, rhs_mat, MHD_CG)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) ::   femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -158,8 +157,8 @@
 !
       if (iflag .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
-        call set_aiccg_matrices(time_d%dt, FEM_prm,                     &
-     &      SGS_par%model_p, SGS_par%commute_p, femmesh, ele_mesh,      &
+        call set_aiccg_matrices                                         &
+     &     (time_d%dt, FEM_prm, SGS_par, femmesh, ele_mesh,             &
      &      MHD_mesh, FEM_MHD_BCs, MHD_prop, fem_int, FEM_elens,        &
      &      Csims_FEM_MHD, MHD_mat_tbls, mk_MHD, rhs_mat, MHD_CG)
         flex_p%iflag_flex_step_changed = 0
@@ -169,7 +168,7 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,  &
+      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_par,               &
      &          femmesh, ele_mesh, MHD_mesh, FEM_MHD_BCs, MHD_prop,     &
      &          fem_int, FEM_elens, Csims_FEM_MHD, MHD_mat_tbls,        &
      &          mk_MHD, rhs_mat, MHD_CG)
@@ -182,8 +181,7 @@
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_data), intent(in) ::   femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
@@ -199,8 +197,8 @@
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !
 !
-      call const_MHD_aiccg_matrices                                     &
-     &   (izero, dt, FEM_prm, SGS_param, cmt_param, femmesh, ele_mesh,  &
+      call const_MHD_aiccg_matrices(izero, dt, FEM_prm,                 &
+     &    SGS_par%model_p, SGS_par%commute_p, femmesh, ele_mesh,        &
      &    MHD_mesh, FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,          &
      &    MHD_prop, MHD_CG%ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD,   &
      &    MHD_mat_tbls, mk_MHD, rhs_mat, MHD_CG%MHD_mat)
@@ -209,7 +207,7 @@
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         call const_MGCG_MHD_matrices(MHD_prop%iflag_all_scheme, dt,     &
-     &      FEM_prm, SGS_param, cmt_param, Csims_FEM_MHD,               &
+     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p, Csims_FEM_MHD, &
      &      MHD_prop, MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM,                  &
      &      MHD_CG%MGCG_MHD_FEM, MHD_CG%MHD_mat)
       end if

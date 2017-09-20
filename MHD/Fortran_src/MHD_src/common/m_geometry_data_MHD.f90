@@ -17,7 +17,6 @@
 !
 !>       Strucutre for MHD mesh data
       type(mesh_data_MHD), save :: MHD_mesh1
-!MHD_mesh1%fluid
 !
 !------------------------------------------------------------------
 !

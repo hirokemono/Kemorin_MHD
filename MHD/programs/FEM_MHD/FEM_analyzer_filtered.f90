@@ -153,15 +153,12 @@
 !
 !     ----- Evaluate model coefficients
 !
-      if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_FEM_model_coefficients'
-        call cal_FEM_model_coefficients                                 &
-     &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
-     &      femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                    &
-     &      FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                &
-     &      iphys_nod, iphys_ele, ele_fld, fem_int1, FEM_filters,       &
-     &      mk_MHD1, SGS_MHD_wk, nod_fld, Csims_FEM_MHD1)
-      end if
+      call cal_FEM_model_coefficients                                   &
+     &   (MHD_step%time_d, FEM_prm1, SGS_par1,                          &
+     &    femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                      &
+     &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
+     &    iphys_nod, iphys_ele, ele_fld, fem_int1, FEM_filters,         &
+     &    mk_MHD1, SGS_MHD_wk, nod_fld, Csims_FEM_MHD1)
 !
 !     ========  Data output
 !

@@ -208,6 +208,8 @@
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
 !
+      if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
+      if(iflag_debug.eq.1) write(*,*) 'cal_FEM_model_coefficients'
       call s_cal_model_coefficients(time_d, FEM_prm, SGS_par,           &
      &    femmesh, ele_mesh, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,     &
      &    iphys, iphys_ele, Csims_FEM_MHD%ifld_sgs,                     &

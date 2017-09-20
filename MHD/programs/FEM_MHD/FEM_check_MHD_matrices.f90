@@ -97,8 +97,8 @@
      &   (femmesh, MHD_mesh1, MHD_prop1, fem_int1, MHD_CG%MGCG_WK,      &
      &    MHD1_mat_tbls, MHD_CG%MHD_mat, MHD_CG%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
-     &    SGS_par1%model_p, SGS_par1%commute_p, femmesh, ele_mesh,      &
+      call set_aiccg_matrices                                           &
+     &   (MHD_step%time_d%dt, FEM_prm1, SGS_par1, femmesh, ele_mesh,    &
      &    MHD_mesh1, FEM_MHD1_BCs, MHD_prop1, fem_int1,                 &
      &    FEM_filters1%FEM_elens, Csims_FEM_MHD1, MHD1_mat_tbls,        &
      &    mk_MHD1, SGS_MHD_wk1%rhs_mat, MHD_CG)
