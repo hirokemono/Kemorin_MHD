@@ -7,7 +7,7 @@
 !!     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data, &
 !!     &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters,&
 !!     &         MHD_prop, FEM_MHD_BCs, Csims_FEM_MHD, iphys, nod_fld,  &
-!!     &         fem_int, mk_MHD, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
+!!     &         fem_int, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -27,7 +27,6 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(finite_element_integration), intent(inout) :: fem_int
-!!        type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !
@@ -71,7 +70,7 @@
      &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data,   &
      &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters,  &
      &         MHD_prop, FEM_MHD_BCs, Csims_FEM_MHD, iphys, nod_fld,    &
-     &         fem_int, mk_MHD, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
+     &         fem_int, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_boundary_condition_IDs
       use m_flags_4_solvers
@@ -133,7 +132,6 @@
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(finite_element_integration), intent(inout) :: fem_int
-      type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       character(len=kchara), intent(inout)   :: label_sim
@@ -178,7 +176,7 @@
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(SGS_par, mesh, MHD_prop,                      &
      &    iphys, nod_fld, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,     &
-     &    Csims_FEM_MHD%iphys_elediff, mk_MHD,                          &
+     &    Csims_FEM_MHD%iphys_elediff, SGS_MHD_wk%mk_MHD,               &
      &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                    &
      &    fem_int, fem_sq, label_sim)
 !
@@ -291,7 +289,7 @@
       call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
      &    mesh, MHD_mesh, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    SGS_MHD_wk%rhs_mat%fem_wk, SGS_MHD_wk%rhs_mat%f_l,            &
-     &    fem_int%m_lump, mk_MHD)
+     &    fem_int%m_lump, SGS_MHD_wk%mk_MHD)
 !
 !     ---------------------
 !

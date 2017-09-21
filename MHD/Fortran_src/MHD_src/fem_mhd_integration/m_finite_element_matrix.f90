@@ -19,7 +19,4 @@
 !>      Stracture for FEM assembling
       type(finite_element_integration), save :: fem_int1
 !
-!>      Structure of mass matrices for FEM_MHD
-      type(lumped_mass_mat_layerd), save :: mk_MHD1
-!
       end module m_finite_element_matrix

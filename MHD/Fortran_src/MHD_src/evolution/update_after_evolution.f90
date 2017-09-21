@@ -10,23 +10,23 @@
 !!      subroutine FEM_fields_evolution                                 &
 !!     &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,&
 !!     &          MHD_prop, nod_bcs, surf_bcs, iphys, ak_MHD, fem_int,  &
-!!     &          FEM_filters, mk_MHD, s_package, MGCG_WK, SGS_MHD_wk,  &
+!!     &          FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,          &
 !!     &          nod_fld, Csims_FEM_MHD, fem_sq)
 !!      subroutine update_FEM_fields(time_d, FEM_prm, SGS_par,          &
 !!     &          femmesh, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,       &
-!!     &          iphys, fem_int, FEM_filters, mk_MHD, SGS_MHD_wk,      &
+!!     &          iphys, fem_int, FEM_filters, SGS_MHD_wk,              &
 !!     &          nod_fld, Csims_FEM_MHD)
 !!
 !!      subroutine cal_FEM_model_coefficients(time_d, FEM_prm, SGS_par, &
 !!     &          femmesh, ele_mesh, MHD_mesh, MHD_prop,                &
 !!     &          nod_bcs, surf_bcs, iphys, fem_int, FEM_filters,       &
-!!     &          mk_MHD, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
+!!     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !!
 !!      subroutine fields_evolution_4_FEM_SPH                           &
 !!     &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, fluid,   &
 !!     &          MHD_prop, nod_bcs, surf_bcs, iphys, ak_MHD,           &
-!!     &          fem_int, FEM_filters, mk_MHD, s_package, MGCG_WK,     &
-!!     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD, fem_sq)
+!!     &          fem_int, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk, &
+!!     &          nod_fld, Csims_FEM_MHD, fem_sq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -41,7 +41,6 @@
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(MHD_matrices_pack), intent(in) :: s_package
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -93,7 +92,7 @@
       subroutine FEM_fields_evolution                                   &
      &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,  &
      &          MHD_prop, nod_bcs, surf_bcs, iphys, ak_MHD, fem_int,    &
-     &          FEM_filters, mk_MHD, s_package, MGCG_WK, SGS_MHD_wk,    &
+     &          FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,            &
      &          nod_fld, Csims_FEM_MHD, fem_sq)
 !
       use FEM_MHD_evolution
@@ -111,7 +110,6 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
       type(MHD_matrices_pack), intent(in) :: s_package
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
@@ -126,7 +124,7 @@
      &    Csims_FEM_MHD%ifld_sgs, Csims_FEM_MHD%icomp_sgs,              &
      &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,            &
      &    Csims_FEM_MHD%iphys_elediff, ak_MHD, fem_int, FEM_filters,    &
-     &    mk_MHD, s_package, MGCG_WK, SGS_MHD_wk, nod_fld,              &
+     &    s_package, MGCG_WK, SGS_MHD_wk, nod_fld,                      &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    Csims_FEM_MHD%diff_coefs, fem_sq)
 !
@@ -136,7 +134,7 @@
 !
       subroutine update_FEM_fields(time_d, FEM_prm, SGS_par,            &
      &          femmesh, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,         &
-     &          iphys, fem_int, FEM_filters, mk_MHD, SGS_MHD_wk,        &
+     &          iphys, fem_int, FEM_filters, SGS_MHD_wk,                &
      &          nod_fld, Csims_FEM_MHD)
 !
       use FEM_MHD_evolution
@@ -152,7 +150,6 @@
       type(phys_address), intent(in) :: iphys
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
@@ -162,7 +159,7 @@
       call update_fields(time_d, FEM_prm, SGS_par,                      &
      &    femmesh, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,               &
      &    iphys, Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,     &
-     &    Csims_FEM_MHD%iphys_elediff, fem_int, FEM_filters, mk_MHD,    &
+     &    Csims_FEM_MHD%iphys_elediff, fem_int, FEM_filters,            &
      &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs)
 !
       end subroutine update_FEM_fields
@@ -173,7 +170,7 @@
       subroutine cal_FEM_model_coefficients(time_d, FEM_prm, SGS_par,   &
      &          femmesh, ele_mesh, MHD_mesh, MHD_prop,                  &
      &          nod_bcs, surf_bcs, iphys, fem_int, FEM_filters,         &
-     &          mk_MHD, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
+     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !
       use cal_model_coefficients
 !
@@ -189,7 +186,6 @@
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
@@ -203,7 +199,7 @@
      &    nod_bcs, surf_bcs, iphys, Csims_FEM_MHD%ifld_sgs,             &
      &    Csims_FEM_MHD%icomp_sgs, Csims_FEM_MHD%ifld_diff,             &
      &    Csims_FEM_MHD%icomp_diff, Csims_FEM_MHD%iphys_elediff,        &
-     &    fem_int, FEM_filters, mk_MHD, SGS_MHD_wk, nod_fld,            &
+     &    fem_int, FEM_filters, SGS_MHD_wk, nod_fld,                    &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    Csims_FEM_MHD%diff_coefs)
 !
@@ -215,8 +211,8 @@
       subroutine fields_evolution_4_FEM_SPH                             &
      &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, fluid,     &
      &          MHD_prop, nod_bcs, surf_bcs, iphys, ak_MHD,             &
-     &          fem_int, FEM_filters, mk_MHD, s_package, MGCG_WK,       &
-     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD, fem_sq)
+     &          fem_int, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,   &
+     &          nod_fld, Csims_FEM_MHD, fem_sq)
 !
       use FEM_MHD_evolution
 !
@@ -233,7 +229,6 @@
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
       type(MHD_matrices_pack), intent(in) :: s_package
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
@@ -248,7 +243,7 @@
      &    nod_bcs, surf_bcs, iphys, Csims_FEM_MHD%ifld_sgs,             &
      &    Csims_FEM_MHD%icomp_sgs, Csims_FEM_MHD%ifld_diff,             &
      &    Csims_FEM_MHD%icomp_diff, Csims_FEM_MHD%iphys_elediff,        &
-     &    ak_MHD, fem_int, FEM_filters, mk_MHD, s_package, MGCG_WK,     &
+     &    ak_MHD, fem_int, FEM_filters, s_package, MGCG_WK,             &
      &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD%sgs_coefs,                 &
      &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,        &
      &    fem_sq)

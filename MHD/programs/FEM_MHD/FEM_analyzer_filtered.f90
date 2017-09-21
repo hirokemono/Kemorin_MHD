@@ -146,7 +146,7 @@
       call update_FEM_fields(MHD_step%time_d,                           &
      &    FEM_prm1, FEM_SGS%SGS_par, femmesh, ele_mesh, MHD_mesh1,      &
      &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs, iphys_nod,       &
-     &    fem_int1, FEM_SGS%FEM_filters, mk_MHD1, SGS_MHD_wk,           &
+     &    fem_int1, FEM_SGS%FEM_filters, SGS_MHD_wk,                    &
      &    nod_fld, FEM_SGS%Csims)
 !
 !     ----- Evaluate model coefficients
@@ -156,7 +156,7 @@
      &    femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                      &
      &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
      &    iphys_nod, fem_int1, FEM_SGS%FEM_filters,                     &
-     &    mk_MHD1, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
+     &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ========  Data output
 !
@@ -165,7 +165,7 @@
         call lead_fields_by_FEM                                         &
      &    (MHD_step%time_d, FEM_prm1, FEM_SGS%SGS_par, femmesh,         &
      &     ele_mesh, MHD_mesh1, MHD_prop1, FEM_MHD1_BCs, iphys_nod,     &
-     &     ak_MHD, fem_int1, FEM_SGS%FEM_filters, mk_MHD1, SGS_MHD_wk,  &
+     &     ak_MHD, fem_int1, FEM_SGS%FEM_filters, SGS_MHD_wk,           &
      &     nod_fld, FEM_SGS%Csims)
       end if
 !

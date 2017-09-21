@@ -15,8 +15,8 @@
 !
       use t_phys_data
       use t_phys_address
-      use t_sorted_node_MHD
       use t_MHD_finite_element_mat
+      use t_MHD_mass_matricxes
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
 !
@@ -28,6 +28,9 @@
         type(phys_data) :: ele_fld
 !>       Address for element fields
         type(phys_address) :: iphys_ele
+!
+!>       Structure of mass matrices for FEM_MHD
+        type(lumped_mass_mat_layerd) :: mk_MHD
 !
 !>        Stracture for FEM assembling
         type(arrays_finite_element_mat) :: rhs_mat

@@ -90,7 +90,7 @@
      &    FEM_prm1, FEM_SGS%SGS_par, flex_p, flex_data,                 &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh,              &
      &    MHD_mesh1, FEM_SGS%FEM_filters, MHD_prop1, FEM_MHD1_BCs,      &
-     &    FEM_SGS%Csims, iphys_nod, nod_fld, fem_int1, mk_MHD1, MHD_CG, &
+     &    FEM_SGS%Csims, iphys_nod, nod_fld, fem_int1, MHD_CG,          &
      &    SGS_MHD_wk, fem_sq, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
@@ -104,7 +104,7 @@
      &    FEM_prm1, FEM_SGS%SGS_par, femmesh, ele_mesh,                 &
      &    MHD_mesh1, FEM_MHD1_BCs, MHD_prop1, fem_int1,                 &
      &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims,                 &
-     &    mk_MHD1, SGS_MHD_wk%rhs_mat, MHD_CG)
+     &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%rhs_mat, MHD_CG)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD                                         &

@@ -92,9 +92,8 @@
      &  (MHD_files, FEM_prm1, FEM_SGS%SGS_par, bc_FEM_IO,               &
      &   MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,    &
      &   FEM_SGS%FEM_filters, MHD_prop1, ak_MHD, MHD_BC1, FEM_MHD1_BCs, &
-     &   FEM_SGS%Csims, iphys_nod, nod_fld,                             &
-     &   SNAP_time_IO, MHD_step%rst_step, fem_int1, mk_MHD1,            &
-     &   SGS_MHD_wk, fem_sq, label_sim)
+     &   FEM_SGS%Csims, iphys_nod, nod_fld, SNAP_time_IO,               &
+     &   MHD_step%rst_step, fem_int1, SGS_MHD_wk, fem_sq, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
