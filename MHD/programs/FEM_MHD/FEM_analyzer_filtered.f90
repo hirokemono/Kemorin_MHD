@@ -4,18 +4,18 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_analyze_filtered(i_step, MHD_files,              &
-!!     &          femmesh, ele_mesh, iphys_nod, iphys_ele, ak_MHD,      &
+!!     &          femmesh, ele_mesh, iphys_nod, ak_MHD,                 &
 !!     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                &
-!!     &          nod_fld, ele_fld, fem_ucd, fem_sq)
+!!     &          nod_fld, fem_ucd, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
-!!        type(phys_address), intent(in) :: iphys_nod, iphys_ele
+!!        type(phys_address), intent(in) :: iphys_nod
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
-!!        type(phys_data), intent(inout) :: nod_fld, ele_fld
+!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(ucd_file_data), intent(inout) :: fem_ucd
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
@@ -49,9 +49,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_filtered(i_step, MHD_files,                &
-     &          femmesh, ele_mesh, iphys_nod, iphys_ele, ak_MHD,        &
+     &          femmesh, ele_mesh, iphys_nod, ak_MHD,                   &
      &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                  &
-     &          nod_fld, ele_fld, fem_ucd, fem_sq)
+     &          nod_fld, fem_ucd, fem_sq)
 !
       use m_control_parameter
       use m_physical_property
@@ -82,13 +82,13 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
-      type(phys_address), intent(in) :: iphys_nod, iphys_ele
+      type(phys_address), intent(in) :: iphys_nod
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !
       integer(kind=kint ), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
 !
-      type(phys_data), intent(inout) :: nod_fld, ele_fld
+      type(phys_data), intent(inout) :: nod_fld
       type(FEM_SGS_structure), intent(inout) :: FEM_SGS
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !
@@ -145,9 +145,9 @@
       if (iflag_debug.eq.1)  write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d,                           &
      &    FEM_prm1, FEM_SGS%SGS_par, femmesh, ele_mesh, MHD_mesh1,      &
-     &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
-     &    iphys_nod, iphys_ele, fem_int1, FEM_SGS%FEM_filters, mk_MHD1, &
-     &    SGS_MHD_wk, nod_fld, ele_fld, FEM_SGS%Csims)
+     &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs, iphys_nod,       &
+     &    fem_int1, FEM_SGS%FEM_filters, mk_MHD1, SGS_MHD_wk,           &
+     &    nod_fld, FEM_SGS%Csims)
 !
 !     ----- Evaluate model coefficients
 !
@@ -155,7 +155,7 @@
      &   (MHD_step%time_d, FEM_prm1, FEM_SGS%SGS_par,                   &
      &    femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                      &
      &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs,                  &
-     &    iphys_nod, iphys_ele, ele_fld, fem_int1, FEM_SGS%FEM_filters, &
+     &    iphys_nod, fem_int1, FEM_SGS%FEM_filters,                     &
      &    mk_MHD1, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ========  Data output
@@ -164,9 +164,9 @@
       if(iflag .eq. 0) then
         call lead_fields_by_FEM                                         &
      &    (MHD_step%time_d, FEM_prm1, FEM_SGS%SGS_par, femmesh,         &
-     &     ele_mesh, MHD_mesh1, MHD_prop1, FEM_MHD1_BCs,                &
-     &     iphys_nod, iphys_ele, ak_MHD, fem_int1, FEM_SGS%FEM_filters, &
-     &     mk_MHD1, SGS_MHD_wk, nod_fld, ele_fld, FEM_SGS%Csims)
+     &     ele_mesh, MHD_mesh1, MHD_prop1, FEM_MHD1_BCs, iphys_nod,     &
+     &     ak_MHD, fem_int1, FEM_SGS%FEM_filters, mk_MHD1, SGS_MHD_wk,  &
+     &     nod_fld, FEM_SGS%Csims)
       end if
 !
 !     ----Filtering
@@ -183,8 +183,8 @@
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,         &
-     &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
-     &      iphys_nod, nod_fld, iphys_ele, ele_fld, fem_int1%jcs,       &
+     &      MHD_prop1%fl_prop, MHD_prop1%cd_prop, iphys_nod, nod_fld,   &
+     &      SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, fem_int1%jcs,     &
      &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
      &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
       end if

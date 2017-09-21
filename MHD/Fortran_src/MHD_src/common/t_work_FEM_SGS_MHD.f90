@@ -13,6 +13,8 @@
       use m_precision
       use m_constants
 !
+      use t_phys_data
+      use t_phys_address
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
@@ -21,6 +23,11 @@
 !
 !
       type work_FEM_SGS_MHD
+!>       Structure for field data on element
+        type(phys_data) :: ele_fld
+!>       Address for element fields
+        type(phys_address) :: iphys_ele
+!
 !>        Stracture for FEM assembling
         type(arrays_finite_element_mat) :: rhs_mat
 !>        Work array for FEM assemble in MHD model

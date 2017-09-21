@@ -6,14 +6,14 @@
 !!      subroutine FEM_check_MHD_mat                                    &
 !!     &        (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step,     &
 !!     &         femmesh, ele_mesh, iphys_nod, nod_fld,                 &
-!!     &         iphys_ele, ele_fld, MHD_CG, FEM_SGS, SGS_MHD_wk,       &
-!!     &         fem_sq, label_sim)
+!!     &         femmesh, ele_mesh, iphys_nod, nod_fld, MHD_CG,         &
+!!     &         FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
-!!        type(phys_address), intent(inout) :: iphys_nod, iphys_ele
-!!        type(phys_data), intent(inout) :: nod_fld, ele_fld
+!!        type(phys_address), intent(inout) :: iphys_nod
+!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -49,9 +49,8 @@
 !
       subroutine FEM_check_MHD_mat                                      &
      &        (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step,       &
-     &         femmesh, ele_mesh, iphys_nod, nod_fld,                   &
-     &         iphys_ele, ele_fld, MHD_CG, FEM_SGS, SGS_MHD_wk,         &
-     &         fem_sq, label_sim)
+     &         femmesh, ele_mesh, iphys_nod, nod_fld, MHD_CG,           &
+     &         FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_control_parameter
       use m_geometry_data_MHD
@@ -71,8 +70,8 @@
 !
       type(mesh_data), intent(inout) :: femmesh
       type(element_geometry), intent(inout) :: ele_mesh
-      type(phys_address), intent(inout) :: iphys_nod, iphys_ele
-      type(phys_data), intent(inout) :: nod_fld, ele_fld
+      type(phys_address), intent(inout) :: iphys_nod
+      type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       type(FEM_SGS_structure), intent(inout) :: FEM_SGS
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -91,8 +90,8 @@
      &    FEM_prm1, FEM_SGS%SGS_par, flex_p, flex_data,                 &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh,              &
      &    MHD_mesh1, FEM_SGS%FEM_filters, MHD_prop1, FEM_MHD1_BCs,      &
-     &    FEM_SGS%Csims, iphys_nod, nod_fld, iphys_ele, ele_fld,        &
-     &    fem_int1, mk_MHD1, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
+     &    FEM_SGS%Csims, iphys_nod, nod_fld, fem_int1, mk_MHD1, MHD_CG, &
+     &    SGS_MHD_wk, fem_sq, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !
