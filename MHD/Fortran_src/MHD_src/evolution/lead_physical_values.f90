@@ -108,8 +108,7 @@
      &    femmesh%mesh, femmesh%group, ele_mesh%surf,                   &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys,             &
-     &    SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, fem_int%jcs%g_FEM,  &
-     &    fem_int%jcs%jac_3d, fem_int%jcs%jac_sf_grp,                   &
+     &    SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, fem_int%jcs,        &
      &    fem_int%rhs_tbl, FEM_filters%FEM_elens,                       &
      &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs,            &
      &    fem_int%m_lump, mk_MHD, SGS_MHD_wk%mhd_fem_wk,                &

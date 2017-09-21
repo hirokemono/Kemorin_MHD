@@ -8,19 +8,17 @@
 !!      subroutine cal_vector_potential                                 &
 !!     &         (dt, FEM_prm, SGS_par, mesh, group, surf, conduct,     &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,&
-!!     &          ele_fld, jacs, rhs_tbl, icomp_sgs,                    &
-!!     &          ifld_diff, iphys_elediff, sgs_coefs, diff_coefs,      &
-!!     &          FEM_filters, m_lump, mk_MHD, Bmatrix, Fmatrix,        &
-!!     &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,          &
-!!     &          rhs_mat, fem_sq, nod_fld)
+!!     &          ele_fld, fem_int, icomp_sgs, ifld_diff, iphys_elediff,&
+!!     &          sgs_coefs, diff_coefs, FEM_filters, mk_MHD,           &
+!!     &          Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,    &
+!!     &          mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
 !!      subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,           &
 !!     &          mesh, group, surf, conduct, cd_prop, Bnod_bcs,        &
 !!     &          Asf_bcs, Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
-!!     &          jacs, rhs_tbl, icomp_sgs, ifld_diff,                  &
-!!     &          iphys_elediff, sgs_coefs, sgs_coefs_nod, diff_coefs,  &
-!!     &          FEM_filters, m_lump, mk_MHD, Bmatrix, Fmatrix,        &
-!!     &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,          &
-!!     &          rhs_mat, fem_sq, nod_fld)
+!!     &          fem_int, icomp_sgs, ifld_diff, iphys_elediff,         &
+!!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,    &
+!!     &          mk_MHD, Bmatrix, Fmatrix, ak_d_magne, MGCG_WK,        &
+!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -35,9 +33,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
-!!        type(jacobians_type), intent(in) :: jacs
-!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(lumped_mass_matrices), intent(in) :: m_lump
+!!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_terms_address), intent(in) :: iphys_elediff
@@ -97,11 +93,10 @@
       subroutine cal_vector_potential                                   &
      &         (dt, FEM_prm, SGS_par, mesh, group, surf, conduct,       &
      &          cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,  &
-     &          ele_fld, jacs, rhs_tbl, icomp_sgs,                      &
-     &          ifld_diff, iphys_elediff, sgs_coefs, diff_coefs,        &
-     &          FEM_filters, m_lump, mk_MHD, Bmatrix, Fmatrix,          &
-     &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,            &
-     &          rhs_mat, fem_sq, nod_fld)
+     &          ele_fld, fem_int, icomp_sgs, ifld_diff, iphys_elediff,  &
+     &          sgs_coefs, diff_coefs, FEM_filters, mk_MHD,             &
+     &          Bmatrix, Fmatrix, ak_d_magne, MGCG_WK, FEM_SGS_wk,      &
+     &          mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
 !
       use cal_vector_potential_pre
       use cal_mod_vel_potential
@@ -124,9 +119,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_type), intent(in) :: jacs
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(lumped_mass_matrices), intent(in) :: m_lump
+      type(finite_element_integration), intent(in) :: fem_int
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: iphys_elediff
@@ -163,8 +156,8 @@
      &    iphys_elediff%i_velo, ak_d_magne, dt, FEM_prm,                &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, surf, conduct,            &
-     &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys,            &
-     &    iphys_ele, ele_fld, jacs, rhs_tbl, FEM_filters%FEM_elens,     &
+     &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, &
+     &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    sgs_coefs, diff_coefs, FEM_filters%filtering,                 &
      &    mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                  &
      &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
@@ -174,10 +167,10 @@
 !
       iloop = -1
       call int_norm_div_a_monitor(iloop, mesh%node, mesh%ele,           &
-     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_sq%j_ave,        &
+     &    iphys, nod_fld, fem_int%jcs, fem_sq%j_ave,                    &
      &    rhs_mat%fem_wk,fem_sq%msq, rel_correct)
 !      call int_rms_div_a_monitor(iloop, mesh%node, mesh%ele,           &
-!     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_sq%i_rms,       &
+!     &    iphys, nod_fld, fem_int%jcs, fem_sq%i_rms,                   &
 !     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
       call init_sol_potential                                           &
@@ -190,8 +183,8 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_electric_potential'
         call cal_electric_potential(ifld_diff%i_magne,                  &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%node, mesh%ele, surf, group%surf_grp,                  &
-     &      Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, jacs, rhs_tbl,           &
+     &      mesh%node, mesh%ele, surf, group%surf_grp, Bnod_bcs,        &
+     &      Asf_bcs, Fsf_bcs, iphys, fem_int%jcs, fem_int%rhs_tbl,      &
      &      FEM_filters%FEM_elens, diff_coefs, Fmatrix,                 &
      &      MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
@@ -207,8 +200,8 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, surf, conduct,          &
      &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs, iphys,          &
-     &      iphys_ele, ele_fld, jacs, rhs_tbl,                          &
-     &      FEM_filters%FEM_elens, diff_coefs, m_lump, Bmatrix,         &
+     &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
+     &      FEM_filters%FEM_elens, diff_coefs, fem_int%m_lump, Bmatrix, &
      &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat%fem_wk,              &
      &      rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld) 
 !
@@ -216,8 +209,7 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
         call cal_rms_scalar_potential(iloop, mesh%ele%istack_ele_smp,   &
      &      iphys%i_mag_p, fem_sq%i_rms%i_mag_p, fem_sq%j_ave%i_mag_p,  &
-     &      mesh%node, mesh%ele, nod_fld,                               &
-     &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, rhs_mat%fem_wk,     &
+     &      mesh%node, mesh%ele, nod_fld, fem_int%jcs, rhs_mat%fem_wk,  &
      &      fem_sq%msq, rel_correct, ave_mp0, rms_mp0)
 !
         if (iflag_debug.eq.1)                                           &
@@ -226,10 +218,10 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'int_norm_div_a_monitor'
         call int_norm_div_a_monitor(iloop, mesh%node, mesh%ele,         &
-     &      iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_sq%j_ave,      &
+     &      iphys, nod_fld, fem_int%jcs, fem_sq%j_ave,                  &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_a_monitor(iloop, mesh%node, mesh%ele,         &
-!     &      iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_sq%i_rms,     &
+!     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_rms,                 &
 !     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
         if(abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
@@ -242,11 +234,10 @@
       subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,             &
      &          mesh, group, surf, conduct, cd_prop, Bnod_bcs,          &
      &          Asf_bcs, Bsf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,   &
-     &          jacs, rhs_tbl, icomp_sgs, ifld_diff,                    &
-     &          iphys_elediff, sgs_coefs, sgs_coefs_nod, diff_coefs,    &
-     &          FEM_filters, m_lump, mk_MHD, Bmatrix, Fmatrix,          &
-     &          ak_d_magne, MGCG_WK, FEM_SGS_wk, mhd_fem_wk,            &
-     &          rhs_mat, fem_sq, nod_fld)
+     &          fem_int, icomp_sgs, ifld_diff, iphys_elediff,           &
+     &          sgs_coefs, sgs_coefs_nod, diff_coefs, FEM_filters,      &
+     &          mk_MHD, Bmatrix, Fmatrix, ak_d_magne, MGCG_WK,          &
+     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, fem_sq, nod_fld)
 !
       use cal_magnetic_pre
       use cal_sol_pressure_MHD
@@ -271,9 +262,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_type), intent(in) :: jacs
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(lumped_mass_matrices), intent(in) :: m_lump
+      type(finite_element_integration), intent(in) :: fem_int
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_terms_address), intent(in) :: iphys_elediff
@@ -319,7 +308,7 @@
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    mesh%nod_comm, mesh%node, mesh%ele, surf, conduct,            &
      &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,          &
-     &    iphys, iphys_ele, ele_fld, jacs, rhs_tbl,                     &
+     &    iphys, iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,      &
      &    FEM_filters%FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs,  &
      &    FEM_filters%filtering, mk_MHD%mlump_cd, Bmatrix,              &
      &    MGCG_WK%MG_vector, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &
@@ -330,15 +319,15 @@
 !
       iloop = -1
       call int_norm_div_b_monitor(iloop, mesh%node, mesh%ele,           &
-     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_sq%j_ave,        &
+     &    iphys, nod_fld, fem_int%jcs, fem_sq%j_ave,                    &
      &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
 !
       do iloop = 0, FEM_prm%maxiter_coulomb
         call cal_mag_potential(ifld_diff%i_magne,                       &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%node, mesh%ele, surf, group%surf_grp,                  &
-     &      Bnod_bcs, Bsf_bcs, Fsf_bcs, iphys, jacs, rhs_tbl,           &
+     &      mesh%node, mesh%ele, surf, group%surf_grp, Bnod_bcs,        &
+     &      Bsf_bcs, Fsf_bcs, iphys, fem_int%jcs, fem_int%rhs_tbl,      &
      &      FEM_filters%FEM_elens, diff_coefs, Fmatrix,                 &
      &      MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
      &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
@@ -354,15 +343,14 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh%nod_comm, mesh%node, mesh%ele, surf, conduct,          &
      &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs, iphys,          &
-     &      iphys_ele, ele_fld, jacs, rhs_tbl,                          &
-     &      FEM_filters%FEM_elens, diff_coefs, m_lump, Bmatrix,         &
+     &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
+     &      FEM_filters%FEM_elens, diff_coefs, fem_int%m_lump, Bmatrix, &
      &      MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat%fem_wk,              &
      &      rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
         call cal_rms_scalar_potential(iloop, mesh%ele%istack_ele_smp,   &
      &      iphys%i_mag_p, fem_sq%i_rms%i_mag_p, fem_sq%j_ave%i_mag_p,  &
-     &      mesh%node, mesh%ele, nod_fld,                               &
-     &      jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, rhs_mat%fem_wk,     &
+     &      mesh%node, mesh%ele, nod_fld, fem_int%jcs, rhs_mat%fem_wk,  &
      &      fem_sq%msq, rel_correct, ave_mp0, rms_mp0)
 !
       if (iflag_debug.eq.1)                                             &
@@ -371,10 +359,10 @@
 !
 !
         call int_norm_div_b_monitor(iloop, mesh%node, mesh%ele,         &
-     &      iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_sq%j_ave,      &
+     &      iphys, nod_fld, fem_int%jcs, fem_sq%j_ave,                  &
      &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_b_monitor(iloop, mesh%node, mesh%ele,         &
-!     &      iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_sq%i_rms,     &
+!     &      iphys, nod_fld, fem_int%jcs, fem_sq%i_rms,                 &
 !     &      rhs_mat%fem_wk,fem_sq%msq, rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
