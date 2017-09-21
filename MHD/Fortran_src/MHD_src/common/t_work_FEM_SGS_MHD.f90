@@ -29,9 +29,6 @@
 !>       Address for element fields
         type(phys_address) :: iphys_ele
 !
-!>        Structures for FEM marix table
-        type(tables_MHD_mat_const) :: MHD_mat_tbls
-!
 !>        Stracture for FEM assembling
         type(arrays_finite_element_mat) :: rhs_mat
 !>        Work array for FEM assemble in MHD model

@@ -25,6 +25,7 @@
       use t_iccg_parameter
       use t_FEM_control_parameter
       use t_mesh_data
+      use t_sorted_node_MHD
       use t_solver_djds
       use t_vector_for_solver
       use t_solver_djds_MHD
@@ -42,6 +43,9 @@
       type FEM_MHD_solvers
 !>        Strucutre of coefficients for each element
         type(coefs_4_MHD_type) :: ak_MHD
+!
+!>        Structures for FEM marix table
+        type(tables_MHD_mat_const) :: MHD_mat_tbls
 !
 !>        Structure of matrices for MHD dynamo simulation
         type(MHD_MG_matrices) :: MHD_mat

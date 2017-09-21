@@ -9,12 +9,11 @@
 !!      subroutine update_matrices                                      &
 !!     &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh,          &
 !!     &          MHD_mesh, FEM_MHD_BCs, MHD_prop, fem_int, FEM_elens,  &
-!!     &          Csims_FEM_MHD, MHD_mat_tbls, flex_p, mk_MHD,          &
-!!     &          rhs_mat, MHD_CG)
-!!      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_par,             &
-!!     &          femmesh, ele_mesh, MHD_mesh, FEM_MHD_BCs, MHD_prop,   &
-!!     &          fem_int, FEM_elens, Csims_FEM_MHD, MHD_mat_tbls,      &
-!!     &          mk_MHD, rhs_mat, MHD_CG)
+!!     &          Csims_FEM_MHD, flex_p, mk_MHD, rhs_mat, MHD_CG)
+!!      subroutine set_aiccg_matrices                                   &
+!!     &         (dt, FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,    &
+!!     &          FEM_MHD_BCs, MHD_prop, fem_int, FEM_elens,            &
+!!     &          Csims_FEM_MHD, mk_MHD, rhs_mat, MHD_CG)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -28,7 +27,6 @@
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(MGCG_data), intent(in) :: MGCG_WK
-!!        type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
 !!        type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
 !!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -118,8 +116,7 @@
       subroutine update_matrices                                        &
      &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh,            &
      &          MHD_mesh, FEM_MHD_BCs, MHD_prop, fem_int, FEM_elens,    &
-     &          Csims_FEM_MHD, MHD_mat_tbls, flex_p, mk_MHD,            &
-     &          rhs_mat, MHD_CG)
+     &          Csims_FEM_MHD, flex_p, mk_MHD, rhs_mat, MHD_CG)
 !
       use t_time_data
       use t_flex_delta_t_data
@@ -135,7 +132,6 @@
       type(finite_element_integration), intent(in) :: fem_int
 
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -160,7 +156,7 @@
         call set_aiccg_matrices                                         &
      &     (time_d%dt, FEM_prm, SGS_par, femmesh, ele_mesh,             &
      &      MHD_mesh, FEM_MHD_BCs, MHD_prop, fem_int, FEM_elens,        &
-     &      Csims_FEM_MHD, MHD_mat_tbls, mk_MHD, rhs_mat, MHD_CG)
+     &      Csims_FEM_MHD, mk_MHD, rhs_mat, MHD_CG)
         flex_p%iflag_flex_step_changed = 0
       end if
 !
@@ -168,10 +164,10 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_par,               &
-     &          femmesh, ele_mesh, MHD_mesh, FEM_MHD_BCs, MHD_prop,     &
-     &          fem_int, FEM_elens, Csims_FEM_MHD, MHD_mat_tbls,        &
-     &          mk_MHD, rhs_mat, MHD_CG)
+      subroutine set_aiccg_matrices                                     &
+     &         (dt, FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,      &
+     &          FEM_MHD_BCs, MHD_prop, fem_int, FEM_elens,              &
+     &          Csims_FEM_MHD, mk_MHD, rhs_mat, MHD_CG)
 !
       use set_aiccg_matrices_type
       use precond_djds_MHD
@@ -189,7 +185,6 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
       type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
@@ -201,7 +196,7 @@
      &    SGS_par%model_p, SGS_par%commute_p, femmesh, ele_mesh,        &
      &    MHD_mesh, FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,          &
      &    MHD_prop, MHD_CG%ak_MHD, fem_int, FEM_elens, Csims_FEM_MHD,   &
-     &    MHD_mat_tbls, mk_MHD, rhs_mat, MHD_CG%MHD_mat)
+     &    MHD_CG%MHD_mat_tbls, mk_MHD, rhs_mat, MHD_CG%MHD_mat)
 !
 !     set marrix for the Multigrid
 !
