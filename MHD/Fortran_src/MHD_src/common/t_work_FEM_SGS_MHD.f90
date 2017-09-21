@@ -31,6 +31,8 @@
 !
 !>       Structure of mass matrices for FEM_MHD
         type(lumped_mass_mat_layerd) :: mk_MHD
+!>       Stracture for FEM assembling
+        type(finite_element_integration) :: fem_int
 !
 !>        Stracture for FEM assembling
         type(arrays_finite_element_mat) :: rhs_mat

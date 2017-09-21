@@ -7,7 +7,7 @@
 !!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
 !!     &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,   &
 !!     &          Csims_FEM_MHD, iphys, nod_fld, t_IO, rst_step,        &
-!!     &          fem_int, SGS_MHD_wk, fem_sq, label_sim)
+!!     &          SGS_MHD_wk, fem_sq, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -27,7 +27,6 @@
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
-!!        type(finite_element_integration), intent(inout) :: fem_int
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !
       module initialize_4_snapshot
@@ -74,7 +73,7 @@
      &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
      &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,     &
      &          Csims_FEM_MHD, iphys, nod_fld, t_IO, rst_step,          &
-     &          fem_int, SGS_MHD_wk, fem_sq, label_sim)
+     &          SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_boundary_condition_IDs
       use m_array_for_send_recv
@@ -126,7 +125,6 @@
       type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: rst_step
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
-      type(finite_element_integration), intent(inout) :: fem_int
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       character(len=kchara), intent(inout)   :: label_sim
 !
@@ -167,8 +165,8 @@
       call allocate_array(SGS_par, mesh, MHD_prop,                      &
      &    iphys, nod_fld, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,     &
      &    Csims_FEM_MHD%iphys_elediff, SGS_MHD_wk%mk_MHD,               &
-     &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, fem_int,           &
-     &    fem_sq, label_sim)
+     &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                    &
+     &    SGS_MHD_wk%fem_int, fem_sq, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
@@ -210,20 +208,20 @@
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes(SGS_par%model_p, ele_mesh,    &
      &    group, fem_sq%i_msq, mesh, FEM_filters%layer_tbl,             &
-     &    spfs_1, fem_int%jcs, MHD_mesh, fem_sq%msq)
+     &    spfs_1, SGS_MHD_wk%fem_int%jcs, MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
       call s_set_RHS_assemble_table                                     &
-     &   (mesh, fem_int%next_tbl, fem_int%rhs_tbl)
+     &  (mesh, SGS_MHD_wk%fem_int%next_tbl, SGS_MHD_wk%fem_int%rhs_tbl)
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector                                          &
      &   (my_rank, nprocs, mesh%node, ele_mesh%surf,                    &
-     &    spfs_1%spf_2d, fem_int%jcs)
+     &    spfs_1%spf_2d, SGS_MHD_wk%fem_int%jcs)
       call dealloc_surf_shape_func(spfs_1%spf_2d)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
@@ -239,10 +237,10 @@
 !
 !     ---------------------
 !
-      call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
-     &     mesh, MHD_mesh, fem_int%jcs, fem_int%rhs_tbl,                &
+      call int_RHS_mass_matrices                                        &
+     &    (FEM_prm%npoint_t_evo_int, mesh, MHD_mesh,                    &
      &     SGS_MHD_wk%rhs_mat%fem_wk, SGS_MHD_wk%rhs_mat%f_l,           &
-     &     fem_int%m_lump, SGS_MHD_wk%mk_MHD)
+     &     SGS_MHD_wk%fem_int, SGS_MHD_wk%mk_MHD)
 !
 !     ---------------------
 !

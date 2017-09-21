@@ -63,7 +63,6 @@
       use m_physical_property
       use m_bc_data_list
       use m_bc_data_velo
-      use m_finite_element_matrix
       use t_boundary_field_IO
 !
       use initialize_4_snapshot
@@ -93,7 +92,7 @@
      &   MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,    &
      &   FEM_SGS%FEM_filters, MHD_prop1, ak_MHD, MHD_BC1, FEM_MHD1_BCs, &
      &   FEM_SGS%Csims, iphys_nod, nod_fld, SNAP_time_IO,               &
-     &   MHD_step%rst_step, fem_int1, SGS_MHD_wk, fem_sq, label_sim)
+     &   MHD_step%rst_step, SGS_MHD_wk, fem_sq, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
@@ -106,7 +105,6 @@
       use m_control_parameter
       use m_physical_property
       use m_geometry_data_MHD
-      use m_finite_element_matrix
 !
       use nod_phys_send_recv
       use lead_physical_values
@@ -165,8 +163,9 @@
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,         &
-     &      MHD_prop1%fl_prop, MHD_prop1%cd_prop, iphys_nod, nod_fld,   &
-     &      SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld, fem_int1%jcs,     &
+     &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
+     &      iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                   &
+     &      SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                 &
      &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
      &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
       end if

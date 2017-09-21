@@ -8,14 +8,13 @@
 !>     DJDS ordering table for MHD dynamo model
 !
 !!      subroutine set_MHD_connectivities(DJDS_param, mesh, fluid,      &
-!!     &          solver_C, next_tbl, rhs_tbl, MHD_mat, DJDS_comm_fl)
+!!     &          solver_C, fem_int, MHD_mat, DJDS_comm_fl)
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(mpi_4_solver), intent(in) :: solver_C
 !!
-!!        type(next_nod_ele_table), intent(inout) :: next_tbl
-!!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+!!        type(finite_element_integration), intent(inout) :: fem_int
 !!        type(communication_table), intent(inout) :: DJDS_comm_fl
 !
       module t_FEM_MHD_solvers
@@ -74,7 +73,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_MHD_connectivities(DJDS_param, mesh, fluid,        &
-     &          solver_C, next_tbl, rhs_tbl, MHD_mat, DJDS_comm_fl)
+     &          solver_C, fem_int, MHD_mat, DJDS_comm_fl)
 !
       use t_mesh_data
       use t_geometry_data_MHD
@@ -88,15 +87,14 @@
       type(field_geometry_data), intent(in) :: fluid
       type(mpi_4_solver), intent(in) :: solver_C
 !
-      type(next_nod_ele_table), intent(inout) :: next_tbl
-      type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+      type(finite_element_integration), intent(inout) :: fem_int
       type(MHD_MG_matrices), intent(inout) :: MHD_mat
       type(communication_table), intent(inout) :: DJDS_comm_fl
 !
 !
       call set_MHD_whole_connectivity                                   &
-     &   (DJDS_param, mesh, solver_C, next_tbl, rhs_tbl,                &
-     &    MHD_mat%MG_DJDS_table(0), MHD_mat%MG_comm_table(0))
+     &  (DJDS_param, mesh, solver_C, fem_int%next_tbl, fem_int%rhs_tbl, &
+     &   MHD_mat%MG_DJDS_table(0), MHD_mat%MG_comm_table(0))
 !
       call set_MHD_djds_connectivities(DJDS_param,                      &
      &    mesh, fluid, DJDS_comm_fl, solver_C,                          &

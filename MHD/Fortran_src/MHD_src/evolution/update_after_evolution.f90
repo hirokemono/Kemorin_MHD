@@ -9,23 +9,22 @@
 !!@verbatim
 !!      subroutine FEM_fields_evolution                                 &
 !!     &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,&
-!!     &          MHD_prop, nod_bcs, surf_bcs, iphys, ak_MHD, fem_int,  &
+!!     &          MHD_prop, nod_bcs, surf_bcs, iphys, ak_MHD,           &
 !!     &          FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,          &
 !!     &          nod_fld, Csims_FEM_MHD, fem_sq)
 !!      subroutine update_FEM_fields(time_d, FEM_prm, SGS_par,          &
 !!     &          femmesh, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,       &
-!!     &          iphys, fem_int, FEM_filters, SGS_MHD_wk,              &
-!!     &          nod_fld, Csims_FEM_MHD)
+!!     &          iphys, FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !!
 !!      subroutine cal_FEM_model_coefficients(time_d, FEM_prm, SGS_par, &
 !!     &          femmesh, ele_mesh, MHD_mesh, MHD_prop,                &
-!!     &          nod_bcs, surf_bcs, iphys, fem_int, FEM_filters,       &
-!!     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
+!!     &          nod_bcs, surf_bcs, iphys, FEM_filters, SGS_MHD_wk,    &
+!!     &          nod_fld, Csims_FEM_MHD)
 !!
 !!      subroutine fields_evolution_4_FEM_SPH                           &
 !!     &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, fluid,   &
 !!     &          MHD_prop, nod_bcs, surf_bcs, iphys, ak_MHD,           &
-!!     &          fem_int, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk, &
+!!     &          FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,          &
 !!     &          nod_fld, Csims_FEM_MHD, fem_sq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -39,7 +38,6 @@
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
-!!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(MHD_matrices_pack), intent(in) :: s_package
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
@@ -91,7 +89,7 @@
 !
       subroutine FEM_fields_evolution                                   &
      &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,  &
-     &          MHD_prop, nod_bcs, surf_bcs, iphys, ak_MHD, fem_int,    &
+     &          MHD_prop, nod_bcs, surf_bcs, iphys, ak_MHD,             &
      &          FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,            &
      &          nod_fld, Csims_FEM_MHD, fem_sq)
 !
@@ -108,7 +106,6 @@
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
-      type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(MHD_matrices_pack), intent(in) :: s_package
 !
@@ -123,7 +120,7 @@
      &    ele_mesh, MHD_mesh, MHD_prop, nod_bcs, surf_bcs, iphys,       &
      &    Csims_FEM_MHD%ifld_sgs, Csims_FEM_MHD%icomp_sgs,              &
      &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,            &
-     &    Csims_FEM_MHD%iphys_elediff, ak_MHD, fem_int, FEM_filters,    &
+     &    Csims_FEM_MHD%iphys_elediff, ak_MHD, FEM_filters,             &
      &    s_package, MGCG_WK, SGS_MHD_wk, nod_fld,                      &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    Csims_FEM_MHD%diff_coefs, fem_sq)
@@ -134,8 +131,7 @@
 !
       subroutine update_FEM_fields(time_d, FEM_prm, SGS_par,            &
      &          femmesh, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,         &
-     &          iphys, fem_int, FEM_filters, SGS_MHD_wk,                &
-     &          nod_fld, Csims_FEM_MHD)
+     &          iphys, FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !
       use FEM_MHD_evolution
 !
@@ -148,7 +144,6 @@
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
-      type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
 !
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -159,7 +154,7 @@
       call update_fields(time_d, FEM_prm, SGS_par,                      &
      &    femmesh, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,               &
      &    iphys, Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,     &
-     &    Csims_FEM_MHD%iphys_elediff, fem_int, FEM_filters,            &
+     &    Csims_FEM_MHD%iphys_elediff, FEM_filters,                     &
      &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD%diff_coefs)
 !
       end subroutine update_FEM_fields
@@ -169,8 +164,8 @@
 !
       subroutine cal_FEM_model_coefficients(time_d, FEM_prm, SGS_par,   &
      &          femmesh, ele_mesh, MHD_mesh, MHD_prop,                  &
-     &          nod_bcs, surf_bcs, iphys, fem_int, FEM_filters,         &
-     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
+     &          nod_bcs, surf_bcs, iphys, FEM_filters, SGS_MHD_wk,      &
+     &          nod_fld, Csims_FEM_MHD)
 !
       use cal_model_coefficients
 !
@@ -184,7 +179,6 @@
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(mesh_data_MHD), intent(in) :: MHD_mesh
-      type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
 !
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -199,7 +193,7 @@
      &    nod_bcs, surf_bcs, iphys, Csims_FEM_MHD%ifld_sgs,             &
      &    Csims_FEM_MHD%icomp_sgs, Csims_FEM_MHD%ifld_diff,             &
      &    Csims_FEM_MHD%icomp_diff, Csims_FEM_MHD%iphys_elediff,        &
-     &    fem_int, FEM_filters, SGS_MHD_wk, nod_fld,                    &
+     &    SGS_MHD_wk%fem_int, FEM_filters, SGS_MHD_wk, nod_fld,         &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
      &    Csims_FEM_MHD%diff_coefs)
 !
@@ -211,7 +205,7 @@
       subroutine fields_evolution_4_FEM_SPH                             &
      &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, fluid,     &
      &          MHD_prop, nod_bcs, surf_bcs, iphys, ak_MHD,             &
-     &          fem_int, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,   &
+     &          FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,            &
      &          nod_fld, Csims_FEM_MHD, fem_sq)
 !
       use FEM_MHD_evolution
@@ -227,7 +221,6 @@
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
-      type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(MHD_matrices_pack), intent(in) :: s_package
 !
@@ -243,10 +236,9 @@
      &    nod_bcs, surf_bcs, iphys, Csims_FEM_MHD%ifld_sgs,             &
      &    Csims_FEM_MHD%icomp_sgs, Csims_FEM_MHD%ifld_diff,             &
      &    Csims_FEM_MHD%icomp_diff, Csims_FEM_MHD%iphys_elediff,        &
-     &    ak_MHD, fem_int, FEM_filters, s_package, MGCG_WK,             &
-     &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD%sgs_coefs,                 &
-     &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,        &
-     &    fem_sq)
+     &    ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk, nod_fld, &
+     &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod,         &
+     &    Csims_FEM_MHD%diff_coefs, fem_sq)
 !
       end subroutine fields_evolution_4_FEM_SPH
 !

@@ -87,8 +87,6 @@
 !
       subroutine analyze
 !
-      use m_finite_element_matrix
-!
       integer(kind=kint ) :: i_step, visval
 !
 !
@@ -106,7 +104,8 @@
           call start_elapsed_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        femmesh1, ele_mesh1, nod_fld1,                            &
-     &        fem_int1%next_tbl%neib_ele, fem_int1%jcs)
+     &        SGS_MHD_wk1%fem_int%next_tbl%neib_ele,                    &
+     &        SGS_MHD_wk1%fem_int%jcs)
           call end_elapsed_time(12)
         end if
       end do

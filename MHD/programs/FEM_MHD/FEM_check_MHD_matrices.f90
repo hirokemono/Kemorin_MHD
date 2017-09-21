@@ -55,9 +55,7 @@
       use m_control_parameter
       use m_geometry_data_MHD
       use m_physical_property
-      use m_finite_element_matrix
       use m_bc_data_velo
-      use m_finite_element_matrix
       use t_boundary_field_IO
 !
       use initialization_4_MHD
@@ -90,19 +88,19 @@
      &    FEM_prm1, FEM_SGS%SGS_par, flex_p, flex_data,                 &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh,              &
      &    MHD_mesh1, FEM_SGS%FEM_filters, MHD_prop1, FEM_MHD1_BCs,      &
-     &    FEM_SGS%Csims, iphys_nod, nod_fld, fem_int1, MHD_CG,          &
-     &    SGS_MHD_wk, fem_sq, label_sim)
+     &    FEM_SGS%Csims, iphys_nod, nod_fld, MHD_CG, SGS_MHD_wk,        &
+     &    fem_sq, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
-      call set_data_4_const_matrices                                    &
-     &   (femmesh, MHD_mesh1, MHD_prop1, fem_int1, MHD_CG%MGCG_WK,      &
-     &    MHD_CG%MHD_mat_tbls, MHD_CG%MHD_mat, MHD_CG%solver_pack)
+      call set_data_4_const_matrices(femmesh, MHD_mesh1, MHD_prop1,     &
+     &    SGS_MHD_wk%fem_int, MHD_CG%MGCG_WK, MHD_CG%MHD_mat_tbls,      &
+     &    MHD_CG%MHD_mat, MHD_CG%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt,                       &
      &    FEM_prm1, FEM_SGS%SGS_par, femmesh, ele_mesh,                 &
-     &    MHD_mesh1, FEM_MHD1_BCs, MHD_prop1, fem_int1,                 &
+     &    MHD_mesh1, FEM_MHD1_BCs, MHD_prop1, SGS_MHD_wk%fem_int,       &
      &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims,                 &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%rhs_mat, MHD_CG)
 !

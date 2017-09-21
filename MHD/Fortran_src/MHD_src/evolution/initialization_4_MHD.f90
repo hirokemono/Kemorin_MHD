@@ -7,7 +7,7 @@
 !!     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data, &
 !!     &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters,&
 !!     &         MHD_prop, FEM_MHD_BCs, Csims_FEM_MHD, iphys, nod_fld,  &
-!!     &         fem_int, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
+!!     &         MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -26,7 +26,6 @@
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
-!!        type(finite_element_integration), intent(inout) :: fem_int
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !
@@ -70,7 +69,7 @@
      &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data,   &
      &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters,  &
      &         MHD_prop, FEM_MHD_BCs, Csims_FEM_MHD, iphys, nod_fld,    &
-     &         fem_int, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
+     &         MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
 !
       use m_boundary_condition_IDs
       use m_flags_4_solvers
@@ -131,7 +130,6 @@
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
-      type(finite_element_integration), intent(inout) :: fem_int
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       character(len=kchara), intent(inout)   :: label_sim
@@ -178,7 +176,7 @@
      &    iphys, nod_fld, SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,     &
      &    Csims_FEM_MHD%iphys_elediff, SGS_MHD_wk%mk_MHD,               &
      &    SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                    &
-     &    fem_int, fem_sq, label_sim)
+     &    SGS_MHD_wk%fem_int, fem_sq, label_sim)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
       call s_init_check_delta_t_data                                    &
@@ -256,21 +254,21 @@
       if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes(SGS_par%model_p, ele_mesh,    &
      &    group, fem_sq%i_msq, mesh, FEM_filters%layer_tbl,             &
-     &    spfs_1, fem_int%jcs, MHD_mesh, fem_sq%msq)
+     &    spfs_1, SGS_MHD_wk%fem_int%jcs, MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
       call set_MHD_connectivities                                       &
      &   (FEM_prm%DJDS_param, mesh, MHD_mesh%fluid, MHD_CG%solver_C,    &
-     &    fem_int%next_tbl, fem_int%rhs_tbl,                            &
-     &    MHD_CG%MHD_mat, MHD_CG%DJDS_comm_fl)
+     &    SGS_MHD_wk%fem_int, MHD_CG%MHD_mat, MHD_CG%DJDS_comm_fl)
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(my_rank, nprocs,                         &
-     &    mesh%node, ele_mesh%surf, spfs_1%spf_2d, fem_int%jcs)
+      call const_normal_vector                                          &
+     &   (my_rank, nprocs, mesh%node, ele_mesh%surf,                    &
+     &    spfs_1%spf_2d, SGS_MHD_wk%fem_int%jcs)
       call dealloc_surf_shape_func(spfs_1%spf_2d)
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'
@@ -286,10 +284,10 @@
 !
 !     ---------------------
 !
-      call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
-     &    mesh, MHD_mesh, fem_int%jcs, fem_int%rhs_tbl,                 &
+      call int_RHS_mass_matrices                                        &
+     &   (FEM_prm%npoint_t_evo_int, mesh, MHD_mesh,                     &
      &    SGS_MHD_wk%rhs_mat%fem_wk, SGS_MHD_wk%rhs_mat%f_l,            &
-     &    fem_int%m_lump, SGS_MHD_wk%mk_MHD)
+     &    SGS_MHD_wk%fem_int, SGS_MHD_wk%mk_MHD)
 !
 !     ---------------------
 !
@@ -303,7 +301,7 @@
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG                                     &
-     &     (MHD_step%time_d%dt, FEM_prm, mesh, fem_int%jcs,             &
+     &     (MHD_step%time_d%dt, FEM_prm, mesh, SGS_MHD_wk%fem_int%jcs,  &
      &      Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs,          &
      &      MHD_prop, MHD_BC1, FEM_prm%DJDS_param, spfs_1,              &
      &      MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM,                            &

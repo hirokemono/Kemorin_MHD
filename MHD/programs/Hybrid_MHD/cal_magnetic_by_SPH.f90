@@ -123,7 +123,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,         &
-     &          mesh, sph, comms_sph, trans_p, conduct, jacobians,      &
+     &          mesh, sph, comms_sph, trans_p, conduct, fem_int,        &
      &          Csims_FEM_MHD, ipol, rj_fld)
 !
       use m_solver_SR
@@ -142,7 +142,7 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
-      type(jacobians_type), intent(in) :: jacobians
+      type(finite_element_integration), intent(in) :: fem_int
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
 !
       type(field_geometry_data), intent(in) :: conduct
@@ -156,7 +156,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      MHD_mesh1%conduct, MHD_prop1%cd_prop,                       &
      &      iphys, SGS_MHD_wk1%iphys_ele, SGS_MHD_wk1%ele_fld,          &
-     &      fem_int1%jcs, fem_int1%rhs_tbl, FEM1_elen, filtering1,      &
+     &      fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,        &
      &      Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,              &
      &      SGS_MHD_wk1%FEM_SGS_wk%wk_filter, mhd_fem1_wk,              &
      &      rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl, nod_fld1)
