@@ -72,22 +72,14 @@
 !
 !
       call link_num_field_2_ucd(nod_fld, ucd)
-      call calypso_mpi_barrier
-      write(*,*) 'link_local_mesh_2_ucd'
       call link_local_mesh_2_ucd(node, ele, ucd)
-      call calypso_mpi_barrier
-      write(*,*) 'link_field_data_to_ucd'
       call link_field_data_to_ucd(nod_fld, ucd)
-      call calypso_mpi_barrier
 !
       if (ucd_param%iflag_format/icent .eq. iflag_single/icent) then
-        write(*,*) 'init_merged_ucd'
         call init_merged_ucd                                            &
      &     (ucd_param%iflag_format, node, ele, nod_comm, ucd, m_ucd)
-        call calypso_mpi_barrier
       end if
 !
-        write(*,*) 'sel_write_parallel_ucd_mesh'
       call sel_write_parallel_ucd_mesh(ucd_param, ucd, m_ucd)
       call calypso_mpi_barrier
 !
