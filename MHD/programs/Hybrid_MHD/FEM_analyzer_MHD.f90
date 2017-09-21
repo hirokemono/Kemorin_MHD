@@ -133,13 +133,13 @@
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices                                    &
      &   (femmesh, MHD_mesh1, MHD_prop1, fem_int1,                      &
-     &    MHD_CG%MGCG_WK, MHD1_mat_tbls, MHD_CG%solver_pack)
+     &    MHD_CG%MGCG_WK, SGS_MHD_wk%MHD_mat_tbls, MHD_CG%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt,                       &
      &    FEM_prm1, FEM_SGS%SGS_par, femmesh, ele_mesh,                 &
      &    MHD_mesh1, FEM_MHD1_BCs, MHD_prop1, fem_int1,                 &
-     &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims, MHD1_mat_tbls,  &
-     &    mk_MHD1, rhs_mat1, MHD_CG)
+     &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims,                 &
+     &    SGS_MHD_wk%MHD_mat_tbls, mk_MHD1, rhs_mat1, MHD_CG)
 !
 !   time evolution loop start!
 !
@@ -379,7 +379,8 @@
      &    (MHD_step%time_d, FEM_prm1, FEM_SGS%SGS_par,                  &
      &     femmesh, ele_mesh, MHD_mesh1, FEM_MHD1_BCs, MHD_prop1,       &
      &     fem_int1, FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims,      &
-     &     MHD1_mat_tbls, flex_p1, mk_MHD1, rhs_mat1, MHD_CG)
+     &     SGS_MHD_wk%MHD_mat_tbls, flex_p1, mk_MHD1,                   &
+     &     SGS_MHD_wk%rhs_mat, MHD_CG)
       end if
 !
       end subroutine FEM_analyze_MHD

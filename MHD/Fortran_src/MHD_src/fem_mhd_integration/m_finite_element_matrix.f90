@@ -24,7 +24,4 @@
 !>      Structure of mass matrices for FEM_MHD
       type(lumped_mass_mat_layerd), save :: mk_MHD1
 !
-!>  Structures for FEM marix table
-      type(tables_MHD_mat_const), save :: MHD1_mat_tbls
-!
       end module m_finite_element_matrix
