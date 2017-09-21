@@ -11,7 +11,7 @@
 !!     &          iphys, iphys_ele, ele_fld, fem_int,                   &
 !!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
-!!     &          mlump_fl, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,       &
+!!     &          mk_MHD, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,         &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -35,7 +35,7 @@
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
-!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(MHD_MG_matrix), intent(in) :: Smatrix
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -63,6 +63,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_MHD_finite_element_mat
+      use t_MHD_mass_matricxes
       use t_layering_ele_list
       use t_filter_elength
       use t_filtering_data
@@ -77,6 +78,8 @@
 !
       implicit none
 !
+      private :: s_cal_light_element_pre
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -89,7 +92,7 @@
      &          iphys, iphys_ele, ele_fld, fem_int,                     &
      &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
-     &          mlump_fl, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,         &
+     &          mk_MHD, Smatrix, ak_MHD, MGCG_WK, FEM_SGS_wk,           &
      &          mhd_fem_wk, rhs_mat, nod_fld)
 !
       use nod_phys_send_recv
@@ -131,7 +134,7 @@
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(lumped_mass_matrices), intent(in) :: mlump_fl
+      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
       type(MHD_MG_matrix), intent(in) :: Smatrix
 !
       type(MGCG_data), intent(inout) :: MGCG_WK
@@ -147,8 +150,8 @@
      &    property, ref_param, nod_bcs, sf_bcs, iphys, iphys_ele,       &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,             &
      &    icomp_sgs, ifld_diff, iphys_elediff, sgs_coefs,               &
-     &    sgs_coefs_nod, diff_coefs, filtering, mlump_fl, Smatrix,      &
-     &    ak_MHD%ak_d_composit, MGCG_WK, FEM_SGS_wk%wk_filter,          &
+     &    sgs_coefs_nod, diff_coefs, filtering, mk_MHD%mlump_fl,        &
+     &    Smatrix, ak_MHD%ak_d_composit, MGCG_WK, FEM_SGS_wk%wk_filter, &
      &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,                  &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !

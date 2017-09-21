@@ -11,7 +11,7 @@
 !!     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx, i_step, dt,&
 !!     &          FEM_prm, SGS_par, mesh, group, surf, fluid,           &
 !!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, jacs,             &
-!!     &          rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk,           &
+!!     &          rhs_tbl, FEM_filters, mk_MHD, FEM_SGS_wk,             &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -26,7 +26,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -51,6 +51,7 @@
       use t_work_FEM_integration
       use t_jacobians
       use t_MHD_finite_element_mat
+      use t_MHD_mass_matricxes
       use t_FEM_MHD_filter_data
       use t_material_property
       use t_work_FEM_dynamic_SGS
@@ -68,7 +69,7 @@
      &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx, i_step, dt,  &
      &          FEM_prm, SGS_par, mesh, group, surf, fluid,             &
      &          Vsf_bcs, Psf_bcs, iphys, iphys_ele, jacs,               &
-     &          rhs_tbl, FEM_filters, mlump_fl, FEM_SGS_wk,             &
+     &          rhs_tbl, FEM_filters, mk_MHD, FEM_SGS_wk,               &
      &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, diff_coefs)
 !
       use average_on_elements
@@ -95,7 +96,7 @@
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(lumped_mass_matrices), intent(in) :: mlump_fl
+      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -194,7 +195,7 @@
      &        FEM_filters%layer_tbl, jacs, rhs_tbl,                     &
      &        FEM_filters%FEM_elens, FEM_filters%filtering,             &
      &        FEM_SGS_wk%wk_filter, FEM_SGS_wk%wk_cor,                  &
-     &        FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, mlump_fl,          &
+     &        FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, mk_MHD%mlump_fl,   &
      &        rhs_mat%fem_wk, rhs_mat%surf_wk,                          &
      &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
         end if
