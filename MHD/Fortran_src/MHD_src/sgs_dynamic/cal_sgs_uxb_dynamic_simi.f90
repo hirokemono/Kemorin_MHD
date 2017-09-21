@@ -6,19 +6,17 @@
 !
 !!      subroutine s_cal_sgs_uxb_dynamic_simi                           &
 !!     &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par,          &
-!!     &         mesh, iphys, jacs, FEM_filters, FEM_SGS_wk,            &
+!!     &         mesh, iphys, fem_int, FEM_filters, FEM_SGS_wk,         &
 !!     &         nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic_simi                        &
 !!     &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par,          &
-!!     &         mesh, iphys, jacs, rhs_tbl, FEM_filters, m_lump,       &
-!!     &         FEM_SGS_wk, rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
+!!     &         mesh, iphys, fem_int, FEM_filters, FEM_SGS_wk,         &
+!!     &         rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_address), intent(in) :: iphys
-!!        type(jacobians_type), intent(in) :: jacs
-!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
-!!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -56,7 +54,7 @@
 !
       subroutine s_cal_sgs_uxb_dynamic_simi                             &
      &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par,            &
-     &         mesh, iphys, jacs, FEM_filters, FEM_SGS_wk,              &
+     &         mesh, iphys, fem_int, FEM_filters, FEM_SGS_wk,           &
      &         nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
@@ -71,7 +69,7 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(phys_address), intent(in) :: iphys
-      type(jacobians_type), intent(in) :: jacs
+      type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
@@ -122,7 +120,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
       call cal_model_coefs(SGS_par, FEM_filters%layer_tbl,              &
-     &    mesh%node, mesh%ele, iphys, nod_fld, jacs,                    &
+     &    mesh%node, mesh%ele, iphys, nod_fld, fem_int%jcs,             &
      &    SGS_par%model_p%itype_Csym_uxb, n_vector, iak_sgs_uxb,        &
      &    icomp_sgs_uxb, FEM_prm%npoint_t_evo_int,                      &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs,      &
@@ -134,8 +132,8 @@
 !
       subroutine cal_sgs_induct_t_dynamic_simi                          &
      &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par,            &
-     &         mesh, iphys, jacs, rhs_tbl, FEM_filters, m_lump,         &
-     &         FEM_SGS_wk, rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
+     &         mesh, iphys, fem_int, FEM_filters, FEM_SGS_wk,           &
+     &         rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod)
 !
       use reset_dynamic_model_coefs
       use cal_filtering_scalars
@@ -152,10 +150,8 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(phys_address), intent(in) :: iphys
-      type(jacobians_type), intent(in) :: jacs
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
-      type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -217,14 +213,14 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
       call cal_model_coefs(SGS_par, FEM_filters%layer_tbl,              &
-     &    mesh%node, mesh%ele, iphys, nod_fld, jacs,                    &
+     &    mesh%node, mesh%ele, iphys, nod_fld, fem_int%jcs,             &
      &    SGS_par%model_p%itype_Csym_uxb, n_asym_tensor,                &
      &    iak_sgs_uxb, icomp_sgs_uxb, FEM_prm%npoint_t_evo_int,         &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs,      &
      &    sgs_coefs)
 !
       call cal_ele_vector_2_node(mesh%node, mesh%ele,                   &
-     &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, m_lump,                     &
+     &    fem_int%jcs, fem_int%rhs_tbl, fem_int%m_lump,                 &
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak,             &
      &    sgs_coefs_nod%ntot_comp, icomp_sgs_uxb, sgs_coefs_nod%ak,     &
      &    rhs_mat%fem_wk, rhs_mat%f_l)

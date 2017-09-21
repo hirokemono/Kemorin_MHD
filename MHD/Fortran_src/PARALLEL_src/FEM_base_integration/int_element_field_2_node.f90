@@ -4,15 +4,15 @@
 !     Written by H. Matsui on Oct., 2006
 !
 !!      subroutine cal_ele_scalar_2_node                                &
-!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,            &
+!!     &         (node, ele, jacs, rhs_tbl, m_lump,                     &
 !!     &          ntot_comp_ele, ifield_ele, scalar_ele,                &
 !!     &          ntot_comp_nod, ifield_nod, scalar_nod, fem_wk, rhs_l)
 !!      subroutine cal_ele_vector_2_node                                &
-!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,            &
+!!     &         (node, ele, jacs, rhs_tbl, m_lump,                     &
 !!     &          ntot_comp_ele, ifield_ele, vector_ele,                &
 !!     &          ntot_comp_nod, ifield_nod, vector_nod, fem_wk, rhs_l)
 !!      subroutine cal_ele_sym_tensor_2_node                            &
-!!     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,            &
+!!     &         (node, ele, jacs, rhs_tbl, m_lump,                     &
 !!     &          ntot_comp_ele, ifield_ele, tensor_ele,                &
 !!     &          ntot_comp_nod, ifield_nod, tensor_nod, fem_wk, rhs_l)
 !!
@@ -31,6 +31,8 @@
 !!     &          nele_grp, iele_grp, vector_ele, fem_wk, rhs_l)
 !!        type(node_data), intent(in) ::    node
 !!        type(element_data), intent(in) :: ele
+!!        type(jacobians_type), intent(in) :: jacs
+!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
@@ -62,7 +64,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_ele_scalar_2_node                                  &
-     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,              &
+     &         (node, ele, jacs, rhs_tbl, m_lump,                       &
      &          ntot_comp_ele, ifield_ele, scalar_ele,                  &
      &          ntot_comp_nod, ifield_nod, scalar_nod, fem_wk, rhs_l)
 !
@@ -70,8 +72,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
@@ -87,7 +88,7 @@
 !
 !
       call int_area_ele_scalar_2_node                                   &
-     &   (node, ele, g_FEM, jac_3d, rhs_tbl,                            &
+     &   (node, ele, jacs%g_FEM, jacs%jac_3d, rhs_tbl,                  &
      &    ele%istack_ele_smp,  scalar_ele(1,ifield_ele), fem_wk, rhs_l)
       call cal_ff_smp_2_scalar(node, rhs_tbl, rhs_l%ff_smp,             &
      &    m_lump%ml, n_scalar, ione, scalar_nod(1,ifield_nod))
@@ -97,7 +98,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_ele_vector_2_node                                  &
-     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,              &
+     &         (node, ele, jacs, rhs_tbl, m_lump,                       &
      &          ntot_comp_ele, ifield_ele, vector_ele,                  &
      &          ntot_comp_nod, ifield_nod, vector_nod, fem_wk, rhs_l)
 !
@@ -105,8 +106,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
@@ -123,7 +123,7 @@
 !
 !
       call int_area_ele_vector_2_node                                   &
-     &   (node, ele, g_FEM, jac_3d, rhs_tbl,                            &
+     &   (node, ele, jacs%g_FEM, jacs%jac_3d, rhs_tbl,                  &
      &    ele%istack_ele_smp, vector_ele(1,ifield_ele), fem_wk, rhs_l)
       call cal_ff_smp_2_vector(node, rhs_tbl, rhs_l%ff_smp,             &
      &    m_lump%ml, n_vector, ione, vector_nod(1,ifield_nod))
@@ -133,7 +133,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_ele_sym_tensor_2_node                              &
-     &         (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,              &
+     &         (node, ele, jacs, rhs_tbl, m_lump,                       &
      &          ntot_comp_ele, ifield_ele, tensor_ele,                  &
      &          ntot_comp_nod, ifield_nod, tensor_nod, fem_wk, rhs_l)
 !
@@ -141,8 +141,7 @@
 !
       type(node_data), intent(in) ::    node
       type(element_data), intent(in) :: ele
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
@@ -157,12 +156,10 @@
       type(finite_ele_mat_node), intent(inout) :: rhs_l
 !
 !
-      call cal_ele_vector_2_node                                        &
-     &   (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,                    &
+      call cal_ele_vector_2_node(node, ele, jacs, rhs_tbl, m_lump,      &
      &    n_sym_tensor, ione,  tensor_ele(1,ifield_ele),                &
      &    n_sym_tensor, ione, tensor_nod, fem_wk, rhs_l)
-      call cal_ele_vector_2_node                                        &
-     &   (node, ele, g_FEM, jac_3d, rhs_tbl, m_lump,                    &
+      call cal_ele_vector_2_node(node, ele, jacs, rhs_tbl, m_lump,      &
      &    n_sym_tensor, ifour, tensor_ele(1,ifield_nod),                &
      &    n_sym_tensor, ifour, tensor_nod, fem_wk, rhs_l)
 !
