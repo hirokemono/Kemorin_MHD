@@ -8,7 +8,7 @@
 !!     &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx, dt,      &
 !!     &          FEM_prm, SGS_par, mesh, iphys, iphys_ele, fld_ele,    &
 !!     &          fluid, fem_int, FEM_filters, sgs_coefs_nod,           &
-!!     &          mlump_fl, FEM_SGS_wk, mhd_fem_wk, rhs_mat,            &
+!!     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
 !!     &          nod_fld, sgs_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -20,7 +20,7 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
-!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -44,6 +44,7 @@
       use t_jacobians
       use t_FEM_MHD_filter_data
       use t_MHD_finite_element_mat
+      use t_MHD_mass_matricxes
       use t_material_property
       use t_SGS_model_coefs
       use t_work_FEM_integration
@@ -61,7 +62,7 @@
      &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx, dt,        &
      &          FEM_prm, SGS_par, mesh, iphys, iphys_ele, fld_ele,      &
      &          fluid, fem_int, FEM_filters, sgs_coefs_nod,             &
-     &          mlump_fl, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
+     &          mk_MHD, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
      &          nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
@@ -87,7 +88,7 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
-      type(lumped_mass_matrices), intent(in) :: mlump_fl
+      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -123,7 +124,8 @@
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx, dt,        &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele, fld_ele, fem_int%jcs, FEM_filters%FEM_elens,       &
-     &    fem_int%rhs_tbl, mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld)
+     &    fem_int%rhs_tbl, mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, &
+     &     nod_fld)
 !
 !   gradient model by original field
 !
@@ -132,7 +134,8 @@
      &    iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx, dt,               &
      &    FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,           &
      &    iphys_ele, fld_ele, fem_int%jcs, FEM_filters%FEM_elens,       &
-     &    fem_int%rhs_tbl, mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, nod_fld)
+     &    fem_int%rhs_tbl, mk_MHD%mlump_fl, rhs_mat%fem_wk, mhd_fem_wk, &
+     &    nod_fld)
 !
 !      filtering
 !

@@ -9,7 +9,7 @@
 !!     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,&
 !!     &          SGS_par, mesh, group, surf, Snod_bcs, sf_bcs,         &
 !!     &          iphys, iphys_ele, ele_fld, fluid, fem_int,            &
-!!     &          FEM_filters, sgs_coefs, mlump_fl, FEM_SGS_wk,         &
+!!     &          FEM_filters, sgs_coefs, mk_MHD, FEM_SGS_wk,           &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -25,7 +25,7 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
-!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -46,6 +46,7 @@
       use t_table_FEM_const
       use t_FEM_MHD_filter_data
       use t_MHD_finite_element_mat
+      use t_MHD_mass_matricxes
       use t_bc_data_temp
       use t_surface_bc_data
       use t_work_FEM_integration
@@ -65,7 +66,7 @@
      &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,  &
      &          SGS_par, mesh, group, surf, Snod_bcs, sf_bcs,           &
      &          iphys, iphys_ele, ele_fld, fluid, fem_int,              &
-     &          FEM_filters, sgs_coefs, mlump_fl, FEM_SGS_wk,           &
+     &          FEM_filters, sgs_coefs, mk_MHD, FEM_SGS_wk,             &
      &          mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
 !
       use m_machine_parameter
@@ -105,7 +106,7 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(filters_on_FEM), intent(in) :: FEM_filters
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
-      type(lumped_mass_matrices), intent(in) :: mlump_fl
+      type(lumped_mass_mat_layerd), intent(in) :: mk_MHD
 !
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -128,8 +129,8 @@
      &    icomp_sgs_flux, iphys%i_sgs_grad_f, ifield_f, ie_dfvx,        &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
      &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
-     &    FEM_filters%FEM_elens, sgs_coefs, mlump_fl, mhd_fem_wk,       &
-     &    rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
+     &    FEM_filters%FEM_elens, sgs_coefs, mk_MHD%mlump_fl,            &
+     &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
@@ -138,7 +139,7 @@
      &    ivelo_f, ifield_f, iflag_supg, num_int, dt,                   &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele,         &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, rhs_mat%fem_wk,        &
-     &    mlump_fl, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &    mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
 !
@@ -147,7 +148,7 @@
      &    i_sgs, ivelo, ifield, iflag_supg, num_int, dt,                &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele,         &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, rhs_mat%fem_wk,        &
-     &    mlump_fl, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &    mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
 !
 !    filtering (to iphys%i_sgs_grad)
@@ -170,7 +171,7 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
       call cal_commute_error_4_sf(num_int, fluid%istack_ele_fld_smp,    &
-     &    mlump_fl, mesh%node, mesh%ele, surf,                          &
+     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, surf,                   &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, sf_bcs%sgs, ifilter_4delta,            &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, ivelo_f, ifield_f,    &
@@ -187,7 +188,7 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
       call cal_commute_error_4_sf(num_int, fluid%istack_ele_fld_smp,    &
-     &    mlump_fl, mesh%node, mesh%ele, surf,                          &
+     &    mk_MHD%mlump_fl, mesh%node, mesh%ele, surf,                   &
      &    group%surf_grp, fem_int%jcs, fem_int%rhs_tbl,                 &
      &    FEM_filters%FEM_elens, sf_bcs%sgs, ifilter_2delta,            &
      &    iphys%i_sgs_grad, i_sgs, ivelo, ifield,                       &
