@@ -121,9 +121,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs                                              &
-     &   (SGS_par, FEM_filters%layer_tbl, mesh%node, mesh%ele,          &
-     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,       &
+      call cal_model_coefs(SGS_par, FEM_filters%layer_tbl,              &
+     &    mesh%node, mesh%ele, iphys, nod_fld, jacs,                    &
      &    SGS_par%model_p%itype_Csym_uxb, n_vector, iak_sgs_uxb,        &
      &    icomp_sgs_uxb, FEM_prm%npoint_t_evo_int,                      &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs,      &
@@ -217,9 +216,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs                                              &
-     &   (SGS_par, FEM_filters%layer_tbl, mesh%node, mesh%ele,          &
-     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,       &
+      call cal_model_coefs(SGS_par, FEM_filters%layer_tbl,              &
+     &    mesh%node, mesh%ele, iphys, nod_fld, jacs,                    &
      &    SGS_par%model_p%itype_Csym_uxb, n_asym_tensor,                &
      &    iak_sgs_uxb, icomp_sgs_uxb, FEM_prm%npoint_t_evo_int,         &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs,      &

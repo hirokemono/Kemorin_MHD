@@ -164,10 +164,9 @@
      &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,               &
      &    FEM_prm, SGS_par%model_p, SGS_par%filter_p,                   &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
-     &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
-     &    FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, mlump_fl,     &
-     &    wk_filter, mhd_fem_wk, rhs_mat%fem_wk,                        &
-     &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &    fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,           &
+     &    sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,    &
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
 !   lead work of Reynolds stress
 !

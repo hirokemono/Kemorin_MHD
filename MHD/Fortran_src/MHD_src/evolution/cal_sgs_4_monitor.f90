@@ -170,10 +170,9 @@
         call cal_sgs_momentum_flux                                      &
      &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,             &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
-     &      fluid, iphys, iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
-     &      rhs_tbl, FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,    &
-     &      mk_MHD%mlump_fl, wk_filter, mhd_fem_wk, fem_wk,             &
-     &      f_l, f_nl, nod_fld)
+     &      fluid, iphys, iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, &
+     &      filtering, sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,       &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_SGS_maxwell .gt. 0) then
@@ -182,7 +181,7 @@
         call cal_sgs_maxwell                                            &
      &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne, dt,             &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
-     &      fluid, iphys, iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
+     &      fluid, iphys, iphys_ele, ele_fld, jacs,                     &
      &      rhs_tbl, FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,    &
      &      mk_MHD%mlump_fl, wk_filter, mhd_fem_wk, fem_wk,             &
      &      f_l, f_nl, nod_fld)
@@ -193,10 +192,10 @@
         call cal_sgs_magne_induction(icomp_sgs%i_induction,             &
      &      iphys_elediff%i_velo, iphys_elediff%i_magne, dt,            &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
-     &      conduct, cd_prop, iphys, iphys_ele, ele_fld,                &
-     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, filtering,     &
-     &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_cd,                  &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jacs, rhs_tbl, &
+     &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,             &
+     &      mk_MHD%mlump_cd, wk_filter, mhd_fem_wk, fem_wk,             &
+     &      f_l, nod_fld)
       end if
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then
@@ -205,10 +204,9 @@
         call cal_sgs_uxb_2_monitor                                      &
      &     (icomp_sgs%i_induction, iphys_elediff%i_velo, dt,            &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
-     &      conduct, cd_prop, iphys, iphys_ele, ele_fld,                &
-     &      jacs%g_FEM, jacs%jac_3d,  rhs_tbl, FEM_elens, filtering,    &
-     &      sgs_coefs, mk_MHD%mlump_cd, wk_filter, mhd_fem_wk,          &
-     &      fem_wk, f_l, f_nl, nod_fld)
+     &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jacs, rhs_tbl, &
+     &      FEM_elens, filtering, sgs_coefs, mk_MHD%mlump_cd,           &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       end subroutine cal_sgs_terms_4_monitor

@@ -209,8 +209,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_t, icomp_diff_t
       call cal_diff_coef_fluid                                          &
-     &   (SGS_par, layer_tbl, node, ele, fluid, iphys, nod_fld,         &
-     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
+     &   (SGS_par, layer_tbl, node, ele, fluid, iphys, nod_fld, jacs,   &
      &    n_vector, iak_diff_t, icomp_diff_t, num_int,                  &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !

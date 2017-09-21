@@ -135,9 +135,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*)' cal_model_coefs',              &
      &   n_vector, iak_sgs_hlux, icomp_sgs_flux
-      call cal_model_coefs                                              &
-     &   (SGS_par, FEM_filters%layer_tbl, mesh%node, mesh%ele,          &
-     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,       &
+      call cal_model_coefs(SGS_par, FEM_filters%layer_tbl,              &
+     &    mesh%node, mesh%ele, iphys, nod_fld, jacs,                    &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux, icomp_sgs_flux,      &
      &    num_int, FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
      &    FEM_SGS_wk%wk_sgs, sgs_coefs)

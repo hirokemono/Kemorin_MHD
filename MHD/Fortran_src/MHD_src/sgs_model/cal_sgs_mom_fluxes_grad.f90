@@ -6,13 +6,12 @@
 !!      subroutine cal_sgs_m_flux_grad_w_coef                           &
 !!     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx, dt,        &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, fluid,       &
-!!     &          iphys_ele, ele_fld, g_FEM, jac_3d, FEM_elens,         &
-!!     &          sgs_coefs, rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk,     &
-!!     &          nod_fld)
+!!     &          iphys_ele, ele_fld, jacs, FEM_elens, sgs_coefs,       &
+!!     &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !!      subroutine cal_sgs_m_flux_grad_no_coef                          &
 !!     &         (i_filter, i_sgs, i_field, ie_dvx, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
-!!     &          iphys_ele, ele_fld, g_FEM, jac_3d, FEM_elens,         &
+!!     &          iphys_ele, ele_fld, jacs, FEM_elens,                  &
 !!     &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -22,8 +21,7 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
-!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(jacobians_type), intent(in) :: jacs
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -46,8 +44,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use t_fem_gauss_int_coefs
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
@@ -66,9 +63,8 @@
       subroutine cal_sgs_m_flux_grad_w_coef                             &
      &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx, dt,          &
      &          FEM_prm, SGS_param, nod_comm, node, ele, fluid,         &
-     &          iphys_ele, ele_fld, g_FEM, jac_3d, FEM_elens,           &
-     &          sgs_coefs, rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk,       &
-     &          nod_fld)
+     &          iphys_ele, ele_fld, jacs, FEM_elens, sgs_coefs,         &
+     &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -84,8 +80,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_type), intent(in) :: jacs
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -108,7 +103,7 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
-     &    g_FEM, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
 !
@@ -132,7 +127,7 @@
       subroutine cal_sgs_m_flux_grad_no_coef                            &
      &         (i_filter, i_sgs, i_field, ie_dvx, dt,                   &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
-     &          iphys_ele, ele_fld, g_FEM, jac_3d, FEM_elens,           &
+     &          iphys_ele, ele_fld, jacs, FEM_elens,                    &
      &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
       use cal_ff_smp_to_ffs
@@ -147,8 +142,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_type), intent(in) :: jacs
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type (lumped_mass_matrices), intent(in) :: mlump_fl
@@ -170,7 +164,7 @@
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
-     &    g_FEM, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &    jacs%g_FEM, jacs%jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add6_skv_to_ff_t_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, mhd_fem_wk%ff_t_smp)

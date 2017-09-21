@@ -414,8 +414,7 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      MHD_mesh%conduct, MHD_prop%cd_prop,                         &
-     &      iphys, iphys_ele, ele_fld,                                  &
-     &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
+     &      iphys, iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,    &
      &      FEM_elens, filtering, Csims_FEM_MHD%sgs_coefs,              &
      &      mk_MHD%mlump_cd, FEM_SGS_wk%wk_filter, mhd_fem_wk,          &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)

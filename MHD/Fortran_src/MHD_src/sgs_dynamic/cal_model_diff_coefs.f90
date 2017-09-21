@@ -3,22 +3,22 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!!      subroutine cal_model_coefs(SGS_par, layer_tbl,                  &
-!!     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l, &
-!!     &          itype_csim, n_tensor, ifield_d, icomp_f, n_int,       &
+!!      subroutine cal_model_coefs(SGS_par, layer_tbl, node, ele,       &
+!!     &          iphys, nod_fld, jacs, itype_csim,                     &
+!!     &          n_tensor, ifield_d, icomp_f, n_int,                   &
 !!     &          wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !!
 !!      subroutine cal_diff_coef                                        &
 !!     &         (SGS_par, layer_tbl, node, ele,  iphys, nod_fld,       &
-!!     &          g_FEM, jac_3d_q, jac_3d_l, numdir, ifield_d, icomp_f, &
-!!     &          n_int, wk_cor, wk_lsq, wk_diff, diff_coefs)
-!!      subroutine cal_diff_coef_fluid(SGS_par, layer_tbl, node, ele,   &
-!!     &          fluid, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,     &
-!!     &          numdir, ifield_d, icomp_f, n_int,                     &
+!!     &          jacs, numdir, ifield_d, icomp_f, n_int,               &
 !!     &          wk_cor, wk_lsq, wk_diff, diff_coefs)
-!!      subroutine cal_diff_coef_conduct(SGS_par, layer_tbl, node, ele, &
-!!     &          conduct, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
-!!     &          numdir, ifield_d, icomp_f, n_int,                     &
+!!      subroutine cal_diff_coef_fluid                                  &
+!!     &         (SGS_par, layer_tbl, node, ele, fluid, iphys, nod_fld, &
+!!     &          jacs, numdir, ifield_d, icomp_f, n_int,               &
+!!     &          wk_cor, wk_lsq, wk_diff, diff_coefs)
+!!      subroutine cal_diff_coef_conduct                                &
+!!     &         (SGS_par, layer_tbl, node, ele, conduct, jacs,         &
+!!     &          iphys, nod_fld, numdir, ifield_d, icomp_f, n_int,     &
 !!     &          wk_cor, wk_lsq, wk_diff, diff_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(node_data), intent(in) :: node
@@ -28,8 +28,7 @@
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_type), intent(in) :: jacs
 !!        type(dynamic_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamic_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -48,7 +47,6 @@
       use t_phys_address
       use t_phys_data
       use t_layering_ele_list
-      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_material_property
       use t_SGS_model_coefs
@@ -66,9 +64,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_model_coefs(SGS_par, layer_tbl,                    &
-     &          node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,   &
-     &          itype_csim, n_tensor, ifield_d, icomp_f, n_int,         &
+      subroutine cal_model_coefs(SGS_par, layer_tbl, node, ele,         &
+     &          iphys, nod_fld, jacs, itype_csim,                       &
+     &          n_tensor, ifield_d, icomp_f, n_int,                     &
      &          wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       use cal_lsq_model_coefs
@@ -84,8 +82,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacs
 !
       type(dynamic_correlation_data), intent(inout) :: wk_cor
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq
@@ -93,8 +90,8 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
 !
-      call cal_ave_rms_sgs_dynamic(layer_tbl,                           &
-     &    node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,         &
+      call cal_ave_rms_sgs_dynamic(layer_tbl, node, ele,                &
+     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,       &
      &    n_tensor, icomp_f, n_int, wk_sgs%nlayer, wk_sgs%ntot_comp,    &
      &    wk_sgs%ave_simi, wk_sgs%ave_grad, wk_sgs%rms_simi,            &
      &    wk_sgs%rms_grad, wk_sgs%ratio,                                &
@@ -103,14 +100,15 @@
 !
       call cal_correlate_sgs_dynamic                                    &
      &   (layer_tbl, node, ele, iphys, nod_fld,                         &
-     &    g_FEM, jac_3d_q, jac_3d_l, n_tensor, icomp_f, n_int,          &
+     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
+     &    n_tensor, icomp_f, n_int,                                     &
      &    wk_sgs%nlayer, wk_sgs%ntot_comp, wk_sgs%ave_simi,             &
      &    wk_sgs%ave_grad, wk_sgs%corrilate, wk_sgs%covariant,          &
      &    wk_sgs%corrilate_w, wk_sgs%covariant_w, wk_cor)
 !
       call cal_model_coef_4_flux                                        &
-     &   (SGS_par%model_p%iflag_Csim_marging, layer_tbl,                &
-     &    node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,         &
+     &   (SGS_par%model_p%iflag_Csim_marging, layer_tbl, node, ele,     &
+     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,       &
      &    n_tensor, ifield_d, icomp_f, n_int,                           &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%ntot_comp,            &
      &    wk_sgs%corrilate, wk_sgs%corrilate_w, wk_sgs%fld_coef,        &
@@ -136,8 +134,8 @@
 !
       subroutine cal_diff_coef                                          &
      &         (SGS_par, layer_tbl, node, ele,  iphys, nod_fld,         &
-     &          g_FEM, jac_3d_q, jac_3d_l, numdir, ifield_d, icomp_f,   &
-     &          n_int, wk_cor, wk_lsq, wk_diff, diff_coefs)
+     &          jacs, numdir, ifield_d, icomp_f, n_int,                 &
+     &          wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       integer (kind = kint), intent(in) :: numdir
       integer (kind = kint), intent(in) :: ifield_d, icomp_f, n_int
@@ -148,8 +146,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacs
 !
       type(dynamic_correlation_data), intent(inout) :: wk_cor
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq
@@ -158,14 +155,14 @@
 !
 !
       if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1) then
-        call cal_layerd_diff_coef(SGS_par, layer_tbl,                   &
-     &      node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,       &
+        call cal_layerd_diff_coef(SGS_par, layer_tbl, node, ele,        &
+     &      iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,     &
      &      numdir, ifield_d, icomp_f, n_int,                           &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
       else
         call cal_whole_diff_coef                                        &
-     &     (layer_tbl, ele%istack_ele_smp, SGS_par,                     &
-     &      node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,       &
+     &     (layer_tbl, ele%istack_ele_smp, SGS_par, node, ele,          &
+     &      iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,     &
      &      numdir, ifield_d, icomp_f, n_int, ele%volume,               &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
       end if
@@ -174,9 +171,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diff_coef_fluid(SGS_par, layer_tbl, node, ele,     &
-     &          fluid, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,       &
-     &          numdir, ifield_d, icomp_f, n_int,                       &
+      subroutine cal_diff_coef_fluid                                    &
+     &         (SGS_par, layer_tbl, node, ele, fluid, iphys, nod_fld,   &
+     &          jacs, numdir, ifield_d, icomp_f, n_int,                 &
      &          wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       integer (kind = kint), intent(in) :: numdir
@@ -189,8 +186,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacs
 !
       type(dynamic_correlation_data), intent(inout) :: wk_cor
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq
@@ -199,14 +195,14 @@
 !
 !
       if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1) then
-        call cal_layerd_diff_coef(SGS_par, layer_tbl,                   &
-     &      node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,       &
+        call cal_layerd_diff_coef(SGS_par, layer_tbl, node, ele,        &
+     &      iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,     &
      &      numdir, ifield_d, icomp_f, n_int,                           &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
       else
         call cal_whole_diff_coef                                        &
-     &     (layer_tbl, fluid%istack_ele_fld_smp, SGS_par,               &
-     &      node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,       &
+     &     (layer_tbl, fluid%istack_ele_fld_smp, SGS_par, node, ele,    &
+     &      iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,     &
      &      numdir, ifield_d, icomp_f, n_int, fluid%volume,             &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
       end if
@@ -215,9 +211,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diff_coef_conduct(SGS_par, layer_tbl, node, ele,   &
-     &          conduct, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,     &
-     &          numdir, ifield_d, icomp_f, n_int,                       &
+      subroutine cal_diff_coef_conduct                                  &
+     &         (SGS_par, layer_tbl, node, ele, conduct, jacs,           &
+     &          iphys, nod_fld, numdir, ifield_d, icomp_f, n_int,       &
      &          wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       integer (kind = kint), intent(in) :: numdir
@@ -230,8 +226,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacs
 !
       type(dynamic_correlation_data), intent(inout) :: wk_cor
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq
@@ -240,14 +235,14 @@
 !
 !
       if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1) then
-        call cal_layerd_diff_coef(SGS_par, layer_tbl,                   &
-     &      node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,       &
+        call cal_layerd_diff_coef(SGS_par, layer_tbl, node, ele,        &
+     &      iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,     &
      &      numdir, ifield_d, icomp_f, n_int,                           &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
       else
         call cal_whole_diff_coef                                        &
-     &     (layer_tbl, conduct%istack_ele_fld_smp, SGS_par,             &
-     &      node, ele, iphys, nod_fld, g_FEM, jac_3d_q, jac_3d_l,       &
+     &     (layer_tbl, conduct%istack_ele_fld_smp, SGS_par, node, ele,  &
+     &      iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,     &
      &      numdir, ifield_d, icomp_f, n_int, conduct%volume,           &
      &      wk_cor, wk_lsq, wk_diff, diff_coefs)
       end if

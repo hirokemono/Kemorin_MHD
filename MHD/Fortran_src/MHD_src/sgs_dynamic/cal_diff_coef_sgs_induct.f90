@@ -121,9 +121,9 @@
      &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
      &    ie_dfvx, ie_dfbx, dt, FEM_prm, SGS_par%model_p,               &
      &    mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,         &
-     &    iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
-     &    FEM_filters%FEM_elens, sgs_coefs, mlump_cd, rhs_mat%fem_wk,   &
-     &    mhd_fem_wk, rhs_mat%f_l, nod_fld)
+     &    iphys_ele, ele_fld, jacs, rhs_tbl, FEM_filters%FEM_elens,     &
+     &    sgs_coefs, mlump_cd, rhs_mat%fem_wk, mhd_fem_wk,              &
+     &    rhs_mat%f_l, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
@@ -204,8 +204,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_uxb, icomp_diff_uxb
       call cal_diff_coef_fluid(SGS_par, FEM_filters%layer_tbl,          &
-     &    mesh%node, mesh%ele,  fluid, iphys, nod_fld,                  &
-     &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l, n_vector,             &
+     &    mesh%node, mesh%ele,  fluid, iphys, nod_fld, jacs, n_vector,  &
      &    iak_diff_uxb, icomp_diff_uxb, FEM_prm%npoint_t_evo_int,       &
      &    FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff,     &
      &    diff_coefs)

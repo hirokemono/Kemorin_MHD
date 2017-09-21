@@ -10,9 +10,7 @@
       module m_finite_element_matrix
 !
       use m_precision
-      use t_MHD_finite_element_mat
       use t_work_FEM_integration
-      use t_sorted_node_MHD
       use t_MHD_mass_matricxes
 !
       implicit  none
