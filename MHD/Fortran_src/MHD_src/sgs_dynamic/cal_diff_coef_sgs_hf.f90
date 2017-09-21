@@ -127,10 +127,10 @@
       call cal_sgs_s_flux_grad_w_coef(iflag_supg, num_int, dt,          &
      &    itype_Csym_flux, SGS_par%model_p%icoord_Csim, ifilter_4delta, &
      &    icomp_sgs_flux, iphys%i_sgs_grad_f, ifield_f, ie_dfvx,        &
-     &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele,         &
-     &    ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,                    &
-     &    FEM_filters%FEM_elens, sgs_coefs, mlump_fl, mhd_fem_wk,       &
-     &    rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
+     &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
+     &    iphys_ele, ele_fld, jacs, rhs_tbl, FEM_filters%FEM_elens,     &
+     &    sgs_coefs, mlump_fl, mhd_fem_wk, rhs_mat%fem_wk,              &
+     &    rhs_mat%f_l, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !

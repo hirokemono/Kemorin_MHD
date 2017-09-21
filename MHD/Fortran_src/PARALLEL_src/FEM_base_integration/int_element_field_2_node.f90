@@ -45,7 +45,6 @@
 !
       use t_geometry_data
       use t_phys_data
-      use t_fem_gauss_int_coefs
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat

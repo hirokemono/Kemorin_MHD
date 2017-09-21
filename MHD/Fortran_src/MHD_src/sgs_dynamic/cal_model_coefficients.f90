@@ -138,8 +138,7 @@
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        SGS_par, femmesh%mesh, iphys,                             &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
-     &        MHD_mesh%fluid, fem_int%jcs, fem_int%rhs_tbl,             &
-     &        FEM_filters, sgs_coefs_nod,                               &
+     &        MHD_mesh%fluid, fem_int, FEM_filters, sgs_coefs_nod,      &
      &        mk_MHD%mlump_fl, SGS_MHD_wk%FEM_SGS_wk,                   &
      &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        sgs_coefs)
@@ -192,8 +191,7 @@
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        SGS_par, femmesh%mesh, iphys,                             &
      &        SGS_MHD_wk%iphys_ele, SGS_MHD_wk%ele_fld,                 &
-     &        MHD_mesh%fluid, fem_int%jcs, fem_int%rhs_tbl,             &
-     &        FEM_filters, sgs_coefs_nod,                               &
+     &        MHD_mesh%fluid, fem_int, FEM_filters, sgs_coefs_nod,      &
      &        mk_MHD%mlump_fl, SGS_MHD_wk%FEM_SGS_wk,                   &
      &        SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld,       &
      &        sgs_coefs)

@@ -144,10 +144,9 @@
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
-     &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
-     &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,             &
-     &      mk_MHD%mlump_fl, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,  &
-     &      nod_fld)
+     &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
+     &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl, wk_filter,       &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_SGS_c_flux .gt. 0) then
@@ -159,10 +158,9 @@
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,      &
      &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
-     &      iphys_ele, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
-     &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,             &
-     &      mk_MHD%mlump_fl, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,  &
-     &      nod_fld)
+     &      iphys_ele, ele_fld, jacs, rhs_tbl, FEM_elens, filtering,    &
+     &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl, wk_filter,       &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_SGS_m_flux .gt. 0) then
