@@ -14,6 +14,7 @@
       use m_work_time
 !
       use m_MHD_step_parameter
+      use m_FEM_MHD_time_stepping
       use m_mesh_data
       use m_node_phys_data
       use m_solver_djds_MHD
@@ -80,7 +81,7 @@
 !
       call start_elapsed_time(2)
       call FEM_initialize_MHD                                           &
-     &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1,       &
+     &   (MHD_files1, bc_FEM_IO1, flex_MHD1, MHD_step1,                 &
      &    femmesh1, ele_mesh1, iphys_nod1, nod_fld1, MHD_CG1, FEM_SGS1, &
      &    SGS_MHD_wk1, range1, fem_ucd1, fem_sq1, label_sim)
 !
@@ -103,7 +104,7 @@
       do
 !  Time evolution
         call FEM_analyze_MHD                                            &
-     &     (MHD_files1, femmesh1, ele_mesh1, iphys_nod1,                &
+     &     (MHD_files1, femmesh1, ele_mesh1, iphys_nod1, flex_MHD1,     &
      &      MHD_step1, visval, retval, MHD_CG1, FEM_SGS1, SGS_MHD_wk1,  &
      &      nod_fld1, fem_ucd1, fem_sq1)
 !

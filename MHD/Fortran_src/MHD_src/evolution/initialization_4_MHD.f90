@@ -4,7 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine init_analyzer_fl                                     &
-!!     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data, &
+!!     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_MHD,          &
 !!     &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters,&
 !!     &         MHD_prop, FEM_MHD_BCs, Csims_FEM_MHD, iphys, nod_fld,  &
 !!     &         MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
@@ -12,8 +12,7 @@
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
-!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
-!!        type(flexible_stepping_data), intent(inout) :: flex_data
+!!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
@@ -48,7 +47,7 @@
       use t_boundary_field_IO
       use t_FEM_SGS_model_coefs
       use t_material_property
-      use t_flex_delta_t_data
+      use t_FEM_MHD_time_stepping
       use t_FEM_MHD_mean_square
       use t_FEM_MHD_solvers
       use t_work_FEM_dynamic_SGS
@@ -66,7 +65,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_analyzer_fl                                       &
-     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_p, flex_data,   &
+     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_MHD,            &
      &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters,  &
      &         MHD_prop, FEM_MHD_BCs, Csims_FEM_MHD, iphys, nod_fld,    &
      &         MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
@@ -116,8 +115,7 @@
 !
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
-      type(flexible_stepping_parameter), intent(inout) :: flex_p
-      type(flexible_stepping_data), intent(inout) :: flex_data
+      type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
       type(MHD_step_param), intent(inout) :: MHD_step
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -180,7 +178,7 @@
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
       call s_init_check_delta_t_data                                    &
-     &  (MHD_prop%cd_prop, iphys, flex_data)
+     &  (MHD_prop%cd_prop, iphys, flex_MHD%flex_data)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
@@ -225,7 +223,7 @@
      &    MHD_mesh%fluid, MHD_prop%cd_prop, iphys,                      &
      &    FEM_filters%layer_tbl, SGS_par, SGS_MHD_wk%FEM_SGS_wk,        &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs,            &
-     &    nod_fld, flex_p, MHD_step%init_d, MHD_step%time_d)
+     &    nod_fld, flex_MHD%flex_p, MHD_step%init_d, MHD_step%time_d)
       MHD_step%iflag_initial_step = 0
 !
 !  -------------------------------

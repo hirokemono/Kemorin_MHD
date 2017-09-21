@@ -5,10 +5,9 @@
 !
 !!      subroutine cal_rms_scalar_potential                             &
 !!     &         (iloop, iele_fsmp_stack, i_phi, ir_phi, ja_phi,        &
-!!     &          node, ele, nod_fld, jacs, fem_wk, fem_msq, rsig,      &
+!!     &          mesh, nod_fld, jacs, fem_wk, fem_msq, rsig,           &
 !!     &          ave_0, rms_0)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -22,7 +21,7 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use t_geometry_data
+      use t_mesh_data
       use t_phys_data
       use t_jacobians
       use t_finite_element_mat
@@ -38,7 +37,7 @@
 !
       subroutine cal_rms_scalar_potential                               &
      &         (iloop, iele_fsmp_stack, i_phi, ir_phi, ja_phi,          &
-     &          node, ele, nod_fld, jacs, fem_wk, fem_msq, rsig,        &
+     &          mesh, nod_fld, jacs, fem_wk, fem_msq, rsig,             &
      &          ave_0, rms_0)
 !
       use int_all_energy
@@ -46,8 +45,7 @@
       integer(kind = kint), intent(in) :: iloop
       integer(kind = kint), intent(in) :: i_phi, ir_phi, ja_phi
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
 !
@@ -66,8 +64,7 @@
       fem_msq%ave_local(ja_phi) = zero
       call int_all_4_scalar                                             &
      &   (iele_fsmp_stack, num_int, ir_phi, ja_phi, i_phi,              &
-     &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,   &
-     &    fem_wk, fem_msq)
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
       call MPI_allREDUCE(fem_msq%ave_local(ja_phi) , ave_mp, ione,      &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

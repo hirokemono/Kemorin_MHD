@@ -9,6 +9,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_FEM_MHD_time_stepping
       use m_physical_property
       use m_3d_filter_coef_MHD
       use calypso_mpi
@@ -47,7 +48,7 @@
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call FEM_check_MHD_mat                                            &
-     &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1,       &
+     &   (MHD_files1, bc_FEM_IO1, flex_MHD1, MHD_step1,                 &
      &    femmesh1, ele_mesh1, iphys_nod1, nod_fld1,                    &
      &    MHD_CG1, FEM_SGS1, SGS_MHD_wk1, fem_sq1, label_sim)
 !

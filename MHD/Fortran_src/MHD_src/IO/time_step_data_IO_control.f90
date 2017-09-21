@@ -87,13 +87,11 @@
      &            'i_step=', time_d%i_time_step,'time=', time_d%time
 !
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
-     &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
-     &    iphys, nod_fld, jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,       &
+     &    mesh, MHD_mesh%fluid, MHD_mesh%conduct, iphys, nod_fld, jacs, &
      &    i_rms, j_ave, ifld_msq, rhs_mat%fem_wk, mhd_fem_wk, fem_msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
-     &    mesh%node, mesh%ele, fl_prop, cd_prop, iphys, nod_fld,        &
-     &    iphys_ele, ele_fld, MHD_mesh%fluid, jacs%g_FEM, jacs%jac_3d,  &
-     &    i_rms, j_ave, rhs_mat%fem_wk, fem_msq)
+     &    mesh, fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ele_fld,   &
+     &    MHD_mesh%fluid, jacs, i_rms, j_ave, rhs_mat%fem_wk, fem_msq)
 !
       call MPI_allREDUCE                                                &
      &   (fem_msq%ave_local, fem_msq%ave_global, fem_msq%num_ave,       &

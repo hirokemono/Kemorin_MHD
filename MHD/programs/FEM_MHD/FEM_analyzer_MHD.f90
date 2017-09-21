@@ -4,7 +4,7 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_MHD                                   &
-!!     &        (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step,     &
+!!     &        (MHD_files, bc_FEM_IO, flex_MHD, MHD_step,              &
 !!     &         femmesh, ele_mesh, iphys_nod, nod_fld, MHD_CG,         &
 !!     &         FEM_SGS, SGS_MHD_wk, range, fem_ucd, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -14,8 +14,7 @@
 !!        type(phys_address), intent(inout) :: iphys_nod
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
-!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
-!!        type(flexible_stepping_data), intent(inout) :: flex_data
+!!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -59,7 +58,7 @@
       use t_ucd_file
       use t_MHD_step_parameter
       use t_MHD_file_parameter
-      use t_flex_delta_t_data
+      use t_FEM_MHD_time_stepping
       use t_cal_max_indices
       use t_FEM_MHD_solvers
       use t_FEM_SGS_structure
@@ -77,7 +76,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_MHD                                     &
-     &        (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step,       &
+     &        (MHD_files, bc_FEM_IO, flex_MHD, MHD_step,                &
      &         femmesh, ele_mesh, iphys_nod, nod_fld, MHD_CG,           &
      &         FEM_SGS, SGS_MHD_wk, range, fem_ucd, fem_sq, label_sim)
 !
@@ -103,8 +102,7 @@
       type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       type(MHD_step_param), intent(inout) :: MHD_step
-      type(flexible_stepping_parameter), intent(inout) :: flex_p
-      type(flexible_stepping_data), intent(inout) :: flex_data
+      type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !
       type(mesh_data), intent(inout) :: femmesh
       type(element_geometry), intent(inout) :: ele_mesh
@@ -124,7 +122,7 @@
 !   matrix assembling
 !
       call init_analyzer_fl(MHD_files, bc_FEM_IO, FEM_prm1,             &
-     &    FEM_SGS%SGS_par, flex_p, flex_data, MHD_step,                 &
+     &    FEM_SGS%SGS_par, flex_MHD, MHD_step,                          &
      &    femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,             &
      &    FEM_SGS%FEM_filters, MHD_prop1, FEM_MHD1_BCs, FEM_SGS%Csims,  &
      &    iphys_nod, nod_fld, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
@@ -179,10 +177,9 @@
 !
       FEM_SGS%SGS_par%iflag_SGS_initial = 0
 !
-      call s_check_deltat_by_prev_rms                                   &
-     &   (flex_p1, MHD_step%time_d, femmesh%mesh,                       &
+      call s_check_deltat_by_prev_rms(MHD_step, femmesh%mesh,           &
      &    MHD_mesh1, MHD_prop1%cd_prop, iphys_nod, nod_fld,             &
-     &    SGS_MHD_wk%fem_int%jcs, SGS_MHD_wk%rhs_mat, flex_data1)
+     &    SGS_MHD_wk%fem_int, SGS_MHD_wk%rhs_mat, flex_MHD)
 !
 !
 !    Open monitor files
@@ -203,7 +200,7 @@
 !
       subroutine FEM_analyze_MHD                                        &
      &         (MHD_files, femmesh, ele_mesh, iphys_nod,                &
-     &          MHD_step, visval, retval, MHD_CG, FEM_SGS,              &
+     &          flex_MHD, MHD_step, visval, retval, MHD_CG, FEM_SGS,    &
      &          SGS_MHD_wk, nod_fld, fem_ucd, fem_sq)
 !
       use m_geometry_data_MHD
@@ -233,6 +230,7 @@
       type(phys_address), intent(in) :: iphys_nod
 !
       integer(kind=kint ), intent(inout) :: visval
+      type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -275,10 +273,9 @@
 !
       if (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
-        call s_check_flexible_time_step(femmesh%mesh, MHD_mesh1,        &
-     &      MHD_prop1%cd_prop, iphys_nod, nod_fld,                      &
-     &      SGS_MHD_wk%fem_int%jcs, SGS_MHD_wk%rhs_mat,                 &
-     &      flex_data1, flex_p1, MHD_step%time_d)
+        call s_check_flexible_time_step                                 &
+     &     (femmesh%mesh, MHD_mesh1, MHD_prop1, iphys_nod, nod_fld,     &
+     &      SGS_MHD_wk%fem_int, SGS_MHD_wk%rhs_mat, flex_MHD, MHD_step)
       end if
 !
 !     ========  Data output

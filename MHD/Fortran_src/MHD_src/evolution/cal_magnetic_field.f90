@@ -209,7 +209,7 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
         call cal_rms_scalar_potential(iloop, mesh%ele%istack_ele_smp,   &
      &      iphys%i_mag_p, fem_sq%i_rms%i_mag_p, fem_sq%j_ave%i_mag_p,  &
-     &      mesh%node, mesh%ele, nod_fld, fem_int%jcs, rhs_mat%fem_wk,  &
+     &      mesh, nod_fld, fem_int%jcs, rhs_mat%fem_wk,                 &
      &      fem_sq%msq, rel_correct, ave_mp0, rms_mp0)
 !
         if (iflag_debug.eq.1)                                           &
@@ -350,7 +350,7 @@
 !
         call cal_rms_scalar_potential(iloop, mesh%ele%istack_ele_smp,   &
      &      iphys%i_mag_p, fem_sq%i_rms%i_mag_p, fem_sq%j_ave%i_mag_p,  &
-     &      mesh%node, mesh%ele, nod_fld, fem_int%jcs, rhs_mat%fem_wk,  &
+     &      mesh, nod_fld, fem_int%jcs, rhs_mat%fem_wk,                 &
      &      fem_sq%msq, rel_correct, ave_mp0, rms_mp0)
 !
       if (iflag_debug.eq.1)                                             &

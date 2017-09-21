@@ -17,7 +17,4 @@
 !
       type(flexible_stepping_parameter), save :: flex_p1
 !
-      type(flexible_stepping_data), save :: flex_data1
-!
-!
       end module m_flexible_time_step

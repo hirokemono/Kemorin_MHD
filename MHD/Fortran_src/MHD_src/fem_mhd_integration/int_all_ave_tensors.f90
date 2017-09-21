@@ -7,17 +7,13 @@
 !
 !!      subroutine int_all_4_sym_tensor                                 &
 !!     &         (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_vect,       &
-!!     &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,        &
-!!     &          fem_wk, fem_msq)
+!!     &          mesh, nod_fld, jacs, fem_wk, fem_msq)
 !!      subroutine int_all_4_asym_tensor                                &
 !!     &         (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_vect,       &
-!!     &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,        &
-!!     &          fem_wk, fem_msq)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
+!!     &          mesh, nod_fld, jacs, fem_wk, fem_msq)
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_type), intent(in) :: jacs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(mean_square_values), intent(inout)  :: fem_msq
 !
@@ -26,10 +22,9 @@
       use m_precision
       use m_machine_parameter
 !
-      use t_geometry_data
+      use t_mesh_data
       use t_phys_data
-      use t_fem_gauss_int_coefs
-      use t_jacobian_3d
+      use t_jacobians
       use t_finite_element_mat
 !
       implicit none
@@ -45,16 +40,13 @@
 !
       subroutine int_all_4_sym_tensor                                   &
      &         (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_vect,         &
-     &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
-     &          fem_wk, fem_msq)
+     &          mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
       use t_mean_square_values
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacs
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
@@ -68,8 +60,8 @@
 !
       if( (ir_rms*i_vect) .gt. 0) then
         call int_vol_ave_rms_sym_tensor                                 &
-     &     (iele_fsmp_stack, n_int, i_vect, node, ele, nod_fld,         &
-     &      g_FEM, jac_3d_q, jac_3d_l, fem_wk,                          &
+     &     (iele_fsmp_stack, n_int, i_vect, mesh%node, mesh%ele,        &
+     &      nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                   &
      &      fem_msq%rms_local(ir_rms), fem_msq%ave_local(ja_ave))
       end if
 !
@@ -79,16 +71,13 @@
 !
       subroutine int_all_4_asym_tensor                                  &
      &         (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_vect,         &
-     &          node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,          &
-     &          fem_wk, fem_msq)
+     &          mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
       use t_mean_square_values
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacs
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
@@ -102,8 +91,8 @@
 !
       if( (ir_rms*i_vect) .gt. 0) then
         call int_vol_ave_rms_asym_tensor                                &
-     &     (iele_fsmp_stack, n_int, i_vect, node, ele, nod_fld,         &
-     &      g_FEM, jac_3d_q, jac_3d_l, fem_wk,                          &
+     &     (iele_fsmp_stack, n_int, i_vect, mesh%node, mesh%ele,        &
+     &      nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,                   &
      &      fem_msq%rms_local(ir_rms), fem_msq%ave_local(ja_ave))
       end if
 !
@@ -113,7 +102,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_ave_rms_sym_tensor(iele_fsmp_stack, n_int,     &
-     &          i_vect, node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
+     &          i_vect, node, ele, nod_fld, g_FEM, jac_3d_q,            &
      &          fem_wk, rms_local, ave_local)
 !
       use m_geometry_constants
@@ -131,7 +120,7 @@
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_3d), intent(in) :: jac_3d_q
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       real (kind=kreal), intent(inout) :: rms_local
@@ -142,37 +131,19 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_vect, fem_wk%vector_1)
-!
-        if (ele%nnod_4_ele .eq. num_t_quad) then
-          call fem_vol_ave_sym_tensor_1(ele%numele, ele%nnod_4_ele,     &
-     &        iele_fsmp_stack, ele%interior_ele, g_FEM%max_int_point,   &
-     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
-     &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
-     &        k2, fem_wk%vector_1, rms_local, ave_local)
-        else
-          call fem_vol_ave_sym_tensor_1(ele%numele, ele%nnod_4_ele,     &
-     &        iele_fsmp_stack, ele%interior_ele, g_FEM%max_int_point,   &
-     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
-     &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
-     &        k2, fem_wk%vector_1, rms_local, ave_local)
-        end if
+        call fem_vol_ave_sym_tensor_1(ele%numele, ele%nnod_4_ele,       &
+     &      iele_fsmp_stack, ele%interior_ele, g_FEM%max_int_point,     &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
+     &      k2, fem_wk%vector_1, rms_local, ave_local)
 !
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, (i_vect+3), fem_wk%vector_1)
-!
-        if (ele%nnod_4_ele .eq. num_t_quad) then
-          call fem_vol_ave_sym_tensor_2(ele%numele, ele%nnod_4_ele,     &
-     &        iele_fsmp_stack, ele%interior_ele, g_FEM%max_int_point,   &
-     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
-     &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
-     &        k2, fem_wk%vector_1, rms_local, ave_local)
-        else
-          call fem_vol_ave_sym_tensor_2(ele%numele, ele%nnod_4_ele,     &
-     &        iele_fsmp_stack, ele%interior_ele, g_FEM%max_int_point,   &
-     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
-     &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
-     &        k2, fem_wk%vector_1, rms_local, ave_local)
-        end if
+        call fem_vol_ave_sym_tensor_2(ele%numele, ele%nnod_4_ele,       &
+     &      iele_fsmp_stack, ele%interior_ele, g_FEM%max_int_point,     &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
+     &      k2, fem_wk%vector_1, rms_local, ave_local)
       end do
 !
 !
@@ -181,7 +152,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_ave_rms_asym_tensor(iele_fsmp_stack, n_int,    &
-     &          i_vect, node, ele, nod_fld, g_FEM, jac_3d_q, jac_3d_l,  &
+     &          i_vect, node, ele, nod_fld, g_FEM, jac_3d_q,            &
      &          fem_wk, rms_local, ave_local)
 !
       use m_geometry_constants
@@ -197,7 +168,7 @@
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
       type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_3d), intent(in) :: jac_3d_q
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       real (kind=kreal), intent(inout) :: rms_local
@@ -209,19 +180,11 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_vect, fem_wk%vector_1)
 !
-        if (ele%nnod_4_ele .eq. num_t_quad) then
-          call fem_vol_ave_asym_tensor(ele%numele, ele%nnod_4_ele,      &
-     &        iele_fsmp_stack, ele%interior_ele, g_FEM%max_int_point,   &
-     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
-     &        jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,     &
-     &        k2, fem_wk%vector_1, rms_local, ave_local)
-        else
-          call fem_vol_ave_asym_tensor(ele%numele, ele%nnod_4_ele,      &
-     &        iele_fsmp_stack, ele%interior_ele, g_FEM%max_int_point,   &
-     &        g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,       &
-     &        jac_3d_l%ntot_int, n_int, jac_3d_l%xjac, jac_3d_l%an,     &
-     &        k2, fem_wk%vector_1, rms_local, ave_local)
-        end if
+        call fem_vol_ave_asym_tensor(ele%numele, ele%nnod_4_ele,        &
+     &      iele_fsmp_stack, ele%interior_ele, g_FEM%max_int_point,     &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      jac_3d_q%ntot_int, n_int, jac_3d_q%xjac, jac_3d_q%an,       &
+     &      k2, fem_wk%vector_1, rms_local, ave_local)
       end do
 !
 !

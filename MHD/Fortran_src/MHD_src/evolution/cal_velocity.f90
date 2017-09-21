@@ -202,8 +202,8 @@
         call cal_rms_scalar_potential                                   &
      &     (iloop, fluid%istack_ele_fld_smp, iphys%i_press,             &
      &      fem_sq%i_rms%i_press, fem_sq%j_ave%i_press,                 &
-     &      mesh%node, mesh%ele, nod_fld, fem_int%jcs,                  &
-     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct, ave_pr0, rms_pr0)
+     &      mesh, nod_fld, fem_int%jcs, rhs_mat%fem_wk,                 &
+     &      fem_sq%msq, rel_correct, ave_pr0, rms_pr0)
 !
 !
         if (iflag_debug.eq.1)                                           &

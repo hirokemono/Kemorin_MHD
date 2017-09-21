@@ -4,7 +4,7 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_check_MHD_mat                                    &
-!!     &        (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step,     &
+!!     &        (MHD_files, bc_FEM_IO, flex_MHD, MHD_step,              &
 !!     &         femmesh, ele_mesh, iphys_nod, nod_fld,                 &
 !!     &         femmesh, ele_mesh, iphys_nod, nod_fld, MHD_CG,         &
 !!     &         FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
@@ -18,8 +18,7 @@
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
-!!        type(flexible_stepping_data), intent(inout) :: flex_data
+!!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !
       module FEM_check_MHD_matrices
 !
@@ -34,7 +33,7 @@
       use t_material_property
       use t_MHD_file_parameter
       use t_MHD_step_parameter
-      use t_flex_delta_t_data
+      use t_FEM_MHD_time_stepping
       use t_FEM_MHD_solvers
       use t_FEM_SGS_structure
       use t_FEM_MHD_mean_square
@@ -48,7 +47,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_check_MHD_mat                                      &
-     &        (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step,       &
+     &        (MHD_files, bc_FEM_IO, flex_MHD, MHD_step,                &
      &         femmesh, ele_mesh, iphys_nod, nod_fld, MHD_CG,           &
      &         FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
 !
@@ -75,8 +74,7 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !
       type(MHD_step_param), intent(inout) :: MHD_step
-      type(flexible_stepping_parameter), intent(inout) :: flex_p
-      type(flexible_stepping_data), intent(inout) :: flex_data
+      type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       character(len=kchara), intent(inout)   :: label_sim
 !
@@ -85,7 +83,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
       call init_analyzer_fl(MHD_files, bc_FEM_IO,                       &
-     &    FEM_prm1, FEM_SGS%SGS_par, flex_p, flex_data,                 &
+     &    FEM_prm1, FEM_SGS%SGS_par, flex_MHD,                          &
      &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh,              &
      &    MHD_mesh1, FEM_SGS%FEM_filters, MHD_prop1, FEM_MHD1_BCs,      &
      &    FEM_SGS%Csims, iphys_nod, nod_fld, MHD_CG, SGS_MHD_wk,        &
