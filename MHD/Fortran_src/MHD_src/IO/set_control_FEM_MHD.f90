@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine set_control_4_FEM_MHD(plt, org_plt, model_ctl,       &
 !!     &          fmctl_ctl, nmtr_ctl, MHD_files, FEM_prm, SGS_par,     &
-!!     &          flex_p, MHD_step, MHD_prop, MHD_BC,                   &
-!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
+!!     &          MHD_step, MHD_prop, MHD_BC, MGCG_WK,                  &
+!!     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -19,7 +19,6 @@
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
-!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -56,12 +55,11 @@
 !
       subroutine set_control_4_FEM_MHD(plt, org_plt, model_ctl,         &
      &          fmctl_ctl, nmtr_ctl, MHD_files, FEM_prm, SGS_par,       &
-     &          flex_p, MHD_step, MHD_prop, MHD_BC,                     &
-     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
+     &          MHD_step, MHD_prop, MHD_BC, MGCG_WK,                    &
+     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
 !
       use calypso_mpi
       use m_default_file_prefix
-      use m_flexible_time_step
       use t_file_IO_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -95,7 +93,6 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
-      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -149,8 +146,8 @@
 !   set parameters for filtering operation
 !
       call s_set_control_4_filtering                                    &
-     &   (MHD_prop%fl_prop, MHD_prop%cd_prop                            &
-     &  , MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    SGS_par%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,       &
      &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
      &    SGS_par%filter_p)
@@ -176,7 +173,7 @@
 !   set control parameters
 !
       call s_set_control_4_time_steps                                   &
-     &   (flex_p, MHD_step, fmctl_ctl%mrst_ctl, fmctl_ctl%tctl)
+     &   (MHD_step, fmctl_ctl%mrst_ctl, fmctl_ctl%tctl)
 !
       call s_set_control_4_crank(fmctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

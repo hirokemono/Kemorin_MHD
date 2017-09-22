@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,  &
 !!     &          sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,       &
-!!     &          SPH_SGS, flex_p, MHD_step, MHD_prop, MHD_BC, WK,      &
+!!     &          SPH_SGS, MHD_step, MHD_prop, MHD_BC, WK,              &
 !!     &          femmesh, ele_mesh)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
@@ -24,7 +24,6 @@
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
-!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -71,7 +70,7 @@
 !
       subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,    &
      &          sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,         &
-     &          SPH_SGS, flex_p, MHD_step, MHD_prop, MHD_BC, WK,        &
+     &          SPH_SGS, MHD_step, MHD_prop, MHD_BC, WK,                &
      &          femmesh, ele_mesh)
 !
       use m_error_IDs
@@ -92,7 +91,6 @@
       type(phys_data), intent(inout) :: nod_fld
       type(sph_mean_squares), intent(inout) :: pwr
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
-      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -107,7 +105,7 @@
      &    MHD_ctl%model_ctl, MHD_ctl%smctl_ctl, MHD_ctl%smonitor_ctl,   &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_maker2%sph_tmp,       &
      &    rj_fld, MHD_files, bc_IO, pwr,                                &
-     &    SPH_SGS%SGS_par, SPH_SGS%dynamic, flex_p, MHD_step,           &
+     &    SPH_SGS%SGS_par, SPH_SGS%dynamic, MHD_step,                   &
      &    MHD_prop, MHD_BC, WK%WK_sph, sph_maker2%gen_sph)
 !
       call s_set_control_4_SPH_to_FEM                                   &

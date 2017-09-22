@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt, modelD_ctl,      &
 !!     &          smctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,          &
-!!     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr, flex_p,       &
+!!     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr,               &
 !!     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
@@ -23,7 +23,6 @@
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
-!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -62,7 +61,7 @@
 !
       subroutine set_control_4_SPH_MHD(plt, org_plt, modelD_ctl,        &
      &          smctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,            &
-     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr, flex_p,         &
+     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr,                 &
      &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
       use sph_mhd_rms_IO
@@ -99,7 +98,6 @@
       type(phys_data), intent(inout) :: rj_fld
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
-      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -167,7 +165,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
       call s_set_control_4_time_steps                                   &
-     &   (flex_p, MHD_step, smctl_ctl%mrst_ctl, smctl_ctl%tctl)
+     &   (MHD_step, smctl_ctl%mrst_ctl, smctl_ctl%tctl)
 !
       call s_set_control_4_crank(smctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

@@ -79,9 +79,13 @@
       type(MHD_step_param), intent(inout) :: MHD_step
 !
 !
+      if(MHD_step%flex_p%iflag_flexible_step .ne. iflag_flex_step)      &
+     &    return
+!
+      if (iflag_debug.eq.1) write(*,*) 'check_flex_time_step_by_sq'
       call check_flex_time_step_by_sq(mesh, MHD_mesh,                   &
      &    MHD_prop%cd_prop, iphys, nod_fld, fem_int%jcs, rhs_mat,       &
-     &    flex_MHD%flex_data, flex_MHD%flex_p, MHD_step%time_d)
+     &    flex_MHD%flex_data, MHD_step%flex_p, MHD_step%time_d)
 !
       end subroutine s_check_flexible_time_step
 !

@@ -55,7 +55,6 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
-      use m_flexible_time_step
       use sph_mhd_rst_IO_control
       use set_control_sph_SGS_MHD
       use set_control_sph_data_MHD
@@ -82,7 +81,7 @@
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%smonitor_ctl,                    &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
      &    MHD_files1, bc_sph_IO1, pwr1, SPH_SGS1%SGS_par,               &
-     &    SPH_SGS1%dynamic, flex_p1, MHD_step1, MHD_prop1,              &
+     &    SPH_SGS1%dynamic, MHD_step1, MHD_prop1,                       &
      &    MHD_BC1, trns_WK1%WK_sph, gen_sph_c)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !

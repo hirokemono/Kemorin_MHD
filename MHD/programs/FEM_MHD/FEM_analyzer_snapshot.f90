@@ -125,7 +125,6 @@
       use m_physical_property
       use m_geometry_data_MHD
       use m_bc_data_velo
-      use m_flexible_time_step
       use m_fem_mhd_restart
 !
       use nod_phys_send_recv
@@ -161,31 +160,30 @@
       type(ucd_file_data), intent(inout) :: fem_ucd
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
-      integer(kind = kint) :: iflag
-!
 !     ---- Load field data --- 
 !
       call reset_update_flag(nod_fld,                                   &
      &    FEM_SGS%Csims%sgs_coefs, FEM_SGS%Csims%diff_coefs)
-      flex_p1%istep_max_dt = i_step
-      if (my_rank.eq.0) write(*,*) 'step: ', flex_p1%istep_max_dt
+      MHD_step%flex_p%istep_max_dt = i_step
+      if(my_rank.eq.0) write(*,*)                                       &
+     &    'step: ', MHD_step%flex_p%istep_max_dt
 !
       if (MHD_step%rst_step%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
         call input_restart_4_snapshot                                   &
-     &     (flex_p1%istep_max_dt, MHD_files%fst_file_IO,                &
+     &     (MHD_step%flex_p%istep_max_dt, MHD_files%fst_file_IO,        &
      &      femmesh%mesh%node, nod_fld, SNAP_time_IO,                   &
      &      MHD_step%rst_step)
 !
       else if (MHD_step%ucd_step%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
         call read_udt_4_snap                                            &
-     &     (flex_p1%istep_max_dt, MHD_files%org_ucd_file_IO,            &
+     &     (MHD_step%flex_p%istep_max_dt, MHD_files%org_ucd_file_IO,    &
      &      nod_fld, SNAP_time_IO, MHD_step%ucd_step)
 !
         MHD_step%time_d%time = MHD_step%init_d%time                     &
-     &                + MHD_step%time_d%dt * dble(flex_p1%istep_max_dt)
-        MHD_step%time_d%i_time_step = flex_p1%istep_max_dt
+     &       + MHD_step%time_d%dt * dble(MHD_step%flex_p%istep_max_dt)
+        MHD_step%time_d%i_time_step = MHD_step%flex_p%istep_max_dt
       end if
 !
 !     ---- magnetic field update
@@ -226,40 +224,30 @@
 !
 !     ========  Data output
 !
-      iflag = lead_field_data_flag(flex_p1%istep_max_dt, MHD_step)
-      if(iflag .eq. 0) then
-        call lead_fields_by_FEM                                         &
-     &    (MHD_step%time_d, FEM_prm1, FEM_SGS%SGS_par, femmesh,         &
-     &     ele_mesh, MHD_mesh1, MHD_prop1, FEM_MHD1_BCs, iphys_nod,     &
-     &     ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,            &
-     &     FEM_SGS%Csims)
-      end if
+      call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt,             &
+     &    MHD_step, FEM_prm1, FEM_SGS%SGS_par, femmesh, ele_mesh,       &
+     &    MHD_mesh1, MHD_prop1, FEM_MHD1_BCs, iphys_nod, ak_MHD,        &
+     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     -----Output monitor date
 !
       call start_elapsed_time(4)
 !
-      iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%rms_step)
-      if(iflag .eq. 0) then
-        if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-        call output_time_step_control                                   &
-     &     (FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,         &
-     &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
-     &      iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                   &
-     &      SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                 &
-     &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
-     &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
-      end if
+      call output_time_step_control                                     &
+     &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
+     &    FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,           &
+     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop,                         &
+     &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
+     &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
+     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                     &
+     &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
 !
-      iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%point_step)
-      if(iflag .eq. 0) then
-        if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
-        call output_monitor_control                                     &
-     &     (MHD_step%time_d, femmesh%mesh%node, nod_fld)
-      end if
+      call output_monitor_control(MHD_step%flex_p%istep_max_dt,         &
+     &      MHD_step%point_step, MHD_step%time_d, femmesh%mesh%node,    &
+     &      nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-      call s_output_sgs_model_coefs(flex_p1%istep_max_dt,               &
+      call s_output_sgs_model_coefs(MHD_step%flex_p%istep_max_dt,       &
      &    MHD_step, FEM_SGS%SGS_par, MHD_prop1%cd_prop,                 &
      &    SGS_MHD_wk%FEM_SGS_wk)
 !
@@ -267,16 +255,16 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
       call s_output_ucd_file_control                                    &
-     &   (MHD_files%ucd_file_IO, flex_p1%istep_max_dt,                  &
+     &   (MHD_files%ucd_file_IO, MHD_step%flex_p%istep_max_dt,          &
      &    MHD_step%time_d, MHD_step%ucd_step, fem_ucd)
 !
 !     ----
 !
-      if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
+      if(MHD_step%flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         visval = viz_file_step_4_flex(MHD_step%time_d,                  &
      &                                MHD_step%viz_step)
       else
-        visval = viz_file_step_4_fix(flex_p1%istep_max_dt,              &
+        visval = viz_file_step_4_fix(MHD_step%flex_p%istep_max_dt,      &
      &                               MHD_step%viz_step)
       end if
 !

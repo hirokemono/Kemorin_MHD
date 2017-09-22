@@ -38,7 +38,6 @@
       use m_control_parameter
       use m_bc_data_list
       use m_boundary_field_IO
-      use m_flexible_time_step
 !
 !
       total_start = MPI_WTIME()
@@ -72,7 +71,7 @@
 !
       call start_elapsed_time(4)
       call input_control_4_FEM_MHD                                      &
-     &   (MHD_files1, FEM_prm1, FEM_SGS1%SGS_par, flex_p1, MHD_step1,   &
+     &   (MHD_files1, FEM_prm1, FEM_SGS1%SGS_par, MHD_step1,            &
      &    MHD_prop1, MHD_BC1, femmesh1, ele_mesh1, nod_fld1,            &
      &    SGS_MHD_wk1%ele_fld, bc_FEM_IO1, FEM_SGS1%FEM_filters,        &
      &    SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1)

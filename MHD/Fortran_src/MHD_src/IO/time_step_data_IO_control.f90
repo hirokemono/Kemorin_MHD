@@ -5,8 +5,8 @@
 !                                    on July 2000 (ver 1.1)
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine output_time_step_control                             &
-!!     &         (FEM_prm, time_d, mesh, MHD_mesh, fl_prop, cd_prop,    &
+!!      subroutine output_time_step_control(istep, rms_step,            &
+!!     &          FEM_prm, time_d, mesh, MHD_mesh, fl_prop, cd_prop,    &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld, jacs,             &
 !!     &          i_rms, j_ave, ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -32,6 +32,7 @@
       use t_FEM_control_parameter
       use t_physical_property
       use t_time_data
+      use t_flex_delta_t_data
       use t_mesh_data
       use t_geometry_data
       use t_geometry_data_MHD
@@ -51,8 +52,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_time_step_control                               &
-     &         (FEM_prm, time_d, mesh, MHD_mesh, fl_prop, cd_prop,      &
+      subroutine output_time_step_control(istep, rms_step,              &
+     &          FEM_prm, time_d, mesh, MHD_mesh, fl_prop, cd_prop,      &
      &          iphys, nod_fld, iphys_ele, ele_fld, jacs,               &
      &          i_rms, j_ave, ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
 !
@@ -62,6 +63,8 @@
       use int_bulk
       use time_step_file_IO
 !
+      integer(kind = kint), intent(in) :: istep
+      type(IO_step_param), intent(in) :: rms_step
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(time_data), intent(in) :: time_d
       type(mesh_geometry), intent(in) :: mesh
@@ -83,7 +86,8 @@
       integer (kind = kint) :: nd
 !
 !
-        if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')               &
+      if(output_IO_flag(istep, rms_step) .ne. 0) return
+      if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')                 &
      &            'i_step=', time_d%i_time_step,'time=', time_d%time
 !
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &

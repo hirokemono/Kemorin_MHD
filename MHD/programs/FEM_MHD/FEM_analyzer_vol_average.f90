@@ -158,17 +158,14 @@
 !
 !     -----Output monitor date
 !
-      iflag = output_IO_flag(i_step, MHD_step%rms_step)
-      if(iflag .eq. 0) then
-        if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-        call output_time_step_control                                   &
-     &     (FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,         &
-     &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
-     &      iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                   &
-     &      SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                 &
-     &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
-     &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
-      end if
+      call output_time_step_control                                     &
+     &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
+     &    FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,           &
+     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop,                         &
+     &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
+     &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
+     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                     &
+     &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
 !
       end subroutine FEM_analyze_vol_average
 !

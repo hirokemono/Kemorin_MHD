@@ -7,10 +7,11 @@
 !> @brief Evaluate many kind of field data
 !!
 !!@verbatim
-!!      subroutine lead_fields_by_FEM                                   &
-!!     &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,&
+!!      subroutine lead_fields_by_FEM(istep, MHD_step,                  &
+!!     &          FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,        &
 !!     &          MHD_prop, FEM_MHD_BCs, iphys, ak_MHD, FEM_filters,    &
 !!     &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
+!!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -35,6 +36,7 @@
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use t_mhd_step_parameter
       use t_control_parameter
       use t_reference_scalar_param
       use t_time_data
@@ -63,8 +65,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_fields_by_FEM                                     &
-     &         (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,  &
+      subroutine lead_fields_by_FEM(istep, MHD_step,                    &
+     &          FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,          &
      &          MHD_prop, FEM_MHD_BCs, iphys, ak_MHD, FEM_filters,      &
      &          SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !
@@ -72,8 +74,10 @@
       use itp_potential_on_edge
       use MHD_field_by_rotation
       use cal_helicities
+      use output_viz_file_control
 !
-      type(time_data), intent(in) :: time_d
+      integer(kind = kint), intent(in) :: istep
+      type(MHD_step_param), intent(in) :: MHD_step
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_data), intent(in) ::   femmesh
@@ -90,18 +94,20 @@
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
 !
+      if(lead_field_data_flag(istep, MHD_step) .ne. 0) return
+!
       if (iflag_debug.gt.0) write(*,*) 'cal_potential_on_edge'
       call cal_potential_on_edge(femmesh%mesh%node, femmesh%mesh%ele,   &
      &    ele_mesh%edge, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'update_FEM_fields'
       call update_FEM_fields                                            &
-     &   (time_d, FEM_prm, SGS_par, femmesh, ele_mesh, MHD_mesh,        &
-     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,                    &
+     &   (MHD_step%time_d, FEM_prm, SGS_par, femmesh, ele_mesh,         &
+     &    MHD_mesh, FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,          &
      &    iphys, FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !
-      call cal_field_by_rotation                                        &
-     &   (time_d%dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,       &
+      call cal_field_by_rotation(MHD_step%time_d%dt,                    &
+     &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    femmesh%mesh, femmesh%group, ele_mesh%surf,                   &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys,             &
@@ -115,7 +121,7 @@
       call cal_helicity(iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
-      call cal_energy_fluxes(time_d%dt, FEM_prm, SGS_par,               &
+      call cal_energy_fluxes(MHD_step%time_d%dt, FEM_prm, SGS_par,      &
      &    femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh, MHD_prop,    &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys,             &
      &    SGS_MHD_wk%iphys_ele, ak_MHD, SGS_MHD_wk%fem_int,             &

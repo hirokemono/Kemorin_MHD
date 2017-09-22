@@ -19,8 +19,6 @@
 !
 !
       type FEM_MHD_time_stepping
-!>        Flexible step information
-        type(flexible_stepping_parameter) :: flex_p
 !>        Data to evaluate flexible step
         type(flexible_stepping_data) :: flex_data
 !

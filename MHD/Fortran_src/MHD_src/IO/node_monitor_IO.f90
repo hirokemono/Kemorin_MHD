@@ -11,7 +11,9 @@
 !!
 !!      subroutine open_node_monitor_file(my_rank, nod_fld)
 !!      subroutine set_local_node_id_4_monitor(node, nod_grp)
-!!      subroutine output_monitor_control(time_d, node, nod_fld)
+!!      subroutine output_monitor_control                               &
+!!     &         (istep, point_step, time_d, node, nod_fld)
+!!        type(IO_step_param), intent(in) :: point_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data), intent(in) :: nod_fld
@@ -25,6 +27,7 @@
       use t_geometry_data
       use t_group_data
       use t_phys_data
+      use t_IO_step_parameter
 !
       implicit none
 !
@@ -188,18 +191,24 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_monitor_control(time_d, node, nod_fld)
+      subroutine output_monitor_control                                 &
+     &         (istep, point_step, time_d, node, nod_fld)
 !
       use calypso_mpi
+      use m_machine_parameter
 !
+      integer(kind = kint), intent(in) :: istep
       type(time_data), intent(in) :: time_d
+      type(IO_step_param), intent(in) :: point_step
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
 !
       integer (kind = kint) :: i, inod, i_fld, ist, ied
 !
 !
-      if (num_monitor .eq. 0 .or. num_monitor_local .eq. 0) return
+      if(output_IO_flag(istep,point_step) .gt. 0) return
+      if(num_monitor .eq. 0 .or. num_monitor_local .eq. 0) return
+      if(iflag_debug.eq.1) write(*,*) 'output_monitor_control'
 !
       call open_node_monitor_file(my_rank, nod_fld)
 !

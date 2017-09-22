@@ -223,7 +223,7 @@
      &    MHD_mesh%fluid, MHD_prop%cd_prop, iphys,                      &
      &    FEM_filters%layer_tbl, SGS_par, SGS_MHD_wk%FEM_SGS_wk,        &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs,            &
-     &    nod_fld, flex_MHD%flex_p, MHD_step%init_d, MHD_step%time_d)
+     &    nod_fld, MHD_step%flex_p, MHD_step%init_d, MHD_step%time_d)
       MHD_step%iflag_initial_step = 0
 !
 !  -------------------------------
