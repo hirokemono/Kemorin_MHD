@@ -17,7 +17,7 @@
       use m_physical_property
       use m_mean_square_values
       use m_FEM_MHD_model_data
-      use m_3d_filter_coef_MHD
+      use m_work_FEM_SGS_MHD
       use m_solver_djds_MHD
       use FEM_analyzer_filtered
       use visualizer_all

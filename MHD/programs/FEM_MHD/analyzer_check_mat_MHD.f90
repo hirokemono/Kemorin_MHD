@@ -12,7 +12,7 @@
       use m_FEM_MHD_model_data
       use m_FEM_MHD_time_stepping
       use m_physical_property
-      use m_3d_filter_coef_MHD
+      use m_work_FEM_SGS_MHD
       use calypso_mpi
 !
       use FEM_check_MHD_matrices

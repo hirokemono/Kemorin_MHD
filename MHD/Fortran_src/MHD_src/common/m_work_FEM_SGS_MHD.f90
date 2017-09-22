@@ -1,9 +1,9 @@
-!m_3d_filter_coef_MHD.f90
-!      module m_3d_filter_coef_MHD
+!m_work_FEM_SGS_MHD.f90
+!      module m_work_FEM_SGS_MHD
 !
 !     Written by H. Matsui on Nov., 2008
 !
-      module m_3d_filter_coef_MHD
+      module m_work_FEM_SGS_MHD
 !
       use m_precision
       use t_FEM_SGS_structure
@@ -18,4 +18,4 @@
 !> Structure of Work area for dynamics model
       type(work_FEM_SGS_MHD), save :: SGS_MHD_wk1
 !
-      end module m_3d_filter_coef_MHD
+      end module m_work_FEM_SGS_MHD

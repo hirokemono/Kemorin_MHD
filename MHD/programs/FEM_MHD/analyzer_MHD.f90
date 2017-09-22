@@ -20,7 +20,7 @@
       use m_node_phys_data
       use m_solver_djds_MHD
       use m_mean_square_values
-      use m_3d_filter_coef_MHD
+      use m_work_FEM_SGS_MHD
 !
       use FEM_analyzer_MHD
       use sections_for_1st

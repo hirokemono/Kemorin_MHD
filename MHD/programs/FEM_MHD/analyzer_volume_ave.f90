@@ -15,7 +15,7 @@
       use m_mesh_data
       use m_node_phys_data
       use m_mean_square_values
-      use m_3d_filter_coef_MHD
+      use m_work_FEM_SGS_MHD
       use FEM_analyzer_vol_average
 !
       implicit none
