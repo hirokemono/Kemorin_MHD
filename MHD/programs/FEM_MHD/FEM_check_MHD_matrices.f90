@@ -5,15 +5,15 @@
 !
 !!      subroutine FEM_check_MHD_mat                                    &
 !!     &        (MHD_files, bc_FEM_IO, flex_MHD, MHD_step,              &
-!!     &         femmesh, ele_mesh, iphys_nod, nod_fld,                 &
-!!     &         femmesh, ele_mesh, iphys_nod, nod_fld, MHD_CG,         &
-!!     &         FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
+!!     &         femmesh, ele_mesh, iphys_nod, nod_fld, FEM_model,      &
+!!     &         MHD_CG, FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -31,6 +31,7 @@
       use t_phys_data
       use t_phys_address
       use t_material_property
+      use t_FEM_MHD_model_data
       use t_MHD_file_parameter
       use t_MHD_step_parameter
       use t_FEM_MHD_time_stepping
@@ -48,13 +49,11 @@
 !
       subroutine FEM_check_MHD_mat                                      &
      &        (MHD_files, bc_FEM_IO, flex_MHD, MHD_step,                &
-     &         femmesh, ele_mesh, iphys_nod, nod_fld, MHD_CG,           &
-     &         FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
+     &         femmesh, ele_mesh, iphys_nod, nod_fld, FEM_model,        &
+     &         MHD_CG, FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
 !
-      use m_control_parameter
       use m_geometry_data_MHD
       use m_physical_property
-      use m_bc_data_velo
       use t_boundary_field_IO
 !
       use initialization_4_MHD
@@ -69,6 +68,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(phys_address), intent(inout) :: iphys_nod
       type(phys_data), intent(inout) :: nod_fld
+      type(FEM_MHD_model_data), intent(inout) :: FEM_model
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       type(FEM_SGS_structure), intent(inout) :: FEM_SGS
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -83,9 +83,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
       call init_analyzer_fl(MHD_files, bc_FEM_IO,                       &
-     &    FEM_prm1, FEM_SGS%SGS_par, flex_MHD,                          &
-     &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh,              &
-     &    MHD_mesh1, FEM_SGS%FEM_filters, MHD_prop1, FEM_MHD1_BCs,      &
+     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, flex_MHD,                 &
+     &    MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,   &
+     &    FEM_SGS%FEM_filters, MHD_prop1, FEM_model%FEM_MHD_BCs,        &
      &    FEM_SGS%Csims, iphys_nod, nod_fld, MHD_CG, SGS_MHD_wk,        &
      &    fem_sq, label_sim)
 !
@@ -97,14 +97,14 @@
      &    MHD_CG%MHD_mat, MHD_CG%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt,                       &
-     &    FEM_prm1, FEM_SGS%SGS_par, femmesh, ele_mesh,                 &
-     &    MHD_mesh1, FEM_MHD1_BCs, MHD_prop1, SGS_MHD_wk%fem_int,       &
-     &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims,                 &
-     &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%rhs_mat, MHD_CG)
+     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, femmesh, ele_mesh,        &
+     &    MHD_mesh1, FEM_model%FEM_MHD_BCs, MHD_prop1,                  &
+     &    SGS_MHD_wk%fem_int,  FEM_SGS%FEM_filters%FEM_elens,           &
+     &    FEM_SGS%Csims, SGS_MHD_wk%mk_MHD, SGS_MHD_wk%rhs_mat, MHD_CG)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD                                         &
-     &   (FEM_prm1, MHD_prop1%fl_prop, MHD_prop1%cd_prop,               &
+     &   (FEM_model%FEM_prm, MHD_prop1%fl_prop, MHD_prop1%cd_prop,      &
      &    MHD_prop1%ht_prop, MHD_prop1%cp_prop,                         &
      &    MHD_CG%solver_pack%Vmatrix, MHD_CG%solver_pack%Pmatrix,       &
      &    MHD_CG%solver_pack%Bmatrix, MHD_CG%solver_pack%Fmatrix,       &

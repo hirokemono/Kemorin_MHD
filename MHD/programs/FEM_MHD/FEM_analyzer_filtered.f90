@@ -4,7 +4,7 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_analyze_filtered(i_step, MHD_files,              &
-!!     &          femmesh, ele_mesh, iphys_nod, ak_MHD,                 &
+!!     &          femmesh, ele_mesh, iphys_nod, FEM_model, ak_MHD,      &
 !!     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                &
 !!     &          nod_fld, fem_ucd, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -27,6 +27,7 @@
       use t_mesh_data
       use t_phys_data
       use t_phys_address
+      use t_FEM_MHD_model_data
       use t_material_property
       use t_IO_step_parameter
       use t_MHD_step_parameter
@@ -35,6 +36,7 @@
       use t_FEM_MHD_mean_square
       use t_FEM_SGS_structure
       use t_work_FEM_SGS_MHD
+      use m_geometry_data_MHD
 !
       use calypso_mpi
 !
@@ -49,14 +51,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_filtered(i_step, MHD_files,                &
-     &          femmesh, ele_mesh, iphys_nod, ak_MHD,                   &
+     &          femmesh, ele_mesh, iphys_nod, FEM_model, ak_MHD,        &
      &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                  &
      &          nod_fld, fem_ucd, fem_sq)
 !
-      use m_control_parameter
       use m_physical_property
-      use m_geometry_data_MHD
-      use m_bc_data_velo
       use m_fem_mhd_restart
 !
       use nod_phys_send_recv
@@ -81,6 +80,7 @@
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_address), intent(in) :: iphys_nod
+      type(FEM_MHD_model_data), intent(in) :: FEM_model
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !
       integer(kind=kint ), intent(inout) :: visval
@@ -140,25 +140,26 @@
       call nod_fields_send_recv(femmesh%mesh, nod_fld)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_FEM_fields'
-      call update_FEM_fields(MHD_step%time_d,                           &
-     &    FEM_prm1, FEM_SGS%SGS_par, femmesh, ele_mesh, MHD_mesh1,      &
-     &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs, iphys_nod,       &
-     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
+      call update_FEM_fields(MHD_step%time_d, FEM_model%FEM_prm,        &
+     &    FEM_SGS%SGS_par, femmesh, ele_mesh, MHD_mesh1,                &
+     &    FEM_model%FEM_MHD_BCs, iphys_nod, FEM_SGS%FEM_filters,        &
+     &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ----- Evaluate model coefficients
 !
       call cal_FEM_model_coefficients                                   &
-     &   (MHD_step%time_d, FEM_prm1, FEM_SGS%SGS_par,                   &
+     &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                      &
-     &    FEM_MHD1_BCs%nod_bcs, FEM_MHD1_BCs%surf_bcs, iphys_nod,       &
-     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
+     &    FEM_model%FEM_MHD_BCs,iphys_nod, FEM_SGS%FEM_filters,         &
+     &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
 !     ========  Data output
 !
-      call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt,             &
-     &    MHD_step, FEM_prm1, FEM_SGS%SGS_par, femmesh, ele_mesh,       &
-     &    MHD_mesh1, MHD_prop1, FEM_MHD1_BCs, iphys_nod, ak_MHD,        &
-     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
+      call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step,   &
+     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, femmesh, ele_mesh,        &
+     &    MHD_mesh1, MHD_prop1, FEM_model%FEM_MHD_BCs, iphys_nod,       &
+     &    ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,             &
+     &    FEM_SGS%Csims)
 !
 !     ----Filtering
       if (iflag_debug.eq.1) write(*,*) 'filtering_all_fields'
@@ -171,7 +172,7 @@
 !
       call output_time_step_control                                     &
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
-     &    FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,           &
+     &    FEM_model%FEM_prm, MHD_step%time_d, femmesh%mesh, MHD_mesh1,  &
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop,                         &
      &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &

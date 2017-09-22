@@ -103,8 +103,8 @@
       if (iflag_debug.gt.0) write(*,*) 'update_FEM_fields'
       call update_FEM_fields                                            &
      &   (MHD_step%time_d, FEM_prm, SGS_par, femmesh, ele_mesh,         &
-     &    MHD_mesh, FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs,          &
-     &    iphys, FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
+     &    MHD_mesh, FEM_MHD_BCs, iphys, FEM_filters, SGS_MHD_wk,        &
+     &    nod_fld, Csims_FEM_MHD)
 !
       call cal_field_by_rotation(MHD_step%time_d%dt,                    &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &

@@ -5,12 +5,13 @@
 !
 !!      subroutine FEM_initialize_vol_average                           &
 !!     &         (MHD_files, bc_FEM_IO, MHD_step, femmesh, ele_mesh,    &
-!!     &          iphys_nod, nod_fld, ak_MHD, FEM_SGS, SGS_MHD_wk,      &
-!!     &          fem_sq, label_sim)
+!!     &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,       &
+!!     &          SGS_MHD_wk,fem_sq, label_sim)
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(FEM_MHD_model_data), intent(inout) :: FEM_model
 !!        type(coefs_4_MHD_type), intent(inout) :: ak_MHD
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -18,7 +19,7 @@
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_analyze_vol_average                              &
-!!     &         (i_step, MHD_files, femmesh, iphys_nod,                &
+!!     &         (i_step, MHD_files, femmesh, iphys_nod, FEM_model,     &
 !!     &          MHD_step, SGS_MHD_wk, nod_fld, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -34,6 +35,7 @@
       use t_phys_data
       use t_phys_address
       use t_material_property
+      use t_FEM_MHD_model_data
       use t_MHD_file_parameter
       use t_MHD_step_parameter
       use t_ucd_file
@@ -55,14 +57,12 @@
 !
       subroutine FEM_initialize_vol_average                             &
      &         (MHD_files, bc_FEM_IO, MHD_step, femmesh, ele_mesh,      &
-     &          iphys_nod, nod_fld, ak_MHD, FEM_SGS, SGS_MHD_wk,        &
-     &          fem_sq, label_sim)
+     &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,         &
+     &          SGS_MHD_wk,fem_sq, label_sim)
 !
-      use m_control_parameter
       use m_geometry_data_MHD
       use m_physical_property
       use m_bc_data_list
-      use m_bc_data_velo
       use t_boundary_field_IO
 !
       use initialize_4_snapshot
@@ -77,6 +77,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(phys_address), intent(inout) :: iphys_nod
       type(phys_data), intent(inout) :: nod_fld
+      type(FEM_MHD_model_data), intent(inout) :: FEM_model
       type(coefs_4_MHD_type), intent(inout) :: ak_MHD
       type(FEM_SGS_structure), intent(inout) :: FEM_SGS
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -88,21 +89,21 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap                                           &
-     &  (MHD_files, FEM_prm1, FEM_SGS%SGS_par, bc_FEM_IO,               &
+     &  (MHD_files, FEM_model%FEM_prm, FEM_SGS%SGS_par, bc_FEM_IO,      &
      &   MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,    &
-     &   FEM_SGS%FEM_filters, MHD_prop1, ak_MHD, MHD_BC1, FEM_MHD1_BCs, &
-     &   FEM_SGS%Csims, iphys_nod, nod_fld, SNAP_time_IO,               &
-     &   MHD_step%rst_step, SGS_MHD_wk, fem_sq, label_sim)
+     &   FEM_SGS%FEM_filters, MHD_prop1, ak_MHD, MHD_BC1,               &
+     &   FEM_model%FEM_MHD_BCs, FEM_SGS%Csims, iphys_nod, nod_fld,      &
+     &   SNAP_time_IO, MHD_step%rst_step, SGS_MHD_wk, fem_sq,           &
+     &   label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_vol_average                                &
-     &         (i_step, MHD_files, femmesh, iphys_nod,                  &
+     &         (i_step, MHD_files, femmesh, iphys_nod, FEM_model,       &
      &          MHD_step, SGS_MHD_wk, nod_fld, fem_sq)
 !
-      use m_control_parameter
       use m_physical_property
       use m_geometry_data_MHD
 !
@@ -118,6 +119,7 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(mesh_data), intent(in) :: femmesh
       type(phys_address), intent(in) :: iphys_nod
+      type(FEM_MHD_model_data), intent(in) :: FEM_model
 !
       type(phys_data), intent(inout) :: nod_fld
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
@@ -160,7 +162,7 @@
 !
       call output_time_step_control                                     &
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
-     &    FEM_prm1, MHD_step%time_d, femmesh%mesh, MHD_mesh1,           &
+     &    FEM_model%FEM_prm, MHD_step%time_d, femmesh%mesh, MHD_mesh1,  &
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop,                         &
      &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &

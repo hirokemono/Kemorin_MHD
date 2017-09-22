@@ -54,6 +54,7 @@
       use t_work_FEM_SGS_MHD
       use t_MHD_mass_matricxes
       use t_FEM_MHD_filter_data
+      use t_FEM_MHD_boundary_data
       use t_work_4_MHD_layering
 !
       implicit none
@@ -74,7 +75,6 @@
       use m_flags_4_solvers
       use m_array_for_send_recv
 !
-      use m_bc_data_velo
       use m_bc_data_list
 !
       use init_iccg_matrices
