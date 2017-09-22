@@ -60,7 +60,6 @@
      &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,         &
      &          SGS_MHD_wk,fem_sq, label_sim)
 !
-      use m_geometry_data_MHD
       use m_physical_property
       use m_bc_data_list
       use t_boundary_field_IO
@@ -88,9 +87,9 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap                                           &
-     &  (MHD_files, FEM_model%FEM_prm, FEM_SGS%SGS_par, bc_FEM_IO,      &
-     &   MHD_step, femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh1,    &
+      call init_analyzer_snap(MHD_files,                                &
+     &   FEM_model%FEM_prm, FEM_SGS%SGS_par, bc_FEM_IO, MHD_step,       &
+     &   femmesh%mesh, femmesh%group, ele_mesh, FEM_model%MHD_mesh,     &
      &   FEM_SGS%FEM_filters, MHD_prop1, ak_MHD, MHD_BC1,               &
      &   FEM_model%FEM_MHD_BCs, FEM_SGS%Csims, iphys_nod, nod_fld,      &
      &   SNAP_time_IO, MHD_step%rst_step, SGS_MHD_wk, fem_sq,           &
@@ -105,7 +104,6 @@
      &          MHD_step, SGS_MHD_wk, nod_fld, fem_sq)
 !
       use m_physical_property
-      use m_geometry_data_MHD
 !
       use nod_phys_send_recv
       use lead_physical_values
@@ -162,8 +160,8 @@
 !
       call output_time_step_control                                     &
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
-     &    FEM_model%FEM_prm, MHD_step%time_d, femmesh%mesh, MHD_mesh1,  &
-     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop,                         &
+     &    FEM_model%FEM_prm, MHD_step%time_d, femmesh%mesh,             &
+     &    FEM_model%MHD_mesh, MHD_prop1%fl_prop, MHD_prop1%cd_prop,     &
      &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
      &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                     &

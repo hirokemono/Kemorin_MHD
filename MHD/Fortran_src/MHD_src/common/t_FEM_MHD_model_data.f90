@@ -12,6 +12,7 @@
 !
       use m_precision
       use t_FEM_control_parameter
+      use t_geometry_data_MHD
       use t_FEM_MHD_boundary_data
 !
       implicit  none
@@ -23,6 +24,9 @@
         type(FEM_MHD_paremeters) :: FEM_prm
 !
         type(FEM_MHD_BC_data) :: FEM_MHD_BCs
+!
+!>         Strucutre for MHD mesh data
+        type(mesh_data_MHD) :: MHD_mesh
       end type FEM_MHD_model_data
 !
       end module t_FEM_MHD_model_data

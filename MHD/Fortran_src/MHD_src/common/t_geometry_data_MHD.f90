@@ -7,18 +7,24 @@
 !
 !!      subroutine count_smp_size_4_area(area)
 !!      subroutine count_empty_smp_area(area)
-!
-!       subroutine allocate_field_nod_list(fld)
-!       subroutine allocate_field_ele_list(fld)
-!       subroutine allocate_geometry_field_smp(fld)
-!
-!       subroutine dealloc_type_ele_connect_org(mesh_MHD)
-!       subroutine deallocate_field_nod_list(fld)
-!       subroutine deallocate_field_ele_list(fld)
-!       subroutine deallocate_geometry_field_smp(fld)
-!
-!      subroutine alloc_ele_connect_org_type(ele, MHD_mesh)
-!      subroutine dealloc_ele_connect_org_type(MHD_mesh)
+!!
+!!       subroutine allocate_field_nod_list(fld)
+!!       subroutine allocate_field_ele_list(fld)
+!!       subroutine allocate_geometry_field_smp(fld)
+!!
+!!      subroutine dealloc_conduct_node_list(MHD_mesh)
+!!      subroutine dealloc_fluid_node_list(MHD_mesh)
+!!      subroutine dealloc_inner_core_ele_list(MHD_mesh)
+!!      subroutine dealloc_geometry_fluid_smp(MHD_mesh)
+!!      subroutine dealloc_geometry_conduct_smp(MHD_mesh)
+!!      subroutine dealloc_element_connect_org(MHD_mesh)
+!!
+!!      subroutine deallocate_field_nod_list(fld)
+!!      subroutine deallocate_field_ele_list(fld)
+!!      subroutine deallocate_geometry_field_smp(fld)
+!!
+!!      subroutine alloc_ele_connect_org_type(ele, MHD_mesh)
+!!      subroutine dealloc_ele_connect_org_type(MHD_mesh)
 !
       module t_geometry_data_MHD
 !
@@ -197,6 +203,73 @@
 !
 !-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
+!
+       subroutine dealloc_conduct_node_list(MHD_mesh)
+!
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!
+!
+       call deallocate_field_nod_list(MHD_mesh%conduct)
+       call deallocate_field_nod_list(MHD_mesh%insulate)
+       call deallocate_field_nod_list(MHD_mesh%inner_core)
+!
+       end subroutine dealloc_conduct_node_list
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_fluid_node_list(MHD_mesh)
+!
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!
+       call deallocate_field_nod_list(MHD_mesh%fluid)
+!
+       end subroutine dealloc_fluid_node_list
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_inner_core_ele_list(MHD_mesh)
+!
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!
+       call deallocate_field_ele_list(MHD_mesh%inner_core)
+!
+       end subroutine dealloc_inner_core_ele_list
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_geometry_fluid_smp(MHD_mesh)
+!
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!
+      call deallocate_geometry_field_smp(MHD_mesh%fluid)
+!
+      end subroutine dealloc_geometry_fluid_smp
+!
+!-----------------------------------------------------------------------
+!
+       subroutine dealloc_geometry_conduct_smp(MHD_mesh)
+!
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!
+!
+       call deallocate_geometry_field_smp(MHD_mesh%conduct)
+       call deallocate_geometry_field_smp(MHD_mesh%insulate)
+       call deallocate_geometry_field_smp(MHD_mesh%inner_core)
+!
+       end subroutine dealloc_geometry_conduct_smp
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_element_connect_org(MHD_mesh)
+!
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!
+      call dealloc_ele_connect_org_type(MHD_mesh)
+!
+      end subroutine dealloc_element_connect_org
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
 !
        subroutine deallocate_field_nod_list(fld)
 !

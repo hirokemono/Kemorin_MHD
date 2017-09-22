@@ -36,7 +36,6 @@
       use t_FEM_MHD_mean_square
       use t_FEM_SGS_structure
       use t_work_FEM_SGS_MHD
-      use m_geometry_data_MHD
 !
       use calypso_mpi
 !
@@ -141,7 +140,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d, FEM_model%FEM_prm,        &
-     &    FEM_SGS%SGS_par, femmesh, ele_mesh, MHD_mesh1,                &
+     &    FEM_SGS%SGS_par, femmesh, ele_mesh, FEM_model%MHD_mesh,       &
      &    FEM_model%FEM_MHD_BCs, iphys_nod, FEM_SGS%FEM_filters,        &
      &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
@@ -149,7 +148,7 @@
 !
       call cal_FEM_model_coefficients                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
-     &    femmesh, ele_mesh, MHD_mesh1, MHD_prop1,                      &
+     &    femmesh, ele_mesh, FEM_model%MHD_mesh, MHD_prop1,             &
      &    FEM_model%FEM_MHD_BCs,iphys_nod, FEM_SGS%FEM_filters,         &
      &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
@@ -157,8 +156,8 @@
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step,   &
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, femmesh, ele_mesh,        &
-     &    MHD_mesh1, MHD_prop1, FEM_model%FEM_MHD_BCs, iphys_nod,       &
-     &    ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,             &
+     &    FEM_model%MHD_mesh, MHD_prop1, FEM_model%FEM_MHD_BCs,         &
+     &    iphys_nod, ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,  &
      &    FEM_SGS%Csims)
 !
 !     ----Filtering
@@ -172,8 +171,8 @@
 !
       call output_time_step_control                                     &
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
-     &    FEM_model%FEM_prm, MHD_step%time_d, femmesh%mesh, MHD_mesh1,  &
-     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop,                         &
+     &    FEM_model%FEM_prm, MHD_step%time_d, femmesh%mesh,             &
+     &    FEM_model%MHD_mesh, MHD_prop1%fl_prop, MHD_prop1%cd_prop,     &
      &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
      &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                     &
