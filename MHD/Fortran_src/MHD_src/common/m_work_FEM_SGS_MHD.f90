@@ -6,11 +6,15 @@
       module m_work_FEM_SGS_MHD
 !
       use m_precision
+      use t_FEM_MHD_solvers
       use t_FEM_SGS_structure
       use t_work_FEM_SGS_MHD
 !
       implicit none
 !
+!
+!>      Matrix structure for FEM_MHD
+      type(FEM_MHD_solvers), save :: MHD_CG1
 !
 !> Structure of grouping of elements
       type(FEM_SGS_structure), save :: FEM_SGS1
