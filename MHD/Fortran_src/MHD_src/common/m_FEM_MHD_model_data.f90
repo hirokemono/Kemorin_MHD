@@ -12,6 +12,7 @@
 !
       use m_precision
       use t_FEM_MHD_model_data
+      use t_boundary_field_IO
 !
       implicit  none
 !
@@ -19,5 +20,7 @@
 !  Parameters for FEM dynamo
 !
       type(FEM_MHD_model_data), save :: FEM_model1
+!
+      type(IO_boundary), save :: bc_FEM_IO1
 !
       end module m_FEM_MHD_model_data

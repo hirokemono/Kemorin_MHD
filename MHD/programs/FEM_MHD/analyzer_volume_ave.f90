@@ -30,7 +30,6 @@
 !
       use m_bc_data_list
       use m_node_phys_data
-      use m_boundary_field_IO
       use m_MHD_step_parameter
       use m_solver_djds_MHD
       use input_control

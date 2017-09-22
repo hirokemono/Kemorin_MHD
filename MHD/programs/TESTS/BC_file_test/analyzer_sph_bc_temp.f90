@@ -65,7 +65,6 @@
 !
       subroutine analyze_bc_temp
 !
-      use m_boundary_field_IO
       use const_sph_boundary_temp
 !
       if (iflag_debug.gt.0) write(*,*) 'const_sph_temp_bc'

@@ -33,7 +33,6 @@
       subroutine init_analyzer
 !
       use m_bc_data_list
-      use m_boundary_field_IO
       use input_control
 !
 !

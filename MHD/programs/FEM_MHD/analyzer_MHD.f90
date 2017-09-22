@@ -37,7 +37,6 @@
 !
       use input_control
       use m_bc_data_list
-      use m_boundary_field_IO
 !
 !
       total_start = MPI_WTIME()
