@@ -100,8 +100,8 @@
 !
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
-      call SPH_init_sph_pick_circle                                     &
-     &  (MHD_files1, bc_sph_IO1, femmesh1, iphys_nod1, SPH_SGS1, cdat1)
+      call SPH_init_sph_pick_circle(MHD_files1, bc_sph_IO1,             &
+     &    femmesh1, iphys_nod1, MHD_prop1, SPH_SGS1, cdat1)
       call calypso_MPI_barrier
 !
       call end_elapsed_time(2)
@@ -132,8 +132,8 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
-        call SPH_analyze_pick_circle                                    &
-     &     (MHD_step1%time_d%i_time_step, MHD_files1, SPH_SGS1, cdat1)
+        call SPH_analyze_pick_circle(MHD_step1%time_d%i_time_step,      &
+     &      MHD_files1, MHD_prop1, SPH_SGS1, cdat1)
 !*
 !*  -----------  exit loop --------------
 !*

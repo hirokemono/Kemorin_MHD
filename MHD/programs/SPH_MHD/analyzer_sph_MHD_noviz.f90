@@ -79,7 +79,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD                                           &
-     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_step1)
+     &   (MHD_files1, MHD_prop1, bc_sph_IO1, iphys_nod1, MHD_step1)
 !
       call calypso_MPI_barrier
 !
@@ -117,7 +117,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
         call SPH_analyze_MHD(MHD_step1%time_d%i_time_step,              &
-     &      MHD_files1, iflag_finish, MHD_step1)
+     &      MHD_files1, MHD_prop1, iflag_finish, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*

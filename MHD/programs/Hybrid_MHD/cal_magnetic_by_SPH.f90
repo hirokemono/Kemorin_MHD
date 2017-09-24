@@ -4,8 +4,9 @@
 !!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,       &
 !!     &          mesh, sph, comms_sph, trans_p, conduct, jacobians,    &
 !!     &          Csims_FEM_MHD, ipol, rj_fld)
-!!      subroutine cal_magneitc_field_by_SPH(SGS_param, cd_prop,        &
-!!     &          sph, comms_sph, trans_p, ipol, itor, rj_fld)
+!!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,       &
+!!     &          mesh, sph, comms_sph, trans_p, conduct, MHD_prop,     &
+!!     &          fem_int, Csims_FEM_MHD, ipol, rj_fld)
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -123,8 +124,8 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_par,         &
-     &          mesh, sph, comms_sph, trans_p, conduct, fem_int,        &
-     &          Csims_FEM_MHD, ipol, rj_fld)
+     &          mesh, sph, comms_sph, trans_p, conduct, MHD_prop,       &
+     &          fem_int, Csims_FEM_MHD, ipol, rj_fld)
 !
       use m_solver_SR
       use m_schmidt_poly_on_rtm
@@ -142,6 +143,7 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(finite_element_integration), intent(in) :: fem_int
       type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
 !
@@ -154,7 +156,7 @@
      &      Csims_FEM_MHD%iphys_elediff%i_velo, MHD_step1%time_d%dt,    &
      &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
-     &      conduct, MHD_prop1%cd_prop,                                 &
+     &      conduct, MHD_prop%cd_prop,                                  &
      &      iphys, SGS_MHD_wk1%iphys_ele, SGS_MHD_wk1%ele_fld,          &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,        &
      &      Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,              &
@@ -283,7 +285,7 @@
       call cal_sol_magne_sph_crank(sph%sph_rj, sph_bc_B,                &
      &    band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
       call update_after_magne_sph                                       &
-     &   (sph%sph_rj, r_2nd, MHD_prop1%cd_prop, sph_bc_B, trans_p%leg,  &
+     &   (sph%sph_rj, r_2nd, MHD_prop%cd_prop, sph_bc_B, trans_p%leg,   &
      &    ipol, itor, rj_fld)
 !
 !

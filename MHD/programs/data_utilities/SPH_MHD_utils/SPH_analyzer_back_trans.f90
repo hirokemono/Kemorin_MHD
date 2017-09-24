@@ -7,8 +7,12 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_back_trans(MHD_files, bc_IO, iphys)
+!!      subroutine SPH_init_sph_back_trans                              &
+!!     &         (MHD_files, bc_IO, iphys, MHD_prop)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(phys_address), intent(in) :: iphys
+!!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!      subroutine SPH_analyze_back_trans(i_step, MHD_files, MHD_step)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -21,6 +25,7 @@
       use t_phys_address
       use t_MHD_step_parameter
       use t_MHD_file_parameter
+      use t_control_parameter
 !
       implicit none
 !
@@ -30,7 +35,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_back_trans(MHD_files, bc_IO, iphys)
+      subroutine SPH_init_sph_back_trans                                &
+     &         (MHD_files, bc_IO, iphys, MHD_prop)
 !
       use m_constants
       use calypso_mpi
@@ -41,7 +47,6 @@
       use m_fdm_coefs
       use m_schmidt_poly_on_rtm
       use m_rms_4_sph_spectr
-      use m_physical_property
       use m_sph_trans_arrays_MHD
       use m_boundary_data_sph_MHD
       use m_bc_data_list
@@ -69,6 +74,8 @@
       type(boundary_spectra), intent(in) :: bc_IO
       type(phys_address), intent(in) :: iphys
 !
+      type(MHD_evolution_param), intent(inout) :: MHD_prop
+!
 !
 !   Allocate spectr field data
 !
@@ -80,14 +87,14 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo                                     &
      &   (bc_IO, sph_grps1, MHD_BC1, ipol, sph1,                        &
-     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop1, sph_MHD_bc1,     &
+     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop, sph_MHD_bc1,      &
      &    r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_back_transform'
       call init_sph_back_transform                                      &
-     &   (MHD_prop1%fl_prop, ipol, idpdr, itor, iphys,                  &
+     &   (MHD_prop%fl_prop, ipol, idpdr, itor, iphys,                   &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------

@@ -19,6 +19,7 @@
 !
       use m_machine_parameter
       use m_MHD_step_parameter
+      use m_physical_property
       use m_SPH_SGS_structure
       use m_spheric_parameter
       use m_work_time
@@ -83,7 +84,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
       call SPH_init_sph_snap                                            &
-     &   (MHD_files1, bc_sph_IO1, iphys_nod1, SPH_SGS1)
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1, SPH_SGS1)
 !
 !        Initialize visualization
 !
@@ -124,7 +125,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_zm_SGS_snap'
         call SPH_analyze_zm_SGS_snap(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1, MHD_step1, SPH_SGS1)
+     &      MHD_files1, MHD_prop1, MHD_step1, SPH_SGS1)
 !*
 !*  -----------  output field data --------------
 !*

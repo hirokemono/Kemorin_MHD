@@ -17,8 +17,9 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_work_time
       use m_MHD_step_parameter
+      use m_physical_property
+      use m_work_time
       use m_mesh_data
       use m_node_phys_data
       use m_sph_trans_arrays_MHD
@@ -81,7 +82,8 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap_psf'
-      call SPH_init_sph_snap_psf(MHD_files1, bc_sph_IO1, iphys_nod1)
+      call SPH_init_sph_snap_psf                                        &
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1)
 !
 !        Initialize visualization
 !
@@ -122,8 +124,8 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap_psf'
-        call SPH_analyze_snap_psf                                       &
-     &     (MHD_step1%time_d%i_time_step, MHD_files1, MHD_step1)
+        call SPH_analyze_snap_psf(MHD_step1%time_d%i_time_step,         &
+     &      MHD_files1, MHD_prop1, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*

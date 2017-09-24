@@ -90,7 +90,8 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
-      call SPH_init_sph_back_trans(MHD_files1, bc_sph_IO1, iphys_nod1)
+      call SPH_init_sph_back_trans                                      &
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(femmesh1, ele_mesh1, nod_fld1)

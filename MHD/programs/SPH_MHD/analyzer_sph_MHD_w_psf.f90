@@ -23,6 +23,7 @@
       use m_node_phys_data
       use m_sph_trans_arrays_MHD
       use m_MHD_step_parameter
+      use m_physical_property
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
@@ -83,7 +84,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD                                           &
-     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_step1)
+     &   (MHD_files1, MHD_prop1, bc_sph_IO1, iphys_nod1, MHD_step1)
 !
 !        Initialize visualization
 !
@@ -124,7 +125,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
         call SPH_analyze_MHD(MHD_step1%time_d%i_time_step,              &
-     &      MHD_files1, iflag_finish, MHD_step1)
+     &      MHD_files1, MHD_prop1, iflag_finish, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*

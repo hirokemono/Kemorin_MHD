@@ -17,8 +17,9 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_work_time
       use m_MHD_step_parameter
+      use m_physical_property
+      use m_work_time
       use m_mesh_data
       use m_node_phys_data
       use m_jacobians_VIZ
@@ -88,7 +89,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
       call SPH_initialize_SGS_MHD(MHD_files1, bc_sph_IO1, iphys_nod1,   &
-     &    MHD_step1, SPH_SGS1)
+     &    MHD_step1, MHD_prop1, SPH_SGS1)
 !
 !        Initialize visualization
 !
@@ -133,7 +134,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
         call SPH_analyze_SGS_MHD(MHD_step1%time_d%i_time_step,          &
-     &      MHD_files1, iflag_finish, MHD_step1, SPH_SGS1)
+     &      MHD_files1, MHD_prop1, iflag_finish, MHD_step1, SPH_SGS1)
 !*
 !*  -----------  output field data --------------
 !*

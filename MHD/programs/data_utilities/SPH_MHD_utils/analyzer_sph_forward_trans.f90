@@ -18,7 +18,7 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use calypso_mpi
+      use m_physical_property
       use m_work_time
       use m_mesh_data
       use m_sph_trans_arrays_MHD
@@ -84,7 +84,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
       call SPH_init_sph_snap                                            &
-     &   (MHD_files1, bc_sph_IO1, iphys_nod1, SPH_SGS1)
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1, SPH_SGS1)
 !
       call calypso_MPI_barrier
 !
@@ -120,7 +120,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
         call SPH_analyze_snap(MHD_step1%time_d%i_time_step,             &
-     &      MHD_files1, MHD_step1, SPH_SGS1)
+     &      MHD_files1, MHD_prop1, MHD_step1, SPH_SGS1)
 !*
 !*  -----------  exit loop --------------
 !*
