@@ -109,6 +109,7 @@
 !
       use time_step_data_IO_control
       use output_parallel_ucd_file
+      use FEM_MHD_evolution
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
