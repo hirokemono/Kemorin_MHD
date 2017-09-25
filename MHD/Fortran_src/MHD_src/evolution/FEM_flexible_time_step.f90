@@ -4,11 +4,11 @@
 !      Written by H. Matsui on Nov., 2009
 !
 !!      subroutine set_new_time_and_step                                &
-!!     &         (cd_prop, iphys, nod_fld, time_d)
+!!     &         (MHD_prop, iphys, nod_fld, time_d)
 !!      subroutine s_check_flexible_time_step                           &
 !!     &         (mesh, MHD_mesh, cd_prop, iphys, nod_fld, jacs,        &
 !!     &          rhs_mat, flex_data, flex_p, time_d)
-!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(phys_address), intent(in) :: iphys
@@ -93,16 +93,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_new_time_and_step                                  &
-     &         (cd_prop, iphys, nod_fld, flex_p, time_d)
+     &         (MHD_prop, iphys, nod_fld, flex_p, time_d)
 !
       use t_time_data
-      use t_material_property
+      use t_control_parameter
       use t_phys_data
       use t_phys_address
 !
       use copy_field_data_4_dt_check
 !
-      type(conductive_property), intent(in) :: cd_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: iphys
 !
       type(time_data), intent(inout) :: time_d
@@ -125,7 +125,8 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_copy_field_data_for_dt_check'
-      call s_copy_field_data_for_dt_check(cd_prop, iphys, nod_fld)
+      call s_copy_field_data_for_dt_check                               &
+     &   (MHD_prop%cd_prop, iphys, nod_fld)
 !
       end subroutine set_new_time_and_step
 !

@@ -60,7 +60,6 @@
      &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,         &
      &          SGS_MHD_wk,fem_sq, label_sim)
 !
-      use m_physical_property
       use m_bc_data_list
       use t_boundary_field_IO
 !
@@ -90,7 +89,7 @@
       call init_analyzer_snap(MHD_files,                                &
      &   FEM_model%FEM_prm, FEM_SGS%SGS_par, bc_FEM_IO, MHD_step,       &
      &   femmesh%mesh, femmesh%group, ele_mesh, FEM_model%MHD_mesh,     &
-     &   FEM_SGS%FEM_filters, MHD_prop1, ak_MHD, MHD_BC1,               &
+     &   FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD, MHD_BC1,      &
      &   FEM_model%FEM_MHD_BCs, FEM_SGS%Csims, iphys_nod, nod_fld,      &
      &   SNAP_time_IO, MHD_step%rst_step, SGS_MHD_wk, fem_sq,           &
      &   label_sim)
@@ -102,8 +101,6 @@
       subroutine FEM_analyze_vol_average                                &
      &         (i_step, MHD_files, femmesh, iphys_nod, FEM_model,       &
      &          MHD_step, SGS_MHD_wk, nod_fld, fem_sq)
-!
-      use m_physical_property
 !
       use nod_phys_send_recv
       use lead_physical_values
@@ -138,13 +135,13 @@
 !
 !     ---- magnetic field update
 !
-      if (MHD_prop1%ref_param_T%iflag_reference                         &
+      if (FEM_model%MHD_prop%ref_param_T%iflag_reference                &
      & .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
         call subtract_2_nod_scalars(nod_fld,                            &
      &      iphys_nod%i_temp, iphys_nod%i_ref_t, iphys_nod%i_par_temp)
       end if
-      if (MHD_prop1%ref_param_C%iflag_reference                         &
+      if (FEM_model%MHD_prop%ref_param_C%iflag_reference                &
      & .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
         call subtract_2_nod_scalars(nod_fld,                            &
@@ -161,7 +158,7 @@
       call output_time_step_control                                     &
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
      &    FEM_model%FEM_prm, MHD_step%time_d, femmesh%mesh,             &
-     &    FEM_model%MHD_mesh, MHD_prop1%fl_prop, MHD_prop1%cd_prop,     &
+     &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
      &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                     &

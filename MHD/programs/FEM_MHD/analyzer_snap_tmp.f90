@@ -14,7 +14,6 @@
       use m_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data
-      use m_physical_property
       use m_mean_square_values
       use m_FEM_MHD_model_data
       use m_work_FEM_SGS_MHD
@@ -64,7 +63,7 @@
 !
       call input_control_4_FEM_snap                                     &
      &   (MHD_files1, FEM_model1%FEM_prm, FEM_SGS1%SGS_par, MHD_step1,  &
-     &    MHD_prop1, MHD_BC1, femmesh1, ele_mesh1, nod_fld1,            &
+     &    FEM_model1%MHD_prop, MHD_BC1, femmesh1, ele_mesh1, nod_fld1,  &
      &    SGS_MHD_wk1%ele_fld, bc_FEM_IO1, FEM_SGS1%FEM_filters,        &
      &    SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)

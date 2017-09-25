@@ -6,14 +6,13 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine output_time_step_control(istep, rms_step,            &
-!!     &          FEM_prm, time_d, mesh, MHD_mesh, fl_prop, cd_prop,    &
+!!     &          FEM_prm, time_d, mesh, MHD_mesh, fMHD_prop,           &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld, jacs,             &
 !!     &          i_rms, j_ave, ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
@@ -30,7 +29,7 @@
       use m_precision
 !
       use t_FEM_control_parameter
-      use t_physical_property
+      use t_control_parameter
       use t_time_data
       use t_flex_delta_t_data
       use t_mesh_data
@@ -53,7 +52,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine output_time_step_control(istep, rms_step,              &
-     &          FEM_prm, time_d, mesh, MHD_mesh, fl_prop, cd_prop,      &
+     &          FEM_prm, time_d, mesh, MHD_mesh, MHD_prop,              &
      &          iphys, nod_fld, iphys_ele, ele_fld, jacs,               &
      &          i_rms, j_ave, ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
 !
@@ -69,8 +68,7 @@
       type(time_data), intent(in) :: time_d
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
@@ -94,8 +92,9 @@
      &    mesh, MHD_mesh%fluid, MHD_mesh%conduct, iphys, nod_fld, jacs, &
      &    i_rms, j_ave, ifld_msq, rhs_mat%fem_wk, mhd_fem_wk, fem_msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
-     &    mesh, fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ele_fld,   &
-     &    MHD_mesh%fluid, jacs, i_rms, j_ave, rhs_mat%fem_wk, fem_msq)
+     &    mesh, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
+     &    iphys, nod_fld, iphys_ele, ele_fld, MHD_mesh%fluid,           &
+     &    jacs, i_rms, j_ave, rhs_mat%fem_wk, fem_msq)
 !
       call MPI_allREDUCE                                                &
      &   (fem_msq%ave_local, fem_msq%ave_global, fem_msq%num_ave,       &

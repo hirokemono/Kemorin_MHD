@@ -4,13 +4,13 @@
 !      Written by H. Matsui on Nov., 2009
 !
 !!      subroutine s_check_deltat_by_prev_rms                           &
-!!     &         (MHD_step, mesh, MHD_mesh, cd_prop, iphys, nod_fld,    &
+!!     &         (MHD_step, mesh, MHD_mesh, MHD_prop, iphys, nod_fld,   &
 !!     &          fem_int, rhs_mat, flex_MHD)
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
-!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -43,6 +43,7 @@
       use m_machine_parameter
 !
       use t_time_data
+      use t_control_parameter
       use t_physical_property
       use t_mesh_data
       use t_geometry_data_MHD
@@ -68,13 +69,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_check_deltat_by_prev_rms                             &
-     &         (MHD_step, mesh, MHD_mesh, cd_prop, iphys, nod_fld,      &
+     &         (MHD_step, mesh, MHD_mesh, MHD_prop, iphys, nod_fld,     &
      &          fem_int, rhs_mat, flex_MHD)
 !
       type(MHD_step_param), intent(in) :: MHD_step
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
-      type(conductive_property), intent(in) :: cd_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(finite_element_integration), intent(in) :: fem_int
@@ -90,7 +91,7 @@
      &   (MHD_step%time_d, mesh, MHD_mesh%fluid, iphys, nod_fld,        &
      &    fem_int%jcs, rhs_mat%fem_wk, flex_MHD%flex_data)
       call check_difference_by_prev_rms(MHD_step%time_d%time,           &
-     &     mesh, MHD_mesh%fluid, cd_prop, iphys, nod_fld,               &
+     &     mesh, MHD_mesh%fluid, MHD_prop%cd_prop, iphys, nod_fld,      &
      &    fem_int%jcs, rhs_mat%fem_wk, flex_MHD%flex_data)
 !
       end subroutine s_check_deltat_by_prev_rms

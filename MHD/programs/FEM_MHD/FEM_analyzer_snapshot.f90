@@ -75,7 +75,6 @@
      &         iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,          &
      &         SGS_MHD_wk, range, fem_ucd, fem_sq, label_sim)
 !
-      use m_physical_property
       use m_bc_data_list
       use t_boundary_field_IO
 !
@@ -106,7 +105,7 @@
       call init_analyzer_snap(MHD_files,                                &
      &   FEM_model%FEM_prm, FEM_SGS%SGS_par, bc_FEM_IO, MHD_step,       &
      &   femmesh%mesh, femmesh%group, ele_mesh, FEM_model%MHD_mesh,     &
-     &   FEM_SGS%FEM_filters, MHD_prop1, ak_MHD, MHD_BC1,               &
+     &   FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD, MHD_BC1,      &
      &   FEM_model%FEM_MHD_BCs, FEM_SGS%Csims, iphys_nod, nod_fld,      &
      &   SNAP_time_IO, MHD_step%rst_step, SGS_MHD_wk,                   &
      &   fem_sq, label_sim)
@@ -126,7 +125,6 @@
      &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                  &
      &          nod_fld, fem_ucd, fem_sq)
 !
-      use m_physical_property
       use m_fem_mhd_restart
 !
       use nod_phys_send_recv
@@ -191,14 +189,14 @@
 !
 !     ---- magnetic field update
 !
-      if (MHD_prop1%ref_param_T%iflag_reference                         &
+      if (FEM_model%MHD_prop%ref_param_T%iflag_reference                &
      & .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
         call subtract_2_nod_scalars(nod_fld,                            &
      &      iphys_nod%i_temp, iphys_nod%i_ref_t,                        &
      &      iphys_nod%i_par_temp)
       end if
-      if (MHD_prop1%ref_param_C%iflag_reference                         &
+      if (FEM_model%MHD_prop%ref_param_C%iflag_reference                &
      & .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
         call subtract_2_nod_scalars(nod_fld,                            &
@@ -222,7 +220,7 @@
 !
       call cal_FEM_model_coefficients                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
-     &    femmesh, ele_mesh, FEM_model%MHD_mesh, MHD_prop1,             &
+     &    femmesh, ele_mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,    &
      &    FEM_model%FEM_MHD_BCs, iphys_nod, FEM_SGS%FEM_filters,        &
      &    SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
@@ -230,7 +228,7 @@
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt,             &
      &    MHD_step, FEM_model%FEM_prm, FEM_SGS%SGS_par,                 &
-     &    femmesh, ele_mesh, FEM_model%MHD_mesh, MHD_prop1,             &
+     &    femmesh, ele_mesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,    &
      &    FEM_model%FEM_MHD_BCs, iphys_nod, ak_MHD,                     &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
 !
@@ -241,7 +239,7 @@
       call output_time_step_control                                     &
      &   (MHD_step%flex_p%istep_max_dt, MHD_step%rms_step,              &
      &    FEM_model%FEM_prm, MHD_step%time_d, femmesh%mesh,             &
-     &    FEM_model%MHD_mesh, MHD_prop1%fl_prop, MHD_prop1%cd_prop,     &
+     &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
      &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                     &
@@ -253,7 +251,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs(MHD_step%flex_p%istep_max_dt,       &
-     &    MHD_step, FEM_SGS%SGS_par, MHD_prop1%cd_prop,                 &
+     &    MHD_step, FEM_SGS%SGS_par, FEM_model%MHD_prop,                &
      &    SGS_MHD_wk%FEM_SGS_wk)
 !
 !     ---- Output voulme field data

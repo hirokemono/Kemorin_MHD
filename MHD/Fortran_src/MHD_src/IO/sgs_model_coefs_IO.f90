@@ -5,10 +5,10 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine s_output_sgs_model_coefs                             &
-!!     &       (i_step_max, MHD_step, SGS_par, cd_prop, FEM_SGS_wk)
+!!     &       (i_step_max, MHD_step, SGS_par, MHD_prop, FEM_SGS_wk)
 !!        type(time_data), intent(in) :: time_d
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(work_FEM_dynamic_SGS), intent(in) :: FEM_SGS_wk
 !!        type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !!
@@ -125,9 +125,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_output_sgs_model_coefs                               &
-     &       (i_step_max, MHD_step, SGS_par, cd_prop, FEM_SGS_wk)
+     &       (i_step_max, MHD_step, SGS_par, MHD_prop, FEM_SGS_wk)
 !
-      use t_physical_property
+      use t_control_parameter
       use t_time_data
       use t_MHD_step_parameter
 !
@@ -135,7 +135,7 @@
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(conductive_property), intent(in) :: cd_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(work_FEM_dynamic_SGS), intent(in) :: FEM_SGS_wk
 !
 !
@@ -145,20 +145,20 @@
 !
       call output_layered_model_coefs_file                              &
      &   (MHD_step%time_d%i_time_step, MHD_step%time_d%time,            &
-     &    SGS_par%model_p, cd_prop, FEM_SGS_wk%wk_sgs)
+     &    SGS_par%model_p, MHD_prop%cd_prop, FEM_SGS_wk%wk_sgs)
       call output_whole_model_coefs_file                                &
      &   (MHD_step%time_d%i_time_step, MHD_step%time_d%time,            &
-     &    SGS_par%model_p, cd_prop, FEM_SGS_wk%wk_sgs)
+     &    SGS_par%model_p, MHD_prop%cd_prop, FEM_SGS_wk%wk_sgs)
 !
       if (SGS_par%commute_p%iflag_commute .gt. id_SGS_commute_OFF) then
         call output_whole_diff_coefs_file                               &
      &     (MHD_step%time_d%i_time_step, MHD_step%time_d%time,          &
-     &      cd_prop, FEM_SGS_wk%wk_diff)
+     &      MHD_prop%cd_prop, FEM_SGS_wk%wk_diff)
 !
         if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1 ) then
           call output_layered_diff_coefs_file                           &
      &       (MHD_step%time_d%i_time_step, MHD_step%time_d%time,        &
-     &        cd_prop, FEM_SGS_wk%wk_diff)
+     &        MHD_prop%cd_prop, FEM_SGS_wk%wk_diff)
         end if
       end if
 !

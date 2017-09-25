@@ -3,23 +3,17 @@
 !
 !     Written by H. Matsui on Apr., 2008
 !
-!!      subroutine s_write_djds_mat_MHD                                 &
-!!     &         (FEM_prm, fl_prop, cd_prop, ht_prop, cp_prop,          &
-!!     &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
+!!      subroutine s_write_djds_mat_MHD(FEM_prm, MHD_prop, solver_pack)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
-!!        type(MHD_MG_matrix), intent(in) :: Vmatrix, Bmatrix
-!!        type(MHD_MG_matrix), intent(in) :: Pmatrix, Fmatrix
-!!        type(MHD_MG_matrix), intent(in) :: Tmatrix, Cmatrix
-!
-!      subroutine write_djds_mat_velo
-!      subroutine write_djds_mat_press
-!      subroutine write_djds_mat_magne
-!      subroutine write_djds_mat_mag_p
-!      subroutine write_djds_mat_temp
-!      subroutine write_djds_mat_composition
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(MHD_matrices_pack), intent(in) :: solver_pack
+!!
+!!      subroutine write_djds_mat_velo
+!!      subroutine write_djds_mat_press
+!!      subroutine write_djds_mat_magne
+!!      subroutine write_djds_mat_mag_p
+!!      subroutine write_djds_mat_temp
+!!      subroutine write_djds_mat_composition
 !
       module   write_djds_mat_MHD
 !
@@ -42,8 +36,9 @@
 !
       character(len=kchara) :: fname, fname_tmp
 !
-      private ::  fname, fname_tmp, id_mat_file
+      private :: fname, fname_tmp, id_mat_file
       private :: write_MHD_djds_mat33, write_MHD_djds_mat11
+      private :: write_djds_matrices_MHD
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,7 +46,29 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_write_djds_mat_MHD                                   &
+      subroutine s_write_djds_mat_MHD(FEM_prm, MHD_prop, solver_pack)
+!
+      use t_FEM_control_parameter
+      use t_control_parameter
+      use t_MHD_matrices_pack
+!
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(MHD_matrices_pack), intent(in) :: solver_pack
+!
+!
+      call write_djds_matrices_MHD(FEM_prm,                             &
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    solver_pack%Vmatrix, solver_pack%Pmatrix,                     &
+     &    solver_pack%Bmatrix, solver_pack%Fmatrix,                     &
+     &    solver_pack%Tmatrix, solver_pack%Cmatrix)
+!
+      end subroutine s_write_djds_mat_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine write_djds_matrices_MHD                                &
      &         (FEM_prm, fl_prop, cd_prop, ht_prop, cp_prop,            &
      &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
 !
@@ -110,7 +127,7 @@
      &      Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS)
       end if
 !
-      end subroutine s_write_djds_mat_MHD
+      end subroutine write_djds_matrices_MHD
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

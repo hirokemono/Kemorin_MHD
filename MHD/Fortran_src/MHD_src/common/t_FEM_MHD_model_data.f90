@@ -11,6 +11,7 @@
       module t_FEM_MHD_model_data
 !
       use m_precision
+      use t_control_parameter
       use t_FEM_control_parameter
       use t_geometry_data_MHD
       use t_FEM_MHD_boundary_data
@@ -21,6 +22,8 @@
 !  Parameters for FEM dynamo model
 !
       type FEM_MHD_model_data
+        type(MHD_evolution_param) :: MHD_prop
+!
         type(FEM_MHD_paremeters) :: FEM_prm
 !
         type(FEM_MHD_BC_data) :: FEM_MHD_BCs
