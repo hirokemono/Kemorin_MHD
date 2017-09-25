@@ -106,6 +106,7 @@
       use init_ele_material_property
       use precond_djds_MHD
       use reordering_by_layers
+      use FEM_MHD_evolution
 !
       use nod_phys_send_recv
       use solver_MGCG_MHD
@@ -228,18 +229,7 @@
 !
 !  -------------------------------
 !
-      if(MHD_prop%ref_param_T%iflag_reference                           &
-     & .ne. id_no_ref_temp) then
-        if (iflag_debug.eq.1) write(*,*)' set_2_perturbation_temp'
-        call subtract_2_nod_scalars(nod_fld,                            &
-     &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
-      end if
-      if (MHD_prop%ref_param_C%iflag_reference                          &
-     & .ne. id_no_ref_temp) then
-        if (iflag_debug.eq.1) write(*,*)' set_2_perturbation_comp'
-        call subtract_2_nod_scalars(nod_fld,                            &
-     &      iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
-      end if
+      call set_perturbation_to_scalar(MHD_prop, iphys, nod_fld)
 !
 !  -------------------------------
 !

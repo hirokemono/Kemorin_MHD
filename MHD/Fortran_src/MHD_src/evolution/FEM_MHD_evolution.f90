@@ -46,6 +46,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!
+!!      subroutine set_perturbation_to_scalar(MHD_prop, iphys, nod_fld)
 !!      subroutine reset_update_flag(nod_fld, sgs_coefs, diff_coefs)
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
@@ -613,6 +614,32 @@
       end if
 !
       end subroutine fields_evo_for_FEM_SPH
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_perturbation_to_scalar(MHD_prop, iphys, nod_fld)
+!
+      use copy_nodal_fields
+!
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(phys_address), intent(in) :: iphys
+!
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      if(MHD_prop%ref_param_T%iflag_reference .ne. id_no_ref_temp) then
+        if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
+        call subtract_2_nod_scalars                                     &
+     &     (nod_fld, iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
+      end if
+      if(MHD_prop%ref_param_C%iflag_reference .ne. id_no_ref_temp) then
+        if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
+        call subtract_2_nod_scalars                                     &
+     &     (nod_fld, iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
+      end if
+!
+      end subroutine set_perturbation_to_scalar
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

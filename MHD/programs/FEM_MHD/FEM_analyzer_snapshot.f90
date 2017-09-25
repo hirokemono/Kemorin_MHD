@@ -187,22 +187,10 @@
         MHD_step%time_d%i_time_step = MHD_step%flex_p%istep_max_dt
       end if
 !
-!     ---- magnetic field update
+!     ---------------------
 !
-      if (FEM_model%MHD_prop%ref_param_T%iflag_reference                &
-     & .ne. id_no_ref_temp) then
-        if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-        call subtract_2_nod_scalars(nod_fld,                            &
-     &      iphys_nod%i_temp, iphys_nod%i_ref_t,                        &
-     &      iphys_nod%i_par_temp)
-      end if
-      if (FEM_model%MHD_prop%ref_param_C%iflag_reference                &
-     & .ne. id_no_ref_temp) then
-        if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
-        call subtract_2_nod_scalars(nod_fld,                            &
-     &      iphys_nod%i_light, iphys_nod%i_ref_c,                       &
-     &      iphys_nod%i_par_light)
-      end if
+      call set_perturbation_to_scalar                                   &
+     &   (FEM_model%MHD_prop, iphys_nod, nod_fld)
 !
 !     ---------------------
 !
