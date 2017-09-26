@@ -26,7 +26,6 @@
       use m_sph_trans_arrays_MHD
       use m_MHD_step_parameter
       use m_SPH_SGS_structure
-      use m_boundary_data_sph_MHD
 !
       use SPH_analyzer_SGS_MHD
       use visualizer_all

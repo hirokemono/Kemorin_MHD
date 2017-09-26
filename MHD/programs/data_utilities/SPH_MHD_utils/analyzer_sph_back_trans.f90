@@ -25,7 +25,6 @@
       use m_jacobians_VIZ
       use m_sph_trans_arrays_MHD
       use m_physical_property
-      use m_boundary_data_sph_MHD
       use t_step_parameter
 !
       use SPH_analyzer_back_trans

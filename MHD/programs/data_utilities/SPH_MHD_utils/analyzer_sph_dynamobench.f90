@@ -20,7 +20,6 @@
       use m_machine_parameter
       use m_work_time
       use m_physical_property
-      use m_boundary_data_sph_MHD
       use t_field_on_circle
       use t_field_4_dynamobench
       use t_step_parameter

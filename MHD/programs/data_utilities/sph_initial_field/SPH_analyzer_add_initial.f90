@@ -88,7 +88,6 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_physical_property
-      use m_boundary_data_sph_MHD
       use m_bc_data_list
 !
       use set_control_sph_mhd

@@ -21,7 +21,6 @@
       use m_work_time
       use m_sph_trans_arrays_MHD
       use m_physical_property
-      use m_boundary_data_sph_MHD
       use m_bc_data_list
       use m_SPH_SGS_structure
       use t_field_on_circle
