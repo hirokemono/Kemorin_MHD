@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine SPH_init_sph_back_trans                              &
-!!     &         (MHD_files, bc_IO, iphys, MHD_prop)
+!!     &         (MHD_files, bc_IO, iphys, MHD_prop, sph_MHD_bc)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
+!!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!      subroutine SPH_analyze_back_trans(i_step, MHD_files, MHD_step)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -26,6 +27,7 @@
       use t_MHD_step_parameter
       use t_MHD_file_parameter
       use t_control_parameter
+      use t_boundary_data_sph_MHD
 !
       implicit none
 !
@@ -36,7 +38,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_init_sph_back_trans                                &
-     &         (MHD_files, bc_IO, iphys, MHD_prop)
+     &         (MHD_files, bc_IO, iphys, MHD_prop, sph_MHD_bc)
 !
       use m_constants
       use calypso_mpi
@@ -48,7 +50,6 @@
       use m_schmidt_poly_on_rtm
       use m_rms_4_sph_spectr
       use m_sph_trans_arrays_MHD
-      use m_boundary_data_sph_MHD
       use m_bc_data_list
 !
       use t_sph_boundary_input_data
@@ -75,6 +76,7 @@
       type(phys_address), intent(in) :: iphys
 !
       type(MHD_evolution_param), intent(inout) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
 !
 !   Allocate spectr field data
@@ -87,14 +89,14 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo                                     &
      &   (bc_IO, sph_grps1, MHD_BC1, ipol, sph1,                        &
-     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop, sph_MHD_bc1,      &
+     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop, sph_MHD_bc,       &
      &    r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_back_transform'
       call init_sph_back_transform                                      &
-     &   (MHD_prop%fl_prop, ipol, idpdr, itor, iphys,                   &
+     &   (MHD_prop%fl_prop, sph_MHD_bc, ipol, idpdr, itor, iphys,       &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
@@ -170,7 +172,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_sph_back_transform                                &
-     &         (fl_prop, ipol, idpdr, itor, iphys,                      &
+     &         (fl_prop, sph_MHD_bc, ipol, idpdr, itor, iphys,          &
      &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !
       use t_physical_property
@@ -183,7 +185,6 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
-      use m_boundary_data_sph_MHD
 !
       use set_address_sph_trans_MHD
       use pole_sph_transform
@@ -196,6 +197,7 @@
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_address), intent(in) :: iphys
       type(fluid_property), intent(in) :: fl_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -232,7 +234,7 @@
       call alloc_sph_trans_address(sph%sph_rtp, WK)
 !
       call sel_sph_transform_MHD(izero, ipol, fl_prop,                  &
-     &    sph_MHD_bc1%sph_bc_U, sph, comms_sph, omega_sph,              &
+     &    sph_MHD_bc%sph_bc_U, sph, comms_sph, omega_sph,               &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    WK%trns_MHD, WK%trns_SGS, WK%WK_sph, WK%MHD_mul_FFTW,         &
      &    WK%SGS_mul_FFTW, trans_p, WK%gt_cor, WK%cor_rlm, rj_fld)
@@ -308,7 +310,6 @@
      &          sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
 !
       use m_machine_parameter
-      use m_boundary_data_sph_MHD
       use t_MHD_step_parameter
       use t_schmidt_poly_on_rtm
 !

@@ -24,6 +24,7 @@
       use m_sph_trans_arrays_MHD
       use m_MHD_step_parameter
       use m_physical_property
+      use m_boundary_data_sph_MHD
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
@@ -83,8 +84,8 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
-      call SPH_initialize_MHD                                           &
-     &   (MHD_files1, MHD_prop1, bc_sph_IO1, iphys_nod1, MHD_step1)
+      call SPH_initialize_MHD(MHD_files1, bc_sph_IO1,                   &
+     &    MHD_prop1, sph_MHD_bc1, iphys_nod1, MHD_step1)
 !
 !        Initialize visualization
 !
@@ -125,7 +126,8 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
         call SPH_analyze_MHD(MHD_step1%time_d%i_time_step,              &
-     &      MHD_files1, MHD_prop1, iflag_finish, MHD_step1)
+     &      MHD_files1, MHD_prop1, sph_MHD_bc1, iflag_finish,           &
+     &      MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*

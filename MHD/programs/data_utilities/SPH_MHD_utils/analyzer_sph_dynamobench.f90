@@ -20,6 +20,7 @@
       use m_machine_parameter
       use m_work_time
       use m_physical_property
+      use m_boundary_data_sph_MHD
       use t_field_on_circle
       use t_field_4_dynamobench
       use t_step_parameter
@@ -80,7 +81,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_dbench'
       call SPH_init_sph_dbench                                          &
-     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1, cdat1)
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1, sph_MHD_bc1,   &
+     &    cdat1)
       call calypso_MPI_barrier
 !
       call end_elapsed_time(2)
@@ -112,7 +114,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_dbench'
         call SPH_analyze_dbench(MHD_step1%time_d%i_time_step,           &
-     &      MHD_files1, MHD_prop1, cdat1, bench1)
+     &      MHD_files1, MHD_prop1, sph_MHD_bc1, cdat1, bench1)
 !*
 !*  -----------  exit loop --------------
 !*

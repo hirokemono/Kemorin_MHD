@@ -21,6 +21,7 @@
       use m_work_time
       use m_sph_trans_arrays_MHD
       use m_physical_property
+      use m_boundary_data_sph_MHD
       use m_bc_data_list
       use m_SPH_SGS_structure
       use t_field_on_circle
@@ -101,7 +102,8 @@
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle(MHD_files1, bc_sph_IO1,             &
-     &    femmesh1, iphys_nod1, MHD_prop1, SPH_SGS1, cdat1)
+     &    femmesh1, iphys_nod1, MHD_prop1, sph_MHD_bc1, SPH_SGS1,       &
+     &    cdat1)
       call calypso_MPI_barrier
 !
       call end_elapsed_time(2)
@@ -133,7 +135,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
         call SPH_analyze_pick_circle(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1, MHD_prop1, SPH_SGS1, cdat1)
+     &      MHD_files1, MHD_prop1, sph_MHD_bc1, SPH_SGS1, cdat1)
 !*
 !*  -----------  exit loop --------------
 !*

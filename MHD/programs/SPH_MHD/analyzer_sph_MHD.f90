@@ -26,6 +26,7 @@
       use m_sph_trans_arrays_MHD
       use m_MHD_step_parameter
       use m_SPH_SGS_structure
+      use m_boundary_data_sph_MHD
 !
       use SPH_analyzer_SGS_MHD
       use visualizer_all
@@ -89,7 +90,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
       call SPH_initialize_SGS_MHD(MHD_files1, bc_sph_IO1, iphys_nod1,   &
-     &    MHD_step1, MHD_prop1, SPH_SGS1)
+     &    MHD_step1, MHD_prop1, sph_MHD_bc1, SPH_SGS1)
 !
 !        Initialize visualization
 !
@@ -134,7 +135,8 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
         call SPH_analyze_SGS_MHD(MHD_step1%time_d%i_time_step,          &
-     &      MHD_files1, MHD_prop1, iflag_finish, MHD_step1, SPH_SGS1)
+     &      MHD_files1, MHD_prop1, sph_MHD_bc1,                         &
+     &     iflag_finish, MHD_step1, SPH_SGS1)
 !*
 !*  -----------  output field data --------------
 !*

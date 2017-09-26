@@ -25,6 +25,7 @@
       use m_jacobians_VIZ
       use m_sph_trans_arrays_MHD
       use m_physical_property
+      use m_boundary_data_sph_MHD
       use t_step_parameter
 !
       use SPH_analyzer_back_trans
@@ -85,7 +86,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
       call SPH_init_sph_back_trans                                      &
-     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1)
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1, sph_MHD_bc1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(femmesh1, ele_mesh1, nod_fld1)

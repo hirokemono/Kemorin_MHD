@@ -27,6 +27,7 @@
       use m_jacobians_VIZ
       use m_sph_trans_arrays_MHD
       use m_SPH_SGS_structure
+      use m_boundary_data_sph_MHD
       use t_step_parameter
 !
       use SPH_analyzer_snap
@@ -87,8 +88,8 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap                                            &
-     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1, SPH_SGS1)
+      call SPH_init_sph_snap(MHD_files1, bc_sph_IO1,                    &
+     &    iphys_nod1, MHD_prop1, sph_MHD_bc1, SPH_SGS1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(femmesh1, ele_mesh1, nod_fld1)
@@ -131,7 +132,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
         call SPH_analyze_snap(MHD_step1%time_d%i_time_step,             &
-     &      MHD_files1, MHD_prop1, MHD_step1, SPH_SGS1)
+     &      MHD_files1, MHD_prop1, sph_MHD_bc1, MHD_step1, SPH_SGS1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -227,7 +228,7 @@
       MHD_step1%time_d%i_time_step = MHD_step1%init_d%i_time_step
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
       call SPH_analyze_snap(MHD_step1%time_d%i_time_step,               &
-     &    MHD_files1, MHD_prop1, MHD_step1, SPH_SGS1)
+     &    MHD_files1, MHD_prop1, sph_MHD_bc1, MHD_step1, SPH_SGS1)
 !*
       iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,        &
      &                             MHD_step1)

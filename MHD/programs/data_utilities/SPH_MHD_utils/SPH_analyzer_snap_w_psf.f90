@@ -8,16 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine SPH_init_sph_snap_psf                                &
-!!     &         (MHD_files, bc_IO, iphys, MHD_prop)
+!!     &         (MHD_files, bc_IO, iphys, MHD_prop, sph_MHD_bc)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
+!!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!      subroutine SPH_analyze_snap_psf                                 &
-!!     &         (i_step, MHD_files, MHD_prop, MHD_step)
+!!     &         (i_step, MHD_files, MHD_prop, sph_MHD_bc, MHD_step)
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
@@ -29,6 +31,7 @@
       use t_phys_address
       use t_MHD_file_parameter
       use t_control_parameter
+      use t_boundary_data_sph_MHD
 !
       implicit none
 !
@@ -39,7 +42,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_init_sph_snap_psf                                  &
-     &         (MHD_files, bc_IO, iphys, MHD_prop)
+     &         (MHD_files, bc_IO, iphys, MHD_prop, sph_MHD_bc)
 !
       use m_constants
       use calypso_mpi
@@ -52,7 +55,6 @@
       use m_rms_4_sph_spectr
       use m_physical_property
       use m_sph_trans_arrays_MHD
-      use m_boundary_data_sph_MHD
       use m_bc_data_list
 !
       use t_sph_boundary_input_data
@@ -77,6 +79,7 @@
       type(boundary_spectra), intent(in) :: bc_IO
       type(phys_address), intent(in) :: iphys
       type(MHD_evolution_param), intent(inout) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
 !
 !   Allocate spectr field data
@@ -89,20 +92,20 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo                                     &
      &   (bc_IO, sph_grps1, MHD_BC1, ipol, sph1,                        &
-     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop, sph_MHD_bc1,      &
+     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop, sph_MHD_bc,       &
      &    r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (MHD_prop, sph_MHD_bc1, ipol, idpdr, itor, iphys,              &
+     &   (MHD_prop, sph_MHD_bc, ipol, idpdr, itor, iphys,               &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
-      call const_radial_mat_sph_snap(MHD_prop, sph_MHD_bc1,             &
+      call const_radial_mat_sph_snap(MHD_prop, sph_MHD_bc,              &
      &    sph1%sph_rj, r_2nd, trans_p1%leg, sph_MHD_mat1)
 !
 !     --------------------- 
@@ -120,7 +123,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_snap_psf                                   &
-     &         (i_step, MHD_files, MHD_prop, MHD_step)
+     &         (i_step, MHD_files, MHD_prop, sph_MHD_bc, MHD_step)
 !
       use m_work_time
       use m_spheric_parameter
@@ -129,7 +132,6 @@
       use m_schmidt_poly_on_rtm
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
-      use m_boundary_data_sph_MHD
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -143,6 +145,7 @@
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
@@ -162,13 +165,13 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start(sph1%sph_rj, r_2nd,                   &
-     &    MHD_prop, sph_MHD_bc1, trans_p1%leg, ipol, itor, rj_fld1)
+     &    MHD_prop, sph_MHD_bc, trans_p1%leg, ipol, itor, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_elapsed_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd,               &
-     &    MHD_prop, sph_MHD_bc1, trans_p1, ref_temp1, ref_comp1,        &
+     &    MHD_prop, sph_MHD_bc, trans_p1, ref_temp1, ref_comp1,         &
      &    ipol, itor, trns_WK1, rj_fld1)
       call end_elapsed_time(8)
 !
@@ -183,7 +186,7 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd                                    &
-     &     (sph1, comms_sph1, r_2nd, MHD_prop, sph_MHD_bc1, trans_p1,   &
+     &     (sph1, comms_sph1, r_2nd, MHD_prop, sph_MHD_bc, trans_p1,    &
      &      ipol, sph_MHD_mat1, trns_WK1, rj_fld1)
       end if
       call end_elapsed_time(9)
@@ -196,7 +199,7 @@
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control                                 &
      &     (MHD_step%time_d, sph1%sph_params, sph1%sph_rj,              &
-     &      sph_MHD_bc1%sph_bc_U, trans_p1%leg, ipol, rj_fld1,          &
+     &      sph_MHD_bc%sph_bc_U, trans_p1%leg, ipol, rj_fld1,           &
      &       pwr1, WK_pwr)
       end if
       call end_elapsed_time(11)
