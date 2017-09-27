@@ -19,7 +19,7 @@
 	
 //	if (self) {
 //        allocate_kemoviwewer_struct(kemoview_s, IZERO);
-        id_window = send_single_kemoview_ID();
+        id_window = send_current_kemoview();
         
 //        NSLog(@"init KemoviewDragDropWindow %d", id_window);
 //		[NSBundle loadNibNamed:@"Kemoviewer" owner:self];

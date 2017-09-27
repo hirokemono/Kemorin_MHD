@@ -462,7 +462,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void) awakeFromNib
 {
-    id_window = send_single_kemoview_ID();
+    id_window = send_current_kemoview();
     set_single_kemoview_ID(id_window);
 
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];

@@ -14,6 +14,7 @@ static char viewtype_title[80] = "3D-View";
 
 static void make_1st_level_menu();
 
+struct kemoviewer_type *single_kemoview;
 
 /* subroutine for reading mesh */
 
@@ -874,7 +875,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	
 	/* Initialize arrays for viewer */
 	
-	allocate_single_kemoviwewer_struct(iflag_dmesh);
+	allocate_single_kemoviwewer_struct(single_kemoview);
 	set_to_stereo_shutter(iflag_streo_shutter);
 	
 	if(iflag_streo_shutter == SHUTTER_ON){

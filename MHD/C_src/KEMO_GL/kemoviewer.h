@@ -365,19 +365,17 @@ struct mul_kemoviewer_type;
 extern "C" {
 #endif
 
-    void allocate_kemoviewer_work();
     void allocate_kemoviwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
-    void allocate_single_kemoviwewer_struct(int iflag_dmesh);
+    void allocate_single_kemoviwewer_struct(struct kemoviewer_type *kemoviewer_data);
     void allocate_kemoviwewer_pointers();
     void deallocate_kemoviwewer_pointers();
     
     int send_nlimit_load_psf();
     
     void set_single_kemoview_ID(int id_window);
-    int send_single_kemoview_ID();
 
     void set_current_kemoview(int id_window, struct mul_kemoviewer_type *kemoview_array);
-    int send_current_kemoview(struct mul_kemoviewer_type *kemoview_array);
+    int send_current_kemoview();
 
     void draw_kemoviewer_c();
     void draw_kemoviewer_to_ps();
@@ -517,9 +515,6 @@ extern "C" {
     void write_kemoviewer_window_to_file(int iflag_img, const char *fhead);
     void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead);
 
-    void write_kemoviewer_window_to_png(const char *fhead);
-    void write_kemoviewer_window_step_png(int istep, const char *fhead);
-
     void modify_view_kemoview();
     void rotate_kemoview();
     
@@ -600,7 +595,6 @@ extern "C" {
     int send_coordinate_id_current_psf();
     
     void set_texture_rgba_to_current_psf(int width, int height, const unsigned char *bgra_in);
-    void set_texture_file_to_current_psf(int img_fmt, const char *img_head);
     
     void set_current_psf_polygon_mode(int iflag);
     void set_current_psf_tanvec_mode(int iflag);
@@ -722,6 +716,10 @@ extern "C" {
     
     double round_to_3digit(double value);
     
+    
+    void set_texture_file_to_current_psf(int img_fmt, const char *img_head);
+    void write_kemoviewer_window_to_png(const char *fhead);
+    void write_kemoviewer_window_step_png(int istep, const char *fhead);
 #ifdef __cplusplus
 }
 #endif
