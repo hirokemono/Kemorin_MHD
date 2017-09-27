@@ -104,21 +104,13 @@
 !    void deallocate_kemoviwewer_pointers();
 !    
 !    int send_nlimit_load_psf();
-!    int add_kemoview_array();
-!    void close_kemoview_array();
 !    
-!    void set_num_loaded_kemoview(int num);
-!    void set_max_loaded_kemoview(int num);
-!    void set_to_loaded_kemoview_flag(int id_psf, int iflag);
-!    void set_current_kemoview(int id_psf);
-!    
-!    int send_nlimit_load_kemoview();
-!    int send_num_loaded_kemoview();
-!    int send_max_loaded_kemoview();
-!    int send_loaded_kemoview_flag(int id_psf);
-!    int send_current_kemoview();
-!    
-!    int send_iflag_current_kemoview();
+!
+!    void set_single_kemoview_ID(int id_window);
+!    int send_single_kemoview_ID();
+!
+!     void set_current_kemoview(int id_window, mul_kemoviewer_type *kemoview_array);
+!    int send_current_kemoview(mul_kemoviewer_type *kemoview_array);
 !    
 !    void draw_kemoviewer_c();
 !    void draw_kemoviewer_to_ps();

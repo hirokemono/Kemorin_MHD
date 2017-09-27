@@ -97,20 +97,3 @@ void copy_rgba_from_BMP_c(int ihpixf, int jvpixf, unsigned char *image){
 	};
 	free(bgr);
 }
-
-void vart_flip_rgba_c(int ihpixf, int jvpixf, const unsigned char *fliped_img,
-                      unsigned char *image){
-	int i, j, k, l;
-    
-    for(j=0;j<jvpixf;j++){
-        for (i=0; i < ihpixf; i++) {
-            k = i + j*ihpixf;
-            l = i + (jvpixf-j-1)*ihpixf;
-		/* reading in BGR order, not RGB. */
-            image[4*k  ] = fliped_img[4*l  ];
-            image[4*k+1] = fliped_img[4*l+1];
-            image[4*k+2] = fliped_img[4*l+2];
-            image[4*k+3] = fliped_img[4*l+3];
-        };
-	};
-}

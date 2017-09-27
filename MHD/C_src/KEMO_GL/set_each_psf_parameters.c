@@ -40,9 +40,6 @@ void set_texture_psf_from_bgra(struct psf_menu_val *psf_menu,
 			int width, int height, const unsigned char *bgra_in){
     set_texture_4_psf(width, height, bgra_in, psf_menu);
 };
-void set_texture_psf_glut(struct psf_menu_val *psf_menu, int img_fmt, const char *img_head){
-    set_texture_from_file(img_fmt, img_head, psf_menu);
-};
 
 void set_psf_polygon_mode(struct psf_menu_val *psf_menu, int iflag){psf_menu->polygon_mode_psf = iflag;};
 int send_each_psf_polygon_mode(struct psf_menu_val *psf_menu){return psf_menu->polygon_mode_psf;};

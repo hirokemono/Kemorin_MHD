@@ -29,7 +29,6 @@ struct glut_menu_address *glut_menu_id;
 
 - (void) init
 {
-	printf("Tako\n");
 	allocate_single_kemoviwewer_struct(0);
 }
 

@@ -402,7 +402,6 @@
 {
     int width, height;
     int rowBytes, pixelBytes;
-    int i, j;
     unsigned char *pixels;
     
     
@@ -417,11 +416,7 @@
         pixelBytes = rowBytes / width;
         pixels = (unsigned char *)[imgRep bitmapData];
         
-        for(j=0;j<height;j++){
-            
-        }
-
-        set_texture_bgra_to_current_psf(width, height, pixels);
+        set_texture_rgba_to_current_psf(width, height, pixels);
     }
     [img release];
 }

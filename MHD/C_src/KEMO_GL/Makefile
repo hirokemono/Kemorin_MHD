@@ -54,6 +54,7 @@ draw_mapgrid.o \
 draw_coastline.o \
 coastline_c.o \
 set_texture_4_psf.o \
+set_psf_texture_by_png.o \
 gl_buffer_2_gl2ps.o \
 \
 set_each_psf_parameters.o \
@@ -563,6 +564,15 @@ module:
 	set_texture_4_psf.o: \
 	'$$(KEMO_C_GLDIR)'/set_texture_4_psf.c \
 	set_texture_4_psf.h \
+	m_kemoviewer_menu.h \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	set_psf_texture_by_png.o: \
+	'$$(KEMO_C_GLDIR)'/set_psf_texture_by_png.c \
+	set_psf_texture_by_png.h \
 	m_kemoviewer_menu.h \
 	read_image_2_bmp.o \
 	read_image_2_png.o \

@@ -357,13 +357,14 @@
  */
 
 struct kemoviewer_type;
+struct mul_kemoviewer_type;
 
 /* prototypes */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
     void allocate_kemoviewer_work();
     void allocate_kemoviwewer_struct(struct kemoviewer_type *kemoviewer_data, int iflag_dmesh);
     void allocate_single_kemoviwewer_struct(int iflag_dmesh);
@@ -371,22 +372,13 @@ extern "C" {
     void deallocate_kemoviwewer_pointers();
     
     int send_nlimit_load_psf();
-    int add_kemoview_array();
-    void close_kemoview_array();
     
-    void set_num_loaded_kemoview(int num);
-    void set_max_loaded_kemoview(int num);
-    void set_to_loaded_kemoview_flag(int id_psf, int iflag);
-    void set_current_kemoview(int id_psf);
-    
-    int send_nlimit_load_kemoview();
-    int send_num_loaded_kemoview();
-    int send_max_loaded_kemoview();
-    int send_loaded_kemoview_flag(int id_psf);
-    int send_current_kemoview();
-    
-    int send_iflag_current_kemoview();
-    
+    void set_single_kemoview_ID(int id_window);
+    int send_single_kemoview_ID();
+
+    void set_current_kemoview(int id_window, struct mul_kemoviewer_type *kemoview_array);
+    int send_current_kemoview(struct mul_kemoviewer_type *kemoview_array);
+
     void draw_kemoviewer_c();
     void draw_kemoviewer_to_ps();
     void kemoviewer_initial_lighting();
@@ -607,7 +599,7 @@ extern "C" {
     int send_draw_component_current_psf();
     int send_coordinate_id_current_psf();
     
-    void set_texture_bgra_to_current_psf(int width, int height, const unsigned char *bgra_in);
+    void set_texture_rgba_to_current_psf(int width, int height, const unsigned char *bgra_in);
     void set_texture_file_to_current_psf(int img_fmt, const char *img_head);
     
     void set_current_psf_polygon_mode(int iflag);

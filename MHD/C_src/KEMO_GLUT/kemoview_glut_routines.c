@@ -19,7 +19,7 @@ void draw_mesh_keep_menu(){
 	return;
 };
 
-void write_rotate_views_glut(int id_image, char *image_head, int i_axis) {
+void write_rotate_views_glut(int iflag_img, char *image_head, int i_axis) {
 	int i, int_degree;
 	int int_deg = 2;
 	int ied_deg = 360/int_deg;
@@ -36,10 +36,10 @@ void write_rotate_views_glut(int id_image, char *image_head, int i_axis) {
 		rotate_kemoview();
 		glutSwapBuffers();
 		
-        if (id_image == SAVE_PNG) {
+        if (iflag_img == SAVE_PNG) {
             write_kemoviewer_window_step_png(i, image_head);
-        } else if (id_image != NO_SAVE_FILE) {
-			write_kemoviewer_window_step_file(id_image, i, image_head);
+        } else if (iflag_img != NO_SAVE_FILE) {
+			write_kemoviewer_window_step_file(iflag_img, i, image_head);
 		};
 	};
 	draw_mesh_keep_menu();
@@ -60,7 +60,7 @@ void write_evolution_views_glut(int iflag_img, char *image_head,
 			draw_mesh_keep_menu();
 			glutSwapBuffers();
             
-            if (id_image == SAVE_PNG) {
+            if (iflag_img == SAVE_PNG) {
                 write_kemoviewer_window_step_png(i, image_head);
             } else {
                 write_kemoviewer_window_step_file(iflag_img, i, image_head);

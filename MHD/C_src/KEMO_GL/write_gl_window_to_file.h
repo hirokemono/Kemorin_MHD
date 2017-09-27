@@ -11,7 +11,7 @@
 #include "m_kemoviewer_menu.h"
 #include "move_draw_objects_gl.h"
 #include "rendereps_c.h"
-#include "gl_buffer_2_png.h"
+/*#include "gl_buffer_2_png.h" */
 #include "gl_buffer_2_bmp.h"
 #include "gl_buffer_2_gl2ps.h"
 

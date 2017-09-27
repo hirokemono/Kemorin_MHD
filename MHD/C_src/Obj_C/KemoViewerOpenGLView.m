@@ -145,7 +145,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 {
 	set_kemoview_animation_rot_axis((int) rotationaxis);
 	set_kemoview_animation_rot_angle((int) int_degree);
-    set_current_kemoview(id_window);
+    set_single_kemoview_ID(id_window);
 	draw_kemoviewer_c();
 	rotate_kemoview();
 	
@@ -155,7 +155,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(id) DrawEvolution:(NSInteger)timeStep
 {	
-    set_current_kemoview(id_window);
+    set_single_kemoview_ID(id_window);
 	evolution_viewer((int) timeStep);
 	draw_kemoviewer_c();
 	modify_view_kemoview();
@@ -166,7 +166,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(void) UpdateImage
 {
-    set_current_kemoview(id_window);
+    set_single_kemoview_ID(id_window);
 	draw_kemoviewer_c();
 	[self swapbuffer_cocoa];
 	return;
@@ -329,7 +329,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-    set_current_kemoview(id_window);
+    set_single_kemoview_ID(id_window);
 
 	if (gDolly) { // end dolly
 		gDolly = GL_FALSE;
@@ -462,8 +462,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void) awakeFromNib
 {
-    id_window = send_current_kemoview();
-    set_current_kemoview(id_window);
+    id_window = send_single_kemoview_ID();
+    set_single_kemoview_ID(id_window);
 
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	NSString *pickSurfName = [defaults stringForKey:@"PickSurfaceCommand"];

@@ -11,7 +11,7 @@
 @implementation Kemoview_CocoaAppDelegate
 
 - (id) init{
-    allocate_single_kemoviwewer_struct(IZERO);
+    allocate_single_kemoviwewer_struct(0);
     return self;
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
