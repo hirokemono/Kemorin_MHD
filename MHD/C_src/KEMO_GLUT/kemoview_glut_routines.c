@@ -36,7 +36,9 @@ void write_rotate_views_glut(int id_image, char *image_head, int i_axis) {
 		rotate_kemoview();
 		glutSwapBuffers();
 		
-		if (id_image != NO_SAVE_FILE) {
+        if (id_image == SAVE_PNG) {
+            write_kemoviewer_window_step_png(i, image_head);
+        } else if (id_image != NO_SAVE_FILE) {
 			write_kemoviewer_window_step_file(id_image, i, image_head);
 		};
 	};
@@ -57,7 +59,12 @@ void write_evolution_views_glut(int iflag_img, char *image_head,
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			draw_mesh_keep_menu();
 			glutSwapBuffers();
-			write_kemoviewer_window_step_file(iflag_img, i, image_head);
+            
+            if (id_image == SAVE_PNG) {
+                write_kemoviewer_window_step_png(i, image_head);
+            } else {
+                write_kemoviewer_window_step_file(iflag_img, i, image_head);
+            }
 		}
 	}
 	return;

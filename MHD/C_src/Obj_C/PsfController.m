@@ -400,16 +400,30 @@
 
 - (void) ReadTextureFile:(NSString *) PsfOpenFilename
 {
-    int iflag_fmt;
-    NSString *PsfOpenFileext =   [PsfOpenFilename pathExtension];
-    NSString *PsfOpenFilehead =  [PsfOpenFilename stringByDeletingPathExtension];
+    int width, height;
+    int rowBytes, pixelBytes;
+    int i, j;
+    unsigned char *pixels;
     
-    if([PsfOpenFileext isEqualToString:@"png"]
-       || [PsfOpenFileext isEqualToString:@"PNG"]){ iflag_fmt = SAVE_PNG;}
-    else if([PsfOpenFileext isEqualToString:@"bmp"]
-            || [PsfOpenFileext isEqualToString:@"BMP"]){ iflag_fmt = SAVE_BMP;};
     
-    set_texture_current_psf(iflag_fmt, [PsfOpenFilehead UTF8String]);
+    NSData *img = [ [ NSData alloc ] initWithContentsOfFile: PsfOpenFilename];
+    NSBitmapImageRep *imgRep = [NSBitmapImageRep imageRepWithData:img];
+    if (img != nil) {
+        width = [imgRep pixelsWide];
+        height = [imgRep pixelsHigh];
+//      int  bmpformat = [imgRep bitmapFormat];
+//      int  bitParPix = [imgRep bitsPerPixel];
+        rowBytes = [imgRep bytesPerRow];
+        pixelBytes = rowBytes / width;
+        pixels = (unsigned char *)[imgRep bitmapData];
+        
+        for(j=0;j<height;j++){
+            
+        }
+
+        set_texture_bgra_to_current_psf(width, height, pixels);
+    }
+    [img release];
 }
 
 - (void) ReadPsfFile:(NSString *) PsfOpenFilename

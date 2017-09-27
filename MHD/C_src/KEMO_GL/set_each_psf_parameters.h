@@ -35,6 +35,8 @@ int send_draw_comp_id_psf(struct psf_menu_val *psf_menu);
 int send_draw_component_psf(struct psf_menu_val *psf_menu);
 int send_coordinate_id_psf(struct psf_data *psf_d, struct psf_menu_val *psf_menu);
 
+void set_texture_psf_from_bgra(struct psf_menu_val *psf_menu,
+			int width, int height, const unsigned char *bgra_in);
 void set_texture_psf_glut(struct psf_menu_val *psf_menu, int img_fmt, const char *img_head);
 
 void set_psf_polygon_mode(struct psf_menu_val *psf_menu, int iflag);

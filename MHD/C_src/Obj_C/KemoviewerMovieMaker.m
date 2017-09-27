@@ -9,7 +9,9 @@
 #import "KemoviewerMovieMaker.h"
 #include "kemoviewer.h"
 
+NSBitmapImageRep *SnapshotBitmapRep;
 NSImage *SnapshotImage;
+NSData *SnapshotData;
 
 @implementation KemoviewerMovieMaker
 @synthesize MovieFormatFlag;
@@ -154,34 +156,41 @@ NSImage *SnapshotImage;
 
 // ---------------------------------
 
-- (void) SetGLBitmapToImage
+- (void) SetGLBitmapToImageRep
 {
     static unsigned char *glimage;
     GLint XViewsize = [_kemoviewer KemoviewHorizontalViewSize];
     GLint YViewsize = [_kemoviewer KemoviewVerticalViewSize];
-
-	glimage = (unsigned char*)calloc(3*XViewsize*XViewsize, sizeof(unsigned char));
-
-    NSBitmapImageRep *bitmapRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
-                                                     pixelsWide: XViewsize
-                                                     pixelsHigh: YViewsize
-                                                  bitsPerSample: 8
-                                                samplesPerPixel: 3
-                                                       hasAlpha: NO
-                                                       isPlanar: NO
-                                                 colorSpaceName:NSDeviceRGBColorSpace
-              //	bytesPerRow: (XpixelGLWindow*3) //pixelsWide*samplesPerPixel
-              // bitsPerPixel: (8*3)   //bitsPerSample*samplesPerPixel
-                                                    bytesPerRow: (XViewsize*3) //pixelsWide*samplesPerPixel
-                                                   bitsPerPixel: 0  //bitsPerSample*samplesPerPixel
-              ];
+    
+    glimage = (unsigned char*)calloc(3*XViewsize*XViewsize, sizeof(unsigned char));
+    
+    SnapshotBitmapRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil
+                                                                          pixelsWide: XViewsize
+                                                                          pixelsHigh: YViewsize
+                                                                       bitsPerSample: 8
+                                                                     samplesPerPixel: 3
+                                                                            hasAlpha: NO
+                                                                            isPlanar: NO
+                                                                      colorSpaceName:NSDeviceRGBColorSpace
+                                   //	bytesPerRow: (XpixelGLWindow*3) //pixelsWide*samplesPerPixel
+                                   // bitsPerPixel: (8*3)   //bitsPerSample*samplesPerPixel
+                                                                         bytesPerRow: (XViewsize*3) //pixelsWide*samplesPerPixel
+                                                                        bitsPerPixel: 0  //bitsPerSample*samplesPerPixel
+                                   ];
     
     get_kemoviewer_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
                               (int) [_kemoviewer KemoviewVerticalViewSize],
-                              glimage, [bitmapRep bitmapData]);
-    [SnapshotImage addRepresentation:bitmapRep];
-    [bitmapRep release];
+                              glimage, [SnapshotBitmapRep bitmapData]);
     free(glimage);
+    return;
+}
+
+- (void) SetGLBitmapToImage
+{
+    [self SetGLBitmapToImageRep];
+
+    [SnapshotImage addRepresentation:SnapshotBitmapRep];
+    [SnapshotBitmapRep release];
     return;
 }
 
@@ -201,6 +210,28 @@ NSImage *SnapshotImage;
     
     if (buffer) {CVBufferRelease(buffer);}
     [SnapshotImage release];            
+}
+
+
+-(void) SaveKemoviewImageFile:(NSString*)filename
+{
+    BOOL interlaced;
+    NSDictionary *properties;
+    
+    [self SetGLBitmapToImageRep];
+    
+    SnapshotImage = [[NSImage alloc] init];
+    [SnapshotImage addRepresentation:SnapshotBitmapRep];
+    
+    properties = [NSDictionary
+                  dictionaryWithObject:[NSNumber numberWithBool:interlaced]
+                  forKey:NSImageInterlaced];
+    SnapshotData = [SnapshotBitmapRep representationUsingType:NSPNGFileType
+                                        properties:properties];
+    [SnapshotData writeToFile:filename atomically:YES];
+    printf("PNG file output\n");
+    [SnapshotImage release];            
+    [SnapshotBitmapRep release];
 }
 
 
@@ -228,6 +259,11 @@ NSImage *SnapshotImage;
 		if (CurrentMovieFormat == SAVE_QT_MOVIE) {
             CMTime frameTime = CMTimeMake((int64_t)self.CurrentStep, self.FramePerSecond);
             [self AddKemoviewImageToMovie:frameTime];
+        } else if (CurrentMovieFormat == SAVE_PNG) {
+            NSString *numstring = [NSString stringWithFormat:@"%ld",self.CurrentStep];
+            NSString *TmpName =  [RotateImageFilehead stringByAppendingString:numstring];
+            NSString *FileName =  [TmpName stringByAppendingString:@".png"];
+            [self SaveKemoviewImageFile:FileName];
 		} else if (CurrentMovieFormat != 0) {
             write_kemoviewer_window_step_file((int) CurrentMovieFormat, (int) self.CurrentStep,
                                               [RotateImageFilehead UTF8String]);
@@ -270,6 +306,11 @@ NSImage *SnapshotImage;
                 iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
                 CMTime frameTime = CMTimeMake((int64_t)iframe, self.FramePerSecond);
                 [self AddKemoviewImageToMovie:frameTime];
+            } else if (CurrentMovieFormat == SAVE_PNG) {
+                NSString *numstring = [NSString stringWithFormat:@"%ld",self.CurrentStep];
+                NSString *TmpName =  [RotateImageFilehead stringByAppendingString:numstring];
+                NSString *FileName =  [TmpName stringByAppendingString:@".png"];
+                [self SaveKemoviewImageFile:FileName];
 			} else if (CurrentMovieFormat != 0) {
                 write_kemoviewer_window_step_file((int) CurrentMovieFormat, (int) self.CurrentStep,
                                                   [EvolutionImageFilehead UTF8String]);

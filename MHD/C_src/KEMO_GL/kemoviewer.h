@@ -524,7 +524,10 @@ extern "C" {
                                    unsigned char *glimage, unsigned char *fliped_img);
     void write_kemoviewer_window_to_file(int iflag_img, const char *fhead);
     void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead);
-    
+
+    void write_kemoviewer_window_to_png(const char *fhead);
+    void write_kemoviewer_window_step_png(int istep, const char *fhead);
+
     void modify_view_kemoview();
     void rotate_kemoview();
     
@@ -604,7 +607,8 @@ extern "C" {
     int send_draw_component_current_psf();
     int send_coordinate_id_current_psf();
     
-    void set_texture_current_psf(int img_fmt, const char *img_head);
+    void set_texture_bgra_to_current_psf(int width, int height, const unsigned char *bgra_in);
+    void set_texture_file_to_current_psf(int img_fmt, const char *img_head);
     
     void set_current_psf_polygon_mode(int iflag);
     void set_current_psf_tanvec_mode(int iflag);

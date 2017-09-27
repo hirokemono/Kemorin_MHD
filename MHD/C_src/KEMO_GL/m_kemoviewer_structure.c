@@ -558,9 +558,6 @@ void send_text_color_code(float c_code[4])    {copy_rgba_color_c(kemo_sgl->mesh_
 
 
 int set_image_file_format_id(char *image_fmt){return set_image_format_id_by_ext(image_fmt);}
-void write_kemoviewer_window_to_file(int iflag_img, const char *fhead){
-	write_gl_window_to_file(iflag_img, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
-}
 
 void get_kemoviewer_fliped_img(int npixel_x, int npixel_y,
                                unsigned char *glimage, unsigned char *fliped_img){
@@ -569,11 +566,19 @@ void get_kemoviewer_fliped_img(int npixel_x, int npixel_y,
     return;
 }
 
-
+void write_kemoviewer_window_to_file(int iflag_img, const char *fhead){
+	write_gl_window_to_file(iflag_img, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
+}
 void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead){
 	write_gl_window_step_file(iflag_img, istep, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
 }
 
+void write_kemoviewer_window_to_png(const char *fhead){
+    write_gl_window_to_png(fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
+}
+void write_kemoviewer_window_step_png(int istep, const char *fhead){
+    write_gl_window_step_png(istep, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
+}
 
 void modify_view_kemoview(){modify_stereo_kemoview(kemo_sgl->mesh_m, kemo_sgl->view_s);};
 void rotate_kemoview(){rotate_stereo_kemoview(kemo_sgl->mesh_m, kemo_sgl->view_s);};
@@ -732,7 +737,10 @@ int send_coordinate_id_current_psf(){
 };
 
 
-void set_texture_current_psf(int img_fmt, const char *img_head){
+void set_texture_bgra_to_current_psf(int width, int height, const unsigned char *bgra_in){
+    set_texture_psf_from_bgra(psf_current_menu, width, height, bgra_in);
+};
+void set_texture_file_to_current_psf(int img_fmt, const char *img_head){
     set_texture_psf_glut(psf_current_menu, img_fmt, img_head);
 };
 

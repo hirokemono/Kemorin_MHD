@@ -44,7 +44,12 @@ static void save_image_handler(){
 	
 	glutSetWindow(winid);
 	draw_mesh_keep_menu();
-	write_kemoviewer_window_to_file(id_image, image_head);
+    
+    if(id_image == SAVE_PNG){
+        write_kemoviewer_window_to_file(id_image, image_head);
+    } else {
+        write_kemoviewer_window_to_png(image_head);
+    }
 	return;
 };
 
@@ -55,7 +60,7 @@ static void load_texture_handler(){
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
 	
-		set_texture_current_psf(id_image, image_head);
+		set_texture_file_to_current_psf(id_image, image_head);
 		set_current_psf_patch_color_mode(TEXTURED_SURFACE);
 	};
 	

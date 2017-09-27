@@ -131,7 +131,13 @@
         id_format = (int) CurrentImageFormat;
     };
     
-    write_kemoviewer_window_to_file(id_format, [ImageFilehead UTF8String]);
+    if(id_format == SAVE_PNG){
+        NSString *FileName =  [ImageFilehead stringByAppendingString:@".png"];
+        [_movieMakerController SaveKemoviewImageFile:FileName];
+    } else {
+        write_kemoviewer_window_to_file(id_format, [ImageFilehead UTF8String]);
+    }
+    
     [_kemoviewer UpdateImage];
 }
 

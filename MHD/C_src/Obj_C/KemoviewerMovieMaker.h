@@ -58,6 +58,7 @@
 
 -(void) InitEvolutionStepByPSF;
 -(void) InitEvolutionStepByFline;
+-(void) SaveKemoviewImageFile:(NSString*)filename;
 
 - (IBAction)SendToClipAsPDF:(id)sender;
 

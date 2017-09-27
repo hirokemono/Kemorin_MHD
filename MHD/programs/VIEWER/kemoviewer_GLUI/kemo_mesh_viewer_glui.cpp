@@ -106,7 +106,7 @@ static void load_psf_texture_glui(int sel){
 	ext_fmt = set_image_file_format_id(img_ext);
 	
 	if(ext_fmt == SAVE_PNG || ext_fmt == SAVE_BMP){
-		set_texture_current_psf(ext_fmt, file_head);
+		set_texture_file_to_current_psf(ext_fmt, file_head);
 		set_current_psf_patch_color_mode(TEXTURED_SURFACE);
 	};
 	

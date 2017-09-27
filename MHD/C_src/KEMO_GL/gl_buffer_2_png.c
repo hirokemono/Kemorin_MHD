@@ -44,7 +44,7 @@ static void get_gl_buffer_for_png(int num_x, int num_y){
 	return;
 }
 
-void gl_buffer_2_png(const char *fhead, int num_x, int num_y){
+void write_gl_window_to_png(const char *fhead, int num_x, int num_y){
 	char fname[LENGTHBUF];
 	
 	/* allocate memory */
@@ -59,4 +59,14 @@ void gl_buffer_2_png(const char *fhead, int num_x, int num_y){
 	/* deallocate memory*/
 	dealloc_img_buffer_2_png(num_y);
 	return;
+}
+
+void write_gl_window_step_png(int istep, const char *fhead,
+                               GLint nwin_x, GLint nwin_y){
+    char fhead_step[LENGTHBUF];
+    
+    sprintf(fhead_step, "%s.%d%c",fhead, istep,'\0');
+    /* printf("file header: %s \n",fhead_step); */
+    write_gl_window_to_png(fhead_step, nwin_x, nwin_y);
+    return;
 }
