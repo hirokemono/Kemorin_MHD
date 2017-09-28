@@ -20,6 +20,7 @@
       use m_machine_parameter
       use m_work_time
       use m_SPH_MHD_model_data
+      use m_SPH_mesh_field_data
       use m_sph_trans_arrays_MHD
       use m_bc_data_list
       use m_SPH_SGS_structure
@@ -52,8 +53,6 @@
       use m_mesh_data
       use m_ctl_data_sph_SGS_MHD
       use m_node_phys_data
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use sph_mhd_rst_IO_control
       use set_control_sph_SGS_MHD
@@ -79,7 +78,7 @@
       call set_control_4_SPH_SGS_MHD                                    &
      &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%smonitor_ctl,                    &
-     &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
+     &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, SPH_MHD1%fld,  &
      &    MHD_files1, bc_sph_IO1, pwr1, SPH_SGS1%SGS_par,               &
      &    SPH_SGS1%dynamic, MHD_step1, SPH_model1%MHD_prop,             &
      &    MHD_BC1, trns_WK1%WK_sph, gen_sph_c)
@@ -92,7 +91,8 @@
 !   Load spherical harmonics data
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh(sph1, comms_sph1, sph_grps1)
+      call load_para_sph_mesh                                           &
+     &   (SPH_MHD1%sph, SPH_MHD1%comms, SPH_MHD1%groups)
 !
       call end_elapsed_time(4)
 !
@@ -102,7 +102,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle(MHD_files1, bc_sph_IO1,             &
      &    femmesh1, iphys_nod1, SPH_model1, sph_MHD_bc1, SPH_SGS1,      &
-     &    cdat1)
+     &    SPH_MHD1, cdat1)
       call calypso_MPI_barrier
 !
       call end_elapsed_time(2)
@@ -134,7 +134,8 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
         call SPH_analyze_pick_circle(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1, SPH_model1, sph_MHD_bc1, SPH_SGS1, cdat1)
+     &      MHD_files1, SPH_model1, sph_MHD_bc1, SPH_SGS1, SPH_MHD1,    &
+     &      cdat1)
 !*
 !*  -----------  exit loop --------------
 !*

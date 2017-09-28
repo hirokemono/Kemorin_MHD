@@ -88,6 +88,7 @@
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+!      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !   Allocate spectr field data
 !
@@ -135,7 +136,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_snap                                       &
-     &         (i_step, MHD_files, SPH_model, sph_MHD_bc, MHD_step,      &
+     &         (i_step, MHD_files, SPH_model, sph_MHD_bc, MHD_step,     &
      &          SPH_SGS)
 !
       use m_work_time
@@ -161,6 +162,7 @@
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+!      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       integer(kind = kint) :: iflag
 !
