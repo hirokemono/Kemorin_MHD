@@ -32,7 +32,6 @@
       use m_work_time
       use m_machine_parameter
 !
-      use m_physical_property
       use t_mesh_data
       use t_phys_data
       use t_phys_address

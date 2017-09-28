@@ -17,6 +17,7 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_SPH_MHD_model_data
       use m_MHD_step_parameter
       use t_step_parameter
       use t_MHD_file_parameter
@@ -93,7 +94,6 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
-      use m_physical_property
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank

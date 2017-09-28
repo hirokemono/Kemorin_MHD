@@ -20,8 +20,8 @@
       use m_machine_parameter
       use m_work_time
       use m_ctl_data_sph_MHD
+      use m_SPH_MHD_model_data
       use m_MHD_step_parameter
-      use m_physical_property
       use t_MHD_file_parameter
 !
       implicit none
@@ -62,7 +62,8 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init(MHD_files1, bc_sph_IO1,        &
      &    DNS_MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, pwr1,     &
-     &     MHD_step1, femmesh1, ele_mesh1, MHD_prop1, MHD_BC1, trns_WK1)
+     &    MHD_step1, femmesh1, ele_mesh1, SPH_model1%MHD_prop,          &
+     &    MHD_BC1, trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
 !
@@ -87,7 +88,6 @@
 !
       use m_spheric_parameter
       use m_sph_spectr_data
-      use m_physical_property
       use m_bc_data_list
 !
       use set_control_sph_mhd
@@ -112,10 +112,10 @@
 !
 ! ---------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd'
-      call init_r_infos_sph_mhd                                         &
-     &   (bc_sph_IO1, sph_grps1, MHD_BC1, ipol, sph1, omega_sph1,       &
-     &    ref_temp1, ref_comp1, rj_fld1, MHD_prop1, sph_MHD_bc1)
+      if (iflag_debug.gt.0) write(*,*) 'init_r_infos_make_sph_initial'
+      call init_r_infos_make_sph_initial                                &
+     & (bc_sph_IO1, sph_grps1, MHD_BC1, ipol, sph1,                     &
+     &  rj_fld1, SPH_model1, sph_MHD_bc1)
 !
 ! ---------------------------------
 !

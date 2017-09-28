@@ -1,10 +1,11 @@
-!>@file   m_sph_spectr_data.f90
-!!@brief  module m_sph_spectr_data
+!>@file   m_SPH_MHD_model_data.f90
+!!@brief  module m_SPH_MHD_model_data
 !!
-!!@author H. Matsui
-!!@date Programmed in Oct., 2007
+!!@author H. Matsui and H. Okuda
+!!@date Programmed in 2000
+!!@n modified in Feb., 2009
 !
-!>@brief  Flag and parameters for spherical transform dnyamo model
+!> @brief control flags for MHD dynamo model
 !!
 !!
 !!@verbatim
@@ -33,30 +34,20 @@
 !!*
 !!***********************************************************************
 !!@endverbatim
-!!
-!!@n @param my_rank process ID
 !
-      module m_sph_spectr_data
+      module m_SPH_MHD_model_data
 !
       use m_precision
-      use t_spheric_parameter
-      use t_spheric_rj_data
-      use t_poloidal_rotation
-      use t_radial_reference_temp
-      use t_phys_address
-      use t_phys_data
+      use t_SPH_MHD_model_data
+      use t_boundary_data_sph_MHD
 !
       implicit  none
 !
 !
-!>   address for spectr data (poloidal component for vector)
-      type(phys_address), save :: ipol
-!>   address for radial gradient for poloidal component
-      type(phys_address), save :: idpdr
-!>   address for toroidal component
-      type(phys_address), save :: itor
+!>      Parameters for spectr dynamo model
+      type(SPH_MHD_model_data), save :: SPH_model1
 !
-!>      Structure for field data
-      type(phys_data), save :: rj_fld1
+!>      Boudary conditions for spectr dynamo model
+      type(sph_MHD_boundary_data), save :: sph_MHD_bc1
 !
-      end module m_sph_spectr_data
+      end module m_SPH_MHD_model_data

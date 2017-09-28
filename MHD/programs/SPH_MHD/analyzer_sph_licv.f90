@@ -18,9 +18,9 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_SPH_MHD_model_data
       use m_sph_trans_arrays_MHD
       use m_MHD_step_parameter
-      use m_physical_property
 !
       use SPH_analyzer_licv
 !
@@ -57,7 +57,7 @@
 !
       call input_control_4_SPH_MHD_nosnap(MHD_files1, bc_sph_IO1,       &
      &    DNS_MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, pwr1,     &
-     &    MHD_step1, MHD_prop1, MHD_BC1, trns_WK1)
+     &    MHD_step1, SPH_model1%MHD_prop, MHD_BC1, trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
 !
@@ -69,7 +69,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_linear_conv'
       call SPH_initialize_linear_conv                                   &
-     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1, sph_MHD_bc1,   &
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, SPH_model1, sph_MHD_bc1,  &
      &    MHD_step1)
       call calypso_MPI_barrier
 !
@@ -108,7 +108,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_linear_conv'
         call SPH_analyze_linear_conv(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1, MHD_prop1, sph_MHD_bc1, iflag_finish,           &
+     &      MHD_files1, SPH_model1, sph_MHD_bc1, iflag_finish,          &
      &      MHD_step1)
 !*
 !*  -----------  exit loop --------------

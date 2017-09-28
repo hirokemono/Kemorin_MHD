@@ -19,7 +19,7 @@
 !
       use m_machine_parameter
       use m_work_time
-      use m_physical_property
+      use m_SPH_MHD_model_data
       use t_field_on_circle
       use t_field_4_dynamobench
       use t_step_parameter
@@ -68,7 +68,8 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamobench'
       call input_control_SPH_dynamobench(MHD_files1, bc_sph_IO1,        &
      &    DNS_MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1, &
-     &    pwr1, MHD_step1, MHD_prop1, MHD_BC1, trns_WK1, cdat1, bench1)
+     &    pwr1, MHD_step1, SPH_model1%MHD_prop, MHD_BC1,                &
+     &    trns_WK1, cdat1, bench1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
 !
@@ -79,9 +80,8 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_dbench'
-      call SPH_init_sph_dbench                                          &
-     &   (MHD_files1, bc_sph_IO1, iphys_nod1, MHD_prop1, sph_MHD_bc1,   &
-     &    cdat1)
+      call SPH_init_sph_dbench(MHD_files1, bc_sph_IO1, iphys_nod1,      &
+     &    SPH_model1, sph_MHD_bc1, cdat1)
       call calypso_MPI_barrier
 !
       call end_elapsed_time(2)
@@ -113,7 +113,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_dbench'
         call SPH_analyze_dbench(MHD_step1%time_d%i_time_step,           &
-     &      MHD_files1, MHD_prop1, sph_MHD_bc1, cdat1, bench1)
+     &      MHD_files1, SPH_model1, sph_MHD_bc1, cdat1, bench1)
 !*
 !*  -----------  exit loop --------------
 !*

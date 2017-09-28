@@ -1,10 +1,11 @@
-!>@file   m_sph_spectr_data.f90
-!!@brief  module m_sph_spectr_data
+!>@file   t_SPH_MHD_model_data.f90
+!!@brief  module t_SPH_MHD_model_data
 !!
-!!@author H. Matsui
-!!@date Programmed in Oct., 2007
+!!@author H. Matsui and H. Okuda
+!!@date Programmed in 2000
+!!@n modified in Feb., 2009
 !
-!>@brief  Flag and parameters for spherical transform dnyamo model
+!> @brief control flags for MHD dynamo model
 !!
 !!
 !!@verbatim
@@ -33,30 +34,29 @@
 !!*
 !!***********************************************************************
 !!@endverbatim
-!!
-!!@n @param my_rank process ID
 !
-      module m_sph_spectr_data
+      module t_SPH_MHD_model_data
 !
       use m_precision
-      use t_spheric_parameter
-      use t_spheric_rj_data
+      use t_control_parameter
       use t_poloidal_rotation
       use t_radial_reference_temp
-      use t_phys_address
-      use t_phys_data
 !
       implicit  none
 !
 !
-!>   address for spectr data (poloidal component for vector)
-      type(phys_address), save :: ipol
-!>   address for radial gradient for poloidal component
-      type(phys_address), save :: idpdr
-!>   address for toroidal component
-      type(phys_address), save :: itor
 !
-!>      Structure for field data
-      type(phys_data), save :: rj_fld1
+!>      Parameters for spectr dynamo model
+      type SPH_MHD_model_data
+        type(MHD_evolution_param) :: MHD_prop
 !
-      end module m_sph_spectr_data
+!>        Structure for rotatin vector
+        type(sph_rotation) :: omega_sph
+!
+!>        Structure of reference temperature
+        type(reference_temperature) :: ref_temp
+!>        Structure of reference temperature
+        type(reference_temperature) :: ref_comp
+      end type SPH_MHD_model_data
+!
+      end module t_SPH_MHD_model_data

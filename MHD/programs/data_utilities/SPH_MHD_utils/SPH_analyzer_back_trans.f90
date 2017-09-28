@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine SPH_init_sph_back_trans                              &
-!!     &         (MHD_files, bc_IO, iphys, MHD_prop, sph_MHD_bc)
+!!     &         (MHD_files, bc_IO, iphys, SPH_model, sph_MHD_bc)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(phys_address), intent(in) :: iphys
-!!        type(MHD_evolution_param), intent(inout) :: MHD_prop
+!!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!      subroutine SPH_analyze_back_trans(i_step, MHD_files, MHD_step)
 !!        type(boundary_spectra), intent(in) :: bc_IO
@@ -38,7 +38,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_init_sph_back_trans                                &
-     &         (MHD_files, bc_IO, iphys, MHD_prop, sph_MHD_bc)
+     &         (MHD_files, bc_IO, iphys, SPH_model, sph_MHD_bc)
 !
       use m_constants
       use calypso_mpi
@@ -75,7 +75,7 @@
       type(boundary_spectra), intent(in) :: bc_IO
       type(phys_address), intent(in) :: iphys
 !
-      type(MHD_evolution_param), intent(inout) :: MHD_prop
+      type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
 !
@@ -89,15 +89,15 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo                                     &
      &   (bc_IO, sph_grps1, MHD_BC1, ipol, sph1,                        &
-     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop, sph_MHD_bc,       &
-     &    r_2nd, rj_fld1)
+     &    SPH_model, sph_MHD_bc, r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_back_transform'
       call init_sph_back_transform                                      &
-     &   (MHD_prop%fl_prop, sph_MHD_bc, ipol, idpdr, itor, iphys,       &
-     &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
+     &   (SPH_model%MHD_prop%fl_prop, sph_MHD_bc,                       &
+     &    ipol, idpdr, itor, iphys, sph1, comms_sph1,                   &
+     &    SPH_model%omega_sph, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
 !

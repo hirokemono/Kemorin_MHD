@@ -19,8 +19,8 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_SPH_MHD_model_data
       use m_sph_trans_arrays_MHD
-      use m_physical_property
       use m_bc_data_list
       use m_SPH_SGS_structure
       use t_field_on_circle
@@ -81,7 +81,7 @@
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%smonitor_ctl,                    &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
      &    MHD_files1, bc_sph_IO1, pwr1, SPH_SGS1%SGS_par,               &
-     &    SPH_SGS1%dynamic, MHD_step1, MHD_prop1,                       &
+     &    SPH_SGS1%dynamic, MHD_step1, SPH_model1%MHD_prop,             &
      &    MHD_BC1, trns_WK1%WK_sph, gen_sph_c)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
@@ -101,7 +101,7 @@
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle(MHD_files1, bc_sph_IO1,             &
-     &    femmesh1, iphys_nod1, MHD_prop1, sph_MHD_bc1, SPH_SGS1,       &
+     &    femmesh1, iphys_nod1, SPH_model1, sph_MHD_bc1, SPH_SGS1,      &
      &    cdat1)
       call calypso_MPI_barrier
 !
@@ -134,7 +134,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
         call SPH_analyze_pick_circle(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1, MHD_prop1, sph_MHD_bc1, SPH_SGS1, cdat1)
+     &      MHD_files1, SPH_model1, sph_MHD_bc1, SPH_SGS1, cdat1)
 !*
 !*  -----------  exit loop --------------
 !*

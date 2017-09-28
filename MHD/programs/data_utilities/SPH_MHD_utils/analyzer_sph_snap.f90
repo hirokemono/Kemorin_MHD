@@ -19,8 +19,8 @@
 !
       use m_work_time
       use m_machine_parameter
+      use m_SPH_MHD_model_data
       use m_MHD_step_parameter
-      use m_physical_property
       use m_mesh_data
       use m_node_phys_data
       use m_jacobians_VIZ
@@ -70,7 +70,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
       call input_control_SPH_dynamo(MHD_files1, bc_sph_IO1,             &
      &    MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
-     &    pwr1, SPH_SGS1, MHD_step1, MHD_prop1, MHD_BC1,                &
+     &    pwr1, SPH_SGS1, MHD_step1, SPH_model1%MHD_prop, MHD_BC1,      &
      &    trns_WK1, femmesh1, ele_mesh1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
@@ -87,7 +87,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
       call SPH_init_sph_snap(MHD_files1, bc_sph_IO1,                    &
-     &    iphys_nod1, MHD_prop1, sph_MHD_bc1, SPH_SGS1)
+     &    iphys_nod1, SPH_model1, sph_MHD_bc1, SPH_SGS1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(femmesh1, ele_mesh1, nod_fld1)
@@ -130,7 +130,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
         call SPH_analyze_snap(MHD_step1%time_d%i_time_step,             &
-     &      MHD_files1, MHD_prop1, sph_MHD_bc1, MHD_step1, SPH_SGS1)
+     &      MHD_files1, SPH_model1, sph_MHD_bc1, MHD_step1, SPH_SGS1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -226,7 +226,7 @@
       MHD_step1%time_d%i_time_step = MHD_step1%init_d%i_time_step
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
       call SPH_analyze_snap(MHD_step1%time_d%i_time_step,               &
-     &    MHD_files1, MHD_prop1, sph_MHD_bc1, MHD_step1, SPH_SGS1)
+     &    MHD_files1, SPH_model1, sph_MHD_bc1, MHD_step1, SPH_SGS1)
 !*
       iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,        &
      &                             MHD_step1)
