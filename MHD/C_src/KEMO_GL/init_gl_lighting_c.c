@@ -129,10 +129,10 @@ void reset_light_from_white_sf_c(int surface_color){
 void reset_light_by_size_of_domain(GLdouble r_max){
 	GLfloat  lightposi[4];
 	
-	lightposi[0] = -10.0 / (GLfloat) r_max;
-	lightposi[1] = -10.0 / (GLfloat) r_max;
-	lightposi[2] = 50.0 / (GLfloat) r_max;
-	lightposi[3] = ONE;
+	lightposi[0] =  10.0 / (GLfloat) r_max;
+	lightposi[1] =  -2.0 / (GLfloat) r_max;
+	lightposi[2] =   5.0 / (GLfloat) r_max;
+	lightposi[3] =   ONE;
 
      glDisable(GL_LIGHT0);
      glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
