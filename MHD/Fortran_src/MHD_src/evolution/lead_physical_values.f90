@@ -36,7 +36,7 @@
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
-      use t_mhd_step_parameter
+      use t_MHD_step_parameter
       use t_control_parameter
       use t_reference_scalar_param
       use t_time_data
