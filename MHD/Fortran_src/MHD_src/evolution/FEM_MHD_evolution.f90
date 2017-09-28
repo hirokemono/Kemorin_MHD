@@ -81,7 +81,7 @@
       use t_bc_data_MHD
       use t_MHD_matrices_pack
       use t_MGCG_data
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use t_SGS_model_coefs
       use t_FEM_MHD_mean_square
       use t_work_FEM_SGS_MHD

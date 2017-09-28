@@ -16,7 +16,7 @@
       use t_phys_data
       use t_phys_address
       use t_MHD_finite_element_mat
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
 !

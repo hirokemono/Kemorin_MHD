@@ -35,7 +35,7 @@
       use t_SGS_control_parameter
       use t_physical_property
       use t_MHD_finite_element_mat
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
 !
       implicit none
 !

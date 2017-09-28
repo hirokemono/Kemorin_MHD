@@ -34,7 +34,7 @@
       use m_machine_parameter
       use t_work_FEM_integration
       use t_finite_element_mat
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use t_vector_for_solver
 !
       type(mesh_data), intent(in) :: femmesh

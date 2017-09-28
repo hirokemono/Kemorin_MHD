@@ -56,7 +56,7 @@
       use t_phys_address
       use t_table_FEM_const
       use t_FEM_MHD_filter_data
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use t_int_surface_data
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic

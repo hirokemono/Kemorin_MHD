@@ -53,7 +53,7 @@
       use t_table_FEM_const
       use t_jacobians
       use t_MHD_finite_element_mat
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use t_filter_elength
       use t_bc_data_MHD
       use t_surface_bc_data_MHD

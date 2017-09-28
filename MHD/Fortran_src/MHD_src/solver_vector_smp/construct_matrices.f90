@@ -51,7 +51,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use t_work_FEM_integration
       use t_filter_elength
       use t_material_property

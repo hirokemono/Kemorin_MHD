@@ -43,7 +43,7 @@
       subroutine s_int_type_mass_matrices(FEM_prm, mesh, MHD_mesh,      &
      &          jacs, rhs_tbl, fem_mat, fem_int, mk_MHD)
 !
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
 !
       type(FEM_MHD_paremeters), intent(in) ::     FEM_prm
       type(mesh_geometry), intent(in) ::          mesh
@@ -72,7 +72,7 @@
       subroutine int_mass_matrix_trilinear(FEM_prm, mesh, MHD_mesh,     &
      &          g_FEM, jac_3d, rhs_tbl, fem_mat, fem_int, mk_MHD)
 !
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use int_vol_mass_matrix
 !
       type(FEM_MHD_paremeters), intent(in) ::     FEM_prm
@@ -123,7 +123,7 @@
       subroutine int_mass_matrices_quad(FEM_prm, mesh, MHD_mesh,        &
      &          g_FEM, jac_3d, rhs_tbl, fem_mat, fem_int, mk_MHD)
 !
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use int_vol_mass_matrix
 !
       type(FEM_MHD_paremeters), intent(in) ::     FEM_prm

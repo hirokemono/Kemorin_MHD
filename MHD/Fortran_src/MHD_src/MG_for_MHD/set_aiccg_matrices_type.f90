@@ -79,7 +79,7 @@
       use t_surface_bc_data_MHD
       use t_coefs_element_4_MHD
       use t_jacobians
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use t_work_FEM_integration
       use t_finite_element_mat
       use t_filter_elength

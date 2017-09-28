@@ -42,7 +42,7 @@
       use t_table_FEM_const
       use t_jacobians
       use t_MHD_finite_element_mat
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use t_FEM_MHD_filter_data
       use t_material_property
       use t_SGS_model_coefs

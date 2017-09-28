@@ -73,7 +73,7 @@
       use t_physical_property
       use t_MGCG_data
       use t_MHD_finite_element_mat
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
       use t_FEM_MHD_mean_square

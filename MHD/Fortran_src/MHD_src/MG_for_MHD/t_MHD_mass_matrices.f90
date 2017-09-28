@@ -1,5 +1,5 @@
-!t_MHD_mass_matricxes.f90
-!     module t_MHD_mass_matricxes
+!t_MHD_mass_matrices.f90
+!     module t_MHD_mass_matrices
 !
 !     Written by H. Matsui on Dec., 2008
 !
@@ -23,7 +23,7 @@
 !!      subroutine check_mass_martix_insulate                           &
 !!     &         (my_rank, numnod, mhd_fem_wk)
 !
-      module t_MHD_mass_matricxes
+      module t_MHD_mass_matrices
 !
       use m_precision
 !
@@ -139,4 +139,4 @@
 !
 !   ---------------------------------------------------------------------
 !
-      end module t_MHD_mass_matricxes
+      end module t_MHD_mass_matrices

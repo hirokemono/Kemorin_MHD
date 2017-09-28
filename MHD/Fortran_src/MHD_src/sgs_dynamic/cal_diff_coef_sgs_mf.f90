@@ -44,7 +44,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_MHD_finite_element_mat
-      use t_MHD_mass_matricxes
+      use t_MHD_mass_matrices
       use t_FEM_MHD_filter_data
       use t_bc_data_velo
       use t_surface_bc_data
