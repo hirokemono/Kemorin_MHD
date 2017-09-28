@@ -8,13 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine open_sph_vol_rms_file_mhd                            &
-!!     &         (sph_params, sph_rj, ipol, rj_fld, pwr, WK_pwr)
+!!     &         (sph, ipol, rj_fld, pwr, WK_pwr)
 !!      subroutine output_rms_sph_mhd_control                           &
-!!     &         (time_d, sph_params, sph_rj, sph_bc_U, leg,            &
-!!     &          ipol, rj_fld, pwr, WK_pwr)
+!!     &         (time_d, sph, sph_bc_U, leg, ipol, rj_fld, pwr, WK_pwr)
 !!        type(time_data), intent(in) :: time_d
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(sph_grids), intent(in) :: sph
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_data), intent(in) :: rj_fld
@@ -66,6 +64,8 @@
 !>      Structure for Nusselt number data
       type(nusselt_number_data), save :: Nu_type1
 !
+      private :: cal_rms_data_4_sph_mhd, output_rms_data_4_sph_mhd
+!
 !  --------------------------------------------------------------------
 !
       contains
@@ -73,15 +73,14 @@
 !  --------------------------------------------------------------------
 !
       subroutine open_sph_vol_rms_file_mhd                              &
-     &         (sph_params, sph_rj, ipol, rj_fld, pwr, WK_pwr)
+     &         (sph, ipol, rj_fld, pwr, WK_pwr)
 !
       use m_error_IDs
       use cal_rms_fields_by_sph
       use output_sph_m_square_file
       use gauss_coefs_monitor_IO
 !
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_grids), intent(in) :: sph
       type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -93,10 +92,11 @@
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr                                        &
-     &   (sph_params, sph_rj, rj_fld, pwr, WK_pwr)
+     &   (sph%sph_params, sph%sph_rj, rj_fld, pwr, WK_pwr)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'check_sph_vol_ms_file'
-      iflag = check_sph_vol_ms_file(my_rank, sph_params, sph_rj, pwr)
+      iflag = check_sph_vol_ms_file(my_rank, sph%sph_params,            &
+     &                              sph%sph_rj, pwr)
       call MPI_Bcast(iflag, ione, CALYPSO_INTEGER, izero,               &
      &               CALYPSO_COMM, ierr_MPI)
       if(iflag .gt. 0) then
@@ -107,11 +107,13 @@
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor                                      &
-     &   (sph_params%l_truncation, sph_rj, rj_fld, pick_list1, pick1)
+     &   (sph%sph_params%l_truncation, sph%sph_rj,                      &
+     &    rj_fld, pick_list1, pick1)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
       call init_gauss_coefs_4_monitor                                   &
-     &   (sph_params%l_truncation, sph_rj, ipol, gauss_list1, gauss1)
+     &   (sph%sph_params%l_truncation, sph%sph_rj,                      &
+     &    ipol, gauss_list1, gauss1)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'check_gauss_coefs_file'
       iflag = check_gauss_coefs_file                                    &
@@ -129,8 +131,7 @@
 !  --------------------------------------------------------------------
 !
       subroutine output_rms_sph_mhd_control                             &
-     &         (time_d, sph_params, sph_rj, sph_bc_U, leg,              &
-     &          ipol, rj_fld, pwr, WK_pwr)
+     &         (time_d, sph, sph_bc_U, leg, ipol, rj_fld, pwr, WK_pwr)
 !
       use t_time_data
       use t_boundary_params_sph_MHD
@@ -142,6 +143,36 @@
       use gauss_coefs_monitor_IO
 !
       type(time_data), intent(in) :: time_d
+      type(sph_grids), intent(in) :: sph
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(legendre_4_sph_trans), intent(in) :: leg
+      type(phys_address), intent(in) :: ipol
+      type(phys_data), intent(in) :: rj_fld
+!
+      type(sph_mean_squares), intent(inout) :: pwr
+      type(sph_mean_square_work), intent(inout) :: WK_pwr
+!
+!
+      call cal_rms_data_4_sph_mhd(sph%sph_params, sph%sph_rj,           &
+     &    sph_bc_U, leg, ipol, rj_fld, pwr, WK_pwr)
+!
+      call output_rms_data_4_sph_mhd                                    &
+     &   (time_d, sph%sph_params, sph%sph_rj, pwr)
+!
+      end subroutine output_rms_sph_mhd_control
+!
+!  --------------------------------------------------------------------
+!  --------------------------------------------------------------------
+!
+      subroutine cal_rms_data_4_sph_mhd(sph_params, sph_rj,             &
+     &          sph_bc_U, leg, ipol, rj_fld, pwr, WK_pwr)
+!
+      use t_boundary_params_sph_MHD
+      use m_machine_parameter
+!
+      use cal_rms_fields_by_sph
+      use volume_average_4_sph
+!
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -172,6 +203,26 @@
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, ipol,              &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld, Nu_type1)
 !
+      end subroutine cal_rms_data_4_sph_mhd
+!
+!  --------------------------------------------------------------------
+!
+      subroutine output_rms_data_4_sph_mhd                              &
+     &         (time_d, sph_params, sph_rj, pwr)
+!
+      use t_time_data
+      use m_machine_parameter
+!
+      use picked_sph_spectr_data_IO
+      use gauss_coefs_monitor_IO
+!
+      type(time_data), intent(in) :: time_d
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
+!
+      type(sph_mean_squares), intent(inout) :: pwr
+!
+!
       if(iflag_debug.gt.0)  write(*,*) 'write_total_energy_to_screen'
       call write_total_energy_to_screen(my_rank, time_d, pwr)
 !
@@ -194,7 +245,7 @@
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
      &    time_d%i_time_step, time_d%time, Nu_type1)
 !
-      end subroutine output_rms_sph_mhd_control
+      end subroutine output_rms_data_4_sph_mhd
 !
 !  --------------------------------------------------------------------
 !

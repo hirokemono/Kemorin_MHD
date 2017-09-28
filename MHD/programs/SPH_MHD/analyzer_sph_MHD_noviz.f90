@@ -125,7 +125,7 @@
         iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
      &                               MHD_step1)
         if(iflag .eq. 0) then
-          if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
+          if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD                                    &
      &       (sph1%sph_params, sph1%sph_rtp, trns_WK1,                  &
      &        femmesh1%mesh, iphys_nod1, nod_fld1)
@@ -156,8 +156,7 @@
       call end_elapsed_time(1)
 !
       if (iflag_debug.eq.1) write(*,*) 'write_resolution_data'
-      call write_resolution_data(sph1%sph_params,                       &
-     &     sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
+      call write_resolution_data(sph1)
       call output_elapsed_times
 !
       call calypso_MPI_barrier

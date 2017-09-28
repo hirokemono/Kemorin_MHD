@@ -216,8 +216,7 @@
       iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control                                 &
-     &     (MHD_step1%time_d, sph1%sph_params, sph1%sph_rj,             &
+        call output_rms_sph_mhd_control(MHD_step1%time_d, sph1,         &
      &      sph_MHD_bc1%sph_bc_U, trans_p1%leg, ipol, rj_fld1,          &
      &      pwr1, WK_pwr)
       end if
@@ -248,7 +247,7 @@
 !*  -----------  data transfer to FEM array --------------
 !*
       call copy_forces_to_snapshot_rtp                                  &
-     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_MHD,   &
+     &   (sph1%sph_params, sph1%sph_rtp, trns_WK1%trns_MHD,             &
      &    mesh%node, iphys_nod1, nod_fld1)
       call copy_snap_vec_fld_from_trans                                 &
      &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_snap,  &

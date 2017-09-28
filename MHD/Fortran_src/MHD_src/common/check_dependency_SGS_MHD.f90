@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine set_sph_SGS_MHD_sprctr_data                          &
-!!     &        (SGS_param, sph_rj, MHD_prop, ipol, idpdr, itor, rj_fld)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!     &        (SGS_par, sph, MHD_prop, ipol, idpdr, itor, rj_fld)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
+!!        type(sph_grids), intent(in) :: sph
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -45,15 +46,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_SGS_MHD_sprctr_data                            &
-     &        (SGS_param, sph_rj, MHD_prop, ipol, idpdr, itor, rj_fld)
+     &        (SGS_par, sph, MHD_prop, ipol, idpdr, itor, rj_fld)
 !
-      use t_spheric_rj_data
+      use t_spheric_parameter
 !
       use set_sph_phys_address
       use check_MHD_dependency_by_id
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(sph_rj_grid), intent(in) :: sph_rj
+      type(SGS_paremeters), intent(in) :: SGS_par
+      type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(phys_address), intent(inout) :: ipol, idpdr, itor
@@ -61,9 +62,9 @@
 !
 !
       call set_sph_MHD_sprctr_data                                      &
-     &   (sph_rj, MHD_prop, ipol, idpdr, itor, rj_fld)
+     &   (sph%sph_rj, MHD_prop, ipol, idpdr, itor, rj_fld)
 !
-      call check_dependence_4_SPH_SGS(SGS_param,                        &
+      call check_dependence_4_SPH_SGS(SGS_par%model_p,                  &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, rj_fld)
 !

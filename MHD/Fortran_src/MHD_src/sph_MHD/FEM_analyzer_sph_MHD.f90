@@ -191,7 +191,7 @@
 !*
       if (iflag_debug.gt.0) write(*,*) 'copy_forces_to_snapshot_rtp'
       call copy_forces_to_snapshot_rtp                                  &
-     &   (sph_params%m_folding, sph_rtp, WK%trns_MHD,                   &
+     &   (sph_params, sph_rtp, WK%trns_MHD,                             &
      &    mesh%node, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'

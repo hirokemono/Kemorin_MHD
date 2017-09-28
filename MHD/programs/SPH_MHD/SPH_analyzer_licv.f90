@@ -108,9 +108,7 @@
 ! ---------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
-      call sph_initial_data_control                                     &
-     &   (MHD_files, SPH_model%ref_temp, SPH_model%ref_comp,            &
-     &    sph1%sph_params, sph1%sph_rj, SPH_model%MHD_prop,             &
+      call sph_initial_data_control(MHD_files, SPH_model, sph1,         &
      &    sph_MHD_bc%sph_bc_B, ipol, idpdr, itor, rj_fld1, MHD_step)
       MHD_step%iflag_initial_step = 0
 !
@@ -144,7 +142,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
       call open_sph_vol_rms_file_mhd                                    &
-     &   (sph1%sph_params, sph1%sph_rj, ipol, rj_fld1, pwr1, WK_pwr)
+     &   (sph1, ipol, rj_fld1, pwr1, WK_pwr)
 !
       end subroutine SPH_initialize_linear_conv
 !
@@ -248,8 +246,7 @@
       iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control                                 &
-     &     (MHD_step%time_d, sph1%sph_params, sph1%sph_rj,              &
+        call output_rms_sph_mhd_control(MHD_step%time_d, sph1,          &
      &      sph_MHD_bc%sph_bc_U, trans_p1%leg, ipol, rj_fld1,           &
      &      pwr1, WK_pwr)
       end if

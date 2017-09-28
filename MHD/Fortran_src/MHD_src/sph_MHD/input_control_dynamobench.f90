@@ -111,7 +111,7 @@
      &    MHD_BC, WK%WK_sph, sph_maker2%gen_sph)
 !
       call s_set_control_4_SPH_to_FEM                                   &
-     &   (DMHD_ctl%psph_ctl%spctl, sph%sph_params, rj_fld, nod_fld)
+     &   (DMHD_ctl%psph_ctl%spctl, sph, rj_fld, nod_fld)
       call set_ctl_params_dynamobench                                   &
      &   (DMHD_ctl%Dmodel_ctl%fld_ctl%field_ctl,                        &
      &    DMHD_ctl%smonitor_ctl%meq_ctl, cdat%circle, cdat%d_circle,    &

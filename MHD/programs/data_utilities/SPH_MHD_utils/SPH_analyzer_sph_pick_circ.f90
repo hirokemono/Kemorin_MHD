@@ -104,8 +104,7 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_SGS_MHD_sprctr_data                                  &
-     &   (SPH_SGS%SGS_par%model_p, sph1%sph_rj,                         &
+      call set_sph_SGS_MHD_sprctr_data(SPH_SGS%SGS_par, sph1,           &
      &    SPH_model%MHD_prop, ipol, idpdr, itor, rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'

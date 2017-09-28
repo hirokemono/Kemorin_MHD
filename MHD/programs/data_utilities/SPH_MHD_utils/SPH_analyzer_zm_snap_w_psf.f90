@@ -128,7 +128,7 @@
       if(output_IO_flag(i_step, MHD_step%rms_step) .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control                                 &
-     &     (MHD_step%time_d, sph1%sph_params, sph1%sph_rj,              &
+     &     (MHD_step%time_d, sph1,                                      &
      &      sph_MHD_bc%sph_bc_U, trans_p1%leg, ipol, rj_fld1,           &
      &      pwr1, WK_pwr)
       end if

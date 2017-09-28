@@ -18,6 +18,7 @@
 !
       use m_machine_parameter
       use m_SPH_MHD_model_data
+      use m_SPH_mesh_field_data
       use m_work_time
       use m_mesh_data
       use m_node_phys_data
@@ -42,10 +43,8 @@
 !
       use t_ctl_data_SGS_MHD
       use m_ctl_data_sph_SGS_MHD
-      use m_spheric_parameter
       use m_mesh_data
       use m_node_phys_data
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_bc_data_list
       use input_control_sph_SGS_MHD
@@ -64,10 +63,11 @@
       call read_control_4_sph_SGS_MHD(MHD_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
-      call input_control_SPH_dynamo(MHD_files1, bc_sph_IO1,             &
-     &    MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
-     &    pwr1, SPH_SGS1, MHD_step1, SPH_model1%MHD_prop, MHD_BC1,      &
-     &    trns_WK1, femmesh1, ele_mesh1)
+      call input_control_SPH_dynamo(MHD_files1,                         &
+     &    bc_sph_IO1, MHD_ctl1, SPH_MHD1%sph, SPH_MHD1%comms,           &
+     &   SPH_MHD1%groups, SPH_MHD1%fld, nod_fld1, pwr1, SPH_SGS1,       &
+     &   MHD_step1, SPH_model1%MHD_prop, MHD_BC1,                       &
+     &   trns_WK1, femmesh1, ele_mesh1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
 !
@@ -88,7 +88,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
       call SPH_initialize_SGS_MHD(MHD_files1, bc_sph_IO1, iphys_nod1,   &
-     &    MHD_step1, SPH_model1, sph_MHD_bc1, SPH_SGS1)
+     &    MHD_step1, SPH_model1, sph_MHD_bc1, SPH_SGS1, SPH_MHD1)
 !
 !        Initialize visualization
 !
@@ -105,8 +105,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine evolution_sph_mhd
-!
-      use m_spheric_parameter
 !
       use FEM_analyzer_sph_MHD
       use FEM_analyzer_sph_SGS_MHD
@@ -134,7 +132,7 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
         call SPH_analyze_SGS_MHD(MHD_step1%time_d%i_time_step,          &
      &      MHD_files1, SPH_model1, sph_MHD_bc1,                        &
-     &     iflag_finish, MHD_step1, SPH_SGS1)
+     &      iflag_finish, MHD_step1, SPH_SGS1, SPH_MHD1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -144,7 +142,7 @@
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
           call SPH_to_FEM_bridge_SGS_MHD                                &
-     &       (SPH_SGS1%SGS_par, sph1%sph_params, sph1%sph_rtp,          &
+     &       (SPH_SGS1%SGS_par, SPH_MHD1%sph,                           &
      &        trns_WK1, femmesh1%mesh, iphys_nod1, nod_fld1)
         end if
 !
@@ -184,8 +182,7 @@
       call end_elapsed_time(1)
 !
       if (iflag_debug.eq.1) write(*,*) 'write_resolution_data'
-      call write_resolution_data(sph1%sph_params,                       &
-    &     sph1%sph_rtp, sph1%sph_rtm, sph1%sph_rlm, sph1%sph_rj)
+      call write_resolution_data(SPH_MHD1%sph)
       if (iflag_debug.eq.1) write(*,*) 'output_elapsed_times '
       call output_elapsed_times
 !

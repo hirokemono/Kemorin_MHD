@@ -142,7 +142,7 @@
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
           call SPH_to_FEM_bridge_SGS_MHD                                &
-     &       (SPH_SGS1%SGS_par, sph1%sph_params, sph1%sph_rtp,          &
+     &       (SPH_SGS1%SGS_par, sph1,                                   &
      &        trns_WK1, femmesh1%mesh, iphys_nod1, nod_fld1)
         end if
 !
@@ -233,7 +233,7 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
         call SPH_to_FEM_bridge_SGS_MHD                                  &
-     &     (SPH_SGS1%SGS_par, sph1%sph_params, sph1%sph_rtp, trns_WK1,  &
+     &     (SPH_SGS1%SGS_par, sph1, trns_WK1,                           &
      &      femmesh1%mesh, iphys_nod1, nod_fld1)
       end if
 !

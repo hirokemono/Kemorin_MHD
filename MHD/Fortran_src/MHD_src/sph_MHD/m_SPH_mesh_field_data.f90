@@ -22,9 +22,6 @@
       implicit  none
 !
 !
-!>      Parameters for spectr dynamo model
-      type(SPH_MHD_model_data), save :: SPH_model1
-!
 !>      Structure of spetr grid and data
       type(SPH_mesh_field_data), save :: SPH_MHD1
 !

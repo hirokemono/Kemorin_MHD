@@ -16,7 +16,7 @@
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!      subroutine SPH_to_FEM_bridge_zm_SGS_snap                        &
-!!     &        (SGS_par, sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
+!!     &        (SGS_par, sph, WK, mesh, iphys, nod_fld)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(works_4_sph_trans_MHD), intent(in) :: WK
@@ -135,8 +135,7 @@
       call start_elapsed_time(11)
       if(output_IO_flag(i_step, MHD_step%rms_step) .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control                                 &
-     &     (MHD_step%time_d, sph1%sph_params, sph1%sph_rj,              &
+        call output_rms_sph_mhd_control(MHD_step%time_d, sph1,          &
      &      sph_MHD_bc%sph_bc_U, trans_p1%leg, ipol, rj_fld1,           &
      &      pwr1, WK_pwr)
       end if
@@ -148,7 +147,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_to_FEM_bridge_zm_SGS_snap                          &
-     &        (SGS_par, sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
+     &        (SGS_par, sph, WK, mesh, iphys, nod_fld)
 !
       use t_mesh_data
       use t_phys_data
@@ -160,8 +159,7 @@
       use sph_rtp_zonal_rms_data
 !
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_grids), intent(in) :: sph
       type(works_4_sph_trans_MHD), intent(in) :: WK
       type(mesh_geometry), intent(in) :: mesh
       type(phys_address), intent(in) :: iphys
@@ -170,13 +168,13 @@
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      call SPH_to_FEM_bridge_SGS_MHD(SGS_par, sph_params, sph_rtp,      &
+      call SPH_to_FEM_bridge_SGS_MHD(SGS_par, sph,                      &
      &    WK, mesh, iphys, nod_fld)
 !
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
-      call zonal_mean_all_rtp_field(sph_rtp, mesh%node, nod_fld)
+      call zonal_mean_all_rtp_field(sph%sph_rtp, mesh%node, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_zm_SGS_snap
 !
