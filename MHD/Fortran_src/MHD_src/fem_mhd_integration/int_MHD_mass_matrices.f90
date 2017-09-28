@@ -32,7 +32,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_MHD_mass_matrices
-      use t_work_fem_integration
+      use t_work_FEM_integration
 !
       implicit none
 !
