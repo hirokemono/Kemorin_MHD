@@ -18,8 +18,10 @@
 !!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, coef_d,              &
 !!     &          it_velo, it_viscous, rj_fld)
 !!      subroutine copy_icore_rot_to_tor_coriolis                       &
-!!     &         (kr_in, idx_rj_degree_one, jmax, ipol, itor,           &
-!!     &          n_point, ntot_phys_rj, d_rj)
+!!     &         (kr_in, sph_rj, ipol, itor, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol, itor
+!!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine inner_core_coriolis_rj                               &
 !!     &         (kr_in, idx_rj_degree_one,  nri, jmax, radius_1d_rj_r, &
 !!     &          omega_rj, coef_cor, ipol, n_point, ntot_phys_rj, d_rj)
@@ -151,24 +153,23 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_icore_rot_to_tor_coriolis                         &
-     &         (kr_in, idx_rj_degree_one, jmax, ipol, itor,             &
-     &          n_point, ntot_phys_rj, d_rj)
+     &         (kr_in, sph_rj, ipol, itor, rj_fld)
 !
+      type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol, itor
-      integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
-      integer(kind = kint), intent(in) :: n_point, jmax
       integer(kind = kint), intent(in) :: kr_in
-      integer(kind = kint), intent(in) :: ntot_phys_rj
 !
-      real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: m, i1
 !
 !
       do m = -1, 1
-        if(idx_rj_degree_one(m) .gt. 0) then
-          i1 = idx_rj_degree_one(m) + (kr_in-1)*jmax
-          d_rj(i1,itor%i_coriolis) = d_rj(i1,ipol%i_rot_Coriolis)
+        if(sph_rj%idx_rj_degree_one(m) .gt. 0) then
+          i1 = sph_rj%idx_rj_degree_one(m)                              &
+     &        + (kr_in-1)*sph_rj%nidx_rj(2)
+          rj_fld%d_fld(i1,itor%i_coriolis)                              &
+     &           = rj_fld%d_fld(i1,ipol%i_rot_Coriolis)
         end if
       end do
 !

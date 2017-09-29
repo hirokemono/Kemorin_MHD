@@ -106,9 +106,8 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_SGS_MHD_sprctr_data(SPH_SGS%SGS_par,                 &
-     &    SPH_MHD%sph, SPH_model%MHD_prop, SPH_MHD%ipol,                &
-     &    SPH_MHD%idpdr, SPH_MHD%itor, SPH_MHD%fld)
+      call set_sph_SGS_MHD_spectr_data                                  &
+     &   (SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver                                   &
@@ -132,10 +131,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
       call init_sph_transform_SGS_MHD                                   &
-     &   (SPH_SGS%SGS_par%model_p, SPH_model%MHD_prop, sph_MHD_bc,      &
-     &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,             &
-     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    trans_p1, trns_WK1, SPH_MHD%fld)
+     &   (SPH_SGS%SGS_par%model_p, SPH_model, sph_MHD_bc,               &
+     &    iphys, trans_p1, trns_WK1, SPH_MHD)
 !
 ! ---------------------------------
 !
@@ -214,12 +211,9 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_elapsed_time(8)
-      call nonlinear_w_SGS                                              &
-     &   (i_step, SPH_SGS%SGS_par, SPH_MHD%sph, SPH_MHD%comms,          &
-     &    SPH_model%omega_sph, r_2nd, SPH_model%MHD_prop, sph_MHD_bc,   &
-     &    trans_p1, SPH_model%ref_temp, SPH_model%ref_comp,             &
-     &    SPH_MHD%ipol, SPH_MHD%itor, trns_WK1, SPH_SGS%dynamic,        &
-     &    SPH_MHD%fld)
+      call nonlinear_with_SGS                                           &
+     &   (i_step, SPH_SGS%SGS_par, r_2nd, SPH_model, sph_MHD_bc,        &
+     &    trans_p1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=

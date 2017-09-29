@@ -8,26 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine nonlinear_SGS_first                                  &
-!!     &         (i_step, sph, comms_sph, omega_sph, r_2nd, MHD_prop,   &
-!!     &          sph_MHD_bc, trans_p, ref_temp, ref_comp, ipol, itor,  &
-!!     &          WK, SGS_par, dynamic_SPH, rj_fld)
-!!      subroutine nonlinear_w_SGS                                      &
-!!     &         (i_step, SGS_par, sph, comms_sph, omega_sph, r_2nd,    &
-!!     &          MHD_prop, sph_MHD_bc, trans_p, ref_temp, ref_comp,    &
-!!     &          ipol, itor, WK, dynamic_SPH, rj_fld)
+!!     &         (i_step, r_2nd, SPH_model, sph_MHD_bc,                 &
+!!     &          trans_p, WK, SGS_par, dynamic_SPH, SPH_MHD)
+!!      subroutine nonlinear_with_SGS                                   &
+!!     &         (i_step, SGS_par, r_2nd, SPH_model, sph_MHD_bc,        &
+!!     &          trans_p, WK, dynamic_SPH, SPH_MHD)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        type(sph_grids), intent(in) :: sph
-!!        type(sph_comm_tables), intent(in) :: comms_sph
-!!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(phys_address), intent(in) :: ipol, itor
-!!        type(works_4_sph_trans_MHD), intent(inout) :: WK
-!!        type(phys_data), intent(inout) :: rj_fld
-!!        type(reference_temperature), intent(in) :: ref_temp
-!!        type(reference_temperature), intent(in) :: ref_comp
-!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+!!        type(works_4_sph_trans_MHD), intent(inout) :: WK
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!@endverbatim
 !
 !
@@ -37,23 +29,20 @@
       use m_constants
 !
       use m_machine_parameter
+      use m_work_time
+!
       use calypso_mpi
 !
-      use t_control_parameter
       use t_physical_property
       use t_SGS_control_parameter
-      use t_spheric_parameter
-      use t_sph_trans_comm_tbl
-      use t_poloidal_rotation
-      use t_phys_address
-      use t_phys_data
+      use t_SPH_MHD_model_data
+      use t_SPH_mesh_field_data
       use t_fdm_coefs
       use t_sph_trans_arrays_MHD
       use t_addresses_sph_transform
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_filtering_data
-      use t_radial_reference_temp
       use t_sph_transforms
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
@@ -62,7 +51,7 @@
 !
       implicit none
 !
-      private :: SGS_by_pseudo_sph
+      private :: nonlinear_w_SGS, SGS_by_pseudo_sph
       private :: nonlinear_by_pseudo_sph_SGS
 !
 !*   ------------------------------------------------------------------
@@ -72,25 +61,19 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine nonlinear_SGS_first                                    &
-     &         (i_step, sph, comms_sph, omega_sph, r_2nd, MHD_prop,     &
-     &          sph_MHD_bc, trans_p, ref_temp, ref_comp, ipol, itor,    &
-     &          WK, SGS_par, dynamic_SPH, rj_fld)
+     &         (i_step, r_2nd, SPH_model, sph_MHD_bc,                   &
+     &          trans_p, WK, SGS_par, dynamic_SPH, SPH_MHD)
 !
       integer(kind = kint), intent(in) :: i_step
-      type(sph_grids), intent(in) :: sph
-      type(sph_comm_tables), intent(in) :: comms_sph
-      type(sph_rotation), intent(in) :: omega_sph
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol, itor
-      type(reference_temperature), intent(in) :: ref_temp, ref_comp
-      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(SPH_MHD_model_data), intent(in) :: SPH_model
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
-      type(phys_data), intent(inout) :: rj_fld
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       real(kind = kreal), save :: tmp_stab_wt = one
 !
@@ -100,9 +83,11 @@
         SGS_par%model_p%stab_weight = one
       end if
 !
-      call nonlinear_w_SGS(i_step, SGS_par, sph, comms_sph,             &
-     &    omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,              &
-     &    ref_temp, ref_comp, ipol, itor, WK, dynamic_SPH, rj_fld)
+      call nonlinear_w_SGS(i_step, SGS_par,                             &
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
+     &    r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p,               &
+     &    SPH_model%ref_temp, SPH_model%ref_comp,                       &
+     &    SPH_MHD%ipol, SPH_MHD%itor, WK,  dynamic_SPH, SPH_MHD%fld)
 !
       if(SGS_par%model_p%iflag_rst_sgs_coef_code .eq. 0) then
         SGS_par%model_p%stab_weight = tmp_stab_wt
@@ -110,6 +95,33 @@
 !
       end subroutine nonlinear_SGS_first
 !*
+!*   ------------------------------------------------------------------
+!*
+      subroutine nonlinear_with_SGS                                     &
+     &         (i_step, SGS_par, r_2nd, SPH_model, sph_MHD_bc,          &
+     &          trans_p, WK, dynamic_SPH, SPH_MHD)
+!
+      integer(kind = kint), intent(in) :: i_step
+      type(SGS_paremeters), intent(in) :: SGS_par
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(SPH_MHD_model_data), intent(in) :: SPH_model
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+!
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!
+!
+      call nonlinear_w_SGS(i_step, SGS_par,                             &
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
+     &    r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p,               &
+     &    SPH_model%ref_temp, SPH_model%ref_comp,                       &
+     &    SPH_MHD%ipol, SPH_MHD%itor, WK,  dynamic_SPH, SPH_MHD%fld)
+!
+      end subroutine nonlinear_with_SGS
+!*
+!*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
 !*
       subroutine nonlinear_w_SGS                                        &
@@ -122,8 +134,6 @@
       use cal_nonlinear_sph_MHD
       use sum_rotation_of_SGS
       use sum_rotation_of_forces
-!
-      use m_work_time
 !
       integer(kind = kint), intent(in) :: i_step
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -172,9 +182,8 @@
       call start_elapsed_time(13)
       if(sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call copy_icore_rot_to_tor_coriolis                             &
-     &     (sph_MHD_bc%sph_bc_U%kr_in, sph%sph_rj%idx_rj_degree_one,    &
-     &      sph%sph_rj%nidx_rj(2), ipol, itor,                          &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &     (sph_MHD_bc%sph_bc_U%kr_in, sph%sph_rj,                      &
+     &      ipol, itor, rj_fld)
       end if
       call end_elapsed_time(13)
 !
@@ -204,8 +213,6 @@
       use cal_sph_field_by_rotation
       use cal_filtered_sph_fields
       use cal_SGS_terms_sph_MHD
-!
-      use m_work_time
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
@@ -295,8 +302,6 @@
       use cal_SGS_terms_sph_MHD
       use dynamic_model_sph_MHD
       use copy_Csim_4_sph_MHD
-!
-      use m_work_time
 !
       integer(kind = kint), intent(in) :: i_step, i_step_sgs_coefs
       type(SGS_model_control_params), intent(in) :: SGS_param

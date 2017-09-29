@@ -103,12 +103,9 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_elapsed_time(8)
-      call nonlinear_w_SGS                                              &
-     &   (i_step, SPH_SGS%SGS_par, SPH_MHD%sph, SPH_MHD%comms,          &
-     &    SPH_model%omega_sph, r_2nd, SPH_model%MHD_prop, sph_MHD_bc,   &
-     &    trans_p1, SPH_model%ref_temp, SPH_model%ref_comp,             &
-     &    SPH_MHD%ipol, SPH_MHD%itor, trns_WK1, SPH_SGS%dynamic,        &
-     &    SPH_MHD%fld)
+      call nonlinear_with_SGS                                           &
+     &   (i_step, SPH_SGS%SGS_par, r_2nd, SPH_model, sph_MHD_bc,        &
+     &    trans_p1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=

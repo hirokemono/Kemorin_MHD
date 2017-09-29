@@ -7,15 +7,12 @@
 !>@brief  Check dependecy of field list fro MHD dynamo
 !!
 !!@verbatim
-!!      subroutine set_sph_SGS_MHD_sprctr_data                          &
-!!     &        (SGS_par, sph, MHD_prop, ipol, idpdr, itor, rj_fld)
+!!      subroutine set_sph_SGS_MHD_spectr_data                          &
+!!     &         (SGS_par, MHD_prop, SPH_MHD)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(sph_grids), intent(in) :: sph
 !!        type(commutation_control_params), intent(in) :: cmt_param
-!!        type(node_data), intent(in) :: node
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(phys_address), intent(inout) :: iphys
-!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!@endverbatim
 !
       module check_dependency_SGS_MHD
@@ -29,8 +26,7 @@
 !
       use t_control_parameter
       use t_SGS_control_parameter
-      use t_phys_data
-      use t_phys_address
+      use t_SPH_mesh_field_data
       use t_physical_property
 !
       use check_dependency_for_MHD
@@ -45,30 +41,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_SGS_MHD_sprctr_data                            &
-     &        (SGS_par, sph, MHD_prop, ipol, idpdr, itor, rj_fld)
-!
-      use t_spheric_parameter
+      subroutine set_sph_SGS_MHD_spectr_data                            &
+     &         (SGS_par, MHD_prop, SPH_MHD)
 !
       use set_sph_phys_address
       use check_MHD_dependency_by_id
 !
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
-      type(phys_address), intent(inout) :: ipol, idpdr, itor
-      type(phys_data), intent(inout) :: rj_fld
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
-      call set_sph_MHD_sprctr_data                                      &
-     &   (sph%sph_rj, MHD_prop, ipol, idpdr, itor, rj_fld)
+      call set_sph_MHD_sprctr_data(SPH_MHD%sph%sph_rj, MHD_prop,        &
+     &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, SPH_MHD%fld)
 !
       call check_dependence_4_SPH_SGS(SGS_par%model_p,                  &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, rj_fld)
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
-      end subroutine set_sph_SGS_MHD_sprctr_data
+      end subroutine set_sph_SGS_MHD_spectr_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
