@@ -19,13 +19,11 @@
 !!        type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
 !!
 !!      subroutine read_alloc_sph_rst_SGS_snap(i_step, rj_file_param,   &
-!!     &          MHD_files, sph_rj, ipol, rj_fld, rst_step, time_d,    &
+!!     &          MHD_files, SPH_MHD, rst_step, time_d,                 &
 !!     &          i_step_sgs_coefs, SGS_param, dynamic_SPH)
 !!        type(field_IO_params), intent(in) :: rj_file_param
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(time_data), intent(inout) :: time_d
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
@@ -51,6 +49,7 @@
 !
       use t_time_data
       use t_IO_step_parameter
+      use t_SPH_mesh_field_data
       use t_phys_address
       use t_phys_data
       use t_MHD_file_parameter
@@ -98,10 +97,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_alloc_sph_rst_SGS_snap(i_step, rj_file_param,     &
-     &          MHD_files, sph_rj, ipol, rj_fld, rst_step, time_d,      &
+     &          MHD_files, SPH_MHD, rst_step, time_d,                   &
      &          i_step_sgs_coefs, SGS_param, dynamic_SPH)
 !
-      use t_spheric_rj_data
       use t_SGS_control_parameter
       use t_sph_filtering
       use sgs_ini_model_coefs_IO
@@ -111,20 +109,18 @@
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: rj_file_param
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_address), intent(in) :: ipol
 !
-      type(phys_data), intent(inout) :: rj_fld
       type(IO_step_param), intent(inout) :: rst_step
       type(time_data), intent(inout) :: time_d
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(SGS_model_control_params), intent(inout) :: SGS_param
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
-     &   (i_step, rj_file_param, MHD_files%fst_file_IO, sph_rj,         &
-     &    ipol, rj_fld, rst_step, time_d)
+     &   (i_step, rj_file_param, MHD_files%fst_file_IO, SPH_MHD%sph,    &
+     &    SPH_MHD%ipol, SPH_MHD%fld, rst_step, time_d)
 !
       if(SGS_param%iflag_dynamic .gt. 0) then
         call read_alloc_SPH_Csim_file                                   &

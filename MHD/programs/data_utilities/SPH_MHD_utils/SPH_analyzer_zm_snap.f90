@@ -81,11 +81,11 @@
       integer(kind = kint) :: iflag
 !
 !
-      call read_alloc_sph_rst_SGS_snap(i_step,                          &
-     &   MHD_files%org_rj_file_IO, MHD_files, SPH_MHD%sph%sph_rj,       &
-     &   SPH_MHD%ipol, SPH_MHD%fld, MHD_step%rst_step, MHD_step%init_d, &
-     &   SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,     &
-     &   SPH_SGS%dynamic)
+      call read_alloc_sph_rst_SGS_snap                                  &
+     &   (i_step, MHD_files%org_rj_file_IO, MHD_files,                  &
+     &    SPH_MHD, MHD_step%rst_step, MHD_step%init_d,                  &
+     &    SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,    &
+     &    SPH_SGS%dynamic)
 !
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !

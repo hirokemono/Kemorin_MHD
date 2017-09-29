@@ -115,7 +115,7 @@
      &    = fst_file_IO%iflag_format
       call read_alloc_sph_rst_4_snap(i_step,                            &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
-     &    sph1%sph_rj, ipol, rj_fld1, MHD_step%rst_step,                &
+     &    sph1, ipol, rj_fld1, MHD_step%rst_step,                       &
      &    MHD_step%init_d)
 !
 !*  ----------------Modify spectr data ... ----------
