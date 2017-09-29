@@ -248,10 +248,8 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
         call lead_fields_4_SPH_SGS_MHD                                  &
-     &     (SPH_SGS%SGS_par%model_p, SPH_MHD%sph,                       &
-     &      SPH_MHD%comms, r_2nd, SPH_model%MHD_prop,                   &
-     &      sph_MHD_bc, trans_p1, SPH_MHD%ipol, sph_MHD_mat1, trns_WK1, &
-     &      SPH_SGS%dynamic, SPH_MHD%fld)
+     &     (SPH_SGS%SGS_par, r_2nd, SPH_model%MHD_prop, sph_MHD_bc,     &
+     &      trans_p1, sph_MHD_mat1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
       end if
       call end_elapsed_time(9)
 !
