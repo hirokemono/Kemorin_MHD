@@ -33,9 +33,9 @@
 !
       use m_precision
       use m_MHD_step_parameter
+      use m_radial_matrices_sph
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
-      use m_radial_matrices_sph
       use t_control_parameter
       use t_phys_address
       use t_MHD_file_parameter
