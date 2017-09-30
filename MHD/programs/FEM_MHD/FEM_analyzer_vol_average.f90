@@ -4,7 +4,7 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_vol_average                           &
-!!     &         (MHD_files, bc_FEM_IO, MHD_step, femmesh, ele_mesh,    &
+!!     &         (MHD_files, MHD_step, femmesh, ele_mesh,               &
 !!     &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,       &
 !!     &          SGS_MHD_wk,fem_sq, label_sim)
 !!        type(mesh_data), intent(inout) :: femmesh
@@ -16,7 +16,6 @@
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
-!!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_analyze_vol_average                              &
 !!     &         (i_step, MHD_files, femmesh, iphys_nod, FEM_model,     &
@@ -56,7 +55,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_vol_average                             &
-     &         (MHD_files, bc_FEM_IO, MHD_step, femmesh, ele_mesh,      &
+     &         (MHD_files, MHD_step, femmesh, ele_mesh,                 &
      &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,         &
      &          SGS_MHD_wk,fem_sq, label_sim)
 !
@@ -68,7 +67,6 @@
       use open_sgs_model_coefs
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
-      type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       type(mesh_data), intent(inout) :: femmesh
       type(element_geometry), intent(inout) :: ele_mesh
@@ -85,8 +83,8 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap(MHD_files,                                &
-     &   FEM_model%FEM_prm, FEM_SGS%SGS_par, bc_FEM_IO, MHD_step,       &
+      call init_analyzer_snap(MHD_files, FEM_model%FEM_prm,             &
+     &   FEM_SGS%SGS_par, FEM_model%bc_FEM_IO, MHD_step,                &
      &   femmesh%mesh, femmesh%group, ele_mesh, FEM_model%MHD_mesh,     &
      &   FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD,               &
      &   FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,        &

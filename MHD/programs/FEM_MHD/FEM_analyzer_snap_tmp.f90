@@ -4,10 +4,9 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_snap_tmp                              &
-!!     &         (MHD_files, bc_FEM_IO, MHD_step, femmesh, ele_mesh,    &
+!!     &         (MHD_files, MHD_step, femmesh, ele_mesh,               &
 !!     &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,       &
 !!     &          SGS_MHD_wk, range, fem_ucd, fem_sq, label_sim)
-!!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(mesh_data), intent(inout) :: femmesh
@@ -62,7 +61,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_snap_tmp                                &
-     &         (MHD_files, bc_FEM_IO, MHD_step, femmesh, ele_mesh,      &
+     &         (MHD_files, MHD_step, femmesh, ele_mesh,                 &
      &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,         &
      &          SGS_MHD_wk, range, fem_ucd, fem_sq, label_sim)
 !
@@ -74,7 +73,6 @@
       use node_monitor_IO
       use open_sgs_model_coefs
 !
-      type(IO_boundary), intent(in) :: bc_FEM_IO
       type(MHD_file_IO_params), intent(inout) :: MHD_files
 !
       type(mesh_data), intent(inout) :: femmesh
@@ -95,8 +93,8 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap                                           &
-     &  (MHD_files, FEM_model%FEM_prm, FEM_SGS%SGS_par, bc_FEM_IO,      &
+      call init_analyzer_snap(MHD_files,                                &
+     &   FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_model%bc_FEM_IO,       &
      &   MHD_step, femmesh%mesh, femmesh%group, ele_mesh,               &
      &   FEM_model%MHD_mesh, FEM_SGS%FEM_filters, FEM_model%MHD_prop,   &
      &   ak_MHD, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,               &

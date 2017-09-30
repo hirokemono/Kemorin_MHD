@@ -38,12 +38,11 @@
       call input_control_4_FEM_MHD(MHD_files1, FEM_model1%FEM_prm,      &
      &    FEM_SGS1%SGS_par, MHD_step1, FEM_model1%MHD_prop,             &
      &    FEM_model1%MHD_BC, femmesh1, ele_mesh1, nod_fld1,             &
-     &    SGS_MHD_wk1%ele_fld, bc_FEM_IO1, FEM_SGS1%FEM_filters,        &
-     &    SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1)
+     &    SGS_MHD_wk1%ele_fld, FEM_model1%bc_FEM_IO,                    &
+     &    FEM_SGS1%FEM_filters,  SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
-      call FEM_check_MHD_mat                                            &
-     &   (MHD_files1, bc_FEM_IO1, flex_MHD1, MHD_step1,                 &
+      call FEM_check_MHD_mat(MHD_files1, flex_MHD1, MHD_step1,          &
      &    femmesh1, ele_mesh1, iphys_nod1, nod_fld1, FEM_model1,        &
      &    MHD_CG1, FEM_SGS1, SGS_MHD_wk1, fem_sq1, label_sim)
 !

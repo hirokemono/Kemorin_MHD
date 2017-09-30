@@ -3,12 +3,10 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_check_MHD_mat                                    &
-!!     &        (MHD_files, bc_FEM_IO, flex_MHD, MHD_step,              &
+!!      subroutine FEM_check_MHD_mat(MHD_files, flex_MHD, MHD_step,     &
 !!     &         femmesh, ele_mesh, iphys_nod, nod_fld, FEM_model,      &
 !!     &         MHD_CG, FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod
@@ -47,8 +45,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_check_MHD_mat                                      &
-     &        (MHD_files, bc_FEM_IO, flex_MHD, MHD_step,                &
+      subroutine FEM_check_MHD_mat(MHD_files, flex_MHD, MHD_step,       &
      &         femmesh, ele_mesh, iphys_nod, nod_fld, FEM_model,        &
      &         MHD_CG, FEM_SGS, SGS_MHD_wk, fem_sq, label_sim)
 !
@@ -60,7 +57,6 @@
       use write_djds_mat_MHD
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       type(mesh_data), intent(inout) :: femmesh
       type(element_geometry), intent(inout) :: ele_mesh
@@ -80,7 +76,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
-      call init_analyzer_fl(MHD_files, bc_FEM_IO,                       &
+      call init_analyzer_fl(MHD_files, FEM_model%bc_FEM_IO,             &
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, flex_MHD, MHD_step,       &
      &    femmesh%mesh, femmesh%group, ele_mesh,                        &
      &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters,                      &

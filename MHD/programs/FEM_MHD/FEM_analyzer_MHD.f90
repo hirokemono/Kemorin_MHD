@@ -4,11 +4,10 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_MHD                                   &
-!!     &        (MHD_files, bc_FEM_IO, flex_MHD, MHD_step, femmesh,     &
+!!     &        (MHD_files, flex_MHD, MHD_step, femmesh,                &
 !!     &         ele_mesh, iphys_nod, nod_fld, FEM_model, MHD_CG,       &
 !!     &         FEM_SGS, SGS_MHD_wk, range, fem_ucd, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod
@@ -77,7 +76,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_MHD                                     &
-     &        (MHD_files, bc_FEM_IO, flex_MHD, MHD_step, femmesh,       &
+     &        (MHD_files, flex_MHD, MHD_step, femmesh,                  &
      &         ele_mesh, iphys_nod, nod_fld, FEM_model, MHD_CG,         &
      &         FEM_SGS, SGS_MHD_wk, range, fem_ucd, fem_sq, label_sim)
 !
@@ -97,7 +96,6 @@
       use FEM_MHD_ucd_data
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
@@ -119,7 +117,8 @@
 !
 !   matrix assembling
 !
-      call init_analyzer_fl(MHD_files, bc_FEM_IO, FEM_model%FEM_prm,    &
+      call init_analyzer_fl                                             &
+     &   (MHD_files, FEM_model%bc_FEM_IO, FEM_model%FEM_prm,            &
      &    FEM_SGS%SGS_par, flex_MHD, MHD_step,                          &
      &    femmesh%mesh, femmesh%group, ele_mesh,                        &
      &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters,                      &

@@ -16,6 +16,7 @@
       use t_geometry_data_MHD
       use t_FEM_MHD_boundary_data
       use t_bc_data_list
+      use t_boundary_field_IO
 !
       implicit  none
 !
@@ -31,6 +32,8 @@
         type(FEM_MHD_BC_data) :: FEM_MHD_BCs
 !>        Structure for boundary condition lists for MHD
         type(MHD_BC_lists) :: MHD_BC
+!
+        type(IO_boundary) :: bc_FEM_IO
 !
 !>         Strucutre for MHD mesh data
         type(mesh_data_MHD) :: MHD_mesh

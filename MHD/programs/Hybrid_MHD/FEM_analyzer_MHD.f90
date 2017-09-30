@@ -4,7 +4,7 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_MHD                                   &
-!!     &         (MHD_files, bc_FEM_IO, flex_MHD, MHD_step,             &
+!!     &         (MHD_files, flex_MHD, MHD_step,                        &
 !!     &          femmesh, ele_mesh, FEM_model, MHD_CG, FEM_SGS,        &
 !!     &          SGS_MHD_wk, range, fem_ucd, fem_sq)
 !!        type(mesh_data), intent(inout) :: femmesh
@@ -16,7 +16,6 @@
 !!      subroutine FEM_finalize_MHD(MHD_files, MHD_step, range, fem_ucd)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
-!!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod
@@ -55,7 +54,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_MHD                                     &
-     &         (MHD_files, bc_FEM_IO, flex_MHD, MHD_step,               &
+     &         (MHD_files, flex_MHD, MHD_step,                          &
      &          femmesh, ele_mesh, FEM_model, MHD_CG, FEM_SGS,          &
      &          SGS_MHD_wk, range, fem_ucd, fem_sq)
 !
@@ -76,7 +75,6 @@
       use FEM_MHD_ucd_data
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -98,7 +96,7 @@
 !
 !   matrix assembling
 !
-      call init_analyzer_fl(MHD_files, bc_FEM_IO,                       &
+      call init_analyzer_fl(MHD_files, FEM_model%bc_FEM_IO,             &
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, flex_MHD, MHD_step,       &
      &    femmesh%mesh, femmesh%group, ele_mesh, FEM_model%MHD_mesh,    &
      &    FEM_SGS%FEM_filters, FEM_model%MHD_prop, FEM_model%MHD_BC,    &
