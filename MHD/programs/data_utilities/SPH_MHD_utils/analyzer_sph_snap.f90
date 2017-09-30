@@ -102,7 +102,6 @@
 !
       subroutine evolution_sph_snap
 !
-      use m_spheric_parameter
       use m_node_phys_data
 !
       use FEM_analyzer_sph_MHD
@@ -195,7 +194,6 @@
 !
       subroutine evolution_sph_snap_badboy
 !
-      use m_spheric_parameter
       use m_node_phys_data
 !
       use volume_rendering_only

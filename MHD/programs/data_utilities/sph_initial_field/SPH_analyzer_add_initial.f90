@@ -126,7 +126,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
       call sph_initial_spectrum(MHD_files1%fst_file_IO, sph_MHD_bc1,    &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld, MHD_step1%rst_step)
+     &    SPH_MHD, MHD_step1%rst_step)
 !
       end subroutine SPH_add_initial_field
 !

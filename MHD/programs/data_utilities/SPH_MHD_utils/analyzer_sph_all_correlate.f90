@@ -105,7 +105,6 @@
 !
       subroutine evolution_sph_all_correlate
 !
-      use m_spheric_parameter
       use m_node_phys_data
       use copy_all_fields_4_sph_trans
 !

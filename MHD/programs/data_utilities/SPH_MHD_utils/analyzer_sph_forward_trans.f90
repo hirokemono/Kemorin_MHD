@@ -98,7 +98,6 @@
 !
       subroutine evolution_sph_forward_trans
 !
-      use m_spheric_parameter
       use m_node_phys_data
 !
       integer(kind = kint) :: visval, iflag

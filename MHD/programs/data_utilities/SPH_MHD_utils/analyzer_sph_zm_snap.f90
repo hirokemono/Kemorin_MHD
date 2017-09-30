@@ -22,7 +22,6 @@
       use m_SPH_MHD_model_data
       use m_SPH_mesh_field_data
       use m_SPH_SGS_structure
-      use m_spheric_parameter
       use m_work_time
       use m_mesh_data
       use m_node_phys_data

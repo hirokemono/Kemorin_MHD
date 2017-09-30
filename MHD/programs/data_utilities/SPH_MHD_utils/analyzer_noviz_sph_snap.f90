@@ -98,7 +98,6 @@
 !
       subroutine evolution_noviz_sph_snap
 !
-      use m_spheric_parameter
       use m_node_phys_data
       use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
