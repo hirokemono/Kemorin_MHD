@@ -43,6 +43,7 @@
       use t_radial_reference_temp
       use t_boundary_data_sph_MHD
       use t_bc_data_list
+      use t_sph_boundary_input_data
 !
       implicit  none
 !
@@ -65,6 +66,8 @@
         type(sph_MHD_boundary_data) :: sph_MHD_bc
 !>        Structure for boundary condition lists for MHD
         type(MHD_BC_lists) :: MHD_BC
+!>         Structures for boundary conditions
+        type(boundary_spectra) :: bc_IO
       end type SPH_MHD_model_data
 !
       end module t_SPH_MHD_model_data

@@ -9,10 +9,9 @@
 !!        Initialzation and evolution loop for dynamo benchmark check
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_dbench(MHD_files, bc_IO, iphys,         &
+!!      subroutine SPH_init_sph_dbench(MHD_files, iphys,                &
 !!     &          SPH_model, SPH_MHD, SPH_WK, cdat)
 !!         type(MHD_file_IO_params), intent(in) :: MHD_files
-!!         type(boundary_spectra), intent(in) :: bc_IO
 !!         type(phys_address), intent(in) :: iphys
 !!         type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -21,7 +20,6 @@
 !!      subroutine SPH_analyze_dbench(i_step, MHD_files, SPH_model,     &
 !!     &          SPH_MHD, SPH_WK, cdat, bench)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(boundary_spectra), intent(in) :: bc_IO
 !!         type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -50,7 +48,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_dbench(MHD_files, bc_IO, iphys,           &
+      subroutine SPH_init_sph_dbench(MHD_files, iphys,                  &
      &          SPH_model, SPH_MHD, SPH_WK, cdat)
 !
       use m_constants
@@ -79,7 +77,6 @@
       use input_control_sph_MHD
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(boundary_spectra), intent(in) :: bc_IO
       type(phys_address), intent(in) :: iphys
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -104,9 +101,7 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
-      call init_r_infos_sph_mhd_evo                                     &
-     &   (bc_IO, SPH_MHD%groups, SPH_MHD%ipol, SPH_MHD%sph,             &
-     &    SPH_model, SPH_WK%r_2nd, SPH_MHD%fld)
+      call init_r_infos_sph_mhd_evo(SPH_model, SPH_WK%r_2nd, SPH_MHD)
 !
 !  -------------------------------
 !

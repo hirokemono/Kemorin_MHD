@@ -1,10 +1,9 @@
 !
 !     module SPH_analyzer_licv
 !
-!!      subroutine SPH_initialize_linear_conv(MHD_files, bc_IO, iphys,  &
+!!      subroutine SPH_initialize_linear_conv(MHD_files, iphys,         &
 !!     &          SPH_model, MHD_step, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -41,7 +40,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_linear_conv(MHD_files, bc_IO, iphys,    &
+      subroutine SPH_initialize_linear_conv(MHD_files, iphys,           &
      &          SPH_model, MHD_step, SPH_MHD, SPH_WK)
 !
       use calypso_mpi
@@ -71,7 +70,6 @@
       use m_work_time
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(boundary_spectra), intent(in) :: bc_IO
       type(phys_address), intent(in) :: iphys
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -93,9 +91,7 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
-      call init_r_infos_sph_mhd_evo                                     &
-     &   (bc_IO, SPH_MHD%groups, SPH_MHD%ipol, SPH_MHD%sph,             &
-     &    SPH_model, SPH_WK%r_2nd, SPH_MHD%fld)
+      call init_r_infos_sph_mhd_evo(SPH_model, SPH_WK%r_2nd, SPH_MHD)
 !
 !  -------------------------------
 !

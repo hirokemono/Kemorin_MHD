@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine SPH_initialize_SGS_MHD                               &
-!!     &         (MHD_files, bc_IO, iphys, MHD_step, SPH_model,         &
+!!     &         (MHD_files, iphys, MHD_step, SPH_model,                &
 !!     &          SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -21,7 +20,6 @@
 !!      subroutine SPH_analyze_SGS_MHD(i_step, MHD_files, SPH_model,    &
 !!     &          iflag_finish, MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -57,7 +55,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_initialize_SGS_MHD                                 &
-     &         (MHD_files, bc_IO, iphys, MHD_step, SPH_model,           &
+     &         (MHD_files, iphys, MHD_step, SPH_model,                  &
      &          SPH_SGS, SPH_MHD, SPH_WK)
 !
       use t_sph_boundary_input_data
@@ -83,7 +81,6 @@
       use input_control_sph_MHD
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(boundary_spectra), intent(in) :: bc_IO
       type(phys_address), intent(in) :: iphys
 !
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -101,9 +98,7 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
-      call init_r_infos_sph_mhd_evo                                     &
-     &   (bc_IO, SPH_MHD%groups, SPH_MHD%ipol, SPH_MHD%sph,             &
-     &    SPH_model, SPH_WK%r_2nd, SPH_MHD%fld)
+      call init_r_infos_sph_mhd_evo(SPH_model, SPH_WK%r_2nd, SPH_MHD)
 !
 ! ---------------------------------
 !

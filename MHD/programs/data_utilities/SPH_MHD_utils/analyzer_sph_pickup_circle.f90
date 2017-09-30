@@ -75,9 +75,10 @@
      &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%smonitor_ctl,                    &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, SPH_MHD1%fld,  &
-     &    MHD_files1, bc_sph_IO1, SPH_SGS1%SGS_par, SPH_SGS1%dynamic,   &
-     &    MHD_step1, SPH_model1%MHD_prop, SPH_model1%MHD_BC,            &
-     &    SPH_WK1%trns_WK%WK_sph, gen_sph_c, SPH_WK1%monitor)
+     &    MHD_files1, SPH_model1%bc_IO, SPH_SGS1%SGS_par,               &
+     &    SPH_SGS1%dynamic, MHD_step1, SPH_model1%MHD_prop,             &
+     &    SPH_model1%MHD_BC, SPH_WK1%trns_WK%WK_sph, gen_sph_c,         &
+     &    SPH_WK1%monitor)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call set_ctl_params_pick_circle                                   &
@@ -96,8 +97,8 @@
 !
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
-      call SPH_init_sph_pick_circle(MHD_files1, bc_sph_IO1,             &
-     &    femmesh1, iphys_nod1, SPH_model1, SPH_SGS1,                   &
+      call SPH_init_sph_pick_circle                                     &
+     &   (MHD_files1, femmesh1, iphys_nod1, SPH_model1, SPH_SGS1,       &
      &    SPH_MHD1, SPH_WK1, cdat1)
       call calypso_MPI_barrier
 !

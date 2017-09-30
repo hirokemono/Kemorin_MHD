@@ -7,17 +7,15 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_back_trans(MHD_files, bc_IO, iphys,     &
+!!      subroutine SPH_init_sph_back_trans(MHD_files, iphys,            &
 !!     &          SPH_model, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!      subroutine SPH_analyze_back_trans                               &
 !!     &         (i_step, MHD_files, MHD_step, SPH_MHD, SPH_WK)
-!!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -44,7 +42,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_back_trans(MHD_files, bc_IO, iphys,       &
+      subroutine SPH_init_sph_back_trans(MHD_files, iphys,              &
      &          SPH_model, SPH_MHD, SPH_WK)
 !
       use m_constants
@@ -71,7 +69,6 @@
       use back_sph_trans_4_all_field
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(boundary_spectra), intent(in) :: bc_IO
       type(phys_address), intent(in) :: iphys
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -87,9 +84,7 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
-      call init_r_infos_sph_mhd_evo                                     &
-     &   (bc_IO, SPH_MHD%groups, SPH_MHD%ipol, SPH_MHD%sph,             &
-     &    SPH_model, SPH_WK%r_2nd, SPH_MHD%fld)
+      call init_r_infos_sph_mhd_evo(SPH_model, SPH_WK%r_2nd, SPH_MHD)
 !
 !  -------------------------------
 !

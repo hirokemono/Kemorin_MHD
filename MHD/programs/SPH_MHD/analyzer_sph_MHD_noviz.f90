@@ -57,7 +57,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_MHD_psf'
       call input_control_SPH_MHD_psf                                    &
-     &   (MHD_files1, bc_sph_IO1, DNS_MHD_ctl1,                         &
+     &   (MHD_files1, SPH_model1%bc_IO, DNS_MHD_ctl1,                   &
      &    SPH_MHD1%sph, SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld,  &
      &    nod_fld1, MHD_step1, SPH_model1%MHD_prop, SPH_model1%MHD_BC,  &
      &    SPH_WK1%trns_WK, SPH_WK1%monitor, femmesh1, ele_mesh1)
@@ -73,7 +73,7 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
-      call SPH_initialize_MHD(MHD_files1, bc_sph_IO1, SPH_model1,       &
+      call SPH_initialize_MHD(MHD_files1, SPH_model1,                   &
      &    iphys_nod1, MHD_step1, SPH_MHD1, SPH_WK1)
 !
       call calypso_MPI_barrier

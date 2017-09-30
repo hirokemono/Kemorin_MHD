@@ -59,7 +59,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init                                &
-     &   (MHD_files1, bc_sph_IO1, DNS_MHD_ctl1, SPH_MHD1%sph,           &
+     &   (MHD_files1, SPH_model1%bc_IO, DNS_MHD_ctl1, SPH_MHD1%sph,     &
      &    SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld,                &
      &    MHD_step1, femmesh1, ele_mesh1, SPH_model1%MHD_prop,          &
      &    SPH_model1%MHD_BC, SPH_WK1%trns_WK, SPH_WK1%monitor)
@@ -70,7 +70,7 @@
 !
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_const_initial_field'
-      call SPH_const_initial_field(SPH_MHD1)
+      call SPH_const_initial_field(SPH_model1, SPH_MHD1)
 !
       call end_elapsed_time(2)
       call reset_elapse_4_init_sph_mhd
@@ -80,7 +80,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_const_initial_field(SPH_MHD)
+      subroutine SPH_const_initial_field(SPH_model, SPH_MHD)
 !
       use set_control_sph_mhd
       use set_sph_phys_address
@@ -97,27 +97,26 @@
       use check_dependency_for_MHD
       use input_control_sph_MHD
 !
+      type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
 !   Allocate spectr field data
 !
       call set_sph_MHD_sprctr_data                                      &
-     &   (SPH_MHD%sph%sph_rj, SPH_model1%MHD_prop,                      &
+     &   (SPH_MHD%sph%sph_rj, SPH_model%MHD_prop,                       &
      &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, SPH_MHD%fld)
 !
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_make_sph_initial'
-      call init_r_infos_make_sph_initial                                &
-     &   (bc_sph_IO1, SPH_MHD%groups, SPH_MHD%ipol, SPH_MHD%sph,        &
-     &    SPH_MHD%fld, SPH_model1)
+      call init_r_infos_make_sph_initial(SPH_model, SPH_MHD)
 !
 ! ---------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
       call sph_initial_spectrum(MHD_files1%fst_file_IO,                 &
-     &    SPH_model1%sph_MHD_bc, SPH_MHD, MHD_step1%rst_step)
+     &    SPH_model%sph_MHD_bc, SPH_MHD, MHD_step1%rst_step)
 !
       end subroutine SPH_const_initial_field
 !
