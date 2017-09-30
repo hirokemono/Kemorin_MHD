@@ -14,7 +14,6 @@
       use m_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data
-      use m_mean_square_values
       use m_FEM_MHD_model_data
       use m_work_FEM_SGS_MHD
       use FEM_analyzer_filtered

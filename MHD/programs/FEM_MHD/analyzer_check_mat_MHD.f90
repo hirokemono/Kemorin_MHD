@@ -29,7 +29,6 @@
       use m_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data
-      use m_mean_square_values
       use input_control
 !
 !

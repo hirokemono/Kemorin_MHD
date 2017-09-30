@@ -12,12 +12,15 @@
 !
       use m_precision
       use t_FEM_MHD_model_data
+      use t_FEM_MHD_mean_square
 !
       implicit  none
 !
 !
 !  Parameters for FEM dynamo
-!
       type(FEM_MHD_model_data), save :: FEM_model1
+!
+!>      Structure for mean square values
+      type(FEM_MHD_mean_square), save :: fem_sq1
 !
       end module m_FEM_MHD_model_data
