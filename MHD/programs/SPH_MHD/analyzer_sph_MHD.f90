@@ -23,7 +23,6 @@
       use m_mesh_data
       use m_node_phys_data
       use m_jacobians_VIZ
-      use m_sph_trans_arrays_MHD
       use m_MHD_step_parameter
       use m_SPH_SGS_structure
 !

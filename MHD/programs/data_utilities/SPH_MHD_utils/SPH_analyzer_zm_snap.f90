@@ -58,7 +58,6 @@
 !
       use m_work_time
       use m_fdm_coefs
-      use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
 !
       use cal_SGS_nonlinear

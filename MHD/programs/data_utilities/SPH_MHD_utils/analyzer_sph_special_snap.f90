@@ -143,7 +143,6 @@
       use m_work_time
       use m_fdm_coefs
       use m_schmidt_poly_on_rtm
-      use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
       use m_radial_matrices_sph
       use t_MHD_step_parameter
@@ -242,7 +241,6 @@
       subroutine SPH_to_FEM_bridge_special_snap(sph, mesh, WK)
 !
       use m_node_phys_data
-      use m_sph_trans_arrays_MHD
       use copy_snap_4_sph_trans
       use copy_MHD_4_sph_trans
       use sph_rtp_zonal_rms_data

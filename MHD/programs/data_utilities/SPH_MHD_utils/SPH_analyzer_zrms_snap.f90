@@ -53,7 +53,6 @@
 !
       use m_work_time
       use m_fdm_coefs
-      use m_sph_trans_arrays_MHD
 !
       use cal_SGS_nonlinear
       use cal_sol_sph_MHD_crank

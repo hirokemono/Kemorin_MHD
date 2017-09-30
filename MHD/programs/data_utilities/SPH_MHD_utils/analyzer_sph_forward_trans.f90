@@ -20,7 +20,6 @@
       use m_machine_parameter
       use m_work_time
       use m_mesh_data
-      use m_sph_trans_arrays_MHD
       use m_SPH_mesh_field_data
       use m_SPH_MHD_model_data
       use m_MHD_step_parameter

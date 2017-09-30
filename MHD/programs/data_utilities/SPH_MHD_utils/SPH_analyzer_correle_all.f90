@@ -45,7 +45,6 @@
 !
       use m_work_time
       use m_schmidt_poly_on_rtm
-      use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
 !
       use cal_nonlinear

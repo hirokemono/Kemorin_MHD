@@ -23,7 +23,6 @@
       use m_SPH_MHD_model_data
       use m_SPH_mesh_field_data
       use m_mesh_data
-      use m_sph_trans_arrays_MHD
       use m_SPH_SGS_structure
       use t_step_parameter
 !

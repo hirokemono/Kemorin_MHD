@@ -47,7 +47,6 @@
       use m_ctl_data_sph_MHD
       use m_node_phys_data
       use m_rms_4_sph_spectr
-      use m_sph_trans_arrays_MHD
       use m_bc_data_list
       use init_sph_MHD_elapsed_label
       use input_control_dynamobench

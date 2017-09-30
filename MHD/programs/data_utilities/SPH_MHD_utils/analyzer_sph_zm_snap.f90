@@ -25,7 +25,6 @@
       use m_work_time
       use m_mesh_data
       use m_node_phys_data
-      use m_sph_trans_arrays_MHD
       use t_step_parameter
 !
       use FEM_analyzer_sph_MHD

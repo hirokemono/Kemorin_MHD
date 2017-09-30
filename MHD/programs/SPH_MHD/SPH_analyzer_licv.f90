@@ -53,8 +53,6 @@
 !
       use m_fdm_coefs
       use m_rms_4_sph_spectr
-      use m_sph_trans_arrays_MHD
-      use m_rms_4_sph_spectr
       use m_bc_data_list
 !
       use t_sph_boundary_input_data
@@ -168,7 +166,6 @@
 !
       use m_work_time
       use m_fdm_coefs
-      use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
 !
       use cal_momentum_eq_explicit

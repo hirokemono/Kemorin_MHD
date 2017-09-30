@@ -43,7 +43,6 @@
       use t_ctl_data_sph_MHD_psf
       use m_mesh_data
       use m_rms_4_sph_spectr
-      use m_sph_trans_arrays_MHD
       use m_bc_data_list
       use set_control_sph_mhd
       use init_sph_MHD_elapsed_label
