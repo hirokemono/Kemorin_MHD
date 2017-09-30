@@ -143,7 +143,6 @@
       use m_work_time
       use m_schmidt_poly_on_rtm
       use m_rms_4_sph_spectr
-      use m_radial_matrices_sph
       use t_MHD_step_parameter
 !
       use cal_SGS_nonlinear
@@ -210,7 +209,7 @@
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd(i_step,                        &
      &    SPH_model%omega_sph, SPH_WK%r_2nd, SPH_model%MHD_prop,        &
-     &    SPH_WK%trns_WK, SPH_SGS%dynamic, sph_MHD_mat1,                &
+     &    SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_WK%MHD_mats,             &
      &    MHD_step, SPH_MHD)
       call end_elapsed_time(9)
 !

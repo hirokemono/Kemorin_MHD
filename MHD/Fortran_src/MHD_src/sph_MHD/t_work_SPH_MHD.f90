@@ -31,7 +31,7 @@
         type(fdm_matrices) :: r_2nd_ele
 !
 !>        Structure of band matrices for dynamo simulation
-!        type(MHD_radial_matrices) :: sph_MHD_mat
+        type(MHD_radial_matrices) :: MHD_mats
 !
 !        type(parameters_4_sph_trans) :: trans_p
 !

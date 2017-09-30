@@ -37,7 +37,6 @@
       use m_precision
       use m_constants
       use m_MHD_step_parameter
-      use m_radial_matrices_sph
       use t_MHD_step_parameter
       use t_MHD_file_parameter
       use t_SPH_MHD_model_data
@@ -147,7 +146,7 @@
       call const_radial_mat_sph_mhd                                     &
      &   (MHD_step%time_d%dt, SPH_model%MHD_prop,                       &
      &    sph_MHD_bc, SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, trans_p1%leg,   &
-     &    sph_MHD_mat1)
+     &    SPH_WK%MHD_mats)
 !*
 !* obtain linear terms for starting
 !*
@@ -225,7 +224,7 @@
      &   (MHD_step%time_d%dt, SPH_MHD%sph%sph_rj,                       &
      &    SPH_WK%r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p1%leg,   &
      &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor,                    &
-     &    sph_MHD_mat1, SPH_MHD%fld)
+     &    SPH_WK%MHD_mats, SPH_MHD%fld)
       call end_elapsed_time(7)
       call end_elapsed_time(6)
 !*
@@ -250,7 +249,7 @@
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
         call lead_fields_4_SPH_SGS_MHD                                  &
      &     (SPH_SGS%SGS_par, SPH_WK%r_2nd, SPH_model%MHD_prop,          &
-     &      sph_MHD_bc, trans_p1, sph_MHD_mat1,                         &
+     &      sph_MHD_bc, trans_p1, SPH_WK%MHD_mats,                      &
      &      SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       end if
       call end_elapsed_time(9)

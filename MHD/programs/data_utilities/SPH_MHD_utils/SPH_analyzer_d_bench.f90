@@ -35,8 +35,6 @@
       module SPH_analyzer_d_bench
 !
       use m_precision
-      use m_radial_matrices_sph
-      use t_phys_address
       use m_MHD_step_parameter
       use t_MHD_file_parameter
       use t_SPH_MHD_model_data
@@ -130,7 +128,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
       call const_radial_mat_sph_snap(SPH_model%MHD_prop, sph_MHD_bc,    &
-     &    SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, trans_p1%leg, sph_MHD_mat1)
+     &    SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, trans_p1%leg,               &
+     &    SPH_WK%MHD_mats)
 !
 !     --------------------- 
 !  set original spectr mesh data for extension of B
@@ -206,7 +205,7 @@
         call s_lead_fields_4_sph_mhd                                    &
      &     (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%r_2nd,                   &
      &      SPH_model%MHD_prop, sph_MHD_bc, trans_p1,                   &
-     &      SPH_MHD%ipol, sph_MHD_mat1, SPH_WK%trns_WK, SPH_MHD%fld)
+     &      SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD%fld)
       end if
       call end_elapsed_time(9)
 !

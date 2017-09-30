@@ -35,7 +35,6 @@
 !
       use m_precision
       use m_MHD_step_parameter
-      use m_radial_matrices_sph
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
       use t_control_parameter
@@ -123,7 +122,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
       call const_radial_mat_sph_snap(SPH_model%MHD_prop, sph_MHD_bc,    &
-     &    SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, trans_p1%leg, sph_MHD_mat1)
+     &    SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, trans_p1%leg,               &
+     &    SPH_WK%MHD_mats)
 !
 !     --------------------- 
 !  set original spectr mesh data for extension of B
@@ -207,7 +207,7 @@
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
         call lead_fields_4_SPH_SGS_MHD                                  &
      &     (SPH_SGS%SGS_par, SPH_WK%r_2nd, SPH_model%MHD_prop,          &
-     &      sph_MHD_bc, trans_p1, sph_MHD_mat1, SPH_WK%trns_WK,         &
+     &      sph_MHD_bc, trans_p1, SPH_WK%MHD_mats, SPH_WK%trns_WK,      &
      &      SPH_SGS%dynamic, SPH_MHD)
       end if
       call end_elapsed_time(9)
