@@ -101,7 +101,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_elapsed_time(12)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        femmesh1, ele_mesh1, FEM_d1%field)
+     &        femmesh1, FEM_d1%ele_mesh, FEM_d1%field)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)

@@ -16,7 +16,5 @@
 !>     Structure for FEM mesh data
 !!        (position, connectivity, communication, and groups)
       type(mesh_data), save :: femmesh1
-!>     Structure for element data (communication)
-      type(element_geometry), save :: ele_mesh1
 !
       end module m_mesh_data

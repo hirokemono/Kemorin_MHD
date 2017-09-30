@@ -67,7 +67,7 @@
       call start_elapsed_time(4)
       call input_control_4_FEM_MHD(MHD_files1, FEM_model1%FEM_prm,      &
      &    FEM_SGS1%SGS_par, MHD_step1, FEM_model1%MHD_prop,             &
-     &    FEM_model1%MHD_BC, femmesh1, ele_mesh1, FEM_MHD1%field,       &
+     &    FEM_model1%MHD_BC, femmesh1, FEM_MHD1%ele_mesh, FEM_MHD1%field, &
      &    SGS_MHD_wk1%ele_fld, FEM_model1%bc_FEM_IO,                    &
      &    FEM_SGS1%FEM_filters, SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
@@ -75,11 +75,12 @@
 !
       call start_elapsed_time(2)
       call FEM_initialize_MHD(MHD_files1, flex_MHD1, MHD_step1,         &
-     &    femmesh1, ele_mesh1, FEM_MHD1%iphys, FEM_MHD1%field,          &
+     &    femmesh1, FEM_MHD1%ele_mesh, FEM_MHD1%iphys, FEM_MHD1%field,    &
      &    FEM_model1, MHD_CG1, FEM_SGS1, SGS_MHD_wk1, range1,           &
      &    fem_ucd1, fem_sq1, FEM_MHD1%label_sim)
 !
-      call init_visualize_surface(femmesh1, ele_mesh1, FEM_MHD1%field)
+      call init_visualize_surface                                       &
+     &   (femmesh1, FEM_MHD1%ele_mesh, FEM_MHD1%field)
       call end_elapsed_time(2)
 !
       end subroutine initialization_MHD
@@ -98,7 +99,7 @@
       do
 !  Time evolution
         call FEM_analyze_MHD                                            &
-     &     (MHD_files1, femmesh1, ele_mesh1, FEM_MHD1%iphys,            &
+     &     (MHD_files1, femmesh1, FEM_MHD1%ele_mesh, FEM_MHD1%iphys,      &
      &      FEM_model1, flex_MHD1, MHD_step1, visval, retval, MHD_CG1,  &
      &      FEM_SGS1, SGS_MHD_wk1, FEM_MHD1%field, fem_ucd1, fem_sq1)
 !
@@ -108,7 +109,7 @@
         if (visval.eq.0) then
           call start_elapsed_time(4)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        femmesh1, ele_mesh1, FEM_MHD1%field)
+     &        femmesh1, FEM_MHD1%ele_mesh, FEM_MHD1%field)
           call end_elapsed_time(4)
         end if
 !

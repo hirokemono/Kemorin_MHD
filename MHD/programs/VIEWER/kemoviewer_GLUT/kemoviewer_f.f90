@@ -11,7 +11,7 @@
 !
       use const_surface_mesh
       use getarg_kemo
-      use t_geometry_data
+      use t_mesh_data
       use t_file_IO_parameter
 !
       implicit    none
@@ -25,6 +25,9 @@
 !
       type(field_IO_params), save :: mesh_file_viewer
       type(element_data), save :: ele_viewer
+!
+      type(element_geometry), save :: ele_mesh1
+!
 !
       icount = iargc_kemo()
       if(icount .eq. 0) then

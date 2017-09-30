@@ -59,7 +59,7 @@
       call input_control_4_SPH_make_init                                &
      &   (MHD_files1, SPH_model1%bc_IO, DNS_MHD_ctl1, SPH_MHD1%sph,     &
      &    SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld,                &
-     &    MHD_step1, femmesh1, ele_mesh1, SPH_model1%MHD_prop,          &
+     &    MHD_step1, femmesh1, FEM_d1%ele_mesh, SPH_model1%MHD_prop,    &
      &    SPH_model1%MHD_BC, SPH_WK1%trns_WK, SPH_WK1%monitor)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
