@@ -18,13 +18,15 @@
       use m_machine_parameter
       use m_work_time
       use m_SPH_MHD_model_data
+      use m_SPH_mesh_field_data
       use m_MHD_step_parameter
       use t_step_parameter
       use t_MHD_file_parameter
+      use t_SPH_mesh_field_data
 !
       implicit none
 !
-      private :: SPH_analyze_mod_restart
+      private :: SPH_analyze_mod_restart, set_modify_rj_fields
 !
 ! ----------------------------------------------------------------------
 !
@@ -56,7 +58,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
         call SPH_analyze_mod_restart(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1%fst_file_IO, MHD_files1, MHD_step1)
+     &      MHD_files1%fst_file_IO, MHD_files1, MHD_step1, SPH_MHD1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -88,11 +90,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_mod_restart                                &
-     &         (i_step, fst_file_IO, MHD_files, MHD_step)
+     &         (i_step, fst_file_IO, MHD_files, MHD_step, SPH_MHD)
 !
       use m_work_time
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
 !
       use cal_nonlinear
@@ -107,6 +107,7 @@
       type(field_IO_params), intent(in) :: fst_file_IO
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       integer(kind = kint) :: iflag
 !
@@ -115,22 +116,22 @@
      &    = fst_file_IO%iflag_format
       call read_alloc_sph_rst_4_snap(i_step,                            &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
-     &    sph1, ipol, rj_fld1, MHD_step%rst_step,                       &
+     &    SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, MHD_step%rst_step,    &
      &    MHD_step%init_d)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
-      call set_modify_rj_fields
+      call set_modify_rj_fields(SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld)
 !
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
       call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
-      call init_output_sph_restart_file(rj_fld1)
+      call init_output_sph_restart_file(SPH_MHD%fld)
 !
       iflag = set_IO_step_flag(MHD_step%time_d%i_time_step,             &
      &                         MHD_step%rst_step)
       if(iflag .eq. 0) then
-        call output_sph_restart_control                                 &
-     &     (fst_file_IO, MHD_step%time_d, rj_fld1, MHD_step%rst_step)
+        call output_sph_restart_control(fst_file_IO, MHD_step%time_d,   &
+     &     SPH_MHD%fld, MHD_step%rst_step)
       end if
 !*
 !*  -----------  lead energy data --------------
@@ -140,9 +141,9 @@
      &                       MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control(MHD_step%time_d, sph1,          &
-     &      sph_MHD_bc1%sph_bc_U, trans_p1%leg, ipol, rj_fld1,          &
-     &      pwr1, WK_pwr)
+        call output_rms_sph_mhd_control(MHD_step%time_d,                &
+     &      SPH_MHD%sph, sph_MHD_bc1%sph_bc_U, trans_p1%leg,            &
+     &      SPH_MHD%ipol, SPH_MHD%fld, pwr1, WK_pwr)
       end if
       call end_elapsed_time(11)
       call end_elapsed_time(4)
@@ -152,12 +153,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_modify_rj_fields
-!
-      use m_spheric_parameter
-      use m_sph_spectr_data
+      subroutine set_modify_rj_fields(sph, ipol, rj_fld)
 !
       use cal_zonal_mean_sph_spectr
+!
+      type(sph_grids), intent(in) :: sph
+      type(phys_address), intent(in) :: ipol
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer (kind =kint), allocatable :: ipick_degree(:)
       integer(kind = kint) :: ltr_half
@@ -169,10 +171,10 @@
 !
       if (my_rank.eq.0) write(*,*) 'Take zonam mean of light element'
       call take_zonal_mean_rj_field                                     &
-     &   (ione, ipol%i_light, sph1%sph_rj, rj_fld1)
+     &   (ione, ipol%i_light, sph%sph_rj, rj_fld)
 !      if (my_rank.eq.0) write(*,*) 'Take sphere average of light element'
 !      call pick_degree_sph_spectr(ltr_half, ipick_degree,               &
-!     &    ione, ipol%i_light, sph1%sph_rj, rj_fld1)
+!     &    ione, ipol%i_light, sph%sph_rj, rj_fld)
 !
       end subroutine set_modify_rj_fields
 !
