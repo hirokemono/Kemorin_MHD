@@ -44,7 +44,6 @@
       subroutine evolution_sph_special_snap
 !
       use t_MHD_step_parameter
-      use m_SPH_mesh_field_data
       use m_mesh_data
       use m_node_phys_data
 !

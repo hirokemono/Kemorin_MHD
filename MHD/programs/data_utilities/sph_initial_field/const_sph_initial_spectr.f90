@@ -94,8 +94,8 @@
       use m_precision
       use m_constants
 !
-      use m_SPH_mesh_field_data
       use t_SPH_MHD_model_data
+      use t_SPH_mesh_field_data
       use t_file_IO_parameter
       use t_boundary_data_sph_MHD
 !

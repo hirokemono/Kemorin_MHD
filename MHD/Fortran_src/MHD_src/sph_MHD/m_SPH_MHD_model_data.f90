@@ -5,7 +5,7 @@
 !!@date Programmed in 2000
 !!@n modified in Feb., 2009
 !
-!> @brief control flags for MHD dynamo model
+!> @brief Instace of Structures for spherical shell dynamo
 !!
 !!
 !!@verbatim
@@ -39,11 +39,19 @@
 !
       use m_precision
       use t_SPH_MHD_model_data
+      use t_SPH_mesh_field_data
+      use t_work_SPH_MHD
 !
       implicit  none
 !
 !
 !>      Parameters for spectr dynamo model
       type(SPH_MHD_model_data), save :: SPH_model1
+!
+!>      Structure of spetr grid and data
+      type(SPH_mesh_field_data), save :: SPH_MHD1
+!
+!>        Structures of work area for spherical shell dynamo
+      type(work_SPH_MHD), save :: SPH_WK1
 !
       end module m_SPH_MHD_model_data
