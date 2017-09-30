@@ -38,7 +38,6 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
-      use m_node_phys_data
       use set_control_sph_mhd
       use input_control_sph_MHD
 !

@@ -45,7 +45,6 @@
 !
       use t_MHD_step_parameter
       use m_mesh_data
-      use m_node_phys_data
 !
       use analyzer_sph_snap
       use FEM_analyzer_sph_MHD
@@ -92,7 +91,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      femmesh1%mesh, nod_fld1, MHD_step1, visval, fem_ucd1)
+     &      femmesh1%mesh, FEM_d1%field, MHD_step1, visval, fem_ucd1)
 !
         call end_elapsed_time(4)
 !
@@ -102,7 +101,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_elapsed_time(12)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        femmesh1, ele_mesh1, nod_fld1)
+     &        femmesh1, ele_mesh1, FEM_d1%field)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)
@@ -233,7 +232,6 @@
 !
       subroutine SPH_to_FEM_bridge_special_snap(sph, mesh, WK)
 !
-      use m_node_phys_data
       use copy_snap_4_sph_trans
       use copy_MHD_4_sph_trans
       use sph_rtp_zonal_rms_data
@@ -246,18 +244,19 @@
 !*
       call copy_forces_to_snapshot_rtp                                  &
      &   (sph%sph_params, sph%sph_rtp, WK%trns_MHD,                     &
-     &    mesh%node, FEM_d1%iphys, nod_fld1)
+     &    mesh%node, FEM_d1%iphys, FEM_d1%field)
       call copy_snap_vec_fld_from_trans                                 &
      &   (sph%sph_params%m_folding, sph%sph_rtp, WK%trns_snap,          &
-     &    mesh%node, FEM_d1%iphys, nod_fld1)
+     &    mesh%node, FEM_d1%iphys, FEM_d1%field)
       call copy_snap_vec_force_from_trans                               &
      &   (sph%sph_params%m_folding, sph%sph_rtp, WK%trns_snap,          &
-     &    mesh%node, FEM_d1%iphys, nod_fld1)
+     &    mesh%node, FEM_d1%iphys, FEM_d1%field)
 !
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
-      call zonal_mean_all_rtp_field(sph%sph_rtp, mesh%node, nod_fld1)
+      call zonal_mean_all_rtp_field                                     &
+     &   (sph%sph_rtp, mesh%node, FEM_d1%field)
 !
       end subroutine SPH_to_FEM_bridge_special_snap
 !

@@ -44,7 +44,6 @@
       use t_ctl_data_SGS_MHD
       use m_ctl_data_sph_SGS_MHD
       use m_mesh_data
-      use m_node_phys_data
       use init_sph_MHD_elapsed_label
       use input_control_sph_SGS_MHD
 !
@@ -63,7 +62,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
       call input_control_SPH_dynamo                                     &
      &  (MHD_files1, SPH_model1%bc_IO, MHD_ctl1, SPH_MHD1%sph,          &
-     &   SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld, nod_fld1,       &
+     &   SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld, FEM_d1%field,   &
      &   SPH_SGS1, MHD_step1, SPH_model1%MHD_prop, SPH_model1%MHD_BC,   &
      &   SPH_WK1%trns_WK, SPH_WK1%monitor, femmesh1, ele_mesh1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
@@ -75,7 +74,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1, MHD_step1,                &
      &    femmesh1%mesh, femmesh1%group, ele_mesh1,                     &
-     &    FEM_d1%iphys, nod_fld1, range1, fem_ucd1)
+     &    FEM_d1%iphys, FEM_d1%field, range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
@@ -92,8 +91,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine evolution_sph_forward_trans
-!
-      use m_node_phys_data
 !
       integer(kind = kint) :: visval, iflag
 !

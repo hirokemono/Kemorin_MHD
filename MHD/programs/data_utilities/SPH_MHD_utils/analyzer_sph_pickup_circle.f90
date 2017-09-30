@@ -49,7 +49,6 @@
       use t_const_spherical_grid
       use m_mesh_data
       use m_ctl_data_sph_SGS_MHD
-      use m_node_phys_data
       use sph_mhd_rst_IO_control
       use set_control_sph_SGS_MHD
       use set_control_sph_data_MHD

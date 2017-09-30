@@ -161,7 +161,8 @@
      &      fem_int%jcs, fem_int%rhs_tbl, FEM1_elen, filtering1,        &
      &      Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,              &
      &      SGS_MHD_wk1%FEM_SGS_wk%wk_filter, mhd_fem1_wk,              &
-     &      rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl, nod_fld1)
+     &      rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl,               &
+     &      FEM_MHD1%field)
 !
       call interpolate_vector_type                                      &
      &   (iphys%i_vp_induct,  iphys_sph%i_vp_induct,                    &

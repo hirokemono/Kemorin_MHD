@@ -44,7 +44,6 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
-      use m_node_phys_data
       use init_sph_MHD_elapsed_label
       use input_control_dynamobench
 !
@@ -63,7 +62,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamobench'
       call input_control_SPH_dynamobench                                &
      &   (MHD_files1, SPH_model1%bc_IO, DNS_MHD_ctl1, SPH_MHD1%sph,     &
-     &    SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld, nod_fld1,      &
+     &    SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld, FEM_d1%field,  &
      &    MHD_step1, SPH_model1%MHD_prop, SPH_model1%MHD_BC,            &
      &    SPH_WK1%trns_WK, SPH_WK1%monitor, cdat1, bench1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)

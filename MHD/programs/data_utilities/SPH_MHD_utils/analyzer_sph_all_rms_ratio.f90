@@ -22,7 +22,6 @@
       use m_MHD_step_parameter
       use m_SPH_SGS_structure
       use m_mesh_data
-      use m_node_phys_data
       use m_jacobians_VIZ
       use t_step_parameter
 !
@@ -67,7 +66,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
       call input_control_SPH_dynamo                                     &
      &   (MHD_files1, SPH_model1%bc_IO, MHD_ctl1, SPH_MHD1%sph,         &
-     &    SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld, nod_fld1,      &
+     &    SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld, FEM_d1%field,  &
      &    SPH_SGS1, MHD_step1, SPH_model1%MHD_prop, SPH_model1%MHD_BC,  &
      &    SPH_WK1%trns_WK, SPH_WK1%monitor, femmesh1, ele_mesh1)
       call set_ctl_4_second_spectr_data                                 &
@@ -81,7 +80,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz(MHD_files1, MHD_step1,                  &
      &    femmesh1%mesh, femmesh1%group, ele_mesh1,                     &
-     &    FEM_d1%iphys, nod_fld1, next_tbl_VIZ1, jacobians_VIZ1,        &
+     &    FEM_d1%iphys, FEM_d1%field, next_tbl_VIZ1, jacobians_VIZ1,    &
      &    range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
@@ -90,7 +89,7 @@
      &   (MHD_files1, FEM_d1%iphys, SPH_model1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(femmesh1, ele_mesh1, nod_fld1)
+      call init_visualize(femmesh1, ele_mesh1, FEM_d1%field)
 !
       call calypso_MPI_barrier
       call end_elapsed_time(2)
@@ -102,7 +101,6 @@
 !
       subroutine evolution_sph_all_rms_ratio
 !
-      use m_node_phys_data
       use copy_all_fields_4_sph_trans
 !
       use FEM_analyzer_sph_MHD
@@ -138,11 +136,11 @@
         if (iflag_debug.gt.0) write(*,*) 'copy_all_field_from_trans'
         call copy_all_field_from_trans                                  &
      &     (SPH_MHD1%sph%sph_params%m_folding, SPH_MHD1%sph%sph_rtp,    &
-     &      SPH_WK1%trns_WK%trns_MHD, femmesh1%mesh, nod_fld1)
+     &      SPH_WK1%trns_WK%trns_MHD, femmesh1%mesh, FEM_d1%field)
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      femmesh1%mesh, nod_fld1, MHD_step1, visval, fem_ucd1)
+     &      femmesh1%mesh, FEM_d1%field, MHD_step1, visval, fem_ucd1)
 !
         call end_elapsed_time(4)
 !
@@ -152,7 +150,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           call start_elapsed_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        femmesh1, ele_mesh1, nod_fld1,                            &
+     &        femmesh1, ele_mesh1, FEM_d1%field,                        &
      &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1)
           call end_elapsed_time(12)
         end if
