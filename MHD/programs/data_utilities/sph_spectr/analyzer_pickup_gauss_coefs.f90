@@ -11,7 +11,6 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
       use m_spheric_data_sph_spetr
       use calypso_mpi
 !

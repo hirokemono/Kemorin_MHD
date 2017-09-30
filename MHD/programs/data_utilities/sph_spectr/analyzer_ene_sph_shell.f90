@@ -13,7 +13,6 @@
       use m_constants
       use m_machine_parameter
       use m_spheric_data_sph_spetr
-      use m_schmidt_poly_on_rtm
       use calypso_mpi
 !
       use t_time_data
@@ -84,7 +83,6 @@
       subroutine analyze_ene_sph_shell
 !
       use m_ctl_params_sph_utils
-      use m_schmidt_poly_on_rtm
       use copy_rj_phys_data_4_IO
       use output_sph_m_square_file
       use volume_average_4_sph

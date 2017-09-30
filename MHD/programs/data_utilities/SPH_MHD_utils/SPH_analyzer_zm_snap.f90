@@ -56,7 +56,6 @@
      &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use m_work_time
-      use m_rms_4_sph_spectr
 !
       use cal_SGS_nonlinear
       use cal_sol_sph_MHD_crank
@@ -64,7 +63,6 @@
       use lead_fields_SPH_SGS_MHD
       use input_control_sph_MHD
       use sph_SGS_MHD_rst_IO_control
-      use sph_mhd_rms_IO
       use output_viz_file_control
 !
       use cal_zonal_mean_sph_spectr
@@ -97,7 +95,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start(SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,     &
-     &    SPH_model%MHD_prop, sph_MHD_bc, trans_p1%leg,                 &
+     &    SPH_model%MHD_prop, sph_MHD_bc, SPH_WK%trans_p%leg,           &
      &    SPH_MHD%ipol, SPH_MHD%itor,  SPH_MHD%fld)
 !
 !*  ----------------lead nonlinear term ... ----------
@@ -105,7 +103,7 @@
       call start_elapsed_time(8)
       call nonlinear_with_SGS                                           &
      &   (i_step, SPH_SGS%SGS_par, SPH_WK%r_2nd, SPH_model, sph_MHD_bc, &
-     &    trans_p1, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -118,8 +116,8 @@
       iflag = lead_field_data_flag(i_step, MHD_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
-        call lead_fields_4_SPH_SGS_MHD(SPH_SGS%SGS_par,                 &
-     &      SPH_WK%r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p1,     &
+        call lead_fields_4_SPH_SGS_MHD(SPH_SGS%SGS_par, SPH_WK%r_2nd,   &
+     &      SPH_model%MHD_prop, sph_MHD_bc, SPH_WK%trans_p,             &
      &      SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       end if
       call end_elapsed_time(9)
@@ -136,8 +134,8 @@
       if(output_IO_flag(i_step, MHD_step%rms_step) .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD%sph,   &
-     &      sph_MHD_bc%sph_bc_U, trans_p1%leg, SPH_MHD%ipol,            &
-     &      SPH_MHD%fld, pwr1, WK_pwr)
+     &      sph_MHD_bc%sph_bc_U, SPH_WK%trans_p%leg, SPH_MHD%ipol,      &
+     &      SPH_MHD%fld, SPH_WK%monitor)
       end if
       call end_elapsed_time(11)
       call end_elapsed_time(4)

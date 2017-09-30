@@ -58,7 +58,8 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
         call SPH_analyze_mod_restart(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1%fst_file_IO, MHD_files1, MHD_step1, SPH_MHD1)
+     &      MHD_files1%fst_file_IO, MHD_files1,                         &
+     &      MHD_step1, SPH_MHD1, SPH_WK1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -89,18 +90,16 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_mod_restart                                &
-     &         (i_step, fst_file_IO, MHD_files, MHD_step, SPH_MHD)
+      subroutine SPH_analyze_mod_restart(i_step, fst_file_IO,           &
+     &          MHD_files, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
-      use m_rms_4_sph_spectr
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
       use set_sph_restart_IO
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
-      use sph_mhd_rms_IO
       use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
@@ -108,6 +107,7 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
       integer(kind = kint) :: iflag
 !
@@ -142,8 +142,8 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(MHD_step%time_d,                &
-     &      SPH_MHD%sph, sph_MHD_bc1%sph_bc_U, trans_p1%leg,            &
-     &      SPH_MHD%ipol, SPH_MHD%fld, pwr1, WK_pwr)
+     &      SPH_MHD%sph, sph_MHD_bc1%sph_bc_U, SPH_WK%trans_p%leg,      &
+     &      SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%monitor)
       end if
       call end_elapsed_time(11)
       call end_elapsed_time(4)

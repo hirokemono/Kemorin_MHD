@@ -106,7 +106,6 @@
      &         (sph_rj, leg, ipol, rj_fld, pwr, pick_rms)
 !
       use calypso_mpi
-      use m_schmidt_poly_on_rtm
       use cal_rms_by_sph_spectr
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -169,7 +168,6 @@
 !
       use calypso_mpi
       use t_spheric_rj_data
-      use m_schmidt_poly_on_rtm
       use cal_rms_by_sph_spectr
       use radial_int_for_sph_spec
 !

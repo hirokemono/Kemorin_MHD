@@ -52,7 +52,6 @@
      &          SPH_model, sph_MHD_bc, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
-      use m_rms_4_sph_spectr
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -60,7 +59,6 @@
       use lead_fields_4_sph_mhd
       use input_control_sph_MHD
       use sph_mhd_rst_IO_control
-      use sph_mhd_rms_IO
       use output_viz_file_control
 !
       use cal_zonal_mean_sph_spectr
@@ -91,7 +89,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start(SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,     &
-     &    SPH_model%MHD_prop, sph_MHD_bc, trans_p1%leg,                 &
+     &    SPH_model%MHD_prop, sph_MHD_bc, SPH_WK%trans_p%leg,           &
      &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
 !
 !*  ----------------lead nonlinear term ... ----------
@@ -99,7 +97,7 @@
       call start_elapsed_time(8)
       call nonlinear                                                    &
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    SPH_WK%r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p1,       &
+     &    SPH_WK%r_2nd, SPH_model%MHD_prop, sph_MHD_bc, SPH_WK%trans_p, &
      &    SPH_model%ref_temp, SPH_model%ref_comp,                       &
      &    SPH_MHD%ipol, SPH_MHD%itor, SPH_WK%trns_WK, SPH_MHD%fld)
       call end_elapsed_time(8)
@@ -116,7 +114,7 @@
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd                                    &
      &     (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%r_2nd,                   &
-     &      SPH_model%MHD_prop, sph_MHD_bc, trans_p1,                   &
+     &      SPH_model%MHD_prop, sph_MHD_bc, SPH_WK%trans_p,             &
      &      SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD%fld)
       end if
       call end_elapsed_time(9)
@@ -132,9 +130,9 @@
       call start_elapsed_time(11)
       if(output_IO_flag(i_step, MHD_step%rms_step) .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control                                 &
-     &     (MHD_step%time_d, SPH_MHD%sph, sph_MHD_bc%sph_bc_U,          &
-     &      trans_p1%leg, SPH_MHD%ipol, SPH_MHD%fld, pwr1, WK_pwr)
+        call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD%sph,   &
+     &      sph_MHD_bc%sph_bc_U, SPH_WK%trans_p%leg,                    &
+     &      SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%monitor)
       end if
       call end_elapsed_time(11)
       call end_elapsed_time(4)

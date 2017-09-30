@@ -136,7 +136,6 @@
 !
       use m_legendre_transform_list
       use copy_all_trans_send_recv
-      use sph_mhd_rms_IO
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph

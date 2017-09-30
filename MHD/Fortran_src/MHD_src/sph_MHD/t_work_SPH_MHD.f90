@@ -17,6 +17,7 @@
       use t_radial_matrices_sph_MHD
       use t_work_4_sph_trans
       use t_sph_trans_arrays_MHD
+      use t_sph_mhd_monitor_data_IO
 !
       implicit  none
 !
@@ -33,10 +34,13 @@
 !>        Structure of band matrices for dynamo simulation
         type(MHD_radial_matrices) :: MHD_mats
 !
-!        type(parameters_4_sph_trans) :: trans_p
+        type(parameters_4_sph_trans) :: trans_p
 !
 !>        strucutres for spherical transform dor MHD dynamo
         type(works_4_sph_trans_MHD) :: trns_WK
+!
+!
+        type(sph_mhd_monitor_data) :: monitor
       end type work_SPH_MHD
 !
       end module t_work_SPH_MHD

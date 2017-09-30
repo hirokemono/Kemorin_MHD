@@ -44,15 +44,12 @@
      &         (time_d, MHD_files, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
-      use m_schmidt_poly_on_rtm
-      use m_rms_4_sph_spectr
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
       use adjust_reference_fields
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
-      use sph_mhd_rms_IO
       use input_control_sph_MHD
 !
       use cal_correlations_by_spectr
@@ -81,21 +78,22 @@
      &    SPH_MHD%fld, MHD_step%ucd_step, MHD_step%init_d)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
-      call back_trans_4_correlate                                       &
-     &   (SPH_MHD%sph, SPH_MHD%comms, ref_rj_fld, SPH_MHD%fld,          &
-     &    trans_p1, SPH_WK%trns_WK%trns_MHD, SPH_WK%trns_WK%WK_sph)
+      call back_trans_4_correlate(SPH_MHD%sph, SPH_MHD%comms,           &
+     &    ref_rj_fld, SPH_MHD%fld, SPH_WK%trans_p,                      &
+     &    SPH_WK%trns_WK%trns_MHD, SPH_WK%trns_WK%WK_sph)
 !
       call cal_sph_correlations                                         &
      &   (SPH_MHD%sph, SPH_MHD%ipol, ref_rj_fld, SPH_MHD%fld,           &
-     &    trans_p1, pwr1, WK_pwr)
+     &    SPH_WK%trans_p, SPH_WK%monitor%pwr, SPH_WK%monitor%WK_pwr)
 !
       call dealloc_phys_data_type(ref_rj_fld)
       call dealloc_phys_name_type(ref_rj_fld)
 !
-      call write_sph_vol_ms_file(my_rank, time_d,                       &
-     &   SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, pwr1)
+      call write_sph_vol_ms_file                                        &
+     &   (my_rank, time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,  &
+     &    SPH_WK%monitor%pwr)
       call write_sph_layer_ms_file(my_rank, time_d,                     &
-     &   SPH_MHD%sph%sph_params, pwr1)
+     &   SPH_MHD%sph%sph_params, SPH_WK%monitor%pwr)
 !
       end subroutine SPH_analyze_correlate_all
 !

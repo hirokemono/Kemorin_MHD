@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/MHD_src/sph_MHD/m_schmidt_poly_on_rtm.f90

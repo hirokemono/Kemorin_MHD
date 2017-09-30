@@ -13,7 +13,6 @@
       use m_constants
       use m_machine_parameter
       use m_spheric_data_sph_spetr
-      use m_schmidt_poly_on_rtm
       use calypso_mpi
 !
       use t_time_data

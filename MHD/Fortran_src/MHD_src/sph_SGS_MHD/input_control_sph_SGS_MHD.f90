@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,  &
-!!     &          sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,       &
-!!     &          SPH_SGS, MHD_step, MHD_prop, MHD_BC, WK,              &
+!!     &          sph, comms_sph, sph_grps, rj_fld, nod_fld,            &
+!!     &          SPH_SGS, MHD_step, MHD_prop, MHD_BC, WK, monitor,     &
 !!     &          femmesh, ele_mesh)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
@@ -20,13 +20,13 @@
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph1
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
+!!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!@endverbatim
 !
 !
@@ -54,6 +54,7 @@
       use t_SPH_SGS_structure
       use t_select_make_SPH_mesh
       use t_flex_delta_t_data
+      use t_sph_mhd_monitor_data_IO
 !
       implicit none
 !
@@ -69,8 +70,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,    &
-     &          sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,         &
-     &          SPH_SGS, MHD_step, MHD_prop, MHD_BC, WK,                &
+     &          sph, comms_sph, sph_grps, rj_fld, nod_fld,              &
+     &          SPH_SGS, MHD_step, MHD_prop, MHD_BC, WK, monitor,       &
      &          femmesh, ele_mesh)
 !
       use m_error_IDs
@@ -89,12 +90,12 @@
 !
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
-      type(sph_mean_squares), intent(inout) :: pwr
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
       type(mesh_data), intent(inout) :: femmesh
       type(element_geometry), intent(inout) :: ele_mesh
@@ -104,9 +105,9 @@
       call set_control_4_SPH_SGS_MHD(MHD_ctl%plt, MHD_ctl%org_plt,      &
      &    MHD_ctl%model_ctl, MHD_ctl%smctl_ctl, MHD_ctl%smonitor_ctl,   &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_maker2%sph_tmp,       &
-     &    rj_fld, MHD_files, bc_IO, pwr,                                &
-     &    SPH_SGS%SGS_par, SPH_SGS%dynamic, MHD_step,                   &
-     &    MHD_prop, MHD_BC, WK%WK_sph, sph_maker2%gen_sph)
+     &    rj_fld, MHD_files, bc_IO, SPH_SGS%SGS_par, SPH_SGS%dynamic,   &
+     &    MHD_step,  MHD_prop, MHD_BC, WK%WK_sph,                       &
+     &    sph_maker2%gen_sph, monitor)
 !
       call s_set_control_4_SPH_to_FEM                                   &
      &   (MHD_ctl%psph_ctl%spctl, sph, rj_fld, nod_fld)

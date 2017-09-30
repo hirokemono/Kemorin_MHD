@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, model_ctl,   &
 !!     &         smctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, sph_gen,  &
-!!     &         rj_fld, MHD_files, bc_IO, pwr, SGS_par, dynamic_SPH,   &
-!!     &         MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
+!!     &         rj_fld, MHD_files, bc_IO, SGS_par, dynamic_SPH,       &
+!!     &         MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph, monitor)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -21,7 +21,6 @@
 !!        type(sph_grids), intent(inout) :: sph_gen
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
-!!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -29,6 +28,7 @@
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
+!!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!@endverbatim
 !
       module set_control_sph_SGS_MHD
@@ -64,10 +64,8 @@
 !
       subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, model_ctl,     &
      &         smctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, sph_gen,    &
-     &         rj_fld, MHD_files, bc_IO, pwr, SGS_par, dynamic_SPH,     &
-     &         MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
-!
-      use sph_mhd_rms_IO
+     &         rj_fld, MHD_files, bc_IO, SGS_par, dynamic_SPH,          &
+     &         MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph, monitor)
 !
       use t_SGS_control_parameter
       use t_spheric_parameter
@@ -78,6 +76,7 @@
       use t_const_spherical_grid
       use t_sph_boundary_input_data
       use t_ctl_params_gen_sph_shell
+      use t_sph_mhd_monitor_data_IO
 !
       use gen_sph_grids_modes
       use set_control_platform_data
@@ -105,7 +104,6 @@
       type(phys_data), intent(inout) :: rj_fld
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
-      type(sph_mean_squares), intent(inout) :: pwr
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -113,6 +111,7 @@
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
+      type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
       integer(kind = kint) :: ierr
 !
@@ -201,17 +200,7 @@
 !
 !   set_pickup modes
 !
-      call set_ctl_params_layered_spectr(smonitor_ctl%lp_ctl, pwr)
-      call set_ctl_params_sph_spectr(smonitor_ctl, pwr)
-!
-      call set_ctl_params_pick_sph(smonitor_ctl%pspec_ctl,              &
-     &    pickup_sph_head, pick_list1, pick1)
-!
-      call set_ctl_params_pick_gauss(smonitor_ctl%g_pwr,                &
-     &    gauss_coefs_file_head, gauss_list1, gauss1)
-!
-      call set_ctl_params_no_heat_Nu(smonitor_ctl%Nusselt_file_prefix,  &
-     &    rj_fld, Nu_type1)
+      call set_control_SPH_MHD_monitors(smonitor_ctl, rj_fld, monitor)
 !
       end subroutine set_control_4_SPH_SGS_MHD
 !

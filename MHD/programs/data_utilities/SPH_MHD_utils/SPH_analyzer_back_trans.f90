@@ -52,8 +52,6 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use m_schmidt_poly_on_rtm
-      use m_rms_4_sph_spectr
       use m_bc_data_list
 !
       use t_sph_boundary_input_data
@@ -69,7 +67,6 @@
       use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph
       use r_interpolate_sph_data
-      use sph_mhd_rms_IO
       use sph_mhd_rst_IO_control
       use sph_filtering
       use cal_rms_fields_by_sph
@@ -105,7 +102,7 @@
      &   (SPH_model%MHD_prop%fl_prop, sph_MHD_bc,                       &
      &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,             &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    trans_p1, SPH_WK%trns_WK, SPH_MHD%fld)
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD%fld)
 !
 ! ---------------------------------
 !
@@ -114,9 +111,8 @@
 !
 ! ---------------------------------
 !
-      call init_rms_4_sph_spectr                                        &
-     &   (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, SPH_MHD%fld,      &
-     &    pwr1, WK_pwr)
+      call init_rms_4_sph_spectr_4_mhd                                  &
+     &   (SPH_MHD%sph, SPH_MHD%fld, SPH_WK%monitor)
 !
       end subroutine SPH_init_sph_back_trans
 !
@@ -126,15 +122,13 @@
      &         (i_step, MHD_files, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
-      use m_schmidt_poly_on_rtm
-      use m_rms_4_sph_spectr
+      use t_sph_mhd_monitor_data_IO
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
       use adjust_reference_fields
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
-      use sph_mhd_rms_IO
       use input_control_sph_MHD
 !
       use back_sph_trans_4_all_field
@@ -156,7 +150,8 @@
 !*
       call start_elapsed_time(9)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
-      call sph_all_back_transform(SPH_MHD%sph, SPH_MHD%comms, trans_p1, &
+      call sph_all_back_transform                                       &
+     &   (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%trans_p,                   &
      &    SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD, SPH_WK%trns_WK%WK_sph)
        call end_elapsed_time(9)
 !
@@ -166,7 +161,8 @@
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_back_trans'
       call output_rms_sph_back_trans                                    &
      &   (MHD_step, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,         &
-     &    trans_p1%leg, SPH_MHD%ipol, SPH_MHD%fld, pwr1, WK_pwr)
+     &    SPH_WK%trans_p%leg, SPH_MHD%ipol, SPH_MHD%fld,                &
+     &    SPH_WK%monitor)
       call end_elapsed_time(11)
 !
       end subroutine SPH_analyze_back_trans
@@ -180,11 +176,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_rms_sph_back_trans(MHD_step,                    &
-     &          sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
+     &          sph_params, sph_rj, leg, ipol, rj_fld, monitor)
 !
       use m_machine_parameter
       use t_MHD_step_parameter
       use t_schmidt_poly_on_rtm
+      use t_sph_mhd_monitor_data_IO
 !
       use cal_rms_fields_by_sph
       use volume_average_4_sph
@@ -197,8 +194,7 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
-      type(sph_mean_squares), intent(inout) :: pwr
-      type(sph_mean_square_work), intent(inout) :: WK_pwr
+      type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
       integer(kind = kint) :: iflag
 !
@@ -210,18 +206,18 @@
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
      &   (sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &
-     &    pwr, WK_pwr)
+     &    monitor%pwr, monitor%WK_pwr)
 !
       call write_sph_vol_ave_file                                       &
-     &   (MHD_step%time_d, sph_params, sph_rj, pwr)
+     &   (MHD_step%time_d, sph_params, sph_rj, monitor%pwr)
       call write_sph_vol_ms_file                                        &
-     &   (my_rank, MHD_step%time_d, sph_params, sph_rj, pwr)
+     &   (my_rank, MHD_step%time_d, sph_params, sph_rj, monitor%pwr)
       call write_sph_vol_ms_spectr_file                                 &
-     &   (my_rank, MHD_step%time_d, sph_params, sph_rj, pwr)
+     &   (my_rank, MHD_step%time_d, sph_params, sph_rj, monitor%pwr)
       call write_sph_layer_ms_file                                      &
-     &   (my_rank, MHD_step%time_d, sph_params, pwr)
+     &   (my_rank, MHD_step%time_d, sph_params, monitor%pwr)
       call write_sph_layer_spectr_file                                  &
-     &   (my_rank, MHD_step%time_d, sph_params, pwr)
+     &   (my_rank, MHD_step%time_d, sph_params, monitor%pwr)
 !
       end subroutine output_rms_sph_back_trans
 !

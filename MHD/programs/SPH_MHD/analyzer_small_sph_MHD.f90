@@ -40,7 +40,6 @@
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
       use m_node_phys_data
-      use m_rms_4_sph_spectr
       use m_bc_data_list
       use set_control_sph_mhd
       use input_control_sph_MHD
@@ -59,8 +58,8 @@
       call input_control_4_SPH_MHD_nosnap                               &
      &   (MHD_files1, bc_sph_IO1, DNS_MHD_ctl1,                         &
      &    SPH_MHD1%sph, SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld,  &
-     &    pwr1, MHD_step1, SPH_model1%MHD_prop, MHD_BC1,                &
-     &    SPH_WK1%trns_WK)
+     &    MHD_step1, SPH_model1%MHD_prop, MHD_BC1,                      &
+     &    SPH_WK1%trns_WK, SPH_WK1%monitor)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
 !

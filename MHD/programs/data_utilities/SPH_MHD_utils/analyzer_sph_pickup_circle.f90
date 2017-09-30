@@ -52,7 +52,6 @@
       use m_mesh_data
       use m_ctl_data_sph_SGS_MHD
       use m_node_phys_data
-      use m_rms_4_sph_spectr
       use sph_mhd_rst_IO_control
       use set_control_sph_SGS_MHD
       use set_control_sph_data_MHD
@@ -78,9 +77,9 @@
      &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%smonitor_ctl,                    &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, SPH_MHD1%fld,  &
-     &    MHD_files1, bc_sph_IO1, pwr1, SPH_SGS1%SGS_par,               &
-     &    SPH_SGS1%dynamic, MHD_step1, SPH_model1%MHD_prop,             &
-     &    MHD_BC1, SPH_WK1%trns_WK%WK_sph, gen_sph_c)
+     &    MHD_files1, bc_sph_IO1, SPH_SGS1%SGS_par, SPH_SGS1%dynamic,   &
+     &    MHD_step1, SPH_model1%MHD_prop, MHD_BC1,                      &
+     &    SPH_WK1%trns_WK%WK_sph, gen_sph_c, SPH_WK1%monitor)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call set_ctl_params_pick_circle                                   &

@@ -12,7 +12,6 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use m_schmidt_poly_on_rtm
       use m_spheric_data_sph_spetr
       use calypso_mpi
 !
@@ -83,7 +82,6 @@
       subroutine analyze_ene_sph_layer
 !
       use m_ctl_params_sph_utils
-      use m_schmidt_poly_on_rtm
       use copy_rj_phys_data_4_IO
       use output_sph_m_square_file
 !
