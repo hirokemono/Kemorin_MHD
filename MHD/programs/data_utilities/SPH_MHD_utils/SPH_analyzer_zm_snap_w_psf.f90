@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine SPH_analyze_zm_snap(i_step, MHD_files,               &
-!!     &          SPH_model, sph_MHD_bc, MHD_step, SPH_MHD, SPH_WK)
+!!     &          SPH_model, MHD_step, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
-!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -49,7 +48,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_zm_snap(i_step, MHD_files,                 &
-     &          SPH_model, sph_MHD_bc, MHD_step, SPH_MHD, SPH_WK)
+     &          SPH_model, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
 !
@@ -66,7 +65,6 @@
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(SPH_MHD_model_data), intent(in) :: SPH_model
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -89,17 +87,14 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start(SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,     &
-     &    SPH_model%MHD_prop, sph_MHD_bc, SPH_WK%trans_p%leg,           &
+     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, &
      &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_elapsed_time(8)
-      call nonlinear                                                    &
-     &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    SPH_WK%r_2nd, SPH_model%MHD_prop, sph_MHD_bc, SPH_WK%trans_p, &
-     &    SPH_model%ref_temp, SPH_model%ref_comp,                       &
-     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_WK%trns_WK, SPH_MHD%fld)
+      call nonlinear(SPH_WK%r_2nd, SPH_model,                           &
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -114,7 +109,7 @@
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd                                    &
      &     (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%r_2nd,                   &
-     &      SPH_model%MHD_prop, sph_MHD_bc, SPH_WK%trans_p,             &
+     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
      &      SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD%fld)
       end if
       call end_elapsed_time(9)
@@ -130,9 +125,8 @@
       call start_elapsed_time(11)
       if(output_IO_flag(i_step, MHD_step%rms_step) .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD%sph,   &
-     &      sph_MHD_bc%sph_bc_U, SPH_WK%trans_p%leg,                    &
-     &      SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%monitor)
+        call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
+     &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if
       call end_elapsed_time(11)
       call end_elapsed_time(4)

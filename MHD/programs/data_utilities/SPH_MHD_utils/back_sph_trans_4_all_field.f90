@@ -8,18 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_back_transform                              &
-!!     &         (fl_prop, sph_MHD_bc, ipol, idpdr, itor, iphys,        &
-!!     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
-!!        type(phys_address), intent(in) :: ipol, idpdr, itor
+!!     &         (SPH_model, iphys, trans_p, WK, SPH_MHD)
+!!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(phys_address), intent(in) :: iphys
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!!        type(sph_grids), intent(inout) :: sph
-!!        type(sph_comm_tables), intent(inout) :: comms_sph
-!!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
-!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!      subroutine sph_all_back_transform(sph, comms_sph, trans_p,      &
 !!     &           rj_fld, trns_MHD, WK_sph)
 !!      subroutine sph_back_transform_dual(sph, comms_sph, trans_p,     &
@@ -37,10 +31,8 @@
 !
       use m_precision
       use calypso_mpi
-      use t_spheric_parameter
-      use t_sph_trans_comm_tbl
-      use t_phys_address
-      use t_phys_data
+      use t_SPH_MHD_model_data
+      use t_SPH_mesh_field_data
       use t_work_4_sph_trans
       use t_addresses_sph_transform
       use t_sph_transforms
@@ -54,8 +46,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_sph_back_transform                                &
-     &         (fl_prop, sph_MHD_bc, ipol, idpdr, itor, iphys,          &
-     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+     &         (SPH_model, iphys, trans_p, WK, SPH_MHD)
 !
       use t_physical_property
       use t_poloidal_rotation
@@ -69,18 +60,12 @@
       use init_sphrical_transform_MHD
       use set_address_all_sph_trans
 !
-      type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_address), intent(in) :: iphys
-      type(fluid_property), intent(in) :: fl_prop
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!
-      type(sph_grids), intent(inout) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-      type(sph_rotation), intent(in) :: omega_sph
+      type(SPH_MHD_model_data), intent(in) :: SPH_model
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
-      type(phys_data), intent(inout) :: rj_fld
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !>      total number of components for spherical harmonics transform
       integer(kind = kint), save :: ncomp_max_trans
@@ -91,28 +76,30 @@
 !
       integer(kind = kint) :: i_fld
 !
-      call init_pole_transform(sph%sph_rtp)
+      call init_pole_transform(SPH_MHD%sph%sph_rtp)
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_backward_trans'
-      call set_addresses_backward_trans(rj_fld, WK%trns_MHD,            &
+      call set_addresses_backward_trans(SPH_MHD%fld, WK%trns_MHD,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(iflag_debug .ge. iflag_routine_msg) then
-        call check_address_trans_sph_MHD(ipol, idpdr, itor, iphys,      &
+        call check_address_trans_sph_MHD                                &
+     &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
      &      WK%trns_MHD, ncomp_max_trans)
-        do i_fld = 1, rj_fld%num_phys_viz
+        do i_fld = 1, SPH_MHD%fld%num_phys_viz
           write(*,*) i_fld, trim(WK%trns_MHD%b_trns_name(i_fld))
         end do
       end if
 !
-      call alloc_sph_trans_address(sph%sph_rtp, WK)
+      call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
 !
-      call sel_sph_transform_MHD(izero, ipol, fl_prop,                  &
-     &    sph_MHD_bc%sph_bc_U, sph, comms_sph, omega_sph,               &
+      call sel_sph_transform_MHD(izero, SPH_MHD%ipol,                   &
+     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    WK%trns_MHD, WK%trns_SGS, WK%WK_sph, WK%MHD_mul_FFTW,         &
-     &    WK%SGS_mul_FFTW, trans_p, WK%gt_cor, WK%cor_rlm, rj_fld)
+     &    WK%SGS_mul_FFTW, trans_p, WK%gt_cor, WK%cor_rlm, SPH_MHD%fld)
 !
       end subroutine init_sph_back_transform
 !

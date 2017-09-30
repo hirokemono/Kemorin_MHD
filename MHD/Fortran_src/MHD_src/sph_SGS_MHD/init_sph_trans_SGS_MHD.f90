@@ -7,11 +7,10 @@
 !>@brief Perform spherical harmonics transform for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine init_sph_transform_SGS_MHD(SGS_param, SPH_model,     &
-!!     &         sph_MHD_bc, iphys, trans_p, WK, SPH_MHD)
+!!      subroutine init_sph_transform_SGS_MHD                           &
+!!     &         (SGS_param, SPH_model, iphys, trans_p, WK, SPH_MHD)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
-!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(phys_address), intent(in) :: iphys
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
@@ -49,8 +48,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_SGS_MHD(SGS_param, SPH_model,       &
-     &         sph_MHD_bc, iphys, trans_p, WK, SPH_MHD)
+      subroutine init_sph_transform_SGS_MHD                             &
+     &         (SGS_param, SPH_model, iphys, trans_p, WK, SPH_MHD)
 !
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
@@ -61,7 +60,6 @@
       use MHD_FFT_selector
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(phys_address), intent(in) :: iphys
       type(SPH_MHD_model_data), intent(in) :: SPH_model
 !
@@ -117,7 +115,7 @@
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
 !
       call sel_sph_transform_MHD(SGS_param%iflag_SGS, SPH_MHD%ipol,     &
-     &    SPH_model%MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,              &
+     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    WK%trns_MHD, WK%trns_SGS, WK%WK_sph,                          &

@@ -80,7 +80,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD(MHD_files1, bc_sph_IO1, SPH_model1,       &
-     &    sph_MHD_bc1, iphys_nod1, MHD_step1, SPH_MHD1, SPH_WK1)
+     &    iphys_nod1, MHD_step1, SPH_MHD1, SPH_WK1)
 !
 !        Initialize visualization
 !
@@ -120,7 +120,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
         call SPH_analyze_MHD(MHD_step1%time_d%i_time_step,              &
-     &      MHD_files1, SPH_model1, sph_MHD_bc1, iflag_finish,          &
+     &      MHD_files1, SPH_model1, iflag_finish,                       &
      &      MHD_step1, SPH_MHD1, SPH_WK1)
 !*
 !*  -----------  output field data --------------

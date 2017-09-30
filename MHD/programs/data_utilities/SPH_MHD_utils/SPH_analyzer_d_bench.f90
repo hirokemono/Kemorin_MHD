@@ -9,9 +9,8 @@
 !!        Initialzation and evolution loop for dynamo benchmark check
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_dbench                                  &
-!!     &         (MHD_files, bc_IO, iphys, SPH_model, sph_MHD_bc,       &
-!!     &          SPH_MHD, SPH_WK, cdat)
+!!      subroutine SPH_init_sph_dbench(MHD_files, bc_IO, iphys,         &
+!!     &          SPH_model, SPH_MHD, SPH_WK, cdat)
 !!         type(MHD_file_IO_params), intent(in) :: MHD_files
 !!         type(boundary_spectra), intent(in) :: bc_IO
 !!         type(phys_address), intent(in) :: iphys
@@ -19,8 +18,7 @@
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!         type(circle_fld_maker), intent(inout) :: cdat
-!!      subroutine SPH_analyze_dbench                                   &
-!!     &         (i_step, MHD_files, SPH_model, sph_MHD_bc,             &
+!!      subroutine SPH_analyze_dbench(i_step, MHD_files, SPH_model,     &
 !!     &          SPH_MHD, SPH_WK, cdat, bench)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
@@ -52,9 +50,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_dbench                                    &
-     &         (MHD_files, bc_IO, iphys, SPH_model, sph_MHD_bc,         &
-     &          SPH_MHD, SPH_WK, cdat)
+      subroutine SPH_init_sph_dbench(MHD_files, bc_IO, iphys,           &
+     &          SPH_model, SPH_MHD, SPH_WK, cdat)
 !
       use m_constants
       use m_array_for_send_recv
@@ -88,7 +85,6 @@
       type(phys_address), intent(in) :: iphys
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
-      type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(circle_fld_maker), intent(inout) :: cdat
@@ -112,20 +108,19 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo                                     &
      &   (bc_IO, SPH_MHD%groups, MHD_BC1, SPH_MHD%ipol, SPH_MHD%sph,    &
-     &    SPH_model, sph_MHD_bc, SPH_WK%r_2nd, SPH_MHD%fld)
+     &    SPH_model, SPH_WK%r_2nd, SPH_MHD%fld)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(SPH_model%MHD_prop, sph_MHD_bc,       &
-     &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,             &
-     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD%fld)
+      call init_sph_transform_MHD                                       &
+     &   (SPH_model, iphys, SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
 !
 ! ---------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
-      call const_radial_mat_sph_snap(SPH_model%MHD_prop, sph_MHD_bc,    &
+      call const_radial_mat_sph_snap                                    &
+     &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, SPH_WK%trans_p%leg,         &
      &    SPH_WK%MHD_mats)
 !
@@ -145,8 +140,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_dbench                                     &
-     &         (i_step, MHD_files, SPH_model, sph_MHD_bc,               &
+      subroutine SPH_analyze_dbench(i_step, MHD_files, SPH_model,       &
      &          SPH_MHD, SPH_WK, cdat, bench)
 !
       use m_work_time
@@ -162,7 +156,6 @@
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(SPH_MHD_model_data), intent(in) :: SPH_model
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -184,8 +177,8 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,    &
-     &    SPH_model%MHD_prop, sph_MHD_bc, SPH_WK%trans_p%leg,          &
+      call set_sph_field_to_start(SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,     &
+     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, &
      &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -200,7 +193,7 @@
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd                                    &
      &     (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%r_2nd,                   &
-     &      SPH_model%MHD_prop, sph_MHD_bc, SPH_WK%trans_p,             &
+     &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
      &      SPH_MHD%ipol, SPH_WK%MHD_mats, SPH_WK%trns_WK, SPH_MHD%fld)
       end if
       call end_elapsed_time(9)
@@ -212,11 +205,11 @@
       if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
       call s_const_data_4_dynamobench                                   &
      &   (MHD_step1%time_d%time, SPH_MHD%sph%sph_params,                &
-     &    SPH_MHD%sph%sph_rj, sph_MHD_bc, SPH_WK%trans_p%leg,           &
+     &    SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, &
      &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld,                      &
      &    cdat, SPH_WK%monitor%pwr, bench, SPH_WK%monitor%WK_pwr)
       call output_field_4_dynamobench(i_step, MHD_step1%time_d%time,    &
-     &   sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B, SPH_MHD%ipol, bench)
+     &   SPH_model%sph_MHD_bc, SPH_MHD%ipol, bench)
       call end_elapsed_time(11)
       call end_elapsed_time(4)
 !

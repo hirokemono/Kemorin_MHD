@@ -8,16 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine nonlinear_SGS_first                                  &
-!!     &         (i_step, r_2nd, SPH_model, sph_MHD_bc,                 &
-!!     &          trans_p, WK, SGS_par, dynamic_SPH, SPH_MHD)
-!!      subroutine nonlinear_with_SGS                                   &
-!!     &         (i_step, SGS_par, r_2nd, SPH_model, sph_MHD_bc,        &
+!!     &         (i_step, r_2nd, SPH_model, trans_p, WK, SGS_par,       &
+!!     &          dynamic_SPH, SPH_MHD)
+!!      subroutine nonlinear_with_SGS(i_step, SGS_par, r_2nd, SPH_model,&
 !!     &          trans_p, WK, dynamic_SPH, SPH_MHD)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
-!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!@endverbatim
@@ -46,12 +44,11 @@
       use t_sph_transforms
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
-      use t_boundary_data_sph_MHD
       use t_sph_filtering
 !
       implicit none
 !
-      private :: nonlinear_w_SGS, SGS_by_pseudo_sph
+      private :: SGS_by_pseudo_sph
       private :: nonlinear_by_pseudo_sph_SGS
 !
 !*   ------------------------------------------------------------------
@@ -61,14 +58,13 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine nonlinear_SGS_first                                    &
-     &         (i_step, r_2nd, SPH_model, sph_MHD_bc,                   &
-     &          trans_p, WK, SGS_par, dynamic_SPH, SPH_MHD)
+     &         (i_step, r_2nd, SPH_model, trans_p, WK, SGS_par,         &
+     &          dynamic_SPH, SPH_MHD)
 !
       integer(kind = kint), intent(in) :: i_step
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(SPH_MHD_model_data), intent(in) :: SPH_model
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(works_4_sph_trans_MHD), intent(inout) :: WK
@@ -83,11 +79,8 @@
         SGS_par%model_p%stab_weight = one
       end if
 !
-      call nonlinear_w_SGS(i_step, SGS_par,                             &
-     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p,               &
-     &    SPH_model%ref_temp, SPH_model%ref_comp,                       &
-     &    SPH_MHD%ipol, SPH_MHD%itor, WK,  dynamic_SPH, SPH_MHD%fld)
+      call nonlinear_with_SGS(i_step, SGS_par,                          &
+     &    r_2nd, SPH_model, trans_p, WK, dynamic_SPH, SPH_MHD)
 !
       if(SGS_par%model_p%iflag_rst_sgs_coef_code .eq. 0) then
         SGS_par%model_p%stab_weight = tmp_stab_wt
@@ -97,37 +90,8 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear_with_SGS                                     &
-     &         (i_step, SGS_par, r_2nd, SPH_model, sph_MHD_bc,          &
+      subroutine nonlinear_with_SGS(i_step, SGS_par, r_2nd, SPH_model,  &
      &          trans_p, WK, dynamic_SPH, SPH_MHD)
-!
-      integer(kind = kint), intent(in) :: i_step
-      type(SGS_paremeters), intent(in) :: SGS_par
-      type(fdm_matrices), intent(in) :: r_2nd
-      type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(SPH_MHD_model_data), intent(in) :: SPH_model
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!
-      type(works_4_sph_trans_MHD), intent(inout) :: WK
-      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
-      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-!
-!
-      call nonlinear_w_SGS(i_step, SGS_par,                             &
-     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p,               &
-     &    SPH_model%ref_temp, SPH_model%ref_comp,                       &
-     &    SPH_MHD%ipol, SPH_MHD%itor, WK,  dynamic_SPH, SPH_MHD%fld)
-!
-      end subroutine nonlinear_with_SGS
-!*
-!*   ------------------------------------------------------------------
-!*   ------------------------------------------------------------------
-!*
-      subroutine nonlinear_w_SGS                                        &
-     &         (i_step, SGS_par, sph, comms_sph, omega_sph, r_2nd,      &
-     &          MHD_prop, sph_MHD_bc, trans_p, ref_temp, ref_comp,      &
-     &          ipol, itor, WK, dynamic_SPH, rj_fld)
 !
       use cal_inner_core_rotation
 !
@@ -137,69 +101,64 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(sph_grids), intent(in) :: sph
-      type(sph_comm_tables), intent(in) :: comms_sph
-      type(sph_rotation), intent(in) :: omega_sph
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol, itor
-      type(reference_temperature), intent(in) :: ref_temp, ref_comp
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(SPH_MHD_model_data), intent(in) :: SPH_model
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
-      type(phys_data), intent(inout) :: rj_fld
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph_SGS'
-      call nonlinear_by_pseudo_sph_SGS(SGS_par%model_p, sph, comms_sph, &
-     &    omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK%gt_cor,   &
-     &    dynamic_SPH, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW,         &
-     &    WK%cor_rlm, ipol, itor, rj_fld)
+      call nonlinear_by_pseudo_sph_SGS(SGS_par%model_p,                 &
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph, r_2nd,       &
+     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
+     &    trans_p, WK%gt_cor, dynamic_SPH, WK%trns_MHD, WK%WK_sph,      &
+     &    WK%MHD_mul_FFTW, WK%cor_rlm, SPH_MHD%ipol,                    &
+     &    SPH_MHD%itor, SPH_MHD%fld)
 !
 !   ----  Lead SGS terms
       if(SGS_par%model_p%iflag_SGS .gt. id_SGS_none) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
         call SGS_by_pseudo_sph                                          &
      &     (i_step, SGS_par%i_step_sgs_coefs, SGS_par%model_p,          &
-     &      sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,                &
-     &      trans_p, WK%trns_MHD, WK%trns_snap, WK%trns_SGS, WK%WK_sph, &
-     &      WK%SGS_mul_FFTW, dynamic_SPH, ipol, itor, rj_fld)
+     &      SPH_MHD%sph, SPH_MHD%comms, r_2nd, SPH_model%MHD_prop,      &
+     &      SPH_model%sph_MHD_bc, trans_p, WK%trns_MHD, WK%trns_snap,   &
+     &      WK%trns_SGS, WK%WK_sph, WK%SGS_mul_FFTW, dynamic_SPH,       &
+     &      SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
       end if
 !
 !   ----  Lead advection of reference field
       call add_ref_advect_sph_MHD                                       &
-     &   (sph%sph_rj, sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,         &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
-     &    trans_p%leg, ref_temp, ref_comp, ipol, rj_fld)
+     &   (SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc, SPH_model%MHD_prop, &
+     &    trans_p%leg, SPH_model%ref_temp, SPH_model%ref_comp,          &
+     &    SPH_MHD%ipol, SPH_MHD%fld)
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
       call start_elapsed_time(13)
-      if(sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
-        call copy_icore_rot_to_tor_coriolis                             &
-     &     (sph_MHD_bc%sph_bc_U%kr_in, sph%sph_rj,                      &
-     &      ipol, itor, rj_fld)
-      end if
+      call copy_icore_rot_to_tor_coriolis                               &
+     &   (SPH_model%sph_MHD_bc%sph_bc_U, SPH_MHD%sph%sph_rj,            &
+     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
       call end_elapsed_time(13)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
       call sum_forces_to_explicit                                       &
-     &   (sph%sph_rj, MHD_prop%fl_prop, ipol, itor, rj_fld)
+     &   (SPH_MHD%sph%sph_rj, SPH_model%MHD_prop%fl_prop,               &
+     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
 !
       if(SGS_par%model_p%iflag_SGS .gt. id_SGS_none) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'SGS_forces_to_explicit'
-        call SGS_forces_to_explicit                                     &
-     &    (SGS_par%model_p, sph%sph_rj, sph_MHD_bc%sph_bc_U,            &
-     &     ipol, itor, rj_fld)
+        call SGS_forces_to_explicit(SGS_par%model_p,                    &
+     &     SPH_MHD%sph%sph_rj, SPH_model%sph_MHD_bc%sph_bc_U,           &
+     &     SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
       end if
 !
-      end subroutine nonlinear_w_SGS
+      end subroutine nonlinear_with_SGS
 !*
 !*   ------------------------------------------------------------------
 !
@@ -255,9 +214,7 @@
       call start_elapsed_time(15)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
       call nonlinear_terms_in_rtp                                       &
-     &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    trns_MHD%b_trns, trns_MHD%f_trns,                             &
+     &   (sph%sph_rtp, MHD_prop, trns_MHD%b_trns, trns_MHD%f_trns,      &
      &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,             &
      &    trns_MHD%fld_rtp, trns_MHD%frc_rtp)
 !

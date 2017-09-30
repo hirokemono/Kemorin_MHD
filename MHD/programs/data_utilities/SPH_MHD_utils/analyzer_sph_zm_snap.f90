@@ -82,7 +82,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
       call SPH_init_sph_snap                                            &
-     &   (MHD_files1, bc_sph_IO1, iphys_nod1, SPH_model1, sph_MHD_bc1,  &
+     &   (MHD_files1, bc_sph_IO1, iphys_nod1, SPH_model1,               &
      &    SPH_SGS1, SPH_MHD1, SPH_WK1)
 !
 !        Initialize visualization
@@ -124,7 +124,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_zm_SGS_snap'
         call SPH_analyze_zm_SGS_snap(MHD_step1%time_d%i_time_step,      &
-     &      MHD_files1, SPH_model1, sph_MHD_bc1, MHD_step1,             &
+     &      MHD_files1, SPH_model1, MHD_step1,                          &
      &      SPH_SGS1, SPH_MHD1, SPH_WK1)
 !*
 !*  -----------  output field data --------------

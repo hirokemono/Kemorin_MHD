@@ -39,15 +39,11 @@
 !
       use m_precision
       use t_SPH_MHD_model_data
-      use t_boundary_data_sph_MHD
 !
       implicit  none
 !
 !
 !>      Parameters for spectr dynamo model
       type(SPH_MHD_model_data), save :: SPH_model1
-!
-!>      Boudary conditions for spectr dynamo model
-      type(sph_MHD_boundary_data), save :: sph_MHD_bc1
 !
       end module m_SPH_MHD_model_data

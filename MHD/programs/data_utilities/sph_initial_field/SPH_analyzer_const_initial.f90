@@ -115,13 +115,13 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_make_sph_initial'
       call init_r_infos_make_sph_initial                                &
      & (bc_sph_IO1, SPH_MHD%groups, MHD_BC1, SPH_MHD%ipol, SPH_MHD%sph, &
-     &  SPH_MHD%fld, SPH_model1, sph_MHD_bc1)
+     &  SPH_MHD%fld, SPH_model1)
 !
 ! ---------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
-      call sph_initial_spectrum(MHD_files1%fst_file_IO, sph_MHD_bc1,    &
-     &    SPH_MHD, MHD_step1%rst_step)
+      call sph_initial_spectrum(MHD_files1%fst_file_IO,                 &
+     &    SPH_model1%sph_MHD_bc, SPH_MHD, MHD_step1%rst_step)
 !
       end subroutine SPH_const_initial_field
 !

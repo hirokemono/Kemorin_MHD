@@ -41,6 +41,7 @@
       use t_control_parameter
       use t_poloidal_rotation
       use t_radial_reference_temp
+      use t_boundary_data_sph_MHD
 !
       implicit  none
 !
@@ -57,6 +58,10 @@
         type(reference_temperature) :: ref_temp
 !>        Structure of reference temperature
         type(reference_temperature) :: ref_comp
+!
+!
+!>        Structure for boundary conditions
+        type(sph_MHD_boundary_data) :: sph_MHD_bc
       end type SPH_MHD_model_data
 !
       end module t_SPH_MHD_model_data

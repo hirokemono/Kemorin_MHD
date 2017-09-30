@@ -10,13 +10,12 @@
 !!      subroutine open_sph_vol_rms_file_mhd                            &
 !!     &         (sph, ipol, rj_fld, monitor)
 !!      subroutine output_rms_sph_mhd_control                           &
-!!     &         (time_d, sph, sph_bc_U, leg, ipol, rj_fld, monitor)
+!!     &         (time_d, SPH_MHD, sph_MHD_bc, leg, monitor)
 !!      subroutine init_rms_4_sph_spectr_4_mhd(sph, rj_fld, monitor)
 !!        type(time_data), intent(in) :: time_d
-!!        type(sph_grids), intent(in) :: sph
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(legendre_4_sph_trans), intent(in) :: leg
-!!        type(phys_data), intent(in) :: rj_fld
+!!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!@endverbatim
 !
@@ -27,10 +26,8 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use t_spheric_parameter
+      use t_SPH_mesh_field_data
       use t_schmidt_poly_on_rtm
-      use t_phys_address
-      use t_phys_data
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
       use t_pickup_sph_spectr_data
@@ -140,10 +137,10 @@
 !  --------------------------------------------------------------------
 !
       subroutine output_rms_sph_mhd_control                             &
-     &         (time_d, sph, sph_bc_U, leg, ipol, rj_fld, monitor)
+     &         (time_d, SPH_MHD, sph_MHD_bc, leg, monitor)
 !
       use t_time_data
-      use t_boundary_params_sph_MHD
+      use t_boundary_data_sph_MHD
       use m_machine_parameter
 !
       use cal_rms_fields_by_sph
@@ -152,20 +149,19 @@
       use gauss_coefs_monitor_IO
 !
       type(time_data), intent(in) :: time_d
-      type(sph_grids), intent(in) :: sph
-      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
-      type(phys_address), intent(in) :: ipol
-      type(phys_data), intent(in) :: rj_fld
+      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
 !
-      call cal_rms_data_4_sph_mhd(sph%sph_params, sph%sph_rj,           &
-     &    sph_bc_U, leg, ipol, rj_fld, monitor)
+      call cal_rms_data_4_sph_mhd                                       &
+     &   (SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,                   &
+     &    sph_MHD_bc%sph_bc_U, leg, SPH_MHD%ipol, SPH_MHD%fld, monitor)
 !
       call output_rms_data_4_sph_mhd                                    &
-     &   (time_d, sph%sph_params, sph%sph_rj, monitor)
+     &   (time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, monitor)
 !
       end subroutine output_rms_sph_mhd_control
 !

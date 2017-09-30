@@ -11,10 +11,9 @@
 !!@verbatim
 !!      subroutine init_r_infos_sph_mhd_evo                             &
 !!     &         (bc_IO, sph_grps, MHD_BC, ipol, sph,                   &
-!!     &          SPH_model, sph_MHD_bc, r_2nd, rj_fld)
+!!     &          SPH_model, r_2nd, rj_fld)
 !!      subroutine init_r_infos_make_sph_initial                        &
-!!     &         (bc_IO, sph_grps, MHD_BC, ipol, sph,                   &
-!!     &          rj_fld, SPH_model, sph_MHD_bc)
+!!     &         (bc_IO, sph_grps, MHD_BC, ipol, sph, rj_fld, SPH_model)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(phys_address), intent(in) :: ipol
@@ -22,7 +21,6 @@
 !!        type(fdm_matrices), intent(inout) :: r_2nd
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
-!!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!@endverbatim
 !!
 !!@n @param r_hot        radius at highest temperature point
@@ -64,7 +62,7 @@
 !
       subroutine init_r_infos_sph_mhd_evo                               &
      &         (bc_IO, sph_grps, MHD_BC, ipol, sph,                     &
-     &          SPH_model, sph_MHD_bc, r_2nd, rj_fld)
+     &          SPH_model, r_2nd, rj_fld)
 !
       use calypso_mpi
       use const_fdm_coefs
@@ -77,7 +75,6 @@
 !
       type(sph_grids), intent(inout) :: sph
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
-      type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(fdm_matrices), intent(inout) :: r_2nd
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -85,7 +82,7 @@
       call init_r_infos_sph_mhd                                         &
      &   (bc_IO, sph_grps, MHD_BC, ipol, sph,                           &
      &    SPH_model%omega_sph, SPH_model%ref_temp, SPH_model%ref_comp,  &
-     &    rj_fld, SPH_model%MHD_prop, sph_MHD_bc)
+     &    rj_fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
       call const_2nd_fdm_matrices(sph%sph_params, sph%sph_rj, r_2nd)
@@ -100,8 +97,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_make_sph_initial                          &
-     &         (bc_IO, sph_grps, MHD_BC, ipol, sph,                     &
-     &          rj_fld, SPH_model, sph_MHD_bc)
+     &         (bc_IO, sph_grps, MHD_BC, ipol, sph, rj_fld, SPH_model)
 !
       use calypso_mpi
 !
@@ -112,14 +108,13 @@
 !
       type(sph_grids), intent(inout) :: sph
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
-      type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call init_r_infos_sph_mhd                                         &
      &   (bc_IO, sph_grps, MHD_BC, ipol, sph,                           &
      &    SPH_model%omega_sph, SPH_model%ref_temp, SPH_model%ref_comp,  &
-     &    rj_fld, SPH_model%MHD_prop, sph_MHD_bc)
+     &    rj_fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
       end subroutine init_r_infos_make_sph_initial
 !
