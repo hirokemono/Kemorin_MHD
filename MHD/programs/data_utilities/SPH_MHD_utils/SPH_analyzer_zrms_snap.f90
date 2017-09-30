@@ -14,12 +14,13 @@
 !!@verbatim
 !!      subroutine SPH_analyze_zRMS_snap                                &
 !!     &          (i_step, MHD_files, SPH_model, sph_MHD_bc,            &
-!!     &           MHD_step, SPH_SGS, SPH_MHD)
+!!     &           MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!@endverbatim
 !!
 !!@param i_step  time step number
@@ -36,6 +37,7 @@
       use t_SPH_SGS_structure
       use t_control_parameter
       use t_boundary_data_sph_MHD
+      use t_work_SPH_MHD
 !
       implicit none
 !
@@ -47,7 +49,7 @@
 !
       subroutine SPH_analyze_zRMS_snap                                  &
      &          (i_step, MHD_files, SPH_model, sph_MHD_bc,              &
-     &           MHD_step, SPH_SGS, SPH_MHD)
+     &           MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use m_work_time
       use m_fdm_coefs
@@ -68,6 +70,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
       integer(kind = kint) :: iflag
 !
@@ -95,7 +98,7 @@
       call start_elapsed_time(8)
       call nonlinear_with_SGS                                           &
      &   (i_step, SPH_SGS%SGS_par, r_2nd, SPH_model, sph_MHD_bc,        &
-     &    trans_p1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
+     &    trans_p1, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -110,7 +113,7 @@
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
         call lead_fields_4_SPH_SGS_MHD(SPH_SGS%SGS_par,                 &
      &      r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p1,            &
-     &      sph_MHD_mat1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
+     &      sph_MHD_mat1, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       end if
       call end_elapsed_time(9)
 !

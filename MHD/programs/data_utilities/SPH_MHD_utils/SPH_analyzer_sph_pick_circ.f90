@@ -14,8 +14,9 @@
 !!       Initialzation and evolution loop to pick up data on circle
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_pick_circle(MHD_files, bc_IO, femmesh,  &
-!!     &          iphys, SPH_model, sph_MHD_bc, SPH_SGS, SPH_MHD, cdat)
+!!      subroutine SPH_init_sph_pick_circle                             &
+!!     &         (MHD_files, bc_IO, femmesh, iphys, SPH_model,          &
+!!     &          sph_MHD_bc, SPH_SGS, SPH_MHD, SPH_WK, cdat)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(mesh_data), intent(in) :: femmesh
@@ -23,15 +24,17 @@
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(circle_fld_maker), intent(inout) :: cdat
 !!      subroutine SPH_analyze_pick_circle                              &
 !!     &         (i_step, MHD_files, SPH_model, sph_MHD_bc,             &
-!!     &          SPH_SGS, SPH_MHD, cdat)
+!!     &          SPH_SGS, SPH_MHD, SPH_WK, cdat)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!      subroutine SPH_finalize_pick_circle
 !!@endverbatim
 !
@@ -48,6 +51,7 @@
       use t_SPH_SGS_structure
       use t_boundary_data_sph_MHD
       use t_field_on_circle
+      use t_work_SPH_MHD
 !
       implicit none
 !
@@ -57,8 +61,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_pick_circle(MHD_files, bc_IO, femmesh,    &
-     &          iphys, SPH_model, sph_MHD_bc, SPH_SGS, SPH_MHD, cdat)
+      subroutine SPH_init_sph_pick_circle                               &
+     &         (MHD_files, bc_IO, femmesh, iphys, SPH_model,            &
+     &          sph_MHD_bc, SPH_SGS, SPH_MHD, SPH_WK, cdat)
 !
       use m_constants
       use m_array_for_send_recv
@@ -103,6 +108,7 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(circle_fld_maker), intent(inout) :: cdat
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !   Allocate spectr field data
 !
@@ -132,7 +138,7 @@
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
       call init_sph_transform_SGS_MHD                                   &
      &   (SPH_SGS%SGS_par%model_p, SPH_model, sph_MHD_bc,               &
-     &    iphys, trans_p1, trns_WK1, SPH_MHD)
+     &    iphys, trans_p1, SPH_WK%trns_WK, SPH_MHD)
 !
 ! ---------------------------------
 !
@@ -164,7 +170,7 @@
 !
       subroutine SPH_analyze_pick_circle                                &
      &         (i_step, MHD_files, SPH_model, sph_MHD_bc,               &
-     &          SPH_SGS, SPH_MHD, cdat)
+     &          SPH_SGS, SPH_MHD, SPH_WK, cdat)
 !
       use m_work_time
       use m_fdm_coefs
@@ -187,6 +193,7 @@
 !
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(circle_fld_maker), intent(inout) :: cdat
 !
       integer(kind = kint) :: iflag
@@ -213,7 +220,7 @@
       call start_elapsed_time(8)
       call nonlinear_with_SGS                                           &
      &   (i_step, SPH_SGS%SGS_par, r_2nd, SPH_model, sph_MHD_bc,        &
-     &    trans_p1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
+     &    trans_p1, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -228,7 +235,8 @@
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
         call lead_fields_4_SPH_SGS_MHD                                  &
      &     (SPH_SGS%SGS_par, r_2nd, SPH_model%MHD_prop, sph_MHD_bc,     &
-     &      trans_p1, sph_MHD_mat1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
+     &      trans_p1, sph_MHD_mat1, SPH_WK%trns_WK, SPH_SGS%dynamic,    &
+     &      SPH_MHD)
       end if
       call end_elapsed_time(9)
 !

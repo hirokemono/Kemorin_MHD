@@ -1,21 +1,23 @@
 !
 !     module SPH_analyzer_licv
 !
-!!      subroutine SPH_initialize_linear_conv(MHD_files, bc_IO,         &
-!!     &          iphys, SPH_model, sph_MHD_bc, MHD_step, SPH_MHD)
+!!      subroutine SPH_initialize_linear_conv(MHD_files, bc_IO, iphys,  &
+!!     &          SPH_model, sph_MHD_bc, MHD_step, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!      subroutine SPH_analyze_linear_conv                              &
 !!     &         (i_step, MHD_files, SPH_model, sph_MHD_bc,             &
-!!     &          iflag_finish, MHD_step, SPH_MHD)
+!!     &          iflag_finish, MHD_step, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !      Written by H. Matsui
 !
@@ -31,6 +33,7 @@
       use t_SPH_mesh_field_data
       use t_control_parameter
       use t_boundary_data_sph_MHD
+      use t_work_SPH_MHD
 !
       implicit none
 !
@@ -40,8 +43,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_linear_conv(MHD_files, bc_IO,           &
-     &          iphys, SPH_model, sph_MHD_bc, MHD_step, SPH_MHD)
+      subroutine SPH_initialize_linear_conv(MHD_files, bc_IO, iphys,    &
+     &          SPH_model, sph_MHD_bc, MHD_step, SPH_MHD, SPH_WK)
 !
       use calypso_mpi
       use m_constants
@@ -84,6 +87,7 @@
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !   Allocate spectr field data
 !
@@ -109,7 +113,7 @@
       call init_sph_transform_MHD(SPH_model%MHD_prop, sph_MHD_bc,       &
      &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,             &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    trans_p1, trns_WK1, SPH_MHD%fld)
+     &    trans_p1, SPH_WK%trns_WK, SPH_MHD%fld)
 !
 ! ---------------------------------
 !
@@ -144,7 +148,8 @@
       call licv_exp                                                     &
      &   (SPH_model%ref_temp, SPH_model%ref_comp, SPH_model%MHD_prop,   &
      &    sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,  &
-     &    trans_p1, SPH_MHD%ipol, SPH_MHD%itor, trns_WK1, SPH_MHD%fld)
+     &    trans_p1, SPH_MHD%ipol, SPH_MHD%itor, SPH_WK%trns_WK,         &
+     &    SPH_MHD%fld)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -159,7 +164,7 @@
 !
       subroutine SPH_analyze_linear_conv                                &
      &         (i_step, MHD_files, SPH_model, sph_MHD_bc,               &
-     &          iflag_finish, MHD_step, SPH_MHD)
+     &          iflag_finish, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
       use m_fdm_coefs
@@ -183,6 +188,7 @@
       integer(kind = kint), intent(inout) :: iflag_finish
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
       integer(kind = kint) :: iflag
 !
@@ -215,7 +221,7 @@
         call s_lead_fields_4_sph_mhd                                    &
      &     (SPH_MHD%sph, SPH_MHD%comms, r_2nd, SPH_model%MHD_prop,      &
      &      sph_MHD_bc, trans_p1, SPH_MHD%ipol, sph_MHD_mat1,           &
-     &      trns_WK1, SPH_MHD%fld)
+     &      SPH_WK%trns_WK, SPH_MHD%fld)
       end if
       call end_elapsed_time(9)
 !
@@ -224,7 +230,8 @@
         call licv_exp                                                   &
      &    (SPH_model%ref_temp, SPH_model%ref_comp, SPH_model%MHD_prop,  &
      &     sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph, &
-     &     trans_p1, SPH_MHD%ipol, SPH_MHD%itor, trns_WK1, SPH_MHD%fld)
+     &     trans_p1, SPH_MHD%ipol, SPH_MHD%itor, SPH_WK%trns_WK,        &
+     &     SPH_MHD%fld)
 !
 !*  -----------  output restart data --------------
 !*

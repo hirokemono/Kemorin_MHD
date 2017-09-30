@@ -1,5 +1,5 @@
-!>@file  t_work_FEM_MHD.f90
-!!       module t_work_FEM_MHD
+!>@file  t_work_FEM_SGS_MHD.f90
+!!       module t_work_FEM_SGS_MHD
 !!
 !!@author H. Matsui
 !!@date   Programmed in Aug., 2011

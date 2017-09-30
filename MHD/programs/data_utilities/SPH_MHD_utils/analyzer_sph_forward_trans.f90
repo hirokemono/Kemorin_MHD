@@ -69,7 +69,7 @@
      &  (MHD_files1, bc_sph_IO1, MHD_ctl1, SPH_MHD1%sph,                &
      &   SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld, nod_fld1,       &
      &   pwr1, SPH_SGS1, MHD_step1, SPH_model1%MHD_prop, MHD_BC1,       &
-     &   trns_WK1, femmesh1, ele_mesh1)
+     &   SPH_WK1%trns_WK, femmesh1, ele_mesh1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
 !
@@ -85,7 +85,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
       call SPH_init_sph_snap                                            &
      &   (MHD_files1, bc_sph_IO1, iphys_nod1, SPH_model1, sph_MHD_bc1,  &
-     &    SPH_SGS1, SPH_MHD1)
+     &    SPH_SGS1, SPH_MHD1, SPH_WK1)
 !
       call calypso_MPI_barrier
 !
@@ -121,7 +121,7 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
         call SPH_analyze_snap(MHD_step1%time_d%i_time_step,             &
      &      MHD_files1, SPH_model1, sph_MHD_bc1, MHD_step1,             &
-     &      SPH_SGS1, SPH_MHD1)
+     &      SPH_SGS1, SPH_MHD1, SPH_WK1)
 !*
 !*  -----------  exit loop --------------
 !*

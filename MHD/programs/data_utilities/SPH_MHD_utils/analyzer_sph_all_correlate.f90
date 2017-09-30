@@ -72,7 +72,7 @@
       call input_control_SPH_dynamo(MHD_files1, bc_sph_IO1, MHD_ctl1,   &
      &    SPH_MHD1%sph, SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld,  &
      &    nod_fld1, pwr1, SPH_SGS1, MHD_step1, SPH_model1%MHD_prop,     &
-     &    MHD_BC1, trns_WK1, femmesh1, ele_mesh1)
+     &    MHD_BC1, SPH_WK1%trns_WK, femmesh1, ele_mesh1)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
@@ -90,7 +90,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
       call SPH_init_sph_back_trans(MHD_files1, bc_sph_IO1,              &
-     &    iphys_nod1, SPH_model1, sph_MHD_bc1, SPH_MHD1)
+     &    iphys_nod1, SPH_model1, sph_MHD_bc1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(femmesh1, ele_mesh1, nod_fld1)
@@ -131,7 +131,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_correlate_all'
         call SPH_analyze_correlate_all                                  &
-     &     (MHD_step1%time_d, mhd_files1, MHD_step1, SPH_MHD1)
+     &     (MHD_step1%time_d, mhd_files1, MHD_step1, SPH_MHD1, SPH_WK1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -141,7 +141,7 @@
         if (iflag_debug.gt.0) write(*,*) 'copy_all_field_from_trans'
         call copy_all_field_from_trans                                  &
      &     (SPH_MHD1%sph%sph_params%m_folding, SPH_MHD1%sph%sph_rtp,    &
-     &      trns_WK1%trns_MHD, femmesh1%mesh, nod_fld1)
+     &      SPH_WK1%trns_WK%trns_MHD, femmesh1%mesh, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1,                            &

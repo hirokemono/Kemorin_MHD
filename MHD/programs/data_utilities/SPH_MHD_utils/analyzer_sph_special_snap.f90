@@ -27,6 +27,7 @@
       use t_SPH_SGS_structure
       use t_step_parameter
       use t_MHD_file_parameter
+      use t_work_SPH_MHD
 !
       implicit none
 !
@@ -74,7 +75,8 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_special_snap'
         call SPH_analyze_special_snap(MHD_step1%time_d%i_time_step,     &
-     &      MHD_files1, SPH_model1, MHD_step1, SPH_SGS1, SPH_MHD1)
+     &      MHD_files1, SPH_model1, MHD_step1, SPH_SGS1, SPH_MHD1,      &
+     &      SPH_WK1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -86,7 +88,7 @@
           if(iflag_debug.eq.1)                                          &
      &       write(*,*) 'SPH_to_FEM_bridge_special_snap'
           call SPH_to_FEM_bridge_special_snap                           &
-     &       (SPH_MHD1%sph, femmesh1%mesh)
+     &       (SPH_MHD1%sph, femmesh1%mesh, SPH_WK1%trns_WK)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
@@ -136,7 +138,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_special_snap(i_step, MHD_files,            &
-     &          SPH_model, MHD_step, SPH_SGS, SPH_MHD)
+     &          SPH_model, MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use m_work_time
       use m_fdm_coefs
@@ -161,6 +163,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
       integer(kind = kint) :: iflag
 !
@@ -195,7 +198,7 @@
       call start_elapsed_time(8)
       call nonlinear_with_SGS                                           &
      &   (i_step, SPH_SGS%SGS_par, r_2nd, SPH_model, sph_MHD_bc1,       &
-     &    trans_p1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
+     &    trans_p1, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -208,8 +211,9 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd(i_step,                        &
-     &    SPH_model%omega_sph, r_2nd, SPH_model%MHD_prop, trns_WK1,     &
-     &    SPH_SGS%dynamic, sph_MHD_mat1, MHD_step, SPH_MHD)
+     &    SPH_model%omega_sph, r_2nd, SPH_model%MHD_prop,               &
+     &    SPH_WK%trns_WK, SPH_SGS%dynamic, sph_MHD_mat1,                &
+     &    MHD_step, SPH_MHD)
       call end_elapsed_time(9)
 !
 !*  -----------  lead energy data --------------
@@ -235,7 +239,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_special_snap(sph, mesh)
+      subroutine SPH_to_FEM_bridge_special_snap(sph, mesh, WK)
 !
       use m_node_phys_data
       use m_sph_trans_arrays_MHD
@@ -245,17 +249,18 @@
 !*
       type(sph_grids), intent(in) :: sph
       type(mesh_geometry), intent(in) :: mesh
+      type(works_4_sph_trans_MHD), intent(in) :: WK
 !
 !*  -----------  data transfer to FEM array --------------
 !*
       call copy_forces_to_snapshot_rtp                                  &
-     &   (sph%sph_params, sph%sph_rtp, trns_WK1%trns_MHD,               &
+     &   (sph%sph_params, sph%sph_rtp, WK%trns_MHD,                     &
      &    mesh%node, iphys_nod1, nod_fld1)
       call copy_snap_vec_fld_from_trans                                 &
-     &   (sph%sph_params%m_folding, sph%sph_rtp, trns_WK1%trns_snap,    &
+     &   (sph%sph_params%m_folding, sph%sph_rtp, WK%trns_snap,          &
      &    mesh%node, iphys_nod1, nod_fld1)
       call copy_snap_vec_force_from_trans                               &
-     &   (sph%sph_params%m_folding, sph%sph_rtp, trns_WK1%trns_snap,    &
+     &   (sph%sph_params%m_folding, sph%sph_rtp, WK%trns_snap,          &
      &    mesh%node, iphys_nod1, nod_fld1)
 !
 ! ----  Take zonal mean

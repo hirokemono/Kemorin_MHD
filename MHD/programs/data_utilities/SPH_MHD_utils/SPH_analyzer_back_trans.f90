@@ -8,18 +8,20 @@
 !!
 !!@verbatim
 !!      subroutine SPH_init_sph_back_trans(MHD_files, bc_IO, iphys,     &
-!!     &          SPH_model, sph_MHD_bc, SPH_MHD)
+!!     &          SPH_model, sph_MHD_bc, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!      subroutine SPH_analyze_back_trans                               &
-!!     &         (i_step, MHD_files, MHD_step, SPH_MHD)
+!!     &         (i_step, MHD_files, MHD_step, SPH_MHD, SPH_WK)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!@endverbatim
 !
       module SPH_analyzer_back_trans
@@ -33,6 +35,7 @@
       use t_SPH_mesh_field_data
       use t_control_parameter
       use t_boundary_data_sph_MHD
+      use t_work_SPH_MHD
 !
       implicit none
 !
@@ -43,7 +46,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_init_sph_back_trans(MHD_files, bc_IO, iphys,       &
-     &          SPH_model, sph_MHD_bc, SPH_MHD)
+     &          SPH_model, sph_MHD_bc, SPH_MHD, SPH_WK)
 !
       use m_constants
       use calypso_mpi
@@ -82,6 +85,7 @@
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !
 !   Allocate spectr field data
@@ -103,7 +107,7 @@
      &   (SPH_model%MHD_prop%fl_prop, sph_MHD_bc,                       &
      &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,             &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    trans_p1, trns_WK1, SPH_MHD%fld)
+     &    trans_p1, SPH_WK%trns_WK, SPH_MHD%fld)
 !
 ! ---------------------------------
 !
@@ -121,7 +125,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_back_trans                                 &
-     &         (i_step, MHD_files, MHD_step, SPH_MHD)
+     &         (i_step, MHD_files, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
       use m_fdm_coefs
@@ -143,6 +147,7 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !
       call read_alloc_sph_spectr                                        &
@@ -156,7 +161,7 @@
       call start_elapsed_time(9)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(SPH_MHD%sph, SPH_MHD%comms, trans_p1, &
-     &    SPH_MHD%fld, trns_WK1%trns_MHD, trns_WK1%WK_sph)
+     &    SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD, SPH_WK%trns_WK%WK_sph)
        call end_elapsed_time(9)
 !
 !*  -----------  lead energy data --------------

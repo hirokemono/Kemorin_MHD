@@ -11,20 +11,22 @@
 !!@verbatim
 !!      subroutine SPH_init_sph_dbench                                  &
 !!     &         (MHD_files, bc_IO, iphys, SPH_model, sph_MHD_bc,       &
-!!     &          SPH_MHD, cdat)
+!!     &          SPH_MHD, SPH_WK, cdat)
 !!         type(MHD_file_IO_params), intent(in) :: MHD_files
 !!         type(boundary_spectra), intent(in) :: bc_IO
 !!         type(phys_address), intent(in) :: iphys
 !!         type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!         type(circle_fld_maker), intent(inout) :: cdat
 !!      subroutine SPH_analyze_dbench                                   &
 !!     &         (i_step, MHD_files, SPH_model, sph_MHD_bc,             &
-!!     &          SPH_MHD, cdat, bench)
+!!     &          SPH_MHD, SPH_WK, cdat, bench)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!         type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(phys_data), intent(inout) :: cdat
 !!        type(dynamobench_monitor), intent(inout) :: bench
 !!      subroutine SPH_finalize_dbench
@@ -42,6 +44,7 @@
       use t_boundary_data_sph_MHD
       use t_field_on_circle
       use t_field_4_dynamobench
+      use t_work_SPH_MHD
 !
       implicit none
 !
@@ -53,7 +56,7 @@
 !
       subroutine SPH_init_sph_dbench                                    &
      &         (MHD_files, bc_IO, iphys, SPH_model, sph_MHD_bc,         &
-     &          SPH_MHD, cdat)
+     &          SPH_MHD, SPH_WK, cdat)
 !
       use m_constants
       use m_array_for_send_recv
@@ -93,6 +96,7 @@
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(circle_fld_maker), intent(inout) :: cdat
 !
 !   Allocate spectr field data
@@ -122,7 +126,7 @@
       call init_sph_transform_MHD(SPH_model%MHD_prop, sph_MHD_bc,       &
      &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,             &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
-     &    trans_p1, trns_WK1, SPH_MHD%fld)
+     &    trans_p1, SPH_WK%trns_WK, SPH_MHD%fld)
 !
 ! ---------------------------------
 !
@@ -148,7 +152,7 @@
 !
       subroutine SPH_analyze_dbench                                     &
      &         (i_step, MHD_files, SPH_model, sph_MHD_bc,               &
-     &          SPH_MHD, cdat, bench)
+     &          SPH_MHD, SPH_WK, cdat, bench)
 !
       use m_work_time
       use m_fdm_coefs
@@ -170,6 +174,7 @@
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(circle_fld_maker), intent(inout) :: cdat
       type(dynamobench_monitor), intent(inout) :: bench
 !
@@ -205,7 +210,7 @@
         call s_lead_fields_4_sph_mhd                                    &
      &     (SPH_MHD%sph, SPH_MHD%comms, r_2nd, SPH_model%MHD_prop,      &
      &      sph_MHD_bc, trans_p1, SPH_MHD%ipol, sph_MHD_mat1,           &
-     &      trns_WK1, SPH_MHD%fld)
+     &      SPH_WK%trns_WK, SPH_MHD%fld)
       end if
       call end_elapsed_time(9)
 !

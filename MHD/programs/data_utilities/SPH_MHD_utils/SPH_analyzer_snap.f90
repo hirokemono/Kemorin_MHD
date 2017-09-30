@@ -7,8 +7,8 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_snap(MHD_files, bc_IO,                  &
-!!     &          iphys, SPH_model, sph_MHD_bc, SPH_SGS, SPH_MHD)
+!!      subroutine SPH_init_sph_snap(MHD_files, bc_IO, iphys, SPH_model,&
+!!     &          sph_MHD_bc, SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(phys_address), intent(in) :: iphys
@@ -16,9 +16,10 @@
 !!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!      subroutine SPH_analyze_snap                                     &
 !!     &         (i_step, MHD_files, SPH_model, sph_MHD_bc, MHD_step,   &
-!!     &          SPH_SGS, SPH_MHD)
+!!     &          SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
@@ -27,6 +28,7 @@
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!@endverbatim
 !
       module SPH_analyzer_snap
@@ -41,6 +43,7 @@
       use t_MHD_file_parameter
       use t_SPH_SGS_structure
       use t_boundary_data_sph_MHD
+      use t_work_SPH_MHD
 !
       implicit none
 !
@@ -50,8 +53,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_snap(MHD_files, bc_IO,                    &
-     &          iphys, SPH_model, sph_MHD_bc, SPH_SGS, SPH_MHD)
+      subroutine SPH_init_sph_snap(MHD_files, bc_IO, iphys, SPH_model,  &
+     &          sph_MHD_bc, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use m_constants
       use calypso_mpi
@@ -91,6 +94,7 @@
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !   Allocate spectr field data
 !
@@ -109,7 +113,7 @@
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
       call init_sph_transform_SGS_MHD                                   &
      &   (SPH_SGS%SGS_par%model_p, SPH_model, sph_MHD_bc,               &
-     &    iphys, trans_p1, trns_WK1, SPH_MHD)
+     &    iphys, trans_p1, SPH_WK%trns_WK, SPH_MHD)
 !
 ! ---------------------------------
 !
@@ -139,7 +143,7 @@
 !
       subroutine SPH_analyze_snap                                       &
      &         (i_step, MHD_files, SPH_model, sph_MHD_bc, MHD_step,     &
-     &          SPH_SGS, SPH_MHD)
+     &          SPH_SGS, SPH_MHD, SPH_WK)
 !
       use m_work_time
       use m_fdm_coefs
@@ -163,6 +167,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
       integer(kind = kint) :: iflag
 !
@@ -191,7 +196,7 @@
       call start_elapsed_time(8)
       call nonlinear_with_SGS                                           &
      &   (i_step, SPH_SGS%SGS_par, r_2nd, SPH_model, sph_MHD_bc,        &
-     &    trans_p1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
+     &    trans_p1, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -206,7 +211,8 @@
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
         call lead_fields_4_SPH_SGS_MHD                                  &
      &     (SPH_SGS%SGS_par, r_2nd, SPH_model%MHD_prop, sph_MHD_bc,     &
-     &      trans_p1, sph_MHD_mat1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
+     &      trans_p1, sph_MHD_mat1, SPH_WK%trns_WK,                     &
+     &      SPH_SGS%dynamic, SPH_MHD)
       end if
       call end_elapsed_time(9)
 !

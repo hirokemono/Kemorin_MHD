@@ -7,11 +7,21 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_initialize_SGS_MHD(MHD_files, bc_IO, iphys,      &
-!!     &          MHD_step, SPH_model, sph_MHD_bc, SPH_SGS, SPH_MHD)
+!!      subroutine SPH_initialize_SGS_MHD                               &
+!!     &         (MHD_files, bc_IO, iphys, MHD_step, SPH_model,         &
+!!     &          sph_MHD_bc, SPH_SGS, SPH_MHD, SPH_WK)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(boundary_spectra), intent(in) :: bc_IO
+!!        type(phys_address), intent(in) :: iphys
+!!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
+!!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
+!!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!      subroutine SPH_analyze_SGS_MHD                                  &
 !!     &         (i_step, MHD_files, SPH_model, sph_MHD_bc,             &
-!!     &          iflag_finish, MHD_step, SPH_SGS, SPH_MHD)
+!!     &          iflag_finish, MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
@@ -19,6 +29,7 @@
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!@endverbatim
 !
       module SPH_analyzer_SGS_MHD
@@ -33,6 +44,7 @@
       use t_SPH_mesh_field_data
       use t_SPH_SGS_structure
       use t_boundary_data_sph_MHD
+      use t_work_SPH_MHD
 !
       implicit none
 !
@@ -42,8 +54,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_SGS_MHD(MHD_files, bc_IO, iphys,        &
-     &          MHD_step, SPH_model, sph_MHD_bc, SPH_SGS, SPH_MHD)
+      subroutine SPH_initialize_SGS_MHD                                 &
+     &         (MHD_files, bc_IO, iphys, MHD_step, SPH_model,           &
+     &          sph_MHD_bc, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -87,6 +100,7 @@
       type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !
 !   Allocate spectr field data
@@ -106,7 +120,7 @@
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
       call init_sph_transform_SGS_MHD                                   &
      &   (SPH_SGS%SGS_par%model_p, SPH_model, sph_MHD_bc,               &
-     &    iphys, trans_p1, trns_WK1, SPH_MHD)
+     &    iphys, trans_p1, SPH_WK%trns_WK, SPH_MHD)
 !
 !  -------------------------------
 !
@@ -148,7 +162,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
       call nonlinear_SGS_first(MHD_step%init_d%i_time_step,             &
-     &    r_2nd, SPH_model, sph_MHD_bc, trans_p1, trns_WK1,             &
+     &    r_2nd, SPH_model, sph_MHD_bc, trans_p1, SPH_WK%trns_WK,       &
      &    SPH_SGS%SGS_par, SPH_SGS%dynamic, SPH_MHD)
 !
 !* -----  Open Volume integration data files -----------------
@@ -166,7 +180,7 @@
 !
       subroutine SPH_analyze_SGS_MHD                                    &
      &         (i_step, MHD_files, SPH_model, sph_MHD_bc,               &
-     &          iflag_finish, MHD_step, SPH_SGS, SPH_MHD)
+     &          iflag_finish, MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use m_work_time
       use m_fdm_coefs
@@ -191,6 +205,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
       integer(kind = kint) :: iflag
       real(kind = kreal) :: total_max
@@ -221,7 +236,7 @@
       call start_elapsed_time(8)
       call nonlinear_with_SGS                                           &
      &   (i_step, SPH_SGS%SGS_par, r_2nd, SPH_model, sph_MHD_bc,        &
-     &    trans_p1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
+     &    trans_p1, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       call end_elapsed_time(8)
       call end_elapsed_time(5)
 !
@@ -237,7 +252,8 @@
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
         call lead_fields_4_SPH_SGS_MHD                                  &
      &     (SPH_SGS%SGS_par, r_2nd, SPH_model%MHD_prop, sph_MHD_bc,     &
-     &      trans_p1, sph_MHD_mat1, trns_WK1, SPH_SGS%dynamic, SPH_MHD)
+     &      trans_p1, sph_MHD_mat1, SPH_WK%trns_WK, SPH_SGS%dynamic,    &
+     &      SPH_MHD)
       end if
       call end_elapsed_time(9)
 !

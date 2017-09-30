@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine SPH_analyze_rms_ratio_all                            &
-!!     &         (time_d, MHD_files, MHD_step, SPH_MHD)
+!!     &         (time_d, MHD_files, MHD_step, SPH_MHD, SPH_WK)
 !!        type(time_data), intent(in) :: time_d
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!@endverbatim
 !
       module SPH_analyzer_rms_ratio_all
@@ -25,6 +26,8 @@
       use t_MHD_step_parameter
       use t_MHD_file_parameter
       use t_SPH_mesh_field_data
+      use t_work_SPH_MHD
+!
       use SPH_analyzer_back_trans
 !
       implicit none
@@ -39,7 +42,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_rms_ratio_all                              &
-     &         (time_d, MHD_files, MHD_step, SPH_MHD)
+     &         (time_d, MHD_files, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
       use m_schmidt_poly_on_rtm
@@ -61,6 +64,7 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
 !       read first data
 !
@@ -83,7 +87,7 @@
 !       Evaluate correlation in sphere
       call back_trans_4_rms_ratio                                       &
      &   (SPH_MHD%sph, SPH_MHD%comms, ref_rj_fld, SPH_MHD%fld,          &
-     &    trans_p1, trns_WK1%trns_MHD, trns_WK1%WK_sph)
+     &    trans_p1, SPH_WK%trns_WK%trns_MHD, SPH_WK%trns_WK%WK_sph)
       call cal_sph_rms_ratios                                           &
      &   (SPH_MHD%sph, SPH_MHD%ipol, ref_rj_fld, SPH_MHD%fld,           &
      &    trans_p1, pwr1, WK_pwr)
