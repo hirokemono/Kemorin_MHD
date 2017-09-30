@@ -100,7 +100,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_sph_spectr_data
       use m_file_format_switch
 !
       use set_control_nodal_data

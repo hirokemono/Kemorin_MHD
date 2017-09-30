@@ -31,7 +31,6 @@
 !
       use input_old_file_sel_4_zlib
 !
-      use m_sph_spectr_data
       use sph_file_IO_select
       use field_IO_select
       use r_interpolate_marged_sph

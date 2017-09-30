@@ -47,7 +47,6 @@
 !
       use t_ctl_data_SGS_MHD
       use m_ctl_data_sph_SGS_MHD
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_bc_data_list
       use init_sph_MHD_elapsed_label

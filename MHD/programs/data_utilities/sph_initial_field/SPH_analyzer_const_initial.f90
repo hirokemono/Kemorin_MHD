@@ -23,8 +23,10 @@
       use m_work_time
       use m_ctl_data_sph_MHD
       use m_SPH_MHD_model_data
+      use m_SPH_mesh_field_data
       use m_MHD_step_parameter
       use t_MHD_file_parameter
+      use t_SPH_mesh_field_data
 !
       implicit none
 !
@@ -39,9 +41,7 @@
       subroutine initialize_const_sph_initial
 !
       use t_ctl_data_sph_MHD_psf
-      use m_spheric_parameter
       use m_mesh_data
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_sph_trans_arrays_MHD
       use m_bc_data_list
@@ -62,8 +62,9 @@
       call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
-      call input_control_4_SPH_make_init(MHD_files1, bc_sph_IO1,        &
-     &    DNS_MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, pwr1,     &
+      call input_control_4_SPH_make_init                                &
+     &   (MHD_files1, bc_sph_IO1, DNS_MHD_ctl1, SPH_MHD1%sph,           &
+     &    SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld, pwr1,          &
      &    MHD_step1, femmesh1, ele_mesh1, SPH_model1%MHD_prop,          &
      &    MHD_BC1, trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
@@ -73,7 +74,7 @@
 !
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_const_initial_field'
-      call SPH_const_initial_field
+      call SPH_const_initial_field(SPH_MHD1)
 !
       call end_elapsed_time(2)
       call reset_elapse_4_init_sph_mhd
@@ -83,10 +84,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_const_initial_field
+      subroutine SPH_const_initial_field(SPH_MHD)
 !
-      use m_spheric_parameter
-      use m_sph_spectr_data
       use m_bc_data_list
 !
       use set_control_sph_mhd
@@ -104,24 +103,27 @@
       use check_dependency_for_MHD
       use input_control_sph_MHD
 !
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!
 !
 !   Allocate spectr field data
 !
       call set_sph_MHD_sprctr_data                                      &
-     &   (sph1%sph_rj, SPH_model1%MHD_prop, ipol, idpdr, itor, rj_fld1)
+     &   (SPH_MHD%sph%sph_rj, SPH_model1%MHD_prop,                      &
+     &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, SPH_MHD%fld)
 !
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_make_sph_initial'
       call init_r_infos_make_sph_initial                                &
-     & (bc_sph_IO1, sph_grps1, MHD_BC1, ipol, sph1,                     &
-     &  rj_fld1, SPH_model1, sph_MHD_bc1)
+     & (bc_sph_IO1, SPH_MHD%groups, MHD_BC1, SPH_MHD%ipol, SPH_MHD%sph, &
+     &  SPH_MHD%fld, SPH_model1, sph_MHD_bc1)
 !
 ! ---------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
       call sph_initial_spectrum(MHD_files1%fst_file_IO, sph_MHD_bc1,    &
-     &    ipol, itor, rj_fld1, MHD_step1%rst_step)
+     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld, MHD_step1%rst_step)
 !
       end subroutine SPH_const_initial_field
 !

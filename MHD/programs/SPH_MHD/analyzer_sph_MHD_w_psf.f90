@@ -44,7 +44,6 @@
       use m_ctl_data_sph_MHD
       use m_mesh_data
       use m_node_phys_data
-      use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_bc_data_list
       use input_control_sph_MHD
