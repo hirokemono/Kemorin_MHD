@@ -128,19 +128,24 @@ SPH_analyzer_snap.o
 MOD_SPH_BACK_TRANS = \
 main_sph_back_transform.o \
 analyzer_sph_back_trans.o \
-SPH_analyzer_back_trans.o
+SPH_analyzer_back_trans.o \
+back_sph_trans_4_all_field.o
 
 MOD_SPH_ALL_CORRELATE = \
 main_sph_all_correlate.o \
 analyzer_sph_all_correlate.o \
 SPH_analyzer_correle_all.o \
-SPH_analyzer_back_trans.o
+SPH_analyzer_back_trans.o \
+back_sph_trans_4_all_field.o \
+cal_correlations_by_spectr.o
 
 MOD_SPH_ALL_RMS_RATIO = \
 main_sph_all_rms_ratio.o \
 analyzer_sph_all_rms_ratio.o \
 SPH_analyzer_rms_ratio_all.o \
-SPH_analyzer_back_trans.o
+SPH_analyzer_back_trans.o \
+back_sph_trans_4_all_field.o \
+cal_correlations_by_spectr.o
 
 #
 #  -------------------------------------------------------------------------

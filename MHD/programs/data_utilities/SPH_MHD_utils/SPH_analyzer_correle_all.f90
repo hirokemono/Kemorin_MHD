@@ -7,7 +7,8 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_analyze_correlate_all(time_d, MHD_files, MHD_step)
+!!      subroutine SPH_analyze_correlate_all                            &
+!!     &         (time_d, MHD_files, MHD_step, SPH_MHD)
 !!        type(time_data), intent(in) :: time_d
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
@@ -22,6 +23,7 @@
       use t_phys_data
       use t_MHD_step_parameter
       use t_MHD_file_parameter
+      use t_SPH_mesh_field_data
       use SPH_analyzer_back_trans
 !
       implicit none
@@ -35,12 +37,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_correlate_all(time_d, MHD_files, MHD_step)
+      subroutine SPH_analyze_correlate_all                              &
+     &         (time_d, MHD_files, MHD_step, SPH_MHD)
 !
       use m_work_time
-      use m_spheric_parameter
-      use m_sph_spectr_data
-      use m_fdm_coefs
       use m_schmidt_poly_on_rtm
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
@@ -52,172 +52,47 @@
       use sph_mhd_rst_IO_control
       use sph_mhd_rms_IO
       use input_control_sph_MHD
-      use cal_rms_fields_by_sph
 !
-      use sph_transforms_snapshot
-      use zonal_correlation_rtp
+      use cal_correlations_by_spectr
 !
       type(time_data), intent(in) :: time_d
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
-!
-      integer(kind = kint) :: iflag, ncomp
-      integer(kind = kint) :: k, nd
-!
-      real(kind = kreal), allocatable :: fld1_rtp(:,:)
-!
-      real(kind = kreal), allocatable :: msq_s1(:,:)
-      real(kind = kreal), allocatable :: msq_s2(:,:)
-      real(kind = kreal), allocatable :: cor_s(:,:)
-      real(kind = kreal), allocatable :: msq_v1(:,:)
-      real(kind = kreal), allocatable :: msq_v2(:,:)
-      real(kind = kreal), allocatable :: cor_v(:,:)
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !       read first data
 !
-      call read_alloc_sph_spectr                                        &
-     &   (time_d%i_time_step, MHD_files%org_rj_file_IO,                 &
-     &    MHD_files%sph_file_IO, sph1%sph_rj, ipol, rj_fld1,            &
+      call read_alloc_sph_spectr(time_d%i_time_step,                    &
+     &    MHD_files%org_rj_file_IO, MHD_files%sph_file_IO,              &
+     &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
      &    MHD_step%ucd_step, MHD_step%init_d)
 !
-      call copy_field_name_type(rj_fld1, ref_rj_fld)
-      call copy_field_data_type(rj_fld1, ref_rj_fld)
+      call copy_field_name_type(SPH_MHD%fld, ref_rj_fld)
+      call copy_field_data_type(SPH_MHD%fld, ref_rj_fld)
 !
-!       Transform second data
+!       read second data
 !
       call read_alloc_sph_spectr                                        &
      &   (time_d%i_time_step, MHD_files%org_rj_file_IO,                 &
-     &    sph_file_param2, sph1%sph_rj, ipol, rj_fld1,                  &
-     &    MHD_step%ucd_step, MHD_step%init_d)
+     &    sph_file_param2, SPH_MHD%sph%sph_rj, SPH_MHD%ipol,            &
+     &    SPH_MHD%fld, MHD_step%ucd_step, MHD_step%init_d)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
-!       Transform first data
+      call back_trans_4_correlate                                       &
+     &   (SPH_MHD%sph, SPH_MHD%comms, ref_rj_fld, SPH_MHD%fld,          &
+     &    trans_p1, trns_WK1%trns_MHD, trns_WK1%WK_sph)
 !
-      call start_elapsed_time(9)
-      if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
-      call sph_all_back_transform(sph1, comms_sph1, trans_p1,           &
-     &    ipol, ref_rj_fld, trns_WK1%trns_MHD, trns_WK1%WK_sph)
-      call end_elapsed_time(9)
-!
-      ncomp = trns_WK1%trns_MHD%ncomp_rj_2_rtp
-      allocate(fld1_rtp(sph1%sph_rtp%nnod_rtp,ncomp))
-!
-!$omp parallel workshare
-      fld1_rtp(1:sph1%sph_rtp%nnod_rtp,1:ncomp)                         &
-           = trns_WK1%trns_MHD%fld_rtp(1:sph1%sph_rtp%nnod_rtp,1:ncomp)
-!$omp end parallel workshare
-!
-!       Transform second data
-!
-      call start_elapsed_time(9)
-      if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
-      call sph_all_back_transform(sph1, comms_sph1, trans_p1,           &
-     &    ipol, rj_fld1, trns_WK1%trns_MHD, trns_WK1%WK_sph)
-      call end_elapsed_time(9)
-!
-!       Evaluate correlation in zonal
-!
-      call ovrwrt_zonal_correlate_rtp(trns_WK1%trns_MHD%ncomp_rj_2_rtp, &
-     &    sph1%sph_rtp%nnod_rtp, sph1%sph_rtp%nidx_rtp,                 &
-     &    fld1_rtp, trns_WK1%trns_MHD%fld_rtp)
-      trns_WK1%trns_MHD%fld_pole = 0.0d0
-!
-      deallocate(fld1_rtp)
-!
-!       Evaluate correlation in sphere
-!
-      if(my_rank .eq. 0) then
-        allocate(msq_s1(pwr1%nri_rms,pwr1%ntot_comp_sq))
-        allocate(msq_s2(pwr1%nri_rms,pwr1%ntot_comp_sq))
-        allocate(cor_s(pwr1%nri_rms,pwr1%ntot_comp_sq))
-        allocate(msq_v1(pwr1%num_vol_spectr,pwr1%ntot_comp_sq))
-        allocate(msq_v2(pwr1%num_vol_spectr,pwr1%ntot_comp_sq))
-        allocate(cor_v(pwr1%num_vol_spectr,pwr1%ntot_comp_sq))
-      end if
-!
-      if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
-      call cal_mean_squre_in_shell                                      &
-     &   (sph1%sph_params%l_truncation, sph1%sph_rj, ipol, ref_rj_fld,  &
-     &    trans_p1%leg%g_sph_rj, pwr1, WK_pwr)
-!
-      if(my_rank .eq. 0) then
-        do nd = 1, pwr1%ntot_comp_sq
-          msq_s1(1:pwr1%nri_rms,nd) = pwr1%shl_sq(1:pwr1%nri_rms,nd)    &
-     &                             - pwr1%shl_l(1:pwr1%nri_rms,0,nd)
-        end do
-        do nd = 1, pwr1%ntot_comp_sq
-          do k = 1, pwr1%num_vol_spectr
-            msq_v1(k,nd) = pwr1%v_spectr(k)%v_sq(nd)                    &
-     &                   - pwr1%v_spectr(k)%v_l(0,nd)
-          end do
-        end do
-      end if
-!
-      if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
-      call cal_mean_squre_in_shell                                      &
-     &   (sph1%sph_params%l_truncation, sph1%sph_rj, ipol, rj_fld1,     &
-     &    trans_p1%leg%g_sph_rj, pwr1, WK_pwr)
-!
-      if(my_rank .eq. 0) then
-        do nd = 1, pwr1%ntot_comp_sq
-          msq_s2(1:pwr1%nri_rms,nd) = pwr1%shl_sq(1:pwr1%nri_rms,nd)    &
-     &                           - pwr1%shl_l(1:pwr1%nri_rms,0,nd)
-        end do
-        do nd = 1, pwr1%ntot_comp_sq
-          do k = 1, pwr1%num_vol_spectr
-            msq_v2(k,nd) = pwr1%v_spectr(k)%v_sq(nd)                    &
-     &                 - pwr1%v_spectr(k)%v_l(0,nd)
-          end do
-        end do
-      end if
-!
-      call cal_correlate_in_shell(sph1%sph_params%l_truncation,         &
-     &    sph1%sph_rj, rj_fld1, ref_rj_fld, trans_p1%leg%g_sph_rj,      &
-     &    pwr1, WK_pwr)
+      call cal_sph_correlations                                         &
+     &   (SPH_MHD%sph, SPH_MHD%ipol, ref_rj_fld, SPH_MHD%fld,           &
+     &    trans_p1, pwr1, WK_pwr)
 !
       call dealloc_phys_data_type(ref_rj_fld)
       call dealloc_phys_name_type(ref_rj_fld)
 !
-!
-      if(my_rank .eq. 0) then
-        do nd = 1, pwr1%ntot_comp_sq
-          cor_s(1:pwr1%nri_rms,nd) = pwr1%shl_sq(1:pwr1%nri_rms,nd)     &
-     &                           - pwr1%shl_l(1:pwr1%nri_rms,0,nd)
-        end do
-        do nd = 1, pwr1%ntot_comp_sq
-          do k = 1, pwr1%num_vol_spectr
-            cor_v(k,nd) = pwr1%v_spectr(k)%v_sq(nd)                     &
-     &                   - pwr1%v_spectr(k)%v_l(0,nd)
-          end do
-        end do
-!
-        do nd = 1, pwr1%ntot_comp_sq
-           do k = 1, pwr1%nri_rms
-             if(msq_s1(k,nd)*msq_s2(k,nd) .eq. zero) then
-              pwr1%shl_sq(k,nd) = zero
-            else
-              pwr1%shl_sq(k,nd) = cor_s(k,nd)                           &
-     &                        / sqrt(msq_s1(k,nd)*msq_s2(k,nd))
-            end if
-          end do
-          do k = 1, pwr1%num_vol_spectr
-            if(msq_v1(k,nd)*msq_v2(k,nd) .eq. zero) then
-              pwr1%shl_sq(k,nd) = zero
-            else
-              pwr1%v_spectr(k)%v_sq(nd) = cor_v(k,nd)                   &
-     &                       / sqrt(msq_v1(k,nd)*msq_v2(k,nd))
-            end if
-          end do
-        end do
-!
-        deallocate(msq_s1, msq_s2, cor_s)
-        deallocate(msq_v1, msq_v2, cor_v)
-      end if
-!
       call write_sph_vol_ms_file(my_rank, time_d,                       &
-     &   sph1%sph_params, sph1%sph_rj, pwr1)
+     &   SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj, pwr1)
       call write_sph_layer_ms_file(my_rank, time_d,                     &
-     &   sph1%sph_params, pwr1)
+     &   SPH_MHD%sph%sph_params, pwr1)
 !
       end subroutine SPH_analyze_correlate_all
 !

@@ -10,8 +10,8 @@
       program t_ave_sph_picked_circle
 !
       use m_precision
-      use m_spheric_parameter
       use m_tave_field_on_circle
+      use t_spheric_parameter
       use t_field_on_circle
       use field_on_circle_IO
 !
@@ -21,6 +21,7 @@
       integer(kind = kint) :: icou, istep
       real(kind = kreal) :: time
 !
+      type(sph_grids), save :: sph_c
       type(circle_fld_maker), save :: cdat_a
 !
 !
@@ -30,7 +31,7 @@
 !    Evaluate time average
 !
       write(*,*) 'open_read_field_data_on_circle'
-      call open_read_field_data_on_circle(sph1%sph_rtp, sph1%sph_rj,    &
+      call open_read_field_data_on_circle(sph_c%sph_rtp, sph_c%sph_rj,  &
      &    cdat_a%circle, cdat_a%d_circle)
       call allocate_tave_circle_field(cdat_a%circle, cdat_a%d_circle)
 !
@@ -61,7 +62,7 @@
 !
 !  Evaluate standard deviation
 !
-      call open_read_field_data_on_circle(sph1%sph_rtp, sph1%sph_rj,    &
+      call open_read_field_data_on_circle(sph_c%sph_rtp, sph_c%sph_rj,  &
      &    cdat_a%circle, cdat_a%d_circle)
 !
       icou = 0
