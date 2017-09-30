@@ -246,13 +246,13 @@
 !*
       call copy_forces_to_snapshot_rtp                                  &
      &   (sph%sph_params, sph%sph_rtp, WK%trns_MHD,                     &
-     &    mesh%node, iphys_nod1, nod_fld1)
+     &    mesh%node, FEM_d1%iphys, nod_fld1)
       call copy_snap_vec_fld_from_trans                                 &
      &   (sph%sph_params%m_folding, sph%sph_rtp, WK%trns_snap,          &
-     &    mesh%node, iphys_nod1, nod_fld1)
+     &    mesh%node, FEM_d1%iphys, nod_fld1)
       call copy_snap_vec_force_from_trans                               &
      &   (sph%sph_params%m_folding, sph%sph_rtp, WK%trns_snap,          &
-     &    mesh%node, iphys_nod1, nod_fld1)
+     &    mesh%node, FEM_d1%iphys, nod_fld1)
 !
 ! ----  Take zonal mean
 !

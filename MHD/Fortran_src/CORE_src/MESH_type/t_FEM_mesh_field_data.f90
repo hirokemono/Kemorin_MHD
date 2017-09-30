@@ -24,6 +24,7 @@
 !
       implicit none
 !
+!>      Structure of FEM mesh and field structures
       type FEM_mesh_field_data
 !>       label   for simulation
         character(len=kchara)   :: label_sim

@@ -42,7 +42,7 @@
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call FEM_check_MHD_mat(MHD_files1, flex_MHD1, MHD_step1,          &
-     &    femmesh1, ele_mesh1, iphys_nod1, nod_fld1, FEM_model1,        &
+     &    femmesh1, ele_mesh1, FEM_MHD1%iphys, nod_fld1, FEM_model1,    &
      &    MHD_CG1, FEM_SGS1, SGS_MHD_wk1, fem_sq1, label_sim)
 !
       end subroutine init_analyzer

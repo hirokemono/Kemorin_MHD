@@ -47,8 +47,8 @@
       if (iflag_debug.eq.1)  write(*,*) 'FEM_initialize_vol_average'
       call FEM_initialize_vol_average                                   &
      &   (MHD_files1, MHD_step1, femmesh1, ele_mesh1,                   &
-     &    iphys_nod1, nod_fld1, FEM_model1, MHD_CG1%ak_MHD, FEM_SGS1,   &
-     &    SGS_MHD_wk1, fem_sq1, label_sim)
+     &    FEM_MHD1%iphys, nod_fld1, FEM_model1, MHD_CG1%ak_MHD,         &
+     &    FEM_SGS1, SGS_MHD_wk1, fem_sq1, label_sim)
 !
       end subroutine init_analyzer
 !
@@ -63,7 +63,7 @@
      &           MHD_step1%finish_d%i_end_step
         if (iflag_debug.eq.1)  write(*,*) 'FEM_analyze_vol_average'
         call FEM_analyze_vol_average(i_step, MHD_files1, femmesh1,      &
-     &      iphys_nod1, FEM_model1, MHD_step1, SGS_MHD_wk1,             &
+     &      FEM_MHD1%iphys, FEM_model1, MHD_step1, SGS_MHD_wk1,         &
      &      nod_fld1, fem_sq1)
       end do
 !

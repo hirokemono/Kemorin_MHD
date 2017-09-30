@@ -23,7 +23,4 @@
 !>       Structure for nodal field data
       type(phys_data), save :: nod_fld1
 !
-!>       address for nodal fields
-      type(phys_address), save :: iphys_nod1
-!
       end module m_node_phys_data

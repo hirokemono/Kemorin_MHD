@@ -77,12 +77,12 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz(MHD_files1, MHD_step1,                  &
      &    femmesh1%mesh, femmesh1%group, ele_mesh1,                     &
-     &    iphys_nod1, nod_fld1, next_tbl_VIZ1, jacobians_VIZ1,          &
+     &    FEM_d1%iphys, nod_fld1, next_tbl_VIZ1, jacobians_VIZ1,        &
      &    range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(MHD_files1, iphys_nod1,                    &
+      call SPH_init_sph_snap(MHD_files1, FEM_d1%iphys,                  &
      &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
@@ -139,7 +139,7 @@
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
           call SPH_to_FEM_bridge_SGS_MHD                                &
      &       (SPH_SGS1%SGS_par, SPH_MHD1%sph,                           &
-     &        SPH_WK1%trns_WK, femmesh1%mesh, iphys_nod1, nod_fld1)
+     &        SPH_WK1%trns_WK, femmesh1%mesh, FEM_d1%iphys, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
@@ -230,7 +230,7 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
         call SPH_to_FEM_bridge_SGS_MHD                                  &
      &     (SPH_SGS1%SGS_par, SPH_MHD1%sph, SPH_WK1%trns_WK,            &
-     &      femmesh1%mesh, iphys_nod1, nod_fld1)
+     &      femmesh1%mesh, FEM_d1%iphys, nod_fld1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

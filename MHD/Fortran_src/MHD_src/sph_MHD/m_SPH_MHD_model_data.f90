@@ -40,6 +40,7 @@
       use m_precision
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
+      use t_FEM_mesh_field_data
       use t_work_SPH_MHD
 !
       implicit  none
@@ -53,5 +54,8 @@
 !
 !>        Structures of work area for spherical shell dynamo
       type(work_SPH_MHD), save :: SPH_WK1
+!
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_data), save :: FEM_d1
 !
       end module m_SPH_MHD_model_data

@@ -69,12 +69,12 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1, MHD_step1,                &
      &    femmesh1%mesh, femmesh1%group, ele_mesh1,                     &
-     &    iphys_nod1, nod_fld1, range1, fem_ucd1)
+     &    FEM_d1%iphys, nod_fld1, range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
       call SPH_initialize_MHD(MHD_files1, SPH_model1,                   &
-     &    iphys_nod1, MHD_step1, SPH_MHD1, SPH_WK1)
+     &    FEM_d1%iphys, MHD_step1, SPH_MHD1, SPH_WK1)
 !
       call calypso_MPI_barrier
 !
@@ -123,7 +123,7 @@
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD                                    &
      &       (SPH_MHD1%sph%sph_params, SPH_MHD1%sph%sph_rtp,            &
-     &        SPH_WK1%trns_WK, femmesh1%mesh, iphys_nod1, nod_fld1)
+     &        SPH_WK1%trns_WK, femmesh1%mesh, FEM_d1%iphys, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

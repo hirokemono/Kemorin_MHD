@@ -76,13 +76,13 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz(MHD_files1, MHD_step1,                  &
      &    femmesh1%mesh, femmesh1%group, ele_mesh1,                     &
-     &    iphys_nod1, nod_fld1, next_tbl_VIZ1, jacobians_VIZ1,          &
+     &    FEM_d1%iphys, nod_fld1, next_tbl_VIZ1, jacobians_VIZ1,        &
      &    range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
       call SPH_init_sph_back_trans                                      &
-     &   (MHD_files1, iphys_nod1, SPH_model1, SPH_MHD1, SPH_WK1)
+     &   (MHD_files1, FEM_d1%iphys, SPH_model1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(femmesh1, ele_mesh1, nod_fld1)

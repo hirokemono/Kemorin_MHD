@@ -76,7 +76,7 @@
 !
       call start_elapsed_time(2)
       call FEM_initialize_MHD(MHD_files1, flex_MHD1, MHD_step1,         &
-     &    femmesh1, ele_mesh1, iphys_nod1, nod_fld1, FEM_model1,        &
+     &    femmesh1, ele_mesh1, FEM_MHD1%iphys, nod_fld1, FEM_model1,    &
      &    MHD_CG1, FEM_SGS1, SGS_MHD_wk1, range1, fem_ucd1, fem_sq1,    &
      &    label_sim)
 !
@@ -99,9 +99,9 @@
       do
 !  Time evolution
         call FEM_analyze_MHD                                            &
-     &     (MHD_files1, femmesh1, ele_mesh1, iphys_nod1, FEM_model1,    &
-     &      flex_MHD1, MHD_step1, visval, retval, MHD_CG1, FEM_SGS1,    &
-     &      SGS_MHD_wk1, nod_fld1, fem_ucd1, fem_sq1)
+     &     (MHD_files1, femmesh1, ele_mesh1, FEM_MHD1%iphys,            &
+     &      FEM_model1, flex_MHD1, MHD_step1, visval, retval, MHD_CG1,  &
+     &      FEM_SGS1, SGS_MHD_wk1, nod_fld1, fem_ucd1, fem_sq1)
 !
 !     ---------------------
 !

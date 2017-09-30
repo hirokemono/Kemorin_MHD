@@ -68,8 +68,8 @@
 !     --------------------- 
 !
       call FEM_initialize_snapshot                                      &
-     &   (MHD_files1, MHD_step1, femmesh1, ele_mesh1,                   &
-     &    iphys_nod1, nod_fld1, FEM_model1, MHD_CG1%ak_MHD, FEM_SGS1,   &
+     &   (MHD_files1, MHD_step1, femmesh1, ele_mesh1, FEM_MHD1%iphys,   &
+     &    nod_fld1, FEM_model1, MHD_CG1%ak_MHD, FEM_SGS1,   &
      &    SGS_MHD_wk1, range1, fem_ucd1, fem_sq1, label_sim)
 !
       call init_visualize(femmesh1, ele_mesh1, nod_fld1)
@@ -90,7 +90,7 @@
 !
 !  Read and generate fields
         call FEM_analyze_filtered(i_step, MHD_files1,                   &
-     &      femmesh1, ele_mesh1, iphys_nod1, FEM_model1,                &
+     &      femmesh1, ele_mesh1, FEM_MHD1%iphys, FEM_model1,            &
      &      MHD_CG1%ak_MHD, MHD_step1, visval, FEM_SGS1, SGS_MHD_wk1,   &
      &      nod_fld1, fem_ucd1, fem_sq1)
 !

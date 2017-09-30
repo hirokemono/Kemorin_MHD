@@ -76,7 +76,7 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_dbench'
-      call SPH_init_sph_dbench(MHD_files1, iphys_nod1,                  &
+      call SPH_init_sph_dbench(MHD_files1, FEM_d1%iphys,                &
      &    SPH_model1, SPH_MHD1, SPH_WK1, cdat1)
       call calypso_MPI_barrier
 !
