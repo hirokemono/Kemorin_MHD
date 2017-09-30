@@ -20,7 +20,6 @@
       use m_machine_parameter
       use m_work_time
       use m_SPH_MHD_model_data
-      use m_bc_data_list
       use m_SPH_SGS_structure
       use t_field_on_circle
       use t_spheric_parameter
@@ -77,7 +76,7 @@
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%smonitor_ctl,                    &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, SPH_MHD1%fld,  &
      &    MHD_files1, bc_sph_IO1, SPH_SGS1%SGS_par, SPH_SGS1%dynamic,   &
-     &    MHD_step1, SPH_model1%MHD_prop, MHD_BC1,                      &
+     &    MHD_step1, SPH_model1%MHD_prop, SPH_model1%MHD_BC,            &
      &    SPH_WK1%trns_WK%WK_sph, gen_sph_c, SPH_WK1%monitor)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !

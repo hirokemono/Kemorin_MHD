@@ -52,8 +52,6 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use m_bc_data_list
-!
       use t_sph_boundary_input_data
 !
       use set_control_sph_mhd
@@ -89,7 +87,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo                                     &
-     &   (bc_IO, SPH_MHD%groups, MHD_BC1, SPH_MHD%ipol, SPH_MHD%sph,    &
+     &   (bc_IO, SPH_MHD%groups, SPH_MHD%ipol, SPH_MHD%sph,             &
      &    SPH_model, SPH_WK%r_2nd, SPH_MHD%fld)
 !
 !  -------------------------------

@@ -44,7 +44,6 @@
 !
       use t_ctl_data_SGS_MHD
       use m_ctl_data_sph_SGS_MHD
-      use m_bc_data_list
       use init_sph_MHD_elapsed_label
       use SPH_analyzer_snap
       use input_control_sph_SGS_MHD
@@ -65,7 +64,7 @@
       call input_control_SPH_dynamo                                     &
      &  (MHD_files1, bc_sph_IO1, MHD_ctl1, SPH_MHD1%sph,                &
      &   SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld, nod_fld1,       &
-     &   SPH_SGS1, MHD_step1, SPH_model1%MHD_prop, MHD_BC1,             &
+     &   SPH_SGS1, MHD_step1, SPH_model1%MHD_prop, SPH_model1%MHD_BC,   &
      &   SPH_WK1%trns_WK, SPH_WK1%monitor, femmesh1, ele_mesh1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)

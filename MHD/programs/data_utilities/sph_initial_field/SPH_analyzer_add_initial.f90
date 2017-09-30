@@ -39,7 +39,6 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_mesh_data
-      use m_bc_data_list
       use set_control_sph_mhd
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
@@ -61,7 +60,7 @@
      &   (MHD_files1, bc_sph_IO1, DNS_MHD_ctl1, SPH_MHD1%sph,           &
      &    SPH_MHD1%comms, SPH_MHD1%groups, SPH_MHD1%fld,                &
      &    MHD_step1, femmesh1, ele_mesh1, SPH_model1%MHD_prop,          &
-     &    MHD_BC1, SPH_WK1%trns_WK, SPH_WK1%monitor)
+     &    SPH_model1%MHD_BC, SPH_WK1%trns_WK, SPH_WK1%monitor)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
 !
@@ -83,8 +82,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_add_initial_field(SPH_MHD)
-!
-      use m_bc_data_list
 !
       use set_control_sph_mhd
       use set_sph_phys_address
@@ -112,8 +109,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_make_sph_initial'
       call init_r_infos_make_sph_initial                                &
-     & (bc_sph_IO1, SPH_MHD%groups, MHD_BC1, SPH_MHD%ipol, SPH_MHD%sph, &
-     &  SPH_MHD%fld, SPH_model1)
+     &   (bc_sph_IO1, SPH_MHD%groups, SPH_MHD%ipol, SPH_MHD%sph,        &
+     &    SPH_MHD%fld, SPH_model1)
 !
 ! ---------------------------------
 !

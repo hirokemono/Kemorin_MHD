@@ -10,10 +10,9 @@
 !!
 !!@verbatim
 !!      subroutine init_r_infos_sph_mhd_evo                             &
-!!     &         (bc_IO, sph_grps, MHD_BC, ipol, sph,                   &
-!!     &          SPH_model, r_2nd, rj_fld)
+!!     &         (bc_IO, sph_grps, ipol, sph, SPH_model, r_2nd, rj_fld)
 !!      subroutine init_r_infos_make_sph_initial                        &
-!!     &         (bc_IO, sph_grps, MHD_BC, ipol, sph, rj_fld, SPH_model)
+!!     &         (bc_IO, sph_grps, ipol, sph, rj_fld, SPH_model)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(phys_address), intent(in) :: ipol
@@ -61,8 +60,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd_evo                               &
-     &         (bc_IO, sph_grps, MHD_BC, ipol, sph,                     &
-     &          SPH_model, r_2nd, rj_fld)
+     &         (bc_IO, sph_grps, ipol, sph, SPH_model, r_2nd, rj_fld)
 !
       use calypso_mpi
       use const_fdm_coefs
@@ -70,7 +68,6 @@
 !
       type(boundary_spectra), intent(in) :: bc_IO
       type(sph_group_data), intent(in) :: sph_grps
-      type(MHD_BC_lists), intent(in) :: MHD_BC
       type(phys_address), intent(in) :: ipol
 !
       type(sph_grids), intent(inout) :: sph
@@ -80,7 +77,7 @@
 !
 !
       call init_r_infos_sph_mhd                                         &
-     &   (bc_IO, sph_grps, MHD_BC, ipol, sph,                           &
+     &   (bc_IO, sph_grps, SPH_model%MHD_BC, ipol, sph,                 &
      &    SPH_model%omega_sph, SPH_model%ref_temp, SPH_model%ref_comp,  &
      &    rj_fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !
@@ -97,13 +94,12 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_make_sph_initial                          &
-     &         (bc_IO, sph_grps, MHD_BC, ipol, sph, rj_fld, SPH_model)
+     &         (bc_IO, sph_grps, ipol, sph, rj_fld, SPH_model)
 !
       use calypso_mpi
 !
       type(boundary_spectra), intent(in) :: bc_IO
       type(sph_group_data), intent(in) :: sph_grps
-      type(MHD_BC_lists), intent(in) :: MHD_BC
       type(phys_address), intent(in) :: ipol
 !
       type(sph_grids), intent(inout) :: sph
@@ -112,7 +108,7 @@
 !
 !
       call init_r_infos_sph_mhd                                         &
-     &   (bc_IO, sph_grps, MHD_BC, ipol, sph,                           &
+     &   (bc_IO, sph_grps, SPH_model%MHD_BC, ipol, sph,                 &
      &    SPH_model%omega_sph, SPH_model%ref_temp, SPH_model%ref_comp,  &
      &    rj_fld, SPH_model%MHD_prop, SPH_model%sph_MHD_bc)
 !

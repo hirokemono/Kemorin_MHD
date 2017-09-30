@@ -84,7 +84,7 @@
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, flex_MHD, MHD_step,       &
      &    femmesh%mesh, femmesh%group, ele_mesh,                        &
      &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters,                      &
-     &    FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs,                    &
+     &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
      &    FEM_SGS%Csims, iphys_nod, nod_fld, MHD_CG, SGS_MHD_wk,        &
      &    fem_sq, label_sim)
 !
