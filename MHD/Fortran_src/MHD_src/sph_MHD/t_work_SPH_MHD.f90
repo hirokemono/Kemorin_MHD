@@ -24,7 +24,7 @@
 !>        Structures of work area for spherical shell dynamo
       type work_SPH_MHD
 !>        Structure of 2nd order FDM matrices
-!        type(fdm_matrices) :: r_2nd
+        type(fdm_matrices) :: r_2nd
 !>          Structure of 4th order FDM matrices
         type(fdm_matrices) :: r_4th
 !>        Structure of 1st order FDM matrices on element

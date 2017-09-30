@@ -51,7 +51,6 @@
       use m_array_for_send_recv
       use m_machine_parameter
 !
-      use m_fdm_coefs
       use m_rms_4_sph_spectr
       use m_bc_data_list
 !
@@ -103,7 +102,7 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo                                     &
      &   (bc_IO, SPH_MHD%groups, MHD_BC1, SPH_MHD%ipol, SPH_MHD%sph,    &
-     &    SPH_model, sph_MHD_bc, r_2nd, SPH_MHD%fld)
+     &    SPH_model, sph_MHD_bc, SPH_WK%r_2nd, SPH_MHD%fld)
 !
 !  -------------------------------
 !
@@ -131,14 +130,14 @@
       if(iflag_debug.gt.0) write(*,*)' const_radial_mat_sph_mhd'
       call const_radial_mat_sph_mhd                                     &
      &   (MHD_step%time_d%dt, SPH_model%MHD_prop, sph_MHD_bc,           &
-     &    SPH_MHD%sph%sph_rj, r_2nd, trans_p1%leg, sph_MHD_mat1)
+     &    SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, trans_p1%leg, sph_MHD_mat1)
 !*
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start                                       &
-     &   (SPH_MHD%sph%sph_rj, r_2nd, SPH_model%MHD_prop, sph_MHD_bc,    &
-     &    trans_p1%leg, SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+      call set_sph_field_to_start(SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,     &
+     &    SPH_model%MHD_prop, sph_MHD_bc, trans_p1%leg,                 &
+     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -165,7 +164,6 @@
      &          iflag_finish, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
-      use m_fdm_coefs
       use m_rms_4_sph_spectr
 !
       use cal_momentum_eq_explicit
@@ -200,7 +198,7 @@
 !*
       call s_cal_sol_sph_MHD_crank                                      &
      &   (MHD_step%time_d%dt, SPH_MHD%sph%sph_rj,                       &
-     &    r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p1%leg,          &
+     &    SPH_WK%r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p1%leg,   &
      &    SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor,                    &
      &    sph_MHD_mat1, SPH_MHD%fld)
 !*
@@ -216,9 +214,9 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd                                    &
-     &     (SPH_MHD%sph, SPH_MHD%comms, r_2nd, SPH_model%MHD_prop,      &
-     &      sph_MHD_bc, trans_p1, SPH_MHD%ipol, sph_MHD_mat1,           &
-     &      SPH_WK%trns_WK, SPH_MHD%fld)
+     &     (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%r_2nd,                   &
+     &      SPH_model%MHD_prop,  sph_MHD_bc, trans_p1,                  &
+     &      SPH_MHD%ipol, sph_MHD_mat1, SPH_WK%trns_WK, SPH_MHD%fld)
       end if
       call end_elapsed_time(9)
 !

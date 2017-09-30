@@ -52,7 +52,6 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use m_fdm_coefs
       use m_schmidt_poly_on_rtm
       use m_rms_4_sph_spectr
       use m_bc_data_list
@@ -97,7 +96,7 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo                                     &
      &   (bc_IO, SPH_MHD%groups, MHD_BC1, SPH_MHD%ipol, SPH_MHD%sph,    &
-     &    SPH_model, sph_MHD_bc, r_2nd, SPH_MHD%fld)
+     &    SPH_model, sph_MHD_bc, SPH_WK%r_2nd, SPH_MHD%fld)
 !
 !  -------------------------------
 !
@@ -127,7 +126,6 @@
      &         (i_step, MHD_files, MHD_step, SPH_MHD, SPH_WK)
 !
       use m_work_time
-      use m_fdm_coefs
       use m_schmidt_poly_on_rtm
       use m_rms_4_sph_spectr
 !

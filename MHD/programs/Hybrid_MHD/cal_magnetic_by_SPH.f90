@@ -195,9 +195,9 @@
      &    comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
 !
-      call const_sph_rotation_uxb(sph%sph_rj, r_2nd, sph_bc_B,          &
+      call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
      &    g_sph_rj, ipol%i_vp_induct, ipol%i_induction, rj_fld)
-      call const_sph_rotation_uxb(sph%sph_rj, r_2nd, sph_bc_B,          &
+      call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
      &    g_sph_rj, ipol%i_SGS_vp_induct, ipol%i_SGS_induction, rj_fld)
 !*
       end subroutine nonlinear_incuction_wSGS_SPH
@@ -247,7 +247,7 @@
      &   (ipol%i_vp_induct, f_hbd_trns%i_vp_induct,                     &
      &    comms_sph%comm_rj, n_WR, WR, rj_fld)
 !
-      call const_sph_rotation_uxb(sph%sph_rj, r_2nd, sph_bc_B,          &
+      call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
      &    g_sph_rj, ipol%i_vp_induct, ipol%i_induction, rj_fld)
 !
       end subroutine nonlinear_incuction_SPH
@@ -284,8 +284,8 @@
       call cal_sol_magne_sph_crank(sph%sph_rj, sph_bc_B,                &
      &    band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
       call update_after_magne_sph                                       &
-     &   (sph%sph_rj, r_2nd, MHD_prop%cd_prop, sph_bc_B, trans_p%leg,   &
-     &    ipol, itor, rj_fld)
+     &   (sph%sph_rj, SPH_WK%r_2nd, MHD_prop%cd_prop, sph_bc_B,         &
+     &    trans_p%leg, ipol, itor, rj_fld)
 !
 !
       call check_calypso_sph_comm_buf_N                                 &

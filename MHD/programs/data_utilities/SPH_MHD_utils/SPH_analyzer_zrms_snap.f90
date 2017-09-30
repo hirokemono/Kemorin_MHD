@@ -52,7 +52,6 @@
      &           MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use m_work_time
-      use m_fdm_coefs
 !
       use cal_SGS_nonlinear
       use cal_sol_sph_MHD_crank
@@ -88,15 +87,15 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start                                       &
-     &   (SPH_MHD%sph%sph_rj, r_2nd, SPH_model%MHD_prop, sph_MHD_bc,    &
-     &    trans_p1%leg, SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+      call set_sph_field_to_start(SPH_MHD%sph%sph_rj, SPH_WK%r_2nd,     &
+     &    SPH_model%MHD_prop, sph_MHD_bc, trans_p1%leg,                 &
+     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_elapsed_time(8)
       call nonlinear_with_SGS                                           &
-     &   (i_step, SPH_SGS%SGS_par, r_2nd, SPH_model, sph_MHD_bc,        &
+     &   (i_step, SPH_SGS%SGS_par, SPH_WK%r_2nd, SPH_model, sph_MHD_bc, &
      &    trans_p1, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       call end_elapsed_time(8)
 !
@@ -111,7 +110,7 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
         call lead_fields_4_SPH_SGS_MHD(SPH_SGS%SGS_par,                 &
-     &      r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p1,            &
+     &      SPH_WK%r_2nd, SPH_model%MHD_prop, sph_MHD_bc, trans_p1,     &
      &      sph_MHD_mat1, SPH_WK%trns_WK, SPH_SGS%dynamic, SPH_MHD)
       end if
       call end_elapsed_time(9)
