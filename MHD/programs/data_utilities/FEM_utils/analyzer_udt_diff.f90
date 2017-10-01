@@ -30,7 +30,7 @@
 !
       use m_array_for_send_recv
       use m_phys_constants
-      use set_field_address
+      use init_nodal_field_address
       use input_control_udt_diff
 !
 !
@@ -51,9 +51,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'init_field_address'
-      call init_field_address                                           &
-     &   (femmesh_FUTIL%mesh%node%numnod, field_FUTIL, iphys_FUTIL)
+      if (iflag_debug.eq.1) write(*,*) 'init_nod_fld_address'
+      call init_nod_fld_address                                         &
+     &   (femmesh_FUTIL%mesh%node, field_FUTIL, iphys_FUTIL)
 !
       end subroutine initialize_udt_diff
 !

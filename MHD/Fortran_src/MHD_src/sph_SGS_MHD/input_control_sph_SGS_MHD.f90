@@ -7,26 +7,17 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,  &
-!!     &          sph, comms_sph, sph_grps, rj_fld, nod_fld,            &
-!!     &          SPH_SGS, MHD_step, MHD_prop, MHD_BC, WK, monitor,     &
-!!     &          femmesh, ele_mesh)
+!!      subroutine input_control_SPH_dynamo                             &
+!!     &         (MHD_files, MHD_ctl, SPH_SGS, MHD_step, SPH_model,     &
+!!     &          trns_WK, monitor, SPH_MHD, FEM_dat)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-!!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
-!!        type(sph_grids), intent(inout) :: sph
-!!        type(sph_comm_tables), intent(inout) :: comms_sph
-!!        type(sph_group_data), intent(inout) ::  sph_grps
-!!        type(construct_spherical_grid), intent(inout) :: gen_sph1
-!!        type(phys_data), intent(inout) :: rj_fld
-!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
-!!        type(mesh_data), intent(inout) :: femmesh
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!        type(MHD_evolution_param), intent(inout) :: MHD_prop
-!!        type(MHD_BC_lists), intent(inout) :: MHD_BC
+!!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !!@endverbatim
 !
 !
@@ -41,11 +32,10 @@
       use t_const_spherical_grid
       use t_MHD_file_parameter
       use t_MHD_step_parameter
-      use t_spheric_parameter
-      use t_mesh_data
-      use t_phys_data
+      use t_SPH_MHD_model_data
+      use t_SPH_mesh_field_data
+      use t_FEM_mesh_field_data
       use t_spheric_mesh
-      use t_group_data
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
       use t_sph_trans_arrays_MHD
@@ -69,10 +59,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,    &
-     &          sph, comms_sph, sph_grps, rj_fld, nod_fld,              &
-     &          SPH_SGS, MHD_step, MHD_prop, MHD_BC, WK, monitor,       &
-     &          femmesh, ele_mesh)
+      subroutine input_control_SPH_dynamo                               &
+     &         (MHD_files, MHD_ctl, SPH_SGS, MHD_step, SPH_model,       &
+     &          trns_WK, monitor, SPH_MHD, FEM_dat)
 !
       use m_error_IDs
 !
@@ -82,42 +71,37 @@
       use set_control_4_SPH_to_FEM
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
-      type(boundary_spectra), intent(inout) :: bc_IO
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-      type(sph_grids), intent(inout) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-      type(sph_group_data), intent(inout) ::  sph_grps
 !
-      type(phys_data), intent(inout) :: rj_fld
-      type(phys_data), intent(inout) :: nod_fld
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(MHD_step_param), intent(inout) :: MHD_step
-      type(MHD_evolution_param), intent(inout) :: MHD_prop
-      type(MHD_BC_lists), intent(inout) :: MHD_BC
-      type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(SPH_MHD_model_data), intent(inout) :: SPH_model
+      type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
-      type(mesh_data), intent(inout) :: femmesh
-      type(element_geometry), intent(inout) :: ele_mesh
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD(MHD_ctl%plt, MHD_ctl%org_plt,      &
      &    MHD_ctl%model_ctl, MHD_ctl%smctl_ctl, MHD_ctl%smonitor_ctl,   &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_maker2%sph_tmp,       &
-     &    rj_fld, MHD_files, bc_IO, SPH_SGS%SGS_par, SPH_SGS%dynamic,   &
-     &    MHD_step,  MHD_prop, MHD_BC, WK%WK_sph,                       &
+     &    SPH_MHD%fld, MHD_files, SPH_model%bc_IO,                      &
+     &    SPH_SGS%SGS_par, SPH_SGS%dynamic, MHD_step,                   &
+     &    SPH_model%MHD_prop, SPH_model%MHD_BC, trns_WK%WK_sph,         &
      &    sph_maker2%gen_sph, monitor)
 !
-      call s_set_control_4_SPH_to_FEM                                   &
-     &   (MHD_ctl%psph_ctl%spctl, sph, rj_fld, nod_fld)
+      call s_set_control_4_SPH_to_FEM(MHD_ctl%psph_ctl%spctl,           &
+     &    SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field)
 !
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
-     &    sph, comms_sph, sph_grps, sph_maker2,                         &
-     &    femmesh%mesh, femmesh%group, ele_mesh, MHD_files)
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, sph_maker2,       &
+     &    FEM_dat%geofem, FEM_dat%ele_mesh, MHD_files)
 !
-      call sph_boundary_IO_control(MHD_prop, MHD_BC, bc_IO)
+      call sph_boundary_IO_control                                      &
+     &   (SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_model%bc_IO)
 !
       end subroutine input_control_SPH_dynamo
 !

@@ -162,7 +162,7 @@
       subroutine element_normals_4_VIZ
 !
       use int_volume_of_domain
-      use set_ele_id_4_node_type
+      use set_table_4_RHS_assemble
       use set_normal_vectors
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
@@ -170,9 +170,8 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-      call set_ele_id_4_node                                            &
-     &   (femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele, ele_4_nod_VIZ)
+      if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
+      call set_element_on_node_in_mesh(femmesh_VIZ%mesh, ele_4_nod_VIZ)
 !
       if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
       allocate(jacobians_VIZ%g_FEM)

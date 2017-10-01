@@ -47,7 +47,6 @@
 !
       use t_ctl_data_SGS_MHD
       use t_const_spherical_grid
-      use m_mesh_data
       use m_ctl_data_sph_SGS_MHD
       use sph_mhd_rst_IO_control
       use set_control_sph_SGS_MHD
@@ -97,8 +96,8 @@
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle                                     &
-     &   (MHD_files1, femmesh1, FEM_d1%iphys, SPH_model1, SPH_SGS1,     &
-     &    SPH_MHD1, SPH_WK1, cdat1)
+     &   (MHD_files1, FEM_d1%geofem, FEM_d1%iphys,                      &
+     &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1, cdat1)
       call calypso_MPI_barrier
 !
       call end_elapsed_time(2)

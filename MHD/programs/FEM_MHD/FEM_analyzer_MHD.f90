@@ -297,7 +297,7 @@
      &      SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
 !
         call output_monitor_control(MHD_step%flex_p%istep_max_dt,       &
-     &      MHD_step%point_step, MHD_step%time_d, femmesh%mesh%node,    &
+     &      MHD_step%point_step, MHD_step%time_d, femmesh%mesh,         &
      &      nod_fld)
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'

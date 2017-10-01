@@ -222,8 +222,8 @@
       integer(kind = kint) :: iflag
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
-     &      write(*,*) 'set_local_node_id_4_monitor'
-      call set_local_node_id_4_monitor(mesh%node, group%nod_grp)
+     &      write(*,*) 'set_local_nod_4_monitor'
+      call set_local_nod_4_monitor(mesh, group)
 !
 ! ----  open data file for boundary data
 !

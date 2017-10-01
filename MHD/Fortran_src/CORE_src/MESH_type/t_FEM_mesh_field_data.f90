@@ -31,7 +31,7 @@
 !
 !>       Structure for FEM mesh data
 !!         (position, connectivity, communication, and groups)
-        type(mesh_data) :: femmesh
+        type(mesh_data) :: geofem
 !>       Structure for element data (communication)
        type(element_geometry) :: ele_mesh
 !
@@ -41,6 +41,5 @@
 !>       address for nodal fields
         type(phys_address) :: iphys
       end type FEM_mesh_field_data
-!
 !
       end module t_FEM_mesh_field_data
