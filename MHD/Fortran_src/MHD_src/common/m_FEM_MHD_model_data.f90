@@ -15,6 +15,11 @@
       use t_FEM_mesh_field_data
       use t_FEM_MHD_mean_square
 !
+      use t_FEM_MHD_solvers
+      use t_FEM_SGS_structure
+      use t_work_FEM_SGS_MHD
+      use t_FEM_MHD_time_stepping
+!
       implicit  none
 !
 !
@@ -26,5 +31,18 @@
 !
 !>      Structure for mean square values
       type(FEM_MHD_mean_square), save :: fem_sq1
+!
+!
+!>      Matrix structure for FEM_MHD
+      type(FEM_MHD_solvers), save :: MHD_CG1
+!
+!> Structure of grouping of elements
+      type(FEM_SGS_structure), save :: FEM_SGS1
+!
+!> Structure of Work area for dynamics model
+      type(work_FEM_SGS_MHD), save :: SGS_MHD_wk1
+!
+!
+      type(FEM_MHD_time_stepping), save :: flex_MHD1
 !
       end module m_FEM_MHD_model_data

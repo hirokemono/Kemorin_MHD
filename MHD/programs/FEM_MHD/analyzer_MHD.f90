@@ -14,9 +14,7 @@
       use m_work_time
 !
       use m_MHD_step_parameter
-      use m_FEM_MHD_time_stepping
       use m_FEM_MHD_model_data
-      use m_work_FEM_SGS_MHD
 !
       use FEM_analyzer_MHD
       use sections_for_1st

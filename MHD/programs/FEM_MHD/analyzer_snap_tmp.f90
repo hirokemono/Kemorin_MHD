@@ -13,7 +13,6 @@
 !
       use m_MHD_step_parameter
       use m_FEM_MHD_model_data
-      use m_work_FEM_SGS_MHD
       use FEM_analyzer_snap_tmp
       use visualizer_all
 !

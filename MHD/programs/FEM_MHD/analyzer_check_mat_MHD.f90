@@ -10,8 +10,6 @@
       use m_precision
       use m_machine_parameter
       use m_FEM_MHD_model_data
-      use m_FEM_MHD_time_stepping
-      use m_work_FEM_SGS_MHD
       use calypso_mpi
 !
       use FEM_check_MHD_matrices

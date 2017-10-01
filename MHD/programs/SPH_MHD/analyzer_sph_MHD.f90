@@ -17,9 +17,9 @@
       use calypso_mpi
 !
       use m_machine_parameter
-      use m_SPH_MHD_model_data
       use m_work_time
       use m_jacobians_VIZ
+      use m_SPH_MHD_model_data
       use m_MHD_step_parameter
       use m_SPH_SGS_structure
 !
