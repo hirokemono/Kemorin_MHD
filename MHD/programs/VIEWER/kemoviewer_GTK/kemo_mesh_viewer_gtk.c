@@ -46,12 +46,7 @@ static void save_image_handler(){
 	
 	glutSetWindow(winid);
 	draw_mesh_keep_menu();
-    
-    if(id_image == SAVE_PNG){
-        write_kemoviewer_window_to_file(id_image, image_head);
-    } else {
-        write_kemoviewer_window_to_png(image_head);
-    }
+    write_kemoviewer_window_to_file(id_image, image_head);
 	return;
 };
 

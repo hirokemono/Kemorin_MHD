@@ -160,13 +160,7 @@ static void input_evolution_increment_panel(int val){
 
 static void save_image_handler(int sel){
 	draw_mesh_keep_menu();
-
-    if(image_fmt == SAVE_PNG){
-        write_kemoviewer_window_to_file(image_fmt, image_head);
-    } else {
-        write_kemoviewer_window_to_png(image_head);
-    }
-
+    write_kemoviewer_window_to_file(image_fmt, image_head);
 	GLUI_Master.close_all();
 	return;
 };

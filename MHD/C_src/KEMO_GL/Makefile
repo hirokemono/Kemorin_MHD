@@ -134,6 +134,7 @@ module:
 	gl_buffer_2_bmp.h \
 	kemoviewer_param_c.o \
 	write_image_2_bmp.o \
+    set_texture_4_psf.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -278,6 +279,7 @@ module:
 	rotate_animation.o \
 	set_each_psf_parameters.o \
 	rainbow_color_code_c.o \
+	gl_buffer_2_gl2ps.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

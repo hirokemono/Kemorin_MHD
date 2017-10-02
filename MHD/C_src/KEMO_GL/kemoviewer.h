@@ -721,8 +721,6 @@ extern "C" {
     int set_image_file_format_id(char *image_fmt);
     void write_kemoviewer_window_to_file(int iflag_img, const char *fhead);
     void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead);
-    void write_kemoviewer_window_to_png(const char *fhead);
-    void write_kemoviewer_window_step_png(int istep, const char *fhead);
 #ifdef __cplusplus
 }
 #endif

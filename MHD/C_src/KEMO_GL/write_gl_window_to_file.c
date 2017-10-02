@@ -43,7 +43,7 @@ int set_image_format_id_by_ext(char *image_fmt){
 void write_gl_window_to_file(int iflag_img, const char *fhead, GLint nwin_x, GLint nwin_y){
 	
 /*	if (iflag_img == SAVE_EPS) { outputEPS(gl_drawID, I_BUFFERSIZE, IONE, colorbar_text, fhead); }*/
-/*	if (iflag_img == SAVE_PNG)  { gl_buffer_2_png(fhead, nwin_x, nwin_y); } */
+	if (iflag_img == SAVE_PNG)  { gl_buffer_2_png(fhead, nwin_x, nwin_y); }
     if (iflag_img == SAVE_BMP)  { gl_buffer_to_bmp(fhead, nwin_x, nwin_y); }
 	else if(iflag_img == SAVE_PPM_B) { gl_buffer_to_ppm_p6(fhead, nwin_x, nwin_y); }
 	else if(iflag_img == SAVE_PPM_A) { gl_buffer_to_ppm_p3(fhead, nwin_x, nwin_y); }

@@ -21,8 +21,6 @@ void alloc_img_buffer_2_png_rgb(int num_x, int num_y);
 void link_img_buffer_4_png(unsigned char **image_p);
 void dealloc_img_buffer_2_png(int num_y);
 
-void write_gl_window_to_png(const char *fhead, int num_x, int num_y);
-void write_gl_window_step_png(int istep, const char *fhead,
-                              GLint nwin_x, GLint nwin_y);
+void gl_buffer_2_png(const char *fhead, int num_x, int num_y);
 
 #endif

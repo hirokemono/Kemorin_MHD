@@ -946,18 +946,12 @@ double round_to_3digit(double value){return round_2_3digit(value);};
 /*  Routines using libpng */
 #ifdef PNG_OUTPUT
 int set_image_file_format_id(char *image_fmt){return set_image_format_id_by_ext(image_fmt);}
+
 void write_kemoviewer_window_to_file(int iflag_img, const char *fhead){
     write_gl_window_to_file(iflag_img, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
 }
 void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead){
     write_gl_window_step_file(iflag_img, istep, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
-}
-
-void write_kemoviewer_window_to_png(const char *fhead){
-    write_gl_window_to_png(fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
-}
-void write_kemoviewer_window_step_png(int istep, const char *fhead){
-    write_gl_window_step_png(istep, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
 }
 
 void set_texture_file_to_current_psf(int img_fmt, const char *img_head){

@@ -51,7 +51,6 @@
 		18D7E74C1562D359009B05FF /* take_normal_psf_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6901562D359009B05FF /* take_normal_psf_c.c */; };
 		18D7E74D1562D359009B05FF /* take_normal_surf_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6921562D359009B05FF /* take_normal_surf_mesh_c.c */; };
 		18D7E74E1562D359009B05FF /* transfer_matvec.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6941562D359009B05FF /* transfer_matvec.c */; };
-		18D7E74F1562D359009B05FF /* write_image_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6961562D359009B05FF /* write_image_2_bmp.c */; };
 		18D7E7511562D359009B05FF /* ysglfontdata.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E69A1562D359009B05FF /* ysglfontdata.c */; };
 		18D7E7521562D359009B05FF /* coastline_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E69D1562D359009B05FF /* coastline_c.c */; };
 		18D7E7531562D359009B05FF /* draw_axis_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E69F1562D359009B05FF /* draw_axis_c.c */; };
@@ -69,7 +68,6 @@
 		18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B71562D359009B05FF /* draw_patches_4_PSF.c */; };
 		18D7E7601562D359009B05FF /* drawcube_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6B91562D359009B05FF /* drawcube_gl.c */; };
 		18D7E7611562D359009B05FF /* find_isoline_on_patch_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6BB1562D359009B05FF /* find_isoline_on_patch_c.c */; };
-		18D7E7621562D359009B05FF /* gl_buffer_2_bmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6BD1562D359009B05FF /* gl_buffer_2_bmp.c */; };
 		18D7E7631562D359009B05FF /* gl_buffer_2_gl2ps.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6BF1562D359009B05FF /* gl_buffer_2_gl2ps.c */; };
 		18D7E7651562D359009B05FF /* icosahedron_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6C31562D359009B05FF /* icosahedron_c.c */; };
 		18D7E7661562D359009B05FF /* init_gl_lighting_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6C51562D359009B05FF /* init_gl_lighting_c.c */; };
@@ -90,7 +88,6 @@
 		18D7E7761562D359009B05FF /* set_texture_4_psf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6E51562D359009B05FF /* set_texture_4_psf.c */; };
 		18D7E7771562D359009B05FF /* sort_by_patch_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6E71562D359009B05FF /* sort_by_patch_distance.c */; };
 		18D7E7781562D359009B05FF /* trackball.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6E91562D359009B05FF /* trackball.c */; };
-		18D7E7791562D359009B05FF /* write_gl_window_to_file.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6EB1562D359009B05FF /* write_gl_window_to_file.c */; };
 		18D7E77A1562D359009B05FF /* write_modelview_matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6ED1562D359009B05FF /* write_modelview_matrix.c */; };
 		18D7E77B1562D359009B05FF /* ysglusefontbitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6EF1562D359009B05FF /* ysglusefontbitmap.c */; };
 		18D7E7831562D359009B05FF /* ColorMapController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E7001562D359009B05FF /* ColorMapController.m */; };
@@ -216,8 +213,6 @@
 		18D7E6931562D359009B05FF /* take_normal_surf_mesh_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = take_normal_surf_mesh_c.h; sourceTree = "<group>"; };
 		18D7E6941562D359009B05FF /* transfer_matvec.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = transfer_matvec.c; sourceTree = "<group>"; };
 		18D7E6951562D359009B05FF /* transfer_matvec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = transfer_matvec.h; sourceTree = "<group>"; };
-		18D7E6961562D359009B05FF /* write_image_2_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = write_image_2_bmp.c; sourceTree = "<group>"; };
-		18D7E6971562D359009B05FF /* write_image_2_bmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = write_image_2_bmp.h; sourceTree = "<group>"; };
 		18D7E69A1562D359009B05FF /* ysglfontdata.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ysglfontdata.c; sourceTree = "<group>"; };
 		18D7E69B1562D359009B05FF /* ysglfontdata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ysglfontdata.h; sourceTree = "<group>"; };
 		18D7E69D1562D359009B05FF /* coastline_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = coastline_c.c; sourceTree = "<group>"; };
@@ -252,8 +247,6 @@
 		18D7E6BA1562D359009B05FF /* drawcube_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = drawcube_gl.h; sourceTree = "<group>"; };
 		18D7E6BB1562D359009B05FF /* find_isoline_on_patch_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = find_isoline_on_patch_c.c; sourceTree = "<group>"; };
 		18D7E6BC1562D359009B05FF /* find_isoline_on_patch_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = find_isoline_on_patch_c.h; sourceTree = "<group>"; };
-		18D7E6BD1562D359009B05FF /* gl_buffer_2_bmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gl_buffer_2_bmp.c; sourceTree = "<group>"; };
-		18D7E6BE1562D359009B05FF /* gl_buffer_2_bmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gl_buffer_2_bmp.h; sourceTree = "<group>"; };
 		18D7E6BF1562D359009B05FF /* gl_buffer_2_gl2ps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gl_buffer_2_gl2ps.c; sourceTree = "<group>"; };
 		18D7E6C01562D359009B05FF /* gl_buffer_2_gl2ps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gl_buffer_2_gl2ps.h; sourceTree = "<group>"; };
 		18D7E6C31562D359009B05FF /* icosahedron_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = icosahedron_c.c; sourceTree = "<group>"; };
@@ -296,8 +289,6 @@
 		18D7E6E81562D359009B05FF /* sort_by_patch_distance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sort_by_patch_distance.h; sourceTree = "<group>"; };
 		18D7E6E91562D359009B05FF /* trackball.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = trackball.c; sourceTree = "<group>"; };
 		18D7E6EA1562D359009B05FF /* trackball.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trackball.h; sourceTree = "<group>"; };
-		18D7E6EB1562D359009B05FF /* write_gl_window_to_file.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = write_gl_window_to_file.c; sourceTree = "<group>"; };
-		18D7E6EC1562D359009B05FF /* write_gl_window_to_file.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = write_gl_window_to_file.h; sourceTree = "<group>"; };
 		18D7E6ED1562D359009B05FF /* write_modelview_matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = write_modelview_matrix.c; sourceTree = "<group>"; };
 		18D7E6EE1562D359009B05FF /* write_modelview_matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = write_modelview_matrix.h; sourceTree = "<group>"; };
 		18D7E6EF1562D359009B05FF /* ysglusefontbitmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ysglusefontbitmap.c; sourceTree = "<group>"; };
@@ -523,8 +514,6 @@
 				18D7E6931562D359009B05FF /* take_normal_surf_mesh_c.h */,
 				18D7E6941562D359009B05FF /* transfer_matvec.c */,
 				18D7E6951562D359009B05FF /* transfer_matvec.h */,
-				18D7E6961562D359009B05FF /* write_image_2_bmp.c */,
-				18D7E6971562D359009B05FF /* write_image_2_bmp.h */,
 				18D7E69A1562D359009B05FF /* ysglfontdata.c */,
 				18D7E69B1562D359009B05FF /* ysglfontdata.h */,
 			);
@@ -570,8 +559,6 @@
 				18D7E6BA1562D359009B05FF /* drawcube_gl.h */,
 				18D7E6BB1562D359009B05FF /* find_isoline_on_patch_c.c */,
 				18D7E6BC1562D359009B05FF /* find_isoline_on_patch_c.h */,
-				18D7E6BD1562D359009B05FF /* gl_buffer_2_bmp.c */,
-				18D7E6BE1562D359009B05FF /* gl_buffer_2_bmp.h */,
 				18D7E6BF1562D359009B05FF /* gl_buffer_2_gl2ps.c */,
 				18D7E6C01562D359009B05FF /* gl_buffer_2_gl2ps.h */,
 				18D7E6C31562D359009B05FF /* icosahedron_c.c */,
@@ -616,8 +603,6 @@
 				18D7E6E81562D359009B05FF /* sort_by_patch_distance.h */,
 				18D7E6E91562D359009B05FF /* trackball.c */,
 				18D7E6EA1562D359009B05FF /* trackball.h */,
-				18D7E6EB1562D359009B05FF /* write_gl_window_to_file.c */,
-				18D7E6EC1562D359009B05FF /* write_gl_window_to_file.h */,
 				18D7E6ED1562D359009B05FF /* write_modelview_matrix.c */,
 				18D7E6EE1562D359009B05FF /* write_modelview_matrix.h */,
 				18D7E6EF1562D359009B05FF /* ysglusefontbitmap.c */,
@@ -862,7 +847,6 @@
 				18D7E74C1562D359009B05FF /* take_normal_psf_c.c in Sources */,
 				18D7E74D1562D359009B05FF /* take_normal_surf_mesh_c.c in Sources */,
 				18D7E74E1562D359009B05FF /* transfer_matvec.c in Sources */,
-				18D7E74F1562D359009B05FF /* write_image_2_bmp.c in Sources */,
 				18D7E7511562D359009B05FF /* ysglfontdata.c in Sources */,
 				18D7E7521562D359009B05FF /* coastline_c.c in Sources */,
 				18D7E7531562D359009B05FF /* draw_axis_c.c in Sources */,
@@ -880,7 +864,6 @@
 				18D7E75F1562D359009B05FF /* draw_patches_4_PSF.c in Sources */,
 				18D7E7601562D359009B05FF /* drawcube_gl.c in Sources */,
 				18D7E7611562D359009B05FF /* find_isoline_on_patch_c.c in Sources */,
-				18D7E7621562D359009B05FF /* gl_buffer_2_bmp.c in Sources */,
 				18D7E7631562D359009B05FF /* gl_buffer_2_gl2ps.c in Sources */,
 				18D7E7651562D359009B05FF /* icosahedron_c.c in Sources */,
 				18D7E7661562D359009B05FF /* init_gl_lighting_c.c in Sources */,
@@ -901,7 +884,6 @@
 				18D7E7761562D359009B05FF /* set_texture_4_psf.c in Sources */,
 				18D7E7771562D359009B05FF /* sort_by_patch_distance.c in Sources */,
 				18D7E7781562D359009B05FF /* trackball.c in Sources */,
-				18D7E7791562D359009B05FF /* write_gl_window_to_file.c in Sources */,
 				18D7E77A1562D359009B05FF /* write_modelview_matrix.c in Sources */,
 				18D7E77B1562D359009B05FF /* ysglusefontbitmap.c in Sources */,
 				18D7E7831562D359009B05FF /* ColorMapController.m in Sources */,
