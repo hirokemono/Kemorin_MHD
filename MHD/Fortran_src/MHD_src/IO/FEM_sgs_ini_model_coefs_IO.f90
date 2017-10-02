@@ -137,7 +137,7 @@
       subroutine init_FEM_Csim_file                                     &
      &         (SGS_param, cmt_param, wk_sgs, wk_diff)
 !
-      use sgs_model_coefs_IO
+      use FEM_sgs_model_coefs_IO
       use set_parallel_file_name
       use set_FEM_sgs_model_coefs_IO
 !
@@ -161,7 +161,7 @@
      &          SGS_param, cmt_param, wk_sgs, wk_diff)
 !
       use field_IO_select
-      use sgs_model_coefs_IO
+      use FEM_sgs_model_coefs_IO
       use set_parallel_file_name
       use set_FEM_sgs_model_coefs_IO
 !

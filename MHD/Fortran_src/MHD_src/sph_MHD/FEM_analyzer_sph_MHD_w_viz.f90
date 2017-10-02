@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine FEM_initialize_w_viz                                 &
 !!     &         (MHD_files, MHD_step, geofem, ele_mesh,                &
-!!     &          iphys, nod_fld, next_tbl, jacobians, range, fem_ucd)
+!!     &          iphys, nod_fld, next_tbl, jacobians, MHD_IO)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_data), intent(inout) :: geofem
@@ -19,8 +19,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(next_nod_ele_table), intent(inout) :: next_tbl
 !!        type(jacobians_type), intent(inout) :: jacobians
-!!        type(maximum_informations), intent(inout) :: range
-!!        type(ucd_file_data), intent(inout) :: fem_ucd
+!!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
@@ -46,7 +45,7 @@
       use t_MHD_step_parameter
       use t_MHD_file_parameter
       use t_cal_max_indices
-      use t_ucd_file
+      use t_MHD_IO_data
 !
       implicit none
 !
@@ -60,7 +59,7 @@
 !
       subroutine FEM_initialize_w_viz                                   &
      &         (MHD_files, MHD_step, geofem, ele_mesh,                  &
-     &          iphys, nod_fld, next_tbl, jacobians, range, fem_ucd)
+     &          iphys, nod_fld, next_tbl, jacobians, MHD_IO)
 !
       use set_table_4_RHS_assemble
       use FEM_analyzer_sph_MHD
@@ -75,8 +74,7 @@
       type(phys_data), intent(inout) :: nod_fld
       type(next_nod_ele_table), intent(inout) :: next_tbl
       type(jacobians_type), intent(inout) :: jacobians
-      type(maximum_informations), intent(inout) :: range
-      type(ucd_file_data), intent(inout) :: fem_ucd
+      type(MHD_IO_data), intent(inout) :: MHD_IO
 !
 !   --------------------------------
 !       setup mesh information
@@ -86,7 +84,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files, MHD_step,                  &
-     &    geofem, ele_mesh, iphys, nod_fld, range, fem_ucd)
+     &    geofem, ele_mesh, iphys, nod_fld, MHD_IO)
 !
 !  -------------------------------
 !

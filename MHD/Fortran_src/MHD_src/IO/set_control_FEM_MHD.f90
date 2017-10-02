@@ -70,7 +70,7 @@
       use set_control_nodal_data_MHD
       use set_ctl_parallel_platform
       use set_control_4_time_steps
-      use sgs_ini_model_coefs_IO
+      use SPH_SGS_ini_model_coefs_IO
 !
       use set_control_4_force
       use set_control_4_normalize

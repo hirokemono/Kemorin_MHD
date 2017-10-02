@@ -22,6 +22,7 @@
       use t_step_parameter
       use t_MHD_file_parameter
       use t_SPH_mesh_field_data
+      use t_field_data_IO
 !
       implicit none
 !
@@ -39,6 +40,7 @@
       use SPH_analyzer_snap
 !
       integer(kind = kint) :: iflag
+      type(field_IO), save  :: sph_fst_IO
 !
 !*  -----------  set initial step data --------------
 !*
@@ -58,7 +60,7 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
         call SPH_analyze_mod_restart(MHD_step1%time_d%i_time_step,      &
      &      MHD_files1%fst_file_IO, SPH_model1, MHD_files1,             &
-     &      MHD_step1, SPH_MHD1, SPH_WK1)
+     &      MHD_step1, SPH_MHD1, SPH_WK1, sph_fst_IO)
 !*
 !*  -----------  output field data --------------
 !*
@@ -71,7 +73,7 @@
       call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1, MHD_step1, range1, fem_ucd1)
+      call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
@@ -89,8 +91,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_mod_restart(i_step, fst_file_IO,           &
-     &          SPH_model, MHD_files, MHD_step, SPH_MHD, SPH_WK)
+      subroutine SPH_analyze_mod_restart                                &
+     &         (i_step, fst_file_IO, SPH_model, MHD_files, MHD_step,    &
+     &          SPH_MHD, SPH_WK, sph_fst_IO)
 !
       use m_work_time
 !
@@ -100,6 +103,7 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use input_control_sph_MHD
+      use set_sph_restart_IO
 !
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: fst_file_IO
@@ -108,6 +112,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
+      type(field_IO), intent(inout) :: sph_fst_IO
 !
       integer(kind = kint) :: iflag
 !
@@ -125,13 +130,13 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
       call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
-      call init_output_sph_restart_file(SPH_MHD%fld)
+      call set_sph_restart_num_to_IO(SPH_MHD%fld, sph_fst_IO)
 !
       iflag = set_IO_step_flag(MHD_step%time_d%i_time_step,             &
      &                         MHD_step%rst_step)
       if(iflag .eq. 0) then
         call output_sph_restart_control(fst_file_IO, MHD_step%time_d,   &
-     &     SPH_MHD%fld, MHD_step%rst_step)
+     &     SPH_MHD%fld, MHD_step%rst_step, sph_fst_IO)
       end if
 !*
 !*  -----------  lead energy data --------------

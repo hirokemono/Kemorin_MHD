@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine SPH_initialize_SGS_MHD                               &
-!!     &         (MHD_files, iphys, MHD_step, SPH_model,                &
+!!     &         (MHD_files, iphys, MHD_step, sph_fst_IO, SPH_model,    &
 !!     &          SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(phys_address), intent(in) :: iphys
@@ -17,14 +17,17 @@
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
-!!      subroutine SPH_analyze_SGS_MHD(i_step, MHD_files, SPH_model,    &
-!!     &          iflag_finish, MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
+!!        type(field_IO), intent(inout) :: sph_fst_IO
+!!      subroutine SPH_analyze_SGS_MHD                                  &
+!!     &         (i_step, MHD_files, SPH_model, iflag_finish,           &
+!!     &          MHD_step, sph_fst_IO, SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
+!!        type(field_IO), intent(inout) :: sph_fst_IO
 !!@endverbatim
 !
       module SPH_analyzer_SGS_MHD
@@ -43,6 +46,7 @@
       use t_SPH_SGS_structure
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
+      use t_field_data_IO
 !
       use m_work_time
 !
@@ -55,7 +59,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_initialize_SGS_MHD                                 &
-     &         (MHD_files, iphys, MHD_step, SPH_model,                  &
+     &         (MHD_files, iphys, MHD_step, sph_fst_IO, SPH_model,      &
      &          SPH_SGS, SPH_MHD, SPH_WK)
 !
       use t_sph_boundary_input_data
@@ -73,7 +77,7 @@
       use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph
       use sph_SGS_MHD_rst_IO_control
-      use sgs_ini_model_coefs_IO
+      use SPH_SGS_ini_model_coefs_IO
       use cal_sol_sph_MHD_crank
       use cal_SGS_nonlinear
       use sph_filtering
@@ -88,6 +92,7 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
+      type(field_IO), intent(inout) :: sph_fst_IO
 !
 !
 !   Allocate spectr field data
@@ -116,7 +121,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
-     &   (MHD_files, SPH_model, SPH_MHD, MHD_step)
+     &   (MHD_files, SPH_model, SPH_MHD, MHD_step, sph_fst_IO)
       call set_initial_Csim_control                                     &
      &   (MHD_files, MHD_step, SPH_SGS%SGS_par, SPH_SGS%dynamic)
       MHD_step%iflag_initial_step = 0
@@ -162,8 +167,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_SGS_MHD(i_step, MHD_files, SPH_model,      &
-     &          iflag_finish, MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
+      subroutine SPH_analyze_SGS_MHD                                    &
+     &         (i_step, MHD_files, SPH_model, iflag_finish,             &
+     &          MHD_step, sph_fst_IO, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use momentum_w_SGS_explicit
       use cal_sol_sph_MHD_crank
@@ -182,6 +188,7 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
+      type(field_IO), intent(inout) :: sph_fst_IO
 !
       integer(kind = kint) :: iflag
       real(kind = kreal) :: total_max
@@ -245,7 +252,7 @@
         call output_sph_SGS_MHD_rst_control                             &
      &     (MHD_files, MHD_step%time_d, SPH_MHD%fld, MHD_step%rst_step, &
      &      SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,  &
-     &      SPH_SGS%dynamic)
+     &      SPH_SGS%dynamic, sph_fst_IO)
       end if
 !
       total_time = MPI_WTIME() - total_start
@@ -258,7 +265,7 @@
         call output_sph_SGS_MHD_rst_control                             &
      &     (MHD_files, MHD_step%time_d, SPH_MHD%fld, MHD_step%rst_step, &
      &      SPH_SGS%SGS_par%i_step_sgs_coefs, SPH_SGS%SGS_par%model_p,  &
-     &      SPH_SGS%dynamic)
+     &      SPH_SGS%dynamic, sph_fst_IO)
       end if
       call end_elapsed_time(10)
 !

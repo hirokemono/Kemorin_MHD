@@ -6,7 +6,7 @@
 !!      subroutine FEM_initialize_vol_average                           &
 !!     &         (MHD_files, MHD_step, femmesh, ele_mesh,               &
 !!     &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,       &
-!!     &          SGS_MHD_wk,fem_sq, label_sim)
+!!     &          SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(phys_address), intent(inout) :: iphys_nod
@@ -17,6 +17,7 @@
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!      subroutine FEM_analyze_vol_average                              &
 !!     &         (i_step, MHD_files, femmesh, iphys_nod, FEM_model,     &
 !!     &          MHD_step, SGS_MHD_wk, nod_fld, fem_sq)
@@ -41,6 +42,7 @@
       use t_FEM_MHD_mean_square
       use t_FEM_SGS_structure
       use t_work_FEM_SGS_MHD
+      use t_MHD_IO_data
 !
       use calypso_mpi
 !
@@ -57,7 +59,7 @@
       subroutine FEM_initialize_vol_average                             &
      &         (MHD_files, MHD_step, femmesh, ele_mesh,                 &
      &          iphys_nod, nod_fld, FEM_model, ak_MHD, FEM_SGS,         &
-     &          SGS_MHD_wk,fem_sq, label_sim)
+     &          SGS_MHD_wk, MHD_IO, fem_sq, label_sim)
 !
       use t_boundary_field_IO
 !
@@ -78,6 +80,7 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(MHD_IO_data), intent(inout) :: MHD_IO
       character(len=kchara), intent(inout)   :: label_sim
 !
 !   matrix assembling
@@ -89,7 +92,7 @@
      &   FEM_SGS%FEM_filters, FEM_model%MHD_prop, ak_MHD,               &
      &   FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,        &
      &   iphys_nod, nod_fld, SNAP_time_IO, MHD_step%rst_step,           &
-     &   SGS_MHD_wk, fem_sq, label_sim)
+     &   SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !

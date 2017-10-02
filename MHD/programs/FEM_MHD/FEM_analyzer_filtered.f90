@@ -6,7 +6,7 @@
 !!      subroutine FEM_analyze_filtered(i_step, MHD_files,              &
 !!     &          femmesh, ele_mesh, iphys_nod, FEM_model, ak_MHD,      &
 !!     &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                &
-!!     &          nod_fld, fem_ucd, fem_sq)
+!!     &          nod_fld, fem_ucd, MHD_IO, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -18,6 +18,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(ucd_file_data), intent(inout) :: fem_ucd
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+!!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !
       module FEM_analyzer_filtered
 !
@@ -35,6 +36,7 @@
       use t_ucd_file
       use t_FEM_MHD_mean_square
       use t_FEM_SGS_structure
+      use t_MHD_IO_data
       use t_work_FEM_SGS_MHD
 !
       use calypso_mpi
@@ -52,7 +54,7 @@
       subroutine FEM_analyze_filtered(i_step, MHD_files,                &
      &          femmesh, ele_mesh, iphys_nod, FEM_model, ak_MHD,        &
      &          MHD_step, visval, FEM_SGS, SGS_MHD_wk,                  &
-     &          nod_fld, fem_ucd, fem_sq)
+     &          nod_fld, fem_ucd, MHD_IO, fem_sq)
 !
       use m_fem_mhd_restart
 !
@@ -65,7 +67,7 @@
 !
       use time_step_data_IO_control
       use node_monitor_IO
-      use sgs_model_coefs_IO
+      use FEM_sgs_model_coefs_IO
       use output_viz_file_control
       use filter_all_fields
       use input_control
@@ -90,6 +92,7 @@
 !
       type(ucd_file_data), intent(inout) :: fem_ucd
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+      type(MHD_IO_data), intent(inout) :: MHD_IO
 !
 !     ---- Load field data --- 
 !
@@ -104,7 +107,7 @@
         call input_restart_4_snapshot                                   &
      &     (MHD_step%flex_p%istep_max_dt, MHD_files%fst_file_IO,        &
      &      femmesh%mesh%node, nod_fld, SNAP_time_IO,                   &
-     &      MHD_step%rst_step)
+     &      MHD_step%rst_step, MHD_IO%rst_IO)
 !
       else if (MHD_step%ucd_step%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'

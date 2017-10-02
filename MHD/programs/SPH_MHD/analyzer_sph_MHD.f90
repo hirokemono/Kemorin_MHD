@@ -71,14 +71,14 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz(MHD_files1, MHD_step1,                  &
      &    FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%iphys, FEM_d1%field,   &
-     &    next_tbl_VIZ1, jacobians_VIZ1, range1, fem_ucd1)
+     &    next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1)
 !
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
       call SPH_initialize_SGS_MHD                                       &
-     &   (MHD_files1, FEM_d1%iphys, MHD_step1, SPH_model1,              &
-     &    SPH_SGS1, SPH_MHD1, SPH_WK1)
+     &   (MHD_files1, FEM_d1%iphys, MHD_step1, MHD_IO1%rst_IO,          &
+     &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1)
 !
 !        Initialize visualization
 !
@@ -121,8 +121,8 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
         call SPH_analyze_SGS_MHD(MHD_step1%time_d%i_time_step,          &
-     &      MHD_files1, SPH_model1, iflag_finish, MHD_step1, SPH_SGS1,  &
-     &      SPH_MHD1, SPH_WK1)
+     &      MHD_files1, SPH_model1, iflag_finish,                       &
+     &      MHD_step1, MHD_IO1%rst_IO, SPH_SGS1, SPH_MHD1, SPH_WK1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -138,7 +138,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      FEM_d1%geofem, FEM_d1%field, MHD_step1, visval, fem_ucd1)
+     &      FEM_d1%geofem, FEM_d1%field, MHD_step1, visval, MHD_IO1)
 !
         call end_elapsed_time(4)
 !
@@ -163,7 +163,7 @@
       call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1, MHD_step1, range1, fem_ucd1)
+      call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_MHD'
 !      call SPH_finalize_MHD

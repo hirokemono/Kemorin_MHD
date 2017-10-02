@@ -6,14 +6,14 @@
 !!      subroutine FEM_initialize_MHD                                   &
 !!     &         (MHD_files, flex_MHD, MHD_step,                        &
 !!     &          femmesh, ele_mesh, FEM_model, MHD_CG, FEM_SGS,        &
-!!     &          SGS_MHD_wk, range, fem_ucd, fem_sq)
+!!     &          SGS_MHD_wk, MHD_IO, fem_sq)
 !!        type(mesh_data), intent(inout) :: femmesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!      subroutine FEM_analyze_MHD(MHD_files, femmesh, ele_mesh,        &
 !!     &          iphys_nod, FEM_model, flex_MHD, MHD_step, visval,     &
 !!     &          retval, nod_fld, MHD_CG, FEM_SGS, SGS_MHD_wk,         &
-!!     &          fem_ucd, fem_sq)
-!!      subroutine FEM_finalize_MHD(MHD_files, MHD_step, range, fem_ucd)
+!!     &          MHD_IO, fem_sq)
+!!      subroutine FEM_finalize_MHD(MHD_files, MHD_step, MHD_IO)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !!        type(mesh_data), intent(in) :: femmesh
@@ -21,8 +21,7 @@
 !!        type(phys_address), intent(inout) :: iphys_nod
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
-!!        type(maximum_informations), intent(inout) :: range
-!!        type(ucd_file_data), intent(inout) :: fem_ucd
+!!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       module FEM_analyzer_MHD
@@ -35,13 +34,13 @@
       use t_phys_data
       use t_phys_address
       use t_material_property
-      use t_ucd_file
       use t_MHD_step_parameter
       use t_MHD_file_parameter
       use t_FEM_MHD_time_stepping
       use t_cal_max_indices
       use t_FEM_MHD_mean_square
       use t_FEM_MHD_solvers
+      use t_MHD_IO_data
 !
       use calypso_mpi
 !
@@ -56,7 +55,7 @@
       subroutine FEM_initialize_MHD                                     &
      &         (MHD_files, flex_MHD, MHD_step,                          &
      &          femmesh, ele_mesh, FEM_model, MHD_CG, FEM_SGS,          &
-     &          SGS_MHD_wk, range, fem_ucd, fem_sq)
+     &          SGS_MHD_wk, MHD_IO, fem_sq)
 !
       use t_boundary_field_IO
 !
@@ -88,8 +87,7 @@
       type(FEM_SGS_structure), intent(inout) :: FEM_SGS
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !
-      type(maximum_informations), intent(inout) :: range
-      type(ucd_file_data), intent(inout) :: fem_ucd
+      type(MHD_IO_data), intent(inout) :: MHD_IO
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer(kind = kint) :: iflag
@@ -101,7 +99,7 @@
      &    femmesh%mesh, femmesh%group, ele_mesh, FEM_model%MHD_mesh,    &
      &    FEM_SGS%FEM_filters, FEM_model%MHD_prop, FEM_model%MHD_BC,    &
      &    FEM_model%FEM_MHD_BCs, FEM_SGS%Csims, iphys_nod, nod_fld,     &
-     &    MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
+     &    MHD_CG, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, label_sim)
 !
       call nod_fields_send_recv(femmesh%mesh, nod_fld)
 !
@@ -162,9 +160,9 @@
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, femmesh%mesh, FEM_model%MHD_mesh, nod_fld, &
-     &    ucd_param, fem_ucd)
+     &    ucd_param, MHD_IO%fem_ucd)
 !
-      call alloc_phys_range(nod_fld%ntot_phys_viz, range)
+      call alloc_phys_range(nod_fld%ntot_phys_viz, MHD_IO%range)
 !       call s_open_boundary_monitor(my_rank, femmesh%group%sf_grp)
       call end_elapsed_time(4)
 !
@@ -175,7 +173,7 @@
       subroutine FEM_analyze_MHD(MHD_files, femmesh, ele_mesh,          &
      &          iphys_nod, FEM_model, flex_MHD, MHD_step, visval,       &
      &          retval, nod_fld, MHD_CG, FEM_SGS, SGS_MHD_wk,           &
-     &          fem_ucd, fem_sq)
+     &          MHD_IO, fem_sq)
 !
       use construct_matrices
       use lead_physical_values
@@ -185,7 +183,7 @@
 !
       use time_step_data_IO_control
       use node_monitor_IO
-      use sgs_model_coefs_IO
+      use FEM_sgs_model_coefs_IO
       use fem_mhd_rst_IO_control
       use output_viz_file_control
 !
@@ -209,7 +207,7 @@
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       type(FEM_SGS_structure), intent(inout) :: FEM_SGS
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
-      type(ucd_file_data), intent(inout) :: fem_ucd
+      type(MHD_IO_data), intent(inout) :: MHD_IO
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer(kind=kint ), intent(inout) :: retval
@@ -285,7 +283,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
         call s_output_ucd_file_control                                  &
      &     (ucd_param, MHD_step%flex_p%istep_max_dt,                    &
-     &      MHD_step%time_d, MHD_step%ucd_step, fem_ucd)
+     &      MHD_step%time_d, MHD_step%ucd_step, MHD_IO%fem_ucd)
 !
         call end_elapsed_time(4)
         call start_elapsed_time(3)
@@ -310,7 +308,8 @@
       call output_MHD_restart_file_ctl                                  &
      &   (retval, FEM_SGS%SGS_par, MHD_files, MHD_step%time_d,          &
      &    MHD_step%flex_p, femmesh%mesh, iphys_nod,                     &
-     &    SGS_MHD_wk%FEM_SGS_wk, MHD_step%rst_step, nod_fld)
+     &    SGS_MHD_wk%FEM_SGS_wk, MHD_step%rst_step, nod_fld,            &
+     &    MHD_IO%rst_IO)
       call end_elapsed_time(4)
 !
 !   Finish by specific step
@@ -355,17 +354,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_MHD(MHD_files, MHD_step, fem_ucd, range)
+      subroutine FEM_finalize_MHD(MHD_files, MHD_step, MHD_IO)
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
-      type(maximum_informations), intent(inout) :: range
-      type(ucd_file_data), intent(inout) :: fem_ucd
+      type(MHD_IO_data), intent(inout) :: MHD_IO
 !
 !
       if(MHD_step%ucd_step%increment .gt. 0) then
-        call finalize_output_ucd(MHD_files%ucd_file_IO, fem_ucd)
-        call dealloc_phys_range(range)
+        call finalize_output_ucd(MHD_files%ucd_file_IO, MHD_IO%fem_ucd)
+        call dealloc_phys_range(MHD_IO%range)
       end if
 !      call close_boundary_monitor(my_rank)
 !

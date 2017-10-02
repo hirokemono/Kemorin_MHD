@@ -50,7 +50,7 @@
       use t_ctl_data_SGS_filter
       use t_ctl_data_filter_files
       use t_read_control_arrays
-      use sgs_ini_model_coefs_IO
+      use SPH_SGS_ini_model_coefs_IO
       use set_control_ele_layering
       use skip_comment_f
 !

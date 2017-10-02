@@ -10,16 +10,17 @@
 !> @brief Call restart data IO routines
 !!
 !!@verbatim
-!!      subroutine init_MHD_restart_output(node, nod_fld)
+!!      subroutine init_MHD_restart_output(node, nod_fld, fem_fst_IO)
 !!      subroutine init_restart_4_snapshot                              &
-!!     &          (i_step, fst_file_IO, node, t_IO, rst_step)
+!!     &         (i_step, fst_file_IO, node, t_IO, rst_step, fem_fst_IO)
 !!        type(node_data), intent(in) :: node
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(IO_step_param), intent(inout) :: rst_step
+!!        type(field_IO), intent(inout) :: fem_fst_IO
 !!
 !!      subroutine output_restart_files(index_rst, fst_file_IO,         &
-!!     &          time_d, node, nod_comm, iphys, nod_fld)
+!!     &          time_d, node, nod_comm, iphys, nod_fld, fem_fst_IO)
 !!        type(time_data), intent(in) :: time_d
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
@@ -34,13 +35,14 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!
-!!      subroutine input_restart_4_snapshot                             &
-!!     &         (i_step, fst_file_IO, node, nod_fld, t_IO, rst_step)
+!!      subroutine input_restart_4_snapshot(i_step, fst_file_IO,        &
+!!     &          node, nod_fld, t_IO, rst_step, fem_fst_IO)
 !!        type(node_data), intent(in) :: node
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(IO_step_param), intent(inout) :: rst_step
+!!        type(field_IO), intent(inout) :: fem_fst_IO
 !!@endverbatim
 !
       module m_fem_mhd_restart
@@ -61,7 +63,6 @@
       implicit  none
 !
       type(time_data), save, private :: fem_time_IO
-      type(field_IO), save, private :: fem_fst_IO
 !
 ! -----------------------------------------------------------------------
 !
@@ -69,13 +70,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_MHD_restart_output(node, nod_fld)
+      subroutine init_MHD_restart_output(node, nod_fld, fem_fst_IO)
 !
       use set_field_to_restart
       use const_global_element_ids
 !
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
+      type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
       call count_field_num_to_restart(nod_fld, fem_fst_IO)
@@ -93,7 +95,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_restart_4_snapshot                                &
-     &          (i_step, fst_file_IO, node, t_IO, rst_step)
+     &         (i_step, fst_file_IO, node, t_IO, rst_step, fem_fst_IO)
 !
       use const_global_element_ids
       use field_IO_select
@@ -105,6 +107,7 @@
 !
       type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: rst_step
+      type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
       rst_step%istep_file = i_step / rst_step%increment
@@ -124,7 +127,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_restart_files(index_rst, fst_file_IO,           &
-     &          time_d, node, nod_comm, iphys, nod_fld)
+     &          time_d, node, nod_comm, iphys, nod_fld, fem_fst_IO)
 !
       use field_IO_select
       use set_field_to_restart
@@ -138,6 +141,7 @@
       type(field_IO_params), intent(in) :: fst_file_IO
 !
       type(phys_data), intent(inout) :: nod_fld
+      type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
       if(iphys%i_pre_mom .gt. 0) then
@@ -181,6 +185,7 @@
       type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
       integer(kind = kint) :: ierr
+      type(field_IO) :: fem_fst_IO
 !
 !
       ierr = check_step_FEM_field_file(my_rank, istep_rst, fst_file_IO)
@@ -209,8 +214,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_restart_4_snapshot                               &
-     &         (i_step, fst_file_IO, node, nod_fld, t_IO, rst_step)
+      subroutine input_restart_4_snapshot(i_step, fst_file_IO,          &
+     &          node, nod_fld, t_IO, rst_step, fem_fst_IO)
 !
       use set_field_to_restart
       use field_IO_select
@@ -222,6 +227,7 @@
       type(time_data), intent(inout) :: t_IO
       type(phys_data), intent(inout) :: nod_fld
       type(IO_step_param), intent(inout) :: rst_step
+      type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
       if (set_IO_step_flag(i_step, rst_step) .ne. 0) return

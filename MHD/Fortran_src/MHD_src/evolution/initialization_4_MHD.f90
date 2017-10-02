@@ -7,7 +7,8 @@
 !!     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_MHD,          &
 !!     &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters,&
 !!     &         MHD_prop, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD,          &
-!!     &         iphys, nod_fld, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
+!!     &         iphys, nod_fld, MHD_CG, SGS_MHD_wk, fem_sq, fem_fst_IO,&
+!!     &         label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -28,6 +29,7 @@
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
+!!        type(field_IO), intent(inout) :: fem_fst_IO
 !
       module initialization_4_MHD
 !
@@ -58,6 +60,7 @@
       use t_FEM_MHD_boundary_data
       use t_work_4_MHD_layering
       use t_bc_data_list
+      use t_field_data_IO
 !
       implicit none
 !
@@ -71,7 +74,8 @@
      &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_MHD,            &
      &         MHD_step, mesh, group, ele_mesh, MHD_mesh, FEM_filters,  &
      &         MHD_prop, MHD_BC, FEM_MHD_BCs, Csims_FEM_MHD,            &
-     &         iphys, nod_fld, MHD_CG, SGS_MHD_wk, fem_sq, label_sim)
+     &         iphys, nod_fld, MHD_CG, SGS_MHD_wk, fem_sq, fem_fst_IO,  &
+     &         label_sim)
 !
       use m_boundary_condition_IDs
       use m_flags_4_solvers
@@ -132,6 +136,7 @@
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
+      type(field_IO), intent(inout) :: fem_fst_IO
       character(len=kchara), intent(inout)   :: label_sim
 !
       type(shape_finctions_at_points), save :: spfs_1
@@ -225,7 +230,8 @@
      &    MHD_mesh%fluid, MHD_prop%cd_prop, iphys,                      &
      &    FEM_filters%layer_tbl, SGS_par, SGS_MHD_wk%FEM_SGS_wk,        &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs,            &
-     &    nod_fld, MHD_step%flex_p, MHD_step%init_d, MHD_step%time_d)
+     &    nod_fld, MHD_step%flex_p, MHD_step%init_d, MHD_step%time_d,   &
+     &    fem_fst_IO)
       MHD_step%iflag_initial_step = 0
 !
 !  -------------------------------

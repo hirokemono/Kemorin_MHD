@@ -7,7 +7,7 @@
 !!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
 !!     &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,   &
 !!     &          Csims_FEM_MHD, iphys, nod_fld, t_IO, rst_step,        &
-!!     &          SGS_MHD_wk, fem_sq, label_sim)
+!!     &          SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -28,6 +28,7 @@
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
+!!        type(field_IO), intent(inout) :: fem_fst_IO
 !
       module initialize_4_snapshot
 !
@@ -60,6 +61,7 @@
       use t_MHD_mass_matrices
       use t_FEM_MHD_filter_data
       use t_work_4_MHD_layering
+      use t_field_data_IO
 !
       implicit none
 !
@@ -73,7 +75,7 @@
      &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
      &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,     &
      &          Csims_FEM_MHD, iphys, nod_fld, t_IO, rst_step,          &
-     &          SGS_MHD_wk, fem_sq, label_sim)
+     &          SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim)
 !
       use m_boundary_condition_IDs
       use m_array_for_send_recv
@@ -126,6 +128,7 @@
       type(IO_step_param), intent(inout) :: rst_step
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
+      type(field_IO), intent(inout) :: fem_fst_IO
       character(len=kchara), intent(inout)   :: label_sim
 !
       type(shape_finctions_at_points), save :: spfs_1
@@ -195,7 +198,8 @@
       if (rst_step%increment .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)' init_restart_4_snapshot'
         call init_restart_4_snapshot(MHD_step%init_d%i_time_step,       &
-     &      MHD_files%fst_file_IO, mesh%node, t_IO, rst_step)
+     &      MHD_files%fst_file_IO, mesh%node,                           &
+     &      t_IO, rst_step, fem_fst_IO)
       end if
 !
 !     ---------------------

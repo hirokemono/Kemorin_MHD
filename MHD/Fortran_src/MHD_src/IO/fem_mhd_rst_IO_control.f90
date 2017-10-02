@@ -11,8 +11,8 @@
 !!
 !!@verbatim
 !!      subroutine output_MHD_restart_file_ctl                          &
-!!     &         (retval, SGS_par, MHD_files, time_d, flex_p,           &
-!!     &          mesh, iphys, FEM_SGS_wk, rst_step, nod_fld)
+!!     &         (retval, SGS_par, MHD_files, time_d, flex_p, mesh,     &
+!!     &          iphys, FEM_SGS_wk, rst_step, nod_fld, fem_fst_IO)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(time_data), intent(in) :: time_d
@@ -21,6 +21,7 @@
 !!        type(work_FEM_dynamic_SGS), intent(in) :: FEM_SGS_wk
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(field_IO), intent(inout) :: fem_fst_IO
 !!
 !!      subroutine input_MHD_restart_file_ctl(MHD_files, rst_step,      &
 !!     &         layer_tbl, node, ele, fluid, SGS_par, wk_sgs, wk_diff, &
@@ -57,6 +58,7 @@
       use t_work_FEM_dynamic_SGS
       use t_MHD_file_parameter
       use t_IO_step_parameter
+      use t_field_data_IO
 !
       implicit  none
 !
@@ -69,8 +71,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_MHD_restart_file_ctl                            &
-     &         (retval, SGS_par, MHD_files, time_d, flex_p,             &
-     &          mesh, iphys, FEM_SGS_wk, rst_step, nod_fld)
+     &         (retval, SGS_par, MHD_files, time_d, flex_p, mesh,       &
+     &          iphys, FEM_SGS_wk, rst_step, nod_fld, fem_fst_IO)
 !
       use m_fem_mhd_restart
       use FEM_sgs_ini_model_coefs_IO
@@ -86,12 +88,13 @@
 !
       type(IO_step_param), intent(inout) :: rst_step
       type(phys_data), intent(inout) :: nod_fld
+      type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
       if(set_IO_step_flag(flex_p%istep_max_dt,rst_step) .eq. 0) then
         call output_MHD_restart_file                                    &
      &     (SGS_par, MHD_files, time_d, rst_step, mesh, iphys,          &
-     &      FEM_SGS_wk, nod_fld)
+     &      FEM_SGS_wk, nod_fld, fem_fst_IO)
       end if
 !
 !   Finish by elapsed time
@@ -99,7 +102,7 @@
         rst_step%istep_file = -1
         call output_MHD_restart_file                                    &
      &     (SGS_par, MHD_files, time_d, rst_step, mesh, iphys,          &
-     &      FEM_SGS_wk, nod_fld)
+     &      FEM_SGS_wk, nod_fld, fem_fst_IO)
       end if
 !
       end subroutine output_MHD_restart_file_ctl
@@ -109,7 +112,7 @@
 !
       subroutine output_MHD_restart_file                                &
      &         (SGS_par, MHD_files, time_d, rst_step, mesh, iphys,      &
-     &          FEM_SGS_wk, nod_fld)
+     &          FEM_SGS_wk, nod_fld, fem_fst_IO)
 !
       use m_fem_mhd_restart
       use FEM_sgs_ini_model_coefs_IO
@@ -123,11 +126,12 @@
       type(work_FEM_dynamic_SGS), intent(in) :: FEM_SGS_wk
 !
       type(phys_data), intent(inout) :: nod_fld
+      type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
       call output_restart_files                                         &
      &   (rst_step%istep_file, MHD_files%fst_file_IO,                   &
-     &    time_d, mesh%node, mesh%nod_comm, iphys, nod_fld)
+     &    time_d, mesh%node, mesh%nod_comm, iphys, nod_fld, fem_fst_IO)
       call write_FEM_Csim_file(SGS_par%i_step_sgs_coefs,                &
      &    MHD_files%Csim_file_IO, MHD_files%Cdiff_file_IO,              &
      &    time_d, rst_step, SGS_par%model_p, SGS_par%commute_p,         &

@@ -31,7 +31,6 @@
       use t_MHD_file_parameter
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
-      use t_SPH_SGS_structure
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
 !

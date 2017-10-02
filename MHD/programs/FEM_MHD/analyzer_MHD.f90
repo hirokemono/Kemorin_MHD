@@ -74,7 +74,7 @@
       call FEM_initialize_MHD(MHD_files1, flex_MHD1, MHD_step1,         &
      &    FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%iphys,           &
      &    FEM_MHD1%field, FEM_model1, MHD_CG1, FEM_SGS1, SGS_MHD_wk1,   &
-     &    range1, fem_ucd1, fem_sq1, FEM_MHD1%label_sim)
+     &    MHD_IO1, fem_sq1, FEM_MHD1%label_sim)
 !
       call init_visualize_surface                                       &
      &   (FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field)
@@ -98,7 +98,7 @@
         call FEM_analyze_MHD(MHD_files1,                                &
      &      FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%iphys,         &
      &      FEM_model1, flex_MHD1, MHD_step1, visval, retval, MHD_CG1,  &
-     &      FEM_SGS1, SGS_MHD_wk1, FEM_MHD1%field, fem_ucd1, fem_sq1)
+     &      FEM_SGS1, SGS_MHD_wk1, FEM_MHD1%field, MHD_IO1, fem_sq1)
 !
 !     ---------------------
 !
@@ -117,7 +117,7 @@
 !
 !  time evolution end
 !
-      call FEM_finalize_MHD(MHD_files1, MHD_step1, range1, fem_ucd1)
+      call FEM_finalize_MHD(MHD_files1, MHD_step1, MHD_IO1)
 !
       call copy_COMM_TIME_to_elaps(num_elapsed)
       call end_elapsed_time(1)

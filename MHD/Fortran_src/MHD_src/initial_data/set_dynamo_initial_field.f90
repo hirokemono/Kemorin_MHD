@@ -9,7 +9,7 @@
 !!     &         (MHD_files, rst_step, ref_param_T,                     &
 !!     &          node, ele, fluid, cd_prop, iphys, layer_tbl,          &
 !!     &          SGS_par, FEM_SGS_wk, sgs_coefs, diff_coefs,           &
-!!     &          nod_fld, flex_p, init_d, time_d)
+!!     &          nod_fld, flex_p, init_d, time_d, fem_fst_IO)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
@@ -26,6 +26,7 @@
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
+!!        type(field_IO), intent(inout) :: fem_fst_IO
 !!
 !!      subroutine set_time_init
 !
@@ -45,6 +46,7 @@
       use t_physical_property
       use t_MHD_file_parameter
       use t_IO_step_parameter
+      use t_field_data_IO
 !
       implicit none
 !
@@ -60,7 +62,7 @@
      &         (MHD_files, rst_step, ref_param_T,                       &
      &          node, ele, fluid, cd_prop, iphys, layer_tbl,            &
      &          SGS_par, FEM_SGS_wk, sgs_coefs, diff_coefs,             &
-     &          nod_fld, flex_p, init_d, time_d)
+     &          nod_fld, flex_p, init_d, time_d, fem_fst_IO)
 !
       use m_initial_field_control
       use m_fem_mhd_restart
@@ -92,6 +94,7 @@
       type(time_data), intent(inout) :: init_d, time_d
       type(phys_data), intent(inout) :: nod_fld
       type(flexible_stepping_parameter), intent(inout) :: flex_p
+      type(field_IO), intent(inout) :: fem_fst_IO
 !
 !
       if(iflag_restart .eq. i_rst_by_file) then
@@ -105,7 +108,7 @@
       end if
 !
       if (iflag_debug .gt. 1)  write(*,*) 'init_MHD_restart_output'
-      call init_MHD_restart_output(node, nod_fld)
+      call init_MHD_restart_output(node, nod_fld, fem_fst_IO)
       if (iflag_debug .gt. 1)  write(*,*) 'init_FEM_Csim_file'
       call init_FEM_Csim_file(SGS_par%model_p, SGS_par%commute_p,       &
      &    FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_diff)

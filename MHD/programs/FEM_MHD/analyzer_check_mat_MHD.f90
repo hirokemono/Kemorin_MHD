@@ -41,7 +41,7 @@
       call FEM_check_MHD_mat(MHD_files1, flex_MHD1, MHD_step1,          &
      &    FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%iphys,           &
      &    FEM_MHD1%field, FEM_model1, MHD_CG1, FEM_SGS1, SGS_MHD_wk1,   &
-     &    fem_sq1, FEM_MHD1%label_sim)
+     &    MHD_IO1, fem_sq1, FEM_MHD1%label_sim)
 !
       end subroutine init_analyzer
 !

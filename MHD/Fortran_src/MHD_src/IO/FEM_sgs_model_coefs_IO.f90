@@ -1,5 +1,5 @@
 !
-!     module sgs_model_coefs_IO
+!     module FEM_sgs_model_coefs_IO
 !
 !     programmed by H.Matsui in 2005
 !     modified by H. Matsui on Aug., 2007
@@ -16,7 +16,7 @@
 !!     &          n_comp, coef)
 !!      subroutine read_sgs_whole_data(file_id, iflag, n_comp, coef)
 !
-      module sgs_model_coefs_IO
+      module FEM_sgs_model_coefs_IO
 !
       use m_precision
 !
@@ -489,4 +489,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module sgs_model_coefs_IO
+      end module FEM_sgs_model_coefs_IO

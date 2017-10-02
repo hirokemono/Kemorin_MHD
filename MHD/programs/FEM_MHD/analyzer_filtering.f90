@@ -68,7 +68,7 @@
       call FEM_initialize_snapshot(MHD_files1, MHD_step1,               &
      &    FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%iphys,           &
      &    FEM_MHD1%field, FEM_model1, MHD_CG1%ak_MHD, FEM_SGS1,         &
-     &    SGS_MHD_wk1, range1, fem_ucd1, fem_sq1, FEM_MHD1%label_sim)
+     &    SGS_MHD_wk1, MHD_IO1, fem_sq1, FEM_MHD1%label_sim)
 !
       call init_visualize                                               &
      &   (FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field)
@@ -91,7 +91,8 @@
         call FEM_analyze_filtered(i_step, MHD_files1,                   &
      &      FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%iphys,         &
      &      FEM_model1, MHD_CG1%ak_MHD, MHD_step1, visval, FEM_SGS1,    &
-     &      SGS_MHD_wk1, FEM_MHD1%field, fem_ucd1, fem_sq1)
+     &      SGS_MHD_wk1, FEM_MHD1%field, MHD_IO1%fem_ucd,               &
+     &      MHD_IO1, fem_sq1)
 !
 !  Visualization
         if (visval.eq.0) then
@@ -103,7 +104,7 @@
       end do
 !
       call FEM_finalize_snapshot                                        &
-     &   (MHD_files1, MHD_step1, range1, fem_ucd1)
+     &   (MHD_files1, MHD_step1, MHD_IO1)
       call output_elapsed_times
 !
       end subroutine analyze

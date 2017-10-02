@@ -39,6 +39,7 @@
       use t_SGS_model_coefs
       use t_SGS_buoyancy_sph
       use t_ele_info_4_dynamic
+      use t_field_data_IO
 !
       implicit none
 !
@@ -58,6 +59,9 @@
 !
 !>         Filter functions
         type(sph_filters_type) :: sph_filters(1)
+!
+        type(field_IO) :: Csim_S_IO
+!        type(field_IO) :: Cdiff_S_IO
       end type dynamic_SGS_data_4_sph
 !
       private :: const_sph_radial_filter, const_radial_filter
