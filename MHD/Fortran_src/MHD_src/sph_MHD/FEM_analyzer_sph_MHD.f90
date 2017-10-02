@@ -60,7 +60,6 @@
       use t_phys_address
       use t_MHD_step_parameter
       use t_MHD_file_parameter
-      use t_MHD_time_and_IO_data
       use t_MHD_IO_data
 !
       implicit none
