@@ -32,8 +32,11 @@
       use t_sph_filtering
       use t_SGS_model_coefs
       use t_file_IO_parameter
+      use t_time_data
 !
       implicit none
+!
+      type(time_data), private :: Csim_time_S_IO
 !
 !-----------------------------------------------------------------------
 !
@@ -68,10 +71,10 @@
 !
       call sel_read_alloc_step_FEM_file(nprocs, my_rank,                &
      &    rst_step%istep_file, Csim_file_IO,                            &
-     &    dynamic_SPH%Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
+     &    Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
 !
       call set_SPH_Csim_from_IO                                         &
-     &   (dynamic_SPH%Csim_time_S_IO, dynamic_SPH%Csim_S_IO,            &
+     &   (Csim_time_S_IO, dynamic_SPH%Csim_S_IO,                        &
      &    init_d, i_step_sgs_coefs, dynamic_SPH%wk_sgs, ierr)
 !
       call dealloc_phys_data_IO(dynamic_SPH%Csim_S_IO)
@@ -115,11 +118,11 @@
 !
       call set_SPH_Csim_to_IO                                           &
      &   (i_step_sgs_coefs, time_d, dynamic_SPH%wk_sgs,                 &
-     &    dynamic_SPH%Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
+     &    Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
 !
       call sel_write_step_FEM_field_file(nprocs, my_rank,               &
      &    rst_step%istep_file, Csim_file_IO,                            &
-     &    dynamic_SPH%Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
+     &    Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
 !
       end subroutine write_SPH_Csim_file
 !
