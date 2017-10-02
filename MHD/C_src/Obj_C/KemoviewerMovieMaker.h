@@ -58,9 +58,12 @@
 
 -(void) InitEvolutionStepByPSF;
 -(void) InitEvolutionStepByFline;
--(void) SaveKemoviewImageFile:(NSString*)filename;
+-(void) SaveKemoviewPNGFile:(NSString*)ImageFilehead;
+-(void) SaveKemoviewBMPFile:(NSString*)ImageFilehead;
 
 - (IBAction)SendToClipAsPDF:(id)sender;
+
+- (NSInteger) SetImageFileFormatID:(NSString *)FileExtension;
 
 - (IBAction)ShowRotationMovie:(id)sender;
 - (IBAction)ShowEvolutionMovie:(id)sender;

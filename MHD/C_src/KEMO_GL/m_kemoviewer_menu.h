@@ -42,6 +42,7 @@
 #define SAVE_TIFF      5
 #define SAVE_QT_MOVIE  999
 #define NO_SAVE_FILE   0
+#define SAVE_UNDEFINED  -1
 
 #define IFLAG_MESH      99
 #define IFLAG_SURFACES   2

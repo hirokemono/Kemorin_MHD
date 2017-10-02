@@ -282,6 +282,7 @@
 #define SAVE_TIFF      5
 #define SAVE_QT_MOVIE  999
 #define NO_SAVE_FILE   0
+#define SAVE_UNDEFINED  -1
 
 #define RAINBOW_SURFACE  0
 #define WHITE_SURFACE    1
@@ -509,11 +510,9 @@ extern "C" {
     void set_to_text_color_code(float c_code[4]);
     void send_text_color_code(float c_code[4]);
     
-    int set_image_file_format_id(char *image_fmt);
     void get_kemoviewer_fliped_img(int npixel_x, int npixel_y,
                                    unsigned char *glimage, unsigned char *fliped_img);
-    void write_kemoviewer_window_to_file(int iflag_img, const char *fhead);
-    void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead);
+	void write_kemoviewer_window_to_vector_file(int iflag_img, const char *fhead);
 
     void modify_view_kemoview();
     void rotate_kemoview();
@@ -718,6 +717,10 @@ extern "C" {
     
     
     void set_texture_file_to_current_psf(int img_fmt, const char *img_head);
+
+    int set_image_file_format_id(char *image_fmt);
+    void write_kemoviewer_window_to_file(int iflag_img, const char *fhead);
+    void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead);
     void write_kemoviewer_window_to_png(const char *fhead);
     void write_kemoviewer_window_step_png(int istep, const char *fhead);
 #ifdef __cplusplus

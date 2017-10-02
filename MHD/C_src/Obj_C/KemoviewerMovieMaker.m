@@ -213,7 +213,7 @@ NSData *SnapshotData;
 }
 
 
--(void) SaveKemoviewImageFile:(NSString*)filename
+-(void) SaveKemoviewPNGFile:(NSString*)ImageFilehead
 {
     BOOL interlaced;
     NSDictionary *properties;
@@ -228,8 +228,31 @@ NSData *SnapshotData;
                   forKey:NSImageInterlaced];
     SnapshotData = [SnapshotBitmapRep representationUsingType:NSPNGFileType
                                         properties:properties];
+    
+    NSString *filename =  [ImageFilehead stringByAppendingString:@".png"];
     [SnapshotData writeToFile:filename atomically:YES];
-    printf("PNG file output\n");
+    [SnapshotImage release];            
+    [SnapshotBitmapRep release];
+}
+
+-(void) SaveKemoviewBMPFile:(NSString*)ImageFilehead
+{
+    BOOL interlaced;
+    NSDictionary *properties;
+    
+    [self SetGLBitmapToImageRep];
+    
+    SnapshotImage = [[NSImage alloc] init];
+    [SnapshotImage addRepresentation:SnapshotBitmapRep];
+    
+    properties = [NSDictionary
+                  dictionaryWithObject:[NSNumber numberWithBool:interlaced]
+                  forKey:NSImageInterlaced];
+    SnapshotData = [SnapshotBitmapRep representationUsingType:NSBMPFileType
+                                                   properties:properties];
+    
+    NSString *filename =  [ImageFilehead stringByAppendingString:@".bmp"];
+    [SnapshotData writeToFile:filename atomically:YES];
     [SnapshotImage release];            
     [SnapshotBitmapRep release];
 }
@@ -259,14 +282,16 @@ NSData *SnapshotData;
 		if (CurrentMovieFormat == SAVE_QT_MOVIE) {
             CMTime frameTime = CMTimeMake((int64_t)self.CurrentStep, self.FramePerSecond);
             [self AddKemoviewImageToMovie:frameTime];
-        } else if (CurrentMovieFormat == SAVE_PNG) {
+        } else if (CurrentMovieFormat != 0) {
             NSString *numstring = [NSString stringWithFormat:@"%ld",self.CurrentStep];
-            NSString *TmpName =  [RotateImageFilehead stringByAppendingString:numstring];
-            NSString *FileName =  [TmpName stringByAppendingString:@".png"];
-            [self SaveKemoviewImageFile:FileName];
-		} else if (CurrentMovieFormat != 0) {
-            write_kemoviewer_window_step_file((int) CurrentMovieFormat, (int) self.CurrentStep,
-                                              [RotateImageFilehead UTF8String]);
+            NSString *ImageFilehead =  [RotateImageFilehead stringByAppendingString:numstring];
+            if (CurrentMovieFormat == SAVE_PNG) {
+                [self SaveKemoviewPNGFile:ImageFilehead];
+            } else if (CurrentMovieFormat == SAVE_BMP) {
+                [self SaveKemoviewBMPFile:ImageFilehead];
+            } else {
+                write_kemoviewer_window_to_vector_file((int) CurrentMovieFormat, [ImageFilehead UTF8String]);
+            }
 		}
         
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.0]]; 
@@ -306,14 +331,16 @@ NSData *SnapshotData;
                 iframe = (self.CurrentStep - self.EvolutionStartStep) / self.EvolutionIncrement;
                 CMTime frameTime = CMTimeMake((int64_t)iframe, self.FramePerSecond);
                 [self AddKemoviewImageToMovie:frameTime];
-            } else if (CurrentMovieFormat == SAVE_PNG) {
-                NSString *numstring = [NSString stringWithFormat:@"%ld",self.CurrentStep];
-                NSString *TmpName =  [RotateImageFilehead stringByAppendingString:numstring];
-                NSString *FileName =  [TmpName stringByAppendingString:@".png"];
-                [self SaveKemoviewImageFile:FileName];
 			} else if (CurrentMovieFormat != 0) {
-                write_kemoviewer_window_step_file((int) CurrentMovieFormat, (int) self.CurrentStep,
-                                                  [EvolutionImageFilehead UTF8String]);
+                NSString *numstring = [NSString stringWithFormat:@"%ld",self.CurrentStep];
+                NSString *ImageFilehead =  [EvolutionImageFilehead stringByAppendingString:numstring];
+                if (CurrentMovieFormat == SAVE_PNG) {
+                    [self SaveKemoviewPNGFile:ImageFilehead];
+                } else if (CurrentMovieFormat == SAVE_BMP) {
+                    [self SaveKemoviewBMPFile:ImageFilehead];
+                } else {
+                    write_kemoviewer_window_to_vector_file((int) CurrentMovieFormat, [ImageFilehead UTF8String]);
+                }
 			}
 
 			[evolutionProgreessBar incrementBy:(double) self.EvolutionIncrement];
@@ -361,75 +388,71 @@ NSData *SnapshotData;
 	[self SaveQTmovieEvolution];
 }
 
+- (NSInteger) SetImageFileFormatID:(NSString *)FileExtension
+{
+    NSInteger id_format;
+
+    if ([FileExtension isEqualToString:@"mov"] 
+        || [FileExtension isEqualToString:@"MOV"]
+        || [FileExtension isEqualToString:@"moov"]
+        || [FileExtension isEqualToString:@"MOOV"]) {
+        id_format = SAVE_QT_MOVIE;
+    } else if ([FileExtension isEqualToString:@"png"] 
+               || [FileExtension isEqualToString:@"PNG"]) {
+        id_format = SAVE_PNG;
+    } else if ([FileExtension isEqualToString:@"bmp"] 
+               || [FileExtension isEqualToString:@"BMP"]) {
+        id_format = SAVE_BMP;
+    } else if ([FileExtension isEqualToString:@"eps"] 
+               || [FileExtension isEqualToString:@"EPS"]) {
+        id_format = SAVE_EPS;
+    } else if ([FileExtension isEqualToString:@"pdf"] 
+               || [FileExtension isEqualToString:@"PDF"]) {
+        id_format = SAVE_PDF;
+    } else if ([FileExtension isEqualToString:@"ps"] 
+               || [FileExtension isEqualToString:@"PS"]) {
+        id_format = SAVE_PS;
+    } else {
+        id_format = SAVE_UNDEFINED;
+    }
+    
+    return id_format;
+}
+
+
 - (void) SelectRotationMovieFile:(NSString *)RotateImageFilename
 {
     NSUserDefaults* defaults = [_movie_defaults_controller defaults];
-    CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
 
     NSString *RotateImageFileext = [RotateImageFilename pathExtension];
     RotateImageFilehead = [RotateImageFilename stringByDeletingPathExtension];
     
-    if ([RotateImageFileext isEqualToString:@"mov"] 
-        || [RotateImageFileext isEqualToString:@"MOV"]
-        || [RotateImageFileext isEqualToString:@"moov"]
-        || [RotateImageFileext isEqualToString:@"MOOV"]) {
-        CurrentMovieFormat = SAVE_QT_MOVIE;
-        RotateImageFilenameNoStep = [RotateImageFilehead stringByAppendingPathExtension:@"mov"];
-    } else if ([RotateImageFileext isEqualToString:@"png"] 
-               || [RotateImageFileext isEqualToString:@"PNG"]) {
-        CurrentMovieFormat = SAVE_PNG;
-    } else if ([RotateImageFileext isEqualToString:@"bmp"] 
-               || [RotateImageFileext isEqualToString:@"BMP"]) {
-        CurrentMovieFormat = SAVE_BMP;
-    } else if ([RotateImageFileext isEqualToString:@"eps"] 
-               || [RotateImageFileext isEqualToString:@"EPS"]) {
-        CurrentMovieFormat = SAVE_EPS;
-    } else if ([RotateImageFileext isEqualToString:@"pdf"] 
-               || [RotateImageFileext isEqualToString:@"PDF"]) {
-        CurrentMovieFormat = SAVE_PDF;
-    } else if ([RotateImageFileext isEqualToString:@"ps"] 
-               || [RotateImageFileext isEqualToString:@"PS"]) {
-        CurrentMovieFormat = SAVE_PS;
-    } else {
-        CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
+    CurrentMovieFormat = [self SetImageFileFormatID:RotateImageFileext];
+    
+    if(CurrentMovieFormat == SAVE_UNDEFINED){
+    CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
+    }
+    if(CurrentMovieFormat == SAVE_QT_MOVIE){
         RotateImageFilenameNoStep = [RotateImageFilehead stringByAppendingPathExtension:@"mov"];
     }
+    
     [self SaveQTmovieRotation];
 }
 
 - (void) SelectEvolutionMovieFile:(NSString *)EvolutionMovieFilename
 {
     NSUserDefaults* defaults = [_movie_defaults_controller defaults];
-    CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
-    
     NSString * EvolutionImageFileext =   [EvolutionMovieFilename pathExtension];
     EvolutionImageFilehead = [EvolutionMovieFilename stringByDeletingPathExtension];
+    CurrentMovieFormat = [self SetImageFileFormatID:EvolutionImageFileext];
     
-    if ([EvolutionImageFileext isEqualToString:@"mov"] 
-        || [EvolutionImageFileext isEqualToString:@"MOV"]
-        || [EvolutionImageFileext isEqualToString:@"moov"]
-        || [EvolutionImageFileext isEqualToString:@"MOOV"]) {
-        CurrentMovieFormat = SAVE_QT_MOVIE;
-        EvolutionImageFilename = [EvolutionImageFilehead stringByAppendingPathExtension:@"mov"];
-    } else if ([EvolutionImageFileext isEqualToString:@"png"] 
-               || [EvolutionImageFileext isEqualToString:@"PNG"]) {
-        CurrentMovieFormat = SAVE_PNG;
-    } else if ([EvolutionImageFileext isEqualToString:@"bmp"] 
-               || [EvolutionImageFileext isEqualToString:@"BMP"]) {
-        CurrentMovieFormat = SAVE_BMP;
-    } else if ([EvolutionImageFileext isEqualToString:@"eps"] 
-               || [EvolutionImageFileext isEqualToString:@"EPS"]) {
-        CurrentMovieFormat = SAVE_EPS;
-    } else if ([EvolutionImageFileext isEqualToString:@"ps"] 
-               || [EvolutionImageFileext isEqualToString:@"PS"]) {
-        CurrentMovieFormat = SAVE_PS;
-    } else if ([EvolutionImageFileext isEqualToString:@"pdf"] 
-               || [EvolutionImageFileext isEqualToString:@"PDF"]) {
-        CurrentMovieFormat = SAVE_PDF;
-    } else {
+    if(CurrentMovieFormat == SAVE_UNDEFINED){
         CurrentMovieFormat = [[defaults stringForKey:@"MovieFormatID"] intValue];
+    }
+    if(CurrentMovieFormat == SAVE_QT_MOVIE){
         EvolutionImageFilename = [EvolutionImageFilehead stringByAppendingPathExtension:@"mov"];
     }
+
     [self SaveQTmovieEvolution];
 
 }

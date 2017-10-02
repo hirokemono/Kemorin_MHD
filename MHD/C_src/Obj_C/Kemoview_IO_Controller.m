@@ -102,40 +102,26 @@
 
 -(void) SelectImageFileFormat:(NSString *)ImageFilename
 {
-    NSInteger id_format;
-    
     NSUserDefaults* defaults = [_user_defaults_controller defaults];
     CurrentImageFormat = [[defaults stringForKey:@"ImageFormatID"] intValue];
     
     NSString * ImageFilehead =  [ImageFilename stringByDeletingPathExtension];
     NSString * ImageFileext =   [ImageFilename pathExtension];
+    NSInteger id_format = [_movieMakerController SetImageFileFormatID:ImageFileext];
     // NSLog(@" ImageFilename = %@",  ImageFilename);
     // NSLog(@" ImageFilehead = %@",  ImageFilehead);
     
-    if([ImageFileext isEqualToString:@"png"]) {
-        id_format = SAVE_PNG;
-    }
-    else if([ImageFileext isEqualToString:@"bmp"]){
-        id_format = SAVE_BMP;
-    }
-    else if([ImageFileext isEqualToString:@"eps"]){
-        id_format = SAVE_EPS;
-    }
-    else if([ImageFileext isEqualToString:@"pdf"]){
-        id_format = SAVE_PDF;
-    }
-    else if([ImageFileext isEqualToString:@"ps"]){
-        id_format = SAVE_PS;
-    }
-    else {
+    
+    if(id_format == SAVE_UNDEFINED || id_format == SAVE_QT_MOVIE){
         id_format = (int) CurrentImageFormat;
-    };
+    }
     
     if(id_format == SAVE_PNG){
-        NSString *FileName =  [ImageFilehead stringByAppendingString:@".png"];
-        [_movieMakerController SaveKemoviewImageFile:FileName];
+        [_movieMakerController SaveKemoviewPNGFile:ImageFilehead];
+    } else if(id_format == SAVE_BMP){
+        [_movieMakerController SaveKemoviewBMPFile:ImageFilehead];
     } else {
-        write_kemoviewer_window_to_file(id_format, [ImageFilehead UTF8String]);
+        write_kemoviewer_window_to_vector_file(id_format, [ImageFilehead UTF8String]);
     }
     
     [_kemoviewer UpdateImage];

@@ -3,6 +3,7 @@
 
 #include "gl_buffer_2_gl2ps.h"
 
+#define I_BUFFERSIZE 10000000
 
 void gl_buffer_2_ps_gl2ps(int size, int doSort, const char *filehead){
 	FILE *fp;
@@ -85,4 +86,13 @@ void gl_buffer_2_pdf_gl2ps(int size, int doSort, const char *filehead){
 	
 	return;
 };
+
+void sel_gl_buffer_2_vector_img(int iflag_img, const char *filehead){
+	
+	if (iflag_img == SAVE_EPS) { gl_buffer_2_eps_gl2ps(I_BUFFERSIZE, IONE, filehead); }
+	else if (iflag_img == SAVE_PDF) { gl_buffer_2_pdf_gl2ps(I_BUFFERSIZE, IONE, filehead); }
+	else if (iflag_img == SAVE_PS) { gl_buffer_2_ps_gl2ps(I_BUFFERSIZE, IONE, filehead); };
+	
+	return;
+}
 

@@ -13,4 +13,6 @@ void gl_buffer_2_ps_gl2ps(int size, int doSort, const char *filehead);
 void gl_buffer_2_eps_gl2ps(int size, int doSort, const char *filehead);
 void gl_buffer_2_pdf_gl2ps(int size, int doSort, const char *filehead);
 
+void sel_gl_buffer_2_vector_img(int iflag_img, const char *filehead);
+	
 #endif
