@@ -17,7 +17,7 @@
 		1825197616A11A24006D5158 /* delete_file_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1825197416A11A24006D5158 /* delete_file_c.c */; };
 		1825198116A28AF9006D5158 /* read_psf_vtk_data_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1825198016A28AF9006D5158 /* read_psf_vtk_data_c.c */; };
 		182D092116C040ED0073D215 /* glsl.c in Sources */ = {isa = PBXBuildFile; fileRef = 182D091F16C040EC0073D215 /* glsl.c */; };
-		184432BB17177C23005D8BE3 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 184432BA17177C23005D8BE3 /* libz.1.2.5.dylib */; };
+		18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5A2711F832A8A005AF658 /* libz.tbd */; };
 		18D7E72B1562D359009B05FF /* cal_surface_center_normal_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */; };
 		18D7E72C1562D359009B05FF /* check_psf_data_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6511562D359009B05FF /* check_psf_data_viewer_c.c */; };
 		18D7E72D1562D359009B05FF /* check_viewer_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6531562D359009B05FF /* check_viewer_mesh_c.c */; };
@@ -141,11 +141,10 @@
 		1825198216A28B14006D5158 /* read_psf_vtk_data_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = read_psf_vtk_data_c.h; sourceTree = "<group>"; };
 		182D091F16C040EC0073D215 /* glsl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glsl.c; sourceTree = "<group>"; };
 		182D092016C040ED0073D215 /* glsl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glsl.h; sourceTree = "<group>"; };
-		184432BA17177C23005D8BE3 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = /usr/lib/libz.1.2.5.dylib; sourceTree = "<absolute>"; };
-		184432BD17177C31005D8BE3 /* zlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = zlib.h; path = /usr/include/zlib.h; sourceTree = "<absolute>"; };
 		18601A6115D9B0D20015F6B0 /* kemoviewer_GLUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GLUI; path = ../../programs/VIEWER/kemoviewer_GLUI; sourceTree = "<group>"; };
 		18601A6215D9B0D20015F6B0 /* kemoviewer_GLUT */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GLUT; path = ../../programs/VIEWER/kemoviewer_GLUT; sourceTree = "<group>"; };
 		18601A6315D9B0D20015F6B0 /* kemoviewer_GTK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = kemoviewer_GTK; path = ../../programs/VIEWER/kemoviewer_GTK; sourceTree = "<group>"; };
+		18B5A2711F832A8A005AF658 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cal_surface_center_normal_c.c; sourceTree = "<group>"; };
 		18D7E6501562D359009B05FF /* cal_surface_center_normal_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cal_surface_center_normal_c.h; sourceTree = "<group>"; };
 		18D7E6511562D359009B05FF /* check_psf_data_viewer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = check_psf_data_viewer_c.c; sourceTree = "<group>"; };
@@ -380,7 +379,7 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				1804E5E6125F028300EC8EAA /* OpenGL.framework in Frameworks */,
 				180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */,
-				184432BB17177C23005D8BE3 /* libz.1.2.5.dylib in Frameworks */,
+				18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,8 +403,6 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				184432BA17177C23005D8BE3 /* libz.1.2.5.dylib */,
-				184432BD17177C31005D8BE3 /* zlib.h */,
 				180FF7D11DDFB55500D20198 /* CoreMedia.framework */,
 				180FF7CF1DDFB55000D20198 /* CoreVideo.framework */,
 				180FF7CD1DDFB54700D20198 /* AVFoundation.framework */,
@@ -739,6 +736,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18B5A2711F832A8A005AF658 /* libz.tbd */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
