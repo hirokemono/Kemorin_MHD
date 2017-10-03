@@ -4,9 +4,10 @@
 !      Written by H. Matsui
 !
 !!      subroutine SPH_analyze_zm_energies                              &
-!!     &         (i_step, files_param, viz_step, sph_mesh,              &
-!!     &          ipol, rj_fld, t_IO, fld_IO, visval)
+!!     &         (i_step, files_param, viz_step,                        &
+!!     &          SPH_MHD, t_IO, fld_IO, visval)
 !!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(sph_grids), intent(in) :: sph_mesh
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -36,12 +37,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_zm_energies                                &
-     &         (i_step, files_param, viz_step, sph_mesh,                &
-     &          ipol, rj_fld, t_IO, fld_IO, visval)
+     &         (i_step, files_param, viz_step,                          &
+     &          SPH_MHD, t_IO, fld_IO, visval)
 !
       use t_phys_address
-      use t_spheric_mesh
-      use t_phys_data
+      use t_SPH_mesh_field_data
       use t_time_data
       use t_field_data_IO
       use t_ctl_params_sph_trans
@@ -58,11 +58,9 @@
       integer(kind = kint), intent(in) :: i_step
       type(SPH_TRNS_file_IO_params), intent(in) :: files_param
       type(VIZ_step_params), intent(in) :: viz_step
-      type(sph_mesh_data), intent(in) :: sph_mesh
-      type(phys_address), intent(in) :: ipol
 !
       integer(kind = kint), intent(inout) :: visval
-      type(phys_data), intent(inout) :: rj_fld
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(field_IO), intent(inout) :: fld_IO
       type(time_data), intent(inout) :: t_IO
 !
@@ -81,30 +79,27 @@
 !
         if(files_param%org_rj_file_IO%iflag_IO .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(fld_IO, rj_fld)
+          call set_rj_phys_data_from_IO(fld_IO, SPH_MHD%fld)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
           call r_interpolate_sph_fld_from_IO                            &
-     &       (fld_IO, sph_mesh%sph%sph_rj, ipol, rj_fld)
+     &       (fld_IO, SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
         end if
 !
-!        call set_rj_phys_for_pol_kene                                  &
-!     &     (sph_mesh%sph%sph_rj%nidx_rj, rj_fld%n_point,               &
-!     &      rj_fld%num_phys, rj_fld%ntot_phys, rj_fld%phys_name,       &
-!     &      rj_fld%istack_component, rj_fld%d_fld)
+!        call set_rj_phys_for_pol_kene(SPH_MHD%sph%sph_rj, SPH_MHD%fld)
 !
-        call set_rj_phys_for_convective_kene(sph_mesh%sph, rj_fld)
+        call set_rj_phys_for_convective_kene(SPH_MHD%sph, SPH_MHD%fld)
 !
 !  spherical transform for vector
         call sph_b_trans_all_field                                      &
-     &     (sph_mesh%sph, sph_mesh%sph_comms, femmesh_STR%mesh,         &
-     &      trns_param, fld_rtp_TRNS, rj_fld, field_STR, WK_sph_TRNS)
+     &     (SPH_MHD%sph, SPH_MHD%comms, femmesh_STR%mesh,               &
+     &      trns_param, fld_rtp_TRNS, SPH_MHD%fld,                      &
+     &      field_STR, WK_sph_TRNS)
         call cal_zm_energy_to_pressure                                  &
-     &     (sph_mesh%sph%sph_rtp%nidx_rtp, field_STR%n_point,           &
+     &     (SPH_MHD%sph%sph_rtp%nidx_rtp, field_STR%n_point,            &
      &      field_STR%num_phys, field_STR%ntot_phys,                    &
-     &      field_STR%istack_component, rj_fld, field_STR%d_fld)
-!
+     &      field_STR%istack_component, SPH_MHD%fld, field_STR%d_fld)
       end if
 !
       end subroutine SPH_analyze_zm_energies
@@ -147,31 +142,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_rj_phys_for_pol_kene                               &
-     &         (nidx_rj, n_point, num_phys_rj, ntot_phys_rj,            &
-     &          phys_name_rj, istack_phys_comp_rj, d_rj)
+      subroutine set_rj_phys_for_pol_kene(sph_rj, rj_fld)
 !
       use m_phys_labels
+      use t_spheric_rj_data
+      use t_phys_data
 !
-      integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: n_point
-      integer(kind = kint), intent(in) ::  num_phys_rj, ntot_phys_rj
-      character (len=kchara), intent(in) :: phys_name_rj(num_phys_rj)
-      integer (kind=kint), intent(in)                                   &
-     &       :: istack_phys_comp_rj(0:num_phys_rj)
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: inod, ist_fld, i, k, j
 !
 !
-      do i = 1, num_phys_rj
-        if     (phys_name_rj(i) .eq. fhd_velo) then
-          ist_fld = istack_phys_comp_rj(i-1)+1
+      do i = 1, rj_fld%num_phys
+        if(rj_fld%phys_name(i) .eq. fhd_velo) then
+          ist_fld = rj_fld%istack_component(i-1)+1
 !$omp parallel do private(j,inod)
-          do k = 1, nidx_rj(1)
-            do j = 1, nidx_rj(2)
-              inod = (k-1)*nidx_rj(2) + j
-              d_rj(inod,ist_fld+2) =  zero
+          do k = 1, sph_rj%nidx_rj(1)
+            do j = 1, sph_rj%nidx_rj(2)
+              inod = (k-1) * sph_rj%nidx_rj(2) + j
+              rj_fld%d_fld(inod,ist_fld+2) =  zero
             end do
           end do
 !$omp end parallel do

@@ -10,8 +10,7 @@
       module m_spheric_data_transform
 !
       use m_precision
-      use t_spheric_mesh
-      use t_phys_data
+      use t_SPH_mesh_field_data
       use t_time_data
       use t_field_data_IO
       use t_file_IO_parameter
@@ -19,16 +18,7 @@
       implicit none
 !
 !>  Structure of grid and spectr data for spherical spectr method
-      type(sph_mesh_data), save :: sph_mesh_trans
-!
-!>   address for spectr data (poloidal component for vector)
-      type(phys_address), save :: ipol_trans
-!>   address for radial gradient for poloidal component
-      type(phys_address), save :: idpdr_trans
-!>   address for toroidal component
-      type(phys_address), save :: itor_trans
-!>  Structure for field data
-      type(phys_data), save :: rj_fld_trans
+      type(SPH_mesh_field_data), save :: SPH_TRNS
 !
 !>  Structure for field data IO
      type(field_IO), save :: sph_trns_IO

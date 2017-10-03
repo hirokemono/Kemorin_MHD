@@ -4,12 +4,10 @@
 !      Written by H. Matsui
 !
 !!      subroutine SPH_analyze_zm_streamfunc                            &
-!!     &         (i_step, files_param, viz_step, sph_mesh,              &
-!!     &          ipol, idpdr, itor, rj_fld, t_IO, fld_IO, visval)
+!!     &         (i_step, files_param, viz_step,                        &
+!!     &          SPH_MHD, t_IO, fld_IO, visval)
 !!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
-!!        type(sph_mesh_data), intent(in) :: sph_mesh
-!!        type(phys_address), intent(in) :: ipol, idpdr, itor
-!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(sph_grids), intent(in) :: sph_mesh
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(time_data), intent(inout) :: t_IO
@@ -38,12 +36,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_zm_streamfunc                              &
-     &         (i_step, files_param, viz_step, sph_mesh,                &
-     &          ipol, idpdr, itor, rj_fld, t_IO, fld_IO, visval)
+     &         (i_step, files_param, viz_step,                          &
+     &          SPH_MHD, t_IO, fld_IO, visval)
 !
-      use t_spheric_mesh
-      use t_phys_address
-      use t_phys_data
+      use t_SPH_mesh_field_data
       use t_time_data
       use t_field_data_IO
       use t_ctl_params_sph_trans
@@ -60,9 +56,8 @@
       integer(kind = kint), intent(in) :: i_step
       type(SPH_TRNS_file_IO_params), intent(in) :: files_param
       type(VIZ_step_params), intent(in) :: viz_step
-      type(sph_mesh_data), intent(in) :: sph_mesh
-      type(phys_address), intent(in) :: ipol, idpdr, itor
-      type(phys_data), intent(inout) :: rj_fld
+!
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       integer(kind = kint), intent(inout) :: visval
       type(time_data), intent(inout) :: t_IO
@@ -83,22 +78,22 @@
 !
         if(files_param%org_rj_file_IO%iflag_IO .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(fld_IO, rj_fld)
+          call set_rj_phys_data_from_IO(fld_IO, SPH_MHD%fld)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
           call r_interpolate_sph_fld_from_IO                            &
-     &       (fld_IO, sph_mesh%sph%sph_rj, ipol, rj_fld)
+     &       (fld_IO, SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
         end if
 !
         call set_rj_phys_for_zm_streamfunc                              &
-     &     (ipol, idpdr, itor, sph_mesh%sph%sph_rj%nidx_rj,             &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        call zonal_mean_all_sph_spectr(sph_mesh%sph%sph_rj, rj_fld)
+     &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor,                  &
+     &      SPH_MHD%sph%sph_rj, SPH_MHD%fld)
+        call zonal_mean_all_sph_spectr(SPH_MHD%sph%sph_rj, SPH_MHD%fld)
 !
 !  spherical transform for vector
-        call sph_b_trans_streamline(sph_mesh%sph, sph_mesh%sph_comms,   &
-     &      femmesh_STR%mesh, fld_rtp_TRNS, rj_fld, field_STR)
+        call sph_b_trans_streamline(SPH_MHD%sph, SPH_MHD%comms,         &
+     &      femmesh_STR%mesh, fld_rtp_TRNS, SPH_MHD%fld, field_STR)
       end if
 !
       end subroutine SPH_analyze_zm_streamfunc
@@ -207,32 +202,35 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_rj_phys_for_zm_streamfunc(ipol, idpdr, itor,       &
-     &          nidx_rj, n_point, ntot_phys_rj, d_rj)
+     &          sph_rj, rj_fld)
 !
       use m_phys_labels
+      use t_spheric_rj_data
       use t_phys_address
+      use t_phys_data
 !
       type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(sph_rj_grid), intent(in) :: sph_rj
 !
-      integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: inod, k, j
 !
 !
       if(ipol%i_velo .gt. 0) then
 !$omp parallel do private(j,inod)
-        do k = 1, nidx_rj(1)
-          do j = 1, nidx_rj(2)
-            inod = (k-1)*nidx_rj(2) + j
-            d_rj(inod,itor%i_vort ) =  d_rj(inod,itor%i_velo)
-            d_rj(inod,ipol%i_vort ) =  zero
-            d_rj(inod,idpdr%i_vort) =  zero
+        do k = 1, sph_rj%nidx_rj(1)
+          do j = 1, sph_rj%nidx_rj(2)
+            inod = (k-1)*sph_rj%nidx_rj(2) + j
+            rj_fld%d_fld(inod,itor%i_vort )                             &
+     &           =  rj_fld%d_fld(inod,itor%i_velo)
+            rj_fld%d_fld(inod,ipol%i_vort ) =  zero
+            rj_fld%d_fld(inod,idpdr%i_vort) =  zero
 !
-            d_rj(inod,itor%i_velo ) =  d_rj(inod,ipol%i_velo)
-            d_rj(inod,ipol%i_velo ) =  zero
-            d_rj(inod,idpdr%i_velo) =  zero
+            rj_fld%d_fld(inod,itor%i_velo )                             &
+     &           =  rj_fld%d_fld(inod,ipol%i_velo)
+            rj_fld%d_fld(inod,ipol%i_velo ) =  zero
+            rj_fld%d_fld(inod,idpdr%i_velo) =  zero
            end do
         end do
 !$omp end parallel do
@@ -240,16 +238,18 @@
 !
       if(ipol%i_magne .gt. 0) then
 !$omp parallel do private(j,inod)
-        do k = 1, nidx_rj(1)
-          do j = 1, nidx_rj(2)
-            inod = (k-1)*nidx_rj(2) + j
-            d_rj(inod,itor%i_current ) =  d_rj(inod,itor%i_magne)
-            d_rj(inod,ipol%i_current ) =  zero
-            d_rj(inod,idpdr%i_current) =  zero
+        do k = 1, sph_rj%nidx_rj(1)
+          do j = 1, sph_rj%nidx_rj(2)
+            inod = (k-1)*sph_rj%nidx_rj(2) + j
+            rj_fld%d_fld(inod,itor%i_current )                          &
+     &           =  rj_fld%d_fld(inod,itor%i_magne)
+            rj_fld%d_fld(inod,ipol%i_current ) =  zero
+            rj_fld%d_fld(inod,idpdr%i_current) =  zero
 !
-            d_rj(inod,itor%i_magne ) =  d_rj(inod,ipol%i_magne)
-            d_rj(inod,ipol%i_magne ) =  zero
-            d_rj(inod,idpdr%i_magne) =  zero
+            rj_fld%d_fld(inod,itor%i_magne )                            &
+     &           =  rj_fld%d_fld(inod,ipol%i_magne)
+            rj_fld%d_fld(inod,ipol%i_magne ) =  zero
+            rj_fld%d_fld(inod,idpdr%i_magne) =  zero
            end do
         end do
 !$omp end parallel do

@@ -3,10 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_init_gauss_back_trans                            &
-!!     &         (files_param, sph_mesh, ipol, rj_fld)
+!!      subroutine SPH_init_gauss_back_trans(files_param, SPH_MHD)
 !!      subroutine SPH_analyze_gauss_back_trans                         &
-!!     &         (i_step, viz_step, sph_mesh, ipol, rj_fld, visval)
+!!     &         (i_step, viz_step, SPH_MHD, visval)
 !
       module SPH_analyzer_gauss_b_trans
 !
@@ -16,9 +15,7 @@
 !
       use m_SPH_transforms
       use t_work_4_sph_trans
-      use t_spheric_mesh
-      use t_phys_address
-      use t_phys_data
+      use t_SPH_mesh_field_data
       use t_phys_name_4_sph_trans
 !
       implicit none
@@ -31,8 +28,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_gauss_back_trans                              &
-     &         (files_param, sph_mesh, ipol, rj_fld)
+      subroutine SPH_init_gauss_back_trans(files_param, SPH_MHD)
 !
       use m_legendre_transform_list
       use t_ctl_params_sph_trans
@@ -45,25 +41,24 @@
       use sph_transfer_all_field
 !
       type(SPH_TRNS_file_IO_params), intent(in) :: files_param
-      type(sph_mesh_data), intent(inout) :: sph_mesh
-      type(phys_address), intent(inout) :: ipol
-      type(phys_data), intent(inout) :: rj_fld
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-      call copy_sph_name_rj_to_rtp(rj_fld, fld_rtp_TRNS)
+      call copy_sph_name_rj_to_rtp(SPH_MHD%fld, fld_rtp_TRNS)
 !
 !  ------    set original spectr modes
 !
-      call set_sph_magne_address(rj_fld, ipol)
+      call set_sph_magne_address(SPH_MHD%fld, SPH_MHD%ipol)
       call set_cmb_icb_radial_point                                     &
      &   (files_param%cmb_radial_grp, files_param%icb_radial_grp,       &
-     &    sph_mesh%sph_grps%radial_rj_grp)
+     &    SPH_MHD%groups%radial_rj_grp)
 !
 !  ---- allocate spectr data
 !
-      call alloc_phys_data_type(sph_mesh%sph%sph_rj%nnod_rj, rj_fld)
+      call alloc_phys_data_type                                         &
+     &   (SPH_MHD%sph%sph_rj%nnod_rj, SPH_MHD%fld)
 !
 !  ---- initialize spherical harmonics transform
 !
@@ -71,17 +66,17 @@
       call copy_sph_trans_nums_from_rtp(fld_rtp_TRNS)
       call initialize_sph_trans(fld_rtp_TRNS%ncomp_trans,               &
      &    fld_rtp_TRNS%num_vector, fld_rtp_TRNS%nscalar_trans,          &
-     &    sph_mesh%sph, sph_mesh%sph_comms, trns_gauss, WK_sph_TRNS)
-      call init_pole_transform(sph_mesh%sph%sph_rtp)
+     &    SPH_MHD%sph, SPH_MHD%comms, trns_gauss, WK_sph_TRNS)
+      call init_pole_transform(SPH_MHD%sph%sph_rtp)
       call allocate_d_pole_4_all_trans                                  &
-     &   (fld_rtp_TRNS, sph_mesh%sph%sph_rtp)
+     &   (fld_rtp_TRNS, SPH_MHD%sph%sph_rtp)
 !
       end subroutine SPH_init_gauss_back_trans
 !
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_gauss_back_trans                           &
-     &         (i_step, viz_step, sph_mesh, ipol, rj_fld, visval)
+     &         (i_step, viz_step, SPH_MHD, visval)
 !
       use t_ctl_params_sph_trans
       use t_VIZ_step_parameter
@@ -94,11 +89,9 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(VIZ_step_params), intent(in) :: viz_step
-      type(sph_mesh_data), intent(in) :: sph_mesh
-      type(phys_address), intent(in) :: ipol
 !
       integer(kind = kint), intent(inout) :: visval
-      type(phys_data), intent(inout) :: rj_fld
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       character(len=kchara) :: fname_tmp
 !
@@ -121,14 +114,16 @@
         if (iflag_debug.gt.0) write(*,*)                                &
      &                        'set_poloidal_b_by_gauss_coefs'
         call set_poloidal_b_by_gauss_coefs                              &
-     &     (sph_mesh%sph%sph_rj, ipol, d_gauss_trans, rj_fld)
+     &     (SPH_MHD%sph%sph_rj, SPH_MHD%ipol, d_gauss_trans,            &
+     &      SPH_MHD%fld)
         call dealloc_gauss_global_coefs(d_gauss_trans)
 !
-!        call check_all_field_data(my_rank, rj_fld)
+!        call check_all_field_data(my_rank, SPH_MHD%fld)
 !  spherical transform for vector
         call sph_b_trans_all_field                                      &
-     &     (sph_mesh%sph, sph_mesh%sph_comms, femmesh_STR%mesh,         &
-     &      trns_gauss, fld_rtp_TRNS, rj_fld, field_STR, WK_sph_TRNS)
+     &     (SPH_MHD%sph, SPH_MHD%comms, femmesh_STR%mesh,               &
+     &      trns_gauss, fld_rtp_TRNS, SPH_MHD%fld,                      &
+     &      field_STR, WK_sph_TRNS)
       end if
 !
       end subroutine SPH_analyze_gauss_back_trans

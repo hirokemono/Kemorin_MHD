@@ -60,13 +60,12 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans(t_STR, viz_step_STR, files_STR,   &
-     &    rj_fld_trans, d_gauss_trans, field_STR, WK_sph_TRNS)
+     &    SPH_TRNS%fld, d_gauss_trans, field_STR, WK_sph_TRNS)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh                                   &
-     &   (files_STR%iflag_access_FEM, sph_mesh_trans%sph,               &
-     &    sph_mesh_trans%sph_comms, sph_mesh_trans%sph_grps,            &
+      call load_para_SPH_and_FEM_mesh(files_STR%iflag_access_FEM,       &
+     &    SPH_TRNS%sph, SPH_TRNS%comms, SPH_TRNS%groups,                &
      &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,             &
      &    files_STR%mesh_file_IO, gen_sph_TRNS)
 !
@@ -80,8 +79,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
-      call SPH_initialize_back_trans(files_STR, sph_mesh_trans,         &
-     &    ipol_trans, idpdr_trans, itor_trans, rj_fld_trans,            &
+      call SPH_initialize_back_trans(files_STR, SPH_TRNS,               &
      &    time_IO_TRNS, sph_trns_IO)
 !
 !  -------------------------------
@@ -102,8 +100,7 @@
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
         call SPH_analyze_zm_energies(i_step, files_STR, viz_step_STR,   &
-     &      sph_mesh_trans, ipol_trans, rj_fld_trans,                   &
-     &      time_IO_TRNS, sph_trns_IO, visval)
+     &      SPH_TRNS, time_IO_TRNS, sph_trns_IO, visval)
 !
         call FEM_analyze_back_trans                                     &
      &     (files_STR%ucd_file_IO, time_IO_TRNS, ucd_SPH_TRNS, i_step,  &

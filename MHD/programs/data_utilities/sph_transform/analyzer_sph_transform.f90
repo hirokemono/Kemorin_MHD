@@ -51,13 +51,12 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_sph_transform'
       call set_control_4_sph_transform(t_STR, viz_step_STR, files_STR,  &
-     &    rj_fld_trans, d_gauss_trans, field_STR, WK_sph_TRNS)
+     &    SPH_TRNS%fld, d_gauss_trans, field_STR, WK_sph_TRNS)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh                                   &
-     &   (files_STR%iflag_access_FEM, sph_mesh_trans%sph,               &
-     &    sph_mesh_trans%sph_comms, sph_mesh_trans%sph_grps,            &
+      call load_para_SPH_and_FEM_mesh(files_STR%iflag_access_FEM,       &
+     &    SPH_TRNS%sph, SPH_TRNS%comms, SPH_TRNS%groups,                &
      &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,             &
      &    files_STR%mesh_file_IO, gen_sph_TRNS)
 !
@@ -68,12 +67,12 @@
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_sph_trans'
-      call SPH_initialize_sph_trans(sph_mesh_trans, rj_fld_trans)
+      call SPH_initialize_sph_trans(SPH_TRNS)
 !
 !    Set field IOP array by spectr fields
       call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
-      call SPH_to_FEM_bridge_sph_trans(rj_fld_trans, sph_trns_IO)
+      call SPH_to_FEM_bridge_sph_trans(SPH_TRNS%fld, sph_trns_IO)
       call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_transform end'
 !
@@ -94,8 +93,7 @@
 !
 !   Spherical transform
         call SPH_analyze_sph_trans                                      &
-     &     (i_step, files_STR%sph_file_IO, sph_mesh_trans,              &
-     &      rj_fld_trans, sph_trns_IO)
+     &     (i_step, files_STR%sph_file_IO, SPH_TRNS, sph_trns_IO)
       end do
 !
       call FEM_finalize_sph_trans                                       &
