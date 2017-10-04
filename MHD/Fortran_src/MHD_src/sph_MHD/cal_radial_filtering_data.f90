@@ -28,8 +28,8 @@
       use calypso_mpi
 !
       use t_filter_coefficients
-      use t_spheric_mesh
       use t_spheric_parameter
+      use t_group_data
 !
       implicit none
 !

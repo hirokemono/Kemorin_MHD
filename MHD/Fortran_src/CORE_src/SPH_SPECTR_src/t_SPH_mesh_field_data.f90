@@ -45,9 +45,9 @@
 !
       use m_precision
       use m_spheric_constants
-      use t_spheric_mesh
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_spheric_group
       use t_phys_address
       use t_phys_data
 !

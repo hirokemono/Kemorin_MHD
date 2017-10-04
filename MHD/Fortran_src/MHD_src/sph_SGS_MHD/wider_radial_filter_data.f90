@@ -15,7 +15,6 @@
       use calypso_mpi
 !
       use t_filter_coefficients
-      use t_spheric_mesh
       use t_spheric_parameter
 !
       implicit none

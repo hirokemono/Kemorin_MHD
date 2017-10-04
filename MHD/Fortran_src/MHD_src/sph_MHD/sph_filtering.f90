@@ -34,6 +34,7 @@
       use t_control_parameter
       use t_physical_property
       use t_spheric_parameter
+      use t_spheric_group
       use t_phys_data
       use t_sph_filtering_data
       use t_SGS_model_coefs

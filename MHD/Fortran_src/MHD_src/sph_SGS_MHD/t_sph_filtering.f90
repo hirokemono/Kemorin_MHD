@@ -31,8 +31,8 @@
       use m_machine_parameter
 !
       use t_control_parameter
-      use t_spheric_mesh
-      use t_spheric_rj_data
+      use t_spheric_parameter
+      use t_spheric_group
       use t_sph_filtering_data
       use t_filter_coefficients
       use t_SGS_control_parameter
