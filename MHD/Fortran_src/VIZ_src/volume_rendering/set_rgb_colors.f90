@@ -194,35 +194,35 @@
       real(kind = kreal), intent(in) :: rnorm
       real(kind = kreal), intent(inout) ::  r, g, b
 !
-      real(kind = kreal), parameter :: blue = zero
-      real(kind = kreal), parameter :: ocean = one / four
-      real(kind = kreal), parameter :: green = one / two
-      real(kind = kreal), parameter :: yellow = three / four
-      real(kind = kreal), parameter :: red =    one
+      real(kind = kreal), parameter :: abyss = zero
+      real(kind = kreal), parameter :: blue =  0.2d0
+      real(kind = kreal), parameter :: white = half
+      real(kind = kreal), parameter :: red =   0.8d0
+      real(kind = kreal), parameter :: blood =  one
 !
 !
-      if (rnorm .lt. blue ) then
+      if (rnorm .lt. abyss ) then
         r = zero
+        g = 0.2d0
+        b = 0.4d0
+      else if (rnorm .ge. abyss .and. rnorm.lt.blue) then
+        r = zero
+        g = blue - rnorm
+        b = 0.4d0 + three * rnorm
+      else if (rnorm .ge. blue .and. rnorm.lt.white) then
+        r = (rnorm - blue) * ten / three
+        g = (rnorm - blue) * ten / three
+        b = one
+      else if (rnorm .ge. white .and. rnorm.lt.red) then
+        r = one
+        g = one - (rnorm - white) * ten / three
+        b = one - (rnorm - white) * ten / three
+      else if (rnorm .ge. red .and. rnorm.lt. blood) then
+        r = one - (rnorm - red) * five / two
         g = zero
-        b = one
-      else if (rnorm .ge. blue .and. rnorm.lt.ocean) then
-        r = zero
-        g = rnorm * four
-        b = one
-      else if (rnorm .ge. ocean .and. rnorm.lt.green) then
-        r = zero
-        g = one
-        b = (green-rnorm) * four
-      else if (rnorm .ge. green .and. rnorm.lt.yellow) then
-        r = (rnorm-green) * four
-        g = one
         b = zero
-      else if (rnorm .ge. yellow .and. rnorm.lt. red) then
-        r = one
-        g = (red-rnorm) * four
-        b = zero
-      else if (rnorm .ge. red ) then
-        r = one
+      else if (rnorm .ge. blood) then
+        r = half
         g = zero
         b = zero
       end if

@@ -86,34 +86,34 @@ void color_sym_grayscale_c(double rnorm, double *r, double *g, double *b){
 }
 
 void color_redblue_c(double rnorm, double *r, double *g, double *b){
-	double blue =   ZERO;
-	double ocean =  ONE / FOUR;
-	double green =  ONE / TWO;
-	double yellow = THREE / FOUR;
-	double red =    ONE;
+	double abyss =   ZERO;
+	double blue =     0.2;
+	double white =  ONE / TWO;
+	double red =      0.8;
+	double blood =    ONE;
 	
-	if (rnorm < blue){
+	if (rnorm < abyss){
 		*r = ZERO;
-		*g = ZERO;
+		*g = 0.2;
+		*b = 0.4;
+	} else if (rnorm >= abyss && rnorm < blue){
+		*r = ZERO;
+		*g = blue - rnorm;
+		*b = 0.4 - 3.0 * rnorm;
+	} else if (rnorm >= blue && rnorm < white){
+		*r = (rnorm - blue) * 10.0 / 3.0;
+		*g = (rnorm - blue) * 10.0 / 3.0;
 		*b = ONE;
-	} else if (rnorm >= blue && rnorm < ocean){
-		*r = ZERO;
-		*g = rnorm * FOUR;
-		*b = ONE;
-	} else if (rnorm >= ocean && rnorm < green){
-		*r = ZERO;
-		*g = ONE;
-		*b = (green-rnorm) * FOUR;
-	} else if (rnorm >= green && rnorm < yellow){
-		*r = (rnorm-green) * FOUR;
-		*g = ONE;
-		*b = ZERO;
-	} else if (rnorm >= yellow && rnorm < red){
+	} else if (rnorm >= white && rnorm < red){
 		*r = ONE;
-		*g = (red-rnorm) * FOUR;
+		*g = ONE - (rnorm - white) * 10.0 / 3.0;
+		*b = ONE - (rnorm - white) * 10.0 / 3.0;
+	} else if (rnorm >= red && rnorm < blood){
+		*r = ONE - (rnorm - red) * 5.0 / 2.0;
+		*g = ZERO;
 		*b = ZERO;
 	} else {
-		*r = ONE;
+		*r = HALF;
 		*g = ZERO;
 		*b = ZERO;
 	}
