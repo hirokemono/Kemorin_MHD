@@ -14,8 +14,6 @@
 !
 !>      Structure for gauss coeffciients
       type(picked_spectrum_data), save :: gauss_org
-!>      File prefix for Gauss coefficients file
-      character(len = kchara) :: gauss_coefs_file_prefix
 !
       real(kind = kreal), allocatable :: ave_gauss(:)
       character(len=kchara) :: tave_pick_gauss_head
@@ -27,16 +25,15 @@
 !
 !
       write(*,*) 'input picked gauss coefficients file prefix'
-      read(5,*) gauss_coefs_file_prefix
+      read(5,*) gauss_org%file_prefix
 !
       write(tave_pick_gauss_head,'(a6,a)')                              &
-        't_ave_', trim(gauss_coefs_file_prefix)
+        't_ave_', trim(gauss_org%file_prefix)
 !
       write(*,*) 'input start, end, increment steps'
       read(5,*) istep_start, istep_end, istep_inc
 !
-      call open_gauss_coefs_read_monitor                                &
-     &   (id_pick, gauss_coefs_file_prefix, gauss_org)
+      call open_gauss_coefs_read_monitor(id_pick, gauss_org)
 !
       allocate( ave_gauss(gauss_org%num_sph_mode))
       ave_gauss = 0.0d0
@@ -70,8 +67,8 @@
 !
       deallocate(ave_gauss)
 !
-      call write_gauss_coefs_4_monitor                                  &
-     &   (izero, i_step, time, tave_pick_gauss_head, gauss_org)
+      gauss_org%file_prefix = tave_pick_gauss_head
+      call write_gauss_coefs_4_monitor(izero, i_step, time, gauss_org)
 !
       write(*,*) '***** program finished *****'
       stop

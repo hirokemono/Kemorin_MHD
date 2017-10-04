@@ -26,18 +26,14 @@
 !
 !
       write(*,*) 'input picked RMS evolution file header'
-      read(5,*) pickup_sph_rms_head
-      write(*,*) 'input time averaged file header'
-      read(5,*) tave_pick_sph_rms_head
-      if(tave_pick_sph_rms_head .eq. pickup_sph_rms_head) then
-        write(*,*) 'set different file header for averaged data'
-        stop
-      end if
+      read(5,*) pick_rms%file_prefix
+      write(tave_pick_sph_rms_head,'(a,a)')                             &
+     &         't_ave_', trim(pick_rms%file_prefix)
 !
       write(*,*) 'input start, end, increment steps'
       read(5,*) istep_start, istep_end, istep_inc
 !
-      call open_sph_spec_read(id_pick, pickup_sph_rms_head, pick_rms)
+      call open_sph_spec_read(id_pick, pick_rms)
 !
       num = pick_rms%num_sph_mode * pick_rms%num_layer
       allocate( ave_rms_pick_sph(pick_rms%ntot_comp_rj,num) )
@@ -77,9 +73,8 @@
 !
       deallocate(ave_rms_pick_sph)
 !
-      pickup_sph_rms_head = tave_pick_sph_rms_head
-      call write_sph_spec_monitor                                       &
-     &   (pickup_sph_rms_head, izero, i_step, time, pick_rms)
+      pick_rms%file_prefix = tave_pick_sph_rms_head
+      call write_sph_spec_monitor(izero, i_step, time, pick_rms)
 !
       write(*,*) '***** program finished *****'
       stop

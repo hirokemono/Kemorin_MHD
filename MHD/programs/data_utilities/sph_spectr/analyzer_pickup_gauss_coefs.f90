@@ -112,8 +112,7 @@
      &      rj_fld_spec%n_point, rj_fld_spec%ntot_phys,                 &
      &      rj_fld_spec%d_fld, gauss_u)
         call write_gauss_coefs_4_monitor                                &
-     &     (my_rank, i_step, t_SHR%time_d%time,                         &
-     &      gauss_coefs_file_prefix, gauss_u)
+     &     (my_rank, i_step, t_SHR%time_d%time, gauss_u)
       end do
 !
       end subroutine analyze_pick_gauss_coef

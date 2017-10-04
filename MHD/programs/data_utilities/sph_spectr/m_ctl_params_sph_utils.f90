@@ -58,19 +58,12 @@
 !>        Structure for pickup list
       type(picked_spectrum_data), save :: pick_rms1
 !
-      character(len = kchara) :: pickup_sph_head =  'picked_ene_spec'
-      character(len = kchara) :: pickup_sph_rms_head =  'picked_ene_spec'
-!
 !>      Structure for pickup list for gauss coefficients
       type(pickup_mode_list), save :: gauss_list_u
 !>      Structure for gauss coeffciients
 !!      Radius to evaluate Gauss coefficients (Default: 6400km/2200km)
 !!      gauss_u%radius_gl(1) = 2.82
       type(picked_spectrum_data), save :: gauss_u
-!
-!>      File prefix for Gauss coefficients file
-      character(len = kchara) :: gauss_coefs_file_prefix
-!
 !
 !
       integer(kind = kint) :: iflag_org_sph_file_fmt = 0
@@ -184,9 +177,9 @@
       call set_ctl_params_layered_spectr(smonitor_u_ctl%lp_ctl, pwr)
       call set_ctl_params_sph_spectr(smonitor_u_ctl, pwr)
       call set_ctl_params_pick_sph(smonitor_u_ctl%pspec_ctl,            &
-     &    pickup_sph_head, pick_list_u, pick_sph_u)
-      call set_ctl_params_pick_gauss(smonitor_u_ctl%g_pwr,              &
-     &    gauss_coefs_file_prefix, gauss_list_u, gauss_u)
+     &    pick_list_u, pick_sph_u)
+      call set_ctl_params_pick_gauss                                    &
+     &   (smonitor_u_ctl%g_pwr, gauss_list_u, gauss_u)
 !
 !   set physical values
 !

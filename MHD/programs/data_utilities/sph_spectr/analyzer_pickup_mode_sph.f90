@@ -105,8 +105,7 @@
      &      rj_fld_spec%ntot_phys, rj_fld_spec%istack_component,        &
      &      rj_fld_spec%d_fld, pick_sph_u)
         call write_sph_spec_monitor                                     &
-     &     (pickup_sph_head, my_rank, i_step, t_SHR%time_d%time,        &
-     &      pick_sph_u)
+     &     (my_rank, i_step, t_SHR%time_d%time, pick_sph_u)
       end do
 !
       end subroutine evolution

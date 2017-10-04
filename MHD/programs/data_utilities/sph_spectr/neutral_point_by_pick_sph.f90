@@ -37,7 +37,8 @@
       write(*,*) 'input start, end, increment steps'
       read(5,*) istep_start, istep_end, istep_inc
 !
-      call open_sph_spec_read(id_pick, evo_header, pick)
+      pick%file_prefix = evo_header
+      call open_sph_spec_read(id_pick, pick)
       call find_field_address(pick)
 !
       call read_sph_spec_monitor(id_pick, i_step, time, pick, ierr)

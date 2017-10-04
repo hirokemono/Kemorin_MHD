@@ -92,7 +92,7 @@
       integer(kind = kint) :: i_step
 !
 !
-      pickup_sph_rms_head = pickup_sph_head
+      pick_rms1%file_prefix = pick_sph_u%file_prefix
       if (iflag_debug.gt.0) write(*,*) 'init_sph_rms_4_monitor'
       call init_sph_rms_4_monitor                                       &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
@@ -116,8 +116,8 @@
      &      leg_s, ipol_spec, rj_fld_spec, pwr_spec, pick_rms1)
 !
         if (iflag_debug.gt.0) write(*,*) 'write_sph_spec_monitor'
-        call write_sph_spec_monitor(pickup_sph_rms_head, my_rank,       &
-     &      i_step, t_SHR%time_d%time, pick_rms1)
+        call write_sph_spec_monitor                                     &
+     &     (my_rank, i_step, t_SHR%time_d%time, pick_rms1)
       end do
 !
       end subroutine analyze_pick_rms_sph

@@ -94,7 +94,6 @@
       integer(kind = kint) :: i_step
 !
 !
-      pickup_sph_rms_head = pickup_sph_head
       pick_rms1%num_layer = pick_sph_u%num_layer
       if (iflag_debug.gt.0) write(*,*) 'init_sph_rms_4_monitor'
       call init_sph_rms_4_monitor                                       &
@@ -121,13 +120,14 @@
      &      rj_fld_spec, pwr_spec, pick_rms1)
 !
         pick_sph_u%num_layer = 1
+        pick_rms1%file_prefix = pick_sph_u%file_prefix
         pick_rms1%num_layer = pick_sph_u%num_layer
         pick_rms1%id_radius = pick_sph_u%id_radius
         pick_rms1%radius_gl = pick_sph_u%radius_gl
 !
         if (iflag_debug.gt.0) write(*,*) 'write_sph_spec_monitor'
-        call write_sph_spec_monitor(pickup_sph_rms_head, my_rank,       &
-     &      i_step, t_SHR%time_d%time, pick_rms1)
+        call write_sph_spec_monitor                                     &
+     &     (my_rank, i_step, t_SHR%time_d%time, pick_rms1)
       end do
 !
       end subroutine analyze_pick_rms_vol
