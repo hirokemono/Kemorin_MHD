@@ -19,7 +19,7 @@ void set_rgb_from_value_s(struct colormap_params *cmap_s,
 	} else if(cmap_s->id_color_mode == RED_BLUE_MODE){
 		color_redblue_c(rnorm, red, green, blue);
 	} else {
-		color_rainbow_c(rnorm, red, green, blue);
+        color_rainbow_c(rnorm, red, green, blue);
 	}
 	return;
 }

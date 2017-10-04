@@ -95,25 +95,25 @@ void color_redblue_c(double rnorm, double *r, double *g, double *b){
 	if (rnorm < abyss){
 		*r = ZERO;
 		*g = 0.2;
-		*b = 0.4;
+		*b = 0.5;
 	} else if (rnorm >= abyss && rnorm < blue){
 		*r = ZERO;
 		*g = blue - rnorm;
-		*b = 0.4 - 3.0 * rnorm;
+		*b = 0.5 + 2.5 * rnorm;
 	} else if (rnorm >= blue && rnorm < white){
-		*r = (rnorm - blue) * 10.0 / 3.0;
-		*g = (rnorm - blue) * 10.0 / 3.0;
+		*r = (rnorm - blue) * 2.5;
+		*g = (rnorm - blue) * 2.5;
 		*b = ONE;
 	} else if (rnorm >= white && rnorm < red){
 		*r = ONE;
-		*g = ONE - (rnorm - white) * 10.0 / 3.0;
-		*b = ONE - (rnorm - white) * 10.0 / 3.0;
+		*g = (red - rnorm) * 2.5;
+		*b = (red - rnorm) * 2.5;
 	} else if (rnorm >= red && rnorm < blood){
-		*r = ONE - (rnorm - red) * 5.0 / 2.0;
+		*r = ONE - (rnorm - red) * 2.5;
 		*g = ZERO;
 		*b = ZERO;
 	} else {
-		*r = HALF;
+		*r = 0.5;
 		*g = ZERO;
 		*b = ZERO;
 	}

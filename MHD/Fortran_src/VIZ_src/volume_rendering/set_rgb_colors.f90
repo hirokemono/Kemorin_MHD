@@ -204,21 +204,21 @@
       if (rnorm .lt. abyss ) then
         r = zero
         g = 0.2d0
-        b = 0.4d0
+        b = 0.5d0
       else if (rnorm .ge. abyss .and. rnorm.lt.blue) then
         r = zero
         g = blue - rnorm
-        b = 0.4d0 + three * rnorm
+        b = 0.5d0 + 2.5 * rnorm
       else if (rnorm .ge. blue .and. rnorm.lt.white) then
-        r = (rnorm - blue) * ten / three
-        g = (rnorm - blue) * ten / three
+        r = (rnorm - blue) * 2.5
+        g = (rnorm - blue) * 2.5
         b = one
       else if (rnorm .ge. white .and. rnorm.lt.red) then
         r = one
-        g = one - (rnorm - white) * ten / three
-        b = one - (rnorm - white) * ten / three
+        g = (red - rnorm) * 2.5
+        b = (red - rnorm) * 2.5
       else if (rnorm .ge. red .and. rnorm.lt. blood) then
-        r = one - (rnorm - red) * five / two
+        r = one - (rnorm - red) * 2.5
         g = zero
         b = zero
       else if (rnorm .ge. blood) then
