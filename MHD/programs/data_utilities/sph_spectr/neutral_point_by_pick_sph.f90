@@ -45,7 +45,7 @@
       icou = 0
 !
       call set_radius_for_fdm(pick,                                     &
-     &    sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj,       &
+     &    SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
      &    r_2nd_newtral)
       call alloc_neutral_point(pick%num_layer)
 !
@@ -54,8 +54,8 @@
      &     .and. i_step.ge.istep_start) then
 !
           call set_radial_grad_scalars(i_step, time,                    &
-     &        sph_mesh_spec%sph%sph_rj%nidx_rj(1),                      &
-     &        sph_mesh_spec%sph%sph_rj%radius_1d_rj_r,                  &
+     &        SPH_dat_ss%sph%sph_rj%nidx_rj(1),                         &
+     &        SPH_dat_ss%sph%sph_rj%radius_1d_rj_r,                     &
      &        r_2nd_newtral%fdm(1)%dmat, buoyancy_ratio, pick)
           icou = icou + 1
           write(*,*) 'step ', i_step,                                   &

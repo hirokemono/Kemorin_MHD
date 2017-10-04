@@ -105,13 +105,11 @@
       end if
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
-      call init_sph_spec_4_monitor                                      &
-     &   (sph%sph_params%l_truncation, sph%sph_rj,                      &
+      call init_sph_spec_4_monitor(sph%sph_params, sph%sph_rj,          &
      &    rj_fld, monitor%pick_list, monitor%pick_coef)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
-      call init_gauss_coefs_4_monitor                                   &
-     &   (sph%sph_params%l_truncation, sph%sph_rj,                      &
+      call init_gauss_coefs_4_monitor(sph%sph_params, sph%sph_rj,       &
      &    ipol, monitor%gauss_list, monitor%gauss_coef)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'check_gauss_coefs_file'

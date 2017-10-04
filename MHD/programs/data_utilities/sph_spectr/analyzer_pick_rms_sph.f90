@@ -44,13 +44,13 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils(t_SHR, rj_fld_spec, pwr_spec)
+      call set_ctl_data_4_sph_utils(t_SHR, SPH_dat_ss%fld, pwr_spec)
 !
 !       set spectr grids
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh(sph_mesh_spec%sph,                        &
-     &    sph_mesh_spec%sph_comms, sph_mesh_spec%sph_grps)
+      call load_para_sph_mesh                                           &
+     &   (SPH_dat_ss%sph, SPH_dat_ss%comms, SPH_dat_ss%groups)
 !
 !  ------  initialize spectr data
 !
@@ -61,22 +61,23 @@
 !
 !  -------------------------------
 !
-      call set_sph_sprctr_data_address(sph_mesh_spec%sph%sph_rj,        &
-     &    ipol_spec, idpdr_spec, itor_spec, rj_fld_spec)
+      call set_sph_sprctr_data_address(SPH_dat_ss%sph%sph_rj,           &
+     &    SPH_dat_ss%ipol, SPH_dat_ss%idpdr, SPH_dat_ss%itor,           &
+     &    SPH_dat_ss%fld)
 !
       call init_rms_4_sph_spectr                                        &
-     &   (sph_mesh_spec%sph%sph_params,                                 &
-     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec, pwr_spec, WK_pwr_spec)
+     &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
+     &    SPH_dat_ss%fld, pwr_spec, WK_pwr_spec)
 !
       call allocate_work_pick_rms_sph                                   &
-     &   (sph_mesh_spec%sph%sph_rj%nidx_rj(1),                          &
-     &    sph_mesh_spec%sph%sph_rj%nidx_rj(2))
+     &   (SPH_dat_ss%sph%sph_rj%nidx_rj(1),                             &
+     &    SPH_dat_ss%sph%sph_rj%nidx_rj(2))
 !
       call alloc_schmidt_normalize                                      &
-     &   (sph_mesh_spec%sph%sph_rlm%nidx_rlm(2),                        &
-     &    sph_mesh_spec%sph%sph_rj%nidx_rj(2), leg_s)
+     &   (SPH_dat_ss%sph%sph_rlm%nidx_rlm(2),                           &
+     &    SPH_dat_ss%sph%sph_rj%nidx_rj(2), leg_s)
       call copy_sph_normalization_2_rj                                  &
-     &   (sph_mesh_spec%sph%sph_rj, leg_s%g_sph_rj)
+     &   (SPH_dat_ss%sph%sph_rj, leg_s%g_sph_rj)
 !
       end subroutine initialize_pick_rms_sph
 !
@@ -95,8 +96,8 @@
       pick_rms1%file_prefix = pick_sph_u%file_prefix
       if (iflag_debug.gt.0) write(*,*) 'init_sph_rms_4_monitor'
       call init_sph_rms_4_monitor                                       &
-     &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj, pwr_spec, pick_list_u, pick_rms1)
+     &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
+      &   pwr_spec, pick_list_u, pick_rms1)
 !
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
@@ -106,14 +107,14 @@
         call sel_read_step_SPH_field_file(nprocs, my_rank, i_step,      &
      &      spec_fst_param, spec_time_IO, sph_spec_IO)
 !
-        call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
+        call set_rj_phys_data_from_IO(sph_spec_IO, SPH_dat_ss%fld)
         call copy_time_step_data(spec_time_IO, t_SHR%time_d)
 !
 !  evaluate energies
 !
         if (iflag_debug.gt.0) write(*,*) 'pickup_sph_rms_4_monitor'
-        call pickup_sph_rms_4_monitor(sph_mesh_spec%sph%sph_rj,         &
-     &      leg_s, ipol_spec, rj_fld_spec, pwr_spec, pick_rms1)
+        call pickup_sph_rms_4_monitor(SPH_dat_ss%sph%sph_rj, leg_s,     &
+     &      SPH_dat_ss%ipol, SPH_dat_ss%fld, pwr_spec, pick_rms1)
 !
         if (iflag_debug.gt.0) write(*,*) 'write_sph_spec_monitor'
         call write_sph_spec_monitor                                     &

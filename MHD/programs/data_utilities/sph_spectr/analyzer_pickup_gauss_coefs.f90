@@ -46,13 +46,13 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils(t_SHR, rj_fld_spec, pwr_spec)
+      call set_ctl_data_4_sph_utils(t_SHR, SPH_dat_ss%fld, pwr_spec)
 !
 !       set spectr grids
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh(sph_mesh_spec%sph,                        &
-     &    sph_mesh_spec%sph_comms, sph_mesh_spec%sph_grps)
+      call load_para_sph_mesh                                           &
+     &   (SPH_dat_ss%sph, SPH_dat_ss%comms, SPH_dat_ss%groups)
 !
 !  ------  initialize spectr data
 !
@@ -64,14 +64,15 @@
 !  -------------------------------
 !
       call alloc_phys_data_type                                         &
-     &   (sph_mesh_spec%sph%sph_rj%nnod_rj, rj_fld_spec)
+     &   (SPH_dat_ss%sph%sph_rj%nnod_rj, SPH_dat_ss%fld)
 !
       call init_rms_4_sph_spectr                                        &
-     &   (sph_mesh_spec%sph%sph_params,                                 &
-     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec, pwr_spec, WK_pwr_spec)
+     &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
+     &    SPH_dat_ss%fld, pwr_spec, WK_pwr_spec)
 !
-      call set_sph_sprctr_data_address(sph_mesh_spec%sph%sph_rj,        &
-     &    ipol_spec, idpdr_spec, itor_spec, rj_fld_spec)
+      call set_sph_sprctr_data_address(SPH_dat_ss%sph%sph_rj,           &
+     &    SPH_dat_ss%ipol, SPH_dat_ss%idpdr, SPH_dat_ss%itor,           &
+     &    SPH_dat_ss%fld)
 !
       end subroutine initialize_pick_gauss_coef
 !
@@ -82,15 +83,15 @@
       use m_ctl_params_sph_utils
 !
       use copy_rj_phys_data_4_IO
-      use gauss_coefs_monitor_IO
+      use cal_write_sph_monitor_data
       use pickup_gauss_coefficients
 !
       integer(kind = kint) :: i_step
 !
 !
       call init_gauss_coefs_4_monitor                                   &
-     &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj, ipol_spec, gauss_list_u, gauss_u)
+     &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
+     &    SPH_dat_ss%ipol, gauss_list_u, gauss_u)
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
 !
@@ -99,20 +100,13 @@
         call sel_read_step_SPH_field_file(nprocs, my_rank, i_step,      &
      &      spec_fst_param, spec_time_IO, sph_spec_IO)
 !
-        call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
+        call set_rj_phys_data_from_IO(sph_spec_IO, SPH_dat_ss%fld)
         call copy_time_step_data(spec_time_IO, t_SHR%time_d)
 !
-!  pickup components
-!
-        call cal_gauss_coefficients                                     &
-     &     (sph_mesh_spec%sph%sph_params%nlayer_ICB,                    &
-     &      sph_mesh_spec%sph%sph_params%nlayer_CMB,                    &
-     &      sph_mesh_spec%sph%sph_rj%nidx_rj,                           &
-     &      sph_mesh_spec%sph%sph_rj%radius_1d_rj_r, ipol_spec,         &
-     &      rj_fld_spec%n_point, rj_fld_spec%ntot_phys,                 &
-     &      rj_fld_spec%d_fld, gauss_u)
-        call write_gauss_coefs_4_monitor                                &
-     &     (my_rank, i_step, t_SHR%time_d%time, gauss_u)
+        t_SHR%time_d%i_time_step = i_step
+        call cal_write_gauss_coefs(t_SHR%time_d,                        &
+     &     SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,            &
+     &     SPH_dat_ss%ipol, SPH_dat_ss%fld, gauss_u)
       end do
 !
       end subroutine analyze_pick_gauss_coef

@@ -45,13 +45,13 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils(t_SHR, rj_fld_spec, pwr_spec)
+      call set_ctl_data_4_sph_utils(t_SHR, SPH_dat_ss%fld, pwr_spec)
 !
 !       set spectr grids
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh(sph_mesh_spec%sph,                        &
-     &    sph_mesh_spec%sph_comms, sph_mesh_spec%sph_grps)
+      call load_para_sph_mesh                                           &
+     &   (SPH_dat_ss%sph, SPH_dat_ss%comms, SPH_dat_ss%groups)
 !
 !  ------  initialize spectr data
 !
@@ -63,11 +63,11 @@
 !  -------------------------------
 !
       call alloc_phys_data_type                                         &
-     &   (sph_mesh_spec%sph%sph_rj%nnod_rj, rj_fld_spec)
+     &   (SPH_dat_ss%sph%sph_rj%nnod_rj, SPH_dat_ss%fld)
 !
       call init_rms_4_sph_spectr                                        &
-     &   (sph_mesh_spec%sph%sph_params,                                 &
-     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec, pwr_spec, WK_pwr_spec)
+     &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
+     &    SPH_dat_ss%fld, pwr_spec, WK_pwr_spec)
 !
       end subroutine initialization
 !
@@ -77,16 +77,15 @@
 !
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
+      use cal_write_sph_monitor_data
       use pickup_sph_spectr_data
-      use picked_sph_spectr_data_IO
 !
       integer(kind = kint) :: i_step
 !
 !
       call init_sph_spec_4_monitor                                      &
-     &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
-     &    sph_mesh_spec%sph%sph_rj, rj_fld_spec,                        &
-     &    pick_list_u, pick_sph_u)
+     &   (SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
+     &    SPH_dat_ss%fld, pick_list_u, pick_sph_u)
 !
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
@@ -95,17 +94,14 @@
 !
         call sel_read_step_SPH_field_file(nprocs, my_rank, i_step,      &
      &      spec_fst_param, spec_time_IO, sph_spec_IO)
-        call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
+        call set_rj_phys_data_from_IO(sph_spec_IO, SPH_dat_ss%fld)
         call copy_time_step_data(spec_time_IO, t_SHR%time_d)
 !
 !  pickup components
 !
-        call pickup_sph_spec_4_monitor(sph_mesh_spec%sph%sph_rj,        &
-     &      rj_fld_spec%n_point, rj_fld_spec%num_phys,                  &
-     &      rj_fld_spec%ntot_phys, rj_fld_spec%istack_component,        &
-     &      rj_fld_spec%d_fld, pick_sph_u)
-        call write_sph_spec_monitor                                     &
-     &     (my_rank, i_step, t_SHR%time_d%time, pick_sph_u)
+        t_SHR%time_d%i_time_step = i_step
+        call pick_write_sph_spectra(t_SHR%time_d,                       &
+     &      SPH_dat_ss%sph%sph_rj, SPH_dat_ss%fld, pick_sph_u)
       end do
 !
       end subroutine evolution

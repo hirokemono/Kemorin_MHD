@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine allocate_work_pick_rms_sph(nri, jmax)
 !!      subroutine init_sph_rms_4_monitor                               &
-!!     &         (l_truncation, sph_rj, pwr, pick_list, pick_rms)
+!!     &         (sph_params, sph_rj, pwr, pick_list, pick_rms)
 !!
 !!      subroutine pickup_sph_rms_4_monitor                             &
 !!     &         (sph_rj, leg, ipol, rj_fld, pwr, pick_rms)
@@ -32,7 +32,7 @@
       use t_phys_data
       use t_schmidt_poly_on_rtm
       use t_phys_address
-      use t_spheric_rj_data
+      use t_spheric_parameter
       use t_rms_4_sph_spectr
       use t_pickup_sph_spectr_data
 !
@@ -78,11 +78,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_sph_rms_4_monitor                                 &
-     &         (l_truncation, sph_rj, pwr, pick_list, pick_rms)
+     &         (sph_params, sph_rj, pwr, pick_list, pick_rms)
 !
       use pickup_sph_coefs
 !
-      integer(kind = kint), intent(in) ::l_truncation
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_mean_squares), intent(in) :: pwr
 !
@@ -93,7 +93,7 @@
       call init_sph_radial_monitor_list(sph_rj, pick_rms)
 !
       call const_picked_sph_address                                    &
-     &   (l_truncation, sph_rj, pick_list, pick_rms)
+     &   (sph_params%l_truncation, sph_rj, pick_list, pick_rms)
 !
       call set_sph_rms_labels_4_monitor(pwr, pick_rms)
 !

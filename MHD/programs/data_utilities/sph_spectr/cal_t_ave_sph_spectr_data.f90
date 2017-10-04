@@ -1,30 +1,32 @@
 !cal_t_ave_sph_spectr_data.f90
 !      module cal_t_ave_sph_spectr_data
 !
-      module cal_t_ave_sph_spectr_data
-!
 !      Written by H. Matsui on Dec., 2008
 !
-!!      subroutine allocate_d_rj_tmp(n_point, ntot_phys_rj)
-!!      subroutine deallocate_d_rj_tmp
+!!      subroutine allocate_d_rj_tmp(rj_fld, ave_WK)
+!!      subroutine deallocate_d_rj_tmp(ave_WK)
 !!
-!!      subroutine sum_sph_spectr_data(n_point, ntot_phys_rj, d_rj)
-!!      subroutine sum_deviation_sph_spectr(n_point, ntot_phys_rj, d_rj)
+!!      subroutine sum_sph_spectr_data(rj_fld, ave_WK)
+!!      subroutine sum_deviation_sph_spectr(rj_fld, ave_WK)
 !!
 !!      subroutine t_ave_sph_spectr_data                                &
-!!     &         (ist_step, ied_step, n_point, ntot_phys_rj, d_rj)
+!!     &         (ist_step, ied_step, ave_WK, rj_fld)
 !!      subroutine sdev_sph_spectr_data                                 &
-!!     &         (ist_step, ied_step, n_point, ntot_phys_rj, d_rj)
+!!     &         (ist_step, ied_step, ave_WK, rj_fld)
+!
+      module cal_t_ave_sph_spectr_data
+!
 !
       use m_precision
       use m_constants
+      use t_phys_data
 !
       implicit none
 !
-      real(kind= kreal), allocatable :: d_rj_ave(:,:)
-      real(kind= kreal), allocatable :: d_rj_dev(:,:)
-!
-      private :: d_rj_ave, d_rj_dev
+      type sph_average_work
+        real(kind= kreal), allocatable :: d_rj_ave(:,:)
+        real(kind= kreal), allocatable :: d_rj_dev(:,:)
+      end type sph_average_work
 !
 !-----------------------------------------------------------------------
 !
@@ -32,43 +34,47 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_d_rj_tmp(n_point, ntot_phys_rj)
+      subroutine allocate_d_rj_tmp(rj_fld, ave_WK)
 !
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+      type(phys_data), intent(in) :: rj_fld
+      type(sph_average_work), intent(inout) :: ave_WK
 !
 !
-      allocate( d_rj_dev(n_point,ntot_phys_rj) )
-      allocate( d_rj_ave(n_point,ntot_phys_rj) )
+      allocate( ave_WK%d_rj_dev(rj_fld%n_point,rj_fld%ntot_phys) )
+      allocate( ave_WK%d_rj_ave(rj_fld%n_point,rj_fld%ntot_phys) )
 !
-      if(n_point*ntot_phys_rj .le. 0) return
-      d_rj_dev = 0.0d0
-      d_rj_ave = 0.0d0
+      if(rj_fld%n_point*rj_fld%ntot_phys .le. 0) return
+      ave_WK%d_rj_dev = 0.0d0
+      ave_WK%d_rj_ave = 0.0d0
 !
       end subroutine allocate_d_rj_tmp
 !
 !-----------------------------------------------------------------------
 !
-      subroutine deallocate_d_rj_tmp
+      subroutine deallocate_d_rj_tmp(ave_WK)
 !
-      deallocate(d_rj_dev,  d_rj_ave)
+      type(sph_average_work), intent(inout) :: ave_WK
+!
+      deallocate(ave_WK%d_rj_dev,  ave_WK%d_rj_ave)
 !
       end subroutine deallocate_d_rj_tmp
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sum_sph_spectr_data(n_point, ntot_phys_rj, d_rj)
+      subroutine sum_sph_spectr_data(rj_fld, ave_WK)
 !
       use calypso_mpi
 !
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
+      type(phys_data), intent(in) :: rj_fld
+      type(sph_average_work), intent(inout) :: ave_WK
 !
       integer(kind = kint) :: nd, inod
 !
 !$omp parallel do private(inod)
-      do nd = 1, ntot_phys_rj
-        do inod = 1, n_point
-          d_rj_ave(inod,nd) = d_rj_ave(inod,nd) + d_rj(inod,nd)
+      do nd = 1, rj_fld%ntot_phys
+        do inod = 1, rj_fld%n_point
+          ave_WK%d_rj_ave(inod,nd) = ave_WK%d_rj_ave(inod,nd)           &
+     &                       + rj_fld%d_fld(inod,nd)
         end do
       end do
 !$omp end parallel do
@@ -77,20 +83,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sum_deviation_sph_spectr(n_point, ntot_phys_rj, d_rj)
+      subroutine sum_deviation_sph_spectr(rj_fld, ave_WK)
 !
       use calypso_mpi
 !
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(in) :: d_rj(n_point,ntot_phys_rj)
+      type(phys_data), intent(in) :: rj_fld
+      type(sph_average_work), intent(inout) :: ave_WK
+!
 !
       integer(kind = kint) :: nd, inod
 !
 !$omp parallel do private(inod)
-      do nd = 1, ntot_phys_rj
-        do inod = 1, n_point
-          d_rj_dev(inod,nd) = d_rj_dev(inod,nd)                         &
-     &                       + (d_rj(inod,nd) - d_rj_ave(inod,nd))**2
+      do nd = 1, rj_fld%ntot_phys
+        do inod = 1, rj_fld%n_point
+          ave_WK%d_rj_dev(inod,nd) = ave_WK%d_rj_dev(inod,nd)           &
+     &         + (rj_fld%d_fld(inod,nd) - ave_WK%d_rj_ave(inod,nd))**2
         end do
       end do
 !$omp end parallel do
@@ -100,12 +107,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine t_ave_sph_spectr_data                                  &
-     &         (ist_step, ied_step, n_point, ntot_phys_rj, d_rj)
+     &         (ist_step, ied_step, ave_WK, rj_fld)
 !
 !
       integer(kind = kint), intent(in) :: ist_step, ied_step
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      type(sph_average_work), intent(in) :: ave_WK
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: nd, inod
       real(kind =  kreal) :: anum
@@ -114,9 +121,9 @@
       anum = one / dble(ied_step-ist_step+1)
 !
 !$omp parallel do private(inod)
-      do nd = 1, ntot_phys_rj
-        do inod = 1, n_point
-          d_rj(inod,nd) = d_rj_ave(inod,nd) * anum
+      do nd = 1, rj_fld%ntot_phys
+        do inod = 1, rj_fld%n_point
+          rj_fld%d_fld(inod,nd) = ave_WK%d_rj_ave(inod,nd) * anum
         end do
       end do
 !$omp end parallel do
@@ -128,12 +135,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine sdev_sph_spectr_data                                   &
-     &         (ist_step, ied_step, n_point, ntot_phys_rj, d_rj)
+     &         (ist_step, ied_step, ave_WK, rj_fld)
 !
 !
       integer(kind = kint), intent(in) :: ist_step, ied_step
-      integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      type(sph_average_work), intent(in) :: ave_WK
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: nd, inod
       real(kind =  kreal) :: anum
@@ -142,9 +149,9 @@
       anum = one / dble(ied_step-ist_step+1)
 !
 !$omp parallel do private(inod)
-      do nd = 1, ntot_phys_rj
-        do inod = 1, n_point
-          d_rj(inod,nd) = sqrt(d_rj_dev(inod,nd)) * anum
+      do nd = 1, rj_fld%ntot_phys
+        do inod = 1, rj_fld%n_point
+          rj_fld%d_fld(inod,nd) = sqrt(ave_WK%d_rj_dev(inod,nd)) * anum
         end do
       end do
 !$omp end parallel do

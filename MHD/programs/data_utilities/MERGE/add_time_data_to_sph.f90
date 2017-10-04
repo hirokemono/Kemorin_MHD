@@ -17,6 +17,7 @@
       use m_constants
       use calypso_mpi
 !
+      use t_SPH_mesh_field_data
       use t_file_IO_parameter
       use t_time_data
       use t_field_data_IO

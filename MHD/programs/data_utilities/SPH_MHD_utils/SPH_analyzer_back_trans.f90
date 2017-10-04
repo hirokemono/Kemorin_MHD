@@ -193,7 +193,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
-     &   (sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &
+     &   (sph_params, sph_rj, ipol, rj_fld, leg%g_sph_rj,               &
      &    monitor%pwr, monitor%WK_pwr)
 !
       call write_sph_vol_ave_file                                       &

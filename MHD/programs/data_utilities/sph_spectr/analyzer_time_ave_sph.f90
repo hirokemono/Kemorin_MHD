@@ -45,13 +45,13 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils(t_SHR, rj_fld_spec, pwr_spec)
+      call set_ctl_data_4_sph_utils(t_SHR, SPH_dat_ss%fld, pwr_spec)
 !
 !       set spectr grids
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_rj_mesh'
-      call load_para_SPH_rj_mesh(sph_mesh_spec%sph,                     &
-     &    sph_mesh_spec%sph_comms, sph_mesh_spec%sph_grps)
+      call load_para_SPH_rj_mesh                                        &
+     &   (SPH_dat_ss%sph, SPH_dat_ss%comms, SPH_dat_ss%groups)
 !
 !  ------  initialize spectr data
 !
@@ -63,10 +63,11 @@
 !  -------------------------------
 !
       call copy_time_data(spec_time_IO, t_SHR%init_d)
-      call copy_rj_phys_name_from_IO(sph_fld_IN, rj_fld_spec)
+      call copy_rj_phys_name_from_IO(sph_fld_IN, SPH_dat_ss%fld)
 !
-      call set_sph_sprctr_data_address(sph_mesh_spec%sph%sph_rj,        &
-     &    ipol_spec, idpdr_spec, itor_spec, rj_fld_spec)
+      call set_sph_sprctr_data_address(SPH_dat_ss%sph%sph_rj,           &
+     &    SPH_dat_ss%ipol, SPH_dat_ss%idpdr, SPH_dat_ss%itor,           &
+     &    SPH_dat_ss%fld)
 !
 !  -------------------------------
 !
@@ -86,10 +87,10 @@
 !
       integer(kind = kint) :: i_step
       type(field_IO_params) :: ave_fst_param
+      type(sph_average_work) :: ave_WK_spec
 !
 !
-      call allocate_d_rj_tmp                                            &
-     &   (rj_fld_spec%n_point, rj_fld_spec%ntot_phys)
+      call allocate_d_rj_tmp(SPH_dat_ss%fld, ave_WK_spec)
 !
 !   Averaging
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
@@ -101,24 +102,21 @@
         call copy_time_data(spec_time_IO, t_SHR%init_d)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-        call set_rj_phys_data_from_IO(sph_fld_IN, rj_fld_spec)
+        call set_rj_phys_data_from_IO(sph_fld_IN, SPH_dat_ss%fld)
 !
-        call sum_sph_spectr_data                                        &
-     &     (rj_fld_spec%n_point, rj_fld_spec%ntot_phys,                 &
-     &      rj_fld_spec%d_fld)
+        call sum_sph_spectr_data(SPH_dat_ss%fld, ave_WK_spec)
       end do
 
       call calypso_mpi_barrier
       call t_ave_sph_spectr_data                                        &
      &   (t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,          &
-     &    rj_fld_spec%n_point, rj_fld_spec%ntot_phys,                   &
-     &    rj_fld_spec%d_fld)
+     &    ave_WK_spec, SPH_dat_ss%fld)
 !
       call copy_rj_phys_name_to_IO                                      &
-     &   (rj_fld_spec%num_phys, rj_fld_spec, sph_fld_OUT)
+     &   (SPH_dat_ss%fld%num_phys, SPH_dat_ss%fld, sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)
       call copy_rj_phys_data_to_IO                                      &
-     &   (rj_fld_spec%num_phys, rj_fld_spec, sph_fld_OUT)
+     &   (SPH_dat_ss%fld%num_phys, SPH_dat_ss%fld, sph_fld_OUT)
 !
       call alloc_merged_field_stack(nprocs, sph_fld_OUT)
       call count_number_of_node_stack                                   &
@@ -147,11 +145,9 @@
         call copy_time_data(spec_time_IO, t_SHR%init_d)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-        call set_rj_phys_data_from_IO(sph_fld_IN, rj_fld_spec)
+        call set_rj_phys_data_from_IO(sph_fld_IN, SPH_dat_ss%fld)
 !
-        call sum_deviation_sph_spectr                                   &
-     &     (rj_fld_spec%n_point, rj_fld_spec%ntot_phys,                 &
-     &      rj_fld_spec%d_fld)
+        call sum_deviation_sph_spectr(SPH_dat_ss%fld, ave_WK_spec)
       end do
 !
       call calypso_mpi_barrier
@@ -160,14 +156,13 @@
 !
       call sdev_sph_spectr_data                                         &
      &   (t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,          &
-     &    rj_fld_spec%n_point, rj_fld_spec%ntot_phys,                   &
-     &    rj_fld_spec%d_fld)
+     &    ave_WK_spec, SPH_dat_ss%fld)
 !
       call copy_rj_phys_name_to_IO                                      &
-     &   (rj_fld_spec%num_phys, rj_fld_spec, sph_fld_OUT)
+     &   (SPH_dat_ss%fld%num_phys, SPH_dat_ss%fld, sph_fld_OUT)
       call alloc_phys_data_IO(sph_fld_OUT)
       call copy_rj_phys_data_to_IO                                      &
-     &   (rj_fld_spec%num_phys, rj_fld_spec, sph_fld_OUT)
+     &   (SPH_dat_ss%fld%num_phys, SPH_dat_ss%fld, sph_fld_OUT)
 !
       call alloc_merged_field_stack(nprocs, sph_fld_OUT)
       call count_number_of_node_stack                                   &
@@ -185,7 +180,7 @@
       call dealloc_phys_name_IO(sph_fld_OUT)
       call calypso_mpi_barrier
 !
-      call deallocate_d_rj_tmp
+      call deallocate_d_rj_tmp(ave_WK_spec)
 !
       if (iflag_debug.eq.1) write(*,*) 'exit evolution_ave_sph'
 !

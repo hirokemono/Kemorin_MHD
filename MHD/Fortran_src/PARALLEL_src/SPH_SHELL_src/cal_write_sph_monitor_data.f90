@@ -83,8 +83,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
-     &   (sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &
-     &    pwr, WK_pwr)
+     &   (sph_params, sph_rj, ipol, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
       if(iflag_debug.gt.0)  write(*,*) 'cal_gauss_coefficients'
       call cal_gauss_coefficients                                       &
      &   (sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
@@ -163,8 +162,8 @@
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
 !
-      call cal_mean_squre_in_shell(sph_params%l_truncation, sph_rj,     &
-     &    ipol, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
+      call cal_mean_squre_in_shell                                      &
+     &   (sph_params, sph_rj, ipol, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
 !
       call write_sph_vol_ave_file(time_d, sph_params, sph_rj, pwr)
       call write_sph_vol_ms_file                                        &
@@ -197,8 +196,7 @@
 !
 !
       call cal_mean_squre_in_shell                                      &
-     &   (sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &
-     &    pwr, WK_pwr)
+     &   (sph_params, sph_rj, ipol, rj_fld, leg%g_sph_rj, pwr, WK_pwr)
       call write_sph_layer_ms_file(my_rank, time_d, sph_params, pwr)
 !
       end subroutine cal_write_layerd_sph_rms

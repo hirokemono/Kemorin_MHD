@@ -163,7 +163,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
-     &   (sph%sph_params%l_truncation, sph%sph_rj, ipol, ref_rj_fld,    &
+     &   (sph%sph_params, sph%sph_rj, ipol, ref_rj_fld,                 &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
@@ -181,7 +181,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
-     &   (sph%sph_params%l_truncation, sph%sph_rj, ipol, rj_fld,        &
+     &   (sph%sph_params, sph%sph_rj, ipol, rj_fld,                     &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
@@ -197,9 +197,8 @@
         end do
       end if
 !
-      call cal_correlate_in_shell(sph%sph_params%l_truncation,          &
-     &    sph%sph_rj, rj_fld, ref_rj_fld, trans_p%leg%g_sph_rj,         &
-     &    pwr, WK_pwr)
+      call cal_correlate_in_shell(sph%sph_params, sph%sph_rj,           &
+     &    rj_fld, ref_rj_fld, trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
 !
       if(my_rank .eq. 0) then
@@ -267,7 +266,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
-     &   (sph%sph_params%l_truncation, sph%sph_rj, ipol, ref_rj_fld,    &
+     &   (sph%sph_params, sph%sph_rj, ipol, ref_rj_fld,                 &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
@@ -283,7 +282,7 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
-     &   (sph%sph_params%l_truncation, sph%sph_rj, ipol, rj_fld,        &
+     &   (sph%sph_params, sph%sph_rj, ipol, rj_fld,                     &
      &    trans_p%leg%g_sph_rj, pwr, WK_pwr)
 !
       if(my_rank .eq. 0) then
