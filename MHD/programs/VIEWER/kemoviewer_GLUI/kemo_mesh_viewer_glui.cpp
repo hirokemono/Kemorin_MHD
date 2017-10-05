@@ -405,22 +405,21 @@ static void set_psf_comp_handler(int sel){
 };
 
 static void set_psf_patchcolor_handler(int sel){
-	if (sel == WHITE_PSF_SURF)        {set_current_psf_patch_color_mode(WHITE_SURFACE);}
-    else if (sel == SGL_COLOR_PSF_SURF) {set_current_psf_patch_color_mode(SINGLE_COLOR);}
-	else if (sel == RAINBOW_PSF_SURF) {set_current_psf_patch_color_mode(RAINBOW_SURFACE);}
-	else if (sel == TEXTURE_PSF_SURF) {set_psf_texture_by_glui(winid);};
-	
+    set_current_psf_patch_color_mode(sel);
 	draw_mesh_w_menu();
 	return;
 };
 
 static void set_psf_linecolor_handler(int sel){
-	if (sel == BLACK_PSF_LINE)          {set_current_isoline_color(BLACK_LINE);}
-	else if (sel == WHITE_PSF_LINE)     {set_current_isoline_color(WHITE_LINE);}
-	else if (sel == RAINBOW_PSF_LINE)   {set_current_isoline_color(RAINBOW_LINE);};
-
+	set_current_isoline_color(sel);
 	draw_mesh_w_menu();
 	return;
+};
+
+static void set_psf_colormode_handler(int sel){
+    set_current_PSF_color_mode_id(sel);
+    draw_mesh_w_menu();
+    return;
 };
 
 static void set_fline_color_handler(int sel){
@@ -617,6 +616,11 @@ static void make_3rd_level_psf_menu(){
 		glut_menu_id->ichoose_psf_linecolor_menu =  glutCreateMenu(set_psf_linecolor_handler);
 		glut_PSF_linecolor_select();
 	};
+    
+    if (iflag_solid > 0 || iflag_grid > 0) {
+        glut_menu_id->ichoose_psf_colormode_menu = glutCreateMenu(set_psf_colormode_handler);
+        glut_PSF_colormode_select();
+    };
 	return;
 };
 
@@ -682,6 +686,9 @@ static void make_2nd_level_psf_menu(){
 
 	if(iflag_solid > 0){glutAddSubMenu("Surface  color", glut_menu_id->ichoose_psf_patchcolor_menu);};
 	if(iflag_grid > 0) {glutAddSubMenu("Line color", glut_menu_id->ichoose_psf_linecolor_menu);};
+    if(iflag_solid > 0 || iflag_grid > 0){
+        glutAddSubMenu("Colormap mode", glut_menu_id->ichoose_psf_colormode_menu);
+    };
 	
 	glut_PSF_range_menu();
 	

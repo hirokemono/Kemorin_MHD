@@ -146,16 +146,16 @@ void glut_PSF_patchcolor_select(){
 	int iflag_p_color = send_current_psf_patch_color();
 
 	if (iflag_p_color != RAINBOW_SURFACE) {
-		glutAddMenuEntry("Rainbow surface", RAINBOW_PSF_SURF);
+		glutAddMenuEntry("Rainbow surface", RAINBOW_SURFACE);
 	};
 	if (iflag_p_color != WHITE_SURFACE) {
-		glutAddMenuEntry("White surface",   WHITE_PSF_SURF);
+		glutAddMenuEntry("White surface",   WHITE_SURFACE);
 	};
     if (iflag_p_color != SINGLE_COLOR) {
-        glutAddMenuEntry("Single color",    SGL_COLOR_PSF_SURF);
+        glutAddMenuEntry("Single color",    SINGLE_COLOR);
     };
 	if (iflag_p_color != TEXTURED_SURFACE) {
-		glutAddMenuEntry("Textured surface",TEXTURE_PSF_SURF);
+		glutAddMenuEntry("Textured surface",TEXTURED_SURFACE);
 	};
 
 	return;
@@ -165,17 +165,37 @@ void glut_PSF_linecolor_select(){
 	int iflag_l_color = send_current_isoline_color();
 
 	if (iflag_l_color != RAINBOW_LINE) {
-		glutAddMenuEntry("Rainbow lines", RAINBOW_PSF_LINE);
+		glutAddMenuEntry("Rainbow lines", RAINBOW_LINE);
 	};
-	if (iflag_l_color != BLACK_PSF_LINE) {
-		glutAddMenuEntry("Black lines", RAINBOW_PSF_LINE);
+	if (iflag_l_color != BLACK_LINE) {
+		glutAddMenuEntry("Black lines", BLACK_LINE);
 	};
-	if (iflag_l_color != WHITE_PSF_LINE) {
-		glutAddMenuEntry("White lines", WHITE_PSF_LINE);
+	if (iflag_l_color != WHITE_LINE) {
+		glutAddMenuEntry("White lines", WHITE_LINE);
 	};
 	
 	return;
 };
+
+void glut_PSF_colormode_select(){
+    int iflag_cmap_mode;
+    iflag_cmap_mode = send_current_PSF_color_mode_id();
+    
+    if (iflag_cmap_mode != RAINBOW_MODE) {
+        glutAddMenuEntry("Rainbow", RAINBOW_MODE);
+    };
+    if (iflag_cmap_mode != RED_BLUE_MODE) {
+        glutAddMenuEntry("Blue to Red", RED_BLUE_MODE);
+    };
+    if (iflag_cmap_mode != GRAYSCALE_MODE) {
+        glutAddMenuEntry("Grayscale", GRAYSCALE_MODE);
+    };
+    if (iflag_cmap_mode != SYM_GRAY_MODE) {
+        glutAddMenuEntry("Symmetric Grayscale", SYM_GRAY_MODE);
+    };
+    
+    return;
+}
 
 
 void glut_fline_color_comp_select() {

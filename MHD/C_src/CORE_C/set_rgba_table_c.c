@@ -95,7 +95,7 @@ void send_opacity_table_items_s(struct colormap_params *cmap_s,
 
 void set_linear_colormap(struct colormap_params *cmap_s,
 			double val_min, double val_max){
-	realloc_color_index_list_s(cmap_s, RAINBOW_MODE, ITWO);
+	realloc_color_index_list_s(cmap_s, ITWO);
 	set_each_color_point_s(cmap_s, IZERO, val_min, ZERO);
 	set_each_color_point_s(cmap_s, IONE,  val_max, ONE);
 	return;

@@ -241,13 +241,6 @@
 #define ISET_PSF_OPACITY     7
 #define COLORBAR_TOGGLE      8
 #define PSF_POLYGON_SWITCH   9
-#define RAINBOW_PSF_SURF    10
-#define WHITE_PSF_SURF      11
-#define TEXTURE_PSF_SURF    12
-#define SGL_COLOR_PSF_SURF  13
-#define RAINBOW_PSF_LINE    20
-#define BLACK_PSF_LINE      21
-#define WHITE_PSF_LINE      22
 #define PSF_OFF             30
 #define PSFVECT_TOGGLE      40
 #define PSFREFV_TOGGLE      41
@@ -292,6 +285,7 @@
 #define SET_OPACITY      5
 #define SINGLE_COLOR     6
 #define TEXTURED_SURFACE 7
+#define BLUE_RED_SURFACE 8
 
 #define BLACK_LINE     1
 #define GREEN_LINE     2
@@ -620,6 +614,7 @@ extern "C" {
     int kemoview_psf_draw_switch_select(int selected);
     
     void set_current_PSF_color_mode_id(int isel);
+    int send_current_PSF_color_mode_id();
     
     double send_current_psf_data_min(int i);
     double send_current_psf_data_max(int i);
@@ -691,7 +686,7 @@ extern "C" {
     void input_fline_linear_colormap(double minvalue, double maxvalue);
     void set_fline_constant_opacitymap(double opacity);
     
-    void realloc_fline_color_index_list(int id_cmode, int num);
+    void realloc_fline_color_index_list(int num);
     void realloc_flie_opacity_index_list(int num);
     
     void set_fline_rgb_from_value(double value, double *red, double *green, double *blue);

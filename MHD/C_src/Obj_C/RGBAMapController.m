@@ -26,10 +26,7 @@
 
 - (IBAction)SetColorMode:(id)pId;
 {
-	int iflag_colormode;
-	iflag_colormode = [ColorModeItem indexOfSelectedItem];
-	set_current_PSF_color_mode_id(iflag_colormode);
-
+	set_current_PSF_color_mode_id((int) [ColorModeItem indexOfSelectedItem]);
 	[_kemoviewer UpdateImage];
 }
 

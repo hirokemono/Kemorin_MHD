@@ -35,7 +35,7 @@ void dealloc_single_color_code(struct colormap_params *cmap_s);
 void dealloc_color_index_list_s(struct colormap_params *cmap_s);
 void dealloc_opacity_index_list_s(struct colormap_params *cmap_s);
 
-void realloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode, int num);
+void realloc_color_index_list_s(struct colormap_params *cmap_s, int num);
 void realloc_opacity_index_list_s(struct colormap_params *cmap_s, int num);
 
 

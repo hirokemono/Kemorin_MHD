@@ -767,6 +767,7 @@ int kemoview_psf_draw_switch_select(int selected){
 }
 
 void set_current_PSF_color_mode_id(int isel){set_PSF_color_mode_id(kemo_sgl->psf_current_menu, isel);}
+int send_current_PSF_color_mode_id(){return send_PSF_color_mode_id(kemo_sgl->psf_current_menu);}
 
 double send_current_psf_data_min(int i){return send_psf_data_min(kemo_sgl->psf_current_data, i);};
 double send_current_psf_data_max(int i){return send_psf_data_max(kemo_sgl->psf_current_data, i);};
@@ -887,8 +888,8 @@ void set_fline_constant_opacitymap(double opacity){
                             kemo_sgl->fline_d->d_max[kemo_sgl->fline_m->icomp_draw_fline], opacity);
 }
 
-void realloc_fline_color_index_list(int id_cmode, int num){
-	realloc_color_index_list_s(kemo_sgl->fline_m->cmap_fline, id_cmode, num);
+void realloc_fline_color_index_list(int num){
+	realloc_color_index_list_s(kemo_sgl->fline_m->cmap_fline, num);
 }
 void realloc_flie_opacity_index_list(int num){
 	realloc_opacity_index_list_s(kemo_sgl->fline_m->cmap_fline, num);

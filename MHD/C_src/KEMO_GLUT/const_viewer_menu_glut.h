@@ -64,6 +64,7 @@ struct glut_menu_address{
 	
 	GLint ichoose_psf_patchcolor_menu;
 	GLint ichoose_psf_linecolor_menu;
+    GLint ichoose_psf_colormode_menu;
     
     GLint ichoose_psf_colormap_menu;
     GLint ichoose_psf_opacitymap_menu;
@@ -93,6 +94,7 @@ extern "C" {
 	void glut_PSF_comps_select();
 	void glut_PSF_patchcolor_select();
 	void glut_PSF_linecolor_select();
+    void glut_PSF_colormode_select();
 	void glut_fline_color_comp_select();
 	void glut_PSF_draw_menu();
 	void glut_PSF_range_menu();

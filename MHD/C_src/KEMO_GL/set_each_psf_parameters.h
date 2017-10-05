@@ -84,7 +84,7 @@ double send_vector_thick(struct psf_menu_val *psf_menu);
 double send_psf_data_min(struct psf_data *psf_d, int icomp);
 double send_psf_data_max(struct psf_data *psf_d, int icomp);
 
-void realloc_PSF_color_index_list(struct psf_menu_val *psf_menu, int id_cmode, int num);
+void realloc_PSF_color_index_list(struct psf_menu_val *psf_menu, int num);
 void realloc_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int num);
 
 void delete_PSF_color_index_list(struct psf_menu_val *psf_menu, int i_delete);
@@ -107,6 +107,7 @@ void set_each_PSF_color_point(struct psf_menu_val *psf_menu, int i_point, double
 void set_each_PSF_opacity_point(struct psf_menu_val *psf_menu, int i_point, double value, double opacity);
 void set_PSF_color_mode_id(struct psf_menu_val *psf_menu, int isel);
 
+int send_PSF_color_mode_id(struct psf_menu_val *psf_menu);
 double send_each_PSF_color_table_min(struct psf_menu_val *psf_menu);
 double send_each_PSF_color_table_max(struct psf_menu_val *psf_menu);
 double send_each_PSF_minimum_opacity(struct psf_menu_val *psf_menu);

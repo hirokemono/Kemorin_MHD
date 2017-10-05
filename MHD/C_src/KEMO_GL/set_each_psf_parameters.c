@@ -122,12 +122,13 @@ void set_PSF_color_mode_id(struct psf_menu_val *psf_menu, int isel){
 	set_color_mode_id_s(psf_menu->cmap_psf, isel);
 	return;
 }
+int send_PSF_color_mode_id(struct psf_menu_val *psf_menu){return send_color_mode_id_s(psf_menu->cmap_psf);};
 
 double send_psf_data_min(struct psf_data *psf_d, int icomp){return psf_d->d_min[icomp];};
 double send_psf_data_max(struct psf_data *psf_d, int icomp){return psf_d->d_max[icomp];};
 
-void realloc_PSF_color_index_list(struct psf_menu_val *psf_menu, int id_cmode, int num){
-	realloc_color_index_list_s(psf_menu->cmap_psf, id_cmode, num);
+void realloc_PSF_color_index_list(struct psf_menu_val *psf_menu, int num){
+	realloc_color_index_list_s(psf_menu->cmap_psf, num);
 	return;
 }
 void realloc_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int num){
