@@ -220,7 +220,7 @@
 !
       call bcast_ctl_array_r3(color%step_opacity_ctl)
 !
-      call bcast_ctl_type_c1(color%colormap_ctl)
+      call bcast_ctl_type_c1(color%colormap_mode_ctl)
       call bcast_ctl_type_c1(color%data_mapping_ctl)
       call bcast_ctl_type_c1(color%opacity_style_ctl)
 !

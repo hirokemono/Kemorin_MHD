@@ -153,9 +153,11 @@
 !     3rd level for rotation
 !
       character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
+      character(len=kchara) :: hd_colormap =      'colormap_ctl'
       character(len=kchara) :: hd_pvr_colordef =  'pvr_color_ctl'
       character(len=kchara) :: hd_pvr_lighting =  'lighting_ctl'
       private :: hd_view_transform, hd_pvr_colordef, hd_pvr_lighting
+      private :: hd_colormap
 !
       private :: hd_pvr_file_head, hd_pvr_out_type, hd_pvr_rgba_type
       private :: hd_pvr_streo, hd_pvr_anaglyph, hd_pvr_updated
@@ -259,9 +261,13 @@
           call read_view_transfer_ctl(hd_view_transform, pvr%mat)
         end if
 !
-        if(right_file_flag(hd_pvr_colordef) .gt. 0) then
+        if(right_file_flag(hd_colormap) .gt. 0                          &
+     &      .or. right_file_flag(hd_pvr_colordef) .gt. 0) then
           call read_file_name_from_ctl_line(pvr%i_color_file,           &
      &        pvr%color_file_ctl)
+        else if(right_begin_flag(hd_colormap) .gt. 0) then
+          pvr%color_file_ctl = 'NO_FILE'
+          call read_pvr_colordef_ctl(hd_colormap, pvr%color)
         else if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
           pvr%color_file_ctl = 'NO_FILE'
           call read_pvr_colordef_ctl(hd_pvr_colordef, pvr%color)

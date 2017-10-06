@@ -107,14 +107,16 @@
 !    set colormap setting
 !
       color_param%id_pvr_color(1) = iflag_rainbow
-      if( color%colormap_ctl%iflag .gt. 0) then
-        tmpchara = color%colormap_ctl%charavalue
+      if( color%colormap_mode_ctl%iflag .gt. 0) then
+        tmpchara = color%colormap_mode_ctl%charavalue
         if     (cmp_no_case(tmpchara, hd_rainbow)) then
           color_param%id_pvr_color(1) = iflag_rainbow
-        else if(cmp_no_case(tmpchara, hd_readblue)) then
-          color_param%id_pvr_color(1) = iflag_readblue
+        else if(cmp_no_case(tmpchara, hd_radblue)) then
+          color_param%id_pvr_color(1) = iflag_redblue
         else if(cmp_no_case(tmpchara, hd_grayscale)) then
           color_param%id_pvr_color(1) = iflag_grayscale
+        else if(cmp_no_case(tmpchara, hd_sym_gray)) then
+          color_param%id_pvr_color(1) = iflag_sym_gray
         end if
       end if
 !

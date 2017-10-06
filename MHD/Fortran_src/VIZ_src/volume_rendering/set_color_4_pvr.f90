@@ -27,11 +27,15 @@
       implicit  none
 !
       character(len = kchara), parameter :: hd_rainbow =   'rainbow'
-      character(len = kchara), parameter :: hd_readblue =  'red_blue'
       character(len = kchara), parameter :: hd_grayscale = 'grayscale'
-      integer(kind = kint), parameter :: iflag_readblue =   1
-      integer(kind = kint), parameter :: iflag_rainbow =    2
-      integer(kind = kint), parameter :: iflag_grayscale =  3
+      character(len = kchara), parameter                                &
+     &                        :: hd_radblue =  'blue_to_red'
+      character(len = kchara), parameter                                &
+     &                        :: hd_sym_gray = 'symmetric_grayscale'
+      integer(kind = kint), parameter :: iflag_redblue =    3
+      integer(kind = kint), parameter :: iflag_rainbow =    1
+      integer(kind = kint), parameter :: iflag_grayscale =  2
+      integer(kind = kint), parameter :: iflag_sym_gray =   4
 !
       character(len = kchara), parameter :: hd_minmax =    'minmax'
       character(len = kchara), parameter :: hd_linear =    'linear'
@@ -106,12 +110,15 @@
       real(kind = kreal), intent(out) :: color(3)
 !
 !
-      if(id_color_system .eq. iflag_readblue) then
+      if(id_color_system .eq. iflag_redblue) then
         call color_redblue(colordat, color(1), color(2), color(3))
-      else if(id_color_system .eq. iflag_rainbow) then
-        call color_rainbow(colordat, color(1), color(2), color(3))
+      else if(id_color_system .eq. iflag_sym_gray) then
+        call color_sym_grayscale                                        &
+     &     (colordat, color(1), color(2), color(3))
       else if(id_color_system .eq. iflag_grayscale) then
         call color_grayscale(colordat, color(1), color(2), color(3))
+      else
+        call color_rainbow(colordat, color(1), color(2), color(3))
       end if
 !
       end subroutine normvalue_to_rgb

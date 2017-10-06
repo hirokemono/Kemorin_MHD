@@ -26,10 +26,11 @@
 !
       character(len=kchara) :: hd_pvr_ctl = 'volume_rendering'
       character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
+      character(len=kchara) :: hd_colormap =      'colormap_ctl'
       character(len=kchara) :: hd_pvr_colordef =  'pvr_color_ctl'
 !
       private :: hd_pvr_ctl
-      private :: hd_view_transform, hd_pvr_colordef
+      private :: hd_view_transform, hd_colormap, hd_pvr_colordef
 !
 !  ---------------------------------------------------------------------
 !
@@ -223,7 +224,10 @@
 !
       if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
         call read_pvr_colordef_ctl                                      &
-     &       (hd_pvr_colordef, pvr_ctl_struct(i_pvr)%color)
+     &     (hd_pvr_colordef, pvr_ctl_struct(i_pvr)%color)
+      else if(right_begin_flag(hd_colormap) .gt. 0) then
+        call read_pvr_colordef_ctl                                      &
+     &     (hd_colormap, pvr_ctl_struct(i_pvr)%color)
       else
         call calypso_mpi_abort(ierr_PVR, 'Set correct colormap file')
       end if

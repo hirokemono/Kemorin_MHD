@@ -134,7 +134,7 @@ begin volume_rendering   (BMP or PNG)
   end lighting_ctl
 !
   begin pvr_color_ctl
-    colormap_ctl       rainbow
+    colormap_mode_ctl       rainbow
 !
     data_mapping_ctl   Colormap_list
     array color_table_ctl    3

@@ -27,8 +27,8 @@
 !!    specular_coef             0.8
 !!  end lighting_ctl
 !!
-!!  begin pvr_color_ctl
-!!    colormap_ctl       rainbow
+!!  begin colormap_ctl
+!!    colormap_mode_ctl       rainbow
 !!!
 !!    data_mapping_ctl   Colormap_list
 !!    array color_table_ctl    3
@@ -61,7 +61,7 @@
 !!!
 !!    range_min_ctl   0.0
 !!    range_max_ctl   1.0
-!!  end   pvr_color_ctl
+!!  end   colormap_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
       module t_ctl_data_pvr_colormap
@@ -95,7 +95,7 @@
 !!@n      light_position_ctl%vec3:  Z-component of light position
         type(ctl_array_r3) :: light_position_ctl
 !
-        type(read_character_item) :: colormap_ctl
+        type(read_character_item) :: colormap_mode_ctl
         type(read_character_item) :: data_mapping_ctl
         type(read_character_item) :: opacity_style_ctl
 !
@@ -136,7 +136,7 @@
 !
 !     3rd level for colormap
 !
-      character(len=kchara) :: hd_colormap =     'colormap_ctl'
+      character(len=kchara) :: hd_colormap_mode =  'colormap_mode_ctl'
       character(len=kchara) :: hd_data_mapping = 'data_mapping_ctl'
       character(len=kchara) :: hd_pvr_range_min = 'range_min_ctl'
       character(len=kchara) :: hd_pvr_range_max = 'range_max_ctl'
@@ -149,7 +149,7 @@
 !
 !
       private :: hd_ambient, hd_diffuse, hd_specular
-      private :: hd_light_param, hd_colormap, hd_data_mapping
+      private :: hd_light_param, hd_colormap_mode, hd_data_mapping
       private :: hd_pvr_range_min, hd_pvr_range_max
       private :: hd_colortable, hd_opacity_style
       private :: hd_constant_opacity, hd_opacity_def, hd_linear_opacity
@@ -233,7 +233,8 @@
      &     (hd_opacity_def, color%step_opacity_ctl)
 !
 !
-        call read_chara_ctl_type(hd_colormap, color%colormap_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_colormap_mode, color%colormap_mode_ctl)
         call read_chara_ctl_type                                        &
      &     (hd_data_mapping, color%data_mapping_ctl)
         call read_chara_ctl_type(hd_opacity_style,                      &
@@ -260,7 +261,7 @@
       color%diffuse_coef_ctl%iflag =  0
       color%specular_coef_ctl%iflag = 0
 !
-      color%colormap_ctl%iflag =        0
+      color%colormap_mode_ctl%iflag =   0
       color%data_mapping_ctl%iflag =    0
       color%range_min_ctl%iflag =       0
       color%range_max_ctl%iflag =       0
