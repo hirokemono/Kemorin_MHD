@@ -210,6 +210,7 @@ void input_GL_modelview_parameters(FILE *fp, struct view_element *view) {
     fgets(buf, LENGTHBUF, fp);
     sscanf(buf, "%s",  ctmp);
     
+    offset = skip_comment_c(fp);
     fgets(buf, LENGTHBUF, fp);
     sscanf(buf, "%s %s ", ctmp, ctmp);
     view->iso_scale = atof(ctmp);
