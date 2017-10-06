@@ -415,7 +415,7 @@ void modify_psf_opacitymap_point_console(int i_point){
 	return;
 }
 
-void save_colormap_file_glut(){
+void save_PSF_colormap_file_glut(){
 	char file_name[LENGTHBUF];
 	char buf[LENGTHBUF];
 	char *delchara;
@@ -426,6 +426,20 @@ void save_colormap_file_glut(){
 	*delchara='\0';
 	strcpy(file_name, buf);
 	write_current_PSF_colormap_control_file(file_name);
+	return;
+};
+
+void load_PSF_colormap_file_glut(){
+	char file_name[LENGTHBUF];
+	char buf[LENGTHBUF];
+	char *delchara;
+	
+	printf("Input colormap file name\n");
+	fgets(buf,sizeof(buf),stdin);
+	delchara=strrchr(buf,'\n');
+	*delchara='\0';
+	strcpy(file_name, buf);
+	read_current_PSF_colormap_control_file(file_name);
 	return;
 };
 

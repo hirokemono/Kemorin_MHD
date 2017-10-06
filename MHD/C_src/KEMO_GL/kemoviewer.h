@@ -241,6 +241,16 @@
 #define ISET_PSF_OPACITY     7
 #define COLORBAR_TOGGLE      8
 #define PSF_POLYGON_SWITCH   9
+
+#define RAINBOW_PSF_SURF    10
+#define WHITE_PSF_SURF      11
+#define TEXTURE_PSF_SURF    12
+#define SGL_COLOR_PSF_SURF  13
+
+#define RAINBOW_PSF_LINE    20
+#define BLACK_PSF_LINE      21
+#define WHITE_PSF_LINE      22
+
 #define PSF_OFF             30
 #define PSFVECT_TOGGLE      40
 #define PSFREFV_TOGGLE      41
@@ -250,7 +260,8 @@
 #define ISET_PSF_REFVECT    45
 #define ISET_PSF_V_THICK    46
 #define PSFTANVEC_TOGGLE    47
-#define WRITE_CMAP          60
+#define WRITE_CMAP          50
+#define READ_CMAP           51
 
 #define ADD_PSF_COLOR       61
 #define MODIFY_PSF_COLOR    62
@@ -644,6 +655,7 @@ extern "C" {
     void send_current_PSF_opacity_table_items(int i_point, double *value, double *opacity);
     
     void write_current_PSF_colormap_control_file(const char *file_name);
+    void read_current_PSF_colormap_control_file(const char *file_name);
 	void check_current_PSF_colormap_control();
     
     
@@ -707,6 +719,7 @@ extern "C" {
     void send_fline_opacity_table_items(int i_point, double *value, double *opacity);
     
     void write_fline_colormap_control_file(const char *file_name);
+    void read_fline_colormap_control_file(const char *file_name);
     
     double round_to_3digit(double value);
     

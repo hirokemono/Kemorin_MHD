@@ -830,6 +830,9 @@ void send_current_PSF_opacity_table_items(int i_point, double *value, double *op
 void write_current_PSF_colormap_control_file(const char *file_name){
     write_each_PSF_colormap_control_file(kemo_sgl->psf_current_menu, file_name);
 }
+void read_current_PSF_colormap_control_file(const char *file_name){
+    read_each_PSF_colormap_control_file(kemo_sgl->psf_current_menu, file_name);
+}
 void check_current_PSF_colormap_control(){
     check_each_PSF_colormap_control(kemo_sgl->psf_current_menu);
 }
@@ -940,6 +943,9 @@ void send_fline_opacity_table_items(int i_point, double *value, double *opacity)
 
 void write_fline_colormap_control_file(const char *file_name){
 	write_colormap_control_file_s(file_name, kemo_sgl->fline_m->cmap_fline);
+}
+void read_fline_colormap_control_file(const char *file_name){
+	read_colormap_control_file_s(file_name, kemo_sgl->fline_m->cmap_fline);
 }
 
 double round_to_3digit(double value){return round_2_3digit(value);};

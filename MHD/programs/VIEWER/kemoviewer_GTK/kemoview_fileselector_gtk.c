@@ -339,7 +339,7 @@ int output_evolution_file_gtk(char *file_head,
 	return id_img;
 }
 
-void save_colormap_file_gtk(){
+void save_PSF_colormap_file_gtk(){
 	char file_name[LENGTHBUF];
 	
 	gtk_file_menu("Save colormap file");
@@ -347,6 +347,18 @@ void save_colormap_file_gtk(){
 	
 	strcpy(file_name, gtk_selected_filename);
 	write_current_PSF_colormap_control_file(file_name);
+	
+	return;
+};
+
+void load_PSF_colormap_file_gtk(){
+	char file_name[LENGTHBUF];
+	
+	gtk_file_menu("Load colormap file");
+	if(iflag_set == IZERO) return;
+	
+	strcpy(file_name, gtk_selected_filename);
+	read_current_PSF_colormap_control_file(file_name);
 	
 	return;
 };

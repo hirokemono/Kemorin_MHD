@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "m_color_table_c.h"
+#include "skip_comment_c.h"
 
 
 /* prototypes */
@@ -45,6 +46,7 @@ void set_full_opacitymap(struct colormap_params *cmap_s, double val_min, double 
 
 void output_colormap_control_s(FILE *fp, struct colormap_params *cmap_s);
 void write_colormap_control_file_s(const char *file_name, struct colormap_params *cmap_s);
+void read_colormap_control_file_s(const char *file_name, struct colormap_params *cmap_s);
 
 
 #endif

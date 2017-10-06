@@ -20,6 +20,8 @@ int count_comps_by_comma_c(FILE *fp);
 void read_multi_field_name(FILE *fp, char **data_name);
 
 void strngcopy(char *chara_out, const char *chara_in);
+int compare_string(int length, const char *string1, const char *string2);
+
 int get_index_from_file_head(const char *file_head, char *stripped_fhead);
 void get_ext_from_file_name_c(const char *file_name,
 							  char *stripped_fhead, char *stripped_ext);

@@ -222,6 +222,9 @@ void send_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_poin
 void write_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const char *file_name){
 	write_colormap_control_file_s(file_name, psf_menu->cmap_psf);
 }
+void read_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const char *file_name){
+	read_colormap_control_file_s(file_name, psf_menu->cmap_psf);
+}
 void check_each_PSF_colormap_control(struct psf_menu_val *psf_menu){
 	output_colormap_control_s(stdout, psf_menu->cmap_psf);
 }

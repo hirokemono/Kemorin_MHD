@@ -86,6 +86,13 @@ static void save_colormap_handler(int sel){
 	return;
 };
 
+static void load_colormap_handler(int sel){
+    printf("colormap_file_name: %s\n", colormap_file_name);
+	read_current_PSF_colormap_control_file(colormap_file_name);
+	GLUI_Master.close_all();
+	return;
+};
+
 static void save_matrix_handler(int sel){
 	write_modelview_file_glut(matrix_file_name);
 	GLUI_Master.close_all();
@@ -291,7 +298,7 @@ void set_rotateimages_menu_glui(int winid){
 	return;
 }
 
-void set_colormap_file_glui(int winid){
+void write_PSF_colormap_file_glui(int winid){
 	char current[LENGTHBUF];
 	getcwd(current, sizeof(current));
 	text_current = current;
@@ -304,6 +311,28 @@ void set_colormap_file_glui(int winid){
 	file_brouser = new GLUI_FileBrowser(glui_fwin, "File list", GLUI_PANEL_RAISED,
 										0, NoSetFilenameCB);
 	glui_fwin->add_button("Save", 0, save_colormap_handler);
+	editText_filename->set_w(300);
+	currentDir->set_w(300);
+	currentDir->set_h(20);
+	currentDir->disable();
+	file_brouser->set_w(240);
+	glui_fwin->set_main_gfx_window(winid);
+	return;
+}
+
+void read_PSF_colormap_file_glui(int winid){
+	char current[LENGTHBUF];
+	getcwd(current, sizeof(current));
+	text_current = current;
+	int iflag;
+	
+	glui_fwin = GLUI_Master.create_glui("Read colormap file", 0, 100, 100);
+	currentDir = new GLUI_TextBox(glui_fwin, text_current, false, -2);
+	editText_filename = new GLUI_EditText( glui_fwin, "File name:	", GLUI_EDITTEXT_TEXT,
+                                          colormap_file_name, -1, input_colormap_file_panel );
+	file_brouser = new GLUI_FileBrowser(glui_fwin, "File list", GLUI_PANEL_RAISED,
+										0, SetFilenameCB);
+	glui_fwin->add_button("Load", 0, load_colormap_handler);
 	editText_filename->set_w(300);
 	currentDir->set_w(300);
 	currentDir->set_h(20);

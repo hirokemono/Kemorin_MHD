@@ -268,8 +268,12 @@ static void psf_handler(int sel){
 		draw_mesh_w_menu();
 	}
 	else if(sel == WRITE_CMAP){
-		save_colormap_file_glut();
+		save_PSF_colormap_file_glut();
 	}
+    else if(sel == READ_CMAP){
+		load_PSF_colormap_file_glut();
+		draw_mesh_w_menu();
+    }
 	else {
 		toggle = kemoview_psf_draw_switch_select(sel);
 		kemoview_psf_draw_input_setting(sel);
@@ -307,13 +311,20 @@ static void set_psf_comp_handler(int sel){
 };
 
 static void set_psf_patchcolor_handler(int sel){
-    set_current_psf_patch_color_mode(sel);
+	if (sel == WHITE_PSF_SURF)          {set_current_psf_patch_color_mode(WHITE_SURFACE);}
+    else if (sel == SGL_COLOR_PSF_SURF) {set_current_psf_patch_color_mode(SINGLE_COLOR);}
+	else if (sel == RAINBOW_PSF_SURF)   {set_current_psf_patch_color_mode(RAINBOW_SURFACE);}
+	else if (sel == TEXTURE_PSF_SURF) {load_texture_handler();};
+	
 	draw_mesh_w_menu();
 	return;
 };
 
 static void set_psf_linecolor_handler(int sel){
-    set_current_isoline_color(sel);
+	if (sel == BLACK_PSF_LINE)     {set_current_isoline_color(BLACK_LINE);}
+	else if (sel == RAINBOW_PSF_LINE)   {set_current_isoline_color(RAINBOW_LINE);}
+	else if (sel == WHITE_PSF_LINE)   {set_current_isoline_color(WHITE_LINE);};
+	
 	draw_mesh_w_menu();
 	return;
 };
@@ -697,6 +708,7 @@ static void make_2nd_level_psf_menu(){
         glutAddSubMenu("Color map",    glut_menu_id->ichoose_psf_colormap_menu);
         glutAddSubMenu("Opacitiy map", glut_menu_id->ichoose_psf_opacitymap_menu);
 		glutAddMenuEntry("Save colormap file", WRITE_CMAP);
+        glutAddMenuEntry("Read colormap file", READ_CMAP);
     }
 
 	glutAddMenuEntry("Close Current PSF data", PSF_OFF);

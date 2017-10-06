@@ -30,7 +30,7 @@
 	[_kemoviewer UpdateImage];
 }
 
-- (IBAction) SetColormapMinMax:(id)pSender {
+- (void) SetColormapMinMax{
 	[_colorMapObject InitColorTables];
 	[_colorMapObject SetColorTables];
 	[_opacityMapObject InitOpacityTables];
@@ -40,21 +40,48 @@
 
 - (IBAction) SaveColormapFile:(id)pId;{
 	
-	NSSavePanel *ViewMatrixSavePanelObj	= [NSSavePanel savePanel];
-    [ViewMatrixSavePanelObj beginSheetModalForWindow:window 
-                                    completionHandler:^(NSInteger ViewMatrixSaveInt){
-	if(ViewMatrixSaveInt == NSFileHandlingPanelOKButton){
+	NSSavePanel *ColormapSavePanelObj	= [NSSavePanel savePanel];
+    [ColormapSavePanelObj beginSheetModalForWindow:window 
+                                    completionHandler:^(NSInteger ColrmapSaveInt){
+	if(ColrmapSaveInt == NSFileHandlingPanelOKButton){
 		
-		NSString * ViewMatrixFilename = [[ ViewMatrixSavePanelObj URL] path];
-		NSString * ViewMatrixDirectory = [[ ViewMatrixSavePanelObj directoryURL] path];
-		NSString * ViewMatrixFilehead = [ ViewMatrixFilename stringByDeletingPathExtension];
-		NSLog(@" ViewMatrixFilename = %@",  ViewMatrixFilename);
-		NSLog(@" ViewMatrixDirectory = %@", ViewMatrixDirectory);
-		NSLog(@" ViewMatrixFilehead = %@",  ViewMatrixFilehead);
+		NSString * ColormapFilename = [[ ColormapSavePanelObj URL] path];
+		NSString * ColormapDirectory = [[ ColormapSavePanelObj directoryURL] path];
+		NSString * ColormapFilehead = [ ColormapFilename stringByDeletingPathExtension];
+		NSLog(@" ColormapFilename = %@",  ColormapFilename);
+		NSLog(@" ColormapDirectory = %@", ColormapDirectory);
+		NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
 		
-		write_current_PSF_colormap_control_file([ViewMatrixFilename UTF8String]);
+		write_current_PSF_colormap_control_file([ColormapFilename UTF8String]);
 	};
                                     }];
+}
+
+- (IBAction) LoadColormapFile:(id)pId;{
+    NSArray *ColormapFileTypes = [NSArray arrayWithObjects:@"dat",@"DAT",nil];
+    
+    NSOpenPanel *ColormapOpenPanelObj	= [NSOpenPanel openPanel];
+    [ColormapOpenPanelObj setTitle:@"Choose colormap data"];
+    [ColormapOpenPanelObj setAllowedFileTypes:ColormapFileTypes];
+    [ColormapOpenPanelObj beginSheetModalForWindow:window 
+                                   completionHandler:^(NSInteger ColormapOpenInteger){
+                                       if(ColormapOpenInteger == NSFileHandlingPanelOKButton){
+                                           
+                                           NSString * ColormapFilename = [[ ColormapOpenPanelObj URL] path];
+                                           NSString * ColormapDirectory = [[ ColormapOpenPanelObj directoryURL] path];
+                                           NSString * ColormapFilehead = [ ColormapFilename stringByDeletingPathExtension];
+                                           NSLog(@" ColormapFilename = %@",  ColormapFilename);
+                                           NSLog(@" ColormapDirectory = %@", ColormapDirectory);
+                                           NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
+                                           
+                                           read_current_PSF_colormap_control_file((char *) [ColormapFilename UTF8String]);
+                                           [_kemoviewer UpdateImage];
+                                           [_colorMapObject SetColorTables];
+                                           [_opacityMapObject SetOpacityTables];
+                                           [ColorModeItem selectItemAtIndex:send_current_PSF_color_mode_id()];
+                                       };
+                                   }];
+    
 }
 
 @end

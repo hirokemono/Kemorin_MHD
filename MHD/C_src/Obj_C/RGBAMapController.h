@@ -35,7 +35,7 @@
 - (void)updateColormapParameter;
 
 - (IBAction)SetColorMode:(id)pId;
-- (IBAction)SetColormapMinMax:(id)pSender;
 - (IBAction)SaveColormapFile:(id)pId;
+- (IBAction)LoadColormapFile:(id)pId;
 
 @end

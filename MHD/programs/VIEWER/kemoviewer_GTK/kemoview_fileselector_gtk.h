@@ -27,7 +27,8 @@ int output_image_file_gtk(char *file_head);
 int output_evolution_file_gtk(char *file_head,
 			int *ist_udt, int *ied_udt, int *inc_udt);
 
-void save_colormap_file_gtk();
+void save_PSF_colormap_file_gtk();
+void load_PSF_colormap_file_gtk();
 void save_viewmatrix_file_gtk();
 void load_viewmatrix_file_gtk();
 

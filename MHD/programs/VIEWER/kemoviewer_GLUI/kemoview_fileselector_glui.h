@@ -25,7 +25,8 @@ int send_glui_idle_count();
 void set_saveimage_menu_glui(int winid);
 void set_evolution_menu_glui(int winid);
 void set_rotateimages_menu_glui(int winid);
-void set_colormap_file_glui(int winid);
+void write_PSF_colormap_file_glui(int winid);
+void read_PSF_colormap_file_glui(int winid);
 void set_viewmatrix_glui(int winid);
 void load_viewmatrix_glui(int winid);
 

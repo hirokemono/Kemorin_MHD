@@ -366,7 +366,11 @@ static void psf_handler(int sel){
 		nload_psf = close_psf_view();
 		draw_mesh_w_menu();
 	}
-	else if(sel == WRITE_CMAP){set_colormap_file_glui(winid);}
+	else if(sel == WRITE_CMAP){write_PSF_colormap_file_glui(winid);}
+	else if(sel == READ_CMAP){
+		read_PSF_colormap_file_glui(winid);
+		printf("TAko");
+		draw_mesh_w_menu();}
 	else if (sel == ADD_PSF_COLOR) {edit_psf_colormap_by_glui(winid);}
 	else if (sel == ADD_PSF_OPACITY) {edit_psf_opacitymap_by_glui(winid);}
 	else {
@@ -405,13 +409,20 @@ static void set_psf_comp_handler(int sel){
 };
 
 static void set_psf_patchcolor_handler(int sel){
-    set_current_psf_patch_color_mode(sel);
+	if (sel == WHITE_PSF_SURF)        {set_current_psf_patch_color_mode(WHITE_SURFACE);}
+    else if (sel == SGL_COLOR_PSF_SURF) {set_current_psf_patch_color_mode(SINGLE_COLOR);}
+	else if (sel == RAINBOW_PSF_SURF) {set_current_psf_patch_color_mode(RAINBOW_SURFACE);}
+	else if (sel == TEXTURE_PSF_SURF) {set_psf_texture_by_glui(winid);};
+	
 	draw_mesh_w_menu();
 	return;
 };
 
 static void set_psf_linecolor_handler(int sel){
-	set_current_isoline_color(sel);
+	if (sel == BLACK_PSF_LINE)          {set_current_isoline_color(BLACK_LINE);}
+	else if (sel == WHITE_PSF_LINE)     {set_current_isoline_color(WHITE_LINE);}
+	else if (sel == RAINBOW_PSF_LINE)   {set_current_isoline_color(RAINBOW_LINE);};
+
 	draw_mesh_w_menu();
 	return;
 };
@@ -696,6 +707,7 @@ static void make_2nd_level_psf_menu(){
         glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
         glutAddMenuEntry("Edit Opacitiy map",  ADD_PSF_OPACITY);
         glutAddMenuEntry("Save colormap file", WRITE_CMAP);
+        glutAddMenuEntry("Read colormap file", READ_CMAP);
     }
     
 	glutAddMenuEntry("Close Current PSF data", PSF_OFF);

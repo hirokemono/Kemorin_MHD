@@ -446,6 +446,7 @@ module:
 	'$$(KEMO_C_DIR)'/set_rgba_table_c.c \
 	set_rgba_table_c.h \
 	m_color_table_c.o \
+	skip_comment_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

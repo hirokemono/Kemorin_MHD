@@ -159,6 +159,19 @@ void strngcopy(char *chara_out, const char *chara_in){
 	return;
 }
 
+int compare_string(int length, const char *string1, const char *string2){
+	int i, iflag;
+	iflag = 1;
+	for(i = 0; i<length;i++){
+		if(string1[i] != string2[i]) {
+			iflag= 0;
+			break;};
+	};
+	return iflag;
+}
+
+
+
 int get_index_from_file_head(const char *file_head, char *stripped_fhead){
 	char buf[100];    /* buffer for reading line */
 	int int_stripped;

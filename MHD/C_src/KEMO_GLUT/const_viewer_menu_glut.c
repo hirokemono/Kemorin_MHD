@@ -146,16 +146,16 @@ void glut_PSF_patchcolor_select(){
 	int iflag_p_color = send_current_psf_patch_color();
 
 	if (iflag_p_color != RAINBOW_SURFACE) {
-		glutAddMenuEntry("Rainbow surface", RAINBOW_SURFACE);
+		glutAddMenuEntry("Rainbow surface", RAINBOW_PSF_SURF);
 	};
 	if (iflag_p_color != WHITE_SURFACE) {
-		glutAddMenuEntry("White surface",   WHITE_SURFACE);
+		glutAddMenuEntry("White surface",   WHITE_PSF_SURF);
 	};
     if (iflag_p_color != SINGLE_COLOR) {
-        glutAddMenuEntry("Single color",    SINGLE_COLOR);
+        glutAddMenuEntry("Single color",    SGL_COLOR_PSF_SURF);
     };
 	if (iflag_p_color != TEXTURED_SURFACE) {
-		glutAddMenuEntry("Textured surface",TEXTURED_SURFACE);
+		glutAddMenuEntry("Textured surface",TEXTURE_PSF_SURF);
 	};
 
 	return;
@@ -165,13 +165,13 @@ void glut_PSF_linecolor_select(){
 	int iflag_l_color = send_current_isoline_color();
 
 	if (iflag_l_color != RAINBOW_LINE) {
-		glutAddMenuEntry("Rainbow lines", RAINBOW_LINE);
+		glutAddMenuEntry("Rainbow lines", RAINBOW_PSF_LINE);
 	};
-	if (iflag_l_color != BLACK_LINE) {
-		glutAddMenuEntry("Black lines", BLACK_LINE);
+	if (iflag_l_color != BLACK_PSF_LINE) {
+		glutAddMenuEntry("Black lines", RAINBOW_PSF_LINE);
 	};
-	if (iflag_l_color != WHITE_LINE) {
-		glutAddMenuEntry("White lines", WHITE_LINE);
+	if (iflag_l_color != WHITE_PSF_LINE) {
+		glutAddMenuEntry("White lines", WHITE_PSF_LINE);
 	};
 	
 	return;
