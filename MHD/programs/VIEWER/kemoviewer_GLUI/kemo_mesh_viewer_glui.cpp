@@ -162,46 +162,6 @@ static void load_viewmatrix_glui(int sel){
 };
 
 
-static void save_psf_colormap_glui(int sel){
-	char current[LENGTHBUF];
-	char file_name[LENGTHBUF];
-	char file_head[LENGTHBUF];
-	char img_ext[LENGTHBUF];
-	int ext_fmt;
-	
-	getcwd(current, sizeof(current));
-	
-	strcpy(file_name, current);
-	strcat(file_name, "/");
-	strcat(file_name, text_fname.c_str());
-	
-	write_current_PSF_colormap_control_file(file_name);
-	GLUI_Master.close_all();
-	return;
-};
-
-
-static void save_viewmatrix_glui(int sel){
-	char current[LENGTHBUF];
-	char file_name[LENGTHBUF];
-	char file_head[LENGTHBUF];
-	char img_ext[LENGTHBUF];
-	int ext_fmt;
-	
-	getcwd(current, sizeof(current));
-	
-	strcpy(file_name, current);
-	strcat(file_name, "/");
-	strcat(file_name, text_fname.c_str());
-	
-	write_modelview_file_glut(file_name);
-	
-	draw_mesh_w_menu();
-	
-	GLUI_Master.close_all();
-	return;
-};
-
 static void SetFilenameCB(int val)
 {
 	text_fname = editText_filename->get_text();
@@ -236,7 +196,7 @@ static void set_open_file_menu_glui(){
 	/*! Set GLUI window*/
 	glui = GLUI_Master.create_glui("Select input data file", 0, 0, 0);
 	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
-	editText_filename = new GLUI_EditText( glui, "file name: ", text_fname,
+	editText_filename = new GLUI_EditText(glui, "file name: ", text_fname,
 										  -1, SetFilenameCB);
 	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
 										0,openFileBrowerCB);
@@ -314,29 +274,6 @@ static void load_viewmatrix_file_glui(int winid){
 	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
 										0,openFileBrowerCB);
 	glui->add_button("load!", 0, load_viewmatrix_glui);
-	
-	editText_filename->set_w(240);
-	file_brouser->set_w(240);
-	currentDir->set_w(240);
-	currentDir->set_h(20);
-	currentDir->disable();
-	glui->set_main_gfx_window(winid);
-	return;
-}
-
-static void write_PSF_colormap_file_glui(int winid){
-	char current[LENGTHBUF];
-	if(getcwd(current, sizeof(current)) != NULL){
-		printf("current dir is %s\n", current);
-	}
-	text_current = current;
-	glui = GLUI_Master.create_glui("Save colormap", 0, 100, 100);
-	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
-	editText_filename = new GLUI_EditText( glui, "File name: ", text_fname,
-										  -1, SetFilenameCB);
-	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
-										0,openFileBrowerCB);
-	glui->add_button("load!", 0, save_psf_colormap_glui);
 	
 	editText_filename->set_w(240);
 	file_brouser->set_w(240);

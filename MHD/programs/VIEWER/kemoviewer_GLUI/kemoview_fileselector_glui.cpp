@@ -35,6 +35,25 @@ static int ist_udt, ied_udt, inc_udt;
 static int counter = 0;
 
 
+
+static void save_psf_colormap_glui(int sel){
+	char current[LENGTHBUF];
+	char file_name[LENGTHBUF];
+	char file_head[LENGTHBUF];
+	char img_ext[LENGTHBUF];
+	int ext_fmt;
+	
+	getcwd(current, sizeof(current));
+	
+	strcpy(file_name, current);
+	strcat(file_name, "/");
+	strcat(file_name, text_fname.c_str());
+	
+	write_current_PSF_colormap_control_file(file_name);
+	GLUI_Master.close_all();
+	return;
+};
+
 static void save_viewmatrix_glui(int sel){
 	char current[LENGTHBUF];
 	char file_name[LENGTHBUF];
@@ -274,6 +293,31 @@ void set_rotateimages_menu_glui(int winid){
 }
 
 
+void write_PSF_colormap_file_glui(int winid){
+	char current[LENGTHBUF];
+	if(getcwd(current, sizeof(current)) != NULL){
+		printf("current dir is %s\n", current);
+	}
+	text_current = current;
+	glui_fwin = GLUI_Master.create_glui("Save colormap", 0, 100, 100);
+	currentDir = new GLUI_TextBox(glui_fwin, text_current, false, -1);
+	editText_filename = new GLUI_EditText( glui_fwin, "File name: ", text_fname,
+										  -1, SetFilenameCB);
+	file_brouser = new GLUI_FileBrowser(glui_fwin, "Select file", GLUI_PANEL_RAISED, 
+										0,fileBrowerCB);
+	glui_fwin->add_button("Save", 0, save_psf_colormap_glui);
+	
+	editText_filename->set_w(240);
+	file_brouser->set_w(240);
+	currentDir->set_w(240);
+	currentDir->set_h(20);
+	currentDir->disable();
+	
+	glutSetWindow(winid);
+	glui_fwin->set_main_gfx_window(winid);
+	return;
+}
+
 
 void save_viewmatrix_file_glui(int winid){
 	char current[LENGTHBUF];
@@ -287,7 +331,7 @@ void save_viewmatrix_file_glui(int winid){
 										  -1, SetFilenameCB);
 	file_brouser = new GLUI_FileBrowser(glui_fwin, "Select file", GLUI_PANEL_RAISED, 
 										0,fileBrowerCB);
-	glui_fwin->add_button("load!", 0, save_viewmatrix_glui);
+	glui_fwin->add_button("Save", 0, save_viewmatrix_glui);
 	
 	editText_filename->set_w(240);
 	file_brouser->set_w(240);
