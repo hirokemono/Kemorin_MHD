@@ -162,6 +162,12 @@ static void load_viewmatrix_glui(int sel){
 };
 
 
+static void SetDirectoryCB(int val)
+{
+	text_fname = editText_filename->get_text();
+	glui->sync_live();
+}
+
 static void SetFilenameCB(int val)
 {
 	text_fname = editText_filename->get_text();
@@ -175,8 +181,12 @@ static void openFileBrowerCB(int val)
 	
 	text_fname = file_brouser->get_file();
 	text_current = current;
+	
+	currentDir->update_and_draw_text();
 	glui->sync_live();
 	/*
+	printf("current: %s\n", current);
+	printf("text_fname: %s\n", text_fname.c_str());
 	int count = send_glui_idle_count();
 	if(count <= 5000) init_kemoview_data_glui(val);
 	reset_glui_idle_count();
@@ -195,7 +205,7 @@ static void set_open_file_menu_glui(){
 	
 	/*! Set GLUI window*/
 	glui = GLUI_Master.create_glui("Select input data file", 0, 0, 0);
-	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
+	currentDir = new GLUI_TextBox(glui, text_current, false, -1, SetDirectoryCB);
 	editText_filename = new GLUI_EditText(glui, "file name: ", text_fname,
 										  -1, SetFilenameCB);
 	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
@@ -222,7 +232,7 @@ static void set_psf_texture_by_glui(int winid){
 	}
 	text_current = current;
 	glui = GLUI_Master.create_glui("Select file for texture", 0, 100, 100);
-	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
+	currentDir = new GLUI_TextBox(glui, text_current, false, -1, SetDirectoryCB);
 	editText_filename = new GLUI_EditText( glui, "file name: ", text_fname,
 										  -1, SetFilenameCB);
 	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
@@ -245,7 +255,7 @@ static void read_PSF_colormap_file_glui(int winid){
 	}
 	text_current = current;
 	glui = GLUI_Master.create_glui("Select colormap file", 0, 100, 100);
-	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
+	currentDir = new GLUI_TextBox(glui, text_current, false, -1, SetDirectoryCB);
 	editText_filename = new GLUI_EditText( glui, "File name: ", text_fname,
 										  -1, SetFilenameCB);
 	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
@@ -268,7 +278,7 @@ static void load_viewmatrix_file_glui(int winid){
 	}
 	text_current = current;
 	glui = GLUI_Master.create_glui("Select viewmatrix file", 0, 100, 100);
-	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
+	currentDir = new GLUI_TextBox(glui, text_current, false, -1, SetDirectoryCB);
 	editText_filename = new GLUI_EditText( glui, "File name: ", text_fname,
 										  -1, SetFilenameCB);
 	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 

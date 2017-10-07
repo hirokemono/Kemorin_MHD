@@ -106,6 +106,8 @@ static void fileBrowerCB(int val)
 	
 	text_fname = file_brouser->get_file();
 	text_current = current;
+	
+	currentDir->update_and_draw_text();
 	glui_fwin->sync_live();
 	
 	sprintf(image_head, "%s",text_fname.c_str());
