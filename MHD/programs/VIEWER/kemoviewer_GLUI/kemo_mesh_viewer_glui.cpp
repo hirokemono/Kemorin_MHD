@@ -347,29 +347,6 @@ static void write_PSF_colormap_file_glui(int winid){
 	return;
 }
 
-static void save_viewmatrix_file_glui(int winid){
-	char current[LENGTHBUF];
-	if(getcwd(current, sizeof(current)) != NULL){
-		printf("current dir is %s\n", current);
-	}
-	text_current = current;
-	glui = GLUI_Master.create_glui("Save view matrix", 0, 100, 100);
-	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
-	editText_filename = new GLUI_EditText( glui, "File name: ", text_fname,
-										  -1, SetFilenameCB);
-	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
-										0,openFileBrowerCB);
-	glui->add_button("load!", 0, save_viewmatrix_glui);
-	
-	editText_filename->set_w(240);
-	file_brouser->set_w(240);
-	currentDir->set_w(240);
-	currentDir->set_h(20);
-	currentDir->disable();
-	glui->set_main_gfx_window(winid);
-	return;
-}
-
 /* ---------  Action for selected menu -----------   */ 
 
 void draw_rot_image_handler(int id_rot){

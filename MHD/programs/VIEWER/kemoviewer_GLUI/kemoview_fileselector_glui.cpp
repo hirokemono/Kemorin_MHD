@@ -16,6 +16,7 @@ static GLUI_String text_current;
 
 static GLUI_FileBrowser *file_brouser;
 static GLUI_EditText   *editText_filename;
+static GLUI_String text_fname;
 
 static GLUI_StaticText   *staticText_p;
 static GLUI_EditText   *editText_st;
@@ -23,7 +24,6 @@ static GLUI_EditText   *editText_ed;
 static GLUI_EditText   *editText_ic;
 static GLUI_Button *bottunToGo;
 
-static GLUI_String glui_image_head;
 static GLUI_RadioGroup *imgfmt_radio;
 static GLUI_String glui_name;
 
@@ -33,6 +33,26 @@ static int image_fmt;
 static int ist_udt, ied_udt, inc_udt;
 
 static int counter = 0;
+
+
+static void save_viewmatrix_glui(int sel){
+	char current[LENGTHBUF];
+	char file_name[LENGTHBUF];
+	char file_head[LENGTHBUF];
+	char img_ext[LENGTHBUF];
+	int ext_fmt;
+	
+	getcwd(current, sizeof(current));
+	
+	strcpy(file_name, current);
+	strcat(file_name, "/");
+	strcat(file_name, text_fname.c_str());
+	
+	write_modelview_file_glut(file_name);
+	GLUI_Master.close_all();
+	return;
+};
+
 
 /* Actions for file name input */
 /*
@@ -65,17 +85,17 @@ static void fileBrowerCB(int val)
 	char current[LENGTHBUF];
 	getcwd(current, sizeof(current));
 	
-	glui_image_head = file_brouser->get_file();
+	text_fname = file_brouser->get_file();
 	text_current = current;
 	glui_fwin->sync_live();
 	
-	sprintf(image_head, "%s",glui_image_head.c_str());
+	sprintf(image_head, "%s",text_fname.c_str());
 }
 
 static void input_image_file_panel(int val)
 {
-	glui_image_head = editText_filename->get_text();
-	sprintf(image_head, "%s",glui_image_head.c_str());
+	text_fname = editText_filename->get_text();
+	sprintf(image_head, "%s",text_fname.c_str());
 	glui_fwin->sync_live();
 	return;
 }
@@ -144,7 +164,7 @@ static void save_rotation_views_handler(int rot_dir){
 
 static void set_imagefile_brouser_glui(){
 	currentDir = new GLUI_TextBox(glui_fwin, text_current, false, -2);
-	editText_filename = new GLUI_EditText( glui_fwin, "File name:", glui_image_head,
+	editText_filename = new GLUI_EditText( glui_fwin, "File name:", text_fname,
 										-1, input_image_file_panel);
 	file_brouser = new GLUI_FileBrowser(glui_fwin, "File list", GLUI_PANEL_RAISED,
 			0, fileBrowerCB);
@@ -250,5 +270,34 @@ void set_rotateimages_menu_glui(int winid){
 	
 	glutSetWindow(winid);
 	glui_fwin->set_main_gfx_window(winid);
+	return;
+}
+
+
+
+void save_viewmatrix_file_glui(int winid){
+	char current[LENGTHBUF];
+	if(getcwd(current, sizeof(current)) != NULL){
+		printf("current dir is %s\n", current);
+	}
+	text_current = current;
+	glui_fwin = GLUI_Master.create_glui("Save view matrix", 0, 100, 100);
+	currentDir = new GLUI_TextBox(glui_fwin, text_current, false, -1);
+	editText_filename = new GLUI_EditText( glui_fwin, "File name: ", text_fname,
+										  -1, SetFilenameCB);
+	file_brouser = new GLUI_FileBrowser(glui_fwin, "Select file", GLUI_PANEL_RAISED, 
+										0,fileBrowerCB);
+	glui_fwin->add_button("load!", 0, save_viewmatrix_glui);
+	
+	editText_filename->set_w(240);
+	file_brouser->set_w(240);
+	currentDir->set_w(240);
+	currentDir->set_h(20);
+	currentDir->disable();
+	
+	
+	glutSetWindow(winid);
+	glui_fwin->set_main_gfx_window(winid);
+	
 	return;
 }
