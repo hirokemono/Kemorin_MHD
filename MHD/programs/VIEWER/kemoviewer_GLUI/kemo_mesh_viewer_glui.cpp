@@ -11,6 +11,7 @@ struct glut_menu_address *glut_menu_id;
 
 static int winid, menu_win;
 static char viewtype_title[80] = "3D-View";
+static char colormap_file_name[LENGTHBUF];
 
 static void make_1st_level_menu();
 
@@ -118,6 +119,88 @@ static void load_psf_texture_glui(int sel){
 	return;
 };
 
+static void load_psf_colormap_glui(int sel){
+	char current[LENGTHBUF];
+	char file_name[LENGTHBUF];
+	char file_head[LENGTHBUF];
+	char img_ext[LENGTHBUF];
+	int ext_fmt;
+	
+	getcwd(current, sizeof(current));
+	
+	strcpy(file_name, current);
+	strcat(file_name, "/");
+	strcat(file_name, text_fname.c_str());
+	
+	read_current_PSF_colormap_control_file(file_name);
+	
+	draw_mesh_w_menu();
+	
+	GLUI_Master.close_all();
+	return;
+};
+
+static void load_viewmatrix_glui(int sel){
+	char current[LENGTHBUF];
+	char file_name[LENGTHBUF];
+	char file_head[LENGTHBUF];
+	char img_ext[LENGTHBUF];
+	int ext_fmt;
+	
+	getcwd(current, sizeof(current));
+	
+	strcpy(file_name, current);
+	strcat(file_name, "/");
+	strcat(file_name, text_fname.c_str());
+	
+	load_modelview_file_glut(file_name);
+	
+	draw_mesh_w_menu();
+	
+	GLUI_Master.close_all();
+	return;
+};
+
+
+static void save_psf_colormap_glui(int sel){
+	char current[LENGTHBUF];
+	char file_name[LENGTHBUF];
+	char file_head[LENGTHBUF];
+	char img_ext[LENGTHBUF];
+	int ext_fmt;
+	
+	getcwd(current, sizeof(current));
+	
+	strcpy(file_name, current);
+	strcat(file_name, "/");
+	strcat(file_name, text_fname.c_str());
+	
+	write_current_PSF_colormap_control_file(file_name);
+	GLUI_Master.close_all();
+	return;
+};
+
+
+static void save_viewmatrix_glui(int sel){
+	char current[LENGTHBUF];
+	char file_name[LENGTHBUF];
+	char file_head[LENGTHBUF];
+	char img_ext[LENGTHBUF];
+	int ext_fmt;
+	
+	getcwd(current, sizeof(current));
+	
+	strcpy(file_name, current);
+	strcat(file_name, "/");
+	strcat(file_name, text_fname.c_str());
+	
+	write_modelview_file_glut(file_name);
+	
+	draw_mesh_w_menu();
+	
+	GLUI_Master.close_all();
+	return;
+};
 
 static void SetFilenameCB(int val)
 {
@@ -140,6 +223,7 @@ static void openFileBrowerCB(int val)
 	*/
 
 }
+
 /* Routines for GLUI Interface */
 
 static void set_open_file_menu_glui(){
@@ -184,6 +268,98 @@ static void set_psf_texture_by_glui(int winid){
 	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
 										0,openFileBrowerCB);
 	glui->add_button("load!", 0, load_psf_texture_glui);
+	
+	editText_filename->set_w(240);
+	file_brouser->set_w(240);
+	currentDir->set_w(240);
+	currentDir->set_h(20);
+	currentDir->disable();
+	glui->set_main_gfx_window(winid);
+	return;
+}
+
+static void read_PSF_colormap_file_glui(int winid){
+	char current[LENGTHBUF];
+	if(getcwd(current, sizeof(current)) != NULL){
+		printf("current dir is %s\n", current);
+	}
+	text_current = current;
+	glui = GLUI_Master.create_glui("Select colormap file", 0, 100, 100);
+	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
+	editText_filename = new GLUI_EditText( glui, "File name: ", text_fname,
+										  -1, SetFilenameCB);
+	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
+										0,openFileBrowerCB);
+	glui->add_button("load!", 0, load_psf_colormap_glui);
+	
+	editText_filename->set_w(240);
+	file_brouser->set_w(240);
+	currentDir->set_w(240);
+	currentDir->set_h(20);
+	currentDir->disable();
+	glui->set_main_gfx_window(winid);
+	return;
+}
+
+static void load_viewmatrix_file_glui(int winid){
+	char current[LENGTHBUF];
+	if(getcwd(current, sizeof(current)) != NULL){
+		printf("current dir is %s\n", current);
+	}
+	text_current = current;
+	glui = GLUI_Master.create_glui("Select viewmatrix file", 0, 100, 100);
+	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
+	editText_filename = new GLUI_EditText( glui, "File name: ", text_fname,
+										  -1, SetFilenameCB);
+	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
+										0,openFileBrowerCB);
+	glui->add_button("load!", 0, load_viewmatrix_glui);
+	
+	editText_filename->set_w(240);
+	file_brouser->set_w(240);
+	currentDir->set_w(240);
+	currentDir->set_h(20);
+	currentDir->disable();
+	glui->set_main_gfx_window(winid);
+	return;
+}
+
+static void write_PSF_colormap_file_glui(int winid){
+	char current[LENGTHBUF];
+	if(getcwd(current, sizeof(current)) != NULL){
+		printf("current dir is %s\n", current);
+	}
+	text_current = current;
+	glui = GLUI_Master.create_glui("Save colormap", 0, 100, 100);
+	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
+	editText_filename = new GLUI_EditText( glui, "File name: ", text_fname,
+										  -1, SetFilenameCB);
+	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
+										0,openFileBrowerCB);
+	glui->add_button("load!", 0, save_psf_colormap_glui);
+	
+	editText_filename->set_w(240);
+	file_brouser->set_w(240);
+	currentDir->set_w(240);
+	currentDir->set_h(20);
+	currentDir->disable();
+	glui->set_main_gfx_window(winid);
+	return;
+}
+
+static void save_viewmatrix_file_glui(int winid){
+	char current[LENGTHBUF];
+	if(getcwd(current, sizeof(current)) != NULL){
+		printf("current dir is %s\n", current);
+	}
+	text_current = current;
+	glui = GLUI_Master.create_glui("Save view matrix", 0, 100, 100);
+	currentDir = new GLUI_TextBox(glui, text_current, false, -1);
+	editText_filename = new GLUI_EditText( glui, "File name: ", text_fname,
+										  -1, SetFilenameCB);
+	file_brouser = new GLUI_FileBrowser(glui, "Select file", GLUI_PANEL_RAISED, 
+										0,openFileBrowerCB);
+	glui->add_button("load!", 0, save_viewmatrix_glui);
 	
 	editText_filename->set_w(240);
 	file_brouser->set_w(240);
@@ -365,21 +541,25 @@ static void psf_handler(int sel){
 	if (sel == PSF_OFF) {
 		nload_psf = close_psf_view();
 		draw_mesh_w_menu();
-	}
-	else if(sel == WRITE_CMAP){write_PSF_colormap_file_glui(winid);}
-	else if(sel == READ_CMAP){
-		read_PSF_colormap_file_glui(winid);
-		printf("TAko");
-		draw_mesh_w_menu();}
-	else if (sel == ADD_PSF_COLOR) {edit_psf_colormap_by_glui(winid);}
-	else if (sel == ADD_PSF_OPACITY) {edit_psf_opacitymap_by_glui(winid);}
-	else {
+	} else {
 		toggle = kemoview_psf_draw_switch_select(sel);
 		kemoview_psf_draw_input_setting(sel);
 		draw_mesh_w_menu();
 	};
 	return;
 };
+
+static void psf_colormap_handler(int sel){
+	if(sel == WRITE_CMAP){write_PSF_colormap_file_glui(winid);}
+	else if(sel == READ_CMAP){read_PSF_colormap_file_glui(winid);}
+	else if (sel == ADD_PSF_COLOR) {edit_psf_colormap_by_glui(winid);}
+	else if (sel == ADD_PSF_OPACITY) {
+		edit_psf_opacitymap_by_glui(winid);
+		draw_mesh_w_menu();
+	};
+	return;
+};
+
 
 static void fline_handler(int sel){
 	int toggle;
@@ -476,9 +656,9 @@ static void object_property_handler(int sel){
 	} else if( sel == SET_COAST_RADIUS) {
 		set_coastline_radius_glui(winid);
 	} else if( sel == OUTPUT_V_MATRIX) {
-		set_viewmatrix_glui(winid);
+		save_viewmatrix_file_glui(winid);
 	} else if( sel == INPUT_V_MATRIX) {
-		load_viewmatrix_glui(winid);
+		load_viewmatrix_file_glui(winid);
 	};
 	draw_mesh_w_menu();
 	
@@ -593,6 +773,18 @@ static void make_2nd_level_mesh_menu(){
 	return;
 };
 
+/* 4th level menues*/
+static void make_4th_level_psf_menu(){
+	int iflag_solid = send_kemoview_psf_draw_flags(PSFSOLID_TOGGLE);
+	int iflag_grid =  send_kemoview_psf_draw_flags(PSFGRID_TOGGLE);
+	
+	if (iflag_solid > 0 || iflag_grid > 0) {
+		glut_menu_id->ichoose_psf_colormode_menu = glutCreateMenu(set_psf_colormode_handler);
+		glut_PSF_colormode_select();
+	};
+	return;
+}
+
 /* 3rd level menues*/
 static void make_3rd_level_psf_menu(){
 	
@@ -629,8 +821,12 @@ static void make_3rd_level_psf_menu(){
 	};
     
     if (iflag_solid > 0 || iflag_grid > 0) {
-        glut_menu_id->ichoose_psf_colormode_menu = glutCreateMenu(set_psf_colormode_handler);
-        glut_PSF_colormode_select();
+        glut_menu_id->ichoose_psf_color_menu = glutCreateMenu(psf_colormap_handler);
+        glutAddSubMenu("Colormap mode", glut_menu_id->ichoose_psf_colormode_menu);
+		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
+		glutAddMenuEntry("Edit Opacitiy map",  ADD_PSF_OPACITY);
+		glutAddMenuEntry("Save colormap file", WRITE_CMAP);
+        glutAddMenuEntry("Read colormap file", READ_CMAP);
     };
 	return;
 };
@@ -694,22 +890,16 @@ static void make_2nd_level_psf_menu(){
 	};
 	
 	glut_PSF_draw_menu();
-
+	
 	if(iflag_solid > 0){glutAddSubMenu("Surface  color", glut_menu_id->ichoose_psf_patchcolor_menu);};
 	if(iflag_grid > 0) {glutAddSubMenu("Line color", glut_menu_id->ichoose_psf_linecolor_menu);};
-    if(iflag_solid > 0 || iflag_grid > 0){
-        glutAddSubMenu("Colormap mode", glut_menu_id->ichoose_psf_colormode_menu);
-    };
 	
 	glut_PSF_range_menu();
 	
     if(iflag_solid > 0 || iflag_grid > 0){
-        glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
-        glutAddMenuEntry("Edit Opacitiy map",  ADD_PSF_OPACITY);
-        glutAddMenuEntry("Save colormap file", WRITE_CMAP);
-        glutAddMenuEntry("Read colormap file", READ_CMAP);
-    }
-    
+        glutAddSubMenu("Color and Opacity", glut_menu_id->ichoose_psf_color_menu);
+    };
+	
 	glutAddMenuEntry("Close Current PSF data", PSF_OFF);
 	
 	return;
@@ -815,6 +1005,7 @@ static void make_1st_level_menu(){
 	};
 	
 	if( iflag_draw_p > 0){
+		make_4th_level_psf_menu();
 		make_3rd_level_psf_menu();
 		make_2nd_level_psf_menu();
 	};

@@ -268,8 +268,16 @@ static void psf_handler(int sel){
 	if (sel == PSF_OFF) {
 		nload_psf = close_psf_view();
 		draw_mesh_w_menu();
-	}
-	else if(sel == WRITE_CMAP){save_PSF_colormap_file_gtk();}
+	} else {
+		toggle = kemoview_psf_draw_switch_select(sel);
+		kemoview_psf_draw_input_setting(sel);
+		draw_mesh_w_menu();
+	};
+	return;
+};
+
+static void psf_colormap_handler(int sel){
+	if(sel == WRITE_CMAP){save_PSF_colormap_file_gtk();}
 	else if(sel == READ_CMAP){
 		load_PSF_colormap_file_gtk();
 		draw_mesh_w_menu();
@@ -277,11 +285,6 @@ static void psf_handler(int sel){
 	else if (sel == ADD_PSF_COLOR) {edit_psf_colormap_gtk(winid);}
 	else if (sel == ADD_PSF_OPACITY) {
 		edit_psf_opasitymap_gtk(winid);
-		draw_mesh_w_menu();
-	}
-	else {
-		toggle = kemoview_psf_draw_switch_select(sel);
-		kemoview_psf_draw_input_setting(sel);
 		draw_mesh_w_menu();
 	};
 	return;
@@ -339,7 +342,7 @@ static void set_psf_colormode_handler(int sel){
     draw_mesh_w_menu();
     return;
 };
-	
+
 
 static void set_fline_color_handler(int sel){
 	set_fline_color_field_flag(sel);
@@ -501,6 +504,18 @@ static void make_2nd_level_mesh_menu(){
 	return;
 };
 
+/* 4th level menues*/
+static void make_4th_level_psf_menu(){
+	int iflag_solid = send_kemoview_psf_draw_flags(PSFSOLID_TOGGLE);
+	int iflag_grid =  send_kemoview_psf_draw_flags(PSFGRID_TOGGLE);
+	
+	if (iflag_solid > 0 || iflag_grid > 0) {
+		glut_menu_id->ichoose_psf_colormode_menu = glutCreateMenu(set_psf_colormode_handler);
+		glut_PSF_colormode_select();
+	};
+	return;
+}
+
 /* 3rd level menues*/
 static void make_3rd_level_psf_menu(){
 	
@@ -537,8 +552,12 @@ static void make_3rd_level_psf_menu(){
 	};
 
     if (iflag_solid > 0 || iflag_grid > 0) {
-        glut_menu_id->ichoose_psf_colormode_menu = glutCreateMenu(set_psf_colormode_handler);
-        glut_PSF_colormode_select();
+        glut_menu_id->ichoose_psf_color_menu = glutCreateMenu(psf_colormap_handler);
+        glutAddSubMenu("Colormap mode", glut_menu_id->ichoose_psf_colormode_menu);
+		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
+		glutAddMenuEntry("Edit Opacitiy map",  ADD_PSF_OPACITY);
+		glutAddMenuEntry("Save colormap file", WRITE_CMAP);
+        glutAddMenuEntry("Read colormap file", READ_CMAP);
     };
 	return;
 };
@@ -601,21 +620,14 @@ static void make_2nd_level_psf_menu(){
 	};
 	
 	glut_PSF_draw_menu();
-
 	if(iflag_solid > 0){glutAddSubMenu("Surface  color", glut_menu_id->ichoose_psf_patchcolor_menu);};
 	if(iflag_grid > 0) {glutAddSubMenu("Line color", glut_menu_id->ichoose_psf_linecolor_menu);};
-    if(iflag_solid > 0 || iflag_grid > 0){
-        glutAddSubMenu("Colormap mode", glut_menu_id->ichoose_psf_colormode_menu);
-    };
-
+	
 	glut_PSF_range_menu();
-
-	if(iflag_solid > 0 || iflag_grid > 0){
-		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
-		glutAddMenuEntry("Edit Opacitiy map",  ADD_PSF_OPACITY);
-		glutAddMenuEntry("Save colormap file", WRITE_CMAP);
-        glutAddMenuEntry("Read colormap file", READ_CMAP);
-	}
+	
+    if(iflag_solid > 0 || iflag_grid > 0){
+        glutAddSubMenu("Color and Opacity", glut_menu_id->ichoose_psf_color_menu);
+	};
 	
 	glutAddMenuEntry("Close Current PSF data", PSF_OFF);
 	
@@ -727,6 +739,7 @@ static void make_1st_level_menu(){
 	};
 	
 	if( iflag_draw_p > 0){
+		make_4th_level_psf_menu();
 		make_3rd_level_psf_menu();
 		make_2nd_level_psf_menu();
 	};

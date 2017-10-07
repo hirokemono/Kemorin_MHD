@@ -267,16 +267,19 @@ static void psf_handler(int sel){
 		nload_psf = close_psf_view();
 		draw_mesh_w_menu();
 	}
-	else if(sel == WRITE_CMAP){
-		save_PSF_colormap_file_glut();
-	}
-    else if(sel == READ_CMAP){
-		load_PSF_colormap_file_glut();
-		draw_mesh_w_menu();
-    }
 	else {
 		toggle = kemoview_psf_draw_switch_select(sel);
 		kemoview_psf_draw_input_setting(sel);
+		draw_mesh_w_menu();
+	};
+	return;
+};
+
+static void psf_colormap_handler(int sel){
+	if(sel == WRITE_CMAP){
+		save_PSF_colormap_file_glut();
+	} else if(sel == READ_CMAP){
+		load_PSF_colormap_file_glut();
 		draw_mesh_w_menu();
 	};
 	return;
@@ -577,9 +580,22 @@ static void make_4th_level_psf_menu(){
             send_current_PSF_opacity_table_items(i, &value, &opacity);
             sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, opacity);
             glutAddMenuEntry(tmp_menu,  i);
-        };
-    };
-    return;
+		};
+		
+		glut_menu_id->ichoose_psf_colormode_menu = glutCreateMenu(set_psf_colormode_handler);
+		glut_PSF_colormode_select();
+		
+        glut_menu_id->ichoose_psf_colormap_menu =  glutCreateMenu(add_psf_colormap_handler);
+        glutAddMenuEntry("Add feature point",  ADD_PSF_COLOR);
+        glutAddSubMenu("Modify feature point",  glut_menu_id->modify_colormap_menu);
+        glutAddSubMenu("Delete feature point",  glut_menu_id->delete_colormap_menu);
+        
+        glut_menu_id->ichoose_psf_opacitymap_menu =  glutCreateMenu(add_psf_opacitymap_handler);
+        glutAddMenuEntry("Add feature point",  ADD_PSF_OPACITY);
+        glutAddSubMenu("Modify feature point",  glut_menu_id->modify_opacitymap_menu);
+        glutAddSubMenu("Delete feature point",  glut_menu_id->delete_opacitymap_menu);
+	};
+	return;
 };
 
 /* 3rd level menues*/
@@ -617,21 +633,13 @@ static void make_3rd_level_psf_menu(){
 		glut_PSF_linecolor_select();
 	};
 
-    if (iflag_solid > 0 || iflag_grid > 0) {
-        glut_menu_id->ichoose_psf_colormode_menu = glutCreateMenu(set_psf_colormode_handler);
-        glut_PSF_colormode_select();
-    };
-    
     if(iflag_solid > 0 || iflag_grid > 0){
-        glut_menu_id->ichoose_psf_colormap_menu =  glutCreateMenu(add_psf_colormap_handler);
-        glutAddMenuEntry("Add feature point",  ADD_PSF_COLOR);
-        glutAddSubMenu("Modify feature point",  glut_menu_id->modify_colormap_menu);
-        glutAddSubMenu("Delete feature point",  glut_menu_id->delete_colormap_menu);
-        
-        glut_menu_id->ichoose_psf_opacitymap_menu =  glutCreateMenu(add_psf_opacitymap_handler);
-        glutAddMenuEntry("Add feature point",  ADD_PSF_OPACITY);
-        glutAddSubMenu("Modify feature point",  glut_menu_id->modify_opacitymap_menu);
-        glutAddSubMenu("Delete feature point",  glut_menu_id->delete_opacitymap_menu);
+        glut_menu_id->ichoose_psf_color_menu = glutCreateMenu(psf_colormap_handler);
+        glutAddSubMenu("Colormap mode", glut_menu_id->ichoose_psf_colormode_menu);
+        glutAddSubMenu("Color map",    glut_menu_id->ichoose_psf_colormap_menu);
+        glutAddSubMenu("Opacitiy map", glut_menu_id->ichoose_psf_opacitymap_menu);
+		glutAddMenuEntry("Save colormap file", WRITE_CMAP);
+        glutAddMenuEntry("Read colormap file", READ_CMAP);
     };
 
 	return;
@@ -698,19 +706,13 @@ static void make_2nd_level_psf_menu(){
 
 	if(iflag_solid > 0){glutAddSubMenu("Surface  color", glut_menu_id->ichoose_psf_patchcolor_menu);};
 	if(iflag_grid > 0) {glutAddSubMenu("Line color", glut_menu_id->ichoose_psf_linecolor_menu);};
-    if(iflag_solid > 0 || iflag_grid > 0){
-        glutAddSubMenu("Colormap mode", glut_menu_id->ichoose_psf_colormode_menu);
-    };
-
+	
 	glut_PSF_range_menu();
     
     if(iflag_solid > 0 || iflag_grid > 0){
-        glutAddSubMenu("Color map",    glut_menu_id->ichoose_psf_colormap_menu);
-        glutAddSubMenu("Opacitiy map", glut_menu_id->ichoose_psf_opacitymap_menu);
-		glutAddMenuEntry("Save colormap file", WRITE_CMAP);
-        glutAddMenuEntry("Read colormap file", READ_CMAP);
+        glutAddSubMenu("Color and Opacity", glut_menu_id->ichoose_psf_color_menu);
     }
-
+	
 	glutAddMenuEntry("Close Current PSF data", PSF_OFF);
 	
 	return;

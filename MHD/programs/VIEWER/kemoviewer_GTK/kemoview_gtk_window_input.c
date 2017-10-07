@@ -453,6 +453,7 @@ static void gtk_range_menu(double range_min, double range_max,
 	GtkWidget *bot1, *bot2;
 	GtkObject *adj_min, *adj_max;
 	
+    double delta;
 	char min_text[30], max_text[30];
 	
 	iflag_set = IZERO;
@@ -490,10 +491,11 @@ static void gtk_range_menu(double range_min, double range_max,
 	lavel3 = gtk_label_new(max_text);
 	gtk_box_pack_start(GTK_BOX(box2), lavel3, TRUE, TRUE, 0);
 	
-	adj_min = gtk_adjustment_new (range_min, (range_min*1.0e3), (range_max*1.0e3),
-			((range_max-range_min)*1.0e-2), ((range_max-range_min)*1.0e-2), 0.0);
-	adj_max = gtk_adjustment_new (range_max, (range_min*1.0e3), (range_max*1.0e3),
-			((range_max-range_min)*1.0e-2), ((range_max-range_min)*1.0e-2), 0.0);
+    delta = range_max - range_min;
+	adj_min = gtk_adjustment_new (range_min, (range_min-1.0e3*delta), (range_max+1.0e3*delta),
+			(delta*1.0e-2), (delta*1.0e-2), 0.0);
+	adj_max = gtk_adjustment_new (range_max, (range_min*1.0e3),  (range_max+1.0e3*delta),
+			(delta*1.0e-2), (delta*1.0e-2), 0.0);
 	spin1 = gtk_spin_button_new( GTK_ADJUSTMENT(adj_min),0,2);
 	gtk_box_pack_start(GTK_BOX(box3), spin1, TRUE, TRUE, 0);
 	spin2 = gtk_spin_button_new( GTK_ADJUSTMENT(adj_max),0,2);
