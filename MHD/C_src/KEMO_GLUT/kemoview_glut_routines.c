@@ -36,7 +36,7 @@ void write_rotate_views_glut(int iflag_img, char *image_head, int i_axis) {
 		rotate_kemoview();
 		glutSwapBuffers();
 		
-        write_kemoviewer_window_step_file(iflag_img, i, image_head);
+        kemoview_write_window_to_file_w_step(iflag_img, i, image_head);
 	};
 	draw_mesh_keep_menu();
 	return;
@@ -56,7 +56,7 @@ void write_evolution_views_glut(int iflag_img, char *image_head,
 			draw_mesh_keep_menu();
 			glutSwapBuffers();
             
-            write_kemoviewer_window_step_file(iflag_img, i, image_head);
+            kemoview_write_window_to_file_w_step(iflag_img, i, image_head);
 		}
 	}
 	return;

@@ -244,11 +244,11 @@
 !    void set_to_text_color_code(float c_code[4]);
 !    void send_text_color_code(float c_code[4]);
 !    
-!    int set_image_file_format_id(char *image_fmt);
+!    int kemoview_set_image_file_format_id(char *image_fmt);
 !    void get_kemoviewer_fliped_img(int npixel_x, int npixel_y,
 !                                   unsigned char *glimage, unsigned char *fliped_img);
-!    void write_kemoviewer_window_to_file(int iflag_img, const char *fhead);
-!    void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead);
+!    void kemoview_write_window_to_file(int iflag_img, const char *fhead);
+!    void kemoview_write_window_to_file_w_step(int iflag_img, int istep, const char *fhead);
 !    
 !    void modify_view_kemoview();
 !    void rotate_kemoview();
@@ -435,74 +435,66 @@
 !    void set_each_fline_color_point(int i_point, double value, double color);
 !    void set_each_fline_opacity_point(int i_point, double value, double opacity);
 !    
-!    void set_fline_color_mode_id(int isel);
+!    void kemoview_set_fline_color_mode_id(int isel);
 !    
-!    double send_fline_color_table_min();
-!    double send_fline_color_table_max();
-!    double send_fline_minimum_opacity();
-        function send_fline_minimum_opacity()                           &
-     &          BIND(C, name = "send_fline_minimum_opacity")
+!    double kemoview_get_fline_min_color();
+!    double kemoview_get_fline_max_color();
+!    double kemoview_get_fline_min_opacity();
+        function kemoview_get_fline_min_opacity()                       &
+     &          BIND(C, name = "kemoview_get_fline_min_opacity")
 !          IMPORT C_DOUBLE, c_int
-          integer(c_int) :: send_fline_minimum_opacity
+          integer(c_int) :: kemoview_get_fline_min_opacity
         END function
 !    
-!    double send_fline_maximum_opacity();
-        function send_fline_maximum_opacity()                           &
-     &          BIND(C, name = "send_fline_maximum_opacity")
+!    double kemoview_get_fline_max_opacity();
+        function kemoview_get_fline_max_opacity()                       &
+     &          BIND(C, name = "kemoview_get_fline_max_opacity")
 !          IMPORT C_DOUBLE, c_int
-          integer(c_int) :: send_fline_maximum_opacity
+          integer(c_int) :: kemoview_get_fline_maximum_opacity
         END function
 !    
-!    int send_fline_color_table_num();
-        function send_fline_color_table_num()                           &
-     &          BIND(C, name = "send_fline_color_table_num")
+!    int kemoview_get_fline_color_num();
+        function kemoview_get_fline_color_num()                         &
+     &          BIND(C, name = "kemoview_get_fline_color_num")
 !          IMPORT c_int
-          integer(c_int) :: send_fline_color_table_num
+          integer(c_int) :: kemoview_get_fline_color_num
         END function
 !
-!    int send_fline_opacity_table_num();
-        function send_fline_opacity_table_num()                         &
-     &          BIND(C, name = "send_fline_opacity_table_num")
+!    int kemoview_get_fline_opacity_num();
+        function kemoview_get_fline_opacity_num()                       &
+     &          BIND(C, name = "kemoview_get_fline_opacity_num")
 !          IMPORT c_int
-          integer(c_int) :: send_fline_opacity_table_num
+          integer(c_int) :: kemoview_get_ffline_opacity_num
         END function
 !
-!    void send_fline_color_table_items(int i_point, double *value, double *color);
-        subroutine send_fline_color_table_items                         &
+!    void kemoview_get_fline_color_item(int i_point, double *value, double *color);
+        subroutine kemoview_get_fline_color_item                        &
      &           (i_point, value, color)                                &
-     &            BIND(C, name = "send_fline_color_table_items")
+     &            BIND(C, name = "kemoview_get_fline_color_item")
 !          IMPORT C_DOUBLE, c_int
           integer(c_int), VALUE :: i_point
           REAL(C_DOUBLE), intent(inout) :: value(i_point)
           REAL(C_DOUBLE), intent(inout) :: color(i_point)
         END subroutine
 !
-!    void send_fline_opacity_table_items(int i_point, double *value, double *opacity);
-        subroutine send_fline_opacity_table_items                       &
+!    void kemoview_get_fline_opacity_item(int i_point, double *value, double *opacity);
+        subroutine kemoview_get_fline_opacity_item                      &
      &           (i_point, value, opacity)                              &
-     &            BIND(C, name = "send_fline_opacity_table_items")
+     &            BIND(C, name = "kemoview_get_fline_opacity_item")
 !          IMPORT C_DOUBLE, c_int
           integer(c_int), VALUE :: i_point
           REAL(C_DOUBLE), intent(inout) :: value(i_point)
           REAL(C_DOUBLE), intent(inout) :: opacity(i_point)
         END subroutine
 !
-!    void write_fline_colormap_control_file(const char *file_name);
-        subroutine write_fline_colormap_control_file(file_name)         &
-     &            BIND(C, name = "write_fline_colormap_control_file")
+!    void kemoview_write_fline_colormap_file(const char *file_name);
+        subroutine kemoview_write_fline_colormap_file(file_name)        &
+     &            BIND(C, name = "kemoview_write_fline_colormap_file")
 !          IMPORT C_DOUBLE, C_CHAR
           character(kind=C_CHAR, LEN=kchara) :: file_name
-          REAL(C_DOUBLE) :: write_fline_colormap_control_file
+          REAL(C_DOUBLE) :: kemoview_write_fline_colormap_file
         END subroutine
 !    
-!    double round_to_3digit(double value);
-        function round_to_3digit(value)                                 &
-     &          BIND(C, name = "round_to_3digit")
-!          IMPORT C_DOUBLE
-          REAL(C_DOUBLE), VALUE :: value
-          REAL(C_DOUBLE) :: round_to_3digit
-        END function
-!
       end interface
 !
 ! -----------------------------------------------------------------------

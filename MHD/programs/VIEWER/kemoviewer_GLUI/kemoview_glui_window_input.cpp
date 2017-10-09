@@ -305,8 +305,8 @@ void set_fline_range_by_glui(int winid){
 	
 	int ifield = send_if_draw_fline();
 	int icomp = send_icomp_draw_fline();
-	fline_color_min = (float) send_fline_color_table_min();
-	fline_color_max = (float) send_fline_color_table_max();
+	fline_color_min = (float) kemoview_get_fline_min_color();
+	fline_color_max = (float) kemoview_get_fline_max_color();
 	sprintf(fline_range_txt,"Range: %3.2e ... %3.2e",(float) send_fline_data_min(icomp),
 			(float) send_fline_data_max(icomp) );
 	

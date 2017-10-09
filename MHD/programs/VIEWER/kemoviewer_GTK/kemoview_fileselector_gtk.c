@@ -284,7 +284,7 @@ int input_texture_file_gtk(char *file_head){
 	strcpy(file_name, gtk_selected_filename);
 	get_ext_from_file_name(file_name, file_head, file_ext);
 	
-	id_img = set_image_file_format_id(file_ext);
+	id_img = kemoview_set_image_file_format_id(file_ext);
 	return id_img;
 }
 
@@ -298,7 +298,7 @@ int output_image_file_gtk(char *file_head){
 	if(iflag_set == IZERO) return 0;
 	
 	strcpy(image_fmt, gtk_selected_filefmt);
-	id_img = set_image_file_format_id(image_fmt);
+	id_img = kemoview_set_image_file_format_id(image_fmt);
 	
 	if(id_img != 0){
 		gtk_file_menu("Save Image file");
@@ -325,7 +325,7 @@ int output_evolution_file_gtk(char *file_head,
 	*ist_udt = gtk_istart;
 	*ied_udt = gtk_iend;
 	*inc_udt = gtk_inc;
-	id_img = set_image_file_format_id(image_fmt);
+	id_img = kemoview_set_image_file_format_id(image_fmt);
 	
 	if(id_img != 0){
 		gtk_file_menu("Save Image files");

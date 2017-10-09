@@ -106,10 +106,10 @@ static void load_psf_texture_glui(int sel){
 	strcat(file_name, text_fname.c_str());
 	
 	get_ext_from_file_name(file_name, file_head, img_ext);
-	ext_fmt = set_image_file_format_id(img_ext);
+	ext_fmt = kemoview_set_image_file_format_id(img_ext);
 	
 	if(ext_fmt == SAVE_PNG || ext_fmt == SAVE_BMP){
-		set_texture_file_to_current_psf(ext_fmt, file_head);
+		kemoview_set_texture_to_current_psf(ext_fmt, file_head);
 		set_current_psf_patch_color_mode(TEXTURED_SURFACE);
 	};
 	

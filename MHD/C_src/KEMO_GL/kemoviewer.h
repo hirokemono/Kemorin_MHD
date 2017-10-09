@@ -706,29 +706,31 @@ extern "C" {
     void set_each_fline_color_point(int i_point, double value, double color);
     void set_each_fline_opacity_point(int i_point, double value, double opacity);
     
-    void set_fline_color_mode_id(int isel);
+    void kemoview_set_fline_color_mode_id(int isel);
     
-    double send_fline_color_table_min();
-    double send_fline_color_table_max();
-    double send_fline_minimum_opacity();
-    double send_fline_maximum_opacity();
+    double kemoview_get_fline_min_color();
+    double kemoview_get_fline_max_color();
+    double kemoview_get_fline_min_opacity();
+    double kemoview_get_fline_max_opacity();
     
-    int send_fline_color_table_num();
-    int send_fline_opacity_table_num();
-    void send_fline_color_table_items(int i_point, double *value, double *color);
-    void send_fline_opacity_table_items(int i_point, double *value, double *opacity);
+    int kemoview_get_fline_color_num();
+    int kemoview_get_fline_opacity_num();
+    void kemoview_get_fline_color_item(int i_point, double *value, double *color);
+    void kemoview_get_fline_opacity_item(int i_point, double *value, double *opacity);
     
-    void write_fline_colormap_control_file(const char *file_name);
-    void read_fline_colormap_control_file(const char *file_name);
-    
-    double round_to_3digit(double value);
-    
-    
-    void set_texture_file_to_current_psf(int img_fmt, const char *img_head);
+    void kemoview_write_fline_colormap_file(const char *file_name);
+    void kemoview_read_fline_colormap_file(const char *file_name);
 
-    int set_image_file_format_id(char *image_fmt);
-    void write_kemoviewer_window_to_file(int iflag_img, const char *fhead);
-    void write_kemoviewer_window_step_file(int iflag_img, int istep, const char *fhead);
+    
+/** Load texture onto current sectioning image */
+    void kemoview_set_texture_to_current_psf(int img_fmt, const char *img_head);
+
+/** Set Image file format by ID */
+    int kemoview_set_image_file_format_id(char *image_fmt);
+/** Write Kemoviwer window image to file without step number */
+    void kemoview_write_window_to_file(int iflag_img, const char *fhead);
+/** Write Kemoviwer window image to file with step number */
+    void kemoview_write_window_to_file_w_step(int iflag_img, int istep, const char *fhead);
 #ifdef __cplusplus
 }
 #endif

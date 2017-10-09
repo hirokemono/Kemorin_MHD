@@ -163,7 +163,7 @@ static void input_evolution_increment_panel(int val){
 
 static void save_image_handler(int sel){
 	draw_mesh_keep_menu();
-    write_kemoviewer_window_to_file(image_fmt, image_head);
+    kemoview_write_window_to_file(image_fmt, image_head);
 	GLUI_Master.close_all();
 	return;
 };

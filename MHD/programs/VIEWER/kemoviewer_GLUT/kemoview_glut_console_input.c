@@ -64,7 +64,7 @@ int input_image_format(){
 	*delchara='\0';
 	strcpy(image_fmt, buf);
 	
-	id_img = set_image_file_format_id(image_fmt);
+	id_img = kemoview_set_image_file_format_id(image_fmt);
 	return id_img;
 }
 
