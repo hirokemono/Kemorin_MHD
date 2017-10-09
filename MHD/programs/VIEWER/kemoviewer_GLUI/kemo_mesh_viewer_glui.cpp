@@ -463,6 +463,7 @@ static void psf_handler(int sel){
     int nload_psf, toggle;
     
 	if (sel == PSF_OFF) {
+        set_viewtype_mode_glut(VIEW_3D, viewtype_title);
 		nload_psf = close_psf_view();
 		draw_mesh_w_menu();
 	} else {
