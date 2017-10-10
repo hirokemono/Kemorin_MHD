@@ -644,19 +644,19 @@ extern "C" {
     void set_current_PSF_color_point(int i_point, double value, double color);
     void set_current_PSF_opacity_point(int i_point, double value, double opacity);
     
-    double send_current_PSF_color_table_min();
-    double send_current_PSF_color_table_max();
-    double send_current_PSF_minimum_opacity();
-    double send_current_PSF_maximum_opacity();
-    int send_current_PSF_color_table_num();
-    int send_current_PSF_opacity_table_num();
+    double kemoview_get_PSF_color_table_min();
+    double kemoview_get_PSF_color_table_max();
+    double kemoview_get_PSF_min_opacity();
+    double kemoview_get_PSF_max_opacity();
+    int kemoview_get_PSF_color_table_num();
+    int kemoview_get_PSF_opacity_table_num();
     
-    void send_current_PSF_color_table_items(int i_point, double *value, double *color);
-    void send_current_PSF_opacity_table_items(int i_point, double *value, double *opacity);
+    void kemoview_get_PSF_color_items(int i_point, double *value, double *color);
+    void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity);
     
-    void write_current_PSF_colormap_control_file(const char *file_name);
-    void read_current_PSF_colormap_control_file(const char *file_name);
-	void check_current_PSF_colormap_control();
+    void kemoview_write_PSF_colormap_file(const char *file_name);
+    void kemoview_read_PSF_colormap_file(const char *file_name);
+	void kemoview_check_PSF_colormap_control();
     
     
     /* Subroutines for field lines */

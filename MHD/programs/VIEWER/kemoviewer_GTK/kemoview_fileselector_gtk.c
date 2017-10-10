@@ -346,7 +346,7 @@ void save_PSF_colormap_file_gtk(){
 	if(iflag_set == IZERO) return;
 	
 	strcpy(file_name, gtk_selected_filename);
-	write_current_PSF_colormap_control_file(file_name);
+	kemoview_write_PSF_colormap_file(file_name);
 	
 	return;
 };
@@ -358,7 +358,7 @@ void load_PSF_colormap_file_gtk(){
 	if(iflag_set == IZERO) return;
 	
 	strcpy(file_name, gtk_selected_filename);
-	read_current_PSF_colormap_control_file(file_name);
+	kemoview_read_PSF_colormap_file(file_name);
 	
 	return;
 };

@@ -167,12 +167,12 @@
 	self.PSFIsolineSwitch =  send_kemoview_psf_draw_flags(PSFGRID_TOGGLE);
 	self.PSFZerolineSwitch = send_kemoview_psf_draw_flags(ZEROGRID_TOGGLE);
 	self.PSFColorbarSwitch = send_kemoview_psf_draw_flags(COLORBAR_TOGGLE);
-	self.PsfMinimumRange =   send_current_PSF_color_table_min();
-	self.PsfMaximumRange =   send_current_PSF_color_table_max();
+	self.PsfMinimumRange =   kemoview_get_PSF_color_table_min();
+	self.PsfMaximumRange =   kemoview_get_PSF_color_table_max();
 	self.PsfMinimumValue =   send_current_psf_data_min(iplotted);
 	self.PsfMaximumValue =   send_current_psf_data_max(iplotted);
 	self.IsolineNumber =     send_current_num_isoline();
-	self.PSFOpacity =        send_current_PSF_maximum_opacity();
+	self.PSFOpacity =        kemoview_get_PSF_max_opacity();
 	
 	self.DrawPSFVectorFlag = send_kemoview_psf_draw_flags(PSFVECT_TOGGLE);
 	self.ScaleVector =       send_current_scale_vect();
@@ -214,12 +214,12 @@
      self.PSFIsolineSwitch =  send_kemoview_psf_draw_flags(PSFGRID_TOGGLE);
      self.PSFZerolineSwitch = send_kemoview_psf_draw_flags(ZEROGRID_TOGGLE);
      self.PSFColorbarSwitch = send_kemoview_psf_draw_flags(COLORBAR_TOGGLE);
-     self.PsfMinimumRange =   send_current_PSF_color_table_min();
-     self.PsfMaximumRange =   send_current_PSF_color_table_max();
+     self.PsfMinimumRange =   kemoview_get_PSF_color_table_min();
+     self.PsfMaximumRange =   kemoview_get_PSF_color_table_max();
      self.PsfMinimumValue =   send_current_psf_data_min(iplotted);
      self.PsfMaximumValue =   send_current_psf_data_max(iplotted);
      self.IsolineNumber =     send_current_num_isoline();
-     self.PSFOpacity =        send_current_PSF_maximum_opacity();
+     self.PSFOpacity =        kemoview_get_PSF_max_opacity();
      
      self.DrawPSFVectorFlag = send_kemoview_psf_draw_flags(PSFVECT_TOGGLE);
      self.ScaleVector =       send_current_scale_vect();
@@ -360,8 +360,8 @@
     
  	self.PsfMinimumValue = send_current_psf_data_min(iplotted);
 	self.PsfMaximumValue = send_current_psf_data_max(iplotted);
-	self.PsfMinimumRange = send_current_PSF_color_table_min();
-	self.PsfMaximumRange = send_current_PSF_color_table_max();
+	self.PsfMinimumRange = kemoview_get_PSF_color_table_min();
+	self.PsfMaximumRange = kemoview_get_PSF_color_table_max();
     
     [self.rgbaMapObject updateColormapParameter];
     [self.colorMapObject InitColorTables];

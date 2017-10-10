@@ -132,7 +132,7 @@ static void load_psf_colormap_glui(int sel){
 	strcat(file_name, "/");
 	strcat(file_name, text_fname.c_str());
 	
-	read_current_PSF_colormap_control_file(file_name);
+	kemoview_read_PSF_colormap_file(file_name);
 	
 	draw_mesh_w_menu();
 	

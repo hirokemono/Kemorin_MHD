@@ -251,7 +251,7 @@ void set_psf_vector_thickness(){
 
 void set_psf_opacity(){
 	float opacity;
-	opacity = (float) send_current_PSF_maximum_opacity();
+	opacity = (float) kemoview_get_PSF_max_opacity();
 	
 	printf("Enter PSF opacity: \n");
 	opacity = set_opacity_console(opacity);
@@ -388,7 +388,7 @@ void add_psf_colormap_point_console(){
 	float value, color;
 	read_psf_colormap_data(&value, &color);
 	add_current_PSF_color_idx_list((double) value, (double) color);
-	check_current_PSF_colormap_control();
+	kemoview_check_PSF_colormap_control();
 	
 	return;
 }
@@ -396,7 +396,7 @@ void modify_psf_colormap_point_console(int i_point){
 	float value, color;
 	read_psf_colormap_data(&value, &color);
 	set_current_PSF_color_point(i_point, (double) value, (double) color);
-	check_current_PSF_colormap_control();
+	kemoview_check_PSF_colormap_control();
 	return;
 }
 
@@ -404,14 +404,14 @@ void add_psf_opacitymap_point_console(){
 	float value, opacity;
 	read_psf_colormap_data(&value, &opacity);
 	add_current_PSF_opacity_idx_list((double) value, (double) opacity);
-	check_current_PSF_colormap_control();
+	kemoview_check_PSF_colormap_control();
 	return;
 }
 void modify_psf_opacitymap_point_console(int i_point){
 	float value, opacity;
 	read_psf_colormap_data(&value, &opacity);
 	set_current_PSF_opacity_point(i_point, (double) value, (double) opacity);
-	check_current_PSF_colormap_control();
+	kemoview_check_PSF_colormap_control();
 	return;
 }
 
@@ -425,7 +425,7 @@ void save_PSF_colormap_file_glut(){
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
 	strcpy(file_name, buf);
-	write_current_PSF_colormap_control_file(file_name);
+	kemoview_write_PSF_colormap_file(file_name);
 	return;
 };
 
@@ -439,7 +439,7 @@ void load_PSF_colormap_file_glut(){
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
 	strcpy(file_name, buf);
-	read_current_PSF_colormap_control_file(file_name);
+	kemoview_read_PSF_colormap_file(file_name);
 	return;
 };
 

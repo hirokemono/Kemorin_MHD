@@ -136,8 +136,8 @@
 	double d_min, d_max;
 	
 	NumColorTable = 2;
-	d_min = send_current_PSF_color_table_min();
-	d_max = send_current_PSF_color_table_max();
+	d_min = kemoview_get_PSF_color_table_min();
+	d_max = kemoview_get_PSF_color_table_max();
 	
 	[self SetColorTables];
 }
@@ -150,9 +150,9 @@
 	
 	[ColorTableField removeAllObjects];
 	[ColorTableColor removeAllObjects];
-	NumColorTable = send_current_PSF_color_table_num();
+	NumColorTable = kemoview_get_PSF_color_table_num();
 	for(i=0;i<NumColorTable;i++){
-		send_current_PSF_color_table_items(i, &value, &color);
+		kemoview_get_PSF_color_items(i, &value, &color);
 		[ColorTableField addObject:[[NSNumber alloc ] initWithDouble:value] ];
 		[ColorTableColor addObject:[[NSNumber alloc ] initWithDouble:color] ];
 	}

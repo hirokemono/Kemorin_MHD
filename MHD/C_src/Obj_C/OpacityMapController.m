@@ -126,8 +126,8 @@
 	double d_min, d_max;
 	
 	NumOpacityTable = 2;
-	d_min = send_current_PSF_color_table_min();
-	d_max = send_current_PSF_color_table_max();
+	d_min = kemoview_get_PSF_color_table_min();
+	d_max = kemoview_get_PSF_color_table_max();
 	
 	[self SetOpacityTables];
 }
@@ -139,9 +139,9 @@
 	
 	[OpacityTableField removeAllObjects];
 	[OpacityTableOpacity removeAllObjects];
-	NumOpacityTable = send_current_PSF_opacity_table_num();
+	NumOpacityTable = kemoview_get_PSF_opacity_table_num();
 	for(i=0;i<NumOpacityTable;i++){
-		send_current_PSF_opacity_table_items(i, &value, &opacity);
+		kemoview_get_PSF_opacity_items(i, &value, &opacity);
 		[OpacityTableField    addObject:[[NSNumber alloc ] initWithDouble:value] ];
 		[OpacityTableOpacity addObject:[[NSNumber alloc ] initWithDouble:opacity] ];
 	}

@@ -355,7 +355,7 @@ static void modify_psf_colormap_handler(int sel){
 
 static void delete_psf_colormap_handler(int sel){
 	delete_current_PSF_color_idx_list(sel);
-	check_current_PSF_colormap_control();
+	kemoview_check_PSF_colormap_control();
 	draw_mesh_w_menu();
    return;
 };
@@ -377,7 +377,7 @@ static void modify_psf_opacitymap_handler(int sel){
 
 static void delete_psf_opacitymap_handler(int sel){
 	delete_current_PSF_opacity_idx_list(sel);
-	check_current_PSF_colormap_control();
+	kemoview_check_PSF_colormap_control();
 	draw_mesh_w_menu();
    return;
 };
@@ -552,33 +552,33 @@ static void make_4th_level_psf_menu(){
     char tmp_menu[1024];
     
     if(iflag_solid > 0 || iflag_grid > 0){
-        npoint = send_current_PSF_color_table_num();
+        npoint = kemoview_get_PSF_color_table_num();
         glut_menu_id->modify_colormap_menu =  glutCreateMenu(modify_psf_colormap_handler);
         for(i = 0; i < npoint; i++) {
-            send_current_PSF_color_table_items(i, &value, &color);
+            kemoview_get_PSF_color_items(i, &value, &color);
             sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, color);
             glutAddMenuEntry(tmp_menu,  i);
         };
         
         glut_menu_id->delete_colormap_menu =  glutCreateMenu(delete_psf_colormap_handler);
         for(i = 0; i < npoint; i++) {
-            send_current_PSF_color_table_items(i, &value, &color);
+            kemoview_get_PSF_color_items(i, &value, &color);
             sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, color);
             glutAddMenuEntry(tmp_menu,  i);
         };
         
         
-        npoint = send_current_PSF_opacity_table_num();
+        npoint = kemoview_get_PSF_opacity_table_num();
         glut_menu_id->modify_opacitymap_menu =  glutCreateMenu(modify_psf_opacitymap_handler);
         for(i = 0; i < npoint; i++) {
-            send_current_PSF_opacity_table_items(i, &value, &opacity);
+            kemoview_get_PSF_opacity_items(i, &value, &opacity);
             sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, opacity);
             glutAddMenuEntry(tmp_menu,  i);
         };
         
         glut_menu_id->delete_opacitymap_menu =  glutCreateMenu(delete_psf_opacitymap_handler);
         for(i = 0; i < npoint; i++) {
-            send_current_PSF_opacity_table_items(i, &value, &opacity);
+            kemoview_get_PSF_opacity_items(i, &value, &opacity);
             sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, opacity);
             glutAddMenuEntry(tmp_menu,  i);
 		};

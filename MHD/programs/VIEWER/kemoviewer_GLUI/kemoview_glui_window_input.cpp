@@ -73,7 +73,7 @@ static void input_psf_max_from_panel(int val){
 static void select_colormap_point(int val){
 	double dvalue, dcolor;
 	int sel = radiogroup_colormap->get_int_val();
-	send_current_PSF_color_table_items(sel, &dvalue, &dcolor);
+	kemoview_get_PSF_color_items(sel, &dvalue, &dcolor);
 	value = (float)dvalue;
 	color = (float)dcolor;
 	editText_data->set_float_val((float)dvalue);
@@ -84,7 +84,7 @@ static void select_colormap_point(int val){
 static void select_opacitymap_point(int val){
 	double dvalue, dopacity;
 	int sel = radiogroup_opacitymap->get_int_val();
-	send_current_PSF_opacity_table_items(sel, &dvalue, &dopacity);
+	kemoview_get_PSF_opacity_items(sel, &dvalue, &dopacity);
 	value = (float)dvalue;
 	opacity = (float)dopacity;
 	editText_data->set_float_val((float)dvalue);
@@ -285,8 +285,8 @@ void set_psf_range_by_glui(int winid){
 	
 	int ifield = send_draw_field_current_psf();
 	int icomp = send_draw_component_current_psf();
-	psf_color_min = (float) send_current_PSF_color_table_min();
-	psf_color_max = (float) send_current_PSF_color_table_max();
+	psf_color_min = (float) kemoview_get_PSF_color_table_min();
+	psf_color_max = (float) kemoview_get_PSF_color_table_max();
 	sprintf(psf_range_txt,"Range: %3.2e ... %3.2e",(float) send_current_psf_data_min(icomp),
 			(float) send_current_psf_data_max(icomp) );
 	glui_sub = GLUI_Master.create_glui("PSF range", 0, 100, 100);
@@ -332,7 +332,7 @@ void set_fline_thick_glui(int winid){
 }
 
 void set_psf_opacity_by_glui(int winid){
-	opacity = (float) send_current_PSF_maximum_opacity();
+	opacity = (float) kemoview_get_PSF_max_opacity();
 	
 	glui_sub = GLUI_Master.create_glui("Set PSF Parameter", 0, 100, 100);
 	editText_opacity = new GLUI_EditText( glui_sub, "Opacity", GLUI_EDITTEXT_FLOAT,
@@ -456,23 +456,21 @@ void set_node_size_by_glui(int winid){
 
 void edit_psf_colormap_by_glui(int winid){
 	GLUI_Panel *color_panel;
-	int i, nloop;
+	int i;
 	double dvalue, dcolor;
 	char tmp_menu[1024];
-	
-	nloop = send_current_PSF_color_table_num();
-	
+
 	glui_sub = GLUI_Master.create_glui("Color map editor", 0, 100, 100);
 	color_panel = new GLUI_Panel(glui_sub, "Colormap (data, color)");
 	
 	radiogroup_colormap = new GLUI_RadioGroup(color_panel, &obj_type, -1, select_colormap_point);
-	for(i = 0; i < nloop; i++) {
-		send_current_PSF_color_table_items(i, &dvalue, &dcolor);
+	for(i = 0; i < kemoview_get_PSF_color_table_num(); i++) {
+		kemoview_get_PSF_color_items(i, &dvalue, &dcolor);
 		sprintf(tmp_menu, "%3.2e	|	%.2f", (float) dvalue, (float) dcolor);
 		new GLUI_RadioButton(radiogroup_colormap, tmp_menu);
 	};
 	
-	send_current_PSF_color_table_items(radiogroup_colormap->get_int_val(), &dvalue, &dcolor);
+	kemoview_get_PSF_color_items(radiogroup_colormap->get_int_val(), &dvalue, &dcolor);
 	value = (float)dvalue;
 	color = (float)dcolor;
 	editText_data = new GLUI_EditText( glui_sub, "data: ", GLUI_EDITTEXT_FLOAT,
@@ -487,24 +485,22 @@ void edit_psf_colormap_by_glui(int winid){
 };
 void edit_psf_opacitymap_by_glui(int winid){
 	GLUI_Panel *opacity_panel;
-	int i, nloop;
+	int i;
     double dvalue, dopacity;
 	char tmp_menu[1024];
-	
-	nloop = send_current_PSF_opacity_table_num();
-	
+
 	glui_sub = GLUI_Master.create_glui("Opacity map editor", 0, 100, 100);
 	opacity_panel = new GLUI_Panel(glui_sub, "Opacity map (data, color)");
 	
 	radiogroup_opacitymap = new GLUI_RadioGroup(opacity_panel, &obj_type, -1, select_opacitymap_point);
-	for(i = 0; i < nloop; i++) {
-		send_current_PSF_opacity_table_items(i, &dvalue, &dopacity);
+	for(i = 0; i < kemoview_get_PSF_opacity_table_num(); i++) {
+		kemoview_get_PSF_opacity_items(i, &dvalue, &dopacity);
 		sprintf(tmp_menu, "%3.2e	|	%.2f", (float) dvalue, (float) dopacity);
 		new GLUI_RadioButton(radiogroup_opacitymap, tmp_menu);
 	};
 	
 	
-	send_current_PSF_opacity_table_items(radiogroup_opacitymap->get_int_val(), &dvalue, &dopacity);
+	kemoview_get_PSF_opacity_items(radiogroup_opacitymap->get_int_val(), &dvalue, &dopacity);
 	value = (float)dvalue;
 	opacity = (float)dopacity;
 	

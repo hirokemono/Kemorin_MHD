@@ -813,27 +813,27 @@ void set_current_PSF_opacity_point(int i_point, double value, double opacity){
     set_each_PSF_opacity_point(kemo_sgl->psf_current_menu, i_point, value, opacity);
 }
 
-double send_current_PSF_color_table_min(){return send_each_PSF_color_table_min(kemo_sgl->psf_current_menu);};
-double send_current_PSF_color_table_max(){return send_each_PSF_color_table_max(kemo_sgl->psf_current_menu);};
-double send_current_PSF_minimum_opacity(){return send_each_PSF_minimum_opacity(kemo_sgl->psf_current_menu);};
-double send_current_PSF_maximum_opacity(){return send_each_PSF_maximum_opacity(kemo_sgl->psf_current_menu);};
-int send_current_PSF_color_table_num(){return send_each_PSF_color_table_num(kemo_sgl->psf_current_menu);};
-int send_current_PSF_opacity_table_num(){return send_each_PSF_opacity_table_num(kemo_sgl->psf_current_menu);};
+double kemoview_get_PSF_color_table_min(){return send_each_PSF_color_table_min(kemo_sgl->psf_current_menu);};
+double kemoview_get_PSF_color_table_max(){return send_each_PSF_color_table_max(kemo_sgl->psf_current_menu);};
+double kemoview_get_PSF_min_opacity(){return send_each_PSF_minimum_opacity(kemo_sgl->psf_current_menu);};
+double kemoview_get_PSF_max_opacity(){return send_each_PSF_maximum_opacity(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_color_table_num(){return send_each_PSF_color_table_num(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_opacity_table_num(){return send_each_PSF_opacity_table_num(kemo_sgl->psf_current_menu);};
 
-void send_current_PSF_color_table_items(int i_point, double *value, double *color){
+void kemoview_get_PSF_color_items(int i_point, double *value, double *color){
     send_each_PSF_color_table_items(kemo_sgl->psf_current_menu, i_point, value, color);
 }
-void send_current_PSF_opacity_table_items(int i_point, double *value, double *opacity){
+void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity){
     send_each_PSF_opacity_table_items(kemo_sgl->psf_current_menu, i_point, value, opacity);
 }
 
-void write_current_PSF_colormap_control_file(const char *file_name){
+void kemoview_write_PSF_colormap_file(const char *file_name){
     write_each_PSF_colormap_control_file(kemo_sgl->psf_current_menu, file_name);
 }
-void read_current_PSF_colormap_control_file(const char *file_name){
+void kemoview_read_PSF_colormap_file(const char *file_name){
     read_each_PSF_colormap_control_file(kemo_sgl->psf_current_menu, file_name);
 }
-void check_current_PSF_colormap_control(){
+void kemoview_check_PSF_colormap_control(){
     check_each_PSF_colormap_control(kemo_sgl->psf_current_menu);
 }
 

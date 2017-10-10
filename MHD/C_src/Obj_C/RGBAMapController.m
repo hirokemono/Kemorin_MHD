@@ -20,8 +20,8 @@
 }
 
 - (void)updateColormapParameter {
-	self.DataMinimum = send_current_PSF_color_table_min();
-	self.DataMaximum = send_current_PSF_color_table_max();
+	self.DataMinimum = kemoview_get_PSF_color_table_min();
+	self.DataMaximum = kemoview_get_PSF_color_table_max();
 }
 
 - (IBAction)SetColorMode:(id)pId;
@@ -52,7 +52,7 @@
 		NSLog(@" ColormapDirectory = %@", ColormapDirectory);
 		NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
 		
-		write_current_PSF_colormap_control_file([ColormapFilename UTF8String]);
+		kemoview_write_PSF_colormap_file([ColormapFilename UTF8String]);
 	};
                                     }];
 }
@@ -74,7 +74,7 @@
                                            NSLog(@" ColormapDirectory = %@", ColormapDirectory);
                                            NSLog(@" ColormapFilehead = %@",  ColormapFilehead);
                                            
-                                           read_current_PSF_colormap_control_file((char *) [ColormapFilename UTF8String]);
+                                           kemoview_read_PSF_colormap_file((char *) [ColormapFilename UTF8String]);
                                            [_kemoviewer UpdateImage];
                                            [_colorMapObject SetColorTables];
                                            [_opacityMapObject SetOpacityTables];

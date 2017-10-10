@@ -33,16 +33,16 @@
     
 
     if(send_num_loaded_PSF() < 1) return;
-	npoint = send_current_PSF_color_table_num();
-	send_current_PSF_color_table_items(IZERO, &colorMin, &color);
-	send_current_PSF_color_table_items(npoint-1, &colorMax, &color);
-	npoint = send_current_PSF_opacity_table_num();
-	send_current_PSF_opacity_table_items(IZERO, &dataMin, &opacity);
-	send_current_PSF_opacity_table_items(npoint-1, &dataMax, &opacity);
+	npoint = kemoview_get_PSF_color_table_num();
+	kemoview_get_PSF_color_items(IZERO, &colorMin, &color);
+	kemoview_get_PSF_color_items(npoint-1, &colorMax, &color);
+	npoint = kemoview_get_PSF_opacity_table_num();
+	kemoview_get_PSF_opacity_items(IZERO, &dataMin, &opacity);
+	kemoview_get_PSF_opacity_items(npoint-1, &dataMax, &opacity);
 	if (dataMin > colorMin) {dataMin = colorMin;};
 	if (dataMax < colorMax) {dataMax = colorMax;};
 
-	maxOpacity = send_current_PSF_maximum_opacity();
+	maxOpacity = kemoview_get_PSF_max_opacity();
 	
     // Set rectList
     for(i = 0; i < rectCount; i++) {
@@ -70,9 +70,8 @@
 
 	str = [NSString stringWithFormat:@"Color"];
 	[self drawString:str x:105 y:265];
-	npoint = send_current_PSF_color_table_num();
-	for(i = 0; i < npoint; i++) {
-		send_current_PSF_color_table_items(i, &value, &color);
+	for(i = 0; i < kemoview_get_PSF_color_table_num(); i++) {
+		kemoview_get_PSF_color_items(i, &value, &color);
 		ylabel = 250 * (value-dataMin) / (dataMax - dataMin);
 		str = [NSString stringWithFormat:@"%1.2e", value];
 		[self drawString:str x:112 y:ylabel];
@@ -80,9 +79,8 @@
 
 	str = [NSString stringWithFormat:@"Opacity"];
 	[self drawString:str x:3 y:265];
-	npoint = send_current_PSF_opacity_table_num();
-	for(i = 0; i < npoint; i++) {
-		send_current_PSF_opacity_table_items(i, &value, &opacity);
+	for(i = 0; i < kemoview_get_PSF_opacity_table_num(); i++) {
+		kemoview_get_PSF_opacity_items(i, &value, &opacity);
 		ylabel = 250 * (value-dataMin) / (dataMax - dataMin);
 		str = [NSString stringWithFormat:@"%1.2e", value];
 		[self drawString:str x:0 y:ylabel];

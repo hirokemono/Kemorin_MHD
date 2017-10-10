@@ -49,7 +49,7 @@ static void save_psf_colormap_glui(int sel){
 	strcat(file_name, "/");
 	strcat(file_name, text_fname.c_str());
 	
-	write_current_PSF_colormap_control_file(file_name);
+	kemoview_write_PSF_colormap_file(file_name);
 	GLUI_Master.close_all();
 	return;
 };

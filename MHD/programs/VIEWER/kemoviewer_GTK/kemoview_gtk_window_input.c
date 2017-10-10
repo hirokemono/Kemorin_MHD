@@ -136,7 +136,7 @@ static void set_colormap_gtk(GtkWidget *treeview)
 {
 	GtkListStore *store;
 	GtkTreeIter iter;
-	int i, nloop;
+	int i;
 	double dvalue, dcolor;
 	
 	/* Get model in treeview and flash all deta */
@@ -145,9 +145,8 @@ static void set_colormap_gtk(GtkWidget *treeview)
 	
 	
 	/* Make new record */
-	nloop = send_current_PSF_color_table_num();
-	for(i = 0; i < nloop; i++) {
-		send_current_PSF_color_table_items(i, &dvalue, &dcolor);
+	for(i = 0; i < kemoview_get_PSF_color_table_num(); i++) {
+		kemoview_get_PSF_color_items(i, &dvalue, &dcolor);
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter,
 					DATA_COL, (float) dvalue, /* Data */
@@ -162,7 +161,7 @@ static void set_opacitymap_gtk(GtkWidget *treeview)
 {
 	GtkListStore *store;
 	GtkTreeIter iter;
-	int i, nloop;
+	int i;
 	double dvalue, dopacity;
 	
 	/* Get model in treeview and flash all deta */
@@ -171,9 +170,8 @@ static void set_opacitymap_gtk(GtkWidget *treeview)
 	
 	
 	/* Make new record */
-	nloop = send_current_PSF_opacity_table_num();
-	for(i = 0; i < nloop; i++) {
-		send_current_PSF_opacity_table_items(i, &dvalue, &dopacity);
+	for(i = 0; i < kemoview_get_PSF_opacity_table_num(); i++) {
+		kemoview_get_PSF_opacity_items(i, &dvalue, &dopacity);
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter,
 					DATA_COL, (float) dvalue,  COLOR_COL, (float) dopacity,
@@ -300,7 +298,7 @@ static void gtk_colormap_menu(double range_min, double range_max, const char *ti
 	
 	gtk_box_pack_start(GTK_BOX(vbox1), treeview, TRUE, TRUE, 0);
 	
-	send_current_PSF_color_table_items(0, &gtk_value, &gtk_color);
+	kemoview_get_PSF_color_items(0, &gtk_value, &gtk_color);
 	adj_data = gtk_adjustment_new(gtk_value, (range_min*1.0e3), (range_max*1.0e3),
 			((range_max-range_min)*1.0e-2), ((range_max-range_min)*1.0e-2), 0.0);
 	adj_color = gtk_adjustment_new (gtk_color, 0.0, 1.0, 0.01, 0.01, 0.0);
@@ -409,7 +407,7 @@ static void gtk_opacitymap_menu(double range_min, double range_max, const char *
 	
 	gtk_box_pack_start(GTK_BOX(vbox1), treeview, TRUE, TRUE, 0);
 	
-	send_current_PSF_opacity_table_items(0, &gtk_value, &gtk_opacity);
+	kemoview_get_PSF_opacity_items(0, &gtk_value, &gtk_opacity);
 	adj_data = gtk_adjustment_new(gtk_value, (range_min*1.0e3), (range_max*1.0e3),
 			((range_max-range_min)*1.0e-2), ((range_max-range_min)*1.0e-2), 0.0);
 	adj_opasity = gtk_adjustment_new (gtk_opacity, 0.0, 1.0, 0.01, 0.01, 0.0);
@@ -779,7 +777,7 @@ void set_psf_vector_thickness_gtk(){
 void set_psf_opacity_gtk(){
 	double opacity;
 	
-	opacity = send_current_PSF_maximum_opacity();
+	opacity = kemoview_get_PSF_max_opacity();
 	gtk_opacity_menu(opacity, "Set opacity");
 	if(iflag_set == IZERO) return; 
 	
