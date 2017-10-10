@@ -370,7 +370,7 @@
 !    void set_current_PSF_constant_opacity(double opacity);
 !    
 !    void set_current_PSF_rgb_from_value(double value, double *red, double *green, double *blue);
-!    void set_current_PSF_opacity_from_value(double value, double *opacity);
+!    double kemoview_get_PSF_opacity_at_value(double value);
 !    void set_current_PSF_color_point(int i_point, double value, double color);
 !    void set_current_PSF_opacity_point(int i_point, double value, double opacity);
 !    
@@ -390,51 +390,47 @@
 !    
 !    /* Subroutines for field lines */
 !    
-!    int send_fline_file_header(char *file_head);
-!    void set_to_fline_file_step(int istep);
+!    int kemoview_get_fline_file_step_prefix(char *file_head);
+!    void kemoview_set_fline_file_step(int istep);
 !    
-!    void set_fline_color_field_flag(int sel);
-!    void set_fline_color_comp_flag(int sel);    
+!    void kemoview_set_fline_color_field(int sel);
+!    void kemoview_set_fline_color_component(int sel);    
 !    
-!    int send_nfield_fline();
-!    int send_ncomptot_fline();
-!    int send_ncomp_fline(int i);
-!    int send_istack_comp_fline(int i);
-!    void send_fline_data_name(char *name, int i);
+!    void kemoview_set_fline_switch(int iflag);
+!    void kemoview_set_fline_color_type(int iflag);
 !    
+!    int kemoview_get_fline_switch();
+!    int kemoview_get_fline_color_num_field();
+!    int kemoview_get_fline_color_ncomptot();
+!    int kemoview_get_fline_color_num_comps(int i);
+!    int kemoview_get_fline_color_istack(int i);
+!    void kemoview_get_fline_color_data_name(char *name, int i);
+!    int kemoview_get_fline_color_field();
+!    int kemoview_get_fline_color_component();
+!    int kemoview_get_fline_color_data_adress();
+!    int kemoview_get_fline_colormode();
 !    
-!    void set_to_draw_fline(int iflag);
-!    void set_to_if_draw_fline(int ifield);
-!    void set_to_ic_draw_fline(int icomp);
-!    void set_to_fieldline_color(int iflag);
-!    
-!    int send_iflag_draw_fline();
-!    int send_if_draw_fline();
-!    int send_ic_draw_fline();
-!    int send_icomp_draw_fline();
-!    int send_fieldline_color();
-!    
-!	void set_to_fline_type_flag(int iflag);
-!	int send_fline_type_flag();
-!	int toggle_fline_type_flag();
+!	void kemoview_set_fline_type(int iflag);
+!	int kemoview_get_fline_type();
+!	int kemoview_toggle_fline_type();
 !	
-!	void set_to_fline_thickness(double thick);
-!	double send_fline_thickness();
+!	void kemoview_set_fline_thickness(double thick);
+!	double kemoview_get_fline_thickness();
 !    
-!    double send_fline_data_min(int i);
-!    double send_fline_data_max(int i);
+!    double kemoview_get_fline_data_min(int i);
+!    double kemoview_get_fline_data_max(int i);
 !    
-!    void input_fline_linear_colormap(double minvalue, double maxvalue);
-!    void set_fline_constant_opacitymap(double opacity);
+!    void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue);
+!    void kemoview_set_fline_constant_opacity(double opacity);
 !    
-!    void realloc_fline_color_index_list(int id_cmode, int num);
-!    void realloc_flie_opacity_index_list(int num);
+!    void kemoview_realloc_fline_colormap(int id_cmode, int num);
+!    void kemoview_realloc_fline_opacitymap(int num);
 !    
-!    void set_fline_rgb_from_value(double value, double *red, double *green, double *blue);
-!    void set_fline_opacity_from_value(double value, double *opacity);
-!    void set_each_fline_color_point(int i_point, double value, double color);
-!    void set_each_fline_opacity_point(int i_point, double value, double opacity);
+!    void kemoview_get_fline_rgb_at_value(double value, double *red, double *green, double *blue);
+!    double kemoview_get_fline_opacity_at_value(double value);
 !    
+!    void kemoview_set_fline_color_data(int i_point, double value, double color);
+!    void kemoview_set_fline_opacity_data(int i_point, double value, double opacity);
 !    void kemoview_set_fline_color_mode_id(int isel);
 !    
 !    double kemoview_get_fline_min_color();

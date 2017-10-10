@@ -57,7 +57,7 @@ static void load_texture_handler(){
 	
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
 	
-		kemoview_set_texture_to_current_psf(id_image, image_head);
+		kemoview_set_texture_to_PSF(id_image, image_head);
 		set_current_psf_patch_color_mode(TEXTURED_SURFACE);
 	};
 	
@@ -294,7 +294,7 @@ static void psf_colormap_handler(int sel){
 static void fline_handler(int sel){
 	int toggle;
 	if (sel == FLINE_OFF) {close_fline_view();}
-	else if (sel == ISET_FLINE_TYPE) {toggle = toggle_fline_type_flag();}
+	else if (sel == ISET_FLINE_TYPE) {toggle = kemoview_toggle_fline_type();}
 	else {kemoview_fline_draw_setting(sel);};
 	
 	draw_mesh_w_menu();
@@ -346,19 +346,19 @@ static void set_psf_colormode_handler(int sel){
 
 
 static void set_fline_color_handler(int sel){
-	set_fline_color_field_flag(sel);
+	kemoview_set_fline_color_field(sel);
 	draw_mesh_w_menu();
 	return;
 };
 
 static void set_fline_c_comp_handler(int sel){
-	set_fline_color_comp_flag(sel);
+	kemoview_set_fline_color_component(sel);
 	draw_mesh_w_menu();
 	return;
 };
 
 static void set_fline_col_type_handler(int sel){
-	set_to_fieldline_color(sel);
+	kemoview_set_fline_color_type(sel);
 	draw_mesh_w_menu();
 	return;
 };
@@ -566,9 +566,9 @@ static void make_3rd_level_psf_menu(){
 
 static void make_3rd_level_fline_menu(){
 	
-	int num_fld =  send_nfield_fline();
-	int if_fline = send_if_draw_fline();
-	int num_comp = send_ncomp_fline(if_fline);
+	int num_fld =  kemoview_get_fline_color_num_field();
+	int if_fline = kemoview_get_fline_color_field();
+	int num_comp = kemoview_get_fline_color_num_comps(if_fline);
 	
 	if (num_fld > 1) {
 		glut_menu_id->ichoose_fline_c_menu = glutCreateMenu(set_fline_color_handler);
@@ -638,15 +638,15 @@ static void make_2nd_level_psf_menu(){
 static void make_2nd_level_fline_menu(){
 	char tmp_menu[1024];
 	
-	int num_fld =  send_nfield_fline();
-	int if_fline = send_if_draw_fline();
-	int ic_fline = send_ic_draw_fline();
-	int num_comp = send_ncomp_fline(if_fline);
-	int itype_fline = send_fline_type_flag();
+	int num_fld =  kemoview_get_fline_color_num_field();
+	int if_fline = kemoview_get_fline_color_field();
+	int ic_fline = kemoview_get_fline_color_component();
+	int num_comp = kemoview_get_fline_color_num_comps(if_fline);
+	int itype_fline = kemoview_get_fline_type();
 	
 	glut_menu_id->fline_root_menu = glutCreateMenu(fline_handler);
 	
-	send_fline_data_name(tmp_menu, if_fline);
+	kemoview_get_fline_color_data_name(tmp_menu, if_fline);
 	if(num_fld > 1){
 		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_fline_c_menu);
 	} else {
@@ -680,7 +680,7 @@ static void make_2nd_level_fline_menu(){
 static void make_2nd_level_image_menu(){
 	int iflag_draw_m = send_iflag_draw_mesh();
 	int iflag_draw_p = send_iflag_draw_current_psf();
-	int iflag_draw_f = send_iflag_draw_fline();
+	int iflag_draw_f = kemoview_get_fline_switch();
 	int iflag_axis =       send_object_property_flags(AXIS_TOGGLE);
 	int iflag_draw_coast = send_object_property_flags(COASTLINE_SWITCH);
 	int iflag_draw_sph =   send_object_property_flags(SPHEREGRID_SWITCH);
@@ -723,7 +723,7 @@ static void make_1st_level_menu(){
 	
 	int iflag_draw_m = send_iflag_draw_mesh();
 	int iflag_draw_p = send_iflag_draw_current_psf();
-	int iflag_draw_f = send_iflag_draw_fline();
+	int iflag_draw_f = kemoview_get_fline_switch();
 	int iflag_any_objects_on = iflag_draw_p + iflag_draw_m + iflag_draw_f;
 	
 	int nload_psf = send_num_loaded_PSF();

@@ -77,12 +77,12 @@
 	NSString *stname;
 	NSNumber *stnum;
 	
-	FlineNumberOfField =  send_nfield_fline();
-	FlineTotalComponent = send_ncomptot_fline();
+	FlineNumberOfField =  kemoview_get_fline_color_num_field();
+	FlineTotalComponent = kemoview_get_fline_color_ncomptot();
 	
 	FlineThickFactor = 1;
 	FlineThickDigit = -2;
-	set_to_fline_thickness(0.01);
+	kemoview_set_fline_thickness(0.01);
 
 
 	[FlineFieldName removeAllObjects];	
@@ -90,23 +90,23 @@
 	[FlineMinimum removeAllObjects];
 	[FlineMaximum removeAllObjects];
 	for(i = 0; i < FlineNumberOfField; i++){
-		send_fline_data_name(name,i);
+		kemoview_get_fline_color_data_name(name,i);
 		stname = [[NSString alloc] initWithUTF8String:name];
 		[FlineFieldName      addObject:stname];
 		[stname release];
 		
-		iflag = send_ncomp_fline(i);
+		iflag = kemoview_get_fline_color_num_comps(i);
 		stnum = [[NSNumber alloc] initWithInt:iflag];
 		[FlineNumberOfComponent addObject:stnum];
 		[stnum release];	
 	}
 	for(i = 0; i < FlineTotalComponent; i++){
-		minmax = send_fline_data_min(i);
+		minmax = kemoview_get_fline_data_min(i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[FlineMinimum      addObject:stnum];
 		[stnum release];	
 		
-		minmax = send_fline_data_max(i);
+		minmax = kemoview_get_fline_data_max(i);
 		stnum = [[NSNumber alloc] initWithDouble:minmax];
 		[FlineMaximum      addObject:stnum];
 		[stnum release];	
@@ -135,7 +135,7 @@
 	self.FlineWindowlabel = [NSString stringWithFormat:@"Fieldline:%@",
 							 [[fieldlineFilehead lastPathComponent] stringByDeletingPathExtension]];
 
-	self.DrawFlineFlag = send_iflag_draw_fline();
+	self.DrawFlineFlag = kemoview_get_fline_switch();
 	[self CopyFlineDisplayFlagsFromC];
 	//		self.EvolutionStartStep = [[FlineOpenFilehead pathExtension] intValue];
 	//		self.EvolutionEndStep =    self.EvolutionStartStep;
@@ -184,7 +184,7 @@
 - (IBAction) CloseFlineFile:(id)pId{
 
 	close_fline_view();
-	self.DrawFlineFlag = send_iflag_draw_fline();
+	self.DrawFlineFlag = kemoview_get_fline_switch();
 	[self CopyFlineDisplayFlagsFromC];
 	
 	[_kemoviewer UpdateImage];
@@ -197,12 +197,12 @@
 	isel = [_FlineFieldMenu indexOfSelectedItem];
 	[self SetFlineComponentMenu:isel];
 	
-	set_fline_color_field_flag(isel);
+	kemoview_set_fline_color_field(isel);
 	
 	
-	iplotted = send_icomp_draw_fline();
-	self.FlineMinimumValue =   send_fline_data_min(iplotted);
-	self.FlineMaximumValue =   send_fline_data_max(iplotted);
+	iplotted = kemoview_get_fline_color_data_adress();
+	self.FlineMinimumValue =   kemoview_get_fline_data_min(iplotted);
+	self.FlineMaximumValue =   kemoview_get_fline_data_max(iplotted);
 	self.FlineDisplayMinimum = [[FlineMinimum objectAtIndex:iplotted] doubleValue];
 	self.FlineDisplayMaximum = [[FlineMaximum objectAtIndex:iplotted] doubleValue];
 
@@ -213,11 +213,11 @@
 {	
 	int iplotted;
 	
-	set_fline_color_comp_flag((int) [_FlineComponentMenu indexOfSelectedItem]);
+	kemoview_set_fline_color_component((int) [_FlineComponentMenu indexOfSelectedItem]);
 	
-	iplotted = send_icomp_draw_fline();
-	self.FlineMinimumValue =   send_fline_data_min(iplotted);
-	self.FlineMaximumValue =   send_fline_data_max(iplotted);
+	iplotted = kemoview_get_fline_color_data_adress();
+	self.FlineMinimumValue =   kemoview_get_fline_data_min(iplotted);
+	self.FlineMaximumValue =   kemoview_get_fline_data_max(iplotted);
 	self.FlineDisplayMinimum = [[FlineMinimum objectAtIndex:iplotted] doubleValue];
 	self.FlineDisplayMaximum = [[FlineMaximum objectAtIndex:iplotted] doubleValue];	
 
@@ -282,9 +282,9 @@
 			}
 		}
 
-		iplotted = send_icomp_draw_fline();
-		self.FlineMinimumValue =   send_fline_data_min(iplotted);
-		self.FlineMaximumValue =   send_fline_data_max(iplotted);
+		iplotted = kemoview_get_fline_color_data_adress();
+		self.FlineMinimumValue =   kemoview_get_fline_data_min(iplotted);
+		self.FlineMaximumValue =   kemoview_get_fline_data_max(iplotted);
 		self.FlineDisplayMinimum = [[FlineMinimum objectAtIndex:iplotted] doubleValue];
 		self.FlineDisplayMaximum = [[FlineMaximum objectAtIndex:iplotted] doubleValue];
 	}
@@ -294,20 +294,20 @@
 - (IBAction)ChooseFieldlineColorAction:(id)sender;
 {
 	NSInteger tag = [[FieldlineColorItem selectedCell] tag];
-	set_to_fieldline_color((int) tag);
+	kemoview_set_fline_color_type((int) tag);
 	
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction) ShowFlineRange:(id)pSender {
-	input_fline_linear_colormap(self.FlineDisplayMinimum, self.FlineDisplayMaximum);
+	kemoview_set_fline_linear_colormap(self.FlineDisplayMinimum, self.FlineDisplayMaximum);
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)ChooseFieldlineTypeAction:(id)sender;
 {
 	self.Flinetype = [[_flinetype_matrix selectedCell] tag];
-	set_to_fline_type_flag((int) self.Flinetype);
+	kemoview_set_fline_type((int) self.Flinetype);
 	
 	[_kemoviewer UpdateImage];
 }
@@ -329,7 +329,7 @@
 		for(i=0;i<IntFlineThickDigit;i++) fieldlineThickness = fieldlineThickness * 10.0;
 	}
 	
-	set_to_fline_thickness((double) fieldlineThickness);
+	kemoview_set_fline_thickness((double) fieldlineThickness);
 	
 	[_kemoviewer UpdateImage];
 }

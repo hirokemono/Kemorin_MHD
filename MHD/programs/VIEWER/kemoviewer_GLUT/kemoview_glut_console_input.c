@@ -154,14 +154,14 @@ void set_fline_range_console(){
 	float range_min, range_max;
 	char name[1024];
 	
-	int ifield = send_if_draw_fline();
-	int icomp = send_icomp_draw_fline();
-	float data_min = (float) send_fline_data_min(icomp);
-	float data_max = (float) send_fline_data_max(icomp);
-	send_fline_data_name(name, ifield);
+	int ifield = kemoview_get_fline_color_field();
+	int icomp = kemoview_get_fline_color_data_adress();
+	float data_min = (float) kemoview_get_fline_data_min(icomp);
+	float data_max = (float) kemoview_get_fline_data_max(icomp);
+	kemoview_get_fline_color_data_name(name, ifield);
 	
 	input_range_from_console(name, &range_min, &range_max, data_min, data_max);	
-	input_fline_linear_colormap((double) range_min, (double) range_max);
+	kemoview_set_fline_linear_colormap((double) range_min, (double) range_max);
 	return;
 }
 
@@ -169,7 +169,7 @@ void set_fline_thick_console(){
 	float thick;
 	char buf[1024];
 	
-	thick = (float) send_fline_thickness();
+	thick = (float) kemoview_get_fline_thickness();
 	printf("Input fieldline thickness. \n");
 	printf("Current thickness: %e \n", thick);
 	
@@ -177,7 +177,7 @@ void set_fline_thick_console(){
 	sscanf(buf,"%e ", &thick);
 	printf("modified  number of line: %e \n", thick);
 	
-	if(thick > 0) set_to_fline_thickness((double) thick);
+	if(thick > 0) kemoview_set_fline_thickness((double) thick);
 	return;
 }
 

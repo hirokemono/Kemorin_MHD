@@ -267,9 +267,9 @@ module:
 	kemoviewer.h \
 	m_psf_data_4_viewer_c.o \
 	m_surface_mesh_4_viewer_c.o \
+	m_gl_transfer_matrix.o \
 	set_rgba_table_c.o \
 	skip_comment_c.o \
-	m_gl_transfer_matrix.o \
 	read_data_4_kemoviewer.o \
 	write_gl_window_to_file.o \
 	psf_data_array_manager.o \
@@ -280,6 +280,7 @@ module:
 	set_each_psf_parameters.o \
 	rainbow_color_code_c.o \
 	gl_buffer_2_gl2ps.o \
+    set_psf_texture_by_png.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

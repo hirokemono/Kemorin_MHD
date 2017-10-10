@@ -17,8 +17,8 @@ void set_rgb_from_value_s(struct colormap_params *cmap_s,
 			double value, double *red, double *green, double *blue);
 void set_rgb_from_rgb(struct colormap_params *cmap_s,
                       double red, double green, double blue);
-void set_opacity_from_value_s(struct colormap_params *cmap_s, 
-			double value, double *opacity);
+double set_opacity_from_value_s(struct colormap_params *cmap_s, 
+			double value);
 
 void set_each_color_point_s(struct colormap_params *cmap_s, 
 			int i_point, double value, double color);

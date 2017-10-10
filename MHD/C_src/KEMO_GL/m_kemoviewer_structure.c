@@ -803,8 +803,8 @@ void set_current_PSF_constant_opacity(double opacity){
 void set_current_PSF_rgb_from_value(double value, double *red, double *green, double *blue){
     set_PSF_rgb_from_value(kemo_sgl->psf_current_menu, value, red, green, blue);
 }
-void set_current_PSF_opacity_from_value(double value, double *opacity){
-    set_PSF_opacity_from_value(kemo_sgl->psf_current_menu, value, opacity);
+double kemoview_get_PSF_opacity_at_value(double value){
+    return get_PSF_opacity_at_value(kemo_sgl->psf_current_menu, value);
 }
 void set_current_PSF_color_point(int i_point, double value, double color){
     set_each_PSF_color_point(kemo_sgl->psf_current_menu, i_point, value, color);
@@ -840,75 +840,75 @@ void check_current_PSF_colormap_control(){
 
 /* Subroutines for field lines */
 
-int send_fline_file_header(char *file_head){
+int kemoview_get_fline_file_prefix(char *file_head){
 	strngcopy(file_head, kemo_sgl->fline_m->fline_header);
 	return kemo_sgl->fline_m->fline_step;
 };
-void set_to_fline_file_step(int istep){kemo_sgl->fline_m->fline_step = istep;};
+void kemoview_set_fline_file_step(int istep){kemo_sgl->fline_m->fline_step = istep;};
 
-void set_fline_color_field_flag(int sel){set_fline_color_field(sel, kemo_sgl->fline_d, kemo_sgl->fline_m);};
-void set_fline_color_comp_flag(int sel){set_fline_color_component(sel, kemo_sgl->fline_d, kemo_sgl->fline_m);};
-
-int send_nfield_fline(){return kemo_sgl->fline_d->nfield;};
-int send_ncomptot_fline(){return kemo_sgl->fline_d->ncomptot;};
-int send_ncomp_fline(int i){return kemo_sgl->fline_d->ncomp[i];};
-int send_istack_comp_fline(int i){return kemo_sgl->fline_d->istack_comp[i];};
-void send_fline_data_name(char *name, int i){ strngcopy(name, kemo_sgl->fline_d->data_name[i]); };
-
-
-void set_to_draw_fline(int iflag) {kemo_sgl->fline_m->iflag_draw_fline = iflag;};
-void set_to_if_draw_fline(int ifield){kemo_sgl->fline_m->if_draw_fline = ifield;};
-void set_to_ic_draw_fline(int icomp) {kemo_sgl->fline_m->ic_draw_fline = icomp;};
-void set_to_fieldline_color(int iflag) {kemo_sgl->fline_m->fieldline_color = iflag;};
-
-int send_iflag_draw_fline(){return kemo_sgl->fline_m->iflag_draw_fline;};
-int send_if_draw_fline(){return kemo_sgl->fline_m->if_draw_fline;};
-int send_ic_draw_fline(){return kemo_sgl->fline_m->ic_draw_fline;};
-int send_icomp_draw_fline(){return kemo_sgl->fline_m->icomp_draw_fline;};
-int send_fieldline_color() {return kemo_sgl->fline_m->fieldline_color;};
+void kemoview_set_fline_switch(int iflag) {kemo_sgl->fline_m->iflag_draw_fline = iflag;};
+void kemoview_set_fline_color_type(int iflag) {kemo_sgl->fline_m->fieldline_color = iflag;};
+void kemoview_set_fline_color_field(int sel){
+    set_fline_color_field(sel, kemo_sgl->fline_d, kemo_sgl->fline_m);
+};
+void kemoview_set_fline_color_component(int sel){
+    set_fline_color_component(sel, kemo_sgl->fline_d, kemo_sgl->fline_m);
+};
 
 
-void set_to_fline_type_flag(int iflag) {kemo_sgl->fline_m->fieldline_type = iflag;};
-int send_fline_type_flag() {return kemo_sgl->fline_m->fieldline_type;};
-int toggle_fline_type_flag(){
+int kemoview_get_fline_switch(){return kemo_sgl->fline_m->iflag_draw_fline;};
+int kemoview_get_fline_color_num_field(){return kemo_sgl->fline_d->nfield;};
+int kemoview_get_fline_color_ncomptot(){return kemo_sgl->fline_d->ncomptot;};
+int kemoview_get_fline_color_num_comps(int i){return kemo_sgl->fline_d->ncomp[i];};
+int kemoview_get_fline_color_istack(int i){return kemo_sgl->fline_d->istack_comp[i];};
+void kemoview_get_fline_color_data_name(char *name, int i){ strngcopy(name, kemo_sgl->fline_d->data_name[i]); };
+int kemoview_get_fline_color_field(){return kemo_sgl->fline_m->if_draw_fline;};
+int kemoview_get_fline_color_component(){return kemo_sgl->fline_m->ic_draw_fline;};
+int kemoview_get_fline_color_data_adress(){return kemo_sgl->fline_m->icomp_draw_fline;};
+int kemoview_get_fline_colormode() {return kemo_sgl->fline_m->fieldline_color;};
+
+
+void kemoview_set_fline_type(int iflag) {kemo_sgl->fline_m->fieldline_type = iflag;};
+int kemoview_get_fline_type() {return kemo_sgl->fline_m->fieldline_type;};
+int kemoview_toggle_fline_type(){
 	return kemo_sgl->fline_m->fieldline_type = toggle_value_c(kemo_sgl->fline_m->fieldline_type);
 };
 
 
-void set_to_fline_thickness(double thick) {kemo_sgl->fline_m->fieldline_thick = thick;};
-double send_fline_thickness() {return kemo_sgl->fline_m->fieldline_thick;};
+void kemoview_set_fline_thickness(double thick) {kemo_sgl->fline_m->fieldline_thick = thick;};
+double kemoview_get_fline_thickness() {return kemo_sgl->fline_m->fieldline_thick;};
 
-double send_fline_data_min(int i){return kemo_sgl->fline_d->d_min[i];};
-double send_fline_data_max(int i){return kemo_sgl->fline_d->d_max[i];};
+double kemoview_get_fline_data_min(int i){return kemo_sgl->fline_d->d_min[i];};
+double kemoview_get_fline_data_max(int i){return kemo_sgl->fline_d->d_max[i];};
 
 
-void input_fline_linear_colormap(double minvalue, double maxvalue){
+void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue){
 	set_linear_colormap(kemo_sgl->fline_m->cmap_fline, minvalue, maxvalue);
 }
-void set_fline_constant_opacitymap(double opacity){
+void kemoview_set_fline_constant_opacity(double opacity){
 	set_constant_opacitymap(kemo_sgl->fline_m->cmap_fline,
                             kemo_sgl->fline_d->d_min[kemo_sgl->fline_m->icomp_draw_fline],
                             kemo_sgl->fline_d->d_max[kemo_sgl->fline_m->icomp_draw_fline], opacity);
 }
 
-void realloc_fline_color_index_list(int num){
+void kemoview_realloc_fline_colormap(int num){
 	realloc_color_index_list_s(kemo_sgl->fline_m->cmap_fline, num);
 }
-void realloc_flie_opacity_index_list(int num){
+void kemoview_realloc_fline_opacitymap(int num){
 	realloc_opacity_index_list_s(kemo_sgl->fline_m->cmap_fline, num);
 }
 
-void set_fline_rgb_from_value(double value, double *red, double *green, double *blue){
+void kemoview_get_fline_rgb_at_value(double value, double *red, double *green, double *blue){
 	set_rgb_from_value_s(kemo_sgl->fline_m->cmap_fline, value, red, green, blue);
 }
 
-void set_fline_opacity_from_value(double value, double *opacity){
-	set_opacity_from_value_s(kemo_sgl->fline_m->cmap_fline, value, opacity);
+double kemoview_get_fline_opacity_at_value(double value){
+	return set_opacity_from_value_s(kemo_sgl->fline_m->cmap_fline, value);
 }
-void set_each_fline_color_point(int i_point, double value, double color){
+void kemoview_set_fline_color_data(int i_point, double value, double color){
 	set_each_color_point_s(kemo_sgl->fline_m->cmap_fline, i_point, value, color);
 }
-void set_each_fline_opacity_point(int i_point, double value, double opacity){
+void kemoview_set_fline_opacity_data(int i_point, double value, double opacity){
 	set_each_opacity_point_s(kemo_sgl->fline_m->cmap_fline, i_point, value, opacity);
 }
 
@@ -959,8 +959,8 @@ void kemoview_write_window_to_file_w_step(int iflag_img, int istep, const char *
     write_gl_window_step_file(iflag_img, istep, fhead, kemo_sgl->view_s->nx_window, kemo_sgl->view_s->ny_window);
 }
 
-void kemoview_set_texture_to_current_psf(int img_fmt, const char *img_head){
-    set_texture_from_file(img_fmt, img_head, kemo_sgl->psf_current_menu);
+void kemoview_set_texture_to_PSF(int img_fmt, const char *img_head){
+    set_texture_to_psf(img_fmt, img_head, kemo_sgl->psf_current_menu);
 };
 #endif
 

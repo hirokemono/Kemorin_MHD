@@ -57,7 +57,7 @@
 		value = dataMin
 			+ ((double) i / ((double)rectCount-1)) * (dataMax-dataMin);
 		set_current_PSF_rgb_from_value(value, &r, &g, &b);
-		set_current_PSF_opacity_from_value(value, &a);
+		a = kemoview_get_PSF_opacity_at_value(value);
 		a = a / maxOpacity;
 
         colors[i] = [NSColor colorWithDeviceRed:r green:g blue:b alpha:1.0];

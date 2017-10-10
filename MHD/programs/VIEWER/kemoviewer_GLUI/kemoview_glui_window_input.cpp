@@ -158,7 +158,7 @@ static void delete_opacitymap_glui(int val){
 static void input_fline_min_from_panel(int val){
 	fline_color_min = editText_min->get_float_val();
 	if(fline_color_max > fline_color_min){
-		input_fline_linear_colormap((double) fline_color_min, (double) fline_color_max);
+		kemoview_set_fline_linear_colormap((double) fline_color_min, (double) fline_color_max);
 		draw_mesh_keep_menu();
 	};
 	return;
@@ -167,7 +167,7 @@ static void input_fline_min_from_panel(int val){
 static void input_fline_max_from_panel(int val){
 	fline_color_max = editText_max->get_float_val();
 	if(fline_color_max > fline_color_min){
-		input_fline_linear_colormap((double) fline_color_min, (double) fline_color_max);
+		kemoview_set_fline_linear_colormap((double) fline_color_min, (double) fline_color_max);
 		draw_mesh_keep_menu();
 	};
 	return;
@@ -175,7 +175,7 @@ static void input_fline_max_from_panel(int val){
 
 static void input_fline_thick_from_panel(int val){
 	fline_thick = editText_fline_thick->get_float_val();
-	set_to_fline_thickness((double) fline_thick);
+	kemoview_set_fline_thickness((double) fline_thick);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -303,12 +303,12 @@ void set_psf_range_by_glui(int winid){
 void set_fline_range_by_glui(int winid){
 	char fline_range_txt[1024];
 	
-	int ifield = send_if_draw_fline();
-	int icomp = send_icomp_draw_fline();
+	int ifield = kemoview_get_fline_color_field();
+	int icomp = kemoview_get_fline_color_data_adress();
 	fline_color_min = (float) kemoview_get_fline_min_color();
 	fline_color_max = (float) kemoview_get_fline_max_color();
-	sprintf(fline_range_txt,"Range: %3.2e ... %3.2e",(float) send_fline_data_min(icomp),
-			(float) send_fline_data_max(icomp) );
+	sprintf(fline_range_txt,"Range: %3.2e ... %3.2e",(float) kemoview_get_fline_data_min(icomp),
+			(float) kemoview_get_fline_data_max(icomp) );
 	
 	glui_sub = GLUI_Master.create_glui("Field line color", 0, 100, 100);
 	staticText = new GLUI_StaticText( glui_sub, fline_range_txt);
@@ -322,7 +322,7 @@ void set_fline_range_by_glui(int winid){
 }
 
 void set_fline_thick_glui(int winid){
-	fline_thick = (float) send_fline_thickness();
+	fline_thick = (float) kemoview_get_fline_thickness();
 	
 	glui_sub = GLUI_Master.create_glui("Set fieldline thickness", 0, 100, 100);
 	editText_fline_thick = new GLUI_EditText( glui_sub, "Thickness", GLUI_EDITTEXT_FLOAT,

@@ -86,7 +86,7 @@ NSData *SnapshotData;
 -(void) InitEvolutionStepByFline;
 {
 	char image_head[LENGTHBUF];
-	self.CurrentStep = send_fline_file_header(image_head);
+	self.CurrentStep = kemoview_get_fline_file_step_prefix(image_head);
 	self.EvolutionStartStep = self.CurrentStep;
 	self.EvolutionEndStep =   self.CurrentStep;
 }

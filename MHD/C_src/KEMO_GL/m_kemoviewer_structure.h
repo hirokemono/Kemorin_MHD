@@ -24,11 +24,11 @@
 #include "gl_buffer_2_gl2ps.h"
 
 
+#include "kemoviewer.h"
+
 #ifdef PNG_OUTPUT
     #include "write_gl_window_to_file.h"
+    #include "set_psf_texture_by_png.h"
 #endif
-
-
-#include "kemoviewer.h"
 
 #endif

@@ -142,7 +142,7 @@ void set_rainbow_color_code(struct colormap_params *cmap_s, double val_pe,
 							double *f_color){
 	
 	set_rgb_from_value_s(cmap_s, val_pe, &f_color[0], &f_color[1], &f_color[2]);
-	set_opacity_from_value_s(cmap_s, val_pe, &f_color[3]);
+	f_color[3] = set_opacity_from_value_s(cmap_s, val_pe);
 	return;
 }
 

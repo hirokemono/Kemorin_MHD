@@ -61,8 +61,8 @@ void glut_PSF_field_select() {
 
 void glut_fline_color_select(){
 	int i;
-	int num_field = send_nfield_fline();
-	int if_fline = send_if_draw_fline();
+	int num_field = kemoview_get_fline_color_num_field();
+	int if_fline = kemoview_get_fline_color_field();
 	char field_name[80];
 	
 	for ( i = 0; i< num_field; i++) {
@@ -201,9 +201,9 @@ void glut_PSF_colormode_select(){
 void glut_fline_color_comp_select() {
 	int i;
 	char tmp_menu[1024];
-	int if_fline = send_if_draw_fline();
-	int ic_fline = send_ic_draw_fline();
-	int ndir = send_ncomp_fline(if_fline);
+	int if_fline = kemoview_get_fline_color_field();
+	int ic_fline = kemoview_get_fline_color_component();
+	int ndir = kemoview_get_fline_color_num_comps(if_fline);
 	
 	for ( i = 0; i< ndir; i++) {
 		if( i != ic_fline){
@@ -567,7 +567,7 @@ void glut_surf_color_menu_item(){
 }
 
 void glut_fline_col_type_menu(){
-	int icolor = send_fieldline_color();
+	int icolor = kemoview_get_fline_colormode();
 	if (icolor != RAINBOW_LINE)
 		glutAddMenuEntry("Rainbow lines", RAINBOW_LINE);
 	if (icolor != TWO_COLOR_LINE)
