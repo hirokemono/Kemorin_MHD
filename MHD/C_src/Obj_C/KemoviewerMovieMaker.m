@@ -78,7 +78,7 @@ NSData *SnapshotData;
 {
 	char image_head[LENGTHBUF];
 	int iflag;
-	self.CurrentStep = send_current_psf_full_path_header(image_head, &iflag);
+	self.CurrentStep = kemoview_get_PSF_full_path_file_prefix(image_head, &iflag);
 	self.EvolutionStartStep = self.CurrentStep;
 	self.EvolutionEndStep =   self.CurrentStep;
 };

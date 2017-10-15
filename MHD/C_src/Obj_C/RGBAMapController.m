@@ -26,7 +26,7 @@
 
 - (IBAction)SetColorMode:(id)pId;
 {
-	set_current_PSF_color_mode_id((int) [ColorModeItem indexOfSelectedItem]);
+	kemoview_set_PSF_color_mode((int) [ColorModeItem indexOfSelectedItem]);
 	[_kemoviewer UpdateImage];
 }
 
@@ -78,7 +78,7 @@
                                            [_kemoviewer UpdateImage];
                                            [_colorMapObject SetColorTables];
                                            [_opacityMapObject SetOpacityTables];
-                                           [ColorModeItem selectItemAtIndex:send_current_PSF_color_mode_id()];
+                                           [ColorModeItem selectItemAtIndex:kemoview_get_PSF_color_mode()];
                                        };
                                    }];
     

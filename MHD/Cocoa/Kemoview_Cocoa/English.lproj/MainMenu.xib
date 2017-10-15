@@ -3467,7 +3467,7 @@
         </window>
         <customView autoresizesSubviews="NO" canDrawConcurrently="YES" id="2222" userLabel="Drawer Content View">
             <rect key="frame" x="0.0" y="0.0" width="224" height="686"/>
-            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
+            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES" heightSizable="YES"/>
             <subviews>
                 <button verticalHuggingPriority="750" id="635">
                     <rect key="frame" x="90" y="48" width="115" height="16"/>
@@ -3871,7 +3871,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" rowHeight="14" headerView="2597" id="2596">
-                                                    <rect key="frame" x="0.0" y="0.0" width="153" height="127"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="153" height="16"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -3958,7 +3958,7 @@
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <subviews>
                                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" rowHeight="14" headerView="2584" id="2585">
-                                                    <rect key="frame" x="0.0" y="0.0" width="153" height="127"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="153" height="16"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                                     <size key="intercellSpacing" width="3" height="2"/>
                                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>

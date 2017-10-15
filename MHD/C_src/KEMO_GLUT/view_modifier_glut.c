@@ -78,14 +78,14 @@ static void motion(GLint x, GLint y){
 	if (button_function == ZOOM){
 		y_dbl = (GLdouble) y;
 		factor = -0.5*(y_dbl-begin[1]);
-		kemoviewer_zooming((GLdouble) factor);
+		kemoview_zooming((GLdouble) factor);
 	}
 	
 	if (button_function == WALKTO){
-		kemoviewer_mousedolly(begin, (GLdouble) x, (GLdouble) y);
+		kemoview_mousedolly(begin, (GLdouble) x, (GLdouble) y);
 	}
 	else if(button_function == PAN){
-		kemoviewer_mousepan(begin, (GLdouble) x, (GLdouble) y);
+		kemoview_mousepan(begin, (GLdouble) x, (GLdouble) y);
 	}
 	else if (button_function == ROTATE) {
 		x_dbl = (GLdouble) x;
@@ -97,11 +97,11 @@ static void motion(GLint x, GLint y){
 		
 		kemoview_startTrackball( begin[0], (-begin[1]));
 		kemoview_rollToTrackball( x_dbl, (-y_dbl));
-		drugging_addToRotationTrackball();
+		kemoview_drugging_addToRotationTrackball();
 	}
 	else if (button_function == SCALE){
 		GLdouble current_scale;
-        current_scale = send_kemoview_scale_factor();
+        current_scale = kemoview_get_scale_factor();
         
 		y_dbl = (GLdouble) y;
 		if (y < begin[1]) {
@@ -156,7 +156,7 @@ static void arrows_c(int key, int x, int y){
 		else {
 			factor = ZERO;
 		};
-		kemoviewer_zooming((GLdouble) factor);
+		kemoview_zooming((GLdouble) factor);
 	}
 	
 	else if (arrow_key_func == WALKTO){
@@ -171,7 +171,7 @@ static void arrows_c(int key, int x, int y){
 		else {
 			factor = ZERO;
 		};
-		kemoviewer_mousedolly(begin, x_dbl, y_dbl);
+		kemoview_mousedolly(begin, x_dbl, y_dbl);
 	}
 	
 	else if (arrow_key_func == PAN){
@@ -193,7 +193,7 @@ static void arrows_c(int key, int x, int y){
 			x_dbl = ZERO;
 			y_dbl = -ONE;
 		};
-		kemoviewer_mousepan(begin, x_dbl, y_dbl);
+		kemoview_mousepan(begin, x_dbl, y_dbl);
 	}
 	
 	else if (arrow_key_func == ROTATE){
@@ -215,12 +215,12 @@ static void arrows_c(int key, int x, int y){
 		};
 		kemoview_startTrackball( begin[0], (-begin[1]));
 		kemoview_rollToTrackball( x_dbl, (-y_dbl));
-		drugging_addToRotationTrackball();
+		kemoview_drugging_addToRotationTrackball();
 	}
 	
 	else if (arrow_key_func == SCALE){
 		GLdouble current_scale;
-        current_scale = send_kemoview_scale_factor();
+        current_scale = kemoview_get_scale_factor();
         
 		if (key == GLUT_KEY_DOWN)
 		factor = ONE/(ONE + TWO_CENT);
@@ -308,7 +308,7 @@ int  menu_init(){
 }
 
 void display_menu(){
-	draw_menubottun_glut();
+	kemoview_draw_glut_menubottun();
 	glutSwapBuffers();
 	
 	return;

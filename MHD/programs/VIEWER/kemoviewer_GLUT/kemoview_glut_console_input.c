@@ -139,14 +139,14 @@ void set_psf_range_console(){
 	float range_min, range_max;
 	char name[1024];
 	
-	int ifield = send_draw_field_current_psf();
-	int icomp = send_draw_component_current_psf();
-	float data_min = (float) send_current_psf_data_min(icomp);
-	float data_max = (float) send_current_psf_data_max(icomp);
-	send_current_psf_data_name(name, ifield);
+	int ifield = kemoview_get_PSF_field_id();
+	int icomp = kemoview_get_PSF_draw_data_address();
+	float data_min = (float) kemoview_get_PSF_min_data(icomp);
+	float data_max = (float) kemoview_get_PSF_max_data(icomp);
+	kemoview_get_PSF_field_name(name, ifield);
 	
 	input_range_from_console(name, &range_min, &range_max, data_min, data_max);
-	set_current_PSF_linear_colormap((double) range_min, (double) range_max);
+	kemoview_set_PSF_linear_colormap((double) range_min, (double) range_max);
 	return;
 }
 
@@ -185,7 +185,7 @@ void set_num_isoline(){
 	int nline;
 	char buf[1024];
 	
-	nline = send_current_num_isoline();
+	nline = kemoview_get_PSF_num_isoline();
 	printf("Input number of isolines. \n");
 	printf("Current number of line: %d \n", nline);
 	
@@ -193,7 +193,7 @@ void set_num_isoline(){
 	sscanf(buf,"%d ", &nline);
 	printf("modified  number of line: %d \n", nline);
 	
-	if(nline > 0) set_current_n_isoline(nline);
+	if(nline > 0) kemoview_set_PSF_num_isoline(nline);
 	return;
 }
 
@@ -201,7 +201,7 @@ void set_psf_vector_increment(){
 	int num_inc;
 	char buf[1024];
 	
-	num_inc = send_current_increment_vect();
+	num_inc = kemoview_get_PSF_vector_increment();
 	printf("Input increment for vector \n");
 	printf("Current increment: %d \n", num_inc);
 	
@@ -209,14 +209,14 @@ void set_psf_vector_increment(){
 	sscanf(buf,"%d ", &num_inc);
 	printf("modified  increment of vector: %d \n", num_inc);
 	
-	if(num_inc > 0) set_current_increment_vect(num_inc);
+	if(num_inc > 0) kemoview_set_PSF_vector_increment(num_inc);
 	return;
 }
 
 void set_psf_vector_scale(){
 	char buf[1024];
 	float scale_input;
-	scale_input = (float) send_current_scale_vect();
+	scale_input = (float) kemoview_get_PSF_vector_scale();
 	
 	printf("Enter scale of vector: \n");
 	
@@ -227,14 +227,14 @@ void set_psf_vector_scale(){
 	if ( scale_input < ZERO) scale_input = ZERO;
 	printf("modified scale vector: %.7e \n", scale_input);
 	
-	set_current_scale_vect((double) scale_input);
+	kemoview_set_PSF_vector_scale((double) scale_input);
 	return;
 }
 
 void set_psf_vector_thickness(){
 	char buf[1024];
 	float thick_input;
-	thick_input = (float) send_current_vector_thick();
+	thick_input = (float) kemoview_get_PSF_vector_thickness();
 	
 	printf("Enter vector thickness: \n");
 	printf("Current thick_org  %.7e \n", thick_input);
@@ -245,7 +245,7 @@ void set_psf_vector_thickness(){
 	if ( thick_input < ZERO) thick_input = ZERO;
 	printf("modified vector thickness: %.7e \n", thick_input);
 	
-	set_current_vector_thick((double) thick_input);
+	kemoview_set_PSF_vector_thickness((double) thick_input);
 	return;
 }
 
@@ -256,7 +256,7 @@ void set_psf_opacity(){
 	printf("Enter PSF opacity: \n");
 	opacity = set_opacity_console(opacity);
 	
-	set_current_PSF_constant_opacity((double) opacity);
+	kemoview_set_PSF_constant_opacity((double) opacity);
 	return;
 }
 
@@ -387,7 +387,7 @@ static void read_psf_colormap_data(float *new_value, float *new_color){
 void add_psf_colormap_point_console(){
 	float value, color;
 	read_psf_colormap_data(&value, &color);
-	add_current_PSF_color_idx_list((double) value, (double) color);
+	kemoview_add_PSF_color_list((double) value, (double) color);
 	kemoview_check_PSF_colormap_control();
 	
 	return;
@@ -395,7 +395,7 @@ void add_psf_colormap_point_console(){
 void modify_psf_colormap_point_console(int i_point){
 	float value, color;
 	read_psf_colormap_data(&value, &color);
-	set_current_PSF_color_point(i_point, (double) value, (double) color);
+	kemoview_set_PSF_color_data(i_point, (double) value, (double) color);
 	kemoview_check_PSF_colormap_control();
 	return;
 }
@@ -403,14 +403,14 @@ void modify_psf_colormap_point_console(int i_point){
 void add_psf_opacitymap_point_console(){
 	float value, opacity;
 	read_psf_colormap_data(&value, &opacity);
-	add_current_PSF_opacity_idx_list((double) value, (double) opacity);
+	kemoview_add_PSF_opacity_list((double) value, (double) opacity);
 	kemoview_check_PSF_colormap_control();
 	return;
 }
 void modify_psf_opacitymap_point_console(int i_point){
 	float value, opacity;
 	read_psf_colormap_data(&value, &opacity);
-	set_current_PSF_opacity_point(i_point, (double) value, (double) opacity);
+	kemoview_set_PSF_opacity_data(i_point, (double) value, (double) opacity);
 	kemoview_check_PSF_colormap_control();
 	return;
 }

@@ -45,7 +45,7 @@
 		color2 = [[self.ColorTableColor objectAtIndex:isel] doubleValue];
 		value = (value1 + value2)*HALF;
 		color = (color1 + color2)*HALF;
-		add_current_PSF_color_idx_list(value, color);
+		kemoview_add_PSF_color_list(value, color);
 		
 		[self SetColorTables];
 	}
@@ -61,7 +61,7 @@
 	if ([idColorTableView numberOfSelectedRows] > 0) {
 		for(i = [self.ColorTableField count]-1;i>1;i--){
 			if([SelectedList containsIndex:i] == TRUE){
-				delete_current_PSF_color_idx_list(i);
+				kemoview_delete_PSF_color_list(i);
 			}
 		};
 	}
@@ -122,7 +122,7 @@
 											withObject:[[NSNumber alloc] initWithDouble:color]];
 	}
 	
-	set_current_PSF_color_point(pRowIndex, value, color);
+	kemoview_set_PSF_color_data(pRowIndex, value, color);
 
 	[_kemoviewer UpdateImage];
 } // end tableView:setObjectValue:forTableColumn:row:

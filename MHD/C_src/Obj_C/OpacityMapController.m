@@ -36,7 +36,7 @@
 		opacity2 = [[self.OpacityTableOpacity objectAtIndex:isel] doubleValue];
 		value =   (value1 + value2)*HALF;
 		opacity = (opacity1 + opacity2)*HALF;
-		add_current_PSF_opacity_idx_list(value, opacity);
+		kemoview_add_PSF_opacity_list(value, opacity);
 		
 		[self SetOpacityTables];
 	}
@@ -52,7 +52,7 @@
 	if ([idOpacityTableView numberOfSelectedRows] > 0) {
 		for(i = [self.OpacityTableField count]-1;i>1;i--){
 			if([SelectedList containsIndex:i] == TRUE){
-				delete_current_PSF_opacity_idx_list(i);
+				kemoview_delete_PSF_opacity_list(i);
 			}
 		}
 	}
@@ -113,7 +113,7 @@
 										  withObject:[[NSNumber alloc] initWithDouble:opacity]];
 	}
 	
-	set_current_PSF_opacity_point(pRowIndex, value, opacity);
+	kemoview_set_PSF_opacity_data(pRowIndex, value, opacity);
 	
 	[_kemoviewer UpdateImage];
 } // end tableView:setObjectValue:forTableColumn:row:

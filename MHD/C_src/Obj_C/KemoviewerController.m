@@ -168,7 +168,7 @@
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	
 	AnaglyphFlag = (1-[_streoViewTypeMenu indexOfSelectedItem]);
-	set_to_iflag_anaglyph((int) AnaglyphFlag);
+	kemoview_set_anaglyph_flag((int) AnaglyphFlag);
 	[defaults setInteger:((int) AnaglyphFlag) forKey:@"AnaglyphFlag"];
 
     printf("AnaglyphFlag %d\n", (int) AnaglyphFlag);

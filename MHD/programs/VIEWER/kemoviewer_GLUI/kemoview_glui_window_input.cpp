@@ -55,7 +55,7 @@ static void close_panel(int val){
 static void input_psf_min_from_panel(int val){
 	psf_color_min = editText_min->get_float_val();
 	if(psf_color_max > psf_color_min){
-		set_current_PSF_linear_colormap((double) psf_color_min, (double) psf_color_max);
+		kemoview_set_PSF_linear_colormap((double) psf_color_min, (double) psf_color_max);
 		draw_mesh_keep_menu();
 	};
 	return;
@@ -64,7 +64,7 @@ static void input_psf_min_from_panel(int val){
 static void input_psf_max_from_panel(int val){
 	psf_color_max = editText_max->get_float_val();
 	if(psf_color_max > psf_color_min){
-		set_current_PSF_linear_colormap((double) psf_color_min, (double) psf_color_max);
+		kemoview_set_PSF_linear_colormap((double) psf_color_min, (double) psf_color_max);
 		draw_mesh_keep_menu();
 	};
 	return;
@@ -110,7 +110,7 @@ static void update_colormap_glui(int val){
 	int sel = radiogroup_colormap->get_int_val();
 	value = editText_data->get_float_val();
 	color = editText_color->get_float_val();
-	set_current_PSF_color_point(sel, (double) value, (double) color);
+	kemoview_set_PSF_color_data(sel, (double) value, (double) color);
 	close_panel(0);
 	return;
 }
@@ -118,14 +118,14 @@ static void update_colormap_glui(int val){
 static void add_colormap_glui(int val){
 	value = editText_data->get_float_val();
 	color = editText_color->get_float_val();
-	add_current_PSF_color_idx_list((double) value, (double) color);
+	kemoview_add_PSF_color_list((double) value, (double) color);
 	close_panel(0);
 	return;
 }
 
 static void delete_colormap_glui(int val){
 	int sel = radiogroup_colormap->get_int_val();
-	delete_current_PSF_color_idx_list(sel);
+	kemoview_delete_PSF_color_list(sel);
 	close_panel(0);
 	return;
 }
@@ -134,7 +134,7 @@ static void update_opacitymap_glui(int val){
 	int sel = radiogroup_opacitymap->get_int_val();
 	value = editText_data->get_float_val();
 	opacity = editText_opacity->get_float_val();
-	set_current_PSF_opacity_point(sel, (double) value, (double) opacity);
+	kemoview_set_PSF_opacity_data(sel, (double) value, (double) opacity);
 	close_panel(0);
 	return;
 }
@@ -142,14 +142,14 @@ static void update_opacitymap_glui(int val){
 static void add_opacitymap_glui(int val){
 	value = editText_data->get_float_val();
 	opacity = editText_opacity->get_float_val();
-	add_current_PSF_opacity_idx_list((double) value, (double) opacity);
+	kemoview_add_PSF_opacity_list((double) value, (double) opacity);
 	close_panel(0);
 	return;
 }
 
 static void delete_opacitymap_glui(int val){
 	int sel = radiogroup_opacitymap->get_int_val();
-	delete_current_PSF_opacity_idx_list(sel);
+	kemoview_delete_PSF_opacity_list(sel);
 	close_panel(0);
 	return;
 }
@@ -183,7 +183,7 @@ static void input_fline_thick_from_panel(int val){
 
 static void input_psf_opacity_from_panel(int val){
 	opacity = editText_opacity->get_float_val();
-	set_current_PSF_constant_opacity((double) opacity);
+	kemoview_set_PSF_constant_opacity((double) opacity);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -215,7 +215,7 @@ static void input_sgrp_opacity_from_panel(int val){
 
 static void input_num_isoline_from_panel(int val){
 	nline = editText->get_int_val();
-	if(nline > 0) set_current_n_isoline(nline);
+	if(nline > 0) kemoview_set_PSF_num_isoline(nline);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -223,7 +223,7 @@ static void input_num_isoline_from_panel(int val){
 
 static void input_vector_increment_from_panel(int val){
 	num_inc = editText->get_int_val();
-	if(num_inc > 0) set_current_increment_vect(num_inc);
+	if(num_inc > 0) kemoview_set_PSF_vector_increment(num_inc);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -231,7 +231,7 @@ static void input_vector_increment_from_panel(int val){
 
 static void input_psf_vector_scale_panel(int val){
 	scaling = editText->get_float_val();
-	set_current_scale_vect((double) scaling);
+	kemoview_set_PSF_vector_scale((double) scaling);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -239,7 +239,7 @@ static void input_psf_vector_scale_panel(int val){
 
 static void input_psf_vector_thickness_panel(int val){
 	thickness = editText->get_float_val();
-	set_current_vector_thick((double) thickness);
+	kemoview_set_PSF_vector_thickness((double) thickness);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -283,12 +283,13 @@ static void input_node_size_from_panel(int val){
 void set_psf_range_by_glui(int winid){
 	char psf_range_txt[1024];
 	
-	int ifield = send_draw_field_current_psf();
-	int icomp = send_draw_component_current_psf();
+	int ifield = kemoview_get_PSF_field_id();
+	int icomp = kemoview_get_PSF_draw_data_address();
 	psf_color_min = (float) kemoview_get_PSF_color_table_min();
 	psf_color_max = (float) kemoview_get_PSF_color_table_max();
-	sprintf(psf_range_txt,"Range: %3.2e ... %3.2e",(float) send_current_psf_data_min(icomp),
-			(float) send_current_psf_data_max(icomp) );
+	sprintf(psf_range_txt,"Range: %3.2e ... %3.2e",
+            (float) kemoview_get_PSF_min_data(icomp),
+			(float) kemoview_get_PSF_max_data(icomp) );
 	glui_sub = GLUI_Master.create_glui("PSF range", 0, 100, 100);
 	staticText = new GLUI_StaticText( glui_sub, psf_range_txt);
 	editText_max = new GLUI_EditText( glui_sub, "Maximum: ", GLUI_EDITTEXT_FLOAT,
@@ -307,7 +308,8 @@ void set_fline_range_by_glui(int winid){
 	int icomp = kemoview_get_fline_color_data_adress();
 	fline_color_min = (float) kemoview_get_fline_min_color();
 	fline_color_max = (float) kemoview_get_fline_max_color();
-	sprintf(fline_range_txt,"Range: %3.2e ... %3.2e",(float) kemoview_get_fline_data_min(icomp),
+	sprintf(fline_range_txt,"Range: %3.2e ... %3.2e",
+            (float) kemoview_get_fline_data_min(icomp),
 			(float) kemoview_get_fline_data_max(icomp) );
 	
 	glui_sub = GLUI_Master.create_glui("Field line color", 0, 100, 100);
@@ -373,7 +375,7 @@ void set_surf_group_opacity_by_glui(int winid){
 
 
 void set_num_isoline_from_glui(int winid){
-	nline = send_current_num_isoline();
+	nline = kemoview_get_PSF_num_isoline();
 	glui_sub = GLUI_Master.create_glui("Set PSF Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "num. of isoline: ",
 								 GLUI_EDITTEXT_INT, &nline, -1, input_num_isoline_from_panel );
@@ -382,7 +384,7 @@ void set_num_isoline_from_glui(int winid){
 }
 
 void set_psf_vect_increment_glui(int winid){
-	num_inc = send_current_increment_vect();
+	num_inc = kemoview_get_PSF_vector_increment();
 	
 	glui_sub = GLUI_Master.create_glui("Set vector increment", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "vector increment: ", GLUI_EDITTEXT_INT,
@@ -392,23 +394,23 @@ void set_psf_vect_increment_glui(int winid){
 }
 
 void set_psf_vector_scale_by_glui(int winid){
-	scaling = (float) send_current_scale_vect();
+	scaling = (float) kemoview_get_PSF_vector_scale();
 	
 	glui_sub = GLUI_Master.create_glui("Set unit length of vector", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Vector scaling: ", GLUI_EDITTEXT_INT,
 								 &scaling, -1, input_psf_vector_scale_panel );
-	set_current_scale_vect(nodesize);
+	kemoview_set_PSF_vector_scale(nodesize);
 	glui_sub->set_main_gfx_window(winid);
 	return;
 }
 
 void set_psf_vector_thick_by_glui(int winid){
-	thickness = (float) send_current_vector_thick();
+	thickness = (float) kemoview_get_PSF_vector_thickness();
 	
 	glui_sub = GLUI_Master.create_glui("Set vector thickness", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Vector thickness", GLUI_EDITTEXT_FLOAT,
 								 &thickness, -1, input_psf_vector_thickness_panel );
-	set_current_vector_thick(thickness);
+	kemoview_set_PSF_vector_thickness(thickness);
 	glui_sub->set_main_gfx_window(winid);
 	return;
 }

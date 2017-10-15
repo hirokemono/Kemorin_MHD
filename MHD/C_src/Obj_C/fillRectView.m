@@ -32,7 +32,7 @@
     int		i, npoint;
     
 
-    if(send_num_loaded_PSF() < 1) return;
+    if(kemoview_get_PSF_num_loaded() < 1) return;
 	npoint = kemoview_get_PSF_color_table_num();
 	kemoview_get_PSF_color_items(IZERO, &colorMin, &color);
 	kemoview_get_PSF_color_items(npoint-1, &colorMax, &color);
@@ -56,7 +56,7 @@
     for(i = 0; i < rectCount; i++) {
 		value = dataMin
 			+ ((double) i / ((double)rectCount-1)) * (dataMax-dataMin);
-		set_current_PSF_rgb_from_value(value, &r, &g, &b);
+		kemoview_get_PSF_rgb_at_value(value, &r, &g, &b);
 		a = kemoview_get_PSF_opacity_at_value(value);
 		a = a / maxOpacity;
 

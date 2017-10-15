@@ -62,14 +62,14 @@
 	GLdouble tmpFar, tmpAspect;
 	GLdouble tmpFocus, tmpEyeRatio;
 	
-	send_kemoview_rotation_parameter(tmpRotation);
-	send_kemoview_shift_vector(tmpShift);
-	send_kemoview_lookat_vector(tmpLookPoint);
-	tmpScale = send_kemoview_scale_factor();
-	send_kemoview_projection_parameters(&tmpAperture, &tmpNear,
-										&tmpFar, &tmpAspect);
-	tmpFocus = send_kemoview_stereo_parameters();
-	tmpEyeRatio = send_kemoview_stereo_eyeseparation();
+	kemoview_get_rotation_parameter(tmpRotation);
+	kemoview_get_shift_vector(tmpShift);
+	kemoview_get_lookat_vector(tmpLookPoint);
+	tmpScale = kemoview_get_scale_factor();
+	kemoview_get_projection_parameters(&tmpAperture, &tmpNear,
+                                       &tmpFar, &tmpAspect);
+	tmpFocus = kemoview_get_stereo_parameters();
+	tmpEyeRatio = kemoview_get_stereo_eyeseparation();
 	
 	self.ViewPointX = -tmpShift[0];
 	self.ViewPointY = -tmpShift[1];
@@ -99,7 +99,7 @@
 - (void) updateObjectRotationForTimeDelta:(CFAbsoluteTime)deltaTime
 {
     GLdouble dt = deltaTime;
-	add_kemoview_animation_rot(dt);
+	kemoview_animation_add_rotation(dt);
 	[self UpdateParameters];
 }
 

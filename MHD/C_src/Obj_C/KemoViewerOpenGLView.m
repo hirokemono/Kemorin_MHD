@@ -112,7 +112,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 -(void) modify_view_Cocoa
 {	
 	rotate_kemoview();
-	reset_kemoviewer_animation();
+	kemoview_reset_animation();
 	[_resetview UpdateParameters];
 	return;
 };
@@ -128,7 +128,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 // move camera in z axis
 -(void)mouseDolly: (NSPoint) location
 {
-	kemoviewer_mousedolly(gDollyPanStartPoint, (GLdouble) location.x, (GLdouble) location.y);
+	kemoview_mousedolly(gDollyPanStartPoint, (GLdouble) location.x, (GLdouble) location.y);
 }
 	
 // ---------------------------------
@@ -136,7 +136,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 // move camera in x/y plane
 - (void)mousePan: (NSPoint) location
 {
-	kemoviewer_mousepan(gDollyPanStartPoint, (GLdouble) location.x, (GLdouble) location.y);
+	kemoview_mousepan(gDollyPanStartPoint, (GLdouble) location.x, (GLdouble) location.y);
 }
 
 // ---------------------------------
@@ -295,7 +295,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	location.y = YpixelGLWindow - location.y;
 /*	
 	if (gTrackball) { // if we are currently tracking, end trackball
-		drugging_addToRotationTrackball();
+		kemoview_drugging_addToRotationTrackball();
 	}
  */
 	gDolly = GL_FALSE; // no dolly
@@ -314,7 +314,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	location.y = YpixelGLWindow - location.y;
 /*	
 	if (gTrackball) { // if we are currently tracking, end trackball
-		drugging_addToRotationTrackball();
+		kemoview_drugging_addToRotationTrackball();
 	}
  */
 	gDolly = GL_TRUE;
@@ -337,7 +337,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 		gPan = GL_FALSE;
 	} else if (gTrackball) { // end trackball
 		gTrackball = GL_FALSE;
-/*		drugging_addToRotationTrackball();*/
+/*		kemoview_drugging_addToRotationTrackball();*/
 		[_resetview UpdateParameters];
 	} 
 	draw_kemoviewer_c();
@@ -367,7 +367,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	location.y = YpixelGLWindow - location.y;
 	if (gTrackball) {
 		kemoview_rollToTrackball (location.x, -location.y);
-		drugging_addToRotationTrackball();
+		kemoview_drugging_addToRotationTrackball();
 		kemoview_startTrackball(location.x, -location.y);
 		[self setNeedsDisplay: YES];
 	} else if (gDolly) {
@@ -387,7 +387,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	float wheelDelta = [theEvent deltaX] +[theEvent deltaY] + [theEvent deltaZ];
 	if (wheelDelta)
 	{
-		kemoviewer_zooming((GLdouble) wheelDelta);
+		kemoview_zooming((GLdouble) wheelDelta);
 		[self updateProjection];  // update projection matrix (not normally done on draw)
 		[self setNeedsDisplay: YES];
 	}
@@ -412,7 +412,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 - (void)magnifyWithEvent:(NSEvent *)theEvent
 {
     GLdouble newScale = 200.0*[theEvent magnification];
-    kemoviewer_zooming(newScale);
+    kemoview_zooming(newScale);
     [self updateProjection];
     [self setNeedsDisplay: YES];
 }
@@ -476,8 +476,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
         set_to_pick_surface_command([pickSurfName UTF8String]);
 	};
 
-	set_to_stereo_shutter(SHUTTER_OFF);
-	set_to_iflag_anaglyph(anaglyphFlag);
+	kemoview_set_stereo_shutter(SHUTTER_OFF);
+	kemoview_set_anaglyph_flag(anaglyphFlag);
 	
 	[self prepareOpenGL];
 	

@@ -59,7 +59,7 @@ static void load_texture_handler(){
 	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
 	
 		kemoview_set_texture_to_PSF(id_image, image_head);
-		set_current_psf_patch_color_mode(TEXTURED_SURFACE);
+		kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE);
 	};
 	
 	
@@ -73,7 +73,7 @@ static void save_evolution_handler(){
 	int ist_udt, ied_udt, inc_udt;
 	int iflag;
 	
-	ist_udt = send_current_psf_full_path_header(image_head, &iflag);
+	ist_udt = kemoview_get_PSF_full_path_file_prefix(image_head, &iflag);
 	int id_image = input_image_format();
 	read_psf_evolution_steps(&ist_udt, &ied_udt, &inc_udt);
 	
@@ -269,7 +269,7 @@ static void psf_handler(int sel){
 		draw_mesh_w_menu();
 	}
 	else {
-		toggle = kemoview_psf_draw_switch_select(sel);
+		toggle = kemoview_PSF_draw_switch_select(sel);
 		kemoview_psf_draw_input_setting(sel);
 		draw_mesh_w_menu();
 	};
@@ -297,27 +297,27 @@ static void fline_handler(int sel){
 };
 
 static void set_current_psf_handler(int sel){
-	set_to_current_PSF(sel);
+	kemoview_set_current_PSF(sel);
 	draw_mesh_w_menu();
 	return;
 };
 
 static void set_psf_field_handler(int sel){
-	set_current_psf_field_flag(sel);
+	kemoview_set_PSF_field(sel);
 	draw_mesh_w_menu();
 	return;
 };
 
 static void set_psf_comp_handler(int sel){
-	set_current_psf_component_flag(sel);
+	kemoview_set_PSF_component(sel);
 	draw_mesh_w_menu();
 	return;
 };
 
 static void set_psf_patchcolor_handler(int sel){
-	if (sel == WHITE_PSF_SURF)          {set_current_psf_patch_color_mode(WHITE_SURFACE);}
-    else if (sel == SGL_COLOR_PSF_SURF) {set_current_psf_patch_color_mode(SINGLE_COLOR);}
-	else if (sel == RAINBOW_PSF_SURF)   {set_current_psf_patch_color_mode(RAINBOW_SURFACE);}
+	if (sel == WHITE_PSF_SURF)          {kemoview_set_PSF_patch_color_mode(WHITE_SURFACE);}
+    else if (sel == SGL_COLOR_PSF_SURF) {kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);}
+	else if (sel == RAINBOW_PSF_SURF)   {kemoview_set_PSF_patch_color_mode(RAINBOW_SURFACE);}
 	else if (sel == TEXTURE_PSF_SURF) {load_texture_handler();};
 	
 	draw_mesh_w_menu();
@@ -325,16 +325,16 @@ static void set_psf_patchcolor_handler(int sel){
 };
 
 static void set_psf_linecolor_handler(int sel){
-	if (sel == BLACK_PSF_LINE)     {set_current_isoline_color(BLACK_LINE);}
-	else if (sel == RAINBOW_PSF_LINE)   {set_current_isoline_color(RAINBOW_LINE);}
-	else if (sel == WHITE_PSF_LINE)   {set_current_isoline_color(WHITE_LINE);};
+	if (sel == BLACK_PSF_LINE)          {kemoview_set_PSF_isoline_color_mode(BLACK_LINE);}
+	else if (sel == RAINBOW_PSF_LINE)   {kemoview_set_PSF_isoline_color_mode(RAINBOW_LINE);}
+	else if (sel == WHITE_PSF_LINE)     {kemoview_set_PSF_isoline_color_mode(WHITE_LINE);};
 	
 	draw_mesh_w_menu();
 	return;
 };
 
 static void set_psf_colormode_handler(int sel){
-    set_current_PSF_color_mode_id(sel);
+    kemoview_set_PSF_color_mode(sel);
     draw_mesh_w_menu();
     return;
 };
@@ -354,7 +354,7 @@ static void modify_psf_colormap_handler(int sel){
 };
 
 static void delete_psf_colormap_handler(int sel){
-	delete_current_PSF_color_idx_list(sel);
+	kemoview_delete_PSF_color_list(sel);
 	kemoview_check_PSF_colormap_control();
 	draw_mesh_w_menu();
    return;
@@ -376,7 +376,7 @@ static void modify_psf_opacitymap_handler(int sel){
 };
 
 static void delete_psf_opacitymap_handler(int sel){
-	delete_current_PSF_opacity_idx_list(sel);
+	kemoview_delete_PSF_opacity_list(sel);
 	kemoview_check_PSF_colormap_control();
 	draw_mesh_w_menu();
    return;
@@ -545,8 +545,8 @@ static void make_2nd_level_mesh_menu(){
 
 /* 4th level menues*/
 static void make_4th_level_psf_menu(){
-    int iflag_solid = send_kemoview_psf_draw_flags(PSFSOLID_TOGGLE);
-    int iflag_grid =  send_kemoview_psf_draw_flags(PSFGRID_TOGGLE);
+    int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
+    int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
     int i, npoint;
     double value, color, opacity;
     char tmp_menu[1024];
@@ -602,12 +602,12 @@ static void make_4th_level_psf_menu(){
 /* 3rd level menues*/
 static void make_3rd_level_psf_menu(){
 	
-	int num_psf =     send_num_loaded_PSF();
-	int num_fld =     send_nfield_current_psf();
-	int if_psf =      send_draw_field_current_psf();
-	int num_comp =    send_ncomp_current_psf(if_psf);
-	int iflag_solid = send_kemoview_psf_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  send_kemoview_psf_draw_flags(PSFGRID_TOGGLE);
+	int num_psf =     kemoview_get_PSF_num_loaded();
+	int num_fld =     kemoview_get_PSF_num_field();
+	int if_psf =      kemoview_get_PSF_field_id();
+	int num_comp =    kemoview_get_PSF_num_component(if_psf);
+	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
+	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
 	
 	if(num_psf > 1){
 		glut_menu_id->ichoose_current_psf_menu = glutCreateMenu(set_current_psf_handler);
@@ -674,24 +674,23 @@ static void make_2nd_level_psf_menu(){
 	char tmp_menu[1024];
 	char psf_name[LENGTHBUF];
 	
-	int num_psf =     send_num_loaded_PSF();
-	int num_fld =     send_nfield_current_psf();
-	int if_psf =      send_draw_field_current_psf();
-	int ic_psf =      send_draw_comp_id_current_psf();
-	int num_comp =    send_ncomp_current_psf(if_psf);
-	int id_coord =    send_coordinate_id_current_psf();
-	int iflag_solid = send_kemoview_psf_draw_flags(PSFSOLID_TOGGLE);
-	int iflag_grid =  send_kemoview_psf_draw_flags(PSFGRID_TOGGLE);
+	int num_psf =     kemoview_get_PSF_num_loaded();
+	int num_fld =     kemoview_get_PSF_num_field();
+	int if_psf =      kemoview_get_PSF_field_id();
+	int ic_psf =      kemoview_get_PSF_component_id();
+	int num_comp =    kemoview_get_PSF_num_component(if_psf);
+	int iflag_solid = kemoview_get_PSF_draw_flags(PSFSOLID_TOGGLE);
+	int iflag_grid =  kemoview_get_PSF_draw_flags(PSFGRID_TOGGLE);
 	
 	glut_menu_id->psf_root_menu = glutCreateMenu(psf_handler);
 	
 	if(num_psf > 1){
-		send_current_psf_file_header(psf_name);
+		kemoview_get_PSF_file_prefix(psf_name);
 		sprintf(tmp_menu, "Current: %s", psf_name);
 		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_current_psf_menu);
 	}
     
-	send_current_psf_data_name(tmp_menu,if_psf);
+	kemoview_get_PSF_field_name(tmp_menu,if_psf);
 	if (num_fld > 1) {
 		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_field_menu);
 	} else {
@@ -699,7 +698,7 @@ static void make_2nd_level_psf_menu(){
 	};
 	
 	if (num_comp > 1) {
-		set_PSF_component_name(num_comp,ic_psf,id_coord,tmp_menu); 
+		set_PSF_component_name(num_comp,ic_psf,tmp_menu); 
 		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_comp_menu);
 	};
 	
@@ -763,7 +762,7 @@ static void make_2nd_level_fline_menu(){
 
 static void make_2nd_level_image_menu(){
 	int iflag_draw_m = send_iflag_draw_mesh();
-	int iflag_draw_p = send_iflag_draw_current_psf();
+	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int iflag_axis =       send_object_property_flags(AXIS_TOGGLE);
 	int iflag_draw_coast = send_object_property_flags(COASTLINE_SWITCH);
@@ -806,11 +805,11 @@ static void make_1st_level_menu(){
 	GLint menu_id;
 	
 	int iflag_draw_m = send_iflag_draw_mesh();
-	int iflag_draw_p = send_iflag_draw_current_psf();
+	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int iflag_any_objects_on = iflag_draw_p + iflag_draw_m + iflag_draw_f;
 	
-	int nload_psf = send_num_loaded_PSF();
+	int nload_psf = kemoview_get_PSF_num_loaded();
 	
 	glutSetWindow(menu_win);
 	
@@ -893,12 +892,12 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	/* Initialize arrays for viewer */
 	
 	allocate_single_kemoviwewer_struct(single_kemoview);
-	set_to_stereo_shutter(iflag_streo_shutter);
+	kemoview_set_stereo_shutter(iflag_streo_shutter);
 	
 	if(iflag_streo_shutter == SHUTTER_ON){
-		set_to_iflag_anaglyph(ANAGLYPH_OFF);
+		kemoview_set_anaglyph_flag(ANAGLYPH_OFF);
 	} else {
-		set_to_iflag_anaglyph(ANAGLYPH_ON);
+		kemoview_set_anaglyph_flag(ANAGLYPH_ON);
 	};
 	
 	link_glut_menu_address();

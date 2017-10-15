@@ -537,112 +537,111 @@ extern "C" {
     void set_kemoview_shift_vector(GLdouble position[3]);
     void set_kemoview_scale_factor(GLdouble scale_s);
     void set_kemoview_projection_aperture(GLdouble aperture_s);
-    void set_kemoview_stereo_parameter(GLdouble focus, GLdouble eye_sep);
+    void set_kemoview_set_stereo_parameter(GLdouble focus, GLdouble eye_sep);
     
-    void send_kemoview_windowsize(GLint *npixel_x, GLint *npixel_y);
-    void send_kemoview_rotation_parameter(GLdouble rot_vect[4]);
-    void send_kemoview_shift_vector(GLdouble position[3]);
-    void send_kemoview_lookat_vector(GLdouble position[3]);
-    GLdouble send_kemoview_scale_factor();
-    GLdouble send_kemoview_projection_aperture();
-    void send_kemoview_projection_parameters(GLdouble *aperture_s, GLdouble *near_s,
-                                             GLdouble *far_s, GLdouble *aspect_s);
-    GLdouble send_kemoview_stereo_parameters();
-    GLdouble send_kemoview_stereo_eyeseparation();
+    void kemoview_get_windowsize(GLint *npixel_x, GLint *npixel_y);
+    void kemoview_get_rotation_parameter(GLdouble rot_vect[4]);
+    void kemoview_get_shift_vector(GLdouble position[3]);
+    void kemoview_get_lookat_vector(GLdouble position[3]);
+    GLdouble kemoview_get_scale_factor();
+    GLdouble kemoview_get_projection_aperture();
+    void kemoview_get_projection_parameters(GLdouble *aperture_s, GLdouble *near_s,
+                                            GLdouble *far_s, GLdouble *aspect_s);
+    GLdouble kemoview_get_stereo_parameters();
+    GLdouble kemoview_get_stereo_eyeseparation();
     
-    void kemoviewer_mousedolly(GLdouble start[2], GLdouble x_dolly, GLdouble y_dolly);
-    void kemoviewer_mousepan(GLdouble start[2], GLdouble x_pan, GLdouble y_pan);
-    void kemoviewer_zooming(GLdouble wheelDelta);
+    void kemoview_mousedolly(GLdouble start[2], GLdouble x_dolly, GLdouble y_dolly);
+    void kemoview_mousepan(GLdouble start[2], GLdouble x_pan, GLdouble y_pan);
+    void kemoview_zooming(GLdouble wheelDelta);
     
     void kemoview_startTrackball(GLdouble x, GLdouble y);
     /* calculated rotation based on current mouse position */
     void kemoview_rollToTrackball(GLdouble x, GLdouble y);
     /* add a GL rotation (dA) to an existing GL rotation (A) */
-    void drugging_addToRotationTrackball();
-    void add_kemoview_animation_rot(GLdouble dt);
-    void reset_kemoviewer_animation();
+    void kemoview_drugging_addToRotationTrackball();
+    void kemoview_animation_add_rotation(GLdouble dt);
+    void kemoview_reset_animation();
     
-    void set_to_stereo_shutter(int iflag);
-    void set_to_iflag_anaglyph(int iflag);
-    int send_stereo_shutter();
-    int send_iflag_anaglyph();
+    void kemoview_set_stereo_shutter(int iflag);
+    void kemoview_set_anaglyph_flag(int iflag);
+    int kemoview_get_stereo_shutter();
+    int kemoview_get_anaglyph_flag();
     
-    void draw_menubottun_glut();
+    void kemoview_draw_glut_menubottun();
     
     /* subroutines for surafces */
-    void set_num_loaded_PSF(int num);
-    void set_max_loaded_PSF(int num);
-    void set_to_loaded_PSF_flag(int id_psf, int iflag);
-    void set_to_current_PSF(int id_psf);
-    int send_num_loaded_PSF();
-    int send_max_loaded_PSF();
-    int send_loaded_PSF_flag(int id_psf);
-    int send_current_PSF();
+    void kemoview_set_PSF_num_loaded(int num);
+    void kemoview_set_PSF_max_loaded(int num);
+    void kemoview_set_loaded_PSF_flag(int id_psf, int iflag);
+    void kemoview_set_current_PSF(int id_psf);
+    int kemoview_get_PSF_num_loaded();
+    int kemoview_get_PSF_max_loaded();
+    int kemoview_get_PSF_loaded_flag(int id_psf);
+    int kemoview_get_curent_PSF_ID();
     
-    int send_current_psf_full_path_header(char *file_head, int *iflag);
-    void send_current_psf_file_header(char *file_head);
+    int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag);
+    void kemoview_get_PSF_file_prefix(char *file_head);
     
-    void set_current_psf_field_flag(int sel);
-    void set_current_psf_component_flag(int sel);
+    void kemoview_set_PSF_field(int sel);
+    void kemoview_set_PSF_component(int sel);
     
-    int send_nfield_current_psf();
-    int send_ncomptot_current_psf();
-    int send_ncomp_current_psf(int i);
-    int send_istack_comp_current_psf(int i);
-    void send_current_psf_data_name(char *name, int i);
+    int kemoview_get_PSF_num_field();
+    int kemoview_get_PSF_ncomptot();
+    int kemoview_get_PSF_num_component(int i);
+    void kemoview_get_PSF_field_name(char *name, int i);
     
-    int send_iflag_draw_current_psf();
+    int kemoview_get_PSF_draw_switch();
     
-    int send_draw_field_current_psf();
-    int send_draw_comp_id_current_psf();
-    int send_draw_component_current_psf();
-    int send_coordinate_id_current_psf();
+    int kemoview_get_PSF_field_id();
+    int kemoview_get_PSF_component_id();
+    int kemoview_get_PSF_draw_data_address();
+    int kemoview_get_PSF_coordinate_id();
     
-    void set_texture_rgba_to_current_psf(int width, int height, const unsigned char *bgra_in);
+    void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char *bgra_in);
     
-    void set_current_psf_polygon_mode(int iflag);
-    void set_current_psf_tanvec_mode(int iflag);
+    void kemoview_set_PSF_polygon_mode(int iflag);
+    void kemoview_set_PSF_tangential_vec_mode(int iflag);
     
-    int send_draw_current_psf_refv();
-    int toggle_draw_current_psf_refv();
+    int kemoview_get_PSF_draw_refv();
+    int kemoview_toggle_PSF_draw_refv();
     
-    void set_current_psf_patch_color_mode(int iflag);
-    void set_current_isoline_color(int iflag);
-    void set_current_n_isoline(int nlline);
-    void set_current_increment_vect(int increment);
-    void set_current_scale_vect(double scale);
-    void set_current_vector_thick(double size);
+    void kemoview_set_PSF_patch_color_mode(int iflag);
+    void kemoview_set_PSF_isoline_color_mode(int iflag);
+    void kemoview_set_PSF_num_isoline(int nlline);
+    void kemoview_set_PSF_vector_increment(int increment);
+    void kemoview_set_PSF_vector_scale(double scale);
+    void kemoview_set_PSF_vector_thickness(double size);
     
-    int send_current_psf_patch_color();
-    int send_current_isoline_color();
-    int send_current_num_isoline();
-    int send_current_vector_patch_color();
-    int send_current_increment_vect();
-    double send_current_scale_vect();
-    double send_current_vector_thick();
+    int kemoview_get_PSF_patch_color_mode();
+    int kemoview_get_PSF_isoline_color_mode();
+    int kemoview_get_PSF_num_isoline();
+    int kemoview_get_PSF_vector_color_mode();
+    int kemoview_get_PSF_vector_increment();
+    double kemoview_get_PSF_vector_scale();
+    double kemoview_get_PSF_vector_thickness();
     
-    int send_kemoview_psf_draw_flags(int selected);
-    int kemoview_psf_draw_switch_select(int selected);
+    int kemoview_get_PSF_draw_flags(int selected);
+    int kemoview_PSF_draw_switch_select(int selected);
     
-    void set_current_PSF_color_mode_id(int isel);
-    int send_current_PSF_color_mode_id();
+    void kemoview_set_PSF_color_mode(int isel);
+    int kemoview_get_PSF_color_mode();
     
-    double send_current_psf_data_min(int i);
-    double send_current_psf_data_max(int i);
+    double kemoview_get_PSF_min_data(int i);
+    double kemoview_get_PSF_max_data(int i);
     
-	void delete_current_PSF_color_idx_list(int i_delete);
-	void delete_current_PSF_opacity_idx_list(int i_delete);
-	void add_current_PSF_color_idx_list(double add_value, double add_color);
-	void add_current_PSF_opacity_idx_list(double add_value, double add_opacity);
+	void kemoview_delete_PSF_color_list(int i_delete);
+	void kemoview_delete_PSF_opacity_list(int i_delete);
+	void kemoview_add_PSF_color_list(double add_value, double add_color);
+	void kemoview_add_PSF_opacity_list(double add_value, double add_opacity);
 	
-    void set_current_PSF_linear_colormap(double minvalue, double maxvalue);
-    void set_current_PSF_fixed_color(double *rgba);
-    void set_current_PSF_constant_opacity(double opacity);
+    void kemoview_set_PSF_linear_colormap(double minvalue, double maxvalue);
+    void kemoview_set_PSF_single_color(double *rgba);
+    void kemoview_set_PSF_constant_opacity(double opacity);
     
-    void set_current_PSF_rgb_from_value(double value, double *red, double *green, double *blue);
+    void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, double *blue);
     double kemoview_get_PSF_opacity_at_value(double value);
-    void set_current_PSF_color_point(int i_point, double value, double color);
-    void set_current_PSF_opacity_point(int i_point, double value, double opacity);
+    void kemoview_set_PSF_color_data(int i_point, double value, double color);
+    void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity);
     
     double kemoview_get_PSF_color_table_min();
     double kemoview_get_PSF_color_table_max();

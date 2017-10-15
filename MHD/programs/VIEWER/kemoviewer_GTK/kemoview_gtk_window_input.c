@@ -634,21 +634,21 @@ void edit_psf_colormap_gtk(){
 	char name[1024];
 	double range_min, range_max;
 	
-	int ifield = send_draw_field_current_psf();
-	int icomp = send_draw_component_current_psf();
+	int ifield = kemoview_get_PSF_field_id();
+	int icomp = kemoview_get_PSF_draw_data_address();
 	
-	send_current_psf_data_name(name, ifield);
-	range_min = send_current_psf_data_min(icomp);
-	range_max = send_current_psf_data_max(icomp);
+	kemoview_get_PSF_field_name(name, ifield);
+	range_min = kemoview_get_PSF_min_data(icomp);
+	range_max = kemoview_get_PSF_max_data(icomp);
 	
 	gtk_colormap_menu(range_min, range_max, name);
 	
 	if(iflag_set == MODIFY_POINT){
-		set_current_PSF_color_point(i_selected, gtk_value, gtk_color);}
+		kemoview_set_PSF_color_data(i_selected, gtk_value, gtk_color);}
 	else if(iflag_set == ADD_POINT) {
-		add_current_PSF_color_idx_list(gtk_value, gtk_color);}
+		kemoview_add_PSF_color_list(gtk_value, gtk_color);}
 	else if(iflag_set == DELETE_POINT) {
-		delete_current_PSF_color_idx_list(i_selected);}
+		kemoview_delete_PSF_color_list(i_selected);}
 	
 	draw_mesh_keep_menu();
 	return;
@@ -658,21 +658,21 @@ void edit_psf_opasitymap_gtk(){
 	char name[1024];
 	double range_min, range_max;
 	
-	int ifield = send_draw_field_current_psf();
-	int icomp = send_draw_component_current_psf();
+	int ifield = kemoview_get_PSF_field_id();
+	int icomp = kemoview_get_PSF_draw_data_address();
 	
-	send_current_psf_data_name(name, ifield);
-	range_min = send_current_psf_data_min(icomp);
-	range_max = send_current_psf_data_max(icomp);
+	kemoview_get_PSF_field_name(name, ifield);
+	range_min = kemoview_get_PSF_min_data(icomp);
+	range_max = kemoview_get_PSF_max_data(icomp);
 	
 	gtk_opacitymap_menu(range_min, range_max, name);
 	
 	if(iflag_set == MODIFY_POINT){
-		set_current_PSF_opacity_point(i_selected, gtk_value, gtk_opacity);}
+		kemoview_set_PSF_opacity_data(i_selected, gtk_value, gtk_opacity);}
 	else if(iflag_set == ADD_POINT) {
-		add_current_PSF_opacity_idx_list(gtk_value, gtk_opacity);}
+		kemoview_add_PSF_opacity_list(gtk_value, gtk_opacity);}
 	else if(iflag_set == DELETE_POINT) {
-		delete_current_PSF_opacity_idx_list(i_selected);}
+		kemoview_delete_PSF_opacity_list(i_selected);}
 	
 	draw_mesh_keep_menu();
 	return;
@@ -682,17 +682,17 @@ void set_psf_range_gtk(){
 	double range_min, range_max;
 	char name[1024];
 	
-	int ifield = send_draw_field_current_psf();
-	int icomp = send_draw_component_current_psf();
+	int ifield = kemoview_get_PSF_field_id();
+	int icomp = kemoview_get_PSF_draw_data_address();
 	
-	send_current_psf_data_name(name, ifield);
-	range_min = send_current_psf_data_min(icomp);
-	range_max = send_current_psf_data_max(icomp);
+	kemoview_get_PSF_field_name(name, ifield);
+	range_min = kemoview_get_PSF_min_data(icomp);
+	range_max = kemoview_get_PSF_max_data(icomp);
 	
 	gtk_range_menu(range_min, range_max, name);
 	if(iflag_set == IZERO) return; 
 	
-	set_current_PSF_linear_colormap(gtk_min, gtk_max);
+	kemoview_set_PSF_linear_colormap(gtk_min, gtk_max);
 	return;
 }
 
@@ -727,50 +727,50 @@ void set_fline_thick_gtk(){
 void set_num_isoline_gtk(){
 	int nline;
 	
-	nline = send_current_num_isoline();
+	nline = kemoview_get_PSF_num_isoline();
 	gtk_nline_menu(nline, "Set number of lines");
 	if(iflag_set == IZERO) return; 
 	
-	if(nline > 0) set_current_n_isoline(gtk_intvalue);
+	if(nline > 0) kemoview_set_PSF_num_isoline(gtk_intvalue);
 	return;
 }
 
 void set_psf_vector_increment_gtk(){
 	int num_inc;
 	
-	num_inc = send_current_increment_vect();
+	num_inc = kemoview_get_PSF_vector_increment();
 	gtk_nline_menu(num_inc, "Set increment");
 	if(iflag_set == IZERO) return; 
 	
-	if(gtk_intvalue > 0) set_current_increment_vect(gtk_intvalue);
+	if(gtk_intvalue > 0) kemoview_set_PSF_vector_increment(gtk_intvalue);
 	return;
 }
 
 void set_psf_vector_scale_gtk(){
 	double scale_input;
 	
-	scale_input = send_current_scale_vect();
+	scale_input = kemoview_get_PSF_vector_scale();
 	gtk_opacity_menu(scale_input, "Set scale");
 	if(iflag_set == IZERO) return; 
 	
 	scale_input = gtk_min;
 	
 	if ( scale_input < ZERO) scale_input = ZERO;
-	set_current_scale_vect(scale_input);
+	kemoview_set_PSF_vector_scale(scale_input);
 	return;
 }
 
 void set_psf_vector_thickness_gtk(){
 	double thick_input;
 	
-	thick_input = send_current_vector_thick();
+	thick_input = kemoview_get_PSF_vector_thickness();
 	gtk_opacity_menu(thick_input, "Set thickness");
 	if(iflag_set == IZERO) return; 
 	
 	thick_input = gtk_min;
 	
 	if (thick_input < ZERO) thick_input = ZERO;
-	set_current_vector_thick(thick_input);
+	kemoview_set_PSF_vector_thickness(thick_input);
 	return;
 }
 
@@ -781,7 +781,7 @@ void set_psf_opacity_gtk(){
 	gtk_opacity_menu(opacity, "Set opacity");
 	if(iflag_set == IZERO) return; 
 	
-	set_current_PSF_constant_opacity(gtk_min);
+	kemoview_set_PSF_constant_opacity(gtk_min);
 	return;
 }
 

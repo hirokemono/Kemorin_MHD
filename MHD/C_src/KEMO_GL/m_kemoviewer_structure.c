@@ -205,7 +205,7 @@ int close_psf_view(){
 	kemo_sgl->psf_current_data = kemo_sgl->psf_d[kemo_sgl->psf_a->id_current];
 	kemo_sgl->psf_current_menu = kemo_sgl->psf_m[kemo_sgl->psf_a->id_current];
     
-	return send_num_loaded_PSF();
+	return kemoview_get_PSF_num_loaded();
 }
 
 void close_fline_view(){
@@ -550,7 +550,7 @@ void write_kemoviewer_window_to_vector_file(int iflag_img, const char *fhead){
 	sel_gl_buffer_2_vector_img(iflag_img, fhead);
 }
 
-void set_texture_rgba_to_current_psf(int width, int height, const unsigned char *bgra_in){
+void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char *bgra_in){
     set_texture_psf_from_bgra(kemo_sgl->psf_current_menu, width, height, bgra_in);
 };
 
@@ -606,43 +606,43 @@ void set_kemoview_stereo_parameter(GLdouble focus, GLdouble eye_sep){
 };
 
 
-void send_kemoview_windowsize(GLint *npixel_x, GLint *npixel_y){
+void kemoview_get_windowsize(GLint *npixel_x, GLint *npixel_y){
 	send_gl_windowsize(kemo_sgl->view_s, npixel_x, npixel_y);
 }
-void send_kemoview_rotation_parameter(GLdouble rot_vect[4]){
+void kemoview_get_rotation_parameter(GLdouble rot_vect[4]){
 	send_gl_rotation_parameter(kemo_sgl->view_s, rot_vect);
 }
 
-void send_kemoview_shift_vector(GLdouble position[3]){
+void kemoview_get_shift_vector(GLdouble position[3]){
 	send_gl_shift_vector(kemo_sgl->view_s, position);
 }
 
-void send_kemoview_lookat_vector(GLdouble position[3]){
+void kemoview_get_lookat_vector(GLdouble position[3]){
 	send_gl_lookat_vector(kemo_sgl->view_s, position);
 }
 
-GLdouble send_kemoview_scale_factor(){
+GLdouble kemoview_get_scale_factor(){
     return send_scalar_scale_factor(kemo_sgl->view_s);
 }
 
-GLdouble send_kemoview_projection_aperture(){
+GLdouble kemoview_get_projection_aperture(){
 	return send_gl_projection_aperture(kemo_sgl->view_s);
 }
-void send_kemoview_projection_parameters(GLdouble *aperture_s, GLdouble *near_s,
-										 GLdouble *far_s, GLdouble *aspect_s){
+void kemoview_get_projection_parameters(GLdouble *aperture_s, GLdouble *near_s,
+                                        GLdouble *far_s, GLdouble *aspect_s){
 	send_gl_projection_parameters(kemo_sgl->view_s, aperture_s, near_s, far_s, aspect_s);
 }
 
-GLdouble send_kemoview_stereo_parameters(){return send_gl_stereo_parameters(kemo_sgl->view_s);};
-GLdouble send_kemoview_stereo_eyeseparation(){return send_gl_stereo_eyeseparation(kemo_sgl->view_s);};
+GLdouble kemoview_get_stereo_parameters(){return send_gl_stereo_parameters(kemo_sgl->view_s);};
+GLdouble kemoview_get_stereo_eyeseparation(){return send_gl_stereo_eyeseparation(kemo_sgl->view_s);};
 
-void kemoviewer_mousedolly(GLdouble start[2], GLdouble x_dolly, GLdouble y_dolly){
+void kemoview_mousedolly(GLdouble start[2], GLdouble x_dolly, GLdouble y_dolly){
 	gl_mousedolly_struct(kemo_sgl->view_s, start, x_dolly, y_dolly);
 }
-void kemoviewer_mousepan(GLdouble start[2], GLdouble x_pan, GLdouble y_pan){
+void kemoview_mousepan(GLdouble start[2], GLdouble x_pan, GLdouble y_pan){
 	gl_mousepan_struct(kemo_sgl->view_s, start, x_pan, y_pan);
 }
-void kemoviewer_zooming(GLdouble wheelDelta){
+void kemoview_zooming(GLdouble wheelDelta){
 	gl_zooming_struct(kemo_sgl->view_s, wheelDelta);
 }
 
@@ -651,95 +651,96 @@ void kemoview_startTrackball(GLdouble x, GLdouble y){gl_startTrackball(x, y, kem
 /* calculated rotation based on current mouse position */
 void kemoview_rollToTrackball(GLdouble x, GLdouble y){ gl_rollToTrackball (x, y, kemo_sgl->view_s);};
 /* add a GL rotation (dA) to an existing GL rotation (A) */
-void drugging_addToRotationTrackball(){ gl_drag_addToRotationTrackball(kemo_sgl->view_s);}
+void kemoview_drugging_addToRotationTrackball(){
+    gl_drag_addToRotationTrackball(kemo_sgl->view_s);
+}
 
-void add_kemoview_animation_rot(GLdouble dt){add_animation_rotation(kemo_sgl->view_s, dt);}
-void reset_kemoviewer_animation(){reset_rot_animation(kemo_sgl->view_s);};
+void kemoview_animation_add_rotation(GLdouble dt){add_animation_rotation(kemo_sgl->view_s, dt);}
+void kemoview_reset_animation(){reset_rot_animation(kemo_sgl->view_s);};
 
 
-void set_to_stereo_shutter(int iflag){kemo_sgl->mesh_m->iflag_streo_stutter = iflag;}
-void set_to_iflag_anaglyph(int iflag){kemo_sgl->mesh_m->iflag_streo_anaglyph = iflag;}
-int send_stereo_shutter(){return kemo_sgl->mesh_m->iflag_streo_stutter;}
-int send_iflag_anaglyph(){return kemo_sgl->mesh_m->iflag_streo_anaglyph;}
+void kemoview_set_stereo_shutter(int iflag){kemo_sgl->mesh_m->iflag_streo_stutter = iflag;}
+void kemoview_set_anaglyph_flag(int iflag){kemo_sgl->mesh_m->iflag_streo_anaglyph = iflag;}
+int kemoview_get_stereo_shutter(){return kemo_sgl->mesh_m->iflag_streo_stutter;}
+int kemoview_get_anaglyph_flag(){return kemo_sgl->mesh_m->iflag_streo_anaglyph;}
 
-void draw_menubottun_glut(){draw_menubottun_gl();}
+void kemoview_draw_glut_menubottun(){draw_menubottun_gl();}
 
 /* Subroutines for surface rendering */
-void set_num_loaded_PSF(int num){kemo_sgl->psf_a->num_loaded = num;};
-void set_max_loaded_PSF(int num){kemo_sgl->psf_a->nmax_loaded = num;};
-void set_to_loaded_PSF_flag(int id_psf, int iflag){kemo_sgl->psf_a->iflag_loaded[id_psf] = iflag;};
-void set_to_current_PSF(int id_psf){
+void kemoview_set_PSF_num_loaded(int num){kemo_sgl->psf_a->num_loaded = num;};
+void kemoview_set_PSF_max_loaded(int num){kemo_sgl->psf_a->nmax_loaded = num;};
+void kemoview_set_loaded_PSF_flag(int id_psf, int iflag){kemo_sgl->psf_a->iflag_loaded[id_psf] = iflag;};
+void kemoview_set_current_PSF(int id_psf){
     kemo_sgl->psf_a->id_current = id_psf;
     kemo_sgl->psf_current_data = kemo_sgl->psf_d[kemo_sgl->psf_a->id_current];
     kemo_sgl->psf_current_menu = kemo_sgl->psf_m[kemo_sgl->psf_a->id_current];
 }
 
-int send_num_loaded_PSF(){return kemo_sgl->psf_a->num_loaded;};
-int send_max_loaded_PSF(){return kemo_sgl->psf_a->nmax_loaded;};
-int send_loaded_PSF_flag(int id_psf){return kemo_sgl->psf_a->iflag_loaded[id_psf];};
-int send_current_PSF(){return kemo_sgl->psf_a->id_current;};
+int kemoview_get_PSF_num_loaded(){return kemo_sgl->psf_a->num_loaded;};
+int kemoview_get_PSF_max_loaded(){return kemo_sgl->psf_a->nmax_loaded;};
+int kemoview_get_PSF_loaded_flag(int id_psf){return kemo_sgl->psf_a->iflag_loaded[id_psf];};
+int kemoview_get_curent_PSF_ID(){return kemo_sgl->psf_a->id_current;};
 
 
-int send_current_psf_full_path_header(char *file_head, int *iflag){
+int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag){
     return send_each_psf_file_header_full(kemo_sgl->psf_current_menu, file_head, iflag);
 }
 
-void send_current_psf_file_header(char *file_head){
+void kemoview_get_PSF_file_prefix(char *file_head){
 	int istep;
 	istep = send_each_psf_file_header(kemo_sgl->psf_current_menu, file_head);
 	return;
 }
 
-void set_current_psf_field_flag(int sel){
+void kemoview_set_PSF_field(int sel){
 	set_PSF_field(sel, kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu);
 };
-void set_current_psf_component_flag(int sel){
+void kemoview_set_PSF_component(int sel){
 	set_PSF_component(sel, kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu);
 };
 
-int send_nfield_current_psf()          {return send_nfield_each_psf(kemo_sgl->psf_current_data);};
-int send_ncomptot_current_psf()        {return send_ncomptot_each_psf(kemo_sgl->psf_current_data);};
-int send_ncomp_current_psf(int i)      {return send_ncomp_each_psf(kemo_sgl->psf_current_data, i);};
-int send_istack_comp_current_psf(int i){return send_istack_each_comp_psf(kemo_sgl->psf_current_data, i);};
-void send_current_psf_data_name(char *name, int i){
+int kemoview_get_PSF_num_field()         {return send_nfield_each_psf(kemo_sgl->psf_current_data);};
+int kemoview_get_PSF_ncomptot()          {return send_ncomptot_each_psf(kemo_sgl->psf_current_data);};
+int kemoview_get_PSF_num_component(int i){return send_ncomp_each_psf(kemo_sgl->psf_current_data, i);};
+void kemoview_get_PSF_field_name(char *name, int i){
     send_each_psf_data_name(kemo_sgl->psf_current_data, name, i);
 };
 
-int send_iflag_draw_current_psf(){return kemo_sgl->psf_a->iflag_loaded[kemo_sgl->psf_a->id_current];};
+int kemoview_get_PSF_draw_switch(){return kemo_sgl->psf_a->iflag_loaded[kemo_sgl->psf_a->id_current];};
 
-int send_draw_field_current_psf()    {return send_field_draw_each_psf(kemo_sgl->psf_current_menu);};
-int send_draw_comp_id_current_psf()  {return send_draw_comp_id_psf(kemo_sgl->psf_current_menu);};
-int send_draw_component_current_psf(){return send_draw_component_psf(kemo_sgl->psf_current_menu);};
-int send_coordinate_id_current_psf(){
+int kemoview_get_PSF_field_id()    {return send_field_draw_each_psf(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_component_id(){return send_draw_comp_id_psf(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_draw_data_address(){return send_draw_component_psf(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_coordinate_id(){
     return send_coordinate_id_psf(kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu);
 };
 
 
 
-void set_current_psf_polygon_mode(int iflag){set_psf_polygon_mode(kemo_sgl->psf_current_menu, iflag);};
-void set_current_psf_tanvec_mode(int iflag){set_psf_vector_mode(kemo_sgl->psf_current_menu, iflag);};
+void kemoview_set_PSF_polygon_mode(int iflag){set_psf_polygon_mode(kemo_sgl->psf_current_menu, iflag);};
+void kemoview_set_PSF_tangential_vec_mode(int iflag){set_psf_vector_mode(kemo_sgl->psf_current_menu, iflag);};
 
-int send_draw_current_psf_refv()  {return send_draw_psf_refv(kemo_sgl->psf_current_menu);};
-int toggle_draw_current_psf_refv(){return toggle_draw_psf_refv(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_draw_refv()  {return send_draw_psf_refv(kemo_sgl->psf_current_menu);};
+int kemoview_toggle_PSF_draw_refv(){return toggle_draw_psf_refv(kemo_sgl->psf_current_menu);};
 
-void set_current_psf_patch_color_mode(int iflag){set_psf_patch_color_mode(kemo_sgl->psf_current_menu, iflag);};
+void kemoview_set_PSF_patch_color_mode(int iflag){set_psf_patch_color_mode(kemo_sgl->psf_current_menu, iflag);};
 
-void set_current_isoline_color(int iflag)     {set_each_isoline_color(kemo_sgl->psf_current_menu, iflag);};
-void set_current_n_isoline(int nlline)        {set_each_n_isoline(kemo_sgl->psf_current_menu, nlline);};
-void set_current_increment_vect(int increment){set_each_increment_vect(kemo_sgl->psf_current_menu, increment);};
-void set_current_scale_vect(double scale)     {set_each_scale_vect(kemo_sgl->psf_current_menu, scale);};
-void set_current_vector_thick(double size)    {set_each_vector_thick(kemo_sgl->psf_current_menu, size);};
+void kemoview_set_PSF_isoline_color_mode(int iflag)  {set_each_isoline_color(kemo_sgl->psf_current_menu, iflag);};
+void kemoview_set_PSF_num_isoline(int nlline)        {set_each_n_isoline(kemo_sgl->psf_current_menu, nlline);};
+void kemoview_set_PSF_vector_increment(int increment){set_each_increment_vect(kemo_sgl->psf_current_menu, increment);};
+void kemoview_set_PSF_vector_scale(double scale)     {set_each_scale_vect(kemo_sgl->psf_current_menu, scale);};
+void kemoview_set_PSF_vector_thickness(double size)  {set_each_vector_thick(kemo_sgl->psf_current_menu, size);};
 
-int send_current_psf_patch_color()   {return send_each_psf_patch_color(kemo_sgl->psf_current_menu);};
-int send_current_isoline_color()     {return send_each_isoline_color(kemo_sgl->psf_current_menu);};
-int send_current_num_isoline()       {return send_num_isoline(kemo_sgl->psf_current_menu);};
-int send_current_vector_patch_color(){return send_each_vector_patch_color(kemo_sgl->psf_current_menu);};
-int send_current_increment_vect()    {return send_increment_vector(kemo_sgl->psf_current_menu);};
-double send_current_scale_vect()     {return send_scale_vector(kemo_sgl->psf_current_menu);};
-double send_current_vector_thick()   {return send_vector_thick(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_patch_color_mode()    {return send_each_psf_patch_color(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_isoline_color_mode()  {return send_each_isoline_color(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_num_isoline()         {return send_num_isoline(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_vector_color_mode()   {return send_each_vector_patch_color(kemo_sgl->psf_current_menu);};
+int kemoview_get_PSF_vector_increment()    {return send_increment_vector(kemo_sgl->psf_current_menu);};
+double kemoview_get_PSF_vector_scale()     {return send_scale_vector(kemo_sgl->psf_current_menu);};
+double kemoview_get_PSF_vector_thickness() {return send_vector_thick(kemo_sgl->psf_current_menu);};
 
 
-int send_kemoview_psf_draw_flags(int selected){
+int kemoview_get_PSF_draw_flags(int selected){
 	if      (selected == PSFSOLID_TOGGLE)    {return send_draw_psf_solid(kemo_sgl->psf_current_menu);}
 	else if (selected == PSFGRID_TOGGLE)     {return send_draw_psf_grid(kemo_sgl->psf_current_menu);}
 	else if (selected == ZEROGRID_TOGGLE)    {return send_draw_psf_zero(kemo_sgl->psf_current_menu);}
@@ -750,7 +751,7 @@ int send_kemoview_psf_draw_flags(int selected){
 	return 0;
 }
 
-int kemoview_psf_draw_switch_select(int selected){
+int kemoview_PSF_draw_switch_select(int selected){
 	int toggle = 0;
 	
 	if      (selected == PSFSOLID_TOGGLE)    {return toggle_draw_psf_solid(kemo_sgl->psf_current_menu);}
@@ -766,50 +767,50 @@ int kemoview_psf_draw_switch_select(int selected){
 	return toggle;
 }
 
-void set_current_PSF_color_mode_id(int isel){set_PSF_color_mode_id(kemo_sgl->psf_current_menu, isel);}
-int send_current_PSF_color_mode_id(){return send_PSF_color_mode_id(kemo_sgl->psf_current_menu);}
+void kemoview_set_PSF_color_mode(int isel){set_PSF_color_mode_id(kemo_sgl->psf_current_menu, isel);}
+int kemoview_get_PSF_color_mode(){return send_PSF_color_mode_id(kemo_sgl->psf_current_menu);}
 
-double send_current_psf_data_min(int i){return send_psf_data_min(kemo_sgl->psf_current_data, i);};
-double send_current_psf_data_max(int i){return send_psf_data_max(kemo_sgl->psf_current_data, i);};
+double kemoview_get_PSF_min_data(int i){return send_psf_data_min(kemo_sgl->psf_current_data, i);};
+double kemoview_get_PSF_max_data(int i){return send_psf_data_max(kemo_sgl->psf_current_data, i);};
 
 
 
-void delete_current_PSF_color_idx_list(int i_delete){
+void kemoview_delete_PSF_color_list(int i_delete){
     delete_PSF_color_index_list(kemo_sgl->psf_current_menu, i_delete);
 }
-void delete_current_PSF_opacity_idx_list(int i_delete){
+void kemoview_delete_PSF_opacity_list(int i_delete){
     delete_PSF_opacity_index_list(kemo_sgl->psf_current_menu, i_delete);
 }
 
-void add_current_PSF_color_idx_list(double add_value, double add_color){
+void kemoview_add_PSF_color_list(double add_value, double add_color){
     add_PSF_color_index_list(kemo_sgl->psf_current_menu, add_value, add_color);
 }
-void add_current_PSF_opacity_idx_list(double add_value, double add_opacity){
+void kemoview_add_PSF_opacity_list(double add_value, double add_opacity){
     add_PSF_opacity_index_list(kemo_sgl->psf_current_menu, add_value, add_opacity);
 }
 
-void set_current_PSF_linear_colormap(double minvalue, double maxvalue){
+void kemoview_set_PSF_linear_colormap(double minvalue, double maxvalue){
     set_PSF_linear_colormap(kemo_sgl->psf_current_menu, minvalue, maxvalue);
 }
 
-void set_current_PSF_fixed_color(double *rgba){
+void kemoview_set_PSF_single_color(double *rgba){
     set_PSF_fixed_color(kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu, rgba);
 }
 
-void set_current_PSF_constant_opacity(double opacity){
+void kemoview_set_PSF_constant_opacity(double opacity){
     set_PSF_constant_opacity(kemo_sgl->psf_current_data, kemo_sgl->psf_current_menu, opacity);
 }
 
-void set_current_PSF_rgb_from_value(double value, double *red, double *green, double *blue){
+void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, double *blue){
     set_PSF_rgb_from_value(kemo_sgl->psf_current_menu, value, red, green, blue);
 }
 double kemoview_get_PSF_opacity_at_value(double value){
     return get_PSF_opacity_at_value(kemo_sgl->psf_current_menu, value);
 }
-void set_current_PSF_color_point(int i_point, double value, double color){
+void kemoview_set_PSF_color_data(int i_point, double value, double color){
     set_each_PSF_color_point(kemo_sgl->psf_current_menu, i_point, value, color);
 }
-void set_current_PSF_opacity_point(int i_point, double value, double opacity){
+void kemoview_set_PSF_opacity_data(int i_point, double value, double opacity){
     set_each_PSF_opacity_point(kemo_sgl->psf_current_menu, i_point, value, opacity);
 }
 
@@ -840,7 +841,7 @@ void kemoview_check_PSF_colormap_control(){
 
 /* Subroutines for field lines */
 
-int kemoview_get_fline_file_prefix(char *file_head){
+int kemoview_get_fline_file_step_prefix(char *file_head){
 	strngcopy(file_head, kemo_sgl->fline_m->fline_header);
 	return kemo_sgl->fline_m->fline_step;
 };
