@@ -9,7 +9,6 @@
 
 #include "kemoviewer_param_c.h"
 #include "write_image_2_bmp.h"
-#include "flip_gl_buffer.h"
 
 /* prototypes */
 
