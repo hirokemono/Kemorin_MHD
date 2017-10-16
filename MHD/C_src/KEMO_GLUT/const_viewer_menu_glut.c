@@ -4,8 +4,8 @@
 #include "const_viewer_menu_glut.h"
 
 void glut_drawing_select() {
-	int iflag_shade = send_object_property_flags(SHADING_SWITCH);
-	int iflag_polygon = send_object_property_flags(POLYGON_SWITCH);
+	int iflag_shade = kemoview_get_object_property_flags(SHADING_SWITCH);
+	int iflag_polygon = kemoview_get_object_property_flags(POLYGON_SWITCH);
 	
 	if(iflag_shade == FLAT_SHADE ){
 		glutAddMenuEntry("flat => smooth",SHADING_SWITCH);
@@ -334,12 +334,12 @@ void glut_nod_grp_menu_item(){
 	int i;
 	int iflag_draw;
 	char name_tmp[80];
-	int ngrp = send_ngrp_nod_sf();
+	int ngrp = kemoview_get_num_node_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
-		iflag_draw = send_draw_nodgrp_nod(i);
-		send_nod_gp_name_sf(name_tmp, i);
+		iflag_draw = kemoview_get_draw_nodgrp_node(i);
+		kemoview_get_node_grp_name(name_tmp, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
 	};
 	glutAddMenuEntry("Show all",ngrp);
@@ -348,12 +348,12 @@ void glut_nod_grp_menu_item(){
 void glut_surf_grp_patch_menu(){
 	int i, iflag_draw;
 	char name_tmp[80];
-	int ngrp = send_ngrp_surf_sf();
+	int ngrp = kemoview_get_num_surf_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
-		iflag_draw = send_draw_surfgrp_solid(i);
-		send_surf_gp_name_sf(name_tmp, i);
+		iflag_draw = kemoview_get_draw_surfgrp_patch(i);
+		kemoview_get_surf_grp_name(name_tmp, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
 	};
 	glutAddMenuEntry("Show all",ngrp);
@@ -362,12 +362,12 @@ void glut_surf_grp_patch_menu(){
 void glut_surf_grp_edge_menu(){
 	int i, iflag_draw;
 	char name_tmp[80];
-	int ngrp = send_ngrp_surf_sf();
+	int ngrp = kemoview_get_num_surf_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
-		iflag_draw = send_draw_surfgrp_grid(i);
-		send_surf_gp_name_sf(name_tmp, i);
+		iflag_draw = kemoview_get_draw_surfgrp_grid(i);
+		kemoview_get_surf_grp_name(name_tmp, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
 	};
 	glutAddMenuEntry("Show all",ngrp);
@@ -376,12 +376,12 @@ void glut_surf_grp_edge_menu(){
 void glut_surf_grp_node_menu(){
 	int i, iflag_draw;
 	char name_tmp[80];
-	int ngrp = send_ngrp_surf_sf();
+	int ngrp = kemoview_get_num_surf_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
-		iflag_draw = send_draw_surfgrp_nod(i);
-		send_surf_gp_name_sf(name_tmp, i);
+		iflag_draw = kemoview_get_draw_surfgrp_node(i);
+		kemoview_get_surf_grp_name(name_tmp, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
 	};
 	glutAddMenuEntry("Show all",ngrp);
@@ -391,12 +391,12 @@ void glut_surf_grp_node_menu(){
 void glut_ele_grp_patch_menu(){
 	int i, iflag_draw;
 	char name_tmp[80];
-	int ngrp = send_ngrp_ele_sf();
+	int ngrp = kemoview_get_num_ele_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
-		iflag_draw = send_draw_elegrp_solid(i);
-		send_ele_gp_name_sf(name_tmp, i);
+		iflag_draw = kemoview_get_draw_elegrp_patch(i);
+		kemoview_get_ele_grp_name(name_tmp, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
 	};
 	glutAddMenuEntry("Show all",ngrp);
@@ -405,12 +405,12 @@ void glut_ele_grp_patch_menu(){
 void glut_ele_grp_edge_menu(){
 	int i, iflag_draw;
 	char name_tmp[80];
-	int ngrp = send_ngrp_ele_sf();
+	int ngrp = kemoview_get_num_ele_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
-		iflag_draw = send_draw_elegrp_grid(i);
-		send_ele_gp_name_sf(name_tmp, i);
+		iflag_draw = kemoview_get_draw_elegrp_grid(i);
+		kemoview_get_ele_grp_name(name_tmp, i);
 		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
 	};
 	glutAddMenuEntry("Show all",ngrp);
@@ -419,12 +419,12 @@ void glut_ele_grp_edge_menu(){
 void glut_ele_grp_node_menu(){
 	int i, iflag_draw;
 	char name_tmp[80];
-	int ngrp = send_ngrp_ele_sf();
+	int ngrp = kemoview_get_num_ele_grp();
 	
 	glutAddMenuEntry("Hide all",ngrp+1);
 	for (i = 0; i < ngrp; i++){
-		send_ele_gp_name_sf(name_tmp, i);
-		iflag_draw = send_draw_elegrp_nod(i);
+		kemoview_get_ele_grp_name(name_tmp, i);
+		iflag_draw = kemoview_get_draw_elegrp_node(i);
 		glut_add_each_grp_menu_item(i, iflag_draw, name_tmp);
 	};
 	glutAddMenuEntry("Show all",ngrp);
@@ -432,7 +432,7 @@ void glut_ele_grp_node_menu(){
 }
 
 void glut_viewtype_menu(){
-	int iflag_view = send_iflag_view_type();
+	int iflag_view = kemoview_get_view_type_flag();
 	
 	if( iflag_view != VIEW_3D){
 		glutAddMenuEntry("3D-Viewer",VIEW_3D);
@@ -458,9 +458,9 @@ void glut_viewtype_menu(){
 }
 
 void glut_mesh_display_menu(){
-	int iflag_nod =   send_draw_surface_nod();
-	int iflag_grid =  send_draw_surface_grid();
-	int iflag_solid = send_draw_surface_solid();
+	int iflag_nod =   kemoview_get_draw_mesh_node();
+	int iflag_grid =  kemoview_get_draw_mesh_grid();
+	int iflag_solid = kemoview_get_draw_mesh_patch();
 	
 	if( iflag_solid != IZERO ){
 		glutAddMenuEntry("Hide solid surface",SURFSOLID_TOGGLE);

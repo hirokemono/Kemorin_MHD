@@ -140,7 +140,7 @@
 	//		self.EvolutionStartStep = [[FlineOpenFilehead pathExtension] intValue];
 	//		self.EvolutionEndStep =    self.EvolutionStartStep;
 	
-	id_viewtype = send_iflag_view_type();
+	id_viewtype = kemoview_get_view_type_flag();
 	[_kemoviewControl SetViewTypeMenu:id_viewtype];
 	
 	
@@ -161,7 +161,7 @@
         FlineOpenFilehead =   [FlineOpenFilehead stringByDeletingPathExtension];
     };
     
-    int iflag_datatype =  kemoview_open_data_glut([FlineFileName UTF8String]);
+    int iflag_datatype =  kemoview_open_data([FlineFileName UTF8String]);
     if(iflag_datatype == IFLAG_LINES) [self OpenFieldlineFile:(NSString *)FlineOpenFilehead];
 }
 
@@ -183,7 +183,7 @@
 
 - (IBAction) CloseFlineFile:(id)pId{
 
-	close_fline_view();
+	kemoview_close_fieldline_view();
 	self.DrawFlineFlag = kemoview_get_fline_switch();
 	[self CopyFlineDisplayFlagsFromC];
 	

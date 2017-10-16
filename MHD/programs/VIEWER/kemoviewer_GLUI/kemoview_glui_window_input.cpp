@@ -191,7 +191,7 @@ static void input_psf_opacity_from_panel(int val){
 
 static void input_domain_opacity_from_panel(int val){
 	opacity = editText_opacity->get_float_val();
-	set_to_domain_surface_opacity((double) opacity);
+	kemoview_set_domain_opacity((double) opacity);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -199,7 +199,7 @@ static void input_domain_opacity_from_panel(int val){
 
 static void input_egrp_opacity_from_panel(int val){
 	opacity = editText_opacity->get_float_val();
-	set_to_ele_surface_opacity((double) opacity);
+	kemoview_set_ele_grp_opacity((double) opacity);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -207,7 +207,7 @@ static void input_egrp_opacity_from_panel(int val){
 
 static void input_sgrp_opacity_from_panel(int val){
 	opacity = editText_opacity->get_float_val();
-	set_to_surf_surface_opacity((double) opacity);
+	kemoview_set_surf_grp_opacity((double) opacity);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -247,7 +247,7 @@ static void input_psf_vector_thickness_panel(int val){
 
 static void input_coast_radius_from_panel(int val){
 	coast_radius = editText->get_float_val();
-	set_to_coastline_radius((double) coast_radius);
+	kemoview_set_coastline_radius((double) coast_radius);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -255,7 +255,7 @@ static void input_coast_radius_from_panel(int val){
 
 static void input_domain_distance_from_panel(int val){
 	distance = editText->get_float_val();
-	set_to_dist_domains((double) distance);
+	kemoview_set_domain_distance((double) distance);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -263,7 +263,7 @@ static void input_domain_distance_from_panel(int val){
 
 static void input_num_colorloop_from_panel(int val){
 	nloop = editText->get_int_val();
-	if(nloop > 0) set_to_num_of_color_loop(nloop);
+	if(nloop > 0) kemoview_set_num_of_color_loop(nloop);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -271,7 +271,7 @@ static void input_num_colorloop_from_panel(int val){
 
 static void input_node_size_from_panel(int val){
 	nodesize = editText->get_float_val();
-	set_to_node_diam((double) nodesize);
+	kemoview_set_node_diamater((double) nodesize);
 	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
@@ -344,7 +344,7 @@ void set_psf_opacity_by_glui(int winid){
 }
 
 void set_domain_opacity_by_glui(int winid){
-	opacity = (float) send_domain_surface_opacity();
+	opacity = (float) kemoview_get_domain_opacity();
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText_opacity = new GLUI_EditText( glui_sub, "Opacity: ", GLUI_EDITTEXT_FLOAT,
@@ -354,7 +354,7 @@ void set_domain_opacity_by_glui(int winid){
 }
 
 void set_ele_group_opacity_by_glui(int winid){
-	opacity = (float) send_ele_surface_opacity();
+	opacity = (float) kemoview_get_ele_grp_opacity();
 	
 	glui_sub = GLUI_Master.create_glui("Element group Parameter", 0, 100, 100);
 	editText_opacity = new GLUI_EditText( glui_sub, "Opacity: ", GLUI_EDITTEXT_FLOAT,
@@ -364,7 +364,7 @@ void set_ele_group_opacity_by_glui(int winid){
 }
 
 void set_surf_group_opacity_by_glui(int winid){
-	opacity = (float) send_surf_surface_opacity();
+	opacity = (float) kemoview_get_surf_grp_opacity();
 	
 	glui_sub = GLUI_Master.create_glui("Surface group Parameter", 0, 100, 100);
 	editText_opacity = new GLUI_EditText( glui_sub, "Opacity: ", GLUI_EDITTEXT_FLOAT,
@@ -416,7 +416,7 @@ void set_psf_vector_thick_by_glui(int winid){
 }
 
 void set_coastline_radius_glui(int winid){
-	coast_radius = (float) send_coastline_radius();
+	coast_radius = (float) kemoview_get_coastline_radius();
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Coastline radius: ", GLUI_EDITTEXT_FLOAT,
@@ -426,7 +426,7 @@ void set_coastline_radius_glui(int winid){
 }
 
 void set_domain_distance_by_glui(int winid){
-	distance = (float) send_dist_domains();
+	distance = (float) kemoview_get_domain_distance();
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Object distance: ", GLUI_EDITTEXT_FLOAT,
@@ -436,7 +436,7 @@ void set_domain_distance_by_glui(int winid){
 }
 
 void set_num_color_loop_by_glui(int winid){
-	nloop = send_num_of_color_loop();
+	nloop = kemoview_get_num_of_color_loop();
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Num of color: ", GLUI_EDITTEXT_INT,
@@ -446,7 +446,7 @@ void set_num_color_loop_by_glui(int winid){
 }
 
 void set_node_size_by_glui(int winid){
-	nodesize = (float) send_node_diam();
+	nodesize = (float) kemoview_get_node_diamater();
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
 	editText = new GLUI_EditText( glui_sub, "Node size: ", GLUI_EDITTEXT_FLOAT,

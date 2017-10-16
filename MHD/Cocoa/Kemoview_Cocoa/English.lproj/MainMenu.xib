@@ -3504,14 +3504,14 @@
                 </button>
                 <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="none" id="3790">
                     <rect key="frame" x="0.0" y="71" width="224" height="615"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="ChU-hG-Nc0">
                         <rect key="frame" x="0.0" y="0.0" width="224" height="615"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view id="3791">
                                 <rect key="frame" x="0.0" y="0.0" width="224" height="615"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                 <subviews>
                                     <box autoresizesSubviews="NO" title="Projection Matrix" borderType="line" id="2238">
                                         <rect key="frame" x="28" y="110" width="178" height="62"/>
@@ -3843,6 +3843,7 @@
                     </scroller>
                 </scrollView>
             </subviews>
+            <point key="canvasLocation" x="229" y="1148"/>
         </customView>
         <customView id="2491" userLabel="Drawer Content View">
             <rect key="frame" x="0.0" y="0.0" width="194" height="707"/>

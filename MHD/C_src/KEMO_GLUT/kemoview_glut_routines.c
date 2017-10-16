@@ -12,9 +12,9 @@ void set_main_window_id_glut(int winid){
 
 void draw_mesh_keep_menu(){
 	glutSetWindow(id_window);
-	draw_kemoviewer_c();
-	update_kemoviewer_distance();
-	modify_view_kemoview();
+	kemoview_draw_objects_c();
+	kemoview_update_distance();
+	kemoview_modify_view();
 	glutPostRedisplay();
 	return;
 };
@@ -26,14 +26,14 @@ void write_rotate_views_glut(int iflag_img, char *image_head, int i_axis) {
 	
 	glutSetWindow(id_window);
 	
-	set_kemoview_animation_rot_axis(i_axis);
+	kemoview_set_animation_rot_axis(i_axis);
 	for (i = 0; i< ied_deg; i++) {
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 		int_degree =  i*int_deg;
 		
-		set_kemoview_animation_rot_angle(int_degree);
-		draw_kemoviewer_c();
-		rotate_kemoview();
+		kemoview_set_animation_rot_angle(int_degree);
+		kemoview_draw_objects_c();
+		kemoview_rotate();
 		glutSwapBuffers();
 		
         kemoview_write_window_to_file_w_step(iflag_img, i, image_head);
@@ -50,7 +50,7 @@ void write_evolution_views_glut(int iflag_img, char *image_head,
 	for (i=ist_udt; i<(ied_udt+1); i++) {
 		if( ((i-ist_udt)%inc_udt) == 0) {
 			
-			evolution_viewer(i);
+			kemoview_viewer_evolution(i);
 			
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			draw_mesh_keep_menu();
@@ -93,6 +93,6 @@ void set_viewtype_mode_glut(int selected, char *viewtype_title){
 		set_left_button(PAN);
 	};
 	
-	set_viewtype_glut(selected);
+	kemoview_set_viewtype(selected);
 	return;
 }

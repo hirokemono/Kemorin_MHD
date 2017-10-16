@@ -46,12 +46,12 @@
 	tmpRotation[3] = (GLdouble) self.RotationAxisZ;
 	tmpRotation[0] = (GLdouble) self.RotationAngle;	
     
-	set_kemoview_rotation_parameter(tmpRotation);
-	set_kemoview_shift_vector(tmpShift);
-	set_kemoview_scale_factor((GLdouble) self.ScaleFactor);
-	set_kemoview_projection_aperture((GLdouble) self.ProjentionAperture);
+	kemoview_set_rotation_parameter(tmpRotation);
+	kemoview_set_shift_vector(tmpShift);
+	kemoview_set_scale_factor((GLdouble) self.ScaleFactor);
+	kemoview_set_projection_aperture((GLdouble) self.ProjentionAperture);
     
-	set_kemoview_stereo_parameter((GLdouble) self.FocusPoint, (GLdouble) self.eyeRatio);
+	kemoview_set_stereo_parameter((GLdouble) self.FocusPoint, (GLdouble) self.eyeRatio);
 }
 
 - (void) UpdateParameters

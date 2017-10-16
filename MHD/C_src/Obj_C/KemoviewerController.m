@@ -34,7 +34,7 @@
 	AnaglyphFlag = [[defaults stringForKey:@"AnaglyphFlag"] intValue];
 	[_streoViewTypeMenu selectItemAtIndex:(1-AnaglyphFlag)];
 
-    self.coastlineRadius = send_coastline_radius();
+    self.coastlineRadius = kemoview_get_coastline_radius();
     return;
 }
 
@@ -83,7 +83,7 @@
 - (IBAction)ChoosePolygontypeAction:(id)sender;
 {
 	PolygonMode = [[_polygontype_matrix selectedCell] tag];
-	set_object_property_flags(POLYGON_SWITCH, (int) PolygonMode);
+	kemoview_set_object_property_flags(POLYGON_SWITCH, (int) PolygonMode);
 	
 	[_kemoviewer UpdateImage];
 }
@@ -91,13 +91,13 @@
 - (IBAction)ChooseSurfcetypeAction:(id)sender;
 {
 	ShadingMode = [[_surfacetype_matrix selectedCell] tag];
-	set_object_property_flags(SHADING_SWITCH, (int) ShadingMode);
+	kemoview_set_object_property_flags(SHADING_SWITCH, (int) ShadingMode);
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)AxisSwitchAction:(id)sender;
 {
-	int DrawAxisFlag = object_properties_toggle(AXIS_TOGGLE);
+	int DrawAxisFlag = kemoview_toggle_object_properties(AXIS_TOGGLE);
 
 	if(DrawAxisFlag == 0) {[_AxisSwitchOutlet setTitle:@"Axis Off"];}
 	else{ [_AxisSwitchOutlet setTitle:@"Axis On"];};
@@ -107,34 +107,34 @@
 
 - (IBAction)CoastSwitchAction:(id)sender;
 {
-	int DrawCoastFlag = object_properties_toggle(COASTLINE_SWITCH);
+	int DrawCoastFlag = kemoview_toggle_object_properties(COASTLINE_SWITCH);
 	if(DrawCoastFlag == 0) {[_coastSwitchOutlet setTitle:@"Off"];}
 	else{ [_coastSwitchOutlet setTitle:@"On"];};
 	[_kemoviewer UpdateImage];
 }
 - (IBAction)SphGridSwitchAction:(id)sender;
 {
-	int DrawSphGridFlag = object_properties_toggle(SPHEREGRID_SWITCH);
+	int DrawSphGridFlag = kemoview_toggle_object_properties(SPHEREGRID_SWITCH);
 	if(DrawSphGridFlag == 0) {[_sphGridSwitchOutlet setTitle:@"Off"];}
 	else{ [_sphGridSwitchOutlet setTitle:@"On"];};
 	[_kemoviewer UpdateImage];
 }
 - (IBAction)SphRadiusAction:(id)sender;
 {
-	set_to_coastline_radius((double) coastlineRadius);
+	kemoview_set_coastline_radius((double) coastlineRadius);
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)ChooseColorModeAction:(id)sender
 {
 	MeshColorMode = [[_colormode_matrix selectedCell] tag];
-	set_to_mesh_color_mode((int) MeshColorMode);
+	kemoview_set_mesh_color_mode((int) MeshColorMode);
 
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)SetColorLoopCount:(id)pSender {
-	set_to_num_of_color_loop((int) ColorLoopCount);
+	kemoview_set_num_of_color_loop((int) ColorLoopCount);
 
 	[_kemoviewer UpdateImage];
 }
@@ -154,7 +154,7 @@
 		for(i=0;i<IntNodeSizedigit;i++) NodeDiameter = NodeDiameter * 10.0;
 	}
 	
-	set_to_node_diam((double) NodeDiameter);
+	kemoview_set_node_diamater((double) NodeDiameter);
 
 	[_kemoviewer UpdateImage];
 }

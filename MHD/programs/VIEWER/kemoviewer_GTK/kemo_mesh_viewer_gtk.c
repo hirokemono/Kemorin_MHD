@@ -153,7 +153,7 @@ static void viewtype_handler(int sel){
 
 static void domain_handler(int sel){
 	if(sel == MESH_OFF){
-		close_mesh_view();
+		kemoview_close_mesh_view();
 	} else{
 		kemoview_mesh_draw_toggle(sel);
 	};
@@ -166,24 +166,24 @@ static void domain_color_handler(int sel){
 	if (sel == SET_OPACITY) {
 		set_domain_opacity_gtk();
 	} else {
-		set_domain_color_flag(SURFSOLID_TOGGLE, sel);
+		kemoview_set_domain_color_flag(SURFSOLID_TOGGLE, sel);
 	};
 	draw_mesh_keep_menu();
 	return;
 ;
 };
 static void domain_grid_color_handler(int sel){
-	set_domain_color_flag(SURFGRID_TOGGLE, sel);
+	kemoview_set_domain_color_flag(SURFGRID_TOGGLE, sel);
 	draw_mesh_keep_menu();
 };
 static void domain_node_color_handler(int sel){
-	set_domain_color_flag(SURFNOD_TOGGLE, sel);
+	kemoview_set_domain_color_flag(SURFNOD_TOGGLE, sel);
 	draw_mesh_keep_menu();
 };
 
 
 static void node_node_color_handler(int sel){
-	set_node_grp_color_flag(sel);
+	kemoview_set_node_grp_color_flag(sel);
 	draw_mesh_keep_menu();
 };
 
@@ -192,17 +192,17 @@ static void ele_surf_color_handler(int sel){
 	if(sel == SET_OPACITY){
 		set_ele_group_opacity_gtk();
 	} else {
-		set_ele_grp_color_flag(SURFSOLID_TOGGLE, sel);
+		kemoview_set_ele_grp_color_flag(SURFSOLID_TOGGLE, sel);
 	};
 	draw_mesh_keep_menu();
 	return;
 };
 static void ele_grid_color_handler(int sel){
-	set_ele_grp_color_flag(SURFGRID_TOGGLE, sel);
+	kemoview_set_ele_grp_color_flag(SURFGRID_TOGGLE, sel);
 	draw_mesh_keep_menu();
 };
 static void ele_node_color_handler(int sel){
-	set_ele_grp_color_flag(SURFNOD_TOGGLE, sel);
+	kemoview_set_ele_grp_color_flag(SURFNOD_TOGGLE, sel);
 	draw_mesh_keep_menu();
 };
 
@@ -211,16 +211,16 @@ static void surf_surf_color_handler(int sel){
 	if (sel == SET_OPACITY) {
 		set_surf_group_opacity_gtk();
 	} else {
-		set_surf_grp_color_flag(SURFSOLID_TOGGLE, sel);
+		kemoview_set_surf_grp_color_flag(SURFSOLID_TOGGLE, sel);
 	};
 	draw_mesh_keep_menu();
 };
 static void surf_grid_color_handler(int sel){
-	set_surf_grp_color_flag(SURFGRID_TOGGLE, sel);
+	kemoview_set_surf_grp_color_flag(SURFGRID_TOGGLE, sel);
 	draw_mesh_keep_menu();
 };
 static void surf_node_color_handler(int sel){
-	set_surf_grp_color_flag(SURFNOD_TOGGLE, sel);
+	kemoview_set_surf_grp_color_flag(SURFNOD_TOGGLE, sel);
 	draw_mesh_keep_menu();
 };
 
@@ -267,10 +267,10 @@ static void psf_handler(int sel){
     
 	if (sel == PSF_OFF) {
         set_viewtype_mode_glut(VIEW_3D, viewtype_title);
-		nload_psf = close_psf_view();
+		nload_psf = kemoview_close_PSF_view();
 		draw_mesh_w_menu();
 	} else {
-		toggle = kemoview_PSF_draw_switch_select(sel);
+		toggle = kemoview_select_PSF_draw_switch(sel);
 		kemoview_psf_draw_input_setting(sel);
 		draw_mesh_w_menu();
 	};
@@ -293,7 +293,7 @@ static void psf_colormap_handler(int sel){
 
 static void fline_handler(int sel){
 	int toggle;
-	if (sel == FLINE_OFF) {close_fline_view();}
+	if (sel == FLINE_OFF) {kemoview_close_fieldline_view();}
 	else if (sel == ISET_FLINE_TYPE) {toggle = kemoview_toggle_fline_type();}
 	else {kemoview_fline_draw_setting(sel);};
 	
@@ -366,9 +366,9 @@ static void set_fline_col_type_handler(int sel){
 
 static void color_mode_handler(int sel){
 	if (sel == GRAYSCALE) {
-		set_to_mesh_color_mode(GRAYSCALE);
+		kemoview_set_mesh_color_mode(GRAYSCALE);
 	} else if( sel == RAINBOW_COLOR) {
-		set_to_mesh_color_mode(RAINBOW_COLOR);
+		kemoview_set_mesh_color_mode(RAINBOW_COLOR);
 	} else if( sel == SET_NUM_COLORS) {
 		set_num_color_loop_gtk();
 	};
@@ -379,13 +379,13 @@ static void color_mode_handler(int sel){
 
 static void object_property_handler(int sel){
 	int toggle;
-    toggle = object_properties_toggle(sel);
+    toggle = kemoview_toggle_object_properties(sel);
 
 	if		 ( sel == SET_NODE_SIZE) {
 		set_node_size_gtk();
 	} else if( sel == SET_DISTANCE_DOMAIN) {
 		set_domain_distance_gtk();
-		draw_modified_object_distance();
+		kemoview_draw_with_modified_domain_distance();
 	} else if( sel == SET_COAST_RADIUS) {
 		set_coastline_radius_gtk();
 	} else if( sel == OUTPUT_V_MATRIX) {
@@ -677,12 +677,12 @@ static void make_2nd_level_fline_menu(){
 /* 2nd level menues*/
 
 static void make_2nd_level_image_menu(){
-	int iflag_draw_m = send_iflag_draw_mesh();
+	int iflag_draw_m = kemoview_get_draw_mesh_flag();
 	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
-	int iflag_axis =       send_object_property_flags(AXIS_TOGGLE);
-	int iflag_draw_coast = send_object_property_flags(COASTLINE_SWITCH);
-	int iflag_draw_sph =   send_object_property_flags(SPHEREGRID_SWITCH);
+	int iflag_axis =       kemoview_get_object_property_flags(AXIS_TOGGLE);
+	int iflag_draw_coast = kemoview_get_object_property_flags(COASTLINE_SWITCH);
+	int iflag_draw_sph =   kemoview_get_object_property_flags(SPHEREGRID_SWITCH);
 	
 	glut_menu_id->color_mode_menu = glutCreateMenu(color_mode_handler);
 	glut_color_mode_menu_item();
@@ -720,7 +720,7 @@ static void make_2nd_level_image_menu(){
 static void make_1st_level_menu(){
 	GLint menu_id;
 	
-	int iflag_draw_m = send_iflag_draw_mesh();
+	int iflag_draw_m = kemoview_get_draw_mesh_flag();
 	int iflag_draw_p = kemoview_get_PSF_draw_switch();
 	int iflag_draw_f = kemoview_get_fline_switch();
 	int iflag_any_objects_on = iflag_draw_p + iflag_draw_m + iflag_draw_f;
@@ -807,7 +807,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
     GLboolean bStereo;
 	/* Initialize arrays for viewer */
 	
-	allocate_single_kemoviwewer_struct(single_kemoview);
+	kemoview_allocate_single_viwewer_struct(single_kemoview);
 	kemoview_set_stereo_shutter(iflag_streo_shutter);
 	
 	if(iflag_streo_shutter == SHUTTER_ON){
@@ -831,8 +831,8 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 		glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH|GLUT_MULTISAMPLE);
 	};
 	/*! Create viewer window*/
-    set_kemoview_retinamode(IZERO);
-	set_kemoview_windowsize(NPIX_X, NPIX_Y);
+    kemoview_set_retinamode(IZERO);
+	kemoview_set_windowsize(NPIX_X, NPIX_Y);
 	glutInitWindowSize(NPIX_X, NPIX_Y);
 	winid = glutCreateWindow("Kemoviewer");
 	set_main_window_id_glut(winid);
@@ -848,12 +848,12 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 		{printf("GL_ARB_texture_non_power_of_two is not Supported\n");};
 	
 	/*  initialize view_modifier, receiving the id for it's submenu  */
-	reset_kemoviewer_to_init_angle();
+	kemoviewer_reset_to_init_angle();
 	view_modifier_init();
 	
 	/* ! set the perspective and lighting */
-	init_kemoview_background_color();
-	kemoviewer_initial_lighting();
+	kemoview_init_background_color();
+	kemoview_init_lighting();
 	
 	
 	/*! Create menu window*/

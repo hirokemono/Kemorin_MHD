@@ -42,9 +42,9 @@
 	[SurfaceGroupDisplayPatchFlags removeAllObjects];
 	[SurfaceGroupDisplayWireFlags removeAllObjects];
 	[SurfaceGroupDisplayNodeFlags removeAllObjects];
-	NumSurfaceGroup = send_ngrp_surf_sf();
+	NumSurfaceGroup = kemoview_get_num_surf_grp();
 	for(i=0;i<NumSurfaceGroup;i++){
-		send_surf_gp_name_sf(name,i);
+		kemoview_get_surf_grp_name(name,i);
 		stname = [[NSString alloc] initWithUTF8String:name];
 		[SurfaceGroupDisplayNames      addObject:stname];
 		[SurfaceGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
@@ -62,7 +62,7 @@
 		[SurfaceGroupDisplayPatchFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			set_to_draw_surfgrp_solid(IONE,i);
+			kemoview_set_draw_surfgrp_patch(IONE,i);
 		}
 	}
 	else if([selectedSurfaceGroupObjectType isEqualToString:@"SurfGrpGrid"]) {
@@ -70,14 +70,14 @@
 		[SurfaceGroupDisplayWireFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayWireFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			set_to_draw_surfgrp_grid(IONE,i);
+			kemoview_set_draw_surfgrp_grid(IONE,i);
 		}
 	}
 	else if([selectedSurfaceGroupObjectType isEqualToString:@"SurfGrpNode"]) {
 		[SurfaceGroupDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			set_to_draw_surfgrp_nod(IONE,i);
+			kemoview_set_draw_surfgrp_node(IONE,i);
 		}
 	}
     [self UpdateSurfaceTable];
@@ -92,21 +92,21 @@
 		[SurfaceGroupDisplayPatchFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			set_to_draw_surfgrp_solid(IZERO,i);
+			kemoview_set_draw_surfgrp_patch(IZERO,i);
 		}
 	}
 	else if([selectedSurfaceGroupObjectType isEqualToString:@"SurfGrpGrid"]) {
 		[SurfaceGroupDisplayWireFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayWireFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			set_to_draw_surfgrp_grid(IZERO,i);
+			kemoview_set_draw_surfgrp_grid(IZERO,i);
 		}
 	}
 	else if([selectedSurfaceGroupObjectType isEqualToString:@"SurfGrpNode"]) {
 		[SurfaceGroupDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumSurfaceGroup;i++){
 			[SurfaceGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			set_to_draw_surfgrp_nod(IZERO,i);
+			kemoview_set_draw_surfgrp_node(IZERO,i);
 		}
 	}	
     [self UpdateSurfaceTable];
@@ -150,15 +150,15 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	
     identifier = [tableColumn identifier];
     if([identifier isEqualToString:@"SurfGrpPatch"]) {
-		set_to_draw_surfgrp_solid([object intValue],rowIndex);
+		kemoview_set_draw_surfgrp_patch([object intValue],rowIndex);
 		[SurfaceGroupDisplayPatchFlags replaceObjectAtIndex:rowIndex withObject:object];
     }
     if([identifier isEqualToString:@"SurfGrpGrid"]) {
-		set_to_draw_surfgrp_grid([object intValue],rowIndex);
+		kemoview_set_draw_surfgrp_grid([object intValue],rowIndex);
 		[SurfaceGroupDisplayWireFlags replaceObjectAtIndex:rowIndex withObject:object];
 	}
     if([identifier isEqualToString:@"SurfGrpNode"]) {
-		set_to_draw_surfgrp_nod([object intValue],rowIndex);
+		kemoview_set_draw_surfgrp_node([object intValue],rowIndex);
 		[SurfaceGroupDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
 	}
 	[_kemoviewer UpdateImage];
@@ -180,16 +180,16 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[SurfaceGroupDisplayPatchFlags removeAllObjects];
 	[SurfaceGroupDisplayWireFlags removeAllObjects];
 	[SurfaceGroupDisplayNodeFlags removeAllObjects];
-	NumSurfaceGroup = send_ngrp_surf_sf();
+	NumSurfaceGroup = kemoview_get_num_surf_grp();
 	for(i=0;i<NumSurfaceGroup;i++){
-		send_surf_gp_name_sf(name,i);
+		kemoview_get_surf_grp_name(name,i);
 		stname = [[NSString alloc] initWithUTF8String:name];
 		[SurfaceGroupDisplayNames      addObject:stname];
-		iflag = send_draw_surfgrp_solid(i);
+		iflag = kemoview_get_draw_surfgrp_patch(i);
 		[SurfaceGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:iflag] ];
-		iflag = send_draw_surfgrp_grid(i);
+		iflag = kemoview_get_draw_surfgrp_grid(i);
 		[SurfaceGroupDisplayWireFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
-		iflag = send_draw_surfgrp_nod(i);
+		iflag = kemoview_get_draw_surfgrp_node(i);
 		[SurfaceGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
 		[stname release];
 	}
@@ -200,21 +200,21 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseSurfGrpPatchColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpPatchColorItem selectedCell] tag];
-	set_surf_grp_color_flag(SURFSOLID_TOGGLE, tag);
+	kemoview_set_surf_grp_color_flag(SURFSOLID_TOGGLE, tag);
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)ChooseSurfGrpLineColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpLineColorItem selectedCell] tag];
-	set_surf_grp_color_flag(SURFGRID_TOGGLE, tag);
+	kemoview_set_surf_grp_color_flag(SURFGRID_TOGGLE, tag);
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)ChooseSurfGrpNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_SurfGrpNodeColorItem selectedCell] tag];
-	set_surf_grp_color_flag(SURFNOD_TOGGLE, tag);
+	kemoview_set_surf_grp_color_flag(SURFNOD_TOGGLE, tag);
 	[_kemoviewer UpdateImage];
 }
 
@@ -229,7 +229,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (GLfloat) greenBG;
 	colorcode4[2] =  (GLfloat) blueBG;
 	colorcode4[3] =  (GLfloat) opacityBG;
-	set_surf_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
+	kemoview_set_surf_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }
@@ -243,7 +243,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (GLfloat) greenBG;
 	colorcode4[2] =  (GLfloat) blueBG;
 	colorcode4[3] =  (GLfloat) opacityBG;
-	set_surf_grp_color_code(SURFGRID_TOGGLE, colorcode4);
+	kemoview_set_surf_grp_color_code(SURFGRID_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }
@@ -257,7 +257,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (GLfloat) greenBG;
 	colorcode4[2] =  (GLfloat) blueBG;
 	colorcode4[3] =  (GLfloat) opacityBG;
-	set_surf_grp_color_code(SURFNOD_TOGGLE, colorcode4);
+	kemoview_set_surf_grp_color_code(SURFNOD_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }

@@ -114,7 +114,7 @@ static void motion(GLint x, GLint y){
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		set_kemoview_scale_factor(current_scale);
+		kemoview_set_scale_factor(current_scale);
 	};
     /* ! update private variables and redisplay */
 	
@@ -231,7 +231,7 @@ static void arrows_c(int key, int x, int y){
 			factor = ONE;
 		};
 		current_scale = current_scale * factor;
-		set_kemoview_scale_factor(current_scale);
+		kemoview_set_scale_factor(current_scale);
  	};
 	
 	glutPostRedisplay();
@@ -315,13 +315,13 @@ void display_menu(){
 };
 
 void display(){
-	modify_view_kemoview();
+	kemoview_modify_view();
 	glutSwapBuffers();
 	
 	return;
 };
 
 void modifywindow(int width, int height){
-    update_projection_by_kemoviewer_size(width, height);
+    kemoview_update_projection_by_viewer_size(width, height);
 	return;
 }

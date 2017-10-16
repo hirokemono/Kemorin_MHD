@@ -78,24 +78,24 @@ void read_kemoview_data_glut(){
 	int iflag_datatype;
 	
 	input_file_name(file_name);
-	get_ext_from_file_name(file_name, file_head, file_ext);
+	kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
 	printf("file name: %s\n", file_name);
 	printf("file_head %s\n", file_head);
 	printf("file_ext %s\n", file_ext);
 	
 	if (		  (file_ext[0] == 'g' && file_ext[1] == 'z')
 		||	  (file_ext[0] == 'G' && file_ext[1] == 'Z') ){
-		get_ext_from_file_name(file_head, file_head2, file_ext);
+		kemoview_get_ext_from_file_name(file_head, file_head2, file_ext);
 		
 		if (file_ext[0] == '0' && file_ext[1] == '\0') {
 			return;
 		}
 	} else if (file_ext[0] == '0' && file_ext[1] == '\0') {
 		set_pickup_command(pick_command);
-		set_to_pick_surface_command(pick_command);
+		kemoview_set_pick_surface_command(pick_command);
 	}
 	
-	iflag_datatype = kemoview_open_data_glut(file_name);
+	iflag_datatype = kemoview_open_data(file_name);
 	return;
 };
 
@@ -262,41 +262,41 @@ void set_psf_opacity(){
 
 void set_domain_opacity(){
 	float opacity;
-	opacity = (float) send_domain_surface_opacity();
+	opacity = (float) kemoview_get_domain_opacity();
 	
 	printf("Enter domaom opacity: \n");
 	opacity = set_opacity_console(opacity);
 	
-	set_to_domain_surface_opacity((double) opacity);
+	kemoview_set_domain_opacity((double) opacity);
 	return;
 }
 
 void set_ele_group_opacity(){
 	float opacity;
-	opacity = (float) send_surf_surface_opacity();
+	opacity = (float) kemoview_get_surf_grp_opacity();
 	
 	printf("Enter surafce group opacity: \n");
 	opacity = set_opacity_console(opacity);
 	
-	set_to_ele_surface_opacity((double) opacity);
+	kemoview_set_ele_grp_opacity((double) opacity);
 	return;
 }
 
 void set_surf_group_opacity(){
 	float opacity;
-	opacity = (float) send_surf_surface_opacity();
+	opacity = (float) kemoview_get_surf_grp_opacity();
 	
 	printf("Enter surafce group opacity: \n");
 	opacity = set_opacity_console(opacity);
 	
-	set_to_surf_surface_opacity((double) opacity);
+	kemoview_set_surf_grp_opacity((double) opacity);
 	return;
 }
 
 void set_coastline_radius_console(){
 	float radius;
 	char buf[1024];
-	float radius_org = (float) send_coastline_radius();
+	float radius_org = (float) kemoview_get_coastline_radius();
 	
 	printf("Enter coastline radius: \n");
 	printf("Current radius  %.7e \n", radius_org);
@@ -305,14 +305,14 @@ void set_coastline_radius_console(){
 	sscanf(buf,"%f", &radius);
 	printf("modified radius: %.7e \n", radius);
 	
-	set_to_coastline_radius((double) radius);
+	kemoview_set_coastline_radius((double) radius);
 	return;
 };
 
 void set_domain_distance_console(){
 	float distance;
 	char buf[1024];
-	float dist_org = (float) send_dist_domains();
+	float dist_org = (float) kemoview_get_domain_distance();
 	
 	printf("Enter object distance: \n");
 	printf("Current distance  %.7e \n", dist_org);
@@ -321,14 +321,14 @@ void set_domain_distance_console(){
 	sscanf(buf,"%f", &distance);
 	printf("modified distance: %.7e \n", distance);
 	
-	set_to_dist_domains((double) distance);
+	kemoview_set_domain_distance((double) distance);
 	return;
 }
 
 void set_num_color_loop_console(){
 	char buf[1024];
 	int num_cloop;
-	int num_loop_org = send_num_of_color_loop();
+	int num_loop_org = kemoview_get_num_of_color_loop();
 	
 	printf("Enter number of color: \n");
 	printf("Current number  %d \n", num_loop_org);
@@ -337,14 +337,14 @@ void set_num_color_loop_console(){
 	sscanf(buf,"%d", &num_cloop);
 	printf("modified number of color: %d \n", num_cloop);
 	
-	set_to_num_of_color_loop(num_cloop);
+	kemoview_set_num_of_color_loop(num_cloop);
 	return;
 }
 
 void set_node_size_console(){
 	float nodesize;
 	char buf[1024];
-	float size_org = (float) send_node_diam();
+	float size_org = (float) kemoview_get_node_diamater();
 	
 	printf("Enter size of node: \n");
 	printf("Current size  %.7e \n", size_org);
@@ -353,7 +353,7 @@ void set_node_size_console(){
 	sscanf(buf,"%f", &nodesize);
 	printf("modified size of node: %.7e \n", nodesize);
 	
-	set_to_node_diam((double) nodesize);
+	kemoview_set_node_diamater((double) nodesize);
 	return;
 }
 
@@ -453,7 +453,7 @@ void save_viewmatrix_file(){
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
 	strcpy(file_name, buf);
-	write_modelview_file_glut(file_name);
+	kemoview_write_modelview_file(file_name);
 	return;
 };
 
@@ -467,7 +467,7 @@ void load_viewmatrix_file(){
 	delchara=strrchr(buf,'\n');
 	*delchara='\0';
 	strcpy(file_name, buf);
-	load_modelview_file_glut(file_name);
+	kemoview_load_modelview_file(file_name);
 	return;
 };
 

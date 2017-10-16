@@ -16,12 +16,12 @@ static void run_pick_surface_c(struct mesh_menu_val *mesh_m){
 	char command[LENGTHBUF];
     
     if (mesh_m->iformat_surface_mesh == IFLAG_FULL_MESH_GZ) {
-        get_ext_from_file_name(mesh_m->mesh_file_name, file_head, file_ext);
+        kemoview_get_ext_from_file_name(mesh_m->mesh_file_name, file_head, file_ext);
     } else {
         strngcopy(file_head, mesh_m->mesh_file_name);
     };
-    get_ext_from_file_name(file_head, file_tmp, file_ext);
-    get_ext_from_file_name(file_tmp, file_head, file_ext);
+    kemoview_get_ext_from_file_name(file_head, file_tmp, file_ext);
+    kemoview_get_ext_from_file_name(file_tmp, file_head, file_ext);
     
 	strcpy(command,mesh_m->pick_surface_command);
 	strcat(command, "    ");
@@ -44,109 +44,64 @@ static int set_kemoview_data_fmt_flag(const char *file_name, char *file_head){
 	char file_head2[LENGTHBUF];
 	char file_ext[LENGTHBUF];
 	
-	get_ext_from_file_name(file_name, file_head, file_ext);
+	kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
 	
-	if (		  (file_ext[0] == 'g'
-                   && file_ext[1] == 'z')
-        ||	  (file_ext[0] == 'G'
-               && file_ext[1] == 'Z') ){
-            get_ext_from_file_name(file_head, file_head2, file_ext);
-            if(		  (file_ext[0] == 'k' 
-                       && file_ext[1] == 's' 
-                       && file_ext[2] == 'm')
-               ||	  (file_ext[0] == 'K'
-                       && file_ext[1] == 'S'
-                       && file_ext[2] == 'M') ){
-                   ifile_type = IFLAG_SURF_MESH_GZ;
-               } else if((file_ext[0] == 'g'
-                          && file_ext[1] == 'f'
-                          && file_ext[2] == 'm')
-                         ||	  (file_ext[0] == 'G'
-                               && file_ext[1] == 'F'
-                               && file_ext[2] == 'M') ){
-                             ifile_type = IFLAG_FULL_MESH_GZ;
-                             get_ext_from_file_name(file_head2, file_head, file_ext);
-                             strngcopy(file_head2, file_head);
-                         } else if((file_ext[0] == 'u'
-                                    && file_ext[1] == 'd' 
-                                    && file_ext[2] == 't')
-                                   ||	  (file_ext[0] == 'U'
-                                           && file_ext[1] == 'D'
-                                           && file_ext[2] == 'T') ){
-                                       ifile_type = IFLAG_SURF_UDT_GZ;
-                                   } else if((file_ext[0] == 'i' 
-                                              && file_ext[1] == 'n' 
-                                              && file_ext[2] == 'p')
-                                             ||	  (file_ext[0] == 'I'
-                                                   && file_ext[1] == 'N'
-                                                   && file_ext[2] == 'P') ){
-                                                 ifile_type = IFLAG_SURF_UCD_GZ;
-                                             } else if((file_ext[0] == 'v'
-                                                        && file_ext[1] == 't'
-                                                        && file_ext[2] == 'd')
-                                                       ||	  (file_ext[0] == 'V'
-                                                               && file_ext[1] == 'T'
-                                                               && file_ext[2] == 'D') ){
-                                                           ifile_type = IFLAG_SURF_VTD_GZ;
-                                                       } else if(	  (file_ext[0] == 'v'
-                                                                       && file_ext[1] == 't'
-                                                                       && file_ext[2] == 'k')
-                                                                 ||	  (file_ext[0] == 'V'
-                                                                       && file_ext[1] == 'T'
-                                                                       && file_ext[2] == 'K') ){
-                                                                     ifile_type = IFLAG_SURF_VTK_GZ;
-                                                                 } else {
-                                                                     ifile_type = 99;
-                                                                 };
-            strngcopy(file_head, file_head2);
+	if((file_ext[0] == 'g' && file_ext[1] == 'z') 
+       || (file_ext[0] == 'G' && file_ext[1] == 'Z') ){
+        kemoview_get_ext_from_file_name(file_head, file_head2, file_ext);
+
+        if((file_ext[0] == 'k' && file_ext[1] == 's' && file_ext[2] == 'm')
+           || (file_ext[0] == 'K' && file_ext[1] == 'S' && file_ext[2] == 'M') ){
+            ifile_type = IFLAG_SURF_MESH_GZ;
+        } else if((file_ext[0] == 'g' && file_ext[1] == 'f' && file_ext[2] == 'm')
+                  || (file_ext[0] == 'G' && file_ext[1] == 'F' && file_ext[2] == 'M') ){
+            ifile_type = IFLAG_FULL_MESH_GZ;
+            kemoview_get_ext_from_file_name(file_head2, file_head, file_ext);
+            strngcopy(file_head2, file_head);
+        } else if((file_ext[0] == 'u' && file_ext[1] == 'd' && file_ext[2] == 't')
+                  || (file_ext[0] == 'U' && file_ext[1] == 'D' && file_ext[2] == 'T') ){
+            ifile_type = IFLAG_SURF_UDT_GZ;
+        } else if((file_ext[0] == 'i' && file_ext[1] == 'n' && file_ext[2] == 'p')
+                  ||	  (file_ext[0] == 'I' && file_ext[1] == 'N' && file_ext[2] == 'P') ){
+            ifile_type = IFLAG_SURF_UCD_GZ;
+        } else if((file_ext[0] == 'v' && file_ext[1] == 't' && file_ext[2] == 'd')
+                  ||	  (file_ext[0] == 'V' && file_ext[1] == 'T' && file_ext[2] == 'D') ){
+            ifile_type = IFLAG_SURF_VTD_GZ;
+        } else if(	  (file_ext[0] == 'v' && file_ext[1] == 't' && file_ext[2] == 'k')
+                  ||	  (file_ext[0] == 'V' && file_ext[1] == 'T' && file_ext[2] == 'K') ){
+            ifile_type = IFLAG_SURF_VTK_GZ;
+
+        } else {
+            ifile_type = 99;
+
+        };
+
+        strngcopy(file_head, file_head2);
             
-        } else if(	  (file_ext[0] == 'k' 
-                       && file_ext[1] == 's' 
-                       && file_ext[2] == 'm')
-                  ||	  (file_ext[0] == 'K'
-                           && file_ext[1] == 'S'
-                           && file_ext[2] == 'M') ){
-                      ifile_type = IFLAG_SURF_MESH;
-                  } else if(    (file_ext[0] == 'g'
-                                 && file_ext[1] == 'f'
-                                 && file_ext[2] == 'm')
-                            ||	  (file_ext[0] == 'G'
-                                   && file_ext[1] == 'F'
-                                   && file_ext[2] == 'M') ){
-                                ifile_type = IFLAG_FULL_MESH;
-                                get_ext_from_file_name(file_head, file_head2, file_ext);
-                                strngcopy(file_head, file_head2);
-                            } else if(	  (file_ext[0] == 'u'
-                                           && file_ext[1] == 'd' 
-                                           && file_ext[2] == 't')
-                                      ||	  (file_ext[0] == 'U'
-                                               && file_ext[1] == 'D'
-                                               && file_ext[2] == 'T') ){
-                                          ifile_type = IFLAG_SURF_UDT;
-                                      } else if(	  (file_ext[0] == 'i'
-                                                       && file_ext[1] == 'n' 
-                                                       && file_ext[2] == 'p')
-                                                ||	  (file_ext[0] == 'I'
-                                                       && file_ext[1] == 'N'
-                                                       && file_ext[2] == 'P') ){
-                                                    ifile_type = IFLAG_SURF_UCD;
-                                                } else if(	  (file_ext[0] == 'v'
-                                                               && file_ext[1] == 't'
-                                                               && file_ext[2] == 'd')
-                                                          ||	  (file_ext[0] == 'V'
-                                                                   && file_ext[1] == 'T'
-                                                                   && file_ext[2] == 'D') ){
-                                                              ifile_type = IFLAG_SURF_VTD;
-                                                          } else if(	  (file_ext[0] == 'v'
-                                                                           && file_ext[1] == 't'
-                                                                           && file_ext[2] == 'k')
-                                                                    ||	  (file_ext[0] == 'V'
-                                                                           && file_ext[1] == 'T'
-                                                                           && file_ext[2] == 'K') ){
-                                                                        ifile_type = IFLAG_SURF_VTK;
-                                                                    } else {
-                                                                        ifile_type = 99;
-                                                                    };
+        } else if(	  (file_ext[0] == 'k' && file_ext[1] == 's' && file_ext[2] == 'm')
+                  ||	  (file_ext[0] == 'K' && file_ext[1] == 'S' && file_ext[2] == 'M') ){
+            ifile_type = IFLAG_SURF_MESH;
+        } else if(    (file_ext[0] == 'g' && file_ext[1] == 'f' && file_ext[2] == 'm')
+                  ||	  (file_ext[0] == 'G' && file_ext[1] == 'F' && file_ext[2] == 'M') ){
+            ifile_type = IFLAG_FULL_MESH;
+
+            kemoview_get_ext_from_file_name(file_head, file_head2, file_ext);
+            strngcopy(file_head, file_head2);
+        } else if(	  (file_ext[0] == 'u' && file_ext[1] == 'd' && file_ext[2] == 't')
+                  ||	  (file_ext[0] == 'U' && file_ext[1] == 'D' && file_ext[2] == 'T') ){
+            ifile_type = IFLAG_SURF_UDT;
+        } else if(	  (file_ext[0] == 'i' && file_ext[1] == 'n'  && file_ext[2] == 'p')
+                  ||	  (file_ext[0] == 'I' && file_ext[1] == 'N' && file_ext[2] == 'P') ){
+            ifile_type = IFLAG_SURF_UCD;
+        } else if(	  (file_ext[0] == 'v' && file_ext[1] == 't' && file_ext[2] == 'd')
+                  ||	  (file_ext[0] == 'V' && file_ext[1] == 'T' && file_ext[2] == 'D') ){
+            ifile_type = IFLAG_SURF_VTD;
+        } else if(	  (file_ext[0] == 'v' && file_ext[1] == 't' && file_ext[2] == 'k')
+                  ||	  (file_ext[0] == 'V' && file_ext[1] == 'T' && file_ext[2] == 'K') ){
+            ifile_type = IFLAG_SURF_VTK;
+        } else {
+            ifile_type = 99;
+        };
 	return ifile_type;
 }
 
@@ -187,7 +142,7 @@ static void init_draw_fline(struct mesh_menu_val *mesh_m,
     return;
 };
 
-int kemoview_open_data(const char *file_name, struct viewer_mesh *mesh_d, struct mesh_menu_val *mesh_m, 
+int kemoviewer_open_data(const char *file_name, struct viewer_mesh *mesh_d, struct mesh_menu_val *mesh_m, 
                        struct kemo_array_control *psf_a, struct psf_data **psf_d, struct psf_menu_val **psf_m,
                        struct psf_data *fline_d, struct fline_menu_val *fline_m, 
                        struct psf_data *ucd_tmp, struct ucd_file_menu_val *ucd_m,

@@ -42,9 +42,9 @@
 	[ElementGroupDisplayPatchFlags removeAllObjects];
 	[ElementGroupDisplayWireFlags removeAllObjects];
 	[ElementGroupDisplayNodeFlags removeAllObjects];
-	NumElementGroup = send_ngrp_ele_sf();
+	NumElementGroup = kemoview_get_num_ele_grp();
 	for(i=0;i<NumElementGroup;i++){
-		send_ele_gp_name_sf(name,i);
+		kemoview_get_ele_grp_name(name,i);
 		stname = [[NSString alloc] initWithUTF8String:name];
 		[ElementGroupDisplayNames      addObject:stname];
 		[ElementGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
@@ -62,7 +62,7 @@
 		[ElementGroupDisplayPatchFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			set_to_draw_elegrp_solid(IONE,i);
+			kemoview_set_draw_elegrp_patch(IONE,i);
 		}
 	}
 	else if([selectedElementGroupObjectType isEqualToString:@"EleGrpGrid"]) {
@@ -70,14 +70,14 @@
 		[ElementGroupDisplayWireFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayWireFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			set_to_draw_elegrp_grid(IONE,i);
+			kemoview_set_draw_elegrp_grid(IONE,i);
 		}
 	}
 	else if([selectedElementGroupObjectType isEqualToString:@"EleGrpNode"]) {
 		[ElementGroupDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
-			set_to_draw_elegrp_nod(IONE,i);
+			kemoview_set_draw_elegrp_node(IONE,i);
 		}
 	}
     
@@ -93,21 +93,21 @@
 		[ElementGroupDisplayPatchFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			set_to_draw_elegrp_solid(IZERO,i);
+			kemoview_set_draw_elegrp_patch(IZERO,i);
 		}
 	}
 	else if([selectedElementGroupObjectType isEqualToString:@"EleGrpGrid"]) {
 		[ElementGroupDisplayWireFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayWireFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			set_to_draw_elegrp_grid(IZERO,i);
+			kemoview_set_draw_elegrp_grid(IZERO,i);
 		}
 	}
 	else if([selectedElementGroupObjectType isEqualToString:@"EleGrpNode"]) {
 		[ElementGroupDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumElementGroup;i++){
 			[ElementGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			set_to_draw_elegrp_nod(IZERO,i);
+			kemoview_set_draw_elegrp_node(IZERO,i);
 		}
 	}	
     [self UpdateElementTable];
@@ -152,15 +152,15 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 
     identifier = [tableColumn identifier];
     if([identifier isEqualToString:@"EleGrpPatch"]) {
-		set_to_draw_elegrp_solid([object intValue],rowIndex);
+		kemoview_set_draw_elegrp_patch([object intValue],rowIndex);
 		[ElementGroupDisplayPatchFlags replaceObjectAtIndex:rowIndex withObject:object];
     }
     if([identifier isEqualToString:@"EleGrpGrid"]) {
-		set_to_draw_elegrp_grid([object intValue],rowIndex);
+		kemoview_set_draw_elegrp_grid([object intValue],rowIndex);
 		[ElementGroupDisplayWireFlags replaceObjectAtIndex:rowIndex withObject:object];
    }
     if([identifier isEqualToString:@"EleGrpNode"]) {
-		set_to_draw_elegrp_nod([object intValue],rowIndex);
+		kemoview_set_draw_elegrp_node([object intValue],rowIndex);
 		[ElementGroupDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
    }
 	[_kemoviewer UpdateImage];
@@ -183,16 +183,16 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	[ElementGroupDisplayPatchFlags removeAllObjects];
 	[ElementGroupDisplayWireFlags removeAllObjects];
 	[ElementGroupDisplayNodeFlags removeAllObjects];
-	NumElementGroup = send_ngrp_ele_sf();
+	NumElementGroup = kemoview_get_num_ele_grp();
 	for(i=0;i<NumElementGroup;i++){
-		send_ele_gp_name_sf(name,i);
+		kemoview_get_ele_grp_name(name,i);
 		stname = [[NSString alloc] initWithUTF8String:name];
 		[ElementGroupDisplayNames      addObject:stname];
-		iflag = send_draw_elegrp_solid(i);
+		iflag = kemoview_get_draw_elegrp_patch(i);
 		[ElementGroupDisplayPatchFlags addObject:[[NSNumber alloc ] initWithInt:iflag] ];
-		iflag = send_draw_elegrp_grid(i);
+		iflag = kemoview_get_draw_elegrp_grid(i);
 		[ElementGroupDisplayWireFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
-		iflag = send_draw_elegrp_nod(i);
+		iflag = kemoview_get_draw_elegrp_node(i);
 		[ElementGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
 		[stname release];
 	}
@@ -203,7 +203,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseEleGrpPatchColorAction:(id)sender;
 {
 	NSInteger tag = [[_EleGrpPatchColorItem selectedCell] tag];
-	set_ele_grp_color_flag(SURFSOLID_TOGGLE, tag);
+	kemoview_set_ele_grp_color_flag(SURFSOLID_TOGGLE, tag);
 
 	[_kemoviewer UpdateImage];
 }
@@ -211,7 +211,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseEleGrpLineColorAction:(id)sender;
 {
 	NSInteger tag = [[_EleGrpLineColorItem selectedCell] tag];
-	set_ele_grp_color_flag(SURFGRID_TOGGLE, tag);
+	kemoview_set_ele_grp_color_flag(SURFGRID_TOGGLE, tag);
 
 	[_kemoviewer UpdateImage];
 }
@@ -219,7 +219,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseEleGrpNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_EleGrpNodeColorItem selectedCell] tag];
-	set_ele_grp_color_flag(SURFNOD_TOGGLE, tag);
+	kemoview_set_ele_grp_color_flag(SURFNOD_TOGGLE, tag);
 
 	[_kemoviewer UpdateImage];
 }
@@ -234,7 +234,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (GLfloat) greenBG;
 	colorcode4[2] =  (GLfloat) blueBG;
 	colorcode4[3] =  (GLfloat) opacityBG;
-	set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
+	kemoview_set_ele_grp_color_code(SURFSOLID_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }
@@ -248,7 +248,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (GLfloat) greenBG;
 	colorcode4[2] =  (GLfloat) blueBG;
 	colorcode4[3] =  (GLfloat) opacityBG;
-	set_ele_grp_color_code(SURFGRID_TOGGLE, colorcode4);
+	kemoview_set_ele_grp_color_code(SURFGRID_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }
@@ -262,7 +262,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (GLfloat) greenBG;
 	colorcode4[2] =  (GLfloat) blueBG;
 	colorcode4[3] =  (GLfloat) opacityBG;
-	set_ele_grp_color_code(SURFNOD_TOGGLE, colorcode4);
+	kemoview_set_ele_grp_color_code(SURFNOD_TOGGLE, colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }

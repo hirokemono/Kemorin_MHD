@@ -788,77 +788,77 @@ void set_psf_opacity_gtk(){
 void set_domain_opacity_gtk(){
 	double opacity;
 	
-	opacity = send_domain_surface_opacity();
+	opacity = kemoview_get_domain_opacity();
 	gtk_opacity_menu(opacity, "Set opacity");
 	if(iflag_set == IZERO) return; 
 	
-	set_to_domain_surface_opacity(gtk_min);
+	kemoview_set_domain_opacity(gtk_min);
 	return;
 }
 
 void set_ele_group_opacity_gtk(){
 	double opacity;
 	
-	opacity = send_surf_surface_opacity();
+	opacity = kemoview_get_surf_grp_opacity();
 	gtk_opacity_menu(opacity, "Set opacity");
 	if(iflag_set == IZERO) return; 
 	
-	set_to_ele_surface_opacity(gtk_min);
+	kemoview_set_ele_grp_opacity(gtk_min);
 	return;
 }
 
 void set_surf_group_opacity_gtk(){
 	double opacity;
 	
-	opacity = send_surf_surface_opacity();
+	opacity = kemoview_get_surf_grp_opacity();
 	gtk_opacity_menu(opacity, "Set opacity");
 	if(iflag_set == IZERO) return; 
 	
-	set_to_surf_surface_opacity(gtk_min);
+	kemoview_set_surf_grp_opacity(gtk_min);
 	return;
 }
 
 void set_coastline_radius_gtk(){
 	double radius;
 	
-	radius = send_coastline_radius();
+	radius = kemoview_get_coastline_radius();
 	gtk_opacity_menu(radius, "Set radius");
 	if(iflag_set == IZERO) return; 
 	
-	set_to_coastline_radius(gtk_min);
+	kemoview_set_coastline_radius(gtk_min);
 	return;
 };
 
 void set_domain_distance_gtk(){
 	double distance;
 	
-	distance = send_dist_domains();
+	distance = kemoview_get_domain_distance();
 	gtk_opacity_menu(distance, "Set distance");
 	if(iflag_set == IZERO) return; 
 	
-	set_to_dist_domains(gtk_min);
+	kemoview_set_domain_distance(gtk_min);
 	return;
 }
 
 void set_num_color_loop_gtk(){
 	int num_cloop;
 	
-	num_cloop = send_num_of_color_loop();
+	num_cloop = kemoview_get_num_of_color_loop();
 	gtk_nline_menu(num_cloop, "Set loop number");
 	if(iflag_set == IZERO) return; 
 	
-	set_to_num_of_color_loop(gtk_intvalue);
+	kemoview_set_num_of_color_loop(gtk_intvalue);
 	return;
 }
 
 void set_node_size_gtk(){
 	double nodesize;
 	
-	nodesize = send_node_diam();
+	nodesize = kemoview_get_node_diamater();
 	gtk_opacity_menu(nodesize, "Set size");
 	if(iflag_set == IZERO) return; 
 	
-	set_to_node_diam(gtk_min);
+	kemoview_set_node_diamater(gtk_min);
 	return;
 }
 

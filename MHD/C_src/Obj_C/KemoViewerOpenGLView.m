@@ -34,9 +34,9 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     }
     
     if(XpixelGLWindow > XpixelRectView){
-        set_kemoview_retinamode(IONE);
+        kemoview_set_retinamode(IONE);
     } else {
-        set_kemoview_retinamode(IZERO);
+        kemoview_set_retinamode(IZERO);
     };
     return;
 }
@@ -77,7 +77,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 {
     [[self openGLContext] makeCurrentContext];
 	// set projection
-	update_kemoviewer_distance();
+	kemoview_update_distance();
 }
 
 // ---------------------------------
@@ -101,7 +101,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     int iflag_updated = [self getViewSize];
 	if (iflag_updated != 0) {
 		
-		update_projection_by_kemoviewer_size(XpixelGLWindow, YpixelGLWindow);
+		kemoview_update_projection_by_viewer_size(XpixelGLWindow, YpixelGLWindow);
         
         [[self openGLContext] makeCurrentContext];
 		[_cocoaGLMessages updateInfoString];
@@ -111,7 +111,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(void) modify_view_Cocoa
 {	
-	rotate_kemoview();
+	kemoview_rotate();
 	kemoview_reset_animation();
 	[_resetview UpdateParameters];
 	return;
@@ -143,11 +143,11 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(id) DrawRotation: (NSInteger) int_degree : (NSInteger)rotationaxis
 {
-	set_kemoview_animation_rot_axis((int) rotationaxis);
-	set_kemoview_animation_rot_angle((int) int_degree);
-    set_single_kemoview_ID(id_window);
-	draw_kemoviewer_c();
-	rotate_kemoview();
+	kemoview_set_animation_rot_axis((int) rotationaxis);
+	kemoview_set_animation_rot_angle((int) int_degree);
+    kemoview_set_single_viewer_id(id_window);
+	kemoview_draw_objects_c();
+	kemoview_rotate();
 	
 	[self swapbuffer_cocoa];
 	return self;
@@ -155,10 +155,10 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(id) DrawEvolution:(NSInteger)timeStep
 {	
-    set_single_kemoview_ID(id_window);
-	evolution_viewer((int) timeStep);
-	draw_kemoviewer_c();
-	modify_view_kemoview();
+    kemoview_set_single_viewer_id(id_window);
+	kemoview_viewer_evolution((int) timeStep);
+	kemoview_draw_objects_c();
+	kemoview_modify_view();
 	
 	[self swapbuffer_cocoa];
 	return self;
@@ -166,8 +166,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 -(void) UpdateImage
 {
-    set_single_kemoview_ID(id_window);
-	draw_kemoviewer_c();
+    kemoview_set_single_viewer_id(id_window);
+	kemoview_draw_objects_c();
 	[self swapbuffer_cocoa];
 	return;
 }
@@ -217,7 +217,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 		leftBottunFlag = PAN;
 		fAnimate = 0;
 	};
-	set_viewtype_glut(selected);
+	kemoview_set_viewtype(selected);
 }
 
 -(void) setAnimate:(NSInteger)flag
@@ -241,7 +241,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void) Resetview
 {
-	reset_kemoviewer_to_init_angle();
+	kemoviewer_reset_to_init_angle();
 
 	[self updateProjection];
 	[self swapbuffer_cocoa];
@@ -329,7 +329,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void)mouseUp:(NSEvent *)theEvent
 {
-    set_single_kemoview_ID(id_window);
+    kemoview_set_single_viewer_id(id_window);
 
 	if (gDolly) { // end dolly
 		gDolly = GL_FALSE;
@@ -340,7 +340,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 /*		kemoview_drugging_addToRotationTrackball();*/
 		[_resetview UpdateParameters];
 	} 
-	draw_kemoviewer_c();
+	kemoview_draw_objects_c();
 	gTrackingViewInfo = NULL;
 	[self setNeedsDisplay: YES];
 }
@@ -447,14 +447,14 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	int iflag_updates = [self getViewSize];
     [self setRetinaMode];
     
-    if(iflag_updates != 0) set_kemoview_windowsize(XpixelGLWindow, YpixelGLWindow);
+    if(iflag_updates != 0) kemoview_set_windowsize(XpixelGLWindow, YpixelGLWindow);
 		
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	BgColor4f[0] = [[defaults stringForKey:@"BackGroundRed"] floatValue];
 	BgColor4f[1] = [[defaults stringForKey:@"BackGroundGreen"] floatValue];
 	BgColor4f[2] = [[defaults stringForKey:@"BackGroundBlue"] floatValue];
 	BgColor4f[3] = 1.0;
-	set_kemoview_background_color(BgColor4f);
+	kemoview_set_background_color(BgColor4f);
 
 	glPushMatrix();
 }
@@ -462,8 +462,8 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 
 - (void) awakeFromNib
 {
-    id_window = send_current_kemoview();
-    set_single_kemoview_ID(id_window);
+    id_window = kemoview_get_current_viewer_id();
+    kemoview_set_single_viewer_id(id_window);
 
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	NSString *pickSurfName = [defaults stringForKey:@"PickSurfaceCommand"];
@@ -471,9 +471,9 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	
 	if(!pickSurfName){
 		printf("Empty default pick surface\n");
-        set_to_pick_surface_command("pick_surface");
+        kemoview_set_pick_surface_command("pick_surface");
 	} else {
-        set_to_pick_surface_command([pickSurfName UTF8String]);
+        kemoview_set_pick_surface_command([pickSurfName UTF8String]);
 	};
 
 	kemoview_set_stereo_shutter(SHUTTER_OFF);
@@ -481,10 +481,10 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	
 	[self prepareOpenGL];
 	
-	reset_kemoviewer_to_init_angle();
-	kemoviewer_initial_lighting();
+	kemoviewer_reset_to_init_angle();
+	kemoview_init_lighting();
 
-	draw_kemoviewer_c();
+	kemoview_draw_objects_c();
 	
 	// set start values...
 	fAnimate =  0;

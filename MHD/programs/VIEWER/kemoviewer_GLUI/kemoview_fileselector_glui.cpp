@@ -67,7 +67,7 @@ static void save_viewmatrix_glui(int sel){
 	strcat(file_name, "/");
 	strcat(file_name, text_fname.c_str());
 	
-	write_modelview_file_glut(file_name);
+	kemoview_write_modelview_file(file_name);
 	GLUI_Master.close_all();
 	return;
 };

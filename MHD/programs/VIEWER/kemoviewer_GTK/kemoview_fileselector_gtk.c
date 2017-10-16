@@ -250,14 +250,14 @@ void read_kemoview_data_gtk(){
 	
 	strcpy(file_name, gtk_selected_filename);
 	
-	get_ext_from_file_name(file_name, file_head, file_ext);
+	kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
 	printf("file name: %s\n", file_name);
 	printf("file_head %s\n", file_head);
 	printf("file_ext %s\n", file_ext);
 	
 	if (		  (file_ext[0] == 'g' && file_ext[1] == 'z')
 		||	  (file_ext[0] == 'G' && file_ext[1] == 'Z') ){
-		get_ext_from_file_name(file_head, file_head2, file_ext);
+		kemoview_get_ext_from_file_name(file_head, file_head2, file_ext);
 		
 		if (file_ext[0] == '0' && file_ext[1] == '\0') {
 			return;
@@ -265,10 +265,10 @@ void read_kemoview_data_gtk(){
 	} else if (file_ext[0] == '0' && file_ext[1] == '\0') {
 		set_pickup_command(pick_command);
 		if(iflag_set == IZERO) return;
-		set_to_pick_surface_command(pick_command);
+		kemoview_set_pick_surface_command(pick_command);
 	}
 	
-	iflag_datatype = kemoview_open_data_glut(file_name);
+	iflag_datatype = kemoview_open_data(file_name);
 	return;
 };
 
@@ -282,7 +282,7 @@ int input_texture_file_gtk(char *file_head){
 	if(iflag_set == IZERO) return 0;
 	
 	strcpy(file_name, gtk_selected_filename);
-	get_ext_from_file_name(file_name, file_head, file_ext);
+	kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
 	
 	id_img = kemoview_set_image_file_format_id(file_ext);
 	return id_img;
@@ -305,7 +305,7 @@ int output_image_file_gtk(char *file_head){
 		if(iflag_set == IZERO) return 0;
 		
 		strcpy(file_name, gtk_selected_filename);
-		get_ext_from_file_name(file_name, file_head, file_ext);
+		kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
 	};
 	
 	return id_img;
@@ -333,7 +333,7 @@ int output_evolution_file_gtk(char *file_head,
 		
 		strcpy(image_fmt, gtk_selected_filefmt);
 		strcpy(file_name, gtk_selected_filename);
-		get_ext_from_file_name(file_name, file_head, file_ext);
+		kemoview_get_ext_from_file_name(file_name, file_head, file_ext);
 	};
 	
 	return id_img;
@@ -370,7 +370,7 @@ void save_viewmatrix_file_gtk(){
 	if(iflag_set == IZERO) return;
 	
 	strcpy(file_name, gtk_selected_filename);
-	write_modelview_file_glut(file_name);
+	kemoview_write_modelview_file(file_name);
 	
 	return;
 };
@@ -382,7 +382,7 @@ void load_viewmatrix_file_gtk(){
 	if(iflag_set == IZERO) return;
 	
 	strcpy(file_name, gtk_selected_filename);
-	load_modelview_file_glut(file_name);
+	kemoview_load_modelview_file(file_name);
 	
 	return;
 };

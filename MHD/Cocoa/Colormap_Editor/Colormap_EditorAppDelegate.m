@@ -29,7 +29,6 @@ struct glut_menu_address *glut_menu_id;
 
 - (void) init
 {
-	allocate_single_kemoviwewer_struct(0);
 }
 
 @end

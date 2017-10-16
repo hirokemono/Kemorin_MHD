@@ -178,9 +178,9 @@ NSData *SnapshotData;
                                                                         bitsPerPixel: 0  //bitsPerSample*samplesPerPixel
                                    ];
     
-    get_kemoviewer_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
-                              (int) [_kemoviewer KemoviewVerticalViewSize],
-                              glimage, [SnapshotBitmapRep bitmapData]);
+    kemoview_get_fliped_img((int) [_kemoviewer KemoviewHorizontalViewSize],
+                            (int) [_kemoviewer KemoviewVerticalViewSize],
+                            glimage, [SnapshotBitmapRep bitmapData]);
     free(glimage);
     return;
 }
@@ -290,7 +290,7 @@ NSData *SnapshotData;
             } else if (CurrentMovieFormat == SAVE_BMP) {
                 [self SaveKemoviewBMPFile:ImageFilehead];
             } else {
-                write_kemoviewer_window_to_vector_file((int) CurrentMovieFormat, [ImageFilehead UTF8String]);
+                kemoview_write_window_to_vector_file((int) CurrentMovieFormat, [ImageFilehead UTF8String]);
             }
 		}
         
@@ -339,7 +339,7 @@ NSData *SnapshotData;
                 } else if (CurrentMovieFormat == SAVE_BMP) {
                     [self SaveKemoviewBMPFile:ImageFilehead];
                 } else {
-                    write_kemoviewer_window_to_vector_file((int) CurrentMovieFormat, [ImageFilehead UTF8String]);
+                    kemoview_write_window_to_vector_file((int) CurrentMovieFormat, [ImageFilehead UTF8String]);
                 }
 			}
 

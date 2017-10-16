@@ -176,7 +176,7 @@
     for (i=0; i<3; i++) glrgbaBG[i] = (GLfloat) rgbaBG[i];
 	glrgbaBG[3] = ONE;
 
-	set_kemoview_background_color(glrgbaBG);
+	kemoview_set_background_color(glrgbaBG);
 
 	NSUserDefaults* defaults = [_kemoviewGL_defaults_controller defaults];
 	[defaults setFloat:((float) rgbaBG[0]) forKey:@"BackGroundRed"];

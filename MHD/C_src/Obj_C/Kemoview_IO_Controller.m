@@ -25,7 +25,7 @@
 		if([KemoviewOpenFileext isEqualToString:@"0"]) return;
 	};
 
-	iflag_datatype = kemoview_open_data_glut((char *) [kemoviewOpenFilename UTF8String]);
+	iflag_datatype = kemoview_open_data((char *) [kemoviewOpenFilename UTF8String]);
 	
 	if(iflag_datatype==IFLAG_MESH) {
 		[_domainTableController OpenSurfaceMeshFile:kemoviewOpenFilehead];
@@ -71,7 +71,7 @@
 		NSLog(@" ViewMatrixDirectory = %@", ViewMatrixDirectory);
 		NSLog(@" ViewMatrixFilehead = %@",  ViewMatrixFilehead);
 
-		write_modelview_file_glut((char *) [ViewMatrixFilename UTF8String]);
+		kemoview_write_modelview_file((char *) [ViewMatrixFilename UTF8String]);
 	};
                                    }];
 }
@@ -94,7 +94,7 @@
 		NSLog(@" ViewMatrixDirectory = %@", ViewMatrixDirectory);
 		NSLog(@" ViewMatrixFilehead = %@",  ViewMatrixFilehead);
         
-		load_modelview_file_glut((char *) [ViewMatrixFilename UTF8String]);
+		kemoview_load_modelview_file((char *) [ViewMatrixFilename UTF8String]);
 		[_kemoviewer UpdateImage];
 	};
                                  }];
@@ -121,7 +121,7 @@
     } else if(id_format == SAVE_BMP){
         [_movieMakerController SaveKemoviewBMPFile:ImageFilehead];
     } else {
-        write_kemoviewer_window_to_vector_file(id_format, [ImageFilehead UTF8String]);
+        kemoview_write_window_to_vector_file(id_format, [ImageFilehead UTF8String]);
     }
     
     [_kemoviewer UpdateImage];
@@ -157,7 +157,7 @@
 	PickSurfaceCommand = [defaults stringForKey:@"PickSurfaceCommand"];
 	char command[LENGTHBUF];
 	sprintf(command,"%s",[PickSurfaceCommand UTF8String]);
-	set_to_pick_surface_command(command);
+	kemoview_set_pick_surface_command(command);
 }
 
 @end

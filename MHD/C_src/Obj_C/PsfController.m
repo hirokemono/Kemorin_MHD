@@ -372,7 +372,7 @@
 
 
 - (void) DrawPsfFile:(NSString*) PsfOpenFilehead{
-	int id_viewtype = send_iflag_view_type();
+	int id_viewtype = kemoview_get_view_type_flag();
     
 	self.currentPSFStep = [[PsfOpenFilehead pathExtension] intValue];
 	self.PsfWindowlabel = [NSString stringWithFormat:@"PSF:%@",
@@ -390,7 +390,7 @@
 	[_kemoviewer UpdateImage];
 	
 	int num_loaded =  kemoview_get_PSF_num_loaded();
-	int nlimit_load = send_nlimit_load_psf();
+	int nlimit_load = kemoview_get_PSF_maximum_load();
 	if(num_loaded >= nlimit_load-1){
 		self.psfMoreOpenFlag = 1;
 	}else {
@@ -435,7 +435,7 @@
         PsfOpenFilehead =   [PsfOpenFilehead stringByDeletingPathExtension];
     };
     
-    int iflag_datatype = kemoview_open_data_glut([PsfOpenFilename UTF8String]);
+    int iflag_datatype = kemoview_open_data([PsfOpenFilename UTF8String]);
     if(iflag_datatype == IFLAG_SURFACES) [self DrawPsfFile:PsfOpenFilehead];
 }
 
@@ -476,7 +476,7 @@
 
 - (IBAction) ClosePsfFile:(id)pId{
     [self ResetCurrentPsfParam];
-    int num_loaded = close_psf_view();
+    int num_loaded = kemoview_close_PSF_view();
     self.DrawPsfFlag = kemoview_get_PSF_draw_switch();
     
 	if(num_loaded > 0){
@@ -522,25 +522,25 @@
 
 - (IBAction)PsfSurfSwitchAction:(id)sender;
 {
-	self.PSFSurfaceSwitch = kemoview_PSF_draw_switch_select(PSFSOLID_TOGGLE);
+	self.PSFSurfaceSwitch = kemoview_select_PSF_draw_switch(PSFSOLID_TOGGLE);
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)PsfLineSwitchAction:(id)sender;
 {
-	self.PSFIsolineSwitch = kemoview_PSF_draw_switch_select(PSFGRID_TOGGLE);
+	self.PSFIsolineSwitch = kemoview_select_PSF_draw_switch(PSFGRID_TOGGLE);
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)PsfZeroLineSwitchAction:(id)sender;
 {
-	self.PSFZerolineSwitch = kemoview_PSF_draw_switch_select(ZEROGRID_TOGGLE);
+	self.PSFZerolineSwitch = kemoview_select_PSF_draw_switch(ZEROGRID_TOGGLE);
 	[_kemoviewer UpdateImage];
 }
 
 - (IBAction)PsfColorbarSwitchAction:(id)sender;
 {
-	self.PSFColorbarSwitch = kemoview_PSF_draw_switch_select(COLORBAR_TOGGLE);
+	self.PSFColorbarSwitch = kemoview_select_PSF_draw_switch(COLORBAR_TOGGLE);
 	[_kemoviewer UpdateImage];
 }
 
@@ -562,9 +562,9 @@
 - (IBAction)ChoosePsfVectorColorAction:(id)sender;
 {
 	if(self.psfVectorColorTag == 0){
-		kemoview_PSF_draw_switch_select(RAINBOW_PSF_VECT);
+		kemoview_select_PSF_draw_switch(RAINBOW_PSF_VECT);
 	} else if (self.psfVectorColorTag == 1) {
-		kemoview_PSF_draw_switch_select(WHITE_PSF_VECT);
+		kemoview_select_PSF_draw_switch(WHITE_PSF_VECT);
 	}
 	
 	[_kemoviewer UpdateImage];
@@ -594,7 +594,7 @@
 
 - (IBAction)DrawPSFVectorAction:(id)sender;
 {
-	self.DrawPSFVectorFlag = kemoview_PSF_draw_switch_select(PSFVECT_TOGGLE);
+	self.DrawPSFVectorFlag = kemoview_select_PSF_draw_switch(PSFVECT_TOGGLE);
 	
 	if(self.DrawPSFVectorFlag == 0) {[_PSFVectorSwitchOutlet setTitle:@"Off"];}
 	else{ [_PSFVectorSwitchOutlet setTitle:@"On"];};

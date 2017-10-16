@@ -19,7 +19,7 @@
 
 /* prototypes */
 
-int kemoview_open_data(const char *file_name, struct viewer_mesh *mesh_d, struct mesh_menu_val *mesh_m, 
+int kemoviewer_open_data(const char *file_name, struct viewer_mesh *mesh_d, struct mesh_menu_val *mesh_m, 
 					  struct kemo_array_control *psf_a, struct psf_data **psf_d, struct psf_menu_val **psf_m, 
 					  struct psf_data *fline_d, struct fline_menu_val *fline_m, 
 					  struct psf_data *ucd_tmp, struct ucd_file_menu_val *ucd_m,

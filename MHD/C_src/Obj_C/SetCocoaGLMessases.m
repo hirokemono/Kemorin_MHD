@@ -122,7 +122,7 @@ GLenum glReportError ()
 	GLfloat TextColor4f[4], ErrTextColor4f[4];
     
     if(fDrawHelp == NO && fDrawResolution==NO && fDrawinfo==NO) return;
-	send_text_color_code(TextColor4f);
+	kemoview_get_text_color_code(TextColor4f);
 	
 	// set orthograhic 1:1  pixel transform in local view coords
 	glGetIntegerv (GL_MATRIX_MODE, &matrixMode);

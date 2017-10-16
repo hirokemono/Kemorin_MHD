@@ -39,7 +39,7 @@
 		for(i=0;i<NumNodeGroup;i++){
 			[NodeGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:1] ];
 			NSLog(@"Set all nodes %d", i);
-			set_to_draw_nodgrp_nod(IONE,i);
+			kemoview_set_draw_nodgrp_node(IONE,i);
 		}
 	}
 
@@ -55,7 +55,7 @@
 		[NodeGroupDisplayNodeFlags removeAllObjects];
 		for(i=0;i<NumNodeGroup;i++){
 			[NodeGroupDisplayNodeFlags addObject:[[NSNumber alloc ] initWithInt:0] ];
-			set_to_draw_nodgrp_nod(IZERO,i);
+			kemoview_set_draw_nodgrp_node(IZERO,i);
 		}
 	}	
 
@@ -90,7 +90,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	
     identifier = [tableColumn identifier];
     if([identifier isEqualToString:@"NodGrpNode"]) {
-		set_to_draw_nodgrp_nod([object intValue],rowIndex);
+		kemoview_set_draw_nodgrp_node([object intValue],rowIndex);
 		[NodeGroupDisplayNodeFlags replaceObjectAtIndex:rowIndex withObject:object];
 	}
 
@@ -112,12 +112,12 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 //	printf("Update Node group map\n");
 	[NodeGroupDisplayNames removeAllObjects];
 	[NodeGroupDisplayNodeFlags removeAllObjects];
-	NumNodeGroup = send_ngrp_nod_sf();
+	NumNodeGroup = kemoview_get_num_node_grp();
 	for(i=0;i<NumNodeGroup;i++){
-		send_nod_gp_name_sf(name,i);
+		kemoview_get_node_grp_name(name,i);
 		stname = [[NSString alloc] initWithUTF8String:name];
 		[NodeGroupDisplayNames      addObject:stname];
-		iflag = send_draw_nodgrp_nod(i);
+		iflag = kemoview_get_draw_nodgrp_node(i);
 		[NodeGroupDisplayNodeFlags  addObject:[[NSNumber alloc ] initWithInt:iflag] ];
 		[stname release];
 	}
@@ -128,7 +128,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 - (IBAction)ChooseNodeGrpNodeColorAction:(id)sender;
 {
 	NSInteger tag = [[_NodeGrpNodeColorItem selectedCell] tag];
-	set_node_grp_color_flag(tag);
+	kemoview_set_node_grp_color_flag(tag);
 
 	[_kemoviewer UpdateImage];
 }
@@ -142,7 +142,7 @@ objectValueForTableColumn:(NSTableColumn *)aTableColumn
 	colorcode4[1] =  (GLfloat) greenBG;
 	colorcode4[2] =  (GLfloat) blueBG;
 	colorcode4[3] =  (GLfloat) opacityBG;
-	set_to_node_grp_color_code(colorcode4);
+	kemoview_set_node_grp_color_code(colorcode4);
 	
 	[_kemoviewer UpdateImage];
 }
