@@ -54,6 +54,7 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MAKE_SPH_RADIUS): $$(MOD_MAKE_SPH_RADIUS)' \
+    '$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MAKE_SPH_RADIUS)' \
 	'$$(MOD_MAKE_SPH_RADIUS)' \
