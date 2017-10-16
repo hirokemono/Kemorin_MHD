@@ -22,7 +22,7 @@ target_list:
 	@echo >> $(MAKENAME)
 
 target_task:
-	@echo '$$(TARGET_CUTSHELL)': '$$(MOD_CUTSHELL)'  '$$(LIB_FILES_CUBED_SPH)' \
+	@echo '$$(TARGET_CUTSHELL)': '$$(MOD_CUTSHELL)'  '$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)  $$(F90FLAGS) -o  $$(TARGET_CUTSHELL)' \
 	'$$(MOD_CUTSHELL)' \
