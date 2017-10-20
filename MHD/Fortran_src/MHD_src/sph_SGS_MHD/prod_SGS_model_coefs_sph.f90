@@ -15,13 +15,16 @@
 !!
 !!      subroutine product_model_coefs_pout(nnod_med, nphi, sgs_c,      &
 !!     &          ifld, numdir, nnod_rtp, ncomp, frc_rtp)
-!!
 !!      subroutine product_single_buo_coefs_pout                        &
 !!     &         (nnod_rtp, nnod_med, nphi, sgs_c, frc_simi)
 !!      subroutine product_double_buo_coefs_pout                        &
 !!     &         (nnod_rtp, nnod_med, nphi, sgs_c1, sgs_c2, frc_simi)
 !!
 !!
+!!      subroutine prod_sgl_radial_buo_coefs_pin                        &
+!!     &         (nidx_rtp, sgs_c, ifld, nnod_rtp, ncomp, frc_rtp)
+!!      subroutine prod_sgl_radial_buo_coefs_pout                       &
+!!     &         (nidx_rtp, sgs_c, ifld, nnod_rtp, ncomp, frc_rtp)
 !!      subroutine prod_dbl_radial_buo_coefs_pin                        &
 !!     &         (nidx_rtp, sgs_c, ifld, nnod_rtp, ncomp, frc_rtp)
 !!      subroutine prod_dbl_radial_buo_coefs_pout                       &
@@ -223,6 +226,64 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine prod_sgl_radial_buo_coefs_pin                          &
+     &         (nidx_rtp, sgs_c, ifld, nnod_rtp, ncomp, frc_rtp)
+!
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      real(kind = kreal), intent(in) :: sgs_c(nidx_rtp(1))
+      integer(kind = kint), intent(in) :: nnod_rtp, ncomp, ifld
+!
+      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,ncomp)
+!
+      integer(kind = kint) :: k, l, m, i1
+!
+!
+!$omp do private(k,l,m,i1)
+      do l = 1, nidx_rtp(2)
+        do k = 1, nidx_rtp(1)
+          do m = 1, nidx_rtp(3)
+            i1 = m + (k-1) * nidx_rtp(3)                                &
+     &          + (l-1) * nidx_rtp(2)*nidx_rtp(3)
+            frc_rtp(i1,ifld  ) = (one + sgs_c(k)) * frc_rtp(i1,ifld  )
+            frc_rtp(i1,ifld+1) = (one + sgs_c(k)) * frc_rtp(i1,ifld+1)
+            frc_rtp(i1,ifld+2) = (one + sgs_c(k)) * frc_rtp(i1,ifld+2)
+          end do
+        end do
+      end do
+!$omp end do
+!
+      end subroutine prod_sgl_radial_buo_coefs_pin
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine prod_sgl_radial_buo_coefs_pout                         &
+     &         (nidx_rtp, sgs_c, ifld, nnod_rtp, ncomp, frc_rtp)
+!
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      real(kind = kreal), intent(in) :: sgs_c(nidx_rtp(1))
+      integer(kind = kint), intent(in) :: nnod_rtp, ncomp, ifld
+!
+      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,ncomp)
+!
+!
+      integer(kind = kint) :: k, lm, i1
+!
+!
+!$omp do private(k,lm,i1)
+      do lm = 1, nidx_rtp(2)*nidx_rtp(3)
+        do k = 1, nidx_rtp(1)
+          i1 = k + (lm-1) * nidx_rtp(1)
+          frc_rtp(i1,ifld  ) = (one + sgs_c(k)) * frc_rtp(i1,ifld  )
+          frc_rtp(i1,ifld+1) = (one + sgs_c(k)) * frc_rtp(i1,ifld+1)
+          frc_rtp(i1,ifld+2) = (one + sgs_c(k)) * frc_rtp(i1,ifld+2)
+        end do
+      end do
+!$omp end do
+!
+      end subroutine prod_sgl_radial_buo_coefs_pout
+!
+!  ---------------------------------------------------------------------
+!
       subroutine prod_dbl_radial_buo_coefs_pin                          &
      &         (nidx_rtp, sgs_c, ifld, nnod_rtp, ncomp, frc_rtp)
 !
@@ -285,6 +346,7 @@
 !
       end subroutine prod_dbl_radial_buo_coefs_pout
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine prod_dbl_radial_buo_coefs_rj                           &

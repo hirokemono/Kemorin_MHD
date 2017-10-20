@@ -345,21 +345,24 @@
 !
         call start_elapsed_time(17)
         call start_elapsed_time(84)
-        write(*,*) 'SGS_param%iflag_SGS_buo_usage',                     &
-     &            SGS_param%iflag_SGS_buo_usage, id_use_sphere, id_use_zonal
         if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
           if(istep_dynamic .eq. 0) then
             if (iflag_debug.eq.1) write(*,*)                            &
      &                      'sphere_averaged_SGS_buoyancy', iflag_debug
+            call calypso_mpi_barrier
+            write(*,*) 'sphere_averaged_SGS_buoyancy'
             call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,  &
      &          ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
           end if
 !
+            call calypso_mpi_barrier
             if(iflag_debug.eq.1) write(*,*)                             &
      &                      'magnify_sph_ave_SGS_buoyancy'
           call magnify_sph_ave_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
-     &        ipol, dynamic_SPH%wk_sgs_buo, rj_fld, trns_SGS)
-        else if(SGS_param%iflag_SGS_buo_usage .ne. id_use_zonal) then
+     &        ipol, dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs_buo,       &
+     &        rj_fld, trns_SGS)
+            call calypso_mpi_barrier
+        else if(SGS_param%iflag_SGS_buo_usage .ne. id_use_volume) then
           if(istep_dynamic .eq. 0) then
             if (iflag_debug.eq.1) write(*,*)                            &
      &                      'volume_averaged_SGS_buoyancy', iflag_debug
@@ -370,7 +373,8 @@
             if(iflag_debug.eq.1) write(*,*)                             &
      &                      'magnify_vol_ave_SGS_buoyancy'
           call magnify_vol_ave_SGS_buoyancy(sph%sph_rtp, ipol,          &
-     &        dynamic_SPH%wk_sgs_buo, rj_fld, trns_SGS)
+     &        dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs_buo,             &
+     &        rj_fld, trns_SGS)
         end if
         call end_elapsed_time(84)
 !

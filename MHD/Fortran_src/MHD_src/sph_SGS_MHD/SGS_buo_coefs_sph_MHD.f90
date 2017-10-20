@@ -12,7 +12,7 @@
 !!     &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,&
 !!     &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
 !!      subroutine sel_mag_sph_ave_SGS_buo_rtp                          &
-!!     &         (sph_rtp, Cbuo_ave_sph_rtp, f_trns,                    &
+!!     &         (sph_rtp, ifld_sgs, Cbuo_ave_sph_rtp, f_trns,          &
 !!     &          ncomp_SGS_rtp_2_rj, frc_rtp)
 !!      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, fg_trns,      &
 !!     &          ifld_sgs, wk_sgs, nnod_med, nc_SGS_rtp_2_rj, fSGS_rtp)
@@ -36,6 +36,8 @@
 !
       implicit none
 !
+      private :: prod_sph_ave_SGS_buo_rtp_pin
+      private :: prod_sph_ave_SGS_buo_rtp_pout
       private :: SGS_buoyancies_to_Reynolds_pin
       private :: SGS_buoyancies_to_Reynolds_pout
 !
@@ -88,35 +90,27 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_mag_sph_ave_SGS_buo_rtp                            &
-     &         (sph_rtp, Cbuo_ave_sph_rtp, trns_SGS)
+     &         (sph_rtp, ifld_sgs, Cbuo_ave_sph_rtp, trns_SGS)
 !
       use t_rms_4_sph_spectr
       use t_spheric_parameter
       use t_phys_data
-      use radial_int_for_sph_spec
-      use volume_average_4_sph
-      use prod_SGS_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(SGS_terms_address), intent(in) :: ifld_sgs
       real(kind = kreal), intent(in)                                    &
      &                   :: Cbuo_ave_sph_rtp(sph_rtp%nidx_rtp(1),2)
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
 !
-!$omp parallel
       if(iflag_FFT .eq. iflag_FFTW) then
-        call prod_dbl_radial_buo_coefs_pin                              &
-     &     (sph_rtp%nidx_rtp, Cbuo_ave_sph_rtp,                         &
-     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
-     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+        call prod_sph_ave_SGS_buo_rtp_pin                               &
+     &     (sph_rtp, ifld_sgs, Cbuo_ave_sph_rtp, trns_SGS)
       else
-        call prod_dbl_radial_buo_coefs_pout                             &
-     &     (sph_rtp%nidx_rtp, Cbuo_ave_sph_rtp,                         &
-     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
-     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+        call prod_sph_ave_SGS_buo_rtp_pout                              &
+     &     (sph_rtp, ifld_sgs, Cbuo_ave_sph_rtp, trns_SGS)
       end if
-!$omp end parallel
 !
       end subroutine sel_mag_sph_ave_SGS_buo_rtp
 !
@@ -153,6 +147,85 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
+      subroutine prod_sph_ave_SGS_buo_rtp_pin                           &
+     &         (sph_rtp, ifld_sgs, Cbuo_ave_sph_rtp, trns_SGS)
+!
+      use t_rms_4_sph_spectr
+      use t_spheric_parameter
+      use t_phys_data
+      use prod_SGS_model_coefs_sph
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(SGS_terms_address), intent(in) :: ifld_sgs
+      real(kind = kreal), intent(in)                                    &
+     &                   :: Cbuo_ave_sph_rtp(sph_rtp%nidx_rtp(1),2)
+!
+      type(address_4_sph_trans), intent(inout) :: trns_SGS
+!
+!
+!$omp parallel
+      if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
+        call prod_dbl_radial_buo_coefs_pin                              &
+     &     (sph_rtp%nidx_rtp, Cbuo_ave_sph_rtp,                         &
+     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
+     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      else if(ifld_sgs%i_buoyancy .gt. 0) then
+        call prod_sgl_radial_buo_coefs_pin                              &
+     &     (sph_rtp%nidx_rtp, Cbuo_ave_sph_rtp(1,1),                    &
+     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
+     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
+        call prod_sgl_radial_buo_coefs_pin                              &
+     &     (sph_rtp%nidx_rtp, Cbuo_ave_sph_rtp(1,2),                    &
+     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
+     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      end if
+!$omp end parallel
+!
+      end subroutine prod_sph_ave_SGS_buo_rtp_pin
+!
+! ----------------------------------------------------------------------
+!
+      subroutine prod_sph_ave_SGS_buo_rtp_pout                          &
+     &         (sph_rtp, ifld_sgs, Cbuo_ave_sph_rtp, trns_SGS)
+!
+      use t_rms_4_sph_spectr
+      use t_spheric_parameter
+      use t_phys_data
+      use prod_SGS_model_coefs_sph
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(SGS_terms_address), intent(in) :: ifld_sgs
+      real(kind = kreal), intent(in)                                    &
+     &                   :: Cbuo_ave_sph_rtp(sph_rtp%nidx_rtp(1),2)
+!
+      type(address_4_sph_trans), intent(inout) :: trns_SGS
+!
+!
+!$omp parallel
+      if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
+        call prod_dbl_radial_buo_coefs_pout                             &
+     &     (sph_rtp%nidx_rtp, Cbuo_ave_sph_rtp,                         &
+     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
+     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      else if(ifld_sgs%i_buoyancy .gt. 0) then
+        call prod_sgl_radial_buo_coefs_pout                             &
+     &     (sph_rtp%nidx_rtp, Cbuo_ave_sph_rtp(1,1),                    &
+     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
+     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
+        call prod_sgl_radial_buo_coefs_pout                             &
+     &     (sph_rtp%nidx_rtp, Cbuo_ave_sph_rtp(1,2),                    &
+     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
+     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      end if
+!$omp end parallel
+!
+      end subroutine prod_sph_ave_SGS_buo_rtp_pout
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
       subroutine SGS_buoyancies_to_Reynolds_pin(sph_rtp, fg_trns,       &
      &          ifld_sgs, nnod_med, nfld_sgs, fld_coef,                 &
      &          nc_SGS_rtp_2_rj, fSGS_rtp)
@@ -171,8 +244,7 @@
 !
 !
 !$omp parallel
-      if     (ifld_sgs%i_buoyancy .gt. 0                                &
-     &  .and. ifld_sgs%i_comp_buoyancy .gt. 0) then
+      if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
         call product_double_buo_coefs_pin                               &
      &     (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),            &
      &      fld_coef(1,ifld_sgs%i_buoyancy),                            &
@@ -214,8 +286,7 @@
 !
 !
 !$omp parallel
-      if     (ifld_sgs%i_buoyancy .gt. 0                                &
-     &  .and. ifld_sgs%i_comp_buoyancy .gt. 0) then
+      if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
         call product_double_buo_coefs_pout                              &
      &     (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),            &
      &      fld_coef(1,ifld_sgs%i_buoyancy),                            &
@@ -236,6 +307,7 @@
 !
       end subroutine SGS_buoyancies_to_Reynolds_pout
 !
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       end module SGS_buo_coefs_sph_MHD 
