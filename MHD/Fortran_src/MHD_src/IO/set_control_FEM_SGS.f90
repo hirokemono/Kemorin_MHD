@@ -170,23 +170,6 @@
           end if
       end if
 !
-      SGS_param%iflag_SGS_buo_usage = id_use_volume
-      if(sgs_ctl%SGS_buo_Csim_usage_ctl%iflag .gt. 0) then
-        tmpchara = sgs_ctl%SGS_buo_Csim_usage_ctl%charavalue
-        if(   cmp_no_case(tmpchara, 'zonal')                            &
-     &     .or. cmp_no_case(tmpchara, 'phi')) then
-          SGS_param%iflag_SGS_buo_usage = id_use_zonal
-        end if
-        if(   cmp_no_case(tmpchara, 'sphere')) then
-          SGS_param%iflag_SGS_buo_usage = id_use_sphere
-        end if
-        if(   cmp_no_case(tmpchara, 'volume')                           &
-     &     .or. cmp_no_case(tmpchara, 'V')) then
-          SGS_param%iflag_SGS_buo_usage = id_use_volume
-        end if
-      end if
-
-!
       if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call s_set_control_ele_layering(elayer_ctl)
       end if

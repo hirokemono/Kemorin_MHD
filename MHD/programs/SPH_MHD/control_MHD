@@ -486,19 +486,19 @@ begin MHD_control
 !        begin sph_filter_ctl
 !          number_of_moments        5
 !          radial_filter_width     2.0
-!          sphere_filter_width       2
+!          sphere_filter_width       2.0
 !        end   sph_filter_ctl
 !
 !        begin sph_filter_ctl
 !          number_of_moments        9
 !          radial_filter_width     3.0
-!          sphere_filter_width       3
+!          sphere_filter_width       3.0
 !        end   sph_filter_ctl
 !
 !        begin sph_filter_ctl
 !          number_of_moments        23
 !          radial_filter_width     4.0
-!          sphere_filter_width       4
+!          sphere_filter_width       4.0
 !        end   sph_filter_ctl
       end array sph_filter_ctl
 !
