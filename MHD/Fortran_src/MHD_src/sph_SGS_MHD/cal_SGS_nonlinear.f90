@@ -345,6 +345,8 @@
 !
         call start_elapsed_time(17)
         call start_elapsed_time(84)
+        write(*,*) 'SGS_param%iflag_SGS_buo_usage',                     &
+     &            SGS_param%iflag_SGS_buo_usage, id_use_sphere, id_use_zonal
         if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
           if(istep_dynamic .eq. 0) then
             if (iflag_debug.eq.1) write(*,*)                            &
