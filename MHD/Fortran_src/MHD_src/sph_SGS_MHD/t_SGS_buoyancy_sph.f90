@@ -256,7 +256,7 @@
       use t_SGS_model_coefs
       use radial_int_for_sph_spec
       use volume_average_4_sph
-      use prod_SGS_model_coefs_sph
+      use prod_buo_model_coefs_sph
       use SGS_buo_coefs_sph_MHD
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -294,7 +294,7 @@
       use t_SGS_model_coefs
       use radial_int_for_sph_spec
       use volume_average_4_sph
-      use prod_SGS_model_coefs_sph
+      use prod_buo_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(phys_address), intent(in) :: ipol

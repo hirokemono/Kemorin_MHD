@@ -48,6 +48,7 @@
       implicit none
 !
       private :: cal_dynamic_SGS_4_sph_MHD
+      private :: sel_product_model_coefs
 !
 !-----------------------------------------------------------------------
 !
@@ -162,18 +163,8 @@
      &      wk_sgs%comp_clip, wk_sgs%fld_coef)
       end if
 !
-!$omp parallel
-      if(iflag_FFT .eq. iflag_FFTW) then
-        call product_model_coefs_pin                                    &
-     &   (numdir, sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),      &
-     &    wk_sgs%fld_coef(1,ifld_sgs), trns_SGS%frc_rtp(1,irtp_sgs))
-      else
-        call product_model_coefs_pout(ifld_sgs, sph_rtp%nidx_rtp(3),    &
-     &    nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                  &
-     &    irtp_sgs, numdir, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,  &
-     &    trns_SGS%frc_rtp)
-      end if
-!$omp end parallel
+      call sel_product_model_coefs(sph_rtp, nnod_med, numdir,           &
+     &    irtp_sgs, ifld_sgs, wk_sgs, trns_SGS)
 !
       end subroutine cal_dynamic_SGS_4_sph_MHD
 !
@@ -228,6 +219,40 @@
       end if
 !
       end subroutine const_dynamic_SGS_4_buo_sph
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine sel_product_model_coefs(sph_rtp, nnod_med,             &
+     &          numdir, irtp_sgs, ifld_sgs, wk_sgs, trns_SGS)
+!
+      use m_FFT_selector
+      use prod_SGS_model_coefs_sph
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      integer(kind = kint), intent(in) :: numdir
+      integer(kind = kint), intent(in) :: nnod_med
+!
+      integer(kind = kint), intent(in) :: irtp_sgs
+      integer(kind = kint), intent(in) :: ifld_sgs
+!
+      type(dynamic_model_data), intent(inout) :: wk_sgs
+      type(address_4_sph_trans), intent(inout) :: trns_SGS
+!
+!
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call product_model_coefs_pin(ifld_sgs, sph_rtp%nidx_rtp(3),     &
+     &    nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                  &
+     &    irtp_sgs, numdir, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,  &
+     &    trns_SGS%frc_rtp)
+      else
+        call product_model_coefs_pout(ifld_sgs, sph_rtp%nidx_rtp(3),    &
+     &    nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                  &
+     &    irtp_sgs, numdir, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,  &
+     &    trns_SGS%frc_rtp)
+      end if
+!
+      end subroutine sel_product_model_coefs
 !
 ! ----------------------------------------------------------------------
 !
