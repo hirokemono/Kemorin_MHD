@@ -122,8 +122,6 @@
       subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, fg_trns,        &
      &          ifld_sgs, wk_sgs, nnod_med, nc_SGS_rtp_2_rj, fSGS_rtp)
 !
-      use dynamic_model_sph_MHD
-!
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(phys_address), intent(in) :: fg_trns
       type(SGS_terms_address), intent(in) :: ifld_sgs
