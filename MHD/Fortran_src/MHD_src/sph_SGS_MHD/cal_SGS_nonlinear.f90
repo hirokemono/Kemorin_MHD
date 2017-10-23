@@ -350,7 +350,6 @@
             if (iflag_debug.eq.1) write(*,*)                            &
      &                      'sphere_averaged_SGS_buoyancy', iflag_debug
             call calypso_mpi_barrier
-            write(*,*) 'sphere_averaged_SGS_buoyancy'
             call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,  &
      &          ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
           end if
