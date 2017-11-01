@@ -75,12 +75,13 @@
       use set_control_4_force
       use set_control_4_normalize
       use set_control_4_SGS
+      use set_control_SGS_commute
       use set_control_4_filtering
+      use set_control_FEM_SGS
       use set_control_4_model
       use set_control_4_scheme
       use set_control_4_solver
       use set_control_evo_layers
-      use set_control_FEM_SGS
       use parallel_ucd_IO_select
 !
       use m_fem_mhd_restart
@@ -135,10 +136,12 @@
 !
 !   set parameters for SGS model
 !
-      call set_control_SGS_model(model_ctl%sgs_ctl, SGS_par%model_p,    &
-     &    SGS_par%commute_p, SGS_par%filter_p,                          &
-     &    MHD_files%Csim_file_IO, MHD_files%Cdiff_file_IO,              &
-     &    SGS_par%i_step_sgs_coefs)
+      call set_control_SGS_model                                        &
+     &   (model_ctl%sgs_ctl, SGS_par%model_p, SGS_par%filter_p,         &
+     &    MHD_files%Csim_file_IO, SGS_par%i_step_sgs_coefs)
+      call s_set_control_SGS_commute                                    &
+     &   (SGS_par%model_p, model_ctl%sgs_ctl, SGS_par%commute_p,        &
+     &    MHD_files%Cdiff_file_IO)
       call s_set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,           &
      &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl,              &
      &    SGS_par%model_p)

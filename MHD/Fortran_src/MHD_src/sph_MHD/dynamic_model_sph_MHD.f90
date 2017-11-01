@@ -7,6 +7,8 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
+!!      subroutine prod_fixed_sph_SGS_Csim                              &
+!!     &         (SGS_param, sph_rtp, ifld_sgs, trns_SGS)
 !!      subroutine const_model_coefs_4_sph                              &
 !!     &         (istep_dynamic, stab_weight, sph_rtp,                  &
 !!     &          ifld_sgs, icomp_sgs, wk_sgs, trns_SGS)
@@ -17,7 +19,7 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!
 !!      subroutine const_dynamic_SGS_4_buo_sph                          &
-!!     &         (iflag_SGS_buo_usage, stab_weight, sph_rtp, fl_prop,   &
+!!     &         (iflag_SGS_buo_usage, SGS_param, sph_rtp, fl_prop,     &
 !!     &          trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -37,6 +39,7 @@
       use m_machine_parameter
       use m_phys_constants
 !
+      use t_SGS_control_parameter
       use t_spheric_rtp_data
       use t_phys_address
       use t_addresses_sph_transform
@@ -56,12 +59,58 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine prod_fixed_sph_SGS_Csim                                &
+     &         (SGS_param, sph_rtp, ifld_sgs, trns_SGS)
+!
+      use prod_SGS_model_coefs_sph
+!
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(SGS_terms_address), intent(in) :: ifld_sgs
+!
+      type(address_4_sph_trans), intent(inout) :: trns_SGS
+!
+!
+      if(ifld_sgs%i_mom_flux .gt. 0) then
+        call product_fixed_model_coefs(SGS_param%SGS_mf_factor,         &
+     &     trns_SGS%f_trns%i_SGS_inertia, n_vector, sph_rtp%nnod_rtp,   &
+     &     trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      end if
+!
+      if(ifld_sgs%i_lorentz .gt. 0) then
+        call product_fixed_model_coefs(SGS_param%SGS_mawell_factor,     &
+     &     trns_SGS%f_trns%i_SGS_Lorentz, n_vector, sph_rtp%nnod_rtp,   &
+     &     trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      end if
+!
+      if(ifld_sgs%i_induction .gt. 0) then
+        call product_fixed_model_coefs(SGS_param%SGS_uxb_factor,        &
+     &     trns_SGS%f_trns%i_SGS_vp_induct, n_vector, sph_rtp%nnod_rtp, &
+     &     trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      end if
+!
+      if(ifld_sgs%i_heat_flux .gt. 0) then
+        call product_fixed_model_coefs(SGS_param%SGS_hf_factor,         &
+     &     trns_SGS%f_trns%i_SGS_h_flux, n_vector, sph_rtp%nnod_rtp,    &
+     &     trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      end if
+!
+      if(ifld_sgs%i_comp_flux .gt. 0) then
+        call product_fixed_model_coefs(SGS_param%SGS_cf_factor,         &
+     &     trns_SGS%f_trns%i_SGS_c_flux, n_vector, sph_rtp%nnod_rtp,    &
+     &     trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+      end if
+!
+      end subroutine prod_fixed_sph_SGS_Csim
+!
+! ----------------------------------------------------------------------
+!
       subroutine const_model_coefs_4_sph                                &
-     &         (istep_dynamic, stab_weight, sph_rtp,                    &
+     &         (istep_dynamic, SGS_param, sph_rtp,                      &
      &          ifld_sgs, icomp_sgs, wk_sgs, trns_SGS)
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      real(kind = kreal), intent(in) :: stab_weight
       integer(kind = kint), intent(in) :: istep_dynamic
       type(SGS_terms_address), intent(in) :: ifld_sgs, icomp_sgs
 !
@@ -74,8 +123,8 @@
       nnod_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
 !
       if(ifld_sgs%i_mom_flux .gt. 0) then
-        call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, istep_dynamic, stab_weight, nnod_med,              &
+        call cal_dynamic_SGS_4_sph_MHD(SGS_param%SGS_mf_factor,         &
+     &      sph_rtp, istep_dynamic, SGS_param%stab_weight, nnod_med,    &
      &      n_vector, trns_SGS%f_trns%i_SGS_inertia,                    &
      &      trns_SGS%b_trns%i_wide_SGS_inertia,                         &
      &      ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                  &
@@ -83,8 +132,8 @@
       end if
 !
       if(ifld_sgs%i_lorentz .gt. 0) then
-        call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, istep_dynamic, stab_weight, nnod_med,              &
+        call cal_dynamic_SGS_4_sph_MHD(SGS_param%SGS_mawell_factor,     &
+     &      sph_rtp, istep_dynamic, SGS_param%stab_weight, nnod_med,    &
      &      n_vector, trns_SGS%f_trns%i_SGS_Lorentz,                    &
      &      trns_SGS%b_trns%i_wide_SGS_Lorentz,                         &
      &      ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,                    &
@@ -92,8 +141,8 @@
       end if
 !
       if(ifld_sgs%i_induction .gt. 0) then
-        call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, istep_dynamic, stab_weight, nnod_med,              &
+        call cal_dynamic_SGS_4_sph_MHD(SGS_param%SGS_uxb_factor,        &
+     &      sph_rtp, istep_dynamic, SGS_param%stab_weight, nnod_med,    &
      &      n_vector, trns_SGS%f_trns%i_SGS_vp_induct,                  &
      &      trns_SGS%b_trns%i_wide_SGS_vp_induct,                       &
      &      ifld_sgs%i_induction, icomp_sgs%i_induction,                &
@@ -101,8 +150,8 @@
       end if
 !
       if(ifld_sgs%i_heat_flux .gt. 0) then
-        call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, istep_dynamic, stab_weight, nnod_med,              &
+        call cal_dynamic_SGS_4_sph_MHD(SGS_param%SGS_hf_factor,         &
+     &      sph_rtp, istep_dynamic, SGS_param%stab_weight, nnod_med,    &
      &      n_vector, trns_SGS%f_trns%i_SGS_h_flux,                     &
      &      trns_SGS%b_trns%i_wide_SGS_h_flux,                          &
      &      ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,                &
@@ -110,8 +159,8 @@
       end if
 !
       if(ifld_sgs%i_comp_flux .gt. 0) then
-        call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, istep_dynamic, stab_weight, nnod_med,              &
+        call cal_dynamic_SGS_4_sph_MHD(SGS_param%SGS_cf_factor,         &
+     &      sph_rtp, istep_dynamic, SGS_param%stab_weight, nnod_med,    &
      &      n_vector, trns_SGS%f_trns%i_SGS_c_flux,                     &
      &      trns_SGS%b_trns%i_wide_SGS_c_flux,                          &
      &      ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,                &
@@ -123,8 +172,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_dynamic_SGS_4_sph_MHD                              &
-     &         (sph_rtp, istep_dynamic, stab_weight, nnod_med,          &
+      subroutine cal_dynamic_SGS_4_sph_MHD(const_Csim,                  &
+     &          sph_rtp, istep_dynamic, stab_weight, nnod_med,          &
      &          numdir, irtp_sgs, irtp_wide, ifld_sgs, icomp_sgs,       &
      &          wk_sgs, trns_SGS)
 !
@@ -141,6 +190,7 @@
 !
       integer(kind = kint), intent(in) :: irtp_sgs, irtp_wide
       integer(kind = kint), intent(in) :: ifld_sgs, icomp_sgs
+      real(kind = kreal), intent(in) :: const_Csim
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(address_4_sph_trans), intent(inout) :: trns_SGS
@@ -163,7 +213,8 @@
      &      wk_sgs%comp_clip, wk_sgs%fld_coef)
       end if
 !
-      call sel_product_model_coefs(sph_rtp, nnod_med, numdir,           &
+      call sel_product_model_coefs                                      &
+     &   (const_Csim, sph_rtp, nnod_med, numdir,                        &
      &    irtp_sgs, ifld_sgs, wk_sgs, trns_SGS)
 !
       end subroutine cal_dynamic_SGS_4_sph_MHD
@@ -223,7 +274,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_product_model_coefs(sph_rtp, nnod_med,             &
+      subroutine sel_product_model_coefs(const_Csim, sph_rtp, nnod_med, &
      &          numdir, irtp_sgs, ifld_sgs, wk_sgs, trns_SGS)
 !
       use m_FFT_selector
@@ -235,21 +286,24 @@
 !
       integer(kind = kint), intent(in) :: irtp_sgs
       integer(kind = kint), intent(in) :: ifld_sgs
+      real(kind = kreal), intent(in) :: const_Csim
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then
-        call product_model_coefs_pin(ifld_sgs, sph_rtp%nidx_rtp(3),     &
-     &    nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                  &
-     &    irtp_sgs, numdir, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,  &
-     &    trns_SGS%frc_rtp)
+        call product_model_coefs_pin                                    &
+     &    (const_Csim, ifld_sgs, sph_rtp%nidx_rtp(3),                   &
+     &     nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                 &
+     &     irtp_sgs, numdir, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj, &
+     &     trns_SGS%frc_rtp)
       else
-        call product_model_coefs_pout(ifld_sgs, sph_rtp%nidx_rtp(3),    &
-     &    nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                  &
-     &    irtp_sgs, numdir, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,  &
-     &    trns_SGS%frc_rtp)
+        call product_model_coefs_pout                                   &
+     &    (const_Csim, ifld_sgs, sph_rtp%nidx_rtp(3),                   &
+     &     nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                 &
+     &     irtp_sgs, numdir, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj, &
+     &     trns_SGS%frc_rtp)
       end if
 !
       end subroutine sel_product_model_coefs

@@ -28,7 +28,7 @@
 !
       implicit  none
 !
-      private :: set_Csim_type, set_fixed_Csim
+      private :: set_Csim_type
 !
 ! -----------------------------------------------------------------------
 !
@@ -75,21 +75,6 @@
           if (cmp_no_case(tmpchara, 'keep'))                            &
      &      SGS_param%iflag_nagetive_clip = id_SGS_KEEP_PREVIOUS
         end if
-!
-!
-        SGS_param%clipping_limit                                        &
-     &        = set_fixed_Csim(zero, sgs_ctl%clipping_limit_ctl)
-!
-        SGS_param%SGS_hf_factor                                         &
-     &        = set_fixed_Csim(one, sgs_ctl%SGS_hf_factor_ctl)
-        SGS_param%SGS_mf_factor                                         &
-     &        = set_fixed_Csim(one, sgs_ctl%SGS_mf_factor_ctl)
-        SGS_param%SGS_mawell_factor                                     &
-     &        = set_fixed_Csim(one, sgs_ctl%SGS_mxwl_factor_ctl)
-        SGS_param%SGS_uxb_factor                                        &
-     &        = set_fixed_Csim(one, sgs_ctl%SGS_uxb_factor_ctl)
-        SGS_param%SGS_cf_factor                                         &
-     &        = set_fixed_Csim(one, sgs_ctl%SGS_cf_factor_ctl)
 !
 !
         SGS_param%iflag_Csim_marging = id_SGS_DIR_LSQ
@@ -234,23 +219,6 @@
      &        set_Csim_type = id_CSIM_COMPONENT
 !
       end function set_Csim_type
-!
-! -----------------------------------------------------------------------
-!
-      real(kind = kreal) function set_fixed_Csim                        &
-     &                          (default, csim_fact_ctl)
-!
-      use t_control_elements
-!
-      real(kind = kreal), intent(in) :: default
-      type(read_real_item), intent(in) :: csim_fact_ctl
-!
-      set_fixed_Csim = default
-!
-      if(csim_fact_ctl%iflag .eq. 0) return
-      set_fixed_Csim = csim_fact_ctl%realvalue
-!
-      end function set_fixed_Csim
 !
 ! -----------------------------------------------------------------------
 !

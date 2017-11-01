@@ -175,7 +175,7 @@
 !$omp end parallel workshare
 !
       nnod_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
-      call product_model_coefs_pout(ifld_sgs, sph_rtp%nidx_rtp(3),      &
+      call product_model_coefs_pout(one, ifld_sgs, sph_rtp%nidx_rtp(3), &
      &   nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                   &
      &   irtp_sgs, ione, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,     &
      &   trns_SGS%frc_rtp)

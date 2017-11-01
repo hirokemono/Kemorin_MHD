@@ -6,8 +6,10 @@
 !>@brief Least square for model coefficients
 !!
 !!@verbatim
+!!      subroutine product_fixed_model_coefs                            &
+!!     &         (const_Csim, ifld, numdir, nnod_rtp, ncomp, frc_rtp)
 !!      subroutine product_model_coefs_pin                              &
-!!     &         (isgs, nphi, nnod_med, nfld_sgs, sgs_c,                &
+!!     &         (const_Csim, isgs, nphi, nnod_med, nfld_sgs, sgs_c,    &
 !!     &          ifld, numdir, nnod_rtp, ncomp, frc_rtp)
 !!      subroutine product_single_buo_coefs_pin                         &
 !!     &         (nnod_rtp, nnod_med, nphi, sgs_c, frc_rtp)
@@ -15,7 +17,7 @@
 !!     &         (nnod_rtp, nnod_med, nphi, sgs_c1, sgs_c2, frc_rtp)
 !!
 !!      subroutine product_model_coefs_pout                             &
-!!     &         (isgs, nphi, nnod_med, nfld_sgs, sgs_c,                &
+!!     &         (const_Csim, isgs, nphi, nnod_med, nfld_sgs, sgs_c,    &
 !!     &          ifld, numdir, nnod_rtp, ncomp, frc_rtp)
 !!      subroutine product_single_buo_coefs_pout                        &
 !!     &         (nnod_rtp, nnod_med, nphi, sgs_c, frc_rtp)
@@ -38,10 +40,36 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine product_fixed_model_coefs                              &
+     &         (const_Csim, ifld, numdir, nnod_rtp, ncomp, frc_rtp)
+!
+      real(kind = kreal), intent(in) :: const_Csim
+      integer(kind = kint), intent(in) :: nnod_rtp, ncomp
+      integer(kind = kint), intent(in) :: ifld, numdir
+!
+      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,ncomp)
+!
+      integer(kind = kint) :: nd
+!
+!
+!$omp parallel
+      do nd = 0, numdir-1
+!$omp workshare
+        frc_rtp(1:nnod_rtp,ifld+nd)                                     &
+     &        = const_Csim * frc_rtp(1:nnod_rtp,ifld+nd)
+!$omp end workshare
+     end do
+!$omp end parallel
+!
+      end subroutine product_fixed_model_coefs
+!
+!  ---------------------------------------------------------------------
+!
       subroutine product_model_coefs_pin                                &
-     &         (isgs, nphi, nnod_med, nfld_sgs, sgs_c,                  &
+     &         (const_Csim, isgs, nphi, nnod_med, nfld_sgs, sgs_c,      &
      &          ifld, numdir, nnod_rtp, ncomp, frc_rtp)
 !
+      real(kind = kreal), intent(in) :: const_Csim
       integer(kind = kint), intent(in) :: nnod_med, nfld_sgs
       integer(kind = kint), intent(in) :: isgs, nphi
       real(kind = kreal), intent(in) :: sgs_c(nnod_med,nfld_sgs)
@@ -59,7 +87,8 @@
         do kl = 1, nnod_med
           do m = 1, nphi
             i1 = m + (kl-1)*nphi
-            frc_rtp(i1,ifld+nd) = sgs_c(kl,isgs) * frc_rtp(i1,ifld+nd)
+            frc_rtp(i1,ifld+nd) = const_Csim * sgs_c(kl,isgs)           &
+     &                           * frc_rtp(i1,ifld+nd)
           end do
         end do
 !$omp end do
@@ -127,9 +156,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine product_model_coefs_pout                               &
-     &         (isgs, nphi, nnod_med, nfld_sgs, sgs_c,                  &
+     &         (const_Csim, isgs, nphi, nnod_med, nfld_sgs, sgs_c,      &
      &          ifld, numdir, nnod_rtp, ncomp, frc_rtp)
 !
+      real(kind = kreal), intent(in) :: const_Csim
       integer(kind = kint), intent(in) :: nnod_med, nfld_sgs
       integer(kind = kint), intent(in) :: isgs, nphi
       real(kind = kreal), intent(in) :: sgs_c(nnod_med,nfld_sgs)
@@ -148,7 +178,8 @@
         do m = 1, nphi
           do kl = 1, nnod_med
             i1 = kl + (m-1)*nnod_med
-            frc_rtp(i1,ifld+nd) = sgs_c(kl,isgs) * frc_rtp(i1,ifld+nd)
+            frc_rtp(i1,ifld+nd) = const_Csim * sgs_c(kl,isgs)           &
+     &                           * frc_rtp(i1,ifld+nd)
           end do
         end do
 !$omp end do

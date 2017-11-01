@@ -316,7 +316,7 @@
           if (iflag_debug.eq.1) write(*,*)                              &
      &                   'SGS_param%stab_weight', SGS_param%stab_weight
           call const_model_coefs_4_sph                                  &
-     &       (istep_dynamic, SGS_param%stab_weight, sph%sph_rtp,        &
+     &       (istep_dynamic, SGS_param, sph%sph_rtp,                    &
      &        dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,              &
      &        dynamic_SPH%wk_sgs, trns_SGS)
 !
@@ -334,6 +334,9 @@
      &          dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs, trns_SGS)
           end if
           call end_elapsed_time(83)
+        else
+          call prod_fixed_sph_SGS_Csim                                  &
+     &       (SGS_param, sph%sph_rtp, dynamic_SPH%ifld_sgs, trns_SGS)
         end if
         call end_elapsed_time(15)
 !

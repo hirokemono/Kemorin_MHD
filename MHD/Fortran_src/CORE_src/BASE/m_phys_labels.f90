@@ -117,6 +117,13 @@
 !!   velocity_scale   temperature_scale
 !!   magnetic_scale   composition_scale
 !!
+!!
+!!   viscosity  kinetic_viscosity
+!!   magnetic_diffusivity
+!!   thermal_conductivity thermal_diffusivity
+!!   chemical_diffusivity
+!!
+!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!    name of terms
@@ -1034,10 +1041,20 @@
 !
 !   --------------------------------------------------------------------
 !
+!>        Field label for viscosity   @f$ \mu @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_viscosity =        'viscosity'
+!>        Field label for thermal diffusivity @f$ k @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_T_conductivity =   'thermal_conductivity'
+!
+!
 !>        Field label for kinetic viscosity
+!>                               @f$ \nu = \mu / \bar{\rho} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_K_viscosity =      'kinetic_viscosity'
-!>        Field label for thermal diffusivity
+!>        Field label for thermal diffusivity 
+!!                               @f$ \kappa_{T} = k / \bar{\rho} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_T_diffusivity =    'thermal_diffusivity'
 !>        Field label for chemical diffusivity

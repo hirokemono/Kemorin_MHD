@@ -665,6 +665,12 @@
 !>        start address for composition length scale
         integer (kind=kint) :: i_comp_scale =       izero
 !
+!
+!>        start address for viscosity   @f$ \mu @f$
+        integer (kind=kint) :: i_viscosity =   izero
+!>        start address for thermal diffusivity @f$ k @f$
+        integer (kind=kint) :: i_T_conductivity =   izero
+!
 !>        start address for kinetic viscosity
         integer (kind=kint) :: i_K_viscosity =   izero
 !>        start address for thermal diffusivity
