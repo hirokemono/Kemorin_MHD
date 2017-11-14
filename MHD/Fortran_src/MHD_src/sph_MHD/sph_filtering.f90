@@ -65,8 +65,8 @@
 !
       if(SGS_par%model_p%iflag_SGS .eq. 0) return
 !
-      call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj,            &
-     &    sph_grps, dynamic_SPH%sph_filters)
+      call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj, sph_grps,  &
+     &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
 !
       call init_work_4_SGS_sph_mhd(SGS_par, sph%sph_rtp, MHD_prop,      &
      &    dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,                  &

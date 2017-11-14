@@ -20,10 +20,6 @@
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph1
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(SGS_paremeters), intent(inout) :: SGS_par
-!!        type(sph_filters_type), intent(inout) :: sph_filters(1)
-!!        type(mesh_data), intent(inout) :: femmesh
-!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC

@@ -26,14 +26,22 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      array sph_filter_ctl    2
 !!        begin sph_filter_ctl
+!!          sph_filter_type      'gaussian'
+!!!          sph_filter_type      'cutoff'
+!!          radial_filter_type   'gaussian'
 !!          number_of_moments   5
 !!          radial_filter_width     1.0
 !!          sphere_filter_width     1.0
 !!        end   sph_filter_ctl
 !!        begin sph_filter_ctl
+!!          sph_filter_type      'recursive'
+!!          radial_filter_type   'recursive'
 !!          number_of_moments   7
 !!          radial_filter_width     2.0
 !!          sphere_filter_width     2.0
+!!          sphere_filter_width     2.0
+!!          first_reference_filter_ID    1
+!!          second_reference_filter_ID   1
 !!        end   sph_filter_ctl
 !!      end array sph_filter_ctl
 !!
@@ -72,12 +80,21 @@
 !
 !>        Structure for spherical shell filter
       type sph_filter_ctl_type
+!>        Structure of sphere filter type
+        type(read_character_item) :: sph_filter_type_ctl
+!>        Structure of radial filter type
+        type(read_character_item) :: radial_filter_type_ctl
 !>        Structure for number of moments of filter
         type(read_integer_item) :: maximum_moments_ctl
 !>        Structure for radial filter width
         type(read_real_item) :: sphere_filter_width_ctl
 !>        Structure for horizontal filter width
         type(read_real_item) :: radial_filter_width_ctl
+!
+!>        Structure of first reference filter
+        type(read_integer_item) :: first_reference_ctl
+!>        Structure of second reference filter
+        type(read_integer_item) :: second_reference_ctl
       end type sph_filter_ctl_type
 !
 !
@@ -99,11 +116,19 @@
 !    4th level for SGS model
 !
       character(len=kchara), parameter                                  &
+     &             :: hd_sph_filter_type =    'sph_filter_type'
+      character(len=kchara), parameter                                  &
+     &             :: hd_radial_filter_type = 'radial_filter_type'
+      character(len=kchara), parameter                                  &
      &             :: hd_max_mom = 'number_of_moments'
       character(len=kchara), parameter                                  &
      &             :: hd_radial_filter_w = 'radial_filter_width'
       character(len=kchara), parameter                                  &
      &             :: hd_sphere_filter_w = 'sphere_filter_width'
+      character(len=kchara), parameter                                  &
+     &             :: hd_1st_reference = 'first_reference_filter_ID'
+      character(len=kchara), parameter                                  &
+     &             :: hd_2nd_reference = 'second_reference_filter_ID'
 !
 !    5th level for 3d filtering
 !
@@ -121,6 +146,7 @@
       character(len=kchara) :: hd_comp_filter_ctl                       &
      &                        =  'composition_filter_ctl'
 !
+      private :: hd_sph_filter_type, hd_radial_filter_type
       private :: hd_radial_filter_w, hd_sphere_filter_w, hd_max_mom
       private :: hd_whole_filter_grp, hd_fluid_filter_grp
       private :: hd_momentum_filter_ctl, hd_heat_filter_ctl
@@ -184,8 +210,17 @@
         call find_control_end_flag(hd_block, iflag)
         if(iflag .gt. 0) exit
 !
+        call read_chara_ctl_type(hd_sph_filter_type,                    &
+     &      sphf_ctl%sph_filter_type_ctl)
+        call read_chara_ctl_type(hd_radial_filter_type,                 &
+     &      sphf_ctl%radial_filter_type_ctl)
+!
         call read_integer_ctl_type(hd_max_mom,                          &
      &      sphf_ctl%maximum_moments_ctl)
+        call read_integer_ctl_type(hd_1st_reference,                    &
+     &      sphf_ctl%first_reference_ctl)
+        call read_integer_ctl_type(hd_2nd_reference,                    &
+     &      sphf_ctl%second_reference_ctl)
 !
         call read_real_ctl_type(hd_radial_filter_w,                     &
      &      sphf_ctl%radial_filter_width_ctl)
@@ -224,6 +259,7 @@
       type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
 !
 !
+      call bcast_ctl_type_c1(sphf_ctl%sph_filter_type_ctl)
       call bcast_ctl_type_i1(sphf_ctl%maximum_moments_ctl)
 !
       call bcast_ctl_type_r1(sphf_ctl%radial_filter_width_ctl)

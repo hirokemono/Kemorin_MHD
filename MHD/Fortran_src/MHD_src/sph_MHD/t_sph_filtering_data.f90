@@ -14,6 +14,12 @@
 !!      subroutine cal_r_gaussian_moments(filter_length, mom)
 !!      subroutine set_sph_gaussian_filter(l_truncation, f_width,       &
 !!     &          weight, num_momentum, filter_mom)
+!!      subroutine set_sph_cutoff_filter(l_truncation, f_width,         &
+!!     &          weight, num_momentum, filter_mom)
+!!      subroutine set_sph_recursive_filter                             &
+!!     &         (l_truncation, num_momentum, nmom_ref1, nmom_ref2,     &
+!!     &          ref1_weight, ref1_mom, ref2_weight, ref2_mom,         &
+!!     &          weight, filter_mom)
 !!
 !!      subroutine check_radial_filter(sph_rj, r_filter)
 !!      subroutine check_radial_filter_func(sph_rj, r_filter)
@@ -31,6 +37,14 @@
       use t_spheric_parameter
 !
       implicit none
+!
+!
+      character(len=kchara), parameter :: gaussian_label =  'gaussian'
+      character(len=kchara), parameter :: cutoff_label =    'cutoff'
+      character(len=kchara), parameter :: recursive_label = 'recursive'
+      integer(kind = kint), parameter :: iflag_gaussian_filter =   0
+      integer(kind = kint), parameter :: iflag_cutoff_filter =    10
+      integer(kind = kint), parameter :: iflag_recursive_filter = 20
 !
 !
       type sph_filter_moment
@@ -61,6 +75,17 @@
 !>      Structure for filtering data for spherical shell
       type sph_filters_type
         real(kind = kreal) :: width = 1.0d0
+!>        integer flag of filter function on sphere
+        integer(kind = kint)                                            &
+     &        :: itype_sph_filter =    iflag_gaussian_filter
+!>        integer flag of radial filter function
+        integer(kind = kint)                                            &
+     &        :: itype_radial_filter = iflag_gaussian_filter
+!
+!>        1st reference filter ID for multiplied filter
+        integer(kind = kint) :: id_1st_ref_filter = ione
+!>        2nd reference filter ID for multiplied filter
+        integer(kind = kint) :: id_2nd_ref_filter = ione
 !
 !> data structure for radial filter coefficients table
         type(filter_coefficients_type) :: r_filter
@@ -197,6 +222,66 @@
       filter_mom(0:num_momentum-1) = filter_mom**2
 !
       end subroutine set_sph_gaussian_filter
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_sph_cutoff_filter(l_truncation, f_width,           &
+     &          weight, num_momentum, filter_mom)
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: num_momentum
+      real(kind = kreal), intent(in) :: f_width
+      real(kind = kreal), intent(inout) :: weight(0:l_truncation)
+      real(kind = kreal), intent(inout) :: filter_mom(0:num_momentum-1)
+!
+      integer(kind = kint) :: i, l, l_cutoff
+!
+!
+      l_cutoff = min(l_truncation, int(dble(l_truncation)/f_width))
+      do l = 0, l_cutoff
+        weight(l) = one
+      end do
+      do l = l_cutoff+1, l_truncation
+        weight(l) = zero
+      end do
+!
+      filter_mom(0) = one
+      do i = 1, num_momentum-2, 2
+        filter_mom(i) = zero
+        filter_mom(i+1) =   real(2*i-1) * filter_mom(i-1)
+      end do
+      filter_mom(0:num_momentum-1) = filter_mom**2
+!
+      end subroutine set_sph_cutoff_filter
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_sph_recursive_filter                               &
+     &         (l_truncation, num_momentum, nmom_ref1, nmom_ref2,       &
+     &          ref1_weight, ref1_mom, ref2_weight, ref2_mom,           &
+     &          weight, filter_mom)
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      integer(kind = kint), intent(in) :: nmom_ref1, nmom_ref2
+      integer(kind = kint), intent(in) :: num_momentum
+      real(kind = kreal), intent(in) :: ref1_weight(0:l_truncation)
+      real(kind = kreal), intent(in) :: ref2_weight(0:l_truncation)
+      real(kind = kreal), intent(in) :: ref1_mom(0:num_momentum-1)
+      real(kind = kreal), intent(in) :: ref2_mom(0:num_momentum-1)
+!
+      real(kind = kreal), intent(inout) :: weight(0:l_truncation)
+      real(kind = kreal), intent(inout) :: filter_mom(0:num_momentum-1)
+!
+      integer(kind = kint) :: min_nmom
+!
+!
+      min_nmom = min(nmom_ref1, nmom_ref2)
+      weight(0:l_truncation) =   ref1_weight(0:l_truncation)            &
+     &                         * ref2_weight(0:l_truncation)
+      filter_mom(0:min_nmom-1) = ref1_mom(0:min_nmom-1)                 &
+     &                         * ref2_mom(0:min_nmom-1)
+!
+      end subroutine set_sph_recursive_filter
 !
 ! -----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

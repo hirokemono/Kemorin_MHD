@@ -8,7 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine cal_filtered_sph_rj_fields                           &
-!!     &         (sph_rj, ipol, sph_filters, rj_fld)
+!!     &         (sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
+!!      subroutine cal_filtered_sph_rj_forces                           &
+!!     &         (sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol
+!!        type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
 !
@@ -17,6 +24,7 @@
       use m_precision
       use m_constants
 !
+      use t_SGS_control_parameter
       use t_spheric_rj_data
       use t_phys_data
       use t_sph_filtering_data
@@ -34,36 +42,42 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_filtered_sph_rj_fields                             &
-     &         (sph_rj, ipol, sph_filters, rj_fld)
+     &         (sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
-      type(sph_filters_type), intent(in) :: sph_filters(1)
+      type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call cal_sph_base_filtering_fields                                &
-     &   (sph_rj, ipol, sph_filters(1), rj_fld)
+     &   (sph_rj, ipol, dynamic_SPH%sph_filters(1), rj_fld)
+!
+      if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
       call cal_sph_wide_filtering_fields                                &
-     &   (sph_rj, ipol, sph_filters(1), rj_fld)
+     &   (sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
 !
       end subroutine cal_filtered_sph_rj_fields
 !
 ! ----------------------------------------------------------------------
 !
       subroutine cal_filtered_sph_rj_forces                             &
-     &         (sph_rj, ipol, sph_filters, rj_fld)
+     &         (sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
-      type(sph_filters_type), intent(in) :: sph_filters(1)
+      type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call cal_sph_wide_filtering_forces                                &
-     &   (sph_rj, ipol, sph_filters(1), rj_fld)
+     &   (sph_rj, ipol, dynamic_SPH%sph_filters(1), rj_fld)
+!
+      if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
       call cal_sph_base_filtering_forces                                &
-     &   (sph_rj, ipol, sph_filters(1), rj_fld)
+     &   (sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
 !
       end subroutine cal_filtered_sph_rj_forces
 !
@@ -115,25 +129,25 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call vector_sph_filter(ipol%i_filter_velo, ipol%i_wide_fil_velo,  &
+      call vector_sph_filter(ipol%i_velo, ipol%i_wide_fil_velo,         &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_filter_vort, ipol%i_wide_fil_vort,  &
-     &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
-!
-      call vector_sph_filter                                            &
-     &   (ipol%i_filter_magne, ipol%i_wide_fil_magne,                   &
+      call vector_sph_filter(ipol%i_vort, ipol%i_wide_fil_vort,         &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &
-     &   (ipol%i_filter_current, ipol%i_wide_fil_current,               &
+     &   (ipol%i_magne, ipol%i_wide_fil_magne,                          &
+     &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
+!
+      call vector_sph_filter                                            &
+     &   (ipol%i_current, ipol%i_wide_fil_current,                      &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
 !
-      call scalar_sph_filter(ipol%i_filter_temp, ipol%i_wide_fil_temp,  &
+      call scalar_sph_filter(ipol%i_temp, ipol%i_wide_fil_temp,         &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      call scalar_sph_filter(ipol%i_filter_comp, ipol%i_wide_fil_comp,  &
+      call scalar_sph_filter(ipol%i_light, ipol%i_wide_fil_comp,        &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       end subroutine cal_sph_wide_filtering_fields
@@ -183,21 +197,21 @@
 !
 !
       call vector_sph_filter                                            &
-     &   (ipol%i_SGS_inertia, ipol%i_wide_SGS_inertia,                  &
+     &   (ipol%i_m_advect, ipol%i_wide_SGS_inertia,                     &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &
-     &   (ipol%i_SGS_Lorentz, ipol%i_wide_SGS_Lorentz,                  &
+     &   (ipol%i_lorentz, ipol%i_wide_SGS_Lorentz,                      &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       call vector_sph_filter                                            &
-     &   (ipol%i_SGS_vp_induct, ipol%i_wide_SGS_vp_induct,              &
+     &   (ipol%i_vp_induct, ipol%i_wide_SGS_vp_induct,                  &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_SGS_h_flux, ipol%i_wide_SGS_h_flux, &
+      call vector_sph_filter(ipol%i_h_flux, ipol%i_wide_SGS_h_flux,     &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_SGS_c_flux, ipol%i_wide_SGS_c_flux, &
+      call vector_sph_filter(ipol%i_c_flux, ipol%i_wide_SGS_c_flux,     &
      &    sph_rj, sph_wide_f%r_filter, sph_wide_f%sph_filter, rj_fld)
 !
       end subroutine cal_sph_wide_filtering_forces

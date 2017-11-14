@@ -7,8 +7,12 @@
 !>@brief  Evaluate horizontal filtering in spectrunm space
 !!
 !!@verbatim
+!!      subroutine alloc_sph_filter_type(num_filter, dynamic_SPH)
+!!      subroutine dealloc_sph_filter_type(dynamic_SPH)
+!!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!!
 !!      subroutine init_filter_4_SPH_MHD(sph_params, sph_rj, sph_grps,  &
-!!     &          sph_filters)
+!!     &          num_sph_filteres, sph_filters)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_group_data), intent(in) :: sph_grps
@@ -57,15 +61,17 @@
 !>         Work area for dynamic SGS model
         type(work_4_sph_SGS_buoyancy) :: wk_sgs_buo
 !
+!>         Number of filter functions
+        integer(kind = kint) :: num_sph_filteres
 !>         Filter functions
-        type(sph_filters_type) :: sph_filters(1)
+        type(sph_filters_type), allocatable :: sph_filters(:)
 !
         type(field_IO) :: Csim_S_IO
 !        type(field_IO) :: Cdiff_S_IO
       end type dynamic_SGS_data_4_sph
 !
       private :: const_sph_radial_filter, const_radial_filter
-      private :: const_sph_gaussian_filter
+      private :: const_filter_on_sphere
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,55 +79,74 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine alloc_sph_filter_type(num_filter, dynamic_SPH)
+!
+      integer(kind = kint), intent(in) :: num_filter
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!
+!
+      dynamic_SPH%num_sph_filteres = num_filter
+      allocate(dynamic_SPH%sph_filters(dynamic_SPH%num_sph_filteres))
+!
+      end subroutine alloc_sph_filter_type
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_filter_type(dynamic_SPH)
+!
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!
+!
+      deallocate(dynamic_SPH%sph_filters)
+!
+      end subroutine dealloc_sph_filter_type
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
       subroutine init_filter_4_SPH_MHD(sph_params, sph_rj, sph_grps,    &
-     &          sph_filters)
+     &          num_sph_filteres, sph_filters)
 !
       use calypso_mpi
       use wider_radial_filter_data
 !
+      integer(kind = kint), intent(in) :: num_sph_filteres
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_group_data), intent(in) :: sph_grps
-      type(sph_filters_type), intent(inout) :: sph_filters(1)
+      type(sph_filters_type), intent(inout)                             &
+     &                        :: sph_filters(num_sph_filteres)
+!
+      integer(kind = kint)  :: i, i1, i2
 !
 !
-      if(iflag_debug.gt.0) write(*,*)' const_sph_radial_filter'
-      call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(1))
-      call calypso_mpi_barrier
-      if(iflag_debug.gt.0) write(*,*)' const_sph_gaussian_filter'
-      call const_sph_gaussian_filter(sph_params%l_truncation,           &
-     &    sph_filters(1)%sph_moments, sph_filters(1)%sph_filter)
-      call calypso_mpi_barrier
+      do i = 1, num_sph_filteres
+        i1 = sph_filters(i)%id_1st_ref_filter
+        i2 = sph_filters(i)%id_2nd_ref_filter
+        if(sph_filters(i)%itype_radial_filter                           &
+     &                  .eq. iflag_recursive_filter) then
+          call radial_wider_fileters(sph_rj, sph_filters(i1)%r_filter,  &
+     &        sph_filters(i2)%r_filter, sph_filters(i)%r_filter)
+        else
+          if(iflag_debug.gt.0) write(*,*)' const_sph_radial_filter'
+          call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(i))
+        end if
 !
+        if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
+        call const_filter_on_sphere                                     &
+     &     (sph_filters(i)%itype_sph_filter, sph_params%l_truncation,   &
+     &      sph_filters(i1)%sph_moments, sph_filters(i2)%sph_moments,   &
+     &      sph_filters(i1)%sph_filter, sph_filters(i2)%sph_filter,     &
+     &      sph_filters(i)%sph_moments, sph_filters(i)%sph_filter)
 !
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'check_radial_filter sph_filters(1)'
-        call check_radial_filter(sph_rj, sph_filters(1)%r_filter)
-        write(*,*) 'check_horiz_filter_weight sph_filters(1)'
-        call check_horiz_filter_weight(sph_filters(1)%sph_filter)
-      end if
-!
-!   Second filter
-!      call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(2))
-!
-!      if(iflag_debug .gt. 0) then
-!        call check_radial_filter(sph_rj, sph_filters(2)%r_filter)
-!      end if
-!
-!      call const_sph_gaussian_filter(sph_params%l_truncation,          &
-!     &    sph_filters(2)%sph_moments, sph_filters(2)%sph_filter)
-!
-!
-!   Multiplied filter
-!      call cal_wider_fileters(sph_rj, sph_filters(1)%r_filter,         &
-!     &   sph_filters(2)%r_filter, sph_filters(3)%r_filter)
-!
-!      if(iflag_debug .gt. 0) then
-!        call check_radial_filter(sph_rj, sph_filters(3)%r_filter)
-!      end if
-!
-!      call const_sph_gaussian_filter(sph_params%l_truncation,          &
-!     &    sph_filters(3)%sph_moments, sph_filters(3)%sph_filter)
+        if(iflag_debug .gt. 0) then
+          write(*,*) 'check_radial_filter for no. ', i
+          call check_radial_filter(sph_rj, sph_filters(i)%r_filter)
+          write(*,*) 'check_horiz_filter_weight for no. ', i
+          call check_horiz_filter_weight(sph_filters(i)%sph_filter)
+        end if
+        call calypso_mpi_barrier
+      end do
 !
       end subroutine init_filter_4_SPH_MHD
 !
@@ -186,28 +211,51 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_sph_gaussian_filter                              &
-     &         (l_truncation, sph_moments, sph_filter)
+      subroutine const_filter_on_sphere                                 &
+     &         (itype_sph_filter,  l_truncation,                        &
+     &          ref1_moments, ref2_moments, ref1_filter, ref2_filter,   &
+     &          sph_moments, sph_filter)
 !
+      integer(kind = kint), intent(in) :: itype_sph_filter
       integer(kind = kint), intent(in) :: l_truncation
+      type(sph_gaussian_filter), intent(in) :: ref1_filter, ref2_filter
+      type(sph_filter_moment), intent(in) :: ref1_moments, ref2_moments
 !
       type(sph_gaussian_filter), intent(inout) :: sph_filter
       type(sph_filter_moment), intent(inout) :: sph_moments
 !
 !
-      call calypso_mpi_barrier
-      if(iflag_debug.gt.0) write(*,*)' alloc_sph_filter_weights'
-      call alloc_sph_filter_weights(l_truncation, sph_filter)
-      call calypso_mpi_barrier
-      if(iflag_debug.gt.0) write(*,*)' alloc_sph_filter_moms'
-      call alloc_sph_filter_moms(sph_moments)
-      call calypso_mpi_barrier
-      if(iflag_debug.gt.0) write(*,*)' set_sph_gaussian_filter'
-      call set_sph_gaussian_filter(sph_filter%l_truncation,             &
-     &    sph_filter%f_width, sph_filter%weight,                        &
-     &    sph_moments%num_momentum, sph_moments%filter_mom)
+      if(itype_sph_filter .eq. iflag_recursive_filter) then
+        sph_moments%num_momentum                                        &
+     &      = max(ref1_moments%num_momentum, ref2_moments%num_momentum)
+      end if
 !
-      end subroutine const_sph_gaussian_filter
+      call alloc_sph_filter_weights(l_truncation, sph_filter)
+      call alloc_sph_filter_moms(sph_moments)
+!
+!
+      if(itype_sph_filter .eq. iflag_recursive_filter) then
+        if(iflag_debug.gt.0) write(*,*)' set_sph_recursive_filter'
+        call set_sph_recursive_filter                                   &
+     &     (sph_filter%l_truncation, sph_moments%num_momentum,          &
+     &      ref1_moments%num_momentum, ref2_moments%num_momentum,       &
+     &      ref1_filter%weight, ref1_moments%filter_mom,                &
+     &      ref2_filter%weight, ref2_moments%filter_mom,                &
+     &      sph_filter%weight, sph_moments%filter_mom)
+!
+      else if(itype_sph_filter .eq. iflag_cutoff_filter) then
+        if(iflag_debug.gt.0) write(*,*)' set_sph_cutoff_filter'
+        call set_sph_cutoff_filter(sph_filter%l_truncation,             &
+     &      sph_filter%f_width, sph_filter%weight,                      &
+     &      sph_moments%num_momentum, sph_moments%filter_mom)
+      else
+        if(iflag_debug.gt.0) write(*,*)' set_sph_gaussian_filter'
+        call set_sph_gaussian_filter(sph_filter%l_truncation,           &
+     &      sph_filter%f_width, sph_filter%weight,                      &
+     &      sph_moments%num_momentum, sph_moments%filter_mom)
+      end if
+!
+      end subroutine const_filter_on_sphere
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

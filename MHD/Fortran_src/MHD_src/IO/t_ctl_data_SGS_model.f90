@@ -74,16 +74,7 @@
 !!      SGS_buoyancy_Csim_usage   volume
 !!
 !!      array sph_filter_ctl    2
-!!        begin sph_filter_ctl
-!!          number_of_moments   5
-!!          radial_filter_width     1.0
-!!          sphere_filter_width     1.0
-!!        end   sph_filter_ctl
-!!        begin sph_filter_ctl
-!!          number_of_moments   7
-!!          radial_filter_width     2.0
-!!          sphere_filter_width     2.0
-!!        end   sph_filter_ctl
+!!        ...
 !!      end array sph_filter_ctl
 !!
 !!
@@ -130,19 +121,7 @@
 !!      end array commutation_ctl
 !!
 !!      begin 3d_filtering_ctl
-!!        array whole_filtering_grp_ctl  2
-!!          whole_filtering_grp_ctl  Both   end
-!!          whole_filtering_grp_ctl  whole  end
-!!        end array 3d_filtering_ctl
-!!
-!!        array fluid_filtering_grp_ctl  2
-!!            fluid_filtering_grp_ctl  Both   end
-!!            fluid_filtering_grp_ctl  fluid  end
-!!        end array fluid_filtering_grp_ctl
-!!
-!!        momentum_filter_ctl      fluid_filtering
-!!        heat_filter_ctl          fluid_filtering
-!!        induction_filter_ctl     whole_filtering
+!!        ...
 !!      end 3d_filtering_ctl
 !! 
 !!  Define by number and starting group of element group list

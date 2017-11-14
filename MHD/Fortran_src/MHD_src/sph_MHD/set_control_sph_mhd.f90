@@ -21,7 +21,6 @@
 !!        type(sph_grids), intent(inout) :: sph_gen
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
-!!        type(sph_filters_type), intent(inout) :: sph_filters(1)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC

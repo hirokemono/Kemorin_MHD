@@ -197,7 +197,7 @@
         if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_fields'
         call start_elapsed_time(81)
         call cal_filtered_sph_rj_fields                                 &
-     &     (sph%sph_rj, ipol, dynamic_SPH%sph_filters, rj_fld)
+     &     (sph%sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
         call end_elapsed_time(81)
       end if
 !
@@ -284,7 +284,7 @@
         if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_forces'
         call start_elapsed_time(81)
         call cal_filtered_sph_rj_forces                                 &
-     &     (sph%sph_rj, ipol, dynamic_SPH%sph_filters, rj_fld)
+     &     (sph%sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
         call end_elapsed_time(81)
 !
         call start_elapsed_time(14)

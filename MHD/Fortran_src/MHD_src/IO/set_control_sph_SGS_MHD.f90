@@ -128,10 +128,8 @@
      &    MHD_files%Cdiff_file_IO)
 !
       if(SGS_par%model_p%iflag_SGS .ne. id_SGS_none) then
-        call set_control_SPH_SGS_1filter                                &
-     &     (model_ctl%sgs_ctl%num_sph_filter_ctl,                       &
-     &      model_ctl%sgs_ctl%sph_filter_ctl(1),                        &
-     &      dynamic_SPH%sph_filters(1))
+        call set_control_SPH_SGS_filters                                &
+     &     (model_ctl%sgs_ctl, SGS_par%model_p, dynamic_SPH)
       end if
       if(model_ctl%sgs_ctl%num_sph_filter_ctl .gt. 0) then
         call dealloc_sph_filter_ctl(model_ctl%sgs_ctl)

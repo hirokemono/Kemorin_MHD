@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
-!!      subroutine cal_wider_fileters                                   &
+!!      subroutine radial_wider_fileters                                &
 !!     &         (sph_rj, r_filter, wide_filter, wide2_filter)
 !
 !
@@ -25,7 +25,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_wider_fileters                                     &
+      subroutine radial_wider_fileters                                  &
      &         (sph_rj, r_filter, wide_filter, wide2_filter)
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -50,7 +50,7 @@
 !
       deallocate(a_org, a_2nd, a_prd2)
 !
-      end subroutine cal_wider_fileters
+      end subroutine radial_wider_fileters
 !
 ! -----------------------------------------------------------------------
 !
