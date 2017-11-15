@@ -9,20 +9,24 @@
 !!      subroutine set_psf_type_id(numnod, numele, nnod_4_ele, ie,      &
 !!     &          ele_search, mark_ele, c_ref)
 !!      subroutine count_num_patch_4_psf(numele, numedge, iedge_4_ele,  &
-!!     &          ele_search, mark_ele, id_n_on_e, istack_patch_smp)
+!!     &          ele_search, num_case_tbl, psf_case_tbl,               &
+!!     &          mark_ele, id_n_on_e, istack_patch_smp)
 !!      subroutine set_patch_4_psf(numele, numedge, iedge_4_ele,        &
-!!     &          ele_search, mark_ele, id_n_on_e, istack_numele,       &
+!!     &          ele_search, num_case_tbl, psf_case_tbl,               &
+!!     &          mark_ele,  id_n_on_e, istack_numele,                  &
 !!     &          npatch_tot, istack_patch_smp, iele_global, ie_patch)
+!!        type(psf_each_case), intent(in) :: psf_case_tbl(num_case_tbl)
+!!        type(sect_search_list), intent(in) :: ele_search
 !!@endverbatim
 !
       module patch_4_psf
 !
       use m_precision
       use m_constants
+      use m_geometry_constants
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_psf_case_table
 !
       implicit none
 !
@@ -88,13 +92,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_num_patch_4_psf(numele, numedge, iedge_4_ele,    &
-     &          ele_search, mark_ele, id_n_on_e, istack_patch_smp)
+     &          ele_search, num_case_tbl, psf_case_tbl,                 &
+     &          mark_ele, id_n_on_e, istack_patch_smp)
 !
-      use m_geometry_constants
       use t_psf_geometry_list
+      use t_psf_case_table
 !
-      type(sect_search_list), intent(in) :: ele_search
       integer(kind = kint), intent(in) :: numele, numedge
+!
+      integer(kind=kint), intent(in) :: num_case_tbl
+      type(psf_each_case), intent(in) :: psf_case_tbl(num_case_tbl)
+      type(sect_search_list), intent(in) :: ele_search
+!
       integer(kind = kint), intent(in)                                  &
      &              :: iedge_4_ele(numele,nedge_4_ele)
       integer(kind = kint_gl), intent(in) :: id_n_on_e(numedge)
@@ -155,24 +164,29 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_patch_4_psf(numele, numedge, iedge_4_ele,          &
-     &          ele_search, mark_ele, id_n_on_e, istack_numele,         &
+     &          ele_search, num_case_tbl, psf_case_tbl,                 &
+     &          mark_ele,  id_n_on_e, istack_numele,                    &
      &          npatch_tot, istack_patch_smp, iele_global, ie_patch)
 !
-      use m_geometry_constants
       use t_psf_geometry_list
+      use t_psf_case_table
 !
       integer(kind = kint), intent(in) :: numele, numedge
       integer(kind = kint_gl), intent(in) :: istack_numele
       integer(kind = kint), intent(in)                                  &
      &              :: iedge_4_ele(numele,nedge_4_ele)
 !
+      integer(kind=kint), intent(in) :: num_case_tbl
+      type(psf_each_case), intent(in) :: psf_case_tbl(num_case_tbl)
       type(sect_search_list), intent(in) :: ele_search
+!
       integer(kind = kint_gl), intent(in) :: id_n_on_e(numedge)
       integer(kind = kint), intent(in)                                  &
      &              :: mark_ele(ele_search%num_search)
       integer(kind = kint), intent(in) :: npatch_tot
       integer(kind = kint), intent(in)                                  &
      &                    :: istack_patch_smp(0:np_smp)
+!
 !
       integer(kind = kint_gl), intent(inout) :: iele_global(npatch_tot)
       integer(kind = kint), intent(inout) :: ie_patch(npatch_tot,3)

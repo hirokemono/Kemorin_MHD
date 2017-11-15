@@ -39,6 +39,7 @@
       use t_psf_patch_data
       use t_ucd_data
 !
+      use t_psf_case_table
       use t_surface_group_connect
       use t_file_IO_parameter
 !
@@ -46,6 +47,9 @@
 !
 !>      Number of sections
       integer(kind = kint) :: num_psf
+!
+!>      Structure of case table for isosurface
+      type(psf_cases), save :: psf_case_tbls
 !
 !>      Structure for table for sections
       type(sectioning_list), allocatable, save :: psf_list(:)
@@ -100,6 +104,8 @@
       num_psf = num_psf_ctl
       if(num_psf .le. 0) return
 !
+      call init_psf_case_tables(psf_case_tbls)
+!
       if (iflag_debug.eq.1) write(*,*) 'allocate_control_params_4_psf'
       call allocate_control_params_4_psf(num_psf)
       do i_psf = 1, num_psf
@@ -136,7 +142,7 @@
       call set_node_and_patch_psf                                       &
      &   (num_psf, mesh%node, mesh%ele, ele_mesh%edge, mesh%nod_comm,   &
      &    ele_mesh%edge_comm, group%surf_grp, group%surf_nod_grp,       &
-     &    psf_search, psf_list, psf_grp_list, psf_mesh)
+     &    psf_case_tbls, psf_search, psf_list, psf_grp_list, psf_mesh)
 !
       call alloc_psf_field_data(num_psf, psf_mesh)
 !
@@ -216,6 +222,7 @@
       call dealloc_psf_node_and_patch(num_psf, psf_list, psf_mesh)
       call dealloc_psf_field_name(num_psf, psf_mesh)
       call dealloc_psf_field_data(num_psf, psf_mesh)
+      call dealloc_psf_case_table(psf_case_tbls)
 !
       deallocate(psf_mesh, psf_list, psf_grp_list)
       deallocate(psf_search, psf_out, psf_out_m, psf_param)

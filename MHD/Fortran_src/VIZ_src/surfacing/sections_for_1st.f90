@@ -39,8 +39,6 @@
       use m_cross_section
       use m_isosurface
 !
-      use set_psf_case_table
-!
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
 !
@@ -48,9 +46,6 @@
 !
 !
       call start_elapsed_time(60)
-      if (iflag_debug.eq.1)  write(*,*) 'set_sectioning_case_table'
-      call set_sectioning_case_table
-!
       call SECTIONING_initialize                                        &
      &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld)
       call end_elapsed_time(60)

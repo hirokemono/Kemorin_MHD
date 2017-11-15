@@ -75,7 +75,6 @@
       use m_control_params_4_psf
       use set_parallel_file_name
       use t_read_control_arrays
-      use set_psf_case_table
       use set_coefs_of_sections
 !
       integer(kind = kint) :: igrp
@@ -130,7 +129,6 @@
      &      = 'scalar'
       end do
 !
-      call set_sectioning_case_table
       call SECTIONING_initialize                                        &
      &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group, elemesh_FUTIL,       &
      &    field_FUTIL)

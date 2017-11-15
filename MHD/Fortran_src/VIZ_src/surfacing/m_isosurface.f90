@@ -32,8 +32,8 @@
       use t_psf_geometry_list
       use t_psf_patch_data
       use t_time_data
+      use t_psf_case_table
       use t_ucd_data
-!
 !
       use m_constants
       use m_machine_parameter
@@ -43,6 +43,9 @@
 !
 !>      Number of isosurfaces
       integer(kind = kint) :: num_iso
+!
+!>      Structure of case table for isosurface
+      type(psf_cases), save :: iso_case_tbls
 !
 !>      Structure for table for sections
       type(sectioning_list), allocatable, save :: iso_list(:)
@@ -89,6 +92,8 @@
 !
       num_iso = num_iso_ctl
       if (num_iso .le. 0) return
+!
+      call init_psf_case_tables(iso_case_tbls)
 !
       call alloc_iso_field_type
 !
@@ -144,7 +149,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso                                       &
      &   (num_iso, mesh%node, mesh%ele, ele_mesh%edge,                  &
-     &    ele_mesh%edge_comm, iso_search, iso_list, iso_mesh)
+     &    ele_mesh%edge_comm, iso_case_tbls, iso_search,                &
+     &    iso_list, iso_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
       call alloc_psf_field_data(num_iso, iso_mesh)
@@ -167,6 +173,7 @@
       use set_psf_iso_control
 !
       call dealloc_psf_field_name(num_iso, iso_mesh)
+      call dealloc_psf_case_table(iso_case_tbls)
 !
       deallocate(iso_mesh, iso_list)
       deallocate(iso_search, iso_param)
