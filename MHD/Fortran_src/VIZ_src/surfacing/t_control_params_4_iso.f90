@@ -4,10 +4,10 @@
 !        programmed by H.Matsui on May. 2006
 !
 !!      subroutine count_control_4_iso                                  &
-!!     &         (iso, num_mat, mat_name, num_nod_phys, phys_nod_name,  &
+!!     &         (iso_c, num_mat, mat_name, num_nod_phys, phys_nod_name,&
 !!     &          iso_fld, iso_param, iso_def, iso_file_IO)
 !!      subroutine set_control_4_iso                                    &
-!!     &         (iso, num_mat, mat_name, num_nod_phys, phys_nod_name,  &
+!!     &         (iso_c, num_mat, mat_name, num_nod_phys, phys_nod_name,&
 !!     &          iso_fld, iso_param, iso_def)
 !
       module t_control_params_4_iso
@@ -44,7 +44,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_control_4_iso                                    &
-     &         (iso, num_mat, mat_name, num_nod_phys, phys_nod_name,    &
+     &         (iso_c, num_mat, mat_name, num_nod_phys, phys_nod_name,  &
      &          iso_fld, iso_param, iso_def, iso_file_IO)
 !
       use m_file_format_switch
@@ -64,7 +64,7 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      type(iso_ctl), intent(in) :: iso
+      type(iso_ctl), intent(in) :: iso_c
       type(phys_data), intent(inout) :: iso_fld
       type(psf_parameters), intent(inout) :: iso_param
       type(isosurface_define), intent(inout) :: iso_def
@@ -74,19 +74,19 @@
 !
 !
       call set_merged_ucd_file_ctl(default_iso_prefix,                  &
-     &    iso%iso_file_head_ctl, iso%iso_output_type_ctl,               &
+     &    iso_c%iso_file_head_ctl, iso_c%iso_output_type_ctl,           &
      &    iso_file_IO)
 !
-      if     (iso%iso_out_field_ctl%num .gt. 0                          &
-     &  .and. iso%result_value_iso_ctl%iflag .gt. 0) then
-        tmpchara = iso%iso_result_type_ctl%charavalue
+      if     (iso_c%iso_out_field_ctl%num .gt. 0                        &
+     &  .and. iso_c%result_value_iso_ctl%iflag .gt. 0) then
+        tmpchara = iso_c%iso_result_type_ctl%charavalue
         if(cmp_no_case(tmpchara, cflag_field_iso)) then
           iso_def%id_iso_result_type = iflag_field_iso
         else if(cmp_no_case(tmpchara, cflag_const_iso)) then
           iso_def%id_iso_result_type = iflag_constant_iso
         end if
 !
-      else if(iso%iso_out_field_ctl%num .eq. 0) then
+      else if(iso_c%iso_out_field_ctl%num .eq. 0) then
         iso_def%id_iso_result_type = iflag_constant_iso
       else
         iso_def%id_iso_result_type = iflag_field_iso
@@ -96,12 +96,12 @@
         iso_fld%num_phys = ione
       else if (iso_def%id_iso_result_type .eq. iflag_field_iso) then
         call check_field_4_viz(num_nod_phys, phys_nod_name,             &
-     &      iso%iso_out_field_ctl%num, iso%iso_out_field_ctl%c1_tbl,    &
-     &      iso_fld%num_phys, iso_fld%num_phys_viz)
+     &     iso_c%iso_out_field_ctl%num, iso_c%iso_out_field_ctl%c1_tbl, &
+     &     iso_fld%num_phys, iso_fld%num_phys_viz)
       end if
 !
       call count_area_4_viz(num_mat, mat_name,                          &
-     &    iso%iso_area_ctl%num, iso%iso_area_ctl%c_tbl,                 &
+     &    iso_c%iso_area_ctl%num, iso_c%iso_area_ctl%c_tbl,             &
      &    iso_param%nele_grp_area)
 !
       end subroutine count_control_4_iso
@@ -109,7 +109,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_iso                                      &
-     &         (iso, num_mat, mat_name, num_nod_phys, phys_nod_name,    &
+     &         (iso_c, num_mat, mat_name, num_nod_phys, phys_nod_name,  &
      &          iso_fld, iso_param, iso_def)
 !
       use set_area_4_viz
@@ -124,7 +124,7 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      type(iso_ctl), intent(in) :: iso
+      type(iso_ctl), intent(in) :: iso_c
       type(phys_data), intent(inout) :: iso_fld
       type(psf_parameters), intent(inout) :: iso_param
       type(isosurface_define), intent(inout) :: iso_def
@@ -135,16 +135,16 @@
 !
 !
       call set_one_component_4_viz(num_nod_phys, phys_nod_name,         &
-     &    iso%isosurf_data_ctl%charavalue,                              &
-     &    iso%isosurf_comp_ctl%charavalue,                              &
+     &    iso_c%isosurf_data_ctl%charavalue,                            &
+     &    iso_c%isosurf_comp_ctl%charavalue,                            &
      &    iso_def%id_isosurf_data, iso_def%id_isosurf_comp,             &
      &    ncomp, ncomp_org, tmpchara)
 !
-      iso_def%isosurf_value = iso%isosurf_value_ctl%realvalue
+      iso_def%isosurf_value = iso_c%isosurf_value_ctl%realvalue
 !
       call alloc_output_comps_psf(iso_fld%num_phys, iso_param)
       if (iso_def%id_iso_result_type .eq. iflag_constant_iso) then
-        iso_def%result_value_iso = iso%result_value_iso_ctl%realvalue
+        iso_def%result_value_iso = iso_c%result_value_iso_ctl%realvalue
         iso_param%id_output(1) = iflag_constant_iso
         iso_param%icomp_output(1) = 0
         iso_fld%num_component(1) = 1
@@ -152,16 +152,16 @@
 !
       else if (iso_def%id_iso_result_type .eq. iflag_field_iso) then
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
-     &      iso%iso_out_field_ctl%num, iso%iso_out_field_ctl%c1_tbl,    &
-     &      iso%iso_out_field_ctl%c2_tbl, iso_fld%num_phys,             &
-     &      iso_param%id_output, iso_param%icomp_output,                &
-     &      iso_fld%num_component, iso_param%ncomp_org,                 &
-     &      iso_fld%phys_name)
+     &     iso_c%iso_out_field_ctl%num, iso_c%iso_out_field_ctl%c1_tbl, &
+     &     iso_c%iso_out_field_ctl%c2_tbl, iso_fld%num_phys,            &
+     &     iso_param%id_output, iso_param%icomp_output,                 &
+     &     iso_fld%num_component, iso_param%ncomp_org,                  &
+     &     iso_fld%phys_name)
       end if
 !
       call alloc_area_group_psf(iso_param)
       call s_set_area_4_viz(num_mat, mat_name,                          &
-     &     iso%iso_area_ctl%num, iso%iso_area_ctl%c_tbl,                &
+     &     iso_c%iso_area_ctl%num, iso_c%iso_area_ctl%c_tbl,            &
      &     iso_param%nele_grp_area, iso_param%id_ele_grp_area)
 !
       end subroutine set_control_4_iso
