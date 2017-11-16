@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      integer(kind = kint), function check_PVR_update
+!!      integer(kind = kint), function check_PVR_update(pvr_ctls)
 !!      subroutine PVR_initialize(mesh, group, ele_mesh, nod_fld)
 !!      subroutine PVR_visualize                                        &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld)
@@ -38,6 +38,7 @@
       use t_pvr_ray_startpoints
       use t_pvr_image_array
       use t_geometries_in_pvr_screen
+      use t_control_data_pvrs
 !
       use field_data_4_pvr
       use set_default_pvr_params
@@ -72,22 +73,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      integer(kind = kint) function check_PVR_update()
+      integer(kind = kint) function check_PVR_update(pvr_ctls)
 !
       use m_control_data_pvrs
       use set_pvr_control
       use skip_comment_f
 !
+      type(volume_rendering_controls), intent(inout) :: pvr_ctls
       character(len = kchara) :: tmpchara
 !
 !
       call calypso_mpi_barrier
-      call read_control_pvr_update(ione)
+      call read_control_pvr_update                                      &
+     &   (pvr_ctls%fname_pvr_ctl(1), pvr_ctls%pvr_ctl_struct(1))
 !
       if(my_rank .eq. izero) then
         check_PVR_update = IFLAG_THROUGH
-        if(pvr_ctl_struct(1)%updated_ctl%iflag .gt. 0) then
-          tmpchara = pvr_ctl_struct(1)%updated_ctl%charavalue
+        if(pvr_ctls%pvr_ctl_struct(1)%updated_ctl%iflag .gt. 0) then
+          tmpchara = pvr_ctls%pvr_ctl_struct(1)%updated_ctl%charavalue
           if(cmp_no_case(tmpchara, 'end')) then
             check_PVR_update = IFLAG_TERMINATE
           else if(cflag_update .ne. tmpchara) then
@@ -95,7 +98,7 @@
             cflag_update = tmpchara
           end if
         end if
-        call reset_pvr_update_flags(pvr_ctl_struct(1))
+        call reset_pvr_update_flags(pvr_ctls%pvr_ctl_struct(1))
       end if
       call mpi_Bcast(check_PVR_update, ione, CALYPSO_INTEGER, izero,    &
      &    CALYPSO_COMM, ierr_MPI)
@@ -105,60 +108,31 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine PVR_initialize(mesh, group, ele_mesh, nod_fld)
+      subroutine PVR_initialize                                         &
+     &         (mesh, group, ele_mesh, nod_fld, pvr_ctls)
 !
-      use m_control_data_pvrs
       use t_control_data_pvr_misc
       use set_pvr_control
       use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
       use find_selected_domain_bd
-      use bcast_control_data_4_pvr
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
+      type(volume_rendering_controls), intent(inout) :: pvr_ctls
 !
-      integer(kind = kint) :: i_pvr, i_psf
+      integer(kind = kint) :: i_pvr
 !
 !
-      num_pvr = num_pvr_ctl
-      if (num_pvr .le. 0) return
+      if(pvr_ctls%num_pvr_ctl .le. 0) return
 !
-      if(iflag_debug .gt. 0) write(*,*) 'allocate_components_4_pvr',    &
-     &         num_pvr
-      call allocate_components_4_pvr(mesh%node, mesh%ele, group)
+      call allocate_components_4_pvr                                   &
+     &   (mesh%node, mesh%ele, group, pvr_ctls)
 !
-      ctl_file_code = pvr_ctl_file_code
-      if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_control', num_pvr
-      do i_pvr = 1, num_pvr
-        call read_control_pvr(i_pvr)
-        call read_control_modelview(i_pvr)
-        call read_control_colormap(i_pvr)
-        do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
-          call read_control_pvr_section_def                             &
-     &       (pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf))
-        end do
-!
-        call bcast_vr_psf_ctl(pvr_ctl_struct(i_pvr))
-!
-        call set_each_pvr_control(group%ele_grp, group%surf_grp,        &
-     &      nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      pvr_ctl_struct(i_pvr), pvr_param(i_pvr)%file,               &
-     &      pvr_param(i_pvr)%field_def, pvr_data(i_pvr)%view,           &
-     &      pvr_param(i_pvr)%field, pvr_data(i_pvr)%screen,             &
-     &      pvr_data(i_pvr)%color, pvr_param(i_pvr)%colorbar)
-!
-        if(pvr_ctl_struct(1)%updated_ctl%iflag .gt. 0                   &
-     &     .and. i_pvr .eq. 1) then
-          cflag_update = pvr_ctl_struct(1)%updated_ctl%charavalue
-        end if
-!
-        call deallocate_cont_dat_pvr(pvr_ctl_struct(i_pvr))
-        call calypso_mpi_barrier
-      end do
-!
+      call read_set_pvr_controls(num_pvr, group, nod_fld,               &
+     &    pvr_ctls, cflag_update, pvr_param, pvr_data)
 !
       call allocate_imark_4_surface(ele_mesh%surf%numsurf)
       do i_pvr = 1, num_pvr
@@ -266,15 +240,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_components_4_pvr(node, ele, group)
+      subroutine allocate_components_4_pvr(node, ele, group, pvr_ctls)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(mesh_groups), intent(in) :: group
+      type(volume_rendering_controls), intent(in) :: pvr_ctls
 !
       integer(kind = kint) :: i_pvr
 !
 !
+      num_pvr = pvr_ctls%num_pvr_ctl
       allocate(pvr_param(num_pvr))
       allocate(pvr_data(num_pvr))
       do i_pvr = 1, num_pvr

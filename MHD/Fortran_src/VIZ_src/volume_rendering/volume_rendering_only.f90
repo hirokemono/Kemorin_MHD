@@ -37,6 +37,7 @@
      &         (femmesh, ele_mesh, nod_fld)
 !
       use volume_rendering
+      use m_control_data_pvrs
 !
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
@@ -44,7 +45,7 @@
 !
 !
       call PVR_initialize                                               &
-     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld)
+     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld, pvr_ctls1)
       call calypso_MPI_barrier
 !
       end subroutine init_visualize_pvr_only

@@ -41,6 +41,7 @@
 !
       use m_cross_section
       use m_control_data_sections
+      use m_control_data_pvrs
       use m_control_data_flines
       use volume_rendering
       use fieldline
@@ -65,7 +66,7 @@
 !
       call start_elapsed_time(62)
       call PVR_initialize                                               &
-     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld)
+     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld, pvr_ctls1)
       call calypso_MPI_barrier
       call end_elapsed_time(62)
 !

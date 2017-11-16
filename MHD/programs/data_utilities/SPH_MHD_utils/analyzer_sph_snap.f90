@@ -184,6 +184,7 @@
 !
       subroutine evolution_sph_snap_badboy
 !
+      use m_control_data_pvrs
       use volume_rendering_only
       use volume_rendering
       use FEM_analyzer_sph_MHD
@@ -243,7 +244,7 @@
 !*  ----------- Visualization --------------
 !*
       do
-        visval = check_PVR_update()
+        visval = check_PVR_update(pvr_ctls1)
         call calypso_mpi_barrier
 !
         if(visval .eq. IFLAG_TERMINATE) then
