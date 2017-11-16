@@ -54,7 +54,8 @@
 !
       call start_elapsed_time(61)
       call ISOSURF_initialize                                           &
-     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld)
+     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld,               &
+     &    iso_ctls1, iso1)
       call end_elapsed_time(61)
 !
       end subroutine init_visualize_surface
@@ -81,7 +82,7 @@
 !
       call start_elapsed_time(66)
       call ISOSURF_visualize(viz_step%ISO_t%istep_file, time_d,         &
-     &    femmesh%mesh, ele_mesh, nod_fld)
+     &    femmesh%mesh, ele_mesh, nod_fld, iso1)
       call end_elapsed_time(66)
 !
       end subroutine visualize_surface
