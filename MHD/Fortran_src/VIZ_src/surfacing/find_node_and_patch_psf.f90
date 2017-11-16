@@ -91,6 +91,7 @@
       use t_comm_table
       use t_geometry_data
       use t_edge_data
+      use t_group_data
       use t_surface_group_connect
       use t_psf_geometry_list
       use t_psf_patch_data
@@ -128,10 +129,8 @@
       end do
 !
       if (iflag_debug.eq.1)  write(*,*) 'count_nodes_4_psf'
-      call count_nodes_4_psf(num_psf, node%internal_node, edge%numedge, &
-     &    edge%nnod_4_edge, edge%ie_edge, edge%interior_edge,           &
-     &    sf_grp%num_grp, sf_grp_nod%ntot_node_sf_grp,                  &
-     &    sf_grp_nod%inod_stack_sf_grp, sf_grp_nod%inod_surf_grp,       &
+      call count_nodes_4_psf                                            &
+     &   (num_psf, node, edge, sf_grp, sf_grp_nod,                      &
      &    psf_def, psf_search, psf_list, psf_grp_list, psf_mesh)
 !
 !
@@ -143,12 +142,9 @@
       end do
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_nodes_4_psf'
-      call set_nodes_4_psf(num_psf, node%numnod, node%internal_node,    &
-     &    edge%numedge, edge%nnod_4_edge, node%xx,                      &
-     &    edge%ie_edge, edge%interior_edge, nod_comm, edge_comm,        &
-     &    sf_grp%num_grp, sf_grp_nod%ntot_node_sf_grp,                  &
-     &    sf_grp_nod%inod_stack_sf_grp, sf_grp_nod%inod_surf_grp,       &
-     &    psf_def, psf_search, psf_list, psf_grp_list, psf_mesh)
+      call set_nodes_4_psf(num_psf, node, edge, nod_comm, edge_comm,    &
+     &    sf_grp, sf_grp_nod, psf_def, psf_search,                      &
+     &    psf_list, psf_grp_list, psf_mesh)
 !
       if (iflag_debug.eq.1)  write(*,*) 'count_psf_patches'
       call count_psf_patches(num_psf, node%numnod,                      &
@@ -201,13 +197,10 @@
       integer(kind= kint) :: i_iso
 !
 !
-      call count_nodes_4_iso(num_iso, edge%numedge,                     &
-     &    edge%nnod_4_edge, edge%ie_edge, edge%interior_edge,           &
-     &    iso_search, iso_list, iso_mesh)
+      call count_nodes_4_iso                                            &
+     &   (num_iso, edge, iso_search, iso_list, iso_mesh)
 !
-      call set_nodes_4_iso                                              &
-     &   (num_iso, node%numnod, edge%numedge, edge%nnod_4_edge,         &
-     &    node%xx, edge%ie_edge, edge%interior_edge, edge_comm,         &
+      call set_nodes_4_iso(num_iso, node, edge, edge_comm,              &
      &    iso_search, iso_list, iso_mesh)
 !
 !
