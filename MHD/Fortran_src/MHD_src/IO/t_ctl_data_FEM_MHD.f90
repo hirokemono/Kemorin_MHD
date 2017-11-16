@@ -145,7 +145,7 @@
 !
         call read_monitor_data_ctl                                      &
      &     (hd_monitor_data, i_monitor_data, FEM_MHD_ctl%nmtr_ctl)
-        call read_sections_control_data
+        call read_sections_control_data(psf_ctls1, iso_ctls1)
       end do
 !
       end subroutine read_fem_mhd_control_data
@@ -172,8 +172,8 @@
 !
       call bcast_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
 !
-      call bcast_files_4_psf_ctl
-      call bcast_files_4_iso_ctl
+      call bcast_files_4_psf_ctl(psf_ctls1)
+      call bcast_files_4_iso_ctl(iso_ctls1)
 !
       end subroutine bcast_fem_mhd_ctl_data
 !

@@ -43,6 +43,7 @@
       use t_surface_group_connect
       use t_file_IO_parameter
       use t_control_params_4_psf
+      use t_control_data_sections
 !
       implicit  none
 !
@@ -107,23 +108,18 @@
       integer(kind = kint) :: i_psf
 !
 !
-      num_psf = num_psf_ctl
-      if(num_psf .le. 0) return
+      if(psf_ctls1%num_psf_ctl .le. 0) return
 !
       call init_psf_case_tables(psf_case_tbls)
 !
-      do i_psf = 1, num_psf
-        if (iflag_debug.eq.1) write(*,*) 'read_control_4_psf', i_psf
-        call read_control_4_psf(i_psf)
-      end do
-!
       if (iflag_debug.eq.1) write(*,*) 'alloc_psf_field_type'
-      call alloc_psf_field_type
+      call alloc_psf_field_type(psf_ctls1)
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_psf_control'
-      call set_psf_control(num_psf, group%ele_grp, group%surf_grp,      &
-     &    nod_fld, psf_param, psf_def, psf_mesh, psf_file_IO)
+      call set_psf_control                                              &
+     &   (num_psf, group%ele_grp, group%surf_grp, nod_fld,              &
+     &    psf_ctls1, psf_param, psf_def, psf_mesh, psf_file_IO)
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
@@ -191,12 +187,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_psf_field_type
+      subroutine alloc_psf_field_type(psf_ctls)
 !
       use m_field_file_format
 !
+      type(section_controls), intent(in) :: psf_ctls
       integer(kind = kint) :: i_psf
 !
+!
+      num_psf = psf_ctls%num_psf_ctl
 !
       allocate(psf_mesh(num_psf))
       allocate(psf_list(num_psf))

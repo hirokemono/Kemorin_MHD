@@ -17,6 +17,8 @@
 !
       implicit none
 !
+      private :: set_med_grp_patch_ctl
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -83,8 +85,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_med_patch_ele_grp',         &
      &             trim(grouping_mesh_head)
-      num_psf_ctl = femmesh_FUTIL%group%ele_grp%num_grp
-      call allocate_psf_ctl_stract
+      psf_ctls1%num_psf_ctl = femmesh_FUTIL%group%ele_grp%num_grp
+      call alloc_psf_ctl_stract(psf_ctls1)
 !
       if(my_rank .eq. 0) then
         call add_dat_extension(grouping_mesh_head,grouping_mesh_list)
@@ -96,6 +98,36 @@
         end do
         close(id_gname)
       end if
+!
+      call set_med_grp_patch_ctl(psf_ctls1%num_psf_ctl,                 &
+     &     psf_ctls1%fname_psf_ctl, psf_ctls1%psf_ctl_struct)
+!
+      call SECTIONING_initialize                                        &
+     &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group, elemesh_FUTIL,       &
+     &    field_FUTIL)
+!
+      end subroutine analyze_med_grp_patch
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_med_grp_patch_ctl                                  &
+     &         (num_psf_ctl, fname_psf_ctl, psf_ctl_struct)
+!
+      use m_ctl_params_4_diff_udt
+      use m_cross_section
+      use set_parallel_file_name
+      use t_control_data_4_psf
+      use t_read_control_arrays
+      use set_coefs_of_sections
+!
+      integer(kind = kint), intent(inout) :: num_psf_ctl
+      character(len = kchara), intent(inout)                            &
+     &                         :: fname_psf_ctl(num_psf_ctl)
+      type(psf_ctl), intent(inout) :: psf_ctl_struct(num_psf_ctl)
+!
+      integer(kind = kint) :: igrp
+!
 !
       do igrp = 1, femmesh_FUTIL%group%ele_grp%num_grp
         fname_psf_ctl(igrp) = 'NO_FILE'
@@ -128,11 +160,7 @@
      &      = 'scalar'
       end do
 !
-      call SECTIONING_initialize                                        &
-     &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group, elemesh_FUTIL,       &
-     &    field_FUTIL)
-!
-      end subroutine analyze_med_grp_patch
+      end subroutine set_med_grp_patch_ctl
 !
 ! ----------------------------------------------------------------------
 !

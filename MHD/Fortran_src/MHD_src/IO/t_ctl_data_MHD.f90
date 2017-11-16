@@ -135,7 +135,7 @@
         call read_sph_monitoring_ctl                                    &
      &     (hd_pick_sph, i_pick_sph, MHD_ctl%smonitor_ctl)
 !
-        call read_sections_control_data
+        call read_sections_control_data(psf_ctls1, iso_ctls1)
       end do
 !
       end subroutine read_sph_mhd_ctl_w_psf
@@ -188,8 +188,8 @@
 !
 !
       call bcast_sph_mhd_ctl_data(MHD_ctl)
-      call bcast_files_4_psf_ctl
-      call bcast_files_4_iso_ctl
+      call bcast_files_4_psf_ctl(psf_ctls1)
+      call bcast_files_4_iso_ctl(iso_ctls1)
 !
       end subroutine bcast_sph_mhd_ctl_w_psf
 !

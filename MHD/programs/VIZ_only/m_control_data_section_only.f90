@@ -94,8 +94,8 @@
 !
       call bcast_ctl_data_4_platform(sect_plt)
       call bcast_ctl_data_4_time_step(t_sect_ctl)
-      call bcast_files_4_psf_ctl
-      call bcast_files_4_iso_ctl
+      call bcast_files_4_psf_ctl(psf_ctls1)
+      call bcast_files_4_iso_ctl(iso_ctls1)
 !
       end subroutine read_control_data_section_only
 !
@@ -121,7 +121,7 @@
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_sect_ctl)
 !
-        call read_sections_control_data
+        call read_sections_control_data(psf_ctls1, iso_ctls1)
       end do
 !
       end subroutine read_section_control_data

@@ -37,8 +37,6 @@
 !
       type(pvr_ctl), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_psf
-!
 !
       call MPI_BCAST(pvr%i_pvr_ctl,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)

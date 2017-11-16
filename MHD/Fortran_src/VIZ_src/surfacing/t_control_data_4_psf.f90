@@ -7,6 +7,7 @@
 !>@brief  control ID data for surfacing module
 !!
 !!@verbatim
+!!      subroutine init_psf_ctl_stract(psf)
 !!      subroutine deallocate_cont_dat_4_psf(psf)
 !!        type(psf_ctl), intent(inout) :: psf
 !!
@@ -235,6 +236,18 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_psf_ctl_stract(psf)
+!
+      type(psf_ctl), intent(inout) :: psf
+!
+      psf%radius_psf_ctl%realvalue = 0.0d0
+      psf%psf_out_field_ctl%num = 0
+      psf%psf_area_ctl%num =      0
+!
+      end subroutine init_psf_ctl_stract
 !
 !  ---------------------------------------------------------------------
 !

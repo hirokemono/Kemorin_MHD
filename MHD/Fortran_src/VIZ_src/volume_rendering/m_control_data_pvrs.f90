@@ -106,15 +106,27 @@
         call find_control_end_flag(hd_viz_control, i_viz_control)
         if(i_viz_control .eq. 1) exit
 !
-        call find_control_array_flag(hd_psf_ctl, num_psf_ctl)
-        if(num_psf_ctl .gt. 0) call read_files_4_psf_ctl
-        call find_control_array_flag(hd_section_ctl, num_psf_ctl)
-        if(num_psf_ctl .gt. 0) call read_files_4_psf_ctl
+        call find_control_array_flag(hd_psf_ctl, psf_ctls1%num_psf_ctl)
+        if(psf_ctls1%num_psf_ctl .gt. 0) then
+          call read_files_4_psf_ctl(psf_ctls1)
+        end if
 !
-        call find_control_array_flag(hd_iso_ctl, num_iso_ctl)
-        if(num_iso_ctl .gt. 0) call read_files_4_iso_ctl
-        call find_control_array_flag(hd_isosurf_ctl, num_iso_ctl)
-        if(num_iso_ctl .gt. 0) call read_files_4_iso_ctl
+        call find_control_array_flag                                    &
+     &     (hd_section_ctl, psf_ctls1%num_psf_ctl)
+        if(psf_ctls1%num_psf_ctl .gt. 0) then
+          call read_files_4_psf_ctl(psf_ctls1)
+        end if
+!
+        call find_control_array_flag(hd_iso_ctl, iso_ctls1%num_iso_ctl)
+        if(iso_ctls1%num_iso_ctl .gt. 0) then
+          call read_files_4_iso_ctl(iso_ctls1)
+        end if
+!
+        call find_control_array_flag                                    &
+     &     (hd_isosurf_ctl, iso_ctls1%num_iso_ctl)
+        if(iso_ctls1%num_iso_ctl .gt. 0) then
+          call read_files_4_iso_ctl(iso_ctls1)
+        end if
 !
         call find_control_array_flag(hd_pvr_ctl, num_pvr_ctl)
         if(num_pvr_ctl .gt. 0) call read_files_4_pvr_ctl
@@ -133,8 +145,8 @@
       use m_control_data_flines
 !
 !
-      call bcast_files_4_psf_ctl
-      call bcast_files_4_iso_ctl
+      call bcast_files_4_psf_ctl(psf_ctls1)
+      call bcast_files_4_iso_ctl(iso_ctls1)
       call bcast_files_4_pvr_ctl
       call bcast_files_4_fline_ctl
 !
@@ -179,8 +191,6 @@
 !
       use calypso_mpi
       use bcast_control_data_4_pvr
-!
-      integer (kind=kint) :: i_pvr
 !
 !
       call MPI_BCAST(num_pvr_ctl,  ione,                                &

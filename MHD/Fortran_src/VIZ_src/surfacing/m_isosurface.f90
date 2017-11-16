@@ -36,6 +36,7 @@
       use t_ucd_data
       use t_file_IO_parameter
       use t_control_params_4_iso
+      use t_control_data_sections
 !
       use m_constants
       use m_machine_parameter
@@ -95,16 +96,15 @@
       integer(kind = kint) :: i_iso
 !
 !
-      num_iso = num_iso_ctl
-      if (num_iso .le. 0) return
+      if (iso_ctls1%num_iso_ctl .le. 0) return
 !
       call init_psf_case_tables(iso_case_tbls)
 !
-      call alloc_iso_field_type
+      call alloc_iso_field_type(iso_ctls1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
       call set_iso_control(num_iso, group%ele_grp, nod_fld,             &
-     &    iso_param, iso_def, iso_mesh, iso_file_IO)
+     &    iso_ctls1, iso_param, iso_def, iso_mesh, iso_file_IO)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
       call set_search_mesh_list_4_psf                                   &
@@ -186,10 +186,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_iso_field_type
+      subroutine alloc_iso_field_type(iso_ctls)
 !
       use m_field_file_format
 !
+      type(isosurf_controls), intent(inout) :: iso_ctls
+!
+!
+      num_iso = iso_ctls%num_iso_ctl
 !
       allocate(iso_mesh(num_iso))
       allocate(iso_list(num_iso))

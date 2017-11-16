@@ -8,9 +8,17 @@
 !!      subroutine count_control_4_psf                                  &
 !!     &         (psf, num_mat, mat_name, num_nod_phys, phys_nod_name,  &
 !!     &          psf_fld, psf_param, psf_file_IO, ierr)
-!!      subroutine set_control_4_psf(i_psf, psf, num_mat, mat_name,     &
+!!        type(psf_ctl), intent(in) :: psf
+!!        type(phys_data), intent(inout) :: psf_fld
+!!        type(psf_parameters), intent(inout) :: psf_param
+!!        type(field_IO_params), intent(inout) :: psf_file_IO
+!!      subroutine set_control_4_psf(psf, num_mat, mat_name,            &
 !!     &          num_surf, surf_name, num_nod_phys, phys_nod_name,     &
 !!     &          psf_fld, psf_param, psf_def, ierr)
+!!        type(psf_ctl), intent(inout) :: psf
+!!        type(phys_data), intent(inout) :: psf_fld
+!!        type(psf_parameters), intent(inout) :: psf_param
+!!        type(section_define), intent(inout) :: psf_def
 !
       module t_control_params_4_psf
 !
@@ -111,7 +119,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_psf(i_psf, psf, num_mat, mat_name,       &
+      subroutine set_control_4_psf(psf, num_mat, mat_name,              &
      &          num_surf, surf_name, num_nod_phys, phys_nod_name,       &
      &          psf_fld, psf_param, psf_def, ierr)
 !
@@ -133,7 +141,6 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      integer(kind = kint), intent(in) :: i_psf
       type(psf_ctl), intent(inout) :: psf
       type(phys_data), intent(inout) :: psf_fld
       type(psf_parameters), intent(inout) :: psf_param
