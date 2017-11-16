@@ -9,9 +9,10 @@
 !!        type(section_define), intent(in):: psf_def(num_psf)
 !!        type(sectioning_list), intent(inout):: psf_list(num_psf)
 !!      subroutine set_const_4_isosurfaces                              &
-!!     &         (num_iso, node, nod_fld, iso_list)
+!!     &         (num_iso, node, nod_fld, iso_def, iso_list)
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(isosurface_define), intent(in) :: iso_def(num_iso)
 !!        type(sectioning_list), intent(inout):: iso_list(num_iso)
 !
       module set_const_4_sections
@@ -60,9 +61,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_const_4_isosurfaces                                &
-     &         (num_iso, node, nod_fld, iso_list)
+     &         (num_iso, node, nod_fld, iso_def, iso_list)
 !
-      use m_control_params_4_iso
+      use t_control_params_4_iso
       use t_geometry_data
       use t_phys_data
       use t_psf_geometry_list
@@ -70,6 +71,7 @@
       integer(kind = kint), intent(in) :: num_iso
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
+      type(isosurface_define), intent(in) :: iso_def(num_iso)
 !
       type(sectioning_list), intent(inout):: iso_list(num_iso)
 !
@@ -78,7 +80,7 @@
 !
       do i_iso = 1, num_iso
         call set_constant_4_iso                                         &
-     &     (i_iso, node%numnod, node%istack_nod_smp, node%xx,           &
+     &     (iso_def(i_iso), node%numnod, node%istack_nod_smp, node%xx,  &
      &      node%rr, node%a_r, node%ss, node%a_s, nod_fld%num_phys,     &
      &      nod_fld%ntot_phys,  nod_fld%istack_component,               &
      &      nod_fld%d_fld, iso_list(i_iso)%ref_fld)
@@ -126,11 +128,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_constant_4_iso(i_iso, nnod, istack_nod_smp,        &
+      subroutine set_constant_4_iso(iso_def, nnod, istack_nod_smp,      &
      &          xx, radius, a_r, s_radius, a_s, num_fld, ntot_comp,     &
      &          istack_comp_nod, d_nod, c_ref_iso)
 !
-      use m_control_params_4_iso
+      use t_control_params_4_iso
 !
       use mag_of_field_smp
       use cvt_xyz_vector_2_sph_smp
@@ -139,7 +141,7 @@
 !
       use copy_field_smp
 !
-      integer(kind = kint), intent(in) :: i_iso
+      type(isosurface_define), intent(in) :: iso_def
 !
       integer(kind = kint), intent(in) :: nnod
       integer(kind = kint), intent(in) :: istack_nod_smp(0:np_smp)
@@ -159,8 +161,8 @@
       integer(kind = kint) :: ifield, i_comp, ic
 !
 !
-      ifield = id_isosurf_data(i_iso)
-      i_comp = id_isosurf_comp(i_iso)
+      ifield = iso_def%id_isosurf_data
+      i_comp = iso_def%id_isosurf_comp
 !
       ist_field  = istack_comp_nod(ifield-1) + 1
       ncomp_org = istack_comp_nod(ifield) - istack_comp_nod(ifield-1)
@@ -220,7 +222,7 @@
 !
 !$omp parallel
       call subtruct_const_4_scalar_smp_ow                               &
-     &   (nnod, c_ref_iso, isosurf_value(i_iso))
+     &   (nnod, c_ref_iso, iso_def%isosurf_value)
 !$omp end parallel
 !
       end subroutine set_constant_4_iso

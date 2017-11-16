@@ -105,7 +105,6 @@
      &         (num_iso, numedge, nnod_4_edge, ie_edge,                 &
      &          interior_edge, iso_search, iso_list, iso_mesh)
 !
-      use m_control_params_4_iso
       use t_psf_geometry_list
       use t_psf_patch_data
 !
@@ -230,7 +229,6 @@
      &          edge_comm, iso_search, iso_list, iso_mesh)
 !
       use calypso_mpi
-      use m_control_params_4_iso
       use t_comm_table
       use t_psf_geometry_list
       use t_psf_patch_data

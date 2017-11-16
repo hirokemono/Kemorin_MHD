@@ -35,6 +35,7 @@
       use t_psf_case_table
       use t_ucd_data
       use t_file_IO_parameter
+      use t_control_params_4_iso
 !
       use m_constants
       use m_machine_parameter
@@ -55,6 +56,7 @@
       type(psf_search_lists), allocatable, save :: iso_search(:)
 !
       type(psf_parameters), allocatable, save :: iso_param(:)
+      type(isosurface_define), allocatable, save :: iso_def(:)
 !
 !>      Structure for isosurface patch data on local domain
       type(psf_local_data), allocatable, save :: iso_mesh(:)
@@ -80,7 +82,6 @@
 !
       use m_geometry_constants
       use m_control_data_sections
-      use m_control_params_4_iso
 !
       use set_psf_iso_control
       use search_ele_list_for_psf
@@ -103,7 +104,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
       call set_iso_control(num_iso, group%ele_grp, nod_fld,             &
-     &    iso_param, iso_mesh, iso_file_IO)
+     &    iso_param, iso_def, iso_mesh, iso_file_IO)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
       call set_search_mesh_list_4_psf                                   &
@@ -127,7 +128,6 @@
 !
 !
       use m_geometry_constants
-      use m_control_params_4_iso
       use t_time_data
       use t_ucd_data
 !
@@ -148,7 +148,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_isosurfaces'
       call set_const_4_isosurfaces                                      &
-     &   (num_iso, mesh%node, nod_fld, iso_list)
+     &   (num_iso, mesh%node, nod_fld, iso_def, iso_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso                                       &
@@ -159,7 +159,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
       call alloc_psf_field_data(num_iso, iso_mesh)
       call set_field_4_iso(num_iso, ele_mesh%edge, nod_fld,             &
-     &    iso_param, iso_list, iso_mesh)
+     &    iso_param, iso_def, iso_list, iso_mesh)
 !
       call output_isosurface(num_iso, iso_file_IO, istep_iso,           &
      &    time_d, iso_mesh, iso_time_IO, iso_out, iso_out_m)
@@ -180,7 +180,7 @@
       call dealloc_psf_case_table(iso_case_tbls)
 !
       deallocate(iso_mesh, iso_list)
-      deallocate(iso_search, iso_param)
+      deallocate(iso_search, iso_param, iso_def)
       deallocate(iso_file_IO, iso_out, iso_out_m)
 !
       end subroutine dealloc_iso_field_type
@@ -197,6 +197,7 @@
       allocate(iso_list(num_iso))
       allocate(iso_search(num_iso))
       allocate(iso_param(num_iso))
+      allocate(iso_def(num_iso))
 !
       allocate(iso_file_IO(num_iso))
       allocate(iso_out(num_iso))

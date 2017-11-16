@@ -19,11 +19,12 @@
 !!        type(sectioning_list), intent(in):: psf_list(num_psf)
 !!        type(grp_section_list), intent(in) :: psf_grp_list(num_psf)
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
-!!      subroutine set_field_4_iso                                      &
-!!     &         (num_iso, edge, nod_fld, iso_param, iso_list, iso_mesh)
+!!      subroutine set_field_4_iso(num_iso, edge, nod_fld,              &
+!!     &          iso_param, iso_def, iso_list, iso_mesh)
 !!        type(edge_data), intent(in) :: edge
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(psf_parameters), intent(in) :: iso_param(num_iso)
+!!        type(isosurface_define), intent(in) :: iso_def(num_iso)
 !!        type(sectioning_list), intent(in):: iso_list(num_iso)
 !!        type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
 !!@endverbatim
@@ -137,10 +138,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_field_4_iso                                        &
-     &         (num_iso, edge, nod_fld, iso_param, iso_list, iso_mesh)
+      subroutine set_field_4_iso(num_iso, edge, nod_fld,                &
+     &          iso_param, iso_def, iso_list, iso_mesh)
 !
-      use m_control_params_4_iso
+      use t_control_params_4_iso
       use t_edge_data
       use t_phys_data
       use t_psf_geometry_list
@@ -153,6 +154,7 @@
       type(phys_data), intent(in) :: nod_fld
 !
       type(psf_parameters), intent(in) :: iso_param(num_iso)
+      type(isosurface_define), intent(in) :: iso_def(num_iso)
       type(sectioning_list), intent(in):: iso_list(num_iso)
 !
       type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
@@ -160,9 +162,9 @@
       integer(kind = kint) :: i
 !
       do i = 1, num_iso
-        if(id_iso_result_type(i) .eq. iflag_constant_iso) then
+        if(iso_def(i)%id_iso_result_type .eq. iflag_constant_iso) then
           call set_const_on_psf(iso_mesh(i)%node%numnod,                &
-     &        result_value_iso(i), iso_mesh(i)%field%d_fld)
+     &        iso_def(i)%result_value_iso, iso_mesh(i)%field%d_fld)
         else
           call set_field_on_psf(nod_fld%n_point,                        &
      &      edge%numedge, edge%nnod_4_edge, edge%ie_edge,               &

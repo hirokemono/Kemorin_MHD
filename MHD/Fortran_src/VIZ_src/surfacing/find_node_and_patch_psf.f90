@@ -176,7 +176,6 @@
      &          iso_search, iso_list, iso_mesh)
 !
       use m_geometry_constants
-      use m_control_params_4_iso
       use calypso_mpi
       use t_comm_table
       use t_geometry_data

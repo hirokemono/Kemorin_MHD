@@ -19,7 +19,13 @@
 !!        type(section_define), intent(inout) :: psf_def(num_psf)
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
 !!      subroutine set_iso_control(num_iso, ele_grp, nod_fld,           &
-!!     &          iso_param, iso_mesh, iso_file_IO)
+!!     &          iso_param, iso_def, iso_mesh, iso_file_IO)
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(psf_parameters), intent(inout) :: iso_param(num_iso)
+!!        type(isosurface_define), intent(inout) :: iso_def(num_iso)
+!!        type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
+!!        type(field_IO_params), intent(inout) :: iso_file_IO(num_iso)
 !!@endverbatim
 !
       module set_psf_iso_control
@@ -130,12 +136,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_iso_control(num_iso, ele_grp, nod_fld,             &
-     &          iso_param, iso_mesh, iso_file_IO)
+     &          iso_param, iso_def, iso_mesh, iso_file_IO)
 !
       use calypso_mpi
       use m_control_data_sections
-      use m_control_params_4_iso
       use m_read_control_elements
+      use t_control_params_4_iso
       use t_group_data
       use t_phys_data
       use t_control_data_4_iso
@@ -149,13 +155,12 @@
       type(phys_data), intent(in) :: nod_fld
 !
       type(psf_parameters), intent(inout) :: iso_param(num_iso)
+      type(isosurface_define), intent(inout) :: iso_def(num_iso)
       type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
       type(field_IO_params), intent(inout) :: iso_file_IO(num_iso)
 !
       integer(kind = kint) :: i
 !
-!
-      call allocate_control_params_4_iso(num_iso)
 !
       ctl_file_code = iso_ctl_file_code
       do i = 1, num_iso
@@ -163,18 +168,19 @@
       end do
 !
       do i = 1, num_iso
-        call count_control_4_iso(i, iso_ctl_struct(i),                  &
+        call count_control_4_iso(iso_ctl_struct(i),                     &
      &      ele_grp%num_grp, ele_grp%grp_name,                          &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      iso_mesh(i)%field, iso_param(i), iso_file_IO(i))
+     &      iso_mesh(i)%field, iso_param(i), iso_def(i),                &
+     &      iso_file_IO(i))
       end do
 !
       do i = 1, num_iso
         call alloc_phys_name_type(iso_mesh(i)%field)
-        call set_control_4_iso(i, iso_ctl_struct(i),                    &
+        call set_control_4_iso(iso_ctl_struct(i),                       &
      &      ele_grp%num_grp, ele_grp%grp_name,                          &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      iso_mesh(i)%field, iso_param(i))
+     &      iso_mesh(i)%field, iso_param(i), iso_def(i))
         call deallocate_cont_dat_4_iso(iso_ctl_struct(i))
 !
         call count_total_comps_4_viz(iso_mesh(i)%field)
@@ -186,7 +192,7 @@
       if(iflag_debug .gt. 0) then
         do i = 1, num_iso
           write(*,*) 'id_isosurf_data', i,                              &
-     &        id_isosurf_data(i), id_isosurf_comp(i)
+     &        iso_def(i)%id_isosurf_data, iso_def(i)%id_isosurf_comp
         end do
       end if
 !
@@ -233,7 +239,6 @@
       use m_read_control_elements
 !
       use t_control_data_4_iso
-      use m_control_params_4_iso
       use m_control_data_sections
 !
       integer(kind = kint), intent(in) :: i_iso
