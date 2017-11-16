@@ -147,17 +147,12 @@
      &    psf_list, psf_grp_list, psf_mesh)
 !
       if (iflag_debug.eq.1)  write(*,*) 'count_psf_patches'
-      call count_psf_patches(num_psf, node%numnod,                      &
-     &    ele%numele, edge%numedge, ele%nnod_4_ele, ele%ie,             &
-     &    edge%iedge_4_ele, sf_grp%num_grp, sf_grp%istack_grp,          &
+      call count_psf_patches(num_psf, node, ele, edge, sf_grp,          &
      &    psf_case_tbls, psf_def, psf_search, psf_list, psf_mesh)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_psf_patches'
-      call set_psf_patches(num_psf, ele%numele, edge%numedge,           &
-     &    ele%nnod_4_ele, ele%ie, edge%iedge_4_ele,                     &
-     &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
-     &    sf_grp%item_sf_grp, psf_case_tbls, psf_def, psf_search,       &
-     &    psf_list, psf_grp_list, psf_mesh)
+      call set_psf_patches(num_psf, ele, edge, sf_grp, psf_case_tbls,   &
+     &     psf_def, psf_search, psf_list, psf_grp_list, psf_mesh)
 !
       do i_psf = 1, num_psf
         call dealloc_mark_ele_psf(psf_search(i_psf))
@@ -204,12 +199,10 @@
      &    iso_search, iso_list, iso_mesh)
 !
 !
-      call count_iso_patches(num_iso, node%numnod, ele%numele,          &
-     &    edge%numedge, ele%nnod_4_ele, ele%ie, edge%iedge_4_ele,       &
+      call count_iso_patches(num_iso, node, ele, edge,                  &
      &    psf_case_tbls, iso_search, iso_list, iso_mesh)
 !
-      call set_iso_patches                                              &
-     &   (num_iso, ele%numele, edge%numedge, edge%iedge_4_ele,          &
+      call set_iso_patches(num_iso, ele, edge,                          &
      &    psf_case_tbls, iso_search, iso_list, iso_mesh)
 !
       do i_iso = 1, num_iso
