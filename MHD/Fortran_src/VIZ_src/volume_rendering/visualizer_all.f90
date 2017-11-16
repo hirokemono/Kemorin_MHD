@@ -40,7 +40,6 @@
       subroutine init_visualize(femmesh, ele_mesh, nod_fld)
 !
       use m_cross_section
-      use m_isosurface
       use m_control_data_sections
       use volume_rendering
       use fieldline
@@ -82,7 +81,6 @@
      &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacs)
 !
       use m_cross_section
-      use m_isosurface
       use volume_rendering
       use fieldline
 !

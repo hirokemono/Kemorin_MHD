@@ -37,7 +37,6 @@
       subroutine init_visualize_surface(femmesh, ele_mesh, nod_fld)
 !
       use m_cross_section
-      use m_isosurface
       use m_control_data_sections
 !
       type(mesh_data), intent(in) :: femmesh
@@ -66,7 +65,6 @@
      &         (viz_step, time_d, femmesh, ele_mesh, nod_fld)
 !
       use m_cross_section
-      use m_isosurface
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(time_data), intent(in) :: time_d

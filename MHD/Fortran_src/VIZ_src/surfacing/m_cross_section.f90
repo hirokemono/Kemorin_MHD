@@ -29,9 +29,11 @@
       use m_precision
 !
       use t_cross_section
+      use t_isosurface
 !
       implicit  none
 !
       type(sectioning_module), save :: psf1
+      type(isosurface_module), save :: iso1
 !
       end module m_cross_section
