@@ -104,7 +104,7 @@
 !
       call SECTIONING_initialize                                        &
      &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group, elemesh_FUTIL,       &
-     &    field_FUTIL)
+     &    field_FUTIL, psf_ctls1, psf1)
 !
       end subroutine analyze_med_grp_patch
 !

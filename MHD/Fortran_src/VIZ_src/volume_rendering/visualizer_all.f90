@@ -41,6 +41,7 @@
 !
       use m_cross_section
       use m_isosurface
+      use m_control_data_sections
       use volume_rendering
       use fieldline
 !
@@ -52,7 +53,8 @@
 !
       call start_elapsed_time(60)
       call SECTIONING_initialize                                        &
-     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld)
+     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld,               &
+     &    psf_ctls1, psf1)
       call end_elapsed_time(60)
 !
       call start_elapsed_time(61)
@@ -95,7 +97,7 @@
 !
       call start_elapsed_time(65)
       call SECTIONING_visualize                                         &
-     &   (viz_step%PSF_t%istep_file, time_d, ele_mesh, nod_fld)
+     &   (viz_step%PSF_t%istep_file, time_d, ele_mesh, nod_fld, psf1)
       call calypso_MPI_barrier
       call end_elapsed_time(65)
 !
