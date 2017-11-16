@@ -42,6 +42,7 @@
       use t_psf_case_table
       use t_surface_group_connect
       use t_file_IO_parameter
+      use t_control_params_4_psf
 !
       implicit  none
 !
@@ -59,7 +60,10 @@
 !>      Structure for search table for sections
       type(psf_search_lists), allocatable, save :: psf_search(:)
 !
+!>      Structure of sectioning module parameter
       type(psf_parameters), allocatable, save :: psf_param(:)
+!>      Structure of cross sectioning parameter
+      type(section_define), allocatable, save  :: psf_def(:)
 !
 !>      Structure for psf patch data on local domain
       type(psf_local_data), allocatable, save :: psf_mesh(:)
@@ -86,7 +90,6 @@
 !
       use m_geometry_constants
       use m_control_data_sections
-      use m_control_params_4_psf
 !
       use calypso_mpi
       use set_psf_iso_control
@@ -109,8 +112,6 @@
 !
       call init_psf_case_tables(psf_case_tbls)
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_control_params_4_psf'
-      call allocate_control_params_4_psf(num_psf)
       do i_psf = 1, num_psf
         if (iflag_debug.eq.1) write(*,*) 'read_control_4_psf', i_psf
         call read_control_4_psf(i_psf)
@@ -122,7 +123,7 @@
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_psf_control'
       call set_psf_control(num_psf, group%ele_grp, group%surf_grp,      &
-     &    nod_fld, psf_param, psf_mesh, psf_file_IO)
+     &    nod_fld, psf_param, psf_def, psf_mesh, psf_file_IO)
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
@@ -139,13 +140,15 @@
       end do
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_crossections'
-      call set_const_4_crossections(num_psf, mesh%node, psf_list)
+      call set_const_4_crossections                                     &
+     &   (num_psf, psf_def, mesh%node, psf_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
       call set_node_and_patch_psf                                       &
      &   (num_psf, mesh%node, mesh%ele, ele_mesh%edge, mesh%nod_comm,   &
      &    ele_mesh%edge_comm, group%surf_grp, group%surf_nod_grp,       &
-     &    psf_case_tbls, psf_search, psf_list, psf_grp_list, psf_mesh)
+     &    psf_case_tbls, psf_def, psf_search,                           &
+     &    psf_list, psf_grp_list, psf_mesh)
 !
       call alloc_psf_field_data(num_psf, psf_mesh)
 !
@@ -162,7 +165,6 @@
       subroutine SECTIONING_visualize                                   &
      &         (istep_psf, time_d, ele_mesh, nod_fld)
 !
-      use m_control_params_4_psf
       use set_fields_for_psf
       use set_ucd_data_to_type
       use output_4_psf
@@ -178,7 +180,7 @@
 !
 !      call start_elapsed_time(20)
       call set_field_4_psf(num_psf, ele_mesh%edge, nod_fld,             &
-     &    psf_param, psf_list, psf_grp_list, psf_mesh)
+     &    psf_def, psf_param, psf_list, psf_grp_list, psf_mesh)
 !      call end_elapsed_time(20)
 !
 !      call start_elapsed_time(21)
@@ -195,16 +197,23 @@
 !
       use m_field_file_format
 !
+      integer(kind = kint) :: i_psf
+!
 !
       allocate(psf_mesh(num_psf))
       allocate(psf_list(num_psf))
       allocate(psf_grp_list(num_psf))
       allocate(psf_search(num_psf))
       allocate(psf_param(num_psf))
+      allocate(psf_def(num_psf))
 !
       allocate(psf_file_IO(num_psf))
       allocate(psf_out(num_psf))
       allocate(psf_out_m(num_psf))
+!
+      do i_psf = 1, num_psf
+        call alloc_coefficients_4_psf(psf_def(i_psf))
+      end do
 !
       psf_file_IO(1:num_psf)%iflag_format = iflag_sgl_udt
 !
@@ -225,6 +234,7 @@
     &      (psf_out(i_psf), psf_out_m(i_psf))
 !
         call dealloc_inod_grp_psf(psf_grp_list(i_psf))
+        call dealloc_coefficients_4_psf(psf_def(i_psf))
       end do
 !
       call dealloc_psf_node_and_patch(num_psf, psf_list, psf_mesh)

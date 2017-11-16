@@ -9,8 +9,8 @@
 !!      subroutine count_nodes_4_psf(num_psf, internal_node,            &
 !!     &         numedge, nnod_4_edge, ie_edge, interior_edge,          &
 !!     &         num_surf, ntot_node_sf_grp, inod_stack_sf_grp,         &
-!!     &         inod_surf_grp, psf_search, psf_list, psf_grp_list,     &
-!!     &         psf_mesh)
+!!     &         inod_surf_grp, psf_def, psf_search,                    &
+!!     &         psf_list, psf_grp_list, psf_mesh)
 !!      subroutine count_nodes_4_iso                                    &
 !!     &         (num_iso, numedge, nnod_4_edge, ie_edge,               &
 !!     &          interior_edge, iso_search, iso_list, iso_mesh)
@@ -19,7 +19,8 @@
 !!      &        (num_psf, numnod, internal_node, numedge, nnod_4_edge, &
 !!      &         xx, ie_edge, interior_edge, nod_comm, edge_comm,      &
 !!      &         num_surf, ntot_node_sf_grp, inod_stack_sf_grp,        &
-!!      &         inod_surf_grp, psf_search, psf_list, psf_mesh)
+!!      &         inod_surf_grp, psf_def, psf_search,                   &
+!!      &         psf_list, psf_grp_list, psf_mesh)
 !!      subroutine set_nodes_4_iso(num_iso, numnod, numedge,            &
 !!     &          nnod_4_edge, xx, ie_edge, interior_edge,              &
 !!     &          iso_search, iso_list, iso_mesh)
@@ -45,10 +46,10 @@
       subroutine count_nodes_4_psf(num_psf, internal_node,              &
      &         numedge, nnod_4_edge, ie_edge, interior_edge,            &
      &         num_surf, ntot_node_sf_grp, inod_stack_sf_grp,           &
-     &         inod_surf_grp, psf_search, psf_list, psf_grp_list,       &
-     &         psf_mesh)
+     &         inod_surf_grp, psf_def, psf_search,                      &
+     &         psf_list, psf_grp_list, psf_mesh)
 !
-      use m_control_params_4_psf
+      use t_control_params_4_psf
       use t_psf_geometry_list
       use t_psf_patch_data
 !
@@ -64,6 +65,7 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: inod_surf_grp(ntot_node_sf_grp)
 !
+      type(section_define), intent(in) :: psf_def(num_psf)
 !
       type(psf_search_lists), intent(inout) :: psf_search(num_psf)
       type(sectioning_list), intent(inout) :: psf_list(num_psf)
@@ -74,7 +76,7 @@
 !
 !
       do i = 1, num_psf
-        if( id_section_method(i) .gt. 0) then
+        if(psf_def(i)%id_section_method .gt. 0) then
           call count_node_on_edge_4_psf                                 &
      &       (numedge, nnod_4_edge, ie_edge, interior_edge,             &
      &        psf_search(i)%edge_list, psf_list(i))
@@ -83,9 +85,9 @@
           psf_grp_list(i)%internod_on_nod = 0
           psf_grp_list(i)%externod_on_nod = 0
 !
-        else if ( id_section_method(i) .eq. 0) then
+        else if(psf_def(i)%id_section_method .eq. 0) then
           call count_node_at_node_on_grp                                &
-     &       (id_psf_group(i), internal_node, num_surf,                 &
+     &       (psf_def(i)%id_psf_group, internal_node, num_surf,         &
      &        ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,       &
      &        psf_grp_list(i))
 !
@@ -137,11 +139,11 @@
       &        (num_psf, numnod, internal_node, numedge, nnod_4_edge,   &
       &         xx, ie_edge, interior_edge, nod_comm, edge_comm,        &
       &         num_surf, ntot_node_sf_grp, inod_stack_sf_grp,          &
-      &         inod_surf_grp, psf_search, psf_list, psf_grp_list,      &
-      &         psf_mesh)
+      &         inod_surf_grp, psf_def, psf_search,                     &
+      &         psf_list, psf_grp_list, psf_mesh)
 !
-      use m_control_params_4_psf
       use calypso_mpi
+      use t_control_params_4_psf
       use t_comm_table
       use t_psf_geometry_list
       use t_psf_patch_data
@@ -166,6 +168,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: edge_comm
 !
+      type(section_define), intent(in) :: psf_def(num_psf)
       type(psf_search_lists), intent(in) :: psf_search(num_psf)
       type(sectioning_list), intent(inout) :: psf_list(num_psf)
       type(grp_section_list), intent(inout) :: psf_grp_list(num_psf)
@@ -174,13 +177,14 @@
       integer(kind = kint) :: i, ist, num, igrp, inod
 !
       do i = 1, num_psf
-        if( id_section_method(i) .gt. 0) then
+        if(psf_def(i)%id_section_method .gt. 0) then
           call set_node_on_edge_4_psf                                   &
      &       (numedge, nnod_4_edge, ie_edge, interior_edge,             &
      &        psf_search(i)%edge_list, psf_list(i))
 !
-          call set_node_on_edge_int_quad_psf(numnod, numedge,           &
-     &        nnod_4_edge, ie_edge, xx, const_psf(1,i), psf_list(i))
+          call set_node_on_edge_int_quad_psf                            &
+     &       (numnod, numedge, nnod_4_edge, ie_edge, xx,                &
+     &        psf_def(i)%const_psf, psf_list(i))
 !
           call psf_global_nod_id_on_edge(edge_comm, numedge,            &
      &       psf_mesh(i)%node%istack_internod, psf_list(i)%id_n_on_e)
@@ -190,8 +194,8 @@
      &       psf_mesh(i)%node%numnod, psf_mesh(i)%node%inod_global,     &
      &       psf_mesh(i)%node%xx, psf_list(i))
 !
-        else if( id_section_method(i) .eq. 0) then
-          igrp = id_psf_group(i)
+        else if(psf_def(i)%id_section_method .eq. 0) then
+          igrp = psf_def(i)%id_psf_group
           ist = inod_stack_sf_grp(igrp-1)
           num = inod_stack_sf_grp(igrp  ) - ist
           call set_node_at_node_on_grp(igrp, internal_node,             &

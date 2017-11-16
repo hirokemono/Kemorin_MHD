@@ -11,11 +11,12 @@
 !!      subroutine dealloc_psf_field_name(num_psf, psf_mesh)
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
 !!      subroutine set_psf_control(num_psf, ele_grp, sf_grp,            &
-!!     &          nod_fld, psf_param, psf_mesh, psf_file_IO)
+!!     &          nod_fld, psf_param, psf_def, psf_mesh, psf_file_IO)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(psf_parameters), intent(inout) :: psf_param(num_psf)
+!!        type(section_define), intent(inout) :: psf_def(num_psf)
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
 !!      subroutine set_iso_control(num_iso, ele_grp, nod_fld,           &
 !!     &          iso_param, iso_mesh, iso_file_IO)
@@ -71,17 +72,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_psf_control(num_psf, ele_grp, sf_grp,              &
-     &          nod_fld, psf_param, psf_mesh, psf_file_IO)
+     &          nod_fld, psf_param, psf_def, psf_mesh, psf_file_IO)
 !
       use calypso_mpi
       use m_control_data_sections
-      use m_control_params_4_psf
       use m_read_control_elements
       use t_group_data
       use t_phys_data
       use t_control_data_4_psf
       use t_psf_patch_data
       use t_file_IO_parameter
+      use t_control_params_4_psf
 !
       use set_field_comp_for_viz
 !
@@ -91,6 +92,7 @@
       type(phys_data), intent(in) :: nod_fld
 !
       type(psf_parameters), intent(inout) :: psf_param(num_psf)
+      type(section_define), intent(inout) :: psf_def(num_psf)
       type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
       type(field_IO_params), intent(inout)  :: psf_file_IO(num_psf)
 !
@@ -112,7 +114,8 @@
      &      ele_grp%num_grp, ele_grp%grp_name,                          &
      &      sf_grp%num_grp, sf_grp%grp_name,                            &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      psf_mesh(i_psf)%field,  psf_param(i_psf), ierr)
+     &      psf_mesh(i_psf)%field,  psf_param(i_psf), psf_def(i_psf),   &
+     &      ierr)
         if(ierr.gt.0) call calypso_MPI_abort(ierr, e_message)
 !
         call deallocate_cont_dat_4_psf(psf_ctl_struct(i_psf))
@@ -198,7 +201,6 @@
       use m_read_control_elements
 !
       use t_control_data_4_psf
-      use m_control_params_4_psf
       use m_control_data_sections
 !
 !

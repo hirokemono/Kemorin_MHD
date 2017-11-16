@@ -13,8 +13,8 @@
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
 !!      subroutine set_node_and_patch_psf                               &
 !!     &         (num_psf, node, ele, edge, nod_comm, edge_comm,        &
-!!     &          sf_grp, sf_grp_nod, psf_case_tbls, psf_search,        &
-!!     &          psf_list, psf_grp_list, psf_mesh)
+!!     &          sf_grp, sf_grp_nod, psf_case_tbls, psf_def,           &
+!!     &          psf_search, psf_list, psf_grp_list, psf_mesh)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in) :: edge
@@ -81,13 +81,13 @@
 !
       subroutine set_node_and_patch_psf                                 &
      &         (num_psf, node, ele, edge, nod_comm, edge_comm,          &
-     &          sf_grp, sf_grp_nod, psf_case_tbls, psf_search,          &
-     &          psf_list, psf_grp_list, psf_mesh)
+     &          sf_grp, sf_grp_nod, psf_case_tbls, psf_def,             &
+     &          psf_search, psf_list, psf_grp_list, psf_mesh)
 !
       use m_geometry_constants
       use m_machine_parameter
-      use m_control_params_4_psf
       use calypso_mpi
+      use t_control_params_4_psf
       use t_comm_table
       use t_geometry_data
       use t_edge_data
@@ -110,6 +110,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: edge_comm
       type(psf_cases), intent(in) :: psf_case_tbls
+      type(section_define), intent(in) :: psf_def(num_psf)
 !
       type(psf_search_lists), intent(inout) :: psf_search(num_psf)
       type(sectioning_list), intent(inout) :: psf_list(num_psf)
@@ -131,7 +132,7 @@
      &    edge%nnod_4_edge, edge%ie_edge, edge%interior_edge,           &
      &    sf_grp%num_grp, sf_grp_nod%ntot_node_sf_grp,                  &
      &    sf_grp_nod%inod_stack_sf_grp, sf_grp_nod%inod_surf_grp,       &
-     &    psf_search, psf_list, psf_grp_list, psf_mesh)
+     &    psf_def, psf_search, psf_list, psf_grp_list, psf_mesh)
 !
 !
       do i_psf = 1, num_psf
@@ -147,19 +148,19 @@
      &    edge%ie_edge, edge%interior_edge, nod_comm, edge_comm,        &
      &    sf_grp%num_grp, sf_grp_nod%ntot_node_sf_grp,                  &
      &    sf_grp_nod%inod_stack_sf_grp, sf_grp_nod%inod_surf_grp,       &
-     &    psf_search, psf_list, psf_grp_list, psf_mesh)
+     &    psf_def, psf_search, psf_list, psf_grp_list, psf_mesh)
 !
       if (iflag_debug.eq.1)  write(*,*) 'count_psf_patches'
       call count_psf_patches(num_psf, node%numnod,                      &
      &    ele%numele, edge%numedge, ele%nnod_4_ele, ele%ie,             &
      &    edge%iedge_4_ele, sf_grp%num_grp, sf_grp%istack_grp,          &
-     &    psf_case_tbls, psf_search, psf_list, psf_mesh)
+     &    psf_case_tbls, psf_def, psf_search, psf_list, psf_mesh)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_psf_patches'
       call set_psf_patches(num_psf, ele%numele, edge%numedge,           &
      &    ele%nnod_4_ele, ele%ie, edge%iedge_4_ele,                     &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
-     &    sf_grp%item_sf_grp, psf_case_tbls, psf_search,                &
+     &    sf_grp%item_sf_grp, psf_case_tbls, psf_def, psf_search,       &
      &    psf_list, psf_grp_list, psf_mesh)
 !
       do i_psf = 1, num_psf

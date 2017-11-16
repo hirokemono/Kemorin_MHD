@@ -72,7 +72,6 @@
       use m_ctl_params_4_diff_udt
       use m_cross_section
       use m_control_data_sections
-      use m_control_params_4_psf
       use set_parallel_file_name
       use t_read_control_arrays
       use set_coefs_of_sections

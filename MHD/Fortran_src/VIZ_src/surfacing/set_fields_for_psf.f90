@@ -11,9 +11,10 @@
 !!      subroutine dealloc_psf_field_data(num_psf, psf_mesh)
 !!
 !!      subroutine set_field_4_psf(num_psf, edge, nod_fld,              &
-!!     &          psf_param, psf_list, psf_grp_list, psf_mesh)
+!!     &          psf_def, psf_param, psf_list, psf_grp_list, psf_mesh)
 !!        type(edge_data), intent(in) :: edge
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(section_define), intent(in) :: psf_def(num_psf)
 !!        type(psf_parameters), intent(in) :: psf_param(num_psf)
 !!        type(sectioning_list), intent(in):: psf_list(num_psf)
 !!        type(grp_section_list), intent(in) :: psf_grp_list(num_psf)
@@ -82,9 +83,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_field_4_psf(num_psf, edge, nod_fld,                &
-     &          psf_param, psf_list, psf_grp_list, psf_mesh)
+     &          psf_def, psf_param, psf_list, psf_grp_list, psf_mesh)
 !
-      use m_control_params_4_psf
+      use t_control_params_4_psf
       use t_edge_data
       use t_phys_data
       use t_psf_geometry_list
@@ -94,6 +95,7 @@
       type(edge_data), intent(in) :: edge
       type(phys_data), intent(in) :: nod_fld
 !
+      type(section_define), intent(in) :: psf_def(num_psf)
       type(psf_parameters), intent(in) :: psf_param(num_psf)
       type(sectioning_list), intent(in):: psf_list(num_psf)
       type(grp_section_list), intent(in) :: psf_grp_list(num_psf)
@@ -103,7 +105,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, num_psf
-        if( id_section_method(i) .gt. 0) then
+        if(psf_def(i)%id_section_method .gt. 0) then
           call set_field_on_psf(nod_fld%n_point,                        &
      &      edge%numedge,  edge%nnod_4_edge, edge%ie_edge,              &
      &      psf_mesh(i)%node%numnod, psf_mesh(i)%node%istack_nod_smp,   &
@@ -116,8 +118,8 @@
      &      nod_fld%ntot_phys, nod_fld%istack_component, nod_fld%d_fld, &
      &      psf_mesh(i)%field%d_fld, psf_mesh(i)%tmp_psf, psf_list(i))
 !
-        else if( id_section_method(i) .eq. 0) then
-          call set_field_on_psf_grp(nod_fld%n_point,                             &
+        else if(psf_def(i)%id_section_method .eq. 0) then
+          call set_field_on_psf_grp(nod_fld%n_point,                    &
      &      psf_mesh(i)%node%numnod, psf_mesh(i)%node%istack_nod_smp,   &
      &      psf_mesh(i)%node%xx,  psf_mesh(i)%node%rr,                  &
      &      psf_mesh(i)%node%a_r, psf_mesh(i)%node%ss,                  &
