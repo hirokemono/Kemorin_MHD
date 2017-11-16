@@ -14,12 +14,13 @@
 !!
 !!@verbatim
 !!      subroutine s_const_field_lines                                  &
-!!     &         (i_fln, node, ele, surf, ele_4_nod, nod_comm)
+!!     &         (i_fln, node, ele, surf, ele_4_nod, nod_comm, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(communication_table), intent(in) :: nod_comm
+!!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
 !
       module const_field_lines
@@ -42,16 +43,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_field_lines                                    &
-     &         (i_fln, node, ele, surf, ele_4_nod, nod_comm)
+     &         (i_fln, node, ele, surf, ele_4_nod, nod_comm, fline_lc)
 !
 !
       use m_control_params_4_fline
-      use m_local_fline
       use t_comm_table
       use t_geometry_data
       use t_surface_data
       use t_comm_table
       use t_next_node_ele_4_node
+      use t_local_fline
       use extend_field_line
 !
       integer(kind= kint), intent(in) :: i_fln
@@ -61,6 +62,8 @@
       type(surface_data), intent(in) :: surf
       type(element_around_node), intent(in) :: ele_4_nod
       type(communication_table), intent(in) :: nod_comm
+!
+      type(local_fieldline), intent(inout) :: fline_lc
 !
       integer(kind = kint) :: iflag_comm
       integer(kind = kint) :: i, ist, ied, num7, ip, src_rank, nline
@@ -80,8 +83,7 @@
       call calypso_MPI_barrier
 !
       iflag_comm = 0
-      nnod_line_l = 0
-      nele_line_l = 0
+      call reset_fline_start(fline_lc)
 !
       do
         ist = istack_all_fline(my_rank,i_fln) + 1
@@ -95,7 +97,7 @@
      &        iflag_fline(i), vector_nod_fline(1,1,i_fln),              &
      &        color_nod_fline(1,i_fln), isf_fline_start(1,i),           &
      &        xx_fline_start(1,i), v_fline_start(1,i),                  &
-     &        c_fline_start(i), icount_fline(i), iflag_comm)
+     &        c_fline_start(i), icount_fline(i), iflag_comm, fline_lc)
           write(50+my_rank,*) 'extension end for ', i, iflag_comm
 !
           call set_fline_start_2_bcast(iflag_comm, i, node%numnod,      &
@@ -148,7 +150,7 @@
         if(nline .le. 0) exit
       end do
 !
-!      call check_local_fline_dx( (my_rank+60+i_fln*100) )
+!      call check_local_fline_dx( (my_rank+60+i_fln*100), fline_lc)
 !
       end subroutine s_const_field_lines
 !

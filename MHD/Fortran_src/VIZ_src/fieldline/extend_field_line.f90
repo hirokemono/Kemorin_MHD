@@ -4,12 +4,13 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!      subroutine s_extend_field_line(numnod, numele, numsurf,          &
-!     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                   &
-!     &          iele_4_surf, interior_surf, vnorm_surf,                &
-!     &          max_line_step, iflag_used_ele, iflag_back,             &
-!     &          vect_nod, color_nod, isurf_org, x_start, v_start,      &
-!     &          c_field, icount_line, iflag_comm)
+!!      subroutine s_extend_field_line(numnod, numele, numsurf,         &
+!!     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                  &
+!!     &          iele_4_surf, interior_surf, vnorm_surf,               &
+!!     &          max_line_step, iflag_used_ele, iflag_back,            &
+!!     &          vect_nod, color_nod, isurf_org, x_start, v_start,     &
+!!     &          c_field, icount_line, iflag_comm, fline_lc)
+!!        type(local_fieldline), intent(inout) :: fline_lc
 !
       module extend_field_line
 !
@@ -32,9 +33,9 @@
      &          iele_4_surf, interior_surf, vnorm_surf,                 &
      &          max_line_step, iflag_used_ele, iflag_back,              &
      &          vect_nod, color_nod, isurf_org, x_start, v_start,       &
-     &          c_field, icount_line, iflag_comm)
+     &          c_field, icount_line, iflag_comm, fline_lc)
 !
-      use m_local_fline
+      use t_local_fline
       use cal_field_on_surf_viz
       use cal_fline_in_cube
 !
@@ -57,6 +58,8 @@
       real(kind = kreal), intent(inout) ::   v_start(3), x_start(3)
       real(kind = kreal), intent(inout) ::   c_field(1)
 !
+      type(local_fieldline), intent(inout) :: fline_lc
+!
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
       real(kind = kreal) :: x_tgt(3), v_tgt(3), c_tgt(1), xi(2), flux
 !
@@ -66,7 +69,7 @@
         return
       end if
 !
-      call add_fline_start(x_start, c_field(1))
+      call add_fline_start(x_start, c_field(1), fline_lc)
 !
        do
         icount_line = icount_line + 1
@@ -95,7 +98,7 @@
         v_start(1:3) = half * (v_start(1:3) + v_tgt(1:3))
         c_field(1) =   half * (c_field(1) + c_tgt(1))
 !
-        call add_fline_list(x_start, c_field(1))
+        call add_fline_list(x_start, c_field(1), fline_lc)
 !
 !   extend to surface of element
 !
@@ -115,7 +118,7 @@
      &      ie_surf, isurf_end, xi, color_nod, c_field(1))
         x_start(1:3) =  x_tgt(1:3)
 !
-        call add_fline_list(x_start, c_field(1))
+        call add_fline_list(x_start, c_field(1), fline_lc)
 !
         flux = (v_start(1) * vnorm_surf(isurf_end,1)                    &
      &        + v_start(2) * vnorm_surf(isurf_end,2)                    &

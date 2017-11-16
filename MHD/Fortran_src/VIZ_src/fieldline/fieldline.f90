@@ -25,9 +25,11 @@
       use m_control_params_4_fline
       use m_geometry_constants
       use m_global_fline
+      use m_local_fline
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_phys_data
+      use t_local_fline
 !
       implicit  none
 !
@@ -61,7 +63,7 @@
       call allocate_local_data_4_fline(mesh%node%numnod)
       call allocate_start_point_fline
       call allocate_num_gl_start_fline(nprocs)
-      call allocate_local_fline
+      call alloc_local_fline(fline_lc1)
       call allocate_global_fline_num
 !
       end subroutine FLINE_initialize
@@ -100,10 +102,10 @@
       do i_fln = 1, num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call s_const_field_lines(i_fln, mesh%node, mesh%ele,            &
-     &      ele_mesh%surf, ele_4_nod, mesh%nod_comm)
+     &      ele_mesh%surf, ele_4_nod, mesh%nod_comm, fline_lc1)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
-       call s_collect_fline_data(istep_fline, i_fln)
+       call s_collect_fline_data(istep_fline, i_fln, fline_lc1)
       end do
 !
       end subroutine FLINE_visualize

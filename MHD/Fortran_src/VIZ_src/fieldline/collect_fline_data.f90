@@ -4,6 +4,8 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
+!!      subroutine s_collect_fline_data(istep_fline, i_fln, fline_lc)
+!
       module collect_fline_data
 !
       use m_precision
@@ -11,14 +13,12 @@
       use calypso_mpi
       use m_constants
       use m_global_fline
-      use m_local_fline
+      use t_local_fline
 !
       implicit  none
 !
       private :: collect_number_of_fline, collect_fline_connection
       private :: collect_fline_position, collect_fline_color
-!
-!      subroutine s_collect_fline_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -26,7 +26,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_collect_fline_data(istep_fline, i_fln)
+      subroutine s_collect_fline_data(istep_fline, i_fln, fline_lc)
 !
       use m_control_params_4_fline
       use m_field_file_format
@@ -34,12 +34,13 @@
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: istep_fline, i_fln
+      type(local_fieldline), intent(in) :: fline_lc
 !
       character(len=kchara) :: ftmp_1, file_name
 !
 !
       color_name_gl = name_color_output(i_fln)
-      call collect_number_of_fline
+      call collect_number_of_fline(fline_lc)
 !
       if(ntot_nod_line_gl .gt. ntot_nod_line_gl_buf) then
         call raise_global_fline_data
@@ -49,9 +50,9 @@
         call raise_global_fline_connect
       end if
 !
-      call collect_fline_connection
-      call collect_fline_position
-      call collect_fline_color
+      call collect_fline_connection(fline_lc)
+      call collect_fline_position(fline_lc)
+      call collect_fline_color(fline_lc)
 !
 !
       if(my_rank .eq. 0) then
@@ -79,16 +80,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine collect_number_of_fline
+      subroutine collect_number_of_fline(fline_lc)
 !
+      type(local_fieldline), intent(in) :: fline_lc
       integer(kind = kint) :: ip
 !
 !
-      call MPI_AllGather(nnod_line_l, ione, CALYPSO_INTEGER,            &
+      call MPI_AllGather(fline_lc%nnod_line_l, ione, CALYPSO_INTEGER,   &
      &    nnod_line_gl(1), ione, CALYPSO_INTEGER, CALYPSO_COMM,         &
      &    ierr_MPI)
 !
-      call MPI_AllGather(nele_line_l, ione, CALYPSO_INTEGER,            &
+      call MPI_AllGather(fline_lc%nele_line_l, ione, CALYPSO_INTEGER,   &
      &    nele_line_gl(1), ione, CALYPSO_INTEGER, CALYPSO_COMM,         &
      &    ierr_MPI)
 !
@@ -107,15 +109,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine collect_fline_connection
+      subroutine collect_fline_connection(fline_lc)
 !
+      type(local_fieldline), intent(in) :: fline_lc
       integer(kind = kint) :: ip, num, ist, ied, inum, nneib_recv
 !
 !
       nneib_recv = 0
-      num = 2*nele_line_l
-      call MPI_Isend(iedge_line_l(1,1), num, CALYPSO_INTEGER, izero,    &
-     &   0, CALYPSO_COMM, req1_fline(1), ierr_MPI)
+      num = 2 * fline_lc%nele_line_l
+      call MPI_Isend(fline_lc%iedge_line_l(1,1), num, CALYPSO_INTEGER,  &
+     &   izero, 0, CALYPSO_COMM, req1_fline(1), ierr_MPI)
 !
       if(my_rank .eq. 0) then
         nneib_recv = nprocs
@@ -146,14 +149,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine collect_fline_position
+      subroutine collect_fline_position(fline_lc)
 !
+      type(local_fieldline), intent(in) :: fline_lc
       integer(kind = kint) :: ip, num, ist, nneib_recv
 !
 !
       nneib_recv = 0
-      num = 3*nnod_line_l
-      call MPI_Isend(xx_line_l(1,1), num, CALYPSO_REAL, izero,          &
+      num = 3 * fline_lc%nnod_line_l
+      call MPI_Isend(fline_lc%xx_line_l(1,1), num, CALYPSO_REAL, izero, &
      &    0, CALYPSO_COMM, req1_fline(1), ierr_MPI)
 !
       if(my_rank .eq. 0) then
@@ -174,14 +178,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine collect_fline_color
+      subroutine collect_fline_color(fline_lc)
 !
+      type(local_fieldline), intent(in) :: fline_lc
       integer(kind = kint) :: ip, num, ist, nneib_recv
 !
 !
       nneib_recv = 0
-      num = nnod_line_l
-      call MPI_Isend(col_line_l(1), num, CALYPSO_REAL, izero,           &
+      num = fline_lc%nnod_line_l
+      call MPI_Isend(fline_lc%col_line_l(1), num, CALYPSO_REAL, izero,  &
      &    0, CALYPSO_COMM, req1_fline(1), ierr_MPI)
 !
       if(my_rank .eq. 0) then
