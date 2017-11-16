@@ -100,8 +100,8 @@
       use output_4_psf
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
+      type(mesh_groups), intent(in) ::   group
       type(phys_data), intent(in) :: nod_fld
 !
       integer(kind = kint) :: i_psf
@@ -145,10 +145,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
       call set_node_and_patch_psf                                       &
-     &   (num_psf, mesh%node, mesh%ele, ele_mesh%edge, mesh%nod_comm,   &
-     &    ele_mesh%edge_comm, group%surf_grp, group%surf_nod_grp,       &
-     &    psf_case_tbls, psf_def, psf_search,                           &
-     &    psf_list, psf_grp_list, psf_mesh)
+     &   (num_psf, mesh, ele_mesh, group, psf_case_tbls,                &
+     &    psf_def, psf_search, psf_list, psf_grp_list, psf_mesh)
 !
       call alloc_psf_field_data(num_psf, psf_mesh)
 !

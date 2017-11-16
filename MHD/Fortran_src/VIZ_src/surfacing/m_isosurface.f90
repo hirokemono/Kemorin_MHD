@@ -151,10 +151,8 @@
      &   (num_iso, mesh%node, nod_fld, iso_def, iso_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
-      call set_node_and_patch_iso                                       &
-     &   (num_iso, mesh%node, mesh%ele, ele_mesh%edge,                  &
-     &    ele_mesh%edge_comm, iso_case_tbls, iso_search,                &
-     &    iso_list, iso_mesh)
+      call set_node_and_patch_iso(num_iso, mesh, ele_mesh,              &
+     &    iso_case_tbls, iso_search, iso_list, iso_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
       call alloc_psf_field_data(num_iso, iso_mesh)
