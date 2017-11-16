@@ -200,7 +200,7 @@
 !
       if(pvr%num_pvr_sect_ctl .gt. 0) then
         do i = 1, pvr%num_pvr_sect_ctl
-          call deallocate_cont_dat_4_psf(pvr%pvr_sect_ctl(i)%psf)
+          call deallocate_cont_dat_4_psf(pvr%pvr_sect_ctl(i)%psf_c)
         end do
         deallocate(pvr%pvr_sect_ctl)
       end if

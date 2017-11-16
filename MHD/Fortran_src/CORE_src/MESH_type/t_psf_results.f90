@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine load_psf_data_to_link_IO                             &
-!!     &         (istep, psf_file_param, psf, psf_ucd)
-!!      subroutine load_psf_data(istep, psf_file_param, psf)
+!!     &         (istep, psf_file_param, psf_dat, psf_ucd)
+!!      subroutine load_psf_data(istep, psf_file_param, psf_dat)
 !!
 !!      subroutine dealloc_psf_results(psf_nod, psf_ele, psf_phys)
 !!@endverbatim
@@ -46,33 +46,33 @@
 !-----------------------------------------------------------------------
 !
       subroutine load_psf_data_to_link_IO                               &
-     &         (istep, psf_file_param, psf, psf_ucd)
+     &         (istep, psf_file_param, psf_dat, psf_ucd)
 !
       use set_ucd_data_to_type
 !
       integer(kind = kint), intent(in) :: istep
       type(field_IO_params), intent(in) :: psf_file_param
-      type(psf_results), intent(inout) :: psf
+      type(psf_results), intent(inout) :: psf_dat
       type(ucd_data), intent(inout) :: psf_ucd
 !
 !
-      call load_psf_data(istep, psf_file_param, psf)
+      call load_psf_data(istep, psf_file_param, psf_dat)
 !
-      call link_node_data_2_ucd(psf%psf_nod, psf_ucd)
-      call link_ele_data_2_ucd(psf%psf_ele, psf_ucd)
-      call link_field_data_to_ucd(psf%psf_phys, psf_ucd)
+      call link_node_data_2_ucd(psf_dat%psf_nod, psf_ucd)
+      call link_ele_data_2_ucd(psf_dat%psf_ele, psf_ucd)
+      call link_field_data_to_ucd(psf_dat%psf_phys, psf_ucd)
 !
       end subroutine load_psf_data_to_link_IO
 !
 !-----------------------------------------------------------------------
 !
-      subroutine load_psf_data(istep, psf_file_param, psf)
+      subroutine load_psf_data(istep, psf_file_param, psf_dat)
 !
       use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: istep
       type(field_IO_params), intent(in) :: psf_file_param
-      type(psf_results), intent(inout) :: psf
+      type(psf_results), intent(inout) :: psf_dat
 !
       type(ucd_data) :: read_psf
 !
@@ -81,23 +81,24 @@
      &   (iminus, istep, ithree, psf_file_param, read_psf)
 !
       call set_psf_udt_mesh                                             &
-     &   (read_psf, psf%psf_nod, psf%psf_ele, psf%psf_phys)
-      call set_psf_udt_data(read_psf, psf%psf_nod, psf%psf_phys)
+     &   (read_psf, psf_dat%psf_nod, psf_dat%psf_ele, psf_dat%psf_phys)
+      call set_psf_udt_data                                             &
+     &   (read_psf, psf_dat%psf_nod, psf_dat%psf_phys)
 !
       end subroutine load_psf_data
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_psf_results(psf)
+      subroutine dealloc_psf_results(psf_dat)
 !
-      type(psf_results), intent(inout) :: psf
+      type(psf_results), intent(inout) :: psf_dat
 !
 !
-      call dealloc_phys_data_type(psf%psf_phys)
-      call dealloc_phys_name_type(psf%psf_phys)
-      call deallocate_ele_connect_type(psf%psf_ele)
-      call deallocate_node_geometry_type(psf%psf_nod)
+      call dealloc_phys_data_type(psf_dat%psf_phys)
+      call dealloc_phys_name_type(psf_dat%psf_phys)
+      call deallocate_ele_connect_type(psf_dat%psf_ele)
+      call deallocate_node_geometry_type(psf_dat%psf_nod)
 !
       end subroutine dealloc_psf_results
 !

@@ -226,7 +226,7 @@
       if(iso_ctls%num_iso_ctl .le. 0) return
       if ((i_iso_ctl1+i_iso_ctl2) .gt. 0) return
 !
-      call allocate_iso_ctl_stract(iso_ctls)
+      call alloc_iso_ctl_stract(iso_ctls)
       do
         call load_ctl_label_and_line
 !

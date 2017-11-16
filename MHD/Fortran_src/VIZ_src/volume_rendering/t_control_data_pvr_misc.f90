@@ -56,7 +56,7 @@
 !
       type pvr_sections_ctl
         character(len = kchara) :: fname_sect_ctl
-        type(psf_ctl) :: psf
+        type(psf_ctl) :: psf_c
         type(read_real_item) :: opacity_ctl
       end type pvr_sections_ctl
 !
@@ -153,7 +153,7 @@
       do
         call load_ctl_label_and_line
         if(right_begin_flag(hd_surface_define) .gt. 0) then
-          call read_section_def_control(pvr_sect_ctl%psf)
+          call read_section_def_control(pvr_sect_ctl%psf_c)
           exit
         end if
       end do
@@ -172,7 +172,7 @@
 !
       i_psf_ctl1 = 0
       i_flag = 0
-      pvr_sect_ctl%psf%i_surface_define = 0
+      pvr_sect_ctl%psf_c%i_surface_define = 0
       do
         call load_ctl_label_and_line
 !
@@ -185,7 +185,7 @@
         else if(right_begin_flag(hd_surface_define) .gt. 0) then
           i_psf_ctl1 = i_psf_ctl1 + 1
           pvr_sect_ctl%fname_sect_ctl = 'NO_FILE'
-          call read_section_def_control(pvr_sect_ctl%psf)
+          call read_section_def_control(pvr_sect_ctl%psf_c)
         end if
 !
         call read_real_ctl_type                                         &

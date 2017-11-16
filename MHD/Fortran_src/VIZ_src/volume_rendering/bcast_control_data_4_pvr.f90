@@ -108,10 +108,10 @@
       do i = 1, pvr%num_pvr_sect_ctl
         call MPI_BCAST(pvr%pvr_sect_ctl(i)%fname_sect_ctl, kchara,      &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-        call MPI_BCAST(pvr%pvr_sect_ctl(i)%psf%i_psf_ctl,  ione,        &
+        call MPI_BCAST(pvr%pvr_sect_ctl(i)%psf_c%i_psf_ctl,  ione,      &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-        call bcast_section_def_control(pvr%pvr_sect_ctl(i)%psf)
+        call bcast_section_def_control(pvr%pvr_sect_ctl(i)%psf_c)
         call bcast_ctl_type_r1(pvr%pvr_sect_ctl(i)%opacity_ctl)
       end do
 !
