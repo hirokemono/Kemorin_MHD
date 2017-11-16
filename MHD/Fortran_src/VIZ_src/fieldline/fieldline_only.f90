@@ -37,13 +37,14 @@
       subroutine field_line_init_only(mesh, group, nod_fld)
 !
       use fieldline
+      use m_control_data_flines
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(phys_data), intent(in) :: nod_fld
 !
 !
-      call FLINE_initialize(mesh, group, nod_fld)
+      call FLINE_initialize(mesh, group, nod_fld, fline_ctls1)
 !
       end subroutine field_line_init_only
 !

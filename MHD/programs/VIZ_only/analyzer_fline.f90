@@ -24,6 +24,7 @@
 !
       use calypso_mpi
       use m_control_data_vizs
+      use m_control_data_flines
 !
       integer(kind = kint) :: ierr
 !
@@ -42,7 +43,7 @@
 !
 !  VIZ Initialization
       call FLINE_initialize                                             &
-     &   (femmesh_VIZ%mesh, femmesh_VIZ%group, field_VIZ)
+     &   (femmesh_VIZ%mesh, femmesh_VIZ%group, field_VIZ, fline_ctls1)
 !
       end subroutine initialize_fline
 !

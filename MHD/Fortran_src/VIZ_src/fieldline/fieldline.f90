@@ -7,7 +7,7 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine FLINE_initialize(mesh, group, nod_fld)
+!!      subroutine FLINE_initialize(mesh, group, nod_fld, fline_ctls)
 !!      subroutine FLINE_visualize(istep_fline, mesh, group, ele_mesh,  &
 !!     &          ele_4_nod, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -15,6 +15,7 @@
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(phys_data), intent(in) :: nod_fld
+!!        type(fieldline_controls), intent(inout) :: fline_ctls
 !!@endverbatim
 !
       module fieldline
@@ -25,7 +26,6 @@
       use m_control_params_4_fline
       use m_geometry_constants
       use m_global_fline
-      use m_local_fline
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_phys_data
@@ -33,31 +33,33 @@
 !
       implicit  none
 !
+      type(local_fieldline), save :: fline_lc1
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine FLINE_initialize(mesh, group, nod_fld)
+      subroutine FLINE_initialize(mesh, group, nod_fld, fline_ctls)
 !
       use calypso_mpi
-      use m_control_data_flines
+      use t_control_data_flines
       use m_source_4_filed_line
-      use m_local_fline
       use set_fline_control
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
+      type(fieldline_controls), intent(inout) :: fline_ctls
 !
 !
-      num_fline = num_fline_ctl
+      num_fline = fline_ctls%num_fline_ctl
       if (num_fline .le. 0) return
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
       call s_set_fline_control                                          &
-     &   (mesh%ele, group%ele_grp, group%surf_grp, nod_fld)
+     &   (mesh%ele, group%ele_grp, group%surf_grp, nod_fld, fline_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_local_data_4_fline'
       call allocate_local_data_4_fline(mesh%node%numnod)

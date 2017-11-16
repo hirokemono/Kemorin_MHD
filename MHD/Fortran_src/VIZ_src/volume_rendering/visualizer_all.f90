@@ -41,6 +41,7 @@
 !
       use m_cross_section
       use m_control_data_sections
+      use m_control_data_flines
       use volume_rendering
       use fieldline
 !
@@ -70,7 +71,7 @@
 !
       call start_elapsed_time(63)
       call FLINE_initialize                                             &
-     &   (femmesh%mesh, femmesh%group, nod_fld)
+     &   (femmesh%mesh, femmesh%group, nod_fld, fline_ctls1)
       call end_elapsed_time(63)
 !
       end subroutine init_visualize

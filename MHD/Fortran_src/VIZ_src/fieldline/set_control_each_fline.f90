@@ -197,7 +197,7 @@
       tmpfield(1) = fln%fline_color_field_ctl%charavalue
       tmpcomp(1) = fln%fline_color_comp_ctl%charavalue
       call set_components_4_viz                                         &
-     &   (nod_fld%num_phys, nod_fld%phys_name, ione, tmpfield, tmpcomp,         &
+     &   (nod_fld%num_phys, nod_fld%phys_name, ione, tmpfield, tmpcomp, &
      &    ione, ifield_linecolor(i_fln), icomp_linecolor(i_fln),        &
      &    ncomp, ncomp_org, name_color_output(i_fln))
       if(ncomp(1) .ne. ione) then

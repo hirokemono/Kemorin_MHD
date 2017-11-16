@@ -1,6 +1,6 @@
-!m_source_4_filed_line.f90
+!t_source_of_filed_line.f90
 !
-!      module m_source_4_filed_line
+!      module t_source_of_filed_line
 !
 !      Written by H. Matsui on Aug., 2011
 !
@@ -8,11 +8,14 @@
 !      subroutine allocate_local_start_grp_item
 !      subroutine allocate_local_data_4_fline(numnod)
 !      subroutine allocate_start_point_fline
+!!      subroutine alloc_num_gl_start_fline                             &
+!!     &         (nprocs, num_fline, ntot_each_field_line, fline_trc)
 !      subroutine deallocate_local_data_4_fline
 !      subroutine deallocate_local_start_grp_item
 !      subroutine deallocate_start_point_fline
+!!      subroutine dealloc_num_gl_start_fline(fline_trc)
 !
-      module m_source_4_filed_line
+      module t_source_of_filed_line
 !
       use m_precision
 !
@@ -33,24 +36,26 @@
       real(kind = kreal),   allocatable :: xx_start_fline(:,:)
       real(kind = kreal),   allocatable :: flux_start_fline(:)
 !
+        integer(kind = kint) :: ntot_gl_fline = 0
 !
-      integer(kind = kint) :: ntot_gl_fline = 0
-      integer(kind = kint), allocatable :: istack_all_fline(:,:)
-      integer(kind = kint), allocatable :: num_all_fline(:,:)
-      real(kind = kreal),   allocatable :: flux_stack_fline(:)
+      type fieldline_trace
+        integer(kind = kint), allocatable :: istack_all_fline(:,:)
+        integer(kind = kint), allocatable :: num_all_fline(:,:)
+        real(kind = kreal),   allocatable :: flux_stack_fline(:)
 !
-      integer(kind= kint), allocatable :: iflag_fline(:)
-      integer(kind= kint), allocatable :: icount_fline(:)
-      integer(kind= kint), allocatable :: isf_fline_start(:,:)
-      real(kind = kreal), allocatable ::  xx_fline_start(:,:)
-      real(kind = kreal), allocatable ::  v_fline_start(:,:)
-      real(kind = kreal), allocatable ::  c_fline_start(:)
+        integer(kind= kint), allocatable :: iflag_fline(:)
+        integer(kind= kint), allocatable :: icount_fline(:)
+        integer(kind= kint), allocatable :: isf_fline_start(:,:)
+        real(kind = kreal), allocatable ::  xx_fline_start(:,:)
+        real(kind = kreal), allocatable ::  v_fline_start(:,:)
+        real(kind = kreal), allocatable ::  c_fline_start(:)
 !
-      integer(kind= kint), allocatable :: id_fline_export(:,:)
-      real(kind = kreal), allocatable ::  fline_export(:,:)
+        integer(kind= kint), allocatable :: id_fline_export(:,:)
+        real(kind = kreal), allocatable ::  fline_export(:,:)
 !
-      integer(kind= kint), allocatable :: isf_fline_global(:,:)
-      real(kind = kreal), allocatable ::  fline_global(:,:)
+        integer(kind= kint), allocatable :: isf_fline_global(:,:)
+        real(kind = kreal), allocatable ::  fline_global(:,:)
+      end type fieldline_trace
 !
 !  ---------------------------------------------------------------------
 !
@@ -126,44 +131,44 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_num_gl_start_fline(nprocs)
+      subroutine alloc_num_gl_start_fline                               &
+     &         (nprocs, num_fline, ntot_each_field_line, fline_trc)
 !
-      use m_control_params_4_fline
-!
-      integer(kind = kint), intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: num_fline, nprocs
+      integer(kind = kint), intent(in) :: ntot_each_field_line
+      type(fieldline_trace), intent(inout) :: fline_trc
       integer(kind = kint) :: num
 !
 !
-      allocate(istack_all_fline(0:nprocs,num_fline))
-      allocate(num_all_fline(nprocs,num_fline))
-      allocate(flux_stack_fline(0:nprocs))
+      allocate(fline_trc%istack_all_fline(0:nprocs,num_fline))
+      allocate(fline_trc%num_all_fline(nprocs,num_fline))
+      allocate(fline_trc%flux_stack_fline(0:nprocs))
 !
       num = 2*ntot_each_field_line
-      allocate(icount_fline(num))
-      allocate(iflag_fline(num))
-      allocate(isf_fline_start(3,num))
-      allocate(xx_fline_start(3,num))
-      allocate(v_fline_start(3,num))
-      allocate(c_fline_start(num))
+      allocate(fline_trc%icount_fline(num))
+      allocate(fline_trc%iflag_fline(num))
+      allocate(fline_trc%isf_fline_start(3,num))
+      allocate(fline_trc%xx_fline_start(3,num))
+      allocate(fline_trc%v_fline_start(3,num))
+      allocate(fline_trc%c_fline_start(num))
 !
-      istack_all_fline = 0
-      num_all_fline =    0
-      ntot_gl_fline =    0
-      flux_stack_fline = 0.0d0
+      fline_trc%istack_all_fline = 0
+      fline_trc%num_all_fline =    0
+      fline_trc%flux_stack_fline = 0.0d0
 !
-      icount_fline = 0
-      iflag_fline =  0
-      isf_fline_start = 0
-      xx_fline_start = 0.0d0
-      v_fline_start =  0.0d0
-      c_fline_start =  0.0d0
+      fline_trc%icount_fline = 0
+      fline_trc%iflag_fline =  0
+      fline_trc%isf_fline_start = 0
+      fline_trc%xx_fline_start = 0.0d0
+      fline_trc%v_fline_start =  0.0d0
+      fline_trc%c_fline_start =  0.0d0
 !
-      allocate(id_fline_export(7,num))
-      allocate(fline_export(7,num))
-      id_fline_export = 0
-      fline_export = 0.0d0
+      allocate(fline_trc%id_fline_export(7,num))
+      allocate(fline_trc%fline_export(7,num))
+      fline_trc%id_fline_export = 0
+      fline_trc%fline_export = 0.0d0
 !
-      end subroutine allocate_num_gl_start_fline
+      end subroutine alloc_num_gl_start_fline
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -195,25 +200,27 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_num_gl_start_fline
+      subroutine dealloc_num_gl_start_fline(fline_trc)
+!
+      type(fieldline_trace), intent(inout) :: fline_trc
 !
 !
-      deallocate(istack_all_fline)
-      deallocate(num_all_fline)
-      deallocate(flux_stack_fline)
+      deallocate(fline_trc%istack_all_fline)
+      deallocate(fline_trc%num_all_fline)
+      deallocate(fline_trc%flux_stack_fline)
 !
-      deallocate(icount_fline)
-      deallocate(iflag_fline)
-      deallocate(isf_fline_start)
-      deallocate(xx_fline_start)
-      deallocate(v_fline_start)
-      deallocate(c_fline_start)
+      deallocate(fline_trc%icount_fline)
+      deallocate(fline_trc%iflag_fline)
+      deallocate(fline_trc%isf_fline_start)
+      deallocate(fline_trc%xx_fline_start)
+      deallocate(fline_trc%v_fline_start)
+      deallocate(fline_trc%c_fline_start)
 !
-      deallocate(id_fline_export)
-      deallocate(fline_export)
+      deallocate(fline_trc%id_fline_export)
+      deallocate(fline_trc%fline_export)
 !
       end subroutine dealloc_num_gl_start_fline
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_source_4_filed_line
+      end module t_source_of_filed_line
