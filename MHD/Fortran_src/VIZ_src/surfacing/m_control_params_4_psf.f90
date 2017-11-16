@@ -4,8 +4,9 @@
 !        programmed by H.Matsui on May. 2006
 !
 !!      subroutine allocate_control_params_4_psf(num_psf)
-!!      subroutine count_control_4_psf(i_psf, psf, num_mat, mat_name,   &
-!!     &          num_nod_phys, phys_nod_name, psf_fld, psf_param, ierr)
+!!      subroutine count_control_4_psf                                  &
+!!     &         (psf, num_mat, mat_name, num_nod_phys, phys_nod_name,  &
+!!     &          psf_fld, psf_param, psf_file_IO, ierr)
 !!      subroutine set_control_4_psf(i_psf, psf, num_mat, mat_name,     &
 !!     &          num_surf, surf_name, num_nod_phys, phys_nod_name,     &
 !!     &          psf_fld, psf_param, ierr)
@@ -13,14 +14,11 @@
       module m_control_params_4_psf
 !
       use m_precision
-      use t_file_IO_parameter
 !
       implicit  none
 !
 !
       character(len=kchara), parameter :: default_psf_prefix = 'psf'
-!
-      type(field_IO_params), allocatable :: psf_file_IO(:)
 !
       integer(kind = kint), allocatable :: id_section_method(:)
 !
@@ -44,7 +42,6 @@
       integer(kind= kint), intent(in) :: num_psf
 !
 !
-      allocate(psf_file_IO(num_psf))
 !
       allocate(id_section_method(num_psf))
 !
@@ -52,7 +49,6 @@
 !
       allocate(id_psf_group(num_psf))
 !
-      psf_file_IO(1:num_psf)%iflag_format = iflag_sgl_udt
       id_section_method =  0
       id_psf_group =       0
 !
@@ -63,14 +59,16 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_control_4_psf(i_psf, psf, num_mat, mat_name,     &
-     &          num_nod_phys, phys_nod_name, psf_fld, psf_param, ierr)
+      subroutine count_control_4_psf                                    &
+     &         (psf, num_mat, mat_name, num_nod_phys, phys_nod_name,    &
+     &          psf_fld, psf_param, psf_file_IO, ierr)
 !
       use m_error_IDs
-      use t_control_data_4_psf
       use m_file_format_switch
+      use t_control_data_4_psf
       use t_phys_data
       use t_psf_patch_data
+      use t_file_IO_parameter
       use parallel_ucd_IO_select
       use set_area_4_viz
       use set_field_comp_for_viz
@@ -81,17 +79,16 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      integer(kind = kint), intent(in) :: i_psf
       type(psf_ctl), intent(in) :: psf
       type(phys_data), intent(inout) :: psf_fld
       type(psf_parameters), intent(inout) :: psf_param
+      type(field_IO_params), intent(inout) :: psf_file_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
       ierr = 0
       call set_merged_ucd_file_ctl(default_psf_prefix,                  &
-     &    psf%psf_file_head_ctl, psf%psf_output_type_ctl,               &
-     &    psf_file_IO(i_psf))
+     &    psf%psf_file_head_ctl, psf%psf_output_type_ctl, psf_file_IO)
 !
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
      &   psf%psf_out_field_ctl%num, psf%psf_out_field_ctl%c1_tbl,       &

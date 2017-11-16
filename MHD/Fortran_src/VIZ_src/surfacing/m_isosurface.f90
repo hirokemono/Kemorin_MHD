@@ -34,6 +34,7 @@
       use t_time_data
       use t_psf_case_table
       use t_ucd_data
+      use t_file_IO_parameter
 !
       use m_constants
       use m_machine_parameter
@@ -55,10 +56,13 @@
 !
       type(psf_parameters), allocatable, save :: iso_param(:)
 !
-!>      Structure for psf patch data on local domain
+!>      Structure for isosurface patch data on local domain
       type(psf_local_data), allocatable, save :: iso_mesh(:)
 !
+!>      Structure for isosurface time output
       type(time_data), save :: iso_time_IO
+!>      Structure for isosurface data output
+      type(field_IO_params), allocatable, save :: iso_file_IO(:)
 !
 !>      Structure for isosurface output (used by master process)
       type(ucd_data), allocatable, save :: iso_out(:)
@@ -98,8 +102,8 @@
       call alloc_iso_field_type
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
-      call set_iso_control                                              &
-     &   (num_iso, group%ele_grp, nod_fld, iso_param, iso_mesh)
+      call set_iso_control(num_iso, group%ele_grp, nod_fld,             &
+     &    iso_param, iso_mesh, iso_file_IO)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
       call set_search_mesh_list_4_psf                                   &
@@ -177,7 +181,7 @@
 !
       deallocate(iso_mesh, iso_list)
       deallocate(iso_search, iso_param)
-      deallocate(iso_out, iso_out_m)
+      deallocate(iso_file_IO, iso_out, iso_out_m)
 !
       end subroutine dealloc_iso_field_type
 !
@@ -186,14 +190,19 @@
 !
       subroutine alloc_iso_field_type
 !
+      use m_field_file_format
+!
 !
       allocate(iso_mesh(num_iso))
       allocate(iso_list(num_iso))
       allocate(iso_search(num_iso))
       allocate(iso_param(num_iso))
 !
+      allocate(iso_file_IO(num_iso))
       allocate(iso_out(num_iso))
       allocate(iso_out_m(num_iso))
+!
+      iso_file_IO(1:num_iso)%iflag_format = iflag_sgl_ucd
 !
       end subroutine alloc_iso_field_type
 !

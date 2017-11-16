@@ -11,14 +11,14 @@
 !!      subroutine dealloc_psf_field_name(num_psf, psf_mesh)
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
 !!      subroutine set_psf_control(num_psf, ele_grp, sf_grp,            &
-!!     &          nod_fld, psf_param, psf_mesh)
+!!     &          nod_fld, psf_param, psf_mesh, psf_file_IO)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(psf_parameters), intent(inout) :: psf_param(num_psf)
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
-!!      subroutine set_iso_control                                      &
-!!     &         (num_iso, ele_grp, nod_fld, iso_param, iso_mesh)
+!!      subroutine set_iso_control(num_iso, ele_grp, nod_fld,           &
+!!     &          iso_param, iso_mesh, iso_file_IO)
 !!@endverbatim
 !
       module set_psf_iso_control
@@ -71,7 +71,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_psf_control(num_psf, ele_grp, sf_grp,              &
-     &          nod_fld, psf_param, psf_mesh)
+     &          nod_fld, psf_param, psf_mesh, psf_file_IO)
 !
       use calypso_mpi
       use m_control_data_sections
@@ -81,6 +81,7 @@
       use t_phys_data
       use t_control_data_4_psf
       use t_psf_patch_data
+      use t_file_IO_parameter
 !
       use set_field_comp_for_viz
 !
@@ -91,15 +92,17 @@
 !
       type(psf_parameters), intent(inout) :: psf_param(num_psf)
       type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
+      type(field_IO_params), intent(inout)  :: psf_file_IO(num_psf)
 !
       integer(kind = kint) :: i_psf, ierr
 !
 !
       do i_psf = 1, num_psf
-        call count_control_4_psf(i_psf, psf_ctl_struct(i_psf),          &
-     &      ele_grp%num_grp, ele_grp%grp_name,                          &
+        call count_control_4_psf                                        &
+     &     (psf_ctl_struct(i_psf), ele_grp%num_grp, ele_grp%grp_name,   &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      psf_mesh(i_psf)%field, psf_param(i_psf), ierr)
+     &      psf_mesh(i_psf)%field, psf_param(i_psf),                    &
+     &      psf_file_IO(i_psf), ierr)
         if(ierr.gt.0) call calypso_MPI_abort(ierr, e_message)
       end do
 !
@@ -123,8 +126,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_iso_control                                        &
-     &         (num_iso, ele_grp, nod_fld, iso_param, iso_mesh)
+      subroutine set_iso_control(num_iso, ele_grp, nod_fld,             &
+     &          iso_param, iso_mesh, iso_file_IO)
 !
       use calypso_mpi
       use m_control_data_sections
@@ -134,6 +137,7 @@
       use t_phys_data
       use t_control_data_4_iso
       use t_psf_patch_data
+      use t_file_IO_parameter
 !
       use set_field_comp_for_viz
 !
@@ -143,6 +147,7 @@
 !
       type(psf_parameters), intent(inout) :: iso_param(num_iso)
       type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
+      type(field_IO_params), intent(inout) :: iso_file_IO(num_iso)
 !
       integer(kind = kint) :: i
 !
@@ -158,7 +163,7 @@
         call count_control_4_iso(i, iso_ctl_struct(i),                  &
      &      ele_grp%num_grp, ele_grp%grp_name,                          &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      iso_mesh(i)%field, iso_param(i))
+     &      iso_mesh(i)%field, iso_param(i), iso_file_IO(i))
       end do
 !
       do i = 1, num_iso

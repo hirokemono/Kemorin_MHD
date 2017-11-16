@@ -12,7 +12,6 @@
       module m_control_params_4_iso
 !
       use m_precision
-      use t_file_IO_parameter
 !
       implicit  none
 !
@@ -24,10 +23,6 @@
 !
       integer(kind = kint), parameter :: iflag_constant_iso = -1
       integer(kind = kint), parameter :: iflag_field_iso =     1
-!
-      type(field_IO_params), allocatable :: iso_file_IO(:)
-!
-      character(len = kchara), target, allocatable :: iso_header(:)
 !
 !
       integer(kind = kint), allocatable :: id_isosurf_data(:)
@@ -47,12 +42,8 @@
 !
       subroutine allocate_control_params_4_iso(num_iso)
 !
-      use m_field_file_format
-!
       integer(kind= kint), intent(in) :: num_iso
 !
-!
-      allocate(iso_file_IO(num_iso))
 !
       allocate(id_isosurf_data(num_iso))
       allocate(id_isosurf_comp(num_iso))
@@ -61,7 +52,6 @@
       allocate(id_iso_result_type(num_iso))
 !
 !
-      iso_file_IO(1:num_iso)%iflag_format = iflag_sgl_ucd
       id_iso_result_type = 0
 !
       id_isosurf_data =  0
@@ -74,12 +64,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_control_4_iso(i_iso, iso, num_mat, mat_name,     &
-     &          num_nod_phys, phys_nod_name, iso_fld, iso_param)
+      subroutine count_control_4_iso                                    &
+     &         (i_iso, iso, num_mat, mat_name, num_nod_phys, phys_nod_name,     &
+     &          iso_fld, iso_param, iso_file_IO)
 !
       use m_file_format_switch
       use parallel_ucd_IO_select
       use set_field_comp_for_viz
+      use t_file_IO_parameter
       use t_control_data_4_iso
       use t_phys_data
       use t_psf_patch_data
@@ -97,6 +89,7 @@
       type(iso_ctl), intent(in) :: iso
       type(phys_data), intent(inout) :: iso_fld
       type(psf_parameters), intent(inout) :: iso_param
+      type(field_IO_params), intent(inout) :: iso_file_IO
 !
       character(len=kchara) :: tmpchara
       character(len=kchara), parameter :: default_iso_prefix = 'iso'
@@ -104,7 +97,7 @@
 !
       call set_merged_ucd_file_ctl(default_iso_prefix,                  &
      &    iso%iso_file_head_ctl, iso%iso_output_type_ctl,               &
-     &    iso_file_IO(i_iso))
+     &    iso_file_IO)
 !
       if     (iso%iso_out_field_ctl%num .gt. 0                          &
      &  .and. iso%result_value_iso_ctl%iflag .gt. 0) then

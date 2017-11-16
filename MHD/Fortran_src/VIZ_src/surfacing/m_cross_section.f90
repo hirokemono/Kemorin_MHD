@@ -64,7 +64,10 @@
 !>      Structure for psf patch data on local domain
       type(psf_local_data), allocatable, save :: psf_mesh(:)
 !
+!>      Structure for psf time output
       type(time_data), save :: psf_time_IO
+!>      Structure for psf data output
+      type(field_IO_params), allocatable, save :: psf_file_IO(:)
 !
 !>      Structure for cross sectioning output (used by master process)
       type(ucd_data), allocatable, save :: psf_out(:)
@@ -119,7 +122,7 @@
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_psf_control'
       call set_psf_control(num_psf, group%ele_grp, group%surf_grp,      &
-     &    nod_fld, psf_param, psf_mesh)
+     &    nod_fld, psf_param, psf_mesh, psf_file_IO)
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
@@ -190,6 +193,8 @@
 !
       subroutine alloc_psf_field_type
 !
+      use m_field_file_format
+!
 !
       allocate(psf_mesh(num_psf))
       allocate(psf_list(num_psf))
@@ -197,8 +202,11 @@
       allocate(psf_search(num_psf))
       allocate(psf_param(num_psf))
 !
-      allocate( psf_out(num_psf) )
-      allocate( psf_out_m(num_psf) )
+      allocate(psf_file_IO(num_psf))
+      allocate(psf_out(num_psf))
+      allocate(psf_out_m(num_psf))
+!
+      psf_file_IO(1:num_psf)%iflag_format = iflag_sgl_udt
 !
       end subroutine alloc_psf_field_type
 !
@@ -225,7 +233,8 @@
       call dealloc_psf_case_table(psf_case_tbls)
 !
       deallocate(psf_mesh, psf_list, psf_grp_list)
-      deallocate(psf_search, psf_out, psf_out_m, psf_param)
+      deallocate(psf_search, psf_file_IO, psf_out, psf_out_m)
+      deallocate(psf_param)
 !
       end subroutine dealloc_psf_field_type
 !
