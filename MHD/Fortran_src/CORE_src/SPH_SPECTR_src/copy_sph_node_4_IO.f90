@@ -77,6 +77,7 @@
       rtp%nidx_rtp(1:ithree) = sph_IO%nidx_sph(1:ithree)
       rtp%ist_rtp(1:ithree) =  sph_IO%ist_sph(1:ithree)
       rtp%ied_rtp(1:ithree) =  sph_IO%ied_sph(1:ithree)
+      rtp%nnod_med =           sph_IO%nidx_sph(1)*sph_IO%nidx_sph(2)
 !
       call alloc_type_spheric_param_rtp(rtp)
       call alloc_type_sph_1d_index_rtp(rtp)

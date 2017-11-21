@@ -146,6 +146,7 @@
       use lead_fields_4_sph_mhd
       use sph_SGS_MHD_rst_IO_control
       use input_control_sph_MHD
+      use forces_from_sph_trans
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -231,8 +232,7 @@
 !
       subroutine SPH_to_FEM_bridge_special_snap(sph, mesh, WK)
 !
-      use copy_snap_4_sph_trans
-      use copy_MHD_4_sph_trans
+      use FEM_analyzer_sph_MHD
       use sph_rtp_zonal_rms_data
 !*
       type(sph_grids), intent(in) :: sph
@@ -241,15 +241,8 @@
 !
 !*  -----------  data transfer to FEM array --------------
 !*
-      call copy_forces_to_snapshot_rtp                                  &
-     &   (sph%sph_params, sph%sph_rtp, WK%trns_MHD,                     &
-     &    mesh%node, FEM_d1%iphys, FEM_d1%field)
-      call copy_snap_vec_fld_from_trans                                 &
-     &   (sph%sph_params%m_folding, sph%sph_rtp, WK%trns_snap,          &
-     &    mesh%node, FEM_d1%iphys, FEM_d1%field)
-      call copy_snap_vec_force_from_trans                               &
-     &   (sph%sph_params%m_folding, sph%sph_rtp, WK%trns_snap,          &
-     &    mesh%node, FEM_d1%iphys, FEM_d1%field)
+      call SPH_to_FEM_bridge_MHD(sph%sph_params, sph%sph_rtp,           &
+     &    WK, mesh, FEM_d1%iphys, FEM_d1%field)
 !
 ! ----  Take zonal mean
 !

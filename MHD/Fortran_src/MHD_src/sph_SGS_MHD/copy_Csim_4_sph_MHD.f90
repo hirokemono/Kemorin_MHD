@@ -167,18 +167,15 @@
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
-      integer(kind = kint) :: nnod_med
-!
 !
 !$omp parallel workshare
       trns_SGS%frc_rtp(1:sph_rtp%nnod_rtp,irtp_sgs) = one
 !$omp end parallel workshare
 !
-      nnod_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
       call product_model_coefs_pout(one, ifld_sgs, sph_rtp%nidx_rtp(3), &
-     &   nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                   &
-     &   irtp_sgs, ione, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,     &
-     &   trns_SGS%frc_rtp)
+     &    sph_rtp%nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,          &
+     &    irtp_sgs, ione, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,    &
+     &    trns_SGS%frc_rtp)
 !
       end subroutine set_model_coefs_sph_snap
 !

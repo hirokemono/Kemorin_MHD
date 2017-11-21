@@ -171,8 +171,9 @@
       use t_spheric_parameter
       use t_sph_trans_arrays_MHD
 !
-      use copy_snap_4_sph_trans
-      use copy_MHD_4_sph_trans
+      use forces_from_sph_trans
+      use snapshot_forces_from_trans
+      use snapshot_field_from_trans
       use coordinate_convert_4_sph
 !
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -227,6 +228,84 @@
      end if
 !
       end subroutine FEM_finalize
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine zonal_mean_to_FEM_bridge_MHD                           &
+     &         (sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
+!
+      use t_spheric_parameter
+      use t_sph_trans_arrays_MHD
+!
+      use forces_from_sph_trans
+      use snapshot_forces_from_trans
+      use snapshot_field_from_trans
+      use coordinate_convert_4_sph
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_address), intent(in) :: iphys
+!
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(phys_data), intent(inout) :: nod_fld
+!*
+!*  -----------  data transfer to FEM array --------------
+!*
+      if (iflag_debug.gt.0) write(*,*) 'zmean_forces_to_snapshot_rtp'
+      call zmean_forces_to_snapshot_rtp                                 &
+     &   (sph_params, sph_rtp, WK%trns_MHD, mesh%node, iphys, nod_fld)
+!
+      if (iflag_debug.gt.0) write(*,*) 'zmean_snap_vec_fld_from_trans'
+      call zmean_snap_vec_fld_from_trans                                &
+     &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
+     &    mesh%node, iphys, nod_fld)
+      if (iflag_debug.gt.0) write(*,*)                                  &
+     &       'zmean_snap_vec_force_from_trans'
+      call zmean_snap_vec_force_from_trans                              &
+     &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
+     &    mesh%node, iphys, nod_fld)
+!
+      end subroutine zonal_mean_to_FEM_bridge_MHD
+!
+!-----------------------------------------------------------------------
+!
+      subroutine zonal_RMS_to_FEM_bridge_MHD                            &
+     &         (sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
+!
+      use t_spheric_parameter
+      use t_sph_trans_arrays_MHD
+!
+      use forces_from_sph_trans
+      use snapshot_forces_from_trans
+      use snapshot_field_from_trans
+      use coordinate_convert_4_sph
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_address), intent(in) :: iphys
+!
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(phys_data), intent(inout) :: nod_fld
+!*
+!*  -----------  data transfer to FEM array --------------
+!*
+      if (iflag_debug.gt.0) write(*,*) 'zrms_forces_to_snapshot_rtp'
+      call zrms_forces_to_snapshot_rtp                                  &
+     &   (sph_params, sph_rtp, WK%trns_MHD, mesh%node, iphys, nod_fld)
+!
+      if (iflag_debug.gt.0) write(*,*) 'zrms_snap_vec_fld_from_trans'
+      call zrms_snap_vec_fld_from_trans                                 &
+     &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
+     &    mesh%node, iphys, nod_fld)
+      if (iflag_debug.gt.0) write(*,*) 'zrms_snap_vec_force_from_trans'
+      call zrms_snap_vec_force_from_trans                               &
+     &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
+     &    mesh%node, iphys, nod_fld)
+!
+      end subroutine zonal_RMS_to_FEM_bridge_MHD
 !
 !-----------------------------------------------------------------------
 !

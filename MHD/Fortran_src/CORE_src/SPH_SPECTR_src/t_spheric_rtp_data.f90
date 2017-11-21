@@ -52,6 +52,8 @@
         integer(kind = kint) :: nnod_rtp
 !>        number of data points at pole
         integer(kind = kint) :: nnod_pole
+!>        number of data points on meridional planes
+        integer(kind = kint) :: nnod_med
 !
 !>        number of 1d data points for @f$ f(r,\theta,\phi) @f$
         integer(kind = kint) :: nidx_rtp(3)

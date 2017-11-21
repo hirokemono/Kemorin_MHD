@@ -117,14 +117,10 @@
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
-      integer(kind = kint) :: nnod_med
-!
-!
-      nnod_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
 !
       if(ifld_sgs%i_mom_flux .gt. 0) then
         call cal_dynamic_SGS_4_sph_MHD(SGS_param%SGS_mf_factor,         &
-     &      sph_rtp, istep_dynamic, SGS_param%stab_weight, nnod_med,    &
+     &      sph_rtp, istep_dynamic, SGS_param%stab_weight,              &
      &      n_vector, trns_SGS%f_trns%i_SGS_inertia,                    &
      &      trns_SGS%b_trns%i_wide_SGS_inertia,                         &
      &      ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                  &
@@ -133,7 +129,7 @@
 !
       if(ifld_sgs%i_lorentz .gt. 0) then
         call cal_dynamic_SGS_4_sph_MHD(SGS_param%SGS_mawell_factor,     &
-     &      sph_rtp, istep_dynamic, SGS_param%stab_weight, nnod_med,    &
+     &      sph_rtp, istep_dynamic, SGS_param%stab_weight,              &
      &      n_vector, trns_SGS%f_trns%i_SGS_Lorentz,                    &
      &      trns_SGS%b_trns%i_wide_SGS_Lorentz,                         &
      &      ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,                    &
@@ -142,7 +138,7 @@
 !
       if(ifld_sgs%i_induction .gt. 0) then
         call cal_dynamic_SGS_4_sph_MHD(SGS_param%SGS_uxb_factor,        &
-     &      sph_rtp, istep_dynamic, SGS_param%stab_weight, nnod_med,    &
+     &      sph_rtp, istep_dynamic, SGS_param%stab_weight,              &
      &      n_vector, trns_SGS%f_trns%i_SGS_vp_induct,                  &
      &      trns_SGS%b_trns%i_wide_SGS_vp_induct,                       &
      &      ifld_sgs%i_induction, icomp_sgs%i_induction,                &
@@ -151,7 +147,7 @@
 !
       if(ifld_sgs%i_heat_flux .gt. 0) then
         call cal_dynamic_SGS_4_sph_MHD(SGS_param%SGS_hf_factor,         &
-     &      sph_rtp, istep_dynamic, SGS_param%stab_weight, nnod_med,    &
+     &      sph_rtp, istep_dynamic, SGS_param%stab_weight,              &
      &      n_vector, trns_SGS%f_trns%i_SGS_h_flux,                     &
      &      trns_SGS%b_trns%i_wide_SGS_h_flux,                          &
      &      ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,                &
@@ -160,7 +156,7 @@
 !
       if(ifld_sgs%i_comp_flux .gt. 0) then
         call cal_dynamic_SGS_4_sph_MHD(SGS_param%SGS_cf_factor,         &
-     &      sph_rtp, istep_dynamic, SGS_param%stab_weight, nnod_med,    &
+     &      sph_rtp, istep_dynamic, SGS_param%stab_weight,              &
      &      n_vector, trns_SGS%f_trns%i_SGS_c_flux,                     &
      &      trns_SGS%b_trns%i_wide_SGS_c_flux,                          &
      &      ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,                &
@@ -172,8 +168,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_dynamic_SGS_4_sph_MHD(const_Csim,                  &
-     &          sph_rtp, istep_dynamic, stab_weight, nnod_med,          &
+      subroutine cal_dynamic_SGS_4_sph_MHD                              &
+     &         (const_Csim, sph_rtp, istep_dynamic, stab_weight,        &
      &          numdir, irtp_sgs, irtp_wide, ifld_sgs, icomp_sgs,       &
      &          wk_sgs, trns_SGS)
 !
@@ -186,7 +182,6 @@
       real(kind = kreal), intent(in) :: stab_weight
       integer(kind = kint), intent(in) :: istep_dynamic
       integer(kind = kint), intent(in) :: numdir
-      integer(kind = kint), intent(in) :: nnod_med
 !
       integer(kind = kint), intent(in) :: irtp_sgs, irtp_wide
       integer(kind = kint), intent(in) :: ifld_sgs, icomp_sgs
@@ -199,22 +194,21 @@
       if(istep_dynamic .eq. 0) then
         if(iflag_debug .gt. 0)                                          &
            write(*,*) 'sel_int_zonal_for_model_coefs', istep_dynamic
-        call sel_int_zonal_for_model_coefs                              &
-     &   (numdir, sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),      &
+        call sel_int_zonal_for_model_coefs(numdir,                      &
+     &    sph_rtp%nnod_rtp, sph_rtp%nnod_med, sph_rtp%nidx_rtp(3),      &
      &    trns_SGS%frc_rtp(1,irtp_sgs), trns_SGS%fld_rtp(1,irtp_wide),  &
      &    wk_sgs%ntot_comp, icomp_sgs,                                  &
      &    wk_sgs%comp_coef, wk_sgs%comp_clip)
 !
         if(iflag_debug .gt. 0)                                          &
            write(*,*) 'sel_sph_model_coefs', stab_weight
-        call sel_sph_model_coefs(numdir, nnod_med,                      &
+        call sel_sph_model_coefs(numdir, sph_rtp%nnod_med,              &
      &      stab_weight, ifld_sgs, icomp_sgs,                           &
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp, wk_sgs%comp_coef,       &
      &      wk_sgs%comp_clip, wk_sgs%fld_coef)
       end if
 !
-      call sel_product_model_coefs                                      &
-     &   (const_Csim, sph_rtp, nnod_med, numdir,                        &
+      call sel_product_model_coefs(const_Csim, sph_rtp, numdir,         &
      &    irtp_sgs, ifld_sgs, wk_sgs, trns_SGS)
 !
       end subroutine cal_dynamic_SGS_4_sph_MHD
@@ -274,7 +268,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_product_model_coefs(const_Csim, sph_rtp, nnod_med, &
+      subroutine sel_product_model_coefs(const_Csim, sph_rtp,           &
      &          numdir, irtp_sgs, ifld_sgs, wk_sgs, trns_SGS)
 !
       use m_FFT_selector
@@ -282,7 +276,6 @@
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       integer(kind = kint), intent(in) :: numdir
-      integer(kind = kint), intent(in) :: nnod_med
 !
       integer(kind = kint), intent(in) :: irtp_sgs
       integer(kind = kint), intent(in) :: ifld_sgs
@@ -295,13 +288,13 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call product_model_coefs_pin                                    &
      &    (const_Csim, ifld_sgs, sph_rtp%nidx_rtp(3),                   &
-     &     nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                 &
+     &     sph_rtp%nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,         &
      &     irtp_sgs, numdir, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj, &
      &     trns_SGS%frc_rtp)
       else
         call product_model_coefs_pout                                   &
      &    (const_Csim, ifld_sgs, sph_rtp%nidx_rtp(3),                   &
-     &     nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,                 &
+     &     sph_rtp%nnod_med, wk_sgs%num_kinds, wk_sgs%fld_coef,         &
      &     irtp_sgs, numdir, sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj, &
      &     trns_SGS%frc_rtp)
       end if

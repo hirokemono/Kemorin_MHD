@@ -40,8 +40,6 @@
 !
       implicit none
 !
-      private :: copy_SGS_MHD_fld_from_trans
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -58,6 +56,7 @@
       use t_SGS_control_parameter
 !
       use FEM_analyzer_sph_MHD
+      use SGS_MHD_fields_to_FEM
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) :: sph
@@ -80,7 +79,74 @@
       end subroutine SPH_to_FEM_bridge_SGS_MHD
 !
 !-----------------------------------------------------------------------
-! ----------------------------------------------------------------------
+!
+      subroutine zonal_mean_FEM_bridge_SGS_MHD                          &
+     &        (SGS_par, sph, WK, geofem, iphys, nod_fld)
+!
+      use t_mesh_data
+      use t_phys_data
+      use t_phys_address
+      use t_sph_trans_arrays_MHD
+      use t_SGS_control_parameter
+!
+      use FEM_analyzer_sph_MHD
+      use SGS_MHD_fields_to_FEM
+!
+      type(SGS_paremeters), intent(in) :: SGS_par
+      type(sph_grids), intent(in) :: sph
+      type(mesh_data), intent(in) :: geofem
+      type(phys_address), intent(in) :: iphys
+!
+      type(phys_data), intent(inout) :: nod_fld
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+!*
+!*  -----------  data transfer to FEM array --------------
+!*
+      call zonal_mean_to_FEM_bridge_MHD                                 &
+     &   (sph%sph_params, sph%sph_rtp, WK, geofem%mesh, iphys, nod_fld)
+!
+!
+      if(SGS_par%model_p%iflag_SGS .eq. 0) return
+      call zmean_SGS_MHD_fld_from_trans                                 &
+     &   (sph, WK, geofem%mesh, iphys, nod_fld)
+!
+      end subroutine zonal_mean_FEM_bridge_SGS_MHD
+!
+!-----------------------------------------------------------------------
+!
+      subroutine zonal_RMS_FEM_bridge_SGS_MHD                           &
+     &        (SGS_par, sph, WK, geofem, iphys, nod_fld)
+!
+      use t_mesh_data
+      use t_phys_data
+      use t_phys_address
+      use t_sph_trans_arrays_MHD
+      use t_SGS_control_parameter
+!
+      use FEM_analyzer_sph_MHD
+      use SGS_MHD_fields_to_FEM
+!
+      type(SGS_paremeters), intent(in) :: SGS_par
+      type(sph_grids), intent(in) :: sph
+      type(mesh_data), intent(in) :: geofem
+      type(phys_address), intent(in) :: iphys
+!
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(phys_data), intent(inout) :: nod_fld
+!*
+!*  -----------  data transfer to FEM array --------------
+!*
+      call zonal_mean_to_FEM_bridge_MHD                                 &
+     &   (sph%sph_params, sph%sph_rtp, WK, geofem%mesh, iphys, nod_fld)
+!
+!
+      if(SGS_par%model_p%iflag_SGS .eq. 0) return
+      call zrms_SGS_MHD_fld_from_trans                                  &
+     &   (sph, WK, geofem%mesh, iphys, nod_fld)
+!
+      end subroutine zonal_RMS_FEM_bridge_SGS_MHD
+!
+!-----------------------------------------------------------------------
 !
       subroutine SPH_to_FEM_bridge_zRMS_snap                            &
      &        (SGS_par, sph, WK, geofem, iphys, nod_fld)
@@ -92,6 +158,7 @@
       use t_SGS_control_parameter
 !
       use sph_rtp_zonal_rms_data
+      use SGS_MHD_fields_to_FEM
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) :: sph
@@ -115,64 +182,6 @@
      &   (sph%sph_rtp, geofem%mesh%node, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_zRMS_snap
-!
-! ----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine copy_SGS_MHD_fld_from_trans                            &
-     &         (sph, WK, mesh, iphys, nod_fld)
-!
-      use t_mesh_data
-      use t_phys_data
-      use t_phys_address
-      use t_sph_trans_arrays_MHD
-!
-      use copy_snap_4_sph_trans
-      use copy_MHD_4_sph_trans
-      use coordinate_convert_4_sph
-      use copy_SGS_4_sph_trans
-!
-      type(sph_grids), intent(in) :: sph
-      type(works_4_sph_trans_MHD), intent(in) :: WK
-      type(mesh_geometry), intent(in) :: mesh
-      type(phys_address), intent(in) :: iphys
-!
-      type(phys_data), intent(inout) :: nod_fld
-!*
-!
-      if (iflag_debug.gt.0) write(*,*) 'copy_filtered_field_from_trans'
-      call copy_filtered_field_from_trans                               &
-     &   (sph%sph_params, sph%sph_rtp, WK%trns_MHD,                     &
-     &    mesh%node, iphys, nod_fld)
-      if (iflag_debug.gt.0) write(*,*) 'copy_wide_SGS_field_from_trans'
-      call copy_wide_SGS_field_from_trans                               &
-     &   (sph%sph_params, sph%sph_rtp, WK%trns_SGS,                     &
-     &    mesh%node, iphys, nod_fld)
-      if (iflag_debug.gt.0) write(*,*) 'copy_SGS_force_from_trans'
-!      call copy_SGS_force_from_trans                                   &
-!     &   (sph%sph_params, sph%sph_rtp, WK%trns_SGS,                    &
-!     &    mesh%node, iphys, nod_fld)
-      call copy_SGS_snap_fld_from_trans                                 &
-     &   (sph%sph_params, sph%sph_rtp, WK%trns_snap,                    &
-     &    mesh%node, iphys, nod_fld)
-      call copy_SGS_diff_field_from_trans                               &
-     &   (sph%sph_params, sph%sph_rtp, WK%trns_snap,                    &
-     &    mesh%node, iphys, nod_fld)
-!
-!
-!!!!!   These routines are for debugging. Be careful!
-!
-!  Check nonlinear terms by filtered field as SGS term list
-!      call copy_filtered_forces_to_snap                                &
-!     &   (sph%sph_params, sph%sph_rtp, WK%trns_MHD,                    &
-!     &    mesh%node, iphys, nod_fld)
-!
-!  Check filtered nonlinear terms by using SGS term list
-!      call copy_SGS_field_from_trans                                   &
-!     &   (sph%sph_params, sph%sph_rtp, WK%trns_SGS,                    &
-!     &    mesh%node, iphys, nod_fld)
-!
-      end subroutine copy_SGS_MHD_fld_from_trans
 !
 !-----------------------------------------------------------------------
 !

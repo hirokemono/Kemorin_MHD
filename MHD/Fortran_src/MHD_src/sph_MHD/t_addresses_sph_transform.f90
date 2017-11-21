@@ -10,12 +10,15 @@
 !!@verbatim
 !!      subroutine alloc_bwd_trns_field_name(num_field, trns)
 !!      subroutine alloc_fwd_trns_field_name(num_field, trns)
-!!      subroutine alloc_nonlinear_data(nnod_rtp, trns)
-!!      subroutine alloc_nonlinear_pole(nnod_pole, trns)
+!!      subroutine alloc_nonlinear_data(sph_rtp, trns)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!      subroutine alloc_nonlinear_pole(sph_rtp, trns)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!      subroutine dealloc_bwd_trns_field_name(trns)
 !!      subroutine dealloc_fwd_trns_field_name(trns)
 !!      subroutine dealloc_nonlinear_data(trns)
 !!      subroutine dealloc_nonlinear_pole(trns)
+!!      subroutine dealloc_nonlinear_zmean(trns)
 !!        type(address_4_sph_trans), intent(inout) :: trns
 !!
 !!      subroutine add_scalar_trans_flag                                &
@@ -33,6 +36,7 @@
       use m_precision
 !
       use t_phys_address
+      use t_spheric_rtp_data
 !
       implicit none
 !
@@ -84,6 +88,9 @@
 !
 !>        Nonlinear terms data at pole
         real(kind = kreal), allocatable :: frc_pole(:,:)
+!
+!>        zonal mean of field data in grid space
+        real(kind = kreal), allocatable :: fld_zm(:,:)
       end type address_4_sph_trans
 !
 !-----------------------------------------------------------------------
@@ -118,14 +125,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_nonlinear_data(nnod_rtp, trns)
+      subroutine alloc_nonlinear_data(sph_rtp, trns)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%fld_rtp(nnod_rtp,trns%ncomp_rj_2_rtp))
-      allocate(trns%frc_rtp(nnod_rtp,trns%ncomp_rtp_2_rj))
+      allocate(trns%fld_rtp(sph_rtp%nnod_rtp,trns%ncomp_rj_2_rtp))
+      allocate(trns%frc_rtp(sph_rtp%nnod_rtp,trns%ncomp_rtp_2_rj))
+      allocate(trns%fld_zm(sph_rtp%nnod_med,6))
+!
+      trns%fld_zm = 0.0d0
       if(trns%ncomp_rj_2_rtp .gt. 0) trns%fld_rtp = 0.0d0
       if(trns%ncomp_rtp_2_rj .gt. 0) trns%frc_rtp = 0.0d0
 !
@@ -133,16 +143,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_nonlinear_pole(nnod_pole, trns)
+      subroutine alloc_nonlinear_pole(sph_rtp, trns)
 !
-      integer(kind = kint), intent(in) :: nnod_pole
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%fld_pole(nnod_pole,trns%ncomp_rj_2_rtp))
-      allocate(trns%flc_pole(nnod_pole,trns%ncomp_rj_2_rtp))
+      allocate(trns%fld_pole(sph_rtp%nnod_pole,trns%ncomp_rj_2_rtp))
+      allocate(trns%flc_pole(sph_rtp%nnod_pole,trns%ncomp_rj_2_rtp))
 !
-      allocate(trns%frc_pole(nnod_pole,trns%ncomp_rtp_2_rj))
+      allocate(trns%frc_pole(sph_rtp%nnod_pole,trns%ncomp_rtp_2_rj))
 !
       if(trns%ncomp_rj_2_rtp .gt. 0) trns%fld_pole = 0.0d0
       if(trns%ncomp_rj_2_rtp .gt. 0) trns%flc_pole = 0.0d0
@@ -157,6 +167,7 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
       deallocate(trns%fld_rtp, trns%frc_rtp)
+      deallocate(trns%fld_zm)
 !
       end subroutine dealloc_nonlinear_data
 !
