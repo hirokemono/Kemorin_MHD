@@ -25,7 +25,7 @@
       use m_machine_parameter
       use m_control_params_4_fline
       use m_geometry_constants
-      use m_global_fline
+      use t_global_fieldline
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_phys_data
@@ -34,6 +34,7 @@
       implicit  none
 !
       type(local_fieldline), save :: fline_lc1
+      type(global_fieldline_data), save :: fline_gl1
 !
 !  ---------------------------------------------------------------------
 !
@@ -66,7 +67,7 @@
       call allocate_start_point_fline
       call allocate_num_gl_start_fline(nprocs)
       call alloc_local_fline(fline_lc1)
-      call allocate_global_fline_num
+      call alloc_global_fline_num(fline_gl1)
 !
       end subroutine FLINE_initialize
 !
@@ -107,11 +108,20 @@
      &      ele_mesh%surf, ele_4_nod, mesh%nod_comm, fline_lc1)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
-       call s_collect_fline_data(istep_fline, i_fln, fline_lc1)
+       call s_collect_fline_data                                        &
+     &    (istep_fline, i_fln, fline_lc1, fline_gl1)
       end do
 !
       end subroutine FLINE_visualize
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine FLINE_finalize
+!
+      call dealloc_local_fline(fline_lc1)
+      call dealloc_global_fline_num(fline_gl1)
+!
+      end subroutine FLINE_finalize
+!
+!  ---------------------------------------------------------------------
       end module fieldline

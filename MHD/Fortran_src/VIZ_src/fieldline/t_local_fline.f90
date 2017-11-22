@@ -7,7 +7,7 @@
 !!      subroutine reset_fline_start(fline_lc)
 !!      subroutine add_fline_start(xx_add, col_add, fline_lc)
 !!      subroutine alloc_local_fline(fline_lc)
-!!      subroutine deallocate_local_fline(fline_lc)
+!!      subroutine dealloc_local_fline(fline_lc)
 !!      subroutine add_fline_list(xx_add, col_add, fline_lc)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!
@@ -126,14 +126,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_local_fline(fline_lc)
+      subroutine dealloc_local_fline(fline_lc)
 !
       type(local_fieldline), intent(inout) :: fline_lc
 !
       call dealloc_local_fline_conn(fline_lc)
       call dealloc_local_fline_data(fline_lc)
 !
-      end subroutine deallocate_local_fline
+      end subroutine dealloc_local_fline
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
