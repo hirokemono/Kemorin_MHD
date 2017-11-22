@@ -4,14 +4,15 @@
 !        programmed by H.Matsui on May. 2006
 !
 !!      subroutine count_control_4_fline                                &
-!!     &         (i_fln, fln, ele, ele_grp, sf_grp)
+!!     &         (i_fln, fln, ele, ele_grp, sf_grp, fline_src)
 !!      subroutine set_control_4_fline                                  &
-!!     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld)
+!!     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld, fline_src)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fline_ctl), intent(inout) :: fln
+!!        type(fieldline_source), intent(inout) :: fline_src
 !!      subroutine set_iflag_fline_used_ele(i_fln, ele, ele_grp)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
@@ -42,8 +43,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_control_4_fline                                  &
-     &         (i_fln, fln, ele, ele_grp, sf_grp)
+     &         (i_fln, fln, ele, ele_grp, sf_grp, fline_src)
 !
+      use t_source_of_filed_line
       use set_area_4_viz
 !
       type(element_data), intent(in) :: ele
@@ -52,6 +54,8 @@
 !
       integer(kind = kint), intent(in) :: i_fln
       type(fline_ctl), intent(in) :: fln
+!
+      type(fieldline_source), intent(inout) :: fline_src
 !
       character(len=kchara) :: character_256
 !
@@ -144,7 +148,7 @@
      &        igrp_start_fline_surf_grp(i_fln))
         end if
 !
-        call count_nsurf_for_starting(i_fln, ele, sf_grp)
+        call count_nsurf_for_starting(i_fln, ele, sf_grp, fline_src)
 !
       else if(id_fline_start_type(i_fln) .eq.  1) then
         if(fln%seed_surface_ctl%num .gt. 0) then
@@ -164,8 +168,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_fline                                    &
-     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld)
+     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld, fline_src)
 !
+      use t_source_of_filed_line
       use set_components_flags
       use set_area_4_viz
 !
@@ -176,6 +181,8 @@
 !
       integer(kind = kint), intent(in) :: i_fln
       type(fline_ctl), intent(inout) :: fln
+!
+      type(fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: i, ist, ncomp(1), ncomp_org(1)
       character(len=kchara) :: tmpfield(1)
@@ -212,7 +219,7 @@
 !
       ist = istack_each_field_line(i_fln-1)
       if(id_fline_start_type(i_fln) .eq.  0) then
-        call set_isurf_for_starting(i_fln, ele, sf_grp)
+        call set_isurf_for_starting(i_fln, ele, sf_grp, fline_src)
       else if(id_fline_start_type(i_fln) .eq.  1) then
         do i = 1, num_each_field_line(i_fln)
           id_gl_surf_start_fline(1,i+ist)                               &

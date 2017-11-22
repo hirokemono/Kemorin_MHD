@@ -34,6 +34,7 @@
 !
       implicit  none
 !
+      type(fieldline_source), save :: fline_src1
       type(fieldline_trace), save :: fline_tce1
       type(local_fieldline), save :: fline_lc1
       type(global_fieldline_data), save :: fline_gl1
@@ -48,7 +49,6 @@
 !
       use calypso_mpi
       use t_control_data_flines
-      use m_source_4_filed_line
       use set_fline_control
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -62,11 +62,12 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
       call s_set_fline_control                                          &
-     &   (mesh%ele, group%ele_grp, group%surf_grp, nod_fld, fline_ctls)
+     &   (mesh%ele, group%ele_grp, group%surf_grp, nod_fld,             &
+     &    fline_ctls, fline_src1)
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_local_data_4_fline'
-      call allocate_local_data_4_fline(mesh%node%numnod)
-      call allocate_start_point_fline
+      call alloc_local_data_4_fline(mesh%node%numnod, fline_src1)
+      call alloc_start_point_fline(fline_src1)
       call allocate_num_gl_start_fline(nprocs)
       call alloc_num_gl_start_fline                                     &
      &   (nprocs, num_fline, ntot_each_field_line, fline_tce1)
@@ -98,20 +99,20 @@
       if (num_fline.le.0 .or. istep_fline .le. 0) return
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
-      call set_local_field_4_fline(mesh%node, nod_fld)
+      call set_local_field_4_fline(mesh%node, nod_fld, fline_src1)
 !
       do i_fln = 1, num_fline
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
         call s_set_fields_for_fieldline                                 &
      &     (i_fln, mesh%node, mesh%ele, ele_mesh%surf, group%ele_grp,   &
-     &      fline_tce1)
+     &      fline_src1, fline_tce1)
       end do
 !
       do i_fln = 1, num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call s_const_field_lines(i_fln, mesh%node, mesh%ele,            &
      &      ele_mesh%surf, ele_4_nod, mesh%nod_comm,                    &
-     &      fline_tce1, fline_lc1)
+     &      fline_src1, fline_tce1, fline_lc1)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
        call s_collect_fline_data                                        &
@@ -123,6 +124,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine FLINE_finalize
+!
+      call dealloc_local_data_4_fline(fline_src1)
+      call dealloc_local_start_grp_item(fline_src1)
+      call dealloc_start_point_fline(fline_src1)
 !
       call dealloc_num_gl_start_fline(fline_tce1)
       call dealloc_local_fline(fline_lc1)

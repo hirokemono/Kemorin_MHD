@@ -10,7 +10,7 @@
 !!      subroutine alloc_start_point_fline(fline_src)
 !!      subroutine alloc_num_gl_start_fline                             &
 !!     &         (nprocs, num_fline, ntot_each_field_line, fline_tce)
-!!      subroutine deallocate_local_data_4_fline(fline_src)
+!!      subroutine dealloc_local_data_4_fline(fline_src)
 !!      subroutine dealloc_local_start_grp_item(fline_src)
 !!      subroutine dealloc_start_point_fline(fline_src)
 !!      subroutine dealloc_num_gl_start_fline(fline_tce)
@@ -201,14 +201,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_local_data_4_fline(fline_src)
+      subroutine dealloc_local_data_4_fline(fline_src)
 !
       type(fieldline_source), intent(inout) :: fline_src
 !
 !
       deallocate(fline_src%vector_nod_fline, fline_src%color_nod_fline)
 !
-      end subroutine deallocate_local_data_4_fline
+      end subroutine dealloc_local_data_4_fline
 !
 !  ---------------------------------------------------------------------
 !

@@ -15,12 +15,13 @@
 !!@verbatim
 !!      subroutine s_const_field_lines                                  &
 !!     &         (i_fln, node, ele, surf, ele_4_nod, nod_comm,          &
-!!     &          fline_tce, fline_lc)
+!!     &          fline_src, fline_tce, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(communication_table), intent(in) :: nod_comm
+!!        type(fieldline_source), intent(in) :: fline_src
 !!        type(fieldline_trace), intent(inout) :: fline_tce
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
@@ -32,7 +33,6 @@
       use calypso_mpi
       use m_constants
       use m_machine_parameter
-      use m_source_4_filed_line
 !
       implicit  none
 !
@@ -47,7 +47,7 @@
 !
       subroutine s_const_field_lines                                    &
      &         (i_fln, node, ele, surf, ele_4_nod, nod_comm,            &
-     &          fline_tce, fline_lc)
+     &          fline_src, fline_tce, fline_lc)
 !
 !
       use m_control_params_4_fline
@@ -67,6 +67,7 @@
       type(surface_data), intent(in) :: surf
       type(element_around_node), intent(in) :: ele_4_nod
       type(communication_table), intent(in) :: nod_comm
+      type(fieldline_source), intent(in) :: fline_src
 !
       type(fieldline_trace), intent(inout) :: fline_tce
       type(local_fieldline), intent(inout) :: fline_lc
@@ -101,8 +102,10 @@
      &        surf%nnod_4_surf, node%xx, surf%ie_surf, surf%isf_4_ele,  &
      &        surf%iele_4_surf, surf%interior_surf, surf%vnorm_surf,    &
      &        max_line_stepping(i_fln), iflag_fline_used_ele(1,i_fln),  &
-     &        fline_tce%iflag_fline(i), vector_nod_fline(1,1,i_fln),    &
-     &        color_nod_fline(1,i_fln), fline_tce%isf_fline_start(1,i), &
+     &        fline_tce%iflag_fline(i),                                 &
+     &        fline_src%vector_nod_fline(1,1,i_fln),                    &
+     &        fline_src%color_nod_fline(1,i_fln),                       &
+     &        fline_tce%isf_fline_start(1,i),                           &
      &        fline_tce%xx_fline_start(1,i),                            &
      &        fline_tce%v_fline_start(1,i),                             &
      &        fline_tce%c_fline_start(i), fline_tce%icount_fline(i),    &
