@@ -8,7 +8,7 @@
 !!      subroutine count_nsurf_for_starting(i_fln, ele, sf_grp)
 !!      subroutine set_isurf_for_starting(i_fln, ele, sf_grp)
 !!      subroutine s_set_fields_for_fieldline                           &
-!!     &         (i_fln, node, ele, surf, ele_grp)
+!!     &         (i_fln, node, ele, surf, ele_grp, fline_tce)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -137,11 +137,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_fields_for_fieldline                             &
-     &         (i_fln, node, ele, surf, ele_grp)
+     &         (i_fln, node, ele, surf, ele_grp, fline_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
       use set_fline_start_surface
+      use t_source_of_filed_line
 !
       integer(kind = kint), intent(in) :: i_fln
 !
@@ -149,6 +150,8 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(group_data), intent(in) :: ele_grp
+!
+      type(fieldline_trace), intent(inout) :: fline_tce
 !
       integer(kind = kint) :: ist_grp, num_grp, i, ist, ied, ip, inum
       integer(kind = kint) :: ist_line, iele, isf, isurf, num
@@ -189,24 +192,27 @@
         call MPI_allREDUCE(tot_flux_start_l, tot_flux_start, ione,      &
      &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
         call MPI_AllGather(abs_flux_start_l, ione,                      &
-     &      CALYPSO_REAL, flux_stack_fline(1), ione,                    &
+     &      CALYPSO_REAL, fline_tce%flux_stack_fline(1), ione,          &
      &      CALYPSO_REAL, CALYPSO_COMM, ierr_MPI)
 !
-        flux_stack_fline(0) = 0.0d0
+        fline_tce%flux_stack_fline(0) = 0.0d0
         do ip = 1, nprocs
-          flux_stack_fline(ip) = flux_stack_fline(ip-1)                 &
-     &                          + flux_stack_fline(ip)
+          fline_tce%flux_stack_fline(ip)                                &
+     &                         = fline_tce%flux_stack_fline(ip-1)       &
+     &                          + fline_tce%flux_stack_fline(ip)
         end do
-        abs_flux_start = flux_stack_fline(nprocs)
+        abs_flux_start = fline_tce%flux_stack_fline(nprocs)
         flux_4_each_line = abs_flux_start                               &
      &                    / dble(num_each_field_line(i_fln) )
 !
         do ip = 1, nprocs
-          num_all_fline(ip,i_fln) = nint(flux_stack_fline(ip)           &
-     &                                 / flux_4_each_line)
+          fline_tce%num_all_fline(ip,i_fln)                             &
+     &       = nint(fline_tce%flux_stack_fline(ip)                      &
+     &              / flux_4_each_line)
         end do
-        num_line_local(i_fln) = num_all_fline(my_rank+1,i_fln)          &
-     &                         - num_all_fline(my_rank,i_fln)
+        num_line_local(i_fln)                                           &
+     &       = fline_tce%num_all_fline(my_rank+1,i_fln)                 &
+     &        - fline_tce%num_all_fline(my_rank,i_fln)
 !
         if(i_debug .gt. iflag_full_msg) then
           write(my_rank+50,*)  'abs_flux_start',                        &
@@ -226,8 +232,6 @@
      &                     flux_4_each_line
 !
         ist_line = istack_each_field_line(i_fln-1)
-        ist = ist_grp
-        ied = ist_grp
         inum = ist_grp
 !
 !
@@ -302,30 +306,34 @@
       end do
 !
       call MPI_AllGather(num_line_local(i_fln), ione, CALYPSO_INTEGER,  &
-     &    num_all_fline(1,i_fln), ione, CALYPSO_INTEGER,                &
+     &    fline_tce%num_all_fline(1,i_fln), ione, CALYPSO_INTEGER,      &
      &    CALYPSO_COMM, ierr_MPI)
 !
       if( id_fline_direction(i_fln) .eq. 0) then
-        num_all_fline(1:nprocs,i_fln) = 2*num_all_fline(1:nprocs,i_fln)
+        fline_tce%num_all_fline(1:nprocs,i_fln)                         &
+     &        = 2 * fline_tce%num_all_fline(1:nprocs,i_fln)
       end if
 !
-      istack_all_fline(0,i_fln) = ntot_gl_fline
+      fline_tce%istack_all_fline(0,i_fln) = fline_tce%ntot_gl_fline
       do i = 1, nprocs
-        istack_all_fline(i,i_fln) = istack_all_fline(i-1,i_fln)         &
-     &                             + num_all_fline(i,i_fln)
+        fline_tce%istack_all_fline(i,i_fln)                             &
+     &        = fline_tce%istack_all_fline(i-1,i_fln)                   &
+     &         + fline_tce%num_all_fline(i,i_fln)
       end do
-      ntot_gl_fline = istack_all_fline(nprocs,i_fln)
+      fline_tce%ntot_gl_fline                                           &
+     &        = fline_tce%istack_all_fline(nprocs,i_fln)
 !
       call set_fline_start_surf(my_rank, i_fln,                         &
      &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
-     &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf)
+     &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf, fline_tce)
 !
       if(i_debug .gt. iflag_full_msg) then
-        write(50+my_rank,*) 'ntot_gl_fline', ntot_gl_fline
-        write(50+my_rank,*) 'ntot_gl_fline', ntot_gl_fline
-        write(50+my_rank,*) 'num_all_fline', num_all_fline(:,i_fln)
+        write(50+my_rank,*) 'ntot_gl_fline', fline_tce%ntot_gl_fline
+        write(50+my_rank,*) 'ntot_gl_fline', fline_tce%ntot_gl_fline
+        write(50+my_rank,*) 'num_all_fline',                            &
+     &                     fline_tce%num_all_fline(:,i_fln)
         write(50+my_rank,*) 'istack_all_fline',                         &
-     &                      istack_all_fline(:,i_fln)
+     &                     fline_tce%istack_all_fline(:,i_fln)
 !
         write(50+my_rank,*) 'num_line_local', num_line_local(i_fln)
         do i = 1, num_line_local(i_fln)
@@ -335,12 +343,13 @@
      &    xx_start_fline(1:3,i+ist_line), flux_start_fline(i+ist_line)
         end do
 !
-        do i = istack_all_fline(my_rank,i_fln)+1,                       &
-     &        istack_all_fline(my_rank+1,i_fln)
+        ist = fline_tce%istack_all_fline(my_rank,i_fln) + 1
+        ied = fline_tce%istack_all_fline(my_rank+1,i_fln)
+        do i = ist, ied
           write(50+my_rank,*) 'isf_fline_start', i,                     &
-     &                         isf_fline_start(1:3,i)
+     &                         fline_tce%isf_fline_start(1:3,i)
           write(50+my_rank,'(a,1p3e16.5)') 'start_point',               &
-     &      xx_fline_start(1:3,i)
+     &      fline_tce%xx_fline_start(1:3,i)
         end do
       end if
 !

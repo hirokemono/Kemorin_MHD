@@ -33,25 +33,6 @@
       real(kind = kreal),   allocatable :: xx_start_fline(:,:)
       real(kind = kreal),   allocatable :: flux_start_fline(:)
 !
-!
-      integer(kind = kint) :: ntot_gl_fline = 0
-      integer(kind = kint), allocatable :: istack_all_fline(:,:)
-      integer(kind = kint), allocatable :: num_all_fline(:,:)
-      real(kind = kreal),   allocatable :: flux_stack_fline(:)
-!
-      integer(kind= kint), allocatable :: iflag_fline(:)
-      integer(kind= kint), allocatable :: icount_fline(:)
-      integer(kind= kint), allocatable :: isf_fline_start(:,:)
-      real(kind = kreal), allocatable ::  xx_fline_start(:,:)
-      real(kind = kreal), allocatable ::  v_fline_start(:,:)
-      real(kind = kreal), allocatable ::  c_fline_start(:)
-!
-      integer(kind= kint), allocatable :: id_fline_export(:,:)
-      real(kind = kreal), allocatable ::  fline_export(:,:)
-!
-      integer(kind= kint), allocatable :: isf_fline_global(:,:)
-      real(kind = kreal), allocatable ::  fline_global(:,:)
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -87,7 +68,6 @@
       allocate(flux_start(ntot_ele_start_grp))
       if(ntot_ele_start_grp .gt. 0) then
         iele_start_item =    0
-        ntot_ele_start_grp = 0
       end if
 !
       end subroutine allocate_local_start_grp_item
@@ -125,47 +105,6 @@
       end subroutine allocate_start_point_fline
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine allocate_num_gl_start_fline(nprocs)
-!
-      use m_control_params_4_fline
-!
-      integer(kind = kint), intent(in) :: nprocs
-      integer(kind = kint) :: num
-!
-!
-      allocate(istack_all_fline(0:nprocs,num_fline))
-      allocate(num_all_fline(nprocs,num_fline))
-      allocate(flux_stack_fline(0:nprocs))
-!
-      num = 2*ntot_each_field_line
-      allocate(icount_fline(num))
-      allocate(iflag_fline(num))
-      allocate(isf_fline_start(3,num))
-      allocate(xx_fline_start(3,num))
-      allocate(v_fline_start(3,num))
-      allocate(c_fline_start(num))
-!
-      istack_all_fline = 0
-      num_all_fline =    0
-      ntot_gl_fline =    0
-      flux_stack_fline = 0.0d0
-!
-      icount_fline = 0
-      iflag_fline =  0
-      isf_fline_start = 0
-      xx_fline_start = 0.0d0
-      v_fline_start =  0.0d0
-      c_fline_start =  0.0d0
-!
-      allocate(id_fline_export(7,num))
-      allocate(fline_export(7,num))
-      id_fline_export = 0
-      fline_export = 0.0d0
-!
-      end subroutine allocate_num_gl_start_fline
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_local_start_grp_item
@@ -192,27 +131,6 @@
       deallocate(xx_start_fline, flux_start_fline)
 !
       end subroutine deallocate_start_point_fline
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_num_gl_start_fline
-!
-!
-      deallocate(istack_all_fline)
-      deallocate(num_all_fline)
-      deallocate(flux_stack_fline)
-!
-      deallocate(icount_fline)
-      deallocate(iflag_fline)
-      deallocate(isf_fline_start)
-      deallocate(xx_fline_start)
-      deallocate(v_fline_start)
-      deallocate(c_fline_start)
-!
-      deallocate(id_fline_export)
-      deallocate(fline_export)
-!
-      end subroutine dealloc_num_gl_start_fline
 !
 !  ---------------------------------------------------------------------
 !
