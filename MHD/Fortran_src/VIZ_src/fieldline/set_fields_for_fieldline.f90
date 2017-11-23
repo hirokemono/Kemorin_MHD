@@ -4,16 +4,20 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine set_local_field_4_fline(node, nod_fld, fline_src)
+!!      subroutine set_local_field_4_fline                              &
+!!     &          (num_fline, node, nod_fld, fline_prm, fline_src)
 !!      subroutine count_nsurf_for_starting                             &
-!!     &         (i_fln, ele, sf_grp, fline_src)
-!!      subroutine set_isurf_for_starting(i_fln, ele, sf_grp, fline_src)
+!!     &         (i_fln, ele, sf_grp, fline_prm, fline_src)
+!!      subroutine set_isurf_for_starting                               &
+!!     &         (i_fln, ele, sf_grp, fline_prm, fline_src)
 !!      subroutine s_set_fields_for_fieldline                           &
-!!     &         (i_fln, node, ele, surf, ele_grp, fline_src, fline_tce)
+!!     &         (i_fln, node, ele, surf, ele_grp,                      &
+!!     &          fline_prm, fline_src, fline_tce)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(group_data), intent(in) :: ele_grp
+!!        type(fieldline_paramters), intent(inout) :: fline_prm
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(fieldline_source), intent(inout) :: fline_src
 !!        type(fieldline_trace), intent(inout) :: fline_tce
@@ -25,12 +29,13 @@
       use calypso_mpi
       use m_constants
       use m_machine_parameter
-      use m_control_params_4_fline
 !
       use t_phys_data
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use t_control_params_4_fline
+      use t_source_of_filed_line
 !
       implicit  none
 !
@@ -43,13 +48,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_local_field_4_fline(node, nod_fld, fline_src)
+      subroutine set_local_field_4_fline                                &
+     &          (num_fline, node, nod_fld, fline_prm, fline_src)
 !
-      use t_source_of_filed_line
       use convert_components_4_viz
 !
+      integer(kind = kint) :: num_fline
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
+      type(fieldline_paramters), intent(in) :: fline_prm
 !
       type(fieldline_source), intent(inout) :: fline_src
 !
@@ -58,7 +65,7 @@
 !
 !
       do i_fln = 1, num_fline
-        i_field = ifield_4_fline(i_fln)
+        i_field = fline_prm%ifield_4_fline(i_fln)
         ist_fld = nod_fld%istack_component(i_field-1)
         num_comp = nod_fld%istack_component(i_field) - ist_fld
 !
@@ -66,17 +73,18 @@
      &    'convert_comps_4_viz ifield_4_fline', i_field
         call convert_comps_4_viz(node%numnod, node%istack_nod_smp,      &
      &      node%xx, node%rr,node%a_r, node%ss, node%a_s, ithree,       &
-     &      num_comp, icomp_4_fline(i_fln), nod_fld%d_fld(1,ist_fld+1), &
+     &      num_comp, fline_prm%icomp_4_fline(i_fln),                   &
+     &      nod_fld%d_fld(1,ist_fld+1),                                 &
      &      fline_src%vector_nod_fline(1,1,i_fln) )
 !
-        i_field = ifield_linecolor(i_fln)
+        i_field = fline_prm%ifield_linecolor(i_fln)
         ist_fld = nod_fld%istack_component(i_field-1)
         num_comp = nod_fld%istack_component(i_field) - ist_fld
         if (iflag_debug .gt. 0) write(*,*)                              &
      &     'convert_comps_4_viz ifield_linecolor', i_field
         call convert_comps_4_viz(node%numnod, node%istack_nod_smp,      &
      &      node%xx, node%rr, node%a_r, node%ss, node%a_s, ione,        &
-     &      num_comp, icomp_linecolor(i_fln),                           &
+     &      num_comp, fline_prm%icomp_linecolor(i_fln),                 &
      &      nod_fld%d_fld(1,ist_fld+1),                                 &
      &      fline_src%color_nod_fline(1,i_fln) )
       end do
@@ -87,21 +95,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_nsurf_for_starting                               &
-     &         (i_fln, ele, sf_grp, fline_src)
-!
-      use t_source_of_filed_line
+     &         (i_fln, ele, sf_grp, fline_prm, fline_src)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
+      type(fieldline_paramters), intent(in) :: fline_prm
 !
       type(fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: igrp, isurf, iele, icou, ist, ied
 !
 !
-      igrp = igrp_start_fline_surf_grp(i_fln)
+      igrp = fline_prm%igrp_start_fline_surf_grp(i_fln)
 !
       icou = 0
       ist = sf_grp%istack_grp(igrp-1) + 1
@@ -121,21 +128,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_isurf_for_starting(i_fln, ele, sf_grp, fline_src)
-!
-      use t_source_of_filed_line
+      subroutine set_isurf_for_starting                                 &
+     &         (i_fln, ele, sf_grp, fline_prm, fline_src)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
+      type(fieldline_paramters), intent(in) :: fline_prm
 !
       type(fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: igrp, isurf, inum, iele, ist, ied
 !
 !
-      igrp = igrp_start_fline_surf_grp(i_fln)
+      igrp = fline_prm%igrp_start_fline_surf_grp(i_fln)
 !
       inum = fline_src%istack_ele_start_grp(i_fln-1)
       ist = sf_grp%istack_grp(igrp-1) + 1
@@ -156,12 +163,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_fields_for_fieldline                             &
-     &         (i_fln, node, ele, surf, ele_grp, fline_src, fline_tce)
+     &         (i_fln, node, ele, surf, ele_grp,                        &
+     &          fline_prm, fline_src, fline_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
       use set_fline_start_surface
-      use t_source_of_filed_line
 !
       integer(kind = kint), intent(in) :: i_fln
 !
@@ -170,6 +177,7 @@
       type(surface_data), intent(in) :: surf
       type(group_data), intent(in) :: ele_grp
 !
+      type(fieldline_paramters), intent(inout) :: fline_prm
       type(fieldline_source), intent(inout) :: fline_src
       type(fieldline_trace), intent(inout) :: fline_tce
 !
@@ -192,7 +200,7 @@
 !
 !
       num_int_point = 2
-      if(id_fline_start_type(i_fln) .eq. 0) then
+      if(fline_prm%id_fline_start_type(i_fln) .eq. 0) then
         ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
         num_grp = fline_src%nele_start_grp(i_fln)
 !
@@ -226,7 +234,7 @@
         end do
         abs_flux_start = fline_tce%flux_stack_fline(nprocs)
         flux_4_each_line = abs_flux_start                               &
-     &                    / dble(num_each_field_line(i_fln) )
+     &                    / dble(fline_prm%num_each_field_line(i_fln))
 !
         do ip = 1, nprocs
           fline_tce%num_all_fline(ip,i_fln)                             &
@@ -254,7 +262,7 @@
         write(my_rank+50,*)  'adjusted flux_4_each_line',               &
      &                     flux_4_each_line
 !
-        ist_line = istack_each_field_line(i_fln-1)
+        ist_line = fline_prm%istack_each_field_line(i_fln-1)
         inum = ist_grp
 !
 !
@@ -286,9 +294,9 @@
               flux = flux_new
             end do
 !
-            id_surf_start_fline(1,i+ist_line)                           &
+            fline_prm%id_surf_start_fline(1,i+ist_line)                 &
      &            = fline_src%iele_start_item(1,inum)
-            id_surf_start_fline(2,i+ist_line)                           &
+            fline_prm%id_surf_start_fline(2,i+ist_line)                 &
      &            = fline_src%iele_start_item(2,inum)
 !
           end do
@@ -296,22 +304,22 @@
 !
         deallocate(rnd_flux, r_rnd, seed)
 !
-      else if(id_fline_start_type(i_fln) .eq. 1) then
+      else if(fline_prm%id_fline_start_type(i_fln) .eq. 1) then
         call cnt_start_surface_by_gl_table                              &
      &     (i_fln, ele%numele, ele%iele_global,                         &
      &      ele%interior_ele, ele_grp%num_grp, ele_grp%num_item,        &
-     &      ele_grp%istack_grp, ele_grp%item_grp, fline_src)
+     &      ele_grp%istack_grp, ele_grp%item_grp, fline_prm, fline_src)
         call set_start_surface_by_gl_table                              &
      &     (i_fln, ele%numele, ele%iele_global,                         &
      &      ele%interior_ele, ele_grp%num_grp, ele_grp%num_item,        &
-     &      ele_grp%istack_grp, ele_grp%item_grp, fline_src)
+     &      ele_grp%istack_grp, ele_grp%item_grp, fline_src, fline_prm)
       end if
 !
-      ist_line = istack_each_field_line(i_fln-1)
+      ist_line = fline_prm%istack_each_field_line(i_fln-1)
       do i = 1, fline_src%num_line_local(i_fln)
         inum = i + ist_line
-        iele = id_surf_start_fline(1,inum)
-        isf =  id_surf_start_fline(2,inum)
+        iele = fline_prm%id_surf_start_fline(1,inum)
+        isf =  fline_prm%id_surf_start_fline(2,inum)
         isurf = abs(surf%isf_4_ele(iele,isf))
         fline_src%xx_start_fline(1:3,inum) =   surf%x_surf(isurf,1:3)
         xi(1:2) = zero
@@ -326,7 +334,7 @@
      &                     * dble(surf%isf_4_ele(iele,isf) / isurf)
 !
         if(fline_src%flux_start_fline(inum) .gt. zero) then
-          iflag_outward_flux_fline(inum) = 1
+          fline_prm%iflag_outward_flux_fline(inum) = 1
           fline_src%flux_start_fline(inum)                              &
      &                     = -fline_src%flux_start_fline(inum)
         end if
@@ -337,7 +345,7 @@
      &    fline_tce%num_all_fline(1,i_fln), ione, CALYPSO_INTEGER,      &
      &    CALYPSO_COMM, ierr_MPI)
 !
-      if( id_fline_direction(i_fln) .eq. 0) then
+      if( fline_prm%id_fline_direction(i_fln) .eq. 0) then
         fline_tce%num_all_fline(1:nprocs,i_fln)                         &
      &        = 2 * fline_tce%num_all_fline(1:nprocs,i_fln)
       end if
@@ -354,24 +362,24 @@
       call set_fline_start_surf(my_rank, i_fln,                         &
      &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
      &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,               &
-     &    fline_src, fline_tce)
+     &    fline_prm, fline_src, fline_tce)
 !
       if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'ntot_gl_fline', fline_tce%ntot_gl_fline
         write(50+my_rank,*) 'ntot_gl_fline', fline_tce%ntot_gl_fline
         write(50+my_rank,*) 'num_all_fline',                            &
-     &                     fline_tce%num_all_fline(:,i_fln)
+     &                   fline_tce%num_all_fline(:,i_fln)
         write(50+my_rank,*) 'istack_all_fline',                         &
-     &                     fline_tce%istack_all_fline(:,i_fln)
+     &                   fline_tce%istack_all_fline(:,i_fln)
 !
         write(50+my_rank,*) 'num_line_local',                           &
-     &                     fline_src%num_line_local(i_fln)
+     &                  fline_src%num_line_local(i_fln)
         do i = 1, fline_src%num_line_local(i_fln)
           write(50+my_rank,*) 'id_surf_start_fline', i,                 &
-     &                        id_surf_start_fline(1:2,i+ist_line)
+     &                  fline_prm%id_surf_start_fline(1:2,i+ist_line)
           write(50+my_rank,'(a,1p4e16.5)') 'start_point, flux',         &
-     &                        fline_src%xx_start_fline(1:3,i+ist_line), &
-     &                        fline_src%flux_start_fline(i+ist_line)
+     &                  fline_src%xx_start_fline(1:3,i+ist_line),       &
+     &                  fline_src%flux_start_fline(i+ist_line)
         end do
 !
         ist = fline_tce%istack_all_fline(my_rank,i_fln) + 1
@@ -392,9 +400,7 @@
 !
       subroutine cnt_start_surface_by_gl_table(i_fln, numele,           &
      &          iele_global, interior_ele, num_mat, num_mat_bc,         &
-     &          mat_istack, mat_item, fline_src)
-!
-      use t_source_of_filed_line
+     &          mat_istack, mat_item, fline_prm, fline_src)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
@@ -405,6 +411,7 @@
       integer(kind=kint), intent(in) :: num_mat, num_mat_bc
       integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
       integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
+      type(fieldline_paramters), intent(in) :: fline_prm
 !
       type(fieldline_source), intent(inout) :: fline_src
 !
@@ -417,12 +424,12 @@
       icou = 0
       ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
       ied_grp = fline_src%istack_ele_start_grp(i_fln)
-      jst_grp = istack_grp_area_fline(i_fln-1) + 1
-      jed_grp = istack_grp_area_fline(i_fln)
+      jst_grp = fline_prm%istack_grp_area_fline(i_fln-1) + 1
+      jed_grp = fline_prm%istack_grp_area_fline(i_fln)
       do inum = ist_grp, ied_grp
-        iele_g = id_gl_surf_start_fline(1,inum)
+        iele_g = fline_prm%id_gl_surf_start_fline(1,inum)
           do jgrp = jst_grp, jed_grp
-            jg = id_ele_grp_area_fline(jgrp)
+            jg = fline_prm%id_ele_grp_area_fline(jgrp)
             jst = mat_istack(jg-1) + 1
             jed = mat_istack(jg)
             do jnum = jst, jed
@@ -443,9 +450,7 @@
 !
       subroutine set_start_surface_by_gl_table(i_fln, numele,           &
      &          iele_global, interior_ele, num_mat, num_mat_bc,         &
-     &          mat_istack, mat_item, fline_src)
-!
-      use t_source_of_filed_line
+     &          mat_istack, mat_item, fline_src, fline_prm)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
@@ -459,21 +464,23 @@
 !
       type(fieldline_source), intent(in) :: fline_src
 !
+      type(fieldline_paramters), intent(inout) :: fline_prm
+!
       integer(kind = kint) :: inum, ist_grp, ied_grp
       integer(kind = kint) :: jgrp, jst_grp, jed_grp
       integer(kind = kint) :: icou, jnum, jele, jg, jst, jed
       integer(kind = kint_gl) :: iele_g
 !
 !
-      icou = istack_each_field_line(i_fln-1)
+      icou = fline_prm%istack_each_field_line(i_fln-1)
       ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
       ied_grp = fline_src%istack_ele_start_grp(i_fln)
-      jst_grp = istack_grp_area_fline(i_fln-1) + 1
-      jed_grp = istack_grp_area_fline(i_fln)
+      jst_grp = fline_prm%istack_grp_area_fline(i_fln-1) + 1
+      jed_grp = fline_prm%istack_grp_area_fline(i_fln)
       do inum = ist_grp, ied_grp
-        iele_g = id_gl_surf_start_fline(1,inum)
+        iele_g = fline_prm%id_gl_surf_start_fline(1,inum)
           do jgrp = jst_grp, jed_grp
-            jg = id_ele_grp_area_fline(jgrp)
+            jg = fline_prm%id_ele_grp_area_fline(jgrp)
             jst = mat_istack(jg-1) + 1
             jed = mat_istack(jg)
             do jnum = jst, jed
@@ -481,9 +488,9 @@
               if(iele_g.eq.iele_global(jele)                            &
      &           .and. interior_ele(jele) .gt. 0) then
                 icou = icou + 1
-                id_surf_start_fline(1,icou) = jele
-                id_surf_start_fline(2,icou)                             &
-     &               = id_gl_surf_start_fline(2,inum)
+                fline_prm%id_surf_start_fline(1,icou) = jele
+                fline_prm%id_surf_start_fline(2,icou)                   &
+     &               = fline_prm%id_gl_surf_start_fline(2,inum)
                 exit
               end if
             end do

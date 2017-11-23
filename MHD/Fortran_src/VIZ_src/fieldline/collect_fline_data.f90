@@ -5,7 +5,8 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_collect_fline_data                                 &
-!!     &         (istep_fline, i_fln, fline_lc, fline_gl)
+!!     &         (istep_fline, i_fln, fline_prm, fline_lc, fline_gl)
+!!        type(fieldline_paramters), intent(in) :: fline_prm
 !!        type(local_fieldline), intent(in) :: fline_lc
 !!        type(global_fieldline_data), intent(inout) :: fline_gl
 !
@@ -30,14 +31,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_collect_fline_data                                   &
-     &         (istep_fline, i_fln, fline_lc, fline_gl)
+     &         (istep_fline, i_fln, fline_prm, fline_lc, fline_gl)
 !
-      use m_control_params_4_fline
+      use t_control_params_4_fline
       use m_field_file_format
       use set_ucd_file_names
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: istep_fline, i_fln
+      type(fieldline_paramters), intent(in) :: fline_prm
       type(local_fieldline), intent(in) :: fline_lc
 !
       type(global_fieldline_data), intent(inout) :: fline_gl
@@ -45,10 +47,10 @@
       character(len=kchara) :: ftmp_1, file_name
 !
 !
-      fline_gl%color_name_gl = name_color_output(i_fln)
+      fline_gl%color_name_gl = fline_prm%name_color_output(i_fln)
       call collect_number_of_fline(fline_lc, fline_gl)
 !
-      if(fline_gl%ntot_nod_line_gl                                     &
+      if(fline_gl%ntot_nod_line_gl                                      &
      &        .gt. fline_gl%ntot_nod_line_gl_buf) then
         call raise_global_fline_data(fline_gl)
       end if
@@ -64,8 +66,9 @@
 !
 !
       if(my_rank .eq. 0) then
-        if(id_fline_file_type(i_fln) .eq. 0) then
-          call set_single_ucd_file_name(fline_header(i_fln), iflag_ucd, &
+        if(fline_prm%id_fline_file_type(i_fln) .eq. 0) then
+          call set_single_ucd_file_name(fline_prm%fline_header(i_fln),  &
+     &        fline_prm%id_fline_file_type(i_fln),                      &
      &        istep_fline, file_name)
           write(*,*) 'output ', trim(file_name)
           open(id_fline_data_code, file=file_name)
@@ -73,7 +76,8 @@
           call write_global_fline(id_fline_data_code, fline_gl)
           close(id_fline_data_code)
         else
-          call add_int_suffix(istep_fline, fline_header(i_fln), ftmp_1)
+          call add_int_suffix                                           &
+     &       (istep_fline, fline_prm%fline_header(i_fln), ftmp_1)
           call add_dx_extension(ftmp_1, file_name)
           write(*,*) 'output ', trim(file_name)
           open(id_fline_data_code, file=file_name)

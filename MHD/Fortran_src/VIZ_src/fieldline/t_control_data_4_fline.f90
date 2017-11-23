@@ -66,6 +66,7 @@
       implicit  none
 !
 !
+      integer(kind = kint), parameter :: fline_ctl_file_code = 11
 !
       type fline_ctl
         type(read_character_item) :: fline_file_head_ctl

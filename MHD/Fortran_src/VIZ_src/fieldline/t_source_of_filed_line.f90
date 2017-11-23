@@ -4,10 +4,11 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine alloc_local_start_grp_num(fline_src)
-!!      subroutine alloc_local_start_grp_item(fline_src)
-!!      subroutine alloc_local_data_4_fline(numnod, fline_src)
-!!      subroutine alloc_start_point_fline(fline_src)
+!!      subroutine alloc_local_start_grp_num(num_fline, fline_src)
+!!      subroutine alloc_local_start_grp_item(num_fline, fline_src)
+!!      subroutine alloc_local_data_4_fline(num_fline, numnod, fline_src)
+!!      subroutine alloc_start_point_fline                              &
+!!     &         (ntot_each_field_line, fline_src)
 !!      subroutine alloc_num_gl_start_fline                             &
 !!     &         (nprocs, num_fline, ntot_each_field_line, fline_tce)
 !!      subroutine dealloc_local_data_4_fline(fline_src)
@@ -66,10 +67,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_local_start_grp_num(fline_src)
+      subroutine alloc_local_start_grp_num(num_fline, fline_src)
 !
-      use m_control_params_4_fline
-!
+      integer(kind = kint), intent(in) :: num_fline
       type(fieldline_source), intent(inout) :: fline_src
 !
 !
@@ -87,10 +87,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_local_start_grp_item(fline_src)
+      subroutine alloc_local_start_grp_item(num_fline, fline_src)
 !
-      use m_control_params_4_fline
-!
+      integer(kind = kint), intent(in) :: num_fline
       type(fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: num
@@ -108,11 +107,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_local_data_4_fline(numnod, fline_src)
+      subroutine alloc_local_data_4_fline(num_fline, numnod, fline_src)
 !
-      use m_control_params_4_fline
-!
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: num_fline, numnod
       type(fieldline_source), intent(inout) :: fline_src
 !
 !
@@ -126,10 +123,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_start_point_fline(fline_src)
+      subroutine alloc_start_point_fline                                &
+     &         (ntot_each_field_line, fline_src)
 !
-      use m_control_params_4_fline
-!
+      integer(kind = kint), intent(in) :: ntot_each_field_line
       type(fieldline_source), intent(inout) :: fline_src
 !
 !
