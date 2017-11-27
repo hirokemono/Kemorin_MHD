@@ -56,7 +56,6 @@
       subroutine copy_SGS_MHD_fld_from_trans                            &
      &         (sph, WK, mesh, iphys, nod_fld)
 !
-      use copy_MHD_4_sph_trans
       use coordinate_convert_4_sph
 !      use filtered_forces_to_snap
 !      use SGS_field_from_trans
@@ -113,7 +112,6 @@
       subroutine zmean_SGS_MHD_fld_from_trans                           &
      &         (sph, WK, mesh, iphys, nod_fld)
 !
-      use copy_MHD_4_sph_trans
       use coordinate_convert_4_sph
 !      use filtered_forces_to_snap
 !      use SGS_field_from_trans
@@ -170,7 +168,6 @@
       subroutine zrms_SGS_MHD_fld_from_trans                            &
      &         (sph, WK, mesh, iphys, nod_fld)
 !
-      use copy_MHD_4_sph_trans
       use coordinate_convert_4_sph
 !      use filtered_forces_to_snap
 !      use SGS_field_from_trans

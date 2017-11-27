@@ -87,7 +87,6 @@
 !
       use sph_transforms_4_MHD
       use cal_buoyancies_sph_MHD
-      use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
       use swap_phi_order_4_sph_trans
 !
@@ -134,7 +133,6 @@
 !
       use sph_transforms_4_MHD
       use cal_buoyancies_sph_MHD
-      use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
       use swap_phi_order_4_sph_trans
 !

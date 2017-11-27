@@ -247,7 +247,7 @@
 !
       call zrms_scalar_from_snap_trans                                  &
      &   (trns_MHD%b_trns%i_wide_fil_comp, iphys%i_wide_fil_comp,       &
-     &    sph_params%m_folding, sph_rtp, trns_MHD, node, nod_fld)
+     &    sph_params%m_folding, sph_rtp, trns_MHD, node, nod_fld) 
 !
       end subroutine zrms_filtered_field_from_trans
 !
