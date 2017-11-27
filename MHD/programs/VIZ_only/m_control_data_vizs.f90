@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine read_control_data_vizs
+!      subroutine read_control_file_vizs
 !
 !!   --------------------------------------------------------------------
 !!    Example of control block
@@ -31,6 +31,7 @@
       use m_machine_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
+      use t_control_data_vizs
 !
       implicit  none
 !
@@ -42,6 +43,8 @@
       type(platform_data_control), save :: viz_plt
 !>      Structure for time stepping control
       type(time_data_control), save :: t_viz_ctl
+!>        Structures of visualization controls
+      type(visualization_controls), save :: viz_ctl_v
 !
 !     Top level
 !
@@ -71,9 +74,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_data_vizs
+      subroutine read_control_file_vizs
 !
-      use m_control_data_pvrs
       use m_read_control_elements
       use skip_comment_f
       use bcast_4_platform_ctl
@@ -92,15 +94,14 @@
 !
       call bcast_ctl_data_4_platform(viz_plt)
       call bcast_ctl_data_4_time_step(t_viz_ctl)
-      call bcast_viz_control_data
+      call bcast_viz_controls(viz_ctl_v)
 !
-      end subroutine read_control_data_vizs
+      end subroutine read_control_file_vizs
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_vizs_control_data
 !
-      use m_control_data_pvrs
       use m_read_control_elements
 !
       use skip_comment_f
@@ -118,7 +119,7 @@
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_viz_ctl)
 !
-        call read_viz_control_data
+        call read_viz_controls(viz_ctl_v)
       end do
 !
       end subroutine read_vizs_control_data

@@ -22,10 +22,11 @@
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
       use m_work_time
+      use m_jacobians_VIZ
       use t_step_parameter
+      use t_visualizer
 !
-      use FEM_analyzer_sph_MHD
-      use sections_for_1st
+      use FEM_analyzer_sph_MHD_w_viz
 !
       implicit none
 !
@@ -68,10 +69,10 @@
 !     --------------------- 
 !
       call start_elapsed_time(2)
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD                                       &
-     &   (MHD_files1, MHD_step1, FEM_d1%geofem, FEM_d1%ele_mesh,        &
-     &    FEM_d1%iphys, FEM_d1%field, MHD_IO1)
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
+      call FEM_initialize_w_viz(MHD_files1, MHD_step1,                  &
+     &    FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%iphys, FEM_d1%field,   &
+     &    next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
@@ -80,9 +81,9 @@
 !
 !        Initialize visualization
 !
-      if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
-      call init_visualize_surface                                       &
-     &   (FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field)
+      if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
+      call init_visualize(FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, &
+     &    MHD_ctl1%viz_ctls, vizs1)
 !
       call calypso_MPI_barrier
       call end_elapsed_time(2)
@@ -95,6 +96,7 @@
       subroutine evolution_sph_zm_snap
 !
       use SPH_analyzer_zm_snap
+      use FEM_analyzer_sph_MHD
       use output_viz_file_control
 !
       integer(kind = kint) :: visval
@@ -144,11 +146,10 @@
 !*  ----------- Visualization --------------
 !*
         if(visval .eq. 0) then
-          if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
-          call start_elapsed_time(8)
-          call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field)
-          call end_elapsed_time(8)
+          if (iflag_debug.eq.1) write(*,*) 'visualize_all', my_rank
+          call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
+     &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,             &
+     &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1, vizs1)
         end if
         call end_elapsed_time(1)
 !

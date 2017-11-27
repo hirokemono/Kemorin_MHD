@@ -14,11 +14,18 @@
 !
       use m_precision
       use t_SPH_SGS_structure
+      use t_control_data_vizs
+      use t_visualizer
 !
       implicit none
 !
 !
 !>      Structures of SGS model in Spherical shell dynamo
       type(SPH_SGS_structure), save :: SPH_SGS1
+!
+!>        Structures of visualization controls
+      type(visualization_controls), save :: viz_ctls1
+!>      Structures of visualizations
+      type(visualize_modules), save :: vizs1
 !
       end module m_SPH_SGS_structure

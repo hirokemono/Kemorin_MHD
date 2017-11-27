@@ -26,6 +26,7 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
+      use t_control_data_vizs
 !
       implicit none
 !
@@ -52,6 +53,9 @@
         type(sph_monitor_control) :: smonitor_ctl
 !>        Structure for monitoring plave list
         type(node_monitor_control) :: nmtr_ctl
+!
+!>        Structures of visualization controls
+        type(visualization_controls) :: viz_ctls
       end type sph_sgs_mhd_control
 !
 !   Top level of label
@@ -86,6 +90,8 @@
 !
       private :: hd_mhd_ctl, i_mhd_ctl
 !
+      private :: read_sph_mhd_control_data
+      private :: bcast_sph_mhd_control_data
       private :: bcast_sph_sgs_mhd_ctl_data
 !
 ! ----------------------------------------------------------------------
@@ -124,7 +130,6 @@
       subroutine read_sph_mhd_control_data(MHD_ctl)
 !
       use t_ctl_data_SPH_MHD_control
-      use m_control_data_pvrs
 !
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !
@@ -158,7 +163,7 @@
         call read_sph_monitoring_ctl                                    &
      &     (hd_pick_sph, i_pick_sph, MHD_ctl%smonitor_ctl)
 !
-        call read_viz_control_data
+        call read_viz_controls(MHD_ctl%viz_ctls)
       end do
 !
       end subroutine read_sph_mhd_control_data
@@ -168,7 +173,6 @@
 !
       subroutine bcast_sph_mhd_control_data(MHD_ctl)
 !
-      use m_control_data_pvrs
       use bcast_4_platform_ctl
 !
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
@@ -177,7 +181,7 @@
       call bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
       call bcast_ctl_data_4_platform(MHD_ctl%new_plt)
 !
-      call bcast_viz_control_data
+      call bcast_viz_controls(MHD_ctl%viz_ctls)
 !
       end subroutine bcast_sph_mhd_control_data
 !

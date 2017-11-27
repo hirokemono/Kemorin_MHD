@@ -28,6 +28,7 @@
       use t_step_parameter
       use t_MHD_file_parameter
       use t_work_SPH_MHD
+      use t_viz_sections
 !
       implicit none
 !
@@ -48,7 +49,6 @@
       use analyzer_sph_snap
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap
-      use sections_for_1st
       use output_viz_file_control
 !
       integer(kind = kint) :: visval
@@ -100,7 +100,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_elapsed_time(12)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field)
+     &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, viz_psfs1)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)

@@ -10,9 +10,11 @@
       use m_visualization
 !
       use FEM_analyzer_viz_fline
-      use fieldline
+      use t_fieldline
 !
       implicit none
+!
+      type(fieldline_module), save :: fline_v
 !
 !  ---------------------------------------------------------------------
 !
@@ -24,7 +26,7 @@
 !
       use calypso_mpi
       use m_control_data_vizs
-      use m_control_data_flines
+      use t_control_data_vizs
 !
       integer(kind = kint) :: ierr
 !
@@ -32,7 +34,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
-      call read_control_data_vizs
+      call read_control_file_vizs
       call set_control_params_4_viz(my_rank, t_viz_ctl, viz_plt,        &
      &   mesh_file_VIZ, ucd_file_VIZ, ierr)
 !
@@ -42,8 +44,8 @@
       call FEM_initialize_fline(ucd_file_VIZ)
 !
 !  VIZ Initialization
-      call FLINE_initialize                                             &
-     &   (femmesh_VIZ%mesh, femmesh_VIZ%group, field_VIZ, fline_ctls1)
+      call FLINE_initialize(femmesh_VIZ%mesh, femmesh_VIZ%group,        &
+     &    field_VIZ, viz_ctl_v%fline_ctls, fline_v)
 !
       end subroutine initialize_fline
 !
@@ -64,7 +66,7 @@
 !  Generate field lines
         call FLINE_visualize( viz_step_V%FLINE_t%istep_file,            &
      &      femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ,           &
-     &      ele_4_nod_VIZ, field_VIZ)
+     &      ele_4_nod_VIZ, field_VIZ, fline_v)
       end do
 !
       end subroutine analyze

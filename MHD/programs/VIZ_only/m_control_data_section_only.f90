@@ -31,6 +31,7 @@
       use m_machine_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
+      use t_control_data_sections
 !
       implicit  none
 !
@@ -42,6 +43,9 @@
       type(platform_data_control), save :: sect_plt
 !>      Structure for time stepping control
       type(time_data_control), save :: t_sect_ctl
+!
+      type(section_controls), save :: sect_psf_ctls
+      type(isosurf_controls), save :: sect_iso_ctls
 !
 !     top level
 !
@@ -75,7 +79,6 @@
 !
       use calypso_mpi
 !
-      use m_control_data_sections
       use m_read_control_elements
       use skip_comment_f
       use bcast_4_platform_ctl
@@ -94,8 +97,8 @@
 !
       call bcast_ctl_data_4_platform(sect_plt)
       call bcast_ctl_data_4_time_step(t_sect_ctl)
-      call bcast_files_4_psf_ctl(psf_ctls1)
-      call bcast_files_4_iso_ctl(iso_ctls1)
+      call bcast_files_4_psf_ctl(sect_psf_ctls)
+      call bcast_files_4_iso_ctl(sect_iso_ctls)
 !
       end subroutine read_control_data_section_only
 !
@@ -103,7 +106,6 @@
 !
       subroutine read_section_control_data
 !
-      use m_control_data_sections
       use m_read_control_elements
 !
       use skip_comment_f
@@ -121,7 +123,7 @@
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_sect_ctl)
 !
-        call read_sections_control_data(psf_ctls1, iso_ctls1)
+        call read_sections_control_data(sect_psf_ctls, sect_iso_ctls)
       end do
 !
       end subroutine read_section_control_data

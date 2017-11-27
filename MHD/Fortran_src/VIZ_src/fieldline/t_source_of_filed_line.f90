@@ -4,16 +4,17 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!      subroutine allocate_local_start_grp_num
-!      subroutine allocate_local_start_grp_item
-!      subroutine allocate_local_data_4_fline(numnod)
-!      subroutine allocate_start_point_fline
+!!      subroutine alloc_local_start_grp_num(num_fline, fline_src)
+!!      subroutine alloc_local_start_grp_item(num_fline, fline_src)
+!!      subroutine alloc_local_data_4_fline(num_fline, numnod, fline_src)
+!!      subroutine alloc_start_point_fline                              &
+!!     &         (ntot_each_field_line, fline_src)
 !!      subroutine alloc_num_gl_start_fline                             &
-!!     &         (nprocs, num_fline, ntot_each_field_line, fline_trc)
-!      subroutine deallocate_local_data_4_fline
-!      subroutine deallocate_local_start_grp_item
-!      subroutine deallocate_start_point_fline
-!!      subroutine dealloc_num_gl_start_fline(fline_trc)
+!!     &         (nprocs, num_fline, ntot_each_field_line, fline_tce)
+!!      subroutine dealloc_local_data_4_fline(fline_src)
+!!      subroutine dealloc_local_start_grp_item(fline_src)
+!!      subroutine dealloc_start_point_fline(fline_src)
+!!      subroutine dealloc_num_gl_start_fline(fline_tce)
 !
       module t_source_of_filed_line
 !
@@ -22,23 +23,26 @@
       implicit  none
 !
 !
-      real(kind = kreal), allocatable :: vector_nod_fline(:,:,:)
-      real(kind = kreal), allocatable :: color_nod_fline(:,:)
+      type fieldline_source
+        real(kind = kreal), allocatable :: vector_nod_fline(:,:,:)
+        real(kind = kreal), allocatable :: color_nod_fline(:,:)
 !
-      integer(kind = kint) :: ntot_ele_start_grp
-      integer(kind = kint), allocatable :: istack_ele_start_grp(:)
-      integer(kind = kint), allocatable :: nele_start_grp(:)
-      integer(kind = kint), allocatable :: iele_start_item(:,:)
-      real(kind = kreal),   allocatable :: flux_start(:)
+        integer(kind = kint) :: ntot_ele_start_grp
+        integer(kind = kint), allocatable :: istack_ele_start_grp(:)
+        integer(kind = kint), allocatable :: nele_start_grp(:)
+        integer(kind = kint), allocatable :: iele_start_item(:,:)
+        real(kind = kreal),   allocatable :: flux_start(:)
 !
-      integer(kind = kint), allocatable :: num_line_local(:)
+        integer(kind = kint), allocatable :: num_line_local(:)
 !
-      real(kind = kreal),   allocatable :: xx_start_fline(:,:)
-      real(kind = kreal),   allocatable :: flux_start_fline(:)
+        real(kind = kreal),   allocatable :: xx_start_fline(:,:)
+        real(kind = kreal),   allocatable :: flux_start_fline(:)
+      end type fieldline_source
 !
-        integer(kind = kint) :: ntot_gl_fline = 0
 !
       type fieldline_trace
+        integer(kind = kint) :: ntot_gl_fline = 0
+!
         integer(kind = kint), allocatable :: istack_all_fline(:,:)
         integer(kind = kint), allocatable :: num_all_fline(:,:)
         real(kind = kreal),   allocatable :: flux_stack_fline(:)
@@ -63,161 +67,176 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_local_start_grp_num
+      subroutine alloc_local_start_grp_num(num_fline, fline_src)
 !
-      use m_control_params_4_fline
-!
-!
-      allocate(nele_start_grp(num_fline))
-      allocate(istack_ele_start_grp(0:num_fline))
-!
-      allocate(num_line_local(num_fline))
-!
-      nele_start_grp =       0
-      istack_ele_start_grp = 0
-!
-      num_line_local = 0
-!
-      end subroutine allocate_local_start_grp_num
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_local_start_grp_item
-!
-      use m_control_params_4_fline
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_source), intent(inout) :: fline_src
 !
 !
-      ntot_ele_start_grp = istack_ele_start_grp(num_fline)
-      allocate(iele_start_item(2,ntot_ele_start_grp))
-      allocate(flux_start(ntot_ele_start_grp))
-      if(ntot_ele_start_grp .gt. 0) then
-        iele_start_item =    0
-        ntot_ele_start_grp = 0
-      end if
+      allocate(fline_src%nele_start_grp(num_fline))
+      allocate(fline_src%istack_ele_start_grp(0:num_fline))
 !
-      end subroutine allocate_local_start_grp_item
+      allocate(fline_src%num_line_local(num_fline))
+!
+      fline_src%nele_start_grp =       0
+      fline_src%istack_ele_start_grp = 0
+!
+      fline_src%num_line_local = 0
+!
+      end subroutine alloc_local_start_grp_num
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_local_data_4_fline(numnod)
+      subroutine alloc_local_start_grp_item(num_fline, fline_src)
 !
-      use m_control_params_4_fline
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_source), intent(inout) :: fline_src
 !
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint) :: num
 !
 !
-      allocate(vector_nod_fline(numnod,3,num_fline))
-      allocate(color_nod_fline(numnod,num_fline))
+      fline_src%ntot_ele_start_grp                                      &
+     &            = fline_src%istack_ele_start_grp(num_fline)
+      num = fline_src%ntot_ele_start_grp
 !
-      vector_nod_fline = 0.0d0
-      color_nod_fline =  0.0d0
+      allocate(fline_src%iele_start_item(2,num))
+      allocate(fline_src%flux_start(num))
+      if(num .gt. 0) fline_src%iele_start_item = 0
 !
-      end subroutine allocate_local_data_4_fline
+      end subroutine alloc_local_start_grp_item
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_start_point_fline
+      subroutine alloc_local_data_4_fline(num_fline, numnod, fline_src)
 !
-      use m_control_params_4_fline
+      integer(kind = kint), intent(in) :: num_fline, numnod
+      type(fieldline_source), intent(inout) :: fline_src
 !
 !
-      allocate(xx_start_fline(3,ntot_each_field_line))
-      allocate(flux_start_fline(ntot_each_field_line))
+      allocate(fline_src%vector_nod_fline(numnod,3,num_fline))
+      allocate(fline_src%color_nod_fline(numnod,num_fline))
 !
-      xx_start_fline = 0.0d0
-      flux_start_fline =  0.0d0
+      fline_src%vector_nod_fline = 0.0d0
+      fline_src%color_nod_fline =  0.0d0
 !
-      end subroutine allocate_start_point_fline
+      end subroutine alloc_local_data_4_fline
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_start_point_fline                                &
+     &         (ntot_each_field_line, fline_src)
+!
+      integer(kind = kint), intent(in) :: ntot_each_field_line
+      type(fieldline_source), intent(inout) :: fline_src
+!
+!
+      allocate(fline_src%xx_start_fline(3,ntot_each_field_line))
+      allocate(fline_src%flux_start_fline(ntot_each_field_line))
+!
+      fline_src%xx_start_fline = 0.0d0
+      fline_src%flux_start_fline =  0.0d0
+!
+      end subroutine alloc_start_point_fline
 !
 !  ---------------------------------------------------------------------
 !
       subroutine alloc_num_gl_start_fline                               &
-     &         (nprocs, num_fline, ntot_each_field_line, fline_trc)
+     &         (nprocs, num_fline, ntot_each_field_line, fline_tce)
 !
       integer(kind = kint), intent(in) :: num_fline, nprocs
       integer(kind = kint), intent(in) :: ntot_each_field_line
-      type(fieldline_trace), intent(inout) :: fline_trc
+      type(fieldline_trace), intent(inout) :: fline_tce
+!
       integer(kind = kint) :: num
 !
 !
-      allocate(fline_trc%istack_all_fline(0:nprocs,num_fline))
-      allocate(fline_trc%num_all_fline(nprocs,num_fline))
-      allocate(fline_trc%flux_stack_fline(0:nprocs))
+      allocate(fline_tce%istack_all_fline(0:nprocs,num_fline))
+      allocate(fline_tce%num_all_fline(nprocs,num_fline))
+      allocate(fline_tce%flux_stack_fline(0:nprocs))
 !
       num = 2*ntot_each_field_line
-      allocate(fline_trc%icount_fline(num))
-      allocate(fline_trc%iflag_fline(num))
-      allocate(fline_trc%isf_fline_start(3,num))
-      allocate(fline_trc%xx_fline_start(3,num))
-      allocate(fline_trc%v_fline_start(3,num))
-      allocate(fline_trc%c_fline_start(num))
+      allocate(fline_tce%icount_fline(num))
+      allocate(fline_tce%iflag_fline(num))
+      allocate(fline_tce%isf_fline_start(3,num))
+      allocate(fline_tce%xx_fline_start(3,num))
+      allocate(fline_tce%v_fline_start(3,num))
+      allocate(fline_tce%c_fline_start(num))
 !
-      fline_trc%istack_all_fline = 0
-      fline_trc%num_all_fline =    0
-      fline_trc%flux_stack_fline = 0.0d0
+      fline_tce%ntot_gl_fline =    0
+      fline_tce%istack_all_fline = 0
+      fline_tce%num_all_fline =    0
+      fline_tce%flux_stack_fline = 0.0d0
 !
-      fline_trc%icount_fline = 0
-      fline_trc%iflag_fline =  0
-      fline_trc%isf_fline_start = 0
-      fline_trc%xx_fline_start = 0.0d0
-      fline_trc%v_fline_start =  0.0d0
-      fline_trc%c_fline_start =  0.0d0
+      fline_tce%icount_fline = 0
+      fline_tce%iflag_fline =  0
+      fline_tce%isf_fline_start = 0
+      fline_tce%xx_fline_start = 0.0d0
+      fline_tce%v_fline_start =  0.0d0
+      fline_tce%c_fline_start =  0.0d0
 !
-      allocate(fline_trc%id_fline_export(7,num))
-      allocate(fline_trc%fline_export(7,num))
-      fline_trc%id_fline_export = 0
-      fline_trc%fline_export = 0.0d0
+      allocate(fline_tce%id_fline_export(7,num))
+      allocate(fline_tce%fline_export(7,num))
+      fline_tce%id_fline_export = 0
+      fline_tce%fline_export = 0.0d0
 !
       end subroutine alloc_num_gl_start_fline
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_local_start_grp_item
+      subroutine dealloc_local_start_grp_item(fline_src)
 !
-      deallocate(nele_start_grp, istack_ele_start_grp)
-      deallocate(iele_start_item, flux_start)
-      deallocate(num_line_local)
+      type(fieldline_source), intent(inout) :: fline_src
 !
-      end subroutine deallocate_local_start_grp_item
 !
-!  ---------------------------------------------------------------------
+      deallocate(fline_src%nele_start_grp)
+      deallocate(fline_src%istack_ele_start_grp)
+      deallocate(fline_src%iele_start_item, fline_src%flux_start)
+      deallocate(fline_src%num_line_local)
 !
-      subroutine deallocate_local_data_4_fline
-!
-      deallocate(vector_nod_fline, color_nod_fline)
-!
-      end subroutine deallocate_local_data_4_fline
+      end subroutine dealloc_local_start_grp_item
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_start_point_fline
+      subroutine dealloc_local_data_4_fline(fline_src)
+!
+      type(fieldline_source), intent(inout) :: fline_src
 !
 !
-      deallocate(xx_start_fline, flux_start_fline)
+      deallocate(fline_src%vector_nod_fline, fline_src%color_nod_fline)
 !
-      end subroutine deallocate_start_point_fline
+      end subroutine dealloc_local_data_4_fline
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_num_gl_start_fline(fline_trc)
+      subroutine dealloc_start_point_fline(fline_src)
 !
-      type(fieldline_trace), intent(inout) :: fline_trc
+      type(fieldline_source), intent(inout) :: fline_src
+!
+      deallocate(fline_src%xx_start_fline, fline_src%flux_start_fline)
+!
+      end subroutine dealloc_start_point_fline
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_num_gl_start_fline(fline_tce)
+!
+      type(fieldline_trace), intent(inout) :: fline_tce
 !
 !
-      deallocate(fline_trc%istack_all_fline)
-      deallocate(fline_trc%num_all_fline)
-      deallocate(fline_trc%flux_stack_fline)
+      deallocate(fline_tce%istack_all_fline)
+      deallocate(fline_tce%num_all_fline)
+      deallocate(fline_tce%flux_stack_fline)
 !
-      deallocate(fline_trc%icount_fline)
-      deallocate(fline_trc%iflag_fline)
-      deallocate(fline_trc%isf_fline_start)
-      deallocate(fline_trc%xx_fline_start)
-      deallocate(fline_trc%v_fline_start)
-      deallocate(fline_trc%c_fline_start)
+      deallocate(fline_tce%icount_fline)
+      deallocate(fline_tce%iflag_fline)
+      deallocate(fline_tce%isf_fline_start)
+      deallocate(fline_tce%xx_fline_start)
+      deallocate(fline_tce%v_fline_start)
+      deallocate(fline_tce%c_fline_start)
 !
-      deallocate(fline_trc%id_fline_export)
-      deallocate(fline_trc%fline_export)
+      deallocate(fline_tce%id_fline_export)
+      deallocate(fline_tce%fline_export)
 !
       end subroutine dealloc_num_gl_start_fline
 !

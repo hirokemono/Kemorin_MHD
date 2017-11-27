@@ -12,11 +12,11 @@
 !!      subroutine input_control_4_FEM_MHD                              &
 !!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
 !!     &          MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,          &
-!!     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG)
+!!     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !!      subroutine input_control_4_FEM_snap                             &
 !!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
 !!     &          MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,&
-!!     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG)
+!!     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
@@ -37,6 +37,7 @@
 !!        type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_mat
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
+!!        type(visualization_controls), intent(inout) :: viz_ctls
 !!@endverbatim
 !
 !
@@ -47,6 +48,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_control_data_vizs
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_MHD_step_parameter
@@ -85,7 +87,7 @@
       subroutine input_control_4_FEM_MHD                                &
      &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
      &          MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,            &
-     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG)
+     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -108,9 +110,11 @@
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
 !
+      type(visualization_controls), intent(inout) :: viz_ctls
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
-      call read_control_4_fem_MHD(MHD_ctl_name, FEM_MHD_ctl)
+      call read_control_4_fem_MHD(MHD_ctl_name, FEM_MHD_ctl, viz_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
@@ -143,7 +147,7 @@
       subroutine input_control_4_FEM_snap                               &
      &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
      &          MHD_BC, femmesh, ele_mesh, nod_fld, ele_fld,            &
-     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG)
+     &          IO_bc, FEM_filters, FEM_SGS_wk, MHD_CG, viz_ctls)
 !
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -165,9 +169,11 @@
       type(work_FEM_dynamic_SGS), intent(inout) :: FEM_SGS_wk
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !
+      type(visualization_controls), intent(inout) :: viz_ctls
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
-      call read_control_4_fem_MHD(snap_ctl_name, FEM_MHD_ctl)
+      call read_control_4_fem_MHD(snap_ctl_name, FEM_MHD_ctl, viz_ctls)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &

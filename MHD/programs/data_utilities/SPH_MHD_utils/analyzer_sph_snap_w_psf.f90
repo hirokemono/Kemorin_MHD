@@ -21,10 +21,10 @@
       use m_SPH_MHD_model_data
       use m_work_time
       use t_step_parameter
+      use t_viz_sections
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap_w_psf
-      use sections_for_1st
 !
       implicit none
 !
@@ -81,7 +81,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
       call init_visualize_surface                                       &
-     &   (FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field)
+     &   (FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,                 &
+     &    DNS_MHD_ctl1%psf_ctls, DNS_MHD_ctl1%iso_ctls, viz_psfs1)
 !
       call calypso_MPI_barrier
       call end_elapsed_time(2)
@@ -144,7 +145,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_elapsed_time(12)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field)
+     &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, viz_psfs1)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)

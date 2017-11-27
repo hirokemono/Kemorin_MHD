@@ -29,6 +29,7 @@
       use t_sph_transforms
       use t_phys_name_4_sph_trans
       use t_const_spherical_grid
+      use t_visualizer
 !
       implicit none
 !
@@ -77,6 +78,9 @@
 !>      Work structures for various spherical harmonics trasform
       type(spherical_trns_works), save :: WK_sph_TRNS
       type(field_name_4_sph_trans), save :: fld_rtp_TRNS
+!
+!>      Structure for visualization
+      type(visualize_modules), save :: vizs_TRNS
 !
 ! ----------------------------------------------------------------------
 !

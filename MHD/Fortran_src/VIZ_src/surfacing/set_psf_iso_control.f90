@@ -217,7 +217,6 @@
       use m_read_control_elements
 !
       use t_control_data_4_psf
-      use m_control_data_sections
 !
 !
       character(len = kchara), intent(in) :: fname_psf_ctl

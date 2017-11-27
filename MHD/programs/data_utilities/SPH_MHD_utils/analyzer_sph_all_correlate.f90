@@ -25,7 +25,7 @@
       use t_step_parameter
 !
       use SPH_analyzer_back_trans
-      use visualizer_all
+      use t_visualizer
 !
       implicit none
 !
@@ -86,7 +86,8 @@
      &   (MHD_files1, FEM_d1%iphys, SPH_model1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field)
+      call init_visualize(FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, &
+     &    MHD_ctl1%viz_ctls, vizs1)
 !
       call calypso_MPI_barrier
       call end_elapsed_time(2)
@@ -148,7 +149,7 @@
           call start_elapsed_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,             &
-     &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1)
+     &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1, vizs1)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)
