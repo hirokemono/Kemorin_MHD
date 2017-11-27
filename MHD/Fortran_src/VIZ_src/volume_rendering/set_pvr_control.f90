@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on May., 2006
 !
-!!      subroutine read_set_pvr_controls(num_pvr, group, nod_fld,       &
+!!      subroutine read_set_pvr_controls(num_pvr, mesh, group, nod_fld, &
 !!     &          pvr_ctls, cflag_update, pvr_param, pvr_data)
 !!      subroutine read_control_pvr_update                              &
 !!     &         (fname_pvr_ctl, pvr_ctl_struct)
@@ -38,7 +38,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_set_pvr_controls(num_pvr, group, nod_fld,         &
+      subroutine read_set_pvr_controls(num_pvr, mesh, group, nod_fld,   &
      &          pvr_ctls, cflag_update, pvr_param, pvr_data)
 !
       use t_mesh_data
@@ -47,6 +47,7 @@
       use t_rendering_vr_image
       use bcast_control_data_4_pvr
 !
+      type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
       integer(kind = kint), intent(in) :: num_pvr
@@ -61,6 +62,7 @@
       ctl_file_code = pvr_ctl_file_code
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_control', num_pvr
       do i_pvr = 1, num_pvr
+!
         call read_control_pvr(i_pvr, pvr_ctls%fname_pvr_ctl(i_pvr),     &
      &                        pvr_ctls%pvr_ctl_struct(i_pvr))
         call read_control_modelview                                     &
@@ -73,6 +75,10 @@
         end do
 !
         call bcast_vr_psf_ctl(pvr_ctls%pvr_ctl_struct(i_pvr))
+!
+        call allocate_nod_data_4_pvr(mesh%node%numnod, mesh%ele%numele, &
+     &      group%surf_grp%num_grp, pvr_param(i_pvr)%field)
+        call reset_pvr_view_parameteres(pvr_data(i_pvr)%view)
 !
         call set_each_pvr_control(group%ele_grp, group%surf_grp,        &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &

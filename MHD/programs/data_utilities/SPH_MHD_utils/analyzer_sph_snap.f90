@@ -186,7 +186,7 @@
 !
       use m_control_data_pvrs
       use volume_rendering_only
-      use volume_rendering
+      use t_volume_rendering
       use FEM_analyzer_sph_MHD
       use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
@@ -237,7 +237,7 @@
         call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,        &
      &      FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,               &
      &      next_tbl_VIZ1%neib_ele, jacobians_VIZ1)
-        call deallocate_pvr_data
+        call deallocate_pvr_data(pvr1)
         call end_elapsed_time(12)
       end if
 !
@@ -263,7 +263,7 @@
           call visualize_pvr_only(MHD_step1%viz_step%PVR_t%istep_file,  &
      &        FEM_d1%geofem, FEM_d1%ele_mesh, jacobians_VIZ1,           &
      &        FEM_d1%field)
-          call deallocate_pvr_data
+          call deallocate_pvr_data(pvr1)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)

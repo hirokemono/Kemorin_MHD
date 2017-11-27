@@ -28,8 +28,11 @@
       use t_phys_data
       use t_next_node_ele_4_node
       use t_jacobians
+      use t_volume_rendering
 !
       implicit  none
+!
+      type(volume_rendering_module), save :: pvr1
 !
 !  ---------------------------------------------------------------------
 !
@@ -43,7 +46,6 @@
       use m_control_data_sections
       use m_control_data_pvrs
       use m_control_data_flines
-      use volume_rendering
       use fieldline
 !
       type(mesh_data), intent(in) :: femmesh
@@ -65,8 +67,8 @@
       call end_elapsed_time(61)
 !
       call start_elapsed_time(62)
-      call PVR_initialize                                               &
-     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld, pvr_ctls1)
+      call PVR_initialize(femmesh%mesh, femmesh%group, ele_mesh,        &
+     &    nod_fld, pvr_ctls1, pvr1)
       call calypso_MPI_barrier
       call end_elapsed_time(62)
 !
@@ -83,7 +85,6 @@
      &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacs)
 !
       use m_cross_section
-      use volume_rendering
       use fieldline
 !
       type(time_data), intent(in) :: time_d
@@ -110,7 +111,7 @@
 !
       call start_elapsed_time(67)
       call PVR_visualize(viz_step%PVR_t%istep_file,                    &
-     &    femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld)
+     &    femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld, pvr1)
       call calypso_MPI_barrier
       call end_elapsed_time(67)
 !
