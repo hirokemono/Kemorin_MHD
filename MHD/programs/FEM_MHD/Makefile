@@ -48,8 +48,7 @@ FEM_check_MHD_matrices.o
 MOD_SNAP_PLUG = \
 main_snapshot.o \
 analyzer_snap.o \
-FEM_analyzer_snapshot.o \
-visualizer_all.o
+FEM_analyzer_snapshot.o
 
 
 MOD_FILTERING_ALL = \
@@ -57,7 +56,6 @@ main_filtering.o \
 analyzer_filtering.o \
 FEM_analyzer_snapshot.o \
 FEM_analyzer_filtered.o \
-visualizer_all.o \
 \
 filter_all_fields.o
 
@@ -69,8 +67,7 @@ FEM_analyzer_vol_average.o
 MOD_SNAP_TMP = \
 main_snap_tmp.o \
 analyzer_snap_tmp.o \
-FEM_analyzer_snap_tmp.o \
-visualizer_all.o
+FEM_analyzer_snap_tmp.o
 
 #
 #  -------------------------------------------------------------------------

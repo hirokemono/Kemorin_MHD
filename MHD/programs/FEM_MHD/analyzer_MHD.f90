@@ -17,9 +17,11 @@
       use m_FEM_MHD_model_data
 !
       use FEM_analyzer_MHD
-      use sections_for_1st
+      use t_viz_sections
 !
       implicit none
+!
+      type(surfacing_modules), save :: MHD_viz_psfs
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,7 +68,8 @@
      &    FEM_SGS1%SGS_par, MHD_step1, FEM_model1%MHD_prop,             &
      &    FEM_model1%MHD_BC, FEM_MHD1%geofem, FEM_MHD1%ele_mesh,        &
      &    FEM_MHD1%field, SGS_MHD_wk1%ele_fld, FEM_model1%bc_FEM_IO,    &
-     &    FEM_SGS1%FEM_filters, SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1)
+     &    FEM_SGS1%FEM_filters, SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1,        &
+     &    viz_ctls_F)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
 !
@@ -77,7 +80,8 @@
      &    MHD_IO1, fem_sq1, FEM_MHD1%label_sim)
 !
       call init_visualize_surface                                       &
-     &   (FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field)
+     &   (FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field,           &
+     &    viz_ctls_F%psf_ctls, viz_ctls_F%iso_ctls, MHD_viz_psfs)
       call end_elapsed_time(2)
 !
       end subroutine initialization_MHD
@@ -106,7 +110,8 @@
         if (visval.eq.0) then
           call start_elapsed_time(4)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field)
+     &        FEM_MHD1%geofem, FEM_MHD1%ele_mesh, FEM_MHD1%field,       &
+     &        MHD_viz_psfs)
           call end_elapsed_time(4)
         end if
 !

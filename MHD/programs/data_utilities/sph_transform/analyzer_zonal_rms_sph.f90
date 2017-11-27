@@ -20,7 +20,7 @@
       use SPH_analyzer_back_trans_old
       use FEM_analyzer_sph_trans
       use FEM_analyzer_back_trans
-      use visualizer_all
+      use t_visualizer
 !
       implicit none
 !
@@ -88,7 +88,8 @@
 !
 !  -------------------------------
 !
-      call init_visualize(femmesh_STR, elemesh_STR, field_STR)
+      call init_visualize(femmesh_STR, elemesh_STR, field_STR,          &
+     &    viz_st_ctls, vizs_TRNS)
 !
       end subroutine init_analyzer
 !
@@ -122,8 +123,8 @@
 !
         if(visval .eq. 0) then
           call visualize_all(viz_step_STR, t_STR%time_d,                &
-     &        femmesh_STR, elemesh_STR, field_STR,                      &
-     &        ele_4_nod_SPH_TRANS, jacobians_STR)
+     &        femmesh_STR, elemesh_STR, field_STR, ele_4_nod_SPH_TRANS, &
+     &        jacobians_STR, vizs_TRNS)
         end if
       end do
 !

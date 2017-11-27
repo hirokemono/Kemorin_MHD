@@ -41,7 +41,6 @@ MOD_GAUSS_B_TRANS = \
 analyzer_gauss_back_trans.o \
 FEM_analyzer_back_trans.o \
 SPH_analyzer_gauss_b_trans.o \
-visualizer_all.o \
 m_control_data_vizs.o  \
 main_gauss_back_trans.o
 
@@ -58,7 +57,6 @@ MOD_ZMEAN_STREAM = \
 \
 main_zm_streamfunc.o \
 analyzer_zm_streamfunc.o \
-visualizer_all.o \
 FEM_analyzer_back_trans.o \
 SPH_analyzer_back_trans_old.o \
 SPH_analyzer_zm_streamfunc.o
@@ -72,7 +70,6 @@ SPH_analyzer_sph_trans.o \
 SPH_analyzer_back_trans_old.o \
 \
 analyzer_zm_sph_field.o \
-visualizer_all.o \
 m_control_data_vizs.o  \
 main_zm_sph_field.o
 
@@ -85,7 +82,6 @@ FEM_analyzer_back_trans.o \
 SPH_analyzer_sph_trans.o \
 SPH_analyzer_back_trans_old.o \
 \
-visualizer_all.o \
 m_control_data_vizs.o  \
 analyzer_zonal_rms_sph.o \
 main_zonal_rms_sph.o
@@ -95,7 +91,6 @@ MOD_ZMEAN_KENE = \
 \
 main_zm_kinetic_energy.o \
 analyzer_zm_kinetic_energy.o \
-visualizer_all.o \
 FEM_analyzer_back_trans.o \
 SPH_analyzer_back_trans_old.o \
 SPH_analyzer_zm_energies.o

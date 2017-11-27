@@ -72,21 +72,23 @@
       subroutine analyze_med_grp_patch
 !
       use m_ctl_params_4_diff_udt
-      use m_cross_section
-      use m_control_data_sections
       use set_parallel_file_name
+      use t_control_data_sections
       use t_read_control_arrays
+      use t_cross_section
       use set_coefs_of_sections
 !
       integer(kind = kint) :: igrp
       integer(kind = kint),  parameter :: id_gname = 11
       character(len=kchara) :: grouping_mesh_list
+      type(section_controls), save :: psf_ctls_md
+      type(sectioning_module), save :: psf_md
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_med_patch_ele_grp',         &
      &             trim(grouping_mesh_head)
-      psf_ctls1%num_psf_ctl = femmesh_FUTIL%group%ele_grp%num_grp
-      call alloc_psf_ctl_stract(psf_ctls1)
+      psf_ctls_md%num_psf_ctl = femmesh_FUTIL%group%ele_grp%num_grp
+      call alloc_psf_ctl_stract(psf_ctls_md)
 !
       if(my_rank .eq. 0) then
         call add_dat_extension(grouping_mesh_head,grouping_mesh_list)
@@ -99,12 +101,12 @@
         close(id_gname)
       end if
 !
-      call set_med_grp_patch_ctl(psf_ctls1%num_psf_ctl,                 &
-     &     psf_ctls1%fname_psf_ctl, psf_ctls1%psf_ctl_struct)
+      call set_med_grp_patch_ctl(psf_ctls_md%num_psf_ctl,               &
+     &     psf_ctls_md%fname_psf_ctl, psf_ctls_md%psf_ctl_struct)
 !
       call SECTIONING_initialize                                        &
      &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group, elemesh_FUTIL,       &
-     &    field_FUTIL, psf_ctls1, psf1)
+     &    field_FUTIL, psf_ctls_md, psf_md)
 !
       end subroutine analyze_med_grp_patch
 !
@@ -115,7 +117,6 @@
      &         (num_psf_ctl, fname_psf_ctl, psf_ctl_struct)
 !
       use m_ctl_params_4_diff_udt
-      use m_cross_section
       use set_parallel_file_name
       use t_control_data_4_psf
       use t_read_control_arrays

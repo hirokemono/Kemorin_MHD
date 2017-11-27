@@ -15,9 +15,11 @@
       use m_visualization
 !
       use FEM_analyzer_viz
-      use visualizer_all
+      use t_visualizer
 !
       implicit none
+!
+      type(visualize_modules), save :: vizs_v
 !
 !  ---------------------------------------------------------------------
 !
@@ -51,8 +53,8 @@
 !
 !     read controls
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
-      call read_control_data_vizs
+      if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
+      call read_control_file_vizs
       call set_control_params_4_viz(my_rank, t_viz_ctl, viz_plt,        &
      &    mesh_file_VIZ, ucd_file_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
@@ -64,7 +66,8 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize(femmesh_VIZ, elemesh_VIZ, field_VIZ)
+      call init_visualize(femmesh_VIZ, elemesh_VIZ, field_VIZ,          &
+     &    viz_ctl_v, vizs_v)
 !
       end subroutine init_analyzer
 !
@@ -89,7 +92,7 @@
           call start_elapsed_time(12)
           call visualize_all(viz_step_V, t_VIZ%time_d,                  &
      &        femmesh_VIZ, elemesh_VIZ, field_VIZ,                      &
-     &        ele_4_nod_VIZ, jacobians_VIZ)
+     &        ele_4_nod_VIZ, jacobians_VIZ, vizs_v)
           call end_elapsed_time(12)
         end if
       end do

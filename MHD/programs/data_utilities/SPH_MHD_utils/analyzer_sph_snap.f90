@@ -24,9 +24,9 @@
       use m_jacobians_VIZ
       use m_SPH_SGS_structure
       use t_step_parameter
+      use t_visualizer
 !
       use SPH_analyzer_snap
-      use visualizer_all
 !
       implicit none
 !
@@ -82,7 +82,8 @@
      &    SPH_model1, SPH_SGS1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field)
+      call init_visualize(FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, &
+     &    MHD_ctl1%viz_ctls, vizs1)
 !
       call calypso_MPI_barrier
       call end_elapsed_time(2)
@@ -149,7 +150,7 @@
           call start_elapsed_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,             &
-     &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1)
+     &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1, vizs1)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)
@@ -184,7 +185,8 @@
 !
       subroutine evolution_sph_snap_badboy
 !
-      use m_control_data_pvrs
+      use m_ctl_data_sph_SGS_MHD
+      use t_control_data_vizs
       use t_volume_rendering
       use FEM_analyzer_sph_MHD
       use FEM_analyzer_sph_SGS_MHD
@@ -235,15 +237,16 @@
         call start_elapsed_time(12)
         call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,        &
      &      FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,               &
-     &      next_tbl_VIZ1%neib_ele, jacobians_VIZ1)
-        call deallocate_pvr_data(pvr1)
+     &      next_tbl_VIZ1%neib_ele, jacobians_VIZ1, vizs1)
+        call deallocate_pvr_data(vizs1%pvr)
         call end_elapsed_time(12)
       end if
 !
 !*  ----------- Visualization --------------
 !*
       do
-        visval = check_PVR_update(pvr_ctls1, pvr1)
+        visval = check_PVR_update                                       &
+     &         (MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr)
         call calypso_mpi_barrier
 !
         if(visval .eq. IFLAG_TERMINATE) then
@@ -259,12 +262,12 @@
           call start_elapsed_time(12)
           call PVR_initialize                                           &
      &       (FEM_d1%geofem%mesh, FEM_d1%geofem%group, FEM_d1%ele_mesh, &
-     &        FEM_d1%field, pvr_ctls1, pvr1)
+     &        FEM_d1%field, MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr)
           call calypso_MPI_barrier
           call PVR_visualize(MHD_step1%viz_step%PVR_t%istep_file,       &
      &        FEM_d1%geofem%mesh, FEM_d1%geofem%group, FEM_d1%ele_mesh, &
-     &        jacobians_VIZ1, FEM_d1%field, pvr1)
-          call deallocate_pvr_data(pvr1)
+     &        jacobians_VIZ1, FEM_d1%field, vizs1%pvr)
+          call deallocate_pvr_data(vizs1%pvr)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)

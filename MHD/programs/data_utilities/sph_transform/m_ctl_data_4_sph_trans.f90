@@ -12,6 +12,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
+      use t_control_data_vizs
       use t_control_elements
       use skip_comment_f
 !
@@ -28,6 +29,8 @@
       type(field_control), save :: fld_st_ctl
 !>      Structure for time stepping control
       type(time_data_control), save :: t_st_ctl
+!>        Structures of visualization controls
+      type(visualization_controls), save :: viz_st_ctls
 !
       type(read_character_item), save :: zm_spec_file_head_ctl
       type(read_character_item), save :: zonal_udt_head_ctl
@@ -135,7 +138,6 @@
       subroutine read_sph_trans_control_data
 !
       use m_machine_parameter
-      use m_control_data_pvrs
 !
 !   2 begin phys_values_ctl
 !
@@ -154,10 +156,8 @@
         call read_sph_trans_model_ctl
         call read_sph_trans_params_ctl
 !
-        call read_viz_control_data
+        call read_viz_controls(viz_st_ctls)
       end do
-!
-!      call bcast_viz_control_data
 !
       end subroutine read_sph_trans_control_data
 !

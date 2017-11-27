@@ -3,6 +3,14 @@
 !
 !      Written by H. Matsui on July, 2006
 !
+!!      subroutine s_find_pvr_surf_domain                               &
+!!     &         (num_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) :: group
+!!        type(element_geometry), intent(in) :: ele_mesh
+!!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
+!!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
+!!
 !!      subroutine each_PVR_initialize                                  &
 !!     &         (i_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
 !!      subroutine each_PVR_rendering                                   &
@@ -55,6 +63,38 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine s_find_pvr_surf_domain                                 &
+     &         (num_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
+!
+      use t_mesh_data
+      use t_rendering_vr_image
+      use find_selected_domain_bd
+      use find_pvr_surf_domain
+!
+      integer(kind = kint), intent(in) :: num_pvr
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
+      type(element_geometry), intent(in) :: ele_mesh
+!
+      type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
+      type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
+!
+      integer(kind = kint) :: i_pvr
+!
+!
+      call allocate_imark_4_surface(ele_mesh%surf%numsurf)
+      do i_pvr = 1, num_pvr
+        call find_each_pvr_surf_domain                                  &
+     &     (mesh%ele, ele_mesh%surf, group%ele_grp,                     &
+     &      pvr_param(i_pvr)%field_def, pvr_data(i_pvr)%bound,          &
+     &      pvr_param(i_pvr)%field)
+      end do
+      call deallocate_imark_4_surface
+!
+      end subroutine s_find_pvr_surf_domain
 !
 !  ---------------------------------------------------------------------
 !

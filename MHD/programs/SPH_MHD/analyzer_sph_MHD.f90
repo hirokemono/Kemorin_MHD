@@ -24,7 +24,7 @@
       use m_SPH_SGS_structure
 !
       use SPH_analyzer_SGS_MHD
-      use visualizer_all
+      use t_visualizer
       use init_sph_MHD_elapsed_label
 !
       implicit none
@@ -83,7 +83,8 @@
 !        Initialize visualization
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field)
+      call init_visualize(FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, &
+     &    MHD_ctl1%viz_ctls, vizs1)
 !
       call calypso_MPI_barrier
 !
@@ -149,7 +150,7 @@
           call start_elapsed_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,             &
-     &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1)
+     &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1, vizs1)
           call end_elapsed_time(12)
         end if
 !

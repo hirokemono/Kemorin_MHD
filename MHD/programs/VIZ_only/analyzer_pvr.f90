@@ -31,8 +31,8 @@
 !
 !     read controls
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
-      call read_control_data_vizs
+      if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
+      call read_control_file_vizs
       call set_control_params_4_viz(my_rank, t_viz_ctl, viz_plt,        &
      &   mesh_file_VIZ, ucd_file_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
@@ -42,7 +42,7 @@
 !
 !  VIZ Initialization
       call PVR_initialize(femmesh_VIZ%mesh, femmesh_VIZ%group,          &
-     &    elemesh_VIZ, field_VIZ, pvr_ctls1, pvr_v)
+     &    elemesh_VIZ, field_VIZ, viz_ctl_v%fline_ctls, pvr_v)
       call calypso_MPI_barrier
 !
       end subroutine initialization

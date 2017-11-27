@@ -35,7 +35,8 @@
      &    FEM_SGS1%SGS_par, MHD_step1, FEM_model1%MHD_prop,             &
      &    FEM_model1%MHD_BC, FEM_MHD1%geofem, FEM_MHD1%ele_mesh,        &
      &    FEM_MHD1%field, SGS_MHD_wk1%ele_fld, FEM_model1%bc_FEM_IO,    &
-     &    FEM_SGS1%FEM_filters, SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1)
+     &    FEM_SGS1%FEM_filters, SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1,        &
+     &    viz_ctls_F)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
 !   matrix assembling

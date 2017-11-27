@@ -30,6 +30,7 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
+      use t_control_data_sections
 !
       implicit none
 !
@@ -54,6 +55,11 @@
         type(sph_monitor_control) :: smonitor_ctl
 !>        Structure for monitoring plave list
         type(node_monitor_control) :: nmtr_ctl
+!
+!>        Structures of setioning controls
+        type(section_controls) :: psf_ctls
+!>        Structures of isosurface controls
+        type(isosurf_controls) :: iso_ctls
       end type DNS_mhd_simulation_control
 !
 !   Top level of label
@@ -103,8 +109,6 @@
 !
       subroutine read_sph_mhd_ctl_w_psf(MHD_ctl)
 !
-      use m_control_data_sections
-!
       type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
@@ -135,7 +139,8 @@
         call read_sph_monitoring_ctl                                    &
      &     (hd_pick_sph, i_pick_sph, MHD_ctl%smonitor_ctl)
 !
-        call read_sections_control_data(psf_ctls1, iso_ctls1)
+        call read_sections_control_data                                 &
+     &     (MHD_ctl%psf_ctls, MHD_ctl%iso_ctls)
       end do
 !
       end subroutine read_sph_mhd_ctl_w_psf
@@ -182,14 +187,12 @@
 !
       subroutine bcast_sph_mhd_ctl_w_psf(MHD_ctl)
 !
-      use m_control_data_sections
-!
       type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
       call bcast_sph_mhd_ctl_data(MHD_ctl)
-      call bcast_files_4_psf_ctl(psf_ctls1)
-      call bcast_files_4_iso_ctl(iso_ctls1)
+      call bcast_files_4_psf_ctl(MHD_ctl%psf_ctls)
+      call bcast_files_4_iso_ctl(MHD_ctl%iso_ctls)
 !
       end subroutine bcast_sph_mhd_ctl_w_psf
 !

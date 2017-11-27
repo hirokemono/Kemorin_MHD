@@ -101,7 +101,7 @@
       private :: hd_ene_spec_head, hd_vol_ene_spec_head
       private :: hd_zm_sph_spec_file
       private :: hd_buo_ratio, hd_thermal_buo
-      private :: read_sph_trans_control_data, read_sph_trans_params_ctl
+      private :: read_sph_utils_control_data, read_sph_trans_params_ctl
       private :: read_sph_trans_model_ctl
 !
 ! -----------------------------------------------------------------------
@@ -120,7 +120,7 @@
       open (ctl_file_code, file = control_file_name)
 !
       call load_ctl_label_and_line
-      call read_sph_trans_control_data
+      call read_sph_utils_control_data
 !
       close(ctl_file_code)
 !
@@ -129,7 +129,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_sph_trans_control_data
+      subroutine read_sph_utils_control_data
 !
       use m_machine_parameter
       use calypso_mpi
@@ -156,7 +156,7 @@
      &     (hd_pick_sph, i_pick_sph, smonitor_u_ctl)
       end do
 !
-      end subroutine read_sph_trans_control_data
+      end subroutine read_sph_utils_control_data
 !
 ! -----------------------------------------------------------------------
 !

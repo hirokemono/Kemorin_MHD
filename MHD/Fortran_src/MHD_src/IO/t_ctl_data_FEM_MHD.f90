@@ -11,7 +11,10 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_control_4_fem_MHD(file_name, FEM_MHD_ctl)
+!!      subroutine read_control_4_fem_MHD                               &
+!!     &         (file_name, FEM_MHD_ctl, viz_ctls)
+!!        type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+!!        type(visualization_controls), intent(inout) :: viz_ctls
 !!@endverbatim
 !
       module t_ctl_data_FEM_MHD
@@ -25,6 +28,7 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
+      use t_control_data_vizs
 !
       implicit none
 !
@@ -92,10 +96,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_control_4_fem_MHD(file_name, FEM_MHD_ctl)
+      subroutine read_control_4_fem_MHD                                 &
+     &         (file_name, FEM_MHD_ctl, viz_ctls)
 !
       character(len=kchara), intent(in) :: file_name
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+      type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
       if(my_rank .eq. 0) then
@@ -103,25 +109,25 @@
         open (ctl_file_code, file = file_name, status='old' )
 !
         call load_ctl_label_and_line
-        call read_fem_mhd_control_data(FEM_MHD_ctl)
+        call read_fem_mhd_control_data(FEM_MHD_ctl, viz_ctls)
 !
         close(ctl_file_code)
       end if
 !
-      call bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
+      call bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
 !
       end subroutine read_control_4_fem_MHD
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine read_fem_mhd_control_data(FEM_MHD_ctl)
+      subroutine read_fem_mhd_control_data(FEM_MHD_ctl, viz_ctls)
 !
       use calypso_mpi
-      use m_control_data_sections
       use t_ctl_data_FEM_MHD_control
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+      type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
       if(right_begin_flag(hd_mhd_ctl) .eq. 0) return
@@ -145,7 +151,7 @@
 !
         call read_monitor_data_ctl                                      &
      &     (hd_monitor_data, i_monitor_data, FEM_MHD_ctl%nmtr_ctl)
-        call read_sections_control_data(psf_ctls1, iso_ctls1)
+        call read_viz_controls(viz_ctls)
       end do
 !
       end subroutine read_fem_mhd_control_data
@@ -153,9 +159,8 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
+      subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
 !
-      use m_control_data_sections
       use t_ctl_data_FEM_MHD_control
       use bcast_4_platform_ctl
       use bcast_4_field_ctl
@@ -163,6 +168,8 @@
       use bcast_4_sphere_ctl
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
+      type(visualization_controls), intent(inout) :: viz_ctls
+!
 !
       call bcast_ctl_data_4_platform(FEM_MHD_ctl%plt)
       call bcast_ctl_data_4_platform(FEM_MHD_ctl%org_plt)
@@ -172,8 +179,7 @@
 !
       call bcast_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
 !
-      call bcast_files_4_psf_ctl(psf_ctls1)
-      call bcast_files_4_iso_ctl(iso_ctls1)
+      call bcast_viz_controls(viz_ctls)
 !
       end subroutine bcast_fem_mhd_ctl_data
 !

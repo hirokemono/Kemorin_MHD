@@ -69,7 +69,6 @@
 !
       integer(kind = kint) function check_PVR_update(pvr_ctls, pvr)
 !
-      use m_control_data_pvrs
       use set_pvr_control
       use skip_comment_f
 !

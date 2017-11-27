@@ -19,6 +19,8 @@
       use t_FEM_SGS_structure
       use t_work_FEM_SGS_MHD
       use t_FEM_MHD_time_stepping
+      use t_control_data_vizs
+      use t_visualizer
 !
       implicit  none
 !
@@ -42,6 +44,11 @@
 !> Structure of Work area for dynamics model
       type(work_FEM_SGS_MHD), save :: SGS_MHD_wk1
 !
+!>        Structures of visualization controls
+      type(visualization_controls) :: viz_ctls_F
+!
+!>        Structures of visualization
+      type(visualize_modules), save :: vizs_F
 !
       type(FEM_MHD_time_stepping), save :: flex_MHD1
 !
