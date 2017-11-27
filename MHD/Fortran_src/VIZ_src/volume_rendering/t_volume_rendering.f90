@@ -109,9 +109,7 @@
 !
       use t_control_data_pvr_misc
       use set_pvr_control
-      use cal_pvr_modelview_mat
-      use cal_pvr_projection_mat
-      use find_selected_domain_bd
+      use find_pvr_surf_domain
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
@@ -131,7 +129,7 @@
      &    pvr_ctls, pvr%cflag_update, pvr%pvr_param, pvr%pvr_data)
 !
       call s_find_pvr_surf_domain(pvr%num_pvr, mesh, group, ele_mesh,   &
-     &    pvr_ctls, pvr%pvr_param, pvr%pvr_data)
+     &    pvr%pvr_param, pvr%pvr_data)
 !
       do i_pvr = 1, pvr%num_pvr
         call each_PVR_initialize(i_pvr, mesh, group, ele_mesh,          &

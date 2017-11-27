@@ -4,12 +4,10 @@
 !        programmed by H.Matsui on Aug., 2011
 !
 !!      subroutine s_find_pvr_surf_domain                               &
-!!     &         (num_pvr, mesh, group, ele_mesh, pvr_ctls,             &
-!!     &          pvr_param, pvr_data)
+!!     &         (num_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
-!!        type(volume_rendering_controls), intent(inout) :: pvr_ctls
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
 !!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !!
@@ -42,20 +40,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_find_pvr_surf_domain                                 &
-     &         (num_pvr, mesh, group, ele_mesh, pvr_ctls,               &
-     &          pvr_param, pvr_data)
+     &         (num_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
 !
       use t_mesh_data
-      use t_control_data_pvrs
-      use t_control_data_pvr_misc
       use t_rendering_vr_image
+      use find_selected_domain_bd
 !
       integer(kind = kint), intent(in) :: num_pvr
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(element_geometry), intent(in) :: ele_mesh
 !
-      type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
       type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !

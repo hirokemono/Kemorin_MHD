@@ -3,7 +3,6 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      integer(kind = kint), function check_PVR_update(pvr_ctls)
 !!      subroutine each_PVR_initialize                                  &
 !!     &         (i_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
 !!      subroutine each_PVR_rendering                                   &

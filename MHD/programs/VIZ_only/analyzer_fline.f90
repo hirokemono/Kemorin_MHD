@@ -10,9 +10,11 @@
       use m_visualization
 !
       use FEM_analyzer_viz_fline
-      use fieldline
+      use t_fieldline
 !
       implicit none
+!
+      type(fieldline_module), save :: fline_v
 !
 !  ---------------------------------------------------------------------
 !
@@ -42,8 +44,8 @@
       call FEM_initialize_fline(ucd_file_VIZ)
 !
 !  VIZ Initialization
-      call FLINE_initialize                                             &
-     &   (femmesh_VIZ%mesh, femmesh_VIZ%group, field_VIZ, fline_ctls1)
+      call FLINE_initialize(femmesh_VIZ%mesh, femmesh_VIZ%group,        &
+     &    field_VIZ, fline_ctls1, fline_v)
 !
       end subroutine initialize_fline
 !
@@ -64,7 +66,7 @@
 !  Generate field lines
         call FLINE_visualize( viz_step_V%FLINE_t%istep_file,            &
      &      femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ,           &
-     &      ele_4_nod_VIZ, field_VIZ)
+     &      ele_4_nod_VIZ, field_VIZ, fline_v)
       end do
 !
       end subroutine analyze

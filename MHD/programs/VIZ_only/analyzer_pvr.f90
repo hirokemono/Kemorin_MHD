@@ -10,9 +10,11 @@
       use m_visualization
 !
       use FEM_analyzer_viz_pvr
-      use volume_rendering_only
+      use t_volume_rendering
 !
       implicit none
+!
+      type(volume_rendering_module), save :: pvr_v
 !
 !  ---------------------------------------------------------------------
 !
@@ -39,8 +41,8 @@
       call FEM_initialize_pvr
 !
 !  VIZ Initialization
-      call init_visualize_pvr_only(femmesh_VIZ%mesh, femmesh_VIZ%group, &
-     &    elemesh_VIZ, field_VIZ)
+      call PVR_initialize(femmesh_VIZ%mesh, femmesh_VIZ%group,          &
+     &    elemesh_VIZ, field_VIZ, pvr_ctls1, pvr_v)
       call calypso_MPI_barrier
 !
       end subroutine initialization
@@ -61,8 +63,9 @@
         call FEM_analyze_pvr(i_step, t_VIZ, viz_step_V%PVR_t)
 !
 !  Rendering
-        call visualize_pvr_only(viz_step_V%PVR_t%istep_file,            &
-     &      femmesh_VIZ, elemesh_VIZ, jacobians_VIZ, field_VIZ)
+        call PVR_visualize(viz_step_V%PVR_t%istep_file,                 &
+     &      femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ,           &
+     &      jacobians_VIZ, field_VIZ, pvr_v)
       end do
 !
       end subroutine analyze

@@ -29,10 +29,12 @@
       use t_next_node_ele_4_node
       use t_jacobians
       use t_volume_rendering
+      use t_fieldline
 !
       implicit  none
 !
       type(volume_rendering_module), save :: pvr1
+      type(fieldline_module), save :: fline1
 !
 !  ---------------------------------------------------------------------
 !
@@ -46,7 +48,6 @@
       use m_control_data_sections
       use m_control_data_pvrs
       use m_control_data_flines
-      use fieldline
 !
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
@@ -74,7 +75,7 @@
 !
       call start_elapsed_time(63)
       call FLINE_initialize                                             &
-     &   (femmesh%mesh, femmesh%group, nod_fld, fline_ctls1)
+     &   (femmesh%mesh, femmesh%group, nod_fld, fline_ctls1, fline1)
       call end_elapsed_time(63)
 !
       end subroutine init_visualize
@@ -85,7 +86,6 @@
      &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacs)
 !
       use m_cross_section
-      use fieldline
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
@@ -116,8 +116,9 @@
       call end_elapsed_time(67)
 !
       call start_elapsed_time(68)
-      call FLINE_visualize(viz_step%FLINE_t%istep_file,                &
-     &   femmesh%mesh, femmesh%group, ele_mesh, ele_4_nod, nod_fld)
+      call FLINE_visualize(viz_step%FLINE_t%istep_file,                 &
+     &    femmesh%mesh, femmesh%group, ele_mesh, ele_4_nod, nod_fld,    &
+     &    fline1)
       call calypso_MPI_barrier
       call end_elapsed_time(68)
 !

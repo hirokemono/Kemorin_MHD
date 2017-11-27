@@ -185,7 +185,6 @@
       subroutine evolution_sph_snap_badboy
 !
       use m_control_data_pvrs
-      use volume_rendering_only
       use t_volume_rendering
       use FEM_analyzer_sph_MHD
       use FEM_analyzer_sph_SGS_MHD
@@ -244,7 +243,7 @@
 !*  ----------- Visualization --------------
 !*
       do
-        visval = check_PVR_update(pvr_ctls1)
+        visval = check_PVR_update(pvr_ctls1, pvr1)
         call calypso_mpi_barrier
 !
         if(visval .eq. IFLAG_TERMINATE) then
@@ -258,11 +257,13 @@
           end if
 !
           call start_elapsed_time(12)
-          call init_visualize_pvr_only                                  &
-     &       (FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field)
-          call visualize_pvr_only(MHD_step1%viz_step%PVR_t%istep_file,  &
-     &        FEM_d1%geofem, FEM_d1%ele_mesh, jacobians_VIZ1,           &
-     &        FEM_d1%field)
+          call PVR_initialize                                           &
+     &       (FEM_d1%geofem%mesh, FEM_d1%geofem%group, FEM_d1%ele_mesh, &
+     &        FEM_d1%field, pvr_ctls1, pvr1)
+          call calypso_MPI_barrier
+          call PVR_visualize(MHD_step1%viz_step%PVR_t%istep_file,       &
+     &        FEM_d1%geofem%mesh, FEM_d1%geofem%group, FEM_d1%ele_mesh, &
+     &        jacobians_VIZ1, FEM_d1%field, pvr1)
           call deallocate_pvr_data(pvr1)
           call end_elapsed_time(12)
         end if
