@@ -101,7 +101,7 @@
       integer(kind = kint), intent(in) :: numele, numedge
 !
       integer(kind=kint), intent(in) :: num_case_tbl
-      type(psf_each_case), intent(in) :: psf_case_tbl(num_case_tbl)
+      type(psf_each_case), intent(in) :: psf_case_tbl(0:num_case_tbl)
       type(sect_search_list), intent(in) :: ele_search
 !
       integer(kind = kint), intent(in)                                  &
@@ -177,7 +177,7 @@
      &              :: iedge_4_ele(numele,nedge_4_ele)
 !
       integer(kind=kint), intent(in) :: num_case_tbl
-      type(psf_each_case), intent(in) :: psf_case_tbl(num_case_tbl)
+      type(psf_each_case), intent(in) :: psf_case_tbl(0:num_case_tbl)
       type(sect_search_list), intent(in) :: ele_search
 !
       integer(kind = kint_gl), intent(in) :: id_n_on_e(numedge)

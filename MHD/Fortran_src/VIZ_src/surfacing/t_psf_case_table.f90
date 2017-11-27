@@ -298,7 +298,8 @@
      &        :: iedge_4_patch_x(num_triangle,num_patch_n,nkind_etype)
       integer(kind=kint), intent(in) :: num_case_tbl
 !
-      type(psf_each_case), intent(inout) :: psf_case_tbl(num_case_tbl)
+      type(psf_each_case), intent(inout)                                &
+     &                     :: psf_case_tbl(0:num_case_tbl)
 !
       integer(kind = kint) :: i, id, j ,k
 !
@@ -327,7 +328,8 @@
 !
       integer(kind=kint), intent(in) :: num_case_tbl
 !
-      type(psf_each_case), intent(inout) :: psf_case_tbl(num_case_tbl)
+      type(psf_each_case), intent(inout)                                &
+     &                     :: psf_case_tbl(0:num_case_tbl)
 !
 !
       integer(kind = kint) :: i, id
