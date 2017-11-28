@@ -66,32 +66,30 @@
 !
       call start_elapsed_time(60)
       call SECTIONING_initialize                                        &
-     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld,               &
-     &    viz_ctls%psf_ctls, vizs%psf)
+     &   (femmesh, ele_mesh, nod_fld, viz_ctls%psf_ctls, vizs%psf)
       call end_elapsed_time(60)
 !
       call start_elapsed_time(61)
       call ISOSURF_initialize                                           &
-     &   (femmesh%mesh, femmesh%group, ele_mesh, nod_fld,               &
-     &    viz_ctls%iso_ctls, vizs%iso)
+     &   (femmesh, ele_mesh, nod_fld, viz_ctls%iso_ctls, vizs%iso)
       call end_elapsed_time(61)
 !
       call start_elapsed_time(62)
-      call PVR_initialize(femmesh%mesh, femmesh%group, ele_mesh,        &
-     &    nod_fld, viz_ctls%pvr_ctls, vizs%pvr)
+      call PVR_initialize                                               &
+     &   (femmesh, ele_mesh, nod_fld, viz_ctls%pvr_ctls, vizs%pvr)
       call calypso_MPI_barrier
       call end_elapsed_time(62)
 !
       call start_elapsed_time(63)
-      call FLINE_initialize(femmesh%mesh, femmesh%group, nod_fld,       &
-     &    viz_ctls%fline_ctls, vizs%fline)
+      call FLINE_initialize                                             &
+     &   (femmesh, nod_fld, viz_ctls%fline_ctls, vizs%fline)
       call end_elapsed_time(63)
 !
       end subroutine init_visualize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_all(viz_step, time_d,                       &
+      subroutine visualize_all(viz_step, time_d,                        &
      &          femmesh, ele_mesh, nod_fld, ele_4_nod, jacs, vizs)
 !
       type(time_data), intent(in) :: time_d
@@ -114,21 +112,19 @@
 !
       call start_elapsed_time(66)
       call ISOSURF_visualize(viz_step%ISO_t%istep_file, time_d,         &
-     &    femmesh%mesh, ele_mesh, nod_fld, vizs%iso)
+     &    femmesh, ele_mesh, nod_fld, vizs%iso)
       call calypso_MPI_barrier
       call end_elapsed_time(66)
 !
       call start_elapsed_time(67)
       call PVR_visualize(viz_step%PVR_t%istep_file,                     &
-     &    femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,         &
-     &    vizs%pvr)
+     &    femmesh, ele_mesh, jacs, nod_fld, vizs%pvr)
       call calypso_MPI_barrier
       call end_elapsed_time(67)
 !
       call start_elapsed_time(68)
       call FLINE_visualize(viz_step%FLINE_t%istep_file,                 &
-     &    femmesh%mesh, femmesh%group, ele_mesh, ele_4_nod, nod_fld,    &
-     &    vizs%fline)
+     &    femmesh, ele_mesh, ele_4_nod, nod_fld, vizs%fline)
       call calypso_MPI_barrier
       call end_elapsed_time(68)
 !

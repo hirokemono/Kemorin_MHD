@@ -4,12 +4,11 @@
 !      Written by H. Matsui on July, 2006
 !
 !!      integer(kind = kint), function check_PVR_update(pvr_ctls, pvr)
-!!      subroutine PVR_initialize(mesh, group, ele_mesh, nod_fld, pvr)
+!!      subroutine PVR_initialize(femmesh, ele_mesh, nod_fld, pvr)
 !!      subroutine PVR_visualize                                        &
-!!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld, pvr)
+!!     &         (istep_pvr, femmesh, ele_mesh, jacs, nod_fld, pvr)
 !!      subroutine deallocate_pvr_data(pvr)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) :: group
+!!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -104,14 +103,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine PVR_initialize                                         &
-     &         (mesh, group, ele_mesh, nod_fld, pvr_ctls, pvr)
+     &         (femmesh, ele_mesh, nod_fld, pvr_ctls, pvr)
 !
       use t_control_data_pvr_misc
       use set_pvr_control
       use find_pvr_surf_domain
 !
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
+      type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
@@ -124,14 +122,17 @@
 !
       call allocate_components_4_pvr(pvr_ctls, pvr)
 !
-      call read_set_pvr_controls(pvr%num_pvr, mesh, group, nod_fld,     &
+      call read_set_pvr_controls                                        &
+     &   (pvr%num_pvr, femmesh%mesh, femmesh%group, nod_fld,            &
      &    pvr_ctls, pvr%cflag_update, pvr%pvr_param, pvr%pvr_data)
 !
-      call s_find_pvr_surf_domain(pvr%num_pvr, mesh, group, ele_mesh,   &
+      call s_find_pvr_surf_domain                                       &
+     &   (pvr%num_pvr, femmesh%mesh, femmesh%group, ele_mesh,           &
      &    pvr%pvr_param, pvr%pvr_data)
 !
       do i_pvr = 1, pvr%num_pvr
-        call each_PVR_initialize(i_pvr, mesh, group, ele_mesh,          &
+        call each_PVR_initialize                                        &
+     &     (i_pvr, femmesh%mesh, femmesh%group, ele_mesh,               &
      &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))
       end do
 !
@@ -143,14 +144,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine PVR_visualize                                          &
-     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld, pvr)
+     &         (istep_pvr, femmesh, ele_mesh, jacs, nod_fld, pvr)
 !
       use cal_pvr_modelview_mat
 !
       integer(kind = kint), intent(in) :: istep_pvr
 !
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
+      type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
@@ -163,8 +163,8 @@
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
 !
       do i_pvr = 1, pvr%num_pvr
-        call each_PVR_rendering                                         &
-     &     (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,            &
+        call each_PVR_rendering(istep_pvr,                              &
+     &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
      &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))
       end do
 !

@@ -6,15 +6,18 @@
 !!      subroutine alloc_coefficients_4_psf(psf_def)
 !!      subroutine dealloc_coefficients_4_psf(psf_def)
 !!      subroutine count_control_4_psf                                  &
-!!     &         (psf_c, num_mat, mat_name, num_nod_phys, phys_nod_name,&
+!!     &         (psf_c, ele_grp, num_nod_phys, phys_nod_name,          &
 !!     &          psf_fld, psf_param, psf_file_IO, ierr)
 !!        type(psf_ctl), intent(in) :: psf_c
+!!        type(group_data), intent(in) :: ele_grp
 !!        type(phys_data), intent(inout) :: psf_fld
 !!        type(psf_parameters), intent(inout) :: psf_param
 !!        type(field_IO_params), intent(inout) :: psf_file_IO
-!!      subroutine set_control_4_psf(psf_c, num_mat, mat_name,          &
-!!     &          num_surf, surf_name, num_nod_phys, phys_nod_name,     &
+!!      subroutine set_control_4_psf                                    &
+!!     &         (psf_c, ele_grp, sf_grp, num_nod_phys, phys_nod_name,  &
 !!     &          psf_fld, psf_param, psf_def, ierr)
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(psf_ctl), intent(inout) :: psf_c
 !!        type(phys_data), intent(inout) :: psf_fld
 !!        type(psf_parameters), intent(inout) :: psf_param
@@ -71,12 +74,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_control_4_psf                                    &
-     &         (psf_c, num_mat, mat_name, num_nod_phys, phys_nod_name,  &
+     &         (psf_c, ele_grp, num_nod_phys, phys_nod_name,            &
      &          psf_fld, psf_param, psf_file_IO, ierr)
 !
       use m_error_IDs
       use m_file_format_switch
       use t_control_data_4_psf
+      use t_group_data
       use t_phys_data
       use t_psf_patch_data
       use t_file_IO_parameter
@@ -84,8 +88,7 @@
       use set_area_4_viz
       use set_field_comp_for_viz
 !
-      integer(kind = kint), intent(in) :: num_mat
-      character(len=kchara), intent(in) :: mat_name(num_mat)
+      type(group_data), intent(in) :: ele_grp
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -106,7 +109,7 @@
      &   psf_c%psf_out_field_ctl%num, psf_c%psf_out_field_ctl%c1_tbl,   &
      &   psf_fld%num_phys, psf_fld%num_phys_viz)
 !
-      call count_area_4_viz(num_mat, mat_name,                          &
+      call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    psf_c%psf_area_ctl%num, psf_c%psf_area_ctl%c_tbl,             &
      &    psf_param%nele_grp_area)
 !
@@ -120,12 +123,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_psf(psf_c, num_mat, mat_name,            &
-     &          num_surf, surf_name, num_nod_phys, phys_nod_name,       &
+      subroutine set_control_4_psf                                      &
+     &         (psf_c, ele_grp, sf_grp, num_nod_phys, phys_nod_name,    &
      &          psf_fld, psf_param, psf_def, ierr)
 !
       use m_error_IDs
       use t_control_data_4_psf
+      use t_group_data
       use t_phys_data
       use t_psf_patch_data
       use set_cross_section_coefs
@@ -133,11 +137,8 @@
       use set_coefs_of_sections
       use set_field_comp_for_viz
 !
-      integer(kind = kint), intent(in) :: num_mat
-      character(len=kchara), intent(in) :: mat_name(num_mat)
-!
-      integer(kind = kint), intent(in) :: num_surf
-      character(len=kchara), intent(in) :: surf_name(num_surf)
+      type(group_data), intent(in) :: ele_grp
+      type(surface_group_data), intent(in) :: sf_grp
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -157,7 +158,7 @@
       tmpchara = psf_c%section_method_ctl%charavalue
       if(ierr .gt. 0 .and. cmp_no_case(tmpchara, cflag_grp)) then
         psf_def%id_section_method = 0
-        call set_surf_grp_id_4_viz(num_surf, surf_name,                 &
+        call set_surf_grp_id_4_viz(sf_grp%num_grp, sf_grp%grp_name,     &
      &      psf_c%psf_group_name_ctl%charavalue,                        &
      &      psf_def%id_psf_group)
       else if(ierr .gt. 0) then
@@ -177,7 +178,7 @@
       end if
 !
       call alloc_area_group_psf(psf_param)
-      call s_set_area_4_viz(num_mat, mat_name,                          &
+      call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    psf_c%psf_area_ctl%num, psf_c%psf_area_ctl%c_tbl,             &
      &    psf_param%nele_grp_area, psf_param%id_ele_grp_area)
 !

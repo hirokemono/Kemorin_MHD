@@ -6,7 +6,8 @@
 !!      subroutine alloc_control_params_fline(num_fline, fline_prm)
 !!      subroutine alloc_fline_starts_ctl(num_fline, fline_prm)
 !!      subroutine alloc_iflag_fline_used_ele                           &
-!!     &         (num_fline, numele, fline_prm)
+!!     &         (num_fline, ele, fline_prm)
+!!        type(element_data), intent(in) :: ele
 !!      subroutine dealloc_control_params_fline(fline_prm)
 !!      subroutine dealloc_fline_starts_ctl(fline_prm)
 !!      subroutine dealloc_iflag_fline_used_ele(fline_prm)
@@ -150,13 +151,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine alloc_iflag_fline_used_ele                             &
-     &         (num_fline, numele, fline_prm)
+     &         (num_fline, ele, fline_prm)
 !
-      integer(kind = kint), intent(in) :: num_fline, numele
+      use t_geometry_data
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(element_data), intent(in) :: ele
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
 !
-      allocate(fline_prm%iflag_fline_used_ele(numele,num_fline))
+      allocate(fline_prm%iflag_fline_used_ele(ele%numele,num_fline))
       fline_prm%iflag_fline_used_ele = 0
 !
       end subroutine alloc_iflag_fline_used_ele

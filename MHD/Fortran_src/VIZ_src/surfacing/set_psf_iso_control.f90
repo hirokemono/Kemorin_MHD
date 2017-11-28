@@ -10,18 +10,17 @@
 !!@verbatim
 !!      subroutine dealloc_psf_field_name(num_psf, psf_mesh)
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
-!!      subroutine set_psf_control(num_psf, ele_grp, sf_grp, nod_fld,   &
+!!      subroutine set_psf_control(num_psf, group, nod_fld,             &
 !!     &          psf_ctls, psf_param, psf_def, psf_mesh, psf_file_IO)
-!!        type(group_data), intent(in) :: ele_grp
-!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(section_controls), intent(inout) :: psf_ctls
 !!        type(psf_parameters), intent(inout) :: psf_param(num_psf)
 !!        type(section_define), intent(inout) :: psf_def(num_psf)
 !!        type(psf_local_data), intent(inout) :: psf_mesh(num_psf)
-!!      subroutine set_iso_control(num_iso, ele_grp, nod_fld,           &
+!!      subroutine set_iso_control(num_iso, group, nod_fld,             &
 !!     &          iso_ctls, iso_param, iso_def, iso_mesh, iso_file_IO)
-!!        type(group_data), intent(in) :: ele_grp
+!!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(isosurf_controls), intent(inout) :: iso_ctls
 !!        type(psf_parameters), intent(inout) :: iso_param(num_iso)
@@ -80,13 +79,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_psf_control(num_psf, ele_grp, sf_grp, nod_fld,     &
+      subroutine set_psf_control(num_psf, group, nod_fld,               &
      &          psf_ctls, psf_param, psf_def, psf_mesh, psf_file_IO)
 !
       use calypso_mpi
       use m_read_control_elements
       use t_control_data_sections
-      use t_group_data
+      use t_mesh_data
       use t_phys_data
       use t_control_data_4_psf
       use t_psf_patch_data
@@ -96,8 +95,7 @@
       use set_field_comp_for_viz
 !
       integer(kind= kint), intent(in) :: num_psf
-      type(group_data), intent(in) :: ele_grp
-      type(surface_group_data), intent(in) :: sf_grp
+      type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
 !
       type(section_controls), intent(inout) :: psf_ctls
@@ -117,17 +115,15 @@
 !
       do i = 1, num_psf
         call count_control_4_psf(psf_ctls%psf_ctl_struct(i),            &
-     &      ele_grp%num_grp, ele_grp%grp_name,                          &
-     &      nod_fld%num_phys, nod_fld%phys_name,                        &
+     &      group%ele_grp, nod_fld%num_phys, nod_fld%phys_name,         &
      &      psf_mesh(i)%field, psf_param(i), psf_file_IO(i), ierr)
         if(ierr.gt.0) call calypso_MPI_abort(ierr, e_message)
       end do
 !
       do i = 1, num_psf
         call alloc_phys_name_type(psf_mesh(i)%field)
-        call set_control_4_psf(psf_ctls%psf_ctl_struct(i),              &
-     &      ele_grp%num_grp, ele_grp%grp_name,                          &
-     &      sf_grp%num_grp, sf_grp%grp_name,                            &
+        call set_control_4_psf                                          &
+     &     (psf_ctls%psf_ctl_struct(i), group%ele_grp, group%surf_grp,  &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
      &      psf_mesh(i)%field,  psf_param(i), psf_def(i), ierr)
         if(ierr.gt.0) call calypso_MPI_abort(ierr, e_message)
@@ -143,13 +139,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_iso_control(num_iso, ele_grp, nod_fld,             &
+      subroutine set_iso_control(num_iso, group, nod_fld,               &
      &          iso_ctls, iso_param, iso_def, iso_mesh, iso_file_IO)
 !
       use calypso_mpi
       use m_read_control_elements
       use t_control_data_sections
       use t_control_params_4_iso
+      use t_mesh_data
       use t_group_data
       use t_phys_data
       use t_control_data_4_iso
@@ -159,7 +156,7 @@
       use set_field_comp_for_viz
 !
       integer(kind= kint), intent(in) :: num_iso
-      type(group_data), intent(in) :: ele_grp
+      type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
 !
       type(isosurf_controls), intent(inout) :: iso_ctls
@@ -179,8 +176,7 @@
 !
       do i = 1, num_iso
         call count_control_4_iso(iso_ctls%iso_ctl_struct(i),            &
-     &      ele_grp%num_grp, ele_grp%grp_name,                          &
-     &      nod_fld%num_phys, nod_fld%phys_name,                        &
+     &      group%ele_grp, nod_fld%num_phys, nod_fld%phys_name,         &
      &      iso_mesh(i)%field, iso_param(i), iso_def(i),                &
      &      iso_file_IO(i))
       end do
@@ -188,8 +184,7 @@
       do i = 1, num_iso
         call alloc_phys_name_type(iso_mesh(i)%field)
         call set_control_4_iso(iso_ctls%iso_ctl_struct(i),              &
-     &      ele_grp%num_grp, ele_grp%grp_name,                          &
-     &      nod_fld%num_phys, nod_fld%phys_name,                        &
+     &      group%ele_grp, nod_fld%num_phys, nod_fld%phys_name,         &
      &      iso_mesh(i)%field, iso_param(i), iso_def(i))
         call deallocate_cont_dat_4_iso(iso_ctls%iso_ctl_struct(i))
 !

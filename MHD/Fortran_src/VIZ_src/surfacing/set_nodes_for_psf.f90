@@ -141,7 +141,7 @@
 !
 !
       do i = 1, num_iso
-        call alloc_nnod_psf(np_smp, edge%numedge, iso_list(i))
+        call alloc_nnod_psf(np_smp, edge, iso_list(i))
         call count_node_on_edge_4_psf(edge%numedge, edge%nnod_4_edge,   &
      &      edge%ie_edge, edge%interior_edge,                           &
      &      iso_search(i)%edge_list, iso_list(i))

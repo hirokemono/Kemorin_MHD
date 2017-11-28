@@ -113,9 +113,9 @@
       do i_psf = 1, num_psf
         if (iflag_debug.eq.1) write(*,*) 'alloc_nnod_psf'
         call alloc_nnod_psf                                             &
-     &     (np_smp, ele_mesh%edge%numedge, psf_list(i_psf))
+     &     (np_smp, ele_mesh%edge, psf_list(i_psf))
         call alloc_nnod_grp_psf                                         &
-     &     (np_smp, mesh%node%numnod, psf_grp_list(i_psf))
+     &     (np_smp, mesh%node, psf_grp_list(i_psf))
       end do
 !
       if (iflag_debug.eq.1)  write(*,*) 'count_nodes_4_psf'
