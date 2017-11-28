@@ -48,7 +48,7 @@
 !
       type sectioning_module
 !>        Number of sections
-        integer(kind = kint) :: num_psf
+        integer(kind = kint) :: num_psf = 0
 !
 !>        Structure of case table for isosurface
         type(psf_cases) :: psf_case_tbls
@@ -110,12 +110,13 @@
       integer(kind = kint) :: i_psf
 !
 !
-      if(psf_ctls%num_psf_ctl .le. 0) return
+      psf%num_psf = psf_ctls%num_psf_ctl
+      if(psf%num_psf .le. 0) return
 !
       call init_psf_case_tables(psf%psf_case_tbls)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_psf_field_type'
-      call alloc_psf_field_type(psf_ctls, psf)
+      call alloc_psf_field_type(psf)
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_psf_control'
@@ -195,16 +196,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_psf_field_type(psf_ctls, psf)
+      subroutine alloc_psf_field_type(psf)
 !
       use m_field_file_format
 !
-      type(section_controls), intent(in) :: psf_ctls
       type(sectioning_module), intent(inout) :: psf
       integer(kind = kint) :: i_psf
 !
-!
-      psf%num_psf = psf_ctls%num_psf_ctl
 !
       allocate(psf%psf_mesh(psf%num_psf))
       allocate(psf%psf_list(psf%num_psf))

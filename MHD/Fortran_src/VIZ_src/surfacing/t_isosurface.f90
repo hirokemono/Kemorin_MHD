@@ -103,11 +103,12 @@
       integer(kind = kint) :: i_iso
 !
 !
-      if (iso_ctls%num_iso_ctl .le. 0) return
+      iso%num_iso = iso_ctls%num_iso_ctl
+      if(iso%num_iso .le. 0) return
 !
       call init_psf_case_tables(iso%iso_case_tbls)
 !
-      call alloc_iso_field_type(iso_ctls, iso)
+      call alloc_iso_field_type(iso)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
       call set_iso_control                                              &
@@ -203,15 +204,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_iso_field_type(iso_ctls, iso)
+      subroutine alloc_iso_field_type(iso)
 !
       use m_field_file_format
 !
-      type(isosurf_controls), intent(in) :: iso_ctls
       type(isosurface_module), intent(inout) :: iso
 !
-!
-      iso%num_iso = iso_ctls%num_iso_ctl
 !
       allocate(iso%iso_mesh(iso%num_iso))
       allocate(iso%iso_list(iso%num_iso))

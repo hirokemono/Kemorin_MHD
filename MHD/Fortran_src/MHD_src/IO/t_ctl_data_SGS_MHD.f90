@@ -27,6 +27,7 @@
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
       use t_control_data_vizs
+      use t_control_data_zm_vizs
 !
       implicit none
 !
@@ -56,6 +57,8 @@
 !
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctls
+!>        Structures of zonal mean controls
+        type(sph_zonal_means_controls) :: zm_ctls
       end type sph_sgs_mhd_control
 !
 !   Top level of label
@@ -164,6 +167,8 @@
      &     (hd_pick_sph, i_pick_sph, MHD_ctl%smonitor_ctl)
 !
         call read_viz_controls(MHD_ctl%viz_ctls)
+!
+        call read_zonal_mean_control(MHD_ctl%zm_ctls)
       end do
 !
       end subroutine read_sph_mhd_control_data
@@ -182,6 +187,7 @@
       call bcast_ctl_data_4_platform(MHD_ctl%new_plt)
 !
       call bcast_viz_controls(MHD_ctl%viz_ctls)
+      call bcast_zonal_mean_control(MHD_ctl%zm_ctls)
 !
       end subroutine bcast_sph_mhd_control_data
 !

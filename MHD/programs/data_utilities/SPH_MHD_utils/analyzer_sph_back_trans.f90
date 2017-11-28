@@ -23,9 +23,10 @@
       use m_SPH_SGS_structure
       use m_jacobians_VIZ
       use t_step_parameter
+      use t_visualizer
+      use t_SPH_MHD_zonal_mean_viz
 !
       use SPH_analyzer_back_trans
-      use t_visualizer
 !
       implicit none
 !
@@ -82,6 +83,9 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, &
      &    MHD_ctl1%viz_ctls, vizs1)
+      call init_zonal_mean_sections                                     &
+     &   (FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,                 &
+     &    MHD_ctl1%zm_ctls, zmeans1)
 !
       call calypso_MPI_barrier
       call end_elapsed_time(2)
@@ -94,8 +98,8 @@
       subroutine evolution_sph_back_trans
 !
       use copy_all_fields_4_sph_trans
-!
       use FEM_analyzer_sph_MHD
+      use SGS_MHD_zonal_mean_viz
 !
       integer(kind = kint) :: visval, iflag
 !
@@ -143,6 +147,13 @@
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,             &
      &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1, vizs1)
+!*
+!*  ----------- Zonal means --------------
+!*
+          call SGS_MHD_zmean_sections                                   &
+     &       (MHD_step1%viz_step, MHD_step1%time_d, SPH_SGS1%SGS_par,   &
+     &        SPH_MHD1%sph, FEM_d1%geofem, FEM_d1%ele_mesh,             &
+     &        FEM_d1%iphys, SPH_WK1%trns_WK, FEM_d1%field, zmeans1)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)

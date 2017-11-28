@@ -118,9 +118,10 @@
       integer(kind = kint) :: i_pvr
 !
 !
-      if(pvr_ctls%num_pvr_ctl .le. 0) return
+      pvr%num_pvr = pvr_ctls%num_pvr_ctl
+      if(pvr%num_pvr .le. 0) return
 !
-      call allocate_components_4_pvr(pvr_ctls, pvr)
+      call allocate_components_4_pvr(pvr)
 !
       call read_set_pvr_controls                                        &
      &   (pvr%num_pvr, femmesh%mesh, femmesh%group, nod_fld,            &
@@ -173,13 +174,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_components_4_pvr(pvr_ctls, pvr)
+      subroutine allocate_components_4_pvr(pvr)
 !
-      type(volume_rendering_controls), intent(in) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
 !
 !
-      pvr%num_pvr = pvr_ctls%num_pvr_ctl
       allocate(pvr%pvr_param(pvr%num_pvr))
       allocate(pvr%pvr_data(pvr%num_pvr))
 !

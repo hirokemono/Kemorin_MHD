@@ -136,7 +136,7 @@
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      call zonal_mean_to_FEM_bridge_MHD                                 &
+      call zonal_RMS_to_FEM_bridge_MHD                                  &
      &   (sph%sph_params, sph%sph_rtp, WK, geofem%mesh, iphys, nod_fld)
 !
 !

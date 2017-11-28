@@ -31,6 +31,7 @@
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
       use t_control_data_sections
+      use t_control_data_zm_vizs
 !
       implicit none
 !
@@ -60,6 +61,9 @@
         type(section_controls) :: psf_ctls
 !>        Structures of isosurface controls
         type(isosurf_controls) :: iso_ctls
+!
+!>        Structures of zonal mean controls
+        type(sph_zonal_means_controls) :: zm_ctls
       end type DNS_mhd_simulation_control
 !
 !   Top level of label
@@ -141,6 +145,8 @@
 !
         call read_sections_control_data                                 &
      &     (MHD_ctl%psf_ctls, MHD_ctl%iso_ctls)
+!
+        call read_zonal_mean_control(MHD_ctl%zm_ctls)
       end do
 !
       end subroutine read_sph_mhd_ctl_w_psf
@@ -193,6 +199,7 @@
       call bcast_sph_mhd_ctl_data(MHD_ctl)
       call bcast_files_4_psf_ctl(MHD_ctl%psf_ctls)
       call bcast_files_4_iso_ctl(MHD_ctl%iso_ctls)
+      call bcast_zonal_mean_control(MHD_ctl%zm_ctls)
 !
       end subroutine bcast_sph_mhd_ctl_w_psf
 !

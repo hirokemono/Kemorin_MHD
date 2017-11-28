@@ -22,6 +22,7 @@
       use m_work_time
       use t_step_parameter
       use t_viz_sections
+      use t_SPH_MHD_zonal_mean_viz
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap_w_psf
@@ -83,6 +84,10 @@
       call init_visualize_surface                                       &
      &   (FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,                 &
      &    DNS_MHD_ctl1%psf_ctls, DNS_MHD_ctl1%iso_ctls, viz_psfs1)
+!
+      call init_zonal_mean_sections                                     &
+     &   (FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field,                 &
+     &    DNS_MHD_ctl1%zm_ctls, zmeans1)
 !
       call calypso_MPI_barrier
       call end_elapsed_time(2)
@@ -146,6 +151,13 @@
           call start_elapsed_time(12)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
      &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, viz_psfs1)
+!*
+!*  ----------- Zonal means --------------
+!*
+          call SPH_MHD_zmean_sections                                   &
+     &       (MHD_step1%viz_step, MHD_step1%time_d, SPH_MHD1%sph,       &
+     &        FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%iphys,             &
+     &        SPH_WK1%trns_WK, FEM_d1%field, zmeans1)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)
