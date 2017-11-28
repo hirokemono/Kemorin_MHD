@@ -9,9 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine SECTIONING_initialize                                &
-!!     &         (mesh, group, ele_mesh, nod_fld, psf_ctls, psf)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) ::   group
+!!     &         (femmesh, ele_mesh, nod_fld, psf_ctls, psf)
+!!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!      subroutine SECTIONING_visualize                                 &
@@ -89,7 +88,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine SECTIONING_initialize                                  &
-     &         (mesh, group, ele_mesh, nod_fld, psf_ctls, psf)
+     &         (femmesh, ele_mesh, nod_fld, psf_ctls, psf)
 !
       use m_geometry_constants
 !
@@ -101,9 +100,8 @@
       use set_fields_for_psf
       use output_4_psf
 !
-      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
-      type(mesh_groups), intent(in) ::   group
       type(phys_data), intent(in) :: nod_fld
 !
       type(section_controls), intent(inout) :: psf_ctls
@@ -121,16 +119,15 @@
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_psf_control'
-      call set_psf_control                                              &
-     &   (psf%num_psf, group%ele_grp, group%surf_grp, nod_fld,          &
+      call set_psf_control(psf%num_psf, femmesh%group, nod_fld,         &
      &    psf_ctls, psf%psf_param, psf%psf_def,                         &
      &    psf%psf_mesh, psf%psf_file_IO)
 !
       call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
-      call set_search_mesh_list_4_psf(psf%num_psf,                      &
-     &    mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,            &
-     &    group%ele_grp, psf%psf_param, psf%psf_search)
+      call set_search_mesh_list_4_psf                                   &
+     &   (psf%num_psf, femmesh%mesh, ele_mesh, femmesh%group,           &
+     &    psf%psf_param, psf%psf_search)
 !
 !
       do i_psf = 1, psf%num_psf
@@ -138,16 +135,16 @@
         call allocate_ele_param_smp_type(psf%psf_mesh(i_psf)%patch)
 !
         call alloc_ref_field_4_psf                                      &
-     &     (mesh%node%numnod, psf%psf_list(i_psf))
+     &     (femmesh%mesh%node, psf%psf_list(i_psf))
       end do
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_crossections'
       call set_const_4_crossections                                     &
-     &   (psf%num_psf, psf%psf_def, mesh%node, psf%psf_list)
+     &   (psf%num_psf, psf%psf_def, femmesh%mesh%node, psf%psf_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
       call set_node_and_patch_psf                                       &
-     &   (psf%num_psf, mesh, ele_mesh, group,                           &
+     &   (psf%num_psf, femmesh%mesh, ele_mesh, femmesh%group,           &
      &    psf%psf_case_tbls, psf%psf_def, psf%psf_search, psf%psf_list, &
      &    psf%psf_grp_list, psf%psf_mesh)
 !

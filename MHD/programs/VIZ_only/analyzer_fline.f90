@@ -44,8 +44,8 @@
       call FEM_initialize_fline(ucd_file_VIZ)
 !
 !  VIZ Initialization
-      call FLINE_initialize(femmesh_VIZ%mesh, femmesh_VIZ%group,        &
-     &    field_VIZ, viz_ctl_v%fline_ctls, fline_v)
+      call FLINE_initialize                                             &
+     &   (femmesh_VIZ, field_VIZ, viz_ctl_v%fline_ctls, fline_v)
 !
       end subroutine initialize_fline
 !
@@ -64,8 +64,8 @@
      &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V%FLINE_t)
 !
 !  Generate field lines
-        call FLINE_visualize( viz_step_V%FLINE_t%istep_file,            &
-     &      femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ,           &
+        call FLINE_visualize                                            &
+     &     (viz_step_V%FLINE_t%istep_file, femmesh_VIZ, elemesh_VIZ,    &
      &      ele_4_nod_VIZ, field_VIZ, fline_v)
       end do
 !

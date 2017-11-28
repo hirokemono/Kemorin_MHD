@@ -9,18 +9,17 @@
 !!
 !!@verbatim
 !!      subroutine ISOSURF_initialize                                   &
-!!     &          (mesh, group, ele_mesh, nod_fld, iso_ctls, iso)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) ::   group
+!!     &          (femmesh, ele_mesh, nod_fld, iso_ctls, iso)
+!!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(isosurf_controls), intent(inout) :: iso_ctls
 !!        type(isosurface_module), intent(inout) :: iso
 !!
 !!        type(phys_data), intent(in) :: nod_fld
 !!      subroutine ISOSURF_visualize                                    &
-!!     &         (istep_iso, time_d, mesh, ele_mesh, nod_fld, iso)
+!!     &         (istep_iso, time_d, femmesh, ele_mesh, nod_fld, iso)
 !!        type(time_data), intent(in) :: time_d
-!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(isosurface_module), intent(inout) :: iso
@@ -87,15 +86,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ISOSURF_initialize                                     &
-     &          (mesh, group, ele_mesh, nod_fld, iso_ctls, iso)
+     &          (femmesh, ele_mesh, nod_fld, iso_ctls, iso)
 !
       use m_geometry_constants
 !
       use set_psf_iso_control
       use search_ele_list_for_psf
 !
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) ::   group
+      type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
 !
@@ -113,20 +111,20 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
       call set_iso_control                                              &
-     &   (iso%num_iso, group%ele_grp, nod_fld, iso_ctls,                &
+     &   (iso%num_iso, femmesh%group, nod_fld, iso_ctls,                &
      &    iso%iso_param, iso%iso_def, iso%iso_mesh, iso%iso_file_IO)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
-      call set_search_mesh_list_4_psf(iso%num_iso,                      &
-     &    mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,            &
-     &    group%ele_grp, iso%iso_param, iso%iso_search)
+      call set_search_mesh_list_4_psf                                   &
+     &   (iso%num_iso, femmesh%mesh, ele_mesh, femmesh%group,           &
+     &    iso%iso_param, iso%iso_search)
 !
       do i_iso = 1, iso%num_iso
         call allocate_node_param_smp_type(iso%iso_mesh(i_iso)%node)
         call allocate_ele_param_smp_type(iso%iso_mesh(i_iso)%patch)
 !
         call alloc_ref_field_4_psf                                      &
-     &     (mesh%node%numnod, iso%iso_list(i_iso))
+     &     (femmesh%mesh%node, iso%iso_list(i_iso))
       end do
 !
       end subroutine ISOSURF_initialize
@@ -135,7 +133,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ISOSURF_visualize                                      &
-     &         (istep_iso, time_d, mesh, ele_mesh, nod_fld, iso)
+     &         (istep_iso, time_d, femmesh, ele_mesh, nod_fld, iso)
 !
 !
       use m_geometry_constants
@@ -150,7 +148,7 @@
       integer(kind = kint), intent(in) :: istep_iso
 !
       type(time_data), intent(in) :: time_d
-      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
 !
@@ -160,12 +158,12 @@
       if (iso%num_iso.le.0 .or. istep_iso.le.0) return
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_isosurfaces'
-      call set_const_4_isosurfaces                                      &
-     &   (iso%num_iso, mesh%node, nod_fld, iso%iso_def, iso%iso_list)
+      call set_const_4_isosurfaces(iso%num_iso, femmesh%mesh%node,      &
+     &    nod_fld, iso%iso_def, iso%iso_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso                                       &
-     &   (iso%num_iso, mesh, ele_mesh, iso%iso_case_tbls,               &
+     &   (iso%num_iso, femmesh%mesh, ele_mesh, iso%iso_case_tbls,       &
      &    iso%iso_search, iso%iso_list, iso%iso_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'

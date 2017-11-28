@@ -4,11 +4,17 @@
 !        programmed by H.Matsui on May. 2006
 !
 !!      subroutine count_control_4_iso                                  &
-!!     &         (iso_c, num_mat, mat_name, num_nod_phys, phys_nod_name,&
+!!     &         (iso_c, ele_grp, num_nod_phys, phys_nod_name,          &
 !!     &          iso_fld, iso_param, iso_def, iso_file_IO)
 !!      subroutine set_control_4_iso                                    &
-!!     &         (iso_c, num_mat, mat_name, num_nod_phys, phys_nod_name,&
+!!     &         (iso_c, ele_grp, num_nod_phys, phys_nod_name,          &
 !!     &          iso_fld, iso_param, iso_def)
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(iso_ctl), intent(in) :: iso_c
+!!        type(phys_data), intent(inout) :: iso_fld
+!!        type(psf_parameters), intent(inout) :: iso_param
+!!        type(isosurface_define), intent(inout) :: iso_def
+!!        type(field_IO_params), intent(inout) :: iso_file_IO
 !
       module t_control_params_4_iso
 !
@@ -44,12 +50,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_control_4_iso                                    &
-     &         (iso_c, num_mat, mat_name, num_nod_phys, phys_nod_name,  &
+     &         (iso_c, ele_grp, num_nod_phys, phys_nod_name,            &
      &          iso_fld, iso_param, iso_def, iso_file_IO)
 !
       use m_file_format_switch
       use parallel_ucd_IO_select
       use set_field_comp_for_viz
+      use t_group_data
       use t_file_IO_parameter
       use t_control_data_4_iso
       use t_phys_data
@@ -58,8 +65,7 @@
       use set_area_4_viz
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: num_mat
-      character(len=kchara), intent(in) :: mat_name(num_mat)
+      type(group_data), intent(in) :: ele_grp
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -100,7 +106,7 @@
      &     iso_fld%num_phys, iso_fld%num_phys_viz)
       end if
 !
-      call count_area_4_viz(num_mat, mat_name,                          &
+      call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    iso_c%iso_area_ctl%num, iso_c%iso_area_ctl%c_tbl,             &
      &    iso_param%nele_grp_area)
 !
@@ -109,17 +115,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_iso                                      &
-     &         (iso_c, num_mat, mat_name, num_nod_phys, phys_nod_name,  &
+     &         (iso_c, ele_grp, num_nod_phys, phys_nod_name,            &
      &          iso_fld, iso_param, iso_def)
 !
       use set_area_4_viz
       use set_field_comp_for_viz
+      use t_group_data
       use t_control_data_4_iso
       use t_phys_data
       use t_psf_patch_data
 !
-      integer(kind = kint), intent(in) :: num_mat
-      character(len=kchara), intent(in) :: mat_name(num_mat)
+      type(group_data), intent(in) :: ele_grp
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -160,7 +166,7 @@
       end if
 !
       call alloc_area_group_psf(iso_param)
-      call s_set_area_4_viz(num_mat, mat_name,                          &
+      call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &     iso_c%iso_area_ctl%num, iso_c%iso_area_ctl%c_tbl,            &
      &     iso_param%nele_grp_area, iso_param%id_ele_grp_area)
 !

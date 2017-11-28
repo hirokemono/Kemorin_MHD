@@ -6,7 +6,8 @@
 !
 !!      subroutine alloc_local_start_grp_num(num_fline, fline_src)
 !!      subroutine alloc_local_start_grp_item(num_fline, fline_src)
-!!      subroutine alloc_local_data_4_fline(num_fline, numnod, fline_src)
+!!      subroutine alloc_local_data_4_fline(num_fline, node, fline_src)
+!!        type(node_data), intent(in) :: node
 !!      subroutine alloc_start_point_fline                              &
 !!     &         (ntot_each_field_line, fline_src)
 !!      subroutine alloc_num_gl_start_fline                             &
@@ -107,14 +108,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_local_data_4_fline(num_fline, numnod, fline_src)
+      subroutine alloc_local_data_4_fline(num_fline, node, fline_src)
 !
-      integer(kind = kint), intent(in) :: num_fline, numnod
+      use t_geometry_data
+!
+      integer(kind = kint), intent(in) :: num_fline
+      type(node_data), intent(in) :: node
       type(fieldline_source), intent(inout) :: fline_src
 !
 !
-      allocate(fline_src%vector_nod_fline(numnod,3,num_fline))
-      allocate(fline_src%color_nod_fline(numnod,num_fline))
+      allocate(fline_src%vector_nod_fline(node%numnod,3,num_fline))
+      allocate(fline_src%color_nod_fline(node%numnod,num_fline))
 !
       fline_src%vector_nod_fline = 0.0d0
       fline_src%color_nod_fline =  0.0d0

@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine FLINE_initialize                                     &
-!!     &         (mesh, group, nod_fld, fline_ctls, fline)
-!!      subroutine FLINE_visualize(istep_fline, mesh, group, ele_mesh,  &
+!!     &         (femmesh, nod_fld, fline_ctls, fline)
+!!      subroutine FLINE_visualize(istep_fline, femmesh, ele_mesh,      &
 !!     &          ele_4_nod, nod_fld, fline)
 !!      subroutine FLINE_finalize(fline)
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) :: group
+!!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(phys_data), intent(in) :: nod_fld
@@ -53,14 +52,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine FLINE_initialize                                       &
-     &         (mesh, group, nod_fld, fline_ctls, fline)
+     &         (femmesh, nod_fld, fline_ctls, fline)
 !
       use calypso_mpi
       use t_control_data_flines
       use set_fline_control
 !
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
+      type(mesh_data), intent(in) :: femmesh
       type(phys_data), intent(in) :: nod_fld
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_module), intent(inout) :: fline
@@ -70,13 +68,12 @@
       if(fline%num_fline .le. 0) return
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
-      call s_set_fline_control                                          &
-     &  (mesh%ele, group%ele_grp, group%surf_grp, nod_fld,              &
+      call s_set_fline_control(femmesh%mesh, femmesh%group, nod_fld,    &
      &   fline%num_fline, fline_ctls, fline%fline_prm, fline%fline_src)
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_local_data_4_fline'
       call alloc_local_data_4_fline                                     &
-     &   (mesh%node%numnod, fline%num_fline, fline%fline_src)
+     &   (fline%num_fline, femmesh%mesh%node, fline%fline_src)
       call alloc_start_point_fline                                      &
      &   (fline%fline_prm%ntot_each_field_line, fline%fline_src)
       call alloc_num_gl_start_fline(nprocs, fline%num_fline,            &
@@ -88,7 +85,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine FLINE_visualize(istep_fline, mesh, group, ele_mesh,    &
+      subroutine FLINE_visualize(istep_fline, femmesh, ele_mesh,        &
      &          ele_4_nod, nod_fld, fline)
 !
       use set_fields_for_fieldline
@@ -97,8 +94,7 @@
 !
       integer(kind = kint), intent(in) :: istep_fline
 !
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
+      type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(element_around_node), intent(in) :: ele_4_nod
       type(phys_data), intent(in) :: nod_fld
@@ -111,20 +107,22 @@
       if (fline%num_fline.le.0 .or. istep_fline .le. 0) return
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
-      call set_local_field_4_fline(fline%num_fline, mesh%node, nod_fld, &
+      call set_local_field_4_fline                                      &
+     &   (fline%num_fline, femmesh%mesh%node, nod_fld,                  &
      &    fline%fline_prm, fline%fline_src)
 !
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
         call s_set_fields_for_fieldline                                 &
-     &     (i_fln, mesh%node, mesh%ele, ele_mesh%surf, group%ele_grp,   &
+     &     (i_fln, femmesh%mesh, ele_mesh, femmesh%group,               &
      &      fline%fline_prm, fline%fline_src, fline%fline_tce)
       end do
 !
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
-        call s_const_field_lines(i_fln, mesh%node, mesh%ele,            &
-     &      ele_mesh%surf, ele_4_nod, mesh%nod_comm,                    &
+        call s_const_field_lines                                        &
+     &     (i_fln, femmesh%mesh%node, femmesh%mesh%ele,                 &
+     &      ele_mesh%surf, ele_4_nod, femmesh%mesh%nod_comm,            &
      &      fline%fline_prm, fline%fline_src,                           &
      &      fline%fline_tce, fline%fline_lc)
 !

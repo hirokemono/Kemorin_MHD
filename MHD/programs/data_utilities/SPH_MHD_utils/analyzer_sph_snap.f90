@@ -260,13 +260,12 @@
           end if
 !
           call start_elapsed_time(12)
-          call PVR_initialize                                           &
-     &       (FEM_d1%geofem%mesh, FEM_d1%geofem%group, FEM_d1%ele_mesh, &
+          call PVR_initialize(FEM_d1%geofem, FEM_d1%ele_mesh,           &
      &        FEM_d1%field, MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr)
           call calypso_MPI_barrier
           call PVR_visualize(MHD_step1%viz_step%PVR_t%istep_file,       &
-     &        FEM_d1%geofem%mesh, FEM_d1%geofem%group, FEM_d1%ele_mesh, &
-     &        jacobians_VIZ1, FEM_d1%field, vizs1%pvr)
+     &        FEM_d1%geofem, FEM_d1%ele_mesh, jacobians_VIZ1,           &
+     &        FEM_d1%field, vizs1%pvr)
           call deallocate_pvr_data(vizs1%pvr)
           call end_elapsed_time(12)
         end if
