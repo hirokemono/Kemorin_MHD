@@ -12,7 +12,7 @@
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(element_geometry), intent(in) :: ele_mesh
-!!        type(works_4_sph_trans_MHD), intent(inout) :: WK
+!!        type(works_4_sph_trans_MHD), intent(in) :: WK
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
 !
@@ -35,7 +35,7 @@
 !
       implicit  none
 !
-      private :: SGS_MHD_zonal_mean_section, SGS_MHD_zonal_RMS_section
+      private :: SGS_MHD_zonal_RMS_section
 !
 !  ---------------------------------------------------------------------
 !
@@ -57,14 +57,14 @@
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: geofem
       type(element_geometry), intent(in) :: ele_mesh
+      type(works_4_sph_trans_MHD), intent(in) :: WK
 !
-      type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: nod_fld
       type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
 !
 !
-      call SGS_MHD_zonal_mean_section(viz_step, time_d, SGS_par,        &
-     &    sph, geofem, ele_mesh, iphys, WK, nod_fld, zmeans%zm_psf)
+      call SPH_MHD_zonal_mean_section(viz_step, time_d,                 &
+     &    sph, geofem, ele_mesh, nod_fld, zmeans%zm_psf)
       call SGS_MHD_zonal_RMS_section(viz_step, time_d, SGS_par,         &
      &    sph, geofem, ele_mesh, iphys, WK, nod_fld, zmeans%zrms_psf)
 !
@@ -73,48 +73,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine SGS_MHD_zonal_mean_section(viz_step, time_d, SGS_par,  &
-     &          sph, geofem, ele_mesh, iphys, WK, nod_fld, zm_psf)
-!
-      use FEM_analyzer_sph_SGS_MHD
-      use nod_phys_send_recv
-!
-      type(VIZ_step_params), intent(in) :: viz_step
-      type(SGS_paremeters), intent(in) :: SGS_par
-      type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(in) :: iphys
-!
-      type(time_data), intent(in) :: time_d
-      type(mesh_data), intent(in) :: geofem
-      type(element_geometry), intent(in) :: ele_mesh
-!
-      type(works_4_sph_trans_MHD), intent(inout) :: WK
-      type(phys_data), intent(inout) :: nod_fld
-      type(sectioning_module), intent(inout) :: zm_psf
-!
-!
-      if(viz_step%PSF_t%istep_file.le.0) return
-      if(zm_psf%num_psf .le. 0) return
-!
-      call zonal_mean_FEM_bridge_SGS_MHD                                &
-     &   (SGS_par, sph, WK, geofem, iphys, nod_fld)
-!
-      if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(geofem%mesh, nod_fld)
-!
-      call start_elapsed_time(65)
-      call SECTIONING_visualize(viz_step%PSF_t%istep_file, time_d,      &
-     &    ele_mesh, nod_fld, zm_psf)
-      call end_elapsed_time(65)
-!
-      end subroutine SGS_MHD_zonal_mean_section
-!
-!  ---------------------------------------------------------------------
-!
       subroutine SGS_MHD_zonal_RMS_section(viz_step, time_d, SGS_par,   &
      &          sph, geofem, ele_mesh, iphys, WK, nod_fld, zrms_psf)
 !
       use FEM_analyzer_sph_SGS_MHD
+      use sph_rtp_zonal_rms_data
       use nod_phys_send_recv
 !
       type(VIZ_step_params), intent(in) :: viz_step
@@ -125,8 +88,8 @@
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: geofem
       type(element_geometry), intent(in) :: ele_mesh
+      type(works_4_sph_trans_MHD), intent(in) :: WK
 !
-      type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: nod_fld
       type(sectioning_module), intent(inout) :: zrms_psf
 !
@@ -134,13 +97,17 @@
       if(viz_step%PSF_t%istep_file.le.0) return
       if(zrms_psf%num_psf .le. 0) return
 !
-      call zonal_RMS_FEM_bridge_SGS_MHD                                 &
+      if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
+      call SPH_to_FEM_bridge_SGS_MHD                                    &
      &   (SGS_par, sph, WK, geofem, iphys, nod_fld)
+      call zonal_rms_all_rtp_field                                      &
+     &   (sph%sph_rtp, geofem%mesh%node, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(geofem%mesh, nod_fld)
 !
       call start_elapsed_time(65)
+      if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'
       call SECTIONING_visualize(viz_step%PSF_t%istep_file, time_d,      &
      &    ele_mesh, nod_fld, zrms_psf)
       call end_elapsed_time(65)

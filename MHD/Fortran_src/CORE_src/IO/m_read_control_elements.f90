@@ -9,6 +9,7 @@
 !!@verbatim
 !!      subroutine load_ctl_label_and_line
 !!      subroutine check_read_control_header
+!!      subroutine check_read_control_buffer
 !!
 !!      integer function right_begin_flag(ctl_name)
 !!      integer function right_file_flag(ctl_name)
@@ -135,6 +136,14 @@
       write(*,*) 'read header: ', trim(header_chara)
 !
       end subroutine check_read_control_header
+!
+!   --------------------------------------------------------------------
+!
+      subroutine check_read_control_buffer
+!
+      write(*,*) 'Buffer: ', trim(character_4_read)
+!
+      end subroutine check_read_control_buffer
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

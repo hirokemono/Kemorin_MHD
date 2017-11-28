@@ -117,27 +117,23 @@
 !
 !
       if(psf_ctls%num_psf_ctl .gt. 0) return
+!      call check_read_control_header
+!      call check_read_control_buffer
 !
-      psf_ctls%num_psf_ctl = 1
-      call alloc_psf_ctl_stract(psf_ctls)
-!
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_array_flag(hd_section,                    &
-     &      psf_ctls%num_psf_ctl, i_psf_ctl)
-        if(i_psf_ctl .ge. psf_ctls%num_psf_ctl) exit
-!
-        if(right_file_flag(hd_section) .gt. 0) then
-          call read_file_names_from_ctl_line                            &
-     &       (psf_ctls%num_psf_ctl, i_psf_ctl, psf_ctls%fname_psf_ctl)
-        else if(right_begin_flag(hd_section) .gt. 0) then
-          i_psf_ctl = i_psf_ctl + 1
-          psf_ctls%fname_psf_ctl(i_psf_ctl) = 'NO_FILE'
-          call read_psf_control_data                                    &
-     &       (hd_section, psf_ctls%psf_ctl_struct(i_psf_ctl))
-        end if
-      end do
+      if(right_file_flag(hd_section) .gt. 0) then
+        psf_ctls%num_psf_ctl = 1
+        call alloc_psf_ctl_stract(psf_ctls)
+        call read_file_names_from_ctl_line                            &
+     &     (psf_ctls%num_psf_ctl, i_psf_ctl, psf_ctls%fname_psf_ctl)
+        write(*,*) 'read read_file_names_from_ctl_line', i_psf_ctl
+      else if(right_begin_flag(hd_section) .gt. 0) then
+        i_psf_ctl = i_psf_ctl + 1
+        psf_ctls%num_psf_ctl = 1
+        call alloc_psf_ctl_stract(psf_ctls)
+        psf_ctls%fname_psf_ctl(i_psf_ctl) = 'NO_FILE'
+        call read_psf_control_data                                    &
+     &     (hd_section, psf_ctls%psf_ctl_struct(i_psf_ctl))
+      end if
 !
       end subroutine read_single_section_ctl
 !
