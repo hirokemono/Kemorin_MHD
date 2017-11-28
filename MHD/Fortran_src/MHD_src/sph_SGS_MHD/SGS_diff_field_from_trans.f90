@@ -15,16 +15,6 @@
 !!        type(node_data), intent(in) :: node
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
-!!      subroutine zmean_SGS_diff_field_from_trans(sph_params, sph_rtp, &
-!!     &          trns_snap, node, iphys, nod_fld)
-!!      subroutine zrms_SGS_diff_field_from_trans(sph_params, sph_rtp,  &
-!!     &          trns_snap, node, iphys, nod_fld)
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(node_data), intent(in) :: node
-!!        type(phys_address), intent(in) :: iphys
-!!        type(address_4_sph_trans), intent(inout) :: trns_snap
-!!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
       module SGS_diff_field_from_trans
@@ -89,98 +79,6 @@
      &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       end  subroutine copy_SGS_diff_field_from_trans
-!
-!-----------------------------------------------------------------------
-!
-      subroutine zmean_SGS_diff_field_from_trans(sph_params, sph_rtp,   &
-     &          trns_snap, node, iphys, nod_fld)
-!
-      use copy_fields_from_sph_trans
-!
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(node_data), intent(in) :: node
-      type(phys_address), intent(in) :: iphys
-      type(phys_data), intent(inout) :: nod_fld
-      type(address_4_sph_trans), intent(inout) :: trns_snap
-!
-!
-      call zmean_vector_from_snap_trans                                 &
-     &   (trns_snap%b_trns%i_SGS_rot_inertia, iphys%i_SGS_rot_inertia,  &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      call zmean_vector_from_snap_trans                                 &
-     &   (trns_snap%b_trns%i_SGS_rot_Lorentz, iphys%i_SGS_rot_Lorentz,  &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      call zmean_vector_from_snap_trans                                 &
-     &   (trns_snap%b_trns%i_SGS_induction, iphys%i_SGS_induction,      &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-!
-      call zmean_scalar_from_snap_trans                                &
-     &   (trns_snap%b_trns%i_SGS_div_inertia, iphys%i_SGS_div_inertia,  &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      call zmean_scalar_from_snap_trans                                 &
-     &   (trns_snap%b_trns%i_SGS_div_Lorentz, iphys%i_SGS_div_Lorentz,  &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      call zmean_scalar_from_snap_trans                                 &
-     &   (trns_snap%b_trns%i_SGS_div_h_flux, iphys%i_SGS_div_h_flux,    &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      call zmean_scalar_from_snap_trans                                 &
-     &   (trns_snap%b_trns%i_SGS_div_c_flux, iphys%i_SGS_div_c_flux,    &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      end  subroutine zmean_SGS_diff_field_from_trans
-!
-!-----------------------------------------------------------------------
-!
-      subroutine zrms_SGS_diff_field_from_trans(sph_params, sph_rtp,    &
-     &          trns_snap, node, iphys, nod_fld)
-!
-      use copy_fields_from_sph_trans
-!
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(node_data), intent(in) :: node
-      type(phys_address), intent(in) :: iphys
-      type(address_4_sph_trans), intent(inout) :: trns_snap
-      type(phys_data), intent(inout) :: nod_fld
-!
-!
-      call zrms_vector_from_snap_trans                                  &
-     &   (trns_snap%b_trns%i_SGS_rot_inertia, iphys%i_SGS_rot_inertia,  &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      call zrms_vector_from_snap_trans                                  &
-     &   (trns_snap%b_trns%i_SGS_rot_Lorentz, iphys%i_SGS_rot_Lorentz,  &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      call zrms_vector_from_snap_trans                                  &
-     &   (trns_snap%b_trns%i_SGS_induction, iphys%i_SGS_induction,      &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-!
-      call zrms_scalar_from_snap_trans                                  &
-     &   (trns_snap%b_trns%i_SGS_div_inertia, iphys%i_SGS_div_inertia,  &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      call zrms_scalar_from_snap_trans                                  &
-     &   (trns_snap%b_trns%i_SGS_div_Lorentz, iphys%i_SGS_div_Lorentz,  &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      call zrms_scalar_from_snap_trans                                  &
-     &   (trns_snap%b_trns%i_SGS_div_h_flux, iphys%i_SGS_div_h_flux,    &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      call zrms_scalar_from_snap_trans                                  &
-     &   (trns_snap%b_trns%i_SGS_div_c_flux, iphys%i_SGS_div_c_flux,    &
-     &    sph_params%m_folding, sph_rtp, trns_snap, node, nod_fld)
-!
-      end  subroutine zrms_SGS_diff_field_from_trans
 !
 !-----------------------------------------------------------------------
 !

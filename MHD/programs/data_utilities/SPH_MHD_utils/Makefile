@@ -5,14 +5,11 @@
 SPH_SNAPSHOT_DIR =   $$(DATA_UTILS_DIR)/SPH_MHD_utils
 
 TARGET_SPH_SNAP =         sph_snapshot
-TARGET_SPH_ZM_SNAP =      sph_zm_snapshot
-TARGET_SPH_ZRMS_SNAP =    sph_zonal_rms_snapshot
 TARGET_SPH_SNAP_BADBOY =  sph_snapshot_badboy
 
 TARGET_SPH_SP_SNAP =    sph_special_snap
 TARGET_MODIFY_SPH_INI = sph_modify_restart
 
-TARGET_SPH_ZM_PSF_SNAP =  sph_zm_snapshot_psf
 TARGET_SPH_PSF_SNAP =     sph_snapshot_psf
 
 TARGET_SPH_SNAP_NOVIZ =    sph_snapshot_noviz
@@ -63,24 +60,6 @@ MOD_SPH_SNAP_PSF_MAIN =  \
 main_sph_snapshot_w_psf.o \
 analyzer_sph_snap_w_psf.o \
 SPH_analyzer_snap_w_psf.o
-
-MOD_SPH_ZM_SNAP_MAIN =  \
-main_sph_zm_snap.o \
-analyzer_sph_zm_snap.o \
-SPH_analyzer_snap.o \
-SPH_analyzer_zm_snap.o
-
-MOD_SPH_ZM_PSF_SNAP_MAIN =  \
-main_sph_zm_snap_w_psf.o \
-analyzer_sph_zm_snap_w_psf.o \
-SPH_analyzer_snap_w_psf.o \
-SPH_analyzer_zm_snap_w_psf.o
-
-MOD_SPH_ZRMS_SNAP_MAIN =  \
-main_sph_zonal_rms_snap.o \
-analyzer_sph_zonal_rms_snap.o \
-SPH_analyzer_snap.o \
-SPH_analyzer_zrms_snap.o
 
 MOD_SPH_SNAP_BADBOY =  \
 main_sph_snap_badboy.o \
@@ -159,13 +138,10 @@ target_list:
 	@echo 'TARGET_SPH_PSF_SNAP =   $$(BUILDDIR)/$(TARGET_SPH_PSF_SNAP)'   >> $(MAKENAME)
 	@echo 'TARGET_SPH_SP_SNAP =    $$(BUILDDIR)/$(TARGET_SPH_SP_SNAP)'    >> $(MAKENAME)
 	@echo 'TARGET_MODIFY_SPH_INI = $$(BUILDDIR)/$(TARGET_MODIFY_SPH_INI)' >> $(MAKENAME)
-	@echo 'TARGET_SPH_ZM_SNAP =    $$(BUILDDIR)/$(TARGET_SPH_ZM_SNAP)'   >> $(MAKENAME)
-	@echo 'TARGET_SPH_ZRMS_SNAP =  $$(BUILDDIR)/$(TARGET_SPH_ZRMS_SNAP)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_D_BENCH =    $$(BUILDDIR)/$(TARGET_SPH_D_BENCH)'   >> $(MAKENAME)
 	@echo 'TARGET_SPH_PICK_CIRC =  $$(BUILDDIR)/$(TARGET_SPH_PICK_CIRC)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_SNAP_NOVIZ = $$(BUILDDIR)/$(TARGET_SPH_SNAP_NOVIZ)'>> $(MAKENAME)
 	@echo 'TARGET_SPH_SNAP_BADBOY = $$(BUILDDIR)/$(TARGET_SPH_SNAP_BADBOY)' >> $(MAKENAME)
-	@echo 'TARGET_SPH_ZM_PSF_SNAP = $$(BUILDDIR)/$(TARGET_SPH_ZM_PSF_SNAP)' >> $(MAKENAME)
 	@echo 'TARGET_TAVE_PICK_CIRCLE =  $$(BUILDDIR)/$(TARGET_TAVE_PICK_CIRCLE)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_FORWARD_TRANS =  $$(BUILDDIR)/$(TARGET_SPH_FORWARD_TRANS)' >> $(MAKENAME)
 	@echo 'TARGET_SPH_BACK_TRANS =  $$(BUILDDIR)/$(TARGET_SPH_BACK_TRANS)' >> $(MAKENAME)
@@ -177,14 +153,11 @@ target_task:
 	@echo sph_utils: \
 	 '$$(TARGET_SPH_SNAP)'       \
 	 '$$(TARGET_SPH_PSF_SNAP)'   \
-	 '$$(TARGET_SPH_ZM_SNAP)'    \
-	 '$$(TARGET_SPH_ZRMS_SNAP)'  \
 	 '$$(TARGET_SPH_SP_SNAP)'    \
 	 '$$(TARGET_MODIFY_SPH_INI)' \
 	 '$$(TARGET_SPH_D_BENCH)'    \
 	 '$$(TARGET_SPH_PICK_CIRC)'  \
 	 '$$(TARGET_SPH_SNAP_NOVIZ)' \
-	 '$$(TARGET_SPH_ZM_PSF_SNAP)' \
 	 '$$(TARGET_SPH_SNAP_BADBOY)'   \
 	 '$$(TARGET_TAVE_PICK_CIRCLE)'  \
 	 '$$(TARGET_SPH_FORWARD_TRANS)'  \
@@ -207,24 +180,6 @@ target_task:
 	@echo '$$(TARGET_SPH_SNAP_NOVIZ):  $$(MOD_SPH_SNAP_NOVIZ_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_SNAP_NOVIZ)' '$$(MOD_SPH_SNAP_NOVIZ_MAIN)' \
-	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_SPH_ZM_SNAP):  $$(MOD_SPH_ZM_SNAP_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ZM_SNAP)' '$$(MOD_SPH_ZM_SNAP_MAIN)' \
-	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_SPH_ZRMS_SNAP):  $$(MOD_SPH_ZRMS_SNAP_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ZRMS_SNAP)' '$$(MOD_SPH_ZRMS_SNAP_MAIN)' \
-	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_SPH_ZM_PSF_SNAP):  $$(MOD_SPH_ZM_PSF_SNAP_MAIN)  $$(LIB_FILES_SPH_UTILS)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ZM_PSF_SNAP)' '$$(MOD_SPH_ZM_PSF_SNAP_MAIN)' \
 	'-L. $$(LIBS_SPH_UTILS)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
@@ -303,12 +258,6 @@ mod_list:
 	@echo  $(MOD_SPH_SP_SNAP_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_SNAP_NOVIZ_MAIN=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_NOVIZ_MAIN) >> $(MAKENAME)
-	@echo  MOD_SPH_ZM_SNAP_MAIN=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_ZM_SNAP_MAIN) >> $(MAKENAME)
-	@echo  MOD_SPH_ZRMS_SNAP_MAIN=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_ZRMS_SNAP_MAIN) >> $(MAKENAME)
-	@echo  MOD_SPH_ZM_PSF_SNAP_MAIN=  \\ >> $(MAKENAME)
-	@echo  $(MOD_SPH_ZM_PSF_SNAP_MAIN) >> $(MAKENAME)
 	@echo  MOD_SPH_SNAP_BADBOY=  \\ >> $(MAKENAME)
 	@echo  $(MOD_SPH_SNAP_BADBOY) >> $(MAKENAME)
 	@echo  MOD_SPH_D_BENCH_MAIN=  \\ >> $(MAKENAME)

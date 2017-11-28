@@ -21,6 +21,16 @@
 !!        type(works_4_sph_trans_MHD), intent(in) :: WK
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
+!!
+!!      subroutine SPH_MHD_zonal_mean_section(viz_step, time_d,         &
+!!     &          sph, geofem, ele_mesh, nod_fld, zm_psf)
+!!        type(VIZ_step_params), intent(in) :: viz_step
+!!        type(sph_grids), intent(in) :: sph
+!!        type(time_data), intent(in) :: time_d
+!!        type(mesh_data), intent(in) :: geofem
+!!        type(element_geometry), intent(in) :: ele_mesh
+!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(sectioning_module), intent(inout) :: zm_psf
 !
       module t_SPH_MHD_zonal_mean_viz
 !
@@ -48,7 +58,7 @@
         type(sectioning_module) :: zrms_psf
       end type sph_zonal_mean_sectioning
 !
-      private :: SPH_MHD_zonal_mean_section, SPH_MHD_zonal_RMS_section
+      private :: SPH_MHD_zonal_RMS_section
 !
 !  ---------------------------------------------------------------------
 !
