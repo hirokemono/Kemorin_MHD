@@ -309,6 +309,30 @@ void set_coastline_radius_console(){
 	return;
 };
 
+void set_background_color_console(){
+    GLfloat color[4];
+    float red, green, blue;
+    char buf[1024];
+
+    kemoview_get_background_color(color);
+    printf("Enter Background color by (R,G,B) from 0.0 to 1.0: \n");
+    printf("Corrent color:  %.7e %.7e %.7e \n", color[0], color[1], color[2]);
+    fgets(buf,sizeof(buf),stdin);
+    sscanf(buf,"%f %f %f", &red, &green, &blue);
+    printf("New background Color (R,G,B): %.7e %.7e %.7e \n", red, green, blue);
+    
+    color[0] = (GLfloat) red;
+    color[1] = (GLfloat) green;
+    color[2] = (GLfloat) blue;
+
+    
+    draw_mesh_keep_menu();
+    kemoview_set_background_color(color);
+    glClear(GL_COLOR_BUFFER_BIT); 
+    return;
+};
+
+
 void set_domain_distance_console(){
 	float distance;
 	char buf[1024];

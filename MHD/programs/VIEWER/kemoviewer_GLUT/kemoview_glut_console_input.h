@@ -37,6 +37,7 @@ void set_ele_group_opacity();
 void set_surf_group_opacity();
 void set_domain_distance_console();
 void set_coastline_radius_console();
+void set_background_color_console();
 void set_num_color_loop_console();
 void set_node_size_console();
 void read_psf_evolution_steps(int *ist_udt, int *ied_udt, int *inc_udt);

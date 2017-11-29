@@ -139,10 +139,11 @@ static void kemoview_fline_draw_setting(int sel){
 
 static void main_menu_handler(int sel){
 	if (sel == QUIT_SELECTED)   { exit(EXIT_SUCCESS); }
-	else if (sel == FILE_OPEN)  { read_draw_kemoview_data_gtk(); }
-	else if (sel == SAVE_SNAPSHOT)  { save_image_handler(); }
-	else if (sel == SAVE_EVOLUTION) { save_evolution_handler(); }
-	return;
+	else if(sel == FILE_OPEN)  { read_draw_kemoview_data_gtk(); }
+	else if(sel == SAVE_SNAPSHOT)  { save_image_handler(); }
+	else if(sel == SAVE_EVOLUTION) { save_evolution_handler(); }
+    else if(sel == SET_BACKGROUND) { set_background_color_gtk(); };
+    return;
 };
 
 static void viewtype_handler(int sel){
@@ -700,6 +701,7 @@ static void make_2nd_level_image_menu(){
 	if ( (iflag_draw_m > 0) && (iflag_draw_p == 0) && (iflag_draw_f == 0) ) {
 		glutAddMenuEntry("Object distance",SET_DISTANCE_DOMAIN);
 	};
+
 	glutAddMenuEntry("Output transfer matrices",OUTPUT_V_MATRIX);
 	glutAddMenuEntry("Load transfer matrices", INPUT_V_MATRIX);
 	
@@ -793,6 +795,7 @@ static void make_1st_level_menu(){
 		glutAddSubMenu("Save rotate images", glut_menu_id->save_rot_image_menu);
 		glutAddSubMenu("Rotate on Window",   glut_menu_id->draw_rot_image_menu);
 	};
+    glutAddMenuEntry("Background color",SET_BACKGROUND);
 	
 	glutAddMenuEntry("Quit",QUIT_SELECTED);
 	glutAttachMenu(GLUT_LEFT_BUTTON);

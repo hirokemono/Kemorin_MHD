@@ -572,6 +572,42 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	return;
 }
 
+static void color_OK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
+{
+	GLfloat color[4];
+	gdouble dcolor[4];
+	
+	gtk_color_selection_get_color( GTK_COLOR_SELECTION(colordialog->colorsel), dcolor);
+	gtk_widget_destroy(colordialog);
+	gtk_main_quit();
+	
+    color[0] = (GLfloat) dcolor[0];
+    color[1] = (GLfloat) dcolor[1];
+    color[2] = (GLfloat) dcolor[2];
+	/*printf("New background Color (R,G,B): %.7e %.7e %.7e \n", color[0], color[1], color[2]);*/
+	
+	draw_mesh_keep_menu();
+    kemoview_set_background_color(color);
+    glClear(GL_COLOR_BUFFER_BIT); 
+	
+	return;
+}
+
+static void gtk_colorselect(GLfloat color[4], const char *title){
+	
+	gint response;
+	
+	rangew = gtk_color_selection_dialog_new(title);
+	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button),
+				"clicked", GTK_SIGNAL_FUNC(color_OK), rangew);
+	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button),
+				"clicked", GTK_SIGNAL_FUNC(destroy), rangew);
+	gtk_widget_show_all(rangew);
+	gtk_main();
+
+	return;
+}
+
 static void gtk_nline_menu(int nline, const char *title){
 	GtkWidget *box;
 	GtkWidget *box1, *box2, *box3, *box5;
@@ -827,6 +863,16 @@ void set_coastline_radius_gtk(){
 	
 	kemoview_set_coastline_radius(gtk_min);
 	return;
+};
+
+void set_background_color_gtk(){
+    GLfloat color[4];
+    float red, green, blue;
+    char buf[1024];
+	
+	kemoview_get_background_color(color);
+	gtk_colorselect(color, "Select Background color");
+    return;
 };
 
 void set_domain_distance_gtk(){

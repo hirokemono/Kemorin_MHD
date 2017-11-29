@@ -31,6 +31,7 @@ void set_psf_vect_increment_glui(int winid);
 void set_psf_vector_scale_by_glui(int winid);
 void set_psf_vector_thick_by_glui(int winid);
 void set_coastline_radius_glui(int winid);
+void set_background_color_glui(int winid);
 void set_domain_distance_by_glui(int winid);
 void set_num_color_loop_by_glui(int winid);
 void set_node_size_by_glui(int winid);

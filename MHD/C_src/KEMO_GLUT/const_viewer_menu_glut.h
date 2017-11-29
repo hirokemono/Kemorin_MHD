@@ -15,6 +15,7 @@
 #define SAVE_SNAPSHOT   10
 #define SAVE_EVOLUTION  11
 #define SAVE_ROTATION   12
+#define SET_BACKGROUND  21
 
 #define ROTATE_X  1
 #define ROTATE_Y  2
