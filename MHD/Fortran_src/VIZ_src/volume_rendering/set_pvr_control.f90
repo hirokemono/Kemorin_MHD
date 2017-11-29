@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on May., 2006
 !
-!!      subroutine read_set_pvr_controls(num_pvr, mesh, group, nod_fld, &
-!!     &          pvr_ctls, cflag_update, pvr_param, pvr_data)
+!!      subroutine read_set_each_pvr_controls                           &
+!!     &         (i_pvr, group, nod_fld, fname_pvr_ctl, pvr_ctl_struct, &
+!!     &          pvr_param, pvr_data)
 !!      subroutine read_control_pvr_update                              &
 !!     &         (fname_pvr_ctl, pvr_ctl_struct)
 !!      subroutine flush_each_pvr_control                               &
@@ -38,8 +39,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_set_pvr_controls(num_pvr, mesh, group, nod_fld,   &
-     &          pvr_ctls, cflag_update, pvr_param, pvr_data)
+      subroutine read_set_each_pvr_controls                             &
+     &         (i_pvr, group, nod_fld, fname_pvr_ctl, pvr_ctl_struct,   &
+     &          pvr_param, pvr_data)
 !
       use t_mesh_data
       use t_phys_data
@@ -47,58 +49,38 @@
       use t_rendering_vr_image
       use bcast_control_data_4_pvr
 !
-      type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
-      integer(kind = kint), intent(in) :: num_pvr
+      integer(kind = kint), intent(in) :: i_pvr
+      character(len = kchara), intent(in)  :: fname_pvr_ctl
 !
-      character(len=kchara), intent(inout) :: cflag_update
-      type(volume_rendering_controls), intent(inout) :: pvr_ctls
-      type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
-      type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
+      type(pvr_ctl), intent(inout) :: pvr_ctl_struct
+      type(PVR_control_params), intent(inout) :: pvr_param
+      type(PVR_image_generator), intent(inout) :: pvr_data
 !
-      integer(kind = kint) :: i_pvr, i_psf
+      integer(kind = kint) :: i_psf
+!
 !
       ctl_file_code = pvr_ctl_file_code
-      if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_control', num_pvr
-      do i_pvr = 1, num_pvr
-!
-        call read_control_pvr(i_pvr, pvr_ctls%fname_pvr_ctl(i_pvr),     &
-     &                        pvr_ctls%pvr_ctl_struct(i_pvr))
-        call read_control_modelview                                     &
-     &     (i_pvr, pvr_ctls%pvr_ctl_struct(i_pvr))
-        call read_control_colormap                                      &
-     &     (i_pvr, pvr_ctls%pvr_ctl_struct(i_pvr))
-        do i_psf = 1, pvr_ctls%pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
-          call read_control_pvr_section_def                             &
-     &       (pvr_ctls%pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf))
-        end do
-!
-        call bcast_vr_psf_ctl(pvr_ctls%pvr_ctl_struct(i_pvr))
-!
-        call allocate_nod_data_4_pvr(mesh%node%numnod, mesh%ele%numele, &
-     &      group%surf_grp%num_grp, pvr_param(i_pvr)%field)
-        call reset_pvr_view_parameteres(pvr_data(i_pvr)%view)
-!
-        call set_each_pvr_control(group%ele_grp, group%surf_grp,        &
-     &      nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      pvr_ctls%pvr_ctl_struct(i_pvr), pvr_param(i_pvr)%file,      &
-     &      pvr_param(i_pvr)%field_def, pvr_data(i_pvr)%view,           &
-     &      pvr_param(i_pvr)%field, pvr_data(i_pvr)%screen,             &
-     &      pvr_data(i_pvr)%color, pvr_param(i_pvr)%colorbar)
-!
-        if(pvr_ctls%pvr_ctl_struct(1)%updated_ctl%iflag .gt. 0          &
-     &     .and. i_pvr .eq. 1) then
-          cflag_update                                                  &
-     &         = pvr_ctls%pvr_ctl_struct(1)%updated_ctl%charavalue
-        end if
-!
-        call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_struct(i_pvr))
-        call calypso_mpi_barrier
+      call read_control_pvr(i_pvr, fname_pvr_ctl, pvr_ctl_struct)
+      call read_control_modelview(i_pvr, pvr_ctl_struct)
+      call read_control_colormap(i_pvr, pvr_ctl_struct)
+      do i_psf = 1, pvr_ctl_struct%num_pvr_sect_ctl
+        call read_control_pvr_section_def                             &
+     &     (pvr_ctl_struct%pvr_sect_ctl(i_psf))
       end do
-      call dealloc_pvr_file_header_ctl(pvr_ctls)
 !
-      end subroutine read_set_pvr_controls
+      call bcast_vr_psf_ctl(pvr_ctl_struct)
+!
+      call set_each_pvr_control(group%ele_grp, group%surf_grp,          &
+     &    nod_fld%num_phys, nod_fld%phys_name, pvr_ctl_struct,          &
+     &    pvr_param%file, pvr_param%field_def, pvr_data%view,           &
+     &    pvr_param%field, pvr_data%screen, pvr_data%color,             &
+     &    pvr_param%colorbar)
+!
+      call deallocate_cont_dat_pvr(pvr_ctl_struct)
+!
+      end subroutine read_set_each_pvr_controls
 !
 !  ---------------------------------------------------------------------
 !
@@ -192,10 +174,10 @@
       if(my_rank .eq. 0) then
          write(*,*) 'PVR control:', i_pvr,':  ', trim(fname_pvr_ctl)
 !
-        open(pvr_ctl_file_code, file=fname_pvr_ctl, status='old')
+        open(ctl_file_code, file=fname_pvr_ctl, status='old')
         call load_ctl_label_and_line
         call read_vr_psf_ctl(hd_pvr_ctl, pvr_ctl_struct)
-        close(pvr_ctl_file_code)
+        close(ctl_file_code)
       end if
 !
       end subroutine read_control_pvr
@@ -214,11 +196,11 @@
 !
       if(fname_pvr_ctl .eq. 'NO_FILE') return
       if(my_rank .eq. 0) then
-        open(pvr_ctl_file_code, file=fname_pvr_ctl, status='old')
+        open(ctl_file_code, file=fname_pvr_ctl, status='old')
 !
         call load_ctl_label_and_line
         call read_pvr_update_flag(hd_pvr_ctl, pvr_ctl_struct)
-        close(pvr_ctl_file_code)
+        close(ctl_file_code)
       end if
 !
       call bcast_pvr_update_flag(pvr_ctl_struct)
@@ -247,7 +229,7 @@
       write(*,*) 'Modelview control:', i_pvr,':  ',                     &
      &               trim(pvr_ctl_struct%view_file_ctl)
 !
-      open(pvr_ctl_file_code,                                           &
+      open(ctl_file_code,                                               &
      &        file=pvr_ctl_struct%view_file_ctl, status='old')
 !
       call load_ctl_label_and_line
@@ -259,7 +241,7 @@
         call calypso_mpi_abort(ierr_PVR, 'Set view matrix file')
       end if
 !
-      close(pvr_ctl_file_code)
+      close(ctl_file_code)
 !
       end subroutine read_control_modelview
 !
@@ -285,7 +267,7 @@
       write(*,*) 'Colormap control:', i_pvr,':  ',                      &
      &                 trim(pvr_ctl_struct%color_file_ctl)
 !
-      open(pvr_ctl_file_code,                                           &
+      open(ctl_file_code,                                               &
      &     file=pvr_ctl_struct%color_file_ctl,  status='old')
 !
       call load_ctl_label_and_line
@@ -300,7 +282,7 @@
         call calypso_mpi_abort(ierr_PVR, 'Set correct colormap file')
       end if
 !
-      close(pvr_ctl_file_code)
+      close(ctl_file_code)
 !
       end subroutine read_control_colormap
 !
