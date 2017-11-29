@@ -123,17 +123,19 @@
 !
       call allocate_components_4_pvr(pvr)
 !
+      do i_pvr = 1, pvr%num_pvr
+        call allocate_nod_data_4_pvr                                    &
+     &     (femmesh%mesh%node%numnod, femmesh%mesh%ele%numele,          &
+     &      femmesh%group%surf_grp%num_grp, pvr%pvr_param(i_pvr)%field)
+        call reset_pvr_view_parameteres(pvr%pvr_data(i_pvr)%view)
+      end do
+!
       if(pvr_ctls%pvr_ctl_struct(1)%updated_ctl%iflag .gt. 0) then
         pvr%cflag_update                                                &
      &         = pvr_ctls%pvr_ctl_struct(1)%updated_ctl%charavalue
       end if
 !
       do i_pvr = 1, pvr%num_pvr
-        call allocate_nod_data_4_pvr                                    &
-     &     (femmesh%mesh%node%numnod, femmesh%mesh%ele%numele,          &
-     &      femmesh%group%surf_grp%num_grp, pvr%pvr_param(i_pvr)%field)
-        call reset_pvr_view_parameteres(pvr%pvr_data(i_pvr)%view)
-!
         call read_set_each_pvr_controls(i_pvr, femmesh%group, nod_fld,  &
      &      pvr_ctls%fname_pvr_ctl(i_pvr),                              &
      &      pvr_ctls%pvr_ctl_struct(i_pvr),                             &
