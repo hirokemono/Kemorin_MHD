@@ -18,13 +18,13 @@ static GLUI_EditText   *editText_max;
 static GLUI_EditText   *editText_data;
 static GLUI_EditText   *editText_color;
 static GLUI_EditText   *editText_opacity;
-static GLUI_EditText   *editText_r;
-static GLUI_EditText   *editText_g;
-static GLUI_EditText   *editText_b;
-static GLUI_EditText   *editText_a;
 static GLUI_EditText   *editText_fline_thick;
 static GLUI_RadioGroup *radiogroup_colormap;
 static GLUI_RadioGroup *radiogroup_opacitymap;
+static GLUI_Spinner   *spinner_r;
+static GLUI_Spinner   *spinner_g;
+static GLUI_Spinner   *spinner_b;
+static GLUI_Spinner   *spinner_opacity;
 
 static int obj_type = 1;
 static float psf_color_min;
@@ -190,33 +190,25 @@ static void input_fline_thick_from_panel(int val){
 }
 
 static void input_psf_opacity_from_panel(int val){
-	opacity = editText_opacity->get_float_val();
 	kemoview_set_PSF_constant_opacity((double) opacity);
-	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
 }
 
 static void input_domain_opacity_from_panel(int val){
-	opacity = editText_opacity->get_float_val();
 	kemoview_set_domain_opacity((double) opacity);
-	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
 }
 
 static void input_egrp_opacity_from_panel(int val){
-	opacity = editText_opacity->get_float_val();
 	kemoview_set_ele_grp_opacity((double) opacity);
-	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
 }
 
 static void input_sgrp_opacity_from_panel(int val){
-	opacity = editText_opacity->get_float_val();
 	kemoview_set_surf_grp_opacity((double) opacity);
-	GLUI_Master.close_all();
 	draw_mesh_keep_menu();
 	return;
 }
@@ -280,7 +272,7 @@ static void update_PSFcolor_glui(int val){
     rgba[0] = (double) red;
     rgba[1] = (double) green;
     rgba[2] = (double) blue;
-    rgba[3] = (double) alpha;
+	rgba[3] = kemoview_get_PSF_max_opacity();
     
     kemoview_set_PSF_single_color(rgba);
 	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
@@ -372,8 +364,11 @@ void set_psf_opacity_by_glui(int winid){
 	opacity = (float) kemoview_get_PSF_max_opacity();
 	
 	glui_sub = GLUI_Master.create_glui("Set PSF Parameter", 0, 100, 100);
-	editText_opacity = new GLUI_EditText( glui_sub, "Opacity", GLUI_EDITTEXT_FLOAT,
-										 &opacity, -1, input_psf_opacity_from_panel );
+	spinner_opacity = new GLUI_Spinner( glui_sub, "Opacity: ", GLUI_SPINNER_FLOAT,
+				&opacity, -1, input_psf_opacity_from_panel );
+	spinner_opacity->set_float_limits(0.0,1.0);
+	spinner_opacity->set_speed(1.0);
+	glui_sub->add_button("Done", 0, close_panel);
 	glui_sub->set_main_gfx_window(winid);
 	return;
 }
@@ -382,8 +377,11 @@ void set_domain_opacity_by_glui(int winid){
 	opacity = (float) kemoview_get_domain_opacity();
 	
 	glui_sub = GLUI_Master.create_glui("Domain Parameter", 0, 100, 100);
-	editText_opacity = new GLUI_EditText( glui_sub, "Opacity: ", GLUI_EDITTEXT_FLOAT,
-										 &opacity, -1, input_domain_opacity_from_panel );
+	spinner_opacity = new GLUI_Spinner( glui_sub, "Opacity: ", GLUI_SPINNER_FLOAT,
+				&opacity, -1, input_domain_opacity_from_panel );
+	spinner_opacity->set_float_limits(0.0,1.0);
+	spinner_opacity->set_speed(1.0);
+	glui_sub->add_button("Done", 0, close_panel);
 	glui_sub->set_main_gfx_window(winid);
 	return;
 }
@@ -392,8 +390,11 @@ void set_ele_group_opacity_by_glui(int winid){
 	opacity = (float) kemoview_get_ele_grp_opacity();
 	
 	glui_sub = GLUI_Master.create_glui("Element group Parameter", 0, 100, 100);
-	editText_opacity = new GLUI_EditText( glui_sub, "Opacity: ", GLUI_EDITTEXT_FLOAT,
-										 &opacity, -1, input_egrp_opacity_from_panel );
+	spinner_opacity = new GLUI_Spinner( glui_sub, "Opacity: ", GLUI_SPINNER_FLOAT,
+				&opacity, -1, input_egrp_opacity_from_panel );
+	spinner_opacity->set_float_limits(0.0,1.0);
+	spinner_opacity->set_speed(1.0);
+	glui_sub->add_button("Done", 0, close_panel);
 	glui_sub->set_main_gfx_window(winid);
 	return;
 }
@@ -402,8 +403,11 @@ void set_surf_group_opacity_by_glui(int winid){
 	opacity = (float) kemoview_get_surf_grp_opacity();
 	
 	glui_sub = GLUI_Master.create_glui("Surface group Parameter", 0, 100, 100);
-	editText_opacity = new GLUI_EditText( glui_sub, "Opacity: ", GLUI_EDITTEXT_FLOAT,
-										 &opacity, -1, input_sgrp_opacity_from_panel );
+	spinner_opacity = new GLUI_Spinner( glui_sub, "Opacity: ", GLUI_SPINNER_FLOAT,
+				&opacity, -1, input_sgrp_opacity_from_panel );
+	spinner_opacity->set_float_limits(0.0,1.0);
+	spinner_opacity->set_speed(1.0);
+	glui_sub->add_button("Done", 0, close_panel);
 	glui_sub->set_main_gfx_window(winid);
 	return;
 }
@@ -470,13 +474,19 @@ void set_background_color_glui(int winid){
 	blue =  color[2];
 	alpha = color[3];
 	
-	glui_sub = GLUI_Master.create_glui("Color editor (0.0 to 1.0)", 0, 100, 100);
-	editText_r = new GLUI_EditText( glui_sub, "Red:   ", GLUI_EDITTEXT_FLOAT,
-								 &red, -1, update_BGcolor_glui );
-	editText_g = new GLUI_EditText( glui_sub, "Green: ", GLUI_EDITTEXT_FLOAT,
-								 &green, -1, update_BGcolor_glui );
-	editText_b = new GLUI_EditText( glui_sub, "Blue:  ", GLUI_EDITTEXT_FLOAT,
-								 &blue, -1, update_BGcolor_glui );
+	glui_sub = GLUI_Master.create_glui("Color editor", 0, 100, 100);
+	spinner_r = new GLUI_Spinner( glui_sub, "Red:   ", GLUI_SPINNER_FLOAT,
+				&red, -1, update_BGcolor_glui );
+	spinner_g = new GLUI_Spinner( glui_sub, "Green: ", GLUI_SPINNER_FLOAT,
+				&green, -1, update_BGcolor_glui );
+	spinner_b = new GLUI_Spinner( glui_sub, "Blue:  ", GLUI_SPINNER_FLOAT,
+				&blue, -1, update_BGcolor_glui );
+	spinner_r->set_float_limits(0.0,1.0);
+	spinner_r->set_speed(1.0);
+	spinner_g->set_float_limits(0.0,1.0);
+	spinner_g->set_speed(1.0);
+	spinner_b->set_float_limits(0.0,1.0);
+	spinner_b->set_speed(1.0);
 	glui_sub->add_button("Done", 0, close_panel);
 	
     return;
@@ -514,15 +524,19 @@ void set_node_size_by_glui(int winid){
 }
 
 void set_psf_single_color_glui(int winid){
-	glui_sub = GLUI_Master.create_glui("Color editor (0.0 to 1.0)", 0, 100, 100);
-	editText_r = new GLUI_EditText( glui_sub, "Red:   ", GLUI_EDITTEXT_FLOAT,
-								 &red, -1, update_PSFcolor_glui );
-	editText_g = new GLUI_EditText( glui_sub, "Green: ", GLUI_EDITTEXT_FLOAT,
-								 &green, -1, update_PSFcolor_glui );
-	editText_b = new GLUI_EditText( glui_sub, "Blue:  ", GLUI_EDITTEXT_FLOAT,
-								 &blue, -1, update_PSFcolor_glui );
-	editText_a = new GLUI_EditText( glui_sub, "alpha: ", GLUI_EDITTEXT_FLOAT,
-								 &alpha, -1, update_PSFcolor_glui );
+	glui_sub = GLUI_Master.create_glui("Color editor", 0, 100, 100);
+	spinner_r = new GLUI_Spinner( glui_sub, "Red:   ", GLUI_SPINNER_FLOAT,
+				&red, -1, update_PSFcolor_glui );
+	spinner_g = new GLUI_Spinner( glui_sub, "Green: ", GLUI_SPINNER_FLOAT,
+				&green, -1, update_PSFcolor_glui );
+	spinner_b = new GLUI_Spinner( glui_sub, "Blue:  ", GLUI_SPINNER_FLOAT,
+				&blue, -1, update_PSFcolor_glui );
+	spinner_r->set_float_limits(0.0,1.0);
+	spinner_r->set_speed(1.0);
+	spinner_g->set_float_limits(0.0,1.0);
+	spinner_g->set_speed(1.0);
+	spinner_b->set_float_limits(0.0,1.0);
+	spinner_b->set_speed(1.0);
 	glui_sub->add_button("Done", 0, close_panel);
 	
 	return;

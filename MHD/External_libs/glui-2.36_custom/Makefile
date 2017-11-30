@@ -14,7 +14,9 @@ glui.o \
 glui_bitmap_img_data.o \
 glui_bitmaps.o \
 glui_button.o \
+glui_checkbox.o \
 glui_edittext.o \
+glui_spinner.o \
 glui_node.o \
 glui_radio.o \
 glui_statictext.o \
@@ -91,8 +93,26 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	glui_checkbox.o: \
+	'$$(GLUI_SRCDIR)'/glui_checkbox.cpp \
+	GL/glui.h \
+	glui_internal.h \
+	>> $(MAKENAME)
+	@echo '	''$$(CXX)' -c' $$(CXXFLAGS)  -Wall $$(GLUI_INC) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	glui_edittext.o: \
 	'$$(GLUI_SRCDIR)'/glui_edittext.cpp \
+	GL/glui.h \
+	glui_internal.h \
+	>> $(MAKENAME)
+	@echo '	''$$(CXX)' -c' $$(CXXFLAGS)  -Wall $$(GLUI_INC) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	glui_spinner.o: \
+	'$$(GLUI_SRCDIR)'/glui_spinner.cpp \
 	GL/glui.h \
 	glui_internal.h \
 	>> $(MAKENAME)

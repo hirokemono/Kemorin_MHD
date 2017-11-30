@@ -576,11 +576,13 @@ static void set_PSFcolor_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordi
 {
 	gdouble dcolor[4];
 	
+	
 	gtk_color_selection_get_color( GTK_COLOR_SELECTION(colordialog->colorsel), dcolor);
 	gtk_widget_destroy(colordialog);
 	gtk_main_quit();
 	
-    kemoview_set_PSF_single_color(dcolor);
+	dcolor[3] = (float) kemoview_get_PSF_max_opacity();
+	kemoview_set_PSF_single_color(dcolor);
 	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
 	draw_mesh_keep_menu();
 	return;
