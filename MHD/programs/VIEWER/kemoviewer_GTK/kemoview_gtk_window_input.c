@@ -572,7 +572,21 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	return;
 }
 
-static void color_OK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
+static void set_PSFcolor_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
+{
+	gdouble dcolor[4];
+	
+	gtk_color_selection_get_color( GTK_COLOR_SELECTION(colordialog->colorsel), dcolor);
+	gtk_widget_destroy(colordialog);
+	gtk_main_quit();
+	
+    kemoview_set_PSF_single_color(dcolor);
+	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
+	draw_mesh_keep_menu();
+	return;
+}
+
+static void set_background_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
 {
 	GLfloat color[4];
 	gdouble dcolor[4];
@@ -593,18 +607,27 @@ static void color_OK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
 	return;
 }
 
-static void gtk_colorselect(GLfloat color[4], const char *title){
-	
-	gint response;
-	
+static void gtk_PSFcolorselect(const char *title){
 	rangew = gtk_color_selection_dialog_new(title);
 	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button),
-				"clicked", GTK_SIGNAL_FUNC(color_OK), rangew);
+				"clicked", GTK_SIGNAL_FUNC(set_PSFcolor_GTK), rangew);
 	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button),
 				"clicked", GTK_SIGNAL_FUNC(destroy), rangew);
 	gtk_widget_show_all(rangew);
 	gtk_main();
+	
+	return;
+}
 
+static void gtk_BGcolorselect(GLfloat color[4], const char *title){
+	rangew = gtk_color_selection_dialog_new(title);
+	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button),
+				"clicked", GTK_SIGNAL_FUNC(set_background_GTK), rangew);
+	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button),
+				"clicked", GTK_SIGNAL_FUNC(destroy), rangew);
+	gtk_widget_show_all(rangew);
+	gtk_main();
+	
 	return;
 }
 
@@ -665,6 +688,11 @@ static void gtk_nline_menu(int nline, const char *title){
 }
 
 /* Routines for values from console input */
+
+void set_psf_single_color_gtk(){
+	gtk_PSFcolorselect("Select patch color");
+	return;
+}
 
 void edit_psf_colormap_gtk(){
 	char name[1024];
@@ -867,11 +895,9 @@ void set_coastline_radius_gtk(){
 
 void set_background_color_gtk(){
     GLfloat color[4];
-    float red, green, blue;
-    char buf[1024];
 	
 	kemoview_get_background_color(color);
-	gtk_colorselect(color, "Select Background color");
+	gtk_BGcolorselect(color, "Select Background color");
     return;
 };
 

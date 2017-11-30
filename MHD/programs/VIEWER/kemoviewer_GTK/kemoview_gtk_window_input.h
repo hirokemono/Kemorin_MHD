@@ -20,6 +20,7 @@
 
 /*  prototypes */
 
+void set_psf_single_color_gtk();
 void edit_psf_colormap_gtk();
 void edit_psf_opasitymap_gtk();
 void set_psf_range_gtk();

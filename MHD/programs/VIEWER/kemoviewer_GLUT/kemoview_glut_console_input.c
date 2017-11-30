@@ -408,6 +408,28 @@ static void read_psf_colormap_data(float *new_value, float *new_color){
 	return;
 }
 
+void set_psf_single_color_console(){
+    double rgba[4];
+	
+    float red, green, blue, alpha;
+    char buf[1024];
+	
+    printf("Enter surface color by (R,G,B,A) from 0.0 to 1.0: \n");
+    fgets(buf,sizeof(buf),stdin);
+    sscanf(buf,"%f %f %f %f", &red, &green, &blue, &alpha);
+	printf("New background Color (R,G,B,A): %.7e %.7e %.7e %.7e \n",
+				red, green, blue, alpha);
+	
+	rgba[0] = (double) red;
+	rgba[1] = (double) green;
+	rgba[2] = (double) blue;
+	rgba[3] = (double) alpha;
+	
+    kemoview_set_PSF_single_color(rgba);
+	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
+	return;
+}
+
 void add_psf_colormap_point_console(){
 	float value, color;
 	read_psf_colormap_data(&value, &color);

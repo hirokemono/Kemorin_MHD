@@ -36,6 +36,7 @@ void set_domain_distance_by_glui(int winid);
 void set_num_color_loop_by_glui(int winid);
 void set_node_size_by_glui(int winid);
 
+void set_psf_single_color_glui(int winid);
 void edit_psf_colormap_by_glui(int winid);
 void edit_psf_opacitymap_by_glui(int winid);
 
