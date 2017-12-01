@@ -61,12 +61,13 @@
     
 	NSInteger currentPSFID;
 	NSInteger currentPSFStep;
-	CGFloat PSFOpacity;
     
 	
 	CGFloat PsfMinimumValue;
 	CGFloat PsfMaximumValue;
 	NSInteger IsolineNumber;
+    CGFloat PSFOpacity;
+    
     
     IBOutlet id _PsfSurfSwitchOutlet;
     IBOutlet id _PsfLineSwitchOutlet;
@@ -92,6 +93,7 @@
     
 	CGFloat PsfMinimumRange;
 	CGFloat PsfMaximumRange;
+    CGFloat PsfSingleOpacity;
 	
 	NSInteger EvolutionStartStep;
     
@@ -188,5 +190,7 @@
 
 - (IBAction)ChoosePsfPatchDirection:(id)sender;
 
+- (void)SetPSFColorFromColorWell;
 - (IBAction)SetPSFPatchColorAction:(id)sender;
+- (IBAction)SetPSFSingleOpacityAction:(id)sender;
 @end

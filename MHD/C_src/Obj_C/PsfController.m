@@ -548,7 +548,10 @@
 {
 	if(self.psfPatchColorTag == TEXTURED_SURFACE){
 		[self ChooseTextureFile];
-	};
+	}
+    else if(self.psfPatchColorTag == SINGLE_COLOR){
+        [self SetPSFColorFromColorWell];
+    };
 	kemoview_set_PSF_patch_color_mode(self.psfPatchColorTag);
     
 	[_kemoviewer UpdateImage];
@@ -621,20 +624,36 @@
 	[_kemoviewer UpdateImage];
 }
 
-- (IBAction)SetPSFPatchColorAction:(id)sender
-{
+- (void)SetPSFColorFromColorWell{
     CGFloat redBG, greenBG, blueBG, opacityBG;
     double rgba[4];
     NSColor *nsPSFPatchColor = [PSFPatchColorWell color];
     [nsPSFPatchColor getRed:&redBG green:&greenBG blue:&blueBG alpha:&opacityBG ];
-
+    
     rgba[0] = (double) redBG;
     rgba[1] = (double) greenBG;
     rgba[2] = (double) blueBG;
     rgba[3] = (double) opacityBG;
-
+    self.PSFOpacity = opacityBG;
+    
     kemoview_set_PSF_single_color(rgba);
+}
 
+- (IBAction)SetPSFPatchColorAction:(id)sender
+{
+    [self SetPSFColorFromColorWell];
     [_kemoviewer UpdateImage];
 }
+
+- (IBAction)SetPSFSingleOpacityAction:(id)sender
+{
+    kemoview_set_PSF_constant_opacity((double) self.PSFOpacity);
+
+    NSColor *OriginalWellColor = [PSFPatchColorWell color];
+    NSColor *NewWellColor = [OriginalWellColor colorWithAlphaComponent:self.PSFOpacity];
+    [PSFPatchColorWell setColor:NewWellColor];
+    
+    [_kemoviewer UpdateImage];
+};
+
 @end

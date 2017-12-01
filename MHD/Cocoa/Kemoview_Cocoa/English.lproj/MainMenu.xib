@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1611" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10117" systemVersion="15G17023" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10117"/>
@@ -2209,6 +2209,7 @@
                 <binding destination="703" name="visible" keyPath="self.DrawMeshFlag" id="3762"/>
                 <outlet property="delegate" destination="703" id="2985"/>
             </connections>
+            <point key="canvasLocation" x="759" y="383"/>
         </window>
         <customObject id="1932" customClass="FlineController">
             <connections>
@@ -2225,14 +2226,14 @@
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="1196" y="87" width="232" height="757"/>
+            <rect key="contentRect" x="1196" y="87" width="232" height="734"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
             <view key="contentView" id="1065">
-                <rect key="frame" x="0.0" y="0.0" width="232" height="757"/>
+                <rect key="frame" x="0.0" y="0.0" width="232" height="734"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" verticalScrollElasticity="allowed" id="3782">
-                        <rect key="frame" x="0.0" y="-11" width="232" height="686"/>
+                        <rect key="frame" x="0.0" y="-34" width="232" height="686"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="VFN-e1-GpJ">
                             <rect key="frame" x="0.0" y="0.0" width="232" height="686"/>
@@ -2242,8 +2243,388 @@
                                     <rect key="frame" x="0.0" y="0.0" width="230" height="686"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
+                                        <box autoresizesSubviews="NO" title="Surface" borderType="line" id="1079">
+                                            <rect key="frame" x="17" y="226" width="198" height="249"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="qff-HL-V5e">
+                                                <rect key="frame" x="1" y="1" width="196" height="233"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <popUpButton verticalHuggingPriority="750" id="1877">
+                                                        <rect key="frame" x="46" y="177" width="109" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <popUpButtonCell key="cell" type="push" title="Contour" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1880" id="1878">
+                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="menu"/>
+                                                            <menu key="menu" title="OtherViews" id="1879">
+                                                                <items>
+                                                                    <menuItem title="Contour" state="on" id="1880"/>
+                                                                    <menuItem title="White" tag="1" id="1881"/>
+                                                                    <menuItem title="Single color" tag="6" id="xbX-r6-dDd"/>
+                                                                    <menuItem title="Texture.." tag="7" id="3638">
+                                                                        <connections>
+                                                                            <binding destination="964" name="enabled" keyPath="self.psfTexTureEnable" id="3744"/>
+                                                                        </connections>
+                                                                    </menuItem>
+                                                                </items>
+                                                            </menu>
+                                                            <connections>
+                                                                <binding destination="2714" name="selectedTag" keyPath="selection.self.psfPatchColorTag" id="3703"/>
+                                                            </connections>
+                                                        </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="ChoosePsfPatchColorAction:" target="1157" id="1890"/>
+                                                        </connections>
+                                                    </popUpButton>
+                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" id="3170">
+                                                        <rect key="frame" x="18" y="113" width="158" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        <size key="cellSize" width="77" height="18"/>
+                                                        <size key="intercellSpacing" width="4" height="2"/>
+                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="3172">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                        </buttonCell>
+                                                        <cells>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Normal" imagePosition="left" alignment="left" state="on" inset="2" id="3171">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <connections>
+                                                                        <action selector="ChoosePsfPatchDirection:" target="1157" id="3183"/>
+                                                                    </connections>
+                                                                </buttonCell>
+                                                            </column>
+                                                            <column>
+                                                                <buttonCell type="radio" title="Reverse" imagePosition="left" alignment="left" tag="1" inset="2" id="3178">
+                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                    <font key="font" metaFont="system"/>
+                                                                    <connections>
+                                                                        <action selector="ChoosePsfPatchDirection:" target="1157" id="3184"/>
+                                                                    </connections>
+                                                                </buttonCell>
+                                                            </column>
+                                                        </cells>
+                                                    </matrix>
+                                                    <textField verticalHuggingPriority="750" id="1883">
+                                                        <rect key="frame" x="34" y="160" width="51" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color" id="1884">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="2427">
+                                                        <rect key="frame" x="114" y="160" width="52" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Opacity" id="2428">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="3042">
+                                                        <rect key="frame" x="76" y="88" width="43" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Range" id="3043">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <button id="1080">
+                                                        <rect key="frame" x="17" y="207" width="78" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Patch" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="1081">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                            <connections>
+                                                                <binding destination="2714" name="value" keyPath="selection.self.PSFSurfaceSwitch" id="2906">
+                                                                    <dictionary key="options">
+                                                                        <bool key="NSValidatesImmediately" value="YES"/>
+                                                                    </dictionary>
+                                                                </binding>
+                                                            </connections>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="PsfSurfSwitchAction:" target="1157" id="1174"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1272"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="2854">
+                                                        <rect key="frame" x="99" y="207" width="81" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Color bar" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="2855">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                            <connections>
+                                                                <action selector="PsfColorbarSwitchAction:" target="1157" id="2871"/>
+                                                                <binding destination="2714" name="value" keyPath="selection.self.PSFColorbarSwitch" id="2895"/>
+                                                            </connections>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="2856"/>
+                                                        </connections>
+                                                    </button>
+                                                    <textField verticalHuggingPriority="750" id="2799">
+                                                        <rect key="frame" x="101" y="31" width="76" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="2800">
+                                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.###E0" negativeFormat="#.###E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2801"/>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <action selector="SetPSFDisplayrange:" target="1157" id="2941"/>
+                                                                <binding destination="2714" name="value" keyPath="selection.self.PsfMaximumRange" id="2940"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="2802">
+                                                        <rect key="frame" x="17" y="31" width="76" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="2803">
+                                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#E0" negativeFormat="#E0" numberStyle="decimal" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="cIB-Ir-DdL"/>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <action selector="SetPSFDisplayrange:" target="1157" id="2942"/>
+                                                                <binding destination="2714" name="value" keyPath="selection.self.PsfMinimumRange" id="2938"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="1066">
+                                                        <rect key="frame" x="17" y="58" width="76" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="1147">
+                                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.###E0" negativeFormat="#.###E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="jEU-dF-s9g"/>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <binding destination="1157" name="value" keyPath="self.PsfMinimumValue" id="2969"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="1067">
+                                                        <rect key="frame" x="101" y="58" width="76" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="1145">
+                                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.###E0" negativeFormat="#.###E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="PZG-rA-hcK"/>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <binding destination="1157" name="value" keyPath="self.PsfMaximumValue" id="2968"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <colorWell id="StT-jt-Xhd">
+                                                        <rect key="frame" x="20" y="137" width="72" height="23"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <color key="color" red="0.11946704630635285" green="0.021984556839427571" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <connections>
+                                                            <action selector="SetPSFPatchColorAction:" target="1157" id="HQ7-et-bQz"/>
+                                                        </connections>
+                                                    </colorWell>
+                                                    <slider verticalHuggingPriority="750" id="Hlu-EY-wns">
+                                                        <rect key="frame" x="102" y="137" width="76" height="21"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <sliderCell key="cell" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="QJj-Yt-xvf"/>
+                                                        <connections>
+                                                            <action selector="SetPSFSingleOpacityAction:" target="1157" id="JPc-8R-96K"/>
+                                                            <binding destination="1157" name="value" keyPath="self.PSFOpacity" id="EG7-2b-prG"/>
+                                                        </connections>
+                                                    </slider>
+                                                    <button verticalHuggingPriority="750" id="2497">
+                                                        <rect key="frame" x="84" y="12" width="95" height="16"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="push" title="Color Map" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2498">
+                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="miniSystem"/>
+                                                            <connections>
+                                                                <action selector="toggle:" target="2492" id="2500"/>
+                                                            </connections>
+                                                        </buttonCell>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                        <box autoresizesSubviews="NO" title="Isoline" borderType="line" id="1077">
+                                            <rect key="frame" x="16" y="479" width="198" height="111"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="PKN-Oq-Mlh">
+                                                <rect key="frame" x="1" y="1" width="196" height="95"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <textField verticalHuggingPriority="750" id="1091">
+                                                        <rect key="frame" x="104" y="14" width="53" height="22"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="1094">
+                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="1095">
+                                                                <real key="minimum" value="0.0"/>
+                                                                <real key="maximum" value="100"/>
+                                                            </numberFormatter>
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <binding destination="1157" name="value" keyPath="self.IsolineNumber" id="1202"/>
+                                                            </connections>
+                                                        </textFieldCell>
+                                                        <connections>
+                                                            <action selector="ShowIsolineNumber:" target="1157" id="1177"/>
+                                                            <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="1367"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="1090">
+                                                        <rect key="frame" x="162" y="11" width="19" height="27"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="1096">
+                                                            <connections>
+                                                                <binding destination="1157" name="value" keyPath="self.IsolineNumber" id="1206"/>
+                                                            </connections>
+                                                        </stepperCell>
+                                                        <connections>
+                                                            <action selector="ShowIsolineNumber:" target="1157" id="1178"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1370"/>
+                                                        </connections>
+                                                    </stepper>
+                                                    <popUpButton verticalHuggingPriority="750" id="1871">
+                                                        <rect key="frame" x="82" y="40" width="99" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <popUpButtonCell key="cell" type="push" title="Black" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="1875" id="1872">
+                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="menu"/>
+                                                            <menu key="menu" title="OtherViews" id="1873">
+                                                                <items>
+                                                                    <menuItem title="Color" tag="3" id="1874"/>
+                                                                    <menuItem title="Black" state="on" tag="1" id="1875"/>
+                                                                    <menuItem title="White" tag="6" id="3694"/>
+                                                                </items>
+                                                            </menu>
+                                                            <connections>
+                                                                <binding destination="2714" name="selectedTag" keyPath="selection.self.psfLineColorTag" id="3700"/>
+                                                            </connections>
+                                                        </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="ChoosePsfLineColorAction:" target="1157" id="1889"/>
+                                                        </connections>
+                                                    </popUpButton>
+                                                    <textField verticalHuggingPriority="750" id="1885">
+                                                        <rect key="frame" x="15" y="46" width="51" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color" id="1886">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <textField verticalHuggingPriority="750" id="2429">
+                                                        <rect key="frame" x="15" y="16" width="82" height="17"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Num. of line" id="2430">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                    </textField>
+                                                    <button id="1069">
+                                                        <rect key="frame" x="16" y="69" width="64" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Isoline" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1143">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                            <connections>
+                                                                <binding destination="2714" name="value" keyPath="selection.self.PSFIsolineSwitch" id="2902"/>
+                                                            </connections>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="PsfLineSwitchAction:" target="1157" id="1173"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1275"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button id="1070">
+                                                        <rect key="frame" x="129" y="70" width="51" height="18"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <buttonCell key="cell" type="check" title="Zero" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1142">
+                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                            <font key="font" metaFont="system"/>
+                                                            <connections>
+                                                                <binding destination="2714" name="value" keyPath="selection.self.PSFZerolineSwitch" id="2898"/>
+                                                            </connections>
+                                                        </buttonCell>
+                                                        <connections>
+                                                            <action selector="PsfZeroLineSwitchAction:" target="1157" id="1175"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1278"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
+                                        <box autoresizesSubviews="NO" title="Field to Display" borderType="line" id="1892">
+                                            <rect key="frame" x="17" y="594" width="198" height="92"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                            <view key="contentView" id="4Pa-T4-4I0">
+                                                <rect key="frame" x="1" y="1" width="196" height="76"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <subviews>
+                                                    <popUpButton verticalHuggingPriority="750" id="1074">
+                                                        <rect key="frame" x="15" y="42" width="166" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <popUpButtonCell key="cell" type="push" title="Field" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1107" id="1103">
+                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="menu"/>
+                                                            <menu key="menu" title="OtherViews" id="1104">
+                                                                <items>
+                                                                    <menuItem title="Field" state="on" id="1107"/>
+                                                                    <menuItem title="Item 2" id="1106"/>
+                                                                    <menuItem title="Item 3" id="1105"/>
+                                                                </items>
+                                                            </menu>
+                                                            <connections>
+                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.PSFSelectedField" id="2909"/>
+                                                            </connections>
+                                                        </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="PsfFieldAction:" target="1157" id="1172"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1266"/>
+                                                        </connections>
+                                                    </popUpButton>
+                                                    <popUpButton verticalHuggingPriority="750" id="1076">
+                                                        <rect key="frame" x="16" y="11" width="166" height="26"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                        <popUpButtonCell key="cell" type="push" title="Component" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1101" id="1097">
+                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                            <font key="font" metaFont="menu"/>
+                                                            <menu key="menu" title="OtherViews" id="1098">
+                                                                <items>
+                                                                    <menuItem title="Component" state="on" id="1101"/>
+                                                                </items>
+                                                            </menu>
+                                                            <connections>
+                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.PSFSelectedComponent" id="2912"/>
+                                                            </connections>
+                                                        </popUpButtonCell>
+                                                        <connections>
+                                                            <action selector="PsfComponentAction:" target="1157" id="1171"/>
+                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1269"/>
+                                                        </connections>
+                                                    </popUpButton>
+                                                </subviews>
+                                            </view>
+                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
+                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </box>
                                         <box autoresizesSubviews="NO" title="Vector" borderType="line" id="3003">
-                                            <rect key="frame" x="17" y="29" width="198" height="179"/>
+                                            <rect key="frame" x="17" y="43" width="198" height="179"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="CZ1-hQ-dWH">
                                                 <rect key="frame" x="1" y="1" width="196" height="163"/>
@@ -2397,377 +2778,6 @@
                                             <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                                             <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </box>
-                                        <box autoresizesSubviews="NO" title="Surface" borderType="line" id="1079">
-                                            <rect key="frame" x="17" y="212" width="198" height="243"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <view key="contentView" id="qff-HL-V5e">
-                                                <rect key="frame" x="1" y="1" width="196" height="227"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <popUpButton verticalHuggingPriority="750" id="1877">
-                                                        <rect key="frame" x="76" y="171" width="105" height="26"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <popUpButtonCell key="cell" type="push" title="Color" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1880" id="1878">
-                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="menu"/>
-                                                            <menu key="menu" title="OtherViews" id="1879">
-                                                                <items>
-                                                                    <menuItem title="Color" state="on" id="1880"/>
-                                                                    <menuItem title="White" tag="1" id="1881"/>
-                                                                    <menuItem title="Single color" tag="6" id="xbX-r6-dDd"/>
-                                                                    <menuItem title="Texture.." tag="7" id="3638">
-                                                                        <connections>
-                                                                            <binding destination="964" name="enabled" keyPath="self.psfTexTureEnable" id="3744"/>
-                                                                        </connections>
-                                                                    </menuItem>
-                                                                </items>
-                                                            </menu>
-                                                            <connections>
-                                                                <binding destination="2714" name="selectedTag" keyPath="selection.self.psfPatchColorTag" id="3703"/>
-                                                            </connections>
-                                                        </popUpButtonCell>
-                                                        <connections>
-                                                            <action selector="ChoosePsfPatchColorAction:" target="1157" id="1890"/>
-                                                        </connections>
-                                                    </popUpButton>
-                                                    <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" id="3170">
-                                                        <rect key="frame" x="18" y="125" width="158" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        <size key="cellSize" width="77" height="18"/>
-                                                        <size key="intercellSpacing" width="4" height="2"/>
-                                                        <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="3172">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                        </buttonCell>
-                                                        <cells>
-                                                            <column>
-                                                                <buttonCell type="radio" title="Normal" imagePosition="left" alignment="left" state="on" inset="2" id="3171">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <connections>
-                                                                        <action selector="ChoosePsfPatchDirection:" target="1157" id="3183"/>
-                                                                    </connections>
-                                                                </buttonCell>
-                                                            </column>
-                                                            <column>
-                                                                <buttonCell type="radio" title="Reverse" imagePosition="left" alignment="left" tag="1" inset="2" id="3178">
-                                                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                                    <font key="font" metaFont="system"/>
-                                                                    <connections>
-                                                                        <action selector="ChoosePsfPatchDirection:" target="1157" id="3184"/>
-                                                                    </connections>
-                                                                </buttonCell>
-                                                            </column>
-                                                        </cells>
-                                                    </matrix>
-                                                    <textField verticalHuggingPriority="750" id="1883">
-                                                        <rect key="frame" x="21" y="176" width="51" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color" id="1884">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="2427">
-                                                        <rect key="frame" x="21" y="151" width="52" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Opacity" id="2428">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="3042">
-                                                        <rect key="frame" x="77" y="94" width="43" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Range" id="3043">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <button id="1080">
-                                                        <rect key="frame" x="16" y="201" width="78" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Patch" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="1081">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                            <connections>
-                                                                <binding destination="2714" name="value" keyPath="selection.self.PSFSurfaceSwitch" id="2906">
-                                                                    <dictionary key="options">
-                                                                        <bool key="NSValidatesImmediately" value="YES"/>
-                                                                    </dictionary>
-                                                                </binding>
-                                                            </connections>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="PsfSurfSwitchAction:" target="1157" id="1174"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1272"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button id="2854">
-                                                        <rect key="frame" x="98" y="201" width="81" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Color bar" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="2855">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                            <connections>
-                                                                <action selector="PsfColorbarSwitchAction:" target="1157" id="2871"/>
-                                                                <binding destination="2714" name="value" keyPath="selection.self.PSFColorbarSwitch" id="2895"/>
-                                                            </connections>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="2856"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button verticalHuggingPriority="750" id="2497">
-                                                        <rect key="frame" x="83" y="13" width="95" height="16"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="push" title="Color Map" bezelStyle="rounded" alignment="center" controlSize="mini" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2498">
-                                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="miniSystem"/>
-                                                            <connections>
-                                                                <action selector="toggle:" target="2492" id="2500"/>
-                                                            </connections>
-                                                        </buttonCell>
-                                                    </button>
-                                                    <textField verticalHuggingPriority="750" id="2799">
-                                                        <rect key="frame" x="102" y="37" width="76" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="2800">
-                                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.###E0" negativeFormat="#.###E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2801"/>
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <connections>
-                                                                <action selector="SetPSFDisplayrange:" target="1157" id="2941"/>
-                                                                <binding destination="2714" name="value" keyPath="selection.self.PsfMaximumRange" id="2940"/>
-                                                            </connections>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="2802">
-                                                        <rect key="frame" x="18" y="37" width="76" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="2803">
-                                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#E0" negativeFormat="#E0" numberStyle="decimal" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="cIB-Ir-DdL"/>
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <connections>
-                                                                <action selector="SetPSFDisplayrange:" target="1157" id="2942"/>
-                                                                <binding destination="2714" name="value" keyPath="selection.self.PsfMinimumRange" id="2938"/>
-                                                            </connections>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="1066">
-                                                        <rect key="frame" x="18" y="64" width="76" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="1147">
-                                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.###E0" negativeFormat="#.###E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="jEU-dF-s9g"/>
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <connections>
-                                                                <binding destination="1157" name="value" keyPath="self.PsfMinimumValue" id="2969"/>
-                                                            </connections>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="1067">
-                                                        <rect key="frame" x="102" y="64" width="76" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" id="1145">
-                                                            <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#.###E0" negativeFormat="#.###E0" numberStyle="scientific" usesGroupingSeparator="NO" paddingCharacter="*" groupingSize="0" minimumIntegerDigits="0" maximumIntegerDigits="1" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="PZG-rA-hcK"/>
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                            <connections>
-                                                                <binding destination="1157" name="value" keyPath="self.PsfMaximumValue" id="2968"/>
-                                                            </connections>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <colorWell id="StT-jt-Xhd">
-                                                        <rect key="frame" x="134" y="148" width="44" height="23"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <color key="color" red="0.11946704630635285" green="0.021984556839427571" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                        <connections>
-                                                            <action selector="SetPSFPatchColorAction:" target="1157" id="HQ7-et-bQz"/>
-                                                        </connections>
-                                                    </colorWell>
-                                                </subviews>
-                                            </view>
-                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </box>
-                                        <box autoresizesSubviews="NO" title="Isoline" borderType="line" id="1077">
-                                            <rect key="frame" x="15" y="459" width="198" height="111"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <view key="contentView" id="PKN-Oq-Mlh">
-                                                <rect key="frame" x="1" y="1" width="196" height="95"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <textField verticalHuggingPriority="750" id="1091">
-                                                        <rect key="frame" x="104" y="14" width="53" height="22"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="1094">
-                                                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="1095">
-                                                                <real key="minimum" value="0.0"/>
-                                                                <real key="maximum" value="100"/>
-                                                            </numberFormatter>
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                            <connections>
-                                                                <binding destination="1157" name="value" keyPath="self.IsolineNumber" id="1202"/>
-                                                            </connections>
-                                                        </textFieldCell>
-                                                        <connections>
-                                                            <action selector="ShowIsolineNumber:" target="1157" id="1177"/>
-                                                            <binding destination="1157" name="editable" keyPath="self.DrawPsfFlag" id="1367"/>
-                                                        </connections>
-                                                    </textField>
-                                                    <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" id="1090">
-                                                        <rect key="frame" x="162" y="11" width="19" height="27"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <stepperCell key="cell" continuous="YES" alignment="left" maxValue="100" id="1096">
-                                                            <connections>
-                                                                <binding destination="1157" name="value" keyPath="self.IsolineNumber" id="1206"/>
-                                                            </connections>
-                                                        </stepperCell>
-                                                        <connections>
-                                                            <action selector="ShowIsolineNumber:" target="1157" id="1178"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1370"/>
-                                                        </connections>
-                                                    </stepper>
-                                                    <popUpButton verticalHuggingPriority="750" id="1871">
-                                                        <rect key="frame" x="82" y="40" width="99" height="26"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <popUpButtonCell key="cell" type="push" title="Black" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" tag="1" imageScaling="proportionallyDown" inset="2" selectedItem="1875" id="1872">
-                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="menu"/>
-                                                            <menu key="menu" title="OtherViews" id="1873">
-                                                                <items>
-                                                                    <menuItem title="Color" tag="3" id="1874"/>
-                                                                    <menuItem title="Black" state="on" tag="1" id="1875"/>
-                                                                    <menuItem title="White" tag="6" id="3694"/>
-                                                                </items>
-                                                            </menu>
-                                                            <connections>
-                                                                <binding destination="2714" name="selectedTag" keyPath="selection.self.psfLineColorTag" id="3700"/>
-                                                            </connections>
-                                                        </popUpButtonCell>
-                                                        <connections>
-                                                            <action selector="ChoosePsfLineColorAction:" target="1157" id="1889"/>
-                                                        </connections>
-                                                    </popUpButton>
-                                                    <textField verticalHuggingPriority="750" id="1885">
-                                                        <rect key="frame" x="15" y="46" width="51" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Color" id="1886">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <textField verticalHuggingPriority="750" id="2429">
-                                                        <rect key="frame" x="15" y="16" width="82" height="17"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Num. of line" id="2430">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                    </textField>
-                                                    <button id="1069">
-                                                        <rect key="frame" x="16" y="69" width="64" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Isoline" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1143">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                            <connections>
-                                                                <binding destination="2714" name="value" keyPath="selection.self.PSFIsolineSwitch" id="2902"/>
-                                                            </connections>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="PsfLineSwitchAction:" target="1157" id="1173"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1275"/>
-                                                        </connections>
-                                                    </button>
-                                                    <button id="1070">
-                                                        <rect key="frame" x="129" y="70" width="51" height="18"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <buttonCell key="cell" type="check" title="Zero" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1142">
-                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                            <font key="font" metaFont="system"/>
-                                                            <connections>
-                                                                <binding destination="2714" name="value" keyPath="selection.self.PSFZerolineSwitch" id="2898"/>
-                                                            </connections>
-                                                        </buttonCell>
-                                                        <connections>
-                                                            <action selector="PsfZeroLineSwitchAction:" target="1157" id="1175"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1278"/>
-                                                        </connections>
-                                                    </button>
-                                                </subviews>
-                                            </view>
-                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </box>
-                                        <box autoresizesSubviews="NO" title="Field to Display" borderType="line" id="1892">
-                                            <rect key="frame" x="15" y="574" width="198" height="92"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <view key="contentView" id="4Pa-T4-4I0">
-                                                <rect key="frame" x="1" y="1" width="196" height="76"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                                <subviews>
-                                                    <popUpButton verticalHuggingPriority="750" id="1074">
-                                                        <rect key="frame" x="15" y="42" width="166" height="26"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <popUpButtonCell key="cell" type="push" title="Field" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1107" id="1103">
-                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="menu"/>
-                                                            <menu key="menu" title="OtherViews" id="1104">
-                                                                <items>
-                                                                    <menuItem title="Field" state="on" id="1107"/>
-                                                                    <menuItem title="Item 2" id="1106"/>
-                                                                    <menuItem title="Item 3" id="1105"/>
-                                                                </items>
-                                                            </menu>
-                                                            <connections>
-                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.PSFSelectedField" id="2909"/>
-                                                            </connections>
-                                                        </popUpButtonCell>
-                                                        <connections>
-                                                            <action selector="PsfFieldAction:" target="1157" id="1172"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1266"/>
-                                                        </connections>
-                                                    </popUpButton>
-                                                    <popUpButton verticalHuggingPriority="750" id="1076">
-                                                        <rect key="frame" x="16" y="11" width="166" height="26"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                        <popUpButtonCell key="cell" type="push" title="Component" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1101" id="1097">
-                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                            <font key="font" metaFont="menu"/>
-                                                            <menu key="menu" title="OtherViews" id="1098">
-                                                                <items>
-                                                                    <menuItem title="Component" state="on" id="1101"/>
-                                                                </items>
-                                                            </menu>
-                                                            <connections>
-                                                                <binding destination="2714" name="selectedIndex" keyPath="selection.self.PSFSelectedComponent" id="2912"/>
-                                                            </connections>
-                                                        </popUpButtonCell>
-                                                        <connections>
-                                                            <action selector="PsfComponentAction:" target="1157" id="1171"/>
-                                                            <binding destination="1157" name="enabled" keyPath="self.DrawPsfFlag" id="1269"/>
-                                                        </connections>
-                                                    </popUpButton>
-                                                </subviews>
-                                            </view>
-                                            <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                                            <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </box>
                                     </subviews>
                                 </view>
                             </subviews>
@@ -2781,8 +2791,30 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
+                    <textField verticalHuggingPriority="750" id="2989">
+                        <rect key="frame" x="162" y="715" width="50" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" drawsBackground="YES" id="2990">
+                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2994"/>
+                            <font key="font" metaFont="miniSystem"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" white="0.66666666669999997" alpha="0.0" colorSpace="deviceWhite"/>
+                            <connections>
+                                <binding destination="2714" name="value" keyPath="selection.self.currentPSFStep" id="2993"/>
+                            </connections>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="2995">
+                        <rect key="frame" x="83" y="719" width="74" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Current step:" id="2996">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                     <popUpButton verticalHuggingPriority="750" id="2848">
-                        <rect key="frame" x="63" y="676" width="152" height="26"/>
+                        <rect key="frame" x="63" y="660" width="152" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="PSF File" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="2851" id="2849">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -2801,7 +2833,7 @@
                         </connections>
                     </popUpButton>
                     <button verticalHuggingPriority="750" id="2805">
-                        <rect key="frame" x="122" y="702" width="96" height="32"/>
+                        <rect key="frame" x="122" y="686" width="96" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Close" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2806">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2812,7 +2844,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="3600">
-                        <rect key="frame" x="14" y="702" width="96" height="32"/>
+                        <rect key="frame" x="14" y="686" width="96" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Open" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3601">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -2822,28 +2854,6 @@
                             <action selector="OpenPsfFile:" target="1157" id="3603"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="2989">
-                        <rect key="frame" x="162" y="738" width="50" height="16"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" alignment="right" drawsBackground="YES" id="2990">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" positiveFormat="#,##0.###" negativeFormat="#,##0.###" numberStyle="decimal" paddingCharacter="*" minimumIntegerDigits="1" maximumIntegerDigits="309" maximumFractionDigits="3" decimalSeparator="." groupingSeparator="," currencyDecimalSeparator="." plusSign="+" minusSign="-" notANumberSymbol="NaN" perMillSymbol="‰" percentSymbol="%" exponentSymbol="E" positivePrefix="" positiveSuffix="" negativePrefix="-" negativeSuffix="" id="2994"/>
-                            <font key="font" metaFont="miniSystem"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" white="0.66666666669999997" alpha="0.0" colorSpace="deviceWhite"/>
-                            <connections>
-                                <binding destination="2714" name="value" keyPath="selection.self.currentPSFStep" id="2993"/>
-                            </connections>
-                        </textFieldCell>
-                    </textField>
-                    <textField verticalHuggingPriority="750" id="2995">
-                        <rect key="frame" x="83" y="742" width="74" height="14"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Current step:" id="2996">
-                            <font key="font" metaFont="smallSystem"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
                 </subviews>
             </view>
             <connections>
@@ -2851,6 +2861,7 @@
                 <binding destination="1157" name="title" keyPath="self.PsfWindowlabel" id="1905"/>
                 <outlet property="delegate" destination="1157" id="1443"/>
             </connections>
+            <point key="canvasLocation" x="69" y="341"/>
         </window>
         <window title="Fieldline View" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1944">
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
