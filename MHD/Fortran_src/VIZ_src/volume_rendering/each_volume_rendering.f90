@@ -53,7 +53,6 @@
       use field_data_4_pvr
       use set_default_pvr_params
       use set_position_pvr_screen
-      use set_pvr_ray_start_point
       use mesh_outline_4_pvr
       use generate_vr_image
       use rendering_streo_vr_image

@@ -55,7 +55,6 @@
       use t_pvr_ray_startpoints
       use ray_trace_4_each_image
       use composite_pvr_images
-      use set_pvr_ray_start_point
       use draw_pvr_colorbar
       use composite_pvr_images
       use PVR_image_transfer

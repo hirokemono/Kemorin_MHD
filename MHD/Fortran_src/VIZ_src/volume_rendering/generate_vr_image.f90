@@ -134,6 +134,7 @@
       use m_geometry_constants
       use t_geometry_data
       use t_surface_data
+      use count_pvr_ray_start_point
       use set_pvr_ray_start_point
       use cal_field_on_surf_viz
 !
@@ -190,6 +191,12 @@
      &   pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,       &
      &   pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,                &
      &   pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
+!
+      if(iflag_debug .gt. 0) then
+        call check_pvr_ray_startpoint                                   &
+     &     (pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                 &
+     &      pvr_start%num_pvr_ray, pvr_start%id_pixel_start)
+      end if
 !
       end subroutine s_set_pvr_ray_start_point
 !

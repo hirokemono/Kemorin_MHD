@@ -52,7 +52,6 @@
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
-      use set_pvr_ray_start_point
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
