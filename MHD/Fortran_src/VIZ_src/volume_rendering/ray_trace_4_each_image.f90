@@ -293,7 +293,7 @@
         c_org(1) =   c_tgt(1)
       end do
 !
-      if(iflag_check) then
+      if(iflag_check .gt. 0) then
         if(iflag_hit .eq. 0) then
           write(*,*) 'surface does not hit: ', my_rank
         else
