@@ -295,6 +295,8 @@
 !
       if(iflag_check .gt. 0 .and. iflag_hit .eq. 0) then
         write(*,*) 'surface does not hit: ', my_rank
+      else
+        write(*,*) 'surface  hit in: ', my_rank
       end if
 !
       end subroutine ray_trace_each_pixel

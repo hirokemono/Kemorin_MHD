@@ -231,6 +231,7 @@
         jpix = (inum-1)/npixel_x+1
 !
         if(ipix.eq.649 .and. jpix.eq.398) id_pixel_check(icou) = 1
+        if(ipix.eq.648 .and. jpix.eq.398) id_pixel_check(icou) = 1
 !
         if(id_pixel_check(icou) .gt. 0) then
           write(*,*) 'pixel check for ', icou, ipix, jpix
