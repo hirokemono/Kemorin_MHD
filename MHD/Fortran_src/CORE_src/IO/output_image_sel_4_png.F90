@@ -21,6 +21,8 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter :: iflag_BMP = 11
+      integer(kind = kint), parameter :: iflag_PNG = 12
       character(len=1024), private ::  fhead_img_v
 !
 !------------------------------------------------------------------
@@ -40,7 +42,7 @@
 !
 !
 #ifdef PNG_OUTPUT
-      if(id_file_type .eq. 12) then
+      if(id_file_type .eq. iflag_PNG) then
         npix4_x = int(npix_x)
         npix4_y = int(npix_y)
         write(fhead_img_v, '(a,a1)') trim(img_head), CHAR(0)
@@ -67,7 +69,7 @@
 !
 !
 #ifdef PNG_OUTPUT
-      if(id_file_type .eq. 12) then
+      if(id_file_type .eq. iflag_PNG) then
         write(fhead_img_v, '(a,a1)') trim(img_head), CHAR(0)
         npix4_x = int(npix_x)
         npix4_y = int(npix_y)

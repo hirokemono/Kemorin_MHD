@@ -19,6 +19,7 @@
       use calypso_mpi
 !
       use set_field_comp_for_viz
+      use output_image_sel_4_png
 !
       implicit  none
 !
@@ -59,11 +60,11 @@
      &   .or. cmp_no_case(tmpchara, 'udt')) then
         file_param%id_pvr_file_type = 0
       else if(cmp_no_case(tmpchara, 'png')) then
-        file_param%id_pvr_file_type = 12
+        file_param%id_pvr_file_type = iflag_PNG
       else if(cmp_no_case(tmpchara, 'bmp')) then
-        file_param%id_pvr_file_type = 11
+        file_param%id_pvr_file_type = iflag_BMP
       else
-        file_param%id_pvr_file_type = 11
+        file_param%id_pvr_file_type = iflag_BMP
       end if
 !
 !
