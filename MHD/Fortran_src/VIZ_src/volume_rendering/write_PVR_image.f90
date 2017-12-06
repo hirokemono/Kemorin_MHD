@@ -75,7 +75,7 @@
 !>       MPI rank for image output
       integer(kind = kint), parameter :: irank_tgt = 0
 !
-!      integer(kind = kint) :: i, j, k, ipix
+      integer(kind = kint) :: i, j, k, ipix
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
@@ -119,6 +119,15 @@
      &    pvr_img%npixel_img, pvr_rgb%num_pixel_xy,                     &
      &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
      &    pvr_img%rgba_rank0, pvr_rgb%rgba_real_gl, pvr_img%COMM)
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'picked points'
+        do i = 635, 639
+          do j = 394, 398
+            ipix = i + (j-1)* pvr_rgb%num_pixels(1)
+            write(*,*) i, j, ipix, pvr_rgb%rgba_real_gl(1:4,ipix)
+          end do
+        end do
 !
       if(my_rank .eq. irank_tgt) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
