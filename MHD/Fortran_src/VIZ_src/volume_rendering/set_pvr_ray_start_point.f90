@@ -196,7 +196,7 @@
 !
         do icou = 1, npixel_x*npixel_y
           if(iflag_pix_g(icou) .eq. 0) write(*,*) 'missing pixel: ',    &
-     &       icou, mod(icou-1,npixel_y)+1, (icou-1)/npixel_y+1
+     &       icou, mod(icou-1,npixel_x)+1, (icou-1)/npixel_x+1
         end do
       end if
 !
