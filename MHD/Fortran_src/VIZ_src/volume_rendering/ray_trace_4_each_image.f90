@@ -295,9 +295,9 @@
 !
       if(iflag_check*field_pvr%num_sections .gt. 0) then
         if(iflag_hit .eq. 0) then
-          write(*,*) 'surface does not hit: ', my_rank
+          write(*,*) 'surface does not hit: ', my_rank, rgba_ray(1:4)
         else
-          write(*,*) 'surface  hit in: ', my_rank
+          write(*,*) 'surface  hit in: ', my_rank, rgba_ray(1:4)
         end if
       end if
 !
