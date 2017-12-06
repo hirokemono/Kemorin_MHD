@@ -76,7 +76,7 @@
 !
 !$omp parallel do private(inum, iflag_comm,rgba_tmp)
       do inum = 1, num_pvr_ray
-        if(id_pixel_check(inum) .gt. 0) then
+        if(id_pixel_check(inum)*field_pvr%num_sections .gt. 0) then
           write(*,*) 'check section trace for ', my_rank, inum
         end if
 !
@@ -293,7 +293,7 @@
         c_org(1) =   c_tgt(1)
       end do
 !
-      if(iflag_check .gt. 0) then
+      if(iflag_check*field_pvr%num_sections .gt. 0) then
         if(iflag_hit .eq. 0) then
           write(*,*) 'surface does not hit: ', my_rank
         else
