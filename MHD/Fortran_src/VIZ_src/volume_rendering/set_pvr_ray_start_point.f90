@@ -238,7 +238,7 @@
         if(ipix.eq.634 .and. jpix.eq.396) id_pixel_check(icou) = 1
 !
         if(id_pixel_check(icou) .gt. 0) then
-          write(*,*) 'pixel check for ', icou, ipix, jpix
+          write(*,*) 'pixel check for ', my_rank, icou, ipix, jpix
         end if
       end do
 !
