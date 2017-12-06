@@ -377,7 +377,7 @@
       iflag_pix_l = 0
       iflag_pix_g = 0
       rgb_chk = char(0)
-      do inum = 1, num_pvr_surf
+      do inum = 1, num_pvr_ray
         icou = id_pixel_start(jcou)
         iflag_pix_l(icou) = 1
         rgb_chk(1,icou) = char(255)
