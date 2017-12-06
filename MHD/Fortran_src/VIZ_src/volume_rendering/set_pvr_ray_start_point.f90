@@ -181,15 +181,19 @@
       do icou = 1, num_pvr_ray
         inum = id_pixel_start(icou)
         iflag_pix_l(inum) = 1
-        rgb_chk(1,inum) = char(255)
       end do
       call MPI_allREDUCE (iflag_pix_l, iflag_pix_g,                     &
      &    npixel_x*npixel_y, CALYPSO_INTEGER,                           &
      &    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if(my_rank .eq. 0) then
+        do icou = 1, npixel_x*npixel_y
+          rgb_chk(1,inum) = char(iflag_pix_g(icou)*255)
+        end do
+!
         call pixout_BMP                                                 &
      &     (img_head, npixel_x, npixel_y, rgb_chk(1,1))
+!
         do icou = 1, npixel_x*npixel_y
           if(iflag_pix_g(icou) .eq. 0) write(*,*) 'missing pixel: ',    &
      &       icou, mod(icou-1,npixel_y)+1, (icou-1)/npixel_y+1
