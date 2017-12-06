@@ -63,6 +63,9 @@
         real(kind = kreal), allocatable ::  pvr_ray_dir(:,:)
 !>    Color data for tracing
         real(kind = kreal), allocatable ::  rgba_ray(:,:)
+!
+!>    pixel check flag for ray tracing
+        integer(kind= kint), allocatable :: id_pixel_check(:)
       end type pvr_ray_start_type
 !
 !>  Direction of Ray in screen coordinate
@@ -107,6 +110,7 @@
       allocate(pvr_start%xx_pvr_ray_start(3,pvr_start%num_pvr_ray) )
       allocate(pvr_start%xx_pvr_start(3,pvr_start%num_pvr_ray)     )
       allocate(pvr_start%pvr_ray_dir(3,pvr_start%num_pvr_ray)      )
+      allocate(pvr_start%id_pixel_check(pvr_start%num_pvr_ray)     )
 !
       if(pvr_start%num_pvr_ray .gt. 0) then
         pvr_start%id_pixel_start = 0
@@ -116,6 +120,7 @@
         pvr_start%xx_pvr_ray_start = 0.0d0
         pvr_start%xx_pvr_start = 0.0d0
         pvr_start%pvr_ray_dir =  0.0d0
+        pvr_start%id_pixel_check = 0
       end if
 !
       end subroutine allocate_item_pvr_ray_start
@@ -200,7 +205,7 @@
       deallocate(pvr_start%isf_pvr_ray_start)
       deallocate(pvr_start%xx_pvr_ray_start)
       deallocate(pvr_start%xx_pvr_start, pvr_start%xi_pvr_start)
-      deallocate(pvr_start%pvr_ray_dir)
+      deallocate(pvr_start%pvr_ray_dir, pvr_start%id_pixel_check)
 !
       end subroutine deallocate_item_pvr_ray_start
 !

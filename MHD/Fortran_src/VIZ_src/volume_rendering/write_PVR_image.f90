@@ -81,10 +81,10 @@
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image(node, ele, surf,                    &
      &    pvr_screen, field_pvr, color_param, ray_vec,                  &
-     &    pvr_start%num_pvr_ray, pvr_start%icount_pvr_trace,            &
-     &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
-     &    pvr_start%xx_pvr_start, pvr_start%xx_pvr_ray_start,           &
-     &    pvr_start%rgba_ray)
+     &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
+     &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
+     &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
+     &    pvr_start%xx_pvr_ray_start, pvr_start%rgba_ray)
 !
       if(iflag_debug .gt. 0) write(*,*) 'copy_segmented_image'
       call copy_segmented_image(pvr_start%num_pvr_ray,                  &

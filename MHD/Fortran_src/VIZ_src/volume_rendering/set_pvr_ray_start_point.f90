@@ -15,6 +15,8 @@
 !!     &          xx_pvr_start, xx_pvr_ray_start, pvr_ray_dir)
 !!      subroutine check_pvr_ray_startpoint                             &
 !!     &         (npixel_x, npixel_y, num_pvr_ray, id_pixel_start)
+!!      subroutine set_pvr_ray_trace_check(npixel_x, npixel_y,          &
+!!     &          num_pvr_ray, id_pixel_start, id_pixel_check)
 !
       module set_pvr_ray_start_point
 !
@@ -160,7 +162,7 @@
 !
       integer(kind = kint), intent(in) :: npixel_x, npixel_y
       integer(kind = kint), intent(in) ::  num_pvr_ray
-      integer(kind = kint), intent(in)                               &
+      integer(kind = kint), intent(in)                                  &
      &                    :: id_pixel_start(num_pvr_ray)
 !
       integer(kind = kint) :: inum, icou
@@ -203,6 +205,39 @@
       deallocate(rgb_chk, iflag_pix_g, iflag_pix_l)
 !
       end subroutine check_pvr_ray_startpoint
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_pvr_ray_trace_check(npixel_x, npixel_y,            &
+     &          num_pvr_ray, id_pixel_start, id_pixel_check)
+!
+      use write_bmp_image
+!
+      integer(kind = kint), intent(in) :: npixel_x, npixel_y
+      integer(kind = kint), intent(in) ::  num_pvr_ray
+      integer(kind = kint), intent(in)                                  &
+     &                    :: id_pixel_start(num_pvr_ray)
+!
+      integer(kind = kint), intent(inout)                               &
+     &                    :: id_pixel_check(num_pvr_ray)
+!
+      integer(kind = kint) :: inum, icou
+      integer(kind = kint) :: ipix, jpix
+!
+!
+      do icou = 1, num_pvr_ray
+        inum = id_pixel_start(icou)
+        ipix = mod(inum-1,npixel_x)+1
+        jpix = (inum-1)/npixel_x+1
+!
+        if(ipix.eq.649 .and. jpix.eq.398) id_pixel_check(icou) = 1
+!
+        if(id_pixel_check(icou) .gt. 0) then
+          write(*,*) 'pixel check for ', icou, ipix, jpix
+        end if
+      end do
+!
+      end subroutine set_pvr_ray_trace_check
 !
 !  ---------------------------------------------------------------------
 !

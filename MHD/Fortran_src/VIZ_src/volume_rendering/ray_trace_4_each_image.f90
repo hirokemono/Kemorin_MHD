@@ -5,8 +5,9 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!
-!!      subroutine s_ray_trace_4_each_image(node, ele, surf, pvr_screen,&
-!!     &          field_pvr, color_param, ray_vec, num_pvr_ray,         &
+!!      subroutine s_ray_trace_4_each_image                             &
+!!     &         (node, ele, surf, pvr_screen, field_pvr,               &
+!!     &          color_param, ray_vec, num_pvr_ray, id_pixel_check,    &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
 !!      subroutine blend_overlapped_area(num_pvr_ray,                   &
@@ -35,8 +36,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_ray_trace_4_each_image(node, ele, surf, pvr_screen,  &
-     &          field_pvr, color_param, ray_vec, num_pvr_ray,           &
+      subroutine s_ray_trace_4_each_image                               &
+     &         (node, ele, surf, pvr_screen, field_pvr,                 &
+     &          color_param, ray_vec, num_pvr_ray, id_pixel_check,      &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
 !
@@ -55,6 +57,8 @@
 !
       real(kind = kreal), intent(in) :: ray_vec(3)
       integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(in)                                  &
+     &                    :: id_pixel_check(num_pvr_ray)
       integer(kind = kint), intent(inout)                               &
      &                    :: icount_pvr_trace(num_pvr_ray)
       integer(kind = kint), intent(inout)                               &
@@ -72,16 +76,21 @@
 !
 !$omp parallel do private(inum, iflag_comm,rgba_tmp)
       do inum = 1, num_pvr_ray
+        if(id_pixel_check(inum) .gt. 0) then
+          write(*,*) 'check section trace for ', my_rank, inum
+        end if
+!
         rgba_tmp(1:4) = zero
-          call ray_trace_each_pixel                                     &
+        call ray_trace_each_pixel                                       &
      &      (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,   &
      &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,            &
      &       ele%interior_ele, node%xx, surf%vnorm_surf,                &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
      &       pvr_screen%viewpoint_vec, field_pvr, color_param, ray_vec, &
-     &       isf_pvr_ray_start(1,inum), xx_pvr_ray_start(1,inum),       &
-     &       xx_pvr_start(1,inum), xi_pvr_start(1,inum),                &
-     &       rgba_tmp(1), icount_pvr_trace(inum), iflag_comm)
+     &       id_pixel_check(inum), isf_pvr_ray_start(1,inum),           &
+     &       xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),            &
+     &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
+     &       iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
       end do
 !$omp end parallel do
@@ -131,10 +140,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_pixel                                   &
-     &       (numnod, numele, numsurf,  nnod_4_surf, ie_surf,           &
+     &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
      &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
-     &        arccos_sf, x_nod_model, viewpoint_vec,                    &
-     &        field_pvr, color_param, ray_vec, isurf_org,               &
+     &        arccos_sf, x_nod_model, viewpoint_vec, field_pvr,         &
+     &        color_param, ray_vec, iflag_check, isurf_org,             &
      &        screen_st, xx_st, xi, rgba_ray, icount_line, iflag_comm)
 !
       use t_geometries_in_pvr_screen
@@ -143,6 +152,7 @@
       use cal_fline_in_cube
       use set_coefs_of_sections
 !
+      integer(kind = kint), intent(in) :: iflag_check
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
@@ -168,7 +178,7 @@
 !
       integer(kind = kint), parameter :: iflag_back = 0
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
-      integer(kind = kint) :: i_iso, i_psf, iflag
+      integer(kind = kint) :: i_iso, i_psf, iflag, iflag_hit
       real(kind = kreal) :: screen_tgt(3), c_tgt(1), c_org(1)
       real(kind = kreal) :: grad_tgt(3), xx_tgt(3), rflag, rflag2
 !
@@ -181,6 +191,9 @@
       call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
      &    ie_surf, isurf_end, xi, field_pvr%d_pvr, c_org(1) )
 !
+      if(iflag_check .gt. 0) then
+        iflag_hit = 0
+      end if
       do
         icount_line = icount_line + 1
         iele =    isurf_org(1)
@@ -233,8 +246,10 @@
             rflag2 = side_of_plane(field_pvr%coefs(1:10,i_psf), xx_tgt)
             if     (rflag .ge. -TINY .and. rflag2 .le. TINY) then
               iflag = 1
+              iflag_hit = 1
             else if(rflag .le. TINY .and. rflag2 .ge. -TINY) then
               iflag = 1
+              iflag_hit = 1
             else
               iflag = 0
             end if
@@ -277,6 +292,10 @@
         xx_st(1:3) = xx_tgt(1:3)
         c_org(1) =   c_tgt(1)
       end do
+!
+      if(iflag_check .gt. 0 .and. iflag_hit .eq. 0) then
+        write(*,*) 'surface does not hit: ', my_rank
+      end if
 !
       end subroutine ray_trace_each_pixel
 !
