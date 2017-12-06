@@ -188,7 +188,7 @@
 !
       if(my_rank .eq. 0) then
         do icou = 1, npixel_x*npixel_y
-          rgb_chk(1,inum) = char(iflag_pix_g(icou)*255)
+          rgb_chk(1,icou) = char(iflag_pix_g(icou)*255)
         end do
 !
         call pixout_BMP                                                 &
