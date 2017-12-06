@@ -275,13 +275,13 @@ void write_GL_modelview_file(const char *file_name, int iflag_view, struct view_
 	fprintf(fp_mat, "  begin view_transform_ctl\n");
 	fprintf(fp_mat, "!\n");
     
-    /*
-    output_GL_modelview_matrix(fp_mat, view);
-    output_GL_projection_matrix(fp_mat, view);
-    */
+    
     
     output_GL_modelview_parameters(fp_mat, view);
 	if(iflag_view == VIEW_STEREO) output_stereo_parameter(fp_mat, view);
+    
+    output_GL_modelview_matrix(fp_mat, view);
+    output_GL_projection_matrix(fp_mat, view);
     
 	fprintf(fp_mat, "  end view_transform_ctl\n");
 	fprintf(fp_mat, "!\n");
