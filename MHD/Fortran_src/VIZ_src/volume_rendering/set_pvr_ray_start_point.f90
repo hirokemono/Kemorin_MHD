@@ -262,6 +262,7 @@
      &          xx_pvr_start, xx_pvr_ray_start, pvr_ray_dir)
 !
       use cal_field_on_surf_viz
+      use write_bmp_image
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -313,6 +314,10 @@
       integer(kind = kint) :: ist_pix, ied_pix
       integer(kind = kint) :: ipix, jpix
 !
+      character(len=kchara), parameter :: img_head = 'startpoints'
+      integer(kind = kint), allocatable :: iflag_pix_g(:)
+      integer(kind = kint), allocatable :: iflag_pix_l(:)
+      character(len = 1), allocatable :: rgb_chk(:,:)
 !
 !      write(*,*) 'set_each_pvr_ray_start loop '
 !$omp parallel do private(inum,icou,jcou,iele,k1,isurf,                 &
@@ -365,6 +370,32 @@
       end do
 !$omp end parallel do
 !       write(*,*) 'set_each_pvr_ray_start end '
+!
+      allocate(iflag_pix_l(npixel_x*npixel_y))
+      allocate(iflag_pix_g(npixel_x*npixel_y))
+      allocate(rgb_chk(3,npixel_x*npixel_y))
+      iflag_pix_l = 0
+      iflag_pix_g = 0
+      rgb_chk = char(0)
+      do inum = 1, num_pvr_surf
+        icou = id_pixel_start(jcou)
+        iflag_pix_l(icou) = 1
+        rgb_chk(1,icou) = char(255)
+      end do
+      call MPI_allREDUCE (iflag_pix_l, iflag_pix_g,                     &
+     &    npixel_x*npixel_y, CALYPSO_INTEGER,                           &
+     &    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+!
+      if(my_rank .eq. 0) then
+        call pixout_BMP                                                 &
+     &     (img_head, npixel_x, npixel_y, rgb_chk(1,1))
+        do icou = 1, npixel_x*npixel_y
+          if(iflag_pix_g(icou) .eq. 0) write(*,*) 'missing pixel: ',    &
+     &       icou, mod(icou-1,npixel_y)+1, (icou-1)/npixel_y+1
+        end do
+      end if
+      deallocate(rgb_chk, iflag_pix_g, iflag_pix_l)
+!
 !
       end subroutine set_each_pvr_ray_start
 !
