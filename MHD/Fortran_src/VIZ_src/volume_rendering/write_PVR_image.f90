@@ -122,8 +122,8 @@
 !
       if(my_rank .eq. 0) then
         write(*,*) 'picked points'
-        do i = 635, 639
-          do j = 394, 398
+        do j = 1, num_pixels(2)
+          do i = 1, num_pixels(1)
             ipix = i + (j-1)* pvr_rgb%num_pixels(1)
             write(*,*) i, j, ipix, pvr_rgb%rgba_real_gl(1:4,ipix)
           end do
