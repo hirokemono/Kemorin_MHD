@@ -141,10 +141,10 @@
 !
       integer(kind = kint) :: inum, iele, k1, isurf
       integer(kind = kint) :: i1, i2, i3, i4
-      real(kind = kreal) :: x31(3), x42(3)
+      real(kind = kreal) :: x31(3), x42(3), vlen
 !
 !
-!$omp parallel do private (inum,iele,k1,isurf,i1,i2,i3,i4,x31,x42)
+!$omp parallel do private (inum,iele,k1,isurf,i1,i2,i3,i4,x31,x42,vlen)
         do inum = 1, num_pvr_surf
           iele = item_pvr_surf_domain(1,inum)
           k1 =   item_pvr_surf_domain(2,inum)
@@ -166,6 +166,17 @@
           screen_norm_pvr_domain(3,inum)                                &
      &                  = (x31(1)*x42(2) - x31(2)*x42(1))               &
      &                   * dble(isf_4_ele(iele,k1) /isurf)
+          vlen = sqrt(screen_norm_pvr_domain(1,inum)**2                 &
+     &              + screen_norm_pvr_domain(2,inum)**2                 &
+     &              + screen_norm_pvr_domain(3,inum)**2)
+          if(vlen .gt. zero) then
+            screen_norm_pvr_domain(1,inum)                              &
+     &                  = screen_norm_pvr_domain(1,inum) / vlen
+            screen_norm_pvr_domain(2,inum)                              &
+     &                  = screen_norm_pvr_domain(2,inum) / vlen
+            screen_norm_pvr_domain(3,inum)                              &
+     &                  = screen_norm_pvr_domain(3,inum) / vlen
+          end if
         end do
 !$omp end parallel do
 !
