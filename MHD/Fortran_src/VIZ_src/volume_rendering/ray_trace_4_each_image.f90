@@ -210,7 +210,7 @@
         call find_line_end_in_1ele                                      &
      &     (iflag_back, numnod, numele, numsurf, nnod_4_surf,           &
      &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
-     &     ray_vec, screen_st, iflag_check, isf_tgt, screen_tgt, xi)
+     &      ray_vec, screen_st, iflag_check, isf_tgt, screen_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
           if(iflag_check .gt. 0) write(*,*) 'isf_tgt .eq. 0', my_rank

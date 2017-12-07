@@ -69,6 +69,8 @@
         inc = -1
       end if
 !
+      if(iflag_check .gt. 0) write(*,*) 'x0', x0(1:3)
+      if(iflag_check .gt. 0) write(*,*) 'b_ray', b_ray(1:3)
       isf_tgt = izero
       do k = ist, ied, inc
         k1 = mod(isf_org+k-ione,nsurf_4_ele) + ione
@@ -77,6 +79,7 @@
         do k2 = 1, num_linear_sf
           inod = ie_surf(isurf,k2)
           x_quad(1:3,k2) = xx(inod,1:3)
+          if(iflag_check .gt. 0) write(*,*) 'x_quad_1', k2, x_quad(1:3,k2)
         end do
 !
         call cal_fline_to_square(x0, b_ray, x_quad,  x_tgt, xi, ierr)
@@ -86,7 +89,6 @@
         end if
       end do
 !
-!      if(iflag_check .gt. 0) 
       if(isf_tgt .gt. izero) return
 !
 !      write(my_rank+60,'(i3,1p3e16.7)') (-ione), b_ray(1:3)
