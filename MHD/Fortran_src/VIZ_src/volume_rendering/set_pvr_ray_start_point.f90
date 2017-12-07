@@ -230,8 +230,8 @@
         ipix = mod(inum-1,npixel_x)+1
         jpix = (inum-1)/npixel_x+1
 !
-!        if(ipix.eq.637 .and. jpix.eq.245) id_pixel_check(icou) = 1
-        if(my_rank.eq.134 .and. icou.eq.18854) id_pixel_check(icou) = 1
+        if(ipix.eq.637 .and. jpix.eq.245) id_pixel_check(icou) = 1
+        if(my_rank.eq.134 .and. icou.eq.18854) id_pixel_check(icou) = 2
 !
         if(id_pixel_check(icou) .gt. 0) then
           write(*,*) 'pixel check for ', my_rank, icou, ipix, jpix

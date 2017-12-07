@@ -200,7 +200,6 @@
         isf_org = isurf_org(2)
 !
         if(field_pvr%iflag_used_ele(iele).eq.0) then
-          if(iflag_check .gt. 0) write(*,*) 'field_pvr%iflag_used_ele(iele).eq.0', my_rank
           iflag_comm = 2
           exit
         end if
@@ -211,6 +210,7 @@
      &     (iflag_back, numnod, numele, numsurf, nnod_4_surf,           &
      &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
      &      ray_vec, screen_st, iflag_check, isf_tgt, screen_tgt, xi)
+        if(iflag_check .gt. 0) write(*,*) 'screen_tgt', my_rank, screen_tgt(1:3)
 !
         if(isf_tgt .eq. 0) then
           if(iflag_check .gt. 0) write(*,*) 'isf_tgt .eq. 0', my_rank
