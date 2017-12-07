@@ -69,8 +69,8 @@
         inc = -1
       end if
 !
-      if(iflag_check .gt. 0) write(*,*) 'x0', x0(1:3)
-      if(iflag_check .gt. 0) write(*,*) 'b_ray', b_ray(1:3)
+      if(iflag_check .eq. 2) write(*,*) 'x0', x0(1:3)
+      if(iflag_check .eq. 2) write(*,*) 'b_ray', b_ray(1:3)
       isf_tgt = izero
       do k = ist, ied, inc
         k1 = mod(isf_org+k-ione,nsurf_4_ele) + ione
