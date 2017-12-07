@@ -200,6 +200,7 @@
         isf_org = isurf_org(2)
 !
         if(field_pvr%iflag_used_ele(iele).eq.0) then
+          write(*,*) 'field_pvr%iflag_used_ele(iele).eq.0', my_rank
           iflag_comm = 2
           exit
         end if
@@ -212,6 +213,7 @@
      &     ray_vec, screen_st, isf_tgt, screen_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
+          write(*,*) 'isf_tgt .eq. 0', my_rank
           iflag_comm = -1
           exit
         end if
@@ -285,6 +287,7 @@
         end if
 !
         if(isurf_org(1).eq.0) then
+          write(*,*) 'isurf_org(1).eq.0', my_rank
           iflag_comm = 0
           exit
         end if

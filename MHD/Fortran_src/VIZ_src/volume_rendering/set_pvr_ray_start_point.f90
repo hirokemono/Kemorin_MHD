@@ -230,7 +230,7 @@
         ipix = mod(inum-1,npixel_x)+1
         jpix = (inum-1)/npixel_x+1
 !
-        if(ipix.eq.638 .and. jpix.eq.245) id_pixel_check(icou) = 1
+!        if(ipix.eq.638 .and. jpix.eq.245) id_pixel_check(icou) = 1
         if(ipix.eq.637 .and. jpix.eq.245) id_pixel_check(icou) = 1
 !
         if(id_pixel_check(icou) .gt. 0) then
