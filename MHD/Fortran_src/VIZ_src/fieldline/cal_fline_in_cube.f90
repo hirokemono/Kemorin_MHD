@@ -6,7 +6,7 @@
 !
 !      subroutine find_line_end_in_1ele(iflag_back, nnod, nele, nsurf,  &
 !     &          nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,    &
-!     &          fline, x0, isf_tgt, x_tgt, xi)
+!     &          fline, x0, iflag_check, isf_tgt, x_tgt, xi)
 !      subroutine cal_fline_to_square(x0, vec, x_quad, x_tgt, ierr)
 !      subroutine cal_filne_to_triangle(x0, vec, x_tri, x_tgt, ierr)
 !
@@ -29,7 +29,7 @@
 !
       subroutine find_line_end_in_1ele(iflag_back, nnod, nele, nsurf,   &
      &          nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,     &
-     &          fline, x0, isf_tgt, x_tgt, xi)
+     &          fline, x0, iflag_check, isf_tgt, x_tgt, xi)
 !
       integer(kind = kint), intent(in) :: nnod, nele, nsurf
       integer(kind = kint), intent(in) :: nnod_4_surf, iflag_back
@@ -38,6 +38,7 @@
       real(kind = kreal), intent(in) :: xx(nnod,3)
       integer(kind = kint), intent(in) :: iele, isf_org
       real(kind = kreal), intent(in) :: fline(3), x0(3)
+      integer(kind = kint), intent(in) :: iflag_check
 !
       real(kind = kreal), intent(inout) :: x_tgt(3), xi(2)
       integer(kind = kint), intent(inout) :: isf_tgt
@@ -79,12 +80,13 @@
         end do
 !
         call cal_fline_to_square(x0, b_ray, x_quad,  x_tgt, xi, ierr)
-        if(ierr.eq.zero) then
+        if(ierr .eq. zero) then
           isf_tgt = k1
           exit
         end if
       end do
 !
+!      if(iflag_check .gt. 0) 
       if(isf_tgt .gt. izero) return
 !
 !      write(my_rank+60,'(i3,1p3e16.7)') (-ione), b_ray(1:3)

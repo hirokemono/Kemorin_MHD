@@ -200,7 +200,7 @@
         isf_org = isurf_org(2)
 !
         if(field_pvr%iflag_used_ele(iele).eq.0) then
-          write(*,*) 'field_pvr%iflag_used_ele(iele).eq.0', my_rank
+          if(iflag_check .gt. 0) write(*,*) 'field_pvr%iflag_used_ele(iele).eq.0', my_rank
           iflag_comm = 2
           exit
         end if
@@ -210,10 +210,10 @@
         call find_line_end_in_1ele                                      &
      &     (iflag_back, numnod, numele, numsurf, nnod_4_surf,           &
      &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
-     &     ray_vec, screen_st, isf_tgt, screen_tgt, xi)
+     &     ray_vec, screen_st, iflag_check, isf_tgt, screen_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
-          write(*,*) 'isf_tgt .eq. 0', my_rank
+          if(iflag_check .gt. 0) write(*,*) 'isf_tgt .eq. 0', my_rank
           iflag_comm = -1
           exit
         end if
@@ -287,7 +287,7 @@
         end if
 !
         if(isurf_org(1).eq.0) then
-          write(*,*) 'isurf_org(1).eq.0', my_rank
+          if(iflag_check .gt. 0) write(*,*) 'isurf_org(1).eq.0', my_rank
           iflag_comm = 0
           exit
         end if
