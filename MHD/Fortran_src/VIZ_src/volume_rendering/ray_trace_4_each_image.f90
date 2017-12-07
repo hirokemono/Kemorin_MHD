@@ -244,6 +244,7 @@
           do i_psf = 1, field_pvr%num_sections
             rflag =  side_of_plane(field_pvr%coefs(1:10,i_psf), xx_st)
             rflag2 = side_of_plane(field_pvr%coefs(1:10,i_psf), xx_tgt)
+            if(iflag_check .gt. 0) write(*,*) 'rflag', rflag, rflag2
             if     (rflag .ge. -TINY .and. rflag2 .le. TINY) then
               iflag = 1
               iflag_hit = 1
