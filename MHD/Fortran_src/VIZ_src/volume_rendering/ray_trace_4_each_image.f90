@@ -23,10 +23,9 @@
       use calypso_mpi
       use set_rgba_4_each_pixel
 !
-      implicit  none
+      use t_control_params_4_pvr
 !
-      real(kind = kint), parameter :: SMALL = 0.1
-      real(kind = kint), parameter :: TINY =  1.0D-9
+      implicit  none
 !
       private :: ray_trace_each_pixel
 !
@@ -45,7 +44,6 @@
       use t_geometry_data
       use t_surface_data
       use t_geometries_in_pvr_screen
-      use t_control_params_4_pvr
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -147,7 +145,6 @@
      &        screen_st, xx_st, xi, rgba_ray, icount_line, iflag_comm)
 !
       use t_geometries_in_pvr_screen
-      use t_control_params_4_pvr
       use cal_field_on_surf_viz
       use cal_fline_in_cube
       use set_coefs_of_sections
@@ -243,7 +240,7 @@
      &      ie_surf, isurf_end, xi, field_pvr%d_pvr, c_tgt(1))
 !
         if(interior_ele(iele) .gt. 0) then
-          if(arccos_sf(isurf_end) .gt. SMALL) then
+          if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
             grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
             call plane_rendering_with_light                             &
      &         (viewpoint_vec, xx_tgt, grad_tgt,                        &
