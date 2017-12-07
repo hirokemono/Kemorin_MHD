@@ -177,7 +177,7 @@
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
       integer(kind = kint), parameter :: iflag_back = 0
-      integer(kind = kint) :: iflag_notrace = 0
+      integer(kind = kint) :: iflag_notrace
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
       integer(kind = kint) :: i_iso, i_psf, iflag, iflag_hit
       real(kind = kreal) :: screen_tgt(3), c_tgt(1), c_org(1)
@@ -205,7 +205,8 @@
 !
         if(field_pvr%iflag_used_ele(iele).eq.0) then
           if(iflag_notrace .eq. 1 .and. iflag_check.gt.0) then
-            rflag =  side_of_plane(field_pvr%coefs(1:10,i_psf), xx_st)
+            write(*,*) 'exit', xx_st
+          end if
           iflag_comm = 2
           exit
         end if
