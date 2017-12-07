@@ -128,6 +128,7 @@
             write(*,*) i, j, ipix, pvr_rgb%rgba_real_gl(1:4,ipix)
           end do
         end do
+      end if
 !
       if(my_rank .eq. irank_tgt) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
