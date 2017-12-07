@@ -33,6 +33,7 @@
       implicit  none
 !
       private :: cal_coefs_on_surf
+      real(kind = kreal), parameter :: SMALL = 0.01d0
 !
 !  ---------------------------------------------------------------------
 !
@@ -64,7 +65,7 @@
 !
 !$omp parallel do private(inum)
       do inum = 1, num_pvr_surf
-        if((screen_norm_pvr_domain(3,inum)*ray_vec(3)) .gt. zero) then
+        if((screen_norm_pvr_domain(3,inum)*ray_vec(3)) .gt. -SMALL) then
           istack_tmp_pvr_ray_st(inum) = (isurf_xrng_pvr_domain(2,inum)  &
      &                            - isurf_xrng_pvr_domain(1,inum)+1)    &
      &                           * (jsurf_yrng_pvr_domain(2,inum)       &
@@ -153,7 +154,7 @@
         isurf = abs(isf_4_ele(iele,k1))
         icou = istack_tmp_pvr_ray_st(inum-1)
 !
-        if((screen_norm_pvr_domain(3,inum)*ray_vec(3)) .gt. zero) then
+        if((screen_norm_pvr_domain(3,inum)*ray_vec(3)) .gt. -SMALL) then
           i1 = ie_surf(isurf,1)
           i2 = ie_surf(isurf,2)
           i3 = ie_surf(isurf,3)
