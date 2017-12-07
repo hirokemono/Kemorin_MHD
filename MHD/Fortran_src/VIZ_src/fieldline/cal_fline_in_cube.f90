@@ -69,6 +69,7 @@
         inc = -1
       end if
 !
+      if(iflag_check .eq. 2) write(*,*) b_ray(1:3) = -b_ray(1:3)
       if(iflag_check .eq. 2) write(*,*) 'x0', x0(1:3)
       if(iflag_check .eq. 2) write(*,*) 'b_ray', b_ray(1:3)
       isf_tgt = izero

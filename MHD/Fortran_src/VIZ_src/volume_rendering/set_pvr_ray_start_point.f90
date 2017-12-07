@@ -143,9 +143,6 @@
      &                                 - xx_pvr_start(2,jcou)
               pvr_ray_dir(3,jcou) = viewpoint_vec(3)                    &
      &                                 - xx_pvr_start(3,jcou)
-              if(jcou .eq. 18854) then
-                write(*,*) 'screen_norm_pvr_domain(3,inum)', my_rank, screen_norm_pvr_domain(3,inum)
-              end if
             end if
           end do
         end if

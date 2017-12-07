@@ -213,7 +213,6 @@
         if(iflag_check .gt. 0) write(*,*) 'screen_tgt', my_rank, screen_tgt(1:3)
 !
         if(isf_tgt .eq. 0) then
-          if(iflag_check .gt. 0) write(*,*) 'isf_tgt .eq. 0', my_rank
           iflag_comm = -1
           exit
         end if
@@ -246,7 +245,6 @@
           do i_psf = 1, field_pvr%num_sections
             rflag =  side_of_plane(field_pvr%coefs(1:10,i_psf), xx_st)
             rflag2 = side_of_plane(field_pvr%coefs(1:10,i_psf), xx_tgt)
-            if(iflag_check .gt. 0) write(*,*) 'rflag', rflag, rflag2
             if     (rflag .ge. -TINY .and. rflag2 .le. TINY) then
               iflag = 1
               iflag_hit = 1
@@ -287,7 +285,6 @@
         end if
 !
         if(isurf_org(1).eq.0) then
-          if(iflag_check .gt. 0) write(*,*) 'isurf_org(1).eq.0', my_rank
           iflag_comm = 0
           exit
         end if
