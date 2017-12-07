@@ -177,6 +177,7 @@
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
       integer(kind = kint), parameter :: iflag_back = 0
+      integer(kind = kint) :: iflag_notrace = 0
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
       integer(kind = kint) :: i_iso, i_psf, iflag, iflag_hit
       real(kind = kreal) :: screen_tgt(3), c_tgt(1), c_org(1)
@@ -185,9 +186,12 @@
 !
       if(isurf_org(1) .eq. 0) return
 !
+      iflag_notrace = 1
       iele =    isurf_org(1)
       isf_org = isurf_org(2)
       isurf_end = abs(isf_4_ele(iele,isf_org))
+      call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
+     &    ie_surf, isurf_end, xi, xx, xx_st)
       call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
      &    ie_surf, isurf_end, xi, field_pvr%d_pvr, c_org(1) )
 !
@@ -200,6 +204,8 @@
         isf_org = isurf_org(2)
 !
         if(field_pvr%iflag_used_ele(iele).eq.0) then
+          if(iflag_notrace .eq. 1 .and. iflag_check.gt.0) then
+            rflag =  side_of_plane(field_pvr%coefs(1:10,i_psf), xx_st)
           iflag_comm = 2
           exit
         end if
@@ -209,7 +215,7 @@
         call find_line_end_in_1ele                                      &
      &     (iflag_back, numnod, numele, numsurf, nnod_4_surf,           &
      &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
-     &      ray_vec, screen_st, iflag_check, isf_tgt, screen_tgt, xi)
+     &      ray_vec, screen_st, isf_tgt, screen_tgt, xi)
         if(iflag_check .gt. 0) write(*,*) 'screen_tgt', my_rank, screen_tgt(1:3)
 !
         if(isf_tgt .eq. 0) then
@@ -219,6 +225,7 @@
 !
 !   set backside element and surface 
 !
+        iflag_notrace = 0
         isurf_end = abs(isf_4_ele(iele,isf_tgt))
 !
         if(isf_4_ele(iele,isf_tgt) .lt. 0) then

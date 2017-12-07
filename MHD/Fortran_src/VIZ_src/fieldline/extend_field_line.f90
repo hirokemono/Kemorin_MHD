@@ -22,8 +22,6 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter :: iflag_check = 0
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -82,7 +80,7 @@
 !
         call find_line_end_in_1ele(iflag_back, numnod, numele, numsurf, &
      &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
-     &      v_start, x_start, iflag_check, isf_tgt, x_tgt, xi)
+     &      v_start, x_start, isf_tgt, x_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
@@ -106,7 +104,7 @@
 !
         call find_line_end_in_1ele(iflag_back, numnod, numele, numsurf, &
      &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
-     &      v_start, x_start, iflag_check, isf_tgt, x_tgt, xi)
+     &      v_start, x_start, isf_tgt, x_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
