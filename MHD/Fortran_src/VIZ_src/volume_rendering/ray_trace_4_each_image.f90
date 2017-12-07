@@ -217,7 +217,7 @@
      &     (iflag_back, numnod, numele, numsurf, nnod_4_surf,           &
      &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
      &      ray_vec, screen_st, isf_tgt, screen_tgt, xi)
-        if(iflag_check .gt. 0) write(*,*) 'screen_tgt', my_rank, xx_st(1:3)
+        if(iflag_check .gt. 0) write(*,*) 'screen_tgt', my_rank, xx_st(1:3), interior_ele(iele)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
