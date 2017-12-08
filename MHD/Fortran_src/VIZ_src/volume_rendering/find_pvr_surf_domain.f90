@@ -171,14 +171,14 @@
      &              + screen_norm_pvr_domain(2,inum)**2                 &
      &              + screen_norm_pvr_domain(3,inum)**2)
 !
-!          if(vlen .gt. zero) then
-!            screen_norm_pvr_domain(1,inum)                             &
-!     &                  = screen_norm_pvr_domain(1,inum) / vlen
-!            screen_norm_pvr_domain(2,inum)                             &
-!     &                  = screen_norm_pvr_domain(2,inum) / vlen
-!            screen_norm_pvr_domain(3,inum)                             &
-!     &                  = screen_norm_pvr_domain(3,inum) / vlen
-!          end if
+          if(vlen .gt. zero) then
+            screen_norm_pvr_domain(1,inum)                              &
+     &                  = screen_norm_pvr_domain(1,inum) / vlen
+            screen_norm_pvr_domain(2,inum)                              &
+     &                  = screen_norm_pvr_domain(2,inum) / vlen
+            screen_norm_pvr_domain(3,inum)                              &
+     &                  = screen_norm_pvr_domain(3,inum) / vlen
+          end if
         end do
 !$omp end parallel do
 !
