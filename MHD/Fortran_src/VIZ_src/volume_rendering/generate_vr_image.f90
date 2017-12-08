@@ -197,10 +197,10 @@
 !     &     (pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                &
 !     &      pvr_start%num_pvr_ray, pvr_start%id_pixel_start)
 !      end if
-       call set_pvr_ray_trace_check                                     &
-     &     (pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                 &
-     &      pvr_start%num_pvr_ray, pvr_start%id_pixel_start,            &
-     &      pvr_start%id_pixel_check)
+!       call set_pvr_ray_trace_check                                    &
+!     &     (pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                &
+!     &      pvr_start%num_pvr_ray, pvr_start%id_pixel_start,           &
+!     &      pvr_start%id_pixel_check)
 !
       end subroutine s_set_pvr_ray_start_point
 !
