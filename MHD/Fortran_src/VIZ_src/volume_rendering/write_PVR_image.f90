@@ -120,15 +120,15 @@
      &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
      &    pvr_img%rgba_rank0, pvr_rgb%rgba_real_gl, pvr_img%COMM)
 !
-!      if(my_rank .eq. 0) then
-!        write(*,*) 'picked points'
-!        do j = 244, 246
-!          do i = 636, 638
-!            ipix = i + (j-1)* pvr_rgb%num_pixels(1)
-!            write(*,*) i, j, ipix, pvr_rgb%rgba_real_gl(1:4,ipix)
-!          end do
-!        end do
-!      end if
+      if(my_rank .eq. 0) then
+        write(*,*) 'picked points'
+        do j = 244, 246
+          do i = 636, 638
+            ipix = i + (j-1)* pvr_rgb%num_pixels(1)
+            write(*,*) i, j, ipix, pvr_rgb%rgba_real_gl(1:4,ipix)
+          end do
+        end do
+      end if
 !
       if(my_rank .eq. irank_tgt) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
