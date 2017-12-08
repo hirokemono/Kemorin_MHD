@@ -30,8 +30,8 @@
       integer(kind = kint), parameter :: IFLAG_RIGHT =  1
 !
       real(kind = kint), parameter :: TINY =  1.0D-9
-      real(kind = kint), parameter :: SMALL_RAY_TRACE = 0.1
-      real(kind = kreal), parameter :: SMALL_NORM = 0.2d0
+      real(kind = kreal), parameter :: SMALL_RAY_TRACE = 0.1d0
+      real(kind = kreal), parameter :: SMALL_NORM = 0.01d0
 !
 !>  Structure for field parameter for PVR
       type pvr_output_parameter
