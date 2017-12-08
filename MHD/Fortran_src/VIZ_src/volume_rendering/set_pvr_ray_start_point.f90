@@ -28,8 +28,6 @@
 !
       implicit  none
 !
-      real(kind = kreal), parameter :: SMALL = 0.01d0
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -105,7 +103,8 @@
 !$omp parallel do private(inum,icou,jcou,iele,k1,isurf,                 &
 !$omp&                    ipix,jpix,ist_pix,ied_pix)
       do inum = 1, num_pvr_surf
-        if((screen_norm_pvr_domain(3,inum)*ray_vec(3)) .gt. -SMALL) then
+        if((screen_norm_pvr_domain(3,inum)*ray_vec(3))                  &
+     &         .gt. -SMALL_NORM) then
           iele = item_pvr_surf_domain(1,inum)
           k1 =   item_pvr_surf_domain(2,inum)
           isurf = abs(isf_4_ele(iele,k1))
