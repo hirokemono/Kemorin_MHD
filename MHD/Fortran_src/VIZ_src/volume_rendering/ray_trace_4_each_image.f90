@@ -74,9 +74,9 @@
 !
 !$omp parallel do private(inum, iflag_comm,rgba_tmp)
       do inum = 1, num_pvr_ray
-        if(id_pixel_check(inum)*field_pvr%num_sections .gt. 0) then
-          write(*,*) 'check section trace for ', my_rank, inum
-        end if
+!        if(id_pixel_check(inum)*field_pvr%num_sections .gt. 0) then
+!          write(*,*) 'check section trace for ', my_rank, inum
+!        end if
 !
         rgba_tmp(1:4) = zero
         call ray_trace_each_pixel                                       &
@@ -211,7 +211,8 @@
      &     (iflag_back, numnod, numele, numsurf, nnod_4_surf,           &
      &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
      &      ray_vec, screen_st, isf_tgt, screen_tgt, xi)
-        if(iflag_check .gt. 0) write(*,*) 'screen_tgt', my_rank, xx_st(1:3), interior_ele(iele)
+!        if(iflag_check .gt. 0) write(*,*) 'screen_tgt',                &
+!     &                        my_rank, xx_st(1:3), interior_ele(iele)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
@@ -296,13 +297,13 @@
         c_org(1) =   c_tgt(1)
       end do
 !
-      if(iflag_check*field_pvr%num_sections .gt. 0) then
-        if(iflag_hit .eq. 0) then
-          write(*,*) 'surface does not hit: ', my_rank, rgba_ray(1:4)
-        else
-          write(*,*) 'surface  hit in: ', my_rank, rgba_ray(1:4)
-        end if
-      end if
+!      if(iflag_check*field_pvr%num_sections .gt. 0) then
+!        if(iflag_hit .eq. 0) then
+!          write(*,*) 'surface does not hit: ', my_rank, rgba_ray(1:4)
+!        else
+!          write(*,*) 'surface  hit in: ', my_rank, rgba_ray(1:4)
+!        end if
+!      end if
 !
       end subroutine ray_trace_each_pixel
 !
