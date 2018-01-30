@@ -86,6 +86,16 @@
         real(kind=kreal)  , allocatable  :: ss(:)
 !>       1 / a_s_cylinder
         real(kind=kreal)  , allocatable  :: a_s(:)
+!
+!
+!>       Minimum position at subdomain
+        real(kind = kreal) :: xyz_min_lc(3)
+!>       Maximum position at subdomain
+        real(kind = kreal) :: xyz_max_lc(3)
+!>       Minimum position at whole domain
+        real(kind = kreal) :: xyz_min_gl(3)
+!>       Minimum position at whole domain
+        real(kind = kreal) :: xyz_max_gl(3)
       end type node_data
 !
 !

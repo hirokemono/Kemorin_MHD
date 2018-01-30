@@ -241,6 +241,8 @@
        if (iflag_debug.eq.1) write(*,*) 'set_spherical_position'
       call set_spherical_position(node)
 !
+      call find_subdomain_position_range(node)
+!
        if (iflag_debug.eq.1) write(*,*) 'count_overlap_ele'
       call count_overlap_ele(node, ele)
 !

@@ -73,6 +73,9 @@
       if(iflag_debug.gt.0) write(*,*)' const_global_numnod_list'
       call const_global_numnod_list(mesh%node)
 !
+      if(iflag_debug.gt.0) write(*,*) ' find_position_range'
+      call find_position_range(mesh%node)
+!
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
       call const_ele_comm_tbl(mesh%node, mesh%ele, mesh%nod_comm,       &
      &    blng_tbl, ele_mesh%ele_comm)
@@ -316,5 +319,29 @@
       end subroutine const_edge_comm_table
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine find_position_range(node)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(inout) :: node
+!
+!
+!  Evaluate range in local domain
+      call MPI_ALLREDUCE(node%xyz_max_lc, node%xyz_max_gl,              &
+     &     3, CALYPSO_REAL, MPI_MAX,CALYPSO_COMM, ierr_MPI)
+      call MPI_ALLREDUCE(node%xyz_min_lc, node%xyz_min_gl,              &
+     &     3, CALYPSO_REAL, MPI_MIN,CALYPSO_COMM, ierr_MPI)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*)  'x range: ', node%xyz_min_gl(1), node%xyz_max_gl(1)
+        write(*,*)  'y range: ', node%xyz_min_gl(2), node%xyz_max_gl(2)
+        write(*,*)  'z range: ', node%xyz_min_gl(3), node%xyz_max_gl(3)
+      end if
+!
+      end subroutine find_position_range
+!
+! ----------------------------------------------------------------------
 !
       end module const_element_comm_tables
