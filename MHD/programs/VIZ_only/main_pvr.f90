@@ -11,7 +11,7 @@
       use m_precision
 !
       use calypso_mpi
-      use analyzer_viz
+      use analyzer_pvr
 !
       implicit none
 !

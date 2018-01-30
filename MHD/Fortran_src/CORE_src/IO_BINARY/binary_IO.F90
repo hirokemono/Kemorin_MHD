@@ -20,6 +20,7 @@
 !!      subroutine write_mul_integer_b(num, int_dat)
 !!      subroutine write_integer_stack_b(num, istack)
 !!      subroutine write_mul_character_b(num, chara_dat)
+!!      subroutine write_mul_one_character_b(num, chara_dat)
 !!      subroutine write_1d_vector_b(num, real_dat)
 !!      subroutine write_2d_vector_b(n1, n2, real_dat)
 !!
@@ -30,6 +31,7 @@
 !!      subroutine read_mul_integer_b(num, int_dat)
 !!      subroutine read_integer_stack_b(num, istack, ntot)
 !!      subroutine read_mul_character_b(num, chara_dat)
+!!      subroutine read_mul_one_character_b(num, chara_dat)
 !!      subroutine read_1d_vector_b(num, real_dat)
 !!      subroutine read_2d_vector_b(n1, n2, real_dat)
 !!@endverbatim
@@ -267,6 +269,26 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine write_mul_one_character_b(num, chara_dat)
+!
+      integer(kind = kint), intent(in) :: num
+      character(len=1), intent(in) :: chara_dat(num)
+!
+      integer(kind = kint) :: ilength
+!
+!
+      if(num .le. 0) return
+#ifdef ZLIB_IO
+      ilength = num
+      call rawwrite_f(ilength, chara_dat(1), ierr_IO)
+#else
+      write(id_binary)  chara_dat(1:num)
+#endif
+!
+end subroutine write_mul_one_character_b
+!
+! -----------------------------------------------------------------------
+!
       subroutine write_1d_vector_b(num, real_dat)
 !
       integer(kind = kint), intent(in) :: num
@@ -439,6 +461,26 @@
 #endif
 !
       end subroutine read_mul_character_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_mul_one_character_b(num, chara_dat)
+!
+      integer(kind = kint), intent(in) :: num
+      character(len=1), intent(inout) :: chara_dat(num)
+!
+      integer(kind = kint) :: ilength
+!
+!
+      if(num .le. 0) return
+#ifdef ZLIB_IO
+      ilength = num
+      call rawread_f(iflag_endian, ilength, chara_dat(1), ierr_IO)
+#else
+      read(id_binary)  chara_dat(1:num)
+#endif
+!
+end subroutine read_mul_one_character_b
 !
 ! -----------------------------------------------------------------------
 !
