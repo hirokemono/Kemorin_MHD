@@ -15,7 +15,7 @@
 !!     &          pvr_param, pvr_data)
 !!      subroutine flush_rendering_4_fixed_view(pvr_data)
 !!
-!!      subroutine rendering_at_once(isel_projection,                   &
+!!      subroutine rendering_at_once(isel_projection, istep_pvr,        &
 !!     &           node, ele, surf, group, pvr_param, pvr_data)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -119,8 +119,8 @@
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
      &      pvr_data%screen)
 !
-        call rendering_at_once(IFLAG_NORMAL, node, ele, surf, group,    &
-     &      pvr_param, pvr_data)
+        call rendering_at_once(IFLAG_NORMAL, istep_pvr,                 &
+     &       node, ele, surf, group, pvr_param, pvr_data)
 !
         if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
         call sel_write_pvr_image_file                                   &
@@ -189,8 +189,8 @@
      &   (pvr_data%start_pt_1, pvr_data%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image                                              &
-     &   (node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
+      call rendering_image(istep_pvr, pvr_param%file,                   &
+     &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
      &    pvr_param%field, pvr_data%screen, pvr_data%start_pt,          &
      &    pvr_data%image, pvr_data%rgb)
 !
@@ -221,14 +221,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_at_once(isel_projection,                     &
+      subroutine rendering_at_once(isel_projection, istep_pvr,          &
      &           node, ele, surf, group, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
       use write_PVR_image
 !
-      integer(kind = kint) :: isel_projection
+      integer(kind = kint), intent(in) :: isel_projection
+      integer(kind = kint), intent(in) :: istep_pvr
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -246,10 +247,10 @@
      &      pvr_data%start_pt, pvr_data%image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image                                              &
-     &     (node, ele, surf, pvr_data%color, pvr_param%colorbar,        &
-     &      pvr_param%field, pvr_data%screen, pvr_data%start_pt,        &
-     &      pvr_data%image, pvr_data%rgb)
+      call rendering_image(istep_pvr, pvr_param%file,                   &
+     &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
+     &    pvr_param%field, pvr_data%screen, pvr_data%start_pt,          &
+     &    pvr_data%image, pvr_data%rgb)
 !
       end subroutine rendering_at_once
 !

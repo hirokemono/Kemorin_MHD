@@ -7,8 +7,11 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_image(node, ele, surf, color_param,        &
-!!     &          cbar_param, field_pvr, pvr_screen, pvr_start, pvr_img)
+!!      subroutine rendering_image                                      &
+!!     &         (istep_pvr, file_param, node, ele, surf, color_param,  &
+!!     &          cbar_param, field_pvr, pvr_screen, pvr_start,         &
+!!     &          pvr_img, pvr_rgb)
+!!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -42,7 +45,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image(node, ele, surf, color_param,          &
+      subroutine rendering_image                                        &
+     &         (istep_pvr, file_param, node, ele, surf, color_param,    &
      &          cbar_param, field_pvr, pvr_screen, pvr_start,           &
      &          pvr_img, pvr_rgb)
 !
@@ -59,6 +63,9 @@
       use composite_pvr_images
       use PVR_image_transfer
       use pvr_axis_label
+!
+      type(pvr_output_parameter), intent(in) :: file_param
+      integer(kind = kint), intent(in) :: istep_pvr
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -93,15 +100,18 @@
      &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
      &    pvr_img%iflag_mapped, pvr_img%rgba_lc)
 !
-!      do i = 1, pvr_img%num_overlap
-!        j = pvr_img%istack_overlap(my_rank) + i
-!        do k = 1, pvr_img%npixel_img
-!          ipix = pvr_img%ipixel_small(k)
-!          pvr_rgb%rgba_real_lc(1:4,ipix) = pvr_img%rgba_lc(1:4,j,k)
-!        end do
-!        call sel_write_pvr_local_img(file_param, j, istep_pvr,         &
-!     &      pvr_rgb)
-!      end do
+!       Outut semented image
+      if(i_debug .gt. 0) then
+        do i = 1, pvr_img%num_overlap
+          j = pvr_img%istack_overlap(my_rank) + i
+          do k = 1, pvr_img%npixel_img
+            ipix = pvr_img%ipixel_small(k)
+            pvr_rgb%rgba_real_lc(1:4,ipix) = pvr_img%rgba_lc(1:4,j,k)
+          end do
+          call sel_write_pvr_local_img(file_param, j, istep_pvr,        &
+     &        pvr_rgb)
+        end do
+      end if
 !
       call distribute_segmented_images                                  &
      &   (pvr_img%num_overlap, pvr_img%istack_overlap,                  &
