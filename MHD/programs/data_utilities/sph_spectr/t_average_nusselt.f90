@@ -74,7 +74,7 @@
       write(*,*)
       close(id_pick)
 !
-      acou = one / (end_time - true_start)
+      acou = one / (time - true_start)
       ave_Nu(1:2) = ave_Nu(1:2) * acou
 !
 !       Evaluate standard deviation
@@ -116,7 +116,7 @@
       write(*,*)
       close(id_pick)
 !
-      acou = one / (end_time - true_start)
+      acou = one / (time - true_start)
       sdev_Nu(1:2) = sqrt(sdev_Nu(1:2)) * acou
 !
 !    output Results

@@ -357,16 +357,16 @@ target_task:
 	@echo '$$(TARGET_T_AVE_PICK_SPH_SPEC)': '$$(MOD_T_AVE_PICK_SPH)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_PICK_SPH_SPEC)' \
+	'$$(MOD_T_AVE_PICK_SPH)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSUM_SPH_ENE_SPEC)': '$$(MOD_PSUM_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSUM_SPH_ENE_SPEC)' \
 	'$$(MOD_PSUM_SPH_ENE_SPEC)' \
-	'-L. $$(LIBS_SPH_UTIL)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_PICK_SPH_SPEC)' \
-	'$$(MOD_T_AVE_PICK_SPH)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
