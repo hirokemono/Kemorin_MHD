@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>15G1611</string>
+	<string>15G17023</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDocumentTypes</key>
@@ -112,7 +112,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.01</string>
+	<string>2.02</string>
 	<key>CFBundleSignature</key>
 	<string>KMVW</string>
 	<key>CFBundleSupportedPlatforms</key>
@@ -120,7 +120,7 @@
 		<string>MacOSX</string>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>Build 2017, Sep., 27</string>
+	<string>Build 2017, Nov. 30</string>
 	<key>DTCompiler</key>
 	<string>com.apple.compilers.llvm.clang.1_0</string>
 	<key>DTPlatformBuild</key>
