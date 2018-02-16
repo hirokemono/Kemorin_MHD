@@ -648,7 +648,7 @@
                 </menuItem>
             </items>
         </menu>
-        <window title="moviemaker" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
+        <window title="moviemaker" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371" customClass="KemoMovieDragDropWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="511" width="559" height="248"/>
@@ -961,6 +961,9 @@
                     </imageView>
                 </subviews>
             </view>
+            <connections>
+                <outlet property="_kemoMovieIOControl" destination="601" id="JoI-vK-Zq9"/>
+            </connections>
             <point key="canvasLocation" x="531.5" y="505"/>
         </window>
         <customObject id="494" customClass="Kemo_MoviemakerAppDelegate">

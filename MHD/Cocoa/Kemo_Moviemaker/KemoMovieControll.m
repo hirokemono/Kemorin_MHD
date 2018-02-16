@@ -69,6 +69,28 @@
     return pxbuffer;
 }
 
+-(void) OpenReferenceImageFile:(NSString *)iFileName
+{
+    NSUserDefaults *defalts = [NSUserDefaults standardUserDefaults];
+    [defalts setObject:iFileName forKey:@"ImageFileName"];
+    [defalts synchronize];
+    
+    SnapshotImage = [[NSImage alloc] initWithContentsOfFile:iFileName];
+    CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
+    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithCGImage:CGImage];
+    
+    [refImageView setImage:SnapshotImage];
+    
+    self.imageWidth = [rep pixelsWide];
+    self.imageHight = [rep pixelsHigh];
+    //    printf("Image size %d, %d",(int)self.imageWidth, (int)self.imageHight);
+    [rep release];
+    [SnapshotImage release];
+    
+    saveBottun.enabled = YES;
+    saveMenu.enabled = YES;
+}
+
 -(void) OpenKemoviewMovieFile:(NSString *)mFileName
 {
     // Movie setting
@@ -140,24 +162,7 @@
     }
     else { return;};
     
-    NSUserDefaults *defalts = [NSUserDefaults standardUserDefaults];
-    [defalts setObject:imageFileName forKey:@"ImageFileName"];
-    [defalts synchronize];
-
-    SnapshotImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
-    CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
-    NSBitmapImageRep *rep = [[NSBitmapImageRep alloc] initWithCGImage:CGImage];
-    
-    [refImageView setImage:SnapshotImage];
-    
-    self.imageWidth = [rep pixelsWide];
-    self.imageHight = [rep pixelsHigh];
-//    printf("Image size %d, %d",(int)self.imageWidth, (int)self.imageHight);
-    [rep release];
-    [SnapshotImage release];
-    
-    saveBottun.enabled = YES;
-    saveMenu.enabled = YES;
+    [self OpenReferenceImageFile:imageFileName];
 }
 
 -(IBAction) SaveImageEvolution:(id)pSender

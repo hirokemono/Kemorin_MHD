@@ -11,6 +11,7 @@
 		183A86651DDF4F12004DC0DC /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183A86641DDF4F12004DC0DC /* CoreVideo.framework */; };
 		183A86671DDF672D004DC0DC /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183A86661DDF672D004DC0DC /* CoreMedia.framework */; };
 		184DB8671277B00A00B1229A /* KemoMovieControll.m in Sources */ = {isa = PBXBuildFile; fileRef = 184DB8661277B00A00B1229A /* KemoMovieControll.m */; };
+		18CD4CB32037808800BE3BA0 /* MovieMakerDragDropWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 18CD4CB22037808800BE3BA0 /* MovieMakerDragDropWindow.m */; };
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* Kemo_MoviemakerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* Kemo_MoviemakerAppDelegate.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -27,6 +28,8 @@
 		183A86661DDF672D004DC0DC /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		184DB8651277B00A00B1229A /* KemoMovieControll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KemoMovieControll.h; sourceTree = "<group>"; };
 		184DB8661277B00A00B1229A /* KemoMovieControll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KemoMovieControll.m; sourceTree = "<group>"; };
+		18CD4CB22037808800BE3BA0 /* MovieMakerDragDropWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieMakerDragDropWindow.m; sourceTree = "<group>"; };
+		18CD4CB4203780A500BE3BA0 /* MovieMakerDragDropWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MovieMakerDragDropWindow.h; sourceTree = "<group>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		256AC3D80F4B6AC300CF3369 /* Kemo_MoviemakerAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Kemo_MoviemakerAppDelegate.h; sourceTree = "<group>"; };
 		256AC3D90F4B6AC300CF3369 /* Kemo_MoviemakerAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Kemo_MoviemakerAppDelegate.m; sourceTree = "<group>"; };
@@ -60,6 +63,8 @@
 				256AC3D90F4B6AC300CF3369 /* Kemo_MoviemakerAppDelegate.m */,
 				184DB8651277B00A00B1229A /* KemoMovieControll.h */,
 				184DB8661277B00A00B1229A /* KemoMovieControll.m */,
+				18CD4CB22037808800BE3BA0 /* MovieMakerDragDropWindow.m */,
+				18CD4CB4203780A500BE3BA0 /* MovieMakerDragDropWindow.h */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -198,6 +203,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18CD4CB32037808800BE3BA0 /* MovieMakerDragDropWindow.m in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* Kemo_MoviemakerAppDelegate.m in Sources */,
 				184DB8671277B00A00B1229A /* KemoMovieControll.m in Sources */,

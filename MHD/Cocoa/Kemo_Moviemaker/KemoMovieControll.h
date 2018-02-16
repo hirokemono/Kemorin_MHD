@@ -51,7 +51,8 @@
 @property NSInteger imageWidth;
 @property NSInteger imageHight;
 
--(void) OpenKemoviewMovieFile:(NSString *)movieFileName;
+-(void) OpenReferenceImageFile:(NSString *)iFileName;
+-(void) OpenKemoviewMovieFile:(NSString *)mFileName;
 -(void) CloseKemoviewMovieFile;
 
 -(IBAction) OpenReferenceImage:(id)pSender;
