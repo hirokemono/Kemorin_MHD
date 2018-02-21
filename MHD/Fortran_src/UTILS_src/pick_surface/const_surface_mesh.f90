@@ -45,8 +45,11 @@
 !
 !
       surface_file_head = mesh_file%file_prefix
+      write(*,*) 'find_mesh_format_4_viewer'
       call find_mesh_format_4_viewer(mesh_file)
+      write(*,*) 'count_subdomains_4_viewer'
       call count_subdomains_4_viewer(mesh_file)
+      write(*,*) 'const_surf_mesh_4_viewer'
       call const_surf_mesh_4_viewer(mesh_file, ele, surf, edge)
 !
       end subroutine choose_surface_mesh
@@ -63,19 +66,19 @@
 !
 !  Detect file format
       mesh_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
+      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
 !
       mesh_file%iflag_format = id_ascii_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
+      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
 !
       mesh_file%iflag_format = id_binary_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
+      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
 !
       mesh_file%iflag_format = id_gzip_bin_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
+      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
 !
       mesh_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
+      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
 !
       stop 'I cannot find mesh file!!'
 !
@@ -91,7 +94,8 @@
 !
       num_pe = 0
       do
-        if(check_exist_mesh(mesh_file, num_pe) .eq. 0) exit
+        if(check_exist_mesh(mesh_file, num_pe) .gt. 0) exit
+        num_pe = num_pe + 1
       end do
 !
       write(*,*) 'Number of subdomains: ', num_pe
