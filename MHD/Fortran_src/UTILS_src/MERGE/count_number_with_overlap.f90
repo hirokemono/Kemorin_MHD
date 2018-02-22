@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine count_number_w_overlap(mesh_file, nnod_4_ele)
+!!      subroutine count_number_w_overlap(mesh_file, nnod_4_ele)
+!!      subroutine count_subdomain_ngrp_stack(num_pe, sub, istack)
 !
       module count_number_with_overlap
 !
@@ -76,23 +77,6 @@
       nnod_4_ele = fem_IO_o%mesh%ele%nnod_4_ele
 !
       end subroutine count_numbers_4_mesh_merge
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_num_group_w_overlap
-!
-      use m_geometry_data_4_merge
-!
-!
-      call count_subdomain_ngrp_stack(mgd_mesh1%num_pe,                 &
-     &    sub_nod_grp, istack_bc_pe)
-      call count_subdomain_ngrp_stack(mgd_mesh1%num_pe,                 &
-     &    sub_ele_grp, istack_mat_pe)
-!
-      call count_subdomain_sf_ngrp_stack(mgd_mesh1%num_pe,              &
-     &    sub_surf_grp,  istack_surf_pe)
-!
-      end subroutine count_num_group_w_overlap
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

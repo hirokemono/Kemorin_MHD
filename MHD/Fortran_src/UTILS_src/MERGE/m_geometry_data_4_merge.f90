@@ -9,7 +9,7 @@
 !      subroutine allocate_number_of_mesh
 !      subroutine allocate_array_4_node
 !      subroutine allocate_array_4_element
-!      subroutine allocate_subdomain_grp_stack
+!      subroutine allocate_subdomain_groups
 !
 !      subroutine allocate_merged_group_num
 !      subroutine allocate_merged_group_item
@@ -18,8 +18,6 @@
 !      subroutine deallocate_number_of_mesh
 !
 !      subroutine deallocate_subdomain_groups
-!
-!      subroutine deallocate_subdomain_grp_stack
 !
       module m_geometry_data_4_merge
 !
@@ -56,12 +54,6 @@
       type(group_data), allocatable :: sub_nod_grp(:)
       type(group_data), allocatable :: sub_ele_grp(:)
       type(surface_group_data), allocatable :: sub_surf_grp(:)
-!
-!   stacks for group data
-!
-      integer (kind=kint), allocatable :: istack_bc_pe(:)
-      integer (kind=kint), allocatable :: istack_mat_pe(:)
-      integer (kind=kint), allocatable :: istack_surf_pe(:)
 !
 !------------------------------------------------------------------
 !
@@ -137,21 +129,13 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-       subroutine allocate_subdomain_grp_stack
+       subroutine allocate_subdomain_groups
 !
        allocate ( sub_nod_grp(mgd_mesh1%num_pe) )
        allocate ( sub_ele_grp(mgd_mesh1%num_pe) )
        allocate ( sub_surf_grp(mgd_mesh1%num_pe) )
 !
-       allocate ( istack_bc_pe(0:mgd_mesh1%num_pe) )
-       allocate ( istack_mat_pe(0:mgd_mesh1%num_pe) )
-       allocate ( istack_surf_pe(0:mgd_mesh1%num_pe) )
-!
-       istack_bc_pe = 0
-       istack_mat_pe = 0
-       istack_surf_pe = 0
-!
-       end subroutine allocate_subdomain_grp_stack
+       end subroutine allocate_subdomain_groups
 !
 !------------------------------------------------------------------
 !
@@ -201,18 +185,6 @@
       end do
 !
       end subroutine deallocate_subdomain_groups
-!
-!-----------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-       subroutine deallocate_subdomain_grp_stack
-!
-!
-       deallocate ( istack_bc_pe )
-       deallocate ( istack_mat_pe )
-       deallocate ( istack_surf_pe )
-!
-       end subroutine deallocate_subdomain_grp_stack
 !
 !------------------------------------------------------------------
 !

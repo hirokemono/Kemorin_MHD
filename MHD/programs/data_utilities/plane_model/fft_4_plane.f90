@@ -23,6 +23,7 @@
       use set_list_4_FFT
       use cal_fft_for_horizontal
       use set_plane_spectr_file_head
+      use const_merged_groups
 
       implicit    none
 !
@@ -64,7 +65,7 @@
 !
 !
       call allocate_number_of_mesh
-      call allocate_subdomain_grp_stack
+      call allocate_subdomain_groups
 !
 !   read field name and number of components
 !

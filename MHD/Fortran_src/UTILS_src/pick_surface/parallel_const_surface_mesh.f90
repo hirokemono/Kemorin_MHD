@@ -122,7 +122,6 @@
        call set_surf_domain_id_viewer
 !
 !
-       call deallocate_subdomain_grp_stack
        call deallocate_array_4_merge
 !
        write(*,*)  'construct_edge_4_viewer'

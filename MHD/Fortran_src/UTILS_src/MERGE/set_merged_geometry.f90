@@ -36,7 +36,8 @@
 !
 !      write(*,*) 'allocate_number_of_mesh'
       call allocate_number_of_mesh
-      call allocate_subdomain_grp_stack
+      call allocate_subdomain_groups
+
 !
 !     count number of node for each domain
 !
@@ -54,10 +55,15 @@
       call set_geometry_data_2_merge
 !
 !      write(*,*) 'count_num_group_w_overlap'
+      call allocate_subdomain_grp_stack
       call count_num_group_w_overlap
 !
+!      write(*,*) 'count_merged_mesh_groups'
+      call count_merged_mesh_groups
 !      write(*,*) 'const_merged_mesh_groups'
       call const_merged_mesh_groups
+!
+      call deallocate_subdomain_grp_stack
 !
       end subroutine set_merged_mesh_and_group
 !
@@ -71,7 +77,7 @@
 !
 !      write(*,*) 'allocate_number_of_mesh'
       call allocate_number_of_mesh
-      call allocate_subdomain_grp_stack
+      call allocate_subdomain_groups
 !
 !     count number of node for each domain
 !
@@ -96,7 +102,7 @@
 !
       subroutine set_overlapped_mesh_and_group(mesh_file, nnod_4_ele)
 !
-      use const_overlap_groups
+      use const_merged_groups
 !
       type(field_IO_params), intent(in) :: mesh_file
       integer (kind = kint), intent(inout) :: nnod_4_ele
@@ -104,7 +110,7 @@
 !
 !       write(*,*) 'allocate_number_of_mesh'
       call allocate_number_of_mesh
-      call allocate_subdomain_grp_stack
+      call allocate_subdomain_groups
 !
 !     count number of node for each domain
 !
@@ -113,19 +119,24 @@
 !
 !     array allocation
 !
-       write(*,*) 'allocate_geometry_data_4_merge'
+      write(*,*) 'allocate_geometry_data_4_merge'
       call allocate_geometry_data_4_merge
 !
 !  set mesh_information
 !
-       write(*,*) 'set_geometry_data_w_overlap'
-       call set_geometry_data_w_overlap
+      write(*,*) 'set_geometry_data_w_overlap'
+      call set_geometry_data_w_overlap
 !
 !
-       call count_num_group_w_overlap
+      call allocate_subdomain_grp_stack
+      call count_num_group_w_overlap
 !
-       write(*,*) 'const_merged_overlapped_groups'
-       call const_merged_overlapped_groups
+      write(*,*) 'count_merged_mesh_groups'
+      call count_merged_mesh_groups
+      write(*,*) 'const_merged_overlapped_groups'
+      call const_merged_overlapped_groups
+!
+      call deallocate_subdomain_grp_stack
 !
       end subroutine set_overlapped_mesh_and_group
 !
