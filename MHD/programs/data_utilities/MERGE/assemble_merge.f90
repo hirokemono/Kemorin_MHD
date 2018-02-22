@@ -63,7 +63,7 @@
 !
 !    set list array for merged field
 !
-      call set_field_list_4_merge
+      call set_field_list_4_merge(merged_fld)
       call alloc_phys_data_type(merged%node%numnod, merged_fld)
 !
 !   output grid data
@@ -84,7 +84,8 @@
 !
       do istep = istep_start, istep_end, increment_step
         call read_ucd_data_4_merge                                      &
-     &     (istep, original_ucd_param, fem_time_IO, fem_ucd)
+     &     (istep, mgd_mesh1%num_pe, subdomain, merge_tbl,              &
+     &      original_ucd_param, fem_time_IO, fem_ucd, merged_fld)
         call link_merged_field_2_udt_IO(fem_ucd)
 !
         call sel_write_ucd_file                                         &

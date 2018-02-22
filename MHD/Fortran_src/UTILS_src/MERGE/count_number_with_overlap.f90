@@ -32,7 +32,10 @@
       integer (kind = kint), intent(inout) :: nnod_4_ele
 !
 !
-      call count_numbers_4_mesh_merge(mesh_file, nnod_4_ele)
+      call count_numbers_4_mesh_merge                                   &
+     &   (mesh_file, mgd_mesh1%num_pe, nnod_4_ele, subdomain,           &
+     &    mgd_mesh1%sub_nod_grp, mgd_mesh1%sub_ele_grp,                 &
+     &    mgd_mesh1%sub_surf_grp)
       call count_num_overlap_geom_type                                  &
      &   (mgd_mesh1%num_pe, subdomain, merge_tbl)
       call count_num_geometry_w_overlap                                 &
@@ -43,9 +46,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_numbers_4_mesh_merge(mesh_file, nnod_4_ele)
+      subroutine count_numbers_4_mesh_merge                             &
+     &         (mesh_file, num_pe, nnod_4_ele, subdomain,               &
+     &          sub_nod_grp, sub_ele_grp, sub_surf_grp)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
       use mesh_IO_select
       use set_read_geometry_2_merge
       use set_read_boundary_2_merge
@@ -54,14 +59,20 @@
       use load_mesh_data
 !
       type(field_IO_params), intent(in) :: mesh_file
+      integer(kind = kint), intent(in)  :: num_pe
+!
       integer (kind = kint), intent(inout) :: nnod_4_ele
+      type(mesh_geometry), intent(inout) :: subdomain(num_pe)
+      type(group_data), intent(inout) :: sub_nod_grp(num_pe)
+      type(group_data), intent(inout) :: sub_ele_grp(num_pe)
+      type(surface_group_data), intent(inout) :: sub_surf_grp(num_pe)
 !
       integer (kind = kint) :: ip, my_rank, ierr
 !
        type(mesh_data) :: fem_IO_o
 !
 !
-      do ip = 1, mgd_mesh1%num_pe
+      do ip = 1, num_pe
         my_rank = ip - 1
         call sel_read_mesh(mesh_file, my_rank, fem_IO_o, ierr)
         if(ierr .gt. 0) stop 'Error in Mesh data'
@@ -70,8 +81,7 @@
      &      subdomain(ip)%nod_comm, subdomain(ip)%node,                 &
      &      subdomain(ip)%ele)
         call set_grp_data_from_IO(fem_IO_o%group,                       &
-     &      mgd_mesh1%sub_nod_grp(ip), mgd_mesh1%sub_ele_grp(ip),       &
-     &      mgd_mesh1%sub_surf_grp(ip))
+     &      sub_nod_grp(ip), sub_ele_grp(ip), sub_surf_grp(ip))
         call dealloc_groups_data(fem_IO_o%group)
       end do
 !

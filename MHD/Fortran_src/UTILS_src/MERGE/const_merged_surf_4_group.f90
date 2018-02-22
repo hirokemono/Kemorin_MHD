@@ -106,7 +106,7 @@
 !
       subroutine const_merged_surface_4_sf_grp(merged_grp)
 !
-!      use m_surf_geometry_4_merge
+      use m_surf_geometry_4_merge
       use m_grp_data_merged_surfaces
 !
       type(mesh_groups), intent(in) :: merged_grp

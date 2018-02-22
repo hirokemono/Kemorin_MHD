@@ -71,7 +71,7 @@
 !
 !    set list array for merged field
 !
-      call set_field_list_4_merge
+      call set_field_list_4_merge(merged_fld)
       call alloc_phys_data_type(merged%node%numnod, merged_fld)
 !
 !   Cnostract grid data
@@ -84,7 +84,8 @@
       do istep = istep_start, istep_end, increment_step
 !        write(*,*) 'read_ucd_data_4_merge', istep
         call read_ucd_data_4_merge                                      &
-     &     (istep, original_ucd_param, fem_time_IO, fem_ucd)
+     &     (istep, mgd_mesh1%num_pe, subdomain, merge_tbl,              &
+     &      original_ucd_param, fem_time_IO, fem_ucd, merged_fld)
         call assemble_2nd_udt_phys                                      &
      &     (istep, assemble_ucd_param, fem_time_IO, second_ucd)
         write(*,*) 'step', istep, 'finish '
