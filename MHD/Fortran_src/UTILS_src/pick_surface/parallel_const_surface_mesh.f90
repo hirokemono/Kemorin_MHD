@@ -94,7 +94,7 @@
        write(*,*) 'set_overlapped_mesh_and_group'
        call set_overlapped_mesh_and_group(mesh_file, ele%nnod_4_ele)
 !
-       call dealloc_subdomain_groups(mgd_mesh1)
+       call dealloc_subdomain_groups
 !
 !   output grid data
 !
@@ -122,7 +122,7 @@
        call set_surf_domain_id_viewer
 !
 !
-       call dealloc_subdomain_grp_stack(mgd_mesh1)
+       call deallocate_subdomain_grp_stack
        call deallocate_array_4_merge
 !
        write(*,*)  'construct_edge_4_viewer'
