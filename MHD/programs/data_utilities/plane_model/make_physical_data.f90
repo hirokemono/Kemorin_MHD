@@ -102,7 +102,7 @@
       allocate( subdomains_2(num_pe2) )
 !
       call copy_plane_resolution                                        &
-     &   (mgd_mesh1%num_pe, subdomain, merge_tbl)
+     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl)
 !
 !  check positions in z-direction
 !

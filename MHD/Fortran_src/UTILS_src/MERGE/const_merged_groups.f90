@@ -132,11 +132,11 @@
       call allocate_flags_merged_grp
 !
       call count_merged_node_group(mgd_mesh1%num_pe, merge_tbl,         &
-     &    subdomain, mgd_mesh1%sub_nod_grp, merged_grp)
+     &    mgd_mesh1%subdomain, mgd_mesh1%sub_nod_grp, merged_grp)
       call count_merged_element_group(mgd_mesh1%num_pe, merge_tbl,      &
-     &    subdomain, mgd_mesh1%sub_ele_grp, merged_grp)
+     &    mgd_mesh1%subdomain, mgd_mesh1%sub_ele_grp, merged_grp)
       call count_merged_surface_group(mgd_mesh1%num_pe, merge_tbl,      &
-     &    subdomain, mgd_mesh1%sub_surf_grp, merged_grp)
+     &    mgd_mesh1%subdomain, mgd_mesh1%sub_surf_grp, merged_grp)
 !
 !    allocate merged group items
 !
@@ -147,11 +147,11 @@
 !    set merged group data
 !
       call set_merged_node_group(mgd_mesh1%num_pe, merge_tbl,           &
-     &    subdomain, mgd_mesh1%sub_nod_grp, merged_grp)
+     &    mgd_mesh1%subdomain, mgd_mesh1%sub_nod_grp, merged_grp)
       call set_merged_element_group(mgd_mesh1%num_pe, merge_tbl,        &
-     &    subdomain, mgd_mesh1%sub_ele_grp, merged_grp)
+     &    mgd_mesh1%subdomain, mgd_mesh1%sub_ele_grp, merged_grp)
       call set_merged_surface_group(mgd_mesh1%num_pe, merge_tbl,        &
-     &    subdomain, mgd_mesh1%sub_surf_grp, merged_grp)
+     &    mgd_mesh1%subdomain, mgd_mesh1%sub_surf_grp, merged_grp)
 !
       call deallocate_flags_merged_grp
 !

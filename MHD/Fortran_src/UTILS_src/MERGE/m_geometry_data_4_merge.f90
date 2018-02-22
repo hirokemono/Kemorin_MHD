@@ -35,9 +35,6 @@
 !
       type(merged_mesh), save :: mgd_mesh1
 !
-      type(mesh_geometry), allocatable :: subdomain(:)
-!>      subdomain mesh data
-!
       type(mesh_geometry) :: merged
 !>      merged mesh data
       type(phys_data) :: merged_fld
@@ -68,7 +65,7 @@
 !
 !
       merge_tbl%num_subdomain = mgd_mesh1%num_pe
-      allocate( subdomain(mgd_mesh1%num_pe) )
+      allocate( mgd_mesh1%subdomain(mgd_mesh1%num_pe) )
 !
       call alloc_subdomain_stack(mgd_mesh1%num_pe, merge_tbl)
 !

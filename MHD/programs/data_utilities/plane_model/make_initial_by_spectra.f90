@@ -280,7 +280,8 @@
 ! * PES loops 
 ! ========================
 !
-        call plane_nnod_stack_4_IO(mgd_mesh1%num_pe, subdomain)
+        call plane_nnod_stack_4_IO                                      &
+     &     (mgd_mesh1%num_pe, mgd_mesh1%subdomain)
 !
         do ip =1, mgd_mesh1%num_pe
 !
@@ -289,8 +290,8 @@
 !         write(*,*) 'num_spectr', num_spectr
 !
           do j = 1, num_fft
-            do i = 1, subdomain(ip)%node%numnod
-              inod = int(subdomain(ip)%node%inod_global(i))
+            do i = 1, mgd_mesh1%subdomain(ip)%node%numnod
+              inod = int(mgd_mesh1%subdomain(ip)%node%inod_global(i))
               if (inod .le. merge_tbl%inter_nod_m) then
                 i1 = (j-1)*num_spectr + inod
                 rst_from_sp(i,j) = phys_d(i1)
@@ -301,7 +302,7 @@
         end do
 !
         call s_write_restart_by_spectr                                  &
-       &    (ip, mgd_mesh1%num_pe, subdomain(ip)%node%numnod,           &
+       &    (ip, mgd_mesh1%num_pe, mgd_mesh1%subdomain(ip)%node%numnod, &
        &     merged_fld, plane_t_IO)
 !
 !   deallocate arrays

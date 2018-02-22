@@ -38,9 +38,9 @@
       merge_tbl%nele_merged = 0
       do ip = 1, mgd_mesh1%num_pe
         call copy_read_nodal_data_2_merge                               &
-     &     (ip, subdomain(ip), merge_tbl, merged)
+     &     (ip, mgd_mesh1%subdomain(ip), merge_tbl, merged)
         call copy_read_ele_data_2_merge                                 &
-     &     (ip, subdomain(ip), merge_tbl, merged)
+     &     (ip, mgd_mesh1%subdomain(ip), merge_tbl, merged)
       end do
 !
       end subroutine set_geometry_data_2_merge
@@ -62,14 +62,14 @@
       merge_tbl%nele_merged = 0
       do ip =1, mgd_mesh1%num_pe
         call copy_read_nodal_data_w_overlap                             &
-     &     (ip, subdomain(ip), merge_tbl, merged)
+     &     (ip, mgd_mesh1%subdomain(ip), merge_tbl, merged)
         call copy_read_ele_data_w_overlap                               &
-     &     (ip, subdomain(ip), merge_tbl, merged)
+     &     (ip, mgd_mesh1%subdomain(ip), merge_tbl, merged)
 !
 !   convert node and element ID
 !
         call cvt_ele_connect_w_overlap                                  &
-     &     (ip, subdomain(ip), merge_tbl, merged)
+     &     (ip, mgd_mesh1%subdomain(ip), merge_tbl, merged)
 !
         call cvt_group_4_overlap(mgd_mesh1%sub_nod_grp(ip),             &
      &      merge_tbl%istack_nod(ip-1))

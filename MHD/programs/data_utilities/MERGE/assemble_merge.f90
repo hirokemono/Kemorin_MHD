@@ -84,7 +84,7 @@
 !
       do istep = istep_start, istep_end, increment_step
         call read_ucd_data_4_merge                                      &
-     &     (istep, mgd_mesh1%num_pe, subdomain, merge_tbl,              &
+     &     (istep, mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl,    &
      &      original_ucd_param, fem_time_IO, fem_ucd, merged_fld)
         call link_merged_field_2_udt_IO(fem_ucd)
 !

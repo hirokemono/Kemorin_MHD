@@ -89,13 +89,13 @@
       do ip = 1, mgd_mesh1%num_pe
         id_rank = ip - 1
 !
-        merged_IO%nnod_IO = subdomain(ip)%node%numnod
+        merged_IO%nnod_IO = mgd_mesh1%subdomain(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
         call sel_read_step_FEM_field_file                               &
      &     (mgd_mesh1%num_pe, id_rank, istep, org_fst_param,            &
      &      t_IO, merged_IO)
         call set_restart_data_2_merge                                   &
-     &     (subdomain(ip), merged_IO, merged_fld)
+     &     (mgd_mesh1%subdomain(ip), merged_IO, merged_fld)
 !
         call dealloc_phys_data_IO(merged_IO)
       end do
@@ -176,14 +176,14 @@
       do ip = 1, mgd_mesh1%num_pe
         id_rank = ip - 1
 !
-        merged_IO%nnod_IO = subdomain(ip)%node%numnod
+        merged_IO%nnod_IO = mgd_mesh1%subdomain(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
 !
         call sel_read_rst_file                                          &
      &     (id_rank, istep, org_fst_param, t_IO, merged_IO)
 !
         call set_restart_data_2_merge                                   &
-     &     (subdomain(ip), merged_IO, merged_fld)
+     &     (mgd_mesh1%subdomain(ip), merged_IO, merged_fld)
 !
         call dealloc_phys_data_IO(merged_IO)
       end do
