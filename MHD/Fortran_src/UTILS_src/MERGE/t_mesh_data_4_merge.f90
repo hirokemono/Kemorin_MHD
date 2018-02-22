@@ -1,5 +1,5 @@
-!>@file   t_geometry_data_4_merge.f90
-!!@brief  module t_geometry_data_4_merge
+!>@file   t_mesh_data_4_merge.f90
+!!@brief  module t_mesh_data_4_merge
 !!
 !!@author  H. Matsui
 !!@date Programmed in Apr., 2012
@@ -29,7 +29,7 @@
 !!      subroutine check_surface_data_m(ip, mgd_mesh)
 !!@endverbatim
 !
-      module t_geometry_data_4_merge
+      module t_mesh_data_4_merge
 !
       use m_precision
 !
@@ -300,4 +300,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module t_geometry_data_4_merge
+      end module t_mesh_data_4_merge
