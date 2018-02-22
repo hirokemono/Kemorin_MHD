@@ -54,9 +54,12 @@
 !
       call allocate_flags_merged_grp
 !
-      call count_merged_node_group
-      call count_merged_element_group
-      call count_merged_surface_group
+      call count_merged_node_group(num_pe, merge_tbl,                   &
+     &    subdomain, sub_nod_grp, merged_grp)
+      call count_merged_element_group(num_pe, merge_tbl,                &
+     &    subdomain, sub_ele_grp, merged_grp)
+      call count_merged_surface_group(num_pe, merge_tbl,                &
+     &    subdomain, sub_surf_grp, merged_grp)
 !
 !    allocate merged group items
 !
@@ -66,9 +69,12 @@
 !
 !    set merged group data
 !
-      call set_merged_node_group
-      call set_merged_element_group
-      call set_merged_surface_group
+      call set_merged_node_group(num_pe, merge_tbl,                   &
+     &    subdomain, sub_nod_grp, merged_grp)
+      call set_merged_element_group(num_pe, merge_tbl,                &
+     &    subdomain, sub_ele_grp, merged_grp)
+      call set_merged_surface_group(num_pe, merge_tbl,                &
+     &    subdomain, sub_surf_grp, merged_grp)
 !
       call deallocate_flags_merged_grp
 !

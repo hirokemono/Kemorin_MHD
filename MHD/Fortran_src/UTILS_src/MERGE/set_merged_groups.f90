@@ -4,14 +4,26 @@
 !      subroutine allocate_flags_merged_grp
 !      subroutine deallocate_flags_merged_grp
 !
-!      subroutine count_merged_node_group
-!      subroutine set_merged_node_group
+!!      subroutine count_merged_node_group(num_pe, merge_tbl,           &
+!!     &          subdomain, sub_nod_grp, merged_grp)
+!!      subroutine set_merged_node_group(num_pe, merge_tbl,             &
+!!     &          subdomain, sub_nod_grp, merged_grp)
 !
-!      subroutine count_merged_element_group
-!      subroutine set_merged_element_group
+!!      subroutine count_merged_element_group(num_pe, merge_tbl,        &
+!!     &          subdomain, sub_ele_grp, merged_grp)
+!!      subroutine set_merged_element_group(num_pe, merge_tbl,          &
+!!     &          subdomain, sub_ele_grp, merged_grp)
 !
-!      subroutine count_merged_surface_group
-!      subroutine set_merged_surface_group
+!!      subroutine count_merged_surface_group(num_pe, merge_tbl,        &
+!!     &          subdomain, sub_surf_grp, merged_grp)
+!!      subroutine set_merged_surface_group(num_pe, merge_tbl,          &
+!!     &          subdomain, sub_surf_grp, merged_grp)
+!!        type(merged_stacks), intent(in) :: merge_tbl
+!!        type(mesh_geometry), intent(in) :: subdomain(num_pe)
+!!        type(group_data), intent(in) :: sub_nod_grp(num_pe)
+!!        type(group_data), intent(in) :: sub_ele_grp(num_pe)
+!!        type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)
+!!        type(mesh_groups), intent(inout) :: merged_grp
 !
 !      Written by H. Matsui on july, 2005
 !
@@ -20,7 +32,8 @@
       use m_precision
 !
       use m_geometry_constants
-      use m_geometry_data_4_merge
+      use t_mesh_data
+      use t_group_data
 !
       implicit none
 !
@@ -40,6 +53,7 @@
 !
       subroutine allocate_flags_merged_grp
 !
+      use m_geometry_data_4_merge
 !
       allocate( iflag_nod_grp(merged%node%numnod) )
       allocate( iflag_ele_grp(merged%ele%numele) )
@@ -60,14 +74,25 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine count_merged_node_group
+      subroutine count_merged_node_group(num_pe, merge_tbl,             &
+     &          subdomain, sub_nod_grp, merged_grp)
+!
+      use t_merged_geometry_data
+!
+      integer(kind = kint), intent(in)  :: num_pe
+      type(merged_stacks), intent(in) :: merge_tbl
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(group_data), intent(in) :: sub_nod_grp(num_pe)
+!
+      type(mesh_groups), intent(inout) :: merged_grp
 !
       integer(kind = kint) :: inod, jgrp, icou
 !
 !
       do jgrp = 1, merged_grp%nod_grp%num_grp
         call mark_node_by_global_address                                &
-     &      (merged_grp%nod_grp%grp_name(jgrp) )
+     &     (merged_grp%nod_grp%grp_name(jgrp),                          &
+     &      num_pe, subdomain, sub_nod_grp)
 !
         icou = merged_grp%nod_grp%istack_grp(jgrp-1)
         do inod = 1, merge_tbl%nnod_merged
@@ -83,14 +108,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_merged_node_group
+      subroutine set_merged_node_group(num_pe, merge_tbl,              &
+     &          subdomain, sub_nod_grp, merged_grp)
+!
+      use t_merged_geometry_data
+!
+      integer(kind = kint), intent(in)  :: num_pe
+      type(merged_stacks), intent(in) :: merge_tbl
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(group_data), intent(in) :: sub_nod_grp(num_pe)
+!
+      type(mesh_groups), intent(inout) :: merged_grp
 !
       integer(kind = kint) :: inod, jgrp, icou
 !
 !
       do jgrp = 1, merged_grp%nod_grp%num_grp
         call mark_node_by_global_address                                &
-     &      (merged_grp%nod_grp%grp_name(jgrp) )
+     &     (merged_grp%nod_grp%grp_name(jgrp),                          &
+     &      num_pe, subdomain, sub_nod_grp)
 !
         icou = merged_grp%nod_grp%istack_grp(jgrp-1)
         do inod = 1, merge_tbl%nnod_merged
@@ -106,14 +142,25 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine count_merged_element_group
+      subroutine count_merged_element_group(num_pe, merge_tbl,          &
+     &          subdomain, sub_ele_grp, merged_grp)
+!
+      use t_merged_geometry_data
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(merged_stacks), intent(in) :: merge_tbl
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(group_data), intent(in) :: sub_ele_grp(num_pe)
+!
+      type(mesh_groups), intent(inout) :: merged_grp
 !
       integer(kind = kint) :: iele, jgrp, icou
 !
 !
       do jgrp = 1, merged_grp%ele_grp%num_grp
         call mark_ele_by_global_address                                 &
-     &      (merged_grp%ele_grp%grp_name(jgrp))
+     &     (merged_grp%ele_grp%grp_name(jgrp),                          &
+     &      num_pe, subdomain, sub_ele_grp)
 !
         icou = merged_grp%ele_grp%istack_grp(jgrp-1)
         do iele = 1, merge_tbl%nele_merged
@@ -129,14 +176,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_merged_element_group
+      subroutine set_merged_element_group(num_pe, merge_tbl,            &
+     &          subdomain, sub_ele_grp, merged_grp)
+!
+      use t_merged_geometry_data
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(merged_stacks), intent(in) :: merge_tbl
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(group_data), intent(in) :: sub_ele_grp(num_pe)
+!
+      type(mesh_groups), intent(inout) :: merged_grp
 !
       integer(kind = kint) :: iele, jgrp, icou
 !
 !
       do jgrp = 1, merged_grp%ele_grp%num_grp
         call mark_ele_by_global_address                                 &
-     &      (merged_grp%ele_grp%grp_name(jgrp))
+     &     (merged_grp%ele_grp%grp_name(jgrp),                          &
+     &      num_pe, subdomain, sub_ele_grp)
 !
         icou = merged_grp%ele_grp%istack_grp(jgrp-1)
         do iele = 1, merge_tbl%nele_merged
@@ -152,14 +210,25 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine count_merged_surface_group
+      subroutine count_merged_surface_group(num_pe, merge_tbl,          &
+     &          subdomain, sub_surf_grp, merged_grp)
+!
+      use t_merged_geometry_data
+!
+      integer(kind = kint), intent(in)  :: num_pe
+      type(merged_stacks), intent(in) :: merge_tbl
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)
+!
+      type(mesh_groups), intent(inout) :: merged_grp
 !
       integer (kind = kint) :: icou, jgrp, iele, isurf
 !
 !
       do jgrp = 1, merged_grp%surf_grp%num_grp
         call mark_surf_by_global_address                                &
-     &      (merged_grp%surf_grp%grp_name(jgrp))
+     &     (merged_grp%surf_grp%grp_name(jgrp),                         &
+     &      num_pe, subdomain, sub_surf_grp)
 !
         icou = merged_grp%surf_grp%istack_grp(jgrp-1)
         do iele = 1, merge_tbl%nele_merged
@@ -178,7 +247,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_merged_surface_group
+      subroutine set_merged_surface_group(num_pe, merge_tbl,            &
+     &          subdomain, sub_surf_grp, merged_grp)
+!
+      use t_merged_geometry_data
+!
+      integer(kind = kint), intent(in)  :: num_pe
+      type(merged_stacks), intent(in) :: merge_tbl
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)
+!
+      type(mesh_groups), intent(inout) :: merged_grp
 !
       integer (kind = kint) :: icou, jgrp, iele, isurf
 !
@@ -186,7 +265,8 @@
 !
       do jgrp = 1, merged_grp%surf_grp%num_grp
         call mark_surf_by_global_address                                &
-     &      (merged_grp%surf_grp%grp_name(jgrp))
+     &     (merged_grp%surf_grp%grp_name(jgrp),                         &
+     &      num_pe, subdomain, sub_surf_grp)
 !
         icou = merged_grp%surf_grp%istack_grp(jgrp-1)
         do iele = 1, merge_tbl%nele_merged
@@ -210,9 +290,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine mark_node_by_global_address(target_name)
+      subroutine mark_node_by_global_address(target_name,               &
+     &          num_pe, subdomain, sub_nod_grp)
 !
       character(len=kchara), intent(in) :: target_name
+!
+      integer(kind = kint), intent(in)  :: num_pe
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(group_data), intent(in) :: sub_nod_grp(num_pe)
 !
       integer(kind = kint) :: ip, igrp, kst, ked, k, ii
       integer(kind = kint_gl) :: inod_g
@@ -238,9 +323,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine mark_ele_by_global_address(target_name)
+      subroutine mark_ele_by_global_address(target_name,                &
+     &          num_pe, subdomain, sub_ele_grp)
 !
       character(len=kchara), intent(in) :: target_name
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(group_data), intent(in) :: sub_ele_grp(num_pe)
 !
       integer(kind = kint) :: ip, igrp, kst, ked, k, ii
       integer(kind = kint_gl) :: iele_g
@@ -266,9 +356,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine mark_surf_by_global_address(target_name)
+      subroutine mark_surf_by_global_address(target_name,               &
+     &          num_pe, subdomain, sub_surf_grp)
 !
       character(len=kchara), intent(in) :: target_name
+!
+      integer(kind = kint), intent(in)  :: num_pe
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)
 !
 !
       integer(kind = kint) :: ip, igrp, kst, ked, k, ii, isurf

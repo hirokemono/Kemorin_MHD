@@ -42,7 +42,9 @@
 !
       call set_num_nod_ele_merge_type_wop(nprocs, mesh_info,            &
      &    subdomain)
-      call count_num_geometry_w_overlap
+      call count_num_overlap_geom_type(num_pe, subdomain, merge_tbl)
+      call count_num_geometry_w_overlap                                 &
+     &   (num_pe, subdomain, merge_tbl, merged)
 !
       call allocate_array_4_node
       call allocate_array_4_element
@@ -89,7 +91,9 @@
       call allocate_number_of_mesh
 !
       call set_num_nod_ele_merge_type(nprocs, mesh_info, subdomain)
-      call count_num_geometry_w_overlap
+      call count_num_overlap_geom_type(num_pe, subdomain, merge_tbl)
+      call count_num_geometry_w_overlap                                  &
+     &   (num_pe, subdomain, merge_tbl, merged)
 !
       call allocate_geometry_data_4_merge
 !

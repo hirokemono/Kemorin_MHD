@@ -10,7 +10,6 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_data_4_merge
       use t_mesh_data
       use t_file_IO_parameter
 !
@@ -26,12 +25,16 @@
 !
       subroutine count_number_w_overlap(mesh_file, nnod_4_ele)
 !
+      use m_geometry_data_4_merge
+!
       type(field_IO_params), intent(in) :: mesh_file
       integer (kind = kint), intent(inout) :: nnod_4_ele
 !
 !
       call count_numbers_4_mesh_merge(mesh_file, nnod_4_ele)
-      call count_num_geometry_w_overlap
+      call count_num_overlap_geom_type(num_pe, subdomain, merge_tbl)
+      call count_num_geometry_w_overlap                                 &
+     &   (num_pe, subdomain, merge_tbl, merged)
 !
       end subroutine count_number_w_overlap
 !
@@ -40,16 +43,18 @@
 !
       subroutine count_numbers_4_mesh_merge(mesh_file, nnod_4_ele)
 !
-       use mesh_IO_select
-       use set_read_geometry_2_merge
-       use set_read_boundary_2_merge
-       use set_element_data_4_IO
-       use copy_mesh_structures
-       use load_mesh_data
+      use m_geometry_data_4_merge
+      use mesh_IO_select
+      use set_read_geometry_2_merge
+      use set_read_boundary_2_merge
+      use set_element_data_4_IO
+      use copy_mesh_structures
+      use load_mesh_data
 !
       type(field_IO_params), intent(in) :: mesh_file
-       integer (kind = kint), intent(inout) :: nnod_4_ele
-       integer (kind = kint) :: ip, my_rank, ierr
+      integer (kind = kint), intent(inout) :: nnod_4_ele
+!
+      integer (kind = kint) :: ip, my_rank, ierr
 !
        type(mesh_data) :: fem_IO_o
 !
@@ -72,16 +77,40 @@
       end subroutine count_numbers_4_mesh_merge
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine count_num_group_w_overlap
+!
+      use m_geometry_data_4_merge
+!
+!
+      call count_subdomain_ngrp_stack(num_pe, sub_nod_grp,              &
+     &    istack_bc_pe)
+      call count_subdomain_ngrp_stack(num_pe, sub_ele_grp,              &
+     &    istack_mat_pe)
+!
+      call count_subdomain_sf_ngrp_stack(num_pe, sub_surf_grp,          &
+     &    istack_surf_pe)
+!
+      end subroutine count_num_group_w_overlap
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_num_geometry_w_overlap
+      subroutine count_num_geometry_w_overlap                           &
+     &         (num_pe, subdomain, table, merged)
+!
+      use t_merged_geometry_data
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(merged_stacks), intent(in) :: table
+!
+      type(mesh_geometry), intent(inout) :: merged
 !
 !
-      call count_num_overlap_geom_type(num_pe, subdomain, merge_tbl)
-!
-      merged%node%numnod =        merge_tbl%istack_nod(num_pe)
-      merged%node%internal_node = merge_tbl%istack_inter(num_pe)
-      merged%ele%numele =         merge_tbl%istack_ele(num_pe)
+      merged%node%numnod =        table%istack_nod(num_pe)
+      merged%node%internal_node = table%istack_inter(num_pe)
+      merged%ele%numele =         table%istack_ele(num_pe)
       merged%ele%nnod_4_ele =     subdomain(1)%ele%nnod_4_ele
 !
       end subroutine count_num_geometry_w_overlap
@@ -91,6 +120,7 @@
       subroutine count_num_overlap_geom_type(num_pe, subdomain, table)
 !
       use m_constants
+      use t_merged_geometry_data
 !
       integer(kind = kint), intent(in) :: num_pe
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
@@ -120,21 +150,6 @@
       table%nele_overlap = table%istack_ele(num_pe)
 !
       end subroutine count_num_overlap_geom_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_num_group_w_overlap
-!
-!
-      call count_subdomain_ngrp_stack(num_pe, sub_nod_grp,              &
-     &    istack_bc_pe)
-      call count_subdomain_ngrp_stack(num_pe, sub_ele_grp,              &
-     &    istack_mat_pe)
-!
-      call count_subdomain_sf_ngrp_stack(num_pe, sub_surf_grp,          &
-     &    istack_surf_pe)
-!
-      end subroutine count_num_group_w_overlap
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

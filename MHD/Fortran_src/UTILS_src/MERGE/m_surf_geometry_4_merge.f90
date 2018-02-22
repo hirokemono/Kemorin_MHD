@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Jan., 2007
 !
-!      subroutine allocate_num_surface_merge
+!      subroutine allocate_num_surface_merge(num_pe)
 !
 !      subroutine deallocate_num_surface_merge
 !      subroutine deallocate_surf_connect_merge
@@ -32,9 +32,9 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine allocate_num_surface_merge
+      subroutine allocate_num_surface_merge(num_pe)
 !
-      use m_geometry_data_4_merge
+      integer(kind=kint), intent(in)  :: num_pe
 !
       allocate( istack_surfpe(0:num_pe) )
       istack_surfpe = 0

@@ -9,7 +9,6 @@
 !
       use m_precision
 !
-      use m_geometry_data_4_merge
       use m_surf_geometry_4_merge
 !
       implicit    none
@@ -24,6 +23,7 @@
 !
       subroutine s_const_merged_surf_data
 !
+      use m_geometry_data_4_merge
       use const_surface_data
 !
 !   set hash data for suface elements using sum of local node ID
@@ -33,15 +33,20 @@
 !
 !   count number of element for each domain
 !
-      call allocate_num_surface_merge
-      call count_nsurf_4_each_domain
+      call allocate_num_surface_merge(num_pe)
+      call count_nsurf_4_each_domain(num_pe, merge_tbl)
 !
       end subroutine s_const_merged_surf_data
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine count_nsurf_4_each_domain
+      subroutine count_nsurf_4_each_domain(num_pe, merge_tbl)
+!
+      use t_merged_geometry_data
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(merged_stacks), intent(in) :: merge_tbl
 !
       integer(kind = kint) :: ip, iref, ist, isurf, inod
 !
