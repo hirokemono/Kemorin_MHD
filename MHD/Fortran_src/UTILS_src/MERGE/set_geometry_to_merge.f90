@@ -66,11 +66,11 @@
 !
         call cvt_ele_connect_w_overlap(ip)
 !
-        call cvt_group_4_overlap(sub_nod_grp(ip),                       &
+        call cvt_group_4_overlap(mgd_mesh1%sub_nod_grp(ip),             &
      &      merge_tbl%istack_nod(ip-1))
-        call cvt_group_4_overlap(sub_ele_grp(ip),                       &
+        call cvt_group_4_overlap(mgd_mesh1%sub_ele_grp(ip),             &
      &      merge_tbl%istack_ele(ip-1))
-        call cvt_surf_grp_4_overlap(sub_surf_grp(ip),                   &
+        call cvt_surf_grp_4_overlap(mgd_mesh1%sub_surf_grp(ip),         &
      &      merge_tbl%istack_ele(ip-1))
       end do
 !

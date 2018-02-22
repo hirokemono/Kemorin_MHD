@@ -65,7 +65,6 @@
 !
 !
       call allocate_number_of_mesh
-      call allocate_subdomain_groups
 !
 !   read field name and number of components
 !

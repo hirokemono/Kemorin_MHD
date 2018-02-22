@@ -130,8 +130,6 @@
        write(*,*) 'set_overlapped_mesh_and_group'
        call set_overlapped_mesh_and_group(mesh_file, ele%nnod_4_ele)
 !
-       call deallocate_subdomain_groups
-!
 !   output grid data
 !
        write(*,*) 'set_source_mesh_parameter'

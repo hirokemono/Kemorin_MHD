@@ -70,7 +70,8 @@
      &      subdomain(ip)%nod_comm, subdomain(ip)%node,                 &
      &      subdomain(ip)%ele)
         call set_grp_data_from_IO(fem_IO_o%group,                       &
-     &      sub_nod_grp(ip), sub_ele_grp(ip), sub_surf_grp(ip))
+     &      mgd_mesh1%sub_nod_grp(ip), mgd_mesh1%sub_ele_grp(ip),       &
+     &      mgd_mesh1%sub_surf_grp(ip))
         call dealloc_groups_data(fem_IO_o%group)
       end do
 !

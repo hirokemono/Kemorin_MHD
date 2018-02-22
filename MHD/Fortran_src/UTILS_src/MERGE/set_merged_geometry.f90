@@ -36,13 +36,12 @@
 !
 !      write(*,*) 'allocate_number_of_mesh'
       call allocate_number_of_mesh
-      call allocate_subdomain_groups
 
-!
 !     count number of node for each domain
 !
 !       write(*,*) 'count_number_w_overlap'
-       call count_number_w_overlap(mesh_file, nnod_4_ele)
+      call alloc_subdomain_groups(mgd_mesh1)
+      call count_number_w_overlap(mesh_file, nnod_4_ele)
 !
 !     array allocation
 !
@@ -77,12 +76,12 @@
 !
 !      write(*,*) 'allocate_number_of_mesh'
       call allocate_number_of_mesh
-      call allocate_subdomain_groups
 !
 !     count number of node for each domain
 !
 !       write(*,*) 'count_number_w_overlap'
-       call count_number_w_overlap(mesh_file, nnod_4_ele)
+      call alloc_subdomain_groups(mgd_mesh1)
+      call count_number_w_overlap(mesh_file, nnod_4_ele)
 !
 !     array allocation
 !
@@ -92,7 +91,7 @@
 !  set mesh_information
 !
 !       write(*,*) 'set_geometry_data_2_merge'
-       call set_geometry_data_2_merge
+      call set_geometry_data_2_merge
 !
 !
       end subroutine set_merged_node_and_element
@@ -110,12 +109,12 @@
 !
 !       write(*,*) 'allocate_number_of_mesh'
       call allocate_number_of_mesh
-      call allocate_subdomain_groups
 !
 !     count number of node for each domain
 !
        write(*,*) 'count_number_w_overlap'
-       call count_number_w_overlap(mesh_file, nnod_4_ele)
+      call alloc_subdomain_groups(mgd_mesh1)
+      call count_number_w_overlap(mesh_file, nnod_4_ele)
 !
 !     array allocation
 !
@@ -137,6 +136,7 @@
       call const_merged_overlapped_groups
 !
       call deallocate_subdomain_grp_stack
+      call dealloc_subdomain_groups(mgd_mesh1)
 !
       end subroutine set_overlapped_mesh_and_group
 !
