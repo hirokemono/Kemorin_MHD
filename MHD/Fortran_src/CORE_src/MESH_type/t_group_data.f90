@@ -316,7 +316,7 @@
       subroutine check_surf_grp_type_data(my_rank, sf_grp)
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(surface_group_data), intent(inout) :: sf_grp
+      type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint) :: i, ist, ied
 !
       write(50+my_rank,*) 'num_grp',  sf_grp%num_grp

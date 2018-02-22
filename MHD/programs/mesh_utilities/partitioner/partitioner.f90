@@ -23,7 +23,7 @@
       use load_mesh_data
       use const_mesh_information
 !
-      use const_surface_mesh
+      use single_const_surface_mesh
 !
       implicit none
 !
@@ -70,8 +70,8 @@
 !
 !  ========= Construct subdomain information for viewer ==============
 !
-      write(*,*) 'choose_surface_mesh'
-      call choose_surface_mesh(distribute_mesh_file,                    &
+      write(*,*) 'choose_surface_mesh_sgl'
+      call choose_surface_mesh_sgl(distribute_mesh_file,                &
      &    org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge)
 !
       stop ' * Partitioning finished'

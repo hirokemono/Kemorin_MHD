@@ -1,20 +1,25 @@
+!>@file   parallel_const_surface_mesh.f90
+!!@brief  module parallel_const_surface_mesh
+!!
+!!@author  H. Matsui
+!!@date Programmed in Dec., 2006
 !
-!      module const_surface_mesh
-!
-!      Written by Kemorin
-!      Modified by Kemorin on Dec., 2006
-!
-!!      subroutine choose_surface_mesh(mesh_file, ele, surf, edge)
+!>@brief Surface mesh data generator for kemoviewer
+!!
+!!@verbatim
+!!      subroutine choose_surface_mesh_para(mesh_file, ele, surf, edge)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data), intent(inout) :: edge
+!!@endverbatim
 !
-      module const_surface_mesh
+      module parallel_const_surface_mesh
 !
       use m_precision
-!
       use m_constants
+      use calypso_mpi
+!
       use m_machine_parameter
       use m_file_format_switch
       use m_geometry_data_4_merge
@@ -28,7 +33,6 @@
       implicit none
 !
       private :: const_surf_mesh_4_viewer, set_source_mesh_parameter
-      private :: find_mesh_format_4_viewer
 !
 !------------------------------------------------------------------
 !
@@ -36,7 +40,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine choose_surface_mesh(mesh_file, ele, surf, edge)
+      subroutine choose_surface_mesh_para(mesh_file, ele, surf, edge)
+!
+      use find_mesh_file_format
 !
       type(field_IO_params), intent(inout) :: mesh_file
       type(element_data), intent(inout) :: ele
@@ -45,62 +51,24 @@
 !
 !
       surface_file_head = mesh_file%file_prefix
-      write(*,*) 'find_mesh_format_4_viewer'
-      call find_mesh_format_4_viewer(mesh_file)
-      write(*,*) 'count_subdomains_4_viewer'
-      call count_subdomains_4_viewer(mesh_file)
-      write(*,*) 'const_surf_mesh_4_viewer'
-      call const_surf_mesh_4_viewer(mesh_file, ele, surf, edge)
+      num_pe = nprocs
 !
-      end subroutine choose_surface_mesh
+      if(my_rank .eq. 0) then
+        if(iflag_debug .eq. 0) write(*,*) 'find_merged_mesh_format'
+        call find_merged_mesh_format(mesh_file)
+      end if
+      call calypso_mpi_barrier
+      call MPI_BCAST(mesh_file%iflag_format, ione,                      &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-!------------------------------------------------------------------
 !
-      subroutine find_mesh_format_4_viewer(mesh_file)
+      if(my_rank .eq. 0) then
+        write(*,*) 'const_surf_mesh_4_viewer'
+        call const_surf_mesh_4_viewer(mesh_file, ele, surf, edge)
+      end if
+      call calypso_mpi_barrier
 !
-      use t_file_IO_parameter
-      use m_file_format_switch
-      use mesh_file_name_by_param
-!
-      type(field_IO_params), intent(inout) ::  mesh_file
-!
-!  Detect file format
-      mesh_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_ascii_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_binary_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_gzip_bin_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      stop 'I cannot find mesh file!!'
-!
-      end subroutine find_mesh_format_4_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine count_subdomains_4_viewer(mesh_file)
-!
-      use mesh_IO_select
-!
-      type(field_IO_params), intent(in) ::  mesh_file
-!
-      num_pe = 0
-      do
-        if(check_exist_mesh(mesh_file, num_pe) .gt. 0) exit
-        num_pe = num_pe + 1
-      end do
-!
-      write(*,*) 'Number of subdomains: ', num_pe
-!
-      end subroutine count_subdomains_4_viewer
+      end subroutine choose_surface_mesh_para
 !
 !------------------------------------------------------------------
 !
@@ -126,7 +94,7 @@
        write(*,*) 'set_overlapped_mesh_and_group'
        call set_overlapped_mesh_and_group(mesh_file, ele%nnod_4_ele)
 !
-       call dealloc_subdomain_groups
+       call dealloc_subdomain_groups(mgd_mesh1)
 !
 !   output grid data
 !
@@ -154,7 +122,7 @@
        call set_surf_domain_id_viewer
 !
 !
-       call deallocate_subdomain_grp_stack
+       call dealloc_subdomain_grp_stack(mgd_mesh1)
        call deallocate_array_4_merge
 !
        write(*,*)  'construct_edge_4_viewer'
@@ -233,4 +201,4 @@
 !
 !------------------------------------------------------------------
 !
-      end module const_surface_mesh
+      end module parallel_const_surface_mesh

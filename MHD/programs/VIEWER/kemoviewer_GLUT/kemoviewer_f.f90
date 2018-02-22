@@ -9,7 +9,7 @@
 !
       use m_precision
 !
-      use const_surface_mesh
+      use single_const_surface_mesh
       use getarg_kemo
       use t_mesh_data
       use t_file_IO_parameter
@@ -38,7 +38,7 @@
       end if
 !
       mesh_file_viewer%file_prefix = file_head
-      call choose_surface_mesh                                          &
+      call choose_surface_mesh_sgl                                      &
      &   (mesh_file_viewer, ele_viewer, ele_mesh1%surf, ele_mesh1%edge)
 !
       write(*,*) 'will you draw mesh? (y/n)'
