@@ -17,13 +17,9 @@
 !      subroutine deallocate_array_4_merge
 !      subroutine deallocate_number_of_mesh
 !
-!      subroutine dealloc_subdomain_groups
+!      subroutine deallocate_subdomain_groups
 !
 !      subroutine deallocate_subdomain_grp_stack
-!
-!      subroutine check_boundary_data_m
-!      subroutine check_material_data_m
-!      subroutine check_surface_data_m
 !
       module m_geometry_data_4_merge
 !
@@ -41,9 +37,9 @@
 !  ==============================
 ! . for mesh data & result data
 !  ==============================
-
-      integer(kind=kint )  :: num_pe
-!>      number of subdomains
+!
+      type(merged_mesh), save :: mgd_mesh1
+!
       type(mesh_geometry), allocatable :: subdomain(:)
 !>      subdomain mesh data
 !
@@ -86,10 +82,10 @@
       subroutine allocate_number_of_mesh
 !
 !
-      merge_tbl%num_subdomain = num_pe
-      allocate( subdomain(num_pe) )
+      merge_tbl%num_subdomain = mgd_mesh1%num_pe
+      allocate( subdomain(mgd_mesh1%num_pe) )
 !
-      call alloc_subdomain_stack(num_pe, merge_tbl)
+      call alloc_subdomain_stack(mgd_mesh1%num_pe, merge_tbl)
 !
       end subroutine allocate_number_of_mesh
 !
@@ -143,13 +139,13 @@
 !
        subroutine allocate_subdomain_grp_stack
 !
-       allocate ( sub_nod_grp(num_pe) )
-       allocate ( sub_ele_grp(num_pe) )
-       allocate ( sub_surf_grp(num_pe) )
+       allocate ( sub_nod_grp(mgd_mesh1%num_pe) )
+       allocate ( sub_ele_grp(mgd_mesh1%num_pe) )
+       allocate ( sub_surf_grp(mgd_mesh1%num_pe) )
 !
-       allocate ( istack_bc_pe(0:num_pe) )
-       allocate ( istack_mat_pe(0:num_pe) )
-       allocate ( istack_surf_pe(0:num_pe) )
+       allocate ( istack_bc_pe(0:mgd_mesh1%num_pe) )
+       allocate ( istack_mat_pe(0:mgd_mesh1%num_pe) )
+       allocate ( istack_surf_pe(0:mgd_mesh1%num_pe) )
 !
        istack_bc_pe = 0
        istack_mat_pe = 0
@@ -193,18 +189,18 @@
 !------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_subdomain_groups
+      subroutine deallocate_subdomain_groups
 !
       integer(kind = kint) :: ip
 !
 !
-      do ip = 1, num_pe
+      do ip = 1, mgd_mesh1%num_pe
         call deallocate_grp_type( sub_nod_grp(ip) )
         call deallocate_grp_type( sub_ele_grp(ip) )
         call deallocate_sf_grp_type( sub_surf_grp(ip) )
       end do
 !
-      end subroutine dealloc_subdomain_groups
+      end subroutine deallocate_subdomain_groups
 !
 !-----------------------------------------------------------------------
 !------------------------------------------------------------------
@@ -219,42 +215,5 @@
        end subroutine deallocate_subdomain_grp_stack
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine check_boundary_data_m
-!
-      integer(kind = kint) :: ip
-!
-      do ip = 1, num_pe
-        call check_group_type_data(izero, sub_nod_grp(ip))
-      end do
-!
-      end subroutine check_boundary_data_m
-!
-!-----------------------------------------------------------------------
-!
-      subroutine check_material_data_m
-!
-      integer(kind = kint) :: ip
-!
-      do ip = 1, num_pe
-        call check_group_type_data(izero, sub_ele_grp(ip))
-      end do
-!
-      end subroutine check_material_data_m
-!
-!-----------------------------------------------------------------------
-!
-       subroutine check_surface_data_m
-!
-       integer(kind = kint) :: ip
-!
-       do ip = 1, num_pe
-         call check_surf_grp_type_data(izero, sub_surf_grp(ip))
-       end do
-!
-       end subroutine check_surface_data_m
-!
-!-----------------------------------------------------------------------
 !
       end module m_geometry_data_4_merge

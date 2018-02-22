@@ -51,7 +51,7 @@
 !
 !
       surface_file_head = mesh_file%file_prefix
-      num_pe = nprocs
+      mgd_mesh1%num_pe = nprocs
 !
       if(my_rank .eq. 0) then
         if(iflag_debug .eq. 0) write(*,*) 'find_merged_mesh_format'
@@ -94,7 +94,7 @@
        write(*,*) 'set_overlapped_mesh_and_group'
        call set_overlapped_mesh_and_group(mesh_file, ele%nnod_4_ele)
 !
-       call dealloc_subdomain_groups
+       call deallocate_subdomain_groups
 !
 !   output grid data
 !
@@ -154,7 +154,7 @@
 !
 !  set array for number of surface
 !
-      num_pe_sf = num_pe
+      num_pe_sf = mgd_mesh1%num_pe
 !
 !       write(*,*) 'allocate_num_mesh_sf'
       call allocate_num_mesh_sf

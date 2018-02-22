@@ -65,18 +65,18 @@
       call set_initial_components
       call reset_time_data(plane_t_IO)
 !
-      num_pe = ndx * ndy * ndz
+      mgd_mesh1%num_pe = ndx * ndy * ndz
 !
       merged%node%numnod = node_plane%numnod
 !
       call alloc_merged_field_stack(nprocs, plane_fst_IO)
       plane_fst_IO%istack_numnod_IO(0) = 0
-      do ip = 1, num_pe
+      do ip = 1, mgd_mesh1%num_pe
         plane_fst_IO%istack_numnod_IO(ip)                               &
      &      = plane_fst_IO%istack_numnod_IO(ip-1) + merged%node%numnod
       end do
 !
-      do ip = 1, num_pe
+      do ip = 1, mgd_mesh1%num_pe
         id_rank = ip-1
 !
 !    read mesh file
@@ -148,7 +148,8 @@
 !
         call set_file_fmt_prefix                                        &
      &     (izero, org_rst_f_header, plane_fld_file)
-        call sel_write_step_FEM_field_file(num_pe, id_rank, izero,      &
+        call sel_write_step_FEM_field_file                              &
+     &     (mgd_mesh1%num_pe, id_rank, izero,                           &
      &      plane_fld_file, plane_t_IO, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)

@@ -75,9 +75,10 @@
       call read_control_data_fft_plane
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT(num_pe, ist, ied, iint)
-      call set_parameters_data_by_spec(num_pe, kx_org, ky_org, iz_org,  &
-     &                                 plane_mesh_file, ucd_file_param)
+      call set_parameters_4_FFT(mgd_mesh1%num_pe, ist, ied, iint)
+      call set_parameters_data_by_spec                                  &
+     &   (mgd_mesh1%num_pe, kx_org, ky_org, iz_org,                     &
+     &    plane_mesh_file, ucd_file_param)
       call s_set_numnod_4_plane
 !
       call allocate_z_compliment_info(nz_all)
@@ -100,19 +101,19 @@
 !
       allocate( subdomains_2(num_pe2) )
 !
-      subdomains_2(1:num_pe)%node%numnod                                &
-     &     = subdomain(1:num_pe)%node%numnod
-      subdomains_2(1:num_pe)%ele%numele                                 &
-     &     = subdomain(1:num_pe)%ele%numele
-      subdomains_2(1:num_pe)%node%internal_node                         &
-     &     = subdomain(1:num_pe)%node%internal_node
+      do ip = 1, mgd_mesh1%num_pe
+        subdomains_2(ip)%node%numnod = subdomain(ip)%node%numnod
+        subdomains_2(ip)%ele%numele  = subdomain(ip)%ele%numele
+        subdomains_2(ip)%node%internal_node                             &
+     &                               = subdomain(ip)%node%internal_node
+      end do
 !
       call copy_subdomain_stacks(merge_tbl, merge_tbl_2)
 !
       call allocate_2nd_merged_geometry
       call allocate_2nd_merge_table
 !
-      do ip = 1, num_pe
+      do ip = 1, mgd_mesh1%num_pe
         nnod = subdomain(ip)%node%numnod
         nele = subdomain(ip)%ele%numele
         subdomains_2(ip)%node%inod_global(1:nnod)                       &

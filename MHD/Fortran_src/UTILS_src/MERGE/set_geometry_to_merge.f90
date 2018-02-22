@@ -36,7 +36,7 @@
 !
       merge_tbl%nnod_merged = 0
       merge_tbl%nele_merged = 0
-      do ip =1, num_pe
+      do ip = 1, mgd_mesh1%num_pe
         call copy_read_nodal_data_2_merge(ip)
         call copy_read_ele_data_2_merge(ip)
       end do
@@ -58,7 +58,7 @@
 ! ========================
       merge_tbl%nnod_merged = 0
       merge_tbl%nele_merged = 0
-      do ip =1, num_pe
+      do ip =1, mgd_mesh1%num_pe
         call copy_read_nodal_data_w_overlap(ip)
         call copy_read_ele_data_w_overlap(ip)
 !

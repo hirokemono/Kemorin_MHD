@@ -109,7 +109,7 @@
 !
 !
       if (source_plt%ndomain_ctl%iflag .gt. 0) then
-        num_pe = source_plt%ndomain_ctl%intvalue
+        mgd_mesh1%num_pe = source_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains'
         stop

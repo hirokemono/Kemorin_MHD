@@ -96,13 +96,13 @@
 !
       type(field_IO_params), intent(in) ::  mesh_file
 !
-      num_pe = 0
+      mgd_mesh1%num_pe = 0
       do
-        if(check_exist_mesh(mesh_file, num_pe) .gt. 0) exit
-        num_pe = num_pe + 1
+        if(check_exist_mesh(mesh_file, mgd_mesh1%num_pe) .gt. 0) exit
+        mgd_mesh1%num_pe = mgd_mesh1%num_pe + 1
       end do
 !
-      write(*,*) 'Number of subdomains: ', num_pe
+      write(*,*) 'Number of subdomains: ', mgd_mesh1%num_pe
 !
       end subroutine count_subdomains_4_viewer
 !
@@ -130,7 +130,7 @@
        write(*,*) 'set_overlapped_mesh_and_group'
        call set_overlapped_mesh_and_group(mesh_file, ele%nnod_4_ele)
 !
-       call dealloc_subdomain_groups
+       call deallocate_subdomain_groups
 !
 !   output grid data
 !
@@ -190,7 +190,7 @@
 !
 !  set array for number of surface
 !
-      num_pe_sf = num_pe
+      num_pe_sf = mgd_mesh1%num_pe
 !
 !       write(*,*) 'allocate_num_mesh_sf'
       call allocate_num_mesh_sf

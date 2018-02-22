@@ -57,7 +57,8 @@
 !
 !
       call sel_read_alloc_FEM_fld_head                                  &
-     &   (num_pe, izero, istep_start, org_fst_param, t_IO, merged_IO)
+     &   (mgd_mesh1%num_pe, izero, istep_start, org_fst_param,          &
+     &    t_IO, merged_IO)
 !
       call init_field_name_by_restart(merged_IO, merged_fld)
       call alloc_phys_data_type(merged%node%numnod, merged_fld)
@@ -85,13 +86,14 @@
       integer (kind = kint) :: ip, id_rank
 !
 !
-      do ip = 1, num_pe
+      do ip = 1, mgd_mesh1%num_pe
         id_rank = ip - 1
 !
         merged_IO%nnod_IO = subdomain(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
         call sel_read_step_FEM_field_file                               &
-     &     (num_pe, id_rank, istep, org_fst_param, t_IO, merged_IO)
+     &     (mgd_mesh1%num_pe, id_rank, istep, org_fst_param,            &
+     &      t_IO, merged_IO)
         call set_restart_data_2_merge(ip, merged_IO)
 !
         call dealloc_phys_data_IO(merged_IO)
@@ -170,7 +172,7 @@
       integer (kind = kint) :: ip, id_rank
 !
 !
-      do ip = 1, num_pe
+      do ip = 1, mgd_mesh1%num_pe
         id_rank = ip - 1
 !
         merged_IO%nnod_IO = subdomain(ip)%node%numnod
@@ -229,7 +231,7 @@
 !
       call add_int_suffix(istep, org_fst_param%file_prefix, fname_c)
       call delete_parallel_files                                        &
-     &   (org_fst_param%iflag_format, num_pe, fname_c)
+     &   (org_fst_param%iflag_format, mgd_mesh1%num_pe, fname_c)
 !
       end subroutine delete_old_restart
 !

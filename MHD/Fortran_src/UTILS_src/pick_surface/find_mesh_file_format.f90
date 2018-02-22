@@ -97,13 +97,13 @@
 !
       type(field_IO_params), intent(in) ::  mesh_file
 !
-      num_pe = 0
+      mgd_mesh1%num_pe = 0
       do
-        if(check_exist_mesh(mesh_file, num_pe) .gt. 0) exit
-        num_pe = num_pe + 1
+        if(check_exist_mesh(mesh_file, mgd_mesh1%num_pe) .gt. 0) exit
+        mgd_mesh1%num_pe = mgd_mesh1%num_pe + 1
       end do
 !
-      write(*,*) 'Number of subdomains: ', num_pe
+      write(*,*) 'Number of subdomains: ', mgd_mesh1%num_pe
 !
       end subroutine count_subdomains_4_viewer
 !

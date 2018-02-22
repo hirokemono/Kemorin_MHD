@@ -80,7 +80,8 @@
 !
       if(iflag_delete_org .gt. 0) then
         do istep = istep_start, istep_end, increment_step
-          call delete_FEM_fld_file(org_fst_param, num_pe, istep)
+          call delete_FEM_fld_file                                      &
+     &       (org_fst_param, mgd_mesh1%num_pe, istep)
         end do
       end if
 !

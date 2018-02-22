@@ -26,12 +26,12 @@
 !
 !    count merged number of groups
 !
-      call count_num_merged_grp(num_pe, sub_nod_grp,                    &
+      call count_num_merged_grp(mgd_mesh1%num_pe, sub_nod_grp,          &
      &    istack_bc_pe, merged_grp%nod_grp%num_grp)
-      call count_num_merged_grp(num_pe, sub_ele_grp,                    &
+      call count_num_merged_grp(mgd_mesh1%num_pe, sub_ele_grp,          &
      &    istack_mat_pe, merged_grp%ele_grp%num_grp)
 !
-      call count_num_merged_sf_grp(num_pe, sub_surf_grp,                &
+      call count_num_merged_sf_grp(mgd_mesh1%num_pe, sub_surf_grp,      &
      &    istack_surf_pe, merged_grp%surf_grp%num_grp)
 !
 !     allocate group names
@@ -42,23 +42,23 @@
 !
 !    set merged group names
 !
-      call set_merged_grp_name(num_pe, sub_nod_grp,                     &
+      call set_merged_grp_name(mgd_mesh1%num_pe, sub_nod_grp,           &
      &    istack_bc_pe, merged_grp%nod_grp)
-      call set_merged_grp_name(num_pe, sub_ele_grp,                     &
+      call set_merged_grp_name(mgd_mesh1%num_pe, sub_ele_grp,           &
      &    istack_mat_pe, merged_grp%ele_grp)
 !
-      call set_merged_grp_sf_name(num_pe, sub_surf_grp,                 &
+      call set_merged_grp_sf_name(mgd_mesh1%num_pe, sub_surf_grp,       &
      &    istack_surf_pe, merged_grp%surf_grp)
 !
 !    count merged group items
 !
       call allocate_flags_merged_grp
 !
-      call count_merged_node_group(num_pe, merge_tbl,                   &
+      call count_merged_node_group(mgd_mesh1%num_pe, merge_tbl,         &
      &    subdomain, sub_nod_grp, merged_grp)
-      call count_merged_element_group(num_pe, merge_tbl,                &
+      call count_merged_element_group(mgd_mesh1%num_pe, merge_tbl,      &
      &    subdomain, sub_ele_grp, merged_grp)
-      call count_merged_surface_group(num_pe, merge_tbl,                &
+      call count_merged_surface_group(mgd_mesh1%num_pe, merge_tbl,      &
      &    subdomain, sub_surf_grp, merged_grp)
 !
 !    allocate merged group items
@@ -69,11 +69,11 @@
 !
 !    set merged group data
 !
-      call set_merged_node_group(num_pe, merge_tbl,                   &
+      call set_merged_node_group(mgd_mesh1%num_pe, merge_tbl,           &
      &    subdomain, sub_nod_grp, merged_grp)
-      call set_merged_element_group(num_pe, merge_tbl,                &
+      call set_merged_element_group(mgd_mesh1%num_pe, merge_tbl,        &
      &    subdomain, sub_ele_grp, merged_grp)
-      call set_merged_surface_group(num_pe, merge_tbl,                &
+      call set_merged_surface_group(mgd_mesh1%num_pe, merge_tbl,        &
      &    subdomain, sub_surf_grp, merged_grp)
 !
       call deallocate_flags_merged_grp

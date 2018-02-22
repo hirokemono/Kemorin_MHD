@@ -58,7 +58,7 @@
 !     read outline of mesh
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT(num_pe, ist, ied, iint)
+      call set_parameters_4_FFT(mgd_mesh1%num_pe, ist, ied, iint)
 !
       call s_set_numnod_4_plane
 !

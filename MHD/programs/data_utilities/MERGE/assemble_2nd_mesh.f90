@@ -94,7 +94,7 @@
       if(iflag_delete_org .gt. 0) then
         do istep = istep_start, istep_end, increment_step
           call delete_para_ucd_file(original_ucd_param%file_prefix,     &
-     &        original_ucd_param%iflag_format, num_pe, istep)
+     &        original_ucd_param%iflag_format, mgd_mesh1%num_pe, istep)
         end do
       end if
 !

@@ -80,7 +80,7 @@
       call read_control_data_fft_plane
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_rst_by_spec(num_pe, ist, ied,                 &
+      call set_parameters_rst_by_spec(mgd_mesh1%num_pe, ist, ied,       &
      &          ifactor_step, ifactor_rst, dt_init, t_init,             &
      &          kx_org, ky_org, iz_org, plane_mesh_file)
 !
@@ -282,7 +282,7 @@
 !
         call plane_nnod_stack_4_IO
 !
-        do ip =1, num_pe
+        do ip =1, mgd_mesh1%num_pe
 !
 !        write(*,*) 'numnod', merge_tbl%nnod_merged
 !        write(*,*) 'internal_node', merge_tbl%inter_nod_m

@@ -77,7 +77,7 @@
 ! * PES loops 
 ! ========================
 !
-      call read_udt_data_4_plane_model(num_pe, istep,                   &
+      call read_udt_data_4_plane_model(mgd_mesh1%num_pe, istep,         &
      &    num_spectr, num_fft, icomp_fft, ifield_fft, phys_d,           &
      &    merge_tbl%nnod_max, subdomain, ucd_param, t_IO, ucd)
 !

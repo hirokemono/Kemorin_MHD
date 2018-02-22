@@ -37,14 +37,15 @@
       type(mesh_data), intent(in) :: mesh_info(nprocs)
 !
 !
-      num_pe = nprocs
+      mgd_mesh1%num_pe = nprocs
       call allocate_number_of_mesh
 !
-      call set_num_nod_ele_merge_type_wop(nprocs, mesh_info,            &
-     &    subdomain)
-      call count_num_overlap_geom_type(num_pe, subdomain, merge_tbl)
+      call set_num_nod_ele_merge_type_wop                               &
+     &   (mgd_mesh1%num_pe, mesh_info, subdomain)
+      call count_num_overlap_geom_type                                  &
+     &   (mgd_mesh1%num_pe, subdomain, merge_tbl)
       call count_num_geometry_w_overlap                                 &
-     &   (num_pe, subdomain, merge_tbl, merged)
+     &   (mgd_mesh1%num_pe, subdomain, merge_tbl, merged)
 !
       call allocate_array_4_node
       call allocate_array_4_element
@@ -87,13 +88,15 @@
       type(mesh_data), intent(in) :: mesh_info(nprocs)
 !
 !
-      num_pe = nprocs
+      mgd_mesh1%num_pe = nprocs
       call allocate_number_of_mesh
 !
-      call set_num_nod_ele_merge_type(nprocs, mesh_info, subdomain)
-      call count_num_overlap_geom_type(num_pe, subdomain, merge_tbl)
-      call count_num_geometry_w_overlap                                  &
-     &   (num_pe, subdomain, merge_tbl, merged)
+      call set_num_nod_ele_merge_type                                   &
+     &   (mgd_mesh1%num_pe, mesh_info, subdomain)
+      call count_num_overlap_geom_type                                  &
+     &   (mgd_mesh1%num_pe, subdomain, merge_tbl)
+      call count_num_geometry_w_overlap                                 &
+     &   (mgd_mesh1%num_pe, subdomain, merge_tbl, merged)
 !
       call allocate_geometry_data_4_merge
 !

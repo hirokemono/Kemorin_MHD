@@ -56,10 +56,10 @@
 !
       integer(kind=kint) :: ip
 !
-      call alloc_merged_field_stack(num_pe, pl_fld_IO)
+      call alloc_merged_field_stack(mgd_mesh1%num_pe, pl_fld_IO)
 !
       pl_fld_IO%istack_numnod_IO(0) = 0
-      do ip = 1, num_pe
+      do ip = 1, mgd_mesh1%num_pe
         pl_fld_IO%istack_numnod_IO(ip)                                  &
      &      = pl_fld_IO%istack_numnod_IO(ip-1)                          &
      &       + subdomain(ip)%node%numnod
@@ -101,7 +101,8 @@
 !
       pl_fld_file%file_prefix = rst_head_plane
       call sel_write_step_FEM_field_file                                &
-     &   (num_pe, id_rank, izero, pl_fld_file, t_IO, pl_fld_IO)
+     &   (mgd_mesh1%num_pe, id_rank, izero, pl_fld_file,                &
+     &    t_IO, pl_fld_IO)
 !
       call dealloc_merged_field_stack(pl_fld_IO)
       call dealloc_phys_name_IO(pl_fld_IO)

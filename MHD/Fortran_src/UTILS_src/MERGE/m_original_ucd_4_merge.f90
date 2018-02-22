@@ -118,7 +118,7 @@
       ucd%ntot_comp = org_fld%istack_component(org_fld%num_phys)
       call allocate_ucd_phys_name(ucd)
 !
-      do ip =1, num_pe
+      do ip =1, mgd_mesh1%num_pe
         my_rank = ip - 1
         ucd%nnod = subdomain(ip)%node%numnod
         call allocate_ucd_phys_data(ucd)
