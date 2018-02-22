@@ -89,7 +89,7 @@
 !
       num_rst_org = plane_fst_IO%num_field_IO
 !
-      call add_initial_num_comp_mhd
+      call add_initial_num_comp_mhd(merged_fld)
 !
       merged_fld%num_phys = num_rst_new
       call alloc_phys_name_type(merged_fld)
@@ -102,7 +102,7 @@
       merged_fld%istack_component(0:num_rst_org)                        &
      &             = plane_fst_IO%istack_comp_IO(0:num_rst_org)
 !
-      call add_initial_comp_mhd
+      call add_initial_comp_mhd(merged_fld)
       merged_fld%ntot_phys =  ntot_rst_org
 !
 !    construct new data

@@ -109,7 +109,7 @@
      &        = merged_grp%surf_grp%grp_name(1:ngrp_surf_sf)
 !
       call set_surface_group_item_viewer
-      call set_surface_group_stack_viewer
+      call set_surface_group_stack_viewer(merged_grp)
 !
       end subroutine s_set_groups_4_viewer_surface
 !

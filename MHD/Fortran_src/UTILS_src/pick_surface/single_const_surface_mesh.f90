@@ -141,9 +141,9 @@
        call s_const_merged_surf_data
 !
 !       write(*,*) 'const_merged_surface_4_ele_grp'
-       call const_merged_surface_4_ele_grp
+       call const_merged_surface_4_ele_grp(merged, merged_grp)
 !       write(*,*) 'const_merged_surface_4_sf_grp'
-       call const_merged_surface_4_sf_grp
+       call const_merged_surface_4_sf_grp(merged_grp)
 !
 !  pickup surface and nodes
 !

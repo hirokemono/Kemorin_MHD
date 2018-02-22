@@ -4,10 +4,11 @@
 !      Written by H. Matsui
 !      Modified by H. Matsui on June, 2007
 !
-!      subroutine allocate_rst_by_plane_sp(nnod, ndir)
-!      subroutine deallocate_rst_by_plane_sp
-!      subroutine plane_nnod_stack_4_IO
-!      subroutine s_write_restart_by_spectr(ip, nnod, t_IO)
+!!      subroutine allocate_rst_by_plane_sp(nnod, ndir)
+!!      subroutine deallocate_rst_by_plane_sp
+!!      subroutine plane_nnod_stack_4_IO(num_pe, subdomain)
+!!      subroutine s_write_restart_by_spectr                            &
+!!     &         (ip, num_pe, nnod, merged_fld, t_IO)
 !
       module write_restart_by_spectr
 !
@@ -50,16 +51,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine plane_nnod_stack_4_IO
+      subroutine plane_nnod_stack_4_IO(num_pe, subdomain)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
+!
+      integer(kind=kint), intent(in) :: num_pe
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
 !
       integer(kind=kint) :: ip
 !
-      call alloc_merged_field_stack(mgd_mesh1%num_pe, pl_fld_IO)
+      call alloc_merged_field_stack(num_pe, pl_fld_IO)
 !
       pl_fld_IO%istack_numnod_IO(0) = 0
-      do ip = 1, mgd_mesh1%num_pe
+      do ip = 1, num_pe
         pl_fld_IO%istack_numnod_IO(ip)                                  &
      &      = pl_fld_IO%istack_numnod_IO(ip-1)                          &
      &       + subdomain(ip)%node%numnod
@@ -69,10 +73,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_write_restart_by_spectr(ip, nnod, t_IO)
+      subroutine s_write_restart_by_spectr                              &
+     &         (ip, num_pe, nnod, merged_fld, t_IO)
 !
       use m_constants
-      use m_geometry_data_4_merge
+      use t_phys_data
       use t_time_data
       use field_IO_select
       use set_list_4_FFT
@@ -80,6 +85,9 @@
       use set_restart_data
 !
       integer(kind=kint), intent(in) :: ip, nnod
+      integer(kind=kint), intent(in) :: num_pe
+      type(phys_data), intent(in) :: merged_fld
+!
       type(time_data), intent(inout) :: t_IO
 !
       integer(kind=kint) :: id_rank
@@ -101,8 +109,7 @@
 !
       pl_fld_file%file_prefix = rst_head_plane
       call sel_write_step_FEM_field_file                                &
-     &   (mgd_mesh1%num_pe, id_rank, izero, pl_fld_file,                &
-     &    t_IO, pl_fld_IO)
+     &   (num_pe, id_rank, izero, pl_fld_file, t_IO, pl_fld_IO)
 !
       call dealloc_merged_field_stack(pl_fld_IO)
       call dealloc_phys_name_IO(pl_fld_IO)

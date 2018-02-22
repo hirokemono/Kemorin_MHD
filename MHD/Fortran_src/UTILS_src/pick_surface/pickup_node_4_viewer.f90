@@ -3,12 +3,16 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!      subroutine mark_used_node_4_viewer(nnod_4_surf)
-!      subroutine count_used_node_4_viewer
-!      subroutine set_node_cvt_table_viewer
-!
-!      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
-!      subroutine set_node_position_4_viewer
+!!      subroutine mark_used_node_4_viewer(nnod_4_surf, merged_grp)
+!!        type(mesh_groups), intent(in)  :: merged_grp
+!!      subroutine count_used_node_4_viewer(merge_tbl)
+!!        type(merged_stacks), intent(in) :: merge_tbl
+!!      subroutine set_node_cvt_table_viewer(merged)
+!!        type(mesh_geometry), intent(in) :: merged
+!!
+!!      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
+!!      subroutine set_node_position_4_viewer(merged)
+!!        type(mesh_geometry), intent(in) :: merged
 !
       module pickup_node_4_viewer
 !
@@ -24,12 +28,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mark_used_node_4_viewer(nnod_4_surf)
+      subroutine mark_used_node_4_viewer(nnod_4_surf, merged_grp)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
       use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
+      type(mesh_groups), intent(in)  :: merged_grp
+!
       integer(kind = kint) :: inum, isurf, inod, k1
 !
 !
@@ -49,10 +55,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_used_node_4_viewer
+      subroutine count_used_node_4_viewer(merge_tbl)
 !
-      use m_geometry_data_4_merge
+      use t_merged_geometry_data
       use m_surface_mesh_4_merge
+!
+      type(merged_stacks), intent(in) :: merge_tbl
 !
       integer(kind = kint) :: ip, ist, ied, inod
 !
@@ -70,10 +78,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_cvt_table_viewer
+      subroutine set_node_cvt_table_viewer(merged)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
       use m_surf_geometry_4_merge
+!
+      type(mesh_geometry), intent(in) :: merged
 !
       integer(kind = kint) :: inod, inum
 !
@@ -111,10 +121,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_position_4_viewer
+      subroutine set_node_position_4_viewer(merged)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
       use m_surface_mesh_4_merge
+!
+      type(mesh_geometry), intent(in) :: merged
 !
       integer(kind = kint) :: inum, inod
 !

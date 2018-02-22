@@ -1,11 +1,11 @@
 !
 !      program make_physical_data
 !
-      program make_physical_data
-!
 !      constract result data from spectr
 !
 !      Written by Kemorin
+!
+      program make_physical_data
 !
       use m_precision
 !
@@ -43,7 +43,7 @@
       type(time_data), save :: fft_t_IO
 !
       integer(kind=kint ) :: ist, ied, iint
-      integer(kind=kint ) ::  istep, isig, ip
+      integer(kind=kint ) ::  istep, isig
 !
 !  ===========
 ! . for local 
@@ -101,26 +101,8 @@
 !
       allocate( subdomains_2(num_pe2) )
 !
-      do ip = 1, mgd_mesh1%num_pe
-        subdomains_2(ip)%node%numnod = subdomain(ip)%node%numnod
-        subdomains_2(ip)%ele%numele  = subdomain(ip)%ele%numele
-        subdomains_2(ip)%node%internal_node                             &
-     &                               = subdomain(ip)%node%internal_node
-      end do
-!
-      call copy_subdomain_stacks(merge_tbl, merge_tbl_2)
-!
-      call allocate_2nd_merged_geometry
-      call allocate_2nd_merge_table
-!
-      do ip = 1, mgd_mesh1%num_pe
-        nnod = subdomain(ip)%node%numnod
-        nele = subdomain(ip)%ele%numele
-        subdomains_2(ip)%node%inod_global(1:nnod)                       &
-     &      = subdomain(ip)%node%inod_global(1:nnod)
-        subdomains_2(ip)%ele%iele_global(1:nele)                        &
-     &      = subdomain(ip)%ele%iele_global(1:nele)
-      end do
+      call copy_plane_resolution                                        &
+     &   (mgd_mesh1%num_pe, subdomain, merge_tbl)
 !
 !  check positions in z-direction
 !
@@ -313,5 +295,48 @@
      &     (izero, istep, ucd_file_param, fft_t_IO, fft_ucd)
         call disconnect_ucd_data(fft_ucd)
       end do
+!
+!------------------------------------------------------------------
+!
+      contains
+!
+!------------------------------------------------------------------
+!
+      subroutine copy_plane_resolution(num_pe, subdomain, merge_tbl)
+!
+      use m_2nd_geometry_4_merge
+      use t_merged_geometry_data
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(merged_stacks), intent(in) :: merge_tbl
+!
+      integer(kind = kint) :: ip
+!
+!
+      do ip = 1, num_pe
+        subdomains_2(ip)%node%numnod = subdomain(ip)%node%numnod
+        subdomains_2(ip)%ele%numele  = subdomain(ip)%ele%numele
+        subdomains_2(ip)%node%internal_node                             &
+     &                               = subdomain(ip)%node%internal_node
+      end do
+!
+      call copy_subdomain_stacks(merge_tbl, merge_tbl_2)
+!
+      call allocate_2nd_merged_geometry
+      call allocate_2nd_merge_table
+!
+      do ip = 1, num_pe
+        nnod = subdomain(ip)%node%numnod
+        nele = subdomain(ip)%ele%numele
+        subdomains_2(ip)%node%inod_global(1:nnod)                       &
+     &      = subdomain(ip)%node%inod_global(1:nnod)
+        subdomains_2(ip)%ele%iele_global(1:nele)                        &
+     &      = subdomain(ip)%ele%iele_global(1:nele)
+      end do
+!
+      end subroutine copy_plane_resolution
+!
+!------------------------------------------------------------------
 !
       end program make_physical_data

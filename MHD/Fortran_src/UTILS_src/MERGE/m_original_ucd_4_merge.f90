@@ -126,7 +126,8 @@
         call sel_read_udt_file                                          &
      &     (my_rank, istep, org_ucd_param, t_IO, ucd)
 !
-        call copy_udt_field_data_merge(ip, ifield_2_copy, org_fld, ucd)
+        call copy_udt_field_data_merge(ip, ifield_2_copy, org_fld, ucd, &
+     &      subdomain(ip), merge_tbl, merged_fld)
 !
         call deallocate_ucd_phys_data(ucd)
       end do

@@ -1,25 +1,27 @@
 !
 !      module renumber_surface_4_viewer
 !
-      module renumber_surface_4_viewer
-!
 !      Written by Kemorin in Jan., 2007
+!
+!!      subroutine set_surf_domain_item_viewer
+!!      subroutine set_element_group_item_viewer
+!!      subroutine set_surface_group_item_viewer
+!!      subroutine set_node_group_item_viewer(merged_grp)
+!!        type(mesh_groups), intent(in) :: merged_grp
+!!
+!!      subroutine set_surf_domain_stack_viewer
+!!      subroutine set_element_group_stack_viewer
+!!      subroutine set_surface_group_stack_viewer(merged_grp)
+!!      subroutine set_node_group_stack_viewer(merged_grp)
+!!        type(mesh_groups), intent(in) :: merged_grp
+!
+      module renumber_surface_4_viewer
 !
       use m_precision
 !
       use m_surface_mesh_4_merge
 !
       implicit none
-!
-!      subroutine set_surf_domain_item_viewer
-!      subroutine set_element_group_item_viewer
-!      subroutine set_surface_group_item_viewer
-!      subroutine set_node_group_item_viewer
-!
-!      subroutine set_surf_domain_stack_viewer
-!      subroutine set_element_group_stack_viewer
-!      subroutine set_surface_group_stack_viewer
-!      subroutine set_node_group_stack_viewer
 !
 !------------------------------------------------------------------
 !
@@ -81,10 +83,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_group_item_viewer
+      subroutine set_node_group_item_viewer(merged_grp)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
       use m_pickup_table_4_viewer
+!
+      type(mesh_groups), intent(in) :: merged_grp
 !
       integer(kind = kint) :: inum, inod
 !
@@ -144,9 +148,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_surface_group_stack_viewer
+      subroutine set_surface_group_stack_viewer(merged_grp)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
+!
+      type(mesh_groups), intent(in) :: merged_grp
 !
       integer(kind = kint) :: igrp, ip, idx, iref, ist, ied
       integer(kind = kint) :: inum, isurf
@@ -172,9 +178,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_group_stack_viewer
+      subroutine set_node_group_stack_viewer(merged_grp)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
+!
+      type(mesh_groups), intent(in) :: merged_grp
 !
       integer(kind = kint) :: igrp, ip, idx, iref, ist, ied, inum, inod
 !

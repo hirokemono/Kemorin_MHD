@@ -3,13 +3,16 @@
 !
 !      Written by H. Matsui on Jan., 2007
 !
-!      subroutine const_merged_surface_4_ele_grp
-!      subroutine const_merged_surface_4_sf_grp
+!!      subroutine const_merged_surface_4_ele_grp(merged, merged_grp)
+!!      subroutine const_merged_surface_4_sf_grp(merged_grp)
+!!        type(mesh_geometry), intent(in) :: merged
+!!        type(mesh_groups), intent(in) :: merged_grp
 !
       module const_merged_surf_4_group
 !
       use m_precision
       use t_sum_hash
+      use t_mesh_data
 !
       implicit    none
 !
@@ -21,9 +24,8 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine const_merged_surface_4_ele_grp
+      subroutine const_merged_surface_4_ele_grp(merged, merged_grp)
 !
-      use m_geometry_data_4_merge
       use m_surf_geometry_4_merge
       use m_grp_data_merged_surfaces
 !
@@ -32,11 +34,14 @@
       use set_surface_data
       use const_surface_data
 !
+      type(mesh_geometry), intent(in) :: merged
+      type(mesh_groups), intent(in) :: merged_grp
+!
       integer(kind = kint) :: igrp
       integer(kind = kint) :: ist_grp, ied_grp, nele_grp
 !
 !
-      call allocate_n_iso_surf_4_ele_grp
+      call allocate_n_iso_surf_4_ele_grp(merged_grp)
       call allocate_iso_surf_4_egrp_m
 !
       do igrp = 1, merged_grp%ele_grp%num_grp
@@ -99,15 +104,16 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine const_merged_surface_4_sf_grp
+      subroutine const_merged_surface_4_sf_grp(merged_grp)
 !
-      use m_geometry_data_4_merge
-      use m_surf_geometry_4_merge
+!      use m_surf_geometry_4_merge
       use m_grp_data_merged_surfaces
+!
+      type(mesh_groups), intent(in) :: merged_grp
 !
       integer(kind= kint) :: i, iele, isf
 !
-      call allocate_iso_surf_4_sgrp_m
+      call allocate_iso_surf_4_sgrp_m(merged_grp)
 !
       do i = 1, merged_grp%surf_grp%num_item
         iele = merged_grp%surf_grp%item_sf_grp(1,i)

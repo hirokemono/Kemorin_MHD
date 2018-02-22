@@ -3,18 +3,20 @@
 !
 !      Written by H. Matsui on Jan., 2007
 !
-!      subroutine allocate_n_iso_surf_4_ele_grp
-!      subroutine allocate_iso_surf_4_egrp_m
-!      subroutine allocate_iso_surf_4_egrp_tmp
-!
-!      subroutine allocate_iso_surf_4_sgrp_m
-!
-!      subroutine deallocate_n_iso_surf_4_ele_grp
-!      subroutine deallocate_iso_surf_4_egrp_m
-!      subroutine deallocate_iso_surf_4_egrp_tmp
-!
-!      subroutine check_merged_isurf_4_ele_grp
-!      subroutine check_merged_isurf_4_surf_grp
+!!      subroutine allocate_n_iso_surf_4_ele_grp(merged_grp)
+!!      subroutine allocate_iso_surf_4_egrp_m
+!!      subroutine allocate_iso_surf_4_egrp_tmp
+!!
+!!      subroutine allocate_iso_surf_4_sgrp_m(merged_grp)
+!!        type(mesh_groups), intent(in) :: merged_grp
+!!
+!!      subroutine deallocate_n_iso_surf_4_ele_grp
+!!      subroutine deallocate_iso_surf_4_egrp_m
+!!      subroutine deallocate_iso_surf_4_egrp_tmp
+!!
+!!      subroutine check_merged_isurf_4_ele_grp(merged_grp)
+!!      subroutine check_merged_isurf_4_surf_grp(merged_grp)
+!!        type(mesh_groups), intent(in) :: merged_grp
 !
       module m_grp_data_merged_surfaces
 !
@@ -38,9 +40,11 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine allocate_n_iso_surf_4_ele_grp
+      subroutine allocate_n_iso_surf_4_ele_grp(merged_grp)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
+!
+      type(mesh_groups), intent(in) :: merged_grp
 !
 !
       allocate( num_sf_iso_ele_grp_m(merged_grp%ele_grp%num_grp) )
@@ -71,10 +75,11 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine allocate_iso_surf_4_sgrp_m
+      subroutine allocate_iso_surf_4_sgrp_m(merged_grp)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
 !
+      type(mesh_groups), intent(in) :: merged_grp
 !
       allocate( isf_surf_grp_m(merged_grp%surf_grp%num_item) )
       isf_surf_grp_m = 0
@@ -118,9 +123,11 @@
 ! ------------------------------------------------------
 ! ------------------------------------------------------
 !
-      subroutine check_merged_isurf_4_ele_grp
+      subroutine check_merged_isurf_4_ele_grp(merged_grp)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
+!
+      type(mesh_groups), intent(in) :: merged_grp
 !
       integer(kind = kint) :: igrp, ist, ied
 !
@@ -139,9 +146,11 @@
       end subroutine check_merged_isurf_4_ele_grp
 !
 !   ---------------------------------------------------------------------!
-      subroutine check_merged_isurf_4_surf_grp
+      subroutine check_merged_isurf_4_surf_grp(merged_grp)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
+!
+      type(mesh_groups), intent(in) :: merged_grp
 !
       integer(kind = kint) :: igrp, ist, ied
 !

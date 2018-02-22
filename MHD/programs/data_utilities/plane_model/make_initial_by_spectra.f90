@@ -92,7 +92,7 @@
 !
 !    setting for initial values
 !
-      call set_initial_components
+      call set_initial_components(merged_fld)
 !
       call read_size_of_spectr
 !
@@ -280,7 +280,7 @@
 ! * PES loops 
 ! ========================
 !
-        call plane_nnod_stack_4_IO
+        call plane_nnod_stack_4_IO(mgd_mesh1%num_pe, subdomain)
 !
         do ip =1, mgd_mesh1%num_pe
 !
@@ -301,7 +301,8 @@
         end do
 !
         call s_write_restart_by_spectr                                  &
-       &    (ip, subdomain(ip)%node%numnod, plane_t_IO)
+       &    (ip, mgd_mesh1%num_pe, subdomain(ip)%node%numnod,           &
+       &     merged_fld, plane_t_IO)
 !
 !   deallocate arrays
 !
