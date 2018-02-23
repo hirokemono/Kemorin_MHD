@@ -12,10 +12,10 @@
       use m_spectr_4_ispack
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
-      use m_geometry_data_4_merge
 !
       use t_time_data
       use t_ucd_data
+      use t_mesh_data_4_merge
 !
       use set_geometry_to_merge
       use set_numnod_4_plane
@@ -35,6 +35,8 @@
 !
       type(time_data), save :: fft_t_IO
       type(ucd_data), save :: fft_ucd
+!
+      type(merged_mesh), save :: mgd_mesh_pm
 !
       integer(kind=kint ) :: istep
       integer(kind=kint ) :: ist, ied, iint
@@ -59,12 +61,12 @@
 !     read outline of mesh
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT(mgd_mesh1%num_pe, ist, ied, iint)
+      call set_parameters_4_FFT(mgd_mesh_pm%num_pe, ist, ied, iint)
 !
-      call s_set_numnod_4_plane(mgd_mesh1%merge_tbl)
+      call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
 !
-      call alloc_number_of_mesh(mgd_mesh1)
+      call alloc_number_of_mesh(mgd_mesh_pm)
 !
 !   read field name and number of components
 !
@@ -73,12 +75,13 @@
 !
       call set_fields_4_FFT(fld_zfft_ctl%field_ctl)
 !
-      write(*,*) 'internal_node, ele', mgd_mesh1%merge_tbl%inter_nod_m, &
-     &                                 mgd_mesh1%merge_tbl%inter_ele_m
+      write(*,*) 'internal_node, ele',                                  &
+     &           mgd_mesh_pm%merge_tbl%inter_nod_m,                     &
+     &           mgd_mesh_pm%merge_tbl%inter_ele_m
 !
 !     array allocation
 !
-      call alloc_geometry_data_4_merge(mgd_mesh1)
+      call alloc_geometry_data_4_merge(mgd_mesh_pm)
 !
       call allocate_horiz_spectr
 !
@@ -87,14 +90,14 @@
 !  set mesh_information
 !
 !       write(*,*) 'set_geometry_data_2_merge'
-       call set_geometry_data_2_merge(mgd_mesh1)
+       call set_geometry_data_2_merge(mgd_mesh_pm)
 !
 !   loop for time integration
 !
       do istep = ist, ied, iint
 !
        call s_read_udt_data_4_FFT                                       &
-     &    (istep, ucd_file_param, mgd_mesh1, fft_t_IO, fft_ucd)
+     &    (istep, ucd_file_param, mgd_mesh_pm, fft_t_IO, fft_ucd)
 !
 !  -------   Fourier Transform
 !
@@ -106,7 +109,7 @@
 !     ======================
 
       if (istep .eq. ist) then
-        call write_size_of_spectr(mgd_mesh1%merged)
+        call write_size_of_spectr(mgd_mesh_pm%merged)
       end if
 !
        call write_spectr_data(istep)

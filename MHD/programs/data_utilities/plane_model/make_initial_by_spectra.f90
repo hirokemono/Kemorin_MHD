@@ -11,11 +11,11 @@
       use calypso_mpi
 !
       use t_time_data
+      use t_mesh_data_4_merge
 !
       use m_constants
       use m_file_format_switch
       use m_phys_labels
-      use m_geometry_data_4_merge
       use m_size_4_plane
       use m_setting_4_ini
       use m_set_new_spectr
@@ -36,6 +36,7 @@
 !
 !
       type(field_IO_params), save ::  plane_mesh_file
+      type(merged_mesh), save :: mgd_mesh_pm
 !
       integer(kind=kint ) ::  istep_udt, n_comp, i_time_step
 !
@@ -78,19 +79,19 @@
       call read_control_data_fft_plane
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_rst_by_spec(mgd_mesh1%num_pe, ist, ied,       &
+      call set_parameters_rst_by_spec(mgd_mesh_pm%num_pe, ist, ied,     &
      &          ifactor_step, ifactor_rst, dt_init, t_init,             &
      &          kx_org, ky_org, iz_org, plane_mesh_file)
 !
 !     read outline of mesh
 !
-      call s_set_numnod_4_plane(mgd_mesh1%merge_tbl)
+      call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
       call allocate_z_compliment_info(nz_all)
 !
 !    setting for initial values
 !
-      call set_initial_components(mgd_mesh1%merged_fld)
+      call set_initial_components(mgd_mesh_pm%merged_fld)
 !
       call read_size_of_spectr
 !
@@ -108,22 +109,22 @@
 !   read mesh data for initial values
 !
       plane_mesh_file%iflag_format = id_ascii_file_fmt
-      call set_merged_mesh_and_group(plane_mesh_file, mgd_mesh1)
+      call set_merged_mesh_and_group(plane_mesh_file, mgd_mesh_pm)
 !
       write(*,*) 'allocate_rst_by_plane_sp'
-      call allocate_rst_by_plane_sp(mgd_mesh1%merge_tbl%nnod_max,       &
-     &    mgd_mesh1%merged_fld%ntot_phys)
+      call allocate_rst_by_plane_sp(mgd_mesh_pm%merge_tbl%nnod_max,     &
+     &    mgd_mesh_pm%merged_fld%ntot_phys)
 !
 !  check positions in z-direction
 !
      call check_plane_horiz_position                                    &
-    &   (mgd_mesh1%merged, mgd_mesh1%merged_fld)
+    &   (mgd_mesh_pm%merged, mgd_mesh_pm%merged_fld)
 !
       kx_new = nx_all
       ky_new = ny_all
       iz_new = nz_all
-      num_spectr = mgd_mesh1%merge_tbl%inter_nod_m
-      nfft_new =   mgd_mesh1%merged_fld%ntot_phys
+      num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
+      nfft_new =   mgd_mesh_pm%merged_fld%ntot_phys
 !
       kx_max = kx_new
       ky_max = ky_new
@@ -134,13 +135,13 @@
 !
       call allocate_horiz_spectr
 !
-      call allocate_work_array_4_r(mgd_mesh1%merge_tbl%inter_nod_m)
+      call allocate_work_array_4_r(mgd_mesh_pm%merge_tbl%inter_nod_m)
 !
 !      do iz = 1, nz_all
 !       write(*,*) iz, iz_1(iz), z_1(iz)
 !      end do
 !
-!       write(*,*) 'numnod tako', mgd_mesh1%merge_tbl%nnod_merged
+!       write(*,*) 'numnod tako', mgd_mesh_pm%merge_tbl%nnod_merged
 !
 !    start loop for snap shots
 !
@@ -182,7 +183,7 @@
        kx_max = kx_new
        ky_max = ky_new
        iz_max = iz_new
-       num_spectr = mgd_mesh1%merge_tbl%inter_nod_m
+       num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
        num_fft = nfft_new
 !
            write(*,*) 'num_spectr 0', num_spectr
@@ -201,14 +202,14 @@
 ! ========================
 !
         call plane_nnod_stack_4_IO                                      &
-     &     (mgd_mesh1%num_pe, mgd_mesh1%subdomain)
+     &     (mgd_mesh_pm%num_pe, mgd_mesh_pm%subdomain)
 !
-        do ip =1, mgd_mesh1%num_pe
+        do ip =1, mgd_mesh_pm%num_pe
 !
           do j = 1, num_fft
-            do i = 1, mgd_mesh1%subdomain(ip)%node%numnod
-              inod = int(mgd_mesh1%subdomain(ip)%node%inod_global(i))
-              if (inod .le. mgd_mesh1%merge_tbl%inter_nod_m) then
+            do i = 1, mgd_mesh_pm%subdomain(ip)%node%numnod
+              inod = int(mgd_mesh_pm%subdomain(ip)%node%inod_global(i))
+              if (inod .le. mgd_mesh_pm%merge_tbl%inter_nod_m) then
                 i1 = (j-1)*num_spectr + inod
                 rst_from_sp(i,j) = phys_d(i1)
               else
@@ -217,9 +218,9 @@
           end do
         end do
 !
-        call s_write_restart_by_spectr                                  &
-       &    (ip, mgd_mesh1%num_pe, mgd_mesh1%subdomain(ip)%node%numnod, &
-       &     mgd_mesh1%merged_fld, plane_t_IO)
+        call s_write_restart_by_spectr(ip, mgd_mesh_pm%num_pe,          &
+       &     mgd_mesh_pm%subdomain(ip)%node%numnod,                     &
+       &     mgd_mesh_pm%merged_fld, plane_t_IO)
 !
 !   deallocate arrays
 !

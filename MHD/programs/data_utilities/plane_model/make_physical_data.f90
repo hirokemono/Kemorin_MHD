@@ -11,7 +11,6 @@
 !
       use m_constants
       use m_file_format_switch
-      use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_size_4_plane
       use m_set_new_spectr
@@ -22,6 +21,7 @@
 !
       use t_time_data
       use t_ucd_data
+      use t_mesh_data_4_merge
 !
       use count_number_with_overlap
       use set_merged_geometry
@@ -41,6 +41,7 @@
       type(field_IO_params), save ::  plane_mesh_file, ucd_file_param
       type(ucd_data) :: fft_ucd
       type(time_data), save :: fft_t_IO
+      type(merged_mesh), save :: mgd_mesh_pm
 !
       integer(kind=kint ) :: ist, ied, iint
       integer(kind=kint ) ::  istep
@@ -75,11 +76,11 @@
       call read_control_data_fft_plane
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_4_FFT(mgd_mesh1%num_pe, ist, ied, iint)
+      call set_parameters_4_FFT(mgd_mesh_pm%num_pe, ist, ied, iint)
       call set_parameters_data_by_spec                                  &
-     &   (mgd_mesh1%num_pe, kx_org, ky_org, iz_org,                     &
+     &   (mgd_mesh_pm%num_pe, kx_org, ky_org, iz_org,                   &
      &    plane_mesh_file, ucd_file_param)
-      call s_set_numnod_4_plane(mgd_mesh1%merge_tbl)
+      call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
       call allocate_z_compliment_info(nz_all)
 !
@@ -97,36 +98,13 @@
 !   read mesh data for initial values
 !
       plane_mesh_file%iflag_format = id_ascii_file_fmt
-      call set_merged_mesh_and_group(plane_mesh_file, mgd_mesh1)
+      call set_merged_mesh_and_group(plane_mesh_file, mgd_mesh_pm)
 !
       allocate( subdomains_2(num_pe2) )
 !
       call copy_plane_resolution                                        &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl)
-!
-!  check positions in z-direction
-!
-      do iz = 1, nz_all
-        i1 = iz*nx_all*ny_all
-        if ( mgd_mesh1%merged%node%xx(i1,3) .eq. zz(1) ) then
-          iz_1(iz) = 1
-          z_1(iz) = 1.0d0
-        end if
-          do j = 2, iz_max
-           if (mgd_mesh1%merged%node%xx(i1,3).gt.zz(j-1)                &
-     &     .and. mgd_mesh1%merged%node%xx(i1,3).le.zz(j)) then
-         iz_1(iz) = j
-         z_1(iz)  = ( mgd_mesh1%merged%node%xx(i1,3) - zz(j-1) )        &
-     &             / ( zz(j) - zz(j-1) )
-        end if
-       end do
-      end do
-!
-!      do iz = 1, nz_all
-!       write(*,*) iz, iz_1(iz), z_1(iz)
-!      end do
-!
-!       write(*,*) 'numnod tako', mgd_mesh1%merge_tbl%nnod_merged
+     &   (mgd_mesh_pm%num_pe, mgd_mesh_pm%subdomain,                    &
+     &    mgd_mesh_pm%merged, mgd_mesh_pm%merge_tbl)
 !
 ! allocate arrays for spectr
 !
@@ -139,16 +117,16 @@
 !
 !  set data on grid
 !
-      call set_field_to_z_grid(mgd_mesh1%merged_fld)
+      call set_field_to_z_grid(mgd_mesh_pm%merged_fld)
 !
 !      write(*,*) 'allocate_merged_field_data'
       call alloc_phys_data_type                                         &
-     &   (mgd_mesh1%merged%node%numnod, mgd_mesh1%merged_fld)
+     &   (mgd_mesh_pm%merged%node%numnod, mgd_mesh_pm%merged_fld)
 !
       ncomp_nsp = num_fft
 !
 !      write(*,*) 'allocate_index_4_trans'
-      call allocate_work_array_4_r(mgd_mesh1%merge_tbl%inter_nod_m)
+      call allocate_work_array_4_r(mgd_mesh_pm%merge_tbl%inter_nod_m)
 !
 !      write(*,*) 'allocate_index_4_trans'
       call allocate_index_4_trans
@@ -187,7 +165,7 @@
         kx_max = nx_all
         ky_max = ny_all
         iz_max = nz_all
-        num_spectr = mgd_mesh1%merge_tbl%inter_nod_m
+        num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
 !
 !           write(*,*) 'num_spectr 0', num_spectr
 !    allocate new spectr
@@ -198,14 +176,14 @@
 !   reset spectr data
 !
         call s_inverse_fft_4_plane
-        call copy_2_inverted_udt(mgd_mesh1%merged_fld)
+        call copy_2_inverted_udt(mgd_mesh_pm%merged_fld)
 !
 !    output data
 !
         call link_merged_node_2_ucd_IO                                  &
-     &     (mgd_mesh1%merged, mgd_mesh1%merge_tbl, fft_ucd)
+     &     (mgd_mesh_pm%merged, mgd_mesh_pm%merge_tbl, fft_ucd)
         call link_merged_field_2_udt_IO                                 &
-     &     (mgd_mesh1%merged_fld, mgd_mesh1%merge_tbl, fft_ucd)
+     &     (mgd_mesh_pm%merged_fld, mgd_mesh_pm%merge_tbl, fft_ucd)
 !
         ucd_file_param%iflag_format = iflag_udt
         call sel_write_ucd_file                                         &
@@ -219,13 +197,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_plane_resolution(num_pe, subdomain, merge_tbl)
+      subroutine copy_plane_resolution(num_pe, subdomain, merged, merge_tbl)
 !
       use m_2nd_geometry_4_merge
       use t_merged_geometry_data
 !
       integer(kind = kint), intent(in) :: num_pe
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(mesh_geometry), intent(in):: merged
       type(merged_stacks), intent(in) :: merge_tbl
 !
       integer(kind = kint) :: ip
@@ -251,6 +230,30 @@
         subdomains_2(ip)%ele%iele_global(1:nele)                        &
      &      = subdomain(ip)%ele%iele_global(1:nele)
       end do
+!
+!  check positions in z-direction
+!
+      do iz = 1, nz_all
+        i1 = iz*nx_all*ny_all
+        if(merged%node%xx(i1,3) .eq. zz(1) ) then
+          iz_1(iz) = 1
+          z_1(iz) = 1.0d0
+        end if
+          do j = 2, iz_max
+           if (merged%node%xx(i1,3).gt.zz(j-1)                          &
+     &     .and. merged%node%xx(i1,3).le.zz(j)) then
+         iz_1(iz) = j
+         z_1(iz)  = (merged%node%xx(i1,3) - zz(j-1) )                   &
+     &             / ( zz(j) - zz(j-1) )
+        end if
+       end do
+      end do
+!
+!      do iz = 1, nz_all
+!       write(*,*) iz, iz_1(iz), z_1(iz)
+!      end do
+!
+!       write(*,*) 'numnod tako', merge_tbl%nnod_merged
 !
       end subroutine copy_plane_resolution
 !

@@ -11,17 +11,19 @@
 !
       use m_phys_labels
       use m_size_4_plane
+      use m_control_plane_fft
+!
+      use t_mesh_data_4_merge
+!
       use set_numnod_4_plane
       use set_spectr_file_name
-!
-      use m_geometry_data_4_merge
-      use m_control_plane_fft
       use set_list_4_FFT
       use set_plane_spectr_file_head
 !
       implicit none
 !
       type(field_IO_params), save ::  plane_mesh_file
+      type(merged_mesh), save :: mgd_mesh_pm
 !
       integer(kind=kint) :: nx_2, ny_2
       integer(kind=kint) :: num_ene, num_ene_z
@@ -81,7 +83,7 @@
       call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
 !
-      call s_set_numnod_4_plane(mgd_mesh1%merge_tbl)
+      call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
        nx_2 = nx_all/2+1
        ny_2 = ny_all/2+1
