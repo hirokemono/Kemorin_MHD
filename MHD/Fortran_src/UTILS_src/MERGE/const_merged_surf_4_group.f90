@@ -46,7 +46,7 @@
       integer(kind = kint) :: ist_grp, ied_grp, nele_grp
 !
 !
-      call allocate_n_iso_surf_4_ele_grp(merged_grp)
+      call allocate_n_iso_surf_4_ele_grp(merged_grp%ele_grp)
       call allocate_iso_surf_4_egrp_m
 !
       do igrp = 1, merged_grp%ele_grp%num_grp
@@ -85,7 +85,8 @@
      &      surf_ele_tbl%iflag_hash, num_sf_iso_ele_grp_m(igrp) )
         istack_sf_iso_ele_grp_m(igrp) = istack_sf_iso_ele_grp_m(igrp-1) &
      &                                 + num_sf_iso_ele_grp_m(igrp)
-        ntot_sf_iso_ele_grp_m = istack_sf_iso_ele_grp_m(igrp)
+        mgd_sf_grp1%ntot_sf_iso_ele_grp_m                               &
+     &       = istack_sf_iso_ele_grp_m(igrp)
 !
 !    set independent surfaces for element group
 !
@@ -103,7 +104,8 @@
         call dealloc_sum_hash(surf_ele_tbl)
       end do
 !
-!      call check_merged_isurf_4_ele_grp
+!      call check_merged_isurf_4_ele_grp                                &
+!     &   (merged_grp%ele_grp, mgd_sf_grp1)
 !
       end subroutine const_merged_surface_4_ele_grp
 !
@@ -119,7 +121,7 @@
 !
       integer(kind= kint) :: i, iele, isf
 !
-      call allocate_iso_surf_4_sgrp_m(merged_grp)
+      call allocate_iso_surf_4_sgrp_m(merged_grp%surf_grp)
 !
       do i = 1, merged_grp%surf_grp%num_item
         iele = merged_grp%surf_grp%item_sf_grp(1,i)
@@ -127,7 +129,8 @@
         isf_surf_grp_m(i) = merged_surf%isf_4_ele(iele,isf)
       end do
 !
-!      call check_merged_isurf_4_surf_grp
+!      call check_merged_isurf_4_surf_grp                               &
+!     &   (merged_grp%surf_grp, mgd_sf_grp1)
 !
       end subroutine const_merged_surface_4_sf_grp
 !

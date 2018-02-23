@@ -95,7 +95,7 @@
 !     renumber element group boundary
 !
       ngrp_ele_sf = merged_grp%ele_grp%num_grp
-      nele_ele_sf = ntot_sf_iso_ele_grp_m
+      nele_ele_sf = mgd_sf_grp1%ntot_sf_iso_ele_grp_m
        write(*,*) 'allocate_ele_grp_stack_4_surf'
       call allocate_ele_grp_stack_4_surf
       call allocate_ele_grp_item_4_surf

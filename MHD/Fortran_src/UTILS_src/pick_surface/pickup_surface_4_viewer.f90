@@ -43,7 +43,7 @@
         imark_surf(isurf) = 1
       end do
 !
-      do inum = 1, ntot_sf_iso_ele_grp_m
+      do inum = 1, mgd_sf_grp1%ntot_sf_iso_ele_grp_m
         isurf = abs( isf_isolate_ele_grp_m(inum) )
         imark_surf(isurf) = 1
       end do
