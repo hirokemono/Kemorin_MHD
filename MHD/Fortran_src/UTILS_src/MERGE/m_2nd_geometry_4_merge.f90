@@ -22,8 +22,6 @@
 !
       type(second_mesh), save :: sec_mesh1
 !
-      type(merged_stacks) :: merge_tbl_2
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -34,7 +32,8 @@
 !
       allocate( sec_mesh1%subdomains_2(sec_mesh1%num_pe2) )
 !
-      call alloc_subdomain_stack(sec_mesh1%num_pe2, merge_tbl_2)
+      call alloc_subdomain_stack                                        &
+     &   (sec_mesh1%num_pe2, sec_mesh1%merge_tbl_2)
 !
       end subroutine allocate_number_of_2nd_mesh
 !
@@ -59,8 +58,8 @@
       subroutine allocate_2nd_merge_table
 !
 !
-      call alloc_local_nod_id_tbl(merge_tbl_2)
-      call alloc_local_ele_id_tbl(merge_tbl_2)
+      call alloc_local_nod_id_tbl(sec_mesh1%merge_tbl_2)
+      call alloc_local_ele_id_tbl(sec_mesh1%merge_tbl_2)
 !
       end subroutine allocate_2nd_merge_table
 !
@@ -69,7 +68,7 @@
 !
       subroutine deallocate_number_of_2nd_mesh
 !
-      call dealloc_subdomain_stack(merge_tbl_2)
+      call dealloc_subdomain_stack(sec_mesh1%merge_tbl_2)
 !
       end subroutine deallocate_number_of_2nd_mesh
 !
@@ -78,8 +77,8 @@
       subroutine deallocate_2nd_merge_table
 !
 !
-      call dealloc_local_nod_id_tbl(merge_tbl_2)
-      call dealloc_local_ele_id_tbl(merge_tbl_2)
+      call dealloc_local_nod_id_tbl(sec_mesh1%merge_tbl_2)
+      call dealloc_local_ele_id_tbl(sec_mesh1%merge_tbl_2)
 !
       end subroutine deallocate_2nd_merge_table
 !

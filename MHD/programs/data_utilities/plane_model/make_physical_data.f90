@@ -106,7 +106,7 @@
      &   (mgd_mesh_pm%num_pe, mgd_mesh_pm%subdomain,                    &
      &    mgd_mesh_pm%merged, mgd_mesh_pm%merge_tbl,                    &
      &    sec_mesh1%num_pe2, sec_mesh1%subdomains_2,                    &
-     &    merge_tbl_2)
+     &    sec_mesh1%merge_tbl_2)
 !
 ! allocate arrays for spectr
 !

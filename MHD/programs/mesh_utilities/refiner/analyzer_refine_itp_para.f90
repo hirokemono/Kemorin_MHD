@@ -36,6 +36,7 @@
       use m_constants
       use m_control_data_refine_para
       use m_interpolate_table_IO
+      use m_2nd_geometry_4_merge
       use itp_table_IO_select_4_zlib
       use num_nod_ele_merge_by_type
       use merge_domain_local_by_type
@@ -76,7 +77,8 @@
       write(*,*) 'set_domain_local_id_by_type1'
       call set_domain_local_id_by_type1                                 &
      &   (nprocs_fine, fine_mesh, mgd_mesh_rf%merge_tbl)
-      call set_domain_local_id_by_type2(nprocs_course, course_mesh)
+      call set_domain_local_id_by_type2                                 &
+     &   (nprocs_course, course_mesh, sec_mesh1%merge_tbl_2)
 !
 !
 !
@@ -96,7 +98,8 @@
       call alloc_para_refine_itp_type
 !
 !
-      call refine_interpolation_table(mgd_mesh_rf%merge_tbl)
+      call refine_interpolation_table                                   &
+     &   (mgd_mesh_rf%merge_tbl, sec_mesh1%merge_tbl_2)
 !
       call dealloc_para_refine_itp_type
 !
@@ -146,16 +149,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine refine_interpolation_table(merge_tbl)
+      subroutine refine_interpolation_table(merge_tbl, merge_tbl_2)
 !
       use t_interpolate_table
       use t_merged_geometry_data
-      use m_2nd_geometry_4_merge
       use m_interpolate_table_IO
       use const_parallel_itp_table
       use itp_table_IO_select_4_zlib
 !
       type(merged_stacks), intent(inout) :: merge_tbl
+      type(merged_stacks), intent(inout) :: merge_tbl_2
 !
       integer(kind = kint) :: ip, my_rank
 !

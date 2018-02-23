@@ -99,7 +99,6 @@
       type(merged_mesh), intent(inout) :: mgd_mesh
 !
 !
-      mgd_mesh%merge_tbl%num_subdomain = mgd_mesh%num_pe
       allocate( mgd_mesh%subdomain(mgd_mesh%num_pe) )
 !
       call alloc_subdomain_stack(mgd_mesh%num_pe, mgd_mesh%merge_tbl)
