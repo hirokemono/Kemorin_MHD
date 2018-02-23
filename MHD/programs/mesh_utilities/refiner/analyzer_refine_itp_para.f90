@@ -100,7 +100,7 @@
 !
       call deallocate_number_of_2nd_mesh
       call deallocate_2nd_merge_table
-      call deallocate_array_4_merge
+      call dealloc_array_4_merge(mgd_mesh1)
 !
       call dealloc_interpolate_tbl_type(f2c_single)
       call dealloc_interpolate_tbl_type(c2f_single)

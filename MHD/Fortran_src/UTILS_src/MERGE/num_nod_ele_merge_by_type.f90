@@ -38,7 +38,7 @@
 !
 !
       mgd_mesh1%num_pe = nprocs
-      call allocate_number_of_mesh
+      call alloc_number_of_mesh(mgd_mesh1)
 !
       call set_num_nod_ele_merge_type_wop                               &
      &   (mgd_mesh1%num_pe, mesh_info, mgd_mesh1%subdomain)
@@ -48,8 +48,7 @@
      &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,   &
      &    mgd_mesh1%merged)
 !
-      call allocate_array_4_node
-      call allocate_array_4_element
+      call alloc_geometry_data_4_merge(mgd_mesh1)
 !
       end subroutine set_num_nod_ele_merge_type_wop1
 !
@@ -90,7 +89,7 @@
 !
 !
       mgd_mesh1%num_pe = nprocs
-      call allocate_number_of_mesh
+      call alloc_number_of_mesh(mgd_mesh1)
 !
       call set_num_nod_ele_merge_type                                   &
      &   (mgd_mesh1%num_pe, mesh_info, mgd_mesh1%subdomain)
@@ -100,7 +99,7 @@
      &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,   &
      &    mgd_mesh1%merged)
 !
-      call allocate_geometry_data_4_merge
+      call alloc_geometry_data_4_merge(mgd_mesh1)
 !
       end subroutine set_num_nod_ele_merge_type1
 !

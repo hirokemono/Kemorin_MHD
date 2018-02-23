@@ -121,7 +121,7 @@
        call set_surf_domain_id_viewer
 !
 !
-       call deallocate_array_4_merge
+       call dealloc_array_4_merge(mgd_mesh1)
 !
        write(*,*)  'construct_edge_4_viewer'
        call construct_edge_4_viewer(surf, edge)

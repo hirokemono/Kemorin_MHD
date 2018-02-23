@@ -34,8 +34,8 @@
       integer (kind = kint) :: nnod_4_ele
 !
 !
-!      write(*,*) 'allocate_number_of_mesh'
-      call allocate_number_of_mesh
+!      write(*,*) 'alloc_number_of_mesh'
+      call alloc_number_of_mesh(mgd_mesh1)
 
 !     count number of node for each domain
 !
@@ -45,8 +45,8 @@
 !
 !     array allocation
 !
-!      write(*,*) 'allocate_geometry_data_4_merge'
-      call allocate_geometry_data_4_merge
+!      write(*,*) 'alloc_geometry_data_4_merge'
+      call alloc_geometry_data_4_merge(mgd_mesh1)
 !
 !  set mesh_information
 !
@@ -81,8 +81,8 @@
       integer (kind = kint) :: nnod_4_ele
 !
 !
-!      write(*,*) 'allocate_number_of_mesh'
-      call allocate_number_of_mesh
+!      write(*,*) 'alloc_number_of_mesh'
+      call alloc_number_of_mesh(mgd_mesh1)
 !
 !     count number of node for each domain
 !
@@ -92,8 +92,8 @@
 !
 !     array allocation
 !
-!      write(*,*) 'allocate_geometry_data_4_merge'
-      call allocate_geometry_data_4_merge
+!      write(*,*) 'alloc_geometry_data_4_merge'
+      call alloc_geometry_data_4_merge(mgd_mesh1)
 !
 !  set mesh_information
 !
@@ -114,8 +114,8 @@
       integer (kind = kint), intent(inout) :: nnod_4_ele
 !
 !
-!       write(*,*) 'allocate_number_of_mesh'
-      call allocate_number_of_mesh
+!       write(*,*) 'alloc_number_of_mesh'
+      call alloc_number_of_mesh(mgd_mesh1)
 !
 !     count number of node for each domain
 !
@@ -125,8 +125,8 @@
 !
 !     array allocation
 !
-      write(*,*) 'allocate_geometry_data_4_merge'
-      call allocate_geometry_data_4_merge
+      write(*,*) 'alloc_geometry_data_4_merge'
+      call alloc_geometry_data_4_merge(mgd_mesh1)
 !
 !  set mesh_information
 !

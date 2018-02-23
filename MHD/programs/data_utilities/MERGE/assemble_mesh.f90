@@ -40,7 +40,7 @@
 !
       call s_write_merged_mesh                                          &
      &   (mgd_mesh1%merge_tbl, mgd_mesh1%merged, mgd_mesh1%merged_grp)
-      call deallocate_array_4_merge
+      call dealloc_array_4_merge(mgd_mesh1)
 !
       stop ' //// program normally finished //// '
 !

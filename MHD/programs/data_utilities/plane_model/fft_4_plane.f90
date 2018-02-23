@@ -64,7 +64,7 @@
       call s_set_numnod_4_plane(mgd_mesh1%merge_tbl)
 !
 !
-      call allocate_number_of_mesh
+      call alloc_number_of_mesh(mgd_mesh1)
 !
 !   read field name and number of components
 !
@@ -78,7 +78,7 @@
 !
 !     array allocation
 !
-      call allocate_geometry_data_4_merge
+      call alloc_geometry_data_4_merge(mgd_mesh1)
 !
       call allocate_horiz_spectr
 !
