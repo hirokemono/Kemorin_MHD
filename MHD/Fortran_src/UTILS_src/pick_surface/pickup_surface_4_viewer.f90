@@ -34,7 +34,6 @@
       use t_mesh_data
       use t_surface_data
       use t_grp_data_merged_surfaces
-      use m_grp_data_merged_surfaces
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(in) :: merged_surf
@@ -54,7 +53,7 @@
       end do
 !
       do inum = 1, merged_grp%surf_grp%num_item
-        isurf = abs( isf_surf_grp_m(inum) )
+        isurf = abs( mgd_sf_grp%isf_surf_grp_m(inum) )
         imark_surf(isurf) = 1
       end do
 !

@@ -30,8 +30,11 @@
       use t_edge_data
       use t_file_IO_parameter
       use t_mesh_data_4_merge
+      use t_grp_data_merged_surfaces
 !
       implicit none
+!
+      type(group_data_merged_surf), save, private :: mgd_sf_grp1
 !
       private :: const_surf_mesh_4_viewer
       private :: find_mesh_format_4_viewer
@@ -135,15 +138,17 @@
 !
 !       write(*,*) 'const_merged_surface_4_ele_grp'
        call const_merged_surface_4_ele_grp                              &
-     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf)
+     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
+     &     mgd_sf_grp1)
 !       write(*,*) 'const_merged_surface_4_sf_grp'
        call const_merged_surface_4_sf_grp                               &
-     &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf)
+     &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp1)
 !
 !  pickup surface and nodes
 !
 !       write(*,*) 's_set_surf_connect_4_viewer'
-       call s_set_surf_connect_4_viewer(surf%nnod_4_surf, mgd_mesh)
+       call s_set_surf_connect_4_viewer                                 &
+     &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp1)
 !       write(*,*) 's_set_nodes_4_viewer'
        call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh)
 !

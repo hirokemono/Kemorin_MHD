@@ -3,8 +3,10 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine s_set_surf_connect_4_viewer(nnod_4_surf, mgd_mesh)
+!!      subroutine s_set_surf_connect_4_viewer                          &
+!!     &         (nnod_4_surf, mgd_mesh, mgd_sf_grp)
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
+!!        type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
 !
       module set_surf_connect_4_viewer
 !
@@ -22,22 +24,24 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_set_surf_connect_4_viewer(nnod_4_surf, mgd_mesh)
+      subroutine s_set_surf_connect_4_viewer                            &
+     &         (nnod_4_surf, mgd_mesh, mgd_sf_grp)
 !
       use t_mesh_data_4_merge
       use t_surface_data
-      use m_grp_data_merged_surfaces
+      use t_grp_data_merged_surfaces
       use m_pickup_table_4_viewer
       use pickup_surface_4_viewer
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       type(merged_mesh), intent(inout) :: mgd_mesh
+      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
 !
 !
        write(*,*) 'allocate_imark_surf'
       call allocate_imark_surf(mgd_mesh%merged_surf)
       call mark_used_surface_4_viewer                                   &
-     &   (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp1)
+     &   (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp)
 !
        write(*,*) 'count_used_surface_4_viewer'
       call count_used_surface_4_viewer                                  &
@@ -55,7 +59,7 @@
       call set_surf_connect_viewer(mgd_mesh%merged_surf)
 !
       call s_set_groups_4_viewer_surface                                &
-     &   (mgd_mesh%merged_grp, mgd_mesh%merged_surf)
+     &   (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp)
 !
        write(*,*) 'deallocate_sf_cvt_table_viewer'
       call deallocate_sf_cvt_table_viewer
@@ -72,16 +76,17 @@
 !------------------------------------------------------------------
 !
       subroutine s_set_groups_4_viewer_surface                          &
-     &         (merged_grp, merged_surf)
+     &         (merged_grp, merged_surf, mgd_sf_grp)
 !
       use t_mesh_data
       use t_surface_data
-      use m_grp_data_merged_surfaces
+      use t_grp_data_merged_surfaces
 !
       use renumber_surface_4_viewer
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(in) :: merged_surf
+      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !
 !     renumber domain boundary
 !
@@ -96,7 +101,7 @@
 !     renumber element group boundary
 !
       ngrp_ele_sf = merged_grp%ele_grp%num_grp
-      nele_ele_sf = mgd_sf_grp1%ntot_sf_iso_ele_grp_m
+      nele_ele_sf = mgd_sf_grp%ntot_sf_iso_ele_grp_m
        write(*,*) 'allocate_ele_grp_stack_4_surf'
       call allocate_ele_grp_stack_4_surf
       call allocate_ele_grp_item_4_surf
@@ -104,8 +109,8 @@
       ele_gp_name_sf(1:ngrp_ele_sf)                                     &
      &     = merged_grp%ele_grp%grp_name(1:ngrp_ele_sf)
 !
-      call set_element_group_item_viewer(mgd_sf_grp1)
-      call set_element_group_stack_viewer(mgd_sf_grp1)
+      call set_element_group_item_viewer(mgd_sf_grp)
+      call set_element_group_stack_viewer(mgd_sf_grp)
 !
 !     renumber surface boundary
 !
@@ -118,7 +123,7 @@
       surf_gp_name_sf(1:ngrp_surf_sf)                                   &
      &        = merged_grp%surf_grp%grp_name(1:ngrp_surf_sf)
 !
-      call set_surface_group_item_viewer
+      call set_surface_group_item_viewer(mgd_sf_grp)
       call set_surface_group_stack_viewer(merged_grp)
 !
       end subroutine s_set_groups_4_viewer_surface

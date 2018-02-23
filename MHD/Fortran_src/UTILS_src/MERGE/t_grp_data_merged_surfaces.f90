@@ -5,7 +5,7 @@
 !
 !!      subroutine alloc_n_iso_surf_4_ele_grp(ele_grp, mgd_sf_grp)
 !!        type(group_data), intent(in) :: ele_grp
-!!      subroutine allocate_iso_surf_4_egrp_m(mgd_sf_grp)
+!!      subroutine alloc_iso_surf_4_egrp_m(mgd_sf_grp)
 !!
 !!      subroutine alloc_iso_surf_4_sgrp_m(surf_grp, mgd_sf_grp)
 !!        type(surface_group_data), intent(in) :: surf_grp
