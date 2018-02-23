@@ -13,10 +13,14 @@
 !!      subroutine alloc_array_4_node(mgd_mesh)
 !!      subroutine alloc_array_4_element(mgd_mesh)
 !!
+!!      subroutine alloc_num_surface_merge(mgd_mesh)
+!!
 !!      subroutine dealloc_array_4_merge(mgd_mesh)
 !!      subroutine dealloc_number_of_mesh(mgd_mesh)
 !!
 !!      subroutine dealloc_subdomain_groups(mgd_mesh)
+!!      subroutine dealloc_num_surface_merge(mgd_mesh)
+!!        type(merged_mesh), intent(inout) :: mgd_mesh
 !!
 !!      subroutine check_boundary_data_m(ip, mgd_mesh)
 !!      subroutine check_material_data_m(ip, mgd_mesh)
@@ -58,6 +62,8 @@
         type(group_data), allocatable :: sub_nod_grp(:)
         type(group_data), allocatable :: sub_ele_grp(:)
         type(surface_group_data), allocatable :: sub_surf_grp(:)
+!
+        integer(kind=kint ), allocatable :: istack_surfpe(:)
       end type merged_mesh
 !
 !------------------------------------------------------------------
@@ -145,6 +151,28 @@
       end subroutine alloc_array_4_element
 !
 !------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine alloc_num_surface_merge(mgd_mesh)
+!
+      type(merged_mesh), intent(inout) :: mgd_mesh
+!
+      allocate(mgd_mesh%istack_surfpe(0:mgd_mesh%num_pe) )
+      mgd_mesh%istack_surfpe = 0
+!
+      end subroutine alloc_num_surface_merge
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_num_surface_merge(mgd_mesh)
+!
+      type(merged_mesh), intent(inout) :: mgd_mesh
+!
+      deallocate( mgd_mesh%istack_surfpe )
+!
+      end subroutine dealloc_num_surface_merge
+!
+! ------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine dealloc_array_4_merge(mgd_mesh)

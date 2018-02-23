@@ -5,9 +5,10 @@
 !
 !!      subroutine mark_used_surface_4_viewer(merged_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
-!!      subroutine count_used_surface_4_viewer
-!!      subroutine set_surf_cvt_table_viewer
-!!      subroutine set_surf_connect_viewer
+!!      subroutine count_used_surface_4_viewer(num_pe, istack_surfpe)
+!!      subroutine set_surf_cvt_table_viewer(merged_surf)
+!!      subroutine set_surf_connect_viewer(merged_surf)
+!!        type(surface_data), intent(in) :: merged_surf
 !
 !
       module pickup_surface_4_viewer
@@ -54,14 +55,16 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine count_used_surface_4_viewer
+      subroutine count_used_surface_4_viewer(num_pe, istack_surfpe)
 !
-      use m_surf_geometry_4_merge
       use m_surface_mesh_4_merge
+!
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: istack_surfpe(0:num_pe)
 !
       integer(kind = kint) :: ip, ist, ied, isurf
 !
-      do ip = 1, num_pe_sf
+      do ip = 1, num_pe
         ist = istack_surfpe(ip-1) + 1
         ied = istack_surfpe(ip)
         isurf_sf_stack(ip) = isurf_sf_stack(ip-1)
@@ -69,15 +72,17 @@
           isurf_sf_stack(ip) = isurf_sf_stack(ip) + imark_surf(isurf)
         end do
       end do
-      surfpetot_viewer = isurf_sf_stack(num_pe_sf)
+      surfpetot_viewer = isurf_sf_stack(num_pe)
 !
       end subroutine count_used_surface_4_viewer
 !
 ! ------------------------------------------------------
 !
-      subroutine set_surf_cvt_table_viewer
+      subroutine set_surf_cvt_table_viewer(merged_surf)
 !
-      use m_surf_geometry_4_merge
+      use t_surface_data
+!
+      type(surface_data), intent(in) :: merged_surf
 !
       integer(kind = kint) :: isurf, inum
 !
@@ -95,10 +100,12 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine set_surf_connect_viewer
+      subroutine set_surf_connect_viewer(merged_surf)
 !
-      use m_surf_geometry_4_merge
+      use t_surface_data
       use m_surface_mesh_4_merge
+!
+      type(surface_data), intent(in) :: merged_surf
 !
       integer(kind = kint) :: inum, isurf
 !

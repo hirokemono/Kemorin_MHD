@@ -33,7 +33,7 @@
 !
       implicit none
 !
-      private :: const_surf_mesh_4_viewer, set_source_mesh_parameter
+      private :: const_surf_mesh_4_viewer
       private :: find_mesh_format_4_viewer
 !
 !------------------------------------------------------------------
@@ -100,6 +100,7 @@
       subroutine const_surf_mesh_4_viewer                               &
      &         (mesh_file, ele, surf, edge, mgd_mesh)
 !
+      use m_surf_geometry_4_merge
       use set_merged_geometry
       use const_merged_surf_data
       use const_merged_surf_4_group
@@ -125,7 +126,8 @@
 !   output grid data
 !
        write(*,*) 'set_source_mesh_parameter'
-       call set_source_mesh_parameter(mgd_mesh%num_pe, ele, surf, edge)
+       call set_source_mesh_parameter                                   &
+     &    (mgd_mesh%num_pe, ele, surf, edge, merged_surf)
 !
 !  choose surface
 !
@@ -146,7 +148,7 @@
        call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh)
 !
        write(*,*) 'set_surf_domain_id_viewer'
-       call set_surf_domain_id_viewer
+       call set_surf_domain_id_viewer(merged_surf)
 !
 !
        call dealloc_array_4_merge(mgd_mesh)
@@ -164,10 +166,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_source_mesh_parameter(num_pe, ele, surf, edge)
+      subroutine set_source_mesh_parameter                              &
+     &         (num_pe, ele, surf, edge, merged_surf)
 !
       use m_geometry_constants
-      use m_surf_geometry_4_merge
       use m_node_quad_2_linear_sf
 !
       use set_local_id_table_4_1ele
@@ -177,6 +179,7 @@
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
+      type(surface_data), intent(inout) :: merged_surf
 !
 !  set array for number of surface
 !
@@ -208,9 +211,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_surf_domain_id_viewer
+      subroutine set_surf_domain_id_viewer(merged_surf)
 !
-      use m_surf_geometry_4_merge
+      type(surface_data), intent(inout) :: merged_surf
 !
 !
       call allocate_surf_type_viewer

@@ -38,18 +38,19 @@
       call mark_used_surface_4_viewer(mgd_mesh%merged_grp)
 !
        write(*,*) 'count_used_surface_4_viewer'
-      call count_used_surface_4_viewer
+      call count_used_surface_4_viewer                                  &
+     &   (mgd_mesh%num_pe, mgd_mesh%istack_surfpe)
 !
        write(*,*) 'allocate_sf_cvt_table_viewer'
       call allocate_sf_cvt_table_viewer
-      call set_surf_cvt_table_viewer
+      call set_surf_cvt_table_viewer(merged_surf)
 !
        write(*,*) 'deallocate_imark_surf'
       call deallocate_imark_surf
 !
        write(*,*) 'allocate_surf_connect_viewer'
       call allocate_surf_connect_viewer(nnod_4_surf)
-      call set_surf_connect_viewer
+      call set_surf_connect_viewer(merged_surf)
 !
       call s_set_groups_4_viewer_surface(mgd_mesh%merged_grp)
 !
@@ -61,7 +62,7 @@
 !
       call deallocate_iso_surf_merge
       call deallocate_surf_connect_merge
-      call deallocate_num_surface_merge
+      call dealloc_num_surface_merge(mgd_mesh)
 !
       end subroutine s_set_surf_connect_4_viewer
 !

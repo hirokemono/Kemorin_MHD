@@ -34,7 +34,7 @@
 !
       implicit none
 !
-      private :: const_surf_mesh_4_viewer, set_source_mesh_parameter
+      private :: const_surf_mesh_4_viewer
 !
 !------------------------------------------------------------------
 !
@@ -80,6 +80,7 @@
       subroutine const_surf_mesh_4_viewer                               &
      &         (mesh_file, ele, surf, edge, mgd_mesh)
 !
+      use m_surf_geometry_4_merge
       use set_merged_geometry
       use const_merged_surf_data
       use const_merged_surf_4_group
@@ -88,6 +89,7 @@
       use const_edge_4_viewer
       use set_nodes_4_groups_viewer
       use viewer_IO_select_4_zlib
+      use single_const_surface_mesh
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(element_data), intent(inout) :: ele
@@ -105,7 +107,8 @@
 !   output grid data
 !
        write(*,*) 'set_source_mesh_parameter'
-       call set_source_mesh_parameter(mgd_mesh%num_pe, ele, surf, edge)
+       call set_source_mesh_parameter                                   &
+     &    (mgd_mesh%num_pe, ele, surf, edge, merged_surf)
 !
 !  choose surface
 !
@@ -126,7 +129,7 @@
        call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh)
 !
        write(*,*) 'set_surf_domain_id_viewer'
-       call set_surf_domain_id_viewer
+       call set_surf_domain_id_viewer(merged_surf)
 !
 !
        call dealloc_array_4_merge(mgd_mesh)
@@ -141,69 +144,6 @@
      &    surf%nnod_4_surf, edge%nnod_4_edge)
 !
       end subroutine const_surf_mesh_4_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine set_source_mesh_parameter(num_pe, ele, surf, edge)
-!
-      use m_geometry_constants
-      use m_surf_geometry_4_merge
-      use m_node_quad_2_linear_sf
-!
-      use set_local_id_table_4_1ele
-      use set_nnod_4_ele_by_type
-!
-      integer(kind = kint), intent(in) :: num_pe
-      type(element_data), intent(inout) :: ele
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
-!
-!  set array for number of surface
-!
-      num_pe_sf = num_pe
-!
-!       write(*,*) 'allocate_num_mesh_sf'
-      call allocate_num_mesh_sf
-!
-!   set number of node in surface
-!
-      call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (ele%nnod_4_ele, surf%nnod_4_surf, edge%nnod_4_edge)
-      call allocate_quad4_2_linear(ele%nnod_4_ele)
-!
-      call allocate_inod_in_surf(surf)
-      call set_inod_in_surf                                             &
-     &   (surf%nnod_4_surf, surf%node_on_sf, surf%node_on_sf_n)
-!
-      call alloc_inod_in_edge(edge)
-      call copy_inod_in_edge(edge%nnod_4_edge,                          &
-     &    edge%node_on_edge, edge%node_on_edge_sf)
-!
-      merged_surf%nnod_4_surf = surf%nnod_4_surf
-      call allocate_inod_in_surf(merged_surf)
-      call set_inod_in_surf(merged_surf%nnod_4_surf,                    &
-     &    merged_surf%node_on_sf, merged_surf%node_on_sf_n)
-!
-      end subroutine set_source_mesh_parameter
-!
-!------------------------------------------------------------------
-!
-      subroutine set_surf_domain_id_viewer
-!
-      use m_surf_geometry_4_merge
-!
-!
-      call allocate_surf_type_viewer
-!
-      if ( merged_surf%nnod_4_surf .eq. 4) then
-        surftyp_viewer(1:surfpetot_viewer) = 221
-      else if ( merged_surf%nnod_4_surf .eq. 8) then
-        surftyp_viewer(1:surfpetot_viewer) = 222
-      else if ( merged_surf%nnod_4_surf .eq. 9) then
-        surftyp_viewer(1:surfpetot_viewer) = 223
-      end if
-!
-      end subroutine set_surf_domain_id_viewer
 !
 !------------------------------------------------------------------
 !
