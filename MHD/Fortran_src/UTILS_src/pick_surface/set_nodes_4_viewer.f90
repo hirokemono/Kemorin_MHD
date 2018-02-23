@@ -32,15 +32,15 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_imark_node'
-      call allocate_imark_node(merged%node%numnod)
+      call allocate_imark_node(mgd_mesh1%merged%node%numnod)
       call mark_used_node_4_viewer(nnod_4_surf, merged_grp)
 !
       call count_used_node_4_viewer(merge_tbl)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'allocate_nod_cvt_table_viewer'
-      call allocate_nod_cvt_table_viewer
-      call set_node_cvt_table_viewer(merged)
+      call allocate_nod_cvt_table_viewer(mgd_mesh1%merged)
+      call set_node_cvt_table_viewer(mgd_mesh1%merged)
 !
       if(iflag_debug .gt. 0) write(*,*) 'deallocate_imark_node'
       call deallocate_imark_node
@@ -48,7 +48,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'allocate_nod_position_viewer'
       call allocate_nod_position_viewer
-      call set_node_position_4_viewer(merged)
+      call set_node_position_4_viewer(mgd_mesh1%merged)
 !
       call renumber_surf_connect_4_viewer(nnod_4_surf)
 !

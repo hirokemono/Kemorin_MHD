@@ -1,9 +1,9 @@
 !
 !      module set_merged_groups
 !
-!      subroutine allocate_flags_merged_grp
-!      subroutine deallocate_flags_merged_grp
-!
+!!      subroutine allocate_flags_merged_grp(merged)
+!!      subroutine deallocate_flags_merged_grp
+!!
 !!      subroutine count_merged_node_group(num_pe, merge_tbl,           &
 !!     &          subdomain, sub_nod_grp, merged_grp)
 !!      subroutine set_merged_node_group(num_pe, merge_tbl,             &
@@ -51,9 +51,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_flags_merged_grp
+      subroutine allocate_flags_merged_grp(merged)
 !
-      use m_geometry_data_4_merge
+      type(mesh_geometry), intent(in) :: merged
 !
       allocate( iflag_nod_grp(merged%node%numnod) )
       allocate( iflag_ele_grp(merged%ele%numele) )

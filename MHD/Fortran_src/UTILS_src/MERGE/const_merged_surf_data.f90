@@ -28,7 +28,8 @@
 !
 !   set hash data for suface elements using sum of local node ID
 !
-      call const_isolated_surface_t_data(merged%node, merged%ele,       &
+      call const_isolated_surface_t_data                                &
+     &   (mgd_mesh1%merged%node, mgd_mesh1%merged%ele,                  &
      &    merged_surf)
 !
 !   count number of element for each domain

@@ -108,15 +108,15 @@
 !
       do iz = 1, nz_all
         i1 = iz*nx_all*ny_all
-        if ( merged%node%xx(i1,3) .eq. zz(1) ) then
+        if ( mgd_mesh1%merged%node%xx(i1,3) .eq. zz(1) ) then
           iz_1(iz) = 1
           z_1(iz) = 1.0d0
         end if
           do j = 2, iz_max
-           if (merged%node%xx(i1,3).gt.zz(j-1)                          &
-     &     .and. merged%node%xx(i1,3).le.zz(j)) then
+           if (mgd_mesh1%merged%node%xx(i1,3).gt.zz(j-1)                &
+     &     .and. mgd_mesh1%merged%node%xx(i1,3).le.zz(j)) then
          iz_1(iz) = j
-         z_1(iz)  = ( merged%node%xx(i1,3) - zz(j-1) )                  &
+         z_1(iz)  = ( mgd_mesh1%merged%node%xx(i1,3) - zz(j-1) )        &
      &             / ( zz(j) - zz(j-1) )
         end if
        end do
@@ -228,7 +228,8 @@
       end do
 !
 !      write(*,*) 'allocate_merged_field_data'
-      call alloc_phys_data_type(merged%node%numnod, merged_fld)
+      call alloc_phys_data_type                                         &
+     &   (mgd_mesh1%merged%node%numnod, merged_fld)
 !
       ncomp_nsp = num_fft
 !
@@ -283,12 +284,13 @@
 !   reset spectr data
 !
         call s_inverse_fft_4_plane
-        call copy_2_inverted_udt
+        call copy_2_inverted_udt(merged_fld)
 !
 !    output data
 !
-        call link_merged_node_2_ucd_IO(fft_ucd)
-        call link_merged_field_2_udt_IO(fft_ucd)
+        call link_merged_node_2_ucd_IO                                  &
+     &     (mgd_mesh1%merged, merge_tbl, fft_ucd)
+        call link_merged_field_2_udt_IO(merged_fld, merge_tbl, fft_ucd)
 !
         ucd_file_param%iflag_format = iflag_udt
         call sel_write_ucd_file                                         &

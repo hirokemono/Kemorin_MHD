@@ -61,7 +61,8 @@
      &    t_IO, merged_IO)
 !
       call init_field_name_by_restart(merged_IO, merged_fld)
-      call alloc_phys_data_type(merged%node%numnod, merged_fld)
+      call alloc_phys_data_type                                         &
+     &   (mgd_mesh1%merged%node%numnod, merged_fld)
 !
       end subroutine count_restart_data_fields
 !
@@ -148,7 +149,8 @@
      &   (izero, istep_start, org_fst_param, t_IO, merged_IO)
 !
       call init_field_name_by_restart(merged_IO, merged_fld)
-      call alloc_phys_data_type(merged%node%numnod, merged_fld)
+      call alloc_phys_data_type                                         &
+     &   (mgd_mesh1%merged%node%numnod, merged_fld)
 !
       end subroutine init_by_old_restart_data
 !

@@ -1,9 +1,24 @@
 !
 !      module m_pickup_table_4_viewer
 !
-      module m_pickup_table_4_viewer
-!
 !      Written by Kemorin in Jan., 2007
+!
+!!      subroutine allocate_imark_surf
+!!      subroutine allocate_imark_node(numnod)
+!!      subroutine allocate_ele_edge_item_tmp
+!!      subroutine allocate_sf_edge_item_tmp
+!!      subroutine allocate_sf_cvt_table_viewer
+!!      subroutine allocate_nod_cvt_table_viewer(merged)
+!!        type(mesh_geometry), intent(in) :: merged
+!!
+!!      subroutine deallocate_imark_surf
+!!      subroutine deallocate_imark_node
+!!      subroutine deallocate_sf_cvt_table_viewer
+!!      subroutine deallocate_nod_cvt_table_viewer
+!!      subroutine deallocate_ele_edge_item_tmp
+!!      subroutine deallocate_sf_edge_item_tmp
+!
+      module m_pickup_table_4_viewer
 !
       use m_precision
 !
@@ -27,21 +42,6 @@
       integer(kind = kint), allocatable :: ele_nod_item_tmp(:)
       integer(kind = kint), allocatable :: surf_nod_item_tmp(:)
 !
-!
-!      subroutine allocate_imark_surf
-!      subroutine allocate_imark_node(numnod)
-!      subroutine allocate_ele_edge_item_tmp
-!      subroutine allocate_sf_edge_item_tmp
-!      subroutine allocate_sf_cvt_table_viewer
-!      subroutine allocate_nod_cvt_table_viewer
-!
-!
-!      subroutine deallocate_imark_surf
-!      subroutine deallocate_imark_node
-!      subroutine deallocate_sf_cvt_table_viewer
-!      subroutine deallocate_nod_cvt_table_viewer
-!      subroutine deallocate_ele_edge_item_tmp
-!      subroutine deallocate_sf_edge_item_tmp
 !
 !------------------------------------------------------------------
 !
@@ -85,10 +85,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_nod_cvt_table_viewer
+      subroutine allocate_nod_cvt_table_viewer(merged)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
       use m_surface_mesh_4_merge
+!
+      type(mesh_geometry), intent(in) :: merged
 !
       allocate( inod_merge2viewer(merged%node%numnod) )
       allocate( inod_viewer2merge(nodpetot_viewer) )

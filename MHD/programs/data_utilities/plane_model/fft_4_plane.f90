@@ -106,7 +106,7 @@
 !     ======================
 
       if (istep .eq. ist) then
-        call write_size_of_spectr
+        call write_size_of_spectr(mgd_mesh1%merged)
       end if
 !
        call write_spectr_data(istep)

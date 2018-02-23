@@ -72,11 +72,13 @@
 !    set list array for merged field
 !
       call set_field_list_4_merge(merged_fld)
-      call alloc_phys_data_type(merged%node%numnod, merged_fld)
+      call alloc_phys_data_type                                         &
+     &   (mgd_mesh1%merged%node%numnod, merged_fld)
 !
 !   Cnostract grid data
 !
-      call assemble_2nd_udt_mesh(assemble_ucd_param, second_ucd)
+      call assemble_2nd_udt_mesh                                        &
+     &   (assemble_ucd_param, mgd_mesh1%merged, second_ucd)
 !
 !   loop for snap shots
 !
@@ -86,8 +88,9 @@
         call read_ucd_data_4_merge                                      &
      &     (istep, mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl,    &
      &      original_ucd_param, fem_time_IO, fem_ucd, merged_fld)
-        call assemble_2nd_udt_phys                                      &
-     &     (istep, assemble_ucd_param, fem_time_IO, second_ucd)
+        call assemble_2nd_udt_phys(istep, assemble_ucd_param,           &
+     &      mgd_mesh1%merged, mgd_mesh1%merged_fld,                     &
+     &      fem_time_IO, second_ucd)
         write(*,*) 'step', istep, 'finish '
       end do
 !

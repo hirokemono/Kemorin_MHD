@@ -96,11 +96,11 @@
 !  open result file
 !
        do iz = 1, nz_all
-        z_out(iz) = merged%node%xx(nx_all*ny_all*iz,3)
+        z_out(iz) = mgd_mesh1%merged%node%xx(nx_all*ny_all*iz,3)
        end do
 !
        call deallocate_ioverlap_nod
-       call deallocate_node_geometry_type(merged%node)
+       call deallocate_node_geometry_type(mgd_mesh1%merged%node)
        call deallocate_2nd_merge_table
 !
 !

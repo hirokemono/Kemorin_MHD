@@ -35,8 +35,6 @@
 !
       type(merged_mesh), save :: mgd_mesh1
 !
-      type(mesh_geometry) :: merged
-!>      merged mesh data
       type(phys_data) :: merged_fld
 !>      merged field data
 !
@@ -89,11 +87,11 @@
       integer(kind = kint) :: i
 !
 !
-      call allocate_node_geometry_type(merged%node)
+      call allocate_node_geometry_type(mgd_mesh1%merged%node)
       call alloc_local_nod_id_tbl(merge_tbl)
 !
-      do i = 1, merged%node%numnod
-        merged%node%inod_global(i) = i
+      do i = 1, mgd_mesh1%merged%node%numnod
+        mgd_mesh1%merged%node%inod_global(i) = i
       end do
 !
       end subroutine allocate_array_4_node
@@ -107,11 +105,11 @@
       integer(kind = kint) :: i
 !
 !
-      call allocate_ele_connect_type(merged%ele)
+      call allocate_ele_connect_type(mgd_mesh1%merged%ele)
       call alloc_local_ele_id_tbl(merge_tbl)
 !
-      do i = 1, merged%ele%numele
-        merged%ele%iele_global(i) = i
+      do i = 1, mgd_mesh1%merged%ele%numele
+        mgd_mesh1%merged%ele%iele_global(i) = i
       end do
 !
       end subroutine allocate_array_4_element

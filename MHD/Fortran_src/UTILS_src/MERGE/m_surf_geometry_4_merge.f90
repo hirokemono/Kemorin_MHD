@@ -3,14 +3,15 @@
 !
 !      Written by H. Matsui on Jan., 2007
 !
-!      subroutine allocate_num_surface_merge(num_pe)
-!
-!      subroutine deallocate_num_surface_merge
-!      subroutine deallocate_surf_connect_merge
-!      subroutine deallocate_iso_surf_merge
-!
-!      subroutine check_merged_surface_data
-!      subroutine check_merged_iso_surf
+!!      subroutine allocate_num_surface_merge(num_pe)
+!!
+!!      subroutine deallocate_num_surface_merge
+!!      subroutine deallocate_surf_connect_merge
+!!      subroutine deallocate_iso_surf_merge
+!!
+!!      subroutine check_merged_surface_data(merged)
+!!        type(mesh_geometry), intent(in) :: merged
+!!      subroutine check_merged_iso_surf
 !
       module m_surf_geometry_4_merge
 !
@@ -69,10 +70,12 @@
 ! ------------------------------------------------------
 ! ------------------------------------------------------
 !
-      subroutine check_merged_surface_data
+      subroutine check_merged_surface_data(merged)
 !
+      use t_mesh_data
       use m_geometry_constants
-      use m_geometry_data_4_merge
+!
+      type(mesh_geometry), intent(in) :: merged
 !
       integer(kind = kint) :: isurf, iele
 !

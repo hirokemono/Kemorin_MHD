@@ -67,13 +67,14 @@
 !
       mgd_mesh1%num_pe = ndx * ndy * ndz
 !
-      merged%node%numnod = node_plane%numnod
+      mgd_mesh1%merged%node%numnod = node_plane%numnod
 !
       call alloc_merged_field_stack(nprocs, plane_fst_IO)
       plane_fst_IO%istack_numnod_IO(0) = 0
       do ip = 1, mgd_mesh1%num_pe
         plane_fst_IO%istack_numnod_IO(ip)                               &
-     &      = plane_fst_IO%istack_numnod_IO(ip-1) + merged%node%numnod
+     &      = plane_fst_IO%istack_numnod_IO(ip-1)                       &
+     &       + mgd_mesh1%merged%node%numnod
       end do
 !
       do ip = 1, mgd_mesh1%num_pe
@@ -92,7 +93,8 @@
         call dealloc_node_geometry_base(mesh_IO_p%node)
         call deallocate_type_neib_id(mesh_IO_p%nod_comm)
 !
-        call alloc_phys_data_type(merged%node%numnod, merged_fld)
+        call alloc_phys_data_type                                       &
+     &     (mgd_mesh1%merged%node%numnod, merged_fld)
 !
 !   set up of physical values
 !
@@ -102,7 +104,7 @@
 !
           if (merged_fld%phys_name(np) .eq. fhd_temp) then
 !
-            do inod = 1, merged%node%numnod
+            do inod = 1, mgd_mesh1%merged%node%numnod
               if (node_plane%xx(inod,3).eq.zmin) then
                 merged_fld%d_fld(inod,jst+1) = 1.0d0
               else if (node_plane%xx(inod,3).eq.zmax) then
@@ -118,14 +120,14 @@
 !
           else if (merged_fld%phys_name(np) .eq. fhd_vecp) then
 !
-            do inod = 1, merged%node%numnod
+            do inod = 1, mgd_mesh1%merged%node%numnod
               merged_fld%d_fld(inod,jst+1)                              &
      &            = 0.01d0*sin(pi*node_plane%xx(inod,3) / (zmax-zmin))
             end do
 !
           else if (merged_fld%phys_name(np) .eq. fhd_magne) then
 !
-            do inod = 1, merged%node%numnod
+            do inod = 1, mgd_mesh1%merged%node%numnod
               merged_fld%d_fld(inod,jst+2) = (0.01d0*pi/two)            &
      &                * cos( pi*node_plane%xx(inod,3) / (zmax-zmin))
             end do
@@ -135,7 +137,7 @@
 !     write data
 !
 !
-        plane_fst_IO%nnod_IO = merged%node%numnod
+        plane_fst_IO%nnod_IO = mgd_mesh1%merged%node%numnod
 !
         plane_fst_IO%num_field_IO = merged_fld%num_phys
         plane_fst_IO%ntot_comp_IO = merged_fld%ntot_phys
@@ -144,7 +146,7 @@
 !
         call simple_copy_fld_name_to_rst(merged_fld, plane_fst_IO)
         call simple_copy_fld_data_to_rst                                &
-     &     (merged%node, merged_fld, plane_fst_IO)
+     &     (mgd_mesh1%merged%node, merged_fld, plane_fst_IO)
 !
         call set_file_fmt_prefix                                        &
      &     (izero, org_rst_f_header, plane_fld_file)

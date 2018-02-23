@@ -120,15 +120,15 @@
 !
       do iz = 1, nz_all
        i1 = iz*nx_all*ny_all
-       if ( merged%node%xx(i1,3) .eq. zz(1) ) then
+       if ( mgd_mesh1%merged%node%xx(i1,3) .eq. zz(1) ) then
         iz_1(iz) = 1
         z_1(iz) = 1.0d0
        end if
        do j = 2, iz_max
-        if (merged%node%xx(i1,3).gt.zz(j-1)                             &
-     &       .and. merged%node%xx(i1,3).le.zz(j)) then
+        if (mgd_mesh1%merged%node%xx(i1,3).gt.zz(j-1)                   &
+     &       .and. mgd_mesh1%merged%node%xx(i1,3).le.zz(j)) then
          iz_1(iz) = j
-         z_1(iz)  = ( merged%node%xx(i1,3) - zz(j-1) )                  &
+         z_1(iz)  = ( mgd_mesh1%merged%node%xx(i1,3) - zz(j-1) )        &
      &             / ( zz(j) - zz(j-1) )
         end if
        end do
