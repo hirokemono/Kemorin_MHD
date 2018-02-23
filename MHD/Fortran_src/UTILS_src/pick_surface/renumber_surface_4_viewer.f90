@@ -10,7 +10,8 @@
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!
 !!      subroutine set_surf_domain_stack_viewer
-!!      subroutine set_element_group_stack_viewer
+!!      subroutine set_element_group_stack_viewer(mgd_sf_grp)
+!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !!      subroutine set_surface_group_stack_viewer(merged_grp)
 !!      subroutine set_node_group_stack_viewer(merged_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
@@ -125,9 +126,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_element_group_stack_viewer
+      subroutine set_element_group_stack_viewer(mgd_sf_grp)
 !
-      use m_grp_data_merged_surfaces
+      use t_grp_data_merged_surfaces
+!
+      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !
       integer(kind = kint) :: igrp, ip, idx, iref, ist, inum, isurf
 !
@@ -138,7 +141,7 @@
           iref = isurf_sf_stack(ip)
           ist = ele_stack_sf(idx-1) + 1
           ele_stack_sf(idx) = ele_stack_sf(idx-1)
-          do inum = ist, istack_sf_iso_ele_grp_m(igrp)
+          do inum = ist, mgd_sf_grp%istack_sf_iso_ele_grp_m(igrp)
             isurf = abs( ele_item_sf(inum) )
             if ( isurf .gt. iref ) exit
             ele_stack_sf(idx) = inum

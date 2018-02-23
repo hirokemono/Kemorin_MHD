@@ -104,7 +104,7 @@
      &     = merged_grp%ele_grp%grp_name(1:ngrp_ele_sf)
 !
       call set_element_group_item_viewer
-      call set_element_group_stack_viewer
+      call set_element_group_stack_viewer(mgd_sf_grp1)
 !
 !     renumber surface boundary
 !

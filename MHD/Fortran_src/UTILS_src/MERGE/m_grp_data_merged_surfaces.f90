@@ -25,7 +25,6 @@
       type(group_data_merged_surf), save :: mgd_sf_grp1
 !
       integer(kind=kint ), allocatable :: num_sf_iso_ele_grp_m(:)
-      integer(kind=kint ), allocatable :: istack_sf_iso_ele_grp_m(:)
 !
       integer(kind=kint ), allocatable :: isf_isolate_ele_grp_m(:)
       integer(kind=kint ), allocatable :: isf_isolate_ele_grp_tmp(:)
@@ -47,10 +46,10 @@
 !
 !
       allocate( num_sf_iso_ele_grp_m(ele_grp%num_grp) )
-      allocate( istack_sf_iso_ele_grp_m(0:ele_grp%num_grp) )
+      allocate( mgd_sf_grp1%istack_sf_iso_ele_grp_m(0:ele_grp%num_grp) )
 !
       num_sf_iso_ele_grp_m = 0
-      istack_sf_iso_ele_grp_m = 0
+      mgd_sf_grp1%istack_sf_iso_ele_grp_m = 0
 !
       end subroutine allocate_n_iso_surf_4_ele_grp
 !
@@ -91,7 +90,7 @@
       subroutine deallocate_n_iso_surf_4_ele_grp
 !
       deallocate( num_sf_iso_ele_grp_m )
-      deallocate( istack_sf_iso_ele_grp_m )
+      deallocate( mgd_sf_grp1%istack_sf_iso_ele_grp_m )
 !
       end subroutine deallocate_n_iso_surf_4_ele_grp
 !

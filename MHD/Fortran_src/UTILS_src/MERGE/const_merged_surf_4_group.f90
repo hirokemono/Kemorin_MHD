@@ -73,7 +73,7 @@
 !
 !    count independent surfaces for element group
 !
-        ist_grp = istack_sf_iso_ele_grp_m(igrp-1)
+        ist_grp = mgd_sf_grp1%istack_sf_iso_ele_grp_m(igrp-1)
 !
         call allocate_iso_surf_4_egrp_tmp
         isf_isolate_ele_grp_tmp(1:ist_grp)                              &
@@ -83,10 +83,11 @@
 !        write(*,*) 'count_part_surface', igrp
         call count_part_surface(merged%ele%numele, nele_grp,            &
      &      surf_ele_tbl%iflag_hash, num_sf_iso_ele_grp_m(igrp) )
-        istack_sf_iso_ele_grp_m(igrp) = istack_sf_iso_ele_grp_m(igrp-1) &
-     &                                 + num_sf_iso_ele_grp_m(igrp)
+        mgd_sf_grp1%istack_sf_iso_ele_grp_m(igrp)                       &
+     &      = mgd_sf_grp1%istack_sf_iso_ele_grp_m(igrp-1) &
+     &       + num_sf_iso_ele_grp_m(igrp)
         mgd_sf_grp1%ntot_sf_iso_ele_grp_m                               &
-     &       = istack_sf_iso_ele_grp_m(igrp)
+     &       = mgd_sf_grp1%istack_sf_iso_ele_grp_m(igrp)
 !
 !    set independent surfaces for element group
 !
