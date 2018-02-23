@@ -108,7 +108,7 @@
 !   read mesh data for initial values
 !
       plane_mesh_file%iflag_format = id_ascii_file_fmt
-      call set_merged_mesh_and_group(plane_mesh_file)
+      call set_merged_mesh_and_group(plane_mesh_file, mgd_mesh1)
 !
       write(*,*) 'allocate_rst_by_plane_sp'
       call allocate_rst_by_plane_sp(mgd_mesh1%merge_tbl%nnod_max,       &

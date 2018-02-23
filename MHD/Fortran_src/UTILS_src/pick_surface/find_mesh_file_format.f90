@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine find_merged_mesh_format(mesh_file)
 !!      subroutine find_mesh_format_4_viewer(mesh_file)
-!!      subroutine count_subdomains_4_viewer(mesh_file)
+!!      subroutine count_subdomains_4_viewer(mesh_file, num_pe)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!@endverbatim
 !
@@ -20,7 +20,6 @@
       use m_constants
       use m_machine_parameter
       use m_file_format_switch
-      use m_geometry_data_4_merge
 !
       use t_file_IO_parameter
 !
@@ -91,19 +90,20 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_subdomains_4_viewer(mesh_file)
+      subroutine count_subdomains_4_viewer(mesh_file, num_pe)
 !
       use mesh_IO_select
 !
       type(field_IO_params), intent(in) ::  mesh_file
+      integer(kind = kint), intent(inout) :: num_pe
 !
-      mgd_mesh1%num_pe = 0
+      num_pe = 0
       do
-        if(check_exist_mesh(mesh_file, mgd_mesh1%num_pe) .gt. 0) exit
-        mgd_mesh1%num_pe = mgd_mesh1%num_pe + 1
+        if(check_exist_mesh(mesh_file, num_pe) .gt. 0) exit
+        num_pe = num_pe + 1
       end do
 !
-      write(*,*) 'Number of subdomains: ', mgd_mesh1%num_pe
+      write(*,*) 'Number of subdomains: ', num_pe
 !
       end subroutine count_subdomains_4_viewer
 !

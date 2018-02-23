@@ -97,7 +97,7 @@
 !   read mesh data for initial values
 !
       plane_mesh_file%iflag_format = id_ascii_file_fmt
-      call set_merged_mesh_and_group(plane_mesh_file)
+      call set_merged_mesh_and_group(plane_mesh_file, mgd_mesh1)
 !
       allocate( subdomains_2(num_pe2) )
 !

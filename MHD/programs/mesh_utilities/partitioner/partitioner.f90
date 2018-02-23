@@ -14,6 +14,7 @@
 !
       use m_control_data_4_part
       use m_ctl_param_partitioner
+      use m_geometry_data_4_merge
 !
       use init_partitioner
       use grouping_for_partition
@@ -72,7 +73,8 @@
 !
       write(*,*) 'choose_surface_mesh_sgl'
       call choose_surface_mesh_sgl(distribute_mesh_file,                &
-     &    org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge)
+     &    org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge,           &
+     &    mgd_mesh1)
 !
       stop ' * Partitioning finished'
 !

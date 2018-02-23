@@ -4,7 +4,7 @@
 !
 !      subroutine deallocate_control_4_merge
 !
-!!       subroutine set_control_4_merge
+!!       subroutine set_control_4_merge(num_pe)
 !!      subroutine set_control_4_newrst
 !
 !      subroutine set_control_4_newudt
@@ -91,11 +91,10 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-       subroutine set_control_4_merge
+       subroutine set_control_4_merge(num_pe)
 !
       use t_file_IO_parameter
 !
-      use m_geometry_data_4_merge
       use m_file_format_switch
       use m_field_file_format
 !
@@ -105,11 +104,13 @@
       use ucd_IO_select
       use parallel_ucd_IO_select
 !
-      integer(kind=kint ) :: i, icou
+      integer(kind = kint), intent(inout) :: num_pe
+!
+      integer(kind = kint) :: i, icou
 !
 !
       if (source_plt%ndomain_ctl%iflag .gt. 0) then
-        mgd_mesh1%num_pe = source_plt%ndomain_ctl%intvalue
+        num_pe = source_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains'
         stop
@@ -167,7 +168,6 @@
       subroutine set_control_4_newrst
 !
       use m_control_data_4_merge
-      use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_file_format_switch
       use set_control_platform_data

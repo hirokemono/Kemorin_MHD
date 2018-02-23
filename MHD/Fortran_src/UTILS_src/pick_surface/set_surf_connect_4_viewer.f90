@@ -3,7 +3,8 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!      subroutine s_set_surf_connect_4_viewer(nnod_4_surf)
+!!      subroutine s_set_surf_connect_4_viewer(nnod_4_surf, mgd_mesh)
+!!        type(merged_mesh), intent(inout) :: mgd_mesh
 !
       module set_surf_connect_4_viewer
 !
@@ -21,19 +22,20 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_set_surf_connect_4_viewer(nnod_4_surf)
+      subroutine s_set_surf_connect_4_viewer(nnod_4_surf, mgd_mesh)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data_4_merge
       use m_surf_geometry_4_merge
       use m_pickup_table_4_viewer
       use pickup_surface_4_viewer
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
+      type(merged_mesh), intent(inout) :: mgd_mesh
 !
 !
        write(*,*) 'allocate_imark_surf'
       call allocate_imark_surf
-      call mark_used_surface_4_viewer(mgd_mesh1%merged_grp)
+      call mark_used_surface_4_viewer(mgd_mesh%merged_grp)
 !
        write(*,*) 'count_used_surface_4_viewer'
       call count_used_surface_4_viewer
@@ -49,13 +51,13 @@
       call allocate_surf_connect_viewer(nnod_4_surf)
       call set_surf_connect_viewer
 !
-      call s_set_groups_4_viewer_surface(mgd_mesh1%merged_grp)
+      call s_set_groups_4_viewer_surface(mgd_mesh%merged_grp)
 !
        write(*,*) 'deallocate_sf_cvt_table_viewer'
       call deallocate_sf_cvt_table_viewer
 !
-      call deallocate_sf_grp_type(mgd_mesh1%merged_grp%surf_grp)
-      call deallocate_grp_type(mgd_mesh1%merged_grp%ele_grp)
+      call deallocate_sf_grp_type(mgd_mesh%merged_grp%surf_grp)
+      call deallocate_grp_type(mgd_mesh%merged_grp%ele_grp)
 !
       call deallocate_iso_surf_merge
       call deallocate_surf_connect_merge

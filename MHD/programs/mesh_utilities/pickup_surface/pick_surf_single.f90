@@ -13,6 +13,7 @@
       use t_surface_data
       use t_edge_data
       use t_file_IO_parameter
+      use m_geometry_data_4_merge
       use single_const_surface_mesh
       use getarg_kemo
 !
@@ -36,7 +37,7 @@
 !
       pick_mesh_file%file_prefix = file_head
       call choose_surface_mesh_sgl                                      &
-     &   (pick_mesh_file, ele_pick, surf_pick, edge_pick)
+     &   (pick_mesh_file, ele_pick, surf_pick, edge_pick, mgd_mesh1)
 !
       stop ' //// program normally finished //// '
 !

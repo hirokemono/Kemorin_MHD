@@ -3,10 +3,14 @@
 !
 !      Written by H. Matsui on Feb., 2007
 !
-!      subroutine set_num_nod_ele_merge_type_wop1(nprocs, mesh_info)
-!      subroutine set_num_nod_ele_merge_type_wop2(nprocs, mesh_info)
-!
-!      subroutine set_num_nod_ele_merge_type1(nprocs, mesh_info)
+!!      subroutine set_num_nod_ele_merge_type_wop1                      &
+!!     &         (nprocs, mesh_info, mgd_mesh)
+!!      subroutine set_num_nod_ele_merge_type_wop2(nprocs, mesh_info)
+!!
+!!      subroutine set_num_nod_ele_merge_type1                          &
+!!     &         (nprocs, mesh_info, mgd_mesh)
+!!        type(mesh_data), intent(in) :: mesh_info(nprocs)
+!!        type(merged_mesh), intent(inout) :: mgd_mesh
 !      subroutine set_num_nod_ele_merge_type2(nprocs, mesh_info)
 !
       module num_nod_ele_merge_by_type
@@ -28,27 +32,29 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_num_nod_ele_merge_type_wop1(nprocs, mesh_info)
+      subroutine set_num_nod_ele_merge_type_wop1                        &
+     &         (nprocs, mesh_info, mgd_mesh)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data_4_merge
       use count_number_with_overlap
 !
       integer(kind = kint), intent(in) :: nprocs
       type(mesh_data), intent(in) :: mesh_info(nprocs)
+      type(merged_mesh), intent(inout) :: mgd_mesh
 !
 !
-      mgd_mesh1%num_pe = nprocs
-      call alloc_number_of_mesh(mgd_mesh1)
+      mgd_mesh%num_pe = nprocs
+      call alloc_number_of_mesh(mgd_mesh)
 !
       call set_num_nod_ele_merge_type_wop                               &
-     &   (mgd_mesh1%num_pe, mesh_info, mgd_mesh1%subdomain)
+     &   (mgd_mesh%num_pe, mesh_info, mgd_mesh%subdomain)
       call count_num_overlap_geom_type                                  &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl)
+     &   (mgd_mesh%num_pe, mgd_mesh%subdomain, mgd_mesh%merge_tbl)
       call count_num_geometry_w_overlap                                 &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,   &
-     &    mgd_mesh1%merged)
+     &   (mgd_mesh%num_pe, mgd_mesh%subdomain, mgd_mesh%merge_tbl,      &
+     &    mgd_mesh%merged)
 !
-      call alloc_geometry_data_4_merge(mgd_mesh1)
+      call alloc_geometry_data_4_merge(mgd_mesh)
 !
       end subroutine set_num_nod_ele_merge_type_wop1
 !
@@ -79,27 +85,30 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_num_nod_ele_merge_type1(nprocs, mesh_info)
+      subroutine set_num_nod_ele_merge_type1                            &
+     &         (nprocs, mesh_info, mgd_mesh)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data_4_merge
       use count_number_with_overlap
 !
       integer(kind = kint), intent(in) :: nprocs
       type(mesh_data), intent(in) :: mesh_info(nprocs)
 !
+      type(merged_mesh), intent(inout) :: mgd_mesh
 !
-      mgd_mesh1%num_pe = nprocs
-      call alloc_number_of_mesh(mgd_mesh1)
+!
+      mgd_mesh%num_pe = nprocs
+      call alloc_number_of_mesh(mgd_mesh)
 !
       call set_num_nod_ele_merge_type                                   &
-     &   (mgd_mesh1%num_pe, mesh_info, mgd_mesh1%subdomain)
+     &   (mgd_mesh%num_pe, mesh_info, mgd_mesh%subdomain)
       call count_num_overlap_geom_type                                  &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl)
+     &   (mgd_mesh%num_pe, mgd_mesh%subdomain, mgd_mesh%merge_tbl)
       call count_num_geometry_w_overlap                                 &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,   &
-     &    mgd_mesh1%merged)
+     &   (mgd_mesh%num_pe, mgd_mesh%subdomain, mgd_mesh%merge_tbl,      &
+     &    mgd_mesh%merged)
 !
-      call alloc_geometry_data_4_merge(mgd_mesh1)
+      call alloc_geometry_data_4_merge(mgd_mesh)
 !
       end subroutine set_num_nod_ele_merge_type1
 !

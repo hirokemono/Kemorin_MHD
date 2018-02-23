@@ -3,8 +3,11 @@
 !
 !     Written by H. Matsui on Feb., 2007
 !
-!      subroutine init_udt_4_correlate(istep, nod_fld, t_IO, ucd)
-!      subroutine read_udt_4_correlate(istep, t_IO, ucd)
+!!      subroutine init_udt_4_correlate(istep, nod_fld, t_IO, ucd)
+!!      subroutine read_udt_4_correlate(istep, mgd_mesh, t_IO, ucd)
+!!        type(merged_mesh), intent(in) :: mgd_mesh
+!!        type(time_data), intent(inout) :: t_IO
+!!        type(ucd_data), intent(inout) :: ucd
 !
       module read_udt_files_4_correlate
 !
@@ -27,7 +30,6 @@
 !
       subroutine init_udt_4_correlate(istep, nod_fld, t_IO, ucd)
 !
-      use m_geometry_data_4_merge
       use m_file_format_switch
       use t_phys_data
       use ucd_IO_select
@@ -51,22 +53,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_udt_4_correlate(istep, t_IO, ucd)
+      subroutine read_udt_4_correlate(istep, mgd_mesh, t_IO, ucd)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data_4_merge
       use m_2nd_geometry_4_merge
       use m_file_format_switch
       use copy_pick_udt_data_plane
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
+      type(merged_mesh), intent(in) :: mgd_mesh
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call read_udt_data_4_plane_model(mgd_mesh1%num_pe, istep,         &
+      call read_udt_data_4_plane_model(mgd_mesh%num_pe, istep,          &
      &    num_domain, num_crt, icomp_crt, ifield_crt, phys_d1(1),       &
-     &    mgd_mesh1%merge_tbl%nnod_max, mgd_mesh1%subdomain,            &
+     &    mgd_mesh%merge_tbl%nnod_max, mgd_mesh%subdomain,              &
      &    cor_ucd_param, t_IO, ucd)
 !
 !

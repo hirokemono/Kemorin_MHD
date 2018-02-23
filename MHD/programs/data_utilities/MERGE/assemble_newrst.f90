@@ -49,12 +49,12 @@
 !
       call read_control_4_merge
 !
-      call set_control_4_merge
+      call set_control_4_merge(mgd_mesh1%num_pe)
       call set_control_4_newrst
 !
 !     read outline of mesh
 !
-      call set_merged_node_and_element(merge_org_mesh_file)
+      call set_merged_node_and_element(merge_org_mesh_file, mgd_mesh1)
 !
       call s_set_2nd_geometry_4_serial(merged_mesh_file)
 !
@@ -64,7 +64,7 @@
 !  allocate restart data
 !
       call count_restart_data_fields                                    &
-     &   (org_fst_param, merged_time_IO, merged_IO)
+     &   (org_fst_param, mgd_mesh1, merged_time_IO, merged_IO)
 !
 !   loop for time integration
 !
@@ -72,7 +72,7 @@
 !
         call generate_new_restart_snap                                  &
      &     (istep, org_fst_param, new_fst_param,                        &
-     &      merged_time_IO, merged_IO)
+     &      mgd_mesh1, merged_time_IO, merged_IO)
         write(*,*) 'step', istep, 'finish '
       end do
       call dealloc_phys_name_IO(merged_IO)

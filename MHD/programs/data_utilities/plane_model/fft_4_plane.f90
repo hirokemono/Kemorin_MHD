@@ -87,14 +87,14 @@
 !  set mesh_information
 !
 !       write(*,*) 'set_geometry_data_2_merge'
-       call set_geometry_data_2_merge
+       call set_geometry_data_2_merge(mgd_mesh1)
 !
 !   loop for time integration
 !
       do istep = ist, ied, iint
 !
        call s_read_udt_data_4_FFT                                       &
-     &    (istep, ucd_file_param, fft_t_IO, fft_ucd)
+     &    (istep, ucd_file_param, mgd_mesh1, fft_t_IO, fft_ucd)
 !
 !  -------   Fourier Transform
 !

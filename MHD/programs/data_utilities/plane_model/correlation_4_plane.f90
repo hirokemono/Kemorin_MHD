@@ -72,7 +72,7 @@
       call s_set_plane_size_correlate(mgd_mesh1%num_pe, num_pe2)
 !
       write(*,*) 'set_merged_node_and_element'
-      call set_merged_node_and_element(cor_mesh_file)
+      call set_merged_node_and_element(cor_mesh_file, mgd_mesh1)
       write(*,*) 's_set_2nd_geometry_4_serial'
       call s_set_2nd_geometry_4_serial(ref_mesh_file)
 !
@@ -111,7 +111,8 @@
       do istep = ist, ied, iint
 !
        write(*,*) 'read_udt_4_correlate'
-       call read_udt_4_correlate(istep, plane_t_IO, plane_ucd)
+       call read_udt_4_correlate                                        &
+     &    (istep, mgd_mesh1, plane_t_IO, plane_ucd)
 !
 !  -------  Cross correlatiion
 !

@@ -28,13 +28,13 @@
 ! ==============================================
 !
       call read_control_4_merge
-      call set_control_4_merge
+      call set_control_4_merge(mgd_mesh1%num_pe)
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, assemble_plt, merged_mesh_file)
 !
 !  read mesh information
 !
-      call set_merged_mesh_and_group(merge_org_mesh_file)
+      call set_merged_mesh_and_group(merge_org_mesh_file, mgd_mesh1)
 !
 !   output grid data
 !

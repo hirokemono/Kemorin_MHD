@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on Jan., 2007
 !
-!      subroutine s_const_merged_surf_data
+!!      subroutine s_const_merged_surf_data(mgd_mesh)
+!!        type(merged_mesh), intent(inout) :: mgd_mesh
 !
       module const_merged_surf_data
 !
@@ -21,22 +22,24 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_const_merged_surf_data
+      subroutine s_const_merged_surf_data(mgd_mesh)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data_4_merge
       use const_surface_data
+!
+      type(merged_mesh), intent(in) :: mgd_mesh
 !
 !   set hash data for suface elements using sum of local node ID
 !
       call const_isolated_surface_t_data                                &
-     &   (mgd_mesh1%merged%node, mgd_mesh1%merged%ele,                  &
+     &   (mgd_mesh%merged%node, mgd_mesh%merged%ele,                    &
      &    merged_surf)
 !
 !   count number of element for each domain
 !
-      call allocate_num_surface_merge(mgd_mesh1%num_pe)
+      call allocate_num_surface_merge(mgd_mesh%num_pe)
       call count_nsurf_4_each_domain                                    &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%merge_tbl)
+     &   (mgd_mesh%num_pe, mgd_mesh%merge_tbl)
 !
       end subroutine s_const_merged_surf_data
 !

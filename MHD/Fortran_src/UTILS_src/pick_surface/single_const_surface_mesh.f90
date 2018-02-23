@@ -7,11 +7,13 @@
 !>@brief Surface mesh data generator for kemoviewer
 !!
 !!@verbatim
-!!      subroutine choose_surface_mesh_sgl(mesh_file, ele, surf, edge)
+!!      subroutine choose_surface_mesh_sgl                              &
+!!     &         (mesh_file, ele, surf, edge, mgd_mesh)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data), intent(inout) :: edge
+!!        type(merged_mesh), intent(inout) :: mgd_mesh
 !!@endverbatim
 !
       module single_const_surface_mesh
@@ -21,13 +23,13 @@
       use m_constants
       use m_machine_parameter
       use m_file_format_switch
-      use m_geometry_data_4_merge
       use m_surface_mesh_4_merge
 !
       use t_geometry_data
       use t_surface_data
       use t_edge_data
       use t_file_IO_parameter
+      use t_mesh_data_4_merge
 !
       implicit none
 !
@@ -40,21 +42,26 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine choose_surface_mesh_sgl(mesh_file, ele, surf, edge)
+      subroutine choose_surface_mesh_sgl                                &
+     &         (mesh_file, ele, surf, edge, mgd_mesh)
+!
+      use find_mesh_file_format
 !
       type(field_IO_params), intent(inout) :: mesh_file
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
+      type(merged_mesh), intent(inout) :: mgd_mesh
 !
 !
       surface_file_head = mesh_file%file_prefix
       write(*,*) 'find_mesh_format_4_viewer'
       call find_mesh_format_4_viewer(mesh_file)
       write(*,*) 'count_subdomains_4_viewer'
-      call count_subdomains_4_viewer(mesh_file)
+      call count_subdomains_4_viewer(mesh_file, mgd_mesh%num_pe)
       write(*,*) 'const_surf_mesh_4_viewer'
-      call const_surf_mesh_4_viewer(mesh_file, ele, surf, edge)
+      call const_surf_mesh_4_viewer                                     &
+     &   (mesh_file, ele, surf, edge, mgd_mesh)
 !
       end subroutine choose_surface_mesh_sgl
 !
@@ -90,25 +97,8 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_subdomains_4_viewer(mesh_file)
-!
-      use mesh_IO_select
-!
-      type(field_IO_params), intent(in) ::  mesh_file
-!
-      mgd_mesh1%num_pe = 0
-      do
-        if(check_exist_mesh(mesh_file, mgd_mesh1%num_pe) .gt. 0) exit
-        mgd_mesh1%num_pe = mgd_mesh1%num_pe + 1
-      end do
-!
-      write(*,*) 'Number of subdomains: ', mgd_mesh1%num_pe
-!
-      end subroutine count_subdomains_4_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine const_surf_mesh_4_viewer(mesh_file, ele, surf, edge)
+      subroutine const_surf_mesh_4_viewer                               &
+     &         (mesh_file, ele, surf, edge, mgd_mesh)
 !
       use set_merged_geometry
       use const_merged_surf_data
@@ -123,41 +113,43 @@
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
+      type(merged_mesh), intent(inout) :: mgd_mesh
 !
 !
 !  set mesh_information
 !
        write(*,*) 'set_overlapped_mesh_and_group'
-       call set_overlapped_mesh_and_group(mesh_file, ele%nnod_4_ele)
+       call set_overlapped_mesh_and_group                               &
+     &    (mesh_file, ele%nnod_4_ele, mgd_mesh)
 !
 !   output grid data
 !
        write(*,*) 'set_source_mesh_parameter'
-       call set_source_mesh_parameter(ele, surf, edge)
+       call set_source_mesh_parameter(mgd_mesh%num_pe, ele, surf, edge)
 !
 !  choose surface
 !
        write(*,*) 's_const_merged_surf_data'
-       call s_const_merged_surf_data
+       call s_const_merged_surf_data(mgd_mesh)
 !
 !       write(*,*) 'const_merged_surface_4_ele_grp'
        call const_merged_surface_4_ele_grp                              &
-     &    (mgd_mesh1%merged, mgd_mesh1%merged_grp)
+     &    (mgd_mesh%merged, mgd_mesh%merged_grp)
 !       write(*,*) 'const_merged_surface_4_sf_grp'
-       call const_merged_surface_4_sf_grp(mgd_mesh1%merged_grp)
+       call const_merged_surface_4_sf_grp(mgd_mesh%merged_grp)
 !
 !  pickup surface and nodes
 !
 !       write(*,*) 's_set_surf_connect_4_viewer'
-       call s_set_surf_connect_4_viewer(surf%nnod_4_surf)
+       call s_set_surf_connect_4_viewer(surf%nnod_4_surf, mgd_mesh)
 !       write(*,*) 's_set_nodes_4_viewer'
-       call s_set_nodes_4_viewer(surf%nnod_4_surf)
+       call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh)
 !
        write(*,*) 'set_surf_domain_id_viewer'
        call set_surf_domain_id_viewer
 !
 !
-       call dealloc_array_4_merge(mgd_mesh1)
+       call dealloc_array_4_merge(mgd_mesh)
 !
        write(*,*)  'construct_edge_4_viewer'
        call construct_edge_4_viewer(surf, edge)
@@ -172,23 +164,23 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_source_mesh_parameter(ele, surf, edge)
+      subroutine set_source_mesh_parameter(num_pe, ele, surf, edge)
 !
       use m_geometry_constants
       use m_surf_geometry_4_merge
       use m_node_quad_2_linear_sf
 !
-      use m_geometry_data_4_merge
       use set_local_id_table_4_1ele
       use set_nnod_4_ele_by_type
 !
+      integer(kind = kint), intent(in) :: num_pe
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
 !
 !  set array for number of surface
 !
-      num_pe_sf = mgd_mesh1%num_pe
+      num_pe_sf = num_pe
 !
 !       write(*,*) 'allocate_num_mesh_sf'
       call allocate_num_mesh_sf

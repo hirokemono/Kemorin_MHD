@@ -67,7 +67,8 @@
 !
 !
       write(*,*) 'set_num_nod_ele_merge_type1'
-      call set_num_nod_ele_merge_type1(nprocs_fine,   fine_mesh)
+      call set_num_nod_ele_merge_type1                                  &
+     &    (nprocs_fine, fine_mesh, mgd_mesh1)
       call set_num_nod_ele_merge_type2(nprocs_course, course_mesh)
 !
       write(*,*) 'set_domain_local_id_by_type1'

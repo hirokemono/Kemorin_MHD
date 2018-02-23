@@ -3,7 +3,10 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine count_number_w_overlap(mesh_file, nnod_4_ele)
+!!      subroutine count_number_w_overlap                               &
+!!     &         (mesh_file, nnod_4_ele, mgd_mesh)
+!!        type(field_IO_params), intent(in) :: mesh_file
+!!        type(merged_mesh), intent(inout) :: mgd_mesh
 !!      subroutine count_subdomain_ngrp_stack(num_pe, sub, istack)
 !
       module count_number_with_overlap
@@ -24,23 +27,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_number_w_overlap(mesh_file, nnod_4_ele)
+      subroutine count_number_w_overlap                                 &
+     &         (mesh_file, nnod_4_ele, mgd_mesh)
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data_4_merge
 !
       type(field_IO_params), intent(in) :: mesh_file
       integer (kind = kint), intent(inout) :: nnod_4_ele
+      type(merged_mesh), intent(inout) :: mgd_mesh
 !
 !
       call count_numbers_4_mesh_merge                                   &
-     &   (mesh_file, mgd_mesh1%num_pe, nnod_4_ele, mgd_mesh1%subdomain, &
-     &    mgd_mesh1%sub_nod_grp, mgd_mesh1%sub_ele_grp,                 &
-     &    mgd_mesh1%sub_surf_grp)
+     &   (mesh_file, mgd_mesh%num_pe, nnod_4_ele, mgd_mesh%subdomain,   &
+     &    mgd_mesh%sub_nod_grp, mgd_mesh%sub_ele_grp,                   &
+     &    mgd_mesh%sub_surf_grp)
       call count_num_overlap_geom_type                                  &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl)
+     &   (mgd_mesh%num_pe, mgd_mesh%subdomain, mgd_mesh%merge_tbl)
       call count_num_geometry_w_overlap                                 &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,   &
-     &    mgd_mesh1%merged)
+     &   (mgd_mesh%num_pe, mgd_mesh%subdomain, mgd_mesh%merge_tbl,      &
+     &    mgd_mesh%merged)
 !
       end subroutine count_number_w_overlap
 !

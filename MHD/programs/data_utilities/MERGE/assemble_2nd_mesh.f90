@@ -55,12 +55,12 @@
 !
       call read_control_4_merge
 !
-      call set_control_4_merge
+      call set_control_4_merge(mgd_mesh1%num_pe)
       call set_control_4_newudt
 !
 !  read mesh information
 !
-      call set_merged_mesh_and_group(merge_org_mesh_file)
+      call set_merged_mesh_and_group(merge_org_mesh_file, mgd_mesh1)
 !
       call s_set_2nd_geometry_4_serial(merged_mesh_file)
 !

@@ -13,6 +13,7 @@
       use getarg_kemo
       use t_mesh_data
       use t_file_IO_parameter
+      use m_geometry_data_4_merge
 !
       implicit    none
 !
@@ -39,7 +40,8 @@
 !
       mesh_file_viewer%file_prefix = file_head
       call choose_surface_mesh_sgl                                      &
-     &   (mesh_file_viewer, ele_viewer, ele_mesh1%surf, ele_mesh1%edge)
+     &   (mesh_file_viewer, ele_viewer, ele_mesh1%surf, ele_mesh1%edge, &
+     &    mgd_mesh1)
 !
       write(*,*) 'will you draw mesh? (y/n)'
       read(*,*) chara_flag
