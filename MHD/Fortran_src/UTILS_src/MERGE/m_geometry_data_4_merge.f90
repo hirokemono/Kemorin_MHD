@@ -38,8 +38,6 @@
       type(merged_stacks) :: merge_tbl
 !>      merged index table
 !
-      type(mesh_groups) :: merged_grp
-!
 !------------------------------------------------------------------
 !
       contains
@@ -110,29 +108,6 @@
       end do
 !
       end subroutine allocate_array_4_element
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-       subroutine allocate_merged_group_num
-!
-!
-       call allocate_grp_type_num(merged_grp%nod_grp)
-       call allocate_grp_type_num(merged_grp%ele_grp)
-       call allocate_sf_grp_type_num(merged_grp%surf_grp)
-!
-       end subroutine allocate_merged_group_num
-!
-!------------------------------------------------------------------
-!
-       subroutine allocate_merged_group_item
-!
-!
-       call allocate_grp_type_item(merged_grp%nod_grp)
-       call allocate_grp_type_item(merged_grp%ele_grp)
-       call allocate_sf_grp_type_item(merged_grp%surf_grp)
-!
-       end subroutine allocate_merged_group_item
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

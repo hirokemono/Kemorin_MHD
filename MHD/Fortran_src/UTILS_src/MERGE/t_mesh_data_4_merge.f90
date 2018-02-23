@@ -13,9 +13,6 @@
 !!      subroutine alloc_array_4_node(mgd_mesh)
 !!      subroutine alloc_array_4_element(mgd_mesh)
 !!
-!!      subroutine alloc_merged_group_num(mgd_mesh)
-!!      subroutine alloc_merged_group_item(mgd_mesh)
-!!
 !!      subroutine dealloc_array_4_merge(mgd_mesh)
 !!      subroutine dealloc_number_of_mesh(mgd_mesh)
 !!
@@ -146,33 +143,6 @@
       end do
 !
       end subroutine alloc_array_4_element
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-       subroutine alloc_merged_group_num(mgd_mesh)
-!
-       type(merged_mesh), intent(inout) :: mgd_mesh
-!
-!
-       call allocate_grp_type_num(mgd_mesh%merged_grp%nod_grp)
-       call allocate_grp_type_num(mgd_mesh%merged_grp%ele_grp)
-       call allocate_sf_grp_type_num(mgd_mesh%merged_grp%surf_grp)
-!
-       end subroutine alloc_merged_group_num
-!
-!------------------------------------------------------------------
-!
-       subroutine alloc_merged_group_item(mgd_mesh)
-!
-       type(merged_mesh), intent(inout) :: mgd_mesh
-!
-!
-       call allocate_grp_type_item(mgd_mesh%merged_grp%nod_grp)
-       call allocate_grp_type_item(mgd_mesh%merged_grp%ele_grp)
-       call allocate_sf_grp_type_item(mgd_mesh%merged_grp%surf_grp)
-!
-       end subroutine alloc_merged_group_item
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

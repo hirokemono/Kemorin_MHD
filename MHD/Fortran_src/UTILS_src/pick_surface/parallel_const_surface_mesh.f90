@@ -106,9 +106,9 @@
 !
 !       write(*,*) 'const_merged_surface_4_ele_grp'
        call const_merged_surface_4_ele_grp                              &
-     &    (mgd_mesh1%merged, merged_grp)
+     &    (mgd_mesh1%merged, mgd_mesh1%merged_grp)
 !       write(*,*) 'const_merged_surface_4_sf_grp'
-       call const_merged_surface_4_sf_grp(merged_grp)
+       call const_merged_surface_4_sf_grp(mgd_mesh1%merged_grp)
 !
 !  pickup surface and nodes
 !

@@ -1,9 +1,16 @@
 !
 !      module pickup_surface_4_viewer
 !
-      module pickup_surface_4_viewer
-!
 !      Written by Kemorin in Jan., 2007
+!
+!!      subroutine mark_used_surface_4_viewer(merged_grp)
+!!        type(mesh_groups), intent(in) :: merged_grp
+!!      subroutine count_used_surface_4_viewer
+!!      subroutine set_surf_cvt_table_viewer
+!!      subroutine set_surf_connect_viewer
+!
+!
+      module pickup_surface_4_viewer
 !
       use m_precision
 !
@@ -11,24 +18,22 @@
 !
       implicit none
 !
-!      subroutine mark_used_surface_4_viewer
-!      subroutine count_used_surface_4_viewer
-!      subroutine set_surf_cvt_table_viewer
-!      subroutine set_surf_connect_viewer
-!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine mark_used_surface_4_viewer
+      subroutine mark_used_surface_4_viewer(merged_grp)
 !
+      use t_mesh_data
       use m_surf_geometry_4_merge
-      use m_geometry_data_4_merge
       use m_grp_data_merged_surfaces
 !
+      type(mesh_groups), intent(in) :: merged_grp
+!
       integer(kind = kint) :: inum, isurf
+!
 !
       do inum = 1, merged_surf%numsurf_iso
         isurf = abs( merged_surf%isf_isolate(inum) )

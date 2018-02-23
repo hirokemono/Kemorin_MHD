@@ -10,7 +10,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_data_4_merge
       use m_surface_mesh_4_merge
 !
       implicit none
@@ -25,6 +24,7 @@
 !
       subroutine s_set_nodes_4_viewer(nnod_4_surf)
 !
+      use m_geometry_data_4_merge
       use m_pickup_table_4_viewer
       use pickup_node_4_viewer
 !
@@ -33,7 +33,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_imark_node'
       call allocate_imark_node(mgd_mesh1%merged%node%numnod)
-      call mark_used_node_4_viewer(nnod_4_surf, merged_grp)
+      call mark_used_node_4_viewer(nnod_4_surf, mgd_mesh1%merged_grp)
 !
       call count_used_node_4_viewer(merge_tbl)
 !
@@ -52,23 +52,26 @@
 !
       call renumber_surf_connect_4_viewer(nnod_4_surf)
 !
-      call s_set_nod_grp_4_viewer_surface
+      call s_set_nod_grp_4_viewer_surface(mgd_mesh1%merged_grp)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'deallocate_nod_cvt_table_viewer'
       call deallocate_nod_cvt_table_viewer
 !
-      call deallocate_grp_type(merged_grp%nod_grp)
+      call deallocate_grp_type(mgd_mesh1%merged_grp%nod_grp)
 !
       end subroutine s_set_nodes_4_viewer
 !
 !------------------------------------------------------------------
 !
-      subroutine s_set_nod_grp_4_viewer_surface
+      subroutine s_set_nod_grp_4_viewer_surface(merged_grp)
 !
+      use t_mesh_data
       use m_surf_geometry_4_merge
 !
       use renumber_surface_4_viewer
+!
+      type(mesh_groups), intent(in) :: merged_grp
 !
 !
       ngrp_nod_sf = merged_grp%nod_grp%num_grp

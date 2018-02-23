@@ -62,12 +62,12 @@
 !      write(*,*) 'count_merged_mesh_groups'
       call count_merged_mesh_groups(mgd_mesh1%num_pe,                   &
      &    mgd_mesh1%sub_nod_grp, mgd_mesh1%sub_ele_grp,                 &
-     &    mgd_mesh1%sub_surf_grp, merged_grp)
+     &    mgd_mesh1%sub_surf_grp, mgd_mesh1%merged_grp)
 !      write(*,*) 'const_merged_mesh_groups'
       call const_merged_mesh_groups(mgd_mesh1%num_pe,                   &
      &    mgd_mesh1%subdomain, mgd_mesh1%merged, merge_tbl,             &
      &    mgd_mesh1%sub_nod_grp, mgd_mesh1%sub_ele_grp,                 &
-     &    mgd_mesh1%sub_surf_grp, merged_grp)
+     &    mgd_mesh1%sub_surf_grp, mgd_mesh1%merged_grp)
 !
       call deallocate_subdomain_grp_stack
 !
@@ -142,11 +142,11 @@
       write(*,*) 'count_merged_mesh_groups'
       call count_merged_mesh_groups(mgd_mesh1%num_pe,                   &
      &    mgd_mesh1%sub_nod_grp, mgd_mesh1%sub_ele_grp,                 &
-     &    mgd_mesh1%sub_surf_grp, merged_grp)
+     &    mgd_mesh1%sub_surf_grp, mgd_mesh1%merged_grp)
       write(*,*) 'const_merged_overlapped_groups'
       call const_merged_overlapped_groups(mgd_mesh1%num_pe,             &
      &    mgd_mesh1%sub_nod_grp, mgd_mesh1%sub_ele_grp,                 &
-     &    mgd_mesh1%sub_surf_grp, merged_grp)
+     &    mgd_mesh1%sub_surf_grp, mgd_mesh1%merged_grp)
 !
       call deallocate_subdomain_grp_stack
       call dealloc_subdomain_groups(mgd_mesh1)

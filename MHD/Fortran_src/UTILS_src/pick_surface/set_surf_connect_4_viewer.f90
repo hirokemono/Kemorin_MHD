@@ -9,7 +9,6 @@
 !
       use m_precision
 !
-      use m_geometry_data_4_merge
       use m_surface_mesh_4_merge
 !
       implicit none
@@ -24,6 +23,7 @@
 !
       subroutine s_set_surf_connect_4_viewer(nnod_4_surf)
 !
+      use m_geometry_data_4_merge
       use m_surf_geometry_4_merge
       use m_pickup_table_4_viewer
       use pickup_surface_4_viewer
@@ -33,7 +33,7 @@
 !
        write(*,*) 'allocate_imark_surf'
       call allocate_imark_surf
-      call mark_used_surface_4_viewer
+      call mark_used_surface_4_viewer(mgd_mesh1%merged_grp)
 !
        write(*,*) 'count_used_surface_4_viewer'
       call count_used_surface_4_viewer
@@ -49,13 +49,13 @@
       call allocate_surf_connect_viewer(nnod_4_surf)
       call set_surf_connect_viewer
 !
-      call s_set_groups_4_viewer_surface
+      call s_set_groups_4_viewer_surface(mgd_mesh1%merged_grp)
 !
        write(*,*) 'deallocate_sf_cvt_table_viewer'
       call deallocate_sf_cvt_table_viewer
 !
-      call deallocate_sf_grp_type(merged_grp%surf_grp)
-      call deallocate_grp_type(merged_grp%ele_grp)
+      call deallocate_sf_grp_type(mgd_mesh1%merged_grp%surf_grp)
+      call deallocate_grp_type(mgd_mesh1%merged_grp%ele_grp)
 !
       call deallocate_iso_surf_merge
       call deallocate_surf_connect_merge
@@ -66,12 +66,15 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine s_set_groups_4_viewer_surface
+      subroutine s_set_groups_4_viewer_surface(merged_grp)
 !
+      use t_mesh_data
       use m_surf_geometry_4_merge
       use m_grp_data_merged_surfaces
 !
       use renumber_surface_4_viewer
+!
+      type(mesh_groups), intent(in) :: merged_grp
 !
 !     renumber domain boundary
 !
