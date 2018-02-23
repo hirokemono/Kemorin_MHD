@@ -16,12 +16,12 @@
 !
       use m_precision
 !
-      use t_mesh_data
-      use t_merged_geometry_data
+      use t_mesh_data_4_merge
 !
       implicit none
 !
-      integer(kind = kint) :: num_pe2
+      type(second_mesh), save :: sec_mesh1
+!
       type(mesh_geometry), allocatable :: subdomains_2(:)
       type(merged_stacks) :: merge_tbl_2
 !
@@ -33,9 +33,9 @@
 !
       subroutine allocate_number_of_2nd_mesh
 !
-      allocate( subdomains_2(num_pe2) )
+      allocate( subdomains_2(sec_mesh1%num_pe2) )
 !
-      call alloc_subdomain_stack(num_pe2, merge_tbl_2)
+      call alloc_subdomain_stack(sec_mesh1%num_pe2, merge_tbl_2)
 !
       end subroutine allocate_number_of_2nd_mesh
 !
@@ -48,7 +48,7 @@
       integer(kind = kint) :: ip
 !
 !
-      do ip = 1, num_pe2
+      do ip = 1, sec_mesh1%num_pe2
         call allocate_node_geometry_type(subdomains_2(ip)%node)
         call allocate_ele_connect_type(subdomains_2(ip)%ele)
       end do

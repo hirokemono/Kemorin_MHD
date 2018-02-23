@@ -42,18 +42,18 @@
 !  ==============================
 !
       type merged_mesh
-        integer(kind = kint)  :: num_pe
 !>        number of subdomains
-        type(mesh_geometry), allocatable :: subdomain(:)
+        integer(kind = kint)  :: num_pe
 !>        subdomain mesh data
+        type(mesh_geometry), allocatable :: subdomain(:)
 !
-        type(mesh_geometry) :: merged
 !>        merged mesh data
-        type(phys_data) :: merged_fld
+        type(mesh_geometry) :: merged
 !>        merged field data
+        type(phys_data) :: merged_fld
 !
-        type(merged_stacks) :: merge_tbl
 !>        merged index table
+        type(merged_stacks) :: merge_tbl
 !
         type(mesh_groups) :: merged_grp
 !
@@ -66,6 +66,15 @@
 !
         integer(kind=kint ), allocatable :: istack_surfpe(:)
       end type merged_mesh
+!
+      type second_mesh
+!>        number of subdomains
+        integer(kind = kint) :: num_pe2
+!>        subdomain mesh data
+        type(mesh_geometry), allocatable :: subdomains_2(:)
+!>        merged index table
+        type(merged_stacks) :: merge_tbl_2
+      end type second_mesh
 !
 !------------------------------------------------------------------
 !

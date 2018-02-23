@@ -35,7 +35,7 @@
 !
       call set_2nd_mesh_for_single(mesh_file)
 !
-      call count_num_overlap_geom_type(num_pe2,                         &
+      call count_num_overlap_geom_type(sec_mesh1%num_pe2,               &
      &    subdomains_2, merge_tbl_2)
 !
       call allocate_2nd_merge_table
@@ -58,7 +58,7 @@
       integer (kind = kint) :: ip, my_rank, ierr
 !
 !
-      do ip =1, num_pe2
+      do ip =1, sec_mesh1%num_pe2
         my_rank = ip - 1
 !
         call sel_read_mesh_geometry                                     &

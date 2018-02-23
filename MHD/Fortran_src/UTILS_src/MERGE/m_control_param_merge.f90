@@ -208,7 +208,7 @@
 !
 !
       if (assemble_plt%ndomain_ctl%iflag .gt. 0) then
-        num_pe2 = assemble_plt%ndomain_ctl%intvalue
+        sec_mesh1%num_pe2 = assemble_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains for new grid'
         stop

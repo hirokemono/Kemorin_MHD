@@ -100,7 +100,7 @@
       plane_mesh_file%iflag_format = id_ascii_file_fmt
       call set_merged_mesh_and_group(plane_mesh_file, mgd_mesh_pm)
 !
-      allocate( subdomains_2(num_pe2) )
+      allocate( subdomains_2(sec_mesh1%num_pe2) )
 !
       call copy_plane_resolution                                        &
      &   (mgd_mesh_pm%num_pe, mgd_mesh_pm%subdomain,                    &

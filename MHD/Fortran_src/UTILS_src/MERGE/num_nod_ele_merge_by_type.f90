@@ -70,12 +70,12 @@
       type(mesh_data), intent(in) :: mesh_info(nprocs)
 !
 !
-      num_pe2 = nprocs
+      sec_mesh1%num_pe2 = nprocs
       call allocate_number_of_2nd_mesh
 !
       call set_num_nod_ele_merge_type_wop(nprocs, mesh_info,            &
      &    subdomains_2)
-      call count_num_overlap_geom_type(num_pe2,                         &
+      call count_num_overlap_geom_type(sec_mesh1%num_pe2,               &
      &    subdomains_2, merge_tbl_2)
 !
       call allocate_2nd_merged_geometry
@@ -124,11 +124,11 @@
       type(mesh_data), intent(in) :: mesh_info(nprocs)
 !
 !
-      num_pe2 = nprocs
+      sec_mesh1%num_pe2 = nprocs
       call allocate_number_of_2nd_mesh
 !
       call set_num_nod_ele_merge_type(nprocs, mesh_info, subdomains_2)
-      call count_num_overlap_geom_type(num_pe2,                         &
+      call count_num_overlap_geom_type(sec_mesh1%num_pe2,               &
      &    subdomains_2, merge_tbl_2)
 !
       call allocate_2nd_merged_geometry

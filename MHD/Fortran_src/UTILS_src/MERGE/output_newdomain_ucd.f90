@@ -61,7 +61,7 @@
       ucd%phys_name(1:ucd%num_field)                                    &
      &     = merged_fld%phys_name(1:ucd%num_field)
 !
-      do ip = 1, num_pe2
+      do ip = 1, sec_mesh1%num_pe2
         my_rank = ip - 1
 !
         ucd%nnod = subdomains_2(ip)%node%numnod
@@ -95,7 +95,7 @@
 !
       ucd%nnod_4_ele = merged%ele%nnod_4_ele
 !
-      do ip = 1, num_pe2
+      do ip = 1, sec_mesh1%num_pe2
         my_rank = ip - 1
 !
         ucd%nnod = subdomains_2(ip)%node%numnod

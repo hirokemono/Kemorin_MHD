@@ -1,16 +1,16 @@
 !
 !      module set_plane_size_correlate
 !
-      module set_plane_size_correlate
-!
 !     Written by H. Matsui
-!
-      use m_precision
-!
-      implicit    none
 !
 !       subroutine s_set_plane_size_correlate(num_pe2)
 !       subroutine check_dominsize_data_2
+!
+      module set_plane_size_correlate
+!
+      use m_precision
+!
+      implicit none
 !
 !  ---------------------------------------------------------------------
 !
