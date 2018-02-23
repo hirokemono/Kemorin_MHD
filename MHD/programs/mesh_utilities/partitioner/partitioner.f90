@@ -11,10 +11,10 @@
       use t_surface_data
       use t_edge_data
       use t_near_mesh_id_4_node
+      use t_mesh_data_4_merge
 !
       use m_control_data_4_part
       use m_ctl_param_partitioner
-      use m_geometry_data_4_merge
 !
       use init_partitioner
       use grouping_for_partition
@@ -31,6 +31,7 @@
       type(mesh_geometry), save :: org_mesh
       type(mesh_groups), save :: org_group
       type(element_geometry), save :: org_ele_mesh
+      type(merged_mesh), save :: mgd_mesh_pt
 !
       type(near_mesh), save :: included_ele
 !
@@ -74,7 +75,7 @@
       write(*,*) 'choose_surface_mesh_sgl'
       call choose_surface_mesh_sgl(distribute_mesh_file,                &
      &    org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge,           &
-     &    mgd_mesh1)
+     &    mgd_mesh_pt)
 !
       stop ' * Partitioning finished'
 !

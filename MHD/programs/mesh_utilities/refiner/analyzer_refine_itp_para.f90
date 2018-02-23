@@ -14,11 +14,14 @@
       use m_machine_parameter
       use m_para_refine_itp_tables
       use m_control_param_refine_para
+      use t_mesh_data_4_merge
       use set_parallel_mesh_in_1pe
 !
       implicit none
 !
       integer(kind = kint), parameter, private :: ifile_type = 0
+!
+      type(merged_mesh), save, private :: mgd_mesh_rf
 !
       private :: refine_interpolation_table
 !
@@ -33,7 +36,6 @@
       use m_constants
       use m_control_data_refine_para
       use m_interpolate_table_IO
-      use m_geometry_data_4_merge
       use itp_table_IO_select_4_zlib
       use num_nod_ele_merge_by_type
       use merge_domain_local_by_type
@@ -68,12 +70,12 @@
 !
       write(*,*) 'set_num_nod_ele_merge_type1'
       call set_num_nod_ele_merge_type1                                  &
-     &    (nprocs_fine, fine_mesh, mgd_mesh1)
+     &    (nprocs_fine, fine_mesh, mgd_mesh_rf)
       call set_num_nod_ele_merge_type2(nprocs_course, course_mesh)
 !
       write(*,*) 'set_domain_local_id_by_type1'
       call set_domain_local_id_by_type1                                 &
-     &   (nprocs_fine, fine_mesh, mgd_mesh1%merge_tbl)
+     &   (nprocs_fine, fine_mesh, mgd_mesh_rf%merge_tbl)
       call set_domain_local_id_by_type2(nprocs_course, course_mesh)
 !
 !
@@ -85,7 +87,6 @@
       subroutine analyze_refine_itp_para
 !
       use t_interpolate_table
-      use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_interpolate_table_IO
 !
@@ -95,13 +96,13 @@
       call alloc_para_refine_itp_type
 !
 !
-      call refine_interpolation_table(mgd_mesh1%merge_tbl)
+      call refine_interpolation_table(mgd_mesh_rf%merge_tbl)
 !
       call dealloc_para_refine_itp_type
 !
       call deallocate_number_of_2nd_mesh
       call deallocate_2nd_merge_table
-      call dealloc_array_4_merge(mgd_mesh1)
+      call dealloc_array_4_merge(mgd_mesh_rf)
 !
       call dealloc_interpolate_tbl_type(f2c_single)
       call dealloc_interpolate_tbl_type(c2f_single)
