@@ -122,15 +122,16 @@
       do ip = 1, sec_mesh1%num_pe2
         merged_IO%istack_numnod_IO(ip)                                  &
      &      = merged_IO%istack_numnod_IO(ip-1)                          &
-     &       + subdomains_2(ip)%node%numnod
+     &       + sec_mesh1%subdomains_2(ip)%node%numnod
       end do
 !
       do ip = 1, sec_mesh1%num_pe2
         id_rank = ip - 1
 !
-        merged_IO%nnod_IO =   subdomains_2(ip)%node%numnod
+        merged_IO%nnod_IO = sec_mesh1%subdomains_2(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
-        call set_new_restart_data(ip, mgd_mesh%merged_fld, merged_IO)
+        call set_new_restart_data(mgd_mesh%merged_fld,                  &
+     &      sec_mesh1%subdomains_2(ip), merged_IO)
 !
         call sel_write_step_FEM_field_file                              &
      &     (sec_mesh1%num_pe2, id_rank, istep, new_fst_param,           &
@@ -215,16 +216,17 @@
       do ip = 1, sec_mesh1%num_pe2
         merged_IO%istack_numnod_IO(ip)                                  &
      &      = merged_IO%istack_numnod_IO(ip-1)                          &
-     &       + subdomains_2(ip)%node%numnod
+     &       + sec_mesh1%subdomains_2(ip)%node%numnod
       end do
 !
       do ip = 1, sec_mesh1%num_pe2
         id_rank = ip - 1
 !
-        merged_IO%nnod_IO =   subdomains_2(ip)%node%numnod
+        merged_IO%nnod_IO = sec_mesh1%subdomains_2(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
 !
-        call set_new_restart_data(ip, mgd_mesh%merged_fld, merged_IO)
+        call set_new_restart_data(mgd_mesh%merged_fld,                  &
+     &      sec_mesh1%subdomains_2(ip), merged_IO)
 !
         call sel_write_step_FEM_field_file                              &
      &     (sec_mesh1%num_pe2, id_rank, istep, new_fst_param,           &

@@ -22,7 +22,6 @@
 !
       type(second_mesh), save :: sec_mesh1
 !
-      type(mesh_geometry), allocatable :: subdomains_2(:)
       type(merged_stacks) :: merge_tbl_2
 !
 !  ---------------------------------------------------------------------
@@ -33,7 +32,7 @@
 !
       subroutine allocate_number_of_2nd_mesh
 !
-      allocate( subdomains_2(sec_mesh1%num_pe2) )
+      allocate( sec_mesh1%subdomains_2(sec_mesh1%num_pe2) )
 !
       call alloc_subdomain_stack(sec_mesh1%num_pe2, merge_tbl_2)
 !
@@ -49,8 +48,8 @@
 !
 !
       do ip = 1, sec_mesh1%num_pe2
-        call allocate_node_geometry_type(subdomains_2(ip)%node)
-        call allocate_ele_connect_type(subdomains_2(ip)%ele)
+        call allocate_node_geometry_type(sec_mesh1%subdomains_2(ip)%node)
+        call allocate_ele_connect_type(sec_mesh1%subdomains_2(ip)%ele)
       end do
 !
       end subroutine allocate_2nd_merged_geometry

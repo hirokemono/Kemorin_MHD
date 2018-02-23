@@ -13,6 +13,7 @@
 !
       use m_constants
       use m_geometry_data_4_merge
+      use m_2nd_geometry_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
       use m_original_ucd_4_merge
@@ -78,7 +79,8 @@
 !   Cnostract grid data
 !
       call assemble_2nd_udt_mesh                                        &
-     &   (assemble_ucd_param, mgd_mesh1%merged, second_ucd)
+     &   (assemble_ucd_param, mgd_mesh1%merged,                         &
+     &    sec_mesh1%num_pe2, sec_mesh1%subdomains_2, second_ucd)
 !
 !   loop for snap shots
 !
@@ -91,6 +93,7 @@
      &      mgd_mesh1%merged_fld)
         call assemble_2nd_udt_phys(istep, assemble_ucd_param,           &
      &      mgd_mesh1%merged, mgd_mesh1%merged_fld,                     &
+     &      sec_mesh1%num_pe2, sec_mesh1%subdomains_2,                  &
      &      fem_time_IO, second_ucd)
         write(*,*) 'step', istep, 'finish '
       end do

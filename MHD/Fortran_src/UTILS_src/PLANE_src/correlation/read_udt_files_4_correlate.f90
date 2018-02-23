@@ -75,7 +75,8 @@
 !
       call read_udt_data_4_plane_model(sec_mesh1%num_pe2, istep,        &
      &    num_domain, num_crt, icomp_crt, ifield_crt2, phys_d2(1),      &
-     &    merge_tbl_2%nnod_max, subdomains_2, ref_ucd_param, t_IO, ucd)
+     &    merge_tbl_2%nnod_max, sec_mesh1%subdomains_2,                 &
+     &    ref_ucd_param, t_IO, ucd)
 !
       end subroutine read_udt_4_correlate
 !

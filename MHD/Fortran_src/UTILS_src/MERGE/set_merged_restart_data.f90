@@ -7,8 +7,10 @@
 !!        type(mesh_geometry), intent(in) :: subdomain
 !!        type(field_IO), intent(in) :: fld_IO
 !!        type(phys_data), intent(inout) :: merged_fld
-!!      subroutine set_new_restart_data(ip, merged_fld, fld_IO)
+!!      subroutine set_new_restart_data                                 &
+!!     &         (merged_fld, subdomains_2, fld_IO)
 !!        type(phys_data), intent(in) :: merged_fld
+!!        type(mesh_geometry), intent(in) :: subdomains_2
 !!        type(field_IO), intent(inout) :: fld_IO
 !!      subroutine rescale_4_magne(merge_tbl, merged_fld)
 !!        type(merged_stacks), intent(in) :: merge_tbl
@@ -51,14 +53,15 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_new_restart_data(ip, merged_fld, fld_IO)
+      subroutine set_new_restart_data                                   &
+     &         (merged_fld, subdomains_2, fld_IO)
 !
-      use m_2nd_geometry_4_merge
+      use t_mesh_data
       use t_phys_data
       use t_field_data_IO
 !
-      integer(kind = kint), intent(in) :: ip
       type(phys_data), intent(in) :: merged_fld
+      type(mesh_geometry), intent(in) :: subdomains_2
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: j, inod
@@ -66,8 +69,8 @@
 !
 !
       do j = 1, fld_IO%ntot_comp_IO
-        do inod = 1, subdomains_2(ip)%node%numnod
-          inod_gl = subdomains_2(ip)%node%inod_global(inod)
+        do inod = 1, subdomains_2%node%numnod
+          inod_gl = subdomains_2%node%inod_global(inod)
           fld_IO%d_IO(inod,j) = merged_fld%d_fld(inod_gl,j)
         end do
       end do

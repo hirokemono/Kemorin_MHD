@@ -100,11 +100,13 @@
       plane_mesh_file%iflag_format = id_ascii_file_fmt
       call set_merged_mesh_and_group(plane_mesh_file, mgd_mesh_pm)
 !
-      allocate( subdomains_2(sec_mesh1%num_pe2) )
+      allocate(sec_mesh1%subdomains_2(sec_mesh1%num_pe2) )
 !
       call copy_plane_resolution                                        &
      &   (mgd_mesh_pm%num_pe, mgd_mesh_pm%subdomain,                    &
-     &    mgd_mesh_pm%merged, mgd_mesh_pm%merge_tbl)
+     &    mgd_mesh_pm%merged, mgd_mesh_pm%merge_tbl,                    &
+     &    sec_mesh1%num_pe2, sec_mesh1%subdomains_2,                    &
+     &    merge_tbl_2)
 !
 ! allocate arrays for spectr
 !
@@ -197,15 +199,21 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_plane_resolution(num_pe, subdomain, merged, merge_tbl)
+      subroutine copy_plane_resolution                                  &
+     &         (num_pe, subdomain, merged, merge_tbl,                   &
+     &          num_pe2, subdomains_2, merge_tbl_2)
 !
-      use m_2nd_geometry_4_merge
+      use t_mesh_data
       use t_merged_geometry_data
 !
       integer(kind = kint), intent(in) :: num_pe
       type(mesh_geometry), intent(in) :: subdomain(num_pe)
       type(mesh_geometry), intent(in):: merged
       type(merged_stacks), intent(in) :: merge_tbl
+!
+      integer(kind = kint), intent(in) :: num_pe2
+      type(mesh_geometry), intent(inout) :: subdomains_2(num_pe2)
+      type(merged_stacks), intent(inout) :: merge_tbl_2
 !
       integer(kind = kint) :: ip
 !

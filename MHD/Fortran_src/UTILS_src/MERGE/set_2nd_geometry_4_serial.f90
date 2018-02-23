@@ -11,7 +11,6 @@
       use m_precision
 !
       use m_file_format_switch
-      use m_2nd_geometry_4_merge
       use t_file_IO_parameter
 !
       implicit none
@@ -26,6 +25,7 @@
 !
       subroutine s_set_2nd_geometry_4_serial(mesh_file)
 !
+      use m_2nd_geometry_4_merge
       use count_number_with_overlap
 !
       type(field_IO_params), intent(in) :: mesh_file
@@ -33,10 +33,11 @@
 !
       call allocate_number_of_2nd_mesh
 !
-      call set_2nd_mesh_for_single(mesh_file)
+      call set_2nd_mesh_for_single                                      &
+     &   (mesh_file, sec_mesh1%num_pe2, sec_mesh1%subdomains_2)
 !
       call count_num_overlap_geom_type(sec_mesh1%num_pe2,               &
-     &    subdomains_2, merge_tbl_2)
+     &    sec_mesh1%subdomains_2, merge_tbl_2)
 !
       call allocate_2nd_merge_table
 !
@@ -45,7 +46,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_2nd_mesh_for_single(mesh_file)
+      subroutine set_2nd_mesh_for_single                                &
+     &         (mesh_file, num_pe2, subdomains_2)
 !
        use t_mesh_data
        use mesh_IO_select
@@ -54,11 +56,14 @@
 !
       type(field_IO_params), intent(in) :: mesh_file
 !
+      integer(kind = kint), intent(in) :: num_pe2
+      type(mesh_geometry), intent(inout) :: subdomains_2(num_pe2)
+!
       type(mesh_geometry) :: mesh_IO_2
       integer (kind = kint) :: ip, my_rank, ierr
 !
 !
-      do ip =1, sec_mesh1%num_pe2
+      do ip = 1, num_pe2
         my_rank = ip - 1
 !
         call sel_read_mesh_geometry                                     &
