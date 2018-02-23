@@ -26,6 +26,7 @@
 !
       use t_mesh_data_4_merge
       use t_surface_data
+      use m_grp_data_merged_surfaces
       use m_pickup_table_4_viewer
       use pickup_surface_4_viewer
 !
@@ -36,7 +37,7 @@
        write(*,*) 'allocate_imark_surf'
       call allocate_imark_surf(mgd_mesh%merged_surf)
       call mark_used_surface_4_viewer                                   &
-     &   (mgd_mesh%merged_grp, mgd_mesh%merged_surf)
+     &   (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp1)
 !
        write(*,*) 'count_used_surface_4_viewer'
       call count_used_surface_4_viewer                                  &
@@ -103,7 +104,7 @@
       ele_gp_name_sf(1:ngrp_ele_sf)                                     &
      &     = merged_grp%ele_grp%grp_name(1:ngrp_ele_sf)
 !
-      call set_element_group_item_viewer
+      call set_element_group_item_viewer(mgd_sf_grp1)
       call set_element_group_stack_viewer(mgd_sf_grp1)
 !
 !     renumber surface boundary

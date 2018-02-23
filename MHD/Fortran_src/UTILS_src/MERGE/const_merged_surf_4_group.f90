@@ -103,7 +103,7 @@
         call allocate_iso_surf_4_egrp_tmp                               &
      &     (mgd_sf_grp1%ntot_sf_iso_ele_grp_m)
         isf_isolate_ele_grp_tmp(1:ist_grp)                              &
-     &          = isf_isolate_ele_grp_m(1:ist_grp)
+     &          = mgd_sf_grp1%isf_isolate_ele_grp_m(1:ist_grp)
         call deallocate_iso_surf_4_egrp_m
 !
 !        write(*,*) 'count_part_surface', igrp
@@ -119,7 +119,7 @@
 !    set independent surfaces for element group
 !
         call allocate_iso_surf_4_egrp_m
-        isf_isolate_ele_grp_m(1:ist_grp)                                &
+        mgd_sf_grp1%isf_isolate_ele_grp_m(1:ist_grp)                    &
      &          = isf_isolate_ele_grp_tmp(1:ist_grp)
         call deallocate_iso_surf_4_egrp_tmp
 !
@@ -127,7 +127,8 @@
         call set_part_surface(merged%ele%numele, nele_grp,              &
      &      mgd_sf_grp1%num_sf_iso_ele_grp_m(igrp),                     &
      &      merged_surf%isf_4_ele, surf_ele_tbl%id_hash,                &
-     &       surf_ele_tbl%iflag_hash, isf_isolate_ele_grp_m(ist_grp+1))
+     &      surf_ele_tbl%iflag_hash,                                    &
+     &      mgd_sf_grp1%isf_isolate_ele_grp_m(ist_grp+1))
 !
         call dealloc_sum_hash(surf_ele_tbl)
       end do

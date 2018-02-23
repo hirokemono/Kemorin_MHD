@@ -4,7 +4,8 @@
 !      Written by Kemorin in Jan., 2007
 !
 !!      subroutine set_surf_domain_item_viewer(merged_surf)
-!!      subroutine set_element_group_item_viewer
+!!      subroutine set_element_group_item_viewer(mgd_sf_grp)
+!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !!      subroutine set_surface_group_item_viewer
 !!      subroutine set_node_group_item_viewer(merged_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
@@ -50,18 +51,20 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_element_group_item_viewer
+      subroutine set_element_group_item_viewer(mgd_sf_grp)
 !
-      use m_grp_data_merged_surfaces
+      use t_grp_data_merged_surfaces
       use m_pickup_table_4_viewer
+!
+      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !
       integer(kind = kint) :: inum, isurf
 !
 !
       do inum = 1, nele_ele_sf
-        isurf = abs( isf_isolate_ele_grp_m(inum) )
+        isurf = abs( mgd_sf_grp%isf_isolate_ele_grp_m(inum) )
         ele_item_sf(inum) = isf_merge2viewer(isurf)                     &
-     &                     * (isf_isolate_ele_grp_m(inum) / isurf)
+     &         * (mgd_sf_grp%isf_isolate_ele_grp_m(inum) / isurf)
       end do
 !
       end subroutine set_element_group_item_viewer

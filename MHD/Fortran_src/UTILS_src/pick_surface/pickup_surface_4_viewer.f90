@@ -3,9 +3,11 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine mark_used_surface_4_viewer(merged_grp, merged_surf)
+!!      subroutine mark_used_surface_4_viewer                           &
+!!     &         (merged_grp, merged_surf, mgd_sf_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!        type(surface_data), intent(in) :: merged_surf
+!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !!      subroutine count_used_surface_4_viewer(num_pe, istack_surfpe)
 !!      subroutine set_surf_cvt_table_viewer(merged_surf)
 !!      subroutine set_surf_connect_viewer(merged_surf)
@@ -26,14 +28,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mark_used_surface_4_viewer(merged_grp, merged_surf)
+      subroutine mark_used_surface_4_viewer                             &
+     &         (merged_grp, merged_surf, mgd_sf_grp)
 !
       use t_mesh_data
       use t_surface_data
+      use t_grp_data_merged_surfaces
       use m_grp_data_merged_surfaces
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(in) :: merged_surf
+      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !
       integer(kind = kint) :: inum, isurf
 !
@@ -43,8 +48,8 @@
         imark_surf(isurf) = 1
       end do
 !
-      do inum = 1, mgd_sf_grp1%ntot_sf_iso_ele_grp_m
-        isurf = abs( isf_isolate_ele_grp_m(inum) )
+      do inum = 1, mgd_sf_grp%ntot_sf_iso_ele_grp_m
+        isurf = abs( mgd_sf_grp%isf_isolate_ele_grp_m(inum) )
         imark_surf(isurf) = 1
       end do
 !
