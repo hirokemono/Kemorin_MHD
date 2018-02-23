@@ -22,7 +22,6 @@
 !
       subroutine s_const_merged_surf_data(mgd_mesh)
 !
-      use m_surf_geometry_4_merge
       use t_mesh_data_4_merge
       use const_surface_data
 !
@@ -32,14 +31,14 @@
 !
       call const_isolated_surface_t_data                                &
      &   (mgd_mesh%merged%node, mgd_mesh%merged%ele,                    &
-     &    merged_surf)
+     &    mgd_mesh%merged_surf)
 !
 !   count number of element for each domain
 !
       call alloc_num_surface_merge(mgd_mesh)
       call count_nsurf_4_each_domain                                    &
      &   (mgd_mesh%num_pe, mgd_mesh%merge_tbl,                          &
-     &    merged_surf, mgd_mesh%istack_surfpe)
+     &    mgd_mesh%merged_surf, mgd_mesh%istack_surfpe)
 !
       end subroutine s_const_merged_surf_data
 !

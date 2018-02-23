@@ -81,7 +81,6 @@
       subroutine set_node_cvt_table_viewer(merged)
 !
       use t_mesh_data
-      use m_surf_geometry_4_merge
 !
       type(mesh_geometry), intent(in) :: merged
 !

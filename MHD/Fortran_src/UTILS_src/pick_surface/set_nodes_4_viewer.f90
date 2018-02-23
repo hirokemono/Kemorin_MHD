@@ -69,7 +69,6 @@
       subroutine s_set_nod_grp_4_viewer_surface(merged_grp)
 !
       use t_mesh_data
-      use m_surf_geometry_4_merge
 !
       use renumber_surface_4_viewer
 !

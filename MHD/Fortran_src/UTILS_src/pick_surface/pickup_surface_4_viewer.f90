@@ -3,8 +3,9 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine mark_used_surface_4_viewer(merged_grp)
+!!      subroutine mark_used_surface_4_viewer(merged_grp, merged_surf)
 !!        type(mesh_groups), intent(in) :: merged_grp
+!!        type(surface_data), intent(in) :: merged_surf
 !!      subroutine count_used_surface_4_viewer(num_pe, istack_surfpe)
 !!      subroutine set_surf_cvt_table_viewer(merged_surf)
 !!      subroutine set_surf_connect_viewer(merged_surf)
@@ -25,13 +26,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mark_used_surface_4_viewer(merged_grp)
+      subroutine mark_used_surface_4_viewer(merged_grp, merged_surf)
 !
       use t_mesh_data
-      use m_surf_geometry_4_merge
+      use t_surface_data
       use m_grp_data_merged_surfaces
 !
       type(mesh_groups), intent(in) :: merged_grp
+      type(surface_data), intent(in) :: merged_surf
 !
       integer(kind = kint) :: inum, isurf
 !

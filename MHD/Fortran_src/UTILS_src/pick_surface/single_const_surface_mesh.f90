@@ -100,7 +100,6 @@
       subroutine const_surf_mesh_4_viewer                               &
      &         (mesh_file, ele, surf, edge, mgd_mesh)
 !
-      use m_surf_geometry_4_merge
       use set_merged_geometry
       use const_merged_surf_data
       use const_merged_surf_4_group
@@ -127,7 +126,7 @@
 !
        write(*,*) 'set_source_mesh_parameter'
        call set_source_mesh_parameter                                   &
-     &    (mgd_mesh%num_pe, ele, surf, edge, merged_surf)
+     &    (mgd_mesh%num_pe, ele, surf, edge, mgd_mesh%merged_surf)
 !
 !  choose surface
 !
@@ -136,9 +135,10 @@
 !
 !       write(*,*) 'const_merged_surface_4_ele_grp'
        call const_merged_surface_4_ele_grp                              &
-     &    (mgd_mesh%merged, mgd_mesh%merged_grp)
+     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf)
 !       write(*,*) 'const_merged_surface_4_sf_grp'
-       call const_merged_surface_4_sf_grp(mgd_mesh%merged_grp)
+       call const_merged_surface_4_sf_grp                               &
+     &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf)
 !
 !  pickup surface and nodes
 !
@@ -148,7 +148,7 @@
        call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh)
 !
        write(*,*) 'set_surf_domain_id_viewer'
-       call set_surf_domain_id_viewer(merged_surf)
+       call set_surf_domain_id_viewer(mgd_mesh%merged_surf)
 !
 !
        call dealloc_array_4_merge(mgd_mesh)

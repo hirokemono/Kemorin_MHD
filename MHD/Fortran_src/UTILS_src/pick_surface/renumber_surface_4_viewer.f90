@@ -3,7 +3,7 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine set_surf_domain_item_viewer
+!!      subroutine set_surf_domain_item_viewer(merged_surf)
 !!      subroutine set_element_group_item_viewer
 !!      subroutine set_surface_group_item_viewer
 !!      subroutine set_node_group_item_viewer(merged_grp)
@@ -29,10 +29,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_surf_domain_item_viewer
+      subroutine set_surf_domain_item_viewer(merged_surf)
 !
-      use m_surf_geometry_4_merge
+      use t_surface_data
       use m_pickup_table_4_viewer
+!
+      type(surface_data), intent(in) :: merged_surf
 !
       integer(kind = kint) :: inum, isurf
 !

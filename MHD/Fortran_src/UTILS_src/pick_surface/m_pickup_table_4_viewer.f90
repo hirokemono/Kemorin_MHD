@@ -3,13 +3,14 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine allocate_imark_surf
+!!      subroutine allocate_imark_surf(merged_surf)
 !!      subroutine allocate_imark_node(numnod)
 !!      subroutine allocate_ele_edge_item_tmp
 !!      subroutine allocate_sf_edge_item_tmp
-!!      subroutine allocate_sf_cvt_table_viewer
+!!      subroutine allocate_sf_cvt_table_viewer(merged_surf)
 !!      subroutine allocate_nod_cvt_table_viewer(merged)
 !!        type(mesh_geometry), intent(in) :: merged
+!!        type(surface_data), intent(in) :: merged_surf
 !!
 !!      subroutine deallocate_imark_surf
 !!      subroutine deallocate_imark_node
@@ -21,6 +22,7 @@
       module m_pickup_table_4_viewer
 !
       use m_precision
+      use t_surface_data
 !
       implicit none
 !
@@ -49,9 +51,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_imark_surf
+      subroutine allocate_imark_surf(merged_surf)
 !
-      use m_surf_geometry_4_merge
+      type(surface_data), intent(in) :: merged_surf
 !
       allocate( imark_surf(merged_surf%numsurf) )
       imark_surf = 0
@@ -71,10 +73,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_sf_cvt_table_viewer
+      subroutine allocate_sf_cvt_table_viewer(merged_surf)
 !
-      use m_surf_geometry_4_merge
       use m_surface_mesh_4_merge
+!
+      type(surface_data), intent(in) :: merged_surf
 !
       allocate( isf_merge2viewer(merged_surf%numsurf) )
       allocate( isf_viewer2merge(surfpetot_viewer) )
