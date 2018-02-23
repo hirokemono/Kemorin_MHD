@@ -85,8 +85,8 @@
 !
       do istep = istep_start, istep_end, increment_step
 !        write(*,*) 'read_ucd_data_4_merge', istep
-        call read_ucd_data_4_merge                                      &
-     &     (istep, mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl,    &
+        call read_ucd_data_4_merge(istep, mgd_mesh1%num_pe,             &
+     &      mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,                   &
      &      original_ucd_param, fem_time_IO, fem_ucd,                   &
      &      mgd_mesh1%merged_fld)
         call assemble_2nd_udt_phys(istep, assemble_ucd_param,           &

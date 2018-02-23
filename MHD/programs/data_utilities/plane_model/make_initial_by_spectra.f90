@@ -84,7 +84,7 @@
 !
 !     read outline of mesh
 !
-      call s_set_numnod_4_plane
+      call s_set_numnod_4_plane(mgd_mesh1%merge_tbl)
 !
       call allocate_z_compliment_info(nz_all)
 !
@@ -111,7 +111,7 @@
       call set_merged_mesh_and_group(plane_mesh_file)
 !
       write(*,*) 'allocate_rst_by_plane_sp'
-      call allocate_rst_by_plane_sp(merge_tbl%nnod_max,                 &
+      call allocate_rst_by_plane_sp(mgd_mesh1%merge_tbl%nnod_max,       &
      &    mgd_mesh1%merged_fld%ntot_phys)
 !
 !  check positions in z-direction
@@ -122,7 +122,7 @@
       kx_new = nx_all
       ky_new = ny_all
       iz_new = nz_all
-      num_spectr = merge_tbl%inter_nod_m
+      num_spectr = mgd_mesh1%merge_tbl%inter_nod_m
       nfft_new =   mgd_mesh1%merged_fld%ntot_phys
 !
       kx_max = kx_new
@@ -134,13 +134,13 @@
 !
       call allocate_horiz_spectr
 !
-      call allocate_work_array_4_r(merge_tbl%inter_nod_m)
+      call allocate_work_array_4_r(mgd_mesh1%merge_tbl%inter_nod_m)
 !
 !      do iz = 1, nz_all
 !       write(*,*) iz, iz_1(iz), z_1(iz)
 !      end do
 !
-!       write(*,*) 'numnod tako', merge_tbl%nnod_merged
+!       write(*,*) 'numnod tako', mgd_mesh1%merge_tbl%nnod_merged
 !
 !    start loop for snap shots
 !
@@ -182,7 +182,7 @@
        kx_max = kx_new
        ky_max = ky_new
        iz_max = iz_new
-       num_spectr = merge_tbl%inter_nod_m
+       num_spectr = mgd_mesh1%merge_tbl%inter_nod_m
        num_fft = nfft_new
 !
            write(*,*) 'num_spectr 0', num_spectr
@@ -205,14 +205,10 @@
 !
         do ip =1, mgd_mesh1%num_pe
 !
-!        write(*,*) 'numnod', merge_tbl%nnod_merged
-!        write(*,*) 'internal_node', merge_tbl%inter_nod_m
-!         write(*,*) 'num_spectr', num_spectr
-!
           do j = 1, num_fft
             do i = 1, mgd_mesh1%subdomain(ip)%node%numnod
               inod = int(mgd_mesh1%subdomain(ip)%node%inod_global(i))
-              if (inod .le. merge_tbl%inter_nod_m) then
+              if (inod .le. mgd_mesh1%merge_tbl%inter_nod_m) then
                 i1 = (j-1)*num_spectr + inod
                 rst_from_sp(i,j) = phys_d(i1)
               else

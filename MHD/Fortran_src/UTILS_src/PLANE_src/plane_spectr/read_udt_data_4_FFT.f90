@@ -79,7 +79,7 @@
 !
       call read_udt_data_4_plane_model(mgd_mesh1%num_pe, istep,         &
      &    num_spectr, num_fft, icomp_fft, ifield_fft, phys_d,           &
-     &    merge_tbl%nnod_max, mgd_mesh1%subdomain,                      &
+     &    mgd_mesh1%merge_tbl%nnod_max, mgd_mesh1%subdomain,            &
      &    ucd_param, t_IO, ucd)
 !
        end subroutine s_read_udt_data_4_FFT

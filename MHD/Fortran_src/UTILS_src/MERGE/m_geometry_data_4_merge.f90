@@ -21,10 +21,6 @@
       use m_precision
 !
       use m_constants
-      use t_mesh_data
-      use t_group_data
-      use t_merged_geometry_data
-      use t_phys_data
       use t_mesh_data_4_merge
 !
       implicit    none
@@ -34,9 +30,6 @@
 !  ==============================
 !
       type(merged_mesh), save :: mgd_mesh1
-!
-      type(merged_stacks) :: merge_tbl
-!>      merged index table
 !
 !------------------------------------------------------------------
 !
@@ -57,10 +50,10 @@
       subroutine allocate_number_of_mesh
 !
 !
-      merge_tbl%num_subdomain = mgd_mesh1%num_pe
+      mgd_mesh1%merge_tbl%num_subdomain = mgd_mesh1%num_pe
       allocate( mgd_mesh1%subdomain(mgd_mesh1%num_pe) )
 !
-      call alloc_subdomain_stack(mgd_mesh1%num_pe, merge_tbl)
+      call alloc_subdomain_stack(mgd_mesh1%num_pe, mgd_mesh1%merge_tbl)
 !
       end subroutine allocate_number_of_mesh
 !
@@ -68,7 +61,7 @@
 !
       subroutine deallocate_number_of_mesh
 !
-      call dealloc_subdomain_stack(merge_tbl)
+      call dealloc_subdomain_stack(mgd_mesh1%merge_tbl)
 !
       end subroutine deallocate_number_of_mesh
 !
@@ -83,7 +76,7 @@
 !
 !
       call allocate_node_geometry_type(mgd_mesh1%merged%node)
-      call alloc_local_nod_id_tbl(merge_tbl)
+      call alloc_local_nod_id_tbl(mgd_mesh1%merge_tbl)
 !
       do i = 1, mgd_mesh1%merged%node%numnod
         mgd_mesh1%merged%node%inod_global(i) = i
@@ -101,7 +94,7 @@
 !
 !
       call allocate_ele_connect_type(mgd_mesh1%merged%ele)
-      call alloc_local_ele_id_tbl(merge_tbl)
+      call alloc_local_ele_id_tbl(mgd_mesh1%merge_tbl)
 !
       do i = 1, mgd_mesh1%merged%ele%numele
         mgd_mesh1%merged%ele%iele_global(i) = i
@@ -115,8 +108,8 @@
       subroutine deallocate_array_4_merge
 !
 !
-      call dealloc_local_nod_id_tbl(merge_tbl)
-      call dealloc_local_ele_id_tbl(merge_tbl)
+      call dealloc_local_nod_id_tbl(mgd_mesh1%merge_tbl)
+      call dealloc_local_ele_id_tbl(mgd_mesh1%merge_tbl)
 !
       end subroutine deallocate_array_4_merge
 !

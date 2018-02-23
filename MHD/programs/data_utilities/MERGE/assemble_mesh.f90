@@ -39,7 +39,7 @@
 !   output grid data
 !
       call s_write_merged_mesh                                          &
-     &   (merge_tbl, mgd_mesh1%merged, mgd_mesh1%merged_grp)
+     &   (mgd_mesh1%merge_tbl, mgd_mesh1%merged, mgd_mesh1%merged_grp)
       call deallocate_array_4_merge
 !
       stop ' //// program normally finished //// '

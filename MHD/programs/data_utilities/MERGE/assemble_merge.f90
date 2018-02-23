@@ -70,9 +70,9 @@
 !   output grid data
 !
       call link_merged_node_2_ucd_IO                                    &
-     &   (mgd_mesh1%merged, merge_tbl, fem_ucd)
+     &   (mgd_mesh1%merged, mgd_mesh1%merge_tbl, fem_ucd)
       call link_merged_ele_2_ucd_IO                                     &
-     &   (mgd_mesh1%merged, merge_tbl, fem_ucd)
+     &   (mgd_mesh1%merged, mgd_mesh1%merge_tbl, fem_ucd)
 !
       call sel_write_grd_file(izero, assemble_ucd_param, fem_ucd)
 !
@@ -86,12 +86,12 @@
 !   loop for snap shots
 !
       do istep = istep_start, istep_end, increment_step
-        call read_ucd_data_4_merge                                      &
-     &     (istep, mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl,    &
+        call read_ucd_data_4_merge(istep, mgd_mesh1%num_pe,             &
+     &      mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,                   &
      &      original_ucd_param, fem_time_IO, fem_ucd,                   &
      &      mgd_mesh1%merged_fld)
         call link_merged_field_2_udt_IO                                 &
-     &     (mgd_mesh1%merged_fld, merge_tbl, fem_ucd)
+     &     (mgd_mesh1%merged_fld, mgd_mesh1%merge_tbl, fem_ucd)
 !
         call sel_write_ucd_file                                         &
      &     (iminus, istep, assemble_ucd_param, fem_time_IO, fem_ucd)

@@ -37,9 +37,9 @@
      &    mgd_mesh1%sub_nod_grp, mgd_mesh1%sub_ele_grp,                 &
      &    mgd_mesh1%sub_surf_grp)
       call count_num_overlap_geom_type                                  &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl)
+     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl)
       call count_num_geometry_w_overlap                                 &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl,             &
+     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,   &
      &    mgd_mesh1%merged)
 !
       end subroutine count_number_w_overlap

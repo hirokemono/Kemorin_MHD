@@ -35,7 +35,7 @@
       call allocate_imark_node(mgd_mesh1%merged%node%numnod)
       call mark_used_node_4_viewer(nnod_4_surf, mgd_mesh1%merged_grp)
 !
-      call count_used_node_4_viewer(merge_tbl)
+      call count_used_node_4_viewer(mgd_mesh1%merge_tbl)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'allocate_nod_cvt_table_viewer'

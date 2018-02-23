@@ -34,13 +34,15 @@
       call allocate_ioverlap_nod(mgd_mesh1%merged)
       call allocate_ioverlap_ele(mgd_mesh1%merged)
 !
-      merge_tbl%nnod_merged = 0
-      merge_tbl%nele_merged = 0
+      mgd_mesh1%merge_tbl%nnod_merged = 0
+      mgd_mesh1%merge_tbl%nele_merged = 0
       do ip = 1, mgd_mesh1%num_pe
         call copy_read_nodal_data_2_merge                               &
-     &     (ip, mgd_mesh1%subdomain(ip), merge_tbl, mgd_mesh1%merged)
+     &     (ip, mgd_mesh1%subdomain(ip), mgd_mesh1%merge_tbl,           &
+     &      mgd_mesh1%merged)
         call copy_read_ele_data_2_merge                                 &
-     &     (ip, mgd_mesh1%subdomain(ip), merge_tbl, mgd_mesh1%merged)
+     &     (ip, mgd_mesh1%subdomain(ip), mgd_mesh1%merge_tbl,           &
+     &      mgd_mesh1%merged)
       end do
 !
       end subroutine set_geometry_data_2_merge
@@ -58,25 +60,28 @@
 ! ========================
 ! * PES loops 
 ! ========================
-      merge_tbl%nnod_merged = 0
-      merge_tbl%nele_merged = 0
+      mgd_mesh1%merge_tbl%nnod_merged = 0
+      mgd_mesh1%merge_tbl%nele_merged = 0
       do ip =1, mgd_mesh1%num_pe
         call copy_read_nodal_data_w_overlap                             &
-     &     (ip, mgd_mesh1%subdomain(ip), merge_tbl, mgd_mesh1%merged)
+     &     (ip, mgd_mesh1%subdomain(ip), mgd_mesh1%merge_tbl,           &
+     &      mgd_mesh1%merged)
         call copy_read_ele_data_w_overlap                               &
-     &     (ip, mgd_mesh1%subdomain(ip), merge_tbl, mgd_mesh1%merged)
+     &     (ip, mgd_mesh1%subdomain(ip), mgd_mesh1%merge_tbl,           &
+     &      mgd_mesh1%merged)
 !
 !   convert node and element ID
 !
         call cvt_ele_connect_w_overlap                                  &
-     &     (ip, mgd_mesh1%subdomain(ip), merge_tbl, mgd_mesh1%merged)
+     &     (ip, mgd_mesh1%subdomain(ip), mgd_mesh1%merge_tbl,           &
+     &      mgd_mesh1%merged)
 !
         call cvt_group_4_overlap(mgd_mesh1%sub_nod_grp(ip),             &
-     &      merge_tbl%istack_nod(ip-1))
+     &      mgd_mesh1%merge_tbl%istack_nod(ip-1))
         call cvt_group_4_overlap(mgd_mesh1%sub_ele_grp(ip),             &
-     &      merge_tbl%istack_ele(ip-1))
+     &      mgd_mesh1%merge_tbl%istack_ele(ip-1))
         call cvt_surf_grp_4_overlap(mgd_mesh1%sub_surf_grp(ip),         &
-     &      merge_tbl%istack_ele(ip-1))
+     &      mgd_mesh1%merge_tbl%istack_ele(ip-1))
       end do
 !
       end subroutine set_geometry_data_w_overlap

@@ -43,9 +43,9 @@
       call set_num_nod_ele_merge_type_wop                               &
      &   (mgd_mesh1%num_pe, mesh_info, mgd_mesh1%subdomain)
       call count_num_overlap_geom_type                                  &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl)
+     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl)
       call count_num_geometry_w_overlap                                 &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl,             &
+     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,   &
      &    mgd_mesh1%merged)
 !
       call allocate_array_4_node
@@ -95,9 +95,9 @@
       call set_num_nod_ele_merge_type                                   &
      &   (mgd_mesh1%num_pe, mesh_info, mgd_mesh1%subdomain)
       call count_num_overlap_geom_type                                  &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl)
+     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl)
       call count_num_geometry_w_overlap                                 &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl,             &
+     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,   &
      &    mgd_mesh1%merged)
 !
       call allocate_geometry_data_4_merge

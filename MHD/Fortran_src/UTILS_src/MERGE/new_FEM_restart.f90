@@ -103,7 +103,7 @@
 !
 !   re-scaling for magnetic field
 !
-      call rescale_4_magne(merge_tbl, mgd_mesh1%merged_fld)
+      call rescale_4_magne(mgd_mesh1%merge_tbl, mgd_mesh1%merged_fld)
 !
 !   output new restart data
 !
@@ -192,7 +192,7 @@
 !
 !   re-scaling for magnetic field
 !
-      call rescale_4_magne(merge_tbl, mgd_mesh1%merged_fld)
+      call rescale_4_magne(mgd_mesh1%merge_tbl, mgd_mesh1%merged_fld)
 !
 !   output new restart data
 !

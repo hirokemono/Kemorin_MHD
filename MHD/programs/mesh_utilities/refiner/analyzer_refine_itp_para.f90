@@ -2,9 +2,12 @@
 !
 !      module  analyzer_refine_itp_para
 !
-      module  analyzer_refine_itp_para
-!
 !     Written by H. Matsui on May., 2010
+!
+!      subroutine init_refine_itp_para
+!      subroutine analyze_refine_itp_para
+!
+      module  analyzer_refine_itp_para
 !
       use m_precision
 !
@@ -17,8 +20,7 @@
 !
       integer(kind = kint), parameter, private :: ifile_type = 0
 !
-!      subroutine init_refine_itp_para
-!      subroutine analyze_refine_itp_para
+      private :: refine_interpolation_table
 !
 !   --------------------------------------------------------------------
 !
@@ -31,6 +33,7 @@
       use m_constants
       use m_control_data_refine_para
       use m_interpolate_table_IO
+      use m_geometry_data_4_merge
       use itp_table_IO_select_4_zlib
       use num_nod_ele_merge_by_type
       use merge_domain_local_by_type
@@ -68,7 +71,8 @@
       call set_num_nod_ele_merge_type2(nprocs_course, course_mesh)
 !
       write(*,*) 'set_domain_local_id_by_type1'
-      call set_domain_local_id_by_type1(nprocs_fine,   fine_mesh)
+      call set_domain_local_id_by_type1                                 &
+     &   (nprocs_fine, fine_mesh, mgd_mesh1%merge_tbl)
       call set_domain_local_id_by_type2(nprocs_course, course_mesh)
 !
 !
@@ -83,8 +87,6 @@
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_interpolate_table_IO
-      use const_parallel_itp_table
-      use itp_table_IO_select_4_zlib
 !
       integer(kind = kint) :: ip, my_rank
 !
@@ -92,43 +94,7 @@
       call alloc_para_refine_itp_type
 !
 !
-      write(*,*) 's_const_parallel_itp_table course_2_fine'
-      call s_const_parallel_itp_table(nprocs_course, nprocs_fine,       &
-     &    nprocs_larger, c2f_single, c2f_para,                          &
-     &    merge_tbl_2%nele_overlap, merge_tbl_2%iele_local,             &
-     &    merge_tbl_2%idomain_ele, merge_tbl%nnod_overlap,              &
-     &    merge_tbl%inod_local, merge_tbl%idomain_nod)
-!
-!
-      write(*,*) 's_const_parallel_itp_table fine_2_course'
-      call s_const_parallel_itp_table(nprocs_fine, nprocs_course,       &
-     &    nprocs_larger, f2c_single, f2c_para,                          &
-     &    merge_tbl%nele_overlap, merge_tbl%iele_local,                 &
-     &    merge_tbl%idomain_ele,  merge_tbl_2%nnod_overlap,             &
-     &    merge_tbl_2%inod_local,  merge_tbl_2%idomain_nod)
-!
-!
-      write(*,*) 's_const_parallel_itp_table fine_2_course_ele'
-      call s_const_parallel_itp_table(nprocs_fine, nprocs_course,       &
-     &    nprocs_larger, f2c_ele_single, f2c_ele_para,                  &
-     &    merge_tbl%nele_overlap, merge_tbl%iele_local,                 &
-     &    merge_tbl%idomain_ele, merge_tbl_2%nele_overlap,              &
-     &    merge_tbl_2%iele_local, merge_tbl_2%idomain_ele)
-!
-!
-      do ip = 1, nprocs_larger
-        my_rank = ip - 1
-!
-        table_file_header = c2f_para_head
-        call output_interpolate_table(my_rank, c2f_para(ip) )
-!
-        table_file_header = f2c_para_head
-        call output_interpolate_table(my_rank, f2c_para(ip) )
-!
-        table_file_header = f2c_ele_para_head
-        call output_interpolate_table(my_rank, f2c_ele_para(ip) )
-      end do
-!
+      call refine_interpolation_table(mgd_mesh1%merge_tbl)
 !
       call dealloc_para_refine_itp_type
 !
@@ -174,6 +140,62 @@
       end do
 !
       end subroutine dealloc_parallel_mesh_in_1pe
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine refine_interpolation_table(merge_tbl)
+!
+      use t_interpolate_table
+      use t_merged_geometry_data
+      use m_2nd_geometry_4_merge
+      use m_interpolate_table_IO
+      use const_parallel_itp_table
+      use itp_table_IO_select_4_zlib
+!
+      type(merged_stacks), intent(inout) :: merge_tbl
+!
+      integer(kind = kint) :: ip, my_rank
+!
+!
+      write(*,*) 's_const_parallel_itp_table course_2_fine'
+      call s_const_parallel_itp_table(nprocs_course, nprocs_fine,       &
+     &    nprocs_larger, c2f_single, c2f_para,                          &
+     &    merge_tbl_2%nele_overlap, merge_tbl_2%iele_local,             &
+     &    merge_tbl_2%idomain_ele, merge_tbl%nnod_overlap,              &
+     &    merge_tbl%inod_local, merge_tbl%idomain_nod)
+!
+!
+      write(*,*) 's_const_parallel_itp_table fine_2_course'
+      call s_const_parallel_itp_table(nprocs_fine, nprocs_course,       &
+     &    nprocs_larger, f2c_single, f2c_para,                          &
+     &    merge_tbl%nele_overlap, merge_tbl%iele_local,                 &
+     &    merge_tbl%idomain_ele,  merge_tbl_2%nnod_overlap,             &
+     &    merge_tbl_2%inod_local,  merge_tbl_2%idomain_nod)
+!
+!
+      write(*,*) 's_const_parallel_itp_table fine_2_course_ele'
+      call s_const_parallel_itp_table(nprocs_fine, nprocs_course,       &
+     &    nprocs_larger, f2c_ele_single, f2c_ele_para,                  &
+     &    merge_tbl%nele_overlap, merge_tbl%iele_local,                 &
+     &    merge_tbl%idomain_ele, merge_tbl_2%nele_overlap,              &
+     &    merge_tbl_2%iele_local, merge_tbl_2%idomain_ele)
+!
+!
+      do ip = 1, nprocs_larger
+        my_rank = ip - 1
+!
+        table_file_header = c2f_para_head
+        call output_interpolate_table(my_rank, c2f_para(ip) )
+!
+        table_file_header = f2c_para_head
+        call output_interpolate_table(my_rank, f2c_para(ip) )
+!
+        table_file_header = f2c_ele_para_head
+        call output_interpolate_table(my_rank, f2c_ele_para(ip) )
+      end do
+!
+      end subroutine refine_interpolation_table
 !
 ! -----------------------------------------------------------------------
 !

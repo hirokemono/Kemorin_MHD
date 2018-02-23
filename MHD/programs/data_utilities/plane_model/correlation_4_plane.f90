@@ -76,7 +76,7 @@
       write(*,*) 's_set_2nd_geometry_4_serial'
       call s_set_2nd_geometry_4_serial(ref_mesh_file)
 !
-      call s_set_numnod_4_plane
+      call s_set_numnod_4_plane(mgd_mesh1%merge_tbl)
 !
 !   read field name and number of components
 !
@@ -85,8 +85,8 @@
       call s_set_list_4_correlate                                       &
      &   (fld_pc_ctl%field_ctl, ref_phys, cor_phys)
 !
-      write(*,*) 'internal_node, ele',                                  &
-     &           merge_tbl%inter_nod_m,  merge_tbl%inter_ele_m
+      write(*,*) 'internal_node, ele', mgd_mesh1%merge_tbl%inter_nod_m, &
+     &                                 mgd_mesh1%merge_tbl%inter_ele_m
 !
 !     array allocation
 !

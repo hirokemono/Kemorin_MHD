@@ -35,7 +35,8 @@
 !   count number of element for each domain
 !
       call allocate_num_surface_merge(mgd_mesh1%num_pe)
-      call count_nsurf_4_each_domain(mgd_mesh1%num_pe, merge_tbl)
+      call count_nsurf_4_each_domain                                    &
+     &   (mgd_mesh1%num_pe, mgd_mesh1%merge_tbl)
 !
       end subroutine s_const_merged_surf_data
 !

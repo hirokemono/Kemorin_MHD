@@ -61,7 +61,7 @@
       call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(mgd_mesh1%num_pe, ist, ied, iint)
 !
-      call s_set_numnod_4_plane
+      call s_set_numnod_4_plane(mgd_mesh1%merge_tbl)
 !
 !
       call allocate_number_of_mesh
@@ -73,8 +73,8 @@
 !
       call set_fields_4_FFT(fld_zfft_ctl%field_ctl)
 !
-      write(*,*) 'internal_node, ele',                                  &
-     &           merge_tbl%inter_nod_m,  merge_tbl%inter_ele_m
+      write(*,*) 'internal_node, ele', mgd_mesh1%merge_tbl%inter_nod_m, &
+     &                                 mgd_mesh1%merge_tbl%inter_ele_m
 !
 !     array allocation
 !

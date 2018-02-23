@@ -79,7 +79,7 @@
       call set_parameters_data_by_spec                                  &
      &   (mgd_mesh1%num_pe, kx_org, ky_org, iz_org,                     &
      &    plane_mesh_file, ucd_file_param)
-      call s_set_numnod_4_plane
+      call s_set_numnod_4_plane(mgd_mesh1%merge_tbl)
 !
       call allocate_z_compliment_info(nz_all)
 !
@@ -102,7 +102,7 @@
       allocate( subdomains_2(num_pe2) )
 !
       call copy_plane_resolution                                        &
-     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, merge_tbl)
+     &   (mgd_mesh1%num_pe, mgd_mesh1%subdomain, mgd_mesh1%merge_tbl)
 !
 !  check positions in z-direction
 !
@@ -126,7 +126,7 @@
 !       write(*,*) iz, iz_1(iz), z_1(iz)
 !      end do
 !
-!       write(*,*) 'numnod tako', merge_tbl%nnod_merged
+!       write(*,*) 'numnod tako', mgd_mesh1%merge_tbl%nnod_merged
 !
 ! allocate arrays for spectr
 !
@@ -148,7 +148,7 @@
       ncomp_nsp = num_fft
 !
 !      write(*,*) 'allocate_index_4_trans'
-      call allocate_work_array_4_r(merge_tbl%inter_nod_m)
+      call allocate_work_array_4_r(mgd_mesh1%merge_tbl%inter_nod_m)
 !
 !      write(*,*) 'allocate_index_4_trans'
       call allocate_index_4_trans
@@ -187,7 +187,7 @@
         kx_max = nx_all
         ky_max = ny_all
         iz_max = nz_all
-        num_spectr = merge_tbl%inter_nod_m
+        num_spectr = mgd_mesh1%merge_tbl%inter_nod_m
 !
 !           write(*,*) 'num_spectr 0', num_spectr
 !    allocate new spectr
@@ -203,9 +203,9 @@
 !    output data
 !
         call link_merged_node_2_ucd_IO                                  &
-     &     (mgd_mesh1%merged, merge_tbl, fft_ucd)
+     &     (mgd_mesh1%merged, mgd_mesh1%merge_tbl, fft_ucd)
         call link_merged_field_2_udt_IO                                 &
-     &     (mgd_mesh1%merged_fld, merge_tbl, fft_ucd)
+     &     (mgd_mesh1%merged_fld, mgd_mesh1%merge_tbl, fft_ucd)
 !
         ucd_file_param%iflag_format = iflag_udt
         call sel_write_ucd_file                                         &

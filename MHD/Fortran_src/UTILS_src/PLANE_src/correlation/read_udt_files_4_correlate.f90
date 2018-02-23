@@ -66,7 +66,7 @@
 !
       call read_udt_data_4_plane_model(mgd_mesh1%num_pe, istep,         &
      &    num_domain, num_crt, icomp_crt, ifield_crt, phys_d1(1),       &
-     &    merge_tbl%nnod_max, mgd_mesh1%subdomain,                      &
+     &    mgd_mesh1%merge_tbl%nnod_max, mgd_mesh1%subdomain,            &
      &    cor_ucd_param, t_IO, ucd)
 !
 !

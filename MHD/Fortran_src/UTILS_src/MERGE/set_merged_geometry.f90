@@ -65,7 +65,7 @@
      &    mgd_mesh1%sub_surf_grp, mgd_mesh1%merged_grp)
 !      write(*,*) 'const_merged_mesh_groups'
       call const_merged_mesh_groups(mgd_mesh1%num_pe,                   &
-     &    mgd_mesh1%subdomain, mgd_mesh1%merged, merge_tbl,             &
+     &    mgd_mesh1%subdomain, mgd_mesh1%merged, mgd_mesh1%merge_tbl,   &
      &    mgd_mesh1%sub_nod_grp, mgd_mesh1%sub_ele_grp,                 &
      &    mgd_mesh1%sub_surf_grp, mgd_mesh1%merged_grp)
 !
