@@ -62,7 +62,7 @@
       call read_control_data_plane_mesh
       call s_set_ctl_data_plane_mesh
 !
-      call set_initial_components(merged_fld)
+      call set_initial_components(mgd_mesh1%merged_fld)
       call reset_time_data(plane_t_IO)
 !
       mgd_mesh1%num_pe = ndx * ndy * ndz
@@ -94,17 +94,67 @@
         call deallocate_type_neib_id(mesh_IO_p%nod_comm)
 !
         call alloc_phys_data_type                                       &
-     &     (mgd_mesh1%merged%node%numnod, merged_fld)
+     &     (mgd_mesh1%merged%node%numnod, mgd_mesh1%merged_fld)
 !
 !   set up of physical values
 !
-        do np = 1, merged_fld%num_phys
-          jst = merged_fld%istack_component(np-1)
-          jed = merged_fld%istack_component(np)
+        call initial_field_on_plane                                     &
+     &     (mgd_mesh1%merged, mgd_mesh1%merged_fld)
 !
-          if (merged_fld%phys_name(np) .eq. fhd_temp) then
+!     write data
 !
-            do inod = 1, mgd_mesh1%merged%node%numnod
+!
+        plane_fst_IO%nnod_IO = mgd_mesh1%merged%node%numnod
+!
+        plane_fst_IO%num_field_IO = mgd_mesh1%merged_fld%num_phys
+        plane_fst_IO%ntot_comp_IO = mgd_mesh1%merged_fld%ntot_phys
+        call alloc_phys_name_IO(plane_fst_IO)
+        call alloc_phys_data_IO(plane_fst_IO)
+!
+        call simple_copy_fld_name_to_rst                                &
+     &     (mgd_mesh1%merged_fld, plane_fst_IO)
+        call simple_copy_fld_data_to_rst                                &
+     &     (mgd_mesh1%merged%node, mgd_mesh1%merged_fld, plane_fst_IO)
+!
+        call set_file_fmt_prefix                                        &
+     &     (izero, org_rst_f_header, plane_fld_file)
+        call sel_write_step_FEM_field_file                              &
+     &     (mgd_mesh1%num_pe, id_rank, izero,                           &
+     &      plane_fld_file, plane_t_IO, plane_fst_IO)
+!
+        call dealloc_phys_name_IO(plane_fst_IO)
+        call dealloc_phys_data_IO(plane_fst_IO)
+!
+        call dealloc_phys_data_type(mgd_mesh1%merged_fld)
+        call dealloc_node_geometry_base(node_plane)
+      end do
+!
+      stop
+!
+!------------------------------------------------------------------
+!
+      contains
+!
+!------------------------------------------------------------------
+!
+      subroutine initial_field_on_plane(merged, merged_fld)
+!
+      use t_mesh_data
+      use t_phys_data
+!
+      type(mesh_geometry), intent(in) :: merged
+      type(phys_data), intent(inout) :: merged_fld
+!
+      integer(kind = kint) :: ip
+!
+!
+        do ip = 1, merged_fld%num_phys
+          jst = merged_fld%istack_component(ip-1)
+          jed = merged_fld%istack_component(ip)
+!
+          if (merged_fld%phys_name(ip) .eq. fhd_temp) then
+!
+            do inod = 1, merged%node%numnod
               if (node_plane%xx(inod,3).eq.zmin) then
                 merged_fld%d_fld(inod,jst+1) = 1.0d0
               else if (node_plane%xx(inod,3).eq.zmax) then
@@ -118,49 +168,25 @@
               end if
             end do
 !
-          else if (merged_fld%phys_name(np) .eq. fhd_vecp) then
+          else if (merged_fld%phys_name(ip) .eq. fhd_vecp) then
 !
-            do inod = 1, mgd_mesh1%merged%node%numnod
+            do inod = 1, merged%node%numnod
               merged_fld%d_fld(inod,jst+1)                              &
      &            = 0.01d0*sin(pi*node_plane%xx(inod,3) / (zmax-zmin))
             end do
 !
-          else if (merged_fld%phys_name(np) .eq. fhd_magne) then
+          else if (merged_fld%phys_name(ip) .eq. fhd_magne) then
 !
-            do inod = 1, mgd_mesh1%merged%node%numnod
+            do inod = 1, merged%node%numnod
               merged_fld%d_fld(inod,jst+2) = (0.01d0*pi/two)            &
      &                * cos( pi*node_plane%xx(inod,3) / (zmax-zmin))
             end do
           end if
         end do
 !
-!     write data
+      end subroutine initial_field_on_plane
 !
+!------------------------------------------------------------------
 !
-        plane_fst_IO%nnod_IO = mgd_mesh1%merged%node%numnod
-!
-        plane_fst_IO%num_field_IO = merged_fld%num_phys
-        plane_fst_IO%ntot_comp_IO = merged_fld%ntot_phys
-        call alloc_phys_name_IO(plane_fst_IO)
-        call alloc_phys_data_IO(plane_fst_IO)
-!
-        call simple_copy_fld_name_to_rst(merged_fld, plane_fst_IO)
-        call simple_copy_fld_data_to_rst                                &
-     &     (mgd_mesh1%merged%node, merged_fld, plane_fst_IO)
-!
-        call set_file_fmt_prefix                                        &
-     &     (izero, org_rst_f_header, plane_fld_file)
-        call sel_write_step_FEM_field_file                              &
-     &     (mgd_mesh1%num_pe, id_rank, izero,                           &
-     &      plane_fld_file, plane_t_IO, plane_fst_IO)
-!
-        call dealloc_phys_name_IO(plane_fst_IO)
-        call dealloc_phys_data_IO(plane_fst_IO)
-!
-        call dealloc_phys_data_type(merged_fld)
-        call dealloc_node_geometry_base(node_plane)
-      end do
-!
-      stop
       end program generate_initial_4_plane
 

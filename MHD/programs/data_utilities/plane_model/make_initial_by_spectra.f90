@@ -1,11 +1,11 @@
 !
 !      program make_initial_by_spectra
 !
-      program make_initial_by_spectra
-!
 !    constract new initial data from simulation results 
 !     By H. Matsui
 !
+!
+      program make_initial_by_spectra
 !
       use m_precision
       use calypso_mpi
@@ -44,10 +44,8 @@
 !  ===========
 
       integer(kind=kint ) :: ip, inod
-      integer(kind=kint ) :: i, j, iz
-      integer(kind=kint ) :: icomp
+      integer(kind=kint ) :: i, j
       integer(kind=kint ) :: i1
-      integer(kind=kint ) :: iflag
       integer(kind=kint ) :: ist, ied
       integer(kind=kint ) :: ifactor_rst, ifactor_step, istep_rst
 !
@@ -92,7 +90,7 @@
 !
 !    setting for initial values
 !
-      call set_initial_components(merged_fld)
+      call set_initial_components(mgd_mesh1%merged_fld)
 !
       call read_size_of_spectr
 !
@@ -114,96 +112,18 @@
 !
       write(*,*) 'allocate_rst_by_plane_sp'
       call allocate_rst_by_plane_sp(merge_tbl%nnod_max,                 &
-     &    merged_fld%ntot_phys)
+     &    mgd_mesh1%merged_fld%ntot_phys)
 !
 !  check positions in z-direction
 !
-      do iz = 1, nz_all
-       i1 = iz*nx_all*ny_all
-       if ( mgd_mesh1%merged%node%xx(i1,3) .eq. zz(1) ) then
-        iz_1(iz) = 1
-        z_1(iz) = 1.0d0
-       end if
-       do j = 2, iz_max
-        if (mgd_mesh1%merged%node%xx(i1,3).gt.zz(j-1)                   &
-     &       .and. mgd_mesh1%merged%node%xx(i1,3).le.zz(j)) then
-         iz_1(iz) = j
-         z_1(iz)  = ( mgd_mesh1%merged%node%xx(i1,3) - zz(j-1) )        &
-     &             / ( zz(j) - zz(j-1) )
-        end if
-       end do
-      end do
-!
-      call read_spectr_data(istep_udt)
-!
-!   check components of spectr
-!
-      do i = 1, merged_fld%num_phys
-       iflag = 0
-       call set_num_comps_4_rst(merged_fld%phys_name(i), n_comp)
-       if ( n_comp .eq. 3) then
-         do j = 1, num_fft
-           if ( merged_fld%phys_name(i) .eq. fft_name(j) ) then
-             if( fft_comp(j).eq.'x' .or. fft_comp(j).eq.'X') then
-                iflag = iflag + 1
-              else if( fft_comp(j).eq.'y' .or. fft_comp(j).eq.'y') then
-                iflag = iflag + 2
-              else if( fft_comp(j).eq.'z' .or. fft_comp(j).eq.'Z') then
-               iflag = iflag + 4
-            end if
-          end if
-        end do
-        if (iflag.ne.7) then
-         write(*,*) 'there is no component of ',                        &
-     &         merged_fld%phys_name(i),'flag:', iflag
-         stop
-        end if
-       else
-        do j = 1, num_fft
-         if ( merged_fld%phys_name(i) .eq. fft_name(j) ) then
-          iflag = iflag + 1
-         end if
-        end do
-        if (iflag.ne.1) then
-         write(*,*) 'there is no component for ',                       &
-     &              merged_fld%phys_name(i),'flag:', iflag
-         stop
-        end if
-       end if
-      end do
-!
-!  set restart data
-!
-      ncomp_nsp = merged_fld%ntot_phys
-      call allocate_index_4_trans
-!
-!
-!  set index for transfer
-!
-      do i = 1, merged_fld%num_phys
-        icomp = merged_fld%istack_component(i-1) + 1
-        do j = 1, num_fft
-          if (merged_fld%phys_name(i) .eq. fft_name(j)) then
-            if (merged_fld%num_component(i) .eq. 3) then
-              if (fft_comp(j) .eq.'x' .or. fft_comp(j) .eq.'X') then
-                idx_field(icomp) = j
-              else if (fft_comp(j) .eq.'y' .or. fft_comp(j) .eq.'Y') then
-                idx_field(icomp+1) = j
-              else if (fft_comp(j) .eq.'z' .or. fft_comp(j) .eq.'Z') then
-                idx_field(icomp+2) = j
-              end if
-            else
-              idx_field(icomp) = j
-            end if
-          end if
-        end do
-      end do
+     call check_plane_horiz_position                                    &
+    &   (mgd_mesh1%merged, mgd_mesh1%merged_fld)
 !
       kx_new = nx_all
       ky_new = ny_all
       iz_new = nz_all
       num_spectr = merge_tbl%inter_nod_m
-      nfft_new =   merged_fld%ntot_phys
+      nfft_new =   mgd_mesh1%merged_fld%ntot_phys
 !
       kx_max = kx_new
       ky_max = ky_new
@@ -303,7 +223,7 @@
 !
         call s_write_restart_by_spectr                                  &
        &    (ip, mgd_mesh1%num_pe, mgd_mesh1%subdomain(ip)%node%numnod, &
-       &     merged_fld, plane_t_IO)
+       &     mgd_mesh1%merged_fld, plane_t_IO)
 !
 !   deallocate arrays
 !
@@ -311,5 +231,107 @@
       end do
 !
       call calypso_MPI_finalize
+!
+!------------------------------------------------------------------
+!
+      contains
+!
+!------------------------------------------------------------------
+!
+      subroutine check_plane_horiz_position(merged, merged_fld)
+!
+      type(mesh_geometry), intent(in) :: merged
+      type(phys_data), intent(in) :: merged_fld
+!
+      integer(kind=kint ) :: i1, iz
+      integer(kind=kint ) :: i, j
+      integer(kind=kint ) :: icomp
+      integer(kind=kint ) :: iflag
+!
+!
+      do iz = 1, nz_all
+       i1 = iz*nx_all*ny_all
+       if(merged%node%xx(i1,3) .eq. zz(1)) then
+        iz_1(iz) = 1
+        z_1(iz) = 1.0d0
+       end if
+       do j = 2, iz_max
+        if (merged%node%xx(i1,3).gt.zz(j-1)                             &
+     &       .and. merged%node%xx(i1,3).le.zz(j)) then
+         iz_1(iz) = j
+         z_1(iz)  = (merged%node%xx(i1,3) - zz(j-1))                    &
+     &             / ( zz(j) - zz(j-1) )
+        end if
+       end do
+      end do
+!
+      call read_spectr_data(istep_udt)
+!
+!   check components of spectr
+!
+      do i = 1, merged_fld%num_phys
+       iflag = 0
+       call set_num_comps_4_rst(merged_fld%phys_name(i), n_comp)
+       if ( n_comp .eq. 3) then
+         do j = 1, num_fft
+           if ( merged_fld%phys_name(i) .eq. fft_name(j) ) then
+             if( fft_comp(j).eq.'x' .or. fft_comp(j).eq.'X') then
+                iflag = iflag + 1
+              else if( fft_comp(j).eq.'y' .or. fft_comp(j).eq.'y') then
+                iflag = iflag + 2
+              else if( fft_comp(j).eq.'z' .or. fft_comp(j).eq.'Z') then
+               iflag = iflag + 4
+            end if
+          end if
+        end do
+        if (iflag.ne.7) then
+         write(*,*) 'there is no component of ',                        &
+     &         merged_fld%phys_name(i),'flag:', iflag
+         stop
+        end if
+       else
+        do j = 1, num_fft
+         if ( merged_fld%phys_name(i) .eq. fft_name(j) ) then
+          iflag = iflag + 1
+         end if
+        end do
+        if (iflag.ne.1) then
+         write(*,*) 'there is no component for ',                       &
+     &              merged_fld%phys_name(i),'flag:', iflag
+         stop
+        end if
+       end if
+      end do
+!
+!  set restart data
+!
+      ncomp_nsp = merged_fld%ntot_phys
+      call allocate_index_4_trans
+!
+!
+!  set index for transfer
+!
+      do i = 1, merged_fld%num_phys
+        icomp = merged_fld%istack_component(i-1) + 1
+        do j = 1, num_fft
+          if (merged_fld%phys_name(i) .eq. fft_name(j)) then
+            if (merged_fld%num_component(i) .eq. 3) then
+              if (fft_comp(j) .eq.'x' .or. fft_comp(j) .eq.'X') then
+                idx_field(icomp) = j
+              else if (fft_comp(j) .eq.'y' .or. fft_comp(j) .eq.'Y') then
+                idx_field(icomp+1) = j
+              else if (fft_comp(j) .eq.'z' .or. fft_comp(j) .eq.'Z') then
+                idx_field(icomp+2) = j
+              end if
+            else
+              idx_field(icomp) = j
+            end if
+          end if
+        end do
+      end do
+!
+      end subroutine check_plane_horiz_position
+!
+!------------------------------------------------------------------
 !
       end program make_initial_by_spectra

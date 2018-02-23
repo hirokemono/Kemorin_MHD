@@ -89,21 +89,21 @@
 !
       num_rst_org = plane_fst_IO%num_field_IO
 !
-      call add_initial_num_comp_mhd(merged_fld)
+      call add_initial_num_comp_mhd(mgd_mesh1%merged_fld)
 !
-      merged_fld%num_phys = num_rst_new
-      call alloc_phys_name_type(merged_fld)
+      mgd_mesh1%merged_fld%num_phys = num_rst_new
+      call alloc_phys_name_type(mgd_mesh1%merged_fld)
 !
       ntot_rst_org =  plane_fst_IO%ntot_comp_IO
-      merged_fld%phys_name(1:num_rst_org)                               &
+      mgd_mesh1%merged_fld%phys_name(1:num_rst_org)                     &
      &             =    plane_fst_IO%fld_name(1:num_rst_org)
-      merged_fld%num_component(1:num_rst_org)                           &
+      mgd_mesh1%merged_fld%num_component(1:num_rst_org)                 &
      &             = plane_fst_IO%num_comp_IO(1:num_rst_org)
-      merged_fld%istack_component(0:num_rst_org)                        &
+      mgd_mesh1%merged_fld%istack_component(0:num_rst_org)              &
      &             = plane_fst_IO%istack_comp_IO(0:num_rst_org)
 !
-      call add_initial_comp_mhd(merged_fld)
-      merged_fld%ntot_phys =  ntot_rst_org
+      call add_initial_comp_mhd(mgd_mesh1%merged_fld)
+      mgd_mesh1%merged_fld%ntot_phys =  ntot_rst_org
 !
 !    construct new data
 !
@@ -135,10 +135,10 @@
 !
 !     allocate added restart data
 !
-        merged_fld%num_phys =  num_rst_new
-        merged_fld%ntot_phys = ntot_rst_new
+        mgd_mesh1%merged_fld%num_phys =  num_rst_new
+        mgd_mesh1%merged_fld%ntot_phys = ntot_rst_new
         call alloc_phys_data_type                                       &
-     &     (mgd_mesh1%merged%node%numnod, merged_fld)
+     &     (mgd_mesh1%merged%node%numnod, mgd_mesh1%merged_fld)
 !
 !     read original restart data
 !
@@ -154,7 +154,7 @@
      &      plane_fld_file, plane_t_IO, plane_fst_IO)
 !
         do np = 1, ntot_rst_org
-          merged_fld%d_fld(1:mgd_mesh1%merged%node%numnod,np)           &
+          mgd_mesh1%merged_fld%d_fld(1:mgd_mesh1%merged%node%numnod,np) &
      &           = plane_fst_IO%d_IO(1:mgd_mesh1%merged%node%numnod,np)
         end do
 !
@@ -164,16 +164,17 @@
 !     construct added data
 !
         do np = num_rst_org+1, num_rst_new
-          jst = merged_fld%istack_component(np-1)
-          if (merged_fld%phys_name(np) .eq. fhd_vecp) then
+          jst = mgd_mesh1%merged_fld%istack_component(np-1)
+          if (mgd_mesh1%merged_fld%phys_name(np) .eq. fhd_vecp) then
             do inod = 1, mgd_mesh1%merged%node%numnod
-              merged_fld%d_fld(inod,jst+1)                              &
+              mgd_mesh1%merged_fld%d_fld(inod,jst+1)                    &
      &                = 0.01d0*sin( pi*node_plane%xx(inod,3)            &
      &                 / (zmax-zmin))
             end do
-          else if (merged_fld%phys_name(np) .eq. fhd_magne) then
+          else if(mgd_mesh1%merged_fld%phys_name(np) .eq. fhd_magne)    &
+     &        then
             do inod = 1, mgd_mesh1%merged%node%numnod
-              merged_fld%d_fld(inod,jst+2) = (0.01d0*pi/two)            &
+              mgd_mesh1%merged_fld%d_fld(inod,jst+2) = (0.01d0*pi/two)  &
      &                * cos( pi*node_plane%xx(inod,3) / (zmax-zmin))
             end do
           end if
@@ -186,9 +187,10 @@
         call alloc_phys_name_IO(plane_fst_IO)
         call alloc_phys_data_IO(plane_fst_IO)
 !
-        call simple_copy_fld_name_to_rst(merged_fld, plane_fst_IO)
+        call simple_copy_fld_name_to_rst                                &
+     &     (mgd_mesh1%merged_fld, plane_fst_IO)
         call simple_copy_fld_data_to_rst                                &
-     &     (mgd_mesh1%merged%node, merged_fld, plane_fst_IO)
+     &     (mgd_mesh1%merged%node, mgd_mesh1%merged_fld, plane_fst_IO)
 !
         plane_fld_file%file_prefix = new_rst_file_header
         call sel_write_step_FEM_field_file                              &
@@ -198,7 +200,7 @@
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)
 !
-        call dealloc_phys_data_type(merged_fld)
+        call dealloc_phys_data_type(mgd_mesh1%merged_fld)
         call dealloc_node_geometry_base(node_plane)
       end do
 !

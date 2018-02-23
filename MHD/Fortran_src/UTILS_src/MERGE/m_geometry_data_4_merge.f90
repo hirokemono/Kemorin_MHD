@@ -35,9 +35,6 @@
 !
       type(merged_mesh), save :: mgd_mesh1
 !
-      type(phys_data) :: merged_fld
-!>      merged field data
-!
       type(merged_stacks) :: merge_tbl
 !>      merged index table
 !

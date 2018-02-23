@@ -60,9 +60,9 @@
      &   (mgd_mesh1%num_pe, izero, istep_start, org_fst_param,          &
      &    t_IO, merged_IO)
 !
-      call init_field_name_by_restart(merged_IO, merged_fld)
+      call init_field_name_by_restart(merged_IO, mgd_mesh1%merged_fld)
       call alloc_phys_data_type                                         &
-     &   (mgd_mesh1%merged%node%numnod, merged_fld)
+     &   (mgd_mesh1%merged%node%numnod, mgd_mesh1%merged_fld)
 !
       end subroutine count_restart_data_fields
 !
@@ -96,14 +96,14 @@
      &     (mgd_mesh1%num_pe, id_rank, istep, org_fst_param,            &
      &      t_IO, merged_IO)
         call set_restart_data_2_merge                                   &
-     &     (mgd_mesh1%subdomain(ip), merged_IO, merged_fld)
+     &     (mgd_mesh1%subdomain(ip), merged_IO, mgd_mesh1%merged_fld)
 !
         call dealloc_phys_data_IO(merged_IO)
       end do
 !
 !   re-scaling for magnetic field
 !
-      call rescale_4_magne(merge_tbl, merged_fld)
+      call rescale_4_magne(merge_tbl, mgd_mesh1%merged_fld)
 !
 !   output new restart data
 !
@@ -121,7 +121,7 @@
 !
         merged_IO%nnod_IO =   subdomains_2(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
-        call set_new_restart_data(ip, merged_fld, merged_IO)
+        call set_new_restart_data(ip, mgd_mesh1%merged_fld, merged_IO)
 !
         call sel_write_step_FEM_field_file                              &
      &     (num_pe2, id_rank, istep, new_fst_param, t_IO, merged_IO)
@@ -148,9 +148,9 @@
       call sel_read_rst_comps                                           &
      &   (izero, istep_start, org_fst_param, t_IO, merged_IO)
 !
-      call init_field_name_by_restart(merged_IO, merged_fld)
+      call init_field_name_by_restart(merged_IO, mgd_mesh1%merged_fld)
       call alloc_phys_data_type                                         &
-     &   (mgd_mesh1%merged%node%numnod, merged_fld)
+     &   (mgd_mesh1%merged%node%numnod, mgd_mesh1%merged_fld)
 !
       end subroutine init_by_old_restart_data
 !
@@ -185,14 +185,14 @@
      &     (id_rank, istep, org_fst_param, t_IO, merged_IO)
 !
         call set_restart_data_2_merge                                   &
-     &     (mgd_mesh1%subdomain(ip), merged_IO, merged_fld)
+     &     (mgd_mesh1%subdomain(ip), merged_IO, mgd_mesh1%merged_fld)
 !
         call dealloc_phys_data_IO(merged_IO)
       end do
 !
 !   re-scaling for magnetic field
 !
-      call rescale_4_magne(merge_tbl, merged_fld)
+      call rescale_4_magne(merge_tbl, mgd_mesh1%merged_fld)
 !
 !   output new restart data
 !
@@ -211,7 +211,7 @@
         merged_IO%nnod_IO =   subdomains_2(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
 !
-        call set_new_restart_data(ip, merged_fld, merged_IO)
+        call set_new_restart_data(ip, mgd_mesh1%merged_fld, merged_IO)
 !
         call sel_write_step_FEM_field_file                              &
      &     (num_pe2, id_rank, istep, new_fst_param, t_IO, merged_IO)

@@ -43,7 +43,7 @@
       type(time_data), save :: fft_t_IO
 !
       integer(kind=kint ) :: ist, ied, iint
-      integer(kind=kint ) ::  istep, isig
+      integer(kind=kint ) ::  istep
 !
 !  ===========
 ! . for local 
@@ -51,7 +51,7 @@
 
       integer(kind=kint ) :: i,j
       integer(kind=kint ) :: iz
-      integer(kind=kint ) :: iii, i1, nnod, nele
+      integer(kind=kint ) :: i1, nnod, nele
 
       real   (kind=kreal), dimension(:), allocatable ::  zz
 !
@@ -138,6 +138,130 @@
 !
 !
 !  set data on grid
+!
+      call set_field_to_z_grid(mgd_mesh1%merged_fld)
+!
+!      write(*,*) 'allocate_merged_field_data'
+      call alloc_phys_data_type                                         &
+     &   (mgd_mesh1%merged%node%numnod, mgd_mesh1%merged_fld)
+!
+      ncomp_nsp = num_fft
+!
+!      write(*,*) 'allocate_index_4_trans'
+      call allocate_work_array_4_r(merge_tbl%inter_nod_m)
+!
+!      write(*,*) 'allocate_index_4_trans'
+      call allocate_index_4_trans
+!
+      do i = 1, num_fft
+       idx_field(i) = i
+      end do
+!
+!
+      do istep = ist, ied, iint
+!
+!    read spectral data
+!
+        kx_max = kx_org
+        ky_max = ky_org
+        iz_max = iz_org
+        num_spectr = kx_org*ky_org*iz_org
+        call read_spectr_data(istep)
+!
+!     interpolate in radial direction
+!
+        write(*,*) 's_radial_interpolate'
+        call s_radial_interpolate
+!
+!  set new spectr
+!
+        call set_new_spectr
+!
+!    deallocate old spectram data
+!
+        call deallocate_spectr_name
+        call deallocate_horiz_spectr
+!
+!    set new array size for spectr
+!
+        kx_max = nx_all
+        ky_max = ny_all
+        iz_max = nz_all
+        num_spectr = merge_tbl%inter_nod_m
+!
+!           write(*,*) 'num_spectr 0', num_spectr
+!    allocate new spectr
+!
+        call allocate_spectr_name
+        call allocate_horiz_spectr
+!
+!   reset spectr data
+!
+        call s_inverse_fft_4_plane
+        call copy_2_inverted_udt(mgd_mesh1%merged_fld)
+!
+!    output data
+!
+        call link_merged_node_2_ucd_IO                                  &
+     &     (mgd_mesh1%merged, merge_tbl, fft_ucd)
+        call link_merged_field_2_udt_IO                                 &
+     &     (mgd_mesh1%merged_fld, merge_tbl, fft_ucd)
+!
+        ucd_file_param%iflag_format = iflag_udt
+        call sel_write_ucd_file                                         &
+     &     (izero, istep, ucd_file_param, fft_t_IO, fft_ucd)
+        call disconnect_ucd_data(fft_ucd)
+      end do
+!
+!------------------------------------------------------------------
+!
+      contains
+!
+!------------------------------------------------------------------
+!
+      subroutine copy_plane_resolution(num_pe, subdomain, merge_tbl)
+!
+      use m_2nd_geometry_4_merge
+      use t_merged_geometry_data
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(merged_stacks), intent(in) :: merge_tbl
+!
+      integer(kind = kint) :: ip
+!
+!
+      do ip = 1, num_pe
+        subdomains_2(ip)%node%numnod = subdomain(ip)%node%numnod
+        subdomains_2(ip)%ele%numele  = subdomain(ip)%ele%numele
+        subdomains_2(ip)%node%internal_node                             &
+     &                               = subdomain(ip)%node%internal_node
+      end do
+!
+      call copy_subdomain_stacks(merge_tbl, merge_tbl_2)
+!
+      call allocate_2nd_merged_geometry
+      call allocate_2nd_merge_table
+!
+      do ip = 1, num_pe
+        nnod = subdomain(ip)%node%numnod
+        nele = subdomain(ip)%ele%numele
+        subdomains_2(ip)%node%inod_global(1:nnod)                       &
+     &      = subdomain(ip)%node%inod_global(1:nnod)
+        subdomains_2(ip)%ele%iele_global(1:nele)                        &
+     &      = subdomain(ip)%ele%iele_global(1:nele)
+      end do
+!
+      end subroutine copy_plane_resolution
+!
+!------------------------------------------------------------------
+!
+      subroutine set_field_to_z_grid(merged_fld)
+!
+      type(phys_data), intent(inout) :: merged_fld
+!
+      integer(kind=kint ) :: i, j
+      integer(kind=kint ) :: iii, isig
 !
       merged_fld%ntot_phys = num_fft
       merged_fld%num_phys = 0
@@ -227,117 +351,7 @@
      &            + merged_fld%num_component(j)
       end do
 !
-!      write(*,*) 'allocate_merged_field_data'
-      call alloc_phys_data_type                                         &
-     &   (mgd_mesh1%merged%node%numnod, merged_fld)
-!
-      ncomp_nsp = num_fft
-!
-!      write(*,*) 'allocate_index_4_trans'
-      call allocate_work_array_4_r(merge_tbl%inter_nod_m)
-!
-!      write(*,*) 'allocate_index_4_trans'
-      call allocate_index_4_trans
-!
-      do i = 1, num_fft
-       idx_field(i) = i
-      end do
-!
-!
-      do istep = ist, ied, iint
-!
-!    read spectral data
-!
-        kx_max = kx_org
-        ky_max = ky_org
-        iz_max = iz_org
-        num_spectr = kx_org*ky_org*iz_org
-        call read_spectr_data(istep)
-!
-!     interpolate in radial direction
-!
-        write(*,*) 's_radial_interpolate'
-        call s_radial_interpolate
-!
-!  set new spectr
-!
-        call set_new_spectr
-!
-!    deallocate old spectram data
-!
-        call deallocate_spectr_name
-        call deallocate_horiz_spectr
-!
-!    set new array size for spectr
-!
-        kx_max = nx_all
-        ky_max = ny_all
-        iz_max = nz_all
-        num_spectr = merge_tbl%inter_nod_m
-!
-!           write(*,*) 'num_spectr 0', num_spectr
-!    allocate new spectr
-!
-        call allocate_spectr_name
-        call allocate_horiz_spectr
-!
-!   reset spectr data
-!
-        call s_inverse_fft_4_plane
-        call copy_2_inverted_udt(merged_fld)
-!
-!    output data
-!
-        call link_merged_node_2_ucd_IO                                  &
-     &     (mgd_mesh1%merged, merge_tbl, fft_ucd)
-        call link_merged_field_2_udt_IO(merged_fld, merge_tbl, fft_ucd)
-!
-        ucd_file_param%iflag_format = iflag_udt
-        call sel_write_ucd_file                                         &
-     &     (izero, istep, ucd_file_param, fft_t_IO, fft_ucd)
-        call disconnect_ucd_data(fft_ucd)
-      end do
-!
-!------------------------------------------------------------------
-!
-      contains
-!
-!------------------------------------------------------------------
-!
-      subroutine copy_plane_resolution(num_pe, subdomain, merge_tbl)
-!
-      use m_2nd_geometry_4_merge
-      use t_merged_geometry_data
-!
-      integer(kind = kint), intent(in) :: num_pe
-      type(mesh_geometry), intent(in) :: subdomain(num_pe)
-      type(merged_stacks), intent(in) :: merge_tbl
-!
-      integer(kind = kint) :: ip
-!
-!
-      do ip = 1, num_pe
-        subdomains_2(ip)%node%numnod = subdomain(ip)%node%numnod
-        subdomains_2(ip)%ele%numele  = subdomain(ip)%ele%numele
-        subdomains_2(ip)%node%internal_node                             &
-     &                               = subdomain(ip)%node%internal_node
-      end do
-!
-      call copy_subdomain_stacks(merge_tbl, merge_tbl_2)
-!
-      call allocate_2nd_merged_geometry
-      call allocate_2nd_merge_table
-!
-      do ip = 1, num_pe
-        nnod = subdomain(ip)%node%numnod
-        nele = subdomain(ip)%ele%numele
-        subdomains_2(ip)%node%inod_global(1:nnod)                       &
-     &      = subdomain(ip)%node%inod_global(1:nnod)
-        subdomains_2(ip)%ele%iele_global(1:nele)                        &
-     &      = subdomain(ip)%ele%iele_global(1:nele)
-      end do
-!
-      end subroutine copy_plane_resolution
+      end subroutine set_field_to_z_grid
 !
 !------------------------------------------------------------------
 !
