@@ -24,10 +24,7 @@
 !
       type(group_data_merged_surf), save :: mgd_sf_grp1
 !
-      integer(kind=kint ), allocatable :: num_sf_iso_ele_grp_m(:)
-!
       integer(kind=kint ), allocatable :: isf_isolate_ele_grp_m(:)
-      integer(kind=kint ), allocatable :: isf_isolate_ele_grp_tmp(:)
 !
 !
       integer(kind=kint ), allocatable :: isf_surf_grp_m(:)
@@ -45,11 +42,7 @@
       type(group_data), intent(in) :: ele_grp
 !
 !
-      allocate( num_sf_iso_ele_grp_m(ele_grp%num_grp) )
-      allocate( mgd_sf_grp1%istack_sf_iso_ele_grp_m(0:ele_grp%num_grp) )
-!
-      num_sf_iso_ele_grp_m = 0
-      mgd_sf_grp1%istack_sf_iso_ele_grp_m = 0
+      call alloc_n_iso_surf_4_ele_grp(ele_grp, mgd_sf_grp1)
 !
       end subroutine allocate_n_iso_surf_4_ele_grp
 !
@@ -61,15 +54,6 @@
       isf_isolate_ele_grp_m = 0
 !
       end subroutine allocate_iso_surf_4_egrp_m
-!
-! ------------------------------------------------------
-!
-      subroutine allocate_iso_surf_4_egrp_tmp
-!
-      allocate( isf_isolate_ele_grp_tmp(mgd_sf_grp1%ntot_sf_iso_ele_grp_m) )
-      isf_isolate_ele_grp_tmp = 0
-!
-      end subroutine allocate_iso_surf_4_egrp_tmp
 !
 ! ------------------------------------------------------
 !
@@ -89,8 +73,7 @@
 !
       subroutine deallocate_n_iso_surf_4_ele_grp
 !
-      deallocate( num_sf_iso_ele_grp_m )
-      deallocate( mgd_sf_grp1%istack_sf_iso_ele_grp_m )
+      call dealloc_n_iso_surf_4_ele_grp(mgd_sf_grp1)
 !
       end subroutine deallocate_n_iso_surf_4_ele_grp
 !
@@ -101,14 +84,6 @@
       deallocate( isf_isolate_ele_grp_m )
 !
       end subroutine deallocate_iso_surf_4_egrp_m
-!
-! ------------------------------------------------------
-!
-      subroutine deallocate_iso_surf_4_egrp_tmp
-!
-      deallocate( isf_isolate_ele_grp_tmp )
-!
-      end subroutine deallocate_iso_surf_4_egrp_tmp
 !
 ! ------------------------------------------------------
 !

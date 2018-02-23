@@ -20,12 +20,37 @@
 !
       implicit    none
 !
-      type(sum_hash_tbl), save, private :: surf_ele_tbl
+      type(sum_hash_tbl), save :: surf_ele_tbl
+      integer(kind=kint ), allocatable :: isf_isolate_ele_grp_tmp(:)
+!
+      private :: surf_ele_tbl, isf_isolate_ele_grp_tmp
+      private :: allocate_iso_surf_4_egrp_tmp
+      private ::  deallocate_iso_surf_4_egrp_tmp
 !
 !   ---------------------------------------------------------------------
 !
       contains
 !
+!   ---------------------------------------------------------------------
+!
+      subroutine allocate_iso_surf_4_egrp_tmp(ntot)
+!
+      integer(kind = kint), intent(in) :: ntot
+!
+      allocate( isf_isolate_ele_grp_tmp(ntot) )
+      if(ntot .gt. 0) isf_isolate_ele_grp_tmp = 0
+!
+      end subroutine allocate_iso_surf_4_egrp_tmp
+!
+!   ---------------------------------------------------------------------
+!
+      subroutine deallocate_iso_surf_4_egrp_tmp
+!
+      deallocate( isf_isolate_ele_grp_tmp )
+!
+      end subroutine deallocate_iso_surf_4_egrp_tmp
+!
+!   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
       subroutine const_merged_surface_4_ele_grp                         &
@@ -75,17 +100,19 @@
 !
         ist_grp = mgd_sf_grp1%istack_sf_iso_ele_grp_m(igrp-1)
 !
-        call allocate_iso_surf_4_egrp_tmp
+        call allocate_iso_surf_4_egrp_tmp                               &
+     &     (mgd_sf_grp1%ntot_sf_iso_ele_grp_m)
         isf_isolate_ele_grp_tmp(1:ist_grp)                              &
      &          = isf_isolate_ele_grp_m(1:ist_grp)
         call deallocate_iso_surf_4_egrp_m
 !
 !        write(*,*) 'count_part_surface', igrp
-        call count_part_surface(merged%ele%numele, nele_grp,            &
-     &      surf_ele_tbl%iflag_hash, num_sf_iso_ele_grp_m(igrp) )
+        call count_part_surface                                         &
+     &     (merged%ele%numele, nele_grp, surf_ele_tbl%iflag_hash,       &
+     &      mgd_sf_grp1%num_sf_iso_ele_grp_m(igrp) )
         mgd_sf_grp1%istack_sf_iso_ele_grp_m(igrp)                       &
      &      = mgd_sf_grp1%istack_sf_iso_ele_grp_m(igrp-1) &
-     &       + num_sf_iso_ele_grp_m(igrp)
+     &       + mgd_sf_grp1%num_sf_iso_ele_grp_m(igrp)
         mgd_sf_grp1%ntot_sf_iso_ele_grp_m                               &
      &       = mgd_sf_grp1%istack_sf_iso_ele_grp_m(igrp)
 !
@@ -98,9 +125,9 @@
 !
 !        write(*,*) 'set_part_surface', igrp
         call set_part_surface(merged%ele%numele, nele_grp,              &
-     &      num_sf_iso_ele_grp_m(igrp), merged_surf%isf_4_ele,          &
-     &      surf_ele_tbl%id_hash, surf_ele_tbl%iflag_hash,              &
-     &      isf_isolate_ele_grp_m(ist_grp+1) )
+     &      mgd_sf_grp1%num_sf_iso_ele_grp_m(igrp),                     &
+     &      merged_surf%isf_4_ele, surf_ele_tbl%id_hash,                &
+     &       surf_ele_tbl%iflag_hash, isf_isolate_ele_grp_m(ist_grp+1))
 !
         call dealloc_sum_hash(surf_ele_tbl)
       end do

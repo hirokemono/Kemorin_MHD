@@ -6,14 +6,12 @@
 !!      subroutine alloc_n_iso_surf_4_ele_grp(ele_grp, mgd_sf_grp)
 !!        type(group_data), intent(in) :: ele_grp
 !!      subroutine allocate_iso_surf_4_egrp_m(mgd_sf_grp)
-!!      subroutine allocate_iso_surf_4_egrp_tmp(mgd_sf_grp)
 !!
 !!      subroutine alloc_iso_surf_4_sgrp_m(surf_grp, mgd_sf_grp)
 !!        type(surface_group_data), intent(in) :: surf_grp
 !!
 !!      subroutine dealloc_n_iso_surf_4_ele_grp(mgd_sf_grp)
 !!      subroutine dealloc_iso_surf_4_egrp_m(mgd_sf_grp)
-!!      subroutine dealloc_iso_surf_4_egrp_tmp(mgd_sf_grp)
 !!
 !!      subroutine check_merged_isurf_4_ele_grp(ele_grp, mgd_sf_grp)
 !!      subroutine check_merged_isurf_4_surf_grp(surf_grp, mgd_sf_grp)
@@ -33,8 +31,6 @@
         integer(kind=kint ), allocatable :: istack_sf_iso_ele_grp_m(:)
 !
         integer(kind=kint ), allocatable :: isf_isolate_ele_grp_m(:)
-        integer(kind=kint ), allocatable :: isf_isolate_ele_grp_tmp(:)
-!
 !
         integer(kind=kint ), allocatable :: isf_surf_grp_m(:)
       end type group_data_merged_surf
@@ -77,20 +73,6 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine alloc_iso_surf_4_egrp_tmp(mgd_sf_grp)
-!
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
-!
-      integer(kind = kint) :: num
-!
-      num = mgd_sf_grp%ntot_sf_iso_ele_grp_m
-      allocate(mgd_sf_grp%isf_isolate_ele_grp_tmp(num) )
-      mgd_sf_grp%isf_isolate_ele_grp_tmp = 0
-!
-      end subroutine alloc_iso_surf_4_egrp_tmp
-!
-! ------------------------------------------------------
-!
       subroutine alloc_iso_surf_4_sgrp_m(surf_grp, mgd_sf_grp)
 !
       use t_group_data
@@ -124,16 +106,6 @@
       deallocate( mgd_sf_grp%isf_isolate_ele_grp_m )
 !
       end subroutine dealloc_iso_surf_4_egrp_m
-!
-! ------------------------------------------------------
-!
-      subroutine dealloc_iso_surf_4_egrp_tmp(mgd_sf_grp)
-!
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
-!
-      deallocate( mgd_sf_grp%isf_isolate_ele_grp_tmp )
-!
-      end subroutine dealloc_iso_surf_4_egrp_tmp
 !
 ! ------------------------------------------------------
 !
