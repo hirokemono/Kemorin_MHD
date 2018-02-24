@@ -132,16 +132,16 @@
       call count_num_edges_by_sf                                        &
      &   (nodpetot_viewer, surfpetot_viewer, nnod_4_edge,               &
      &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
-     &    ed_sf_tbl%iflag_hash, nedge_domain_sf)
+     &    ed_sf_tbl%iflag_hash, domain_edge_grp%num_item)
 !
       call allocate_domain_edge_item_sf
 !
 !      write(*,*) 'set_part_edges_4_sf'
       call set_part_edges_4_sf(nodpetot_viewer, surfpetot_viewer,       &
-     &    nnod_4_edge, nedge_domain_sf, iedge_sf_viewer,                &
+     &    nnod_4_edge, domain_edge_grp%num_item, iedge_sf_viewer,       &
      &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash,                      &
-     &    edge_item_domain_sf)
+     &    domain_edge_grp%item_sf)
 !
       end subroutine construct_edge_4_domain
 !

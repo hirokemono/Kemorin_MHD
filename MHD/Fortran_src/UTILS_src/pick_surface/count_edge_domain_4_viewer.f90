@@ -47,12 +47,12 @@
 !
       do ip = 1, num_pe_sf
         iref = inod_sf_stack(ip)
-        ist =  edge_stack_domain_sf(ip-1) + 1
-        do inum = ist, nedge_domain_sf
-          iedge = abs(edge_item_domain_sf(inum) )
+        ist =  domain_edge_grp%istack_sf(ip-1) + 1
+        do inum = ist, domain_edge_grp%num_item
+          iedge = abs(domain_edge_grp%item_sf(inum) )
           inod = ie_edge_viewer(iedge,1)
           if ( inod .gt. iref ) exit
-          edge_stack_domain_sf(ip:num_pe_sf) = inum
+          domain_edge_grp%istack_sf(ip:num_pe_sf) = inum
         end do
       end do
 !

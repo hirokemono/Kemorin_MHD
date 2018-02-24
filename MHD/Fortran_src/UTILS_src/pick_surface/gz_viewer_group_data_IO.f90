@@ -84,13 +84,13 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i16,a1)') nedge_domain_sf, char(0)
+      write(textbuf,'(i16,a1)') domain_edge_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_gz_multi_int_8i10(num_pe_sf,                           &
-     &    edge_stack_domain_sf(1) )
-      call write_gz_multi_int_8i10(nedge_domain_sf,                     &
-     &    edge_item_domain_sf)
+     &    domain_edge_grp%istack_sf(1) )
+      call write_gz_multi_int_8i10(domain_edge_grp%num_item,            &
+     &    domain_edge_grp%item_sf)
 !
       end subroutine write_domain_group_viewer_gz
 !
@@ -120,11 +120,12 @@
 !
 !      write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
 !
-      call skip_gz_comment_int(nedge_domain_sf)
-      call read_gz_multi_int(num_pe_sf, edge_stack_domain_sf(1))
+      call skip_gz_comment_int(domain_edge_grp%num_item)
+      call read_gz_multi_int(num_pe_sf, domain_edge_grp%istack_sf(1))
 !
       call allocate_domain_edge_item_sf
-      call read_gz_multi_int(nedge_domain_sf, edge_item_domain_sf)
+      call read_gz_multi_int                                            &
+     &   (domain_edge_grp%num_item, domain_edge_grp%item_sf)
 !
       end subroutine read_domain_group_viewer_gz
 !

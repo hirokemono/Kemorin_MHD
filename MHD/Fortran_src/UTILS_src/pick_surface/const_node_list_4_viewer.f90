@@ -43,15 +43,15 @@
 !
       imark_node = 0
       do k1 = 1, nnod_4_edge
-        do inum = 1, nedge_domain_sf
-          iedge = abs(edge_item_domain_sf(inum))
+        do inum = 1, domain_edge_grp%num_item
+          iedge = abs(domain_edge_grp%item_sf(inum))
           inod = ie_edge_viewer(iedge,k1)
           imark_node(inod) = 1
         end do
       end do
 !
       if (nnod_4_surf .eq. num_lag_sf) then
-        do inum = 1, nedge_domain_sf
+        do inum = 1, domain_edge_grp%num_item
           isurf = isurf_domain_sf(inum)
           inod = ie_sf_viewer(isurf,num_lag_sf)
           imark_node(inod) = 1
@@ -87,7 +87,7 @@
       if (nnod_4_surf .eq. num_lag_sf) then
         ist = ele_surf_grp%istack_sf( (igrp-1)*num_pe_sf ) + 1
         ied = ele_surf_grp%istack_sf( (igrp  )*num_pe_sf )
-        do inum = 1, nedge_domain_sf
+        do inum = 1, domain_edge_grp%num_item
           isurf = abs(ele_surf_grp%item_sf(inum))
           inod = ie_sf_viewer(isurf,num_lag_sf)
           imark_node(inod) = 1
@@ -123,7 +123,7 @@
       if (nnod_4_surf .eq. num_lag_sf) then
         ist = sf_surf_grp%istack_sf( (igrp-1)*num_pe_sf ) + 1
         ied = sf_surf_grp%istack_sf( (igrp  )*num_pe_sf )
-        do inum = 1, nedge_domain_sf
+        do inum = 1, domain_edge_grp%num_item
           isurf = sf_surf_grp%item_sf(inum)
           inod = ie_sf_viewer(isurf,num_lag_sf)
           imark_node(inod) = 1

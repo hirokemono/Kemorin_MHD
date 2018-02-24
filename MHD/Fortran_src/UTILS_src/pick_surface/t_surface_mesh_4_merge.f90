@@ -78,18 +78,6 @@
 !        integer(kind = kint), allocatable :: isurf_stack_domain_sf(:)
 !domain_surf_grp%item_sf
 !        integer(kind = kint), allocatable :: isurf_domain_sf(:)
-!domain_edge_grp%num_item
-!        integer(kind = kint) :: nedge_domain_sf
-!domain_edge_grp%istack_sf
-!        integer(kind = kint), allocatable :: edge_stack_domain_sf(:)
-!domain_edge_grp%item_sf
-!        integer(kind = kint), allocatable :: edge_item_domain_sf(:)
-!domain_nod_grp%num_item
-!        integer(kind = kint) :: nnod_domain_sf
-!domain_nod_grp%istack_sf
-!        integer(kind = kint), allocatable :: nod_stack_domain_sf(:)
-!domain_nod_grp%item_sf
-!        integer(kind = kint), allocatable :: nod_item_domain_sf(:)
 !
 !
 !------------------------------------------------------------------

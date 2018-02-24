@@ -36,6 +36,7 @@
       module m_surface_mesh_4_merge
 !
       use m_precision
+      use m_constants
       use t_surface_mesh_4_merge
 !
       implicit none
@@ -62,9 +63,6 @@
       integer(kind=kint ) :: nsurf_domain_sf
       integer(kind=kint ), allocatable :: isurf_stack_domain_sf(:)
       integer(kind=kint ), allocatable :: isurf_domain_sf(:)
-      integer(kind=kint ) :: nedge_domain_sf
-      integer(kind=kint ), allocatable :: edge_stack_domain_sf(:)
-      integer(kind=kint ), allocatable :: edge_item_domain_sf(:)
 !
 !
       integer(kind=kint ), parameter :: ngrp_domain = ione
@@ -197,12 +195,12 @@
 !
 !
       allocate( isurf_stack_domain_sf(0:num_pe_sf)  )
-      allocate( edge_stack_domain_sf(0:num_pe_sf)  )
+      call alloc_merged_group_stack                                     &
+     &   (num_pe_sf, ngrp_domain, domain_edge_grp)
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, ngrp_domain, domain_nod_grp)
 !
       isurf_stack_domain_sf = 0
-      edge_stack_domain_sf = 0
 !
       end subroutine allocate_domain_stack_4_surf
 !
@@ -227,8 +225,7 @@
 !
       subroutine allocate_domain_edge_item_sf
 !
-      allocate( edge_item_domain_sf(nedge_domain_sf) )
-      edge_item_domain_sf = 0
+      call alloc_merged_group_item(domain_edge_grp)
 !
       end subroutine allocate_domain_edge_item_sf
 !

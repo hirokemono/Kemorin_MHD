@@ -67,10 +67,11 @@
       write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i16)') nedge_domain_sf
-      write(surface_id,'(8i16)') edge_stack_domain_sf(1:num_pe_sf)
+      write(surface_id,'(i16)') domain_edge_grp%num_item
+      write(surface_id,'(8i16)') domain_edge_grp%istack_sf(1:num_pe_sf)
 !
-      write(surface_id,'(8i16)') edge_item_domain_sf(1:nedge_domain_sf)
+      write(surface_id,'(8i16)')                                        &
+     &       domain_edge_grp%item_sf(1:domain_edge_grp%num_item)
 !
       end subroutine write_domain_group_viewer
 !
@@ -104,11 +105,12 @@
 !      write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) nedge_domain_sf
-      read(surface_id,*) edge_stack_domain_sf(1:num_pe_sf)
+      read(tmp_character,*) domain_edge_grp%num_item
+      read(surface_id,*) domain_edge_grp%istack_sf(1:num_pe_sf)
 !
       call allocate_domain_edge_item_sf
-      read(surface_id,*) edge_item_domain_sf(1:nedge_domain_sf)
+      read(surface_id,*)                                                &
+     &       domain_edge_grp%item_sf(1:domain_edge_grp%num_item)
 !
       end subroutine read_domain_group_viewer
 !
