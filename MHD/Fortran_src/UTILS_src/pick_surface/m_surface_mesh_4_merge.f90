@@ -29,7 +29,6 @@
 !      subroutine deallocate_surf_connect_viewer
 !      subroutine deallocate_ele_gp_nod_item_sf
 !      subroutine deallocate_ele_grp_edge_item_sf
-!      subroutine deallocate_sf_gp_nod_item_sf
 !      subroutine deallocate_sf_grp_edge_item_sf
 !
 !      subroutine check_edge_connent_viewer(nnod_4_edge)
@@ -37,10 +36,11 @@
       module m_surface_mesh_4_merge
 !
       use m_precision
+      use t_surface_mesh_4_merge
 !
       implicit none
 !
-
+!
       integer(kind=kint )  :: num_pe_sf
 !
       integer(kind=kint ), allocatable :: inod_sf_stack(:)
@@ -85,13 +85,13 @@
       integer(kind=kint ), allocatable :: ele_edge_item_sf(:)
       integer(kind=kint ), allocatable :: ele_nod_item_sf(:)
       integer(kind=kint ) :: ngrp_surf_sf
-      integer(kind=kint ) :: nsurf_surf_sf, nedge_surf_sf, nnod_surf_sf
+      integer(kind=kint ) :: nsurf_surf_sf, nedge_surf_sf
       integer(kind=kint ), allocatable :: surf_stack_sf(:)
       integer(kind=kint ), allocatable :: surf_edge_stack_sf(:)
-      integer(kind=kint ), allocatable :: surf_nod_stack_sf(:)
       integer(kind=kint ), allocatable :: surf_item_sf(:)
       integer(kind=kint ), allocatable :: surf_edge_item_sf(:)
-      integer(kind=kint ), allocatable :: surf_nod_item_sf(:)
+!
+      type(viewer_group_data), save :: sf_nod_grp
 !
 !
       integer (kind = kint), parameter :: surface_id = 15
@@ -275,11 +275,11 @@
       allocate( surf_gp_name_sf(ngrp_surf_sf)  )
       allocate( surf_stack_sf(0:num_pe_sf*ngrp_surf_sf)  )
       allocate( surf_edge_stack_sf(0:num_pe_sf*ngrp_surf_sf)  )
-      allocate( surf_nod_stack_sf(0:num_pe_sf*ngrp_surf_sf)  )
+      call alloc_merged_group_stack                                     &
+     &   (num_pe_sf, ngrp_surf_sf, sf_nod_grp)
 !
       surf_stack_sf = 0
       surf_edge_stack_sf = 0
-      surf_nod_stack_sf = 0
 !
       end subroutine allocate_surf_grp_stack_4_surf
 !
@@ -346,14 +346,6 @@
       end subroutine allocate_surf_grp_item_4_surf
 !
 !------------------------------------------------------------------
-!
-      subroutine allocate_sf_gp_nod_item_sf
-!
-      allocate( surf_nod_item_sf(nnod_surf_sf)  )
-      surf_nod_item_sf = 0
-!
-      end subroutine allocate_sf_gp_nod_item_sf
-!
 !------------------------------------------------------------------
 !
       subroutine allocate_sf_grp_edge_item_sf
@@ -364,14 +356,6 @@
       end subroutine allocate_sf_grp_edge_item_sf
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine deallocate_sf_gp_nod_item_sf
-!
-      deallocate( surf_nod_item_sf )
-!
-      end subroutine deallocate_sf_gp_nod_item_sf
-!
 !------------------------------------------------------------------
 !
       subroutine deallocate_sf_grp_edge_item_sf

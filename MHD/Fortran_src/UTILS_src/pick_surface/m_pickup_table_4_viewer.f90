@@ -139,7 +139,7 @@
 !
       use m_surface_mesh_4_merge
 !
-      allocate( surf_nod_item_tmp(nnod_surf_sf) )
+      allocate( surf_nod_item_tmp(sf_nod_grp%num_item) )
       surf_nod_item_tmp = 0
 !
       end subroutine allocate_sf_gp_nod_item_tmp

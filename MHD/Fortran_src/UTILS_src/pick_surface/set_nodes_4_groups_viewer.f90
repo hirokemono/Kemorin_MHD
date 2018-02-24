@@ -39,7 +39,7 @@
       call set_nod_4_domain_viewer(nnod_4_surf, nnod_4_edge)
 !
       call allocate_ele_gp_nod_item_sf
-      call allocate_sf_gp_nod_item_sf
+      call alloc_merged_group_item(sf_nod_grp)
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_ele_group_viewer'
       call set_nod_4_ele_group_viewer(nnod_4_surf, nnod_4_edge)
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_surf_group_viewer'
@@ -106,14 +106,14 @@
      &     (igrp, nnod_4_surf, nnod_4_edge)
 !
         call allocate_sf_gp_nod_item_tmp
-        ied = nnod_surf_sf
-        surf_nod_item_tmp(1:ied) = surf_nod_item_sf(1:ied)
-        call deallocate_sf_gp_nod_item_sf
+        ied = sf_nod_grp%num_item
+        surf_nod_item_tmp(1:ied) = sf_nod_grp%item_sf(1:ied)
+        call dealloc_merged_group_item(sf_nod_grp)
 !
         call count_nod_stack_4_sf_gp_viewer(igrp)
 !
-        call allocate_sf_gp_nod_item_sf
-        surf_nod_item_sf(1:ied) = surf_nod_item_tmp(1:ied)
+        call alloc_merged_group_item(sf_nod_grp)
+        sf_nod_grp%item_sf(1:ied) = surf_nod_item_tmp(1:ied)
         call deallocate_sf_gp_nod_item_tmp
 !
         call const_nod_4_sf_gp_viewer(igrp)

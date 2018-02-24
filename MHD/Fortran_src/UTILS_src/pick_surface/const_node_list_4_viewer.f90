@@ -184,13 +184,13 @@
         idx = (igrp-1)*num_pe_sf + ip
         ist = inod_sf_stack(ip-1) + 1
         ied = inod_sf_stack(ip)
-        surf_nod_stack_sf(idx) = surf_nod_stack_sf(idx-1)
+        sf_nod_grp%istack_sf(idx) = sf_nod_grp%istack_sf(idx-1)
         do inod = ist, ied
-          surf_nod_stack_sf(idx) = surf_nod_stack_sf(idx)               &
-     &                            + imark_node(inod)
+          sf_nod_grp%istack_sf(idx) = sf_nod_grp%istack_sf(idx)         &
+     &                               + imark_node(inod)
         end do
       end do
-      nnod_surf_sf = surf_nod_stack_sf( igrp*num_pe_sf )
+      sf_nod_grp%num_item = sf_nod_grp%istack_sf(igrp*num_pe_sf)
 !
       end subroutine count_nod_stack_4_sf_gp_viewer
 !
@@ -248,11 +248,11 @@
         idx = (igrp-1)*num_pe_sf + ip
         ist = inod_sf_stack(ip-1) + 1
         ied = inod_sf_stack(ip)
-        icou = surf_nod_stack_sf(idx-1)
+        icou = sf_nod_grp%istack_sf(idx-1)
         do inod = ist, ied
           if (imark_node(inod) .eq. 1) then
             icou = icou + 1
-            surf_nod_item_sf(icou) = inod
+            sf_nod_grp%item_sf(icou) = inod
           end if
         end do
       end do
