@@ -52,13 +52,13 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i16,a1)') nnod_domain_sf, char(0)
+      write(textbuf,'(i16,a1)') domain_nod_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_gz_multi_int_8i10(num_pe_sf,                           &
-     &    nod_stack_domain_sf(1) )
-      call write_gz_multi_int_8i10(nnod_domain_sf,                      &
-     &    nod_item_domain_sf)
+     &    domain_nod_grp%istack_sf(1) )
+      call write_gz_multi_int_8i10(domain_nod_grp%num_item,             &
+     &    domain_nod_grp%item_sf)
 !
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
@@ -103,11 +103,12 @@
 !
 !      write(surface_id,'(a)') '! 3. node ID for domain boundary'
 !
-      call skip_gz_comment_int(nnod_domain_sf)
-      call read_gz_multi_int(num_pe_sf, nod_stack_domain_sf(1))
+      call skip_gz_comment_int(domain_nod_grp%num_item)
+      call read_gz_multi_int(num_pe_sf, domain_nod_grp%istack_sf(1))
 !
       call allocate_domain_nod_item_sf
-      read(surface_id,*) nod_item_domain_sf(1:nnod_domain_sf)
+      read(surface_id,*)                                                &
+     &      domain_nod_grp%item_sf(1:domain_nod_grp%num_item)
 !
 !      write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
 !

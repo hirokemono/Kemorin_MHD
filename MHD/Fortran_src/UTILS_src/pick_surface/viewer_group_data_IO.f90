@@ -49,9 +49,10 @@
       write(surface_id,'(a)') '! 3. node ID for domain boundary'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i16)') nnod_domain_sf
-      write(surface_id,'(8i16)') nod_stack_domain_sf(1:num_pe_sf)
-      write(surface_id,'(8i16)') nod_item_domain_sf(1:nnod_domain_sf)
+      write(surface_id,'(i16)') domain_nod_grp%num_item
+      write(surface_id,'(8i16)') domain_nod_grp%istack_sf(1:num_pe_sf)
+      write(surface_id,'(8i16)')                                        &
+     &       domain_nod_grp%item_sf(1:domain_nod_grp%num_item)
 !
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
@@ -84,11 +85,12 @@
 !      write(surface_id,'(a)') '! 3. node ID for domain boundary'
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) nnod_domain_sf
-      read(surface_id,*) nod_stack_domain_sf(1:num_pe_sf)
+      read(tmp_character,*) domain_nod_grp%num_item
+      read(surface_id,*) domain_nod_grp%istack_sf(1:num_pe_sf)
 !
       call allocate_domain_nod_item_sf
-      read(surface_id,*) nod_item_domain_sf(1:nnod_domain_sf)
+      read(surface_id,*)                                                &
+     &      domain_nod_grp%item_sf(1:domain_nod_grp%num_item)
 !
 !      write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
 !

@@ -65,10 +65,12 @@
       integer(kind=kint ) :: nedge_domain_sf
       integer(kind=kint ), allocatable :: edge_stack_domain_sf(:)
       integer(kind=kint ), allocatable :: edge_item_domain_sf(:)
-      integer(kind=kint ) :: nnod_domain_sf
-      integer(kind=kint ), allocatable :: nod_stack_domain_sf(:)
-      integer(kind=kint ), allocatable :: nod_item_domain_sf(:)
 !
+!
+      integer(kind=kint ), parameter :: ngrp_domain = ione
+      type(viewer_group_data), save :: domain_surf_grp
+      type(viewer_group_data), save :: domain_edge_grp
+      type(viewer_group_data), save :: domain_nod_grp
 !
       character(len=kchara), allocatable :: nod_gp_name_sf(:)
       integer(kind=kint ) :: ngrp_nod_sf
@@ -194,11 +196,11 @@
       subroutine allocate_domain_stack_4_surf
 !
 !
-      allocate( nod_stack_domain_sf(0:num_pe_sf)  )
       allocate( isurf_stack_domain_sf(0:num_pe_sf)  )
       allocate( edge_stack_domain_sf(0:num_pe_sf)  )
+      call alloc_merged_group_stack                                     &
+     &   (num_pe_sf, ngrp_domain, domain_nod_grp)
 !
-      nod_stack_domain_sf = 0
       isurf_stack_domain_sf = 0
       edge_stack_domain_sf = 0
 !
@@ -217,8 +219,7 @@
 !
       subroutine allocate_domain_nod_item_sf
 !
-      allocate( nod_item_domain_sf(nnod_domain_sf) )
-      nod_item_domain_sf = 0
+      call alloc_merged_group_item(domain_nod_grp)
 !
       end subroutine allocate_domain_nod_item_sf
 !
@@ -237,7 +238,8 @@
 !
 !
       allocate( nod_gp_name_sf(ngrp_nod_sf)  )
-      allocate( nod_nod_grp%istack_sf(0:num_pe_sf*ngrp_nod_sf)  )
+      call alloc_merged_group_stack                                     &
+     &   (num_pe_sf, ngrp_nod_sf, nod_nod_grp)
 !
       end subroutine allocate_nod_grp_stack_4_surf
 !

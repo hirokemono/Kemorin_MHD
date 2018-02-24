@@ -92,13 +92,6 @@
 !        integer(kind = kint), allocatable :: nod_item_domain_sf(:)
 !
 !
-!nod_nod_grp%num_item
-!        integer(kind = kint) :: nnod_nod_sf
-!nod_nod_grp%istack_sf
-!        integer(kind = kint), allocatable :: nod_stack_sf(:)
-!nod_nod_grp%item_sf
-!        integer(kind = kint), allocatable :: nod_item_sf(:)
-!
 !------------------------------------------------------------------
 !
       contains

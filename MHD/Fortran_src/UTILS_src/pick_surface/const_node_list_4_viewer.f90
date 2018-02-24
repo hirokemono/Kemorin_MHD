@@ -142,13 +142,13 @@
       do ip = 1, num_pe_sf
         ist = inod_sf_stack(ip-1) + 1
         ied = inod_sf_stack(ip)
-        nod_stack_domain_sf(ip) = nod_stack_domain_sf(ip-1)
+        domain_nod_grp%istack_sf(ip) = domain_nod_grp%istack_sf(ip-1)
         do inod = ist, ied
-          nod_stack_domain_sf(ip) = nod_stack_domain_sf(ip)             &
-     &                             + imark_node(inod)
+          domain_nod_grp%istack_sf(ip) = domain_nod_grp%istack_sf(ip)   &
+     &                                  + imark_node(inod)
         end do
       end do
-      nnod_domain_sf = nod_stack_domain_sf(num_pe_sf)
+      domain_nod_grp%num_item = domain_nod_grp%istack_sf(num_pe_sf)
 !
       end subroutine count_nod_stack_4_domain_viewer
 !
@@ -204,11 +204,11 @@
       do ip = 1, num_pe_sf
         ist = inod_sf_stack(ip-1) + 1
         ied = inod_sf_stack(ip)
-        icou = nod_stack_domain_sf(ip-1)
+        icou = domain_nod_grp%istack_sf(ip-1)
         do inod = ist, ied
           if (imark_node(inod) .eq. 1) then
             icou = icou + 1
-            nod_item_domain_sf(icou) = inod
+            domain_nod_grp%item_sf(icou) = inod
           end if
         end do
       end do
