@@ -22,6 +22,7 @@
       integer(kind = kint), parameter, private :: ifile_type = 0
 !
       type(merged_mesh), save, private :: mgd_mesh_rf
+      type(second_mesh), save, private :: sec_mesh_rf
 !
       private :: refine_interpolation_table
 !
@@ -36,12 +37,10 @@
       use m_constants
       use m_control_data_refine_para
       use m_interpolate_table_IO
-      use m_2nd_geometry_4_merge
       use itp_table_IO_select_4_zlib
       use num_nod_ele_merge_by_type
       use merge_domain_local_by_type
 !
-      integer(kind = kint) :: ierr
 !
       if(iflag_debug.gt.0) write(*,*) 'read_control_data_ref_para_itp'
       call read_control_data_ref_para_itp
@@ -73,13 +72,13 @@
       call set_num_nod_ele_merge_type1                                  &
      &   (nprocs_fine, fine_mesh, mgd_mesh_rf)
       call set_num_nod_ele_merge_type2                                  &
-     &   (nprocs_course, course_mesh, sec_mesh1)
+     &   (nprocs_course, course_mesh, sec_mesh_rf)
 !
       write(*,*) 'set_domain_local_id_by_type1'
       call set_domain_local_id_by_type1                                 &
      &   (nprocs_fine, fine_mesh, mgd_mesh_rf%merge_tbl)
       call set_domain_local_id_by_type2                                 &
-     &   (nprocs_course, course_mesh, sec_mesh1%merge_tbl_2)
+     &   (nprocs_course, course_mesh, sec_mesh_rf%merge_tbl_2)
 !
 !
 !
@@ -90,22 +89,19 @@
       subroutine analyze_refine_itp_para
 !
       use t_interpolate_table
-      use m_2nd_geometry_4_merge
       use m_interpolate_table_IO
-!
-      integer(kind = kint) :: ip, my_rank
 !
 !
       call alloc_para_refine_itp_type
 !
 !
       call refine_interpolation_table                                   &
-     &   (mgd_mesh_rf%merge_tbl, sec_mesh1%merge_tbl_2)
+     &   (mgd_mesh_rf%merge_tbl, sec_mesh_rf%merge_tbl_2)
 !
       call dealloc_para_refine_itp_type
 !
-      call dealloc_number_of_2nd_mesh(sec_mesh1)
-      call dealloc_2nd_merge_table(sec_mesh1)
+      call dealloc_number_of_2nd_mesh(sec_mesh_rf)
+      call dealloc_2nd_merge_table(sec_mesh_rf)
       call dealloc_array_4_merge(mgd_mesh_rf)
 !
       call dealloc_interpolate_tbl_type(f2c_single)

@@ -10,7 +10,6 @@
       use m_precision
 !
       use m_geometry_data_4_merge
-      use m_2nd_geometry_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
 !

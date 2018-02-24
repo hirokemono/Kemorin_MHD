@@ -11,7 +11,6 @@
       use calypso_mpi
 !
       use m_geometry_data_4_merge
-      use m_2nd_geometry_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
       use t_file_IO_parameter

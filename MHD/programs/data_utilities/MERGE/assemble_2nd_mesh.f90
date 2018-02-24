@@ -13,7 +13,6 @@
 !
       use m_constants
       use m_geometry_data_4_merge
-      use m_2nd_geometry_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
       use m_original_ucd_4_merge

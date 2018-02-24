@@ -11,7 +11,6 @@
 !
       use m_constants
       use m_file_format_switch
-      use m_2nd_geometry_4_merge
       use m_size_4_plane
       use m_set_new_spectr
       use m_spectr_4_ispack
@@ -42,6 +41,7 @@
       type(ucd_data) :: fft_ucd
       type(time_data), save :: fft_t_IO
       type(merged_mesh), save :: mgd_mesh_pm
+      type(second_mesh), save :: sec_mesh_pm
 !
       integer(kind=kint ) :: ist, ied, iint
       integer(kind=kint ) ::  istep
@@ -100,13 +100,13 @@
       plane_mesh_file%iflag_format = id_ascii_file_fmt
       call set_merged_mesh_and_group(plane_mesh_file, mgd_mesh_pm)
 !
-      allocate(sec_mesh1%subdomains_2(sec_mesh1%num_pe2) )
+      allocate(sec_mesh_pm%subdomains_2(sec_mesh_pm%num_pe2) )
 !
       call copy_plane_resolution                                        &
      &   (mgd_mesh_pm%num_pe, mgd_mesh_pm%subdomain,                    &
      &    mgd_mesh_pm%merged, mgd_mesh_pm%merge_tbl,                    &
-     &    sec_mesh1%num_pe2, sec_mesh1%subdomains_2,                    &
-     &    sec_mesh1%merge_tbl_2)
+     &    sec_mesh_pm%num_pe2, sec_mesh_pm%subdomains_2,                &
+     &    sec_mesh_pm%merge_tbl_2)
 !
 ! allocate arrays for spectr
 !

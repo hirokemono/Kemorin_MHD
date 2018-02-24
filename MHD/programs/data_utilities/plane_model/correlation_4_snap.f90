@@ -11,7 +11,6 @@
 !
       use m_correlate_4_plane
       use m_size_4_plane
-      use m_2nd_geometry_4_merge
       use m_control_plane_correlate
 !
       use t_phys_data
@@ -44,6 +43,7 @@
       type(ucd_data), save :: plane_ucd
 
       type(merged_mesh), save :: mgd_mesh_pm
+      type(second_mesh), save :: sec_mesh_pm
 
       integer(kind=kint ) :: istep
       integer(kind=kint ) :: ist, ied, iint
@@ -71,13 +71,13 @@
 !     read outline of mesh
 !
       call s_set_plane_size_correlate                                   &
-     &   (mgd_mesh_pm%num_pe, sec_mesh1%num_pe2)
+     &   (mgd_mesh_pm%num_pe, sec_mesh_pm%num_pe2)
 !
       write(*,*) 'set_merged_node_and_element'
       call set_merged_node_and_element(cor_mesh_file, mgd_mesh_pm)
       write(*,*) 's_set_2nd_geometry_4_serial'
 !
-      call s_set_2nd_geometry_4_serial(ref_mesh_file, sec_mesh1)
+      call s_set_2nd_geometry_4_serial(ref_mesh_file, sec_mesh_pm)
 !
       call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
@@ -111,7 +111,7 @@
 !
        call deallocate_ioverlap_nod
        call deallocate_node_geometry_type(mgd_mesh_pm%merged%node)
-       call dealloc_2nd_merge_table(sec_mesh1)
+       call dealloc_2nd_merge_table(sec_mesh_pm)
 !
 !   loop for time integration
 !
@@ -121,7 +121,7 @@
 !
        write(*,*) 'read_udt_4_correlate'
        call read_udt_4_correlate                                        &
-     &    (istep, mgd_mesh_pm, sec_mesh1, plane_t_IO, plane_ucd)
+     &    (istep, mgd_mesh_pm, sec_mesh_pm, plane_t_IO, plane_ucd)
 !
 !  -------  Cross correlatiion
 !

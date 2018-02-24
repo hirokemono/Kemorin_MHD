@@ -19,5 +19,6 @@
 !
       type(merged_mesh), save :: mgd_mesh1
 !
+      type(second_mesh), save :: sec_mesh1
 !
       end module m_geometry_data_4_merge
