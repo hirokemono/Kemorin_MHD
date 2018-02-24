@@ -74,11 +74,11 @@
 !
       imark_node = 0
 !
-      ist = ele_edge_stack_sf( (igrp-1)*num_pe_sf ) + 1
-      ied = ele_edge_stack_sf( (igrp  )*num_pe_sf )
+      ist = ele_edge_grp%istack_sf( (igrp-1)*num_pe_sf ) + 1
+      ied = ele_edge_grp%istack_sf( (igrp  )*num_pe_sf )
       do k1 = 1, nnod_4_edge
         do inum = ist, ied
-          iedge = abs(ele_edge_item_sf(inum))
+          iedge = abs(ele_edge_grp%item_sf(inum))
           inod = ie_edge_viewer(iedge,k1)
           imark_node(inod) = 1
         end do

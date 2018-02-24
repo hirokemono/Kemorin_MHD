@@ -58,22 +58,22 @@
      &      edge_sf_tbl%iflag_hash)
 !
 !
-        ist = ele_edge_stack_sf( (igrp-1)*num_pe_sf )
+        ist = ele_edge_grp%istack_sf( (igrp-1)*num_pe_sf )
 !
         call allocate_ele_edge_item_tmp
-        ele_edge_item_tmp(1:nedge_ele_sf)                               &
-     &          = ele_edge_item_sf(1:nedge_ele_sf)
+        ele_edge_item_tmp(1:ele_edge_grp%num_item)                      &
+     &          = ele_edge_grp%item_sf(1:ele_edge_grp%num_item)
         call deallocate_ele_grp_edge_item_sf
 !
         call count_num_edges_by_sf(nodpetot_viewer, surfpetot_viewer,   &
      &      nnod_4_edge, edge_sf_tbl%istack_hash,                       &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%iflag_hash, nedge_grp)
-        ele_edge_stack_sf(igrp*num_pe_sf)                               &
-     &        = ele_edge_stack_sf((igrp-1)*num_pe_sf) + nedge_grp
-        nedge_ele_sf = ele_edge_stack_sf(igrp*num_pe_sf)
+        ele_edge_grp%istack_sf(igrp*num_pe_sf)                          &
+     &        = ele_edge_grp%istack_sf((igrp-1)*num_pe_sf) + nedge_grp
+        ele_edge_grp%num_item = ele_edge_grp%istack_sf(igrp*num_pe_sf)
 !
         call allocate_ele_grp_edge_item_sf
-        ele_edge_item_sf(1:ist) = ele_edge_item_tmp(1:ist)
+        ele_edge_grp%item_sf(1:ist) = ele_edge_item_tmp(1:ist)
         call deallocate_ele_edge_item_tmp
 !
 !        write(*,*) 'set_part_edges_4_sf', igrp
@@ -81,11 +81,11 @@
      &      nnod_4_edge, nedge_grp, iedge_sf_viewer,                    &
      &      edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,             &
      &      edge_sf_tbl%id_hash, edge_sf_tbl%iflag_hash,                &
-     &      ele_edge_item_sf(ist+1) )
+     &      ele_edge_grp%item_sf(ist+1) )
 !
       end do
 !
-!      write(50,*) 'ele_edge_item_sf', ele_edge_item_sf
+!      write(50,*) 'ele_edge_item_sf', ele_edge_grp%item_sf
 !
       end subroutine construct_edge_4_ele_grp
 !

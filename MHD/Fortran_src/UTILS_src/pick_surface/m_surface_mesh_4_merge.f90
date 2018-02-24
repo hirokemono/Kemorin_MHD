@@ -76,12 +76,11 @@
       integer(kind=kint ), allocatable :: nod_stack_sf(:)
       integer(kind=kint ), allocatable :: nod_item_sf(:)
       integer(kind=kint ) :: ngrp_ele_sf
-      integer(kind=kint ) :: nele_ele_sf, nedge_ele_sf
+      integer(kind=kint ) :: nele_ele_sf
       integer(kind=kint ), allocatable :: ele_stack_sf(:)
-      integer(kind=kint ), allocatable :: ele_edge_stack_sf(:)
       integer(kind=kint ), allocatable :: ele_item_sf(:)
-      integer(kind=kint ), allocatable :: ele_edge_item_sf(:)
 !
+      type(viewer_group_data), save :: ele_edge_grp
       type(viewer_group_data), save :: ele_nod_grp
 !
       integer(kind=kint ) :: ngrp_surf_sf
@@ -254,12 +253,12 @@
 !
       allocate( ele_gp_name_sf(ngrp_ele_sf)  )
       allocate( ele_stack_sf(0:num_pe_sf*ngrp_ele_sf)  )
-      allocate( ele_edge_stack_sf(0:num_pe_sf*ngrp_ele_sf)  )
+      call alloc_merged_group_stack                                     &
+     &   (num_pe_sf, ngrp_ele_sf, ele_edge_grp)
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, ngrp_ele_sf, ele_nod_grp)
 !
       ele_stack_sf = 0
-      ele_edge_stack_sf = 0
 !
       end subroutine allocate_ele_grp_stack_4_surf
 !
@@ -308,8 +307,7 @@
 !
       subroutine allocate_ele_grp_edge_item_sf
 !
-      allocate( ele_edge_item_sf(nedge_ele_sf)  )
-      ele_edge_item_sf = 0
+      call alloc_merged_group_item(ele_edge_grp)
 !
       end subroutine allocate_ele_grp_edge_item_sf
 !
@@ -326,7 +324,7 @@
 !
       subroutine deallocate_ele_grp_edge_item_sf
 !
-      deallocate( ele_edge_item_sf )
+      call dealloc_merged_group_item(ele_edge_grp)
 !
       end subroutine deallocate_ele_grp_edge_item_sf
 !
