@@ -103,7 +103,7 @@
       integer(kind = kint) :: igrp, ngrp, ist, nedge_grp
 !
 !
-      call allocate_sf_grp_edge_item_sf
+      call alloc_merged_group_item(sf_edge_grp)
 !
       do igrp = 1, ngrp_surf_sf
         ngrp = surf_stack_sf( igrp*num_pe_sf )                          &
@@ -124,20 +124,20 @@
 !
 !
         call allocate_sf_edge_item_tmp
-        surf_edge_item_tmp(1:nedge_surf_sf)                             &
-     &          = surf_edge_item_sf(1:nedge_surf_sf)
-        call deallocate_sf_grp_edge_item_sf
+        surf_edge_item_tmp(1:sf_edge_grp%num_item)                      &
+     &          = sf_edge_grp%item_sf(1:sf_edge_grp%num_item)
+        call dealloc_merged_group_item(sf_edge_grp)
 !
         call count_num_edges_by_sf(nodpetot_viewer, surfpetot_viewer,   &
      &      nnod_4_edge, edge_sf_tbl%istack_hash,                       &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%iflag_hash, nedge_grp)
-        surf_edge_stack_sf(igrp*num_pe_sf)                              &
-     &        = surf_edge_stack_sf((igrp-1)*num_pe_sf) + nedge_grp
-        nedge_surf_sf = surf_edge_stack_sf(igrp*num_pe_sf)
+        sf_edge_grp%istack_sf(igrp*num_pe_sf)                           &
+     &        = sf_edge_grp%istack_sf((igrp-1)*num_pe_sf) + nedge_grp
+        sf_edge_grp%num_item = sf_edge_grp%istack_sf(igrp*num_pe_sf)
 !
-        call allocate_sf_grp_edge_item_sf
-        ist = surf_edge_stack_sf( (igrp-1)*num_pe_sf )
-        surf_edge_item_sf(1:ist) = surf_edge_item_tmp(1:ist)
+        call alloc_merged_group_item(sf_edge_grp)
+        ist = sf_edge_grp%istack_sf( (igrp-1)*num_pe_sf )
+        sf_edge_grp%item_sf(1:ist) = surf_edge_item_tmp(1:ist)
         call deallocate_sf_edge_item_tmp
 !
 !        write(*,*) 'set_part_edges_4_sf', igrp
@@ -145,7 +145,7 @@
      &      nnod_4_edge, nedge_grp, iedge_sf_viewer,                    &
      &      edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,             &
      &      edge_sf_tbl%id_hash, edge_sf_tbl%iflag_hash,                &
-     &      surf_edge_item_sf(ist+1) )
+     &      sf_edge_grp%item_sf(ist+1) )
       end do
 !
       end subroutine construct_edge_4_surf_grp

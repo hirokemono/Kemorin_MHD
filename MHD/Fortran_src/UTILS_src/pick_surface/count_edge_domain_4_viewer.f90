@@ -95,17 +95,17 @@
 !
       do igrp = 1, ngrp_surf_sf
         ist_grp = (igrp-1)*num_pe_sf
-        nn = surf_edge_stack_sf(igrp*num_pe_sf)
+        nn = sf_edge_grp%istack_sf(igrp*num_pe_sf)
         do ip = 1, num_pe_sf
           iref = inod_sf_stack(ip)
-          ist =  surf_edge_stack_sf(ist_grp+ip-1) + 1
-          surf_edge_stack_sf(ist_grp+ip)                                &
-     &          = surf_edge_stack_sf(ist_grp+ip-1)
+          ist =  sf_edge_grp%istack_sf(ist_grp+ip-1) + 1
+          sf_edge_grp%istack_sf(ist_grp+ip)                             &
+     &          = sf_edge_grp%istack_sf(ist_grp+ip-1)
           do inum = ist, nn
-            iedge = abs( surf_edge_item_sf(inum) )
+            iedge = abs( sf_edge_grp%item_sf(inum) )
             inod = ie_edge_viewer(iedge,1)
             if ( inod .gt. iref ) exit
-            surf_edge_stack_sf(ist_grp+ip) = inum
+            sf_edge_grp%istack_sf(ist_grp+ip) = inum
           end do
         end do
       end do

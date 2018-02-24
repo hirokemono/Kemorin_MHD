@@ -85,12 +85,11 @@
       integer(kind=kint ), allocatable :: ele_edge_item_sf(:)
       integer(kind=kint ), allocatable :: ele_nod_item_sf(:)
       integer(kind=kint ) :: ngrp_surf_sf
-      integer(kind=kint ) :: nsurf_surf_sf, nedge_surf_sf
+      integer(kind=kint ) :: nsurf_surf_sf
       integer(kind=kint ), allocatable :: surf_stack_sf(:)
-      integer(kind=kint ), allocatable :: surf_edge_stack_sf(:)
       integer(kind=kint ), allocatable :: surf_item_sf(:)
-      integer(kind=kint ), allocatable :: surf_edge_item_sf(:)
 !
+      type(viewer_group_data), save :: sf_edge_grp
       type(viewer_group_data), save :: sf_nod_grp
 !
 !
@@ -274,12 +273,12 @@
 !
       allocate( surf_gp_name_sf(ngrp_surf_sf)  )
       allocate( surf_stack_sf(0:num_pe_sf*ngrp_surf_sf)  )
-      allocate( surf_edge_stack_sf(0:num_pe_sf*ngrp_surf_sf)  )
+      call alloc_merged_group_stack                                     &
+     &   (num_pe_sf, ngrp_surf_sf, sf_edge_grp)
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, ngrp_surf_sf, sf_nod_grp)
 !
       surf_stack_sf = 0
-      surf_edge_stack_sf = 0
 !
       end subroutine allocate_surf_grp_stack_4_surf
 !
@@ -344,25 +343,6 @@
       surf_item_sf = 0
 !
       end subroutine allocate_surf_grp_item_4_surf
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine allocate_sf_grp_edge_item_sf
-!
-      allocate( surf_edge_item_sf(nedge_surf_sf)  )
-      surf_edge_item_sf = 0
-!
-      end subroutine allocate_sf_grp_edge_item_sf
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine deallocate_sf_grp_edge_item_sf
-!
-      deallocate( surf_edge_item_sf )
-!
-      end subroutine deallocate_sf_grp_edge_item_sf
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

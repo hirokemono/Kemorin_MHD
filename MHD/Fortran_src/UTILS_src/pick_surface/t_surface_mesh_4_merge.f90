@@ -123,20 +123,6 @@
 !sf_surf_grp%item_sf
 !        integer(kind = kint), allocatable :: surf_item_sf(:)
 !
-!sf_edge_grp%num_item
-!        integer(kind = kint) :: nedge_surf_sf
-!sf_edge_grp%istack_sf
-!        integer(kind = kint), allocatable :: surf_edge_stack_sf(:)
-!sf_edge_grp%item_sf
-!        integer(kind = kint), allocatable :: surf_edge_item_sf(:)
-!
-!sf_nod_grp%num_item
-!        integer(kind = kint) :: nnod_surf_sf
-!sf_nod_grp%istack_sf
-!        integer(kind = kint), allocatable :: surf_nod_stack_sf(:)
-!sf_nod_grp%item_sf
-!        integer(kind = kint), allocatable :: surf_nod_item_sf(:)
-!
 !------------------------------------------------------------------
 !
       contains

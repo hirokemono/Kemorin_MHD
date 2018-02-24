@@ -118,7 +118,7 @@
 !
       use m_surface_mesh_4_merge
 !
-      allocate( surf_edge_item_tmp(nedge_surf_sf) )
+      allocate( surf_edge_item_tmp(sf_edge_grp%num_item) )
 !
       end subroutine allocate_sf_edge_item_tmp
 !
