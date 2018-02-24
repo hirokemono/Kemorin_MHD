@@ -68,13 +68,13 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i16,a1)') nsurf_domain_sf, char(0)
+      write(textbuf,'(i16,a1)') domain_surf_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_gz_multi_int_8i10(num_pe_sf,                           &
-     &    isurf_stack_domain_sf(1) )
-      call write_gz_multi_int_8i10(nsurf_domain_sf,                     &
-     &    isurf_domain_sf)
+     &    domain_surf_grp%istack_sf(1) )
+      call write_gz_multi_int_8i10(domain_surf_grp%num_item,            &
+     &    domain_surf_grp%item_sf)
 !
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
@@ -106,24 +106,25 @@
       call skip_gz_comment_int(domain_nod_grp%num_item)
       call read_gz_multi_int(num_pe_sf, domain_nod_grp%istack_sf(1))
 !
-      call allocate_domain_nod_item_sf
+      call alloc_merged_group_item(domain_nod_grp)
       read(surface_id,*)                                                &
      &      domain_nod_grp%item_sf(1:domain_nod_grp%num_item)
 !
 !      write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
 !
-      call skip_gz_comment_int(nsurf_domain_sf)
-      call read_gz_multi_int(num_pe_sf, isurf_stack_domain_sf(1))
+      call skip_gz_comment_int(domain_surf_grp%num_item)
+      call read_gz_multi_int(num_pe_sf, domain_surf_grp%istack_sf(1))
 !
-      call allocate_domain_surf_item_sf
-      call read_gz_multi_int(nsurf_domain_sf, isurf_domain_sf)
+      call alloc_merged_group_item(domain_surf_grp)
+      call read_gz_multi_int                                            &
+     &   (domain_surf_grp%num_item, domain_surf_grp%item_sf)
 !
 !      write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
 !
       call skip_gz_comment_int(domain_edge_grp%num_item)
       call read_gz_multi_int(num_pe_sf, domain_edge_grp%istack_sf(1))
 !
-      call allocate_domain_edge_item_sf
+      call alloc_merged_group_item(domain_edge_grp)
       call read_gz_multi_int                                            &
      &   (domain_edge_grp%num_item, domain_edge_grp%item_sf)
 !
@@ -167,7 +168,7 @@
       nod_nod_grp%num_item                                              &
      &    = nod_nod_grp%istack_sf(ngrp_nod_sf*num_pe_sf)
 !
-      call allocate_nod_grp_item_4_surf
+      call alloc_merged_group_item(nod_nod_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_nod_sf,            &
      &    nod_nod_grp%num_item, nod_nod_grp%istack_sf,                  &
@@ -246,7 +247,7 @@
 !
       call read_gz_multi_int((num_pe_sf*ngrp_ele_sf),                   &
      &    ele_surf_grp%istack_sf(1))
-      call allocate_ele_grp_item_4_surf
+      call alloc_merged_group_item(ele_surf_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_ele_sf,            &
      &    ele_surf_grp%num_item, ele_surf_grp%istack_sf,                &
@@ -258,7 +259,7 @@
 !
       call read_gz_multi_int((num_pe_sf*ngrp_ele_sf),                   &
      &    ele_nod_grp%istack_sf(1))
-      call allocate_ele_gp_nod_item_sf
+      call alloc_merged_group_item(ele_nod_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_ele_sf,            &
      &    ele_nod_grp%num_item, ele_nod_grp%istack_sf, ele_gp_name_sf,  &
@@ -270,7 +271,7 @@
 !
       call read_gz_multi_int((num_pe_sf*ngrp_ele_sf),                   &
      &    ele_edge_grp%istack_sf(1))
-      call allocate_ele_grp_edge_item_sf
+      call alloc_merged_group_item(ele_edge_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_ele_sf,            &
      &    ele_edge_grp%num_item, ele_edge_grp%istack_sf,                &

@@ -38,7 +38,7 @@
       integer(kind = kint) :: igrp, ngrp, ist, nedge_grp
 !
 !
-      call allocate_ele_grp_edge_item_sf
+      call alloc_merged_group_item(ele_edge_grp)
 !
       do igrp = 1, ngrp_ele_sf
         ngrp = ele_surf_grp%istack_sf(igrp*num_pe_sf)                   &
@@ -64,7 +64,7 @@
         call allocate_ele_edge_item_tmp
         ele_edge_item_tmp(1:ele_edge_grp%num_item)                      &
      &          = ele_edge_grp%item_sf(1:ele_edge_grp%num_item)
-        call deallocate_ele_grp_edge_item_sf
+        call dealloc_merged_group_item(ele_edge_grp)
 !
         call count_num_edges_by_sf(nodpetot_viewer, surfpetot_viewer,   &
      &      nnod_4_edge, edge_sf_tbl%istack_hash,                       &
@@ -73,7 +73,7 @@
      &        = ele_edge_grp%istack_sf((igrp-1)*num_pe_sf) + nedge_grp
         ele_edge_grp%num_item = ele_edge_grp%istack_sf(igrp*num_pe_sf)
 !
-        call allocate_ele_grp_edge_item_sf
+        call alloc_merged_group_item(ele_edge_grp)
         ele_edge_grp%item_sf(1:ist) = ele_edge_item_tmp(1:ist)
         call deallocate_ele_edge_item_tmp
 !

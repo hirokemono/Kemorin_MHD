@@ -41,9 +41,9 @@
       integer(kind = kint) :: inum, isurf
 !
 !
-      do inum = 1, nsurf_domain_sf
+      do inum = 1, domain_surf_grp%num_item
         isurf = abs( merged_surf%isf_isolate(inum) )
-        isurf_domain_sf(inum) = isf_merge2viewer(isurf)                 &
+        domain_surf_grp%item_sf(inum) = isf_merge2viewer(isurf)         &
      &                    * (merged_surf%isf_isolate(inum) / isurf)
       end do
 !
@@ -118,12 +118,12 @@
 !
       do ip = 1, num_pe_sf
         iref = isurf_sf_stack(ip)
-        ist = isurf_stack_domain_sf(ip-1) + 1
-        isurf_stack_domain_sf(ip) = isurf_stack_domain_sf(ip-1)
-        do inum = ist, nsurf_domain_sf
-          isurf = abs( isurf_domain_sf(inum) )
+        ist = domain_surf_grp%istack_sf(ip-1) + 1
+        domain_surf_grp%istack_sf(ip) = domain_surf_grp%istack_sf(ip-1)
+        do inum = ist, domain_surf_grp%num_item
+          isurf = abs( domain_surf_grp%item_sf(inum) )
           if ( isurf .gt. iref ) exit
-          isurf_stack_domain_sf(ip) = inum
+          domain_surf_grp%istack_sf(ip) = inum
         end do
       end do
 !

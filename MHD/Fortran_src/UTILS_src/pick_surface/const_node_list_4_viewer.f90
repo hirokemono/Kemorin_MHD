@@ -52,7 +52,7 @@
 !
       if (nnod_4_surf .eq. num_lag_sf) then
         do inum = 1, domain_edge_grp%num_item
-          isurf = isurf_domain_sf(inum)
+          isurf = domain_surf_grp%item_sf(inum)
           inod = ie_sf_viewer(isurf,num_lag_sf)
           imark_node(inod) = 1
         end do

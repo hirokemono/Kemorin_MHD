@@ -90,10 +90,10 @@
 !
 !     renumber domain boundary
 !
-      nsurf_domain_sf = merged_surf%numsurf_iso
+      domain_surf_grp%num_item = merged_surf%numsurf_iso
        write(*,*) 'allocate_domain_stack_4_surf'
       call allocate_domain_stack_4_surf
-      call allocate_domain_surf_item_sf
+      call alloc_merged_group_item(domain_surf_grp)
 !
       call set_surf_domain_item_viewer(merged_surf)
       call set_surf_domain_stack_viewer
@@ -104,7 +104,7 @@
       ele_surf_grp%num_item = mgd_sf_grp%ntot_sf_iso_ele_grp_m
        write(*,*) 'allocate_ele_grp_stack_4_surf'
       call allocate_ele_grp_stack_4_surf
-      call allocate_ele_grp_item_4_surf
+      call alloc_merged_group_item(ele_surf_grp)
 !
       ele_gp_name_sf(1:ngrp_ele_sf)                                     &
      &     = merged_grp%ele_grp%grp_name(1:ngrp_ele_sf)

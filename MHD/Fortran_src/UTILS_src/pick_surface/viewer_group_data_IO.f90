@@ -58,10 +58,11 @@
       write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i16)') nsurf_domain_sf
-      write(surface_id,'(8i16)') isurf_stack_domain_sf(1:num_pe_sf)
+      write(surface_id,'(i16)') domain_surf_grp%num_item
+      write(surface_id,'(8i16)') domain_surf_grp%istack_sf(1:num_pe_sf)
 !
-      write(surface_id,'(8i16)') isurf_domain_sf(1:nsurf_domain_sf)
+      write(surface_id,'(8i16)')                                        &
+     &       domain_surf_grp%item_sf(1:domain_surf_grp%num_item)
 !
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
@@ -89,18 +90,19 @@
       read(tmp_character,*) domain_nod_grp%num_item
       read(surface_id,*) domain_nod_grp%istack_sf(1:num_pe_sf)
 !
-      call allocate_domain_nod_item_sf
+      call alloc_merged_group_item(domain_nod_grp)
       read(surface_id,*)                                                &
      &      domain_nod_grp%item_sf(1:domain_nod_grp%num_item)
 !
 !      write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) nsurf_domain_sf
-      read(surface_id,*) isurf_stack_domain_sf(1:num_pe_sf)
+      read(tmp_character,*) domain_surf_grp%num_item
+      read(surface_id,*) domain_surf_grp%istack_sf(1:num_pe_sf)
 !
-      call allocate_domain_surf_item_sf
-      read(surface_id,*) isurf_domain_sf(1:nsurf_domain_sf)
+      call alloc_merged_group_item(domain_surf_grp)
+      read(surface_id,*)                                                &
+     &      domain_surf_grp%item_sf(1:domain_surf_grp%num_item)
 !
 !      write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
 !
@@ -108,7 +110,7 @@
       read(tmp_character,*) domain_edge_grp%num_item
       read(surface_id,*) domain_edge_grp%istack_sf(1:num_pe_sf)
 !
-      call allocate_domain_edge_item_sf
+      call alloc_merged_group_item(domain_edge_grp)
       read(surface_id,*)                                                &
      &       domain_edge_grp%item_sf(1:domain_edge_grp%num_item)
 !
@@ -150,7 +152,7 @@
 !
       nod_nod_grp%num_item                                              &
      &    = nod_nod_grp%istack_sf(ngrp_nod_sf*num_pe_sf)
-      call allocate_nod_grp_item_4_surf
+      call alloc_merged_group_item(nod_nod_grp)
 !
       call read_viewer_group_item(surface_id, num_pe_sf, ngrp_nod_sf,   &
      &    nod_nod_grp%num_item, nod_nod_grp%istack_sf,                  &
@@ -217,7 +219,7 @@
       read(surface_id,*)                                                &
      &   ele_surf_grp%istack_sf(1:(num_pe_sf*ngrp_ele_sf))
 !
-      call allocate_ele_grp_item_4_surf
+      call alloc_merged_group_item(ele_surf_grp)
 !
       call read_viewer_group_item(surface_id, num_pe_sf, ngrp_ele_sf,   &
      &    ele_surf_grp%num_item, ele_surf_grp%istack_sf,                &
@@ -230,7 +232,7 @@
 !
       read(surface_id,*)                                                &
      &    ele_nod_grp%istack_sf(1:(num_pe_sf*ngrp_ele_sf))
-      call allocate_ele_gp_nod_item_sf
+      call alloc_merged_group_item(ele_nod_grp)
 !
       call read_viewer_group_item(surface_id, num_pe_sf, ngrp_ele_sf,   &
      &    ele_nod_grp%num_item, ele_nod_grp%istack_sf, ele_gp_name_sf,  &
@@ -243,7 +245,7 @@
 !
       read(surface_id,*)                                                &
      &    ele_edge_grp%istack_sf(1:num_pe_sf*ngrp_ele_sf)
-      call allocate_ele_grp_edge_item_sf
+      call alloc_merged_group_item(ele_edge_grp)
 !
       call read_viewer_group_item(surface_id, num_pe_sf, ngrp_ele_sf,   &
      &    ele_edge_grp%num_item, ele_edge_grp%istack_sf,                &

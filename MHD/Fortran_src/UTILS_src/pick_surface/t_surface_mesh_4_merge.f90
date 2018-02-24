@@ -71,15 +71,6 @@
         type(viewer_group_data) :: sf_nod_grp
       end type viewer_groups
 !
-!
-!domain_surf_grp%num_item
-!        integer(kind = kint) :: nsurf_domain_sf
-!domain_surf_grp%istack_sf
-!        integer(kind = kint), allocatable :: isurf_stack_domain_sf(:)
-!domain_surf_grp%item_sf
-!        integer(kind = kint), allocatable :: isurf_domain_sf(:)
-!
-!
 !------------------------------------------------------------------
 !
       contains

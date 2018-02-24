@@ -60,10 +60,6 @@
 !
       real   (kind=kreal), dimension(:,:), allocatable  ::  xx_view
 !
-      integer(kind=kint ) :: nsurf_domain_sf
-      integer(kind=kint ), allocatable :: isurf_stack_domain_sf(:)
-      integer(kind=kint ), allocatable :: isurf_domain_sf(:)
-!
 !
       integer(kind=kint ), parameter :: ngrp_domain = ione
       type(viewer_group_data), save :: domain_surf_grp
@@ -194,41 +190,16 @@
       subroutine allocate_domain_stack_4_surf
 !
 !
-      allocate( isurf_stack_domain_sf(0:num_pe_sf)  )
+      call alloc_merged_group_stack                                     &
+     &   (num_pe_sf, ngrp_domain, domain_surf_grp)
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, ngrp_domain, domain_edge_grp)
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, ngrp_domain, domain_nod_grp)
 !
-      isurf_stack_domain_sf = 0
-!
       end subroutine allocate_domain_stack_4_surf
 !
 !------------------------------------------------------------------
-!
-      subroutine allocate_domain_surf_item_sf
-!
-      allocate( isurf_domain_sf(nsurf_domain_sf) )
-      isurf_domain_sf = 0
-!
-      end subroutine allocate_domain_surf_item_sf
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_domain_nod_item_sf
-!
-      call alloc_merged_group_item(domain_nod_grp)
-!
-      end subroutine allocate_domain_nod_item_sf
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_domain_edge_item_sf
-!
-      call alloc_merged_group_item(domain_edge_grp)
-!
-      end subroutine allocate_domain_edge_item_sf
-!
 !------------------------------------------------------------------
 !
       subroutine allocate_nod_grp_stack_4_surf
@@ -269,55 +240,6 @@
      &   (num_pe_sf, ngrp_surf_sf, sf_nod_grp)
 !
       end subroutine allocate_surf_grp_stack_4_surf
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_nod_grp_item_4_surf
-!
-      call alloc_merged_group_item(nod_nod_grp)
-!
-      end subroutine allocate_nod_grp_item_4_surf
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_ele_grp_item_4_surf
-!
-      call alloc_merged_group_item(ele_surf_grp)
-!
-      end subroutine allocate_ele_grp_item_4_surf
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_ele_gp_nod_item_sf
-!
-      call alloc_merged_group_item(ele_nod_grp)
-!
-      end subroutine allocate_ele_gp_nod_item_sf
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_ele_grp_edge_item_sf
-!
-      call alloc_merged_group_item(ele_edge_grp)
-!
-      end subroutine allocate_ele_grp_edge_item_sf
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine deallocate_ele_gp_nod_item_sf
-!
-      call dealloc_merged_group_item(ele_nod_grp)
-!
-      end subroutine deallocate_ele_gp_nod_item_sf
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_ele_grp_edge_item_sf
-!
-      call dealloc_merged_group_item(ele_edge_grp)
-!
-      end subroutine deallocate_ele_grp_edge_item_sf
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

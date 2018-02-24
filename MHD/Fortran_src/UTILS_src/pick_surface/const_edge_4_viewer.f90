@@ -123,8 +123,9 @@
 !
 !      write(*,*) 'const_part_edge_hash_4_sf'
       call const_part_edge_hash_4_sf                                    &
-     &   (nodpetot_viewer, surfpetot_viewer, nsurf_domain_sf,           &
-     &    nnod_4_surf, nnod_4_edge, ie_sf_viewer, isurf_domain_sf,      &
+     &   (nodpetot_viewer, surfpetot_viewer, domain_surf_grp%num_item,  &
+     &    nnod_4_surf, nnod_4_edge,                                     &
+     &    ie_sf_viewer, domain_surf_grp%item_sf,                        &
      &    ed_sf_tbl%num_hash, ed_sf_tbl%istack_hash,                    &
      &    ed_sf_tbl%iend_hash, ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash)
 !
@@ -134,7 +135,7 @@
      &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%iflag_hash, domain_edge_grp%num_item)
 !
-      call allocate_domain_edge_item_sf
+      call alloc_merged_group_item(domain_edge_grp)
 !
 !      write(*,*) 'set_part_edges_4_sf'
       call set_part_edges_4_sf(nodpetot_viewer, surfpetot_viewer,       &
