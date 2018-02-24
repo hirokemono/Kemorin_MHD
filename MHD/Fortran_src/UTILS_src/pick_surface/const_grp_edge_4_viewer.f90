@@ -106,9 +106,9 @@
       call alloc_merged_group_item(sf_edge_grp)
 !
       do igrp = 1, ngrp_surf_sf
-        ngrp = surf_stack_sf( igrp*num_pe_sf )                          &
-     &        - surf_stack_sf( (igrp-1)*num_pe_sf )
-        ist = surf_stack_sf( (igrp-1)*num_pe_sf ) + 1
+        ngrp = sf_surf_grp%istack_sf( igrp*num_pe_sf )                  &
+     &        - sf_surf_grp%istack_sf( (igrp-1)*num_pe_sf )
+        ist = sf_surf_grp%istack_sf( (igrp-1)*num_pe_sf ) + 1
 !
 !   set hash data for edge elements using sum of local node ID
 !
@@ -117,7 +117,7 @@
 !        write(*,*) 'const_part_edge_hash_4_sf', igrp
         call const_part_edge_hash_4_sf                                  &
      &     (nodpetot_viewer, surfpetot_viewer, ngrp, nnod_4_surf,       &
-     &      nnod_4_edge, ie_sf_viewer, surf_item_sf(ist),               &
+     &      nnod_4_edge, ie_sf_viewer, sf_surf_grp%item_sf(ist),        &
      &      edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,              &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%id_hash,                 &
      &      edge_sf_tbl%iflag_hash)

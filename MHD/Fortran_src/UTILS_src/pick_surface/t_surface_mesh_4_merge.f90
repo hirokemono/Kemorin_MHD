@@ -116,13 +116,6 @@
 !ele_nod_grp%item_sf
 !        integer(kind = kint), allocatable :: ele_nod_item_sf(:)
 !
-!sf_surf_grp%num_item
-!        integer(kind = kint) :: nsurf_surf_sf
-!sf_surf_grp%istack_sf
-!        integer(kind = kint), allocatable :: surf_stack_sf(:)
-!sf_surf_grp%item_sf
-!        integer(kind = kint), allocatable :: surf_item_sf(:)
-!
 !------------------------------------------------------------------
 !
       contains

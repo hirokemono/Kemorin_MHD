@@ -115,10 +115,10 @@
 !     renumber surface boundary
 !
       ngrp_surf_sf = merged_grp%surf_grp%num_grp
-      nsurf_surf_sf = merged_grp%surf_grp%num_item
+      sf_surf_grp%num_item = merged_grp%surf_grp%num_item
 !
       call allocate_surf_grp_stack_4_surf
-      call allocate_surf_grp_item_4_surf
+      call alloc_merged_group_item(sf_surf_grp)
 !
       surf_gp_name_sf(1:ngrp_surf_sf)                                   &
      &        = merged_grp%surf_grp%grp_name(1:ngrp_surf_sf)

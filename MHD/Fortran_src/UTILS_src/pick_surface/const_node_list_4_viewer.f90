@@ -121,10 +121,10 @@
       end do
 !
       if (nnod_4_surf .eq. num_lag_sf) then
-        ist = surf_stack_sf( (igrp-1)*num_pe_sf ) + 1
-        ied = surf_stack_sf( (igrp  )*num_pe_sf )
+        ist = sf_surf_grp%istack_sf( (igrp-1)*num_pe_sf ) + 1
+        ied = sf_surf_grp%istack_sf( (igrp  )*num_pe_sf )
         do inum = 1, nedge_domain_sf
-          isurf = surf_item_sf(inum)
+          isurf = sf_surf_grp%item_sf(inum)
           inod = ie_sf_viewer(isurf,num_lag_sf)
           imark_node(inod) = 1
         end do
