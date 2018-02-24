@@ -41,9 +41,9 @@
       call allocate_ele_grp_edge_item_sf
 !
       do igrp = 1, ngrp_ele_sf
-        ngrp = ele_stack_sf(igrp*num_pe_sf)                             &
-     &        - ele_stack_sf( (igrp-1)*num_pe_sf )
-        ist = ele_stack_sf((igrp-1)*num_pe_sf) + 1
+        ngrp = ele_surf_grp%istack_sf(igrp*num_pe_sf)                   &
+     &        - ele_surf_grp%istack_sf( (igrp-1)*num_pe_sf )
+        ist = ele_surf_grp%istack_sf((igrp-1)*num_pe_sf) + 1
 !
 !   set hash data for edge elements using sum of local node ID
 !
@@ -52,7 +52,8 @@
 !        write(*,*) 'const_part_edge_hash_4_sf', igrp
         call const_part_edge_hash_4_sf                                  &
      &     (nodpetot_viewer, surfpetot_viewer, ngrp,                    &
-     &      nnod_4_surf,nnod_4_edge, ie_sf_viewer, ele_item_sf(ist),    &
+     &      nnod_4_surf, nnod_4_edge,                                   &
+     &      ie_sf_viewer, ele_surf_grp%item_sf(ist),                    &
      &      edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,              &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%id_hash,                 &
      &      edge_sf_tbl%iflag_hash)

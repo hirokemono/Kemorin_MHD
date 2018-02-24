@@ -61,9 +61,9 @@
       integer(kind = kint) :: inum, isurf
 !
 !
-      do inum = 1, nele_ele_sf
+      do inum = 1, ele_surf_grp%num_item
         isurf = abs( mgd_sf_grp%isf_isolate_ele_grp_m(inum) )
-        ele_item_sf(inum) = isf_merge2viewer(isurf)                     &
+        ele_surf_grp%item_sf(inum) = isf_merge2viewer(isurf)            &
      &         * (mgd_sf_grp%isf_isolate_ele_grp_m(inum) / isurf)
       end do
 !
@@ -144,12 +144,12 @@
         do ip = 1, num_pe_sf
           idx = ip + (igrp-1) * num_pe_sf
           iref = isurf_sf_stack(ip)
-          ist = ele_stack_sf(idx-1) + 1
-          ele_stack_sf(idx) = ele_stack_sf(idx-1)
+          ist = ele_surf_grp%istack_sf(idx-1) + 1
+          ele_surf_grp%istack_sf(idx) = ele_surf_grp%istack_sf(idx-1)
           do inum = ist, mgd_sf_grp%istack_sf_iso_ele_grp_m(igrp)
-            isurf = abs( ele_item_sf(inum) )
+            isurf = abs( ele_surf_grp%item_sf(inum) )
             if ( isurf .gt. iref ) exit
-            ele_stack_sf(idx) = inum
+            ele_surf_grp%istack_sf(idx) = inum
           end do
         end do
       end do

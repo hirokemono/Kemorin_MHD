@@ -187,11 +187,13 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(2i16,a1)') ngrp_ele_sf, nele_ele_sf, char(0)
+      write(textbuf,'(2i16,a1)')                                        &
+     &     ngrp_ele_sf, ele_surf_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_ele_sf,           &
-     &    nele_ele_sf, ele_stack_sf, ele_gp_name_sf, ele_item_sf)
+     &    ele_surf_grp%num_item, ele_surf_grp%istack_sf,                &
+     &    ele_gp_name_sf, ele_surf_grp%item_sf)
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
@@ -233,16 +235,17 @@
 !      write(surface_id,'(a)') '! 4.2.1 element data'
 !
       call skip_gz_comment_int(ngrp_ele_sf)
-      read(textbuf,*) ngrp_ele_sf, nele_ele_sf
+      read(textbuf,*) ngrp_ele_sf, ele_surf_grp%num_item
 !
       call allocate_ele_grp_stack_4_surf
 !
       call read_gz_multi_int((num_pe_sf*ngrp_ele_sf),                   &
-     &    ele_stack_sf(1))
+     &    ele_surf_grp%istack_sf(1))
       call allocate_ele_grp_item_4_surf
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_ele_sf,            &
-     &    nele_ele_sf, ele_stack_sf, ele_gp_name_sf,  ele_item_sf)
+     &    ele_surf_grp%num_item, ele_surf_grp%istack_sf,                &
+     &    ele_gp_name_sf, ele_surf_grp%item_sf)
 !
 !      write(surface_id,'(a)') '! 4.2.2 node data'
 !

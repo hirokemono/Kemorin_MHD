@@ -163,10 +163,11 @@
       write(surface_id,'(a)') '! 4.2.1 element data'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(2i16)') ngrp_ele_sf, nele_ele_sf
+      write(surface_id,'(2i16)') ngrp_ele_sf, ele_surf_grp%num_item
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_ele_sf,  &
-     &    nele_ele_sf, ele_stack_sf, ele_gp_name_sf, ele_item_sf)
+     &    ele_surf_grp%num_item, ele_surf_grp%istack_sf,                &
+     &    ele_gp_name_sf, ele_surf_grp%item_sf)
 !
 !
       write(surface_id,'(a)') '!'
@@ -202,15 +203,17 @@
 !      write(surface_id,'(a)') '! 4.2.1 element data'
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) ngrp_ele_sf, nele_ele_sf
+      read(tmp_character,*) ngrp_ele_sf, ele_surf_grp%num_item
 !
       call allocate_ele_grp_stack_4_surf
-      read(surface_id,*) ele_stack_sf(1:(num_pe_sf*ngrp_ele_sf))
+      read(surface_id,*)                                                &
+     &   ele_surf_grp%istack_sf(1:(num_pe_sf*ngrp_ele_sf))
 !
       call allocate_ele_grp_item_4_surf
 !
       call read_viewer_group_item(surface_id, num_pe_sf, ngrp_ele_sf,   &
-     &    nele_ele_sf, ele_stack_sf, ele_gp_name_sf,  ele_item_sf)
+     &    ele_surf_grp%num_item, ele_surf_grp%istack_sf,                &
+     &    ele_gp_name_sf,  ele_surf_grp%item_sf)
 !
 !      write(surface_id,'(a)') '! 4.2.2 node data'
 !

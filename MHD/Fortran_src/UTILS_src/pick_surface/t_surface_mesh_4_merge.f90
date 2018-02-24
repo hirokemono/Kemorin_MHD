@@ -99,19 +99,6 @@
 !nod_nod_grp%item_sf
 !        integer(kind = kint), allocatable :: nod_item_sf(:)
 !
-!ele_surf_grp%num_item
-!        integer(kind = kint) :: nele_ele_sf
-!ele_surf_grp%istack_sf
-!        integer(kind = kint), allocatable :: ele_stack_sf(:)
-!ele_surf_grp%item_sf
-!        integer(kind = kint), allocatable :: ele_item_sf(:)
-!ele_edge_grp%num_item
-!        integer(kind = kint) :: nedge_ele_sf
-!ele_edge_grp%istack_sf
-!        integer(kind = kint), allocatable :: ele_edge_stack_sf(:)
-!ele_edge_grp%item_sf
-!        integer(kind = kint), allocatable :: ele_edge_item_sf(:)
-!
 !------------------------------------------------------------------
 !
       contains
