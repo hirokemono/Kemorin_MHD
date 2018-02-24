@@ -163,13 +163,13 @@
         idx = (igrp-1)*num_pe_sf + ip
         ist = inod_sf_stack(ip-1) + 1
         ied = inod_sf_stack(ip)
-        ele_nod_stack_sf(idx) = ele_nod_stack_sf(idx-1)
+        ele_nod_grp%istack_sf(idx) = ele_nod_grp%istack_sf(idx-1)
         do inod = ist, ied
-          ele_nod_stack_sf(idx) = ele_nod_stack_sf(idx)                 &
-     &                           + imark_node(inod)
+          ele_nod_grp%istack_sf(idx) = ele_nod_grp%istack_sf(idx)       &
+     &                                + imark_node(inod)
         end do
       end do
-      nnod_ele_sf = ele_nod_stack_sf( igrp*num_pe_sf )
+      ele_nod_grp%num_item = ele_nod_grp%istack_sf( igrp*num_pe_sf )
 !
       end subroutine count_nod_stack_4_ele_gp_viewer
 !
@@ -226,11 +226,11 @@
         idx = (igrp-1)*num_pe_sf + ip
         ist = inod_sf_stack(ip-1) + 1
         ied = inod_sf_stack(ip)
-        icou = ele_nod_stack_sf(idx-1)
+        icou = ele_nod_grp%istack_sf(idx-1)
         do inod = ist, ied
           if (imark_node(inod) .eq. 1) then
             icou = icou + 1
-            ele_nod_item_sf(icou) = inod
+            ele_nod_grp%item_sf(icou) = inod
           end if
         end do
       end do

@@ -128,7 +128,7 @@
 !
       use m_surface_mesh_4_merge
 !
-      allocate( ele_nod_item_tmp(nnod_ele_sf) )
+      allocate( ele_nod_item_tmp(ele_nod_grp%num_item) )
       ele_nod_item_tmp = 0
 !
       end subroutine allocate_ele_gp_nod_item_tmp

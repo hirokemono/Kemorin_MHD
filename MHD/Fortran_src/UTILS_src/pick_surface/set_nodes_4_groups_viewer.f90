@@ -77,14 +77,14 @@
         call mark_node_4_ele_grp_viewer(igrp, nnod_4_surf, nnod_4_edge)
 !
         call allocate_ele_gp_nod_item_tmp
-        ied = nnod_ele_sf
-        ele_nod_item_tmp(1:ied) = ele_nod_item_sf(1:ied)
+        ied = ele_nod_grp%num_item
+        ele_nod_item_tmp(1:ied) = ele_nod_grp%item_sf(1:ied)
         call deallocate_ele_gp_nod_item_sf
 !
         call count_nod_stack_4_ele_gp_viewer(igrp)
 !
         call allocate_ele_gp_nod_item_sf
-        ele_nod_item_sf(1:ied) = ele_nod_item_tmp(1:ied)
+        ele_nod_grp%item_sf(1:ied) = ele_nod_item_tmp(1:ied)
         call deallocate_ele_gp_nod_item_tmp
 !
         call const_nod_4_ele_gp_viewer(igrp)

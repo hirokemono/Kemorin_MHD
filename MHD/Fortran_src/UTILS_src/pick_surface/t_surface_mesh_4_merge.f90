@@ -21,6 +21,8 @@
       implicit none
 !
 !
+      integer (kind = kint), parameter :: surface_id = 15
+!
       type viewer_group_data
         integer(kind = kint) :: num_item
         integer(kind = kint), allocatable :: istack_sf(:)
