@@ -46,13 +46,13 @@
       call read_control_4_merge
 !
       call set_control_4_merge(mgd_mesh1%num_pe)
-      call set_control_4_newrst
+      call set_control_4_newrst(sec_mesh1%num_pe2)
 !
 !     read outline of mesh
 !
       call set_merged_node_and_element(merge_org_mesh_file, mgd_mesh1)
 !
-      call s_set_2nd_geometry_4_serial(merged_mesh_file)
+      call s_set_2nd_geometry_4_serial(merged_mesh_file, sec_mesh1)
 !
       call deallocate_node_geometry_type(mgd_mesh1%merged%node)
       call dealloc_2nd_merge_table(sec_mesh1)
@@ -66,7 +66,7 @@
 !
       do istep = istep_start, istep_end, increment_step
         call update_restart_file(istep, org_fst_param, new_fst_param,   &
-     &      mgd_mesh1, merged_time_IO, merged_IO)
+     &      sec_mesh1, mgd_mesh1, merged_time_IO, merged_IO)
         write(*,*) 'step', istep, 'finish '
       end do
       call dealloc_phys_name_IO(merged_IO)

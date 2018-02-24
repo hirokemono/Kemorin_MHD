@@ -10,10 +10,11 @@
 !!      subroutine count_restart_data_fields                            &
 !!     &         (org_fst_param, mgd_mesh, t_IO, merged_IO)
 !!      subroutine generate_new_restart_snap                            &
-!!     &         (istep, org_fst_param, new_fst_param,                  &
+!!     &         (istep, org_fst_param, new_fst_param, sec_mesh,        &
 !!     &          mgd_mesh, t_IO, merged_IO)
 !!        type(field_IO_params), intent(in) :: org_fst_param
 !!        type(field_IO_params), intent(in) :: new_fst_param
+!!        type(second_mesh), intent(in) :: sec_mesh
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: merged_IO
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
@@ -21,10 +22,11 @@
 !!      subroutine init_by_old_restart_data                             &
 !!     &         (org_fst_param, mgd_mesh, t_IO, merged_IO)
 !!      subroutine update_restart_file                                  &
-!!     &         (istep, org_fst_param, new_fst_param,                  &
+!!     &         (istep, org_fst_param, new_fst_param, sec_mesh,        &
 !!     &          mgd_mesh, t_IO, merged_IO)
 !!        type(field_IO_params), intent(in) :: org_fst_param
 !!        type(field_IO_params), intent(in) :: new_fst_param
+!!        type(second_mesh), intent(in) :: sec_mesh
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: merged_IO
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
@@ -77,10 +79,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine generate_new_restart_snap                              &
-     &         (istep, org_fst_param, new_fst_param,                    &
+     &         (istep, org_fst_param, new_fst_param, sec_mesh,          &
      &          mgd_mesh, t_IO, merged_IO)
-!
-      use m_2nd_geometry_4_merge
 !
       use set_merged_restart_data
       use field_IO_select
@@ -88,6 +88,7 @@
       integer (kind = kint), intent(in) :: istep
       type(field_IO_params), intent(in) :: org_fst_param
       type(field_IO_params), intent(in) :: new_fst_param
+      type(second_mesh), intent(in) :: sec_mesh
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: merged_IO
@@ -116,25 +117,25 @@
 !
 !   output new restart data
 !
-      call alloc_merged_field_stack(sec_mesh1%num_pe2, merged_IO)
+      call alloc_merged_field_stack(sec_mesh%num_pe2, merged_IO)
 !
       merged_IO%istack_numnod_IO(0) = 0
-      do ip = 1, sec_mesh1%num_pe2
+      do ip = 1, sec_mesh%num_pe2
         merged_IO%istack_numnod_IO(ip)                                  &
      &      = merged_IO%istack_numnod_IO(ip-1)                          &
-     &       + sec_mesh1%subdomains_2(ip)%node%numnod
+     &       + sec_mesh%subdomains_2(ip)%node%numnod
       end do
 !
-      do ip = 1, sec_mesh1%num_pe2
+      do ip = 1, sec_mesh%num_pe2
         id_rank = ip - 1
 !
-        merged_IO%nnod_IO = sec_mesh1%subdomains_2(ip)%node%numnod
+        merged_IO%nnod_IO = sec_mesh%subdomains_2(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
         call set_new_restart_data(mgd_mesh%merged_fld,                  &
-     &      sec_mesh1%subdomains_2(ip), merged_IO)
+     &      sec_mesh%subdomains_2(ip), merged_IO)
 !
         call sel_write_step_FEM_field_file                              &
-     &     (sec_mesh1%num_pe2, id_rank, istep, new_fst_param,           &
+     &     (sec_mesh%num_pe2, id_rank, istep, new_fst_param,            &
      &      t_IO, merged_IO)
         call dealloc_phys_data_IO(merged_IO)
       end do
@@ -169,10 +170,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine update_restart_file                                    &
-     &         (istep, org_fst_param, new_fst_param,                    &
+     &         (istep, org_fst_param, new_fst_param, sec_mesh,          &
      &          mgd_mesh, t_IO, merged_IO)
-!
-      use m_2nd_geometry_4_merge
 !
       use set_merged_restart_data
       use field_IO_select
@@ -181,6 +180,7 @@
       integer (kind = kint), intent(in) :: istep
       type(field_IO_params), intent(in) :: org_fst_param
       type(field_IO_params), intent(in) :: new_fst_param
+      type(second_mesh), intent(in) :: sec_mesh
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: merged_IO
@@ -210,26 +210,26 @@
 !
 !   output new restart data
 !
-      call alloc_merged_field_stack(sec_mesh1%num_pe2, merged_IO)
+      call alloc_merged_field_stack(sec_mesh%num_pe2, merged_IO)
 !
       merged_IO%istack_numnod_IO(0) = 0
-      do ip = 1, sec_mesh1%num_pe2
+      do ip = 1, sec_mesh%num_pe2
         merged_IO%istack_numnod_IO(ip)                                  &
      &      = merged_IO%istack_numnod_IO(ip-1)                          &
-     &       + sec_mesh1%subdomains_2(ip)%node%numnod
+     &       + sec_mesh%subdomains_2(ip)%node%numnod
       end do
 !
-      do ip = 1, sec_mesh1%num_pe2
+      do ip = 1, sec_mesh%num_pe2
         id_rank = ip - 1
 !
-        merged_IO%nnod_IO = sec_mesh1%subdomains_2(ip)%node%numnod
+        merged_IO%nnod_IO = sec_mesh%subdomains_2(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
 !
         call set_new_restart_data(mgd_mesh%merged_fld,                  &
-     &      sec_mesh1%subdomains_2(ip), merged_IO)
+     &      sec_mesh%subdomains_2(ip), merged_IO)
 !
         call sel_write_step_FEM_field_file                              &
-     &     (sec_mesh1%num_pe2, id_rank, istep, new_fst_param,           &
+     &     (sec_mesh%num_pe2, id_rank, istep, new_fst_param,            &
      &      t_IO, merged_IO)
         call dealloc_phys_data_IO(merged_IO)
       end do

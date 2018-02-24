@@ -5,9 +5,8 @@
 !      subroutine deallocate_control_4_merge
 !
 !!       subroutine set_control_4_merge(num_pe)
-!!      subroutine set_control_4_newrst
-!
-!      subroutine set_control_4_newudt
+!!      subroutine set_control_4_newrst(num_pe2)
+!!      subroutine set_control_4_newudt(num_pe2)
 !
       module m_control_param_merge
 !
@@ -165,15 +164,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_newrst
+      subroutine set_control_4_newrst(num_pe2)
 !
       use m_control_data_4_merge
-      use m_2nd_geometry_4_merge
       use m_file_format_switch
       use set_control_platform_data
 !
+      integer(kind = kint), intent(inout) :: num_pe2
 !
-      call set_control_4_newudt
+!
+      call set_control_4_newudt(num_pe2)
 !
       call set_parallel_file_ctl_params(org_rst_def_head,               &
      &    source_plt%restart_file_prefix,                               &
@@ -197,18 +197,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_newudt
+      subroutine set_control_4_newudt(num_pe2)
 !
       use m_control_data_4_merge
-      use m_2nd_geometry_4_merge
       use m_file_format_switch
       use m_default_file_prefix
       use skip_comment_f
       use set_control_platform_data
 !
+      integer(kind = kint), intent(inout) :: num_pe2
+!
 !
       if (assemble_plt%ndomain_ctl%iflag .gt. 0) then
-        sec_mesh1%num_pe2 = assemble_plt%ndomain_ctl%intvalue
+        num_pe2 = assemble_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains for new grid'
         stop

@@ -5,13 +5,17 @@
 !
 !!      subroutine set_num_nod_ele_merge_type_wop1                      &
 !!     &         (nprocs, mesh_info, mgd_mesh)
-!!      subroutine set_num_nod_ele_merge_type_wop2(nprocs, mesh_info)
+!!      subroutine set_num_nod_ele_merge_type_wop2                      &
+!!     &         (nprocs, mesh_info, sec_mesh)
 !!
 !!      subroutine set_num_nod_ele_merge_type1                          &
 !!     &         (nprocs, mesh_info, mgd_mesh)
 !!        type(mesh_data), intent(in) :: mesh_info(nprocs)
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
-!      subroutine set_num_nod_ele_merge_type2(nprocs, mesh_info)
+!!      subroutine set_num_nod_ele_merge_type2                          &
+!!     &         (nprocs, mesh_info, sec_mesh)
+!!        type(mesh_data), intent(in) :: mesh_info(nprocs)
+!!        type(second_mesh), intent(inout) :: sec_mesh
 !
       module num_nod_ele_merge_by_type
 !
@@ -60,27 +64,29 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_num_nod_ele_merge_type_wop2(nprocs, mesh_info)
+      subroutine set_num_nod_ele_merge_type_wop2                        &
+     &         (nprocs, mesh_info, sec_mesh)
 !
-      use m_2nd_geometry_4_merge
+      use t_mesh_data_4_merge
       use set_2nd_geometry_4_serial
       use count_number_with_overlap
 !
       integer(kind = kint), intent(in) :: nprocs
       type(mesh_data), intent(in) :: mesh_info(nprocs)
+      type(second_mesh), intent(inout) :: sec_mesh
 !
 !
-      sec_mesh1%num_pe2 = nprocs
-      call alloc_number_of_2nd_mesh(sec_mesh1)
+      sec_mesh%num_pe2 = nprocs
+      call alloc_number_of_2nd_mesh(sec_mesh)
 !
       call set_num_nod_ele_merge_type_wop(nprocs, mesh_info,            &
-     &    sec_mesh1%subdomains_2)
-      call count_num_overlap_geom_type(sec_mesh1%num_pe2,               &
-     &    sec_mesh1%subdomains_2, sec_mesh1%merge_tbl_2)
+     &    sec_mesh%subdomains_2)
+      call count_num_overlap_geom_type(sec_mesh%num_pe2,                &
+     &    sec_mesh%subdomains_2, sec_mesh%merge_tbl_2)
 !
       call alloc_2nd_merged_geometry                                    &
-     &   (sec_mesh1%num_pe2, sec_mesh1%subdomains_2)
-      call alloc_2nd_merge_table(sec_mesh1%merge_tbl_2)
+     &   (sec_mesh%num_pe2, sec_mesh%subdomains_2)
+      call alloc_2nd_merge_table(sec_mesh%merge_tbl_2)
 !
       end subroutine set_num_nod_ele_merge_type_wop2
 !
@@ -115,27 +121,29 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_num_nod_ele_merge_type2(nprocs, mesh_info)
+      subroutine set_num_nod_ele_merge_type2                            &
+     &         (nprocs, mesh_info, sec_mesh)
 !
-      use m_2nd_geometry_4_merge
+      use t_mesh_data_4_merge
       use set_2nd_geometry_4_serial
       use count_number_with_overlap
 !
       integer(kind = kint), intent(in) :: nprocs
       type(mesh_data), intent(in) :: mesh_info(nprocs)
+      type(second_mesh), intent(inout) :: sec_mesh
 !
 !
-      sec_mesh1%num_pe2 = nprocs
-      call alloc_number_of_2nd_mesh(sec_mesh1)
+      sec_mesh%num_pe2 = nprocs
+      call alloc_number_of_2nd_mesh(sec_mesh)
 !
       call set_num_nod_ele_merge_type                                   &
-     &   (nprocs, mesh_info, sec_mesh1%subdomains_2)
-      call count_num_overlap_geom_type(sec_mesh1%num_pe2,               &
-     &    sec_mesh1%subdomains_2, sec_mesh1%merge_tbl_2)
+     &   (nprocs, mesh_info, sec_mesh%subdomains_2)
+      call count_num_overlap_geom_type(sec_mesh%num_pe2,                &
+     &    sec_mesh%subdomains_2, sec_mesh%merge_tbl_2)
 !
       call alloc_2nd_merged_geometry                                    &
-     &   (sec_mesh1%num_pe2, sec_mesh1%subdomains_2)
-      call alloc_2nd_merge_table(sec_mesh1%merge_tbl_2)
+     &   (sec_mesh%num_pe2, sec_mesh%subdomains_2)
+      call alloc_2nd_merge_table(sec_mesh%merge_tbl_2)
 !
       end subroutine set_num_nod_ele_merge_type2
 !

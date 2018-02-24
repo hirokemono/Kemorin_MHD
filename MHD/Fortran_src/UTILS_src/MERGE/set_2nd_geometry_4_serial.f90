@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui on Feb., 2007
 !
-!!      subroutine s_set_2nd_geometry_4_serial(mesh_file)
+!!      subroutine s_set_2nd_geometry_4_serial(mesh_file, sec_mesh)
 !!        type(field_IO_params), intent(in) :: mesh_file
+!!        type(second_mesh), intent(inout) :: sec_mesh
 !
       module set_2nd_geometry_4_serial
 !
@@ -23,23 +24,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_2nd_geometry_4_serial(mesh_file)
+      subroutine s_set_2nd_geometry_4_serial(mesh_file, sec_mesh)
 !
-      use m_2nd_geometry_4_merge
+      use t_mesh_data_4_merge
       use count_number_with_overlap
 !
       type(field_IO_params), intent(in) :: mesh_file
+      type(second_mesh), intent(inout) :: sec_mesh
 !
 !
-      call alloc_number_of_2nd_mesh(sec_mesh1)
+      call alloc_number_of_2nd_mesh(sec_mesh)
 !
       call set_2nd_mesh_for_single                                      &
-     &   (mesh_file, sec_mesh1%num_pe2, sec_mesh1%subdomains_2)
+     &   (mesh_file, sec_mesh%num_pe2, sec_mesh%subdomains_2)
 !
-      call count_num_overlap_geom_type(sec_mesh1%num_pe2,               &
-     &    sec_mesh1%subdomains_2, sec_mesh1%merge_tbl_2)
+      call count_num_overlap_geom_type(sec_mesh%num_pe2,                &
+     &    sec_mesh%subdomains_2, sec_mesh%merge_tbl_2)
 !
-      call alloc_2nd_merge_table(sec_mesh1%merge_tbl_2)
+      call alloc_2nd_merge_table(sec_mesh%merge_tbl_2)
 !
       end subroutine s_set_2nd_geometry_4_serial
 !
