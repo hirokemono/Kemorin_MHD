@@ -105,7 +105,7 @@
 !
        call deallocate_ioverlap_nod
        call deallocate_node_geometry_type(mgd_mesh_pm%merged%node)
-       call deallocate_2nd_merge_table
+       call dealloc_2nd_merge_table(sec_mesh1)
 !
 !
        call open_correlate_files_plane

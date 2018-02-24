@@ -227,8 +227,8 @@
 !
       call copy_subdomain_stacks(merge_tbl, merge_tbl_2)
 !
-      call allocate_2nd_merged_geometry
-      call allocate_2nd_merge_table
+      call alloc_2nd_merged_geometry(num_pe2, subdomains_2)
+      call alloc_2nd_merge_table(merge_tbl_2)
 !
       do ip = 1, num_pe
         nnod = subdomain(ip)%node%numnod

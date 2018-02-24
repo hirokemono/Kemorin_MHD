@@ -103,8 +103,8 @@
 !
       call dealloc_para_refine_itp_type
 !
-      call deallocate_number_of_2nd_mesh
-      call deallocate_2nd_merge_table
+      call dealloc_number_of_2nd_mesh(sec_mesh1)
+      call dealloc_2nd_merge_table(sec_mesh1)
       call dealloc_array_4_merge(mgd_mesh_rf)
 !
       call dealloc_interpolate_tbl_type(f2c_single)

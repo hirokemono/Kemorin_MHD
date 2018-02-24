@@ -71,15 +71,16 @@
 !
 !
       sec_mesh1%num_pe2 = nprocs
-      call allocate_number_of_2nd_mesh
+      call alloc_number_of_2nd_mesh(sec_mesh1)
 !
       call set_num_nod_ele_merge_type_wop(nprocs, mesh_info,            &
      &    sec_mesh1%subdomains_2)
       call count_num_overlap_geom_type(sec_mesh1%num_pe2,               &
      &    sec_mesh1%subdomains_2, sec_mesh1%merge_tbl_2)
 !
-      call allocate_2nd_merged_geometry
-      call allocate_2nd_merge_table
+      call alloc_2nd_merged_geometry                                    &
+     &   (sec_mesh1%num_pe2, sec_mesh1%subdomains_2)
+      call alloc_2nd_merge_table(sec_mesh1%merge_tbl_2)
 !
       end subroutine set_num_nod_ele_merge_type_wop2
 !
@@ -125,15 +126,16 @@
 !
 !
       sec_mesh1%num_pe2 = nprocs
-      call allocate_number_of_2nd_mesh
+      call alloc_number_of_2nd_mesh(sec_mesh1)
 !
       call set_num_nod_ele_merge_type                                   &
      &   (nprocs, mesh_info, sec_mesh1%subdomains_2)
       call count_num_overlap_geom_type(sec_mesh1%num_pe2,               &
      &    sec_mesh1%subdomains_2, sec_mesh1%merge_tbl_2)
 !
-      call allocate_2nd_merged_geometry
-      call allocate_2nd_merge_table
+      call alloc_2nd_merged_geometry                                    &
+     &   (sec_mesh1%num_pe2, sec_mesh1%subdomains_2)
+      call alloc_2nd_merge_table(sec_mesh1%merge_tbl_2)
 !
       end subroutine set_num_nod_ele_merge_type2
 !
