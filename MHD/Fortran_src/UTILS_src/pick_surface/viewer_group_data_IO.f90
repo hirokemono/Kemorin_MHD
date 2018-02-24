@@ -123,7 +123,8 @@
       write(surface_id,'(i16)') ngrp_nod_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_nod_sf,  &
-     &    nnod_nod_sf, nod_stack_sf, nod_gp_name_sf, nod_item_sf)
+     &    nod_nod_grp%num_item, nod_nod_grp%istack_sf,                  &
+     &    nod_gp_name_sf, nod_nod_grp%item_sf)
 !
       end subroutine write_nod_group_viewer
 !
@@ -140,13 +141,16 @@
       read(tmp_character,*) ngrp_nod_sf
 !
       call allocate_nod_grp_stack_4_surf
-      read(surface_id,*) nod_stack_sf( 1:(num_pe_sf*ngrp_nod_sf) )
+      read(surface_id,*)                                                &
+     &     nod_nod_grp%istack_sf( 1:(num_pe_sf*ngrp_nod_sf) )
 !
-      nnod_nod_sf = nod_stack_sf(ngrp_nod_sf*num_pe_sf)
+      nod_nod_grp%num_item                                              &
+     &    = nod_nod_grp%istack_sf(ngrp_nod_sf*num_pe_sf)
       call allocate_nod_grp_item_4_surf
 !
       call read_viewer_group_item(surface_id, num_pe_sf, ngrp_nod_sf,   &
-     &    nnod_nod_sf, nod_stack_sf, nod_gp_name_sf, nod_item_sf)
+     &    nod_nod_grp%num_item, nod_nod_grp%istack_sf,                  &
+     &    nod_gp_name_sf, nod_nod_grp%item_sf)
 !
       end subroutine read_nod_group_viewer
 !

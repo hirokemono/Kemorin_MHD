@@ -71,9 +71,8 @@
 !
 !
       character(len=kchara), allocatable :: nod_gp_name_sf(:)
-      integer(kind=kint ) :: ngrp_nod_sf, nnod_nod_sf
-      integer(kind=kint ), allocatable :: nod_stack_sf(:)
-      integer(kind=kint ), allocatable :: nod_item_sf(:)
+      integer(kind=kint ) :: ngrp_nod_sf
+      type(viewer_group_data), save :: nod_nod_grp
 !
       integer(kind=kint ) :: ngrp_ele_sf
       character(len=kchara), allocatable :: ele_gp_name_sf(:)
@@ -238,9 +237,7 @@
 !
 !
       allocate( nod_gp_name_sf(ngrp_nod_sf)  )
-      allocate( nod_stack_sf(0:num_pe_sf*ngrp_nod_sf)  )
-!
-      nod_stack_sf = 0
+      allocate( nod_nod_grp%istack_sf(0:num_pe_sf*ngrp_nod_sf)  )
 !
       end subroutine allocate_nod_grp_stack_4_surf
 !
@@ -278,8 +275,7 @@
 !
       subroutine allocate_nod_grp_item_4_surf
 !
-      allocate( nod_item_sf(nnod_nod_sf)  )
-      nod_item_sf = 0
+      call alloc_merged_group_item(nod_nod_grp)
 !
       end subroutine allocate_nod_grp_item_4_surf
 !

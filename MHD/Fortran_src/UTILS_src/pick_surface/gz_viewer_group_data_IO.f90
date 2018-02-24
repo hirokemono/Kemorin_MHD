@@ -143,8 +143,9 @@
       write(textbuf,'(i16,a1)') ngrp_nod_sf, char(0)
       call gz_write_textbuf_w_lf
 !
-     call write_viewer_group_data_gz(num_pe_sf, ngrp_nod_sf,           &
-     &    nnod_nod_sf, nod_stack_sf, nod_gp_name_sf, nod_item_sf)
+     call write_viewer_group_data_gz(num_pe_sf, ngrp_nod_sf,            &
+    &    nod_nod_grp%num_item, nod_nod_grp%istack_sf,                   &
+    &    nod_gp_name_sf, nod_nod_grp%item_sf)
 !
       end subroutine write_nod_group_viewer_gz
 !
@@ -160,13 +161,15 @@
       call allocate_nod_grp_stack_4_surf
 !
       call read_gz_multi_int((num_pe_sf*ngrp_nod_sf),                   &
-     &    nod_stack_sf(1))
-      nnod_nod_sf = nod_stack_sf(ngrp_nod_sf*num_pe_sf)
+     &    nod_nod_grp%istack_sf(1))
+      nod_nod_grp%num_item                                              &
+     &    = nod_nod_grp%istack_sf(ngrp_nod_sf*num_pe_sf)
 !
       call allocate_nod_grp_item_4_surf
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_nod_sf,            &
-     &    nnod_nod_sf, nod_stack_sf, nod_gp_name_sf, nod_item_sf)
+     &    nod_nod_grp%num_item, nod_nod_grp%istack_sf,                  &
+     &    nod_gp_name_sf, nod_nod_grp%item_sf)
 !
       end subroutine read_nod_group_viewer_gz
 !

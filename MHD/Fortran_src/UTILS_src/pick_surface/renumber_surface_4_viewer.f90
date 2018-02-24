@@ -101,9 +101,9 @@
       integer(kind = kint) :: inum, inod
 !
 !
-      do inum = 1, nnod_nod_sf
+      do inum = 1, nod_nod_grp%num_item
         inod = merged_grp%nod_grp%item_grp(inum)
-        nod_item_sf(inum) = inod_merge2viewer(inod)
+        nod_nod_grp%item_sf(inum) = inod_merge2viewer(inod)
       end do
 !
       end subroutine set_node_group_item_viewer
@@ -201,14 +201,14 @@
         do ip = 1, num_pe_sf
           idx = ip + (igrp-1) * num_pe_sf
           iref = inod_sf_stack(ip)
-          ist = nod_stack_sf(idx-1) + 1
+          ist = nod_nod_grp%istack_sf(idx-1) + 1
           ied = merged_grp%nod_grp%istack_grp(igrp)
 !
-          nod_stack_sf(idx) = nod_stack_sf(idx-1)
+          nod_nod_grp%istack_sf(idx) = nod_nod_grp%istack_sf(idx-1)
           do inum = ist, ied
-            inod = abs( nod_item_sf(inum) )
+            inod = abs( nod_nod_grp%item_sf(inum) )
             if ( inod .gt. iref ) exit
-            nod_stack_sf(idx:(num_pe_sf*ngrp_nod_sf)) = inum
+            nod_nod_grp%istack_sf(idx:(num_pe_sf*ngrp_nod_sf)) = inum
           end do
         end do
       end do

@@ -76,7 +76,7 @@
 !
 !
       ngrp_nod_sf = merged_grp%nod_grp%num_grp
-      nnod_nod_sf = merged_grp%nod_grp%num_item
+      nod_nod_grp%num_item = merged_grp%nod_grp%num_item
       call allocate_nod_grp_stack_4_surf
       call allocate_nod_grp_item_4_surf
 !
