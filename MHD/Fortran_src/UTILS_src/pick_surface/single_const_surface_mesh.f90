@@ -36,8 +36,8 @@
 !
       type(group_data_merged_surf), save, private :: mgd_sf_grp1
 !
-      private :: const_surf_mesh_4_viewer
       private :: find_mesh_format_4_viewer
+      private :: set_surf_domain_id_viewer
 !
 !------------------------------------------------------------------
 !

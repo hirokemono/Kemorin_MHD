@@ -99,7 +99,7 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
       call FEM_mesh_init_with_IO(T_meshes%iflag_output_SURF,            &
      &    T_meshes%mesh_file_IO, mesh, group, ele_mesh)
 !

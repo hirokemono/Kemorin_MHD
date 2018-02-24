@@ -29,7 +29,7 @@
 !
 !   set hash data for suface elements using sum of local node ID
 !
-      call const_isolated_surface_t_data                                &
+      call construct_surface_data                                       &
      &   (mgd_mesh%merged%node, mgd_mesh%merged%ele,                    &
      &    mgd_mesh%merged_surf)
 !

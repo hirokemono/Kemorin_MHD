@@ -36,8 +36,9 @@
       implicit none
 !
       type(group_data_merged_surf), save, private :: mgd_sf_grp1
-!
-      private :: const_surf_mesh_4_viewer
+      type(mesh_geometry), save, private :: mesh_p
+      type(mesh_groups), save, private ::   group_p
+      type(element_geometry), save, private :: ele_mesh_p
 !
 !------------------------------------------------------------------
 !
@@ -49,6 +50,10 @@
      &         (mesh_file, ele, surf, edge, mgd_mesh)
 !
       use find_mesh_file_format
+      use mpi_load_mesh_data
+      use parallel_FEM_mesh_init
+      use single_const_surface_mesh
+      use const_surface_data
 !
       type(field_IO_params), intent(inout) :: mesh_file
       type(element_data), intent(inout) :: ele
@@ -58,7 +63,6 @@
 !
 !
       surface_file_head = mesh_file%file_prefix
-      mgd_mesh%num_pe = nprocs
 !
       if(my_rank .eq. 0) then
         if(iflag_debug .eq. 0) write(*,*) 'find_merged_mesh_format'
@@ -68,6 +72,15 @@
       call MPI_BCAST(mesh_file%iflag_format, ione,                      &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
+      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(mesh_file, nprocs, mesh_p, group_p,           &
+     &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge)
+      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_init_with_IO'
+      call FEM_mesh_init_with_IO(izero, mesh_file,                      &
+     &    mesh_p, group_p, ele_mesh_p)
+!
+      mgd_mesh%num_pe = nprocs
+      call const_surf_mesh_4_viewer_para
 !
       if(my_rank .eq. 0) then
         write(*,*) 'const_surf_mesh_4_viewer'
@@ -80,75 +93,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine const_surf_mesh_4_viewer                               &
-     &         (mesh_file, ele, surf, edge, mgd_mesh)
-!
-      use set_merged_geometry
-      use const_merged_surf_data
-      use const_merged_surf_4_group
-      use set_surf_connect_4_viewer
-      use set_nodes_4_viewer
-      use const_edge_4_viewer
-      use set_nodes_4_groups_viewer
-      use viewer_IO_select_4_zlib
-      use single_const_surface_mesh
-!
-      type(field_IO_params), intent(in) :: mesh_file
-      type(element_data), intent(inout) :: ele
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
-      type(merged_mesh), intent(inout) :: mgd_mesh
+      subroutine const_surf_mesh_4_viewer_para
 !
 !
-!  set mesh_information
+      write(*,*) 'numsurf_iso', ele_mesh_p%surf%numsurf_iso
 !
-       write(*,*) 'set_overlapped_mesh_and_group'
-       call set_overlapped_mesh_and_group                               &
-     &    (mesh_file, ele%nnod_4_ele, mgd_mesh)
-!
-!   output grid data
-!
-       write(*,*) 'set_source_mesh_parameter'
-       call set_source_mesh_parameter                                   &
-     &    (mgd_mesh%num_pe, ele, surf, edge, mgd_mesh%merged_surf)
-!
-!  choose surface
-!
-       write(*,*) 's_const_merged_surf_data'
-       call s_const_merged_surf_data(mgd_mesh)
-!
-!       write(*,*) 'const_merged_surface_4_ele_grp'
-       call const_merged_surface_4_ele_grp                              &
-     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
-     &     mgd_sf_grp1)
-!       write(*,*) 'const_merged_surface_4_sf_grp'
-       call const_merged_surface_4_sf_grp                               &
-     &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp1)
-!
-!  pickup surface and nodes
-!
-!       write(*,*) 's_set_surf_connect_4_viewer'
-       call s_set_surf_connect_4_viewer                                 &
-     &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp1)
-!       write(*,*) 's_set_nodes_4_viewer'
-       call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh)
-!
-       write(*,*) 'set_surf_domain_id_viewer'
-       call set_surf_domain_id_viewer(mgd_mesh%merged_surf)
-!
-!
-       call dealloc_array_4_merge(mgd_mesh)
-!
-       write(*,*)  'construct_edge_4_viewer'
-       call construct_edge_4_viewer(surf, edge)
-       write(*,*)  's_set_nodes_4_groups_viewer'
-       call s_set_nodes_4_groups_viewer                                 &
-     &    (surf%nnod_4_surf, edge%nnod_4_edge)
-!
-      call sel_output_surface_grid(mesh_file%iflag_format,              &
-     &    surf%nnod_4_surf, edge%nnod_4_edge)
-!
-      end subroutine const_surf_mesh_4_viewer
+      end subroutine const_surf_mesh_4_viewer_para
 !
 !------------------------------------------------------------------
 !
