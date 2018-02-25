@@ -5,8 +5,9 @@
 !
 !!      subroutine count_nedge_4_each_domain
 !!      subroutine count_nedge_domain_4_domain
-!!      subroutine count_nedge_ele_grp_4_domain
-!!      subroutine count_nedge_surf_grp_4_domain(sf_edge_grp)
+!!      subroutine count_nedge_ele_grp_4_domain(ngrp_ele_sf)
+!!      subroutine count_nedge_surf_grp_4_domain                        &
+!!     &         (ngrp_surf_sf, sf_edge_grp)
 !!       type(viewer_group_data), intent(inout)  :: sf_edge_grp
 !
       module count_edge_domain_4_viewer
@@ -61,7 +62,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_nedge_ele_grp_4_domain
+      subroutine count_nedge_ele_grp_4_domain(ngrp_ele_sf)
+!
+      integer(kind = kint), intent(in) :: ngrp_ele_sf
 !
       integer(kind = kint) :: igrp, ip, iref, ist, inum, iedge, inod
       integer(kind = kint) :: nn, ist_grp
@@ -88,15 +91,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_nedge_surf_grp_4_domain(sf_edge_grp)
+      subroutine count_nedge_surf_grp_4_domain                          &
+     &         (ngrp_surf_sf, sf_edge_grp)
 !
+      integer(kind = kint), intent(in) :: ngrp_surf_sf
       type(viewer_group_data), intent(inout)  :: sf_edge_grp
 !
       integer(kind = kint) :: igrp, ip, iref, ist, inum, iedge, inod
       integer(kind = kint) :: nn, ist_grp
 !
 !
-      do igrp = 1, view_sf_grps%num_grp
+      do igrp = 1, ngrp_surf_sf
         ist_grp = (igrp-1)*num_pe_sf
         nn = sf_edge_grp%istack_sf(igrp*num_pe_sf)
         do ip = 1, num_pe_sf

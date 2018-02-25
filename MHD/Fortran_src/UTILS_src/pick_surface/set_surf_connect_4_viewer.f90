@@ -100,17 +100,18 @@
 !
 !     renumber element group boundary
 !
-      ngrp_ele_sf = merged_grp%ele_grp%num_grp
+      view_ele_grps%num_grp = merged_grp%ele_grp%num_grp
       ele_surf_grp%num_item = mgd_sf_grp%ntot_sf_iso_ele_grp_m
        write(*,*) 'allocate_ele_grp_stack_4_surf'
       call allocate_ele_grp_stack_4_surf
       call alloc_merged_group_item(ele_surf_grp)
 !
-      ele_gp_name_sf(1:ngrp_ele_sf)                                     &
-     &     = merged_grp%ele_grp%grp_name(1:ngrp_ele_sf)
+      ele_gp_name_sf(1:view_ele_grps%num_grp)                           &
+     &     = merged_grp%ele_grp%grp_name(1:view_ele_grps%num_grp)
 !
       call set_element_group_item_viewer(mgd_sf_grp)
-      call set_element_group_stack_viewer(mgd_sf_grp)
+      call set_element_group_stack_viewer(mgd_sf_grp,                   &
+     &    view_ele_grps%num_grp)
 !
 !     renumber surface boundary
 !

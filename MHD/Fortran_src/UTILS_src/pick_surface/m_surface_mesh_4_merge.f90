@@ -69,15 +69,15 @@
       integer(kind=kint ) :: ngrp_nod_sf
       type(viewer_group_data), save :: nod_nod_grp
 !
-      integer(kind=kint ) :: ngrp_ele_sf
+!
+!view_ele_grps%num_grp
       character(len=kchara), allocatable :: ele_gp_name_sf(:)
       type(viewer_group_data), save :: ele_surf_grp
       type(viewer_group_data), save :: ele_edge_grp
       type(viewer_group_data), save :: ele_nod_grp
 !
+      type(viewer_surface_groups), save :: view_ele_grps
       type(viewer_surface_groups), save :: view_sf_grps
-!
-!view_sf_grps%node_grp
 !
 !
       character (len = kchara) :: surface_file_head = 'in_surface'
@@ -213,13 +213,13 @@
       subroutine allocate_ele_grp_stack_4_surf
 !
 !
-      allocate( ele_gp_name_sf(ngrp_ele_sf)  )
+      allocate( ele_gp_name_sf(view_ele_grps%num_grp)  )
       call alloc_merged_group_stack                                     &
-     &   (num_pe_sf, ngrp_ele_sf, ele_surf_grp)
+     &   (num_pe_sf, view_ele_grps%num_grp, ele_surf_grp)
       call alloc_merged_group_stack                                     &
-     &   (num_pe_sf, ngrp_ele_sf, ele_edge_grp)
+     &   (num_pe_sf, view_ele_grps%num_grp, ele_edge_grp)
       call alloc_merged_group_stack                                     &
-     &   (num_pe_sf, ngrp_ele_sf, ele_nod_grp)
+     &   (num_pe_sf, view_ele_grps%num_grp, ele_nod_grp)
 !
       end subroutine allocate_ele_grp_stack_4_surf
 !

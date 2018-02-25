@@ -136,11 +136,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_element_group_stack_viewer(mgd_sf_grp)
+      subroutine set_element_group_stack_viewer(mgd_sf_grp,             &
+     &          ngrp_ele_sf)
 !
       use t_grp_data_merged_surfaces
 !
       type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      integer(kind = kint), intent(in) :: ngrp_ele_sf
 !
       integer(kind = kint) :: igrp, ip, idx, iref, ist, inum, isurf
 !

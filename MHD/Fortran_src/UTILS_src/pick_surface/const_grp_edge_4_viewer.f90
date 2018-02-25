@@ -5,12 +5,12 @@
 !
 !!      subroutine construct_edge_4_ele_grp                             &
 !!     &         (nnod_4_surf, nnod_4_edge,                             &
-!!     &          ele_surf_grp, ele_edge_grp, edge_sf_tbl)
+!!     &          ngrp_ele_sf, ele_surf_grp, ele_edge_grp, edge_sf_tbl)
 !!        type(viewer_group_data), intent(in)  :: ele_surf_grp
 !!        type(viewer_group_data), intent(inout)  :: ele_edge_grp
 !!      subroutine construct_edge_4_surf_grp                            &
 !!     &         (nnod_4_surf, nnod_4_edge,                             &
-!!     &          sf_surf_grp, sf_edge_grp, edge_sf_tbl)
+!!     &          ngrp_surf_sf, sf_surf_grp, sf_edge_grp, edge_sf_tbl)
 !!        type(viewer_group_data), intent(in)  :: sf_surf_grp
 !!        type(viewer_group_data), intent(inout)  :: sf_edge_grp
 !!        type(sum_hash_tbl), intent(inout) :: edge_sf_tbl
@@ -34,7 +34,7 @@
 !
       subroutine construct_edge_4_ele_grp                               &
      &         (nnod_4_surf, nnod_4_edge,                               &
-     &         edge_sf_tbl)
+     &          ngrp_ele_sf, edge_sf_tbl)
 !     &          ele_surf_grp, ele_edge_grp, edge_sf_tbl)
 !
       use m_surface_mesh_4_merge
@@ -42,6 +42,7 @@
       use set_edge_data_by_sf
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+      integer(kind = kint), intent(in) :: ngrp_ele_sf
 !      type(viewer_group_data), intent(in)  :: ele_surf_grp
 !      type(viewer_group_data), intent(inout)  :: ele_edge_grp
       type(sum_hash_tbl), intent(inout) :: edge_sf_tbl
@@ -105,13 +106,14 @@
 !
       subroutine construct_edge_4_surf_grp                              &
      &         (nnod_4_surf, nnod_4_edge,                               &
-     &          sf_surf_grp, sf_edge_grp, edge_sf_tbl)
+     &          ngrp_surf_sf, sf_surf_grp, sf_edge_grp, edge_sf_tbl)
 !
       use m_surface_mesh_4_merge
       use set_edge_hash_by_sf
       use set_edge_data_by_sf
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+      integer(kind = kint), intent(in) :: ngrp_surf_sf
       type(viewer_group_data), intent(in)  :: sf_surf_grp
       type(viewer_group_data), intent(inout)  :: sf_edge_grp
       type(sum_hash_tbl), intent(inout) :: edge_sf_tbl
@@ -121,7 +123,7 @@
 !
       call alloc_merged_group_item(sf_edge_grp)
 !
-      do igrp = 1, view_sf_grps%num_grp
+      do igrp = 1, ngrp_surf_sf
         ngrp = sf_surf_grp%istack_sf( igrp*num_pe_sf )                  &
      &        - sf_surf_grp%istack_sf( (igrp-1)*num_pe_sf )
         ist = sf_surf_grp%istack_sf( (igrp-1)*num_pe_sf ) + 1

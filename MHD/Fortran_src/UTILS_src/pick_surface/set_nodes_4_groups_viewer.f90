@@ -77,7 +77,7 @@
       integer(kind = kint) :: igrp, ied
 !
 !
-      do igrp = 1, ngrp_ele_sf
+      do igrp = 1, view_ele_grps%num_grp
         call mark_node_4_ele_grp_viewer(igrp, nnod_4_surf, nnod_4_edge)
 !
         call allocate_ele_gp_nod_item_tmp
