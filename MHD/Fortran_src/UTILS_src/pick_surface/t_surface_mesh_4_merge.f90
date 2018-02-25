@@ -7,6 +7,10 @@
 !>@brief Structure of surface information for pickup surface
 !!
 !!@verbatim
+!!      subroutine alloc_viewer_surf_grps_stack(num_pe, view_grps)
+!!      subroutine dealloc_viewer_surf_grps_stack(view_grps)
+!!        type(viewer_surface_groups), intent(inout) :: view_grps
+!!
 !!      subroutine alloc_merged_group_stack(num_pe, ngrp, group)
 !!      subroutine alloc_merged_group_item(group)
 !!      subroutine dealloc_merged_group_stack(group)
@@ -28,6 +32,15 @@
         integer(kind = kint), allocatable :: istack_sf(:)
         integer(kind = kint), allocatable :: item_sf(:)
       end type viewer_group_data
+!
+      type viewer_surface_groups
+        integer(kind = kint) :: num_grp
+        character(len=kchara), allocatable :: grp_name(:)
+        type(viewer_group_data) :: surf_grp
+        type(viewer_group_data) :: edge_grp
+        type(viewer_group_data) :: node_grp
+      end type viewer_surface_groups
+!
 !
       type viewer_mesh_data
         integer(kind = kint)  :: num_pe_sf
@@ -64,7 +77,6 @@
         type(viewer_group_data) :: ele_edge_grp
         type(viewer_group_data) :: ele_nod_grp
 !
-        integer(kind = kint) :: ngrp_surf_sf
         character(len=kchara), allocatable :: surf_gp_name_sf(:)
         type(viewer_group_data) :: sf_surf_grp
         type(viewer_group_data) :: sf_edge_grp
@@ -75,6 +87,42 @@
 !
       contains
 !
+!------------------------------------------------------------------
+!
+!      call alloc_viewer_surf_grps_stack(num_pe_sf, view_grps)
+      subroutine alloc_viewer_surf_grps_stack(num_pe, view_grps)
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(viewer_surface_groups), intent(inout) :: view_grps
+!
+!
+      allocate(view_grps%grp_name(view_grps%num_grp))
+!
+      call alloc_merged_group_stack                                     &
+     &   (num_pe, view_grps%num_grp, view_grps%surf_grp)
+      call alloc_merged_group_stack                                     &
+     &   (num_pe, view_grps%num_grp, view_grps%edge_grp)
+      call alloc_merged_group_stack                                     &
+     &   (num_pe, view_grps%num_grp, view_grps%node_grp)
+!
+      end subroutine alloc_viewer_surf_grps_stack
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_viewer_surf_grps_stack(view_grps)
+!
+      type(viewer_surface_groups), intent(inout) :: view_grps
+!
+!
+      deallocate(view_grps%grp_name)
+!
+      call dealloc_merged_group_stack(view_grps%surf_grp)
+      call dealloc_merged_group_stack(view_grps%edge_grp)
+      call dealloc_merged_group_stack(view_grps%node_grp)
+!
+      end subroutine dealloc_viewer_surf_grps_stack
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine alloc_merged_group_stack(num_pe, ngrp, group)

@@ -168,7 +168,7 @@
       integer(kind = kint) :: inum, isurf
 !
 !
-      do igrp = 1, ngrp_surf_sf
+      do igrp = 1, view_sf_grps%num_grp
         do ip = 1, num_pe_sf
           idx = ip + (igrp-1) * num_pe_sf
           iref = isurf_sf_stack(ip)

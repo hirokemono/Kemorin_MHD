@@ -10,18 +10,8 @@
 !!      subroutine read_nod_group_viewer_gz
 !!      subroutine write_ele_group_viewer_gz
 !!      subroutine read_ele_group_viewer_gz
-!!      subroutine write_surf_group_viewer_gz                           &
-!!     &         (num_pe_sf, ngrp_surf_sf, surf_gp_name_sf,             &
-!!     &          sf_surf_grp, sf_edge_grp, sf_nod_grp)
-!!        type(viewer_group_data), intent(in) :: sf_surf_grp
-!!        type(viewer_group_data), intent(in) :: sf_edge_grp
-!!        type(viewer_group_data), intent(in) :: sf_nod_grp
-!!      subroutine read_surf_group_viewer_gz                            &
-!!     &         (num_pe_sf, ngrp_surf_sf, surf_gp_name_sf,             &
-!!     &          sf_surf_grp, sf_edge_grp, sf_nod_grp)
-!!        type(viewer_group_data), intent(inout) :: sf_surf_grp
-!!        type(viewer_group_data), intent(inout) :: sf_edge_grp
-!!        type(viewer_group_data), intent(inout) :: sf_nod_grp
+!!      subroutine write_surf_group_viewer_gz
+!!      subroutine read_surf_group_viewer_gz
 !
       module gz_viewer_group_data_IO
 !
@@ -283,19 +273,9 @@
 !------------------------------------------------------------------
 !
       subroutine write_surf_group_viewer_gz
-!     &         (num_pe_sf, ngrp_surf_sf, surf_gp_name_sf,               &
-!     &          sf_surf_grp, sf_edge_grp, sf_nod_grp)
 !
       use m_surface_mesh_4_merge
       use m_fem_mesh_labels
-!
-!      integer(kind = kint), intent(in) :: num_pe_sf
-!      integer(kind = kint), intent(in) :: ngrp_surf_sf
-!      character(len=kchara), intent(in)                                 &
-!     &                      :: surf_gp_name_sf(ngrp_surf_sf)
-!      type(viewer_group_data), intent(in) :: sf_surf_grp
-!      type(viewer_group_data), intent(in) :: sf_edge_grp
-!      type(viewer_group_data), intent(in) :: sf_nod_grp
 !
 !
       textbuf = hd_fem_sfgrp() // char(0)
@@ -305,10 +285,10 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(2i16,a1)')                                        &
-     &    ngrp_surf_sf, sf_surf_grp%num_item, char(0)
+     &    view_sf_grps%num_grp, sf_surf_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_viewer_group_data_gz(num_pe_sf, ngrp_surf_sf,          &
+      call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
      &    sf_surf_grp%num_item, sf_surf_grp%istack_sf, surf_gp_name_sf, &
      &    sf_surf_grp%item_sf)
 !
@@ -322,7 +302,7 @@
       write(textbuf,'(i16,a1)') sf_nod_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_viewer_group_data_gz(num_pe_sf, ngrp_surf_sf,          &
+      call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
      &    sf_nod_grp%num_item, sf_nod_grp%istack_sf, surf_gp_name_sf,   &
      &    sf_nod_grp%item_sf)
 !
@@ -335,7 +315,7 @@
       write(textbuf,'(i16,a1)') sf_edge_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_viewer_group_data_gz(num_pe_sf, ngrp_surf_sf,          &
+      call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
      &    sf_edge_grp%num_item, sf_edge_grp%istack_sf, surf_gp_name_sf, &
      &    sf_edge_grp%item_sf)
 !
@@ -344,33 +324,23 @@
 !------------------------------------------------------------------
 !
       subroutine read_surf_group_viewer_gz
-!     &         (num_pe_sf, ngrp_surf_sf, surf_gp_name_sf,               &
-!     &          sf_surf_grp, sf_edge_grp, sf_nod_grp)
 !
       use m_surface_mesh_4_merge
-!
-!      integer(kind = kint), intent(in) :: num_pe_sf
-!      integer(kind = kint), intent(inout) :: ngrp_surf_sf
-!      character(len=kchara), intent(inout)                              &
-!     &                      :: surf_gp_name_sf(ngrp_surf_sf)
-!      type(viewer_group_data), intent(inout) :: sf_surf_grp
-!      type(viewer_group_data), intent(inout) :: sf_edge_grp
-!      type(viewer_group_data), intent(inout) :: sf_nod_grp
 !
 !
 !      write(surface_id,'(a)') '! 4.3 surface group'
 !      write(surface_id,'(a)') '! 4.3.1 surface data'
 !
-      call skip_gz_comment_int(ngrp_surf_sf)
-      read(textbuf,*) ngrp_surf_sf, sf_surf_grp%num_item
+      call skip_gz_comment_int(view_sf_grps%num_grp)
+      read(textbuf,*) view_sf_grps%num_grp, sf_surf_grp%num_item
 !
       call allocate_surf_grp_stack_4_surf
 !
-      call read_gz_multi_int((num_pe_sf*ngrp_surf_sf),                  &
+      call read_gz_multi_int((num_pe_sf*view_sf_grps%num_grp),          &
      &    sf_surf_grp%istack_sf(1))
       call alloc_merged_group_item(sf_surf_grp)
 !
-      call read_viewer_group_item_gz(num_pe_sf, ngrp_surf_sf,           &
+      call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
      &    sf_surf_grp%num_item, sf_surf_grp%istack_sf,                  &
      &    surf_gp_name_sf, sf_surf_grp%item_sf)
 !
@@ -378,11 +348,11 @@
 !
       call skip_gz_comment_int(sf_nod_grp%num_item)
 !
-      call read_gz_multi_int((num_pe_sf*ngrp_surf_sf),                  &
+      call read_gz_multi_int((num_pe_sf*view_sf_grps%num_grp),          &
      &    sf_nod_grp%istack_sf(1))
       call alloc_merged_group_item(sf_nod_grp)
 !
-      call read_viewer_group_item_gz(num_pe_sf, ngrp_surf_sf,           &
+      call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
      &    sf_nod_grp%num_item, sf_nod_grp%istack_sf, surf_gp_name_sf,   &
      &    sf_nod_grp%item_sf)
 !
@@ -390,11 +360,11 @@
 !
       call skip_gz_comment_int(sf_edge_grp%num_item)
 !
-      call read_gz_multi_int((num_pe_sf*ngrp_surf_sf),                  &
+      call read_gz_multi_int((num_pe_sf*view_sf_grps%num_grp),          &
      &    sf_edge_grp%istack_sf(1))
       call alloc_merged_group_item(sf_edge_grp)
 !
-      call read_viewer_group_item_gz(num_pe_sf, ngrp_surf_sf,           &
+      call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
      &    sf_edge_grp%num_item, sf_edge_grp%istack_sf, surf_gp_name_sf, &
      &    sf_edge_grp%item_sf)
 !

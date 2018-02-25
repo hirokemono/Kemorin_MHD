@@ -106,7 +106,7 @@
 !
       call alloc_merged_group_item(sf_edge_grp)
 !
-      do igrp = 1, ngrp_surf_sf
+      do igrp = 1, view_sf_grps%num_grp
         ngrp = sf_surf_grp%istack_sf( igrp*num_pe_sf )                  &
      &        - sf_surf_grp%istack_sf( (igrp-1)*num_pe_sf )
         ist = sf_surf_grp%istack_sf( (igrp-1)*num_pe_sf ) + 1

@@ -93,7 +93,7 @@
       integer(kind = kint) :: nn, ist_grp
 !
 !
-      do igrp = 1, ngrp_surf_sf
+      do igrp = 1, view_sf_grps%num_grp
         ist_grp = (igrp-1)*num_pe_sf
         nn = sf_edge_grp%istack_sf(igrp*num_pe_sf)
         do ip = 1, num_pe_sf

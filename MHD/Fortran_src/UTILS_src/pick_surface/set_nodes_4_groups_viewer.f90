@@ -101,7 +101,7 @@
       integer(kind = kint) :: igrp, ied
 !
 !
-      do igrp = 1, ngrp_surf_sf
+      do igrp = 1, view_sf_grps%num_grp
         call mark_node_4_surf_grp_viewer                                &
      &     (igrp, nnod_4_surf, nnod_4_edge)
 !

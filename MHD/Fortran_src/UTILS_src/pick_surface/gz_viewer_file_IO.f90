@@ -60,8 +60,6 @@
 !
 !      write(*,*) 'write_surf_group_viewer_gz'
       call write_surf_group_viewer_gz
-!     &         (num_pe_sf, ngrp_surf_sf, surf_gp_name_sf,               &
-!     &          sf_surf_grp, sf_edge_grp, sf_nod_grp)
 !
       call close_gzfile_f
 !
@@ -112,8 +110,6 @@
 !
 !      write(*,*) 'read_surf_group_viewer_gz'
       call read_surf_group_viewer_gz
-!     &         (num_pe_sf, ngrp_surf_sf, surf_gp_name_sf,               &
-!     &          sf_surf_grp, sf_edge_grp, sf_nod_grp)
 !
       call close_gzfile_f
 !
