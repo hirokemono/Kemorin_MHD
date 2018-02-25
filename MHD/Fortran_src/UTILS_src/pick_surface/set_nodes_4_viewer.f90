@@ -80,7 +80,7 @@
       call allocate_nod_grp_stack_4_surf
       call alloc_merged_group_item(view_nod_grps%node_grp)
 !
-      nod_gp_name_sf(1:ngrp_nod_sf)                                     &
+      view_nod_grps%grp_name(1:ngrp_nod_sf)                             &
      &     = merged_grp%nod_grp%grp_name(1:ngrp_nod_sf)
 !
       call set_node_group_item_viewer(merged_grp,                       &

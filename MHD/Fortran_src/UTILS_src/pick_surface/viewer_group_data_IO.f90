@@ -119,7 +119,7 @@
       write(surface_id,'(i16)') ngrp_nod_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_nod_sf,  &
-     &    nod_gp_name_sf, view_nod_grps%node_grp)
+     &    view_nod_grps%grp_name, view_nod_grps%node_grp)
 !
       end subroutine write_nod_group_viewer
 !
@@ -146,7 +146,7 @@
       call alloc_merged_group_item(view_nod_grps%node_grp)
 !
       call read_viewer_group_item(surface_id, num_pe_sf, ngrp_nod_sf,   &
-     &    nod_gp_name_sf, view_nod_grps%node_grp)
+     &    view_nod_grps%grp_name, view_nod_grps%node_grp)
 !
       end subroutine read_nod_group_viewer
 !

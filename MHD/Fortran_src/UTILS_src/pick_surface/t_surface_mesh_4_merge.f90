@@ -76,7 +76,6 @@
         type(viewer_group_data) :: domain_edge_grp
         type(viewer_group_data) :: domain_nod_grp
 !
-        character(len=kchara), allocatable :: nod_gp_name_sf(:)
         integer(kind = kint) :: ngrp_nod_sf
       end type viewer_groups
 !
