@@ -3,10 +3,14 @@
 !
 !      Written by Kemorin on Jan., 2007
 !
-!!      subroutine write_domain_group_viewer(domain_nod_grp)
+!!      subroutine write_domain_group_viewer                            &
+!!     &         (domain_nod_grp, domain_edge_grp)
 !!        type(viewer_group_data), intent(in) :: domain_nod_grp
-!!      subroutine read_domain_group_viewer(domain_nod_grp)
+!!        type(viewer_group_data), intent(in) :: domain_edge_grp
+!!      subroutine read_domain_group_viewer                             &
+!!     &         (domain_nod_grp, domain_edge_grp)
 !!        type(viewer_group_data), intent(inout) :: domain_nod_grp
+!!        type(viewer_group_data), intent(inout) :: domain_edge_grp
 !!
 !!      subroutine write_nod_group_viewer
 !!      subroutine read_nod_group_viewer
@@ -33,11 +37,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_domain_group_viewer(domain_nod_grp)
+      subroutine write_domain_group_viewer                              &
+     &         (domain_nod_grp, domain_edge_grp)
 !
       use m_surface_mesh_4_merge
 !
       type(viewer_group_data), intent(in) :: domain_nod_grp
+      type(viewer_group_data), intent(in) :: domain_edge_grp
 !
 !
       write(surface_id,'(a)') '!'
@@ -73,13 +79,15 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_domain_group_viewer(domain_nod_grp)
+      subroutine read_domain_group_viewer                               &
+     &         (domain_nod_grp, domain_edge_grp)
 !
       use m_surface_mesh_4_merge
 !
       use skip_comment_f
 !
       type(viewer_group_data), intent(inout) :: domain_nod_grp
+      type(viewer_group_data), intent(inout) :: domain_edge_grp
 !
 !
 !      write(surface_id,'(a)') '! 3. node ID for domain boundary'

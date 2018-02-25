@@ -4,7 +4,8 @@
 !     Written by H. Matsui on Jan., 2007
 !
 !!      subroutine count_nedge_4_each_domain
-!!      subroutine count_nedge_domain_4_domain
+!!      subroutine count_nedge_domain_4_domain(domain_edge_grp)
+!!        type(viewer_group_data), intent(inout) :: domain_edge_grp
 !!      subroutine count_nedge_ele_grp_4_domain                         &
 !!     &         (ngrp_ele_sf, ele_edge_grp)
 !!        type(viewer_group_data), intent(inout) :: ele_edge_grp
@@ -44,7 +45,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_nedge_domain_4_domain
+      subroutine count_nedge_domain_4_domain(domain_edge_grp)
+!
+      type(viewer_group_data), intent(inout) :: domain_edge_grp
 !
       integer(kind = kint) :: ip, iref, ist, inum, iedge, inod
 !

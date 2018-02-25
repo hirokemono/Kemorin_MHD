@@ -73,7 +73,6 @@
 !
       type viewer_groups
         type(viewer_group_data) :: domain_surf_grp
-        type(viewer_group_data) :: domain_edge_grp
       end type viewer_groups
 !
 !------------------------------------------------------------------

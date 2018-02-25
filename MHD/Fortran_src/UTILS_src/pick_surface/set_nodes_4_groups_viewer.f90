@@ -59,7 +59,8 @@
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
 !
 !
-      call mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge)
+      call mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge,          &
+     &    domain_grps%edge_grp)
       call count_nod_stack_4_domain_viewer(domain_grps%node_grp)
       call alloc_merged_group_item(domain_grps%node_grp)
       call const_nod_4_domain_viewer(domain_grps%node_grp)
@@ -78,7 +79,8 @@
 !
 !
       do igrp = 1, view_ele_grps%num_grp
-        call mark_node_4_ele_grp_viewer(igrp, nnod_4_surf, nnod_4_edge, &
+        call mark_node_4_ele_grp_viewer                                 &
+     &     (igrp, nnod_4_surf, nnod_4_edge, domain_grps%edge_grp,       &
      &      view_ele_grps%surf_grp, view_ele_grps%edge_grp)
 !
         call allocate_ele_gp_nod_item_tmp(view_ele_grps%node_grp)
@@ -111,7 +113,7 @@
 !
       do igrp = 1, view_sf_grps%num_grp
         call mark_node_4_surf_grp_viewer                                &
-     &     (igrp, nnod_4_surf, nnod_4_edge,                             &
+     &     (igrp, nnod_4_surf, nnod_4_edge, domain_grps%edge_grp,       &
      &      view_sf_grps%surf_grp, view_sf_grps%edge_grp)
 !
         call allocate_sf_gp_nod_item_tmp(view_sf_grps%node_grp)

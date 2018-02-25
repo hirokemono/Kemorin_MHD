@@ -3,15 +3,19 @@
 !
 !      Written by Kemorin on Jan., 2007
 !
-!!      subroutine mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge)
+!!      subroutine mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge,  &
+!!     &          domain_edge_grp)
+!!        type(viewer_group_data), intent(in) :: domain_edge_grp
 !!      subroutine mark_node_4_ele_grp_viewer                           &
 !!     &         (igrp, nnod_4_surf, nnod_4_edge,                       &
-!!     &          ele_surf_grp, ele_edge_grp)
+!!     &          domain_edge_grp, ele_surf_grp, ele_edge_grp)
+!!        type(viewer_group_data), intent(in) :: domain_edge_grp
 !!        type(viewer_group_data), intent(in) :: ele_surf_grp
 !!        type(viewer_group_data), intent(in) :: ele_edge_grp
 !!      subroutine mark_node_4_surf_grp_viewer                          &
 !!     &         (igrp, nnod_4_surf, nnod_4_edge,                       &
-!!     &          sf_surf_grp, sf_edge_grp)
+!!     &          domain_edge_grp, sf_surf_grp, sf_edge_grp)
+!!        type(viewer_group_data), intent(in) :: domain_edge_grp
 !!        type(viewer_group_data), intent(in)  :: sf_surf_grp
 !!        type(viewer_group_data), intent(in)  :: sf_edge_grp
 !!
@@ -45,11 +49,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge)
+      subroutine mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge,    &
+     &          domain_edge_grp)
 !
       use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+      type(viewer_group_data), intent(in) :: domain_edge_grp
 !
       integer(kind = kint) :: k1, inum, isurf, iedge, inod
 !
@@ -77,7 +83,7 @@
 !
       subroutine mark_node_4_ele_grp_viewer                             &
      &         (igrp, nnod_4_surf, nnod_4_edge,                         &
-     &          ele_surf_grp, ele_edge_grp)
+     &          domain_edge_grp, ele_surf_grp, ele_edge_grp)
 !
       use m_surface_mesh_4_merge
 !
@@ -85,6 +91,7 @@
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       type(viewer_group_data), intent(in) :: ele_surf_grp
       type(viewer_group_data), intent(in) :: ele_edge_grp
+      type(viewer_group_data), intent(in) :: domain_edge_grp
 !
       integer(kind = kint) :: k1, ist, ied, inum, isurf, iedge, inod
 !
@@ -117,12 +124,13 @@
 !
       subroutine mark_node_4_surf_grp_viewer                            &
      &         (igrp, nnod_4_surf, nnod_4_edge,                         &
-     &          sf_surf_grp, sf_edge_grp)
+     &          domain_edge_grp, sf_surf_grp, sf_edge_grp)
 !
       use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+      type(viewer_group_data), intent(in) :: domain_edge_grp
       type(viewer_group_data), intent(in)  :: sf_surf_grp
       type(viewer_group_data), intent(in)  :: sf_edge_grp
 !

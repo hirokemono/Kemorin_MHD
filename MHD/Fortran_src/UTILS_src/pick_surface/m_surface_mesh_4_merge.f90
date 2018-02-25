@@ -60,10 +60,9 @@
 !
       integer(kind=kint ), parameter :: ngrp_domain = ione
       type(viewer_group_data), save :: domain_surf_grp
-      type(viewer_group_data), save :: domain_edge_grp
 !
       type(viewer_surface_groups), save :: domain_grps
-!domain_grps%node_grp
+!domain_grps%edge_grp
 !
       type(viewer_node_groups), save :: view_nod_grps
       type(viewer_surface_groups), save :: view_ele_grps
@@ -177,12 +176,18 @@
       subroutine allocate_domain_stack_4_surf
 !
 !
+      domain_grps%num_grp = 1
+!
+      allocate(domain_grps%grp_name(domain_grps%num_grp))
+!
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, ngrp_domain, domain_surf_grp)
       call alloc_merged_group_stack                                     &
-     &   (num_pe_sf, ngrp_domain, domain_edge_grp)
+     &   (num_pe_sf, ngrp_domain, domain_grps%edge_grp)
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, ngrp_domain, domain_grps%node_grp)
+!
+      domain_grps%grp_name = 'subdomains'
 !
       end subroutine allocate_domain_stack_4_surf
 !
