@@ -60,9 +60,9 @@
 !
 !
       call mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge)
-      call count_nod_stack_4_domain_viewer
-      call alloc_merged_group_item(domain_nod_grp)
-      call const_nod_4_domain_viewer
+      call count_nod_stack_4_domain_viewer(domain_grps%node_grp)
+      call alloc_merged_group_item(domain_grps%node_grp)
+      call const_nod_4_domain_viewer(domain_grps%node_grp)
 !
       end subroutine set_nod_4_domain_viewer
 !

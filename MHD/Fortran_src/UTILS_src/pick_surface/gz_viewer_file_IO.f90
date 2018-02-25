@@ -50,7 +50,7 @@
       call write_edge_connect_viewer_gz(nnod_4_edge)
 !
 !      write(*,*) 'write_domain_group_viewer_gz'
-      call write_domain_group_viewer_gz
+      call write_domain_group_viewer_gz(domain_grps%node_grp)
 !
 !      write(*,*) 'write_nod_group_viewer_gz'
       call write_nod_group_viewer_gz
@@ -100,7 +100,7 @@
       call allocate_domain_stack_4_surf
 !
 !      write(*,*) 'read_domain_group_viewer_gz'
-      call read_domain_group_viewer_gz
+      call read_domain_group_viewer_gz(domain_grps%node_grp)
 !
 !      write(*,*) 'read_nod_group_viewer_gz'
       call read_nod_group_viewer_gz
