@@ -120,7 +120,7 @@
       call allocate_surf_grp_stack_4_surf
       call alloc_merged_group_item(sf_surf_grp)
 !
-      surf_gp_name_sf(1:view_sf_grps%num_grp)                           &
+      view_sf_grps%grp_name(1:view_sf_grps%num_grp)                     &
      &        = merged_grp%surf_grp%grp_name(1:view_sf_grps%num_grp)
 !
       call set_surface_group_item_viewer(mgd_sf_grp)

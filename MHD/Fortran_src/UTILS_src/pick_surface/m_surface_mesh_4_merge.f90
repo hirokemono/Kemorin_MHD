@@ -79,7 +79,6 @@
       type(viewer_surface_groups), save :: view_sf_grps
 !
 !view_sf_grps%num_grp
-      character(len=kchara), allocatable :: surf_gp_name_sf(:)
       type(viewer_group_data), save :: sf_surf_grp
       type(viewer_group_data), save :: sf_edge_grp
       type(viewer_group_data), save :: sf_nod_grp
@@ -233,7 +232,7 @@
       subroutine allocate_surf_grp_stack_4_surf
 !
 !
-      allocate( surf_gp_name_sf(view_sf_grps%num_grp)  )
+      allocate( view_sf_grps%grp_name(view_sf_grps%num_grp)  )
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, view_sf_grps%num_grp, sf_surf_grp)
       call alloc_merged_group_stack                                     &

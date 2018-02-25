@@ -289,8 +289,8 @@
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
-     &    sf_surf_grp%num_item, sf_surf_grp%istack_sf, surf_gp_name_sf, &
-     &    sf_surf_grp%item_sf)
+     &    sf_surf_grp%num_item, sf_surf_grp%istack_sf,                  &
+     &    view_sf_grps%grp_name, sf_surf_grp%item_sf)
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
@@ -303,8 +303,8 @@
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
-     &    sf_nod_grp%num_item, sf_nod_grp%istack_sf, surf_gp_name_sf,   &
-     &    sf_nod_grp%item_sf)
+     &    sf_nod_grp%num_item, sf_nod_grp%istack_sf,                    &
+     &    view_sf_grps%grp_name, sf_nod_grp%item_sf)
 !
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
@@ -316,8 +316,8 @@
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
-     &    sf_edge_grp%num_item, sf_edge_grp%istack_sf, surf_gp_name_sf, &
-     &    sf_edge_grp%item_sf)
+     &    sf_edge_grp%num_item, sf_edge_grp%istack_sf,                  &
+     &    view_sf_grps%grp_name, sf_edge_grp%item_sf)
 !
       end subroutine write_surf_group_viewer_gz
 !
@@ -342,7 +342,7 @@
 !
       call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
      &    sf_surf_grp%num_item, sf_surf_grp%istack_sf,                  &
-     &    surf_gp_name_sf, sf_surf_grp%item_sf)
+     &    view_sf_grps%grp_name, sf_surf_grp%item_sf)
 !
 !      write(surface_id,'(a)') '! 4.3.2 node data'
 !
@@ -353,8 +353,8 @@
       call alloc_merged_group_item(sf_nod_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
-     &    sf_nod_grp%num_item, sf_nod_grp%istack_sf, surf_gp_name_sf,   &
-     &    sf_nod_grp%item_sf)
+     &    sf_nod_grp%num_item, sf_nod_grp%istack_sf,                    &
+     &    view_sf_grps%grp_name, sf_nod_grp%item_sf)
 !
 !      write(surface_id,'(a)') '! 4.3.3 edge data'
 !
@@ -365,8 +365,8 @@
       call alloc_merged_group_item(sf_edge_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
-     &    sf_edge_grp%num_item, sf_edge_grp%istack_sf, surf_gp_name_sf, &
-     &    sf_edge_grp%item_sf)
+     &    sf_edge_grp%num_item, sf_edge_grp%istack_sf,                  &
+     &    view_sf_grps%grp_name, sf_edge_grp%item_sf)
 !
       end subroutine read_surf_group_viewer_gz
 !

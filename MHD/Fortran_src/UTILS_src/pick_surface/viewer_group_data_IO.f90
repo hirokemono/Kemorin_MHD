@@ -260,8 +260,8 @@
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe_sf, view_sf_grps%num_grp,                  &
-     &    sf_surf_grp%num_item, sf_surf_grp%istack_sf, surf_gp_name_sf, &
-     &    sf_surf_grp%item_sf)
+     &    sf_surf_grp%num_item, sf_surf_grp%istack_sf,                  &
+     &    view_sf_grps%grp_name, sf_surf_grp%item_sf)
 !
 !
       write(surface_id,'(a)') '!'
@@ -271,8 +271,8 @@
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe_sf, view_sf_grps%num_grp,                  &
-     &    sf_nod_grp%num_item, sf_nod_grp%istack_sf, surf_gp_name_sf,   &
-     &    sf_nod_grp%item_sf)
+     &    sf_nod_grp%num_item, sf_nod_grp%istack_sf,                    &
+     &    view_sf_grps%grp_name, sf_nod_grp%item_sf)
 !
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '! 4.3.3 edge data'
@@ -281,8 +281,8 @@
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe_sf, view_sf_grps%num_grp,                  &
-     &    sf_edge_grp%num_item, sf_edge_grp%istack_sf, surf_gp_name_sf, &
-     &    sf_edge_grp%item_sf)
+     &    sf_edge_grp%num_item, sf_edge_grp%istack_sf,                  &
+     &    view_sf_grps%grp_name, sf_edge_grp%item_sf)
 !
       end subroutine write_surf_group_viewer
 !
@@ -306,7 +306,7 @@
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe_sf, view_sf_grps%num_grp,                  &
      &    sf_surf_grp%num_item, sf_surf_grp%istack_sf,                  &
-     &    surf_gp_name_sf, sf_surf_grp%item_sf)
+     &    view_sf_grps%grp_name, sf_surf_grp%item_sf)
 !
 !      write(surface_id,'(a)') '! 4.3.2 node data'
 !
@@ -319,8 +319,8 @@
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe_sf, view_sf_grps%num_grp,                  &
-     &    sf_nod_grp%num_item, sf_nod_grp%istack_sf, surf_gp_name_sf,   &
-     &    sf_nod_grp%item_sf)
+     &    sf_nod_grp%num_item, sf_nod_grp%istack_sf,                    &
+     &    view_sf_grps%grp_name, sf_nod_grp%item_sf)
 !
 !      write(surface_id,'(a)') '! 4.3.3 edge data'
 !
@@ -333,8 +333,8 @@
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe_sf, view_sf_grps%num_grp,                  &
-     &    sf_edge_grp%num_item, sf_edge_grp%istack_sf, surf_gp_name_sf, &
-     &    sf_edge_grp%item_sf)
+     &    sf_edge_grp%num_item, sf_edge_grp%istack_sf,                  &
+     &    view_sf_grps%grp_name, sf_edge_grp%item_sf)
 !
       end subroutine read_surf_group_viewer
 !

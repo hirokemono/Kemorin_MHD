@@ -77,7 +77,6 @@
         type(viewer_group_data) :: ele_edge_grp
         type(viewer_group_data) :: ele_nod_grp
 !
-        character(len=kchara), allocatable :: surf_gp_name_sf(:)
         type(viewer_group_data) :: sf_surf_grp
         type(viewer_group_data) :: sf_edge_grp
         type(viewer_group_data) :: sf_nod_grp
