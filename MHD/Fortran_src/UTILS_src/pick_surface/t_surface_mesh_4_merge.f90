@@ -71,8 +71,6 @@
         integer(kind = kint) :: ngrp_nod_sf
         type(viewer_group_data) :: nod_nod_grp
 !
-        type(viewer_group_data) :: ele_surf_grp
-        type(viewer_group_data) :: ele_edge_grp
         type(viewer_group_data) :: ele_nod_grp
       end type viewer_groups
 !

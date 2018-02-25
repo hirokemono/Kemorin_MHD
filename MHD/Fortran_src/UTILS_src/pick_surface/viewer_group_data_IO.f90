@@ -181,11 +181,11 @@
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '! 4.2.3 edge data'
       write(surface_id,'(a)') '!'
-      write(surface_id,'(i16)') ele_edge_grp%num_item
+      write(surface_id,'(i16)') view_ele_grps%edge_grp%num_item
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe_sf, view_ele_grps%num_grp,                 &
-     &    view_ele_grps%grp_name, ele_edge_grp)
+     &    view_ele_grps%grp_name, view_ele_grps%edge_grp)
 !
       end subroutine write_ele_group_viewer
 !
@@ -232,14 +232,14 @@
 !      write(surface_id,'(a)') '! 4.2.3 edge data'
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) ele_edge_grp%num_item
+      read(tmp_character,*) view_ele_grps%edge_grp%num_item
 !
-      read(surface_id,*)  ele_edge_grp%istack_sf(1:num)
-      call alloc_merged_group_item(ele_edge_grp)
+      read(surface_id,*)  view_ele_grps%edge_grp%istack_sf(1:num)
+      call alloc_merged_group_item(view_ele_grps%edge_grp)
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe_sf, view_ele_grps%num_grp,                 &
-     &    view_ele_grps%grp_name, ele_edge_grp)
+     &    view_ele_grps%grp_name, view_ele_grps%edge_grp)
 !
       end subroutine read_ele_group_viewer
 !

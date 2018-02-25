@@ -70,8 +70,7 @@
       type(viewer_group_data), save :: nod_nod_grp
 !
 !
-!view_ele_grps%edge_grp
-      type(viewer_group_data), save :: ele_edge_grp
+!view_ele_grps%node_grp
       type(viewer_group_data), save :: ele_nod_grp
 !
       type(viewer_surface_groups), save :: view_ele_grps
@@ -215,7 +214,7 @@
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, view_ele_grps%num_grp, view_ele_grps%surf_grp)
       call alloc_merged_group_stack                                     &
-     &   (num_pe_sf, view_ele_grps%num_grp, ele_edge_grp)
+     &   (num_pe_sf, view_ele_grps%num_grp, view_ele_grps%edge_grp)
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, view_ele_grps%num_grp, ele_nod_grp)
 !

@@ -79,7 +79,7 @@
 !
       do igrp = 1, view_ele_grps%num_grp
         call mark_node_4_ele_grp_viewer(igrp, nnod_4_surf, nnod_4_edge, &
-     &      view_ele_grps%surf_grp)
+     &      view_ele_grps%surf_grp, view_ele_grps%edge_grp)
 !
         call allocate_ele_gp_nod_item_tmp
         ied = ele_nod_grp%num_item
