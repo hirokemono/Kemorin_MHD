@@ -116,9 +116,10 @@
       use m_fem_mesh_labels
 !
       write(surface_id,'(a)', advance='NO') hd_fem_nodgrp()
-      write(surface_id,'(i16)') ngrp_nod_sf
+      write(surface_id,'(i16)') view_nod_grps%num_grp
 !
-      call write_viewer_group_data(surface_id, num_pe_sf, ngrp_nod_sf,  &
+      call write_viewer_group_data                                      &
+     &   (surface_id, num_pe_sf, view_nod_grps%num_grp,                 &
      &    view_nod_grps%grp_name, view_nod_grps%node_grp)
 !
       end subroutine write_nod_group_viewer
@@ -135,17 +136,18 @@
 !
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) ngrp_nod_sf
+      read(tmp_character,*) view_nod_grps%num_grp
 !
-      num = num_pe_sf*ngrp_nod_sf
-      call allocate_nod_grp_stack_4_surf
+      num = num_pe_sf * view_nod_grps%num_grp
+      call alloc_viewer_node_grps_stack(num_pe_sf, view_nod_grps)
       read(surface_id,*) view_nod_grps%node_grp%istack_sf(1:num)
 !
       view_nod_grps%node_grp%num_item                                   &
-     &    = view_nod_grps%node_grp%istack_sf(ngrp_nod_sf*num_pe_sf)
+     &    = view_nod_grps%node_grp%istack_sf(num)
       call alloc_merged_group_item(view_nod_grps%node_grp)
 !
-      call read_viewer_group_item(surface_id, num_pe_sf, ngrp_nod_sf,   &
+      call read_viewer_group_item                                       &
+     &   (surface_id, num_pe_sf, view_nod_grps%num_grp,                 &
      &    view_nod_grps%grp_name, view_nod_grps%node_grp)
 !
       end subroutine read_nod_group_viewer

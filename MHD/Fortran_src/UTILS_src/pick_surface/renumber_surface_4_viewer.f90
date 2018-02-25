@@ -22,7 +22,8 @@
 !!      subroutine set_surface_group_stack_viewer(merged_grp,           &
 !!     &          ngrp_surf_sf, sf_surf_grp)
 !!        type(viewer_group_data), intent(inout)  :: sf_surf_grp
-!!      subroutine set_node_group_stack_viewer(merged_grp, nod_nod_grp)
+!!      subroutine set_node_group_stack_viewer                          &
+!!     &         (merged_grp, ngrp_nod_sf, nod_nod_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!        type(viewer_group_data), intent(inout) :: nod_nod_grp
 !
@@ -210,11 +211,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_group_stack_viewer(merged_grp, nod_nod_grp)
+      subroutine set_node_group_stack_viewer                            &
+     &         (merged_grp, ngrp_nod_sf, nod_nod_grp)
 !
       use t_mesh_data
 !
       type(mesh_groups), intent(in) :: merged_grp
+      integer(kind = kint), intent(in) :: ngrp_nod_sf
       type(viewer_group_data), intent(inout) :: nod_nod_grp
 !
       integer(kind = kint) :: igrp, ip, idx, iref, ist, ied, inum, inod

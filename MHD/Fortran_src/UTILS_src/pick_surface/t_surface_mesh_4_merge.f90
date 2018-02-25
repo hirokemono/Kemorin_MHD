@@ -75,8 +75,6 @@
         type(viewer_group_data) :: domain_surf_grp
         type(viewer_group_data) :: domain_edge_grp
         type(viewer_group_data) :: domain_nod_grp
-!
-        integer(kind = kint) :: ngrp_nod_sf
       end type viewer_groups
 !
 !------------------------------------------------------------------
