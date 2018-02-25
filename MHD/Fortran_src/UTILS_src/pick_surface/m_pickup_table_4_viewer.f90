@@ -6,7 +6,10 @@
 !!      subroutine allocate_imark_surf(merged_surf)
 !!      subroutine allocate_imark_node(numnod)
 !!      subroutine allocate_ele_edge_item_tmp
-!!      subroutine allocate_sf_edge_item_tmp
+!!      subroutine allocate_sf_edge_item_tmp(sf_edge_grp)
+!!        type(viewer_group_data), intent(in)  :: sf_edge_grp
+!!      subroutine allocate_sf_gp_nod_item_tmp(sf_nod_grp)
+!!        type(viewer_group_data), intent(in) :: sf_nod_grp
 !!      subroutine allocate_sf_cvt_table_viewer(merged_surf)
 !!      subroutine allocate_nod_cvt_table_viewer(merged)
 !!        type(mesh_geometry), intent(in) :: merged
@@ -114,9 +117,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_sf_edge_item_tmp
+      subroutine allocate_sf_edge_item_tmp(sf_edge_grp)
 !
-      use m_surface_mesh_4_merge
+      use t_surface_mesh_4_merge
+!
+      type(viewer_group_data), intent(in)  :: sf_edge_grp
 !
       allocate( surf_edge_item_tmp(sf_edge_grp%num_item) )
 !
@@ -135,9 +140,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_sf_gp_nod_item_tmp
+      subroutine allocate_sf_gp_nod_item_tmp(sf_nod_grp)
 !
-      use m_surface_mesh_4_merge
+      use t_surface_mesh_4_merge
+!
+      type(viewer_group_data), intent(in) :: sf_nod_grp
 !
       allocate( surf_nod_item_tmp(sf_nod_grp%num_item) )
       surf_nod_item_tmp = 0

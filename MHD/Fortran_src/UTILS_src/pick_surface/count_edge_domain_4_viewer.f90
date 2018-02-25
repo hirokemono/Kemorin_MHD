@@ -3,10 +3,11 @@
 !
 !     Written by H. Matsui on Jan., 2007
 !
-!      subroutine count_nedge_4_each_domain
-!      subroutine count_nedge_domain_4_domain
-!      subroutine count_nedge_ele_grp_4_domain
-!      subroutine count_nedge_surf_grp_4_domain
+!!      subroutine count_nedge_4_each_domain
+!!      subroutine count_nedge_domain_4_domain
+!!      subroutine count_nedge_ele_grp_4_domain
+!!      subroutine count_nedge_surf_grp_4_domain(sf_edge_grp)
+!!       type(viewer_group_data), intent(inout)  :: sf_edge_grp
 !
       module count_edge_domain_4_viewer
 !
@@ -87,7 +88,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_nedge_surf_grp_4_domain
+      subroutine count_nedge_surf_grp_4_domain(sf_edge_grp)
+!
+      type(viewer_group_data), intent(inout)  :: sf_edge_grp
 !
       integer(kind = kint) :: igrp, ip, iref, ist, inum, iedge, inod
       integer(kind = kint) :: nn, ist_grp

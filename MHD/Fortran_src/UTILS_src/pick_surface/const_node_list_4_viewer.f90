@@ -7,12 +7,15 @@
 !!      subroutine mark_node_4_ele_grp_viewer                           &
 !!     &         (igrp, nnod_4_surf, nnod_4_edge)
 !!      subroutine mark_node_4_surf_grp_viewer                          &
-!!     &         (igrp, nnod_4_surf, nnod_4_edge, sf_surf_grp)
+!!     &         (igrp, nnod_4_surf, nnod_4_edge,                       &
+!!     &          sf_surf_grp, sf_edge_grp)
 !!        type(viewer_group_data), intent(in)  :: sf_surf_grp
+!!        type(viewer_group_data), intent(in)  :: sf_edge_grp
 !!
 !!      subroutine count_nod_stack_4_domain_viewer
 !!      subroutine count_nod_stack_4_ele_gp_viewer(igrp)
-!!      subroutine count_nod_stack_4_sf_gp_viewer(igrp)
+!!      subroutine count_nod_stack_4_sf_gp_viewer(igrp, sf_nod_grp)
+!!        type(viewer_group_data), intent(inout) :: sf_nod_grp
 !!
 !!      subroutine const_nod_4_domain_viewer
 !!      subroutine const_nod_4_ele_gp_viewer(igrp)
@@ -102,13 +105,15 @@
 !------------------------------------------------------------------
 !
       subroutine mark_node_4_surf_grp_viewer                            &
-     &         (igrp, nnod_4_surf, nnod_4_edge, sf_surf_grp)
+     &         (igrp, nnod_4_surf, nnod_4_edge,                         &
+     &          sf_surf_grp, sf_edge_grp)
 !
       use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       type(viewer_group_data), intent(in)  :: sf_surf_grp
+      type(viewer_group_data), intent(in)  :: sf_edge_grp
 !
       integer(kind = kint) :: k1, ist, ied, inum, isurf, iedge, inod
 !
@@ -184,11 +189,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_nod_stack_4_sf_gp_viewer(igrp)
+      subroutine count_nod_stack_4_sf_gp_viewer(igrp, sf_nod_grp)
 !
       use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: igrp
+      type(viewer_group_data), intent(inout) :: sf_nod_grp
+!
       integer(kind = kint) :: ip, idx, ist, ied, inod
 !
       do ip = 1, num_pe_sf
@@ -256,12 +263,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine const_nod_4_sf_gp_viewer(igrp)
+      subroutine const_nod_4_sf_gp_viewer(igrp, sf_nod_grp)
 !
       use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: igrp
-!      type(viewer_group_data), intent(inout) :: sf_nod_grp
+      type(viewer_group_data), intent(inout) :: sf_nod_grp
 !
       integer(kind = kint) :: ip, idx, ist, ied, inod, icou
 !

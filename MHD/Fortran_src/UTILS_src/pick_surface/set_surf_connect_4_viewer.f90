@@ -117,7 +117,7 @@
       view_sf_grps%num_grp = merged_grp%surf_grp%num_grp
       view_sf_grps%surf_grp%num_item = merged_grp%surf_grp%num_item
 !
-      call allocate_surf_grp_stack_4_surf
+      call alloc_viewer_surf_grps_stack(num_pe_sf, view_sf_grps)
       call alloc_merged_group_item(view_sf_grps%surf_grp)
 !
       view_sf_grps%grp_name(1:view_sf_grps%num_grp)                     &

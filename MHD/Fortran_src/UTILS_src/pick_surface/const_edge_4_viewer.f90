@@ -52,8 +52,7 @@
 !     &    ele_surf_grp, ele_edge_grp, edge_sf_tbl)
       call construct_edge_4_surf_grp                                    &
      &   (surf%nnod_4_surf, edge%nnod_4_edge,                           &
-     &    view_sf_grps%surf_grp, edge_sf_tbl)
-!     &    sf_surf_grp, sf_edge_grp, edge_sf_tbl)
+     &    view_sf_grps%surf_grp, view_sf_grps%edge_grp, edge_sf_tbl)
 !
       call dealloc_sum_hash(edge_sf_tbl)
 !
@@ -64,7 +63,7 @@
          write(*,*)  'count_nedge_ele_grp_4_domain'
       call count_nedge_ele_grp_4_domain
          write(*,*)  'count_nedge_surf_grp_4_domain'
-      call count_nedge_surf_grp_4_domain
+      call count_nedge_surf_grp_4_domain(view_sf_grps%edge_grp)
 !
       end subroutine construct_edge_4_viewer
 !

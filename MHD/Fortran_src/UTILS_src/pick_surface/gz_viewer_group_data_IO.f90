@@ -290,11 +290,11 @@
       call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') sf_nod_grp%num_item, char(0)
+      write(textbuf,'(i16,a1)') view_sf_grps%node_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
-     &    view_sf_grps%grp_name, sf_nod_grp)
+     &    view_sf_grps%grp_name, view_sf_grps%node_grp)
 !
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
@@ -302,11 +302,11 @@
       call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') sf_edge_grp%num_item, char(0)
+      write(textbuf,'(i16,a1)') view_sf_grps%edge_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
-     &    view_sf_grps%grp_name, sf_edge_grp)
+     &    view_sf_grps%grp_name, view_sf_grps%edge_grp)
 !
       end subroutine write_surf_group_viewer_gz
 !
@@ -324,7 +324,7 @@
       read(textbuf,*)                                                   &
      &        view_sf_grps%num_grp, view_sf_grps%surf_grp%num_item
 !
-      call allocate_surf_grp_stack_4_surf
+      call alloc_viewer_surf_grps_stack(num_pe_sf, view_sf_grps)
 !
       call read_gz_multi_int((num_pe_sf*view_sf_grps%num_grp),          &
      &    view_sf_grps%surf_grp%istack_sf(1))
@@ -335,25 +335,25 @@
 !
 !      write(surface_id,'(a)') '! 4.3.2 node data'
 !
-      call skip_gz_comment_int(sf_nod_grp%num_item)
+      call skip_gz_comment_int(view_sf_grps%node_grp%num_item)
 !
       call read_gz_multi_int((num_pe_sf*view_sf_grps%num_grp),          &
-     &    sf_nod_grp%istack_sf(1))
-      call alloc_merged_group_item(sf_nod_grp)
+     &    view_sf_grps%node_grp%istack_sf(1))
+      call alloc_merged_group_item(view_sf_grps%node_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
-     &    view_sf_grps%grp_name, sf_nod_grp)
+     &    view_sf_grps%grp_name, view_sf_grps%node_grp)
 !
 !      write(surface_id,'(a)') '! 4.3.3 edge data'
 !
-      call skip_gz_comment_int(sf_edge_grp%num_item)
+      call skip_gz_comment_int(view_sf_grps%edge_grp%num_item)
 !
       call read_gz_multi_int((num_pe_sf*view_sf_grps%num_grp),          &
-     &    sf_edge_grp%istack_sf(1))
-      call alloc_merged_group_item(sf_edge_grp)
+     &    view_sf_grps%edge_grp%istack_sf(1))
+      call alloc_merged_group_item(view_sf_grps%edge_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
-     &    view_sf_grps%grp_name, sf_edge_grp)
+     &    view_sf_grps%grp_name, view_sf_grps%edge_grp)
 !
       end subroutine read_surf_group_viewer_gz
 !

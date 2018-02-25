@@ -11,8 +11,8 @@
 !!      subroutine construct_edge_4_surf_grp                            &
 !!     &         (nnod_4_surf, nnod_4_edge,                             &
 !!     &          sf_surf_grp, sf_edge_grp, edge_sf_tbl)
-!!        type(viewer_group_data), intent(in)  :: ele_surf_grp
-!!        type(viewer_group_data), intent(inout)  :: ele_edge_grp
+!!        type(viewer_group_data), intent(in)  :: sf_surf_grp
+!!        type(viewer_group_data), intent(inout)  :: sf_edge_grp
 !!        type(sum_hash_tbl), intent(inout) :: edge_sf_tbl
 !
       module const_grp_edge_4_viewer
@@ -105,8 +105,7 @@
 !
       subroutine construct_edge_4_surf_grp                              &
      &         (nnod_4_surf, nnod_4_edge,                               &
-     &          sf_surf_grp, edge_sf_tbl)
-!     &          sf_surf_grp, sf_edge_grp, edge_sf_tbl)
+     &          sf_surf_grp, sf_edge_grp, edge_sf_tbl)
 !
       use m_surface_mesh_4_merge
       use set_edge_hash_by_sf
@@ -114,7 +113,7 @@
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       type(viewer_group_data), intent(in)  :: sf_surf_grp
-!      type(viewer_group_data), intent(inout)  :: sf_edge_grp
+      type(viewer_group_data), intent(inout)  :: sf_edge_grp
       type(sum_hash_tbl), intent(inout) :: edge_sf_tbl
 !
       integer(kind = kint) :: igrp, ngrp, ist, nedge_grp
@@ -140,7 +139,7 @@
      &      edge_sf_tbl%iflag_hash)
 !
 !
-        call allocate_sf_edge_item_tmp
+        call allocate_sf_edge_item_tmp(sf_edge_grp)
         surf_edge_item_tmp(1:sf_edge_grp%num_item)                      &
      &          = sf_edge_grp%item_sf(1:sf_edge_grp%num_item)
         call dealloc_merged_group_item(sf_edge_grp)
