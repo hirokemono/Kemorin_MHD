@@ -3,7 +3,9 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine set_surf_domain_item_viewer(merged_surf)
+!!      subroutine set_surf_domain_item_viewer                          &
+!!     &         (merged_surf, domain_surf_grp)
+!!        type(viewer_group_data), intent(inout) :: domain_surf_grp
 !!      subroutine set_element_group_item_viewer                        &
 !!     &         (mgd_sf_grp, ele_surf_grp)
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
@@ -14,7 +16,8 @@
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!
-!!      subroutine set_surf_domain_stack_viewer
+!!      subroutine set_surf_domain_stack_viewer(domain_surf_grp)
+!!        type(viewer_group_data), intent(inout) :: domain_surf_grp
 !!      subroutine set_element_group_stack_viewer(mgd_sf_grp,           &
 !!     &          ngrp_ele_sf, ele_surf_grp)
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
@@ -41,12 +44,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_surf_domain_item_viewer(merged_surf)
+      subroutine set_surf_domain_item_viewer                            &
+     &         (merged_surf, domain_surf_grp)
 !
       use t_surface_data
       use m_pickup_table_4_viewer
 !
       type(surface_data), intent(in) :: merged_surf
+      type(viewer_group_data), intent(inout) :: domain_surf_grp
 !
       integer(kind = kint) :: inum, isurf
 !
@@ -126,7 +131,9 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_surf_domain_stack_viewer
+      subroutine set_surf_domain_stack_viewer(domain_surf_grp)
+!
+      type(viewer_group_data), intent(inout) :: domain_surf_grp
 !
       integer(kind = kint) :: ip, iref, ist, inum, isurf
 !

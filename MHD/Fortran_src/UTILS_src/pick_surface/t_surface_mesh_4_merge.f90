@@ -71,10 +71,6 @@
         real   (kind=kreal), dimension(:,:), allocatable  ::  xx_view
       end type viewer_mesh_data
 !
-      type viewer_groups
-        type(viewer_group_data) :: domain_surf_grp
-      end type viewer_groups
-!
 !------------------------------------------------------------------
 !
       contains

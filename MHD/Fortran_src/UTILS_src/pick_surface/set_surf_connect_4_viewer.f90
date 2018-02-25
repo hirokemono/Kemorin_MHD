@@ -90,13 +90,14 @@
 !
 !     renumber domain boundary
 !
-      domain_surf_grp%num_item = merged_surf%numsurf_iso
+      domain_grps%surf_grp%num_item = merged_surf%numsurf_iso
        write(*,*) 'allocate_domain_stack_4_surf'
       call allocate_domain_stack_4_surf
-      call alloc_merged_group_item(domain_surf_grp)
+      call alloc_merged_group_item(domain_grps%surf_grp)
 !
-      call set_surf_domain_item_viewer(merged_surf)
-      call set_surf_domain_stack_viewer
+      call set_surf_domain_item_viewer                                  &
+     &   (merged_surf, domain_grps%surf_grp)
+      call set_surf_domain_stack_viewer(domain_grps%surf_grp)
 !
 !     renumber element group boundary
 !

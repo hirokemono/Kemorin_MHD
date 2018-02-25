@@ -51,7 +51,7 @@
 !
 !      write(*,*) 'write_domain_group_viewer_gz'
       call write_domain_group_viewer_gz(domain_grps%node_grp,           &
-     &    domain_grps%edge_grp)
+     &    domain_grps%edge_grp, domain_grps%surf_grp)
 !
 !      write(*,*) 'write_nod_group_viewer_gz'
       call write_nod_group_viewer_gz
@@ -102,7 +102,7 @@
 !
 !      write(*,*) 'read_domain_group_viewer_gz'
       call read_domain_group_viewer_gz(domain_grps%node_grp,            &
-     &    domain_grps%edge_grp)
+     &    domain_grps%edge_grp, domain_grps%surf_grp)
 !
 !      write(*,*) 'read_nod_group_viewer_gz'
       call read_nod_group_viewer_gz

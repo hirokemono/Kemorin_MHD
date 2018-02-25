@@ -48,7 +48,7 @@
 !
 !      write(*,*) 'write_domain_group_viewer'
       call write_domain_group_viewer(domain_grps%node_grp,              &
-     &    domain_grps%edge_grp)
+     &    domain_grps%edge_grp, domain_grps%surf_grp)
 !
 !      write(*,*) 'write_nod_group_viewer'
       call write_nod_group_viewer
@@ -97,7 +97,7 @@
 !
 !      write(*,*) 'read_domain_group_viewer'
       call read_domain_group_viewer(domain_grps%node_grp,               &
-     &    domain_grps%edge_grp)
+     &    domain_grps%edge_grp, domain_grps%surf_grp)
 !
 !      write(*,*) 'read_nod_group_viewer'
       call read_nod_group_viewer

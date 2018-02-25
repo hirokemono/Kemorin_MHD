@@ -44,8 +44,8 @@
       call const_all_edge_4_viewer(surf, edge, edge_sf_tbl)
 !
       call construct_edge_4_domain                                      &
-     &   (surf%nnod_4_surf, edge%nnod_4_edge, domain_grps%edge_grp,     &
-     &    edge_sf_tbl)
+     &   (surf%nnod_4_surf, edge%nnod_4_edge, domain_grps%surf_grp,     &
+     &    domain_grps%edge_grp, edge_sf_tbl)
 !
       call construct_edge_4_ele_grp                                     &
      &   (surf%nnod_4_surf, edge%nnod_4_edge, view_ele_grps%num_grp,    &
@@ -114,12 +114,14 @@
 !------------------------------------------------------------------
 !
       subroutine construct_edge_4_domain                                &
-     &         (nnod_4_surf, nnod_4_edge, domain_edge_grp, ed_sf_tbl)
+     &         (nnod_4_surf, nnod_4_edge, domain_surf_grp,              &
+     &          domain_edge_grp, ed_sf_tbl)
 !
       use set_edge_hash_by_sf
       use set_edge_data_by_sf
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+      type(viewer_group_data), intent(in) :: domain_surf_grp
       type(sum_hash_tbl), intent(inout) :: ed_sf_tbl
       type(viewer_group_data), intent(inout) :: domain_edge_grp
 !
