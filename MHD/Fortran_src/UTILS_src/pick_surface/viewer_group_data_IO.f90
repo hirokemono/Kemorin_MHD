@@ -166,7 +166,7 @@
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe_sf, view_ele_grps%num_grp,                 &
-     &    ele_gp_name_sf, ele_surf_grp)
+     &    view_ele_grps%grp_name, ele_surf_grp)
 !
 !
       write(surface_id,'(a)') '!'
@@ -176,7 +176,7 @@
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe_sf, view_ele_grps%num_grp,                 &
-     &    ele_gp_name_sf, ele_nod_grp)
+     &    view_ele_grps%grp_name, ele_nod_grp)
 !
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '! 4.2.3 edge data'
@@ -185,7 +185,7 @@
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe_sf, view_ele_grps%num_grp,                 &
-     &    ele_gp_name_sf, ele_edge_grp)
+     &    view_ele_grps%grp_name, ele_edge_grp)
 !
       end subroutine write_ele_group_viewer
 !
@@ -213,7 +213,7 @@
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe_sf, view_ele_grps%num_grp,                 &
-     &    ele_gp_name_sf,  ele_surf_grp)
+     &    view_ele_grps%grp_name,  ele_surf_grp)
 !
 !      write(surface_id,'(a)') '! 4.2.2 node data'
 !
@@ -226,7 +226,7 @@
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe_sf, view_ele_grps%num_grp,                 &
-     &    ele_gp_name_sf, ele_nod_grp)
+     &    view_ele_grps%grp_name, ele_nod_grp)
 !
 !      write(surface_id,'(a)') '! 4.2.3 edge data'
 !
@@ -239,7 +239,7 @@
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe_sf, view_ele_grps%num_grp,                 &
-     &    ele_gp_name_sf, ele_edge_grp)
+     &    view_ele_grps%grp_name, ele_edge_grp)
 !
       end subroutine read_ele_group_viewer
 !

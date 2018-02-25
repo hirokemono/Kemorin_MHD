@@ -71,7 +71,6 @@
 !
 !
 !view_ele_grps%num_grp
-      character(len=kchara), allocatable :: ele_gp_name_sf(:)
       type(viewer_group_data), save :: ele_surf_grp
       type(viewer_group_data), save :: ele_edge_grp
       type(viewer_group_data), save :: ele_nod_grp
@@ -213,7 +212,7 @@
       subroutine allocate_ele_grp_stack_4_surf
 !
 !
-      allocate( ele_gp_name_sf(view_ele_grps%num_grp)  )
+      allocate( view_ele_grps%grp_name(view_ele_grps%num_grp)  )
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, view_ele_grps%num_grp, ele_surf_grp)
       call alloc_merged_group_stack                                     &

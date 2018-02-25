@@ -71,7 +71,6 @@
         integer(kind = kint) :: ngrp_nod_sf
         type(viewer_group_data) :: nod_nod_grp
 !
-        character(len=kchara), allocatable :: ele_gp_name_sf(:)
         type(viewer_group_data) :: ele_surf_grp
         type(viewer_group_data) :: ele_edge_grp
         type(viewer_group_data) :: ele_nod_grp
