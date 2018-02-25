@@ -101,17 +101,19 @@
 !     renumber element group boundary
 !
       view_ele_grps%num_grp = merged_grp%ele_grp%num_grp
-      ele_surf_grp%num_item = mgd_sf_grp%ntot_sf_iso_ele_grp_m
+      view_ele_grps%surf_grp%num_item                                   &
+     &     = mgd_sf_grp%ntot_sf_iso_ele_grp_m
        write(*,*) 'allocate_ele_grp_stack_4_surf'
       call allocate_ele_grp_stack_4_surf
-      call alloc_merged_group_item(ele_surf_grp)
+      call alloc_merged_group_item(view_ele_grps%surf_grp)
 !
       view_ele_grps%grp_name(1:view_ele_grps%num_grp)                   &
      &     = merged_grp%ele_grp%grp_name(1:view_ele_grps%num_grp)
 !
-      call set_element_group_item_viewer(mgd_sf_grp)
+      call set_element_group_item_viewer                                &
+     &   (mgd_sf_grp, view_ele_grps%surf_grp)
       call set_element_group_stack_viewer(mgd_sf_grp,                   &
-     &    view_ele_grps%num_grp)
+     &    view_ele_grps%num_grp, view_ele_grps%surf_grp)
 !
 !     renumber surface boundary
 !
@@ -126,8 +128,8 @@
 !
       call set_surface_group_item_viewer                                &
      &   (mgd_sf_grp, view_sf_grps%surf_grp)
-      call set_surface_group_stack_viewer                               &
-     &   (merged_grp, view_sf_grps%surf_grp)
+      call set_surface_group_stack_viewer(merged_grp,                   &
+     &    view_sf_grps%num_grp, view_sf_grps%surf_grp)
 !
       end subroutine s_set_groups_4_viewer_surface
 !

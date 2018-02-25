@@ -34,8 +34,8 @@
 !
       subroutine construct_edge_4_ele_grp                               &
      &         (nnod_4_surf, nnod_4_edge,                               &
-     &          ngrp_ele_sf, edge_sf_tbl)
-!     &          ele_surf_grp, ele_edge_grp, edge_sf_tbl)
+     &          ngrp_ele_sf, ele_surf_grp, edge_sf_tbl)
+!     &          ele_edge_grp, edge_sf_tbl)
 !
       use m_surface_mesh_4_merge
       use set_edge_hash_by_sf
@@ -43,7 +43,7 @@
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       integer(kind = kint), intent(in) :: ngrp_ele_sf
-!      type(viewer_group_data), intent(in)  :: ele_surf_grp
+      type(viewer_group_data), intent(in)  :: ele_surf_grp
 !      type(viewer_group_data), intent(inout)  :: ele_edge_grp
       type(sum_hash_tbl), intent(inout) :: edge_sf_tbl
 !

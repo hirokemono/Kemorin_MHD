@@ -47,9 +47,9 @@
      &   (surf%nnod_4_surf, edge%nnod_4_edge, edge_sf_tbl)
 !
       call construct_edge_4_ele_grp                                     &
-     &   (surf%nnod_4_surf, edge%nnod_4_edge,                           &
-     &    view_ele_grps%num_grp, edge_sf_tbl)
-!     &    ele_surf_grp, ele_edge_grp, edge_sf_tbl)
+     &   (surf%nnod_4_surf, edge%nnod_4_edge, view_ele_grps%num_grp,    &
+     &    view_ele_grps%surf_grp, edge_sf_tbl)
+!     &   ele_edge_grp, edge_sf_tbl)
       call construct_edge_4_surf_grp                                    &
      &   (surf%nnod_4_surf, edge%nnod_4_edge, view_sf_grps%num_grp,     &
      &    view_sf_grps%surf_grp, view_sf_grps%edge_grp, edge_sf_tbl)
