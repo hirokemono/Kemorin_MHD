@@ -103,8 +103,8 @@
       view_ele_grps%num_grp = merged_grp%ele_grp%num_grp
       view_ele_grps%surf_grp%num_item                                   &
      &     = mgd_sf_grp%ntot_sf_iso_ele_grp_m
-       write(*,*) 'allocate_ele_grp_stack_4_surf'
-      call allocate_ele_grp_stack_4_surf
+       write(*,*) 'alloc_viewer_surf_grps_stack'
+      call alloc_viewer_surf_grps_stack(num_pe_sf, view_ele_grps)
       call alloc_merged_group_item(view_ele_grps%surf_grp)
 !
       view_ele_grps%grp_name(1:view_ele_grps%num_grp)                   &

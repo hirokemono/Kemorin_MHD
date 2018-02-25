@@ -7,6 +7,8 @@
 !!      subroutine allocate_imark_node(numnod)
 !!      subroutine allocate_ele_edge_item_tmp(ele_edge_grp)
 !!        type(viewer_group_data), intent(in) :: ele_edge_grp
+!!      subroutine allocate_ele_gp_nod_item_tmp(ele_nod_grp)
+!!        type(viewer_group_data), intent(in) :: ele_nod_grp
 !!      subroutine allocate_sf_edge_item_tmp(sf_edge_grp)
 !!        type(viewer_group_data), intent(in)  :: sf_edge_grp
 !!      subroutine allocate_sf_gp_nod_item_tmp(sf_nod_grp)
@@ -132,9 +134,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_ele_gp_nod_item_tmp
+      subroutine allocate_ele_gp_nod_item_tmp(ele_nod_grp)
 !
-      use m_surface_mesh_4_merge
+      use t_surface_mesh_4_merge
+!
+      type(viewer_group_data), intent(in) :: ele_nod_grp
 !
       allocate( ele_nod_item_tmp(ele_nod_grp%num_item) )
       ele_nod_item_tmp = 0

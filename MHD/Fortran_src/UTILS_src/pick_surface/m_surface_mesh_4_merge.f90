@@ -14,7 +14,6 @@
 !      subroutine allocate_domain_nod_item_sf
 !      subroutine allocate_domain_edge_item_sf
 !      subroutine allocate_nod_grp_stack_4_surf
-!      subroutine allocate_ele_grp_stack_4_surf
 !      subroutine allocate_nod_grp_item_4_surf
 !      subroutine allocate_ele_grp_item_4_surf
 !      subroutine allocate_ele_gp_nod_item_sf
@@ -71,7 +70,6 @@
 !
 !
 !view_ele_grps%node_grp
-      type(viewer_group_data), save :: ele_nod_grp
 !
       type(viewer_surface_groups), save :: view_ele_grps
       type(viewer_surface_groups), save :: view_sf_grps
@@ -204,21 +202,6 @@
      &   (num_pe_sf, ngrp_nod_sf, nod_nod_grp)
 !
       end subroutine allocate_nod_grp_stack_4_surf
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_ele_grp_stack_4_surf
-!
-!
-      allocate( view_ele_grps%grp_name(view_ele_grps%num_grp)  )
-      call alloc_merged_group_stack                                     &
-     &   (num_pe_sf, view_ele_grps%num_grp, view_ele_grps%surf_grp)
-      call alloc_merged_group_stack                                     &
-     &   (num_pe_sf, view_ele_grps%num_grp, view_ele_grps%edge_grp)
-      call alloc_merged_group_stack                                     &
-     &   (num_pe_sf, view_ele_grps%num_grp, ele_nod_grp)
-!
-      end subroutine allocate_ele_grp_stack_4_surf
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

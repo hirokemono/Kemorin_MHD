@@ -38,7 +38,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_domain_viewer'
       call set_nod_4_domain_viewer(nnod_4_surf, nnod_4_edge)
 !
-      call alloc_merged_group_item(ele_nod_grp)
+      call alloc_merged_group_item(view_ele_grps%node_grp)
       call alloc_merged_group_item(view_sf_grps%node_grp)
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_ele_group_viewer'
       call set_nod_4_ele_group_viewer(nnod_4_surf, nnod_4_edge)
@@ -81,18 +81,19 @@
         call mark_node_4_ele_grp_viewer(igrp, nnod_4_surf, nnod_4_edge, &
      &      view_ele_grps%surf_grp, view_ele_grps%edge_grp)
 !
-        call allocate_ele_gp_nod_item_tmp
-        ied = ele_nod_grp%num_item
-        ele_nod_item_tmp(1:ied) = ele_nod_grp%item_sf(1:ied)
-        call dealloc_merged_group_item(ele_nod_grp)
+        call allocate_ele_gp_nod_item_tmp(view_ele_grps%node_grp)
+        ied = view_ele_grps%node_grp%num_item
+        ele_nod_item_tmp(1:ied) = view_ele_grps%node_grp%item_sf(1:ied)
+        call dealloc_merged_group_item(view_ele_grps%node_grp)
 !
-        call count_nod_stack_4_ele_gp_viewer(igrp)
+        call count_nod_stack_4_ele_gp_viewer                           &
+     &     (igrp, view_ele_grps%node_grp)
 !
-        call alloc_merged_group_item(ele_nod_grp)
-        ele_nod_grp%item_sf(1:ied) = ele_nod_item_tmp(1:ied)
+        call alloc_merged_group_item(view_ele_grps%node_grp)
+        view_ele_grps%node_grp%item_sf(1:ied) = ele_nod_item_tmp(1:ied)
         call deallocate_ele_gp_nod_item_tmp
 !
-        call const_nod_4_ele_gp_viewer(igrp)
+        call const_nod_4_ele_gp_viewer(igrp, view_ele_grps%node_grp)
       end do
 !
       end subroutine set_nod_4_ele_group_viewer
