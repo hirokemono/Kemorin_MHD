@@ -54,6 +54,8 @@
 !
       subroutine set_nod_4_domain_viewer(nnod_4_surf, nnod_4_edge)
 !
+      use m_surface_mesh_4_merge
+!
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
 !
 !
@@ -67,6 +69,8 @@
 !------------------------------------------------------------------
 !
       subroutine set_nod_4_ele_group_viewer(nnod_4_surf, nnod_4_edge)
+!
+      use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
 !
@@ -96,6 +100,8 @@
 !
       subroutine set_nod_4_surf_group_viewer(nnod_4_surf, nnod_4_edge)
 !
+      use m_surface_mesh_4_merge
+
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
 !
       integer(kind = kint) :: igrp, ied
@@ -103,7 +109,7 @@
 !
       do igrp = 1, view_sf_grps%num_grp
         call mark_node_4_surf_grp_viewer                                &
-     &     (igrp, nnod_4_surf, nnod_4_edge)
+     &     (igrp, nnod_4_surf, nnod_4_edge, view_sf_grps%surf_grp)
 !
         call allocate_sf_gp_nod_item_tmp
         ied = sf_nod_grp%num_item

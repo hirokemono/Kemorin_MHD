@@ -78,8 +78,7 @@
 !
       type(viewer_surface_groups), save :: view_sf_grps
 !
-!view_sf_grps%num_grp
-      type(viewer_group_data), save :: sf_surf_grp
+!view_sf_grps%surf_grp
       type(viewer_group_data), save :: sf_edge_grp
       type(viewer_group_data), save :: sf_nod_grp
 !
@@ -234,7 +233,7 @@
 !
       allocate( view_sf_grps%grp_name(view_sf_grps%num_grp)  )
       call alloc_merged_group_stack                                     &
-     &   (num_pe_sf, view_sf_grps%num_grp, sf_surf_grp)
+     &   (num_pe_sf, view_sf_grps%num_grp, view_sf_grps%surf_grp)
       call alloc_merged_group_stack                                     &
      &   (num_pe_sf, view_sf_grps%num_grp, sf_edge_grp)
       call alloc_merged_group_stack                                     &

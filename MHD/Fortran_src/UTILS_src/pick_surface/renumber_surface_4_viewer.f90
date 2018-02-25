@@ -5,7 +5,8 @@
 !
 !!      subroutine set_surf_domain_item_viewer(merged_surf)
 !!      subroutine set_element_group_item_viewer(mgd_sf_grp)
-!!      subroutine set_surface_group_item_viewer(mgd_sf_grp)
+!!      subroutine set_surface_group_item_viewer                        &
+!!     &         (mgd_sf_grp, sf_surf_grp)
 !!      subroutine set_node_group_item_viewer(merged_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
@@ -13,7 +14,9 @@
 !!      subroutine set_surf_domain_stack_viewer
 !!      subroutine set_element_group_stack_viewer(mgd_sf_grp)
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
-!!      subroutine set_surface_group_stack_viewer(merged_grp)
+!!      subroutine set_surface_group_stack_viewer                       &
+!!     &         (merged_grp, sf_surf_grp)
+!!        type(viewer_group_data), intent(inout)  :: sf_surf_grp
 !!      subroutine set_node_group_stack_viewer(merged_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
 !
@@ -71,12 +74,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_surface_group_item_viewer(mgd_sf_grp)
+      subroutine set_surface_group_item_viewer                          &
+     &         (mgd_sf_grp, sf_surf_grp)
 !
       use t_grp_data_merged_surfaces
       use m_pickup_table_4_viewer
 !
       type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      type(viewer_group_data), intent(inout)  :: sf_surf_grp
 !
       integer(kind = kint) :: inum, isurf
 !
@@ -158,11 +163,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_surface_group_stack_viewer(merged_grp)
+      subroutine set_surface_group_stack_viewer                         &
+     &         (merged_grp, sf_surf_grp)
 !
       use t_mesh_data
 !
       type(mesh_groups), intent(in) :: merged_grp
+      type(viewer_group_data), intent(inout)  :: sf_surf_grp
 !
       integer(kind = kint) :: igrp, ip, idx, iref, ist, ied
       integer(kind = kint) :: inum, isurf

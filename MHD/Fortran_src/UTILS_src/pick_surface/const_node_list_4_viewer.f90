@@ -1,30 +1,33 @@
 !
 !      module const_node_list_4_viewer
 !
-      module const_node_list_4_viewer
-!
 !      Written by Kemorin on Jan., 2007
 !
-      use m_precision
+!!      subroutine mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge)
+!!      subroutine mark_node_4_ele_grp_viewer                           &
+!!     &         (igrp, nnod_4_surf, nnod_4_edge)
+!!      subroutine mark_node_4_surf_grp_viewer                          &
+!!     &         (igrp, nnod_4_surf, nnod_4_edge, sf_surf_grp)
+!!        type(viewer_group_data), intent(in)  :: sf_surf_grp
+!!
+!!      subroutine count_nod_stack_4_domain_viewer
+!!      subroutine count_nod_stack_4_ele_gp_viewer(igrp)
+!!      subroutine count_nod_stack_4_sf_gp_viewer(igrp)
+!!
+!!      subroutine const_nod_4_domain_viewer
+!!      subroutine const_nod_4_ele_gp_viewer(igrp)
+!!      subroutine const_nod_4_sf_gp_viewer(igrp, sf_nod_grp)
+!!        type(viewer_group_data), intent(inout) :: sf_nod_grp
 !
-      use m_surface_mesh_4_merge
+      module const_node_list_4_viewer
+!
+      use m_precision
+      use m_geometry_constants
+!
+      use t_surface_mesh_4_merge
       use m_pickup_table_4_viewer
 !
       implicit none
-!
-!      subroutine mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge)
-!      subroutine mark_node_4_ele_grp_viewer                            &
-!     &         (igrp, nnod_4_surf, nnod_4_edge)
-!      subroutine mark_node_4_surf_grp_viewer                           &
-!     &         (igrp, nnod_4_surf, nnod_4_edge)
-!
-!      subroutine count_nod_stack_4_domain_viewer
-!      subroutine count_nod_stack_4_ele_gp_viewer(igrp)
-!      subroutine count_nod_stack_4_sf_gp_viewer(igrp)
-!
-!      subroutine const_nod_4_domain_viewer
-!      subroutine const_nod_4_ele_gp_viewer(igrp)
-!      subroutine const_nod_4_sf_gp_viewer(igrp)
 !
 !------------------------------------------------------------------
 !
@@ -34,7 +37,7 @@
 !
       subroutine mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge)
 !
-      use m_geometry_constants
+      use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
 !
@@ -65,7 +68,7 @@
       subroutine mark_node_4_ele_grp_viewer                             &
      &         (igrp, nnod_4_surf, nnod_4_edge)
 !
-      use m_geometry_constants
+      use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
@@ -99,12 +102,14 @@
 !------------------------------------------------------------------
 !
       subroutine mark_node_4_surf_grp_viewer                            &
-     &         (igrp, nnod_4_surf, nnod_4_edge)
+     &         (igrp, nnod_4_surf, nnod_4_edge, sf_surf_grp)
 !
-      use m_geometry_constants
+      use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+      type(viewer_group_data), intent(in)  :: sf_surf_grp
+!
       integer(kind = kint) :: k1, ist, ied, inum, isurf, iedge, inod
 !
 !
@@ -137,6 +142,8 @@
 !
       subroutine count_nod_stack_4_domain_viewer
 !
+      use m_surface_mesh_4_merge
+!
       integer(kind = kint) :: ip, ist, ied, inod
 !
       do ip = 1, num_pe_sf
@@ -155,6 +162,8 @@
 !------------------------------------------------------------------
 !
       subroutine count_nod_stack_4_ele_gp_viewer(igrp)
+!
+      use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint) :: ip, idx, ist, ied, inod
@@ -176,6 +185,8 @@
 !------------------------------------------------------------------
 !
       subroutine count_nod_stack_4_sf_gp_viewer(igrp)
+!
+      use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint) :: ip, idx, ist, ied, inod
@@ -199,6 +210,8 @@
 !
       subroutine const_nod_4_domain_viewer
 !
+      use m_surface_mesh_4_merge
+!
       integer(kind = kint) :: ip, ist, ied, inod, icou
 !
       do ip = 1, num_pe_sf
@@ -219,7 +232,11 @@
 !
       subroutine const_nod_4_ele_gp_viewer(igrp)
 !
+      use m_surface_mesh_4_merge
+!
       integer(kind = kint), intent(in) :: igrp
+!      type(viewer_group_data), intent(inout) :: ele_nod_grp
+!
       integer(kind = kint) :: ip, idx, ist, ied, inod, icou
 !
       do ip = 1, num_pe_sf
@@ -241,7 +258,11 @@
 !
       subroutine const_nod_4_sf_gp_viewer(igrp)
 !
+      use m_surface_mesh_4_merge
+!
       integer(kind = kint), intent(in) :: igrp
+!      type(viewer_group_data), intent(inout) :: sf_nod_grp
+!
       integer(kind = kint) :: ip, idx, ist, ied, inod, icou
 !
       do ip = 1, num_pe_sf

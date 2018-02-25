@@ -137,8 +137,7 @@
       call gz_write_textbuf_w_lf
 !
      call write_viewer_group_data_gz(num_pe_sf, ngrp_nod_sf,            &
-    &    nod_nod_grp%num_item, nod_nod_grp%istack_sf,                   &
-    &    nod_gp_name_sf, nod_nod_grp%item_sf)
+    &    nod_gp_name_sf, nod_nod_grp)
 !
       end subroutine write_nod_group_viewer_gz
 !
@@ -161,8 +160,7 @@
       call alloc_merged_group_item(nod_nod_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_nod_sf,            &
-     &    nod_nod_grp%num_item, nod_nod_grp%istack_sf,                  &
-     &    nod_gp_name_sf, nod_nod_grp%item_sf)
+     &    nod_gp_name_sf, nod_nod_grp)
 !
       end subroutine read_nod_group_viewer_gz
 !
@@ -188,8 +186,7 @@
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_ele_sf,           &
-     &    ele_surf_grp%num_item, ele_surf_grp%istack_sf,                &
-     &    ele_gp_name_sf, ele_surf_grp%item_sf)
+     &    ele_gp_name_sf, ele_surf_grp)
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
@@ -202,8 +199,7 @@
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_ele_sf,           &
-     &    ele_nod_grp%num_item, ele_nod_grp%istack_sf, ele_gp_name_sf,  &
-     &    ele_nod_grp%item_sf)
+     &    ele_gp_name_sf, ele_nod_grp)
 !
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
@@ -215,8 +211,7 @@
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_ele_sf,           &
-     &    ele_edge_grp%num_item, ele_edge_grp%istack_sf,                &
-     &    ele_gp_name_sf, ele_edge_grp%item_sf)
+     &    ele_gp_name_sf, ele_edge_grp)
 !
       end subroutine write_ele_group_viewer_gz
 !
@@ -240,8 +235,7 @@
       call alloc_merged_group_item(ele_surf_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_ele_sf,            &
-     &    ele_surf_grp%num_item, ele_surf_grp%istack_sf,                &
-     &    ele_gp_name_sf, ele_surf_grp%item_sf)
+     &    ele_gp_name_sf, ele_surf_grp)
 !
 !      write(surface_id,'(a)') '! 4.2.2 node data'
 !
@@ -252,8 +246,7 @@
       call alloc_merged_group_item(ele_nod_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_ele_sf,            &
-     &    ele_nod_grp%num_item, ele_nod_grp%istack_sf, ele_gp_name_sf,  &
-     &    ele_nod_grp%item_sf)
+     &    ele_gp_name_sf, ele_nod_grp)
 !
 !      write(surface_id,'(a)') '! 4.2.3 edge data'
 !
@@ -264,8 +257,7 @@
       call alloc_merged_group_item(ele_edge_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_ele_sf,            &
-     &    ele_edge_grp%num_item, ele_edge_grp%istack_sf,                &
-     &    ele_gp_name_sf, ele_edge_grp%item_sf)
+     &    ele_gp_name_sf, ele_edge_grp)
 !
       end subroutine read_ele_group_viewer_gz
 !
@@ -285,12 +277,11 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(2i16,a1)')                                        &
-     &    view_sf_grps%num_grp, sf_surf_grp%num_item, char(0)
+     &    view_sf_grps%num_grp, view_sf_grps%surf_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
-     &    sf_surf_grp%num_item, sf_surf_grp%istack_sf,                  &
-     &    view_sf_grps%grp_name, sf_surf_grp%item_sf)
+     &    view_sf_grps%grp_name, view_sf_grps%surf_grp)
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
@@ -303,8 +294,7 @@
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
-     &    sf_nod_grp%num_item, sf_nod_grp%istack_sf,                    &
-     &    view_sf_grps%grp_name, sf_nod_grp%item_sf)
+     &    view_sf_grps%grp_name, sf_nod_grp)
 !
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
@@ -316,8 +306,7 @@
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, view_sf_grps%num_grp,  &
-     &    sf_edge_grp%num_item, sf_edge_grp%istack_sf,                  &
-     &    view_sf_grps%grp_name, sf_edge_grp%item_sf)
+     &    view_sf_grps%grp_name, sf_edge_grp)
 !
       end subroutine write_surf_group_viewer_gz
 !
@@ -332,17 +321,17 @@
 !      write(surface_id,'(a)') '! 4.3.1 surface data'
 !
       call skip_gz_comment_int(view_sf_grps%num_grp)
-      read(textbuf,*) view_sf_grps%num_grp, sf_surf_grp%num_item
+      read(textbuf,*)                                                   &
+     &        view_sf_grps%num_grp, view_sf_grps%surf_grp%num_item
 !
       call allocate_surf_grp_stack_4_surf
 !
       call read_gz_multi_int((num_pe_sf*view_sf_grps%num_grp),          &
-     &    sf_surf_grp%istack_sf(1))
-      call alloc_merged_group_item(sf_surf_grp)
+     &    view_sf_grps%surf_grp%istack_sf(1))
+      call alloc_merged_group_item(view_sf_grps%surf_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
-     &    sf_surf_grp%num_item, sf_surf_grp%istack_sf,                  &
-     &    view_sf_grps%grp_name, sf_surf_grp%item_sf)
+     &    view_sf_grps%grp_name, view_sf_grps%surf_grp)
 !
 !      write(surface_id,'(a)') '! 4.3.2 node data'
 !
@@ -353,8 +342,7 @@
       call alloc_merged_group_item(sf_nod_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
-     &    sf_nod_grp%num_item, sf_nod_grp%istack_sf,                    &
-     &    view_sf_grps%grp_name, sf_nod_grp%item_sf)
+     &    view_sf_grps%grp_name, sf_nod_grp)
 !
 !      write(surface_id,'(a)') '! 4.3.3 edge data'
 !
@@ -365,31 +353,29 @@
       call alloc_merged_group_item(sf_edge_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, view_sf_grps%num_grp,   &
-     &    sf_edge_grp%num_item, sf_edge_grp%istack_sf,                  &
-     &    view_sf_grps%grp_name, sf_edge_grp%item_sf)
+     &    view_sf_grps%grp_name, sf_edge_grp)
 !
       end subroutine read_surf_group_viewer_gz
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_viewer_group_data_gz(nprocs, ngrp,              &
-     &          ntot, istack, name, item)
+      subroutine write_viewer_group_data_gz(nprocs, ngrp, name, group)
 !
-      integer(kind = kint), intent(in) :: nprocs, ngrp, ntot
-      integer(kind = kint), intent(in) :: istack(0:ngrp)
-      integer(kind = kint), intent(in) :: item(ntot)
+      integer(kind = kint), intent(in) :: nprocs, ngrp
       character(len = kchara), intent(in) :: name(ngrp)
+      type(viewer_group_data), intent(in) :: group
 !
       integer(kind = kint) :: i, ist, num
 !
 !
-      call write_gz_multi_int_8i10((nprocs*ngrp), istack(1))
+      call write_gz_multi_int_8i10((nprocs*ngrp), group%istack_sf(1))
 !
       if (ngrp .gt. 0) then
         do i = 1, ngrp
-          ist = istack(nprocs*(i-1)) + 1
-          num = istack(nprocs*i    ) - istack(nprocs*(i-1))
+          ist = group%istack_sf(nprocs*(i-1)) + 1
+          num = group%istack_sf(nprocs*i)                               &
+     &         - group%istack_sf(nprocs*(i-1))
 !
           write(textbuf,'(a,a1)') trim(name(i)), char(0)
           call gz_write_textbuf_w_lf
@@ -398,7 +384,7 @@
             write(textbuf,'(a1)') char(0)
             call gz_write_textbuf_w_lf
           else
-            call write_gz_multi_int_8i10(num, item(ist))
+            call write_gz_multi_int_8i10(num, group%item_sf(ist))
           end if
         end do
       else
@@ -410,23 +396,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_viewer_group_item_gz(nprocs, ngrp,                &
-     &          ntot, istack, name, item)
+      subroutine read_viewer_group_item_gz(nprocs, ngrp, name, group)
 !
-      integer(kind = kint), intent(in) :: nprocs, ngrp, ntot
-      integer(kind = kint), intent(in) :: istack(0:ngrp)
+      integer(kind = kint), intent(in) :: nprocs, ngrp
 !
-      integer(kind = kint), intent(inout) :: item(ntot)
       character(len = kchara), intent(inout) :: name(ngrp)
+      type(viewer_group_data), intent(inout) :: group
 !
       integer(kind = kint) :: i, ist, num
 !
 !
       do i = 1, ngrp
-        ist = istack(nprocs*(i-1)) + 1
-        num = istack(nprocs*i    ) - istack(nprocs*(i-1))
+        ist = group%istack_sf(nprocs*(i-1)) + 1
+        num = group%istack_sf(nprocs*i) - group%istack_sf(nprocs*(i-1))
         call skip_gz_comment_chara( name(i) )
-        call read_gz_multi_int(num, item(ist))
+        call read_gz_multi_int(num, group%item_sf(ist))
       end do
 !
       end subroutine read_viewer_group_item_gz

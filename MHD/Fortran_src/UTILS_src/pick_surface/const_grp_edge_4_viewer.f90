@@ -4,16 +4,22 @@
 !     Written by H. Matsui on Jan., 2007
 !
 !!      subroutine construct_edge_4_ele_grp                             &
-!!     &         (nnod_4_surf, nnod_4_edge, edge_sf_tbl)
+!!     &         (nnod_4_surf, nnod_4_edge,                             &
+!!     &          ele_surf_grp, ele_edge_grp, edge_sf_tbl)
+!!        type(viewer_group_data), intent(in)  :: ele_surf_grp
+!!        type(viewer_group_data), intent(inout)  :: ele_edge_grp
 !!      subroutine construct_edge_4_surf_grp                            &
-!!     &         (nnod_4_surf, nnod_4_edge, edge_sf_tbl)
-!        type(sum_hash_tbl), intent(inout) :: edge_sf_tbl
+!!     &         (nnod_4_surf, nnod_4_edge,                             &
+!!     &          sf_surf_grp, sf_edge_grp, edge_sf_tbl)
+!!        type(viewer_group_data), intent(in)  :: ele_surf_grp
+!!        type(viewer_group_data), intent(inout)  :: ele_edge_grp
+!!        type(sum_hash_tbl), intent(inout) :: edge_sf_tbl
 !
       module const_grp_edge_4_viewer
 !
       use m_precision
 !
-      use m_surface_mesh_4_merge
+      use t_surface_mesh_4_merge
       use m_pickup_table_4_viewer
 !
       use t_sum_hash
@@ -27,12 +33,17 @@
 !------------------------------------------------------------------
 !
       subroutine construct_edge_4_ele_grp                               &
-     &         (nnod_4_surf, nnod_4_edge, edge_sf_tbl)
+     &         (nnod_4_surf, nnod_4_edge,                               &
+     &         edge_sf_tbl)
+!     &          ele_surf_grp, ele_edge_grp, edge_sf_tbl)
 !
+      use m_surface_mesh_4_merge
       use set_edge_hash_by_sf
       use set_edge_data_by_sf
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+!      type(viewer_group_data), intent(in)  :: ele_surf_grp
+!      type(viewer_group_data), intent(inout)  :: ele_edge_grp
       type(sum_hash_tbl), intent(inout) :: edge_sf_tbl
 !
       integer(kind = kint) :: igrp, ngrp, ist, nedge_grp
@@ -93,12 +104,17 @@
 !------------------------------------------------------------------
 !
       subroutine construct_edge_4_surf_grp                              &
-     &         (nnod_4_surf, nnod_4_edge, edge_sf_tbl)
+     &         (nnod_4_surf, nnod_4_edge,                               &
+     &          sf_surf_grp, edge_sf_tbl)
+!     &          sf_surf_grp, sf_edge_grp, edge_sf_tbl)
 !
+      use m_surface_mesh_4_merge
       use set_edge_hash_by_sf
       use set_edge_data_by_sf
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+      type(viewer_group_data), intent(in)  :: sf_surf_grp
+!      type(viewer_group_data), intent(inout)  :: sf_edge_grp
       type(sum_hash_tbl), intent(inout) :: edge_sf_tbl
 !
       integer(kind = kint) :: igrp, ngrp, ist, nedge_grp
