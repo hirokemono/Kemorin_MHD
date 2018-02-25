@@ -66,11 +66,11 @@
 !
       character(len=kchara), allocatable :: nod_gp_name_sf(:)
       integer(kind=kint ) :: ngrp_nod_sf
-      type(viewer_group_data), save :: nod_nod_grp
 !
 !
-!view_ele_grps%node_grp
+!view_nod_grps%node_grp
 !
+      type(viewer_node_groups), save :: view_nod_grps
       type(viewer_surface_groups), save :: view_ele_grps
       type(viewer_surface_groups), save :: view_sf_grps
 !
@@ -199,7 +199,7 @@
 !
       allocate( nod_gp_name_sf(ngrp_nod_sf)  )
       call alloc_merged_group_stack                                     &
-     &   (num_pe_sf, ngrp_nod_sf, nod_nod_grp)
+     &   (num_pe_sf, ngrp_nod_sf, view_nod_grps%node_grp)
 !
       end subroutine allocate_nod_grp_stack_4_surf
 !

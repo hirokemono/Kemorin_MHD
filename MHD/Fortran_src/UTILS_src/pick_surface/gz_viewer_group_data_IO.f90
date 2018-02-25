@@ -136,8 +136,8 @@
       write(textbuf,'(i16,a1)') ngrp_nod_sf, char(0)
       call gz_write_textbuf_w_lf
 !
-     call write_viewer_group_data_gz(num_pe_sf, ngrp_nod_sf,            &
-    &    nod_gp_name_sf, nod_nod_grp)
+      call write_viewer_group_data_gz(num_pe_sf, ngrp_nod_sf,           &
+    &     nod_gp_name_sf, view_nod_grps%node_grp)
 !
       end subroutine write_nod_group_viewer_gz
 !
@@ -153,14 +153,14 @@
       call allocate_nod_grp_stack_4_surf
 !
       call read_gz_multi_int((num_pe_sf*ngrp_nod_sf),                   &
-     &    nod_nod_grp%istack_sf(1))
-      nod_nod_grp%num_item                                              &
-     &    = nod_nod_grp%istack_sf(ngrp_nod_sf*num_pe_sf)
+     &    view_nod_grps%node_grp%istack_sf(1))
+      view_nod_grps%node_grp%num_item                                   &
+     &    = view_nod_grps%node_grp%istack_sf(ngrp_nod_sf*num_pe_sf)
 !
-      call alloc_merged_group_item(nod_nod_grp)
+      call alloc_merged_group_item(view_nod_grps%node_grp)
 !
       call read_viewer_group_item_gz(num_pe_sf, ngrp_nod_sf,            &
-     &    nod_gp_name_sf, nod_nod_grp)
+     &    nod_gp_name_sf, view_nod_grps%node_grp)
 !
       end subroutine read_nod_group_viewer_gz
 !

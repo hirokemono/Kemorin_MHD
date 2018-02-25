@@ -76,15 +76,17 @@
 !
 !
       ngrp_nod_sf = merged_grp%nod_grp%num_grp
-      nod_nod_grp%num_item = merged_grp%nod_grp%num_item
+      view_nod_grps%node_grp%num_item = merged_grp%nod_grp%num_item
       call allocate_nod_grp_stack_4_surf
-      call alloc_merged_group_item(nod_nod_grp)
+      call alloc_merged_group_item(view_nod_grps%node_grp)
 !
       nod_gp_name_sf(1:ngrp_nod_sf)                                     &
      &     = merged_grp%nod_grp%grp_name(1:ngrp_nod_sf)
 !
-      call set_node_group_item_viewer(merged_grp)
-      call set_node_group_stack_viewer(merged_grp)
+      call set_node_group_item_viewer(merged_grp,                       &
+     &    view_nod_grps%node_grp)
+      call set_node_group_stack_viewer(merged_grp,                      &
+     &    view_nod_grps%node_grp)
 !
       end subroutine s_set_nod_grp_4_viewer_surface
 !

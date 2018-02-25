@@ -119,7 +119,7 @@
       write(surface_id,'(i16)') ngrp_nod_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_nod_sf,  &
-     &    nod_gp_name_sf, nod_nod_grp)
+     &    nod_gp_name_sf, view_nod_grps%node_grp)
 !
       end subroutine write_nod_group_viewer
 !
@@ -131,20 +131,22 @@
 !
       use skip_comment_f
 !
+      integer(kind = kint) :: num
+!
 !
       call skip_comment(tmp_character, surface_id)
       read(tmp_character,*) ngrp_nod_sf
 !
+      num = num_pe_sf*ngrp_nod_sf
       call allocate_nod_grp_stack_4_surf
-      read(surface_id,*)                                                &
-     &     nod_nod_grp%istack_sf( 1:(num_pe_sf*ngrp_nod_sf) )
+      read(surface_id,*) view_nod_grps%node_grp%istack_sf(1:num)
 !
-      nod_nod_grp%num_item                                              &
-     &    = nod_nod_grp%istack_sf(ngrp_nod_sf*num_pe_sf)
-      call alloc_merged_group_item(nod_nod_grp)
+      view_nod_grps%node_grp%num_item                                   &
+     &    = view_nod_grps%node_grp%istack_sf(ngrp_nod_sf*num_pe_sf)
+      call alloc_merged_group_item(view_nod_grps%node_grp)
 !
       call read_viewer_group_item(surface_id, num_pe_sf, ngrp_nod_sf,   &
-     &    nod_gp_name_sf, nod_nod_grp)
+     &    nod_gp_name_sf, view_nod_grps%node_grp)
 !
       end subroutine read_nod_group_viewer
 !

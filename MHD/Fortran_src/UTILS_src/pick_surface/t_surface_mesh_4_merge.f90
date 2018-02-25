@@ -7,6 +7,9 @@
 !>@brief Structure of surface information for pickup surface
 !!
 !!@verbatim
+!!      subroutine alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
+!!      subroutine dealloc_viewer_node_grps_stack(view_nod_grps)
+!!        type(viewer_node_groups), intent(inout) :: view_nod_grps
 !!      subroutine alloc_viewer_surf_grps_stack(num_pe, view_grps)
 !!      subroutine dealloc_viewer_surf_grps_stack(view_grps)
 !!        type(viewer_surface_groups), intent(inout) :: view_grps
@@ -32,6 +35,12 @@
         integer(kind = kint), allocatable :: istack_sf(:)
         integer(kind = kint), allocatable :: item_sf(:)
       end type viewer_group_data
+!
+      type viewer_node_groups
+        integer(kind = kint) :: num_grp
+        character(len=kchara), allocatable :: grp_name(:)
+        type(viewer_group_data) :: node_grp
+      end type viewer_node_groups
 !
       type viewer_surface_groups
         integer(kind = kint) :: num_grp
@@ -69,7 +78,6 @@
 !
         character(len=kchara), allocatable :: nod_gp_name_sf(:)
         integer(kind = kint) :: ngrp_nod_sf
-        type(viewer_group_data) :: nod_nod_grp
       end type viewer_groups
 !
 !------------------------------------------------------------------
@@ -78,7 +86,21 @@
 !
 !------------------------------------------------------------------
 !
-!      call alloc_viewer_surf_grps_stack(num_pe_sf, view_grps)
+      subroutine alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(viewer_node_groups), intent(inout) :: view_nod_grps
+!
+!
+      allocate(view_nod_grps%grp_name(view_nod_grps%num_grp))
+!
+      call alloc_merged_group_stack                                     &
+     &   (num_pe, view_nod_grps%num_grp, view_nod_grps%node_grp)
+!
+      end subroutine alloc_viewer_node_grps_stack
+!
+!------------------------------------------------------------------
+!
       subroutine alloc_viewer_surf_grps_stack(num_pe, view_grps)
 !
       integer(kind = kint), intent(in) :: num_pe
@@ -95,6 +117,19 @@
      &   (num_pe, view_grps%num_grp, view_grps%node_grp)
 !
       end subroutine alloc_viewer_surf_grps_stack
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine dealloc_viewer_node_grps_stack(view_nod_grps)
+!
+      type(viewer_node_groups), intent(inout) :: view_nod_grps
+!
+!
+      deallocate(view_nod_grps%grp_name)
+      call dealloc_merged_group_stack(view_nod_grps%node_grp)
+!
+      end subroutine dealloc_viewer_node_grps_stack
 !
 !------------------------------------------------------------------
 !

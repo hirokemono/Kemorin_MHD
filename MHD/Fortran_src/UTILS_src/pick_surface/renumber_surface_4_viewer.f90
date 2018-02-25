@@ -9,9 +9,10 @@
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !!      subroutine set_surface_group_item_viewer                        &
 !!     &         (mgd_sf_grp, sf_surf_grp)
-!!      subroutine set_node_group_item_viewer(merged_grp)
+!!      subroutine set_node_group_item_viewer(merged_grp, nod_nod_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+!!        type(mesh_groups), intent(in) :: merged_grp
 !!
 !!      subroutine set_surf_domain_stack_viewer
 !!      subroutine set_element_group_stack_viewer(mgd_sf_grp,           &
@@ -21,8 +22,9 @@
 !!      subroutine set_surface_group_stack_viewer(merged_grp,           &
 !!     &          ngrp_surf_sf, sf_surf_grp)
 !!        type(viewer_group_data), intent(inout)  :: sf_surf_grp
-!!      subroutine set_node_group_stack_viewer(merged_grp)
+!!      subroutine set_node_group_stack_viewer(merged_grp, nod_nod_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
+!!        type(viewer_group_data), intent(inout) :: nod_nod_grp
 !
       module renumber_surface_4_viewer
 !
@@ -102,12 +104,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_group_item_viewer(merged_grp)
+      subroutine set_node_group_item_viewer(merged_grp, nod_nod_grp)
 !
       use t_mesh_data
       use m_pickup_table_4_viewer
 !
       type(mesh_groups), intent(in) :: merged_grp
+      type(viewer_group_data), intent(inout) :: nod_nod_grp
 !
       integer(kind = kint) :: inum, inod
 !
@@ -207,11 +210,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_group_stack_viewer(merged_grp)
+      subroutine set_node_group_stack_viewer(merged_grp, nod_nod_grp)
 !
       use t_mesh_data
 !
       type(mesh_groups), intent(in) :: merged_grp
+      type(viewer_group_data), intent(inout) :: nod_nod_grp
 !
       integer(kind = kint) :: igrp, ip, idx, iref, ist, ied, inum, inod
 !
