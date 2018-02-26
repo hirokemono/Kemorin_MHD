@@ -28,11 +28,12 @@
 !
       use FEM_analyzer_snapshot
       use input_control
+      use set_viz_time_labels
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
-      num_elapsed = 68
+      num_elapsed = 75
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                 '
@@ -41,17 +42,9 @@
       elapse_labels(4) = 'Data IO time               '
       elapse_labels(5) = 'Linear solver time         '
       elapse_labels(6) = 'Communication for RHS      '
-      elapse_labels(7) = 'Communication time         '
+      elapse_labels(num_elapsed) = 'Communication time'
 !
-      elapse_labels(60) = 'Sectioning initialization.    '
-      elapse_labels(61) = 'Isosurfaceing initialization.    '
-      elapse_labels(62) = 'Volume rendering initialization.    '
-      elapse_labels(63) = 'fieldline initialization.    '
-!
-      elapse_labels(65) = 'Sectioning.    '
-      elapse_labels(66) = 'Isosurfaceing.    '
-      elapse_labels(67) = 'Volume rendering.    '
-      elapse_labels(68) = 'fieldline.    '
+      call s_set_viz_time_labels
 !
 !     --------------------- 
 !
