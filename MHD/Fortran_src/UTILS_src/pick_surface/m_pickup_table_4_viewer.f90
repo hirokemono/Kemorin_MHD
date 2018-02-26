@@ -7,12 +7,8 @@
 !!      subroutine allocate_imark_node(numnod)
 !!      subroutine allocate_ele_edge_item_tmp(ele_edge_grp)
 !!        type(viewer_group_data), intent(in) :: ele_edge_grp
-!!      subroutine allocate_ele_gp_nod_item_tmp(ele_nod_grp)
-!!        type(viewer_group_data), intent(in) :: ele_nod_grp
 !!      subroutine allocate_sf_edge_item_tmp(sf_edge_grp)
 !!        type(viewer_group_data), intent(in)  :: sf_edge_grp
-!!      subroutine allocate_sf_gp_nod_item_tmp(sf_nod_grp)
-!!        type(viewer_group_data), intent(in) :: sf_nod_grp
 !!      subroutine allocate_sf_cvt_table_viewer(merged_surf)
 !!      subroutine allocate_nod_cvt_table_viewer(merged)
 !!        type(mesh_geometry), intent(in) :: merged
@@ -42,14 +38,6 @@
 !
       integer(kind = kint), allocatable :: inod_merge2viewer(:)
       integer(kind = kint), allocatable :: inod_viewer2merge(:)
-!
-!
-      integer(kind=kint ), allocatable :: ele_edge_item_tmp(:)
-      integer(kind=kint ), allocatable :: surf_edge_item_tmp(:)
-!
-      integer(kind = kint), allocatable :: ele_nod_item_tmp(:)
-      integer(kind = kint), allocatable :: surf_nod_item_tmp(:)
-!
 !
 !------------------------------------------------------------------
 !
@@ -109,56 +97,6 @@
       end subroutine allocate_nod_cvt_table_viewer
 !
 !------------------------------------------------------------------
-!
-      subroutine allocate_ele_edge_item_tmp(ele_edge_grp)
-!
-      use t_surface_mesh_4_merge
-!
-      type(viewer_group_data), intent(in) :: ele_edge_grp
-!
-      allocate( ele_edge_item_tmp(ele_edge_grp%num_item) )
-!
-      end subroutine allocate_ele_edge_item_tmp
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_sf_edge_item_tmp(sf_edge_grp)
-!
-      use t_surface_mesh_4_merge
-!
-      type(viewer_group_data), intent(in)  :: sf_edge_grp
-!
-      allocate( surf_edge_item_tmp(sf_edge_grp%num_item) )
-!
-      end subroutine allocate_sf_edge_item_tmp
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_ele_gp_nod_item_tmp(ele_nod_grp)
-!
-      use t_surface_mesh_4_merge
-!
-      type(viewer_group_data), intent(in) :: ele_nod_grp
-!
-      allocate( ele_nod_item_tmp(ele_nod_grp%num_item) )
-      ele_nod_item_tmp = 0
-!
-      end subroutine allocate_ele_gp_nod_item_tmp
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_sf_gp_nod_item_tmp(sf_nod_grp)
-!
-      use t_surface_mesh_4_merge
-!
-      type(viewer_group_data), intent(in) :: sf_nod_grp
-!
-      allocate( surf_nod_item_tmp(sf_nod_grp%num_item) )
-      surf_nod_item_tmp = 0
-!
-      end subroutine allocate_sf_gp_nod_item_tmp
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine deallocate_imark_surf
@@ -192,38 +130,6 @@
       deallocate( inod_viewer2merge )
 !
       end subroutine deallocate_nod_cvt_table_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_ele_edge_item_tmp
-!
-      deallocate( ele_edge_item_tmp )
-!
-      end subroutine deallocate_ele_edge_item_tmp
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_sf_edge_item_tmp
-!
-      deallocate( surf_edge_item_tmp )
-!
-      end subroutine deallocate_sf_edge_item_tmp
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_ele_gp_nod_item_tmp
-!
-      deallocate( ele_nod_item_tmp )
-!
-      end subroutine deallocate_ele_gp_nod_item_tmp
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_sf_gp_nod_item_tmp
-!
-      deallocate( surf_nod_item_tmp )
-!
-      end subroutine deallocate_sf_gp_nod_item_tmp
 !
 !------------------------------------------------------------------
 !

@@ -15,9 +15,19 @@
 !
       implicit none
 !
+      integer(kind = kint), allocatable :: ele_nod_item_tmp(:)
+      integer(kind = kint), allocatable :: surf_nod_item_tmp(:)
+!
+      private :: ele_nod_item_tmp, surf_nod_item_tmp
+!
       private :: set_nod_4_domain_viewer
       private :: set_nod_4_ele_group_viewer
       private :: set_nod_4_surf_group_viewer
+!
+      private :: allocate_ele_gp_nod_item_tmp
+      private :: allocate_sf_gp_nod_item_tmp
+      private :: deallocate_ele_gp_nod_item_tmp
+      private :: deallocate_sf_gp_nod_item_tmp
 !
 !------------------------------------------------------------------
 !
@@ -132,6 +142,49 @@
       end do
 !
       end subroutine set_nod_4_surf_group_viewer
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine allocate_ele_gp_nod_item_tmp(ele_nod_grp)
+!
+      use t_surface_mesh_4_merge
+!
+      type(viewer_group_data), intent(in) :: ele_nod_grp
+!
+      allocate( ele_nod_item_tmp(ele_nod_grp%num_item) )
+      ele_nod_item_tmp = 0
+!
+      end subroutine allocate_ele_gp_nod_item_tmp
+!
+!------------------------------------------------------------------
+!
+      subroutine allocate_sf_gp_nod_item_tmp(sf_nod_grp)
+!
+      use t_surface_mesh_4_merge
+!
+      type(viewer_group_data), intent(in) :: sf_nod_grp
+!
+      allocate( surf_nod_item_tmp(sf_nod_grp%num_item) )
+      surf_nod_item_tmp = 0
+!
+      end subroutine allocate_sf_gp_nod_item_tmp
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_ele_gp_nod_item_tmp
+!
+      deallocate( ele_nod_item_tmp )
+!
+      end subroutine deallocate_ele_gp_nod_item_tmp
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_sf_gp_nod_item_tmp
+!
+      deallocate( surf_nod_item_tmp )
+!
+      end subroutine deallocate_sf_gp_nod_item_tmp
 !
 !------------------------------------------------------------------
 !

@@ -50,17 +50,16 @@
       call write_edge_connect_viewer_gz(nnod_4_edge)
 !
 !      write(*,*) 'write_domain_group_viewer_gz'
-      call write_domain_group_viewer_gz(domain_grps%node_grp,           &
-     &    domain_grps%edge_grp, domain_grps%surf_grp)
+      call write_domain_group_viewer_gz(num_pe_sf, domain_grps)
 !
 !      write(*,*) 'write_nod_group_viewer_gz'
-      call write_nod_group_viewer_gz
+      call write_nod_group_viewer_gz(num_pe_sf, view_nod_grps)
 !
 !      write(*,*) 'write_ele_group_viewer_gz'
-      call write_ele_group_viewer_gz
+      call write_ele_group_viewer_gz(num_pe_sf, view_ele_grps)
 !
 !      write(*,*) 'write_surf_group_viewer_gz'
-      call write_surf_group_viewer_gz
+      call write_surf_group_viewer_gz(num_pe_sf, view_sf_grps)
 !
       call close_gzfile_f
 !
@@ -101,17 +100,16 @@
       call allocate_domain_stack_4_surf
 !
 !      write(*,*) 'read_domain_group_viewer_gz'
-      call read_domain_group_viewer_gz(domain_grps%node_grp,            &
-     &    domain_grps%edge_grp, domain_grps%surf_grp)
+      call read_domain_group_viewer_gz(num_pe_sf, domain_grps)
 !
 !      write(*,*) 'read_nod_group_viewer_gz'
-      call read_nod_group_viewer_gz
+      call read_nod_group_viewer_gz(num_pe_sf, view_nod_grps)
 !
 !      write(*,*) 'read_ele_group_viewer_gz'
-      call read_ele_group_viewer_gz
+      call read_ele_group_viewer_gz(num_pe_sf, view_ele_grps)
 !
 !      write(*,*) 'read_surf_group_viewer_gz'
-      call read_surf_group_viewer_gz
+      call read_surf_group_viewer_gz(num_pe_sf, view_sf_grps)
 !
       call close_gzfile_f
 !

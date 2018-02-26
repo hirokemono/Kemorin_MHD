@@ -39,7 +39,8 @@
       implicit none
 !
 !
-      integer(kind=kint )  :: num_pe_sf
+!view_mesh%num_pe_sf
+      integer(kind = kint)  :: num_pe_sf
 !
       integer(kind=kint ), allocatable :: inod_sf_stack(:)
       integer(kind=kint ), allocatable :: iedge_sf_stack(:)
@@ -57,9 +58,9 @@
 !
       real   (kind=kreal), dimension(:,:), allocatable  ::  xx_view
 !
+      type(viewer_mesh_data), save :: view_mesh
 !
       type(viewer_surface_groups), save :: domain_grps
-!domain_grps%surf_grp
 !
       type(viewer_node_groups), save :: view_nod_grps
       type(viewer_surface_groups), save :: view_ele_grps

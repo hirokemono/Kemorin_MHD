@@ -52,8 +52,6 @@
 !
 !
       type viewer_mesh_data
-        integer(kind = kint)  :: num_pe_sf
-!
         integer(kind = kint), allocatable :: inod_sf_stack(:)
         integer(kind = kint), allocatable :: iedge_sf_stack(:)
         integer(kind = kint), allocatable :: isurf_sf_stack(:)

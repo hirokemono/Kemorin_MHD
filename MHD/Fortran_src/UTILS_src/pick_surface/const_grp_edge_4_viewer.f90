@@ -26,6 +26,15 @@
 !
       implicit    none
 !
+      integer(kind=kint ), allocatable :: ele_edge_item_tmp(:)
+      integer(kind=kint ), allocatable :: surf_edge_item_tmp(:)
+      private :: ele_edge_item_tmp, surf_edge_item_tmp
+!
+      private :: allocate_ele_edge_item_tmp
+      private :: allocate_sf_edge_item_tmp
+      private :: deallocate_ele_edge_item_tmp
+      private :: deallocate_sf_edge_item_tmp
+!
 !------------------------------------------------------------------
 !
       contains
@@ -166,6 +175,47 @@
       end do
 !
       end subroutine construct_edge_4_surf_grp
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine allocate_ele_edge_item_tmp(ele_edge_grp)
+!
+      use t_surface_mesh_4_merge
+!
+      type(viewer_group_data), intent(in) :: ele_edge_grp
+!
+      allocate( ele_edge_item_tmp(ele_edge_grp%num_item) )
+!
+      end subroutine allocate_ele_edge_item_tmp
+!
+!------------------------------------------------------------------
+!
+      subroutine allocate_sf_edge_item_tmp(sf_edge_grp)
+!
+      use t_surface_mesh_4_merge
+!
+      type(viewer_group_data), intent(in)  :: sf_edge_grp
+!
+      allocate( surf_edge_item_tmp(sf_edge_grp%num_item) )
+!
+      end subroutine allocate_sf_edge_item_tmp
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_ele_edge_item_tmp
+!
+      deallocate( ele_edge_item_tmp )
+!
+      end subroutine deallocate_ele_edge_item_tmp
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_sf_edge_item_tmp
+!
+      deallocate( surf_edge_item_tmp )
+!
+      end subroutine deallocate_sf_edge_item_tmp
 !
 !------------------------------------------------------------------
 !
