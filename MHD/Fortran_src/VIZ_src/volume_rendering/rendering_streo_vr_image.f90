@@ -24,6 +24,7 @@
       use m_precision
       use m_machine_parameter
       use m_constants
+      use m_work_time
 !
       use calypso_mpi
 !
@@ -76,8 +77,15 @@
       if(pvr_param%file%iflag_anaglyph .gt. 0) then
         call store_left_eye_image(pvr_data%rgb)
       else
+        call end_elapsed_time(71)
+        call start_elapsed_time(72)
+!
         call sel_write_pvr_image_file(pvr_param%file,                   &
      &     iminus, istep_pvr, IFLAG_LEFT, pvr_data%rgb)
+!
+        call calypso_mpi_barrier
+        call end_elapsed_time(72)
+        call start_elapsed_time(71)
       end if
 !
       call dealloc_pvr_local_subimage(pvr_data%image)
@@ -91,12 +99,21 @@
       if(pvr_param%file%iflag_anaglyph .gt. 0) then
         call add_left_eye_image(pvr_data%rgb)
 !
+        call end_elapsed_time(71)
+        call start_elapsed_time(72)
+!
         call sel_write_pvr_image_file(pvr_param%file,                   &
      &      iminus, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
       else
+        call end_elapsed_time(71)
+        call start_elapsed_time(72)
+!
         call sel_write_pvr_image_file(pvr_param%file,                   &
      &      iminus, istep_pvr, IFLAG_RIGHT, pvr_data%rgb)
       end if
+      call calypso_mpi_barrier
+      call end_elapsed_time(72)
+      call start_elapsed_time(71)
 !
       call dealloc_pvr_local_subimage(pvr_data%image)
       call deallocate_pvr_ray_start(pvr_data%start_pt)
@@ -139,8 +156,15 @@
         if(pvr_param%file%iflag_anaglyph .gt. 0) then
           call store_left_eye_image(pvr_data%rgb)
         else
+          call end_elapsed_time(71)
+          call start_elapsed_time(72)
+!
           call sel_write_pvr_image_file(pvr_param%file,                 &
      &        i_rot, istep_pvr, IFLAG_LEFT, pvr_data%rgb)
+!
+          call calypso_mpi_barrier
+          call end_elapsed_time(72)
+          call start_elapsed_time(71)
         end if
 !
         call dealloc_pvr_local_subimage(pvr_data%image)
@@ -152,12 +176,21 @@
 !
         if(pvr_param%file%iflag_anaglyph .gt. 0) then
           call add_left_eye_image(pvr_data%rgb)
+!
+          call end_elapsed_time(71)
+          call start_elapsed_time(72)
           call sel_write_pvr_image_file(pvr_param%file,                 &
      &        i_rot, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
         else
+          call end_elapsed_time(71)
+          call start_elapsed_time(72)
+!
           call sel_write_pvr_image_file(pvr_param%file,                 &
      &        i_rot, istep_pvr, IFLAG_RIGHT, pvr_data%rgb)
         end if
+        call calypso_mpi_barrier
+        call end_elapsed_time(72)
+        call start_elapsed_time(71)
 !
         call dealloc_pvr_local_subimage(pvr_data%image)
         call deallocate_pvr_ray_start(pvr_data%start_pt)
