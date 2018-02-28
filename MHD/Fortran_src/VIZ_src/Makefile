@@ -58,6 +58,7 @@ mod_list:
 	@echo '$$(MOD_SURFACING)'  \\ >> $(MAKENAME)
 	@echo '$$(MOD_FIELDLINE)'  \\ >> $(MAKENAME)
 	@echo '$$(MOD_PVR)'        \\ >> $(MAKENAME)
+	@echo '$$(MOD_LIC)'        \\ >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	
 	@for dir in $(SUBDIRS); do \
