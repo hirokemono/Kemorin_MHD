@@ -1,13 +1,13 @@
-!>@file  write_PVR_image.f90
-!!       module write_PVR_image
+!>@file  write_LIC_image.f90
+!!       module write_LIC_image
 !!
-!!@author H. Matsui
-!!@date   Programmed in Aug., 2011
+!!@author  Y. Liao and H. Matsui
+!!@date Programmed in Feb., 2018
 !
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_image                                      &
+!!      subroutine rendering_image_4_lic                                &
 !!     &         (istep_pvr, file_param, node, ele, surf, color_param,  &
 !!     &          cbar_param, field_pvr, pvr_screen, pvr_start,         &
 !!     &          pvr_img, pvr_rgb)
@@ -21,15 +21,9 @@
 !!        type(pvr_projected_data), intent(in) :: pvr_screen
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
-!!
-!!      subroutine sel_write_pvr_image_file                             &
-!!     &       (file_param, i_rot, istep_pvr, isel_projection, pvr_rgb)
-!!      subroutine sel_write_pvr_local_img                              &
-!!     &        (file_param, index, istep_pvr, pvr_rgb)
-!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
-      module write_PVR_image
+      module write_LIC_image
 !
       use m_precision
       use m_work_time
@@ -46,7 +40,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image                                        &
+      subroutine rendering_image_4_lic                                  &
      &         (istep_pvr, file_param, node, ele, surf, color_param,    &
      &          cbar_param, field_pvr, pvr_screen, pvr_start,           &
      &          pvr_img, pvr_rgb)
@@ -58,12 +52,13 @@
       use t_geometries_in_pvr_screen
       use t_pvr_image_array
       use t_pvr_ray_startpoints
-      use ray_trace_4_each_image
+      use ray_trace_LIC_image
       use composite_pvr_images
       use draw_pvr_colorbar
       use composite_pvr_images
       use PVR_image_transfer
       use pvr_axis_label
+      use write_PVR_image
 !
       type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: istep_pvr
@@ -87,8 +82,8 @@
 !
 !
       call start_elapsed_time(73)
-      if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
-      call s_ray_trace_4_each_image(node, ele, surf,                    &
+      if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'
+      call ray_trace_each_lic_image(node, ele, surf,                    &
      &    pvr_screen, field_pvr, color_param, ray_vec,                  &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
@@ -153,102 +148,8 @@
      &      pvr_screen, cbar_param, pvr_rgb%rgba_real_gl)
       end if
 !
-      end subroutine rendering_image
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine sel_write_pvr_image_file                               &
-     &        (file_param, i_rot, istep_pvr, isel_projection, pvr_rgb)
-!
-      use t_pvr_image_array
-      use t_control_params_4_pvr
-      use output_image_sel_4_png
-      use set_parallel_file_name
-      use convert_real_rgb_2_bite
-!
-      type(pvr_output_parameter), intent(in) :: file_param
-      integer(kind = kint), intent(in) :: i_rot, istep_pvr
-      integer(kind = kint), intent(in) :: isel_projection
-!
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-      character(len=kchara) :: tmpchara, img_head
-!
-!
-      if(my_rank .ne. 0) return
-!
-      if(isel_projection .eq. IFLAG_LEFT) then
-        call add_left_label(file_param%pvr_prefix, img_head)
-      else if(isel_projection .eq. IFLAG_RIGHT) then
-        call add_right_label(file_param%pvr_prefix, img_head)
-      else
-        img_head = file_param%pvr_prefix
-      end if
-!
-      if(istep_pvr .ge. 0) then
-        call add_int_suffix(istep_pvr, img_head, tmpchara)
-      else
-        tmpchara = img_head
-      end if
-!
-      if(i_rot .gt. 0) then
-        call add_int_suffix(i_rot, tmpchara, img_head)
-      else
-        img_head = tmpchara
-      end if
-!
-      if(file_param%id_pvr_transparent .eq. 1) then
-          call cvt_double_rgba_to_char_rgba(pvr_rgb%num_pixel_xy,       &
-     &        pvr_rgb%rgba_real_gl,  pvr_rgb%rgba_chara_gl)
-          call sel_rgba_image_file(file_param%id_pvr_file_type,         &
-     &        img_head, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),   &
-     &        pvr_rgb%rgba_chara_gl)
-      else
-          call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,        &
-     &        pvr_rgb%rgba_real_gl,  pvr_rgb%rgb_chara_gl)
-          call sel_output_image_file(file_param%id_pvr_file_type,       &
-     &        img_head, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),   &
-     &        pvr_rgb%rgb_chara_gl)
-      end if
-!
-      end subroutine sel_write_pvr_image_file
+      end subroutine rendering_image_4_lic
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_local_img                                &
-     &         (file_param, index, istep_pvr, pvr_rgb)
-!
-      use t_pvr_image_array
-      use t_control_params_4_pvr
-      use output_image_sel_4_png
-      use set_parallel_file_name
-      use convert_real_rgb_2_bite
-!
-      type(pvr_output_parameter), intent(in) :: file_param
-      integer(kind = kint), intent(in) :: index, istep_pvr
-!
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-      character(len=kchara) :: tmpchara, img_head
-!
-!
-      if(istep_pvr .ge. 0) then
-        call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
-      else
-        tmpchara = file_param%pvr_prefix
-      end if
-      call add_int_suffix(index, tmpchara, img_head)
-!
-      call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,            &
-     &    pvr_rgb%rgba_real_lc, pvr_rgb%rgb_chara_lc)
-!
-      call sel_output_image_file(file_param%id_pvr_file_type,           &
-     &    img_head, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),       &
-     &    pvr_rgb%rgb_chara_lc)
-!
-      end subroutine sel_write_pvr_local_img
-!
-!  ---------------------------------------------------------------------
-!
-      end module write_PVR_image
+      end module write_LIC_image

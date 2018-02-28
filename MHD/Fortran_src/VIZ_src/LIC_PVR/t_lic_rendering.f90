@@ -1,8 +1,12 @@
+!>@file   t_lic_rendering.f90
+!!@brief  module t_lic_rendering
+!!
+!!@author  Y. Liao and H. Matsui
+!!@date Programmed in Feb., 2018
 !
-!      module t_lic_rendering
-!
-!      Written by H. Matsui on July, 2006
-!
+!>@brief structure of control data for multiple LIC rendering
+!!
+!!@verbatim
 !!      integer(kind = kint), function check_LIC_update(lic_ctls, lic)
 !!      subroutine LIC_initialize(femmesh, ele_mesh, nod_fld, lic)
 !!      subroutine LIC_visualize                                        &
@@ -17,6 +21,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!        type(volume_rendering_module), intent(inout) :: lic
+!!@endverbatim
 !
       module t_lic_rendering
 !
@@ -127,7 +132,7 @@
       call alloc_components_4_LIC(lic)
 !
       do i_pvr = 1, lic%num_pvr
-        call allocate_nod_data_4_pvr                                    &
+        call alloc_nod_vector_4_lic                                     &
      &     (femmesh%mesh%node%numnod, femmesh%mesh%ele%numele,          &
      &      femmesh%group%surf_grp%num_grp, lic%pvr_param(i_pvr)%field)
         call reset_pvr_view_parameteres(lic%pvr_data(i_pvr)%view)
@@ -167,6 +172,7 @@
      &         (istep_pvr, femmesh, ele_mesh, jacs, nod_fld, lic)
 !
       use cal_pvr_modelview_mat
+      use each_LIC_rendering
 !
       integer(kind = kint), intent(in) :: istep_pvr
 !
@@ -183,7 +189,7 @@
       if(lic%num_pvr.le.0 .or. istep_pvr.le.0) return
 !
       do i_pvr = 1, lic%num_pvr
-        call each_PVR_rendering(istep_pvr,                              &
+        call s_each_LIC_rendering(istep_pvr,                            &
      &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
      &      lic%pvr_param(i_pvr), lic%pvr_data(i_pvr))
       end do
@@ -207,14 +213,14 @@
 !
       subroutine dealloc_LIC_data(lic)
 !
-      use set_pvr_control
+      use each_LIC_rendering
 !
       integer(kind = kint) :: i_pvr
       type(volume_rendering_module), intent(inout) :: lic
 !
 !
       do i_pvr = 1, lic%num_pvr
-        call dealloc_each_pvr_data                                      &
+        call dealloc_each_lic_data                                      &
      &     (lic%pvr_param(i_pvr), lic%pvr_data(i_pvr))
       end do
       deallocate(lic%pvr_param, lic%pvr_data)

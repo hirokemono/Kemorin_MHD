@@ -165,32 +165,32 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-      call cal_field_4_each_pvr                                       &
-     &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,      &
+      call cal_field_4_each_pvr                                         &
+     &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,        &
      &    pvr_param%field_def, pvr_param%field)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
-      call set_default_pvr_data_params                                &
+      call set_default_pvr_data_params                                  &
      &   (pvr_param%outline, pvr_data%color)
 !
       if(pvr_data%view%iflag_rotate_snap .gt. 0) then
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
-          call streo_rendering_with_rotation                          &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,   &
+          call streo_rendering_with_rotation                            &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        pvr_param, pvr_data)
         else
-          call rendering_with_rotation                                &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,   &
+          call rendering_with_rotation                                  &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        pvr_param, pvr_data)
         end if
       else
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
-          call streo_rendering_fixed_view                             &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,          &
+          call streo_rendering_fixed_view                               &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        group, pvr_param, pvr_data)
         else
-          call rendering_with_fixed_view                              &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,          &
+          call rendering_with_fixed_view                                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        pvr_param, pvr_data)
         end if
       end if

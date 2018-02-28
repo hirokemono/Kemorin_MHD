@@ -136,7 +136,7 @@
       call end_elapsed_time(68)
 !
       call start_elapsed_time(69)
-      call LIC_visualize(viz_step%PVR_t%istep_file,                     &
+      call LIC_visualize(viz_step%LIC_t%istep_file,                     &
      &    femmesh, ele_mesh, jacs, nod_fld, vizs%lic)
       call calypso_MPI_barrier
       call end_elapsed_time(69)

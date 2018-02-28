@@ -1,8 +1,8 @@
 !>@file   t_control_data_LIC_pvrs.f90
 !!@brief  module t_control_data_LIC_pvrs
 !!
-!!@author  H. Matsui
-!!@date Programmed in July, 2006
+!!@author  Y. Liao and H. Matsui
+!!@date Programmed in Feb., 2018
 !
 !>@brief structure of control data for multiple LIC rendering
 !!

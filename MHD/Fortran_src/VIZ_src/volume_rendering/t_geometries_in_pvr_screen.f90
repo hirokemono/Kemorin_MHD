@@ -15,7 +15,10 @@
 !!
 !!      subroutine allocate_nod_data_4_pvr                              &
 !!     &         (numnod, numele, num_sf_grp, field_pvr)
+!!      subroutine alloc_nod_vector_4_lic                               &
+!!     &         (numnod, numele, num_sf_grp, field_pvr)
 !!      subroutine dealloc_nod_data_4_pvr(fld)
+!!      subroutine dealloc_nod_data_4_lic(field_pvr)
 !!
 !!      subroutine g(fld)
 !!      subroutine alloc_pvr_isosurfaces(fld)
@@ -69,6 +72,8 @@
         real(kind = kreal), allocatable :: d_pvr(:)
 !>    Gradient for rendering
         real(kind = kreal), allocatable :: grad_ele(:,:)
+!>    Vector Data for LIC
+        real(kind = kreal), allocatable :: v_nod(:,:)
 !
 !>    flag for rendering element
         integer(kind = kint), allocatable :: iflag_used_ele(:)
@@ -108,6 +113,7 @@
       end type pvr_pixel_position_type
 !
       private :: alloc_nod_data_4_pvr, alloc_iflag_pvr_used_ele
+      private :: alloc_nod_vector_4_pvr
       private :: alloc_iflag_pvr_boundaries
 !
 ! -----------------------------------------------------------------------
@@ -182,6 +188,22 @@
       end subroutine allocate_nod_data_4_pvr
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine alloc_nod_vector_4_lic                                 &
+     &         (numnod, numele, num_sf_grp, field_pvr)
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: num_sf_grp
+      type(pvr_projected_field), intent(inout) :: field_pvr
+!
+!
+      call allocate_nod_data_4_pvr                                      &
+     &   (numnod, numele, num_sf_grp, field_pvr)
+      call alloc_nod_vector_4_pvr(numnod, field_pvr)
+!
+      end subroutine alloc_nod_vector_4_lic
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_nod_data_4_pvr(field_pvr)
@@ -194,6 +216,18 @@
       deallocate(field_pvr%d_pvr, field_pvr%grad_ele)
 !
       end subroutine dealloc_nod_data_4_pvr
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_nod_data_4_lic(field_pvr)
+!
+      type(pvr_projected_field), intent(inout) :: field_pvr
+!
+!
+      call dealloc_nod_data_4_pvr(field_pvr)
+      deallocate(field_pvr%v_nod)
+!
+      end subroutine dealloc_nod_data_4_lic
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -211,6 +245,19 @@
       if(nele .gt. 0) fld%grad_ele = 0.0d0
 !
       end subroutine alloc_nod_data_4_pvr
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_nod_vector_4_pvr(nnod, fld)
+!
+      integer(kind = kint), intent(in) :: nnod
+      type(pvr_projected_field), intent(inout) :: fld
+!
+!
+      allocate(fld%v_nod(nnod,3))
+      if(nnod .gt. 0) fld%v_nod =    0.0d0
+!
+      end subroutine alloc_nod_vector_4_pvr
 !
 ! -----------------------------------------------------------------------
 !
