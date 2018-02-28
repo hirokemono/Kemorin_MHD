@@ -7,7 +7,7 @@
 !!      subroutine PVR_initialize(femmesh, ele_mesh, nod_fld, pvr)
 !!      subroutine PVR_visualize                                        &
 !!     &         (istep_pvr, femmesh, ele_mesh, jacs, nod_fld, pvr)
-!!      subroutine deallocate_pvr_data(pvr)
+!!      subroutine dealloc_pvr_data(pvr)
 !!        type(mesh_data), intent(in) :: femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(node_data), intent(in) :: node
@@ -61,6 +61,8 @@
         type(PVR_image_generator), allocatable :: pvr_data(:)
       end type volume_rendering_module
 !
+      private :: alloc_components_4_pvr
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -79,8 +81,8 @@
 !
 !
       call calypso_mpi_barrier
-      call read_control_pvr_update                                      &
-     &   (pvr_ctls%fname_pvr_ctl(1), pvr_ctls%pvr_ctl_struct(1))
+      call read_control_pvr_update(hd_pvr_ctl,                          &
+     &    pvr_ctls%fname_pvr_ctl(1), pvr_ctls%pvr_ctl_struct(1))
 !
       if(my_rank .eq. izero) then
         check_PVR_update = IFLAG_THROUGH
@@ -122,7 +124,7 @@
       pvr%num_pvr = pvr_ctls%num_pvr_ctl
       if(pvr%num_pvr .le. 0) return
 !
-      call allocate_components_4_pvr(pvr)
+      call alloc_components_4_pvr(pvr)
 !
       do i_pvr = 1, pvr%num_pvr
         call allocate_nod_data_4_pvr                                    &
@@ -137,8 +139,8 @@
       end if
 !
       do i_pvr = 1, pvr%num_pvr
-        call read_set_each_pvr_controls(i_pvr, femmesh%group, nod_fld,  &
-     &      pvr_ctls%fname_pvr_ctl(i_pvr),                              &
+        call read_set_each_pvr_controls(i_pvr, hd_pvr_ctl,              &
+     &      femmesh%group, nod_fld, pvr_ctls%fname_pvr_ctl(i_pvr),      &
      &      pvr_ctls%pvr_ctl_struct(i_pvr),                             &
      &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))
         call calypso_mpi_barrier
@@ -193,7 +195,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_components_4_pvr(pvr)
+      subroutine alloc_components_4_pvr(pvr)
 !
       type(volume_rendering_module), intent(inout) :: pvr
 !
@@ -201,11 +203,11 @@
       allocate(pvr%pvr_param(pvr%num_pvr))
       allocate(pvr%pvr_data(pvr%num_pvr))
 !
-      end subroutine allocate_components_4_pvr
+      end subroutine alloc_components_4_pvr
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_pvr_data(pvr)
+      subroutine dealloc_pvr_data(pvr)
 !
       use set_pvr_control
 !
@@ -219,7 +221,7 @@
       end do
       deallocate(pvr%pvr_param, pvr%pvr_data)
 !
-      end subroutine deallocate_pvr_data
+      end subroutine dealloc_pvr_data
 !
 !  ---------------------------------------------------------------------
 !

@@ -98,7 +98,7 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'pvr_prefix', file_param%pvr_prefix
+        write(*,*) 'pvr_prefix: ', trim(file_param%pvr_prefix)
         write(*,*) 'id_pvr_file_type', file_param%id_pvr_file_type
         write(*,*) 'id_pvr_transparent', file_param%id_pvr_transparent
       end if

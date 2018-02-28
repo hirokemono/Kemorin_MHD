@@ -1,10 +1,12 @@
+!>@file   t_control_data_pvrs.f90
+!!@brief  module t_control_data_pvrs
+!!
+!!@author  H. Matsui
+!!@date Programmed in July, 2006
 !
-!      module t_control_data_pvrs
-!
-!      Written by H. Matsui on July, 2006
-!
-!      subroutine dealloc_pvr_file_header_ctl
-!
+!>@brief structure of control data for multiple PVRs
+!!
+!!@verbatim
 !!      subroutine read_files_4_pvr_ctl(pvr_ctls)
 !!      subroutine bcast_files_4_pvr_ctl(pvr_ctls)
 !
@@ -13,7 +15,7 @@
 !!      file  volume_rendering  'ctl_pvr_temp'
 !!    end array volume_rendering
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
+!!@endverbatim
 !
       module t_control_data_pvrs
 !
@@ -25,6 +27,8 @@
 !
       implicit  none
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_pvr_ctl = 'volume_rendering'
 !
       type volume_rendering_controls
         integer(kind = kint) :: num_pvr_ctl = 0
@@ -34,11 +38,9 @@
 !
 !     lavel for volume rendering
 !
-      character(len=kchara), parameter                                  &
-     &                    :: hd_pvr_ctl = 'volume_rendering'
       integer (kind=kint) :: i_pvr_ctl =   0
 !
-      private :: i_pvr_ctl, hd_pvr_ctl
+      private :: i_pvr_ctl
       private :: alloc_pvr_ctl_struct
 !
 !   --------------------------------------------------------------------

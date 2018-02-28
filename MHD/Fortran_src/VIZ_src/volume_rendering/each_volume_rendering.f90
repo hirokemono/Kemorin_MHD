@@ -48,7 +48,6 @@
       use t_pvr_ray_startpoints
       use t_pvr_image_array
       use t_geometries_in_pvr_screen
-      use t_control_data_pvrs
 !
       use field_data_4_pvr
       use set_default_pvr_params

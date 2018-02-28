@@ -76,6 +76,8 @@
       type(jacobians_type), intent(inout) :: jacobians
       type(MHD_IO_data), intent(inout) :: MHD_IO
 !
+      integer(kind = kint) :: iflag
+!
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------
@@ -94,7 +96,9 @@
      &     (geofem%mesh, next_tbl%neib_ele)
       end if
 !
-      if(MHD_step%viz_step%PVR_t%increment .le. 0) Return
+      iflag = MHD_step%viz_step%PVR_t%increment                         &
+     &       + MHD_step%viz_step%LIC_t%increment
+      if(iflag .le. 0) Return
 !
 !  -----  If there is no volume rendering... return
 !

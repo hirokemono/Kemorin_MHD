@@ -39,6 +39,10 @@ begin visualizer
     array  fieldline  1
       file  fieldline  'ctl_fline_magne'
     end array fieldline
+!
+    array  LIC_rendering  1
+      file  LIC_rendering  'ctl_LIC_magne'
+    end array LIC_rendering
   end  visual_control
 !
 end  visualizer
