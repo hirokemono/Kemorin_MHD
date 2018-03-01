@@ -15,9 +15,6 @@
 !!
 !!      subroutine deallocate_imark_surf
 !!      subroutine deallocate_imark_node
-!!      subroutine deallocate_sf_cvt_table_viewer
-!!      subroutine deallocate_ele_edge_item_tmp
-!!      subroutine deallocate_sf_edge_item_tmp
 !
       module m_pickup_table_4_viewer
 !
@@ -28,11 +25,7 @@
 !
 !
       integer(kind = kint), allocatable :: imark_surf(:)
-      integer(kind = kint), allocatable :: imark_edge(:)
       integer(kind = kint), allocatable :: imark_node(:)
-!
-      integer(kind = kint), allocatable :: isf_merge2viewer(:)
-      integer(kind = kint), allocatable :: isf_viewer2merge(:)
 !
 !------------------------------------------------------------------
 !
@@ -76,15 +69,6 @@
       deallocate( imark_node )
 !
       end subroutine deallocate_imark_node
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_sf_cvt_table_viewer
-!
-      deallocate( isf_merge2viewer )
-      deallocate( isf_viewer2merge )
-!
-      end subroutine deallocate_sf_cvt_table_viewer
 !
 !------------------------------------------------------------------
 !
