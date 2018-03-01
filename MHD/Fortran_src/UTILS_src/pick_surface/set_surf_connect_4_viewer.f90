@@ -32,6 +32,7 @@
       use t_grp_data_merged_surfaces
       use m_pickup_table_4_viewer
       use pickup_surface_4_viewer
+      use merge_to_viewer_surf_tbl
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       type(merged_mesh), intent(inout) :: mgd_mesh
@@ -83,6 +84,7 @@
       use t_grp_data_merged_surfaces
 !
       use renumber_surface_4_viewer
+      use merge_to_viewer_surf_tbl
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(in) :: merged_surf

@@ -3,17 +3,6 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine set_surf_domain_item_viewer                          &
-!!     &         (merged_surf, domain_surf_grp)
-!!        type(viewer_group_data), intent(inout) :: domain_surf_grp
-!!      subroutine set_element_group_item_viewer                        &
-!!     &         (mgd_sf_grp, ele_surf_grp)
-!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
-!!      subroutine set_surface_group_item_viewer                        &
-!!     &         (mgd_sf_grp, sf_surf_grp)
-!!        type(mesh_groups), intent(in) :: merged_grp
-!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
-!!        type(mesh_groups), intent(in) :: merged_grp
 !!
 !!      subroutine set_surf_domain_stack_viewer(domain_surf_grp)
 !!        type(viewer_group_data), intent(inout) :: domain_surf_grp
@@ -40,72 +29,6 @@
 !------------------------------------------------------------------
 !
       contains
-!
-!------------------------------------------------------------------
-!
-      subroutine set_surf_domain_item_viewer                            &
-     &         (merged_surf, domain_surf_grp)
-!
-      use t_surface_data
-      use m_pickup_table_4_viewer
-!
-      type(surface_data), intent(in) :: merged_surf
-      type(viewer_group_data), intent(inout) :: domain_surf_grp
-!
-      integer(kind = kint) :: inum, isurf
-!
-!
-      do inum = 1, domain_surf_grp%num_item
-        isurf = abs( merged_surf%isf_isolate(inum) )
-        domain_surf_grp%item_sf(inum) = isf_merge2viewer(isurf)         &
-     &                    * (merged_surf%isf_isolate(inum) / isurf)
-      end do
-!
-      end subroutine set_surf_domain_item_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine set_element_group_item_viewer                          &
-     &         (mgd_sf_grp, ele_surf_grp)
-!
-      use t_grp_data_merged_surfaces
-      use m_pickup_table_4_viewer
-!
-      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
-      type(viewer_group_data), intent(inout) :: ele_surf_grp
-!
-      integer(kind = kint) :: inum, isurf
-!
-!
-      do inum = 1, ele_surf_grp%num_item
-        isurf = abs( mgd_sf_grp%isf_isolate_ele_grp_m(inum) )
-        ele_surf_grp%item_sf(inum) = isf_merge2viewer(isurf)            &
-     &         * (mgd_sf_grp%isf_isolate_ele_grp_m(inum) / isurf)
-      end do
-!
-      end subroutine set_element_group_item_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine set_surface_group_item_viewer                          &
-     &         (mgd_sf_grp, sf_surf_grp)
-!
-      use t_grp_data_merged_surfaces
-      use m_pickup_table_4_viewer
-!
-      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
-      type(viewer_group_data), intent(inout)  :: sf_surf_grp
-!
-      integer(kind = kint) :: inum, isurf
-!
-!
-      do inum = 1, sf_surf_grp%num_item
-        isurf = abs( mgd_sf_grp%isf_surf_grp_m(inum) )
-        sf_surf_grp%item_sf(inum) = isf_merge2viewer(isurf)             &
-     &                     * (mgd_sf_grp%isf_surf_grp_m(inum) / isurf)
-      end do
-!
-      end subroutine set_surface_group_item_viewer
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

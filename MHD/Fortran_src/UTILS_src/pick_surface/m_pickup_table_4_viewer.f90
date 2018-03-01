@@ -61,21 +61,6 @@
       end subroutine allocate_imark_node
 !
 !------------------------------------------------------------------
-!
-      subroutine allocate_sf_cvt_table_viewer(merged_surf)
-!
-      use m_surface_mesh_4_merge
-!
-      type(surface_data), intent(in) :: merged_surf
-!
-      allocate( isf_merge2viewer(merged_surf%numsurf) )
-      allocate( isf_viewer2merge(surfpetot_viewer) )
-      isf_merge2viewer = 0
-      isf_viewer2merge = 0
-!
-      end subroutine allocate_sf_cvt_table_viewer
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine deallocate_imark_surf
