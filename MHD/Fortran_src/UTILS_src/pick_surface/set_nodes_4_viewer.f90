@@ -12,6 +12,7 @@
 !
       use m_machine_parameter
       use m_surface_mesh_4_merge
+      use merge_to_viewer_ordering
 !
       implicit none
 !

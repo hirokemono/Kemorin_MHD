@@ -78,48 +78,6 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_cvt_table_viewer(merged)
-!
-      use t_mesh_data
-!
-      type(mesh_geometry), intent(in) :: merged
-!
-      integer(kind = kint) :: inod, inum
-!
-!
-      inum = 0
-      do inod = 1, merged%node%numnod
-        if ( imark_node(inod) .gt. 0 ) then
-          inum = inum + 1
-          inod_merge2viewer(inod) = inum
-          inod_viewer2merge(inum) = inod
-        end if
-      end do
-!
-      end subroutine set_node_cvt_table_viewer
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
-!
-      use m_surface_mesh_4_merge
-!
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint) :: isurf, k1, inod
-!
-!
-      do isurf = 1, surfpetot_viewer
-        do k1 = 1, nnod_4_surf
-          inod = ie_sf_viewer(isurf,k1)
-          ie_sf_viewer(isurf,k1) = inod_merge2viewer(inod)
-        end do
-      end do
-!
-      end subroutine renumber_surf_connect_4_viewer
-!
-!------------------------------------------------------------------
-!
       subroutine set_node_position_4_viewer(merged)
 !
       use t_mesh_data
