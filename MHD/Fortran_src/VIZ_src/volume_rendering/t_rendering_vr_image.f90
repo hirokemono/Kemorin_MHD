@@ -203,12 +203,12 @@
       call end_elapsed_time(71)
       call start_elapsed_time(72)
       if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
-      call sel_write_pvr_image_file                                     &
-     &   (pvr_param%file, iminus, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
+      call sel_write_pvr_image_file(pvr_param%file, iminus,             &
+     &    istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
 !
       if(pvr_param%file%iflag_monitoring .gt. 0) then
-        call sel_write_pvr_image_file                                   &
-     &   (pvr_param%file, iminus, iminus, IFLAG_NORMAL, pvr_data%rgb)
+        call sel_write_pvr_image_file(pvr_param%file, iminus,           &
+     &      iminus, IFLAG_NORMAL, pvr_data%rgb)
       end if
       call calypso_mpi_barrier
       call end_elapsed_time(72)
