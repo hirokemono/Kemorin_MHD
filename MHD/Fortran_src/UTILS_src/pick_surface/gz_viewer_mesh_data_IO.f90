@@ -61,12 +61,12 @@
       write(textbuf,'(i15,a1)') mgd_view_mesh1%num_pe_sf, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i10                                      &
-     &   (mgd_view_mesh1%num_pe_sf, inod_sf_stack(1))
-      call write_gz_multi_int_8i10                                      &
-     &   (mgd_view_mesh1%num_pe_sf, isurf_sf_stack(1))
-      call write_gz_multi_int_8i10                                      &
-     &   (mgd_view_mesh1%num_pe_sf, iedge_sf_stack(1))
+      call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
+     &    mgd_view_mesh1%inod_sf_stack(1))
+      call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
+     &    isurf_sf_stack(1))
+      call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
+     &    iedge_sf_stack(1))
 !
       end subroutine write_domain_data_viewer_gz
 !
@@ -80,12 +80,15 @@
 !
       call allocate_num_mesh_sf(mgd_view_mesh1%num_pe_sf)
 !
-      call read_gz_multi_int(mgd_view_mesh1%num_pe_sf, inod_sf_stack)
-      call read_gz_multi_int(mgd_view_mesh1%num_pe_sf, isurf_sf_stack)
-      call read_gz_multi_int(mgd_view_mesh1%num_pe_sf, iedge_sf_stack)
+      call read_gz_multi_int                                            &
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%inod_sf_stack)
+      call read_gz_multi_int                                            &
+     &   (mgd_view_mesh1%num_pe_sf, isurf_sf_stack)
+      call read_gz_multi_int                                            &
+     &   (mgd_view_mesh1%num_pe_sf, iedge_sf_stack)
 !
       view_mesh%nodpetot_viewer                                         &
-     &      =  inod_sf_stack(mgd_view_mesh1%num_pe_sf)
+     &   = mgd_view_mesh1%inod_sf_stack(mgd_view_mesh1%num_pe_sf)
       view_mesh%surfpetot_viewer                                        &
      &      = isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
       view_mesh%edgepetot_viewer                                        &
