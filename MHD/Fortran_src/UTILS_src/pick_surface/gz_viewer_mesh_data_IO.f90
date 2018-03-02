@@ -66,7 +66,7 @@
       call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
      &    isurf_sf_stack(1))
       call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
-     &    iedge_sf_stack(1))
+     &    mgd_view_mesh1%iedge_sf_stack(1))
 !
       end subroutine write_domain_data_viewer_gz
 !
@@ -85,14 +85,14 @@
       call read_gz_multi_int                                            &
      &   (mgd_view_mesh1%num_pe_sf, isurf_sf_stack)
       call read_gz_multi_int                                            &
-     &   (mgd_view_mesh1%num_pe_sf, iedge_sf_stack)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%iedge_sf_stack)
 !
       view_mesh%nodpetot_viewer                                         &
      &   = mgd_view_mesh1%inod_sf_stack(mgd_view_mesh1%num_pe_sf)
       view_mesh%surfpetot_viewer                                        &
-     &      = isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
+     &   = isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
       view_mesh%edgepetot_viewer                                        &
-     &      = iedge_sf_stack(mgd_view_mesh1%num_pe_sf)
+     &   = mgd_view_mesh1%iedge_sf_stack(mgd_view_mesh1%num_pe_sf)
 !
       end subroutine read_domain_data_viewer_gz
 !

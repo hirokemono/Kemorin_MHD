@@ -16,8 +16,7 @@
 !
       type(merged_viewer_mesh), save :: mgd_view_mesh1
 !
-!mgd_view_mesh1%inod_sf_stack
-        integer(kind = kint), allocatable :: iedge_sf_stack(:)
+!mgd_view_mesh1%iedge_sf_stack
         integer(kind = kint), allocatable :: isurf_sf_stack(:)
 !
         type(viewer_mesh_data), save :: view_mesh
@@ -44,10 +43,10 @@
 !
       allocate( mgd_view_mesh1%inod_sf_stack(0:num_pe)  )
       allocate( isurf_sf_stack(0:num_pe) )
-      allocate( iedge_sf_stack(0:num_pe) )
+      allocate( mgd_view_mesh1%iedge_sf_stack(0:num_pe) )
       mgd_view_mesh1%inod_sf_stack  = 0
       isurf_sf_stack = 0
-      iedge_sf_stack = 0
+      mgd_view_mesh1%iedge_sf_stack = 0
 !
       end subroutine allocate_num_mesh_sf
 !
