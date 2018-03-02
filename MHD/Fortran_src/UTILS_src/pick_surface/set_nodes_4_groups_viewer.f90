@@ -10,7 +10,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_pickup_table_4_viewer
       use const_node_list_4_viewer
 !
       implicit none
@@ -42,8 +41,8 @@
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'allocate_imark_node'
-      call allocate_imark_node(nodpetot_viewer)
+      if(iflag_debug .gt. 0) write(*,*) 'allocate_imark_node_4_list'
+      call allocate_imark_node_4_list(nodpetot_viewer)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_domain_viewer'
       call set_nod_4_domain_viewer(nnod_4_surf, nnod_4_edge)
@@ -55,7 +54,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_surf_group_viewer'
       call set_nod_4_surf_group_viewer(nnod_4_surf, nnod_4_edge)
 !
-      call deallocate_imark_node
+      call deallocate_imark_node_4_list
 !
       end subroutine s_set_nodes_4_groups_viewer
 !

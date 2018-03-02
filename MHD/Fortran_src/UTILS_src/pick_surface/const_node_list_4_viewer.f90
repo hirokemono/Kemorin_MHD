@@ -3,6 +3,9 @@
 !
 !      Written by Kemorin on Jan., 2007
 !
+!!      subroutine allocate_imark_node_4_list(numnod)
+!!      subroutine deallocate_imark_node_4_list
+!
 !!      subroutine mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge,  &
 !!     &          domain_edge_grp, domain_surf_grp)
 !!        type(viewer_group_data), intent(in) :: domain_edge_grp
@@ -40,14 +43,35 @@
       use m_geometry_constants
 !
       use t_surface_mesh_4_merge
-      use m_pickup_table_4_viewer
 !
       implicit none
+!
+      integer(kind = kint), allocatable, private :: imark_node(:)
 !
 !------------------------------------------------------------------
 !
       contains
 !
+!------------------------------------------------------------------
+!
+      subroutine allocate_imark_node_4_list(numnod)
+!
+      integer(kind = kint) :: numnod
+!
+      allocate( imark_node(numnod) )
+      imark_node = 0
+!
+      end subroutine allocate_imark_node_4_list
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_imark_node_4_list
+!
+      deallocate( imark_node )
+!
+      end subroutine deallocate_imark_node_4_list
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge,    &

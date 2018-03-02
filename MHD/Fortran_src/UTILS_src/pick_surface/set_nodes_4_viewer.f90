@@ -27,7 +27,6 @@
       subroutine s_set_nodes_4_viewer(nnod_4_surf, mgd_mesh)
 !
       use t_mesh_data_4_merge
-      use m_pickup_table_4_viewer
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       type(merged_mesh), intent(inout) :: mgd_mesh
