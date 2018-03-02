@@ -69,7 +69,7 @@
 !
       call skip_gz_comment_int(num_pe_sf)
 !
-      call allocate_num_mesh_sf
+      call allocate_num_mesh_sf(num_pe_sf)
 !
       call read_gz_multi_int(num_pe_sf, inod_sf_stack)
       call read_gz_multi_int(num_pe_sf, isurf_sf_stack)

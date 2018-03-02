@@ -32,19 +32,19 @@
 !
 !
 !view_mesh%num_pe_sf
-      integer(kind = kint)  :: num_pe_sf
+        integer(kind = kint)  :: num_pe_sf
 !
-      integer(kind=kint ), allocatable :: inod_sf_stack(:)
-      integer(kind=kint ), allocatable :: iedge_sf_stack(:)
-      integer(kind=kint ), allocatable :: isurf_sf_stack(:)
+        integer(kind=kint ), allocatable :: inod_sf_stack(:)
+        integer(kind=kint ), allocatable :: iedge_sf_stack(:)
+        integer(kind=kint ), allocatable :: isurf_sf_stack(:)
 !
-      type(viewer_mesh_data), save :: view_mesh
+        type(viewer_mesh_data), save :: view_mesh
 !
-      type(viewer_surface_groups), save :: domain_grps
+        type(viewer_surface_groups), save :: domain_grps
 !
-      type(viewer_node_groups), save :: view_nod_grps
-      type(viewer_surface_groups), save :: view_ele_grps
-      type(viewer_surface_groups), save :: view_sf_grps
+        type(viewer_node_groups), save :: view_nod_grps
+        type(viewer_surface_groups), save :: view_ele_grps
+        type(viewer_surface_groups), save :: view_sf_grps
 !
 !
       character (len = kchara) :: surface_file_head = 'in_surface'
@@ -56,11 +56,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_num_mesh_sf
+      subroutine allocate_num_mesh_sf(num_pe)
 !
-      allocate( inod_sf_stack(0:num_pe_sf)  )
-      allocate( isurf_sf_stack(0:num_pe_sf) )
-      allocate( iedge_sf_stack(0:num_pe_sf) )
+      integer(ind = kint), intent(in) :: num_pe
+!
+      allocate( inod_sf_stack(0:num_pe)  )
+      allocate( isurf_sf_stack(0:num_pe) )
+      allocate( iedge_sf_stack(0:num_pe) )
       inod_sf_stack  = 0
       isurf_sf_stack = 0
       iedge_sf_stack = 0

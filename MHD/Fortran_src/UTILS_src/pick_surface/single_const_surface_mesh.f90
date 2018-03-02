@@ -191,7 +191,7 @@
       num_pe_sf = num_pe
 !
 !       write(*,*) 'allocate_num_mesh_sf'
-      call allocate_num_mesh_sf
+      call allocate_num_mesh_sf(num_pe_sf)
 !
 !   set number of node in surface
 !

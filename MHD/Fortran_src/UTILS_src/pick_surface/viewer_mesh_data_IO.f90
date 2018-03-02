@@ -58,7 +58,7 @@
       call skip_comment(tmp_character, surface_id)
       read(tmp_character,*) num_pe_sf
 !
-      call allocate_num_mesh_sf
+      call allocate_num_mesh_sf(num_pe_sf)
 !
       read(surface_id,*) inod_sf_stack(1:num_pe_sf)
       read(surface_id,*) isurf_sf_stack(1:num_pe_sf)
