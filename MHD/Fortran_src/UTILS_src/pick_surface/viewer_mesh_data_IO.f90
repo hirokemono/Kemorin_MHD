@@ -197,7 +197,7 @@
 !
       do i = 1, view_mesh%edgepetot_viewer
        write(surface_id,'(10i16)')                                      &
-     &               i, ie_edge_viewer(i,1:nnod_4_edge)
+     &               i, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do
 !
       write(surface_id,'(a)') '!'
@@ -224,10 +224,11 @@
       call skip_comment(tmp_character, surface_id)
       read(tmp_character,*) itmp
 !
-      call allocate_edge_data_4_sf(nnod_4_edge)
+      call alloc_edge_data_4_sf(nnod_4_edge, view_mesh)
 !
       do i = 1, view_mesh%edgepetot_viewer
-       read(surface_id,*) itmp, ie_edge_viewer(i,1:nnod_4_edge)
+       read(surface_id,*)                                               &
+     &         itmp, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do
 !
       call skip_comment(tmp_character, surface_id)

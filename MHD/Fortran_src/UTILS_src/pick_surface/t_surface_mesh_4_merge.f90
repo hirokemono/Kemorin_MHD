@@ -11,10 +11,14 @@
 !!      subroutine alloc_surf_type_viewer(view_mesh)
 !!      subroutine alloc_edge_type_viewer(view_mesh)
 !!      subroutine alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
+!!      subroutine alloc_edge_data_4_sf(nnod_4_edge, view_mesh)
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
+!!
 !!      subroutine dealloc_nod_position_viewer(view_mesh)
 !!      subroutine dealloc_surf_type_viewer(view_mesh)
 !!      subroutine dealloc_edge_type_viewer(view_mesh)
 !!      subroutine dealloc_surf_connect_viewer(view_mesh)
+!!      subroutine dealloc_edge_data_4_sf(view_mesh)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
 !!      subroutine alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
@@ -141,6 +145,26 @@
       end subroutine alloc_surf_connect_viewer
 !
 !------------------------------------------------------------------
+!
+      subroutine alloc_edge_data_4_sf(nnod_4_edge, view_mesh)
+!
+      integer(kind = kint), intent(in) :: nnod_4_edge
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+      integer(kind = kint) :: num
+!
+!
+      num = view_mesh%edgepetot_viewer
+      allocate(view_mesh%ie_edge_viewer(num,nnod_4_edge))
+      if(num .gt. 0) view_mesh%ie_edge_viewer = 0
+!
+      num = view_mesh%surfpetot_viewer
+      allocate(view_mesh%iedge_sf_viewer(num,nedge_4_surf))
+      if(num .gt. 0) view_mesh%iedge_sf_viewer = 0
+!
+      end subroutine alloc_edge_data_4_sf
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine dealloc_nod_position_viewer(view_mesh)
@@ -181,6 +205,18 @@
       deallocate( view_mesh%ie_sf_viewer )
 !
       end subroutine dealloc_surf_connect_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_edge_data_4_sf(view_mesh)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+!
+      deallocate(view_mesh%ie_edge_viewer)
+      deallocate(view_mesh%iedge_sf_viewer)
+!
+      end subroutine dealloc_edge_data_4_sf
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

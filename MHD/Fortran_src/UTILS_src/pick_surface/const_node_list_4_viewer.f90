@@ -90,7 +90,7 @@
       do k1 = 1, nnod_4_edge
         do inum = 1, domain_edge_grp%num_item
           iedge = abs(domain_edge_grp%item_sf(inum))
-          inod = ie_edge_viewer(iedge,k1)
+          inod = view_mesh%ie_edge_viewer(iedge,k1)
           imark_node(inod) = 1
         end do
       end do
@@ -129,7 +129,7 @@
       do k1 = 1, nnod_4_edge
         do inum = ist, ied
           iedge = abs(ele_edge_grp%item_sf(inum))
-          inod = ie_edge_viewer(iedge,k1)
+          inod = view_mesh%ie_edge_viewer(iedge,k1)
           imark_node(inod) = 1
         end do
       end do
@@ -170,7 +170,7 @@
       do k1 = 1, nnod_4_edge
         do inum = ist, ied
           iedge = abs( sf_edge_grp%item_sf(inum) )
-          inod = ie_edge_viewer(iedge,k1)
+          inod = view_mesh%ie_edge_viewer(iedge,k1)
           imark_node(inod) = 1
         end do
       end do

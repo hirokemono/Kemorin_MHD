@@ -101,7 +101,7 @@
      &    edge%nnod_4_edge, ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash, &
      &    ed_sf_tbl%iflag_hash, view_mesh%edgepetot_viewer)
 !
-      call allocate_edge_data_4_sf(edge%nnod_4_edge)
+      call alloc_edge_data_4_sf(edge%nnod_4_edge, view_mesh)
 !
       write(*,*) 'set_edges_connect_by_sf'
       call set_edges_connect_by_sf(view_mesh%nodpetot_viewer,           &
@@ -109,7 +109,7 @@
      &    surf%nnod_4_surf, edge%nnod_4_edge, view_mesh%ie_sf_viewer,   &
      &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash,                      &
-     &    ie_edge_viewer, view_mesh%iedge_sf_viewer,                    &
+     &    view_mesh%ie_edge_viewer, view_mesh%iedge_sf_viewer,          &
      &    edge%node_on_edge_sf)
 !
       end subroutine const_all_edge_4_viewer

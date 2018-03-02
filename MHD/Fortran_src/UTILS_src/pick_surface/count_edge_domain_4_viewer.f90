@@ -35,7 +35,7 @@
         iref = inod_sf_stack(ip)
         ist =  iedge_sf_stack(ip-1) + 1
         do iedge = ist, view_mesh%edgepetot_viewer
-          inod = ie_edge_viewer(iedge,1)
+          inod = view_mesh%ie_edge_viewer(iedge,1)
           if ( inod .gt. iref ) exit
           iedge_sf_stack(ip:num_pe_sf) = iedge
         end do
@@ -57,7 +57,7 @@
         ist =  domain_edge_grp%istack_sf(ip-1) + 1
         do inum = ist, domain_edge_grp%num_item
           iedge = abs(domain_edge_grp%item_sf(inum) )
-          inod = ie_edge_viewer(iedge,1)
+          inod = view_mesh%ie_edge_viewer(iedge,1)
           if ( inod .gt. iref ) exit
           domain_edge_grp%istack_sf(ip:num_pe_sf) = inum
         end do
@@ -87,7 +87,7 @@
      &          = ele_edge_grp%istack_sf(ist_grp+ip-1)
           do inum = ist, nn
             iedge = abs( ele_edge_grp%item_sf(inum) )
-            inod = ie_edge_viewer(iedge,1)
+            inod = view_mesh%ie_edge_viewer(iedge,1)
             if ( inod .gt. iref ) exit
             ele_edge_grp%istack_sf(ist_grp+ip) = inum
           end do
@@ -118,7 +118,7 @@
      &          = sf_edge_grp%istack_sf(ist_grp+ip-1)
           do inum = ist, nn
             iedge = abs( sf_edge_grp%item_sf(inum) )
-            inod = ie_edge_viewer(iedge,1)
+            inod = view_mesh%ie_edge_viewer(iedge,1)
             if ( inod .gt. iref ) exit
             sf_edge_grp%istack_sf(ist_grp+ip) = inum
           end do

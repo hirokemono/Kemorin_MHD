@@ -4,7 +4,6 @@
 !      Written by Kemorin
 !
 !      subroutine allocate_num_mesh_sf
-!      subroutine allocate_edge_data_4_sf
 !      subroutine allocate_domain_stack_4_surf
 !      subroutine allocate_domain_surf_item_sf
 !      subroutine allocate_domain_nod_item_sf
@@ -39,8 +38,6 @@
       integer(kind=kint ), allocatable :: iedge_sf_stack(:)
       integer(kind=kint ), allocatable :: isurf_sf_stack(:)
 !
-      integer(kind=kint ), allocatable  ::  ie_edge_viewer(:,:)
-!
       type(viewer_mesh_data), save :: view_mesh
 !
       type(viewer_surface_groups), save :: domain_grps
@@ -73,27 +70,6 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine allocate_edge_data_4_sf(nnod_4_edge)
-!
-      use m_geometry_constants
-!
-      integer(kind = kint), intent(in) :: nnod_4_edge
-!
-      integer(kind = kint) :: num
-!
-!
-      num = view_mesh%edgepetot_viewer
-      allocate(ie_edge_viewer(num,nnod_4_edge))
-      if(num .gt. 0) ie_edge_viewer = 0
-!
-      num = view_mesh%surfpetot_viewer
-      allocate(view_mesh%iedge_sf_viewer(num,nedge_4_surf))
-      if(num .gt. 0) view_mesh%iedge_sf_viewer = 0
-!
-      end subroutine allocate_edge_data_4_sf
-!
-!------------------------------------------------------------------
-!
       subroutine allocate_domain_stack_4_surf
 !
 !
@@ -111,14 +87,14 @@
       subroutine check_edge_connent_viewer(nnod_4_edge)
 !
       integer(kind = kint), intent(in) :: nnod_4_edge
-      integer(kind = kint) :: iedge
+      integer(kind = kint) :: i
 !
 !
       write(50,*) 'edgepetot_viewer', view_mesh%edgepetot_viewer
       write(50,*) 'iedge_sf_stack', iedge_sf_stack
       write(50,*) 'ie_edge_viewer'
-      do iedge = 1, view_mesh%edgepetot_viewer
-        write(50,*) iedge, ie_edge_viewer(iedge,1:nnod_4_edge)
+      do i = 1, view_mesh%edgepetot_viewer
+        write(50,*) i, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do
 !
       end subroutine check_edge_connent_viewer

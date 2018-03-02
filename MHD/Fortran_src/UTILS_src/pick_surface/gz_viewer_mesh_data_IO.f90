@@ -232,7 +232,7 @@
       write(fmt_txt,'(a5,i2,a9)') '(i15,', nnod_4_edge, '(i15),a1)'
       do i = 1, view_mesh%edgepetot_viewer
         write(textbuf,fmt_txt)                                          &
-     &                i, ie_edge_viewer(i,1:nnod_4_edge), char(0)
+     &         i, view_mesh%ie_edge_viewer(i,1:nnod_4_edge), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
@@ -268,11 +268,11 @@
 !
       call skip_gz_comment_int(itmp)
 !
-      call allocate_edge_data_4_sf(nnod_4_edge)
+      call alloc_edge_data_4_sf(nnod_4_edge, view_mesh)
 !
       do i = 1, view_mesh%edgepetot_viewer
         call get_one_line_from_gz_f
-        read(textbuf,*) itmp, ie_edge_viewer(i,1:nnod_4_edge)
+        read(textbuf,*) itmp, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do
 !
       call skip_gz_comment_int(itmp)
