@@ -70,10 +70,6 @@
 !
 !
       type viewer_mesh_data
-        integer(kind = kint), allocatable :: inod_sf_stack(:)
-        integer(kind = kint), allocatable :: iedge_sf_stack(:)
-        integer(kind = kint), allocatable :: isurf_sf_stack(:)
-!
         integer(kind = kint)  ::  surfpetot_viewer
         integer(kind = kint)  ::  edgepetot_viewer
         integer(kind = kint)  ::  nodpetot_viewer
