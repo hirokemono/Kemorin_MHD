@@ -193,7 +193,7 @@
 !
       do inum = 1, view_mesh%nodpetot_viewer
         inod = inod_viewer2merge(inum)
-        xx_view(inum,1:3) = merged%node%xx(inod,1:3)
+        view_mesh%xx_view(inum,1:3) = merged%node%xx(inod,1:3)
       end do
 !
       end subroutine set_node_position_4_viewer

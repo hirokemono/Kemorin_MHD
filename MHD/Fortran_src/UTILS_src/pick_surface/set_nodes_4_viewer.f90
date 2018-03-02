@@ -45,9 +45,8 @@
 !
       call deallocate_imark_nod_pick_node
 !
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &           'allocate_nod_position_viewer'
-      call allocate_nod_position_viewer
+      if(iflag_debug .gt. 0) write(*,*) 'alloc_nod_position_viewer'
+      call alloc_nod_position_viewer(view_mesh)
       call set_node_position_4_viewer(mgd_mesh%merged)
 !
       call renumber_surf_connect_4_viewer(nnod_4_surf)

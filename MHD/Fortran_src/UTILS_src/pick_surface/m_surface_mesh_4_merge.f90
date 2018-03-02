@@ -4,7 +4,6 @@
 !      Written by Kemorin
 !
 !      subroutine allocate_num_mesh_sf
-!      subroutine allocate_nod_position_viewer
 !      subroutine allocate_surf_type_viewer
 !      subroutine allocate_surf_connect_viewer(nnod_4_surf)
 !      subroutine allocate_edge_data_4_sf
@@ -21,7 +20,6 @@
 !      subroutine allocate_sf_gp_nod_item_sf
 !      subroutine allocate_sf_grp_edge_item_sf
 !
-!      subroutine deallocate_nod_position_viewer
 !      subroutine deallocate_surf_type_viewer
 !      subroutine deallocate_surf_connect_viewer
 !      subroutine deallocate_ele_gp_nod_item_sf
@@ -51,8 +49,6 @@
       integer(kind=kint ), allocatable  ::  surftyp_viewer(:  )
       integer(kind=kint ), allocatable  ::  edgetyp_viewer(:  )
       integer(kind=kint ), allocatable  ::  iedge_sf_viewer(:,:)
-!
-      real   (kind=kreal), dimension(:,:), allocatable  ::  xx_view
 !
       type(viewer_mesh_data), save :: view_mesh
 !
@@ -85,15 +81,6 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_nod_position_viewer
-!
-      allocate( xx_view(view_mesh%nodpetot_viewer,3) )
-      xx_view = 0.0d0
-!
-      end subroutine allocate_nod_position_viewer
-!
-!------------------------------------------------------------------
-!
       subroutine allocate_surf_type_viewer
 !
       allocate( surftyp_viewer(view_mesh%surfpetot_viewer)       )
@@ -113,14 +100,6 @@
       end subroutine allocate_surf_connect_viewer
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine deallocate_nod_position_viewer
-!
-      deallocate( xx_view )
-!
-      end subroutine deallocate_nod_position_viewer
-!
 !------------------------------------------------------------------
 !
       subroutine deallocate_surf_type_viewer

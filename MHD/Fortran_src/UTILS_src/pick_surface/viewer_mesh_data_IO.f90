@@ -86,7 +86,7 @@
       write(surface_id,'(i16)') view_mesh%nodpetot_viewer
 !
       do i = 1, view_mesh%nodpetot_viewer
-        write(surface_id,1002) i, xx_view(i,1:3)
+        write(surface_id,1002) i, view_mesh%xx_view(i,1:3)
       end do
  1002 format(i16, 1p3e23.12)
 !
@@ -103,10 +103,10 @@
       call skip_comment(tmp_character, surface_id)
       read(tmp_character,*) itmp
 !
-      call allocate_nod_position_viewer
+      call alloc_nod_position_viewer(view_mesh)
 !
       do i = 1, view_mesh%nodpetot_viewer
-       read(surface_id,*) itmp, xx_view(i,1:3)
+       read(surface_id,*) itmp, view_mesh%xx_view(i,1:3)
       end do
 !
       end subroutine read_node_data_viewer

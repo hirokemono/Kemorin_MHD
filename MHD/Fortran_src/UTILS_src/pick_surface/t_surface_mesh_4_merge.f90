@@ -7,12 +7,18 @@
 !>@brief Structure of surface information for pickup surface
 !!
 !!@verbatim
+!!      subroutine alloc_nod_position_viewer(view_mesh)
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
+!!
 !!      subroutine alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
 !!      subroutine dealloc_viewer_node_grps_stack(view_nod_grps)
 !!        type(viewer_node_groups), intent(inout) :: view_nod_grps
 !!      subroutine alloc_viewer_surf_grps_stack(num_pe, view_grps)
 !!      subroutine dealloc_viewer_surf_grps_stack(view_grps)
 !!        type(viewer_surface_groups), intent(inout) :: view_grps
+!!
+!!      subroutine dealloc_nod_position_viewer(view_mesh)
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
 !!      subroutine alloc_merged_group_stack(num_pe, ngrp, group)
 !!      subroutine alloc_merged_group_item(group)
@@ -73,6 +79,28 @@
 !
       contains
 !
+!------------------------------------------------------------------
+!
+      subroutine alloc_nod_position_viewer(view_mesh)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+      allocate( view_mesh%xx_view(view_mesh%nodpetot_viewer,3) )
+      if(view_mesh%nodpetot_viewer .gt. 0) view_mesh%xx_view = 0.0d0
+!
+      end subroutine alloc_nod_position_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_nod_position_viewer(view_mesh)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+      deallocate( view_mesh%xx_view )
+!
+      end subroutine dealloc_nod_position_viewer
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
