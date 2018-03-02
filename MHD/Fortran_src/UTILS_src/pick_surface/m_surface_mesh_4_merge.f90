@@ -4,9 +4,7 @@
 !      Written by Kemorin
 !
 !      subroutine allocate_num_mesh_sf
-!      subroutine allocate_surf_type_viewer
 !      subroutine allocate_edge_data_4_sf
-!      subroutine allocate_edge_type_viewer
 !      subroutine allocate_domain_stack_4_surf
 !      subroutine allocate_domain_surf_item_sf
 !      subroutine allocate_domain_nod_item_sf
@@ -19,7 +17,6 @@
 !      subroutine allocate_sf_gp_nod_item_sf
 !      subroutine allocate_sf_grp_edge_item_sf
 !
-!      subroutine deallocate_surf_type_viewer
 !      subroutine deallocate_ele_gp_nod_item_sf
 !      subroutine deallocate_ele_grp_edge_item_sf
 !      subroutine deallocate_sf_grp_edge_item_sf
@@ -43,9 +40,6 @@
       integer(kind=kint ), allocatable :: isurf_sf_stack(:)
 !
       integer(kind=kint ), allocatable  ::  ie_edge_viewer(:,:)
-      integer(kind=kint ), allocatable  ::  surftyp_viewer(:  )
-      integer(kind=kint ), allocatable  ::  edgetyp_viewer(:  )
-      integer(kind=kint ), allocatable  ::  iedge_sf_viewer(:,:)
 !
       type(viewer_mesh_data), save :: view_mesh
 !
@@ -77,24 +71,6 @@
       end subroutine allocate_num_mesh_sf
 !
 !------------------------------------------------------------------
-!
-      subroutine allocate_surf_type_viewer
-!
-      allocate( surftyp_viewer(view_mesh%surfpetot_viewer)       )
-      surftyp_viewer = 0
-!
-      end subroutine allocate_surf_type_viewer
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine deallocate_surf_type_viewer
-!
-      deallocate( surftyp_viewer )
-!
-      end subroutine deallocate_surf_type_viewer
-!
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine allocate_edge_data_4_sf(nnod_4_edge)
@@ -103,24 +79,18 @@
 !
       integer(kind = kint), intent(in) :: nnod_4_edge
 !
+      integer(kind = kint) :: num
 !
-      allocate(ie_edge_viewer(view_mesh%edgepetot_viewer,nnod_4_edge))
-      allocate(iedge_sf_viewer(view_mesh%surfpetot_viewer,nedge_4_surf))
-      ie_edge_viewer = 0
-      iedge_sf_viewer = 0
+!
+      num = view_mesh%edgepetot_viewer
+      allocate(ie_edge_viewer(num,nnod_4_edge))
+      if(num .gt. 0) ie_edge_viewer = 0
+!
+      num = view_mesh%surfpetot_viewer
+      allocate(view_mesh%iedge_sf_viewer(num,nedge_4_surf))
+      if(num .gt. 0) view_mesh%iedge_sf_viewer = 0
 !
       end subroutine allocate_edge_data_4_sf
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_edge_type_viewer
-!
-      use m_geometry_constants
-!
-      allocate (edgetyp_viewer(view_mesh%edgepetot_viewer) )
-      edgetyp_viewer = 0
-!
-      end subroutine allocate_edge_type_viewer
 !
 !------------------------------------------------------------------
 !

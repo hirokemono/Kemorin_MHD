@@ -128,7 +128,7 @@
 !
       write(surface_id,'(i16)') view_mesh%surfpetot_viewer
       write(surface_id,1003)                                            &
-     &          surftyp_viewer(1:view_mesh%surfpetot_viewer)
+     &          view_mesh%surftyp_viewer(1:view_mesh%surfpetot_viewer)
 !
       do i = 1, view_mesh%surfpetot_viewer
        write(surface_id,'(10i16)')                                      &
@@ -159,9 +159,10 @@
       call skip_comment(tmp_character, surface_id)
       read(tmp_character,*) itmp
 !
-      call allocate_surf_type_viewer
+      call alloc_surf_type_viewer(view_mesh)
 !
-      read(surface_id,*) surftyp_viewer(1:view_mesh%surfpetot_viewer)
+      read(surface_id,*)                                                &
+     &        view_mesh%surftyp_viewer(1:view_mesh%surfpetot_viewer)
 !
       call set_3D_nnod_4_sfed_by_ele                                    &
      &   (nnod_4_ele, nnod_4_surf, nnod_4_edge)
@@ -205,7 +206,7 @@
       write(surface_id,'(i16)') view_mesh%surfpetot_viewer
       do i = 1, view_mesh%surfpetot_viewer
         write(surface_id,'(10i16)')                                     &
-     &            i, iedge_sf_viewer(i,1:nedge_4_surf)
+     &            i, view_mesh%iedge_sf_viewer(i,1:nedge_4_surf)
       end do
 !
       end subroutine write_edge_connect_viewer
@@ -233,7 +234,8 @@
       read(tmp_character,*) itmp
 !
       do i = 1, view_mesh%surfpetot_viewer
-       read(surface_id,*) itmp, iedge_sf_viewer(i,1:nedge_4_surf)
+       read(surface_id,*)                                               &
+     &         itmp, view_mesh%iedge_sf_viewer(i,1:nedge_4_surf)
       end do
 !
       end subroutine read_edge_connect_viewer

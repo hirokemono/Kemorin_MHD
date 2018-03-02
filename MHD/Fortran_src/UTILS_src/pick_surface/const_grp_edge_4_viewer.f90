@@ -101,7 +101,7 @@
 !        write(*,*) 'set_part_edges_4_sf', igrp
         call set_part_edges_4_sf                                        &
      &     (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,      &
-     &      nnod_4_edge, nedge_grp, iedge_sf_viewer,                    &
+     &      nnod_4_edge, nedge_grp, view_mesh%iedge_sf_viewer,          &
      &      edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,             &
      &      edge_sf_tbl%id_hash, edge_sf_tbl%iflag_hash,                &
      &      ele_edge_grp%item_sf(ist+1) )
@@ -173,7 +173,7 @@
 !        write(*,*) 'set_part_edges_4_sf', igrp
         call set_part_edges_4_sf                                        &
      &     (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,      &
-     &      nnod_4_edge, nedge_grp, iedge_sf_viewer,                    &
+     &      nnod_4_edge, nedge_grp, view_mesh%iedge_sf_viewer,          &
      &      edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,             &
      &      edge_sf_tbl%id_hash, edge_sf_tbl%iflag_hash,                &
      &      sf_edge_grp%item_sf(ist+1) )

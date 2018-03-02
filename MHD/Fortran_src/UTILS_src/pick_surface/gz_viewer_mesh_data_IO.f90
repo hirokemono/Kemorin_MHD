@@ -154,7 +154,7 @@
       write(textbuf,'(i15,a1)') view_mesh%surfpetot_viewer, char(0)
       call gz_write_textbuf_w_lf
       call write_gz_multi_int_10i8                                      &
-     &   (view_mesh%surfpetot_viewer, surftyp_viewer)
+     &   (view_mesh%surfpetot_viewer, view_mesh%surftyp_viewer)
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
      &                '(i15,', nnod_4_surf, '(i15),a1)'
@@ -183,10 +183,10 @@
 !
       call skip_gz_comment_int(itmp)
 !
-      call allocate_surf_type_viewer
+      call alloc_surf_type_viewer(view_mesh)
 !
       call read_gz_multi_int                                            &
-     &   (view_mesh%surfpetot_viewer, surftyp_viewer)
+     &   (view_mesh%surfpetot_viewer, view_mesh%surftyp_viewer)
 !
       call set_3D_nnod_4_sfed_by_ele                                    &
      &   (nnod_4_ele, nnod_4_surf, nnod_4_edge)
@@ -248,8 +248,8 @@
       write(fmt_txt,'(a5,i2,a9)')                                       &
      &                '(i15,', nedge_4_surf, '(i15),a1)'
       do i = 1, view_mesh%surfpetot_viewer
-        write(textbuf,fmt_txt) i, iedge_sf_viewer(i,1:nedge_4_surf),    &
-     &                           char(0)
+        write(textbuf,fmt_txt)                                          &
+     & i, view_mesh%iedge_sf_viewer(i,1:nedge_4_surf), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
@@ -279,7 +279,8 @@
 !
       do i = 1, view_mesh%surfpetot_viewer
        call get_one_line_from_gz_f
-       read(textbuf,*) itmp, iedge_sf_viewer(i,1:nedge_4_surf)
+       read(textbuf,*)                                                  &
+     &        itmp, view_mesh%iedge_sf_viewer(i,1:nedge_4_surf)
       end do
 !
       end subroutine read_edge_connect_viewer_gz

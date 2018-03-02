@@ -8,8 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine alloc_nod_position_viewer(view_mesh)
+!!      subroutine alloc_surf_type_viewer(view_mesh)
+!!      subroutine alloc_edge_type_viewer(view_mesh)
 !!      subroutine alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
 !!      subroutine dealloc_nod_position_viewer(view_mesh)
+!!      subroutine dealloc_surf_type_viewer(view_mesh)
+!!      subroutine dealloc_edge_type_viewer(view_mesh)
 !!      subroutine dealloc_surf_connect_viewer(view_mesh)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
@@ -33,6 +37,7 @@
       module t_surface_mesh_4_merge
 !
       use m_precision
+      use m_geometry_constants
 !
       implicit none
 !
@@ -95,6 +100,33 @@
 !
 !------------------------------------------------------------------
 !
+      subroutine alloc_surf_type_viewer(view_mesh)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+      allocate(view_mesh%surftyp_viewer(view_mesh%surfpetot_viewer))
+      if(view_mesh%surfpetot_viewer .gt. 0) then
+        view_mesh%surftyp_viewer = 0
+      end if
+!
+      end subroutine alloc_surf_type_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine alloc_edge_type_viewer(view_mesh)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+!
+      allocate(view_mesh%edgetyp_viewer(view_mesh%edgepetot_viewer))
+      if(view_mesh%edgepetot_viewer .gt. 0) then
+        view_mesh%edgetyp_viewer = 0
+      end if
+!
+      end subroutine alloc_edge_type_viewer
+!
+!------------------------------------------------------------------
+!
       subroutine alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -118,6 +150,27 @@
       deallocate( view_mesh%xx_view )
 !
       end subroutine dealloc_nod_position_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_surf_type_viewer(view_mesh)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+      deallocate( view_mesh%surftyp_viewer )
+!
+      end subroutine dealloc_surf_type_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_edge_type_viewer(view_mesh)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+!
+      deallocate(view_mesh%edgetyp_viewer)
+!
+      end subroutine dealloc_edge_type_viewer
 !
 !------------------------------------------------------------------
 !

@@ -109,7 +109,8 @@
      &    surf%nnod_4_surf, edge%nnod_4_edge, view_mesh%ie_sf_viewer,   &
      &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash,                      &
-     &    ie_edge_viewer, iedge_sf_viewer, edge%node_on_edge_sf)
+     &    ie_edge_viewer, view_mesh%iedge_sf_viewer,                    &
+     &    edge%node_on_edge_sf)
 !
       end subroutine const_all_edge_4_viewer
 !
@@ -150,9 +151,9 @@
 !      write(*,*) 'set_part_edges_4_sf'
       call set_part_edges_4_sf                                          &
      &   (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,        &
-     &    nnod_4_edge, domain_edge_grp%num_item, iedge_sf_viewer,       &
-     &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
-     &    ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash,                      &
+     &    nnod_4_edge, domain_edge_grp%num_item,                        &
+     &    view_mesh%iedge_sf_viewer,ed_sf_tbl%istack_hash,              &
+     &    ed_sf_tbl%iend_hash, ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash, &
      &    domain_edge_grp%item_sf)
 !
       end subroutine construct_edge_4_domain
