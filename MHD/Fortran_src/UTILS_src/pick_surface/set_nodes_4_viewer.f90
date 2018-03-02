@@ -43,7 +43,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'allocate_nod_cvt_table_viewer'
       call allocate_nod_cvt_table_viewer(mgd_mesh%merged)
-      call set_node_cvt_table_viewer(mgd_mesh%merged)
+      call set_node_cvt_table_viewer(mgd_mesh%merged, imark_node)
 !
       if(iflag_debug .gt. 0) write(*,*) 'deallocate_imark_node'
       call deallocate_imark_node

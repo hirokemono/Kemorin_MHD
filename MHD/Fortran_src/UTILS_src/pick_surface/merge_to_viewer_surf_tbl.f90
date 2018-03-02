@@ -8,7 +8,7 @@
 !!        type(surface_data), intent(in) :: merged_surf
 !!      subroutine deallocate_sf_cvt_table_viewer
 !!
-!!      subroutine set_surf_cvt_table_viewer(merged_surf)
+!!      subroutine set_surf_cvt_table_viewer(merged_surf, imark_surf)
 !!      subroutine set_surf_connect_viewer(merged_surf)
 !!        type(surface_data), intent(in) :: merged_surf
 !!      subroutine set_surf_domain_item_viewer                          &
@@ -27,6 +27,7 @@
 !
       use m_precision
       use t_surface_data
+      use t_surface_mesh_4_merge
 !
       implicit none
 !
@@ -67,11 +68,13 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_surf_cvt_table_viewer(merged_surf)
+      subroutine set_surf_cvt_table_viewer(merged_surf, imark_surf)
 !
       use t_surface_data
 !
       type(surface_data), intent(in) :: merged_surf
+      integer(kind = kint), intent(in)                                  &
+     &                     :: imark_surf(merged_surf%numsurf)
 !
       integer(kind = kint) :: isurf, inum
 !
@@ -114,7 +117,6 @@
      &         (merged_surf, domain_surf_grp)
 !
       use t_surface_data
-      use m_pickup_table_4_viewer
 !
       type(surface_data), intent(in) :: merged_surf
       type(viewer_group_data), intent(inout) :: domain_surf_grp
@@ -136,7 +138,7 @@
      &         (mgd_sf_grp, ele_surf_grp)
 !
       use t_grp_data_merged_surfaces
-      use m_pickup_table_4_viewer
+
 !
       type(group_data_merged_surf), intent(in) :: mgd_sf_grp
       type(viewer_group_data), intent(inout) :: ele_surf_grp
@@ -158,7 +160,6 @@
      &         (mgd_sf_grp, sf_surf_grp)
 !
       use t_grp_data_merged_surfaces
-      use m_pickup_table_4_viewer
 !
       type(group_data_merged_surf), intent(in) :: mgd_sf_grp
       type(viewer_group_data), intent(inout)  :: sf_surf_grp

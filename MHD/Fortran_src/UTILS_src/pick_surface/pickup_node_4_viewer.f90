@@ -7,12 +7,6 @@
 !!        type(mesh_groups), intent(in)  :: merged_grp
 !!      subroutine count_used_node_4_viewer(merge_tbl)
 !!        type(merged_stacks), intent(in) :: merge_tbl
-!!      subroutine set_node_cvt_table_viewer(merged)
-!!        type(mesh_geometry), intent(in) :: merged
-!!
-!!      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
-!!      subroutine set_node_position_4_viewer(merged)
-!!        type(mesh_geometry), intent(in) :: merged
 !
       module pickup_node_4_viewer
 !
@@ -75,25 +69,6 @@
       nodpetot_viewer = inod_sf_stack(num_pe_sf)
 !
       end subroutine count_used_node_4_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine set_node_position_4_viewer(merged)
-!
-      use t_mesh_data
-      use m_surface_mesh_4_merge
-!
-      type(mesh_geometry), intent(in) :: merged
-!
-      integer(kind = kint) :: inum, inod
-!
-!
-      do inum = 1, nodpetot_viewer
-        inod = inod_viewer2merge(inum)
-        xx_view(inum,1:3) = merged%node%xx(inod,1:3)
-      end do
-!
-      end subroutine set_node_position_4_viewer
 !
 !------------------------------------------------------------------
 !

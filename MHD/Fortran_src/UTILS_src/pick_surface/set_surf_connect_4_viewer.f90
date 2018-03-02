@@ -50,7 +50,7 @@
 !
        write(*,*) 'allocate_sf_cvt_table_viewer'
       call allocate_sf_cvt_table_viewer(mgd_mesh%merged_surf)
-      call set_surf_cvt_table_viewer(mgd_mesh%merged_surf)
+      call set_surf_cvt_table_viewer(mgd_mesh%merged_surf, imark_surf)
 !
        write(*,*) 'deallocate_imark_surf'
       call deallocate_imark_surf

@@ -9,9 +9,6 @@
 !!        type(surface_data), intent(in) :: merged_surf
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !!      subroutine count_used_surface_4_viewer(num_pe, istack_surfpe)
-!!      subroutine set_surf_cvt_table_viewer(merged_surf)
-!!      subroutine set_surf_connect_viewer(merged_surf)
-!!        type(surface_data), intent(in) :: merged_surf
 !
 !
       module pickup_surface_4_viewer
@@ -81,48 +78,6 @@
       surfpetot_viewer = isurf_sf_stack(num_pe)
 !
       end subroutine count_used_surface_4_viewer
-!
-! ------------------------------------------------------
-!
-      subroutine set_surf_cvt_table_viewer(merged_surf)
-!
-      use t_surface_data
-!
-      type(surface_data), intent(in) :: merged_surf
-!
-      integer(kind = kint) :: isurf, inum
-!
-!
-      inum = 0
-      do isurf = 1, merged_surf%numsurf
-        if ( imark_surf(isurf) .gt. 0 ) then
-          inum = inum + 1
-          isf_merge2viewer(isurf) = inum
-          isf_viewer2merge(inum) = isurf
-        end if
-      end do
-!
-      end subroutine set_surf_cvt_table_viewer
-!
-! ------------------------------------------------------
-!
-      subroutine set_surf_connect_viewer(merged_surf)
-!
-      use t_surface_data
-      use m_surface_mesh_4_merge
-!
-      type(surface_data), intent(in) :: merged_surf
-!
-      integer(kind = kint) :: inum, isurf
-!
-!
-      do inum = 1, surfpetot_viewer
-        isurf = isf_viewer2merge(inum)
-        ie_sf_viewer(inum,1:merged_surf%nnod_4_surf)                    &
-     &         = merged_surf%ie_surf(isurf,1:merged_surf%nnod_4_surf)
-      end do
-!
-      end subroutine set_surf_connect_viewer
 !
 ! ------------------------------------------------------
 !

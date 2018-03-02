@@ -7,7 +7,7 @@
 !!        type(mesh_geometry), intent(in) :: merged
 !!      subroutine deallocate_nod_cvt_table_viewer
 !!
-!!      subroutine set_node_cvt_table_viewer(merged)
+!!      subroutine set_node_cvt_table_viewer(merged, imark_node)
 !!        type(mesh_geometry), intent(in) :: merged
 !!      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
 !!      subroutine set_node_position_4_viewer(merged)
@@ -61,11 +61,13 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_node_cvt_table_viewer(merged)
+      subroutine set_node_cvt_table_viewer(merged, imark_node)
 !
       use t_mesh_data
 !
       type(mesh_geometry), intent(in) :: merged
+      integer(kind = kint), intent(in)                                  &
+     &                     :: imark_node(merged%node%numnod)
 !
       integer(kind = kint) :: inod, inum
 !
@@ -125,6 +127,7 @@
       subroutine set_node_group_item_viewer(merged_grp, nod_nod_grp)
 !
       use t_mesh_data
+      use t_surface_mesh_4_merge
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(viewer_group_data), intent(inout) :: nod_nod_grp
