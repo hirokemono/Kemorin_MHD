@@ -46,8 +46,6 @@
       integer(kind=kint ), allocatable :: iedge_sf_stack(:)
       integer(kind=kint ), allocatable :: isurf_sf_stack(:)
 !
-      integer(kind=kint )  ::  surfpetot_viewer
-!
       integer(kind=kint ), allocatable  ::  ie_sf_viewer(:,:)
       integer(kind=kint ), allocatable  ::  ie_edge_viewer(:,:)
       integer(kind=kint ), allocatable  ::  surftyp_viewer(:  )
@@ -98,7 +96,7 @@
 !
       subroutine allocate_surf_type_viewer
 !
-      allocate( surftyp_viewer(surfpetot_viewer)       )
+      allocate( surftyp_viewer(view_mesh%surfpetot_viewer)       )
       surftyp_viewer = 0
 !
       end subroutine allocate_surf_type_viewer
@@ -109,7 +107,7 @@
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
 !
-      allocate( ie_sf_viewer(surfpetot_viewer,nnod_4_surf) )
+      allocate( ie_sf_viewer(view_mesh%surfpetot_viewer,nnod_4_surf) )
       ie_sf_viewer = 0
 !
       end subroutine allocate_surf_connect_viewer
@@ -149,8 +147,8 @@
       integer(kind = kint), intent(in) :: nnod_4_edge
 !
 !
-      allocate (ie_edge_viewer(view_mesh%edgepetot_viewer,nnod_4_edge))
-      allocate (iedge_sf_viewer(surfpetot_viewer,nedge_4_surf) )
+      allocate(ie_edge_viewer(view_mesh%edgepetot_viewer,nnod_4_edge))
+      allocate(iedge_sf_viewer(view_mesh%surfpetot_viewer,nedge_4_surf))
       ie_edge_viewer = 0
       iedge_sf_viewer = 0
 !

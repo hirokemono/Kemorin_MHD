@@ -100,7 +100,7 @@
       integer(kind = kint) :: inum, isurf, inod, k1
 !
 !
-      do isurf = 1, surfpetot_viewer
+      do isurf = 1, view_mesh%surfpetot_viewer
         do k1 = 1, nnod_4_surf
           inod = ie_sf_viewer(isurf,k1)
           imark_node(inod) = 1
@@ -170,7 +170,7 @@
       integer(kind = kint) :: isurf, k1, inod
 !
 !
-      do isurf = 1, surfpetot_viewer
+      do isurf = 1, view_mesh%surfpetot_viewer
         do k1 = 1, nnod_4_surf
           inod = ie_sf_viewer(isurf,k1)
           ie_sf_viewer(isurf,k1) = inod_merge2viewer(inod)

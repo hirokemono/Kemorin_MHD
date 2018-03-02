@@ -71,7 +71,7 @@
 !
 !        write(*,*) 'const_part_edge_hash_4_sf', igrp
         call const_part_edge_hash_4_sf                                  &
-     &     (view_mesh%nodpetot_viewer, surfpetot_viewer,                &
+     &     (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,      &
      &      ngrp, nnod_4_surf, nnod_4_edge,                             &
      &      ie_sf_viewer, ele_surf_grp%item_sf(ist),                    &
      &      edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,              &
@@ -87,7 +87,7 @@
         call dealloc_merged_group_item(ele_edge_grp)
 !
         call count_num_edges_by_sf                                      &
-     &     (view_mesh%nodpetot_viewer, surfpetot_viewer,                &
+     &     (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,      &
      &      nnod_4_edge, edge_sf_tbl%istack_hash,                       &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%iflag_hash, nedge_grp)
         ele_edge_grp%istack_sf(igrp*num_pe_sf)                          &
@@ -100,7 +100,7 @@
 !
 !        write(*,*) 'set_part_edges_4_sf', igrp
         call set_part_edges_4_sf                                        &
-     &     (view_mesh%nodpetot_viewer, surfpetot_viewer,                &
+     &     (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,      &
      &      nnod_4_edge, nedge_grp, iedge_sf_viewer,                    &
      &      edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,             &
      &      edge_sf_tbl%id_hash, edge_sf_tbl%iflag_hash,                &
@@ -144,7 +144,7 @@
 !
 !        write(*,*) 'const_part_edge_hash_4_sf', igrp
         call const_part_edge_hash_4_sf                                  &
-     &     (view_mesh%nodpetot_viewer, surfpetot_viewer,                &
+     &     (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,      &
      &      ngrp, nnod_4_surf, nnod_4_edge,                             &
      &      ie_sf_viewer, sf_surf_grp%item_sf(ist),                     &
      &      edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,              &
@@ -158,7 +158,7 @@
         call dealloc_merged_group_item(sf_edge_grp)
 !
         call count_num_edges_by_sf                                      &
-     &     (view_mesh%nodpetot_viewer, surfpetot_viewer,                &
+     &     (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,      &
      &      nnod_4_edge, edge_sf_tbl%istack_hash,                       &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%iflag_hash, nedge_grp)
         sf_edge_grp%istack_sf(igrp*num_pe_sf)                           &
@@ -172,7 +172,7 @@
 !
 !        write(*,*) 'set_part_edges_4_sf', igrp
         call set_part_edges_4_sf                                        &
-     &     (view_mesh%nodpetot_viewer, surfpetot_viewer,                &
+     &     (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,      &
      &      nnod_4_edge, nedge_grp, iedge_sf_viewer,                    &
      &      edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,             &
      &      edge_sf_tbl%id_hash, edge_sf_tbl%iflag_hash,                &
