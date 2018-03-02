@@ -42,7 +42,7 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_imark_node_4_list'
-      call allocate_imark_node_4_list(nodpetot_viewer)
+      call allocate_imark_node_4_list(view_mesh%nodpetot_viewer)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_domain_viewer'
       call set_nod_4_domain_viewer(nnod_4_surf, nnod_4_edge)

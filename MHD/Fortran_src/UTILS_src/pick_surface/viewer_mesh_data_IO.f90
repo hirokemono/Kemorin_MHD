@@ -64,7 +64,7 @@
       read(surface_id,*) isurf_sf_stack(1:num_pe_sf)
       read(surface_id,*) iedge_sf_stack(1:num_pe_sf)
 !
-      nodpetot_viewer =  inod_sf_stack(num_pe_sf)
+      view_mesh%nodpetot_viewer =  inod_sf_stack(num_pe_sf)
       surfpetot_viewer = isurf_sf_stack(num_pe_sf)
       edgepetot_viewer = iedge_sf_stack(num_pe_sf)
 !
@@ -83,9 +83,9 @@
       write(surface_id,'(a)') '! Global ID, x, y, z'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i16)') nodpetot_viewer
+      write(surface_id,'(i16)') view_mesh%nodpetot_viewer
 !
-      do i = 1, nodpetot_viewer
+      do i = 1, view_mesh%nodpetot_viewer
         write(surface_id,1002) i, xx_view(i,1:3)
       end do
  1002 format(i16, 1p3e23.12)
@@ -105,7 +105,7 @@
 !
       call allocate_nod_position_viewer
 !
-      do i = 1, nodpetot_viewer
+      do i = 1, view_mesh%nodpetot_viewer
        read(surface_id,*) itmp, xx_view(i,1:3)
       end do
 !

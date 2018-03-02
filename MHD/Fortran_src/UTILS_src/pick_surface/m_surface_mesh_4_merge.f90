@@ -48,7 +48,6 @@
 !
       integer(kind=kint )  ::  surfpetot_viewer
       integer(kind=kint )  ::  edgepetot_viewer
-      integer(kind=kint )  ::  nodpetot_viewer
 !
       integer(kind=kint ), allocatable  ::  ie_sf_viewer(:,:)
       integer(kind=kint ), allocatable  ::  ie_edge_viewer(:,:)
@@ -91,7 +90,7 @@
 !
       subroutine allocate_nod_position_viewer
 !
-      allocate( xx_view(nodpetot_viewer,3) )
+      allocate( xx_view(view_mesh%nodpetot_viewer,3) )
       xx_view = 0.0d0
 !
       end subroutine allocate_nod_position_viewer

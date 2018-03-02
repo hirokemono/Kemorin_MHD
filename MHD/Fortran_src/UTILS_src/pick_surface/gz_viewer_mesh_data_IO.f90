@@ -75,7 +75,7 @@
       call read_gz_multi_int(num_pe_sf, isurf_sf_stack)
       call read_gz_multi_int(num_pe_sf, iedge_sf_stack)
 !
-      nodpetot_viewer =  inod_sf_stack(num_pe_sf)
+      view_mesh%nodpetot_viewer =  inod_sf_stack(num_pe_sf)
       surfpetot_viewer = isurf_sf_stack(num_pe_sf)
       edgepetot_viewer = iedge_sf_stack(num_pe_sf)
 !
@@ -100,10 +100,10 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i15,a1)') nodpetot_viewer, char(0)
+      write(textbuf,'(i15,a1)') view_mesh%nodpetot_viewer, char(0)
       call gz_write_textbuf_w_lf
 !
-      do i = 1, nodpetot_viewer
+      do i = 1, view_mesh%nodpetot_viewer
         write(textbuf,1002) i, xx_view(i,1:3), char(0)
         call gz_write_textbuf_w_lf
       end do
@@ -122,7 +122,7 @@
 !
       call allocate_nod_position_viewer
 !
-      do i = 1, nodpetot_viewer
+      do i = 1, view_mesh%nodpetot_viewer
         call get_one_line_from_gz_f
         read(textbuf,*) itmp, xx_view(i,1:3)
       end do

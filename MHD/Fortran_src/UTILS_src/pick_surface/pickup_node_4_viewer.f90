@@ -64,7 +64,7 @@
       type(mesh_geometry), intent(in) :: merged
 !
       allocate( inod_merge2viewer(merged%node%numnod) )
-      allocate( inod_viewer2merge(nodpetot_viewer) )
+      allocate( inod_viewer2merge(view_mesh%nodpetot_viewer) )
       inod_merge2viewer = 0
       inod_viewer2merge = 0
 !
@@ -133,7 +133,7 @@
           inod_sf_stack(ip) = inod_sf_stack(ip) + imark_node(inod)
         end do
       end do
-      nodpetot_viewer = inod_sf_stack(num_pe_sf)
+      view_mesh%nodpetot_viewer = inod_sf_stack(num_pe_sf)
 !
       end subroutine count_used_node_4_viewer
 !
@@ -191,7 +191,7 @@
       integer(kind = kint) :: inum, inod
 !
 !
-      do inum = 1, nodpetot_viewer
+      do inum = 1, view_mesh%nodpetot_viewer
         inod = inod_viewer2merge(inum)
         xx_view(inum,1:3) = merged%node%xx(inod,1:3)
       end do
