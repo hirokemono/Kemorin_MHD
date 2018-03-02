@@ -3,27 +3,30 @@
 !
 !      Written by Kemorin on Jan., 2007
 !
-!      subroutine write_domain_data_viewer_gz
-!      subroutine read_domain_data_viewer_gz
-!
-!      subroutine write_node_data_viewer_gz
-!      subroutine read_node_data_viewer_gz
-!
-!      subroutine write_surf_connect_viewer_gz(nnod_4_surf)
-!      subroutine read_surf_connect_viewer_gz                           &
-!     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge)
-!
-!      subroutine write_edge_connect_viewer_gz(nnod_4_edge)
-!      subroutine read_edge_connect_viewer_gz(nnod_4_edge)
-!
-!      subroutine write_domain_center_viewer_gz
-!      subroutine read_domain_center_viewer_gz
+!!      subroutine write_domain_data_viewer_gz
+!!      subroutine read_domain_data_viewer_gz
+!!
+!!      subroutine write_node_data_viewer_gz(view_mesh)
+!!        type(viewer_mesh_data), intent(in) :: view_mesh
+!!      subroutine read_node_data_viewer_gz(view_mesh)
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
+!!
+!!      subroutine write_surf_connect_viewer_gz(nnod_4_surf, view_mesh)
+!!        type(viewer_mesh_data), intent(in) :: view_mesh
+!!      subroutine read_surf_connect_viewer_gz                          &
+!!     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge, view_mesh)
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
+!!
+!!      subroutine write_edge_connect_viewer_gz(nnod_4_edge)
+!!        type(viewer_mesh_data), intent(in) :: view_mesh
+!!      subroutine read_edge_connect_viewer_gz(nnod_4_edge, view_mesh)
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       module gz_viewer_mesh_data_IO
 !
       use m_precision
 !
-      use m_surface_mesh_4_merge
+      use t_surface_mesh_4_merge
       use skip_gz_comment
 !
       implicit none
@@ -35,6 +38,8 @@
 !------------------------------------------------------------------
 !
       subroutine write_domain_data_viewer_gz
+!
+      use m_surface_mesh_4_merge
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
@@ -66,6 +71,7 @@
 !
       subroutine read_domain_data_viewer_gz
 !
+      use m_surface_mesh_4_merge
 !
       call skip_gz_comment_int(num_pe_sf)
 !
@@ -84,9 +90,12 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_node_data_viewer_gz
+      subroutine write_node_data_viewer_gz(view_mesh)
+!
+      type(viewer_mesh_data), intent(in) :: view_mesh
 !
       integer(kind = kint) :: i
+!
 !
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
@@ -113,7 +122,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_node_data_viewer_gz
+      subroutine read_node_data_viewer_gz(view_mesh)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       integer(kind = kint) :: i, itmp
 !
@@ -132,9 +143,10 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_surf_connect_viewer_gz(nnod_4_surf)
+      subroutine write_surf_connect_viewer_gz(nnod_4_surf, view_mesh)
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
+      type(viewer_mesh_data), intent(in) :: view_mesh
 !
       integer(kind = kint) :: i
       character(len=kchara) :: fmt_txt
@@ -169,7 +181,7 @@
 !------------------------------------------------------------------
 !
       subroutine read_surf_connect_viewer_gz                            &
-     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge)
+     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge, view_mesh)
 !
       use m_geometry_constants
       use m_node_quad_2_linear_sf
@@ -178,6 +190,8 @@
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(inout) :: nnod_4_surf
       integer(kind = kint), intent(inout) :: nnod_4_edge
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
       integer(kind = kint) :: i, itmp
 !
 !
@@ -204,11 +218,12 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_edge_connect_viewer_gz(nnod_4_edge)
+      subroutine write_edge_connect_viewer_gz(nnod_4_edge, view_mesh)
 !
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nnod_4_edge
+      type(viewer_mesh_data), intent(in) :: view_mesh
 !
       integer(kind = kint) :: i
       character(len=kchara) :: fmt_txt
@@ -257,12 +272,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_edge_connect_viewer_gz(nnod_4_edge)
+      subroutine read_edge_connect_viewer_gz(nnod_4_edge, view_mesh)
 !
       use m_geometry_constants
       use m_node_quad_2_linear_sf
 !
       integer(kind = kint), intent(in) :: nnod_4_edge
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
       integer(kind = kint) :: i, itmp
 !
 !

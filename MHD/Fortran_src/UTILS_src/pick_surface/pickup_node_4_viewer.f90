@@ -4,21 +4,27 @@
 !      Written by Kemorin in Jan., 2007
 !
 !!      subroutine allocate_imark_nod_pick_node(merged)
-!!      subroutine allocate_nod_cvt_table_viewer(merged)
+!!      subroutine allocate_nod_cvt_table_viewer(merged, view_mesh)
 !!        type(mesh_geometry), intent(in) :: merged
 !!      subroutine deallocate_imark_nod_pick_node
 !!      subroutine deallocate_nod_cvt_table_viewer
 !!
-!!      subroutine mark_used_node_4_viewer(nnod_4_surf, merged_grp)
+!!      subroutine mark_used_node_4_viewer                              &
+!!     &         (nnod_4_surf, merged_grp, view_mesh)
 !!        type(mesh_groups), intent(in)  :: merged_grp
-!!      subroutine count_used_node_4_viewer(merge_tbl)
+!!        type(viewer_mesh_data), intent(in) :: view_mesh
+!!      subroutine count_used_node_4_viewer                             &
+!!     &         (merge_tbl, num_pe, inod_sf_stack, view_mesh)
 !!        type(merged_stacks), intent(in) :: merge_tbl
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
 !!      subroutine set_node_cvt_table_viewer(merged, imark_node)
 !!        type(mesh_geometry), intent(in) :: merged
-!!      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
-!!      subroutine set_node_position_4_viewer(merged)
+!!      subroutine renumber_surf_connect_4_viewer                       &
+!!     &         (nnod_4_surf, view_mesh, view_mesh)
+!!      subroutine set_node_position_4_viewer(merged, view_mesh)
 !!        type(mesh_geometry), intent(in) :: merged
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!      subroutine set_node_group_item_viewer(merged_grp, nod_nod_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!        type(viewer_group_data), intent(inout) :: nod_nod_grp
@@ -27,6 +33,7 @@
 !
       use m_precision
       use t_surface_data
+      use t_surface_mesh_4_merge
 !
       implicit none
 !
@@ -56,12 +63,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_nod_cvt_table_viewer(merged)
+      subroutine allocate_nod_cvt_table_viewer(merged, view_mesh)
 !
       use t_mesh_data
-      use m_surface_mesh_4_merge
 !
       type(mesh_geometry), intent(in) :: merged
+      type(viewer_mesh_data), intent(in) :: view_mesh
 !
       allocate( inod_merge2viewer(merged%node%numnod) )
       allocate( inod_viewer2merge(view_mesh%nodpetot_viewer) )
@@ -89,13 +96,14 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine mark_used_node_4_viewer(nnod_4_surf, merged_grp)
+      subroutine mark_used_node_4_viewer                                &
+     &         (nnod_4_surf, merged_grp, view_mesh)
 !
       use t_mesh_data
-      use m_surface_mesh_4_merge
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       type(mesh_groups), intent(in)  :: merged_grp
+      type(viewer_mesh_data), intent(in) :: view_mesh
 !
       integer(kind = kint) :: inum, isurf, inod, k1
 !
@@ -116,16 +124,20 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_used_node_4_viewer(merge_tbl)
+      subroutine count_used_node_4_viewer                               &
+     &         (merge_tbl, num_pe, inod_sf_stack, view_mesh)
 !
       use t_merged_geometry_data
-      use m_surface_mesh_4_merge
 !
       type(merged_stacks), intent(in) :: merge_tbl
+      integer(kind = kint), intent(in) :: num_pe
+!
+      integer(kind = kint), intent(inout) :: inod_sf_stack(0:num_pe)
+      type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       integer(kind = kint) :: ip, ist, ied, inod
 !
-      do ip = 1, num_pe_sf
+      do ip = 1, num_pe
         ist = merge_tbl%istack_nod(ip-1) + 1
         ied = merge_tbl%istack_nod(ip)
         inod_sf_stack(ip) = inod_sf_stack(ip-1)
@@ -133,7 +145,7 @@
           inod_sf_stack(ip) = inod_sf_stack(ip) + imark_node(inod)
         end do
       end do
-      view_mesh%nodpetot_viewer = inod_sf_stack(num_pe_sf)
+      view_mesh%nodpetot_viewer = inod_sf_stack(num_pe)
 !
       end subroutine count_used_node_4_viewer
 !
@@ -162,11 +174,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
-!
-      use m_surface_mesh_4_merge
+      subroutine renumber_surf_connect_4_viewer                         &
+     &         (nnod_4_surf, view_mesh)
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
       integer(kind = kint) :: isurf, k1, inod
 !
 !
@@ -181,12 +194,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_position_4_viewer(merged)
+      subroutine set_node_position_4_viewer(merged, view_mesh)
 !
       use t_mesh_data
-      use m_surface_mesh_4_merge
 !
       type(mesh_geometry), intent(in) :: merged
+      type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       integer(kind = kint) :: inum, inod
 !
@@ -204,7 +217,6 @@
       subroutine set_node_group_item_viewer(merged_grp, nod_nod_grp)
 !
       use t_mesh_data
-      use t_surface_mesh_4_merge
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(viewer_group_data), intent(inout) :: nod_nod_grp

@@ -23,13 +23,13 @@
       use m_constants
       use m_machine_parameter
       use m_file_format_switch
-      use m_surface_mesh_4_merge
 !
       use t_geometry_data
       use t_surface_data
       use t_edge_data
       use t_file_IO_parameter
       use t_mesh_data_4_merge
+      use t_surface_mesh_4_merge
       use t_grp_data_merged_surfaces
 !
       implicit none
@@ -48,6 +48,7 @@
       subroutine choose_surface_mesh_sgl                                &
      &         (mesh_file, ele, surf, edge, mgd_mesh)
 !
+      use m_surface_mesh_4_merge
       use find_mesh_file_format
 !
       type(field_IO_params), intent(inout) :: mesh_file
@@ -103,6 +104,7 @@
       subroutine const_surf_mesh_4_viewer                               &
      &         (mesh_file, ele, surf, edge, mgd_mesh)
 !
+      use m_surface_mesh_4_merge
       use set_merged_geometry
       use const_merged_surf_data
       use const_merged_surf_4_group
@@ -148,21 +150,28 @@
 !
 !       write(*,*) 's_set_surf_connect_4_viewer'
        call s_set_surf_connect_4_viewer                                 &
-     &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp1)
+     &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp1,                     &
+     &     num_pe_sf, isurf_sf_stack, view_mesh, domain_grps,           &
+     &     view_ele_grps, view_sf_grps)
 !       write(*,*) 's_set_nodes_4_viewer'
-       call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh)
+       call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh,            &
+     &     num_pe_sf, inod_sf_stack, view_mesh, view_nod_grps)
 !
        write(*,*) 'set_surf_domain_id_viewer'
-       call set_surf_domain_id_viewer(mgd_mesh%merged_surf)
+       call set_surf_domain_id_viewer(mgd_mesh%merged_surf, view_mesh)
 !
 !
        call dealloc_array_4_merge(mgd_mesh)
 !
        write(*,*)  'construct_edge_4_viewer'
-       call construct_edge_4_viewer(surf, edge)
+       call construct_edge_4_viewer(surf, edge,                         &
+     &     num_pe_sf, inod_sf_stack, iedge_sf_stack, view_mesh,         &
+     &     domain_grps, view_ele_grps, view_sf_grps)
        write(*,*)  's_set_nodes_4_groups_viewer'
        call s_set_nodes_4_groups_viewer                                 &
-     &    (surf%nnod_4_surf, edge%nnod_4_edge)
+     &    (surf%nnod_4_surf, edge%nnod_4_edge,                          &
+     &     num_pe_sf, inod_sf_stack, view_mesh, domain_grps,            &
+     &     view_ele_grps, view_sf_grps)
 !
       call sel_output_surface_grid(mesh_file%iflag_format,              &
      &    surf%nnod_4_surf, edge%nnod_4_edge)
@@ -176,6 +185,7 @@
 !
       use m_geometry_constants
       use m_node_quad_2_linear_sf
+      use m_surface_mesh_4_merge
 !
       use set_local_id_table_4_1ele
       use set_nnod_4_ele_by_type
@@ -216,9 +226,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_surf_domain_id_viewer(merged_surf)
+      subroutine set_surf_domain_id_viewer(merged_surf, view_mesh)
 !
-      type(surface_data), intent(inout) :: merged_surf
+      type(surface_data), intent(in) :: merged_surf
+      type(viewer_mesh_data), intent(inout) :: view_mesh
 !
 !
       call alloc_surf_type_viewer(view_mesh)

@@ -4,17 +4,20 @@
 !      Written by Kemorin in Jan., 2007
 !
 !!
-!!      subroutine set_surf_domain_stack_viewer(domain_surf_grp)
+!!      subroutine set_surf_domain_stack_viewer                         &
+!!     &         (num_pe, isurf_sf_stack, domain_surf_grp)
 !!        type(viewer_group_data), intent(inout) :: domain_surf_grp
-!!      subroutine set_element_group_stack_viewer(mgd_sf_grp,           &
+!!      subroutine set_element_group_stack_viewer                       &
+!!     &         (num_pe, isurf_sf_stack, mgd_sf_grp,                   &
 !!     &          ngrp_ele_sf, ele_surf_grp)
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !!        type(viewer_group_data), intent(inout) :: ele_surf_grp
-!!      subroutine set_surface_group_stack_viewer(merged_grp,           &
+!!      subroutine set_surface_group_stack_viewer                       &
+!!     &         (num_pe, isurf_sf_stack, merged_grp,                   &
 !!     &          ngrp_surf_sf, sf_surf_grp)
 !!        type(viewer_group_data), intent(inout)  :: sf_surf_grp
-!!      subroutine set_node_group_stack_viewer                          &
-!!     &         (merged_grp, ngrp_nod_sf, nod_nod_grp)
+!!      subroutine set_node_group_stack_viewer(num_pe, inod_sf_stack,   &
+!!     &          merged_grp, ngrp_nod_sf, nod_nod_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!        type(viewer_group_data), intent(inout) :: nod_nod_grp
 !
@@ -22,7 +25,7 @@
 !
       use m_precision
 !
-      use m_surface_mesh_4_merge
+      use t_surface_mesh_4_merge
 !
       implicit none
 !
@@ -33,14 +36,17 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_surf_domain_stack_viewer(domain_surf_grp)
+      subroutine set_surf_domain_stack_viewer                           &
+     &         (num_pe, isurf_sf_stack, domain_surf_grp)
 !
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: isurf_sf_stack(0:num_pe)
       type(viewer_group_data), intent(inout) :: domain_surf_grp
 !
       integer(kind = kint) :: ip, iref, ist, inum, isurf
 !
 !
-      do ip = 1, num_pe_sf
+      do ip = 1, num_pe
         iref = isurf_sf_stack(ip)
         ist = domain_surf_grp%istack_sf(ip-1) + 1
         domain_surf_grp%istack_sf(ip) = domain_surf_grp%istack_sf(ip-1)
@@ -55,11 +61,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_element_group_stack_viewer(mgd_sf_grp,             &
+      subroutine set_element_group_stack_viewer                         &
+     &         (num_pe, isurf_sf_stack, mgd_sf_grp,                     &
      &          ngrp_ele_sf, ele_surf_grp)
 !
       use t_grp_data_merged_surfaces
 !
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: isurf_sf_stack(0:num_pe)
       type(group_data_merged_surf), intent(in) :: mgd_sf_grp
       integer(kind = kint), intent(in) :: ngrp_ele_sf
 !
@@ -69,8 +78,8 @@
 !
 !
       do igrp = 1, ngrp_ele_sf
-        do ip = 1, num_pe_sf
-          idx = ip + (igrp-1) * num_pe_sf
+        do ip = 1, num_pe
+          idx = ip + (igrp-1) * num_pe
           iref = isurf_sf_stack(ip)
           ist = ele_surf_grp%istack_sf(idx-1) + 1
           ele_surf_grp%istack_sf(idx) = ele_surf_grp%istack_sf(idx-1)
@@ -86,11 +95,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_surface_group_stack_viewer(merged_grp,             &
+      subroutine set_surface_group_stack_viewer                         &
+     &         (num_pe, isurf_sf_stack, merged_grp,                     &
      &          ngrp_surf_sf, sf_surf_grp)
 !
       use t_mesh_data
 !
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: isurf_sf_stack(0:num_pe)
       type(mesh_groups), intent(in) :: merged_grp
       integer(kind = kint), intent(in) :: ngrp_surf_sf
 !
@@ -101,8 +113,8 @@
 !
 !
       do igrp = 1, ngrp_surf_sf
-        do ip = 1, num_pe_sf
-          idx = ip + (igrp-1) * num_pe_sf
+        do ip = 1, num_pe
+          idx = ip + (igrp-1) * num_pe
           iref = isurf_sf_stack(ip)
           ist = sf_surf_grp%istack_sf(idx-1) + 1
           ied = merged_grp%surf_grp%istack_grp(igrp)
@@ -120,11 +132,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_group_stack_viewer                            &
-     &         (merged_grp, ngrp_nod_sf, nod_nod_grp)
+      subroutine set_node_group_stack_viewer(num_pe, inod_sf_stack,     &
+     &          merged_grp, ngrp_nod_sf, nod_nod_grp)
 !
       use t_mesh_data
 !
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
       type(mesh_groups), intent(in) :: merged_grp
       integer(kind = kint), intent(in) :: ngrp_nod_sf
       type(viewer_group_data), intent(inout) :: nod_nod_grp
@@ -133,8 +147,8 @@
 !
 !
       do igrp = 1, ngrp_nod_sf
-        do ip = 1, num_pe_sf
-          idx = ip + (igrp-1) * num_pe_sf
+        do ip = 1, num_pe
+          idx = ip + (igrp-1) * num_pe
           iref = inod_sf_stack(ip)
           ist = nod_nod_grp%istack_sf(idx-1) + 1
           ied = merged_grp%nod_grp%istack_grp(igrp)
@@ -143,7 +157,7 @@
           do inum = ist, ied
             inod = abs( nod_nod_grp%item_sf(inum) )
             if ( inod .gt. iref ) exit
-            nod_nod_grp%istack_sf(idx:(num_pe_sf*ngrp_nod_sf)) = inum
+            nod_nod_grp%istack_sf(idx:(num_pe*ngrp_nod_sf)) = inum
           end do
         end do
       end do

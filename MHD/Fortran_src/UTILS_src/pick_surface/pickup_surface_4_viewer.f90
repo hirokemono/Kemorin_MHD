@@ -4,8 +4,9 @@
 !      Written by Kemorin in Jan., 2007
 !
 !!      subroutine allocate_imark_surf(merged_surf)
-!!      subroutine allocate_sf_cvt_table_viewer(merged_surf)
+!!      subroutine allocate_sf_cvt_table_viewer(merged_surf, view_mesh)
 !!        type(mesh_geometry), intent(in) :: merged
+!!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!        type(surface_data), intent(in) :: merged_surf
 !!      subroutine deallocate_imark_surf
 !!      subroutine deallocate_sf_cvt_table_viewer
@@ -15,11 +16,14 @@
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!        type(surface_data), intent(in) :: merged_surf
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
-!!      subroutine count_used_surface_4_viewer(num_pe, istack_surfpe)
+!!      subroutine count_used_surface_4_viewer                          &
+!!     &         (num_pe, istack_surfpe, isurf_sf_stack, view_mesh)
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
-!!      subroutine set_surf_cvt_table_viewer(merged_surf, imark_surf)
-!!      subroutine set_surf_connect_viewer(merged_surf)
+!!      subroutine set_surf_cvt_table_viewer(merged_surf)
+!!      subroutine set_surf_connect_viewer(merged_surf, view_mesh)
 !!        type(surface_data), intent(in) :: merged_surf
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!      subroutine set_surf_domain_item_viewer                          &
 !!     &         (merged_surf, domain_surf_grp)
 !!        type(viewer_group_data), intent(inout) :: domain_surf_grp
@@ -64,11 +68,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_sf_cvt_table_viewer(merged_surf)
-!
-      use m_surface_mesh_4_merge
+      subroutine allocate_sf_cvt_table_viewer(merged_surf, view_mesh)
 !
       type(surface_data), intent(in) :: merged_surf
+      type(viewer_mesh_data), intent(in) :: view_mesh
 !
       allocate( isf_merge2viewer(merged_surf%numsurf) )
       allocate( isf_viewer2merge(view_mesh%surfpetot_viewer) )
@@ -130,12 +133,14 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine count_used_surface_4_viewer(num_pe, istack_surfpe)
-!
-      use m_surface_mesh_4_merge
+      subroutine count_used_surface_4_viewer                            &
+     &         (num_pe, istack_surfpe, isurf_sf_stack, view_mesh)
 !
       integer(kind = kint), intent(in) :: num_pe
       integer(kind = kint), intent(in) :: istack_surfpe(0:num_pe)
+!
+      integer(kind = kint), intent(inout) :: isurf_sf_stack(0:num_pe)
+      type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       integer(kind = kint) :: ip, ist, ied, isurf
 !
@@ -176,12 +181,12 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine set_surf_connect_viewer(merged_surf)
+      subroutine set_surf_connect_viewer(merged_surf, view_mesh)
 !
       use t_surface_data
-      use m_surface_mesh_4_merge
 !
       type(surface_data), intent(in) :: merged_surf
+      type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       integer(kind = kint) :: inum, isurf
 !

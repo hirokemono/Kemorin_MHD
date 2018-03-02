@@ -21,6 +21,7 @@
 !!      subroutine dealloc_edge_data_4_sf(view_mesh)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
+!!      subroutine alloc_domain_stack_4_surf(num_pe, domain_grps)
 !!      subroutine alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
 !!      subroutine dealloc_viewer_node_grps_stack(view_nod_grps)
 !!        type(viewer_node_groups), intent(inout) :: view_nod_grps
@@ -215,6 +216,22 @@
       end subroutine dealloc_edge_data_4_sf
 !
 !------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine alloc_domain_stack_4_surf(num_pe, domain_grps)
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(viewer_surface_groups), intent(inout) :: domain_grps
+!
+!
+      domain_grps%num_grp = 1
+!
+      call alloc_viewer_surf_grps_stack(num_pe, domain_grps)
+!
+      domain_grps%grp_name = 'subdomains'
+!
+      end subroutine alloc_domain_stack_4_surf
+!
 !------------------------------------------------------------------
 !
       subroutine alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
