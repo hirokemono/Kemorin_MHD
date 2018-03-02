@@ -47,7 +47,6 @@
       integer(kind=kint ), allocatable :: isurf_sf_stack(:)
 !
       integer(kind=kint )  ::  surfpetot_viewer
-      integer(kind=kint )  ::  edgepetot_viewer
 !
       integer(kind=kint ), allocatable  ::  ie_sf_viewer(:,:)
       integer(kind=kint ), allocatable  ::  ie_edge_viewer(:,:)
@@ -150,7 +149,7 @@
       integer(kind = kint), intent(in) :: nnod_4_edge
 !
 !
-      allocate (ie_edge_viewer(edgepetot_viewer,nnod_4_edge))
+      allocate (ie_edge_viewer(view_mesh%edgepetot_viewer,nnod_4_edge))
       allocate (iedge_sf_viewer(surfpetot_viewer,nedge_4_surf) )
       ie_edge_viewer = 0
       iedge_sf_viewer = 0
@@ -163,7 +162,7 @@
 !
       use m_geometry_constants
 !
-      allocate (edgetyp_viewer(edgepetot_viewer) )
+      allocate (edgetyp_viewer(view_mesh%edgepetot_viewer) )
       edgetyp_viewer = 0
 !
       end subroutine allocate_edge_type_viewer
@@ -190,10 +189,10 @@
       integer(kind = kint) :: iedge
 !
 !
-      write(50,*) 'edgepetot_viewer', edgepetot_viewer
+      write(50,*) 'edgepetot_viewer', view_mesh%edgepetot_viewer
       write(50,*) 'iedge_sf_stack', iedge_sf_stack
       write(50,*) 'ie_edge_viewer'
-      do iedge = 1, edgepetot_viewer
+      do iedge = 1, view_mesh%edgepetot_viewer
         write(50,*) iedge, ie_edge_viewer(iedge,1:nnod_4_edge)
       end do
 !

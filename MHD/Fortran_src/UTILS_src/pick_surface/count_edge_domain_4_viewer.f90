@@ -34,7 +34,7 @@
       do ip = 1, num_pe_sf
         iref = inod_sf_stack(ip)
         ist =  iedge_sf_stack(ip-1) + 1
-        do iedge = ist, edgepetot_viewer
+        do iedge = ist, view_mesh%edgepetot_viewer
           inod = ie_edge_viewer(iedge,1)
           if ( inod .gt. iref ) exit
           iedge_sf_stack(ip:num_pe_sf) = iedge

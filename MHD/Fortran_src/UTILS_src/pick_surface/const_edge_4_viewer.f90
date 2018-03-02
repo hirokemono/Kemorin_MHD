@@ -99,13 +99,13 @@
       call count_num_edges_by_sf                                        &
      &   (view_mesh%nodpetot_viewer, surfpetot_viewer,                  &
      &    edge%nnod_4_edge, ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash, &
-     &    ed_sf_tbl%iflag_hash, edgepetot_viewer)
+     &    ed_sf_tbl%iflag_hash, view_mesh%edgepetot_viewer)
 !
       call allocate_edge_data_4_sf(edge%nnod_4_edge)
 !
       write(*,*) 'set_edges_connect_by_sf'
       call set_edges_connect_by_sf(view_mesh%nodpetot_viewer,           &
-     &    surfpetot_viewer, edgepetot_viewer,                           &
+     &    surfpetot_viewer, view_mesh%edgepetot_viewer,                 &
      &    surf%nnod_4_surf, edge%nnod_4_edge, ie_sf_viewer,             &
      &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash,                      &

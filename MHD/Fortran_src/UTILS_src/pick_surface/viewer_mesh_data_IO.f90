@@ -66,7 +66,7 @@
 !
       view_mesh%nodpetot_viewer =  inod_sf_stack(num_pe_sf)
       surfpetot_viewer = isurf_sf_stack(num_pe_sf)
-      edgepetot_viewer = iedge_sf_stack(num_pe_sf)
+      view_mesh%edgepetot_viewer = iedge_sf_stack(num_pe_sf)
 !
       end subroutine read_domain_data_viewer
 !
@@ -190,9 +190,9 @@
       write(surface_id,'(a)') '!  global ID, connectivity'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i16)') edgepetot_viewer
+      write(surface_id,'(i16)') view_mesh%edgepetot_viewer
 !
-      do i = 1, edgepetot_viewer
+      do i = 1, view_mesh%edgepetot_viewer
        write(surface_id,'(10i16)')                                      &
      &               i, ie_edge_viewer(i,1:nnod_4_edge)
       end do
@@ -222,7 +222,7 @@
 !
       call allocate_edge_data_4_sf(nnod_4_edge)
 !
-      do i = 1, edgepetot_viewer
+      do i = 1, view_mesh%edgepetot_viewer
        read(surface_id,*) itmp, ie_edge_viewer(i,1:nnod_4_edge)
       end do
 !

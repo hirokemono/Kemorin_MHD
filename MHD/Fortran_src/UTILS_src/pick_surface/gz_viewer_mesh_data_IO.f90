@@ -77,7 +77,7 @@
 !
       view_mesh%nodpetot_viewer =  inod_sf_stack(num_pe_sf)
       surfpetot_viewer = isurf_sf_stack(num_pe_sf)
-      edgepetot_viewer = iedge_sf_stack(num_pe_sf)
+      view_mesh%edgepetot_viewer = iedge_sf_stack(num_pe_sf)
 !
       end subroutine read_domain_data_viewer_gz
 !
@@ -223,12 +223,12 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i15,a1)') edgepetot_viewer, char(0)
+      write(textbuf,'(i15,a1)') view_mesh%edgepetot_viewer, char(0)
       call gz_write_textbuf_w_lf
 !
 !
       write(fmt_txt,'(a5,i2,a9)') '(i15,', nnod_4_edge, '(i15),a1)'
-      do i = 1, edgepetot_viewer
+      do i = 1, view_mesh%edgepetot_viewer
         write(textbuf,fmt_txt)                                          &
      &                i, ie_edge_viewer(i,1:nnod_4_edge), char(0)
         call gz_write_textbuf_w_lf
@@ -268,7 +268,7 @@
 !
       call allocate_edge_data_4_sf(nnod_4_edge)
 !
-      do i = 1, edgepetot_viewer
+      do i = 1, view_mesh%edgepetot_viewer
         call get_one_line_from_gz_f
         read(textbuf,*) itmp, ie_edge_viewer(i,1:nnod_4_edge)
       end do
