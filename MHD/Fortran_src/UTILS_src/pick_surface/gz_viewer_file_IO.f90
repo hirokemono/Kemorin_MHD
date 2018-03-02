@@ -53,19 +53,19 @@
 !
 !      write(*,*) 'write_domain_group_viewer_gz'
       call write_domain_group_viewer_gz                                 &
-     &   (mgd_view_mesh1%num_pe_sf, domain_grps)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%domain_grps)
 !
 !      write(*,*) 'write_nod_group_viewer_gz'
       call write_nod_group_viewer_gz                                    &
-     &   (mgd_view_mesh1%num_pe_sf, view_nod_grps)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%view_nod_grps)
 !
 !      write(*,*) 'write_ele_group_viewer_gz'
       call write_ele_group_viewer_gz                                    &
-     &   (mgd_view_mesh1%num_pe_sf, view_ele_grps)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%view_ele_grps)
 !
 !      write(*,*) 'write_surf_group_viewer_gz'
       call write_surf_group_viewer_gz                                   &
-     &   (mgd_view_mesh1%num_pe_sf, view_sf_grps)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%view_sf_grps)
 !
       call close_gzfile_f
 !
@@ -107,23 +107,23 @@
      &   (nnod_4_edge, mgd_view_mesh1%view_mesh)
 !
       call alloc_domain_stack_4_surf                                    &
-     &   (mgd_view_mesh1%num_pe_sf, domain_grps)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%domain_grps)
 !
 !      write(*,*) 'read_domain_group_viewer_gz'
       call read_domain_group_viewer_gz                                  &
-     &   (mgd_view_mesh1%num_pe_sf, domain_grps)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%domain_grps)
 !
 !      write(*,*) 'read_nod_group_viewer_gz'
       call read_nod_group_viewer_gz                                     &
-     &   (mgd_view_mesh1%num_pe_sf, view_nod_grps)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%view_nod_grps)
 !
 !      write(*,*) 'read_ele_group_viewer_gz'
       call read_ele_group_viewer_gz                                     &
-     &   (mgd_view_mesh1%num_pe_sf, view_ele_grps)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%view_ele_grps)
 !
 !      write(*,*) 'read_surf_group_viewer_gz'
       call read_surf_group_viewer_gz                                    &
-     &   (mgd_view_mesh1%num_pe_sf, view_sf_grps)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%view_sf_grps)
 !
       call close_gzfile_f
 !
