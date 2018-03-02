@@ -5,7 +5,10 @@
 !
 !!      subroutine alloc_num_mesh_sf(num_pe, mgd_view_mesh)
 !!      subroutine dealloc_num_mesh_sf(mgd_view_mesh)
+!!      subroutine num_merged_viewer_nod_surf_edge(mgd_view_mesh)
+!!        type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !!      subroutine check_edge_connent_viewer(nnod_4_edge, mgd_view_mesh)
+!!        type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
       module t_merged_viewer_mesh
 !
@@ -68,6 +71,23 @@
       deallocate( mgd_view_mesh%iedge_sf_stack )
 !
       end subroutine dealloc_num_mesh_sf
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine num_merged_viewer_nod_surf_edge(mgd_view_mesh)
+!
+      type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
+!
+!
+      mgd_view_mesh%view_mesh%nodpetot_viewer                           &
+     &   = mgd_view_mesh%inod_sf_stack(mgd_view_mesh%num_pe_sf)
+      mgd_view_mesh%view_mesh%surfpetot_viewer                          &
+     &   = mgd_view_mesh%isurf_sf_stack(mgd_view_mesh%num_pe_sf)
+      mgd_view_mesh%view_mesh%edgepetot_viewer                          &
+     &   = mgd_view_mesh%iedge_sf_stack(mgd_view_mesh%num_pe_sf)
+!
+      end subroutine num_merged_viewer_nod_surf_edge
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

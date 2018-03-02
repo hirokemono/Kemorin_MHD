@@ -14,10 +14,7 @@
 !
       type(merged_viewer_mesh), save :: mgd_view_mesh1
 !
-!mgd_view_mesh1%isurf_sf_stack
-!
-        type(viewer_mesh_data), save :: view_mesh
-!
+!mgd_view_mesh1%view_mesh
         type(viewer_surface_groups), save :: domain_grps
 !
         type(viewer_node_groups), save :: view_nod_grps

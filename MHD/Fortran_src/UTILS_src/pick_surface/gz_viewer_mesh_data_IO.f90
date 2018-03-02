@@ -4,7 +4,9 @@
 !      Written by Kemorin on Jan., 2007
 !
 !!      subroutine write_domain_data_viewer_gz
+!!        type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !!      subroutine read_domain_data_viewer_gz
+!!        type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !!
 !!      subroutine write_node_data_viewer_gz(view_mesh)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
@@ -27,6 +29,8 @@
       use m_precision
 !
       use t_viewer_mesh
+      use t_merged_viewer_mesh
+!
       use skip_gz_comment
 !
       implicit none
@@ -37,9 +41,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_domain_data_viewer_gz
+      subroutine write_domain_data_viewer_gz(mgd_view_mesh)
 !
-      use m_surface_mesh_4_merge
+      type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
@@ -58,44 +62,37 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i15,a1)') mgd_view_mesh1%num_pe_sf, char(0)
+      write(textbuf,'(i15,a1)') mgd_view_mesh%num_pe_sf, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
-     &    mgd_view_mesh1%inod_sf_stack(1))
-      call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
-     &    mgd_view_mesh1%isurf_sf_stack(1))
-      call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
-     &    mgd_view_mesh1%iedge_sf_stack(1))
+      call write_gz_multi_int_8i10(mgd_view_mesh%num_pe_sf,             &
+     &    mgd_view_mesh%inod_sf_stack(1))
+      call write_gz_multi_int_8i10(mgd_view_mesh%num_pe_sf,             &
+     &    mgd_view_mesh%isurf_sf_stack(1))
+      call write_gz_multi_int_8i10(mgd_view_mesh%num_pe_sf,             &
+     &    mgd_view_mesh%iedge_sf_stack(1))
 !
       end subroutine write_domain_data_viewer_gz
 !
 !------------------------------------------------------------------
 !
-      subroutine read_domain_data_viewer_gz
+      subroutine read_domain_data_viewer_gz(mgd_view_mesh)
 !
-      use m_surface_mesh_4_merge
+      type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
       integer(kind = kint) :: num_pe
 !
 !
       call skip_gz_comment_int(num_pe)
 !
-      call alloc_num_mesh_sf(num_pe, mgd_view_mesh1)
+      call alloc_num_mesh_sf(num_pe, mgd_view_mesh)
 !
       call read_gz_multi_int                                            &
-     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%inod_sf_stack)
+     &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack)
       call read_gz_multi_int                                            &
-     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%isurf_sf_stack)
+     &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%isurf_sf_stack)
       call read_gz_multi_int                                            &
-     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%iedge_sf_stack)
-!
-      view_mesh%nodpetot_viewer                                         &
-     &   = mgd_view_mesh1%inod_sf_stack(mgd_view_mesh1%num_pe_sf)
-      view_mesh%surfpetot_viewer                                        &
-     &   = mgd_view_mesh1%isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
-      view_mesh%edgepetot_viewer                                        &
-     &   = mgd_view_mesh1%iedge_sf_stack(mgd_view_mesh1%num_pe_sf)
+     &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%iedge_sf_stack)
 !
       end subroutine read_domain_data_viewer_gz
 !

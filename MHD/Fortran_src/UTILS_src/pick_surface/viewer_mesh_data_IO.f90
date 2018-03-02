@@ -3,8 +3,10 @@
 !
 !      Written by Kemorin on Jan., 2007
 !
-!!      subroutine write_domain_data_viewer
-!!      subroutine read_domain_data_viewer
+!!      subroutine write_domain_data_viewer(mgd_view_mesh)
+!!        type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
+!!      subroutine read_domain_data_viewer(mgd_view_mesh)
+!!        type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !!
 !!      subroutine write_node_data_viewer(view_mesh)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
@@ -26,6 +28,7 @@
 !
       use m_precision
       use t_viewer_mesh
+      use t_merged_viewer_mesh
 !
       implicit none
 !
@@ -38,9 +41,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_domain_data_viewer
+      subroutine write_domain_data_viewer(mgd_view_mesh)
 !
-      use m_surface_mesh_4_merge
+      type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
 !
       write(surface_id,'(a)') '!'
@@ -50,22 +53,23 @@
       write(surface_id,'(a)') '!   stack of edge for domain '
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i16)') mgd_view_mesh1%num_pe_sf
+      write(surface_id,'(i16)') mgd_view_mesh%num_pe_sf
       write(surface_id,'(8i16)')                                        &
-     &   mgd_view_mesh1%inod_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+     &   mgd_view_mesh%inod_sf_stack(1:mgd_view_mesh%num_pe_sf)
       write(surface_id,'(8i16)')                                        &
-     &   mgd_view_mesh1%isurf_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+     &   mgd_view_mesh%isurf_sf_stack(1:mgd_view_mesh%num_pe_sf)
       write(surface_id,'(8i16)')                                        &
-     &   mgd_view_mesh1%iedge_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+     &   mgd_view_mesh%iedge_sf_stack(1:mgd_view_mesh%num_pe_sf)
 !
       end subroutine write_domain_data_viewer
 !
 !------------------------------------------------------------------
 !
-      subroutine read_domain_data_viewer
+      subroutine read_domain_data_viewer(mgd_view_mesh)
 !
-      use m_surface_mesh_4_merge
       use skip_comment_f
+!
+      type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
       integer(kind = kint) :: num_pe
 !
@@ -73,21 +77,14 @@
       call skip_comment(tmp_character, surface_id)
       read(tmp_character,*) num_pe
 !
-      call alloc_num_mesh_sf(num_pe, mgd_view_mesh1)
+      call alloc_num_mesh_sf(num_pe, mgd_view_mesh)
 !
       read(surface_id,*)                                                &
-     &   mgd_view_mesh1%inod_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+     &   mgd_view_mesh%inod_sf_stack(1:mgd_view_mesh%num_pe_sf)
       read(surface_id,*)                                                &
-     &   mgd_view_mesh1%isurf_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+     &   mgd_view_mesh%isurf_sf_stack(1:mgd_view_mesh%num_pe_sf)
       read(surface_id,*)                                                &
-     &   mgd_view_mesh1%iedge_sf_stack(1:mgd_view_mesh1%num_pe_sf)
-!
-      view_mesh%nodpetot_viewer                                         &
-     &   = mgd_view_mesh1%inod_sf_stack(mgd_view_mesh1%num_pe_sf)
-      view_mesh%surfpetot_viewer                                        &
-     &   = mgd_view_mesh1%isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
-      view_mesh%edgepetot_viewer                                        &
-     &   = mgd_view_mesh1%iedge_sf_stack(mgd_view_mesh1%num_pe_sf)
+     &   mgd_view_mesh%iedge_sf_stack(1:mgd_view_mesh%num_pe_sf)
 !
       end subroutine read_domain_data_viewer
 !

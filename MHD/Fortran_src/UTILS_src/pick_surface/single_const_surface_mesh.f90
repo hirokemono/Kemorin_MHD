@@ -152,14 +152,16 @@
        call s_set_surf_connect_4_viewer                                 &
      &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp1,                     &
      &     mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%isurf_sf_stack,     &
-     &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
+     &     mgd_view_mesh1%view_mesh, domain_grps,       &
+     &     view_ele_grps, view_sf_grps)
 !       write(*,*) 's_set_nodes_4_viewer'
        call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh,            &
      &     mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%inod_sf_stack,      &
-     &     view_mesh, view_nod_grps)
+     &     mgd_view_mesh1%view_mesh, view_nod_grps)
 !
        write(*,*) 'set_surf_domain_id_viewer'
-       call set_surf_domain_id_viewer(mgd_mesh%merged_surf, view_mesh)
+       call set_surf_domain_id_viewer                                   &
+     &    (mgd_mesh%merged_surf, mgd_view_mesh1%view_mesh)
 !
 !
        call dealloc_array_4_merge(mgd_mesh)
@@ -167,13 +169,13 @@
        write(*,*)  'construct_edge_4_viewer'
        call construct_edge_4_viewer(surf, edge,                         &
      &     mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%inod_sf_stack,      &
-     &     mgd_view_mesh1%iedge_sf_stack, view_mesh,      &
+     &     mgd_view_mesh1%iedge_sf_stack, mgd_view_mesh1%view_mesh,     &
      &     domain_grps, view_ele_grps, view_sf_grps)
        write(*,*)  's_set_nodes_4_groups_viewer'
        call s_set_nodes_4_groups_viewer                                 &
      &    (surf%nnod_4_surf, edge%nnod_4_edge,                          &
      &     mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%inod_sf_stack,      &
-     &     view_mesh, domain_grps,          &
+     &     mgd_view_mesh1%view_mesh, domain_grps,          &
      &     view_ele_grps, view_sf_grps)
 !
       call sel_output_surface_grid(mesh_file%iflag_format,              &
