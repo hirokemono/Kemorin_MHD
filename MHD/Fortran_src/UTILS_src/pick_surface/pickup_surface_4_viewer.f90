@@ -3,9 +3,11 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
+!!      subroutine allocate_imark_surf(merged_surf)
 !!      subroutine allocate_sf_cvt_table_viewer(merged_surf)
 !!        type(mesh_geometry), intent(in) :: merged
 !!        type(surface_data), intent(in) :: merged_surf
+!!      subroutine deallocate_imark_surf
 !!      subroutine deallocate_sf_cvt_table_viewer
 !!
 !!      subroutine mark_used_surface_4_viewer                           &
@@ -35,19 +37,30 @@
       use m_precision
       use t_surface_data
       use t_surface_mesh_4_merge
-      use m_pickup_table_4_viewer
 !
       implicit none
 !
 !
+      integer(kind = kint), allocatable :: imark_surf(:)
       integer(kind = kint), allocatable :: isf_merge2viewer(:)
       integer(kind = kint), allocatable :: isf_viewer2merge(:)
 !
-      private :: isf_merge2viewer, isf_viewer2merge
+      private :: imark_surf, isf_merge2viewer, isf_viewer2merge
 !
 !------------------------------------------------------------------
 !
       contains
+!
+!------------------------------------------------------------------
+!
+      subroutine allocate_imark_surf(merged_surf)
+!
+      type(surface_data), intent(in) :: merged_surf
+!
+      allocate( imark_surf(merged_surf%numsurf) )
+      imark_surf = 0
+!
+      end subroutine allocate_imark_surf
 !
 !------------------------------------------------------------------
 !
@@ -63,6 +76,14 @@
       isf_viewer2merge = 0
 !
       end subroutine allocate_sf_cvt_table_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_imark_surf
+!
+      deallocate( imark_surf )
+!
+      end subroutine deallocate_imark_surf
 !
 !------------------------------------------------------------------
 !

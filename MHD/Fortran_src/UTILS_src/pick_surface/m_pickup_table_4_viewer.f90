@@ -3,9 +3,7 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine allocate_imark_surf(merged_surf)
 !!      subroutine allocate_imark_node(numnod)
-!!      subroutine deallocate_imark_surf
 !!      subroutine deallocate_imark_node
 !
       module m_pickup_table_4_viewer
@@ -16,23 +14,11 @@
       implicit none
 !
 !
-      integer(kind = kint), allocatable :: imark_surf(:)
       integer(kind = kint), allocatable :: imark_node(:)
 !
 !------------------------------------------------------------------
 !
       contains
-!
-!------------------------------------------------------------------
-!
-      subroutine allocate_imark_surf(merged_surf)
-!
-      type(surface_data), intent(in) :: merged_surf
-!
-      allocate( imark_surf(merged_surf%numsurf) )
-      imark_surf = 0
-!
-      end subroutine allocate_imark_surf
 !
 !------------------------------------------------------------------
 !
@@ -46,14 +32,6 @@
       end subroutine allocate_imark_node
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine deallocate_imark_surf
-!
-      deallocate( imark_surf )
-!
-      end subroutine deallocate_imark_surf
-!
 !------------------------------------------------------------------
 !
       subroutine deallocate_imark_node
