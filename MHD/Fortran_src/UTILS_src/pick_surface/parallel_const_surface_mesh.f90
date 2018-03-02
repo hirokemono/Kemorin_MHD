@@ -35,7 +35,6 @@
 !
       implicit none
 !
-      type(group_data_merged_surf), save, private :: mgd_sf_grp1
       type(mesh_geometry), save, private :: mesh_p
       type(mesh_groups), save, private ::   group_p
       type(element_geometry), save, private :: ele_mesh_p
@@ -62,7 +61,7 @@
       type(merged_mesh), intent(inout) :: mgd_mesh
 !
 !
-      surface_file_head = mesh_file%file_prefix
+      mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
 !
       if(my_rank .eq. 0) then
         if(iflag_debug .eq. 0) write(*,*) 'find_merged_mesh_format'
@@ -85,7 +84,7 @@
       if(my_rank .eq. 0) then
         write(*,*) 'const_surf_mesh_4_viewer'
         call const_surf_mesh_4_viewer                                   &
-     &     (mesh_file, ele, surf, edge, mgd_mesh)
+     &     (mesh_file, ele, surf, edge, mgd_mesh, mgd_view_mesh1)
       end if
       call calypso_mpi_barrier
 !

@@ -177,7 +177,7 @@
       use m_fem_mesh_labels
 !
       integer(kind = kint), intent(in)  :: num_pe
-      type(viewer_surface_groups), intent(inout) :: view_ele_grps
+      type(viewer_surface_groups), intent(in) :: view_ele_grps
 !
 !
       write(surface_id,'(a)', advance='NO') hd_fem_elegrp()
