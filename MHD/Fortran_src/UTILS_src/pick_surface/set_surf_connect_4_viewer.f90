@@ -32,7 +32,6 @@
       use t_grp_data_merged_surfaces
       use m_pickup_table_4_viewer
       use pickup_surface_4_viewer
-      use merge_to_viewer_surf_tbl
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       type(merged_mesh), intent(inout) :: mgd_mesh
@@ -50,7 +49,7 @@
 !
        write(*,*) 'allocate_sf_cvt_table_viewer'
       call allocate_sf_cvt_table_viewer(mgd_mesh%merged_surf)
-      call set_surf_cvt_table_viewer(mgd_mesh%merged_surf, imark_surf)
+      call set_surf_cvt_table_viewer(mgd_mesh%merged_surf)
 !
        write(*,*) 'deallocate_imark_surf'
       call deallocate_imark_surf
@@ -84,7 +83,7 @@
       use t_grp_data_merged_surfaces
 !
       use renumber_surface_4_viewer
-      use merge_to_viewer_surf_tbl
+      use pickup_surface_4_viewer
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(in) :: merged_surf
