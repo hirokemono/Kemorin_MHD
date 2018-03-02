@@ -25,7 +25,7 @@
       module count_edge_domain_4_viewer
 !
       use m_precision
-      use t_surface_mesh_4_merge
+      use t_viewer_mesh
 !
       implicit    none
 !

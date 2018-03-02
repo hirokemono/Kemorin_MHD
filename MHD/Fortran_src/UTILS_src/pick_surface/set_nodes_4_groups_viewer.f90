@@ -16,7 +16,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use t_surface_mesh_4_merge
+      use t_viewer_mesh
       use const_node_list_4_viewer
 !
       implicit none
@@ -190,7 +190,6 @@
 !
       subroutine allocate_ele_gp_nod_item_tmp(ele_nod_grp)
 !
-      use t_surface_mesh_4_merge
 !
       type(viewer_group_data), intent(in) :: ele_nod_grp
 !
@@ -203,7 +202,6 @@
 !
       subroutine allocate_sf_gp_nod_item_tmp(sf_nod_grp)
 !
-      use t_surface_mesh_4_merge
 !
       type(viewer_group_data), intent(in) :: sf_nod_grp
 !

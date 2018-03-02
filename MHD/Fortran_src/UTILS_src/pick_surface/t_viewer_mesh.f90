@@ -1,5 +1,5 @@
-!>@file   t_surface_mesh_4_merge.f90
-!!@brief  module t_surface_mesh_4_merge
+!>@file   t_viewer_mesh.f90
+!!@brief  module t_viewer_mesh
 !!
 !!@author  H. Matsui
 !!@date Programmed in Dec., 2006
@@ -39,7 +39,7 @@
 !!        type(viewer_group_data), intent(inout) :: group
 !!@endverbatim
 !
-      module t_surface_mesh_4_merge
+      module t_viewer_mesh
 !
       use m_precision
       use m_geometry_constants
@@ -344,4 +344,4 @@
 !
 !------------------------------------------------------------------
 !
-      end module t_surface_mesh_4_merge
+      end module t_viewer_mesh

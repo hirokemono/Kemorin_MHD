@@ -21,8 +21,7 @@
 !
       use m_precision
 !
-      use t_surface_mesh_4_merge
-!
+      use t_viewer_mesh
       use t_sum_hash
 !
       implicit    none
@@ -190,7 +189,6 @@
 !
       subroutine allocate_ele_edge_item_tmp(ele_edge_grp)
 !
-      use t_surface_mesh_4_merge
 !
       type(viewer_group_data), intent(in) :: ele_edge_grp
 !
@@ -202,7 +200,6 @@
 !
       subroutine allocate_sf_edge_item_tmp(sf_edge_grp)
 !
-      use t_surface_mesh_4_merge
 !
       type(viewer_group_data), intent(in)  :: sf_edge_grp
 !
