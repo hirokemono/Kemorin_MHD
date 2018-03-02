@@ -12,7 +12,7 @@
 !
       use m_machine_parameter
       use m_surface_mesh_4_merge
-      use merge_to_viewer_ordering
+      use pickup_node_4_viewer
 !
       implicit none
 !
@@ -28,7 +28,6 @@
 !
       use t_mesh_data_4_merge
       use m_pickup_table_4_viewer
-      use pickup_node_4_viewer
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       type(merged_mesh), intent(inout) :: mgd_mesh
@@ -43,7 +42,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'allocate_nod_cvt_table_viewer'
       call allocate_nod_cvt_table_viewer(mgd_mesh%merged)
-      call set_node_cvt_table_viewer(mgd_mesh%merged, imark_node)
+      call set_node_cvt_table_viewer(mgd_mesh%merged)
 !
       if(iflag_debug .gt. 0) write(*,*) 'deallocate_imark_node'
       call deallocate_imark_node

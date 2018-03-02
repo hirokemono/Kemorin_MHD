@@ -5,14 +5,6 @@
 !
 !!      subroutine allocate_imark_surf(merged_surf)
 !!      subroutine allocate_imark_node(numnod)
-!!      subroutine allocate_ele_edge_item_tmp(ele_edge_grp)
-!!        type(viewer_group_data), intent(in) :: ele_edge_grp
-!!      subroutine allocate_sf_edge_item_tmp(sf_edge_grp)
-!!        type(viewer_group_data), intent(in)  :: sf_edge_grp
-!!      subroutine allocate_sf_cvt_table_viewer(merged_surf)
-!!        type(mesh_geometry), intent(in) :: merged
-!!        type(surface_data), intent(in) :: merged_surf
-!!
 !!      subroutine deallocate_imark_surf
 !!      subroutine deallocate_imark_node
 !
