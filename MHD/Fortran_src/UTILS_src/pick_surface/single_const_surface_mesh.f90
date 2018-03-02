@@ -151,11 +151,12 @@
 !       write(*,*) 's_set_surf_connect_4_viewer'
        call s_set_surf_connect_4_viewer                                 &
      &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp1,                     &
-     &     num_pe_sf, isurf_sf_stack, view_mesh, domain_grps,           &
-     &     view_ele_grps, view_sf_grps)
+     &     mgd_view_mesh1%num_pe_sf, isurf_sf_stack,                    &
+     &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*) 's_set_nodes_4_viewer'
        call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh,            &
-     &     num_pe_sf, inod_sf_stack, view_mesh, view_nod_grps)
+     &     mgd_view_mesh1%num_pe_sf, inod_sf_stack,                     &
+     &     view_mesh, view_nod_grps)
 !
        write(*,*) 'set_surf_domain_id_viewer'
        call set_surf_domain_id_viewer(mgd_mesh%merged_surf, view_mesh)
@@ -165,13 +166,13 @@
 !
        write(*,*)  'construct_edge_4_viewer'
        call construct_edge_4_viewer(surf, edge,                         &
-     &     num_pe_sf, inod_sf_stack, iedge_sf_stack, view_mesh,         &
-     &     domain_grps, view_ele_grps, view_sf_grps)
+     &     mgd_view_mesh1%num_pe_sf, inod_sf_stack, iedge_sf_stack,     &
+     &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
        write(*,*)  's_set_nodes_4_groups_viewer'
        call s_set_nodes_4_groups_viewer                                 &
      &    (surf%nnod_4_surf, edge%nnod_4_edge,                          &
-     &     num_pe_sf, inod_sf_stack, view_mesh, domain_grps,            &
-     &     view_ele_grps, view_sf_grps)
+     &     mgd_view_mesh1%num_pe_sf, inod_sf_stack, view_mesh,          &
+     &     domain_grps, view_ele_grps, view_sf_grps)
 !
       call sel_output_surface_grid(mesh_file%iflag_format,              &
      &    surf%nnod_4_surf, edge%nnod_4_edge)
@@ -198,10 +199,10 @@
 !
 !  set array for number of surface
 !
-      num_pe_sf = num_pe
+      mgd_view_mesh1%num_pe_sf = num_pe
 !
 !       write(*,*) 'allocate_num_mesh_sf'
-      call allocate_num_mesh_sf(num_pe_sf)
+      call allocate_num_mesh_sf(mgd_view_mesh1%num_pe_sf)
 !
 !   set number of node in surface
 !

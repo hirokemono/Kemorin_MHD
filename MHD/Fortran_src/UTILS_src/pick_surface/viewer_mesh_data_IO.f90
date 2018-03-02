@@ -49,10 +49,13 @@
       write(surface_id,'(a)') '!   stack of edge for domain '
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i16)') num_pe_sf
-      write(surface_id,'(8i16)') inod_sf_stack(1:num_pe_sf)
-      write(surface_id,'(8i16)') isurf_sf_stack(1:num_pe_sf)
-      write(surface_id,'(8i16)') iedge_sf_stack(1:num_pe_sf)
+      write(surface_id,'(i16)') mgd_view_mesh1%num_pe_sf
+      write(surface_id,'(8i16)')                                        &
+     &        inod_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+      write(surface_id,'(8i16)')                                        &
+     &        isurf_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+      write(surface_id,'(8i16)')                                        &
+     &        iedge_sf_stack(1:mgd_view_mesh1%num_pe_sf)
 !
       end subroutine write_domain_data_viewer
 !
@@ -64,17 +67,20 @@
       use skip_comment_f
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) num_pe_sf
+      read(tmp_character,*) mgd_view_mesh1%num_pe_sf
 !
-      call allocate_num_mesh_sf(num_pe_sf)
+      call allocate_num_mesh_sf(mgd_view_mesh1%num_pe_sf)
 !
-      read(surface_id,*) inod_sf_stack(1:num_pe_sf)
-      read(surface_id,*) isurf_sf_stack(1:num_pe_sf)
-      read(surface_id,*) iedge_sf_stack(1:num_pe_sf)
+      read(surface_id,*) inod_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+      read(surface_id,*) isurf_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+      read(surface_id,*) iedge_sf_stack(1:mgd_view_mesh1%num_pe_sf)
 !
-      view_mesh%nodpetot_viewer =  inod_sf_stack(num_pe_sf)
-      view_mesh%surfpetot_viewer = isurf_sf_stack(num_pe_sf)
-      view_mesh%edgepetot_viewer = iedge_sf_stack(num_pe_sf)
+      view_mesh%nodpetot_viewer                                         &
+     &      =  inod_sf_stack(mgd_view_mesh1%num_pe_sf)
+      view_mesh%surfpetot_viewer                                        &
+     &      = isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
+      view_mesh%edgepetot_viewer                                        &
+     &      = iedge_sf_stack(mgd_view_mesh1%num_pe_sf)
 !
       end subroutine read_domain_data_viewer
 !

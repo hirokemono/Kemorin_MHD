@@ -58,12 +58,15 @@
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i15,a1)') num_pe_sf, char(0)
+      write(textbuf,'(i15,a1)') mgd_view_mesh1%num_pe_sf, char(0)
       call gz_write_textbuf_w_lf
 !
-      call write_gz_multi_int_8i10(num_pe_sf, inod_sf_stack(1))
-      call write_gz_multi_int_8i10(num_pe_sf, isurf_sf_stack(1))
-      call write_gz_multi_int_8i10(num_pe_sf, iedge_sf_stack(1))
+      call write_gz_multi_int_8i10                                      &
+     &   (mgd_view_mesh1%num_pe_sf, inod_sf_stack(1))
+      call write_gz_multi_int_8i10                                      &
+     &   (mgd_view_mesh1%num_pe_sf, isurf_sf_stack(1))
+      call write_gz_multi_int_8i10                                      &
+     &   (mgd_view_mesh1%num_pe_sf, iedge_sf_stack(1))
 !
       end subroutine write_domain_data_viewer_gz
 !
@@ -73,17 +76,20 @@
 !
       use m_surface_mesh_4_merge
 !
-      call skip_gz_comment_int(num_pe_sf)
+      call skip_gz_comment_int(mgd_view_mesh1%num_pe_sf)
 !
-      call allocate_num_mesh_sf(num_pe_sf)
+      call allocate_num_mesh_sf(mgd_view_mesh1%num_pe_sf)
 !
-      call read_gz_multi_int(num_pe_sf, inod_sf_stack)
-      call read_gz_multi_int(num_pe_sf, isurf_sf_stack)
-      call read_gz_multi_int(num_pe_sf, iedge_sf_stack)
+      call read_gz_multi_int(mgd_view_mesh1%num_pe_sf, inod_sf_stack)
+      call read_gz_multi_int(mgd_view_mesh1%num_pe_sf, isurf_sf_stack)
+      call read_gz_multi_int(mgd_view_mesh1%num_pe_sf, iedge_sf_stack)
 !
-      view_mesh%nodpetot_viewer =  inod_sf_stack(num_pe_sf)
-      view_mesh%surfpetot_viewer = isurf_sf_stack(num_pe_sf)
-      view_mesh%edgepetot_viewer = iedge_sf_stack(num_pe_sf)
+      view_mesh%nodpetot_viewer                                         &
+     &      =  inod_sf_stack(mgd_view_mesh1%num_pe_sf)
+      view_mesh%surfpetot_viewer                                        &
+     &      = isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
+      view_mesh%edgepetot_viewer                                        &
+     &      = iedge_sf_stack(mgd_view_mesh1%num_pe_sf)
 !
       end subroutine read_domain_data_viewer_gz
 !

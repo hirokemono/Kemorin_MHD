@@ -4,19 +4,19 @@
 !      Written by Kemorin
 !
 !      subroutine allocate_num_mesh_sf
-!      subroutine check_edge_connent_viewer(nnod_4_edge)
 !
       module m_surface_mesh_4_merge
 !
       use m_precision
       use m_constants
-      use t_viewer_mesh
+      use t_merged_viewer_mesh
 !
       implicit none
 !
 !
-        integer(kind = kint)  :: num_pe_sf
+      type(merged_viewer_mesh), save :: mgd_view_mesh1
 !
+!mgd_view_mesh1%num_pe_sf
         integer(kind = kint), allocatable :: inod_sf_stack(:)
         integer(kind = kint), allocatable :: iedge_sf_stack(:)
         integer(kind = kint), allocatable :: isurf_sf_stack(:)
@@ -51,24 +51,6 @@
       iedge_sf_stack = 0
 !
       end subroutine allocate_num_mesh_sf
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine check_edge_connent_viewer(nnod_4_edge)
-!
-      integer(kind = kint), intent(in) :: nnod_4_edge
-      integer(kind = kint) :: i
-!
-!
-      write(50,*) 'edgepetot_viewer', view_mesh%edgepetot_viewer
-      write(50,*) 'iedge_sf_stack', iedge_sf_stack
-      write(50,*) 'ie_edge_viewer'
-      do i = 1, view_mesh%edgepetot_viewer
-        write(50,*) i, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
-      end do
-!
-      end subroutine check_edge_connent_viewer
 !
 !------------------------------------------------------------------
 !
