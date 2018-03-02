@@ -33,8 +33,8 @@
       type(merged_mesh), intent(inout) :: mgd_mesh
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'allocate_imark_node'
-      call allocate_imark_node(mgd_mesh%merged%node%numnod)
+      if(iflag_debug .gt. 0) write(*,*) 'allocate_imark_nod_pick_node'
+      call allocate_imark_nod_pick_node(mgd_mesh%merged)
       call mark_used_node_4_viewer(nnod_4_surf, mgd_mesh%merged_grp)
 !
       call count_used_node_4_viewer(mgd_mesh%merge_tbl)
@@ -44,8 +44,7 @@
       call allocate_nod_cvt_table_viewer(mgd_mesh%merged)
       call set_node_cvt_table_viewer(mgd_mesh%merged)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'deallocate_imark_node'
-      call deallocate_imark_node
+      call deallocate_imark_nod_pick_node
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'allocate_nod_position_viewer'

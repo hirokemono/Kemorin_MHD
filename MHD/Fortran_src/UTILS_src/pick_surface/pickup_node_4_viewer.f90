@@ -3,8 +3,10 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
+!!      subroutine allocate_imark_nod_pick_node(merged)
 !!      subroutine allocate_nod_cvt_table_viewer(merged)
 !!        type(mesh_geometry), intent(in) :: merged
+!!      subroutine deallocate_imark_nod_pick_node
 !!      subroutine deallocate_nod_cvt_table_viewer
 !!
 !!      subroutine mark_used_node_4_viewer(nnod_4_surf, merged_grp)
@@ -25,19 +27,32 @@
 !
       use m_precision
       use t_surface_data
-      use m_pickup_table_4_viewer
 !
       implicit none
 !
 !
+      integer(kind = kint), allocatable :: imark_node(:)
       integer(kind = kint), allocatable :: inod_merge2viewer(:)
       integer(kind = kint), allocatable :: inod_viewer2merge(:)
 !
-      private :: inod_merge2viewer, inod_viewer2merge
+      private :: imark_node, inod_merge2viewer, inod_viewer2merge
 !
 !------------------------------------------------------------------
 !
       contains
+!
+!------------------------------------------------------------------
+!
+      subroutine allocate_imark_nod_pick_node(merged)
+!
+      use t_mesh_data
+!
+      type(mesh_geometry), intent(in) :: merged
+!
+      allocate( imark_node(merged%node%numnod) )
+      imark_node = 0
+!
+      end subroutine allocate_imark_nod_pick_node
 !
 !------------------------------------------------------------------
 !
@@ -54,6 +69,14 @@
       inod_viewer2merge = 0
 !
       end subroutine allocate_nod_cvt_table_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_imark_nod_pick_node
+!
+      deallocate( imark_node )
+!
+      end subroutine deallocate_imark_nod_pick_node
 !
 !------------------------------------------------------------------
 !
