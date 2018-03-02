@@ -131,7 +131,8 @@
      &          surftyp_viewer(1:view_mesh%surfpetot_viewer)
 !
       do i = 1, view_mesh%surfpetot_viewer
-       write(surface_id,'(10i16)')  i, ie_sf_viewer(i,1:nnod_4_surf)
+       write(surface_id,'(10i16)')                                      &
+     &        i, view_mesh%ie_sf_viewer(i,1:nnod_4_surf)
       end do
 !
  1003 format(10i16)
@@ -166,10 +167,10 @@
      &   (nnod_4_ele, nnod_4_surf, nnod_4_edge)
       call allocate_quad4_2_linear(nnod_4_ele)
 !
-      call allocate_surf_connect_viewer(nnod_4_surf)
+      call alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
 !
       do i = 1, view_mesh%surfpetot_viewer
-       read(surface_id,*) itmp, ie_sf_viewer(i,1:nnod_4_surf)
+       read(surface_id,*) itmp, view_mesh%ie_sf_viewer(i,1:nnod_4_surf)
       end do
 !
       end subroutine read_surf_connect_viewer

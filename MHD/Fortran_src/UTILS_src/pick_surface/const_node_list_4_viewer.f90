@@ -98,7 +98,7 @@
       if (nnod_4_surf .eq. num_lag_sf) then
         do inum = 1, domain_edge_grp%num_item
           isurf = domain_surf_grp%item_sf(inum)
-          inod = ie_sf_viewer(isurf,num_lag_sf)
+          inod = view_mesh%ie_sf_viewer(isurf,num_lag_sf)
           imark_node(inod) = 1
         end do
       end if
@@ -139,7 +139,7 @@
         ied = ele_surf_grp%istack_sf( (igrp  )*num_pe_sf )
         do inum = 1, domain_edge_grp%num_item
           isurf = abs(ele_surf_grp%item_sf(inum))
-          inod = ie_sf_viewer(isurf,num_lag_sf)
+          inod = view_mesh%ie_sf_viewer(isurf,num_lag_sf)
           imark_node(inod) = 1
         end do
       end if
@@ -180,7 +180,7 @@
         ied = sf_surf_grp%istack_sf( (igrp  )*num_pe_sf )
         do inum = 1, domain_edge_grp%num_item
           isurf = sf_surf_grp%item_sf(inum)
-          inod = ie_sf_viewer(isurf,num_lag_sf)
+          inod = view_mesh%ie_sf_viewer(isurf,num_lag_sf)
           imark_node(inod) = 1
         end do
       end if

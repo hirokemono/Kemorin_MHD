@@ -102,7 +102,7 @@
 !
       do isurf = 1, view_mesh%surfpetot_viewer
         do k1 = 1, nnod_4_surf
-          inod = ie_sf_viewer(isurf,k1)
+          inod = view_mesh%ie_sf_viewer(isurf,k1)
           imark_node(inod) = 1
         end do
       end do
@@ -172,8 +172,8 @@
 !
       do isurf = 1, view_mesh%surfpetot_viewer
         do k1 = 1, nnod_4_surf
-          inod = ie_sf_viewer(isurf,k1)
-          ie_sf_viewer(isurf,k1) = inod_merge2viewer(inod)
+          inod = view_mesh%ie_sf_viewer(isurf,k1)
+          view_mesh%ie_sf_viewer(isurf,k1) = inod_merge2viewer(inod)
         end do
       end do
 !

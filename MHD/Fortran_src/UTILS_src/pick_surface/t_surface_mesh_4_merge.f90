@@ -8,6 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine alloc_nod_position_viewer(view_mesh)
+!!      subroutine alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
+!!      subroutine dealloc_nod_position_viewer(view_mesh)
+!!      subroutine dealloc_surf_connect_viewer(view_mesh)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
 !!      subroutine alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
@@ -92,6 +95,22 @@
 !
 !------------------------------------------------------------------
 !
+      subroutine alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
+!
+      integer(kind = kint), intent(in) :: nnod_4_surf
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+      integer(kind  = kint) :: num
+!
+      num = view_mesh%surfpetot_viewer
+      allocate( view_mesh%ie_sf_viewer(num,nnod_4_surf) )
+      if(num .gt. 0) view_mesh%ie_sf_viewer = 0
+!
+      end subroutine alloc_surf_connect_viewer
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
       subroutine dealloc_nod_position_viewer(view_mesh)
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
@@ -99,6 +118,16 @@
       deallocate( view_mesh%xx_view )
 !
       end subroutine dealloc_nod_position_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_surf_connect_viewer(view_mesh)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+      deallocate( view_mesh%ie_sf_viewer )
+!
+      end subroutine dealloc_surf_connect_viewer
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

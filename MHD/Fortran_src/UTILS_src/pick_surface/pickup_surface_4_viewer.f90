@@ -188,7 +188,7 @@
 !
       do inum = 1, view_mesh%surfpetot_viewer
         isurf = isf_viewer2merge(inum)
-        ie_sf_viewer(inum,1:merged_surf%nnod_4_surf)                    &
+        view_mesh%ie_sf_viewer(inum,1:merged_surf%nnod_4_surf)          &
      &         = merged_surf%ie_surf(isurf,1:merged_surf%nnod_4_surf)
       end do
 !

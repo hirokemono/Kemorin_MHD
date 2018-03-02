@@ -73,7 +73,7 @@
         call const_part_edge_hash_4_sf                                  &
      &     (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,      &
      &      ngrp, nnod_4_surf, nnod_4_edge,                             &
-     &      ie_sf_viewer, ele_surf_grp%item_sf(ist),                    &
+     &      view_mesh%ie_sf_viewer, ele_surf_grp%item_sf(ist),          &
      &      edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,              &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%id_hash,                 &
      &      edge_sf_tbl%iflag_hash)
@@ -146,7 +146,7 @@
         call const_part_edge_hash_4_sf                                  &
      &     (view_mesh%nodpetot_viewer, view_mesh%surfpetot_viewer,      &
      &      ngrp, nnod_4_surf, nnod_4_edge,                             &
-     &      ie_sf_viewer, sf_surf_grp%item_sf(ist),                     &
+     &      view_mesh%ie_sf_viewer, sf_surf_grp%item_sf(ist),           &
      &      edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,              &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%id_hash,                 &
      &      edge_sf_tbl%iflag_hash)
