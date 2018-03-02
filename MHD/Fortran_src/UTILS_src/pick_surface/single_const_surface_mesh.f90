@@ -151,7 +151,7 @@
 !       write(*,*) 's_set_surf_connect_4_viewer'
        call s_set_surf_connect_4_viewer                                 &
      &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp1,                     &
-     &     mgd_view_mesh1%num_pe_sf, isurf_sf_stack,                    &
+     &     mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%isurf_sf_stack,     &
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*) 's_set_nodes_4_viewer'
        call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh,            &
@@ -199,12 +199,8 @@
       type(edge_data), intent(inout) :: edge
       type(surface_data), intent(inout) :: merged_surf
 !
-!  set array for number of surface
 !
-      mgd_view_mesh1%num_pe_sf = num_pe
-!
-!       write(*,*) 'allocate_num_mesh_sf'
-      call allocate_num_mesh_sf(mgd_view_mesh1%num_pe_sf)
+      call alloc_num_mesh_sf(num_pe, mgd_view_mesh1)
 !
 !   set number of node in surface
 !

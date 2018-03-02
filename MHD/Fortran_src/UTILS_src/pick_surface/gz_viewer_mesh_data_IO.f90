@@ -64,7 +64,7 @@
       call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
      &    mgd_view_mesh1%inod_sf_stack(1))
       call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
-     &    isurf_sf_stack(1))
+     &    mgd_view_mesh1%isurf_sf_stack(1))
       call write_gz_multi_int_8i10(mgd_view_mesh1%num_pe_sf,            &
      &    mgd_view_mesh1%iedge_sf_stack(1))
 !
@@ -76,21 +76,24 @@
 !
       use m_surface_mesh_4_merge
 !
-      call skip_gz_comment_int(mgd_view_mesh1%num_pe_sf)
+      integer(kind = kint) :: num_pe
 !
-      call allocate_num_mesh_sf(mgd_view_mesh1%num_pe_sf)
+!
+      call skip_gz_comment_int(num_pe)
+!
+      call alloc_num_mesh_sf(num_pe, mgd_view_mesh1)
 !
       call read_gz_multi_int                                            &
      &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%inod_sf_stack)
       call read_gz_multi_int                                            &
-     &   (mgd_view_mesh1%num_pe_sf, isurf_sf_stack)
+     &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%isurf_sf_stack)
       call read_gz_multi_int                                            &
      &   (mgd_view_mesh1%num_pe_sf, mgd_view_mesh1%iedge_sf_stack)
 !
       view_mesh%nodpetot_viewer                                         &
      &   = mgd_view_mesh1%inod_sf_stack(mgd_view_mesh1%num_pe_sf)
       view_mesh%surfpetot_viewer                                        &
-     &   = isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
+     &   = mgd_view_mesh1%isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
       view_mesh%edgepetot_viewer                                        &
      &   = mgd_view_mesh1%iedge_sf_stack(mgd_view_mesh1%num_pe_sf)
 !

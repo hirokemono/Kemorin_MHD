@@ -3,7 +3,7 @@
 !
 !      Written by Kemorin
 !
-!!      subroutine alloc_num_mesh_sf
+!!      subroutine alloc_num_mesh_sf(num_pe, mgd_view_mesh)
 !!      subroutine dealloc_num_mesh_sf(mgd_view_mesh)
 !!      subroutine check_edge_connent_viewer(nnod_4_edge, mgd_view_mesh)
 !
@@ -44,9 +44,12 @@
       integer(kind = kint), intent(in) :: num_pe
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
-      allocate( mgd_view_mesh%inod_sf_stack(0:num_pe)  )
-      allocate( mgd_view_mesh%isurf_sf_stack(0:num_pe) )
-      allocate( mgd_view_mesh%iedge_sf_stack(0:num_pe) )
+!
+      mgd_view_mesh%num_pe_sf = num_pe
+!
+      allocate(mgd_view_mesh%inod_sf_stack(0:mgd_view_mesh%num_pe_sf) )
+      allocate(mgd_view_mesh%isurf_sf_stack(0:mgd_view_mesh%num_pe_sf))
+      allocate(mgd_view_mesh%iedge_sf_stack(0:mgd_view_mesh%num_pe_sf))
       mgd_view_mesh%inod_sf_stack  = 0
       mgd_view_mesh%isurf_sf_stack = 0
       mgd_view_mesh%iedge_sf_stack = 0
@@ -58,6 +61,7 @@
       subroutine dealloc_num_mesh_sf(mgd_view_mesh)
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
+!
 !
       deallocate( mgd_view_mesh%inod_sf_stack  )
       deallocate( mgd_view_mesh%isurf_sf_stack )

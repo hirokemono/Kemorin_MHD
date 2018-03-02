@@ -42,6 +42,7 @@
 !
       use m_surface_mesh_4_merge
 !
+!
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '! number of domain '
       write(surface_id,'(a)') '!   stack of node for domain '
@@ -53,7 +54,7 @@
       write(surface_id,'(8i16)')                                        &
      &   mgd_view_mesh1%inod_sf_stack(1:mgd_view_mesh1%num_pe_sf)
       write(surface_id,'(8i16)')                                        &
-     &   isurf_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+     &   mgd_view_mesh1%isurf_sf_stack(1:mgd_view_mesh1%num_pe_sf)
       write(surface_id,'(8i16)')                                        &
      &   mgd_view_mesh1%iedge_sf_stack(1:mgd_view_mesh1%num_pe_sf)
 !
@@ -66,22 +67,25 @@
       use m_surface_mesh_4_merge
       use skip_comment_f
 !
-      call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) mgd_view_mesh1%num_pe_sf
+      integer(kind = kint) :: num_pe
 !
-      call allocate_num_mesh_sf(mgd_view_mesh1%num_pe_sf)
+!
+      call skip_comment(tmp_character, surface_id)
+      read(tmp_character,*) num_pe
+!
+      call alloc_num_mesh_sf(num_pe, mgd_view_mesh1)
 !
       read(surface_id,*)                                                &
      &   mgd_view_mesh1%inod_sf_stack(1:mgd_view_mesh1%num_pe_sf)
       read(surface_id,*)                                                &
-     &   isurf_sf_stack(1:mgd_view_mesh1%num_pe_sf)
+     &   mgd_view_mesh1%isurf_sf_stack(1:mgd_view_mesh1%num_pe_sf)
       read(surface_id,*)                                                &
      &   mgd_view_mesh1%iedge_sf_stack(1:mgd_view_mesh1%num_pe_sf)
 !
       view_mesh%nodpetot_viewer                                         &
      &   = mgd_view_mesh1%inod_sf_stack(mgd_view_mesh1%num_pe_sf)
       view_mesh%surfpetot_viewer                                        &
-     &   = isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
+     &   = mgd_view_mesh1%isurf_sf_stack(mgd_view_mesh1%num_pe_sf)
       view_mesh%edgepetot_viewer                                        &
      &   = mgd_view_mesh1%iedge_sf_stack(mgd_view_mesh1%num_pe_sf)
 !
