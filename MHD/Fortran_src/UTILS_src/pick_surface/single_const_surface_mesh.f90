@@ -127,11 +127,9 @@
        call set_overlapped_mesh_and_group                               &
      &    (mesh_file, ele%nnod_4_ele, mgd_mesh)
 !
-!   output grid data
-!
        write(*,*) 'set_source_mesh_parameter'
-       call set_source_mesh_parameter(mgd_mesh%num_pe, ele, surf, edge, &
-     &     mgd_mesh%merged_surf, mgd_view_mesh)
+       call set_source_mesh_parameter                                   &
+     &    (ele, surf, edge, mgd_mesh%merged_surf)
 !
 !  choose surface
 !
@@ -147,6 +145,9 @@
      &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp1)
 !
 !  pickup surface and nodes
+!
+!
+      call alloc_num_mesh_sf(mgd_mesh%num_pe, mgd_view_mesh)
 !
 !       write(*,*) 's_set_surf_connect_4_viewer'
        call s_set_surf_connect_4_viewer                                 &
@@ -187,7 +188,7 @@
 !------------------------------------------------------------------
 !
       subroutine set_source_mesh_parameter                              &
-     &         (num_pe, ele, surf, edge, merged_surf, mgd_view_mesh)
+     &         (ele, surf, edge, merged_surf)
 !
       use m_geometry_constants
       use m_node_quad_2_linear_sf
@@ -197,15 +198,10 @@
       use set_local_id_table_4_1ele
       use set_nnod_4_ele_by_type
 !
-      integer(kind = kint), intent(in) :: num_pe
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
       type(surface_data), intent(inout) :: merged_surf
-      type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
-!
-!
-      call alloc_num_mesh_sf(num_pe, mgd_view_mesh)
 !
 !   set number of node in surface
 !
