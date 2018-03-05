@@ -37,6 +37,7 @@
       private :: find_mesh_format_4_viewer
       private :: set_surf_domain_id_viewer
 !
+!
 !------------------------------------------------------------------
 !
       contains
@@ -55,15 +56,22 @@
       type(edge_data), intent(inout) :: edge
       type(merged_mesh), intent(inout) :: mgd_mesh
 !
+      type(group_data_merged_surf), save :: mgd_sf_grp1
 !
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
       write(*,*) 'find_mesh_format_4_viewer'
       call find_mesh_format_4_viewer(mesh_file)
       write(*,*) 'count_subdomains_4_viewer'
       call count_subdomains_4_viewer(mesh_file, mgd_mesh%num_pe)
+!
+!  set mesh_information
+!
+      call const_merged_mesh_data                                       &
+     &   (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp1)
       write(*,*) 'const_surf_mesh_4_viewer'
       call const_surf_mesh_4_viewer                                     &
-     &   (mesh_file, ele, surf, edge, mgd_mesh, mgd_view_mesh1)
+     &   (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp1,            &
+     &    mgd_view_mesh1)
 !
       end subroutine choose_surface_mesh_sgl
 !
@@ -100,7 +108,8 @@
 !------------------------------------------------------------------
 !
       subroutine const_surf_mesh_4_viewer                               &
-     &         (mesh_file, ele, surf, edge, mgd_mesh, mgd_view_mesh)
+     &         (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp,       &
+     &          mgd_view_mesh)
 !
       use t_merged_viewer_mesh
       use set_merged_geometry
@@ -117,32 +126,9 @@
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
       type(merged_mesh), intent(inout) :: mgd_mesh
+      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
-      type(group_data_merged_surf), save :: mgd_sf_grp1
-!
-!  set mesh_information
-!
-       write(*,*) 'set_overlapped_mesh_and_group'
-       call set_overlapped_mesh_and_group                               &
-     &    (mesh_file, ele%nnod_4_ele, mgd_mesh)
-!
-       write(*,*) 'set_source_mesh_parameter'
-       call set_source_mesh_parameter                                   &
-     &    (ele, surf, edge, mgd_mesh%merged_surf)
-!
-!  choose surface
-!
-       write(*,*) 's_const_merged_surf_data'
-       call s_const_merged_surf_data(mgd_mesh)
-!
-!       write(*,*) 'const_merged_surface_4_ele_grp'
-       call const_merged_surface_4_ele_grp                              &
-     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
-     &     mgd_sf_grp1)
-!       write(*,*) 'const_merged_surface_4_sf_grp'
-       call const_merged_surface_4_sf_grp                               &
-     &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp1)
 !
 !  pickup surface and nodes
 !
@@ -151,7 +137,7 @@
 !
 !       write(*,*) 's_set_surf_connect_4_viewer'
        call s_set_surf_connect_4_viewer                                 &
-     &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp1,                     &
+     &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp,                      &
      &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%isurf_sf_stack,       &
      &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,          &
      &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
@@ -184,6 +170,53 @@
      &    surf%nnod_4_surf, edge%nnod_4_edge, mgd_view_mesh)
 !
       end subroutine const_surf_mesh_4_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine const_merged_mesh_data                                 &
+     &         (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp)
+!
+      use t_merged_viewer_mesh
+      use set_merged_geometry
+      use const_merged_surf_data
+      use const_merged_surf_4_group
+      use set_surf_connect_4_viewer
+      use set_nodes_4_viewer
+      use const_edge_4_viewer
+      use set_nodes_4_groups_viewer
+      use viewer_IO_select_4_zlib
+!
+      type(field_IO_params), intent(in) :: mesh_file
+      type(element_data), intent(inout) :: ele
+      type(surface_data), intent(inout) :: surf
+      type(edge_data), intent(inout) :: edge
+      type(merged_mesh), intent(inout) :: mgd_mesh
+      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+!
+!  set mesh_information
+!
+       write(*,*) 'set_overlapped_mesh_and_group'
+       call set_overlapped_mesh_and_group                               &
+     &    (mesh_file, ele%nnod_4_ele, mgd_mesh)
+!
+       write(*,*) 'set_source_mesh_parameter'
+       call set_source_mesh_parameter                                   &
+     &    (ele, surf, edge, mgd_mesh%merged_surf)
+!
+!  choose surface
+!
+       write(*,*) 's_const_merged_surf_data'
+       call s_const_merged_surf_data(mgd_mesh)
+!
+!       write(*,*) 'const_merged_surface_4_ele_grp'
+       call const_merged_surface_4_ele_grp                              &
+     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
+     &     mgd_sf_grp)
+!       write(*,*) 'const_merged_surface_4_sf_grp'
+       call const_merged_surface_4_sf_grp                               &
+     &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp)
+!
+      end subroutine const_merged_mesh_data
 !
 !------------------------------------------------------------------
 !

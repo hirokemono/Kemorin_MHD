@@ -60,6 +60,7 @@
       type(edge_data), intent(inout) :: edge
       type(merged_mesh), intent(inout) :: mgd_mesh
 !
+      type(group_data_merged_surf), save :: mgd_sf_grp1
 !
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
 !
@@ -82,9 +83,15 @@
       call const_surf_mesh_4_viewer_para
 !
       if(my_rank .eq. 0) then
+!
+!  set mesh_information
+!
+        call const_merged_mesh_data                                     &
+     &   (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp1)
         write(*,*) 'const_surf_mesh_4_viewer'
         call const_surf_mesh_4_viewer                                   &
-     &     (mesh_file, ele, surf, edge, mgd_mesh, mgd_view_mesh1)
+     &     (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp1,          &
+     &      mgd_view_mesh1)
       end if
       call calypso_mpi_barrier
 !
