@@ -28,7 +28,6 @@
       type(element_data), save :: ele_pick
       type(surface_data), save :: surf_pick
       type(edge_data), save :: edge_pick
-      type(merged_mesh), save :: mgd_mesh_ps
 !
 !
       call calypso_MPI_init
@@ -49,7 +48,7 @@
 !
       pick_mesh_file%file_prefix = file_head
       call choose_surface_mesh_para                                     &
-     &   (pick_mesh_file, ele_pick, surf_pick, edge_pick, mgd_mesh_ps)
+     &   (pick_mesh_file, ele_pick, surf_pick, edge_pick)
 !
       call calypso_MPI_finalize
       stop ' //// program normally finished //// '

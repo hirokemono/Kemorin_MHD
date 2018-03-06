@@ -31,7 +31,6 @@
       type(mesh_geometry), save :: org_mesh
       type(mesh_groups), save :: org_group
       type(element_geometry), save :: org_ele_mesh
-      type(merged_mesh), save :: mgd_mesh_pt
 !
       type(near_mesh), save :: included_ele
 !
@@ -74,8 +73,7 @@
 !
       write(*,*) 'choose_surface_mesh_sgl'
       call choose_surface_mesh_sgl(distribute_mesh_file,                &
-     &    org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge,           &
-     &    mgd_mesh_pt)
+     &    org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge)
 !
       stop ' * Partitioning finished'
 !

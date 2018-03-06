@@ -28,7 +28,6 @@
       type(element_data), save :: ele_viewer
 !
       type(element_geometry), save :: ele_mesh1
-      type(merged_mesh), save :: mgd_mesh_vw
 !
 !
       icount = iargc_kemo()
@@ -41,8 +40,7 @@
 !
       mesh_file_viewer%file_prefix = file_head
       call choose_surface_mesh_sgl                                      &
-     &   (mesh_file_viewer, ele_viewer, ele_mesh1%surf, ele_mesh1%edge, &
-     &    mgd_mesh_vw)
+     &   (mesh_file_viewer, ele_viewer, ele_mesh1%surf, ele_mesh1%edge)
 !
       write(*,*) 'will you draw mesh? (y/n)'
       read(*,*) chara_flag

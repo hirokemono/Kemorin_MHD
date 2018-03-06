@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine choose_surface_mesh_para                             &
-!!     &         (mesh_file, ele, surf, edge, mgd_mesh)
+!!     &         (mesh_file, ele, surf, edge)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data), intent(inout) :: edge
-!!        type(merged_mesh), intent(inout) :: mgd_mesh
 !!@endverbatim
 !
       module parallel_const_surface_mesh
@@ -24,7 +23,6 @@
 !
       use m_machine_parameter
       use m_file_format_switch
-      use m_surface_mesh_4_merge
 !
       use t_geometry_data
       use t_surface_data
@@ -32,6 +30,7 @@
       use t_file_IO_parameter
       use t_mesh_data_4_merge
       use t_grp_data_merged_surfaces
+      use t_merged_viewer_mesh
 !
       implicit none
 !
@@ -46,7 +45,7 @@
 !------------------------------------------------------------------
 !
       subroutine choose_surface_mesh_para                               &
-     &         (mesh_file, ele, surf, edge, mgd_mesh)
+     &         (mesh_file, ele, surf, edge)
 !
       use find_mesh_file_format
       use mpi_load_mesh_data
@@ -58,9 +57,10 @@
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
-      type(merged_mesh), intent(inout) :: mgd_mesh
 !
+      type(merged_mesh), save :: mgd_mesh1
       type(group_data_merged_surf), save :: mgd_sf_grp1
+      type(merged_viewer_mesh), save :: mgd_view_mesh1
 !
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
 !
@@ -79,7 +79,7 @@
       call FEM_mesh_init_with_IO(izero, mesh_file,                      &
      &    mesh_p, group_p, ele_mesh_p)
 !
-      mgd_mesh%num_pe = nprocs
+      mgd_mesh1%num_pe = nprocs
       call const_surf_mesh_4_viewer_para
 !
       if(my_rank .eq. 0) then
@@ -87,10 +87,10 @@
 !  set mesh_information
 !
         call const_merged_mesh_data                                     &
-     &   (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp1)
+     &   (mesh_file, ele, surf, edge, mgd_mesh1, mgd_sf_grp1)
         write(*,*) 'const_surf_mesh_4_viewer'
         call const_surf_mesh_4_viewer                                   &
-     &     (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp1,          &
+     &     (mesh_file, surf, edge, mgd_mesh1, mgd_sf_grp1,              &
      &      mgd_view_mesh1)
       end if
       call calypso_mpi_barrier

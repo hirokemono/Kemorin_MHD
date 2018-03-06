@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine choose_surface_mesh_sgl                              &
-!!     &         (mesh_file, ele, surf, edge, mgd_mesh)
+!!     &         (mesh_file, ele, surf, edge)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data), intent(inout) :: edge
-!!        type(merged_mesh), intent(inout) :: mgd_mesh
 !!@endverbatim
 !
       module single_const_surface_mesh
@@ -31,6 +30,7 @@
       use t_mesh_data_4_merge
       use t_viewer_mesh
       use t_grp_data_merged_surfaces
+      use t_merged_viewer_mesh
 !
       implicit none
 !
@@ -45,32 +45,33 @@
 !------------------------------------------------------------------
 !
       subroutine choose_surface_mesh_sgl                                &
-     &         (mesh_file, ele, surf, edge, mgd_mesh)
+     &         (mesh_file, ele, surf, edge)
 !
-      use m_surface_mesh_4_merge
       use find_mesh_file_format
 !
       type(field_IO_params), intent(inout) :: mesh_file
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
-      type(merged_mesh), intent(inout) :: mgd_mesh
 !
+      type(merged_mesh), save :: mgd_mesh1
       type(group_data_merged_surf), save :: mgd_sf_grp1
+      type(merged_viewer_mesh), save :: mgd_view_mesh1
+!
 !
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
       write(*,*) 'find_mesh_format_4_viewer'
       call find_mesh_format_4_viewer(mesh_file)
       write(*,*) 'count_subdomains_4_viewer'
-      call count_subdomains_4_viewer(mesh_file, mgd_mesh%num_pe)
+      call count_subdomains_4_viewer(mesh_file, mgd_mesh1%num_pe)
 !
 !  set mesh_information
 !
       call const_merged_mesh_data                                       &
-     &   (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp1)
+     &   (mesh_file, ele, surf, edge, mgd_mesh1, mgd_sf_grp1)
       write(*,*) 'const_surf_mesh_4_viewer'
       call const_surf_mesh_4_viewer                                     &
-     &   (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp1,            &
+     &   (mesh_file, surf, edge, mgd_mesh1, mgd_sf_grp1,                &
      &    mgd_view_mesh1)
 !
       end subroutine choose_surface_mesh_sgl
@@ -108,10 +109,9 @@
 !------------------------------------------------------------------
 !
       subroutine const_surf_mesh_4_viewer                               &
-     &         (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp,       &
+     &         (mesh_file, surf, edge, mgd_mesh, mgd_sf_grp,            &
      &          mgd_view_mesh)
 !
-      use t_merged_viewer_mesh
       use set_merged_geometry
       use const_merged_surf_data
       use const_merged_surf_4_group
@@ -122,7 +122,6 @@
       use viewer_IO_select_4_zlib
 !
       type(field_IO_params), intent(in) :: mesh_file
-      type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
       type(merged_mesh), intent(inout) :: mgd_mesh
