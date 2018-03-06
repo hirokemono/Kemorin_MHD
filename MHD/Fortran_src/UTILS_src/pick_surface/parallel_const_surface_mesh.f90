@@ -62,6 +62,10 @@
       type(group_data_merged_surf), save :: mgd_sf_grp1
       type(merged_viewer_mesh), save :: mgd_view_mesh1
 !
+      type(merged_mesh), save :: mgd_mesh_p
+      type(group_data_merged_surf), save :: mgd_sf_grp_p
+!
+!
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
 !
       if(my_rank .eq. 0) then
@@ -79,13 +83,15 @@
       call FEM_mesh_init_with_IO(izero, mesh_file,                      &
      &    mesh_p, group_p, ele_mesh_p)
 !
-      mgd_mesh1%num_pe = nprocs
-      call const_surf_mesh_4_viewer_para
+      mgd_mesh_p%num_pe = ione
+      call const_merged_mesh_para                                       &
+     &   (mesh_file, ele, surf, edge, mgd_mesh_p, mgd_sf_grp_p)
 !
       if(my_rank .eq. 0) then
 !
 !  set mesh_information
 !
+        mgd_mesh1%num_pe = nprocs
         call const_merged_mesh_data                                     &
      &   (mesh_file, ele, surf, edge, mgd_mesh1, mgd_sf_grp1)
         write(*,*) 'const_surf_mesh_4_viewer'
@@ -99,12 +105,45 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine const_surf_mesh_4_viewer_para
+      subroutine const_merged_mesh_para                                 &
+     &         (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp)
+!
+      use load_mesh_data
+      use set_group_types_4_IO
+      use count_number_with_overlap
+      use set_merged_geometry
+!
+      type(field_IO_params), intent(in) :: mesh_file
+      type(element_data), intent(inout) :: ele
+      type(surface_data), intent(inout) :: surf
+      type(edge_data), intent(inout) :: edge
+      type(merged_mesh), intent(inout) :: mgd_mesh
+      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
 !
 !
-      write(*,*) 'numsurf_iso', ele_mesh_p%surf%numsurf_iso
+!       write(*,*) 'alloc_number_of_mesh'
+      call alloc_number_of_mesh(mgd_mesh)
+      call alloc_subdomain_groups(mgd_mesh)
 !
-      end subroutine const_surf_mesh_4_viewer_para
+      call set_mesh_geometry_data(mesh_p,                               &
+     &    mgd_mesh%subdomain(1)%nod_comm, mgd_mesh%subdomain(1)%node,   &
+     &    mgd_mesh%subdomain(1)%ele)
+      call set_gruop_stracture                                          &
+     &   (group_p%nod_grp, mgd_mesh%sub_nod_grp(1))
+      call set_gruop_stracture                                          &
+     &   (group_p%ele_grp, mgd_mesh%sub_ele_grp(1))
+      call set_surf_grp_stracture                                       &
+     &   (group_p%surf_grp, mgd_mesh%sub_surf_grp(1))
+!
+      call count_num_overlap_geom_type                                  &
+     &   (mgd_mesh%num_pe, mgd_mesh%subdomain, mgd_mesh%merge_tbl)
+      call count_num_geometry_w_overlap                                 &
+     &   (mgd_mesh%num_pe, mgd_mesh%subdomain, mgd_mesh%merge_tbl,      &
+     &    mgd_mesh%merged)
+!
+      call count_overlapped_mesh_groups(mgd_mesh)
+!
+      end subroutine const_merged_mesh_para
 !
 !------------------------------------------------------------------
 !

@@ -175,7 +175,6 @@
       subroutine const_merged_mesh_data                                 &
      &         (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp)
 !
-      use t_merged_viewer_mesh
       use set_merged_geometry
       use const_merged_surf_data
       use const_merged_surf_4_group
