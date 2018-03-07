@@ -35,8 +35,6 @@
       implicit none
 !
       private :: find_mesh_format_4_viewer
-      private :: set_surf_domain_id_viewer
-!
 !
 !------------------------------------------------------------------
 !
