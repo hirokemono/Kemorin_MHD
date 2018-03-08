@@ -47,6 +47,7 @@
       subroutine choose_surface_mesh_para                               &
      &         (mesh_file, ele, surf, edge)
 !
+      use m_node_quad_2_linear_sf
       use find_mesh_file_format
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
@@ -62,6 +63,9 @@
       type(group_data_merged_surf), save :: mgd_sf_grp1
       type(merged_viewer_mesh), save :: mgd_view_mesh1
 !
+      type(element_data), save :: ele_p
+      type(surface_data), save :: surf_p
+      type(edge_data), save :: edge_p
       type(merged_mesh), save :: mgd_mesh_p
       type(group_data_merged_surf), save :: mgd_sf_grp_p
 !
@@ -76,16 +80,10 @@
       call MPI_BCAST(mesh_file%iflag_format, ione,                      &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_file, nprocs, mesh_p, group_p,           &
-     &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge)
-      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_init_with_IO'
-      call FEM_mesh_init_with_IO(izero, mesh_file,                      &
-     &    mesh_p, group_p, ele_mesh_p)
-!
-      mgd_mesh_p%num_pe = ione
       call const_merged_mesh_para                                       &
-     &   (mesh_file, ele, surf, edge, mgd_mesh_p, mgd_sf_grp_p)
+     &   (mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p)
+!
+      call deallocate_quad4_2_linear
 !
       if(my_rank .eq. 0) then
 !
@@ -108,10 +106,15 @@
       subroutine const_merged_mesh_para                                 &
      &         (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp)
 !
+      use t_file_IO_parameter
       use load_mesh_data
       use set_group_types_4_IO
       use count_number_with_overlap
       use set_merged_geometry
+      use mesh_MPI_IO_select
+      use single_const_surface_mesh
+      use const_merged_surf_data
+      use const_merged_surf_4_group
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(element_data), intent(inout) :: ele
@@ -120,20 +123,24 @@
       type(merged_mesh), intent(inout) :: mgd_mesh
       type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
 !
+      type(mesh_data) :: fem_IO_p
 !
-!       write(*,*) 'alloc_number_of_mesh'
+!
+      mgd_mesh%num_pe = ione
       call alloc_number_of_mesh(mgd_mesh)
       call alloc_subdomain_groups(mgd_mesh)
 !
-      call set_mesh_geometry_data(mesh_p,                               &
+      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+      call sel_mpi_read_mesh(mesh_file, fem_IO_p)
+!
+      call set_mesh_geometry_data(fem_IO_p%mesh,                        &
      &    mgd_mesh%subdomain(1)%nod_comm, mgd_mesh%subdomain(1)%node,   &
      &    mgd_mesh%subdomain(1)%ele)
-      call set_gruop_stracture                                          &
-     &   (group_p%nod_grp, mgd_mesh%sub_nod_grp(1))
-      call set_gruop_stracture                                          &
-     &   (group_p%ele_grp, mgd_mesh%sub_ele_grp(1))
-      call set_surf_grp_stracture                                       &
-     &   (group_p%surf_grp, mgd_mesh%sub_surf_grp(1))
+      call set_grp_data_from_IO(fem_IO_p%group,                         &
+     &    mgd_mesh%sub_nod_grp(1), mgd_mesh%sub_ele_grp(1),             &
+     &    mgd_mesh%sub_surf_grp(1))
+      call dealloc_groups_data(fem_IO_p%group)
+      ele%nnod_4_ele = fem_IO_p%mesh%ele%nnod_4_ele
 !
       call count_num_overlap_geom_type                                  &
      &   (mgd_mesh%num_pe, mgd_mesh%subdomain, mgd_mesh%merge_tbl)
@@ -142,6 +149,23 @@
      &    mgd_mesh%merged)
 !
       call count_overlapped_mesh_groups(mgd_mesh)
+!
+!
+       write(*,*) 'set_source_mesh_parameter'
+       call set_source_mesh_parameter                                   &
+     &    (ele, surf, edge, mgd_mesh%merged_surf)
+!
+       write(*,*) 's_const_merged_surf_data'
+       call s_const_merged_surf_data(mgd_mesh)
+!
+       write(*,*) 'const_merged_surface_4_ele_grp'
+       call const_merged_surface_4_ele_grp                              &
+     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
+     &     mgd_sf_grp)
+       write(*,*) 'const_merged_surface_4_sf_grp'
+       call const_merged_surface_4_sf_grp                               &
+     &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp)
+!
 !
       end subroutine const_merged_mesh_para
 !
