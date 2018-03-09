@@ -34,10 +34,6 @@
 !
       implicit none
 !
-      type(mesh_geometry), save, private :: mesh_p
-      type(mesh_groups), save, private ::   group_p
-      type(element_geometry), save, private :: ele_mesh_p
-!
 !------------------------------------------------------------------
 !
       contains
@@ -53,6 +49,7 @@
       use parallel_FEM_mesh_init
       use single_const_surface_mesh
       use const_surface_data
+      use set_parallel_file_name
 !
       type(field_IO_params), intent(inout) :: mesh_file
       type(element_data), intent(inout) :: ele
@@ -68,6 +65,10 @@
       type(edge_data), save :: edge_p
       type(merged_mesh), save :: mgd_mesh_p
       type(group_data_merged_surf), save :: mgd_sf_grp_p
+      type(merged_viewer_mesh), save :: mgd_view_mesh_p
+!
+      character(len=kchara) :: fhead_tmp
+      integer(kind = kint) :: i
 !
 !
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
@@ -80,24 +81,22 @@
       call MPI_BCAST(mesh_file%iflag_format, ione,                      &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
+      fhead_tmp = mesh_file%file_prefix
       call const_merged_mesh_para                                       &
      &   (mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p)
 !
+      call add_int_suffix(my_rank, fhead_tmp,                           &
+     &    mgd_view_mesh_p%surface_file_head)
+      call const_surf_mesh_4_viewer                                     &
+     &   (mesh_file, surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p,          &
+     &    mgd_view_mesh_p)
+!
+!
+      call collect_surf_mesh_4_viewer                                   &
+     &   (mesh_file, surf_p, edge_p, mgd_view_mesh_p, mgd_view_mesh1)
+!
+!
       call deallocate_quad4_2_linear
-!
-      if(my_rank .eq. 0) then
-!
-!  set mesh_information
-!
-        mgd_mesh1%num_pe = nprocs
-        call const_merged_mesh_data                                     &
-     &   (mesh_file, ele, surf, edge, mgd_mesh1, mgd_sf_grp1)
-        write(*,*) 'const_surf_mesh_4_viewer'
-        call const_surf_mesh_4_viewer                                   &
-     &     (mesh_file, surf, edge, mgd_mesh1, mgd_sf_grp1,              &
-     &      mgd_view_mesh1)
-      end if
-      call calypso_mpi_barrier
 !
       end subroutine choose_surface_mesh_para
 !
@@ -168,6 +167,82 @@
 !
 !
       end subroutine const_merged_mesh_para
+!
+!------------------------------------------------------------------
+!
+      subroutine collect_surf_mesh_4_viewer                             &
+     &         (mesh_file,  surf, edge, mgd_v_mesh_p, mgd_view_mesh)
+!
+      use set_merged_geometry
+      use const_merged_surf_data
+      use const_merged_surf_4_group
+      use set_surf_connect_4_viewer
+      use set_nodes_4_viewer
+      use const_edge_4_viewer
+      use set_nodes_4_groups_viewer
+      use viewer_IO_select_4_zlib
+      use const_global_element_ids
+!
+      type(field_IO_params), intent(in) :: mesh_file
+      type(surface_data), intent(inout) :: surf
+      type(edge_data), intent(inout) :: edge
+      type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p
+      type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
+!
+!
+!  pickup surface and nodes
+!
+!
+      call alloc_num_mesh_sf(nprocs, mgd_view_mesh)
+!
+!      call count_number_of_node_stack(mgd_v_mesh_p%inod_sf_stack(1),    &
+!    &     mgd_view_mesh%inod_sf_stack)
+!      call count_number_of_node_stack(mgd_v_mesh_p%isurf_sf_stack(1),   &
+!    &     mgd_view_mesh%isurf_sf_stack)
+!      call count_number_of_node_stack(mgd_v_mesh_p%iedge_sf_stack(1),   &
+!    &     mgd_view_mesh%iedge_sf_stack)
+!
+      if(my_rank .eq. 0) return
+!
+!      write(*,*) 'mgd_view_mesh%inod_sf_stack', mgd_view_mesh%inod_sf_stack
+!      write(*,*) 'mgd_view_mesh%isurf_sf_stack', mgd_view_mesh%isurf_sf_stack
+!      write(*,*) 'mgd_view_mesh%iedge_sf_stack', mgd_view_mesh%iedge_sf_stack
+!
+!       write(*,*) 's_set_surf_connect_4_viewer'
+!       call s_set_surf_connect_4_viewer                                &
+!     &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp,                     &
+!     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%isurf_sf_stack,      &
+!     &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,         &
+!     &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
+!       write(*,*) 's_set_nodes_4_viewer'
+!       call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh,           &
+!     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack,       &
+!     &     mgd_view_mesh%view_mesh, mgd_view_mesh%view_nod_grps)
+!
+!       write(*,*) 'set_surf_domain_id_viewer'
+!       call set_surf_domain_id_viewer                                  &
+!     &    (mgd_mesh%merged_surf, mgd_view_mesh%view_mesh)
+!
+!
+!       call dealloc_array_4_merge(mgd_mesh)
+!
+!       write(*,*)  'construct_edge_4_viewer'
+!       call construct_edge_4_viewer(surf, edge,                        &
+!     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack,       &
+!     &     mgd_view_mesh%iedge_sf_stack, mgd_view_mesh%view_mesh,      &
+!     &     mgd_view_mesh%domain_grps, mgd_view_mesh%view_ele_grps,     &
+!     &     mgd_view_mesh%view_sf_grps)
+!       write(*,*)  's_set_nodes_4_groups_viewer'
+!       call s_set_nodes_4_groups_viewer                                &
+!     &    (surf%nnod_4_surf, edge%nnod_4_edge,                         &
+!     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack,       &
+!     &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,         &
+!     &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
+!
+      call sel_output_surface_grid(mesh_file%iflag_format,              &
+     &    surf%nnod_4_surf, edge%nnod_4_edge, mgd_view_mesh)
+!
+      end subroutine collect_surf_mesh_4_viewer
 !
 !------------------------------------------------------------------
 !
