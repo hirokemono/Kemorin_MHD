@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Jan., 2007
 !
-!!      subroutine count_nedge_4_each_domain                            &
-!!     &         (num_pe, inod_sf_stack, iedge_sf_stack, view_mesh)
+!!      subroutine count_nedge_4_each_domain(num_pe, inod_sf_stack,     &
+!!     &          nedge_sf, iedge_sf_stack, view_mesh)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!      subroutine count_nedge_domain_4_domain                          &
 !!     &        s (num_pe, inod_sf_stack, view_mesh, domain_edge_grp)
@@ -35,13 +35,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_nedge_4_each_domain                              &
-     &         (num_pe, inod_sf_stack, iedge_sf_stack, view_mesh)
+      subroutine count_nedge_4_each_domain(num_pe, inod_sf_stack,       &
+     &          nedge_sf, iedge_sf_stack, view_mesh)
 !
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
       integer(kind = kint), intent(in) :: num_pe
       integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
+      integer(kind = kint), intent(inout) :: nedge_sf(num_pe)
       integer(kind = kint), intent(inout) :: iedge_sf_stack(0:num_pe)
 !
       integer(kind = kint) :: ip, iref, ist, iedge, inod
@@ -55,6 +56,7 @@
           if ( inod .gt. iref ) exit
           iedge_sf_stack(ip:num_pe) = iedge
         end do
+        nedge_sf(ip) = iedge_sf_stack(ip) - iedge_sf_stack(ip-1)
       end do
 !
       end subroutine count_nedge_4_each_domain

@@ -17,7 +17,7 @@
 !!        type(surface_data), intent(in) :: merged_surf
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !!      subroutine count_used_surface_4_viewer                          &
-!!     &         (num_pe, istack_surfpe, isurf_sf_stack, view_mesh)
+!!     &         (num_pe, istack_surfpe, nsurf_sf)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
 !!      subroutine set_surf_cvt_table_viewer(merged_surf)
@@ -134,25 +134,23 @@
 ! ------------------------------------------------------
 !
       subroutine count_used_surface_4_viewer                            &
-     &         (num_pe, istack_surfpe, isurf_sf_stack, view_mesh)
+     &         (num_pe, istack_surfpe, nsurf_sf)
 !
       integer(kind = kint), intent(in) :: num_pe
       integer(kind = kint), intent(in) :: istack_surfpe(0:num_pe)
 !
-      integer(kind = kint), intent(inout) :: isurf_sf_stack(0:num_pe)
-      type(viewer_mesh_data), intent(inout) :: view_mesh
+      integer(kind = kint), intent(inout) :: nsurf_sf(num_pe)
 !
       integer(kind = kint) :: ip, ist, ied, isurf
 !
       do ip = 1, num_pe
         ist = istack_surfpe(ip-1) + 1
         ied = istack_surfpe(ip)
-        isurf_sf_stack(ip) = isurf_sf_stack(ip-1)
+        nsurf_sf(ip) = 0
         do isurf = ist, ied
-          isurf_sf_stack(ip) = isurf_sf_stack(ip) + imark_surf(isurf)
+          nsurf_sf(ip) = nsurf_sf(ip) + imark_surf(isurf)
         end do
       end do
-      view_mesh%surfpetot_viewer = isurf_sf_stack(num_pe)
 !
       end subroutine count_used_surface_4_viewer
 !

@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Jan., 2007
 !
-!!      subroutine construct_edge_4_viewer(surf, edge,                  &
-!!     &          num_pe, inod_sf_stack, iedge_sf_stack, view_mesh,     &
+!!      subroutine construct_edge_4_viewer(surf, edge, num_pe,          &
+!!     &          inod_sf_stack, nedge_sf, iedge_sf_stack, view_mesh,   &
 !!     &          domain_grps, view_ele_grps, view_sf_grps)
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
@@ -35,8 +35,8 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine construct_edge_4_viewer(surf, edge,                    &
-     &          num_pe, inod_sf_stack, iedge_sf_stack, view_mesh,       &
+      subroutine construct_edge_4_viewer(surf, edge, num_pe,            &
+     &          inod_sf_stack, nedge_sf, iedge_sf_stack, view_mesh,     &
      &          domain_grps, view_ele_grps, view_sf_grps)
 !
       use t_surface_data
@@ -49,6 +49,7 @@
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
 !
+      integer(kind = kint), intent(inout) :: nedge_sf(num_pe)
       integer(kind = kint), intent(inout) :: iedge_sf_stack(0:num_pe)
       type(viewer_mesh_data), intent(inout) :: view_mesh
       type(viewer_surface_groups), intent(inout) :: domain_grps
@@ -79,7 +80,7 @@
 !
          write(*,*)  'count_nedge_4_each_domain'
       call count_nedge_4_each_domain                                    &
-     &   (num_pe, inod_sf_stack, iedge_sf_stack, view_mesh)
+     &   (num_pe, inod_sf_stack, nedge_sf, iedge_sf_stack, view_mesh)
          write(*,*)  'count_nedge_domain_4_domain'
       call count_nedge_domain_4_domain(num_pe, inod_sf_stack,           &
      &    view_mesh, domain_grps%edge_grp)

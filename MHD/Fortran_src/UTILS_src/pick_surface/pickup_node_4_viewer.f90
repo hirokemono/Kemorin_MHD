@@ -13,10 +13,8 @@
 !!     &         (nnod_4_surf, merged_grp, view_mesh)
 !!        type(mesh_groups), intent(in)  :: merged_grp
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
-!!      subroutine count_used_node_4_viewer                             &
-!!     &         (merge_tbl, num_pe, inod_sf_stack, view_mesh)
+!!      subroutine count_used_node_4_viewer(merge_tbl, num_pe, nnod_sf)
 !!        type(merged_stacks), intent(in) :: merge_tbl
-!!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
 !!      subroutine set_node_cvt_table_viewer(merged, imark_node)
 !!        type(mesh_geometry), intent(in) :: merged
@@ -124,28 +122,25 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_used_node_4_viewer                               &
-     &         (merge_tbl, num_pe, inod_sf_stack, view_mesh)
+      subroutine count_used_node_4_viewer(merge_tbl, num_pe, nnod_sf)
 !
       use t_merged_geometry_data
 !
       type(merged_stacks), intent(in) :: merge_tbl
       integer(kind = kint), intent(in) :: num_pe
 !
-      integer(kind = kint), intent(inout) :: inod_sf_stack(0:num_pe)
-      type(viewer_mesh_data), intent(inout) :: view_mesh
+      integer(kind = kint), intent(inout) :: nnod_sf(num_pe)
 !
       integer(kind = kint) :: ip, ist, ied, inod
 !
       do ip = 1, num_pe
         ist = merge_tbl%istack_nod(ip-1) + 1
         ied = merge_tbl%istack_nod(ip)
-        inod_sf_stack(ip) = inod_sf_stack(ip-1)
+        nnod_sf(ip) = 0
         do inod = ist, ied
-          inod_sf_stack(ip) = inod_sf_stack(ip) + imark_node(inod)
+          nnod_sf(ip) = nnod_sf(ip) + imark_node(inod)
         end do
       end do
-      view_mesh%nodpetot_viewer = inod_sf_stack(num_pe)
 !
       end subroutine count_used_node_4_viewer
 !

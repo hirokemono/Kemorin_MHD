@@ -3,8 +3,8 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine s_set_nodes_4_viewer(nnod_4_surf, mgd_mesh,          &
-!!     &          num_pe, inod_sf_stack, view_mesh, view_nod_grps)
+!!      subroutine s_set_nodes_4_viewer(nnod_4_surf, mgd_mesh, num_pe,  &
+!!     &          nnod_sf, inod_sf_stack, view_mesh, view_nod_grps)
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!        type(viewer_node_groups), intent(inout) :: view_nod_grps
@@ -27,14 +27,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_set_nodes_4_viewer(nnod_4_surf, mgd_mesh,            &
-     &          num_pe, inod_sf_stack, view_mesh, view_nod_grps)
+      subroutine s_set_nodes_4_viewer(nnod_4_surf, mgd_mesh, num_pe,    &
+     &          nnod_sf, inod_sf_stack, view_mesh, view_nod_grps)
 !
       use t_mesh_data_4_merge
+      use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: num_pe
 !
+      integer(kind = kint), intent(inout) :: nnod_sf(num_pe)
       integer(kind = kint), intent(inout) :: inod_sf_stack(0:num_pe)
       type(merged_mesh), intent(inout) :: mgd_mesh
       type(viewer_mesh_data), intent(inout) :: view_mesh
@@ -47,7 +49,9 @@
      &   (nnod_4_surf, mgd_mesh%merged_grp, view_mesh)
 !
       call count_used_node_4_viewer                                     &
-     &   (mgd_mesh%merge_tbl, num_pe, inod_sf_stack, view_mesh)
+     &   (mgd_mesh%merge_tbl, num_pe, nnod_sf)
+      call s_cal_total_and_stacks(num_pe, nnod_sf, izero,               &
+     &    inod_sf_stack, view_mesh%nodpetot_viewer)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'allocate_nod_cvt_table_viewer'

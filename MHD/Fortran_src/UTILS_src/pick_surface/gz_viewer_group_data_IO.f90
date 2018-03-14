@@ -27,6 +27,7 @@
 !
       use t_viewer_mesh
       use skip_gz_comment
+      use m_viewer_mesh_labels
 !
       implicit none
 !
@@ -44,12 +45,7 @@
       type(viewer_surface_groups), intent(in) :: domain_grps
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &        '! 3. node ID for domain boundary', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
+      textbuf = hd_domain_nod_grp() // char(0)
       call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i16,a1)') domain_grps%node_grp%num_item, char(0)
@@ -60,12 +56,7 @@
       call write_gz_multi_int_8i10(domain_grps%node_grp%num_item,       &
      &    domain_grps%node_grp%item_sf)
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &        '! 3.1 surface ID for domain boundary', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
+      textbuf = hd_domain_surf_grp() // char(0)
       call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i16,a1)') domain_grps%surf_grp%num_item, char(0)
@@ -76,12 +67,7 @@
       call write_gz_multi_int_8i10(domain_grps%surf_grp%num_item,       &
      &    domain_grps%surf_grp%item_sf)
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &       '! 3.2 edge ID for domain boundary', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
+      textbuf = hd_domain_edge_grp() // char(0)
       call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i16,a1)') domain_grps%edge_grp%num_item, char(0)
@@ -192,10 +178,8 @@
 !
       textbuf = hd_fem_elegrp() // char(0)
       call gz_write_textbuf_no_lf
-      write(textbuf,'(a,a1)') '! 4.2.1 element data', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_ele_nod_grp() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(2i16,a1)') view_ele_grps%num_grp,                 &
      &     view_ele_grps%surf_grp%num_item, char(0)
@@ -205,12 +189,7 @@
      &    view_ele_grps%grp_name, view_ele_grps%surf_grp)
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4.2.2 node data', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_ele_nod_grp() // char(0)
       write(textbuf,'(i16,a1)')                                         &
      &    view_ele_grps%node_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
@@ -218,11 +197,7 @@
       call write_viewer_group_data_gz(num_pe, view_ele_grps%num_grp,    &
      &    view_ele_grps%grp_name, view_ele_grps%node_grp)
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4.2.3 edge data', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
+      textbuf = hd_ele_edge_grp() // char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)')                                         &
      &    view_ele_grps%edge_grp%num_item, char(0)
@@ -286,35 +261,22 @@
 !
       textbuf = hd_fem_sfgrp() // char(0)
       call gz_write_textbuf_no_lf
-      write(textbuf,'(a,a1)') '! 4.3.1 surface data', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(2i16,a1)')                                        &
-     &    view_sf_grps%num_grp, view_sf_grps%surf_grp%num_item, char(0)
+      textbuf = hd_surf_surf_grp() // char(0)
+      write(textbuf,'(a,a1)') 'hd_surf_edge_grp', char(0)
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe, view_sf_grps%num_grp,     &
      &    view_sf_grps%grp_name, view_sf_grps%surf_grp)
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4.3.2 node data', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      write(textbuf,'(a,a1)') 'hd_surf_nod_grp', char(0)
       write(textbuf,'(i16,a1)') view_sf_grps%node_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe, view_sf_grps%num_grp,     &
      &    view_sf_grps%grp_name, view_sf_grps%node_grp)
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4.3.3 edge data', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
+      write(textbuf,'(a,a1)') 'hd_surf_edge_grp', char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') view_sf_grps%edge_grp%num_item, char(0)
       call gz_write_textbuf_w_lf

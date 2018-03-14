@@ -4,8 +4,8 @@
 !      Written by Kemorin in Jan., 2007
 !
 !!      subroutine s_set_surf_connect_4_viewer                          &
-!!     &         (nnod_4_surf, mgd_mesh, mgd_sf_grp,                    &
-!!     &          num_pe, isurf_sf_stack, view_mesh, domain_grps,       &
+!!     &         (nnod_4_surf, mgd_mesh, mgd_sf_grp, num_pe,            &
+!!     &          nsurf_sf, isurf_sf_stack, view_mesh, domain_grps,     &
 !!     &          view_ele_grps, view_sf_grps)
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
 !!        type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
@@ -27,17 +27,19 @@
 !------------------------------------------------------------------
 !
       subroutine s_set_surf_connect_4_viewer                            &
-     &         (nnod_4_surf, mgd_mesh, mgd_sf_grp,                      &
-     &          num_pe, isurf_sf_stack, view_mesh, domain_grps,         &
+     &         (nnod_4_surf, mgd_mesh, mgd_sf_grp, num_pe,              &
+     &          nsurf_sf, isurf_sf_stack, view_mesh, domain_grps,       &
      &          view_ele_grps, view_sf_grps)
 !
       use t_mesh_data_4_merge
       use t_surface_data
       use t_grp_data_merged_surfaces
       use pickup_surface_4_viewer
+      use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(inout) :: nsurf_sf(num_pe)
       integer(kind = kint), intent(inout) :: isurf_sf_stack(0:num_pe)
 !
       type(merged_mesh), intent(inout) :: mgd_mesh
@@ -55,8 +57,10 @@
 !
        write(*,*) 'count_used_surface_4_viewer'
       call count_used_surface_4_viewer                                  &
-     &   (mgd_mesh%num_pe, mgd_mesh%istack_surfpe,                      &
-     &    isurf_sf_stack, view_mesh)
+     &   (mgd_mesh%num_pe, mgd_mesh%istack_surfpe, nsurf_sf)
+!
+      call s_cal_total_and_stacks(num_pe, nsurf_sf, izero,              &
+     &    isurf_sf_stack, view_mesh%surfpetot_viewer)
 !
        write(*,*) 'allocate_sf_cvt_table_viewer'
       call allocate_sf_cvt_table_viewer                                 &

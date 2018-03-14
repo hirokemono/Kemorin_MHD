@@ -24,6 +24,10 @@
 !
         integer(kind = kint)  :: num_pe_sf
 !
+        integer(kind = kint), allocatable :: nnod_sf(:)
+        integer(kind = kint), allocatable :: nedge_sf(:)
+        integer(kind = kint), allocatable :: nsurf_sf(:)
+!
         integer(kind = kint), allocatable :: inod_sf_stack(:)
         integer(kind = kint), allocatable :: iedge_sf_stack(:)
         integer(kind = kint), allocatable :: isurf_sf_stack(:)
@@ -52,12 +56,22 @@
 !
       mgd_view_mesh%num_pe_sf = num_pe
 !
+      allocate(mgd_view_mesh%nnod_sf(mgd_view_mesh%num_pe_sf) )
+      allocate(mgd_view_mesh%nsurf_sf(mgd_view_mesh%num_pe_sf))
+      allocate(mgd_view_mesh%nedge_sf(mgd_view_mesh%num_pe_sf))
+!
       allocate(mgd_view_mesh%inod_sf_stack(0:mgd_view_mesh%num_pe_sf) )
       allocate(mgd_view_mesh%isurf_sf_stack(0:mgd_view_mesh%num_pe_sf))
       allocate(mgd_view_mesh%iedge_sf_stack(0:mgd_view_mesh%num_pe_sf))
       mgd_view_mesh%inod_sf_stack  = 0
       mgd_view_mesh%isurf_sf_stack = 0
       mgd_view_mesh%iedge_sf_stack = 0
+!
+      if(mgd_view_mesh%num_pe_sf .gt. 0) then
+        mgd_view_mesh%nnod_sf  = 0
+        mgd_view_mesh%nedge_sf = 0
+        mgd_view_mesh%nsurf_sf = 0
+      end if
 !
       end subroutine alloc_num_mesh_sf
 !
@@ -67,6 +81,10 @@
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
+!
+      deallocate( mgd_view_mesh%nnod_sf  )
+      deallocate( mgd_view_mesh%nedge_sf )
+      deallocate( mgd_view_mesh%nsurf_sf )
 !
       deallocate( mgd_view_mesh%inod_sf_stack  )
       deallocate( mgd_view_mesh%isurf_sf_stack )

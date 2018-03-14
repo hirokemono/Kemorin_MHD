@@ -25,24 +25,35 @@ static void read_group_stack_4_viewer(int npe, int ngrp, int *stack_sf){
 	return;
 };
 
+static long read_each_group_item_4_viewer(){
+    
+};
+
 static long read_group_item_4_viewer(int sum_o, int npe, int ngrp, int *stack_sf,
 									char **name, int *item){
-	int i, j, jst, jed;
+	int ip, i, j, jst, jed;
+    int itmp;
 	long sum_offset=0;
     long offset;
 	char buf[LENGTHBUF];            /* character buffer for reading line */
 	
-	for (j = 0; j < ngrp; j++) {
+    for (j = 0; j < ngrp; j++) {
 		offset = skip_comment_c(fp);
 		sum_offset = offset + sum_o;
 		
 		fgets(buf, LENGTHBUF, fp);
 		sscanf(buf, "%s", name[j]);
 		
-		jst = stack_sf[npe*j    ];
-		jed = stack_sf[npe*(j+1)];
-		for (i = jst; i < jed; i++) {
-			fscanf(fp, "%d", &item[i]);
+        for(ip=0;ip<npe;ip++){
+            jst = stack_sf[npe*j+ip];
+            jed = stack_sf[npe*j+ip+1];
+            if(jst >= jed){
+                offset = skip_comment_c(fp);
+            } else {
+                for (i = jst; i < jed; i++) {
+                    fscanf(fp, "%d", &item[i]);
+                };
+            };
 		};
 	};
 	return sum_offset;
@@ -54,7 +65,7 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	int itmp;
 	long offset = 0;
 	long sum_offset = 0;
-	int i;
+	int i, ist, num;
 	
 	printf("kemoviewer mesh file name: %s \n",file_name);
 	
@@ -72,20 +83,18 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	alloc_nummesh_viewer_s(mesh_s);
 	alloc_domain_stack_viewer_s(mesh_s);
-	
-	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->inod_sf_stack);
-	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->isurf_sf_stack);
-	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->iedge_sf_stack);
-	
-	mesh_s->nodpetot_viewer =  mesh_s->inod_sf_stack[mesh_s->num_pe_sf];
-	mesh_s->surfpetot_viewer = mesh_s->isurf_sf_stack[mesh_s->num_pe_sf];
-	mesh_s->edgepetot_viewer = mesh_s->iedge_sf_stack[mesh_s->num_pe_sf];
-	
+		
 	offset = skip_comment_c(fp);
 	sum_offset = offset + sum_offset;
 	
-	fgets(buf, LENGTHBUF, fp);
-	sscanf(buf, "%d", &itmp);
+    read_listed_item_viewer(mesh_s->num_pe_sf, mesh_s->nnod_sf);
+	read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->inod_sf_stack);
+
+    mesh_s->inod_sf_stack[0] = 0;
+    for (i= 0; i < mesh_s->nodpetot_viewer; i++) {
+        mesh_s->inod_sf_stack[i+1] = mesh_s->inod_sf_stack[i] + mesh_s->nnod_sf[i];
+    }
+    mesh_s->nodpetot_viewer =  mesh_s->inod_sf_stack[mesh_s->num_pe_sf];
 	
 	alloc_node_viewer_s(mesh_s);
 	for (i= 0; i < mesh_s->nodpetot_viewer; i++) {
@@ -104,11 +113,22 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	offset = skip_comment_c(fp);
 	sum_offset = offset + sum_offset;
 	
-	fgets(buf, LENGTHBUF, fp);
-	sscanf(buf, "%d", &itmp);
+    read_listed_item_viewer(mesh_s->num_pe_sf, mesh_s->nsurf_sf);
+    read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->isurf_sf_stack);
+    
+    mesh_s->isurf_sf_stack[0] = 0;
+    for (i= 0; i < mesh_s->nodpetot_viewer; i++) {
+        mesh_s->isurf_sf_stack[i+1] = mesh_s->isurf_sf_stack[i] + mesh_s->nsurf_sf[i];
+    }
+    mesh_s->surfpetot_viewer =  mesh_s->isurf_sf_stack[mesh_s->num_pe_sf];
+    
 	
 	alloc_sf_type_viewer_s(mesh_s);
-	read_listed_item_viewer(mesh_s->surfpetot_viewer, mesh_s->surftyp_viewer);
+    for(i=0;i<mesh_s->num_pe_sf;i++){
+        ist = mesh_s->isurf_sf_stack[i];
+        num = mesh_s->isurf_sf_stack[i+1] - ist;
+        read_listed_item_viewer(num, mesh_s->surftyp_viewer[ist]);
+    }
 	
 	alloc_surface_params_s(mesh_s);
 	alloc_surf_connect_viewer_s(mesh_s);
@@ -164,9 +184,16 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	offset = skip_comment_c(fp);
 	sum_offset = offset + sum_offset;
-	fgets(buf, LENGTHBUF, fp);
-	sscanf(buf, "%d", &itmp);
-	alloc_edge_4_sf_viewer_s(mesh_s);
+    read_listed_item_viewer(mesh_s->num_pe_sf, mesh_s->nedge_sf);
+    read_group_stack_4_viewer(mesh_s->num_pe_sf, 1, mesh_s->iedge_sf_stack);
+
+    mesh_s->iedge_sf_stack[0] = 0;
+    for (i= 0; i < mesh_s->nodpetot_viewer; i++) {
+        mesh_s->iedge_sf_stack[i+1] = mesh_s->iedge_sf_stack[i] + mesh_s->nedge_sf[i];
+    }
+    mesh_s->edgepetot_viewer = mesh_s->iedge_sf_stack[mesh_s->num_pe_sf];
+
+    alloc_edge_4_sf_viewer_s(mesh_s);
 	
 	if( mesh_s->nnod_4_edge == 3 ){
 		for (i = 0; i < mesh_s->edgepetot_viewer; i++) {

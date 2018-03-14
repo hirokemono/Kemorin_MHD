@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine count_number_of_node_stack(nnod, istack_nod_list)
+!!      subroutine count_number_of_node_stack4(nnod, istack_nod_list)
 !!      subroutine set_global_ele_id(txt, nele, istack_internal_e,      &
 !!     &         internal_flag, e_comm, iele_global)
 !!      subroutine check_element_position(txt, nele, x_ele, e_comm)
@@ -54,6 +55,34 @@
 !
       end subroutine count_number_of_node_stack
 !
+!-----------------------------------------------------------------------
+!
+      subroutine count_number_of_node_stack4(nnod, istack_nod_list)
+!
+      integer(kind = kint) :: nnod
+      integer(kind = kint), intent(inout) :: istack_nod_list(0:nprocs)
+!
+      integer(kind = kint), allocatable :: nnod_list_gl(:)
+!
+      integer(kind = kint) :: ip
+!
+!
+      allocate(nnod_list_gl(nprocs))
+      nnod_list_gl = 0
+!
+      call MPI_Allgather(nnod, ione, CALYPSO_INTEGER,                   &
+     &    nnod_list_gl, ione, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
+!
+      istack_nod_list(0) = 0
+      do ip = 1, nprocs
+        istack_nod_list(ip) = istack_nod_list(ip-1) + nnod_list_gl(ip)
+      end do
+!
+      deallocate(nnod_list_gl)
+!
+      end subroutine count_number_of_node_stack4
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_global_ele_id(txt, nele, istack_internal_e,        &

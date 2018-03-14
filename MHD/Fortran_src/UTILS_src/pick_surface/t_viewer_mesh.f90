@@ -81,7 +81,11 @@
         integer(kind = kint), allocatable  ::  edgetyp_viewer(:  )
         integer(kind = kint), allocatable  ::  iedge_sf_viewer(:,:)
 !
-        real   (kind=kreal), dimension(:,:), allocatable  ::  xx_view
+        integer(kind = kint_gl), allocatable :: inod_gl_view(:)
+        integer(kind = kint_gl), allocatable :: isurf_gl_view(:)
+        integer(kind = kint_gl), allocatable :: iedge_gl_view(:)
+!
+        real(kind=kreal), allocatable  ::  xx_view(:,:)
       end type viewer_mesh_data
 !
 !------------------------------------------------------------------
@@ -95,7 +99,9 @@
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       allocate( view_mesh%xx_view(view_mesh%nodpetot_viewer,3) )
+      allocate( view_mesh%inod_gl_view(view_mesh%nodpetot_viewer) )
       if(view_mesh%nodpetot_viewer .gt. 0) view_mesh%xx_view = 0.0d0
+      if(view_mesh%nodpetot_viewer .gt. 0) view_mesh%inod_gl_view = 0
 !
       end subroutine alloc_nod_position_viewer
 !
@@ -137,7 +143,9 @@
 !
       num = view_mesh%surfpetot_viewer
       allocate( view_mesh%ie_sf_viewer(num,nnod_4_surf) )
+      allocate( view_mesh%isurf_gl_view(num) )
       if(num .gt. 0) view_mesh%ie_sf_viewer = 0
+      if(num .gt. 0) view_mesh%isurf_gl_view = 0
 !
       end subroutine alloc_surf_connect_viewer
 !
@@ -153,7 +161,9 @@
 !
       num = view_mesh%edgepetot_viewer
       allocate(view_mesh%ie_edge_viewer(num,nnod_4_edge))
+      allocate(view_mesh%iedge_gl_view(num))
       if(num .gt. 0) view_mesh%ie_edge_viewer = 0
+      if(num .gt. 0) view_mesh%iedge_gl_view = 0
 !
       num = view_mesh%surfpetot_viewer
       allocate(view_mesh%iedge_sf_viewer(num,nedge_4_surf))
@@ -168,7 +178,7 @@
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
-      deallocate( view_mesh%xx_view )
+      deallocate( view_mesh%xx_view, view_mesh%inod_gl_view )
 !
       end subroutine dealloc_nod_position_viewer
 !
@@ -199,7 +209,7 @@
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
-      deallocate( view_mesh%ie_sf_viewer )
+      deallocate( view_mesh%ie_sf_viewer, view_mesh%isurf_gl_view )
 !
       end subroutine dealloc_surf_connect_viewer
 !
@@ -210,7 +220,7 @@
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
 !
-      deallocate(view_mesh%ie_edge_viewer)
+      deallocate(view_mesh%ie_edge_viewer, view_mesh%iedge_gl_view)
       deallocate(view_mesh%iedge_sf_viewer)
 !
       end subroutine dealloc_edge_data_4_sf

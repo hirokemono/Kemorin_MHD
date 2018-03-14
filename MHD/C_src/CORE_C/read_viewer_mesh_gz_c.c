@@ -94,16 +94,14 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	alloc_nummesh_viewer_s(mesh_s);
 	alloc_domain_stack_viewer_s(mesh_s);
 	
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->inod_sf_stack);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->isurf_sf_stack);
-	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->iedge_sf_stack);
-	
-	mesh_s->nodpetot_viewer =  mesh_s->inod_sf_stack[mesh_s->num_pe_sf];
-	mesh_s->surfpetot_viewer = mesh_s->isurf_sf_stack[mesh_s->num_pe_sf];
-	mesh_s->edgepetot_viewer = mesh_s->iedge_sf_stack[mesh_s->num_pe_sf];
-	
-	num_word[0] = skip_comment_gz_c(lbuf, buf);
-	sscanf(buf, "%d", &itmp);
+    read_listed_item_gz_viewer(mesh_s->num_pe_sf, mesh_s->nnod_sf);
+    read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->inod_sf_stack);
+    
+    mesh_s->inod_sf_stack[0] = 0;
+    for (i= 0; i < mesh_s->nodpetot_viewer; i++) {
+        mesh_s->inod_sf_stack[i+1] = mesh_s->inod_sf_stack[i] + mesh_s->nnod_sf[i];
+    }
+    mesh_s->nodpetot_viewer =  mesh_s->inod_sf_stack[mesh_s->num_pe_sf];
 	
 	alloc_node_viewer_s(mesh_s);
 	for (i= 0; i < mesh_s->nodpetot_viewer; i++) {
@@ -117,9 +115,16 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 			mesh_s->xx_view[mesh_s->nodpetot_viewer-1][1],
 			mesh_s->xx_view[mesh_s->nodpetot_viewer-1][2]);*/
 	
-	num_word[0] = skip_comment_gz_c(lbuf, buf);
-	sscanf(buf, "%d", &itmp);
-	alloc_sf_type_viewer_s(mesh_s);
+    read_listed_item_gz_viewer(mesh_s->num_pe_sf, mesh_s->nsurf_sf);
+    read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->isurf_sf_stack);
+    
+    mesh_s->isurf_sf_stack[0] = 0;
+    for (i= 0; i < mesh_s->nodpetot_viewer; i++) {
+        mesh_s->isurf_sf_stack[i+1] = mesh_s->isurf_sf_stack[i] + mesh_s->nsurf_sf[i];
+    }
+    mesh_s->surfpetot_viewer =  mesh_s->isurf_sf_stack[mesh_s->num_pe_sf];
+
+    alloc_sf_type_viewer_s(mesh_s);
 	
 	read_listed_item_gz_viewer(mesh_s->surfpetot_viewer, mesh_s->surftyp_viewer);
 	
@@ -172,8 +177,15 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 			mesh_s->ie_sf_viewer[mesh_s->surfpetot_viewer-1][2],
 			mesh_s->ie_sf_viewer[mesh_s->surfpetot_viewer-1][3]);*/
 	
-	num_word[0] = skip_comment_gz_c(lbuf, buf);
-	sscanf(buf, "%d", &itmp);
+    read_listed_item_gz_viewer(mesh_s->num_pe_sf, mesh_s->nedge_sf);
+    read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->iedge_sf_stack);
+    
+    mesh_s->iedge_sf_stack[0] = 0;
+    for (i= 0; i < mesh_s->nodpetot_viewer; i++) {
+        mesh_s->iedge_sf_stack[i+1] = mesh_s->iedge_sf_stack[i] + mesh_s->nedge_sf[i];
+    }
+    mesh_s->edgepetot_viewer = mesh_s->iedge_sf_stack[mesh_s->num_pe_sf];
+    
 	alloc_edge_4_sf_viewer_s(mesh_s);
 	
 	if( mesh_s->nnod_4_edge == 3 ){

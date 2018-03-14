@@ -46,15 +46,14 @@
       call write_domain_data_viewer_gz(mgd_view_mesh)
 !
 !      write(*,*) 'write_node_data_viewer_gz'
-      call write_node_data_viewer_gz(mgd_view_mesh%view_mesh)
+      call write_node_data_viewer_gz(mgd_view_mesh)
 !
 !      write(*,*) 'write_surf_connect_viewer_gz'
-      call write_surf_connect_viewer_gz                                 &
-     &   (nnod_4_surf, mgd_view_mesh%view_mesh)
+      call write_surf_connect_viewer_gz(nnod_4_surf, mgd_view_mesh)
 !
 !      write(*,*) 'write_edge_connect_viewer_gz'
       call write_edge_connect_viewer_gz                                 &
-     &   (nnod_4_edge, mgd_view_mesh%view_mesh)
+     &   (nnod_4_edge, mgd_view_mesh)
 !
 !      write(*,*) 'write_domain_group_viewer_gz'
       call write_domain_group_viewer_gz                                 &
@@ -94,19 +93,17 @@
 !
 !      write(*,*) 'read_domain_data_viewer_gz'
       call read_domain_data_viewer_gz(mgd_view_mesh)
-      call num_merged_viewer_nod_surf_edge(mgd_view_mesh)
 !
 !      write(*,*) 'read_node_data_viewer_gz'
-      call read_node_data_viewer_gz(mgd_view_mesh%view_mesh)
+      call read_node_data_viewer_gz(mgd_view_mesh)
 !
 !      write(*,*) 'read_surf_connect_viewer_gz'
       call read_surf_connect_viewer_gz                                  &
-     &   (nnod_4_ele, nnod_4_surf, nnod_4_edge,                         &
-     &    mgd_view_mesh%view_mesh)
+     &   (nnod_4_ele, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
 !
 !      write(*,*) 'read_edge_connect_viewer_gz'
       call read_edge_connect_viewer_gz                                  &
-     &   (nnod_4_edge, mgd_view_mesh%view_mesh)
+     &   (nnod_4_edge, mgd_view_mesh)
 !
       call alloc_domain_stack_4_surf                                    &
      &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%domain_grps)

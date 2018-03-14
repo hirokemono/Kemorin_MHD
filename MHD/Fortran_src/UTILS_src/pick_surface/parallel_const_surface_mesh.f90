@@ -183,66 +183,328 @@
       use viewer_IO_select_4_zlib
       use const_global_element_ids
 !
+      use m_viewer_mesh_labels
+      use m_fem_mesh_labels
+      use t_calypso_mpi_IO_param
+      use MPI_domain_data_IO
+      use MPI_ascii_data_IO
+      use MPI_node_geometry_IO
+      use MPI_element_connect_IO
+!
       type(field_IO_params), intent(in) :: mesh_file
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
       type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
+      character(len=kchara) :: file_name = 'aho.ksm'
+      type(calypso_MPI_IO_params) :: IO_param
+!
+      integer(kind = kint) :: i, k
 !
 !  pickup surface and nodes
 !
 !
       call alloc_num_mesh_sf(nprocs, mgd_view_mesh)
 !
-!      call count_number_of_node_stack(mgd_v_mesh_p%inod_sf_stack(1),    &
-!    &     mgd_view_mesh%inod_sf_stack)
-!      call count_number_of_node_stack(mgd_v_mesh_p%isurf_sf_stack(1),   &
-!    &     mgd_view_mesh%isurf_sf_stack)
-!      call count_number_of_node_stack(mgd_v_mesh_p%iedge_sf_stack(1),   &
-!    &     mgd_view_mesh%iedge_sf_stack)
+      call count_number_of_node_stack4(mgd_v_mesh_p%inod_sf_stack(1),   &
+     &     mgd_view_mesh%inod_sf_stack)
+      call count_number_of_node_stack4(mgd_v_mesh_p%isurf_sf_stack(1),  &
+     &     mgd_view_mesh%isurf_sf_stack)
+      call count_number_of_node_stack4(mgd_v_mesh_p%iedge_sf_stack(1),  &
+     &     mgd_view_mesh%iedge_sf_stack)
 !
-      if(my_rank .eq. 0) return
+      call num_merged_viewer_nod_surf_edge(mgd_view_mesh)
 !
-!      write(*,*) 'mgd_view_mesh%inod_sf_stack', mgd_view_mesh%inod_sf_stack
-!      write(*,*) 'mgd_view_mesh%isurf_sf_stack', mgd_view_mesh%isurf_sf_stack
-!      write(*,*) 'mgd_view_mesh%iedge_sf_stack', mgd_view_mesh%iedge_sf_stack
+!      call alloc_domain_stack_4_surf(mgd_view_mesh%num_pe_sf,           &
+!     &    mgd_view_mesh%domain_grps)
+!      call alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
 !
-!       write(*,*) 's_set_surf_connect_4_viewer'
-!       call s_set_surf_connect_4_viewer                                &
-!     &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp,                     &
-!     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%isurf_sf_stack,      &
-!     &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,         &
-!     &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
-!       write(*,*) 's_set_nodes_4_viewer'
-!       call s_set_nodes_4_viewer(surf%nnod_4_surf, mgd_mesh,           &
-!     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack,       &
-!     &     mgd_view_mesh%view_mesh, mgd_view_mesh%view_nod_grps)
-!
-!       write(*,*) 'set_surf_domain_id_viewer'
-!       call set_surf_domain_id_viewer                                  &
-!     &    (mgd_mesh%merged_surf, mgd_view_mesh%view_mesh)
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Write ascii mesh file: ', trim(file_name)
 !
 !
-!       call dealloc_array_4_merge(mgd_mesh)
 !
-!       write(*,*)  'construct_edge_4_viewer'
-!       call construct_edge_4_viewer(surf, edge,                        &
-!     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack,       &
-!     &     mgd_view_mesh%iedge_sf_stack, mgd_view_mesh%view_mesh,      &
-!     &     mgd_view_mesh%domain_grps, mgd_view_mesh%view_ele_grps,     &
-!     &     mgd_view_mesh%view_sf_grps)
-!       write(*,*)  's_set_nodes_4_groups_viewer'
-!       call s_set_nodes_4_groups_viewer                                &
-!     &    (surf%nnod_4_surf, edge%nnod_4_edge,                         &
-!     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack,       &
-!     &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,         &
-!     &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
+      call open_write_mpi_file                                          &
+     &   (file_name, nprocs, my_rank, IO_param)
 !
-      call sel_output_surface_grid(mesh_file%iflag_format,              &
-     &    surf%nnod_4_surf, edge%nnod_4_edge, mgd_view_mesh)
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_ndomain_viewer()), hd_ndomain_viewer())
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(mgd_view_mesh%num_pe_sf))
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_node_viewer()), hd_node_viewer())
+!
+      do i = 1, mgd_v_mesh_p%view_mesh%nodpetot_viewer
+        mgd_v_mesh_p%view_mesh%inod_gl_view(i)                          &
+     &          = i + mgd_view_mesh%inod_sf_stack(my_rank)
+      end do
+!
+      do i = 1, mgd_v_mesh_p%view_mesh%surfpetot_viewer
+        mgd_v_mesh_p%view_mesh%isurf_gl_view(i)                         &
+     &          = i + mgd_view_mesh%isurf_sf_stack(my_rank)
+      end do
+      do k = 1, surf%nnod_4_surf
+        do i = 1, mgd_v_mesh_p%view_mesh%surfpetot_viewer
+          mgd_v_mesh_p%view_mesh%ie_sf_viewer(i,k)                      &
+     &          = mgd_v_mesh_p%view_mesh%ie_sf_viewer(i,k)              &
+     &           + mgd_view_mesh%inod_sf_stack(my_rank)
+        end do
+      end do
+!
+      do i = 1, mgd_v_mesh_p%view_mesh%edgepetot_viewer
+        mgd_v_mesh_p%view_mesh%iedge_gl_view(i)                         &
+     &          = i + mgd_view_mesh%iedge_sf_stack(my_rank)
+      end do
+      do k = 1, edge%nnod_4_edge
+        do i = 1, mgd_v_mesh_p%view_mesh%edgepetot_viewer
+          mgd_v_mesh_p%view_mesh%ie_edge_viewer(i,k)                    &
+     &          = mgd_v_mesh_p%view_mesh%ie_edge_viewer(i,k)            &
+     &           + mgd_view_mesh%inod_sf_stack(my_rank)
+        end do
+      end do
+      do k = 1, nedge_4_surf
+        do i = 1, mgd_v_mesh_p%view_mesh%surfpetot_viewer
+          if(mgd_v_mesh_p%view_mesh%iedge_sf_viewer(i,k) .gt. 0) then
+            mgd_v_mesh_p%view_mesh%iedge_sf_viewer(i,k)                 &
+     &          = mgd_v_mesh_p%view_mesh%iedge_sf_viewer(i,k)           &
+     &           + mgd_view_mesh%iedge_sf_stack(my_rank)
+          else
+            mgd_v_mesh_p%view_mesh%iedge_sf_viewer(i,k)                 &
+     &          = mgd_v_mesh_p%view_mesh%iedge_sf_viewer(i,k)           &
+     &           - mgd_view_mesh%iedge_sf_stack(my_rank)
+          end if
+        end do
+      end do
+!
+!
+      call mpi_write_node_position(IO_param,                            &
+     &    mgd_v_mesh_p%view_mesh%nodpetot_viewer, ithree,               &
+     &    mgd_v_mesh_p%view_mesh%inod_gl_view,                          &
+     &    mgd_v_mesh_p%view_mesh%xx_view)
+!
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_surf_viewer()), hd_surf_viewer())
+!
+      call mpi_write_num_of_data                                        &
+     &   (IO_param, mgd_v_mesh_p%view_mesh%surfpetot_viewer)
+      call mpi_write_element_type                                       &
+     &   (IO_param, iten, mgd_v_mesh_p%view_mesh%surfpetot_viewer,      &
+     &    mgd_v_mesh_p%view_mesh%surftyp_viewer)
+!
+      call mpi_write_ele_connect                                        &
+     &   (IO_param, mgd_v_mesh_p%view_mesh%surfpetot_viewer,            &
+     &    surf%nnod_4_surf, mgd_v_mesh_p%view_mesh%isurf_gl_view,       &
+     &    mgd_v_mesh_p%view_mesh%ie_sf_viewer)
+!
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_edge_viewer()), hd_edge_viewer())
+!
+      call mpi_write_num_of_data                                        &
+     &   (IO_param, mgd_v_mesh_p%view_mesh%edgepetot_viewer)
+      call mpi_write_ele_connect                                        &
+     &   (IO_param, mgd_v_mesh_p%view_mesh%edgepetot_viewer,            &
+     &    edge%nnod_4_edge, mgd_v_mesh_p%view_mesh%iedge_gl_view,       &
+     &    mgd_v_mesh_p%view_mesh%ie_edge_viewer)
+!
+!
+      call mpi_write_charahead(IO_param,                                &
+     &    len(hd_edge_on_sf_viewer()), hd_edge_on_sf_viewer())
+!
+      call mpi_write_num_of_data(IO_param, nedge_4_surf)
+!
+      call mpi_write_ele_connect(IO_param,                              &
+     &    mgd_v_mesh_p%view_mesh%surfpetot_viewer, nedge_4_surf,        &
+     &    mgd_v_mesh_p%view_mesh%isurf_gl_view,                         &
+     &    mgd_v_mesh_p%view_mesh%iedge_sf_viewer)
+!
+!
+      do i = 1, mgd_v_mesh_p%domain_grps%node_grp%num_item
+        mgd_v_mesh_p%domain_grps%node_grp%item_sf(i)                    &
+     &          = mgd_v_mesh_p%domain_grps%node_grp%item_sf(i)          &
+     &           + mgd_view_mesh%inod_sf_stack(my_rank)
+      end do
+      do i = 1, mgd_v_mesh_p%domain_grps%surf_grp%num_item
+        mgd_v_mesh_p%domain_grps%surf_grp%item_sf(i)                    &
+     &          = mgd_v_mesh_p%domain_grps%surf_grp%item_sf(i)          &
+     &           + mgd_view_mesh%isurf_sf_stack(my_rank)
+      end do
+      do i = 1, mgd_v_mesh_p%domain_grps%edge_grp%num_item
+        mgd_v_mesh_p%domain_grps%edge_grp%item_sf(i)                    &
+     &          = mgd_v_mesh_p%domain_grps%edge_grp%item_sf(i)          &
+     &           + mgd_view_mesh%iedge_sf_stack(my_rank)
+      end do
+!
+      do i = 1, mgd_v_mesh_p%view_nod_grps%node_grp%num_item
+        mgd_v_mesh_p%view_nod_grps%node_grp%item_sf(i)                  &
+     &          = mgd_v_mesh_p%view_nod_grps%node_grp%item_sf(i)        &
+     &           + mgd_view_mesh%inod_sf_stack(my_rank)
+      end do
+!
+      do i = 1, mgd_v_mesh_p%view_ele_grps%node_grp%num_item
+        mgd_v_mesh_p%view_ele_grps%node_grp%item_sf(i)                  &
+     &          = mgd_v_mesh_p%view_ele_grps%node_grp%item_sf(i)        &
+     &           + mgd_view_mesh%inod_sf_stack(my_rank)
+      end do
+      do i = 1, mgd_v_mesh_p%view_ele_grps%surf_grp%num_item
+        mgd_v_mesh_p%view_ele_grps%surf_grp%item_sf(i)                  &
+     &          = mgd_v_mesh_p%view_ele_grps%surf_grp%item_sf(i)        &
+     &           + mgd_view_mesh%isurf_sf_stack(my_rank)
+      end do
+      do i = 1, mgd_v_mesh_p%view_ele_grps%edge_grp%num_item
+        if(mgd_v_mesh_p%view_ele_grps%edge_grp%item_sf(i) .gt. 0) then
+          mgd_v_mesh_p%view_ele_grps%edge_grp%item_sf(i)                &
+     &          = mgd_v_mesh_p%view_ele_grps%edge_grp%item_sf(i)        &
+     &           + mgd_view_mesh%iedge_sf_stack(my_rank)
+        else
+          mgd_v_mesh_p%view_ele_grps%edge_grp%item_sf(i)                &
+     &          = mgd_v_mesh_p%view_ele_grps%edge_grp%item_sf(i)        &
+     &           - mgd_view_mesh%iedge_sf_stack(my_rank)
+        end if
+      end do
+!
+      do i = 1, mgd_v_mesh_p%view_sf_grps%node_grp%num_item
+        mgd_v_mesh_p%view_sf_grps%node_grp%item_sf(i)                   &
+     &          = mgd_v_mesh_p%view_sf_grps%node_grp%item_sf(i)         &
+     &           + mgd_view_mesh%inod_sf_stack(my_rank)
+      end do
+      do i = 1, mgd_v_mesh_p%view_sf_grps%surf_grp%num_item
+        mgd_v_mesh_p%view_sf_grps%surf_grp%item_sf(i)                   &
+     &          = mgd_v_mesh_p%view_sf_grps%surf_grp%item_sf(i)         &
+     &           + mgd_view_mesh%isurf_sf_stack(my_rank)
+      end do
+      do i = 1, mgd_v_mesh_p%view_sf_grps%edge_grp%num_item
+        if(mgd_v_mesh_p%view_sf_grps%edge_grp%item_sf(i) .gt. 0) then
+          mgd_v_mesh_p%view_sf_grps%edge_grp%item_sf(i)                 &
+     &          = mgd_v_mesh_p%view_sf_grps%edge_grp%item_sf(i)         &
+     &           + mgd_view_mesh%iedge_sf_stack(my_rank)
+        else
+          mgd_v_mesh_p%view_sf_grps%edge_grp%item_sf(i)                 &
+     &          = mgd_v_mesh_p%view_sf_grps%edge_grp%item_sf(i)         &
+     &           - mgd_view_mesh%iedge_sf_stack(my_rank)
+        end if
+      end do
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_domain_nod_grp()), hd_domain_nod_grp())
+      call mpi_write_viewer_grp_data                                    &
+     &   (IO_param, mgd_v_mesh_p%domain_grps%num_grp,                   &
+     &    mgd_v_mesh_p%domain_grps%grp_name,                            &
+     &    mgd_v_mesh_p%domain_grps%node_grp)
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_domain_surf_grp()), hd_domain_surf_grp())
+      call mpi_write_viewer_grp_data                                    &
+     &   (IO_param, mgd_v_mesh_p%domain_grps%num_grp,                   &
+     &    mgd_v_mesh_p%domain_grps%grp_name,                            &
+     &    mgd_v_mesh_p%domain_grps%surf_grp)
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_domain_edge_grp()), hd_domain_edge_grp())
+      call mpi_write_viewer_grp_data                                    &
+     &   (IO_param, mgd_v_mesh_p%domain_grps%num_grp,                   &
+     &    mgd_v_mesh_p%domain_grps%grp_name,                            &
+     &    mgd_v_mesh_p%domain_grps%edge_grp)
+!
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_nodgrp()), hd_fem_nodgrp())
+      call mpi_write_viewer_grp_data                                    &
+     &   (IO_param, mgd_v_mesh_p%view_nod_grps%num_grp,                 &
+     &    mgd_v_mesh_p%view_nod_grps%grp_name,                          &
+     &    mgd_v_mesh_p%view_nod_grps%node_grp)
+!
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_elegrp()), hd_fem_elegrp())
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_ele_surf_grp()), hd_ele_surf_grp())
+      call mpi_write_viewer_grp_data                                    &
+     &   (IO_param, mgd_v_mesh_p%view_ele_grps%num_grp,                 &
+     &    mgd_v_mesh_p%view_ele_grps%grp_name,                          &
+     &    mgd_v_mesh_p%view_ele_grps%surf_grp)
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_ele_nod_grp()), hd_ele_nod_grp())
+      call mpi_write_viewer_grp_data                                    &
+     &   (IO_param, mgd_v_mesh_p%view_ele_grps%num_grp,                 &
+     &    mgd_v_mesh_p%view_ele_grps%grp_name,                          &
+     &    mgd_v_mesh_p%view_ele_grps%node_grp)
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_ele_edge_grp()), hd_ele_edge_grp())
+      call mpi_write_viewer_grp_data                                    &
+     &   (IO_param, mgd_v_mesh_p%view_ele_grps%num_grp,                 &
+     &    mgd_v_mesh_p%view_ele_grps%grp_name,                          &
+     &    mgd_v_mesh_p%view_ele_grps%edge_grp)
+!
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_fem_sfgrp()), hd_fem_sfgrp())
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_surf_surf_grp()), hd_surf_surf_grp())
+      call mpi_write_viewer_grp_data                                    &
+     &   (IO_param, mgd_v_mesh_p%view_sf_grps%num_grp,                  &
+     &    mgd_v_mesh_p%view_sf_grps%grp_name,                           &
+     &    mgd_v_mesh_p%view_sf_grps%surf_grp)
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_surf_nod_grp()), hd_surf_nod_grp())
+      call mpi_write_viewer_grp_data                                    &
+     &   (IO_param, mgd_v_mesh_p%view_sf_grps%num_grp,                  &
+     &    mgd_v_mesh_p%view_sf_grps%grp_name,                           &
+     &    mgd_v_mesh_p%view_sf_grps%node_grp)
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_surf_edge_grp()), hd_surf_edge_grp())
+      call mpi_write_viewer_grp_data                                    &
+     &   (IO_param, mgd_v_mesh_p%view_sf_grps%num_grp,                  &
+     &    mgd_v_mesh_p%view_sf_grps%grp_name,                           &
+     &    mgd_v_mesh_p%view_sf_grps%edge_grp)
+!
+!
+      call close_mpi_file(IO_param)
 !
       end subroutine collect_surf_mesh_4_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine mpi_write_viewer_grp_data                              &
+     &         (IO_param, num_grp, grp_name, view_grp)
+!
+      use t_calypso_mpi_IO_param
+      use data_IO_to_textline
+      use MPI_domain_data_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind = kint), intent(in) :: num_grp
+      character(len=kchara), intent(in) :: grp_name(num_grp)
+      type(viewer_group_data), intent(inout) :: view_grp
+!
+      integer(kind = kint) :: i, ist, ied, num
+!
+!
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(num_grp))
+      call mpi_write_int_stack                                          &
+     &   (IO_param, num_grp, view_grp%istack_sf)
+!
+      do i = 1, num_grp
+        call mpi_write_charahead(IO_param,                              &
+     &      len_one_word_textline(grp_name(i)),                         &
+     &      one_word_textline(grp_name(i)))
+!
+        ist = view_grp%istack_sf(i-1) + 1
+        ied = view_grp%istack_sf(i)
+        num = view_grp%istack_sf(i) - view_grp%istack_sf(i-1)
+        call mpi_write_comm_table                                       &
+     &     (IO_param, ieight, num, view_grp%item_sf(ist:ied))
+      end do
+!
+      end subroutine mpi_write_viewer_grp_data
 !
 !------------------------------------------------------------------
 !
