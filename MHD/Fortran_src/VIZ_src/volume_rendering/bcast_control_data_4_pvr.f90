@@ -218,6 +218,11 @@
 !
       call bcast_ctl_array_r3(color%step_opacity_ctl)
 !
+      call bcast_ctl_type_c1(color%lic_color_fld_ctl)
+      call bcast_ctl_type_c1(color%lic_color_comp_ctl)
+      call bcast_ctl_type_c1(color%lic_opacity_fld_ctl)
+      call bcast_ctl_type_c1(color%lic_opacity_comp_ctl)
+!
       call bcast_ctl_type_c1(color%colormap_mode_ctl)
       call bcast_ctl_type_c1(color%data_mapping_ctl)
       call bcast_ctl_type_c1(color%opacity_style_ctl)

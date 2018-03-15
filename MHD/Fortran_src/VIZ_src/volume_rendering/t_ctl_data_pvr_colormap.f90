@@ -30,6 +30,12 @@
 !!  begin colormap_ctl
 !!    colormap_mode_ctl       rainbow
 !!!
+!!    LIC_color_field             magnetic_field
+!!    LIC_color_componenet        magnitude
+!!
+!!    LIC_transparent_field         magnetic_field
+!!    LIC_transparent_componenet    magnitude
+!!!
 !!    data_mapping_ctl   Colormap_list
 !!    array color_table_ctl    3
 !!      color_table_ctl    0.0   0.0
@@ -95,6 +101,11 @@
 !!@n      light_position_ctl%vec3:  Z-component of light position
         type(ctl_array_r3) :: light_position_ctl
 !
+        type(read_character_item) :: lic_color_fld_ctl
+        type(read_character_item) :: lic_color_comp_ctl
+        type(read_character_item) :: lic_opacity_fld_ctl
+        type(read_character_item) :: lic_opacity_comp_ctl
+!
         type(read_character_item) :: colormap_mode_ctl
         type(read_character_item) :: data_mapping_ctl
         type(read_character_item) :: opacity_style_ctl
@@ -137,6 +148,16 @@
 !     3rd level for colormap
 !
       character(len=kchara) :: hd_colormap_mode =  'colormap_mode_ctl'
+!
+      character(len=kchara)                                             &
+     &        :: hd_lic_color_fld =  'LIC_color_field'
+      character(len=kchara)                                             &
+     &        :: hd_lic_color_comp =  'LIC_color_componenet'
+      character(len=kchara)                                             &
+     &        :: hd_lic_opacity_fld =  'LIC_transparent_field'
+      character(len=kchara)                                             &
+     &        :: hd_lic_opacity_comp =  'LIC_transparent_componenet'
+!
       character(len=kchara) :: hd_data_mapping = 'data_mapping_ctl'
       character(len=kchara) :: hd_pvr_range_min = 'range_min_ctl'
       character(len=kchara) :: hd_pvr_range_max = 'range_max_ctl'
@@ -232,6 +253,14 @@
         call read_control_array_r3                                      &
      &     (hd_opacity_def, color%step_opacity_ctl)
 !
+        call read_chara_ctl_type                                        &
+     &     (hd_lic_color_fld, color%lic_color_fld_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_lic_color_comp, color%lic_color_comp_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_lic_opacity_fld, color%lic_opacity_fld_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_lic_opacity_comp, color%lic_opacity_comp_ctl)
 !
         call read_chara_ctl_type                                        &
      &     (hd_colormap_mode, color%colormap_mode_ctl)
@@ -260,6 +289,11 @@
       color%ambient_coef_ctl%iflag =  0
       color%diffuse_coef_ctl%iflag =  0
       color%specular_coef_ctl%iflag = 0
+!
+      color%lic_color_fld_ctl%iflag =    0
+      color%lic_color_comp_ctl%iflag =   0
+      color%lic_opacity_fld_ctl%iflag =  0
+      color%lic_opacity_comp_ctl%iflag = 0
 !
       color%colormap_mode_ctl%iflag =   0
       color%data_mapping_ctl%iflag =    0

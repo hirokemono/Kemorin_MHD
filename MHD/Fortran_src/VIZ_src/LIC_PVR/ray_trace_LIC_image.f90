@@ -21,7 +21,7 @@
       use m_constants
       use m_geometry_constants
       use calypso_mpi
-      use set_rgba_4_each_pixel
+      use lic_rgba_4_each_pixel
 !
       use t_control_params_4_pvr
       use m_machine_parameter
@@ -48,6 +48,7 @@
       use t_geometry_data
       use t_surface_data
       use t_geometries_in_pvr_screen
+      use t_noise_node_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -76,17 +77,25 @@
       real(kind = kreal) :: rgba_tmp(4)
 !
       integer(kind = kint) :: n_d_size(3)
-      character, allocatable:: noise_data(:)
+      character, allocatable:: noise_data(:), noise_grad_data(:)
+      type(noise_node), pointer, dimension(:) :: n_node_data
       integer(kind = kint) :: k_size
       real(kind = kreal), allocatable :: k_ary(:)
       integer(kind = kint) :: i, read_err, j, n_size
       character(len=kchara), parameter :: filename = "noise/noise-256"
+      character(len=kchara), parameter :: gradfilename = "noise/noise-256.grd"
 
       iflag_debug = 0
-
+!
       k_size = 128
       allocate(k_ary(k_size))
+      ! import noise_value in noise_node data structure
+      !call import_noise_nd_ary(filename, n_node_data, n_d_size, read_err)
+      ! directly import noise_value to an array
       call import_noise_ary(filename, noise_data, n_d_size, read_err)
+      if(read_err .eq. 0) then
+        call import_noise_grad_ary(gradfilename, noise_grad_data, n_d_size, read_err)
+      end if
       call generate_kernal_ary(k_size, k_ary)
 
       n_size = n_d_size(1) * n_d_size(2) * n_d_size(3)
@@ -108,7 +117,7 @@
 !        end if
 !
         rgba_tmp(1:4) = zero
-        call lic_ray_trace_each_pixel                                            &
+        call lic_ray_trace_each_pixel                                        &
      &      (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,        &
      &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,                 &
      &       ele%interior_ele, node%xx, surf%vnorm_surf, surf%interior_surf, &
@@ -117,13 +126,53 @@
      &       id_pixel_check(inum), isf_pvr_ray_start(1,inum),                &
      &       xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),                 &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),      &
-     &       k_size, k_ary, n_size, noise_data, node%xyz_min_gl,             &
-     &       node%xyz_max_gl, iflag_comm)
+     &       k_size, k_ary, n_size, noise_data, noise_grad_data,             &
+     &       node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
       end do
 !$omp end parallel do
 !
       end subroutine ray_trace_each_lic_image
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine blend_overlapped_area(num_pvr_ray,                     &
+     &         id_pixel_start, xx_pvr_ray_start, rgba_ray,              &
+     &         num_pixel_xy, iflag_mapped, rgba_lc, depth_lc)
+!
+      integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
+      real(kind = kreal), intent(in)                                    &
+     &                    ::  xx_pvr_ray_start(3,num_pvr_ray)
+      real(kind = kreal), intent(in)                                    &
+     &                    ::  rgba_ray(4,num_pvr_ray)
+!
+      integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
+      real(kind = kreal), intent(inout) :: rgba_lc(4,num_pixel_xy)
+      real(kind = kreal), intent(inout) :: depth_lc(num_pixel_xy)
+!
+      integer(kind = kint) :: inum, id_pixel
+!
+!
+      iflag_mapped = 0
+      rgba_lc =      0.0d0
+      depth_lc =     0.0d0
+      do inum = 1, num_pvr_ray
+        id_pixel = id_pixel_start(inum)
+        call composite_lic_alpha_blending                               &
+     &     (rgba_ray(1,inum), rgba_lc(1,id_pixel) )
+!
+        if(iflag_mapped(id_pixel) .eq. 0) then
+          depth_lc(id_pixel)  = xx_pvr_ray_start(3,inum)
+          iflag_mapped(id_pixel) = 1
+        else
+          depth_lc(id_pixel)                                            &
+     &      = min(depth_lc(id_pixel),xx_pvr_ray_start(3,inum))
+        end if
+      end do
+!
+      end subroutine blend_overlapped_area
 !
 !  ---------------------------------------------------------------------
 !
@@ -133,13 +182,14 @@
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
      &        field_pvr, color_param, ray_vec, iflag_check, isurf_org,  &
      &        screen_st, xx_st, xi, rgba_ray, icount_line,              &
-     &        k_size, k_ary, n_size, noise_data, xyz_min_gl,            &
-     &        xyz_max_gl, iflag_comm)
+     &        k_size, k_ary, n_size, noise_data, noise_grad,            &
+     &        xyz_min_gl, xyz_max_gl, iflag_comm)
 !
       use t_geometries_in_pvr_screen
       use cal_field_on_surf_viz
       use cal_fline_in_cube
       use set_coefs_of_sections
+      use t_noise_node_data
 !
       integer(kind = kint), intent(in) :: iflag_check
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
@@ -170,7 +220,9 @@
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
       integer(kind = kint), intent(in) :: n_size
+      character(kind=1), intent(in):: noise_grad(n_size*3)
       character(kind=1), intent(in):: noise_data(n_size)
+      !type(noise_node), intent(in) :: noise_data(n_size)
       integer(kind = kint), intent(in) :: k_size
       real(kind = kreal), intent(in) :: k_ary(k_size)
 !
@@ -178,9 +230,12 @@
       integer(kind = kint) :: iflag_notrace
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
       integer(kind = kint) :: i_iso, i_psf, iflag, iflag_hit
-      real(kind = kreal) :: screen_tgt(3), c_tgt(1), o_tgt(1), c_org(1)
+      real(kind = kreal) :: screen_tgt(3), c_tgt(1), c_org(1)
       real(kind = kreal) :: grad_tgt(3), xx_tgt(3), rflag, rflag2
       integer(kind = kint) :: isurf_orgs(2,3), i, iflag_lic
+
+real(kind = kreal) :: ray_total_len = zero, ave_ray_len
+integer(kind = kint) :: icount_line_cur_ray = 0
 !
 !
       if(isurf_org(1) .eq. 0) return
@@ -200,6 +255,7 @@
       end if
       do
         icount_line = icount_line + 1
+        icount_line_cur_ray = icount_line_cur_ray + 1
         iele =    isurf_org(1)
         isf_org = isurf_org(2)
 !
@@ -248,7 +304,7 @@
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, xx, xx_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, field_pvr%d_pvr, o_tgt(1))
+     &      ie_surf, isurf_end, xi, field_pvr%d_pvr, c_tgt(1))
 !
         if(interior_ele(iele) .gt. 0) then
 !   rendering boundery
@@ -265,11 +321,13 @@
 !  write(50+my_rank,*) "ele: ", isurf_orgs(i,1), "local surf: ", isurf_orgs(i,2)
 !end do
 
+! calculate lic value at current location, lic value will be used as intensity
+! as volume rendering
           call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,    &
      &          isf_4_ele, iele_4_surf, interior_surf, xx, vnorm_surf,         &
-     &          isurf_orgs, ie_surf, xi, n_size, noise_data, k_size,           &
-     &          k_ary, field_pvr%v_nod, xx_tgt, isurf_end, c_tgt(1),           &
-     &          xyz_min_gl, xyz_max_gl, iflag_lic)
+     &          isurf_orgs, ie_surf, xi, n_size, noise_data, noise_grad,       &
+     &          k_size, k_ary, field_pvr%v_nod, xx_tgt, isurf_end,             &
+     &          xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
           !write(50+my_rank, *) iflag_lic
 
           do i_psf = 1, field_pvr%num_sections
@@ -307,11 +365,15 @@
      &            color_param, rgba_ray)
             end if
           end do
+          ray_total_len = ray_total_len + norm2(xx_tgt - xx_st)
+          ave_ray_len = ray_total_len / icount_line_cur_ray
 !
-          grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)
+          !grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)
+          grad_tgt(1:3) = grad_tgt(1:3) / norm2(grad_tgt(1:3))
           c_tgt(1) = half*(c_tgt(1) + c_org(1))
-          call s_set_rgba_4_each_pixel(viewpoint_vec, xx_st, xx_tgt,    &
-     &        c_tgt(1), grad_tgt, o_tgt(1), color_param, rgba_ray)
+          call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_st, xx_tgt,    &
+     &        c_tgt(1), c_tgt(1), grad_tgt, color_param, ave_ray_len,   &
+     &        rgba_ray)
         end if
 !
         if(isurf_org(1).eq.0) then
