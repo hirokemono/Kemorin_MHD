@@ -200,7 +200,7 @@
       character(len=kchara) :: file_name = 'aho.ksm'
       type(calypso_MPI_IO_params) :: IO_param
 !
-      integer(kind = kint) :: i, k
+      integer(kind = kint) :: i, k, total_count
 !
 !  pickup surface and nodes
 !
@@ -232,9 +232,12 @@
      &   (IO_param, len(hd_ndomain_viewer()), hd_ndomain_viewer())
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(mgd_view_mesh%num_pe_sf))
-!
-      call mpi_write_charahead                                          &
-     &   (IO_param, len(hd_node_viewer()), hd_node_viewer())
+      call mpi_write_stack_over_domain                                  &
+     &   (IO_param, mgd_v_mesh_p%view_mesh%nodpetot_viewer)
+      call mpi_write_stack_over_domain                                  &
+     &   (IO_param, mgd_v_mesh_p%view_mesh%surfpetot_viewer)
+      call mpi_write_stack_over_domain                                  &
+     &   (IO_param, mgd_v_mesh_p%view_mesh%edgepetot_viewer)
 !
       do i = 1, mgd_v_mesh_p%view_mesh%nodpetot_viewer
         mgd_v_mesh_p%view_mesh%inod_gl_view(i)                          &
@@ -278,8 +281,13 @@
         end do
       end do
 !
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_node_viewer()), hd_node_viewer())
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(mgd_view_mesh%view_mesh%nodpetot_viewer))
 !
-      call mpi_write_node_position(IO_param,                            &
+!
+      call mpi_write_viewer_position(IO_param,                          &
      &    mgd_v_mesh_p%view_mesh%nodpetot_viewer, ithree,               &
      &    mgd_v_mesh_p%view_mesh%inod_gl_view,                          &
      &    mgd_v_mesh_p%view_mesh%xx_view)
@@ -287,14 +295,14 @@
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_surf_viewer()), hd_surf_viewer())
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(mgd_view_mesh%view_mesh%surfpetot_viewer))
 !
-      call mpi_write_num_of_data                                        &
-     &   (IO_param, mgd_v_mesh_p%view_mesh%surfpetot_viewer)
-      call mpi_write_element_type                                       &
+      call mpi_write_viewer_element_type                                &
      &   (IO_param, iten, mgd_v_mesh_p%view_mesh%surfpetot_viewer,      &
      &    mgd_v_mesh_p%view_mesh%surftyp_viewer)
 !
-      call mpi_write_ele_connect                                        &
+      call mpi_write_viewer_connect                                     &
      &   (IO_param, mgd_v_mesh_p%view_mesh%surfpetot_viewer,            &
      &    surf%nnod_4_surf, mgd_v_mesh_p%view_mesh%isurf_gl_view,       &
      &    mgd_v_mesh_p%view_mesh%ie_sf_viewer)
@@ -302,10 +310,10 @@
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_edge_viewer()), hd_edge_viewer())
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(mgd_view_mesh%view_mesh%edgepetot_viewer))
 !
-      call mpi_write_num_of_data                                        &
-     &   (IO_param, mgd_v_mesh_p%view_mesh%edgepetot_viewer)
-      call mpi_write_ele_connect                                        &
+      call mpi_write_viewer_connect                                     &
      &   (IO_param, mgd_v_mesh_p%view_mesh%edgepetot_viewer,            &
      &    edge%nnod_4_edge, mgd_v_mesh_p%view_mesh%iedge_gl_view,       &
      &    mgd_v_mesh_p%view_mesh%ie_edge_viewer)
@@ -313,13 +321,15 @@
 !
       call mpi_write_charahead(IO_param,                                &
      &    len(hd_edge_on_sf_viewer()), hd_edge_on_sf_viewer())
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(mgd_view_mesh%view_mesh%surfpetot_viewer))
 !
-      call mpi_write_num_of_data(IO_param, nedge_4_surf)
 !
-      call mpi_write_ele_connect(IO_param,                              &
+      call mpi_write_viewer_connect(IO_param,                           &
      &    mgd_v_mesh_p%view_mesh%surfpetot_viewer, nedge_4_surf,        &
      &    mgd_v_mesh_p%view_mesh%isurf_gl_view,                         &
      &    mgd_v_mesh_p%view_mesh%iedge_sf_viewer)
+!
 !
 !
       do i = 1, mgd_v_mesh_p%domain_grps%node_grp%num_item
@@ -388,26 +398,44 @@
         end if
       end do
 !
+      call MPI_allREDUCE(mgd_v_mesh_p%domain_grps%node_grp%num_item,    &
+     &    total_count, ione, CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM,    &
+     &    ierr_MPI)
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_domain_nod_grp()), hd_domain_nod_grp())
-      call mpi_write_viewer_grp_data                                    &
-     &   (IO_param, mgd_v_mesh_p%domain_grps%num_grp,                   &
-     &    mgd_v_mesh_p%domain_grps%grp_name,                            &
-     &    mgd_v_mesh_p%domain_grps%node_grp)
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(total_count))
+      call mpi_write_stack_over_domain                                  &
+     &   (IO_param, mgd_v_mesh_p%domain_grps%node_grp%num_item)
+      call mpi_write_viewer_grp_item(IO_param, ieight,                  &
+     &    mgd_v_mesh_p%domain_grps%node_grp%num_item,                   &
+     &    mgd_v_mesh_p%domain_grps%node_grp%item_sf)
 !
+      call MPI_allREDUCE(mgd_v_mesh_p%domain_grps%surf_grp%num_item,    &
+     &    total_count, ione, CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM,    &
+     &    ierr_MPI)
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_domain_surf_grp()), hd_domain_surf_grp())
-      call mpi_write_viewer_grp_data                                    &
-     &   (IO_param, mgd_v_mesh_p%domain_grps%num_grp,                   &
-     &    mgd_v_mesh_p%domain_grps%grp_name,                            &
-     &    mgd_v_mesh_p%domain_grps%surf_grp)
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(total_count))
+      call mpi_write_stack_over_domain                                  &
+     &   (IO_param, mgd_v_mesh_p%domain_grps%surf_grp%num_item)
+      call mpi_write_viewer_grp_item(IO_param, ieight,                  &
+     &    mgd_v_mesh_p%domain_grps%surf_grp%num_item,                   &
+     &    mgd_v_mesh_p%domain_grps%surf_grp%item_sf)
 !
+      call MPI_allREDUCE(mgd_v_mesh_p%domain_grps%edge_grp%num_item,    &
+     &    total_count, ione, CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM,    &
+     &    ierr_MPI)
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_domain_edge_grp()), hd_domain_edge_grp())
-      call mpi_write_viewer_grp_data                                    &
-     &   (IO_param, mgd_v_mesh_p%domain_grps%num_grp,                   &
-     &    mgd_v_mesh_p%domain_grps%grp_name,                            &
-     &    mgd_v_mesh_p%domain_grps%edge_grp)
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(total_count))
+      call mpi_write_stack_over_domain                                  &
+     &   (IO_param, mgd_v_mesh_p%domain_grps%edge_grp%num_item)
+      call mpi_write_viewer_grp_item(IO_param, ieight,                  &
+     &    mgd_v_mesh_p%domain_grps%edge_grp%num_item,                   &
+     &    mgd_v_mesh_p%domain_grps%edge_grp%item_sf)
 !
 !
       call mpi_write_charahead                                          &
@@ -484,13 +512,20 @@
       character(len=kchara), intent(in) :: grp_name(num_grp)
       type(viewer_group_data), intent(inout) :: view_grp
 !
-      integer(kind = kint) :: i, ist, ied, num
+      integer(kind = kint) :: i, ist, ied, num, ntot
 !
 !
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(num_grp))
-      call mpi_write_int_stack                                          &
-     &   (IO_param, num_grp, view_grp%istack_sf)
+!
+      ntot = 0
+      do i = 1, num_grp
+        num = view_grp%istack_sf(i) - view_grp%istack_sf(i-1)
+        call set_istack_4_parallell_data(num, IO_param)
+        num = ntot + IO_param%istack_merged(my_rank+1)
+        ntot = ntot + IO_param%istack_merged(nprocs)
+        call mpi_write_num_of_data(IO_param, num)
+      end do
 !
       do i = 1, num_grp
         call mpi_write_charahead(IO_param,                              &
@@ -498,14 +533,214 @@
      &      one_word_textline(grp_name(i)))
 !
         ist = view_grp%istack_sf(i-1) + 1
-        ied = view_grp%istack_sf(i)
         num = view_grp%istack_sf(i) - view_grp%istack_sf(i-1)
-        call mpi_write_comm_table                                       &
-     &     (IO_param, ieight, num, view_grp%item_sf(ist:ied))
+        call mpi_write_viewer_grp_item                                  &
+     &     (IO_param, ieight, num, view_grp%item_sf(ist))
       end do
 !
       end subroutine mpi_write_viewer_grp_data
 !
 !------------------------------------------------------------------
+!
+      subroutine mpi_write_viewer_position                              &
+     &         (IO_param, nnod, numdir, id_global, xx)
+!
+      use t_calypso_mpi_IO_param
+      use data_IO_to_textline
+      use MPI_domain_data_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: nnod, numdir
+      integer(kind=kint_gl), intent(in) :: id_global(nnod)
+      real(kind=kreal), intent(in) :: xx(nnod, numdir)
+!
+      integer(kind = kint) :: i, led, ilength
+      real(kind = kreal) :: xx_tmp(numdir)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+!
+      ilength = len_int8_and_vector_textline(numdir)
+      led = nnod * len_int8_and_vector_textline(numdir)
+      call set_istack_4_parallell_data(led, IO_param)
+!      call mpi_write_stack_over_domain(IO_param, led)
+!
+      ioffset = IO_param%ioff_gl                                        &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(nnod .le. 0) then
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_file, ioffset, ione, char(10))
+      else
+        do i = 1, nnod
+          xx_tmp(1:numdir) = xx(i,1:numdir)
+          call calypso_mpi_seek_write_chara                             &
+     &       (IO_param%id_file, ioffset, ilength,                       &
+     &        int8_and_vector_textline(id_global(i), numdir, xx_tmp))
+        end do
+      end if
+      call calypso_mpi_barrier
+!
+      end subroutine mpi_write_viewer_position
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_write_viewer_element_type                          &
+     &         (IO_param, ncolumn, num, int_dat)
+!
+      use t_calypso_mpi_IO_param
+      use data_IO_to_textline
+      use MPI_domain_data_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num, ncolumn
+      integer(kind=kint), intent(in) :: int_dat(num)
+!
+      integer(kind = kint) :: i, nrest, loop, led
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+!
+      if(num .le. 0) then
+        led = ione
+      else if(num .gt. 0) then
+        nrest = mod((num-1),ncolumn) + 1
+        loop = (num-1)/ncolumn
+        led = len_multi_6digit_line(ncolumn) * loop                     &
+     &       + len_multi_6digit_line(nrest)
+      end if
+!
+!      call mpi_write_stack_over_domain(IO_param, led)
+      call set_istack_4_parallell_data(led, IO_param)
+!
+      ioffset = IO_param%ioff_gl                                        &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(num .le. 0) then
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_file, ioffset, ione, char(10))
+      else if(num .gt. 0) then
+        do i = 0, (num-1)/ncolumn - 1
+          call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
+     &        len_multi_6digit_line(ncolumn),                           &
+     &        mul_6digit_int_line(ncolumn, int_dat(ncolumn*i+1)))
+        end do
+        nrest = mod((num-1),ncolumn) + 1
+        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
+     &      len_multi_6digit_line(nrest),                               &
+     &      mul_6digit_int_line(nrest, int_dat(num-nrest+1)))
+      end if
+!
+      end subroutine mpi_write_viewer_element_type
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_write_viewer_connect                               &
+     &         (IO_param, nele, nnod_4_ele, id_global, ie)
+!
+      use t_calypso_mpi_IO_param
+      use data_IO_to_textline
+      use MPI_domain_data_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: nele, nnod_4_ele
+      integer(kind=kint_gl), intent(in) :: id_global(nele)
+      integer(kind=kint), intent(in) :: ie(nele,nnod_4_ele)
+!
+      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint) :: ie_tmp(nnod_4_ele)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+!
+      ilength = len_int8_and_mul_int_textline(nnod_4_ele)
+!
+      if(nele .le. 0) then
+        led = ione
+      else
+        led = ilength * nele
+      end if
+!
+!      call mpi_write_stack_over_domain(IO_param, led)
+      call set_istack_4_parallell_data(led, IO_param)
+!
+      ioffset = IO_param%ioff_gl                                        &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(nele .le. 0) then
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_file, ioffset, ione, char(10))
+      else
+        do i = 1, nele
+          ie_tmp(1:nnod_4_ele) = ie(i,1:nnod_4_ele)
+          call calypso_mpi_seek_write_chara                             &
+     &       (IO_param%id_file, ioffset, ilength,                       &
+     &        int8_and_mul_int_textline(id_global(i),                   &
+     &                                  nnod_4_ele, ie_tmp))
+        end do
+      end if
+!
+      end subroutine mpi_write_viewer_connect
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_write_viewer_grp_item                              &
+     &         (IO_param, ncolumn, num, int_dat)
+!
+      use t_calypso_mpi_IO_param
+      use data_IO_to_textline
+      use MPI_domain_data_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num, ncolumn
+      integer(kind=kint), intent(in) :: int_dat(num)
+!
+      integer(kind = kint) :: i, nrest, loop, led
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+!
+      if(num .le. 0) then
+!        led = ione
+         led = izero
+      else if(num .gt. 0) then
+        nrest = mod((num-1),ncolumn) + 1
+        loop = (num-1)/ncolumn
+        led = len_multi_int_textline(ncolumn) * loop                    &
+     &       + len_multi_int_textline(nrest)
+      end if
+!
+!      call mpi_write_stack_over_domain(IO_param, led)
+      call set_istack_4_parallell_data(led, IO_param)
+!
+      ioffset = IO_param%ioff_gl                                        &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(num .gt. 0) then
+        do i = 0, (num-1)/ncolumn - 1
+          call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
+     &        len_multi_int_textline(ncolumn),                          &
+     &        multi_int_textline(ncolumn, int_dat(ncolumn*i+1)))
+        end do
+        nrest = mod((num-1),ncolumn) + 1
+        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
+     &      len_multi_int_textline(nrest),                              &
+     &      multi_int_textline(nrest, int_dat(num-nrest+1)))
+!      else
+!        call calypso_mpi_seek_write_chara                              &
+!     &     (IO_param%id_file, ioffset, ione, char(10))
+      end if
+!
+      end subroutine mpi_write_viewer_grp_item
+!
+! -----------------------------------------------------------------------
 !
       end module parallel_const_surface_mesh

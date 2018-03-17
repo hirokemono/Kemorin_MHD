@@ -52,25 +52,27 @@
       write(surface_id,'(i16)') domain_grps%node_grp%num_item
       write(surface_id,'(8i16)')                                        &
      &   domain_grps%node_grp%istack_sf(1:num_pe)
-      call write_viewer_group_data(surface_id, num_pe, ione,            &
-     &    domain_grps%grp_name, domain_grps%node_grp)
+      write(surface_id,'(8i16)')                                        &
+     &   domain_grps%node_grp%item_sf(1:domain_grps%node_grp%num_item)
 !
       write(surface_id,'(a)', advance='NO') hd_domain_surf_grp()
 !
       write(surface_id,'(i16)') domain_grps%surf_grp%num_item
       write(surface_id,'(8i16)')                                        &
      &   domain_grps%surf_grp%istack_sf(1:num_pe)
-      call write_viewer_group_data(surface_id, num_pe, ione,            &
-     &    domain_grps%grp_name, domain_grps%surf_grp)
+!
+      write(surface_id,'(8i16)')                                        &
+     &   domain_grps%surf_grp%item_sf(1:domain_grps%surf_grp%num_item)
 !
       write(surface_id,'(a)', advance='NO') hd_domain_edge_grp()
+!
 !
       write(surface_id,'(i16)') domain_grps%edge_grp%num_item
       write(surface_id,'(8i16)')                                        &
      &     domain_grps%edge_grp%istack_sf(1:num_pe)
 !
-      call write_viewer_group_data(surface_id, num_pe, ione,            &
-     &    domain_grps%grp_name, domain_grps%edge_grp)
+      write(surface_id,'(8i16)')                                        &
+     &   domain_grps%edge_grp%item_sf(1:domain_grps%edge_grp%num_item)
 !
       end subroutine write_domain_group_viewer
 !
@@ -91,8 +93,8 @@
       read(surface_id,*) domain_grps%node_grp%istack_sf(1:num_pe)
 !
       call alloc_merged_group_item(domain_grps%node_grp)
-      call read_viewer_group_item(surface_id, num_pe, ione,             &
-     &    domain_grps%grp_name, domain_grps%node_grp)
+      read(surface_id,*)                                                &
+     &   domain_grps%node_grp%item_sf(1:domain_grps%node_grp%num_item)
 !
 !      write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
 !
@@ -101,8 +103,8 @@
       read(surface_id,*) domain_grps%surf_grp%istack_sf(1:num_pe)
 !
       call alloc_merged_group_item(domain_grps%surf_grp)
-      call read_viewer_group_item(surface_id, num_pe, ione,             &
-     &    domain_grps%grp_name, domain_grps%surf_grp)
+      read(surface_id,*)                                                &
+     &   domain_grps%surf_grp%item_sf(1:domain_grps%surf_grp%num_item)
 !
 !      write(surface_id,'(a)') '! 3.2 edge ID for domain boundary'
 !
@@ -111,8 +113,8 @@
       read(surface_id,*) domain_grps%edge_grp%istack_sf(1:num_pe)
 !
       call alloc_merged_group_item(domain_grps%edge_grp)
-      call read_viewer_group_item(surface_id, num_pe, ione,             &
-     &    domain_grps%grp_name, domain_grps%edge_grp)
+      read(surface_id,*)                                                &
+     &   domain_grps%edge_grp%item_sf(1:domain_grps%edge_grp%num_item)
 !
       end subroutine read_domain_group_viewer
 !
@@ -178,8 +180,7 @@
       write(surface_id,'(a)', advance='NO') hd_fem_elegrp()
       write(surface_id,'(a)', advance='NO') hd_ele_surf_grp()
 !
-      write(surface_id,'(2i16)')                                        &
-     &    view_ele_grps%num_grp, view_ele_grps%surf_grp%num_item
+      write(surface_id,'(i16)') view_ele_grps%num_grp
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe, view_ele_grps%num_grp,                    &
@@ -187,14 +188,14 @@
 !
 !
       write(surface_id,'(a)', advance='NO') hd_ele_nod_grp()
-      write(surface_id,'(i16)') view_ele_grps%node_grp%num_item
+      write(surface_id,'(i16)') view_ele_grps%num_grp
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe, view_ele_grps%num_grp,                    &
      &    view_ele_grps%grp_name, view_ele_grps%node_grp)
 !
       write(surface_id,'(a)', advance='NO') hd_surf_surf_grp()
-      write(surface_id,'(i16)') view_ele_grps%edge_grp%num_item
+      write(surface_id,'(i16)') view_ele_grps%num_grp
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe, view_ele_grps%num_grp,                    &
@@ -211,19 +212,21 @@
       integer(kind = kint), intent(in)  :: num_pe
       type(viewer_surface_groups), intent(inout) :: view_ele_grps
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: num, itmp
 !
 !      write(surface_id,'(a)') '! 4.2 element group'
 !      write(surface_id,'(a)') '! 4.2.1 element data'
 !
-      num = num_pe * view_ele_grps%num_grp
-!
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*)                                             &
-     &   view_ele_grps%num_grp, view_ele_grps%surf_grp%num_item
+      read(tmp_character,*) view_ele_grps%num_grp
+!
+      num = num_pe * view_ele_grps%num_grp
 !
       call alloc_viewer_surf_grps_stack(num_pe, view_ele_grps)
       read(surface_id,*) view_ele_grps%surf_grp%istack_sf(1:num)
+!
+      view_ele_grps%surf_grp%num_item                                   &
+     &    = view_ele_grps%surf_grp%istack_sf(num)
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe, view_ele_grps%num_grp,                    &
@@ -232,8 +235,11 @@
 !      write(surface_id,'(a)') '! 4.2.2 node data'
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) view_ele_grps%node_grp%num_item
+      read(tmp_character,*) itmp
       read(surface_id,*) view_ele_grps%node_grp%istack_sf(1:num)
+!
+      view_ele_grps%node_grp%num_item                                   &
+     &    = view_ele_grps%node_grp%istack_sf(num)
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe, view_ele_grps%num_grp,                    &
@@ -242,8 +248,11 @@
 !      write(surface_id,'(a)') '! 4.2.3 edge data'
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) view_ele_grps%edge_grp%num_item
+      read(tmp_character,*) itmp
       read(surface_id,*)  view_ele_grps%edge_grp%istack_sf(1:num)
+!
+      view_ele_grps%edge_grp%num_item                                   &
+     &    = view_ele_grps%edge_grp%istack_sf(num)
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe, view_ele_grps%num_grp,                    &
@@ -264,8 +273,7 @@
 !
       write(surface_id,'(a)', advance='NO') hd_fem_sfgrp()
       write(surface_id,'(a)', advance='NO') hd_surf_surf_grp()
-      write(surface_id,'(2i16)')                                        &
-     &       view_sf_grps%num_grp, view_sf_grps%surf_grp%num_item
+      write(surface_id,'(i16)') view_sf_grps%num_grp
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe, view_sf_grps%num_grp,                     &
@@ -273,14 +281,14 @@
 !
 !
       write(surface_id,'(a)', advance='NO') hd_surf_nod_grp()
-      write(surface_id,'(i16)') view_sf_grps%node_grp%num_item
+      write(surface_id,'(i16)') view_sf_grps%num_grp
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe, view_sf_grps%num_grp,                     &
      &    view_sf_grps%grp_name, view_sf_grps%node_grp)
 !
       write(surface_id,'(a)', advance='NO') hd_surf_edge_grp()
-      write(surface_id,'(i16)') view_sf_grps%edge_grp%num_item
+      write(surface_id,'(i16)') view_sf_grps%num_grp
 !
       call write_viewer_group_data                                      &
      &   (surface_id, num_pe, view_sf_grps%num_grp,                     &
@@ -297,16 +305,18 @@
       integer(kind = kint), intent(in)  :: num_pe
       type(viewer_surface_groups), intent(inout) :: view_sf_grps
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: num, itmp
 !
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*)                                             &
-     &       view_sf_grps%num_grp, view_sf_grps%surf_grp%num_item
+      read(tmp_character,*) view_sf_grps%num_grp
       num = num_pe * view_sf_grps%num_grp
 !
       call alloc_viewer_surf_grps_stack(num_pe, view_sf_grps)
       read(surface_id,*) view_sf_grps%surf_grp%istack_sf(1:num)
+!
+      view_sf_grps%surf_grp%num_item                                    &
+     &    = view_sf_grps%surf_grp%istack_sf(num)
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe, view_sf_grps%num_grp,                     &
@@ -315,8 +325,11 @@
 !      write(surface_id,'(a)') '! 4.3.2 node data'
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) view_sf_grps%node_grp%num_item
+      read(tmp_character,*) itmp
       read(surface_id,*) view_sf_grps%node_grp%istack_sf(1:num)
+!
+      view_sf_grps%node_grp%num_item                                    &
+     &    = view_sf_grps%node_grp%istack_sf(num)
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe, view_sf_grps%num_grp,                     &
@@ -325,8 +338,11 @@
 !      write(surface_id,'(a)') '! 4.3.3 edge data'
 !
       call skip_comment(tmp_character, surface_id)
-      read(tmp_character,*) view_sf_grps%edge_grp%num_item
+      read(tmp_character,*) itmp
       read(surface_id,*) view_sf_grps%edge_grp%istack_sf(1:num)
+!
+      view_sf_grps%edge_grp%num_item                                    &
+     &    = view_sf_grps%edge_grp%istack_sf(num)
 !
       call read_viewer_group_item                                       &
      &   (surface_id, num_pe, view_sf_grps%num_grp,                     &
@@ -345,19 +361,17 @@
       character(len = kchara), intent(in) :: name(ngrp)
       type(viewer_group_data), intent(in) :: group
 !
-      integer(kind = kint) :: i, ist, ied, ip
+      integer(kind = kint) :: i, ist, ied
 !
 !
       write(id_file,'(8i16)') group%istack_sf(1:nprocs*ngrp)
 !
       if (ngrp .gt. 0) then
         do i = 1, ngrp
+          ist = group%istack_sf(nprocs*(i-1)) + 1
+          ied = group%istack_sf(nprocs*i    )
           write(id_file,'(a)') trim(name(i))
-          do ip = 1, nprocs
-            ist = group%istack_sf(ip-1+nprocs*(i-1)) + 1
-            ied = group%istack_sf(ip+nprocs*(i-1))
-            write(id_file,'(8i16)') group%item_sf(ist:ied)
-          end do
+          write(id_file,'(8i16)') group%item_sf(ist:ied)
         end do
       else
         write(id_file,*) ''
@@ -376,18 +390,16 @@
       character(len = kchara), intent(inout) :: name(ngrp)
       type(viewer_group_data), intent(inout) :: group
 !
-      integer(kind = kint) :: i, ist, ied, ip
+      integer(kind = kint) :: i, ist, ied
 !
 !
       call alloc_merged_group_item(group)
 !
       do i = 1, ngrp
+        ist = group%istack_sf(nprocs*(i-1)) + 1
+        ied = group%istack_sf(nprocs*i    )
         read(id_file,*) name(i)
-        do ip = 1, nprocs
-          ist = group%istack_sf(ip-1+nprocs*(i-1)) + 1
-          ied = group%istack_sf(ip+nprocs*(i-1))
-          read(id_file,*) group%item_sf(ist:ied)
-        end do
+        read(id_file,*) group%item_sf(ist:ied)
       end do
 !
       end subroutine read_viewer_group_item
