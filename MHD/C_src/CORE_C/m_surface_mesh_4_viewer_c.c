@@ -10,16 +10,11 @@
 void alloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
 	
-    mesh_s->domain_name_sf =  (char **)calloc((IONE),sizeof(char *));
-    for (i = 0; i < mesh_s->num_pe_sf; i++) {
-        mesh_s->domain_name_sf[i] = (char *)calloc(KCHARA_C, sizeof(char));
-    };
-    
 	mesh_s->subdomain_name_sf =  (char **)calloc((mesh_s->num_pe_sf),sizeof(char *));
 	for (i = 0; i < mesh_s->num_pe_sf; i++) {
 		mesh_s->subdomain_name_sf[i] = (char *)calloc(KCHARA_C, sizeof(char));
 	};
-	    
+	
 	mesh_s->inod_sf_stack =  (int *)calloc((mesh_s->num_pe_sf)+1,sizeof(int));
 	mesh_s->isurf_sf_stack = (int *)calloc((mesh_s->num_pe_sf)+1,sizeof(int));
 	mesh_s->iedge_sf_stack = (int *)calloc((mesh_s->num_pe_sf)+1,sizeof(int));
@@ -364,15 +359,13 @@ void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 
 static void dealloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
-
+	
 	free(mesh_s->inod_sf_stack);
 	free(mesh_s->isurf_sf_stack);
 	free(mesh_s->iedge_sf_stack);
 	
 	for (i = 0; i < mesh_s->num_pe_sf; i++) free(mesh_s->subdomain_name_sf[i]);
 	free(mesh_s->subdomain_name_sf);
-    free(mesh_s->domain_name_sf[0]);
-    free(mesh_s->domain_name_sf);
 	return;
 };
 

@@ -19,7 +19,7 @@ struct viewer_mesh {
 	int nedge_4_surf;
 	int nsurf_each_tri;
 	int *node_quad_2_linear_tri;
-
+	
 	int *inod_sf_stack;
 	int *iedge_sf_stack;
 	int *isurf_sf_stack;
@@ -97,7 +97,6 @@ struct viewer_mesh {
 	double rmax_mesh;
 	
     
-    char **domain_name_sf;
 	char **subdomain_name_sf;
     
 	char **nod_gp_name_sf;
