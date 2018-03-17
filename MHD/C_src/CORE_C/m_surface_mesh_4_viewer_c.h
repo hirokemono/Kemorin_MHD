@@ -121,6 +121,7 @@ struct viewer_mesh {
 	double rmax_mesh;
 	
     
+    char **domain_name_sf;
 	char **subdomain_name_sf;
     
 	char **nod_gp_name_sf;
