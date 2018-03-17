@@ -7,26 +7,6 @@
 #include <stdio.h>
 #include "kemosrc_param_c.h"
 
-struct viewer_group {
-    int num_item;
-    int *istack_sf;
-    int *item_sf;
-};
-
-struct viewer_nod_grps {
-    int num_grp;
-    char **grp_name;
-    struct viewer_group node_grp;
-};
-
-struct viewer_surf_grps {
-    int num_grp;
-    char **grp_name;
-    struct viewer_group surf_grp;
-    struct viewer_group edge_grp;
-    struct viewer_group node_grp;
-};
-
 struct viewer_mesh {
 	int num_pe_sf;
 	
@@ -39,11 +19,7 @@ struct viewer_mesh {
 	int nedge_4_surf;
 	int nsurf_each_tri;
 	int *node_quad_2_linear_tri;
-	
-    int *nnod_sf;
-    int *nedge_sf;
-    int *nsurf_sf;
-    
+
 	int *inod_sf_stack;
 	int *iedge_sf_stack;
 	int *isurf_sf_stack;
