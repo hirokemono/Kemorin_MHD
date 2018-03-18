@@ -11,9 +11,6 @@
       use m_constants
       use calypso_mpi
 !
-      use t_geometry_data
-      use t_surface_data
-      use t_edge_data
       use t_file_IO_parameter
       use t_mesh_data_4_merge
       use parallel_const_surface_mesh
@@ -25,9 +22,6 @@
       integer(kind = kint) :: icount
 !
       type(field_IO_params), save ::  pick_mesh_file
-      type(element_data), save :: ele_pick
-      type(surface_data), save :: surf_pick
-      type(edge_data), save :: edge_pick
 !
 !
       call calypso_MPI_init
@@ -47,8 +41,7 @@
      &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
       pick_mesh_file%file_prefix = file_head
-      call choose_surface_mesh_para                                     &
-     &   (pick_mesh_file, ele_pick, surf_pick, edge_pick)
+      call choose_surface_mesh_para(pick_mesh_file)
 !
       call calypso_MPI_finalize
       stop ' //// program normally finished //// '

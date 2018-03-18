@@ -25,9 +25,6 @@
       character(len = 1) :: chara_flag
 !
       type(field_IO_params), save :: mesh_file_viewer
-      type(element_data), save :: ele_viewer
-!
-      type(element_geometry), save :: ele_mesh1
 !
 !
       icount = iargc_kemo()
@@ -39,8 +36,7 @@
       end if
 !
       mesh_file_viewer%file_prefix = file_head
-      call choose_surface_mesh_sgl                                      &
-     &   (mesh_file_viewer, ele_viewer, ele_mesh1%surf, ele_mesh1%edge)
+      call choose_surface_mesh_sgl(mesh_file_viewer)
 !
       write(*,*) 'will you draw mesh? (y/n)'
       read(*,*) chara_flag
