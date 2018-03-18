@@ -3,17 +3,23 @@
 !
 !      Written by H. Matsui on Apr., 2010
 !
-!      subroutine link_merged_node_2_ucd_IO(ucd)
-!      subroutine link_merged_ele_2_ucd_IO(ucd)
-!      subroutine link_merged_field_2_udt_IO(ucd)
-!        type(ucd_data), intent(inout) :: ucd
+!!      subroutine link_merged_node_2_ucd_IO(merged, merge_tbl, ucd)
+!!      subroutine link_merged_ele_2_ucd_IO(merged, merge_tbl, ucd)
+!!      subroutine link_merged_field_2_udt_IO                           &
+!!     &         (merged_fld, merge_tbl, ucd)
+!!        type(mesh_geometry), intent(in) :: merged
+!!        type(phys_data), intent(in) :: merged_fld
+!!        type(merged_stacks), intent(in) :: merge_tbl
+!!        type(ucd_data), intent(inout) :: ucd
 !
       module set_merged_udt_2_IO
 !
       use m_precision
 !
-      use m_geometry_data_4_merge
+      use t_mesh_data
+      use t_phys_data
       use t_ucd_data
+      use t_merged_geometry_data
       use set_ucd_data_to_type
 !
       implicit none
@@ -24,11 +30,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine link_merged_node_2_ucd_IO(ucd)
+      subroutine link_merged_node_2_ucd_IO(merged, merge_tbl, ucd)
 !
       use set_ucd_data
 !
+      type(mesh_geometry), intent(in) :: merged
+      type(merged_stacks), intent(in) :: merge_tbl
       type(ucd_data), intent(inout) :: ucd
+!
       integer(kind = kint_gl) :: inod
 !
 !
@@ -48,10 +57,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine link_merged_ele_2_ucd_IO(ucd)
+      subroutine link_merged_ele_2_ucd_IO(merged, merge_tbl, ucd)
 !
       use set_ucd_data
 !
+      type(mesh_geometry), intent(in) :: merged
+      type(merged_stacks), intent(in) :: merge_tbl
       type(ucd_data), intent(inout) :: ucd
 !
       integer(kind = kint_gl) :: iele
@@ -82,10 +93,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine link_merged_field_2_udt_IO(ucd)
+      subroutine link_merged_field_2_udt_IO                             &
+     &         (merged_fld, merge_tbl, ucd)
 !
       use set_ucd_data
 !
+      type(phys_data), intent(in) :: merged_fld
+      type(merged_stacks), intent(in) :: merge_tbl
       type(ucd_data), intent(inout) :: ucd
 !
       integer(kind = kint_gl) :: inod

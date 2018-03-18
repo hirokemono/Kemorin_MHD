@@ -4,7 +4,8 @@
 !
 !      written by H. Matsui on Jan., 2007
 !
-!      subroutine allocate_quad4_2_linear(nnod_4_ele)
+!!      subroutine allocate_quad4_2_linear(nnod_4_ele)
+!!      subroutine deallocate_quad4_2_linear
 !
 !
       module m_node_quad_2_linear_sf
@@ -55,6 +56,15 @@
       end if
 !
        end subroutine allocate_quad4_2_linear
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_quad4_2_linear
+!
+!
+      deallocate ( node_quad_2_tri )
+!
+      end subroutine deallocate_quad4_2_linear
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

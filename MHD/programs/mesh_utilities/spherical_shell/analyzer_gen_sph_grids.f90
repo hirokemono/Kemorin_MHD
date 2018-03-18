@@ -89,15 +89,14 @@
 !
       call start_elapsed_time(4)
       if(gen_sph_G%s3d_ranks%ndomain_sph .eq. nprocs) then
-        call mpi_gen_fem_mesh_for_sph                                   &
-     &     (sph_files1%iflag_output_FEM, sph_files1%iflag_output_SURF,  &
+        call mpi_gen_fem_mesh_for_sph(sph_files1%FEM_mesh_flags,        &
      &      gen_sph_G, sph_const%sph_params, sph_const%sph_rj,          &
      &      sph_const%sph_rtp, sph_files1%mesh_file_IO)
       else
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
-        call para_gen_fem_mesh_for_sph(sph_files1%iflag_output_FEM,     &
-     &      gen_sph_G%s3d_ranks%ndomain_sph, gen_sph_G,                 &
-     &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
+        call para_gen_fem_mesh_for_sph(gen_sph_G%s3d_ranks%ndomain_sph, &
+     &      sph_files1%FEM_mesh_flags, gen_sph_G, sph_const%sph_params, &
+     &      sph_const%sph_rj, sph_const%sph_rtp,  &
      &      sph_files1%mesh_file_IO)
       end if
       call end_elapsed_time(4)

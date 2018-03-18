@@ -3,8 +3,14 @@
 !
 !      Written by Kemorin on May, 2010
 !
-!      subroutine set_domain_local_id_by_type1(nprocs, mesh_info)
-!      subroutine set_domain_local_id_by_type2(nprocs, mesh_info)
+!!      subroutine set_domain_local_id_by_type1                         &
+!!     &         (nprocs, mesh_info, merge_tbl)
+!!        type(mesh_data), intent(in) :: mesh_info(nprocs)
+!!        type(merged_stacks), intent(inout) :: merge_tbl
+!!      subroutine set_domain_local_id_by_type2                         &
+!!     &         (nprocs, mesh_info, merge_tbl_2)
+!!        type(mesh_data), intent(in) :: mesh_info(nprocs)
+!!        type(merged_stacks), intent(inout) :: merge_tbl_2
 !
       module merge_domain_local_by_type
 !
@@ -22,12 +28,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_domain_local_id_by_type1(nprocs, mesh_info)
+      subroutine set_domain_local_id_by_type1                           &
+     &         (nprocs, mesh_info, merge_tbl)
 !
-      use m_geometry_data_4_merge
+      use t_merged_geometry_data
 !
       integer(kind = kint), intent(in) :: nprocs
       type(mesh_data), intent(in) :: mesh_info(nprocs)
+!
+      type(merged_stacks), intent(inout) :: merge_tbl
 !
 !
       call set_domain_local_id_by_type(nprocs, mesh_info,               &
@@ -39,12 +48,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_domain_local_id_by_type2(nprocs, mesh_info)
+      subroutine set_domain_local_id_by_type2                           &
+     &         (nprocs, mesh_info, merge_tbl_2)
 !
-      use m_2nd_geometry_4_merge
+      use t_mesh_data_4_merge
 !
       integer(kind = kint), intent(in) :: nprocs
       type(mesh_data), intent(in) :: mesh_info(nprocs)
+      type(merged_stacks), intent(inout) :: merge_tbl_2
 !
 !
       call set_domain_local_id_by_type(nprocs, mesh_info,               &

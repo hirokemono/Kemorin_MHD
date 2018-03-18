@@ -3,20 +3,44 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!      subroutine mark_used_node_4_viewer(nnod_4_surf)
-!      subroutine count_used_node_4_viewer
-!      subroutine set_node_cvt_table_viewer
-!
-!      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
-!      subroutine set_node_position_4_viewer
+!!      subroutine allocate_imark_nod_pick_node(merged)
+!!      subroutine allocate_nod_cvt_table_viewer(merged, view_mesh)
+!!        type(mesh_geometry), intent(in) :: merged
+!!      subroutine deallocate_imark_nod_pick_node
+!!      subroutine deallocate_nod_cvt_table_viewer
+!!
+!!      subroutine mark_used_node_4_viewer                              &
+!!     &         (nnod_4_surf, merged_grp, view_mesh)
+!!        type(mesh_groups), intent(in)  :: merged_grp
+!!        type(viewer_mesh_data), intent(in) :: view_mesh
+!!      subroutine count_used_node_4_viewer(merge_tbl, num_pe, nnod_sf)
+!!        type(merged_stacks), intent(in) :: merge_tbl
+!!
+!!      subroutine set_node_cvt_table_viewer(merged, imark_node)
+!!        type(mesh_geometry), intent(in) :: merged
+!!      subroutine renumber_surf_connect_4_viewer                       &
+!!     &         (nnod_4_surf, view_mesh, view_mesh)
+!!      subroutine set_node_position_4_viewer(merged, view_mesh)
+!!        type(mesh_geometry), intent(in) :: merged
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
+!!      subroutine set_node_group_item_viewer(merged_grp, nod_nod_grp)
+!!        type(mesh_groups), intent(in) :: merged_grp
+!!        type(viewer_group_data), intent(inout) :: nod_nod_grp
 !
       module pickup_node_4_viewer
 !
       use m_precision
-!
-      use m_pickup_table_4_viewer
+      use t_surface_data
+      use t_viewer_mesh
 !
       implicit none
+!
+!
+      integer(kind = kint), allocatable :: imark_node(:)
+      integer(kind = kint), allocatable :: inod_merge2viewer(:)
+      integer(kind = kint), allocatable :: inod_viewer2merge(:)
+!
+      private :: imark_node, inod_merge2viewer, inod_viewer2merge
 !
 !------------------------------------------------------------------
 !
@@ -24,18 +48,67 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mark_used_node_4_viewer(nnod_4_surf)
+      subroutine allocate_imark_nod_pick_node(merged)
 !
-      use m_geometry_data_4_merge
-      use m_surface_mesh_4_merge
+      use t_mesh_data
+!
+      type(mesh_geometry), intent(in) :: merged
+!
+      allocate( imark_node(merged%node%numnod) )
+      imark_node = 0
+!
+      end subroutine allocate_imark_nod_pick_node
+!
+!------------------------------------------------------------------
+!
+      subroutine allocate_nod_cvt_table_viewer(merged, view_mesh)
+!
+      use t_mesh_data
+!
+      type(mesh_geometry), intent(in) :: merged
+      type(viewer_mesh_data), intent(in) :: view_mesh
+!
+      allocate( inod_merge2viewer(merged%node%numnod) )
+      allocate( inod_viewer2merge(view_mesh%nodpetot_viewer) )
+      inod_merge2viewer = 0
+      inod_viewer2merge = 0
+!
+      end subroutine allocate_nod_cvt_table_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_imark_nod_pick_node
+!
+      deallocate( imark_node )
+!
+      end subroutine deallocate_imark_nod_pick_node
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_nod_cvt_table_viewer
+!
+      deallocate( inod_merge2viewer, inod_viewer2merge )
+!
+      end subroutine deallocate_nod_cvt_table_viewer
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine mark_used_node_4_viewer                                &
+     &         (nnod_4_surf, merged_grp, view_mesh)
+!
+      use t_mesh_data
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
+      type(mesh_groups), intent(in)  :: merged_grp
+      type(viewer_mesh_data), intent(in) :: view_mesh
+!
       integer(kind = kint) :: inum, isurf, inod, k1
 !
 !
-      do isurf = 1, surfpetot_viewer
+      do isurf = 1, view_mesh%surfpetot_viewer
         do k1 = 1, nnod_4_surf
-          inod = ie_sf_viewer(isurf,k1)
+          inod = view_mesh%ie_sf_viewer(isurf,k1)
           imark_node(inod) = 1
         end do
       end do
@@ -49,31 +122,36 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_used_node_4_viewer
+      subroutine count_used_node_4_viewer(merge_tbl, num_pe, nnod_sf)
 !
-      use m_geometry_data_4_merge
-      use m_surface_mesh_4_merge
+      use t_merged_geometry_data
+!
+      type(merged_stacks), intent(in) :: merge_tbl
+      integer(kind = kint), intent(in) :: num_pe
+!
+      integer(kind = kint), intent(inout) :: nnod_sf(num_pe)
 !
       integer(kind = kint) :: ip, ist, ied, inod
 !
-      do ip = 1, num_pe_sf
+      do ip = 1, num_pe
         ist = merge_tbl%istack_nod(ip-1) + 1
         ied = merge_tbl%istack_nod(ip)
-        inod_sf_stack(ip) = inod_sf_stack(ip-1)
+        nnod_sf(ip) = 0
         do inod = ist, ied
-          inod_sf_stack(ip) = inod_sf_stack(ip) + imark_node(inod)
+          nnod_sf(ip) = nnod_sf(ip) + imark_node(inod)
         end do
       end do
-      nodpetot_viewer = inod_sf_stack(num_pe_sf)
 !
       end subroutine count_used_node_4_viewer
 !
 !------------------------------------------------------------------
+!------------------------------------------------------------------
 !
-      subroutine set_node_cvt_table_viewer
+      subroutine set_node_cvt_table_viewer(merged)
 !
-      use m_geometry_data_4_merge
-      use m_surf_geometry_4_merge
+      use t_mesh_data
+!
+      type(mesh_geometry), intent(in) :: merged
 !
       integer(kind = kint) :: inod, inum
 !
@@ -90,20 +168,20 @@
       end subroutine set_node_cvt_table_viewer
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
 !
-      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
-!
-      use m_surface_mesh_4_merge
+      subroutine renumber_surf_connect_4_viewer                         &
+     &         (nnod_4_surf, view_mesh)
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
       integer(kind = kint) :: isurf, k1, inod
 !
 !
-      do isurf = 1, surfpetot_viewer
+      do isurf = 1, view_mesh%surfpetot_viewer
         do k1 = 1, nnod_4_surf
-          inod = ie_sf_viewer(isurf,k1)
-          ie_sf_viewer(isurf,k1) = inod_merge2viewer(inod)
+          inod = view_mesh%ie_sf_viewer(isurf,k1)
+          view_mesh%ie_sf_viewer(isurf,k1) = inod_merge2viewer(inod)
         end do
       end do
 !
@@ -111,20 +189,42 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_position_4_viewer
+      subroutine set_node_position_4_viewer(merged, view_mesh)
 !
-      use m_geometry_data_4_merge
-      use m_surface_mesh_4_merge
+      use t_mesh_data
+!
+      type(mesh_geometry), intent(in) :: merged
+      type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       integer(kind = kint) :: inum, inod
 !
 !
-      do inum = 1, nodpetot_viewer
+      do inum = 1, view_mesh%nodpetot_viewer
         inod = inod_viewer2merge(inum)
-        xx_view(inum,1:3) = merged%node%xx(inod,1:3)
+        view_mesh%xx_view(inum,1:3) = merged%node%xx(inod,1:3)
       end do
 !
       end subroutine set_node_position_4_viewer
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine set_node_group_item_viewer(merged_grp, nod_nod_grp)
+!
+      use t_mesh_data
+!
+      type(mesh_groups), intent(in) :: merged_grp
+      type(viewer_group_data), intent(inout) :: nod_nod_grp
+!
+      integer(kind = kint) :: inum, inod
+!
+!
+      do inum = 1, nod_nod_grp%num_item
+        inod = merged_grp%nod_grp%item_grp(inum)
+        nod_nod_grp%item_sf(inum) = inod_merge2viewer(inod)
+      end do
+!
+      end subroutine set_node_group_item_viewer
 !
 !------------------------------------------------------------------
 !

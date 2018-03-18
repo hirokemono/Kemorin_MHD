@@ -11,6 +11,7 @@
       use t_surface_data
       use t_edge_data
       use t_near_mesh_id_4_node
+      use t_mesh_data_4_merge
 !
       use m_control_data_4_part
       use m_ctl_param_partitioner
@@ -23,7 +24,7 @@
       use load_mesh_data
       use const_mesh_information
 !
-      use const_surface_mesh
+      use single_const_surface_mesh
 !
       implicit none
 !
@@ -70,9 +71,8 @@
 !
 !  ========= Construct subdomain information for viewer ==============
 !
-      write(*,*) 'choose_surface_mesh'
-      call choose_surface_mesh(distribute_mesh_file,                    &
-     &    org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge)
+      write(*,*) 'choose_surface_mesh_sgl'
+      call choose_surface_mesh_sgl(distribute_mesh_file)
 !
       stop ' * Partitioning finished'
 !

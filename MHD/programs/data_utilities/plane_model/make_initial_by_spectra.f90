@@ -1,21 +1,21 @@
 !
 !      program make_initial_by_spectra
 !
-      program make_initial_by_spectra
-!
 !    constract new initial data from simulation results 
 !     By H. Matsui
 !
+!
+      program make_initial_by_spectra
 !
       use m_precision
       use calypso_mpi
 !
       use t_time_data
+      use t_mesh_data_4_merge
 !
       use m_constants
       use m_file_format_switch
       use m_phys_labels
-      use m_geometry_data_4_merge
       use m_size_4_plane
       use m_setting_4_ini
       use m_set_new_spectr
@@ -36,6 +36,7 @@
 !
 !
       type(field_IO_params), save ::  plane_mesh_file
+      type(merged_mesh), save :: mgd_mesh_pm
 !
       integer(kind=kint ) ::  istep_udt, n_comp, i_time_step
 !
@@ -44,10 +45,8 @@
 !  ===========
 
       integer(kind=kint ) :: ip, inod
-      integer(kind=kint ) :: i, j, iz
-      integer(kind=kint ) :: icomp
+      integer(kind=kint ) :: i, j
       integer(kind=kint ) :: i1
-      integer(kind=kint ) :: iflag
       integer(kind=kint ) :: ist, ied
       integer(kind=kint ) :: ifactor_rst, ifactor_step, istep_rst
 !
@@ -80,19 +79,19 @@
       call read_control_data_fft_plane
 !
       call s_set_plane_spectr_file_head(plane_mesh_file)
-      call set_parameters_rst_by_spec(num_pe, ist, ied,                 &
+      call set_parameters_rst_by_spec(mgd_mesh_pm%num_pe, ist, ied,     &
      &          ifactor_step, ifactor_rst, dt_init, t_init,             &
      &          kx_org, ky_org, iz_org, plane_mesh_file)
 !
 !     read outline of mesh
 !
-      call s_set_numnod_4_plane
+      call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
       call allocate_z_compliment_info(nz_all)
 !
 !    setting for initial values
 !
-      call set_initial_components
+      call set_initial_components(mgd_mesh_pm%merged_fld)
 !
       call read_size_of_spectr
 !
@@ -110,17 +109,146 @@
 !   read mesh data for initial values
 !
       plane_mesh_file%iflag_format = id_ascii_file_fmt
-      call set_merged_mesh_and_group(plane_mesh_file)
+      call set_merged_mesh_and_group(plane_mesh_file, mgd_mesh_pm)
 !
       write(*,*) 'allocate_rst_by_plane_sp'
-      call allocate_rst_by_plane_sp(merge_tbl%nnod_max,                 &
-     &    merged_fld%ntot_phys)
+      call allocate_rst_by_plane_sp(mgd_mesh_pm%merge_tbl%nnod_max,     &
+     &    mgd_mesh_pm%merged_fld%ntot_phys)
 !
 !  check positions in z-direction
 !
+     call check_plane_horiz_position                                    &
+    &   (mgd_mesh_pm%merged, mgd_mesh_pm%merged_fld)
+!
+      kx_new = nx_all
+      ky_new = ny_all
+      iz_new = nz_all
+      num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
+      nfft_new =   mgd_mesh_pm%merged_fld%ntot_phys
+!
+      kx_max = kx_new
+      ky_max = ky_new
+      iz_max = iz_new
+      num_fft = nfft_new
+!
+!
+!
+      call allocate_horiz_spectr
+!
+      call allocate_work_array_4_r(mgd_mesh_pm%merge_tbl%inter_nod_m)
+!
+!      do iz = 1, nz_all
+!       write(*,*) iz, iz_1(iz), z_1(iz)
+!      end do
+!
+!       write(*,*) 'numnod tako', mgd_mesh_pm%merge_tbl%nnod_merged
+!
+!    start loop for snap shots
+!
+      do i_time_step = ist, ied, ifactor_step
+!
+        istep_udt = i_time_step / ifactor_step
+        istep_rst = i_time_step / ifactor_rst
+        plane_t_IO%i_time_step = i_time_step
+        plane_t_IO%time = t_init + dble(i_time_step-ist) * dt_init
+        plane_t_IO%dt =  dt_init
+!
+!    read spectral data
+!
+        kx_max = kx_org
+        ky_max = ky_org
+        iz_max = iz_org
+        num_spectr = kx_org*ky_org*iz_org
+        num_fft = nfft_org
+!
+        call read_spectr_data(istep_udt)
+!
+!     interpolate in radial direction
+!
+        write(*,*) 's_radial_interpolate'
+        call s_radial_interpolate
+!
+!  set new spectr
+!
+        write(*,*) 'set_new_spectr'
+        call set_new_spectr
+!
+!    deallocate old spectram data
+!
+!      write(*,*) 'deallocate_spectr_name'
+!      call deallocate_spectr_name
+!
+!    set new array size for spectr
+!
+       kx_max = kx_new
+       ky_max = ky_new
+       iz_max = iz_new
+       num_spectr = mgd_mesh_pm%merge_tbl%inter_nod_m
+       num_fft = nfft_new
+!
+           write(*,*) 'num_spectr 0', num_spectr
+!    allocate new spectr
+!
+!      call allocate_spectr_name
+!
+        call s_inverse_fft_4_plane
+        call copy_2_inverted_data
+!
+!   read mesh data
+!
+!
+! ========================
+! * PES loops 
+! ========================
+!
+        call plane_nnod_stack_4_IO                                      &
+     &     (mgd_mesh_pm%num_pe, mgd_mesh_pm%subdomain)
+!
+        do ip =1, mgd_mesh_pm%num_pe
+!
+          do j = 1, num_fft
+            do i = 1, mgd_mesh_pm%subdomain(ip)%node%numnod
+              inod = int(mgd_mesh_pm%subdomain(ip)%node%inod_global(i))
+              if (inod .le. mgd_mesh_pm%merge_tbl%inter_nod_m) then
+                i1 = (j-1)*num_spectr + inod
+                rst_from_sp(i,j) = phys_d(i1)
+              else
+              rst_from_sp(i,j) = 0.0d0
+            end if
+          end do
+        end do
+!
+        call s_write_restart_by_spectr(ip, mgd_mesh_pm%num_pe,          &
+       &     mgd_mesh_pm%subdomain(ip)%node%numnod,                     &
+       &     mgd_mesh_pm%merged_fld, plane_t_IO)
+!
+!   deallocate arrays
+!
+       end do
+      end do
+!
+      call calypso_MPI_finalize
+!
+!------------------------------------------------------------------
+!
+      contains
+!
+!------------------------------------------------------------------
+!
+      subroutine check_plane_horiz_position(merged, merged_fld)
+!
+      type(mesh_geometry), intent(in) :: merged
+      type(phys_data), intent(in) :: merged_fld
+!
+      integer(kind=kint ) :: i1, iz
+      integer(kind=kint ) :: i, j
+      integer(kind=kint ) :: icomp
+      integer(kind=kint ) :: iflag
+!
+!
       do iz = 1, nz_all
        i1 = iz*nx_all*ny_all
-       if ( merged%node%xx(i1,3) .eq. zz(1) ) then
+       if(merged%node%xx(i1,3) .eq. zz(1)) then
         iz_1(iz) = 1
         z_1(iz) = 1.0d0
        end if
@@ -128,7 +256,7 @@
         if (merged%node%xx(i1,3).gt.zz(j-1)                             &
      &       .and. merged%node%xx(i1,3).le.zz(j)) then
          iz_1(iz) = j
-         z_1(iz)  = ( merged%node%xx(i1,3) - zz(j-1) )                  &
+         z_1(iz)  = (merged%node%xx(i1,3) - zz(j-1))                    &
      &             / ( zz(j) - zz(j-1) )
         end if
        end do
@@ -199,115 +327,8 @@
         end do
       end do
 !
-      kx_new = nx_all
-      ky_new = ny_all
-      iz_new = nz_all
-      num_spectr = merge_tbl%inter_nod_m
-      nfft_new =   merged_fld%ntot_phys
+      end subroutine check_plane_horiz_position
 !
-      kx_max = kx_new
-      ky_max = ky_new
-      iz_max = iz_new
-      num_fft = nfft_new
-!
-!
-!
-      call allocate_horiz_spectr
-!
-      call allocate_work_array_4_r(merge_tbl%inter_nod_m)
-!
-!      do iz = 1, nz_all
-!       write(*,*) iz, iz_1(iz), z_1(iz)
-!      end do
-!
-!       write(*,*) 'numnod tako', merge_tbl%nnod_merged
-!
-!    start loop for snap shots
-!
-      do i_time_step = ist, ied, ifactor_step
-!
-        istep_udt = i_time_step / ifactor_step
-        istep_rst = i_time_step / ifactor_rst
-        plane_t_IO%i_time_step = i_time_step
-        plane_t_IO%time = t_init + dble(i_time_step-ist) * dt_init
-        plane_t_IO%dt =  dt_init
-!
-!    read spectral data
-!
-        kx_max = kx_org
-        ky_max = ky_org
-        iz_max = iz_org
-        num_spectr = kx_org*ky_org*iz_org
-        num_fft = nfft_org
-!
-        call read_spectr_data(istep_udt)
-!
-!     interpolate in radial direction
-!
-        write(*,*) 's_radial_interpolate'
-        call s_radial_interpolate
-!
-!  set new spectr
-!
-        write(*,*) 'set_new_spectr'
-        call set_new_spectr
-!
-!    deallocate old spectram data
-!
-!      write(*,*) 'deallocate_spectr_name'
-!      call deallocate_spectr_name
-!
-!    set new array size for spectr
-!
-       kx_max = kx_new
-       ky_max = ky_new
-       iz_max = iz_new
-       num_spectr = merge_tbl%inter_nod_m
-       num_fft = nfft_new
-!
-           write(*,*) 'num_spectr 0', num_spectr
-!    allocate new spectr
-!
-!      call allocate_spectr_name
-!
-        call s_inverse_fft_4_plane
-        call copy_2_inverted_data
-!
-!   read mesh data
-!
-!
-! ========================
-! * PES loops 
-! ========================
-!
-        call plane_nnod_stack_4_IO
-!
-        do ip =1, num_pe
-!
-!        write(*,*) 'numnod', merge_tbl%nnod_merged
-!        write(*,*) 'internal_node', merge_tbl%inter_nod_m
-!         write(*,*) 'num_spectr', num_spectr
-!
-          do j = 1, num_fft
-            do i = 1, subdomain(ip)%node%numnod
-              inod = int(subdomain(ip)%node%inod_global(i))
-              if (inod .le. merge_tbl%inter_nod_m) then
-                i1 = (j-1)*num_spectr + inod
-                rst_from_sp(i,j) = phys_d(i1)
-              else
-              rst_from_sp(i,j) = 0.0d0
-            end if
-          end do
-        end do
-!
-        call s_write_restart_by_spectr                                  &
-       &    (ip, subdomain(ip)%node%numnod, plane_t_IO)
-!
-!   deallocate arrays
-!
-       end do
-      end do
-!
-      call calypso_MPI_finalize
+!------------------------------------------------------------------
 !
       end program make_initial_by_spectra

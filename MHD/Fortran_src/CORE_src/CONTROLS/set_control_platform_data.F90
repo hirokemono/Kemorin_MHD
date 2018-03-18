@@ -11,11 +11,14 @@
 !!      subroutine turn_off_debug_flag_by_ctl(my_rank, plt)
 !!      subroutine set_control_smp_def(my_rank, plt)
 !!      subroutine set_control_mesh_def(plt, mesh_file)
-!!      subroutine set_control_sph_mesh(plt, mesh_file, sph_file_param)
+!!      subroutine set_control_sph_mesh(plt, mesh_file, sph_file_param, &
+!!     &          FEM_mesh_flags)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: sph_file_param
+!!        type(FEM_file_IO_flags), intent(inout) :: FEM_mesh_flags
 !!      subroutine set_FEM_mesh_switch_4_SPH(plt, iflag_access_FEM)
 !!      subroutine set_FEM_surface_output_flag(plt, iflag_output_SURF)
+!!      subroutine set_FEM_viewer_output_flag(plt, iflag_output_VMESH)
 !!      subroutine set_control_restart_file_def(plt, file_IO)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(field_IO_params), intent(inout) :: file_IO
@@ -121,7 +124,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_sph_mesh(plt, mesh_file, sph_file_param,   &
-     &          iflag_access_FEM, iflag_output_SURF)
+     &          FEM_mesh_flags)
 !
       use m_file_format_switch
       use sph_file_IO_select
@@ -129,8 +132,7 @@
       type(platform_data_control), intent(in) :: plt
       type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
-      integer(kind = kint), intent(inout) :: iflag_access_FEM
-      integer(kind = kint), intent(inout) :: iflag_output_SURF
+      type(FEM_file_IO_flags), intent(inout) :: FEM_mesh_flags
 !
 !
       call set_control_mesh_def(plt, mesh_file)
@@ -157,8 +159,12 @@
      &         = plt%spectr_field_file_prefix%charavalue
       end if
 !
-      call set_FEM_mesh_switch_4_SPH(plt, iflag_access_FEM)
-      call set_FEM_surface_output_flag(plt, iflag_output_SURF)
+      call set_FEM_mesh_switch_4_SPH                                    &
+     &    (plt, FEM_mesh_flags%iflag_access_FEM)
+      call set_FEM_surface_output_flag                                  &
+     &    (plt, FEM_mesh_flags%iflag_output_SURF)
+      call set_FEM_viewer_output_flag                                   &
+     &    (plt, FEM_mesh_flags%iflag_output_VMESH)
 !
       end subroutine set_control_sph_mesh
 !
@@ -203,6 +209,25 @@
       end if
  
       end subroutine set_FEM_surface_output_flag
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_FEM_viewer_output_flag(plt, iflag_output_VMESH)
+!
+      use skip_comment_f
+!
+      type(platform_data_control), intent(in) :: plt
+      integer(kind = kint), intent(inout) :: iflag_output_VMESH
+!
+!
+      iflag_output_VMESH = 0
+!
+      if(plt%FEM_viewer_output_switch%iflag .eq. 0) return
+      if(yes_flag(plt%FEM_viewer_output_switch%charavalue)) then
+        iflag_output_VMESH = 1
+      end if
+ 
+      end subroutine set_FEM_viewer_output_flag
 !
 ! ----------------------------------------------------------------------
 !

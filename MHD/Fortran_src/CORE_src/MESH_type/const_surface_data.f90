@@ -1,27 +1,29 @@
-!const_surface_data.f90
-!      module const_surface_data
+!>@file   const_surface_data
+!!@brief  module const_surface_data
+!!
+!!@author  H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!     Written by H. Matsui on Dec., 2008
-!
-!
-!      subroutine construct_surface_data(nod, ele, surf)
-!      subroutine const_isolated_surface_t_data(nod, ele, surf)
-!      subroutine const_external_surface_t_data(nod, ele, surf)
-!      subroutine const_surface_hash(nod, ele, surf, sf_ele_tbl)
-!      subroutine const_part_surface_hash(nele_grp, item_grp,         &
-!     &          nod, ele, surf, sf_ele_tbl)
-!        integer(kind = kint) :: nele_grp
-!        integer(kind = kint) :: item_grp(nele_grp)
-!        type(node_data),    intent(in) :: nod
-!        type(element_data), intent(in) :: ele
-!        type(surface_data), intent(inout) :: surf
-!        type(sum_hash_tbl), intent(inout) :: sf_ele_tbl
-!
-!      subroutine const_ele_list_4_surface(ele, surf)
-!      subroutine empty_surface_connect(ele, surf)
-!        type(node_data),    intent(in) :: nod
-!        type(element_data), intent(in) :: ele
-!        type(surface_data), intent(inout) :: surf
+!>@brief Construct surface information form element connectivity
+!!
+!!@verbatim
+!!      subroutine construct_surface_data(nod, ele, surf)
+!!      subroutine const_surface_hash(nod, ele, surf, sf_ele_tbl)
+!!      subroutine const_part_surface_hash(nele_grp, item_grp,          &
+!!     &          nod, ele, surf, sf_ele_tbl)
+!!        integer(kind = kint) :: nele_grp
+!!        integer(kind = kint) :: item_grp(nele_grp)
+!!        type(node_data),    intent(in) :: nod
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(inout) :: surf
+!!        type(sum_hash_tbl), intent(inout) :: sf_ele_tbl
+!!
+!!      subroutine const_ele_list_4_surface(ele, surf)
+!!      subroutine empty_surface_connect(ele, surf)
+!!        type(node_data),    intent(in) :: nod
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(inout) :: surf
+!!@endverbatim
 !
       module const_surface_data
 !
@@ -64,8 +66,8 @@
 !
       call const_all_surface_data(nod, ele, surf, surf_ele_tbl)
 !
-!      call const_external_surface_data(nod, ele, surf, surf_ele_tbl)
-!      call const_isolate_surface_data(nod, ele, surf, surf_ele_tbl)
+      call const_external_surface_data(nod, ele, surf, surf_ele_tbl)
+      call const_isolate_surface_data(nod, ele, surf, surf_ele_tbl)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'dealloc_sum_hash(surf_ele_tbl)'
@@ -74,51 +76,6 @@
       end subroutine construct_surface_data
 !
 !------------------------------------------------------------------
-!
-      subroutine const_isolated_surface_t_data(nod, ele, surf)
-!
-      use set_surface_hash
-!
-      type(node_data),    intent(in) :: nod
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(inout) :: surf
-!
-!
-      call alloc_sum_hash(nod%numnod, ele%numele,                       &
-     &    nsurf_4_ele, surf%nnod_4_surf, surf_ele_tbl)
-!
-      call const_surface_hash(nod, ele, surf, surf_ele_tbl)
-      call const_all_surface_data(nod, ele, surf, surf_ele_tbl)
-!
-      call const_isolate_surface_data(nod, ele, surf, surf_ele_tbl)
-!
-      call dealloc_sum_hash(surf_ele_tbl)
-!
-      end subroutine const_isolated_surface_t_data
-!
-!------------------------------------------------------------------
-!
-      subroutine const_external_surface_t_data(nod, ele, surf)
-!
-      use set_surface_hash
-!
-      type(node_data),    intent(in) :: nod
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(inout) :: surf
-!
-!
-      call alloc_sum_hash(nod%numnod, ele%numele,                       &
-     &    nsurf_4_ele, surf%nnod_4_surf, surf_ele_tbl)
-!
-      call const_surface_hash(nod, ele, surf, surf_ele_tbl)
-      call const_all_surface_data(nod, ele, surf, surf_ele_tbl)
-!
-      call const_external_surface_data(nod, ele, surf, surf_ele_tbl)
-!
-      call dealloc_sum_hash(surf_ele_tbl)
-!
-      end subroutine const_external_surface_t_data
-!
 !------------------------------------------------------------------
 !
       subroutine const_ele_list_4_surface(ele, surf)

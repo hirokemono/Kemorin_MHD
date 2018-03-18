@@ -33,10 +33,8 @@
 !
 !>      Structure of file name and format for spherical transaform
       type SPH_TRNS_file_IO_params
-!>        Integer flag to access FEM mesh
-        integer(kind = kint) :: iflag_access_FEM =  0
-!>        Integer flag to output surface data
-        integer(kind = kint) :: iflag_output_SURF = 0
+!>        FEM mesh IO flags
+        type(FEM_file_IO_flags) :: FEM_mesh_flags
 !>        Structure of mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
 !>        Structure of file name and format for restart file
@@ -106,7 +104,7 @@
       call set_control_smp_def(my_rank, st_plt)
       call set_control_sph_mesh(st_plt,                                 &
      &    files_param%mesh_file_IO, files_param%sph_file_IO,            &
-     &    files_param%iflag_access_FEM, files_param%iflag_output_SURF)
+     &    files_param%FEM_mesh_flags)
       call set_control_restart_file_def                                 &
      &   (st_plt, files_param%fst_file_IO)
       call set_ucd_file_define(st_plt, files_param%ucd_file_IO)
@@ -199,7 +197,7 @@
       call set_control_smp_def(my_rank, st_plt)
       call set_control_sph_mesh                                         &
      &   (st_plt, files_param%mesh_file_IO, files_param%sph_file_IO,    &
-     &    files_param%iflag_access_FEM, files_param%iflag_output_SURF)
+     &    files_param%FEM_mesh_flags)
       call set_control_restart_file_def                                 &
      &   (st_plt, files_param%fst_file_IO)
       call set_merged_ucd_file_define(st_plt, files_param%ucd_file_IO)

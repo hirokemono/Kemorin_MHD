@@ -11,7 +11,6 @@
       use calypso_mpi
 !
       use m_geometry_data_4_merge
-      use m_2nd_geometry_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
       use t_file_IO_parameter
@@ -49,30 +48,30 @@
 !
       call read_control_4_merge
 !
-      call set_control_4_merge
-      call set_control_4_newrst
+      call set_control_4_merge(mgd_mesh1%num_pe)
+      call set_control_4_newrst(sec_mesh1%num_pe2)
 !
 !     read outline of mesh
 !
-      call set_merged_node_and_element(merge_org_mesh_file)
+      call set_merged_node_and_element(merge_org_mesh_file, mgd_mesh1)
 !
-      call s_set_2nd_geometry_4_serial(merged_mesh_file)
+      call s_set_2nd_geometry_4_serial(merged_mesh_file, sec_mesh1)
 !
-      call deallocate_node_geometry_type(merged%node)
-      call deallocate_2nd_merge_table
+      call deallocate_node_geometry_type(mgd_mesh1%merged%node)
+      call dealloc_2nd_merge_table(sec_mesh1)
 !
 !  allocate restart data
 !
       call count_restart_data_fields                                    &
-     &   (org_fst_param, merged_time_IO, merged_IO)
+     &   (org_fst_param, mgd_mesh1, merged_time_IO, merged_IO)
 !
 !   loop for time integration
 !
       do istep = istep_start, istep_end, increment_step
 !
         call generate_new_restart_snap                                  &
-     &     (istep, org_fst_param, new_fst_param,                        &
-     &      merged_time_IO, merged_IO)
+     &     (istep, org_fst_param, new_fst_param, sec_mesh1,             &
+     &      mgd_mesh1, merged_time_IO, merged_IO)
         write(*,*) 'step', istep, 'finish '
       end do
       call dealloc_phys_name_IO(merged_IO)
@@ -80,7 +79,8 @@
 !
       if(iflag_delete_org .gt. 0) then
         do istep = istep_start, istep_end, increment_step
-          call delete_FEM_fld_file(org_fst_param, num_pe, istep)
+          call delete_FEM_fld_file                                      &
+     &       (org_fst_param, mgd_mesh1%num_pe, istep)
         end do
       end if
 !

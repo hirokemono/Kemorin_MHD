@@ -37,9 +37,9 @@
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!
-!!      subroutine para_gen_fem_mesh_for_sph                            &
-!!     &         (iflag_output_mesh, ndomain_sph,                       &
+!!     &         (ndomain_sph, FEM_mesh_flags,                          &
 !!     &          gen_sph, sph_params, sph_rj, sph_rtp, mesh_file)
+!!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(construct_spherical_grid), intent(in) :: gen_sph
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -252,7 +252,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine para_gen_fem_mesh_for_sph                              &
-     &         (iflag_output_mesh, ndomain_sph,                         &
+     &         (ndomain_sph, FEM_mesh_flags,                            &
      &          gen_sph, sph_params, sph_rj, sph_rtp, mesh_file)
 !
       use t_mesh_data
@@ -267,8 +267,8 @@
       use load_mesh_data
       use sph_file_IO_select
 !
-      integer(kind = kint), intent(in) :: iflag_output_mesh
       integer(kind = kint), intent(in) :: ndomain_sph
+      type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(construct_spherical_grid), intent(in) :: gen_sph
@@ -283,7 +283,7 @@
       type(comm_table_make_sph) :: stbl_s
 !
 !
-      if(iflag_output_mesh .eq. 0) return
+      if(FEM_mesh_flags%iflag_access_FEM .eq. 0) return
 !
       call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_s)
 !
@@ -314,7 +314,7 @@
      &      radial_rj_grp_lc, femmesh%mesh, femmesh%group, stbl_s)
 !
 ! Output mesh data
-        if(iflag_output_mesh .gt. 0) then
+        if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then
           mesh_file%file_prefix = sph_file_head
           call output_mesh(mesh_file, ip_rank,                          &
      &                     femmesh%mesh, femmesh%group)

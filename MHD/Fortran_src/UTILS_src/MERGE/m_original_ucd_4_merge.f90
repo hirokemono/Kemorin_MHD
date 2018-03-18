@@ -7,11 +7,13 @@
 !!      subroutine init_ucd_data_4_merge                                &
 !!     &         (istep, org_ucd_param, t_IO, ucd)
 !!      subroutine read_ucd_data_4_merge                                &
-!!     &         (istep, org_ucd_param, t_IO, ucd)
+!!     &         (istep, num_pe, subdomain, merge_tbl, org_ucd_param,   &
+!!     &          t_IO, ucd, merged_fld)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!
-!!      subroutine set_field_list_4_merge
+!!      subroutine set_field_list_4_merge(merged_fld)
+!!        type(phys_data), intent(inout) :: merged_fld
 !
       module m_original_ucd_4_merge
 !
@@ -58,10 +60,10 @@
      &         (istep, org_ucd_param, t_IO, ucd)
 !
       use m_constants
+      use m_control_param_merge
       use t_time_data
       use t_ucd_data
       use t_file_IO_parameter
-      use m_control_param_merge
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
@@ -94,19 +96,26 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_ucd_data_4_merge                                  &
-     &         (istep, org_ucd_param, t_IO, ucd)
+     &         (istep, num_pe, subdomain, merge_tbl, org_ucd_param,     &
+     &          t_IO, ucd, merged_fld)
 !
       use t_time_data
       use t_ucd_data
+      use t_mesh_data
+      use t_merged_geometry_data
       use m_control_param_merge
-      use m_geometry_data_4_merge
       use set_read_geometry_2_merge
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
+      integer(kind = kint), intent(in)  :: num_pe
+      type(mesh_geometry), intent(in) :: subdomain(num_pe)
+      type(merged_stacks), intent(in) :: merge_tbl
       type(field_IO_params), intent(in) :: org_ucd_param
+!
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
+      type(phys_data), intent(inout) :: merged_fld
 !
       integer (kind = kint) :: ip, my_rank
 !
@@ -126,7 +135,8 @@
         call sel_read_udt_file                                          &
      &     (my_rank, istep, org_ucd_param, t_IO, ucd)
 !
-        call copy_udt_field_data_merge(ip, ifield_2_copy, org_fld, ucd)
+        call copy_udt_field_data_merge(ip, ifield_2_copy, org_fld, ucd, &
+     &      subdomain(ip), merge_tbl, merged_fld)
 !
         call deallocate_ucd_phys_data(ucd)
       end do
@@ -137,10 +147,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_field_list_4_merge
+      subroutine set_field_list_4_merge(merged_fld)
 !
       use m_control_param_merge
-      use m_geometry_data_4_merge
+!
+      type(phys_data), intent(inout) :: merged_fld
 !
       integer(kind=kint) :: j, k, ic
 !
