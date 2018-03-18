@@ -7,10 +7,11 @@
 !!
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_mesh                           &
-!!     &         (iflag_access_FEM, sph, comms_sph, sph_grps,           &
+!!     &         (FEM_mesh_flags, sph, comms_sph, sph_grps,             &
 !!     &          mesh, group, ele_mesh, mesh_file, gen_sph)
 !!      subroutine load_para_SPH_rj_mesh(sph, comms_sph, sph_grps)
 !!      subroutine load_para_sph_mesh(sph, bc_rtp_grp, sph_grps)
+!!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) ::  sph_grps
@@ -59,12 +60,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_mesh                             &
-     &         (iflag_access_FEM, sph, comms_sph, sph_grps,             &
+     &         (FEM_mesh_flags, sph, comms_sph, sph_grps,               &
      &          mesh, group, ele_mesh, mesh_file, gen_sph)
 !
       use t_mesh_data
 !
-      integer(kind = kint), intent(in) :: iflag_access_FEM
+      type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
       type(sph_group_data), intent(inout) ::  sph_grps
@@ -79,7 +80,7 @@
 !
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
 !
-      call load_FEM_mesh_4_SPH(iflag_access_FEM,                        &
+      call load_FEM_mesh_4_SPH(FEM_mesh_flags%iflag_access_FEM,         &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
      &    mesh, group, ele_mesh, mesh_file, gen_sph)
