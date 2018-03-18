@@ -80,7 +80,7 @@
 !
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
 !
-      call load_FEM_mesh_4_SPH(FEM_mesh_flags%iflag_access_FEM,         &
+      call load_FEM_mesh_4_SPH(FEM_mesh_flags,                          &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
      &    mesh, group, ele_mesh, mesh_file, gen_sph)
@@ -104,7 +104,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_FEM_mesh_4_SPH(iflag_access_FEM, sph_params,      &
+      subroutine load_FEM_mesh_4_SPH(FEM_mesh_flags, sph_params,        &
      &          sph_rtp, sph_rj, radial_rtp_grp, radial_rj_grp,         &
      &          mesh, group, ele_mesh, mesh_file, gen_sph)
 !
@@ -122,7 +122,7 @@
       use mesh_IO_select
       use mesh_file_name_by_param
 !
-      integer(kind = kint), intent(in) :: iflag_access_FEM
+      type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -159,7 +159,7 @@
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
-      call const_FEM_mesh_4_sph_mhd(iflag_access_FEM,                   &
+      call const_FEM_mesh_4_sph_mhd(FEM_mesh_flags,                     &
      &    sph_params, sph_rtp, sph_rj, radial_rtp_grp, radial_rj_grp,   &
      &    femmesh_s%mesh, femmesh_s%group, mesh_file, gen_sph)
 !      call compare_mesh_type                                           &

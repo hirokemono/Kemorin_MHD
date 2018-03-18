@@ -7,9 +7,10 @@
 !>@brief  Construct FEM mesh from spherical harmonics transform data
 !!
 !!@verbatim
-!!      subroutine const_FEM_mesh_4_sph_mhd(iflag_output_mesh,          &
+!!      subroutine const_FEM_mesh_4_sph_mhd(FEM_mesh_flags,             &
 !!     &          sph_params, sph_rtp, sph_rj, radial_rtp_grp,          &
 !!     &          radial_rj_grp, mesh, group, mesh_file, gen_sph)
+!!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -52,7 +53,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_FEM_mesh_4_sph_mhd(iflag_output_mesh,            &
+      subroutine const_FEM_mesh_4_sph_mhd(FEM_mesh_flags,               &
      &          sph_params, sph_rtp, sph_rj, radial_rtp_grp,            &
      &          radial_rj_grp, mesh, group, mesh_file, gen_sph)
 !
@@ -64,8 +65,9 @@
       use set_FEM_mesh_4_sph
       use mpi_load_mesh_data
       use sph_file_IO_select
+!      use parallel_const_surface_mesh
 !
-      integer(kind = kint), intent(in) :: iflag_output_mesh
+      type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -96,11 +98,15 @@
      &    sph_params, sph_rtp, radial_rj_grp, mesh, group, stbl_SF)
 !
 ! Output mesh data
-      if(iflag_output_mesh .gt. 0) then
+      if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then
         mesh_file%file_prefix = sph_file_head
         call mpi_output_mesh(mesh_file, mesh, group)
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'
+!
+!        if(FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
+!          call choose_surface_mesh_para(mesh_file)
+!        end if
       end if
 !
       call dealloc_nnod_nele_sph_mesh(stbl_SF)
