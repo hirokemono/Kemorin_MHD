@@ -1,15 +1,19 @@
 !
 !      module m_setting_4_ini
 !
-!      subroutine set_initial_components
-!      subroutine add_initial_num_comp_mhd
-!      subroutine add_initial_comp_mhd
+!!      subroutine set_initial_components(merged_fld)
+!!        type(phys_data), intent(inout) :: merged_fld
+!!      subroutine add_initial_num_comp_mhd(merged_fld)
+!!        type(phys_data), intent(in) :: merged_fld
+!!      subroutine add_initial_comp_mhd(merged_fld)
+!!        type(phys_data), intent(inout) :: merged_fld
 !
       module m_setting_4_ini
 !
       use m_precision
 !
       use m_phys_labels
+      use t_phys_data
 !
       implicit none
 !
@@ -27,9 +31,9 @@
 !
 !-----------------------------------------------------------------
 !
-      subroutine set_initial_components
+      subroutine set_initial_components(merged_fld)
 !
-      use m_geometry_data_4_merge
+      type(phys_data), intent(inout) :: merged_fld
 !
       integer(kind=kint) :: np
 !
@@ -84,9 +88,9 @@
 !
 !-----------------------------------------------------------------
 !
-       subroutine add_initial_num_comp_mhd
+       subroutine add_initial_num_comp_mhd(merged_fld)
 !
-      use m_geometry_data_4_merge
+      type(phys_data), intent(in) :: merged_fld
 !
 !
       write(*,*) 'input number of physical valuesto add'
@@ -98,9 +102,9 @@
 !
 !-----------------------------------------------------------------
 !
-       subroutine add_initial_comp_mhd
+       subroutine add_initial_comp_mhd(merged_fld)
 !
-      use m_geometry_data_4_merge
+      type(phys_data), intent(inout) :: merged_fld
 !
       integer(kind=kint) :: np, nq
 !

@@ -23,23 +23,25 @@
 !
       implicit    none
 !
+!
 ! ==============================================                                                                                                            
 ! * get number of  nodes,elements for whole PES
 ! ==============================================
 !
       call read_control_4_merge
-      call set_control_4_merge
+      call set_control_4_merge(mgd_mesh1%num_pe)
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, assemble_plt, merged_mesh_file)
 !
 !  read mesh information
 !
-      call set_merged_mesh_and_group(merge_org_mesh_file)
+      call set_merged_mesh_and_group(merge_org_mesh_file, mgd_mesh1)
 !
 !   output grid data
 !
-      call s_write_merged_mesh(merge_tbl, merged, merged_grp)
-      call deallocate_array_4_merge
+      call s_write_merged_mesh                                          &
+     &   (mgd_mesh1%merge_tbl, mgd_mesh1%merged, mgd_mesh1%merged_grp)
+      call dealloc_array_4_merge(mgd_mesh1)
 !
       stop ' //// program normally finished //// '
 !

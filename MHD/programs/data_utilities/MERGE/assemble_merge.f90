@@ -50,11 +50,11 @@
 !   read control data for merge
 !
       call read_control_4_merge
-      call set_control_4_merge
+      call set_control_4_merge(mgd_mesh1%num_pe)
 !
 !  read mesh information
 !
-      call set_merged_mesh_and_group(merge_org_mesh_file)
+      call set_merged_mesh_and_group(merge_org_mesh_file, mgd_mesh1)
 !
 !   read field name and number of components
 !
@@ -63,13 +63,16 @@
 !
 !    set list array for merged field
 !
-      call set_field_list_4_merge
-      call alloc_phys_data_type(merged%node%numnod, merged_fld)
+      call set_field_list_4_merge(mgd_mesh1%merged_fld)
+      call alloc_phys_data_type                                         &
+     &   (mgd_mesh1%merged%node%numnod, mgd_mesh1%merged_fld)
 !
 !   output grid data
 !
-      call link_merged_node_2_ucd_IO(fem_ucd)
-      call link_merged_ele_2_ucd_IO(fem_ucd)
+      call link_merged_node_2_ucd_IO                                    &
+     &   (mgd_mesh1%merged, mgd_mesh1%merge_tbl, fem_ucd)
+      call link_merged_ele_2_ucd_IO                                     &
+     &   (mgd_mesh1%merged, mgd_mesh1%merge_tbl, fem_ucd)
 !
       call sel_write_grd_file(izero, assemble_ucd_param, fem_ucd)
 !
@@ -83,9 +86,12 @@
 !   loop for snap shots
 !
       do istep = istep_start, istep_end, increment_step
-        call read_ucd_data_4_merge                                      &
-     &     (istep, original_ucd_param, fem_time_IO, fem_ucd)
-        call link_merged_field_2_udt_IO(fem_ucd)
+        call read_ucd_data_4_merge(istep, mgd_mesh1%num_pe,             &
+     &      mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,                   &
+     &      original_ucd_param, fem_time_IO, fem_ucd,                   &
+     &      mgd_mesh1%merged_fld)
+        call link_merged_field_2_udt_IO                                 &
+     &     (mgd_mesh1%merged_fld, mgd_mesh1%merge_tbl, fem_ucd)
 !
         call sel_write_ucd_file                                         &
      &     (iminus, istep, assemble_ucd_param, fem_time_IO, fem_ucd)

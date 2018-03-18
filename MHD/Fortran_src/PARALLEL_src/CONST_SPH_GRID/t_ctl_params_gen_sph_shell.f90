@@ -40,10 +40,8 @@
 !
 !>      Structure of file name and format for MHD
       type gen_sph_file_IO_params
-!>        Integer flag to output surface data
-        integer(kind = kint) :: iflag_output_FEM = 0
-!>        Integer flag to output surface data
-        integer(kind = kint) :: iflag_output_SURF = 0
+!>        FEM mesh IO flags
+        type(FEM_file_IO_flags) :: FEM_mesh_flags
 !>        Structure of mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
 !>        Structure of file name and format for spectr data file
@@ -107,7 +105,7 @@
       call turn_off_debug_flag_by_ctl(izero, plt)
       call set_control_sph_mesh                                         &
      &   (plt, sph_files%mesh_file_IO, sph_files%sph_file_IO,           &
-     &    sph_files%iflag_output_FEM, sph_files%iflag_output_SURF)
+     &    sph_files%FEM_mesh_flags)
 !
       end subroutine set_control_4_shell_filess
 !

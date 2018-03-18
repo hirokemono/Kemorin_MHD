@@ -55,14 +55,14 @@
 !
       call read_control_4_merge
 !
-      call set_control_4_merge
-      call set_control_4_newudt
+      call set_control_4_merge(mgd_mesh1%num_pe)
+      call set_control_4_newudt(sec_mesh1%num_pe2)
 !
 !  read mesh information
 !
-      call set_merged_mesh_and_group(merge_org_mesh_file)
+      call set_merged_mesh_and_group(merge_org_mesh_file, mgd_mesh1)
 !
-      call s_set_2nd_geometry_4_serial(merged_mesh_file)
+      call s_set_2nd_geometry_4_serial(merged_mesh_file, sec_mesh1)
 !
 !   read field name and number of components
 !
@@ -71,22 +71,29 @@
 !
 !    set list array for merged field
 !
-      call set_field_list_4_merge
-      call alloc_phys_data_type(merged%node%numnod, merged_fld)
+      call set_field_list_4_merge(mgd_mesh1%merged_fld)
+      call alloc_phys_data_type                                         &
+     &   (mgd_mesh1%merged%node%numnod, mgd_mesh1%merged_fld)
 !
 !   Cnostract grid data
 !
-      call assemble_2nd_udt_mesh(assemble_ucd_param, second_ucd)
+      call assemble_2nd_udt_mesh                                        &
+     &   (assemble_ucd_param, mgd_mesh1%merged,                         &
+     &    sec_mesh1%num_pe2, sec_mesh1%subdomains_2, second_ucd)
 !
 !   loop for snap shots
 !
 !
       do istep = istep_start, istep_end, increment_step
 !        write(*,*) 'read_ucd_data_4_merge', istep
-        call read_ucd_data_4_merge                                      &
-     &     (istep, original_ucd_param, fem_time_IO, fem_ucd)
-        call assemble_2nd_udt_phys                                      &
-     &     (istep, assemble_ucd_param, fem_time_IO, second_ucd)
+        call read_ucd_data_4_merge(istep, mgd_mesh1%num_pe,             &
+     &      mgd_mesh1%subdomain, mgd_mesh1%merge_tbl,                   &
+     &      original_ucd_param, fem_time_IO, fem_ucd,                   &
+     &      mgd_mesh1%merged_fld)
+        call assemble_2nd_udt_phys(istep, assemble_ucd_param,           &
+     &      mgd_mesh1%merged, mgd_mesh1%merged_fld,                     &
+     &      sec_mesh1%num_pe2, sec_mesh1%subdomains_2,                  &
+     &      fem_time_IO, second_ucd)
         write(*,*) 'step', istep, 'finish '
       end do
 !
@@ -94,7 +101,7 @@
       if(iflag_delete_org .gt. 0) then
         do istep = istep_start, istep_end, increment_step
           call delete_para_ucd_file(original_ucd_param%file_prefix,     &
-     &        original_ucd_param%iflag_format, num_pe, istep)
+     &        original_ucd_param%iflag_format, mgd_mesh1%num_pe, istep)
         end do
       end if
 !

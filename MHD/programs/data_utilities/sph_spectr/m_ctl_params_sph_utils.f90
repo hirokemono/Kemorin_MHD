@@ -24,10 +24,8 @@
 !
 !>      Structure of file name and format for spectr data utilities
       type SPH_UTIL_file_IO_params
-!>        Integer flag to access FEM mesh
-        integer(kind = kint) :: iflag_FEM_mesh =    0
-!>        Integer flag to output surface data
-        integer(kind = kint) :: iflag_output_SURF = 0
+!>        FEM mesh IO flags
+        type(FEM_file_IO_flags) :: FEM_mesh_flags
 !
 !>        Structure of mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
@@ -115,7 +113,7 @@
       call set_control_smp_def(my_rank, su_plt)
       call set_control_sph_mesh                                         &
      &   (su_plt, files_SHR%mesh_file_IO, files_SHR%sph_file_IO,        &
-     &    files_SHR%iflag_FEM_mesh, files_SHR%iflag_output_SURF)
+     &    files_SHR%FEM_mesh_flags)
       call set_control_mesh_file_def                                    &
      &   (def_org_sph_rj_head, org_su_plt, files_SHR%org_rj_file_IO)
       call set_control_mesh_file_def                                    &

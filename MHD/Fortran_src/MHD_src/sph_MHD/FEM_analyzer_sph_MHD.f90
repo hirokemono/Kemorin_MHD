@@ -96,7 +96,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_init_with_IO(MHD_files%iflag_output_SURF,           &
+      call FEM_mesh_init_with_IO                                        &
+     &   (MHD_files%FEM_mesh_flags%iflag_output_SURF,                   &
      &    MHD_files%mesh_file_IO, geofem%mesh, geofem%group, ele_mesh)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)

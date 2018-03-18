@@ -11,13 +11,12 @@
 !
       use m_correlate_4_plane
       use m_size_4_plane
-      use m_geometry_data_4_merge
-      use m_2nd_geometry_4_merge
       use m_control_plane_correlate
 !
       use t_phys_data
       use t_time_data
       use t_ucd_data
+      use t_mesh_data_4_merge
 !
       use set_plane_size_correlate
       use set_numnod_4_plane
@@ -42,6 +41,9 @@
 !>      Structure for time data
       type(time_data), save :: plane_t_IO
       type(ucd_data), save :: plane_ucd
+!
+      type(merged_mesh), save :: mgd_mesh_pm
+      type(second_mesh), save :: sec_mesh_pm
 
       integer(kind=kint ) :: istep
       integer(kind=kint ) :: ist, ied, iint
@@ -69,14 +71,15 @@
 !
 !     read outline of mesh
 !
-      call s_set_plane_size_correlate(num_pe, num_pe2)
+      call s_set_plane_size_correlate                                   &
+     &   (mgd_mesh_pm%num_pe, sec_mesh_pm%num_pe2)
 !
       write(*,*) 'set_merged_node_and_element'
-      call set_merged_node_and_element(cor_mesh_file)
+      call set_merged_node_and_element(cor_mesh_file, mgd_mesh_pm)
       write(*,*) 's_set_2nd_geometry_4_serial'
-      call s_set_2nd_geometry_4_serial(ref_mesh_file)
+      call s_set_2nd_geometry_4_serial(ref_mesh_file, sec_mesh_pm)
 !
-      call s_set_numnod_4_plane
+      call s_set_numnod_4_plane(mgd_mesh_pm%merge_tbl)
 !
 !   read field name and number of components
 !
@@ -86,7 +89,8 @@
      &   (fld_pc_ctl%field_ctl, ref_phys, cor_phys)
 !
       write(*,*) 'internal_node, ele',                                  &
-     &           merge_tbl%inter_nod_m,  merge_tbl%inter_ele_m
+     &           mgd_mesh_pm%merge_tbl%inter_nod_m,                     &
+     &           mgd_mesh_pm%merge_tbl%inter_ele_m
 !
 !     array allocation
 !
@@ -96,12 +100,12 @@
 !  open result file
 !
        do iz = 1, nz_all
-        z_out(iz) = merged%node%xx(nx_all*ny_all*iz,3)
+        z_out(iz) = mgd_mesh_pm%merged%node%xx(nx_all*ny_all*iz,3)
        end do
 !
        call deallocate_ioverlap_nod
-       call deallocate_node_geometry_type(merged%node)
-       call deallocate_2nd_merge_table
+       call deallocate_node_geometry_type(mgd_mesh_pm%merged%node)
+       call dealloc_2nd_merge_table(sec_mesh_pm)
 !
 !
        call open_correlate_files_plane
@@ -111,7 +115,8 @@
       do istep = ist, ied, iint
 !
        write(*,*) 'read_udt_4_correlate'
-       call read_udt_4_correlate(istep, plane_t_IO, plane_ucd)
+       call read_udt_4_correlate                                        &
+     &    (istep, mgd_mesh_pm, sec_mesh_pm, plane_t_IO, plane_ucd)
 !
 !  -------  Cross correlatiion
 !

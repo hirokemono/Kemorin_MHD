@@ -1,8 +1,11 @@
 !
 !
-      module m_spectr_4_ispack
-!
 !   work array for FFT
+!
+!!      subroutine write_size_of_spectr(merged)
+!!        type(mesh_geometry), intent(in) :: merged
+!
+      module m_spectr_4_ispack
 !
       use m_precision
 !
@@ -27,8 +30,6 @@
       character(len=kchara  )               ::  spectr_data_name
 !
       integer(kind=kint )               ::  spectr_data_code = 21
-!
-!        subroutine write_size_of_spectr
 !
 !  ---------------------------------------------------------------------
 !
@@ -391,14 +392,15 @@
 !
 !-----------------------------------------------------------------------
 !
-        subroutine write_size_of_spectr
+      subroutine write_size_of_spectr(merged)
 !
-       use m_geometry_data_4_merge
-       use set_spectr_file_name
+      use t_mesh_data
+      use set_spectr_file_name
 !
-       integer(kind=kint ) :: ix,iy,iz,iii
+      type(mesh_geometry), intent(in) :: merged
+      integer(kind=kint ) :: ix,iy,iz,iii
 !
-       open (spectr_data_code,  file=spec_mode_file_name,               &
+      open (spectr_data_code,  file=spec_mode_file_name,                &
      &                       form='formatted', status ='unknown')
        
 !

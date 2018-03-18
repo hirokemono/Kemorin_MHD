@@ -255,7 +255,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	/* element group */
 	
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
-	sscanf(buf, "%d %d", &mesh_s->ngrp_ele_sf, &mesh_s->nele_ele_sf);
+	sscanf(buf, "%d", &mesh_s->ngrp_ele_sf);
 	alloc_ele_grp_stack_viewer_s(mesh_s);
 	
 	tmp_name_sf = (char **)calloc(mesh_s->ngrp_ele_sf, sizeof(char *));
@@ -272,7 +272,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
-	sscanf(buf, "%d", &mesh_s->nnod_ele_sf);
+	sscanf(buf, "%d", &itmp);
 	
 	read_group_stack_gz_viewer(mesh_s->num_pe_sf, mesh_s->ngrp_ele_sf, mesh_s->ele_nod_stack_sf);
 	mesh_s->nnod_ele_sf = mesh_s->ele_nod_stack_sf[mesh_s->num_pe_sf*mesh_s->ngrp_ele_sf];
@@ -283,7 +283,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
-	sscanf(buf, "%d", &mesh_s->nedge_ele_sf);
+	sscanf(buf, "%d", &itmp);
 	
 	read_group_stack_gz_viewer(mesh_s->num_pe_sf, mesh_s->ngrp_ele_sf, mesh_s->ele_edge_stack_sf);
 	mesh_s->nedge_ele_sf = mesh_s->ele_edge_stack_sf[mesh_s->num_pe_sf*mesh_s->ngrp_ele_sf];
@@ -298,7 +298,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	/* surface group */
 	
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
-	sscanf(buf, "%d %d", &mesh_s->ngrp_surf_sf, &mesh_s->nsurf_surf_sf);
+	sscanf(buf, "%d", &mesh_s->ngrp_surf_sf);
 	alloc_surf_grp_stack_viewer_s(mesh_s);
 	
 	tmp_name_sf = (char **)calloc(mesh_s->ngrp_surf_sf, sizeof(char *));
@@ -315,7 +315,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
-	sscanf(buf, "%d", &mesh_s->nnod_surf_sf);
+	sscanf(buf, "%d", &itmp);
 	
 	read_group_stack_gz_viewer(mesh_s->num_pe_sf, mesh_s->ngrp_surf_sf, mesh_s->surf_nod_stack_sf);
 	mesh_s->nnod_surf_sf = mesh_s->surf_nod_stack_sf[mesh_s->num_pe_sf*mesh_s->ngrp_surf_sf];
@@ -326,7 +326,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
-	sscanf(buf, "%d", &mesh_s->nedge_surf_sf);
+	sscanf(buf, "%d", &itmp);
 	
 	read_group_stack_gz_viewer(mesh_s->num_pe_sf, mesh_s->ngrp_surf_sf, mesh_s->surf_edge_stack_sf);
 	mesh_s->nedge_surf_sf = mesh_s->surf_edge_stack_sf[mesh_s->num_pe_sf*mesh_s->ngrp_surf_sf];

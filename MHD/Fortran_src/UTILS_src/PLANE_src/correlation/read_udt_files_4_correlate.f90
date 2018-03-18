@@ -3,8 +3,13 @@
 !
 !     Written by H. Matsui on Feb., 2007
 !
-!      subroutine init_udt_4_correlate(istep, nod_fld, t_IO, ucd)
-!      subroutine read_udt_4_correlate(istep, t_IO, ucd)
+!!      subroutine init_udt_4_correlate(istep, nod_fld, t_IO, ucd)
+!!      subroutine read_udt_4_correlate                                 &
+!!     &         (istep, mgd_mesh, sec_mesh, t_IO, ucd)
+!!        type(merged_mesh), intent(in) :: mgd_mesh
+!!        type(second_mesh), intent(in) :: sec_mesh
+!!        type(time_data), intent(inout) :: t_IO
+!!        type(ucd_data), intent(inout) :: ucd
 !
       module read_udt_files_4_correlate
 !
@@ -27,7 +32,6 @@
 !
       subroutine init_udt_4_correlate(istep, nod_fld, t_IO, ucd)
 !
-      use m_geometry_data_4_merge
       use m_file_format_switch
       use t_phys_data
       use ucd_IO_select
@@ -51,27 +55,31 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_udt_4_correlate(istep, t_IO, ucd)
+      subroutine read_udt_4_correlate                                   &
+     &         (istep, mgd_mesh, sec_mesh, t_IO, ucd)
 !
-      use m_geometry_data_4_merge
-      use m_2nd_geometry_4_merge
+      use t_mesh_data_4_merge
       use m_file_format_switch
       use copy_pick_udt_data_plane
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
+      type(merged_mesh), intent(in) :: mgd_mesh
+      type(second_mesh), intent(in) :: sec_mesh
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call read_udt_data_4_plane_model(num_pe, istep,                   &
+      call read_udt_data_4_plane_model(mgd_mesh%num_pe, istep,          &
      &    num_domain, num_crt, icomp_crt, ifield_crt, phys_d1(1),       &
-     &    merge_tbl%nnod_max, subdomain, cor_ucd_param, t_IO, ucd)
+     &    mgd_mesh%merge_tbl%nnod_max, mgd_mesh%subdomain,              &
+     &    cor_ucd_param, t_IO, ucd)
 !
 !
-      call read_udt_data_4_plane_model(num_pe2, istep,                  &
+      call read_udt_data_4_plane_model(sec_mesh%num_pe2, istep,         &
      &    num_domain, num_crt, icomp_crt, ifield_crt2, phys_d2(1),      &
-     &    merge_tbl_2%nnod_max, subdomains_2, ref_ucd_param, t_IO, ucd)
+     &    sec_mesh%merge_tbl_2%nnod_max, sec_mesh%subdomains_2,         &
+     &    ref_ucd_param, t_IO, ucd)
 !
       end subroutine read_udt_4_correlate
 !

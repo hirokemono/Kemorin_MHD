@@ -102,8 +102,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_init_with_IO                                        &
-     &   (files_STR%iflag_output_SURF, files_STR%mesh_file_IO,          &
-     &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
+     &   (files_STR%FEM_mesh_flags%iflag_output_SURF,                   &
+     &    files_STR%mesh_file_IO, femmesh_STR%mesh, femmesh_STR%group,  &
+     &    elemesh_STR)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type                                         &

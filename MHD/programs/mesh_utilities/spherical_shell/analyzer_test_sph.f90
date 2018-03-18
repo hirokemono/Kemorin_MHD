@@ -67,8 +67,7 @@
       call read_control_4_const_shell(control_file_name, SPH_TEST_ctl)
       call set_control_sph_mesh(SPH_TEST_ctl%plt,                       &
      &    test_sph_files%mesh_file_IO, test_sph_files%sph_file_IO,      &
-     &    test_sph_files%iflag_output_FEM,                              &
-     &    test_sph_files%iflag_output_SURF)
+     &    test_sph_files%FEM_mesh_flags)
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh                                           &

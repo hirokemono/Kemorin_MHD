@@ -143,7 +143,7 @@
       call set_control_smp_def(my_rank, plt)
       call set_control_sph_mesh                                         &
      &   (plt, MHD_files%mesh_file_IO, MHD_files%sph_file_IO,           &
-     &    MHD_files%iflag_access_FEM, MHD_files%iflag_output_SURF)
+     &    MHD_files%FEM_mesh_flags)
       call set_control_restart_file_def(plt, MHD_files%fst_file_IO)
       call set_merged_ucd_file_define(plt, MHD_files%ucd_file_IO)
       call set_control_org_sph_files(org_plt, MHD_files)

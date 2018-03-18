@@ -3,9 +3,14 @@
 !
 !      Written by H. Matsui on Feb., 2007
 !
-!!      subroutine assemble_2nd_udt_phys(istep, ucd_param, t_IO, ucd)
-!!      subroutine assemble_2nd_udt_mesh(ucd_param, ucd)
+!!      subroutine assemble_2nd_udt_phys(istep, ucd_param,              &
+!!     &          merged, merged_fld, num_pe2, subdomains_2, t_IO, ucd)
+!!      subroutine assemble_2nd_udt_mesh                                &
+!!     &         (ucd_param, merged, num_pe2, subdomains_2, ucd)
 !!        type(field_IO_params), intent(in) :: ucd_param
+!!        type(mesh_geometry), intent(in) :: merged
+!!        type(mesh_geometry), intent(in) :: subdomains_2(num_pe2)
+!!        type(phys_data), intent(in) :: merged_fld
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !
@@ -15,9 +20,9 @@
 !
       use m_constants
       use m_control_param_merge
-      use m_geometry_data_4_merge
-      use m_2nd_geometry_4_merge
       use t_time_data
+      use t_mesh_data
+      use t_phys_data
       use t_ucd_data
       use t_file_IO_parameter
 !
@@ -32,12 +37,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine assemble_2nd_udt_phys(istep, ucd_param, t_IO, ucd)
+      subroutine assemble_2nd_udt_phys(istep, ucd_param,                &
+     &          merged, merged_fld, num_pe2, subdomains_2, t_IO, ucd)
 !
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
+      integer(kind = kint), intent(in)  :: num_pe2
       type(field_IO_params), intent(in) :: ucd_param
+      type(mesh_geometry), intent(in) :: merged
+      type(phys_data), intent(in) :: merged_fld
+      type(mesh_geometry), intent(in) :: subdomains_2(num_pe2)
+!
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
@@ -60,7 +71,8 @@
         call allocate_ucd_node(ucd)
         call allocate_ucd_phys_data(ucd)
 !
-        call copy_domain_data_from_global(ip, ucd)
+        call copy_domain_data_from_global(merged, merged_fld,           &
+     &      subdomains_2(ip), ucd)
         call sel_write_udt_file(my_rank, istep, ucd_param, t_IO, ucd)
 !
         call deallocate_ucd_phys_data(ucd)
@@ -72,13 +84,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine assemble_2nd_udt_mesh(ucd_param, ucd)
+      subroutine assemble_2nd_udt_mesh                                  &
+     &         (ucd_param, merged, num_pe2, subdomains_2, ucd)
 !
       use m_file_format_switch
       use set_and_cal_udt_data
       use ucd_IO_select
 !
+      integer(kind = kint), intent(in)  :: num_pe2
       type(field_IO_params), intent(in) :: ucd_param
+      type(mesh_geometry), intent(in) :: merged
+      type(mesh_geometry), intent(in) :: subdomains_2(num_pe2)
       type(ucd_data), intent(inout) :: ucd
 !
       integer(kind = kint) :: ip, my_rank
@@ -91,7 +107,7 @@
 !
         ucd%nnod = subdomains_2(ip)%node%numnod
         call allocate_ucd_node(ucd)
-        call copy_node_posi_from_global(ip, ucd)
+        call copy_node_posi_from_global(merged, subdomains_2(ip), ucd)
 !
         call const_udt_global_connect                                   &
      &     (subdomains_2(ip)%node%internal_node,                        &
@@ -116,17 +132,20 @@
 !  ---------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_domain_data_from_global(ip, ucd)
+      subroutine copy_domain_data_from_global                           &
+     &         (merged, merged_fld, subdomains_2, ucd)
 !
-      integer(kind = kint), intent(in) :: ip
+      type(mesh_geometry), intent(in) :: merged
+      type(phys_data), intent(in) :: merged_fld
+      type(mesh_geometry), intent(in) :: subdomains_2
       type(ucd_data), intent(inout) :: ucd
 !
       integer (kind = kint_gl) :: inum
       integer (kind = kint_gl) :: inod
 !
 !
-      do inum = 1, subdomains_2(ip)%node%numnod
-        inod = subdomains_2(ip)%node%inod_global(inum)
+      do inum = 1, subdomains_2%node%numnod
+        inod = subdomains_2%node%inod_global(inum)
         ucd%inod_global(inum) = inod
         if(int(inod) .le. merged%node%numnod) then
           ucd%d_ucd(inum,1:ucd%ntot_comp)                               &
@@ -140,9 +159,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_node_posi_from_global(ip, ucd)
+      subroutine copy_node_posi_from_global(merged, subdomains_2, ucd)
 !
-      integer(kind = kint), intent(in) :: ip
+      type(mesh_geometry), intent(in) :: merged
+      type(mesh_geometry), intent(in) :: subdomains_2
       type(ucd_data), intent(inout) :: ucd
 !
       integer (kind = kint_gl) :: inum
@@ -150,7 +170,7 @@
 !
 !
       do inum = 1, ucd%nnod
-        inod = subdomains_2(ip)%node%inod_global(inum)
+        inod = subdomains_2%node%inod_global(inum)
         ucd%inod_global(inum) = inod
         ucd%xx(inum,1:3) = merged%node%xx(inod,1:3)
       end do

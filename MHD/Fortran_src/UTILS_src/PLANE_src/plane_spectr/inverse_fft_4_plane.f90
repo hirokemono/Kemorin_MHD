@@ -1,9 +1,14 @@
 !
 !      module inverse_fft_4_plane
 !
-      module inverse_fft_4_plane
-!
 !      Written by H. Matsui
+!
+!!      subroutine s_inverse_fft_4_plane
+!!      subroutine copy_2_inverted_data
+!!      subroutine copy_2_inverted_udt(merged_fld)
+!!        type(phys_data), intent(inout) :: merged_fld
+!
+      module inverse_fft_4_plane
 !
       use m_precision
 !
@@ -14,10 +19,6 @@
 !
       private :: Nsmp, Nstacksmp
       private :: copy_4_inversse_fft_y, copy_4_inversse_fft_x
-!
-!      subroutine s_inverse_fft_4_plane
-!      subroutine copy_2_inverted_data
-!      subroutine copy_2_inverted_udt
 !
 !  --------------------------------------------------------------------
 !
@@ -208,11 +209,13 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine copy_2_inverted_udt
+      subroutine copy_2_inverted_udt(merged_fld)
 !
       use m_spectr_4_ispack
       use m_size_4_plane
-      use m_geometry_data_4_merge
+      use t_phys_data
+!
+      type(phys_data), intent(inout) :: merged_fld
 !
       integer(kind = kint) :: j, ix, iy, iz, i1, i2
 !
