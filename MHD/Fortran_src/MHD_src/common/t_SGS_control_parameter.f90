@@ -82,6 +82,9 @@
         real (kind = kreal) :: shrink_SGS_dt = 1.0d5
         real (kind = kreal) :: extend_SGS_dt = 1.0d-5
 !
+        integer (kind=kint) :: narea_rave_dynamic =  1
+        integer (kind=kint) :: narea_tave_dynamic =  1
+!
         real (kind = kreal) :: stab_weight = 1.0d0
 !
 !>        Model coefficient type

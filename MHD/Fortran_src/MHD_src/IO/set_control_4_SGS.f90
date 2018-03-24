@@ -185,6 +185,16 @@
       SGS_param%SGS_cf_factor                                           &
      &        = set_fixed_Csim(one, sgs_ctl%SGS_cf_factor_ctl)
 !
+      SGS_param%narea_rave_dynamic = 1
+      SGS_param%narea_tave_dynamic = 1
+      if(sgs_ctl%radial_ave_area_ctl%iflag .gt. 0) then
+        SGS_param%narea_rave_dynamic                                    &
+     &      = sgs_ctl%radial_ave_area_ctl%intvalue
+      end if
+      if(sgs_ctl%med_ave_area_ctl%iflag .gt. 0) then
+        SGS_param%narea_tave_dynamic                                    &
+     &      = sgs_ctl%med_ave_area_ctl%intvalue
+      end if
 !
       if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         SGS_param%iflag_rst_sgs_coef_code                               &
@@ -206,7 +216,6 @@
           write(*,*) 'Csim_file_IO%iflag_format: ',                     &
      &      Csim_file_IO%iflag_format
         end if
-!
       end if
 !
       SGS_param%iflag_SGS_buo_usage = id_use_volume

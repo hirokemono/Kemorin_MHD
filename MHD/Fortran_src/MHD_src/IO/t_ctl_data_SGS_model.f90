@@ -92,6 +92,8 @@
 !!
 !!      istep_dynamic_ctl         10
 !!      stabilize_weight_ctl      0.6
+!!      radial_averaging_area      4
+!!      meridional_averaging_area  4
 !!
 !!      min_step_dynamic_ctl      1
 !!      max_step_dynamic_ctl      50
@@ -99,25 +101,25 @@
 !!      delta_to_extend_ctl      1.0d-3
 !!
 !!      array SGS_terms_ctl      5
-!!        SGS_terms_ctl    heat              end
-!!        SGS_terms_ctl    parturbation_heat end
-!!        SGS_terms_ctl    inertia           end
-!!        SGS_terms_ctl    gravity           end
-!!        SGS_terms_ctl    Lorentz           end
-!!        SGS_terms_ctl    induction         end
+!!        SGS_terms_ctl    heat
+!!        SGS_terms_ctl    parturbation_heat
+!!        SGS_terms_ctl    inertia
+!!        SGS_terms_ctl    gravity
+!!        SGS_terms_ctl    Lorentz
+!!        SGS_terms_ctl    induction
 !!      end array SGS_terms_ctl
 !!
 !!      array commutation_ctl    9
-!!        commutation_ctl    velocity          end
-!!        commutation_ctl    vector_potential  end
-!!        commutation_ctl    temperature       end
-!!        commutation_ctl    dumnmy_scalar     end
+!!        commutation_ctl    velocity
+!!        commutation_ctl    vector_potential
+!!        commutation_ctl    temperature
+!!        commutation_ctl    dumnmy_scalar
 !!
-!!        commutation_ctl    heat              end
-!!        commutation_ctl    inertia           end
-!!        commutation_ctl    Lorentz           end
-!!        commutation_ctl    induction         end
-!!        commutation_ctl    composit_flux     end
+!!        commutation_ctl    heat
+!!        commutation_ctl    inertia
+!!        commutation_ctl    Lorentz
+!!        commutation_ctl    induction
+!!        commutation_ctl    composit_flux
 !!      end array commutation_ctl
 !!
 !!      begin 3d_filtering_ctl
@@ -146,14 +148,14 @@
 !!        end array grp_stack_each_layer_ctl
 !!
 !!        array layer_grp_name_ctl    8
-!!          layer_grp_name_ctl    fluid_layer_1   end
-!!          layer_grp_name_ctl    fluid_layer_2   end
-!!          layer_grp_name_ctl    fluid_layer_3   end
-!!          layer_grp_name_ctl    fluid_layer_4   end
-!!          layer_grp_name_ctl    fluid_layer_5   end
-!!          layer_grp_name_ctl    fluid_layer_6   end
-!!          layer_grp_name_ctl    fluid_layer_7   end
-!!          layer_grp_name_ctl    fluid_layer_8   end
+!!          layer_grp_name_ctl    fluid_layer_1
+!!          layer_grp_name_ctl    fluid_layer_2
+!!          layer_grp_name_ctl    fluid_layer_3
+!!          layer_grp_name_ctl    fluid_layer_4
+!!          layer_grp_name_ctl    fluid_layer_5
+!!          layer_grp_name_ctl    fluid_layer_6
+!!          layer_grp_name_ctl    fluid_layer_7
+!!          layer_grp_name_ctl    fluid_layer_8
 !!        end array layer_grp_name_ctl
 !!      end dynamic_model_layer_ctl
 !!
@@ -209,6 +211,9 @@
         type(read_real_item) :: stabilize_weight_ctl
         type(read_real_item) :: delta_to_shrink_dynamic_ctl
         type(read_real_item) :: delta_to_extend_dynamic_ctl
+!
+        type(read_integer_item) :: radial_ave_area_ctl
+        type(read_integer_item) :: med_ave_area_ctl
 !
         type(read_real_item) :: clipping_limit_ctl
 !
@@ -281,6 +286,11 @@
       character(len=kchara), parameter :: hd_SGS_perturbation_ctl       &
      &                        = 'SGS_perturbation_ctl'
 !
+      character(len=kchara), parameter :: hd_r_ave_area_ctl             &
+     &                        = 'radial_averaging_area'
+      character(len=kchara), parameter :: hd_med_ave_area_ctl           &
+     &                        = 'meridional_averaging_area'
+!
       character(len=kchara), parameter :: hd_model_coef_type_ctl        &
      &                        = 'model_coef_type_ctl'
       character(len=kchara), parameter :: hd_hf_csim_type_ctl           &
@@ -324,6 +334,7 @@
       private :: hd_SGS_marging, hd_DIFF_coefs, hd_3d_filtering
       private :: hd_istep_dynamic, hd_stabilize_weight
       private :: hd_min_step_dynamic, hd_max_step_dynamic
+      private :: hd_r_ave_area_ctl, hd_med_ave_area_ctl
       private :: hd_delta_shrink_dynamic, hd_delta_extend_dynamic
       private :: hd_SGS_terms, hd_SGS_perturbation_ctl, hd_sph_filter
       private :: hd_model_coef_type_ctl, hd_model_coef_coord_ctl
@@ -458,6 +469,11 @@
      &      sgs_ctl%min_step_dynamic_ctl)
         call read_integer_ctl_type(hd_max_step_dynamic,                 &
      &      sgs_ctl%max_step_dynamic_ctl)
+!
+        call read_integer_ctl_type(hd_r_ave_area_ctl,                   &
+     &      sgs_ctl%radial_ave_area_ctl)
+        call read_integer_ctl_type(hd_med_ave_area_ctl,                 &
+     &      sgs_ctl%med_ave_area_ctl)
       end do
 !
       end subroutine read_sgs_ctl
@@ -555,6 +571,9 @@
       call bcast_ctl_type_i1(sgs_ctl%istep_dynamic_ctl)
       call bcast_ctl_type_i1(sgs_ctl%min_step_dynamic_ctl)
       call bcast_ctl_type_i1(sgs_ctl%max_step_dynamic_ctl)
+!
+      call bcast_ctl_type_i1(sgs_ctl%radial_ave_area_ctl)
+      call bcast_ctl_type_i1(sgs_ctl%med_ave_area_ctl)
 !
       end subroutine bcast_sgs_ctl
 !
