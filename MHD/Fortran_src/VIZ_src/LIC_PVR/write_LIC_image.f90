@@ -81,7 +81,7 @@
       integer(kind = kint) :: i, j, k, ipix
 !
 !
-      call start_elapsed_time(73)
+      call start_elapsed_time(78)
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'
       call ray_trace_each_lic_image(node, ele, surf,                    &
      &    pvr_screen, field_pvr, color_param, ray_vec,                  &
@@ -96,7 +96,7 @@
      &    pvr_img%num_overlap, pvr_rgb%num_pixel_xy,                    &
      &    pvr_img%npixel_img, pvr_img%iflag_img_pe,                     &
      &    pvr_img%iflag_mapped, pvr_img%rgba_lc)
-      call end_elapsed_time(73)
+      call end_elapsed_time(78)
 !
 !       Outut semented image
       if(i_debug .gt. 0) then
@@ -111,7 +111,7 @@
         end do
       end if
 !
-      call start_elapsed_time(74)
+      call start_elapsed_time(79)
       call distribute_segmented_images                                  &
      &   (pvr_img%num_overlap, pvr_img%istack_overlap,                  &
      &    pvr_img%ntot_overlap, pvr_img%npixel_img,                     &
@@ -128,7 +128,7 @@
      &    pvr_img%npixel_img, pvr_rgb%num_pixel_xy,                     &
      &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
      &    pvr_img%rgba_rank0, pvr_rgb%rgba_real_gl, pvr_img%COMM)
-      call end_elapsed_time(74)
+      call end_elapsed_time(79)
 !
 !      if(my_rank .eq. 0) then
 !        write(*,*) 'picked points'

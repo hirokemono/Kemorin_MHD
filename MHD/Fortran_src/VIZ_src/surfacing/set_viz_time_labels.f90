@@ -48,6 +48,11 @@
       elapse_labels(73) = 'V. Rendering ray trace   '
       elapse_labels(74) = 'V. Rendering subimage composit   '
 !
+      elapse_labels(76) = 'LIC V. rendering w/o file output   '
+      elapse_labels(77) = 'LIC V. rendering file output   '
+      elapse_labels(78) = 'LIC V. Rendering ray trace   '
+      elapse_labels(79) = 'LIC V. Rendering subimage composit   '
+!
       end subroutine s_set_viz_time_labels
 !
 ! ----------------------------------------------------------------------

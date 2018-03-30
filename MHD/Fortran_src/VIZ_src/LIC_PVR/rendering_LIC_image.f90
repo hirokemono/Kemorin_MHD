@@ -81,14 +81,14 @@
         call rendering_lic_at_once(IFLAG_NORMAL, istep_pvr,             &
      &       node, ele, surf, group, pvr_param, pvr_data)
 !
-        call end_elapsed_time(71)
-        call start_elapsed_time(72)
+        call end_elapsed_time(76)
+        call start_elapsed_time(77)
         if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
         call sel_write_pvr_image_file                                   &
      &   (pvr_param%file, i_rot, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
         call calypso_mpi_barrier
-        call end_elapsed_time(72)
-        call start_elapsed_time(71)
+        call end_elapsed_time(77)
+        call start_elapsed_time(76)
 !
         call dealloc_pvr_local_subimage(pvr_data%image)
         call deallocate_pvr_ray_start(pvr_data%start_pt)
@@ -124,8 +124,8 @@
      &    pvr_param%field, pvr_data%screen, pvr_data%start_pt,          &
      &    pvr_data%image, pvr_data%rgb)
 !
-      call end_elapsed_time(71)
-      call start_elapsed_time(72)
+      call end_elapsed_time(76)
+      call start_elapsed_time(77)
       if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
       call sel_write_pvr_image_file(pvr_param%file, iminus,             &
      &    istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
@@ -135,8 +135,8 @@
      &      iminus, IFLAG_NORMAL, pvr_data%rgb)
       end if
       call calypso_mpi_barrier
-      call end_elapsed_time(72)
-      call start_elapsed_time(71)
+      call end_elapsed_time(77)
+      call start_elapsed_time(76)
 !
       end subroutine lic_rendering_with_fixed_view
 !
