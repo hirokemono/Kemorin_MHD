@@ -31,6 +31,7 @@
       use m_constants
       use m_machine_parameter
       use m_geometry_constants
+      use m_work_time
 !
       use t_mesh_data
       use t_phys_data
@@ -188,11 +189,13 @@
 !
       if(lic%num_pvr.le.0 .or. istep_pvr.le.0) return
 !
+      call start_elapsed_time(76)
       do i_pvr = 1, lic%num_pvr
         call s_each_LIC_rendering(istep_pvr,                            &
      &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
      &      lic%pvr_param(i_pvr), lic%pvr_data(i_pvr))
       end do
+      call end_elapsed_time(76)
 !
       end subroutine LIC_visualize
 !

@@ -1,10 +1,14 @@
-!t_control_data_4_pvr.f90
-!      module t_control_data_4_pvr
+!>@file   t_control_data_4_pvr.f90
+!!@brief  module t_control_data_4_pvr
+!!
+!!@author H. Matsui
+!!@date Programmed in 2006
 !
-!        programmed by H.Matsui on May. 2006
-!
-!      subroutine deallocate_cont_dat_pvr(pvr)
-!
+!> @brief control data for parallel volume rendering
+!!
+!!@verbatim
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      subroutine deallocate_cont_dat_pvr(pvr)
+!!
 !!      subroutine reset_pvr_update_flags(pvr)
 !!      subroutine read_vr_psf_ctl(hd_block, pvr)
 !!      subroutine read_pvr_update_flag(hd_block, pvr)
@@ -23,7 +27,7 @@
 !!  anaglyph_image       YES
 !!!
 !!  output_field    temperature    end
-!!  output component     scalar
+!!  output_component     scalar
 !!!
 !!  begin plot_area_ctl
 !!    array chosen_ele_grp_ctl  1
@@ -54,6 +58,7 @@
 !!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!@endverbatim
 !
       module t_control_data_4_pvr
 !

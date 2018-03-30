@@ -1,9 +1,13 @@
-!t_control_data_pvr_misc.f90
-!      module t_control_data_pvr_misc
+!>@file   t_control_data_pvr_misc.f90
+!!@brief  module t_control_data_pvr_misc
+!!
+!!@author H. Matsui
+!!@date Programmed in 2006
 !
-!        programmed by H.Matsui on May. 2006
-!
-!!      subroutine read_control_pvr_section_def(pvr_sect_ctl)
+!> @brief control data for parallel volume rendering
+!!
+!!@verbatim
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      subroutine read_control_pvr_section_def(pvr_sect_ctl)
 !!      subroutine read_pvr_section_ctl(pvr_sect_ctl)
 !!        type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
 !!
@@ -38,6 +42,7 @@
 !!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!@endverbatim
 !
       module t_control_data_pvr_misc
 !
