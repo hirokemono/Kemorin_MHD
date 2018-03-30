@@ -25,6 +25,9 @@
 !
       implicit  none
 !
+      real(kind = kreal), parameter :: factor_lic_magnify = 120.0d0
+      private :: factor_lic_magnify
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -210,7 +213,7 @@
         if(k_area .gt. 0.0) then
           o_tgt = o_tgt / k_area
         end if
-        o_tgt = o_tgt * 20.0
+        o_tgt = o_tgt * factor_lic_magnify
 
         !write(50+my_rank, *) iflag_comm, o_tgt
         if(iflag_debug .eq. 1) write(50+my_rank,*) "Get lic value: ", o_tgt
