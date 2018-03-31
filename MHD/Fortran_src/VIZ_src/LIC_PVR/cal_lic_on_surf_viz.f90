@@ -25,7 +25,7 @@
 !
       implicit  none
 !
-      real(kind = kreal), parameter :: factor_lic_magnify = 120.0d0
+      real(kind = kreal), parameter :: factor_lic_magnify = 20.0d0
       private :: factor_lic_magnify
 !
 !  ---------------------------------------------------------------------
