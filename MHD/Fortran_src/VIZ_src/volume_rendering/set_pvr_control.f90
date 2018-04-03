@@ -4,12 +4,13 @@
 !     Written by H. Matsui on May., 2006
 !
 !!      subroutine read_set_each_pvr_controls                           &
-!!     &         (i_pvr, hd_pvr_ctl, group, nod_fld, fname_pvr_ctl,     &
-!!     &          pvr_ctl_struct, pvr_param, pvr_data)
+!!     &         (i_pvr, hd_pvr_ctl, hd_pvr_colordef, group, nod_fld,   &
+!!     &          fname_pvr_ctl, pvr_ctl_struct, pvr_param, pvr_data)
 !!      subroutine read_control_pvr_update                              &
 !!     &         (hd_pvr_ctl, fname_pvr_ctl, pvr_ctl_struct)
-!!      subroutine flush_each_pvr_control                               &
-!!     &         (color_params, fld_params, field_pvr)
+!!      subroutine flush_each_pvr_control(pvr_data, pvr_param)
+!!        type(PVR_control_params), intent(inout) :: pvr_data
+!!        type(PVR_control_params), intent(inout) :: pvr_param
 !
       module set_pvr_control
 !
@@ -24,9 +25,8 @@
 !
       character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
       character(len=kchara) :: hd_colormap =      'colormap_ctl'
-      character(len=kchara) :: hd_pvr_colordef =  'pvr_color_ctl'
 !
-      private :: hd_view_transform, hd_colormap, hd_pvr_colordef
+      private :: hd_view_transform, hd_colormap
 !
       private :: read_control_pvr, set_each_pvr_control
       private :: read_control_modelview, read_control_colormap
@@ -38,8 +38,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_set_each_pvr_controls                             &
-     &         (i_pvr, hd_pvr_ctl, group, nod_fld, fname_pvr_ctl,       &
-     &          pvr_ctl_struct, pvr_param, pvr_data)
+     &         (i_pvr, hd_pvr_ctl, hd_pvr_colordef, group, nod_fld,     &
+     &          fname_pvr_ctl, pvr_ctl_struct, pvr_param, pvr_data)
 !
       use t_mesh_data
       use t_phys_data
@@ -50,6 +50,7 @@
       type(phys_data), intent(in) :: nod_fld
       integer(kind = kint), intent(in) :: i_pvr
       character(len = kchara), intent(in)  :: hd_pvr_ctl
+      character(len = kchara), intent(in) :: hd_pvr_colordef
       character(len = kchara), intent(in)  :: fname_pvr_ctl
 !
       type(pvr_ctl), intent(inout) :: pvr_ctl_struct
@@ -60,11 +61,13 @@
 !
 !
       ctl_file_code = pvr_ctl_file_code
-      call read_control_pvr                                             &
-     &   (i_pvr, hd_pvr_ctl, fname_pvr_ctl, pvr_ctl_struct)
+      call read_control_pvr(i_pvr, hd_pvr_ctl, hd_pvr_colordef,         &
+     &    fname_pvr_ctl, pvr_ctl_struct)
       write(*,*) 'read_control_pvr end'
       call read_control_modelview(i_pvr, pvr_ctl_struct)
-      call read_control_colormap(i_pvr, pvr_ctl_struct)
+      call read_control_colormap                                        &
+     &   (hd_pvr_colordef, i_pvr, pvr_ctl_struct)
+!
       do i_psf = 1, pvr_ctl_struct%num_pvr_sect_ctl
         call read_control_pvr_section_def                               &
      &     (pvr_ctl_struct%pvr_sect_ctl(i_psf))
@@ -74,9 +77,7 @@
 !
       call set_each_pvr_control(group%ele_grp, group%surf_grp,          &
      &    nod_fld%num_phys, nod_fld%phys_name, pvr_ctl_struct,          &
-     &    pvr_param%file, pvr_param%field_def, pvr_data%view,           &
-     &    pvr_param%field, pvr_data%screen, pvr_data%color,             &
-     &    pvr_param%colorbar)
+     &    pvr_data, pvr_param)
 !
       call deallocate_cont_dat_pvr(pvr_ctl_struct)
 !
@@ -86,11 +87,10 @@
 !
       subroutine set_each_pvr_control                                   &
      &       (ele_grp, surf_grp, num_nod_phys, phys_nod_name,           &
-     &        pvr_control, file_params, fld_params, view_params,        &
-     &        field_pvr, pvr_screen, color_params, cbar_params)
+     &        pvr_control, pvr_data, pvr_param)
 !
       use t_group_data
-      use t_control_params_4_pvr
+      use t_rendering_vr_image
       use t_geometries_in_pvr_screen
       use t_control_data_pvr_misc
       use set_control_each_pvr
@@ -104,55 +104,49 @@
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
       type(pvr_ctl), intent(inout) :: pvr_control
-      type(pvr_output_parameter), intent(inout) :: file_params
-      type(pvr_field_parameter), intent(inout) :: fld_params
-      type(pvr_view_parameter), intent(inout) :: view_params
-      type(pvr_projected_data), intent(inout) :: pvr_screen
-      type(pvr_projected_field), intent(inout) :: field_pvr
-      type(pvr_colormap_parameter), intent(inout) :: color_params
-      type(pvr_colorbar_parameter), intent(inout) :: cbar_params
+      type(PVR_control_params), intent(inout) :: pvr_param
+      type(PVR_image_generator), intent(inout) :: pvr_data
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
       call set_pvr_file_control(pvr_control,                            &
-     &    num_nod_phys, phys_nod_name, file_params)
+     &    num_nod_phys, phys_nod_name, pvr_param%file)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
       call set_control_pvr                                              &
      &   (pvr_control, ele_grp, surf_grp, num_nod_phys,                 &
-     &    phys_nod_name, fld_params, view_params, field_pvr,            &
-     &    color_params, cbar_params)
+     &    phys_nod_name, pvr_param%field_def, pvr_param%area_def,       &
+     &    pvr_data%view, pvr_param%field, pvr_data%color,               &
+     &    pvr_param%colorbar)
 !
 !   set transfer matrix
 !
       call s_set_pvr_modelview_matrix                                   &
-     &   (pvr_control%mat, view_params, pvr_screen)
+     &   (pvr_control%mat, pvr_data%view, pvr_data%screen)
 !
       end subroutine set_each_pvr_control
 !
 !   --------------------------------------------------------------------
 !
-       subroutine flush_each_pvr_control                                &
-      &         (color_params, fld_params, field_pvr)
+      subroutine flush_each_pvr_control(pvr_data, pvr_param)
 !
-      use t_control_params_4_pvr
+      use t_rendering_vr_image
       use t_geometries_in_pvr_screen
 !
-      type(pvr_colormap_parameter), intent(inout) :: color_params
-      type(pvr_field_parameter), intent(inout) :: fld_params
-      type(pvr_projected_field), intent(inout) :: field_pvr
+      type(PVR_image_generator), intent(inout) :: pvr_data
+      type(PVR_control_params), intent(inout) :: pvr_param
 !
 !
-      if(field_pvr%num_sections .gt. 0) then
-        call dealloc_pvr_sections(field_pvr)
+      if(pvr_param%field%num_sections .gt. 0) then
+        call dealloc_pvr_sections(pvr_param%field)
       end if
 !
-      if(field_pvr%num_isosurf .gt. 0) then
-        call dealloc_pvr_isosurfaces(field_pvr)
+      if(pvr_param%field%num_isosurf .gt. 0) then
+        call dealloc_pvr_isosurfaces(pvr_param%field)
       end if
 !
-      call dealloc_pvr_element_group(fld_params)
-      call dealloc_pvr_color_parameteres(color_params)
+      call dealloc_pvr_element_group(pvr_param%area_def)
+      call dealloc_pvr_color_parameteres(pvr_data%color)
 !
       end subroutine flush_each_pvr_control
 !
@@ -160,14 +154,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_control_pvr                                       &
-     &         (i_pvr, hd_pvr_ctl, fname_pvr_ctl, pvr_ctl_struct)
+     &         (i_pvr, hd_pvr_ctl, hd_pvr_colordef, fname_pvr_ctl,      &
+     &          pvr_ctl_struct)
 !
       use calypso_mpi
       use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: i_pvr
-      character(len = kchara), intent(in)  :: hd_pvr_ctl
-      character(len = kchara), intent(in)  :: fname_pvr_ctl
+      character(len = kchara), intent(in) :: hd_pvr_ctl
+      character(len = kchara), intent(in) :: hd_pvr_colordef
+      character(len = kchara), intent(in) :: fname_pvr_ctl
       type(pvr_ctl), intent(inout) :: pvr_ctl_struct
 !
       if(fname_pvr_ctl .eq. 'NO_FILE') return
@@ -177,7 +173,7 @@
 !
         open(ctl_file_code, file=fname_pvr_ctl, status='old')
         call load_ctl_label_and_line
-        call read_vr_psf_ctl(hd_pvr_ctl, pvr_ctl_struct)
+        call read_vr_psf_ctl(hd_pvr_ctl, hd_pvr_colordef, pvr_ctl_struct)
         close(ctl_file_code)
       end if
 !
@@ -249,12 +245,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_colormap(i_pvr, pvr_ctl_struct)
+      subroutine read_control_colormap                                  &
+     &         (hd_pvr_colordef, i_pvr, pvr_ctl_struct)
 !
       use calypso_mpi
       use m_error_IDs
       use t_ctl_data_pvr_colormap
 !
+      character(len = kchara), intent(in) :: hd_pvr_colordef
       integer(kind = kint), intent(in) :: i_pvr
       type(pvr_ctl), intent(inout) :: pvr_ctl_struct
 !

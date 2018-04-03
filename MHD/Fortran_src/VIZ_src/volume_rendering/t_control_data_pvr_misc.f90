@@ -14,13 +14,13 @@
 !!      subroutine read_pvr_isosurface_ctl(pvr_iso_ctl)
 !!        type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
 !!
-!!      subroutine read_pvr_colorbar_ctl(colorbar)
-!!        type(pvr_colorbar_ctl), intent(inout) :: colorbar
+!!      subroutine read_pvr_colorbar_ctl(cbar_ctl)
+!!        type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !!
 !!      subroutine read_pvr_rotation_ctl(movie)
 !!        type(pvr_movie_ctl), intent(inout) :: movie
 !!
-!!      subroutine reset_pvr_misc_control_flags(colorbar, movie)
+!!      subroutine reset_pvr_misc_control_flags(cbar_ctl, movie)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin colorbar_ctl
@@ -226,39 +226,39 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_colorbar_ctl(colorbar)
+      subroutine read_pvr_colorbar_ctl(cbar_ctl)
 !
-      type(pvr_colorbar_ctl), intent(inout) :: colorbar
+      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !
 !
       if(right_begin_flag(hd_pvr_colorbar) .eq. 0) return
-      if (colorbar%i_pvr_colorbar.gt.0) return
+      if (cbar_ctl%i_pvr_colorbar.gt.0) return
       do
         call load_ctl_label_and_line
 !
         call find_control_end_flag                                      &
-     &     (hd_pvr_colorbar, colorbar%i_pvr_colorbar)
-        if(colorbar%i_pvr_colorbar .gt. 0) exit
+     &     (hd_pvr_colorbar, cbar_ctl%i_pvr_colorbar)
+        if(cbar_ctl%i_pvr_colorbar .gt. 0) exit
 !
 !
         call read_integer_ctl_type                                      &
-     &     (hd_pvr_font_size, colorbar%font_size_ctl)
+     &     (hd_pvr_font_size, cbar_ctl%font_size_ctl)
         call read_integer_ctl_type(hd_pvr_numgrid_cbar,                 &
-     &      colorbar%ngrid_cbar_ctl)
+     &      cbar_ctl%ngrid_cbar_ctl)
 !
 !
         call read_chara_ctl_type(hd_colorbar_switch,                    &
-     &      colorbar%colorbar_switch_ctl)
+     &      cbar_ctl%colorbar_switch_ctl)
         call read_chara_ctl_type(hd_colorbar_scale,                     &
-     &      colorbar%colorbar_scale_ctl)
+     &      cbar_ctl%colorbar_scale_ctl)
         call read_chara_ctl_type(hd_zeromarker_flag,                    &
-     &      colorbar%zeromarker_flag_ctl)
+     &      cbar_ctl%zeromarker_flag_ctl)
 !
         call read_chara_ctl_type(hd_axis_switch,                        &
-     &      colorbar%axis_switch_ctl)
+     &      cbar_ctl%axis_switch_ctl)
 !!
         call read_real2_ctl_type                                        &
-     &     (hd_cbar_range, colorbar%cbar_range_ctl)
+     &     (hd_cbar_range, cbar_ctl%cbar_range_ctl)
       end do
 !
       end subroutine read_pvr_colorbar_ctl
@@ -290,24 +290,24 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine reset_pvr_misc_control_flags(colorbar, movie)
+      subroutine reset_pvr_misc_control_flags(cbar_ctl, movie)
 !
-      type(pvr_colorbar_ctl), intent(inout) :: colorbar
+      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
       type(pvr_movie_ctl), intent(inout) :: movie
 !
 !
       movie%num_frames_ctl%iflag =    0
       movie%rotation_axis_ctl%iflag = 0
 !
-      colorbar%colorbar_switch_ctl%iflag = 0
-      colorbar%colorbar_scale_ctl%iflag =  0
-      colorbar%font_size_ctl%iflag =       0
-      colorbar%ngrid_cbar_ctl%iflag =      0
-      colorbar%zeromarker_flag_ctl%iflag = 0
-      colorbar%cbar_range_ctl%iflag =      0
+      cbar_ctl%colorbar_switch_ctl%iflag = 0
+      cbar_ctl%colorbar_scale_ctl%iflag =  0
+      cbar_ctl%font_size_ctl%iflag =       0
+      cbar_ctl%ngrid_cbar_ctl%iflag =      0
+      cbar_ctl%zeromarker_flag_ctl%iflag = 0
+      cbar_ctl%cbar_range_ctl%iflag =      0
 !
       movie%i_pvr_rotation = 0
-      colorbar%i_pvr_colorbar = 0
+      cbar_ctl%i_pvr_colorbar = 0
 !
       end subroutine reset_pvr_misc_control_flags
 !

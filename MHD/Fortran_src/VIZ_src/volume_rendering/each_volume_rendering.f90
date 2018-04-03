@@ -87,8 +87,8 @@
       do i_pvr = 1, num_pvr
         call find_each_pvr_surf_domain                                  &
      &     (mesh%ele, ele_mesh%surf, group%ele_grp,                     &
-     &      pvr_param(i_pvr)%field_def, pvr_data(i_pvr)%bound,          &
-     &      pvr_param(i_pvr)%field)
+     &      pvr_param(i_pvr)%field_def, pvr_param(i_pvr)%area_def,      &
+     &      pvr_data(i_pvr)%bound, pvr_param(i_pvr)%field)
       end do
       call deallocate_imark_4_surface
 !
@@ -218,8 +218,7 @@
 !
       call dealloc_pvr_surf_domain_item(pvr_data%bound)
       call dealloc_nod_data_4_pvr(pvr_param%field)
-      call flush_each_pvr_control(pvr_data%color,                       &
-     &    pvr_param%field_def, pvr_param%field)
+      call flush_each_pvr_control(pvr_data, pvr_param)
 !
       end subroutine dealloc_each_pvr_data
 !

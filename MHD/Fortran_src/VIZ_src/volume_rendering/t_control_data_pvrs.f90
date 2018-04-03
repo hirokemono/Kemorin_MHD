@@ -29,6 +29,8 @@
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_pvr_ctl = 'volume_rendering'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_pvr_colordef =  'pvr_color_ctl'
 !
       type volume_rendering_controls
         integer(kind = kint) :: num_pvr_ctl = 0
@@ -100,8 +102,8 @@
         if(right_begin_flag(hd_pvr_ctl) .gt. 0) then
           i_pvr_ctl = i_pvr_ctl + 1
           pvr_ctls%fname_pvr_ctl(i_pvr_ctl) = 'NO_FILE'
-          call read_vr_psf_ctl                                          &
-     &       (hd_pvr_ctl, pvr_ctls%pvr_ctl_struct(i_pvr_ctl))
+          call read_vr_psf_ctl(hd_pvr_ctl, hd_pvr_colordef,             &
+     &        pvr_ctls%pvr_ctl_struct(i_pvr_ctl))
         end if
       end do
 !

@@ -139,8 +139,7 @@
 !
       call dealloc_pvr_surf_domain_item(pvr_data%bound)
       call dealloc_nod_data_4_lic(pvr_param%field)
-      call flush_each_pvr_control(pvr_data%color,                       &
-     &    pvr_param%field_def, pvr_param%field)
+      call flush_each_pvr_control(pvr_data, pvr_param)
 !
       end subroutine dealloc_each_lic_data
 !

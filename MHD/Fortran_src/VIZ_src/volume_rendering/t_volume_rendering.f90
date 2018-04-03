@@ -139,7 +139,8 @@
       end if
 !
       do i_pvr = 1, pvr%num_pvr
-        call read_set_each_pvr_controls(i_pvr, hd_pvr_ctl,              &
+        call read_set_each_pvr_controls                                 &
+     &     (i_pvr, hd_pvr_ctl, hd_pvr_colordef,                         &
      &      femmesh%group, nod_fld, pvr_ctls%fname_pvr_ctl(i_pvr),      &
      &      pvr_ctls%pvr_ctl_struct(i_pvr),                             &
      &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))

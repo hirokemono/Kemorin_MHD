@@ -10,7 +10,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      subroutine deallocate_cont_dat_pvr(pvr)
 !!
 !!      subroutine reset_pvr_update_flags(pvr)
-!!      subroutine read_vr_psf_ctl(hd_block, pvr)
+!!      subroutine read_vr_psf_ctl(hd_block, hd_pvr_colordef, pvr)
 !!      subroutine read_pvr_update_flag(hd_block, pvr)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -26,7 +26,7 @@
 !!  streo_imaging        YES
 !!  anaglyph_image       YES
 !!!
-!!  output_field    temperature    end
+!!  output_field    temperature
 !!  output_component     scalar
 !!!
 !!  begin plot_area_ctl
@@ -88,7 +88,7 @@
         type(pvr_colormap_ctl) :: color
 !
 !>    Structure for colorbar
-        type(pvr_colorbar_ctl) :: colorbar
+        type(pvr_colorbar_ctl) :: cbar_ctl
 !
 !>    Structure for image rotation
         type(pvr_movie_ctl) :: movie
@@ -159,9 +159,8 @@
 !
       character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
       character(len=kchara) :: hd_colormap =      'colormap_ctl'
-      character(len=kchara) :: hd_pvr_colordef =  'pvr_color_ctl'
       character(len=kchara) :: hd_pvr_lighting =  'lighting_ctl'
-      private :: hd_view_transform, hd_pvr_colordef, hd_pvr_lighting
+      private :: hd_view_transform, hd_pvr_lighting
       private :: hd_colormap
 !
       private :: hd_pvr_file_head, hd_pvr_out_type, hd_pvr_rgba_type
@@ -186,7 +185,7 @@
 !
 !
       call reset_pvr_colormap_flags(pvr%color)
-      call reset_pvr_misc_control_flags(pvr%colorbar, pvr%movie)
+      call reset_pvr_misc_control_flags(pvr%cbar_ctl, pvr%movie)
 !
       call dealloc_view_transfer_ctl(pvr%mat)
       call dealloc_pvr_color_crl(pvr%color)
@@ -242,9 +241,10 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_vr_psf_ctl(hd_block, pvr)
+      subroutine read_vr_psf_ctl(hd_block, hd_pvr_colordef, pvr)
 !
       character(len=kchara), intent(in) :: hd_block
+      character(len = kchara), intent(in) :: hd_pvr_colordef
 !
       type(pvr_ctl), intent(inout) :: pvr
 !
@@ -288,7 +288,7 @@
 !
         call read_plot_area_ctl(pvr)
         call read_lighting_ctl(hd_pvr_lighting, pvr%color)
-        call read_pvr_colorbar_ctl(pvr%colorbar)
+        call read_pvr_colorbar_ctl(pvr%cbar_ctl)
         call read_pvr_rotation_ctl(pvr%movie)
 !
 !

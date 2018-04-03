@@ -30,6 +30,8 @@
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_lic_ctl = 'LIC_rendering'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_lic_colordef =  'LIC_color_ctl'
 !
       type lic_rendering_controls
         integer(kind = kint) :: num_lic_ctl = 0
@@ -101,8 +103,8 @@
         if(right_begin_flag(hd_lic_ctl) .gt. 0) then
           i_lic_ctl = i_lic_ctl + 1
           lic_ctls%fname_lic_ctl(i_lic_ctl) = 'NO_FILE'
-          call read_vr_psf_ctl                                          &
-     &       (hd_lic_ctl, lic_ctls%lic_ctl_struct(i_lic_ctl))
+          call read_vr_psf_ctl(hd_lic_ctl, hd_lic_colordef,             &
+     &        lic_ctls%lic_ctl_struct(i_lic_ctl))
         end if
       end do
 !

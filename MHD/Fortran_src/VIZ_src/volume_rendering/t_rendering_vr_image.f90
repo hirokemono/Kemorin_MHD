@@ -55,6 +55,8 @@
         type(pvr_pixel_position_type) :: pixel
 !>        Structure for field parameter for PVR
         type(pvr_field_parameter) :: field_def
+!>        Structure for rendering area by element group
+        type(viz_area_parameter) :: area_def
 !>        Structure for rough serch of subdomains
         type(pvr_domain_outline) :: outline
 !>        Field data for volume rendering

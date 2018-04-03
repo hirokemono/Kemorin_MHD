@@ -6,8 +6,17 @@
 !!      subroutine set_pvr_file_control                                 &
 !!     &         (pvr, num_nod_phys, phys_nod_name, file_param)
 !!      subroutine set_control_pvr(pvr, ele_grp, surf_grp,              &
-!!     &          num_nod_phys, phys_nod_name, fld_param, view_param,   &
-!!     &          field_pvr, color_param, cbar_param)
+!!     &          num_nod_phys, phys_nod_name, fld_param, pvr_area,     &
+!!     &          view_param, field_pvr, color_param, cbar_param)
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(surface_group_data), intent(in) :: surf_grp
+!!        type(pvr_ctl), intent(inout) :: pvr
+!!        type(pvr_field_parameter), intent(inout) :: fld_param
+!!        type(pvr_view_parameter), intent(inout) :: view_param
+!!        type(pvr_projected_field), intent(inout) :: field_pvr
+!!        type(viz_area_parameter), intent(inout) :: pvr_area
+!!        type(pvr_colormap_parameter), intent(inout) :: color_param
+!!        type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
       module set_control_each_pvr
 !
@@ -109,8 +118,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_pvr(pvr, ele_grp, surf_grp,                &
-     &          num_nod_phys, phys_nod_name, fld_param, view_param,     &
-     &          field_pvr, color_param, cbar_param)
+     &          num_nod_phys, phys_nod_name, fld_param, pvr_area,       &
+     &          view_param, field_pvr, color_param, cbar_param)
 !
       use t_group_data
       use t_control_params_4_pvr
@@ -133,6 +142,7 @@
       type(pvr_field_parameter), intent(inout) :: fld_param
       type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_projected_field), intent(inout) :: field_pvr
+      type(viz_area_parameter), intent(inout) :: pvr_area
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
@@ -165,18 +175,18 @@
 !
       call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
-     &    fld_param%nele_grp_area_pvr)
+     &    pvr_area%nele_grp_area_pvr)
 !
-      if (fld_param%nele_grp_area_pvr .le. 0) then
+      if (pvr_area%nele_grp_area_pvr .le. 0) then
         call calypso_MPI_abort(ierr_PVR, 'set correct element group')
       else
-        call alloc_pvr_element_group(fld_param)
+        call alloc_pvr_element_group(pvr_area)
       end if
 !
 !
       call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
-     &    fld_param%nele_grp_area_pvr, fld_param%id_ele_grp_area_pvr)
+     &    pvr_area%nele_grp_area_pvr, pvr_area%id_ele_grp_area_pvr)
 !
 !
       if (pvr%surf_enhanse_ctl%num .gt. 0) then
@@ -241,7 +251,7 @@
       call set_control_pvr_colormap(pvr%color, color_param)
 !
 !    set colorbar setting
-      call set_control_pvr_colorbar(pvr%colorbar, cbar_param)
+      call set_control_pvr_colorbar(pvr%cbar_ctl, cbar_param)
 !
       end subroutine set_control_pvr
 !

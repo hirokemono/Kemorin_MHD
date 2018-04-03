@@ -145,7 +145,8 @@
       end if
 !
       do i_pvr = 1, lic%num_pvr
-        call read_set_each_pvr_controls(i_pvr, hd_lic_ctl,              &
+        call read_set_each_pvr_controls                                 &
+     &     (i_pvr, hd_lic_ctl, hd_pvr_colordef,                         &
      &      femmesh%group, nod_fld, lic_ctls%fname_lic_ctl(i_pvr),      &
      &      lic_ctls%lic_ctl_struct(i_pvr),                             &
      &      lic%pvr_param(i_pvr), lic%pvr_data(i_pvr))
