@@ -35,7 +35,7 @@
 !
       subroutine bcast_vr_psf_ctl(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
       call MPI_BCAST(pvr%i_pvr_ctl,  ione,                              &
@@ -79,7 +79,7 @@
 !
       subroutine bcast_pvr_update_flag(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
       call bcast_ctl_type_c1(pvr%updated_ctl)
@@ -91,7 +91,7 @@
 !
       subroutine bcast_pvr_sections_ctl(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
       integer(kind = kint) :: i
 !
@@ -121,7 +121,7 @@
 !
       subroutine bcast_pvr_isosurfs_ctl(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
       integer(kind = kint) :: i
 !

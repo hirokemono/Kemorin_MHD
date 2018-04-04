@@ -326,7 +326,7 @@ integer(kind = kint) :: icount_line_cur_ray = 0
           call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,    &
      &          isf_4_ele, iele_4_surf, interior_surf, xx, vnorm_surf,         &
      &          isurf_orgs, ie_surf, xi, n_size, noise_data, noise_grad,       &
-     &          k_size, k_ary, field_pvr%v_nod, xx_tgt, isurf_end,             &
+     &          k_size, k_ary, field_pvr%v_lic, xx_tgt, isurf_end,             &
      &          xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
           !write(50+my_rank, *) iflag_lic
 

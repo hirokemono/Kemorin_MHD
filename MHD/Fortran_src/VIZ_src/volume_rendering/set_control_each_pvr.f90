@@ -5,12 +5,13 @@
 !
 !!      subroutine set_pvr_file_control                                 &
 !!     &         (pvr, num_nod_phys, phys_nod_name, file_param)
-!!      subroutine set_control_pvr(pvr, ele_grp, surf_grp,              &
-!!     &          num_nod_phys, phys_nod_name, fld_param, pvr_area,     &
+!!      subroutine set_control_field_4_pvr(field_ctl, comp_ctl,         &
+!!     &          num_nod_phys, phys_nod_name, fld_param, icheck_ncomp)
+!!      subroutine set_control_pvr(pvr, ele_grp, surf_grp, pvr_area,    &
 !!     &          view_param, field_pvr, color_param, cbar_param)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: surf_grp
-!!        type(pvr_ctl), intent(inout) :: pvr
+!!        type(pvr_parameter_ctl), intent(inout) :: pvr
 !!        type(pvr_field_parameter), intent(inout) :: fld_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(pvr_projected_field), intent(inout) :: field_pvr
@@ -50,7 +51,7 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      type(pvr_ctl), intent(in) :: pvr
+      type(pvr_parameter_ctl), intent(in) :: pvr
       type(pvr_output_parameter), intent(inout) :: file_param
 !
       integer(kind = kint) :: num_field, num_phys_viz
@@ -117,8 +118,39 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_pvr(pvr, ele_grp, surf_grp,                &
-     &          num_nod_phys, phys_nod_name, fld_param, pvr_area,       &
+      subroutine set_control_field_4_pvr(field_ctl, comp_ctl,           &
+     &          num_nod_phys, phys_nod_name, fld_param, icheck_ncomp)
+!
+      use t_control_params_4_pvr
+!
+      integer(kind = kint), intent(in) :: num_nod_phys
+      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      type(read_character_item), intent(in) :: field_ctl
+      type(read_character_item), intent(in) :: comp_ctl
+!
+      type(pvr_field_parameter), intent(inout) :: fld_param
+      integer(kind = kint), intent(inout) :: icheck_ncomp(1)
+!
+      integer(kind = kint) :: ifld_tmp(1), icomp_tmp(1), ncomp_tmp(1)
+      character(len = kchara) :: fldname_tmp(1)
+      character(len = kchara) :: tmpfield(1), tmpcomp(1)
+!
+!
+      tmpfield(1) = field_ctl%charavalue
+      tmpcomp(1) =  comp_ctl%charavalue
+      call set_components_4_viz                                         &
+     &   (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp, ione,   &
+     &    ifld_tmp, icomp_tmp, icheck_ncomp, ncomp_tmp, fldname_tmp)
+      fld_param%id_field =          ifld_tmp(1)
+      fld_param%id_component =      icomp_tmp(1)
+      fld_param%num_original_comp = ncomp_tmp(1)
+      fld_param%field_name =        fldname_tmp(1)
+!
+      end subroutine set_control_field_4_pvr
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_control_pvr(pvr, ele_grp, surf_grp, pvr_area,      &
      &          view_param, field_pvr, color_param, cbar_param)
 !
       use t_group_data
@@ -135,11 +167,7 @@
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: surf_grp
 !
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
-!
-      type(pvr_ctl), intent(inout) :: pvr
-      type(pvr_field_parameter), intent(inout) :: fld_param
+      type(pvr_parameter_ctl), intent(inout) :: pvr
       type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_projected_field), intent(inout) :: field_pvr
       type(viz_area_parameter), intent(inout) :: pvr_area
@@ -147,10 +175,6 @@
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
       integer(kind = kint) :: id_section_method, ierr, i
-      integer(kind = kint) :: icheck_ncomp(1)
-      integer(kind = kint) :: ifld_tmp(1), icomp_tmp(1), ncomp_tmp(1)
-      character(len = kchara) :: fldname_tmp(1)
-      character(len = kchara) :: tmpfield(1), tmpcomp(1)
       character(len = kchara) :: tmpchara
 !
 !
@@ -158,20 +182,6 @@
       if(yes_flag(pvr%streo_ctl%charavalue)) then
         view_param%iflag_stereo_pvr = 1
       end if
-!
-      tmpfield(1) = pvr%pvr_field_ctl%charavalue
-      tmpcomp(1) =  pvr%pvr_comp_ctl%charavalue
-      call set_components_4_viz                                         &
-     &   (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp, ione,   &
-     &    ifld_tmp, icomp_tmp, icheck_ncomp, ncomp_tmp, fldname_tmp)
-      fld_param%id_pvr_output =    ifld_tmp(1)
-      fld_param%icomp_pvr_output = icomp_tmp(1)
-      fld_param%ncomp_pvr_org =    ncomp_tmp(1)
-      fld_param%name_pvr_output =  fldname_tmp(1)
-!
-      if (icheck_ncomp(1) .gt. 1)                                       &
-     &     call calypso_MPI_abort(ierr_PVR, 'set scalar for rendering')
-!
 !
       call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &

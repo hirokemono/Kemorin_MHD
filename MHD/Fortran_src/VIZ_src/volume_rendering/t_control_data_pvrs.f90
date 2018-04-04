@@ -35,7 +35,7 @@
       type volume_rendering_controls
         integer(kind = kint) :: num_pvr_ctl = 0
         character(len = kchara), allocatable :: fname_pvr_ctl(:)
-        type(pvr_ctl), allocatable :: pvr_ctl_struct(:)
+        type(pvr_parameter_ctl), allocatable :: pvr_ctl_type(:)
       end type volume_rendering_controls
 !
 !     lavel for volume rendering
@@ -57,7 +57,7 @@
 !
 !
       allocate(pvr_ctls%fname_pvr_ctl(pvr_ctls%num_pvr_ctl))
-      allocate(pvr_ctls%pvr_ctl_struct(pvr_ctls%num_pvr_ctl))
+      allocate(pvr_ctls%pvr_ctl_type(pvr_ctls%num_pvr_ctl))
 !
       end subroutine alloc_pvr_ctl_struct
 !
@@ -68,7 +68,7 @@
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
 !
 !
-      deallocate(pvr_ctls%pvr_ctl_struct)
+      deallocate(pvr_ctls%pvr_ctl_type)
       deallocate(pvr_ctls%fname_pvr_ctl)
 !
       end subroutine dealloc_pvr_file_header_ctl
@@ -102,8 +102,8 @@
         if(right_begin_flag(hd_pvr_ctl) .gt. 0) then
           i_pvr_ctl = i_pvr_ctl + 1
           pvr_ctls%fname_pvr_ctl(i_pvr_ctl) = 'NO_FILE'
-          call read_vr_psf_ctl(hd_pvr_ctl, hd_pvr_colordef,             &
-     &        pvr_ctls%pvr_ctl_struct(i_pvr_ctl))
+          call read_pvr_ctl(hd_pvr_ctl, hd_pvr_colordef,                &
+     &        pvr_ctls%pvr_ctl_type(i_pvr_ctl))
         end if
       end do
 !

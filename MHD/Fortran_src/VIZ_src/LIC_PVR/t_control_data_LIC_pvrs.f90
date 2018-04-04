@@ -25,6 +25,7 @@
       use m_machine_parameter
       use calypso_mpi
       use t_control_data_4_pvr
+      use t_control_data_lic_pvr
 !
       implicit  none
 !
@@ -36,7 +37,8 @@
       type lic_rendering_controls
         integer(kind = kint) :: num_lic_ctl = 0
         character(len = kchara), allocatable :: fname_lic_ctl(:)
-        type(pvr_ctl), allocatable :: lic_ctl_struct(:)
+        type(pvr_parameter_ctl), allocatable :: pvr_ctl_type(:)
+        type(lic_parameter_ctl), allocatable :: lic_ctl_type(:)
       end type lic_rendering_controls
 !
 !     lavel for volume rendering
@@ -58,7 +60,8 @@
 !
 !
       allocate(lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl))
-      allocate(lic_ctls%lic_ctl_struct(lic_ctls%num_lic_ctl))
+      allocate(lic_ctls%pvr_ctl_type(lic_ctls%num_lic_ctl))
+      allocate(lic_ctls%lic_ctl_type(lic_ctls%num_lic_ctl))
 !
       end subroutine alloc_lic_ctl_struct
 !
@@ -69,7 +72,8 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
 !
 !
-      deallocate(lic_ctls%lic_ctl_struct)
+      deallocate(lic_ctls%lic_ctl_type)
+      deallocate(lic_ctls%pvr_ctl_type)
       deallocate(lic_ctls%fname_lic_ctl)
 !
       end subroutine dealloc_pvr_file_header_ctl
@@ -103,8 +107,9 @@
         if(right_begin_flag(hd_lic_ctl) .gt. 0) then
           i_lic_ctl = i_lic_ctl + 1
           lic_ctls%fname_lic_ctl(i_lic_ctl) = 'NO_FILE'
-          call read_vr_psf_ctl(hd_lic_ctl, hd_lic_colordef,             &
-     &        lic_ctls%lic_ctl_struct(i_lic_ctl))
+          call read_lic_pvr_ctl(hd_lic_ctl, hd_lic_colordef,            &
+     &        lic_ctls%pvr_ctl_type(i_lic_ctl),                         &
+     &        lic_ctls%lic_ctl_type(i_lic_ctl))
         end if
       end do
 !

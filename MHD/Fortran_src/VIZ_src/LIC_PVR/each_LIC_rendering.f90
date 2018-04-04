@@ -7,9 +7,17 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
+!!      subroutine find_lic_surf_domain(num_pvr, mesh, group, ele_mesh, &
+!!     &          lic_fld, pvr_param, pvr_data)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) :: group
+!!        type(element_geometry), intent(in) :: ele_mesh
+!!        type(LIC_field_params), intent(in) :: lic_fld(num_pvr)
+!!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
+!!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !!      subroutine s_each_LIC_rendering                                 &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
-!!     &          pvr_param, pvr_data)
+!!     &          lic_fld, pvr_param, pvr_data)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -18,9 +26,11 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_type), intent(in) :: jacs
+!!        type(LIC_field_params), intent(in) :: lic_fld
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
-!!      subroutine dealloc_each_lic_data(pvr_param, pvr_data)
+!!      subroutine dealloc_each_lic_data(pvr_fld, pvr_param, pvr_data)
+!!        type(PVR_field_params), intent(inout) :: pvr_fld
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!@endverbatim
@@ -41,6 +51,7 @@
 !
       use t_rendering_vr_image
       use t_control_params_4_pvr
+      use t_control_param_LIC_PVR
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
       use t_pvr_image_array
@@ -59,9 +70,42 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine find_lic_surf_domain(num_pvr, mesh, group, ele_mesh,   &
+     &          lic_fld, pvr_param, pvr_data)
+!
+      use t_mesh_data
+      use t_rendering_vr_image
+      use find_selected_domain_bd
+      use find_pvr_surf_domain
+!
+      integer(kind = kint), intent(in) :: num_pvr
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
+      type(element_geometry), intent(in) :: ele_mesh
+      type(LIC_field_params), intent(in) :: lic_fld(num_pvr)
+!
+      type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
+      type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
+!
+      integer(kind = kint) :: i_pvr
+!
+!
+      call allocate_imark_4_surface(ele_mesh%surf%numsurf)
+      do i_pvr = 1, num_pvr
+        call find_each_pvr_surf_domain                                  &
+     &     (mesh%ele, ele_mesh%surf, group%ele_grp,                     &
+     &      lic_fld(i_pvr)%area_def, pvr_data(i_pvr)%bound,             &
+     &      pvr_param(i_pvr)%field)
+      end do
+      call deallocate_imark_4_surface
+!
+      end subroutine find_lic_surf_domain
+!
+!  ---------------------------------------------------------------------
+!
       subroutine s_each_LIC_rendering                                   &
      &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
-     &          pvr_param, pvr_data)
+     &          lic_fld, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
       use field_data_4_LIC
@@ -75,19 +119,16 @@
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
+      type(LIC_field_params), intent(in) :: lic_fld
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
-!
-      integer(kind = kint) :: ierr
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_lic                                         &
      &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,        &
-     &    pvr_param%field_def, pvr_param%field, ierr)
-      if(ierr .gt. 0) call calypso_mpi_abort(ierr,                      &
-     &                   'Set vector field for LIC')
+     &    lic_fld%lic_param, pvr_param%field)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
@@ -119,11 +160,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_each_lic_data(pvr_param, pvr_data)
+      subroutine dealloc_each_lic_data(lic_fld, pvr_param, pvr_data)
 !
       use set_pvr_control
       use field_data_4_pvr
 !
+      type(LIC_field_params), intent(inout) :: lic_fld
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
 !
@@ -139,7 +181,7 @@
 !
       call dealloc_pvr_surf_domain_item(pvr_data%bound)
       call dealloc_nod_data_4_lic(pvr_param%field)
-      call flush_each_pvr_control(pvr_data, pvr_param)
+      call flush_each_lic_control(lic_fld, pvr_data, pvr_param)
 !
       end subroutine dealloc_each_lic_data
 !

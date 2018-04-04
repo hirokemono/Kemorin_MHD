@@ -62,13 +62,13 @@
       integer(kind = kint) :: i_field, ist_fld, num_comp
 !
 !
-      i_field = fld_params%id_pvr_output
+      i_field = fld_params%id_field
       ist_fld = nod_fld%istack_component(i_field-1)
       num_comp = nod_fld%istack_component(i_field) - ist_fld
       call convert_comps_4_viz                                          &
      &   (node%numnod, node%istack_nod_smp, node%xx, node%rr,           &
      &    node%a_r, node%ss, node%a_s, ione, num_comp,                  &
-     &    fld_params%icomp_pvr_output, nod_fld%d_fld(1,ist_fld+1),      &
+     &    fld_params%id_component, nod_fld%d_fld(1,ist_fld+1),          &
      &    field_pvr%d_pvr)
 !
       call fem_gradient_on_element(ele%istack_ele_smp, node%numnod,     &

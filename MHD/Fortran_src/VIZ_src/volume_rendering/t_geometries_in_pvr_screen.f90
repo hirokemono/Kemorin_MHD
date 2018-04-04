@@ -72,8 +72,13 @@
         real(kind = kreal), allocatable :: d_pvr(:)
 !>    Gradient for rendering
         real(kind = kreal), allocatable :: grad_ele(:,:)
+!
 !>    Vector Data for LIC
-        real(kind = kreal), allocatable :: v_nod(:,:)
+        real(kind = kreal), allocatable :: v_lic(:,:)
+!>    Vector Data for LIC source data
+        real(kind = kreal), allocatable :: s_lic(:)
+!>    Vector Data for LIC opacity
+        real(kind = kreal), allocatable :: o_pvr(:)
 !
 !>    flag for rendering element
         integer(kind = kint), allocatable :: iflag_used_ele(:)
@@ -225,7 +230,9 @@
 !
 !
       call dealloc_nod_data_4_pvr(field_pvr)
-      deallocate(field_pvr%v_nod)
+      deallocate(field_pvr%v_lic)
+      deallocate(field_pvr%o_pvr)
+      deallocate(field_pvr%s_lic)
 !
       end subroutine dealloc_nod_data_4_lic
 !
@@ -254,8 +261,12 @@
       type(pvr_projected_field), intent(inout) :: fld
 !
 !
-      allocate(fld%v_nod(nnod,3))
-      if(nnod .gt. 0) fld%v_nod =    0.0d0
+      allocate(fld%v_lic(nnod,3))
+      allocate(fld%s_lic(nnod))
+      allocate(fld%o_pvr(nnod))
+      if(nnod .gt. 0) fld%v_lic =    0.0d0
+      if(nnod .gt. 0) fld%s_lic =    0.0d0
+      if(nnod .gt. 0) fld%o_pvr =    0.0d0
 !
       end subroutine alloc_nod_vector_4_pvr
 !

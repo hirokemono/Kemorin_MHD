@@ -3,11 +3,12 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine s_find_pvr_surf_domain                               &
-!!     &         (num_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
+!!      subroutine s_find_pvr_surf_domain(num_pvr, mesh, group,         &
+!!     &          ele_mesh, pvr_fld, pvr_param, pvr_data)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
+!!        type(PVR_field_params), intent(in) :: pvr_fld(num_pvr)
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
 !!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !!
@@ -15,7 +16,7 @@
 !!     &         (i_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
 !!      subroutine each_PVR_rendering                                   &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
-!!     &          pvr_param, pvr_data)
+!!     &          pvr_fld, pvr_param, pvr_data)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -26,7 +27,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
-!!      subroutine dealloc_each_pvr_data(pvr_param, pvr_data)
+!!      subroutine dealloc_each_pvr_data(pvr_fld, pvr_param, pvr_data)
 !
 !
       module each_volume_rendering
@@ -64,8 +65,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_find_pvr_surf_domain                                 &
-     &         (num_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
+      subroutine s_find_pvr_surf_domain(num_pvr, mesh, group,           &
+     &          ele_mesh, pvr_fld, pvr_param, pvr_data)
 !
       use t_mesh_data
       use t_rendering_vr_image
@@ -76,6 +77,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(element_geometry), intent(in) :: ele_mesh
+      type(PVR_field_params), intent(in) :: pvr_fld(num_pvr)
 !
       type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
       type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
@@ -87,8 +89,8 @@
       do i_pvr = 1, num_pvr
         call find_each_pvr_surf_domain                                  &
      &     (mesh%ele, ele_mesh%surf, group%ele_grp,                     &
-     &      pvr_param(i_pvr)%field_def, pvr_param(i_pvr)%area_def,      &
-     &      pvr_data(i_pvr)%bound, pvr_param(i_pvr)%field)
+     &      pvr_fld(i_pvr)%area_def, pvr_data(i_pvr)%bound,             &
+     &      pvr_param(i_pvr)%field)
       end do
       call deallocate_imark_4_surface
 !
@@ -148,7 +150,7 @@
 !
       subroutine each_PVR_rendering                                     &
      &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
-     &          pvr_param, pvr_data)
+     &          pvr_fld, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
 !
@@ -159,6 +161,7 @@
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
+      type(PVR_field_params), intent(in) :: pvr_fld
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
@@ -167,7 +170,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_pvr                                         &
      &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,        &
-     &    pvr_param%field_def, pvr_param%field)
+     &    pvr_fld%field_def, pvr_param%field)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
@@ -199,10 +202,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_each_pvr_data(pvr_param, pvr_data)
+      subroutine dealloc_each_pvr_data(pvr_fld, pvr_param, pvr_data)
 !
       use set_pvr_control
 !
+      type(PVR_field_params), intent(inout) :: pvr_fld
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
 !
@@ -218,7 +222,7 @@
 !
       call dealloc_pvr_surf_domain_item(pvr_data%bound)
       call dealloc_nod_data_4_pvr(pvr_param%field)
-      call flush_each_pvr_control(pvr_data, pvr_param)
+      call flush_each_pvr_control(pvr_fld, pvr_data, pvr_param)
 !
       end subroutine dealloc_each_pvr_data
 !

@@ -19,10 +19,25 @@
 !!
 !!      subroutine read_pvr_rotation_ctl(movie)
 !!        type(pvr_movie_ctl), intent(inout) :: movie
+!!      subroutine read_plot_area_ctl(hd_plot_area, i_plot_area,        &
+!!     &           pvr_area_ctl, surf_enhanse_ctl)
+!!        type(ctl_array_chara), intent(inout) :: pvr_area_ctl
+!!        type(ctl_array_c2r), intent(inout) :: surf_enhanse_ctl
 !!
 !!      subroutine reset_pvr_misc_control_flags(cbar_ctl, movie)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!  begin plot_area_ctl
+!!    array chosen_ele_grp_ctl  1
+!!      chosen_ele_grp_ctl   outer_core
+!!    end array chosen_ele_grp_ctl
+!!
+!!    array surface_enhanse_ctl  2
+!!      surface_enhanse_ctl   ICB   reverse_surface   0.7
+!!      surface_enhanse_ctl   CMB   forward_surface   0.4
+!!    end array surface_enhanse_ctl
+!!  end  plot_area_ctl
+!!!
 !!  begin colorbar_ctl
 !!    colorbar_switch_ctl    ON
 !!    colorbar_scale_ctl     ON
@@ -30,10 +45,10 @@
 !!    colorbar_range     0.0   1.0
 !!    font_size_ctl         3
 !!    num_grid_ctl     4
-!!
+!!!
 !!    axis_label_switch      ON
 !!  end colorbar_ctl
-!!
+!!!
 !!  begin image_rotation_ctl
 !!    rotation_axis_ctl       z
 !!    rotation_axis_ctl       1
@@ -102,6 +117,11 @@
       character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
       character(len=kchara) :: hd_pvr_rotation =  'image_rotation_ctl'
 !
+!     4th level for area group
+!
+      character(len=kchara) :: hd_plot_grp = 'chosen_ele_grp_ctl'
+      character(len=kchara) :: hd_sf_enhanse = 'surface_enhanse_ctl'
+!
 !     3rd level for isosurface
 !
       character(len=kchara) :: hd_isosurf_value = 'isosurf_value'
@@ -125,6 +145,7 @@
       character(len=kchara) :: hd_movie_rot_axis =  'rotation_axis_ctl'
       character(len=kchara) :: hd_movie_rot_frame = 'num_frames_ctl'
 !
+      private :: hd_plot_grp, hd_sf_enhanse
       private :: hd_pvr_colorbar, hd_pvr_rotation, hd_isosurf_value
       private :: hd_colorbar_switch, hd_pvr_opacity, hd_iso_direction
       private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
@@ -286,6 +307,33 @@
       end do
 !
       end subroutine read_pvr_rotation_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine read_plot_area_ctl(hd_plot_area, i_plot_area,          &
+     &           pvr_area_ctl, surf_enhanse_ctl)
+!
+      character(len=kchara), intent(in) :: hd_plot_area
+      integer(kind=kint), intent(inout) :: i_plot_area
+      type(ctl_array_chara), intent(inout) :: pvr_area_ctl
+      type(ctl_array_c2r), intent(inout) :: surf_enhanse_ctl
+!
+!
+      if(right_begin_flag(hd_plot_area) .eq. 0) return
+      if (i_plot_area.gt.0) return
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_plot_area, i_plot_area)
+        if(i_plot_area .gt. 0) exit
+!
+        call read_control_array_c1(hd_plot_grp, pvr_area_ctl)
+        call read_control_array_c2_r                                    &
+     &     (hd_sf_enhanse, surf_enhanse_ctl)
+      end do
+!
+      end subroutine read_plot_area_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

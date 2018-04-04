@@ -4,11 +4,10 @@
 !        programmed by H.Matsui on Aug., 2011
 !
 !!      subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,        &
-!!     &          fld_params, pvr_area, pvr_bound, field_pvr)
+!!     &          pvr_area, pvr_bound, field_pvr)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(group_data), intent(in) :: ele_grp
-!!        type(pvr_field_parameter), intent(in) :: fld_params
 !!        type(viz_area_parameter), intent(in) :: pvr_area
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(pvr_projected_field), intent(inout) :: field_pvr
@@ -40,7 +39,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,          &
-     &          fld_params, pvr_area, pvr_bound, field_pvr)
+     &          pvr_area, pvr_bound, field_pvr)
 !
       use t_geometry_data
       use t_surface_data
@@ -56,7 +55,6 @@
       type(surface_data), intent(in) :: surf
       type(group_data), intent(in) :: ele_grp
 !
-      type(pvr_field_parameter), intent(in) :: fld_params
       type(viz_area_parameter), intent(in) :: pvr_area
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(pvr_projected_field), intent(inout) :: field_pvr

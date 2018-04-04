@@ -46,7 +46,7 @@
         type(isosurface_module) :: iso
         type(volume_rendering_module) :: pvr
         type(fieldline_module) :: fline
-        type(volume_rendering_module) :: lic
+        type(lic_volume_rendering_module) :: lic
       end type visualize_modules
 !
 !  ---------------------------------------------------------------------

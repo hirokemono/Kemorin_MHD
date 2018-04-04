@@ -51,13 +51,13 @@
 !>  Structure for field parameter for PVR
       type pvr_field_parameter
 !>     Field type for PVR data
-        integer(kind = kint) :: id_pvr_output =    0
+        integer(kind = kint) :: id_field =          0
 !>     Component flag for PVR data
-        integer(kind = kint) :: icomp_pvr_output = 0
+        integer(kind = kint) :: id_component =      0
 !>     Number of component of data for Rendering
-        integer(kind = kint) :: ncomp_pvr_org =    0
+        integer(kind = kint) :: num_original_comp = 0
 !>     Field name of data for Rendering
-        character(len = kchara) :: name_pvr_output
+        character(len = kchara) :: field_name
       end type pvr_field_parameter
 !
 !>  Structure for rendering area by element group

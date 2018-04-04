@@ -10,7 +10,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      subroutine deallocate_cont_dat_pvr(pvr)
 !!
 !!      subroutine reset_pvr_update_flags(pvr)
-!!      subroutine read_vr_psf_ctl(hd_block, hd_pvr_colordef, pvr)
+!!      subroutine read_pvr_ctl(hd_block, hd_pvr_colordef, pvr)
 !!      subroutine read_pvr_update_flag(hd_block, pvr)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -30,9 +30,7 @@
 !!  output_component     scalar
 !!!
 !!  begin plot_area_ctl
-!!    array chosen_ele_grp_ctl  1
-!!      chosen_ele_grp_ctl   outer_core   end
-!!    end array chosen_ele_grp_ctl
+!!   ...
 !!  end  plot_area_ctl
 !!!
 !!  begin view_transform_ctl
@@ -76,7 +74,9 @@
 !
       implicit  none
 !
-      type pvr_ctl
+!
+!>  Structure of control data for PVR rendering
+      type pvr_parameter_ctl
 !>  file name for modelves matrix
         character(len=kchara) :: view_file_ctl
 !>  file name for modelves matrix
@@ -129,7 +129,7 @@
         integer (kind=kint) :: i_plot_area =           0
         integer (kind=kint) :: i_pvr_sect =            0
         integer (kind=kint) :: i_pvr_iso =             0
-      end type pvr_ctl
+      end type pvr_parameter_ctl
 !
 !
 !     2nd level for volume_rendering
@@ -150,11 +150,6 @@
 !
       character(len=kchara) :: hd_plot_area =   'plot_area_ctl'
 !
-!     4th level for plot_area
-!
-      character(len=kchara) :: hd_plot_grp = 'chosen_ele_grp_ctl'
-      character(len=kchara) :: hd_sf_enhanse = 'surface_enhanse_ctl'
-!
 !     3rd level for rotation
 !
       character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
@@ -166,11 +161,7 @@
       private :: hd_pvr_file_head, hd_pvr_out_type, hd_pvr_rgba_type
       private :: hd_pvr_streo, hd_pvr_anaglyph, hd_pvr_updated
       private :: hd_output_field_def, hd_pvr_monitor
-      private :: hd_plot_area, hd_output_comp_def, hd_plot_grp
-      private :: hd_sf_enhanse
-!
-      private :: read_pvr_sections_ctl, read_pvr_isosurfs_ctl
-      private :: read_plot_area_ctl
+      private :: hd_plot_area, hd_output_comp_def
 !
 !  ---------------------------------------------------------------------
 !
@@ -180,7 +171,7 @@
 !
       subroutine deallocate_cont_dat_pvr(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
       integer(kind = kint) :: i
 !
 !
@@ -231,7 +222,7 @@
 !
       subroutine reset_pvr_update_flags(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
       pvr%i_pvr_ctl = 0
       pvr%updated_ctl%iflag =     0
@@ -241,12 +232,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_vr_psf_ctl(hd_block, hd_pvr_colordef, pvr)
+      subroutine read_pvr_ctl(hd_block, hd_pvr_colordef, pvr)
 !
       character(len=kchara), intent(in) :: hd_block
       character(len = kchara), intent(in) :: hd_pvr_colordef
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
       if(right_begin_flag(hd_block) .eq. 0) return
@@ -286,7 +277,8 @@
      &     (hd_pvr_isosurf, pvr%num_pvr_iso_ctl)
         if(pvr%num_pvr_iso_ctl .gt. 0) call read_pvr_isosurfs_ctl(pvr)
 !
-        call read_plot_area_ctl(pvr)
+        call read_plot_area_ctl(hd_plot_area, pvr%i_plot_area,          &
+     &      pvr%pvr_area_ctl, pvr%surf_enhanse_ctl)
         call read_lighting_ctl(hd_pvr_lighting, pvr%color)
         call read_pvr_colorbar_ctl(pvr%cbar_ctl)
         call read_pvr_rotation_ctl(pvr%movie)
@@ -306,7 +298,7 @@
         call read_chara_ctl_type(hd_output_comp_def, pvr%pvr_comp_ctl)
       end do
 !
-      end subroutine read_vr_psf_ctl
+      end subroutine read_pvr_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -314,7 +306,7 @@
 !
       character(len=kchara), intent(in) :: hd_block
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
       if(right_begin_flag(hd_block) .eq. 0) return
@@ -335,7 +327,7 @@
 !
       subroutine read_pvr_sections_ctl(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
       if (pvr%i_pvr_sect .gt. 0) return
@@ -359,7 +351,7 @@
 !
       subroutine read_pvr_isosurfs_ctl(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
       if (pvr%i_pvr_iso .gt. 0) return
@@ -378,28 +370,6 @@
       end do
 !
       end subroutine read_pvr_isosurfs_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_plot_area_ctl(pvr)
-!
-      type(pvr_ctl), intent(inout) :: pvr
-!
-!
-      if(right_begin_flag(hd_plot_area) .eq. 0) return
-      if (pvr%i_plot_area.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_plot_area, pvr%i_plot_area)
-        if(pvr%i_plot_area .gt. 0) exit
-!
-        call read_control_array_c1(hd_plot_grp, pvr%pvr_area_ctl)
-        call read_control_array_c2_r                                    &
-     &     (hd_sf_enhanse, pvr%surf_enhanse_ctl)
-      end do
-!
-      end subroutine read_plot_area_ctl
 !
 !  ---------------------------------------------------------------------
 !
