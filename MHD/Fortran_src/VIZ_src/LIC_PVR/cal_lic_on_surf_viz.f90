@@ -4,8 +4,14 @@
 !
 !      Written by Yangguang Liao 2018
 !
-!      subroutine element_ave_4_viz(nnod, nele, ie, v_nod, s_nod,       &
-!     &          iele, v_ave, s_ave)
+!!      subroutine cal_lic_on_surf_vector                               &
+!!     &         (nnod, nsurf, nelem, nnod_4_surf, isf_4_ele,           &
+!!     &          iele_4_surf, interior_surf, xx,                       &
+!!     &          vnorm_surf, isurf_orgs, ie_surf, xi,                  &
+!!     &          f_noise, factor_lic_magnify, noise_size,              &
+!!     &          noise_nod, noise_grad, kernal_size, kernal_node,      &
+!!     &          v_nod, xx_org, isurf, xyz_min, xyz_max, iflag_comm,   &
+!!     &          o_tgt, n_grad)
 !
 !      subroutine cal_field_on_surf_vector(nnod, nsurf, nnod_sf,        &
 !     &          ie_surf, isurf, xi, v_nod, v_tgt)
@@ -25,9 +31,6 @@
 !
       implicit  none
 !
-      real(kind = kreal), parameter :: factor_lic_magnify = 20.0d0
-      private :: factor_lic_magnify
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -37,10 +40,12 @@
 !   xx_org is the point 3D coord, xi is local 2D coord on the surface
 !   isurf is current surface subdomain id
 !   isurf_org is an array with element id and surface element id(1-6)
-      subroutine cal_lic_on_surf_vector(nnod, nsurf, nelem, nnod_4_surf,        &
-     &          isf_4_ele, iele_4_surf, interior_surf, xx,                      &
-     &          vnorm_surf, isurf_orgs, ie_surf, xi,                            &
-     &          noise_size, noise_nod, noise_grad, kernal_size, kernal_node,    &
+      subroutine cal_lic_on_surf_vector                                 &
+     &         (nnod, nsurf, nelem, nnod_4_surf, isf_4_ele,             &
+     &          iele_4_surf, interior_surf, xx,                         &
+     &          vnorm_surf, isurf_orgs, ie_surf, xi,                    &
+     &          f_noise, factor_lic_magnify, noise_size,                &
+     &          noise_nod, noise_grad, kernal_size, kernal_node,        &
      &          v_nod, xx_org, isurf, xyz_min, xyz_max, iflag_comm,     &
      &          o_tgt, n_grad)
 
@@ -56,6 +61,9 @@
         real(kind = kreal), intent(in) :: vnorm_surf(nsurf, 3)
         integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
 
+      real(kind = kreal), intent(in) :: f_noise
+      real(kind = kreal), intent(in) :: factor_lic_magnify
+!
         real(kind = kreal), intent(inout) :: xi(2)
         real(kind = kreal), intent(in) :: v_nod(nnod,3), xx(nnod, 3)
         real(kind = kreal), intent(in) :: xx_org(3)
@@ -98,10 +106,10 @@
         !o_tgt = o_tgt + ichar(noise_nod(pos_idx)) / 255.0 * kernal_node(kernal_size/2)
         !o_tgt = o_tgt + get_noise_value(noise_size, noise_nod, pos_idx) * kernal_node(kernal_size/2)
         n_v = 0.0
-        call noise_sampling(noise_size, noise_nod, xx_org, xyz_min, xyz_max, n_v)
-        !call noise_nd_sampling(noise_size, noise_nod, xx_org, xyz_min, xyz_max, n_v)
+        call noise_sampling(noise_size, f_noise, noise_nod, xx_org, xyz_min, xyz_max, n_v)
+        !call noise_nd_sampling(noise_size, f_noise, noise_nod, xx_org, xyz_min, xyz_max, n_v)
         o_tgt = o_tgt + n_v * kernal_node(kernal_size/2)
-        call noise_grad_sampling(noise_size, noise_grad, xx_org, xyz_min, xyz_max, n_grad)
+        call noise_grad_sampling(noise_size, f_noise, noise_grad, xx_org, xyz_min, xyz_max, n_grad)
         n_grad = n_grad + n_grad * kernal_node(kernal_size/2)
         !if(iflag_debug .eq. 1) write(50+my_rank,*) "xx", xx_org, "min", xyz_min, "max", xyz_max
         !if(iflag_debug .eq. 1) write(50+my_rank,*) "n_size",noise_size, "nid", pos_idx, "n_v", o_tgt
@@ -162,12 +170,12 @@
         else
           new_pos(1:3) = xx_org(1:3)
           if(iflag_debug .eq. 1) write(50+my_rank, *) "start cal lic, ele and surf: ", ilic_suf_org(1), ilic_suf_org(2)
-          call s_cal_lic_from_point(nnod, nelem, nsurf,                      &
-          &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-          &          iele_4_surf, interior_surf, vnorm_surf,                 &
-          &          forward_len, iflag_back, xyz_min, xyz_max,              &
-          &          v_nod, ilic_suf_org, new_pos, step_vec,                 &
-          &          kernal_size, kernal_node, noise_size, noise_nod,        &
+          call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
+          &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
+          &          iele_4_surf, interior_surf, vnorm_surf, f_noise,   &
+          &          forward_len, iflag_back, xyz_min, xyz_max,         &
+          &          v_nod, ilic_suf_org, new_pos, step_vec,            &
+          &          kernal_size, kernal_node, noise_size, noise_nod,   &
           &          noise_grad, lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -199,12 +207,12 @@
         else
           new_pos(1:3) = xx_org(1:3)
           if(iflag_debug .eq. 1) write(50+my_rank, *) "start cal lic, ele and surf: ", ilic_suf_org(1), ilic_suf_org(2)
-          call s_cal_lic_from_point(nnod, nelem, nsurf,                      &
-          &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-          &          iele_4_surf, interior_surf, vnorm_surf,                 &
-          &          backward_len, iflag_back, xyz_min, xyz_max,             &
-          &          v_nod, ilic_suf_org, new_pos, step_vec,                 &
-          &          kernal_size, kernal_node, noise_size, noise_nod,        &
+          call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
+          &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
+          &          iele_4_surf, interior_surf, vnorm_surf, f_noise,   &
+          &          backward_len, iflag_back, xyz_min, xyz_max,        &
+          &          v_nod, ilic_suf_org, new_pos, step_vec,            &
+          &          kernal_size, kernal_node, noise_size, noise_nod,   &
           &          noise_grad, lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -355,7 +363,7 @@ write(50+my_rank,*) "with v: ", v_start
 subroutine s_cal_lic_from_point(numnod, numele, numsurf,           &
 &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
 &          iele_4_surf, interior_surf, vnorm_surf,                 &
-&          max_line_len, iflag_back, xyz_min, xyz_max,             &
+&          f_noise, max_line_len, iflag_back, xyz_min, xyz_max,    &
 &          vect_nod, isurf_org, x_start, v_start,                  &
 &          k_size, k_node, n_size, n_node, grad_node,              &
 &          lic_v, grad_v, k_area, iflag_comm)
@@ -371,6 +379,8 @@ integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
 integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
 integer(kind = kint), intent(in) :: interior_surf(numsurf)
 real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
+!
+      real(kind = kreal), intent(in) :: f_noise
 !
 integer(kind = kint), intent(in) :: iflag_back
 real(kind = kreal), intent(in) :: vect_nod(numnod,3), max_line_len
@@ -488,10 +498,10 @@ if(iflag_debug .eq. 1) write(50 + my_rank, *) "pos:", x_tgt
   x_start(1:3) =  x_tgt(1:3)
   !call cal_pos_idx_volume(n_size, x_tgt, xyz_min, xyz_max, i_n)
   n_v = 0.0
-  call noise_sampling(n_size, n_node, x_tgt, xyz_min, xyz_max, n_v)
-  !call noise_nd_sampling(n_size, n_node, x_tgt, xyz_min, xyz_max, n_v)
+  call noise_sampling(n_size, f_noise, n_node, x_tgt, xyz_min, xyz_max, n_v)
+  !call noise_nd_sampling(n_size, f_noise, n_node, x_tgt, xyz_min, xyz_max, n_v)
   g_v(1:3) = 0.0
-  call noise_grad_sampling(n_size, grad_node, x_tgt, xyz_min, xyz_max, g_v)
+  call noise_grad_sampling(n_size, f_noise, grad_node, x_tgt, xyz_min, xyz_max, g_v)
   nv_sum = nv_sum + n_v
   len_sum = len_sum + step_len
   len_sum = min(len_sum, max_line_len)
@@ -537,8 +547,8 @@ if(len_sum .gt. max_line_len) then
     k_pos = 0.0
     x_tgt = x_start + v_start / norm2(v_start) * avg_stepsize
     n_v = 0.0
-    call noise_sampling(n_size, n_node, x_tgt, xyz_min, xyz_max, n_v)
-    !call noise_nd_sampling(n_size, n_node, x_tgt, xyz_min, xyz_max, n_v)
+    call noise_sampling(n_size, f_noise, n_node, x_tgt, xyz_min, xyz_max, n_v)
+    !call noise_nd_sampling(n_size, f_noise, n_node, x_tgt, xyz_min, xyz_max, n_v)
     if(iflag_back .eq. ione) then
       k_pos =  0.5 + 0.5 * len_sum/max_line_len
     else

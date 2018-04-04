@@ -67,6 +67,11 @@
         integer(kind = kint) :: iflag_normalization = 0
 !>        normalization factor for LIC value
         real(kind = kreal) :: factor_normal = one
+!
+!>        integer flag for reflection reference
+        integer(kind = kint) :: iflag_reflection_ref = 0
+!>        file name of reflection file
+        character(len = kchara) :: reflection_file_name
       end type lic_parameters
 !
       character(len = kchara), parameter                                &
@@ -81,6 +86,11 @@
       character(len = kchara), parameter                                &
      &                        :: cflag_by_ctl =   'set_by_control'
 !
+      character(len = kchara), parameter                                &
+     &                        :: cflag_noise_file =   'noise_file'
+      character(len = kchara), parameter                                &
+     &                        :: cflag_from_color = 'color_field'
+!
       integer(kind = kint), parameter :: iflag_from_file =    0
       integer(kind = kint), parameter :: iflag_randum =       1
       integer(kind = kint), parameter :: iflag_linear =       1
@@ -88,6 +98,7 @@
       integer(kind = kint), parameter :: iflag_from_lic =     0
       integer(kind = kint), parameter :: iflag_from_control = 1
 !
+      integer(kind = kint), parameter :: iflag_from_color =   2
 !
       private :: cflag_from_file, cflag_randum, cflag_linear
       private :: cflag_by_range, cflag_by_ctl
@@ -272,6 +283,26 @@
       lic_p%factor_normal = one
       if(lic_ctl%normalization_value_ctl%iflag .gt. 0) then
         lic_p%factor_normal = lic_ctl%normalization_value_ctl%realvalue
+      end if
+!
+      lic_p%iflag_reflection_ref = iflag_from_color
+      if(lic_ctl%reflection_ref_type_ctl%iflag .gt. 0) then
+        tmpchara = lic_ctl%reflection_ref_type_ctl%charavalue
+        if(cmp_no_case(tmpchara, cflag_noise_file)) then
+          lic_p%iflag_reflection_ref = iflag_from_file
+        else if(cmp_no_case(tmpchara, cflag_from_color)) then
+          lic_p%iflag_reflection_ref = iflag_from_color
+        end if
+      end if
+!
+      if(lic_p%iflag_reflection_ref .eq. iflag_from_file) then
+        if(lic_ctl%ref_noise_file_name_ctl%iflag .gt. 0) then
+          lic_p%reflection_file_name                                    &
+     &       = lic_ctl%ref_noise_file_name_ctl%charavalue
+        else
+          e_message = 'Set LIC noise file name for reflection'
+          call calypso_mpi_abort(ierr_VIZ, e_message)
+        end if
       end if
 !
       end subroutine set_control_lic_parameter

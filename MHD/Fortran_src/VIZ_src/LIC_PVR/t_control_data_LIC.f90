@@ -39,6 +39,9 @@
 !!
 !!    normalization_type     'constant'
 !!    normalization_value     20.0
+!!
+!!    reflection_reference   'noise_file'
+!!    ref_noise_file_name    "noise/noise-256.grd"
 !!  end LIC_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -83,6 +86,9 @@
         type(read_character_item) :: normalization_type_ctl
         type(read_real_item) ::      normalization_value_ctl
 !
+        type(read_character_item) :: reflection_ref_type_ctl
+        type(read_character_item) :: ref_noise_file_name_ctl
+!
 !     2nd level for volume rendering
         integer (kind=kint) :: i_lic_control = 0
       end type lic_parameter_ctl
@@ -119,6 +125,11 @@
       character(len=kchara) :: hd_normalization_value                   &
      &                        = 'normalization_value'
 !
+      character(len=kchara) :: hd_reflection_ref_type                   &
+     &                        = 'reflection_reference'
+      character(len=kchara) :: hd_ref_noise_file_name                   &
+     &                        = 'ref_noise_file_name'
+!
       private :: hd_LIC_field, hd_color_field, hd_color_component
       private :: hd_opacity_field, hd_opacity_component
       private :: hd_source_reference_field, hd_source_minimum
@@ -127,6 +138,7 @@
       private :: hd_kernel_function_type, hd_kernal_file_name
       private :: hd_LIC_trace_length
       private :: hd_normalization_type, hd_normalization_value
+      private :: hd_reflection_ref_type, hd_ref_noise_file_name
 !
 !  ---------------------------------------------------------------------
 !
@@ -189,6 +201,11 @@
      &     (hd_normalization_type, lic_ctl%normalization_type_ctl)
         call read_real_ctl_type                                         &
      &     (hd_normalization_value, lic_ctl%normalization_value_ctl)
+!
+        call read_chara_ctl_type                                        &
+     &     (hd_reflection_ref_type, lic_ctl%reflection_ref_type_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_ref_noise_file_name, lic_ctl%ref_noise_file_name_ctl)
       end do
 !
       end subroutine read_lic_control_data
@@ -223,6 +240,9 @@
 !
       lic_ctl%normalization_type_ctl%iflag =   0
       lic_ctl%normalization_value_ctl%iflag =  0
+!
+      lic_ctl%reflection_ref_type_ctl%iflag =  0
+      lic_ctl%ref_noise_file_name_ctl%iflag =  0
 !
       lic_ctl%i_lic_control = 0
 !
@@ -262,6 +282,9 @@
 !
       call bcast_ctl_type_c1(lic_ctl%normalization_type_ctl)
       call bcast_ctl_type_r1(lic_ctl%normalization_value_ctl)
+!
+      call bcast_ctl_type_c1(lic_ctl%reflection_ref_type_ctl)
+      call bcast_ctl_type_c1(lic_ctl%ref_noise_file_name_ctl)
 !
       end subroutine bcast_lic_control_data
 !

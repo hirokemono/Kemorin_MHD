@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine streo_lic_rendering_fix_view(istep_pvr,              &
-!!     &          node, ele, surf, group, pvr_param, pvr_data)
+!!     &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !!      subroutine streo_lic_rendering_with_rot(istep_pvr,              &
-!!     &          node, ele, surf, group, pvr_param, pvr_data)
+!!     &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(mesh_groups), intent(in) :: group
+!!        type(lic_parameters), intent(in) :: lic_p
 !!        type(PVR_control_params), intent(in) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!@endverbatim
@@ -34,6 +35,7 @@
       use t_group_data
       use t_rendering_vr_image
       use t_control_params_4_pvr
+      use t_control_param_LIC
       use t_geometries_in_pvr_screen
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
@@ -49,7 +51,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine streo_lic_rendering_fix_view(istep_pvr,                &
-     &          node, ele, surf, group, pvr_param, pvr_data)
+     &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
@@ -61,6 +63,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
+      type(lic_parameters), intent(in) :: lic_p
       type(PVR_control_params), intent(in) :: pvr_param
 !
       type(PVR_image_generator), intent(inout) :: pvr_data
@@ -73,7 +76,7 @@
 !   Left eye
 !
       call rendering_lic_at_once(IFLAG_LEFT, istep_pvr,                 &
-     &    node, ele, surf, group, pvr_param, pvr_data)
+     &    node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
       if(pvr_param%file%iflag_anaglyph .gt. 0) then
         call store_left_eye_image(pvr_data%rgb)
@@ -95,7 +98,7 @@
 !   Right eye
 !
       call rendering_lic_at_once(IFLAG_RIGHT, istep_pvr,                &
-     &    node, ele, surf, group, pvr_param, pvr_data)
+     &    node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
       if(pvr_param%file%iflag_anaglyph .gt. 0) then
         call add_left_eye_image(pvr_data%rgb)
@@ -125,7 +128,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine streo_lic_rendering_with_rot(istep_pvr,                &
-     &          node, ele, surf, group, pvr_param, pvr_data)
+     &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
       use rendering_LIC_image
@@ -137,6 +140,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
+      type(lic_parameters), intent(in) :: lic_p
       type(PVR_control_params), intent(in) :: pvr_param
 !
       type(PVR_image_generator), intent(inout) :: pvr_data
@@ -153,7 +157,7 @@
 !
 !    Left eye
         call rendering_lic_at_once(IFLAG_LEFT, istep_pvr,               &
-     &      node, ele, surf, group, pvr_param, pvr_data)
+     &      node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
         if(pvr_param%file%iflag_anaglyph .gt. 0) then
           call store_left_eye_image(pvr_data%rgb)
@@ -174,7 +178,7 @@
 !
 !    Right eye
         call rendering_lic_at_once(IFLAG_RIGHT, istep_pvr,              &
-     &      node, ele, surf, group, pvr_param, pvr_data)
+     &      node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
         if(pvr_param%file%iflag_anaglyph .gt. 0) then
           call add_left_eye_image(pvr_data%rgb)

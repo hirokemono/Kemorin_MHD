@@ -7,8 +7,8 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_image_4_lic                                &
-!!     &         (istep_pvr, file_param, node, ele, surf, color_param,  &
+!!      subroutine rendering_image_4_lic(istep_pvr, file_param,         &
+!!     &          node, ele, surf, lic_p, color_param,                  &
 !!     &          cbar_param, field_pvr, pvr_screen, pvr_start,         &
 !!     &          pvr_img, pvr_rgb)
 !!        type(pvr_output_parameter), intent(in) :: file_param
@@ -40,8 +40,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image_4_lic                                  &
-     &         (istep_pvr, file_param, node, ele, surf, color_param,    &
+      subroutine rendering_image_4_lic(istep_pvr, file_param,           &
+     &          node, ele, surf, lic_p, color_param,                    &
      &          cbar_param, field_pvr, pvr_screen, pvr_start,           &
      &          pvr_img, pvr_rgb)
 !
@@ -49,6 +49,7 @@
       use t_geometry_data
       use t_surface_data
       use t_control_params_4_pvr
+      use t_control_param_LIC
       use t_geometries_in_pvr_screen
       use t_pvr_image_array
       use t_pvr_ray_startpoints
@@ -66,6 +67,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(lic_parameters), intent(in) :: lic_p
       type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
@@ -84,7 +86,7 @@
       call start_elapsed_time(78)
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'
       call ray_trace_each_lic_image(node, ele, surf,                    &
-     &    pvr_screen, field_pvr, color_param, ray_vec,                  &
+     &    lic_p, pvr_screen, field_pvr, color_param, ray_vec,           &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &

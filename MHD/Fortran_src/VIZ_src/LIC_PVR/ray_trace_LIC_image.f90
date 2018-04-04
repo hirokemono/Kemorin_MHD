@@ -8,10 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine ray_trace_each_lic_image                             &
-!!     &         (node, ele, surf, pvr_screen, field_pvr,               &
+!!     &         (node, ele, surf, lic_p, pvr_screen, field_pvr,        &
 !!     &          color_param, ray_vec, num_pvr_ray, id_pixel_check,    &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
+!!       type(node_data), intent(in) :: node
+!!       type(element_data), intent(in) :: ele
+!!       type(surface_data), intent(in) :: surf
+!!       type(lic_parameters), intent(in) :: lic_p
+!!       type(pvr_projected_field), intent(in) :: field_pvr
+!!       type(pvr_colormap_parameter), intent(in) :: color_param
+!!       type(pvr_projected_data), intent(in) :: pvr_screen
 !!@endverbatim
 !
       module ray_trace_LIC_image
@@ -24,6 +31,7 @@
       use lic_rgba_4_each_pixel
 !
       use t_control_params_4_pvr
+      use t_control_param_LIC
       use m_machine_parameter
       use cal_lic_on_surf_viz
       use lic_kernel_generator
@@ -40,7 +48,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_lic_image                               &
-     &         (node, ele, surf, pvr_screen, field_pvr,                 &
+     &         (node, ele, surf, lic_p, pvr_screen, field_pvr,          &
      &          color_param, ray_vec, num_pvr_ray, id_pixel_check,      &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
@@ -54,6 +62,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
+      type(lic_parameters), intent(in) :: lic_p
       type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_data), intent(in) :: pvr_screen
@@ -82,19 +91,20 @@
       integer(kind = kint) :: k_size
       real(kind = kreal), allocatable :: k_ary(:)
       integer(kind = kint) :: i, read_err, j, n_size
-      character(len=kchara), parameter :: filename = "noise/noise-256"
-      character(len=kchara), parameter :: gradfilename = "noise/noise-256.grd"
 
       iflag_debug = 0
 !
       k_size = 128
       allocate(k_ary(k_size))
       ! import noise_value in noise_node data structure
-      !call import_noise_nd_ary(filename, n_node_data, n_d_size, read_err)
+      !call import_noise_nd_ary(lic_p%noise_file_name,                  &
+!     &    n_node_data, n_d_size, read_err)
       ! directly import noise_value to an array
-      call import_noise_ary(filename, noise_data, n_d_size, read_err)
+      call import_noise_ary(lic_p%noise_file_name,                      &
+     &    noise_data, n_d_size, read_err)
       if(read_err .eq. 0) then
-        call import_noise_grad_ary(gradfilename, noise_grad_data, n_d_size, read_err)
+        call import_noise_grad_ary(lic_p%reflection_file_name,          &
+     &      noise_grad_data, n_d_size, read_err)
       end if
       call generate_kernal_ary(k_size, k_ary)
 
@@ -122,7 +132,7 @@
      &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,                 &
      &       ele%interior_ele, node%xx, surf%vnorm_surf, surf%interior_surf, &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,                   &
-     &       pvr_screen%viewpoint_vec, field_pvr, color_param, ray_vec,      &
+     &       pvr_screen%viewpoint_vec, lic_p, field_pvr, color_param, ray_vec,      &
      &       id_pixel_check(inum), isf_pvr_ray_start(1,inum),                &
      &       xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),                 &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),      &
@@ -180,8 +190,8 @@
      &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
      &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
-     &        field_pvr, color_param, ray_vec, iflag_check, isurf_org,  &
-     &        screen_st, xx_st, xi, rgba_ray, icount_line,              &
+     &        lic_p, field_pvr, color_param, ray_vec, iflag_check,      &
+     &        isurf_org, screen_st, xx_st, xi, rgba_ray, icount_line,   &
      &        k_size, k_ary, n_size, noise_data, noise_grad,            &
      &        xyz_min_gl, xyz_max_gl, iflag_comm)
 !
@@ -210,6 +220,7 @@
       real(kind = kreal), intent(in) :: xyz_min_gl(3)
       real(kind = kreal), intent(in) :: xyz_max_gl(3)
 !
+      type(lic_parameters), intent(in) :: lic_p
       type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
@@ -323,11 +334,14 @@ integer(kind = kint) :: icount_line_cur_ray = 0
 
 ! calculate lic value at current location, lic value will be used as intensity
 ! as volume rendering
-          call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,    &
-     &          isf_4_ele, iele_4_surf, interior_surf, xx, vnorm_surf,         &
-     &          isurf_orgs, ie_surf, xi, n_size, noise_data, noise_grad,       &
-     &          k_size, k_ary, field_pvr%v_lic, xx_tgt, isurf_end,             &
-     &          xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
+          call cal_lic_on_surf_vector                                   &
+     &       (numnod, numsurf, numele, nnod_4_surf,                     &
+     &        isf_4_ele, iele_4_surf, interior_surf, xx,                &
+     &        vnorm_surf, isurf_orgs, ie_surf, xi,                      &
+     &        lic_p%freq_noise, lic_p%factor_normal,                    &
+     &        n_size, noise_data, noise_grad, k_size, k_ary,            &
+     &        field_pvr%v_lic, xx_tgt, isurf_end,                       &
+     &        xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
           !write(50+my_rank, *) iflag_lic
 
           do i_psf = 1, field_pvr%num_sections

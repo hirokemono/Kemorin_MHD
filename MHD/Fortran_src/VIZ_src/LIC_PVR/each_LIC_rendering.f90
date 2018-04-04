@@ -138,21 +138,21 @@
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_lic_rendering_with_rot                             &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, pvr_data)
+     &        lic_fld%lic_param, pvr_param, pvr_data)
         else
           call lic_rendering_with_rotation                              &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, pvr_data)
+     &        lic_fld%lic_param, pvr_param, pvr_data)
         end if
       else
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_lic_rendering_fix_view                             &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
-     &        group, pvr_param, pvr_data)
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+     &        lic_fld%lic_param, pvr_param, pvr_data)
         else
           call lic_rendering_with_fixed_view                            &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
-     &        pvr_param, pvr_data)
+     &        lic_fld%lic_param, pvr_param, pvr_data)
         end if
       end if
 !

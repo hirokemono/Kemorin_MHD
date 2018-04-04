@@ -4,7 +4,14 @@
 !
 !      Written by Yangguang Liao 2018
 !
-!      subroutine import_noise_ary(filename, n_raw_data, n_data_size)
+!!      subroutine import_noise_ary(filename, n_raw_data, n_data_size)
+!!
+!!      subroutine noise_sampling(noise_size, f_noise, noise_data,      &
+!!     &          xx_org, xyz_min, xyz_max, noise_value)
+!!      subroutine noise_grad_sampling(noise_size, f_noise,             &
+!!     &          noise_grad, xx_org, xyz_min, xyz_max, grad_value)
+!!      subroutine noise_nd_sampling(noise_size, f_noise, n_node,       &
+!!     &          xx_org, xyz_min, xyz_max, noise_value)
 !
       module lic_noise_generator
 !
@@ -14,9 +21,6 @@
       use calypso_mpi
 !
       implicit  none
-!
-      real(kind = kreal), parameter :: noise_freq = 4.0d0
-      private :: noise_freq
 !
 !  ---------------------------------------------------------------------
 !
@@ -233,11 +237,13 @@ end subroutine import_noise_nd_ary
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine noise_sampling(noise_size, noise_data, xx_org, xyz_min, xyz_max, noise_value)
+      subroutine noise_sampling(noise_size, f_noise, noise_data,        &
+     &          xx_org, xyz_min, xyz_max, noise_value)
 
       use set_parallel_file_name
       !
       integer(kind = kint), intent(in) :: noise_size
+      real(kind = kreal), intent(in) :: f_noise
       character(len=1), intent(in) :: noise_data(noise_size)
       real(kind = kreal), intent(in) :: xx_org(3), xyz_min(3), xyz_max(3)
       real(kind = kreal), intent(inout) :: noise_value
@@ -250,7 +256,7 @@ end subroutine import_noise_nd_ary
 
       noise_value = 0.0
       xyz_norm = (xx_org - xyz_min) / (xyz_max - xyz_min)
-      xyz_norm = xyz_norm * noise_freq
+      xyz_norm = xyz_norm * f_noise
       xyz_norm = xyz_norm - int(xyz_norm)
       dim = int(noise_size**(1./3.))
       xyz = xyz_norm * dim
@@ -283,24 +289,26 @@ end subroutine import_noise_nd_ary
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine noise_grad_sampling(noise_size, noise_grad, xx_org, xyz_min, xyz_max, grad_value)
-
+      subroutine noise_grad_sampling(noise_size, f_noise,               &
+     &          noise_grad, xx_org, xyz_min, xyz_max, grad_value)
+!
       use set_parallel_file_name
-      !
+!
       integer(kind = kint), intent(in) :: noise_size
+      real(kind = kreal), intent(in) :: f_noise
       character(len=1), intent(in) :: noise_grad(noise_size*3)
       real(kind = kreal), intent(in) :: xx_org(3), xyz_min(3), xyz_max(3)
       real(kind = kreal), intent(inout) :: grad_value(3)
       integer(kind = kint) :: idx, idx000,idx001,idx010,idx011,idx100,idx101,idx110,idx111
       real(kind = kreal) :: xyz(3), xyz_d(3), c00(3), c01(3), c10(3), c11(3), c0(3), c1(3)
       integer(kind = kint) :: xyz_i(3)
-      !
+!
       integer(kind = kint) :: dim
       real(kind = kreal) :: xyz_norm(3)
 
       grad_value(1:3) = 0.0
       xyz_norm = (xx_org - xyz_min) / (xyz_max - xyz_min)
-      xyz_norm = xyz_norm * noise_freq
+      xyz_norm = xyz_norm * f_noise
       xyz_norm = xyz_norm - int(xyz_norm)
       dim = int(noise_size**(1./3.))
       xyz = xyz_norm * dim
@@ -333,33 +341,35 @@ end subroutine import_noise_nd_ary
 !
 !  ---------------------------------------------------------------------
 !
-subroutine noise_nd_sampling(noise_size, n_node, xx_org, xyz_min, xyz_max, noise_value)
+      subroutine noise_nd_sampling(noise_size, f_noise, n_node,         &
+     &          xx_org, xyz_min, xyz_max, noise_value)
 
-use t_noise_node_data
-use set_parallel_file_name
+      use t_noise_node_data
+      use set_parallel_file_name
 !
-integer(kind = kint), intent(in) :: noise_size
-type(noise_node), intent(in) :: n_node(noise_size)
-real(kind = kreal), intent(in) :: xx_org(3), xyz_min(3), xyz_max(3)
-real(kind = kreal), intent(inout) :: noise_value
-integer(kind = kint) :: idx, idx000,idx001,idx010,idx011,idx100,idx101,idx110,idx111
-real(kind = kreal) :: xyz(3), xyz_d(3), c00, c01, c10, c11, c0, c1
-integer(kind = kint) :: xyz_i(3)
+      integer(kind = kint), intent(in) :: noise_size
+      real(kind = kreal), intent(in) :: f_noise
+      type(noise_node), intent(in) :: n_node(noise_size)
+      real(kind = kreal), intent(in) :: xx_org(3), xyz_min(3), xyz_max(3)
+      real(kind = kreal), intent(inout) :: noise_value
+      integer(kind = kint) :: idx, idx000,idx001,idx010,idx011,idx100,idx101,idx110,idx111
+      real(kind = kreal) :: xyz(3), xyz_d(3), c00, c01, c10, c11, c0, c1
+      integer(kind = kint) :: xyz_i(3)
 !
-integer(kind = kint) :: dim
-real(kind = kreal) :: xyz_norm(3)
+      integer(kind = kint) :: dim
+      real(kind = kreal) :: xyz_norm(3)
 
-noise_value = 0.0
-xyz_norm = (xx_org - xyz_min) / (xyz_max - xyz_min)
-xyz_norm = xyz_norm * noise_freq
-xyz_norm = xyz_norm - int(xyz_norm)
-dim = int(noise_size**(1./3.))
-xyz = xyz_norm * dim
-xyz_i = int(xyz_norm * (dim-1))+1
-idx = get_offset_vol(xyz_i(1), xyz_i(2), xyz_i(3), dim)
-noise_value = get_noise_nd_value(noise_size, n_node, idx, 0)
+      noise_value = 0.0
+      xyz_norm = (xx_org - xyz_min) / (xyz_max - xyz_min)
+      xyz_norm = xyz_norm * f_noise
+      xyz_norm = xyz_norm - int(xyz_norm)
+      dim = int(noise_size**(1./3.))
+      xyz = xyz_norm * dim
+      xyz_i = int(xyz_norm * (dim-1))+1
+      idx = get_offset_vol(xyz_i(1), xyz_i(2), xyz_i(3), dim)
+      noise_value = get_noise_nd_value(noise_size, n_node, idx, 0)
 
-end subroutine noise_nd_sampling
+      end subroutine noise_nd_sampling
 !
 !  ---------------------------------------------------------------------
 !
