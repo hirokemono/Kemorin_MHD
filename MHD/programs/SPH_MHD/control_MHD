@@ -468,8 +468,8 @@ begin MHD_control
 !
       istep_dynamic_ctl         10
       stabilize_weight_ctl      0.6
-      radial_averaging_area      4
-      meridional_averaging_area  4
+      num_radial_averaging_area     4
+      num_med_averaging_area        4
 !
       begin filter_files_def
         model_coef_rst_prefix       'rst_8/Csim_med'

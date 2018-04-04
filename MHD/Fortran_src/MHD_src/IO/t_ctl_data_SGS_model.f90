@@ -92,8 +92,8 @@
 !!
 !!      istep_dynamic_ctl         10
 !!      stabilize_weight_ctl      0.6
-!!      radial_averaging_area      4
-!!      meridional_averaging_area  4
+!!      num_radial_averaging_area   4
+!!      num_med_averaging_area      4
 !!
 !!      min_step_dynamic_ctl      1
 !!      max_step_dynamic_ctl      50
@@ -212,8 +212,8 @@
         type(read_real_item) :: delta_to_shrink_dynamic_ctl
         type(read_real_item) :: delta_to_extend_dynamic_ctl
 !
-        type(read_integer_item) :: radial_ave_area_ctl
-        type(read_integer_item) :: med_ave_area_ctl
+        type(read_integer_item) :: ngrp_radial_ave_ctl
+        type(read_integer_item) :: ngrp_med_ave_ctl
 !
         type(read_real_item) :: clipping_limit_ctl
 !
@@ -287,9 +287,9 @@
      &                        = 'SGS_perturbation_ctl'
 !
       character(len=kchara), parameter :: hd_r_ave_area_ctl             &
-     &                        = 'radial_averaging_area'
+     &                        = 'num_radial_averaging_area'
       character(len=kchara), parameter :: hd_med_ave_area_ctl           &
-     &                        = 'meridional_averaging_area'
+     &                        = 'num_med_averaging_area'
 !
       character(len=kchara), parameter :: hd_model_coef_type_ctl        &
      &                        = 'model_coef_type_ctl'
@@ -471,9 +471,9 @@
      &      sgs_ctl%max_step_dynamic_ctl)
 !
         call read_integer_ctl_type(hd_r_ave_area_ctl,                   &
-     &      sgs_ctl%radial_ave_area_ctl)
+     &      sgs_ctl%ngrp_radial_ave_ctl)
         call read_integer_ctl_type(hd_med_ave_area_ctl,                 &
-     &      sgs_ctl%med_ave_area_ctl)
+     &      sgs_ctl%ngrp_med_ave_ctl)
       end do
 !
       end subroutine read_sgs_ctl
@@ -572,8 +572,8 @@
       call bcast_ctl_type_i1(sgs_ctl%min_step_dynamic_ctl)
       call bcast_ctl_type_i1(sgs_ctl%max_step_dynamic_ctl)
 !
-      call bcast_ctl_type_i1(sgs_ctl%radial_ave_area_ctl)
-      call bcast_ctl_type_i1(sgs_ctl%med_ave_area_ctl)
+      call bcast_ctl_type_i1(sgs_ctl%ngrp_radial_ave_ctl)
+      call bcast_ctl_type_i1(sgs_ctl%ngrp_med_ave_ctl)
 !
       end subroutine bcast_sgs_ctl
 !

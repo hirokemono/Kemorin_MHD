@@ -185,15 +185,15 @@
       SGS_param%SGS_cf_factor                                           &
      &        = set_fixed_Csim(one, sgs_ctl%SGS_cf_factor_ctl)
 !
-      SGS_param%narea_rave_dynamic = 1
-      SGS_param%narea_tave_dynamic = 1
-      if(sgs_ctl%radial_ave_area_ctl%iflag .gt. 0) then
-        SGS_param%narea_rave_dynamic                                    &
-     &      = sgs_ctl%radial_ave_area_ctl%intvalue
+      SGS_param%ngrp_rave_dynamic = 1
+      SGS_param%ngrp_medave_dynamic = 1
+      if(sgs_ctl%ngrp_radial_ave_ctl%iflag .gt. 0) then
+        SGS_param%ngrp_rave_dynamic                                     &
+     &      = sgs_ctl%ngrp_radial_ave_ctl%intvalue
       end if
-      if(sgs_ctl%med_ave_area_ctl%iflag .gt. 0) then
-        SGS_param%narea_tave_dynamic                                    &
-     &      = sgs_ctl%med_ave_area_ctl%intvalue
+      if(sgs_ctl%ngrp_med_ave_ctl%iflag .gt. 0) then
+        SGS_param%ngrp_medave_dynamic                                   &
+     &      = sgs_ctl%ngrp_med_ave_ctl%intvalue
       end if
 !
       if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
