@@ -147,7 +147,7 @@
       lst =   wk_dgrp%istack_t_gl_ngrp(ip_t-1)
       do kr = 1, sph_d_grp%ngrp_rt(1)
         do lt = 1, sph_d_grp%ngrp_rt(2)
-          i = lt + (kr-1) * sph_d_grp%ngrp_rt(2)
+          i =  kr + (lt-1) * sph_d_grp%ngrp_rt(1)
           sph_d_grp%igrp_gl_dynamic(i,1) = kr + kst
           sph_d_grp%igrp_gl_dynamic(i,2) = lt + lst
         end do
