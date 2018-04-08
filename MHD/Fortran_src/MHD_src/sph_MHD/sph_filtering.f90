@@ -55,6 +55,7 @@
       use calypso_mpi
       use t_physical_property
       use t_SGS_buoyancy_sph
+      use set_groups_sph_dynamic
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) ::  sph
@@ -64,6 +65,9 @@
 !
 !
       if(SGS_par%model_p%iflag_SGS .eq. 0) return
+!
+      call find_grouping_4_dynamic_model(SGS_par%model_p,               &
+     &    sph%sph_params, sph%sph_rtp, dynamic_SPH%sph_d_grp)
 !
       call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj, sph_grps,  &
      &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
