@@ -7,22 +7,26 @@
 !!
 !!@verbatim
 !!      subroutine product_fixed_model_coefs                            &
-!!     &         (const_Csim, ifld, numdir, nnod_rtp, ncomp, frc_rtp)
+!!     &         (const_Csim, sph_rtp, ifld, numdir, ncomp, frc_rtp)
 !!      subroutine product_model_coefs_pin                              &
-!!     &         (const_Csim, isgs, nphi, nnod_med, nfld_sgs, sgs_c,    &
-!!     &          ifld, numdir, nnod_rtp, ncomp, frc_rtp)
+!!     &         (const_Csim, isgs, sph_rtp, sph_d_grp, nfld_sgs, sgs_c,&
+!!     &          ifld, numdir, ncomp, frc_rtp)
 !!      subroutine product_single_buo_coefs_pin                         &
-!!     &         (nnod_rtp, nnod_med, nphi, sgs_c, frc_rtp)
+!!     &         (sph_rtp, sph_d_grp, sgs_c, frc_rtp)
 !!      subroutine product_double_buo_coefs_pin                         &
-!!     &         (nnod_rtp, nnod_med, nphi, sgs_c1, sgs_c2, frc_rtp)
+!!     &         (sph_rtp, sph_d_grp, sgs_c1, sgs_c2, frc_rtp)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !!
 !!      subroutine product_model_coefs_pout                             &
-!!     &         (const_Csim, isgs, nphi, nnod_med, nfld_sgs, sgs_c,    &
-!!     &          ifld, numdir, nnod_rtp, ncomp, frc_rtp)
+!!     &         (const_Csim, isgs, sph_rtp, sph_d_grp, nfld_sgs, sgs_c,&
+!!     &          ifld, numdir, ncomp, frc_rtp)
 !!      subroutine product_single_buo_coefs_pout                        &
-!!     &         (nnod_rtp, nnod_med, nphi, sgs_c, frc_rtp)
+!!     &         (sph_rtp, sph_d_grp, sgs_c, frc_rtp)
 !!      subroutine product_double_buo_coefs_pout                        &
-!!     &         (nnod_rtp, nnod_med, nphi, sgs_c1, sgs_c2, frc_rtp)
+!!     &         (sph_rtp, sph_d_grp, sgs_c1, sgs_c2, frc_rtp)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !!@endverbatim
 !
       module prod_SGS_model_coefs_sph
@@ -31,6 +35,9 @@
       use m_constants
       use m_machine_parameter
       use m_phys_constants
+!
+      use t_spheric_rtp_data
+      use t_groups_sph_dynamic
 !
       implicit none
 !
@@ -41,13 +48,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine product_fixed_model_coefs                              &
-     &         (const_Csim, ifld, numdir, nnod_rtp, ncomp, frc_rtp)
+     &         (const_Csim, sph_rtp, ifld, numdir, ncomp, frc_rtp)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       real(kind = kreal), intent(in) :: const_Csim
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp
-      integer(kind = kint), intent(in) :: ifld, numdir
+      integer(kind = kint), intent(in) :: ncomp, ifld, numdir
 !
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,ncomp)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: frc_rtp(sph_rtp%nnod_rtp,ncomp)
 !
       integer(kind = kint) :: nd
 !
@@ -55,8 +64,8 @@
 !$omp parallel
       do nd = 0, numdir-1
 !$omp workshare
-        frc_rtp(1:nnod_rtp,ifld+nd)                                     &
-     &        = const_Csim * frc_rtp(1:nnod_rtp,ifld+nd)
+        frc_rtp(1:sph_rtp%nnod_rtp,ifld+nd)                             &
+     &        = const_Csim * frc_rtp(1:sph_rtp%nnod_rtp,ifld+nd)
 !$omp end workshare
      end do
 !$omp end parallel
@@ -66,29 +75,38 @@
 !  ---------------------------------------------------------------------
 !
       subroutine product_model_coefs_pin                                &
-     &         (const_Csim, isgs, nphi, nnod_med, nfld_sgs, sgs_c,      &
-     &          ifld, numdir, nnod_rtp, ncomp, frc_rtp)
+     &         (const_Csim, isgs, sph_rtp, sph_d_grp, nfld_sgs, sgs_c,  &
+     &          ifld, numdir, ncomp, frc_rtp)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
       real(kind = kreal), intent(in) :: const_Csim
-      integer(kind = kint), intent(in) :: nnod_med, nfld_sgs
-      integer(kind = kint), intent(in) :: isgs, nphi
-      real(kind = kreal), intent(in) :: sgs_c(nnod_med,nfld_sgs)
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp
-      integer(kind = kint), intent(in) :: ifld, numdir
+      integer(kind = kint), intent(in) :: nfld_sgs, isgs
+      real(kind = kreal), intent(in)                                    &
+     &                   :: sgs_c(sph_d_grp%ngrp_dynamic,nfld_sgs)
+      integer(kind = kint), intent(in) :: ncomp, ifld, numdir
 !
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,ncomp)
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: frc_rtp(sph_rtp%nnod_rtp,ncomp)
 !
-      integer(kind = kint) :: kl, m, i1, nd
+      integer(kind = kint) :: nd, m, l, k, i1, klgrp
 !
 !
 !$omp parallel
       do nd = 0, numdir-1
-!$omp do private(kl,m,i1)
-        do kl = 1, nnod_med
-          do m = 1, nphi
-            i1 = m + (kl-1)*nphi
-            frc_rtp(i1,ifld+nd) = const_Csim * sgs_c(kl,isgs)           &
-     &                           * frc_rtp(i1,ifld+nd)
+!$omp do private(m,l,k,i1,klgrp)
+        do l = 1, sph_rtp%nidx_rtp(2)
+          do k = 1, sph_rtp%nidx_rtp(1)
+            klgrp = sph_d_grp%kgrp_dynamic(k)                           &
+     &             + (sph_d_grp%lgrp_dynamic(l) - 1)                    &
+     &              * (sph_d_grp%ngrp_rt(1) + 1)
+            do m = 1, sph_rtp%nidx_rtp(3)
+              i1 = m + (k-1) * sph_rtp%nidx_rtp(3)                      &
+     &            + (l-1) * sph_rtp%nidx_rtp(3) * sph_rtp%nidx_rtp(1)
+              frc_rtp(i1,ifld+nd) = const_Csim * sgs_c(klgrp,isgs)      &
+     &                             * frc_rtp(i1,ifld+nd)
+            end do
           end do
         end do
 !$omp end do
@@ -100,24 +118,33 @@
 !  ---------------------------------------------------------------------
 !
       subroutine product_single_buo_coefs_pin                           &
-     &         (nnod_rtp, nnod_med, nphi, sgs_c, frc_rtp)
+     &         (sph_rtp, sph_d_grp, sgs_c, frc_rtp)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
-      real(kind = kreal), intent(in) :: sgs_c(nnod_med)
+      real(kind = kreal), intent(in) :: sgs_c(sph_d_grp%ngrp_dynamic)
 !
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,n_vector)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: frc_rtp(sph_rtp%nnod_rtp,n_vector)
 !
-      integer(kind = kint) :: kl, m, i1
+      integer(kind = kint) :: m, l, k, i1, klgrp
 !
 !
-!$omp parallel do private(kl,m,i1)
-      do kl = 1, nnod_med
-        do m = 1, nphi
-          i1 = m + (kl-1)*nphi
-          frc_rtp(i1,1) = (one + sgs_c(kl)) * frc_rtp(i1,1)
-          frc_rtp(i1,2) = (one + sgs_c(kl)) * frc_rtp(i1,2)
-          frc_rtp(i1,3) = (one + sgs_c(kl)) * frc_rtp(i1,3)
+!$omp parallel do private(m,l,k,i1,klgrp)
+      do l = 1, sph_rtp%nidx_rtp(2)
+        do k = 1, sph_rtp%nidx_rtp(1)
+          klgrp = sph_d_grp%kgrp_dynamic(k)                             &
+     &           + (sph_d_grp%lgrp_dynamic(l) - 1)                      &
+     &            * (sph_d_grp%ngrp_rt(1) + 1)
+          do m = 1, sph_rtp%nidx_rtp(3)
+            i1 = m + (k-1) * sph_rtp%nidx_rtp(3)                        &
+     &             + (l-1) * sph_rtp%nidx_rtp(3) * sph_rtp%nidx_rtp(1)
+!
+            frc_rtp(i1,1) = (one + sgs_c(klgrp)) * frc_rtp(i1,1)
+            frc_rtp(i1,2) = (one + sgs_c(klgrp)) * frc_rtp(i1,2)
+            frc_rtp(i1,3) = (one + sgs_c(klgrp)) * frc_rtp(i1,3)
+          end do
         end do
       end do
 !$omp end parallel do
@@ -127,25 +154,37 @@
 !  ---------------------------------------------------------------------
 !
       subroutine product_double_buo_coefs_pin                           &
-     &         (nnod_rtp, nnod_med, nphi, sgs_c1, sgs_c2, frc_rtp)
+     &         (sph_rtp, sph_d_grp, sgs_c1, sgs_c2, frc_rtp)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
-      real(kind = kreal), intent(in) :: sgs_c1(nnod_med)
-      real(kind = kreal), intent(in) :: sgs_c2(nnod_med)
+      real(kind = kreal), intent(in) :: sgs_c1(sph_d_grp%ngrp_dynamic)
+      real(kind = kreal), intent(in) :: sgs_c2(sph_d_grp%ngrp_dynamic)
 !
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,n_vector)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: frc_rtp(sph_rtp%nnod_rtp,n_vector)
 !
-      integer(kind = kint) :: kl, m, i1
+      integer(kind = kint) :: m, l, k, i1, klgrp
 !
 !
-!$omp parallel do private(kl,m,i1)
-      do kl = 1, nnod_med
-        do m = 1, nphi
-          i1 = m + (kl-1)*nphi
-          frc_rtp(i1,1) = (one + sgs_c1(kl) + sgs_c2(kl))*frc_rtp(i1,1)
-          frc_rtp(i1,2) = (one + sgs_c1(kl) + sgs_c2(kl))*frc_rtp(i1,2)
-          frc_rtp(i1,3) = (one + sgs_c1(kl) + sgs_c2(kl))*frc_rtp(i1,3)
+!$omp parallel do private(m,l,k,i1,klgrp)
+      do l = 1, sph_rtp%nidx_rtp(2)
+        do k = 1, sph_rtp%nidx_rtp(1)
+          klgrp = sph_d_grp%kgrp_dynamic(k)                             &
+     &           + (sph_d_grp%lgrp_dynamic(l) - 1)                      &
+     &            * (sph_d_grp%ngrp_rt(1) + 1)
+          do m = 1, sph_rtp%nidx_rtp(3)
+            i1 = m + (k-1) * sph_rtp%nidx_rtp(3)                        &
+     &             + (l-1) * sph_rtp%nidx_rtp(3) * sph_rtp%nidx_rtp(1)
+!
+            frc_rtp(i1,1)                                               &
+     &            = (one + sgs_c1(klgrp) + sgs_c2(klgrp))*frc_rtp(i1,1)
+            frc_rtp(i1,2)                                               &
+     &            = (one + sgs_c1(klgrp) + sgs_c2(klgrp))*frc_rtp(i1,2)
+            frc_rtp(i1,3)                                               &
+     &            = (one + sgs_c1(klgrp) + sgs_c2(klgrp))*frc_rtp(i1,3)
+          end do
         end do
       end do
 !$omp end parallel do
@@ -156,30 +195,40 @@
 !  ---------------------------------------------------------------------
 !
       subroutine product_model_coefs_pout                               &
-     &         (const_Csim, isgs, nphi, nnod_med, nfld_sgs, sgs_c,      &
-     &          ifld, numdir, nnod_rtp, ncomp, frc_rtp)
+     &         (const_Csim, isgs, sph_rtp, sph_d_grp, nfld_sgs, sgs_c,  &
+     &          ifld, numdir, ncomp, frc_rtp)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
       real(kind = kreal), intent(in) :: const_Csim
-      integer(kind = kint), intent(in) :: nnod_med, nfld_sgs
-      integer(kind = kint), intent(in) :: isgs, nphi
-      real(kind = kreal), intent(in) :: sgs_c(nnod_med,nfld_sgs)
-      integer(kind = kint), intent(in) :: nnod_rtp, ncomp
-      integer(kind = kint), intent(in) :: ifld, numdir
+      integer(kind = kint), intent(in) :: nfld_sgs, isgs
+      real(kind = kreal), intent(in)                                    &
+     &                   :: sgs_c(sph_d_grp%ngrp_dynamic,nfld_sgs)
 !
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,ncomp)
+      integer(kind = kint), intent(in) :: ncomp, ifld, numdir
 !
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: frc_rtp(sph_rtp%nnod_rtp,ncomp)
 !
-      integer(kind = kint) :: kl, m, i1, nd
+      integer(kind = kint) :: nd, m, l, k, i1, klgrp
 !
 !
 !$omp parallel
       do nd = 0, numdir-1
-!$omp do private(m,kl,i1)
-        do m = 1, nphi
-          do kl = 1, nnod_med
-            i1 = kl + (m-1)*nnod_med
-            frc_rtp(i1,ifld+nd) = const_Csim * sgs_c(kl,isgs)           &
-     &                           * frc_rtp(i1,ifld+nd)
+!$omp do private(m,l,k,i1,klgrp)
+        do m = 1, sph_rtp%nidx_rtp(3)
+          do l = 1, sph_rtp%nidx_rtp(2)
+            do k = 1, sph_rtp%nidx_rtp(1)
+              i1 = k + (l-1)*sph_rtp%nidx_rtp(1)                        &
+     &               + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
+               klgrp = sph_d_grp%kgrp_dynamic(k)                        &
+     &                + (sph_d_grp%lgrp_dynamic(l) - 1)                 &
+     &                 * (sph_d_grp%ngrp_rt(1) + 1)
+!
+              frc_rtp(i1,ifld+nd) = const_Csim * sgs_c(klgrp,isgs)      &
+     &                             * frc_rtp(i1,ifld+nd)
+            end do
           end do
         end do
 !$omp end do
@@ -191,24 +240,33 @@
 !  ---------------------------------------------------------------------
 !
       subroutine product_single_buo_coefs_pout                          &
-     &         (nnod_rtp, nnod_med, nphi, sgs_c, frc_rtp)
+     &         (sph_rtp, sph_d_grp, sgs_c, frc_rtp)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, nnod_med, nphi
-      real(kind = kreal), intent(in) :: sgs_c(nnod_med)
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,n_vector)
+      real(kind = kreal), intent(in) :: sgs_c(sph_d_grp%ngrp_dynamic)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: frc_rtp(sph_rtp%nnod_rtp,n_vector)
+!
+      integer(kind = kint) :: m, l, k, i1, klgrp
 !
 !
-      integer(kind = kint) :: kl, m, i1
+!$omp parallel do private(m,l,k,i1,klgrp)
+      do m = 1, sph_rtp%nidx_rtp(3)
+        do l = 1, sph_rtp%nidx_rtp(2)
+          do k = 1, sph_rtp%nidx_rtp(1)
+            i1 = k + (l-1)*sph_rtp%nidx_rtp(1)                          &
+     &             + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
+            klgrp = sph_d_grp%kgrp_dynamic(k)                           &
+     &             + (sph_d_grp%lgrp_dynamic(l) - 1)                    &
+     &              * (sph_d_grp%ngrp_rt(1) + 1)
 !
-!
-!$omp parallel do private(m,kl,i1)
-      do m = 1, nphi
-        do kl = 1, nnod_med
-          i1 = kl + (m-1)*nnod_med
-          frc_rtp(i1,1) = (one + sgs_c(kl)) * frc_rtp(i1,1)
-          frc_rtp(i1,2) = (one + sgs_c(kl)) * frc_rtp(i1,2)
-          frc_rtp(i1,3) = (one + sgs_c(kl)) * frc_rtp(i1,3)
+            frc_rtp(i1,1) = (one + sgs_c(klgrp)) * frc_rtp(i1,1)
+            frc_rtp(i1,2) = (one + sgs_c(klgrp)) * frc_rtp(i1,2)
+            frc_rtp(i1,3) = (one + sgs_c(klgrp)) * frc_rtp(i1,3)
+          end do
         end do
       end do
 !$omp end parallel do
@@ -218,26 +276,37 @@
 !  ---------------------------------------------------------------------
 !
       subroutine product_double_buo_coefs_pout                          &
-     &         (nnod_rtp, nnod_med, nphi, sgs_c1, sgs_c2, frc_rtp)
+     &         (sph_rtp, sph_d_grp, sgs_c1, sgs_c2, frc_rtp)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nnod_med, nphi
-      real(kind = kreal), intent(in) :: sgs_c1(nnod_med)
-      real(kind = kreal), intent(in) :: sgs_c2(nnod_med)
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
-      real(kind = kreal), intent(inout) :: frc_rtp(nnod_rtp,n_vector)
+      real(kind = kreal), intent(in) :: sgs_c1(sph_d_grp%ngrp_dynamic)
+      real(kind = kreal), intent(in) :: sgs_c2(sph_d_grp%ngrp_dynamic)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: frc_rtp(sph_rtp%nnod_rtp,n_vector)
+!
+      integer(kind = kint) :: m, l, k, i1, klgrp
 !
 !
-      integer(kind = kint) :: kl, m, i1
+!$omp parallel do private(m,l,k,i1,klgrp)
+      do m = 1, sph_rtp%nidx_rtp(3)
+        do l = 1, sph_rtp%nidx_rtp(2)
+          do k = 1, sph_rtp%nidx_rtp(1)
+            i1 = k + (l-1)*sph_rtp%nidx_rtp(1)                          &
+     &             + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
+            klgrp = sph_d_grp%kgrp_dynamic(k)                           &
+     &             + (sph_d_grp%lgrp_dynamic(l) - 1)                    &
+     &              * (sph_d_grp%ngrp_rt(1) + 1)
 !
-!
-!$omp parallel do private(m,kl,i1)
-      do m = 1, nphi
-        do kl = 1, nnod_med
-          i1 = kl + (m-1)*nnod_med
-          frc_rtp(i1,1) = (one + sgs_c1(kl) + sgs_c2(kl))*frc_rtp(i1,1)
-          frc_rtp(i1,2) = (one + sgs_c1(kl) + sgs_c2(kl))*frc_rtp(i1,2)
-          frc_rtp(i1,3) = (one + sgs_c1(kl) + sgs_c2(kl))*frc_rtp(i1,3)
+            frc_rtp(i1,1)                                               &
+     &            = (one + sgs_c1(klgrp) + sgs_c2(klgrp))*frc_rtp(i1,1)
+            frc_rtp(i1,2)                                               &
+     &            = (one + sgs_c1(klgrp) + sgs_c2(klgrp))*frc_rtp(i1,2)
+            frc_rtp(i1,3)                                               &
+     &            = (one + sgs_c1(klgrp) + sgs_c2(klgrp))*frc_rtp(i1,3)
+          end do
         end do
       end do
 !$omp end parallel do

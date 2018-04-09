@@ -306,8 +306,9 @@ void set_3d_position_to_window(int point_screen[2], GLfloat xx[3],
 		end_device[i] =  end_clip[i] / end_clip[3];
 	};
 	point_screen[0] = (int) ( (end_device[0] + 1.0) * ((double) nx_win / 2.0) );
-	point_screen[1] = (int) ( (end_device[1] + ((double) nx_win) / ((double) ny_win) )
-                             * ((double) ny_win / 2.0) ) ;
+	/*point_screen[1] = (int) ( (end_device[1] + ((double) nx_win) / ((double) ny_win) )
+                             * ((double) ny_win / 2.0) ) ; */
+    point_screen[1] = (int) ( (end_device[1] + 1.0) * ((double) ny_win / 2.0) );
 	
 	return;
 }

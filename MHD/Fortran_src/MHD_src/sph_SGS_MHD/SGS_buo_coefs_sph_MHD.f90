@@ -8,14 +8,19 @@
 !!
 !!@verbatim
 !!      subroutine cal_SGS_buo_coefs_sph_MHD                            &
-!!     &         (nnod_med, sph_rtp, stablize_weight, frc_rtp,          &
+!!     &         (sph_rtp, sph_d_grp, stablize_weight, frc_rtp,         &
 !!     &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,&
 !!     &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
 !!      subroutine sel_mag_sph_ave_SGS_buo_rtp                          &
 !!     &         (sph_rtp, ifld_sgs, Cbuo_ave_sph_rtp, f_trns,          &
 !!     &          ncomp_SGS_rtp_2_rj, frc_rtp)
-!!      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, fg_trns,      &
-!!     &          ifld_sgs, wk_sgs, nnod_med, nc_SGS_rtp_2_rj, fSGS_rtp)
+!!      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,    &
+!!     &          fg_trns, ifld_sgs, wk_sgs, nc_SGS_rtp_2_rj, fSGS_rtp)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+!!        type(phys_address), intent(in) :: fg_trns
+!!        type(SGS_terms_address), intent(in) :: ifld_sgs
+!!        type(dynamic_model_data), intent(in) :: wk_sgs
 !!@endverbatim
 !
       module SGS_buo_coefs_sph_MHD
@@ -33,6 +38,7 @@
       use t_addresses_sph_transform
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic
+      use t_groups_sph_dynamic
 !
       implicit none
 !
@@ -48,7 +54,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_SGS_buo_coefs_sph_MHD                              &
-     &         (nnod_med, sph_rtp, stablize_weight, frc_rtp,            &
+     &         (sph_rtp, sph_d_grp, stablize_weight, frc_rtp,           &
      &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,  &
      &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
 !
@@ -56,7 +62,8 @@
       use zonal_lsq_4_model_coefs
       use cal_sph_model_coefs
 !
-      integer(kind = kint), intent(in) :: nnod_med
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
       real(kind = kreal), intent(in) :: stablize_weight
       integer(kind = kint), intent(in)  :: ncomp_snap_rtp_2_rj
@@ -64,7 +71,6 @@
       integer(kind = kint), intent(in)  :: if_trns_buo_wk
       integer(kind = kint), intent(in)  :: icomp_SGS_buo
       integer(kind = kint), intent(in)  :: ifld_SGS_buo
-      type(sph_rtp_grid), intent(in) :: sph_rtp
       real(kind = kreal), intent(in)                                    &
      &               :: frc_rtp(sph_rtp%nnod_rtp,ncomp_snap_rtp_2_rj)
 !
@@ -73,15 +79,14 @@
 !
       if(ifld_SGS_buo .eq. 0) return
       call calypso_mpi_barrier
-      call sel_int_zonal_for_buo_coefs                                  &
-     &   (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),              &
+      call sel_int_zonal_4_buo_coefs(sph_rtp, sph_d_grp,                &
      &    frc_rtp(1,if_trns_reynolds), frc_rtp(1,if_trns_buo_wk),       &
-     &    icomp_SGS_buo, wk_sgs%ntot_comp,                              &
-     &    wk_sgs%comp_coef, wk_sgs%comp_clip)
+     &    wk_sgs%comp_coef(1,icomp_SGS_buo),                            &
+     &    wk_sgs%comp_clip(1,icomp_SGS_buo))
       call calypso_mpi_barrier
 !
-      call sel_sph_model_coefs                                          &
-     &   (ione, nnod_med, stablize_weight, ifld_SGS_buo, icomp_SGS_buo, &
+      call sel_sph_model_coefs(ione, sph_d_grp%ngrp_dynamic,            &
+     &    stablize_weight, ifld_SGS_buo, icomp_SGS_buo,                 &
      &    wk_sgs%num_kinds, wk_sgs%ntot_comp, wk_sgs%comp_coef,         &
      &    wk_sgs%comp_clip, wk_sgs%fld_coef)
 !
@@ -119,14 +124,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, fg_trns,        &
-     &          ifld_sgs, wk_sgs, nnod_med, nc_SGS_rtp_2_rj, fSGS_rtp)
+      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,      &
+     &          fg_trns, ifld_sgs, wk_sgs, nc_SGS_rtp_2_rj, fSGS_rtp)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(phys_address), intent(in) :: fg_trns
       type(SGS_terms_address), intent(in) :: ifld_sgs
       type(dynamic_model_data), intent(in) :: wk_sgs
-      integer(kind = kint), intent(in) :: nnod_med
       integer(kind = kint), intent(in) :: nc_SGS_rtp_2_rj
 !
       real(kind = kreal), intent(inout)                                 &
@@ -135,18 +140,18 @@
 !
       if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
         call sel_product_double_buo_coefs                               &
-     &     (sph_rtp, nnod_med, wk_sgs%num_kinds,                        &
+     &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      ifld_sgs%i_buoyancy, ifld_sgs%i_comp_buoyancy,              &
      &      wk_sgs%fld_coef, nc_SGS_rtp_2_rj, fg_trns%i_SGS_inertia,    &
      &      fSGS_rtp)
       else if(ifld_sgs%i_buoyancy .gt. 0) then
         call sel_product_single_buo_coefs                               &
-     &     (sph_rtp, nnod_med, wk_sgs%num_kinds,                        &
+     &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      ifld_sgs%i_buoyancy, wk_sgs%fld_coef,                       &
      &      nc_SGS_rtp_2_rj, fg_trns%i_SGS_inertia, fSGS_rtp)
       else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
         call sel_product_single_buo_coefs                               &
-     &     (sph_rtp, nnod_med, wk_sgs%num_kinds,                        &
+     &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      ifld_sgs%i_comp_buoyancy, wk_sgs%fld_coef,                  &
      &      nc_SGS_rtp_2_rj, fg_trns%i_SGS_inertia, fSGS_rtp)
       end if
@@ -209,30 +214,30 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_product_single_buo_coefs                           &
-     &         (sph_rtp, nnod_med, nfld_sgs, isgs_buo,                  &
+     &         (sph_rtp, sph_d_grp, nfld_sgs, isgs_buo,                 &
      &          fld_coef, nc_SGS_rtp_2_rj, i_SGS_inertia, fSGS_rtp)
 !
       use m_FFT_selector
       use prod_SGS_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      integer(kind = kint), intent(in) :: nnod_med, nfld_sgs
-      integer(kind = kint), intent(in) :: isgs_buo
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+!
+      integer(kind = kint), intent(in) :: nfld_sgs, isgs_buo
       integer(kind = kint), intent(in) :: i_SGS_inertia
       integer(kind = kint), intent(in) :: nc_SGS_rtp_2_rj
-      real(kind = kreal), intent(in) :: fld_coef(nnod_med,nfld_sgs)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: fld_coef(sph_d_grp%ngrp_dynamic,nfld_sgs)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: fSGS_rtp(sph_rtp%nnod_rtp,nc_SGS_rtp_2_rj)
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then
-        call product_single_buo_coefs_pin                               &
-     &     (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),            &
+        call product_single_buo_coefs_pin(sph_rtp, sph_d_grp,           &
      &      fld_coef(1,isgs_buo), fSGS_rtp(1,i_SGS_inertia))
       else
-        call product_single_buo_coefs_pout                              &
-     &     (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),            &
+        call product_single_buo_coefs_pout(sph_rtp, sph_d_grp,          &
      &      fld_coef(1,isgs_buo), fSGS_rtp(1,i_SGS_inertia))
       end if
 !
@@ -241,31 +246,32 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_product_double_buo_coefs                           &
-     &         (sph_rtp, nnod_med, nfld_sgs, isgs_buo1, isgs_buo2,      &
+     &         (sph_rtp, sph_d_grp, nfld_sgs, isgs_buo1, isgs_buo2,     &
      &          fld_coef, nc_SGS_rtp_2_rj, i_SGS_inertia, fSGS_rtp)
 !
       use m_FFT_selector
       use prod_SGS_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      integer(kind = kint), intent(in) :: nnod_med, nfld_sgs
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+!
+      integer(kind = kint), intent(in) :: nfld_sgs
       integer(kind = kint), intent(in) :: isgs_buo1, isgs_buo2
       integer(kind = kint), intent(in) :: i_SGS_inertia
       integer(kind = kint), intent(in) :: nc_SGS_rtp_2_rj
-      real(kind = kreal), intent(in) :: fld_coef(nnod_med,nfld_sgs)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: fld_coef(sph_d_grp%ngrp_dynamic,nfld_sgs)
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: fSGS_rtp(sph_rtp%nnod_rtp,nc_SGS_rtp_2_rj)
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then
-        call product_double_buo_coefs_pin                               &
-     &     (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),            &
+        call product_double_buo_coefs_pin(sph_rtp, sph_d_grp,           &
      &      fld_coef(1,isgs_buo1), fld_coef(1,isgs_buo2),               &
      &      fSGS_rtp(1,i_SGS_inertia))
       else
-        call product_double_buo_coefs_pout                              &
-     &     (sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),            &
+        call product_double_buo_coefs_pout(sph_rtp, sph_d_grp,          &
      &      fld_coef(1,isgs_buo1),  fld_coef(1,isgs_buo2),              &
      &      fSGS_rtp(1,i_SGS_inertia))
       end if

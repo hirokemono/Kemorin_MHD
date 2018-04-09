@@ -17,8 +17,8 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
-!!      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_rtp, MHD_prop,  &
-!!     &          ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
+!!      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_rtp, sph_d_grp, &
+!!     &          MHD_prop, ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_rtp_grid), intent(in) ::  sph_rtp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -44,6 +44,7 @@
       use t_SGS_buoyancy_sph
       use t_ele_info_4_dynamic
       use t_field_data_IO
+      use t_groups_sph_dynamic
 !
       implicit none
 !
@@ -68,6 +69,8 @@
 !
         type(field_IO) :: Csim_S_IO
 !        type(field_IO) :: Cdiff_S_IO
+!
+        type(sph_dynamic_model_group) :: sph_d_grp
       end type dynamic_SGS_data_4_sph
 !
       private :: const_sph_radial_filter, const_radial_filter
@@ -152,27 +155,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_rtp, MHD_prop,    &
-     &          ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
+      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_rtp, sph_d_grp,   &
+     &          MHD_prop, ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
 !
       use t_physical_property
       use count_sgs_components
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_rtp_grid), intent(in) ::  sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(MHD_evolution_param), intent(in) :: MHD_prop
+!
       type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(dynamic_model_data), intent(inout) :: wk_sgs
 !
-      integer(kind = kint) :: num_med
 !
-!
-      num_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
       call s_count_sgs_components(SGS_par%model_p,                      &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, sgs_coefs)
-      call alloc_sgs_coefs_layer(num_med,                               &
+      call alloc_sgs_coefs_layer(sph_d_grp%ngrp_dynamic,                &
      &    sgs_coefs%num_field, sgs_coefs%ntot_comp, wk_sgs)
 !
       call alloc_SGS_num_coefs(sgs_coefs)

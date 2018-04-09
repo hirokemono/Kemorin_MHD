@@ -337,6 +337,8 @@
       real(kind = kreal), intent(in) :: rgba_src(4)
       real(kind = kreal), intent(inout) :: rgba_tgt(4)
 !
+!   This us is backward casting!!
+!
       rgba_tgt(4) = rgba_src(4) + rgba_tgt(4) * (one - rgba_src(4))
       rgba_tgt(1:3) =  rgba_src(1:3)                                    &
      &               + rgba_tgt(1:3) * (one - rgba_src(4))
