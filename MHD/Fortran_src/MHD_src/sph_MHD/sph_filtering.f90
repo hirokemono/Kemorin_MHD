@@ -72,8 +72,9 @@
       call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj, sph_grps,  &
      &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
 !
-      call init_work_4_SGS_sph_mhd(SGS_par, sph%sph_rtp, MHD_prop,      &
-     &    dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,                  &
+      call init_work_4_SGS_sph_mhd                                      &
+     &   (SGS_par, sph%sph_rtp, dynamic_SPH%sph_d_grp,                  &
+     &    MHD_prop, dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,        &
      &    dynamic_SPH%sgs_coefs, dynamic_SPH%wk_sgs)
 !
       call alloc_sph_ave_Csim_SGS_buo                                   &

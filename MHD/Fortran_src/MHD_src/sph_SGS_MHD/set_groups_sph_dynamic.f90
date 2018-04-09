@@ -78,14 +78,13 @@
       call set_sph_dynamic_num_grp(sph_rtp, wk_dgrp1, sph_d_grp)
 !
       call alloc_sph_dynamic_grp_stack(sph_d_grp)
-      call set_sph_dynamic_grp_stack                                    &
-     &   (sph_params, sph_rtp, wk_dgrp1, sph_d_grp)
+      call set_sph_dynamic_grp_stack(sph_rtp, wk_dgrp1, sph_d_grp)
 !
 !
       call dealloc_mk_sph_istack_dynamic(wk_dgrp1)
       call dealloc_mk_sph_dgrp_stack(wk_dgrp1)
 !
-      call alloc_sph_dynamic_grp_item(sph_d_grp)
+      call alloc_sph_dynamic_grp_item(sph_rtp, sph_d_grp)
       call set_sph_dynamic_grp_item(sph_params, sph_rtp, sph_d_grp)
 !
       if(i_debug .gt. 0) then
@@ -118,7 +117,7 @@
      &                    - wk_dgrp%istack_t_gl_ngrp(ip-1)
 !
       sph_d_grp%ngrp_dynamic                                            &
-     &        = sph_d_grp%ngrp_rt(1) * sph_d_grp%ngrp_rt(2)
+     &        = (sph_d_grp%ngrp_rt(1) + 1) * sph_d_grp%ngrp_rt(2)
 !
       end subroutine set_sph_dynamic_num_grp
 !
@@ -126,12 +125,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_dynamic_grp_stack                              &
-     &         (sph_params, sph_rtp, wk_dgrp, sph_d_grp)
+     &         (sph_rtp, wk_dgrp, sph_d_grp)
 !
-      use t_spheric_parameter
       use t_spheric_rtp_data
 !
-      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(make_sph_dynamic_model_grp), intent(in) :: wk_dgrp
 !
@@ -147,10 +144,15 @@
       lst =   wk_dgrp%istack_t_gl_ngrp(ip_t-1)
       do kr = 1, sph_d_grp%ngrp_rt(1)
         do lt = 1, sph_d_grp%ngrp_rt(2)
-          i =  kr + (lt-1) * sph_d_grp%ngrp_rt(1)
+          i =  kr + (lt-1) * (sph_d_grp%ngrp_rt(1) + 1)
           sph_d_grp%igrp_gl_dynamic(i,1) = kr + kst
           sph_d_grp%igrp_gl_dynamic(i,2) = lt + lst
         end do
+      end do
+      do lt = 1, sph_d_grp%ngrp_rt(2)
+        i =  lt * (sph_d_grp%ngrp_rt(1) + 1)
+        sph_d_grp%igrp_gl_dynamic(i,1) = 0
+        sph_d_grp%igrp_gl_dynamic(i,2) = lt + lst
       end do
 !
       ip_r = sph_rtp%irank_sph_rtp(1) + 1
@@ -160,7 +162,7 @@
         sph_d_grp%istack_dynamic_kr(i)                                  &
      &       = wk_dgrp%istack_rgrp(i+ist) - wk_dgrp%istack_rgrp(ist)
       end do
-      sph_d_grp%ntot_dynamic_kr = sph_d_grp%istack_dynamic_kr(ngrp)
+      sph_d_grp%ntot_dynamic_rt(1) = sph_d_grp%istack_dynamic_kr(ngrp)
 !
       ip_t = sph_rtp%irank_sph_rtp(2) + 1
       ist = wk_dgrp%istack_t_gl_ngrp(ip_t-1)
@@ -169,7 +171,7 @@
         sph_d_grp%istack_dynamic_lt(i)                                  &
      &       = wk_dgrp%istack_tgrp(i+ist) - wk_dgrp%istack_tgrp(ist)
       end do
-      sph_d_grp%ntot_dynamic_lt = sph_d_grp%istack_dynamic_lt(ngrp)
+      sph_d_grp%ntot_dynamic_rt(2) = sph_d_grp%istack_dynamic_lt(ngrp)
 !
       end subroutine set_sph_dynamic_grp_stack
 !
@@ -198,6 +200,9 @@
           i = i + 1
           sph_d_grp%kr_dynamic(i) =    kr
           sph_d_grp%kr_gl_dynamic(i) = kr_gl
+          sph_d_grp%kgrp_dynamic(kr) = i
+        else
+          sph_d_grp%kgrp_dynamic(kr) = sph_d_grp%ngrp_rt(1) + 1
         end if
       end do
 !
@@ -207,6 +212,7 @@
         i = i + 1
         sph_d_grp%lt_dynamic(i) =    lt
         sph_d_grp%lt_gl_dynamic(i) = lt_gl
+        sph_d_grp%lgrp_dynamic(lt) = i
       end do
 !
       end subroutine set_sph_dynamic_grp_item

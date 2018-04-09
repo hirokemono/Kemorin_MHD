@@ -251,8 +251,9 @@
 !
       if(SGS_param%iflag_dynamic .gt. id_SGS_none) then
         if(iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'
-        call copy_model_coefs_4_sph_snap(sph%sph_rtp,                   &
-     &      dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs, WK%trns_snap)
+        call copy_model_coefs_4_sph_snap                                &
+     &     (sph%sph_rtp, dynamic_SPH%sph_d_grp, dynamic_SPH%ifld_sgs,   &
+     &      dynamic_SPH%wk_sgs, WK%trns_snap)
       end if
 !
       end subroutine lead_SGS_terms_4_SPH
