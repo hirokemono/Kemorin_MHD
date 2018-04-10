@@ -49,24 +49,27 @@
      &    ierr)
       if(ierr .gt. 0) stop 'Global mesh is wrong!'
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+!      write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank, org_mesh, org_group, org_ele_mesh)
 !
 !  ========= Routines for partitioner ==============
 !
+!      write(*,*) 'initialize_partitioner'
       call initialize_partitioner(org_mesh, org_group)
+!      write(*,*) 'grouping_for_partitioner'
       call grouping_for_partitioner                                     &
      &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge,               &
      &    org_group%nod_grp, org_group%ele_grp, org_group%tbls_ele_grp)
 !
 !C===
 !C-- create subdomain mesh
+!      write(*,*) 'PROC_LOCAL_MESH'
       call PROC_LOCAL_MESH                                              &
      &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge, org_group,    &
      &    included_ele)
 !C
 !C-- Finalize
-      write(*,*) 'dealloc_nod_ele_infos'
+!      write(*,*) 'dealloc_nod_ele_infos'
       call dealloc_nod_ele_infos(org_mesh, org_group, org_ele_mesh)
 !
 !  ========= Construct subdomain information for viewer ==============
