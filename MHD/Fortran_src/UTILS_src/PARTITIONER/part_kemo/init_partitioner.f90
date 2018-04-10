@@ -31,7 +31,6 @@
       use m_error_IDs
       use m_ctl_param_partitioner
       use m_domain_group_4_partition
-      use const_mesh_information
       use set_domain_and_org_id
       use quick_mesh_check_for_part
 !
@@ -41,14 +40,8 @@
       type(mesh_groups), intent(inout) :: org_group
 !
 !
+!      write(*,*) 'quick_mesh_chk_4_part'
       call quick_mesh_chk_4_part(org_mesh%node, org_mesh%ele,           &
-     &    org_group%nod_grp, org_group%ele_grp, org_group%surf_grp)
-!
-!    construct element and surface data
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
-      call const_nod_ele_infos                                          &
-     &   (my_rank, org_mesh%node, org_mesh%ele,                         &
      &    org_group%nod_grp, org_group%ele_grp, org_group%surf_grp)
 !
 !   set numbers of global mesh
@@ -57,6 +50,7 @@
       nele_s_domin =   org_mesh%ele%numele
       intnod_s_domin = org_mesh%node%internal_node
 !
+!      write(*,*) 'allocate_domain_nod_group'
       call allocate_domain_nod_group
       call allocate_org_gl_nod_id
       call allocate_local_ne_id_tbl

@@ -58,7 +58,7 @@
         stop
       end if
       call choose_file_format                                           &
-     &   (single_plt%sph_file_fmt_ctl, global_mesh_file%iflag_format)
+     &   (single_plt%mesh_file_fmt_ctl, global_mesh_file%iflag_format)
 !
       write(*,*) 'i_part_method', part_method_ctl%iflag
 !
