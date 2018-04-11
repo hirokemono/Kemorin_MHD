@@ -318,7 +318,7 @@
           call const_model_coefs_4_sph(istep_dynamic,                   &
      &        SGS_param, sph%sph_rtp, trns_SGS, dynamic_SPH)
 !
-          if(iflag_debug .eq. 0) write(*,*) 'Dynamic model:',           &
+          if(iflag_debug .gt. 0) write(*,*) 'Dynamic model:',           &
      &                      i_step, i_step_sgs_coefs, istep_dynamic
           if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none               &
      &       .and. istep_dynamic .eq. 0) then
