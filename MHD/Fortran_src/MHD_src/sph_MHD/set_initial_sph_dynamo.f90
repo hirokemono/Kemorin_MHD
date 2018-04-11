@@ -61,6 +61,7 @@
       use initial_magne_dbench_qvc
       use set_initial_sph_scalars
       use set_sph_restart_IO
+      use calypso_mpi
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(SPH_MHD_model_data), intent(in) :: SPH_model
@@ -75,6 +76,8 @@
         call read_alloc_sph_restart_data                                &
      &     (MHD_files%fst_file_IO, MHD_step%init_d, SPH_MHD%fld,        &
      &      MHD_step%rst_step, sph_fst_IO)
+        call calypso_mpi_barrier
+        if(iflag_debug .gt. 0) write(*,*) 'read_alloc_sph_restart_data end'
 !
 !   for dynamo benchmark
       else if(iflag_restart .eq. i_rst_dbench0                          &

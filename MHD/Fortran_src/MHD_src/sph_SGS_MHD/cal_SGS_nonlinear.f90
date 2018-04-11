@@ -318,10 +318,10 @@
           call const_model_coefs_4_sph(istep_dynamic,                   &
      &        SGS_param, sph%sph_rtp, trns_SGS, dynamic_SPH)
 !
+          if(iflag_debug .eq. 0) write(*,*) 'Dynamic model:',           &
+     &                      i_step, i_step_sgs_coefs, istep_dynamic
           if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none               &
      &       .and. istep_dynamic .eq. 0) then
-            if(my_rank .eq. 0) write(*,*) 'Dynamic model:',             &
-     &                      i_step, i_step_sgs_coefs
             if(iflag_debug .gt. 0) write(*,*)                           &
      &           'const_dynamic_SGS_4_buo_sph', iflag_debug
             call const_dynamic_SGS_4_buo_sph                            &
@@ -351,18 +351,15 @@
           if(istep_dynamic .eq. 0) then
             if (iflag_debug.eq.1) write(*,*)                            &
      &                      'sphere_averaged_SGS_buoyancy', iflag_debug
-            call calypso_mpi_barrier
             call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,  &
      &          ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
           end if
 !
-            call calypso_mpi_barrier
             if(iflag_debug.eq.1) write(*,*)                             &
      &                      'magnify_sph_ave_SGS_buoyancy'
           call magnify_sph_ave_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
      &        ipol, dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs_buo,       &
      &        rj_fld, trns_SGS)
-            call calypso_mpi_barrier
         else if(SGS_param%iflag_SGS_buo_usage .ne. id_use_volume) then
           if(istep_dynamic .eq. 0) then
             if (iflag_debug.eq.1) write(*,*)                            &

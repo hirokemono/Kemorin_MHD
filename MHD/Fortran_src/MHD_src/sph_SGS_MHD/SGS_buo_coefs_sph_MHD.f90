@@ -77,13 +77,10 @@
       type(dynamic_model_data), intent(inout) :: wk_sgs
 !
 !
-      if(ifld_SGS_buo .eq. 0) return
-      call calypso_mpi_barrier
       call sel_int_zonal_4_buo_coefs(sph_rtp, sph_d_grp,                &
      &    frc_rtp(1,if_trns_reynolds), frc_rtp(1,if_trns_buo_wk),       &
      &    wk_sgs%comp_coef(1,icomp_SGS_buo),                            &
      &    wk_sgs%comp_clip(1,icomp_SGS_buo))
-      call calypso_mpi_barrier
 !
       call sel_sph_model_coefs(ione, sph_d_grp%ngrp_dynamic,            &
      &    stablize_weight, ifld_SGS_buo, icomp_SGS_buo,                 &

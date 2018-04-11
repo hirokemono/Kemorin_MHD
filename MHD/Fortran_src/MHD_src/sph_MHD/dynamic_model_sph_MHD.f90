@@ -117,6 +117,7 @@
 !
 !
       if(dynamic_SPH%ifld_sgs%i_mom_flux .gt. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD MF'
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (SGS_param%SGS_mf_factor, sph_rtp, dynamic_SPH%sph_d_grp,    &
      &      istep_dynamic, SGS_param%stab_weight,                       &
@@ -128,6 +129,7 @@
       end if
 !
       if(dynamic_SPH%ifld_sgs%i_lorentz .gt. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD LZ'
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &    (SGS_param%SGS_mawell_factor, sph_rtp, dynamic_SPH%sph_d_grp, &
      &     istep_dynamic, SGS_param%stab_weight,                        &
@@ -139,6 +141,7 @@
       end if
 !
       if(dynamic_SPH%ifld_sgs%i_induction .gt. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD ID'
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (SGS_param%SGS_uxb_factor, sph_rtp, dynamic_SPH%sph_d_grp,   &
      &      istep_dynamic, SGS_param%stab_weight,                       &
@@ -150,6 +153,7 @@
       end if
 !
       if(dynamic_SPH%ifld_sgs%i_heat_flux .gt. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD HF'
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (SGS_param%SGS_hf_factor, sph_rtp, dynamic_SPH%sph_d_grp,    &
      &     istep_dynamic, SGS_param%stab_weight,                        &
@@ -161,6 +165,7 @@
       end if
 !
       if(dynamic_SPH%ifld_sgs%i_comp_flux .gt. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD CF'
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (SGS_param%SGS_cf_factor, sph_rtp, dynamic_SPH%sph_d_grp,    &
      &      istep_dynamic, SGS_param%stab_weight,                       &
@@ -208,7 +213,6 @@
      &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs))
 !
         if(iflag_debug .gt. 0)                                          &
-           write(*,*) 'sel_sph_model_coefs', stab_weight
         call sel_sph_model_coefs(numdir, sph_d_grp%ngrp_dynamic,        &
      &      stab_weight, ifld_sgs, icomp_sgs,                           &
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp, wk_sgs%comp_coef,       &
@@ -247,23 +251,28 @@
      &    trns_snap%ncomp_rtp_2_rj, trns_MHD%fld_rtp, trns_SGS%frc_rtp, &
      &    trns_snap%frc_rtp)
 !
-      call cal_SGS_buo_coefs_sph_MHD                                    &
-     &   (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                  &
-     &    trns_snap%frc_rtp, trns_snap%ncomp_rtp_2_rj,                  &
-     &    trns_snap%f_trns%i_reynolds_wk,                               &
-     &    trns_snap%f_trns%i_SGS_buo_wk,                                &
-     &    dynamic_SPH%ifld_sgs%i_buoyancy,                              &
-     &    dynamic_SPH%icomp_sgs%i_buoyancy, dynamic_SPH%wk_sgs)
+      if(dynamic_SPH%ifld_sgs%i_buoyancy .gt. 0) then
+        call cal_SGS_buo_coefs_sph_MHD                                  &
+     &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
+     &      trns_snap%frc_rtp, trns_snap%ncomp_rtp_2_rj,                &
+     &      trns_snap%f_trns%i_reynolds_wk,                             &
+     &      trns_snap%f_trns%i_SGS_buo_wk,                              &
+     &      dynamic_SPH%ifld_sgs%i_buoyancy,                            &
+     &      dynamic_SPH%icomp_sgs%i_buoyancy, dynamic_SPH%wk_sgs)
+      end if
 !
-      call cal_SGS_buo_coefs_sph_MHD                                    &
-     &   (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                  &
-     &    trns_snap%frc_rtp, trns_snap%ncomp_rtp_2_rj,                  &
-     &    trns_snap%f_trns%i_reynolds_wk,                               &
-     &    trns_snap%f_trns%i_SGS_comp_buo_wk,                           &
-     &    dynamic_SPH%ifld_sgs%i_comp_buoyancy,                         &
-     &    dynamic_SPH%icomp_sgs%i_comp_buoyancy, dynamic_SPH%wk_sgs)
+      if(dynamic_SPH%ifld_sgs%i_comp_buoyancy .gt. 0) then
+        call cal_SGS_buo_coefs_sph_MHD                                  &
+     &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
+     &      trns_snap%frc_rtp, trns_snap%ncomp_rtp_2_rj,                &
+     &      trns_snap%f_trns%i_reynolds_wk,                             &
+     &      trns_snap%f_trns%i_SGS_comp_buo_wk,                         &
+     &      dynamic_SPH%ifld_sgs%i_comp_buoyancy,                       &
+     &      dynamic_SPH%icomp_sgs%i_comp_buoyancy, dynamic_SPH%wk_sgs)
+      end if
 !
       if(iflag_SGS_buo_usage .eq. id_use_zonal) then
+        write(*,*) 'prod_SGS_buoyancy_to_Reynolds'
         call prod_SGS_buoyancy_to_Reynolds                              &
      &     (sph_rtp, dynamic_SPH%sph_d_grp,                             &
      &      trns_SGS%f_trns, dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs,  &
