@@ -7,7 +7,8 @@
 !> @brief control data for parallel volume rendering
 !!
 !!@verbatim
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      subroutine dealloc_lic_count_data(pvr, lic_ctl)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine dealloc_lic_count_data(pvr, lic_ctl)
 !!      subroutine read_lic_pvr_ctl                                     &
 !!     &         (hd_block, hd_lic_colordef, pvr, lic_ctl)
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr
