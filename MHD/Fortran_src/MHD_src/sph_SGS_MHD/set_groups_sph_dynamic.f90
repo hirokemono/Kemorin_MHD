@@ -49,7 +49,7 @@
       call alloc_mk_sph_dgrp_flag(sph_rtp, wk_dgrp1)
       call count_nprocs_meridional_plans(sph_rtp, wk_dgrp1)
 !
-      if(iflag_debug .eq. 0) then
+      if(iflag_debug .gt. 0) then
         call ckeck_dynamic_grp_iflag(sph_params, sph_rtp, wk_dgrp1)
       end if
 !
@@ -70,12 +70,15 @@
       call alloc_mk_sph_istack_dynamic(SGS_param, wk_dgrp1)
       call set_istack_dynamic_sph_grp(wk_dgrp1)
 !
-      if(iflag_debug .eq. 0) then
+      if(iflag_debug .gt. 0) then
         call ckeck_make_dynamic_grp_stacks(wk_dgrp1)
       end if
 !
 !
       call set_sph_dynamic_num_grp(sph_rtp, wk_dgrp1, sph_d_grp)
+      if(i_debug .gt. 0) then
+        call check_sph_dynamic_grp_num(sph_d_grp)
+      end if
 !
       call alloc_sph_dynamic_grp_stack(sph_d_grp)
       call set_sph_dynamic_grp_stack(sph_rtp, wk_dgrp1, sph_d_grp)
@@ -189,7 +192,8 @@
 !
       type(sph_dynamic_model_group), intent(inout) :: sph_d_grp
 !
-      integer(kind = kint) :: i, kr, kr_gl, lt, lt_gl
+      integer(kind = kint) :: i, kr, kr_gl, k, kst, ked
+      integer(kind = kint) :: lt, lt_gl, l, lst, led
 !
 !
       i = 0
@@ -200,9 +204,6 @@
           i = i + 1
           sph_d_grp%kr_dynamic(i) =    kr
           sph_d_grp%kr_gl_dynamic(i) = kr_gl
-          sph_d_grp%kgrp_dynamic(kr) = i
-        else
-          sph_d_grp%kgrp_dynamic(kr) = sph_d_grp%ngrp_rt(1) + 1
         end if
       end do
 !
@@ -212,7 +213,25 @@
         i = i + 1
         sph_d_grp%lt_dynamic(i) =    lt
         sph_d_grp%lt_gl_dynamic(i) = lt_gl
-        sph_d_grp%lgrp_dynamic(lt) = i
+      end do
+!
+      sph_d_grp%kgrp_dynamic = sph_d_grp%ngrp_rt(1) + 1
+      do i = 1, sph_d_grp%ngrp_rt(1)
+        kst = sph_d_grp%istack_dynamic_kr(i-1) + 1
+        ked = sph_d_grp%istack_dynamic_kr(i)
+        do k = kst, ked
+          kr = sph_d_grp%kr_dynamic(k)
+          sph_d_grp%kgrp_dynamic(kr) = i
+        end do
+      end do
+!
+      do i = 1, sph_d_grp%ngrp_rt(2)
+        lst = sph_d_grp%istack_dynamic_lt(i-1) + 1
+        led = sph_d_grp%istack_dynamic_lt(i)
+        do l = lst, led
+          lt = sph_d_grp%lt_dynamic(l)
+          sph_d_grp%lgrp_dynamic(lt) = i
+        end do
       end do
 !
       end subroutine set_sph_dynamic_grp_item
