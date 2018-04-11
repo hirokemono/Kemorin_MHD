@@ -212,7 +212,7 @@
      &    trns_SGS%frc_rtp(1,irtp_sgs), trns_SGS%fld_rtp(1,irtp_wide),  &
      &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs))
 !
-        if(iflag_debug .gt. 0)                                          &
+        if(iflag_debug .gt. 0) write(*,*) 'sel_sph_model_coefs'
         call sel_sph_model_coefs(numdir, sph_d_grp%ngrp_dynamic,        &
      &      stab_weight, ifld_sgs, icomp_sgs,                           &
      &      wk_sgs%num_kinds, wk_sgs%ntot_comp, wk_sgs%comp_coef,       &

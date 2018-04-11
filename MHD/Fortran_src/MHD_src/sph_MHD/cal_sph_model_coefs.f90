@@ -46,7 +46,8 @@
 !
       if(numdir .eq. n_vector) then
         call cal_vector_sph_model_coefs(ngrp_dynamic, stab_wt,          &
-     &     sgs_zl(1,icomp_sgs), sgs_zt(1,icomp_sgs), sgs_c(1,ifld_sgs))
+     &      sgs_zl(1,icomp_sgs), sgs_zt(1,icomp_sgs),                   &
+     &      sgs_c(1,ifld_sgs))
       else
         call cal_scalar_sph_model_coefs(ngrp_dynamic, stab_wt,          &
      &      sgs_zl(1,icomp_sgs), sgs_zt(1,icomp_sgs),                   &
