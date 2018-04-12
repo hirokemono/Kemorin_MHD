@@ -11,6 +11,8 @@
 !!     &         (num_nod_phys, phys_nod_name, lic_ctl, lic_p)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
+!!      subroutine dealloc_lic_masking_ranges(lic_p)
+!!        type(lic_parameter_ctl), intent(inout) :: lic_p
 !!@endverbatim
 !
       module t_control_param_LIC
@@ -22,17 +24,18 @@
       use m_error_IDs
       use skip_comment_f
       use t_control_params_4_pvr
+      use t_control_param_LIC_masking
 !
       implicit  none
 !
 !
       type lic_parameters
-!>        Structure for field parameter for LIC
+!>        Structure of field parameter for LIC
         type(pvr_field_parameter) :: lic_field
 !
 !>        integer flag to use color
         integer(kind = kint) :: iflag_color_mode =   0
-!>        Structure for field color parameter for LIC
+!>        Structure of field color parameter for LIC
         type(pvr_field_parameter) :: color_field
 !
 !>        integer flag to use opacity
@@ -40,14 +43,10 @@
 !>        Structure for field opacity parameter for LIC
         type(pvr_field_parameter) :: opacity_field
 !
-!>        integer flag to use source decision
-        integer(kind = kint) :: iflag_source_decision =   0
-!>        Structure for soure decision field parameter for LIC
-        type(pvr_field_parameter) :: soure_field
-!>        minimum value of source point range
-        real(kind = kreal) :: sorce_min = -1.0e15
-!>        maximum value of source point range
-        real(kind = kreal) :: sorce_max =  1.0e15
+!>        Number of masking field
+        integer(kind = kint) :: num_masking =   0
+!>        Structure of masking parameter
+        type(lic_masking_parameter), allocatable :: masking(:)
 !
 !>        integer flag for LIC kernel function
         integer(kind = kint) :: iflag_noise_type = 0
@@ -72,6 +71,8 @@
         integer(kind = kint) :: iflag_reflection_ref = 0
 !>        file name of reflection file
         character(len = kchara) :: reflection_file_name
+!>        reflection parameter
+        real(kind = kreal) :: reflection_parameter
       end type lic_parameters
 !
       character(len = kchara), parameter                                &
@@ -115,6 +116,7 @@
       use t_control_data_LIC
       use set_field_comp_for_viz
       use set_components_flags
+      use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -127,6 +129,8 @@
       character(len = kchara) :: fldname_tmp(1)
       character(len = kchara) :: tmpfield(1), tmpcomp(1)
       character(len = kchara) :: tmpchara
+!
+      integer(kind = kint) :: i
 !
 !
       lic_p%iflag_color_mode = lic_ctl%LIC_field_ctl%iflag
@@ -189,34 +193,15 @@
       end if
 !
 !
-      lic_p%iflag_source_decision = lic_ctl%source_ref_field_ctl%iflag
-      if(lic_p%iflag_source_decision .ne. id_turn_OFF) then
-        if(lic_ctl%source_ref_component_ctl%iflag .eq. 0) then
-          e_message = 'Set component for LIC source decision'
-          call calypso_mpi_abort(ierr_fld, e_message)
-        end if
+      lic_p%num_masking = lic_ctl%num_masking_ctl
+      if(lic_p%num_masking .gt. 0) then
+        allocate(lic_p%masking(lic_p%num_masking))
 !
-        tmpfield(1) = lic_ctl%source_ref_field_ctl%charavalue
-        tmpcomp(1) =  lic_ctl%source_ref_component_ctl%charavalue
-        call set_components_4_viz                                       &
-     &     (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp, ione, &
-     &      ifld_tmp, icomp_tmp, icheck_ncomp, ncomp_tmp, fldname_tmp)
-        lic_p%soure_field%id_field =          ifld_tmp(1)
-        lic_p%soure_field%id_component =      icomp_tmp(1)
-        lic_p%soure_field%num_original_comp = ncomp_tmp(1)
-        lic_p%soure_field%field_name =        fldname_tmp(1)
-!
-        lic_p%sorce_min = -1.0e15
-        if(lic_ctl%source_minimum_ctl%iflag .gt. 0) then
-          lic_p%sorce_min = lic_ctl%source_minimum_ctl%realvalue
-        end if
-!
-        lic_p%sorce_max = 1.0e15
-        if(lic_ctl%source_maximum_ctl%iflag .gt. 0) then
-          lic_p%sorce_max = lic_ctl%source_maximum_ctl%realvalue
-        end if
+        do i = 1, lic_p%num_masking
+          call set_control_lic_masking(num_nod_phys, phys_nod_name,     &
+     &        lic_ctl%mask_ctl(i), lic_p%masking(i))
+        end do
       end if
-!
 !
       lic_p%iflag_noise_type = iflag_from_file
       if(lic_ctl%noise_type_ctl%iflag .gt. 0) then
@@ -229,14 +214,17 @@
       end if
 !
       if(lic_p%iflag_noise_type .eq. iflag_from_file) then
-        if(lic_ctl%noise_file_name_ctl%iflag .gt. 0) then
+        if(lic_ctl%noise_file_prefix_ctl%iflag .gt. 0) then
           lic_p%noise_file_name                                         &
-     &       = lic_ctl%noise_file_name_ctl%charavalue
+     &       = lic_ctl%noise_file_prefix_ctl%charavalue
         else
           e_message = 'Set LIC noise file name'
           call calypso_mpi_abort(ierr_VIZ, e_message)
         end if
       end if
+!
+      call add_grd_extension                                            &
+     &   (lic_p%noise_file_name, lic_p%reflection_file_name)
 !
       lic_p%freq_noise = one
       if(lic_ctl%noise_frequency_ctl%iflag .gt. 0) then
@@ -295,17 +283,29 @@
         end if
       end if
 !
-      if(lic_p%iflag_reflection_ref .eq. iflag_from_file) then
-        if(lic_ctl%ref_noise_file_name_ctl%iflag .gt. 0) then
-          lic_p%reflection_file_name                                    &
-     &       = lic_ctl%ref_noise_file_name_ctl%charavalue
-        else
-          e_message = 'Set LIC noise file name for reflection'
-          call calypso_mpi_abort(ierr_VIZ, e_message)
-        end if
+      lic_p%reflection_parameter = one
+      if(lic_ctl%reflection_parameter_ctl%iflag .gt. 0) then
+          lic_p%reflection_parameter                                    &
+     &          = lic_ctl%reflection_parameter_ctl%realvalue
       end if
 !
       end subroutine set_control_lic_parameter
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_lic_masking_ranges(lic_p)
+!
+      type(lic_parameters), intent(inout) :: lic_p
+!
+      integer(kind = kint) :: i
+!
+!
+        do i = 1, lic_p%num_masking
+          call dealloc_lic_masking_range(lic_p%masking(i))
+        end do
+        deallocate(lic_p%masking)
+!
+      end subroutine dealloc_lic_masking_ranges
 !
 !  ---------------------------------------------------------------------
 !

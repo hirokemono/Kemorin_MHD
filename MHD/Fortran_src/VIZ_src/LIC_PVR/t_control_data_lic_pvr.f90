@@ -116,7 +116,7 @@
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !
 !
-      call reset_lic_control_flags(lic_ctl)
+      call dealloc_lic_control_flags(lic_ctl)
       call deallocate_cont_dat_pvr(pvr)
 !
       end subroutine dealloc_lic_count_data

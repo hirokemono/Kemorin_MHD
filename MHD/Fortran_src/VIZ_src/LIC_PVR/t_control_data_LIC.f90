@@ -9,7 +9,7 @@
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      subroutine read_lic_control_data(hd_lic_ctl, lic_ctl)
-!!      subroutine reset_lic_control_flags(lic_ctl)
+!!      subroutine dealloc_lic_control_flags(lic_ctl)
 !!      subroutine bcast_lic_control_data(lic_ctl)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!
@@ -23,25 +23,35 @@
 !!    opacity_field       magnetic_field
 !!    opacity_component   amplitude
 !!
-!!    source_reference_field        magnetic_field
-!!    source_reference_component    magnetic_field
-!!    source_minimum              0.5
-!!    source_maximum              0.5
+!!    array masking_control    1
+!!      begin masking_control
+!!        source_reference_field        magnetic_field
+!!        source_reference_component    magnetic_field
+!!        array masking_range      1
+!!          masking_range       0.5    0.8
+!!          ...
+!!        end array masking_range
+!!      end masking_control
+!!      ...
+!!   end array masking_control
 !!
 !!    noise_type             external_file
-!!    noise_file_name        'noise/noise_64'
+!!    noise_file_prefix      'noise/noise_64'
 !!    noise_frequency          2.0
 !!
 !!    kernel_function_type   external_file
 !!    kernal_file_name       'kernel.dat'
 !!
+!!    LIC_trace_length_mode   'length'  or  'element_count'
 !!    LIC_trace_length        0.5
+!!    LIC_trace_count         8
 !!
 !!    normalization_type     'constant'
 !!    normalization_value     20.0
 !!
 !!    reflection_reference   'noise_file'
-!!    ref_noise_file_name    "noise/noise-256.grd"
+!!
+!!    referection_parameter    2.0
 !!  end LIC_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -56,6 +66,7 @@
       use m_read_control_elements
       use t_control_elements
       use t_read_control_arrays
+      use t_control_data_LIC_masking
       use skip_comment_f
 !
       implicit  none
@@ -69,14 +80,12 @@
         type(read_character_item) :: opacity_field_ctl
         type(read_character_item) :: opacity_component_ctl
 !
-!
-        type(read_character_item) :: source_ref_field_ctl
-        type(read_character_item) :: source_ref_component_ctl
-        type(read_real_item) ::       source_minimum_ctl
-        type(read_real_item) ::       source_maximum_ctl
+        integer(kind = kint) :: num_masking_ctl = 0
+        integer(kind=kint) :: i_masking_ctl = 0
+        type(lic_masking_ctl), allocatable :: mask_ctl(:)
 !
         type(read_character_item) :: noise_type_ctl
-        type(read_character_item) :: noise_file_name_ctl
+        type(read_character_item) :: noise_file_prefix_ctl
         type(read_real_item) ::      noise_frequency_ctl
 !
         type(read_character_item) :: kernel_function_type_ctl
@@ -87,7 +96,7 @@
         type(read_real_item) ::      normalization_value_ctl
 !
         type(read_character_item) :: reflection_ref_type_ctl
-        type(read_character_item) :: ref_noise_file_name_ctl
+        type(read_real_item) ::      reflection_parameter_ctl
 !
 !     2nd level for volume rendering
         integer (kind=kint) :: i_lic_control = 0
@@ -104,15 +113,10 @@
       character(len=kchara) :: hd_opacity_component                     &
      &                        = 'opacity_component'
 !
-      character(len=kchara) :: hd_source_reference_field                &
-     &                        = 'source_reference_field'
-      character(len=kchara) :: hd_source_reference_comp                 &
-     &                        = 'source_reference_component'
-      character(len=kchara) :: hd_source_minimum = 'source_minimum'
-      character(len=kchara) :: hd_source_maximum = 'source_maximum'
+      character(len=kchara) :: hd_masking_ctl = 'masking_control'
 !
       character(len=kchara) :: hd_noise_type =      'noise_type'
-      character(len=kchara) :: hd_noise_file_name = 'noise_file_name'
+      character(len=kchara) :: hd_noise_file_head = 'noise_file_prefix'
       character(len=kchara) :: hd_noise_frequency = 'noise_frequency'
 !
       character(len=kchara) :: hd_kernel_function_type                  &
@@ -127,18 +131,19 @@
 !
       character(len=kchara) :: hd_reflection_ref_type                   &
      &                        = 'reflection_reference'
-      character(len=kchara) :: hd_ref_noise_file_name                   &
-     &                        = 'ref_noise_file_name'
+      character(len=kchara) :: hd_referection_parameter                 &
+     &                        = 'referection_parameter'
 !
       private :: hd_LIC_field, hd_color_field, hd_color_component
       private :: hd_opacity_field, hd_opacity_component
-      private :: hd_source_reference_field, hd_source_minimum
-      private :: hd_source_reference_comp, hd_source_maximum
-      private :: hd_noise_type, hd_noise_file_name, hd_noise_frequency
+      private :: hd_masking_ctl
+      private :: hd_noise_type, hd_noise_file_head, hd_noise_frequency
       private :: hd_kernel_function_type, hd_kernal_file_name
       private :: hd_LIC_trace_length
       private :: hd_normalization_type, hd_normalization_value
-      private :: hd_reflection_ref_type, hd_ref_noise_file_name
+      private :: hd_reflection_ref_type, hd_referection_parameter
+!
+      private :: read_lic_masking_ctl_array
 !
 !  ---------------------------------------------------------------------
 !
@@ -175,18 +180,9 @@
      &     (hd_opacity_component, lic_ctl%opacity_component_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_source_reference_field, lic_ctl%source_ref_field_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_source_reference_comp, lic_ctl%source_ref_component_ctl)
-        call read_real_ctl_type                                         &
-     &     (hd_source_minimum, lic_ctl%source_minimum_ctl)
-        call read_real_ctl_type                                         &
-     &     (hd_source_maximum, lic_ctl%source_maximum_ctl)
-!
-        call read_chara_ctl_type                                        &
      &     (hd_noise_type, lic_ctl%noise_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_noise_file_name, lic_ctl%noise_file_name_ctl)
+     &     (hd_noise_file_head, lic_ctl%noise_file_prefix_ctl)
         call read_real_ctl_type                                         &
      &     (hd_noise_frequency, lic_ctl%noise_frequency_ctl)
 !
@@ -204,18 +200,51 @@
 !
         call read_chara_ctl_type                                        &
      &     (hd_reflection_ref_type, lic_ctl%reflection_ref_type_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_ref_noise_file_name, lic_ctl%ref_noise_file_name_ctl)
+        call read_real_ctl_type                                         &
+     &     (hd_referection_parameter, lic_ctl%reflection_parameter_ctl)
+!
+        call find_control_array_flag                                    &
+     &     (hd_masking_ctl, lic_ctl%num_masking_ctl)
+        if(lic_ctl%num_masking_ctl .gt. 0) then
+          call read_lic_masking_ctl_array(lic_ctl)
+        end if
       end do
 !
       end subroutine read_lic_control_data
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      subroutine reset_lic_control_flags(lic_ctl)
+      subroutine read_lic_masking_ctl_array(lic_ctl)
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!
+!
+      if (lic_ctl%i_masking_ctl .gt. 0) return
+      allocate(lic_ctl%mask_ctl(lic_ctl%num_masking_ctl))
+!
+      do
+        call load_ctl_label_and_line
+        call find_control_end_array_flag(hd_masking_ctl,                &
+     &      lic_ctl%num_masking_ctl, lic_ctl%i_masking_ctl)
+        if(lic_ctl%i_masking_ctl .ge. lic_ctl%num_masking_ctl) exit
+!
+        if(right_begin_flag(hd_masking_ctl) .gt. 0) then
+          lic_ctl%i_masking_ctl = lic_ctl%i_masking_ctl + 1
+          call read_lic_masking_ctl_data                                &
+     &      (hd_masking_ctl, lic_ctl%mask_ctl(lic_ctl%i_masking_ctl))
+        end if
+      end do
+!
+      end subroutine read_lic_masking_ctl_array
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_lic_control_flags(lic_ctl)
+!
+      type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!
+      integer(kind = kint) :: i
 !
 !
       lic_ctl%LIC_field_ctl%iflag = 0
@@ -225,13 +254,8 @@
       lic_ctl%opacity_field_ctl%iflag =     0
       lic_ctl%opacity_component_ctl%iflag = 0
 !
-      lic_ctl%source_ref_field_ctl%iflag =     0
-      lic_ctl%source_ref_component_ctl%iflag = 0
-      lic_ctl%source_minimum_ctl%iflag =       0
-      lic_ctl%source_maximum_ctl%iflag =       0
-!
       lic_ctl%noise_type_ctl%iflag =      0
-      lic_ctl%noise_file_name_ctl%iflag = 0
+      lic_ctl%noise_file_prefix_ctl%iflag = 0
       lic_ctl%noise_frequency_ctl%iflag = 0
 !
       lic_ctl%kernel_function_type_ctl%iflag = 0
@@ -242,11 +266,21 @@
       lic_ctl%normalization_value_ctl%iflag =  0
 !
       lic_ctl%reflection_ref_type_ctl%iflag =  0
-      lic_ctl%ref_noise_file_name_ctl%iflag =  0
+      lic_ctl%reflection_parameter_ctl%iflag = 0
+!
+!
+      if(lic_ctl%num_masking_ctl .gt. 0) then
+        do i = 1, lic_ctl%num_masking_ctl
+          call dealloc_lic_masking_ctl_flags(lic_ctl%mask_ctl(i))
+        end do
+        deallocate(lic_ctl%mask_ctl)
+      end if
+      lic_ctl%num_masking_ctl =  0
+      lic_ctl%i_masking_ctl =    0
 !
       lic_ctl%i_lic_control = 0
 !
-      end subroutine reset_lic_control_flags
+      end subroutine dealloc_lic_control_flags
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -256,6 +290,8 @@
       use bcast_control_arrays
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!
+      integer(kind = kint) :: i
 !
 !
       call MPI_BCAST(lic_ctl%i_lic_control,  ione,                      &
@@ -267,13 +303,8 @@
       call bcast_ctl_type_c1(lic_ctl%opacity_field_ctl)
       call bcast_ctl_type_c1(lic_ctl%opacity_component_ctl)
 !
-      call bcast_ctl_type_c1(lic_ctl%source_ref_field_ctl)
-      call bcast_ctl_type_c1(lic_ctl%source_ref_component_ctl)
-      call bcast_ctl_type_r1(lic_ctl%source_minimum_ctl)
-      call bcast_ctl_type_r1(lic_ctl%source_maximum_ctl)
-!
       call bcast_ctl_type_c1(lic_ctl%noise_type_ctl)
-      call bcast_ctl_type_c1(lic_ctl%noise_file_name_ctl)
+      call bcast_ctl_type_c1(lic_ctl%noise_file_prefix_ctl)
       call bcast_ctl_type_r1(lic_ctl%noise_frequency_ctl)
 !
       call bcast_ctl_type_c1(lic_ctl%kernel_function_type_ctl)
@@ -284,7 +315,16 @@
       call bcast_ctl_type_r1(lic_ctl%normalization_value_ctl)
 !
       call bcast_ctl_type_c1(lic_ctl%reflection_ref_type_ctl)
-      call bcast_ctl_type_c1(lic_ctl%ref_noise_file_name_ctl)
+      call bcast_ctl_type_r1(lic_ctl%reflection_parameter_ctl)
+!
+      call MPI_BCAST(lic_ctl%num_masking_ctl,  ione,                    &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      if(my_rank .ne. 0) then
+        allocate(lic_ctl%mask_ctl(lic_ctl%num_masking_ctl))
+      end if
+      do i = 1, lic_ctl%num_masking_ctl
+        call bcast_lic_masking_ctl_data(lic_ctl%mask_ctl(i))
+      end do
 !
       end subroutine bcast_lic_control_data
 !
