@@ -75,9 +75,7 @@
      &        = r_ele_grouping_ctl%vec1(1:num_r_ele_grp)
         minmax_r_ele_grping(1:num_r_ele_grp,2)                          &
      &        = r_ele_grouping_ctl%vec2(1:num_r_ele_grp)
-        call dealloc_control_array_c_r2(r_ele_grouping_ctl)
       end if
-!
 !
       if (s_ele_grouping_ctl%icou .gt. 0) then
         num_s_ele_grp = s_ele_grouping_ctl%num
@@ -89,9 +87,7 @@
      &        = s_ele_grouping_ctl%vec1(1:num_s_ele_grp)
         minmax_s_ele_grping(1:num_s_ele_grp,2)                          &
      &        = s_ele_grouping_ctl%vec2(1:num_s_ele_grp)
-        call dealloc_control_array_c_r2(s_ele_grouping_ctl)
       end if
-!
 !
       if (t_ele_grouping_ctl%icou .gt. 0) then
         num_t_ele_grp = t_ele_grouping_ctl%num
@@ -103,9 +99,7 @@
      &        = t_ele_grouping_ctl%vec1(1:num_t_ele_grp)
         minmax_t_ele_grping(1:num_t_ele_grp,2)                          &
      &        = t_ele_grouping_ctl%vec2(1:num_t_ele_grp)
-        call dealloc_control_array_c_r2(t_ele_grouping_ctl)
       end if
-!
 !
       if (z_ele_grouping_ctl%icou .gt. 0) then
         num_z_ele_grp = z_ele_grouping_ctl%num
@@ -117,7 +111,6 @@
      &        = z_ele_grouping_ctl%vec1(1:num_z_ele_grp)
         minmax_z_ele_grping(1:num_z_ele_grp,2)                          &
      &        = z_ele_grouping_ctl%vec2(1:num_z_ele_grp)
-        call dealloc_control_array_c_r2(z_ele_grouping_ctl)
       end if
 !
 !
@@ -132,6 +125,11 @@
      &        = minmax_t_ele_grping(1:num_t_ele_grp,2) * pi
         end if
       end if
+!
+      call dealloc_control_array_c_r2(r_ele_grouping_ctl)
+      call dealloc_control_array_c_r2(s_ele_grouping_ctl)
+      call dealloc_control_array_c_r2(t_ele_grouping_ctl)
+      call dealloc_control_array_c_r2(z_ele_grouping_ctl)
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'iflag_grping_direction', iflag_grping_direction

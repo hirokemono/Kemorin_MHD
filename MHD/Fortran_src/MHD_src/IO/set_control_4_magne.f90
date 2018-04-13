@@ -94,8 +94,6 @@
      &         magne_nod%bc_magnitude(i), trim(magne_nod%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(node_bc_B_ctl)
       end if
 !
 !
@@ -126,10 +124,10 @@
      &         magne_surf%bc_magnitude(i), trim(magne_surf%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(surf_bc_BN_ctl)
       end if
 !
+      call dealloc_control_array_c2_r(node_bc_B_ctl)
+      call dealloc_control_array_c2_r(surf_bc_BN_ctl)
 !
       end subroutine s_set_control_4_magne
 !

@@ -46,7 +46,6 @@
 !
 !
       if (num_bc_infty .gt. 0) then
-!
         call allocate_infty_surf_ctl
 !
         bc_infty_name(1:num_bc_infty)                                   &
@@ -58,9 +57,9 @@
          call set_surf_infty_group_types(surf_bc_INF_ctl%c1_tbl(i),     &
      &       ibc_infty_type(i))
         end do
-!
-        call dealloc_control_array_c2_r(surf_bc_INF_ctl)
       end if
+!
+      call dealloc_control_array_c2_r(surf_bc_INF_ctl)
 !
       end subroutine s_set_control_4_infty
 !

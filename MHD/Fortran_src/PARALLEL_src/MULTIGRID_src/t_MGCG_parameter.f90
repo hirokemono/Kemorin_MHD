@@ -150,7 +150,6 @@
         if (MG_ctl%MG_mesh_prefix_ctl%num .eq. MG_file%nlevel_f) then
           MG_file%MG_mesh_file_head(1:MG_file%nlevel_f)                 &
      &          = MG_ctl%MG_mesh_prefix_ctl%c_tbl(1:MG_file%nlevel_f)
-          call dealloc_control_array_chara(MG_ctl%MG_mesh_prefix_ctl)
         else
           e_message = 'Set coarse mesh header'
           call calypso_MPI_abort(ierr_file, e_message)
@@ -159,7 +158,6 @@
         if(MG_ctl%MG_fine_2_coarse_tbl%icou .eq. MG_file%nlevel_f) then
           MG_file%MG_f2c_tbl_head(1:MG_file%nlevel_f)                   &
      &          = MG_ctl%MG_fine_2_coarse_tbl%c_tbl(1:MG_file%nlevel_f)
-          call dealloc_control_array_chara(MG_ctl%MG_fine_2_coarse_tbl)
         else
           e_message = 'Set restriction table header'
           call calypso_MPI_abort(ierr_file, e_message)
@@ -168,7 +166,6 @@
         if(MG_ctl%MG_coarse_2_fine_tbl%icou .eq. MG_file%nlevel_f) then
           MG_file%MG_c2f_tbl_head(1:MG_file%nlevel_f)                   &
      &          = MG_ctl%MG_coarse_2_fine_tbl%c_tbl(1:MG_file%nlevel_f)
-          call dealloc_control_array_chara(MG_ctl%MG_coarse_2_fine_tbl)
         else
           e_message = 'Set prolongation table header'
           call calypso_MPI_abort(ierr_file, e_message)
@@ -177,13 +174,11 @@
         if (MG_ctl%MG_f2c_ele_tbl_ctl%icou .eq. MG_file%nlevel_f) then
           MG_file%MG_f2c_eletbl_head(1:MG_file%nlevel_f)                &
      &          = MG_ctl%MG_f2c_ele_tbl_ctl%c_tbl(1:MG_file%nlevel_f)
-          call dealloc_control_array_chara(MG_ctl%MG_f2c_ele_tbl_ctl)
         end if
 !
         if (MG_ctl%MG_mesh_fmt_ctl%icou .eq. MG_file%nlevel_f) then
           call choose_file_format_array(MG_file%nlevel_f,               &
      &        MG_ctl%MG_mesh_fmt_ctl, MG_file%ifmt_MG_mesh_file)
-          call dealloc_control_array_chara(MG_ctl%MG_mesh_fmt_ctl)
         else
           e_message = 'Set mesh file formats for MG'
           call calypso_MPI_abort(ierr_file, e_message)
@@ -192,13 +187,18 @@
         if(MG_ctl%MG_table_fmt_ctl%icou .eq. MG_file%nlevel_f) then
           call choose_file_format_array(MG_file%nlevel_f,               &
      &        MG_ctl%MG_table_fmt_ctl, MG_file%ifmt_MG_table_file)
-          call dealloc_control_array_chara(MG_ctl%MG_table_fmt_ctl)
         else
           e_message = 'Set interpolation table file formats for MG'
           call calypso_MPI_abort(ierr_file, e_message)
         end if
       end if
 !
+      call dealloc_control_array_chara(MG_ctl%MG_mesh_prefix_ctl)
+      call dealloc_control_array_chara(MG_ctl%MG_fine_2_coarse_tbl)
+      call dealloc_control_array_chara(MG_ctl%MG_coarse_2_fine_tbl)
+      call dealloc_control_array_chara(MG_ctl%MG_f2c_ele_tbl_ctl)
+      call dealloc_control_array_chara(MG_ctl%MG_mesh_fmt_ctl)
+      call dealloc_control_array_chara(MG_ctl%MG_table_fmt_ctl)
 !
       if (iflag_debug .gt. 0) then
         do i = 1, MG_file%nlevel_f

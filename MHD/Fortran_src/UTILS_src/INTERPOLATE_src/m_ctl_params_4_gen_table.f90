@@ -201,9 +201,9 @@
         search_error_level(1:num_search_times)                          &
      &      = eps_4_itp_ctl%vect(1:num_search_times)
 !
-        call dealloc_control_array_i_r(eps_4_itp_ctl)
       end if
 !
+      call dealloc_control_array_i_r(eps_4_itp_ctl)
 !
       if (iflag_debug.eq.1)  then
         write(*,*) 'num_search_times ', num_search_times

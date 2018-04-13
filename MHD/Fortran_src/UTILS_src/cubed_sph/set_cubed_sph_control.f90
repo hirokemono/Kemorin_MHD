@@ -100,7 +100,6 @@
         j = radial_pnt_ctl%ivec(i)
         r_nod(j) = radial_pnt_ctl%vect(i)
       end do
-      call dealloc_control_array_i_r(radial_pnt_ctl)
 !
 !   set ICB and CMB address
 !
@@ -191,9 +190,6 @@
           k = j + istack_nod_grp_layer_csp(if_CMB+if_ICB+if_EXT)
           id_nod_grp_layer_csp(k) = node_grp_layer_ctl%ivec(j)
         end do
-!
-        call dealloc_control_array_int(node_grp_layer_ctl)
-        call dealloc_control_array_c_i(node_grp_name_ctl)
       end if
 !
       do j = 1, num_node_grp_csp
@@ -291,9 +287,6 @@
           k = j + istack_ele_grp_layer_csp(if_CMB+if_ICB+if_EXT)
           id_ele_grp_layer_csp(k) = elem_grp_layer_ctl%ivec(j)
         end do
-!
-        call dealloc_control_array_int(elem_grp_layer_ctl)
-        call dealloc_control_array_c_i(elem_grp_name_ctl)
       end if
 !
       do j = 1, num_ele_grp_csp
@@ -379,9 +372,6 @@
           if (   cmp_no_case(surf_grp_layer_ctl%c_tbl(j), 'out')        &
      &        ) id_surf_grp_layer_csp(2,k) = 6
         end do
-!
-        call dealloc_control_array_c_i(surf_grp_layer_ctl)
-        call dealloc_control_array_c_i(surf_grp_name_ctl)
       end if
 !
       do j = 1, num_surf_grp_csp
@@ -403,7 +393,6 @@
           kr_edge_latitude_ref(j) =  edge_latitude_ctl%ivec(j)
           edge_latitude_ref(j) =     edge_latitude_ctl%vect(j)
         end do
-        call dealloc_control_array_i_r(edge_latitude_ctl)
       end if
 !
       max_coarse_level = sph_coarsing_ctl%num
@@ -414,8 +403,6 @@
      &      = sph_coarsing_ctl%int1(1:max_coarse_level)
       icoarse_level(1:max_coarse_level,2)                               &
      &      = sph_coarsing_ctl%int2(1:max_coarse_level)
-!
-      call dealloc_control_array_i2(sph_coarsing_ctl)
 !
 !
       write(*,*) 'num_edge_latitude_ref', num_edge_latitude_ref
@@ -456,6 +443,19 @@
           write(*,*) j, edge_latitude(j)
         end do
       end if
+!
+      call dealloc_control_array_int(node_grp_layer_ctl)
+      call dealloc_control_array_c_i(node_grp_name_ctl)
+!
+      call dealloc_control_array_int(elem_grp_layer_ctl)
+      call dealloc_control_array_c_i(elem_grp_name_ctl)
+!
+      call dealloc_control_array_c_i(surf_grp_layer_ctl)
+      call dealloc_control_array_c_i(surf_grp_name_ctl)
+!
+      call dealloc_control_array_i_r(edge_latitude_ctl)
+      call dealloc_control_array_i_r(radial_pnt_ctl)
+      call dealloc_control_array_i2(sph_coarsing_ctl)
 !
       end subroutine set_shell_paramteres
 !

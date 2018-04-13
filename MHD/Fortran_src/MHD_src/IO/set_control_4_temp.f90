@@ -91,8 +91,6 @@
      &         temp_nod%bc_magnitude(i), trim(temp_nod%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(node_bc_T_ctl)
       end if
 !
 !   set boundary conditions for heat flux
@@ -112,9 +110,10 @@
           call set_bc_group_types_sph_center(surf_bc_HF_ctl%c1_tbl(i),  &
      &            h_flux_surf%ibc_type(i))
         end do
- !
-        call dealloc_control_array_c2_r(surf_bc_HF_ctl)
       end if
+!
+      call dealloc_control_array_c2_r(node_bc_T_ctl)
+      call dealloc_control_array_c2_r(surf_bc_HF_ctl)
 !
       end subroutine s_set_control_4_temp
 !

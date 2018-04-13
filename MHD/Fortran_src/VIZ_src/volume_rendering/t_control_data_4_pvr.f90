@@ -181,12 +181,8 @@
       call dealloc_view_transfer_ctl(pvr%mat)
       call dealloc_pvr_color_crl(pvr%color)
 !
-      if(pvr%pvr_area_ctl%num .gt. 0) then
-        call dealloc_control_array_chara(pvr%pvr_area_ctl)
-      end if
-      if(pvr%surf_enhanse_ctl%num .gt. 0) then
-        call dealloc_control_array_c2_r(pvr%surf_enhanse_ctl)
-      end if
+      call dealloc_control_array_chara(pvr%pvr_area_ctl)
+      call dealloc_control_array_c2_r(pvr%surf_enhanse_ctl)
 !
       pvr%pvr_area_ctl%num =  0
       pvr%pvr_area_ctl%icou = 0

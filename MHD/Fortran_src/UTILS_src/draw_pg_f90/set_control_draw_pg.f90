@@ -144,7 +144,6 @@
         do i = 1, contour_range_ctl%num
           nmax_line = max(contour_range_ctl%int2(i),nmax_line)
         end do
-        call dealloc_control_array_i2_r2(contour_range_ctl)
       end if
 !
       call allocate_data_4_isoline
@@ -156,8 +155,10 @@
           scale_pg(j) = vector_scale_ctl%vect(i)
         end do
 !
-        call dealloc_control_array_i2_r(vector_scale_ctl)
       end if
+!
+      call dealloc_control_array_i2_r(vector_scale_ctl)
+      call dealloc_control_array_i2_r2(contour_range_ctl)
 !
       if (iflag_debug .gt. 0) then
         write(*,*) 'npanel_window', npanel_window

@@ -108,14 +108,14 @@
           FEM_elens%filter_conf%f_width(i) = ref_filter_width(i)
         end do
 !
-        call dealloc_control_array_c_r(reference_filter_ctl)
-!
         if (iflag_debug.gt.0)  then
           write(*,*) 'iref_filter_type', iref_filter_type
           write(*,*) 'ref_filter_width', ref_filter_width
         end if
 !
       end if
+!
+      call dealloc_control_array_c_r(reference_filter_ctl)
 !
       num_moments_order = ref_filter_mom_ctl%num
       if (iflag_debug.gt.0)                                             &
@@ -145,15 +145,14 @@
           end if
         end do
 !
-        call dealloc_control_array_i_c_r(ref_filter_mom_ctl)
-!
       if (iflag_debug.gt.0)  then
           write(*,*) 'mom_order', mom_order
           write(*,*) 'mom_value', mom_value
           write(*,*) 'iref_mom_type', iref_mom_type
         end if
-!
       end if
+!
+      call dealloc_control_array_i_c_r(ref_filter_mom_ctl)
 !
       if (minimum_det_ctl%iflag .gt. 0) then
         minimum_det_mat = minimum_det_ctl%realvalue

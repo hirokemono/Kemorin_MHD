@@ -149,9 +149,9 @@
             end if
           end do
 !
-          call dealloc_control_array_chara(sgs_ctl%SGS_terms_ctl)
         end if
       end if
+      call dealloc_control_array_chara(sgs_ctl%SGS_terms_ctl)
 !
       if (SGS_param%iflag_SGS .ne. id_SGS_none) then
         if (iflag_debug .gt. 0)  then

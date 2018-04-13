@@ -159,7 +159,6 @@
         do i = 1, num_monitor
           monitor_grp(i) = nmtr_ctl%group_4_monitor_ctl%c_tbl(i)
         end do
-        call dealloc_control_array_chara(nmtr_ctl%group_4_monitor_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) then
           do i = 1, num_monitor
@@ -168,6 +167,7 @@
         end if
       end if
 !
+      call dealloc_control_array_chara(nmtr_ctl%group_4_monitor_ctl)
 !
       end subroutine s_set_control_4_model
 !

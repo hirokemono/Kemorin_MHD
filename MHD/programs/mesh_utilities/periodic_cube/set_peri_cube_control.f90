@@ -98,7 +98,6 @@
         j = radial_pnt_ctl%ivec(i)
         r_nod(j) = radial_pnt_ctl%vect(i)
       end do
-      call dealloc_control_array_i_r(radial_pnt_ctl)
 !
 !   set ICB and CMB address
 !
@@ -155,6 +154,7 @@
       icoarse_level(1:max_coarse_level,2)                               &
      &      = sph_coarsing_ctl%int2(1:max_coarse_level)
 !
+      call dealloc_control_array_i_r(radial_pnt_ctl)
       call dealloc_control_array_i2(sph_coarsing_ctl)
 !
       end subroutine set_peri_cube_paramteres
