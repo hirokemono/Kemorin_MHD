@@ -49,13 +49,19 @@
         type(lic_masking_parameter), allocatable :: masking(:)
 !
 !>        integer flag for LIC kernel function
+!>          cflag_from_file: Read noise data file
+!>          iflag_randum:    generate fram randum number
         integer(kind = kint) :: iflag_noise_type = 0
 !>        file name of kernel function data
         character(len = kchara) :: noise_file_name
 !>        normalization factor for LIC value
         real(kind = kreal) :: freq_noise = one
+!>        1-D grid size of LIC noise
+        integer(kind = kint) :: noise_resolution
 !
 !>        integer flag for LIC kernel function
+!>          iflag_linear:    Use symmetric linear kernel
+!>          iflag_from_file: Use kernel image file
         integer(kind = kint) :: iflag_kernel_type = 0
 !>        file name of kernel function data
         character(len = kchara) :: kernel_file_name
@@ -63,11 +69,15 @@
         real(kind = kreal) :: trace_length = one
 !
 !>        integer flag for LIC normalization mode
+!>          iflag_from_control: Set from control file
+!>          iflag_from_lic:     Use LIC value range
         integer(kind = kint) :: iflag_normalization = 0
 !>        normalization factor for LIC value
         real(kind = kreal) :: factor_normal = one
 !
 !>        integer flag for reflection reference
+!>          iflag_from_file:   Use noise gradient file
+!>          iflag_from_color:  Use gradient of color data
         integer(kind = kint) :: iflag_reflection_ref = 0
 !>        file name of reflection file
         character(len = kchara) :: reflection_file_name
@@ -192,7 +202,6 @@
         lic_p%opacity_field%field_name =        fldname_tmp(1)
       end if
 !
-!
       lic_p%num_masking = lic_ctl%num_masking_ctl
       if(lic_p%num_masking .gt. 0) then
         allocate(lic_p%masking(lic_p%num_masking))
@@ -202,6 +211,30 @@
      &        lic_ctl%mask_ctl(i), lic_p%masking(i))
         end do
       end if
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'LIC field: ', lic_p%lic_field%id_field,             &
+     &            trim(lic_p%lic_field%field_name)
+        write(*,*) 'LIC color: ', lic_p%color_field%id_field,           &
+     &            lic_p%color_field%id_component,                       &
+     &            trim(lic_p%color_field%field_name)
+        write(*,*) 'LIC opacity: ', lic_p%opacity_field%id_field,       &
+     &            lic_p%opacity_field%id_component,                     &
+     &            trim(lic_p%opacity_field%field_name)
+!
+        write(*,*) 'num_masking: ', lic_p%num_masking
+        do i = 1, lic_p%num_masking
+          write(*,*) 'LIC masking field: ',  i,                         &
+     &              lic_p%masking(i)%field_info%id_field,               &
+     &              lic_p%masking(i)%field_info%id_component,           &
+     &              trim(lic_p%masking(i)%field_info%field_name)
+          write(*,*) 'LIC masking range min: ',                         &
+     &              lic_p%masking(i)%range_min(:)
+          write(*,*) 'LIC masking range max: ',                         &
+     &              lic_p%masking(i)%range_max(:)
+        end do
+      end if
+!
 !
       lic_p%iflag_noise_type = iflag_from_file
       if(lic_ctl%noise_type_ctl%iflag .gt. 0) then
@@ -226,11 +259,11 @@
       call add_grd_extension                                            &
      &   (lic_p%noise_file_name, lic_p%reflection_file_name)
 !
-      lic_p%freq_noise = one
-      if(lic_ctl%noise_frequency_ctl%iflag .gt. 0) then
-        lic_p%freq_noise = lic_ctl%noise_frequency_ctl%realvalue
-      end if
 !
+      lic_p%freq_noise = one
+      if(lic_ctl%noise_resolution_ctl%iflag .gt. 0) then
+        lic_p%noise_resolution = lic_ctl%noise_resolution_ctl%intvalue
+      end if
 !
       lic_p%iflag_kernel_type = iflag_linear
       if(lic_ctl%kernel_function_type_ctl%iflag .gt. 0) then
@@ -251,6 +284,7 @@
           call calypso_mpi_abort(ierr_VIZ, e_message)
         end if
       end if
+!
 !
       lic_p%trace_length = one
       if(lic_ctl%LIC_trace_length_ctl%iflag .gt. 0) then
@@ -287,6 +321,26 @@
       if(lic_ctl%reflection_parameter_ctl%iflag .gt. 0) then
           lic_p%reflection_parameter                                    &
      &          = lic_ctl%reflection_parameter_ctl%realvalue
+      end if
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'iflag_noise_type: ', lic_p%iflag_noise_type
+        write(*,*) 'noise_file_name: ', trim(lic_p%noise_file_name)
+        write(*,*) 'reflection_file_name: ',                            &
+     &            trim(lic_p%reflection_file_name)
+        write(*,*) 'noise_resolution: ', lic_p%noise_resolution
+        write(*,*) 'freq_noise: ', lic_p%freq_noise
+!
+        write(*,*) 'iflag_kernel_type: ', lic_p%iflag_kernel_type
+        write(*,*) 'kernel_file_name: ', lic_p%kernel_file_name
+!
+        write(*,*) 'trace_length: ', lic_p%trace_length
+!
+        write(*,*) 'iflag_normalization: ', lic_p%iflag_normalization
+        write(*,*) 'factor_normal: ',       lic_p%factor_normal
+!
+        write(*,*) 'iflag_reflection_ref: ', lic_p%iflag_reflection_ref
+        write(*,*) 'reflection_parameter: ', lic_p%reflection_parameter
       end if
 !
       end subroutine set_control_lic_parameter

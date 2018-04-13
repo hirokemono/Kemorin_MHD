@@ -127,8 +127,7 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
-      call set_pvr_file_control(pvr_ctl_type,                           &
-     &    num_nod_phys, phys_nod_name, pvr_param%file)
+      call set_pvr_file_control(pvr_ctl_type, pvr_param%file)
 !
       call set_control_lic_parameter(num_nod_phys, phys_nod_name,       &
      &    lic_ctl_type, lic_fld%lic_param)

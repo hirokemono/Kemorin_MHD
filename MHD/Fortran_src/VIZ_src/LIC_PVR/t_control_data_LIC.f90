@@ -37,7 +37,7 @@
 !!
 !!    noise_type             external_file
 !!    noise_file_prefix      'noise/noise_64'
-!!    noise_frequency          2.0
+!!    noise_resolution         2048
 !!
 !!    kernel_function_type   external_file
 !!    kernal_file_name       'kernel.dat'
@@ -86,7 +86,7 @@
 !
         type(read_character_item) :: noise_type_ctl
         type(read_character_item) :: noise_file_prefix_ctl
-        type(read_real_item) ::      noise_frequency_ctl
+        type(read_integer_item) ::   noise_resolution_ctl
 !
         type(read_character_item) :: kernel_function_type_ctl
         type(read_character_item) :: kernal_file_name_ctl
@@ -117,7 +117,7 @@
 !
       character(len=kchara) :: hd_noise_type =      'noise_type'
       character(len=kchara) :: hd_noise_file_head = 'noise_file_prefix'
-      character(len=kchara) :: hd_noise_frequency = 'noise_frequency'
+      character(len=kchara) :: hd_noise_grid_size = 'noise_resolution'
 !
       character(len=kchara) :: hd_kernel_function_type                  &
      &                        = 'kernel_function_type'
@@ -137,7 +137,7 @@
       private :: hd_LIC_field, hd_color_field, hd_color_component
       private :: hd_opacity_field, hd_opacity_component
       private :: hd_masking_ctl
-      private :: hd_noise_type, hd_noise_file_head, hd_noise_frequency
+      private :: hd_noise_type, hd_noise_file_head, hd_noise_grid_size
       private :: hd_kernel_function_type, hd_kernal_file_name
       private :: hd_LIC_trace_length
       private :: hd_normalization_type, hd_normalization_value
@@ -183,8 +183,8 @@
      &     (hd_noise_type, lic_ctl%noise_type_ctl)
         call read_chara_ctl_type                                        &
      &     (hd_noise_file_head, lic_ctl%noise_file_prefix_ctl)
-        call read_real_ctl_type                                         &
-     &     (hd_noise_frequency, lic_ctl%noise_frequency_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_noise_grid_size, lic_ctl%noise_resolution_ctl)
 !
         call read_chara_ctl_type                                        &
      &     (hd_kernel_function_type, lic_ctl%kernel_function_type_ctl)
@@ -205,7 +205,8 @@
 !
         call find_control_array_flag                                    &
      &     (hd_masking_ctl, lic_ctl%num_masking_ctl)
-        if(lic_ctl%num_masking_ctl .gt. 0) then
+        if(lic_ctl%num_masking_ctl .gt. 0                               &
+     &      .and. lic_ctl%i_masking_ctl .eq. 0) then
           call read_lic_masking_ctl_array(lic_ctl)
         end if
       end do
@@ -256,7 +257,7 @@
 !
       lic_ctl%noise_type_ctl%iflag =      0
       lic_ctl%noise_file_prefix_ctl%iflag = 0
-      lic_ctl%noise_frequency_ctl%iflag = 0
+      lic_ctl%noise_resolution_ctl%iflag = 0
 !
       lic_ctl%kernel_function_type_ctl%iflag = 0
       lic_ctl%kernal_file_name_ctl%iflag =     0
@@ -305,7 +306,7 @@
 !
       call bcast_ctl_type_c1(lic_ctl%noise_type_ctl)
       call bcast_ctl_type_c1(lic_ctl%noise_file_prefix_ctl)
-      call bcast_ctl_type_r1(lic_ctl%noise_frequency_ctl)
+      call bcast_ctl_type_i1(lic_ctl%noise_resolution_ctl)
 !
       call bcast_ctl_type_c1(lic_ctl%kernel_function_type_ctl)
       call bcast_ctl_type_c1(lic_ctl%kernal_file_name_ctl)
