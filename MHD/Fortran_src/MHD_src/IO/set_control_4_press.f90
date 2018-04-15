@@ -88,8 +88,6 @@
      &        press_nod%bc_magnitude(i), trim(press_nod%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(node_bc_P_ctl)
       end if
 !
 !
@@ -109,9 +107,10 @@
           call set_surf_wall_group_types(surf_bc_PN_ctl%c1_tbl(i),      &
      &       wall_surf%ibc_type(i) )
         end do
-!
-        call dealloc_control_array_c2_r(surf_bc_PN_ctl)
       end if
+!
+      call dealloc_control_array_c2_r(node_bc_P_ctl)
+      call dealloc_control_array_c2_r(surf_bc_PN_ctl)
 !
       end subroutine s_set_control_4_press
 !

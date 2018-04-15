@@ -277,8 +277,6 @@
             kr = spctl%radius_ctl%ivec(i)
             s3d_radius%radius_1d_gl(kr) = spctl%radius_ctl%vect(i)
           end do
-!
-          call dealloc_control_array_i_r(spctl%radius_ctl)
         end if
 !
         sph_params%nlayer_2_center = -1
@@ -302,7 +300,6 @@
             end if
           end do
 !
-          call dealloc_control_array_c_i(spctl%radial_grp_ctl)
         end if
 !
 !   Set radial grid by Chebyshev, equaidistance, or half Chebyshev
@@ -342,6 +339,9 @@
      &      spctl%Max_radius_ctl%realvalue, sph_params, sph_rtp,        &
      &      s3d_radius)
       end if
+!
+      call dealloc_control_array_c_i(spctl%radial_grp_ctl)
+      call dealloc_control_array_i_r(spctl%radius_ctl)
 !
 !       Check whole sphere model
       if(sph_params%iflag_radial_grid .eq. igrid_half_Chebyshev) then

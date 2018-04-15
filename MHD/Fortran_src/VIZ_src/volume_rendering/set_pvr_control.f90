@@ -126,8 +126,9 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
-      call set_pvr_file_control(pvr_ctl_type,                           &
-     &    num_nod_phys, phys_nod_name, pvr_param%file)
+      call set_pvr_file_control(pvr_ctl_type, pvr_param%file)
+      call check_pvr_field_control(pvr_ctl_type,                        &
+     &    num_nod_phys, phys_nod_name)
 !
       call set_control_field_4_pvr                                      &
      &   (pvr_ctl_type%pvr_field_ctl, pvr_ctl_type%pvr_comp_ctl,        &

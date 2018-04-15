@@ -326,20 +326,20 @@
       nlayer_fluid = sph_params%nlayer_CMB - sph_params%nlayer_ICB + 1
       if(SGS_param%ngrp_rave_dynamic .lt. wk_dgrp%nprocs_rt(1)) then
         write(e_message,*)                                              &
-     &          'Set radial groupig more than radial decomposition'
+     &       'Set radial groupig more than domain decomposition'
         call calypso_mpi_abort(1, e_message)
       else if(SGS_param%ngrp_rave_dynamic .gt. nlayer_fluid) then
         write(e_message,*)                                              &
-     &          'Set radial groupig less than radial node points'
+     &       'Set radial groupig less than radial node points'
         call calypso_mpi_abort(1, e_message)
       end if
       if(SGS_param%ngrp_medave_dynamic .lt. wk_dgrp%nprocs_rt(2)) then
         write(e_message,*)                                              &
-     &          'Set radial groupig more than meridional decomposition'
+     &       'Set meridional groupig more than domain decomposition'
         call calypso_mpi_abort(1, e_message)
       else if(SGS_param%ngrp_rave_dynamic .gt. sph_rtp%nidx_rtp(2)) then
         write(e_message,*)                                              &
-     &          'Set radial groupig less than meridional node points'
+     &       'Set meridional groupig less than meridional node points'
         call calypso_mpi_abort(1, e_message)
       end if
 !

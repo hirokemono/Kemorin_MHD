@@ -88,7 +88,6 @@
           end if
         end do
 !
-        call dealloc_control_array_chara(sgs_ctl%commutate_fld_ctl)
 !
         cmt_param%iflag_c_linear                                        &
      &        =  cmt_param%iflag_c_temp +  cmt_param%iflag_c_velo       &
@@ -113,6 +112,8 @@
           end if
         end if
       end if
+!
+      call dealloc_control_array_chara(sgs_ctl%commutate_fld_ctl)
 !
       if (iflag_debug .gt. 0)  then
         write(*,*) 'iflag_commute_temp:     ', cmt_param%iflag_c_temp

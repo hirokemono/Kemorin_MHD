@@ -90,10 +90,7 @@
      &         light_nod%bc_magnitude(i), trim(light_nod%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(node_bc_C_ctl)
       end if
-!
 !
 !   set boundary conditions for composition flux
 !
@@ -123,9 +120,10 @@
      &         light_surf%bc_magnitude(i), trim(light_surf%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(surf_bc_CF_ctl)
       end if
+!
+      call dealloc_control_array_c2_r(node_bc_C_ctl)
+      call dealloc_control_array_c2_r(surf_bc_CF_ctl)
 !
       end subroutine s_set_control_4_composition
 !

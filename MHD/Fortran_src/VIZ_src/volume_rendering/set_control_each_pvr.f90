@@ -3,8 +3,10 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!!      subroutine set_pvr_file_control                                 &
-!!     &         (pvr, num_nod_phys, phys_nod_name, file_param)
+!!      subroutine set_pvr_file_control(pvr, file_param)
+!!      subroutine check_pvr_field_control                              &
+!!     &         (pvr, num_nod_phys, phys_nod_name)
+!!
 !!      subroutine set_control_field_4_pvr(field_ctl, comp_ctl,         &
 !!     &          num_nod_phys, phys_nod_name, fld_param, icheck_ncomp)
 !!      subroutine set_control_pvr(pvr, ele_grp, surf_grp, pvr_area,    &
@@ -41,21 +43,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_file_control                                   &
-     &         (pvr, num_nod_phys, phys_nod_name, file_param)
+      subroutine set_pvr_file_control(pvr, file_param)
 !
       use t_control_params_4_pvr
       use set_area_4_viz
       use skip_comment_f
 !
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
-!
       type(pvr_parameter_ctl), intent(in) :: pvr
       type(pvr_output_parameter), intent(inout) :: file_param
 !
-      integer(kind = kint) :: num_field, num_phys_viz
-      character(len = kchara) :: tmpfield(1)
       character(len = kchara) :: tmpchara
 !
 !
@@ -99,13 +95,6 @@
         file_param%iflag_anaglyph = 1
       end if
 !
-      tmpfield(1) = pvr%pvr_field_ctl%charavalue
-      call check_field_4_viz(num_nod_phys, phys_nod_name,               &
-     &    ione, tmpfield, num_field, num_phys_viz)
-      if(num_field .eq. 0) then
-        call calypso_MPI_abort(ierr_PVR,'set correct field name')
-      end if
-!
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'pvr_prefix: ', trim(file_param%pvr_prefix)
@@ -114,6 +103,32 @@
       end if
 !
       end subroutine set_pvr_file_control
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine check_pvr_field_control                                &
+     &         (pvr, num_nod_phys, phys_nod_name)
+!
+      use t_control_params_4_pvr
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: num_nod_phys
+      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+!
+      type(pvr_parameter_ctl), intent(in) :: pvr
+!
+      integer(kind = kint) :: num_field, num_phys_viz
+      character(len = kchara) :: tmpfield(1)
+!
+!
+      tmpfield(1) = pvr%pvr_field_ctl%charavalue
+      call check_field_4_viz(num_nod_phys, phys_nod_name,               &
+     &    ione, tmpfield, num_field, num_phys_viz)
+      if(num_field .eq. 0) then
+        call calypso_MPI_abort(ierr_PVR,'set correct field name')
+      end if
+!
+      end subroutine check_pvr_field_control
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

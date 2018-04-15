@@ -154,13 +154,14 @@
      &         = refine_i_ele_grp_ctl%c_tbl(1:num_refine_type)
           iflag_refine_type(1:num_refine_type)                          &
      &         = refine_i_ele_grp_ctl%ivec(1:num_refine_type)
-          call dealloc_control_array_c_i(refine_i_ele_grp_ctl)
         end if
 !
       else
         write(*,*) 'set refine type and area'
         stop
       end if
+!
+      call dealloc_control_array_c_i(refine_i_ele_grp_ctl)
 !
       end subroutine set_control_4_refiner
 !

@@ -64,10 +64,6 @@
           dynamic_layer_grp_name(1:ntotal_layer_grp)                    &
      &        = elayer_ctl%layer_grp_name_ctl%c_tbl(1:ntotal_layer_grp)
         end if
-!
-        call dealloc_control_array_int(elayer_ctl%igrp_stack_layer_ctl)
-        call dealloc_control_array_chara(elayer_ctl%layer_grp_name_ctl)
-!
       else if (iflag_layering_type .eq. 2) then
         num_layering_grp = elayer_ctl%num_layering_grp_ctl%intvalue
         num_fluid_layering_grp                                          &
@@ -77,6 +73,10 @@
         start_fluid_layering_grp_name                                   &
      &     = elayer_ctl%start_fl_layer_grp_name_ctl%charavalue
       end if
+!
+      call dealloc_control_array_int(elayer_ctl%igrp_stack_layer_ctl)
+      call dealloc_control_array_chara(elayer_ctl%layer_grp_name_ctl)
+!
 !
       if(iflag_debug .gt. 0) then
         if (iflag_layering_type .eq. 0) then

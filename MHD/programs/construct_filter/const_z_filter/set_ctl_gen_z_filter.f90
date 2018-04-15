@@ -124,9 +124,6 @@
       f_width =   reference_filter_ctl%vect(1)
       f_width_h = horizontal_filter_ctl%vect(1)
 !
-      call dealloc_control_array_c_r(reference_filter_ctl)
-      call dealloc_control_array_c_r(horizontal_filter_ctl)
-!
       if      (cmp_no_case(type_filter_z, 'tophat')) then
        iflag_filter = 0
       else if (cmp_no_case(type_filter_z, 'linear')) then
@@ -181,6 +178,9 @@
      &   (CG_filter_ctl%DJDS_ctl, DJDS_param)
 !
       call copy_from_iccg_parameter(CG_param, mat_crs)
+!
+      call dealloc_control_array_c_r(reference_filter_ctl)
+      call dealloc_control_array_c_r(horizontal_filter_ctl)
 !
       end subroutine set_ctl_params_4_gen_z_filter
 !

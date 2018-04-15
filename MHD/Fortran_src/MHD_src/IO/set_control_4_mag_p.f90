@@ -82,8 +82,6 @@
           call set_bc_group_types_sgs_scalar(node_bc_MP_ctl%c1_tbl(i),  &
      &        e_potential_nod%ibc_type(i))
         end do
-!
-        call dealloc_control_array_c2_r(node_bc_MP_ctl)
       end if
 !
 !   set boundary_conditons for magnetic potential
@@ -105,9 +103,10 @@
           call set_surf_wall_group_types(surf_bc_MPN_ctl%c1_tbl(i),     &
      &        e_potential_surf%ibc_type(i) )
         end do
-!
-        call dealloc_control_array_c2_r(surf_bc_MPN_ctl)
       end if
+!
+      call dealloc_control_array_c2_r(node_bc_MP_ctl)
+      call dealloc_control_array_c2_r(surf_bc_MPN_ctl)
 !
       end subroutine s_set_control_4_mag_p
 !

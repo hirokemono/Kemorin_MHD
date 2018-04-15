@@ -217,7 +217,8 @@
           write(*,*) i, trim(f_area%f_gourp_name(i))
         end do
       end if
-        call dealloc_control_array_chara(filter_grp_ctl)
+!
+      call dealloc_control_array_chara(filter_grp_ctl)
 !
       end subroutine set_control_filter_area
 !
