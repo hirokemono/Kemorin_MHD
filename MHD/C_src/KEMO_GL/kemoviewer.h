@@ -44,14 +44,16 @@
 #define gzip_infleat_cont         gzip_infleat_cont_
 #define gzip_infleat_last         gzip_infleat_last_
 
-#define write_png_rgba_c          write_png_rgba_c_
-#define write_png_rgb_c           write_png_rgb_c_
-#define read_png_file_c           read_png_file_c_
-#define copy_rgb_from_png_c       copy_rgb_from_png_c_
-#define copy_rgba_from_png_c      copy_rgba_from_png_c_
-#define read_BMP_c                read_BMP_c_
-#define copy_rgb_from_BMP_c       copy_rgb_from_BMP_c_
-#define copy_rgba_from_BMP_c      copy_rgba_from_BMP_c_
+#define write_png_rgba_c           write_png_rgba_c_
+#define write_png_rgb_c            write_png_rgb_c_
+#define read_png_file_c            read_png_file_c_
+#define copy_rgb_from_png_c        copy_rgb_from_png_c_
+#define copy_rgba_from_png_c       copy_rgba_from_png_c_
+#define copy_grayscale_from_png_c  copy_grayscale_from_png_c_
+#define copy_grayalpha_from_png_c  copy_grayalpha_from_png_c_
+#define read_BMP_c                 read_BMP_c_
+#define copy_rgb_from_BMP_c        copy_rgb_from_BMP_c_
+#define copy_rgba_from_BMP_c       copy_rgba_from_BMP_c_
 
 
 #define kemo_fftw_plan_dft_r2c_1d    kemo_fftw_plan_dft_r2c_1d_
@@ -95,14 +97,16 @@
 #define gzip_infleat_cont         GZIP_INFLEAT_CONT
 #define gzip_infleat_last         GZIP_INFLEAT_LAST
 
-#define write_png_rgba_c          WRITE_PNG_RGBA_C
-#define write_png_rgb_c           WRITE_PNG_RGB_C
-#define read_png_file_c           READ_PNG_FILE_C
-#define copy_rgb_from_png_c       COPY_RGB_FROM_PNG_C
-#define copy_rgba_from_png_c      COPY_RGBA_FROM_PNG_C
-#define read_BMP_c                READ_BMP_C
-#define copy_rgb_from_BMP_c       COPY_RGB_FROM_BMP_C
-#define copy_rgba_from_BMP_c      COPY_RGBA_FROM_BMP_C
+#define write_png_rgba_c           WRITE_PNG_RGBA_C
+#define write_png_rgb_c            WRITE_PNG_RGB_C
+#define read_png_file_c            READ_PNG_FILE_C
+#define copy_rgb_from_png_c        COPY_RGB_FROM_PNG_C
+#define copy_rgba_from_png_c       COPY_RGBA_FROM_PNG_C
+#define copy_grayscale_from_png_c  COPY_GRAYSCALE_FROM_PNG_C
+#define copy_grayalpha_from_png_c  COPY_GRAYALPHA_FROM_PNG_C
+#define read_BMP_c                 READ_BMP_C
+#define copy_rgb_from_BMP_c        COPY_RGB_FROM_BMP_C
+#define copy_rgba_from_BMP_c       COPY_RGBA_FROM_BMP_C
 
 #define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
 #define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
@@ -145,14 +149,16 @@
 #define gzip_infleat_cont         GZIP_INFLEAT_CONT
 #define gzip_infleat_last         GZIP_INFLEAT_LAST
 
-#define write_png_rgba_c          WRITE_PNG_RGBA_C
-#define write_png_rgb_c           WRITE_PNG_RGB_C
-#define read_png_file_c           READ_PNG_FILE_C
-#define copy_rgb_from_png_c       COPY_RGB_FROM_PNG_C
-#define copy_rgba_from_png_c      COPY_RGBA_FROM_PNG_C
-#define read_BMP_c                READ_BMP_C
-#define copy_rgb_from_BMP_c       COPY_RGB_FROM_BMP_C
-#define copy_rgba_from_BMP_c      COPY_RGBA_FROM_BMP_C
+#define write_png_rgba_c           WRITE_PNG_RGBA_C
+#define write_png_rgb_c            WRITE_PNG_RGB_C
+#define read_png_file_c            READ_PNG_FILE_C
+#define copy_rgb_from_png_c        COPY_RGB_FROM_PNG_C
+#define copy_rgba_from_png_c       COPY_RGBA_FROM_PNG_C
+#define copy_grayscale_from_png_c  COPY_GRAYSCALE_FROM_PNG_C
+#define copy_grayalpha_from_png_c  COPY_GRAYALPHA_FROM_PNG_C
+#define read_BMP_c                 READ_BMP_C
+#define copy_rgb_from_BMP_c        COPY_RGB_FROM_BMP_C
+#define copy_rgba_from_BMP_c       COPY_RGBA_FROM_BMP_C
 
 #define kemo_fftw_plan_dft_r2c_1d    KEMO_FFTW_PLAN_DFT_R2C_1D
 #define kemo_fftw_plan_dft_c2r_1d    KEMO_FFTW_PLAN_DFT_C2R_1D
@@ -195,14 +201,16 @@
 #define gzip_infleat_cont         gzip_infleat_cont
 #define gzip_infleat_last         gzip_infleat_last
 
-#define write_png_rgba_c          write_png_rgba_c
-#define write_png_rgb_c           write_png_rgb_c
-#define read_png_file_c           read_png_file_c
-#define copy_rgb_from_png_c       copy_rgb_from_png_c
-#define copy_rgba_from_png_c      copy_rgba_from_png_c
-#define read_BMP_c                read_BMP_c
-#define copy_rgb_from_BMP_c       copy_rgb_from_BMP_c
-#define copy_rgba_from_BMP_c      copy_rgba_from_BMP_c
+#define write_png_rgba_c           write_png_rgba_c
+#define write_png_rgb_c            write_png_rgb_c
+#define read_png_file_c            read_png_file_c
+#define copy_rgb_from_png_c        copy_rgb_from_png_c
+#define copy_rgba_from_png_c       copy_rgba_from_png_c
+#define copy_grayscale_from_png_c  copy_grayscale_from_png_c
+#define copy_grayalpha_from_png_c  copy_grayalpha_from_png_c
+#define read_BMP_c                 read_BMP_c
+#define copy_rgb_from_BMP_c        copy_rgb_from_BMP_c
+#define copy_rgba_from_BMP_c       copy_rgba_from_BMP_c
 
 #define kemo_fftw_plan_dft_r2c_1d    kemo_fftw_plan_dft_r2c_1d
 #define kemo_fftw_plan_dft_c2r_1d    kemo_fftw_plan_dft_c2r_1d
@@ -312,6 +320,11 @@
 #define SAVE_QT_MOVIE  999
 #define NO_SAVE_FILE   0
 #define SAVE_UNDEFINED  -1
+
+#define RGBA_COLOR  1
+#define RGB_COLOR   0
+#define BW_ALPHA    11
+#define B_AND_W     10
 
 #define RAINBOW_SURFACE  0
 #define WHITE_SURFACE    1

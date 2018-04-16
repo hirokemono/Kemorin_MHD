@@ -17,5 +17,7 @@ void read_png_file_c(const char *fhead, int *num_x, int *num_y, int *iflag_rgba)
 
 void copy_rgb_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char *cimage);
 void copy_rgba_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char *cimage);
+void copy_grayscale_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char *cimage);
+void copy_grayalpha_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char *cimage);
 
 #endif
