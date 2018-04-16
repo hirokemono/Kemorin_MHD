@@ -64,7 +64,7 @@
 !>          iflag_from_file: Use kernel image file
         integer(kind = kint) :: iflag_kernel_type = 0
 !>        file name of kernel function data
-        character(len = kchara) :: kernel_file_name
+        character(len = kchara) :: kernel_image_prefix
 !>        normalization factor for LIC value
         real(kind = kreal) :: trace_length = one
 !
@@ -277,10 +277,10 @@
 !
       if(lic_p%iflag_kernel_type .eq. iflag_from_file) then
         if(lic_ctl%kernal_file_prefix_ctl%iflag .gt. 0) then
-          lic_p%kernel_file_name                                        &
+          lic_p%kernel_image_prefix                                     &
      &       = lic_ctl%kernal_file_prefix_ctl%charavalue
         else
-          e_message = 'Set LIC kernel file name'
+          e_message = 'Set LIC kernel file prefix'
           call calypso_mpi_abort(ierr_VIZ, e_message)
         end if
       end if
@@ -332,7 +332,7 @@
         write(*,*) 'freq_noise: ', lic_p%freq_noise
 !
         write(*,*) 'iflag_kernel_type: ', lic_p%iflag_kernel_type
-        write(*,*) 'kernel_file_name: ', lic_p%kernel_file_name
+        write(*,*) 'kernel_image_prefix: ', lic_p%kernel_image_prefix
 !
         write(*,*) 'trace_length: ', lic_p%trace_length
 !
