@@ -157,6 +157,7 @@
 !
       if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call s_set_control_ele_layering(elayer_ctl)
+        call dealloc_ctl_data_ele_layering(elayer_ctl)
       end if
 !
       if (SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then

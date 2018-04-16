@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine read_ele_layers_control(hd_block, iflag, elayer_ctl)
+!!      subroutine dealloc_ctl_data_ele_layering(elayer_ctl)
 !!        type(layering_control), intent(inout) :: elayer_ctl
 !!
 !! -- example of parameters -----------------------------------------
@@ -170,6 +171,18 @@
       end do
 !
       end subroutine read_ele_layers_control
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_ctl_data_ele_layering(elayer_ctl)
+!
+      type(layering_control), intent(inout) :: elayer_ctl
+!
+!
+      call dealloc_control_array_int(elayer_ctl%igrp_stack_layer_ctl)
+      call dealloc_control_array_chara(elayer_ctl%layer_grp_name_ctl)
+!
+      end subroutine dealloc_ctl_data_ele_layering
 !
 !   --------------------------------------------------------------------
 !

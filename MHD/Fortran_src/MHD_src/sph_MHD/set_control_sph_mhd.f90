@@ -259,6 +259,10 @@
       call set_ctl_params_pick_gauss                                    &
      &   (smonitor_ctl%g_pwr, monitor%gauss_list, monitor%gauss_coef)
 !
+      call dealloc_num_spec_layer_ctl(smonitor_ctl%lp_ctl)
+      call dealloc_pick_sph_ctl(smonitor_ctl%pspec_ctl)
+      call dealloc_pick_gauss_ctl(smonitor_ctl%g_pwr)
+!
       call set_ctl_params_no_heat_Nu(smonitor_ctl%Nusselt_file_prefix,  &
      &    rj_fld, monitor%Nusselt)
 !

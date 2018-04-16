@@ -56,6 +56,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_ele_layering'
       call s_set_control_ele_layering(elayer_d_ctl)
+      call dealloc_ctl_data_ele_layering(elayer_d_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
       call s_set_control_nodal_data(fld_d_ctl%field_ctl, nod_fld, ierr)

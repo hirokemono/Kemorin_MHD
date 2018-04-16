@@ -179,6 +179,10 @@
       call set_ctl_params_pick_gauss                                    &
      &   (smonitor_u_ctl%g_pwr, gauss_list_u, gauss_u)
 !
+      call dealloc_num_spec_layer_ctl(smonitor_u_ctl%lp_ctl)
+      call dealloc_pick_sph_ctl(smonitor_u_ctl%pspec_ctl)
+      call dealloc_pick_gauss_ctl(smonitor_u_ctl%g_pwr)
+!
 !   set physical values
 !
       call s_set_control_sph_data(fld_su_ctl%field_ctl, rj_fld, ierr)

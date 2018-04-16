@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_ele_layering(elayer_ctl)
-!!        type(layering_control), intent(inout) :: elayer_ctl
+!!        type(layering_control), intent(in) :: elayer_ctl
 !!@endverbatim
 !
       module set_control_ele_layering
@@ -31,7 +31,7 @@
       use set_layer_list_by_table
       use skip_comment_f
 !
-      type(layering_control), intent(inout) :: elayer_ctl
+      type(layering_control), intent(in) :: elayer_ctl
 !
       character(len=kchara) :: tmpchara
 !
@@ -73,10 +73,6 @@
         start_fluid_layering_grp_name                                   &
      &     = elayer_ctl%start_fl_layer_grp_name_ctl%charavalue
       end if
-!
-      call dealloc_control_array_int(elayer_ctl%igrp_stack_layer_ctl)
-      call dealloc_control_array_chara(elayer_ctl%layer_grp_name_ctl)
-!
 !
       if(iflag_debug .gt. 0) then
         if (iflag_layering_type .eq. 0) then
