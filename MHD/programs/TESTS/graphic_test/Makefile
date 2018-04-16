@@ -13,6 +13,7 @@ TARGET_CPSF_READ_TEST = test_read_psf_c
 TARGET_CVIEW_READ_TEST = test_read_viewer_c
 TARGET_CBMP_READ_TEST = test_read_bmp
 TARGET_CPNG_READ_TEST = test_read_png
+TARGET_PNG_2_BMP_F =    test_png_2_bmp_f
 
 
 MOD_BMP_TEST = \
@@ -59,6 +60,10 @@ test_read_png_c.o
 OBJ_CBMP_READ_TEST = \
 test_read_bmp_c.o
 
+OBJ_PNG_2_BMP_F = \
+write_bmp_image.o \
+png_to_bmp_f.o
+
 #
 #  ------------------------------------------------------------------
 #
@@ -89,11 +94,13 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_CPNG_READ_TEST = $$(BUILDDIR)/$(TARGET_CPNG_READ_TEST)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_PNG_2_BMP_F = $$(BUILDDIR)/$(TARGET_PNG_2_BMP_F)' \
+	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo f_graphic_tests: \
-	'$$(TARGET_BMP_TEST)'  \
+	'$$(TARGET_BMP_TEST) $$(TARGET_PNG_2_BMP_F)'  \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo c_graphic_tests: \
@@ -164,6 +171,12 @@ target_task:
 	'$$(OBJ_CPNG_READ_TEST)' \
 	'-L. $$(LIB_KEMO_C)  $$(PNG_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_PNG_2_BMP_F)': '$$(OBJ_PNG_2_BMP_F)  $$(LIB_KEMO_C_FILE)' \
+	 >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(OPTFLAGS)' -o '$$(TARGET_PNG_2_BMP_F)' \
+	'$$(OBJ_PNG_2_BMP_F)' \
+	'-L. $$(LIB_KEMO_C)  $$(PNG_LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -183,10 +196,12 @@ mod_list:
 	@echo  $(OBJ_CPSF_READ_TEST)    >> $(MAKENAME)
 	@echo  OBJ_CVIEW_READ_TEST=  \\ >> $(MAKENAME)
 	@echo  $(OBJ_CVIEW_READ_TEST)   >> $(MAKENAME)
-	@echo  OBJ_CBMP_READ_TEST=  \\ >> $(MAKENAME)
-	@echo  $(OBJ_CBMP_READ_TEST)   >> $(MAKENAME)
-	@echo  OBJ_CPNG_READ_TEST=  \\ >> $(MAKENAME)
-	@echo  $(OBJ_CPNG_READ_TEST)   >> $(MAKENAME)
+	@echo  OBJ_CBMP_READ_TEST=  \\  >> $(MAKENAME)
+	@echo  $(OBJ_CBMP_READ_TEST)    >> $(MAKENAME)
+	@echo  OBJ_CPNG_READ_TEST=  \\  >> $(MAKENAME)
+	@echo  $(OBJ_CPNG_READ_TEST)    >> $(MAKENAME)
+	@echo  OBJ_PNG_2_BMP_F=  \\     >> $(MAKENAME)
+	@echo  $(OBJ_PNG_2_BMP_F)       >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 
@@ -198,6 +213,15 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' -c '$$(F90FLAGS)' \
 	'$$(GRAPHIC_TEST_DIR)'/test_bmp_images.f90 \
+	>> $(MAKENAME)
+	
+	@echo \
+	png_to_bmp_f.o: \
+	'$$(GRAPHIC_TEST_DIR)'/png_to_bmp_f.F90 \
+	write_bmp_image.o \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' -c '$$(F90FLAGS)' \
+	'$$(GRAPHIC_TEST_DIR)'/png_to_bmp_f.F90 \
 	>> $(MAKENAME)
 	
 	@echo \
