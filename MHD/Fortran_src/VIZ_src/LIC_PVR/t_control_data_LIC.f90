@@ -40,7 +40,7 @@
 !!    noise_resolution         2048
 !!
 !!    kernel_function_type   external_file
-!!    kernal_file_name       'kernel.dat'
+!!    kernal_image_prefix       'kernel'
 !!
 !!    LIC_trace_length_mode   'length'  or  'element_count'
 !!    LIC_trace_length        0.5
@@ -89,7 +89,7 @@
         type(read_integer_item) ::   noise_resolution_ctl
 !
         type(read_character_item) :: kernel_function_type_ctl
-        type(read_character_item) :: kernal_file_name_ctl
+        type(read_character_item) :: kernal_file_prefix_ctl
         type(read_real_item) ::      LIC_trace_length_ctl
 !
         type(read_character_item) :: normalization_type_ctl
@@ -121,7 +121,8 @@
 !
       character(len=kchara) :: hd_kernel_function_type                  &
      &                        = 'kernel_function_type'
-      character(len=kchara) :: hd_kernal_file_name = 'kernal_file_name'
+      character(len=kchara) :: hd_kernal_file_name                      &
+     &                        = 'kernal_image_prefix'
       character(len=kchara) :: hd_LIC_trace_length = 'LIC_trace_length'
 !
       character(len=kchara) :: hd_normalization_type                    &
@@ -189,7 +190,7 @@
         call read_chara_ctl_type                                        &
      &     (hd_kernel_function_type, lic_ctl%kernel_function_type_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_kernal_file_name, lic_ctl%kernal_file_name_ctl)
+     &     (hd_kernal_file_name, lic_ctl%kernal_file_prefix_ctl)
         call read_real_ctl_type                                         &
      &     (hd_LIC_trace_length, lic_ctl%LIC_trace_length_ctl)
 !
@@ -260,7 +261,7 @@
       lic_ctl%noise_resolution_ctl%iflag = 0
 !
       lic_ctl%kernel_function_type_ctl%iflag = 0
-      lic_ctl%kernal_file_name_ctl%iflag =     0
+      lic_ctl%kernal_file_prefix_ctl%iflag =   0
       lic_ctl%LIC_trace_length_ctl%iflag =     0
 !
       lic_ctl%normalization_type_ctl%iflag =   0
@@ -309,7 +310,7 @@
       call bcast_ctl_type_i1(lic_ctl%noise_resolution_ctl)
 !
       call bcast_ctl_type_c1(lic_ctl%kernel_function_type_ctl)
-      call bcast_ctl_type_c1(lic_ctl%kernal_file_name_ctl)
+      call bcast_ctl_type_c1(lic_ctl%kernal_file_prefix_ctl)
       call bcast_ctl_type_r1(lic_ctl%LIC_trace_length_ctl)
 !
       call bcast_ctl_type_c1(lic_ctl%normalization_type_ctl)

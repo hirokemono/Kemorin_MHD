@@ -276,9 +276,9 @@
       end if
 !
       if(lic_p%iflag_kernel_type .eq. iflag_from_file) then
-        if(lic_ctl%kernal_file_name_ctl%iflag .gt. 0) then
+        if(lic_ctl%kernal_file_prefix_ctl%iflag .gt. 0) then
           lic_p%kernel_file_name                                        &
-     &       = lic_ctl%kernal_file_name_ctl%charavalue
+     &       = lic_ctl%kernal_file_prefix_ctl%charavalue
         else
           e_message = 'Set LIC kernel file name'
           call calypso_mpi_abort(ierr_VIZ, e_message)
