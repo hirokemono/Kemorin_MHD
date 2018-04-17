@@ -54,11 +54,18 @@ static void read_png_raw_image(FILE *fp, png_structp png_ptr, png_infop info_ptr
 	*height = png_get_image_height(png_ptr, info_ptr);
 	
 	if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_RGBA){
-		*iflag_rgba = 1;
+		*iflag_rgba = RGBA_COLOR;
 	}
 	else if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_RGB){
-		*iflag_rgba = 0;
+		*iflag_rgba = RGB_COLOR;
 	}
+    else if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_GRAY_ALPHA){
+        *iflag_rgba = BW_ALPHA;
+    }
+    else if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_GRAY){
+        *iflag_rgba = B_AND_W;
+    }
+
 	else exit(EXIT_FAILURE);
 	
 	
@@ -141,7 +148,7 @@ void copy_rgb_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char 
 {
 	int k, j, l;
 	
-	if(*iflag_rgba == 1){
+	if(*iflag_rgba == RGBA_COLOR){
 		for (l = 0; l < *num_x; l++) {
 			for (j = 0; j < *num_y; j++) {
 				k = (*num_y-j-1) * (*num_x) + l;
@@ -150,13 +157,31 @@ void copy_rgb_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char 
 				cimage[3*k+2] = bimage[j][4*l+2];
 			}
 		};
-	} else {
+	} else if(*iflag_rgba == RGB_COLOR){
 		for (l = 0; l < *num_x; l++) {
 			for (j = 0; j < *num_y; j++) {
 				k = (*num_y-j-1) * (*num_x) + l;
 				cimage[3*k  ] = bimage[j][3*l  ];
 				cimage[3*k+1] = bimage[j][3*l+1];
 				cimage[3*k+2] = bimage[j][3*l+2];
+			}
+		};
+	} else if(*iflag_rgba == BW_ALPHA){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				cimage[3*k  ] = bimage[j][2*l];
+				cimage[3*k+1] = bimage[j][2*l];
+				cimage[3*k+2] = bimage[j][2*l];
+			}
+		};
+	} else if(*iflag_rgba == B_AND_W){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				cimage[3*k  ] = bimage[j][l];
+				cimage[3*k+1] = bimage[j][l];
+				cimage[3*k+2] = bimage[j][l];
 			}
 		};
 	};
@@ -168,7 +193,7 @@ void copy_rgba_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char
 {
 	int i, k, j, l;
 	
-	if(*iflag_rgba == 1){
+	if(*iflag_rgba == RGBA_COLOR){
 		for (l = 0; l < *num_x; l++) {
 			for (j = 0; j < *num_y; j++) {
 				k = (*num_y-j-1) * (*num_x) + l;
@@ -178,7 +203,7 @@ void copy_rgba_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char
 				cimage[4*k+3] = bimage[j][4*l+3];
 			}
 		};
-	} else {
+	} else if(*iflag_rgba == RGB_COLOR){
 		for (l = 0; l < *num_x; l++) {
 			for (j = 0; j < *num_y; j++) {
 				k = (*num_y-j-1) * (*num_x) + l;
@@ -186,6 +211,109 @@ void copy_rgba_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char
 				cimage[4*k+1] = bimage[j][3*l+1];
 				cimage[4*k+2] = bimage[j][3*l+2];
 				cimage[4*k+3] = (unsigned char) 255;
+			}
+		};
+	} else if(*iflag_rgba == BW_ALPHA){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				cimage[4*k  ] = bimage[j][2*l  ];
+				cimage[4*k+1] = bimage[j][2*l  ];
+				cimage[4*k+2] = bimage[j][2*l  ];
+				cimage[4*k+3] = bimage[j][2*l+1];
+			}
+		};
+	} else if(*iflag_rgba == B_AND_W){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				cimage[4*k  ] = bimage[j][l];
+				cimage[4*k+1] = bimage[j][l];
+				cimage[4*k+2] = bimage[j][l];
+				cimage[4*k+3] = (unsigned char) 255;
+			}
+		};
+	};
+	
+	for (i = 0; i < *num_y; i++) free(bimage[i]);
+	free(bimage);
+};
+
+void copy_grayscale_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char *cimage)
+{
+	int k, j, l, mixed;
+	
+	if(*iflag_rgba == RGBA_COLOR){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				mixed = ((int) bimage[j][4*l  ] + (int) bimage[j][4*l+1] + (int) bimage[j][4*l+2]) / 3;
+				cimage[k  ] = (unsigned char) mixed;
+			}
+		};
+	} else if(*iflag_rgba == RGB_COLOR){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				mixed = ((int) bimage[j][3*l  ] + (int) bimage[j][3*l+1] + (int) bimage[j][3*l+2]) / 3;
+				cimage[k  ] = (unsigned char) mixed;
+			}
+		};
+	} else if(*iflag_rgba == BW_ALPHA){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				cimage[k  ] = bimage[j][2*l  ];
+			}
+		};
+	} else if(*iflag_rgba == B_AND_W){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				cimage[k  ] = bimage[j][l];
+			}
+		};
+	};
+	
+	free(bimage);
+};
+
+void copy_grayalpha_from_png_c(int *num_x, int *num_y, int *iflag_rgba, unsigned char *cimage)
+{
+	int i, k, j, l, mixed;
+	
+	if(*iflag_rgba == RGBA_COLOR){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				mixed = ((int) bimage[j][4*l  ] + (int) bimage[j][4*l+1] + (int) bimage[j][4*l+2]) / 3;
+				cimage[2*k  ] = (unsigned char) mixed;
+				cimage[2*k+1] = bimage[j][2*l+1];
+			}
+		};
+	} else if(*iflag_rgba == RGB_COLOR){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				mixed = ((int) bimage[j][3*l  ] + (int) bimage[j][3*l+1] + (int) bimage[j][3*l+2]) / 3;
+				cimage[2*k  ] = (unsigned char) mixed;
+				cimage[2*k+3] = (unsigned char) 255;
+			}
+		};
+	} else if(*iflag_rgba == BW_ALPHA){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				cimage[2*k  ] = bimage[j][2*l  ];
+				cimage[2*k+1] = bimage[j][2*l+1];
+			}
+		};
+	} else if(*iflag_rgba == B_AND_W){
+		for (l = 0; l < *num_x; l++) {
+			for (j = 0; j < *num_y; j++) {
+				k = (*num_y-j-1) * (*num_x) + l;
+				cimage[2*k  ] = bimage[j][l];
+				cimage[2*k+3] = (unsigned char) 255;
 			}
 		};
 	};
