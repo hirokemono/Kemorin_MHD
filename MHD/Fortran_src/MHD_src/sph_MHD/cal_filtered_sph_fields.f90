@@ -9,8 +9,24 @@
 !!@verbatim
 !!      subroutine cal_filtered_sph_rj_fields                           &
 !!     &         (sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
+!!       Input:   rj_fld(1:i_fld)
+!!          i_fld = i_velo, i_vort, i_magne, i_current, i_temp, i_light
+!!       Output:  rj_fld(1:i_fld)
+!!          i_fld = i_filter_velo, i_filter_vort, i_filter_magne, 
+!!                  i_filter_current, i_filter_temp, i_filter_comp, 
+!!                  i_wide_fil_velo, i_wide_fil_vort, i_wide_fil_magne,
+!!                  i_wide_fil_current, i_wide_fil_temp, i_wide_fil_comp
 !!      subroutine cal_filtered_sph_rj_forces                           &
 !!     &         (sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
+!!       Input:   rj_fld(1:i_fld)
+!!          i_fld = i_m_advect, i_lorentz, i_vp_induct,
+!!                  i_h_flux, i_c_flux
+!!       Output:  rj_fld(1:i_fld)
+!!          i_fld = i_SGS_inertia, i_SGS_Lorentz, i_SGS_vp_induct, 
+!!                  i_SGS_h_flux, i_SGS_c_flux, 
+!!                  i_wide_SGS_inertia, i_wide_SGS_Lorentz,
+!!                  i_wide_SGS_vp_induct,
+!!                  i_wide_SGS_h_flux, i_wide_SGS_c_flux
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
@@ -34,6 +50,8 @@
 !
       private :: cal_sph_base_filtering_fields
       private :: cal_sph_wide_filtering_fields
+      private :: cal_sph_base_filtering_forces
+      private :: cal_sph_wide_filtering_forces
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,6 +59,20 @@
 !
 ! ----------------------------------------------------------------------
 !
+!>      get @f$ \overline{\tilde{u}_{i}) } @f$,
+!!        @f$ \overline{\tilde{\omega}_{i}) } @f$,
+!!        @f$ \overline{\tilde{B}_{i}) } @f$,
+!!        @f$ \overline{\tilde{J}_{i}) } @f$,
+!!        @f$ \overline{\tilde{T}) } @f$, @f$ \overline{\tilde{C}) } @f$,
+!>        @f$ \overline{\overline{\tilde{u}_{i}) }} @f$,
+!!        @f$ \overline{\overline{\tilde{\omega}_{i}) }} @f$,
+!!        @f$ \overline{\overline{\tilde{B}_{i}) }} @f$,
+!!        @f$ \overline{\overline{\tilde{J}_{i}) }} @f$,
+!!        @f$ \overline{\overline{\tilde{T}) }} @f$, and 
+!!        @f$ \overline{\overline{\tilde{C}) }} @f$,
+!!          from @f$ \tilde{u}_{i} @f$, @f$ \tilde{\omega}_{i} @f$, 
+!!        @f$ \tilde{B}_{i} @f$, @f$ \tilde{J}_{i} @f$, 
+!!        @f$ \tilde{T} @f$, and @f$ \tilde{C} @f$, 
       subroutine cal_filtered_sph_rj_fields                             &
      &         (sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
 !
@@ -62,6 +94,22 @@
 !
 ! ----------------------------------------------------------------------
 !
+!>      Get @f$ \overline{(e_{ijk}\tilde{\omega_{j}}\tilde{u}_{k})} @f$,
+!!      @f$ \overline{(e_{ijk}\tilde{J}_{j}\tilde{B}_{k})} @f$,
+!!      @f$ \overline{(e_{ijk}\tilde{u}_{j}\tilde{B}_{k})} @f$,
+!!      @f$ \overline{ \tilde{u}_{i} \tilde{T}) } @f$,
+!!      @f$ \overline{ \tilde{u}_{i} \tilde{C}) } @f$, 
+!>      @f$ \overline{\overline{
+!!             (e_{ijk} \tilde{\omega_{j}} \tilde{u}_{k})}} @f$, 
+!!      @f$ \overline{\overline{(e_{ijk}\tilde{J}_{j}\tilde{B}_{k})}} @f$,
+!!      @f$ \overline{\overline{(e_{ijk}\tilde{u}_{j}\tilde{B}_{k})}} @f$,
+!!      @f$ \overline{\overline{ \tilde{u}_{i} \tilde{T}) }} @f$, and
+!!      @f$ \overline{\overline{ \tilde{u}_{i} \tilde{C}) }} @f$
+!!        from  @f$  (e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k} @f$, 
+!!      @f$  (e_{ijk} \tilde{J}_{j} \tilde{B}_{k} @f$,
+!!      @f$  (e_{ijk} \tilde{u}_{j} \tilde{B}_{k} @f$,
+!!      @f$ \tilde{u}_{i} \tilde{T}) @f$, and 
+!!      @f$ \tilde{u}_{i} \tilde{C}) @f$
       subroutine cal_filtered_sph_rj_forces                             &
      &         (sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
 !
@@ -72,11 +120,11 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call cal_sph_wide_filtering_forces                                &
+      call cal_sph_base_filtering_forces                                &
      &   (sph_rj, ipol, dynamic_SPH%sph_filters(1), rj_fld)
 !
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      call cal_sph_base_filtering_forces                                &
+      call cal_sph_wide_filtering_forces                                &
      &   (sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
 !
       end subroutine cal_filtered_sph_rj_forces
@@ -84,6 +132,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
+!>      Get @f$ \overline{\tilde{u}_{i}) } @f$,
+!!        @f$ \overline{\tilde{\omega}_{i}) } @f$,
+!!        @f$ \overline{\tilde{B}_{i}) } @f$,
+!!        @f$ \overline{\tilde{J}_{i}) } @f$,
+!!        @f$ \overline{\tilde{T}) } @f$, and 
+!!        @f$ \overline{\tilde{C}) } @f$,
+!!          from @f$ \tilde{u}_{i} @f$, @f$ \tilde{\omega}_{i} @f$, 
+!!        @f$ \tilde{B}_{i} @f$, @f$ \tilde{J}_{i} @f$, 
+!!        @f$ \tilde{T} @f$, and @f$ \tilde{C} @f$
       subroutine cal_sph_base_filtering_fields                          &
      &         (sph_rj, ipol, sph_filters, rj_fld)
 !
@@ -118,6 +175,15 @@
 !
 ! ----------------------------------------------------------------------
 !
+!>      get @f$ \overline{\overline{\tilde{u}_{i}) }} @f$,
+!!        @f$ \overline{\overline{\tilde{\omega}_{i}) }} @f$,
+!!        @f$ \overline{\overline{\tilde{B}_{i}) }} @f$,
+!!        @f$ \overline{\overline{\tilde{J}_{i}) }} @f$,
+!!        @f$ \overline{\overline{\tilde{T}) }} @f$, and 
+!!        @f$ \overline{\overline{\tilde{C}) }} @f$,
+!!          from @f$ \tilde{u}_{i} @f$, @f$ \tilde{\omega}_{i} @f$, 
+!!        @f$ \tilde{B}_{i} @f$, @f$ \tilde{J}_{i} @f$, 
+!!        @f$ \tilde{T} @f$, and @f$ \tilde{C} @f$, 
       subroutine cal_sph_wide_filtering_fields                          &
      &         (sph_rj, ipol, sph_wide_f, rj_fld)
 !
@@ -155,6 +221,16 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
+!>      Get @f$ \overline{(e_{ijk}\tilde{\omega}_{j}\tilde{u}_{k})} @f$,
+!!      @f$ \overline{(e_{ijk}\tilde{J}_{j}\tilde{B}_{k})} @f$,
+!!      @f$ \overline{(e_{ijk}\tilde{u}_{j}\tilde{B}_{k})} @f$,
+!!      @f$ \overline{ \tilde{u}_{i} \tilde{T}) } @f$, and
+!!      @f$ \overline{ \tilde{u}_{i} \tilde{C}) } @f$
+!!        from  @f$  (e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k} @f$, 
+!!      @f$  (e_{ijk} \tilde{J}_{j} \tilde{B}_{k} @f$,
+!!      @f$  (e_{ijk} \tilde{u}_{j} \tilde{B}_{k} @f$,
+!!      @f$ \tilde{u}_{i} \tilde{T}) @f$, and 
+!!      @f$ \tilde{u}_{i} \tilde{C}) @f$
       subroutine cal_sph_base_filtering_forces                          &
      &         (sph_rj, ipol, sph_filters, rj_fld)
 !
@@ -185,6 +261,17 @@
 !
 ! ----------------------------------------------------------------------
 !
+!>      Get @f$ \overline{\overline{
+!!             (e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k})}} @f$, 
+!!      @f$ \overline{\overline{(e_{ijk}\tilde{J}_{j}\tilde{B}_{k})}} @f$,
+!!      @f$ \overline{\overline{(e_{ijk}\tilde{u}_{j}\tilde{B}_{k})}} @f$,
+!!      @f$ \overline{\overline{ \tilde{u}_{i} \tilde{T}) }} @f$, and
+!!      @f$ \overline{\overline{ \tilde{u}_{i} \tilde{C}) }} @f$
+!!        from  @f$  (e_{ijk} \tilde{\omega}_{j} \tilde{u}_{k} @f$, 
+!!      @f$  (e_{ijk} \tilde{J}_{j} \tilde{B}_{k} @f$,
+!!      @f$  (e_{ijk} \tilde{u}_{j} \tilde{B}_{k} @f$,
+!!      @f$ \tilde{u}_{i} \tilde{T}) @f$, and 
+!!      @f$ \tilde{u}_{i} \tilde{C}) @f$
       subroutine cal_sph_wide_filtering_forces                          &
      &         (sph_rj, ipol, sph_wide_f, rj_fld)
 !
