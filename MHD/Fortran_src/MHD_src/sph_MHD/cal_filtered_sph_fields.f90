@@ -9,20 +9,20 @@
 !!@verbatim
 !!      subroutine cal_filtered_sph_rj_fields                           &
 !!     &         (sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
-!!       Input:   rj_fld(1:i_fld)
-!!          i_fld = i_velo, i_vort, i_magne, i_current, i_temp, i_light
-!!       Output:  rj_fld(1:i_fld)
-!!          i_fld = i_filter_velo, i_filter_vort, i_filter_magne, 
+!!       Input:   rj_fld(1:is_fld)
+!!          is_fld = i_velo, i_vort, i_magne, i_current, i_temp, i_light
+!!       Output:  rj_fld(1:is_fld)
+!!          is_fld = i_filter_velo, i_filter_vort, i_filter_magne, 
 !!                  i_filter_current, i_filter_temp, i_filter_comp, 
 !!                  i_wide_fil_velo, i_wide_fil_vort, i_wide_fil_magne,
 !!                  i_wide_fil_current, i_wide_fil_temp, i_wide_fil_comp
 !!      subroutine cal_filtered_sph_rj_forces                           &
 !!     &         (sph_rj, ipol, SGS_param, dynamic_SPH, rj_fld)
-!!       Input:   rj_fld(1:i_fld)
-!!          i_fld = i_m_advect, i_lorentz, i_vp_induct,
+!!       Input:   rj_fld(1:is_fld)
+!!          is_fld = i_m_advect, i_lorentz, i_vp_induct,
 !!                  i_h_flux, i_c_flux
-!!       Output:  rj_fld(1:i_fld)
-!!          i_fld = i_SGS_inertia, i_SGS_Lorentz, i_SGS_vp_induct, 
+!!       Output:  rj_fld(1:is_fld)
+!!          is_fld = i_SGS_inertia, i_SGS_Lorentz, i_SGS_vp_induct, 
 !!                  i_SGS_h_flux, i_SGS_c_flux, 
 !!                  i_wide_SGS_inertia, i_wide_SGS_Lorentz,
 !!                  i_wide_SGS_vp_induct,

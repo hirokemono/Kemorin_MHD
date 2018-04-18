@@ -11,8 +11,12 @@
 !!     &         (sph, comms_sph, fl_prop, sph_bc_U, omega_sph,         &
 !!     &          trans_p, gt_cor, ipol, rj_fld, trns_MHD,              &
 !!     &          WK_sph, MHD_mul_FFTW, cor_rlm)
+!!        Input ::  rj_fld
+!!        Output :: trns_MHD, cor_rlm
 !!      subroutine sph_pole_trans_4_MHD(sph, comms_sph,                 &
 !!     &          trans_p, ipol, rj_fld, trns_MHD)
+!!        Input ::  rj_fld
+!!        Output :: trns_MHD
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -29,6 +33,8 @@
 !!      subroutine sph_forward_trans_4_MHD                              &
 !!     &         (sph, comms_sph, fl_prop, trans_p, cor_rlm,            &
 !!     &          ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
+!!        Input :: trns_MHD, cor_rlm
+!!        Output ::  rj_fld
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(fluid_property), intent(in) :: fl_prop

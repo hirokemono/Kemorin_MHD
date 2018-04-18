@@ -10,6 +10,12 @@
 !!      subroutine nonlinear_terms_in_rtp                               &
 !!     &         (sph_rtp, MHD_prop, b_trns, f_trns,                    &
 !!     &          ncomp_rj_2_rtp, ncomp_rtp_2_rj, fld_rtp, frc_rtp)
+!!       Input ::  fld_rtp(1,ib_fld)
+!!               ib_fld = i_velo, i_vort, i_magne, i_current,
+!!                        i_temp, i_light
+!!       Output :: frc_rtp(1,if_frc)
+!!               if_frc = i_m_advect, i_lorentz, i_vp_induct, 
+!!                        i_h_flux, i_c_flux, i_Coriolis
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -17,6 +23,10 @@
 !!        type(phys_address), intent(in) :: b_trns, f_trns
 !!      subroutine add_ref_advect_sph_MHD(sph_rj, sph_MHD_bc, MHD_prop, &
 !!     &          leg, ref_temp, ref_comp, ipol, rj_fld)
+!!       Input ::  rj_fld(1,is_fld)
+!!               is_fld = i_velo, i_h_advect, i_c_advect
+!!       Output :: rj_fld(1,is_fld)
+!!               is_fld = i_h_advect, i_c_advect
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc

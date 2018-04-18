@@ -10,6 +10,12 @@
 !!      subroutine filtered_nonlinear_in_rtp(SGS_param, sph_rtp,        &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, b_trns, f_trns,   &
 !!     &          ncomp_rj_2_rtp, ncomp_rtp_2_rj, fld_rtp, frc_rtp)
+!!       Input ::  fld_rtp(1,ib_fld)
+!!               ib_fld = i_filter_velo, i_filter_vort, i_filter_magne, 
+!!                        i_filter_current, i_filter_temp, i_filter_comp
+!!       Output :: frc_rtp(1,if_frc)
+!!               if_frc = i_SGS_inertia, i_SGS_Lorentz,
+!!                        i_SGS_vp_induct, i_SGS_h_flux, i_SGS_c_flux
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -19,12 +25,43 @@
 !!
 !!      subroutine similarity_SGS_terms_rtp                             &
 !!     &         (sph_rtp, f_trns, bg_trns, fg_trns,                    &
-!!     &          ncomp_rtp_2_rj, nc_SGS_rj_2_rtp, nc_SGS_rtp_2_rj,     &
-!!     &          frc_rtp, fil_rtp, fSGS_rtp)
+!!     &          nc_SGS_rj_2_rtp, ncomp_rtp_2_rj, nc_SGS_rtp_2_rj,     &
+!!     &          fil_rtp, frc_rtp, fSGS_rtp)
+!!       Input ::  fil_rtp(1,il_frc)
+!!               il_frc = i_SGS_inertia, i_SGS_Lorentz,
+!!                        i_SGS_vp_induct, i_SGS_h_flux, i_SGS_c_flux
+!!                 frc_rtp(1,if_frc)
+!!               if_frc = i_SGS_inertia, i_SGS_Lorentz,
+!!                        i_SGS_vp_induct, i_SGS_h_flux, i_SGS_c_flux
+!!       Output ::  fSGS_rtp(1,ig_frc)
+!!               ig_frc = i_SGS_inertia, i_SGS_Lorentz,
+!!                        i_SGS_vp_induct, i_SGS_h_flux, i_SGS_c_flux
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(phys_address), intent(in) :: f_trns
+!!        type(phys_address), intent(in) :: bg_trns, fg_trns
+!!
 !!      subroutine wider_similarity_SGS_rtp(istep_dynamic,              &
 !!     &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
 !!     &          b_trns, bg_trns, ncomp_rj_2_rtp, nc_SGS_rj_2_rtp,     &
 !!     &          fld_rtp, fil_rtp)
+!!       Input ::  fil_rtp(1,il_frc)
+!!               il_frc = i_wide_SGS_inertia, i_wide_SGS_Lorentz,
+!!                        i_wide_SGS_vp_induct, i_wide_SGS_h_flux, 
+!!                        i_wide_SGS_c_flux
+!!                 fld_rtp(1,ib_frc)
+!!               ib_frc = i_wide_fil_velo, i_wide_fil_vort,
+!!                        i_wide_fil_magne, i_wide_fil_current
+!!                        i_wide_fil_temp, i_wide_fil_comp
+!!       Output ::  fil_rtp(1,il_frc)
+!!               il_frc = i_wide_SGS_inertia, i_wide_SGS_Lorentz,
+!!                        i_wide_SGS_vp_induct, i_wide_SGS_h_flux, 
+!!                        i_wide_SGS_c_flux
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(phys_address), intent(in) :: b_trns
+!!        type(phys_address), intent(in) :: bg_trns
 !!@endverbatim
 !
       module cal_SGS_terms_sph_MHD
@@ -50,6 +87,17 @@
 !
 !-----------------------------------------------------------------------
 !
+!>      Get @f$ e_{ijk} \overline{\tilde{\omega}}_{j}
+!!                      \overline{\tilde{u}}_{k} @f$,
+!>      @f$ e_{ijk}\overline{\tilde{J}}_{j}\overline{\tilde{B}}_{k} @f$,
+!>      @f$ e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{B}}_{k} @f$,
+!>      @f$ \overline{\tilde{u}}_{i}\overline{\tilde{T}} @f$,
+!>      @f$ \overline{\tilde{u}}_{i}\overline{\tilde{C}} @f$,
+!!        from @f$ \overline{\tilde{u}}_{i} @f$,
+!!      @f$ \overline{\tilde{\omega}_{i} @f$, 
+!!      @f$ \overline{\tilde{B}}_{i} @f$, 
+!!      @f$ \overline{\tilde{J}}_{i} @f$, 
+!!      @f$ \overline{\tilde{T}} @f$, and @f$ \overline{\tilde{C}} @f$
       subroutine filtered_nonlinear_in_rtp(SGS_param, sph_rtp,          &
      &          fl_prop, cd_prop, ht_prop, cp_prop, b_trns, f_trns,     &
      &          ncomp_rj_2_rtp, ncomp_rtp_2_rj, fld_rtp, frc_rtp)
@@ -125,10 +173,21 @@
 !
 !-----------------------------------------------------------------------
 !
+!>      Get @f$ e_{ijk} \overline{\tilde{\omega}_{j}\tilde{u}_{k}}
+!!             - e_{ijk} \overline{\tilde{\omega}}_{j}
+!!                      \overline{\tilde{u}}_{k} @f$,
+!!      @f$ e_{ijk}\overline{\tilde{J}_{j} \tilde{B}_{k}}
+!!         - e_{ijk}\overline{\tilde{J}}_{j}\overline{\tilde{B}}_{k} @f$,
+!!      @f$ e_{ijk}\overline{\tilde{u}_{j} \tilde{B}_{k}}
+!!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{B}}_{k} @f$,
+!!      @f$ e_{ijk}\overline{\tilde{u}_{j} \tilde{T}}
+!!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{T}} @f$, and
+!!      @f$ e_{ijk}\overline{\tilde{u}_{j} \tilde{C}}
+!!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{C}} @f$,
       subroutine similarity_SGS_terms_rtp                               &
      &         (sph_rtp, f_trns, bg_trns, fg_trns,                      &
-     &          ncomp_rtp_2_rj, nc_SGS_rj_2_rtp, nc_SGS_rtp_2_rj,       &
-     &          frc_rtp, fil_rtp, fSGS_rtp)
+     &          nc_SGS_rj_2_rtp, ncomp_rtp_2_rj, nc_SGS_rtp_2_rj,       &
+     &          fil_rtp, frc_rtp, fSGS_rtp)
 !
       use cal_subtract_smp
 !
@@ -188,6 +247,22 @@
 !
 !-----------------------------------------------------------------------
 !
+!>      Get 
+!!      @f$ e_{ijk} \overline{\overline{\tilde{\omega}_{j}\tilde{u}_{k}}}
+!!         - e_{ijk} \overline{\overline{\tilde{\omega}}}_{j}
+!!                  \overline{\overline{\tilde{u}}}_{k} @f$,
+!!      @f$ e_{ijk}\overline{\overline{\tilde{J}_{j} \tilde{B}_{k}}}
+!!         - e_{ijk} \overline{\overline{\tilde{J}}}_{j}
+!!                  \overline{\overline{\tilde{B}}}_{k} @f$,
+!!      @f$ e_{ijk}\overline{\overline{\tilde{u}_{j} \tilde{B}_{k}}}
+!!         - e_{ijk} \overline{\overline{\tilde{u}}}_{j}
+!!                  \overline{\overline{\tilde{B}}}_{k} @f$,
+!!      @f$ e_{ijk}\overline{\overline{\tilde{u}_{j} \tilde{T}}}
+!!         - e_{ijk} \overline{\overline{\tilde{u}}}_{j}
+!!                  \overline{\overline{\tilde{T}}} @f$, and
+!!      @f$ e_{ijk}\overline{\overline{\tilde{u}_{j} \tilde{C}}}
+!!         - e_{ijk} \overline{\overline{\tilde{u}}}_{j}
+!!                  \overline{\overline{\tilde{C}}} @f$,
       subroutine wider_similarity_SGS_rtp(istep_dynamic,                &
      &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
      &          b_trns, bg_trns, ncomp_rj_2_rtp, nc_SGS_rj_2_rtp,       &

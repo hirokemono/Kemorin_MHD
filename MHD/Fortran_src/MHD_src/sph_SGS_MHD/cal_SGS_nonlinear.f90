@@ -297,9 +297,9 @@
         if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
         call similarity_SGS_terms_rtp(sph%sph_rtp,                      &
      &      trns_MHD%f_trns, trns_SGS%b_trns, trns_SGS%f_trns,          &
-     &      trns_MHD%ncomp_rtp_2_rj, trns_SGS%ncomp_rj_2_rtp,           &
-     &      trns_SGS%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                  &
-     &      trns_SGS%fld_rtp, trns_SGS%frc_rtp)
+     &      trns_SGS%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,           &
+     &      trns_SGS%ncomp_rtp_2_rj,                  &
+     &      trns_SGS%fld_rtp, trns_MHD%frc_rtp, trns_SGS%frc_rtp)
 !
         istep_dynamic = mod(i_step, i_step_sgs_coefs)
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
