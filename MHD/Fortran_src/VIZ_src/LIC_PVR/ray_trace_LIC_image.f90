@@ -102,17 +102,17 @@
       !call import_noise_nd_ary(lic_p%noise_file_name,                  &
 !     &    n_node_data, n_d_size, read_err)
       ! directly import noise_value to an array
-      call import_noise_ary(lic_p%noise_file_name,                      &
-     &    noise_data, n_d_size, read_err)
-      if(read_err .eq. 0) then
-        call import_noise_grad_ary(lic_p%reflection_file_name,          &
-     &      noise_grad_data, n_d_size, read_err)
-      end if
+!      call import_noise_ary(lic_p%noise_file_name,                      &
+!     &    noise_data, n_d_size, read_err)
+!      if(read_err .eq. 0) then
+!        call import_noise_grad_ary(lic_p%reflection_file_name,          &
+!     &      noise_grad_data, n_d_size, read_err)
+!      end if
       call generate_kernal_ary(k_size, k_ary)
 
-      n_size = n_d_size(1) * n_d_size(2) * n_d_size(3)
-      range_min = 3.0
-      range_max = 14.0
+      n_size = lic_p%noise_size(1) * lic_p%noise_size(2) * lic_p%noise_size(3)
+      range_min = 0.0
+      range_max = 120.0
       allocate(n_mask)
       call init_noise_mask(n_mask, range_min, range_max, field_pvr%d_pvr, node%numnod)
 

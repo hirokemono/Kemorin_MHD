@@ -122,7 +122,7 @@
           call noise_grad_sampling(noise_size, f_noise, noise_grad, xx_org, xyz_min, xyz_max, n_grad)
         end if
         o_tgt = o_tgt + n_v * kernal_node(kernal_size/2.0)
-        n_grad = n_grad + n_grad * kernal_node(kernal_size/2)
+        n_grad = n_grad + n_grad * kernal_node(kernal_size/2.0)
 
         if(iflag_debug .eq. 1) write(50+my_rank,*) "------------------------Forward iter begin--------------------"
         !   forward integration

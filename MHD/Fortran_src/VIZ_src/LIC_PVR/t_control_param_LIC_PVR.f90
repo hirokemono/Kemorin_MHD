@@ -132,6 +132,8 @@
       call set_control_lic_parameter(num_nod_phys, phys_nod_name,       &
      &    lic_ctl_type, lic_fld%lic_param)
 !
+      call load_noise_data(lic_fld%lic_param)
+!
       if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
       call set_control_pvr(pvr_ctl_type, ele_grp, surf_grp,             &
      &    lic_fld%area_def, pvr_data%view, pvr_param%field,             &
@@ -163,6 +165,8 @@
       if(pvr_param%field%num_isosurf .gt. 0) then
         call dealloc_pvr_isosurfaces(pvr_param%field)
       end if
+!
+      call dealloc_lic_noise_data(lic_fld%lic_param)
 !
       call dealloc_pvr_element_group(lic_fld%area_def)
       call dealloc_pvr_color_parameteres(pvr_data%color)
