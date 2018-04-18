@@ -96,7 +96,7 @@ end subroutine import_noise_nd_ary
 
       ! parameter for read noise data
       character(len = kchara), intent(in) :: filename
-      integer(kind = kint), intent(inout) :: n_data_size(3)
+      integer(kind = kint), intent(in) :: n_data_size(3)
       character(len=1), allocatable, intent(inout) :: n_grad_data(:)
       integer(kind = kint), intent(inout) :: ierr
       integer(kind = kint) :: d_size
@@ -247,7 +247,7 @@ end subroutine import_noise_nd_ary
       character(len=1), intent(in) :: noise_data(noise_size)
       real(kind = kreal), intent(in) :: xx_org(3), xyz_min(3), xyz_max(3)
       real(kind = kreal), intent(inout) :: noise_value
-      integer(kind = kint) :: idx, idx000,idx001,idx010,idx011,idx100,idx101,idx110,idx111
+      integer(kind = kint) :: idx000,idx001,idx010,idx011,idx100,idx101,idx110,idx111
       real(kind = kreal) :: xyz(3), xyz_d(3), c00, c01, c10, c11, c0, c1
       integer(kind = kint) :: xyz_i(3)
       !
@@ -299,7 +299,7 @@ end subroutine import_noise_nd_ary
       character(len=1), intent(in) :: noise_grad(noise_size*3)
       real(kind = kreal), intent(in) :: xx_org(3), xyz_min(3), xyz_max(3)
       real(kind = kreal), intent(inout) :: grad_value(3)
-      integer(kind = kint) :: idx, idx000,idx001,idx010,idx011,idx100,idx101,idx110,idx111
+      integer(kind = kint) :: idx000,idx001,idx010,idx011,idx100,idx101,idx110,idx111
       real(kind = kreal) :: xyz(3), xyz_d(3), c00(3), c01(3), c10(3), c11(3), c0(3), c1(3)
       integer(kind = kint) :: xyz_i(3)
 !
@@ -352,8 +352,8 @@ end subroutine import_noise_nd_ary
       type(noise_node), intent(in) :: n_node(noise_size)
       real(kind = kreal), intent(in) :: xx_org(3), xyz_min(3), xyz_max(3)
       real(kind = kreal), intent(inout) :: noise_value
-      integer(kind = kint) :: idx, idx000,idx001,idx010,idx011,idx100,idx101,idx110,idx111
-      real(kind = kreal) :: xyz(3), xyz_d(3), c00, c01, c10, c11, c0, c1
+      integer(kind = kint) :: idx
+      real(kind = kreal) :: xyz(3)
       integer(kind = kint) :: xyz_i(3)
 !
       integer(kind = kint) :: dim

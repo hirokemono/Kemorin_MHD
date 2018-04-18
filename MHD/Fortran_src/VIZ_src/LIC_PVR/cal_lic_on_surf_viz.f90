@@ -24,6 +24,7 @@
 !
       use m_precision
       use m_constants
+      use t_control_param_LIC
       use lic_noise_generator
       use lic_kernel_generator
       use cal_field_on_surf_viz
@@ -43,9 +44,8 @@
       subroutine cal_lic_on_surf_vector                                 &
      &         (nnod, nsurf, nelem, nnod_4_surf, isf_4_ele,             &
      &          iele_4_surf, interior_surf, xx,                         &
-     &          isurf_orgs, ie_surf, xi,                    &
-     &          f_noise, factor_lic_magnify, noise_size,                &
-     &          noise_nod, noise_grad, n_mask, r_org, vec_org,          &
+     &          isurf_orgs, ie_surf, xi, lic_p,                         &
+     &          n_mask, r_org, vec_org,                                 &
      &          kernal_size, kernal_node,                               &
      &          v_nod, xx_org, isurf, xyz_min, xyz_max, iflag_comm,     &
      &          o_tgt, n_grad)
@@ -60,19 +60,16 @@
         integer(kind = kint), intent(in) :: iele_4_surf(nsurf, 2, 2)
         integer(kind = kint), intent(in) :: interior_surf(nsurf)
         integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
-
-      real(kind = kreal), intent(in) :: f_noise
-      real(kind = kreal), intent(in) :: factor_lic_magnify
+!
+        type(lic_parameters), intent(in) :: lic_p
 !
         real(kind = kreal), intent(inout) :: xi(2)
         real(kind = kreal), intent(in) :: v_nod(nnod,3), xx(nnod, 3)
         real(kind = kreal), intent(in) :: xx_org(3), r_org, vec_org(3)
         real(kind = kreal), intent(inout) :: o_tgt, n_grad(3)
         integer(kind = kint), intent(inout) :: iflag_comm
-        integer(kind = kint), intent(in) :: noise_size, kernal_size
+        integer(kind = kint), intent(in) :: kernal_size
         real(kind = kreal), intent(in) :: kernal_node(kernal_size)
-        character(kind = 1), intent(in):: noise_grad(noise_size*3)
-        character(kind = 1), intent(in):: noise_nod(noise_size)
         !type(noise_node), intent(in) :: noise_nod(noise_size)
         type(noise_mask), intent(inout) :: n_mask
 
@@ -118,8 +115,10 @@
         end do
 
         if(mask_flag(n_mask, r_org)) then
-          call noise_sampling(noise_size, f_noise, noise_nod, xx_org, xyz_min, xyz_max, n_v)
-          call noise_grad_sampling(noise_size, f_noise, noise_grad, xx_org, xyz_min, xyz_max, n_grad)
+          call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,                   &
+          &     xx_org, xyz_min, xyz_max, n_v)
+          call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,         &
+          &     xx_org, xyz_min, xyz_max, n_grad)
         end if
         o_tgt = o_tgt + n_v * kernal_node(kernal_size/2.0)
         n_grad = n_grad + n_grad * kernal_node(kernal_size/2.0)
@@ -160,11 +159,10 @@
           if(iflag_debug .eq. 1) write(50+my_rank, *) "start cal lic, ele and surf: ", ilic_suf_org(1), ilic_suf_org(2)
           call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
           &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
-          &          iele_4_surf, interior_surf, f_noise,   &
+          &          iele_4_surf, interior_surf, lic_p,                 &
           &          forward_len, iflag_back, xyz_min, xyz_max,         &
           &          v_nod, ilic_suf_org, new_pos, step_vec,            &
-          &          kernal_size, kernal_node, noise_size, noise_nod,   &
-          &          noise_grad, n_mask,                                &
+          &          kernal_size, kernal_node, n_mask,                  &
           &          lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -198,11 +196,10 @@
           if(iflag_debug .eq. 1) write(50+my_rank, *) "start cal lic, ele and surf: ", ilic_suf_org(1), ilic_suf_org(2)
           call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
           &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
-          &          iele_4_surf, interior_surf, f_noise,   &
-          &          forward_len, iflag_back, xyz_min, xyz_max,         &
+          &          iele_4_surf, interior_surf, lic_p,                 &
+          &          backward_len, iflag_back, xyz_min, xyz_max,        &
           &          v_nod, ilic_suf_org, new_pos, step_vec,            &
-          &          kernal_size, kernal_node, noise_size, noise_nod,   &
-          &          noise_grad, n_mask,                                &
+          &          kernal_size, kernal_node, n_mask,                  &
           &          lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -211,7 +208,7 @@
         if(k_area .gt. 0.0) then
           o_tgt = o_tgt / k_area
         end if
-        o_tgt = o_tgt * factor_lic_magnify
+        o_tgt = o_tgt * lic_p%factor_normal
 
         if(iflag_debug .eq. 1) write(50+my_rank,*) "Get lic value: ", o_tgt
         if(iflag_debug .eq. 1) write(50+my_rank, *)"   "
@@ -222,10 +219,10 @@
 !
     subroutine s_cal_lic_from_point(numnod, numele, numsurf,           &
     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
-    &          iele_4_surf, interior_surf,                 &
-    &          f_noise, max_line_len, iflag_back, xyz_min, xyz_max,    &
+    &          iele_4_surf, interior_surf, lic_p,                      &
+    &          max_line_len, iflag_back, xyz_min, xyz_max,    &
     &          vect_nod, isurf_org, x_start, v_start,                  &
-    &          k_size, k_node, n_size, n_node, grad_node, n_mask,      &
+    &          k_size, k_node, n_mask,                                 &
     &          lic_v, grad_v, k_area, iflag_comm)
 
       use t_noise_node_data
@@ -241,16 +238,14 @@
     !
       integer(kind = kint), intent(in) :: iflag_back
       real(kind = kreal), intent(in) :: vect_nod(numnod,3), max_line_len
-      real(kind = kreal), intent(in) :: f_noise
+      type(lic_parameters), intent(in) :: lic_p
     !
       integer(kind = kint), intent(inout) :: isurf_org(3)
       integer(kind = kint), intent(inout) :: iflag_comm
       real(kind = kreal), intent(inout) ::   v_start(3), x_start(3)
     !
-      integer(kind = kint), intent(in) :: n_size, k_size
+      integer(kind = kint), intent(in) :: k_size
       real(kind = kreal), intent(in) :: k_node(k_size)
-      character(kind = 1), intent(in):: grad_node(n_size*3)
-      character(kind = 1), intent(in):: n_node(n_size)
     !type(noise_node), intent(in) :: n_node(n_size)
       type(noise_mask), intent(inout) :: n_mask
     !
@@ -362,8 +357,10 @@
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
         &      ie_surf, isurf_end, xi, n_mask%ref_data, ref_value(1))
         if(mask_flag(n_mask, ref_value(1))) then
-          call noise_sampling(n_size, f_noise, n_node, x_tgt, xyz_min, xyz_max, n_v)
-          call noise_grad_sampling(n_size, f_noise, grad_node, x_tgt, xyz_min, xyz_max, g_v)
+          call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
+          &     x_tgt, xyz_min, xyz_max, n_v)
+          call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,     &
+          &     x_tgt, xyz_min, xyz_max, g_v)
         end if
         nv_sum = nv_sum + n_v
         len_sum = len_sum + step_len
@@ -415,8 +412,10 @@
           call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
           &      ie_surf, isurf_end, xi, n_mask%ref_data, ref_value(1))
           if(mask_flag(n_mask, ref_value(1))) then
-            call noise_sampling(n_size, f_noise, n_node, x_tgt, xyz_min, xyz_max, n_v)
-            call noise_grad_sampling(n_size, f_noise, grad_node, x_tgt, xyz_min, xyz_max, g_v)
+            call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
+            &     x_tgt, xyz_min, xyz_max, n_v)
+            call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,     &
+            &     x_tgt, xyz_min, xyz_max, g_v)
           end if
           !call noise_nd_sampling(n_size, n_node, x_tgt, xyz_min, xyz_max, n_v)
           if(iflag_back .eq. ione) then

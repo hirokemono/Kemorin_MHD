@@ -85,47 +85,21 @@
       integer(kind = kint) :: inum, iflag_comm
       real(kind = kreal) :: rgba_tmp(4)
 !
-      integer(kind = kint) :: n_d_size(3)
-      character, allocatable:: noise_data(:), noise_grad_data(:)
-      !type(noise_node), pointer, dimension(:) :: n_node_data
       type(noise_mask), allocatable :: n_mask
       integer(kind = kint) :: k_size
       real(kind = kreal), allocatable :: k_ary(:)
-      integer(kind = kint) :: read_err, n_size
       real(kind = kreal) :: range_max, range_min
 
       iflag_debug = 0
 !
       k_size = 128
       allocate(k_ary(k_size))
-      ! import noise_value in noise_node data structure
-      !call import_noise_nd_ary(lic_p%noise_file_name,                  &
-!     &    n_node_data, n_d_size, read_err)
-      ! directly import noise_value to an array
-!      call import_noise_ary(lic_p%noise_file_name,                      &
-!     &    noise_data, n_d_size, read_err)
-!      if(read_err .eq. 0) then
-!        call import_noise_grad_ary(lic_p%reflection_file_name,          &
-!     &      noise_grad_data, n_d_size, read_err)
-!      end if
       call generate_kernal_ary(k_size, k_ary)
 
-      n_size = lic_p%noise_size(1) * lic_p%noise_size(2) * lic_p%noise_size(3)
       range_min = 0.0
       range_max = 120.0
       allocate(n_mask)
       call init_noise_mask(n_mask, range_min, range_max, field_pvr%d_pvr, node%numnod)
-
-      !if(read_err .eq. 0 .and. iflag_debug .gt. 0) then
-      !  write(*,*)  'noise data size', n_d_size(1), n_d_size(2), n_d_size(3)
-      !  write(*,*)  'kernel data', k_size
-      !  do i = 1, n_size
-          !read(raw_data(i), *) j
-          !write(*,*) ichar(raw_data(i))
-      !    write(*,*) noise_data(i)
-      !  end do
-      !end if
-
 !
 !$omp parallel do private(inum, iflag_comm,rgba_tmp)
       do inum = 1, num_pvr_ray
@@ -134,17 +108,16 @@
 !        end if
 !
         rgba_tmp(1:4) = zero
-        call lic_ray_trace_each_pixel                                        &
-     &      (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,        &
-     &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,                 &
-     &       ele%interior_ele, node%xx, surf%vnorm_surf, surf%interior_surf, &
-     &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,                   &
+        call lic_ray_trace_each_pixel                                               &
+     &      (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,               &
+     &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,                        &
+     &       ele%interior_ele, node%xx, surf%vnorm_surf, surf%interior_surf,        &
+     &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,                          &
      &       pvr_screen%viewpoint_vec, lic_p, field_pvr, color_param, ray_vec,      &
-     &       id_pixel_check(inum), isf_pvr_ray_start(1,inum),                &
-     &       xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),                 &
-     &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),      &
-     &       k_size, k_ary, n_size, noise_data, noise_grad_data, n_mask,     &
-     &       node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
+     &       id_pixel_check(inum), isf_pvr_ray_start(1,inum),                       &
+     &       xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),                        &
+     &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),             &
+     &       k_size, k_ary, n_mask, node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
       end do
 !$omp end parallel do
@@ -199,8 +172,7 @@
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
      &        lic_p, field_pvr, color_param, ray_vec, iflag_check,      &
      &        isurf_org, screen_st, xx_st, xi, rgba_ray, icount_line,   &
-     &        k_size, k_ary, n_size, noise_data, noise_grad, n_mask,    &
-     &        xyz_min_gl, xyz_max_gl, iflag_comm)
+     &        k_size, k_ary, n_mask, xyz_min_gl, xyz_max_gl, iflag_comm)
 !
       use t_geometries_in_pvr_screen
       use cal_field_on_surf_viz
@@ -237,10 +209,6 @@
       real(kind = kreal), intent(inout) :: xx_st(3), xi(2)
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
-      integer(kind = kint), intent(in) :: n_size
-      character(kind=1), intent(in):: noise_grad(n_size*3)
-      character(kind=1), intent(in):: noise_data(n_size)
-      !type(noise_node), intent(in) :: noise_data(n_size)
       type(noise_mask), intent(inout) :: n_mask
       integer(kind = kint), intent(in) :: k_size
       real(kind = kreal), intent(in) :: k_ary(k_size)
@@ -364,8 +332,8 @@
               vec_mid = vec_org * (1-ratio) + vec_tgt * ratio
               call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
               &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
-              &      isurf_orgs, ie_surf, xi, lic_p%freq_noise, lic_p%factor_normal,    &
-              &      n_size, noise_data, noise_grad, n_mask, r_mid(1), vec_mid,         &
+              &      isurf_orgs, ie_surf, xi, lic_p,                                    &
+              &      n_mask, r_mid(1), vec_mid,                                         &
               &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
               &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
 
@@ -394,8 +362,8 @@
 !   as volume rendering
             call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
             &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
-            &      isurf_orgs, ie_surf, xi, lic_p%freq_noise, lic_p%factor_normal,    &
-            &      n_size, noise_data, noise_grad, n_mask, r_mid(1), vec_mid,         &
+            &      isurf_orgs, ie_surf, xi, lic_p,                                    &
+            &      n_mask, r_mid(1), vec_mid,                                         &
             &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
             &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
 
