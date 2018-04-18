@@ -96,8 +96,8 @@
       allocate(k_ary(k_size))
       call generate_kernal_ary(k_size, k_ary)
 
-      range_min = 0.0
-      range_max = 120.0
+      range_min = 3.0
+      range_max = 14.0
       allocate(n_mask)
       call init_noise_mask(n_mask, range_min, range_max, field_pvr%d_pvr, node%numnod)
 !
@@ -388,6 +388,7 @@
         screen_st(1:3) = screen_tgt(1:3)
         xx_st(1:3) = xx_tgt(1:3)
         r_org(1) = r_tgt(1)
+        vec_org(1:3) = vec_tgt(1:3)
       end do
       end subroutine lic_ray_trace_each_pixel
 !
