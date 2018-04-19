@@ -99,7 +99,7 @@
       range_min = 3.0
       range_max = 14.0
       allocate(n_mask)
-      call init_noise_mask(n_mask, range_min, range_max, field_pvr%d_pvr, node%numnod)
+      call init_noise_mask(n_mask, range_min, range_max, field_pvr%s_lic, node%numnod)
 !
 !$omp parallel do private(inum, iflag_comm,rgba_tmp)
       do inum = 1, num_pvr_ray
