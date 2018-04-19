@@ -70,11 +70,24 @@
         integer(kind = kint) :: nfield_rj_2_rtp = 0
 !>        Field name for backward transform
         character(len = kchara), allocatable :: b_trns_name(:)
+!>        address of backward transform array
+        integer(kind = kint), allocatable :: ifld_trns(:)
+!>        address of backward transform for sprctr
+        integer(kind = kint), allocatable :: ifld_rj(:)
+!>        address of backward transform for nodal field
+        integer(kind = kint), allocatable :: ifld_rtp(:)
 !
 !>        number of components for backward spherical harmonics transform
         integer(kind = kint) :: nfield_rtp_2_rj = 0
 !>        Field name for forward transform
         character(len = kchara), allocatable :: f_trns_name(:)
+!>        address of forward transform array
+        integer(kind = kint), allocatable :: ifrc_trns(:)
+!>        address of forward transform for sprctr
+        integer(kind = kint), allocatable :: ifrc_rj(:)
+!>        address of forward transform for field
+        integer(kind = kint), allocatable :: ifrc_rtp(:)
+!
 !
 !>        field data in grid space
         real(kind = kreal), allocatable :: fld_rtp(:,:)
@@ -107,6 +120,14 @@
 !
       trns%nfield_rj_2_rtp = num_field
       allocate(trns%b_trns_name(trns%nfield_rj_2_rtp))
+      allocate(trns%ifld_trns(trns%nfield_rj_2_rtp))
+      allocate(trns%ifld_rj(trns%nfield_rj_2_rtp))
+      allocate(trns%ifld_rtp(trns%nfield_rj_2_rtp))
+!
+      if(trns%nfield_rj_2_rtp .le. 0) return
+      trns%ifld_trns = 0
+      trns%ifld_rj =   0
+      trns%ifld_rtp =  0
 !
       end subroutine alloc_bwd_trns_field_name
 !
@@ -120,6 +141,14 @@
 !
       trns%nfield_rtp_2_rj = num_field
       allocate(trns%f_trns_name(trns%nfield_rtp_2_rj))
+      allocate(trns%ifrc_trns(trns%nfield_rtp_2_rj))
+      allocate(trns%ifrc_rj(trns%nfield_rtp_2_rj))
+      allocate(trns%ifrc_rtp(trns%nfield_rtp_2_rj))
+!
+      if(trns%nfield_rtp_2_rj .le. 0) return
+      trns%ifrc_trns = 0
+      trns%ifrc_rj =   0
+      trns%ifrc_rtp =  0
 !
       end subroutine alloc_fwd_trns_field_name
 !
@@ -190,6 +219,7 @@
 !
 !
       deallocate(trns%b_trns_name)
+      deallocate(trns%ifld_trns, trns%ifld_rj, trns%ifld_rtp)
 !
       end subroutine dealloc_bwd_trns_field_name
 !
@@ -201,6 +231,7 @@
 !
 !
       deallocate(trns%f_trns_name)
+      deallocate(trns%ifrc_trns, trns%ifrc_rj, trns%ifrc_rtp)
 !
       end subroutine dealloc_fwd_trns_field_name
 !
@@ -208,13 +239,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine add_scalar_trans_flag                                  &
-     &         (is_fld, nfield_vec, num_trans, itrans)
+     &         (iflag, nfield_vec, num_trans, itrans)
 !
-      integer(kind = kint), intent(in) :: is_fld, nfield_vec
+      integer(kind = kint), intent(in) :: iflag, nfield_vec
       integer(kind = kint), intent(inout) :: num_trans, itrans
 !
 !
-      if(is_fld .gt. 0) then
+      if(iflag .gt. 0) then
         num_trans = num_trans + 1
         itrans = num_trans + 3*nfield_vec
       end if
@@ -223,18 +254,34 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_vector_trans_flag(is_fld, num_trans, itrans)
+      subroutine add_vector_trans_flag(iflag, num_trans, itrans)
 !
-      integer(kind = kint), intent(in) :: is_fld
+      integer(kind = kint), intent(in) :: iflag
       integer(kind = kint), intent(inout) :: num_trans, itrans
 !
 !
-      if(is_fld .gt. 0) then
+      if(iflag .gt. 0) then
         num_trans = num_trans + 1
         itrans = 3*num_trans -  2
       end if
 !
       end subroutine add_vector_trans_flag
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_tensor_trans_flag                                  &
+     &         (iflag, nfield_vec, nfield_scl, num_trans, itrans)
+!
+      integer(kind = kint), intent(in) :: iflag, nfield_vec, nfield_scl
+      integer(kind = kint), intent(inout) :: num_trans, itrans
+!
+!
+      if(iflag .gt. 0) then
+        num_trans = num_trans + 1
+        itrans = num_trans + 3*nfield_vec + nfield_scl
+      end if
+!
+      end subroutine add_tensor_trans_flag
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
