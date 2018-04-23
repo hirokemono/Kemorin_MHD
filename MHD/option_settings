@@ -2,6 +2,19 @@ Settings for Makefiles
 
 #
 # -------------------------------------------------------------------------------
+# Mac OS X Sierra with macports (Kemo_MB_2014)
+# -------------------------------------------------------------------------------
+#
+./configure --prefix=/Users/matsui/local \
+CFLAGS='-O4 -Wall -g' FCFLAGS='-O4 -Wall -g -march=westmere  -ffpe-trap=invalid,underflow,denormal -ffpe-summary=invalid,underflow,denormal' \
+F77=gfortran-mp-5 FC=gfortran-mp-7 CC=gcc-mp-7 CXX=g++-mp-7 \
+RANLIB='ranlib -c' --enable-cocoa --with-blas=yes --enable-fftw3 \
+--enable-gl --enable-glui --enable-gtk --enable-libpng \
+--with-zlib=/opt/local --with-hdf5=/opt/local/bin/h5pcc \
+--with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks \
+PKG_CONFIG_PATH=/usr/lib/pkgconfig:/opt/local/lib/pkgconfig
+#
+# -------------------------------------------------------------------------------
 # Intel KNL (TACC:stampede2)
 # -------------------------------------------------------------------------------
 #
@@ -252,7 +265,7 @@ FCFLAGS='-O4 -Wall -g -march=westmere  -ffpe-trap=invalid,underflow,denormal -ff
 F77=gfortran-mp-5 FC=gfortran-mp-5 CC=gcc-mp-5 CXX=g++-mp-5 RANLIB='ranlib -c' \
 --enable-cocoa --with-blas=yes --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
 --enable-libpng  --with-zlib=/opt/local --with-hdf5=/opt/local/bin/h5pcc \
---with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local  \
+--with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks  \
 PKG_CONFIG_PATH='/usr/lib/pkgconfig:/opt/local/lib/pkgconfig'
 
 #
@@ -264,7 +277,7 @@ PKG_CONFIG_PATH='/usr/lib/pkgconfig:/opt/local/lib/pkgconfig'
   F77=gfortran-mp-4.8 FC=gfortran-mp-4.8 CC=gcc-mp-4.8 CXX=g++-mp-4.8 RANLIB='ranlib -c' \
   --enable-cocoa --with-blas=yes --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
   --enable-libpng  --with-zlib=/opt/local --with-hdf5=/Users/matsui/local/bin/h5pcc \
-  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local  \
+  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks  \
 PKG_CONFIG_PATH='/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/opt/local/lib/pkgconfig'
 #
 # -------------------------------------------------------------------------------
@@ -274,7 +287,7 @@ PKG_CONFIG_PATH='/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/opt/local/lib/pkgcon
 ./configure --prefix='/Users/matsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
   --enable-cocoa --with-blas=yes --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
   --enable-libpng  --with-zlib=/Users/matsui/local --with-hdf5=/Users/matsui/local/bin/h5pcc \
-  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local  \
+  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks  \
 PKG_CONFIG_PATH='/Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11/lib/pkgconfig:/usr/local/lib/pkgconfig'
 #
 #
@@ -357,7 +370,7 @@ GTK2_LIBS= -L/usr/local/homebrew/Cellar/gtk+/2.24.10/lib -L/usr/local/homebrew/C
 #  CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
 #  --enable-cocoa --disable-fftw3 --enable-gl --enable-glui --disable-gtk \
 #  --enable-libpng --with-zlib=/Users/matsui/local \
-#  --with-pgplot=/usr/local/pgplot --with-aquaterm=/opt/local
+#  --with-pgplot=/usr/local/pgplot --with-aquaterm=/Library/Frameworks
 #
 #  directories of CALYPSO
 #
@@ -699,7 +712,7 @@ CXXFLAGS =
 ./configure --prefix='/home/hrmatsui/local' CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' \
   --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
   --enable-libpng  --with-zlib=/Users/matsui/local \
-  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local 
+  --with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/Library/Frameworks
 #
 #
 # -------------------------------------------------------------------------------
