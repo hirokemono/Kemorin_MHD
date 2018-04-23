@@ -8,8 +8,8 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine alloc_bwd_trns_field_name(num_field, trns)
-!!      subroutine alloc_fwd_trns_field_name(num_field, trns)
+!!      subroutine alloc_bwd_trns_field_name(trns)
+!!      subroutine alloc_fwd_trns_field_name(trns)
 !!      subroutine alloc_nonlinear_data(sph_rtp, trns)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!      subroutine alloc_nonlinear_pole(sph_rtp, trns)
@@ -29,6 +29,14 @@
 !!     &          nfield_vec, num_trans, itrans)
 !!      subroutine add_vec_trans_flag_snap(is_fld, irtp_fld,            &
 !!     &          num_trans, itrans)
+!!
+!!      subroutine count_num_fields_4_sph_trans(trns, ncomp_sph_trans,  &
+!!     &          nvector_sph_trans, nscalar_sph_trans)
+!!      subroutine set_field_name_4_bwd_trns                            &
+!!     &         (field_name, i_trns, i_rj, irtp, trns)
+!!      subroutine set_field_name_4_fwd_trns                            &
+!!     &         (field_name, i_trns, i_rj, irtp, trns)
+!!        type(address_4_sph_trans), intent(inout) :: trns
 !!@endverbatim
 !
       module t_addresses_sph_transform
@@ -112,13 +120,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_bwd_trns_field_name(num_field, trns)
+      subroutine alloc_bwd_trns_field_name(trns)
 !
-      integer(kind = kint), intent(in) :: num_field
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      trns%nfield_rj_2_rtp = num_field
       allocate(trns%b_trns_name(trns%nfield_rj_2_rtp))
       allocate(trns%ifld_trns(trns%nfield_rj_2_rtp))
       allocate(trns%ifld_rj(trns%nfield_rj_2_rtp))
@@ -133,13 +139,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_fwd_trns_field_name(num_field, trns)
+      subroutine alloc_fwd_trns_field_name(trns)
 !
-      integer(kind = kint), intent(in) :: num_field
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      trns%nfield_rtp_2_rj = num_field
       allocate(trns%f_trns_name(trns%nfield_rtp_2_rj))
       allocate(trns%ifrc_trns(trns%nfield_rtp_2_rj))
       allocate(trns%ifrc_rj(trns%nfield_rtp_2_rj))
@@ -313,6 +317,99 @@
       call add_vector_trans_flag(iflag, num_trans, itrans)
 !
       end subroutine add_vec_trans_flag_snap
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine count_num_fields_4_sph_trans(trns, ncomp_sph_trans,    &
+     &          nvector_sph_trans, nscalar_sph_trans)
+!
+      type(address_4_sph_trans), intent(inout) :: trns
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+      integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
+!
+!
+      trns%nfield_rj_2_rtp =  trns%nvector_rj_2_rtp                     &
+     &                      + trns%nscalar_rj_2_rtp                     &
+     &                      + trns%ntensor_rj_2_rtp
+      trns%nfield_rtp_2_rj =  trns%nvector_rtp_2_rj                     &
+     &                      + trns%nscalar_rtp_2_rj                     &
+     &                      + trns%ntensor_rtp_2_rj
+!
+      nscltsr_rj_2_rtp                                                  &
+     &      = trns%nscalar_rj_2_rtp + 6*trns%ntensor_rj_2_rtp
+      trns%ncomp_rj_2_rtp                                               &
+     &      = 3*trns%nvector_rj_2_rtp + nscltsr_rj_2_rtp
+!
+      nscltsr_rtp_2_rj                                                  &
+     &      = trns%nscalar_rtp_2_rj + 6*trns%ntensor_rtp_2_rj
+      trns%ncomp_rtp_2_rj                                               &
+     &      = 3*trns%nvector_rtp_2_rj + nscltsr_rtp_2_rj
+!
+      ncomp_sph_trans =   max(ncomp_sph_trans, trns%ncomp_rtp_2_rj)
+      ncomp_sph_trans =   max(ncomp_sph_trans, trns%ncomp_rj_2_rtp)
+      nvector_sph_trans = max(nvector_sph_trans, trns%nvector_rj_2_rtp)
+      nvector_sph_trans = max(nvector_sph_trans, trns%nvector_rtp_2_rj)
+      nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rj_2_rtp)
+      nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rtp_2_rj)
+!
+      end subroutine count_num_fields_4_sph_trans
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_field_name_4_bwd_trns                              &
+     &         (field_name, i_trns, i_rj, irtp, icou, trns)
+!
+      use m_machine_parameter
+!
+      character(len = kchara), intent(in) :: field_name
+      integer(kind = kint), intent(in) :: i_trns, i_rj, irtp
+      integer(kind = kint), intent(inout) :: icou
+      type(address_4_sph_trans), intent(inout) :: trns
+!
+!
+      if(i_trns .eq. 0) return
+      icou = icou + 1
+      trns%b_trns_name(icou) = field_name
+      trns%ifld_trns(icou) = i_trns
+      trns%ifld_rj(icou) =   i_rj
+      trns%ifld_rtp(icou) =  irtp
+!
+      if(iflag_debug .eq. 0) return
+      write(*,*) icou, trim(trns%b_trns_name(icou)), ': ',              &
+     &    trns%ifld_trns(icou), trns%ifld_rj(icou), trns%ifld_rtp(icou)
+!
+      end subroutine set_field_name_4_bwd_trns
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_field_name_4_fwd_trns                              &
+     &         (field_name, i_trns, i_rj, irtp, icou, trns)
+!
+      use m_machine_parameter
+!
+      character(len = kchara), intent(in) :: field_name
+      integer(kind = kint), intent(in) :: i_trns, i_rj, irtp
+      integer(kind = kint), intent(inout) :: icou
+      type(address_4_sph_trans), intent(inout) :: trns
+!
+!
+      if(i_trns .eq. 0) return
+      icou = icou + 1
+      trns%f_trns_name(icou) = field_name
+      trns%ifrc_trns(icou) = i_trns
+      trns%ifrc_rj(icou) =   i_rj
+      trns%ifrc_rtp(icou) =  irtp
+!
+      if(iflag_debug .eq. 0) return
+      write(*,*) icou, trim(trns%f_trns_name(icou)), ': ',              &
+     &    trns%ifrc_trns(icou), trns%ifrc_rj(icou), trns%ifrc_rtp(icou)
+!
+      end subroutine set_field_name_4_fwd_trns
 !
 !-----------------------------------------------------------------------
 !

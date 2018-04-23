@@ -65,7 +65,8 @@
         end if
       end do
 !
-      call alloc_bwd_trns_field_name(rj_fld%num_phys_viz, trns_MHD)
+      trns_MHD%nfield_rj_2_rtp = rj_fld%num_phys_viz
+      call alloc_bwd_trns_field_name(trns_MHD)
 !
       icou = 0
       do i_fld = 1, rj_fld%num_phys_viz
@@ -142,7 +143,8 @@
         end if
       end do
 !
-      call alloc_fwd_trns_field_name(rj_fld%num_phys_viz, trns_MHD)
+      trns_MHD%nfield_rtp_2_rj = rj_fld%num_phys_viz
+      call alloc_fwd_trns_field_name(trns_MHD)
 !
       icou = 0
       do i_fld = 1, rj_fld%num_phys_viz
