@@ -11925,7 +11925,7 @@ fi
 
 
 
-	AQUATERM_LIBS="-L${AQUATERM_HOME}/lib ${LIBS} -Wl,-framework -Wl,Foundation"
+	AQUATERM_LIBS="-L${AQUATERM_HOME} ${LIBS} -Wl,-framework -Wl,Foundation"
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: AQUATERM_LIBS: ${AQUATERM_LIBS}" >&5
 $as_echo "AQUATERM_LIBS: ${AQUATERM_LIBS}" >&6; }
 else
