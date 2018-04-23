@@ -14,6 +14,15 @@
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      List of flags
+!!
+!!    noise_type:             'external_file' or 'randum'
+!!    kernel_function_type:   'external_file' or 'linear'
+!!    LIC_trace_length_mode:  'length'  or  'element_count'
+!!    normalization_type:     'set_by_control' or 'set_by_range'
+!!    reflection_reference:   'noise_file''color_field'
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin LIC_ctl
 !!    LIC_field    magnetic_field
 !!
@@ -25,8 +34,8 @@
 !!
 !!    array masking_control    1
 !!      begin masking_control
-!!        source_reference_field        magnetic_field
-!!        source_reference_component    magnetic_field
+!!        masking_field        magnetic_field
+!!        masking_component    magnetic_field
 !!        array masking_range      1
 !!          masking_range       0.5    0.8
 !!          ...
@@ -35,18 +44,18 @@
 !!      ...
 !!   end array masking_control
 !!
-!!    noise_type             external_file
+!!    noise_type             'external_file'
 !!    noise_file_prefix      'noise/noise_64'
 !!    noise_resolution         2048
 !!
-!!    kernel_function_type   external_file
+!!    kernel_function_type   'external_file'
 !!    kernal_image_prefix       'kernel'
 !!
-!!    LIC_trace_length_mode   'length'  or  'element_count'
+!!    LIC_trace_length_mode   'length'
 !!    LIC_trace_length        0.5
 !!    LIC_trace_count         8
 !!
-!!    normalization_type     'constant'
+!!    normalization_type     'set_by_control'
 !!    normalization_value     20.0
 !!
 !!    reflection_reference   'noise_file'
@@ -90,7 +99,10 @@
 !
         type(read_character_item) :: kernel_function_type_ctl
         type(read_character_item) :: kernal_file_prefix_ctl
+!
+        type(read_character_item) :: LIC_trace_length_def_ctl
         type(read_real_item) ::      LIC_trace_length_ctl
+        type(read_integer_item) ::   LIC_trace_count_ctl
 !
         type(read_character_item) :: normalization_type_ctl
         type(read_real_item) ::      normalization_value_ctl
@@ -123,7 +135,11 @@
      &                        = 'kernel_function_type'
       character(len=kchara) :: hd_kernal_file_name                      &
      &                        = 'kernal_image_prefix'
+!
+      character(len=kchara) :: hd_LIC_trace_type                        &
+     &                        = 'LIC_trace_length_mode'
       character(len=kchara) :: hd_LIC_trace_length = 'LIC_trace_length'
+      character(len=kchara) :: hd_LIC_trace_count = 'LIC_trace_count'
 !
       character(len=kchara) :: hd_normalization_type                    &
      &                        = 'normalization_type'
@@ -140,7 +156,8 @@
       private :: hd_masking_ctl
       private :: hd_noise_type, hd_noise_file_head, hd_noise_grid_size
       private :: hd_kernel_function_type, hd_kernal_file_name
-      private :: hd_LIC_trace_length
+      private :: hd_LIC_trace_type
+      private :: hd_LIC_trace_length, hd_LIC_trace_count
       private :: hd_normalization_type, hd_normalization_value
       private :: hd_reflection_ref_type, hd_referection_parameter
 !
@@ -191,8 +208,13 @@
      &     (hd_kernel_function_type, lic_ctl%kernel_function_type_ctl)
         call read_chara_ctl_type                                        &
      &     (hd_kernal_file_name, lic_ctl%kernal_file_prefix_ctl)
+!
+        call read_chara_ctl_type                                        &
+     &     (hd_LIC_trace_type, lic_ctl%LIC_trace_length_def_ctl)
         call read_real_ctl_type                                         &
      &     (hd_LIC_trace_length, lic_ctl%LIC_trace_length_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_LIC_trace_count, lic_ctl%LIC_trace_count_ctl)
 !
         call read_chara_ctl_type                                        &
      &     (hd_normalization_type, lic_ctl%normalization_type_ctl)
@@ -262,7 +284,10 @@
 !
       lic_ctl%kernel_function_type_ctl%iflag = 0
       lic_ctl%kernal_file_prefix_ctl%iflag =   0
+!
+      lic_ctl%LIC_trace_length_def_ctl%iflag = 0
       lic_ctl%LIC_trace_length_ctl%iflag =     0
+      lic_ctl%LIC_trace_count_ctl%iflag =      0
 !
       lic_ctl%normalization_type_ctl%iflag =   0
       lic_ctl%normalization_value_ctl%iflag =  0
@@ -311,7 +336,10 @@
 !
       call bcast_ctl_type_c1(lic_ctl%kernel_function_type_ctl)
       call bcast_ctl_type_c1(lic_ctl%kernal_file_prefix_ctl)
+!
+      call bcast_ctl_type_c1(lic_ctl%LIC_trace_length_def_ctl)
       call bcast_ctl_type_r1(lic_ctl%LIC_trace_length_ctl)
+      call bcast_ctl_type_i1(lic_ctl%LIC_trace_count_ctl)
 !
       call bcast_ctl_type_c1(lic_ctl%normalization_type_ctl)
       call bcast_ctl_type_r1(lic_ctl%normalization_value_ctl)

@@ -157,6 +157,8 @@
         call calypso_mpi_barrier
       end do
 !
+
+!
       call find_lic_surf_domain                                         &
      &   (lic%num_pvr, femmesh%mesh, femmesh%group, ele_mesh,           &
      &    lic%lic_fld, lic%pvr_param, lic%pvr_data)
