@@ -1,3 +1,15 @@
 *~
 MHD/Cocoa/Fortran_codes/Fortran_codes.xcodeproj/
 *.DS_Store
+bin/
+work/
+
+*.log
+
+Makefile
+
+config.status
+
+MHD_project.xcworkspace/contents.xcworkspacedata
+
+MHD_project.xcworkspace/xcuserdata/liaoyangguang.xcuserdatad/UserInterfaceState.xcuserstate

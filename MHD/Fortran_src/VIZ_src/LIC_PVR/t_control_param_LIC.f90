@@ -25,6 +25,8 @@
       use skip_comment_f
       use t_control_params_4_pvr
       use t_control_param_LIC_masking
+      use t_noise_node_data
+      use lic_noise_generator
 !
       implicit  none
 !
@@ -56,8 +58,15 @@
         character(len = kchara) :: noise_file_name
 !>        normalization factor for LIC value
         real(kind = kreal) :: freq_noise = one
-!>        1-D grid size of LIC noise
+!>        1-D grid size of LIC noise, resolution = size * frequency
         integer(kind = kint) :: noise_resolution
+!>        input noise texture size
+        integer(kind = kint) :: noise_dim(3)
+        integer(kind = kint) :: noise_size
+!>        noise texture, 1 BYTE for each noise value
+        character, allocatable:: noise_data(:)
+!>        Precomputed noise gradient for lighting
+        character, allocatable:: noise_grad_data(:)
 !
 !>        integer flag for LIC kernel function
 !>          iflag_linear:    Use symmetric linear kernel
@@ -344,6 +353,49 @@
       end if
 !
       end subroutine set_control_lic_parameter
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine load_noise_data(lic_p)
+!
+      use t_control_data_LIC
+!
+      integer(kind = kint) :: read_err
+      type(lic_parameters), intent(inout) :: lic_p
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'loading noise texture from: ', lic_p%noise_file_name
+      end if
+      call import_noise_ary(lic_p%noise_file_name,                      &
+      &    lic_p%noise_data, lic_p%noise_dim, read_err)
+      if(read_err .eq. 0) then
+        if(iflag_debug .gt. 0) then
+          write(*,*) 'loading noise successfuly, loading gradient from: ', lic_p%reflection_file_name
+        end if
+        call import_noise_grad_ary(lic_p%reflection_file_name,            &
+        &      lic_p%noise_grad_data, lic_p%noise_dim, read_err)
+      end if
+!
+      lic_p%noise_size = lic_p%noise_dim(1) * lic_p%noise_dim(2) * lic_p%noise_dim(3)
+      lic_p%freq_noise = lic_p%noise_resolution / lic_p%noise_dim(1)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'load noise texture from: ', lic_p%noise_file_name
+        write(*,*) 'noise size: ', lic_p%noise_size
+      end if
+      end subroutine load_noise_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_lic_noise_data(lic_p)
+!
+      type(lic_parameters), intent(inout) :: lic_p
+!
+      if(lic_p%noise_size .gt. 0) then
+        deallocate(lic_p%noise_data)
+        deallocate(lic_p%noise_grad_data)
+      end if
+      end subroutine dealloc_lic_noise_data
 !
 !  ---------------------------------------------------------------------
 !
