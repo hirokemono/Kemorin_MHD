@@ -74,8 +74,13 @@
         integer(kind = kint) :: iflag_kernel_type = 0
 !>        file name of kernel function data
         character(len = kchara) :: kernel_image_prefix
-!>        normalization factor for LIC value
+!
+!>        Element counts of LIC field line tracing
+        integer(kind = kint) :: iflag_trace_length_type = izero
+!>        Lengh of LIC field line tracing
         real(kind = kreal) :: trace_length = one
+!>        Element counts of LIC field line tracing
+        integer(kind = kint) :: trace_count =  ieight
 !
 !>        integer flag for LIC normalization mode
 !>          iflag_from_control: Set from control file
@@ -94,6 +99,8 @@
         real(kind = kreal) :: reflection_parameter
       end type lic_parameters
 !
+      character(len = kchara), parameter :: cflag_LIC = 'LIC'
+!
       character(len = kchara), parameter                                &
      &                        :: cflag_from_file = 'file'
       character(len = kchara), parameter                                &
@@ -102,12 +109,17 @@
      &                        :: cflag_linear = 'linear'
 !
       character(len = kchara), parameter                                &
+     &                        :: cflag_by_lengh =   'length'
+      character(len = kchara), parameter                                &
+     &                        :: cflag_by_e_count = 'element_count'
+!
+      character(len = kchara), parameter                                &
      &                        :: cflag_by_range = 'set_by_range'
       character(len = kchara), parameter                                &
      &                        :: cflag_by_ctl =   'set_by_control'
 !
       character(len = kchara), parameter                                &
-     &                        :: cflag_noise_file =   'noise_file'
+     &                        :: cflag_noise_file = 'noise_file'
       character(len = kchara), parameter                                &
      &                        :: cflag_from_color = 'color_field'
 !
@@ -117,6 +129,9 @@
 !
       integer(kind = kint), parameter :: iflag_from_lic =     0
       integer(kind = kint), parameter :: iflag_from_control = 1
+!
+      integer(kind = kint), parameter :: iflag_by_lengh =   0
+      integer(kind = kint), parameter :: iflag_by_e_count = 1
 !
       integer(kind = kint), parameter :: iflag_from_color =   2
 !
@@ -295,9 +310,26 @@
       end if
 !
 !
-      lic_p%trace_length = one
-      if(lic_ctl%LIC_trace_length_ctl%iflag .gt. 0) then
-        lic_p%trace_length = lic_ctl%LIC_trace_length_ctl%realvalue
+      lic_p%iflag_trace_length_type = iflag_by_lengh
+      if(lic_ctl%LIC_trace_length_def_ctl%iflag .gt. 0) then
+        tmpchara = lic_ctl%LIC_trace_length_def_ctl%charavalue
+        if(cmp_no_case(tmpchara, cflag_by_lengh)) then
+          lic_p%iflag_trace_length_type = iflag_by_lengh
+        else if(cmp_no_case(tmpchara, cflag_by_e_count)) then
+          lic_p%iflag_trace_length_type = iflag_by_e_count
+        end if
+      end if
+!
+      if(lic_p%iflag_trace_length_type .eq. iflag_by_lengh) then
+        lic_p%trace_length = one
+        if(lic_ctl%LIC_trace_length_ctl%iflag .gt. 0) then
+          lic_p%trace_length = lic_ctl%LIC_trace_length_ctl%realvalue
+        end if
+      else if(lic_p%iflag_trace_length_type .eq. iflag_by_e_count) then
+        lic_p%trace_count =  ieight
+        if(lic_ctl%LIC_trace_count_ctl%iflag .gt. 0) then
+          lic_p%trace_count = lic_ctl%LIC_trace_count_ctl%intvalue
+        end if
       end if
 !
 !
@@ -343,7 +375,10 @@
         write(*,*) 'iflag_kernel_type: ', lic_p%iflag_kernel_type
         write(*,*) 'kernel_image_prefix: ', lic_p%kernel_image_prefix
 !
+        write(*,*) 'iflag_trace_length_type: ',                         &
+     &             lic_p%iflag_trace_length_type
         write(*,*) 'trace_length: ', lic_p%trace_length
+        write(*,*) 'trace_count: ',  lic_p%trace_count
 !
         write(*,*) 'iflag_normalization: ', lic_p%iflag_normalization
         write(*,*) 'factor_normal: ',       lic_p%factor_normal
