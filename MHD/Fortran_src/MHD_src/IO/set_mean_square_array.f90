@@ -54,21 +54,21 @@
         if (nod_fld%iflag_monitor(i) .eq. 1) then
           if     (field_name .eq. fhd_velo                              &
      &       .or. field_name .eq. fhd_filter_velo                       &
-     &      ) then
-         i0 = i0 + 2
-         j0 = j0 + 7
-        else if ( field_name .eq. fhd_magne                             &
+     &           ) then
+            i0 = i0 + 2
+            j0 = j0 + 7
+          else if(field_name .eq. fhd_magne                             &
      &       .or. field_name .eq. fhd_filter_magne                      &
-     &      ) then
-         i0 = i0 + 3
-         j0 = j0 + 7
-        else if ( field_name .eq. fhd_current ) then
-         i0 = i0 + 4
-         j0 = j0 + 6
-        else if ( field_name .eq. fhd_vort ) then
-         i0 = i0 + 2
-         j0 = j0 + 3
-        else if ( field_name .eq. fhd_vecp                              &
+     &           ) then
+            i0 = i0 + 3
+            j0 = j0 + 7
+          else if(field_name .eq. fhd_current ) then
+            i0 = i0 + 4
+            j0 = j0 + 6
+          else if(field_name .eq. fhd_vort ) then
+            i0 = i0 + 2
+            j0 = j0 + 3
+          else if(field_name .eq. fhd_vecp                              &
      &       .or. field_name .eq. fhd_filter_vecp                       &
      &       .or. field_name .eq. fhd_temp                              &
      &       .or. field_name .eq. fhd_part_temp                         &
@@ -104,17 +104,19 @@
      &       .or. field_name .eq. fhd_temp_generation                   &
      &       .or. field_name .eq. fhd_part_temp_gen                     &
      &       .or. field_name .eq. fhd_part_comp_gen                     &
-     &       .or. field_name .eq. fhd_div_SGS_h_flux                    &
-     &       .or. field_name .eq. fhd_SGS_temp_gen                      &
+     &       .or. field_name .eq. fhd_c_diffuse                         &
+     &       .or. field_name .eq. fhd_thermal_diffusion                 &
+     &       .or. field_name .eq. fhd_vis_ene_diffuse                   &
+     &       .or. field_name .eq. fhd_mag_ene_diffuse                   &
+     &           ) then
+            i0 = i0 + 1
+            j0 = j0 + n_scalar
+          else if(field_name .eq. fhd_SGS_temp_gen                      &
      &       .or. field_name .eq. fhd_SGS_m_ene_gen                     &
      &       .or. field_name .eq. fhd_SGS_Lorentz_work                  &
      &       .or. field_name .eq. fhd_Reynolds_work                     &
      &       .or. field_name .eq. fhd_SGS_buo_flux                      &
      &       .or. field_name .eq. fhd_SGS_comp_buo_flux                 &
-     &       .or. field_name .eq. fhd_c_diffuse                         &
-     &       .or. field_name .eq. fhd_thermal_diffusion                 &
-     &       .or. field_name .eq. fhd_vis_ene_diffuse                   &
-     &       .or. field_name .eq. fhd_mag_ene_diffuse                   &
      &       .or. field_name .eq. fhd_SGS_div_h_flux_true               &
      &       .or. field_name .eq. fhd_SGS_div_c_flux_true               &
      &       .or. field_name .eq. fhd_SGS_Lorentz_wk_true               &
@@ -128,10 +130,12 @@
      &       .or. field_name .eq. fhd_SGS_div_Lorentz                   &
      &       .or. field_name .eq. fhd_w_filter_temp                     &
      &       .or. field_name .eq. fhd_w_filter_comp                     &
-     &      ) then
-         i0 = i0 + 1
-         j0 = j0 + n_scalar
-        else if ( field_name .eq. fhd_mag_tension                       &
+     &       .or. field_name .eq. fhd_d_filter_temp                     &
+     &       .or. field_name .eq. fhd_d_filter_comp                     &
+     &           ) then
+            i0 = i0 + 1
+            j0 = j0 + n_scalar
+          else if(field_name .eq. fhd_mag_tension                       &
      &       .or. field_name .eq. fhd_inertia                           &
      &       .or. field_name .eq. fhd_div_m_flux                        &
      &       .or. field_name .eq. fhd_div_maxwell_t                     &
@@ -154,15 +158,10 @@
      &       .or. field_name .eq. fhd_grad_v_1                          &
      &       .or. field_name .eq. fhd_grad_v_2                          &
      &       .or. field_name .eq. fhd_grad_v_3                          &
-     &       .or. field_name .eq. fhd_filter_vort                       &
-     &       .or. field_name .eq. fhd_w_filter_velo                     &
-     &       .or. field_name .eq. fhd_w_filter_vort                     &
-     &       .or. field_name .eq. fhd_w_filter_magne                    &
-     &       .or. field_name .eq. fhd_w_filter_current                  &
-     &      ) then
-         i0 = i0 + 1
-         j0 = j0 + n_vector
-        else if(  field_name .eq. fhd_SGS_h_flux                        &
+     &           ) then
+            i0 = i0 + 1
+            j0 = j0 + n_vector
+          else if(field_name .eq. fhd_SGS_h_flux                        &
      &       .or. field_name .eq. fhd_SGS_c_flux                        &
      &       .or. field_name .eq. fhd_div_SGS_m_flux                    &
      &       .or. field_name .eq. fhd_SGS_Lorentz                       &
@@ -177,11 +176,6 @@
      &       .or. field_name .eq. fhd_SGS_mag_induct_true               &
      &       .or. field_name .eq. fhd_SGS_buoyancy                      &
      &       .or. field_name .eq. fhd_SGS_comp_buo                      &
-     &       .or. field_name .eq. fhd_wide_SGS_h_flux                   &
-     &       .or. field_name .eq. fhd_wide_SGS_c_flux                   &
-     &       .or. field_name .eq. fhd_wide_SGS_inertia                  &
-     &       .or. field_name .eq. fhd_wide_SGS_Lorentz                  &
-     &       .or. field_name .eq. fhd_wide_SGS_vp_induct                &
      &       .or. field_name .eq. fhd_SGS_rot_inertia                   &
      &       .or. field_name .eq. fhd_SGS_rot_Lorentz                   &
      &       .or. field_name .eq. fhd_geostrophic                       &
@@ -191,10 +185,41 @@
      &       .or. field_name .eq. fhd_Lorentz_w_sgs                     &
      &       .or. field_name .eq. fhd_vp_induct_w_sgs                   &
      &       .or. field_name .eq. fhd_mag_induct_w_sgs                  &
-     &      ) then
-         i0 = i0 + 1
-         j0 = j0 + n_vector
-        else if ( field_name .eq. fhd_mom_flux                          &
+     &           ) then
+            i0 = i0 + 1
+            j0 = j0 + n_vector
+          else if(field_name .eq. fhd_filter_vort                       &
+     &       .or. field_name .eq. fhd_filter_current                    &
+     &       .or. field_name .eq. fhd_grad_filter_temp                  &
+     &       .or. field_name .eq. fhd_grad_filter_comp                  &
+     &       .or. field_name .eq. fhd_w_filter_velo                     &
+     &       .or. field_name .eq. fhd_w_filter_vort                     &
+     &       .or. field_name .eq. fhd_w_filter_vecp                     &
+     &       .or. field_name .eq. fhd_w_filter_magne                    &
+     &       .or. field_name .eq. fhd_w_filter_current                  &
+     &       .or. field_name .eq. fhd_w_filter_grad_temp                &
+     &       .or. field_name .eq. fhd_w_filter_grad_comp                &
+     &       .or. field_name .eq. fhd_d_filter_velo                     &
+     &       .or. field_name .eq. fhd_d_filter_vort                     &
+     &       .or. field_name .eq. fhd_d_filter_magne                    &
+     &       .or. field_name .eq. fhd_d_filter_magne                    &
+     &       .or. field_name .eq. fhd_d_filter_current                  &
+     &       .or. field_name .eq. fhd_d_filter_grad_temp                &
+     &       .or. field_name .eq. fhd_d_filter_grad_comp                &
+     &       .or. field_name .eq. fhd_wide_SGS_h_flux                   &
+     &       .or. field_name .eq. fhd_wide_SGS_c_flux                   &
+     &       .or. field_name .eq. fhd_wide_SGS_inertia                  &
+     &       .or. field_name .eq. fhd_wide_SGS_Lorentz                  &
+     &       .or. field_name .eq. fhd_wide_SGS_vp_induct                &
+     &       .or. field_name .eq. fhd_dbl_SGS_h_flux                    &
+     &       .or. field_name .eq. fhd_dbl_SGS_c_flux                    &
+     &       .or. field_name .eq. fhd_dbl_SGS_inertia                   &
+     &       .or. field_name .eq. fhd_dbl_SGS_Lorentz                   &
+     &       .or. field_name .eq. fhd_dbl_SGS_vp_induct                 &
+     &           ) then
+            i0 = i0 + 1
+            j0 = j0 + n_vector
+          else if(field_name .eq. fhd_mom_flux                          &
      &       .or. field_name .eq. fhd_maxwell_t                         &
      &       .or. field_name .eq. fhd_induct_t                          &
      &       .or. field_name .eq. fhd_SGS_m_flux                        &
@@ -202,11 +227,11 @@
      &       .or. field_name .eq. fhd_SGS_induct_t                      &
      &       .or. field_name .eq. fhd_mom_flux_w_sgs                    &
      &       .or. field_name .eq. fhd_maxwell_t_w_sgs                   &
-     &      ) then
-         i0 = i0 + 1
-         j0 = j0 + n_sym_tensor
+     &           ) then
+            i0 = i0 + 1
+            j0 = j0 + n_sym_tensor
 !
-        else if ( field_name .eq. fhd_velocity_scale                    &
+          else if(field_name .eq. fhd_velocity_scale                    &
      &       .or. field_name .eq. fhd_magnetic_scale                    &
      &       .or. field_name .eq. fhd_temp_scale                        &
      &       .or. field_name .eq. fhd_composition_scale                 &
@@ -217,10 +242,10 @@
      &       .or. field_name .eq. fhd_Csim_SGS_induction                &
      &       .or. field_name .eq. fhd_Csim_SGS_buoyancy                 &
      &       .or. field_name .eq. fhd_Csim_SGS_comp_buo                 &
-     &      ) then
-         i0 = i0 + 1
-         j0 = j0 + n_scalar
-        end if
+     &           ) then
+            i0 = i0 + 1
+            j0 = j0 + n_scalar
+          end if
 !
         else
           if    ( field_name .eq. fhd_velo                              &
@@ -402,6 +427,12 @@
           else if ( field_name .eq. fhd_w_filter_comp ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_wide_fil_comp, j_ave%i_wide_fil_comp)
+          else if ( field_name .eq. fhd_d_filter_temp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_fil_temp, j_ave%i_dbl_fil_temp)
+          else if ( field_name .eq. fhd_d_filter_comp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_fil_comp, j_ave%i_dbl_fil_comp)
           end if
 !
           if ( field_name .eq. fhd_grad_v_1 ) then
@@ -532,7 +563,26 @@
           else if ( field_name .eq. fhd_wide_SGS_vp_induct ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_wide_SGS_vp_induct, j_ave%i_wide_SGS_vp_induct)
-          else if ( field_name .eq. fhd_SGS_rot_inertia ) then
+          end if
+!
+          if ( field_name .eq. fhd_dbl_SGS_h_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_SGS_h_flux, j_ave%i_dbl_SGS_h_flux)
+          else if ( field_name .eq. fhd_dbl_SGS_c_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_SGS_c_flux, j_ave%i_dbl_SGS_c_flux)
+          else if ( field_name .eq. fhd_dbl_SGS_inertia ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_SGS_inertia, j_ave%i_dbl_SGS_inertia)
+          else if ( field_name .eq. fhd_dbl_SGS_Lorentz ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_SGS_Lorentz, j_ave%i_dbl_SGS_Lorentz)
+          else if ( field_name .eq. fhd_dbl_SGS_vp_induct ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_SGS_vp_induct, j_ave%i_dbl_SGS_vp_induct)
+          end if
+!
+          if ( field_name .eq. fhd_SGS_rot_inertia ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_rot_inertia, j_ave%i_SGS_rot_inertia)
           else if ( field_name .eq. fhd_SGS_rot_Lorentz ) then
@@ -707,21 +757,62 @@
      &          i_rms%i_SGS_div_Lorentz, j_ave%i_SGS_div_Lorentz)
           end if
 !
-          if ( field_name .eq. fhd_w_filter_velo ) then
+          if ( field_name .eq. fhd_filter_vort ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_filter_vort, j_ave%i_filter_vort)
+          else if ( field_name .eq. fhd_filter_current ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_filter_current, j_ave%i_filter_current)
+          else if ( field_name .eq. fhd_grad_filter_temp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_filter_temp, j_ave%i_grad_filter_temp)
+          else if ( field_name .eq. fhd_grad_filter_comp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_filter_comp, j_ave%i_grad_filter_comp)
+          else if ( field_name .eq. fhd_w_filter_velo ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_wide_fil_velo, j_ave%i_wide_fil_velo)
-          else if ( field_name .eq. fhd_filter_vort ) then
-            call set_rms_address(num_comps, i0, j0,                     &
-     &          i_rms%i_wide_fil_vort, j_ave%i_wide_fil_vort)
           else if ( field_name .eq. fhd_w_filter_vort ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_wide_fil_vort, j_ave%i_wide_fil_vort)
+          else if ( field_name .eq. fhd_w_filter_vecp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_fil_vecp, j_ave%i_wide_fil_vecp)
           else if ( field_name .eq. fhd_w_filter_magne ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_wide_fil_magne, j_ave%i_wide_fil_magne)
           else if ( field_name .eq. fhd_w_filter_current ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_wide_fil_current, j_ave%i_wide_fil_current)
+          else if ( field_name .eq. fhd_w_filter_grad_temp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_fil_grad_t, j_ave%i_wide_fil_grad_t)
+          else if ( field_name .eq. fhd_w_filter_grad_comp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_wide_fil_grad_c, j_ave%i_wide_fil_grad_c)
+          end if
+!
+          if ( field_name .eq. fhd_d_filter_velo ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_fil_velo, j_ave%i_dbl_fil_velo)
+          else if ( field_name .eq. fhd_d_filter_vort ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_fil_vort, j_ave%i_dbl_fil_vort)
+          else if ( field_name .eq. fhd_d_filter_vecp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_fil_vecp, j_ave%i_dbl_fil_vecp)
+          else if ( field_name .eq. fhd_d_filter_magne ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_fil_magne, j_ave%i_dbl_fil_magne)
+          else if ( field_name .eq. fhd_d_filter_current ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_fil_current, j_ave%i_dbl_fil_current)
+          else if ( field_name .eq. fhd_d_filter_grad_temp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_fil_grad_t, j_ave%i_dbl_fil_grad_t)
+          else if ( field_name .eq. fhd_d_filter_grad_comp ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_dbl_fil_grad_c, j_ave%i_dbl_fil_grad_c)
           end if
 !
           if ( field_name .eq. fhd_velocity_scale ) then

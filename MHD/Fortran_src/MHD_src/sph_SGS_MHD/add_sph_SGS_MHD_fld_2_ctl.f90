@@ -41,47 +41,60 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
+!   Add SGS terms
 !
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
-        call add_phys_name_ctl(fhd_filter_temp, field_ctl)
-!
         call add_phys_name_ctl(fhd_SGS_h_flux, field_ctl)
         call add_phys_name_ctl(fhd_div_SGS_h_flux, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
-        call add_phys_name_ctl(fhd_filter_comp, field_ctl)
-!
         call add_phys_name_ctl(fhd_SGS_c_flux, field_ctl)
         call add_phys_name_ctl(fhd_div_SGS_c_flux, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
-        call add_phys_name_ctl(fhd_filter_vort, field_ctl)
-!
         call add_phys_name_ctl(fhd_SGS_inertia, field_ctl)
         call add_phys_name_ctl(fhd_SGS_rot_inertia, field_ctl)
         call add_phys_name_ctl(fhd_SGS_div_inertia, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
-        call add_phys_name_ctl(fhd_filter_current, field_ctl)
-!
         call add_phys_name_ctl(fhd_SGS_Lorentz, field_ctl)
         call add_phys_name_ctl(fhd_SGS_rot_Lorentz, field_ctl)
         call add_phys_name_ctl(fhd_SGS_div_Lorentz, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
-        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
-        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
-!
         call add_phys_name_ctl(fhd_SGS_vp_induct, field_ctl)
         call add_phys_name_ctl(fhd_SGS_induction, field_ctl)
+      end if
+!
+!   Add fieltered field
+!
+      if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_filter_temp, field_ctl)
+      end if
+!
+      if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_filter_comp, field_ctl)
+      end if
+!
+      if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_filter_vort, field_ctl)
+      end if
+!
+      if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
+        call add_phys_name_ctl(fhd_filter_current, field_ctl)
+      end if
+!
+      if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_filter_magne, field_ctl)
       end if
 !
       end subroutine add_field_name_4_SGS
@@ -100,44 +113,109 @@
 !
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
 !
+!   Add model coefficients
+!
+      if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_Csim_SGS_h_flux, field_ctl)
+      end if
+      if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_Csim_SGS_h_flux, field_ctl)
+      end if
+      if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_Csim_SGS_c_flux, field_ctl)
+      end if
+      if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_Csim_SGS_m_flux, field_ctl)
+      end if
+      if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_Csim_SGS_Lorentz, field_ctl)
+      end if
+      if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_Csim_SGS_induction, field_ctl)
+      end if
+      if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+          call add_phys_name_ctl(fhd_Csim_SGS_buoyancy, field_ctl)
+        end if
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+          call add_phys_name_ctl(fhd_Csim_SGS_comp_buo, field_ctl)
+        end if
+      end if
+!
+!    Add filtered field
+!
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_w_filter_temp, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_temp, field_ctl)
+      end if
 !
-        call add_phys_name_ctl(fhd_wide_SGS_h_flux, field_ctl)
-        call add_phys_name_ctl(fhd_Csim_SGS_h_flux, field_ctl)
+      if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_w_filter_temp, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_temp, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_w_filter_comp, field_ctl)
-!
-        call add_phys_name_ctl(fhd_wide_SGS_c_flux, field_ctl)
-        call add_phys_name_ctl(fhd_Csim_SGS_c_flux, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_comp, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_w_filter_vort, field_ctl)
-!
-        call add_phys_name_ctl(fhd_wide_SGS_inertia, field_ctl)
-        call add_phys_name_ctl(fhd_Csim_SGS_m_flux, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_vort, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_magne, field_ctl)
         call add_phys_name_ctl(fhd_w_filter_current, field_ctl)
-!
-        call add_phys_name_ctl(fhd_wide_SGS_Lorentz, field_ctl)
-        call add_phys_name_ctl(fhd_Csim_SGS_Lorentz, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_magne, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_current, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_w_filter_magne, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_velo, field_ctl)
+        call add_phys_name_ctl(fhd_d_filter_magne, field_ctl)
+      end if
 !
+!       Add SGS fluxes
+!
+      if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_wide_SGS_h_flux, field_ctl)
+        call add_phys_name_ctl(fhd_dbl_SGS_h_flux, field_ctl)
+      end if
+!
+      if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_wide_SGS_h_flux, field_ctl)
+        call add_phys_name_ctl(fhd_dbl_SGS_h_flux, field_ctl)
+      end if
+!
+      if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_wide_SGS_c_flux, field_ctl)
+        call add_phys_name_ctl(fhd_dbl_SGS_c_flux, field_ctl)
+      end if
+!
+      if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_wide_SGS_inertia, field_ctl)
+        call add_phys_name_ctl(fhd_dbl_SGS_inertia, field_ctl)
+      end if
+!
+      if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none) then
+        call add_phys_name_ctl(fhd_wide_SGS_Lorentz, field_ctl)
+        call add_phys_name_ctl(fhd_dbl_SGS_Lorentz, field_ctl)
+      end if
+!
+      if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_wide_SGS_vp_induct, field_ctl)
-        call add_phys_name_ctl(fhd_Csim_SGS_induction, field_ctl)
+        call add_phys_name_ctl(fhd_dbl_SGS_vp_induct, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
@@ -145,12 +223,10 @@
 !
         if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_SGS_buo_flux, field_ctl)
-          call add_phys_name_ctl(fhd_Csim_SGS_buoyancy, field_ctl)
         end if
 !
         if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_SGS_comp_buo_flux, field_ctl)
-          call add_phys_name_ctl(fhd_Csim_SGS_comp_buo, field_ctl)
         end if
       end if
 !

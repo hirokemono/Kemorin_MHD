@@ -184,14 +184,40 @@
      &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_filter_vort)
           call vector_label_4_step                                      &
      &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_filter_current)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_filter_temp)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_filter_comp)
+!
           call vector_label_4_step                                      &
      &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_w_filter_velo)
           call vector_label_4_step                                      &
      &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_w_filter_vort)
           call vector_label_4_step                                      &
+     &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_w_filter_vecp)
+          call vector_label_4_step                                      &
      &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_w_filter_magne)
           call vector_label_4_step(id_ave, id_msq,                      &
      &        nod_fld%phys_name(i), fhd_w_filter_current)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_w_filter_grad_temp)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_w_filter_grad_comp)
+!
+          call vector_label_4_step                                      &
+     &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_d_filter_velo)
+          call vector_label_4_step                                      &
+     &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_d_filter_vort)
+          call vector_label_4_step                                      &
+     &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_d_filter_vecp)
+          call vector_label_4_step                                      &
+     &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_d_filter_magne)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_d_filter_current)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_d_filter_grad_temp)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_d_filter_grad_comp)
 !
           call vector_label_4_step                                      &
      &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_press_grad)
@@ -288,6 +314,10 @@
      &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_w_filter_temp)
           call scalar_label_4_step                                      &
      &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_w_filter_comp)
+          call scalar_label_4_step                                      &
+     &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_d_filter_temp)
+          call scalar_label_4_step                                      &
+     &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_d_filter_comp)
 !
           call sym_tensor_label_4_step(id_ave, id_msq,                  &
      &        nod_fld%phys_name(i), fhd_SGS_m_flux)
@@ -315,6 +345,17 @@
      &        nod_fld%phys_name(i), fhd_wide_SGS_Lorentz)
           call vector_label_4_step(id_ave, id_msq,                      &
      &        nod_fld%phys_name(i), fhd_wide_SGS_vp_induct)
+!
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_dbl_SGS_h_flux)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_dbl_SGS_c_flux)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_dbl_SGS_inertia)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_dbl_SGS_Lorentz)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_dbl_SGS_vp_induct)
 !
           call vector_label_4_step(id_ave, id_msq,                      &
      &        nod_fld%phys_name(i), fhd_div_SGS_m_flux)
@@ -432,8 +473,8 @@
             call write_one_label(id_ave, e_hd_fil_div_b)
           end if
 !
-          call scalar_label_4_step(id_ave, id_msq, nod_fld%phys_name(i),                &
-     &        fhd_mag_potential)
+          call scalar_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_mag_potential)
         end if
       end do
 !

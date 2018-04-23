@@ -134,24 +134,24 @@
      &     .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. ht_prop%iflag_scheme .gt. id_no_evolution               &
      &     .or. cp_prop%iflag_scheme .gt. id_no_evolution) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_velo = 3*nvector_rj_2_rtp - 2
+        call add_vector_trans_flag                                      &
+     &     (ipol%i_velo, nvector_rj_2_rtp, b_trns%i_velo)
       end if
 !   vorticity flag
       if(       fl_prop%iflag_scheme .gt. id_no_evolution) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_vort = 3*nvector_rj_2_rtp - 2
+        call add_vector_trans_flag                                      &
+     &     (ipol%i_vort, nvector_rj_2_rtp, b_trns%i_vort)
       end if
 !   magnetic field flag
       if(       cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. fl_prop%iflag_4_lorentz .gt.     id_turn_OFF) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_magne = 3*nvector_rj_2_rtp - 2
+        call add_vector_trans_flag                                      &
+     &     (ipol%i_magne, nvector_rj_2_rtp, b_trns%i_magne)
       end if
 !   current density flag
       if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
-        nvector_rj_2_rtp = nvector_rj_2_rtp + 1
-        b_trns%i_current = 3*nvector_rj_2_rtp - 2
+        call add_vector_trans_flag                                      &
+     &     (ipol%i_current, nvector_rj_2_rtp, b_trns%i_current)
       end if
 !
 !
@@ -198,13 +198,13 @@
       nscalar_rj_2_rtp = 0
 !   temperature flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
-        nscalar_rj_2_rtp = nscalar_rj_2_rtp + 1
-        b_trns%i_temp = nscalar_rj_2_rtp + 3*nvector_rj_2_rtp
+        call add_scalar_trans_flag(ipol%i_temp,                         &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_temp)
       end if
 !   composition flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        nscalar_rj_2_rtp = nscalar_rj_2_rtp + 1
-        b_trns%i_light = nscalar_rj_2_rtp + 3*nvector_rj_2_rtp
+        call add_scalar_trans_flag(ipol%i_light,                        &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_light)
       end if
 !
 !   filtered temperature
@@ -240,40 +240,40 @@
       nvector_rtp_2_rj = 0
 !   advection flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_m_advect = 3*nvector_rtp_2_rj - 2
+        call add_vector_trans_flag(ipol%i_m_advect,                     &
+     &      nvector_rtp_2_rj, f_trns%i_m_advect)
 !   Coriolis flag
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
-          nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-          f_trns%i_coriolis = 3*nvector_rtp_2_rj - 2
+          call add_vector_trans_flag(ipol%i_coriolis,                   &
+     &        nvector_rtp_2_rj, f_trns%i_coriolis)
         end if
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
-          nvector_rtp_2_rj =      nvector_rtp_2_rj + 1
-          f_trns%i_rot_Coriolis = 3*nvector_rtp_2_rj - 2
+          call add_vector_trans_flag(ipol%i_rot_Coriolis,               &
+     &        nvector_rtp_2_rj, f_trns%i_rot_Coriolis)
         end if
 !   Lorentz flag
         if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
-          nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-          f_trns%i_lorentz = 3*nvector_rtp_2_rj - 2
+          call add_vector_trans_flag(ipol%i_lorentz,                    &
+     &        nvector_rtp_2_rj, f_trns%i_lorentz)
         end if
       end if
 !
 !   induction flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_vp_induct =  3*nvector_rtp_2_rj - 2
+        call add_vector_trans_flag(ipol%i_vp_induct,                    &
+     &      nvector_rtp_2_rj, f_trns%i_vp_induct)
       end if
 !
 !   heat flux flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_h_flux = 3*nvector_rtp_2_rj - 2
+        call add_vector_trans_flag(ipol%i_h_flux,                       &
+     &      nvector_rtp_2_rj, f_trns%i_h_flux)
       end if
 !
 !   composition flux flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
-        nvector_rtp_2_rj = nvector_rtp_2_rj + 1
-        f_trns%i_c_flux = 3*nvector_rtp_2_rj - 2
+        call add_vector_trans_flag(ipol%i_c_flux,                       &
+     &      nvector_rtp_2_rj, f_trns%i_c_flux)
       end if
 !
 !
