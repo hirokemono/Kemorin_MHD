@@ -113,7 +113,6 @@
      &           rj_fld, trns_MHD, WK_sph)
 !
       use m_solver_SR
-      use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
       use m_machine_parameter

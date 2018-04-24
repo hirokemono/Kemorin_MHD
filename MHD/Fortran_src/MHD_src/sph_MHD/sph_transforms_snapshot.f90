@@ -137,7 +137,7 @@
      &          WK_sph, rj_fld)
 !
       use m_solver_SR
-      use copy_sph_MHD_4_send_recv
+      use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
@@ -163,9 +163,8 @@
      &    sph, comms_sph, trans_p, trns_tmp%frc_rtp,                    &
      &    n_WS, n_WR, WS, WR, WK_sph)
 !
-      call copy_tmp_scl_spec_from_trans                                 &
-     &   (trns_tmp%ncomp_rtp_2_rj, trns_tmp%f_trns,                     &
-     &    comms_sph%comm_rj, ipol, n_WR, WR, rj_fld)
+      call mhd_spectr_from_recvbuf                                      &
+     &   (trns_tmp, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_tmp_snap_MHD
 !

@@ -54,7 +54,6 @@
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
       use set_address_sph_trans_snap
-      use set_address_sph_trans_tmp
       use init_sphrical_transform_MHD
       use pole_sph_transform
       use MHD_FFT_selector
@@ -91,15 +90,8 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_snapshot_trans(SPH_MHD, iphys, WK%trns_snap,   &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_temporal_trans                                 &
-     &   (SPH_MHD%ipol, iphys, WK%trns_tmp,                             &
+      call set_addresses_temporal_trans(SPH_MHD, iphys, WK%trns_tmp,    &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-!
-      if(iflag_debug .ge. iflag_routine_msg) then
-        call check_address_trans_sph_tmp                                &
-     &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
-     &      WK%trns_tmp)
-      end if
 !
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
 !
