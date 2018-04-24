@@ -5,12 +5,12 @@
 # DESCRIPTION
 #
 #   This macro searches for an installed aquaterm. If nothing was
-#   specified when calling configure, it searches first in /usr/local and
-#   then in /usr, /opt/local and /sw. If the --with-aquaterm=DIR is specified,
-#   it will try to find it in DIR/include/aquaterm/aquaterm.h and DIR/lib/libz.a. If
+#   specified when calling configure, it searches first in /Library/Frameworks and
+#   then in /System/Library/Frameworks, /opt/local/Frameworks and /sw/Frameworks. If the --with-aquaterm=DIR is specified,
+#   it will try to find it in DIR/AquaTerm.framework and DIR/lib/libz.a. If
 #   --without-aquaterm is specified, the library is not searched at all.
 #
-#   If either the header file (aquaterm/aquaterm.h) or the library (aquaterm) is not found,
+#   If the execute file (AquaTerm.framework/AquaTerm) is not found,
 #   the configuration exits on error, asking for a valid aquaterm installation
 #   directory or --without-aquaterm.
 #
@@ -19,7 +19,6 @@
 #   config.h file. Sample usage in a C/C++ source is as follows:
 #
 #     #ifdef HAVE_AQUATERM
-#     #include <aquaterm/aquaterm.h>
 #     #endif /* HAVE_AQUATERM */
 #
 # LICENSE
@@ -63,10 +62,10 @@ AC_DEFUN([AX_CHECK_AQUATERM],
 [AC_MSG_CHECKING(if aquaterm is wanted)
 AC_ARG_WITH(aquaterm,
 [  --with-aquaterm=DIR root directory path of aquaterm installation [defaults to
-                    /usr/local or /usr if not found in /usr/local]
+                    /Library/Frameworks or /System/Library/Frameworks if not found in /Library/Frameworks]
   --without-aquaterm to disable aquaterm usage completely],
 [if test "$withval" != no ; then
-  aquaterm_places="/usr/local /usr /opt/local /sw"
+  aquaterm_places="/Library/Frameworks /System/Library/Frameworks /opt/local/Frameworks /sw/Frameworks"
   AC_MSG_RESULT(yes)
   if test -d "$withval"
   then
@@ -78,7 +77,7 @@ else
   AC_MSG_RESULT(no)
 fi],
 [AC_MSG_WARN([Checking aquaterm in usual places])
- aquaterm_places="/usr/local /usr /opt/local /sw"
+ aquaterm_places="/Library/Frameworks /System/Library/Frameworks /opt/local/Frameworks /sw/Frameworks"
  AC_MSG_RESULT(yes)])
 
 #
@@ -87,45 +86,25 @@ fi],
 if test -n "${aquaterm_places}"
 then
 	# check the user supplied or any other more or less 'standard' place:
-	#   Most UNIX systems      : /usr/local and /usr
-	#   MacPorts / Fink on OSX : /opt/local respectively /sw
+	#   Most UNIX systems      : /Library/Frameworks and /System/Library/Frameworks
+	#   MacPorts / Fink on OSX : /opt/local/Frameworks respectively /sw/Frameworks
 	for AQUATERM_HOME in ${aquaterm_places} ; do
-	  if test -f "${AQUATERM_HOME}/include/aquaterm/aquaterm.h"; then break; fi
+	  if test -f "${AQUATERM_HOME}/AquaTerm.framework/AquaTerm"; then break; fi
 	  AQUATERM_HOME=""
 	done
 
-	# if aquaterm/aquaterm.h was nowhere to be found, give a notice and bail out
+	# if AquaTerm.framework/AquaTerm was nowhere to be found, give a notice and bail out
 	if test ! -n "${AQUATERM_HOME}"; then
-          AC_MSG_ERROR(No aquaterm/aquaterm.h in any include directory of ${aquaterm_places}: either specify a valid aquaterm installation with --with-aquaterm=DIR or disable aquaterm usage with --without-aquaterm)
+          AC_MSG_ERROR(No AquaTerm.framework/AquaTerm in any directory of ${aquaterm_places}: either specify a valid aquaterm installation with --with-aquaterm=DIR or disable aquaterm usage with --without-aquaterm)
 	fi
 
-        AQUATERM_OLD_LDFLAGS=$LDFLAGS
-        AQUATERM_OLD_CPPFLAGS=$LDFLAGS
-        LDFLAGS="$LDFLAGS -L${AQUATERM_HOME}/lib"
-        CPPFLAGS="$CPPFLAGS -I${AQUATERM_HOME}/include"
-        AC_LANG_SAVE
-        AC_LANG(Objective C)
-        AC_CHECK_LIB(aquaterm, main, [aterm_cv_aterm=yes], [aterm_cv_aterm=no])
-        AC_CHECK_HEADER(aquaterm/aquaterm.h, [aterm_cv_aterm_h=yes], [aterm_cv_aterm_h=no])
-        AC_LANG_RESTORE
-        if test "$aterm_cv_aterm" = "yes" -a "$aterm_cv_aterm_h" = "yes"
-        then
-                #
-                # If both library and header were found, use them
-                #
-                AC_CHECK_LIB(aquaterm, main)
-                AC_MSG_CHECKING(aquaterm in ${AQUATERM_HOME})
-                AC_MSG_RESULT(ok)
-        else
-                #
-                # If either header or library was not found, revert and bomb
-                #
-                AC_MSG_CHECKING(aquaterm in ${AQUATERM_HOME})
-                LDFLAGS="$AQUATERM_OLD_LDFLAGS"
-                CPPFLAGS="$AQUATERM_OLD_CPPFLAGS"
-                AC_MSG_RESULT(failed)
-                AC_MSG_ERROR(either specify a valid aquaterm installation with --with-aquaterm=DIR or disable aquaterm usage with --without-aquaterm)
-        fi
+	AQUATERM_OLD_LDFLAGS=$LDFLAGS
+	AQUATERM_OLD_CPPFLAGS=$LDFLAGS
+	LDFLAGS="$LDFLAGS -L${AQUATERM_HOME}"
+	LIBS="$LIBS -framework AquaTerm"
+
+	AC_MSG_CHECKING(aquaterm in ${AQUATERM_HOME})
+	AC_MSG_RESULT(ok)
 fi
 
 ])
