@@ -97,11 +97,6 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'addresses of spherical transform for dynamic model'
-        call check_address_trans_sph_SGS                                &
-     &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
-     &      WK%trns_DYNS)
-!
         write(*,*)                                                      &
      &      'addresses of spherical transform for model coefficients'
         call check_address_trans_sph_SGS                                &

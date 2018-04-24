@@ -290,7 +290,7 @@
         call start_elapsed_time(14)
         if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD'
         call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,            &
-     &      ipol, rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
+     &      rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
         call end_elapsed_time(14)
 !
         call start_elapsed_time(15)
@@ -342,7 +342,7 @@
         call start_elapsed_time(16)
         if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
         call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
-     &      ipol, trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
+     &      trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
         call end_elapsed_time(16)
 !
         call start_elapsed_time(17)

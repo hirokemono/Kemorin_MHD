@@ -8,15 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,      &
-!!     &          ipol, rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
+!!     &          rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
 !!      subroutine sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,   &
-!!     &          ipol, trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
-!!      subroutine sph_pole_trans_SGS_MHD(sph, comms_sph, trans_p,      &
-!!     &          ipol, rj_fld, trns_SGS)
+!!     &          trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
+!!      subroutine sph_pole_trans_SGS_MHD                               &
+!!     &         (sph, comms_sph, trans_p, rj_fld, trns_SGS)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
@@ -55,17 +54,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,        &
-     &          ipol, rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
+     &          rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
 !
       use m_solver_SR
       use sph_trans_w_coriols
-      use copy_sph_MHD_4_send_recv
+      use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
@@ -80,9 +78,8 @@
       call check_calypso_sph_comm_buf_N(trns_SGS%ncomp_rj_2_rtp,        &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-      call copy_SGS_spectr_to_send(sph%sph_rtp%nnod_pole,               &
-     &    trns_SGS%ncomp_rj_2_rtp, trns_SGS%b_trns,                     &
-     &    sph%sph_rj, comms_sph%comm_rj, ipol, rj_fld, n_WS, WS)
+      call mhd_spectr_to_sendbuf                                        &
+     &   (trns_SGS, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
       call sph_b_transform_SGS                                          &
      &   (trns_SGS%ncomp_rj_2_rtp, trns_SGS%nvector_rj_2_rtp,           &
@@ -94,17 +91,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,     &
-     &          ipol, trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
+     &          trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
 !
       use m_solver_SR
       use sph_trans_w_coriols
-      use copy_sph_MHD_4_send_recv
+      use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
       type(spherical_trns_works), intent(inout) :: WK_sph
@@ -125,26 +121,24 @@
      &    sph, comms_sph, trans_p, trns_SGS,                            &
      &    n_WS, n_WR, WS(1), WR(1), WK_sph, SGS_mul_FFTW)
 !
-      call copy_SGS_vec_spec_from_trans                                 &
-     &   (trns_SGS%ncomp_rtp_2_rj, trns_SGS%f_trns,                     &
-     &    comms_sph%comm_rj, ipol, n_WR, WR(1), rj_fld)
+      call mhd_spectr_from_recvbuf                                      &
+     &   (trns_SGS, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_SGS_MHD
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_pole_trans_SGS_MHD(sph, comms_sph, trans_p,        &
-     &          ipol, rj_fld, trns_SGS)
+      subroutine sph_pole_trans_SGS_MHD                                 &
+     &         (sph, comms_sph, trans_p, rj_fld, trns_SGS)
 !
       use m_solver_SR
       use t_sph_transforms
-      use copy_sph_MHD_4_send_recv
+      use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
@@ -160,9 +154,8 @@
       call check_calypso_sph_comm_buf_N(trns_SGS%ncomp_rj_2_rtp,        &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-      call copy_SGS_spectr_to_send(sph%sph_rtp%nnod_pole,               &
-     &    trns_SGS%ncomp_rj_2_rtp, trns_SGS%b_trns,                     &
-     &    sph%sph_rj, comms_sph%comm_rj, ipol, rj_fld, n_WS, WS)
+      call mhd_spectr_to_sendbuf                                        &
+     &   (trns_SGS, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
       call pole_b_transform(trns_SGS%ncomp_rj_2_rtp,                    &
      &    trns_SGS%nvector_rj_2_rtp, trns_SGS%nscalar_rj_2_rtp,         &
