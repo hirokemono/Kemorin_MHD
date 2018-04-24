@@ -147,6 +147,7 @@ makemake:
 	@echo CXX=$(CXX)             >> $(MAKENAME)
 	@echo AR=$(AR)               >> $(MAKENAME)
 	@echo RANLIB=$(RANLIB) >> $(MAKENAME)
+	@echo F90_LOCAL=$(F90_LOCAL) >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# Compiler options' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)

@@ -153,6 +153,7 @@ makemake: mpif.h
 		F90OPTFLAGS="$(F90OPTFLAGS)" \
 		CXXFLAGS="$(CXXFLAGS)" \
 		F90LIB="$(F90LIB)" \
+        F90="$(F90)" \
 		CC="$(CC)" \
 		CXX="$(CXX)" \
 		MPIF90="$(MPIF90)" \
