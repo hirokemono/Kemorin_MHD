@@ -89,15 +89,13 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_Csim(SPH_MHD, iphys, WK%trns_Csim,   &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_snapshot_trans                                 &
-     &   (SPH_MHD%ipol, iphys, WK%trns_snap,                            &
+      call set_addresses_snapshot_trans(SPH_MHD, iphys, WK%trns_snap,   &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_temporal_trans                                 &
      &   (SPH_MHD%ipol, iphys, WK%trns_tmp,                             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(iflag_debug .ge. iflag_routine_msg) then
-        write(*,*)                                                      &
         call check_address_trans_sph_snap                               &
      &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
      &      WK%trns_snap)
