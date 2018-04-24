@@ -7,7 +7,7 @@ UTILS_SRCDIR =  $$(F_SRCDIR)/UTILS_src
 LIB_UTILS =       -lkemo_utils
 LIB_UTILS_FILE = libkemo_utils.a
 
-SUBDIRS = \
+SUBDIR_NO_PG = \
 CONST_FILTER_src \
 INTERPOLATE_src  \
 \
@@ -17,6 +17,9 @@ PARTITIONER    \
 MERGE          \
 REFINER        \
 pick_surface   \
+
+SUBDIRS = \
+$(SUBDIR_NO_PG) \
 draw_pg_f90
 
 
@@ -55,6 +58,14 @@ lib_name:
 
 lib_tasks: libtarget lib_archve
 	@echo '	''$$(RANLIB) $$@' >> $(MAKENAME)
+	@for dir in draw_pg_f90; do \
+		( cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKENAME='$(MAKENAME)' \
+		lib_tasks \
+		) \
+	done
 	@echo '#' >> $(MAKENAME)
 
 libtarget:
@@ -62,7 +73,7 @@ libtarget:
 	@echo  '$$(LIB_UTILS_FILE): $$(MOD_KEMO_UTILS)'>> $(MAKENAME)
 
 lib_archve:
-	@for dir in $(SUBDIRS); do \
+	@for dir in $(SUBDIR_NO_PG); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
