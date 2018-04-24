@@ -83,7 +83,7 @@
       call set_addresses_trans_sph_MHD                                  &
      &   (SPH_model%MHD_prop, SPH_MHD, iphys, WK%trns_MHD,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_trans_sph_SGS(SPH_MHD%ipol, WK%trns_SGS,       &
+      call set_addresses_trans_sph_SGS(SPH_MHD, iphys, WK%trns_SGS,     &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_DYNS(SPH_MHD, iphys, WK%trns_DYNS,   &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
@@ -97,11 +97,6 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'addresses of spherical transform for SGS term'
-        call check_address_trans_sph_SGS                                &
-     &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
-     &      WK%trns_SGS)
-!
         write(*,*) 'addresses of spherical transform for dynamic model'
         call check_address_trans_sph_SGS                                &
      &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
