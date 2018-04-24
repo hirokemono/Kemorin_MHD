@@ -204,4 +204,28 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine check_address_trans_sph_MHD                            &
+     &         (ipol, idpdr, itor, iphys, trns_MHD, ncomp_sph_trans)
+!
+      use check_address_sph_trans
+!
+      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: iphys
+      type(address_4_sph_trans), intent(in) :: trns_MHD
+      integer(kind = kint), intent(in) :: ncomp_sph_trans
+!
+!
+      write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+      write(*,*) 'addresses of spherical transform for MHD'
+!
+      call check_add_trans_sph_MHD                                      &
+     &   (ipol, idpdr, itor, iphys, trns_MHD%b_trns, trns_MHD%f_trns,   &
+     &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%nvector_rj_2_rtp,           &
+     &    trns_MHD%nscalar_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,           &
+     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj)
+!
+      end subroutine check_address_trans_sph_MHD
+!
+!-----------------------------------------------------------------------
+!
       end module back_sph_trans_4_all_field

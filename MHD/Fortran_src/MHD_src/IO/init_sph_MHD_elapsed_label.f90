@@ -93,7 +93,7 @@
       elapse_labels(48) = 'mat product for fwd. trans.    '
       elapse_labels(49) = 'Copy spectrum to fwd. trans.    '
 !
-      elapse_labels(51) = 'copy_mhd_spectr_to_send.   '
+      elapse_labels(51) = 'mhd_spectr_to_sendbuf.   '
       elapse_labels(52) = 'copy_mhd_field_from_trans.    '
       elapse_labels(53) = 'copy_mhd_spectr_from_recv.    '
 !

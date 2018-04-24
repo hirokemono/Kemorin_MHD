@@ -207,7 +207,7 @@
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,        &
-     &    omega_sph, trans_p, gt_cor, ipol, rj_fld, trns_MHD,           &
+     &    omega_sph, trans_p, gt_cor, rj_fld, trns_MHD,                 &
      &    WK_sph, MHD_mul_FFTW, cor_rlm)
       call end_elapsed_time(14)
 !

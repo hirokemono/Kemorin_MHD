@@ -7,14 +7,13 @@
 !>@brief Perform spherical harmonics transform for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine sph_back_trans_4_MHD                                 &
-!!     &         (sph, comms_sph, fl_prop, sph_bc_U, omega_sph,         &
-!!     &          trans_p, gt_cor, ipol, rj_fld, trns_MHD,              &
-!!     &          WK_sph, MHD_mul_FFTW, cor_rlm)
+!!      subroutine sph_back_trans_4_MHD(sph, comms_sph, fl_prop,        &
+!!     &          sph_bc_U, omega_sph, trans_p, gt_cor, rj_fld,         &
+!!     &          trns_MHD, WK_sph, MHD_mul_FFTW, cor_rlm)
 !!        Input ::  rj_fld
 !!        Output :: trns_MHD, cor_rlm
-!!      subroutine sph_pole_trans_4_MHD(sph, comms_sph,                 &
-!!     &          trans_p, ipol, rj_fld, trns_MHD)
+!!      subroutine sph_pole_trans_4_MHD                                 &
+!!     &         (sph, comms_sph, trans_p, rj_fld, trns_MHD)
 !!        Input ::  rj_fld
 !!        Output :: trns_MHD
 !!        type(sph_grids), intent(inout) :: sph
@@ -24,7 +23,6 @@
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(gaunt_coriolis_rlm), intent(in) :: gt_cor
-!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
@@ -91,14 +89,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_back_trans_4_MHD                                   &
-     &         (sph, comms_sph, fl_prop, sph_bc_U, omega_sph,           &
-     &          trans_p, gt_cor, ipol, rj_fld, trns_MHD,                &
-     &          WK_sph, MHD_mul_FFTW, cor_rlm)
+      subroutine sph_back_trans_4_MHD(sph, comms_sph, fl_prop,          &
+     &          sph_bc_U, omega_sph, trans_p, gt_cor, rj_fld,           &
+     &          trns_MHD, WK_sph, MHD_mul_FFTW, cor_rlm)
 !
       use m_solver_SR
       use sph_trans_w_coriols
-      use copy_sph_MHD_4_send_recv
+      use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
@@ -108,7 +105,6 @@
       type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(gaunt_coriolis_rlm), intent(in) :: gt_cor
-      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
@@ -122,12 +118,9 @@
       call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rj_2_rtp,        &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-!      call start_elapsed_time(51)
-      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_spectr_to_send'
-      call copy_mhd_spectr_to_send                                      &
-     &   (trns_MHD%ncomp_rj_2_rtp, trns_MHD%b_trns, comms_sph%comm_rj,  &
-     &    ipol, rj_fld, n_WS, WS)
-!      call end_elapsed_time(51)
+      if(iflag_debug .gt. 0) write(*,*) 'mhd_spectr_to_sendbuf'
+      call mhd_spectr_to_sendbuf                                      &
+     &   (trns_MHD, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
       if(trns_MHD%ncomp_rj_2_rtp .eq. 0) return
       call sph_b_trans_w_coriolis(trns_MHD%ncomp_rj_2_rtp,              &
@@ -181,18 +174,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_pole_trans_4_MHD(sph, comms_sph,                   &
-     &          trans_p, ipol, rj_fld, trns_MHD)
+      subroutine sph_pole_trans_4_MHD                                   &
+     &         (sph, comms_sph, trans_p, rj_fld, trns_MHD)
 !
       use m_solver_SR
       use t_sph_transforms
-      use copy_sph_MHD_4_send_recv
+      use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld
       type(address_4_sph_trans), intent(inout) :: trns_MHD
 !
@@ -203,10 +195,9 @@
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
 !      call start_elapsed_time(51)
-      if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_spectr_to_send'
-      call copy_mhd_spectr_to_send                                      &
-     &   (trns_MHD%ncomp_rj_2_rtp, trns_MHD%b_trns, comms_sph%comm_rj,  &
-     &    ipol, rj_fld, n_WS, WS)
+      if(iflag_debug .gt. 0) write(*,*) 'mhd_spectr_to_sendbuf'
+      call mhd_spectr_to_sendbuf                                        &
+     &   (trns_MHD, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !      call end_elapsed_time(51)
 !
       if(trns_MHD%ncomp_rj_2_rtp .eq. 0) return
@@ -227,6 +218,7 @@
 !
       use m_solver_SR
       use sph_trans_w_coriols
+      use set_address_sph_trans_MHD
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
@@ -253,8 +245,8 @@
       call check_calypso_sph_comm_buf_N                                 &
      &   (trns_MHD%ncomp_rtp_2_rj, comm_rlm, comm_rj)
 !
-      call copy_mhd_spectr_to_send(trns_MHD%ncomp_rj_2_rtp,             &
-     &    trns_MHD%b_trns, comm_rj, ipol, rj_fld, n_WS, WS(1))
+      call mhd_spectr_to_sendbuf                                        &
+     &   (trns_MHD, comm_rj, rj_fld, n_WS, WS(1))
 !
       call sph_b_trans_licv(trns_MHD%ncomp_rj_2_rtp,                    &
      &    sph_rlm, comm_rlm, comm_rj, fl_prop, sph_bc_U, omega_sph,     &

@@ -301,7 +301,6 @@
       end do
       call end_elapsed_time(3)
 !
-  10   continue
 !    Loop end
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)

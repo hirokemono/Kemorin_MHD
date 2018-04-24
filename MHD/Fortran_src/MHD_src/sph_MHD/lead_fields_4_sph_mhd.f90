@@ -115,7 +115,7 @@
       end if
 !
       call lead_fields_by_sph_trans                                     &
-     &   (sph, comms_sph, MHD_prop, trans_p, ipol, WK, rj_fld)
+     &   (sph, comms_sph, MHD_prop, trans_p, WK, rj_fld)
 !
       call gradients_of_vectors_sph                                     &
      &   (sph, comms_sph, r_2nd, sph_MHD_bc, trans_p,                   &
@@ -129,7 +129,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_fields_by_sph_trans                               &
-     &         (sph, comms_sph, MHD_prop, trans_p, ipol, WK, rj_fld)
+     &         (sph, comms_sph, MHD_prop, trans_p, WK, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_buoyancies_sph_MHD
@@ -140,7 +140,6 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: rj_fld
@@ -153,7 +152,7 @@
      &      then
         if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_4_MHD'
         call sph_pole_trans_4_MHD                                       &
-     &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_MHD)
+     &     (sph, comms_sph, trans_p, rj_fld, WK%trns_MHD)
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
         call cal_nonlinear_pole_MHD                                     &

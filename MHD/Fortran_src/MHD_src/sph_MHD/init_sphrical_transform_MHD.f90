@@ -268,7 +268,7 @@
 !
         starttime = MPI_WTIME()
         call sph_back_trans_4_MHD(sph, comms_sph, fl_prop, sph_bc_U,    &
-     &      omega_sph, trans_p, gt_cor, ipol, rj_fld, trns_MHD,         &
+     &      omega_sph, trans_p, gt_cor, rj_fld, trns_MHD,               &
      &      WK_sph, MHD_mul_FFTW, cor_rlm)
         call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop, trans_p,  &
      &      cor_rlm, ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)

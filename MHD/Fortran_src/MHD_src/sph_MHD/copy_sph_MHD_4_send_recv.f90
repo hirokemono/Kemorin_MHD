@@ -8,9 +8,6 @@
 !!       for dynamo simulation
 !!
 !!@verbatim
-!!      subroutine copy_mhd_spectr_to_send                              &
-!!     &         (ncomp_send, b_trns, comm_rj, ipol, rj_fld, n_WS, WS)
-!!        type(phys_address), intent(in) :: b_trns
 !!      subroutine copy_mhd_spectr_from_recv                            &
 !!     &         (ncomp_recv, f_trns, comm_rj, ipol, n_WR, WR, rj_fld)
 !!        type(phys_address), intent(in) :: f_trns
@@ -57,83 +54,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_mhd_spectr_to_send                                &
-     &         (ncomp_send, b_trns, comm_rj, ipol, rj_fld, n_WS, WS)
-!
-      type(sph_comm_tbl), intent(in) :: comm_rj
-      type(phys_address), intent(in) :: ipol
-      type(phys_address), intent(in) :: b_trns
-      type(phys_data), intent(in) :: rj_fld
-      integer(kind = kint), intent(in) :: ncomp_send, n_WS
-      real(kind = kreal), intent(inout) :: WS(n_WS)
-!
-!
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_velo, b_trns%i_velo,                       &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_vort, b_trns%i_vort,                       &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_magne, b_trns%i_magne,                     &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_current, b_trns%i_current,                 &
-     &    comm_rj, rj_fld, n_WS, WS)
-!
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_filter_velo, b_trns%i_filter_velo,         &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_filter_vort, b_trns%i_filter_vort,         &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_filter_magne, b_trns%i_filter_magne,       &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_filter_current, b_trns%i_filter_current,   &
-     &    comm_rj, rj_fld, n_WS, WS)
-!
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_wide_fil_velo, b_trns%i_wide_fil_velo,     &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_wide_fil_vort, b_trns%i_wide_fil_vort,     &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_vector_to_send                                    &
-     &   (ncomp_send, ipol%i_wide_fil_magne, b_trns%i_wide_fil_magne,   &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_vector_to_send(ncomp_send,                        &
-     &    ipol%i_wide_fil_current, b_trns%i_wide_fil_current,           &
-     &    comm_rj, rj_fld, n_WS, WS)
-!
-!
-      call sel_sph_rj_scalar_to_send                                    &
-     &   (ncomp_send, ipol%i_temp, b_trns%i_temp,                       &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_scalar_to_send                                    &
-     &   (ncomp_send, ipol%i_light, b_trns%i_light,                     &
-     &    comm_rj, rj_fld, n_WS, WS)
-!
-      call sel_sph_rj_scalar_to_send                                    &
-     &   (ncomp_send, ipol%i_filter_temp, b_trns%i_filter_temp,         &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_scalar_to_send                                    &
-     &   (ncomp_send, ipol%i_filter_comp, b_trns%i_filter_comp,         &
-     &    comm_rj, rj_fld, n_WS, WS)
-!
-      call sel_sph_rj_scalar_to_send                                    &
-     &   (ncomp_send, ipol%i_wide_fil_temp, b_trns%i_wide_fil_temp,     &
-     &    comm_rj, rj_fld, n_WS, WS)
-      call sel_sph_rj_scalar_to_send                                    &
-     &   (ncomp_send, ipol%i_wide_fil_comp, b_trns%i_wide_fil_comp,     &
-     &    comm_rj, rj_fld, n_WS, WS)
-!
-!
-      end subroutine copy_mhd_spectr_to_send
 !
 !-----------------------------------------------------------------------
 !

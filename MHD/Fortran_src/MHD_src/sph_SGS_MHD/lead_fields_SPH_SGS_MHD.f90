@@ -87,7 +87,7 @@
 !
 !
       call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
-     &    MHD_prop, trans_p, SPH_MHD%ipol, WK, SPH_MHD%fld)
+     &    MHD_prop, trans_p, WK, SPH_MHD%fld)
 !
       call lead_SGS_terms_4_SPH                                         &
      &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                  &
