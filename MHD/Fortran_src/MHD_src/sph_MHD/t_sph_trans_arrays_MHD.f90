@@ -35,6 +35,8 @@
 !>        strucutres for spherical transform for SGS model
         type(address_4_sph_trans) :: trns_SGS
 !>        strucutres for spherical transform for dynamic SGS model
+        type(address_4_sph_trans) :: trns_DYNS
+!>        strucutres for spherical transform for model coefficients
         type(address_4_sph_trans) :: trns_Csim
 !>        strucutres for spherical transform for snapshot output
         type(address_4_sph_trans) :: trns_snap
@@ -46,6 +48,7 @@
 !
         type(work_for_sgl_FFTW) :: MHD_mul_FFTW
         type(work_for_sgl_FFTW) :: SGS_mul_FFTW
+        type(work_for_sgl_FFTW) :: DYNS_mul_FFTW
         type(work_for_sgl_FFTW) :: Csim_mul_FFTW
 !
 !>        Gunat integrals of Coriolis term
@@ -70,6 +73,7 @@
 !
       call alloc_nonlinear_data(sph_rtp, wk%trns_MHD)
       call alloc_nonlinear_data(sph_rtp, wk%trns_SGS)
+      call alloc_nonlinear_data(sph_rtp, wk%trns_DYNS)
       call alloc_nonlinear_data(sph_rtp, wk%trns_Csim)
       call alloc_nonlinear_data(sph_rtp, WK%trns_snap)
       call alloc_nonlinear_data(sph_rtp, wk%trns_tmp)
@@ -77,6 +81,7 @@
 !
       call alloc_nonlinear_pole(sph_rtp, WK%trns_MHD)
       call alloc_nonlinear_pole(sph_rtp, WK%trns_SGS)
+      call alloc_nonlinear_pole(sph_rtp, WK%trns_DYNS)
       call alloc_nonlinear_pole(sph_rtp, WK%trns_snap)
 !
       end subroutine alloc_sph_trans_address
@@ -90,10 +95,12 @@
 !
       call dealloc_nonlinear_pole(WK%trns_snap)
       call dealloc_nonlinear_pole(WK%trns_Csim)
+      call dealloc_nonlinear_pole(WK%trns_DYNS)
       call dealloc_nonlinear_pole(WK%trns_SGS)
 !
       call dealloc_nonlinear_data(WK%trns_tmp)
       call dealloc_nonlinear_data(WK%trns_Csim)
+      call dealloc_nonlinear_data(WK%trns_DYNS)
       call dealloc_nonlinear_data(WK%trns_SGS)
       call dealloc_nonlinear_data(WK%trns_snap)
       call dealloc_nonlinear_data(WK%trns_MHD)

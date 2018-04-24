@@ -85,6 +85,8 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_SGS(SPH_MHD%ipol, WK%trns_SGS,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
+      call set_addresses_trans_sph_DYNS(SPH_MHD%ipol, WK%trns_DYNS,     &
+     &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_Csim(SPH_MHD%ipol, WK%trns_Csim,     &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_snapshot_trans                                 &
@@ -98,12 +100,23 @@
         call check_address_trans_sph_MHD                                &
      &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
      &      WK%trns_MHD, ncomp_max_trans)
+!
+        write(*,*) 'addresses of spherical transform for SGS term'
         call check_address_trans_sph_SGS                                &
      &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
      &      WK%trns_SGS)
-        call check_address_trans_sph_Csim                               &
+!
+        write(*,*) 'addresses of spherical transform for dynamic model'
+        call check_address_trans_sph_SGS                                &
+     &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
+     &      WK%trns_DYNS)
+!
+        write(*,*)                                                      &
+     &      'addresses of spherical transform for model coefficients'
+        call check_address_trans_sph_SGS                                &
      &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
      &      WK%trns_Csim)
+!
         call check_address_trans_sph_snap                               &
      &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
      &      WK%trns_snap)
@@ -156,8 +169,9 @@
      &    sph, comms_sph, trans_p%leg, trans_p%idx_trns)
       call init_fourier_transform_SGS_MHD                               &
      &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
-     &    WK%trns_MHD, WK%trns_SGS, WK%trns_Csim, WK%WK_sph,            &
-     &    WK%MHD_mul_FFTW, WK%SGS_mul_FFTW, WK%Csim_mul_FFTW)
+     &    WK%trns_MHD, WK%trns_SGS, WK%trns_DYNS, WK%trns_Csim,         &
+     &    WK%WK_sph, WK%MHD_mul_FFTW, WK%SGS_mul_FFTW,                  &
+     &    WK%DYNS_mul_FFTW, WK%Csim_mul_FFTW)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp(sph%sph_rtp, sph%sph_rj, trans_p%leg)
@@ -170,9 +184,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_fourier_transform_SGS_MHD(SGS_param, ncomp_tot,   &
-     &          sph_rtp, comm_rtp, trns_MHD, trns_SGS, trns_Csim,       &
-     &          WK_sph, MHD_mul_FFTW, SGS_mul_FFTW, Csim_mul_FFTW)
+      subroutine init_fourier_transform_SGS_MHD                         &
+     &       (SGS_param, ncomp_tot, sph_rtp, comm_rtp,                  &
+     &        trns_MHD, trns_SGS, trns_DYNS, trns_Csim, WK_sph,         &
+     &        MHD_mul_FFTW, SGS_mul_FFTW, DYNS_mul_FFTW, Csim_mul_FFTW)
 !
       use m_solver_SR
       use init_FFT_4_MHD
@@ -182,11 +197,12 @@
       type(sph_comm_tbl), intent(in) :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_tot
 !
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(address_4_sph_trans), intent(inout) :: trns_SGS, trns_Csim
+      type(address_4_sph_trans), intent(inout) :: trns_MHD,  trns_SGS
+      type(address_4_sph_trans), intent(inout) :: trns_DYNS, trns_Csim
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
+      type(work_for_sgl_FFTW), intent(inout) :: DYNS_mul_FFTW
       type(work_for_sgl_FFTW), intent(inout) :: Csim_mul_FFTW
 !
 !
@@ -199,6 +215,9 @@
      &      SGS_mul_FFTW)
 !
         if(SGS_param%iflag_dynamic .gt. 0) then
+          call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,         &
+     &        trns_DYNS%ncomp_rtp_2_rj, trns_DYNS%ncomp_rj_2_rtp,       &
+     &        DYNS_mul_FFTW)
           call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,         &
      &        trns_Csim%ncomp_rtp_2_rj, trns_Csim%ncomp_rj_2_rtp,       &
      &        Csim_mul_FFTW)

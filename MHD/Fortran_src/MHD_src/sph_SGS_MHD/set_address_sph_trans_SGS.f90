@@ -12,6 +12,10 @@
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!      subroutine set_addresses_trans_sph_DYNS(ipol, trns_DYNS,        &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_address), intent(in) :: ipol
+!!        type(address_4_sph_trans), intent(inout) :: trns_DYNS
 !!      subroutine set_addresses_trans_sph_Csim(ipol, trns_Csim,        &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol
@@ -20,12 +24,7 @@
 !!     &         (ipol, idpdr, itor, iphys, trns_SGS)
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(phys_address), intent(in) :: iphys
-!!        type(address_4_sph_trans), intent(in) :: trns_SGS
-!!      subroutine check_address_trans_sph_Csim                         &
-!!     &         (ipol, idpdr, itor, iphys, trns_Csim)
-!!        type(phys_address), intent(in) :: ipol, idpdr, itor
-!!        type(phys_address), intent(in) :: iphys
-!!        type(address_4_sph_trans), intent(in) :: trns_Csim
+!!        type(address_4_sph_trans), intent(in) :: trns_DYNS
 !!@endverbatim
 !
       module set_address_sph_trans_SGS
@@ -79,6 +78,37 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine set_addresses_trans_sph_DYNS(ipol, trns_DYNS,          &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      type(phys_address), intent(in) :: ipol
+      type(address_4_sph_trans), intent(inout) :: trns_DYNS
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+!
+      call b_trans_address_vector_SGS                                   &
+     &   (ipol, trns_DYNS%nvector_rj_2_rtp, trns_DYNS%b_trns)
+      call b_trans_address_scalar_SGS                                   &
+     &   (ipol, trns_DYNS%nvector_rj_2_rtp, trns_DYNS%nscalar_rj_2_rtp, &
+     &    trns_DYNS%b_trns)
+      trns_DYNS%ntensor_rj_2_rtp = 0
+!
+      call f_trans_address_vector_SGS                                   &
+     &   (ipol, trns_DYNS%nvector_rtp_2_rj, trns_DYNS%f_trns)
+      call f_trans_address_scalar_SGS                                   &
+     &   (ipol, trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj, &
+     &    trns_DYNS%f_trns)
+      trns_DYNS%ntensor_rtp_2_rj = 0
+!
+      call count_num_fields_4_sph_trans(trns_DYNS, ncomp_sph_trans,     &
+     &   nvector_sph_trans, nscalar_sph_trans)
+!
+      end subroutine set_addresses_trans_sph_DYNS
+!
+!-----------------------------------------------------------------------
+!
       subroutine set_addresses_trans_sph_Csim(ipol, trns_Csim,          &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
@@ -119,8 +149,6 @@
       type(address_4_sph_trans), intent(in) :: trns_SGS
 !
 !
-      write(*,*) 'addresses of spherical transform for SGS term'
-!
       call check_add_trans_sph_MHD                                      &
      &   (ipol, idpdr, itor, iphys, trns_SGS%b_trns, trns_SGS%f_trns,   &
      &    trns_SGS%ncomp_rj_2_rtp, trns_SGS%nvector_rj_2_rtp,           &
@@ -128,29 +156,6 @@
      &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj)
 !
       end subroutine check_address_trans_sph_SGS
-!
-!-----------------------------------------------------------------------
-!
-      subroutine check_address_trans_sph_Csim                           &
-     &         (ipol, idpdr, itor, iphys, trns_Csim)
-!
-      use check_address_sph_trans
-!
-      type(phys_address), intent(in) :: ipol, idpdr, itor
-      type(phys_address), intent(in) :: iphys
-      type(address_4_sph_trans), intent(in) :: trns_Csim
-!
-!
-      write(*,*)                                                        &
-     &      'addresses of spherical transform for model coefficients'
-!
-      call check_add_trans_sph_MHD                                      &
-     &   (ipol, idpdr, itor, iphys, trns_Csim%b_trns, trns_Csim%f_trns, &
-     &    trns_Csim%ncomp_rj_2_rtp, trns_Csim%nvector_rj_2_rtp,         &
-     &    trns_Csim%nscalar_rj_2_rtp, trns_Csim%ncomp_rtp_2_rj,         &
-     &    trns_Csim%nvector_rtp_2_rj, trns_Csim%nscalar_rtp_2_rj)
-!
-      end subroutine check_address_trans_sph_Csim
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
