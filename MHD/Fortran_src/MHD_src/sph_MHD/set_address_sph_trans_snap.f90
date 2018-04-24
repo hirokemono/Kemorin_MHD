@@ -92,26 +92,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_address_trans_sph_snap                           &
-     &         (ipol, idpdr, itor, iphys, trns_snap)
-!
-      use check_address_sph_trans
-!
-      type(phys_address), intent(in) :: ipol, idpdr, itor
-      type(phys_address), intent(in) :: iphys
-      type(address_4_sph_trans), intent(in) :: trns_snap
-!
-!
-      write(*,*) 'addresses of spherical transform for snapshot'
-!
-      call check_add_trans_sph_MHD                                      &
-     &   (ipol, idpdr, itor, iphys, trns_snap%b_trns, trns_snap%f_trns, &
-     &    trns_snap%ncomp_rj_2_rtp, trns_snap%nvector_rj_2_rtp,         &
-     &    trns_snap%nscalar_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,         &
-     &    trns_snap%nvector_rtp_2_rj, trns_snap%nscalar_rtp_2_rj)
-!
-      end subroutine check_address_trans_sph_snap
-!
-!-----------------------------------------------------------------------
-!
       end module set_address_sph_trans_snap

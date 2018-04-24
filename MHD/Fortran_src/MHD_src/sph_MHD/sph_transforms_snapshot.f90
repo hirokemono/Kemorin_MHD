@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p, &
-!!     &          ipol, rj_fld, trns_snap, WK_sph)
+!!     &          rj_fld, trns_snap, WK_sph)
 !!      subroutine sph_forward_trans_snapshot_MHD                       &
-!!     &         (sph, comms_sph, trans_p, trns_snap, ipol,             &
-!!     &          WK_sph, rj_fld)
+!!     &         (sph, comms_sph, trans_p, trns_snap, WK_sph, rj_fld)
 !!
 !!      subroutine sph_forward_trans_tmp_snap_MHD                       &
 !!     &         (sph, comms_sph, trans_p, trns_tmp, ipol,              &
@@ -56,16 +55,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,   &
-     &          ipol, rj_fld, trns_snap, WK_sph)
+     &          rj_fld, trns_snap, WK_sph)
 !
       use m_solver_SR
-      use copy_sph_MHD_4_send_recv
+      use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
       type(address_4_sph_trans), intent(inout) :: trns_snap
@@ -83,10 +81,9 @@
       call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rj_2_rtp,       &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-      call copy_snap_spectr_to_send(sph%sph_rtp%nnod_pole,              &
-     &    trns_snap%ncomp_rj_2_rtp, trns_snap%b_trns,                   &
-     &    sph%sph_rj, comms_sph%comm_rj, ipol, rj_fld,                  &
-     &    n_WS, WS, trns_snap%flc_pole)
+      call mhd_spectr_to_sendbuf_wpole                                  &
+     &   (sph%sph_rtp%nnod_pole, sph%sph_rj, comms_sph%comm_rj,         &
+     &    rj_fld, n_WS, WS(1), trns_snap)
 !
       call sph_b_trans_w_poles                                          &
      &   (trns_snap%ncomp_rj_2_rtp, trns_snap%nvector_rj_2_rtp,         &
@@ -99,18 +96,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_snapshot_MHD                         &
-     &         (sph, comms_sph, trans_p, trns_snap, ipol,               &
-     &          WK_sph, rj_fld)
+     &         (sph, comms_sph, trans_p, trns_snap, WK_sph, rj_fld)
 !
       use m_solver_SR
-      use copy_sph_MHD_4_send_recv
+      use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(address_4_sph_trans), intent(in) :: trns_snap
-      type(phys_address), intent(in) :: ipol
 !
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
@@ -129,9 +124,8 @@
      &    sph, comms_sph, trans_p, trns_snap%frc_rtp,                   &
      &    n_WS, n_WR, WS(1), WR(1), WK_sph)
 !
-      call copy_snap_vec_spec_from_trans                                &
-     &   (trns_snap%ncomp_rtp_2_rj, trns_snap%f_trns,                   &
-     &    comms_sph%comm_rj, ipol, n_WR, WR(1), rj_fld)
+      call mhd_spectr_from_recvbuf                                      &
+     &   (trns_snap, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_snapshot_MHD
 !

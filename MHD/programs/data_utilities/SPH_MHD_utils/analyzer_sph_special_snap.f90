@@ -306,7 +306,7 @@
 !
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p, trns_WK%trns_snap,       &
-     &     SPH_MHD%ipol, trns_WK%WK_sph, SPH_MHD%fld)
+     &    trns_WK%WK_sph, SPH_MHD%fld)
 !
 ! ----  Take zonal mean
 !
