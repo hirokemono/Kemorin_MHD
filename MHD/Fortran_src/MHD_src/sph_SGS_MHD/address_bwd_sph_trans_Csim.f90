@@ -230,7 +230,7 @@
      &     iphys%i_dbl_SGS_vp_induct, icou, trns_Csim)
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_dbl_SGS_h_flux, trns_Csim%b_trns%i_dbl_SGS_h_flux,        &
-     &    ipol%i_dbl_SGS_h_flux, itor%i_dbl_SGS_c_flux,                 &
+     &    ipol%i_dbl_SGS_h_flux, itor%i_dbl_SGS_h_flux,                 &
      &    iphys%i_dbl_SGS_h_flux, icou, trns_Csim)
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_dbl_SGS_c_flux, trns_Csim%b_trns%i_dbl_SGS_c_flux,        &

@@ -233,7 +233,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_b_trans_scalar_field_DYNS                          &
-     &         (icou, ipol, iphys, itor, trns_DYNS)
+     &         (icou, ipol, itor, iphys, trns_DYNS)
 !
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
