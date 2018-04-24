@@ -85,7 +85,8 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_SGS(SPH_MHD%ipol, WK%trns_SGS,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_trans_sph_DYNS(SPH_MHD%ipol, WK%trns_DYNS,     &
+      call set_addresses_trans_sph_DYNS                                 &
+     &   (SPH_MHD%ipol, iphys, WK%trns_DYNS,                            &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_Csim(SPH_MHD%ipol, WK%trns_Csim,     &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
