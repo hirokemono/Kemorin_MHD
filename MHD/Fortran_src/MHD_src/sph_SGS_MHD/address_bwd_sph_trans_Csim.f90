@@ -157,7 +157,7 @@
       type(address_4_sph_trans), intent(inout) :: trns_Csim
       integer(kind = kint), intent(inout) :: icou
 !
-!      wide filtered force
+!      wide filtered field
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_w_filter_velo, trns_Csim%b_trns%i_wide_fil_velo,          &
      &    ipol%i_wide_fil_velo, itor%i_wide_fil_velo,                   &
@@ -175,7 +175,7 @@
      &    ipol%i_wide_fil_current, itor%i_wide_fil_current,             &
      &    iphys%i_wide_fil_current, icou, trns_Csim)
 !
-!      double filtered force
+!      double filtered field
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_d_filter_velo, trns_Csim%b_trns%i_dbl_fil_velo,           &
      &    ipol%i_dbl_fil_velo, itor%i_dbl_fil_velo,                     &

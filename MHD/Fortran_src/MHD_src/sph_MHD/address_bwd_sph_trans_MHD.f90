@@ -93,6 +93,21 @@
       call add_vector_trans_flag(ipol%i_filter_current,                 &
      &    trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns%i_filter_current)
 !
+!
+!   wide filtered velocity
+      call add_vector_trans_flag(ipol%i_wide_fil_velo,                  &
+     &    trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns%i_wide_fil_velo)
+!   wide filtered vorticity
+      call add_vector_trans_flag(ipol%i_wide_fil_vort,                  &
+     &    trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns%i_wide_fil_vort)
+!   wide filtered magnetic field
+      call add_vector_trans_flag(ipol%i_wide_fil_magne,                 &
+     &    trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns%i_wide_fil_magne)
+!   wide filtered current density
+      call add_vector_trans_flag                                        &
+     &   (ipol%i_wide_fil_current, trns_MHD%nvector_rj_2_rtp,           &
+     &    trns_MHD%b_trns%i_wide_fil_current)
+!
       end subroutine b_trans_address_vector_MHD
 !
 !-----------------------------------------------------------------------
@@ -127,6 +142,15 @@
       call add_scalar_trans_flag(ipol%i_filter_comp,                    &
      &    trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,         &
      &    trns_MHD%b_trns%i_filter_comp)
+!
+!   wide filtered temperature
+      call add_scalar_trans_flag(ipol%i_wide_fil_temp,                  &
+     &    trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,         &
+     &    trns_MHD%b_trns%i_wide_fil_temp)
+!   wide filtered composition
+      call add_scalar_trans_flag(ipol%i_wide_fil_comp,                  &
+     &    trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,         &
+     &    trns_MHD%b_trns%i_wide_fil_comp)
 !
       end subroutine b_trans_address_scalar_MHD
 !
@@ -171,6 +195,24 @@
      &    itor%i_filter_current, iphys%i_filter_current,                &
      &    icou, trns_MHD)
 !
+!      wide filtered field
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_w_filter_velo, trns_MHD%b_trns%i_wide_fil_velo,           &
+     &    ipol%i_wide_fil_velo, itor%i_wide_fil_velo,                   &
+     &    iphys%i_wide_fil_velo, icou, trns_MHD)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_w_filter_vort, trns_MHD%b_trns%i_wide_fil_vort,           &
+     &    ipol%i_wide_fil_vort, itor%i_wide_fil_vort,                   &
+     &    iphys%i_wide_fil_vort, icou, trns_MHD)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_w_filter_magne, trns_MHD%b_trns%i_wide_fil_magne,         &
+     &    ipol%i_wide_fil_magne, itor%i_wide_fil_magne,                 &
+     &    iphys%i_wide_fil_magne, icou, trns_MHD)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_w_filter_current, trns_MHD%b_trns%i_wide_fil_current,     &
+     &    ipol%i_wide_fil_current, itor%i_wide_fil_current,             &
+     &    iphys%i_wide_fil_current, icou, trns_MHD)
+!
       end subroutine set_b_trans_vector_field_MHD
 !
 !-----------------------------------------------------------------------
@@ -197,6 +239,16 @@
       call set_field_name_4_bwd_trns(fhd_filter_comp,                   &
      &    trns_MHD%b_trns%i_filter_comp, ipol%i_filter_comp,            &
      &    itor%i_filter_comp, iphys%i_filter_comp, icou, trns_MHD)
+!
+!   wide filtered field
+      call set_field_name_4_bwd_trns(fhd_w_filter_temp,                 &
+     &    trns_MHD%b_trns%i_wide_fil_temp, ipol%i_wide_fil_temp,        &
+     &    itor%i_wide_fil_temp, iphys%i_wide_fil_temp,                  &
+     &    icou, trns_MHD)
+      call set_field_name_4_bwd_trns(fhd_w_filter_comp,                 &
+     &    trns_MHD%b_trns%i_wide_fil_comp, ipol%i_wide_fil_comp,        &
+     &    itor%i_wide_fil_comp, iphys%i_wide_fil_comp,                  &
+     &    icou, trns_MHD)
 !
       end subroutine set_b_trans_scalar_field_MHD
 !

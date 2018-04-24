@@ -92,6 +92,27 @@
      &      trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_c_flux)
       end if
 !
+!
+!   filtered advection flag
+      call add_vector_trans_flag(ipol%i_SGS_inertia,                    &
+     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_SGS_inertia)
+!
+!   filtered Lorentz force flag
+      call add_vector_trans_flag(ipol%i_SGS_Lorentz,                    &
+     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_SGS_Lorentz)
+!
+!   filtered induction flag
+      call add_vector_trans_flag(ipol%i_SGS_vp_induct,                  &
+     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_SGS_vp_induct)
+!
+!   filtered heat flux flag
+      call add_vector_trans_flag(ipol%i_SGS_h_flux,                     &
+     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_SGS_h_flux)
+!
+!   filtered composition flux flag
+      call add_vector_trans_flag(ipol%i_SGS_c_flux,                     &
+     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_SGS_c_flux)
+!
       end subroutine f_trans_address_vector_MHD
 !
 !-----------------------------------------------------------------------
@@ -152,6 +173,29 @@
       call set_field_name_4_fwd_trns                                    &
      &   (fhd_c_flux, trns_MHD%f_trns%i_c_flux, ipol%i_c_flux,          &
      &    itor%i_c_flux, iphys%i_c_flux, icou, trns_MHD)
+!
+!
+!   SGS advection flag
+      call set_field_name_4_fwd_trns                                    &
+     &   (fhd_SGS_inertia, trns_MHD%f_trns%i_SGS_inertia,               &
+     &    ipol%i_SGS_inertia, itor%i_SGS_inertia, iphys%i_SGS_inertia,  &
+     &    icou, trns_MHD)
+      call set_field_name_4_fwd_trns                                    &
+     &   (fhd_SGS_Lorentz, trns_MHD%f_trns%i_SGS_Lorentz,               &
+     &    ipol%i_SGS_Lorentz, itor%i_SGS_Lorentz, iphys%i_SGS_Lorentz,  &
+     &    icou, trns_MHD)
+      call set_field_name_4_fwd_trns                                    &
+     &   (fhd_SGS_vp_induct, trns_MHD%f_trns%i_SGS_vp_induct,           &
+     &    ipol%i_SGS_vp_induct, itor%i_SGS_vp_induct,                   &
+     &    iphys%i_SGS_vp_induct, icou, trns_MHD)
+      call set_field_name_4_fwd_trns                                    &
+     &   (fhd_SGS_h_flux, trns_MHD%f_trns%i_SGS_h_flux,                 &
+     &    ipol%i_SGS_h_flux, itor%i_SGS_h_flux, iphys%i_SGS_h_flux,     &
+     &    icou, trns_MHD)
+      call set_field_name_4_fwd_trns                                    &
+     &   (fhd_SGS_c_flux, trns_MHD%f_trns%i_SGS_c_flux,                 &
+     &    ipol%i_SGS_c_flux, itor%i_SGS_c_flux, iphys%i_SGS_c_flux,     &
+     &    icou, trns_MHD)
 !
       end subroutine set_f_trans_vector_field_MHD
 !

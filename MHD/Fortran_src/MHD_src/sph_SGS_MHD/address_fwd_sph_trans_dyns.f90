@@ -111,23 +111,23 @@
 !
 !   SGS advection flag
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_SGS_inertia, trns_DYNS%f_trns%i_SGS_inertia,               &
+     &   (fhd_SGS_inertia, trns_DYNS%f_trns%i_SGS_inertia,              &
      &    ipol%i_SGS_inertia, itor%i_SGS_inertia, iphys%i_SGS_inertia,  &
      &    icou, trns_DYNS)
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_SGS_Lorentz, trns_DYNS%f_trns%i_SGS_Lorentz,               &
+     &   (fhd_SGS_Lorentz, trns_DYNS%f_trns%i_SGS_Lorentz,              &
      &    ipol%i_SGS_Lorentz, itor%i_SGS_Lorentz, iphys%i_SGS_Lorentz,  &
      &    icou, trns_DYNS)
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_SGS_vp_induct, trns_DYNS%f_trns%i_SGS_vp_induct,           &
+     &   (fhd_SGS_vp_induct, trns_DYNS%f_trns%i_SGS_vp_induct,          &
      &    ipol%i_SGS_vp_induct, itor%i_SGS_vp_induct,                   &
      &    iphys%i_SGS_vp_induct, icou, trns_DYNS)
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_SGS_h_flux, trns_DYNS%f_trns%i_SGS_h_flux,                 &
+     &   (fhd_SGS_h_flux, trns_DYNS%f_trns%i_SGS_h_flux,                &
      &    ipol%i_SGS_h_flux, itor%i_SGS_h_flux, iphys%i_SGS_h_flux,     &
      &    icou, trns_DYNS)
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_SGS_c_flux, trns_DYNS%f_trns%i_SGS_c_flux,                 &
+     &   (fhd_SGS_c_flux, trns_DYNS%f_trns%i_SGS_c_flux,                &
      &    ipol%i_SGS_c_flux, itor%i_SGS_c_flux, iphys%i_SGS_c_flux,     &
      &    icou, trns_DYNS)
 !

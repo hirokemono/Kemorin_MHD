@@ -81,7 +81,7 @@
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
       call set_addresses_trans_sph_MHD                                  &
-     &   (SPH_model%MHD_prop, SPH_MHD%ipol, WK%trns_MHD,                &
+     &   (SPH_model%MHD_prop, SPH_MHD, iphys, WK%trns_MHD,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_SGS(SPH_MHD%ipol, WK%trns_SGS,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
@@ -97,10 +97,6 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(iflag_debug .ge. iflag_routine_msg) then
-        call check_address_trans_sph_MHD                                &
-     &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
-     &      WK%trns_MHD, ncomp_max_trans)
-!
         write(*,*) 'addresses of spherical transform for SGS term'
         call check_address_trans_sph_SGS                                &
      &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
