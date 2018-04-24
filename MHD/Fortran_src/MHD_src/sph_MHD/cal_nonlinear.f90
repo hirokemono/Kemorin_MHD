@@ -12,6 +12,24 @@
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!      subroutine nonlinear_by_pseudo_sph                              &
+!!     &         (sph, comms_sph, omega_sph, r_2nd, MHD_prop,           &
+!!     &          sph_MHD_bc, trans_p, gt_cor, trns_MHD, WK_sph,        &
+!!     &          MHD_mul_FFTW, cor_rlm, ipol, itor, rj_fld)
+!!        type(sph_grids), intent(in) :: sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(sph_rotation), intent(in) :: omega_sph
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
+!!        type(gaunt_coriolis_rlm), intent(in) :: gt_cor
+!!        type(phys_address), intent(in) :: ipol, itor
+!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
+!!        type(coriolis_rlm_data), intent(inout) :: cor_rlm
+!!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine licv_exp(ref_temp, ref_comp, MHD_prop, sph_MHD_bc,   &
 !!     &          sph, comms_sph, omega_sph, trans_p, ipol, itor,       &
 !!     &          WK, rj_fld)
@@ -55,17 +73,12 @@
 !
       implicit none
 !
-      private :: nonlinear_by_pseudo_sph
-!
 !*   ------------------------------------------------------------------
 !*
       contains
 !*
 !*   ------------------------------------------------------------------
-!
 !*
-!*   ------------------------------------------------------------------
-!
       subroutine nonlinear(r_2nd, SPH_model, trans_p, WK, SPH_MHD)
 !
       use cal_inner_core_rotation
@@ -115,9 +128,10 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_by_pseudo_sph(sph, comms_sph, omega_sph,     &
-     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, gt_cor, trns_MHD, &
-     &          WK_sph, MHD_mul_FFTW, cor_rlm, ipol, itor, rj_fld)
+      subroutine nonlinear_by_pseudo_sph                                &
+     &         (sph, comms_sph, omega_sph,  r_2nd, MHD_prop,            &
+     &          sph_MHD_bc, trans_p, gt_cor, trns_MHD, WK_sph,          &
+     &          MHD_mul_FFTW, cor_rlm, ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD

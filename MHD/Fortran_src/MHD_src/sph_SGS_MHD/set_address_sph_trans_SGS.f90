@@ -123,7 +123,7 @@
       trns_DYNS%ntensor_rj_2_rtp = 0
 !
       call f_trans_address_vector_DYNS(SPH_MHD%ipol, trns_DYNS)
-      call f_trans_address_scalar_DYNS(SPH_MHD%ipol, trns_DYNS)
+      call f_trans_address_scalar_DYNS(trns_DYNS)
       trns_DYNS%ntensor_rtp_2_rj = 0
 !
       call count_num_fields_4_sph_trans(trns_DYNS, ncomp_sph_trans,     &

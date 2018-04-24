@@ -66,9 +66,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_scalar_DYNS(ipol, trns_DYNS)
+      subroutine f_trans_address_scalar_DYNS(trns_DYNS)
 !
-      type(phys_address), intent(in) :: ipol
+!      type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
 !
 !
@@ -86,15 +86,14 @@
 !!     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj,       &
 !!     &    trns_DYNS%f_trns%i_SGS_comp_buo_wk)
 !
-!   SGS buoyancy
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_buoyancy,              &
-     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj,         &
-     &    trns_DYNS%f_trns%i_Csim_SGS_buoyancy)
-!   SGS compostional buoyancy
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_comp_buo,              &
-     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj,         &
-     &    trns_DYNS%f_trns%i_Csim_SGS_comp_buo)
-!
+!!   SGS buoyancy
+!      call add_scalar_trans_flag(ipol%i_Csim_SGS_buoyancy,             &
+!     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj,      &
+!     &    trns_DYNS%f_trns%i_Csim_SGS_buoyancy)
+!!   SGS compostional buoyancy
+!      call add_scalar_trans_flag(ipol%i_Csim_SGS_comp_buo,             &
+!     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj,      &
+!     &    trns_DYNS%f_trns%i_Csim_SGS_comp_buo)
 !
       end subroutine f_trans_address_scalar_DYNS
 !
@@ -144,25 +143,25 @@
 !
 !
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_Reynolds_work, trns_DYNS%f_trns%i_reynolds_wk,             &
+     &   (fhd_Reynolds_work, trns_DYNS%f_trns%i_reynolds_wk,            &
      &    ipol%i_reynolds_wk, itor%i_reynolds_wk, iphys%i_reynolds_wk,  &
      &    icou, trns_DYNS)
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_SGS_buo_flux, trns_DYNS%f_trns%i_SGS_buo_wk,               &
+     &   (fhd_SGS_buo_flux, trns_DYNS%f_trns%i_SGS_buo_wk,              &
      &    ipol%i_SGS_buo_wk, itor%i_SGS_buo_wk, iphys%i_SGS_buo_wk,     &
      &    icou, trns_DYNS)
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_SGS_comp_buo_flux, trns_DYNS%f_trns%i_SGS_comp_buo_wk,     &
+     &   (fhd_SGS_comp_buo_flux, trns_DYNS%f_trns%i_SGS_comp_buo_wk,    &
      &    ipol%i_SGS_comp_buo_wk, itor%i_SGS_comp_buo_wk,               &
      &    iphys%i_SGS_comp_buo_wk, icou, trns_DYNS)
 !
 !   SGS buoyancy
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_Csim_SGS_buoyancy, trns_DYNS%f_trns%i_Csim_SGS_buoyancy,   &
+     &   (fhd_Csim_SGS_buoyancy, trns_DYNS%f_trns%i_Csim_SGS_buoyancy,  &
      &    ipol%i_Csim_SGS_buoyancy, itor%i_Csim_SGS_buoyancy,           &
      &    iphys%i_Csim_SGS_buoyancy, icou, trns_DYNS)
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_Csim_SGS_comp_buo, trns_DYNS%f_trns%i_Csim_SGS_comp_buo,   &
+     &   (fhd_Csim_SGS_comp_buo, trns_DYNS%f_trns%i_Csim_SGS_comp_buo,  &
      &    ipol%i_Csim_SGS_comp_buo, itor%i_Csim_SGS_comp_buo,           &
      &    iphys%i_Csim_SGS_comp_buo, icou, trns_DYNS)
 !

@@ -57,12 +57,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_model_coefs_4_sph                                &
-     &         (SGS_param, sph_rtp, trns_SGS, dynamic_SPH)
+     &         (SGS_param, sph_rtp, trns_SGS, trns_DYNS, dynamic_SPH)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(address_4_sph_trans), intent(in) :: trns_SGS, trns_DYNS
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
@@ -70,55 +70,60 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD MF'
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
-     &      n_vector, trns_SGS%f_trns%i_SGS_inertia,                    &
-     &      trns_SGS%b_trns%i_wide_SGS_inertia,                         &
-     &      dynamic_SPH%ifld_sgs%i_mom_flux,                            &
+     &      n_vector, dynamic_SPH%ifld_sgs%i_mom_flux,                  &
      &      dynamic_SPH%icomp_sgs%i_mom_flux,                           &
-     &      dynamic_SPH%wk_sgs, trns_SGS)
+     &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_Lorentz),          &
+     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_inertia),   &
+     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_inertia),    &
+     &      dynamic_SPH%wk_sgs)
       end if
 !
       if(dynamic_SPH%ifld_sgs%i_lorentz .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD LZ'
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &    (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,       &
-     &     n_vector, trns_SGS%f_trns%i_SGS_Lorentz,                     &
-     &     trns_SGS%b_trns%i_wide_SGS_Lorentz,                          &
-     &     dynamic_SPH%ifld_sgs%i_lorentz,                              &
-     &     dynamic_SPH%icomp_sgs%i_lorentz,                             &
-     &     dynamic_SPH%wk_sgs, trns_SGS)
+     &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
+     &      n_vector, dynamic_SPH%ifld_sgs%i_lorentz,                   &
+     &      dynamic_SPH%icomp_sgs%i_lorentz,                            &
+     &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_Lorentz),          &
+     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_Lorentz),   &
+     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_Lorentz),    &
+     &      dynamic_SPH%wk_sgs)
       end if
 !
       if(dynamic_SPH%ifld_sgs%i_induction .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD ID'
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
-     &      n_vector, trns_SGS%f_trns%i_SGS_vp_induct,                  &
-     &      trns_SGS%b_trns%i_wide_SGS_vp_induct,                       &
-     &      dynamic_SPH%ifld_sgs%i_induction,                           &
+     &      n_vector, dynamic_SPH%ifld_sgs%i_induction,                 &
      &      dynamic_SPH%icomp_sgs%i_induction,                          &
-     &      dynamic_SPH%wk_sgs, trns_SGS)
+     &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_vp_induct),        &
+     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_vp_induct), &
+     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_vp_induct),  &
+     &      dynamic_SPH%wk_sgs)
       end if
 !
       if(dynamic_SPH%ifld_sgs%i_heat_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD HF'
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
-     &      n_vector, trns_SGS%f_trns%i_SGS_h_flux,                     &
-     &      trns_SGS%b_trns%i_wide_SGS_h_flux,                          &
-     &      dynamic_SPH%ifld_sgs%i_heat_flux,                           &
+     &      n_vector, dynamic_SPH%ifld_sgs%i_heat_flux,                 &
      &      dynamic_SPH%icomp_sgs%i_heat_flux,                          &
-     &      dynamic_SPH%wk_sgs, trns_SGS)
+     &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_h_flux),           &
+     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_h_flux),    &
+     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_h_flux),     &
+     &      dynamic_SPH%wk_sgs)
       end if
 !
       if(dynamic_SPH%ifld_sgs%i_comp_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD CF'
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
-     &      n_vector, trns_SGS%f_trns%i_SGS_c_flux,                     &
-     &      trns_SGS%b_trns%i_wide_SGS_c_flux,                          &
-     &      dynamic_SPH%ifld_sgs%i_comp_flux,                           &
+     &      n_vector, dynamic_SPH%ifld_sgs%i_comp_flux,                 &
      &      dynamic_SPH%icomp_sgs%i_comp_flux,                          &
-     &      dynamic_SPH%wk_sgs, trns_SGS)
+     &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_c_flux),           &
+     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_c_flux),    &
+     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_c_flux),     &
+     &      dynamic_SPH%wk_sgs)
       end if
 !
       end subroutine const_model_coefs_4_sph
@@ -127,8 +132,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_dynamic_SGS_4_sph_MHD(sph_rtp, sph_d_grp,          &
-     &          stab_weight, numdir, irtp_sgs, irtp_wide,               &
-     &          ifld_sgs, icomp_sgs, wk_sgs, trns_SGS)
+     &          stab_weight, numdir, ifld_sgs, icomp_sgs,               &
+     &          flux_simi, flux_wide, flux_dble, wk_sgs)
 !
       use m_FFT_selector
       use zonal_lsq_4_model_coefs
@@ -140,17 +145,22 @@
       real(kind = kreal), intent(in) :: stab_weight
       integer(kind = kint), intent(in) :: numdir
 !
-      integer(kind = kint), intent(in) :: irtp_sgs, irtp_wide
       integer(kind = kint), intent(in) :: ifld_sgs, icomp_sgs
 !
+      real(kind = kreal), intent(in)                                    &
+     &                   :: flux_simi(sph_rtp%nnod_rtp,numdir)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: flux_wide(sph_rtp%nnod_rtp,numdir)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: flux_dble(sph_rtp%nnod_rtp,numdir)
+!
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_int_zonal_4_model_coefs'
-      call sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp, numdir,      &
-     &  trns_SGS%frc_rtp(1,irtp_sgs), trns_SGS%fld_rtp(1,irtp_wide),    &
-     &  wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs))
+      call sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp,              &
+     &    numdir, flux_simi, flux_wide,                                 &
+     &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs))
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_sph_model_coefs'
       call sel_sph_model_coefs(numdir, sph_d_grp%ngrp_dynamic,          &
