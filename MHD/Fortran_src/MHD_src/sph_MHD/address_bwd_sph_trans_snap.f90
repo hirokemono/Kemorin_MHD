@@ -19,9 +19,9 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_snap
 !!
 !!      subroutine set_b_trans_vector_field_snap                        &
-!!     &         (icou, ipol, iphys, trns_snap)
+!!     &         (icou, ipol, itor, iphys, trns_snap)
 !!      subroutine set_b_trans_scalar_field_snap                        &
-!!     &         (icou, ipol, iphys, trns_snap)
+!!     &         (icou, ipol, itor, iphys, trns_snap)
 !!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_snap
 !!@endverbatim
@@ -242,9 +242,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_b_trans_vector_field_snap                          &
-     &         (icou, ipol, iphys, trns_snap)
+     &         (icou, ipol, itor, iphys, trns_snap)
 !
-      type(phys_address), intent(in) :: ipol, iphys
+      type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_4_sph_trans), intent(inout) :: trns_snap
       integer(kind = kint), intent(inout) :: icou
 !
@@ -322,7 +322,7 @@
 !
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_buoyancy, trns_snap%b_trns%i_buoyancy,                    &
-     &    ipol%i_buoyancy, itor%i_buoyancy iphys%i_buoyancy,            &
+     &    ipol%i_buoyancy, itor%i_buoyancy, iphys%i_buoyancy,           &
      &    icou, trns_snap)
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_comp_buo, trns_snap%b_trns%i_comp_buo,                    &
@@ -407,9 +407,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_b_trans_scalar_field_snap                          &
-     &         (icou, ipol, iphys, trns_snap)
+     &         (icou, ipol, itor, iphys, trns_snap)
 !
-      type(phys_address), intent(in) :: ipol, iphys
+      type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_4_sph_trans), intent(inout) :: trns_snap
       integer(kind = kint), intent(inout) :: icou
 !

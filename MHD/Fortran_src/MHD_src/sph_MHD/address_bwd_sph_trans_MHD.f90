@@ -19,10 +19,10 @@
 !!        type(phys_address), intent(inout) :: b_trns
 !!
 !!      subroutine set_b_trans_vector_field_MHD                         &
-!!     &         (icou, ipol, iphys, trns_MHD)
+!!     &         (icou, ipol, itor, iphys, trns_MHD)
 !!      subroutine set_b_trans_scalar_field_MHD                         &
-!!     &         (icou, ipol, iphys, trns_MHD)
-!!        type(phys_address), intent(in) :: ipol, iphys
+!!     &         (icou, ipol, itor, iphys, trns_MHD)
+!!        type(phys_address), intent(in) :: ipol, itor, iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!@endverbatim
 !
@@ -134,9 +134,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_b_trans_vector_field_MHD                           &
-     &         (icou, ipol, iphys, trns_MHD)
+     &         (icou, ipol, itor, iphys, trns_MHD)
 !
-      type(phys_address), intent(in) :: ipol, iphys
+      type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       integer(kind = kint), intent(inout) :: icou
 !
@@ -176,9 +176,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_b_trans_scalar_field_MHD                           &
-     &         (icou, ipol, iphys, trns_MHD)
+     &         (icou, ipol, itor, iphys, trns_MHD)
 !
-      type(phys_address), intent(in) :: ipol, iphys
+      type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       integer(kind = kint), intent(inout) :: icou
 !

@@ -12,8 +12,10 @@
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
-!!      subroutine set_addresses_trans_sph_DYNS(ipol, iphys, trns_DYNS, &
+!!      subroutine set_addresses_trans_sph_DYNS                         &
+!!     &         (SPH_MHD, iphys, trns_DYNS,                            &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(phys_address), intent(in) :: ipol, iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_DYNS
 !!      subroutine set_addresses_trans_sph_Csim(ipol, trns_Csim,        &
@@ -32,6 +34,7 @@
       use m_precision
 !
       use t_phys_address
+      use t_SPH_mesh_field_data
       use t_addresses_sph_transform
 !
       implicit none
@@ -78,12 +81,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_trans_sph_DYNS(ipol, iphys, trns_DYNS,   &
+      subroutine set_addresses_trans_sph_DYNS                           &
+     &         (SPH_MHD, iphys, trns_DYNS,                              &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use address_bwd_sph_trans_dyns
 !
-      type(phys_address), intent(in) :: ipol, iphys
+      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
+      type(phys_address), intent(in) :: iphys
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
@@ -92,14 +97,14 @@
       integer(kind = kint):: icou
 !
 !
-      call b_trans_address_vector_DYNS(ipol, trns_DYNS)
-      call b_trans_address_scalar_DYNS(ipol, trns_DYNS)
+      call b_trans_address_vector_DYNS(SPH_MHD%ipol, trns_DYNS)
+      call b_trans_address_scalar_DYNS(SPH_MHD%ipol, trns_DYNS)
       trns_DYNS%ntensor_rj_2_rtp = 0
 !
-      call f_trans_address_vector_SGS                                   &
-     &   (ipol, trns_DYNS%nvector_rtp_2_rj, trns_DYNS%f_trns)
-      call f_trans_address_scalar_SGS                                   &
-     &   (ipol, trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj, &
+      call f_trans_address_vector_SGS(SPH_MHD%ipol,                     &
+     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%f_trns)
+      call f_trans_address_scalar_SGS(SPH_MHD%ipol,                     &
+     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj,       &
      &    trns_DYNS%f_trns)
       trns_DYNS%ntensor_rtp_2_rj = 0
 !
@@ -108,9 +113,9 @@
 !
       icou = 0
       call set_b_trans_vector_field_DYNS                                &
-     &   (icou, ipol, iphys, trns_DYNS)
+     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_DYNS)
       call set_b_trans_scalar_field_dyns                                &
-     &   (icou, ipol, iphys, trns_DYNS)
+     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_DYNS)
 !
       end subroutine set_addresses_trans_sph_DYNS
 !

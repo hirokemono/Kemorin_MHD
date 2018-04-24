@@ -14,10 +14,10 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!
 !!      subroutine set_b_trans_vector_field_SGS                         &
-!!     &         (icou, ipol, iphys, trns_SGS)
+!!     &         (icou, ipol, itor, iphys, trns_SGS)
 !!      subroutine set_b_trans_scalar_field_SGS                         &
-!!     &         (icou, ipol, iphys, trns_SGS)
-!!        type(phys_address), intent(in) :: ipol, iphys
+!!     &         (icou, ipol, itor, iphys, trns_SGS)
+!!        type(phys_address), intent(in) :: ipol, itor, iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!@endverbatim
 !
@@ -83,59 +83,68 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_b_trans_vector_field_SGS                           &
-     &         (icou, ipol, iphys, trns_SGS)
+     &         (icou, ipol, itor, iphys, trns_SGS)
 !
-      type(phys_address), intent(in) :: ipol, iphys
+      type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_4_sph_trans), intent(inout) :: trns_SGS
       integer(kind = kint), intent(inout) :: icou
 !
 !      filtered force
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_SGS_inertia, trns_SGS%b_trns%i_SGS_inertia,               &
-     &    ipol%i_SGS_inertia, iphys%i_SGS_inertia, icou, trns_SGS)
+     &    ipol%i_SGS_inertia, itor%i_SGS_inertia,                       &
+     &    iphys%i_SGS_inertia, icou, trns_SGS)
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_SGS_Lorentz, trns_SGS%b_trns%i_SGS_Lorentz,               &
-     &    ipol%i_SGS_Lorentz, iphys%i_SGS_Lorentz, icou, trns_SGS)
+     &    ipol%i_SGS_Lorentz, itor%i_SGS_Lorentz,                       &
+     &    iphys%i_SGS_Lorentz, icou, trns_SGS)
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_SGS_vp_induct, trns_SGS%b_trns%i_SGS_vp_induct,           &
-     &    ipol%i_SGS_vp_induct, iphys%i_SGS_vp_induct, icou, trns_SGS)
+     &    ipol%i_SGS_vp_induct, itor%i_SGS_vp_induct,                   &
+     &    iphys%i_SGS_vp_induct, icou, trns_SGS)
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_SGS_h_flux, trns_SGS%b_trns%i_SGS_h_flux,                 &
-     &    ipol%i_SGS_h_flux, iphys%i_SGS_h_flux, icou, trns_SGS)
+     &    ipol%i_SGS_h_flux, itor%i_SGS_h_flux, iphys%i_SGS_h_flux,     &
+     &     icou, trns_SGS)
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_SGS_c_flux, trns_SGS%b_trns%i_SGS_c_flux,                 &
-     &    ipol%i_SGS_c_flux, iphys%i_SGS_c_flux, icou, trns_SGS)
+     &    ipol%i_SGS_c_flux, itor%i_SGS_c_flux, iphys%i_SGS_c_flux,     &
+     &    icou, trns_SGS)
 !
 !
 !   filtered fields
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_filter_velo, trns_SGS%b_trns%i_filter_velo,               &
-     &     ipol%i_filter_velo, iphys%i_filter_velo, icou, trns_SGS)
+     &    ipol%i_filter_velo, itor%i_filter_velo, iphys%i_filter_velo,  &
+     &    icou, trns_SGS)
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_filter_vort, trns_SGS%b_trns%i_filter_vort,               &
-     &    ipol%i_filter_vort, iphys%i_filter_vort, icou, trns_SGS)
+     &    ipol%i_filter_vort, itor%i_filter_vort, iphys%i_filter_vort,  &
+     &     icou, trns_SGS)
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_filter_magne, trns_SGS%b_trns%i_filter_magne,             &
-     &    ipol%i_filter_magne, iphys%i_filter_magne, icou, trns_SGS)
+     &    ipol%i_filter_magne, itor%i_filter_magne,                     &
+     &    iphys%i_filter_magne, icou, trns_SGS)
       call set_field_name_4_bwd_trns(fhd_filter_current,                &
      &    trns_SGS%b_trns%i_filter_current, ipol%i_filter_current,      &
-     &    iphys%i_filter_current, icou, trns_SGS)
+     &    itor%i_filter_current, iphys%i_filter_current,                &
+     &    icou, trns_SGS)
 !
       end subroutine set_b_trans_vector_field_SGS
 !
 !-----------------------------------------------------------------------
 !
 !      subroutine set_b_trans_scalar_field_SGS                          &
-!     &         (icou, ipol, iphys, trns_SGS)
+!     &         (icou, ipol, itor, iphys, trns_SGS)
 !
-!      type(phys_address), intent(in) :: ipol, iphys
+!      type(phys_address), intent(in) :: ipol, itor, iphys
 !      type(address_4_sph_trans), intent(inout) :: trns_SGS
 !      integer(kind = kint), intent(inout) :: icou
 !
 !
 !      call set_field_name_4_bwd_trns(fhd_filter_temp,                  &
 !     &    trns_SGS%b_trns%i_filter_temp, ipol%i_filter_temp,           &
-!     &    iphys%i_filter_temp, icou, trns_SGS)
+!     &    itor%i_filter_temp, iphys%i_filter_temp, icou, trns_SGS)
 !
 !      end subroutine set_b_trans_scalar_field_SGS
 !
