@@ -30,9 +30,18 @@ LIB_FILES_PSF_UTIL = \
 '$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'
 
+LIBS_PG_UTIL = \
+'$$(LIB_DRAW_PG)' \
+'$$(LIB_MESH)'
+
+LIB_FILES_PG_UTIL = \
+'$$(LIB_DRAW_PG_FILE)'
+
 ifdef FORTRAN_C_CONNECT
   LIBS_PSF_UTIL+=        '$$(LIB_KEMO_C)'
   LIB_FILES_PSF_UTIL+=   '$$(LIB_KEMO_C_FILE)'
+  LIBS_PG_UTIL+=         '$$(LIB_KEMO_C)'
+  LIB_FILES_PG_UTIL+=    '$$(LIB_KEMO_C_FILE)'
 endif
 
 SOURCES = $(shell ls *.f90)
@@ -149,31 +158,31 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DRAW_CZ)': '$$(MOD_ZCPLANE_PG)' \
-	'$$(LIB_FILES_PSF_UTIL)' \
+	'$$(LIB_FILES_PG_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_CZ)' \
-	'$$(MOD_ZCPLANE_PG)' '-L. $$(LIBS_PSF_UTIL)' \
+	@echo '	''$$(F90_LOCAL)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_CZ)' \
+	'$$(MOD_ZCPLANE_PG)' '-L. $$(LIBS_PG_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DRAW_CX)': '$$(MOD_XCPLANE_PG)' \
-	'$$(LIB_FILES_PSF_UTIL)' \
+	'$$(LIB_FILES_PG_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_CX)' \
-	'$$(MOD_XCPLANE_PG)' '-L. $$(LIBS_PSF_UTIL)' \
+	@echo '	''$$(F90_LOCAL)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_CX)' \
+	'$$(MOD_XCPLANE_PG)' '-L. $$(LIBS_PG_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DRAW_CY)': '$$(MOD_YCPLANE_PG)' \
-	'$$(LIB_FILES_PSF_UTIL)' \
+	'$$(LIB_FILES_PG_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_CY)' \
-	'$$(MOD_YCPLANE_PG)' '-L. $$(LIBS_PSF_UTIL)' \
+	@echo '	''$$(F90_LOCAL)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_CY)' \
+	'$$(MOD_YCPLANE_PG)' '-L. $$(LIBS_PG_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DRAW_MAP)': '$$(MOD_MAP_PG)' \
-	'$$(LIB_FILES_PSF_UTIL)' \
+	'$$(LIB_FILES_PG_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_MAP)' \
-	'$$(MOD_MAP_PG)' '-L. $$(LIBS_PSF_UTIL)' \
+	@echo '	''$$(F90_LOCAL)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_MAP)' \
+	'$$(MOD_MAP_PG)' '-L. $$(LIBS_PG_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_LINE_ON_PSF)': '$$(MOD_LINE_ON_PSF)' \
@@ -181,21 +190,21 @@ target_task:
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_LINE_ON_PSF)' \
 	'$$(MOD_LINE_ON_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
-	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
+	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DBENCH_ON_PSF)': '$$(MOD_DYNAMOBENCH_PSF)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DBENCH_ON_PSF)' \
 	'$$(MOD_DYNAMOBENCH_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
-	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
+	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FIX_TEMP_PSF)': '$$(MOD_FIX_TEMP_PSF)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FIX_TEMP_PSF)' \
 	'$$(MOD_FIX_TEMP_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
-	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
+	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 
@@ -204,6 +213,10 @@ lib_name:
 	@echo  $(LIBS_PSF_UTIL)            >> $(MAKENAME)
 	@echo  LIB_FILES_PSF_UTIL=  \\     >> $(MAKENAME)
 	@echo  $(LIB_FILES_PSF_UTIL)       >> $(MAKENAME)
+	@echo  LIBS_PG_UTIL=  \\           >> $(MAKENAME)
+	@echo  $(LIBS_PG_UTIL)             >> $(MAKENAME)
+	@echo  LIB_FILES_PG_UTIL=  \\      >> $(MAKENAME)
+	@echo  $(LIB_FILES_PG_UTIL)        >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 mod_list:
