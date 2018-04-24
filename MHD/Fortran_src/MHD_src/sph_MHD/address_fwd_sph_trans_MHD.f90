@@ -18,10 +18,10 @@
 !!        type(phys_address), intent(inout) :: b_trns
 !!
 !!      subroutine set_f_trans_vector_field_MHD                         &
-!!     &         (icou, ipol, iphys, trns_MHD)
+!!     &         (icou, ipol, itor, iphys, trns_MHD)
 !!      subroutine set_f_trans_scalar_field_MHD                         &
-!!     &         (icou, ipol, iphys, trns_MHD)
-!!        type(phys_address), intent(in) :: ipol, iphys
+!!     &         (icou, ipol, itor, iphys, trns_MHD)
+!!        type(phys_address), intent(in) :: ipol, itor, iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!@endverbatim
 !
@@ -114,52 +114,53 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_f_trans_vector_field_MHD                           &
-     &         (icou, ipol, iphys, trns_MHD)
+     &         (icou, ipol, itor, iphys, trns_MHD)
 !
-      type(phys_address), intent(in) :: ipol, iphys
+      type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       integer(kind = kint), intent(inout) :: icou
 !
 !
 !   advection flag
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_inertia, trns_MHD%f_trns%i_m_advect,                      &
-     &    ipol%i_m_advect, iphys%i_m_advect, icou, trns_MHD)
+     &   (fhd_inertia, trns_MHD%f_trns%i_m_advect, ipol%i_m_advect,     &
+     &    itor%i_m_advect, iphys%i_m_advect, icou, trns_MHD)
 !
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_Coriolis, trns_MHD%f_trns%i_coriolis,                     &
-     &    ipol%i_coriolis, iphys%i_coriolis, icou, trns_MHD)
+     &   (fhd_Coriolis, trns_MHD%f_trns%i_coriolis, ipol%i_coriolis,    &
+     &    itor%i_coriolis, iphys%i_coriolis, icou, trns_MHD)
       call set_field_name_4_fwd_trns                                    &
      &   (fhd_rot_Coriolis, trns_MHD%f_trns%i_rot_Coriolis,             &
-     &    ipol%i_rot_Coriolis, iphys%i_rot_Coriolis, icou, trns_MHD)
+     &    ipol%i_rot_Coriolis, itor%i_rot_Coriolis,                     &
+     &    iphys%i_rot_Coriolis, icou, trns_MHD)
 !
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_Lorentz, trns_MHD%f_trns%i_lorentz,                       &
-     &    ipol%i_lorentz, iphys%i_lorentz, icou, trns_MHD)
+     &   (fhd_Lorentz, trns_MHD%f_trns%i_lorentz, ipol%i_lorentz,       &
+     &    itor%i_lorentz, iphys%i_lorentz, icou, trns_MHD)
 !
 !   induction flag
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_vp_induct, trns_MHD%f_trns%i_vp_induct,                   &
-     &    ipol%i_vp_induct, iphys%i_vp_induct, icou, trns_MHD)
+     &   (fhd_vp_induct, trns_MHD%f_trns%i_vp_induct, ipol%i_vp_induct, &
+     &    itor%i_vp_induct, iphys%i_vp_induct, icou, trns_MHD)
 !
 !   heat flux flag
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_h_flux, trns_MHD%f_trns%i_h_flux,                         &
-     &    ipol%i_h_flux, iphys%i_h_flux, icou, trns_MHD)
+     &   (fhd_h_flux, trns_MHD%f_trns%i_h_flux, ipol%i_h_flux,          &
+     &    itor%i_h_flux, iphys%i_h_flux, icou, trns_MHD)
 !
 !   composition flux flag
       call set_field_name_4_fwd_trns                                    &
-     &   (fhd_c_flux, trns_MHD%f_trns%i_c_flux,                         &
-     &    ipol%i_c_flux, iphys%i_c_flux, icou, trns_MHD)
+     &   (fhd_c_flux, trns_MHD%f_trns%i_c_flux, ipol%i_c_flux,          &
+     &    itor%i_c_flux, iphys%i_c_flux, icou, trns_MHD)
 !
       end subroutine set_f_trans_vector_field_MHD
 !
 !-----------------------------------------------------------------------
 !
       subroutine set_f_trans_scalar_field_MHD                           &
-     &         (icou, ipol, iphys, trns_MHD)
+     &         (icou, ipol, itor, iphys, trns_MHD)
 !
-      type(phys_address), intent(in) :: ipol, iphys
+      type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       integer(kind = kint), intent(inout) :: icou
 !
@@ -167,7 +168,8 @@
 !   divergence of Coriolis flux flag
       call set_field_name_4_fwd_trns                                    &
      &   (fhd_div_Coriolis, trns_MHD%f_trns%i_div_Coriolis,             &
-     &    ipol%i_div_Coriolis, iphys%i_div_Coriolis, icou, trns_MHD)
+     &    ipol%i_div_Coriolis, itor%i_div_Coriolis,                     &
+     &    iphys%i_div_Coriolis, icou, trns_MHD)
 !
       end subroutine set_f_trans_scalar_field_MHD
 !

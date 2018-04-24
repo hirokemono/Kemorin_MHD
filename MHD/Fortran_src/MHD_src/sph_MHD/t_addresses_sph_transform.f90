@@ -35,7 +35,7 @@
 !!      subroutine set_field_name_4_bwd_trns                            &
 !!     &         (field_name, i_trns, i_pol, i_tor, irtp, trns)
 !!      subroutine set_field_name_4_fwd_trns                            &
-!!     &         (field_name, i_trns, i_rj, irtp, trns)
+!!     &         (field_name, i_trns, i_pol, i_tor, irtp, trns)
 !!        type(address_4_sph_trans), intent(inout) :: trns
 !!@endverbatim
 !
@@ -383,7 +383,8 @@
       trns%ifld_rtp(icou) =  irtp
 !
       if(iflag_debug .eq. 0) return
-      write(*,*) icou, trim(trns%b_trns_name(icou)), ': ',              &
+      write(*,'(i5,a2,a,a2,4i5)')                                       &
+     &    icou, '. ', trim(trns%b_trns_name(icou)), ': ',               &
      &    trns%ifld_trns(icou), trns%ifld_rj(icou), i_tor,              &
      &    trns%ifld_rtp(icou)
 !
@@ -392,12 +393,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_field_name_4_fwd_trns                              &
-     &         (field_name, i_trns, i_rj, irtp, icou, trns)
+     &         (field_name, i_trns, i_pol, i_tor, irtp, icou, trns)
 !
       use m_machine_parameter
 !
       character(len = kchara), intent(in) :: field_name
-      integer(kind = kint), intent(in) :: i_trns, i_rj, irtp
+      integer(kind = kint), intent(in) :: i_trns, i_pol, i_tor, irtp
       integer(kind = kint), intent(inout) :: icou
       type(address_4_sph_trans), intent(inout) :: trns
 !
@@ -406,12 +407,14 @@
       icou = icou + 1
       trns%f_trns_name(icou) = field_name
       trns%ifrc_trns(icou) = i_trns
-      trns%ifrc_rj(icou) =   i_rj
+      trns%ifrc_rj(icou) =   i_pol
       trns%ifrc_rtp(icou) =  irtp
 !
       if(iflag_debug .eq. 0) return
-      write(*,*) icou, trim(trns%f_trns_name(icou)), ': ',              &
-     &    trns%ifrc_trns(icou), trns%ifrc_rj(icou), trns%ifrc_rtp(icou)
+      write(*,'(i5,a2,a,a2,4i5)')                                       &
+     &    icou, '. ', trim(trns%f_trns_name(icou)), ': ',               &
+     &    trns%ifrc_trns(icou), trns%ifrc_rj(icou), i_tor,              &
+     &    trns%ifrc_rtp(icou)
 !
       end subroutine set_field_name_4_fwd_trns
 !

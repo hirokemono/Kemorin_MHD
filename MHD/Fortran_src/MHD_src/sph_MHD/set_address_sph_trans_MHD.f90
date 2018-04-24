@@ -17,13 +17,33 @@
 !!     &         (ipol, idpdr, itor, trns_MHD, ncomp_sph_trans)
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
+!!
+!!      subroutine mhd_spectr_to_sendbuf                                &
+!!     &         (trns_MHD, comm_rj, rj_fld, n_WS, WS)
+!!        type(address_4_sph_trans), intent(in) :: trns_MHD
+!!        type(sph_comm_tbl), intent(in) :: comm_rj
+!!        type(phys_data), intent(in) :: rj_fld
+!!      subroutine mhd_spectr_to_sendbuf_wpole(nnod_pole,               &
+!!     &          sph_rj, comm_rj, rj_fld, n_WS, WS, trns_MHD)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(sph_comm_tbl), intent(in) :: comm_rj
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
+!!      subroutine mhd_spectr_from_recvbuf                              &
+!!     &         (trns_MHD, comm_rj, n_WR, WR, rj_fld)
+!!        type(address_4_sph_trans), intent(in) :: trns_MHD
+!!        type(sph_comm_tbl), intent(in) :: comm_rj
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
       module set_address_sph_trans_MHD
 !
       use m_precision
 !
+      use t_sph_trans_comm_tbl
+      use t_spheric_rj_data
       use t_phys_address
+      use t_phys_data
       use t_addresses_sph_transform
       use t_control_parameter
       use t_physical_property
@@ -305,6 +325,99 @@
      &    nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns%i_div_Coriolis)
 !
       end subroutine f_trans_address_scalar_MHD
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine mhd_spectr_to_sendbuf                                  &
+     &         (trns_MHD, comm_rj, rj_fld, n_WS, WS)
+!
+      use copy_spectr_4_sph_trans
+!
+      type(address_4_sph_trans), intent(in) :: trns_MHD
+      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(phys_data), intent(in) :: rj_fld
+      integer(kind = kint), intent(in) :: n_WS
+      real(kind = kreal), intent(inout) :: WS(n_WS)
+!
+      integer(kind = kint) :: i, inum
+!
+!
+      do i = 1, trns_MHD%nvector_rj_2_rtp
+        call sel_sph_rj_vector_to_send(trns_MHD%ncomp_rj_2_rtp,         &
+     &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i),                 &
+     &      comm_rj, rj_fld, n_WS, WS)
+      end do
+      do inum = 1, trns_MHD%nscalar_rj_2_rtp
+        i = inum + trns_MHD%nvector_rj_2_rtp
+        call sel_sph_rj_scalar_to_send(trns_MHD%ncomp_rj_2_rtp,         &
+     &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i),                 &
+     &      comm_rj, rj_fld, n_WS, WS)
+      end do
+!
+      end subroutine mhd_spectr_to_sendbuf
+!
+!-----------------------------------------------------------------------
+!
+      subroutine mhd_spectr_to_sendbuf_wpole(nnod_pole,                 &
+     &          sph_rj, comm_rj, rj_fld, n_WS, WS, trns_MHD)
+!
+      use copy_spectr_4_sph_trans
+!
+      integer(kind = kint), intent(in) :: nnod_pole
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_comm_tbl), intent(in) :: comm_rj
+      type(phys_data), intent(in) :: rj_fld
+      integer(kind = kint), intent(in) :: n_WS
+      real(kind = kreal), intent(inout) :: WS(n_WS)
+      type(address_4_sph_trans), intent(inout) :: trns_MHD
+!
+      integer(kind = kint) :: i, inum
+!
+!
+      do i = 1, trns_MHD%nvector_rj_2_rtp
+        call sel_sph_rj_vector_to_send(trns_MHD%ncomp_rj_2_rtp,         &
+     &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i),                 &
+     &      comm_rj, rj_fld, n_WS, WS)
+      end do
+      do inum = 1, trns_MHD%nscalar_rj_2_rtp
+        i = inum + trns_MHD%nvector_rj_2_rtp
+        call sel_sph_rj_scalar_2_send_wpole(trns_MHD%ncomp_rj_2_rtp,    &
+     &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i), nnod_pole,      &
+     &      sph_rj, comm_rj, rj_fld, n_WS, WS, trns_MHD%flc_pole)
+      end do
+!
+      end subroutine mhd_spectr_to_sendbuf_wpole
+!
+!-----------------------------------------------------------------------
+!
+      subroutine mhd_spectr_from_recvbuf                                &
+     &         (trns_MHD, comm_rj, n_WR, WR, rj_fld)
+!
+      use copy_spectr_4_sph_trans
+!
+      type(address_4_sph_trans), intent(in) :: trns_MHD
+      type(sph_comm_tbl), intent(in) :: comm_rj
+      integer(kind = kint), intent(in) :: n_WR
+      real(kind = kreal), intent(inout) :: WR(n_WR)
+      type(phys_data), intent(inout) :: rj_fld
+!
+      integer(kind = kint) :: i, inum
+!
+!
+      do i = 1, trns_MHD%nvector_rtp_2_rj
+        call sel_sph_rj_vector_from_recv(trns_MHD%ncomp_rtp_2_rj,       &
+     &      trns_MHD%ifrc_rj(i), trns_MHD%ifrc_trns(i),                 &
+     &      comm_rj, n_WR, WR, rj_fld)
+      end do
+      do inum = 1, trns_MHD%nscalar_rtp_2_rj
+        i = inum + trns_MHD%nvector_rtp_2_rj
+        call sel_sph_rj_scalar_from_recv(trns_MHD%ncomp_rtp_2_rj,       &
+     &      trns_MHD%ifrc_rj(i), trns_MHD%ifrc_trns(i),                 &
+     &      comm_rj, n_WR, WR, rj_fld)
+      end do
+!
+      end  subroutine mhd_spectr_from_recvbuf
 !
 !-----------------------------------------------------------------------
 !
