@@ -96,8 +96,7 @@
 !
       call init_leg_fourier_trans_MHD                                   &
      &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &
-     &    ncomp_max_trans, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW,     &
-     &    trans_p, WK%gt_cor, WK%cor_rlm)
+     &    ncomp_max_trans, trans_p, WK)
 !
       call sel_sph_transform_MHD                                        &
      &   (SPH_MHD%ipol, SPH_model%MHD_prop, SPH_model%sph_MHD_bc,       &

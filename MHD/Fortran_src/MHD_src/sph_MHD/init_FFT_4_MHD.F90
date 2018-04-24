@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine init_fourier_transform_4_MHD(ncomp_tot,              &
-!!     &          sph_rtp, comm_rtp, trns_MHD, WK_FFTs, MHD_mul_FFTW)
+!!     &          sph_rtp, comm_rtp, trns_MHD, WK_sph, MHD_mul_FFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
-!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!
 !!       Current problem
@@ -30,6 +30,7 @@
       use MHD_FFT_selector
 !
       use t_spheric_rtp_data
+      use t_sph_transforms
       use t_sph_trans_comm_tbl
       use t_addresses_sph_transform
       use t_sph_multi_FFTW
@@ -50,7 +51,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_fourier_transform_4_MHD(ncomp_tot,                &
-     &          sph_rtp, comm_rtp, trns_MHD, WK_FFTs, MHD_mul_FFTW)
+     &          sph_rtp, comm_rtp, trns_MHD, WK_sph, MHD_mul_FFTW)
 !
       use m_solver_SR
 !
@@ -59,13 +60,13 @@
       integer(kind = kint), intent(in) :: ncomp_tot
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(work_for_FFTs), intent(inout) :: WK_FFTs
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
       if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
         call compare_FFT_4_MHD(ncomp_tot, sph_rtp, comm_rtp,            &
-     &      n_WS, n_WR, WS, WR, trns_MHD, WK_FFTs)
+     &      n_WS, n_WR, WS, WR, trns_MHD, WK_sph%WK_FFTs)
         iflag_FFT = iflag_selected
       end if
 !
@@ -86,7 +87,8 @@
         end if
       end if
 !
-      call init_sph_FFT_select(my_rank, sph_rtp, ncomp_tot, WK_FFTs)
+      call init_sph_FFT_select                                          &
+     &   (my_rank, sph_rtp, ncomp_tot, WK_sph%WK_FFTs)
       call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,             &
      &    trns_MHD%ncomp_rtp_2_rj, trns_MHD%ncomp_rj_2_rtp,             &
      &    MHD_mul_FFTW)
