@@ -51,7 +51,6 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
       call b_trans_address_vector_MHD                                   &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
@@ -72,21 +71,11 @@
      &    trns_MHD%nscalar_rtp_2_rj, trns_MHD%f_trns)
       trns_MHD%ntensor_rtp_2_rj = 0
 !
-      nscltsr_rtp_2_rj                                                  &
-     &      = trns_MHD%nscalar_rj_2_rtp + 6*trns_MHD%ntensor_rj_2_rtp
-      trns_MHD%ncomp_rj_2_rtp                                           &
-     &      = 3*trns_MHD%nvector_rj_2_rtp + nscltsr_rtp_2_rj
-!
-      nscltsr_rj_2_rtp                                                  &
-     &      = trns_MHD%nscalar_rtp_2_rj + 6*trns_MHD%ntensor_rtp_2_rj
-      trns_MHD%ncomp_rtp_2_rj                                           &
-     &      = 3*trns_MHD%nvector_rtp_2_rj + nscltsr_rj_2_rtp
-!
-      ncomp_sph_trans                                                   &
-     &      = max(trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj)
-      nvector_sph_trans                                                 &
-     &      = max(trns_MHD%nvector_rj_2_rtp, trns_MHD%nvector_rtp_2_rj)
-      nscalar_sph_trans = max(nscltsr_rtp_2_rj, nscltsr_rj_2_rtp)
+      ncomp_sph_trans =   0
+      nvector_sph_trans = 0
+      nscalar_sph_trans = 0
+      call count_num_fields_4_sph_trans(trns_MHD, ncomp_sph_trans,      &
+     &   nvector_sph_trans, nscalar_sph_trans)
 !
       end subroutine set_addresses_trans_sph_MHD
 !

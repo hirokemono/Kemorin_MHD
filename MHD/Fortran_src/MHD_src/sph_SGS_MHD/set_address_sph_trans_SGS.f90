@@ -57,7 +57,6 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
       call b_trans_address_vector_SGS                                   &
      &   (ipol, trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns)
@@ -71,21 +70,8 @@
      &    trns_SGS%f_trns)
       trns_SGS%ntensor_rtp_2_rj = 0
 !
-      nscltsr_rtp_2_rj                                                  &
-     &      = trns_SGS%nscalar_rj_2_rtp + 6*trns_SGS%ntensor_rj_2_rtp
-      trns_SGS%ncomp_rj_2_rtp                                           &
-     &      = 3*trns_SGS%nvector_rj_2_rtp + nscltsr_rtp_2_rj
-!
-      nscltsr_rj_2_rtp                                                  &
-     &      = trns_SGS%nscalar_rtp_2_rj + 6*trns_SGS%ntensor_rtp_2_rj
-      trns_SGS%ncomp_rtp_2_rj                                           &
-     &      = 3*trns_SGS%nvector_rtp_2_rj + nscltsr_rj_2_rtp
-!
-      ncomp_sph_trans                                                   &
-     &      = max(trns_SGS%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj)
-      nvector_sph_trans                                                 &
-     &      = max(trns_SGS%nvector_rj_2_rtp, trns_SGS%nvector_rtp_2_rj)
-      nscalar_sph_trans = max(nscltsr_rtp_2_rj, nscltsr_rj_2_rtp)
+      call count_num_fields_4_sph_trans(trns_SGS, ncomp_sph_trans,      &
+     &   nvector_sph_trans, nscalar_sph_trans)
 !
       end subroutine set_addresses_trans_sph_SGS
 !
@@ -100,7 +86,6 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
       trns_Csim%nvector_rj_2_rtp = 0
       call b_trans_address_scalar_Csim                                  &
@@ -114,21 +99,8 @@
      &    trns_Csim%f_trns)
       trns_Csim%ntensor_rtp_2_rj = 0
 !
-      nscltsr_rtp_2_rj                                                  &
-     &    = trns_Csim%nscalar_rj_2_rtp + 6*trns_Csim%ntensor_rj_2_rtp
-      trns_Csim%ncomp_rj_2_rtp                                          &
-     &    = 3*trns_Csim%nvector_rj_2_rtp + nscltsr_rtp_2_rj
-!
-      nscltsr_rj_2_rtp                                                  &
-     &    = trns_Csim%nscalar_rtp_2_rj + 6*trns_Csim%ntensor_rtp_2_rj
-      trns_Csim%ncomp_rtp_2_rj                                          &
-     &    = 3*trns_Csim%nvector_rtp_2_rj + nscltsr_rj_2_rtp
-!
-      ncomp_sph_trans                                                   &
-     &    = max(trns_Csim%ncomp_rj_2_rtp, trns_Csim%ncomp_rtp_2_rj)
-      nvector_sph_trans                                                 &
-     &    = max(trns_Csim%nvector_rj_2_rtp, trns_Csim%nvector_rtp_2_rj)
-      nscalar_sph_trans = max(nscltsr_rtp_2_rj, nscltsr_rj_2_rtp)
+      call count_num_fields_4_sph_trans(trns_Csim, ncomp_sph_trans,     &
+     &   nvector_sph_trans, nscalar_sph_trans)
 !
       end subroutine set_addresses_trans_sph_Csim
 !

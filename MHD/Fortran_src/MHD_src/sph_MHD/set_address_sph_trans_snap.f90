@@ -43,8 +43,6 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
-!
 !
       call b_trans_address_vector_snap(ipol, iphys,                     &
      &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns)
@@ -61,26 +59,8 @@
        trns_snap%ntensor_rtp_2_rj = 0
 !
 !
-      nscltsr_rj_2_rtp                                                  &
-     &      = trns_snap%nscalar_rj_2_rtp + 6*trns_snap%ntensor_rj_2_rtp
-      trns_snap%ncomp_rj_2_rtp                                          &
-     &      = 3*trns_snap%nvector_rj_2_rtp + nscltsr_rj_2_rtp
-!
-      nscltsr_rtp_2_rj                                                  &
-     &      = trns_snap%nscalar_rtp_2_rj + 6*trns_snap%ntensor_rtp_2_rj
-      trns_snap%ncomp_rtp_2_rj                                          &
-     &      = 3*trns_snap%nvector_rtp_2_rj + nscltsr_rtp_2_rj
-!
-!
-      ncomp_sph_trans = max(ncomp_sph_trans, trns_snap%ncomp_rtp_2_rj)
-      ncomp_sph_trans = max(ncomp_sph_trans, trns_snap%ncomp_rj_2_rtp)
-!
-      nvector_sph_trans                                                 &
-     &       = max(nvector_sph_trans, trns_snap%nvector_rj_2_rtp)
-      nvector_sph_trans                                                 &
-     &       = max(nvector_sph_trans, trns_snap%nvector_rtp_2_rj)
-      nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rtp_2_rj)
-      nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rj_2_rtp)
+      call count_num_fields_4_sph_trans(trns_snap, ncomp_sph_trans,     &
+     &   nvector_sph_trans, nscalar_sph_trans)
 !
       end subroutine set_addresses_snapshot_trans
 !

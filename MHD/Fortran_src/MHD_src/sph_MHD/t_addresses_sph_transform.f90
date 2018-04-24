@@ -356,6 +356,9 @@
       nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rj_2_rtp)
       nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rtp_2_rj)
 !
+      call alloc_bwd_trns_field_name(trns)
+      call alloc_fwd_trns_field_name(trns)
+!
       end subroutine count_num_fields_4_sph_trans
 !
 !-----------------------------------------------------------------------
