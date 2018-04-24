@@ -7,15 +7,13 @@
 !>@brief Select Fourier transform routine by elapsed time
 !!
 !!@verbatim
-!!      subroutine init_fourier_transform_4_MHD(iflag_SGS, ncomp_tot,   &
-!!     &          sph_rtp, comm_rtp, trns_MHD, trns_SGS, WK_FFTs,       &
-!!     &          MHD_mul_FFTW, SGS_mul_FFTW)
+!!      subroutine init_fourier_transform_4_MHD(ncomp_tot,              &
+!!     &          sph_rtp, comm_rtp, trns_MHD, WK_FFTs, MHD_mul_FFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
-!!        type(address_4_sph_trans), intent(inout) :: trns_MHD, trns_SGS
+!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
-!!        type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !!
 !!       Current problem
 !!      FFTW crashes when both single and multi transforms are 
@@ -51,21 +49,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_fourier_transform_4_MHD(iflag_SGS, ncomp_tot,     &
-     &          sph_rtp, comm_rtp, trns_MHD, trns_SGS, WK_FFTs,         &
-     &          MHD_mul_FFTW, SGS_mul_FFTW)
+      subroutine init_fourier_transform_4_MHD(ncomp_tot,                &
+     &          sph_rtp, comm_rtp, trns_MHD, WK_FFTs, MHD_mul_FFTW)
 !
       use m_solver_SR
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
-      integer(kind = kint), intent(in) :: iflag_SGS
       integer(kind = kint), intent(in) :: ncomp_tot
 !
-      type(address_4_sph_trans), intent(inout) :: trns_MHD, trns_SGS
+      type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
 !
       if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
@@ -74,31 +69,27 @@
         iflag_FFT = iflag_selected
       end if
 !
+      if(my_rank .eq. 0) then
+        write(*,'(a,i4)', advance='no') 'Selected Fourier transform: ', &
+     &                          iflag_FFT
+!
+        if     (iflag_FFT .eq. iflag_FFTPACK) then
+          write(*,'(a)') ' (FFTPACK) '
+        else if(iflag_FFT .eq. iflag_FFTW) then
+          write(*,'(a)') ' (FFTW) '
+        else if(iflag_FFT .eq. iflag_ISPACK) then
+          write(*,'(a)') ' (ISPACK) '
+        else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
+          write(*,'(a)') ' (FFTW_SINGLE) '
+        else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
+          write(*,'(a)') ' (FFTW_FIELD) '
+        end if
+      end if
+!
       call init_sph_FFT_select(my_rank, sph_rtp, ncomp_tot, WK_FFTs)
       call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,             &
      &    trns_MHD%ncomp_rtp_2_rj, trns_MHD%ncomp_rj_2_rtp,             &
      &    MHD_mul_FFTW)
-      if(iflag_SGS .gt. 0) then
-        call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
-     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%ncomp_rj_2_rtp,           &
-     &      SGS_mul_FFTW)
-      end if
-!
-      if(my_rank .gt. 0) return
-      write(*,'(a,i4)', advance='no') 'Selected Fourier transform: ',   &
-     &                          iflag_FFT
-!
-      if     (iflag_FFT .eq. iflag_FFTPACK) then
-        write(*,'(a)') ' (FFTPACK) '
-      else if(iflag_FFT .eq. iflag_FFTW) then
-        write(*,'(a)') ' (FFTW) '
-      else if(iflag_FFT .eq. iflag_ISPACK) then
-        write(*,'(a)') ' (ISPACK) '
-      else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        write(*,'(a)') ' (FFTW_SINGLE) '
-      else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
-        write(*,'(a)') ' (FFTW_FIELD) '
-      end if
 !
       end subroutine init_fourier_transform_4_MHD
 !
