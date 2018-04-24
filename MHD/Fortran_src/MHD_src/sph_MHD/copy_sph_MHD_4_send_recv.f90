@@ -220,7 +220,22 @@
       integer(kind = kint), intent(in) :: ncomp_send, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
 !
-!      Vectors
+!
+!      Wide filtered field terms
+      call sel_sph_rj_vector_to_send                                    &
+     &   (ncomp_send, ipol%i_wide_fil_velo, bg_trns%i_wide_fil_velo,    &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send                                    &
+     &   (ncomp_send, ipol%i_wide_fil_vort, bg_trns%i_wide_fil_vort,    &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send                                    &
+     &   (ncomp_send, ipol%i_wide_fil_magne, bg_trns%i_wide_fil_magne,  &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_wide_fil_current, bg_trns%i_wide_fil_current,          &
+     &    comm_rj, rj_fld, n_WS, WS)
+!
+!      Filtered nonlinear terms
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_SGS_inertia, bg_trns%i_SGS_inertia,                    &
      &     comm_rj, rj_fld, n_WS, WS)
@@ -237,6 +252,7 @@
      &    ipol%i_SGS_c_flux, bg_trns%i_SGS_c_flux,                      &
      &     comm_rj, rj_fld, n_WS, WS)
 !
+!      Wide filtered nonlinear terms
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_wide_SGS_inertia, bg_trns%i_wide_SGS_inertia,          &
      &     comm_rj, rj_fld, n_WS, WS)
@@ -252,6 +268,30 @@
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_wide_SGS_c_flux, bg_trns%i_wide_SGS_c_flux,            &
      &     comm_rj, rj_fld, n_WS, WS)
+!
+!      double filtered nonlinear terms
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_dbl_SGS_inertia, bg_trns%i_dbl_SGS_inertia,            &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_dbl_SGS_Lorentz, bg_trns%i_dbl_SGS_Lorentz,            &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_dbl_SGS_vp_induct, bg_trns%i_dbl_SGS_vp_induct,        &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_dbl_SGS_h_flux, bg_trns%i_dbl_SGS_h_flux,              &
+     &     comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_dbl_SGS_c_flux, bg_trns%i_dbl_SGS_c_flux,              &
+     &     comm_rj, rj_fld, n_WS, WS)
+!
+      call sel_sph_rj_scalar_to_send                                    &
+     &   (ncomp_send, ipol%i_wide_fil_temp, bg_trns%i_wide_fil_temp,    &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_scalar_to_send                                    &
+     &   (ncomp_send, ipol%i_wide_fil_comp, bg_trns%i_wide_fil_comp,    &
+     &    comm_rj, rj_fld, n_WS, WS)
 !
       end subroutine copy_SGS_spectr_to_send
 !

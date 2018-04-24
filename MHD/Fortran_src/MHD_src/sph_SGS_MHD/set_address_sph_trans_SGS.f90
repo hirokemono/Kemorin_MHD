@@ -60,7 +60,9 @@
 !
       call b_trans_address_vector_SGS                                   &
      &   (ipol, trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns)
-      trns_SGS%nscalar_rj_2_rtp = 0
+      call b_trans_address_scalar_SGS                                   &
+     &   (ipol, trns_SGS%nvector_rj_2_rtp, trns_SGS%nscalar_rj_2_rtp,   &
+     &    trns_SGS%b_trns)
       trns_SGS%ntensor_rj_2_rtp = 0
 !
       call f_trans_address_vector_SGS                                   &
@@ -163,6 +165,20 @@
 !
       nvector_rj_2_rtp = 0
 !
+!   wide filtered velocity
+      call add_vector_trans_flag(ipol%i_wide_fil_velo,                  &
+     &    nvector_rj_2_rtp, b_trns%i_wide_fil_velo)
+!   wide filtered vorticity
+      call add_vector_trans_flag(ipol%i_wide_fil_vort,                  &
+     &    nvector_rj_2_rtp, b_trns%i_wide_fil_vort)
+!   wide filtered magnetic field
+      call add_vector_trans_flag(ipol%i_wide_fil_magne,                 &
+     &    nvector_rj_2_rtp, b_trns%i_wide_fil_magne)
+!   wide filtered current density
+      call add_vector_trans_flag(ipol%i_wide_fil_current,               &
+     &    nvector_rj_2_rtp, b_trns%i_wide_fil_current)
+!
+!
 !   filtered Inertia
       call add_vector_trans_flag(ipol%i_SGS_inertia,                    &
      &    nvector_rj_2_rtp, b_trns%i_SGS_inertia)
@@ -180,23 +196,61 @@
      &    nvector_rj_2_rtp, b_trns%i_SGS_c_flux)
 !
 !
-!   dual filtered Inertia
+!   wide filtered Inertia
       call add_vector_trans_flag(ipol%i_wide_SGS_inertia,               &
      &    nvector_rj_2_rtp, b_trns%i_wide_SGS_inertia)
-!   dual filtered Lorentz force
+!   wide filtered Lorentz force
       call add_vector_trans_flag(ipol%i_wide_SGS_Lorentz,               &
      &    nvector_rj_2_rtp, b_trns%i_wide_SGS_Lorentz)
-!   dual filtered induction
+!   wide filtered induction
       call add_vector_trans_flag(ipol%i_wide_SGS_vp_induct,             &
      &    nvector_rj_2_rtp, b_trns%i_wide_SGS_vp_induct)
-!   dual filtered heat flux
+!   wide filtered heat flux
       call add_vector_trans_flag(ipol%i_wide_SGS_h_flux,                &
      &    nvector_rj_2_rtp, b_trns%i_wide_SGS_h_flux)
-!   dual filtered composition flux
+!   wide filtered composition flux
       call add_vector_trans_flag(ipol%i_wide_SGS_c_flux,                &
      &    nvector_rj_2_rtp, b_trns%i_wide_SGS_c_flux)
 !
+!   dual filtered Inertia
+      call add_vector_trans_flag(ipol%i_dbl_SGS_inertia,                &
+     &    nvector_rj_2_rtp, b_trns%i_dbl_SGS_inertia)
+!   dual filtered Lorentz force
+      call add_vector_trans_flag(ipol%i_dbl_SGS_Lorentz,                &
+     &    nvector_rj_2_rtp, b_trns%i_dbl_SGS_Lorentz)
+!   dual filtered induction
+      call add_vector_trans_flag(ipol%i_dbl_SGS_vp_induct,              &
+     &    nvector_rj_2_rtp, b_trns%i_dbl_SGS_vp_induct)
+!   dual filtered heat flux
+      call add_vector_trans_flag(ipol%i_dbl_SGS_h_flux,                 &
+     &    nvector_rj_2_rtp, b_trns%i_dbl_SGS_h_flux)
+!   dual filtered composition flux
+      call add_vector_trans_flag(ipol%i_dbl_SGS_c_flux,                 &
+     &    nvector_rj_2_rtp, b_trns%i_dbl_SGS_c_flux)
+!
       end subroutine b_trans_address_vector_SGS
+!
+!-----------------------------------------------------------------------
+!
+      subroutine b_trans_address_scalar_SGS                             &
+     &         (ipol, nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns)
+!
+      type(phys_address), intent(in) :: ipol
+      integer(kind = kint), intent(in) :: nvector_rj_2_rtp
+      integer(kind = kint), intent(inout) :: nscalar_rj_2_rtp
+      type(phys_address), intent(inout) :: b_trns
+!
+!
+      nscalar_rj_2_rtp = 0
+!
+!   wide filtered temperature
+      call add_scalar_trans_flag(ipol%i_wide_fil_temp,                  &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_wide_fil_temp)
+!   wide filtered composition
+      call add_scalar_trans_flag(ipol%i_wide_fil_comp,                  &
+     &    nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns%i_wide_fil_comp)
+!
+      end subroutine b_trans_address_scalar_SGS
 !
 !-----------------------------------------------------------------------
 !
@@ -224,8 +278,6 @@
 !   SGS composition flux flag
       call add_vector_trans_flag(ipol%i_SGS_c_flux,                     &
      &    nvector_rtp_2_rj, f_trns%i_SGS_c_flux)
-!
-!
 !
       end subroutine f_trans_address_vector_SGS
 !

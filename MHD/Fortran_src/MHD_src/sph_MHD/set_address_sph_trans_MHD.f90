@@ -157,16 +157,16 @@
       call add_vector_trans_flag(ipol%i_filter_current,                 &
      &    nvector_rj_2_rtp, b_trns%i_filter_current)
 !
-!   dual filtered velocity
+!   wide filtered velocity
       call add_vector_trans_flag(ipol%i_wide_fil_velo,                  &
      &    nvector_rj_2_rtp, b_trns%i_wide_fil_velo)
-!   dual filtered vorticity
+!   wide filtered vorticity
       call add_vector_trans_flag(ipol%i_wide_fil_vort,                  &
      &    nvector_rj_2_rtp, b_trns%i_wide_fil_vort)
-!   dual filtered magnetic field
+!   wide filtered magnetic field
       call add_vector_trans_flag(ipol%i_wide_fil_magne,                 &
      &    nvector_rj_2_rtp, b_trns%i_wide_fil_magne)
-!   dual filtered current density
+!   wide filtered current density
       call add_vector_trans_flag(ipol%i_wide_fil_current,               &
      &    nvector_rj_2_rtp, b_trns%i_wide_fil_current)
 !

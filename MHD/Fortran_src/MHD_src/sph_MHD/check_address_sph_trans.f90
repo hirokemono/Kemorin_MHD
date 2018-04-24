@@ -101,6 +101,39 @@
      &        'b_trns%i_wide_fil_current ', b_trns%i_wide_fil_current,  &
      &       ipol%i_wide_fil_current, itor%i_wide_fil_current,          &
      &        idpdr%i_wide_fil_current, iphys%i_wide_fil_current
+      if(b_trns%i_wide_fil_grad_t .gt. 0) write(*,*)                    &
+     &        'b_trns%i_wide_fil_grad_t ', b_trns%i_wide_fil_grad_t,    &
+     &       ipol%i_wide_fil_grad_t, itor%i_wide_fil_grad_t,            &
+     &        idpdr%i_wide_fil_grad_t, iphys%i_wide_fil_grad_t
+      if(b_trns%i_wide_fil_grad_c .gt. 0) write(*,*)                    &
+     &        'b_trns%i_wide_fil_grad_c ', b_trns%i_wide_fil_grad_c,    &
+     &       ipol%i_wide_fil_grad_c, itor%i_wide_fil_grad_c,            &
+     &        idpdr%i_wide_fil_grad_c, iphys%i_wide_fil_grad_c
+!
+      if(b_trns%i_dbl_fil_velo .gt. 0) write(*,*)                       &
+     &        'b_trns%i_dbl_fil_velo  ', b_trns%i_dbl_fil_velo,         &
+     &        ipol%i_dbl_fil_velo, itor%i_dbl_fil_velo,                 &
+     &        idpdr%i_dbl_fil_velo, iphys%i_dbl_fil_velo
+      if(b_trns%i_dbl_fil_vort .gt. 0) write(*,*)                       &
+     &        'b_trns%i_dbl_fil_vort  ', b_trns%i_dbl_fil_vort,         &
+     &        ipol%i_dbl_fil_vort, itor%i_dbl_fil_vort,                 &
+     &        idpdr%i_dbl_fil_vort, iphys%i_dbl_fil_vort
+      if(b_trns%i_dbl_fil_magne .gt. 0) write(*,*)                      &
+     &        'b_trns%i_dbl_fil_magne ', b_trns%i_dbl_fil_magne,        &
+     &        ipol%i_dbl_fil_magne, itor%i_dbl_fil_magne,               &
+     &        idpdr%i_dbl_fil_magne, iphys%i_dbl_fil_magne
+      if(b_trns%i_dbl_fil_current .gt. 0) write(*,*)                    &
+     &        'b_trns%i_dbl_fil_current ', b_trns%i_dbl_fil_current,    &
+     &       ipol%i_dbl_fil_current, itor%i_dbl_fil_current,            &
+     &        idpdr%i_dbl_fil_current, iphys%i_dbl_fil_current
+      if(b_trns%i_dbl_fil_grad_t .gt. 0) write(*,*)                     &
+     &        'b_trns%i_dbl_fil_grad_t ', b_trns%i_dbl_fil_grad_t,      &
+     &       ipol%i_dbl_fil_grad_t, itor%i_dbl_fil_grad_t,              &
+     &        idpdr%i_dbl_fil_grad_t, iphys%i_dbl_fil_grad_t
+      if(b_trns%i_dbl_fil_grad_c .gt. 0) write(*,*)                     &
+     &        'b_trns%i_dbl_fil_grad_c ', b_trns%i_dbl_fil_grad_c,      &
+     &       ipol%i_dbl_fil_grad_c, itor%i_dbl_fil_grad_c,              &
+     &        idpdr%i_dbl_fil_grad_c, iphys%i_dbl_fil_grad_c
 !
 !  Filetered forces
       if(b_trns%i_SGS_inertia .gt. 0) write(*,*)                        &
@@ -173,6 +206,28 @@
      &        'b_trns%i_wide_SGS_c_flux', b_trns%i_wide_SGS_c_flux,     &
      &        ipol%i_wide_SGS_c_flux, itor%i_wide_SGS_c_flux,           &
      &        idpdr%i_wide_SGS_c_flux, iphys%i_wide_SGS_c_flux
+!
+      if(b_trns%i_dbl_SGS_inertia .gt. 0) write(*,*)                    &
+     &        'b_trns%i_dbl_SGS_inertia ', b_trns%i_dbl_SGS_inertia,    &
+     &        ipol%i_dbl_SGS_inertia, itor%i_dbl_SGS_inertia,           &
+     &        idpdr%i_dbl_SGS_inertia, iphys%i_dbl_SGS_inertia
+      if(b_trns%i_dbl_SGS_Lorentz .gt. 0) write(*,*)                    &
+     &        'b_trns%i_dbl_SGS_Lorentz  ', b_trns%i_dbl_SGS_Lorentz,   &
+     &        ipol%i_dbl_SGS_Lorentz, itor%i_dbl_SGS_Lorentz,           &
+     &        idpdr%i_dbl_SGS_Lorentz, iphys%i_dbl_SGS_Lorentz
+      if(b_trns%i_dbl_SGS_vp_induct .gt. 0) write(*,*)                  &
+     &        'b_trns%i_dbl_SGS_vp_induct ',                            &
+     &        b_trns%i_dbl_SGS_vp_induct,                               &
+     &        ipol%i_dbl_SGS_vp_induct, itor%i_dbl_SGS_vp_induct,       &
+     &        idpdr%i_dbl_SGS_vp_induct, iphys%i_dbl_SGS_vp_induct
+      if(b_trns%i_dbl_SGS_h_flux .gt. 0) write(*,*)                     &
+     &        'b_trns%i_dbl_SGS_h_flux', b_trns%i_dbl_SGS_h_flux,       &
+     &        ipol%i_dbl_SGS_h_flux, itor%i_dbl_SGS_h_flux,             &
+     &        idpdr%i_dbl_SGS_h_flux, iphys%i_dbl_SGS_h_flux
+      if(b_trns%i_dbl_SGS_c_flux .gt. 0) write(*,*)                     &
+     &        'b_trns%i_dbl_SGS_c_flux', b_trns%i_dbl_SGS_c_flux,       &
+     &        ipol%i_dbl_SGS_c_flux, itor%i_dbl_SGS_c_flux,             &
+     &        idpdr%i_dbl_SGS_c_flux, iphys%i_dbl_SGS_c_flux
 !
 !   Snapshots
       if(b_trns%i_v_diffuse .gt. 0) write(*,*)                          &

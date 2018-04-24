@@ -88,6 +88,23 @@
      &    itor%i_wide_fil_magne, idpdr%i_wide_fil_magne)
       call set_vect_sph_address(ipol%i_wide_fil_current,                &
      &    itor%i_wide_fil_current, idpdr%i_wide_fil_current)
+      call set_vect_sph_address(ipol%i_wide_fil_grad_t,                 &
+     &    itor%i_wide_fil_grad_t, idpdr%i_wide_fil_grad_t)
+      call set_vect_sph_address(ipol%i_wide_fil_grad_c,                 &
+     &    itor%i_wide_fil_grad_c, idpdr%i_wide_fil_grad_c)
+!
+      call set_vect_sph_address(ipol%i_dbl_fil_velo,                    &
+     &    itor%i_dbl_fil_velo, idpdr%i_dbl_fil_velo)
+      call set_vect_sph_address(ipol%i_dbl_fil_vort,                    &
+     &    itor%i_dbl_fil_vort, idpdr%i_dbl_fil_vort)
+      call set_vect_sph_address(ipol%i_dbl_fil_magne,                   &
+     &    itor%i_dbl_fil_magne, idpdr%i_dbl_fil_magne)
+      call set_vect_sph_address(ipol%i_dbl_fil_current,                 &
+     &    itor%i_dbl_fil_current, idpdr%i_dbl_fil_current)
+      call set_vect_sph_address(ipol%i_dbl_fil_grad_t,                  &
+     &    itor%i_dbl_fil_grad_t, idpdr%i_dbl_fil_grad_t)
+      call set_vect_sph_address(ipol%i_dbl_fil_grad_c,                  &
+     &    itor%i_dbl_fil_grad_c, idpdr%i_dbl_fil_grad_c)
 !
       call set_vect_sph_address(ipol%i_v_diffuse, itor%i_v_diffuse,     &
      &    idpdr%i_v_diffuse)
@@ -212,6 +229,17 @@
      &    itor%i_wide_SGS_Lorentz, idpdr%i_wide_SGS_Lorentz)
       call set_vect_sph_address(ipol%i_wide_SGS_vp_induct,              &
      &    itor%i_wide_SGS_vp_induct, idpdr%i_wide_SGS_vp_induct)
+!
+      call set_vect_sph_address(ipol%i_dbl_SGS_h_flux,                  &
+     &    itor%i_dbl_SGS_h_flux, idpdr%i_dbl_SGS_h_flux)
+      call set_vect_sph_address(ipol%i_dbl_SGS_c_flux,                  &
+     &    itor%i_dbl_SGS_c_flux, idpdr%i_dbl_SGS_c_flux)
+      call set_vect_sph_address(ipol%i_dbl_SGS_inertia,                 &
+     &    itor%i_dbl_SGS_inertia, idpdr%i_dbl_SGS_inertia)
+      call set_vect_sph_address(ipol%i_dbl_SGS_Lorentz,                 &
+     &    itor%i_dbl_SGS_Lorentz, idpdr%i_dbl_SGS_Lorentz)
+      call set_vect_sph_address(ipol%i_dbl_SGS_vp_induct,               &
+     &    itor%i_dbl_SGS_vp_induct, idpdr%i_dbl_SGS_vp_induct)
 !
       call set_vect_sph_address(ipol%i_SGS_div_m_flux,                  &
      &    itor%i_SGS_div_m_flux, idpdr%i_SGS_div_m_flux)
