@@ -163,7 +163,7 @@
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD                                      &
      &   (sph, comms_sph, MHD_prop%fl_prop, trans_p, cor_rlm,           &
-     &    ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
+     &    trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
       call end_elapsed_time(16)
 !
       call start_elapsed_time(17)
@@ -207,7 +207,7 @@
      &     (sph%sph_rlm, comms_sph%comm_rlm, comms_sph%comm_rj,         &
      &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, omega_sph,           &
      &      trans_p%leg, WK%gt_cor, WK%trns_MHD,                        &
-     &      ipol, rj_fld, WK%cor_rlm)
+     &      rj_fld, WK%cor_rlm)
       end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum

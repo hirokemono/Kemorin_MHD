@@ -8,10 +8,6 @@
 !!       for dynamo simulation
 !!
 !!@verbatim
-!!      subroutine copy_mhd_spectr_from_recv                            &
-!!     &         (ncomp_recv, f_trns, comm_rj, ipol, n_WR, WR, rj_fld)
-!!        type(phys_address), intent(in) :: f_trns
-!!
 !!      subroutine copy_SGS_spectr_to_send(nnod_pole, ncomp_send,       &
 !!     &          bg_trns, sph_rj, comm_rj, ipol, rj_fld, n_WS, WS)
 !!        type(phys_address), intent(in) :: bg_trns
@@ -55,77 +51,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine copy_mhd_spectr_from_recv                              &
-     &         (ncomp_recv, f_trns, comm_rj, ipol, n_WR, WR, rj_fld)
-!
-      type(sph_comm_tbl), intent(in) :: comm_rj
-      type(phys_address), intent(in) :: ipol
-      type(phys_address), intent(in) :: f_trns
-      integer(kind = kint), intent(in) :: ncomp_recv, n_WR
-      real(kind = kreal), intent(inout) :: WR(n_WR)
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-!   advection flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_m_advect, f_trns%i_m_advect,                           &
-     &    comm_rj, n_WR, WR, rj_fld)
-!   Coriolis flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_coriolis, f_trns%i_coriolis,                           &
-     &    comm_rj, n_WR, WR, rj_fld)
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &     ipol%i_rot_Coriolis, f_trns%i_rot_Coriolis,                  &
-     &    comm_rj, n_WR, WR, rj_fld)
-!   Lorentz flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_lorentz, f_trns%i_lorentz,                             &
-     &    comm_rj, n_WR, WR, rj_fld)
-!
-!   induction flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_vp_induct, f_trns%i_vp_induct,                         &
-     &    comm_rj, n_WR, WR, rj_fld)
-!
-!   heat flux flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_h_flux, f_trns%i_h_flux,                               &
-     &    comm_rj, n_WR, WR, rj_fld)
-!   composition flux flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_c_flux, f_trns%i_c_flux,                               &
-     &    comm_rj, n_WR, WR, rj_fld)
-!
-!
-!
-!   filtered advection flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_SGS_inertia, f_trns%i_SGS_inertia,                     &
-     &    comm_rj, n_WR, WR, rj_fld)
-!   filtered Lorentz flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_SGS_Lorentz, f_trns%i_SGS_Lorentz,                     &
-     &    comm_rj, n_WR, WR, rj_fld)
-!
-!   filtered induction flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_SGS_vp_induct, f_trns%i_SGS_vp_induct,                 &
-     &    comm_rj, n_WR, WR, rj_fld)
-!
-!   filtered heat flux flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_SGS_h_flux, f_trns%i_SGS_h_flux,                       &
-     &    comm_rj, n_WR, WR, rj_fld)
-!   filtered composition flux flag
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_SGS_c_flux, f_trns%i_SGS_c_flux,                       &
-     &    comm_rj, n_WR, WR, rj_fld)
-!
-      end  subroutine copy_mhd_spectr_from_recv
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine copy_SGS_spectr_to_send(nnod_pole, ncomp_send,         &

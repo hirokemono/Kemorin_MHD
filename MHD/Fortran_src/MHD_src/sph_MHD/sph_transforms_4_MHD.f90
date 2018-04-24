@@ -30,7 +30,7 @@
 !!        type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !!      subroutine sph_forward_trans_4_MHD                              &
 !!     &         (sph, comms_sph, fl_prop, trans_p, cor_rlm,            &
-!!     &          ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
+!!     &          trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
 !!        Input :: trns_MHD, cor_rlm
 !!        Output ::  rj_fld
 !!        type(sph_grids), intent(inout) :: sph
@@ -46,8 +46,7 @@
 !!
 !!      subroutine sph_transform_4_licv                                 &
 !!     &         (sph_rlm, comm_rlm, comm_rj, fl_prop, sph_bc_U,        &
-!!     &          omega_sph, leg, gt_cor, trns_MHD,                     &
-!!     &          ipol, rj_fld, cor_rlm)
+!!     &          omega_sph, leg, gt_cor, trns_MHD, rj_fld, cor_rlm)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(coriolis_rlm_data), intent(inout) :: cor_rlm
@@ -135,11 +134,11 @@
 !
       subroutine sph_forward_trans_4_MHD                                &
      &         (sph, comms_sph, fl_prop, trans_p, cor_rlm,              &
-     &          ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
+     &          trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
 !
       use m_solver_SR
       use sph_trans_w_coriols
-      use copy_sph_MHD_4_send_recv
+      use set_address_sph_trans_MHD
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
@@ -147,7 +146,6 @@
       type(fluid_property), intent(in) :: fl_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(coriolis_rlm_data), intent(in) :: cor_rlm
-      type(phys_address), intent(in) :: ipol
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(spherical_trns_works), intent(inout) :: WK_sph
@@ -166,9 +164,8 @@
      &    sph, comms_sph, fl_prop, trans_p, cor_rlm, trns_MHD,          &
      &    n_WS, n_WR, WS(1), WR(1), WK_sph, MHD_mul_FFTW)
 !
-      call copy_mhd_spectr_from_recv(trns_MHD%ncomp_rtp_2_rj,           &
-     &    trns_MHD%f_trns, comms_sph%comm_rj, ipol,                     &
-     &    n_WR, WR(1), rj_fld)
+      call mhd_spectr_from_recvbuf                                      &
+     &   (trns_MHD, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_4_MHD
 !
@@ -213,13 +210,11 @@
 !
       subroutine sph_transform_4_licv                                   &
      &         (sph_rlm, comm_rlm, comm_rj, fl_prop, sph_bc_U,          &
-     &          omega_sph, leg, gt_cor, trns_MHD,                       &
-     &          ipol, rj_fld, cor_rlm)
+     &          omega_sph, leg, gt_cor, trns_MHD, rj_fld, cor_rlm)
 !
       use m_solver_SR
       use sph_trans_w_coriols
       use set_address_sph_trans_MHD
-      use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -231,7 +226,6 @@
       type(legendre_4_sph_trans), intent(in) :: leg
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(gaunt_coriolis_rlm), intent(in) :: gt_cor
-      type(phys_address), intent(in) :: ipol
 !
       type(phys_data), intent(inout) :: rj_fld
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
@@ -255,9 +249,8 @@
      &    sph_rlm, comm_rlm, comm_rj, fl_prop, cor_rlm, trns_MHD,       &
      &    n_WS, WS(1))
 !
-      call copy_mhd_spectr_from_recv                                    &
-     &   (trns_MHD%ncomp_rtp_2_rj, trns_MHD%f_trns, comm_rj, ipol,      &
-     &    n_WR, WR(1), rj_fld)
+      call mhd_spectr_from_recvbuf                                      &
+     &   (trns_MHD, comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_transform_4_licv
 !
