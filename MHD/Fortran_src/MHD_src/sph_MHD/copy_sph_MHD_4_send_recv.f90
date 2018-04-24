@@ -46,38 +46,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_Csym_vec_spec_from_trans                          &
-     &         (ncomp_recv, fg_trns, comm_rj, ipol, n_WR, WR, rj_fld)
-!
-      type(sph_comm_tbl), intent(in) :: comm_rj
-      type(phys_address), intent(in) :: ipol
-      type(phys_address), intent(in) :: fg_trns
-      integer(kind = kint), intent(in) :: ncomp_recv, n_WR
-      real(kind = kreal), intent(inout) :: WR(n_WR)
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-!      Vectors
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_SGS_inertia, fg_trns%i_SGS_inertia,                    &
-     &    comm_rj, n_WR, WR, rj_fld)
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_SGS_Lorentz, fg_trns%i_SGS_Lorentz,                    &
-     &    comm_rj, n_WR, WR, rj_fld)
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_SGS_vp_induct, fg_trns%i_SGS_vp_induct,                &
-     &    comm_rj, n_WR, WR, rj_fld)
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_SGS_h_flux, fg_trns%i_SGS_h_flux,                      &
-     &    comm_rj, n_WR, WR, rj_fld)
-      call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
-     &    ipol%i_SGS_c_flux, fg_trns%i_SGS_c_flux,                      &
-     &    comm_rj, n_WR, WR, rj_fld)
-!
-      end  subroutine copy_Csym_vec_spec_from_trans
-!
-!-----------------------------------------------------------------------
-!
       subroutine copy_snap_spectr_to_send(nnod_pole, ncomp_send,        &
      &          bs_trns, sph_rj, comm_rj, ipol, rj_fld,                 &
      &          n_WS, WS, v_pl_local)
