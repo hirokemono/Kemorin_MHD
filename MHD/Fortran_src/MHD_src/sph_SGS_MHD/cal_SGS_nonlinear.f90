@@ -259,6 +259,7 @@
       use cal_SGS_terms_sph_MHD
       use dynamic_model_sph_MHD
       use copy_Csim_4_sph_MHD
+      use product_model_coefs_sph
 !
       integer(kind = kint), intent(in) :: i_step, i_step_sgs_coefs
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -288,7 +289,7 @@
         call end_elapsed_time(81)
 !
         call start_elapsed_time(14)
-        if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD'
+        if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD SGS'
         call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,            &
      &      rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
         call end_elapsed_time(14)
@@ -305,18 +306,23 @@
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           call start_elapsed_time(83)
 !
-          if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
-          call wider_similarity_SGS_rtp(istep_dynamic, sph%sph_rtp,     &
-     &        MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
-     &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
-     &        trns_MHD%b_trns, trns_SGS%b_trns,                         &
-     &        trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rj_2_rtp,         &
-     &        trns_MHD%fld_rtp, trns_SGS%fld_rtp)
+          if(istep_dynamic .eq. 0) then
+            if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
+            call wider_similarity_SGS_rtp(sph%sph_rtp,                  &
+     &          MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
+     &          MHD_prop%ht_prop, MHD_prop%cp_prop,                     &
+     &          trns_MHD%b_trns, trns_SGS%b_trns,                       &
+     &          trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rj_2_rtp,       &
+     &          trns_MHD%fld_rtp, trns_SGS%fld_rtp)
 !
-          if (iflag_debug.eq.1) write(*,*)                              &
-     &                   'SGS_param%stab_weight', SGS_param%stab_weight
-          call const_model_coefs_4_sph(istep_dynamic,                   &
-     &        SGS_param, sph%sph_rtp, trns_SGS, dynamic_SPH)
+            if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
+            call const_model_coefs_4_sph                                &
+     &         (SGS_param, sph%sph_rtp, trns_SGS, dynamic_SPH)
+          end if
+!
+          if (iflag_debug.eq.1) write(*,*) 'product_model_coefs_4_sph'
+          call product_model_coefs_4_sph                                &
+     &       (SGS_param, sph%sph_rtp, trns_SGS, dynamic_SPH)
 !
           if(iflag_debug .gt. 0) write(*,*) 'Dynamic model:',           &
      &                      i_step, i_step_sgs_coefs, istep_dynamic

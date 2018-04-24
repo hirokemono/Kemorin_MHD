@@ -40,8 +40,8 @@
 !!        type(phys_address), intent(in) :: f_trns
 !!        type(phys_address), intent(in) :: bg_trns, fg_trns
 !!
-!!      subroutine wider_similarity_SGS_rtp(istep_dynamic,              &
-!!     &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
+!!      subroutine wider_similarity_SGS_rtp                             &
+!!     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
 !!     &          b_trns, bg_trns, ncomp_rj_2_rtp, nc_SGS_rj_2_rtp,     &
 !!     &          fld_rtp, fil_rtp)
 !!       Input ::  fil_rtp(1,il_frc)
@@ -263,12 +263,11 @@
 !!      @f$ e_{ijk}\overline{\overline{\tilde{u}_{j} \tilde{C}}}
 !!         - e_{ijk} \overline{\overline{\tilde{u}}}_{j}
 !!                  \overline{\overline{\tilde{C}}} @f$,
-      subroutine wider_similarity_SGS_rtp(istep_dynamic,                &
-     &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
+      subroutine wider_similarity_SGS_rtp                               &
+     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
      &          b_trns, bg_trns, ncomp_rj_2_rtp, nc_SGS_rj_2_rtp,       &
      &          fld_rtp, fil_rtp)
 !
-      integer(kind = kint), intent(in) :: istep_dynamic
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -284,8 +283,6 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: fil_rtp(sph_rtp%nnod_rtp,nc_SGS_rj_2_rtp)
 !
-!
-      if(istep_dynamic .gt. 0) return
 !
 !$omp parallel
       if(bg_trns%i_wide_SGS_inertia .gt. 0) then
