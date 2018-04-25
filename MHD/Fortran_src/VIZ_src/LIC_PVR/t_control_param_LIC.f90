@@ -403,7 +403,7 @@
       integer(kind = kint) :: read_err
       type(lic_parameters), intent(inout) :: lic_p
 !
-      if(my_rank .gt. 0) write(*,*) 'loading noise texture from: ',     &
+      if(my_rank .eq. 0) write(*,*) 'loading noise texture from: ',     &
      &                             trim(lic_p%noise_file_name)
       call import_noise_ary(lic_p%noise_file_name,                      &
       &    lic_p%noise_data, lic_p%noise_dim, read_err)
