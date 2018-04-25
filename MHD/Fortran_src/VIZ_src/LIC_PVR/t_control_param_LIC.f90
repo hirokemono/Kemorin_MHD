@@ -400,7 +400,7 @@
       logical function mask_flag(lic_p, value)
 !
       type(lic_parameters), intent(in) :: lic_p
-      real(kind=kreal), intent(in) :: value
+      real(kind=kreal), intent(in) :: value(:)
 !
       integer(kind=kint) :: i,j, iFlag_inmask
 !
@@ -408,8 +408,8 @@
       do i = 1, lic_p%num_masking
         iFlag_inmask = izero
         do j = 1, lic_p%masking(i)%num_range
-          if((value .ge. lic_p%masking(i)%range_min(j)) .and.        &
-          &   (value .le. lic_p%masking(i)%range_max(j))) then
+          if((value(i) .ge. lic_p%masking(i)%range_min(j)) .and.        &
+          &   (value(i) .le. lic_p%masking(i)%range_max(j))) then
             iFlag_inmask = 1
             exit
           end if

@@ -45,7 +45,7 @@
      &         (nnod, nsurf, nelem, nnod_4_surf, isf_4_ele,             &
      &          iele_4_surf, interior_surf, xx,                         &
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
-     &          n_mask, r_org, vec_org,                                 &
+     &          r_org, vec_org,                                         &
      &          kernal_size, kernal_node,                               &
      &          v_nod, xx_org, isurf, xyz_min, xyz_max, iflag_comm,     &
      &          o_tgt, n_grad)
@@ -71,7 +71,7 @@
         integer(kind = kint), intent(in) :: kernal_size
         real(kind = kreal), intent(in) :: kernal_node(kernal_size)
         !type(noise_node), intent(in) :: noise_nod(noise_size)
-        type(noise_mask), intent(inout) :: n_mask
+        !type(noise_mask), intent(inout) :: n_mask
 
         real(kind = kreal), intent(in) :: xyz_min(3)
         real(kind = kreal), intent(in) :: xyz_max(3)
@@ -156,9 +156,9 @@
           call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
           &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
           &          iele_4_surf, interior_surf, lic_p,                 &
-          &          iflag_back, xyz_min, xyz_max,         &
+          &          iflag_back, xyz_min, xyz_max,                      &
           &          v_nod, ilic_suf_org, new_pos, step_vec,            &
-          &          kernal_size, kernal_node, n_mask,                  &
+          &          kernal_size, kernal_node,                          &
           &          lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -193,9 +193,9 @@
           call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
           &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
           &          iele_4_surf, interior_surf, lic_p,                 &
-          &          iflag_back, xyz_min, xyz_max,        &
+          &          iflag_back, xyz_min, xyz_max,                      &
           &          v_nod, ilic_suf_org, new_pos, step_vec,            &
-          &          kernal_size, kernal_node, n_mask,                  &
+          &          kernal_size, kernal_node,                          &
           &          lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -218,7 +218,7 @@
     &          iele_4_surf, interior_surf, lic_p,                      &
     &          iflag_back, xyz_min, xyz_max,                           &
     &          vect_nod, isurf_org, x_start, v_start,                  &
-    &          k_size, k_node, n_mask,                                 &
+    &          k_size, k_node,                                         &
     &          lic_v, grad_v, k_area, iflag_comm)
 
       use t_noise_node_data
@@ -243,7 +243,7 @@
       integer(kind = kint), intent(in) :: k_size
       real(kind = kreal), intent(in) :: k_node(k_size)
     !type(noise_node), intent(in) :: n_node(n_size)
-      type(noise_mask), intent(inout) :: n_mask
+    !type(noise_mask), intent(inout) :: n_mask
     !
       real(kind = kreal), intent(in) :: xyz_min(3)
       real(kind = kreal), intent(in) :: xyz_max(3)
