@@ -8,7 +8,7 @@
 !!@n     $omp parallel is required to use these routines
 !!
 !!@verbatim
-!!      subroutine copy_velo_to_grad_v_rtp(sph_rtp, b_trns, ft_trns,    &
+!!      subroutine copy_vect_to_grad_vect_rtp(sph_rtp, b_trns, ft_trns, &
 !!     &          ncomp_rj_2_rtp, ncomp_tmp_rtp_2_rj, fld_rtp, frt_rtp)
 !!      subroutine cal_grad_of_velocities_sph                           &
 !!     &         (sph_rj, r_2nd, sph_bc_U, g_sph_rj, ipol, rj_fld)
@@ -34,7 +34,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_velo_to_grad_v_rtp(sph_rtp, b_trns, ft_trns,      &
+      subroutine copy_vect_to_grad_vect_rtp(sph_rtp, b_trns, ft_trns,   &
      &          ncomp_rj_2_rtp, ncomp_tmp_rtp_2_rj, fld_rtp, frt_rtp)
 !
       use t_spheric_rtp_data
@@ -64,7 +64,62 @@
      &      fld_rtp(1,b_trns%i_velo+2), frt_rtp(1,ft_trns%i_grad_vz) )
       end if
 !
-      end subroutine copy_velo_to_grad_v_rtp
+      if(ft_trns%i_grad_wx.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &      fld_rtp(1,b_trns%i_vort  ), frt_rtp(1,ft_trns%i_grad_wx) )
+      end if
+      if(ft_trns%i_grad_wy.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &      fld_rtp(1,b_trns%i_vort+1), frt_rtp(1,ft_trns%i_grad_wy) )
+      end if
+      if(ft_trns%i_grad_wz.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &      fld_rtp(1,b_trns%i_vort+2), frt_rtp(1,ft_trns%i_grad_wz) )
+      end if
+!
+      if(ft_trns%i_grad_ax.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &      fld_rtp(1,b_trns%i_vecp  ), frt_rtp(1,ft_trns%i_grad_ax) )
+      end if
+      if(ft_trns%i_grad_ay.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &      fld_rtp(1,b_trns%i_vecp+1), frt_rtp(1,ft_trns%i_grad_ay) )
+      end if
+      if(ft_trns%i_grad_az.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &      fld_rtp(1,b_trns%i_vecp+2), frt_rtp(1,ft_trns%i_grad_az) )
+      end if
+!
+      if(ft_trns%i_grad_bx.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &     fld_rtp(1,b_trns%i_magne  ), frt_rtp(1,ft_trns%i_grad_bx) )
+      end if
+      if(ft_trns%i_grad_by.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &     fld_rtp(1,b_trns%i_magne+1), frt_rtp(1,ft_trns%i_grad_by) )
+      end if
+      if(ft_trns%i_grad_bz.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &     fld_rtp(1,b_trns%i_magne+2), frt_rtp(1,ft_trns%i_grad_bz) )
+      end if
+!
+      if(ft_trns%i_grad_jx.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &      fld_rtp(1,b_trns%i_current  ),                              &
+     &      frt_rtp(1,ft_trns%i_grad_jx) )
+      end if
+      if(ft_trns%i_grad_jy.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &      fld_rtp(1,b_trns%i_current+1),                              &
+     &      frt_rtp(1,ft_trns%i_grad_jy) )
+      end if
+      if(ft_trns%i_grad_jz.gt.0) then
+        call sel_scalar_from_trans(sph_rtp,                             &
+     &      fld_rtp(1,b_trns%i_current+2),                              &
+     &      frt_rtp(1,ft_trns%i_grad_jz) )
+      end if
+!
+      end subroutine copy_vect_to_grad_vect_rtp
 !
 ! -----------------------------------------------------------------------
 !

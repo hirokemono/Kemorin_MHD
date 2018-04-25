@@ -168,6 +168,34 @@
       call add_vec_trans_flag_snap(ipol%i_grad_vz, iphys%i_grad_vz,     &
      &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_vz)
 !
+      call add_vec_trans_flag_snap(ipol%i_grad_wx, iphys%i_grad_wx,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_wx)
+      call add_vec_trans_flag_snap(ipol%i_grad_wy, iphys%i_grad_wy,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_wy)
+      call add_vec_trans_flag_snap(ipol%i_grad_wz, iphys%i_grad_wz,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_wz)
+!
+      call add_vec_trans_flag_snap(ipol%i_grad_ax, iphys%i_grad_ax,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_ax)
+      call add_vec_trans_flag_snap(ipol%i_grad_ay, iphys%i_grad_ay,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_ay)
+      call add_vec_trans_flag_snap(ipol%i_grad_az, iphys%i_grad_az,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_az)
+!
+      call add_vec_trans_flag_snap(ipol%i_grad_bx, iphys%i_grad_vx,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_vx)
+      call add_vec_trans_flag_snap(ipol%i_grad_by, iphys%i_grad_vy,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_vy)
+      call add_vec_trans_flag_snap(ipol%i_grad_bz, iphys%i_grad_bz,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_bz)
+!
+      call add_vec_trans_flag_snap(ipol%i_grad_jx, iphys%i_grad_jx,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snapb_trns%i_grad_jx)
+      call add_vec_trans_flag_snap(ipol%i_grad_jy, iphys%i_grad_jy,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_jy)
+      call add_vec_trans_flag_snap(ipol%i_grad_jz, iphys%i_grad_jz,     &
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_jz)
+!
       end subroutine b_trans_address_vector_snap
 !
 !-----------------------------------------------------------------------
@@ -400,6 +428,58 @@
       call set_field_name_4_bwd_trns                                    &
      &   (fhd_grad_v_3, trns_snap%b_trns%i_grad_vz,                     &
      &    ipol%i_grad_vz, itor%i_grad_vz, iphys%i_grad_vz,              &
+     &    icou, trns_snap)
+!
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_w_1, trns_snap%b_trns%i_grad_wx,                     &
+     &    ipol%i_grad_wx, itor%i_grad_wx, iphys%i_grad_wx,              &
+     &    icou, trns_snap)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_w_2, trns_snap%b_trns%i_grad_wy,                     &
+     &    ipol%i_grad_wy, itor%i_grad_wy, iphys%i_grad_wy,              &
+     &    icou, trns_snap)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_w_3, trns_snap%b_trns%i_grad_wz,                     &
+     &    ipol%i_grad_wz, itor%i_grad_wz, iphys%i_grad_wz,              &
+     &    icou, trns_snap)
+!
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_a_1, trns_snap%b_trns%i_grad_ax,                     &
+     &    ipol%i_grad_ax, itor%i_grad_ax, iphys%i_grad_ax,              &
+     &    icou, trns_snap)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_a_2, trns_snap%b_trns%i_grad_ay,                     &
+     &    ipol%i_grad_ay, itor%i_grad_ay, iphys%i_grad_ay,              &
+     &    icou, trns_snap)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_a_3, trns_snap%b_trns%i_grad_az,                     &
+     &    ipol%i_grad_az, itor%i_grad_az, iphys%i_grad_az,              &
+     &    icou, trns_snap)
+!
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_b_1, trns_snap%b_trns%i_grad_bx,                     &
+     &    ipol%i_grad_bx, itor%i_grad_bx, iphys%i_grad_bx,              &
+     &    icou, trns_snap)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_b_2, trns_snap%b_trns%i_grad_by,                     &
+     &    ipol%i_grad_by, itor%i_grad_by, iphys%i_grad_by,              &
+     &    icou, trns_snap)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_b_3, trns_snap%b_trns%i_grad_bz,                     &
+     &    ipol%i_grad_bz, itor%i_grad_bz, iphys%i_grad_bz,              &
+     &    icou, trns_snap)
+!
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_j_1, trns_snap%b_trns%i_grad_jx,                     &
+     &    ipol%i_grad_jx, itor%i_grad_jx, iphys%i_grad_jx,              &
+     &    icou, trns_snap)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_j_2, trns_snap%b_trns%i_grad_jy,                     &
+     &    ipol%i_grad_jy, itor%i_grad_jy, iphys%i_grad_jy,              &
+     &    icou, trns_snap)
+      call set_field_name_4_bwd_trns                                    &
+     &   (fhd_grad_j_3, trns_snap%b_trns%i_grad_jz,                     &
+     &    ipol%i_grad_jz, itor%i_grad_jz, iphys%i_grad_jz,              &
      &    icou, trns_snap)
 !
       end subroutine set_b_trans_vector_field_snap

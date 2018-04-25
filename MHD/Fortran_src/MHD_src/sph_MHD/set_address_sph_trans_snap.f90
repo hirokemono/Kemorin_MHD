@@ -159,4 +159,35 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine copy_field_from_transform                              &
+     &         (sph_params, sph_rtp, trns_snap, mesh, nod_fld)
+!
+      use copy_fields_from_sph_trans
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(address_4_sph_trans), intent(in) :: trns_snap
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      do i = 1, trns_snap%nvector_rj_2_rtp
+        call copy_vector_from_snap_trans                                &
+     &     (trns_snap%ifld_trns(i), trns%ifld_rtp(i),                   &
+     &      sph_params%m_folding, sph_rtp, trns_snap,                   &
+     &      mesh%node, nod_fld)
+      end do
+!
+      do inum = 1, trns_snap%nscalar_rj_2_rtp
+        i = inum + trns_snap%nvector_rj_2_rtp
+        call copy_scalar_from_snap_trans                                &
+     &     (trns_snap%ifld_trns(i), trns%ifld_rtp(i),                   &
+     &      sph_params%m_folding, sph_rtp, trns_snap,                   &
+     &      mesh%node, nod_fld)
+      end do
+!
+      end subroutine copy_field_from_transform
+!
+!-----------------------------------------------------------------------
+!
       end module set_address_sph_trans_snap

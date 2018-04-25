@@ -158,6 +158,18 @@
      &       .or. field_name .eq. fhd_grad_v_1                          &
      &       .or. field_name .eq. fhd_grad_v_2                          &
      &       .or. field_name .eq. fhd_grad_v_3                          &
+     &       .or. field_name .eq. fhd_grad_w_1                          &
+     &       .or. field_name .eq. fhd_grad_w_2                          &
+     &       .or. field_name .eq. fhd_grad_w_3                          &
+     &       .or. field_name .eq. fhd_grad_a_1                          &
+     &       .or. field_name .eq. fhd_grad_a_2                          &
+     &       .or. field_name .eq. fhd_grad_a_3                          &
+     &       .or. field_name .eq. fhd_grad_v_1                          &
+     &       .or. field_name .eq. fhd_grad_b_2                          &
+     &       .or. field_name .eq. fhd_grad_b_3                          &
+     &       .or. field_name .eq. fhd_grad_b_1                          &
+     &       .or. field_name .eq. fhd_grad_j_2                          &
+     &       .or. field_name .eq. fhd_grad_j_3                          &
      &           ) then
             i0 = i0 + 1
             j0 = j0 + n_vector
@@ -435,7 +447,7 @@
      &          i_rms%i_dbl_fil_comp, j_ave%i_dbl_fil_comp)
           end if
 !
-          if ( field_name .eq. fhd_grad_v_1 ) then
+          if      ( field_name .eq. fhd_grad_v_1 ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_grad_vx, j_ave%i_grad_vx)
           else if ( field_name .eq. fhd_grad_v_2 ) then
@@ -444,6 +456,46 @@
           else if ( field_name .eq. fhd_grad_v_3 ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_grad_vz, j_ave%i_grad_vz)
+          end if
+          if      ( field_name .eq. fhd_grad_w_1 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_wx, j_ave%i_grad_wx)
+          else if ( field_name .eq. fhd_grad_w_2 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_wy, j_ave%i_grad_wy)
+          else if ( field_name .eq. fhd_grad_w_3 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_wz, j_ave%i_grad_wz)
+          end if
+          if      ( field_name .eq. fhd_grad_a_1 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_ax, j_ave%i_grad_ax)
+          else if ( field_name .eq. fhd_grad_a_2 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_ay, j_ave%i_grad_ay)
+          else if ( field_name .eq. fhd_grad_a_3 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_az, j_ave%i_grad_az)
+          end if
+          if      ( field_name .eq. fhd_grad_b_1 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_bx, j_ave%i_grad_bx)
+          else if ( field_name .eq. fhd_grad_b_2 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_by, j_ave%i_grad_by)
+          else if ( field_name .eq. fhd_grad_b_3 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_bz, j_ave%i_grad_bz)
+          end if
+          if      ( field_name .eq. fhd_grad_j_1 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_vx, j_ave%i_grad_jx)
+          else if ( field_name .eq. fhd_grad_j_2 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_jy, j_ave%i_grad_jy)
+          else if ( field_name .eq. fhd_grad_j_3 ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_grad_jz, j_ave%i_grad_jz)
           end if
 !
           if ( field_name .eq. fhd_mom_flux ) then

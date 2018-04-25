@@ -508,6 +508,58 @@
 !
       call int_all_4_vector                                             &
      &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_wx, j_ave%i_grad_wx, iphys%i_grad_wx,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_wy, j_ave%i_grad_wy, iphys%i_grad_wy,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_wz, j_ave%i_grad_wz, iphys%i_grad_wz,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+!
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_ax, j_ave%i_grad_ax, iphys%i_grad_ax,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_ay, j_ave%i_grad_ay, iphys%i_grad_ay,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_az, j_ave%i_grad_az, iphys%i_grad_az,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+!
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_bx, j_ave%i_grad_bx, iphys%i_grad_bx,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_by, j_ave%i_grad_by, iphys%i_grad_by,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_bz, j_ave%i_grad_bz, iphys%i_grad_bz,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+!
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_jx, j_ave%i_grad_jx, iphys%i_grad_jx,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_jy, j_ave%i_grad_jy, iphys%i_grad_jy,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
+     &    i_rms%i_grad_jz, j_ave%i_grad_jz, iphys%i_grad_jz,            &
+     &    mesh, nod_fld, jacs, fem_wk, fem_msq)
+!
+      call int_all_4_vector                                             &
+     &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
      &    i_rms%i_SGS_h_flux, j_ave%i_SGS_h_flux, iphys%i_SGS_h_flux,   &
      &    mesh, nod_fld, jacs, fem_wk, fem_msq)
       call int_all_4_vector                                             &

@@ -179,6 +179,30 @@
      &        nod_fld%phys_name(i), fhd_grad_v_2)
           call vector_label_4_step(id_ave, id_msq,                      &
      &        nod_fld%phys_name(i), fhd_grad_v_3)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_w_1)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_w_2)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_w_3)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_a_1)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_a_2)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_a_3)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_b_1)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_b_2)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_b_3)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_j_1)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_j_2)
+          call vector_label_4_step(id_ave, id_msq,                      &
+     &        nod_fld%phys_name(i), fhd_grad_j_3)
 !
           call vector_label_4_step                                      &
      &       (id_ave, id_msq, nod_fld%phys_name(i), fhd_filter_vort)

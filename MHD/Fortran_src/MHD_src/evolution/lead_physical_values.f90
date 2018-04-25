@@ -143,6 +143,7 @@
       use cal_MHD_forces_4_monitor
       use cal_sgs_4_monitor
       use cal_true_sgs_terms
+      use vector_gradients_4_monitor
 !
       real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -192,6 +193,10 @@
       call cal_fluxes_4_monitor                                         &
      &  (mesh%node, MHD_prop%fl_prop, MHD_prop%cd_prop, iphys, nod_fld)
 !
+      call vect_gradients_4_monitor                                     &
+     &   (dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,              &
+     &    MHD_mesh%fluid, iphys, iphys_ele, fem_int, mk_MHD,            &
+     &     rhs_mat, nod_fld, ele_fld)
       call cal_forces_4_monitor(dt, FEM_prm, SGS_par,                   &
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
@@ -215,9 +220,9 @@
      &    filtering, FEM_SGS_wk%wk_filter, nod_fld)
 !
       call cal_work_4_forces                                            &
-     &  (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, MHD_prop%fl_prop, &
-     &   MHD_prop%cd_prop, iphys, fem_int%jcs, fem_int%rhs_tbl,         &
-     &   mk_MHD, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld)
+     &  (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,                   &
+     &   MHD_prop%fl_prop, MHD_prop%cd_prop, iphys, fem_int,            &
+     &   mk_MHD, mhd_fem_wk, rhs_mat, nod_fld)
 !
       call cal_work_4_sgs_terms(FEM_prm,                                &
      &   mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,          &

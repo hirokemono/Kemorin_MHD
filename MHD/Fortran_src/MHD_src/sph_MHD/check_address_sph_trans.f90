@@ -293,6 +293,46 @@
      &        b_trns%i_grad_vz, ipol%i_grad_vz, itor%i_grad_vz,         &
      &        idpdr%i_grad_vz, iphys%i_grad_vz
 !
+      if(b_trns%i_grad_wx .gt. 0) write(*,*) 'b_trns%i_grad_wx',        &
+     &        b_trns%i_grad_wx, ipol%i_grad_wx, itor%i_grad_wx,         &
+     &        idpdr%i_grad_wx, iphys%i_grad_wx
+      if(b_trns%i_grad_wy .gt. 0) write(*,*) 'b_trns%i_grad_wy',        &
+     &        b_trns%i_grad_wy, ipol%i_grad_wy, itor%i_grad_wy,         &
+     &        idpdr%i_grad_wy, iphys%i_grad_wy
+      if(b_trns%i_grad_wz .gt. 0) write(*,*) 'b_trns%i_grad_wz',        &
+     &        b_trns%i_grad_wz, ipol%i_grad_wz, itor%i_grad_wz,         &
+     &        idpdr%i_grad_wz, iphys%i_grad_wz
+!
+      if(b_trns%i_grad_ax .gt. 0) write(*,*) 'b_trns%i_grad_ax',        &
+     &        b_trns%i_grad_ax, ipol%i_grad_ax, itor%i_grad_ax,         &
+     &        idpdr%i_grad_ax, iphys%i_grad_ax
+      if(b_trns%i_grad_ay .gt. 0) write(*,*) 'b_trns%i_grad_ay',        &
+     &        b_trns%i_grad_ay, ipol%i_grad_ay, itor%i_grad_ay,         &
+     &        idpdr%i_grad_ay, iphys%i_grad_ay
+      if(b_trns%i_grad_az .gt. 0) write(*,*) 'b_trns%i_grad_az',        &
+     &        b_trns%i_grad_az, ipol%i_grad_az, itor%i_grad_az,         &
+     &        idpdr%i_grad_az, iphys%i_grad_az
+!
+      if(b_trns%i_grad_bx .gt. 0) write(*,*) 'b_trns%i_grad_bx',        &
+     &        b_trns%i_grad_bx, ipol%i_grad_bx, itor%i_grad_bx,         &
+     &        idpdr%i_grad_bx, iphys%i_grad_bx
+      if(b_trns%i_grad_by .gt. 0) write(*,*) 'b_trns%i_grad_by',        &
+     &        b_trns%i_grad_by, ipol%i_grad_by, itor%i_grad_by,         &
+     &        idpdr%i_grad_by, iphys%i_grad_by
+      if(b_trns%i_grad_bz .gt. 0) write(*,*) 'b_trns%i_grad_bz',        &
+     &        b_trns%i_grad_bz, ipol%i_grad_bz, itor%i_grad_bz,         &
+     &        idpdr%i_grad_bz, iphys%i_grad_bz
+!
+      if(b_trns%i_grad_jx .gt. 0) write(*,*) 'b_trns%i_grad_jx',        &
+     &        b_trns%i_grad_jx, ipol%i_grad_jx, itor%i_grad_jx,         &
+     &        idpdr%i_grad_jx, iphys%i_grad_jx
+      if(b_trns%i_grad_jy .gt. 0) write(*,*) 'b_trns%i_grad_jy',        &
+     &        b_trns%i_grad_jy, ipol%i_grad_jy, itor%i_grad_jy,         &
+     &        idpdr%i_grad_jy, iphys%i_grad_jy
+      if(b_trns%i_grad_jz .gt. 0) write(*,*) 'b_trns%i_grad_jz',        &
+     &        b_trns%i_grad_jz, ipol%i_grad_jz, itor%i_grad_jz,         &
+     &        idpdr%i_grad_jz, iphys%i_grad_jz
+!
       if(b_trns%i_comp_buo .gt. 0) write(*,*)                           &
      &         'b_trns%i_comp_buo  ', b_trns%i_comp_buo,                &
      &         ipol%i_comp_buo, iphys%i_comp_buo
@@ -451,6 +491,46 @@
       if(f_trns%i_grad_vz .gt. 0) write(*,*) 'f_trns%i_grad_vz',        &
      &        f_trns%i_grad_vz, ipol%i_grad_vz,                         &
      &        itor%i_grad_vz, idpdr%i_grad_vz, iphys%i_grad_vz
+!
+      if(f_trns%i_grad_wx .gt. 0) write(*,*) 'f_trns%i_grad_wx',        &
+     &        f_trns%i_grad_wx, ipol%i_grad_wx,                         &
+     &        itor%i_grad_wx, idpdr%i_grad_wx, iphys%i_grad_wx
+      if(f_trns%i_grad_wy .gt. 0) write(*,*) 'f_trns%i_grad_wy',        &
+     &        f_trns%i_grad_wy, ipol%i_grad_wy,                         &
+     &        itor%i_grad_wy, idpdr%i_grad_wy, iphys%i_grad_wy
+      if(f_trns%i_grad_wz .gt. 0) write(*,*) 'f_trns%i_grad_wz',        &
+     &        f_trns%i_grad_wz, ipol%i_grad_wz,                         &
+     &        itor%i_grad_wz, idpdr%i_grad_wz, iphys%i_grad_wz
+!
+      if(f_trns%i_grad_ax .gt. 0) write(*,*) 'f_trns%i_grad_ax',        &
+     &        f_trns%i_grad_ax, ipol%i_grad_ax,                         &
+     &        itor%i_grad_ax, idpdr%i_grad_ax, iphys%i_grad_ax
+      if(f_trns%i_grad_ay .gt. 0) write(*,*) 'f_trns%i_grad_ay',        &
+     &        f_trns%i_grad_ay, ipol%i_grad_ay,                         &
+     &        itor%i_grad_ay, idpdr%i_grad_ay, iphys%i_grad_ay
+      if(f_trns%i_grad_az .gt. 0) write(*,*) 'f_trns%i_grad_az',        &
+     &        f_trns%i_grad_az, ipol%i_grad_az,                         &
+     &        itor%i_grad_az, idpdr%i_grad_az, iphys%i_grad_az
+!
+      if(f_trns%i_grad_bx .gt. 0) write(*,*) 'f_trns%i_grad_bx',        &
+     &        f_trns%i_grad_bx, ipol%i_grad_bx,                         &
+     &        itor%i_grad_bx, idpdr%i_grad_bx, iphys%i_grad_bx
+      if(f_trns%i_grad_by .gt. 0) write(*,*) 'f_trns%i_grad_by',        &
+     &        f_trns%i_grad_by, ipol%i_grad_by,                         &
+     &        itor%i_grad_by, idpdr%i_grad_by, iphys%i_grad_by
+      if(f_trns%i_grad_bz .gt. 0) write(*,*) 'f_trns%i_grad_bz',        &
+     &        f_trns%i_grad_bz, ipol%i_grad_bz,                         &
+     &        itor%i_grad_bz, idpdr%i_grad_bz, iphys%i_grad_bz
+!
+      if(f_trns%i_grad_jx .gt. 0) write(*,*) 'f_trns%i_grad_jx',        &
+     &        f_trns%i_grad_jx, ipol%i_grad_jx,                         &
+     &        itor%i_grad_jx, idpdr%i_grad_jx, iphys%i_grad_jx
+      if(f_trns%i_grad_jy .gt. 0) write(*,*) 'f_trns%i_grad_jy',        &
+     &        f_trns%i_grad_jy, ipol%i_grad_jy,                         &
+     &        itor%i_grad_jy, idpdr%i_grad_jy, iphys%i_grad_jy
+      if(f_trns%i_grad_jz .gt. 0) write(*,*) 'f_trns%i_grad_jz',        &
+     &        f_trns%i_grad_jz, ipol%i_grad_jz,                         &
+     &        itor%i_grad_jz, idpdr%i_grad_jz, iphys%i_grad_jz
 !
       write(*,*) 'nscalar_rtp_2_rj  ', nscalar_rtp_2_rj
       if(f_trns%i_me_gen .gt. 0) write(*,*) 'f_trns%i_me_gen  ',        &

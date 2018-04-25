@@ -71,7 +71,10 @@
      &     .or. i_start .eq. iphys%i_k_heli                             &
      &     .or. i_start .eq. iphys%i_SGS_inertia                        &
      &     .or. i_start .eq. iphys%i_wide_SGS_inertia                   &
-     &     .or. i_start .eq. iphys%i_velo_scale) then 
+     &     .or. i_start .eq. iphys%i_velo_scale                         &
+     &     .or. i_start .eq. iphys%i_grad_wx                            &
+     &     .or. i_start .eq. iphys%i_grad_wy                            &
+     &     .or. i_start .eq. iphys%i_grad_wz ) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_vort, fhd_vort)
         else if(i_start .eq. iphys%i_press_grad) then
@@ -86,19 +89,28 @@
      &     .or. i_start .eq. iphys%i_m_tension                          &
      &     .or. i_start .eq. iphys%i_lorentz                            &
      &     .or. i_start .eq. iphys%i_maxwell                            &
-     &     .or. i_start .eq. iphys%i_SGS_maxwell) then 
+     &     .or. i_start .eq. iphys%i_SGS_maxwell                        &
+     &     .or. i_start .eq. iphys%i_grad_bx                            &
+     &     .or. i_start .eq. iphys%i_grad_by                            &
+     &     .or. i_start .eq. iphys%i_grad_bz) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_filter_vecp                        &
      &     .or. i_start .eq. iphys%i_scalar_p                           &
      &     .or. i_start .eq. iphys%i_m_heli                             &
-     &     .or. i_start .eq. iphys%i_vp_diffuse) then
+     &     .or. i_start .eq. iphys%i_vp_diffuse                         &
+     &     .or. i_start .eq. iphys%i_grad_ax                            &
+     &     .or. i_start .eq. iphys%i_grad_ay                            &
+     &     .or. i_start .eq. iphys%i_grad_az) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_vecp, fhd_vecp)
         else if(i_start .eq. iphys%i_filter_current                     &
      &     .or. i_start .eq. iphys%i_wide_fil_current                   &
      &     .or. i_start .eq. iphys%i_c_heli                             &
-     &     .or. i_start .eq. iphys%i_magne_scale) then 
+     &     .or. i_start .eq. iphys%i_magne_scale                        &
+     &     .or. i_start .eq. iphys%i_grad_jx                            &
+     &     .or. i_start .eq. iphys%i_grad_jy                            &
+     &     .or. i_start .eq. iphys%i_grad_jz) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_current, fhd_current)
         else if(i_start .eq. iphys%i_vecp) then
@@ -143,7 +155,7 @@
         else if(i_start .eq. iphys%i_comp_scale) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_c_diffuse, fhd_c_diffuse)
-        else if(i_start .eq. iphys%i_comp_scale) then 
+        else if(i_start .eq. iphys%i_mag_stretch) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
           call check_missing_field                                      &

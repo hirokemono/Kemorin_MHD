@@ -174,8 +174,8 @@
 !
       use forces_from_sph_trans
       use snapshot_forces_from_trans
-      use snapshot_field_from_trans
       use coordinate_convert_4_sph
+      use set_address_sph_trans_snap
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -192,10 +192,9 @@
      &   (sph_params, sph_rtp, WK%trns_MHD,                             &
      &    mesh%node, iphys, nod_fld)
 !
-      if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
-      call copy_snap_vec_fld_from_trans                                 &
-     &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
-     &    mesh%node, iphys, nod_fld)
+      if (iflag_debug.gt.0) write(*,*) 'copy_field_from_transform'
+      call copy_field_from_transform                                    &
+     &   (sph_params, sph_rtp, WK%trns_snap, mesh, iphys, nod_fld)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_force_from_trans'
       call copy_snap_vec_force_from_trans                               &
      &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
