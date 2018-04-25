@@ -48,8 +48,6 @@
 !
       implicit none
 !
-      private :: SGS_by_pseudo_sph
-!
 !*   ------------------------------------------------------------------
 !*
       contains
@@ -98,6 +96,7 @@
       use sum_rotation_of_SGS
       use sum_rotation_of_forces
       use cal_nonlinear
+      use cal_sph_dynamic_SGS
 !
       integer(kind = kint), intent(in) :: i_step
       type(SGS_paremeters), intent(in) :: SGS_par

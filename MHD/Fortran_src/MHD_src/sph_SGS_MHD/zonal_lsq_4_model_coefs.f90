@@ -6,8 +6,8 @@
 !>@brief Least square for model coefficients
 !!
 !!@verbatim
-!!      subroutine cal_dynamic_SGS_4_sph_MHD(sph_rtp, sph_d_grp,        &
-!!     &          stab_weight, numdir, ifld_sgs, icomp_sgs,             &
+!!      subroutine cal_dynamic_SGS_4_sph_MHD                            &
+!!     &         (sph_rtp, sph_d_grp, stab_weight, numdir, ifld_sgs,    &
 !!     &          flux_simi, flux_wide, flux_dble, wk_sgs)
 !!@endverbatim
 !
@@ -16,10 +16,12 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_phys_constants
       use calypso_mpi
 !
       use t_spheric_rtp_data
       use t_groups_sph_dynamic
+      use t_ele_info_4_dynamic
 !
       implicit none
 !
@@ -31,8 +33,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_dynamic_SGS_4_sph_MHD(sph_rtp, sph_d_grp,          &
-     &          stab_weight, numdir, ifld_sgs, icomp_sgs,               &
+      subroutine cal_dynamic_SGS_4_sph_MHD                              &
+     &         (sph_rtp, sph_d_grp, stab_weight, numdir, ifld_sgs,      &
      &          flux_simi, flux_wide, flux_dble, wk_sgs)
 !
       use m_FFT_selector
@@ -43,7 +45,7 @@
       real(kind = kreal), intent(in) :: stab_weight
       integer(kind = kint), intent(in) :: numdir
 !
-      integer(kind = kint), intent(in) :: ifld_sgs, icomp_sgs
+      integer(kind = kint), intent(in) :: ifld_sgs
 !
       real(kind = kreal), intent(in)                                    &
      &                   :: flux_simi(sph_rtp%nnod_rtp,numdir)
@@ -57,14 +59,14 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_int_zonal_4_model_coefs'
       call sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp,              &
-     &    numdir, flux_simi, flux_wide,                                 &
-     &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs))
+     &    numdir, flux_simi, flux_wide, flux_dble,                      &
+     &    wk_sgs%comp_coef(1,ifld_sgs), wk_sgs%comp_clip(1,ifld_sgs))
 !
-      if(iflag_debug .gt. 0) write(*,*) 'sel_sph_model_coefs'
-      call sel_sph_model_coefs(numdir, sph_d_grp%ngrp_dynamic,          &
-     &    stab_weight, ifld_sgs, icomp_sgs,                             &
-     &    wk_sgs%num_kinds, wk_sgs%ntot_comp, wk_sgs%comp_coef,         &
-     &    wk_sgs%comp_clip, wk_sgs%fld_coef)
+      if(iflag_debug .gt. 0) write(*,*) 'cal_scalar_sph_model_coefs'
+      call cal_scalar_sph_model_coefs                                   &
+     &   (sph_d_grp%ngrp_dynamic, stab_weight,                          &
+     &    wk_sgs%comp_coef(1,ifld_sgs), wk_sgs%comp_clip(1,ifld_sgs),   &
+     &    wk_sgs%fld_coef(1,ifld_sgs))
 !
       end subroutine cal_dynamic_SGS_4_sph_MHD
 !
@@ -72,7 +74,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp,        &
-     &          numdir, frc_simi, frc_wide,  sgs_zl, sgs_zt)
+     &          numdir, frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
 !
       use m_FFT_selector
       use zonal_int_4_sph_Csim_pin

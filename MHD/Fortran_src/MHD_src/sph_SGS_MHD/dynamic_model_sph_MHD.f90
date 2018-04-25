@@ -47,8 +47,6 @@
 !
       implicit none
 !
-      private :: cal_dynamic_SGS_4_sph_MHD
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -72,7 +70,6 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_mom_flux,                  &
-     &      dynamic_SPH%icomp_sgs%i_mom_flux,                           &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_Lorentz),          &
      &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_inertia),   &
      &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_inertia),    &
@@ -84,7 +81,6 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_lorentz,                   &
-     &      dynamic_SPH%icomp_sgs%i_lorentz,                            &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_Lorentz),          &
      &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_Lorentz),   &
      &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_Lorentz),    &
@@ -96,7 +92,6 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_induction,                 &
-     &      dynamic_SPH%icomp_sgs%i_induction,                          &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_vp_induct),        &
      &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_vp_induct), &
      &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_vp_induct),  &
@@ -108,7 +103,6 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_heat_flux,                 &
-     &      dynamic_SPH%icomp_sgs%i_heat_flux,                          &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_h_flux),           &
      &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_h_flux),    &
      &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_h_flux),     &
@@ -120,7 +114,6 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_comp_flux,                 &
-     &      dynamic_SPH%icomp_sgs%i_comp_flux,                          &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_c_flux),           &
      &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_c_flux),    &
      &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_c_flux),     &

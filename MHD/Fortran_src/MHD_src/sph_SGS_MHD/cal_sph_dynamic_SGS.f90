@@ -48,7 +48,7 @@
 !
       implicit none
 !
-      private :: SGS_by_pseudo_sph
+      private :: dynamic_SGS_by_pseudo_sph
 !
 !*   ------------------------------------------------------------------
 !*
@@ -62,13 +62,10 @@
      &          WK_sph, SGS_mul_FFTW, DYNS_mul_FFTW, dynamic_SPH,       &
      &          ipol, itor, rj_fld)
 !
-      use t_SGS_buoyancy_sph
       use sph_transforms_4_SGS
       use cal_sph_rotation_of_SGS
-      use cal_filtered_sph_fields
       use cal_SGS_terms_sph_MHD
-      use dynamic_model_sph_MHD
-      use copy_Csim_4_sph_MHD
+      use cal_filtered_sph_fields
       use product_model_coefs_sph
       use cal_dynamic_SGS_buoyancy
 !
@@ -178,14 +175,10 @@
      &          MHD_prop, trans_p, trns_SGS, trns_DYNS, WK_sph,         &
      &          SGS_mul_FFTW, DYNS_mul_FFTW, dynamic_SPH, ipol, rj_fld)
 !
-      use t_SGS_buoyancy_sph
       use sph_transforms_4_SGS
-      use cal_sph_rotation_of_SGS
       use cal_filtered_sph_fields
       use cal_SGS_terms_sph_MHD
       use dynamic_model_sph_MHD
-      use copy_Csim_4_sph_MHD
-      use product_model_coefs_sph
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
