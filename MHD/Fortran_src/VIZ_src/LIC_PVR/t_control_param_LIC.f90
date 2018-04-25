@@ -391,6 +391,34 @@
 !
 !  ---------------------------------------------------------------------
 !
+!     if true, the reference value is in the mask range, so it can be visualized
+      logical function mask_flag(lic_p, value)
+!
+      type(lic_parameters), intent(in) :: lic_p
+      real(kind=kreal), intent(in) :: value
+!
+      integer(kind=kint) :: i,j, iFlag_inmask
+!
+      mask_flag = .true.
+      do i = 1, lic_p%num_masking
+        iFlag_inmask = izero
+        do j = 1, lic_p%masking(i)%num_range
+          if((value .ge. lic_p%masking(i)%range_min(j)) .and.        &
+          &   (value .le. lic_p%masking(i)%range_max(j))) then
+            iFlag_inmask = 1
+            exit
+          end if
+        end do
+        if(iFlag_inmask .eq. izero) then
+          mask_flag = .false.
+          return
+        end if
+      end do
+
+      end function mask_flag
+!
+!-----------------------------------------------------------------------
+!
       subroutine load_noise_data(lic_p)
 !
       use t_control_data_LIC

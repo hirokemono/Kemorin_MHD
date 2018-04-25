@@ -240,17 +240,19 @@
       iele =    isurf_org(1)
       isf_org = isurf_org(2)
       isurf_end = abs(isf_4_ele(iele,isf_org))
-      call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
-      &    ie_surf, isurf_end, xi, xx, xx_st)
-      call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-      &    ie_surf, isurf_end, xi, field_pvr%d_pvr, r_org(1) )
-      call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
-      &    ie_surf, isurf_end, xi, field_pvr%v_lic, vec_org)
-
 !
       if(iflag_check .gt. 0) then
         iflag_hit = 0
       end if
+!   get original value of sampling point
+call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
+&    ie_surf, isurf_end, xi, xx, xx_st)
+call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
+&    ie_surf, isurf_end, xi, field_pvr%s_lic, r_org(1) )
+call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
+&    ie_surf, isurf_end, xi, field_pvr%v_lic, vec_org)
+!
+!   start ray casting
       do
         icount_line = icount_line + 1
         icount_line_cur_ray = icount_line_cur_ray + 1
@@ -282,7 +284,6 @@
 !
         iflag_notrace = 0
         isurf_end = abs(isf_4_ele(iele,isf_tgt))
-
 !
         if(isf_4_ele(iele,isf_tgt) .lt. 0) then
           isurf_org(1) = iele_4_surf(isurf_end,1,1) ! element on one side share the surface
@@ -301,7 +302,7 @@
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
         &      ie_surf, isurf_end, xi, xx, xx_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-        &    ie_surf, isurf_end, xi, field_pvr%d_pvr, r_tgt(1) )
+        &    ie_surf, isurf_end, xi, field_pvr%s_lic, r_tgt(1) )
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
         &    ie_surf, isurf_end, xi, field_pvr%v_lic, vec_tgt)
 
@@ -329,22 +330,27 @@
               ratio = (step_size*step_cnt - ray_left) / ray_len
               xx_lic = xx_st + ratio * (xx_tgt - xx_st)
               r_mid(1) = r_org(1) * (1 - ratio) + r_tgt(1)*ratio
-              vec_mid = vec_org * (1-ratio) + vec_tgt * ratio
-              call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
-              &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
-              &      isurf_orgs, ie_surf, xi, lic_p,                                    &
-              &      n_mask, r_mid(1), vec_mid,                                         &
-              &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
-              &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
+write(*,*) "org", r_org, "tgt", r_tgt, "ratio", ratio
+              if(mask_flag(lic_p, r_mid(1))) then
 
-!   normalize gradient
-              grad_len = norm2(grad_tgt(1:3))
-              if(grad_len .ne. 0.0) then
-                grad_tgt(1:3) = grad_tgt(1:3) / norm2(grad_tgt(1:3))
-              endif
+                vec_mid = vec_org * (1-ratio) + vec_tgt * ratio
+                call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
+                &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
+                &      isurf_orgs, ie_surf, xi, lic_p,                                    &
+                &      n_mask, r_mid(1), vec_mid,                                         &
+                &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
+                &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
 
-              call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_lic_last, xx_lic,           &
-              &        c_tgt(1), grad_tgt, color_param, step_size, rgba_ray)
+  !   normalize gradient
+                grad_len = norm2(grad_tgt(1:3))
+                if(grad_len .ne. 0.0) then
+                  grad_tgt(1:3) = grad_tgt(1:3) / norm2(grad_tgt(1:3))
+                endif
+
+                call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_lic_last, xx_lic,           &
+                &        c_tgt(1), grad_tgt, color_param, step_size, rgba_ray)
+
+              end if
               xx_lic_last = xx_lic
               step_cnt = step_cnt + 1
             end do
