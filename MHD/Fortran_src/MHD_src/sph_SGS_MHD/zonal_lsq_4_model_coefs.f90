@@ -100,7 +100,7 @@
 !
       if(numdir .eq. n_sym_tensor) then
         if(iflag_FFT .eq. iflag_FFTW) then
-          call zonal_int_tentor_Csim_in(sph_rtp, sph_d_grp,             &
+          call zonal_int_tentor_Csim_pin(sph_rtp, sph_d_grp,            &
      &        frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
         else
           call zonal_int_tentor_Csim_pout(sph_rtp, sph_d_grp,           &
@@ -108,7 +108,7 @@
         end if
       else
         if(iflag_FFT .eq. iflag_FFTW) then
-          call zonal_int_vector_Csim_in(sph_rtp, sph_d_grp,             &
+          call zonal_int_vector_Csim_pin(sph_rtp, sph_d_grp,            &
      &        frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
         else
           call zonal_int_vector_Csim_pout(sph_rtp, sph_d_grp,           &
