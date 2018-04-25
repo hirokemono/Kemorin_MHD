@@ -100,7 +100,7 @@
      &     (node%numnod, node%istack_nod_smp, node%xx, node%rr,         &
      &      node%a_r, node%ss, node%a_s, ione, num_comp,                &
      &      lic_p%masking(i)%field_info%id_component,                   &
-     &      nod_fld%d_fld(1,ist_fld+1), field_pvr%s_lic)
+     &      nod_fld%d_fld(1,ist_fld+1), field_pvr%s_lic(1,i))
       end do
 !
       end subroutine cal_field_4_each_lic

@@ -105,10 +105,12 @@
      &       (ele_grp, surf_grp, num_nod_phys, phys_nod_name,           &
      &        pvr_ctl_type, lic_ctl_type, lic_fld, pvr_data, pvr_param)
 !
+      use m_error_IDs
       use t_group_data
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
       use t_control_data_pvr_misc
+      use t_LIC_kernel_image
       use set_control_each_pvr
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
@@ -132,7 +134,19 @@
       call set_control_lic_parameter(num_nod_phys, phys_nod_name,       &
      &    lic_ctl_type, lic_fld%lic_param)
 !
-      call load_noise_data(lic_fld%lic_param)
+      if(lic_fld%lic_param%iflag_noise_type .eq. iflag_from_file) then
+        call load_noise_data(lic_fld%lic_param)
+      else
+        write(e_message,*)                                              &
+          'Currently, noise data is only loaded from file'
+          call calypso_mpi_abort(ierr_LIC, e_message)
+      end if
+!
+      if(lic_fld%lic_param%iflag_kernel_type .eq. iflag_from_file) then
+        call load_kernel_data_from_file                                 &
+     &    (lic_fld%lic_param%kernel_image_prefix,                       &
+     &     lic_fld%lic_param%kernel_image)
+      end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
       call set_control_pvr(pvr_ctl_type, ele_grp, surf_grp,             &
@@ -167,6 +181,8 @@
       end if
 !
       call dealloc_lic_noise_data(lic_fld%lic_param)
+      call dealloc_lic_masking_ranges(lic_fld%lic_param)
+      call dealloc_lic_kernel(lic_fld%lic_param)
 !
       call dealloc_pvr_element_group(lic_fld%area_def)
       call dealloc_pvr_color_parameteres(pvr_data%color)
