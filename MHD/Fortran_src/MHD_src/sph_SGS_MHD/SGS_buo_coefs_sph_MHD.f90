@@ -42,6 +42,7 @@
 !
       implicit none
 !
+      private :: sel_int_zonal_4_buo_coefs
       private :: sel_product_single_buo_coefs
       private :: sel_product_double_buo_coefs
       private :: sel_prod_sgl_radial_buo_coefs
@@ -156,6 +157,37 @@
       end subroutine prod_SGS_buoyancy_to_Reynolds
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine sel_int_zonal_4_buo_coefs(sph_rtp, sph_d_grp,          &
+     &          frc_simi, frc_wide, sgs_zl, sgs_zt)
+!
+      use m_FFT_selector
+      use zonal_int_4_sph_Csim_pin
+      use zonal_int_4_sph_Csim_pout
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+!
+      real(kind = kreal), intent(in) :: frc_simi(sph_rtp%nnod_rtp)
+      real(kind = kreal), intent(in) :: frc_wide(sph_rtp%nnod_rtp)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: sgs_zl(sph_d_grp%ngrp_dynamic)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: sgs_zt(sph_d_grp%ngrp_dynamic)
+!
+!
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call int_zonal_buo_coefs_pin(sph_rtp, sph_d_grp,                &
+     &      frc_simi, frc_wide, sgs_zl, sgs_zt)
+      else
+        call int_zonal_buo_coefs_pout(sph_rtp, sph_d_grp,               &
+     &      frc_simi, frc_wide, sgs_zl, sgs_zt)
+      end if
+!
+      end subroutine sel_int_zonal_4_buo_coefs
+!
 ! ----------------------------------------------------------------------
 !
       subroutine sel_prod_sgl_radial_buo_coefs                          &

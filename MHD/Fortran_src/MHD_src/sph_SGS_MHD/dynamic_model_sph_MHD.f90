@@ -58,6 +58,8 @@
       subroutine const_model_coefs_4_sph                                &
      &         (SGS_param, sph_rtp, trns_SGS, trns_DYNS, dynamic_SPH)
 !
+      use zonal_lsq_4_model_coefs
+!
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
 !
@@ -128,49 +130,6 @@
       end subroutine const_model_coefs_4_sph
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine cal_dynamic_SGS_4_sph_MHD(sph_rtp, sph_d_grp,          &
-     &          stab_weight, numdir, ifld_sgs, icomp_sgs,               &
-     &          flux_simi, flux_wide, flux_dble, wk_sgs)
-!
-      use m_FFT_selector
-      use zonal_lsq_4_model_coefs
-      use prod_SGS_model_coefs_sph
-      use cal_sph_model_coefs
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-      real(kind = kreal), intent(in) :: stab_weight
-      integer(kind = kint), intent(in) :: numdir
-!
-      integer(kind = kint), intent(in) :: ifld_sgs, icomp_sgs
-!
-      real(kind = kreal), intent(in)                                    &
-     &                   :: flux_simi(sph_rtp%nnod_rtp,numdir)
-      real(kind = kreal), intent(in)                                    &
-     &                   :: flux_wide(sph_rtp%nnod_rtp,numdir)
-      real(kind = kreal), intent(in)                                    &
-     &                   :: flux_dble(sph_rtp%nnod_rtp,numdir)
-!
-      type(dynamic_model_data), intent(inout) :: wk_sgs
-!
-!
-      if(iflag_debug .gt. 0) write(*,*) 'sel_int_zonal_4_model_coefs'
-      call sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp,              &
-     &    numdir, flux_simi, flux_wide,                                 &
-     &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs))
-!
-      if(iflag_debug .gt. 0) write(*,*) 'sel_sph_model_coefs'
-      call sel_sph_model_coefs(numdir, sph_d_grp%ngrp_dynamic,          &
-     &    stab_weight, ifld_sgs, icomp_sgs,                             &
-     &    wk_sgs%num_kinds, wk_sgs%ntot_comp, wk_sgs%comp_coef,         &
-     &    wk_sgs%comp_clip, wk_sgs%fld_coef)
-!
-      end subroutine cal_dynamic_SGS_4_sph_MHD
-!
-! ----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
       subroutine const_dynamic_SGS_4_buo_sph(stab_weight, sph_rtp,      &
      &          fl_prop, trns_MHD, trns_SGS, trns_DYNS, dynamic_SPH)
