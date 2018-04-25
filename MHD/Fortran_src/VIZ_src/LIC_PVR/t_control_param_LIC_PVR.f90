@@ -144,7 +144,7 @@
 !
       if(lic_fld%lic_param%iflag_kernel_type .eq. iflag_from_file) then
         call load_kernel_data_from_file                                 &
-     &    (my_rank, lic_fld%lic_param%kernel_image_prefix,              &
+     &    (lic_fld%lic_param%kernel_image_prefix,                       &
      &     lic_fld%lic_param%kernel_image)
       end if
 !
