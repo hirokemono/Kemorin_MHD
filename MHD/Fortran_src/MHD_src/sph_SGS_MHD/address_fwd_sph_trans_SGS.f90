@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine f_trans_address_vector_SGS(ipol, trns_SGS)
-!!      subroutine f_trans_address_scalar_SGS(ipol, trns_SGS)
+!!      subroutine f_trans_address_scalar_SGS(trns_SGS)
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!
@@ -66,34 +66,34 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_scalar_SGS(ipol, trns_SGS)
+      subroutine f_trans_address_scalar_SGS(trns_SGS)
 !
-      type(phys_address), intent(in) :: ipol
+!      type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
 !
       trns_SGS%nscalar_rtp_2_rj = 0
 !!   work of Reynolds stress
-!!      call add_scalar_trans_flag(ipol%i_reynolds_wk,                  &
-!!     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,       &
-!!     &    trns_SGS%f_trns%i_reynolds_wk)
+!      call add_scalar_trans_flag(ipol%i_reynolds_wk,                   &
+!     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,        &
+!     &    trns_SGS%f_trns%i_reynolds_wk)
 !!   work of SGS buoyancy
-!!      call add_scalar_trans_flag(ipol%i_SGS_buo_wk,                   &
-!!     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,       &
-!!     &    trns_SGS%f_trns%i_SGS_buo_wk)
+!      call add_scalar_trans_flag(ipol%i_SGS_buo_wk,                    &
+!     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,        &
+!     &    trns_SGS%f_trns%i_SGS_buo_wk)
 !!   work of SGS compositional buoyancy
-!!      call add_scalar_trans_flag(ipol%i_SGS_comp_buo_wk,              &
-!!     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,       &
-!!     &    trns_SGS%f_trns%i_SGS_comp_buo_wk)
+!      call add_scalar_trans_flag(ipol%i_SGS_comp_buo_wk,               &
+!     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,        &
+!     &    trns_SGS%f_trns%i_SGS_comp_buo_wk)
 !
 !   SGS buoyancy
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_buoyancy,              &
-     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,         &
-     &    trns_SGS%f_trns%i_Csim_SGS_buoyancy)
-!   SGS compostional buoyancy
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_comp_buo,              &
-     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,         &
-     &    trns_SGS%f_trns%i_Csim_SGS_comp_buo)
+!      call add_scalar_trans_flag(ipol%i_Csim_SGS_buoyancy,             &
+!     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,        &
+!     &    trns_SGS%f_trns%i_Csim_SGS_buoyancy)
+!!   SGS compostional buoyancy
+!      call add_scalar_trans_flag(ipol%i_Csim_SGS_comp_buo,             &
+!     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,        &
+!     &    trns_SGS%f_trns%i_Csim_SGS_comp_buo)
 !
 !
       end subroutine f_trans_address_scalar_SGS

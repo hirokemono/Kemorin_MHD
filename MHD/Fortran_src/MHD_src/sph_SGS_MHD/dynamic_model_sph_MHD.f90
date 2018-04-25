@@ -14,9 +14,8 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!
-!!      subroutine const_dynamic_SGS_4_buo_sph                          &
-!!     &         (iflag_SGS_buo_usage, stab_weight, sph_rtp,            &
-!!     &          fl_prop, trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
+!!      subroutine const_dynamic_SGS_4_buo_sph(stab_weight, sph_rtp,    &
+!!     &          fl_prop, trns_MHD, trns_SGS, trns_DYNS, dynamic_SPH)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
@@ -173,36 +172,34 @@
 ! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine const_dynamic_SGS_4_buo_sph                            &
-     &         (iflag_SGS_buo_usage, stab_weight, sph_rtp,              &
-     &          fl_prop, trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
+      subroutine const_dynamic_SGS_4_buo_sph(stab_weight, sph_rtp,      &
+     &          fl_prop, trns_MHD, trns_SGS, trns_DYNS, dynamic_SPH)
 !
       use SGS_buo_coefs_sph_MHD
       use cal_SGS_buo_flux_sph_MHD
 !
-      integer(kind = kint), intent(in) :: iflag_SGS_buo_usage
       real(kind = kreal), intent(in) :: stab_weight
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
       type(address_4_sph_trans), intent(in) :: trns_MHD
+      type(address_4_sph_trans), intent(in) :: trns_SGS
 !
-      type(address_4_sph_trans), intent(inout) :: trns_snap
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(address_4_sph_trans), intent(inout) :: trns_DYNS
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
       call SGS_fluxes_for_buo_coefs(sph_rtp, fl_prop,                   &
-     &    trns_MHD%b_trns, trns_SGS%f_trns, trns_snap%f_trns,           &
+     &    trns_MHD%b_trns, trns_SGS%f_trns, trns_DYNS%f_trns,           &
      &    trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,             &
-     &    trns_snap%ncomp_rtp_2_rj, trns_MHD%fld_rtp, trns_SGS%frc_rtp, &
-     &    trns_snap%frc_rtp)
+     &    trns_DYNS%ncomp_rtp_2_rj, trns_MHD%fld_rtp, trns_SGS%frc_rtp, &
+     &    trns_DYNS%frc_rtp)
 !
       if(dynamic_SPH%ifld_sgs%i_buoyancy .gt. 0) then
         call cal_SGS_buo_coefs_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
-     &      trns_snap%frc_rtp, trns_snap%ncomp_rtp_2_rj,                &
-     &      trns_snap%f_trns%i_reynolds_wk,                             &
-     &      trns_snap%f_trns%i_SGS_buo_wk,                              &
+     &      trns_DYNS%frc_rtp, trns_DYNS%ncomp_rtp_2_rj,                &
+     &      trns_DYNS%f_trns%i_reynolds_wk,                             &
+     &      trns_DYNS%f_trns%i_SGS_buo_wk,                              &
      &      dynamic_SPH%ifld_sgs%i_buoyancy,                            &
      &      dynamic_SPH%icomp_sgs%i_buoyancy, dynamic_SPH%wk_sgs)
       end if
@@ -210,22 +207,14 @@
       if(dynamic_SPH%ifld_sgs%i_comp_buoyancy .gt. 0) then
         call cal_SGS_buo_coefs_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
-     &      trns_snap%frc_rtp, trns_snap%ncomp_rtp_2_rj,                &
-     &      trns_snap%f_trns%i_reynolds_wk,                             &
-     &      trns_snap%f_trns%i_SGS_comp_buo_wk,                         &
+     &      trns_DYNS%frc_rtp, trns_DYNS%ncomp_rtp_2_rj,                &
+     &      trns_DYNS%f_trns%i_reynolds_wk,                             &
+     &      trns_DYNS%f_trns%i_SGS_comp_buo_wk,                         &
      &      dynamic_SPH%ifld_sgs%i_comp_buoyancy,                       &
      &      dynamic_SPH%icomp_sgs%i_comp_buoyancy, dynamic_SPH%wk_sgs)
       end if
 !
-      if(iflag_SGS_buo_usage .eq. id_use_zonal) then
-        write(*,*) 'prod_SGS_buoyancy_to_Reynolds'
-        call prod_SGS_buoyancy_to_Reynolds                              &
-     &     (sph_rtp, dynamic_SPH%sph_d_grp,                             &
-     &      trns_SGS%f_trns, dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs,  &
-     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
-      end if
-!
-      end subroutine const_dynamic_SGS_4_buo_sph
+      end subroutine const_dynamic_SGS_4_buo_sph 
 !
 ! ----------------------------------------------------------------------
 !
