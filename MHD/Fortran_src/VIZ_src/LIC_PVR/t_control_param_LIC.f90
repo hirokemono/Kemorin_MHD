@@ -11,7 +11,9 @@
 !!     &         (num_nod_phys, phys_nod_name, lic_ctl, lic_p)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
+!!      subroutine dealloc_lic_noise_data(lic_p)
 !!      subroutine dealloc_lic_masking_ranges(lic_p)
+!!      subroutine dealloc_lic_kernel(lic_p)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
 !!@endverbatim
 !
@@ -26,6 +28,7 @@
       use t_control_params_4_pvr
       use t_control_param_LIC_masking
       use t_noise_node_data
+      use t_LIC_kernel_image
       use lic_noise_generator
 !
       implicit  none
@@ -74,6 +77,8 @@
         integer(kind = kint) :: iflag_kernel_type = 0
 !>        file name of kernel function data
         character(len = kchara) :: kernel_image_prefix
+!>        Structure of LIC kernel image
+        type(LIC_kernel_image) :: kernel_image
 !
 !>        Element counts of LIC field line tracing
         integer(kind = kint) :: iflag_trace_length_type = izero
@@ -447,6 +452,16 @@
         deallocate(lic_p%masking)
 !
       end subroutine dealloc_lic_masking_ranges
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_lic_kernel(lic_p)
+!
+      type(lic_parameters), intent(inout) :: lic_p
+!
+      call dealloc_lic_kernel_image(lic_p%kernel_image)
+!
+      end subroutine dealloc_lic_kernel
 !
 !  ---------------------------------------------------------------------
 !
