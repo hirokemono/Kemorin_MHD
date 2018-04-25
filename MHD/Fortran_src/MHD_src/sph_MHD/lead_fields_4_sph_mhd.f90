@@ -316,8 +316,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'copy_velo_to_grad_v_rtp'
-      call copy_velo_to_grad_v_rtp                                      &
+      if (iflag_debug.eq.1) write(*,*) 'copy_vect_to_grad_vect_rtp'
+      call copy_vect_to_grad_vect_rtp                                   &
      &   (sph%sph_rtp, trns_MHD%b_trns, trns_tmp%f_trns,                &
      &    trns_MHD%ncomp_rj_2_rtp, trns_tmp%ncomp_rtp_2_rj,             &
      &    trns_MHD%fld_rtp, trns_tmp%frc_rtp)
