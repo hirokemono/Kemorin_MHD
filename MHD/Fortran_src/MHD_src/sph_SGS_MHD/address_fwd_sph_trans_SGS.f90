@@ -84,7 +84,7 @@
 !      type(phys_address), intent(inout) :: f_trns
 !
 !
-      trns_fwd%num_scalar = 0
+      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
 !
       end subroutine f_trans_address_scalar_SGS
 !

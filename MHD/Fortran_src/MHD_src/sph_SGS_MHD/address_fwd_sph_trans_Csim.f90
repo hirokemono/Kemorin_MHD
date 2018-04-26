@@ -8,17 +8,12 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine f_trans_address_vector_Csim(trns_Csim)
-!!      subroutine f_trans_address_scalar_Csim(ipol, trns_Csim)
-!!        type(phys_address), intent(in) :: ipol
-!!        type(address_4_sph_trans), intent(inout) :: trns_Csim
-!!
-!!      subroutine set_f_trans_vector_field_Csim                        &
-!!     &         (icou, ipol, itor, iphys, trns_Csim)
-!!      subroutine set_f_trans_scalar_field_Csim                        &
-!!     &         (icou, ipol, itor, iphys, trns_Csim)
+!!      subroutine f_trans_address_vector_Csim(trns_fwd)
+!!      subroutine f_trans_address_scalar_Csim                          &
+!!     &         (ipol, itor, iphys, f_trns, trns_fwd)
 !!        type(phys_address), intent(in) :: ipol, itor, iphys
-!!        type(address_4_sph_trans), intent(inout) :: trns_Csim
+!!        type(address_each_sph_trans), intent(inout) :: trns_fwd
+!!        type(phys_address), intent(inout) :: f_trns
 !!@endverbatim
 !
       module address_fwd_sph_trans_Csim
@@ -26,6 +21,7 @@
       use m_precision
 !
       use m_phys_labels
+      use m_phys_constants
       use t_phys_address
       use t_addresses_sph_transform
       use t_control_parameter
@@ -39,119 +35,73 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_vector_Csim(trns_Csim)
+      subroutine f_trans_address_vector_Csim(trns_fwd)
 !
-      type(address_4_sph_trans), intent(inout) :: trns_Csim
+!      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(address_each_sph_trans), intent(inout) :: trns_fwd
+!      type(phys_address), intent(inout) :: f_trns
 !
 !
-      trns_Csim%forward%num_vector = 0
-!   SGS advection flag
-!      call add_vector_trans_flag(ipol%i_SGS_inertia,                   &
-!     &    trns_Csim%forward%num_vector, trns_Csim%f_trns%i_SGS_inertia)
+      trns_fwd%nfield = 0
+      call alloc_sph_trns_field_name(trns_fwd)
+!
+      trns_fwd%num_vector = 0
 !
       end subroutine f_trans_address_vector_Csim
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_scalar_Csim(ipol, trns_Csim)
+      subroutine f_trans_address_scalar_Csim                            &
+     &         (ipol, itor, iphys, f_trns, trns_fwd)
 !
-      type(phys_address), intent(in) :: ipol
-      type(address_4_sph_trans), intent(inout) :: trns_Csim
+      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(phys_address), intent(inout) :: f_trns
 !
 !
-      trns_Csim%forward%num_scalar = 0
 !   SGS advection flag
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_m_flux,                &
-     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
-     &    trns_Csim%f_trns%i_Csim_SGS_m_flux)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_Csim_SGS_m_flux, fhd_Csim_SGS_m_flux, n_scalar,        &
+     &    ipol%i_Csim_SGS_m_flux, itor%i_Csim_SGS_m_flux,               &
+     &    iphys%i_Csim_SGS_m_flux, f_trns%i_Csim_SGS_m_flux, trns_fwd)
 !   SGS Lorentz force flag
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_Lorentz,               &
-     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
-     &    trns_Csim%f_trns%i_Csim_SGS_Lorentz)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_Csim_SGS_Lorentz, fhd_Csim_SGS_Lorentz, n_scalar,      &
+     &    ipol%i_Csim_SGS_Lorentz, itor%i_Csim_SGS_Lorentz,             &
+     &    iphys%i_Csim_SGS_Lorentz, f_trns%i_Csim_SGS_Lorentz,          &
+     &    trns_fwd)
 !   SGS induction flag
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_induction,             &
-     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
-     &    trns_Csim%f_trns%i_Csim_SGS_induction)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_Csim_SGS_induction, fhd_Csim_SGS_induction, n_scalar,  &
+     &    ipol%i_Csim_SGS_induction, itor%i_Csim_SGS_induction,         &
+     &    iphys%i_Csim_SGS_induction, f_trns%i_Csim_SGS_induction,      &
+     &    trns_fwd)
 !   SGS heat flux flag
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_h_flux,                &
-     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
-     &    trns_Csim%f_trns%i_Csim_SGS_h_flux)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_Csim_SGS_h_flux, fhd_Csim_SGS_h_flux, n_scalar,        &
+     &    ipol%i_Csim_SGS_h_flux, itor%i_Csim_SGS_h_flux,               &
+     &    iphys%i_Csim_SGS_h_flux, f_trns%i_Csim_SGS_h_flux, trns_fwd)
 !   SGS composition flux flag
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_c_flux,                &
-     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
-     &    trns_Csim%f_trns%i_Csim_SGS_c_flux)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_Csim_SGS_c_flux, fhd_Csim_SGS_c_flux, n_scalar,        &
+     &    ipol%i_Csim_SGS_c_flux, itor%i_Csim_SGS_c_flux,               &
+     &    iphys%i_Csim_SGS_c_flux, f_trns%i_Csim_SGS_c_flux, trns_fwd)
 !
 !   SGS buoyancy
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_buoyancy,              &
-     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
-     &    trns_Csim%f_trns%i_Csim_SGS_buoyancy)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_Csim_SGS_buoyancy, fhd_Csim_SGS_buoyancy, n_scalar,    &
+     &    ipol%i_Csim_SGS_buoyancy, itor%i_Csim_SGS_buoyancy,           &
+     &    iphys%i_Csim_SGS_buoyancy, f_trns%i_Csim_SGS_buoyancy,        &
+     &    trns_fwd)
 !   SGS compostional buoyancy
-      call add_scalar_trans_flag(ipol%i_Csim_SGS_comp_buo,              &
-     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
-     &    trns_Csim%f_trns%i_Csim_SGS_comp_buo)
-!
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_Csim_SGS_comp_buo, fhd_Csim_SGS_comp_buo, n_scalar,    &
+     &    ipol%i_Csim_SGS_comp_buo, itor%i_Csim_SGS_comp_buo,           &
+     &    iphys%i_Csim_SGS_comp_buo, f_trns%i_Csim_SGS_comp_buo,        &
+     &    trns_fwd)
+      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
 !
       end subroutine f_trans_address_scalar_Csim
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_f_trans_vector_field_Csim                          &
-     &         (icou, ipol, itor, iphys, trns_Csim)
-!
-      type(phys_address), intent(in) :: ipol, itor, iphys
-      type(address_4_sph_trans), intent(inout) :: trns_Csim
-      integer(kind = kint), intent(inout) :: icou
-!
-!
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_SGS_inertia, trns_Csim%f_trns%i_SGS_inertia,              &
-     &    ipol%i_SGS_inertia, itor%i_SGS_inertia, iphys%i_SGS_inertia,  &
-     &    icou, trns_Csim%forward)
-!
-      end subroutine set_f_trans_vector_field_Csim
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_f_trans_scalar_field_Csim                          &
-     &         (icou, ipol, itor, iphys, trns_Csim)
-!
-      type(phys_address), intent(in) :: ipol, itor, iphys
-      type(address_4_sph_trans), intent(inout) :: trns_Csim
-      integer(kind = kint), intent(inout) :: icou
-!
-!
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_Csim_SGS_m_flux, trns_Csim%f_trns%i_Csim_SGS_m_flux,      &
-     &    ipol%i_Csim_SGS_m_flux, itor%i_Csim_SGS_m_flux,               &
-     &    iphys%i_Csim_SGS_m_flux, icou, trns_Csim%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_Csim_SGS_Lorentz, trns_Csim%f_trns%i_Csim_SGS_Lorentz,    &
-     &    ipol%i_Csim_SGS_Lorentz, itor%i_Csim_SGS_Lorentz,             &
-     &    iphys%i_Csim_SGS_Lorentz, icou, trns_Csim%forward)
-      call set_field_name_4_sph_trns                                    &
-     &  (fhd_Csim_SGS_induction, trns_Csim%f_trns%i_Csim_SGS_induction, &
-     &   ipol%i_Csim_SGS_induction, itor%i_Csim_SGS_induction,          &
-     &   iphys%i_Csim_SGS_induction, icou, trns_Csim%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_Csim_SGS_h_flux, trns_Csim%f_trns%i_Csim_SGS_h_flux,      &
-     &    ipol%i_Csim_SGS_h_flux, itor%i_Csim_SGS_h_flux,               &
-     &    iphys%i_Csim_SGS_h_flux, icou, trns_Csim%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_Csim_SGS_c_flux, trns_Csim%f_trns%i_Csim_SGS_c_flux,      &
-     &    ipol%i_Csim_SGS_c_flux, itor%i_Csim_SGS_c_flux,               &
-     &    iphys%i_Csim_SGS_c_flux, icou, trns_Csim%forward)
-!
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_Csim_SGS_buoyancy, trns_Csim%f_trns%i_Csim_SGS_buoyancy,  &
-     &    ipol%i_Csim_SGS_buoyancy, itor%i_Csim_SGS_buoyancy,           &
-     &    iphys%i_Csim_SGS_buoyancy, icou, trns_Csim%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_Csim_SGS_comp_buo, trns_Csim%f_trns%i_Csim_SGS_comp_buo,  &
-     &    ipol%i_Csim_SGS_comp_buo, itor%i_Csim_SGS_comp_buo,           &
-     &    iphys%i_Csim_SGS_comp_buo, icou, trns_Csim%forward)
-!
-      end subroutine set_f_trans_scalar_field_Csim
 !
 !-----------------------------------------------------------------------
 !

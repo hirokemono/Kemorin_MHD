@@ -167,47 +167,40 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint):: icou
-!
-!
-      call b_trans_address_vector_Csim(SPH_MHD%ipol, trns_Csim)
-      call b_trans_address_scalar_Csim(SPH_MHD%ipol, trns_Csim)
-      trns_Csim%backward%num_tensor = 0
-!
-      call f_trans_address_vector_Csim(trns_Csim)
-      call f_trans_address_scalar_Csim(SPH_MHD%ipol, trns_Csim)
-      trns_Csim%forward%num_tensor = 0
-!
-      call count_num_fields_4_sph_trans(trns_Csim, ncomp_sph_trans,     &
-     &    nvector_sph_trans, nscalar_sph_trans)
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for model coefs'
-        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_Csim%backward%num_vector
-        write(*,*) 'nscalar_rj_2_rtp ', trns_Csim%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
 !
-      icou = 0
-      call set_b_trans_vector_field_Csim                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_Csim)
-      call set_b_trans_scalar_field_Csim                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_Csim)
+      call b_trans_address_vector_Csim(trns_Csim%backward)
+      call b_trans_address_scalar_Csim(trns_Csim%backward)
+      trns_Csim%backward%num_tensor = 0
 !
      if(iflag_debug .gt. 0) then
-        write(*,*) 'nvector_rtp_2_rj ', trns_Csim%forward%num_vector
-        write(*,*) 'nscalar_rtp_2_rj ', trns_Csim%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
 !
-      icou = 0
-      call set_f_trans_vector_field_Csim                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_Csim)
-      call set_f_trans_scalar_field_Csim                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_Csim)
+      call f_trans_address_vector_Csim(trns_Csim%forward)
+      call f_trans_address_scalar_Csim(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_Csim%f_trns, trns_Csim%forward)
+      trns_Csim%forward%num_tensor = 0
+!
+      call count_num_fields_each_trans2(trns_Csim%backward,             &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans2(trns_Csim%forward,              &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ', trns_Csim%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_Csim%backward%num_scalar
+!
+        write(*,*) 'nvector_rtp_2_rj ', trns_Csim%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_Csim%forward%num_scalar
+      end if
 !
       end subroutine set_addresses_trans_sph_Csim
 !
