@@ -75,9 +75,9 @@
       type(address_4_sph_trans), intent(inout) :: trns_tmp
       integer(kind = kint), intent(inout) :: icou
 !
-      call set_field_name_4_bwd_trns(fhd_grad_v_1,                      &
+      call set_field_name_4_sph_trns(fhd_grad_v_1,                      &
      &    trns_tmp%b_trns%i_grad_vx, ipol%i_grad_vx, itor%i_grad_vx,    &
-     &    iphys%i_grad_vx, icou, trns_tmp)
+     &    iphys%i_grad_vx, icou, trns_tmp%backward)
 !
       end subroutine set_b_trans_vector_field_stmp
 !
@@ -91,8 +91,8 @@
       integer(kind = kint), intent(inout) :: icou
 !
 !
-      call set_field_name_4_bwd_trns(fhd_temp, trns_tmp%b_trns%i_temp,  &
-     &    ipol%i_temp, itor%i_temp, iphys%i_temp, icou, trns_tmp)
+      call set_field_name_4_sph_trns(fhd_temp, trns_tmp%b_trns%i_temp,  &
+     &    ipol%i_temp, itor%i_temp, iphys%i_temp, icou, trns_tmp%backward)
 !
       end subroutine set_b_trans_scalar_field_stmp
 !

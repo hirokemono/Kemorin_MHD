@@ -32,8 +32,6 @@
 !!     &          nvector_sph_trans, nscalar_sph_trans)
 !!      subroutine set_field_name_4_sph_trns(field_name, i_trns,        &
 !!     &          i_pol, i_tor, irtp, icou, each_trns)
-!!      subroutine set_field_name_4_bwd_trns                            &
-!!     &         (field_name, i_trns, i_pol, i_tor, irtp, trns)
 !!        type(address_4_sph_trans), intent(inout) :: trns
 !!@endverbatim
 !
@@ -98,8 +96,6 @@
 !>        zonal mean of field data in grid space
         real(kind = kreal), allocatable :: fld_zm(:,:)
       end type address_4_sph_trans
-!
-      private :: alloc_sph_trns_field_name
 !
 !-----------------------------------------------------------------------
 !
@@ -300,6 +296,27 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
+      subroutine count_num_fields_each_trans2(each_trns,                &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      type(address_each_sph_trans), intent(inout) :: each_trns
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+      integer(kind = kint) :: nscltsr_rj_2_rtp
+!
+!
+      nscltsr_rj_2_rtp = each_trns%num_scalar + 6*each_trns%num_tensor
+!
+      ncomp_sph_trans =   max(ncomp_sph_trans, each_trns%ncomp)
+      nvector_sph_trans = max(nvector_sph_trans, each_trns%num_vector)
+      nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rj_2_rtp)
+!
+      end subroutine count_num_fields_each_trans2
+!
+!-----------------------------------------------------------------------
+!
       subroutine count_num_fields_each_trans(each_trns,                 &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
@@ -321,6 +338,8 @@
       nvector_sph_trans = max(nvector_sph_trans, each_trns%num_vector)
       nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rj_2_rtp)
 !
+      call alloc_sph_trns_field_name(each_trns)
+!
       end subroutine count_num_fields_each_trans
 !
 !-----------------------------------------------------------------------
@@ -338,9 +357,6 @@
      &          nvector_sph_trans, nscalar_sph_trans)
       call count_num_fields_each_trans(trns%forward, ncomp_sph_trans,   &
      &          nvector_sph_trans, nscalar_sph_trans)
-!
-      call alloc_sph_trns_field_name(trns%backward)
-      call alloc_sph_trns_field_name(trns%forward)
 !
       end subroutine count_num_fields_4_sph_trans
 !
@@ -375,21 +391,72 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_field_name_4_bwd_trns                              &
-     &         (field_name, i_trns, i_pol, i_tor, irtp, icou, trns)
+      subroutine copy_field_name_4_sph_trns                             &
+     &         (num_copy, etrns_org, etrns_new)
+!
+      integer(kind = kint), intent(in) :: num_copy
+      type(address_each_sph_trans), intent(in) :: etrns_org
+      type(address_each_sph_trans), intent(inout) :: etrns_new
+!
+!
+      if(num_copy .le. 0) return
+      etrns_new%field_name(1:num_copy)                                  &
+     &            = etrns_org%field_name(1:num_copy) 
+      etrns_new%ifld_trns(1:num_copy) = etrns_org%ifld_trns(1:num_copy)
+      etrns_new%ifld_rj(1:num_copy) =   etrns_org%ifld_rj(1:num_copy)
+      etrns_new%ifld_rtp(1:num_copy) =  etrns_org%ifld_rtp(1:num_copy)
+!
+      end subroutine copy_field_name_4_sph_trns
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_field_name_4_sph_trns                              &
+     &         (iflag_add, field_name, num_component,                   &
+     &          i_pol, i_tor, irtp, i_trns, each_trns)
 !
       use m_machine_parameter
 !
+      integer(kind = kint), intent(in) :: iflag_add, num_component
       character(len = kchara), intent(in) :: field_name
-      integer(kind = kint), intent(in) :: i_trns, i_pol, i_tor, irtp
-      integer(kind = kint), intent(inout) :: icou
-      type(address_4_sph_trans), intent(inout) :: trns
+      integer(kind = kint), intent(in) :: i_pol, i_tor, irtp
+!
+      integer(kind = kint), intent(inout) :: i_trns
+      type(address_each_sph_trans), intent(inout) :: each_trns
+!
+      type(address_each_sph_trans) :: etrns_tmp
 !
 !
-      call set_field_name_4_sph_trns(field_name, i_trns,               &
-     &          i_pol, i_tor, irtp, icou, trns%backward)
+      if(iflag_add .eq. 0) return
 !
-      end subroutine set_field_name_4_bwd_trns
+      i_trns = each_trns%ncomp + 1
+!
+      etrns_tmp%nfield = each_trns%nfield
+      call alloc_sph_trns_field_name(etrns_tmp)
+      call copy_field_name_4_sph_trns                                   &
+     &   (etrns_tmp%nfield, each_trns, etrns_tmp)
+      call dealloc_sph_trns_field_name(each_trns)
+!
+      each_trns%ncomp =  each_trns%ncomp + num_component
+      each_trns%nfield = each_trns%nfield + 1
+      call alloc_sph_trns_field_name(each_trns)
+      call copy_field_name_4_sph_trns                                   &
+     &   (etrns_tmp%nfield, etrns_tmp, each_trns)
+      call dealloc_sph_trns_field_name(etrns_tmp)
+!
+      each_trns%field_name(each_trns%nfield) = field_name
+      each_trns%ifld_trns(each_trns%nfield) = i_trns
+      each_trns%ifld_rj(each_trns%nfield) =   i_pol
+      each_trns%ifld_rtp(each_trns%nfield) =  irtp
+!
+!
+      if(iflag_debug .eq. 0) return
+      write(*,'(i5,a2,a,a2,4i5)') each_trns%nfield, '. ',               &
+     &    trim(each_trns%field_name(each_trns%nfield)), ': ',           &
+     &    each_trns%ifld_trns(each_trns%nfield),                        &
+     &    each_trns%ifld_rj(each_trns%nfield), i_tor,                   &
+     &    each_trns%ifld_rtp(each_trns%nfield)
+!
+      end subroutine add_field_name_4_sph_trns
 !
 !-----------------------------------------------------------------------
 !

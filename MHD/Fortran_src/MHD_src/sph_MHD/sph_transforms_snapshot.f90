@@ -13,12 +13,10 @@
 !!     &         (sph, comms_sph, trans_p, trns_snap, WK_sph, rj_fld)
 !!
 !!      subroutine sph_forward_trans_tmp_snap_MHD                       &
-!!     &         (sph, comms_sph, trans_p, trns_tmp, ipol,              &
-!!     &          WK_sph, rj_fld)
+!!     &         (sph, comms_sph, trans_p, trns_tmp, WK_sph, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(address_4_sph_trans), intent(in) :: trns_tmp
-!!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!@endverbatim
@@ -133,8 +131,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_tmp_snap_MHD                         &
-     &         (sph, comms_sph, trans_p, trns_tmp, ipol,                &
-     &          WK_sph, rj_fld)
+     &         (sph, comms_sph, trans_p, trns_tmp, WK_sph, rj_fld)
 !
       use m_solver_SR
       use set_address_sph_trans_MHD
@@ -144,7 +141,6 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(address_4_sph_trans), intent(in) :: trns_tmp
-      type(phys_address), intent(in) :: ipol
 !
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld

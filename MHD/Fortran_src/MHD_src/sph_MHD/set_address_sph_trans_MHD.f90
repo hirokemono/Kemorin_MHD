@@ -73,52 +73,53 @@
       integer(kind = kint):: icou
 !
 !
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Spherical transform field table for MHD'
+        write(*,*) 'Address for backward transform: ',                  &
+     &             'transform, poloidal, troidal, grid data'
+      end if
+!
       call b_trans_address_vector_MHD                                   &
-     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, SPH_MHD%ipol, trns_MHD)
-      call b_trans_address_scalar_MHD                                   &
-     &   (MHD_prop%ht_prop, MHD_prop%cp_prop, SPH_MHD%ipol, trns_MHD)
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
+     &    MHD_prop%cp_prop,  SPH_MHD%ipol, SPH_MHD%itor, iphys,         &
+     &    trns_MHD%b_trns, trns_MHD%backward)
+      call b_trans_address_scalar_MHD(MHD_prop%ht_prop,                 &
+     &    MHD_prop%cp_prop,  SPH_MHD%ipol, SPH_MHD%itor, iphys,         &
+     &    trns_MHD%b_trns, trns_MHD%backward)
       trns_MHD%backward%num_tensor = 0
 !
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Address for forward transform: ',                  &
+     &             'transform, poloidal, troidal, grid data'
+      end if
+!
       call f_trans_address_vector_MHD                                   &
-     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, SPH_MHD%ipol, trns_MHD)
-      call f_trans_address_scalar_MHD(MHD_prop%fl_prop, trns_MHD)
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
+     &    MHD_prop%cp_prop, SPH_MHD%ipol, SPH_MHD%itor, iphys,          &
+     &    trns_MHD%f_trns, trns_MHD%forward)
+      call f_trans_address_scalar_MHD                                   &
+     &   (SPH_MHD%ipol, SPH_MHD%itor, iphys,                            &
+     &    trns_MHD%f_trns, trns_MHD%forward)
       trns_MHD%forward%num_tensor = 0
 !
       ncomp_sph_trans =   0
       nvector_sph_trans = 0
       nscalar_sph_trans = 0
-      call count_num_fields_4_sph_trans(trns_MHD, ncomp_sph_trans,      &
-     &   nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans2(trns_MHD%backward,              &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans2(trns_MHD%forward,               &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'Spherical transform field table for MHD'
         write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
         write(*,*) 'nvector_rj_2_rtp ', trns_MHD%backward%num_vector
         write(*,*) 'nscalar_rj_2_rtp ', trns_MHD%backward%num_scalar
-        write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, troidal, grid data'
-      end if
 !
-      icou = 0
-      call set_b_trans_vector_field_MHD                                 &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_MHD)
-      call set_b_trans_scalar_field_MHD                                 &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_MHD)
-!
-     if(iflag_debug .gt. 0) then
         write(*,*) 'nvector_rtp_2_rj ', trns_MHD%forward%num_vector
         write(*,*) 'nscalar_rtp_2_rj ', trns_MHD%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
-!
-      icou = 0
-      call set_f_trans_vector_field_MHD                                 &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_MHD)
-      call set_f_trans_scalar_field_MHD                                 &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_MHD)
 !
       end subroutine set_addresses_trans_sph_MHD
 !

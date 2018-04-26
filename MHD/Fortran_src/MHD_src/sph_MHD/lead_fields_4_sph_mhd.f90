@@ -324,7 +324,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_tmp_snap_MHD'
       call sph_forward_trans_tmp_snap_MHD                               &
-     &   (sph, comms_sph, trans_p, trns_tmp, ipol, WK_sph, rj_fld)
+     &   (sph, comms_sph, trans_p, trns_tmp, WK_sph, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_grad_of_velocities_sph'
       call cal_grad_of_velocities_sph(sph%sph_rj, r_2nd,                &

@@ -55,8 +55,8 @@
       integer(kind = kint):: icou
 !
 !
-      call b_trans_address_vector_snap(SPH_MHD%ipol, iphys, trns_snap)
-      call b_trans_address_scalar_snap(SPH_MHD%ipol, iphys, trns_snap)
+      call b_trans_address_vector_snap(SPH_MHD%ipol, iphys, trns_snap%backward, trns_snap%b_trns)
+      call b_trans_address_scalar_snap(SPH_MHD%ipol, iphys, trns_snap%backward, trns_snap%b_trns)
       trns_snap%backward%num_tensor = 0
 !
       call f_trans_address_vector_snap(SPH_MHD%ipol, iphys, trns_snap)
@@ -78,9 +78,9 @@
 !
       icou = 0
       call set_b_trans_vector_field_snap                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_snap)
+     &   (icou, trns_snap%b_trns, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_snap%backward)
       call set_b_trans_scalar_field_snap                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_snap)
+     &   (icou, trns_snap%b_trns, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_snap%backward)
 !
      if(iflag_debug .gt. 0) then
         write(*,*) 'nvector_rtp_2_rj ', trns_snap%forward%num_vector
