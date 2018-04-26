@@ -44,9 +44,9 @@
 !      type(phys_address), intent(in) :: ipol, iphys
       type(address_4_sph_trans), intent(inout) :: trns_tmp
 !
-      trns_tmp%nvector_rj_2_rtp = 0
+      trns_tmp%backward%num_vector = 0
 !      call add_vec_trans_flag_snap(ipol%i_grad_vx, iphys%i_grad_vx,    &
-!     &    trns_tmp%nvector_rj_2_rtp, trns_tmp%b_trns%i_grad_vx)
+!     &    trns_tmp%backward%num_vector, trns_tmp%b_trns%i_grad_vx)
 !
       end subroutine b_trans_address_vector_stmp
 !
@@ -58,9 +58,9 @@
       type(address_4_sph_trans), intent(inout) :: trns_tmp
 !
 !
-      trns_tmp%nscalar_rj_2_rtp = 0
+      trns_tmp%backward%num_scalar = 0
 !      call add_scl_trans_flag_snap(ipol%i_temp, iphys%i_temp,          &
-!     &    trns_tmp%nvector_rj_2_rtp, trns_tmp%nscalar_rj_2_rtp,        &
+!     &    trns_tmp%backward%num_vector, trns_tmp%backward%num_scalar,        &
 !     &    trns_tmp%b_trns%i_temp)
 !
       end subroutine b_trans_address_scalar_stmp

@@ -63,7 +63,7 @@
       integer(kind = kint) :: icomp, jcomp
 !
 !
-      do j_fld = 1, trns_MHD%nvector_rj_2_rtp
+      do j_fld = 1, trns_MHD%backward%num_vector
         jcomp = n_vector*j_fld - 2
         do i_fld = 1, rj_fld%num_phys_viz
           if(rj_fld%phys_name(i_fld) .eq. trns_MHD%b_trns_name(j_fld))  &
@@ -80,9 +80,9 @@
 !
 !      write(*,*) 'WS', WS(1:3*trns_MHD%*comm_rj%istack_sr(comm_rj%nneib_domain))
 !
-      do j = 1, trns_MHD%nscalar_rj_2_rtp
-        j_fld = j + trns_MHD%nvector_rj_2_rtp
-        jcomp = j + n_vector*trns_MHD%nvector_rj_2_rtp
+      do j = 1, trns_MHD%backward%num_scalar
+        j_fld = j + trns_MHD%backward%num_vector
+        jcomp = j + n_vector*trns_MHD%backward%num_vector
         do i_fld = 1, rj_fld%num_phys_viz
           if(rj_fld%phys_name(i_fld) .eq. trns_MHD%b_trns_name(j_fld))  &
      &        then
@@ -97,11 +97,11 @@
         end do
       end do
 !
-      do j = 1, trns_MHD%ntensor_rj_2_rtp
-        j_fld = j + trns_MHD%nvector_rj_2_rtp                           &
-     &            + trns_MHD%nscalar_rj_2_rtp
-        jcomp = n_sym_tensor * j - 5 + trns_MHD%nscalar_rj_2_rtp        &
-     &         + n_vector*trns_MHD%nvector_rj_2_rtp
+      do j = 1, trns_MHD%backward%num_tensor
+        j_fld = j + trns_MHD%backward%num_vector                        &
+     &            + trns_MHD%backward%num_scalar
+        jcomp = n_sym_tensor * j - 5 + trns_MHD%backward%num_scalar     &
+     &         + n_vector*trns_MHD%backward%num_vector
         do i_fld = 1, rj_fld%num_phys_viz
           if(rj_fld%phys_name(i_fld) .eq. trns_MHD%b_trns_name(j_fld))  &
      &        then
@@ -134,7 +134,7 @@
       integer(kind = kint) :: icomp, jcomp
 !
 !
-      do j_fld = 1, trns_MHD%nvector_rtp_2_rj
+      do j_fld = 1, trns_MHD%forward%num_vector
         jcomp = n_vector*j_fld - 2
         do i_fld = 1, rj_fld%num_phys_viz
           if(rj_fld%phys_name(i_fld) .eq. trns_MHD%f_trns_name(j_fld))  &
@@ -149,9 +149,9 @@
         end do
       end do
 !
-      do j = 1, trns_MHD%nscalar_rtp_2_rj
-        j_fld = j + trns_MHD%nvector_rtp_2_rj
-        jcomp = j + n_vector*trns_MHD%nvector_rtp_2_rj
+      do j = 1, trns_MHD%forward%num_scalar
+        j_fld = j + trns_MHD%forward%num_vector
+        jcomp = j + n_vector*trns_MHD%forward%num_vector
         do i_fld = 1, rj_fld%num_phys_viz
           if(rj_fld%phys_name(i_fld) .eq. trns_MHD%f_trns_name(j_fld))  &
      &        then
@@ -165,11 +165,11 @@
         end do
       end do
 !
-      do j = 1, trns_MHD%ntensor_rtp_2_rj
-        j_fld = j + trns_MHD%nvector_rtp_2_rj                           &
-     &            + trns_MHD%nscalar_rtp_2_rj
-        jcomp = n_sym_tensor * j - 5 + trns_MHD%nscalar_rtp_2_rj        &
-     &         + n_vector*trns_MHD%nvector_rtp_2_rj
+      do j = 1, trns_MHD%forward%num_tensor
+        j_fld = j + trns_MHD%forward%num_vector                         &
+     &            + trns_MHD%forward%num_scalar
+        jcomp = n_sym_tensor * j - 5 + trns_MHD%forward%num_scalar      &
+     &         + n_vector*trns_MHD%forward%num_vector
         do i_fld = 1, rj_fld%num_phys_viz
           if(rj_fld%phys_name(i_fld) .eq. trns_MHD%f_trns_name(j_fld))  &
      &        then

@@ -54,6 +54,12 @@
         integer(kind = kint) :: nfield = 0
 !>        number of components for spherical harmonics transform
         integer(kind = kint) :: ncomp =  0
+!>        number of vector for spherical harmonics transform
+        integer(kind = kint) :: num_vector = 0
+!>        number of scalars for spherical harmonics transform
+        integer(kind = kint) :: num_scalar = 0
+!>        number of tensors for spherical harmonics transform
+        integer(kind = kint) :: num_tensor = 0
       end type address_each_sph_trans
 !
 
@@ -63,21 +69,6 @@
         type(address_each_sph_trans) :: backward
 !>        strucutre of forward spherical transform data addresses
         type(address_each_sph_trans) :: forward
-!
-!>        number of components
-!!        for backward vector spherical harmonics transform
-        integer(kind = kint) :: nvector_rj_2_rtp = 0
-!>        number of scalars for backward spherical harmonics transform
-        integer(kind = kint) :: nscalar_rj_2_rtp = 0
-!>        number of tensors for backward spherical harmonics transform
-        integer(kind = kint) :: ntensor_rj_2_rtp = 0
-!
-!>        number of vectors for forward spherical harmonics transform
-        integer(kind = kint) :: nvector_rtp_2_rj = 0
-!>        number of scalars for forward spherical harmonics transform
-        integer(kind = kint) :: nscalar_rtp_2_rj = 0
-!>        number of tensors for forward spherical harmonics transform
-        integer(kind = kint) :: ntensor_rtp_2_rj = 0
 !
 !>        addresses of fields for backward transform
         type(phys_address) :: b_trns
@@ -338,27 +329,27 @@
       integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
 !
-      trns%backward%nfield =  trns%nvector_rj_2_rtp                     &
-     &                      + trns%nscalar_rj_2_rtp                     &
-     &                      + trns%ntensor_rj_2_rtp
-      trns%forward%nfield =  trns%nvector_rtp_2_rj                      &
-     &                      + trns%nscalar_rtp_2_rj                     &
-     &                      + trns%ntensor_rtp_2_rj
+      trns%backward%nfield =  trns%backward%num_vector                  &
+     &                      + trns%backward%num_scalar                  &
+     &                      + trns%backward%num_tensor
+      trns%forward%nfield =  trns%forward%num_vector                    &
+     &                      + trns%forward%num_scalar                   &
+     &                      + trns%forward%num_tensor
 !
       nscltsr_rj_2_rtp                                                  &
-     &      = trns%nscalar_rj_2_rtp + 6*trns%ntensor_rj_2_rtp
+     &      = trns%backward%num_scalar + 6*trns%backward%num_tensor
       trns%backward%ncomp                                               &
-     &      = 3*trns%nvector_rj_2_rtp + nscltsr_rj_2_rtp
+     &      = 3*trns%backward%num_vector + nscltsr_rj_2_rtp
 !
       nscltsr_rtp_2_rj                                                  &
-     &      = trns%nscalar_rtp_2_rj + 6*trns%ntensor_rtp_2_rj
+     &      = trns%forward%num_scalar + 6*trns%forward%num_tensor
       trns%forward%ncomp                                                &
-     &      = 3*trns%nvector_rtp_2_rj + nscltsr_rtp_2_rj
+     &      = 3*trns%forward%num_vector + nscltsr_rtp_2_rj
 !
       ncomp_sph_trans =   max(ncomp_sph_trans, trns%forward%ncomp)
       ncomp_sph_trans =   max(ncomp_sph_trans, trns%backward%ncomp)
-      nvector_sph_trans = max(nvector_sph_trans, trns%nvector_rj_2_rtp)
-      nvector_sph_trans = max(nvector_sph_trans, trns%nvector_rtp_2_rj)
+      nvector_sph_trans = max(nvector_sph_trans, trns%backward%num_vector)
+      nvector_sph_trans = max(nvector_sph_trans, trns%forward%num_vector)
       nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rj_2_rtp)
       nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rtp_2_rj)
 !

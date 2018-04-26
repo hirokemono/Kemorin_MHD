@@ -44,10 +44,10 @@
       type(address_4_sph_trans), intent(inout) :: trns_Csim
 !
 !
-      trns_Csim%nvector_rtp_2_rj = 0
+      trns_Csim%forward%num_vector = 0
 !   SGS advection flag
 !      call add_vector_trans_flag(ipol%i_SGS_inertia,                   &
-!     &    trns_Csim%nvector_rtp_2_rj, trns_Csim%f_trns%i_SGS_inertia)
+!     &    trns_Csim%forward%num_vector, trns_Csim%f_trns%i_SGS_inertia)
 !
       end subroutine f_trans_address_vector_Csim
 !
@@ -59,35 +59,35 @@
       type(address_4_sph_trans), intent(inout) :: trns_Csim
 !
 !
-      trns_Csim%nscalar_rtp_2_rj = 0
+      trns_Csim%forward%num_scalar = 0
 !   SGS advection flag
       call add_scalar_trans_flag(ipol%i_Csim_SGS_m_flux,                &
-     &    trns_Csim%nvector_rtp_2_rj, trns_Csim%nscalar_rtp_2_rj,       &
+     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
      &    trns_Csim%f_trns%i_Csim_SGS_m_flux)
 !   SGS Lorentz force flag
       call add_scalar_trans_flag(ipol%i_Csim_SGS_Lorentz,               &
-     &    trns_Csim%nvector_rtp_2_rj, trns_Csim%nscalar_rtp_2_rj,       &
+     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
      &    trns_Csim%f_trns%i_Csim_SGS_Lorentz)
 !   SGS induction flag
       call add_scalar_trans_flag(ipol%i_Csim_SGS_induction,             &
-     &    trns_Csim%nvector_rtp_2_rj, trns_Csim%nscalar_rtp_2_rj,       &
+     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
      &    trns_Csim%f_trns%i_Csim_SGS_induction)
 !   SGS heat flux flag
       call add_scalar_trans_flag(ipol%i_Csim_SGS_h_flux,                &
-     &    trns_Csim%nvector_rtp_2_rj, trns_Csim%nscalar_rtp_2_rj,       &
+     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
      &    trns_Csim%f_trns%i_Csim_SGS_h_flux)
 !   SGS composition flux flag
       call add_scalar_trans_flag(ipol%i_Csim_SGS_c_flux,                &
-     &    trns_Csim%nvector_rtp_2_rj, trns_Csim%nscalar_rtp_2_rj,       &
+     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
      &    trns_Csim%f_trns%i_Csim_SGS_c_flux)
 !
 !   SGS buoyancy
       call add_scalar_trans_flag(ipol%i_Csim_SGS_buoyancy,              &
-     &    trns_Csim%nvector_rtp_2_rj, trns_Csim%nscalar_rtp_2_rj,       &
+     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
      &    trns_Csim%f_trns%i_Csim_SGS_buoyancy)
 !   SGS compostional buoyancy
       call add_scalar_trans_flag(ipol%i_Csim_SGS_comp_buo,              &
-     &    trns_Csim%nvector_rtp_2_rj, trns_Csim%nscalar_rtp_2_rj,       &
+     &    trns_Csim%forward%num_vector, trns_Csim%forward%num_scalar,       &
      &    trns_Csim%f_trns%i_Csim_SGS_comp_buo)
 !
 !

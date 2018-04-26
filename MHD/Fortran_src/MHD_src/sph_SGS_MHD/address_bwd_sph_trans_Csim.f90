@@ -45,76 +45,76 @@
       type(address_4_sph_trans), intent(inout) :: trns_Csim
 !
 !
-      trns_Csim%nvector_rj_2_rtp = 0
+      trns_Csim%backward%num_vector = 0
 !
 !   wide filtered velocity
       call add_vector_trans_flag(ipol%i_wide_fil_velo,                  &
-     &    trns_Csim%nvector_rj_2_rtp, trns_Csim%b_trns%i_wide_fil_velo)
+     &    trns_Csim%backward%num_vector, trns_Csim%b_trns%i_wide_fil_velo)
 !   wide filtered vorticity
       call add_vector_trans_flag(ipol%i_wide_fil_vort,                  &
-     &    trns_Csim%nvector_rj_2_rtp, trns_Csim%b_trns%i_wide_fil_vort)
+     &    trns_Csim%backward%num_vector, trns_Csim%b_trns%i_wide_fil_vort)
 !   wide filtered magnetic field
       call add_vector_trans_flag(ipol%i_wide_fil_magne,                 &
-     &   trns_Csim%nvector_rj_2_rtp, trns_Csim%b_trns%i_wide_fil_magne)
+     &   trns_Csim%backward%num_vector, trns_Csim%b_trns%i_wide_fil_magne)
 !   wide filtered current density
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_fil_current, trns_Csim%nvector_rj_2_rtp,          &
+     &   (ipol%i_wide_fil_current, trns_Csim%backward%num_vector,          &
      &    trns_Csim%b_trns%i_wide_fil_current)
 !
 !   dual filtered velocity
       call add_vector_trans_flag(ipol%i_dbl_fil_velo,                   &
-     &    trns_Csim%nvector_rj_2_rtp, trns_Csim%b_trns%i_dbl_fil_velo)
+     &    trns_Csim%backward%num_vector, trns_Csim%b_trns%i_dbl_fil_velo)
 !   dual filtered vorticity
       call add_vector_trans_flag(ipol%i_dbl_fil_vort,                   &
-     &    trns_Csim%nvector_rj_2_rtp, trns_Csim%b_trns%i_dbl_fil_vort)
+     &    trns_Csim%backward%num_vector, trns_Csim%b_trns%i_dbl_fil_vort)
 !   dual filtered magnetic field
       call add_vector_trans_flag(ipol%i_dbl_fil_magne,                  &
-     &    trns_Csim%nvector_rj_2_rtp, trns_Csim%b_trns%i_dbl_fil_magne)
+     &    trns_Csim%backward%num_vector, trns_Csim%b_trns%i_dbl_fil_magne)
 !   dual filtered current density
       call add_vector_trans_flag                                        &
-     &   (ipol%i_dbl_fil_current, trns_Csim%nvector_rj_2_rtp,           &
+     &   (ipol%i_dbl_fil_current, trns_Csim%backward%num_vector,           &
      &    trns_Csim%b_trns%i_dbl_fil_current)
 !
 !
 !   wide filtered Inertia
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_SGS_inertia, trns_Csim%nvector_rj_2_rtp,          &
+     &   (ipol%i_wide_SGS_inertia, trns_Csim%backward%num_vector,          &
      &    trns_Csim%b_trns%i_wide_SGS_inertia)
 !   wide filtered Lorentz force
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_SGS_Lorentz, trns_Csim%nvector_rj_2_rtp,          &
+     &   (ipol%i_wide_SGS_Lorentz, trns_Csim%backward%num_vector,          &
      &    trns_Csim%b_trns%i_wide_SGS_Lorentz)
 !   wide filtered induction
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_SGS_vp_induct, trns_Csim%nvector_rj_2_rtp,        &
+     &   (ipol%i_wide_SGS_vp_induct, trns_Csim%backward%num_vector,        &
      &    trns_Csim%b_trns%i_wide_SGS_vp_induct)
 !   wide filtered heat flux
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_SGS_h_flux, trns_Csim%nvector_rj_2_rtp,           &
+     &   (ipol%i_wide_SGS_h_flux, trns_Csim%backward%num_vector,           &
      &    trns_Csim%b_trns%i_wide_SGS_h_flux)
 !   wide filtered composition flux
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_SGS_c_flux, trns_Csim%nvector_rj_2_rtp,           &
+     &   (ipol%i_wide_SGS_c_flux, trns_Csim%backward%num_vector,           &
      &    trns_Csim%b_trns%i_wide_SGS_c_flux)
 !
 !   dual filtered Inertia
       call add_vector_trans_flag                                        &
-     &   (ipol%i_dbl_SGS_inertia, trns_Csim%nvector_rj_2_rtp,           &
+     &   (ipol%i_dbl_SGS_inertia, trns_Csim%backward%num_vector,           &
      &    trns_Csim%b_trns%i_dbl_SGS_inertia)
 !   dual filtered Lorentz force
       call add_vector_trans_flag                                        &
-     &   (ipol%i_dbl_SGS_Lorentz, trns_Csim%nvector_rj_2_rtp,           &
+     &   (ipol%i_dbl_SGS_Lorentz, trns_Csim%backward%num_vector,           &
      &    trns_Csim%b_trns%i_dbl_SGS_Lorentz)
 !   dual filtered induction
       call add_vector_trans_flag                                        &
-     &   (ipol%i_dbl_SGS_vp_induct, trns_Csim%nvector_rj_2_rtp,         &
+     &   (ipol%i_dbl_SGS_vp_induct, trns_Csim%backward%num_vector,         &
      &    trns_Csim%b_trns%i_dbl_SGS_vp_induct)
 !   dual filtered heat flux
       call add_vector_trans_flag(ipol%i_dbl_SGS_h_flux,                 &
-     &   trns_Csim%nvector_rj_2_rtp, trns_Csim%b_trns%i_dbl_SGS_h_flux)
+     &   trns_Csim%backward%num_vector, trns_Csim%b_trns%i_dbl_SGS_h_flux)
 !   dual filtered composition flux
       call add_vector_trans_flag(ipol%i_dbl_SGS_c_flux,                 &
-     &   trns_Csim%nvector_rj_2_rtp, trns_Csim%b_trns%i_dbl_SGS_c_flux)
+     &   trns_Csim%backward%num_vector, trns_Csim%b_trns%i_dbl_SGS_c_flux)
 !
       end subroutine b_trans_address_vector_Csim
 !
@@ -126,23 +126,23 @@
       type(address_4_sph_trans), intent(inout) :: trns_Csim
 !
 !
-      trns_Csim%nscalar_rj_2_rtp = 0
+      trns_Csim%backward%num_scalar = 0
 !   wide filtered temperature
       call add_scalar_trans_flag(ipol%i_wide_fil_temp,                  &
-     &    trns_Csim%nvector_rj_2_rtp, trns_Csim%nscalar_rj_2_rtp,       &
+     &    trns_Csim%backward%num_vector, trns_Csim%backward%num_scalar,       &
      &    trns_Csim%b_trns%i_wide_fil_temp)
 !   wide filtered composition
       call add_scalar_trans_flag(ipol%i_wide_fil_comp,                  &
-     &    trns_Csim%nvector_rj_2_rtp, trns_Csim%nscalar_rj_2_rtp,       &
+     &    trns_Csim%backward%num_vector, trns_Csim%backward%num_scalar,       &
      &    trns_Csim%b_trns%i_wide_fil_comp)
 !
 !   dual filtered temperature
       call add_scalar_trans_flag(ipol%i_dbl_fil_temp,                   &
-     &    trns_Csim%nvector_rj_2_rtp, trns_Csim%nscalar_rj_2_rtp,       &
+     &    trns_Csim%backward%num_vector, trns_Csim%backward%num_scalar,       &
      &    trns_Csim%b_trns%i_dbl_fil_temp)
 !   dual filtered composition
       call add_scalar_trans_flag(ipol%i_dbl_fil_comp,                   &
-     &    trns_Csim%nvector_rj_2_rtp, trns_Csim%nscalar_rj_2_rtp,       &
+     &    trns_Csim%backward%num_vector, trns_Csim%backward%num_scalar,       &
      &    trns_Csim%b_trns%i_dbl_fil_comp)
 !
       end subroutine b_trans_address_scalar_Csim

@@ -45,76 +45,76 @@
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
 !
 !
-      trns_DYNS%nvector_rj_2_rtp = 0
+      trns_DYNS%backward%num_vector = 0
 !
 !   wide filtered velocity
       call add_vector_trans_flag(ipol%i_wide_fil_velo,                  &
-     &    trns_DYNS%nvector_rj_2_rtp, trns_DYNS%b_trns%i_wide_fil_velo)
+     &    trns_DYNS%backward%num_vector, trns_DYNS%b_trns%i_wide_fil_velo)
 !   wide filtered vorticity
       call add_vector_trans_flag(ipol%i_wide_fil_vort,                  &
-     &    trns_DYNS%nvector_rj_2_rtp, trns_DYNS%b_trns%i_wide_fil_vort)
+     &    trns_DYNS%backward%num_vector, trns_DYNS%b_trns%i_wide_fil_vort)
 !   wide filtered magnetic field
       call add_vector_trans_flag(ipol%i_wide_fil_magne,                 &
-     &   trns_DYNS%nvector_rj_2_rtp, trns_DYNS%b_trns%i_wide_fil_magne)
+     &   trns_DYNS%backward%num_vector, trns_DYNS%b_trns%i_wide_fil_magne)
 !   wide filtered current density
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_fil_current, trns_DYNS%nvector_rj_2_rtp,          &
+     &   (ipol%i_wide_fil_current, trns_DYNS%backward%num_vector,          &
      &    trns_DYNS%b_trns%i_wide_fil_current)
 !
 !   dual filtered velocity
       call add_vector_trans_flag(ipol%i_dbl_fil_velo,                   &
-     &    trns_DYNS%nvector_rj_2_rtp, trns_DYNS%b_trns%i_dbl_fil_velo)
+     &    trns_DYNS%backward%num_vector, trns_DYNS%b_trns%i_dbl_fil_velo)
 !   dual filtered vorticity
       call add_vector_trans_flag(ipol%i_dbl_fil_vort,                   &
-     &    trns_DYNS%nvector_rj_2_rtp, trns_DYNS%b_trns%i_dbl_fil_vort)
+     &    trns_DYNS%backward%num_vector, trns_DYNS%b_trns%i_dbl_fil_vort)
 !   dual filtered magnetic field
       call add_vector_trans_flag(ipol%i_dbl_fil_magne,                  &
-     &    trns_DYNS%nvector_rj_2_rtp, trns_DYNS%b_trns%i_dbl_fil_magne)
+     &    trns_DYNS%backward%num_vector, trns_DYNS%b_trns%i_dbl_fil_magne)
 !   dual filtered current density
       call add_vector_trans_flag                                        &
-     &   (ipol%i_dbl_fil_current, trns_DYNS%nvector_rj_2_rtp,           &
+     &   (ipol%i_dbl_fil_current, trns_DYNS%backward%num_vector,           &
      &    trns_DYNS%b_trns%i_dbl_fil_current)
 !
 !
 !   wide filtered Inertia
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_SGS_inertia, trns_DYNS%nvector_rj_2_rtp,          &
+     &   (ipol%i_wide_SGS_inertia, trns_DYNS%backward%num_vector,          &
      &    trns_DYNS%b_trns%i_wide_SGS_inertia)
 !   wide filtered Lorentz force
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_SGS_Lorentz, trns_DYNS%nvector_rj_2_rtp,          &
+     &   (ipol%i_wide_SGS_Lorentz, trns_DYNS%backward%num_vector,          &
      &    trns_DYNS%b_trns%i_wide_SGS_Lorentz)
 !   wide filtered induction
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_SGS_vp_induct, trns_DYNS%nvector_rj_2_rtp,        &
+     &   (ipol%i_wide_SGS_vp_induct, trns_DYNS%backward%num_vector,        &
      &    trns_DYNS%b_trns%i_wide_SGS_vp_induct)
 !   wide filtered heat flux
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_SGS_h_flux, trns_DYNS%nvector_rj_2_rtp,           &
+     &   (ipol%i_wide_SGS_h_flux, trns_DYNS%backward%num_vector,           &
      &    trns_DYNS%b_trns%i_wide_SGS_h_flux)
 !   wide filtered composition flux
       call add_vector_trans_flag                                        &
-     &   (ipol%i_wide_SGS_c_flux, trns_DYNS%nvector_rj_2_rtp,           &
+     &   (ipol%i_wide_SGS_c_flux, trns_DYNS%backward%num_vector,           &
      &    trns_DYNS%b_trns%i_wide_SGS_c_flux)
 !
 !   dual filtered Inertia
       call add_vector_trans_flag                                        &
-     &   (ipol%i_dbl_SGS_inertia, trns_DYNS%nvector_rj_2_rtp,           &
+     &   (ipol%i_dbl_SGS_inertia, trns_DYNS%backward%num_vector,           &
      &    trns_DYNS%b_trns%i_dbl_SGS_inertia)
 !   dual filtered Lorentz force
       call add_vector_trans_flag                                        &
-     &   (ipol%i_dbl_SGS_Lorentz, trns_DYNS%nvector_rj_2_rtp,           &
+     &   (ipol%i_dbl_SGS_Lorentz, trns_DYNS%backward%num_vector,           &
      &    trns_DYNS%b_trns%i_dbl_SGS_Lorentz)
 !   dual filtered induction
       call add_vector_trans_flag                                        &
-     &   (ipol%i_dbl_SGS_vp_induct, trns_DYNS%nvector_rj_2_rtp,         &
+     &   (ipol%i_dbl_SGS_vp_induct, trns_DYNS%backward%num_vector,         &
      &    trns_DYNS%b_trns%i_dbl_SGS_vp_induct)
 !   dual filtered heat flux
       call add_vector_trans_flag(ipol%i_dbl_SGS_h_flux,                 &
-     &   trns_DYNS%nvector_rj_2_rtp, trns_DYNS%b_trns%i_dbl_SGS_h_flux)
+     &   trns_DYNS%backward%num_vector, trns_DYNS%b_trns%i_dbl_SGS_h_flux)
 !   dual filtered composition flux
       call add_vector_trans_flag(ipol%i_dbl_SGS_c_flux,                 &
-     &   trns_DYNS%nvector_rj_2_rtp, trns_DYNS%b_trns%i_dbl_SGS_c_flux)
+     &   trns_DYNS%backward%num_vector, trns_DYNS%b_trns%i_dbl_SGS_c_flux)
 !
       end subroutine b_trans_address_vector_DYNS
 !
@@ -126,14 +126,14 @@
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
 !
 !
-      trns_DYNS%nscalar_rj_2_rtp = 0
+      trns_DYNS%backward%num_scalar = 0
 !   wide filtered temperature
       call add_scalar_trans_flag(ipol%i_wide_fil_temp,                  &
-     &    trns_DYNS%nvector_rj_2_rtp, trns_DYNS%nscalar_rj_2_rtp,       &
+     &    trns_DYNS%backward%num_vector, trns_DYNS%backward%num_scalar,       &
      &    trns_DYNS%b_trns%i_wide_fil_temp)
 !   wide filtered composition
       call add_scalar_trans_flag(ipol%i_wide_fil_comp,                  &
-     &    trns_DYNS%nvector_rj_2_rtp, trns_DYNS%nscalar_rj_2_rtp,       &
+     &    trns_DYNS%backward%num_vector, trns_DYNS%backward%num_scalar,       &
      &    trns_DYNS%b_trns%i_wide_fil_comp)
 !
       end subroutine b_trans_address_scalar_DYNS

@@ -45,36 +45,36 @@
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
 !
-      trns_SGS%nvector_rj_2_rtp = 0
+      trns_SGS%backward%num_vector = 0
 !
 !   filtered velocity
       call add_vector_trans_flag(ipol%i_filter_velo,                    &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns%i_filter_velo)
+     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_filter_velo)
 !   filtered vorticity
       call add_vector_trans_flag(ipol%i_filter_vort,                    &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns%i_filter_vort)
+     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_filter_vort)
 !   filtered magnetic field
       call add_vector_trans_flag(ipol%i_filter_magne,                   &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns%i_filter_magne)
+     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_filter_magne)
 !   filtered current density
       call add_vector_trans_flag(ipol%i_filter_current,                 &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns%i_filter_current)
+     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_filter_current)
 !
 !   filtered Inertia
       call add_vector_trans_flag(ipol%i_SGS_inertia,                    &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns%i_SGS_inertia)
+     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_SGS_inertia)
 !   filtered Lorentz force
       call add_vector_trans_flag(ipol%i_SGS_Lorentz,                    &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns%i_SGS_Lorentz)
+     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_SGS_Lorentz)
 !   filtered induction
       call add_vector_trans_flag(ipol%i_SGS_vp_induct,                  &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns%i_SGS_vp_induct)
+     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_SGS_vp_induct)
 !   filtered heat flux
       call add_vector_trans_flag(ipol%i_SGS_h_flux,                     &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns%i_SGS_h_flux)
+     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_SGS_h_flux)
 !   filtered composition flux
       call add_vector_trans_flag(ipol%i_SGS_c_flux,                     &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%b_trns%i_SGS_c_flux)
+     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_SGS_c_flux)
 !
       end subroutine b_trans_address_vector_SGS
 !
@@ -86,14 +86,14 @@
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
 !
-      trns_SGS%nscalar_rj_2_rtp = 0
+      trns_SGS%backward%num_scalar = 0
 !   filtered temperature
       call add_scalar_trans_flag(ipol%i_filter_temp,                    &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%nscalar_rj_2_rtp,         &
+     &    trns_SGS%backward%num_vector, trns_SGS%backward%num_scalar,         &
      &    trns_SGS%b_trns%i_filter_temp)
 !   filtered composition
       call add_scalar_trans_flag(ipol%i_filter_comp,                    &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%nscalar_rj_2_rtp,         &
+     &    trns_SGS%backward%num_vector, trns_SGS%backward%num_scalar,         &
      &    trns_SGS%b_trns%i_filter_comp)
 !
       end subroutine b_trans_address_scalar_SGS

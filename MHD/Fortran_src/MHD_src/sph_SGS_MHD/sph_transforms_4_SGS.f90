@@ -82,8 +82,8 @@
      &   (trns_SGS, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
       call sph_b_transform_SGS                                          &
-     &   (trns_SGS%backward%ncomp, trns_SGS%nvector_rj_2_rtp,           &
-     &    trns_SGS%ntensor_rj_2_rtp, sph, comms_sph, trans_p,           &
+     &   (trns_SGS%backward%ncomp, trns_SGS%backward%num_vector,        &
+     &    trns_SGS%backward%num_tensor, sph, comms_sph, trans_p,        &
      &    n_WS, n_WR, WS(1), WR(1), trns_SGS, WK_sph, SGS_mul_FFTW)
 !
       end subroutine sph_back_trans_SGS_MHD
@@ -117,7 +117,7 @@
 !
 !   transform for vectors and scalars
       call sph_f_transform_SGS(trns_SGS%forward%ncomp,                  &
-     &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,         &
+     &    trns_SGS%forward%num_vector, trns_SGS%forward%num_scalar,     &
      &    sph, comms_sph, trans_p, trns_SGS,                            &
      &    n_WS, n_WR, WS(1), WR(1), WK_sph, SGS_mul_FFTW)
 !
@@ -147,8 +147,8 @@
 !
       if(trns_SGS%backward%ncomp .le. 0) return
 !
-      nscalar_trans = trns_SGS%nscalar_rj_2_rtp                         &
-     &               + 6*trns_SGS%ntensor_rj_2_rtp
+      nscalar_trans = trns_SGS%backward%num_scalar                      &
+     &               + 6*trns_SGS%backward%num_tensor
       call check_calypso_sph_comm_buf_N(trns_SGS%backward%ncomp,        &
      &   comms_sph%comm_rj, comms_sph%comm_rlm)
       call check_calypso_sph_comm_buf_N(trns_SGS%backward%ncomp,        &
@@ -158,7 +158,7 @@
      &   (trns_SGS, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
       call pole_b_transform(trns_SGS%backward%ncomp,                    &
-     &    trns_SGS%nvector_rj_2_rtp, trns_SGS%nscalar_rj_2_rtp,         &
+     &    trns_SGS%backward%num_vector, trns_SGS%backward%num_scalar,   &
      &    sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
      &    trns_SGS%flc_pole, trns_SGS%fld_pole)
 !

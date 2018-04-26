@@ -140,8 +140,8 @@
 !
       if(trns_MHD%backward%ncomp .le. 0) return
 !
-      nscalar_trans = trns_MHD%nscalar_rj_2_rtp                         &
-     &               + 6*trns_MHD%ntensor_rj_2_rtp
+      nscalar_trans = trns_MHD%backward%num_scalar                      &
+     &               + 6*trns_MHD%backward%num_tensor
       call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
      &   comms_sph%comm_rj, comms_sph%comm_rlm)
       call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
@@ -153,7 +153,7 @@
      &    n_WS, WS, trns_MHD%flc_pole)
 !
       call sph_b_trans_w_poles                                          &
-     &   (trns_MHD%backward%ncomp, trns_MHD%nvector_rj_2_rtp,           &
+     &   (trns_MHD%backward%ncomp, trns_MHD%backward%num_vector,        &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
      &    n_WS, n_WR, WS(1), WR(1), trns_MHD%fld_rtp,                   &
      &    trns_MHD%flc_pole, trns_MHD%fld_pole, WK_sph)
@@ -219,9 +219,9 @@
 !
       call check_add_trans_sph_MHD                                      &
      &   (ipol, idpdr, itor, iphys, trns_MHD%b_trns, trns_MHD%f_trns,   &
-     &    trns_MHD%backward%ncomp, trns_MHD%nvector_rj_2_rtp,           &
-     &    trns_MHD%nscalar_rj_2_rtp, trns_MHD%forward%ncomp,            &
-     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj)
+     &    trns_MHD%backward%ncomp, trns_MHD%backward%num_vector,        &
+     &    trns_MHD%backward%num_scalar, trns_MHD%forward%ncomp,         &
+     &    trns_MHD%forward%num_vector, trns_MHD%forward%num_scalar)
 !
       end subroutine check_address_trans_sph_MHD
 !

@@ -60,11 +60,11 @@
 !
       call b_trans_address_vector_SGS(SPH_MHD%ipol, trns_SGS)
       call b_trans_address_scalar_SGS(SPH_MHD%ipol, trns_SGS)
-      trns_SGS%ntensor_rj_2_rtp = 0
+      trns_SGS%backward%num_tensor = 0
 !
       call f_trans_address_vector_SGS(SPH_MHD%ipol, trns_SGS)
       call f_trans_address_scalar_SGS(trns_SGS)
-      trns_SGS%ntensor_rtp_2_rj = 0
+      trns_SGS%forward%num_tensor = 0
 !
       call count_num_fields_4_sph_trans(trns_SGS, ncomp_sph_trans,      &
      &   nvector_sph_trans, nscalar_sph_trans)
@@ -72,8 +72,8 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for similarity SGS'
         write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_SGS%nvector_rj_2_rtp
-        write(*,*) 'nscalar_rj_2_rtp ', trns_SGS%nscalar_rj_2_rtp
+        write(*,*) 'nvector_rj_2_rtp ', trns_SGS%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_SGS%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -85,8 +85,8 @@
      &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_SGS)
 !
      if(iflag_debug .gt. 0) then
-        write(*,*) 'nvector_rtp_2_rj ', trns_SGS%nvector_rtp_2_rj
-        write(*,*) 'nscalar_rtp_2_rj ', trns_SGS%nscalar_rtp_2_rj
+        write(*,*) 'nvector_rtp_2_rj ', trns_SGS%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_SGS%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -120,11 +120,11 @@
 !
       call b_trans_address_vector_DYNS(SPH_MHD%ipol, trns_DYNS)
       call b_trans_address_scalar_DYNS(SPH_MHD%ipol, trns_DYNS)
-      trns_DYNS%ntensor_rj_2_rtp = 0
+      trns_DYNS%backward%num_tensor = 0
 !
       call f_trans_address_vector_DYNS(trns_DYNS)
       call f_trans_address_scalar_DYNS(SPH_MHD%ipol, trns_DYNS)
-      trns_DYNS%ntensor_rtp_2_rj = 0
+      trns_DYNS%forward%num_tensor = 0
 !
       call count_num_fields_4_sph_trans(trns_DYNS, ncomp_sph_trans,     &
      &   nvector_sph_trans, nscalar_sph_trans)
@@ -132,8 +132,8 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for dynamnic SGS'
         write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_DYNS%nvector_rj_2_rtp
-        write(*,*) 'nscalar_rj_2_rtp ', trns_DYNS%nscalar_rj_2_rtp
+        write(*,*) 'nvector_rj_2_rtp ', trns_DYNS%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_DYNS%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -145,8 +145,8 @@
      &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_DYNS)
 !
      if(iflag_debug .gt. 0) then
-        write(*,*) 'nvector_rtp_2_rj ', trns_DYNS%nvector_rtp_2_rj
-        write(*,*) 'nscalar_rtp_2_rj ', trns_DYNS%nscalar_rtp_2_rj
+        write(*,*) 'nvector_rtp_2_rj ', trns_DYNS%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_DYNS%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                   &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -180,11 +180,11 @@
 !
       call b_trans_address_vector_Csim(SPH_MHD%ipol, trns_Csim)
       call b_trans_address_scalar_Csim(SPH_MHD%ipol, trns_Csim)
-      trns_Csim%ntensor_rj_2_rtp = 0
+      trns_Csim%backward%num_tensor = 0
 !
       call f_trans_address_vector_Csim(trns_Csim)
       call f_trans_address_scalar_Csim(SPH_MHD%ipol, trns_Csim)
-      trns_Csim%ntensor_rtp_2_rj = 0
+      trns_Csim%forward%num_tensor = 0
 !
       call count_num_fields_4_sph_trans(trns_Csim, ncomp_sph_trans,     &
      &    nvector_sph_trans, nscalar_sph_trans)
@@ -192,8 +192,8 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for model coefs'
         write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_Csim%nvector_rj_2_rtp
-        write(*,*) 'nscalar_rj_2_rtp ', trns_Csim%nscalar_rj_2_rtp
+        write(*,*) 'nvector_rj_2_rtp ', trns_Csim%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_Csim%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -205,8 +205,8 @@
      &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_Csim)
 !
      if(iflag_debug .gt. 0) then
-        write(*,*) 'nvector_rtp_2_rj ', trns_Csim%nvector_rtp_2_rj
-        write(*,*) 'nscalar_rtp_2_rj ', trns_Csim%nscalar_rtp_2_rj
+        write(*,*) 'nvector_rtp_2_rj ', trns_Csim%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_Csim%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if

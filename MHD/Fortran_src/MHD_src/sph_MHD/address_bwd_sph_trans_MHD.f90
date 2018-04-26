@@ -53,30 +53,30 @@
       type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(inout) :: trns_MHD
 !
-      trns_MHD%nvector_rj_2_rtp = 0
+      trns_MHD%backward%num_vector = 0
 !   velocity flag
       if(       fl_prop%iflag_scheme .gt. id_no_evolution               &
      &     .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. ht_prop%iflag_scheme .gt. id_no_evolution               &
      &     .or. cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_vector_trans_flag(ipol%i_velo,                         &
-     &    trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns%i_velo)
+     &    trns_MHD%backward%num_vector, trns_MHD%b_trns%i_velo)
       end if
 !   vorticity flag
       if(       fl_prop%iflag_scheme .gt. id_no_evolution) then
         call add_vector_trans_flag(ipol%i_vort,                         &
-     &      trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns%i_vort)
+     &      trns_MHD%backward%num_vector, trns_MHD%b_trns%i_vort)
       end if
 !   magnetic field flag
       if(       cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. fl_prop%iflag_4_lorentz .gt.     id_turn_OFF) then
         call add_vector_trans_flag(ipol%i_magne,                        &
-     &      trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns%i_magne)
+     &      trns_MHD%backward%num_vector, trns_MHD%b_trns%i_magne)
       end if
 !   current density flag
       if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         call add_vector_trans_flag(ipol%i_current,                      &
-     &     trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns%i_current)
+     &     trns_MHD%backward%num_vector, trns_MHD%b_trns%i_current)
       end if
 !
       end subroutine b_trans_address_vector_MHD
@@ -91,17 +91,17 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD
 !
 !
-      trns_MHD%nscalar_rj_2_rtp = 0
+      trns_MHD%backward%num_scalar = 0
 !   temperature flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
         call add_scalar_trans_flag(ipol%i_temp,                         &
-     &      trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,       &
+     &      trns_MHD%backward%num_vector, trns_MHD%backward%num_scalar,    &
      &      trns_MHD%b_trns%i_temp)
       end if
 !   composition flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_scalar_trans_flag(ipol%i_light,                        &
-     &      trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,       &
+     &      trns_MHD%backward%num_vector, trns_MHD%backward%num_scalar,    &
      &      trns_MHD%b_trns%i_light)
       end if
 !

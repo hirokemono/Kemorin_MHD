@@ -57,11 +57,11 @@
 !
       call b_trans_address_vector_snap(SPH_MHD%ipol, iphys, trns_snap)
       call b_trans_address_scalar_snap(SPH_MHD%ipol, iphys, trns_snap)
-      trns_snap%ntensor_rj_2_rtp = 0
+      trns_snap%backward%num_tensor = 0
 !
       call f_trans_address_vector_snap(SPH_MHD%ipol, iphys, trns_snap)
       call f_trans_address_scalar_snap(SPH_MHD%ipol, iphys, trns_snap)
-       trns_snap%ntensor_rtp_2_rj = 0
+       trns_snap%forward%num_tensor = 0
 !
       call count_num_fields_4_sph_trans(trns_snap, ncomp_sph_trans,     &
      &   nvector_sph_trans, nscalar_sph_trans)
@@ -70,8 +70,8 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for snapshot'
         write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_snap%nvector_rj_2_rtp
-        write(*,*) 'nscalar_rj_2_rtp ', trns_snap%nscalar_rj_2_rtp
+        write(*,*) 'nvector_rj_2_rtp ', trns_snap%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_snap%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -83,8 +83,8 @@
      &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_snap)
 !
      if(iflag_debug .gt. 0) then
-        write(*,*) 'nvector_rtp_2_rj ', trns_snap%nvector_rtp_2_rj
-        write(*,*) 'nscalar_rtp_2_rj ', trns_snap%nscalar_rtp_2_rj
+        write(*,*) 'nvector_rtp_2_rj ', trns_snap%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_snap%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -118,11 +118,11 @@
 !
       call b_trans_address_vector_stmp(trns_tmp)
       call b_trans_address_scalar_stmp(trns_tmp)
-      trns_tmp%ntensor_rj_2_rtp = 0
+      trns_tmp%backward%num_tensor = 0
 !
       call f_trans_address_vector_stmp(trns_tmp)
       call f_trans_address_scalar_stmp(SPH_MHD%ipol, iphys, trns_tmp)
-      trns_tmp%ntensor_rtp_2_rj = 0
+      trns_tmp%forward%num_tensor = 0
 !
       call count_num_fields_4_sph_trans(trns_tmp, ncomp_sph_trans,      &
      &   nvector_sph_trans, nscalar_sph_trans)
@@ -132,8 +132,8 @@
         write(*,*) 'Spherical transform field table ',                  &
      &             'for intermediate of snapshot'
         write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_tmp%nvector_rj_2_rtp
-        write(*,*) 'nscalar_rj_2_rtp ', trns_tmp%nscalar_rj_2_rtp
+        write(*,*) 'nvector_rj_2_rtp ', trns_tmp%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_tmp%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -145,8 +145,8 @@
      &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_tmp)
 !
      if(iflag_debug .gt. 0) then
-        write(*,*) 'nvector_rtp_2_rj ', trns_tmp%nvector_rtp_2_rj
-        write(*,*) 'nscalar_rtp_2_rj ', trns_tmp%nscalar_rtp_2_rj
+        write(*,*) 'nvector_rtp_2_rj ', trns_tmp%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_tmp%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -176,15 +176,15 @@
       integer(kind = kint) :: i, inum
 !
 !
-      do i = 1, trns_snap%nvector_rj_2_rtp
+      do i = 1, trns_snap%backward%num_vector
         call copy_vector_from_snap_trans                                &
      &     (trns_snap%ifld_trns(i), trns_snap%ifld_rtp(i),              &
      &      sph_params%m_folding, sph_rtp, trns_snap,                   &
      &      mesh%node, nod_fld)
       end do
 !
-      do inum = 1, trns_snap%nscalar_rj_2_rtp
-        i = inum + trns_snap%nvector_rj_2_rtp
+      do inum = 1, trns_snap%backward%num_scalar
+        i = inum + trns_snap%backward%num_vector
         call copy_scalar_from_snap_trans                                &
      &     (trns_snap%ifld_trns(i), trns_snap%ifld_rtp(i),              &
      &      sph_params%m_folding, sph_rtp, trns_snap,                   &
@@ -209,15 +209,15 @@
       integer(kind = kint) :: i, inum
 !
 !
-      do i = 1, trns_snap%nvector_rtp_2_rj
+      do i = 1, trns_snap%forward%num_vector
         call copy_vector_from_snap_force                                &
      &     (trns_snap%ifrc_trns(i), trns_snap%ifrc_rtp(i),              &
      &      sph_params%m_folding, sph_rtp, trns_snap,                   &
      &      mesh%node, nod_fld)
       end do
 !
-      do inum = 1, trns_snap%nscalar_rtp_2_rj
-        i = inum + trns_snap%nvector_rtp_2_rj
+      do inum = 1, trns_snap%forward%num_scalar
+        i = inum + trns_snap%forward%num_vector
         call copy_scalar_from_snap_force                                &
      &     (trns_snap%ifrc_trns(i), trns_snap%ifrc_rtp(i),              &
      &      sph_params%m_folding, sph_rtp, trns_snap,                   &

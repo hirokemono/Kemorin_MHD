@@ -74,8 +74,8 @@
 !
       if(trns_snap%backward%ncomp .le. 0) return
 !
-      nscalar_trans = trns_snap%nscalar_rj_2_rtp                        &
-     &               + 6*trns_snap%ntensor_rj_2_rtp
+      nscalar_trans = trns_snap%backward%num_scalar                     &
+     &               + 6*trns_snap%backward%num_tensor
       call check_calypso_sph_comm_buf_N(trns_snap%backward%ncomp,       &
      &   comms_sph%comm_rj, comms_sph%comm_rlm)
       call check_calypso_sph_comm_buf_N(trns_snap%backward%ncomp,       &
@@ -86,7 +86,7 @@
      &    rj_fld, n_WS, WS(1), trns_snap)
 !
       call sph_b_trans_w_poles                                          &
-     &   (trns_snap%backward%ncomp, trns_snap%nvector_rj_2_rtp,         &
+     &   (trns_snap%backward%ncomp, trns_snap%backward%num_vector,      &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
      &    n_WS, n_WR, WS(1), WR(1), trns_snap%fld_rtp,                  &
      &    trns_snap%flc_pole, trns_snap%fld_pole, WK_sph)
@@ -120,7 +120,7 @@
 !
 !   transform for vectors and scalars
       call sph_forward_transforms(trns_snap%forward%ncomp,              &
-     &    trns_snap%nvector_rtp_2_rj, trns_snap%nscalar_rtp_2_rj,       &
+     &    trns_snap%forward%num_vector, trns_snap%forward%num_scalar,   &
      &    sph, comms_sph, trans_p, trns_snap%frc_rtp,                   &
      &    n_WS, n_WR, WS(1), WR(1), WK_sph)
 !
@@ -159,7 +159,7 @@
 !
 !   transform for vectors and scalars
       call sph_forward_transforms(trns_tmp%forward%ncomp,               &
-     &    trns_tmp%nvector_rtp_2_rj, trns_tmp%nscalar_rtp_2_rj,         &
+     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,     &
      &    sph, comms_sph, trans_p, trns_tmp%frc_rtp,                    &
      &    n_WS, n_WR, WS, WR, WK_sph)
 !

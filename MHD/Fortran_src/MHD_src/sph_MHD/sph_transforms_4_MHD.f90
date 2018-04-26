@@ -123,7 +123,7 @@
 !
       if(trns_MHD%backward%ncomp .eq. 0) return
       call sph_b_trans_w_coriolis(trns_MHD%backward%ncomp,              &
-     &    trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,         &
+     &    trns_MHD%backward%num_vector, trns_MHD%backward%num_scalar,   &
      &    sph, comms_sph, fl_prop, sph_bc_U, omega_sph,                 &
      &    trans_p, gt_cor, n_WS, n_WR, WS(1), WR(1),                    &
      &    trns_MHD, WK_sph, MHD_mul_FFTW, cor_rlm)
@@ -160,7 +160,7 @@
 !
       if(trns_MHD%forward%ncomp .eq. 0) return
       call sph_f_trans_w_coriolis(trns_MHD%forward%ncomp,               &
-     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj,         &
+     &    trns_MHD%forward%num_vector, trns_MHD%forward%num_scalar,     &
      &    sph, comms_sph, fl_prop, trans_p, cor_rlm, trns_MHD,          &
      &    n_WS, n_WR, WS(1), WR(1), WK_sph, MHD_mul_FFTW)
 !
@@ -199,7 +199,7 @@
 !
       if(trns_MHD%backward%ncomp .eq. 0) return
       call pole_b_transform(trns_MHD%backward%ncomp,                    &
-     &    trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,         &
+     &    trns_MHD%backward%num_vector, trns_MHD%backward%num_scalar,   &
      &    sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
      &    trns_MHD%flc_pole, trns_MHD%fld_pole)
 !

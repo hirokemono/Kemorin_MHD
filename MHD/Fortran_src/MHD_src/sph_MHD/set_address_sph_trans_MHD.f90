@@ -78,13 +78,13 @@
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, SPH_MHD%ipol, trns_MHD)
       call b_trans_address_scalar_MHD                                   &
      &   (MHD_prop%ht_prop, MHD_prop%cp_prop, SPH_MHD%ipol, trns_MHD)
-      trns_MHD%ntensor_rj_2_rtp = 0
+      trns_MHD%backward%num_tensor = 0
 !
       call f_trans_address_vector_MHD                                   &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, SPH_MHD%ipol, trns_MHD)
       call f_trans_address_scalar_MHD(MHD_prop%fl_prop, trns_MHD)
-      trns_MHD%ntensor_rtp_2_rj = 0
+      trns_MHD%forward%num_tensor = 0
 !
       ncomp_sph_trans =   0
       nvector_sph_trans = 0
@@ -95,8 +95,8 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for MHD'
         write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_MHD%nvector_rj_2_rtp
-        write(*,*) 'nscalar_rj_2_rtp ', trns_MHD%nscalar_rj_2_rtp
+        write(*,*) 'nvector_rj_2_rtp ', trns_MHD%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_MHD%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -108,8 +108,8 @@
      &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_MHD)
 !
      if(iflag_debug .gt. 0) then
-        write(*,*) 'nvector_rtp_2_rj ', trns_MHD%nvector_rtp_2_rj
-        write(*,*) 'nscalar_rtp_2_rj ', trns_MHD%nscalar_rtp_2_rj
+        write(*,*) 'nvector_rtp_2_rj ', trns_MHD%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_MHD%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
@@ -139,13 +139,13 @@
       integer(kind = kint) :: i, inum
 !
 !
-      do i = 1, trns_MHD%nvector_rj_2_rtp
+      do i = 1, trns_MHD%backward%num_vector
         call sel_sph_rj_vector_to_send(trns_MHD%backward%ncomp,         &
      &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i),                 &
      &      comm_rj, rj_fld, n_WS, WS)
       end do
-      do inum = 1, trns_MHD%nscalar_rj_2_rtp
-        i = inum + trns_MHD%nvector_rj_2_rtp
+      do inum = 1, trns_MHD%backward%num_scalar
+        i = inum + trns_MHD%backward%num_vector
         call sel_sph_rj_scalar_to_send(trns_MHD%backward%ncomp,         &
      &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i),                 &
      &      comm_rj, rj_fld, n_WS, WS)
@@ -171,13 +171,13 @@
       integer(kind = kint) :: i, inum
 !
 !
-      do i = 1, trns_MHD%nvector_rj_2_rtp
+      do i = 1, trns_MHD%backward%num_vector
         call sel_sph_rj_vector_to_send(trns_MHD%backward%ncomp,         &
      &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i),                 &
      &      comm_rj, rj_fld, n_WS, WS)
       end do
-      do inum = 1, trns_MHD%nscalar_rj_2_rtp
-        i = inum + trns_MHD%nvector_rj_2_rtp
+      do inum = 1, trns_MHD%backward%num_scalar
+        i = inum + trns_MHD%backward%num_vector
         call sel_sph_rj_scalar_2_send_wpole(trns_MHD%backward%ncomp,    &
      &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i), nnod_pole,      &
      &      sph_rj, comm_rj, rj_fld, n_WS, WS, trns_MHD%flc_pole)
@@ -201,13 +201,13 @@
       integer(kind = kint) :: i, inum
 !
 !
-      do i = 1, trns_MHD%nvector_rtp_2_rj
+      do i = 1, trns_MHD%forward%num_vector
         call sel_sph_rj_vector_from_recv(trns_MHD%forward%ncomp,        &
      &      trns_MHD%ifrc_rj(i), trns_MHD%ifrc_trns(i),                 &
      &      comm_rj, n_WR, WR, rj_fld)
       end do
-      do inum = 1, trns_MHD%nscalar_rtp_2_rj
-        i = inum + trns_MHD%nvector_rtp_2_rj
+      do inum = 1, trns_MHD%forward%num_scalar
+        i = inum + trns_MHD%forward%num_vector
         call sel_sph_rj_scalar_from_recv(trns_MHD%forward%ncomp,        &
      &      trns_MHD%ifrc_rj(i), trns_MHD%ifrc_trns(i),                 &
      &      comm_rj, n_WR, WR, rj_fld)

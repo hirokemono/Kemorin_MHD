@@ -49,152 +49,152 @@
       type(phys_address), intent(in) :: ipol, iphys
       type(address_4_sph_trans), intent(inout) :: trns_snap
 !
-      trns_snap%nvector_rj_2_rtp = 0
+      trns_snap%backward%num_vector = 0
 !      if(b_trns%i_velo .eq. 0) then
         call add_vec_trans_flag_snap(ipol%i_velo, iphys%i_velo,         &
-     &      trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_velo)
+     &      trns_snap%backward%num_vector, trns_snap%b_trns%i_velo)
 !      end if
 !      if(b_trns%i_vort .eq. 0) then
         call add_vec_trans_flag_snap(ipol%i_vort, iphys%i_vort,         &
-     &      trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_vort)
+     &      trns_snap%backward%num_vector, trns_snap%b_trns%i_vort)
 !      end if
 !      if(b_trns%i_magne .eq. 0) then
         call add_vec_trans_flag_snap(ipol%i_magne, iphys%i_magne,       &
-     &      trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_magne)
+     &      trns_snap%backward%num_vector, trns_snap%b_trns%i_magne)
 !      end if
 !      if(b_trns%i_current .eq. 0) then
         call add_vec_trans_flag_snap(ipol%i_current, iphys%i_current,   &
-     &      trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_current)
+     &      trns_snap%backward%num_vector, trns_snap%b_trns%i_current)
 !      end if
 !
       call add_vec_trans_flag_snap(ipol%i_v_diffuse, iphys%i_v_diffuse, &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_v_diffuse)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_v_diffuse)
       call add_vec_trans_flag_snap(ipol%i_w_diffuse, iphys%i_w_diffuse, &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_w_diffuse)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_w_diffuse)
       call add_vec_trans_flag_snap                                      &
      &   (ipol%i_vp_diffuse, iphys%i_vp_diffuse,                        &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_vp_diffuse)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_vp_diffuse)
       call add_vec_trans_flag_snap(ipol%i_b_diffuse, iphys%i_b_diffuse, &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_b_diffuse)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_b_diffuse)
 !
       call add_vec_trans_flag_snap                                      &
      &   (ipol%i_rot_inertia, iphys%i_rot_inertia,                      &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_rot_inertia)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_rot_inertia)
       call add_vec_trans_flag_snap(ipol%i_rot_Coriolis,                 &
-     &    iphys%i_rot_Coriolis, trns_snap%nvector_rj_2_rtp,             &
+     &    iphys%i_rot_Coriolis, trns_snap%backward%num_vector,             &
      &    trns_snap%b_trns%i_rot_Coriolis)
       call add_vec_trans_flag_snap                                      &
      &   (ipol%i_rot_Lorentz, iphys%i_rot_Lorentz,                      &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_rot_Lorentz)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_rot_Lorentz)
       call add_vec_trans_flag_snap(ipol%i_rot_buoyancy,                 &
-     &    iphys%i_rot_buoyancy, trns_snap%nvector_rj_2_rtp,             &
+     &    iphys%i_rot_buoyancy, trns_snap%backward%num_vector,             &
      &    trns_snap%b_trns%i_rot_buoyancy)
       call add_vec_trans_flag_snap(ipol%i_rot_comp_buo,                 &
-     &    iphys%i_rot_comp_buo, trns_snap%nvector_rj_2_rtp,             &
+     &    iphys%i_rot_comp_buo, trns_snap%backward%num_vector,             &
      &    trns_snap%b_trns%i_rot_comp_buo)
 !
 !      call add_vec_trans_flag_snap(ipol%i_SGS_inertia,                 &
-!     &    iphys%i_SGS_inertia, trns_snap%nvector_rj_2_rtp,             &
+!     &    iphys%i_SGS_inertia, trns_snap%backward%num_vector,             &
 !     &    trns_snap%b_trns%i_SGS_inertia)
 !      call add_vec_trans_flag_snap(ipol%i_SGS_Lorentz,                 &
-!     &    iphys%i_SGS_Lorentz, trns_snap%nvector_rj_2_rtp,             &
+!     &    iphys%i_SGS_Lorentz, trns_snap%backward%num_vector,             &
 !     &    trns_snap%b_trns%i_SGS_Lorentz)
 !      call add_vec_trans_flag_snap(ipol%i_SGS_vp_induct,               &
-!     &    iphys%i_SGS_vp_induct, trns_snap%nvector_rj_2_rtp,           &
+!     &    iphys%i_SGS_vp_induct, trns_snap%backward%num_vector,           &
 !     &    trns_snap%b_trns%i_SGS_vp_induct)
 !      call add_vec_trans_flag_snap(ipol%i_SGS_h_flux,                  &
-!     &    iphys%i_SGS_h_flux, trns_snap%nvector_rj_2_rtp,              &
+!     &    iphys%i_SGS_h_flux, trns_snap%backward%num_vector,              &
 !     &    trns_snap%b_trns%i_SGS_h_flux)
 !      call add_vec_trans_flag_snap(ipol%i_SGS_c_flux,                  &
-!     &    iphys%i_SGS_c_flux, trns_snap%nvector_rj_2_rtp,              &
+!     &    iphys%i_SGS_c_flux, trns_snap%backward%num_vector,              &
 !     &    trns_snap%b_trns%i_SGS_c_flux)
 !
       call add_vec_trans_flag_snap(ipol%i_buoyancy,                     &
-     &    iphys%i_buoyancy, trns_snap%nvector_rj_2_rtp,                 &
+     &    iphys%i_buoyancy, trns_snap%backward%num_vector,                 &
      &    trns_snap%b_trns%i_buoyancy)
       call add_vec_trans_flag_snap(ipol%i_comp_buo,                     &
-     &    iphys%i_comp_buo, trns_snap%nvector_rj_2_rtp,                 &
+     &    iphys%i_comp_buo, trns_snap%backward%num_vector,                 &
      &    trns_snap%b_trns%i_comp_buo)
 !
       call add_vec_trans_flag_snap(ipol%i_geostrophic,                  &
-     &    iphys%i_geostrophic, trns_snap%nvector_rj_2_rtp,              &
+     &    iphys%i_geostrophic, trns_snap%backward%num_vector,              &
      &    trns_snap%b_trns%i_geostrophic)
 !
       call add_vec_trans_flag_snap(ipol%i_h_flux_w_sgs,                 &
-     &    iphys%i_h_flux_w_sgs, trns_snap%nvector_rj_2_rtp,             &
+     &    iphys%i_h_flux_w_sgs, trns_snap%backward%num_vector,             &
      &    trns_snap%b_trns%i_h_flux_w_sgs)
       call add_vec_trans_flag_snap(ipol%i_c_flux_w_sgs,                 &
-     &    iphys%i_c_flux_w_sgs, trns_snap%nvector_rj_2_rtp,             &
+     &    iphys%i_c_flux_w_sgs, trns_snap%backward%num_vector,             &
      &    trns_snap%b_trns%i_c_flux_w_sgs)
       call add_vec_trans_flag_snap(ipol%i_inertia_w_sgs,                &
-     &    iphys%i_inertia_w_sgs, trns_snap%nvector_rj_2_rtp,            &
+     &    iphys%i_inertia_w_sgs, trns_snap%backward%num_vector,            &
      &    trns_snap%b_trns%i_inertia_w_sgs)
       call add_vec_trans_flag_snap(ipol%i_Lorentz_w_sgs,                &
-     &    iphys%i_Lorentz_w_sgs, trns_snap%nvector_rj_2_rtp,            &
+     &    iphys%i_Lorentz_w_sgs, trns_snap%backward%num_vector,            &
      &    trns_snap%b_trns%i_Lorentz_w_sgs)
       call add_vec_trans_flag_snap(ipol%i_vp_induct_w_sgs,              &
-     &    iphys%i_vp_induct_w_sgs, trns_snap%nvector_rj_2_rtp,          &
+     &    iphys%i_vp_induct_w_sgs, trns_snap%backward%num_vector,          &
      &    trns_snap%b_trns%i_vp_induct_w_sgs)
       call add_vec_trans_flag_snap(ipol%i_mag_induct_w_sgs,             &
-     &    iphys%i_mag_induct_w_sgs, trns_snap%nvector_rj_2_rtp,         &
+     &    iphys%i_mag_induct_w_sgs, trns_snap%backward%num_vector,         &
      &    trns_snap%b_trns%i_mag_induct_w_sgs)
 !
       call add_vec_trans_flag_snap(ipol%i_SGS_rot_inertia,              &
-     &    iphys%i_SGS_rot_inertia, trns_snap%nvector_rj_2_rtp,          &
+     &    iphys%i_SGS_rot_inertia, trns_snap%backward%num_vector,          &
      &    trns_snap%b_trns%i_SGS_rot_inertia)
       call add_vec_trans_flag_snap(ipol%i_SGS_rot_Lorentz,              &
-     &    iphys%i_SGS_rot_Lorentz, trns_snap%nvector_rj_2_rtp,          &
+     &    iphys%i_SGS_rot_Lorentz, trns_snap%backward%num_vector,          &
      &    trns_snap%b_trns%i_SGS_rot_Lorentz)
       call add_vec_trans_flag_snap(ipol%i_SGS_induction,                &
-     &    iphys%i_SGS_induction, trns_snap%nvector_rj_2_rtp,            &
+     &    iphys%i_SGS_induction, trns_snap%backward%num_vector,            &
      &    trns_snap%b_trns%i_SGS_induction)
 !
       call add_vec_trans_flag_snap                                      &
      &   (ipol%i_press_grad, iphys%i_press_grad,                        &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_press_grad)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_press_grad)
       call add_vec_trans_flag_snap(ipol%i_induction, iphys%i_induction, &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_induction)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_induction)
 !
       call add_vec_trans_flag_snap(ipol%i_grad_t, iphys%i_grad_t,       &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_t)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_t)
       call add_vec_trans_flag_snap(ipol%i_grad_composit,                &
-     &    iphys%i_grad_composit, trns_snap%nvector_rj_2_rtp,            &
+     &    iphys%i_grad_composit, trns_snap%backward%num_vector,            &
      &    trns_snap%b_trns%i_grad_composit)
 !
       call add_vec_trans_flag_snap(ipol%i_grad_vx, iphys%i_grad_vx,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_vx)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_vx)
       call add_vec_trans_flag_snap(ipol%i_grad_vy, iphys%i_grad_vy,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_vy)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_vy)
       call add_vec_trans_flag_snap(ipol%i_grad_vz, iphys%i_grad_vz,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_vz)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_vz)
 !
       call add_vec_trans_flag_snap(ipol%i_grad_wx, iphys%i_grad_wx,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_wx)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_wx)
       call add_vec_trans_flag_snap(ipol%i_grad_wy, iphys%i_grad_wy,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_wy)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_wy)
       call add_vec_trans_flag_snap(ipol%i_grad_wz, iphys%i_grad_wz,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_wz)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_wz)
 !
       call add_vec_trans_flag_snap(ipol%i_grad_ax, iphys%i_grad_ax,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_ax)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_ax)
       call add_vec_trans_flag_snap(ipol%i_grad_ay, iphys%i_grad_ay,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_ay)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_ay)
       call add_vec_trans_flag_snap(ipol%i_grad_az, iphys%i_grad_az,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_az)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_az)
 !
       call add_vec_trans_flag_snap(ipol%i_grad_bx, iphys%i_grad_vx,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_vx)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_vx)
       call add_vec_trans_flag_snap(ipol%i_grad_by, iphys%i_grad_vy,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_vy)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_vy)
       call add_vec_trans_flag_snap(ipol%i_grad_bz, iphys%i_grad_bz,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_bz)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_bz)
 !
       call add_vec_trans_flag_snap(ipol%i_grad_jx, iphys%i_grad_jx,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_jx)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_jx)
       call add_vec_trans_flag_snap(ipol%i_grad_jy, iphys%i_grad_jy,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_jy)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_jy)
       call add_vec_trans_flag_snap(ipol%i_grad_jz, iphys%i_grad_jz,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_jz)
+     &    trns_snap%backward%num_vector, trns_snap%b_trns%i_grad_jz)
 !
       end subroutine b_trans_address_vector_snap
 !
@@ -206,62 +206,62 @@
       type(address_4_sph_trans), intent(inout) :: trns_snap
 !
 !
-      trns_snap%nscalar_rj_2_rtp = 0
+      trns_snap%backward%num_scalar = 0
 !      if(b_trns%i_temp.eq.0 .or. ipol%i_par_temp.gt.0) then
         call add_scl_trans_flag_snap(ipol%i_temp, iphys%i_temp,         &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_temp)
 !      end if
 !      if(b_trns%i_light .eq. 0) then
         call add_scl_trans_flag_snap(ipol%i_light, iphys%i_light,       &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_light)
 !      end if
 !
       call add_scl_trans_flag_snap(ipol%i_press, iphys%i_press,         &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_press)
       call add_scl_trans_flag_snap(ipol%i_par_temp, iphys%i_par_temp,   &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_par_temp)
       call add_scl_trans_flag_snap                                      &
      &   (ipol%i_filter_temp, iphys%i_filter_temp,                      &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_filter_temp)
       call add_scl_trans_flag_snap(ipol%i_t_diffuse, iphys%i_t_diffuse, &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_t_diffuse)
       call add_scl_trans_flag_snap(ipol%i_c_diffuse, iphys%i_c_diffuse, &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_c_diffuse)
 !
       call add_scl_trans_flag_snap(ipol%i_h_advect, iphys%i_h_advect,   &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_h_advect)
       call add_scl_trans_flag_snap(ipol%i_c_advect, iphys%i_c_advect,   &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_c_advect)
 !
       call add_scl_trans_flag_snap                                      &
      &   (ipol%i_div_Coriolis, iphys%i_div_Coriolis,                    &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_div_Coriolis)
 !
       call add_scl_trans_flag_snap                                      &
      &   (ipol%i_SGS_div_inertia, iphys%i_SGS_div_inertia,              &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_SGS_div_inertia)
       call add_scl_trans_flag_snap                                      &
      &   (ipol%i_SGS_div_Lorentz, iphys%i_SGS_div_Lorentz,              &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_SGS_div_Lorentz)
       call add_scl_trans_flag_snap                                      &
      &   (ipol%i_SGS_div_h_flux, iphys%i_SGS_div_h_flux,                &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_SGS_div_h_flux)
       call add_scl_trans_flag_snap                                      &
      &   (ipol%i_SGS_div_c_flux, iphys%i_SGS_div_c_flux,                &
-     &    trns_snap%nvector_rj_2_rtp, trns_snap%nscalar_rj_2_rtp,       &
+     &    trns_snap%backward%num_vector, trns_snap%backward%num_scalar,       &
      &    trns_snap%b_trns%i_SGS_div_c_flux)
 !
       end subroutine b_trans_address_scalar_snap

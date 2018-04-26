@@ -45,22 +45,22 @@
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
 !
 !
-      trns_DYNS%nvector_rtp_2_rj = 0
+      trns_DYNS%forward%num_vector = 0
 !   SGS advection flag
 !      call add_vector_trans_flag(ipol%i_SGS_inertia,                   &
-!     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%f_trns%i_SGS_inertia)
+!     &    trns_DYNS%forward%num_vector, trns_DYNS%f_trns%i_SGS_inertia)
 !   SGS Lorentz force flag
 !      call add_vector_trans_flag(ipol%i_SGS_Lorentz,                   &
-!     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%f_trns%i_SGS_Lorentz)
+!     &    trns_DYNS%forward%num_vector, trns_DYNS%f_trns%i_SGS_Lorentz)
 !   SGS induction flag
 !      call add_vector_trans_flag(ipol%i_SGS_vp_induct,                 &
-!     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%f_trns%i_SGS_vp_induct)
+!     &    trns_DYNS%forward%num_vector, trns_DYNS%f_trns%i_SGS_vp_induct)
 !   SGS heat flux flag
 !      call add_vector_trans_flag(ipol%i_SGS_h_flux,                    &
-!     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%f_trns%i_SGS_h_flux)
+!     &    trns_DYNS%forward%num_vector, trns_DYNS%f_trns%i_SGS_h_flux)
 !   SGS composition flux flag
 !      call add_vector_trans_flag(ipol%i_SGS_c_flux,                    &
-!     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%f_trns%i_SGS_c_flux)
+!     &    trns_DYNS%forward%num_vector, trns_DYNS%f_trns%i_SGS_c_flux)
 !
       end subroutine f_trans_address_vector_DYNS
 !
@@ -72,18 +72,18 @@
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
 !
 !
-      trns_DYNS%nscalar_rtp_2_rj = 0
+      trns_DYNS%forward%num_scalar = 0
 !   work of Reynolds stress
       call add_scalar_trans_flag(ipol%i_reynolds_wk,                    &
-     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj,       &
+     &    trns_DYNS%forward%num_vector, trns_DYNS%forward%num_scalar,       &
      &    trns_DYNS%f_trns%i_reynolds_wk)
 !   work of SGS buoyancy
       call add_scalar_trans_flag(ipol%i_SGS_buo_wk,                     &
-     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj,       &
+     &    trns_DYNS%forward%num_vector, trns_DYNS%forward%num_scalar,       &
      &    trns_DYNS%f_trns%i_SGS_buo_wk)
 !   work of SGS compositional buoyancy
       call add_scalar_trans_flag(ipol%i_SGS_comp_buo_wk,                &
-     &    trns_DYNS%nvector_rtp_2_rj, trns_DYNS%nscalar_rtp_2_rj,       &
+     &    trns_DYNS%forward%num_vector, trns_DYNS%forward%num_scalar,       &
      &    trns_DYNS%f_trns%i_SGS_comp_buo_wk)
 !
       end subroutine f_trans_address_scalar_DYNS

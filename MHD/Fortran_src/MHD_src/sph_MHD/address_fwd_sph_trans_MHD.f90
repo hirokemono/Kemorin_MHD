@@ -53,43 +53,43 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD
 !
 !
-      trns_MHD%nvector_rtp_2_rj = 0
+      trns_MHD%forward%num_vector = 0
 !   advection flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call add_vector_trans_flag(ipol%i_m_advect,                     &
-     &      trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_m_advect)
+     &      trns_MHD%forward%num_vector, trns_MHD%f_trns%i_m_advect)
 !   Coriolis flag
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           call add_vector_trans_flag(ipol%i_coriolis,                   &
-     &        trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_coriolis)
+     &        trns_MHD%forward%num_vector, trns_MHD%f_trns%i_coriolis)
         end if
         if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           call add_vector_trans_flag(ipol%i_rot_Coriolis,               &
-     &       trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_rot_Coriolis)
+     &       trns_MHD%forward%num_vector, trns_MHD%f_trns%i_rot_Coriolis)
         end if
 !   Lorentz flag
         if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           call add_vector_trans_flag(ipol%i_lorentz,                    &
-     &        trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_lorentz)
+     &        trns_MHD%forward%num_vector, trns_MHD%f_trns%i_lorentz)
         end if
       end if
 !
 !   induction flag
       if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call add_vector_trans_flag(ipol%i_vp_induct,                    &
-     &      trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_vp_induct)
+     &      trns_MHD%forward%num_vector, trns_MHD%f_trns%i_vp_induct)
       end if
 !
 !   heat flux flag
       if(ht_prop%iflag_scheme .gt. id_no_evolution) then
         call add_vector_trans_flag(ipol%i_h_flux,                       &
-     &      trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_h_flux)
+     &      trns_MHD%forward%num_vector, trns_MHD%f_trns%i_h_flux)
       end if
 !
 !   composition flux flag
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_vector_trans_flag(ipol%i_c_flux,                       &
-     &      trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns%i_c_flux)
+     &      trns_MHD%forward%num_vector, trns_MHD%f_trns%i_c_flux)
       end if
 !
       end subroutine f_trans_address_vector_MHD
@@ -102,10 +102,10 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD
 !
 !
-      trns_MHD%nscalar_rtp_2_rj = 0
+      trns_MHD%forward%num_scalar = 0
 !   divergence of Coriolis flux flag
       call add_scalar_trans_flag(fl_prop%iflag_4_coriolis,              &
-     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj,         &
+     &    trns_MHD%forward%num_vector, trns_MHD%forward%num_scalar,         &
      &    trns_MHD%f_trns%i_div_Coriolis)
 !
       end subroutine f_trans_address_scalar_MHD

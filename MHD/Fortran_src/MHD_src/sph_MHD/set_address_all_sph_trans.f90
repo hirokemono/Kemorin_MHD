@@ -24,8 +24,7 @@
 !
       implicit none
 !
-      private :: set_addresses_backward_trans
-      private :: set_addresses_forward_trans
+      private :: set_addresses_all_transform
       private :: set_field_names_backward_trans
       private :: set_field_names_forward_trans
 !
@@ -46,8 +45,8 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD
 !
 !
-      call set_addresses_backward_trans(rj_fld, trns_MHD)
-      call set_addresses_forward_trans(rj_fld, trns_MHD)
+      call set_addresses_all_transform(rj_fld, trns_MHD%backward)
+      call set_addresses_all_transform(rj_fld, trns_MHD%forward)
 !
       ncomp_sph_trans =   0
       nvector_sph_trans = 0
@@ -63,65 +62,31 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_backward_trans(rj_fld, trns_MHD)
+      subroutine set_addresses_all_transform(rj_fld, backward)
 !
       type(phys_data), intent(in) :: rj_fld
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(address_each_sph_trans), intent(inout) :: backward
 !
       integer(kind = kint) :: i_fld
 !
 !
-      trns_MHD%nscalar_rj_2_rtp = 0
-      trns_MHD%nvector_rj_2_rtp = 0
-      trns_MHD%ntensor_rj_2_rtp = 0
-      trns_MHD%nscalar_rtp_2_rj = 0
-      trns_MHD%nvector_rtp_2_rj = 1
-      trns_MHD%ntensor_rtp_2_rj = 0
+      backward%num_scalar = 0
+      backward%num_vector = 0
+      backward%num_tensor = 0
 !
       do i_fld = 1, rj_fld%num_phys_viz
         if(rj_fld%num_component(i_fld) .eq. n_vector) then
-          trns_MHD%nvector_rj_2_rtp = trns_MHD%nvector_rj_2_rtp + 1
+          backward%num_vector = backward%num_vector + 1
         end if
         if(rj_fld%num_component(i_fld) .eq. n_scalar) then
-          trns_MHD%nscalar_rj_2_rtp = trns_MHD%nscalar_rj_2_rtp + 1
+          backward%num_scalar = backward%num_scalar + 1
         end if
         if(rj_fld%num_component(i_fld) .eq. n_sym_tensor) then
-          trns_MHD%ntensor_rj_2_rtp = trns_MHD%ntensor_rj_2_rtp + 1
+          backward%num_tensor = backward%num_tensor + 1
         end if
       end do
 !
-      end subroutine set_addresses_backward_trans
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_addresses_forward_trans(rj_fld, trns_MHD)
-!
-      type(phys_data), intent(in) :: rj_fld
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
-!
-      integer(kind = kint) :: i_fld
-!
-!
-      trns_MHD%nscalar_rj_2_rtp = 0
-      trns_MHD%nvector_rj_2_rtp = 1
-      trns_MHD%ntensor_rj_2_rtp = 0
-      trns_MHD%nscalar_rtp_2_rj = 0
-      trns_MHD%nvector_rtp_2_rj = 0
-      trns_MHD%ntensor_rtp_2_rj = 0
-!
-      do i_fld = 1, rj_fld%num_phys_viz
-        if(rj_fld%num_component(i_fld) .eq. n_vector) then
-          trns_MHD%nvector_rtp_2_rj = trns_MHD%nvector_rtp_2_rj + 1
-        end if
-        if(rj_fld%num_component(i_fld) .eq. n_scalar) then
-          trns_MHD%nscalar_rtp_2_rj = trns_MHD%nscalar_rtp_2_rj + 1
-        end if
-        if(rj_fld%num_component(i_fld) .eq. n_sym_tensor) then
-          trns_MHD%ntensor_rtp_2_rj = trns_MHD%ntensor_rtp_2_rj + 1
-        end if
-      end do
-!
-      end subroutine set_addresses_forward_trans
+      end subroutine set_addresses_all_transform
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
