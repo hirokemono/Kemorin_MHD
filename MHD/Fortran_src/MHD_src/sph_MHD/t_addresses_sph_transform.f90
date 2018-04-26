@@ -60,6 +60,9 @@
         integer(kind = kint) :: num_scalar = 0
 !>        number of tensors for spherical harmonics transform
         integer(kind = kint) :: num_tensor = 0
+!
+!>        Field name for spherical transform
+        character(len = kchara), allocatable :: field_name(:)
       end type address_each_sph_trans
 !
 
@@ -75,8 +78,6 @@
 !>        addresses of forces for forward transform
         type(phys_address) :: f_trns
 !
-!>        Field name for backward transform
-        character(len = kchara), allocatable :: b_trns_name(:)
 !>        address of backward transform array
         integer(kind = kint), allocatable :: ifld_trns(:)
 !>        address of backward transform for sprctr
@@ -84,8 +85,6 @@
 !>        address of backward transform for nodal field
         integer(kind = kint), allocatable :: ifld_rtp(:)
 !
-!>        Field name for forward transform
-        character(len = kchara), allocatable :: f_trns_name(:)
 !>        address of forward transform array
         integer(kind = kint), allocatable :: ifrc_trns(:)
 !>        address of forward transform for sprctr
@@ -122,7 +121,7 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%b_trns_name(trns%backward%nfield))
+      allocate(trns%backward%field_name(trns%backward%nfield))
       allocate(trns%ifld_trns(trns%backward%nfield))
       allocate(trns%ifld_rj(trns%backward%nfield))
       allocate(trns%ifld_rtp(trns%backward%nfield))
@@ -141,7 +140,7 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%f_trns_name(trns%forward%nfield))
+      allocate(trns%forward%field_name(trns%forward%nfield))
       allocate(trns%ifrc_trns(trns%forward%nfield))
       allocate(trns%ifrc_rj(trns%forward%nfield))
       allocate(trns%ifrc_rtp(trns%forward%nfield))
@@ -219,7 +218,7 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      deallocate(trns%b_trns_name)
+      deallocate(trns%backward%field_name)
       deallocate(trns%ifld_trns, trns%ifld_rj, trns%ifld_rtp)
 !
       end subroutine dealloc_bwd_trns_field_name
@@ -231,7 +230,7 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      deallocate(trns%f_trns_name)
+      deallocate(trns%forward%field_name)
       deallocate(trns%ifrc_trns, trns%ifrc_rj, trns%ifrc_rtp)
 !
       end subroutine dealloc_fwd_trns_field_name
@@ -374,14 +373,14 @@
 !
       if(i_trns .eq. 0) return
       icou = icou + 1
-      trns%b_trns_name(icou) = field_name
+      trns%backward%field_name(icou) = field_name
       trns%ifld_trns(icou) = i_trns
       trns%ifld_rj(icou) =   i_pol
       trns%ifld_rtp(icou) =  irtp
 !
       if(iflag_debug .eq. 0) return
       write(*,'(i5,a2,a,a2,4i5)')                                       &
-     &    icou, '. ', trim(trns%b_trns_name(icou)), ': ',               &
+     &    icou, '. ', trim(trns%backward%field_name(icou)), ': ',       &
      &    trns%ifld_trns(icou), trns%ifld_rj(icou), i_tor,              &
      &    trns%ifld_rtp(icou)
 !
@@ -402,14 +401,14 @@
 !
       if(i_trns .eq. 0) return
       icou = icou + 1
-      trns%f_trns_name(icou) = field_name
+      trns%forward%field_name(icou) = field_name
       trns%ifrc_trns(icou) = i_trns
       trns%ifrc_rj(icou) =   i_pol
       trns%ifrc_rtp(icou) =  irtp
 !
       if(iflag_debug .eq. 0) return
       write(*,'(i5,a2,a,a2,4i5)')                                       &
-     &    icou, '. ', trim(trns%f_trns_name(icou)), ': ',               &
+     &    icou, '. ', trim(trns%forward%field_name(icou)), ': ',        &
      &    trns%ifrc_trns(icou), trns%ifrc_rj(icou), i_tor,              &
      &    trns%ifrc_rtp(icou)
 !

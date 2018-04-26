@@ -66,8 +66,8 @@
       do j_fld = 1, trns_MHD%backward%num_vector
         jcomp = n_vector*j_fld - 2
         do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld) .eq. trns_MHD%b_trns_name(j_fld))  &
-     &        then
+          if(rj_fld%phys_name(i_fld)                                    &
+     &        .eq. trns_MHD%backward%field_name(j_fld)) then
             icomp = rj_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'set to send buffer ',    &
@@ -84,7 +84,8 @@
         j_fld = j + trns_MHD%backward%num_vector
         jcomp = j + n_vector*trns_MHD%backward%num_vector
         do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld) .eq. trns_MHD%b_trns_name(j_fld))  &
+          if(rj_fld%phys_name(i_fld)                                    &
+     &           .eq. trns_MHD%backward%field_name(j_fld))  &
      &        then
             icomp = rj_fld%istack_component(i_fld-1) + 1
 !
@@ -103,8 +104,8 @@
         jcomp = n_sym_tensor * j - 5 + trns_MHD%backward%num_scalar     &
      &         + n_vector*trns_MHD%backward%num_vector
         do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld) .eq. trns_MHD%b_trns_name(j_fld))  &
-     &        then
+          if(rj_fld%phys_name(i_fld)                                    &
+     &           .eq. trns_MHD%backward%field_name(j_fld)) then
             icomp = rj_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'set to send buffer ',    &
@@ -137,8 +138,8 @@
       do j_fld = 1, trns_MHD%forward%num_vector
         jcomp = n_vector*j_fld - 2
         do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld) .eq. trns_MHD%f_trns_name(j_fld))  &
-     &        then
+          if(rj_fld%phys_name(i_fld)                                    &
+     &        .eq. trns_MHD%forward%field_name(j_fld))  then
             icomp = rj_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'get from recv buffer ',  &
@@ -153,8 +154,8 @@
         j_fld = j + trns_MHD%forward%num_vector
         jcomp = j + n_vector*trns_MHD%forward%num_vector
         do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld) .eq. trns_MHD%f_trns_name(j_fld))  &
-     &        then
+          if(rj_fld%phys_name(i_fld)                                    &
+     &        .eq. trns_MHD%forward%field_name(j_fld)) then
             icomp = rj_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'get from recv buffer ',  &
@@ -171,8 +172,8 @@
         jcomp = n_sym_tensor * j - 5 + trns_MHD%forward%num_scalar      &
      &         + n_vector*trns_MHD%forward%num_vector
         do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld) .eq. trns_MHD%f_trns_name(j_fld))  &
-     &        then
+          if(rj_fld%phys_name(i_fld)                                    &
+     &         .eq. trns_MHD%forward%field_name(j_fld))then
             icomp = rj_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'get from recv buffer ',  &

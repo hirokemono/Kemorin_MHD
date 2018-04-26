@@ -63,8 +63,8 @@
       do j_fld = 1, trns_MHD%backward%num_vector
         jcomp = n_vector*j_fld - 2
         do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld) .eq. trns_MHD%b_trns_name(j_fld)) &
-     &        then
+          if(nod_fld%phys_name(i_fld)                                   &
+     &           .eq. trns_MHD%backward%field_name(j_fld)) then
             icomp = nod_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
@@ -80,8 +80,8 @@
         j_fld = j + trns_MHD%backward%num_vector
         jcomp = j + n_vector*trns_MHD%backward%num_vector
         do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld) .eq. trns_MHD%b_trns_name(j_fld)) &
-     &        then
+          if(nod_fld%phys_name(i_fld)                                   &
+     &          .eq. trns_MHD%backward%field_name(j_fld)) then
             icomp = nod_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
@@ -99,8 +99,8 @@
         jcomp = n_sym_tensor * j - 5 + trns_MHD%backward%num_scalar     &
      &         + n_vector*trns_MHD%backward%num_vector
         do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld) .eq. trns_MHD%b_trns_name(j_fld)) &
-     &        then
+          if(nod_fld%phys_name(i_fld)                                   &
+     &          .eq. trns_MHD%backward%field_name(j_fld)) then
             icomp = nod_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
@@ -131,8 +131,8 @@
       do j_fld = 1, trns_MHD%forward%num_vector
         jcomp = n_vector*j_fld - 2
         do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld) .eq. trns_MHD%f_trns_name(j_fld)) &
-     &        then
+          if(nod_fld%phys_name(i_fld)                                   &
+     &        .eq. trns_MHD%forward%field_name(j_fld)) then
             icomp = nod_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
@@ -147,8 +147,8 @@
         j_fld = j + trns_MHD%forward%num_vector
         jcomp = j + n_vector*trns_MHD%forward%num_vector
         do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld) .eq. trns_MHD%f_trns_name(j_fld)) &
-     &        then
+          if(nod_fld%phys_name(i_fld)                                   &
+     &         .eq. trns_MHD%forward%field_name(j_fld)) then
             icomp = nod_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
@@ -165,8 +165,8 @@
         jcomp = n_sym_tensor * j - 5 + trns_MHD%forward%num_scalar      &
      &         + n_vector*trns_MHD%forward%num_vector
         do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld) .eq. trns_MHD%f_trns_name(j_fld)) &
-     &        then
+          if(nod_fld%phys_name(i_fld)                                   &
+     &        .eq. trns_MHD%forward%field_name(j_fld)) then
             icomp = nod_fld%istack_component(i_fld-1) + 1
 !
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &

@@ -88,7 +88,8 @@
      &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
      &      WK%trns_MHD, ncomp_max_trans)
         do i_fld = 1, SPH_MHD%fld%num_phys_viz
-          write(*,*) i_fld, trim(WK%trns_MHD%b_trns_name(i_fld))
+          write(*,*) i_fld,                                             &
+     &              trim(WK%trns_MHD%backward%field_name(i_fld))
         end do
       end if
 !
