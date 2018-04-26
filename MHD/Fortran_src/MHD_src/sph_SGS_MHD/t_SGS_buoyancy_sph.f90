@@ -311,7 +311,7 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call product_double_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl, trns_SGS%f_trns%i_SGS_inertia,      &
-     &      sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,                  &
+     &      sph_rtp%nnod_rtp, trns_SGS%forward%ncomp,                   &
      &      trns_SGS%frc_rtp)
       else if(ifld_sgs%i_buoyancy .gt. 0) then
         call product_single_vol_buo_coefs                               &
@@ -319,7 +319,7 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call product_single_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl(1), trns_SGS%f_trns%i_SGS_inertia,   &
-     &      sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,                  &
+     &      sph_rtp%nnod_rtp, trns_SGS%forward%ncomp,                   &
      &      trns_SGS%frc_rtp)
       else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
         call product_single_vol_buo_coefs                               &
@@ -327,7 +327,7 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call product_single_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl(2), trns_SGS%f_trns%i_SGS_inertia,   &
-     &      sph_rtp%nnod_rtp, trns_SGS%ncomp_rtp_2_rj,                  &
+     &      sph_rtp%nnod_rtp, trns_SGS%forward%ncomp,                   &
      &      trns_SGS%frc_rtp)
       end if
 !

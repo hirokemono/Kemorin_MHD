@@ -48,10 +48,22 @@
 !
       implicit none
 !
-!>      strucutre for spherical transform data addresses
+!>      strucutre of spherical transform data addresses
+      type address_each_sph_trans
+!>        number of fields for spherical harmonics transform
+        integer(kind = kint) :: nfield = 0
+!>        number of components for spherical harmonics transform
+        integer(kind = kint) :: ncomp =  0
+      end type address_each_sph_trans
+!
+
+!>      strucutre of spherical transform data addresses
       type address_4_sph_trans
-!>        number of components for backward spherical harmonics transform
-        integer(kind = kint) :: ncomp_rj_2_rtp = 0
+!>        strucutre of backward spherical transform data addresses
+        type(address_each_sph_trans) :: backward
+!>        strucutre of forward spherical transform data addresses
+        type(address_each_sph_trans) :: forward
+!
 !>        number of components
 !!        for backward vector spherical harmonics transform
         integer(kind = kint) :: nvector_rj_2_rtp = 0
@@ -60,8 +72,6 @@
 !>        number of tensors for backward spherical harmonics transform
         integer(kind = kint) :: ntensor_rj_2_rtp = 0
 !
-!>        number of components for forward spherical harmonics transform
-        integer(kind = kint) :: ncomp_rtp_2_rj = 0
 !>        number of vectors for forward spherical harmonics transform
         integer(kind = kint) :: nvector_rtp_2_rj = 0
 !>        number of scalars for forward spherical harmonics transform
@@ -74,8 +84,6 @@
 !>        addresses of forces for forward transform
         type(phys_address) :: f_trns
 !
-!>        number of components for backward spherical harmonics transform
-        integer(kind = kint) :: nfield_rj_2_rtp = 0
 !>        Field name for backward transform
         character(len = kchara), allocatable :: b_trns_name(:)
 !>        address of backward transform array
@@ -85,8 +93,6 @@
 !>        address of backward transform for nodal field
         integer(kind = kint), allocatable :: ifld_rtp(:)
 !
-!>        number of components for backward spherical harmonics transform
-        integer(kind = kint) :: nfield_rtp_2_rj = 0
 !>        Field name for forward transform
         character(len = kchara), allocatable :: f_trns_name(:)
 !>        address of forward transform array
@@ -125,12 +131,12 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%b_trns_name(trns%nfield_rj_2_rtp))
-      allocate(trns%ifld_trns(trns%nfield_rj_2_rtp))
-      allocate(trns%ifld_rj(trns%nfield_rj_2_rtp))
-      allocate(trns%ifld_rtp(trns%nfield_rj_2_rtp))
+      allocate(trns%b_trns_name(trns%backward%nfield))
+      allocate(trns%ifld_trns(trns%backward%nfield))
+      allocate(trns%ifld_rj(trns%backward%nfield))
+      allocate(trns%ifld_rtp(trns%backward%nfield))
 !
-      if(trns%nfield_rj_2_rtp .le. 0) return
+      if(trns%backward%nfield .le. 0) return
       trns%ifld_trns = 0
       trns%ifld_rj =   0
       trns%ifld_rtp =  0
@@ -144,12 +150,12 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%f_trns_name(trns%nfield_rtp_2_rj))
-      allocate(trns%ifrc_trns(trns%nfield_rtp_2_rj))
-      allocate(trns%ifrc_rj(trns%nfield_rtp_2_rj))
-      allocate(trns%ifrc_rtp(trns%nfield_rtp_2_rj))
+      allocate(trns%f_trns_name(trns%forward%nfield))
+      allocate(trns%ifrc_trns(trns%forward%nfield))
+      allocate(trns%ifrc_rj(trns%forward%nfield))
+      allocate(trns%ifrc_rtp(trns%forward%nfield))
 !
-      if(trns%nfield_rtp_2_rj .le. 0) return
+      if(trns%forward%nfield .le. 0) return
       trns%ifrc_trns = 0
       trns%ifrc_rj =   0
       trns%ifrc_rtp =  0
@@ -164,13 +170,13 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%fld_rtp(sph_rtp%nnod_rtp,trns%ncomp_rj_2_rtp))
-      allocate(trns%frc_rtp(sph_rtp%nnod_rtp,trns%ncomp_rtp_2_rj))
+      allocate(trns%fld_rtp(sph_rtp%nnod_rtp,trns%backward%ncomp))
+      allocate(trns%frc_rtp(sph_rtp%nnod_rtp,trns%forward%ncomp))
       allocate(trns%fld_zm(sph_rtp%nnod_med,6))
 !
       trns%fld_zm = 0.0d0
-      if(trns%ncomp_rj_2_rtp .gt. 0) trns%fld_rtp = 0.0d0
-      if(trns%ncomp_rtp_2_rj .gt. 0) trns%frc_rtp = 0.0d0
+      if(trns%backward%ncomp .gt. 0) trns%fld_rtp = 0.0d0
+      if(trns%forward%ncomp .gt. 0) trns%frc_rtp = 0.0d0
 !
       end subroutine alloc_nonlinear_data
 !
@@ -182,14 +188,14 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%fld_pole(sph_rtp%nnod_pole,trns%ncomp_rj_2_rtp))
-      allocate(trns%flc_pole(sph_rtp%nnod_pole,trns%ncomp_rj_2_rtp))
+      allocate(trns%fld_pole(sph_rtp%nnod_pole,trns%backward%ncomp))
+      allocate(trns%flc_pole(sph_rtp%nnod_pole,trns%backward%ncomp))
 !
-      allocate(trns%frc_pole(sph_rtp%nnod_pole,trns%ncomp_rtp_2_rj))
+      allocate(trns%frc_pole(sph_rtp%nnod_pole,trns%forward%ncomp))
 !
-      if(trns%ncomp_rj_2_rtp .gt. 0) trns%fld_pole = 0.0d0
-      if(trns%ncomp_rj_2_rtp .gt. 0) trns%flc_pole = 0.0d0
-      if(trns%ncomp_rtp_2_rj .gt. 0) trns%frc_pole = 0.0d0
+      if(trns%backward%ncomp .gt. 0) trns%fld_pole = 0.0d0
+      if(trns%backward%ncomp .gt. 0) trns%flc_pole = 0.0d0
+      if(trns%forward%ncomp .gt. 0) trns%frc_pole = 0.0d0
 !
       end subroutine alloc_nonlinear_pole
 !
@@ -332,25 +338,25 @@
       integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
 !
-      trns%nfield_rj_2_rtp =  trns%nvector_rj_2_rtp                     &
+      trns%backward%nfield =  trns%nvector_rj_2_rtp                     &
      &                      + trns%nscalar_rj_2_rtp                     &
      &                      + trns%ntensor_rj_2_rtp
-      trns%nfield_rtp_2_rj =  trns%nvector_rtp_2_rj                     &
+      trns%forward%nfield =  trns%nvector_rtp_2_rj                      &
      &                      + trns%nscalar_rtp_2_rj                     &
      &                      + trns%ntensor_rtp_2_rj
 !
       nscltsr_rj_2_rtp                                                  &
      &      = trns%nscalar_rj_2_rtp + 6*trns%ntensor_rj_2_rtp
-      trns%ncomp_rj_2_rtp                                               &
+      trns%backward%ncomp                                               &
      &      = 3*trns%nvector_rj_2_rtp + nscltsr_rj_2_rtp
 !
       nscltsr_rtp_2_rj                                                  &
      &      = trns%nscalar_rtp_2_rj + 6*trns%ntensor_rtp_2_rj
-      trns%ncomp_rtp_2_rj                                               &
+      trns%forward%ncomp                                                &
      &      = 3*trns%nvector_rtp_2_rj + nscltsr_rtp_2_rj
 !
-      ncomp_sph_trans =   max(ncomp_sph_trans, trns%ncomp_rtp_2_rj)
-      ncomp_sph_trans =   max(ncomp_sph_trans, trns%ncomp_rj_2_rtp)
+      ncomp_sph_trans =   max(ncomp_sph_trans, trns%forward%ncomp)
+      ncomp_sph_trans =   max(ncomp_sph_trans, trns%backward%ncomp)
       nvector_sph_trans = max(nvector_sph_trans, trns%nvector_rj_2_rtp)
       nvector_sph_trans = max(nvector_sph_trans, trns%nvector_rtp_2_rj)
       nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rj_2_rtp)

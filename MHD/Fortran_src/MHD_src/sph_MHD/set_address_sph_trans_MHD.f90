@@ -140,13 +140,13 @@
 !
 !
       do i = 1, trns_MHD%nvector_rj_2_rtp
-        call sel_sph_rj_vector_to_send(trns_MHD%ncomp_rj_2_rtp,         &
+        call sel_sph_rj_vector_to_send(trns_MHD%backward%ncomp,         &
      &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i),                 &
      &      comm_rj, rj_fld, n_WS, WS)
       end do
       do inum = 1, trns_MHD%nscalar_rj_2_rtp
         i = inum + trns_MHD%nvector_rj_2_rtp
-        call sel_sph_rj_scalar_to_send(trns_MHD%ncomp_rj_2_rtp,         &
+        call sel_sph_rj_scalar_to_send(trns_MHD%backward%ncomp,         &
      &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i),                 &
      &      comm_rj, rj_fld, n_WS, WS)
       end do
@@ -172,13 +172,13 @@
 !
 !
       do i = 1, trns_MHD%nvector_rj_2_rtp
-        call sel_sph_rj_vector_to_send(trns_MHD%ncomp_rj_2_rtp,         &
+        call sel_sph_rj_vector_to_send(trns_MHD%backward%ncomp,         &
      &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i),                 &
      &      comm_rj, rj_fld, n_WS, WS)
       end do
       do inum = 1, trns_MHD%nscalar_rj_2_rtp
         i = inum + trns_MHD%nvector_rj_2_rtp
-        call sel_sph_rj_scalar_2_send_wpole(trns_MHD%ncomp_rj_2_rtp,    &
+        call sel_sph_rj_scalar_2_send_wpole(trns_MHD%backward%ncomp,    &
      &      trns_MHD%ifld_rj(i), trns_MHD%ifld_trns(i), nnod_pole,      &
      &      sph_rj, comm_rj, rj_fld, n_WS, WS, trns_MHD%flc_pole)
       end do
@@ -202,13 +202,13 @@
 !
 !
       do i = 1, trns_MHD%nvector_rtp_2_rj
-        call sel_sph_rj_vector_from_recv(trns_MHD%ncomp_rtp_2_rj,       &
+        call sel_sph_rj_vector_from_recv(trns_MHD%forward%ncomp,        &
      &      trns_MHD%ifrc_rj(i), trns_MHD%ifrc_trns(i),                 &
      &      comm_rj, n_WR, WR, rj_fld)
       end do
       do inum = 1, trns_MHD%nscalar_rtp_2_rj
         i = inum + trns_MHD%nvector_rtp_2_rj
-        call sel_sph_rj_scalar_from_recv(trns_MHD%ncomp_rtp_2_rj,       &
+        call sel_sph_rj_scalar_from_recv(trns_MHD%forward%ncomp,        &
      &      trns_MHD%ifrc_rj(i), trns_MHD%ifrc_trns(i),                 &
      &      comm_rj, n_WR, WR, rj_fld)
       end do

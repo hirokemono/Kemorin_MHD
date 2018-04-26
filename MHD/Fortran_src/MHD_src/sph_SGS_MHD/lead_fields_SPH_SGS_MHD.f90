@@ -207,8 +207,8 @@
         call SGS_fluxes_for_snapshot                                    &
      &     (sph%sph_rtp, MHD_prop%fl_prop, trns_MHD%b_trns,             &
      &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,        &
-     &      trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,           &
-     &      trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,         &
+     &      trns_MHD%backward%ncomp, trns_SGS%forward%ncomp,            &
+     &      trns_snap%backward%ncomp, trns_snap%forward%ncomp,          &
      &      trns_MHD%fld_rtp, trns_SGS%frc_rtp,                         &
      &      trns_snap%fld_rtp, trns_snap%frc_rtp)
       end if

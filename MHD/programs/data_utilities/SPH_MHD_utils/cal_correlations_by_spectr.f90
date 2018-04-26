@@ -75,7 +75,7 @@
       integer(kind = kint) :: nnod_rtp, ncomp_rtp
 !
       nnod_rtp =  sph%sph_rtp%nnod_rtp
-      ncomp_rtp = trns_MHD%ncomp_rj_2_rtp
+      ncomp_rtp = trns_MHD%backward%ncomp
       allocate(fld1_rtp(nnod_rtp,ncomp_rtp))
 !
       call sph_back_transform_dual(sph, comms_sph, trans_p,             &
@@ -115,7 +115,7 @@
 !       Transform first data
 !
       nnod_rtp =  sph%sph_rtp%nnod_rtp
-      ncomp_rtp = trns_MHD%ncomp_rj_2_rtp
+      ncomp_rtp = trns_MHD%backward%ncomp
       allocate(fld1_rtp(nnod_rtp,ncomp_rtp))
 !
       call sph_back_transform_dual(sph, comms_sph, trans_p,             &

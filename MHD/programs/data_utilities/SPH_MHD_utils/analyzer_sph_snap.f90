@@ -139,7 +139,7 @@
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
           call SPH_to_FEM_bridge_SGS_MHD                                &
      &       (SPH_SGS1%SGS_par, SPH_MHD1%sph, SPH_WK1%trns_WK,          &
-     &        FEM_d1%geofem, FEM_d1%iphys, FEM_d1%field)
+     &        FEM_d1%geofem, FEM_d1%field)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
@@ -162,7 +162,7 @@
           call SGS_MHD_zmean_sections                                   &
      &       (MHD_step1%viz_step, MHD_step1%time_d, SPH_SGS1%SGS_par,   &
      &        SPH_MHD1%sph, FEM_d1%geofem, FEM_d1%ele_mesh,             &
-     &        FEM_d1%iphys, SPH_WK1%trns_WK, FEM_d1%field, zmeans1)
+     &        SPH_WK1%trns_WK, FEM_d1%field, zmeans1)
           call end_elapsed_time(12)
         end if
         call end_elapsed_time(1)
@@ -236,7 +236,7 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
         call SPH_to_FEM_bridge_SGS_MHD                                  &
      &     (SPH_SGS1%SGS_par, SPH_MHD1%sph, SPH_WK1%trns_WK,            &
-     &      FEM_d1%geofem, FEM_d1%iphys, FEM_d1%field)
+     &      FEM_d1%geofem, FEM_d1%field)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

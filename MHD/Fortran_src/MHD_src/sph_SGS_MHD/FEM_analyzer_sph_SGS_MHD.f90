@@ -9,12 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine SPH_to_FEM_bridge_SGS_MHD                            &
-!!     &        (SGS_par, sph, WK, geofem, iphys, nod_fld)
+!!     &        (SGS_par, sph, WK, geofem, nod_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_grids), intent(in) :: sph
 !!        type(works_4_sph_trans_MHD), intent(in) :: WK
 !!        type(mesh_data), intent(in) :: geofem
-!!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !!
@@ -45,11 +44,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine SPH_to_FEM_bridge_SGS_MHD                              &
-     &        (SGS_par, sph, WK, geofem, iphys, nod_fld)
+     &        (SGS_par, sph, WK, geofem, nod_fld)
 !
       use t_mesh_data
       use t_phys_data
-      use t_phys_address
       use t_sph_trans_arrays_MHD
       use t_SGS_control_parameter
 !
@@ -60,7 +58,6 @@
       type(sph_grids), intent(in) :: sph
       type(works_4_sph_trans_MHD), intent(in) :: WK
       type(mesh_data), intent(in) :: geofem
-      type(phys_address), intent(in) :: iphys
 !
       type(phys_data), intent(inout) :: nod_fld
 !*

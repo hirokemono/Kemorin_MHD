@@ -79,8 +79,8 @@
       call init_pole_transform(SPH_MHD%sph%sph_rtp)
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
-     &                     'set_addresses_backward_trans'
-      call set_addresses_backward_trans(SPH_MHD%fld, WK%trns_MHD,       &
+     &                     'set_all_spherical_transform'
+      call set_all_spherical_transform(SPH_MHD%fld, WK%trns_MHD,        &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(iflag_debug .ge. iflag_routine_msg) then
@@ -138,22 +138,22 @@
       integer(kind = kint) :: nscalar_trans
 !
 !
-      if(trns_MHD%ncomp_rj_2_rtp .le. 0) return
+      if(trns_MHD%backward%ncomp .le. 0) return
 !
       nscalar_trans = trns_MHD%nscalar_rj_2_rtp                         &
      &               + 6*trns_MHD%ntensor_rj_2_rtp
-      call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rj_2_rtp,        &
+      call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
      &   comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rj_2_rtp,        &
+      call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       call copy_all_spectr_to_send                                      &
-     &   (sph%sph_rtp%nnod_pole, trns_MHD%ncomp_rj_2_rtp,               &
+     &   (sph%sph_rtp%nnod_pole, trns_MHD%backward%ncomp,               &
      &    sph%sph_rj, comms_sph%comm_rj, rj_fld, trns_MHD,              &
      &    n_WS, WS, trns_MHD%flc_pole)
 !
       call sph_b_trans_w_poles                                          &
-     &   (trns_MHD%ncomp_rj_2_rtp, trns_MHD%nvector_rj_2_rtp,           &
+     &   (trns_MHD%backward%ncomp, trns_MHD%nvector_rj_2_rtp,           &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
      &    n_WS, n_WR, WS(1), WR(1), trns_MHD%fld_rtp,                   &
      &    trns_MHD%flc_pole, trns_MHD%fld_pole, WK_sph)
@@ -219,8 +219,8 @@
 !
       call check_add_trans_sph_MHD                                      &
      &   (ipol, idpdr, itor, iphys, trns_MHD%b_trns, trns_MHD%f_trns,   &
-     &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%nvector_rj_2_rtp,           &
-     &    trns_MHD%nscalar_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,           &
+     &    trns_MHD%backward%ncomp, trns_MHD%nvector_rj_2_rtp,           &
+     &    trns_MHD%nscalar_rj_2_rtp, trns_MHD%forward%ncomp,            &
      &    trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj)
 !
       end subroutine check_address_trans_sph_MHD

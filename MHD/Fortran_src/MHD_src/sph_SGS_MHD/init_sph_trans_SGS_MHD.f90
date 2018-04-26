@@ -179,15 +179,15 @@
 !
       if(SGS_param%iflag_SGS .gt. 0) then
         call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
-     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%ncomp_rj_2_rtp,           &
+     &      trns_SGS%forward%ncomp, trns_SGS%backward%ncomp,            &
      &      SGS_mul_FFTW)
 !
         if(SGS_param%iflag_dynamic .gt. 0) then
           call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,         &
-     &        trns_DYNS%ncomp_rtp_2_rj, trns_DYNS%ncomp_rj_2_rtp,       &
+     &        trns_DYNS%forward%ncomp, trns_DYNS%backward%ncomp,        &
      &        DYNS_mul_FFTW)
           call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,         &
-     &        trns_Csim%ncomp_rtp_2_rj, trns_Csim%ncomp_rj_2_rtp,       &
+     &        trns_Csim%forward%ncomp, trns_Csim%backward%ncomp,        &
      &        Csim_mul_FFTW)
         end if
       end if

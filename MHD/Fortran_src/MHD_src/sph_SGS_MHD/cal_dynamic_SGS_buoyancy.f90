@@ -146,7 +146,7 @@
           call prod_SGS_buoyancy_to_Reynolds                            &
      &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
      &      trns_SGS%f_trns, dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs,  &
-     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+     &      trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
 !
           call start_elapsed_time(16)
           if (iflag_debug.eq.1) write(*,*)                              &

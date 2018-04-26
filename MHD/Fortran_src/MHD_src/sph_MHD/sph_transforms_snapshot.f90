@@ -72,13 +72,13 @@
       integer(kind = kint) :: nscalar_trans
 !
 !
-      if(trns_snap%ncomp_rj_2_rtp .le. 0) return
+      if(trns_snap%backward%ncomp .le. 0) return
 !
       nscalar_trans = trns_snap%nscalar_rj_2_rtp                        &
      &               + 6*trns_snap%ntensor_rj_2_rtp
-      call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rj_2_rtp,       &
+      call check_calypso_sph_comm_buf_N(trns_snap%backward%ncomp,       &
      &   comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rj_2_rtp,       &
+      call check_calypso_sph_comm_buf_N(trns_snap%backward%ncomp,       &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       call mhd_spectr_to_sendbuf_wpole                                  &
@@ -86,7 +86,7 @@
      &    rj_fld, n_WS, WS(1), trns_snap)
 !
       call sph_b_trans_w_poles                                          &
-     &   (trns_snap%ncomp_rj_2_rtp, trns_snap%nvector_rj_2_rtp,         &
+     &   (trns_snap%backward%ncomp, trns_snap%nvector_rj_2_rtp,         &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
      &    n_WS, n_WR, WS(1), WR(1), trns_snap%fld_rtp,                  &
      &    trns_snap%flc_pole, trns_snap%fld_pole, WK_sph)
@@ -111,15 +111,15 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(trns_snap%ncomp_rtp_2_rj .le. 0) return
+      if(trns_snap%forward%ncomp .le. 0) return
 !
-      call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rtp_2_rj,       &
+      call check_calypso_sph_comm_buf_N(trns_snap%forward%ncomp,        &
      &    comms_sph%comm_rtp, comms_sph%comm_rtm)
-      call check_calypso_sph_comm_buf_N(trns_snap%ncomp_rtp_2_rj,       &
+      call check_calypso_sph_comm_buf_N(trns_snap%forward%ncomp,        &
      &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
 !   transform for vectors and scalars
-      call sph_forward_transforms(trns_snap%ncomp_rtp_2_rj,             &
+      call sph_forward_transforms(trns_snap%forward%ncomp,              &
      &    trns_snap%nvector_rtp_2_rj, trns_snap%nscalar_rtp_2_rj,       &
      &    sph, comms_sph, trans_p, trns_snap%frc_rtp,                   &
      &    n_WS, n_WR, WS(1), WR(1), WK_sph)
@@ -150,15 +150,15 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(trns_tmp%ncomp_rtp_2_rj .eq. 0) return
+      if(trns_tmp%forward%ncomp .eq. 0) return
 !
-      call check_calypso_sph_comm_buf_N(trns_tmp%ncomp_rtp_2_rj,        &
+      call check_calypso_sph_comm_buf_N(trns_tmp%forward%ncomp,         &
      &    comms_sph%comm_rtp, comms_sph%comm_rtm)
-      call check_calypso_sph_comm_buf_N(trns_tmp%ncomp_rtp_2_rj,        &
+      call check_calypso_sph_comm_buf_N(trns_tmp%forward%ncomp,         &
      &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
 !   transform for vectors and scalars
-      call sph_forward_transforms(trns_tmp%ncomp_rtp_2_rj,              &
+      call sph_forward_transforms(trns_tmp%forward%ncomp,               &
      &    trns_tmp%nvector_rtp_2_rj, trns_tmp%nscalar_rtp_2_rj,         &
      &    sph, comms_sph, trans_p, trns_tmp%frc_rtp,                    &
      &    n_WS, n_WR, WS, WR, WK_sph)

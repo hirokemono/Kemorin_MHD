@@ -71,18 +71,18 @@
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
 !
-      if(trns_SGS%ncomp_rj_2_rtp .le. 0) return
+      if(trns_SGS%backward%ncomp .le. 0) return
 !
-      call check_calypso_sph_comm_buf_N(trns_SGS%ncomp_rj_2_rtp,        &
+      call check_calypso_sph_comm_buf_N(trns_SGS%backward%ncomp,        &
      &   comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N(trns_SGS%ncomp_rj_2_rtp,        &
+      call check_calypso_sph_comm_buf_N(trns_SGS%backward%ncomp,        &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       call mhd_spectr_to_sendbuf                                        &
      &   (trns_SGS, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
       call sph_b_transform_SGS                                          &
-     &   (trns_SGS%ncomp_rj_2_rtp, trns_SGS%nvector_rj_2_rtp,           &
+     &   (trns_SGS%backward%ncomp, trns_SGS%nvector_rj_2_rtp,           &
      &    trns_SGS%ntensor_rj_2_rtp, sph, comms_sph, trans_p,           &
      &    n_WS, n_WR, WS(1), WR(1), trns_SGS, WK_sph, SGS_mul_FFTW)
 !
@@ -108,15 +108,15 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(trns_SGS%ncomp_rtp_2_rj .le. 0) return
+      if(trns_SGS%forward%ncomp .le. 0) return
 !
-      call check_calypso_sph_comm_buf_N(trns_SGS%ncomp_rtp_2_rj,        &
+      call check_calypso_sph_comm_buf_N(trns_SGS%forward%ncomp,         &
      &    comms_sph%comm_rtp, comms_sph%comm_rtm)
-      call check_calypso_sph_comm_buf_N(trns_SGS%ncomp_rtp_2_rj,        &
+      call check_calypso_sph_comm_buf_N(trns_SGS%forward%ncomp,         &
      &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
 !   transform for vectors and scalars
-      call sph_f_transform_SGS(trns_SGS%ncomp_rtp_2_rj,                 &
+      call sph_f_transform_SGS(trns_SGS%forward%ncomp,                  &
      &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,         &
      &    sph, comms_sph, trans_p, trns_SGS,                            &
      &    n_WS, n_WR, WS(1), WR(1), WK_sph, SGS_mul_FFTW)
@@ -145,19 +145,19 @@
       integer(kind = kint) :: nscalar_trans
 !
 !
-      if(trns_SGS%ncomp_rj_2_rtp .le. 0) return
+      if(trns_SGS%backward%ncomp .le. 0) return
 !
       nscalar_trans = trns_SGS%nscalar_rj_2_rtp                         &
      &               + 6*trns_SGS%ntensor_rj_2_rtp
-      call check_calypso_sph_comm_buf_N(trns_SGS%ncomp_rj_2_rtp,        &
+      call check_calypso_sph_comm_buf_N(trns_SGS%backward%ncomp,        &
      &   comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N(trns_SGS%ncomp_rj_2_rtp,        &
+      call check_calypso_sph_comm_buf_N(trns_SGS%backward%ncomp,        &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       call mhd_spectr_to_sendbuf                                        &
      &   (trns_SGS, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
-      call pole_b_transform(trns_SGS%ncomp_rj_2_rtp,                    &
+      call pole_b_transform(trns_SGS%backward%ncomp,                    &
      &    trns_SGS%nvector_rj_2_rtp, trns_SGS%nscalar_rj_2_rtp,         &
      &    sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
      &    trns_SGS%flc_pole, trns_SGS%fld_pole)

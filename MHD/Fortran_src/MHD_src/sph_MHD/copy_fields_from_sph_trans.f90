@@ -60,7 +60,7 @@
 !
       if( (i_field*i_trns) .le. 0) return
       call copy_nod_scl_from_trans_wpole                                &
-     &   (sph_rtp, m_folding, trns_snap%ncomp_rj_2_rtp,                 &
+     &   (sph_rtp, m_folding, trns_snap%backward%ncomp,                 &
      &    i_trns, trns_snap%fld_rtp, trns_snap%fld_pole,                &
      &    i_field, node, nod_fld)
 !
@@ -83,7 +83,7 @@
 !
       if( (i_field*i_trns) .le. 0) return
       call copy_nod_vec_from_trans_wpole                                &
-     &   (sph_rtp, m_folding, trns_snap%ncomp_rj_2_rtp,                 &
+     &   (sph_rtp, m_folding, trns_snap%backward%ncomp,                 &
      &    i_trns, trns_snap%fld_rtp, trns_snap%fld_pole,                &
      &    i_field, node, nod_fld)
 !
@@ -106,7 +106,7 @@
 !
       if( (i_field*i_trns) .le. 0) return
       call copy_nod_tsr_from_trans_wpole                                &
-     &   (sph_rtp, m_folding, trns_snap%ncomp_rj_2_rtp,                 &
+     &   (sph_rtp, m_folding, trns_snap%backward%ncomp,                 &
      &    i_trns, trns_snap%fld_rtp, trns_snap%fld_pole,                &
      &    i_field, node, nod_fld)
 !
@@ -130,7 +130,7 @@
 !
       if( (i_field*i_trns) .le. 0) return
       call copy_nod_scl_from_trans_wpole                                &
-     &   (sph_rtp, m_folding, trns_snap%ncomp_rtp_2_rj,                 &
+     &   (sph_rtp, m_folding, trns_snap%forward%ncomp,                  &
      &    i_trns, trns_snap%frc_rtp, trns_snap%frc_pole,                &
      &    i_field, node, nod_fld)
 !
@@ -153,7 +153,7 @@
 !
       if( (i_field*i_trns) .le. 0) return
       call copy_nod_vec_from_trans_wpole                                &
-     &   (sph_rtp, m_folding, trns_snap%ncomp_rtp_2_rj,                 &
+     &   (sph_rtp, m_folding, trns_snap%forward%ncomp,                  &
      &    i_trns, trns_snap%frc_rtp, trns_snap%frc_pole,                &
      &    i_field, node, nod_fld)
 !
@@ -176,7 +176,7 @@
 !
       if( (i_field*i_trns) .le. 0) return
       call copy_nod_tsr_from_trans_wpole                                &
-     &   (sph_rtp, m_folding, trns_snap%ncomp_rtp_2_rj,                 &
+     &   (sph_rtp, m_folding, trns_snap%forward%ncomp,                  &
      &    i_trns, trns_snap%frc_rtp, trns_snap%frc_pole,                &
      &    i_field, node, nod_fld)
 !

@@ -179,7 +179,7 @@
 !
       call product_model_coefs_pout(one, ifld_sgs, sph_rtp, sph_d_grp,  &
      &    wk_sgs%num_kinds, wk_sgs%fld_coef, irtp_sgs, ione,            &
-     &    trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
+     &    trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
 !
       end subroutine set_model_coefs_sph_snap
 !

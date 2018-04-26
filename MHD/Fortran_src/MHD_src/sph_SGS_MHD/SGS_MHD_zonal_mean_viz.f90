@@ -4,11 +4,10 @@
 !      Written by H. Matsui on Apr., 2012
 !
 !!      subroutine SGS_MHD_zmean_sections(viz_step, time_d, SGS_par,    &
-!!     &          sph, geofem, ele_mesh, iphys, WK, nod_fld, zmeans)
+!!     &          sph, geofem, ele_mesh, WK, nod_fld, zmeans)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_grids), intent(in) :: sph
-!!        type(phys_address), intent(in) :: iphys
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -44,7 +43,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine SGS_MHD_zmean_sections(viz_step, time_d, SGS_par,      &
-     &          sph, geofem, ele_mesh, iphys, WK, nod_fld, zmeans)
+     &          sph, geofem, ele_mesh, WK, nod_fld, zmeans)
 !
       use FEM_analyzer_sph_SGS_MHD
       use nod_phys_send_recv
@@ -52,7 +51,6 @@
       type(VIZ_step_params), intent(in) :: viz_step
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(in) :: iphys
 !
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: geofem
@@ -66,7 +64,7 @@
       call SPH_MHD_zonal_mean_section(viz_step, time_d,                 &
      &    sph, geofem, ele_mesh, nod_fld, zmeans%zm_psf)
       call SGS_MHD_zonal_RMS_section(viz_step, time_d, SGS_par,         &
-     &    sph, geofem, ele_mesh, iphys, WK, nod_fld, zmeans%zrms_psf)
+     &    sph, geofem, ele_mesh, WK, nod_fld, zmeans%zrms_psf)
 !
       end subroutine SGS_MHD_zmean_sections
 !
@@ -74,7 +72,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine SGS_MHD_zonal_RMS_section(viz_step, time_d, SGS_par,   &
-     &          sph, geofem, ele_mesh, iphys, WK, nod_fld, zrms_psf)
+     &          sph, geofem, ele_mesh, WK, nod_fld, zrms_psf)
 !
       use FEM_analyzer_sph_SGS_MHD
       use sph_rtp_zonal_rms_data
@@ -83,7 +81,6 @@
       type(VIZ_step_params), intent(in) :: viz_step
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(in) :: iphys
 !
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: geofem
@@ -99,7 +96,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
       call SPH_to_FEM_bridge_SGS_MHD                                    &
-     &   (SGS_par, sph, WK, geofem, iphys, nod_fld)
+     &   (SGS_par, sph, WK, geofem, nod_fld)
       call zonal_rms_all_rtp_field                                      &
      &   (sph%sph_rtp, geofem%mesh%node, nod_fld)
 !

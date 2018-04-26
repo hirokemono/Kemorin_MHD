@@ -159,7 +159,7 @@
      &     (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,            &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
      &      WK%trns_MHD%f_trns, WK%trns_MHD%b_trns,                     &
-     &      WK%trns_MHD%ncomp_rj_2_rtp, WK%trns_MHD%ncomp_rtp_2_rj,     &
+     &      WK%trns_MHD%backward%ncomp, WK%trns_MHD%forward%ncomp,      &
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)
       end if
 !
@@ -288,8 +288,8 @@
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
-     &    trns_MHD%ncomp_rtp_2_rj, trns_snap%ncomp_rj_2_rtp,            &
-     &    trns_snap%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                   &
+     &    trns_MHD%forward%ncomp, trns_snap%backward%ncomp,             &
+     &    trns_snap%forward%ncomp, trns_MHD%frc_rtp,                    &
      &    trns_snap%fld_rtp, trns_snap%frc_rtp)
 !
       end subroutine cal_sph_enegy_fluxes
@@ -319,7 +319,7 @@
       if (iflag_debug.eq.1) write(*,*) 'copy_vect_to_grad_vect_rtp'
       call copy_vect_to_grad_vect_rtp                                   &
      &   (sph%sph_rtp, trns_MHD%b_trns, trns_tmp%f_trns,                &
-     &    trns_MHD%ncomp_rj_2_rtp, trns_tmp%ncomp_rtp_2_rj,             &
+     &    trns_MHD%backward%ncomp, trns_tmp%forward%ncomp,              &
      &    trns_MHD%fld_rtp, trns_tmp%frc_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_tmp_snap_MHD'
