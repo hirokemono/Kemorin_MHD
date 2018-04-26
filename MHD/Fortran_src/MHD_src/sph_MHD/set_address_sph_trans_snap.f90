@@ -178,7 +178,7 @@
 !
       do i = 1, trns_snap%backward%num_vector
         call copy_vector_from_snap_trans                                &
-     &     (trns_snap%ifld_trns(i), trns_snap%ifld_rtp(i),              &
+     &     (trns_snap%backward%ifld_trns(i), trns_snap%backward%ifld_rtp(i),     &
      &      sph_params%m_folding, sph_rtp, trns_snap,                   &
      &      mesh%node, nod_fld)
       end do
@@ -186,7 +186,7 @@
       do inum = 1, trns_snap%backward%num_scalar
         i = inum + trns_snap%backward%num_vector
         call copy_scalar_from_snap_trans                                &
-     &     (trns_snap%ifld_trns(i), trns_snap%ifld_rtp(i),              &
+     &     (trns_snap%backward%ifld_trns(i), trns_snap%backward%ifld_rtp(i),     &
      &      sph_params%m_folding, sph_rtp, trns_snap,                   &
      &      mesh%node, nod_fld)
       end do
@@ -211,7 +211,7 @@
 !
       do i = 1, trns_snap%forward%num_vector
         call copy_vector_from_snap_force                                &
-     &     (trns_snap%ifrc_trns(i), trns_snap%ifrc_rtp(i),              &
+     &     (trns_snap%forward%ifld_trns(i), trns_snap%forward%ifld_rtp(i),      &
      &      sph_params%m_folding, sph_rtp, trns_snap,                   &
      &      mesh%node, nod_fld)
       end do
@@ -219,7 +219,7 @@
       do inum = 1, trns_snap%forward%num_scalar
         i = inum + trns_snap%forward%num_vector
         call copy_scalar_from_snap_force                                &
-     &     (trns_snap%ifrc_trns(i), trns_snap%ifrc_rtp(i),              &
+     &     (trns_snap%forward%ifld_trns(i), trns_snap%forward%ifld_rtp(i),      &
      &      sph_params%m_folding, sph_rtp, trns_snap,                   &
      &      mesh%node, nod_fld)
       end do

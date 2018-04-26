@@ -8,8 +8,6 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine alloc_bwd_trns_field_name(trns)
-!!      subroutine alloc_fwd_trns_field_name(trns)
 !!      subroutine alloc_nonlinear_data(sph_rtp, trns)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!      subroutine alloc_nonlinear_pole(sph_rtp, trns)
@@ -63,6 +61,12 @@
 !
 !>        Field name for spherical transform
         character(len = kchara), allocatable :: field_name(:)
+!>        address of spherical transform array
+        integer(kind = kint), allocatable :: ifld_trns(:)
+!>        address of backward transform for sprctr
+        integer(kind = kint), allocatable :: ifld_rj(:)
+!>        address of backward transform for nodal field
+        integer(kind = kint), allocatable :: ifld_rtp(:)
       end type address_each_sph_trans
 !
 
@@ -77,21 +81,6 @@
         type(phys_address) :: b_trns
 !>        addresses of forces for forward transform
         type(phys_address) :: f_trns
-!
-!>        address of backward transform array
-        integer(kind = kint), allocatable :: ifld_trns(:)
-!>        address of backward transform for sprctr
-        integer(kind = kint), allocatable :: ifld_rj(:)
-!>        address of backward transform for nodal field
-        integer(kind = kint), allocatable :: ifld_rtp(:)
-!
-!>        address of forward transform array
-        integer(kind = kint), allocatable :: ifrc_trns(:)
-!>        address of forward transform for sprctr
-        integer(kind = kint), allocatable :: ifrc_rj(:)
-!>        address of forward transform for field
-        integer(kind = kint), allocatable :: ifrc_rtp(:)
-!
 !
 !>        field data in grid space
         real(kind = kreal), allocatable :: fld_rtp(:,:)
@@ -110,48 +99,44 @@
         real(kind = kreal), allocatable :: fld_zm(:,:)
       end type address_4_sph_trans
 !
+      private :: alloc_sph_trns_field_name
+!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_bwd_trns_field_name(trns)
+      subroutine alloc_sph_trns_field_name(each_trns)
 !
-      type(address_4_sph_trans), intent(inout) :: trns
+      type(address_each_sph_trans), intent(inout) :: each_trns
 !
 !
-      allocate(trns%backward%field_name(trns%backward%nfield))
-      allocate(trns%ifld_trns(trns%backward%nfield))
-      allocate(trns%ifld_rj(trns%backward%nfield))
-      allocate(trns%ifld_rtp(trns%backward%nfield))
+      allocate(each_trns%field_name(each_trns%nfield))
+      allocate(each_trns%ifld_trns(each_trns%nfield))
+      allocate(each_trns%ifld_rj(each_trns%nfield))
+      allocate(each_trns%ifld_rtp(each_trns%nfield))
 !
-      if(trns%backward%nfield .le. 0) return
-      trns%ifld_trns = 0
-      trns%ifld_rj =   0
-      trns%ifld_rtp =  0
+      if(each_trns%nfield .le. 0) return
+      each_trns%ifld_trns = 0
+      each_trns%ifld_rj =   0
+      each_trns%ifld_rtp =  0
 !
-      end subroutine alloc_bwd_trns_field_name
+      end subroutine alloc_sph_trns_field_name
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_fwd_trns_field_name(trns)
+      subroutine dealloc_sph_trns_field_name(each_trns)
 !
-      type(address_4_sph_trans), intent(inout) :: trns
+      type(address_each_sph_trans), intent(inout) :: each_trns
 !
 !
-      allocate(trns%forward%field_name(trns%forward%nfield))
-      allocate(trns%ifrc_trns(trns%forward%nfield))
-      allocate(trns%ifrc_rj(trns%forward%nfield))
-      allocate(trns%ifrc_rtp(trns%forward%nfield))
+      deallocate(each_trns%field_name, each_trns%ifld_trns)
+      deallocate(each_trns%ifld_rj, each_trns%ifld_rtp)
 !
-      if(trns%forward%nfield .le. 0) return
-      trns%ifrc_trns = 0
-      trns%ifrc_rj =   0
-      trns%ifrc_rtp =  0
+      end subroutine dealloc_sph_trns_field_name
 !
-      end subroutine alloc_fwd_trns_field_name
-!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine alloc_nonlinear_data(sph_rtp, trns)
@@ -218,8 +203,7 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      deallocate(trns%backward%field_name)
-      deallocate(trns%ifld_trns, trns%ifld_rj, trns%ifld_rtp)
+      call dealloc_sph_trns_field_name(trns%backward)
 !
       end subroutine dealloc_bwd_trns_field_name
 !
@@ -230,8 +214,7 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      deallocate(trns%forward%field_name)
-      deallocate(trns%ifrc_trns, trns%ifrc_rj, trns%ifrc_rtp)
+      call dealloc_sph_trns_field_name(trns%forward)
 !
       end subroutine dealloc_fwd_trns_field_name
 !
@@ -317,10 +300,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_fields_4_sph_trans(trns, ncomp_sph_trans,    &
-     &          nvector_sph_trans, nscalar_sph_trans)
+      subroutine count_num_fields_each_trans(each_trns,                 &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      type(address_4_sph_trans), intent(inout) :: trns
+      type(address_each_sph_trans), intent(inout) :: each_trns
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
@@ -328,36 +311,68 @@
       integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
 !
-      trns%backward%nfield =  trns%backward%num_vector                  &
-     &                      + trns%backward%num_scalar                  &
-     &                      + trns%backward%num_tensor
-      trns%forward%nfield =  trns%forward%num_vector                    &
-     &                      + trns%forward%num_scalar                   &
-     &                      + trns%forward%num_tensor
+      each_trns%nfield =  each_trns%num_vector + each_trns%num_scalar   &
+     &                  + each_trns%num_tensor
 !
-      nscltsr_rj_2_rtp                                                  &
-     &      = trns%backward%num_scalar + 6*trns%backward%num_tensor
-      trns%backward%ncomp                                               &
-     &      = 3*trns%backward%num_vector + nscltsr_rj_2_rtp
+      nscltsr_rj_2_rtp = each_trns%num_scalar + 6*each_trns%num_tensor
+      each_trns%ncomp = 3*each_trns%num_vector + nscltsr_rj_2_rtp
 !
-      nscltsr_rtp_2_rj                                                  &
-     &      = trns%forward%num_scalar + 6*trns%forward%num_tensor
-      trns%forward%ncomp                                                &
-     &      = 3*trns%forward%num_vector + nscltsr_rtp_2_rj
-!
-      ncomp_sph_trans =   max(ncomp_sph_trans, trns%forward%ncomp)
-      ncomp_sph_trans =   max(ncomp_sph_trans, trns%backward%ncomp)
-      nvector_sph_trans = max(nvector_sph_trans, trns%backward%num_vector)
-      nvector_sph_trans = max(nvector_sph_trans, trns%forward%num_vector)
+      ncomp_sph_trans =   max(ncomp_sph_trans, each_trns%ncomp)
+      nvector_sph_trans = max(nvector_sph_trans, each_trns%num_vector)
       nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rj_2_rtp)
-      nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rtp_2_rj)
 !
-      call alloc_bwd_trns_field_name(trns)
-      call alloc_fwd_trns_field_name(trns)
+      end subroutine count_num_fields_each_trans
+!
+!-----------------------------------------------------------------------
+!
+      subroutine count_num_fields_4_sph_trans(trns,                     &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      type(address_4_sph_trans), intent(inout) :: trns
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+!
+      call count_num_fields_each_trans(trns%backward, ncomp_sph_trans,  &
+     &          nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns%forward, ncomp_sph_trans,   &
+     &          nvector_sph_trans, nscalar_sph_trans)
+!
+      call alloc_sph_trns_field_name(trns%backward)
+      call alloc_sph_trns_field_name(trns%forward)
 !
       end subroutine count_num_fields_4_sph_trans
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_field_name_4_sph_trns(field_name, i_trns,          &
+     &          i_pol, i_tor, irtp, icou, each_trns)
+!
+      use m_machine_parameter
+!
+      character(len = kchara), intent(in) :: field_name
+      integer(kind = kint), intent(in) :: i_trns, i_pol, i_tor, irtp
+      integer(kind = kint), intent(inout) :: icou
+      type(address_each_sph_trans), intent(inout) :: each_trns
+!
+!
+      if(i_trns .eq. 0) return
+      icou = icou + 1
+      each_trns%field_name(icou) = field_name
+      each_trns%ifld_trns(icou) = i_trns
+      each_trns%ifld_rj(icou) =   i_pol
+      each_trns%ifld_rtp(icou) =  irtp
+!
+      if(iflag_debug .eq. 0) return
+      write(*,'(i5,a2,a,a2,4i5)')                                       &
+     &    icou, '. ', trim(each_trns%field_name(icou)), ': ',           &
+     &    each_trns%ifld_trns(icou), each_trns%ifld_rj(icou), i_tor,    &
+     &    each_trns%ifld_rtp(icou)
+!
+      end subroutine set_field_name_4_sph_trns
+!
 !-----------------------------------------------------------------------
 !
       subroutine set_field_name_4_bwd_trns                              &
@@ -371,18 +386,8 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      if(i_trns .eq. 0) return
-      icou = icou + 1
-      trns%backward%field_name(icou) = field_name
-      trns%ifld_trns(icou) = i_trns
-      trns%ifld_rj(icou) =   i_pol
-      trns%ifld_rtp(icou) =  irtp
-!
-      if(iflag_debug .eq. 0) return
-      write(*,'(i5,a2,a,a2,4i5)')                                       &
-     &    icou, '. ', trim(trns%backward%field_name(icou)), ': ',       &
-     &    trns%ifld_trns(icou), trns%ifld_rj(icou), i_tor,              &
-     &    trns%ifld_rtp(icou)
+      call set_field_name_4_sph_trns(field_name, i_trns,               &
+     &          i_pol, i_tor, irtp, icou, trns%backward)
 !
       end subroutine set_field_name_4_bwd_trns
 !
@@ -399,18 +404,8 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      if(i_trns .eq. 0) return
-      icou = icou + 1
-      trns%forward%field_name(icou) = field_name
-      trns%ifrc_trns(icou) = i_trns
-      trns%ifrc_rj(icou) =   i_pol
-      trns%ifrc_rtp(icou) =  irtp
-!
-      if(iflag_debug .eq. 0) return
-      write(*,'(i5,a2,a,a2,4i5)')                                       &
-     &    icou, '. ', trim(trns%forward%field_name(icou)), ': ',        &
-     &    trns%ifrc_trns(icou), trns%ifrc_rj(icou), i_tor,              &
-     &    trns%ifrc_rtp(icou)
+      call set_field_name_4_sph_trns(field_name, i_trns,                &
+     &          i_pol, i_tor, irtp, icou, trns%forward)
 !
       end subroutine set_field_name_4_fwd_trns
 !
