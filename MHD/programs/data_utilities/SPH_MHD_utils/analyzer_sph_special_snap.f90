@@ -241,8 +241,7 @@
 !
 !*  -----------  data transfer to FEM array --------------
 !*
-      call SPH_to_FEM_bridge_MHD(sph%sph_params, sph%sph_rtp,           &
-     &    WK, mesh, FEM_d1%iphys, FEM_d1%field)
+      call SPH_to_FEM_bridge_MHD(sph, WK, mesh, FEM_d1%field)
 !
 ! ----  Take zonal mean
 !

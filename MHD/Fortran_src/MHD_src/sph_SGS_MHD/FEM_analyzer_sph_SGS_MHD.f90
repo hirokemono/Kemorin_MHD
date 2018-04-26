@@ -66,13 +66,10 @@
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      call SPH_to_FEM_bridge_MHD                                        &
-     &   (sph%sph_params, sph%sph_rtp, WK, geofem%mesh, iphys, nod_fld)
-!
+      call SPH_to_FEM_bridge_MHD(sph, WK, geofem%mesh, nod_fld)
 !
       if(SGS_par%model_p%iflag_SGS .eq. 0) return
-      call copy_SGS_MHD_fld_from_trans                                  &
-     &   (sph, WK, geofem%mesh, iphys, nod_fld)
+      call copy_SGS_MHD_fld_from_trans(sph, WK, geofem%mesh, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_SGS_MHD
 !

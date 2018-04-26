@@ -93,21 +93,21 @@
      &    iphys%i_rot_comp_buo, trns_snap%nvector_rj_2_rtp,             &
      &    trns_snap%b_trns%i_rot_comp_buo)
 !
-      call add_vec_trans_flag_snap(ipol%i_SGS_inertia,                  &
-     &    iphys%i_SGS_inertia, trns_snap%nvector_rj_2_rtp,              &
-     &    trns_snap%b_trns%i_SGS_inertia)
-      call add_vec_trans_flag_snap(ipol%i_SGS_Lorentz,                  &
-     &    iphys%i_SGS_Lorentz, trns_snap%nvector_rj_2_rtp,              &
-     &    trns_snap%b_trns%i_SGS_Lorentz)
-      call add_vec_trans_flag_snap(ipol%i_SGS_vp_induct,                &
-     &    iphys%i_SGS_vp_induct, trns_snap%nvector_rj_2_rtp,            &
-     &    trns_snap%b_trns%i_SGS_vp_induct)
-      call add_vec_trans_flag_snap(ipol%i_SGS_h_flux,                   &
-     &    iphys%i_SGS_h_flux, trns_snap%nvector_rj_2_rtp,               &
-     &    trns_snap%b_trns%i_SGS_h_flux)
-      call add_vec_trans_flag_snap(ipol%i_SGS_c_flux,                   &
-     &    iphys%i_SGS_c_flux, trns_snap%nvector_rj_2_rtp,               &
-     &    trns_snap%b_trns%i_SGS_c_flux)
+!      call add_vec_trans_flag_snap(ipol%i_SGS_inertia,                 &
+!     &    iphys%i_SGS_inertia, trns_snap%nvector_rj_2_rtp,             &
+!     &    trns_snap%b_trns%i_SGS_inertia)
+!      call add_vec_trans_flag_snap(ipol%i_SGS_Lorentz,                 &
+!     &    iphys%i_SGS_Lorentz, trns_snap%nvector_rj_2_rtp,             &
+!     &    trns_snap%b_trns%i_SGS_Lorentz)
+!      call add_vec_trans_flag_snap(ipol%i_SGS_vp_induct,               &
+!     &    iphys%i_SGS_vp_induct, trns_snap%nvector_rj_2_rtp,           &
+!     &    trns_snap%b_trns%i_SGS_vp_induct)
+!      call add_vec_trans_flag_snap(ipol%i_SGS_h_flux,                  &
+!     &    iphys%i_SGS_h_flux, trns_snap%nvector_rj_2_rtp,              &
+!     &    trns_snap%b_trns%i_SGS_h_flux)
+!      call add_vec_trans_flag_snap(ipol%i_SGS_c_flux,                  &
+!     &    iphys%i_SGS_c_flux, trns_snap%nvector_rj_2_rtp,              &
+!     &    trns_snap%b_trns%i_SGS_c_flux)
 !
       call add_vec_trans_flag_snap(ipol%i_buoyancy,                     &
      &    iphys%i_buoyancy, trns_snap%nvector_rj_2_rtp,                 &
@@ -190,7 +190,7 @@
      &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_bz)
 !
       call add_vec_trans_flag_snap(ipol%i_grad_jx, iphys%i_grad_jx,     &
-     &    trns_snap%nvector_rj_2_rtp, trns_snapb_trns%i_grad_jx)
+     &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_jx)
       call add_vec_trans_flag_snap(ipol%i_grad_jy, iphys%i_grad_jy,     &
      &    trns_snap%nvector_rj_2_rtp, trns_snap%b_trns%i_grad_jy)
       call add_vec_trans_flag_snap(ipol%i_grad_jz, iphys%i_grad_jz,     &

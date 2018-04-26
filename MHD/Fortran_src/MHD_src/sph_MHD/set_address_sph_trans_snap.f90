@@ -27,6 +27,8 @@
       use t_phys_address
       use t_SPH_mesh_field_data
       use t_addresses_sph_transform
+      use t_mesh_data
+      use t_spheric_parameter
 !
       implicit none
 !
@@ -158,6 +160,7 @@
       end subroutine set_addresses_temporal_trans
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       subroutine copy_field_from_transform                              &
      &         (sph_params, sph_rtp, trns_snap, mesh, nod_fld)
@@ -170,10 +173,12 @@
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(inout) :: nod_fld
 !
+      integer(kind = kint) :: i, inum
+!
 !
       do i = 1, trns_snap%nvector_rj_2_rtp
         call copy_vector_from_snap_trans                                &
-     &     (trns_snap%ifld_trns(i), trns%ifld_rtp(i),                   &
+     &     (trns_snap%ifld_trns(i), trns_snap%ifld_rtp(i),              &
      &      sph_params%m_folding, sph_rtp, trns_snap,                   &
      &      mesh%node, nod_fld)
       end do
@@ -181,12 +186,45 @@
       do inum = 1, trns_snap%nscalar_rj_2_rtp
         i = inum + trns_snap%nvector_rj_2_rtp
         call copy_scalar_from_snap_trans                                &
-     &     (trns_snap%ifld_trns(i), trns%ifld_rtp(i),                   &
+     &     (trns_snap%ifld_trns(i), trns_snap%ifld_rtp(i),              &
      &      sph_params%m_folding, sph_rtp, trns_snap,                   &
      &      mesh%node, nod_fld)
       end do
 !
       end subroutine copy_field_from_transform
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_force_from_transform                              &
+     &         (sph_params, sph_rtp, trns_snap, mesh, nod_fld)
+!
+      use copy_fields_from_sph_trans
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(address_4_sph_trans), intent(in) :: trns_snap
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_data), intent(inout) :: nod_fld
+!
+      integer(kind = kint) :: i, inum
+!
+!
+      do i = 1, trns_snap%nvector_rtp_2_rj
+        call copy_vector_from_snap_force                                &
+     &     (trns_snap%ifrc_trns(i), trns_snap%ifrc_rtp(i),              &
+     &      sph_params%m_folding, sph_rtp, trns_snap,                   &
+     &      mesh%node, nod_fld)
+      end do
+!
+      do inum = 1, trns_snap%nscalar_rtp_2_rj
+        i = inum + trns_snap%nvector_rtp_2_rj
+        call copy_scalar_from_snap_force                                &
+     &     (trns_snap%ifrc_trns(i), trns_snap%ifrc_rtp(i),              &
+     &      sph_params%m_folding, sph_rtp, trns_snap,                   &
+     &      mesh%node, nod_fld)
+      end do
+!
+      end subroutine copy_force_from_transform
 !
 !-----------------------------------------------------------------------
 !
