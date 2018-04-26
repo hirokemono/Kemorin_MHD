@@ -146,7 +146,6 @@
       use lead_fields_4_sph_mhd
       use sph_SGS_MHD_rst_IO_control
       use input_control_sph_MHD
-      use forces_from_sph_trans
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
