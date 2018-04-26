@@ -12,8 +12,9 @@
 !!     &         (ipol, itor, iphys, b_trns, trns_back)
 !!      subroutine b_trans_address_scalar_SGS                           &
 !!     &         (ipol, itor, iphys, b_trns, trns_back)
-!!        type(phys_address), intent(in) :: ipol
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(phys_address), intent(in) :: ipol, itor, iphys
+!!        type(address_each_sph_trans), intent(inout) :: trns_back
+!!        type(phys_address), intent(inout) :: b_trns
 !!@endverbatim
 !
       module address_bwd_sph_trans_SGS

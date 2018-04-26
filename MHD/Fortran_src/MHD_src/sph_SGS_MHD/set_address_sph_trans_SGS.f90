@@ -112,47 +112,42 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint):: icou
-!
-!
-      call b_trans_address_vector_DYNS(SPH_MHD%ipol, trns_DYNS)
-      call b_trans_address_scalar_DYNS(SPH_MHD%ipol, trns_DYNS)
-      trns_DYNS%backward%num_tensor = 0
-!
-      call f_trans_address_vector_DYNS(trns_DYNS)
-      call f_trans_address_scalar_DYNS(SPH_MHD%ipol, trns_DYNS)
-      trns_DYNS%forward%num_tensor = 0
-!
-      call count_num_fields_4_sph_trans(trns_DYNS, ncomp_sph_trans,     &
-     &   nvector_sph_trans, nscalar_sph_trans)
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for dynamnic SGS'
-        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_DYNS%backward%num_vector
-        write(*,*) 'nscalar_rj_2_rtp ', trns_DYNS%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
 !
-      icou = 0
-      call set_b_trans_vector_field_DYNS                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_DYNS)
-      call set_b_trans_scalar_field_dyns                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_DYNS)
+      call b_trans_address_vector_DYNS(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
+      call b_trans_address_scalar_DYNS(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
+      trns_DYNS%backward%num_tensor = 0
 !
      if(iflag_debug .gt. 0) then
-        write(*,*) 'nvector_rtp_2_rj ', trns_DYNS%forward%num_vector
-        write(*,*) 'nscalar_rtp_2_rj ', trns_DYNS%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                   &
      &             'transform, poloidal, troidal, grid data'
       end if
 !
-      icou = 0
-      call set_f_trans_vector_field_DYNS                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_DYNS)
-      call set_f_trans_scalar_field_DYNS                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_DYNS)
+      call f_trans_address_vector_DYNS(trns_DYNS%forward)
+      call f_trans_address_scalar_DYNS(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_DYNS%f_trns, trns_DYNS%forward)
+      trns_DYNS%forward%num_tensor = 0
+!
+      call count_num_fields_each_trans2(trns_DYNS%backward,             &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans2(trns_DYNS%forward,              &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ', trns_DYNS%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_DYNS%backward%num_scalar
+!
+        write(*,*) 'nvector_rtp_2_rj ', trns_DYNS%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_DYNS%forward%num_scalar
+      end if
 !
       end subroutine set_addresses_trans_sph_DYNS
 !
