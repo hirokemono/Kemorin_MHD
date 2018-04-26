@@ -8,16 +8,11 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine b_trans_address_vector_SGS(ipol, trns_SGS)
-!!      subroutine b_trans_address_scalar_SGS(ipol, trns_SGS)
+!!      subroutine b_trans_address_vector_SGS                           &
+!!     &         (ipol, itor, iphys, b_trns, trns_back)
+!!      subroutine b_trans_address_scalar_SGS                           &
+!!     &         (ipol, itor, iphys, b_trns, trns_back)
 !!        type(phys_address), intent(in) :: ipol
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
-!!
-!!      subroutine set_b_trans_vector_field_SGS                         &
-!!     &         (icou, ipol, itor, iphys, trns_SGS)
-!!      subroutine set_b_trans_scalar_field_SGS                         &
-!!     &         (icou, ipol, itor, iphys, trns_SGS)
-!!        type(phys_address), intent(in) :: ipol, itor, iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!@endverbatim
 !
@@ -26,6 +21,7 @@
       use m_precision
 !
       use m_phys_labels
+      use m_phys_constants
       use t_phys_address
       use t_addresses_sph_transform
       use t_control_parameter
@@ -39,136 +35,90 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_address_vector_SGS(ipol, trns_SGS)
+      subroutine b_trans_address_vector_SGS                             &
+     &         (ipol, itor, iphys, b_trns, trns_back)
 !
-      type(phys_address), intent(in) :: ipol
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(phys_address), intent(inout) :: b_trns
 !
 !
-      trns_SGS%backward%num_vector = 0
+      trns_back%nfield = 0
+      call alloc_sph_trns_field_name(trns_back)
 !
 !   filtered velocity
-      call add_vector_trans_flag(ipol%i_filter_velo,                    &
-     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_filter_velo)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_filter_velo, fhd_filter_velo, n_vector,                &
+     &    ipol%i_filter_velo, itor%i_filter_velo, iphys%i_filter_velo,  &
+     &    b_trns%i_filter_velo, trns_back)
 !   filtered vorticity
-      call add_vector_trans_flag(ipol%i_filter_vort,                    &
-     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_filter_vort)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_filter_vort, fhd_filter_vort, n_vector,                &
+     &    ipol%i_filter_vort, itor%i_filter_vort, iphys%i_filter_vort,  &
+     &    b_trns%i_filter_vort, trns_back)
 !   filtered magnetic field
-      call add_vector_trans_flag(ipol%i_filter_magne,                   &
-     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_filter_magne)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_filter_magne, fhd_filter_magne, n_vector,              &
+     &    ipol%i_filter_magne, itor%i_filter_magne,                     &
+     &    iphys%i_filter_magne, b_trns%i_filter_magne, trns_back)
 !   filtered current density
-      call add_vector_trans_flag(ipol%i_filter_current,                 &
-     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_filter_current)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_filter_current, fhd_filter_current, n_vector,          &
+     &    ipol%i_filter_current, itor%i_filter_current,                 &
+     &    iphys%i_filter_current, b_trns%i_filter_current, trns_back)
 !
 !   filtered Inertia
-      call add_vector_trans_flag(ipol%i_SGS_inertia,                    &
-     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_SGS_inertia)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_SGS_inertia, fhd_SGS_inertia, n_vector,                &
+     &    ipol%i_SGS_inertia, itor%i_SGS_inertia,                       &
+     &    iphys%i_SGS_inertia, b_trns%i_SGS_inertia, trns_back)
 !   filtered Lorentz force
-      call add_vector_trans_flag(ipol%i_SGS_Lorentz,                    &
-     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_SGS_Lorentz)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_SGS_Lorentz, fhd_SGS_Lorentz, n_vector,                &
+     &    ipol%i_SGS_Lorentz, itor%i_SGS_Lorentz,                       &
+     &    iphys%i_SGS_Lorentz, b_trns%i_SGS_Lorentz, trns_back)
 !   filtered induction
-      call add_vector_trans_flag(ipol%i_SGS_vp_induct,                  &
-     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_SGS_vp_induct)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_SGS_vp_induct, fhd_SGS_vp_induct, n_vector,            &
+     &    ipol%i_SGS_vp_induct, itor%i_SGS_vp_induct,                   &
+     &    iphys%i_SGS_vp_induct, b_trns%i_SGS_vp_induct, trns_back)
 !   filtered heat flux
-      call add_vector_trans_flag(ipol%i_SGS_h_flux,                     &
-     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_SGS_h_flux)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_SGS_h_flux, fhd_SGS_h_flux, n_vector,                  &
+     &    ipol%i_SGS_h_flux, itor%i_SGS_h_flux, iphys%i_SGS_h_flux,     &
+     &    b_trns%i_SGS_h_flux, trns_back)
 !   filtered composition flux
-      call add_vector_trans_flag(ipol%i_SGS_c_flux,                     &
-     &    trns_SGS%backward%num_vector, trns_SGS%b_trns%i_SGS_c_flux)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_SGS_c_flux, fhd_SGS_c_flux, n_vector,                  &
+     &    ipol%i_SGS_c_flux, itor%i_SGS_c_flux, iphys%i_SGS_c_flux,     &
+     &    b_trns%i_SGS_c_flux, trns_back)
+      trns_back%num_vector = trns_back%nfield
 !
       end subroutine b_trans_address_vector_SGS
 !
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_address_scalar_SGS(ipol, trns_SGS)
+      subroutine b_trans_address_scalar_SGS                             &
+     &         (ipol, itor, iphys, b_trns, trns_back)
 !
-      type(phys_address), intent(in) :: ipol
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(phys_address), intent(inout) :: b_trns
 !
 !
-      trns_SGS%backward%num_scalar = 0
 !   filtered temperature
-      call add_scalar_trans_flag(ipol%i_filter_temp,                    &
-     &    trns_SGS%backward%num_vector, trns_SGS%backward%num_scalar,         &
-     &    trns_SGS%b_trns%i_filter_temp)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_filter_temp, fhd_filter_temp, n_scalar,                &
+     &    ipol%i_filter_temp, itor%i_filter_temp, iphys%i_filter_temp,  &
+     &    b_trns%i_filter_temp, trns_back)
 !   filtered composition
-      call add_scalar_trans_flag(ipol%i_filter_comp,                    &
-     &    trns_SGS%backward%num_vector, trns_SGS%backward%num_scalar,         &
-     &    trns_SGS%b_trns%i_filter_comp)
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_filter_comp, fhd_filter_comp, n_scalar,                &
+     &    ipol%i_filter_comp, itor%i_filter_comp, iphys%i_filter_comp,  &
+     &    b_trns%i_filter_comp, trns_back)
+      trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
 !
       end subroutine b_trans_address_scalar_SGS
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_b_trans_vector_field_SGS                           &
-     &         (icou, ipol, itor, iphys, trns_SGS)
-!
-      type(phys_address), intent(in) :: ipol, itor, iphys
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
-      integer(kind = kint), intent(inout) :: icou
-!
-!   filtered fields
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_filter_velo, trns_SGS%b_trns%i_filter_velo,               &
-     &    ipol%i_filter_velo, itor%i_filter_velo, iphys%i_filter_velo,  &
-     &    icou, trns_SGS%backward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_filter_vort, trns_SGS%b_trns%i_filter_vort,               &
-     &    ipol%i_filter_vort, itor%i_filter_vort, iphys%i_filter_vort,  &
-     &     icou, trns_SGS%backward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_filter_magne, trns_SGS%b_trns%i_filter_magne,             &
-     &    ipol%i_filter_magne, itor%i_filter_magne,                     &
-     &    iphys%i_filter_magne, icou, trns_SGS%backward)
-      call set_field_name_4_sph_trns(fhd_filter_current,                &
-     &    trns_SGS%b_trns%i_filter_current, ipol%i_filter_current,      &
-     &    itor%i_filter_current, iphys%i_filter_current,                &
-     &    icou, trns_SGS%backward)
-!
-!      filtered force
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_SGS_inertia, trns_SGS%b_trns%i_SGS_inertia,               &
-     &    ipol%i_SGS_inertia, itor%i_SGS_inertia,                       &
-     &    iphys%i_SGS_inertia, icou, trns_SGS%backward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_SGS_Lorentz, trns_SGS%b_trns%i_SGS_Lorentz,               &
-     &    ipol%i_SGS_Lorentz, itor%i_SGS_Lorentz,                       &
-     &    iphys%i_SGS_Lorentz, icou, trns_SGS%backward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_SGS_vp_induct, trns_SGS%b_trns%i_SGS_vp_induct,           &
-     &    ipol%i_SGS_vp_induct, itor%i_SGS_vp_induct,                   &
-     &    iphys%i_SGS_vp_induct, icou, trns_SGS%backward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_SGS_h_flux, trns_SGS%b_trns%i_SGS_h_flux,                 &
-     &    ipol%i_SGS_h_flux, itor%i_SGS_h_flux, iphys%i_SGS_h_flux,     &
-     &     icou, trns_SGS%backward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_SGS_c_flux, trns_SGS%b_trns%i_SGS_c_flux,                 &
-     &    ipol%i_SGS_c_flux, itor%i_SGS_c_flux, iphys%i_SGS_c_flux,     &
-     &    icou, trns_SGS%backward)
-!
-      end subroutine set_b_trans_vector_field_SGS
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_b_trans_scalar_field_SGS                          &
-     &         (icou, ipol, itor, iphys, trns_SGS)
-!
-      type(phys_address), intent(in) :: ipol, itor, iphys
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
-      integer(kind = kint), intent(inout) :: icou
-!
-!
-!   filtered field
-      call set_field_name_4_sph_trns(fhd_filter_temp,                   &
-     &    trns_SGS%b_trns%i_filter_temp, ipol%i_filter_temp,            &
-     &    itor%i_filter_temp, iphys%i_filter_temp, icou, trns_SGS%backward)
-      call set_field_name_4_sph_trns(fhd_filter_comp,                   &
-     &    trns_SGS%b_trns%i_filter_comp, ipol%i_filter_comp,            &
-     &    itor%i_filter_comp, iphys%i_filter_comp, icou, trns_SGS%backward)
-!
-      end subroutine set_b_trans_scalar_field_SGS
 !
 !-----------------------------------------------------------------------
 !

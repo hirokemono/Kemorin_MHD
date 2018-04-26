@@ -55,47 +55,44 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint) :: icou
-!
-!
-      call b_trans_address_vector_SGS(SPH_MHD%ipol, trns_SGS)
-      call b_trans_address_scalar_SGS(SPH_MHD%ipol, trns_SGS)
-      trns_SGS%backward%num_tensor = 0
-!
-      call f_trans_address_vector_SGS(SPH_MHD%ipol, trns_SGS)
-      call f_trans_address_scalar_SGS(trns_SGS)
-      trns_SGS%forward%num_tensor = 0
-!
-      call count_num_fields_4_sph_trans(trns_SGS, ncomp_sph_trans,      &
-     &   nvector_sph_trans, nscalar_sph_trans)
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for similarity SGS'
-        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_SGS%backward%num_vector
-        write(*,*) 'nscalar_rj_2_rtp ', trns_SGS%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
 !
-      icou = 0
-      call set_b_trans_vector_field_SGS                                 &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_SGS)
-      call set_b_trans_scalar_field_SGS                                 &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_SGS)
+      call b_trans_address_vector_SGS(SPH_MHD%ipol, SPH_MHD%itor,       &
+     &    iphys, trns_SGS%b_trns, trns_SGS%backward)
+      call b_trans_address_scalar_SGS(SPH_MHD%ipol, SPH_MHD%itor,       &
+     &    iphys, trns_SGS%b_trns, trns_SGS%backward)
+      trns_SGS%backward%num_tensor = 0
 !
-     if(iflag_debug .gt. 0) then
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Address for forward transform: ',                  &
+     &             'transform, poloidal, troidal, grid data'
+      end if
+!
+      call f_trans_address_vector_SGS(SPH_MHD%ipol, SPH_MHD%itor,       &
+     &    iphys, trns_SGS%f_trns, trns_SGS%forward)
+      call f_trans_address_scalar_SGS(trns_SGS%forward)
+      trns_SGS%forward%num_tensor = 0
+!
+      call count_num_fields_each_trans2(trns_SGS%backward,              &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans2(trns_SGS%forward,               &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ', trns_SGS%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_SGS%backward%num_scalar
+!
         write(*,*) 'nvector_rtp_2_rj ', trns_SGS%forward%num_vector
         write(*,*) 'nscalar_rtp_2_rj ', trns_SGS%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
-!
-      icou = 0
-      call set_f_trans_vector_field_SGS                                 &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_SGS)
-      call set_f_trans_scalar_field_SGS                                 &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_SGS)
 !
       end subroutine set_addresses_trans_sph_SGS
 !

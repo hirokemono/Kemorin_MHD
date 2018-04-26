@@ -70,8 +70,6 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint):: icou
-!
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for MHD'
