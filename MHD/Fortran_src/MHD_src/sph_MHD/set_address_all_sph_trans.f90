@@ -146,8 +146,8 @@
       do i = 1, rj_fld%num_phys_viz
         i_fld = rj_fld%istack_component(i-1) + 1
         if(rj_fld%num_component(i) .eq. n_vector) then
-          call set_field_name_4_fwd_trns(rj_fld%phys_name(i),           &
-     &        icomp, i_fld, (i_fld+2), i_fld, icou, trns_MHD)
+          call set_field_name_4_sph_trns(rj_fld%phys_name(i),           &
+     &        icomp, i_fld, (i_fld+2), i_fld, icou, trns_MHD%forward)
           icomp = icomp + 3
         end if
       end do
@@ -155,8 +155,8 @@
       do i = 1, rj_fld%num_phys_viz
         i_fld = rj_fld%istack_component(i-1) + 1
         if(rj_fld%num_component(i) .eq. n_scalar) then
-          call set_field_name_4_fwd_trns(rj_fld%phys_name(i),           &
-     &        icomp, i_fld, izero, i_fld, icou, trns_MHD)
+          call set_field_name_4_sph_trns(rj_fld%phys_name(i),           &
+     &        icomp, i_fld, izero, i_fld, icou, trns_MHD%forward)
           icomp = icomp + 1
         end if
       end do
@@ -164,8 +164,8 @@
       do i = 1, rj_fld%num_phys_viz
         i_fld = rj_fld%istack_component(i-1) + 1
         if(rj_fld%num_component(i) .eq. n_sym_tensor) then
-          call set_field_name_4_fwd_trns(rj_fld%phys_name(i),           &
-     &        icomp, i_fld, izero, i_fld, icou, trns_MHD)
+          call set_field_name_4_sph_trns(rj_fld%phys_name(i),           &
+     &        icomp, i_fld, izero, i_fld, icou, trns_MHD%forward)
           icomp = icomp + 6
         end if
       end do

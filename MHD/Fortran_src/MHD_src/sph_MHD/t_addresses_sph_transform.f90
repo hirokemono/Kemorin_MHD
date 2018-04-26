@@ -30,9 +30,9 @@
 !!
 !!      subroutine count_num_fields_4_sph_trans(trns, ncomp_sph_trans,  &
 !!     &          nvector_sph_trans, nscalar_sph_trans)
+!!      subroutine set_field_name_4_sph_trns(field_name, i_trns,        &
+!!     &          i_pol, i_tor, irtp, icou, each_trns)
 !!      subroutine set_field_name_4_bwd_trns                            &
-!!     &         (field_name, i_trns, i_pol, i_tor, irtp, trns)
-!!      subroutine set_field_name_4_fwd_trns                            &
 !!     &         (field_name, i_trns, i_pol, i_tor, irtp, trns)
 !!        type(address_4_sph_trans), intent(inout) :: trns
 !!@endverbatim
@@ -308,7 +308,7 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
+      integer(kind = kint) :: nscltsr_rj_2_rtp
 !
 !
       each_trns%nfield =  each_trns%num_vector + each_trns%num_scalar   &
@@ -390,24 +390,6 @@
      &          i_pol, i_tor, irtp, icou, trns%backward)
 !
       end subroutine set_field_name_4_bwd_trns
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_field_name_4_fwd_trns                              &
-     &         (field_name, i_trns, i_pol, i_tor, irtp, icou, trns)
-!
-      use m_machine_parameter
-!
-      character(len = kchara), intent(in) :: field_name
-      integer(kind = kint), intent(in) :: i_trns, i_pol, i_tor, irtp
-      integer(kind = kint), intent(inout) :: icou
-      type(address_4_sph_trans), intent(inout) :: trns
-!
-!
-      call set_field_name_4_sph_trns(field_name, i_trns,                &
-     &          i_pol, i_tor, irtp, icou, trns%forward)
-!
-      end subroutine set_field_name_4_fwd_trns
 !
 !-----------------------------------------------------------------------
 !

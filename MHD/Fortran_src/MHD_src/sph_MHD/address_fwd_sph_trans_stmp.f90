@@ -126,10 +126,10 @@
       integer(kind = kint), intent(inout) :: icou
 !
 !
-      call set_field_name_4_fwd_trns                                    &
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_Coriolis, trns_tmp%f_trns%i_coriolis,                     &
      &    ipol%i_coriolis, itor%i_coriolis, iphys%i_coriolis,           &
-     &    icou, trns_tmp)
+     &    icou, trns_tmp%forward)
 !
       end subroutine set_f_trans_vector_field_stmp
 !
@@ -143,70 +143,70 @@
       integer(kind = kint), intent(inout) :: icou
 !
 !
-      call set_field_name_4_fwd_trns                                    &
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_v_1, trns_tmp%f_trns%i_grad_vx,                      &
      &    ipol%i_grad_vx, itor%i_grad_vx, iphys%i_grad_vx,              &
-     &    icou, trns_tmp)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_tmp%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_v_2, trns_tmp%f_trns%i_grad_vy,                      &
      &    ipol%i_grad_vy, itor%i_grad_vy, iphys%i_grad_vy,              &
-     &    icou, trns_tmp)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_tmp%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_v_3, trns_tmp%f_trns%i_grad_vz,                      &
      &    ipol%i_grad_vz, itor%i_grad_vz, iphys%i_grad_vz,              &
-     &    icou, trns_tmp)
+     &    icou, trns_tmp%forward)
 !
-      call set_field_name_4_fwd_trns                                    &
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_w_1, trns_tmp%f_trns%i_grad_wx,                      &
      &    ipol%i_grad_wx, itor%i_grad_wx, iphys%i_grad_wx,              &
-     &    icou, trns_tmp)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_tmp%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_w_2, trns_tmp%f_trns%i_grad_wy,                      &
      &    ipol%i_grad_wy, itor%i_grad_wy, iphys%i_grad_wy,              &
-     &    icou, trns_tmp)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_tmp%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_w_3, trns_tmp%f_trns%i_grad_wz,                      &
      &    ipol%i_grad_wz, itor%i_grad_wz, iphys%i_grad_wz,              &
-     &    icou, trns_tmp)
+     &    icou, trns_tmp%forward)
 !
-      call set_field_name_4_fwd_trns                                    &
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_a_1, trns_tmp%f_trns%i_grad_ax,                      &
      &    ipol%i_grad_ax, itor%i_grad_ax, iphys%i_grad_ax,              &
-     &    icou, trns_tmp)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_tmp%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_a_2, trns_tmp%f_trns%i_grad_ay,                      &
      &    ipol%i_grad_ay, itor%i_grad_ay, iphys%i_grad_ay,              &
-     &    icou, trns_tmp)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_tmp%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_a_3, trns_tmp%f_trns%i_grad_az,                      &
      &    ipol%i_grad_az, itor%i_grad_az, iphys%i_grad_az,              &
-     &    icou, trns_tmp)
+     &    icou, trns_tmp%forward)
 !
-      call set_field_name_4_fwd_trns                                    &
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_b_1, trns_tmp%f_trns%i_grad_bx,                      &
      &    ipol%i_grad_bx, itor%i_grad_bx, iphys%i_grad_bx,              &
-     &    icou, trns_tmp)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_tmp%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_b_2, trns_tmp%f_trns%i_grad_by,                      &
      &    ipol%i_grad_by, itor%i_grad_by, iphys%i_grad_by,              &
-     &    icou, trns_tmp)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_tmp%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_b_3, trns_tmp%f_trns%i_grad_bz,                      &
      &    ipol%i_grad_bz, itor%i_grad_bz, iphys%i_grad_bz,              &
-     &    icou, trns_tmp)
+     &    icou, trns_tmp%forward)
 !
-      call set_field_name_4_fwd_trns                                    &
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_j_1, trns_tmp%f_trns%i_grad_jx,                      &
      &    ipol%i_grad_jx, itor%i_grad_jx, iphys%i_grad_jx,              &
-     &    icou, trns_tmp)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_tmp%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_j_2, trns_tmp%f_trns%i_grad_jy,                      &
      &    ipol%i_grad_jy, itor%i_grad_jy, iphys%i_grad_jy,              &
-     &    icou, trns_tmp)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_tmp%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_grad_j_3, trns_tmp%f_trns%i_grad_jz,                      &
      &    ipol%i_grad_jz, itor%i_grad_jz, iphys%i_grad_jz,              &
-     &    icou, trns_tmp)
+     &    icou, trns_tmp%forward)
 !
       end subroutine set_f_trans_scalar_field_stmp
 !

@@ -110,26 +110,26 @@
 !
 !
 !   SGS advection flag
-      call set_field_name_4_fwd_trns                                    &
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_SGS_inertia, trns_SGS%f_trns%i_SGS_inertia,               &
      &    ipol%i_SGS_inertia, itor%i_SGS_inertia, iphys%i_SGS_inertia,  &
-     &    icou, trns_SGS)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_SGS%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_SGS_Lorentz, trns_SGS%f_trns%i_SGS_Lorentz,               &
      &    ipol%i_SGS_Lorentz, itor%i_SGS_Lorentz, iphys%i_SGS_Lorentz,  &
-     &    icou, trns_SGS)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_SGS%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_SGS_vp_induct, trns_SGS%f_trns%i_SGS_vp_induct,           &
      &    ipol%i_SGS_vp_induct, itor%i_SGS_vp_induct,                   &
-     &    iphys%i_SGS_vp_induct, icou, trns_SGS)
-      call set_field_name_4_fwd_trns                                    &
+     &    iphys%i_SGS_vp_induct, icou, trns_SGS%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_SGS_h_flux, trns_SGS%f_trns%i_SGS_h_flux,                 &
      &    ipol%i_SGS_h_flux, itor%i_SGS_h_flux, iphys%i_SGS_h_flux,     &
-     &    icou, trns_SGS)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_SGS%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_SGS_c_flux, trns_SGS%f_trns%i_SGS_c_flux,                 &
      &    ipol%i_SGS_c_flux, itor%i_SGS_c_flux, iphys%i_SGS_c_flux,     &
-     &    icou, trns_SGS)
+     &    icou, trns_SGS%forward)
 !
       end subroutine set_f_trans_vector_field_SGS
 !
@@ -143,28 +143,28 @@
       integer(kind = kint), intent(inout) :: icou
 !
 !
-      call set_field_name_4_fwd_trns                                    &
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_Reynolds_work, trns_SGS%f_trns%i_reynolds_wk,             &
      &    ipol%i_reynolds_wk, itor%i_reynolds_wk, iphys%i_reynolds_wk,  &
-     &    icou, trns_SGS)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_SGS%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_SGS_buo_flux, trns_SGS%f_trns%i_SGS_buo_wk,               &
      &    ipol%i_SGS_buo_wk, itor%i_SGS_buo_wk, iphys%i_SGS_buo_wk,     &
-     &    icou, trns_SGS)
-      call set_field_name_4_fwd_trns                                    &
+     &    icou, trns_SGS%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_SGS_comp_buo_flux, trns_SGS%f_trns%i_SGS_comp_buo_wk,     &
      &    ipol%i_SGS_comp_buo_wk, itor%i_SGS_comp_buo_wk,               &
-     &    iphys%i_SGS_comp_buo_wk, icou, trns_SGS)
+     &    iphys%i_SGS_comp_buo_wk, icou, trns_SGS%forward)
 !
 !   SGS buoyancy
-      call set_field_name_4_fwd_trns                                    &
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_Csim_SGS_buoyancy, trns_SGS%f_trns%i_Csim_SGS_buoyancy,   &
      &    ipol%i_Csim_SGS_buoyancy, itor%i_Csim_SGS_buoyancy,           &
-     &    iphys%i_Csim_SGS_buoyancy, icou, trns_SGS)
-      call set_field_name_4_fwd_trns                                    &
+     &    iphys%i_Csim_SGS_buoyancy, icou, trns_SGS%forward)
+      call set_field_name_4_sph_trns                                    &
      &   (fhd_Csim_SGS_comp_buo, trns_SGS%f_trns%i_Csim_SGS_comp_buo,   &
      &    ipol%i_Csim_SGS_comp_buo, itor%i_Csim_SGS_comp_buo,           &
-     &    iphys%i_Csim_SGS_comp_buo, icou, trns_SGS)
+     &    iphys%i_Csim_SGS_comp_buo, icou, trns_SGS%forward)
 !
       end subroutine set_f_trans_scalar_field_SGS
 !
