@@ -179,7 +179,7 @@
         i = inum + trns_MHD%backward%num_vector
         call sel_sph_rj_scalar_2_send_wpole(trns_MHD%backward%ncomp,    &
      &      trns_MHD%backward%ifld_rj(i), trns_MHD%backward%ifld_trns(i), nnod_pole,      &
-     &      sph_rj, comm_rj, rj_fld, n_WS, WS, trns_MHD%flc_pole)
+     &      sph_rj, comm_rj, rj_fld, n_WS, WS, trns_MHD%backward%flc_pole)
       end do
 !
       end subroutine mhd_spectr_to_sendbuf_wpole

@@ -87,7 +87,7 @@
      &   (trns_snap%backward%ncomp, trns_snap%backward%num_vector,      &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
      &    n_WS, n_WR, WS(1), WR(1), trns_snap%backward%fld_rtp,         &
-     &    trns_snap%flc_pole, trns_snap%backward%fld_pole, WK_sph)
+     &    trns_snap%backward%flc_pole, trns_snap%backward%fld_pole, WK_sph)
 !
       end subroutine sph_back_trans_snapshot_MHD
 !

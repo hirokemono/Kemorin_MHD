@@ -160,7 +160,7 @@
       call pole_b_transform(trns_SGS%backward%ncomp,                    &
      &    trns_SGS%backward%num_vector, trns_SGS%backward%num_scalar,   &
      &    sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
-     &    trns_SGS%flc_pole, trns_SGS%backward%fld_pole)
+     &    trns_SGS%backward%flc_pole, trns_SGS%backward%fld_pole)
 !
       end subroutine sph_pole_trans_SGS_MHD
 !

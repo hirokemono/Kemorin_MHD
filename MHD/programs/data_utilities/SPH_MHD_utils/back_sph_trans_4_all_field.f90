@@ -151,13 +151,13 @@
       call copy_all_spectr_to_send                                      &
      &   (sph%sph_rtp%nnod_pole, trns_MHD%backward%ncomp,               &
      &    sph%sph_rj, comms_sph%comm_rj, rj_fld, trns_MHD,              &
-     &    n_WS, WS, trns_MHD%flc_pole)
+     &    n_WS, WS, trns_MHD%backward%flc_pole)
 !
       call sph_b_trans_w_poles                                          &
      &   (trns_MHD%backward%ncomp, trns_MHD%backward%num_vector,        &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
      &    n_WS, n_WR, WS(1), WR(1), trns_MHD%backward%fld_rtp,          &
-     &    trns_MHD%flc_pole, trns_MHD%backward%fld_pole, WK_sph)
+     &    trns_MHD%backward%flc_pole, trns_MHD%backward%fld_pole, WK_sph)
 !
       end subroutine sph_all_back_transform
 !
