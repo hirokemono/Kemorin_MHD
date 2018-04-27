@@ -289,8 +289,8 @@
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
      &    trns_MHD%forward%ncomp, trns_snap%backward%ncomp,             &
-     &    trns_snap%forward%ncomp, trns_MHD%frc_rtp,                    &
-     &    trns_snap%backward%fld_rtp, trns_snap%frc_rtp)
+     &    trns_snap%forward%ncomp, trns_MHD%forward%fld_rtp,            &
+     &    trns_snap%backward%fld_rtp, trns_snap%forward%fld_rtp)
 !
       end subroutine cal_sph_enegy_fluxes
 !
@@ -320,7 +320,7 @@
       call copy_vect_to_grad_vect_rtp                                   &
      &   (sph%sph_rtp, trns_MHD%b_trns, trns_tmp%f_trns,                &
      &    trns_MHD%backward%ncomp, trns_tmp%forward%ncomp,              &
-     &    trns_MHD%backward%fld_rtp, trns_tmp%frc_rtp)
+     &    trns_MHD%backward%fld_rtp, trns_tmp%forward%fld_rtp)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_tmp_snap_MHD'
       call sph_forward_trans_tmp_snap_MHD                               &

@@ -207,7 +207,7 @@
       call start_elapsed_time(24)
       call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WS, trns_MHD%frc_rtp, WS, WK_sph%WK_FFTs, MHD_mul_FFTW)
+     &    n_WS, trns_MHD%forward%fld_rtp, WS, WK_sph%WK_FFTs, MHD_mul_FFTW)
       call end_elapsed_time(24)
 !
       START_SRtime= MPI_WTIME()
@@ -329,7 +329,7 @@
       call start_elapsed_time(24)
       call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WS, trns_SGS%frc_rtp, WS, WK_sph%WK_FFTs, SGS_mul_FFTW)
+     &    n_WS, trns_SGS%forward%fld_rtp, WS, WK_sph%WK_FFTs, SGS_mul_FFTW)
       call end_elapsed_time(24)
 !
       START_SRtime= MPI_WTIME()

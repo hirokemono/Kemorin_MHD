@@ -112,7 +112,7 @@
       call similarity_SGS_terms_rtp(sph%sph_rtp, MHD_prop,              &
      &    trns_SGS%b_trns, trns_SGS%f_trns,                             &
      &    trns_SGS%backward%ncomp, trns_SGS%forward%ncomp,              &
-     &    trns_SGS%backward%fld_rtp, trns_SGS%frc_rtp)
+     &    trns_SGS%backward%fld_rtp, trns_SGS%forward%fld_rtp)
       call end_elapsed_time(15)
 !
       istep_dynamic = mod(i_step, i_step_sgs_coefs)

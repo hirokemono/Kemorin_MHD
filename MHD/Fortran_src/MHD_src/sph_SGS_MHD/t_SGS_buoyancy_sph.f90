@@ -312,7 +312,7 @@
         call product_double_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl, trns_SGS%f_trns%i_SGS_inertia,      &
      &      sph_rtp%nnod_rtp, trns_SGS%forward%ncomp,                   &
-     &      trns_SGS%frc_rtp)
+     &      trns_SGS%forward%fld_rtp)
       else if(ifld_sgs%i_buoyancy .gt. 0) then
         call product_single_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl(1), ipol%i_SGS_inertia,              &
@@ -320,7 +320,7 @@
         call product_single_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl(1), trns_SGS%f_trns%i_SGS_inertia,   &
      &      sph_rtp%nnod_rtp, trns_SGS%forward%ncomp,                   &
-     &      trns_SGS%frc_rtp)
+     &      trns_SGS%forward%fld_rtp)
       else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
         call product_single_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl(2), ipol%i_SGS_inertia,              &
@@ -328,7 +328,7 @@
         call product_single_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl(2), trns_SGS%f_trns%i_SGS_inertia,   &
      &      sph_rtp%nnod_rtp, trns_SGS%forward%ncomp,                   &
-     &      trns_SGS%frc_rtp)
+     &      trns_SGS%forward%fld_rtp)
       end if
 !
       end subroutine magnify_vol_ave_SGS_buoyancy

@@ -43,7 +43,7 @@
       call swap_phi_order_from_trans(trns_MHD%backward%ncomp,           &
      &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%backward%fld_rtp)
       call swap_phi_order_from_trans(trns_MHD%forward%ncomp,            &
-     &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%frc_rtp)
+     &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%forward%fld_rtp)
 !
       end subroutine swap_phi_from_MHD_trans
 !
@@ -63,7 +63,7 @@
       call swap_phi_order_to_trans(trns_MHD%backward%ncomp,             &
      &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%backward%fld_rtp)
       call swap_phi_order_to_trans(trns_MHD%forward%ncomp,              &
-     &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%frc_rtp)
+     &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%forward%fld_rtp)
 !
       end subroutine swap_phi_to_MHD_trans
 !

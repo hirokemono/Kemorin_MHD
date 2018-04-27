@@ -138,7 +138,7 @@
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_vec_to_sph_trans(mesh%node, sph_rtp,          &
-     &          nod_fld, icomp, trns_MHD%frc_rtp(1,jcomp))
+     &          nod_fld, icomp, trns_MHD%forward%fld_rtp(1,jcomp))
           end if
         end do
       end do
@@ -154,7 +154,7 @@
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_scl_to_sph_trans(mesh%node, sph_rtp,          &
-     &          nod_fld, icomp, trns_MHD%frc_rtp(1,jcomp))
+     &          nod_fld, icomp, trns_MHD%forward%fld_rtp(1,jcomp))
           end if
         end do
       end do
@@ -172,7 +172,7 @@
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_tsr_to_sph_trans(mesh%node, sph_rtp,          &
-     &          nod_fld, icomp, trns_MHD%frc_rtp(1,jcomp))
+     &          nod_fld, icomp, trns_MHD%forward%fld_rtp(1,jcomp))
           end if
         end do
       end do

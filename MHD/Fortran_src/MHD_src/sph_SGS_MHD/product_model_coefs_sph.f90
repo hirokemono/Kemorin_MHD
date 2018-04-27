@@ -61,31 +61,31 @@
       if(ifld_sgs%i_mom_flux .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_mf_factor,         &
      &      sph_rtp, trns_SGS%f_trns%i_SGS_inertia, n_vector,           &
-     &      trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       end if
 !
       if(ifld_sgs%i_lorentz .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_mawell_factor,     &
      &      sph_rtp, trns_SGS%f_trns%i_SGS_Lorentz, n_vector,           &
-     &      trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       end if
 !
       if(ifld_sgs%i_induction .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_uxb_factor,        &
      &      sph_rtp, trns_SGS%f_trns%i_SGS_vp_induct, n_vector,         &
-     &      trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       end if
 !
       if(ifld_sgs%i_heat_flux .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_hf_factor,         &
      &      sph_rtp, trns_SGS%f_trns%i_SGS_h_flux, n_vector,            &
-     &      trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       end if
 !
       if(ifld_sgs%i_comp_flux .gt. 0) then
         call product_fixed_model_coefs(SGS_param%SGS_cf_factor,         &
      &      sph_rtp, trns_SGS%f_trns%i_SGS_c_flux, n_vector,            &
-     &      trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       end if
 !
       end subroutine prod_fixed_sph_SGS_Csim
@@ -173,11 +173,11 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call product_model_coefs_pin(const_Csim, ifld_sgs,              &
      &     sph_rtp, sph_d_grp, wk_sgs%num_kinds, wk_sgs%fld_coef,       &
-     &     irtp_sgs, numdir, trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &     irtp_sgs, numdir, trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       else
         call product_model_coefs_pout(const_Csim, ifld_sgs,             &
      &     sph_rtp, sph_d_grp, wk_sgs%num_kinds, wk_sgs%fld_coef,       &
-     &     irtp_sgs, numdir, trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &     irtp_sgs, numdir, trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       end if
 !
       end subroutine sel_product_model_coefs

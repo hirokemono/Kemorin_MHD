@@ -205,11 +205,11 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_sgl_radial_buo_coefs_pin(sph_rtp%nidx_rtp, sgs_c,     &
      &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
-     &      trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       else
         call prod_sgl_radial_buo_coefs_pout(sph_rtp%nidx_rtp, sgs_c,    &
      &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
-     &      trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       end if
 !
       end subroutine sel_prod_sgl_radial_buo_coefs
@@ -231,11 +231,11 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_dbl_radial_buo_coefs_pin(sph_rtp%nidx_rtp, sgs_c,     &
      &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
-     &      trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       else
         call prod_dbl_radial_buo_coefs_pout(sph_rtp%nidx_rtp, sgs_c,    &
      &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
-     &      trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
       end if
 !
       end subroutine sel_prod_dbl_radial_buo_coefs

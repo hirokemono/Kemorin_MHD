@@ -70,7 +70,7 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_mom_flux,                  &
-     &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_Lorentz),          &
+     &      trns_SGS%forward%fld_rtp(1,trns_SGS%f_trns%i_SGS_Lorentz),          &
      &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_inertia),   &
      &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_inertia),    &
      &      dynamic_SPH%wk_sgs)
@@ -81,7 +81,7 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_lorentz,                   &
-     &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_Lorentz),          &
+     &      trns_SGS%forward%fld_rtp(1,trns_SGS%f_trns%i_SGS_Lorentz),          &
      &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_Lorentz),   &
      &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_Lorentz),    &
      &      dynamic_SPH%wk_sgs)
@@ -92,7 +92,7 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_induction,                 &
-     &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_vp_induct),        &
+     &      trns_SGS%forward%fld_rtp(1,trns_SGS%f_trns%i_SGS_vp_induct),        &
      &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_vp_induct), &
      &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_vp_induct),  &
      &      dynamic_SPH%wk_sgs)
@@ -103,7 +103,7 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_heat_flux,                 &
-     &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_h_flux),           &
+     &      trns_SGS%forward%fld_rtp(1,trns_SGS%f_trns%i_SGS_h_flux),           &
      &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_h_flux),    &
      &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_h_flux),     &
      &      dynamic_SPH%wk_sgs)
@@ -114,7 +114,7 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_comp_flux,                 &
-     &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_c_flux),           &
+     &      trns_SGS%forward%fld_rtp(1,trns_SGS%f_trns%i_SGS_c_flux),           &
      &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_c_flux),    &
      &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_c_flux),     &
      &      dynamic_SPH%wk_sgs)
@@ -143,13 +143,13 @@
       call SGS_fluxes_for_buo_coefs(sph_rtp, fl_prop,                   &
      &    trns_MHD%b_trns, trns_SGS%f_trns, trns_DYNS%f_trns,           &
      &    trns_MHD%backward%ncomp, trns_SGS%forward%ncomp,              &
-     &    trns_DYNS%forward%ncomp, trns_MHD%backward%fld_rtp, trns_SGS%frc_rtp,  &
-     &    trns_DYNS%frc_rtp)
+     &    trns_DYNS%forward%ncomp, trns_MHD%backward%fld_rtp, trns_SGS%forward%fld_rtp,  &
+     &    trns_DYNS%forward%fld_rtp)
 !
       if(dynamic_SPH%ifld_sgs%i_buoyancy .gt. 0) then
         call cal_SGS_buo_coefs_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
-     &      trns_DYNS%frc_rtp, trns_DYNS%forward%ncomp,                 &
+     &      trns_DYNS%forward%fld_rtp, trns_DYNS%forward%ncomp,         &
      &      trns_DYNS%f_trns%i_reynolds_wk,                             &
      &      trns_DYNS%f_trns%i_SGS_buo_wk,                              &
      &      dynamic_SPH%ifld_sgs%i_buoyancy,                            &
@@ -159,7 +159,7 @@
       if(dynamic_SPH%ifld_sgs%i_comp_buoyancy .gt. 0) then
         call cal_SGS_buo_coefs_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, stab_weight,                &
-     &      trns_DYNS%frc_rtp, trns_DYNS%forward%ncomp,                 &
+     &      trns_DYNS%forward%fld_rtp, trns_DYNS%forward%ncomp,         &
      &      trns_DYNS%f_trns%i_reynolds_wk,                             &
      &      trns_DYNS%f_trns%i_SGS_comp_buo_wk,                         &
      &      dynamic_SPH%ifld_sgs%i_comp_buoyancy,                       &

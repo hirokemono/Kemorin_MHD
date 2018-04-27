@@ -119,7 +119,7 @@
 !   transform for vectors and scalars
       call sph_forward_transforms(trns_snap%forward%ncomp,              &
      &    trns_snap%forward%num_vector, trns_snap%forward%num_scalar,   &
-     &    sph, comms_sph, trans_p, trns_snap%frc_rtp,                   &
+     &    sph, comms_sph, trans_p, trns_snap%forward%fld_rtp,           &
      &    n_WS, n_WR, WS(1), WR(1), WK_sph)
 !
       call mhd_spectr_from_recvbuf                                      &
@@ -156,7 +156,7 @@
 !   transform for vectors and scalars
       call sph_forward_transforms(trns_tmp%forward%ncomp,               &
      &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,     &
-     &    sph, comms_sph, trans_p, trns_tmp%frc_rtp,                    &
+     &    sph, comms_sph, trans_p, trns_tmp%forward%fld_rtp,            &
      &    n_WS, n_WR, WS, WR, WK_sph)
 !
       call mhd_spectr_from_recvbuf                                      &

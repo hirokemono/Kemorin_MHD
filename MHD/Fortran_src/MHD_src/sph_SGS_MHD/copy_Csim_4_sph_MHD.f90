@@ -174,12 +174,12 @@
 !
 !
 !$omp parallel workshare
-      trns_SGS%frc_rtp(1:sph_rtp%nnod_rtp,irtp_sgs) = one
+      trns_SGS%forward%fld_rtp(1:sph_rtp%nnod_rtp,irtp_sgs) = one
 !$omp end parallel workshare
 !
       call product_model_coefs_pout(one, ifld_sgs, sph_rtp, sph_d_grp,  &
      &    wk_sgs%num_kinds, wk_sgs%fld_coef, irtp_sgs, ione,            &
-     &    trns_SGS%forward%ncomp, trns_SGS%frc_rtp)
+     &    trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
 !
       end subroutine set_model_coefs_sph_snap
 !
