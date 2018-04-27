@@ -244,7 +244,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
       call sph_pole_trans_SGS_MHD                                       &
-     &   (sph, comms_sph, trans_p, rj_fld, WK%trns_SGS)
+     &   (sph, comms_sph, trans_p, rj_fld, WK%trns_SGS%backward)
 !
       if(SGS_param%iflag_dynamic .gt. id_SGS_none) then
         if(iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'

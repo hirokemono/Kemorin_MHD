@@ -299,8 +299,9 @@
 !
       call sph_back_trans_4_MHD(SPH_MHD%sph, SPH_MHD%comms,             &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, omega_sph, trans_p,    &
-     &    trns_WK%gt_cor, SPH_MHD%fld, trns_WK%trns_MHD,                &
-     &    trns_WK%WK_sph, trns_WK%MHD_mul_FFTW, trns_WK%cor_rlm)
+     &    trns_WK%gt_cor, SPH_MHD%fld, trns_WK%trns_MHD%b_trns,         &
+     &    trns_WK%trns_MHD%backward, trns_WK%WK_sph,                    &
+     &    trns_WK%MHD_mul_FFTW, trns_WK%cor_rlm)
 !
       call sph_forward_trans_snapshot_MHD                               &
      &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &

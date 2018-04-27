@@ -254,10 +254,11 @@
 !
         starttime = MPI_WTIME()
         call sph_back_trans_4_MHD(sph, comms_sph, fl_prop, sph_bc_U,    &
-     &      omega_sph, trans_p, gt_cor, rj_fld, trns_MHD,               &
-     &      WK_sph, MHD_mul_FFTW, cor_rlm)
-        call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop, trans_p,  &
-     &      cor_rlm, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
+     &      omega_sph, trans_p, gt_cor, rj_fld, trns_MHD%b_trns,        &
+     &      trns_MHD%backward, WK_sph, MHD_mul_FFTW, cor_rlm)
+        call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop,           &
+     &      trans_p, cor_rlm, trns_MHD%f_trns, trns_MHD%forward,        &
+     &      WK_sph, MHD_mul_FFTW, rj_fld)
         endtime(WK_sph%WK_leg%id_legendre) = MPI_WTIME() - starttime
 !
         call sel_finalize_legendre_trans(WK_sph%WK_leg)

@@ -152,7 +152,7 @@
      &      then
         if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_4_MHD'
         call sph_pole_trans_4_MHD                                       &
-     &     (sph, comms_sph, trans_p, rj_fld, WK%trns_MHD)
+     &     (sph, comms_sph, trans_p, rj_fld, WK%trns_MHD%backward)
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
         call cal_nonlinear_pole_MHD                                     &

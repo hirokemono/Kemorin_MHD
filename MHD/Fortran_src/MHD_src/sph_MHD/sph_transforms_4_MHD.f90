@@ -9,11 +9,11 @@
 !!@verbatim
 !!      subroutine sph_back_trans_4_MHD(sph, comms_sph, fl_prop,        &
 !!     &          sph_bc_U, omega_sph, trans_p, gt_cor, rj_fld,         &
-!!     &          trns_MHD, WK_sph, MHD_mul_FFTW, cor_rlm)
+!!     &          b_trns, trns_bwd, WK_sph, MHD_mul_FFTW, cor_rlm)
 !!        Input ::  rj_fld
 !!        Output :: trns_MHD, cor_rlm
 !!      subroutine sph_pole_trans_4_MHD                                 &
-!!     &         (sph, comms_sph, trans_p, rj_fld, trns_MHD)
+!!     &         (sph, comms_sph, trans_p, rj_fld, trns_bwd)
 !!        Input ::  rj_fld
 !!        Output :: trns_MHD
 !!        type(sph_grids), intent(inout) :: sph
@@ -24,14 +24,17 @@
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(gaunt_coriolis_rlm), intent(in) :: gt_cor
 !!        type(phys_data), intent(in) :: rj_fld
-!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
+!!        type(phys_address), intent(in) :: b_trns
+!!        type(phys_address), intent(in) :: f_trns
+!!        type(address_each_sph_trans), intent(inout) :: trns_bwd
+!!        type(address_each_sph_trans), intent(inout) :: trns_fwd
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!        type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !!      subroutine sph_forward_trans_4_MHD                              &
-!!     &         (sph, comms_sph, fl_prop, trans_p, cor_rlm,            &
-!!     &          trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
-!!        Input :: trns_MHD, cor_rlm
+!!     &         (sph, comms_sph, fl_prop, trans_p, cor_rlm, f_trns,    &
+!!     &          trns_fwd, WK_sph, MHD_mul_FFTW, rj_fld)
+!!        Input :: trns_fwd, cor_rlm
 !!        Output ::  rj_fld
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -39,7 +42,8 @@
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(coriolis_rlm_data), intent(in) :: cor_rlm
 !!        type(phys_address), intent(in) :: ipol
-!!        type(address_4_sph_trans), intent(in) :: trns_MHD
+!!        type(phys_address), intent(in) :: f_trns
+!!        type(address_each_sph_trans), intent(inout) :: trns_fwd
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -90,7 +94,7 @@
 !
       subroutine sph_back_trans_4_MHD(sph, comms_sph, fl_prop,          &
      &          sph_bc_U, omega_sph, trans_p, gt_cor, rj_fld,           &
-     &          trns_MHD, WK_sph, MHD_mul_FFTW, cor_rlm)
+     &          b_trns, trns_bwd, WK_sph, MHD_mul_FFTW, cor_rlm)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -105,35 +109,36 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(gaunt_coriolis_rlm), intent(in) :: gt_cor
       type(phys_data), intent(in) :: rj_fld
+      type(phys_address), intent(in) :: b_trns
 !
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(address_each_sph_trans), intent(inout) :: trns_bwd
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !
 !
-      call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
+      call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                &
      &   comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
+      call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                 &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'mhd_spectr_to_sendbuf'
       call mhd_spectr_to_sendbuf                                        &
-     &   (trns_MHD%backward, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
+     &   (trns_bwd, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
-      if(trns_MHD%backward%ncomp .eq. 0) return
+      if(trns_bwd%ncomp .eq. 0) return
       call sph_b_trans_w_coriolis                                       &
      &   (sph, comms_sph, fl_prop, sph_bc_U, omega_sph,                 &
-     &    trns_MHD%b_trns, trans_p, gt_cor, n_WS, n_WR, WS(1), WR(1),   &
-     &    trns_MHD%backward, WK_sph, MHD_mul_FFTW, cor_rlm)
+     &    b_trns, trans_p, gt_cor, n_WS, n_WR, WS(1), WR(1),            &
+     &    trns_bwd, WK_sph, MHD_mul_FFTW, cor_rlm)
 !
       end subroutine sph_back_trans_4_MHD
 !
 !-----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_4_MHD                                &
-     &         (sph, comms_sph, fl_prop, trans_p, cor_rlm,              &
-     &          trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
+     &         (sph, comms_sph, fl_prop, trans_p, cor_rlm, f_trns,      &
+     &          trns_fwd, WK_sph, MHD_mul_FFTW, rj_fld)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -145,33 +150,33 @@
       type(fluid_property), intent(in) :: fl_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(coriolis_rlm_data), intent(in) :: cor_rlm
+      type(phys_address), intent(in) :: f_trns
 !
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(address_each_sph_trans), intent(inout) :: trns_fwd
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call check_calypso_sph_comm_buf_N(trns_MHD%forward%ncomp,         &
+      call check_calypso_sph_comm_buf_N(trns_fwd%ncomp,                 &
      &    comms_sph%comm_rtp, comms_sph%comm_rtm)
-      call check_calypso_sph_comm_buf_N(trns_MHD%forward%ncomp,         &
+      call check_calypso_sph_comm_buf_N(trns_fwd%ncomp,                 &
      &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
-      if(trns_MHD%forward%ncomp .eq. 0) return
+      if(trns_fwd%ncomp .eq. 0) return
       call sph_f_trans_w_coriolis                                       &
-     &   (sph, comms_sph, fl_prop, trans_p, cor_rlm, trns_MHD%f_trns,   &
-     &    trns_MHD%forward, n_WS, n_WR, WS(1), WR(1), WK_sph,           &
-     &    MHD_mul_FFTW)
+     &   (sph, comms_sph, fl_prop, trans_p, cor_rlm, f_trns,            &
+     &    trns_fwd, n_WS, n_WR, WS(1), WR(1), WK_sph, MHD_mul_FFTW)
 !
       call mhd_spectr_from_recvbuf                                      &
-     &   (trns_MHD%forward, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
+     &   (trns_fwd, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_4_MHD
 !
 !-----------------------------------------------------------------------
 !
       subroutine sph_pole_trans_4_MHD                                   &
-     &         (sph, comms_sph, trans_p, rj_fld, trns_MHD)
+     &         (sph, comms_sph, trans_p, rj_fld, trns_bwd)
 !
       use m_solver_SR
       use t_sph_transforms
@@ -182,25 +187,25 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_data), intent(in) :: rj_fld
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(address_each_sph_trans), intent(inout) :: trns_bwd
 !
 !
-      call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
-     &   comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
-     &   comms_sph%comm_rtm, comms_sph%comm_rtp)
+      call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                 &
+     &    comms_sph%comm_rj, comms_sph%comm_rlm)
+      call check_calypso_sph_comm_buf_N(trns_bwd%ncomp,                 &
+     &    comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
 !      call start_elapsed_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'mhd_spectr_to_sendbuf'
       call mhd_spectr_to_sendbuf                                        &
-     &   (trns_MHD%backward, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
+     &   (trns_bwd, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !      call end_elapsed_time(51)
 !
-      if(trns_MHD%backward%ncomp .eq. 0) return
-      call pole_b_transform(trns_MHD%backward%ncomp,                    &
-     &    trns_MHD%backward%num_vector, trns_MHD%backward%num_scalar,   &
+      if(trns_bwd%ncomp .eq. 0) return
+      call pole_b_transform                                             &
+     &   (trns_bwd%ncomp, trns_bwd%num_vector, trns_bwd%num_scalar,     &
      &    sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
-     &    trns_MHD%backward%flc_pole, trns_MHD%backward%fld_pole)
+     &    trns_bwd%flc_pole, trns_bwd%fld_pole)
 !
       end subroutine sph_pole_trans_4_MHD
 !
@@ -241,12 +246,12 @@
       call mhd_spectr_to_sendbuf                                        &
      &   (trns_MHD%backward, comm_rj, rj_fld, n_WS, WS(1))
 !
-      call sph_b_trans_licv(trns_MHD%backward%ncomp,                    &
-     &    sph_rlm, comm_rlm, comm_rj, fl_prop, sph_bc_U, omega_sph,     &
-     &    leg, gt_cor, trns_MHD, n_WR, WR(1), cor_rlm)
-      call sph_f_trans_licv(trns_MHD%forward%ncomp,                     &
-     &    sph_rlm, comm_rlm, comm_rj, fl_prop, cor_rlm, trns_MHD,       &
-     &    n_WS, WS(1))
+      call sph_b_trans_licv(sph_rlm, comm_rlm, comm_rj,                 &
+     &    fl_prop, sph_bc_U, omega_sph, leg, gt_cor,                    &
+     &    trns_MHD%b_trns, trns_MHD%backward, n_WR, WR(1), cor_rlm)
+      call sph_f_trans_licv(sph_rlm, comm_rlm, comm_rj,                 &
+     &    fl_prop, cor_rlm, trns_MHD%f_trns, trns_MHD%forward,          &
+     &     n_WS, WS(1))
 !
       call mhd_spectr_from_recvbuf                                      &
      &   (trns_MHD%forward, comm_rj, n_WR, WR(1), rj_fld)

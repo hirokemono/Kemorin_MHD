@@ -106,7 +106,7 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &                     'sph_forward_trans_SGS_MHD dyns'
         call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
-     &      trns_DYNS, WK_sph, DYNS_mul_FFTW, rj_fld)
+     &      trns_DYNS%forward, WK_sph, DYNS_mul_FFTW, rj_fld)
         call end_elapsed_time(16)
 !
         if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
@@ -159,14 +159,14 @@
           if (iflag_debug.eq.1) write(*,*)                              &
      &                        'sph_forward_trans_SGS_MHD SGS'
           call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,       &
-     &        trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
+     &        trns_SGS%forward, WK_sph, SGS_mul_FFTW, rj_fld)
           call end_elapsed_time(16)
         else if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
           call start_elapsed_time(16)
           if (iflag_debug.eq.1) write(*,*)                              &
      &                        'sph_forward_trans_SGS_MHD SGS'
           call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,       &
-     &        trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
+     &        trns_SGS%forward, WK_sph, SGS_mul_FFTW, rj_fld)
           call end_elapsed_time(16)
 !
           if(iflag_debug.eq.1) write(*,*)                               &
@@ -179,7 +179,7 @@
           if (iflag_debug.eq.1) write(*,*)                              &
      &                        'sph_forward_trans_SGS_MHD SGS'
           call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,       &
-     &        trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
+     &        trns_SGS%forward, WK_sph, SGS_mul_FFTW, rj_fld)
           call end_elapsed_time(16)
 !
             if(iflag_debug.eq.1) write(*,*)                             &

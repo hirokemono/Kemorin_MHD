@@ -104,7 +104,7 @@
       call start_elapsed_time(14)
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD SGS'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
+     &    rj_fld, trns_SGS%backward, WK_sph, SGS_mul_FFTW)
       call end_elapsed_time(14)
 !
       call start_elapsed_time(15)
@@ -157,7 +157,7 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &            'sph_forward_trans_SGS_MHD SGS'
         call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
-     &      trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
+     &      trns_SGS%forward, WK_sph, SGS_mul_FFTW, rj_fld)
         call end_elapsed_time(16)
       end if
 !
@@ -198,7 +198,7 @@
       call start_elapsed_time(16)
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD dyns'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
+     &    trns_SGS%forward, WK_sph, SGS_mul_FFTW, rj_fld)
       call end_elapsed_time(16)
 !
       call cal_sph_wide_filtering_fields                                &
@@ -211,7 +211,7 @@
       call start_elapsed_time(14)
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD dyns'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_DYNS, WK_sph, DYNS_mul_FFTW)
+     &    rj_fld, trns_DYNS%backward, WK_sph, DYNS_mul_FFTW)
       call end_elapsed_time(14)
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
@@ -220,7 +220,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph                                      &
-     &   (SGS_param, sph%sph_rtp, trns_SGS%f_trns, trns_DYNS%b_trns, trns_SGS%forward, trns_DYNS%backward, dynamic_SPH)
+     &   (SGS_param, sph%sph_rtp, trns_SGS%f_trns, trns_DYNS%b_trns,    &
+     &    trns_SGS%forward, trns_DYNS%backward, dynamic_SPH)
 !
       end subroutine dynamic_SGS_by_pseudo_sph
 !
