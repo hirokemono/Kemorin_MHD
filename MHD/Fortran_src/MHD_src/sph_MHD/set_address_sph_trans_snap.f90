@@ -23,6 +23,7 @@
       module set_address_sph_trans_snap
 !
       use m_precision
+      use m_machine_parameter
 !
       use t_phys_address
       use t_SPH_mesh_field_data
@@ -111,49 +112,42 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint):: icou
-!
-!
-      call b_trans_address_vector_stmp(trns_tmp)
-      call b_trans_address_scalar_stmp(trns_tmp)
-      trns_tmp%backward%num_tensor = 0
-!
-      call f_trans_address_vector_stmp(trns_tmp)
-      call f_trans_address_scalar_stmp(SPH_MHD%ipol, iphys, trns_tmp)
-      trns_tmp%forward%num_tensor = 0
-!
-      call count_num_fields_4_sph_trans(trns_tmp, ncomp_sph_trans,      &
-     &   nvector_sph_trans, nscalar_sph_trans)
-!
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table ',                  &
      &             'for intermediate of snapshot'
-        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_tmp%backward%num_vector
-        write(*,*) 'nscalar_rj_2_rtp ', trns_tmp%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
 !
-      icou = 0
-      call set_b_trans_vector_field_stmp                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_tmp)
-      call set_b_trans_scalar_field_stmp                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_tmp)
+      call b_trans_address_vector_stmp(trns_tmp%backward)
+      call b_trans_address_scalar_stmp(trns_tmp%backward)
+      trns_tmp%backward%num_tensor = 0
 !
      if(iflag_debug .gt. 0) then
-        write(*,*) 'nvector_rtp_2_rj ', trns_tmp%forward%num_vector
-        write(*,*) 'nscalar_rtp_2_rj ', trns_tmp%forward%num_scalar
-        write(*,*) 'Address for forward transform: ',                  &
+        write(*,*) 'Address for forward transform: ',                   &
      &             'transform, poloidal, troidal, grid data'
       end if
 !
-      icou = 0
-      call set_f_trans_vector_field_stmp                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_tmp)
-      call set_f_trans_scalar_field_stmp                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_tmp)
+      call f_trans_address_vector_stmp(trns_tmp%forward)
+      call f_trans_address_scalar_stmp(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &   iphys, trns_tmp%f_trns, trns_tmp%forward)
+      trns_tmp%forward%num_tensor = 0
+!
+      call count_num_fields_each_trans2(trns_tmp%backward,              &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans2(trns_tmp%forward,               &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ', trns_tmp%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_tmp%backward%num_scalar
+!
+        write(*,*) 'nvector_rtp_2_rj ', trns_tmp%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_tmp%forward%num_scalar
+      end if
 !
       end subroutine set_addresses_temporal_trans
 !

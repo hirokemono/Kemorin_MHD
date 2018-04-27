@@ -12,10 +12,7 @@
 !!     &         (ipol, itor, iphys, b_trns, trns_back)
 !!      subroutine b_trans_address_scalar_snap                          &
 !!     &         (ipol, itor, iphys, b_trns, trns_back)
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in)  :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
-!!        type(phys_address), intent(in) :: ipol
+!!        type(phys_address), intent(in) :: ipol, itor, iphys
 !!        type(address_each_sph_trans), intent(inout) :: trns_back
 !!        type(phys_address), intent(inout) :: b_trns
 !!@endverbatim
@@ -28,8 +25,6 @@
       use m_phys_constants
       use t_phys_address
       use t_addresses_sph_transform
-      use t_control_parameter
-      use t_physical_property
 !
       implicit none
 !

@@ -9,19 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine f_trans_address_vector_stmp(trns_snap)
-!!      subroutine f_trans_address_scalar_stmp(fl_prop, trns_snap)
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in)  :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_address), intent(inout) :: b_trns
-!!
-!!      subroutine set_f_trans_vector_field_stmp                        &
-!!     &         (icou, ipol, itor, iphys, trns_snap)
-!!      subroutine set_f_trans_scalar_field_stmp                        &
-!!     &         (icou, ipol, itor, iphys, trns_snap)
+!!      subroutine f_trans_address_scalar_stmp                          &
+!!     &         (ipol, itor, iphys, f_trns, trns_fwd)
 !!        type(phys_address), intent(in) :: ipol, itor, iphys
-!!        type(address_4_sph_trans), intent(inout) :: trns_snap
+!!        type(address_each_sph_trans), intent(inout) :: trns_fwd
+!!        type(phys_address), intent(inout) :: f_trns
 !!@endverbatim
 !
       module address_fwd_sph_trans_stmp
@@ -29,10 +21,9 @@
       use m_precision
 !
       use m_phys_labels
+      use m_phys_constants
       use t_phys_address
       use t_addresses_sph_transform
-      use t_control_parameter
-      use t_physical_property
 !
       implicit none
 !
@@ -42,173 +33,81 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_vector_stmp(trns_tmp)
+      subroutine f_trans_address_vector_stmp(trns_fwd)
 !
-!      type(phys_address), intent(in) :: ipol, iphys
-      type(address_4_sph_trans), intent(inout) :: trns_tmp
+!      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(address_each_sph_trans), intent(inout) :: trns_fwd
+!      type(phys_address), intent(inout) :: f_trns
 !
+      trns_fwd%nfield = 0
+      call alloc_sph_trns_field_name(trns_fwd)
 !
-      trns_tmp%forward%num_vector = 0
-!      call add_vec_trans_flag_snap(ipol%i_coriolis, iphys%i_coriolis,  &
-!     &    trns_tmp%forward%num_vector, trns_tmp%f_trns%i_coriolis)
+      trns_fwd%num_vector = trns_fwd%nfield
 !
       end subroutine f_trans_address_vector_stmp
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_scalar_stmp(ipol, iphys, trns_tmp)
+      subroutine f_trans_address_scalar_stmp                            &
+     &         (ipol, itor, iphys, f_trns, trns_fwd)
 !
-      type(phys_address), intent(in) :: ipol, iphys
-      type(address_4_sph_trans), intent(inout) :: trns_tmp
+      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(phys_address), intent(inout) :: f_trns
 !
 !
-      trns_tmp%forward%num_scalar = 0
-      call add_scl_trans_flag_snap(ipol%i_grad_vx, iphys%i_grad_vx,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_vx)
-      call add_scl_trans_flag_snap(ipol%i_grad_vy, iphys%i_grad_vy,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_vy)
-      call add_scl_trans_flag_snap(ipol%i_grad_vz, iphys%i_grad_vz,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_vz)
+      call add_field_name_4_sph_trns_snap(fhd_grad_v_1, n_scalar,       &
+     &    ipol%i_grad_vx, itor%i_grad_vx, iphys%i_grad_vx,              &
+     &    f_trns%i_grad_vx, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_grad_v_2, n_scalar,       &
+     &    ipol%i_grad_vy, itor%i_grad_vy, iphys%i_grad_vy,              &
+     &    f_trns%i_grad_vy, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_grad_v_3, n_scalar,       &
+     &    ipol%i_grad_vz, itor%i_grad_vz, iphys%i_grad_vz,              &
+     &    f_trns%i_grad_vz, trns_fwd)
 !
-      call add_scl_trans_flag_snap(ipol%i_grad_wx, iphys%i_grad_wx,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_wx)
-      call add_scl_trans_flag_snap(ipol%i_grad_wy, iphys%i_grad_wy,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_wy)
-      call add_scl_trans_flag_snap(ipol%i_grad_wz, iphys%i_grad_wz,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_wz)
+      call add_field_name_4_sph_trns_snap(fhd_grad_w_1, n_scalar,       &
+     &    ipol%i_grad_wx, itor%i_grad_wx, iphys%i_grad_wx,              &
+     &    f_trns%i_grad_wx, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_grad_w_2, n_scalar,       &
+     &    ipol%i_grad_wy, itor%i_grad_wy, iphys%i_grad_wy,              &
+     &    f_trns%i_grad_wy, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_grad_w_3, n_scalar,       &
+     &    ipol%i_grad_wz, itor%i_grad_wz, iphys%i_grad_wz,              &
+     &    f_trns%i_grad_wz, trns_fwd)
 !
-      call add_scl_trans_flag_snap(ipol%i_grad_ax, iphys%i_grad_ax,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_ax)
-      call add_scl_trans_flag_snap(ipol%i_grad_ay, iphys%i_grad_ay,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_ay)
-      call add_scl_trans_flag_snap(ipol%i_grad_az, iphys%i_grad_az,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_az)
+      call add_field_name_4_sph_trns_snap(fhd_grad_a_1, n_scalar,       &
+     &    ipol%i_grad_ax, itor%i_grad_ax, iphys%i_grad_ax,              &
+     &    f_trns%i_grad_ax, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_grad_a_2, n_scalar,       &
+     &    ipol%i_grad_ay, itor%i_grad_ay, iphys%i_grad_ay,              &
+     &    f_trns%i_grad_ay, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_grad_a_3, n_scalar,       &
+     &    ipol%i_grad_az, itor%i_grad_az, iphys%i_grad_az,              &
+     &    f_trns%i_grad_az, trns_fwd)
 !
-      call add_scl_trans_flag_snap(ipol%i_grad_bx, iphys%i_grad_bx,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_bx)
-      call add_scl_trans_flag_snap(ipol%i_grad_by, iphys%i_grad_by,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_by)
-      call add_scl_trans_flag_snap(ipol%i_grad_bz, iphys%i_grad_bz,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_bz)
+      call add_field_name_4_sph_trns_snap(fhd_grad_b_1, n_scalar,       &
+     &    ipol%i_grad_bx, itor%i_grad_bx, iphys%i_grad_bx,              &
+     &    f_trns%i_grad_bx, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_grad_b_2, n_scalar,       &
+     &    ipol%i_grad_by, itor%i_grad_by, iphys%i_grad_by,              &
+     &    f_trns%i_grad_by, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_grad_b_3, n_scalar,       &
+     &    ipol%i_grad_bz, itor%i_grad_bz, iphys%i_grad_bz,              &
+     &    f_trns%i_grad_bz, trns_fwd)
 !
-      call add_scl_trans_flag_snap(ipol%i_grad_jx, iphys%i_grad_jx,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_jx)
-      call add_scl_trans_flag_snap(ipol%i_grad_jy, iphys%i_grad_jy,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_jy)
-      call add_scl_trans_flag_snap(ipol%i_grad_jz, iphys%i_grad_jz,     &
-     &    trns_tmp%forward%num_vector, trns_tmp%forward%num_scalar,         &
-     &    trns_tmp%f_trns%i_grad_jz)
+      call add_field_name_4_sph_trns_snap(fhd_grad_j_1, n_scalar,       &
+     &    ipol%i_grad_jx, itor%i_grad_jx, iphys%i_grad_jx,              &
+     &    f_trns%i_grad_jx, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_grad_j_2, n_scalar,       &
+     &    ipol%i_grad_jy, itor%i_grad_jy, iphys%i_grad_jy,              &
+     &    f_trns%i_grad_jy, trns_fwd)
+      call add_field_name_4_sph_trns_snap(fhd_grad_j_3, n_scalar,       &
+     &    ipol%i_grad_jz, itor%i_grad_jz, iphys%i_grad_jz,              &
+     &    f_trns%i_grad_jz, trns_fwd)
+      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
 !
       end subroutine f_trans_address_scalar_stmp
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_f_trans_vector_field_stmp                          &
-     &         (icou, ipol, itor, iphys, trns_tmp)
-!
-      type(phys_address), intent(in) :: ipol, itor, iphys
-      type(address_4_sph_trans), intent(inout) :: trns_tmp
-      integer(kind = kint), intent(inout) :: icou
-!
-!
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_Coriolis, trns_tmp%f_trns%i_coriolis,                     &
-     &    ipol%i_coriolis, itor%i_coriolis, iphys%i_coriolis,           &
-     &    icou, trns_tmp%forward)
-!
-      end subroutine set_f_trans_vector_field_stmp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_f_trans_scalar_field_stmp                          &
-     &         (icou, ipol, itor, iphys, trns_tmp)
-!
-      type(phys_address), intent(in) :: ipol, itor, iphys
-      type(address_4_sph_trans), intent(inout) :: trns_tmp
-      integer(kind = kint), intent(inout) :: icou
-!
-!
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_v_1, trns_tmp%f_trns%i_grad_vx,                      &
-     &    ipol%i_grad_vx, itor%i_grad_vx, iphys%i_grad_vx,              &
-     &    icou, trns_tmp%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_v_2, trns_tmp%f_trns%i_grad_vy,                      &
-     &    ipol%i_grad_vy, itor%i_grad_vy, iphys%i_grad_vy,              &
-     &    icou, trns_tmp%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_v_3, trns_tmp%f_trns%i_grad_vz,                      &
-     &    ipol%i_grad_vz, itor%i_grad_vz, iphys%i_grad_vz,              &
-     &    icou, trns_tmp%forward)
-!
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_w_1, trns_tmp%f_trns%i_grad_wx,                      &
-     &    ipol%i_grad_wx, itor%i_grad_wx, iphys%i_grad_wx,              &
-     &    icou, trns_tmp%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_w_2, trns_tmp%f_trns%i_grad_wy,                      &
-     &    ipol%i_grad_wy, itor%i_grad_wy, iphys%i_grad_wy,              &
-     &    icou, trns_tmp%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_w_3, trns_tmp%f_trns%i_grad_wz,                      &
-     &    ipol%i_grad_wz, itor%i_grad_wz, iphys%i_grad_wz,              &
-     &    icou, trns_tmp%forward)
-!
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_a_1, trns_tmp%f_trns%i_grad_ax,                      &
-     &    ipol%i_grad_ax, itor%i_grad_ax, iphys%i_grad_ax,              &
-     &    icou, trns_tmp%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_a_2, trns_tmp%f_trns%i_grad_ay,                      &
-     &    ipol%i_grad_ay, itor%i_grad_ay, iphys%i_grad_ay,              &
-     &    icou, trns_tmp%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_a_3, trns_tmp%f_trns%i_grad_az,                      &
-     &    ipol%i_grad_az, itor%i_grad_az, iphys%i_grad_az,              &
-     &    icou, trns_tmp%forward)
-!
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_b_1, trns_tmp%f_trns%i_grad_bx,                      &
-     &    ipol%i_grad_bx, itor%i_grad_bx, iphys%i_grad_bx,              &
-     &    icou, trns_tmp%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_b_2, trns_tmp%f_trns%i_grad_by,                      &
-     &    ipol%i_grad_by, itor%i_grad_by, iphys%i_grad_by,              &
-     &    icou, trns_tmp%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_b_3, trns_tmp%f_trns%i_grad_bz,                      &
-     &    ipol%i_grad_bz, itor%i_grad_bz, iphys%i_grad_bz,              &
-     &    icou, trns_tmp%forward)
-!
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_j_1, trns_tmp%f_trns%i_grad_jx,                      &
-     &    ipol%i_grad_jx, itor%i_grad_jx, iphys%i_grad_jx,              &
-     &    icou, trns_tmp%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_j_2, trns_tmp%f_trns%i_grad_jy,                      &
-     &    ipol%i_grad_jy, itor%i_grad_jy, iphys%i_grad_jy,              &
-     &    icou, trns_tmp%forward)
-      call set_field_name_4_sph_trns                                    &
-     &   (fhd_grad_j_3, trns_tmp%f_trns%i_grad_jz,                      &
-     &    ipol%i_grad_jz, itor%i_grad_jz, iphys%i_grad_jz,              &
-     &    icou, trns_tmp%forward)
-!
-      end subroutine set_f_trans_scalar_field_stmp
 !
 !-----------------------------------------------------------------------
 !
