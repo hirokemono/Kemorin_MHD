@@ -145,7 +145,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
       call sum_coriolis_rlm                                             &
      &   (ncomp_trans, sph%sph_rlm, comms_sph%comm_rlm,                 &
-     &    fl_prop, sph_bc_U, omega_sph, trns_MHD, trans_p%leg,          &
+     &    fl_prop, sph_bc_U, omega_sph, trns_MHD%b_trns, trans_p%leg,   &
      &    gt_cor, n_WR, WR, cor_rlm)
       call finish_send_recv_sph(comms_sph%comm_rj)
       call end_elapsed_time(13)
@@ -207,7 +207,7 @@
       call start_elapsed_time(24)
       call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WS, trns_MHD%forward%fld_rtp, WS, WK_sph%WK_FFTs, MHD_mul_FFTW)
+     &    n_WS, trns_MHD%forward, WS, WK_sph%WK_FFTs, MHD_mul_FFTW)
       call end_elapsed_time(24)
 !
       START_SRtime= MPI_WTIME()
@@ -232,7 +232,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
       call copy_coriolis_terms_rlm                                      &
      &   (ncomp_trans, sph%sph_rlm, comms_sph%comm_rlm, fl_prop,        &
-     &    trns_MHD, cor_rlm, n_WS, WS)
+     &    trns_MHD%f_trns, cor_rlm, n_WS, WS)
       call end_elapsed_time(13)
 !
       START_SRtime= MPI_WTIME()
@@ -329,7 +329,7 @@
       call start_elapsed_time(24)
       call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WS, trns_SGS%forward%fld_rtp, WS, WK_sph%WK_FFTs, SGS_mul_FFTW)
+     &    n_WS, trns_SGS%forward, WS, WK_sph%WK_FFTs, SGS_mul_FFTW)
       call end_elapsed_time(24)
 !
       START_SRtime= MPI_WTIME()
@@ -392,7 +392,7 @@
       call start_elapsed_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
       call sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,             &
-     &    fl_prop, sph_bc_U, omega_sph, trns_MHD, leg, gt_cor,          &
+     &    fl_prop, sph_bc_U, omega_sph, trns_MHD%b_trns, leg, gt_cor,   &
      &    n_WR, WR, cor_rlm)
       call end_elapsed_time(13)
 !
@@ -421,7 +421,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
       call copy_coriolis_terms_rlm                                      &
      &   (ncomp_trans, sph_rlm, comm_rlm, fl_prop,                      &
-     &    trns_MHD, cor_rlm, n_WS, WS)
+     &    trns_MHD%f_trns, cor_rlm, n_WS, WS)
       call end_elapsed_time(24)
 !
       START_SRtime= MPI_WTIME()

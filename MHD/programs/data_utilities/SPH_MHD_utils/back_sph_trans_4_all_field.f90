@@ -138,7 +138,7 @@
 !
       call copy_all_spectr_to_send                                      &
      &   (sph%sph_rtp%nnod_pole, trns_MHD%backward%ncomp,               &
-     &    sph%sph_rj, comms_sph%comm_rj, rj_fld, trns_MHD,              &
+     &    sph%sph_rj, comms_sph%comm_rj, rj_fld, trns_MHD%backward,     &
      &    n_WS, WS, trns_MHD%backward%flc_pole)
 !
       call sph_b_trans_w_poles                                          &

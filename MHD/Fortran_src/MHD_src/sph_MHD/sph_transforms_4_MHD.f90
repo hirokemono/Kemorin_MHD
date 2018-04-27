@@ -118,8 +118,8 @@
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'mhd_spectr_to_sendbuf'
-      call mhd_spectr_to_sendbuf                                      &
-     &   (trns_MHD, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
+      call mhd_spectr_to_sendbuf                                        &
+     &   (trns_MHD%backward, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
       if(trns_MHD%backward%ncomp .eq. 0) return
       call sph_b_trans_w_coriolis(trns_MHD%backward%ncomp,              &
@@ -165,7 +165,7 @@
      &    n_WS, n_WR, WS(1), WR(1), WK_sph, MHD_mul_FFTW)
 !
       call mhd_spectr_from_recvbuf                                      &
-     &   (trns_MHD, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
+     &   (trns_MHD%forward, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_4_MHD
 !
@@ -194,7 +194,7 @@
 !      call start_elapsed_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'mhd_spectr_to_sendbuf'
       call mhd_spectr_to_sendbuf                                        &
-     &   (trns_MHD, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
+     &   (trns_MHD%backward, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !      call end_elapsed_time(51)
 !
       if(trns_MHD%backward%ncomp .eq. 0) return
@@ -240,7 +240,7 @@
      &   (trns_MHD%forward%ncomp, comm_rlm, comm_rj)
 !
       call mhd_spectr_to_sendbuf                                        &
-     &   (trns_MHD, comm_rj, rj_fld, n_WS, WS(1))
+     &   (trns_MHD%backward, comm_rj, rj_fld, n_WS, WS(1))
 !
       call sph_b_trans_licv(trns_MHD%backward%ncomp,                    &
      &    sph_rlm, comm_rlm, comm_rj, fl_prop, sph_bc_U, omega_sph,     &
@@ -250,7 +250,7 @@
      &    n_WS, WS(1))
 !
       call mhd_spectr_from_recvbuf                                      &
-     &   (trns_MHD, comm_rj, n_WR, WR(1), rj_fld)
+     &   (trns_MHD%forward, comm_rj, n_WR, WR(1), rj_fld)
 !
       end subroutine sph_transform_4_licv
 !

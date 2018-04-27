@@ -11,9 +11,12 @@
 !!     &         (sph_rtp, sph_d_grp, stablize_weight, frc_rtp,         &
 !!     &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,&
 !!     &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
-!!      subroutine sel_mag_sph_ave_SGS_buo_rtp                          &
-!!     &         (sph_rtp, ifld_sgs, Cbuo_ave_sph_rtp, f_trns,          &
-!!     &          ncomp_SGS_rtp_2_rj, frc_rtp)
+!!      subroutine sel_mag_sph_ave_SGS_buo_rtp(sph_rtp, ifld_sgs,       &
+!!     &          Cbuo_ave_sph_rtp, fg_trns, trns_f_SGS)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(SGS_terms_address), intent(in) :: ifld_sgs
+!!        type(phys_address), intent(in) :: fg_trns
+!!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !!      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,    &
 !!     &          fg_trns, ifld_sgs, wk_sgs, nc_SGS_rtp_2_rj, fSGS_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -92,8 +95,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_mag_sph_ave_SGS_buo_rtp                            &
-     &         (sph_rtp, ifld_sgs, Cbuo_ave_sph_rtp, trns_SGS)
+      subroutine sel_mag_sph_ave_SGS_buo_rtp(sph_rtp, ifld_sgs,         &
+     &          Cbuo_ave_sph_rtp, fg_trns, trns_f_SGS)
 !
       use t_rms_4_sph_spectr
       use t_spheric_parameter
@@ -101,21 +104,22 @@
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(SGS_terms_address), intent(in) :: ifld_sgs
+      type(phys_address), intent(in) :: fg_trns
       real(kind = kreal), intent(in)                                    &
      &                   :: Cbuo_ave_sph_rtp(sph_rtp%nidx_rtp(1),2)
 !
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
       if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
         call sel_prod_dbl_radial_buo_coefs(sph_rtp,                     &
-     &     Cbuo_ave_sph_rtp, trns_SGS%f_trns, trns_SGS%forward)
+     &     Cbuo_ave_sph_rtp, fg_trns, trns_f_SGS)
       else if(ifld_sgs%i_buoyancy .gt. 0) then
         call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
-     &     Cbuo_ave_sph_rtp(1,1), trns_SGS%f_trns, trns_SGS%forward)
+     &     Cbuo_ave_sph_rtp(1,1), fg_trns, trns_f_SGS)
       else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
         call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
-     &     Cbuo_ave_sph_rtp(1,2), trns_SGS%f_trns, trns_SGS%forward)
+     &     Cbuo_ave_sph_rtp(1,2), fg_trns, trns_f_SGS)
       end if
 !
       end subroutine sel_mag_sph_ave_SGS_buo_rtp

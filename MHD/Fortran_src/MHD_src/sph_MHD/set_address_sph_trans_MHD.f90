@@ -17,19 +17,19 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!
 !!      subroutine mhd_spectr_to_sendbuf                                &
-!!     &         (trns_MHD, comm_rj, rj_fld, n_WS, WS)
-!!        type(address_4_sph_trans), intent(in) :: trns_MHD
+!!     &         (backward, comm_rj, rj_fld, n_WS, WS)
+!!        type(address_each_sph_trans), intent(in) :: backward
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!      subroutine mhd_spectr_to_sendbuf_wpole(nnod_pole,               &
-!!     &          sph_rj, comm_rj, rj_fld, n_WS, WS, trns_MHD)
+!!     &          sph_rj, comm_rj, rj_fld, n_WS, WS, backward)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(phys_data), intent(in) :: rj_fld
-!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
+!!        type(address_each_sph_trans), intent(inout) :: backward
 !!      subroutine mhd_spectr_from_recvbuf                              &
-!!     &         (trns_MHD, comm_rj, n_WR, WR, rj_fld)
-!!        type(address_4_sph_trans), intent(in) :: trns_MHD
+!!     &         (forward, comm_rj, n_WR, WR, rj_fld)
+!!        type(address_each_sph_trans), intent(in) :: forward
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -125,11 +125,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine mhd_spectr_to_sendbuf                                  &
-     &         (trns_MHD, comm_rj, rj_fld, n_WS, WS)
+     &         (backward, comm_rj, rj_fld, n_WS, WS)
 !
       use copy_spectr_4_sph_trans
 !
-      type(address_4_sph_trans), intent(in) :: trns_MHD
+      type(address_each_sph_trans), intent(in) :: backward
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: n_WS
@@ -138,15 +138,15 @@
       integer(kind = kint) :: i, inum
 !
 !
-      do i = 1, trns_MHD%backward%num_vector
-        call sel_sph_rj_vector_to_send(trns_MHD%backward%ncomp,         &
-     &      trns_MHD%backward%ifld_rj(i), trns_MHD%backward%ifld_trns(i),        &
+      do i = 1, backward%num_vector
+        call sel_sph_rj_vector_to_send                                  &
+     &     (backward%ncomp, backward%ifld_rj(i), backward%ifld_trns(i), &
      &      comm_rj, rj_fld, n_WS, WS)
       end do
-      do inum = 1, trns_MHD%backward%num_scalar
-        i = inum + trns_MHD%backward%num_vector
-        call sel_sph_rj_scalar_to_send(trns_MHD%backward%ncomp,         &
-     &      trns_MHD%backward%ifld_rj(i), trns_MHD%backward%ifld_trns(i),        &
+      do inum = 1, backward%num_scalar
+        i = inum + backward%num_vector
+        call sel_sph_rj_scalar_to_send                                  &
+     &     (backward%ncomp, backward%ifld_rj(i), backward%ifld_trns(i), &
      &      comm_rj, rj_fld, n_WS, WS)
       end do
 !
@@ -155,7 +155,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine mhd_spectr_to_sendbuf_wpole(nnod_pole,                 &
-     &          sph_rj, comm_rj, rj_fld, n_WS, WS, trns_MHD)
+     &          sph_rj, comm_rj, rj_fld, n_WS, WS, backward)
 !
       use copy_spectr_4_sph_trans
 !
@@ -165,21 +165,21 @@
       type(phys_data), intent(in) :: rj_fld
       integer(kind = kint), intent(in) :: n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(address_each_sph_trans), intent(inout) :: backward
 !
       integer(kind = kint) :: i, inum
 !
 !
-      do i = 1, trns_MHD%backward%num_vector
-        call sel_sph_rj_vector_to_send(trns_MHD%backward%ncomp,         &
-     &      trns_MHD%backward%ifld_rj(i), trns_MHD%backward%ifld_trns(i),        &
+      do i = 1, backward%num_vector
+        call sel_sph_rj_vector_to_send                                  &
+     &     (backward%ncomp, backward%ifld_rj(i), backward%ifld_trns(i), &
      &      comm_rj, rj_fld, n_WS, WS)
       end do
-      do inum = 1, trns_MHD%backward%num_scalar
-        i = inum + trns_MHD%backward%num_vector
-        call sel_sph_rj_scalar_2_send_wpole(trns_MHD%backward%ncomp,    &
-     &      trns_MHD%backward%ifld_rj(i), trns_MHD%backward%ifld_trns(i), nnod_pole,      &
-     &      sph_rj, comm_rj, rj_fld, n_WS, WS, trns_MHD%backward%flc_pole)
+      do inum = 1, backward%num_scalar
+        i = inum + backward%num_vector
+        call sel_sph_rj_scalar_2_send_wpole(backward%ncomp,             &
+     &      backward%ifld_rj(i), backward%ifld_trns(i), nnod_pole,      &
+     &      sph_rj, comm_rj, rj_fld, n_WS, WS, backward%flc_pole)
       end do
 !
       end subroutine mhd_spectr_to_sendbuf_wpole
@@ -187,11 +187,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine mhd_spectr_from_recvbuf                                &
-     &         (trns_MHD, comm_rj, n_WR, WR, rj_fld)
+     &         (forward, comm_rj, n_WR, WR, rj_fld)
 !
       use copy_spectr_4_sph_trans
 !
-      type(address_4_sph_trans), intent(in) :: trns_MHD
+      type(address_each_sph_trans), intent(in) :: forward
       type(sph_comm_tbl), intent(in) :: comm_rj
       integer(kind = kint), intent(in) :: n_WR
       real(kind = kreal), intent(inout) :: WR(n_WR)
@@ -200,15 +200,15 @@
       integer(kind = kint) :: i, inum
 !
 !
-      do i = 1, trns_MHD%forward%num_vector
-        call sel_sph_rj_vector_from_recv(trns_MHD%forward%ncomp,        &
-     &      trns_MHD%forward%ifld_rj(i), trns_MHD%forward%ifld_trns(i),         &
+      do i = 1, forward%num_vector
+        call sel_sph_rj_vector_from_recv                                &
+     &     (forward%ncomp, forward%ifld_rj(i), forward%ifld_trns(i),    &
      &      comm_rj, n_WR, WR, rj_fld)
       end do
-      do inum = 1, trns_MHD%forward%num_scalar
-        i = inum + trns_MHD%forward%num_vector
-        call sel_sph_rj_scalar_from_recv(trns_MHD%forward%ncomp,        &
-     &      trns_MHD%forward%ifld_rj(i), trns_MHD%forward%ifld_trns(i),         &
+      do inum = 1, forward%num_scalar
+        i = inum + forward%num_vector
+        call sel_sph_rj_scalar_from_recv                                &
+     &     (forward%ncomp, forward%ifld_rj(i), forward%ifld_trns(i),    &
      &      comm_rj, n_WR, WR, rj_fld)
       end do
 !

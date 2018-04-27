@@ -173,7 +173,7 @@
      &                      'magnify_sph_ave_SGS_buoyancy'
           call magnify_sph_ave_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
      &        ipol, dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs_buo,       &
-     &        rj_fld, trns_SGS)
+     &        rj_fld, trns_SGS%f_trns, trns_SGS%forward)
         else if(SGS_param%iflag_SGS_buo_usage .ne. id_use_volume) then
           call start_elapsed_time(16)
           if (iflag_debug.eq.1) write(*,*)                              &
@@ -186,7 +186,7 @@
      &                      'magnify_vol_ave_SGS_buoyancy'
           call magnify_vol_ave_SGS_buoyancy(sph%sph_rtp, ipol,          &
      &        dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs_buo,             &
-     &        rj_fld, trns_SGS)
+     &        rj_fld, trns_SGS%f_trns, trns_SGS%forward)
         end if
         call end_elapsed_time(84)
 !

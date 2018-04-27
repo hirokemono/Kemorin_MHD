@@ -216,7 +216,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
       call sph_forward_trans_snapshot_MHD                               &
-     &   (sph, comms_sph, trans_p, trns_snap, WK_sph, rj_fld)
+     &   (sph, comms_sph, trans_p, trns_snap%forward, WK_sph, rj_fld)
       call calypso_mpi_barrier
 !
       end subroutine enegy_fluxes_SPH_SGS_MHD

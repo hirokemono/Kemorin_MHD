@@ -213,7 +213,7 @@
      &    trns_MHD%backward%ncomp, n_WR, WR, trns_MHD%fld_rtp,          &
      &    WK_FFTs, TEST_mul_FFTW)
       call fwd_MHD_FFT_sel_to_send(sph_rtp, comm_rtp,                   &
-     &    trns_MHD%forward%ncomp, n_WS, trns_MHD%forward%fld_rtp, WS,   &
+     &    trns_MHD%forward%ncomp, n_WS, trns_MHD%forward, WS,           &
      &    WK_FFTs, TEST_mul_FFTW)
       endtime = MPI_WTIME() - starttime
 !

@@ -303,8 +303,8 @@
      &    trns_WK%WK_sph, trns_WK%MHD_mul_FFTW, trns_WK%cor_rlm)
 !
       call sph_forward_trans_snapshot_MHD                               &
-     &   (SPH_MHD%sph, SPH_MHD%comms, trans_p, trns_WK%trns_snap,       &
-     &    trns_WK%WK_sph, SPH_MHD%fld)
+     &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
+     &    trns_WK%trns_snap%forward,  trns_WK%WK_sph, SPH_MHD%fld)
 !
 ! ----  Take zonal mean
 !
