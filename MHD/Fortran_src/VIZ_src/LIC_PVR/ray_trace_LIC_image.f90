@@ -255,8 +255,8 @@
       allocate(r_tgt(lic_p%num_masking))
       allocate(r_mid(lic_p%num_masking))
       do i = 1, lic_p%num_masking
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-        &    ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_org(i) )
+        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+     &      ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_org(i) )
       end do
 !
 !   start ray casting
@@ -310,12 +310,12 @@
         &      ie_surf, isurf_end, xi, xx, xx_tgt)
 !        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
 !        &    ie_surf, isurf_end, xi, field_pvr%s_lic, r_tgt(1) )
-        call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
+        call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
         &    ie_surf, isurf_end, xi, field_pvr%v_lic, vec_tgt)
 
         do i = 1, lic_p%num_masking
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-&    ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_tgt(i) )
+          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
+     &        ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_tgt(i) )
         end do
 
         c_tgt(1) = 0.0
