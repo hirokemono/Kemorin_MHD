@@ -108,14 +108,14 @@
 !
 !
       if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
-        call sel_prod_dbl_radial_buo_coefs                              &
-     &     (sph_rtp, Cbuo_ave_sph_rtp, trns_SGS)
+        call sel_prod_dbl_radial_buo_coefs(sph_rtp,                     &
+     &     Cbuo_ave_sph_rtp, trns_SGS%f_trns, trns_SGS%forward)
       else if(ifld_sgs%i_buoyancy .gt. 0) then
-        call sel_prod_sgl_radial_buo_coefs                              &
-     &     (sph_rtp, Cbuo_ave_sph_rtp(1,1), trns_SGS)
+        call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
+     &     Cbuo_ave_sph_rtp(1,1), trns_SGS%f_trns, trns_SGS%forward)
       else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
-        call sel_prod_sgl_radial_buo_coefs                              &
-     &     (sph_rtp, Cbuo_ave_sph_rtp(1,2), trns_SGS)
+        call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
+     &     Cbuo_ave_sph_rtp(1,2), trns_SGS%f_trns, trns_SGS%forward)
       end if
 !
       end subroutine sel_mag_sph_ave_SGS_buo_rtp
@@ -191,25 +191,26 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_prod_sgl_radial_buo_coefs                          &
-     &         (sph_rtp, sgs_c, trns_SGS)
+     &         (sph_rtp, sgs_c, fg_trns, trns_f_SGS)
 !
       use m_FFT_selector
       use prod_buo_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       real(kind = kreal), intent(in) :: sgs_c(sph_rtp%nidx_rtp(1))
+      type(phys_address), intent(in) :: fg_trns
 !
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_sgl_radial_buo_coefs_pin(sph_rtp%nidx_rtp, sgs_c,     &
-     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
-     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
+     &      fg_trns%i_SGS_inertia, sph_rtp%nnod_rtp,                    &
+     &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else
         call prod_sgl_radial_buo_coefs_pout(sph_rtp%nidx_rtp, sgs_c,    &
-     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
-     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
+     &      fg_trns%i_SGS_inertia, sph_rtp%nnod_rtp,                    &
+     &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
       end subroutine sel_prod_sgl_radial_buo_coefs
@@ -217,25 +218,26 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_prod_dbl_radial_buo_coefs                          &
-     &         (sph_rtp, sgs_c, trns_SGS)
+     &         (sph_rtp, sgs_c, fg_trns, trns_f_SGS)
 !
       use m_FFT_selector
       use prod_buo_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       real(kind = kreal), intent(in) :: sgs_c(sph_rtp%nidx_rtp(1),2)
+      type(phys_address), intent(in) :: fg_trns
 !
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_dbl_radial_buo_coefs_pin(sph_rtp%nidx_rtp, sgs_c,     &
-     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
-     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
+     &      fg_trns%i_SGS_inertia, sph_rtp%nnod_rtp,                    &
+     &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else
         call prod_dbl_radial_buo_coefs_pout(sph_rtp%nidx_rtp, sgs_c,    &
-     &      trns_SGS%f_trns%i_SGS_inertia, sph_rtp%nnod_rtp,            &
-     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
+     &      fg_trns%i_SGS_inertia, sph_rtp%nnod_rtp,                    &
+     &      trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if
 !
       end subroutine sel_prod_dbl_radial_buo_coefs

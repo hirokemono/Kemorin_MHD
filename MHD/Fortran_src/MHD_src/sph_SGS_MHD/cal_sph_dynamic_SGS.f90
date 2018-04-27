@@ -130,11 +130,11 @@
 !
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
         if (iflag_debug.eq.1) write(*,*) 'product_model_coefs_4_sph'
-        call product_model_coefs_4_sph                                  &
-     &     (SGS_param, sph%sph_rtp, trns_SGS, dynamic_SPH)
+        call product_model_coefs_4_sph(SGS_param, sph%sph_rtp,          &
+     &      trns_SGS%f_trns, trns_SGS%forward, dynamic_SPH)
       else
-        call prod_fixed_sph_SGS_Csim                                    &
-     &     (SGS_param, sph%sph_rtp, dynamic_SPH%ifld_sgs, trns_SGS)
+        call prod_fixed_sph_SGS_Csim(SGS_param, sph%sph_rtp,            &
+     &      dynamic_SPH%ifld_sgs, trns_SGS%f_trns, trns_SGS%forward)
       end if
       call end_elapsed_time(15)
 !
@@ -221,7 +221,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph                                      &
-     &   (SGS_param, sph%sph_rtp, trns_SGS, trns_DYNS, dynamic_SPH)
+     &   (SGS_param, sph%sph_rtp, trns_SGS%f_trns, trns_DYNS%b_trns, trns_SGS%forward, trns_DYNS%backward, dynamic_SPH)
 !
       end subroutine dynamic_SGS_by_pseudo_sph
 !

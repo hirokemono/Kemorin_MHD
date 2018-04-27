@@ -93,6 +93,19 @@
      &    ipol%i_f_buo_gen, itor%i_f_buo_gen, iphys%i_f_buo_gen,        &
      &    f_trns%i_f_buo_gen, trns_fwd)
 !
+      call add_field_name_4_sph_trns_snap                               &
+     &   (fhd_magnetic_helicity, n_scalar,                              &
+     &    ipol%i_k_heli, itor%i_k_heli, iphys%i_k_heli,                 &
+     &    f_trns%i_k_heli, trns_fwd)
+      call add_field_name_4_sph_trns_snap                               &
+     &   (fhd_current_helicity, n_scalar,                               &
+     &    ipol%i_c_heli, itor%i_c_heli, iphys%i_c_heli,                 &
+     &    f_trns%i_c_heli, trns_fwd)
+      call add_field_name_4_sph_trns_snap                               &
+     &   (fhd_cross_helicity, n_scalar,                                 &
+     &    ipol%i_x_heli, itor%i_x_heli, iphys%i_x_heli,                 &
+     &    f_trns%i_x_heli, trns_fwd)
+!
       call add_field_name_4_sph_trns_snap(fhd_Reynolds_work, n_scalar,  &
      &    ipol%i_reynolds_wk, itor%i_reynolds_wk, iphys%i_reynolds_wk,  &
      &    f_trns%i_reynolds_wk, trns_fwd)

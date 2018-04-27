@@ -7,10 +7,9 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_back_trans(MHD_files, iphys,            &
-!!     &          SPH_model, SPH_MHD, SPH_WK)
+!!      subroutine SPH_init_sph_back_trans                              &
+!!     &         (MHD_files, SPH_model, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(phys_address), intent(in) :: iphys
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
@@ -42,8 +41,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_back_trans(MHD_files, iphys,              &
-     &          SPH_model, SPH_MHD, SPH_WK)
+      subroutine SPH_init_sph_back_trans                                &
+     &         (MHD_files, SPH_model, SPH_MHD, SPH_WK)
 !
       use m_constants
       use calypso_mpi
@@ -69,7 +68,6 @@
       use back_sph_trans_4_all_field
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(phys_address), intent(in) :: iphys
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -90,7 +88,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_back_transform'
       call init_sph_back_transform                                      &
-     &   (SPH_model, iphys, SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
+     &   (SPH_model, SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
 !
 ! ---------------------------------
 !

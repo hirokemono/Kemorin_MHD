@@ -113,6 +113,37 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine alloc_sph_trns_field_data(sph_rtp, each_trns)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(address_each_sph_trans), intent(inout) :: each_trns
+!
+!
+      allocate(each_trns%fld_rtp(sph_rtp%nnod_rtp,each_trns%ncomp))
+      if(each_trns%ncomp .gt. 0) each_trns%fld_rtp = 0.0d0
+!
+      end subroutine alloc_sph_trns_field_data
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_sph_trns_pole_data(sph_rtp, each_trns)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(address_each_sph_trans), intent(inout) :: each_trns
+!
+!
+      allocate(each_trns%fld_pole(sph_rtp%nnod_pole,each_trns%ncomp))
+      allocate(each_trns%flc_pole(sph_rtp%nnod_pole,each_trns%ncomp))
+!
+      if(each_trns%ncomp*sph_rtp%nnod_pole .gt. 0) then
+        each_trns%fld_pole = 0.0d0
+        each_trns%flc_pole = 0.0d0
+      end if
+!
+      end subroutine alloc_sph_trns_pole_data
+!
+!-----------------------------------------------------------------------
+!
       subroutine dealloc_sph_trns_field_name(each_trns)
 !
       type(address_each_sph_trans), intent(inout) :: each_trns
@@ -124,6 +155,28 @@
       end subroutine dealloc_sph_trns_field_name
 !
 !-----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_trns_field_dats(each_trns)
+!
+      type(address_each_sph_trans), intent(inout) :: each_trns
+!
+!
+      deallocate(each_trns%fld_rtp)
+!
+      end subroutine dealloc_sph_trns_field_dats
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_trns_pole_data(each_trns)
+!
+      type(address_each_sph_trans), intent(inout) :: each_trns
+!
+!
+      deallocate(each_trns%fld_pole, each_trns%flc_pole)
+!
+      end subroutine dealloc_sph_trns_pole_data
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine alloc_nonlinear_data(sph_rtp, trns)
@@ -132,13 +185,11 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%backward%fld_rtp(sph_rtp%nnod_rtp,trns%backward%ncomp))
-      allocate(trns%forward%fld_rtp(sph_rtp%nnod_rtp,trns%forward%ncomp))
-      allocate(trns%fld_zm(sph_rtp%nnod_med,6))
+      call alloc_sph_trns_field_data(sph_rtp, trns%backward)
+      call alloc_sph_trns_field_data(sph_rtp, trns%forward)
 !
+      allocate(trns%fld_zm(sph_rtp%nnod_med,6))
       trns%fld_zm = 0.0d0
-      if(trns%backward%ncomp .gt. 0) trns%backward%fld_rtp = 0.0d0
-      if(trns%forward%ncomp .gt. 0) trns%forward%fld_rtp = 0.0d0
 !
       end subroutine alloc_nonlinear_data
 !
@@ -150,14 +201,8 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%backward%fld_pole(sph_rtp%nnod_pole,trns%backward%ncomp))
-      allocate(trns%backward%flc_pole(sph_rtp%nnod_pole,trns%backward%ncomp))
-!
-      allocate(trns%forward%fld_pole(sph_rtp%nnod_pole,trns%forward%ncomp))
-!
-      if(trns%backward%ncomp .gt. 0) trns%backward%fld_pole = 0.0d0
-      if(trns%backward%ncomp .gt. 0) trns%backward%flc_pole = 0.0d0
-      if(trns%forward%ncomp .gt. 0) trns%forward%fld_pole = 0.0d0
+      call alloc_sph_trns_pole_data(sph_rtp, trns%backward)
+      call alloc_sph_trns_pole_data(sph_rtp, trns%forward)
 !
       end subroutine alloc_nonlinear_pole
 !
@@ -167,8 +212,9 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns
 !
-      deallocate(trns%backward%fld_rtp, trns%forward%fld_rtp)
-      deallocate(trns%fld_zm)
+!
+      call dealloc_sph_trns_field_dats(trns%backward)
+      call dealloc_sph_trns_field_dats(trns%forward)
 !
       end subroutine dealloc_nonlinear_data
 !
@@ -179,7 +225,8 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      deallocate(trns%backward%fld_pole, trns%backward%flc_pole, trns%forward%fld_pole)
+      call dealloc_sph_trns_pole_data(trns%backward)
+      call dealloc_sph_trns_pole_data(trns%forward)
 !
       end subroutine dealloc_nonlinear_pole
 !

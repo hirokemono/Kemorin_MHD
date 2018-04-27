@@ -78,7 +78,7 @@
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
       call SPH_init_sph_back_trans                                      &
-     &   (MHD_files1, FEM_d1%iphys, SPH_model1, SPH_MHD1, SPH_WK1)
+     &   (MHD_files1, SPH_model1, SPH_MHD1, SPH_WK1)
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(FEM_d1%geofem, FEM_d1%ele_mesh, FEM_d1%field, &
@@ -131,7 +131,8 @@
         if (iflag_debug.gt.0) write(*,*) 'copy_all_field_from_trans'
         call copy_all_field_from_trans                                  &
      &     (SPH_MHD1%sph%sph_params%m_folding, SPH_MHD1%sph%sph_rtp,    &
-     &      SPH_WK1%trns_WK%trns_MHD, FEM_d1%geofem%mesh, FEM_d1%field)
+     &      SPH_WK1%trns_WK%trns_MHD%backward, FEM_d1%geofem%mesh,      &
+     &      FEM_d1%field)
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1,                            &

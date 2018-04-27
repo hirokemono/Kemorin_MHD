@@ -55,7 +55,6 @@
      &     .or. i_start .eq. iphys%i_magne                              &
      &     .or. i_start .eq. iphys%i_temp                               &
      &     .or. i_start .eq. iphys%i_light                              &
-     &     .or. i_start .eq. iphys%i_k_heli                             &
      &     .or. i_start .eq. iphys%i_v_diffuse                          &
      &     .or. i_start .eq. iphys%i_m_advect                           &
      &     .or. i_start .eq. iphys%i_m_flux                             &
@@ -68,10 +67,10 @@
      &       (fld, i_start, iphys%i_velo, fhd_velo)
         else if(i_start .eq. iphys%i_filter_vort                        &
      &     .or. i_start .eq. iphys%i_wide_fil_vort                      &
-     &     .or. i_start .eq. iphys%i_k_heli                             &
      &     .or. i_start .eq. iphys%i_SGS_inertia                        &
      &     .or. i_start .eq. iphys%i_wide_SGS_inertia                   &
      &     .or. i_start .eq. iphys%i_velo_scale                         &
+     &     .or. i_start .eq. iphys%i_k_heli                             &
      &     .or. i_start .eq. iphys%i_grad_wx                            &
      &     .or. i_start .eq. iphys%i_grad_wy                            &
      &     .or. i_start .eq. iphys%i_grad_wz ) then 

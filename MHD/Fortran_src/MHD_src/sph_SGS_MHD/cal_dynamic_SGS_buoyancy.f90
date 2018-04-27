@@ -23,14 +23,19 @@
 !!        type(work_for_sgl_FFTW), intent(inout) :: DYNS_mul_FFTW
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine const_dynamic_SGS_4_buo_sph(stab_weight, sph_rtp,    &
-!!     &          fl_prop, trns_MHD, trns_SGS, trns_DYNS, dynamic_SPH)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(address_4_sph_trans), intent(in) :: trns_MHD
-!!        type(address_4_sph_trans), intent(in) :: trns_SGS
-!!        type(address_4_sph_trans), intent(inout) :: trns_DYNS
+!!      subroutine product_buo_model_coefs_4_sph                        &
+!!     &         (SGS_param, sph, comms_sph, trans_p, trns_SGS,         &
+!!     &          WK_sph, SGS_mul_FFTW, dynamic_SPH, ipol, rj_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(sph_grids), intent(in) :: sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
+!!        type(phys_address), intent(in) :: ipol
+!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
 !
@@ -92,7 +97,9 @@
      &       'const_dynamic_SGS_4_buo_sph', iflag_debug
       call const_dynamic_SGS_4_buo_sph                                  &
      &   (SGS_param%stab_weight, sph%sph_rtp, MHD_prop%fl_prop,         &
-     &    trns_MHD, trns_SGS, trns_DYNS, dynamic_SPH)
+     &    trns_MHD%b_trns, trns_SGS%f_trns, trns_DYNS%f_trns,           &
+     &    trns_MHD%backward, trns_SGS%forward, trns_DYNS%forward,       &
+     &    dynamic_SPH)
 !
       if(SGS_param%iflag_SGS_buo_usage .ne. id_use_zonal) then
         call start_elapsed_time(16)

@@ -159,8 +159,7 @@
      &     (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,            &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
      &      WK%trns_MHD%f_trns, WK%trns_MHD%b_trns,                     &
-     &      WK%trns_MHD%backward%ncomp, WK%trns_MHD%forward%ncomp,      &
-     &      WK%trns_MHD%backward%fld_pole, WK%trns_MHD%forward%fld_pole)
+     &      WK%trns_MHD%backward, WK%trns_MHD%forward)
       end if
 !
       end subroutine lead_fields_by_sph_trans
@@ -288,9 +287,7 @@
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
-     &    trns_MHD%forward%ncomp, trns_snap%backward%ncomp,             &
-     &    trns_snap%forward%ncomp, trns_MHD%forward%fld_rtp,            &
-     &    trns_snap%backward%fld_rtp, trns_snap%forward%fld_rtp)
+     &    trns_MHD%forward, trns_snap%backward, trns_snap%forward)
 !
       end subroutine cal_sph_enegy_fluxes
 !

@@ -8,9 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_back_transform                              &
-!!     &         (SPH_model, iphys, trans_p, WK, SPH_MHD)
+!!     &         (SPH_model, trans_p, WK, SPH_MHD)
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
-!!        type(phys_address), intent(in) :: iphys
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -46,7 +45,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_sph_back_transform                                &
-     &         (SPH_model, iphys, trans_p, WK, SPH_MHD)
+     &         (SPH_model, trans_p, WK, SPH_MHD)
 !
       use t_physical_property
       use t_poloidal_rotation
@@ -60,7 +59,6 @@
       use init_sphrical_transform_MHD
       use set_address_all_sph_trans
 !
-      type(phys_address), intent(in) :: iphys
       type(SPH_MHD_model_data), intent(in) :: SPH_model
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
@@ -82,16 +80,6 @@
      &                     'set_all_spherical_transform'
       call set_all_spherical_transform(SPH_MHD%fld, WK%trns_MHD,        &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-!
-      if(iflag_debug .ge. iflag_routine_msg) then
-        call check_address_trans_sph_MHD                                &
-     &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
-     &      WK%trns_MHD, ncomp_max_trans)
-        do i_fld = 1, SPH_MHD%fld%num_phys_viz
-          write(*,*) i_fld,                                             &
-     &              trim(WK%trns_MHD%backward%field_name(i_fld))
-        end do
-      end if
 !
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
 !
@@ -203,29 +191,5 @@
       end subroutine sph_back_transform_dual
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine check_address_trans_sph_MHD                            &
-     &         (ipol, idpdr, itor, iphys, trns_MHD, ncomp_sph_trans)
-!
-      use check_address_sph_trans
-!
-      type(phys_address), intent(in) :: ipol, idpdr, itor
-      type(phys_address), intent(in) :: iphys
-      type(address_4_sph_trans), intent(in) :: trns_MHD
-      integer(kind = kint), intent(in) :: ncomp_sph_trans
-!
-!
-      write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-      write(*,*) 'addresses of spherical transform for MHD'
-!
-      call check_add_trans_sph_MHD                                      &
-     &   (ipol, idpdr, itor, iphys, trns_MHD%b_trns, trns_MHD%f_trns,   &
-     &    trns_MHD%backward%ncomp, trns_MHD%backward%num_vector,        &
-     &    trns_MHD%backward%num_scalar, trns_MHD%forward%ncomp,         &
-     &    trns_MHD%forward%num_vector, trns_MHD%forward%num_scalar)
-!
-      end subroutine check_address_trans_sph_MHD
-!
-!-----------------------------------------------------------------------
 !
       end module back_sph_trans_4_all_field
