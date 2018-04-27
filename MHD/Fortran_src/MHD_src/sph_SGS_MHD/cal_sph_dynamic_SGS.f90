@@ -111,8 +111,7 @@
       if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
       call similarity_SGS_terms_rtp(sph%sph_rtp, MHD_prop,              &
      &    trns_SGS%b_trns, trns_SGS%f_trns,                             &
-     &    trns_SGS%backward%ncomp, trns_SGS%forward%ncomp,              &
-     &    trns_SGS%backward%fld_rtp, trns_SGS%forward%fld_rtp)
+     &    trns_SGS%backward, trns_SGS%forward)
       call end_elapsed_time(15)
 !
       istep_dynamic = mod(i_step, i_step_sgs_coefs)
@@ -217,7 +216,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
       call wider_similarity_SGS_rtp(sph%sph_rtp, MHD_prop,              &
-     &   trns_DYNS%b_trns, trns_DYNS%backward%ncomp, trns_DYNS%backward%fld_rtp)
+     &   trns_DYNS%b_trns, trns_DYNS%backward)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
       call const_model_coefs_4_sph                                      &

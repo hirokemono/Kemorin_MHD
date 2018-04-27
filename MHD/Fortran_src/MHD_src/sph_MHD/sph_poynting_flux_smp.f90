@@ -25,6 +25,7 @@
       use m_machine_parameter
 !
       use t_phys_address
+      use t_addresses_sph_transform
 !
       private :: copy_grad_vect_to_m_stretch, sel_scalar_from_trans
 !
@@ -65,7 +66,7 @@
 !
       if(ft_trns%i_grad_wx.gt.0) then
         call sel_scalar_from_trans(sph_rtp,                             &
-     &      fldtrns_bwd%fld_rtp(1,b_trns%i_vort  ),                     &
+     &      trns_bwd%fld_rtp(1,b_trns%i_vort  ),                        &
      &      trns_fwd%fld_rtp(1,ft_trns%i_grad_wx) )
       end if
       if(ft_trns%i_grad_wy.gt.0) then

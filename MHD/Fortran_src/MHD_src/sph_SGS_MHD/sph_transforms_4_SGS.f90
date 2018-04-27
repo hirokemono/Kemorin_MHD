@@ -82,9 +82,8 @@
      &   (trns_SGS%backward, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
       call sph_b_transform_SGS                                          &
-     &   (trns_SGS%backward%ncomp, trns_SGS%backward%num_vector,        &
-     &    trns_SGS%backward%num_tensor, sph, comms_sph, trans_p,        &
-     &    n_WS, n_WR, WS(1), WR(1), trns_SGS, WK_sph, SGS_mul_FFTW)
+     &   (sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
+     &    trns_SGS%backward, WK_sph, SGS_mul_FFTW)
 !
       end subroutine sph_back_trans_SGS_MHD
 !

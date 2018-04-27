@@ -127,35 +127,35 @@
 ! ----------------------------------------------------------------------
 !
       subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,      &
-     &          fg_trns, ifld_sgs, wk_sgs, nc_SGS_rtp_2_rj, fSGS_rtp)
+     &          fg_trns, ifld_sgs, wk_sgs, trns_f_SGS)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(phys_address), intent(in) :: fg_trns
       type(SGS_terms_address), intent(in) :: ifld_sgs
       type(dynamic_model_data), intent(in) :: wk_sgs
-      integer(kind = kint), intent(in) :: nc_SGS_rtp_2_rj
 !
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: fSGS_rtp(sph_rtp%nnod_rtp,nc_SGS_rtp_2_rj)
+      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
       if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
         call sel_product_double_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      ifld_sgs%i_buoyancy, ifld_sgs%i_comp_buoyancy,              &
-     &      wk_sgs%fld_coef, nc_SGS_rtp_2_rj, fg_trns%i_SGS_inertia,    &
-     &      fSGS_rtp)
+     &      wk_sgs%fld_coef, trns_f_SGS%ncomp, fg_trns%i_SGS_inertia,   &
+     &      trns_f_SGS%fld_rtp)
       else if(ifld_sgs%i_buoyancy .gt. 0) then
         call sel_product_single_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      ifld_sgs%i_buoyancy, wk_sgs%fld_coef,                       &
-     &      nc_SGS_rtp_2_rj, fg_trns%i_SGS_inertia, fSGS_rtp)
+     &      trns_f_SGS%ncomp, fg_trns%i_SGS_inertia,                    &
+     &      trns_f_SGS%fld_rtp)
       else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
         call sel_product_single_buo_coefs                               &
      &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
      &      ifld_sgs%i_comp_buoyancy, wk_sgs%fld_coef,                  &
-     &      nc_SGS_rtp_2_rj, fg_trns%i_SGS_inertia, fSGS_rtp)
+     &      trns_f_SGS%ncomp, fg_trns%i_SGS_inertia,                    &
+     &      trns_f_SGS%fld_rtp)
       end if
 !
       end subroutine prod_SGS_buoyancy_to_Reynolds

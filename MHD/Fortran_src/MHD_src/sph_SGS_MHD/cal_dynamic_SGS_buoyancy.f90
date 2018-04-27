@@ -151,9 +151,9 @@
         if(SGS_param%iflag_SGS_buo_usage .eq. id_use_zonal) then
           write(*,*) 'prod_SGS_buoyancy_to_Reynolds'
           call prod_SGS_buoyancy_to_Reynolds                            &
-     &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
-     &      trns_SGS%f_trns, dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs,  &
-     &      trns_SGS%forward%ncomp, trns_SGS%forward%fld_rtp)
+     &       (sph%sph_rtp, dynamic_SPH%sph_d_grp,                       &
+     &        trns_SGS%f_trns, dynamic_SPH%ifld_sgs,                    &
+     &        dynamic_SPH%wk_sgs, trns_SGS%forward)
 !
           call start_elapsed_time(16)
           if (iflag_debug.eq.1) write(*,*)                              &

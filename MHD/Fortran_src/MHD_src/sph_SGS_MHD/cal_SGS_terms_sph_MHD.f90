@@ -7,9 +7,8 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine similarity_SGS_terms_rtp                             &
-!!     &         (sph_rtp, MHD_prop, bg_trns, fg_trns,                  &
-!!     &          nc_SGS_rj_2_rtp, nc_SGS_rtp_2_rj, fld_rtp, frc_rtp)
+!!      subroutine similarity_SGS_terms_rtp(sph_rtp, MHD_prop,          &
+!!     &          bg_trns, fg_trns, trns_b_SGS, trns_f_SGS)
 !!       Input ::  fil_rtp(1,il_frc)
 !!               il_frc = i_SGS_inertia, i_SGS_Lorentz,
 !!                        i_SGS_vp_induct, i_SGS_h_flux, i_SGS_c_flux
@@ -22,10 +21,11 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(phys_address), intent(in) :: f_trns
 !!        type(phys_address), intent(in) :: bg_trns, fg_trns
+!!        type(address_each_sph_trans), intent(inout) :: trns_b_SGS
+!!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !!
 !!      subroutine wider_similarity_SGS_rtp                             &
-!!     &         (sph_rtp, MHD_prop, b_trns, bg_trns,                   &
-!!     &          ncomp_rj_2_rtp, nc_SGS_rj_2_rtp, fld_rtp, fil_rtp)
+!!     &         (sph_rtp, MHD_prop, bd_trns, trns_b_DYNS)
 !!       Input ::  fil_rtp(1,il_frc)
 !!               il_frc = i_wide_SGS_inertia, i_wide_SGS_Lorentz,
 !!                        i_wide_SGS_vp_induct, i_wide_SGS_h_flux, 
@@ -55,6 +55,7 @@
       use t_control_parameter
       use t_spheric_rtp_data
       use t_phys_address
+      use t_addresses_sph_transform
 !
       implicit none
 !
@@ -80,68 +81,62 @@
 !!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{T}} @f$, and
 !!      @f$ e_{ijk}\overline{\tilde{u}_{j} \tilde{C}}
 !!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{C}} @f$,
-      subroutine similarity_SGS_terms_rtp                               &
-     &         (sph_rtp, MHD_prop, bg_trns, fg_trns,                    &
-     &          nc_SGS_rj_2_rtp, nc_SGS_rtp_2_rj, fld_rtp, frc_rtp)
+      subroutine similarity_SGS_terms_rtp(sph_rtp, MHD_prop,            &
+     &          bg_trns, fg_trns, trns_b_SGS, trns_f_SGS)
 !
       use cal_subtract_smp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: bg_trns, fg_trns
+      type(address_each_sph_trans), intent(inout) :: trns_b_SGS
 !
-      integer(kind = kint), intent(in) :: nc_SGS_rj_2_rtp
-      integer(kind = kint), intent(in) :: nc_SGS_rtp_2_rj
-      real(kind = kreal), intent(in)                                    &
-     &                   :: fld_rtp(sph_rtp%nnod_rtp,nc_SGS_rj_2_rtp)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: frc_rtp(sph_rtp%nnod_rtp,nc_SGS_rtp_2_rj)
+      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !$omp parallel
       if(fg_trns%i_SGS_inertia .gt. 0) then
         call subcract_X_product_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
-     &      fld_rtp(1,bg_trns%i_SGS_inertia),                           &
-     &      fld_rtp(1,bg_trns%i_filter_vort),                           &
-     &      fld_rtp(1,bg_trns%i_filter_velo),                           &
-     &      frc_rtp(1,fg_trns%i_SGS_inertia))
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_SGS_inertia),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_vort),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_velo),                &
+     &      trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_inertia))
       end if
 !
       if(fg_trns%i_SGS_Lorentz .gt. 0) then
         call subcract_X_product_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_lor,                &
-     &      fld_rtp(1,bg_trns%i_SGS_Lorentz),                           &
-     &      fld_rtp(1,bg_trns%i_filter_current),                        &
-     &      fld_rtp(1,bg_trns%i_filter_magne),                          &
-     &      frc_rtp(1,fg_trns%i_SGS_Lorentz))
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_SGS_Lorentz),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_current),             &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_magne),               &
+     &      trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_Lorentz))
       end if
 !
       if(fg_trns%i_SGS_vp_induct .gt. 0) then
         call subcract_X_product_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,             &
-     &      fld_rtp(1,bg_trns%i_SGS_vp_induct),                         &
-     &      fld_rtp(1,bg_trns%i_filter_velo),                           &
-     &      fld_rtp(1,bg_trns%i_filter_magne),                          &
-     &      frc_rtp(1,fg_trns%i_SGS_vp_induct))
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_SGS_vp_induct),              &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_velo),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_magne),               &
+     &      trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_vp_induct))
       end if
 !
       if(fg_trns%i_SGS_h_flux .gt. 0) then
         call subtract_scl_flux_w_coef_smp                               &
      &     (sph_rtp%nnod_rtp, MHD_prop%ht_prop%coef_advect,             &
-     &      fld_rtp(1,bg_trns%i_SGS_h_flux),                            &
-     &      fld_rtp(1,bg_trns%i_filter_velo),                           &
-     &      fld_rtp(1,bg_trns%i_filter_temp),                           &
-     &      frc_rtp(1,fg_trns%i_SGS_h_flux))
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_SGS_h_flux),                 &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_velo),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_temp),                &
+     &      trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_h_flux))
       end if
 !
       if(fg_trns%i_SGS_c_flux .gt. 0) then
         call subtract_scl_flux_w_coef_smp                               &
      &     (sph_rtp%nnod_rtp, MHD_prop%cp_prop%coef_advect,             &
-     &      fld_rtp(1,bg_trns%i_SGS_c_flux),                            &
-     &      fld_rtp(1,bg_trns%i_filter_velo),                           &
-     &      fld_rtp(1,bg_trns%i_filter_temp),                           &
-     &      frc_rtp(1,fg_trns%i_SGS_c_flux))
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_SGS_c_flux),                 &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_velo),                &
+     &      trns_b_SGS%fld_rtp(1,bg_trns%i_filter_temp),                &
+     &      trns_f_SGS%fld_rtp(1,fg_trns%i_SGS_c_flux))
       end if
 !$omp end parallel
 !
@@ -166,56 +161,54 @@
 !!         - e_{ijk} \overline{\overline{\tilde{u}}}_{j}
 !!                  \overline{\overline{\tilde{C}}} @f$,
       subroutine wider_similarity_SGS_rtp                               &
-     &         (sph_rtp, MHD_prop, bd_trns, nc_SGS_rj_2_rtp, fld_rtp)
+     &         (sph_rtp, MHD_prop, bd_trns, trns_b_DYNS)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: bd_trns
 !
-      integer(kind = kint), intent(in) :: nc_SGS_rj_2_rtp
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: fld_rtp(sph_rtp%nnod_rtp,nc_SGS_rj_2_rtp)
+      type(address_each_sph_trans), intent(inout) :: trns_b_DYNS
 !
 !
 !$omp parallel
       if(bd_trns%i_wide_SGS_inertia .gt. 0) then
         call overwrt_sub_X_prod_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_velo,               &
-     &      fld_rtp(1,bd_trns%i_wide_fil_vort),                         &
-     &      fld_rtp(1,bd_trns%i_wide_fil_velo),                         &
-     &      fld_rtp(1,bd_trns%i_wide_SGS_inertia))
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_vort),             &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_velo),             &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_inertia))
       end if
 !
       if(bd_trns%i_wide_SGS_Lorentz .gt. 0) then
         call overwrt_sub_X_prod_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%fl_prop%coef_lor,                &
-     &      fld_rtp(1,bd_trns%i_wide_fil_current),                      &
-     &      fld_rtp(1,bd_trns%i_wide_fil_magne),                        &
-     &      fld_rtp(1,bd_trns%i_wide_SGS_Lorentz))
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_current),          &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_magne),            &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_Lorentz))
       end if
 !
       if(bd_trns%i_wide_SGS_vp_induct .gt. 0) then
         call overwrt_sub_X_prod_w_coef_smp                              &
      &     (sph_rtp%nnod_rtp, MHD_prop%cd_prop%coef_induct,             &
-     &      fld_rtp(1,bd_trns%i_wide_fil_velo),                         &
-     &      fld_rtp(1,bd_trns%i_wide_fil_magne),                        &
-     &      fld_rtp(1,bd_trns%i_wide_SGS_vp_induct))
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_velo),             &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_magne),            &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_vp_induct))
       end if
 !
       if(bd_trns%i_wide_SGS_h_flux .gt. 0) then
         call overwrt_sub_scl_flux_w_coef_smp                            &
      &     (sph_rtp%nnod_rtp, MHD_prop%ht_prop%coef_advect,             &
-     &      fld_rtp(1,bd_trns%i_wide_fil_velo),                         &
-     &      fld_rtp(1,bd_trns%i_wide_fil_temp),                         &
-     &      fld_rtp(1,bd_trns%i_wide_SGS_h_flux))
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_velo),             &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_temp),             &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_h_flux))
       end if
 !
       if(bd_trns%i_wide_SGS_c_flux .gt. 0) then
         call overwrt_sub_scl_flux_w_coef_smp                            &
      &     (sph_rtp%nnod_rtp, MHD_prop%cp_prop%coef_advect,             &
-     &      fld_rtp(1,bd_trns%i_wide_fil_velo),                         &
-     &      fld_rtp(1,bd_trns%i_wide_fil_comp),                         &
-     &      fld_rtp(1,bd_trns%i_wide_SGS_c_flux))
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_velo),             &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_fil_comp),             &
+     &      trns_b_DYNS%fld_rtp(1,bd_trns%i_wide_SGS_c_flux))
       end if
 !$omp end parallel
 !

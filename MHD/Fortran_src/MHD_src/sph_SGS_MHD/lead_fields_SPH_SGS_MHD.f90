@@ -207,10 +207,8 @@
         call SGS_fluxes_for_snapshot                                    &
      &     (sph%sph_rtp, MHD_prop%fl_prop, trns_MHD%b_trns,             &
      &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,        &
-     &      trns_MHD%backward%ncomp, trns_SGS%forward%ncomp,            &
-     &      trns_snap%backward%ncomp, trns_snap%forward%ncomp,          &
-     &      trns_MHD%backward%fld_rtp, trns_SGS%forward%fld_rtp,        &
-     &      trns_snap%backward%fld_rtp, trns_snap%forward%fld_rtp)
+     &      trns_MHD%backward, trns_SGS%forward, trns_snap%backward,    &
+     &      trns_snap%forward)
       end if
 !
       if (iflag_debug.eq.1) write(*,*)                                  &

@@ -148,8 +148,7 @@
 !
       call SGS_fluxes_for_buo_coefs                                     &
      &   (sph_rtp, fl_prop, b_trns, fg_trns, fd_trns,                   &
-     &    trns_b_MHD%ncomp, trns_f_SGS%ncomp, trns_f_DYNS%ncomp,        &
-     &    trns_b_MHD%fld_rtp, trns_f_SGS%fld_rtp, trns_f_DYNS%fld_rtp)
+     &    trns_b_MHD, trns_f_SGS, trns_f_DYNS)
 !
       if(dynamic_SPH%ifld_sgs%i_buoyancy .gt. 0) then
         call cal_SGS_buo_coefs_sph_MHD                                  &

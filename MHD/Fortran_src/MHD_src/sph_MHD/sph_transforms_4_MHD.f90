@@ -122,11 +122,10 @@
      &   (trns_MHD%backward, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
 !
       if(trns_MHD%backward%ncomp .eq. 0) return
-      call sph_b_trans_w_coriolis(trns_MHD%backward%ncomp,              &
-     &    trns_MHD%backward%num_vector, trns_MHD%backward%num_scalar,   &
-     &    sph, comms_sph, fl_prop, sph_bc_U, omega_sph,                 &
-     &    trans_p, gt_cor, n_WS, n_WR, WS(1), WR(1),                    &
-     &    trns_MHD, WK_sph, MHD_mul_FFTW, cor_rlm)
+      call sph_b_trans_w_coriolis                                       &
+     &   (sph, comms_sph, fl_prop, sph_bc_U, omega_sph,                 &
+     &    trns_MHD%b_trns, trans_p, gt_cor, n_WS, n_WR, WS(1), WR(1),   &
+     &    trns_MHD%backward, WK_sph, MHD_mul_FFTW, cor_rlm)
 !
       end subroutine sph_back_trans_4_MHD
 !
@@ -159,10 +158,10 @@
      &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
       if(trns_MHD%forward%ncomp .eq. 0) return
-      call sph_f_trans_w_coriolis(trns_MHD%forward%ncomp,               &
-     &    trns_MHD%forward%num_vector, trns_MHD%forward%num_scalar,     &
-     &    sph, comms_sph, fl_prop, trans_p, cor_rlm, trns_MHD,          &
-     &    n_WS, n_WR, WS(1), WR(1), WK_sph, MHD_mul_FFTW)
+      call sph_f_trans_w_coriolis                                       &
+     &   (sph, comms_sph, fl_prop, trans_p, cor_rlm, trns_MHD%f_trns,   &
+     &    trns_MHD%forward, n_WS, n_WR, WS(1), WR(1), WK_sph,           &
+     &    MHD_mul_FFTW)
 !
       call mhd_spectr_from_recvbuf                                      &
      &   (trns_MHD%forward, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
