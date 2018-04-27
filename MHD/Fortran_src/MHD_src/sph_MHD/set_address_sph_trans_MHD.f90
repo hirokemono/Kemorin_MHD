@@ -103,9 +103,9 @@
       ncomp_sph_trans =   0
       nvector_sph_trans = 0
       nscalar_sph_trans = 0
-      call count_num_fields_each_trans2(trns_MHD%backward,              &
+      call count_num_fields_each_trans(trns_MHD%backward,               &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-      call count_num_fields_each_trans2(trns_MHD%forward,               &
+      call count_num_fields_each_trans(trns_MHD%forward,                &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       if(iflag_debug .gt. 0) then

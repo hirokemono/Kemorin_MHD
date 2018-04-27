@@ -19,20 +19,14 @@
 !!      subroutine dealloc_nonlinear_zmean(trns)
 !!        type(address_4_sph_trans), intent(inout) :: trns
 !!
-!!      subroutine add_scalar_trans_flag                                &
-!!     &         (is_fld, nfield_vec, num_trans, itrans)
-!!      subroutine add_vector_trans_flag(is_fld, num_trans, itrans)
-!!
-!!      subroutine add_scl_trans_flag_snap(is_fld, irtp_fld,            &
-!!     &          nfield_vec, num_trans, itrans)
-!!      subroutine add_vec_trans_flag_snap(is_fld, irtp_fld,            &
-!!     &          num_trans, itrans)
-!!
-!!      subroutine count_num_fields_4_sph_trans(trns, ncomp_sph_trans,  &
-!!     &          nvector_sph_trans, nscalar_sph_trans)
-!!      subroutine set_field_name_4_sph_trns(field_name, i_trns,        &
-!!     &          i_pol, i_tor, irtp, icou, each_trns)
-!!        type(address_4_sph_trans), intent(inout) :: trns
+!!      subroutine count_num_fields_each_trans(each_trns,               &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!      subroutine add_field_name_4_sph_trns_snap                       &
+!!     &         (field_name, num_component, i_pol, i_tor, irtp,        &
+!!     &          i_trns, each_trns)
+!!      subroutine add_field_name_4_sph_trns                            &
+!!     &         (iflag_add, field_name, num_component,                 &
+!!     &          i_pol, i_tor, irtp, i_trns, each_trns)
 !!@endverbatim
 !
       module t_addresses_sph_transform
@@ -96,6 +90,8 @@
 !>        zonal mean of field data in grid space
         real(kind = kreal), allocatable :: fld_zm(:,:)
       end type address_4_sph_trans
+!
+      private :: copy_field_name_4_sph_trns
 !
 !-----------------------------------------------------------------------
 !
@@ -217,106 +213,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_scalar_trans_flag                                  &
-     &         (iflag, nfield_vec, num_trans, itrans)
-!
-      integer(kind = kint), intent(in) :: iflag, nfield_vec
-      integer(kind = kint), intent(inout) :: num_trans, itrans
-!
-!
-      if(iflag .gt. 0) then
-        num_trans = num_trans + 1
-        itrans = num_trans + 3*nfield_vec
-      end if
-!
-      end subroutine add_scalar_trans_flag
-!
-!-----------------------------------------------------------------------
-!
-      subroutine add_vector_trans_flag(iflag, num_trans, itrans)
-!
-      integer(kind = kint), intent(in) :: iflag
-      integer(kind = kint), intent(inout) :: num_trans, itrans
-!
-!
-      if(iflag .gt. 0) then
-        num_trans = num_trans + 1
-        itrans = 3*num_trans -  2
-      end if
-!
-      end subroutine add_vector_trans_flag
-!
-!-----------------------------------------------------------------------
-!
-      subroutine add_tensor_trans_flag                                  &
-     &         (iflag, nfield_vec, nfield_scl, num_trans, itrans)
-!
-      integer(kind = kint), intent(in) :: iflag, nfield_vec, nfield_scl
-      integer(kind = kint), intent(inout) :: num_trans, itrans
-!
-!
-      if(iflag .gt. 0) then
-        num_trans = num_trans + 1
-        itrans = num_trans + 3*nfield_vec + nfield_scl
-      end if
-!
-      end subroutine add_tensor_trans_flag
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine add_scl_trans_flag_snap(is_fld, irtp_fld,              &
-     &          nfield_vec, num_trans, itrans)
-!
-      integer(kind = kint), intent(in) :: is_fld, irtp_fld, nfield_vec
-      integer(kind = kint), intent(inout) :: num_trans, itrans
-!
-      integer(kind = kint) :: iflag
-!
-      iflag = is_fld*irtp_fld
-      call add_scalar_trans_flag (iflag, nfield_vec, num_trans, itrans)
-!
-      end subroutine add_scl_trans_flag_snap
-!
-!-----------------------------------------------------------------------
-!
-      subroutine add_vec_trans_flag_snap(is_fld, irtp_fld,              &
-     &          num_trans, itrans)
-!
-      integer(kind = kint), intent(in) :: is_fld, irtp_fld
-      integer(kind = kint), intent(inout) :: num_trans, itrans
-!
-      integer(kind = kint) :: iflag
-!
-      iflag = is_fld*irtp_fld
-      call add_vector_trans_flag(iflag, num_trans, itrans)
-!
-      end subroutine add_vec_trans_flag_snap
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_fields_each_trans2(each_trns,                &
-     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!
-      type(address_each_sph_trans), intent(inout) :: each_trns
-      integer(kind = kint), intent(inout) :: ncomp_sph_trans
-      integer(kind = kint), intent(inout) :: nvector_sph_trans
-      integer(kind = kint), intent(inout) :: nscalar_sph_trans
-!
-      integer(kind = kint) :: nscltsr_rj_2_rtp
-!
-!
-      nscltsr_rj_2_rtp = each_trns%num_scalar + 6*each_trns%num_tensor
-!
-      ncomp_sph_trans =   max(ncomp_sph_trans, each_trns%ncomp)
-      nvector_sph_trans = max(nvector_sph_trans, each_trns%num_vector)
-      nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rj_2_rtp)
-!
-      end subroutine count_num_fields_each_trans2
-!
-!-----------------------------------------------------------------------
-!
       subroutine count_num_fields_each_trans(each_trns,                 &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
@@ -328,67 +224,15 @@
       integer(kind = kint) :: nscltsr_rj_2_rtp
 !
 !
-      each_trns%nfield =  each_trns%num_vector + each_trns%num_scalar   &
-     &                  + each_trns%num_tensor
-!
       nscltsr_rj_2_rtp = each_trns%num_scalar + 6*each_trns%num_tensor
-      each_trns%ncomp = 3*each_trns%num_vector + nscltsr_rj_2_rtp
 !
       ncomp_sph_trans =   max(ncomp_sph_trans, each_trns%ncomp)
       nvector_sph_trans = max(nvector_sph_trans, each_trns%num_vector)
       nscalar_sph_trans = max(nscalar_sph_trans, nscltsr_rj_2_rtp)
 !
-      call alloc_sph_trns_field_name(each_trns)
-!
       end subroutine count_num_fields_each_trans
 !
 !-----------------------------------------------------------------------
-!
-      subroutine count_num_fields_4_sph_trans(trns,                     &
-     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!
-      type(address_4_sph_trans), intent(inout) :: trns
-      integer(kind = kint), intent(inout) :: ncomp_sph_trans
-      integer(kind = kint), intent(inout) :: nvector_sph_trans
-      integer(kind = kint), intent(inout) :: nscalar_sph_trans
-!
-!
-      call count_num_fields_each_trans(trns%backward, ncomp_sph_trans,  &
-     &          nvector_sph_trans, nscalar_sph_trans)
-      call count_num_fields_each_trans(trns%forward, ncomp_sph_trans,   &
-     &          nvector_sph_trans, nscalar_sph_trans)
-!
-      end subroutine count_num_fields_4_sph_trans
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_field_name_4_sph_trns(field_name, i_trns,          &
-     &          i_pol, i_tor, irtp, icou, each_trns)
-!
-      use m_machine_parameter
-!
-      character(len = kchara), intent(in) :: field_name
-      integer(kind = kint), intent(in) :: i_trns, i_pol, i_tor, irtp
-      integer(kind = kint), intent(inout) :: icou
-      type(address_each_sph_trans), intent(inout) :: each_trns
-!
-!
-      if(i_trns .eq. 0) return
-      icou = icou + 1
-      each_trns%field_name(icou) = field_name
-      each_trns%ifld_trns(icou) = i_trns
-      each_trns%ifld_rj(icou) =   i_pol
-      each_trns%ifld_rtp(icou) =  irtp
-!
-      if(iflag_debug .eq. 0) return
-      write(*,'(i5,a2,a,a2,4i5)')                                       &
-     &    icou, '. ', trim(each_trns%field_name(icou)), ': ',           &
-     &    each_trns%ifld_trns(icou), each_trns%ifld_rj(icou), i_tor,    &
-     &    each_trns%ifld_rtp(icou)
-!
-      end subroutine set_field_name_4_sph_trns
-!
 !-----------------------------------------------------------------------
 !
       subroutine copy_field_name_4_sph_trns                             &

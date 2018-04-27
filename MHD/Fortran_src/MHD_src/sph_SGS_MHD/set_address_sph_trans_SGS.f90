@@ -69,7 +69,7 @@
       trns_SGS%backward%num_tensor = 0
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'Address for forward transform: ',                  &
+        write(*,*) 'Address for forward transform: ',                   &
      &             'transform, poloidal, troidal, grid data'
       end if
 !
@@ -78,9 +78,9 @@
       call f_trans_address_scalar_SGS(trns_SGS%forward)
       trns_SGS%forward%num_tensor = 0
 !
-      call count_num_fields_each_trans2(trns_SGS%backward,              &
+      call count_num_fields_each_trans(trns_SGS%backward,               &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-      call count_num_fields_each_trans2(trns_SGS%forward,               &
+      call count_num_fields_each_trans(trns_SGS%forward,                &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       if(iflag_debug .gt. 0) then
@@ -135,9 +135,9 @@
      &    iphys, trns_DYNS%f_trns, trns_DYNS%forward)
       trns_DYNS%forward%num_tensor = 0
 !
-      call count_num_fields_each_trans2(trns_DYNS%backward,             &
+      call count_num_fields_each_trans(trns_DYNS%backward,              &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-      call count_num_fields_each_trans2(trns_DYNS%forward,              &
+      call count_num_fields_each_trans(trns_DYNS%forward,               &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       if(iflag_debug .gt. 0) then
@@ -179,7 +179,7 @@
       trns_Csim%backward%num_tensor = 0
 !
      if(iflag_debug .gt. 0) then
-        write(*,*) 'Address for forward transform: ',                  &
+        write(*,*) 'Address for forward transform: ',                   &
      &             'transform, poloidal, troidal, grid data'
       end if
 !
@@ -188,9 +188,9 @@
      &    iphys, trns_Csim%f_trns, trns_Csim%forward)
       trns_Csim%forward%num_tensor = 0
 !
-      call count_num_fields_each_trans2(trns_Csim%backward,             &
+      call count_num_fields_each_trans(trns_Csim%backward,              &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-      call count_num_fields_each_trans2(trns_Csim%forward,              &
+      call count_num_fields_each_trans(trns_Csim%forward,               &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       if(iflag_debug .gt. 0) then

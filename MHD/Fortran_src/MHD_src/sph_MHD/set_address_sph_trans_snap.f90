@@ -77,9 +77,9 @@
      &    iphys, trns_snap%f_trns, trns_snap%forward)
        trns_snap%forward%num_tensor = 0
 !
-      call count_num_fields_each_trans2(trns_snap%backward,             &
+      call count_num_fields_each_trans(trns_snap%backward,              &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-      call count_num_fields_each_trans2(trns_snap%forward,              &
+      call count_num_fields_each_trans(trns_snap%forward,               &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
 !
@@ -134,9 +134,9 @@
      &   iphys, trns_tmp%f_trns, trns_tmp%forward)
       trns_tmp%forward%num_tensor = 0
 !
-      call count_num_fields_each_trans2(trns_tmp%backward,              &
+      call count_num_fields_each_trans(trns_tmp%backward,               &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-      call count_num_fields_each_trans2(trns_tmp%forward,               &
+      call count_num_fields_each_trans(trns_tmp%forward,                &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
 !
