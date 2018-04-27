@@ -58,7 +58,7 @@
       integer(kind = kint) :: icomp, jcomp
 !
 !
-!      write(*,*) 'trns_MHD%fld_rtp', trns_MHD%fld_rtp(1:sph_rtp%nnod_rtp,1:3)
+!      write(*,*) 'fld_rtp', trns_MHD%backward%fld_rtp(1:sph_rtp%nnod_rtp,1:3)
 !
       do j_fld = 1, trns_MHD%backward%num_vector
         jcomp = n_vector*j_fld - 2
@@ -70,7 +70,7 @@
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_vec_from_trans_wpole(sph_rtp, m_folding,      &
-     &          trns_MHD%backward%ncomp, jcomp, trns_MHD%fld_rtp,       &
+     &          trns_MHD%backward%ncomp, jcomp, trns_MHD%backward%fld_rtp,       &
      &          trns_MHD%fld_pole, icomp, mesh%node, nod_fld)
           end if
         end do
@@ -87,7 +87,7 @@
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_scl_from_trans_wpole(sph_rtp, m_folding,      &
-     &          trns_MHD%backward%ncomp, jcomp, trns_MHD%fld_rtp,       &
+     &          trns_MHD%backward%ncomp, jcomp, trns_MHD%backward%fld_rtp,       &
      &          trns_MHD%fld_pole, icomp, mesh%node, nod_fld)
           end if
         end do
@@ -106,7 +106,7 @@
             if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_tsr_from_trans_wpole(sph_rtp, m_folding,      &
-     &          trns_MHD%backward%ncomp, jcomp, trns_MHD%fld_rtp,       &
+     &          trns_MHD%backward%ncomp, jcomp, trns_MHD%backward%fld_rtp,       &
      &          trns_MHD%fld_pole, icomp, mesh%node, nod_fld)
           end if
         end do

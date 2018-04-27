@@ -41,7 +41,7 @@
 !
       if(iflag_FFT .ne. iflag_FFTW) return
       call swap_phi_order_from_trans(trns_MHD%backward%ncomp,           &
-     &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%fld_rtp)
+     &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%backward%fld_rtp)
       call swap_phi_order_from_trans(trns_MHD%forward%ncomp,            &
      &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%frc_rtp)
 !
@@ -61,7 +61,7 @@
 !
       if(iflag_FFT .ne. iflag_FFTW) return
       call swap_phi_order_to_trans(trns_MHD%backward%ncomp,             &
-     &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%fld_rtp)
+     &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%backward%fld_rtp)
       call swap_phi_order_to_trans(trns_MHD%forward%ncomp,              &
      &    sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, trns_MHD%frc_rtp)
 !

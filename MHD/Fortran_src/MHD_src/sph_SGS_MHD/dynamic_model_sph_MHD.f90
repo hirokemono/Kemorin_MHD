@@ -71,8 +71,8 @@
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_mom_flux,                  &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_Lorentz),          &
-     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_inertia),   &
-     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_inertia),    &
+     &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_inertia),   &
+     &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_inertia),    &
      &      dynamic_SPH%wk_sgs)
       end if
 !
@@ -82,8 +82,8 @@
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_lorentz,                   &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_Lorentz),          &
-     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_Lorentz),   &
-     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_Lorentz),    &
+     &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_Lorentz),   &
+     &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_Lorentz),    &
      &      dynamic_SPH%wk_sgs)
       end if
 !
@@ -93,8 +93,8 @@
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_induction,                 &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_vp_induct),        &
-     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_vp_induct), &
-     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_vp_induct),  &
+     &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_vp_induct), &
+     &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_vp_induct),  &
      &      dynamic_SPH%wk_sgs)
       end if
 !
@@ -104,8 +104,8 @@
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_heat_flux,                 &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_h_flux),           &
-     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_h_flux),    &
-     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_h_flux),     &
+     &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_h_flux),    &
+     &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_h_flux),     &
      &      dynamic_SPH%wk_sgs)
       end if
 !
@@ -115,8 +115,8 @@
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_comp_flux,                 &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_c_flux),           &
-     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_c_flux),    &
-     &      trns_DYNS%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_c_flux),     &
+     &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_wide_SGS_c_flux),    &
+     &      trns_DYNS%backward%fld_rtp(1,trns_DYNS%b_trns%i_dbl_SGS_c_flux),     &
      &      dynamic_SPH%wk_sgs)
       end if
 !
@@ -143,7 +143,7 @@
       call SGS_fluxes_for_buo_coefs(sph_rtp, fl_prop,                   &
      &    trns_MHD%b_trns, trns_SGS%f_trns, trns_DYNS%f_trns,           &
      &    trns_MHD%backward%ncomp, trns_SGS%forward%ncomp,              &
-     &    trns_DYNS%forward%ncomp, trns_MHD%fld_rtp, trns_SGS%frc_rtp,  &
+     &    trns_DYNS%forward%ncomp, trns_MHD%backward%fld_rtp, trns_SGS%frc_rtp,  &
      &    trns_DYNS%frc_rtp)
 !
       if(dynamic_SPH%ifld_sgs%i_buoyancy .gt. 0) then

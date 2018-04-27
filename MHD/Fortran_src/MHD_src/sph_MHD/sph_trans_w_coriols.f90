@@ -176,7 +176,7 @@
      &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
       call back_MHD_FFT_sel_from_recv                                   &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WR, WR, trns_MHD%fld_rtp, WK_sph%WK_FFTs, MHD_mul_FFTW)
+     &    n_WR, WR, trns_MHD%backward%fld_rtp, WK_sph%WK_FFTs, MHD_mul_FFTW)
       call end_elapsed_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
@@ -300,7 +300,7 @@
      &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
       call back_MHD_FFT_sel_from_recv                                   &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WR, WR, trns_SGS%fld_rtp, WK_sph%WK_FFTs, SGS_mul_FFTW)
+     &    n_WR, WR, trns_SGS%backward%fld_rtp, WK_sph%WK_FFTs, SGS_mul_FFTW)
       call end_elapsed_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'

@@ -156,7 +156,7 @@
       call sph_b_trans_w_poles                                          &
      &   (trns_MHD%backward%ncomp, trns_MHD%backward%num_vector,        &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
-     &    n_WS, n_WR, WS(1), WR(1), trns_MHD%fld_rtp,                   &
+     &    n_WS, n_WR, WS(1), WR(1), trns_MHD%backward%fld_rtp,          &
      &    trns_MHD%flc_pole, trns_MHD%fld_pole, WK_sph)
 !
       end subroutine sph_all_back_transform
@@ -189,7 +189,7 @@
 !
 !$omp parallel workshare
       fld1_rtp(1:nnod_rtp,1:ncomp_rtp)                                  &
-           = trns_MHD%fld_rtp(1:nnod_rtp,1:ncomp_rtp)
+           = trns_MHD%backward%fld_rtp(1:nnod_rtp,1:ncomp_rtp)
 !$omp end parallel workshare
 !
 !       Transform second data

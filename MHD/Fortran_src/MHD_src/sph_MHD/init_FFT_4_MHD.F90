@@ -203,7 +203,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'back_MHD_FFT_sel_from_recv'
       starttime = MPI_WTIME()
       call back_MHD_FFT_sel_from_recv(sph_rtp, comm_rtp,                &
-     &    trns_MHD%backward%ncomp, n_WR, WR, trns_MHD%fld_rtp,          &
+     &    trns_MHD%backward%ncomp, n_WR, WR, trns_MHD%backward%fld_rtp, &
      &    WK_FFTs, TEST_mul_FFTW)
       call fwd_MHD_FFT_sel_to_send(sph_rtp, comm_rtp,                   &
      &    trns_MHD%forward%ncomp, n_WS, trns_MHD%frc_rtp, WS,           &

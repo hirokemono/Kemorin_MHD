@@ -59,6 +59,9 @@
         integer(kind = kint), allocatable :: ifld_rj(:)
 !>        address of backward transform for nodal field
         integer(kind = kint), allocatable :: ifld_rtp(:)
+!
+!>        field data in grid space
+        real(kind = kreal), allocatable :: fld_rtp(:,:)
       end type address_each_sph_trans
 !
 
@@ -74,8 +77,6 @@
 !>        addresses of forces for forward transform
         type(phys_address) :: f_trns
 !
-!>        field data in grid space
-        real(kind = kreal), allocatable :: fld_rtp(:,:)
 !>        Nonliear terms data in grid space
         real(kind = kreal), allocatable :: frc_rtp(:,:)
 !
@@ -137,12 +138,12 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%fld_rtp(sph_rtp%nnod_rtp,trns%backward%ncomp))
+      allocate(trns%backward%fld_rtp(sph_rtp%nnod_rtp,trns%backward%ncomp))
       allocate(trns%frc_rtp(sph_rtp%nnod_rtp,trns%forward%ncomp))
       allocate(trns%fld_zm(sph_rtp%nnod_med,6))
 !
       trns%fld_zm = 0.0d0
-      if(trns%backward%ncomp .gt. 0) trns%fld_rtp = 0.0d0
+      if(trns%backward%ncomp .gt. 0) trns%backward%fld_rtp = 0.0d0
       if(trns%forward%ncomp .gt. 0) trns%frc_rtp = 0.0d0
 !
       end subroutine alloc_nonlinear_data
@@ -172,7 +173,7 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns
 !
-      deallocate(trns%fld_rtp, trns%frc_rtp)
+      deallocate(trns%backward%fld_rtp, trns%frc_rtp)
       deallocate(trns%fld_zm)
 !
       end subroutine dealloc_nonlinear_data

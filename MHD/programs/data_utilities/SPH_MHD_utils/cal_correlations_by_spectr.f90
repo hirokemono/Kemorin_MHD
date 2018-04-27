@@ -85,7 +85,7 @@
 !       Evaluate correlation in zonal
 !
       call ovrwrt_zonal_correlate_rtp(ncomp_rtp, nnod_rtp,              &
-     &    sph%sph_rtp%nidx_rtp, fld1_rtp, trns_MHD%fld_rtp)
+     &    sph%sph_rtp%nidx_rtp, fld1_rtp, trns_MHD%backward%fld_rtp)
       trns_MHD%fld_pole = 0.0d0
 !
       deallocate(fld1_rtp)
@@ -125,7 +125,7 @@
 !       Evaluate correlation in zonal
 !
       call ovrwrt_zonal_rms_ratio_rtp(ncomp_rtp, nnod_rtp,              &
-     &    sph%sph_rtp%nidx_rtp, fld1_rtp, trns_MHD%fld_rtp)
+     &    sph%sph_rtp%nidx_rtp, fld1_rtp, trns_MHD%backward%fld_rtp)
       trns_MHD%fld_pole = 0.0d0
 !
       deallocate(fld1_rtp)
