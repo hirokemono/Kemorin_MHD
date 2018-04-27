@@ -62,6 +62,8 @@
 !
 !>        field data in grid space
         real(kind = kreal), allocatable :: fld_rtp(:,:)
+!>        field data at pole
+        real(kind = kreal), allocatable :: fld_pole(:,:)
       end type address_each_sph_trans
 !
 
@@ -77,8 +79,6 @@
 !>        addresses of forces for forward transform
         type(phys_address) :: f_trns
 !
-!>        field data at pole
-        real(kind = kreal), allocatable :: fld_pole(:,:)
 !>        local field data at pole
         real(kind = kreal), allocatable :: flc_pole(:,:)
 !
@@ -153,12 +153,12 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      allocate(trns%fld_pole(sph_rtp%nnod_pole,trns%backward%ncomp))
+      allocate(trns%backward%fld_pole(sph_rtp%nnod_pole,trns%backward%ncomp))
       allocate(trns%flc_pole(sph_rtp%nnod_pole,trns%backward%ncomp))
 !
       allocate(trns%frc_pole(sph_rtp%nnod_pole,trns%forward%ncomp))
 !
-      if(trns%backward%ncomp .gt. 0) trns%fld_pole = 0.0d0
+      if(trns%backward%ncomp .gt. 0) trns%backward%fld_pole = 0.0d0
       if(trns%backward%ncomp .gt. 0) trns%flc_pole = 0.0d0
       if(trns%forward%ncomp .gt. 0) trns%frc_pole = 0.0d0
 !
@@ -182,7 +182,7 @@
       type(address_4_sph_trans), intent(inout) :: trns
 !
 !
-      deallocate(trns%fld_pole, trns%flc_pole, trns%frc_pole)
+      deallocate(trns%backward%fld_pole, trns%flc_pole, trns%frc_pole)
 !
       end subroutine dealloc_nonlinear_pole
 !

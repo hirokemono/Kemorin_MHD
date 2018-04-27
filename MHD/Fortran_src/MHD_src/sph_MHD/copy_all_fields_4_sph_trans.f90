@@ -71,7 +71,7 @@
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_vec_from_trans_wpole(sph_rtp, m_folding,      &
      &          trns_MHD%backward%ncomp, jcomp, trns_MHD%backward%fld_rtp,       &
-     &          trns_MHD%fld_pole, icomp, mesh%node, nod_fld)
+     &          trns_MHD%backward%fld_pole, icomp, mesh%node, nod_fld)
           end if
         end do
       end do
@@ -88,7 +88,7 @@
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_scl_from_trans_wpole(sph_rtp, m_folding,      &
      &          trns_MHD%backward%ncomp, jcomp, trns_MHD%backward%fld_rtp,       &
-     &          trns_MHD%fld_pole, icomp, mesh%node, nod_fld)
+     &          trns_MHD%backward%fld_pole, icomp, mesh%node, nod_fld)
           end if
         end do
       end do
@@ -107,7 +107,7 @@
      &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
             call copy_nod_tsr_from_trans_wpole(sph_rtp, m_folding,      &
      &          trns_MHD%backward%ncomp, jcomp, trns_MHD%backward%fld_rtp,       &
-     &          trns_MHD%fld_pole, icomp, mesh%node, nod_fld)
+     &          trns_MHD%backward%fld_pole, icomp, mesh%node, nod_fld)
           end if
         end do
       end do
