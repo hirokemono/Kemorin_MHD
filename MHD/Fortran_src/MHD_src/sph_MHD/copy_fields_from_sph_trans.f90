@@ -131,7 +131,7 @@
       if( (i_field*i_trns) .le. 0) return
       call copy_nod_scl_from_trans_wpole                                &
      &   (sph_rtp, m_folding, trns_snap%forward%ncomp,                  &
-     &    i_trns, trns_snap%forward%fld_rtp, trns_snap%frc_pole,        &
+     &    i_trns, trns_snap%forward%fld_rtp, trns_snap%forward%fld_pole, &
      &    i_field, node, nod_fld)
 !
       end subroutine copy_scalar_from_snap_force
@@ -154,7 +154,7 @@
       if( (i_field*i_trns) .le. 0) return
       call copy_nod_vec_from_trans_wpole                                &
      &   (sph_rtp, m_folding, trns_snap%forward%ncomp,                  &
-     &    i_trns, trns_snap%forward%fld_rtp, trns_snap%frc_pole,        &
+     &    i_trns, trns_snap%forward%fld_rtp, trns_snap%forward%fld_pole, &
      &    i_field, node, nod_fld)
 !
       end subroutine copy_vector_from_snap_force
@@ -177,7 +177,7 @@
       if( (i_field*i_trns) .le. 0) return
       call copy_nod_tsr_from_trans_wpole                                &
      &   (sph_rtp, m_folding, trns_snap%forward%ncomp,                  &
-     &    i_trns, trns_snap%forward%fld_rtp, trns_snap%frc_pole,        &
+     &    i_trns, trns_snap%forward%fld_rtp, trns_snap%forward%fld_pole, &
      &    i_field, node, nod_fld)
 !
       end subroutine copy_tensor_from_snap_force

@@ -160,7 +160,7 @@
      &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
      &      WK%trns_MHD%f_trns, WK%trns_MHD%b_trns,                     &
      &      WK%trns_MHD%backward%ncomp, WK%trns_MHD%forward%ncomp,      &
-     &      WK%trns_MHD%backward%fld_pole, WK%trns_MHD%frc_pole)
+     &      WK%trns_MHD%backward%fld_pole, WK%trns_MHD%forward%fld_pole)
       end if
 !
       end subroutine lead_fields_by_sph_trans
