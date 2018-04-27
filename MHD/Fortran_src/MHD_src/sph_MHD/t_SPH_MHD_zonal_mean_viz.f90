@@ -11,10 +11,9 @@
 !!        type(sph_zonal_means_controls), intent(inout) :: zm_ctls
 !!        type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
 !!      subroutine SPH_MHD_zmean_sections(viz_step, time_d,             &
-!!     &          sph, geofem, ele_mesh, iphys, WK, nod_fld, zmeans)
+!!     &          sph, geofem, ele_mesh, WK, nod_fld, zmeans)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(sph_grids), intent(in) :: sph
-!!        type(phys_address), intent(in) :: iphys
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -91,14 +90,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine SPH_MHD_zmean_sections(viz_step, time_d,               &
-     &          sph, geofem, ele_mesh, iphys, WK, nod_fld, zmeans)
+     &          sph, geofem, ele_mesh, WK, nod_fld, zmeans)
 !
       use FEM_analyzer_sph_MHD
       use nod_phys_send_recv
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(in) :: iphys
 !
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: geofem
@@ -112,7 +110,7 @@
       call SPH_MHD_zonal_mean_section(viz_step, time_d,                 &
      &    sph, geofem, ele_mesh, nod_fld, zmeans%zm_psf)
       call SPH_MHD_zonal_RMS_section(viz_step, time_d,                  &
-     &    sph, geofem, ele_mesh, iphys, WK, nod_fld, zmeans%zrms_psf)
+     &    sph, geofem, ele_mesh, WK, nod_fld, zmeans%zrms_psf)
 !
       end subroutine SPH_MHD_zmean_sections
 !
@@ -157,7 +155,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine SPH_MHD_zonal_RMS_section(viz_step, time_d,            &
-     &          sph, geofem, ele_mesh, iphys, WK, nod_fld, zrms_psf)
+     &          sph, geofem, ele_mesh, WK, nod_fld, zrms_psf)
 !
       use FEM_analyzer_sph_MHD
       use sph_rtp_zonal_rms_data
@@ -165,7 +163,6 @@
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(sph_grids), intent(in) :: sph
-      type(phys_address), intent(in) :: iphys
 !
       type(time_data), intent(in) :: time_d
       type(mesh_data), intent(in) :: geofem

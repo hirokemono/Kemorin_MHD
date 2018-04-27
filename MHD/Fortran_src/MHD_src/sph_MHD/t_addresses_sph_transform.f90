@@ -410,14 +410,36 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine add_field_name_4_sph_trns_snap                         &
+     &         (field_name, num_component, i_pol, i_tor, irtp,          &
+     &          i_trns, each_trns)
+!
+      character(len = kchara), intent(in) :: field_name
+      integer(kind = kint), intent(in) :: num_component
+      integer(kind = kint), intent(in) :: i_pol, i_tor, irtp
+!
+      integer(kind = kint), intent(inout) :: i_trns
+      type(address_each_sph_trans), intent(inout) :: each_trns
+!
+      integer(kind = kint)  :: iflag_snap
+!
+!
+      iflag_snap = i_pol * irtp
+      call add_field_name_4_sph_trns(iflag_snap, field_name,            &
+     &    num_component, i_pol, i_tor, irtp, i_trns, each_trns)
+!
+      end subroutine add_field_name_4_sph_trns_snap
+!
+!-----------------------------------------------------------------------
+!
       subroutine add_field_name_4_sph_trns                              &
      &         (iflag_add, field_name, num_component,                   &
      &          i_pol, i_tor, irtp, i_trns, each_trns)
 !
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: iflag_add, num_component
       character(len = kchara), intent(in) :: field_name
+      integer(kind = kint), intent(in) :: iflag_add, num_component
       integer(kind = kint), intent(in) :: i_pol, i_tor, irtp
 !
       integer(kind = kint), intent(inout) :: i_trns

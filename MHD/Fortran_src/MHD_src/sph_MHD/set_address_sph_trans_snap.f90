@@ -52,48 +52,46 @@
       integer(kind = kint), intent(inout) :: nvector_sph_trans
       integer(kind = kint), intent(inout) :: nscalar_sph_trans
 !
-      integer(kind = kint):: icou
-!
-!
-      call b_trans_address_vector_snap(SPH_MHD%ipol, iphys, trns_snap%backward, trns_snap%b_trns)
-      call b_trans_address_scalar_snap(SPH_MHD%ipol, iphys, trns_snap%backward, trns_snap%b_trns)
-      trns_snap%backward%num_tensor = 0
-!
-      call f_trans_address_vector_snap(SPH_MHD%ipol, iphys, trns_snap)
-      call f_trans_address_scalar_snap(SPH_MHD%ipol, iphys, trns_snap)
-       trns_snap%forward%num_tensor = 0
-!
-      call count_num_fields_4_sph_trans(trns_snap, ncomp_sph_trans,     &
-     &   nvector_sph_trans, nscalar_sph_trans)
-!
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for snapshot'
-        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
-        write(*,*) 'nvector_rj_2_rtp ', trns_snap%backward%num_vector
-        write(*,*) 'nscalar_rj_2_rtp ', trns_snap%backward%num_scalar
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
 !
-      icou = 0
-      call set_b_trans_vector_field_snap                                &
-     &   (icou, trns_snap%b_trns, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_snap%backward)
-      call set_b_trans_scalar_field_snap                                &
-     &   (icou, trns_snap%b_trns, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_snap%backward)
+      call b_trans_address_vector_snap(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_snap%b_trns, trns_snap%backward)
+      call b_trans_address_scalar_snap(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_snap%b_trns, trns_snap%backward)
+      trns_snap%backward%num_tensor = 0
 !
      if(iflag_debug .gt. 0) then
+        write(*,*) 'Address for forward transform: ',                   &
+     &             'transform, poloidal, troidal, grid data'
+      end if
+!
+      call f_trans_address_vector_snap(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_snap%f_trns, trns_snap%forward)
+      call f_trans_address_scalar_snap(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_snap%f_trns, trns_snap%forward)
+       trns_snap%forward%num_tensor = 0
+!
+      call count_num_fields_each_trans2(trns_snap%backward,             &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans2(trns_snap%forward,              &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ', trns_snap%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_snap%backward%num_scalar
+!
         write(*,*) 'nvector_rtp_2_rj ', trns_snap%forward%num_vector
         write(*,*) 'nscalar_rtp_2_rj ', trns_snap%forward%num_scalar
         write(*,*) 'Address for forward transform: ',                  &
      &             'transform, poloidal, troidal, grid data'
       end if
-!
-      icou = 0
-      call set_f_trans_vector_field_snap                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_snap)
-      call set_f_trans_scalar_field_snap                                &
-     &   (icou, SPH_MHD%ipol, SPH_MHD%itor, iphys, trns_snap)
 !
       end subroutine set_addresses_snapshot_trans
 !
