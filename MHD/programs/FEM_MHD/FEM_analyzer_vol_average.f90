@@ -152,8 +152,7 @@
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
-     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                     &
-     &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
+     &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !
       end subroutine FEM_analyze_vol_average
 !

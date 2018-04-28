@@ -24,9 +24,11 @@
 !!      subroutine add_field_name_4_sph_trns_snap                       &
 !!     &         (field_name, num_component, i_pol, i_tor, irtp,        &
 !!     &          i_trns, each_trns)
+!!        type(address_each_sph_trans), intent(inout) :: each_trns
 !!      subroutine add_field_name_4_sph_trns                            &
 !!     &         (iflag_add, field_name, num_component,                 &
 !!     &          i_pol, i_tor, irtp, i_trns, each_trns)
+!!        type(address_each_sph_trans), intent(inout) :: each_trns
 !!@endverbatim
 !
       module t_addresses_sph_transform
@@ -277,25 +279,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_field_name_4_sph_trns                             &
-     &         (num_copy, etrns_org, etrns_new)
-!
-      integer(kind = kint), intent(in) :: num_copy
-      type(address_each_sph_trans), intent(in) :: etrns_org
-      type(address_each_sph_trans), intent(inout) :: etrns_new
-!
-!
-      if(num_copy .le. 0) return
-      etrns_new%field_name(1:num_copy)                                  &
-     &            = etrns_org%field_name(1:num_copy) 
-      etrns_new%ifld_trns(1:num_copy) = etrns_org%ifld_trns(1:num_copy)
-      etrns_new%ifld_rj(1:num_copy) =   etrns_org%ifld_rj(1:num_copy)
-      etrns_new%ifld_rtp(1:num_copy) =  etrns_org%ifld_rtp(1:num_copy)
-!
-      end subroutine copy_field_name_4_sph_trns
-!
-!-----------------------------------------------------------------------
-!
       subroutine add_field_name_4_sph_trns_snap                         &
      &         (field_name, num_component, i_pol, i_tor, irtp,          &
      &          i_trns, each_trns)
@@ -365,6 +348,26 @@
      &    each_trns%ifld_rtp(each_trns%nfield)
 !
       end subroutine add_field_name_4_sph_trns
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine copy_field_name_4_sph_trns                             &
+     &         (num_copy, etrns_org, etrns_new)
+!
+      integer(kind = kint), intent(in) :: num_copy
+      type(address_each_sph_trans), intent(in) :: etrns_org
+      type(address_each_sph_trans), intent(inout) :: etrns_new
+!
+!
+      if(num_copy .le. 0) return
+      etrns_new%field_name(1:num_copy)                                  &
+     &            = etrns_org%field_name(1:num_copy) 
+      etrns_new%ifld_trns(1:num_copy) = etrns_org%ifld_trns(1:num_copy)
+      etrns_new%ifld_rj(1:num_copy) =   etrns_org%ifld_rj(1:num_copy)
+      etrns_new%ifld_rtp(1:num_copy) =  etrns_org%ifld_rtp(1:num_copy)
+!
+      end subroutine copy_field_name_4_sph_trns
 !
 !-----------------------------------------------------------------------
 !

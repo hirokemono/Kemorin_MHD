@@ -8,7 +8,7 @@
 !!      subroutine output_time_step_control(istep, rms_step,            &
 !!     &          FEM_prm, time_d, mesh, MHD_mesh, fMHD_prop,           &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld, jacs,             &
-!!     &          i_rms, j_ave, ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
+!!     &          ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
@@ -18,7 +18,6 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_type), intent(in) :: jacs
-!!        type(phys_address), intent(in) :: i_rms
 !!        type(mean_square_address), intent(in) :: ifld_msq
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -54,7 +53,7 @@
       subroutine output_time_step_control(istep, rms_step,              &
      &          FEM_prm, time_d, mesh, MHD_mesh, MHD_prop,              &
      &          iphys, nod_fld, iphys_ele, ele_fld, jacs,               &
-     &          i_rms, j_ave, ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
+     &          rhs_mat, mhd_fem_wk, fem_sq)
 !
       use calypso_mpi
       use t_mean_square_values
@@ -74,12 +73,10 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_type), intent(in) :: jacs
-      type(phys_address), intent(in) :: i_rms, j_ave
-      type(mean_square_address), intent(in) :: ifld_msq
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(mean_square_values), intent(inout) :: fem_msq
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer (kind = kint) :: nd
 !
@@ -90,44 +87,45 @@
 !
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
      &    mesh, MHD_mesh%fluid, MHD_mesh%conduct, iphys, nod_fld, jacs, &
-     &    i_rms, j_ave, ifld_msq, rhs_mat%fem_wk, mhd_fem_wk, fem_msq)
+     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq, fem_sq%msq_list,    &
+     &    rhs_mat%fem_wk, mhd_fem_wk, fem_sq%msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
      &    mesh, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
      &    iphys, nod_fld, iphys_ele, ele_fld, MHD_mesh%fluid,           &
-     &    jacs, i_rms, j_ave, rhs_mat%fem_wk, fem_msq)
+     &    jacs, fem_sq%i_rms, fem_sq%j_ave, rhs_mat%fem_wk, fem_sq%msq)
 !
-      call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local, fem_msq%ave_global, fem_msq%num_ave,       &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE                                                &
-     &   (fem_msq%rms_local, fem_msq%rms_global, fem_msq%num_rms,       &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call MPI_allREDUCE(fem_sq%msq%ave_local, fem_sq%msq%ave_global,   &
+     &    fem_sq%msq%num_ave, CALYPSO_REAL, MPI_SUM,                    &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_allREDUCE(fem_sq%msq%rms_local, fem_sq%msq%rms_global,   &
+     &    fem_sq%msq%num_rms, CALYPSO_REAL, MPI_SUM,                    &
+     &    CALYPSO_COMM, ierr_MPI)
 !
 !
-       do nd = 1, fem_msq%num_ave
-         fem_msq%ave_global(nd) = fem_msq%ave_global(nd)                &
-     &                          / fem_msq%rms_global(ifld_msq%ivol)
+       do nd = 1, fem_sq%msq%num_ave
+         fem_sq%msq%ave_global(nd) = fem_sq%msq%ave_global(nd)          &
+     &                   / fem_sq%msq%rms_global(fem_sq%i_msq%ivol)
        end do
-       do nd = 1, fem_msq%num_rms - 1
-           if (nd .eq. i_rms%i_velo                                     &
-     &    .or. nd .eq. i_rms%i_magne                                    &
-     &    .or. nd .eq. ifld_msq%ir_me_ic                                &
-     &    .or. nd .eq. i_rms%i_vort                                     &
-     &    .or. nd .eq. i_rms%i_current                                  &
-     &    .or. nd .eq. ifld_msq%ir_sqj_ic                               &
-     &    .or. nd .eq. i_rms%i_filter_velo                              &
-     &    .or. nd .eq. i_rms%i_filter_magne                             &
-     &    .or. nd .eq. ifld_msq%ir_me_f_ic) then
-            fem_msq%rms_global(nd) = fem_msq%rms_global(nd)             &
-     &                           / fem_msq%rms_global(ifld_msq%ivol)
+       do nd = 1, fem_sq%msq%num_rms - 1
+           if (nd .eq. fem_sq%i_rms%i_velo                              &
+     &    .or. nd .eq. fem_sq%i_rms%i_magne                             &
+     &    .or. nd .eq. fem_sq%i_msq%ir_me_ic                            &
+     &    .or. nd .eq. fem_sq%i_rms%i_vort                              &
+     &    .or. nd .eq. fem_sq%i_rms%i_current                           &
+     &    .or. nd .eq. fem_sq%i_msq%ir_sqj_ic                           &
+     &    .or. nd .eq. fem_sq%i_rms%i_filter_velo                       &
+     &    .or. nd .eq. fem_sq%i_rms%i_filter_magne                      &
+     &    .or. nd .eq. fem_sq%i_msq%ir_me_f_ic) then
+            fem_sq%msq%rms_global(nd) = fem_sq%msq%rms_global(nd)       &
+     &                    / fem_sq%msq%rms_global(fem_sq%i_msq%ivol)
         else
-          fem_msq%rms_global(nd) = sqrt(fem_msq%rms_global(nd)          &
-     &                           / fem_msq%rms_global(ifld_msq%ivol))
+          fem_sq%msq%rms_global(nd) = sqrt(fem_sq%msq%rms_global(nd)    &
+     &                    / fem_sq%msq%rms_global(fem_sq%i_msq%ivol))
         end if
       end do
 !
-      call output_monitor_file                                          &
-     &   (my_rank, time_d%i_time_step, time_d%time, nod_fld, fem_msq)
+      call output_monitor_file(my_rank, time_d%i_time_step,             &
+     &    time_d%time, nod_fld, fem_sq%msq)
 !
       end subroutine output_time_step_control
 !

@@ -65,6 +65,7 @@
       use count_sgs_components
       use node_monitor_IO
       use dependency_FEM_SGS_MHD
+      use set_mean_square_array
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
@@ -106,7 +107,7 @@
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'set_mean_square_values'
-      call init_FEM_MHD_mean_square(nod_fld, fem_sq)
+      call init_FEM_MHD_mean_square(nod_fld, iphys, fem_sq)
 !
       end subroutine allocate_array
 !

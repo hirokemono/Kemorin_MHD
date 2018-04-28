@@ -228,8 +228,7 @@
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
-     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                     &
-     &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
+     &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !
       call output_monitor_control(MHD_step%flex_p%istep_max_dt,         &
      &    MHD_step%point_step, MHD_step%time_d, femmesh%mesh, nod_fld)
