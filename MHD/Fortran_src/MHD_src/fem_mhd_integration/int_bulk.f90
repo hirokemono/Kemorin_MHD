@@ -88,9 +88,9 @@
 ! ----- lead average in a element -------------
 !
       do i = 1, msq_list%nfield
-        ncomp = msq_list%jave_msq(i) - msq_list%jave_msq(i)
+        ncomp = msq_list%jave_msq(i+1) - msq_list%jave_msq(i)
 !
-        if     (msq_list%ifld_msq(i) .eq. iphys%i_filter_velo) then
+        if     (msq_list%ifld_msq(i) .eq. iphys%i_velo) then
           call int_all_4_vector                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
@@ -111,17 +111,7 @@
      &        ifld_msq%ir_me_ic, ifld_msq%ja_mag_ic, iphys%i_magne,     &
      &        mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
-        else if(msq_list%ifld_msq(i) .eq. iphys%i_filter_velo) then
-          call int_all_4_vector                                         &
-     &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
-     &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
-     &        msq_list%ifld_msq(i), mesh, nod_fld, jacs,                &
-     &        fem_wk, fem_msq)
-          call int_all_angular_mom(fluid%istack_ele_fld_smp,            &
-     &       npoint_integrate, ifld_msq%jr_amom_f, iphys%i_filter_velo, &
-     &       mesh, nod_fld, jacs, mhd_fem_wk, fem_wk, fem_msq)
-!
-        else if(msq_list%ifld_msq(i) .eq. iphys%i_filter_magne) then
+        else if(msq_list%ifld_msq(i) .eq. iphys%i_current) then
           call int_all_4_vector                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
@@ -131,6 +121,16 @@
      &       (conduct%istack_ele_fld_smp, npoint_integrate,             &
      &        ifld_msq%ir_sqj_ic, ifld_msq%ja_j_ic, iphys%i_current,    &
      &        mesh, nod_fld, jacs, fem_wk, fem_msq)
+!
+        else if(msq_list%ifld_msq(i) .eq. iphys%i_filter_velo) then
+          call int_all_4_vector                                         &
+     &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
+     &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
+     &        msq_list%ifld_msq(i), mesh, nod_fld, jacs,                &
+     &        fem_wk, fem_msq)
+          call int_all_angular_mom(fluid%istack_ele_fld_smp,            &
+     &       npoint_integrate, ifld_msq%jr_amom_f, iphys%i_filter_velo, &
+     &       mesh, nod_fld, jacs, mhd_fem_wk, fem_wk, fem_msq)
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_filter_magne) then
           call int_all_4_vector                                         &

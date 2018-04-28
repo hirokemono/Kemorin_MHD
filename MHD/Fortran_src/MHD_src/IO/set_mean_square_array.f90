@@ -165,6 +165,15 @@
             msq_list%numave = msq_list%numave + 4
           end if
 !
+          if ( field_name .eq. fhd_filter_vecp ) then
+            call set_rms_address                                        &
+     &         (field_name, n_scalar, iphys%i_filter_vecp,              &
+     &          i_rms%i_filter_vecp, j_ave%i_filter_vecp, msq_list)
+!
+            i_rms%i_div_filter_a = msq_list%numrms + 1
+            j_ave%i_div_filter_a = msq_list%numave + 1
+          end if
+!
           if ( field_name .eq. fhd_filter_magne ) then
             num_comps = num_comps + n_vector + n_scalar
             call set_rms_address                                        &
@@ -259,11 +268,7 @@
      &          i_rms%i_m_tension, j_ave%i_m_tension, msq_list)
           end if
 !
-          if ( field_name .eq. fhd_filter_vecp ) then
-            call set_rms_address                                        &
-     &         (field_name, n_scalar, iphys%i_div_filter_a,             &
-     &          i_rms%i_div_filter_a, j_ave%i_div_filter_a, msq_list)
-          else if ( field_name .eq. fhd_filter_temp ) then
+          if ( field_name .eq. fhd_filter_temp ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_filter_temp,             &
      &          i_rms%i_filter_temp, j_ave%i_filter_temp, msq_list)
