@@ -101,6 +101,22 @@
         integer(kind=kint) :: ivol = 0
       end type mean_square_address
 !
+!>        Structure for mean square data for FEM_MHD
+      type FEM_MHD_mean_square
+!>        Structure for mean square values
+        type(mean_square_values) :: msq
+!>        Structure for mean square addresses not listed in phys_address
+        type(mean_square_address) :: i_msq
+!
+!>      strucutre of mean square data addresses
+        type(mean_square_list) :: msq_list
+!
+!>        Structure for addresses of volume average
+        type(phys_address) :: i_rms
+!>        Structure for addresses of mean square
+        type(phys_address) :: j_ave
+      end type FEM_MHD_mean_square
+!
       private :: time_step_data_code,  rms_data_code
       private :: open_monitor_file
 !
@@ -149,7 +165,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_monitor_file                                    &
-     &         (my_rank, i_step_MHD, time, nod_fld, fem_msq)
+     &         (my_rank, i_step_MHD, time, nod_fld, fem_msq, msq_list)
 !
       use t_phys_data
 !
@@ -159,6 +175,7 @@
 !
       type(phys_data), intent(in) :: nod_fld
       type(mean_square_values), intent(in) :: fem_msq
+      type(mean_square_list), intent(in) :: msq_list
 !
 !
       if ( my_rank .gt. 0 ) return
@@ -177,14 +194,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine open_monitor_file(my_rank, nod_fld, fem_msq)
+      subroutine open_monitor_file(my_rank, nod_fld, msq_list)
 !
       use t_phys_data
       use time_step_file_IO
 !
       integer (kind=kint), intent(in) :: my_rank
       type(phys_data), intent(in) :: nod_fld
-      type(mean_square_values), intent(in) :: fem_msq
+      type(mean_square_list), intent(in) :: msq_list
 !
       character(len=kchara) :: vector_label(3)
       integer (kind=kint) :: i
@@ -213,7 +230,7 @@
      &      status='replace')
 !
       call write_monitor_labels                                         &
-     &   (time_step_data_code, rms_data_code, nod_fld)
+     &   (time_step_data_code, rms_data_code, nod_fldiphys, msq_list)
 !
       end subroutine open_monitor_file
 !

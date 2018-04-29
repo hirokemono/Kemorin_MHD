@@ -9,7 +9,7 @@
 !> @brief addresses for volume integrated data
 !!
 !!@verbatim
-!!      subroutine init_FEM_MHD_mean_square(nod_fld, fem_sq)
+!!      subroutine init_FEM_MHD_mean_square(nod_fld)
 !!@endverbatim
 !
       module t_FEM_MHD_mean_square
@@ -18,7 +18,6 @@
 !
       use t_phys_address
       use t_phys_data
-      use t_mean_square_values
 !
       implicit  none
 !
@@ -36,26 +35,23 @@
 !>        address of spherical transform array
         integer(kind = kint), allocatable :: ifld_msq(:)
 !>        address of spherical transform array
+        integer(kind = kint), allocatable :: ncomp_msq(:)
+!>        address of spherical transform array
         integer(kind = kint), allocatable :: irms_msq(:)
 !>        address of spherical transform array
         integer(kind = kint), allocatable :: jave_msq(:)
       end type mean_square_list
 !
-!>        Structure for mean square data for FEM_MHD
-      type FEM_MHD_mean_square
-!>        Structure for mean square values
-        type(mean_square_values) :: msq
-!>        Structure for mean square addresses not listed in phys_address
-        type(mean_square_address) :: i_msq
+      character(len = kchara), parameter :: fhd_div_v_rms= 'div_V'
+      character(len = kchara), parameter :: fhd_div_a_rms= 'div_A'
+      character(len = kchara), parameter :: fhd_div_b_rms= 'div_B'
 !
-!>      strucutre of mean square data addresses
-        type(mean_square_list) :: msq_list
-!
-!>        Structure for addresses of volume average
-        type(phys_address) :: i_rms
-!>        Structure for addresses of mean square
-        type(phys_address) :: j_ave
-      end type FEM_MHD_mean_square
+      character(len = kchara), parameter ::                             &
+     &                        fhd_div_fil_v_rms= 'div_filter_V'
+      character(len = kchara), parameter ::                             &
+     &                        fhd_div_fil_a_rms= 'div_filter_A'
+      character(len = kchara), parameter ::                             &
+     &                        fhd_div_fil_b_rms= 'div_filter_B'
 !
 !-----------------------------------------------------------------------
 !
@@ -70,11 +66,13 @@
 !
       allocate(msq_list%field_name(msq_list%nfield))
       allocate(msq_list%ifld_msq(msq_list%nfield))
+      allocate(msq_list%ncomp_msq(msq_list%nfield))
       allocate(msq_list%irms_msq(msq_list%nfield))
       allocate(msq_list%jave_msq(msq_list%nfield))
 !
       if(msq_list%nfield .le. 0) return
       msq_list%ifld_msq = 0
+      msq_list%ncomp_msq = 0
       msq_list%irms_msq = 0
       msq_list%jave_msq = 0
 !
@@ -87,7 +85,8 @@
       type(mean_square_list), intent(inout) :: msq_list
 !
 !
-      deallocate(msq_list%field_name, msq_list%ifld_msq)
+      deallocate(msq_list%field_name)
+      deallocate(msq_list%ifld_msq, msq_list%ncomp_msq)
       deallocate(msq_list%irms_msq, msq_list%jave_msq)
 !
       end subroutine dealloc_mean_square_name
@@ -129,6 +128,7 @@
 !
       msq_list%field_name(msq_list%nfield) = field_name
       msq_list%ifld_msq(msq_list%nfield) = i_phys
+      msq_list%ncomp_msq(msq_list%nfield) = num_comp
       msq_list%irms_msq(msq_list%nfield) = ir_rms
       if(num_comp .gt. 0) msq_list%jave_msq(msq_list%nfield) = ja_ave
 !
@@ -136,6 +136,7 @@
       write(*,'(i5,a2,a,a2,4i5)') msq_list%nfield, '. ',                &
      &    trim(msq_list%field_name(msq_list%nfield)), ': ',             &
      &    msq_list%ifld_msq(msq_list%nfield),                           &
+     &    msq_list%ncomp_msq(msq_list%nfield),                          &
      &    msq_list%irms_msq(msq_list%nfield),                           &
      &    msq_list%jave_msq(msq_list%nfield)
 !

@@ -78,7 +78,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(mean_square_values), intent(inout) :: fem_msq
 !
-      integer(kind = kint) :: i, ncomp
+      integer(kind = kint) :: i
 !
 ! ---------  initialize
 !
@@ -88,8 +88,6 @@
 ! ----- lead average in a element -------------
 !
       do i = 1, msq_list%nfield
-        ncomp = msq_list%jave_msq(i+1) - msq_list%jave_msq(i)
-!
         if     (msq_list%ifld_msq(i) .eq. iphys%i_velo) then
           call int_all_4_vector                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
@@ -152,19 +150,19 @@
      &        msq_list%ifld_msq(i), mesh, nod_fld, jacs,                &
      &        fem_wk, fem_msq)
 !
-        else if(ncomp .eq. n_scalar) then
+        else if(msq_list%ncomp_msq(i) .eq. n_scalar) then
           call int_all_4_scalar                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
      &        msq_list%ifld_msq(i), mesh, nod_fld, jacs,                &
      &        fem_wk, fem_msq)
-        else if(ncomp .eq. n_vector) then
+        else if(msq_list%ncomp_msq(i) .eq. n_vector) then
           call int_all_4_vector                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
      &        msq_list%ifld_msq(i), mesh, nod_fld, jacs,                &
      &        fem_wk, fem_msq)
-        else if(ncomp .eq. n_sym_tensor) then
+        else if(msq_list%ncomp_msq(i) .eq. n_sym_tensor) then
           call int_all_4_sym_tensor                                     &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &
      &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
@@ -172,10 +170,6 @@
      &        fem_wk, fem_msq)
         end if
       end do
-!
-! ----- lead energy and angular momentum for vector data-------------
-!
-!
 !
 !       Adjust results
 !

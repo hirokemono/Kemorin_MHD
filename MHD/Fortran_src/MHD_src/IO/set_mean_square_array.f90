@@ -946,29 +946,29 @@
         else
           if ( field_name .eq. fhd_velo) then
             call set_rms_address                                        &
-     &         (field_name, n_scalar, iphys%i_velo,                     &
+     &         (fhd_div_v_rms, n_scalar, iphys%i_velo,                  &
      &          i_rms%i_div_v, j_ave%i_div_v, msq_list)
           else if ( field_name .eq. fhd_magne ) then
             call set_rms_address                                        &
-     &         (field_name, n_scalar, iphys%i_magne,                    &
+     &         (fhd_div_b_rms, n_scalar, iphys%i_magne,                 &
      &          i_rms%i_div_b, j_ave%i_div_b, msq_list)
           else if ( field_name .eq. fhd_vecp ) then
             call set_rms_address                                        &
-     &         (field_name, n_scalar, iphys%i_vecp,                     &
+     &         (fhd_div_a_rms, n_scalar, iphys%i_vecp,                  &
      &          i_rms%i_div_a, j_ave%i_div_a, msq_list)
           else if ( field_name .eq. fhd_filter_velo ) then
             call set_rms_address                                        &
-     &         (field_name, n_scalar, iphys%i_filter_velo,              &
+     &         (fhd_div_fil_v_rms, n_scalar, iphys%i_filter_velo,       &
      &          i_rms%i_div_filter_v, j_ave%i_div_filter_v, msq_list)
           else if ( field_name .eq. fhd_filter_magne ) then
             call set_rms_address                                        &
-     &         (field_name, n_scalar, iphys%i_filter_magne,             &
+     &         (fhd_div_fil_b_rms, n_scalar, iphys%i_filter_magne,      &
      &          i_rms%i_div_filter_b, j_ave%i_div_filter_b, msq_list)
           else if ( field_name .eq. fhd_filter_vecp ) then
             call set_rms_address                                        &
-     &         (field_name, n_scalar, iphys%i_div_filter_a,             &
+     &         (fhd_div_fil_a_rms, n_scalar, iphys%i_div_filter_a,      &
      &          i_rms%i_div_filter_a, j_ave%i_div_filter_a, msq_list)
-          else if ( field_name .eq. fhd_mag_potential ) then
+          else if ( field_name .eq. fhd_mag_potential ) then'
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_mag_p,                   &
      &          i_rms%i_mag_p, j_ave%i_mag_p, msq_list)
