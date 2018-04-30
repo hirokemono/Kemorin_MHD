@@ -188,6 +188,7 @@
       call s_set_control_sph_data(fld_su_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
      &   (fld_su_ctl%field_ctl, nod_fld, ierr)
+      call dealloc_control_array_c3(fld_su_ctl%field_ctl)
 !
       if(buoyancy_ratio_ctl%iflag .gt. 0) then
         buo_ratio = buoyancy_ratio_ctl%realvalue

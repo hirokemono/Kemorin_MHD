@@ -146,6 +146,7 @@
       call s_set_control_sph_data(fld_st_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
      &   (fld_st_ctl%field_ctl, fem_fld, ierr)
+      call dealloc_control_array_c3(fld_st_ctl%field_ctl)
 !
 !
       files_param%cmb_radial_grp =  'CMB'
@@ -266,6 +267,7 @@
       call s_set_control_sph_data(fld_st_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
      &   (fld_st_ctl%field_ctl, fem_fld, ierr)
+      call dealloc_control_array_c3(fld_st_ctl%field_ctl)
 !
 !
       files_param%cmb_radial_grp =  'CMB'

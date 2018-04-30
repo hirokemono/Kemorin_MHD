@@ -87,6 +87,7 @@
 !    set nodal data
 !
         call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
+        call dealloc_control_array_c3(field_ctl)
       end if
 !
       call set_ele_field_names_MHD                                      &

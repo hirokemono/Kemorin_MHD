@@ -4,12 +4,12 @@
 !        programmed by H.Matsui on Sep., 2006
 !
 !!     subroutine s_set_control_nodal_data(field_ctl, fld, ierr)
-!!        type(ctl_array_c3), intent(inout) :: field_ctl
+!!        type(ctl_array_c3), intent(in) :: field_ctl
 !!        type(phys_data), intent(inout) :: fld
 !!        integer (kind = kint), intent(inout) :: ierr
-!
-!     subroutine ordering_field_type_by_viz(fld)
-!     subroutine ordering_field_type_by_comp_viz(fld)
+!!
+!!     subroutine ordering_field_type_by_viz(fld)
+!!     subroutine ordering_field_type_by_comp_viz(fld)
 !
       module set_control_nodal_data
 !
@@ -30,7 +30,7 @@
       use m_machine_parameter
       use m_error_IDs
 !
-      type(ctl_array_c3), intent(inout) :: field_ctl
+      type(ctl_array_c3), intent(in) :: field_ctl
       type(phys_data), intent(inout) :: fld
       integer (kind = kint), intent(inout) :: ierr
 !
@@ -52,7 +52,6 @@
 !
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &                 call check_nodal_field_name_type(6, fld)
-        call dealloc_control_array_c3(field_ctl)
       end if
 !
       end subroutine s_set_control_nodal_data
