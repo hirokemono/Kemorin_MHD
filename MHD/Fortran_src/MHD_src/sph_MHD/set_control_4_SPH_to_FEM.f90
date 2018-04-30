@@ -60,7 +60,7 @@
       call set_FEM_mesh_mode_4_SPH(spctl, sph%sph_params)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
-     &     write(*,*) 'copy_rj_spec_name_to_nod_fld'
+     &     write(*,*) 'copy_field_name_type'
       call copy_field_name_type(rj_fld, nod_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
