@@ -120,6 +120,13 @@
      &        ifld_msq%ir_sqj_ic, ifld_msq%ja_j_ic, iphys%i_current,    &
      &        mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
+        else if(msq_list%ifld_msq(i) .eq. iphys%i_mag_p) then
+          call int_all_4_scalar                                         &
+     &       (mesh%ele%istack_ele_smp, npoint_integrate,                &
+     &        msq_list%irms_msq(i), msq_list%jave_msq(i),               &
+     &        msq_list%ifld_msq(i), mesh, nod_fld, jacs,                &
+     &        fem_wk, fem_msq)
+!
         else if(msq_list%ifld_msq(i) .eq. iphys%i_filter_velo) then
           call int_all_4_vector                                         &
      &       (fluid%istack_ele_fld_smp, npoint_integrate,               &

@@ -149,9 +149,10 @@
       if(num_copy .le. 0) return
       list_new%field_name(1:num_copy)                                   &
      &            = list_org%field_name(1:num_copy) 
-      list_new%ifld_msq(1:num_copy) = list_org%ifld_msq(1:num_copy)
-      list_new%irms_msq(1:num_copy) = list_org%irms_msq(1:num_copy)
-      list_new%jave_msq(1:num_copy) = list_org%jave_msq(1:num_copy)
+      list_new%ncomp_msq(1:num_copy) = list_org%ncomp_msq(1:num_copy)
+      list_new%ifld_msq(1:num_copy) =  list_org%ifld_msq(1:num_copy)
+      list_new%irms_msq(1:num_copy) =  list_org%irms_msq(1:num_copy)
+      list_new%jave_msq(1:num_copy) =  list_org%jave_msq(1:num_copy)
 !
       end subroutine copy_field_name_4_mean_square
 !

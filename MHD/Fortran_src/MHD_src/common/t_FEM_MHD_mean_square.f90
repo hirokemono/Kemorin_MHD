@@ -85,6 +85,7 @@
       type(phys_address), intent(in) :: iphys
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
+!      integer(kind = kint) :: i
 !
       call alloc_mean_square_name(fem_sq%msq_list)
       call set_mean_square_values(nod_fld, iphys,                       &
@@ -93,6 +94,14 @@
       fem_sq%msq%num_rms = fem_sq%msq_list%numrms
       fem_sq%msq%num_ave = fem_sq%msq_list%numave
       call alloc_mean_square_values(fem_sq%msq)
+!
+!      if(iflag_debug .eq. 0) return
+!      do i = 1, fem_sq%msq_list%nfield
+!        write(*,'(i5,a2,a,a2,4i5)') i, '. ',                           &
+!     &      trim(fem_sq%msq_list%field_name(i)), ': ',                 &
+!     &      fem_sq%msq_list%ifld_msq(i), fem_sq%msq_list%ncomp_msq(i), &
+!     &      fem_sq%msq_list%irms_msq(i), fem_sq%msq_list%jave_msq(i)
+!      end do
 !
       end subroutine init_FEM_MHD_mean_square
 !

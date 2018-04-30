@@ -114,8 +114,8 @@
             ifld_msq%ir_sqj_ic = msq_list%numrms + 1
             ifld_msq%ja_j_ic = msq_list%numave + 1
 !
-            ifld_msq%ir_rms_w = msq_list%numrms + 2
-            ifld_msq%ir_rms_w = msq_list%numrms + 3
+            ifld_msq%ir_rms_j =    msq_list%numrms + 2
+            ifld_msq%ir_rms_j_ic = msq_list%numrms + 3
 !
             msq_list%numrms = msq_list%numrms + 3
             msq_list%numave = msq_list%numave + 3
