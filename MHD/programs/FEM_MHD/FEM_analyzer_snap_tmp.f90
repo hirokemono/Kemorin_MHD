@@ -117,6 +117,7 @@
      &          nod_fld, MHD_IO, fem_sq)
 !
       use m_fem_mhd_restart
+      use t_FEM_MHD_mean_square
 !
       use input_control
       use nod_phys_send_recv
@@ -126,7 +127,6 @@
       use chenge_step_4_dynamic
       use copy_nodal_fields
 !
-      use time_step_data_IO_control
       use node_monitor_IO
       use FEM_sgs_model_coefs_IO
       use output_viz_file_control

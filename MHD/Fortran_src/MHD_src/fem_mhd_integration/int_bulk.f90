@@ -42,7 +42,7 @@
       use t_jacobians
       use t_finite_element_mat
       use t_MHD_finite_element_mat
-      use t_FEM_MHD_mean_square
+      use t_mean_square_filed_list
       use t_mean_square_values
 !
       implicit none

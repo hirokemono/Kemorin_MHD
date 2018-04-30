@@ -10,6 +10,24 @@
 !!
 !!@verbatim
 !!      subroutine init_FEM_MHD_mean_square(nod_fld)
+!!      subroutine output_time_step_control(istep, rms_step,            &
+!!     &          FEM_prm, time_d, mesh, MHD_mesh, fMHD_prop,           &
+!!     &          iphys, nod_fld, iphys_ele, ele_fld, jacs,             &
+!!     &          ifld_msq, rhs_mat, mhd_fem_wk, fem_msq)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_data_MHD), intent(in) :: MHD_mesh
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: ele_fld
+!!        type(jacobians_type), intent(in) :: jacs
+!!        type(mean_square_address), intent(in) :: ifld_msq
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!        type(mean_square_values), intent(inout) :: fem_msq
+!
 !!@endverbatim
 !
       module t_FEM_MHD_mean_square
@@ -18,40 +36,39 @@
 !
       use t_phys_address
       use t_phys_data
+      use t_mean_square_values
+      use t_mean_square_filed_list
+!
+      use t_FEM_control_parameter
+      use t_control_parameter
+      use t_time_data
+      use t_flex_delta_t_data
+      use t_mesh_data
+      use t_geometry_data
+      use t_geometry_data_MHD
+      use t_jacobians
+      use t_finite_element_mat
+      use t_work_FEM_integration
+      use t_MHD_finite_element_mat
+      use t_IO_step_parameter
 !
       implicit  none
 !
+      type FEM_MHD_mean_square
+!>        Structure for mean square values
+        type(mean_square_values) :: msq
+!>        Structure for mean square addresses not listed in phys_address
+        type(mean_square_address) :: i_msq
 !
 !>      strucutre of mean square data addresses
-      type mean_square_list
-!>        number of fields for spherical harmonics transform
-        integer(kind = kint) :: nfield = 0
-!>        number of mean square data for spherical harmonics transform
-        integer(kind = kint) :: numrms =  0
-!>        number of fields for spherical harmonics transform
-        integer(kind = kint) :: numave =  0
-!>        Field name for spherical transform
-        character(len = kchara), allocatable :: field_name(:)
-!>        address of spherical transform array
-        integer(kind = kint), allocatable :: ifld_msq(:)
-!>        address of spherical transform array
-        integer(kind = kint), allocatable :: ncomp_msq(:)
-!>        address of spherical transform array
-        integer(kind = kint), allocatable :: irms_msq(:)
-!>        address of spherical transform array
-        integer(kind = kint), allocatable :: jave_msq(:)
-      end type mean_square_list
+        type(mean_square_list) :: msq_list
 !
-      character(len = kchara), parameter :: fhd_div_v_rms= 'div_V'
-      character(len = kchara), parameter :: fhd_div_a_rms= 'div_A'
-      character(len = kchara), parameter :: fhd_div_b_rms= 'div_B'
+!>        Structure for addresses of volume average
+        type(phys_address) :: i_rms
+!>        Structure for addresses of mean square
+        type(phys_address) :: j_ave
+      end type FEM_MHD_mean_square
 !
-      character(len = kchara), parameter ::                             &
-     &                        fhd_div_fil_v_rms= 'div_filter_V'
-      character(len = kchara), parameter ::                             &
-     &                        fhd_div_fil_a_rms= 'div_filter_A'
-      character(len = kchara), parameter ::                             &
-     &                        fhd_div_fil_b_rms= 'div_filter_B'
 !
 !-----------------------------------------------------------------------
 !
@@ -59,108 +76,108 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_mean_square_name(msq_list)
+      subroutine init_FEM_MHD_mean_square(nod_fld, iphys, fem_sq)
 !
-      type(mean_square_list), intent(inout) :: msq_list
+      use calypso_mpi
+      use set_mean_square_array
 !
-!
-      allocate(msq_list%field_name(msq_list%nfield))
-      allocate(msq_list%ifld_msq(msq_list%nfield))
-      allocate(msq_list%ncomp_msq(msq_list%nfield))
-      allocate(msq_list%irms_msq(msq_list%nfield))
-      allocate(msq_list%jave_msq(msq_list%nfield))
-!
-      if(msq_list%nfield .le. 0) return
-      msq_list%ifld_msq = 0
-      msq_list%ncomp_msq = 0
-      msq_list%irms_msq = 0
-      msq_list%jave_msq = 0
-!
-      end subroutine alloc_mean_square_name
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_mean_square_name(msq_list)
-!
-      type(mean_square_list), intent(inout) :: msq_list
+      type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
 !
-      deallocate(msq_list%field_name)
-      deallocate(msq_list%ifld_msq, msq_list%ncomp_msq)
-      deallocate(msq_list%irms_msq, msq_list%jave_msq)
+      call alloc_mean_square_name(fem_sq%msq_list)
+      call set_mean_square_values(nod_fld, iphys,                       &
+     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq, fem_sq%msq_list)
 !
-      end subroutine dealloc_mean_square_name
+      fem_sq%msq%num_rms = fem_sq%msq_list%numrms
+      fem_sq%msq%num_ave = fem_sq%msq_list%numave
+      call alloc_mean_square_values(fem_sq%msq)
+!
+      end subroutine init_FEM_MHD_mean_square
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_rms_address(field_name, num_comp,                  &
-     &          i_phys, ir_rms, ja_ave, msq_list)
+      subroutine output_time_step_control(istep, rms_step,              &
+     &          FEM_prm, time_d, mesh, MHD_mesh, MHD_prop,              &
+     &          iphys, nod_fld, iphys_ele, ele_fld, jacs,               &
+     &          rhs_mat, mhd_fem_wk, fem_sq)
 !
-      use m_machine_parameter
+      use calypso_mpi
+      use t_mean_square_values
 !
-      character(len = kchara), intent(in) :: field_name
-      integer(kind = kint), intent(in) :: i_phys, num_comp
+      use int_bulk
+      use time_step_file_IO
 !
-      integer(kind = kint), intent(inout) :: ir_rms, ja_ave
-      type(mean_square_list), intent(inout) :: msq_list
+      integer(kind = kint), intent(in) :: istep
+      type(IO_step_param), intent(in) :: rms_step
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+      type(time_data), intent(in) :: time_d
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(jacobians_type), intent(in) :: jacs
 !
-      type(mean_square_list) :: tmp_list
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
-!
-      if(i_phys .eq. 0) return
-      ir_rms = msq_list%numrms + 1
-      ja_ave = msq_list%numave + 1
-!
-      tmp_list%nfield = msq_list%nfield
-      call alloc_mean_square_name(tmp_list)
-      call copy_field_name_4_mean_square                                &
-     &   (tmp_list%nfield, msq_list, tmp_list)
-      call dealloc_mean_square_name(msq_list)
-!
-      msq_list%nfield = msq_list%nfield + 1
-      msq_list%numrms = msq_list%numrms + 1
-      msq_list%numave =  msq_list%numave + num_comp
-      call alloc_mean_square_name(msq_list)
-      call copy_field_name_4_mean_square                                &
-     &   (tmp_list%nfield, tmp_list, msq_list)
-      call dealloc_mean_square_name(tmp_list)
-!
-      msq_list%field_name(msq_list%nfield) = field_name
-      msq_list%ifld_msq(msq_list%nfield) = i_phys
-      msq_list%ncomp_msq(msq_list%nfield) = num_comp
-      msq_list%irms_msq(msq_list%nfield) = ir_rms
-      if(num_comp .gt. 0) msq_list%jave_msq(msq_list%nfield) = ja_ave
-!
-      if(iflag_debug .eq. 0) return
-      write(*,'(i5,a2,a,a2,4i5)') msq_list%nfield, '. ',                &
-     &    trim(msq_list%field_name(msq_list%nfield)), ': ',             &
-     &    msq_list%ifld_msq(msq_list%nfield),                           &
-     &    msq_list%ncomp_msq(msq_list%nfield),                          &
-     &    msq_list%irms_msq(msq_list%nfield),                           &
-     &    msq_list%jave_msq(msq_list%nfield)
-!
-      end subroutine set_rms_address
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_field_name_4_mean_square                          &
-     &         (num_copy, list_org, list_new)
-!
-      integer(kind = kint), intent(in) :: num_copy
-      type(mean_square_list), intent(in) :: list_org
-      type(mean_square_list), intent(inout) :: list_new
+      integer (kind = kint) :: nd
 !
 !
-      if(num_copy .le. 0) return
-      list_new%field_name(1:num_copy)                                   &
-     &            = list_org%field_name(1:num_copy) 
-      list_new%ifld_msq(1:num_copy) = list_org%ifld_msq(1:num_copy)
-      list_new%irms_msq(1:num_copy) = list_org%irms_msq(1:num_copy)
-      list_new%jave_msq(1:num_copy) = list_org%jave_msq(1:num_copy)
+      if(output_IO_flag(istep, rms_step) .ne. 0) return
+      if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')                 &
+     &            'i_step=', time_d%i_time_step,'time=', time_d%time
 !
-      end subroutine copy_field_name_4_mean_square
+      call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
+     &    mesh, MHD_mesh%fluid, MHD_mesh%conduct, iphys, nod_fld, jacs, &
+     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq, fem_sq%msq_list,    &
+     &    rhs_mat%fem_wk, mhd_fem_wk, fem_sq%msq)
+      call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
+     &    mesh, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
+     &    iphys, nod_fld, iphys_ele, ele_fld, MHD_mesh%fluid,           &
+     &    jacs, fem_sq%i_rms, fem_sq%j_ave, rhs_mat%fem_wk, fem_sq%msq)
 !
-!-----------------------------------------------------------------------
+      call MPI_allREDUCE(fem_sq%msq%ave_local, fem_sq%msq%ave_global,   &
+     &    fem_sq%msq%num_ave, CALYPSO_REAL, MPI_SUM,                    &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_allREDUCE(fem_sq%msq%rms_local, fem_sq%msq%rms_global,   &
+     &    fem_sq%msq%num_rms, CALYPSO_REAL, MPI_SUM,                    &
+     &    CALYPSO_COMM, ierr_MPI)
+!
+!
+       do nd = 1, fem_sq%msq%num_ave
+         fem_sq%msq%ave_global(nd) = fem_sq%msq%ave_global(nd)          &
+     &                   / fem_sq%msq%rms_global(fem_sq%i_msq%ivol)
+       end do
+       do nd = 1, fem_sq%msq%num_rms - 1
+           if (nd .eq. fem_sq%i_rms%i_velo                              &
+     &    .or. nd .eq. fem_sq%i_rms%i_magne                             &
+     &    .or. nd .eq. fem_sq%i_msq%ir_me_ic                            &
+     &    .or. nd .eq. fem_sq%i_rms%i_vort                              &
+     &    .or. nd .eq. fem_sq%i_rms%i_current                           &
+     &    .or. nd .eq. fem_sq%i_msq%ir_sqj_ic                           &
+     &    .or. nd .eq. fem_sq%i_rms%i_filter_velo                       &
+     &    .or. nd .eq. fem_sq%i_rms%i_filter_magne                      &
+     &    .or. nd .eq. fem_sq%i_msq%ir_me_f_ic) then
+            fem_sq%msq%rms_global(nd) = fem_sq%msq%rms_global(nd)       &
+     &                    / fem_sq%msq%rms_global(fem_sq%i_msq%ivol)
+        else
+          fem_sq%msq%rms_global(nd) = sqrt(fem_sq%msq%rms_global(nd)    &
+     &                    / fem_sq%msq%rms_global(fem_sq%i_msq%ivol))
+        end if
+      end do
+!
+      call output_monitor_file(my_rank, time_d%i_time_step,             &
+     &    time_d%time, iphys, fem_sq%msq, fem_sq%msq_list)
+!
+      end subroutine output_time_step_control
+!
+!  ---------------------------------------------------------------------
 !
       end module t_FEM_MHD_mean_square

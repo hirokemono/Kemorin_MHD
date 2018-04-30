@@ -175,13 +175,13 @@
      &          retval, nod_fld, MHD_CG, FEM_SGS, SGS_MHD_wk,           &
      &          MHD_IO, fem_sq)
 !
+      use t_FEM_MHD_mean_square
       use construct_matrices
       use lead_physical_values
       use update_after_evolution
       use chenge_step_4_dynamic
       use copy_nodal_fields
 !
-      use time_step_data_IO_control
       use node_monitor_IO
       use FEM_sgs_model_coefs_IO
       use fem_mhd_rst_IO_control

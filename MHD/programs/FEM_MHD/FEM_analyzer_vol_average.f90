@@ -102,12 +102,12 @@
      &         (i_step, MHD_files, femmesh, iphys_nod, FEM_model,       &
      &          MHD_step, SGS_MHD_wk, nod_fld, fem_sq)
 !
+      use t_FEM_MHD_mean_square
       use nod_phys_send_recv
       use lead_physical_values
       use copy_nodal_fields
       use input_control
 !
-      use time_step_data_IO_control
       use output_parallel_ucd_file
       use FEM_MHD_evolution
 !

@@ -13,7 +13,7 @@
       use m_precision
 !
       use t_flex_delta_t_data
-      use t_mean_square_values
+      use t_FEM_MHD_mean_square
 !
       implicit  none
 !

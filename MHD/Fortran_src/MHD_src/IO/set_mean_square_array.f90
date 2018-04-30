@@ -9,7 +9,6 @@
 !> @brief addresses for volume integrated data
 !!
 !!@verbatim
-!!      subroutine count_mean_square_values(nod_fld, fem_msq)
 !!      subroutine set_mean_square_values                               &
 !!     &         (nod_fld, i_rms, j_ave, ifld_msq)
 !!        type(phys_data), intent(in) :: nod_fld
@@ -24,12 +23,10 @@
 !
       use t_phys_address
       use t_phys_data
+      use t_mean_square_filed_list
       use t_mean_square_values
-      use t_FEM_MHD_mean_square
 !
       implicit  none
-!
-      private :: set_mean_square_values
 !
 !-----------------------------------------------------------------------
 !
@@ -37,39 +34,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_FEM_MHD_mean_square(nod_fld, iphys, fem_sq)
-!
-      use calypso_mpi
-!
-      type(phys_data), intent(in) :: nod_fld
-      type(phys_address), intent(in) :: iphys
-      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
-!
-!
-      call alloc_mean_square_name(fem_sq%msq_list)
-      call set_mean_square_values(nod_fld, iphys,                       &
-     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq, fem_sq%msq_list)
-!
-      fem_sq%msq%num_rms = fem_sq%msq_list%numrms
-      fem_sq%msq%num_ave = fem_sq%msq_list%numave
-      call alloc_mean_square_values(fem_sq%msq)
-!
-      if(my_rank .ne. 0) return
-      write(*,*) 'fem_sq%msq_list%numrms', fem_sq%msq_list%numrms
-      write(*,*) 'fem_sq%msq_list%numave', fem_sq%msq_list%numave
-      write(*,*) 'fem_sq%msq%num_ave', fem_sq%msq%num_ave
-      write(*,*) 'fem_sq%msq%num_rms', fem_sq%msq%num_rms
-!
-      end subroutine init_FEM_MHD_mean_square
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
       subroutine set_mean_square_values                                 &
      &         (nod_fld, iphys, i_rms, j_ave, ifld_msq, msq_list)
 !
       use m_phys_labels
       use m_phys_constants
+      use m_volume_average_labels
 !
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys
@@ -946,29 +916,29 @@
         else
           if ( field_name .eq. fhd_velo) then
             call set_rms_address                                        &
-     &         (fhd_div_v_rms, n_scalar, iphys%i_velo,                  &
+     &         (e_hd_div_v, n_scalar, iphys%i_velo,                     &
      &          i_rms%i_div_v, j_ave%i_div_v, msq_list)
           else if ( field_name .eq. fhd_magne ) then
             call set_rms_address                                        &
-     &         (fhd_div_b_rms, n_scalar, iphys%i_magne,                 &
+     &         (e_hd_div_b, n_scalar, iphys%i_magne,                    &
      &          i_rms%i_div_b, j_ave%i_div_b, msq_list)
           else if ( field_name .eq. fhd_vecp ) then
             call set_rms_address                                        &
-     &         (fhd_div_a_rms, n_scalar, iphys%i_vecp,                  &
+     &         (e_hd_div_a, n_scalar, iphys%i_vecp,                     &
      &          i_rms%i_div_a, j_ave%i_div_a, msq_list)
           else if ( field_name .eq. fhd_filter_velo ) then
             call set_rms_address                                        &
-     &         (fhd_div_fil_v_rms, n_scalar, iphys%i_filter_velo,       &
+     &         (e_hd_fil_div_v, n_scalar, iphys%i_filter_velo,          &
      &          i_rms%i_div_filter_v, j_ave%i_div_filter_v, msq_list)
           else if ( field_name .eq. fhd_filter_magne ) then
             call set_rms_address                                        &
-     &         (fhd_div_fil_b_rms, n_scalar, iphys%i_filter_magne,      &
+     &         (e_hd_fil_div_b, n_scalar, iphys%i_filter_magne,         &
      &          i_rms%i_div_filter_b, j_ave%i_div_filter_b, msq_list)
           else if ( field_name .eq. fhd_filter_vecp ) then
             call set_rms_address                                        &
-     &         (fhd_div_fil_a_rms, n_scalar, iphys%i_div_filter_a,      &
+     &         (e_hd_fil_div_a, n_scalar, iphys%i_div_filter_a,        &
      &          i_rms%i_div_filter_a, j_ave%i_div_filter_a, msq_list)
-          else if ( field_name .eq. fhd_mag_potential ) then'
+          else if ( field_name .eq. fhd_mag_potential ) then
             call set_rms_address                                        &
      &         (field_name, num_comps, iphys%i_mag_p,                   &
      &          i_rms%i_mag_p, j_ave%i_mag_p, msq_list)

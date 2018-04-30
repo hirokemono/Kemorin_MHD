@@ -34,7 +34,7 @@
 !
       use t_phys_data
       use t_phys_address
-      use t_FEM_MHD_mean_square
+      use t_mean_square_filed_list
       use m_phys_labels
       use m_phys_constants
       use m_volume_average_labels
@@ -62,7 +62,7 @@
 !
             call scalar_label_4_step(id_ave, id_msq, e_hd_div_v)
             call write_vector_label(id_ave, e_hd_lvec)
-          else if(msq_list%field_name(i) .eq. fhd_div_v_rms) then
+          else if(msq_list%field_name(i) .eq. e_hd_div_v) then
             call scalar_label_4_step(id_ave, id_msq, e_hd_div_v)
           end if
 !
@@ -74,7 +74,7 @@
           if(msq_list%field_name(i) .eq. fhd_vecp) then
             call vector_label_4_step(id_ave, id_msq, fhd_vecp)
             call scalar_label_4_step(id_ave, id_msq, e_hd_div_a)
-          else if(msq_list%field_name(i) .eq. fhd_div_a_rms) then
+          else if(msq_list%field_name(i) .eq. e_hd_div_a) then
             call scalar_label_4_step(id_ave, id_msq, e_hd_div_a)
           end if
 !
@@ -87,7 +87,7 @@
             call write_vector_label(id_ave, vector_label)
             call write_vector_label(id_ave, e_hd_bvec_cd)
             call write_one_label(id_ave, e_hd_div_b)
-          else if(msq_list%field_name(i) .eq. fhd_div_b_rms) then
+          else if(msq_list%field_name(i) .eq. e_hd_div_b) then
             call scalar_label_4_step(id_ave, id_msq, e_hd_div_b)
           end if
 !
@@ -106,15 +106,15 @@
             call write_vector_label(id_ave, vector_label)
             call write_one_label(id_ave, e_hd_fil_div_v)
             call write_vector_label(id_ave, e_hd_fil_lvec)
-          else if(msq_list%field_name(i) .eq. fhd_div_b_rms) then
-            call scalar_label_4_step(id_ave, id_msq, fhd_div_fil_v_rms)
+          else if(msq_list%field_name(i) .eq. e_hd_fil_div_v) then
+            call scalar_label_4_step(id_ave, id_msq, e_hd_fil_div_v)
           end if
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_filter_vecp) then
           if(msq_list%field_name(i) .eq. fhd_filter_vecp) then
             call vector_label_4_step(id_ave, id_msq, fhd_filter_vecp)
             call scalar_label_4_step(id_ave, id_msq, e_hd_fil_div_a)
-          else if(msq_list%field_name(i) .eq. fhd_div_fil_a_rms) then
+          else if(msq_list%field_name(i) .eq. e_hd_fil_div_a) then
             call scalar_label_4_step(id_ave, id_msq, e_hd_fil_div_a)
           end if
 !
@@ -127,8 +127,9 @@
             call write_vector_label(id_ave, vector_label)
             call write_vector_label(id_ave, e_hd_fil_bvec_cd)
             call write_one_label(id_ave, e_hd_fil_div_b)
-          else if(msq_list%field_name(i) .eq. fhd_div_fil_b_rms) then
-            call scalar_label_4_step(id_ave, id_msq, e_hd_fil_div_b)
+          else if(msq_list%field_name(i) .eq. e_hd_fil_div_b) then
+            call scalar_label_4_step                                    &
+     &         (id_ave, id_msq, msq_list%field_name(i))
           end if
 !
         else if(msq_list%ifld_msq(i) .eq. iphys%i_induct_t              &
