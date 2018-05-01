@@ -391,6 +391,7 @@
         end if
         if(i_iter .gt. 200) then
           write(*,*) 'iteration too large in 1: ', i_iter
+          write(*,*) 'total length: ', len_sum
           exit
         end if
       end do
@@ -404,6 +405,7 @@
         do
           if(i_iter .gt. 200) then
             write(*,*) 'iteration too large in 2: ', i_iter
+            write(*,*) 'total length: ', len_sum
             exit
           end if
           i_iter = i_iter + 1
