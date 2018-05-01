@@ -73,7 +73,13 @@ static void gtk_file_menu(const char *title){
 	
 	iflag_set = IZERO;
 	/* generate file selection widget*/
-	filew = gtk_file_selection_new (title);
+	filew = gtk_file_chooser_dialog_new (title, parent_window,
+                                      action,
+                                      _("_Cancel"),
+                                      GTK_RESPONSE_CANCEL,
+                                      _("_Open"),
+                                      GTK_RESPONSE_ACCEPT,
+                                      NULL);
 	gtk_signal_connect (GTK_OBJECT (filew), "destroy",
 			(GtkSignalFunc) destroy, &filew);
 	/* connect ok_button to file_ok_sel() */
