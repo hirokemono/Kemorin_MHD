@@ -287,7 +287,7 @@
         i_iter = i_iter + 1
         if(isurf_start .lt. 1 .or. isurf_start .gt. numsurf) then
           iflag_comm = -10
-          exit
+          return
         end if
 
         if(interior_surf(isurf_start) .eq. izero) then
@@ -389,6 +389,10 @@
           iflag_comm = 1
           exit
         end if
+        if(i_iter .gt. 200) then
+          write(*,*) 'iteration too large in 1: ', i_iter
+          exit
+        end if
       end do
 
       if(flag_lic_end(lic_p, len_sum, i_iter) .eq. izero) then
@@ -398,6 +402,10 @@
         end if
         if(iflag_debug .eq. 1) write(50 + my_rank, *) "----dis is short for", i_iter, "iteration"
         do
+          if(i_iter .gt. 200) then
+            write(*,*) 'iteration too large in 2: ', i_iter
+            exit
+          end if
           i_iter = i_iter + 1
           len_sum = len_sum + avg_stepsize
           len_sum = min(len_sum, lic_p%trace_length)
