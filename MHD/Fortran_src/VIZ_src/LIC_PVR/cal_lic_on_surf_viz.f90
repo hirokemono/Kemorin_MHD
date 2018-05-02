@@ -45,7 +45,7 @@
      &         (nnod, nsurf, nelem, nnod_4_surf, isf_4_ele,             &
      &          iele_4_surf, interior_surf, xx,                         &
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
-     &          r_org, vec_org,                                         &
+     &          r_org, vec_org, ref_nod,                                &
      &          kernal_size, kernal_node,                               &
      &          v_nod, xx_org, isurf, xyz_min, xyz_max, iflag_comm,     &
      &          o_tgt, n_grad)
@@ -65,7 +65,8 @@
 !
         real(kind = kreal), intent(inout) :: xi(2)
         real(kind = kreal), intent(in) :: v_nod(nnod,3), xx(nnod, 3)
-        real(kind = kreal), intent(in) :: xx_org(3), r_org, vec_org(3)
+        real(kind = kreal), intent(in) :: ref_nod(nnod,lic_p%num_masking)
+        real(kind = kreal), intent(in) :: xx_org(3), r_org(:), vec_org(3)
         real(kind = kreal), intent(inout) :: o_tgt, n_grad(3)
         integer(kind = kint), intent(inout) :: iflag_comm
         integer(kind = kint), intent(in) :: kernal_size
@@ -78,7 +79,6 @@
 
         integer(kind = kint) :: iflag_back
 
-        real(kind = kreal) :: ref_value(1)
         real(kind = kreal) :: step_vec(3), new_pos(3)
         integer(kind = kint) :: ilic_suf_org(3), icur_sf
         integer(kind = kint) :: i, isf_tgt
@@ -96,7 +96,6 @@
         n_grad(1:3) = 0.0
         icur_sf = isurf
         n_v = 0.0
-        ref_value = 0.0
 
         do i = 1, 2
           iele = isurf_orgs(i,1)
@@ -110,12 +109,12 @@
           end if
         end do
 
-!        if(mask_flag(lic_p, r_org)) then
+        if(mask_flag(lic_p, r_org)) then
           call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,                   &
           &     xx_org, xyz_min, xyz_max, n_v)
           call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,         &
           &     xx_org, xyz_min, xyz_max, n_grad)
-!        end if
+        end if
         o_tgt = o_tgt + n_v * kernal_node(kernal_size/2.0)
         n_grad = n_grad + n_grad * kernal_node(kernal_size/2.0)
 
@@ -158,7 +157,7 @@
           &          iele_4_surf, interior_surf, lic_p,                 &
           &          iflag_back, xyz_min, xyz_max,                      &
           &          v_nod, ilic_suf_org, new_pos, step_vec,            &
-          &          kernal_size, kernal_node,                          &
+          &          kernal_size, kernal_node, ref_nod,                 &
           &          lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -195,7 +194,7 @@
           &          iele_4_surf, interior_surf, lic_p,                 &
           &          iflag_back, xyz_min, xyz_max,                      &
           &          v_nod, ilic_suf_org, new_pos, step_vec,            &
-          &          kernal_size, kernal_node,                          &
+          &          kernal_size, kernal_node, ref_nod,                 &
           &          lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -218,7 +217,7 @@
     &          iele_4_surf, interior_surf, lic_p,                      &
     &          iflag_back, xyz_min, xyz_max,                           &
     &          vect_nod, isurf_org, x_start, v_start,                  &
-    &          k_size, k_node,                                         &
+    &          k_size, k_node, ref_nod,                                &
     &          lic_v, grad_v, k_area, iflag_comm)
 
       use t_noise_node_data
@@ -235,6 +234,7 @@
       integer(kind = kint), intent(in) :: iflag_back
       real(kind = kreal), intent(in) :: vect_nod(numnod,3)
       type(lic_parameters), intent(in) :: lic_p
+      real(kind = kreal), intent(in) :: ref_nod(numnod,lic_p%num_masking)
     !
       integer(kind = kint), intent(inout) :: isurf_org(3)
       integer(kind = kint), intent(inout) :: iflag_comm
@@ -254,7 +254,7 @@
       real(kind = kreal) :: x_org(3), x_tgt(3), v_tgt(3), xi(2)
       integer(kind = kint) :: i_iter, i_k, i_n, iflag_debug, i
       real(kind = kreal) :: n_v, nv_sum, step_len, len_sum, k_value, k_pos, avg_stepsize
-      real(kind = kreal) :: g_v(3), ref_value(1)
+      real(kind = kreal) :: g_v(3), ref_value(lic_p%num_masking)
     !
     !
     !init local variables
@@ -349,15 +349,17 @@
       !call cal_pos_idx_volume(n_size, x_tgt, xyz_min, xyz_max, i_n)
         n_v = 0.0
         g_v(1:3) = 0.0
-        ref_value = 0.0
-!        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-!        &      ie_surf, isurf_end, xi, n_mask%ref_data, ref_value(1))
-!        if(mask_flag(lic_p, ref_value(1))) then
+        ref_value(:) = 0.0
+        do i = 1, lic_p%num_masking
+          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+          &      ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+        end do
+        if(mask_flag(lic_p, ref_value)) then
           call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
           &     x_tgt, xyz_min, xyz_max, n_v)
           call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,     &
           &     x_tgt, xyz_min, xyz_max, g_v)
-!        end if
+        end if
         nv_sum = nv_sum + n_v
         len_sum = len_sum + step_len
         len_sum = min(len_sum, lic_p%trace_length)
@@ -415,15 +417,16 @@
           x_tgt = x_start + v_start / norm2(v_start) * avg_stepsize
           n_v = 0.0
           g_v(1:3) = 0.0
-          ref_value = 0.0
-!          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-!          &      ie_surf, isurf_end, xi, n_mask%ref_data, ref_value(1))
-!          if(mask_flag(lic_p, ref_value(1))) then
+          do i = 1, lic_p%num_masking
+            call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+            &      ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
+          end do
+          if(mask_flag(lic_p, ref_value)) then
             call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
             &     x_tgt, xyz_min, xyz_max, n_v)
             call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,     &
             &     x_tgt, xyz_min, xyz_max, g_v)
-!          end if
+          end if
           !call noise_nd_sampling(n_size, n_node, x_tgt, xyz_min, xyz_max, n_v)
           if(iflag_back .eq. ione) then
             k_pos =  0.5 + 0.5 * len_sum/(lic_p%trace_length)

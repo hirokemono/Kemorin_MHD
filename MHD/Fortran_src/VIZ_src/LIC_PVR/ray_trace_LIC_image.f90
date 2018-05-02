@@ -345,13 +345,14 @@
                 r_mid(i) = r_org(i) * (1 - ratio) + r_tgt(i)*ratio
 !write(*,*) "org", r_org, "tgt", r_tgt, "ratio", ratio
               end do
-              if(mask_flag(lic_p, r_mid)) then
+! masking on sampling point
+!              if(mask_flag(lic_p, r_mid)) then
 
                 vec_mid = vec_org * (1-ratio) + vec_tgt * ratio
                 call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
                 &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
                 &      isurf_orgs, ie_surf, xi, lic_p,                                    &
-                &      r_mid(1), vec_mid,                                         &
+                &      r_mid, vec_mid, field_pvr%s_lic,                                   &
                 &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
                 &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
 
@@ -364,7 +365,7 @@
                 call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_lic_last, xx_lic,           &
                 &        c_tgt(1), grad_tgt, color_param, step_size, rgba_ray)
 
-              end if
+!              end if
               xx_lic_last = xx_lic
               step_cnt = step_cnt + 1
             end do
@@ -385,7 +386,7 @@
             call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
             &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
             &      isurf_orgs, ie_surf, xi, lic_p,                                    &
-            &      r_mid(1), vec_mid,                                                 &
+            &      r_mid, vec_mid, field_pvr%s_lic,                                   &
             &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
             &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
 
