@@ -45,7 +45,7 @@
      &         (nnod, nsurf, nelem, nnod_4_surf, isf_4_ele,             &
      &          iele_4_surf, interior_surf, xx,                         &
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
-     &          n_mask, r_org, vec_org,                                 &
+     &          r_org, vec_org,                                         &
      &          kernal_size, kernal_node,                               &
      &          v_nod, xx_org, isurf, xyz_min, xyz_max, iflag_comm,     &
      &          o_tgt, n_grad)
@@ -71,27 +71,23 @@
         integer(kind = kint), intent(in) :: kernal_size
         real(kind = kreal), intent(in) :: kernal_node(kernal_size)
         !type(noise_node), intent(in) :: noise_nod(noise_size)
-        type(noise_mask), intent(inout) :: n_mask
+        !type(noise_mask), intent(inout) :: n_mask
 
         real(kind = kreal), intent(in) :: xyz_min(3)
         real(kind = kreal), intent(in) :: xyz_max(3)
 
-        integer(kind = kint) :: nforward_step, nbackward_stap, iflag_back
+        integer(kind = kint) :: iflag_back
 
         real(kind = kreal) :: ref_value(1)
         real(kind = kreal) :: step_vec(3), new_pos(3)
         integer(kind = kint) :: ilic_suf_org(3), icur_sf
         integer(kind = kint) :: i, isf_tgt
-        real(kind = kreal) :: lic_v, n_v, forward_len, backward_len, k_area
+        real(kind = kreal) :: lic_v, n_v, k_area
         integer(kind = kint) :: iflag_found_sf, iele, isf_org, iflag_debug
 
 
         iflag_comm = 1
         iflag_debug = 0
-        nforward_step = 32
-        nbackward_stap = 32
-        forward_len = 0.32
-        backward_len = 0.32
         k_area = 0.0
 
         !   initial convolution integration at origin point
@@ -114,12 +110,12 @@
           end if
         end do
 
-        if(mask_flag(n_mask, r_org)) then
+!        if(mask_flag(lic_p, r_org)) then
           call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,                   &
           &     xx_org, xyz_min, xyz_max, n_v)
           call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,         &
           &     xx_org, xyz_min, xyz_max, n_grad)
-        end if
+!        end if
         o_tgt = o_tgt + n_v * kernal_node(kernal_size/2.0)
         n_grad = n_grad + n_grad * kernal_node(kernal_size/2.0)
 
@@ -160,9 +156,9 @@
           call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
           &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
           &          iele_4_surf, interior_surf, lic_p,                 &
-          &          forward_len, iflag_back, xyz_min, xyz_max,         &
+          &          iflag_back, xyz_min, xyz_max,                      &
           &          v_nod, ilic_suf_org, new_pos, step_vec,            &
-          &          kernal_size, kernal_node, n_mask,                  &
+          &          kernal_size, kernal_node,                          &
           &          lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -197,9 +193,9 @@
           call s_cal_lic_from_point(nnod, nelem, nsurf,                 &
           &          nnod_4_surf, xx, ie_surf, isf_4_ele,               &
           &          iele_4_surf, interior_surf, lic_p,                 &
-          &          backward_len, iflag_back, xyz_min, xyz_max,        &
+          &          iflag_back, xyz_min, xyz_max,                      &
           &          v_nod, ilic_suf_org, new_pos, step_vec,            &
-          &          kernal_size, kernal_node, n_mask,                  &
+          &          kernal_size, kernal_node,                          &
           &          lic_v, n_grad, k_area, iflag_comm)
           o_tgt = o_tgt + lic_v
         end if
@@ -220,9 +216,9 @@
     subroutine s_cal_lic_from_point(numnod, numele, numsurf,           &
     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
     &          iele_4_surf, interior_surf, lic_p,                      &
-    &          max_line_len, iflag_back, xyz_min, xyz_max,    &
+    &          iflag_back, xyz_min, xyz_max,                           &
     &          vect_nod, isurf_org, x_start, v_start,                  &
-    &          k_size, k_node, n_mask,                                 &
+    &          k_size, k_node,                                         &
     &          lic_v, grad_v, k_area, iflag_comm)
 
       use t_noise_node_data
@@ -237,7 +233,7 @@
       integer(kind = kint), intent(in) :: interior_surf(numsurf)
     !
       integer(kind = kint), intent(in) :: iflag_back
-      real(kind = kreal), intent(in) :: vect_nod(numnod,3), max_line_len
+      real(kind = kreal), intent(in) :: vect_nod(numnod,3)
       type(lic_parameters), intent(in) :: lic_p
     !
       integer(kind = kint), intent(inout) :: isurf_org(3)
@@ -247,7 +243,7 @@
       integer(kind = kint), intent(in) :: k_size
       real(kind = kreal), intent(in) :: k_node(k_size)
     !type(noise_node), intent(in) :: n_node(n_size)
-      type(noise_mask), intent(inout) :: n_mask
+    !type(noise_mask), intent(inout) :: n_mask
     !
       real(kind = kreal), intent(in) :: xyz_min(3)
       real(kind = kreal), intent(in) :: xyz_max(3)
@@ -271,8 +267,8 @@
       lic_v = 0.0
       iflag_debug = 0
       step_len = 0.0
-      len_sum = 0.0
       avg_stepsize = 0.01
+      len_sum = 0.0
 
       iflag_comm = 1
       if(isurf_org(1) .eq. 0) then
@@ -354,22 +350,22 @@
         n_v = 0.0
         g_v(1:3) = 0.0
         ref_value = 0.0
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-        &      ie_surf, isurf_end, xi, n_mask%ref_data, ref_value(1))
-        if(mask_flag(n_mask, ref_value(1))) then
+!        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+!        &      ie_surf, isurf_end, xi, n_mask%ref_data, ref_value(1))
+!        if(mask_flag(lic_p, ref_value(1))) then
           call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
           &     x_tgt, xyz_min, xyz_max, n_v)
           call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,     &
           &     x_tgt, xyz_min, xyz_max, g_v)
-        end if
+!        end if
         nv_sum = nv_sum + n_v
         len_sum = len_sum + step_len
-        len_sum = min(len_sum, max_line_len)
+        len_sum = min(len_sum, lic_p%trace_length)
         k_pos = 0.0
         if(iflag_back .eq. ione) then
-          k_pos =  0.5 + 0.5 * len_sum/max_line_len
+          k_pos =  0.5 + 0.5 * len_sum/(lic_p%trace_length)
         else
-          k_pos =  0.5 - 0.5 * len_sum/max_line_len
+          k_pos =  0.5 - 0.5 * len_sum/(lic_p%trace_length)
         end if
         k_value = 0.0
         call kernal_sampling(k_size, k_node, k_pos, k_value)
@@ -388,13 +384,14 @@
           isurf_start = isurf_end
         end if
 
-        if(len_sum .ge.max_line_len) then
+        if(flag_lic_end(lic_p, len_sum, i_iter) .eq. ione) then
+!        if(len_sum .ge.max_line_len) then
           iflag_comm = 1
           exit
         end if
       end do
 
-      if(len_sum .lt. max_line_len) then
+      if(flag_lic_end(lic_p, len_sum, i_iter) .eq. izero) then
         avg_stepsize = len_sum / i_iter
         if (avg_stepsize .lt. 0.005) then
           avg_stepsize = 0.005
@@ -403,25 +400,25 @@
         do
           i_iter = i_iter + 1
           len_sum = len_sum + avg_stepsize
-          len_sum = min(len_sum, max_line_len)
+          len_sum = min(len_sum, lic_p%trace_length)
           k_pos = 0.0
           x_tgt = x_start + v_start / norm2(v_start) * avg_stepsize
           n_v = 0.0
           g_v(1:3) = 0.0
           ref_value = 0.0
-          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-          &      ie_surf, isurf_end, xi, n_mask%ref_data, ref_value(1))
-          if(mask_flag(n_mask, ref_value(1))) then
+!          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+!          &      ie_surf, isurf_end, xi, n_mask%ref_data, ref_value(1))
+!          if(mask_flag(lic_p, ref_value(1))) then
             call noise_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_data,               &
             &     x_tgt, xyz_min, xyz_max, n_v)
             call noise_grad_sampling(lic_p%noise_size, lic_p%freq_noise, lic_p%noise_grad_data,     &
             &     x_tgt, xyz_min, xyz_max, g_v)
-          end if
+!          end if
           !call noise_nd_sampling(n_size, n_node, x_tgt, xyz_min, xyz_max, n_v)
           if(iflag_back .eq. ione) then
-            k_pos =  0.5 + 0.5 * len_sum/max_line_len
+            k_pos =  0.5 + 0.5 * len_sum/(lic_p%trace_length)
           else
-            k_pos =  0.5 - 0.5 * len_sum/max_line_len
+            k_pos =  0.5 - 0.5 * len_sum/(lic_p%trace_length)
           end if
           k_value = 0.0
           call kernal_sampling(k_size, k_node, k_pos, k_value)
@@ -431,7 +428,7 @@
           k_area = k_area + k_value
           x_start = x_tgt
           if(iflag_debug .eq. 1) write(50 + my_rank, *) "nv: ", n_v, "nv sum:", nv_sum, "kernel area: ", k_area, "lic_v: ", lic_v
-          if(len_sum .ge.max_line_len) then
+          if(flag_lic_end(lic_p, len_sum, i_iter) .eq. ione) then
             iflag_comm = 1
             exit
           end if
@@ -442,7 +439,31 @@
       if(iflag_debug .eq. 1) write(50 + my_rank, *) "len_sum", len_sum
     !
     end subroutine s_cal_lic_from_point
+!
+!  ---------------------------------------------------------------------
+!
 
+    integer(kind = kint) function flag_lic_end(lic_p, cur_len, cur_cnt)
+!
+    type(lic_parameters), intent(in) :: lic_p
+    integer(kind = kint), intent(in) :: cur_cnt
+    real(kind = kreal), intent(in) :: cur_len
+!
+    if(lic_p%iflag_trace_length_type .eq. iflag_by_lengh) then
+      if(cur_len .ge. lic_p%trace_length) then
+        flag_lic_end = ione
+      else
+        flag_lic_end = izero
+      end if
+    else
+      if(cur_cnt .gt. lic_p%trace_count) then
+        flag_lic_end = ione
+      else
+        flag_lic_end = izero
+      end if
+    end if
+
+    end function flag_lic_end
 !
 !  ---------------------------------------------------------------------
 !
