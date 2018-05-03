@@ -42,6 +42,8 @@
 !
       implicit  none
 !
+      private :: init_fourier_transform_SGS_MHD
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -103,8 +105,8 @@
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, trans_p,             &
-     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld)
+     &    WK%trns_MHD, WK%WK_sph, trans_p, WK%gt_cor, WK%cor_rlm,       &
+     &    SPH_MHD%fld)
 !
       end subroutine init_sph_transform_SGS_MHD
 !
@@ -138,8 +140,7 @@
       call init_fourier_transform_SGS_MHD                               &
      &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
      &    WK%trns_MHD, WK%trns_SGS, WK%trns_DYNS, WK%trns_Csim,         &
-     &    WK%WK_sph, WK%MHD_mul_FFTW, WK%SGS_mul_FFTW,                  &
-     &    WK%DYNS_mul_FFTW, WK%Csim_mul_FFTW)
+     &    WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp(sph%sph_rtp, sph%sph_rj, trans_p%leg)
@@ -154,8 +155,7 @@
 !
       subroutine init_fourier_transform_SGS_MHD                         &
      &       (SGS_param, ncomp_tot, sph_rtp, comm_rtp,                  &
-     &        trns_MHD, trns_SGS, trns_DYNS, trns_Csim, WK_sph,         &
-     &        MHD_mul_FFTW, SGS_mul_FFTW, DYNS_mul_FFTW, Csim_mul_FFTW)
+     &        trns_MHD, trns_SGS, trns_DYNS, trns_Csim, WK_sph)
 !
       use m_solver_SR
       use init_FFT_4_MHD
@@ -168,27 +168,23 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD,  trns_SGS
       type(address_4_sph_trans), intent(inout) :: trns_DYNS, trns_Csim
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: DYNS_mul_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: Csim_mul_FFTW
 !
 !
       call init_fourier_transform_4_MHD(ncomp_tot,                      &
-     &    sph_rtp, comm_rtp, trns_MHD, WK_sph, MHD_mul_FFTW)
+     &    sph_rtp, comm_rtp, trns_MHD, WK_sph, trns_MHD%mul_FFTW)
 !
       if(SGS_param%iflag_SGS .gt. 0) then
         call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
      &      trns_SGS%forward%ncomp, trns_SGS%backward%ncomp,            &
-     &      SGS_mul_FFTW)
+     &      trns_SGS%mul_FFTW)
 !
         if(SGS_param%iflag_dynamic .gt. 0) then
           call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,         &
      &        trns_DYNS%forward%ncomp, trns_DYNS%backward%ncomp,        &
-     &        DYNS_mul_FFTW)
+     &        trns_DYNS%mul_FFTW)
           call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,         &
      &        trns_Csim%forward%ncomp, trns_Csim%backward%ncomp,        &
-     &        Csim_mul_FFTW)
+     &        trns_Csim%mul_FFTW)
         end if
       end if
 !

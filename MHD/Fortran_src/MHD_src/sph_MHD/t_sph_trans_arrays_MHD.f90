@@ -46,11 +46,6 @@
 !>        Work structures for various spherical harmonics trasform
         type(spherical_trns_works) :: WK_sph
 !
-        type(work_for_sgl_FFTW) :: MHD_mul_FFTW
-        type(work_for_sgl_FFTW) :: SGS_mul_FFTW
-        type(work_for_sgl_FFTW) :: DYNS_mul_FFTW
-        type(work_for_sgl_FFTW) :: Csim_mul_FFTW
-!
 !>        Gunat integrals of Coriolis term
         type(gaunt_coriolis_rlm) :: gt_cor
 !>        Structure of Coriolis terms in@f$ f(r,l,m) @f$.

@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine dynamic_buo_SGS_by_pseudo_sph                        &
 !!     &         (SGS_param,  sph, comms_sph, MHD_prop, trans_p,        &
-!!     &          trns_MHD, trns_SGS, trns_DYNS, WK_sph, DYNS_mul_FFTW, &
-!!     &          dynamic_SPH, ipol, rj_fld)
+!!     &          trns_MHD, trns_SGS, trns_DYNS, WK_sph, dynamic_SPH,   &
+!!     &          ipol, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -20,12 +20,11 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS, trns_DYNS
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
-!!        type(work_for_sgl_FFTW), intent(inout) :: DYNS_mul_FFTW
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine product_buo_model_coefs_4_sph                        &
 !!     &         (SGS_param, sph, comms_sph, trans_p, trns_SGS,         &
-!!     &          WK_sph, SGS_mul_FFTW, dynamic_SPH, ipol, rj_fld)
+!!     &          WK_sph, dynamic_SPH, ipol, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -33,7 +32,6 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
-!!        type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -71,8 +69,8 @@
 !
       subroutine dynamic_buo_SGS_by_pseudo_sph                          &
      &         (SGS_param,  sph, comms_sph, MHD_prop, trans_p,          &
-     &          trns_MHD, trns_SGS, trns_DYNS, WK_sph, DYNS_mul_FFTW,   &
-     &          dynamic_SPH, ipol, rj_fld)
+     &          trns_MHD, trns_SGS, trns_DYNS, WK_sph, dynamic_SPH,     &
+     &          ipol, rj_fld)
 !
       use t_SGS_buoyancy_sph
       use sph_transforms_4_SGS
@@ -88,7 +86,6 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(address_4_sph_trans), intent(inout) :: trns_SGS, trns_DYNS
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: DYNS_mul_FFTW
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -106,7 +103,7 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &                     'sph_forward_trans_SGS_MHD dyns'
         call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
-     &      trns_DYNS%forward, WK_sph, DYNS_mul_FFTW, rj_fld)
+     &      trns_DYNS%forward, WK_sph, trns_DYNS%mul_FFTW, rj_fld)
         call end_elapsed_time(16)
 !
         if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
@@ -128,7 +125,7 @@
 !
       subroutine product_buo_model_coefs_4_sph                          &
      &         (SGS_param, sph, comms_sph, trans_p, trns_SGS,           &
-     &          WK_sph, SGS_mul_FFTW, dynamic_SPH, ipol, rj_fld)
+     &          WK_sph, dynamic_SPH, ipol, rj_fld)
 !
       use t_SGS_buoyancy_sph
       use sph_transforms_4_SGS
@@ -142,7 +139,6 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -159,14 +155,14 @@
           if (iflag_debug.eq.1) write(*,*)                              &
      &                        'sph_forward_trans_SGS_MHD SGS'
           call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,       &
-     &        trns_SGS%forward, WK_sph, SGS_mul_FFTW, rj_fld)
+     &        trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
           call end_elapsed_time(16)
         else if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
           call start_elapsed_time(16)
           if (iflag_debug.eq.1) write(*,*)                              &
      &                        'sph_forward_trans_SGS_MHD SGS'
           call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,       &
-     &        trns_SGS%forward, WK_sph, SGS_mul_FFTW, rj_fld)
+     &        trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
           call end_elapsed_time(16)
 !
           if(iflag_debug.eq.1) write(*,*)                               &
@@ -179,7 +175,7 @@
           if (iflag_debug.eq.1) write(*,*)                              &
      &                        'sph_forward_trans_SGS_MHD SGS'
           call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,       &
-     &        trns_SGS%forward, WK_sph, SGS_mul_FFTW, rj_fld)
+     &        trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
           call end_elapsed_time(16)
 !
             if(iflag_debug.eq.1) write(*,*)                             &

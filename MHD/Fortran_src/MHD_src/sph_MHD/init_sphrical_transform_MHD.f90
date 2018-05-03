@@ -9,14 +9,12 @@
 !!@verbatim
 !!      subroutine init_sph_transform_MHD                               &
 !!     &         (SPH_model, iphys, trans_p, WK, SPH_MHD)
-!!      subroutine init_leg_fourier_trans_MHD                           &
-!!     &         (sph_MHD_bc, sph, comms_sph,                           &
-!!     &          ncomp_max_trans, trans_p, WK)
+!!      subroutine init_leg_fourier_trans_MHD(sph_MHD_bc,               &
+!!     &          sph, comms_sph, ncomp_max_trans, trans_p, WK)
 !!      subroutine sel_sph_transform_MHD                                &
 !!     &         (MHD_prop, sph_MHD_bc, sph, comms_sph, omega_sph,      &
 !!     &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,&
-!!     &          trns_MHD, WK_sph, MHD_mul_FFTW, trans_p,              &
-!!     &          gt_cor, cor_rlm, rj_fld)
+!!     &          trns_MHD, WK_sph, trans_p, gt_cor, cor_rlm, rj_fld)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
@@ -114,16 +112,15 @@
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, trans_p,             &
-     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld)
+     &    WK%trns_MHD, WK%WK_sph, trans_p, WK%gt_cor, WK%cor_rlm,       &
+     &    SPH_MHD%fld)
 !
       end subroutine init_sph_transform_MHD
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_leg_fourier_trans_MHD                             &
-     &         (sph_MHD_bc, sph, comms_sph,                             &
-     &          ncomp_max_trans, trans_p, WK)
+      subroutine init_leg_fourier_trans_MHD(sph_MHD_bc,                 &
+     &          sph, comms_sph, ncomp_max_trans, trans_p, WK)
 !
       use init_sph_trans
       use init_FFT_4_MHD
@@ -147,7 +144,7 @@
      &    sph, comms_sph, trans_p%leg, trans_p%idx_trns)
       call init_fourier_transform_4_MHD                                 &
      &   (ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,             &
-     &    WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW)
+     &    WK%trns_MHD, WK%WK_sph, WK%trns_MHD%mul_FFTW)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp(sph%sph_rtp, sph%sph_rj, trans_p%leg)
@@ -163,8 +160,7 @@
       subroutine sel_sph_transform_MHD                                  &
      &         (MHD_prop, sph_MHD_bc, sph, comms_sph, omega_sph,        &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
-     &          trns_MHD, WK_sph, MHD_mul_FFTW, trans_p,                &
-     &          gt_cor, cor_rlm, rj_fld)
+     &          trns_MHD, WK_sph, trans_p, gt_cor, cor_rlm, rj_fld)
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -182,7 +178,6 @@
       type(gaunt_coriolis_rlm), intent(inout) :: gt_cor
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -190,7 +185,7 @@
       call select_legendre_transform(sph, comms_sph, MHD_prop%fl_prop,  &
      &    sph_MHD_bc%sph_bc_U, omega_sph, trans_p, gt_cor,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW, cor_rlm)
+     &    rj_fld, trns_MHD, WK_sph, cor_rlm)
 !
       call sel_init_legendre_trans                                      &
      &   (ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
@@ -208,7 +203,7 @@
       subroutine select_legendre_transform(sph, comms_sph,              &
      &          fl_prop, sph_bc_U, omega_sph, trans_p, gt_cor,          &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
-     &          rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW, cor_rlm)
+     &          rj_fld, trns_MHD, WK_sph, cor_rlm)
 !
       use sph_transforms_4_MHD
 !
@@ -226,7 +221,6 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -255,10 +249,10 @@
         starttime = MPI_WTIME()
         call sph_back_trans_4_MHD(sph, comms_sph, fl_prop, sph_bc_U,    &
      &      omega_sph, trans_p, gt_cor, rj_fld, trns_MHD%b_trns,        &
-     &      trns_MHD%backward, WK_sph, MHD_mul_FFTW, cor_rlm)
+     &      trns_MHD%backward, WK_sph, trns_MHD%mul_FFTW, cor_rlm)
         call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop,           &
      &      trans_p, cor_rlm, trns_MHD%f_trns, trns_MHD%forward,        &
-     &      WK_sph, MHD_mul_FFTW, rj_fld)
+     &      WK_sph, trns_MHD%mul_FFTW, rj_fld)
         endtime(WK_sph%WK_leg%id_legendre) = MPI_WTIME() - starttime
 !
         call sel_finalize_legendre_trans(WK_sph%WK_leg)

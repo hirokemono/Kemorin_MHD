@@ -7,17 +7,23 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine nonlinear_SGS_first                                  &
-!!     &         (i_step, r_2nd, SPH_model, trans_p, WK, SGS_par,       &
-!!     &          dynamic_SPH, SPH_MHD)
-!!      subroutine nonlinear_with_SGS(i_step, SGS_par, r_2nd, SPH_model,&
-!!     &          trans_p, WK, dynamic_SPH, SPH_MHD)
+!!      subroutine SGS_by_pseudo_sph(i_step, i_step_sgs_coefs,          &
+!!     &          SGS_param, sph, comms_sph, r_2nd, MHD_prop,           &
+!!     &          sph_MHD_bc, trans_p, trns_MHD, trns_SGS, trns_DYNS,   &
+!!     &          WK_sph, dynamic_SPH, ipol, itor, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(sph_grids), intent(in) :: sph
+!!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(SPH_MHD_model_data), intent(in) :: SPH_model
-!!        type(works_4_sph_trans_MHD), intent(inout) :: WK
-!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!        type(phys_address), intent(in) :: ipol, itor
+!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
+!!        type(address_4_sph_trans), intent(inout) :: trns_SGS, trns_DYNS
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
 !
@@ -56,11 +62,10 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine SGS_by_pseudo_sph(i_step, i_step_sgs_coefs, SGS_param, &
-     &          sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
-     &          trans_p, trns_MHD, trns_SGS, trns_DYNS,                 &
-     &          WK_sph, SGS_mul_FFTW, DYNS_mul_FFTW, dynamic_SPH,       &
-     &          ipol, itor, rj_fld)
+      subroutine SGS_by_pseudo_sph(i_step, i_step_sgs_coefs,            &
+     &          SGS_param, sph, comms_sph, r_2nd, MHD_prop,             &
+     &          sph_MHD_bc, trans_p, trns_MHD, trns_SGS, trns_DYNS,     &
+     &          WK_sph, dynamic_SPH, ipol, itor, rj_fld)
 !
       use sph_transforms_4_SGS
       use cal_sph_rotation_of_SGS
@@ -82,8 +87,6 @@
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(address_4_sph_trans), intent(inout) :: trns_SGS, trns_DYNS
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: DYNS_mul_FFTW
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -104,7 +107,7 @@
       call start_elapsed_time(14)
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD SGS'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_SGS%backward, WK_sph, SGS_mul_FFTW)
+     &    rj_fld, trns_SGS%backward, WK_sph, trns_SGS%mul_FFTW)
       call end_elapsed_time(14)
 !
       call start_elapsed_time(15)
@@ -122,8 +125,7 @@
         if(istep_dynamic .eq. 0) then
           call dynamic_SGS_by_pseudo_sph                                &
      &       (SGS_param, sph, comms_sph, MHD_prop, trans_p,             &
-     &        trns_SGS, trns_DYNS, WK_sph, SGS_mul_FFTW, DYNS_mul_FFTW, &
-     &        dynamic_SPH, ipol, rj_fld)
+     &        trns_SGS, trns_DYNS, WK_sph, dynamic_SPH, ipol, rj_fld)
         end if
       end if
 !
@@ -140,10 +142,9 @@
 !
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none                   &
      &  .and. istep_dynamic .eq. 0) then
-        call dynamic_buo_SGS_by_pseudo_sph                              &
-     &     (SGS_param, sph, comms_sph, MHD_prop, trans_p,               &
-     &      trns_MHD, trns_SGS, trns_DYNS,  WK_sph, DYNS_mul_FFTW,      &
-     &      dynamic_SPH, ipol, rj_fld)
+        call dynamic_buo_SGS_by_pseudo_sph(SGS_param, sph, comms_sph,   &
+     &      MHD_prop, trans_p, trns_MHD, trns_SGS, trns_DYNS,           &
+     &      WK_sph,  dynamic_SPH, ipol, rj_fld)
       end if
 !
 !
@@ -151,13 +152,13 @@
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
         call product_buo_model_coefs_4_sph                              &
      &         (SGS_param, sph, comms_sph, trans_p, trns_SGS,           &
-     &          WK_sph, SGS_mul_FFTW, dynamic_SPH, ipol, rj_fld)
+     &          WK_sph, dynamic_SPH, ipol, rj_fld)
       else
         call start_elapsed_time(16)
         if (iflag_debug.eq.1) write(*,*)                                &
      &            'sph_forward_trans_SGS_MHD SGS'
         call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
-     &      trns_SGS%forward, WK_sph, SGS_mul_FFTW, rj_fld)
+     &      trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
         call end_elapsed_time(16)
       end if
 !
@@ -172,7 +173,7 @@
 !
       subroutine dynamic_SGS_by_pseudo_sph(SGS_param, sph, comms_sph,   &
      &          MHD_prop, trans_p, trns_SGS, trns_DYNS, WK_sph,         &
-     &          SGS_mul_FFTW, DYNS_mul_FFTW, dynamic_SPH, ipol, rj_fld)
+     &          dynamic_SPH, ipol, rj_fld)
 !
       use sph_transforms_4_SGS
       use cal_filtered_sph_fields
@@ -188,8 +189,6 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS, trns_DYNS
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
-      type(work_for_sgl_FFTW), intent(inout) :: DYNS_mul_FFTW
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -198,7 +197,7 @@
       call start_elapsed_time(16)
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD dyns'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_SGS%forward, WK_sph, SGS_mul_FFTW, rj_fld)
+     &    trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
       call end_elapsed_time(16)
 !
       call cal_sph_wide_filtering_fields                                &
@@ -211,7 +210,7 @@
       call start_elapsed_time(14)
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD dyns'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_DYNS%backward, WK_sph, DYNS_mul_FFTW)
+     &    rj_fld, trns_DYNS%backward, WK_sph, trns_DYNS%mul_FFTW)
       call end_elapsed_time(14)
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'

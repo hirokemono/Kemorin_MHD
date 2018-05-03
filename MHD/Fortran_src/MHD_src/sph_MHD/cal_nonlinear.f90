@@ -15,7 +15,7 @@
 !!      subroutine nonlinear_by_pseudo_sph                              &
 !!     &         (sph, comms_sph, omega_sph, r_2nd, MHD_prop,           &
 !!     &          sph_MHD_bc, trans_p, gt_cor, trns_MHD, WK_sph,        &
-!!     &          MHD_mul_FFTW, cor_rlm, ipol, itor, rj_fld)
+!!     &          cor_rlm, ipol, itor, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -27,7 +27,6 @@
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
-!!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!        type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine licv_exp(ref_temp, ref_comp, MHD_prop, sph_MHD_bc,   &
@@ -102,8 +101,8 @@
       call nonlinear_by_pseudo_sph                                      &
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,     &
-     &    WK%gt_cor, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW,           &
-     &    WK%cor_rlm, SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &    WK%gt_cor, WK%trns_MHD, WK%WK_sph, WK%cor_rlm,                &
+     &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
 !
 !   ----  Lead advection of reference field
       call add_ref_advect_sph_MHD                                       &
@@ -129,9 +128,9 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_by_pseudo_sph                                &
-     &         (sph, comms_sph, omega_sph,  r_2nd, MHD_prop,            &
+     &         (sph, comms_sph, omega_sph, r_2nd, MHD_prop,             &
      &          sph_MHD_bc, trans_p, gt_cor, trns_MHD, WK_sph,          &
-     &          MHD_mul_FFTW, cor_rlm, ipol, itor, rj_fld)
+     &          cor_rlm, ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
@@ -151,7 +150,6 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -163,7 +161,7 @@
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,        &
      &    omega_sph, trans_p, gt_cor, rj_fld, trns_MHD%b_trns,          &
-     &    trns_MHD%backward, WK_sph, MHD_mul_FFTW, cor_rlm)
+     &    trns_MHD%backward, WK_sph, trns_MHD%mul_FFTW, cor_rlm)
       call end_elapsed_time(14)
 !
       call start_elapsed_time(15)
@@ -176,7 +174,7 @@
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD(sph, comms_sph, MHD_prop%fl_prop,    &
      &    trans_p, cor_rlm, trns_MHD%f_trns, trns_MHD%forward,          &
-     &    WK_sph, MHD_mul_FFTW, rj_fld)
+     &    WK_sph, trns_MHD%mul_FFTW, rj_fld)
       call end_elapsed_time(16)
 !
       call start_elapsed_time(17)

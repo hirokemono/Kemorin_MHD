@@ -37,6 +37,7 @@
 !
       use t_phys_address
       use t_spheric_rtp_data
+      use t_sph_multi_FFTW
 !
       implicit none
 !
@@ -71,7 +72,7 @@
         real(kind = kreal), allocatable :: flc_pole(:,:)
       end type address_each_sph_trans
 !
-
+!
 !>      strucutre of spherical transform data addresses
       type address_4_sph_trans
 !>        strucutre of backward spherical transform data addresses
@@ -86,6 +87,9 @@
 !
 !>        zonal mean of field data in grid space
         real(kind = kreal), allocatable :: fld_zm(:,:)
+!
+!>        Work area of Fourier transform for MHD
+        type(work_for_sgl_FFTW) :: mul_FFTW
       end type address_4_sph_trans
 !
       private :: copy_field_name_4_sph_trns
