@@ -136,7 +136,7 @@
       call alloc_components_4_LIC(lic)
 !
       do i_pvr = 1, lic%num_pvr
-        call alloc_nod_vector_4_lic                                     &
+        call allocate_nod_data_4_pvr                                    &
      &     (femmesh%mesh%node%numnod, femmesh%mesh%ele%numele,          &
      &      femmesh%group%surf_grp%num_grp, lic%pvr_param(i_pvr)%field)
         call reset_pvr_view_parameteres(lic%pvr_data(i_pvr)%view)
@@ -157,7 +157,11 @@
         call calypso_mpi_barrier
       end do
 !
-
+      do i_pvr = 1, lic%num_pvr
+        call alloc_nod_vector_4_lic(femmesh%mesh%node%numnod,          &
+     &      lic%lic_fld(i_pvr)%lic_param%num_masking,                  &
+     &      lic%pvr_param(i_pvr)%field)
+      end do
 !
       call find_lic_surf_domain                                         &
      &   (lic%num_pvr, femmesh%mesh, femmesh%group, ele_mesh,           &

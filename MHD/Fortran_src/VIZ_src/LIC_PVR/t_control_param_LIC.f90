@@ -11,7 +11,9 @@
 !!     &         (num_nod_phys, phys_nod_name, lic_ctl, lic_p)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
+!!      subroutine dealloc_lic_noise_data(lic_p)
 !!      subroutine dealloc_lic_masking_ranges(lic_p)
+!!      subroutine dealloc_lic_kernel(lic_p)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
 !!@endverbatim
 !
@@ -26,6 +28,7 @@
       use t_control_params_4_pvr
       use t_control_param_LIC_masking
       use t_noise_node_data
+      use t_LIC_kernel_image
       use lic_noise_generator
 !
       implicit  none
@@ -74,6 +77,8 @@
         integer(kind = kint) :: iflag_kernel_type = 0
 !>        file name of kernel function data
         character(len = kchara) :: kernel_image_prefix
+!>        Structure of LIC kernel image
+        type(LIC_kernel_image) :: kernel_image
 !
 !>        Element counts of LIC field line tracing
         integer(kind = kint) :: iflag_trace_length_type = izero
@@ -391,6 +396,34 @@
 !
 !  ---------------------------------------------------------------------
 !
+!     if true, the reference value is in the mask range, so it can be visualized
+      logical function mask_flag(lic_p, value)
+!
+      type(lic_parameters), intent(in) :: lic_p
+      real(kind=kreal), intent(in) :: value(:)
+!
+      integer(kind=kint) :: i,j, iFlag_inmask
+!
+      mask_flag = .true.
+      do i = 1, lic_p%num_masking
+        iFlag_inmask = izero
+        do j = 1, lic_p%masking(i)%num_range
+          if((value(i) .ge. lic_p%masking(i)%range_min(j)) .and.        &
+          &   (value(i) .le. lic_p%masking(i)%range_max(j))) then
+            iFlag_inmask = 1
+            exit
+          end if
+        end do
+        if(iFlag_inmask .eq. izero) then
+          mask_flag = .false.
+          return
+        end if
+      end do
+
+      end function mask_flag
+!
+!-----------------------------------------------------------------------
+!
       subroutine load_noise_data(lic_p)
 !
       use t_control_data_LIC
@@ -398,9 +431,8 @@
       integer(kind = kint) :: read_err
       type(lic_parameters), intent(inout) :: lic_p
 !
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'loading noise texture from: ', lic_p%noise_file_name
-      end if
+      if(my_rank .eq. 0) write(*,*) 'loading noise texture from: ',     &
+     &                             trim(lic_p%noise_file_name)
       call import_noise_ary(lic_p%noise_file_name,                      &
       &    lic_p%noise_data, lic_p%noise_dim, read_err)
       if(read_err .eq. 0) then
@@ -447,6 +479,16 @@
         deallocate(lic_p%masking)
 !
       end subroutine dealloc_lic_masking_ranges
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_lic_kernel(lic_p)
+!
+      type(lic_parameters), intent(inout) :: lic_p
+!
+      call dealloc_lic_kernel_image(lic_p%kernel_image)
+!
+      end subroutine dealloc_lic_kernel
 !
 !  ---------------------------------------------------------------------
 !
