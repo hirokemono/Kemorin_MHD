@@ -145,6 +145,42 @@
 !
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
+        if(     i_start .eq. iphys%i_grad_filter_vx                     &
+     &     .or. i_start .eq. iphys%i_grad_filter_vy                     &
+     &     .or. i_start .eq. iphys%i_grad_filter_vz) then 
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_filter_velo, fhd_filter_velo)
+        else if(i_start .eq. iphys%i_grad_filter_wx                     &
+     &     .or. i_start .eq. iphys%i_grad_filter_wy                     &
+     &     .or. i_start .eq. iphys%i_grad_filter_wz) then 
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_filter_vort, fhd_filter_vort)
+        else if(i_start .eq. iphys%i_grad_filter_ax                     &
+     &     .or. i_start .eq. iphys%i_grad_filter_ay                     &
+     &     .or. i_start .eq. iphys%i_grad_filter_az) then 
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_filter_vecp, fhd_filter_vecp)
+        else if(i_start .eq. iphys%i_grad_filter_bx                     &
+     &     .or. i_start .eq. iphys%i_grad_filter_by                     &
+     &     .or. i_start .eq. iphys%i_grad_filter_bz) then 
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_filter_magne, fhd_filter_magne)
+        else if(i_start .eq. iphys%i_grad_filter_jx                     &
+     &     .or. i_start .eq. iphys%i_grad_filter_jy                     &
+     &     .or. i_start .eq. iphys%i_grad_filter_jz) then 
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_filter_current, fhd_filter_current)
+        else if(i_start .eq. iphys%i_grad_filter_temp) then 
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_filter_temp, fhd_filter_temp)
+        else if(i_start .eq. iphys%i_grad_filter_comp) then 
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_filter_comp, fhd_filter_comp)
+        end if
+      end do
+!
+      do i = 1, fld%num_phys
+        i_start = fld%istack_component(i-1) + 1
         if(     i_start .eq. iphys%i_filter_buo) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_filter_temp, fhd_filter_temp)

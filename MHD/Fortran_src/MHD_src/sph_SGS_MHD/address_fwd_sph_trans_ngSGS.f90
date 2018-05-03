@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine f_trans_address_vector_ngSGS(trns_fwd)
 !!      subroutine f_trans_address_scalar_ngSGS                         &
-!!     &         (ipol, itor, iphys, f_trns, trns_SGS)
+!!     &         (ipol, itor, iphys, f_trns, trns_fwd)
 !!        type(phys_address), intent(in) :: ipol, itor, iphys
 !!        type(address_each_sph_trans), intent(inout) :: trns_fwd
 !!        type(phys_address), intent(inout) :: f_trns
