@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_nonlinear_gradient_sph_SGS                       &
-!!     &         (sph, comms_sph, r_2nd, sph_MHD_bc, trans_p,           &
+!!     &         (sph, comms_sph, r_2nd, sph_MHD_bc, trans_p, gamma,    &
 !!     &          ipol, trns_MHD, WK_sph, rj_fld, trns_ngSGS,           &
 !!     &          SGS_mul_ngSGS)
 !!        type(sph_grids), intent(in) :: sph
@@ -24,7 +24,7 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_ngSGS
 !!      subroutine cal_wide_nonlinear_grad_sph_SGS                      &
-!!     &         (sph, comms_sph, r_2nd, sph_MHD_bc, trans_p,           &
+!!     &         (sph, comms_sph, r_2nd, sph_MHD_bc, trans_p, gamma,    &
 !!     &          ipol, trns_MHD, WK_sph, rj_fld, trns_ngSGS,           &
 !!     &          SGS_mul_ngSGS)
 !!        type(sph_grids), intent(in) :: sph
@@ -46,10 +46,21 @@
       use m_precision
       use m_machine_parameter
 !
-      use t_spheric_rj_data
+      use t_spheric_parameter
+      use t_sph_trans_comm_tbl
+      use t_phys_address
       use t_phys_data
+      use t_addresses_sph_transform
+      use t_poloidal_rotation
+      use t_sph_trans_arrays_MHD
+      use t_schmidt_poly_on_rtm
+      use t_work_4_sph_trans
+      use t_sph_multi_FFTW
+      use t_sph_transforms
       use t_fdm_coefs
       use t_boundary_params_sph_MHD
+      use t_boundary_data_sph_MHD
+      use t_control_parameter
 !
       implicit none
 !
@@ -60,22 +71,24 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_nonlinear_gradient_sph_SGS                         &
-     &         (sph, comms_sph, r_2nd, sph_MHD_bc, trans_p,             &
-     &          ipol, trns_MHD, WK_sph, rj_fld, trns_ngSGS,             &
-     &          SGS_mul_ngSGS)
+     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop, trans_p,   &
+     &          gamma, ipol, trns_MHD, WK_sph, rj_fld, trns_ngSGS,      &
+     &          trns_SGS, SGS_mul_ngSGS)
 !
       use copy_rtp_vectors_4_grad
       use sph_transforms_4_SGS
       use cal_grad_of_sph_vectors
-      use nolinear_gradient_sph_MHD
+      use nolinear_gradient_terms_sph
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(in) :: trns_MHD
+      real(kind = kreal), intent(in) :: gamma(3)
 !
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
@@ -111,22 +124,24 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_wide_nonlinear_grad_sph_SGS                        &
-     &         (sph, comms_sph, r_2nd, sph_MHD_bc, trans_p,             &
-     &          ipol, trns_SGS, WK_sph, rj_fld, trns_ngDNMC,            &
-     &          SGS_mul_ngDNMC)
+     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop, trans_p,   &
+     &          gamma, ipol, trns_SGS, WK_sph, rj_fld, trns_ngDNMC,     &
+     &          trns_DYNS, SGS_mul_ngDNMC)
 !
       use copy_rtp_vectors_4_grad
       use sph_transforms_4_SGS
       use cal_grad_of_sph_vectors
-      use nolinear_gradient_sph_MHD
+      use nolinear_gradient_terms_sph
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(in) :: trns_SGS
+      real(kind = kreal), intent(in) :: gamma(3)
 !
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
@@ -144,7 +159,7 @@
      &    trns_ngDNMC%forward, WK_sph, SGS_mul_ngDNMC, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_filter_vecs_sph'
-      call overwrt_grad_filter_vecs_sph(sph%sph_rj, r_2nd,              &
+      call overwrt_grad_filter_vecs_sph(sph, r_2nd,                     &
      &    sph_MHD_bc, trans_p%leg, ipol, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'

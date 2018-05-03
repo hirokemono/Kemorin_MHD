@@ -1,5 +1,5 @@
-!>@file   nolinear_gradient_sph_MHD.f90
-!!@brief  module nolinear_gradient_sph_MHD
+!>@file   nolinear_gradient_terms_sph.f90
+!!@brief  module nolinear_gradient_terms_sph
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2009
@@ -28,14 +28,13 @@
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_DYNS
 !!@endverbatim
 !
-      module nolinear_gradient_sph_MHD
+      module nolinear_gradient_terms_sph
 !
       use m_precision
 !
       use m_constants
       use m_machine_parameter
 !
-      use t_SGS_control_parameter
       use t_control_parameter
       use t_spheric_parameter
       use t_spheric_rtp_data
@@ -232,4 +231,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module nolinear_gradient_sph_MHD
+      end module nolinear_gradient_terms_sph
