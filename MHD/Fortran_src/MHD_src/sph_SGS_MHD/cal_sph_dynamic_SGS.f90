@@ -70,10 +70,9 @@
 !
       use sph_transforms_4_SGS
       use cal_sph_rotation_of_SGS
-      use cal_SGS_terms_sph_MHD
-      use cal_filtered_sph_fields
       use product_model_coefs_sph
       use cal_dynamic_SGS_buoyancy
+      use scale_similarity_sph_SGS
 !
       integer(kind = kint), intent(in) :: i_step, i_step_sgs_coefs
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -95,39 +94,23 @@
       integer(kind = kint) :: istep_dynamic
 !
 !
-!   ----  Lead filtered forces for SGS terms
-      if (iflag_debug.ge.1) write(*,*)                                  &
-     &                    'cal_sph_base_filtering_fields'
-      call start_elapsed_time(81)
-      call cal_sph_base_filtering_fields                                &
-     &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(1), rj_fld)
-      if (iflag_debug.ge.1) write(*,*) 'cal_sph_base_filtering_forces'
-      call cal_sph_base_filtering_forces                                &
-     &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(1), rj_fld)
-      call end_elapsed_time(81)
-!
-      call start_elapsed_time(14)
-      if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD SGS'
-      call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_SIMI%backward, WK_sph, trns_SIMI%mul_FFTW)
-      call end_elapsed_time(14)
-!
-      call start_elapsed_time(15)
-      if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
-      call similarity_SGS_terms_rtp(sph%sph_rtp, MHD_prop,              &
-     &    trns_SIMI%b_trns, trns_SIMI%f_trns,                           &
-     &    trns_SIMI%backward, trns_SIMI%forward)
-      call end_elapsed_time(15)
-!
       istep_dynamic = mod(i_step, i_step_sgs_coefs)
-      if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-        if(iflag_debug .gt. 0) write(*,*) 'Dynamic model:',             &
+!
+      if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
+        call cal_scale_similarity_sph_SGS                               &
+     &     (sph, comms_sph, MHD_prop, trans_p, WK_sph,                  &
+     &      dynamic_SPH, ipol, rj_fld, trns_SIMI)
+!
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+          if(iflag_debug .gt. 0) write(*,*) 'Dynamic model:',           &
      &                      i_step, i_step_sgs_coefs, istep_dynamic
-        call start_elapsed_time(83)
-        if(istep_dynamic .eq. 0) then
-          call dynamic_SGS_by_pseudo_sph                                &
-     &       (SGS_param, sph, comms_sph, MHD_prop, trans_p,             &
-     &        trns_SIMI, trns_DYNS, WK_sph, dynamic_SPH, ipol, rj_fld)
+          call start_elapsed_time(83)
+          if(istep_dynamic .eq. 0) then
+            call dynamic_SGS_by_pseudo_sph                              &
+     &         (SGS_param, sph, comms_sph, MHD_prop, trans_p,           &
+     &          trns_SIMI, trns_DYNS, WK_sph, dynamic_SPH,              &
+     &          ipol, rj_fld)
+          end if
         end if
       end if
 !
