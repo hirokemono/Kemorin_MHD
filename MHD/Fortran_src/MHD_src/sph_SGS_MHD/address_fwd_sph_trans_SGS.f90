@@ -9,7 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine f_trans_vector_SGS_terms                             &
-!!     &         (ipol, itor, iphys, f_trns, trns_SGS)
+!!     &         (ipol, itor, iphys, f_trns, trns_fwd)
+!!      subroutine f_trans_address_SGS_works                            &
+!!     &         (ipol, itor, iphys, f_trns, trns_fwd)
 !!        type(phys_address), intent(in) :: ipol, itor, iphys
 !!        type(address_each_sph_trans), intent(inout) :: trns_fwd
 !!        type(phys_address), intent(inout) :: f_trns
@@ -69,6 +71,34 @@
      &    f_trns%i_SGS_c_flux, trns_fwd)
 !
       end subroutine f_trans_vector_SGS_terms
+!
+!-----------------------------------------------------------------------
+!
+      subroutine f_trans_address_SGS_works                              &
+     &         (ipol, itor, iphys, f_trns, trns_fwd)
+!
+      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(address_each_sph_trans), intent(inout) :: trns_fwd
+      type(phys_address), intent(inout) :: f_trns
+!
+!
+!   work of Reynolds stress
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_reynolds_wk, fhd_Reynolds_work, n_scalar,              &
+     &    ipol%i_reynolds_wk, itor%i_reynolds_wk,                       &
+     &    iphys%i_reynolds_wk, f_trns%i_reynolds_wk, trns_fwd)
+!   work of SGS buoyancy
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_SGS_buo_wk, fhd_SGS_buo_flux, n_scalar,                &
+     &    ipol%i_SGS_buo_wk, itor%i_SGS_buo_wk,                         &
+     &    iphys%i_SGS_buo_wk, f_trns%i_SGS_buo_wk, trns_fwd)
+!   work of SGS compositional buoyancy
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_SGS_comp_buo_wk, fhd_SGS_comp_buo_flux, n_scalar,      &
+     &    ipol%i_SGS_comp_buo_wk, itor%i_SGS_comp_buo_wk,               &
+     &    iphys%i_SGS_comp_buo_wk, f_trns%i_SGS_comp_buo_wk, trns_fwd)
+!
+      end subroutine f_trans_address_SGS_works
 !
 !-----------------------------------------------------------------------
 !

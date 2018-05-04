@@ -116,8 +116,8 @@
      &         (SPH_MHD, iphys, trns_DYNS,                              &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use address_bwd_sph_trans_dyns
-      use address_fwd_sph_trans_dyns
+      use address_bwd_sph_trans_SGS
+      use address_fwd_sph_trans_SGS
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(phys_address), intent(in) :: iphys
@@ -133,20 +133,35 @@
      &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      call b_trans_address_vector_DYNS(SPH_MHD%ipol, SPH_MHD%itor,      &
+      trns_DYNS%backward%nfield = 0
+      call alloc_sph_trns_field_name(trns_DYNS%backward)
+!
+      call b_trans_vector_wide_similarity(SPH_MHD%ipol, SPH_MHD%itor,   &
      &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
-      call b_trans_address_scalar_DYNS(SPH_MHD%ipol, SPH_MHD%itor,      &
+      call b_trans_vector_filtered_SGS(SPH_MHD%ipol, SPH_MHD%itor,      &
      &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
+      trns_DYNS%backward%num_vector = trns_DYNS%backward%nfield
+!
+      call b_trans_scalar_wide_similarity(SPH_MHD%ipol, SPH_MHD%itor,   &
+     &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
+      trns_DYNS%backward%num_scalar = trns_DYNS%backward%nfield         &
+     &                               - trns_DYNS%backward%num_vector
       trns_DYNS%backward%num_tensor = 0
+!
 !
      if(iflag_debug .gt. 0) then
         write(*,*) 'Address for forward transform: ',                   &
      &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      call f_trans_address_vector_DYNS(trns_DYNS%forward)
-      call f_trans_address_scalar_DYNS(SPH_MHD%ipol, SPH_MHD%itor,      &
+      trns_DYNS%forward%nfield = 0
+      call alloc_sph_trns_field_name(trns_DYNS%forward)
+!
+      trns_DYNS%forward%num_vector = 0
+      call f_trans_address_SGS_works(SPH_MHD%ipol, SPH_MHD%itor,        &
      &    iphys, trns_DYNS%f_trns, trns_DYNS%forward)
+      trns_DYNS%forward%num_scalar = trns_DYNS%forward%nfield           &
+     &                              - trns_DYNS%forward%num_vector
       trns_DYNS%forward%num_tensor = 0
 !
       call count_num_fields_each_trans(trns_DYNS%backward,              &
