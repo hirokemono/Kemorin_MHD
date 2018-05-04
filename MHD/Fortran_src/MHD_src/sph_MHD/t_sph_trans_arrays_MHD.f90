@@ -88,10 +88,10 @@
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
 !
-      call dealloc_nonlinear_pole(WK%trns_snap)
-      call dealloc_nonlinear_pole(WK%trns_Csim)
       call dealloc_nonlinear_pole(WK%trns_DYNS)
       call dealloc_nonlinear_pole(WK%trns_SGS)
+      call dealloc_nonlinear_pole(WK%trns_snap)
+      call dealloc_nonlinear_pole(WK%trns_MHD)
 !
       call dealloc_nonlinear_data(WK%trns_tmp)
       call dealloc_nonlinear_data(WK%trns_Csim)
