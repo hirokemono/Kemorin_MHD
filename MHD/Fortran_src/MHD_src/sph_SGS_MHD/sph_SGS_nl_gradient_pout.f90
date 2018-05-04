@@ -115,24 +115,24 @@
             db3_dx3 = grad_bz(inod,3)                                   &
      &           + (b_rtp(inod,2)*cot_t(lt) - b_rtp(inod,1)) * a_r(kr)
 !
-            d_SGS(inod,1) = gamma_r * (du2_dx1 * db3_dx1                &
-     &                                - du3_dx1 * db2_dx1)              &
-     &                   +  gamma_t * (du2_dx2 * db3_dx2                &
-     &                                - du3_dx2 * db2_dx2)              &
-     &                   +  gamma_p * (du2_dx3 * db3_dx3                &
-     &                                - du3_dx3 * db2_dx3)
-            d_SGS(inod,2) = gamma_r * (du3_dx1 * db1_dx1                &
-     &                                - du1_dx1 * db3_dx1)              &
-     &                   +  gamma_t * (du3_dx2 * db1_dx2                &
-     &                                - du1_dx2 * db3_dx2)              &
-     &                   +  gamma_p * (du3_dx3 * db1_dx3                &
-     &                                - du1_dx3 * db3_dx3)
-            d_SGS(inod,3) = gamma_r * (du1_dx1 * db2_dx1                &
-     &                                - du2_dx1 * db1_dx1)              &
-     &                   +  gamma_t * (du1_dx2 * db2_dx2                &
-     &                                - du2_dx2 * db1_dx2)              &
-     &                   +  gamma_p * (du1_dx3 * db2_dx3                &
-     &                                - du2_dx3 * db1_dx3)
+!            d_SGS(inod,1) = gamma_r * (du2_dx1 * db3_dx1               &
+!     &                                - du3_dx1 * db2_dx1)             &
+!     &                   +  gamma_t * (du2_dx2 * db3_dx2               &
+!     &                                - du3_dx2 * db2_dx2)             &
+!     &                   +  gamma_p * (du2_dx3 * db3_dx3               &
+!     &                                - du3_dx3 * db2_dx3)
+!            d_SGS(inod,2) = gamma_r * (du3_dx1 * db1_dx1               &
+!     &                                - du1_dx1 * db3_dx1)             &
+!     &                   +  gamma_t * (du3_dx2 * db1_dx2               &
+!     &                                - du1_dx2 * db3_dx2)             &
+!     &                   +  gamma_p * (du3_dx3 * db1_dx3               &
+!     &                                - du1_dx3 * db3_dx3)
+!            d_SGS(inod,3) = gamma_r * (du1_dx1 * db2_dx1               &
+!     &                                - du2_dx1 * db1_dx1)             &
+!     &                   +  gamma_t * (du1_dx2 * db2_dx2               &
+!     &                                - du2_dx2 * db1_dx2)             &
+!     &                   +  gamma_p * (du1_dx3 * db2_dx3               &
+!     &                                - du2_dx3 * db1_dx3)
           end do
         end do
       end do

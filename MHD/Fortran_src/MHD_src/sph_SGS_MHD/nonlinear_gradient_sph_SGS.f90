@@ -116,7 +116,6 @@
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
      &    rj_fld, trns_ngTMP%backward, WK_sph, trns_ngTMP%mul_FFTW)
       call calypso_mpi_barrier
-      return
 !
       if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
       call nl_gradient_SGS_terms_rtp                                    &

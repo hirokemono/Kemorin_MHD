@@ -215,11 +215,17 @@
       end do
 !
       filter_mom(0) = one
-      do i = 1, num_momentum-2, 2
+      filter_mom(1) = zero
+!      filter_mom(2) = pi * f_width**2 / 12.0d0                         &
+!     &               * (dble(l_truncation*ithree / itwo))**(-2)
+      filter_mom(2) = f_width**2 / 12.0d0 
+      do i = 3, num_momentum-2, 2
         filter_mom(i) = zero
         filter_mom(i+1) =   real(2*i-1) * filter_mom(i-1) * b**i
       end do
       filter_mom(0:num_momentum-1) = filter_mom**2
+!
+      write(*,*) 'Gaussian filter moments for for sphere:', filter_mom
 !
       end subroutine set_sph_gaussian_filter
 !
