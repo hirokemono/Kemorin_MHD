@@ -8,9 +8,9 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine b_trans_address_vector_SGS                           &
+!!      subroutine b_trans_vector_similarity                            &
 !!     &         (ipol, itor, iphys, b_trns, trns_back)
-!!      subroutine b_trans_address_scalar_SGS                           &
+!!      subroutine b_trans_scalar_similarity                            &
 !!     &         (ipol, itor, iphys, b_trns, trns_back)
 !!        type(phys_address), intent(in) :: ipol, itor, iphys
 !!        type(address_each_sph_trans), intent(inout) :: trns_back
@@ -36,16 +36,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_address_vector_SGS                             &
+      subroutine b_trans_vector_similarity                              &
      &         (ipol, itor, iphys, b_trns, trns_back)
 !
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_back
       type(phys_address), intent(inout) :: b_trns
 !
-!
-      trns_back%nfield = 0
-      call alloc_sph_trns_field_name(trns_back)
 !
 !   filtered velocity
       call add_field_name_4_sph_trns                                    &
@@ -93,13 +90,12 @@
      &   (ipol%i_SGS_c_flux, fhd_SGS_c_flux, n_vector,                  &
      &    ipol%i_SGS_c_flux, itor%i_SGS_c_flux, iphys%i_SGS_c_flux,     &
      &    b_trns%i_SGS_c_flux, trns_back)
-      trns_back%num_vector = trns_back%nfield
 !
-      end subroutine b_trans_address_vector_SGS
+      end subroutine b_trans_vector_similarity
 !
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_address_scalar_SGS                             &
+      subroutine b_trans_scalar_similarity                              &
      &         (ipol, itor, iphys, b_trns, trns_back)
 !
       type(phys_address), intent(in) :: ipol, itor, iphys
@@ -117,9 +113,8 @@
      &   (ipol%i_filter_comp, fhd_filter_comp, n_scalar,                &
      &    ipol%i_filter_comp, itor%i_filter_comp, iphys%i_filter_comp,  &
      &    b_trns%i_filter_comp, trns_back)
-      trns_back%num_scalar = trns_back%nfield - trns_back%num_vector
 !
-      end subroutine b_trans_address_scalar_SGS
+      end subroutine b_trans_scalar_similarity
 !
 !-----------------------------------------------------------------------
 !

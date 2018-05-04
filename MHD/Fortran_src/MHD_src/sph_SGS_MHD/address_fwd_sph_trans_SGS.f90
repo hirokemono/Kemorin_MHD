@@ -8,9 +8,8 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine f_trans_address_vector_SGS                           &
+!!      subroutine f_trans_vector_SGS_terms                             &
 !!     &         (ipol, itor, iphys, f_trns, trns_SGS)
-!!      subroutine f_trans_address_scalar_SGS(trns_fwd)
 !!        type(phys_address), intent(in) :: ipol, itor, iphys
 !!        type(address_each_sph_trans), intent(inout) :: trns_fwd
 !!        type(phys_address), intent(inout) :: f_trns
@@ -35,16 +34,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_vector_SGS                             &
+      subroutine f_trans_vector_SGS_terms                               &
      &         (ipol, itor, iphys, f_trns, trns_fwd)
 !
       type(phys_address), intent(in) :: ipol, itor, iphys
       type(address_each_sph_trans), intent(inout) :: trns_fwd
       type(phys_address), intent(inout) :: f_trns
 !
-!
-      trns_fwd%nfield = 0
-      call alloc_sph_trns_field_name(trns_fwd)
 !
 !   SGS advection flag
       call add_field_name_4_sph_trns                                    &
@@ -71,22 +67,8 @@
      &   (ipol%i_SGS_c_flux, fhd_SGS_c_flux, n_vector,                  &
      &    ipol%i_SGS_c_flux, itor%i_SGS_c_flux, iphys%i_SGS_c_flux,     &
      &    f_trns%i_SGS_c_flux, trns_fwd)
-      trns_fwd%num_vector = trns_fwd%nfield
 !
-      end subroutine f_trans_address_vector_SGS
-!
-!-----------------------------------------------------------------------
-!
-      subroutine f_trans_address_scalar_SGS(trns_fwd)
-!
-!      type(phys_address), intent(in) :: ipol, itor, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
-!      type(phys_address), intent(inout) :: f_trns
-!
-!
-      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
-!
-      end subroutine f_trans_address_scalar_SGS
+      end subroutine f_trans_vector_SGS_terms
 !
 !-----------------------------------------------------------------------
 !

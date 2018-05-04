@@ -84,7 +84,7 @@
       call set_addresses_trans_sph_MHD                                  &
      &   (SPH_model%MHD_prop, SPH_MHD, iphys, WK%trns_MHD,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_trans_sph_SGS(SPH_MHD, iphys, WK%trns_SGS,     &
+      call init_sph_trns_fld_similarity(SPH_MHD, iphys, WK%trns_SGS,    &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_DYNS(SPH_MHD, iphys, WK%trns_DYNS,   &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
