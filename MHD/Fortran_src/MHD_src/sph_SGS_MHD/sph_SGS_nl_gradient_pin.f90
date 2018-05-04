@@ -9,16 +9,16 @@
 !!@verbatim
 !!      subroutine sph_SGS_induct_nl_gradient_pin                       &
 !!     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,             &
-!!     &          r_moments, sph_moments, coef,                         &
+!!     &          r_moments, sph_moments, coef, kr_in, kr_out,          &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz,                     &
 !!     &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
 !!      subroutine sph_SGS_s_flux_nl_gradient_pin                       &
 !!     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,             &
-!!     &          r_moments, sph_moments, coef,                         &
+!!     &          r_moments, sph_moments, coef, kr_in, kr_out,          &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz, grad_s, d_SGS)
 !!      subroutine sph_SGS_m_flux_nl_gradient_pin                       &
 !!     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,             &
-!!     &          r_moments, sph_moments, coef,                         &
+!!     &          r_moments, sph_moments, coef, kr_in, kr_out,          &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz, d_SGS)
 !!@endverbatim
 !
@@ -37,11 +37,12 @@
 !
       subroutine sph_SGS_induct_nl_gradient_pin                         &
      &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,               &
-     &          r_moments, sph_moments, coef,                           &
+     &          r_moments, sph_moments, coef, kr_in, kr_out,            &
      &          u_rtp, grad_ux, grad_uy, grad_uz,                       &
      &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
 !
       type(sph_filter_moment), intent(in) :: r_moments, sph_moments
+      integer(kind = kint), intent(in)  :: kr_in, kr_out
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
@@ -77,7 +78,19 @@
 !
 !$omp  parallel private(kr,lt,gamma_r,gamma_t,gamma_p)
       do lt = 1, nidx_rtp(2)
-        do kr = 1, nidx_rtp(1)
+        do kr = 1, kr_in-1
+!$omp do private(mp,inod)
+          do mp = 1, nidx_rtp(3)
+            inod = kr + (lt-1)*nidx_rtp(1)                              &
+     &                 + (mp-1)*nidx_rtp(1)*nidx_rtp(2)
+            d_SGS(inod,1) = zero
+            d_SGS(inod,2) = zero
+            d_SGS(inod,3) = zero
+          end do
+!$omp end do nowait
+        end do
+!
+        do kr = kr_in, kr_out
           gamma_r = coef * r_moments%filter_mom(2)
           gamma_t = coef * sph_moments%filter_mom(2)                    &
      &                   * (r(kr))**2
@@ -136,6 +149,18 @@
           end do
 !$omp end do nowait
         end do
+!
+        do kr = kr_out+1, nidx_rtp(1)
+!$omp do private(mp,inod)
+          do mp = 1, nidx_rtp(3)
+            inod = kr + (lt-1)*nidx_rtp(1)                              &
+     &                 + (mp-1)*nidx_rtp(1)*nidx_rtp(2)
+            d_SGS(inod,1) = zero
+            d_SGS(inod,2) = zero
+            d_SGS(inod,3) = zero
+          end do
+!$omp end do nowait
+        end do
       end do
 !$omp end parallel
 !
@@ -145,10 +170,11 @@
 !
       subroutine sph_SGS_s_flux_nl_gradient_pin                         &
      &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,               &
-     &          r_moments, sph_moments, coef,                           &
+     &          r_moments, sph_moments, coef, kr_in, kr_out,            &
      &          u_rtp, grad_ux, grad_uy, grad_uz, grad_s, d_SGS)
 !
       type(sph_filter_moment), intent(in) :: r_moments, sph_moments
+      integer(kind = kint), intent(in)  :: kr_in, kr_out
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
@@ -176,7 +202,19 @@
 !
 !$omp  parallel private(kr,lt,gamma_r,gamma_t,gamma_p)
       do lt = 1, nidx_rtp(2)
-        do kr = 1, nidx_rtp(1)
+        do kr = 1, kr_in-1
+!$omp do private(mp,inod)
+          do mp = 1, nidx_rtp(3)
+            inod = kr + (lt-1)*nidx_rtp(1)                              &
+     &                 + (mp-1)*nidx_rtp(1)*nidx_rtp(2)
+            d_SGS(inod,1) = zero
+            d_SGS(inod,2) = zero
+            d_SGS(inod,3) = zero
+          end do
+!$omp end do nowait
+        end do
+!
+        do kr = kr_in, kr_out
           gamma_r = coef * r_moments%filter_mom(2)
           gamma_t = coef * sph_moments%filter_mom(2)                    &
      &                   * (r(kr))**2
@@ -217,6 +255,18 @@
           end do
 !$omp end do nowait
         end do
+!
+        do kr = kr_out+1, nidx_rtp(1)
+!$omp do private(mp,inod)
+          do mp = 1, nidx_rtp(3)
+            inod = kr + (lt-1)*nidx_rtp(1)                              &
+     &                 + (mp-1)*nidx_rtp(1)*nidx_rtp(2)
+            d_SGS(inod,1) = zero
+            d_SGS(inod,2) = zero
+            d_SGS(inod,3) = zero
+          end do
+!$omp end do nowait
+        end do
       end do
 !$omp end parallel
 !
@@ -226,10 +276,11 @@
 !
       subroutine sph_SGS_m_flux_nl_gradient_pin                         &
      &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,               &
-     &          r_moments, sph_moments, coef,                           &
+     &          r_moments, sph_moments, coef, kr_in, kr_out,            &
      &          u_rtp, grad_ux, grad_uy, grad_uz, d_SGS)
 !
       type(sph_filter_moment), intent(in) :: r_moments, sph_moments
+      integer(kind = kint), intent(in)  :: kr_in, kr_out
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
@@ -254,7 +305,19 @@
 !
 !$omp  parallel private(kr,lt,gamma_r,gamma_t,gamma_p)
       do lt = 1, nidx_rtp(2)
-        do kr = 1, nidx_rtp(1)
+        do kr = 1, kr_in-1
+!$omp do private(mp,inod)
+          do mp = 1, nidx_rtp(3)
+            inod = kr + (lt-1)*nidx_rtp(1)                              &
+     &                 + (mp-1)*nidx_rtp(1)*nidx_rtp(2)
+            d_SGS(inod,1) = zero
+            d_SGS(inod,2) = zero
+            d_SGS(inod,3) = zero
+          end do
+!$omp end do nowait
+        end do
+!
+        do kr = kr_in, kr_out
           gamma_r = coef * r_moments%filter_mom(2)
           gamma_t = coef * sph_moments%filter_mom(2)                    &
      &                   * (r(kr))**2
@@ -296,6 +359,18 @@
             d_SGS(inod,6) = gamma_r * (du3_dx1 * du3_dx1)               &
      &                   +  gamma_t * (du3_dx2 * du3_dx2)               &
      &                   +  gamma_p * (du3_dx3 * du3_dx3)
+          end do
+!$omp end do nowait
+        end do
+!
+        do kr = kr_out+1, nidx_rtp(1)
+!$omp do private(mp,inod)
+          do mp = 1, nidx_rtp(3)
+            inod = kr + (lt-1)*nidx_rtp(1)                              &
+     &                 + (mp-1)*nidx_rtp(1)*nidx_rtp(2)
+            d_SGS(inod,1) = zero
+            d_SGS(inod,2) = zero
+            d_SGS(inod,3) = zero
           end do
 !$omp end do nowait
         end do

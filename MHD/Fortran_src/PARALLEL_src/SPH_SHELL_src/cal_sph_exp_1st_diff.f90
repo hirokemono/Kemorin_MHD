@@ -75,9 +75,9 @@
         j = mod((inod-1),nidx_rj(2)) + 1
         k = 1 + (inod- j) / nidx_rj(2)
 !
-        d1sdr =  d1nod_mat_fdm_2(k,-1) * d_rj(i_n1,is_fld)              &
-     &         + d1nod_mat_fdm_2(k, 0) * d_rj(inod,is_fld)              &
-     &         + d1nod_mat_fdm_2(k, 1) * d_rj(i_p1,is_fld)
+        d1sdr =  d1nod_mat_fdm_2(k,-1) * d_rj(i_n1,is_grad+1)           &
+     &         + d1nod_mat_fdm_2(k, 0) * d_rj(inod,is_grad+1)           &
+     &         + d1nod_mat_fdm_2(k, 1) * d_rj(i_p1,is_grad+1)
 !
         d_rj(inod,is_grad  ) = d1sdr * g_sph_rj(j,13)                   &
      &                       * radius_1d_rj_r(k)**2

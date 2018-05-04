@@ -119,7 +119,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
       call nl_gradient_SGS_terms_rtp                                    &
-     &   (sph, dynamic_SPH%sph_filters(1), MHD_prop,                    &
+     &   (sph, dynamic_SPH%sph_filters(1), MHD_prop, sph_MHD_bc,        &
      &    trns_MHD%b_trns, trns_ngTMP%b_trns, trns_SGS%f_trns,          &
      &    trns_MHD%backward, trns_ngTMP%backward, trns_SGS%forward)
       call calypso_mpi_barrier
@@ -176,7 +176,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
       call wider_nl_grad_SGS_rtp                                        &
-     &   (sph, dynamic_SPH%sph_filters(2), MHD_prop,                    &
+     &   (sph, dynamic_SPH%sph_filters(2), MHD_prop, sph_MHD_bc,        &
      &    trns_SIMI%b_trns, trns_DYNS%b_trns, trns_Csim%b_trns,         &
      &    trns_SIMI%backward, trns_DYNS%backward, trns_Csim%backward)
       call calypso_mpi_barrier

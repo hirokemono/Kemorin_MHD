@@ -104,9 +104,9 @@
         i_p1 = inod + jmax
         i_p2 = i_p1 + jmax
 !
-        d1s_dr1 =  fdm2_fix_fld_ICB( 0,2) * d_rj(inod,is_fld)           &
-     &           + fdm2_fix_fld_ICB( 1,2) * d_rj(i_p1,is_fld)           &
-     &           + fdm2_fix_fld_ICB( 2,2) * d_rj(i_p2,is_fld)
+        d1s_dr1 =  fdm2_fix_fld_ICB( 0,2) * d_rj(inod,is_grad+1)        &
+     &           + fdm2_fix_fld_ICB( 1,2) * d_rj(i_p1,is_grad+1)        &
+     &           + fdm2_fix_fld_ICB( 2,2) * d_rj(i_p2,is_grad+1)
 !
         d_rj(inod,is_grad  ) = d1s_dr1 * g_sph_rj(j,13) * r_ICB(0)**2
       end do
@@ -268,9 +268,9 @@
         i_n1 = inod - jmax
         i_n2 = i_n1 - jmax
 !
-        d1s_dr1 =  fdm2_fix_fld_CMB(2,2) * d_rj(i_n2,is_fld)            &
-     &           + fdm2_fix_fld_CMB(1,2) * d_rj(i_n1,is_fld)            &
-     &           + fdm2_fix_fld_CMB(0,2) * d_rj(inod,is_fld)
+        d1s_dr1 =  fdm2_fix_fld_CMB(2,2) * d_rj(i_n2,is_grad+1)         &
+     &           + fdm2_fix_fld_CMB(1,2) * d_rj(i_n1,is_grad+1)         &
+     &           + fdm2_fix_fld_CMB(0,2) * d_rj(inod,is_grad+1)
 !
         d_rj(inod,is_grad  ) = d1s_dr1 * g_sph_rj(j,13) * r_CMB(0)**2
       end do
