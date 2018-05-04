@@ -9,13 +9,13 @@
 !!@verbatim
 !!      subroutine cal_scale_similarity_sph_SGS                         &
 !!     &         (sph, comms_sph, MHD_prop, trans_p, WK_sph,            &
-!!     &          dynamic_SPH, ipol, rj_fld, trns_SGS)
+!!     &          dynamic_SPH, ipol, rj_fld, trns_SIMI)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(address_4_sph_trans), intent(inout) :: trns_SIMI
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -54,7 +54,7 @@
 !
       subroutine cal_scale_similarity_sph_SGS                           &
      &         (sph, comms_sph, MHD_prop, trans_p, WK_sph,              &
-     &          dynamic_SPH, ipol, rj_fld, trns_SGS)
+     &          dynamic_SPH, ipol, rj_fld, trns_SIMI)
 !
       use sph_transforms_4_SGS
       use cal_SGS_terms_sph_MHD
@@ -67,7 +67,7 @@
       type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
       type(phys_address), intent(in) :: ipol
 !
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(address_4_sph_trans), intent(inout) :: trns_SIMI
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -86,14 +86,14 @@
       call start_elapsed_time(14)
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD SGS'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_SGS%backward, WK_sph, trns_SGS%mul_FFTW)
+     &    rj_fld, trns_SIMI%backward, WK_sph, trns_SIMI%mul_FFTW)
       call end_elapsed_time(14)
 !
       call start_elapsed_time(15)
       if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
       call similarity_SGS_terms_rtp(sph%sph_rtp, MHD_prop,              &
-     &    trns_SGS%b_trns, trns_SGS%f_trns,                             &
-     &    trns_SGS%backward, trns_SGS%forward)
+     &    trns_SIMI%b_trns, trns_SIMI%f_trns,                           &
+     &    trns_SIMI%backward, trns_SIMI%forward)
       call end_elapsed_time(15)
 !
       end subroutine cal_scale_similarity_sph_SGS

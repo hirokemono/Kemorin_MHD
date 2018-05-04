@@ -14,7 +14,7 @@
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(phys_address), intent(in) :: iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_SIMI
-!!      subroutine set_addresses_trans_sph_DYNS                         &
+!!      subroutine init_sph_trns_fld_dyn_simi                           &
 !!     &         (SPH_MHD, iphys, trns_DYNS,                            &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
@@ -112,7 +112,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_trans_sph_DYNS                           &
+      subroutine init_sph_trns_fld_dyn_simi                             &
      &         (SPH_MHD, iphys, trns_DYNS,                              &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
@@ -178,7 +178,7 @@
         write(*,*) 'nscalar_rtp_2_rj ', trns_DYNS%forward%num_scalar
       end if
 !
-      end subroutine set_addresses_trans_sph_DYNS
+      end subroutine init_sph_trns_fld_dyn_simi
 !
 !-----------------------------------------------------------------------
 !

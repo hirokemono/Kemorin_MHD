@@ -7,8 +7,8 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine nl_gradient_SGS_terms_rtp(sph, gamma, MHD_prop,    &
-!!     &          b_trns, bn_trns, fg_trns, trns_b_MHD, trns_b_NLGD,  &
+!!      subroutine nl_gradient_SGS_terms_rtp(sph, sph_filters, MHD_prop,&
+!!     &          b_trns, bn_trns, fg_trns, trns_b_MHD, trns_b_NLGD,    &
 !!     &          trns_f_SGS)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -17,8 +17,8 @@
 !!        type(address_each_sph_trans), intent(in) :: trns_b_NLGD
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !!
-!!      subroutine wider_nl_grad_SGS_rtp(sph, gamma, MHD_prop,        &
-!!     &          bg_trns, bd_trns, fd_trns, trns_b_SGS, trns_b_DYNG, &
+!!      subroutine wider_nl_grad_SGS_rtp(sph, wide_filters, MHD_prop,   &
+!!     &          bg_trns, bd_trns, fd_trns, trns_b_SGS, trns_b_DYNG,   &
 !!     &          trns_f_DYNS)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -40,6 +40,7 @@
       use t_spheric_rtp_data
       use t_phys_address
       use t_addresses_sph_transform
+      use t_sph_filtering_data
 !
       implicit none
 !
@@ -60,13 +61,13 @@
 !!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{T}} @f$, and
 !!      @f$ e_{ijk}\overline{\tilde{u}_{j} \tilde{C}}
 !!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{C}} @f$,
-      subroutine nl_gradient_SGS_terms_rtp(sph, gamma, MHD_prop,        &
+      subroutine nl_gradient_SGS_terms_rtp(sph, sph_filters, MHD_prop,  &
      &          b_trns, bn_trns, fg_trns, trns_b_MHD, trns_b_NLGD,      &
      &          trns_f_SGS)
 !
       use sel_sph_SGS_nl_gradient
 !
-      real(kind = kreal), intent(in) :: gamma(3)
+      type(sph_filters_type), intent(in) :: sph_filters
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: b_trns, bn_trns, fg_trns
@@ -78,7 +79,7 @@
 !$omp parallel
       if(fg_trns%i_SGS_inertia .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, gamma, MHD_prop%fl_prop%coef_velo,             &
+     &     (sph%sph_rtp, sph_filters, MHD_prop%fl_prop%coef_velo,       &
      &      b_trns%i_vort, b_trns%i_velo,                               &
      &      trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,                       &
      &      bn_trns%i_grad_wx, bn_trns%i_grad_wy, bn_trns%i_grad_wz,    &
@@ -90,7 +91,7 @@
 !
       if(fg_trns%i_SGS_Lorentz .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, gamma, MHD_prop%fl_prop%coef_lor,              &
+     &     (sph%sph_rtp, sph_filters, MHD_prop%fl_prop%coef_lor,        &
      &      b_trns%i_current, b_trns%i_magne,                           &
      &      trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,                       &
      &      bn_trns%i_grad_jx, bn_trns%i_grad_jy, bn_trns%i_grad_jz,    &
@@ -102,7 +103,7 @@
 !
       if(fg_trns%i_SGS_vp_induct .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, gamma, MHD_prop%cd_prop%coef_induct,           &
+     &     (sph%sph_rtp, sph_filters, MHD_prop%cd_prop%coef_induct,     &
      &      b_trns%i_velo, b_trns%i_magne,                              &
      &      trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,                       &
      &      bn_trns%i_grad_vx, bn_trns%i_grad_vy, bn_trns%i_grad_vz,    &
@@ -114,7 +115,7 @@
 !
       if(fg_trns%i_SGS_h_flux .gt. 0) then
         call sel_SGS_s_flux_nl_gradient                                 &
-     &     (sph%sph_rtp, gamma, MHD_prop%ht_prop%coef_advect,           &
+     &     (sph%sph_rtp, sph_filters, MHD_prop%ht_prop%coef_advect,     &
      &      b_trns%i_velo, trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,        &
      &      bn_trns%i_grad_vx, bn_trns%i_grad_vy, bn_trns%i_grad_vz,    &
      &      bn_trns%i_grad_t, trns_b_NLGD%ncomp, trns_b_NLGD%fld_rtp,   &
@@ -123,7 +124,7 @@
 !
       if(fg_trns%i_SGS_c_flux .gt. 0) then
         call sel_SGS_s_flux_nl_gradient                                 &
-     &     (sph%sph_rtp, gamma, MHD_prop%cp_prop%coef_advect,           &
+     &     (sph%sph_rtp, sph_filters, MHD_prop%cp_prop%coef_advect,     &
      &      b_trns%i_velo, trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,        &
      &      bn_trns%i_grad_vx, bn_trns%i_grad_vy, bn_trns%i_grad_vz,    &
      &      bn_trns%i_grad_composit,                                    &
@@ -147,13 +148,13 @@
 !!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{T}} @f$, and
 !!      @f$ e_{ijk}\overline{\tilde{u}_{j} \tilde{C}}
 !!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{C}} @f$,
-      subroutine wider_nl_grad_SGS_rtp(sph, gamma, MHD_prop,            &
+      subroutine wider_nl_grad_SGS_rtp(sph, wide_filters, MHD_prop,     &
      &          bg_trns, bd_trns, fd_trns, trns_b_SGS, trns_b_DYNG,     &
      &          trns_f_DYNS)
 !
       use sel_sph_SGS_nl_gradient
 !
-      real(kind = kreal), intent(in) :: gamma(3)
+      type(sph_filters_type), intent(in) :: wide_filters
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: bg_trns, bd_trns, fd_trns
@@ -165,7 +166,7 @@
 !$omp parallel
       if(fd_trns%i_wide_SGS_inertia .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, gamma, MHD_prop%fl_prop%coef_velo,             &
+     &     (sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_velo,      &
      &      bg_trns%i_filter_vort, bg_trns%i_filter_velo,               &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%i_grad_filter_wx, bd_trns%i_grad_filter_wy,         &
@@ -178,7 +179,7 @@
 !
       if(fd_trns%i_wide_SGS_Lorentz .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, gamma, MHD_prop%fl_prop%coef_lor,              &
+     &     (sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_lor,       &
      &      bg_trns%i_filter_current, bg_trns%i_filter_magne,           &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%i_grad_filter_jx, bd_trns%i_grad_filter_jy,         &
@@ -191,7 +192,7 @@
 !
       if(fd_trns%i_wide_SGS_vp_induct .gt. 0) then
         call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, gamma, MHD_prop%cd_prop%coef_induct,           &
+     &     (sph%sph_rtp, wide_filters, MHD_prop%cd_prop%coef_induct,    &
      &      bg_trns%i_filter_velo, bg_trns%i_filter_magne,              &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%i_grad_filter_vx, bd_trns%i_grad_filter_vy,         &
@@ -204,7 +205,7 @@
 !
       if(fd_trns%i_wide_SGS_h_flux .gt. 0) then
         call sel_SGS_s_flux_nl_gradient                                 &
-     &     (sph%sph_rtp, gamma, MHD_prop%ht_prop%coef_advect,           &
+     &     (sph%sph_rtp, wide_filters, MHD_prop%ht_prop%coef_advect,    &
      &      bg_trns%i_filter_velo,                                      &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%i_grad_filter_vx, bd_trns%i_grad_filter_vy,         &
@@ -216,7 +217,7 @@
 !
       if(fd_trns%i_wide_SGS_c_flux .gt. 0) then
         call sel_SGS_s_flux_nl_gradient                                 &
-     &     (sph%sph_rtp, gamma, MHD_prop%cp_prop%coef_advect,           &
+     &     (sph%sph_rtp, wide_filters, MHD_prop%cp_prop%coef_advect,    &
      &      bg_trns%i_filter_velo,                                      &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns%i_grad_filter_vx, bd_trns%i_grad_filter_vy,         &

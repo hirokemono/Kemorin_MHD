@@ -65,14 +65,15 @@
 !
       subroutine SGS_by_pseudo_sph(i_step, i_step_sgs_coefs,            &
      &          SGS_param, sph, comms_sph, r_2nd, MHD_prop,             &
-     &          sph_MHD_bc, trans_p, trns_MHD, trns_SIMI, trns_DYNS,    &
-     &          WK_sph, dynamic_SPH, ipol, itor, rj_fld)
+     &          sph_MHD_bc, trans_p, trns_MHD, trns_SGS, trns_DYNS,     &
+     &          trns_ngTMP, WK_sph, dynamic_SPH, ipol, itor, rj_fld)
 !
       use sph_transforms_4_SGS
       use cal_sph_rotation_of_SGS
       use product_model_coefs_sph
       use cal_dynamic_SGS_buoyancy
       use scale_similarity_sph_SGS
+      use nonlinear_gradient_sph_SGS
 !
       integer(kind = kint), intent(in) :: i_step, i_step_sgs_coefs
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -85,8 +86,9 @@
       type(phys_address), intent(in) :: ipol, itor
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(address_4_sph_trans), intent(inout) :: trns_SIMI
+      type(address_4_sph_trans), intent(inout) :: trns_SGS
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
+      type(address_4_sph_trans), intent(inout) :: trns_ngTMP
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
@@ -99,7 +101,7 @@
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
         call cal_scale_similarity_sph_SGS                               &
      &     (sph, comms_sph, MHD_prop, trans_p, WK_sph,                  &
-     &      dynamic_SPH, ipol, rj_fld, trns_SIMI)
+     &      dynamic_SPH, ipol, rj_fld, trns_SGS)
 !
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           if(iflag_debug .gt. 0) write(*,*) 'Dynamic model:',           &
@@ -108,19 +110,26 @@
           if(istep_dynamic .eq. 0) then
             call dynamic_SGS_by_pseudo_sph                              &
      &         (SGS_param, sph, comms_sph, MHD_prop, trans_p,           &
-     &          trns_SIMI, trns_DYNS, WK_sph, dynamic_SPH,              &
+     &          trns_SGS, trns_DYNS, WK_sph, dynamic_SPH,               &
      &          ipol, rj_fld)
           end if
         end if
+      else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
+        if (iflag_debug.eq.1) write(*,*)                                &
+     &                'cal_nonlinear_gradient_sph_SGS'
+        call cal_nonlinear_gradient_sph_SGS                             &
+     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop, trans_p,   &
+     &          dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld,            &
+     &          trns_ngTMP, trns_SGS)
       end if
 !
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
         if (iflag_debug.eq.1) write(*,*) 'product_model_coefs_4_sph'
         call product_model_coefs_4_sph(SGS_param, sph%sph_rtp,          &
-     &      trns_SIMI%f_trns, trns_SIMI%forward, dynamic_SPH)
+     &      trns_SGS%f_trns, trns_SGS%forward, dynamic_SPH)
       else
         call prod_fixed_sph_SGS_Csim(SGS_param, sph%sph_rtp,            &
-     &      dynamic_SPH%ifld_sgs, trns_SIMI%f_trns, trns_SIMI%forward)
+     &      dynamic_SPH%ifld_sgs, trns_SGS%f_trns, trns_SGS%forward)
       end if
       call end_elapsed_time(15)
 !
@@ -128,7 +137,7 @@
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none                   &
      &  .and. istep_dynamic .eq. 0) then
         call dynamic_buo_SGS_by_pseudo_sph(SGS_param, sph, comms_sph,   &
-     &      MHD_prop, trans_p, trns_MHD, trns_SIMI, trns_DYNS,          &
+     &      MHD_prop, trans_p, trns_MHD, trns_SGS, trns_DYNS,           &
      &      WK_sph,  dynamic_SPH, ipol, rj_fld)
       end if
 !
@@ -136,14 +145,14 @@
       call start_elapsed_time(17)
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
         call product_buo_model_coefs_4_sph                              &
-     &         (SGS_param, sph, comms_sph, trans_p, trns_SIMI,          &
+     &         (SGS_param, sph, comms_sph, trans_p, trns_SGS,           &
      &          WK_sph, dynamic_SPH, ipol, rj_fld)
       else
         call start_elapsed_time(16)
         if (iflag_debug.eq.1) write(*,*)                                &
      &            'sph_forward_trans_SGS_MHD SGS'
         call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
-     &      trns_SIMI%forward, WK_sph, trns_SIMI%mul_FFTW, rj_fld)
+     &      trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
         call end_elapsed_time(16)
       end if
 !

@@ -8,20 +8,24 @@
 !!
 !!@verbatim
 !!      subroutine sph_SGS_induct_nl_gradient_pin                       &
-!!     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, gamma, coef,&
+!!     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,             &
+!!     &          r_moments, sph_moments, coef,                         &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz,                     &
 !!     &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
 !!      subroutine sph_SGS_s_flux_nl_gradient_pin                       &
-!!     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, gamma, coef,&
+!!     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,             &
+!!     &          r_moments, sph_moments, coef,                         &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz, grad_s, d_SGS)
 !!      subroutine sph_SGS_m_flux_nl_gradient_pin                       &
-!!     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, gamma, coef,&
+!!     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,             &
+!!     &          r_moments, sph_moments, coef,                         &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz, d_SGS)
 !!@endverbatim
 !
       module sph_SGS_nl_gradient_pin
 !
       use m_precision
+      use t_sph_filtering_data
 !
       implicit none
 !
@@ -32,17 +36,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sph_SGS_induct_nl_gradient_pin                         &
-     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, gamma, coef,  &
+     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,               &
+     &          r_moments, sph_moments, coef,                           &
      &          u_rtp, grad_ux, grad_uy, grad_uz,                       &
      &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
 !
+      type(sph_filter_moment), intent(in) :: r_moments, sph_moments
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: a_r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: cot_t(nidx_rtp(2))
-      real(kind = kreal), intent(in) :: gamma(3)
       real(kind = kreal), intent(in) :: coef
 !
       real(kind = kreal), intent(in) :: u_rtp(nnod_rtp,3)
@@ -70,9 +75,11 @@
 !$omp  parallel private(kr,lt,gamma_r,gamma_t,gamma_p)
       do lt = 1, nidx_rtp(2)
         do kr = 1, nidx_rtp(1)
-          gamma_r = coef * gamma(1)
-          gamma_t = coef * gamma(2) * r(kr)
-          gamma_p = coef * gamma(3) * r(kr) * sin_t(lt)
+          gamma_r = coef * r_moments%filter_mom(2)
+          gamma_t = coef * sph_moments%filter_mom(2)                    &
+     &                   * (r(kr))**2
+          gamma_p = coef * sph_moments%filter_mom(2)                    &
+     &                   * (r(kr) * sin_t(lt))**2
 !$omp do private(du1_dx1,du1_dx2,du1_dx3,db1_dx1,db1_dx2,db1_dx3,       &
 !&omp&           du2_dx1,du2_dx2,du2_dx3,db2_dx1,db2_dx2,db2_dx3,       &
 !$omp&           du3_dx1,du3_dx2,du3_dx3,db3_dx1,db3_dx2,db3_dx3,       &
@@ -134,16 +141,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sph_SGS_s_flux_nl_gradient_pin                         &
-     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, gamma, coef,  &
+     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,               &
+     &          r_moments, sph_moments, coef,                           &
      &          u_rtp, grad_ux, grad_uy, grad_uz, grad_s, d_SGS)
 !
+      type(sph_filter_moment), intent(in) :: r_moments, sph_moments
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: a_r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: cot_t(nidx_rtp(2))
-      real(kind = kreal), intent(in) :: gamma(3)
       real(kind = kreal), intent(in) :: coef
 !
       real(kind = kreal), intent(in) :: u_rtp(nnod_rtp,3)
@@ -166,9 +174,11 @@
 !$omp  parallel private(kr,lt,gamma_r,gamma_t,gamma_p)
       do lt = 1, nidx_rtp(2)
         do kr = 1, nidx_rtp(1)
-          gamma_r = coef * gamma(1)
-          gamma_t = coef * gamma(2) * r(kr)
-          gamma_p = coef * gamma(3) * r(kr) * sin_t(lt)
+          gamma_r = coef * r_moments%filter_mom(2)
+          gamma_t = coef * sph_moments%filter_mom(2)                    &
+     &                   * (r(kr))**2
+          gamma_p = coef * sph_moments%filter_mom(2)                    &
+     &                   * (r(kr) * sin_t(lt))**2
 !$omp do private(du1_dx1,du1_dx2,du1_dx3,du2_dx1,du2_dx2,du2_dx3,       &
 !$omp&           du3_dx1,du3_dx2,du3_dx3,ds_dx1, ds_dx2, ds_dx3,        &
 !$omp&           mp,inod)
@@ -212,16 +222,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sph_SGS_m_flux_nl_gradient_pin                         &
-     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, gamma,coef,   &
+     &         (nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t,               &
+     &          r_moments, sph_moments, coef,                           &
      &          u_rtp, grad_ux, grad_uy, grad_uz, d_SGS)
 !
+      type(sph_filter_moment), intent(in) :: r_moments, sph_moments
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: a_r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: cot_t(nidx_rtp(2))
-      real(kind = kreal), intent(in) :: gamma(3)
       real(kind = kreal), intent(in) :: coef
 !
       real(kind = kreal), intent(in) :: u_rtp(nnod_rtp,3)
@@ -241,9 +252,11 @@
 !$omp  parallel private(kr,lt,gamma_r,gamma_t,gamma_p)
       do lt = 1, nidx_rtp(2)
         do kr = 1, nidx_rtp(1)
-          gamma_r = coef * gamma(1)
-          gamma_t = coef * gamma(2) * r(kr)
-          gamma_p = coef * gamma(3) * r(kr) * sin_t(lt)
+          gamma_r = coef * r_moments%filter_mom(2)
+          gamma_t = coef * sph_moments%filter_mom(2)                    &
+     &                   * (r(kr))**2
+          gamma_p = coef * sph_moments%filter_mom(2)                    &
+     &                   * (r(kr) * sin_t(lt))**2
 !$omp do private(du1_dx1,du1_dx2,du1_dx3,du2_dx1,du2_dx2,du2_dx3,       &
 !$omp&           du3_dx1,du3_dx2,du3_dx3,mp,inod)
           do mp = 1, nidx_rtp(3)
