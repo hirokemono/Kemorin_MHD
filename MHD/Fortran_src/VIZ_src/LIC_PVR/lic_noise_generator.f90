@@ -39,7 +39,7 @@ type(noise_node), intent(inout), pointer, dimension(:) :: n_node_data
 integer(kind = kint), intent(inout) :: ierr
 integer(kind = kint) :: d_size, i
 character(len=kchara) :: file_name
-character(len=1) :: noise_char
+character(len=1) :: noise_char(1)
 !
 call add_null_character(filename, file_name)
 call open_rd_rawfile(file_name, ierr)
@@ -53,7 +53,7 @@ if(ierr .eq. 0) then
     ! change 0 to any level to initial complex noise node tree
     call alloc_noise_node(n_node_data(i), 2, 0)
     call read_mul_one_character_b(1, noise_char)
-    n_node_data(i)%n_value = ichar(noise_char) / 255.0
+    n_node_data(i)%n_value = ichar(noise_char(1)) / 255.0
     !write(*,*) n_node_data(i)%n_value
   end do
 end if
