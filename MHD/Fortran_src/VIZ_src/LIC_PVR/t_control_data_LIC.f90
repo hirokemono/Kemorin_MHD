@@ -134,7 +134,7 @@
       character(len=kchara) :: hd_kernel_function_type                  &
      &                        = 'kernel_function_type'
       character(len=kchara) :: hd_kernal_file_name                      &
-     &                        = 'kernal_image_prefix'
+     &                        = 'kernel_image_prefix'
 !
       character(len=kchara) :: hd_LIC_trace_type                        &
      &                        = 'LIC_trace_length_mode'
