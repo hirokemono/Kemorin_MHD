@@ -187,6 +187,7 @@
      &         (SPH_MHD, iphys, trns_DYNG,                              &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
+      use address_bwd_sph_trans_SGS
       use address_bwd_sph_trans_ngSGS
       use address_fwd_sph_trans_ngSGS
 !
@@ -209,6 +210,8 @@
       call alloc_sph_trns_field_name(trns_DYNG%backward)
 !
       call b_trans_filter_vector_grads(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_DYNG%b_trns, trns_DYNG%backward)
+      call b_trans_vector_filtered_SGS(SPH_MHD%ipol, SPH_MHD%itor,      &
      &    iphys, trns_DYNG%b_trns, trns_DYNG%backward)
       trns_DYNG%backward%num_vector = trns_DYNG%backward%nfield
       trns_DYNG%backward%num_scalar = trns_DYNG%backward%nfield         &
