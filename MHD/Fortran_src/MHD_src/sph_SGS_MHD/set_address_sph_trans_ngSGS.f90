@@ -28,6 +28,13 @@
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(phys_address), intent(in) :: iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_DYNG
+!!
+!!      subroutine set_addresses_trans_sph_ngCsim                       &
+!!     &         (SPH_MHD, iphys, trns_Csim,                            &
+!!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
+!!        type(phys_address), intent(in) :: iphys
+!!        type(address_4_sph_trans), intent(inout) :: trns_Csim
 !!@endverbatim
 !
       module set_address_sph_trans_ngSGS
@@ -239,6 +246,73 @@
       end if
 !
       end subroutine init_sph_trns_fld_dyn_ngrad
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_addresses_trans_sph_ngCsim                         &
+     &         (SPH_MHD, iphys, trns_Csim,                              &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      use address_bwd_sph_trans_SGS
+      use address_fwd_sph_trans_Csim
+!
+      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
+      type(phys_address), intent(in) :: iphys
+      type(address_4_sph_trans), intent(inout) :: trns_Csim
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Field table for the second SGS terms ',             &
+     &             'by n. gradient model (trns_Csim)'
+        write(*,*) 'Address for backward transform: ',                  &
+     &             'transform, poloidal, toroidal, grid data'
+      end if
+!
+      trns_Csim%backward%nfield = 0
+      call alloc_sph_trns_field_name(trns_Csim%backward)
+!
+      call b_trans_vector_wide_similarity(SPH_MHD%ipol, SPH_MHD%itor,   &
+     &    iphys, trns_Csim%b_trns, trns_Csim%backward)
+      trns_Csim%backward%num_vector = trns_Csim%backward%nfield
+      trns_Csim%backward%num_scalar = trns_Csim%backward%nfield         &
+     &                               - trns_Csim%backward%num_vector
+      trns_Csim%backward%num_tensor = 0
+!
+!
+     if(iflag_debug .gt. 0) then
+        write(*,*) 'Address for forward transform: ',                   &
+     &             'transform, poloidal, toroidal, grid data'
+      end if
+!
+      trns_Csim%forward%nfield = 0
+      call alloc_sph_trns_field_name(trns_Csim%forward)
+!
+      trns_Csim%forward%num_vector = 0
+      call f_trans_address_scalar_Csim(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_Csim%f_trns, trns_Csim%forward)
+      trns_Csim%forward%num_scalar = trns_Csim%forward%nfield           &
+     &                              - trns_Csim%forward%num_vector
+      trns_Csim%forward%num_tensor = 0
+!
+!
+      call count_num_fields_each_trans(trns_Csim%backward,              &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns_Csim%forward,               &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ', trns_Csim%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_Csim%backward%num_scalar
+!
+        write(*,*) 'nvector_rtp_2_rj ', trns_Csim%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_Csim%forward%num_scalar
+      end if
+!
+      end subroutine set_addresses_trans_sph_ngCsim
 !
 !-----------------------------------------------------------------------
 !

@@ -10,6 +10,8 @@
 !!@verbatim
 !!      subroutine b_trans_vector_similarity                            &
 !!     &         (ipol, itor, iphys, b_trns, trns_back)
+!!      subroutine b_trans_vector_wide_filter_fld                       &
+!!     &         (ipol, itor, iphys, b_trns, trns_back)
 !!      subroutine b_trans_vector_wide_similarity                       &
 !!     &         (ipol, itor, iphys, b_trns, trns_back)
 !!
@@ -18,7 +20,7 @@
 !!
 !!      subroutine b_trans_scalar_similarity                            &
 !!     &         (ipol, itor, iphys, b_trns, trns_back)
-!!      subroutine b_trans_scalar_wide_similarity                       &
+!!      subroutine b_trans_scalar_wide_filter_fld                       &
 !!     &         (ipol, itor, iphys, b_trns, trns_back)
 !!        type(phys_address), intent(in) :: ipol, itor, iphys
 !!        type(address_each_sph_trans), intent(inout) :: trns_back
@@ -103,7 +105,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_vector_wide_similarity                         &
+      subroutine b_trans_vector_wide_filter_fld                         &
      &         (ipol, itor, iphys, b_trns, trns_back)
 !
       type(phys_address), intent(in) :: ipol, itor, iphys
@@ -131,6 +133,18 @@
      &    ipol%i_wide_fil_current, itor%i_wide_fil_current,             &
      &    iphys%i_wide_fil_current, b_trns%i_wide_fil_current,          &
      &    trns_back)
+!
+      end subroutine b_trans_vector_wide_filter_fld
+!
+!-----------------------------------------------------------------------
+!
+      subroutine b_trans_vector_wide_similarity                         &
+     &         (ipol, itor, iphys, b_trns, trns_back)
+!
+      type(phys_address), intent(in) :: ipol, itor, iphys
+      type(address_each_sph_trans), intent(inout) :: trns_back
+      type(phys_address), intent(inout) :: b_trns
+!
 !
 !   wide filtered Inertia
       call add_field_name_4_sph_trns                                    &
@@ -228,7 +242,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_scalar_wide_similarity                         &
+      subroutine b_trans_scalar_wide_filter_fld                         &
      &         (ipol, itor, iphys, b_trns, trns_back)
 !
       type(phys_address), intent(in) :: ipol, itor, iphys
@@ -247,7 +261,7 @@
      &    ipol%i_wide_fil_comp, itor%i_wide_fil_comp,                   &
      &    iphys%i_wide_fil_comp, b_trns%i_wide_fil_comp, trns_back)
 !
-      end subroutine b_trans_scalar_wide_similarity
+      end subroutine b_trans_scalar_wide_filter_fld
 !
 !-----------------------------------------------------------------------
 !

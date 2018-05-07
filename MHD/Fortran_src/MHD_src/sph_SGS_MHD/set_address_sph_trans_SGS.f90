@@ -134,13 +134,15 @@
       trns_DYNS%backward%nfield = 0
       call alloc_sph_trns_field_name(trns_DYNS%backward)
 !
+      call b_trans_vector_wide_filter_fld(SPH_MHD%ipol, SPH_MHD%itor,   &
+     &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
       call b_trans_vector_wide_similarity(SPH_MHD%ipol, SPH_MHD%itor,   &
      &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
       call b_trans_vector_filtered_SGS(SPH_MHD%ipol, SPH_MHD%itor,      &
      &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
       trns_DYNS%backward%num_vector = trns_DYNS%backward%nfield
 !
-      call b_trans_scalar_wide_similarity(SPH_MHD%ipol, SPH_MHD%itor,   &
+      call b_trans_scalar_wide_filter_fld(SPH_MHD%ipol, SPH_MHD%itor,   &
      &    iphys, trns_DYNS%b_trns, trns_DYNS%backward)
       trns_DYNS%backward%num_scalar = trns_DYNS%backward%nfield         &
      &                               - trns_DYNS%backward%num_vector
@@ -184,7 +186,6 @@
      &         (SPH_MHD, iphys, trns_Csim,                              &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use address_bwd_sph_trans_Csim
       use address_fwd_sph_trans_Csim
 !
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
@@ -196,23 +197,34 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'Spherical transform field table for model coefs'
+        write(*,*) 'Spherical transform field table ',                  &
+     &             'for model coefs (trns_Csim)'
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      call b_trans_address_vector_Csim(trns_Csim%backward)
-      call b_trans_address_scalar_Csim(trns_Csim%backward)
+      trns_Csim%backward%nfield = 0
+      call alloc_sph_trns_field_name(trns_Csim%backward)
+!
+      trns_Csim%backward%num_vector = trns_Csim%backward%nfield
+      trns_Csim%backward%num_scalar = trns_Csim%backward%nfield         &
+     &                               - trns_Csim%backward%num_vector
       trns_Csim%backward%num_tensor = 0
+!
 !
      if(iflag_debug .gt. 0) then
         write(*,*) 'Address for forward transform: ',                   &
      &             'transform, poloidal, toroidal, grid data'
       end if
 !
-      call f_trans_address_vector_Csim(trns_Csim%forward)
+      trns_Csim%forward%nfield = 0
+      call alloc_sph_trns_field_name(trns_Csim%forward)
+!
+      trns_Csim%forward%num_vector = 0
       call f_trans_address_scalar_Csim(SPH_MHD%ipol, SPH_MHD%itor,      &
      &    iphys, trns_Csim%f_trns, trns_Csim%forward)
+      trns_Csim%forward%num_scalar = trns_Csim%forward%nfield           &
+     &                              - trns_Csim%forward%num_vector
       trns_Csim%forward%num_tensor = 0
 !
       call count_num_fields_each_trans(trns_Csim%backward,              &

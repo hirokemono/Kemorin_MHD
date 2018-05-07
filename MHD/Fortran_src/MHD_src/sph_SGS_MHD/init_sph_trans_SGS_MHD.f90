@@ -118,6 +118,9 @@
           call init_sph_trns_fld_dyn_ngrad                              &
      &       (SPH_MHD, iphys, WK%trns_DYNG,                             &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
+          call set_addresses_trans_sph_ngCsim                           &
+     &       (SPH_MHD, iphys, WK%trns_Csim,                             &
+     &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
       end if
 !
