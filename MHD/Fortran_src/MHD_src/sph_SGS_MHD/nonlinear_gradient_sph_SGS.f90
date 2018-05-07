@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine cal_nonlinear_gradient_sph_SGS                       &
-!!     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop, trans_p, &
-!!     &          dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld,          &
+!!     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop,          &
+!!     &          trans_p, dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld, &
 !!     &          trns_ngTMP, trns_SGS)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -73,8 +73,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_nonlinear_gradient_sph_SGS                         &
-     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop, trans_p,   &
-     &          dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld,            &
+     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop,            &
+     &          trans_p, dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld,   &
      &          trns_ngTMP, trns_SGS)
 !
       use copy_rtp_vectors_4_grad
@@ -98,6 +98,7 @@
       type(address_4_sph_trans), intent(inout) :: trns_ngTMP
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
+      integer :: lt, kr, mp, inod
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_vectors_rtp_4_grad'
       call copy_vectors_rtp_4_grad                                      &
@@ -117,9 +118,21 @@
      &    rj_fld, trns_ngTMP%backward, WK_sph, trns_ngTMP%mul_FFTW)
       call calypso_mpi_barrier
 !
+        mp = 7
+        kr = 15
+        do lt = 1, sph%sph_rtp%nidx_rtp(2)
+          inod = kr + (lt-1)*sph%sph_rtp%nidx_rtp(1)                    &
+     &        + (mp-1)*sph%sph_rtp%nidx_rtp(1)*sph%sph_rtp%nidx_rtp(2)
+          write(40+my_rank,*) ' trns_MHD ', kr, lt, mp, inod,&
+     &      trns_MHD%backward%fld_rtp(inod,:)
+          write(50+my_rank,*) ' vorticity ', kr, lt, mp, inod,&
+     &      trns_ngTMP%backward%fld_rtp(inod,  &
+     &      trns_ngTMP%b_trns%i_grad_wx+1:trns_ngTMP%b_trns%i_grad_wx+8)
+        end do
+!
       if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
       call nl_gradient_SGS_terms_rtp                                    &
-     &   (sph, dynamic_SPH%sph_filters(1), MHD_prop, sph_MHD_bc,        &
+     &    (sph, dynamic_SPH%sph_filters(1), MHD_prop,                   &
      &    trns_MHD%b_trns, trns_ngTMP%b_trns, trns_SGS%f_trns,          &
      &    trns_MHD%backward, trns_ngTMP%backward, trns_SGS%forward)
       call calypso_mpi_barrier
@@ -174,9 +187,9 @@
      &    rj_fld, trns_DYNS%backward, WK_sph, trns_DYNS%mul_FFTW)
       call calypso_mpi_barrier
 !
-      if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
+      if (iflag_debug.eq.1) write(*,*) 'wider_nl_grad_SGS_rtp'
       call wider_nl_grad_SGS_rtp                                        &
-     &   (sph, dynamic_SPH%sph_filters(2), MHD_prop, sph_MHD_bc,        &
+     &   (sph, dynamic_SPH%sph_filters(2), MHD_prop,                    &
      &    trns_SIMI%b_trns, trns_DYNS%b_trns, trns_Csim%b_trns,         &
      &    trns_SIMI%backward, trns_DYNS%backward, trns_Csim%backward)
       call calypso_mpi_barrier

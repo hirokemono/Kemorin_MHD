@@ -42,6 +42,7 @@
       use t_SGS_control_parameter
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
+      use t_spheric_parameter
       use t_fdm_coefs
       use t_sph_trans_arrays_MHD
       use t_addresses_sph_transform
@@ -118,8 +119,8 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &                'cal_nonlinear_gradient_sph_SGS'
         call cal_nonlinear_gradient_sph_SGS                             &
-     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop, trans_p,   &
-     &          dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld,            &
+     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop,            &
+     &          trans_p, dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld,   &
      &          trns_ngTMP, trns_SGS)
       end if
 !

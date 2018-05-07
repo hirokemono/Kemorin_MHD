@@ -166,9 +166,9 @@
 !
       call start_elapsed_time(15)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
-      call nonlinear_terms_in_rtp                                       &
-     &   (sph%sph_rtp, MHD_prop, trns_MHD%b_trns, trns_MHD%f_trns,      &
-     &    trns_MHD%backward, trns_MHD%forward)
+      call nonlinear_terms_in_rtp(sph%sph_rtp, MHD_prop, trans_p%leg,   &
+     &    trns_MHD%b_trns, trns_MHD%f_trns, trns_MHD%backward,          &
+     &    trns_MHD%forward)
 !
       call start_elapsed_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'

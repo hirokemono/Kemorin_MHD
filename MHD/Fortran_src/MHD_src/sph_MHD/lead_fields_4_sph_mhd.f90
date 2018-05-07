@@ -285,7 +285,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
       call s_cal_energy_flux_rtp                                        &
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
-     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, trans_p%leg,      &
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
      &    trns_MHD%forward, trns_snap%backward, trns_snap%forward)
 !

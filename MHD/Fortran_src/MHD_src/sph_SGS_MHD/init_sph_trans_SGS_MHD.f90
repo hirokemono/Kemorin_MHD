@@ -158,8 +158,8 @@
      &    WK%trns_MHD, WK%trns_SGS, WK%trns_DYNS, WK%trns_Csim,         &
      &    WK%trns_ngTMP, WK%WK_sph)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
-      call set_colatitude_rtp(sph%sph_rtp, sph%sph_rj, trans_p%leg)
+      if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
+      call alloc_sphere_ave_coriolis(sph%sph_rj)
       if (iflag_debug.eq.1) write(*,*) 'init_sum_coriolis_rlm'
       call init_sum_coriolis_rlm                                        &
      &   (sph%sph_params%l_truncation, sph%sph_rlm,                     &

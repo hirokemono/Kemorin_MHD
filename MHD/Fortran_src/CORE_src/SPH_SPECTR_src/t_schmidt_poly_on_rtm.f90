@@ -12,12 +12,14 @@
 !!      subroutine alloc_schmidt_poly_rtm(nth_rtm, jmax_rlm, Plm_WK)
 !!      subroutine alloc_trans_schmidt_rtm(nth_rtm, jmax_rlm, Plm_WK)
 !!      subroutine alloc_schmidt_p_rtm_pole(jmax_rlm, Plm_WK)
+!!      subroutine alloc_gauss_colatitude_rtp(nth_rtp, Plm_WK)
 !!        type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !!
 !!      subroutine dealloc_gauss_colat_rtm(Plm_WK)
 !!      subroutine dealloc_schmidt_poly_rtm(Plm_WK)
 !!      subroutine dealloc_trans_schmidt_rtm(Plm_WK)
 !!      subroutine dealloc_schmidt_p_rtm_pole(Plm_WK)
+!!      subroutine dealloc_gauss_colatitude_rtp(Plm_WK)
 !!        type(legendre_4_sph_trans), intent(inout) :: Plm_WK
 !!
 !!      subroutine check_gauss_colat_rtm(my_rank, nth_rtm, Plm_WK)
@@ -55,10 +57,12 @@
         real(kind = kreal), allocatable :: dPdt_pole_rtm(:,:)
 !
 !>        Normalization constants for spherical harmonics in (r,l,m)
-        real(kind = kreal), allocatable:: g_sph_rlm(:,:)
+        real(kind = kreal), allocatable :: g_sph_rlm(:,:)
 !>        Normalization constants for spherical harmonics in (r,j)
-        real(kind = kreal), allocatable:: g_sph_rj(:,:)
+        real(kind = kreal), allocatable :: g_sph_rj(:,:)
 !
+!>        colatitude in (r,t,p) grid
+        real(kind = kreal), allocatable :: g_colat_rtp(:)
 !
 !>        @$f P_{l}{m} @$f with A(j,theta)
         real(kind = kreal), allocatable :: P_jl(:,:)
@@ -150,10 +154,23 @@
       allocate( Plm_WK%P_pole_rtm(2,jmax_rlm) )
       allocate( Plm_WK%dPdt_pole_rtm(2,jmax_rlm) )
 !
-      Plm_WK%P_pole_rtm = 0.0d0
-      Plm_WK%dPdt_pole_rtm = 0.0d0
+      if(jmax_rlm .gt. 0) Plm_WK%P_pole_rtm = 0.0d0
+      if(jmax_rlm .gt. 0) Plm_WK%dPdt_pole_rtm = 0.0d0
 !
       end subroutine alloc_schmidt_p_rtm_pole
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_gauss_colatitude_rtp(nth_rtp, Plm_WK)
+!
+      integer(kind = kint), intent(in) :: nth_rtp
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
+!
+!
+      allocate(Plm_WK%g_colat_rtp(nth_rtp))
+      if(nth_rtp .gt. 0) Plm_WK%g_colat_rtp = 0.0d0
+!
+      end subroutine alloc_gauss_colatitude_rtp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -199,6 +216,17 @@
       deallocate( Plm_WK%P_pole_rtm, Plm_WK%dPdt_pole_rtm )
 !
       end subroutine dealloc_schmidt_p_rtm_pole
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_gauss_colatitude_rtp(Plm_WK)
+!
+      type(legendre_4_sph_trans), intent(inout) :: Plm_WK
+!
+!
+      deallocate(Plm_WK%g_colat_rtp)
+!
+      end subroutine dealloc_gauss_colatitude_rtp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

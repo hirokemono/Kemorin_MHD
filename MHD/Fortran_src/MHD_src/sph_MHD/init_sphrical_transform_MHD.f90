@@ -146,8 +146,8 @@
      &   (ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,             &
      &    WK%trns_MHD, WK%WK_sph, WK%trns_MHD%mul_FFTW)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
-      call set_colatitude_rtp(sph%sph_rtp, sph%sph_rj, trans_p%leg)
+      if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
+      call alloc_sphere_ave_coriolis(sph%sph_rj)
       if (iflag_debug.eq.1) write(*,*) 'init_sum_coriolis_rlm'
       call init_sum_coriolis_rlm                                        &
      &   (sph%sph_params%l_truncation, sph%sph_rlm,                     &

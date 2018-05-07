@@ -12,14 +12,16 @@
 !!     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
 !!     &          f_trns, bs_trns, trns_b_MHD, trns_f_MHD)
 !!      subroutine s_cal_energy_flux_rtp(sph_rtp, fl_prop, cd_prop,     &
-!!     &          ref_param_T, ref_param_C, f_trns, bs_trns, fs_trns,   &
-!!     &          trns_f_MHD, trns_b_snap, trns_f_snap)
+!!     &          ref_param_T, ref_param_C, leg, f_trns,                &
+!!     &          bs_trns, fs_trns, trns_f_MHD, trns_b_snap,            &
+!!     &          trns_f_snap)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: f_trns
 !!        type(phys_address), intent(in) :: bs_trns, fs_trns
 !!        type(address_each_sph_trans), intent(in) :: trns_f_MHD
@@ -32,12 +34,14 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use calypso_mpi
 !
       use t_phys_address
       use t_spheric_rtp_data
       use t_physical_property
       use t_reference_scalar_param
       use t_addresses_sph_transform
+      use t_schmidt_poly_on_rtm
 !
       implicit  none
 !
@@ -125,8 +129,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_energy_flux_rtp(sph_rtp, fl_prop, cd_prop,       &
-     &          ref_param_T, ref_param_C, f_trns, bs_trns, fs_trns,     &
-     &          trns_f_MHD, trns_b_snap, trns_f_snap)
+     &          ref_param_T, ref_param_C, leg, f_trns,                  &
+     &          bs_trns, fs_trns, trns_f_MHD, trns_b_snap,              &
+     &          trns_f_snap)
 !
       use poynting_flux_smp
       use sph_transforms_4_MHD
@@ -139,6 +144,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(reference_scalar_param), intent(in) :: ref_param_C
+      type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: f_trns
       type(phys_address), intent(in) :: bs_trns, fs_trns
       type(address_each_sph_trans), intent(in) :: trns_f_MHD
@@ -149,8 +155,8 @@
 !
 !$omp parallel
       if(fs_trns%i_coriolis .gt. 0) then
-        call cal_wz_coriolis_rtp                                        &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fl_prop%coef_cor,       &
+        call cal_wz_coriolis_rtp(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,    &
+     &      leg%g_colat_rtp, fl_prop%coef_cor,                          &
      &      trns_b_snap%fld_rtp(1,bs_trns%i_velo),                      &
      &      trns_f_snap%fld_rtp(1,fs_trns%i_Coriolis))
       end if
