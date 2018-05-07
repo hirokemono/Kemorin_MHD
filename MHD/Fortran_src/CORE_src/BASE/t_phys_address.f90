@@ -515,6 +515,7 @@
 !!            + (\overline{B_{i}B_{j}} - \bar{B}_{i}\bar{B}_{j})@f$
       integer (kind=kint) :: i_maxwell_t_w_sgs = izero
 !
+!    Gradient of fields
 !>        start address for gradient of @f$ u_{x} @f$
         integer (kind=kint) :: i_grad_vx = izero
 !>        start address for gradient of @f$ u_{y} @f$
@@ -550,14 +551,50 @@
         integer (kind=kint) :: i_grad_t =           izero
 !>        start address for gradient of @f$ \Theta @f$
         integer (kind=kint) :: i_grad_part_t =      izero
-!>        start address for gradient of @f$ \tilde{T} @f$
-        integer (kind=kint) :: i_grad_filter_temp = izero
 !>        start address for gradient of @f$ C @f$
         integer (kind=kint) :: i_grad_composit =    izero
 !>        start address for gradient of perturbation of composition
         integer (kind=kint) :: i_grad_part_c =      izero
+!
+!
+!    Gradient of filtered fields
+!>        start address for gradient of @f$ \tilde{u}_{x} @f$
+        integer (kind=kint) :: i_grad_filter_vx = izero
+!>        start address for gradient of @f$ \tilde{u}_{y} @f$
+        integer (kind=kint) :: i_grad_filter_vy = izero
+!>        start address for gradient of @f$ \tilde{u}_{z} @f$
+        integer (kind=kint) :: i_grad_filter_vz = izero
+!>        start address for gradient of @f$ \tilde{\omega}_{x} @f$
+        integer (kind=kint) :: i_grad_filter_wx = izero
+!>        start address for gradient of @f$ \tilde{\omega}_{y} @f$
+        integer (kind=kint) :: i_grad_filter_wy = izero
+!>        start address for gradient of @f$ \tilde{\omega}_{z} @f$
+        integer (kind=kint) :: i_grad_filter_wz = izero
+!>        start address for gradient of @f$ \tilde{A}_{x} @f$
+        integer (kind=kint) :: i_grad_filter_ax = izero
+!>        start address for gradient of @f$ \tilde{A}_{y} @f$
+        integer (kind=kint) :: i_grad_filter_ay = izero
+!>        start address for gradient of @f$ \tilde{A}_{z} @f$
+        integer (kind=kint) :: i_grad_filter_az = izero
+!>        start address for gradient of @f$ \tilde{B}_{x} @f$
+        integer (kind=kint) :: i_grad_filter_bx = izero
+!>        start address for gradient of @f$ \tilde{B}_{y} @f$
+        integer (kind=kint) :: i_grad_filter_by = izero
+!>        start address for gradient of @f$ \tilde{B}_{z} @f$
+        integer (kind=kint) :: i_grad_filter_bz = izero
+!>        start address for gradient of @f$ \tilde{J}_{x} @f$
+        integer (kind=kint) :: i_grad_filter_jx = izero
+!>        start address for gradient of @f$ \tilde{J}_{y} @f$
+        integer (kind=kint) :: i_grad_filter_jy = izero
+!>        start address for gradient of @f$ \tilde{J}_{z} @f$
+        integer (kind=kint) :: i_grad_filter_jz = izero
+!
+!>        start address for gradient of @f$ \tilde{T} @f$
+        integer (kind=kint) :: i_grad_filter_temp = izero
 !>        start address for gradient of @f$ \tilde{C} @f$
         integer (kind=kint) :: i_grad_filter_comp = izero
+!
+!
 !
 !>        start address for SGS term by scale similarity method
         integer (kind=kint) :: i_sgs_simi =        izero

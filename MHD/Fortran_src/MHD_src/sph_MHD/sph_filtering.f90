@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine init_SGS_model_sph_mhd(SGS_par, sph, sph_grps,       &
-!!     &          MHD_prop, dynamic_SPH)
+!!     &          MHD_prop, trans_p, dynamic_SPH)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_grids), intent(in) ::  sph
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!
 !!      subroutine vector_sph_filter(i_field, i_filter,                 &
@@ -37,6 +38,7 @@
       use t_spheric_group
       use t_phys_data
       use t_sph_filtering_data
+      use t_work_4_sph_trans
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_sph_filtering
@@ -50,7 +52,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_SGS_model_sph_mhd(SGS_par, sph, sph_grps,         &
-     &          MHD_prop, dynamic_SPH)
+     &          MHD_prop, trans_p, dynamic_SPH)
 !
       use calypso_mpi
       use t_physical_property
@@ -61,6 +63,7 @@
       type(sph_grids), intent(in) ::  sph
       type(sph_group_data), intent(in) :: sph_grps
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
@@ -71,12 +74,11 @@
      &    sph%sph_params, sph%sph_rtp, dynamic_SPH%sph_d_grp)
 !
       if (iflag_debug.gt.0) write(*,*) 'init_filter_4_SPH_MHD'
-      call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj, sph_grps,  &
+      call init_filter_4_SPH_MHD(sph, sph_grps, trans_p%leg,            &
      &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
 !
       if (iflag_debug.gt.0) write(*,*) 'init_work_4_SGS_sph_mhd'
-      call init_work_4_SGS_sph_mhd                                      &
-     &   (SGS_par, sph%sph_rtp, dynamic_SPH%sph_d_grp,                  &
+      call init_work_4_SGS_sph_mhd(SGS_par, dynamic_SPH%sph_d_grp,      &
      &    MHD_prop, dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,        &
      &    dynamic_SPH%sgs_coefs, dynamic_SPH%wk_sgs)
 !

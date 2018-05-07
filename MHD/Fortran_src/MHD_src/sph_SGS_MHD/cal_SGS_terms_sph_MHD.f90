@@ -89,7 +89,7 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: bg_trns, fg_trns
-      type(address_each_sph_trans), intent(inout) :: trns_b_SGS
+      type(address_each_sph_trans), intent(in) :: trns_b_SGS
 !
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !

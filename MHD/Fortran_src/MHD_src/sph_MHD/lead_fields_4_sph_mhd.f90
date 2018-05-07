@@ -285,7 +285,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
       call s_cal_energy_flux_rtp                                        &
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
-     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, trans_p%leg,      &
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
      &    trns_MHD%forward, trns_snap%backward, trns_snap%forward)
 !
@@ -313,9 +313,9 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'copy_vect_to_grad_vect_rtp'
-      call copy_vect_to_grad_vect_rtp                                   &
-     &   (sph%sph_rtp, trns_MHD%b_trns, trns_tmp%f_trns,                &
+      if (iflag_debug.eq.1) write(*,*) 'copy_vectors_rtp_4_grad'
+      call copy_vectors_rtp_4_grad                                      &
+     &   (sph, trns_MHD%b_trns, trns_tmp%f_trns,                        &
      &    trns_MHD%backward, trns_tmp%forward)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_snapshot_MHD'

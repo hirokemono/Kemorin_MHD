@@ -8,7 +8,6 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine f_trans_address_vector_Csim(trns_fwd)
 !!      subroutine f_trans_address_scalar_Csim                          &
 !!     &         (ipol, itor, iphys, f_trns, trns_fwd)
 !!        type(phys_address), intent(in) :: ipol, itor, iphys
@@ -32,22 +31,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine f_trans_address_vector_Csim(trns_fwd)
-!
-!      type(phys_address), intent(in) :: ipol, itor, iphys
-      type(address_each_sph_trans), intent(inout) :: trns_fwd
-!      type(phys_address), intent(inout) :: f_trns
-!
-!
-      trns_fwd%nfield = 0
-      call alloc_sph_trns_field_name(trns_fwd)
-!
-      trns_fwd%num_vector = 0
-!
-      end subroutine f_trans_address_vector_Csim
 !
 !-----------------------------------------------------------------------
 !
@@ -99,7 +82,6 @@
      &    ipol%i_Csim_SGS_comp_buo, itor%i_Csim_SGS_comp_buo,           &
      &    iphys%i_Csim_SGS_comp_buo, f_trns%i_Csim_SGS_comp_buo,        &
      &    trns_fwd)
-      trns_fwd%num_scalar = trns_fwd%nfield - trns_fwd%num_vector
 !
       end subroutine f_trans_address_scalar_Csim
 !

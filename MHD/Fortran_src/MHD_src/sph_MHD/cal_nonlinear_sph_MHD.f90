@@ -7,7 +7,7 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine nonlinear_terms_in_rtp(sph_rtp, MHD_prop,            &
+!!      subroutine nonlinear_terms_in_rtp(sph_rtp, MHD_prop, leg,       &
 !!     &          b_trns, f_trns, trns_b_MHD, trns_f_MHD)
 !!       Input ::  trns_b_MHD%fld_rtp(1,ib_fld)
 !!               ib_fld = i_velo, i_vort, i_magne, i_current,
@@ -17,6 +17,7 @@
 !!                        i_h_flux, i_c_flux, i_Coriolis
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: b_trns, f_trns
 !!        type(address_each_sph_trans), intent(in) :: trns_b_MHD
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_MHD
@@ -71,7 +72,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine nonlinear_terms_in_rtp(sph_rtp, MHD_prop,              &
+      subroutine nonlinear_terms_in_rtp(sph_rtp, MHD_prop, leg,         &
      &          b_trns, f_trns, trns_b_MHD, trns_f_MHD)
 !
       use const_wz_coriolis_rtp
@@ -79,6 +80,7 @@
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: b_trns, f_trns
       type(address_each_sph_trans), intent(in) :: trns_b_MHD
       type(address_each_sph_trans), intent(inout) :: trns_f_MHD
@@ -130,7 +132,7 @@
 !
       if(f_trns%i_Coriolis .gt. 0) then
         call cal_wz_coriolis_rtp(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,    &
-     &      MHD_prop%fl_prop%coef_cor,                                  &
+     &      leg%g_colat_rtp, MHD_prop%fl_prop%coef_cor,                 &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_velo),                        &
      &      trns_f_MHD%fld_rtp(1,f_trns%i_Coriolis))
       end if

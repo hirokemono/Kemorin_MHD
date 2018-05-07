@@ -116,7 +116,7 @@
       if (iflag_debug.gt.0) write(*,*) 'init_SGS_model_sph_mhd'
       call init_SGS_model_sph_mhd                                       &
      &   (SPH_SGS%SGS_par, SPH_MHD%sph, SPH_MHD%groups,                 &
-     &    SPH_model%MHD_prop, SPH_SGS%dynamic)
+     &    SPH_model%MHD_prop, SPH_WK%trans_p, SPH_SGS%dynamic)
       call calypso_mpi_barrier
 !
 !  -------------------------------

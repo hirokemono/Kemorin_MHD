@@ -85,7 +85,7 @@
       integer(kind = kint) :: inum, iflag_comm
       real(kind = kreal) :: rgba_tmp(4)
 !
-      type(noise_mask), allocatable :: n_mask
+      !type(noise_mask), allocatable :: n_mask
       integer(kind = kint) :: k_size
       real(kind = kreal), allocatable :: k_ary(:)
       real(kind = kreal) :: range_max, range_min
@@ -96,10 +96,10 @@
       allocate(k_ary(k_size))
       call generate_kernal_ary(k_size, k_ary)
 
-      range_min = 3.0
-      range_max = 14.0
-      allocate(n_mask)
-      call init_noise_mask(n_mask, range_min, range_max, field_pvr%s_lic, node%numnod)
+      !range_min = 3.0
+      !range_max = 14.0
+      !allocate(n_mask)
+      !call init_noise_mask(n_mask, range_min, range_max, field_pvr%s_lic, node%numnod)
 !
 !$omp parallel do private(inum, iflag_comm,rgba_tmp)
       do inum = 1, num_pvr_ray
@@ -117,7 +117,7 @@
      &       id_pixel_check(inum), isf_pvr_ray_start(1,inum),                       &
      &       xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),                        &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),             &
-     &       k_size, k_ary, n_mask, node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
+     &       k_size, k_ary, node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
       end do
 !$omp end parallel do
@@ -172,7 +172,7 @@
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
      &        lic_p, field_pvr, color_param, ray_vec, iflag_check,      &
      &        isurf_org, screen_st, xx_st, xi, rgba_ray, icount_line,   &
-     &        k_size, k_ary, n_mask, xyz_min_gl, xyz_max_gl, iflag_comm)
+     &        k_size, k_ary, xyz_min_gl, xyz_max_gl, iflag_comm)
 !
       use t_geometries_in_pvr_screen
       use cal_field_on_surf_viz
@@ -209,7 +209,7 @@
       real(kind = kreal), intent(inout) :: xx_st(3), xi(2)
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
-      type(noise_mask), intent(inout) :: n_mask
+      !type(noise_mask), intent(inout) :: n_mask
       integer(kind = kint), intent(in) :: k_size
       real(kind = kreal), intent(in) :: k_ary(k_size)
 !
@@ -217,7 +217,8 @@
       integer(kind = kint) :: iflag_notrace
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
       integer(kind = kint) :: iflag_hit
-      real(kind = kreal) :: screen_tgt(3), c_tgt(1), r_org(1), r_tgt(1), r_mid(1)
+      real(kind = kreal) :: screen_tgt(3), c_tgt(1)
+      real(kind = kreal), allocatable :: r_org(:), r_tgt(:), r_mid(:)
       real(kind = kreal) :: grad_tgt(3), xx_tgt(3), grad_len
 
       real(kind = kreal) :: xx_lic(3), xx_lic_last(3)
@@ -240,17 +241,25 @@
       iele =    isurf_org(1)
       isf_org = isurf_org(2)
       isurf_end = abs(isf_4_ele(iele,isf_org))
-      call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
-      &    ie_surf, isurf_end, xi, xx, xx_st)
-      call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-      &    ie_surf, isurf_end, xi, field_pvr%d_pvr, r_org(1) )
-      call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
-      &    ie_surf, isurf_end, xi, field_pvr%v_lic, vec_org)
-
 !
       if(iflag_check .gt. 0) then
         iflag_hit = 0
       end if
+!   get original value of sampling point
+      call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
+      &    ie_surf, isurf_end, xi, xx, xx_st)
+      call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
+      &    ie_surf, isurf_end, xi, field_pvr%v_lic, vec_org)
+
+      allocate(r_org(lic_p%num_masking))
+      allocate(r_tgt(lic_p%num_masking))
+      allocate(r_mid(lic_p%num_masking))
+      do i = 1, lic_p%num_masking
+        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
+     &      ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_org(i) )
+      end do
+!
+!   start ray casting
       do
         icount_line = icount_line + 1
         icount_line_cur_ray = icount_line_cur_ray + 1
@@ -282,7 +291,6 @@
 !
         iflag_notrace = 0
         isurf_end = abs(isf_4_ele(iele,isf_tgt))
-
 !
         if(isf_4_ele(iele,isf_tgt) .lt. 0) then
           isurf_org(1) = iele_4_surf(isurf_end,1,1) ! element on one side share the surface
@@ -300,10 +308,15 @@
 !   find 3D coordinate of exit point on exit surface
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
         &      ie_surf, isurf_end, xi, xx, xx_tgt)
-        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-        &    ie_surf, isurf_end, xi, field_pvr%d_pvr, r_tgt(1) )
-        call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
+!        call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
+!        &    ie_surf, isurf_end, xi, field_pvr%s_lic, r_tgt(1) )
+        call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
         &    ie_surf, isurf_end, xi, field_pvr%v_lic, vec_tgt)
+
+        do i = 1, lic_p%num_masking
+          call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
+     &        ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_tgt(i) )
+        end do
 
         c_tgt(1) = 0.0
 !
@@ -328,23 +341,31 @@
               ray_len_left = ray_len_left - step_size
               ratio = (step_size*step_cnt - ray_left) / ray_len
               xx_lic = xx_st + ratio * (xx_tgt - xx_st)
-              r_mid(1) = r_org(1) * (1 - ratio) + r_tgt(1)*ratio
-              vec_mid = vec_org * (1-ratio) + vec_tgt * ratio
-              call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
-              &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
-              &      isurf_orgs, ie_surf, xi, lic_p,                                    &
-              &      n_mask, r_mid(1), vec_mid,                                         &
-              &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
-              &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
+              do i = 1, lic_p%num_masking
+                r_mid(i) = r_org(i) * (1 - ratio) + r_tgt(i)*ratio
+!write(*,*) "org", r_org, "tgt", r_tgt, "ratio", ratio
+              end do
+! masking on sampling point
+!              if(mask_flag(lic_p, r_mid)) then
 
-!   normalize gradient
-              grad_len = norm2(grad_tgt(1:3))
-              if(grad_len .ne. 0.0) then
-                grad_tgt(1:3) = grad_tgt(1:3) / norm2(grad_tgt(1:3))
-              endif
+                vec_mid = vec_org * (1-ratio) + vec_tgt * ratio
+                call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
+                &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
+                &      isurf_orgs, ie_surf, xi, lic_p,                                    &
+                &      r_mid, vec_mid, field_pvr%s_lic,                                   &
+                &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
+                &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
 
-              call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_lic_last, xx_lic,           &
-              &        c_tgt(1), grad_tgt, color_param, step_size, rgba_ray)
+  !   normalize gradient
+                grad_len = norm2(grad_tgt(1:3))
+                if(grad_len .ne. 0.0) then
+                  grad_tgt(1:3) = grad_tgt(1:3) / norm2(grad_tgt(1:3))
+                endif
+
+                call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_lic_last, xx_lic,           &
+                &        c_tgt(1), grad_tgt, color_param, step_size, rgba_ray)
+
+!              end if
               xx_lic_last = xx_lic
               step_cnt = step_cnt + 1
             end do
@@ -355,7 +376,9 @@
 !   find mid point between xx_st and xx_tgt, this mid point will be actual sample point
             xx_lic = half*(xx_st + xx_tgt)
 !   reference data at origin of lic iteration
-            r_mid(1) = half*(r_org(1)+r_tgt(1))
+            do i = 1, lic_p%num_masking
+              r_mid(i) = half*(r_org(i)+r_tgt(i))
+            end do
 !   the vector interpolate from entry and exit point
             vec_mid = half*(vec_org + vec_tgt)
 !   calculate lic value at current location, lic value will be used as intensity
@@ -363,7 +386,7 @@
             call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
             &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
             &      isurf_orgs, ie_surf, xi, lic_p,                                    &
-            &      n_mask, r_mid(1), vec_mid,                                         &
+            &      r_mid, vec_mid, field_pvr%s_lic,                                   &
             &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
             &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
 
@@ -387,7 +410,9 @@
 !
         screen_st(1:3) = screen_tgt(1:3)
         xx_st(1:3) = xx_tgt(1:3)
-        r_org(1) = r_tgt(1)
+        do i = 1, lic_p%num_masking
+          r_org(i) = r_tgt(i)
+        end do
         vec_org(1:3) = vec_tgt(1:3)
       end do
       end subroutine lic_ray_trace_each_pixel

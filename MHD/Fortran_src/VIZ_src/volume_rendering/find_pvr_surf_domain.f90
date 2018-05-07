@@ -297,10 +297,19 @@
 !
           isurf_xrng_pvr_domain(1,inum)                                 &
      &       = max(isurf_xrng_pvr_domain(1,inum),ione)
+          isurf_xrng_pvr_domain(1,inum)                                 &
+     &       = min(isurf_xrng_pvr_domain(1,inum),n_pvr_pixel(1))
+          isurf_xrng_pvr_domain(2,inum)                                 &
+     &       = max(isurf_xrng_pvr_domain(2,inum),ione)
           isurf_xrng_pvr_domain(2,inum)                                 &
      &       = min(isurf_xrng_pvr_domain(2,inum),n_pvr_pixel(1))
+!
           jsurf_yrng_pvr_domain(1,inum)                                 &
      &       = max(jsurf_yrng_pvr_domain(1,inum),ione)
+          jsurf_yrng_pvr_domain(1,inum)                                 &
+     &       = min(jsurf_yrng_pvr_domain(1,inum),n_pvr_pixel(2))
+          jsurf_yrng_pvr_domain(2,inum)                                 &
+     &       = max(jsurf_yrng_pvr_domain(2,inum),ione)
           jsurf_yrng_pvr_domain(2,inum)                                 &
      &       = min(jsurf_yrng_pvr_domain(2,inum),n_pvr_pixel(2))
       end do

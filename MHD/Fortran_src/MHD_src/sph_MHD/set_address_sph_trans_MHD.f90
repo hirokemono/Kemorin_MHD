@@ -74,7 +74,7 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for MHD'
         write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, troidal, grid data'
+     &             'transform, poloidal, toroidal, grid data'
       end if
 !
       call b_trans_address_vector_MHD                                   &
@@ -88,7 +88,7 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'Address for forward transform: ',                  &
-     &             'transform, poloidal, troidal, grid data'
+     &             'transform, poloidal, toroidal, grid data'
       end if
 !
       call f_trans_address_vector_MHD                                   &
@@ -115,8 +115,6 @@
 !
         write(*,*) 'nvector_rtp_2_rj ', trns_MHD%forward%num_vector
         write(*,*) 'nscalar_rtp_2_rj ', trns_MHD%forward%num_scalar
-        write(*,*) 'Address for forward transform: ',                  &
-     &             'transform, poloidal, troidal, grid data'
       end if
 !
       end subroutine set_addresses_trans_sph_MHD

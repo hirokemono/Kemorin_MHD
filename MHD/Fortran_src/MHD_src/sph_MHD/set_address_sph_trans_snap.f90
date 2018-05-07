@@ -67,7 +67,7 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'Spherical transform field table for snapshot'
         write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, troidal, grid data'
+     &             'transform, poloidal, toroidal, grid data'
       end if
 !
       call b_trans_address_vector_snap(SPH_MHD%ipol, SPH_MHD%itor,      &
@@ -78,7 +78,7 @@
 !
      if(iflag_debug .gt. 0) then
         write(*,*) 'Address for forward transform: ',                   &
-     &             'transform, poloidal, troidal, grid data'
+     &             'transform, poloidal, toroidal, grid data'
       end if
 !
       call f_trans_address_vector_snap(SPH_MHD%ipol, SPH_MHD%itor,      &
@@ -100,8 +100,6 @@
 !
         write(*,*) 'nvector_rtp_2_rj ', trns_snap%forward%num_vector
         write(*,*) 'nscalar_rtp_2_rj ', trns_snap%forward%num_scalar
-        write(*,*) 'Address for forward transform: ',                  &
-     &             'transform, poloidal, troidal, grid data'
       end if
 !
       end subroutine set_addresses_snapshot_trans
@@ -127,7 +125,7 @@
         write(*,*) 'Spherical transform field table ',                  &
      &             'for intermediate of snapshot'
         write(*,*) 'Address for backward transform: ',                  &
-     &             'transform, poloidal, troidal, grid data'
+     &             'transform, poloidal, toroidal, grid data'
       end if
 !
       call b_trans_address_vector_stmp(trns_tmp%backward)
@@ -136,7 +134,7 @@
 !
      if(iflag_debug .gt. 0) then
         write(*,*) 'Address for forward transform: ',                   &
-     &             'transform, poloidal, troidal, grid data'
+     &             'transform, poloidal, toroidal, grid data'
       end if
 !
       call f_trans_address_vector_stmp(trns_tmp%forward)

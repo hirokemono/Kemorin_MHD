@@ -75,6 +75,8 @@
 !
       recursive subroutine dealloc_noise_node(n_node)
 !
+
+!
         type(noise_node), intent(inout) :: n_node
         integer(kind=kint) :: i, size, dim
 
@@ -107,20 +109,6 @@
         n_mask%ref_data(:) = ref_data(:)
 
       end subroutine init_noise_mask
-!
-!-----------------------------------------------------------------------
-!
-      logical function mask_flag(n_mask, value)
-      !
-        type(noise_mask), intent(inout) :: n_mask
-        real(kind=kreal), intent(in) :: value
-        if((value .gt. n_mask%range_min) .and.        &
-        &    (value .lt. n_mask%range_max)) then
-          mask_flag = .true.
-        else
-          mask_flag = .false.
-        end if
-      end function mask_flag
 !
 !-----------------------------------------------------------------------
 !

@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine copy_Csim_buo_4_sph_trans                            &
-!!     &         (sph_rtp, sph_d_grp, ifld_sgs,  wk_sgs, trns_SGS)
+!!     &         (sph_rtp, sph_d_grp, ifld_sgs,  wk_sgs, trns_SIMI)
 !!      subroutine copy_model_coefs_4_sph_snap                          &
 !!     &         (sph_rtp, sph_d_grp, ifld_sgs,  wk_sgs, trns_snap)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -16,7 +16,7 @@
 !!        type(phys_address), intent(in) :: bg_trns, fg_trns
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs, icomp_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(address_4_sph_trans), intent(inout) :: trns_SIMI
 !!@endverbatim
 !
       module copy_Csim_4_sph_MHD
@@ -47,34 +47,34 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_Csim_buo_4_sph_trans                              &
-     &         (sph_rtp, sph_d_grp, ifld_sgs,  wk_sgs, trns_SGS)
+     &         (sph_rtp, sph_d_grp, ifld_sgs,  wk_sgs, trns_SIMI)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(SGS_terms_address), intent(in) :: ifld_sgs
 !
       type(dynamic_model_data), intent(inout) :: wk_sgs
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(address_4_sph_trans), intent(inout) :: trns_SIMI
 !
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'ifld_sgs%i_buoyancy',                               &
-     &        ifld_sgs%i_buoyancy, trns_SGS%f_trns%i_Csim_SGS_buoyancy
+     &        ifld_sgs%i_buoyancy, trns_SIMI%f_trns%i_Csim_SGS_buoyancy
         write(*,*) 'ifld_sgs%i_comp_buoyancy',                          &
      &        ifld_sgs%i_comp_buoyancy,                                 &
-     &        trns_SGS%f_trns%i_Csim_SGS_comp_buo
+     &        trns_SIMI%f_trns%i_Csim_SGS_comp_buo
       end if
 !
       if(ifld_sgs%i_buoyancy .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_SGS%f_trns%i_Csim_SGS_buoyancy,                        &
-     &      ifld_sgs%i_buoyancy, wk_sgs, trns_SGS%forward)
+     &      trns_SIMI%f_trns%i_Csim_SGS_buoyancy,                       &
+     &      ifld_sgs%i_buoyancy, wk_sgs, trns_SIMI%forward)
       end if
 !
       if(ifld_sgs%i_comp_buoyancy .gt. 0) then
         call set_model_coefs_sph_snap(sph_rtp, sph_d_grp,               &
-     &      trns_SGS%f_trns%i_Csim_SGS_comp_buo,                        &
-     &      ifld_sgs%i_comp_buoyancy, wk_sgs, trns_SGS%forward)
+     &      trns_SIMI%f_trns%i_Csim_SGS_comp_buo,                       &
+     &      ifld_sgs%i_comp_buoyancy, wk_sgs, trns_SIMI%forward)
       end if
 !
       end subroutine copy_Csim_buo_4_sph_trans

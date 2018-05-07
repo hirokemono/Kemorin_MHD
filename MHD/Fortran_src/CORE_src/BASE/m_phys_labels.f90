@@ -810,7 +810,6 @@
       character(len=kchara), parameter :: fhd_SGS_comp =   'comp_4_SGS'
 !
 !  difference of field
-!
 !>        Field label for gradient of @f$ u_{x} @f$
       character(len=kchara), parameter :: fhd_grad_v_1 =  'grad_v_1'
 !>        Field label for gradient of @f$ u_{y} @f$
@@ -856,10 +855,6 @@
 !>         or @f$  \partial T_{0} / dr@f$
       character(len=kchara), parameter                                  &
      &             :: fhd_grad_ref_temp = 'grad_reference_temp'
-!>        Field label for gradient of @f$ \tilde{T} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_filter_temp = 'grad_filtered_temp'
-!>        Field label for gradient of @f$ C @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_grad_composit = 'grad_composition'
 !>        Field label for gradient of perturbation of composition
@@ -870,6 +865,64 @@
 !>         or @f$  \partial C_{0} / dr@f$
       character(len=kchara), parameter                                  &
      &             :: fhd_grad_ref_light = 'grad_reference_composition'
+!
+!
+!
+!  difference of filtered field
+!>        Field label for gradient of @f$ \tilde{u}_{x} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_v_1 =  'grad_filtered_v_1'
+!>        Field label for gradient of @f$ \tilde{u}_{y} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_v_2 =  'grad_filtered_v_2'
+!>        Field label for gradient of @f$ \tilde{u}_{z} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_v_3 =  'grad_filtered_v_3'
+!
+!>        Field label for gradient of @f$ \tilde{\omega}_{x} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_w_1 =  'grad_filtered_w_1'
+!>        Field label for gradient of @f$ \tilde{\omega}_{y} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_w_2 =  'grad_filtered_w_2'
+!>        Field label for gradient of @f$ \tilde{\omega}_{z} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_w_3 =  'grad_filtered_w_3'
+!
+!>        Field label for gradient of @f$ \tilde{A}_{x} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_a_1 =  'grad_filtered_a_1'
+!>        Field label for gradient of @f$ \tilde{A}_{y} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_a_2 =  'grad_filtered_a_2'
+!>        Field label for gradient of @f$ \tilde{A}_{z} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_a_3 =  'grad_filtered_a_3'
+!
+!>        Field label for gradient of @f$ \tilde{B}_{x} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_b_1 =  'grad_filtered_b_1'
+!>        Field label for gradient of @f$ \tilde{B}_{y} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_b_2 =  'grad_filtered_b_2'
+!>        Field label for gradient of @f$ \tilde{B}_{z} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_b_3 =  'grad_filtered_b_3'
+!
+!>        Field label for gradient of @f$ \tilde{J}_{x} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_j_1 =  'grad_filtered_j_1'
+!>        Field label for gradient of @f$ \tilde{J}_{y} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_j_2 =  'grad_filtered_j_2'
+!>        Field label for gradient of @f$ \tilde{J}_{z} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_j_3 =  'grad_filtered_j_3'
+!
+!>        Field label for gradient of @f$ \tilde{T} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_temp = 'grad_filtered_temp'
+!>        Field label for gradient of @f$ C @f$
 !>        Field label for gradient of @f$ \tilde{C} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_grad_filter_comp = 'grad_filtered_comp'
