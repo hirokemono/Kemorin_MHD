@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_nonlinear_gradient_sph_SGS                       &
-!!     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop,          &
+!!     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,          &
 !!     &          trans_p, dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld, &
 !!     &          trns_ngTMP, trns_SGS)
 !!        type(sph_grids), intent(in) :: sph
@@ -24,7 +24,7 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_ngTMP
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!      subroutine cal_wide_nonlinear_grad_sph_SGS                      &
-!!     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop, trans_p, &
+!!     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, &
 !!     &          dynamic_SPH, ipol, trns_SIMI, WK_sph, rj_fld,         &
 !!     &          trns_ngDNMC, trns_DYNS)
 !!        type(sph_grids), intent(in) :: sph
@@ -73,7 +73,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_nonlinear_gradient_sph_SGS                         &
-     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop,            &
+     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
      &          trans_p, dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld,   &
      &          trns_ngTMP, trns_SGS)
 !
@@ -86,9 +86,9 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
-      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
@@ -127,9 +127,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_wide_nonlinear_grad_sph_SGS                        &
-     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop, trans_p,   &
+     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,   &
      &          dynamic_SPH, ipol, trns_SIMI, WK_sph, rj_fld,           &
-     &          trns_DYNS, trns_Csim)
+     &          trns_DYNG, trns_Csim)
 !
       use copy_rtp_vectors_4_grad
       use sph_transforms_4_SGS
@@ -148,19 +148,19 @@
 !
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
-      type(address_4_sph_trans), intent(inout) :: trns_DYNS
+      type(address_4_sph_trans), intent(inout) :: trns_DYNG
       type(address_4_sph_trans), intent(inout) :: trns_Csim
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_filter_vecs_rtp_4_grad'
       call copy_filter_vecs_rtp_4_grad                                  &
-     &   (sph, trns_SIMI%b_trns, trns_SIMI%f_trns,                      &
-     &    trns_SIMI%backward, trns_DYNS%forward)
-      call calypso_mpi_barrier
+     &   (sph, trns_SIMI%b_trns, trns_DYNG%f_trns,                      &
+     &    trns_SIMI%backward, trns_DYNG%forward)
 !
-      if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
+      if (iflag_debug.eq.1)                                             &
+     &         write(*,*) 'sph_forward_trans_SGS_MHD trns_DYNG'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_DYNS%forward, WK_sph, trns_DYNS%mul_FFTW, rj_fld)
-      call calypso_mpi_barrier
+     &    trns_DYNG%forward, WK_sph, trns_DYNG%mul_FFTW, rj_fld)
+      return
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_filter_vecs_sph'
       call overwrt_grad_filter_vecs_sph(sph, r_2nd,                     &
@@ -169,14 +169,14 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_DYNS%backward, WK_sph, trns_DYNS%mul_FFTW)
+     &    rj_fld, trns_DYNG%backward, WK_sph, trns_DYNG%mul_FFTW)
       call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_nl_grad_SGS_rtp'
       call wider_nl_grad_SGS_rtp                                        &
      &   (sph, dynamic_SPH%sph_filters(2), MHD_prop,                    &
-     &    trns_SIMI%b_trns, trns_DYNS%b_trns, trns_Csim%b_trns,         &
-     &    trns_SIMI%backward, trns_DYNS%backward, trns_Csim%backward)
+     &    trns_SIMI%b_trns, trns_DYNG%b_trns, trns_Csim%b_trns,         &
+     &    trns_SIMI%backward, trns_DYNG%backward, trns_Csim%backward)
       call calypso_mpi_barrier
 !
       end subroutine cal_wide_nonlinear_grad_sph_SGS

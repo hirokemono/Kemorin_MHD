@@ -14,19 +14,20 @@
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(phys_address), intent(in) :: iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_ngTMP
-!!      subroutine set_addresses_trans_sph_ngSGS                        &
+!!
+!!      subroutine init_sph_trns_fld_ngrad_SGS                          &
 !!     &         (SPH_MHD, iphys, trns_SGS,                             &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(phys_address), intent(in) :: iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!
-!!      subroutine set_addresses_trans_sph_ngDYNS                       &
-!!     &         (SPH_MHD, iphys, trns_DYNS,                            &
+!!      subroutine init_sph_trns_fld_dyn_ngrad                          &
+!!     &         (SPH_MHD, iphys, trns_DYNG,                            &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(phys_address), intent(in) :: iphys
-!!        type(address_4_sph_trans), intent(inout) :: trns_DYNS
+!!        type(address_4_sph_trans), intent(inout) :: trns_DYNG
 !!@endverbatim
 !
       module set_address_sph_trans_ngSGS
@@ -172,6 +173,72 @@
       end if
 !
       end subroutine init_sph_trns_fld_ngrad_SGS
+!
+!-----------------------------------------------------------------------
+!
+      subroutine init_sph_trns_fld_dyn_ngrad                            &
+     &         (SPH_MHD, iphys, trns_DYNG,                              &
+     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      use address_bwd_sph_trans_ngSGS
+      use address_fwd_sph_trans_ngSGS
+!
+      type(SPH_mesh_field_data), intent(in) :: SPH_MHD
+      type(phys_address), intent(in) :: iphys
+      type(address_4_sph_trans), intent(inout) :: trns_DYNG
+      integer(kind = kint), intent(inout) :: ncomp_sph_trans
+      integer(kind = kint), intent(inout) :: nvector_sph_trans
+      integer(kind = kint), intent(inout) :: nscalar_sph_trans
+!
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Spherical transform field table ',                  &
+     &              'for dynamic nonlinear Gradient SGS (trns_DYNG)'
+        write(*,*) 'Address for backward transform: ',                  &
+     &             'transform, poloidal, troidal, grid data'
+      end if
+!
+      trns_DYNG%backward%nfield = 0
+      call alloc_sph_trns_field_name(trns_DYNG%backward)
+!
+      call b_trans_filter_vector_grads(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &    iphys, trns_DYNG%b_trns, trns_DYNG%backward)
+      trns_DYNG%backward%num_vector = trns_DYNG%backward%nfield
+      trns_DYNG%backward%num_scalar = trns_DYNG%backward%nfield         &
+     &                              - trns_DYNG%backward%num_vector
+      trns_DYNG%backward%num_tensor = 0
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'Address for forward transform: ',                   &
+     &             'transform, poloidal, troidal, grid data'
+      end if
+!
+!
+      trns_DYNG%forward%nfield = 0
+      call alloc_sph_trns_field_name(trns_DYNG%forward)
+!
+      trns_DYNG%forward%num_vector = trns_DYNG%forward%nfield
+      call f_trans_scalar_filter_vec_grads(SPH_MHD%ipol, SPH_MHD%itor,  &
+     &    iphys, trns_DYNG%f_trns, trns_DYNG%forward)
+      trns_DYNG%forward%num_scalar = trns_DYNG%forward%nfield           &
+     &                               - trns_DYNG%forward%num_vector
+      trns_DYNG%forward%num_tensor = 0
+!
+      call count_num_fields_each_trans(trns_DYNG%backward,              &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+      call count_num_fields_each_trans(trns_DYNG%forward,               &
+     &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'ncomp_sph_trans ', ncomp_sph_trans
+        write(*,*) 'nvector_rj_2_rtp ', trns_DYNG%backward%num_vector
+        write(*,*) 'nscalar_rj_2_rtp ', trns_DYNG%backward%num_scalar
+!
+        write(*,*) 'nvector_rtp_2_rj ', trns_DYNG%forward%num_vector
+        write(*,*) 'nscalar_rtp_2_rj ', trns_DYNG%forward%num_scalar
+      end if
+!
+      end subroutine init_sph_trns_fld_dyn_ngrad
 !
 !-----------------------------------------------------------------------
 !

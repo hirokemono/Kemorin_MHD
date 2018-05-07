@@ -115,6 +115,9 @@
           call init_sph_trns_fld_similarity                             &
      &       (SPH_MHD, iphys, WK%trns_SIMI,                             &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
+          call init_sph_trns_fld_dyn_ngrad                              &
+     &       (SPH_MHD, iphys, WK%trns_DYNG,                             &
+     &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
       end if
 !
@@ -168,7 +171,7 @@
       call init_fourier_transform_SGS_MHD                               &
      &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
      &    WK%trns_MHD, WK%trns_SGS, WK%trns_DYNS, WK%trns_Csim,         &
-     &    WK%trns_ngTMP, WK%trns_SIMI, WK%WK_sph)
+     &    WK%trns_ngTMP, WK%trns_SIMI, WK%trns_DYNG, WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
       call alloc_sphere_ave_coriolis(sph%sph_rj)
@@ -184,7 +187,7 @@
       subroutine init_fourier_transform_SGS_MHD                         &
      &       (SGS_param, ncomp_tot, sph_rtp, comm_rtp,                  &
      &        trns_MHD, trns_SGS, trns_DYNS, trns_Csim,                 &
-     &        trns_ngTMP, trns_SIMI, WK_sph)
+     &        trns_ngTMP, trns_SIMI, trns_DYNG, WK_sph)
 !
       use m_solver_SR
       use init_FFT_4_MHD
@@ -196,7 +199,8 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD,  trns_SGS
       type(address_4_sph_trans), intent(inout) :: trns_DYNS, trns_Csim
-      type(address_4_sph_trans), intent(inout) :: trns_ngTMP, trns_SIMI
+      type(address_4_sph_trans), intent(inout) :: trns_ngTMP
+      type(address_4_sph_trans), intent(inout) :: trns_SIMI, trns_DYNG
       type(spherical_trns_works), intent(inout) :: WK_sph
 !
 !
@@ -228,6 +232,9 @@
         call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
      &      trns_SIMI%forward%ncomp, trns_SIMI%backward%ncomp,          &
      &      trns_SIMI%mul_FFTW)
+        call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
+     &      trns_DYNG%forward%ncomp, trns_DYNG%backward%ncomp,          &
+     &      trns_DYNG%mul_FFTW)
         end if
       end if
 !

@@ -291,10 +291,10 @@
      &   (ipol%i_SGS_vp_induct, ipol%i_dbl_SGS_vp_induct,               &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_SGS_h_flux, ipol%i_dbl_SGS_h_flux, &
+      call vector_sph_filter(ipol%i_SGS_h_flux, ipol%i_dbl_SGS_h_flux,  &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
-      call vector_sph_filter(ipol%i_SGS_c_flux, ipol%i_dbl_SGS_c_flux, &
+      call vector_sph_filter(ipol%i_SGS_c_flux, ipol%i_dbl_SGS_c_flux,  &
      &    sph_rj, sph_base_f%r_filter, sph_base_f%sph_filter, rj_fld)
 !
       end subroutine cal_sph_dble_filtering_forces

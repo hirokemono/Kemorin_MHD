@@ -114,7 +114,7 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &                'cal_nonlinear_gradient_sph_SGS'
         call cal_nonlinear_gradient_sph_SGS                             &
-     &         (sph, comms_sph, r_2nd, sph_MHD_bc, MHD_prop, trans_p,   &
+     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,   &
      &          dynamic_SPH, ipol, WK%trns_MHD, WK%WK_sph, rj_fld,      &
      &          WK%trns_ngTMP, WK%trns_SGS)
 !
@@ -125,9 +125,9 @@
           if(istep_dynamic .eq. 0) then
             call start_elapsed_time(83)
             call sph_dynamic_nl_gradient                                &
-     &         (SGS_param, sph, comms_sph, MHD_prop, trans_p,           &
-     &          WK%trns_SIMI, WK%trns_DYNS, WK%WK_sph, dynamic_SPH,     &
-     &          ipol, rj_fld)
+     &         (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, &
+     &          trans_p, WK%trns_SGS, WK%trns_SIMI, WK%trns_DYNG,       &
+     &          WK%trns_Csim, WK%WK_sph, dynamic_SPH, ipol, rj_fld)
             call end_elapsed_time(83)
           end if
         end if
@@ -231,31 +231,58 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine sph_dynamic_nl_gradient(SGS_param, sph, comms_sph,     &
-     &          MHD_prop, trans_p, trns_SIMI, trns_DYNS, WK_sph,        &
-     &          dynamic_SPH, ipol, rj_fld)
+      subroutine sph_dynamic_nl_gradient(SGS_param,                     &
+     &          sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,   &
+     &          trns_SGS, trns_SIMI, trns_DYNG, trns_Csim,              &
+     &          WK_sph, dynamic_SPH, ipol, rj_fld)
 !
       use scale_similarity_sph_SGS
+      use sph_transforms_4_SGS
+      use cal_filtered_sph_fields
+      use nonlinear_gradient_sph_SGS
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
 !
-      type(address_4_sph_trans), intent(inout) :: trns_SIMI, trns_DYNS
+      type(address_4_sph_trans), intent(inout) :: trns_SGS, trns_Csim
+      type(address_4_sph_trans), intent(inout) :: trns_SIMI, trns_DYNG
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!       Scale similarity
+!       Make scale similarity model to grid data
       if (iflag_debug .eq. 1) write(*,*)                                &
      &        'cal_scale_similarity_sph_SGS for dynamic model'
       call cal_scale_similarity_sph_SGS                                 &
      &   (sph, comms_sph, MHD_prop, trans_p, WK_sph,                    &
      &    dynamic_SPH, ipol, rj_fld, trns_SIMI)
+!
+!       Bring SGS terms by nonlinear model to spectr data
+      call start_elapsed_time(16)
+      if (iflag_debug.eq.1) write(*,*)                                  &
+     &            'sph_forward_trans_SGS_MHD SGS for dynamic nl. grad'
+      call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
+     &    trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
+      call end_elapsed_time(16)
+!
+      if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
+      call cal_sph_dble_filtering_forces                                &
+     &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
+      call calypso_mpi_barrier
+!
+      if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
+      call cal_wide_nonlinear_grad_sph_SGS                              &
+     &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,         &
+     &    dynamic_SPH, ipol, trns_SIMI, WK_sph, rj_fld,                 &
+     &    trns_DYNG, trns_Csim)
+      call calypso_mpi_barrier
 !
       end subroutine sph_dynamic_nl_gradient
 !

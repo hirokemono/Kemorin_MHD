@@ -8,6 +8,8 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
+!!      subroutine alloc_sph_trns_field_name(each_trns)
+!!        type(address_each_sph_trans), intent(inout) :: each_trns
 !!      subroutine alloc_nonlinear_data(sph_rtp, trns)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!      subroutine alloc_nonlinear_pole(sph_rtp, trns)

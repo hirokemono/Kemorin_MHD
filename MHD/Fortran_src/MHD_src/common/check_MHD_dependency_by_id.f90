@@ -427,7 +427,8 @@
       do i = 1, fld%num_phys
         i_start = fld%istack_component(i-1) + 1
         if(     i_start .eq. iphys%i_SGS_rot_inertia                    &
-     &     .or. i_start .eq. iphys%i_SGS_div_inertia) then 
+     &     .or. i_start .eq. iphys%i_SGS_div_inertia                    &
+     &     .or. i_start .eq. iphys%i_dbl_SGS_inertia) then 
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_inertia, fhd_SGS_inertia)
         else if(i_start .eq. iphys%i_SGS_div_c_flux                     &
@@ -445,9 +446,20 @@
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_magne, fhd_magne)
         else if(i_start .eq. iphys%i_SGS_rot_Lorentz                    &
-     &     .or. i_start .eq. iphys%i_SGS_div_Lorentz) then
+     &     .or. i_start .eq. iphys%i_SGS_div_Lorentz                    &
+     &     .or. i_start .eq. iphys%i_dbl_SGS_Lorentz) then
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_Lorentz, fhd_SGS_Lorentz)
+        else if(i_start .eq. iphys%i_dbl_SGS_vp_induct) then 
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_SGS_vp_induct, fhd_SGS_vp_induct)
+!
+        else if(i_start .eq. iphys%i_dbl_SGS_h_flux) then 
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_SGS_h_flux, fhd_SGS_h_flux)
+        else if(i_start .eq. iphys%i_dbl_SGS_c_flux) then 
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_SGS_c_flux, fhd_SGS_c_flux)
 !
         else if(i_start .eq. iphys%i_SGS_buoyancy                       &
      &     .or. i_start .eq. iphys%i_SGS_buo_wk) then 
