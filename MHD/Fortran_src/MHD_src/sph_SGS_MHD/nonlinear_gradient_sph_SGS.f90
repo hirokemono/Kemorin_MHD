@@ -164,13 +164,13 @@
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_filter_vecs_sph'
       call overwrt_grad_filter_vecs_sph                                 &
      &   (sph, r_2nd,  sph_MHD_bc, trans_p%leg, ipol, rj_fld)
-      call calypso_mpi_barrier
-      return
 !
-      if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
+      if (iflag_debug.eq.1)                                             &
+     &         write(*,*) 'sph_forward_trans_SGS_MHD trns_DYNG'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
      &    rj_fld, trns_DYNG%backward, WK_sph, trns_DYNG%mul_FFTW)
       call calypso_mpi_barrier
+      return
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_nl_grad_SGS_rtp'
       call wider_nl_grad_SGS_rtp                                        &

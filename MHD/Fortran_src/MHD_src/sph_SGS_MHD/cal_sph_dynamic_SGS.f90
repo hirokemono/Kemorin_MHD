@@ -125,7 +125,7 @@
           if(istep_dynamic .eq. 0) then
             call start_elapsed_time(83)
             call sph_dynamic_nl_gradient                                &
-     &         (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, &
+     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
      &          trans_p, WK%trns_SGS, WK%trns_SIMI, WK%trns_DYNG,       &
      &          WK%trns_Csim, WK%WK_sph, dynamic_SPH, ipol, rj_fld)
             call end_elapsed_time(83)
@@ -231,8 +231,8 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine sph_dynamic_nl_gradient(SGS_param,                     &
-     &          sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,   &
+      subroutine sph_dynamic_nl_gradient                                &
+     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,   &
      &          trns_SGS, trns_SIMI, trns_DYNG, trns_Csim,              &
      &          WK_sph, dynamic_SPH, ipol, rj_fld)
 !
@@ -241,7 +241,6 @@
       use cal_filtered_sph_fields
       use nonlinear_gradient_sph_SGS
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
