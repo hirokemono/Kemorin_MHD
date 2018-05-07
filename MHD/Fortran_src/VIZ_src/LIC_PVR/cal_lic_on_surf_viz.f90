@@ -331,8 +331,8 @@
       !   extend to surface of element
       !
         call find_line_end_in_1ele(iflag_back, numnod, numele, numsurf, &
-        &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
-        &      v_start, x_start, isf_tgt, x_tgt, xi)
+     &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
+     &      v_start, x_start, isf_tgt, x_tgt, xi)
       !
         if(isf_tgt .eq. 0) then
           iflag_comm = -12
@@ -341,8 +341,10 @@
       ! exit point after 2nd field line trace
         isurf_end = abs(isf_4_ele(iele,isf_tgt))
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
-        &      ie_surf, isurf_end, xi, vect_nod, v_start)
-        step_len = NORM2(x_tgt(1:3) - x_org(1:3))
+       &      ie_surf, isurf_end, xi, vect_nod, v_start)
+        step_len = sqrt( (x_tgt(1) - x_org(1))**2                       &
+       &               + (x_tgt(2) - x_org(2))**2                       &
+       &               + (x_tgt(3) - x_org(3))**2)
         if(iflag_debug .eq. 1) write(50 + my_rank, *) "To  ", isurf_end, "at elem", iele, "local", isf_tgt
         if(iflag_debug .eq. 1) write(50 + my_rank, *) "pos:", x_tgt
         x_start(1:3) =  x_tgt(1:3)
@@ -414,7 +416,10 @@
           len_sum = len_sum + avg_stepsize
           len_sum = min(len_sum, lic_p%trace_length)
           k_pos = 0.0
-          x_tgt = x_start + v_start / norm2(v_start) * avg_stepsize
+          x_tgt = x_start + avg_stepsize * v_start                      &
+     &                     / sqrt(v_start(1)*v_start(1)                 &
+     &                          + v_start(2)*v_start(2)                 &
+     &                          + v_start(3)*v_start(3))
           n_v = 0.0
           g_v(1:3) = 0.0
           do i = 1, lic_p%num_masking
