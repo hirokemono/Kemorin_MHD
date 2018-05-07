@@ -200,6 +200,7 @@
       call cal_sph_enegy_fluxes                                         &
      &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,         &
      &    ipol, trns_MHD, trns_snap,  WK_sph, rj_fld)
+      call calypso_mpi_barrier
 !
 !      Work of SGS terms
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then
@@ -210,6 +211,7 @@
      &      trns_MHD%backward, trns_SGS%forward, trns_snap%backward,    &
      &      trns_snap%forward)
       end if
+      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'

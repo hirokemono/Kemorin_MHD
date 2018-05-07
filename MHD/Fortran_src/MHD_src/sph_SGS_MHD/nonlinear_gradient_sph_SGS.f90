@@ -166,17 +166,15 @@
      &   (sph, r_2nd,  sph_MHD_bc, trans_p%leg, ipol, rj_fld)
 !
       if (iflag_debug.eq.1)                                             &
-     &         write(*,*) 'sph_forward_trans_SGS_MHD trns_DYNG'
+     &         write(*,*) 'sph_back_trans_SGS_MHD trns_DYNG'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
      &    rj_fld, trns_DYNG%backward, WK_sph, trns_DYNG%mul_FFTW)
-      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_nl_grad_SGS_rtp'
       call wider_nl_grad_SGS_rtp                                        &
      &   (sph, dynamic_SPH%sph_filters(2), MHD_prop,                    &
      &    trns_SIMI%b_trns, trns_DYNG%b_trns, trns_Csim%b_trns,         &
      &    trns_SIMI%backward, trns_DYNG%backward, trns_Csim%backward)
-      call calypso_mpi_barrier
 !
       end subroutine cal_wide_nonlinear_grad_sph_SGS
 !

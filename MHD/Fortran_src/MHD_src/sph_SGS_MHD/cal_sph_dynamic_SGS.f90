@@ -125,7 +125,7 @@
           if(istep_dynamic .eq. 0) then
             call start_elapsed_time(83)
             call sph_dynamic_nl_gradient                                &
-     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
+     &         (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, &
      &          trans_p, WK%trns_SGS, WK%trns_SIMI, WK%trns_DYNG,       &
      &          WK%trns_Csim, WK%WK_sph, dynamic_SPH, ipol, rj_fld)
             call end_elapsed_time(83)
@@ -223,24 +223,27 @@
      &   trns_DYNS%b_trns, trns_DYNS%backward)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
-      call const_model_coefs_4_sph                                      &
-     &   (SGS_param, sph%sph_rtp, trns_SGS%f_trns, trns_DYNS%b_trns,    &
-     &    trns_SGS%forward, trns_DYNS%backward, dynamic_SPH)
+      call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
+     &    trns_SGS%f_trns, trns_DYNS%b_trns, trns_DYNS%b_trns,          &
+     &    trns_SGS%forward, trns_DYNS%backward, trns_DYNS%backward,     &
+     &    dynamic_SPH)
 !
       end subroutine sph_dynamic_similarity
 !
 !*   ------------------------------------------------------------------
 !
       subroutine sph_dynamic_nl_gradient                                &
-     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,   &
-     &          trns_SGS, trns_SIMI, trns_DYNG, trns_Csim,              &
+     &         (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, &
+     &          trans_p, trns_SGS, trns_SIMI, trns_DYNG, trns_Csim,     &
      &          WK_sph, dynamic_SPH, ipol, rj_fld)
 !
       use scale_similarity_sph_SGS
       use sph_transforms_4_SGS
       use cal_filtered_sph_fields
       use nonlinear_gradient_sph_SGS
+      use dynamic_model_sph_MHD
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -274,13 +277,18 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
       call cal_sph_dble_filtering_forces                                &
      &   (sph%sph_rj, ipol, dynamic_SPH%sph_filters(2), rj_fld)
-      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sph_dble_filtering_forces'
       call cal_wide_nonlinear_grad_sph_SGS                              &
      &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,         &
      &    dynamic_SPH, ipol, trns_SIMI, WK_sph, rj_fld,                 &
      &    trns_DYNG, trns_Csim)
+!
+      if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
+      call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
+     &    trns_SIMI%f_trns, trns_Csim%b_trns, trns_DYNG%b_trns,         &
+     &    trns_SIMI%forward, trns_Csim%backward, trns_DYNG%backward,    &
+     &    dynamic_SPH)
       call calypso_mpi_barrier
 !
       end subroutine sph_dynamic_nl_gradient
