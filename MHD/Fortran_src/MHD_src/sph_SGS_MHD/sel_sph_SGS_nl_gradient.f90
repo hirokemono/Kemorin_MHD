@@ -27,7 +27,6 @@
 !!     &         ncomp_sgs_rj_2_rtp, fld_sgs_rtp,                       &
 !!     &         if_SGS_mflux, ncomp_sgs_rtp_2_rj, frc_sgs_rtp)
 !!       type(sph_rtp_grid), intent(in) :: sph_rtp
-!!       type(group_data) :: radial_rtp_grp
 !!       type(sph_filters_type), intent(in) :: sph_filters
 !!@endverbatim
 !
@@ -59,7 +58,6 @@
       use sph_SGS_nl_gradient_pout
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(group_data) :: radial_rtp_grp
       type(sph_filters_type), intent(in) :: sph_filters
       real(kind = kreal), intent(in) :: coef
 !
@@ -82,7 +80,6 @@
 !
 !
       if(iflag_FFT .eq. iflag_FFTW) then
-        write(*,*) 'sph_SGS_induct_nl_gradient_pin'
         call sph_SGS_induct_nl_gradient_pin                             &
      &     (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,              &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
@@ -96,7 +93,6 @@
      &      fld_sgs_rtp(1,ib_grad_by), fld_sgs_rtp(1,ib_grad_bz),       &
      &      frc_sgs_rtp(1,if_SGS_idct))
       else
-        write(*,*) 'sph_SGS_induct_nl_gradient_pout'
         call sph_SGS_induct_nl_gradient_pout                            &
      &     (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,              &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &

@@ -98,7 +98,6 @@
       type(address_4_sph_trans), intent(inout) :: trns_ngTMP
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
-      integer :: lt, kr, mp, inod
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_vectors_rtp_4_grad'
       call copy_vectors_rtp_4_grad                                      &
@@ -117,18 +116,6 @@
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
      &    rj_fld, trns_ngTMP%backward, WK_sph, trns_ngTMP%mul_FFTW)
       call calypso_mpi_barrier
-!
-        mp = 7
-        kr = 15
-        do lt = 1, sph%sph_rtp%nidx_rtp(2)
-          inod = kr + (lt-1)*sph%sph_rtp%nidx_rtp(1)                    &
-     &        + (mp-1)*sph%sph_rtp%nidx_rtp(1)*sph%sph_rtp%nidx_rtp(2)
-          write(40+my_rank,*) ' trns_MHD ', kr, lt, mp, inod,&
-     &      trns_MHD%backward%fld_rtp(inod,:)
-          write(50+my_rank,*) ' vorticity ', kr, lt, mp, inod,&
-     &      trns_ngTMP%backward%fld_rtp(inod,  &
-     &      trns_ngTMP%b_trns%i_grad_wx+1:trns_ngTMP%b_trns%i_grad_wx+8)
-        end do
 !
       if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
       call nl_gradient_SGS_terms_rtp                                    &
