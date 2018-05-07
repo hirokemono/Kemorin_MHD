@@ -109,8 +109,8 @@
      &    trns_ngTMP%forward, WK_sph, trns_ngTMP%mul_FFTW, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_of_vectors_sph'
-      call overwrt_grad_of_vectors_sph(sph, r_2nd,                      &
-     &    sph_MHD_bc, trans_p%leg, ipol, rj_fld)
+      call overwrt_grad_of_vectors_sph                                  &
+     &    (sph, r_2nd, sph_MHD_bc, trans_p%leg, ipol, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
@@ -160,12 +160,12 @@
      &         write(*,*) 'sph_forward_trans_SGS_MHD trns_DYNG'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
      &    trns_DYNG%forward, WK_sph, trns_DYNG%mul_FFTW, rj_fld)
-      return
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_filter_vecs_sph'
-      call overwrt_grad_filter_vecs_sph(sph, r_2nd,                     &
-     &    sph_MHD_bc, trans_p%leg, ipol, rj_fld)
+      call overwrt_grad_filter_vecs_sph                                 &
+     &   (sph, r_2nd,  sph_MHD_bc, trans_p%leg, ipol, rj_fld)
       call calypso_mpi_barrier
+      return
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
