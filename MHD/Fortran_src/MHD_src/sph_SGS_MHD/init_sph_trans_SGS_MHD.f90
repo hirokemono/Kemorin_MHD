@@ -87,9 +87,14 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
+        if(iflag_debug .gt. 0) then
+          write(*,*) 'Spherical transform field table ',                &
+     &               'for similarity SGS (trns_SGS)'
+        end if
         call init_sph_trns_fld_similarity(SPH_MHD, iphys, WK%trns_SGS,  &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-        if(SGS_param%iflag_dynamic .gt. 0) then
+!
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           call init_sph_trns_fld_dyn_simi(SPH_MHD, iphys, WK%trns_DYNS, &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_addresses_trans_sph_Csim                             &
@@ -102,7 +107,14 @@
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
         call init_sph_trns_fld_ngrad_pre(SPH_MHD, iphys, WK%trns_ngTMP, &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-        if(SGS_param%iflag_dynamic .gt. 0) then
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+          if(iflag_debug .gt. 0) then
+            write(*,*) 'Spherical transform field table ',              &
+     &                 'for similarity SGS (trns_SIMI)'
+          end if
+          call init_sph_trns_fld_similarity                             &
+     &       (SPH_MHD, iphys, WK%trns_SIMI,                             &
+     &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
       end if
 !
@@ -156,7 +168,7 @@
       call init_fourier_transform_SGS_MHD                               &
      &   (SGS_param, ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,  &
      &    WK%trns_MHD, WK%trns_SGS, WK%trns_DYNS, WK%trns_Csim,         &
-     &    WK%trns_ngTMP, WK%WK_sph)
+     &    WK%trns_ngTMP, WK%trns_SIMI, WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
       call alloc_sphere_ave_coriolis(sph%sph_rj)
@@ -172,7 +184,7 @@
       subroutine init_fourier_transform_SGS_MHD                         &
      &       (SGS_param, ncomp_tot, sph_rtp, comm_rtp,                  &
      &        trns_MHD, trns_SGS, trns_DYNS, trns_Csim,                 &
-     &        trns_ngTMP, WK_sph)
+     &        trns_ngTMP, trns_SIMI, WK_sph)
 !
       use m_solver_SR
       use init_FFT_4_MHD
@@ -184,7 +196,7 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD,  trns_SGS
       type(address_4_sph_trans), intent(inout) :: trns_DYNS, trns_Csim
-      type(address_4_sph_trans), intent(inout) :: trns_ngTMP
+      type(address_4_sph_trans), intent(inout) :: trns_ngTMP, trns_SIMI
       type(spherical_trns_works), intent(inout) :: WK_sph
 !
 !
@@ -196,7 +208,7 @@
      &      trns_SGS%forward%ncomp, trns_SGS%backward%ncomp,            &
      &      trns_SGS%mul_FFTW)
 !
-        if(SGS_param%iflag_dynamic .gt. 0) then
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,         &
      &        trns_DYNS%forward%ncomp, trns_DYNS%backward%ncomp,        &
      &        trns_DYNS%mul_FFTW)
@@ -211,6 +223,12 @@
         call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
      &      trns_ngTMP%forward%ncomp, trns_ngTMP%backward%ncomp,        &
      &      trns_ngTMP%mul_FFTW)
+!
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+        call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
+     &      trns_SIMI%forward%ncomp, trns_SIMI%backward%ncomp,          &
+     &      trns_SIMI%mul_FFTW)
+        end if
       end if
 !
       end subroutine init_fourier_transform_SGS_MHD

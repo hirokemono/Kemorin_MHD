@@ -59,8 +59,6 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'Spherical transform field table ',                  &
-     &             'for similarity SGS (trns_SIMI)'
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, toroidal, grid data'
       end if

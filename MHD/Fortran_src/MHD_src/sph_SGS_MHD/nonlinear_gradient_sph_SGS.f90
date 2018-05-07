@@ -115,14 +115,12 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
      &    rj_fld, trns_ngTMP%backward, WK_sph, trns_ngTMP%mul_FFTW)
-      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
       call nl_gradient_SGS_terms_rtp                                    &
      &    (sph, dynamic_SPH%sph_filters(1), MHD_prop,                   &
      &    trns_MHD%b_trns, trns_ngTMP%b_trns, trns_SGS%f_trns,          &
      &    trns_MHD%backward, trns_ngTMP%backward, trns_SGS%forward)
-      call calypso_mpi_barrier
 !
       end subroutine cal_nonlinear_gradient_sph_SGS
 !

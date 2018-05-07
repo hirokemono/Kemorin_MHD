@@ -124,9 +124,7 @@
         call SGS_by_pseudo_sph(i_step, SGS_par%i_step_sgs_coefs,        &
      &      SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                &
      &      r_2nd, SPH_model%MHD_prop, SPH_model%sph_MHD_bc, trans_p,   &
-     &      WK%trns_MHD, WK%trns_SGS, WK%trns_DYNS, WK%trns_ngTMP,      &
-     &      WK%WK_sph, dynamic_SPH,                                     &
-     &      SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+     &      WK, dynamic_SPH, SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
       end if
 !
 !   ----  Lead advection of reference field
