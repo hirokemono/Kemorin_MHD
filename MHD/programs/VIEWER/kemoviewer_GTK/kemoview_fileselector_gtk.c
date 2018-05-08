@@ -91,12 +91,12 @@ static void gtk_file_menu(const char *title){
 }
 
 static void gtk_image_format_box(GtkWidget *c1){
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "No Image");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "PNG");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "BMP");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "EPS");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "PDF");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "PS");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "No Image");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "PNG");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "BMP");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "EPS");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "PDF");
+    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "PS");
 	return;
 }
 
