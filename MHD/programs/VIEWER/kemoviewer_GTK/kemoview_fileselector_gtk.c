@@ -33,7 +33,7 @@ static void fmt_clicked(GtkWidget *widget, gpointer data)
 
 static void fmt_changed(GtkWidget *combo, gpointer data)
 {
-	gtk_selected_filefmt = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(combo));
+	gtk_selected_filefmt = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
 	
 	printf("Format: %s\n",gtk_selected_filefmt);
 /*	printf("index: %d\n",idx_menu);*/
@@ -70,15 +70,19 @@ static void file_ok_sel (GtkWidget *w, GtkFileSelection *fs){
 */
 
 static void gtk_file_menu(const char *title){
+	GtkFileChooserAction action[] 
+			= {GTK_FILE_CHOOSER_ACTION_OPEN, GTK_FILE_CHOOSER_ACTION_SAVE,
+			GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER};
 	
 	iflag_set = IZERO;
 	/* generate file selection widget*/
     filew = gtk_file_selection_new (title);
-	gtk_signal_connect (GTK_OBJECT (filew), "destroy",
-			(GtkSignalFunc) destroy, &filew);
+	filew = gtk_file_chooser_dialog_new(title, GTK_WINDOW(parent), action[0],
+				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL, GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL);
+	g_signal_connect (filew, "destroy", G_CALLBACK(destroy), &filew);
 	/* connect ok_button to file_ok_sel() */
-	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
-			"clicked", (GtkSignalFunc) file_ok_sel, filew );
+	g_signal_connect((GTK_FILE_SELECTION (filew)->ok_button),
+			"clicked", G_CALLBACK(file_ok_sel), filew );
 	
 	/* Connect cancel_button to destroy window */
 	gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
@@ -92,12 +96,12 @@ static void gtk_file_menu(const char *title){
 }
 
 static void gtk_image_format_box(GtkWidget *c1){
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "No Image");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "PNG");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "BMP");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "EPS");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "PDF");
-	gtk_combo_box_append_text(GTK_COMBO_BOX(c1), "PS");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "No Image");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "PNG");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "BMP");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "EPS");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "PDF");
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(c1), "PS");
 	return;
 }
 
@@ -129,9 +133,9 @@ static void gtk_image_fmt_menu(){
 	lavel0 = gtk_label_new("Image format");
 	gtk_box_pack_start(GTK_BOX(box1), lavel0, TRUE, TRUE, 0);
 	
-	c1 = gtk_combo_box_new_text();
+	c1 = gtk_combo_box_text_new();
 	gtk_image_format_box(c1);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(c1), 0);
+	/* gtk_combo_box_set_active(GTK_COMBO_BOX_TEXT(c1), 0); */
 	gtk_box_pack_start(GTK_BOX(box1), c1, FALSE, FALSE, 0);
 	
 	bot1 = gtk_button_new_with_label("Cancel");
@@ -162,8 +166,7 @@ static void gtk_evolution_fmt_menu(int istep){
 	fmtw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(fmtw), "Select File Format");
 
-	gtk_signal_connect (GTK_OBJECT (fmtw), "destroy",
-			(GtkSignalFunc) destroy, &fmtw);
+	g_signal_connect(fmtw, "destroy", G_CALLBACK(destroy), &fmtw);
 
 	gtk_container_set_border_width(GTK_CONTAINER(fmtw), 5);
 
@@ -186,9 +189,9 @@ static void gtk_evolution_fmt_menu(int istep){
 	lavel0 = gtk_label_new("Image format");
 	gtk_box_pack_start(GTK_BOX(box1), lavel0, TRUE, TRUE, 0);
 	
-	c1 = gtk_combo_box_new_text();
+	c1 = gtk_combo_box_text_new();
 	gtk_image_format_box(c1);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(c1), 0);
+	/* gtk_combo_box_set_active(GTK_COMBO_BOX_TEXT(c1), 0); */
 	gtk_box_pack_start(GTK_BOX(box1), c1, FALSE, FALSE, 0);
 	
 	
