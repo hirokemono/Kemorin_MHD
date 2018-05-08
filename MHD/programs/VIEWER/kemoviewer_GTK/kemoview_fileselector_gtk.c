@@ -74,10 +74,10 @@ static void gtk_file_menu(const char *title){
 	iflag_set = IZERO;
 	/* generate file selection widget*/
 	filew = gtk_file_selection_new (title);
-	gtk_signal_connect (GTK_OBJECT (filew), "destroy",
+	g_signal_connect(filew, "destroy",
 			(GtkSignalFunc) destroy, &filew);
 	/* connect ok_button to file_ok_sel() */
-	gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filew)->ok_button),
+	g_signal_connect(GTK_FILE_SELECTION(filew)->ok_button,
 			"clicked", (GtkSignalFunc) file_ok_sel, filew );
 	
 	/* Connect cancel_button to destroy window */
@@ -162,7 +162,7 @@ static void gtk_evolution_fmt_menu(int istep){
 	fmtw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(fmtw), "Select File Format");
 
-	gtk_signal_connect (GTK_OBJECT (fmtw), "destroy",
+	g_signal_connect(fmtw, "destroy",
 			(GtkSignalFunc) destroy, &fmtw);
 
 	gtk_container_set_border_width(GTK_CONTAINER(fmtw), 5);

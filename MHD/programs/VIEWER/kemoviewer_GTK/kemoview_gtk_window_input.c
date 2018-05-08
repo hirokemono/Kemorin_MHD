@@ -611,9 +611,9 @@ static void set_background_GTK(GtkWidget *widget, GtkColorSelectionDialog *color
 
 static void gtk_PSFcolorselect(const char *title){
 	rangew = gtk_color_selection_dialog_new(title);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button),
+	g_signal_connect(GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button,
 				"clicked", GTK_SIGNAL_FUNC(set_PSFcolor_GTK), rangew);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button),
+	g_signal_connect(GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button,
 				"clicked", GTK_SIGNAL_FUNC(destroy), rangew);
 	gtk_widget_show_all(rangew);
 	gtk_main();
@@ -623,9 +623,9 @@ static void gtk_PSFcolorselect(const char *title){
 
 static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 	rangew = gtk_color_selection_dialog_new(title);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button),
+	g_signal_connect(GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button,
 				"clicked", GTK_SIGNAL_FUNC(set_background_GTK), rangew);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button),
+	g_signal_connect(GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button,
 				"clicked", GTK_SIGNAL_FUNC(destroy), rangew);
 	gtk_widget_show_all(rangew);
 	gtk_main();
