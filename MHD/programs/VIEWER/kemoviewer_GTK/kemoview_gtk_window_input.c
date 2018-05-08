@@ -265,22 +265,22 @@ static void gtk_colormap_menu(double range_min, double range_max, const char *ti
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
 	
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
-	hbox1 = gtk_hbox_new(FALSE, 5);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox1);
-	hbox2 = gtk_hbox_new(FALSE, 5);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox2);
-	vbox1 = gtk_vbox_new(FALSE, 5);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), vbox1);
-	hbox4 = gtk_hbox_new(FALSE, 5);
+	hbox4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox4);
-	hbox3 = gtk_hbox_new(FALSE, 5);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox3);
-	hbox5 = gtk_hbox_new(FALSE, 5);
+	hbox5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox5);
-	hbox6 = gtk_hbox_new(FALSE, 5);
+	hbox6 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox6);
 	
 	
@@ -374,22 +374,22 @@ static void gtk_opacitymap_menu(double range_min, double range_max, const char *
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
 	
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
-	hbox1 = gtk_hbox_new(FALSE, 5);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox1);
-	hbox2 = gtk_hbox_new(FALSE, 5);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox2);
-	vbox1 = gtk_vbox_new(FALSE, 5);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), vbox1);
-	hbox4 = gtk_hbox_new(FALSE, 5);
+	hbox4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox4);
-	hbox3 = gtk_hbox_new(FALSE, 5);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox3);
-	hbox5 = gtk_hbox_new(FALSE, 5);
+	hbox5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox5);
-	hbox6 = gtk_hbox_new(FALSE, 5);
+	hbox6 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox6);
 	
 	
@@ -466,16 +466,16 @@ static void gtk_range_menu(double range_min, double range_max,
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
 
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
-	box1 = gtk_hbox_new(FALSE, 5);
+	box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box1);
-	box2 = gtk_hbox_new(FALSE, 5);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box2);
-	box3 = gtk_hbox_new(FALSE, 5);
+	box3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box3);
-	box5 = gtk_hbox_new(FALSE, 5);
+	box5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box5);
 	
 	
@@ -536,16 +536,16 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
 
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
-	box1 = gtk_hbox_new(FALSE, 5);
+	box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box1);
-	box2 = gtk_hbox_new(FALSE, 5);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box2);
-	box3 = gtk_hbox_new(FALSE, 5);
+	box3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box3);
-	box5 = gtk_hbox_new(FALSE, 5);
+	box5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box5);
 	
 	
@@ -653,16 +653,16 @@ static void gtk_nline_menu(int nline, const char *title){
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
 
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
-	box1 = gtk_hbox_new(FALSE, 5);
+	box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box1);
-	box2 = gtk_hbox_new(FALSE, 5);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box2);
-	box3 = gtk_hbox_new(FALSE, 5);
+	box3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box3);
-	box5 = gtk_hbox_new(FALSE, 5);
+	box5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box5);
 	
 	

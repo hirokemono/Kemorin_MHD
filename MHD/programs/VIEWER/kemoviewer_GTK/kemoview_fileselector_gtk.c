@@ -33,7 +33,7 @@ static void fmt_clicked(GtkWidget *widget, gpointer data)
 
 static void fmt_changed(GtkWidget *combo, gpointer data)
 {
-	gtk_selected_filefmt = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+	gtk_selected_filefmt = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX(combo));
 	
 	printf("Format: %s\n",gtk_selected_filefmt);
 /*	printf("index: %d\n",idx_menu);*/
@@ -117,12 +117,12 @@ static void gtk_image_fmt_menu(){
 	gtk_container_set_border_width(GTK_CONTAINER(fmtw), 5);
 
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(fmtw), box);
 	
-	box1 = gtk_hbox_new(FALSE, 5);
+	box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box1);
-	box5 = gtk_hbox_new(FALSE, 100);
+	box5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 100);
 	gtk_container_add(GTK_CONTAINER(box), box5);
 	
 	
@@ -168,18 +168,18 @@ static void gtk_evolution_fmt_menu(int istep){
 	gtk_container_set_border_width(GTK_CONTAINER(fmtw), 5);
 
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(fmtw), box);
 	
-	box1 = gtk_hbox_new(FALSE, 5);
+	box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box1);
-	box2 = gtk_hbox_new(FALSE, 5);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box2);
-	box3 = gtk_hbox_new(FALSE, 5);
+	box3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box3);
-	box4 = gtk_hbox_new(FALSE, 5);
+	box4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box4);
-	box5 = gtk_hbox_new(FALSE, 100);
+	box5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 100);
 	gtk_container_add(GTK_CONTAINER(box), box5);
 	
 	
