@@ -223,7 +223,7 @@
 
       real(kind = kreal) :: xx_lic(3), xx_lic_last(3)
       real(kind = kreal) :: vec_org(3), vec_tgt(3), vec_mid(3)
-      integer(kind = kint) :: isurf_orgs(2,3), i, iflag_lic, iflag_fixsize
+      integer(kind = kint) :: isurf_orgs(2,3), i, iflag_lic
 
       real(kind = kreal) :: ray_total_len = zero, ave_ray_len, step_size
       integer(kind = kint) :: icount_line_cur_ray = 0, step_cnt
@@ -232,11 +232,10 @@
 !
       if(isurf_org(1) .eq. 0) return
 !
-      step_size = 0.006
+      step_size = lic_p%step_size
       ray_left = 0.0
 !
       iflag_notrace = 1
-      iflag_fixsize = 1
       iflag_lic = 1
       iele =    isurf_org(1)
       isf_org = isurf_org(2)
@@ -332,12 +331,11 @@
 !   3d lic calculation at current xx position
 !   if sampling by fixed step size
           ray_len = norm2(xx_tgt - xx_st)
-          if(iflag_fixsize .eq. 1) then
+          if(lic_p%iflag_vr_sample_mode .eq. 0) then
             ray_len_left = ray_left + ray_len
-
             xx_lic_last = xx_st
-            step_cnt = 1
-            do while(ray_len_left .ge. step_size)
+            step_cnt = 0
+            do while(ray_len_left .gt. zero)
               ray_len_left = ray_len_left - step_size
               ratio = (step_size*step_cnt - ray_left) / ray_len
               xx_lic = xx_st + ratio * (xx_tgt - xx_st)
@@ -348,22 +346,22 @@
 ! masking on sampling point
 !              if(mask_flag(lic_p, r_mid)) then
 
-                vec_mid = vec_org * (1-ratio) + vec_tgt * ratio
-                call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
-                &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
-                &      isurf_orgs, ie_surf, xi, lic_p,                                    &
-                &      r_mid, vec_mid, field_pvr%s_lic,                                   &
-                &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
-                &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
+              vec_mid = vec_org * (1-ratio) + vec_tgt * ratio
+              call cal_lic_on_surf_vector(numnod, numsurf, numele, nnod_4_surf,         &
+              &      isf_4_ele, iele_4_surf, interior_surf, xx,                         &
+              &      isurf_orgs, ie_surf, xi, lic_p,                                    &
+              &      r_mid, vec_mid, field_pvr%s_lic,                                   &
+              &      k_size, k_ary, field_pvr%v_lic, xx_lic, isurf_end,                 &
+              &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
 
   !   normalize gradient
-                grad_len = norm2(grad_tgt(1:3))
-                if(grad_len .ne. 0.0) then
-                  grad_tgt(1:3) = grad_tgt(1:3) / norm2(grad_tgt(1:3))
-                endif
+              grad_len = norm2(grad_tgt(1:3))
+              if(grad_len .ne. 0.0) then
+                grad_tgt(1:3) = grad_tgt(1:3) / norm2(grad_tgt(1:3))
+              endif
 
-                call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_lic_last, xx_lic,           &
-                &        c_tgt(1), grad_tgt, color_param, step_size, rgba_ray)
+              call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_lic_last, xx_lic,           &
+              &        c_tgt(1), grad_tgt, color_param, step_size, rgba_ray)
 
 !              end if
               xx_lic_last = xx_lic

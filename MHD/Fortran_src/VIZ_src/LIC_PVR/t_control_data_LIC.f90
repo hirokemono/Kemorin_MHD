@@ -16,6 +16,7 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags
 !!
+!!    vr_sample_mode:         'fixed_size' or 'element_count'
 !!    noise_type:             'external_file' or 'randum'
 !!    kernel_function_type:   'external_file' or 'linear'
 !!    LIC_trace_length_mode:  'length'  or  'element_count'
@@ -50,6 +51,9 @@
 !!
 !!    kernel_function_type   'external_file'
 !!    kernal_image_prefix       'kernel'
+!!
+!!    vr_sample_mode         'fixed_size'
+!!    step_size              0.005
 !!
 !!    LIC_trace_length_mode   'length'
 !!    LIC_trace_length        0.5
@@ -100,6 +104,9 @@
         type(read_character_item) :: kernel_function_type_ctl
         type(read_character_item) :: kernal_file_prefix_ctl
 !
+        type(read_character_item) :: vr_sample_mode_ctl
+        type(read_real_item) :: step_size_ctl
+!
         type(read_character_item) :: LIC_trace_length_def_ctl
         type(read_real_item) ::      LIC_trace_length_ctl
         type(read_integer_item) ::   LIC_trace_count_ctl
@@ -136,6 +143,10 @@
       character(len=kchara) :: hd_kernal_file_name                      &
      &                        = 'kernel_image_prefix'
 !
+      character(len=kchara) :: hd_vr_sample_mode                        &
+     &                        = 'vr_sample_mode'
+      character(len=kchara) :: hd_step_size = 'step_size'
+!
       character(len=kchara) :: hd_LIC_trace_type                        &
      &                        = 'LIC_trace_length_mode'
       character(len=kchara) :: hd_LIC_trace_length = 'LIC_trace_length'
@@ -156,6 +167,8 @@
       private :: hd_masking_ctl
       private :: hd_noise_type, hd_noise_file_head, hd_noise_grid_size
       private :: hd_kernel_function_type, hd_kernal_file_name
+      private :: hd_vr_sample_mode
+      private :: hd_step_size
       private :: hd_LIC_trace_type
       private :: hd_LIC_trace_length, hd_LIC_trace_count
       private :: hd_normalization_type, hd_normalization_value
@@ -208,6 +221,11 @@
      &     (hd_kernel_function_type, lic_ctl%kernel_function_type_ctl)
         call read_chara_ctl_type                                        &
      &     (hd_kernal_file_name, lic_ctl%kernal_file_prefix_ctl)
+!
+        call read_chara_ctl_type                                        &
+     &     (hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
+        call read_real_ctl_type                                         &
+     &     (hd_step_size, lic_ctl%step_size_ctl)
 !
         call read_chara_ctl_type                                        &
      &     (hd_LIC_trace_type, lic_ctl%LIC_trace_length_def_ctl)
@@ -285,6 +303,9 @@
       lic_ctl%kernel_function_type_ctl%iflag = 0
       lic_ctl%kernal_file_prefix_ctl%iflag =   0
 !
+      lic_ctl%vr_sample_mode_ctl%iflag = 0
+      lic_ctl%step_size_ctl%iflag = 0
+!
       lic_ctl%LIC_trace_length_def_ctl%iflag = 0
       lic_ctl%LIC_trace_length_ctl%iflag =     0
       lic_ctl%LIC_trace_count_ctl%iflag =      0
@@ -336,6 +357,9 @@
 !
       call bcast_ctl_type_c1(lic_ctl%kernel_function_type_ctl)
       call bcast_ctl_type_c1(lic_ctl%kernal_file_prefix_ctl)
+!
+      call bcast_ctl_type_c1(lic_ctl%vr_sample_mode_ctl)
+      call bcast_ctl_type_r1(lic_ctl%step_size_ctl)
 !
       call bcast_ctl_type_c1(lic_ctl%LIC_trace_length_def_ctl)
       call bcast_ctl_type_r1(lic_ctl%LIC_trace_length_ctl)

@@ -80,6 +80,11 @@
 !>        Structure of LIC kernel image
         type(LIC_kernel_image) :: kernel_image
 !
+!>        mode of unstructured volume rendering for lic
+!>        sample by fixed step size or sample each cell's center once
+        integer(kind = kint) :: iflag_vr_sample_mode = izero
+        real(kind = kreal) :: step_size = 0.005
+!
 !>        Element counts of LIC field line tracing
         integer(kind = kint) :: iflag_trace_length_type = izero
 !>        Lengh of LIC field line tracing
@@ -114,6 +119,11 @@
      &                        :: cflag_linear = 'linear'
 !
       character(len = kchara), parameter                                &
+     &                        :: cflag_fixed_size =   'fixed_size'
+      character(len = kchara), parameter                                &
+     &                        :: cflag_by_element = 'ele_size'
+!
+      character(len = kchara), parameter                                &
      &                        :: cflag_by_lengh =   'length'
       character(len = kchara), parameter                                &
      &                        :: cflag_by_e_count = 'element_count'
@@ -134,6 +144,9 @@
 !
       integer(kind = kint), parameter :: iflag_from_lic =     0
       integer(kind = kint), parameter :: iflag_from_control = 1
+!
+      integer(kind = kint), parameter :: iflag_fixed_size =   0
+      integer(kind = kint), parameter :: iflag_by_element = 1
 !
       integer(kind = kint), parameter :: iflag_by_lengh =   0
       integer(kind = kint), parameter :: iflag_by_e_count = 1
@@ -314,6 +327,22 @@
         end if
       end if
 !
+      lic_p%iflag_vr_sample_mode = iflag_fixed_size
+      if(lic_ctl%vr_sample_mode_ctl%iflag .gt. 0) then
+        tmpchara = lic_ctl%vr_sample_mode_ctl%charavalue
+        if(cmp_no_case(tmpchara, cflag_fixed_size)) then
+          lic_p%iflag_vr_sample_mode = iflag_fixed_size
+        else if(cmp_no_case(tmpchara, cflag_by_element)) then
+          lic_p%iflag_vr_sample_mode = iflag_by_element
+        end if
+      end if
+!
+      if(lic_p%iflag_vr_sample_mode .eq. iflag_fixed_size) then
+        lic_p%step_size = 0.01
+        if(lic_ctl%step_size_ctl%iflag .gt. 0) then
+          lic_p%step_size = lic_ctl%step_size_ctl%realvalue
+        end if
+      end if
 !
       lic_p%iflag_trace_length_type = iflag_by_lengh
       if(lic_ctl%LIC_trace_length_def_ctl%iflag .gt. 0) then
@@ -379,6 +408,9 @@
 !
         write(*,*) 'iflag_kernel_type: ', lic_p%iflag_kernel_type
         write(*,*) 'kernel_image_prefix: ', lic_p%kernel_image_prefix
+!
+        write(*,*) 'iflag_vr_sample_mode: ', lic_p%iflag_vr_sample_mode
+        write(*,*) 'step_size: ', lic_p%step_size
 !
         write(*,*) 'iflag_trace_length_type: ',                         &
      &             lic_p%iflag_trace_length_type
