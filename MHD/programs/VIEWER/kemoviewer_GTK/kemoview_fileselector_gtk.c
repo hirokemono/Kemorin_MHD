@@ -128,7 +128,7 @@ static void gtk_image_fmt_menu(){
 	lavel0 = gtk_label_new("Image format");
 	gtk_box_pack_start(GTK_BOX(box1), lavel0, TRUE, TRUE, 0);
 	
-	c1 = gtk_combo_box_new_text();
+	c1 = gtk_combo_box_text_new();
 	gtk_image_format_box(c1);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(c1), 0);
 	gtk_box_pack_start(GTK_BOX(box1), c1, FALSE, FALSE, 0);
@@ -184,7 +184,7 @@ static void gtk_evolution_fmt_menu(int istep){
 	lavel0 = gtk_label_new("Image format");
 	gtk_box_pack_start(GTK_BOX(box1), lavel0, TRUE, TRUE, 0);
 	
-	c1 = gtk_combo_box_new_text();
+	c1 = gtk_combo_box_text_new();
 	gtk_image_format_box(c1);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(c1), 0);
 	gtk_box_pack_start(GTK_BOX(box1), c1, FALSE, FALSE, 0);
