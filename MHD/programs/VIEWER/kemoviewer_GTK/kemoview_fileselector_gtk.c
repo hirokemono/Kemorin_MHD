@@ -33,7 +33,7 @@ static void fmt_clicked(GtkWidget *widget, gpointer data)
 
 static void fmt_changed(GtkWidget *combo, gpointer data)
 {
-	gtk_selected_filefmt = gtk_combo_box_get_active_text(GTK_COMBO_BOX(combo));
+    gtk_selected_filefmt = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(combo));
 	
 	printf("Format: %s\n",gtk_selected_filefmt);
 /*	printf("index: %d\n",idx_menu);*/
@@ -74,15 +74,14 @@ static void gtk_file_menu(const char *title){
 	iflag_set = IZERO;
 	/* generate file selection widget*/
 	filew = gtk_file_selection_new (title);
-	g_signal_connect(filew, "destroy",
-			(GtkSignalFunc) destroy, &filew);
+	g_signal_connect(filew, "destroy", destroy, &filew);
 	/* connect ok_button to file_ok_sel() */
 	g_signal_connect(GTK_FILE_SELECTION(filew)->ok_button,
-			"clicked", (GtkSignalFunc) file_ok_sel, filew );
+			"clicked", file_ok_sel, filew );
 	
 	/* Connect cancel_button to destroy window */
 	gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
-			"clicked", (GtkSignalFunc) gtk_widget_destroy,
+			"clicked", gtk_widget_destroy,
 			GTK_OBJECT (filew));
 	/* Set default file neme*/
 	gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), "in.0");
@@ -162,8 +161,7 @@ static void gtk_evolution_fmt_menu(int istep){
 	fmtw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(fmtw), "Select File Format");
 
-	g_signal_connect(fmtw, "destroy",
-			(GtkSignalFunc) destroy, &fmtw);
+	g_signal_connect(fmtw, "destroy", destroy, &fmtw);
 
 	gtk_container_set_border_width(GTK_CONTAINER(fmtw), 5);
 
