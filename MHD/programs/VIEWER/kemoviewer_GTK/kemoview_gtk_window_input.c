@@ -572,12 +572,13 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	return;
 }
 
-static void set_PSFcolor_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
+static void set_PSFcolor_GTK(GtkWidget *widget, GtkWidget *colordialog)
 {
+	GtkWidget* csel;
 	gdouble dcolor[4];
 	
-	
-	gtk_color_selection_get_color( GTK_COLOR_SELECTION(colordialog->colorsel), dcolor);
+	csel = gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG(colordialog));
+	gtk_color_selection_get_color( GTK_COLOR_SELECTION(csel), dcolor);
 	gtk_widget_destroy(colordialog);
 	gtk_main_quit();
 	
@@ -588,12 +589,14 @@ static void set_PSFcolor_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordi
 	return;
 }
 
-static void set_background_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
+static void set_background_GTK(GtkWidget *widget, GtkWidget *colordialog)
 {
+	GtkWidget* csel;
 	GLfloat color[4];
 	gdouble dcolor[4];
 	
-	gtk_color_selection_get_color( GTK_COLOR_SELECTION(colordialog->colorsel), dcolor);
+	csel = gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG(colordialog));
+	gtk_color_selection_get_color( GTK_COLOR_SELECTION(csel), dcolor);
 	gtk_widget_destroy(colordialog);
 	gtk_main_quit();
 	
