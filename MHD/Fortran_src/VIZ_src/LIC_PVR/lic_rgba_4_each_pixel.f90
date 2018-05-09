@@ -74,7 +74,8 @@
 !
 !
       ray_vec = xout_model - xin_model
-      ray_length = norm2(ray_vec)
+      ray_length = sqrt(ray_vec(1)*ray_vec(1) + ray_vec(2)*ray_vec(2)   &
+     &                + ray_vec(3)*ray_vec(3))
 !      ray_length = sqrt((xout_model(1)-xin_model(1))**2                 &
 !    &                 + (xout_model(2)-xin_model(2))**2                 &
 !    &                 + (xout_model(3)-xin_model(3))**2)

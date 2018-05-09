@@ -18,6 +18,7 @@
 #define DELETE_POINT 4
 
 GtkWidget *rangew;
+GtkWidget *ftmpw;
 GtkWidget *spin1, *spin2;
 
 static int i_selected;
@@ -83,25 +84,25 @@ static void cb_tree_clicked (GtkTreeSelection *selection, gpointer user_data)
 
 static void dataChange(GtkWidget *entry, gpointer data)
 {
-	gtk_value = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 }
 static void colorChange(GtkWidget *entry, gpointer data)
 {
-	gtk_color = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_color = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 }
 static void opacityChange(GtkWidget *entry, gpointer data)
 {
-	gtk_opacity = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_opacity = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 }
 
 static void MinChange(GtkWidget *entry, gpointer data)
 {
-	gtk_min = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_min = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 /*	printf("gtk_min %d\n", gtk_min);*/
 }
 static void MaxChange(GtkWidget *entry, gpointer data)
 {
-	gtk_max = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_max = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 /*	printf("gtk_max %d\n", gtk_max);*/
 }
 static void NlineChange(GtkWidget *entry, gpointer data)
@@ -572,13 +573,15 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	return;
 }
 
-static void set_PSFcolor_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
+static void set_PSFcolor_GTK(GtkWidget *colordialog)
 {
+	GtkWidget* csel;
 	gdouble dcolor[4];
 	
-	
-	gtk_color_selection_get_color( GTK_COLOR_SELECTION(colordialog->colorsel), dcolor);
+	csel = gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG(colordialog));
+	gtk_color_selection_get_color( GTK_COLOR_SELECTION(csel), dcolor);
 	gtk_widget_destroy(colordialog);
+	gtk_widget_destroy(ftmpw);
 	gtk_main_quit();
 	
 	dcolor[3] = (float) kemoview_get_PSF_max_opacity();
@@ -588,13 +591,16 @@ static void set_PSFcolor_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordi
 	return;
 }
 
-static void set_background_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
+static void set_background_GTK(GtkWidget *colordialog)
 {
+	GtkWidget* csel;
 	GLfloat color[4];
 	gdouble dcolor[4];
 	
-	gtk_color_selection_get_color( GTK_COLOR_SELECTION(colordialog->colorsel), dcolor);
+	csel = gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG(colordialog));
+	gtk_color_selection_get_color( GTK_COLOR_SELECTION(csel), dcolor);
 	gtk_widget_destroy(colordialog);
+	gtk_widget_destroy(ftmpw);
 	gtk_main_quit();
 	
     color[0] = (GLfloat) dcolor[0];
@@ -609,29 +615,109 @@ static void set_background_GTK(GtkWidget *widget, GtkColorSelectionDialog *color
 	return;
 }
 
-static void gtk_PSFcolorselect(const char *title){
-	rangew = gtk_color_selection_dialog_new(title);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button),
-				"clicked", GTK_SIGNAL_FUNC(set_PSFcolor_GTK), rangew);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button),
-				"clicked", GTK_SIGNAL_FUNC(destroy), rangew);
-	gtk_widget_show_all(rangew);
-	gtk_main();
+static void kemoview_gtk_PSFcolorsel(GtkButton *button, gpointer data){
+	int response;
+	GtkWidget *parent;
+	GtkEntry *entry;
+	parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
+	entry = GTK_ENTRY(data);
 	
+	rangew = gtk_color_selection_dialog_new("Choose color");
+	gtk_widget_show_all(rangew);
+	
+	response = gtk_dialog_run(GTK_DIALOG(rangew));
+	if (response == GTK_RESPONSE_OK){
+		set_PSFcolor_GTK(rangew);
+		g_print ("color selected \n");
+		iflag_set = IONE;
+	}
+	else if( response == GTK_RESPONSE_CANCEL ){
+		g_print( "Cancel button was pressed.\n" );
+		gtk_widget_destroy(rangew);
+	}
+	return;
+}
+
+static void gtk_PSFcolorselect(const char *title){
+	GtkWidget *hbox;
+	GtkWidget *entry;
+	GtkWidget *button;
+	
+	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	
+	gtk_window_set_title(GTK_WINDOW(ftmpw), title);
+	gtk_widget_set_size_request(ftmpw, 150, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
+	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	
+	/*hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);*/
+	hbox = gtk_hbox_new(FALSE, 0);
+	
+	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
+	
+	/* Set button   */
+	entry = gtk_entry_new();
+	button = gtk_button_new_with_label("_select");
+	g_signal_connect(G_OBJECT(button), "clicked", 
+				G_CALLBACK(kemoview_gtk_PSFcolorsel), (gpointer)entry);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	gtk_widget_show_all(ftmpw);
+	gtk_main();
+	return;
+}
+
+
+static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
+	int response;
+	GtkWidget *parent;
+	GtkEntry *entry;
+	parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
+	entry = GTK_ENTRY(data);
+	
+	rangew = gtk_color_selection_dialog_new("Choose color");
+	gtk_widget_show_all(rangew);
+	
+	response = gtk_dialog_run(GTK_DIALOG(rangew));
+	if (response == GTK_RESPONSE_OK){
+		set_background_GTK(rangew);
+		g_print ("color selected \n");
+		iflag_set = IONE;
+	}
+	else if( response == GTK_RESPONSE_CANCEL ){
+		g_print( "Cancel button was pressed.\n" );
+		gtk_widget_destroy(rangew);
+	}
 	return;
 }
 
 static void gtk_BGcolorselect(GLfloat color[4], const char *title){
-	rangew = gtk_color_selection_dialog_new(title);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button),
-				"clicked", GTK_SIGNAL_FUNC(set_background_GTK), rangew);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button),
-				"clicked", GTK_SIGNAL_FUNC(destroy), rangew);
-	gtk_widget_show_all(rangew);
-	gtk_main();
+	GtkWidget *hbox;
+	GtkWidget *entry;
+	GtkWidget *button;
 	
+	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	
+	gtk_window_set_title(GTK_WINDOW(ftmpw), title);
+	gtk_widget_set_size_request(ftmpw, 150, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
+	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	
+	/*hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);*/
+	hbox = gtk_hbox_new(FALSE, 0);
+	
+	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
+	
+	/* Set button   */
+	entry = gtk_entry_new();
+	button = gtk_button_new_with_label("_select");
+	g_signal_connect(G_OBJECT(button), "clicked", 
+				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)entry);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	gtk_widget_show_all(ftmpw);
+	gtk_main();
 	return;
 }
+
 
 static void gtk_nline_menu(int nline, const char *title){
 	GtkWidget *box;
