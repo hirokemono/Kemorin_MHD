@@ -70,9 +70,9 @@ static void IncChange(GtkWidget *entry, gpointer data)
 
 static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
 	int response;
-  GtkWidget *parent;
-  GtkEntry *entry;
-	GtkFileChooserDialog *chooser;
+	GtkWidget *parent;
+	GtkEntry *entry;
+	GtkFileChooser *chooser;
 	
 	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
 	
@@ -108,9 +108,9 @@ static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
 
 static void kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
 	int response;
-  GtkWidget *parent;
-  GtkEntry *entry;
-	GtkFileChooserDialog *chooser;
+	GtkWidget *parent;
+	GtkEntry *entry;
+	GtkFileChooser *chooser;
 	
 	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
 	

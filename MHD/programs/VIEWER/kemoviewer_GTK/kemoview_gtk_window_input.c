@@ -83,25 +83,25 @@ static void cb_tree_clicked (GtkTreeSelection *selection, gpointer user_data)
 
 static void dataChange(GtkWidget *entry, gpointer data)
 {
-	gtk_value = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 }
 static void colorChange(GtkWidget *entry, gpointer data)
 {
-	gtk_color = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_color = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 }
 static void opacityChange(GtkWidget *entry, gpointer data)
 {
-	gtk_opacity = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_opacity = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 }
 
 static void MinChange(GtkWidget *entry, gpointer data)
 {
-	gtk_min = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_min = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 /*	printf("gtk_min %d\n", gtk_min);*/
 }
 static void MaxChange(GtkWidget *entry, gpointer data)
 {
-	gtk_max = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_max = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 /*	printf("gtk_max %d\n", gtk_max);*/
 }
 static void NlineChange(GtkWidget *entry, gpointer data)
