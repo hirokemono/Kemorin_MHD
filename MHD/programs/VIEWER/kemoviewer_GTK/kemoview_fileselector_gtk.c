@@ -11,6 +11,7 @@
 
 GtkWidget *filew;
 GtkWidget *fmtw;
+GtkWidget *ftmpw;
 static const gchar *gtk_selected_filename;
 static const gchar *gtk_selected_filefmt;
 static int iflag_set;
@@ -28,6 +29,13 @@ static void fmt_clicked(GtkWidget *widget, gpointer data)
 {
 	iflag_set = IONE;
 	gtk_widget_destroy(fmtw);
+	gtk_main_quit();
+}
+
+static void fmt_clicked2(GtkWidget *widget, gpointer data)
+{
+/*	iflag_set = IONE;*/
+	gtk_widget_destroy(ftmpw);
 	gtk_main_quit();
 }
 
@@ -56,38 +64,191 @@ static void IncChange(GtkWidget *entry, gpointer data)
 /*	printf("gtk_inc %d\n", gtk_inc);*/
 }
 
-static void file_ok_sel (GtkWidget *w, GtkFileSelection *fs){
-	iflag_set = IONE;
-	gtk_selected_filename = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
-	g_print ("%s\n", gtk_selected_filename);
-	
-	gtk_widget_destroy(filew);
-	gtk_main_quit();
-};
-
 /*
    Constract input windows
 */
 
-static void gtk_file_menu(const char *title){
+static void kemoview_gtk_read_file_select(GtkButton *button, gpointer data){
+	int response;
+  GtkWidget *parent;
+  GtkEntry *entry;
+	GtkFileChooserDialog *chooser;
+	
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+	
+	parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
+	entry = GTK_ENTRY(data);
+	
 	
 	iflag_set = IZERO;
 	/* generate file selection widget*/
-	filew = gtk_file_selection_new (title);
-	g_signal_connect(filew, "destroy", destroy, &filew);
-	/* connect ok_button to file_ok_sel() */
-	g_signal_connect(GTK_FILE_SELECTION(filew)->ok_button,
-			"clicked", file_ok_sel, filew );
 	
-	/* Connect cancel_button to destroy window */
-	gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION (filew)->cancel_button),
-			"clicked", gtk_widget_destroy,
-			GTK_OBJECT (filew));
-	/* Set default file neme*/
-	gtk_file_selection_set_filename (GTK_FILE_SELECTION(filew), "in.0");
+	filew = gtk_file_chooser_dialog_new("Select File", GTK_WINDOW(parent), action,
+				"_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
 	
-	gtk_widget_show(filew);
+	gtk_widget_show_all(filew);
+	
+	response = gtk_dialog_run(GTK_DIALOG(filew));
+	if (response == GTK_RESPONSE_ACCEPT){
+		chooser = GTK_FILE_CHOOSER (filew);
+		gtk_selected_filename = gtk_file_chooser_get_filename (chooser);
+		g_print ("%s\n", gtk_selected_filename);
+		gtk_entry_set_text(entry, gtk_selected_filename);
+		iflag_set = IONE;
+	}
+	else if( response == GTK_RESPONSE_CANCEL ){
+		g_print( "Cancel button was pressed.\n" );
+	}
+	else{
+    g_print( "Another response was received.\n" );
+	}
+ 	gtk_widget_destroy(filew);
+	return;
+}
+
+static void kemoview_gtk_save_file_select(GtkButton *button, gpointer data){
+	int response;
+  GtkWidget *parent;
+  GtkEntry *entry;
+	GtkFileChooserDialog *chooser;
+	
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+	
+	parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
+	entry = GTK_ENTRY(data);
+	
+	
+	iflag_set = IZERO;
+	/* generate file selection widget*/
+	
+	filew = gtk_file_chooser_dialog_new("Select File", GTK_WINDOW(parent), action,
+				"_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
+	
+	gtk_widget_show_all(filew);
+	
+	response = gtk_dialog_run(GTK_DIALOG(filew));
+	if (response == GTK_RESPONSE_ACCEPT){
+		chooser = GTK_FILE_CHOOSER (filew);
+		gtk_selected_filename = gtk_file_chooser_get_filename (chooser);
+		g_print ("%s\n", gtk_selected_filename);
+		gtk_entry_set_text(entry, gtk_selected_filename);
+		iflag_set = IONE;
+	}
+	else if( response == GTK_RESPONSE_CANCEL ){
+		g_print( "Cancel button was pressed.\n" );
+	}
+	else{
+    g_print( "Another response was received.\n" );
+	}
+ 	gtk_widget_destroy(filew);
+	return;
+}
+
+static void gtk_read_file_window(const char *title){
+	GtkWidget *hbox;
+  GtkWidget *label;
+  GtkWidget *entry;
+	GtkWidget *button, *button2;
+	
+	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	
+	gtk_window_set_title(GTK_WINDOW(ftmpw), title);
+	gtk_widget_set_size_request(ftmpw, 300, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
+	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	
+	/*hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);*/
+	hbox = gtk_hbox_new(FALSE, 0);
+	
+	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
+	
+	
+  label = gtk_label_new("File:");
+  gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
+  /*  Generate entry  */
+  entry = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw);
+
+  /* Set buttons   */
+	button = gtk_button_new_with_label("_Select");
+	button2 = gtk_button_new_with_label("_Open");
+	g_signal_connect(G_OBJECT(button), "clicked", 
+				G_CALLBACK(kemoview_gtk_read_file_select), (gpointer)entry);
+	g_signal_connect(G_OBJECT(button2), "clicked", G_CALLBACK(fmt_clicked2), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), button2, FALSE, FALSE, 0);
+	gtk_widget_show_all(ftmpw);
 	gtk_main();
+	return;
+	
+}
+
+static void gtk_save_file_window(const char *title){
+	GtkWidget *hbox;
+  GtkWidget *label;
+  GtkWidget *entry;
+	GtkWidget *button, *button2;
+	
+	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	
+	gtk_window_set_title(GTK_WINDOW(ftmpw), title);
+	gtk_widget_set_size_request(ftmpw, 300, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
+	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	
+	/*hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);*/
+	hbox = gtk_hbox_new(FALSE, 0);
+	
+	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
+	
+	
+  label = gtk_label_new("File:");
+  gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
+  /*  Generate entry  */
+  entry = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+	g_object_set_data(G_OBJECT(entry), "parent", (gpointer)ftmpw);
+
+  /* Set buttons   */
+	button = gtk_button_new_with_label("_Select");
+	button2 = gtk_button_new_with_label("_Open");
+	g_signal_connect(G_OBJECT(button), "clicked", 
+				G_CALLBACK(kemoview_gtk_save_file_select), (gpointer)entry);
+	g_signal_connect(G_OBJECT(button2), "clicked", G_CALLBACK(fmt_clicked2), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), button2, FALSE, FALSE, 0);
+	gtk_widget_show_all(ftmpw);
+	gtk_main();
+	return;
+	
+}
+
+
+static void gtk_save_menu(const char *title){
+	gint response;
+	GtkFileChooser *chooser;
+	
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+	
+	filew = gtk_file_chooser_dialog_new(title, NULL, action,
+				"_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
+	
+	gtk_widget_show_all(filew);
+	
+	response = gtk_dialog_run(GTK_DIALOG(filew));
+	if (response == GTK_RESPONSE_ACCEPT){
+		chooser = GTK_FILE_CHOOSER (filew);
+		gtk_selected_filename = gtk_file_chooser_get_filename (chooser);
+		g_print ("%s\n", gtk_selected_filename);
+		
+		/*gtk_main_quit();*/
+  }
+	gtk_widget_destroy(filew);
+	gtk_main();
+	return;
 }
 
 static void gtk_image_format_box(GtkWidget *c1){
@@ -229,7 +390,7 @@ static void gtk_evolution_fmt_menu(int istep){
 */
 
 static void set_pickup_command(char *file_name){
-	gtk_file_menu("Select pickup surface program");
+	gtk_read_file_window("Select pickup surface program");
 	strcpy(file_name, gtk_selected_filename);
 	return;
 }
@@ -243,7 +404,7 @@ void read_kemoview_data_gtk(){
 	int iflag_datatype;
 	
 	
-	gtk_file_menu("Input data file");
+	gtk_read_file_window("Input data file");
 	if(iflag_set == IZERO) return;
 	
 	strcpy(file_name, gtk_selected_filename);
@@ -276,7 +437,7 @@ int input_texture_file_gtk(char *file_head){
 	char file_ext[LENGTHBUF];
 	int id_img;
 	
-	gtk_file_menu("Select texture file");
+	gtk_read_file_window("Select texture file");
 	if(iflag_set == IZERO) return 0;
 	
 	strcpy(file_name, gtk_selected_filename);
@@ -299,7 +460,7 @@ int output_image_file_gtk(char *file_head){
 	id_img = kemoview_set_image_file_format_id(image_fmt);
 	
 	if(id_img != 0){
-		gtk_file_menu("Save Image file");
+		gtk_save_file_window("Save Image file");
 		if(iflag_set == IZERO) return 0;
 		
 		strcpy(file_name, gtk_selected_filename);
@@ -326,7 +487,7 @@ int output_evolution_file_gtk(char *file_head,
 	id_img = kemoview_set_image_file_format_id(image_fmt);
 	
 	if(id_img != 0){
-		gtk_file_menu("Save Image files");
+		gtk_save_file_window("Save Image files");
 		if(iflag_set == IZERO) return 0;
 		
 		strcpy(image_fmt, gtk_selected_filefmt);
@@ -340,7 +501,7 @@ int output_evolution_file_gtk(char *file_head,
 void save_PSF_colormap_file_gtk(){
 	char file_name[LENGTHBUF];
 	
-	gtk_file_menu("Save colormap file");
+	gtk_save_file_window("Save colormap file");
 	if(iflag_set == IZERO) return;
 	
 	strcpy(file_name, gtk_selected_filename);
@@ -352,7 +513,7 @@ void save_PSF_colormap_file_gtk(){
 void load_PSF_colormap_file_gtk(){
 	char file_name[LENGTHBUF];
 	
-	gtk_file_menu("Load colormap file");
+	gtk_read_file_window("Load colormap file");
 	if(iflag_set == IZERO) return;
 	
 	strcpy(file_name, gtk_selected_filename);
@@ -364,7 +525,7 @@ void load_PSF_colormap_file_gtk(){
 void save_viewmatrix_file_gtk(){
 	char file_name[LENGTHBUF];
 	
-	gtk_file_menu("Save view matrix file");
+	gtk_save_file_window("Save view matrix file");
 	if(iflag_set == IZERO) return;
 	
 	strcpy(file_name, gtk_selected_filename);
@@ -376,7 +537,7 @@ void save_viewmatrix_file_gtk(){
 void load_viewmatrix_file_gtk(){
 	char file_name[LENGTHBUF];
 	
-	gtk_file_menu("Load view matrix file");
+	gtk_read_file_window("Load view matrix file");
 	if(iflag_set == IZERO) return;
 	
 	strcpy(file_name, gtk_selected_filename);
