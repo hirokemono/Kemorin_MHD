@@ -14,7 +14,7 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(work_4_sph_SGS_buoyancy), intent(inout) :: wk_sgs_buo
 !!
-!!      subroutine cal_volume_4__SGS_buoyancy                           &
+!!      subroutine cal_volume_4_SGS_buoyancy                            &
 !!     &         (sph_params, sph_rj, wk_sgs_buo)
 !!      subroutine sphere_averaged_SGS_buoyancy                         &
 !!     &         (sph_rj, sph_rtp, ipol, rj_fld, trns_SGS, wk_sgs_buo)
@@ -115,7 +115,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_volume_4__SGS_buoyancy                             &
+      subroutine cal_volume_4_SGS_buoyancy                              &
      &         (sph_params, sph_rj, wk_sgs_buo)
 !
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -128,7 +128,7 @@
      &       - sph_rj%radius_1d_rj_r(sph_params%nlayer_ICB)**3)
       wk_sgs_buo%avol_SGS_buo = one / wk_sgs_buo%avol_SGS_buo
 !
-      end subroutine cal_volume_4__SGS_buoyancy
+      end subroutine cal_volume_4_SGS_buoyancy
 !
 ! ----------------------------------------------------------------------
 !
