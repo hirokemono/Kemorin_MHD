@@ -573,15 +573,13 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	return;
 }
 
-static void set_PSFcolor_GTK(GtkWidget *colordialog)
+static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
 {
-	GtkWidget* csel;
 	GdkRGBA gcolor;
 	gdouble dcolor[4];
 	
-	csel = gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG(colordialog));
-	gtk_color_selection_get_current_rgba( GTK_COLOR_SELECTION(csel), &gcolor);
-	gtk_widget_destroy(colordialog);
+	gtk_color_chooser_get_rgba(colordialog, &gcolor);
+	gtk_widget_destroy(rangew);
 	gtk_widget_destroy(ftmpw);
 	gtk_main_quit();
 	
@@ -595,15 +593,13 @@ static void set_PSFcolor_GTK(GtkWidget *colordialog)
 	return;
 }
 
-static void set_background_GTK(GtkWidget *colordialog)
+static void set_background_GTK(GtkColorChooser *colordialog)
 {
-	GtkWidget* csel;
 	GdkRGBA gcolor;
 	GLfloat color[4];
 	
-	csel = gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG(colordialog));
-	gtk_color_selection_get_current_rgba( GTK_COLOR_SELECTION(csel), &gcolor);
-	gtk_widget_destroy(colordialog);
+	gtk_color_chooser_get_rgba(colordialog, &gcolor);
+	gtk_widget_destroy(rangew);
 	gtk_widget_destroy(ftmpw);
 	gtk_main_quit();
 	
@@ -621,12 +617,18 @@ static void set_background_GTK(GtkWidget *colordialog)
 
 static void kemoview_gtk_PSFcolorsel(GtkButton *button, gpointer data){
 	int response;
-	rangew = gtk_color_selection_dialog_new("Choose color");
+	GtkColorChooser *chooser;
+	GtkWindow *parent;
+	
+	parent = GTK_WINDOW(g_object_get_data(G_OBJECT(data), "parent"));
+	
+	rangew = gtk_color_chooser_dialog_new("Choose color", parent);
 	gtk_widget_show_all(rangew);
 	
 	response = gtk_dialog_run(GTK_DIALOG(rangew));
 	if (response == GTK_RESPONSE_OK){
-		set_PSFcolor_GTK(rangew);
+		chooser = GTK_COLOR_CHOOSER(rangew);
+		set_PSFcolor_GTK(chooser);
 		g_print ("color selected \n");
 		iflag_set = IONE;
 	}
@@ -667,12 +669,18 @@ static void gtk_PSFcolorselect(const char *title){
 
 static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 	int response;
-	rangew = gtk_color_selection_dialog_new("Choose color");
+	GtkColorChooser *chooser;
+	GtkWindow *parent;
+	
+	parent = GTK_WINDOW(g_object_get_data(G_OBJECT(data), "parent"));
+	
+	rangew = gtk_color_chooser_dialog_new("Choose color", parent);
 	gtk_widget_show_all(rangew);
 	
 	response = gtk_dialog_run(GTK_DIALOG(rangew));
 	if (response == GTK_RESPONSE_OK){
-		set_background_GTK(rangew);
+		chooser = GTK_COLOR_CHOOSER(rangew);
+		set_background_GTK(chooser);
 		g_print ("color selected \n");
 		iflag_set = IONE;
 	}

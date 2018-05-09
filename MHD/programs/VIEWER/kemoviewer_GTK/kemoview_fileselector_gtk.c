@@ -162,8 +162,8 @@ static void gtk_read_file_window(const char *title){
 	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
 	
 	
-  label = gtk_label_new("File:");
-  gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	label = gtk_label_new("File:");
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
   /*  Generate entry  */
   entry = gtk_entry_new();
@@ -222,31 +222,6 @@ static void gtk_save_file_window(const char *title){
 	gtk_main();
 	return;
 	
-}
-
-
-static void gtk_save_menu(const char *title){
-	gint response;
-	GtkFileChooser *chooser;
-	
-	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
-	
-	filew = gtk_file_chooser_dialog_new(title, NULL, action,
-				"_Cancel", GTK_RESPONSE_CANCEL, "_Open", GTK_RESPONSE_ACCEPT, NULL);
-	
-	gtk_widget_show_all(filew);
-	
-	response = gtk_dialog_run(GTK_DIALOG(filew));
-	if (response == GTK_RESPONSE_ACCEPT){
-		chooser = GTK_FILE_CHOOSER (filew);
-		gtk_selected_filename = gtk_file_chooser_get_filename (chooser);
-		g_print ("%s\n", gtk_selected_filename);
-		
-		/*gtk_main_quit();*/
-  }
-	gtk_widget_destroy(filew);
-	gtk_main();
-	return;
 }
 
 static void gtk_image_format_box(GtkWidget *c1){
