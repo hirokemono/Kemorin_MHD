@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine sph_SGS_induct_nl_gradient_pin(kr_in, kr_out,        &
-!!     &          nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, coef,       &
+!!     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,            &
 !!     &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,  &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz,                     &
 !!     &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
 !!      subroutine sph_SGS_s_flux_nl_gradient_pin(kr_in, kr_out,        &
-!!     &          nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, coef,       &
+!!     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,            &
 !!     &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,  &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz, grad_s, d_SGS)
 !!      subroutine sph_SGS_m_flux_nl_gradient_pin(kr_in, kr_out,        &
-!!     &          nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, coef,       &
+!!     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,            &
 !!     &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,  &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz, d_SGS)
 !!@endverbatim
@@ -36,7 +36,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sph_SGS_induct_nl_gradient_pin(kr_in, kr_out,          &
-     &          nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, coef,         &
+     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
      &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,    &
      &          u_rtp, grad_ux, grad_uy, grad_uz,                       &
      &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
@@ -45,9 +45,8 @@
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
-      real(kind = kreal), intent(in) :: a_r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
-      real(kind = kreal), intent(in) :: cot_t(nidx_rtp(2))
+      real(kind = kreal), intent(in) :: cos_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: coef
 !
       real(kind = kreal), intent(in) :: radial_2nd_moment(nidx_rtp(1))
@@ -92,8 +91,8 @@
 !
         do kr = kr_in, kr_out
           gamma_r = coef * radial_2nd_moment(kr)
-          gamma_t = coef * theta_2nd_moment(lt) * (r(kr))**2
-          gamma_p = coef * phi_2nd_moment * (r(kr) * sin_t(lt))**2
+          gamma_t = coef * theta_2nd_moment(lt)
+          gamma_p = coef * phi_2nd_moment
 !
 !$omp do private(du1_dx1,du1_dx2,du1_dx3,db1_dx1,db1_dx2,db1_dx3,       &
 !&omp&           du2_dx1,du2_dx2,du2_dx3,db2_dx1,db2_dx2,db2_dx3,       &
@@ -104,28 +103,32 @@
      &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
 !
             du1_dx1 = grad_ux(inod,1)
-            du1_dx2 = grad_ux(inod,2) - u_rtp(inod,2) * a_r(kr)
-            du1_dx3 = grad_ux(inod,3) - u_rtp(inod,3) * a_r(kr)
+            du1_dx2 = grad_ux(inod,2) * r(kr) - u_rtp(inod,2)
+            du1_dx3 = grad_ux(inod,3) * sin_t(lt) * r(kr)               &
+     &                - u_rtp(inod,3) * sin_t(lt)
             du2_dx1 = grad_uy(inod,1)
-            du2_dx2 = grad_uy(inod,2) + u_rtp(inod,1) * a_r(kr)
-            du2_dx3 = grad_uy(inod,3)                                   &
-     &               - u_rtp(inod,3) * a_r(kr) * cot_t(lt)
+            du2_dx2 = grad_uy(inod,2) * r(kr) + u_rtp(inod,1)
+            du2_dx3 = grad_uy(inod,3) * sin_t(lt) * r(kr)               &
+     &                - u_rtp(inod,3) * cos_t(lt)
             du3_dx1 = grad_uz(inod,1)
-            du3_dx2 = grad_uz(inod,2)
-            du3_dx3 = grad_uz(inod,3)                                   &
-     &           + (u_rtp(inod,2)*cot_t(lt) - u_rtp(inod,1)) * a_r(kr)
+            du3_dx2 = grad_uz(inod,2) * r(kr)
+            du3_dx3 = grad_uz(inod,3) * sin_t(lt) * r(kr)               &
+     &                + u_rtp(inod,2) * cos_t(lt)                       &
+     &                - u_rtp(inod,1) * sin_t(lt)
 !
             db1_dx1 = grad_bx(inod,1)
-            db1_dx2 = grad_bx(inod,2) - b_rtp(inod,2) * a_r(kr)
-            db1_dx3 = grad_bx(inod,3) - b_rtp(inod,3) * a_r(kr)
+            db1_dx2 = grad_bx(inod,2) * r(kr) - b_rtp(inod,2)
+            db1_dx3 = grad_bx(inod,3) * sin_t(lt) * r(kr)               &
+     &                - b_rtp(inod,3) * sin_t(lt)
             db2_dx1 = grad_by(inod,1)
-            db2_dx2 = grad_by(inod,2) + b_rtp(inod,1) * a_r(kr)
-            db2_dx3 = grad_by(inod,3)                                   &
-     &               - b_rtp(inod,3) * a_r(kr) * cot_t(lt)
+            db2_dx2 = grad_by(inod,2) * r(kr) + b_rtp(inod,1)
+            db2_dx3 = grad_by(inod,3) * sin_t(lt) * r(kr)               &
+     &                - b_rtp(inod,3) * cos_t(lt)
             db3_dx1 = grad_bz(inod,1)
-            db3_dx2 = grad_bz(inod,2)
-            db3_dx3 = grad_bz(inod,3)                                   &
-     &           + (b_rtp(inod,2)*cot_t(lt) - b_rtp(inod,1)) * a_r(kr)
+            db3_dx2 = grad_bz(inod,2) * r(kr)
+            db3_dx3 = grad_bz(inod,3) * sin_t(lt) * r(kr)               &
+     &                + b_rtp(inod,2) * cos_t(lt)                       &
+     &                - b_rtp(inod,1) * sin_t(lt)
 !
             d_SGS(inod,1)                                               &
      &          =  gamma_r * (du2_dx1 * db3_dx1 - du3_dx1 * db2_dx1)    &
@@ -162,7 +165,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sph_SGS_s_flux_nl_gradient_pin(kr_in, kr_out,          &
-     &          nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, coef,         &
+     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
      &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,    &
      &          u_rtp, grad_ux, grad_uy, grad_uz, grad_s, d_SGS)
 !
@@ -170,9 +173,8 @@
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
-      real(kind = kreal), intent(in) :: a_r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
-      real(kind = kreal), intent(in) :: cot_t(nidx_rtp(2))
+      real(kind = kreal), intent(in) :: cos_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: coef
 !
       real(kind = kreal), intent(in) :: radial_2nd_moment(nidx_rtp(1))
@@ -212,8 +214,8 @@
 !
         do kr = kr_in, kr_out
           gamma_r = coef * radial_2nd_moment(kr)
-          gamma_t = coef * theta_2nd_moment(lt) * (r(kr))**2
-          gamma_p = coef * phi_2nd_moment * (r(kr) * sin_t(lt))**2
+          gamma_t = coef * theta_2nd_moment(lt)
+          gamma_p = coef * phi_2nd_moment
 !
 !$omp do private(du1_dx1,du1_dx2,du1_dx3,du2_dx1,du2_dx2,du2_dx3,       &
 !$omp&           du3_dx1,du3_dx2,du3_dx3,ds_dx1, ds_dx2, ds_dx3,        &
@@ -223,16 +225,18 @@
      &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
 !
             du1_dx1 = grad_ux(inod,1)
-            du1_dx2 = grad_ux(inod,2) - u_rtp(inod,2) * a_r(kr)
-            du1_dx3 = grad_ux(inod,3) - u_rtp(inod,3) * a_r(kr)
+            du1_dx2 = grad_ux(inod,2) * r(kr) - u_rtp(inod,2)
+            du1_dx3 = grad_ux(inod,3) * sin_t(lt) * r(kr)               &
+     &                - u_rtp(inod,3) * sin_t(lt)
             du2_dx1 = grad_uy(inod,1)
-            du2_dx2 = grad_uy(inod,2) + u_rtp(inod,1) * a_r(kr)
-            du2_dx3 = grad_uy(inod,3)                                   &
-     &               - u_rtp(inod,3) * a_r(kr) * cot_t(lt)
+            du2_dx2 = grad_uy(inod,2) * r(kr) + u_rtp(inod,1)
+            du2_dx3 = grad_uy(inod,3) * sin_t(lt) * r(kr)               &
+     &                - u_rtp(inod,3) * cos_t(lt)
             du3_dx1 = grad_uz(inod,1)
-            du3_dx2 = grad_uz(inod,2)
-            du3_dx3 = grad_uz(inod,3)                                   &
-     &            + (u_rtp(inod,2)*cot_t(lt) - u_rtp(inod,1)) * a_r(kr)
+            du3_dx2 = grad_uz(inod,2) * r(kr)
+            du3_dx3 = grad_uz(inod,3) * sin_t(lt) * r(kr)               &
+     &                + u_rtp(inod,2) * cos_t(lt)                       &
+     &                - u_rtp(inod,1) * sin_t(lt)
 !
             ds_dx1 = grad_s(inod,1)
             ds_dx2 = grad_s(inod,2)
@@ -270,7 +274,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sph_SGS_m_flux_nl_gradient_pin(kr_in, kr_out,          &
-     &          nnod_rtp, nidx_rtp, r, a_r, sin_t, cot_t, coef,         &
+     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
      &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,    &
      &          u_rtp, grad_ux, grad_uy, grad_uz, d_SGS)
 !
@@ -278,9 +282,8 @@
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
-      real(kind = kreal), intent(in) :: a_r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
-      real(kind = kreal), intent(in) :: cot_t(nidx_rtp(2))
+      real(kind = kreal), intent(in) :: cos_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: coef
 !
       real(kind = kreal), intent(in) :: radial_2nd_moment(nidx_rtp(1))
@@ -317,8 +320,8 @@
 !
         do kr = kr_in, kr_out
           gamma_r = coef * radial_2nd_moment(kr)
-          gamma_t = coef * theta_2nd_moment(lt) * (r(kr))**2
-          gamma_p = coef * phi_2nd_moment * (r(kr) * sin_t(lt))**2
+          gamma_t = coef * theta_2nd_moment(lt)
+          gamma_p = coef * phi_2nd_moment
 !
 !$omp do private(du1_dx1,du1_dx2,du1_dx3,du2_dx1,du2_dx2,du2_dx3,       &
 !$omp&           du3_dx1,du3_dx2,du3_dx3,mp,inod)
@@ -327,16 +330,18 @@
      &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
 !
             du1_dx1 = grad_ux(inod,1)
-            du1_dx2 = grad_ux(inod,2) - u_rtp(inod,2) * a_r(kr)
-            du1_dx3 = grad_ux(inod,3) - u_rtp(inod,3) * a_r(kr)
+            du1_dx2 = grad_ux(inod,2) * r(kr) - u_rtp(inod,2)
+            du1_dx3 = grad_ux(inod,3) * sin_t(lt) * r(kr)               &
+     &                - u_rtp(inod,3) * sin_t(lt)
             du2_dx1 = grad_uy(inod,1)
-            du2_dx2 = grad_uy(inod,2) + u_rtp(inod,1) * a_r(kr)
-            du2_dx3 = grad_uy(inod,3)                                   &
-     &               - u_rtp(inod,3) * a_r(kr) * cot_t(lt)
+            du2_dx2 = grad_uy(inod,2) * r(kr) + u_rtp(inod,1)
+            du2_dx3 = grad_uy(inod,3) * sin_t(lt) * r(kr)               &
+     &                - u_rtp(inod,3) * cos_t(lt)
             du3_dx1 = grad_uz(inod,1)
-            du3_dx2 = grad_uz(inod,2)
-            du3_dx3 = grad_uz(inod,3) &
-     &            + (u_rtp(inod,2)*cot_t(lt) - u_rtp(inod,1)) * a_r(kr)
+            du3_dx2 = grad_uz(inod,2) * r(kr)
+            du3_dx3 = grad_uz(inod,3) * sin_t(lt) * r(kr)               &
+     &                + u_rtp(inod,2) * cos_t(lt)                       &
+     &                - u_rtp(inod,1) * sin_t(lt)
 !
             d_SGS(inod,1) = gamma_r * (du1_dx1 * du1_dx1)               &
      &                   +  gamma_t * (du1_dx2 * du1_dx2)               &

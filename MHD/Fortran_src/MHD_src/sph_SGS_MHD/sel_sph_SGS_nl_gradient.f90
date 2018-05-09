@@ -81,30 +81,28 @@
 !
       if(iflag_FFT .eq. iflag_FFTW) then
         call sph_SGS_induct_nl_gradient_pin                             &
-     &     (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,              &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%radius_1d_rtp_r, sph_rtp%a_r_1d_rtp_r,              &
-     &      sph_rtp%sin_theta_1d_rtp, sph_rtp%cot_theta_1d_rtp,         &
-     &      coef, sph_filters%radial_2nd_moment,                        &
-     &      sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,   &
-     &      fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),          &
-     &      fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),       &
-     &      fld_rtp(1,ib_mhd_magne),   fld_sgs_rtp(1,ib_grad_bx),       &
-     &      fld_sgs_rtp(1,ib_grad_by), fld_sgs_rtp(1,ib_grad_bz),       &
-     &      frc_sgs_rtp(1,if_SGS_idct))
+     &    (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,               &
+     &     sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%radius_1d_rtp_r, &
+     &     sph_rtp%sin_theta_1d_rtp, sph_rtp%cos_theta_1d_rtp,          &
+     &     coef, sph_filters%radial_2nd_moment,                         &
+     &     sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,    &
+     &     fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),           &
+     &     fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),        &
+     &     fld_rtp(1,ib_mhd_magne),   fld_sgs_rtp(1,ib_grad_bx),        &
+     &     fld_sgs_rtp(1,ib_grad_by), fld_sgs_rtp(1,ib_grad_bz),        &
+     &     frc_sgs_rtp(1,if_SGS_idct))
       else
         call sph_SGS_induct_nl_gradient_pout                            &
-     &     (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,              &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%radius_1d_rtp_r, sph_rtp%a_r_1d_rtp_r,              &
-     &      sph_rtp%sin_theta_1d_rtp, sph_rtp%cot_theta_1d_rtp,         &
-     &      coef, sph_filters%radial_2nd_moment,                        &
-     &      sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,   &
-     &      fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),          &
-     &      fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),       &
-     &      fld_rtp(1,ib_mhd_magne),   fld_sgs_rtp(1,ib_grad_bx),       &
-     &      fld_sgs_rtp(1,ib_grad_by), fld_sgs_rtp(1,ib_grad_bz),       &
-     &      frc_sgs_rtp(1,if_SGS_idct))
+     &    (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,               &
+     &     sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%radius_1d_rtp_r, &
+     &     sph_rtp%sin_theta_1d_rtp, sph_rtp%cos_theta_1d_rtp,          &
+     &     coef, sph_filters%radial_2nd_moment,                         &
+     &     sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,    &
+     &     fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),           &
+     &     fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),        &
+     &     fld_rtp(1,ib_mhd_magne),   fld_sgs_rtp(1,ib_grad_bx),        &
+     &     fld_sgs_rtp(1,ib_grad_by), fld_sgs_rtp(1,ib_grad_bz),        &
+     &     frc_sgs_rtp(1,if_SGS_idct))
       end if
 !
       end subroutine sel_sph_SGS_induct_nl_gradient
@@ -145,26 +143,24 @@
 !
       if(iflag_FFT .eq. iflag_FFTW) then
         call sph_SGS_s_flux_nl_gradient_pin                             &
-     &     (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,              &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%radius_1d_rtp_r, sph_rtp%a_r_1d_rtp_r,              &
-     &      sph_rtp%sin_theta_1d_rtp, sph_rtp%cot_theta_1d_rtp,         &
-     &      coef, sph_filters%radial_2nd_moment,                        &
-     &      sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,   &
-     &      fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),          &
-     &      fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),       &
-     &      fld_sgs_rtp(1,ib_grad_s),  frc_sgs_rtp(1,if_SGS_sflux))
+     &    (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,               &
+     &     sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%radius_1d_rtp_r, &
+     &     sph_rtp%sin_theta_1d_rtp, sph_rtp%cos_theta_1d_rtp,          &
+     &     coef, sph_filters%radial_2nd_moment,                         &
+     &     sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,    &
+     &     fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),           &
+     &     fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),        &
+     &     fld_sgs_rtp(1,ib_grad_s),  frc_sgs_rtp(1,if_SGS_sflux))
       else
         call sph_SGS_s_flux_nl_gradient_pout                            &
-     &     (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,              &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%radius_1d_rtp_r, sph_rtp%a_r_1d_rtp_r,              &
-     &      sph_rtp%sin_theta_1d_rtp, sph_rtp%cot_theta_1d_rtp,         &
-     &      coef, sph_filters%radial_2nd_moment,                        &
-     &      sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,   &
-     &      fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),          &
-     &      fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),       &
-     &      fld_sgs_rtp(1,ib_grad_s),  frc_sgs_rtp(1,if_SGS_sflux))
+     &    (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,               &
+     &     sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%radius_1d_rtp_r, &
+     &     sph_rtp%sin_theta_1d_rtp, sph_rtp%cos_theta_1d_rtp,          &
+     &     coef, sph_filters%radial_2nd_moment,                         &
+     &     sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,    &
+     &     fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),           &
+     &     fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),        &
+     &     fld_sgs_rtp(1,ib_grad_s),  frc_sgs_rtp(1,if_SGS_sflux))
       end if
 !
       end subroutine sel_SGS_s_flux_nl_gradient
@@ -204,26 +200,24 @@
 !
       if(iflag_FFT .eq. iflag_FFTW) then
         call sph_SGS_m_flux_nl_gradient_pin                             &
-     &     (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,              &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%radius_1d_rtp_r, sph_rtp%a_r_1d_rtp_r,              &
-     &      sph_rtp%sin_theta_1d_rtp, sph_rtp%cot_theta_1d_rtp,         &
-     &      coef, sph_filters%radial_2nd_moment,                        &
-     &      sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,   &
-     &      fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),          &
-     &      fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),       &
-     &      frc_sgs_rtp(1,if_SGS_mflux))
+     &    (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,               &
+     &     sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%radius_1d_rtp_r, &
+     &     sph_rtp%sin_theta_1d_rtp, sph_rtp%cos_theta_1d_rtp,          &
+     &     coef, sph_filters%radial_2nd_moment,                         &
+     &     sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,    &
+     &     fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),           &
+     &     fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),        &
+     &     frc_sgs_rtp(1,if_SGS_mflux))
       else
         call sph_SGS_m_flux_nl_gradient_pout                            &
-     &     (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,              &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%radius_1d_rtp_r, sph_rtp%a_r_1d_rtp_r,              &
-     &      sph_rtp%sin_theta_1d_rtp, sph_rtp%cot_theta_1d_rtp,         &
-     &      coef, sph_filters%radial_2nd_moment,                        &
-     &      sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,   &
-     &      fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),          &
-     &      fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),       &
-     &      frc_sgs_rtp(1,if_SGS_mflux))
+     &    (sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,               &
+     &     sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%radius_1d_rtp_r, &
+     &     sph_rtp%sin_theta_1d_rtp, sph_rtp%cos_theta_1d_rtp,          &
+     &     coef, sph_filters%radial_2nd_moment,                         &
+     &     sph_filters%theta_2nd_moment, sph_filters%phi_2nd_moment,    &
+     &     fld_rtp(1,ib_mhd_velo), fld_sgs_rtp(1,ib_grad_ux),           &
+     &     fld_sgs_rtp(1,ib_grad_uy), fld_sgs_rtp(1,ib_grad_uz),        &
+     &     frc_sgs_rtp(1,if_SGS_mflux))
       end if
 !
       end subroutine sel_sph_SGS_m_flux_nl_gradient
