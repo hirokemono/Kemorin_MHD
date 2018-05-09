@@ -235,7 +235,7 @@ static void gtk_colormap_menu(double range_min, double range_max, const char *ti
 	GtkWidget *vbox1;
 	GtkWidget *lavel0, *lavel1, *lavel2, *lavel3, *lavel4;
 	GtkWidget *bot1, *bot2, *bot3, *bot4;
-	GtkObject *adj_data, *adj_color;
+	GtkAdjustment *adj_data, *adj_color;
 	
 	char min_text[30], max_text[30];
 	
@@ -343,7 +343,7 @@ static void gtk_opacitymap_menu(double range_min, double range_max, const char *
 	GtkWidget *vbox1;
 	GtkWidget *lavel0, *lavel1, *lavel2, *lavel3, *lavel4;
 	GtkWidget *bot1, *bot2, *bot3, *bot4;
-	GtkObject *adj_data, *adj_opasity;
+	GtkAdjustment *adj_data, *adj_opasity;
 	
 	char min_text[30], max_text[30];
 	
@@ -450,7 +450,7 @@ static void gtk_range_menu(double range_min, double range_max,
 	GtkWidget *box1, *box2, *box3, *box5;
 	GtkWidget *lavel0, *lavel1, *lavel2, *lavel3;
 	GtkWidget *bot1, *bot2;
-	GtkObject *adj_min, *adj_max;
+	GtkAdjustment *adj_min, *adj_max;
 	
     double delta;
 	char min_text[30], max_text[30];
@@ -522,7 +522,7 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	GtkWidget *box1, *box2, *box3, *box5;
 	GtkWidget *lavel0, *lavel2;
 	GtkWidget *bot2;
-	GtkObject *adj;
+	GtkAdjustment *adj;
 	
 	char current_text[30];
 	
@@ -576,15 +576,19 @@ static void gtk_opacity_menu(double current_value, const char *title){
 static void set_PSFcolor_GTK(GtkWidget *colordialog)
 {
 	GtkWidget* csel;
+	GdkRGBA gcolor;
 	gdouble dcolor[4];
 	
 	csel = gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG(colordialog));
-	gtk_color_selection_get_color( GTK_COLOR_SELECTION(csel), dcolor);
+	gtk_color_selection_get_current_rgba( GTK_COLOR_SELECTION(csel), &gcolor);
 	gtk_widget_destroy(colordialog);
 	gtk_widget_destroy(ftmpw);
 	gtk_main_quit();
 	
-	dcolor[3] = (float) kemoview_get_PSF_max_opacity();
+	dcolor[0] = gcolor.red;
+	dcolor[1] = gcolor.green;
+	dcolor[2] = gcolor.blue;
+	dcolor[3] = (gdouble) kemoview_get_PSF_max_opacity();
 	kemoview_set_PSF_single_color(dcolor);
 	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
 	draw_mesh_keep_menu();
@@ -594,18 +598,18 @@ static void set_PSFcolor_GTK(GtkWidget *colordialog)
 static void set_background_GTK(GtkWidget *colordialog)
 {
 	GtkWidget* csel;
+	GdkRGBA gcolor;
 	GLfloat color[4];
-	gdouble dcolor[4];
 	
 	csel = gtk_color_selection_dialog_get_color_selection (GTK_COLOR_SELECTION_DIALOG(colordialog));
-	gtk_color_selection_get_color( GTK_COLOR_SELECTION(csel), dcolor);
+	gtk_color_selection_get_current_rgba( GTK_COLOR_SELECTION(csel), &gcolor);
 	gtk_widget_destroy(colordialog);
 	gtk_widget_destroy(ftmpw);
 	gtk_main_quit();
 	
-    color[0] = (GLfloat) dcolor[0];
-    color[1] = (GLfloat) dcolor[1];
-    color[2] = (GLfloat) dcolor[2];
+    color[0] = (GLfloat) gcolor.red;
+    color[1] = (GLfloat) gcolor.green;
+    color[2] = (GLfloat) gcolor.blue;
 	/*printf("New background Color (R,G,B): %.7e %.7e %.7e \n", color[0], color[1], color[2]);*/
 	
 	draw_mesh_keep_menu();
@@ -617,11 +621,6 @@ static void set_background_GTK(GtkWidget *colordialog)
 
 static void kemoview_gtk_PSFcolorsel(GtkButton *button, gpointer data){
 	int response;
-	GtkWidget *parent;
-	GtkEntry *entry;
-	parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
-	entry = GTK_ENTRY(data);
-	
 	rangew = gtk_color_selection_dialog_new("Choose color");
 	gtk_widget_show_all(rangew);
 	
@@ -650,8 +649,7 @@ static void gtk_PSFcolorselect(const char *title){
 	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
 	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-	/*hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);*/
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
 	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
 	
@@ -669,11 +667,6 @@ static void gtk_PSFcolorselect(const char *title){
 
 static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
 	int response;
-	GtkWidget *parent;
-	GtkEntry *entry;
-	parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
-	entry = GTK_ENTRY(data);
-	
 	rangew = gtk_color_selection_dialog_new("Choose color");
 	gtk_widget_show_all(rangew);
 	
@@ -702,8 +695,7 @@ static void gtk_BGcolorselect(GLfloat color[4], const char *title){
 	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
 	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-	/*hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);*/
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
 	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
 	
@@ -724,7 +716,7 @@ static void gtk_nline_menu(int nline, const char *title){
 	GtkWidget *box1, *box2, *box3, *box5;
 	GtkWidget *lavel0, *lavel2;
 	GtkWidget *bot2;
-	GtkObject *adj;
+	GtkAdjustment *adj;
 	
 	char min_text[30];
 	

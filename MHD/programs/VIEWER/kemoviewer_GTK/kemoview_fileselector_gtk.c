@@ -157,8 +157,7 @@ static void gtk_read_file_window(const char *title){
 	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
 	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-	/*hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);*/
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
 	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
 	
@@ -198,8 +197,7 @@ static void gtk_save_file_window(const char *title){
 	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
 	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
-	/*hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);*/
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
 	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
 	
