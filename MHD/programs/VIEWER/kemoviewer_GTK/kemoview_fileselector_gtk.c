@@ -187,8 +187,8 @@ static void gtk_read_file_window(const char *title){
 
 static void gtk_save_file_window(const char *title){
 	GtkWidget *hbox;
-  GtkWidget *label;
-  GtkWidget *entry;
+	GtkWidget *label;
+	GtkWidget *entry;
 	GtkWidget *button, *button2;
 	
 	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -322,7 +322,7 @@ static void gtk_evolution_fmt_menu(int istep){
 	fmtw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(fmtw), "Select File Format");
 
-	g_signal_connect(fmtw, "destroy", destroy, &fmtw);
+	g_signal_connect(fmtw, "destroy", G_CALLBACK(destroy), &fmtw);
 
 	gtk_container_set_border_width(GTK_CONTAINER(fmtw), 5);
 
