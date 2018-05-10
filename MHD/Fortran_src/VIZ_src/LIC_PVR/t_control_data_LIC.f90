@@ -180,8 +180,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag                                      &
-     &     (hd_lic_ctl, lic_ctl%i_lic_control)
+        lic_ctl%i_lic_control = find_control_end_flag(hd_lic_ctl)
         if(lic_ctl%i_lic_control .gt. 0) exit
 !
 !

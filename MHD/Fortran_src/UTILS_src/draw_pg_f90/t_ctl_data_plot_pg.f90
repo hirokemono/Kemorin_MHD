@@ -267,7 +267,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_draw_pgplot, i_draw_pgplot)
+        i_draw_pgplot = find_control_end_flag(hd_draw_pgplot)
         if(i_draw_pgplot .gt. 0) exit
 !
 !
@@ -294,7 +294,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_drmed_grp,  i_drmed_grp)
+        i_drmed_grp = find_control_end_flag(hd_drmed_grp)
         if(i_drmed_grp .gt. 0) exit
 !
         call read_ctl_data_4_pgplot_param(pg_ctl%pg_panel_ctl)
@@ -316,7 +316,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_pgplot_param, i_pgplot_param)
+        i_pgplot_param = find_control_end_flag(hd_pgplot_param)
         if(i_pgplot_param .gt. 0) exit
 !
 !
@@ -343,7 +343,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_sf_plotting, i_sf_plotting)
+        i_sf_plotting = find_control_end_flag(hd_sf_plotting)
         if(i_sf_plotting .gt. 0) exit
 !
 !
@@ -378,7 +378,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_z_plane_ctl, i_z_plane_ctl)
+        i_z_plane_ctl = find_control_end_flag(hd_z_plane_ctl)
         if(i_z_plane_ctl .gt. 0) exit
 !
 !
@@ -405,7 +405,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_sphere_map_ctl, i_sphere_map_ctl)
+        i_sphere_map_ctl = find_control_end_flag(hd_sphere_map_ctl)
         if(i_sphere_map_ctl .gt. 0) exit
 !
         call read_chara_ctl_type                                        &

@@ -21,6 +21,7 @@
 !!     &          label3, label4, label5, label6, label7)
 !!
 !!      subroutine write_multi_labels(id_file, nlabel, labels)
+!!      subroutine write_space_4_parse(id_file, level)
 !!@endverbatim
 !!
 !
@@ -180,6 +181,19 @@
       write(id_file,'(2a)',advance='no') trim(label1), '    '
 !
       end subroutine write_one_label_cont
+!
+! ----------------------------------------------------------------------
+!
+      subroutine write_space_4_parse(id_file, level)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint) :: i
+!
+      do i = 1, level
+        write(id_file,'(a2)',advance='no')  '  '
+      end do
+!
+      end subroutine write_space_4_parse
 !
 ! ----------------------------------------------------------------------
 !

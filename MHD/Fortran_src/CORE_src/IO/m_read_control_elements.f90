@@ -11,10 +11,10 @@
 !!      subroutine check_read_control_header
 !!      subroutine check_read_control_buffer
 !!
-!!      integer function right_begin_flag(ctl_name)
-!!      integer function right_file_flag(ctl_name)
+!!      integer(kind = kint) function right_begin_flag(ctl_name)
+!!      integer(kind = kint) function right_file_flag(ctl_name)
 !!
-!!      subroutine find_control_end_flag(ctl_name, iflag_end)
+!!      integer(kind = kint) function find_control_end_flag(ctl_name)
 !!      subroutine find_control_array_flag(ctl_name, num_array)
 !!      subroutine find_control_end_array_flag(ctl_name, num, iflag_end)
 !!
@@ -148,7 +148,7 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      integer function right_begin_flag(ctl_name)
+      integer(kind = kint) function right_begin_flag(ctl_name)
 !
       use skip_comment_f
 !
@@ -169,7 +169,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      integer function right_file_flag(ctl_name)
+      integer(kind = kint) function right_file_flag(ctl_name)
 !
       use skip_comment_f
 !
@@ -187,22 +187,22 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine find_control_end_flag(ctl_name, iflag_end)
+      integer(kind = kint) function find_control_end_flag(ctl_name)
 !
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: ctl_name
-      integer(kind = kint), intent(inout) :: iflag_end
 !
       character(len=kchara)  :: tmpchara, item_name
 !
 !
+      find_control_end_flag = 0
       if (cmp_no_case(header_chara, hd_end)) then
         read(character_4_read,*) tmpchara, item_name
-        if(item_name .eq. ctl_name) iflag_end = 1
+        if(item_name .eq. ctl_name) find_control_end_flag = 1
       end if 
 !
-      end subroutine find_control_end_flag
+      end function find_control_end_flag
 !
 !   --------------------------------------------------------------------
 !

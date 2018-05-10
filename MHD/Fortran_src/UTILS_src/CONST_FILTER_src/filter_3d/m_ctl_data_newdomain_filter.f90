@@ -98,8 +98,8 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_filter_newdomain_ctl,             &
-     &      i_filter_newdomain_ctl)
+        i_filter_newdomain_ctl                                          &
+     &    = find_control_end_flag(hd_filter_newdomain_ctl)
         if(i_filter_newdomain_ctl .gt. 0) exit
 !
 !

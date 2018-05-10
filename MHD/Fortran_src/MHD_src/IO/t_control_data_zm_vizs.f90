@@ -77,7 +77,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_zm_viz_ctl, i_viz_ctl)
+        i_viz_ctl = find_control_end_flag(hd_zm_viz_ctl)
         if(i_viz_ctl .eq. 1) exit
 !
         call read_single_section_ctl                                &
@@ -123,7 +123,6 @@
         call alloc_psf_ctl_stract(psf_ctls)
         call read_file_names_from_ctl_line                            &
      &     (psf_ctls%num_psf_ctl, i_psf_ctl, psf_ctls%fname_psf_ctl)
-        write(*,*) 'read read_file_names_from_ctl_line', i_psf_ctl
       else if(right_begin_flag(hd_section) .gt. 0) then
         i_psf_ctl = i_psf_ctl + 1
         psf_ctls%num_psf_ctl = 1

@@ -140,7 +140,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_assemble, i_assemble)
+        i_assemble = find_control_end_flag(hd_assemble)
         if(i_assemble .gt. 0) exit
 !
 !
@@ -167,7 +167,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_model, i_model)
+        i_model = find_control_end_flag(hd_model)
         if(i_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
@@ -186,7 +186,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_control, i_control)
+        i_control = find_control_end_flag(hd_control)
         if(i_control .gt. 0) exit
 !
         call read_control_time_step_data                                &
@@ -209,7 +209,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_newrst_magne, i_newrst_magne)
+        i_newrst_magne = find_control_end_flag(hd_newrst_magne)
         if(i_newrst_magne .gt. 0) exit
 !
         call read_real_ctl_type(hd_magnetic_field_ratio,                &

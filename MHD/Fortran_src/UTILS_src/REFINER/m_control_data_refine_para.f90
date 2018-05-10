@@ -100,8 +100,8 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_para_refine_tbl_ctl,              &
-     &      i_para_refine_tbl_ctl)
+        i_para_refine_tbl_ctl                                           &
+     &     = find_control_end_flag(hd_para_refine_tbl_ctl)
 !
 !
         call read_control_platforms                                     &
@@ -123,8 +123,8 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_course_mesh_para_ctl,             &
-     &      i_course_mesh_para_ctl)
+        i_course_mesh_para_ctl                                          &
+     &     = find_control_end_flag(hd_course_mesh_para_ctl)
         if(i_course_mesh_para_ctl .gt. 0) exit
 !
 !

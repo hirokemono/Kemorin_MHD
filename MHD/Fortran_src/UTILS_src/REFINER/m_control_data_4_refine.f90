@@ -121,7 +121,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_refine_ctl, i_refine_ctl)
+        i_refine_ctl = find_control_end_flag(hd_refine_ctl)
         if(i_refine_ctl .gt. 0) exit
 !
         call read_control_platforms                                     &
@@ -145,8 +145,8 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_single_refine_files,              &
-     &      i_single_refine_files)
+        i_single_refine_files                                           &
+     &      = find_control_end_flag(hd_single_refine_files)
         if(i_single_refine_files .gt. 0) exit
 !
 !
@@ -173,7 +173,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_refine_param, i_refine_param)
+        i_refine_param = find_control_end_flag(hd_refine_param)
         if(i_refine_param .gt. 0) exit
 !
 !

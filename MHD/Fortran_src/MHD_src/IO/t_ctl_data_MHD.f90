@@ -121,7 +121,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_mhd_ctl, i_mhd_ctl)
+        i_mhd_ctl = find_control_end_flag(hd_mhd_ctl)
         if(i_mhd_ctl .gt. 0) exit
 !
 !
@@ -163,7 +163,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_mhd_ctl, i_mhd_ctl)
+        i_mhd_ctl = find_control_end_flag(hd_mhd_ctl)
         if(i_mhd_ctl .gt. 0) exit
 !
 !

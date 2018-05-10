@@ -7,59 +7,83 @@
 !>@brief  Subroutines to read control data
 !!
 !!@verbatim
-!!      subroutine write_control_begin_flag(idepth, ctl_name)
-!!      subroutine write_control_end_flag(idepth, ctl_name)
-!!      subroutine write_control_array_flag(idepth, ctl_name, num_array)
-!!      subroutine write_control_end_array_flag(idepth, ctl_name)
+!!      subroutine write_begin_flag_for_ctl(id_file, level, label)
+!!      subroutine write_end_flag_for_ctl(id_file, level, label)
+!!      subroutine write_array_flag_for_ctl(id_file, level, label, num)
+!!      subroutine write_end_array_flag_for_ctl(id_file, level, label)
 !!
-!!      subroutine write_real_ctl_item(idepth, label, real_data)
-!!      subroutine write_integer_ctl_item(idepth, label, int_data)
-!!      subroutine write_character_ctl_item(idepth, label, chara_data)
+!!      subroutine write_real_ctl_item(id_file, level, label, real_data)
+!!      subroutine write_integer_ctl_item                               &
+!!     &          (id_file, level, label, int_data)
+!!      subroutine write_character_ctl_item                             &
+!!     &         (id_file, level, label, chara_data)
 !!
-!!      subroutine write_real2_ctl_item(idepth, label, real_data)
-!!      subroutine write_real3_ctl_item(idepth, label, real_data)
-!!      subroutine write_integer3_ctl_item(idepth, label, int_data)
-!!      subroutine write_character3_ctl_item(idepth, label,             &
-!!     &           chara_data)
-!!      subroutine write_control_array_i2_r2_item(idepth, label,        &
-!!     &          int1, int2, vec1, vec2)
+!!      subroutine write_real2_ctl_item                                 &
+!!     &         (id_file, level, label, real1, real2)
+!!      subroutine write_real3_ctl_item                                 &
+!!     &         (id_file, level, label, real1, real2, real3)
+!!       subroutine write_int_real_ctl_item                             &
+!!     &          (id_file, level, label, int_data, real_data)
+!!      subroutine write_integer2_ctl_item                              &
+!!     &         (id_file, level, label, int1, int2)
+!!      subroutine write_integer3_ctl_item                              &
+!!     &         (id_file, level, label, int1, int2, int3)
+!!       subroutine write_chara_real_ctl_item                           &
+!!     &          (id_file, level, label, chara_data, real_data)
+!!       subroutine write_chara_real2_ctl_item                          &
+!!     &          (id_file, level, label, chara_data, real1, real2)
+!!       subroutine write_chara2_real_ctl_item                          &
+!!     &          (id_file, level, label, chara1, chara2, real_data)
+!!       subroutine write_chara_int_ctl_item                            &
+!!     &          (id_file, level, label, chara_data, int_data)
+!!       subroutine write_i2_r_ctl_item                                 &
+!!     &          (id_file, level, label, int1, int2, real_data)
+!!       subroutine write_i2_r2_ctl_item                                &
+!!     &          (id_file, level, label, int1, int2, real1, real2)
+!!       subroutine write_i_c_r_ctl_item(id_file, level, label,         &
+!!     &           int_data, chara_data, real_data)
+!!      subroutine write_character2_ctl_item                            &
+!!     &         (id_file, level, label, chara1, chara2)
+!!      subroutine write_character3_ctl_item                            &
+!!     &         (id_file, level, label, chara1, chara2, chara3)
 !!
-!!      subroutine write_file_name_from_ctl_line(idepth, label, fname)
-!!      subroutine write_file_names_from_ctl_line(idepth, label, num,   &
-!!     &          icou, fname)
+!!      subroutine write_file_name_for_ctl_line                         &
+!!     &         (id_file, level, label, fname)
+!!      subroutine write_file_names_from_ctl_line                       &
+!!     &         (id_file, level, label, num, fname)
 !!
-!!      subroutine write_control_array_real_list(idepth, label, num,    &
-!!     &          vec1)
-!!      subroutine write_control_array_real2_list(idepth, label, num,   &
-!!     &          vec1, vec2)
-!!      subroutine write_control_array_real3_list(idepth, label, num,   &
-!!     &          vec1, vec2, vec3)
 !!      subroutine write_control_array_int_list                         &
-!!     &         (idepth, label, num, ivect)
-!!      subroutine write_control_array_int2_list(idepth, label, num,    &
-!!     &          int1, int2)
+!!     &         (id_file, level, label, num, ivect)
+!!      subroutine write_control_array_int_r_list                       &
+!!     &         (id_file, level, label, num, ivect, vect)
+!!      subroutine write_control_array_vect_list                        &
+!!     &         (id_file, level, label, num, c_tbl, vect)
+!!      subroutine write_control_array_int_v_list                       &
+!!     &         (id_file, level, label, num, c_tbl, ivect)
+!!      subroutine write_control_array_real_list                        &
+!!     &         (id_file, level, label, num, vec1)
+!!      subroutine write_control_array_real2_list                       &
+!!     &         (id_file, level, label, num, vec1, vec2)
+!!      subroutine write_control_array_real3_list                       &
+!!     &         (id_file, level, label, num, vec1, vec2, vec3)
 !!      subroutine write_control_array_chara_list                       &
-!!     &         (idepth, label, num, c_tbl)
-!!      subroutine write_control_array_chara2_list(idepth, label, num,  &
-!!     &          c1_tbl, c2_tbl)
-!!      subroutine write_control_array_chara3_list(idepth, label, num,  &
-!!     &          c1_tbl, c2_tbl, c3_tbl)
-!!      subroutine write_control_array_vect_list(idepth, label, num,    &
-!!     &          c_tbl, vect)
-!!      subroutine write_control_array_int_v_list(idepth, label, num,   &
-!!     &          c_tbl, ivect)
-!!      subroutine write_control_array_c_r2_list(idepth, label, num,    &
-!!     &          c_tbl, vec1, vec2)
-!!      subroutine write_control_array_c2_r_list(idepth, label, num,    &
-!!     &          c1_tbl, c2_tbl, vect)
-!!      subroutine write_control_array_i_c_r_list(idepth, label, num,   &
-!!     &          ivect, c_tbl, vect)
-!!      subroutine write_control_array_int_r_list(idepth, label, num,   &
-!!     &          ivect, vect)
-!!      subroutine write_control_array_i2_r_list(idepth, label, num,    &
-!!     &          int1, int2, vect)
-!!      subroutine write_control_array_i2_r2_list(idepth, label, num,   &
-!!     &          int1, int2, vec1, vec2)
+!!     &         (id_file, level, label, num, c_tbl)
+!!      subroutine write_control_array_chara2_list                      &
+!!     &         (id_file, level, label, num, c1_tbl, c2_tbl)
+!!      subroutine write_control_array_chara3_list                      &
+!!     &         (id_file, level, label, num, c1_tbl, c2_tbl, c3_tbl)
+!!      subroutine write_control_array_c_r2_list                        &
+!!     &         (id_file, level, label, num, c_tbl,  vec1, vec2)
+!!      subroutine write_control_array_c2_r_list                        &
+!!     &         (id_file, level, label, num, c1_tbl, c2_tbl, vect)
+!!      subroutine write_control_array_i_c_r_list                       &
+!!     &         (id_file, level, label, num, ivect, c_tbl, vect)
+!!      subroutine write_control_array_int2_list                        &
+!!     &         (id_file, level, label, num, int1, int2)
+!!      subroutine write_control_array_i2_r_list                        &
+!!     &         (id_file, level, label, num, int1, int2, vect)
+!!      subroutine write_control_array_i2_r2_list                       &
+!!     &         (id_file, level, label, num, int1, int2, vec1, vec2)
 !!@endverbatim
 !!
 !!@n @param  ctl_name   label for control block
@@ -90,9 +114,18 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_read_control_elements
+      use write_field_labels
 !
       implicit none
+!
+!>   Label to start a control block
+       character(len=kchara), parameter  :: hd_begin = 'begin'
+!>   Label to end a control block
+       character(len=kchara), parameter  :: hd_end = 'end'
+!>   Label for an array control block
+       character(len=kchara), parameter  :: hd_array = 'array'
+!>   Label for an array control block
+       character(len=kchara), parameter  :: hd_file = 'file'
 !
 !   --------------------------------------------------------------------
 !
@@ -100,595 +133,748 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_begin_flag(idepth, ctl_name)
+      subroutine write_begin_flag_for_ctl(id_file, level, label)
 !
-      integer (kind=kint), intent(in) :: idepth
-      character(len=kchara), intent(in) :: ctl_name
-!
-      integer(kind = kint) :: j
-!
-!
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(hd_begin), ' ',    &
-     &                      trim(ctl_name)
-!
-      end subroutine write_control_begin_flag
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_end_flag(idepth, ctl_name)
-!
-      integer (kind=kint), intent(in) :: idepth
-      character(len=kchara), intent(in) :: ctl_name
-!
-      integer(kind = kint) :: j
-!
-!
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(hd_end), ' ',      &
-     &                      trim(ctl_name)
-!
-      end subroutine write_control_end_flag
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_array_flag(idepth, ctl_name, num_array)
-!
-      integer (kind=kint), intent(in) :: idepth
-      character(len=kchara), intent(in) :: ctl_name
-      integer(kind = kint), intent(in) :: num_array
-!
-      integer(kind = kint) :: j
-!
-!
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(hd_begin), ' ',    &
-     &           trim(hd_array), ' ', trim(ctl_name), '  ', num_array
-!
-      end subroutine write_control_array_flag
-!
-!   --------------------------------------------------------------------
-!
-      subroutine write_control_end_array_flag(idepth, ctl_name)
-!
-      integer (kind=kint), intent(in) :: idepth
-      character(len=kchara), intent(in) :: ctl_name
-!
-      integer(kind = kint) :: j
-!
-!
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(hd_end), ' ',      &
-     &                       trim(hd_array), ' ', trim(ctl_name)
-!
-      end subroutine write_control_end_array_flag
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine write_real_ctl_item(idepth, label, real_data)
-!
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
-      integer (kind=kint), intent(inout) :: idepth
-      real(kind = kreal), intent(inout) :: real_data
-!
-      integer(kind = kint) :: j
 !
 !
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(label), '  ',      &
-     &                       real_data
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, hd_begin)
+      write(id_file,'(a)') trim(label)
+!
+      end subroutine write_begin_flag_for_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_end_flag_for_ctl(id_file, level, label)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+!
+!
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, hd_end)
+      write(id_file,'(a)') trim(label)
+!
+      end subroutine write_end_flag_for_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_array_flag_for_ctl(id_file, level, label, num)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      integer (kind=kint), intent(in) :: num
+      character(len=kchara), intent(in) :: label
+!
+!
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, hd_array)
+      call write_one_label_cont(id_file, label)
+      write(id_file,'(i6)') num
+!
+      end subroutine write_array_flag_for_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_end_array_flag_for_ctl(id_file, level, label)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+!
+!
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, hd_end)
+      call write_one_label_cont(id_file, hd_array)
+      write(id_file,'(a)') trim(label)
+!
+      end subroutine write_end_array_flag_for_ctl
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine write_real_ctl_item(id_file, level, label, real_data)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      real(kind = kreal), intent(in) :: real_data
+!
+!
+      call write_space_4_parse(id_file, level)
+      write(id_file,'(a,a2,1pE25.15e3)') trim(label), '  ', real_data
 !
       end subroutine write_real_ctl_item
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_integer_ctl_item(idepth, label, int_data)
+      subroutine write_integer_ctl_item                                 &
+     &         (id_file, level, label, int_data)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
-      integer (kind=kint), intent(inout) :: idepth
-      integer (kind=kint), intent(inout) :: int_data
-!
-      integer(kind = kint) :: j
+      integer (kind=kint), intent(in) :: int_data
 !
 !
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(label), '  ',      &
-     &                       int_data
+      call write_space_4_parse(id_file, level)
+      write(id_file,'(a,a2,i16)') trim(label), '  ', int_data
 !
       end subroutine write_integer_ctl_item
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_character_ctl_item(idepth, label, chara_data)
+      subroutine write_character_ctl_item                               &
+     &         (id_file, level, label, chara_data)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
-      integer (kind=kint), intent(inout) :: idepth
-      character(len=kchara), intent(inout) :: chara_data
-!
-      integer(kind = kint) :: j
+      character(len=kchara), intent(in) :: chara_data
 !
 !
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(label), '  ',      &
-     &                       chara_data
+      call write_space_4_parse(id_file, level)
+      write(id_file,'(a,a2,a)') trim(label), '  ', trim(chara_data)
 !
-       end subroutine write_character_ctl_item
+      end subroutine write_character_ctl_item
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine write_real2_ctl_item(idepth, label, real_data)
+      subroutine write_real2_ctl_item                                   &
+     &         (id_file, level, label, real1, real2)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
-      integer (kind=kint), intent(inout) :: idepth
-      real(kind = kreal), intent(inout) :: real_data(2)
-!
-      integer(kind = kint) :: j
+      real(kind = kreal), intent(in) :: real1, real2
 !
 !
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(label), '  ',      &
-     &                       real_data(1:2)
+      call write_space_4_parse(id_file, level)
+      write(id_file,'(a,a2,1p2E25.15e3)')                               &
+     &            trim(label), '  ', real1, real2
 !
        end subroutine write_real2_ctl_item
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_real3_ctl_item(idepth, label, real_data)
+      subroutine write_real3_ctl_item                                   &
+     &         (id_file, level, label, real1, real2, real3)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: idepth
-      real(kind = kreal), intent(inout) :: real_data(3)
-!
-      integer(kind = kint) :: j
+      real(kind = kreal), intent(in) :: real1, real2, real3
 !
 !
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(label), '  ',      &
-     &                       real_data(1:3)
+      call write_space_4_parse(id_file, level)
+      write(id_file,'(a,a2,1p3E25.15e3)')                               &
+     &            trim(label), '  ', real1, real2, real3
 !
       end subroutine write_real3_ctl_item
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_integer3_ctl_item(idepth, label, int_data)
+      subroutine write_int_real_ctl_item                                &
+     &         (id_file, level, label, int_data, real_data)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: idepth
-      integer (kind=kint), intent(inout) :: int_data(3)
-!
-      integer(kind = kint) :: j
+      integer (kind=kint), intent(in) :: int_data
+      real(kind = kreal), intent(in) :: real_data
 !
 !
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(label), '  ',      &
-     &                       int_data(1:3)
+      call write_space_4_parse(id_file, level)
+      write(id_file,'(a,a2,i16,1pE25.15e3)')                            &
+     &                       trim(label), '  ', int_data, real_data
+!
+      end subroutine write_int_real_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_integer2_ctl_item                                &
+     &         (id_file, level, label, int1, int2)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      integer (kind=kint), intent(in) :: int1, int2
+!
+!
+      call write_space_4_parse(id_file, level)
+      write(id_file,'(a,a2,2i16)') trim(label), '  ', int1, int2
+!
+      end subroutine write_integer2_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_integer3_ctl_item                                &
+     &         (id_file, level, label, int1, int2, int3)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      integer (kind=kint), intent(in) :: int1, int2, int3
+!
+!
+      call write_space_4_parse(id_file, level)
+      write(id_file,'(a,a2,3i16)') trim(label), '  ', int1, int2, int3
 !
       end subroutine write_integer3_ctl_item
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_character3_ctl_item(idepth, label,               &
-     &           chara_data)
+       subroutine write_chara_real_ctl_item                             &
+     &          (id_file, level, label, chara_data, real_data)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: idepth
-      character(len=kchara), intent(inout) :: chara_data(3)
-!
-      integer(kind = kint) :: j
+      character(len=kchara), intent(in) :: chara_data
+      real(kind = kreal), intent(in) :: real_data
 !
 !
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(label), '  ',      &
-     &                       trim(chara_data(1)), '  ',                 &
-     &                       trim(chara_data(2)), '  ',                 &
-     &                       trim(chara_data(3))
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, label)
+      call write_one_label_cont(id_file, chara_data)
+      write(id_file,'(1pE25.15e3)')  real_data
 !
-       end subroutine write_character3_ctl_item
+      end subroutine write_chara_real_ctl_item
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_i2_r2_item(idepth, label,          &
-     &          int1, int2, vec1, vec2)
+       subroutine write_chara_real2_ctl_item                            &
+     &          (id_file, level, label, chara_data, real1, real2)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: idepth
-      integer(kind = kint), intent(inout) :: int1, int2
-      real (kind=kreal), intent(inout) :: vec1, vec2
-!
-      integer(kind = kint) :: j
+      character(len=kchara), intent(in) :: chara_data
+      real(kind = kreal), intent(in) :: real1, real2
 !
 !
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(label), '  ',      &
-     &                       int1, int2, vec1, vec2
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, label)
+      call write_one_label_cont(id_file, chara_data)
+      write(id_file,'(1p2E25.15e3)')  real1, real2
 !
-      end subroutine write_control_array_i2_r2_item
+      end subroutine write_chara_real2_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+       subroutine write_chara2_real_ctl_item                            &
+     &          (id_file, level, label, chara1, chara2, real_data)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      character(len=kchara), intent(in) :: chara1, chara2
+      real(kind = kreal), intent(in) :: real_data
+!
+!
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, label)
+      call write_one_label_cont(id_file, chara1)
+      call write_one_label_cont(id_file, chara2)
+      write(id_file,'(1pE25.15e3)')  real_data
+!
+      end subroutine write_chara2_real_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+       subroutine write_chara_int_ctl_item                              &
+     &          (id_file, level, label, chara_data, int_data)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      character(len=kchara), intent(in) :: chara_data
+      integer (kind=kint), intent(in) :: int_data
+!
+!
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, label)
+      call write_one_label_cont(id_file, chara_data)
+      write(id_file,'(i16)')  int_data
+!
+      end subroutine write_chara_int_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+       subroutine write_i2_r_ctl_item                                   &
+     &          (id_file, level, label, int1, int2, real_data)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      integer(kind = kint), intent(in) :: int1, int2
+      real(kind = kreal), intent(in) :: real_data
+!
+!
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, label)
+      write(id_file,'(2i16,1pE25.15e3)') int1, int2, real_data
+!
+      end subroutine write_i2_r_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+       subroutine write_i2_r2_ctl_item                                  &
+     &          (id_file, level, label, int1, int2, real1, real2)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      integer(kind = kint), intent(in) :: int1, int2
+      real(kind = kreal), intent(in) :: real1, real2
+!
+!
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, label)
+      write(id_file,'(2i16,1p2E25.15e3)') int1, int2, real1, real2
+!
+      end subroutine write_i2_r2_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+       subroutine write_i_c_r_ctl_item(id_file, level, label,           &
+     &           int_data, chara_data, real_data)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      integer(kind = kint), intent(in) :: int_data
+      character(len=kchara), intent(in) :: chara_data
+      real(kind = kreal), intent(in) :: real_data
+!
+!
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, label)
+      write(id_file,'(i16,a2,a,a2,1pE25.15e3)')                         &
+     &       int_data, '  ', trim(chara_data), '  ', real_data
+!
+      end subroutine write_i_c_r_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_character2_ctl_item                              &
+     &         (id_file, level, label, chara1, chara2)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      character(len=kchara), intent(in) :: chara1, chara2
+!
+!
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, label)
+      call write_one_label_cont(id_file, chara1)
+      write(id_file,'(a)') trim(chara2)
+!
+      end subroutine write_character2_ctl_item
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_character3_ctl_item                              &
+     &         (id_file, level, label, chara1, chara2, chara3)
+!
+      integer(kind = kint), intent(in) :: id_file, level
+      character(len=kchara), intent(in) :: label
+      character(len=kchara), intent(in) :: chara1, chara2, chara3
+!
+!
+      call write_space_4_parse(id_file, level)
+      call write_one_label_cont(id_file, label)
+      call write_one_label_cont(id_file, chara1)
+      call write_one_label_cont(id_file, chara2)
+      write(id_file,'(a)') trim(chara3)
+!
+      end subroutine write_character3_ctl_item
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine write_file_name_from_ctl_line(idepth, label, fname)
+      subroutine write_file_name_for_ctl_line                           &
+     &         (id_file, level, label, fname)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: idepth
-      character(len=kchara), intent(inout) :: fname
-!
-      integer(kind = kint) :: j
+      character(len=kchara), intent(in) :: fname
 !
 !
-      write(ctl_file_code,*) ('  ',j=1,idepth), trim(hd_file), ' ',     &
-     &                       trim(label), '  ', fname
+      call write_space_4_parse(id_file, level)
+      write(id_file,'(2a,a2,a)')                                        &
+     &              'file  ', trim(label), '  ', trim(fname)
 !
-       end subroutine write_file_name_from_ctl_line
+       end subroutine write_file_name_for_ctl_line
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_file_names_from_ctl_line(idepth, label, num,     &
-     &          icou, fname)
+      subroutine write_file_names_from_ctl_line                         &
+     &         (id_file, level, label, num, fname)
 !
-      character(len=kchara), intent(in) :: label
-      integer(kind = kint), intent(in) :: idepth
+      integer(kind = kint), intent(in) :: id_file, level
       integer (kind=kint), intent(in) :: num
-      integer (kind=kint), intent(inout) :: icou
-      character(len=kchara), intent(inout) :: fname(num)
+      character(len=kchara), intent(in) :: label
+      character(len=kchara), intent(in) :: fname(num)
+!
+      integer(kind = kint) :: i
 !
 !
-      icou = icou + 1
-      call write_file_name_from_ctl_line(idepth, label, fname(icou))
+      call write_array_flag_for_ctl(id_file, level, label, num)
+      do i = 1, num
+        call write_file_name_for_ctl_line                               &
+     &     (id_file, (level+1), label, fname(i))
+      end do
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
-       end subroutine write_file_names_from_ctl_line
+      end subroutine write_file_names_from_ctl_line
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine write_control_array_int_list                           &
-     &         (idepth, label, num, ivect)
+     &         (id_file, level, label, num, ivect)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       integer (kind=kint), intent(in) :: ivect(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       ivect(i)
+        call write_integer_ctl_item                                     &
+     &     (id_file, (level+1), label, ivect(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_int_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_int_r_list(idepth, label, num,     &
-     &          ivect, vect)
+      subroutine write_control_array_int_r_list                         &
+     &         (id_file, level, label, num, ivect, vect)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       integer (kind=kint), intent(in) :: ivect(num)
       real (kind=kreal), intent(in) :: vect(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       ivect(i), vect(i)
+        call write_int_real_ctl_item                                    &
+     &     (id_file, (level+1), label, ivect(i), vect(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_int_r_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_vect_list(idepth, label, num,      &
-     &          c_tbl, vect)
+      subroutine write_control_array_vect_list                          &
+     &         (id_file, level, label, num, c_tbl, vect)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       character(len=kchara), intent(in) :: c_tbl(num)
       real (kind=kreal), intent(in) :: vect(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       c_tbl(i), vect(i)
+        call write_chara_real_ctl_item                                  &
+     &     (id_file, (level+1), label, c_tbl(i), vect(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_vect_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_int_v_list(idepth, label, num,     &
-     &          c_tbl, ivect)
+      subroutine write_control_array_int_v_list                         &
+     &         (id_file, level, label, num, c_tbl, ivect)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       character(len=kchara), intent(in) :: c_tbl(num)
       integer (kind=kint), intent(in) :: ivect(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       c_tbl(i), ivect(i)
+        call write_chara_int_ctl_item                                   &
+     &     (id_file, (level+1), label, c_tbl(i), ivect(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_int_v_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_real_list(idepth, label, num,      &
-     &          vec1)
+      subroutine write_control_array_real_list                          &
+     &         (id_file, level, label, num, vec1)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       real (kind=kreal), intent(in) :: vec1(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       vec1(i)
+        call write_real_ctl_item(id_file, (level+1), label, vec1(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_real_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_real2_list(idepth, label, num,     &
-     &          vec1, vec2)
+      subroutine write_control_array_real2_list                         &
+     &         (id_file, level, label, num, vec1, vec2)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       real (kind=kreal), intent(in) :: vec1(num), vec2(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       vec1(i), vec2(i)
+        call write_real2_ctl_item                                       &
+     &     (id_file, (level+1), label, vec1(i), vec2(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_real2_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_real3_list(idepth, label, num,     &
-     &          vec1, vec2, vec3)
+      subroutine write_control_array_real3_list                         &
+     &         (id_file, level, label, num, vec1, vec2, vec3)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       real (kind=kreal), intent(in) :: vec1(num), vec2(num)
       real (kind=kreal), intent(in) :: vec3(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       vec1(i), vec2(i), vec3(i)
+        call write_real3_ctl_item                                       &
+     &     (id_file, (level+1), label, vec1(i), vec2(i), vec3(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_real3_list
 !
 !   --------------------------------------------------------------------
 !
       subroutine write_control_array_chara_list                         &
-     &         (idepth, label, num, c_tbl)
+     &         (id_file, level, label, num, c_tbl)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       character(len=kchara), intent(in) :: c_tbl(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       c_tbl(i)
+        call write_character_ctl_item                                   &
+     &     (id_file, (level+1), label, c_tbl(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_chara_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_chara2_list(idepth, label, num,    &
-     &          c1_tbl, c2_tbl)
+      subroutine write_control_array_chara2_list                        &
+     &         (id_file, level, label, num, c1_tbl, c2_tbl)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       character(len=kchara), intent(in) :: c1_tbl(num), c2_tbl(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       c1_tbl(i), c2_tbl(i)
+        call write_character2_ctl_item                                  &
+     &     (id_file, (level+1), label, c1_tbl(i), c2_tbl(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_chara2_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_chara3_list(idepth, label, num,    &
-     &          c1_tbl, c2_tbl, c3_tbl)
+      subroutine write_control_array_chara3_list                        &
+     &         (id_file, level, label, num, c1_tbl, c2_tbl, c3_tbl)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       character(len=kchara), intent(in) :: c1_tbl(num), c2_tbl(num)
       character(len=kchara), intent(in) :: c3_tbl(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       c1_tbl(i), c2_tbl(i), c3_tbl(i)
+        call write_character3_ctl_item(id_file, (level+1),              &
+     &      label, c1_tbl(i), c2_tbl(i), c3_tbl(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_chara3_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_c_r2_list(idepth, label, num,      &
-     &          c_tbl, vec1, vec2)
+      subroutine write_control_array_c_r2_list                          &
+     &         (id_file, level, label, num, c_tbl,  vec1, vec2)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       character(len=kchara), intent(in) :: c_tbl(num)
       real (kind=kreal), intent(in) :: vec1(num), vec2(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       c_tbl(i), vec1(i), vec2(i)
+        call write_chara_real2_ctl_item(id_file, (level+1),             &
+     &      label, c_tbl(i), vec1(i), vec2(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_c_r2_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_c2_r_list(idepth, label, num,      &
-     &          c1_tbl, c2_tbl, vect)
+      subroutine write_control_array_c2_r_list                          &
+     &         (id_file, level, label, num, c1_tbl, c2_tbl, vect)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       character(len=kchara), intent(in) :: c1_tbl(num), c2_tbl(num)
       real (kind=kreal), intent(in) :: vect(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       c1_tbl(i), c2_tbl(i), vect(i)
+        call write_chara2_real_ctl_item(id_file, (level+1),             &
+     &      label, c1_tbl(i), c2_tbl(i), vect(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_c2_r_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_i_c_r_list(idepth, label, num,     &
-     &          ivect, c_tbl, vect)
+      subroutine write_control_array_i_c_r_list                         &
+     &         (id_file, level, label, num, ivect, c_tbl, vect)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       character(len=kchara), intent(in) :: c_tbl(num)
       integer(kind = kint), intent(in) :: ivect(num)
       real (kind=kreal), intent(in) :: vect(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       ivect(i), c_tbl(i), vect(i)
+        call write_i_c_r_ctl_item(id_file, (level+1),                   &
+     &      label, ivect(i), c_tbl(i), vect(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_i_c_r_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_int2_list(idepth, label, num,      &
-     &          int1, int2)
+      subroutine write_control_array_int2_list                          &
+     &         (id_file, level, label, num, int1, int2)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       integer(kind = kint), intent(in) :: int1(num), int2(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       int1(i), int2(i)
+        call write_integer2_ctl_item                                    &
+     &     (id_file, (level+1), label, int1(i), int2(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_int2_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_i2_r_list(idepth, label, num,      &
-     &          int1, int2, vect)
+      subroutine write_control_array_i2_r_list                          &
+     &         (id_file, level, label, num, int1, int2, vect)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       integer(kind = kint), intent(in) :: int1(num), int2(num)
       real (kind=kreal), intent(in) :: vect(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       int1(i), int2(i), vect(i)
+        call write_i2_r_ctl_item                                        &
+     &     (id_file, (level+1), label, int1(i), int2(i), vect(i))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_i2_r_list
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_control_array_i2_r2_list(idepth, label, num,     &
-     &          int1, int2, vec1, vec2)
+      subroutine write_control_array_i2_r2_list                         &
+     &         (id_file, level, label, num, int1, int2, vec1, vec2)
 !
+      integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: idepth
       integer(kind = kint), intent(in) :: int1(num), int2(num)
       real (kind=kreal), intent(in) :: vec1(num), vec2(num)
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
-      call write_control_array_flag(idepth, label, num)
+      call write_array_flag_for_ctl(id_file, level, label, num)
       do i = 1, num
-        write(ctl_file_code,*) ('  ',j=1,idepth+1), trim(label), '  ',  &
-     &                       int1(i), int2(i), vec1(i), vec2(i)
+        call write_i2_r2_ctl_item (id_file, (level+1), label,           &
+     &     int1(i), int2(i), vec1(num), vec2(num))
       end do
-      call write_control_end_array_flag(idepth, label)
+      call write_end_array_flag_for_ctl(id_file, level, label)
 !
       end subroutine write_control_array_i2_r2_list
 !

@@ -202,7 +202,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_pvr_sections, i_flag)
+        i_flag = find_control_end_flag(hd_pvr_sections)
         if(i_flag .gt. 0) exit
 !
         if(right_file_flag(hd_surface_define) .gt. 0) then
@@ -232,7 +232,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_pvr_isosurf, i_flag)
+        i_flag = find_control_end_flag(hd_pvr_isosurf)
         if(i_flag .gt. 0) exit
 !
         call read_chara_ctl_type(hd_iso_direction,                      &
@@ -257,8 +257,8 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag                                      &
-     &     (hd_pvr_colorbar, cbar_ctl%i_pvr_colorbar)
+        cbar_ctl%i_pvr_colorbar                                         &
+     &      = find_control_end_flag(hd_pvr_colorbar)
         if(cbar_ctl%i_pvr_colorbar .gt. 0) exit
 !
 !
@@ -296,8 +296,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag                                      &
-     &     (hd_pvr_rotation, movie%i_pvr_rotation)
+        movie%i_pvr_rotation = find_control_end_flag(hd_pvr_rotation)
         if(movie%i_pvr_rotation .gt. 0) exit
 !
         call read_integer_ctl_type(hd_movie_rot_frame,                  &
@@ -325,7 +324,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_plot_area, i_plot_area)
+        i_plot_area = find_control_end_flag(hd_plot_area)
         if(i_plot_area .gt. 0) exit
 !
         call read_control_array_c1(hd_plot_grp, pvr_area_ctl)

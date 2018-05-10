@@ -141,7 +141,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_sph_trans_ctl, i_sph_trans_ctl)
+        i_sph_trans_ctl = find_control_end_flag(hd_sph_trans_ctl)
         if(i_sph_trans_ctl .gt. 0) exit
 !
 !
@@ -168,8 +168,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_sph_trans_model,                  &
-     &      i_sph_trans_model)
+        i_sph_trans_model = find_control_end_flag(hd_sph_trans_model)
         if(i_sph_trans_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
@@ -193,8 +192,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_sph_trans_params,                 &
-     &      i_sph_trans_params)
+        i_sph_trans_params = find_control_end_flag(hd_sph_trans_params)
         if(i_sph_trans_params .gt. 0) exit
 !
 !

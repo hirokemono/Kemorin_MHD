@@ -62,7 +62,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_2nd_plane_def, i_2nd_plane_def)
+        i_2nd_plane_def = find_control_end_flag(hd_2nd_plane_def)
         if(i_2nd_plane_def .gt. 0) exit
 !
 !
