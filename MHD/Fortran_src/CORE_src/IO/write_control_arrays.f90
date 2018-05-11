@@ -79,6 +79,7 @@
 !
       use m_precision
       use t_read_control_arrays
+      use skip_comment_f
 !
       implicit none
 !

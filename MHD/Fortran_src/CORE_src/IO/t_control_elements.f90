@@ -30,13 +30,13 @@
 !!        type(read_chara3_item), intent(inout) :: chara3_item
 !!
 !!      subroutine write_real_ctl_type                                  &
-!!     &         (id_file, level, label, real_item)
+!!     &         (id_file, level, maxlen, label, real_item)
 !!        type(read_real_item), intent(in) :: real_item
 !!      subroutine write_integer_ctl_type                               &
-!!     &         (id_file, level, label, int_item)
+!!     &         (id_file, level, maxlen, label, int_item)
 !!        type(read_integer_item), intent(in) :: int_item
 !!      subroutine write_chara_ctl_type                                 &
-!!     &         (id_file, level, label, chara_item)
+!!     &         (id_file, level, maxlen, label, chara_item)
 !!        type(read_character_item), intent(in) :: chara_item
 !!      subroutine write_real2_ctl_type                                 &
 !!     &         (id_file, level, label, real2_item)
@@ -223,54 +223,57 @@
 !   --------------------------------------------------------------------
 !
       subroutine write_real_ctl_type                                    &
-     &         (id_file, level, label, real_item)
+     &         (id_file, level, maxlen, label, real_item)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint), intent(in) :: maxlen
       character(len=kchara), intent(in) :: label
       type(read_real_item), intent(in) :: real_item
 !
 !
       if(real_item%iflag .eq. 0) return
       call write_real_ctl_item                                          &
-     &   (id_file, level, label, real_item%realvalue)
+     &   (id_file, level, maxlen, label, real_item%realvalue)
 !
       end subroutine write_real_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine write_integer_ctl_type                                 &
-     &         (id_file, level, label, int_item)
+     &         (id_file, level, maxlen, label, int_item)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint), intent(in) :: maxlen
       character(len=kchara), intent(in) :: label
       type(read_integer_item), intent(in) :: int_item
 !
 !
       if(int_item%iflag .eq. 0) return
       call write_integer_ctl_item                                       &
-     &   (id_file, level, label, int_item%intvalue)
+     &   (id_file, level, maxlen, label, int_item%intvalue)
 !
        end subroutine write_integer_ctl_type
 !
 !   --------------------------------------------------------------------
 !
       subroutine write_chara_ctl_type                                   &
-     &         (id_file, level, label, chara_item)
+     &         (id_file, level, maxlen, label, chara_item)
 !
       use write_control_elements
 !
       integer(kind = kint), intent(in) :: id_file, level
+      integer(kind = kint), intent(in) :: maxlen
       character(len=kchara), intent(in) :: label
       type(read_character_item), intent(in) :: chara_item
 !
 !
       if(chara_item%iflag .eq. 0) return
       call write_character_ctl_item                                     &
-     &   (id_file, level, label, chara_item%charavalue)
+     &   (id_file, level, maxlen, label, chara_item%charavalue)
 !
        end subroutine write_chara_ctl_type
 !
@@ -341,9 +344,18 @@
       character(len=kchara), intent(in) :: label
       type(read_chara3_item), intent(in) :: chara3_item
 !
+      integer(kind = kint) :: i
+      integer(kind = kint) :: maxlen(0:2)
+!
 !
       if(chara3_item%iflag .eq. 0) return
-      call write_character3_ctl_item(id_file, level, label,             &
+!
+      maxlen(0) = len_trim(label)
+      do i = 1, 2
+        maxlen(i) = len_trim(chara3_item%charavalue(i))                 &
+     &           + iflag_divide(chara3_item%charavalue(i))
+      end do
+      call write_character3_ctl_item(id_file, level, label, maxlen,     &
      &    chara3_item%charavalue(1), chara3_item%charavalue(2),         &
      &    chara3_item%charavalue(3))
 !

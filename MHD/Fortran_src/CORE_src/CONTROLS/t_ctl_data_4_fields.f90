@@ -8,8 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine dealloc_phys_control(fld_ctl)
-!!      subroutine dealloc_quad_phys_control(fld_ctl)
-!!      subroutine dealloc_linear_phys_control(fld_ctl)
 !!
 !!      subroutine read_phys_data_control(hd_block, iflag, fld_ctl)
 !!      subroutine write_phys_data_control                              &
@@ -111,33 +109,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine dealloc_phys_control(fld_ctl)
+      subroutine dealloc_phys_control(fld_ctl)
 !
       type(field_control), intent(inout) :: fld_ctl
 !
-       call dealloc_control_array_c3(fld_ctl%field_ctl)
-!
-       end subroutine dealloc_phys_control
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_quad_phys_control(fld_ctl)
-!
-      type(field_control), intent(inout) :: fld_ctl
-!
+      call dealloc_control_array_c3(fld_ctl%field_ctl)
       call dealloc_control_array_chara(fld_ctl%quad_phys)
-!
-      end subroutine dealloc_quad_phys_control
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_linear_phys_control(fld_ctl)
-!
-      type(field_control), intent(inout) :: fld_ctl
-!
       call dealloc_control_array_chara(fld_ctl%linear_phys)
 !
-      end subroutine dealloc_linear_phys_control
+       end subroutine dealloc_phys_control
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

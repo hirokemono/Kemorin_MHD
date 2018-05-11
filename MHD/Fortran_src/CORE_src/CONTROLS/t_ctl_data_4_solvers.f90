@@ -7,10 +7,16 @@
 !>@brief  Structure for reading parameters for MGCG
 !!
 !!@verbatim
+!!      subroutine dealloc_CG_solver_param_ctl(CG_ctl)
+!!
 !!      subroutine read_CG_solver_param_ctl(hd_block, iflag, CG_ctl)
-!!      subroutine read_crs_solver_param_ctl
 !!      subroutine read_control_DJDS_solver(hd_block, iflag, DJDS_ctl)
 !!        type(DJDS_control), intent(inout) :: DJDS_ctl
+!!
+!!      subroutine write_CG_solver_param_ctl                            &
+!!     &         (id_file, hd_block, CG_ctl, level)
+!!      subroutine write_control_DJDS_solver                            &
+!!     &         (id_file, hd_block, DJDS_ctl, level)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!  parameter for solver 
@@ -163,6 +169,17 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine dealloc_CG_solver_param_ctl(CG_ctl)
+!
+      type(solver_control), intent(inout) :: CG_ctl
+!
+!
+      call dealloc_control_Multigrid(CG_ctl%MG_ctl)
+!
+      end subroutine dealloc_CG_solver_param_ctl
+!
+! -----------------------------------------------------------------------
+!
       subroutine read_CG_solver_param_ctl(hd_block, iflag, CG_ctl)
 !
       use m_machine_parameter
@@ -234,6 +251,97 @@
       end do
 !
       end subroutine read_control_DJDS_solver
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine write_CG_solver_param_ctl                              &
+     &         (id_file, hd_block, CG_ctl, level)
+!
+      use m_machine_parameter
+      use m_read_control_elements
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_file
+      character(len=kchara), intent(in) :: hd_block
+      type(solver_control), intent(in) :: CG_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      maxlen = max(maxlen, len_trim(hd_DJDS_params))
+      maxlen = max(maxlen, len_trim(hd_Multigrid_params))
+      maxlen = max(maxlen, len_trim(hd_eps))
+      maxlen = max(maxlen, len_trim(hd_sigma))
+      maxlen = max(maxlen, len_trim(hd_sigma_diag))
+      maxlen = max(maxlen, len_trim(hd_itr))
+      maxlen = max(maxlen, len_trim(hd_method))
+      maxlen = max(maxlen, len_trim(hd_precond))
+!
+      write(id_file,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_file, level, hd_block)
+!
+      call write_control_DJDS_solver(id_file, hd_DJDS_params,           &
+     &    CG_ctl%DJDS_ctl, level)
+      call write_control_Multigrid(id_file, hd_Multigrid_params,        &
+     &    CG_ctl%MG_ctl, level)
+!
+      call write_real_ctl_type(id_file, level, maxlen,                  &
+     &    hd_eps, CG_ctl%eps_ctl)
+      call write_real_ctl_type(id_file, level, maxlen,                  &
+     &    hd_sigma, CG_ctl%sigma_ctl)
+      call write_real_ctl_type(id_file, level, maxlen,                  &
+     &    hd_sigma_diag, CG_ctl%sigma_diag_ctl)
+!
+      call write_integer_ctl_type(id_file, level, maxlen,               &
+     &    hd_itr, CG_ctl%itr_ctl)
+!
+      call write_chara_ctl_type(id_file, level, maxlen,                 &
+     &    hd_method, CG_ctl%method_ctl)
+      call write_chara_ctl_type(id_file, level, maxlen,                 &
+     &    hd_precond, CG_ctl%precond_ctl)
+!
+      level =  write_end_flag_for_ctl(id_file, level, hd_block)
+!
+      end subroutine write_CG_solver_param_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_control_DJDS_solver                              &
+     &         (id_file, hd_block, DJDS_ctl, level)
+!
+      use m_machine_parameter
+      use m_read_control_elements
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_file
+      character(len=kchara), intent(in) :: hd_block
+      type(DJDS_control), intent(in) :: DJDS_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+      maxlen = max(maxlen, len_trim(hd_min_color))
+      maxlen = max(maxlen, len_trim(hd_mc_color))
+      maxlen = max(maxlen, len_trim(hd_order_method))
+!
+      write(id_file,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_file, level, hd_block)
+!
+      call write_integer_ctl_type(id_file, level, maxlen,             &
+     &    hd_min_color, DJDS_ctl%min_color_ctl)
+      call write_integer_ctl_type(id_file, level, maxlen,             &
+     &    hd_mc_color, DJDS_ctl%mc_color_ctl)
+!
+      call write_chara_ctl_type(id_file, level, maxlen,               &
+     &    hd_order_method, DJDS_ctl%order_method_ctl)
+!
+      level =  write_end_flag_for_ctl(id_file, level, hd_block)
+!
+      end subroutine write_control_DJDS_solver
 !
 ! -----------------------------------------------------------------------
 !
