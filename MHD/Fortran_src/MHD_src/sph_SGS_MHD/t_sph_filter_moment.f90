@@ -144,9 +144,9 @@
       do l = 1, sph_rtp%nidx_rtp(2)
         lt_gl = sph_rtp%idx_gl_1d_rtp_t(l)
         if(lt_gl .eq. 1) then
-          dtheta = half * leg%g_colat_rtm(2)
+          dtheta = half * (pi - leg%g_colat_rtm(2))
         else if(lt_gl .eq. sph_rtp%nidx_global_rtp(2)) then
-          dtheta = half * (pi - leg%g_colat_rtm(lt_gl-1))
+          dtheta = half * leg%g_colat_rtm(lt_gl-1)
         else
           dtheta = half * (leg%g_colat_rtm(lt_gl+1)                     &
      &                   - leg%g_colat_rtm(lt_gl-1))

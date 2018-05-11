@@ -146,8 +146,7 @@
 !
         if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
         call init_sph_2nd_order_moments_rtp                             &
-     &     (sph%sph_rtp, sph%sph_rj, sph_grps%radial_rtp_grp,           &
-     &      leg, sph_filters(i))
+     &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
 !
         if(iflag_debug .gt. 0) then
           write(*,*) 'check_radial_filter for no. ', i
@@ -157,7 +156,7 @@
         end if
         if(i_debug .gt. 0) then
           write(*,*) 'check_sph_2nd_moments for no. ', i, my_rank
-          call check_sph_2nd_moments(sph%sph_rtp, sph_filters(i))
+          call check_sph_2nd_moments(sph%sph_rtp, leg, sph_filters(i))
         end if
         call calypso_mpi_barrier
       end do

@@ -13,10 +13,9 @@
 !!        type(sph_filters_type), intent(inout) :: sph_filters
 !!
 !!      subroutine init_sph_2nd_order_moments_rtp                       &
-!!     &         (sph_rtp, sph_rj, radial_rtp_grp, leg, sph_filters)
+!!     &         (sph_rtp, sph_rj, leg, sph_filters)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(group_data), intent(in) :: radial_rtp_grp
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(sph_filters_type), intent(inout) :: sph_filters
 !!
@@ -27,7 +26,8 @@
 !!
 !!      subroutine check_radial_filter(sph_rj, r_filter)
 !!      subroutine check_radial_filter_func(sph_rj, r_filter)
-!!      subroutine check_sph_2nd_moments(sph_rtp, sph_filters)
+!!      subroutine check_sph_2nd_moments(sph_rtp, leg, sph_filters)
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!@endverbatim
 !!
 !
@@ -145,16 +145,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_sph_2nd_order_moments_rtp                         &
-     &         (sph_rtp, sph_rj, radial_rtp_grp, leg, sph_filters)
+     &         (sph_rtp, sph_rj, leg, sph_filters)
 !
       use t_spheric_rtp_data
       use t_spheric_rj_data
       use t_schmidt_poly_on_rtm
-      use t_group_data
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(group_data), intent(in) :: radial_rtp_grp
       type(legendre_4_sph_trans), intent(in) :: leg
 !
       type(sph_filters_type), intent(inout) :: sph_filters
@@ -262,14 +260,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_sph_2nd_moments(sph_rtp, sph_filters)
+      subroutine check_sph_2nd_moments(sph_rtp, leg, sph_filters)
 !
       use t_spheric_rtp_data
+      use t_schmidt_poly_on_rtm
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(legendre_4_sph_trans), intent(in) :: leg
       type(sph_filters_type), intent(in) :: sph_filters
 !
-      integer(kind = kint) :: k, l
+      integer(kind = kint) :: k, l, lt_gl
 !
 !
       write(*,*) 'Second order filter moments area: ',                  &
@@ -281,7 +281,8 @@
       end do
       write(*,*) 'Theta-direction, global ID, moments'
       do l = 1, sph_rtp%nidx_rtp(2)
-        write(*,*) l, sph_rtp%idx_gl_1d_rtp_t(l),                       &
+        lt_gl = sph_rtp%idx_gl_1d_rtp_t(l)
+        write(*,*) l, lt_gl, leg%g_colat_rtm(lt_gl),                    &
      &             sph_filters%theta_2nd_moment(l)
       end do
       write(*,*) 'Phi-direction', sph_filters%phi_2nd_moment
