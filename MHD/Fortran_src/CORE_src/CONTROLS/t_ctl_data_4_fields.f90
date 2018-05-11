@@ -12,6 +12,8 @@
 !!      subroutine dealloc_linear_phys_control(fld_ctl)
 !!
 !!      subroutine read_phys_data_control(hd_block, iflag, fld_ctl)
+!!      subroutine write_phys_data_control                              &
+!!     &         (id_file, hd_block, fld_ctl, level)
 !!
 !! ---------------------------------------------------------------------
 !!
@@ -168,6 +170,38 @@
       end do
 !
       end subroutine read_phys_data_control
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_phys_data_control                                &
+     &         (id_file, hd_block, fld_ctl, level)
+!
+      use m_machine_parameter
+      use m_read_control_elements
+      use write_control_elements
+      use write_control_arrays
+!
+      integer(kind = kint), intent(in) :: id_file
+      character(len=kchara), intent(in) :: hd_block
+      type(field_control), intent(in) :: fld_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+!
+      write(id_file,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_file, level, hd_block)
+!
+      call write_control_array_c3                                       &
+     &   (id_file, level, hd_field_list, fld_ctl%field_ctl)
+!
+      call write_control_array_c1                                       &
+     &   (id_file, level, hd_quad_field, fld_ctl%quad_phys)
+      call write_control_array_c1                                       &
+     &   (id_file, level, hd_linear_field, fld_ctl%linear_phys)
+!
+      level =  write_end_flag_for_ctl(id_file, level, hd_block)
+!
+      end subroutine write_phys_data_control
 !
 !   --------------------------------------------------------------------
 !

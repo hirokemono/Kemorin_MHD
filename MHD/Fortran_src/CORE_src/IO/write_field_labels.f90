@@ -22,6 +22,9 @@
 !!
 !!      subroutine write_multi_labels(id_file, nlabel, labels)
 !!      subroutine write_space_4_parse(id_file, level)
+!!
+!!      subroutine write_one_label_cont(id_file, label1)
+!!      subroutine write_space_4_parse(id_file, level)
 !!@endverbatim
 !!
 !
@@ -31,9 +34,6 @@
       use m_constants
 !
       implicit none
-!
-!
-      private :: write_one_label_cont
 !
 ! ----------------------------------------------------------------------
 !

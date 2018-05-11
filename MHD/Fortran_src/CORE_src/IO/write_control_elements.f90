@@ -4,11 +4,13 @@
 !!@author H. Matsui
 !!@date Programmed in Jan., 2005
 !
-!>@brief  Subroutines to read control data
+!>@brief  Subroutines to write control data
 !!
 !!@verbatim
-!!      subroutine write_begin_flag_for_ctl(id_file, level, label)
-!!      subroutine write_end_flag_for_ctl(id_file, level, label)
+!!      integer(kind = kint) function write_begin_flag_for_ctl          &
+!!     &                            (id_file, level, label)
+!!      integer(kind = kint) function write_end_flag_for_ctl            &
+!!     &                            (id_file, level, label)
 !!      subroutine write_array_flag_for_ctl(id_file, level, label, num)
 !!      subroutine write_end_array_flag_for_ctl(id_file, level, label)
 !!
@@ -133,7 +135,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_begin_flag_for_ctl(id_file, level, label)
+      integer(kind = kint) function write_begin_flag_for_ctl            &
+     &                            (id_file, level, label)
 !
       integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
@@ -143,11 +146,14 @@
       call write_one_label_cont(id_file, hd_begin)
       write(id_file,'(a)') trim(label)
 !
-      end subroutine write_begin_flag_for_ctl
+      write_begin_flag_for_ctl = level + 1
+!
+      end function write_begin_flag_for_ctl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_end_flag_for_ctl(id_file, level, label)
+      integer(kind = kint) function write_end_flag_for_ctl              &
+     &                            (id_file, level, label)
 !
       integer(kind = kint), intent(in) :: id_file, level
       character(len=kchara), intent(in) :: label
@@ -157,7 +163,13 @@
       call write_one_label_cont(id_file, hd_end)
       write(id_file,'(a)') trim(label)
 !
-      end subroutine write_end_flag_for_ctl
+      if(level .le. 0) then
+        write_end_flag_for_ctl = level
+      else
+        write_end_flag_for_ctl = level - 1
+      end if
+!
+      end function write_end_flag_for_ctl
 !
 !   --------------------------------------------------------------------
 !

@@ -3,6 +3,35 @@
 
 #include "skip_comment_c.h"
 
+/* trim tail */
+char *ltrim(char *s)
+{
+    if (s && *s) {
+        size_t len = strlen(s);
+        size_t lws = strspn(s, " \n\r\t\v");
+        memmove(s, s + lws, len -= lws);
+        s[len] = '\0';
+    }
+    return s;
+}
+
+/* trim head spaces */
+char *rtrim(char *s)
+{
+    if (s && *s) {
+        size_t len = strlen(s);
+        while (len && isspace(s[len-1])) --len;
+        s[len] = '\0';
+    }
+    return s;
+}
+
+/* trim both sides spaces */
+char *trim(char *s)
+{
+  return ltrim(rtrim(s));
+}
+
 long skip_comment_c(FILE *fp){
 	long offset = 0;
 	char buf[LENGTHBUF];    /* array for reading line */

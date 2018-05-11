@@ -7,10 +7,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "kemosrc_param_c.h"
 
 /* Prototypes */ 
+
+char *ltrim(char *s);
+char *trim(char *s);
+char *trim(char *s);
 
 long skip_comment_c(FILE *fp);
 int set_field_coordinate_flag(const char *data_name);
