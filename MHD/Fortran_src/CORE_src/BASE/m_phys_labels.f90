@@ -234,6 +234,10 @@
 !!         @f$ \nu \partial_{j}\partial_{j} B_{i} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_diffuse = 'magnetic_diffusion'
+!>        Field label for thermal diffusion
+!!         @f$ \kappa \partial_{i}\partial_{i} T @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_thermal_diffusion = 'thermal_diffusion'
 !>        Field label for compositional diffusion
 !!         @f$ \kappa \partial_{i}\partial_{i} C @f$
       character(len=kchara), parameter                                  &
@@ -548,10 +552,6 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_cross_helicity =    'cross_helicity'
 !
-!>        Field label for thermal diffusion
-!!         @f$ \kappa \partial_{i}\partial_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_thermal_diffusion = 'thermal_diffusion'
 !>        Field label for advection for temperature
 !!         @f$ u_{i} \partial_{i} T @f$
       character(len=kchara), parameter                                  &
@@ -1131,30 +1131,6 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_composition_scale = 'composition_scale'
 !
-!   --------------------------------------------------------------------
-!
-!>        Term label for heat equation
-      character(len=kchara), parameter                                  &
-     &             :: thd_heat_flux =  'heat'
-!>        Term label for advection term
-      character(len=kchara), parameter                                  &
-     &             :: thd_advection =  'inertia'
-!>        Term label for Lorentz term
-      character(len=kchara), parameter                                  &
-     &             :: thd_lorentz =    'Lorentz'
-!>        Term label for Coriolis term
-      character(len=kchara), parameter                                  &
-     &             :: thd_coriolis =   'Coriolis'
-!>        Term label for induction term
-      character(len=kchara), parameter                                  &
-     &             :: thd_induction =  'induction'
-!>        Term label for cpmpositional flux term
-      character(len=kchara), parameter                                  &
-     &             :: thd_comp_flux =  'comp_flux'
-!>        Term label for gravity
-      character(len=kchara), parameter                                  &
-     &             :: thd_gravity =    'gravity'
-!
 !
 !>        Field label for buoyancy flux
 !!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
@@ -1193,5 +1169,30 @@
 !
 !>        Field label for background magnetic field @f$ B_{0} @f$
       character(len=kchara), parameter :: fhd_back_B = 'background_B'
+!
+!   --------------------------------------------------------------------
+!
+!>        Term label for heat equation
+      character(len=kchara), parameter                                  &
+     &             :: thd_heat_flux =  'heat'
+!>        Term label for advection term
+      character(len=kchara), parameter                                  &
+     &             :: thd_advection =  'inertia'
+!>        Term label for Lorentz term
+      character(len=kchara), parameter                                  &
+     &             :: thd_lorentz =    'Lorentz'
+!>        Term label for Coriolis term
+      character(len=kchara), parameter                                  &
+     &             :: thd_coriolis =   'Coriolis'
+!>        Term label for induction term
+      character(len=kchara), parameter                                  &
+     &             :: thd_induction =  'induction'
+!>        Term label for cpmpositional flux term
+      character(len=kchara), parameter                                  &
+     &             :: thd_comp_flux =  'comp_flux'
+!>        Term label for gravity
+      character(len=kchara), parameter                                  &
+     &             :: thd_gravity =    'gravity'
+!
 !
       end module m_phys_labels

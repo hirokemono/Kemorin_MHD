@@ -91,16 +91,6 @@
      &   s3d_ranks%iflag_radial_inner_domain = 1
       end if
 !
-      if (sdctl%ndomain_sph_grid_ctl%num .gt. 0) then
-        call dealloc_ndomain_rtp_ctl(sdctl)
-      end if
-      if (sdctl%ndomain_legendre_ctl%num .gt. 0) then
-        call dealloc_ndomain_rtm_ctl(sdctl)
-      end if
-      if(sdctl%ndomain_spectr_ctl%num .gt. 0) then
-        call dealloc_ndomain_rj_ctl(sdctl)
-      end if
-!
       call check_sph_domains(nprocs_check, s3d_ranks, ierr, e_message)
 !
       end subroutine set_subdomains_4_sph_shell

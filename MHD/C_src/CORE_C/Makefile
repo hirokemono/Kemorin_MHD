@@ -15,6 +15,8 @@ OBJ_KEMO_C = \
  write_image_2_bmp.o \
  read_image_2_bmp.o \
  \
+ all_field_names_c.o \
+ \
  m_surface_mesh_4_viewer_c.o \
  m_grouping_mesh_4_viewer_c.o \
  m_psf_data_4_viewer_c.o \
@@ -27,6 +29,8 @@ OBJ_KEMO_C = \
  read_psf_data_viewer_c.o \
  read_psf_vtk_data_c.o \
  set_psf_viewer.o \
+ \
+ control_elements_IO_c.o \
  \
  read_viewer_mesh_gz_c.o \
  read_psf_data_gz_c.o \
@@ -187,6 +191,16 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
 	'$$(KEMO_C_DIR)'/read_image_2_bmp.c \
+	>> $(MAKENAME)
+	
+	@echo \
+	all_field_names_c.o: \
+	'$$(KEMO_C_DIR)'/all_field_names_c.c \
+	all_field_names_c.h \
+	kemosrc_param_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
+	'$$(KEMO_C_DIR)'/all_field_names_c.c \
 	>> $(MAKENAME)
 	
 	@echo \
@@ -382,6 +396,16 @@ module:
 	m_psf_data_4_viewer_c.o \
 	skip_comment_c.o \
 	set_new_patch_4_map_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	control_elements_IO_c.o: \
+	'$$(KEMO_C_DIR)'/control_elements_IO_c.c \
+	control_elements_IO_c.h \
+	kemosrc_param_c.o \
+	skip_comment_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
