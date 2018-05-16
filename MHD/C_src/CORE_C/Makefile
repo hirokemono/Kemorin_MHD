@@ -31,6 +31,7 @@ OBJ_KEMO_C = \
  set_psf_viewer.o \
  \
  control_elements_IO_c.o \
+ t_SGS_MHD_control_c.o \
  \
  read_viewer_mesh_gz_c.o \
  read_psf_data_gz_c.o \
@@ -406,6 +407,15 @@ module:
 	control_elements_IO_c.h \
 	kemosrc_param_c.o \
 	skip_comment_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_SGS_MHD_control_c.o: \
+	'$$(KEMO_C_DIR)'/t_SGS_MHD_control_c.c \
+	t_SGS_MHD_control_c.h \
+	kemosrc_param_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

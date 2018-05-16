@@ -26,6 +26,9 @@ void read_multi_field_name(FILE *fp, char **data_name);
 
 void strngcopy(char *chara_out, const char *chara_in);
 int compare_string(int length, const char *string1, const char *string2);
+int cmp_no_case_c(const char *string1, const char *string2);
+int check_cautation_require(const char *string);
+void strip_cautation_marks(char *string);
 
 int get_index_from_file_head(const char *file_head, char *stripped_fhead);
 void get_ext_from_file_name_c(const char *file_name,

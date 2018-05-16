@@ -19,6 +19,10 @@
 !!      subroutine check_vis_control_flag(visualize_ctl, iflag_viz)
 !!      subroutine check_monitor_control_flag(iflag, monitor_ctl,       &
 !!     &          iflag_fld_monitor)
+!!
+!!      subroutine set_vis_control_flag(iflag_viz, visualize_ctl)
+!!      subroutine set_monitor_control_flag                             &
+!!     &         (iflag_fld_monitor, monitor_ctl)
 !!@endverbatim
 !
       module set_nodal_field_name
@@ -27,6 +31,14 @@
       use m_phys_labels
 !
       implicit  none
+!
+      character(len = kchara), parameter :: cflag_viz_on =  'Viz_On'
+      character(len = kchara), parameter :: cflag_viz_off = 'Viz_Off'
+!
+      character(len = kchara), parameter                                &
+     &                        :: cflag_monitor_on =  'Monitor_On'
+      character(len = kchara), parameter                                &
+     &                        :: cflag_monitor_off = 'Monitor_Off'
 !
 ! -----------------------------------------------------------------------
 !
@@ -437,8 +449,11 @@
       character(len = kchara), intent(in) :: visualize_ctl
       integer (kind = kint), intent(inout) :: iflag_viz
 !
-      iflag_viz = 0
-      if (cmp_no_case(visualize_ctl, 'Viz_On'))  iflag_viz = 1
+      if (cmp_no_case(visualize_ctl, cflag_viz_on)) then
+        iflag_viz = 1
+      else
+        iflag_viz = 0
+      end if
 !
       end subroutine check_vis_control_flag
 !
@@ -454,10 +469,45 @@
       integer (kind = kint), intent(inout) :: iflag_fld_monitor
 !
       if (iflag .eq. 0) return
-      iflag_fld_monitor = 0
-      if (cmp_no_case(monitor_ctl, 'Monitor_On')) iflag_fld_monitor = 1
+      if(cmp_no_case(monitor_ctl, cflag_monitor_on)) then
+        iflag_fld_monitor = 1
+      else
+        iflag_fld_monitor = 0
+      end if
 !
       end subroutine check_monitor_control_flag
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_vis_control_flag(iflag_viz, visualize_ctl)
+!
+      integer (kind = kint), intent(in) :: iflag_viz
+      character(len = kchara), intent(inout) :: visualize_ctl
+!
+      if(iflag_viz .gt. 0) then
+        visualize_ctl = cflag_viz_on
+      else
+        visualize_ctl = cflag_viz_off
+      end if
+!
+      end subroutine set_vis_control_flag
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_monitor_control_flag                               &
+     &         (iflag_fld_monitor, monitor_ctl)
+!
+      integer (kind = kint), intent(in) :: iflag_fld_monitor
+      character(len = kchara), intent(inout) :: monitor_ctl
+!
+      if(iflag_fld_monitor .gt. 0) then
+        monitor_ctl = cflag_monitor_on
+      else
+        monitor_ctl = cflag_monitor_off
+      end if
+!
+      end subroutine set_monitor_control_flag
 !
 ! -----------------------------------------------------------------------
 !
