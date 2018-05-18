@@ -65,8 +65,10 @@ struct time_data_control_c{
 void alloc_time_data_control_c(struct time_data_control_c *tctl);
 void dealloc_time_data_control_c(struct time_data_control_c *tctl);
 
-int read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], struct time_data_control_c *tctl);
-int write_time_data_control_c(FILE *fp, int level, int *iflag, struct time_data_control_c *tctl);
+int read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+			struct time_data_control_c *tctl);
+int write_time_data_control_c(FILE *fp, int level, const char *label, 
+			int *iflag, struct time_data_control_c *tctl);
 
 
 

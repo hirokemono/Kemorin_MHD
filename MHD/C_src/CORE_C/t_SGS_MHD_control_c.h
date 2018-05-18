@@ -13,6 +13,7 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
+#include "t_ctl_data_4_platforms_c.h"
 #include "t_ctl_data_4_time_steps_c.h"
 
 
@@ -86,9 +87,6 @@ struct fieldline_controls_c{
 	char *ctl_file_name;
 };
 
-struct platform_data_control_c{
-	int iflag;
-};
 struct parallel_sph_shell_control_c{
 	int *iflag_sph_shell;
 	struct sphere_data_control_c *sp_ctl;

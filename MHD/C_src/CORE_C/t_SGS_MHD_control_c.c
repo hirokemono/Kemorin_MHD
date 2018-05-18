@@ -259,8 +259,13 @@ void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	mhd_ctl->iflag_zonal_mean_control = (int *)calloc(1, sizeof(int));
 	
 	mhd_ctl->files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c));
+	alloc_platform_data_control_c(mhd_ctl->files);
+	
 	mhd_ctl->org_files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c));
+	alloc_platform_data_control_c(mhd_ctl->org_files);
+	
 	mhd_ctl->new_files = (struct platform_data_control_c *) malloc(sizeof(struct platform_data_control_c));
+	alloc_platform_data_control_c(mhd_ctl->new_files);
 	
 	mhd_ctl->shell_ctl = (struct parallel_sph_shell_control_c *) malloc(sizeof(struct parallel_sph_shell_control_c));
 	alloc_parallel_sph_shell_control_c(mhd_ctl->shell_ctl);
@@ -305,8 +310,11 @@ void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	free(mhd_ctl->model_ctl);
 	dealloc_parallel_sph_shell_control_c(mhd_ctl->shell_ctl);
 	free(mhd_ctl->shell_ctl);
+	alloc_platform_data_control_c(mhd_ctl->new_files);
 	free(mhd_ctl->new_files);
+	alloc_platform_data_control_c(mhd_ctl->org_files);
 	free(mhd_ctl->org_files);
+	alloc_platform_data_control_c(mhd_ctl->files);
 	free(mhd_ctl->files);
 	return;
 }

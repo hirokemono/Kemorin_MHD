@@ -193,10 +193,11 @@ void dealloc_time_data_control_c(struct time_data_control_c *tctl){
     return;
 };
 
-int read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], struct time_data_control_c *tctl){
-    while(find_control_end_flag_c(buf, "time_step_ctl") == 0){
+int read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+			struct time_data_control_c *tctl){
+    while(find_control_end_flag_c(buf, label) == 0){
         fgets(buf, LENGTHBUF, fp);
-        printf("VAka %s \n", buf);
+
         read_character_ctl_item_c(buf, label_time_data_ctl[0], tctl->flexible_step_c);
         read_real_ctl_item_c(buf, label_time_data_ctl[1], tctl->elapsed_time_c);
         
@@ -248,9 +249,10 @@ int read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], struct time_data_con
     return 1;
 }
 
-int write_time_data_control_c(FILE *fp, int level, int *iflag, struct time_data_control_c *tctl){
+int write_time_data_control_c(FILE *fp, int level, const char *label, 
+			int *iflag, struct time_data_control_c *tctl){
     if(*iflag == 0) return level;
-    level = write_begin_flag_for_ctl_c(fp, level, "time_step_ctl");
+    level = write_begin_flag_for_ctl_c(fp, level, label);
     
     write_character_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[0], tctl->flexible_step_c);
     write_real_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[1], tctl->elapsed_time_c);
@@ -300,7 +302,7 @@ int write_time_data_control_c(FILE *fp, int level, int *iflag, struct time_data_
     write_real_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[37], tctl->delta_t_sgs_coefs_c);
     write_real_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[38], tctl->delta_t_boundary_c);
     
-    level = write_end_flag_for_ctl_c(fp, level, "time_step_ctl");
+    level = write_end_flag_for_ctl_c(fp, level, label);
     return level;
 }
 

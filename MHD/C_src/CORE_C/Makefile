@@ -31,6 +31,7 @@ OBJ_KEMO_C = \
  set_psf_viewer.o \
  \
  control_elements_IO_c.o \
+ t_ctl_data_4_platforms_c.o \
  t_ctl_data_4_time_steps_c.o \
  t_SGS_MHD_control_c.o \
  \
@@ -413,6 +414,16 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	t_ctl_data_4_platforms_c.o: \
+	'$$(KEMO_C_DIR)'/t_ctl_data_4_platforms_c.c \
+	t_ctl_data_4_platforms_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	t_ctl_data_4_time_steps_c.o: \
 	'$$(KEMO_C_DIR)'/t_ctl_data_4_time_steps_c.c \
 	t_ctl_data_4_time_steps_c.h \
@@ -422,13 +433,13 @@ module:
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
 	
-	
 	@echo \
 	t_SGS_MHD_control_c.o: \
 	'$$(KEMO_C_DIR)'/t_SGS_MHD_control_c.c \
 	t_SGS_MHD_control_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
+	t_ctl_data_4_platforms_c.o \
 	t_ctl_data_4_time_steps_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
