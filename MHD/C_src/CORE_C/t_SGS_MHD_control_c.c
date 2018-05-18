@@ -7,6 +7,8 @@
 
 #include "t_SGS_MHD_control_c.h"
 
+
+
 void alloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl){
 	shell_ctl->iflag_sph_shell = (int *)calloc(1, sizeof(int));
 	shell_ctl->iflag_sph_domain = (int *)calloc(1, sizeof(int));
@@ -97,6 +99,7 @@ void alloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_c
 	control_ctl->iflag_mhd_evo_scheme_control = (int *)calloc(1, sizeof(int));
 	
 	control_ctl->tctl = (struct time_data_control_c *) malloc(sizeof(struct time_data_control_c));
+	alloc_time_data_control_c(control_ctl->tctl);
 	control_ctl->mrst_ctl = (struct mhd_restart_control_c *) malloc(sizeof(struct mhd_restart_control_c));
 	control_ctl->mevo_ctl = (struct mhd_evo_scheme_control_c *) malloc(sizeof(struct mhd_evo_scheme_control_c));
 	return;
@@ -107,6 +110,7 @@ void dealloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control
 	free(control_ctl->iflag_mhd_restart_control);
 	free(control_ctl->iflag_mhd_evo_scheme_control);
 	
+	dealloc_time_data_control_c(control_ctl->tctl);
 	free(control_ctl->tctl);
 	free(control_ctl->mrst_ctl);
 	free(control_ctl->mevo_ctl);

@@ -10,7 +10,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "kemosrc_param_c.h"
+#include "control_elements_IO_c.h"
+#include "t_ctl_data_4_time_steps_c.h"
 
 
 struct sphere_data_control_c{
@@ -60,9 +63,6 @@ struct sgs_model_control_c{
 	int iflag;
 };
 
-struct time_data_control_c{
-	int iflag;
-};
 struct mhd_restart_control_c{
 	int iflag;
 };

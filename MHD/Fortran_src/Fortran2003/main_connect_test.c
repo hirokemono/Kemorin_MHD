@@ -3,6 +3,7 @@
 
 #include "all_field_names_c.h"
 #include "control_elements_IO_c.h"
+#include "t_ctl_data_4_time_steps_c.h"
 #include "t_SGS_MHD_control_c.h"
 
 FILE *fp;
@@ -112,13 +113,6 @@ int read_sgs_model_control_c(FILE *fp, char buf[LENGTHBUF]){
 	return 1;
 }
 
-int read_time_data_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "time_step_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_time_data_control_c %s\n", buf);
-	};
-	return 1;
-}
 int read_mhd_restart_control_c(FILE *fp, char buf[LENGTHBUF]){
 	while(find_control_end_flag_c(buf, "restart_file_ctl") == 0){
 		fgets(buf, LENGTHBUF, fp);
@@ -279,7 +273,7 @@ int read_mhd_control_ctl_c(FILE *fp, char buf[LENGTHBUF], struct sph_mhd_control
 	while(find_control_end_flag_c(buf, "control") == 0){
 		fgets(buf, LENGTHBUF, fp);
 		
-		if(right_begin_flag_c(buf, "time_step_ctl") > 0) *control_ctl->iflag_time_data_control = read_time_data_control_c(fp, buf);
+		if(right_begin_flag_c(buf, "time_step_ctl") > 0) *control_ctl->iflag_time_data_control = read_time_data_control_c(fp, buf, control_ctl->tctl);
 		if(right_begin_flag_c(buf, "restart_file_ctl") > 0) *control_ctl->iflag_mhd_restart_control = read_mhd_restart_control_c(fp, buf);
 		if(right_begin_flag_c(buf, "time_loop_ctl") > 0) *control_ctl->iflag_mhd_evo_scheme_control = read_mhd_evo_scheme_control_c(fp, buf);
 	};
@@ -431,12 +425,6 @@ int write_sgs_model_control_c(FILE *fp, int level, int *iflag, struct sgs_model_
 	return level;
 }
 
-int write_time_data_control_c(FILE *fp, int level, int *iflag, struct time_data_control_c *tctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "time_step_ctl");
-	level = write_end_flag_for_ctl_c(fp, level, "time_step_ctl");
-	return level;
-}
 int write_mhd_restart_control_c(FILE *fp, int level, int *iflag, struct mhd_restart_control_c *mrst_ctl){
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "restart_file_ctl");
