@@ -181,14 +181,17 @@
 !
 !
       if(fline_prm%id_fline_start_type(i_fln) .eq. 0) then
+        if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_flux'
         call s_start_surface_by_flux                                    &
      &     (i_fln, mesh%node, mesh%ele, ele_mesh%surf,                  &
      &      fline_prm, fline_src, fline_tce)
       else if(fline_prm%id_fline_start_type(i_fln) .eq. 1) then
+        if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_gl_table'
         call s_start_surface_by_gl_table                                &
      &     (i_fln, mesh%ele, group%ele_grp, fline_prm, fline_src)
       end if
 !
+      if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline'
       call s_start_surface_4_fline                                      &
      &   (i_fln, mesh%node, mesh%ele, ele_mesh%surf,                    &
      &    fline_prm, fline_src, fline_tce)
