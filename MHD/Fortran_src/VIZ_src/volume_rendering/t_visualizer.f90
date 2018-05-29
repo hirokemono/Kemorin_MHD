@@ -37,6 +37,7 @@
       use t_isosurface
       use t_volume_rendering
       use t_fieldline
+      use t_lic_rendering
 !
       implicit  none
 !
@@ -45,6 +46,7 @@
         type(isosurface_module) :: iso
         type(volume_rendering_module) :: pvr
         type(fieldline_module) :: fline
+        type(lic_volume_rendering_module) :: lic
       end type visualize_modules
 !
 !  ---------------------------------------------------------------------
@@ -84,6 +86,11 @@
       call FLINE_initialize                                             &
      &   (femmesh, nod_fld, viz_ctls%fline_ctls, vizs%fline)
       call end_elapsed_time(63)
+!
+      call start_elapsed_time(64)
+      call LIC_initialize                                               &
+     &   (femmesh, ele_mesh, nod_fld, viz_ctls%lic_ctls, vizs%lic)
+      call end_elapsed_time(64)
 !
       end subroutine init_visualize
 !
@@ -127,6 +134,12 @@
      &    femmesh, ele_mesh, ele_4_nod, nod_fld, vizs%fline)
       call calypso_MPI_barrier
       call end_elapsed_time(68)
+!
+      call start_elapsed_time(69)
+      call LIC_visualize(viz_step%LIC_t%istep_file,                     &
+     &    femmesh, ele_mesh, jacs, nod_fld, vizs%lic)
+      call calypso_MPI_barrier
+      call end_elapsed_time(69)
 !
       end subroutine visualize_all
 !

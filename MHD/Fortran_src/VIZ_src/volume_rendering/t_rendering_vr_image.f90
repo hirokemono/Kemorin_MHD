@@ -47,14 +47,20 @@
 !
       implicit  none
 !
+!>      Structure of PVR field parameters
+      type PVR_field_params
+!>        Structure for field parameter for PVR
+        type(pvr_field_parameter) :: field_def
+!>        Structure for rendering area by element group
+        type(viz_area_parameter) :: area_def
+      end type PVR_field_params
+!
 !>      Structure of PVR control parameters
       type PVR_control_params
 !>        Parameters for output files
         type(pvr_output_parameter) :: file
 !>        Parameters for image pixels
         type(pvr_pixel_position_type) :: pixel
-!>        Structure for field parameter for PVR
-        type(pvr_field_parameter) :: field_def
 !>        Structure for rough serch of subdomains
         type(pvr_domain_outline) :: outline
 !>        Field data for volume rendering

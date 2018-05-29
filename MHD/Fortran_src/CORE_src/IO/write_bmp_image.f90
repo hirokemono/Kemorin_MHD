@@ -172,7 +172,7 @@
 !      close(id_img)
 !
       open(unit=id_img,file=fname,status='unknown')
-      write(*,*) 'Now writing BMP(24bit) file : ', fname
+      write(*,*) 'Now writing BMP(24bit) file : ', trim(fname)
 !* header 1 (file header ; 1--14 byte)
       headmsw( 1: 2) = 'BM'             ! declaring this is BMP file
       itmp = 54 + ihpixf * jvpixf * 3 ! total file size = header + data

@@ -205,7 +205,6 @@
               if(cmp_no_case(g_ctl%gravity_vector%c_tbl(i),'Z')         &
      &            ) fl_prop%grav(3) = - g_ctl%gravity_vector%vect(i)
             end do
-            call dealloc_control_array_c_r(g_ctl%gravity_vector)
           end if
         end if
       end if
@@ -227,9 +226,7 @@
           if(cmp_no_case(cor_ctl%system_rotation%c_tbl(i),'Z')          &
      &       )  fl_prop%sys_rot(3) = cor_ctl%system_rotation%vect(i)
         end do
-        call dealloc_control_array_c_r(cor_ctl%system_rotation)
       end if
-!
 !
 !  setting for external mangnetic field
 !
@@ -256,9 +253,12 @@
             if(cmp_no_case(mcv_ctl%ext_magne%c_tbl(i),'Z')              &
      &            ) cd_prop%ex_magne(3) = mcv_ctl%ext_magne%vect(i)
           end do
-          call dealloc_control_array_c_r(mcv_ctl%ext_magne)
         end if
       end if
+!
+      call dealloc_control_array_c_r(g_ctl%gravity_vector)
+      call dealloc_control_array_c_r(cor_ctl%system_rotation)
+      call dealloc_control_array_c_r(mcv_ctl%ext_magne)
 !
      if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'name_force '

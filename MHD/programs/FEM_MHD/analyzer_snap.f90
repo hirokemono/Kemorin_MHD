@@ -32,7 +32,7 @@
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
-      num_elapsed = 75
+      num_elapsed = 80
       call allocate_elapsed_times
 !
       elapse_labels(1) = 'Total time                 '

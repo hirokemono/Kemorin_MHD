@@ -29,9 +29,6 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data),intent(in) :: nod_fld
-!!
-!!      subroutine cal_sph_zonal_mean_and_rms(nnod_rtp, nnod_med, nphi, &
-!!     &          n_comp, d_rtp, d_zm, d_ms)
 !!@endverbatim
 !
       module copy_nodal_fld_4_sph_trans

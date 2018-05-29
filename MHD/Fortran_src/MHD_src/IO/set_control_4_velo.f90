@@ -106,8 +106,6 @@
      &         velo_nod%bc_magnitude(i), trim(velo_nod%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(node_bc_U_ctl)
       end if
 !
 !
@@ -140,9 +138,10 @@
      &                 trim(torque_surf%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(surf_bc_ST_ctl)
       end if
+!
+      call dealloc_control_array_c2_r(node_bc_U_ctl)
+      call dealloc_control_array_c2_r(surf_bc_ST_ctl)
 !
       end subroutine s_set_control_4_velo
 !

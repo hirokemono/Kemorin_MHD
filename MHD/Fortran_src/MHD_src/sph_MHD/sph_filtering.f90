@@ -55,6 +55,7 @@
       use calypso_mpi
       use t_physical_property
       use t_SGS_buoyancy_sph
+      use set_groups_sph_dynamic
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) ::  sph
@@ -65,13 +66,21 @@
 !
       if(SGS_par%model_p%iflag_SGS .eq. 0) return
 !
+      if (iflag_debug.gt.0) write(*,*) 'find_grouping_4_dynamic_model'
+      call find_grouping_4_dynamic_model(SGS_par%model_p,               &
+     &    sph%sph_params, sph%sph_rtp, dynamic_SPH%sph_d_grp)
+!
+      if (iflag_debug.gt.0) write(*,*) 'init_filter_4_SPH_MHD'
       call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj, sph_grps,  &
      &    dynamic_SPH%num_sph_filteres, dynamic_SPH%sph_filters)
 !
-      call init_work_4_SGS_sph_mhd(SGS_par, sph%sph_rtp, MHD_prop,      &
-     &    dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,                  &
+      if (iflag_debug.gt.0) write(*,*) 'init_work_4_SGS_sph_mhd'
+      call init_work_4_SGS_sph_mhd                                      &
+     &   (SGS_par, sph%sph_rtp, dynamic_SPH%sph_d_grp,                  &
+     &    MHD_prop, dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,        &
      &    dynamic_SPH%sgs_coefs, dynamic_SPH%wk_sgs)
 !
+      if (iflag_debug.gt.0) write(*,*) 'cal_volume_4__SGS_buoyancy'
       call alloc_sph_ave_Csim_SGS_buo                                   &
      &   (sph%sph_rj, sph%sph_rtp, dynamic_SPH%wk_SGS_buo)
       call cal_volume_4__SGS_buoyancy                                   &

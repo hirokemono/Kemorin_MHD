@@ -423,6 +423,7 @@
       i_step_rst_ctl          800
       i_step_sectioning_ctl   400
       i_step_pvr_ctl          400
+      i_step_LIC_ctl          400
       i_step_field_ctl        800
       i_step_monitor_ctl       40
       i_step_sgs_coefs_ctl   2000

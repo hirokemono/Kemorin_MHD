@@ -149,9 +149,9 @@
             end if
           end do
 !
-          call dealloc_control_array_chara(sgs_ctl%SGS_terms_ctl)
         end if
       end if
+      call dealloc_control_array_chara(sgs_ctl%SGS_terms_ctl)
 !
       if (SGS_param%iflag_SGS .ne. id_SGS_none) then
         if (iflag_debug .gt. 0)  then
@@ -185,6 +185,16 @@
       SGS_param%SGS_cf_factor                                           &
      &        = set_fixed_Csim(one, sgs_ctl%SGS_cf_factor_ctl)
 !
+      SGS_param%ngrp_rave_dynamic = 1
+      SGS_param%ngrp_medave_dynamic = 1
+      if(sgs_ctl%ngrp_radial_ave_ctl%iflag .gt. 0) then
+        SGS_param%ngrp_rave_dynamic                                     &
+     &      = sgs_ctl%ngrp_radial_ave_ctl%intvalue
+      end if
+      if(sgs_ctl%ngrp_med_ave_ctl%iflag .gt. 0) then
+        SGS_param%ngrp_medave_dynamic                                   &
+     &      = sgs_ctl%ngrp_med_ave_ctl%intvalue
+      end if
 !
       if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         SGS_param%iflag_rst_sgs_coef_code                               &
@@ -206,7 +216,6 @@
           write(*,*) 'Csim_file_IO%iflag_format: ',                     &
      &      Csim_file_IO%iflag_format
         end if
-!
       end if
 !
       SGS_param%iflag_SGS_buo_usage = id_use_volume

@@ -33,6 +33,7 @@
 !!      delta_t_psf_ctl          1.0e-3
 !!      delta_t_pvr_ctl          1.0e-2
 !!      delta_t_fline_ctl        1.0e-1
+!!      delta_t_LIC_ctl          1.0e-1
 !!      delta_t_field_ctl        1.0e-3
 !!      delta_t_monitor_ctl      1.0e-4
 !!      delta_t_sgs_coefs_ctl    2.0e-5
@@ -58,6 +59,7 @@
 !!      i_step_isosurface_ctl   400
 !!      i_step_pvr_ctl          400
 !!      i_step_fline_ctl        400
+!!      i_step_LIC_ctl          400
 !!      i_step_snapshot_ctl     800
 !!      i_step_field_ctl        800
 !!      i_step_monitor_ctl       40
@@ -103,6 +105,8 @@
 !>                Increment time for volume rendering data output
 !>@n@param      delta_t_fline_ctl
 !>                Increment time for field line data output
+!>@n@param      delta_t_lic_ctl
+!>                Increment time for LIC rendering output
 !>@n@param      delta_t_field_ctl
 !>                Increment time for whole field data output
 !>@n@param      delta_t_monitor_ctl
@@ -128,6 +132,8 @@
 !>                Increment step for volume rendering data output
 !>@n@param      i_step_fline_ctl
 !>                Increment step for field line data output
+!>@n@param      i_step_lic_ctl
+!>                Increment step for LIC rendering data output
 !>@n@param      i_step_field_ctl or i_step_snapshot_ctl
 !>                Increment step for whole field data output
 !>@n@param      i_step_monitor_ctl
@@ -171,6 +177,9 @@
         type(read_integer_item) :: i_step_ucd_ctl
 !>   Increment for field line
         type(read_integer_item) :: i_step_fline_ctl
+!>   Increment for LIC rendering
+        type(read_integer_item) :: i_step_lic_ctl
+!
 !>   Increment for monitoring point data
         type(read_integer_item) :: i_step_monitor_ctl
 !
@@ -217,6 +226,8 @@
         type(read_real_item) :: delta_t_pvr_ctl
 !>   time interval for field line
         type(read_real_item) :: delta_t_fline_ctl
+!>   time interval for LIC rendering
+        type(read_real_item) :: delta_t_lic_ctl
 !>   time interval for monitoring point data
         type(read_real_item) :: delta_t_monitor_ctl
 !>   time interval to evaluate model coefficients
@@ -259,6 +270,8 @@
       character(len=kchara), parameter                                  &
      &       :: hd_delta_t_fline =     'delta_t_fline_ctl'
       character(len=kchara), parameter                                  &
+     &       :: hd_delta_t_lic =       'delta_t_LIC_ctl'
+      character(len=kchara), parameter                                  &
      &       :: hd_delta_t_ucd =       'delta_t_field_ctl'
       character(len=kchara), parameter                                  &
      &       :: hd_delta_t_monitor =   'delta_t_monitor_ctl'
@@ -289,6 +302,8 @@
      &       :: hd_i_step_pvr =       'i_step_pvr_ctl'
       character(len=kchara), parameter                                  &
      &       :: hd_i_step_fline =     'i_step_fline_ctl'
+      character(len=kchara), parameter                                  &
+     &       :: hd_i_step_lic =      'i_step_LIC_ctl'
       character(len=kchara), parameter                                  &
      &       :: hd_i_step_ucd =       'i_step_field_ctl'
       character(len=kchara), parameter                                  &
@@ -370,7 +385,9 @@
         call read_real_ctl_type(hd_delta_t_iso, tctl%delta_t_iso_ctl)
         call read_real_ctl_type(hd_delta_t_pvr, tctl%delta_t_pvr_ctl)
         call read_real_ctl_type(hd_delta_t_fline,                       &
-     &       tctl%delta_t_fline_ctl)
+     &      tctl%delta_t_fline_ctl)
+        call read_real_ctl_type(hd_delta_t_lic, tctl%delta_t_lic_ctl)
+!
         call read_real_ctl_type(hd_delta_t_ucd, tctl%delta_t_field_ctl)
         call read_real_ctl_type(hd_delta_t_monitor,                     &
      &      tctl%delta_t_monitor_ctl)
@@ -402,6 +419,8 @@
      &      tctl%i_step_pvr_ctl)
         call read_integer_ctl_type(hd_i_step_fline,                     &
      &      tctl%i_step_fline_ctl)
+        call read_integer_ctl_type(hd_i_step_lic,                       &
+     &      tctl%i_step_lic_ctl)
 !
         call read_integer_ctl_type(hd_i_step_ucd, tctl%i_step_ucd_ctl)
         call read_integer_ctl_type(hd_i_step_monitor,                   &

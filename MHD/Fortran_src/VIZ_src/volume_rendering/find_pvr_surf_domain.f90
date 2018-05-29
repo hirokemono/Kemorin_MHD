@@ -4,7 +4,13 @@
 !        programmed by H.Matsui on Aug., 2011
 !
 !!      subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,        &
-!!     &          fld_params, pvr_bound, field_pvr)
+!!     &          pvr_area, pvr_bound, field_pvr)
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(viz_area_parameter), intent(in) :: pvr_area
+!!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
+!!        type(pvr_projected_field), intent(inout) :: field_pvr
 !!      subroutine set_pvr_domain_surface_data                          &
 !!     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,      &
 !!     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
@@ -33,7 +39,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,          &
-     &          fld_params, pvr_bound, field_pvr)
+     &          pvr_area, pvr_bound, field_pvr)
 !
       use t_geometry_data
       use t_surface_data
@@ -49,7 +55,7 @@
       type(surface_data), intent(in) :: surf
       type(group_data), intent(in) :: ele_grp
 !
-      type(pvr_field_parameter), intent(in) :: fld_params
+      type(viz_area_parameter), intent(in) :: pvr_area
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(pvr_projected_field), intent(inout) :: field_pvr
 !
@@ -59,8 +65,8 @@
       call s_set_iflag_for_used_ele(ele%numele, ele%interior_ele,      &
      &    ele_grp%num_grp, ele_grp%num_item,                           &
      &    ele_grp%istack_grp, ele_grp%item_grp,                        &
-     &    fld_params%nele_grp_area_pvr,                                &
-     &    fld_params%id_ele_grp_area_pvr, field_pvr%iflag_used_ele)
+     &    pvr_area%nele_grp_area_pvr, pvr_area%id_ele_grp_area_pvr,    &
+     &    field_pvr%iflag_used_ele)
 !
       call mark_selected_domain_bd                                     &
      &   (ele%numele, surf%numsurf, surf%isf_4_ele,                    &
@@ -291,10 +297,19 @@
 !
           isurf_xrng_pvr_domain(1,inum)                                 &
      &       = max(isurf_xrng_pvr_domain(1,inum),ione)
+          isurf_xrng_pvr_domain(1,inum)                                 &
+     &       = min(isurf_xrng_pvr_domain(1,inum),n_pvr_pixel(1))
+          isurf_xrng_pvr_domain(2,inum)                                 &
+     &       = max(isurf_xrng_pvr_domain(2,inum),ione)
           isurf_xrng_pvr_domain(2,inum)                                 &
      &       = min(isurf_xrng_pvr_domain(2,inum),n_pvr_pixel(1))
+!
           jsurf_yrng_pvr_domain(1,inum)                                 &
      &       = max(jsurf_yrng_pvr_domain(1,inum),ione)
+          jsurf_yrng_pvr_domain(1,inum)                                 &
+     &       = min(jsurf_yrng_pvr_domain(1,inum),n_pvr_pixel(2))
+          jsurf_yrng_pvr_domain(2,inum)                                 &
+     &       = max(jsurf_yrng_pvr_domain(2,inum),ione)
           jsurf_yrng_pvr_domain(2,inum)                                 &
      &       = min(jsurf_yrng_pvr_domain(2,inum),n_pvr_pixel(2))
       end do

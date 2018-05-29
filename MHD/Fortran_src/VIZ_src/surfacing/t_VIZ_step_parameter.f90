@@ -9,10 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine accum_output_flag_4_viz(i_step, viz_step, iflag_field)
+!!        type(VIZ_step_params), intent(in) :: viz_step
 !!      integer(kind = kint) function viz_file_step_4_flex              &
-!!     &                            (time_d, viz_step)
 !!      integer(kind = kint) function viz_file_step_4_fix               &
 !!     &                            (i_step, viz_step)
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!
 !!      subroutine viz_fixed_time_step_params(dt, tctl, viz_step)
 !!      subroutine viz_flex_time_step_controls(tctl, dt, viz_step)
@@ -38,6 +39,8 @@
         type(IO_step_param) :: PVR_t
 !>        time step paremters for field lines
         type(IO_step_param) :: FLINE_t
+!>        time step paremters for LIC volume rendering
+        type(IO_step_param) :: LIC_t
       end type VIZ_step_params
 !
 !-----------------------------------------------------------------------
@@ -60,6 +63,8 @@
       call accum_output_flag(i_step, viz_step%PVR_t, iflag_field)
       call accum_output_flag(i_step, viz_step%FLINE_t, iflag_field)
 !
+      call accum_output_flag(i_step, viz_step%LIC_t, iflag_field)
+!
       end subroutine accum_output_flag_4_viz
 !
 !-----------------------------------------------------------------------
@@ -67,7 +72,7 @@
       integer(kind = kint) function viz_file_step_4_fix                 &
      &                            (i_step, viz_step)
 !
-      integer (kind =kint), intent(in) :: i_step
+      integer(kind = kint), intent(in) :: i_step
 !
       type(VIZ_step_params), intent(inout) :: viz_step
 !
@@ -82,6 +87,9 @@
       call accum_flag_to_visualization(i_step, viz_step%FLINE_t,        &
      &    viz_file_step_4_fix)
 !
+      call accum_flag_to_visualization(i_step, viz_step%LIC_t,          &
+     &    viz_file_step_4_fix)
+!
       end function viz_file_step_4_fix
 !
 !-----------------------------------------------------------------------
@@ -92,16 +100,18 @@
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(inout) :: viz_step
 !
-      integer(kind=kint ) :: ivis_pvr, ivis_psf, ivis_iso, ivis_fline
+      integer(kind = kint) :: ivis_pvr, ivis_psf, ivis_iso, ivis_fline
+      integer(kind = kint) :: ivis_lic
 !
 !
       call set_viz_flex_file_step(time_d, viz_step%PSF_t, ivis_psf)
       call set_viz_flex_file_step(time_d, viz_step%ISO_t, ivis_iso)
       call set_viz_flex_file_step(time_d, viz_step%PVR_t, ivis_pvr)
       call set_viz_flex_file_step(time_d, viz_step%FLINE_t,ivis_fline)
+      call set_viz_flex_file_step(time_d, viz_step%LIC_t, ivis_lic)
 !
       viz_file_step_4_flex                                              &
-     &    = ivis_psf * ivis_iso * ivis_pvr * ivis_fline
+     &    = ivis_psf * ivis_iso * ivis_pvr * ivis_fline * ivis_lic
 !
       end function viz_file_step_4_flex
 !
@@ -133,6 +143,10 @@
      &   (izero, dt, tctl%i_step_fline_ctl, tctl%delta_t_fline_ctl,     &
      &    viz_step%FLINE_t)
 !
+      call set_output_step_4_fixed_step                                 &
+     &   (izero, dt, tctl%i_step_lic_ctl, tctl%delta_t_lic_ctl,         &
+     &    viz_step%LIC_t)
+!
       end subroutine viz_fixed_time_step_params
 !
 ! -----------------------------------------------------------------------
@@ -161,6 +175,10 @@
       call set_output_step_4_flex_step                                  &
      &   (izero, dt, tctl%i_step_fline_ctl, tctl%delta_t_fline_ctl,     &
      &    viz_step%FLINE_t)
+!
+      call set_output_step_4_flex_step                                  &
+     &   (izero, dt, tctl%i_step_lic_ctl, tctl%delta_t_lic_ctl,         &
+     &    viz_step%LIC_t)
 !
       end subroutine viz_flex_time_step_controls
 !

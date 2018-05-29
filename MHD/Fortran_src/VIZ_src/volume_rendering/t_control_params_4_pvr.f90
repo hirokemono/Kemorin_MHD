@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine reset_pvr_view_parameteres(view_param)
-!!      subroutine alloc_pvr_element_group(fld_prm)
-!!      subroutine dealloc_pvr_element_group(fld_prm)
+!!      subroutine alloc_pvr_element_group(pvr_area)
+!!      subroutine dealloc_pvr_element_group(pvr_area)
+!!        type(viz_area_parameter), intent(inout) :: pvr_area
 !!
 !!      subroutine alloc_pvr_color_parameteres(color)
 !!      subroutine alloc_pvr_opacity_list(color)
@@ -50,20 +51,22 @@
 !>  Structure for field parameter for PVR
       type pvr_field_parameter
 !>     Field type for PVR data
-        integer(kind = kint) :: id_pvr_output =    0
+        integer(kind = kint) :: id_field =          0
 !>     Component flag for PVR data
-        integer(kind = kint) :: icomp_pvr_output = 0
+        integer(kind = kint) :: id_component =      0
 !>     Number of component of data for Rendering
-        integer(kind = kint) :: ncomp_pvr_org =    0
+        integer(kind = kint) :: num_original_comp = 0
 !>     Field name of data for Rendering
-        character(len = kchara) :: name_pvr_output
+        character(len = kchara) :: field_name
+      end type pvr_field_parameter
 !
+!>  Structure for rendering area by element group
+      type viz_area_parameter
 !>     Number of Element group for volume rendering
         integer(kind = kint) :: nele_grp_area_pvr = 0
 !>     Element group list for volume rendering
         integer(kind = kint), allocatable :: id_ele_grp_area_pvr(:)
-      end type pvr_field_parameter
-!
+      end type viz_area_parameter
 !
 !>  Structure for view parameteres
       type pvr_view_parameter
@@ -235,24 +238,24 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_pvr_element_group(fld_prm)
+      subroutine alloc_pvr_element_group(pvr_area)
 !
-      type(pvr_field_parameter), intent(inout) :: fld_prm
+      type(viz_area_parameter), intent(inout) :: pvr_area
 !
-      allocate(fld_prm%id_ele_grp_area_pvr(fld_prm%nele_grp_area_pvr))
+      allocate(pvr_area%id_ele_grp_area_pvr(pvr_area%nele_grp_area_pvr))
 !
-      if(fld_prm%nele_grp_area_pvr .le. 0) return
-      fld_prm%id_ele_grp_area_pvr = 0
+      if(pvr_area%nele_grp_area_pvr .le. 0) return
+      pvr_area%id_ele_grp_area_pvr = 0
 !
       end subroutine alloc_pvr_element_group
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_pvr_element_group(fld_prm)
+      subroutine dealloc_pvr_element_group(pvr_area)
 !
-      type(pvr_field_parameter), intent(inout) :: fld_prm
+      type(viz_area_parameter), intent(inout) :: pvr_area
 !
-      deallocate(fld_prm%id_ele_grp_area_pvr)
+      deallocate(pvr_area%id_ele_grp_area_pvr)
 !
       end subroutine dealloc_pvr_element_group
 !

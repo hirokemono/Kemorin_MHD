@@ -147,12 +147,9 @@
 !
       type(fline_ctl), intent(inout) :: fln
 !
-      if(fln%seed_surface_ctl%num .gt. 0)                               &
-     &      call dealloc_control_array_i2(fln%seed_surface_ctl)
-      if(fln%seed_point_ctl%num .gt. 0)                                 &
-     &      call dealloc_control_array_r3(fln%seed_point_ctl)
-      if(fln%fline_area_grp_ctl%num .gt. 0)                             &
-     &      call dealloc_control_array_chara(fln%fline_area_grp_ctl)
+      call dealloc_control_array_i2(fln%seed_surface_ctl)
+      call dealloc_control_array_r3(fln%seed_point_ctl)
+      call dealloc_control_array_chara(fln%fline_area_grp_ctl)
 !
       end subroutine deallocate_cont_dat_fline
 !

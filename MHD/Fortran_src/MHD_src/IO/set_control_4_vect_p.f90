@@ -96,8 +96,6 @@
      &                  trim(a_potential_nod%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(node_bc_A_ctl)
       end if
 !
 !
@@ -127,9 +125,10 @@
      &                     trim(a_potential_surf%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(surf_bc_AN_ctl)
       end if
+!
+      call dealloc_control_array_c2_r(node_bc_A_ctl)
+      call dealloc_control_array_c2_r(surf_bc_AN_ctl)
 !
       end subroutine s_set_control_4_vect_p
 !

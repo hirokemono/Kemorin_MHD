@@ -26,6 +26,8 @@
       implicit  none
 !
 !
+      character(len=kchara), parameter :: hd_fline_ctl =  'fieldline'
+!
       type fieldline_controls
         integer(kind = kint) :: num_fline_ctl = 0
         character(len = kchara), allocatable :: fname_fline_ctl(:)
@@ -34,10 +36,9 @@
 !
 !      fieldline flag
 !
-      character(len=kchara), parameter :: hd_fline_ctl =  'fieldline'
       integer (kind=kint) :: i_fline_ctl =  0
 !
-      private :: hd_fline_ctl, i_fline_ctl
+      private :: i_fline_ctl
       private :: alloc_fline_ctl_struct
 !
 !   --------------------------------------------------------------------

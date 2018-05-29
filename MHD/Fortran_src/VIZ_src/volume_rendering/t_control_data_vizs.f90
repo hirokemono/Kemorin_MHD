@@ -24,6 +24,9 @@
 !!    array  fieldline  1
 !!      ....
 !!    end array fieldline
+!!    array  LIC_rendering  1
+!!      ....
+!!    end array LIC_rendering
 !!  end visual_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -38,6 +41,7 @@
       use t_control_data_sections
       use t_control_data_pvrs
       use t_control_data_flines
+      use t_control_data_LIC_pvrs
 !
       implicit  none
 !
@@ -51,6 +55,8 @@
         type(volume_rendering_controls) :: pvr_ctls
 !>        Structures of fieldline controls
         type(fieldline_controls) :: fline_ctls
+!>        Structures of LIC rendering controls
+        type(lic_rendering_controls) :: lic_ctls
       end type visualization_controls
 !
 !
@@ -73,12 +79,8 @@
      &             :: hd_psf_ctl = 'surface_rendering'
       character(len=kchara), parameter                                  &
      &             :: hd_iso_ctl = 'isosurf_rendering'
-      character(len=kchara), parameter                                  &
-     &             :: hd_pvr_ctl = 'volume_rendering'
-      character(len=kchara), parameter :: hd_fline_ctl =  'fieldline'
       private :: hd_section_ctl, hd_psf_ctl
       private :: hd_isosurf_ctl, hd_iso_ctl
-      private :: hd_pvr_ctl, hd_fline_ctl
 !
       private :: hd_viz_control, i_viz_control
 !
@@ -139,6 +141,12 @@
         if(viz_ctls%fline_ctls%num_fline_ctl .gt. 0) then
           call read_files_4_fline_ctl(viz_ctls%fline_ctls)
         end if
+!
+        call find_control_array_flag                                    &
+     &     (hd_lic_ctl, viz_ctls%lic_ctls%num_lic_ctl)
+        if(viz_ctls%lic_ctls%num_lic_ctl .gt. 0) then
+          call read_files_4_lic_ctl(viz_ctls%lic_ctls)
+        end if
       end do
 !
       end subroutine read_viz_controls
@@ -154,6 +162,7 @@
       call bcast_files_4_iso_ctl(viz_ctls%iso_ctls)
       call bcast_files_4_pvr_ctl(viz_ctls%pvr_ctls)
       call bcast_files_4_fline_ctl(viz_ctls%fline_ctls)
+      call bcast_files_4_lic_ctl(viz_ctls%lic_ctls)
 !
       end subroutine bcast_viz_controls
 !

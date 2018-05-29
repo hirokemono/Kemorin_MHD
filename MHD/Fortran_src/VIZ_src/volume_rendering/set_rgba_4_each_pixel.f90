@@ -10,12 +10,23 @@
 !!      subroutine s_set_rgba_4_each_pixel(viewpoint_vec,               &
 !!     &          xin_model, xout_model, c_data, grad_data, o_data,     &
 !!     &          color_param, rgba_pixel)
+!!      subroutine color_plane_with_light                               &
+!!     &         (viewpoint_vec, xout_model, c_data, grad_data,         &
+!!     &          opa_current, color_param, rgba_pixel)
+!!      subroutine plane_rendering_with_light                           &
+!!     &         (viewpoint_vec, xout_model, surf_normal,               &
+!!     &          opa_current, color_param, rgba_pixel)
 !!      subroutine set_rgba_4_surface_boundary                          &
 !!     &         (viewpoint_vec, xout_model, surf_normal,               &
 !!     &          opa_current, color_param, rgba_pixel)
 !!
 !!      subroutine compute_opacity(transfer_function_style, opa_value,  &
 !!     &          num_of_features, fea_point, value, opacity_local)
+!!
+!!      subroutine phong_reflection(view_point_d,                       &
+!!     &          num_of_lights, light_point, norm_v, k_ads,            &
+!!     &          in_point, out_point, color, rgb)
+!!
 !!      subroutine composite_alpha_blending(rgba_src, rgba_tgt)
 !!      subroutine alpha_blending(rgba_src, rgba_tgt)
 !!@endverbatim
@@ -43,8 +54,6 @@
       integer(kind = kint), parameter :: iflag_pointdelta =  3
       integer(kind = kint), parameter :: iflag_pointrange =  4
       integer(kind = kint), parameter :: iflag_pointlinear = 5
-!
-      private :: phong_reflection
 !
 ! ----------------------------------------------------------------------
 !
@@ -327,6 +336,8 @@
 !
       real(kind = kreal), intent(in) :: rgba_src(4)
       real(kind = kreal), intent(inout) :: rgba_tgt(4)
+!
+!   This us is backward casting!!
 !
       rgba_tgt(4) = rgba_src(4) + rgba_tgt(4) * (one - rgba_src(4))
       rgba_tgt(1:3) =  rgba_src(1:3)                                    &

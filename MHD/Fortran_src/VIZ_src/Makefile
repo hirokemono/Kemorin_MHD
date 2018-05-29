@@ -8,7 +8,8 @@ LIB_VIZ_FILE = libkemo_viz.a
 SUBDIRS = \
 surfacing       \
 fieldline        \
-volume_rendering
+volume_rendering \
+LIC_PVR
 
 #
 #  -------------------------------------------------------------------------
@@ -57,6 +58,7 @@ mod_list:
 	@echo '$$(MOD_SURFACING)'  \\ >> $(MAKENAME)
 	@echo '$$(MOD_FIELDLINE)'  \\ >> $(MAKENAME)
 	@echo '$$(MOD_PVR)'        \\ >> $(MAKENAME)
+	@echo '$$(MOD_LIC)'        \\ >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	
 	@for dir in $(SUBDIRS); do \

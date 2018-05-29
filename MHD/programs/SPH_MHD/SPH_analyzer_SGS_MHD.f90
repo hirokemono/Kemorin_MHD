@@ -113,9 +113,11 @@
 !
 !  -------------------------------
 !
+      if (iflag_debug.gt.0) write(*,*) 'init_SGS_model_sph_mhd'
       call init_SGS_model_sph_mhd                                       &
      &   (SPH_SGS%SGS_par, SPH_MHD%sph, SPH_MHD%groups,                 &
      &    SPH_model%MHD_prop, SPH_SGS%dynamic)
+      call calypso_mpi_barrier
 !
 !  -------------------------------
 !
@@ -145,6 +147,7 @@
      &   (SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, SPH_model%MHD_prop,         &
      &    SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg,                     &
      &    SPH_MHD%ipol, SPH_MHD%itor, SPH_MHD%fld)
+      call calypso_mpi_barrier
 !
 !* obtain nonlinear terms for starting
 !*
@@ -153,6 +156,7 @@
      &   (MHD_step%init_d%i_time_step, SPH_WK%r_2nd, SPH_model,         &
      &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_SGS%SGS_par,              &
      &    SPH_SGS%dynamic, SPH_MHD)
+      call calypso_mpi_barrier
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -161,6 +165,7 @@
       call open_sph_vol_rms_file_mhd                                    &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%monitor)
       call end_elapsed_time(4)
+      call calypso_mpi_barrier
 !
       end subroutine SPH_initialize_SGS_MHD
 !

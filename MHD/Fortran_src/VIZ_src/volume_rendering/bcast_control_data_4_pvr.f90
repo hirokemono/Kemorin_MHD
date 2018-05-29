@@ -35,7 +35,7 @@
 !
       subroutine bcast_vr_psf_ctl(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
       call MPI_BCAST(pvr%i_pvr_ctl,  ione,                              &
@@ -54,7 +54,7 @@
       call bcast_pvr_sections_ctl(pvr)
 !
       call bcast_lighting_ctl(pvr%color)
-      call bcast_pvr_colorbar_ctl(pvr%colorbar)
+      call bcast_pvr_colorbar_ctl(pvr%cbar_ctl)
       call bcast_pvr_rotation_ctl(pvr%movie)
 !
       call bcast_ctl_array_c1(pvr%pvr_area_ctl)
@@ -79,7 +79,7 @@
 !
       subroutine bcast_pvr_update_flag(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
       call bcast_ctl_type_c1(pvr%updated_ctl)
@@ -91,7 +91,7 @@
 !
       subroutine bcast_pvr_sections_ctl(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
       integer(kind = kint) :: i
 !
@@ -121,7 +121,7 @@
 !
       subroutine bcast_pvr_isosurfs_ctl(pvr)
 !
-      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_parameter_ctl), intent(inout) :: pvr
 !
       integer(kind = kint) :: i
 !
@@ -144,26 +144,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_pvr_colorbar_ctl(colorbar)
+      subroutine bcast_pvr_colorbar_ctl(cbar_ctl)
 !
       use bcast_control_arrays
 !
-      type(pvr_colorbar_ctl), intent(inout) :: colorbar
+      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !
 !
-      call MPI_BCAST(colorbar%i_pvr_colorbar,  ione,                    &
+      call MPI_BCAST(cbar_ctl%i_pvr_colorbar,  ione,                    &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call bcast_ctl_type_i1(colorbar%font_size_ctl)
-      call bcast_ctl_type_i1(colorbar%ngrid_cbar_ctl)
+      call bcast_ctl_type_i1(cbar_ctl%font_size_ctl)
+      call bcast_ctl_type_i1(cbar_ctl%ngrid_cbar_ctl)
 !
-      call bcast_ctl_type_c1(colorbar%colorbar_switch_ctl)
-      call bcast_ctl_type_c1(colorbar%colorbar_scale_ctl)
-      call bcast_ctl_type_c1(colorbar%zeromarker_flag_ctl)
+      call bcast_ctl_type_c1(cbar_ctl%colorbar_switch_ctl)
+      call bcast_ctl_type_c1(cbar_ctl%colorbar_scale_ctl)
+      call bcast_ctl_type_c1(cbar_ctl%zeromarker_flag_ctl)
 !
-      call bcast_ctl_type_c1(colorbar%axis_switch_ctl)
+      call bcast_ctl_type_c1(cbar_ctl%axis_switch_ctl)
 !!
-      call bcast_ctl_type_r2(colorbar%cbar_range_ctl)
+      call bcast_ctl_type_r2(cbar_ctl%cbar_range_ctl)
 !
       end subroutine bcast_pvr_colorbar_ctl
 !
@@ -217,6 +217,11 @@
       call bcast_ctl_array_r2(color%linear_opacity_ctl)
 !
       call bcast_ctl_array_r3(color%step_opacity_ctl)
+!
+      call bcast_ctl_type_c1(color%lic_color_fld_ctl)
+      call bcast_ctl_type_c1(color%lic_color_comp_ctl)
+      call bcast_ctl_type_c1(color%lic_opacity_fld_ctl)
+      call bcast_ctl_type_c1(color%lic_opacity_comp_ctl)
 !
       call bcast_ctl_type_c1(color%colormap_mode_ctl)
       call bcast_ctl_type_c1(color%data_mapping_ctl)

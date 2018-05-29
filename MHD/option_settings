@@ -18,23 +18,23 @@ PKG_CONFIG_PATH=/usr/lib/pkgconfig:/opt/local/lib/pkgconfig
 # Intel KNL (TACC:stampede2)
 # -------------------------------------------------------------------------------
 #
-export PKG_CONFIG_PATH=$TACC_FFTW3_LIB/pkgconfig:/usr/lib64/pkgconfig:/home/hmatsui/local/lib/pkgconfig
 ./configure --prefix=/home1/02179/matsui/local CC=icc FC=ifort F77=ifort CXX=icc AR=xiar \
 MPICC=mpicc MPIFC=mpif90 PKG_CONFIG=/usr/bin/pkg-config \
 CFLAGS='-Os -Wall -g -xCORE-AVX2 -axMIC-AVX512' \
-FCFLAGS='-Os -xCORE-AVX2 -axMIC-AVX512 -warn all -g' \
+FCFLAGS='-Os -xCORE-AVX2 -axMIC-AVX512 -warn all -g -nogen-interfaces ' \
 FFTW3_CFLAGS='$(TACC_FFTW3_INC)' FFTW3_LIBS='-L$(TACC_FFTW3_LIB) -lfftw3' \
 --with-blas=-mkl=sequential --enable-fftw3 --enable-libpng --with-hdf5 \
---with-zlib=/usr/lib64 --without-pgplot --without-aquaterm
+--with-zlib=/usr/lib64 --without-pgplot --without-aquaterm \
+PKG_CONFIG_PATH=$TACC_FFTW3_LIB/pkgconfig:/usr/lib64/pkgconfig:/home/hmatsui/local/lib/pkgconfig
 
 #
 # -------------------------------------------------------------------------------
 # SR24000 (NIPR:sr1)
 # -------------------------------------------------------------------------------
 #
-./configure --prefix='/hsfs/home0/matsui/local' CC=cc FC=f90 \
+./configure --prefix='/hsfs/home0/matsui/local' CC=xlc_r FC=f90 F77=f90 \
 AR="ar -X64" RANLIB="ranlib -X64" MPICC=mpcc_r MPIFC=mpif90 \
-FCFLAGS="-O3 -O4 -noifswpl  -autoinline=2" \
+FCFLAGS="-O4 -noifswpl  -autoinline=2" \
 PKG_CONFIG_PATH=/hsfs/home0/matsui/local/lib/pkgconfig \
 --with-blas=yes --enable-fftw3 --enable-libpng  --with-zlib=/hsfs/home0/matsui/local \
 --with-pgplot=/hsfs/home0/matsui/local/pgplot --with-hdf5=no
@@ -235,7 +235,7 @@ PKG_CONFIG_PATH='/usr/lib64/pkgconfig:/glade/apps/opt/fftw/3.3.2/intel/12.1.4/li
 #
 # ANL Mira
 #
-../configure --host=powerpc64-bgq-linux --prefix='/home/matsui/local' \
+./configure --host=powerpc64-bgq-linux --prefix='/home/matsui/local' \
 --enable-fftw3 --enable-libpng --disable-gl \
 --with-hdf5=no --with-zlib=/soft/libraries/alcf/current/xl/ZLIB --without-pgplot \
 CC=bgxlc FC=bgxlf90_r MPICC=mpixlc MPIFC=mpixlf90_r \

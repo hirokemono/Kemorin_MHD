@@ -7,7 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine sel_sph_model_coefs                                  &
-!!     &         (numdir, nnod_med, stab_wt, ifld_sgs, icomp_sgs,       &
+!!     &         (numdir, ngrp_dynamic, stab_wt, ifld_sgs, icomp_sgs,   &
 !!     &          nfld_sgs, ncomp_sgs,  sgs_zl, sgs_zt, sgs_c)
 !!@endverbatim
 !
@@ -29,29 +29,29 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_sph_model_coefs                                    &
-     &         (numdir, nnod_med, stab_wt, ifld_sgs, icomp_sgs,         &
+     &         (numdir, ngrp_dynamic, stab_wt, ifld_sgs, icomp_sgs,     &
      &          nfld_sgs, ncomp_sgs,  sgs_zl, sgs_zt, sgs_c)
 !
       use m_phys_constants
 !
-      integer(kind = kint), intent(in) :: numdir, nnod_med
+      integer(kind = kint), intent(in) :: numdir, ngrp_dynamic
       integer(kind = kint), intent(in) :: nfld_sgs, ncomp_sgs
       integer(kind = kint), intent(in) :: ifld_sgs, icomp_sgs
-      real(kind = kreal), intent(in) :: sgs_zl(nnod_med,ncomp_sgs)
-      real(kind = kreal), intent(in) :: sgs_zt(nnod_med,ncomp_sgs)
+      real(kind = kreal), intent(in) :: sgs_zl(ngrp_dynamic,ncomp_sgs)
+      real(kind = kreal), intent(in) :: sgs_zt(ngrp_dynamic,ncomp_sgs)
       real(kind = kreal), intent(in) :: stab_wt
 !
-      real(kind = kreal), intent(inout) :: sgs_c(nnod_med,nfld_sgs)
+      real(kind = kreal), intent(inout) :: sgs_c(ngrp_dynamic,nfld_sgs)
 !
 !
       if(numdir .eq. n_vector) then
-        call cal_vector_sph_model_coefs                                 &
-     &    (nnod_med, stab_wt, sgs_zl(1,icomp_sgs), sgs_zt(1,icomp_sgs), &
-     &     sgs_c(1,ifld_sgs))
+        call cal_vector_sph_model_coefs(ngrp_dynamic, stab_wt,          &
+     &      sgs_zl(1,icomp_sgs), sgs_zt(1,icomp_sgs),                   &
+     &      sgs_c(1,ifld_sgs))
       else
-        call cal_scalar_sph_model_coefs                                 &
-     &    (nnod_med, stab_wt, sgs_zl(1,icomp_sgs), sgs_zt(1,icomp_sgs), &
-     &     sgs_c(1,ifld_sgs))
+        call cal_scalar_sph_model_coefs(ngrp_dynamic, stab_wt,          &
+     &      sgs_zl(1,icomp_sgs), sgs_zt(1,icomp_sgs),                   &
+     &      sgs_c(1,ifld_sgs))
       end if
 !
       end subroutine sel_sph_model_coefs
@@ -60,20 +60,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_scalar_sph_model_coefs                             &
-     &         (nnod_med, stab_wt, sgs_zl, sgs_zt, sgs_c)
+     &         (ngrp_dynamic, stab_wt, sgs_zl, sgs_zt, sgs_c)
 !
-      integer(kind = kint), intent(in) :: nnod_med
-      real(kind = kreal), intent(in) :: sgs_zl(nnod_med)
-      real(kind = kreal), intent(in) :: sgs_zt(nnod_med)
+      integer(kind = kint), intent(in) :: ngrp_dynamic
+      real(kind = kreal), intent(in) :: sgs_zl(ngrp_dynamic)
+      real(kind = kreal), intent(in) :: sgs_zt(ngrp_dynamic)
       real(kind = kreal), intent(in) :: stab_wt
 !
-      real(kind = kreal), intent(inout) :: sgs_c(nnod_med)
+      real(kind = kreal), intent(inout) :: sgs_c(ngrp_dynamic)
 !
       integer(kind = kint) :: inod
 !
 !
 !$omp parallel do
-      do inod = 1, nnod_med
+      do inod = 1, ngrp_dynamic
         if( sgs_zt(inod) .ne. zero) then
 !          sgs_c(inod) = one
 !        else
@@ -88,21 +88,21 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_vector_sph_model_coefs                             &
-     &         (nnod_med, stab_wt, sgs_zl, sgs_zt, sgs_c)
+     &         (ngrp_dynamic, stab_wt, sgs_zl, sgs_zt, sgs_c)
 !
-      integer(kind = kint), intent(in) :: nnod_med
-      real(kind = kreal), intent(in) :: sgs_zl(nnod_med,3)
-      real(kind = kreal), intent(in) :: sgs_zt(nnod_med,3)
+      integer(kind = kint), intent(in) :: ngrp_dynamic
+      real(kind = kreal), intent(in) :: sgs_zl(ngrp_dynamic,3)
+      real(kind = kreal), intent(in) :: sgs_zt(ngrp_dynamic,3)
       real(kind = kreal), intent(in) :: stab_wt
 !
-      real(kind = kreal), intent(inout) :: sgs_c(nnod_med)
+      real(kind = kreal), intent(inout) :: sgs_c(ngrp_dynamic)
 !
       integer(kind = kint) :: inod
       real(kind = kreal) :: rflag
 !
 !
 !$omp parallel do private(rflag)
-      do inod = 1, nnod_med
+      do inod = 1, ngrp_dynamic
         rflag = sgs_zt(inod,1) * sgs_zt(inod,2) * sgs_zt(inod,3)
         if(rflag .ne. zero) then
 !          sgs_c(inod) = one

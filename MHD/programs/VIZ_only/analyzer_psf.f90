@@ -34,7 +34,7 @@
 !
       integer(kind = kint) :: ierr
 !
-      num_elapsed = 75
+      num_elapsed = 80
       call allocate_elapsed_times
       call s_set_viz_time_labels
 !

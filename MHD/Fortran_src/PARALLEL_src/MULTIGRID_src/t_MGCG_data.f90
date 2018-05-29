@@ -220,7 +220,6 @@
 !
         MGCG_WK%MG_mpi(1:MGCG_WK%num_MG_level)%nprocs                   &
      &     = MG_ctl%num_MG_subdomain_ctl%ivec(1:MGCG_WK%num_MG_level)
-        call dealloc_control_array_int(MG_ctl%num_MG_subdomain_ctl)
 !
         if (MG_ctl%MG_f2c_ele_tbl_ctl%icou .eq. MG_file%nlevel_f) then
           MGCG_FEM%iflag_MG_commute_by_ele = 1
@@ -233,6 +232,8 @@
      &               MGCG_WK%MG_mpi(i)%nprocs
         end do
       end if
+!
+      call dealloc_control_array_int(MG_ctl%num_MG_subdomain_ctl)
 !
       call set_MGCG_file_controls                                      &
      &   (MGCG_WK%num_MG_level, MG_ctl, MG_file)

@@ -49,7 +49,8 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment
+      iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment     &
+     &       + viz_step%LIC_t%increment
       if(iflag .gt. 0) call element_normals_4_VIZ
 !
 !     --------------------- 

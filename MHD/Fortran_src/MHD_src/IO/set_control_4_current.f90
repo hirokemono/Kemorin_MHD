@@ -89,8 +89,6 @@
      &                 trim(current_nod%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(node_bc_J_ctl)
       end if
 !
 !
@@ -118,9 +116,10 @@
      &                trim(current_surf%bc_name(i))
           end do
         end if
-!
-        call dealloc_control_array_c2_r(surf_bc_JN_ctl)
       end if
+!
+      call dealloc_control_array_c2_r(node_bc_J_ctl)
+      call dealloc_control_array_c2_r(surf_bc_JN_ctl)
 !
       end subroutine s_set_control_4_current
 !

@@ -25,9 +25,6 @@
 !
       implicit none
 !
-      character(len=kchara) :: hd_fline_ctl = 'field_line'
-      private :: hd_fline_ctl
-!
       private :: read_control_4_fline
 !
 !  ---------------------------------------------------------------------
@@ -62,7 +59,8 @@
       call alloc_local_start_grp_num(num_fline, fline_src)
 !
       do i = 1, num_fline
-        call read_control_4_fline(fline_ctls%fname_fline_ctl(i),        &
+        call read_control_4_fline                                       &
+     &     (hd_fline_ctl, fline_ctls%fname_fline_ctl(i),                &
      &      fline_ctls%fline_ctl_struct(i))
       end do
 !
@@ -97,11 +95,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_control_4_fline                                   &
-     &         (fname_fline_ctl, fline_ctl_struct)
+     &         (hd_fline_ctl, fname_fline_ctl, fline_ctl_struct)
 !
       use calypso_mpi
       use t_control_data_4_fline
 !
+      character(len = kchara), intent(in) :: hd_fline_ctl
       character(len = kchara), intent(in) :: fname_fline_ctl
       type(fline_ctl), intent(inout)  :: fline_ctl_struct
 !

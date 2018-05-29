@@ -5,7 +5,7 @@
 !
 !!      subroutine set_control_pvr_lighting(color, color_param)
 !!      subroutine set_control_pvr_colormap(color, color_param)
-!!      subroutine set_control_pvr_colorbar(colorbar, cbar_param)
+!!      subroutine set_control_pvr_colorbar(cbar_ctl, cbar_param)
 !
       module set_control_pvr_color
 !
@@ -242,9 +242,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_pvr_colorbar(colorbar, cbar_param)
+      subroutine set_control_pvr_colorbar(cbar_ctl, cbar_param)
 !
-      type(pvr_colorbar_ctl), intent(in) :: colorbar
+      type(pvr_colorbar_ctl), intent(in) :: cbar_ctl
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
       character(len = kchara) :: tmpchara
@@ -252,8 +252,8 @@
 !    set axis label setting
 !
       cbar_param%iflag_pvr_axis = 0
-      if( colorbar%axis_switch_ctl%iflag .gt. 0) then
-        tmpchara = colorbar%axis_switch_ctl%charavalue
+      if( cbar_ctl%axis_switch_ctl%iflag .gt. 0) then
+        tmpchara = cbar_ctl%axis_switch_ctl%charavalue
         if   (cmp_no_case(tmpchara, 'on')) then
           cbar_param%iflag_pvr_axis = 1
         end if
@@ -263,8 +263,8 @@
 !    set colorbar setting
 !
       cbar_param%iflag_pvr_colorbar = 0
-      if( colorbar%colorbar_switch_ctl%iflag .gt. 0) then
-        tmpchara = colorbar%colorbar_switch_ctl%charavalue
+      if( cbar_ctl%colorbar_switch_ctl%iflag .gt. 0) then
+        tmpchara = cbar_ctl%colorbar_switch_ctl%charavalue
         if   (cmp_no_case(tmpchara, 'on')                               &
      &   .or. cmp_no_case(tmpchara, 'data')                             &
      &   .or. cmp_no_case(tmpchara, 'equi_data')) then
@@ -273,26 +273,26 @@
       end if
 !
       if (cbar_param%iflag_pvr_colorbar .gt. 0) then
-        if( colorbar%colorbar_scale_ctl%iflag .gt. 0) then
-          tmpchara = colorbar%colorbar_scale_ctl%charavalue
+        if( cbar_ctl%colorbar_scale_ctl%iflag .gt. 0) then
+          tmpchara = cbar_ctl%colorbar_scale_ctl%charavalue
           if  (cmp_no_case(tmpchara, 'on')) then
             cbar_param%iflag_pvr_cbar_nums = 1
 !
-            if (colorbar%font_size_ctl%iflag .gt. 0) then
-              cbar_param%iscale_font = colorbar%font_size_ctl%intvalue
+            if (cbar_ctl%font_size_ctl%iflag .gt. 0) then
+              cbar_param%iscale_font = cbar_ctl%font_size_ctl%intvalue
             else
               cbar_param%iscale_font = 1
             end if
 !
-            if (colorbar%ngrid_cbar_ctl%iflag .gt. 0) then
+            if (cbar_ctl%ngrid_cbar_ctl%iflag .gt. 0) then
               cbar_param%ntick_pvr_colorbar                             &
-     &                      = colorbar%ngrid_cbar_ctl%intvalue + 2
+     &                      = cbar_ctl%ngrid_cbar_ctl%intvalue + 2
             else
               cbar_param%ntick_pvr_colorbar = 3
             end if
 !
-            if (colorbar%zeromarker_flag_ctl%iflag .gt. 0) then
-              tmpchara = colorbar%zeromarker_flag_ctl%charavalue
+            if (cbar_ctl%zeromarker_flag_ctl%iflag .gt. 0) then
+              tmpchara = cbar_ctl%zeromarker_flag_ctl%charavalue
               if  (cmp_no_case(tmpchara, 'on')) then
                 cbar_param%iflag_pvr_zero_mark = 1
               else
@@ -305,9 +305,9 @@
           end if
         end if
 !
-        if( colorbar%cbar_range_ctl%iflag .gt. 0) then
+        if( cbar_ctl%cbar_range_ctl%iflag .gt. 0) then
           cbar_param%cbar_range(1:2)                                    &
-     &                = colorbar%cbar_range_ctl%realvalue(1:2)
+     &                = cbar_ctl%cbar_range_ctl%realvalue(1:2)
         end if
       end if
 !

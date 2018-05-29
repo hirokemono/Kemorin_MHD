@@ -73,7 +73,8 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment
+      iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment     &
+     &       + viz_step%LIC_t%increment
       if(iflag .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
         call set_element_on_node_in_mesh(femmesh_STR%mesh, ele_4_nod)

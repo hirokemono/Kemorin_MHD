@@ -19,6 +19,7 @@ begin visualizer
     i_step_isosurface_ctl   400
     i_step_pvr_ctl          400
     i_step_fline_ctl        400
+    i_step_LIC_ctl          400
   end time_step_ctl
 !
   begin visual_control
@@ -38,6 +39,10 @@ begin visualizer
     array  fieldline  1
       file  fieldline  'ctl_fline_magne'
     end array fieldline
+!
+    array  LIC_rendering  1
+      file  LIC_rendering  'ctl_LIC_magne'
+    end array LIC_rendering
   end  visual_control
 !
 end  visualizer

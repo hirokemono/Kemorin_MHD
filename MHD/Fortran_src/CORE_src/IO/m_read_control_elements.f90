@@ -319,7 +319,7 @@
      &                                    trim(chara_data)
       iflag_dat = 1
 !
-       end subroutine read_character_ctl_item
+      end subroutine read_character_ctl_item
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

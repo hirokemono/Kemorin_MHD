@@ -1,24 +1,43 @@
-!t_control_data_pvr_misc.f90
-!      module t_control_data_pvr_misc
+!>@file   t_control_data_pvr_misc.f90
+!!@brief  module t_control_data_pvr_misc
+!!
+!!@author H. Matsui
+!!@date Programmed in 2006
 !
-!        programmed by H.Matsui on May. 2006
-!
-!!      subroutine read_control_pvr_section_def(pvr_sect_ctl)
+!> @brief control data for parallel volume rendering
+!!
+!!@verbatim
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      subroutine read_control_pvr_section_def(pvr_sect_ctl)
 !!      subroutine read_pvr_section_ctl(pvr_sect_ctl)
 !!        type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
 !!
 !!      subroutine read_pvr_isosurface_ctl(pvr_iso_ctl)
 !!        type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
 !!
-!!      subroutine read_pvr_colorbar_ctl(colorbar)
-!!        type(pvr_colorbar_ctl), intent(inout) :: colorbar
+!!      subroutine read_pvr_colorbar_ctl(cbar_ctl)
+!!        type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !!
 !!      subroutine read_pvr_rotation_ctl(movie)
 !!        type(pvr_movie_ctl), intent(inout) :: movie
+!!      subroutine read_plot_area_ctl(hd_plot_area, i_plot_area,        &
+!!     &           pvr_area_ctl, surf_enhanse_ctl)
+!!        type(ctl_array_chara), intent(inout) :: pvr_area_ctl
+!!        type(ctl_array_c2r), intent(inout) :: surf_enhanse_ctl
 !!
-!!      subroutine reset_pvr_misc_control_flags(colorbar, movie)
+!!      subroutine reset_pvr_misc_control_flags(cbar_ctl, movie)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!  begin plot_area_ctl
+!!    array chosen_ele_grp_ctl  1
+!!      chosen_ele_grp_ctl   outer_core
+!!    end array chosen_ele_grp_ctl
+!!
+!!    array surface_enhanse_ctl  2
+!!      surface_enhanse_ctl   ICB   reverse_surface   0.7
+!!      surface_enhanse_ctl   CMB   forward_surface   0.4
+!!    end array surface_enhanse_ctl
+!!  end  plot_area_ctl
+!!!
 !!  begin colorbar_ctl
 !!    colorbar_switch_ctl    ON
 !!    colorbar_scale_ctl     ON
@@ -26,10 +45,10 @@
 !!    colorbar_range     0.0   1.0
 !!    font_size_ctl         3
 !!    num_grid_ctl     4
-!!
+!!!
 !!    axis_label_switch      ON
 !!  end colorbar_ctl
-!!
+!!!
 !!  begin image_rotation_ctl
 !!    rotation_axis_ctl       z
 !!    rotation_axis_ctl       1
@@ -38,6 +57,7 @@
 !!end volume_rendering
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!@endverbatim
 !
       module t_control_data_pvr_misc
 !
@@ -97,6 +117,11 @@
       character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
       character(len=kchara) :: hd_pvr_rotation =  'image_rotation_ctl'
 !
+!     4th level for area group
+!
+      character(len=kchara) :: hd_plot_grp = 'chosen_ele_grp_ctl'
+      character(len=kchara) :: hd_sf_enhanse = 'surface_enhanse_ctl'
+!
 !     3rd level for isosurface
 !
       character(len=kchara) :: hd_isosurf_value = 'isosurf_value'
@@ -120,6 +145,7 @@
       character(len=kchara) :: hd_movie_rot_axis =  'rotation_axis_ctl'
       character(len=kchara) :: hd_movie_rot_frame = 'num_frames_ctl'
 !
+      private :: hd_plot_grp, hd_sf_enhanse
       private :: hd_pvr_colorbar, hd_pvr_rotation, hd_isosurf_value
       private :: hd_colorbar_switch, hd_pvr_opacity, hd_iso_direction
       private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
@@ -221,39 +247,39 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_colorbar_ctl(colorbar)
+      subroutine read_pvr_colorbar_ctl(cbar_ctl)
 !
-      type(pvr_colorbar_ctl), intent(inout) :: colorbar
+      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !
 !
       if(right_begin_flag(hd_pvr_colorbar) .eq. 0) return
-      if (colorbar%i_pvr_colorbar.gt.0) return
+      if (cbar_ctl%i_pvr_colorbar.gt.0) return
       do
         call load_ctl_label_and_line
 !
         call find_control_end_flag                                      &
-     &     (hd_pvr_colorbar, colorbar%i_pvr_colorbar)
-        if(colorbar%i_pvr_colorbar .gt. 0) exit
+     &     (hd_pvr_colorbar, cbar_ctl%i_pvr_colorbar)
+        if(cbar_ctl%i_pvr_colorbar .gt. 0) exit
 !
 !
         call read_integer_ctl_type                                      &
-     &     (hd_pvr_font_size, colorbar%font_size_ctl)
+     &     (hd_pvr_font_size, cbar_ctl%font_size_ctl)
         call read_integer_ctl_type(hd_pvr_numgrid_cbar,                 &
-     &      colorbar%ngrid_cbar_ctl)
+     &      cbar_ctl%ngrid_cbar_ctl)
 !
 !
         call read_chara_ctl_type(hd_colorbar_switch,                    &
-     &      colorbar%colorbar_switch_ctl)
+     &      cbar_ctl%colorbar_switch_ctl)
         call read_chara_ctl_type(hd_colorbar_scale,                     &
-     &      colorbar%colorbar_scale_ctl)
+     &      cbar_ctl%colorbar_scale_ctl)
         call read_chara_ctl_type(hd_zeromarker_flag,                    &
-     &      colorbar%zeromarker_flag_ctl)
+     &      cbar_ctl%zeromarker_flag_ctl)
 !
         call read_chara_ctl_type(hd_axis_switch,                        &
-     &      colorbar%axis_switch_ctl)
+     &      cbar_ctl%axis_switch_ctl)
 !!
         call read_real2_ctl_type                                        &
-     &     (hd_cbar_range, colorbar%cbar_range_ctl)
+     &     (hd_cbar_range, cbar_ctl%cbar_range_ctl)
       end do
 !
       end subroutine read_pvr_colorbar_ctl
@@ -285,24 +311,51 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine reset_pvr_misc_control_flags(colorbar, movie)
+      subroutine read_plot_area_ctl(hd_plot_area, i_plot_area,          &
+     &           pvr_area_ctl, surf_enhanse_ctl)
 !
-      type(pvr_colorbar_ctl), intent(inout) :: colorbar
+      character(len=kchara), intent(in) :: hd_plot_area
+      integer(kind=kint), intent(inout) :: i_plot_area
+      type(ctl_array_chara), intent(inout) :: pvr_area_ctl
+      type(ctl_array_c2r), intent(inout) :: surf_enhanse_ctl
+!
+!
+      if(right_begin_flag(hd_plot_area) .eq. 0) return
+      if (i_plot_area.gt.0) return
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_plot_area, i_plot_area)
+        if(i_plot_area .gt. 0) exit
+!
+        call read_control_array_c1(hd_plot_grp, pvr_area_ctl)
+        call read_control_array_c2_r                                    &
+     &     (hd_sf_enhanse, surf_enhanse_ctl)
+      end do
+!
+      end subroutine read_plot_area_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine reset_pvr_misc_control_flags(cbar_ctl, movie)
+!
+      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
       type(pvr_movie_ctl), intent(inout) :: movie
 !
 !
       movie%num_frames_ctl%iflag =    0
       movie%rotation_axis_ctl%iflag = 0
 !
-      colorbar%colorbar_switch_ctl%iflag = 0
-      colorbar%colorbar_scale_ctl%iflag =  0
-      colorbar%font_size_ctl%iflag =       0
-      colorbar%ngrid_cbar_ctl%iflag =      0
-      colorbar%zeromarker_flag_ctl%iflag = 0
-      colorbar%cbar_range_ctl%iflag =      0
+      cbar_ctl%colorbar_switch_ctl%iflag = 0
+      cbar_ctl%colorbar_scale_ctl%iflag =  0
+      cbar_ctl%font_size_ctl%iflag =       0
+      cbar_ctl%ngrid_cbar_ctl%iflag =      0
+      cbar_ctl%zeromarker_flag_ctl%iflag = 0
+      cbar_ctl%cbar_range_ctl%iflag =      0
 !
       movie%i_pvr_rotation = 0
-      colorbar%i_pvr_colorbar = 0
+      cbar_ctl%i_pvr_colorbar = 0
 !
       end subroutine reset_pvr_misc_control_flags
 !

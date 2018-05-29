@@ -20,13 +20,13 @@
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(pvr_projected_data), intent(in) :: pvr_screen
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
-!!      type(pvr_image_type), intent(inout) :: pvr_rgb
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
 !!      subroutine sel_write_pvr_image_file                             &
 !!     &       (file_param, i_rot, istep_pvr, isel_projection, pvr_rgb)
 !!      subroutine sel_write_pvr_local_img                              &
 !!     &        (file_param, index, istep_pvr, pvr_rgb)
-!!      type(pvr_image_type), intent(inout) :: pvr_rgb
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
       module write_PVR_image
