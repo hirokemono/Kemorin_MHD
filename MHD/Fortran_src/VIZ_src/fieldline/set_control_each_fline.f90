@@ -55,6 +55,7 @@
 !
       use t_source_of_filed_line
       use set_area_4_viz
+      use skip_comment_f
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
@@ -77,11 +78,10 @@
       end if
 !
       character_256 = fln%fline_output_type_ctl%charavalue
-      if     (character_256 .eq. 'ucd'                                  &
-     &   .or. character_256 .eq. 'UCD'                                  &
-     &   .or. character_256 .eq. 'udt'                                  &
-     &   .or. character_256 .eq. 'UDT') then
+      if     (cmp_no_case(character_256, 'ucd')) then
         fline_prm%id_fline_file_type(i_fln) = iflag_ucd
+      else if(cmp_no_case(character_256, 'vtk')) then
+        fline_prm%id_fline_file_type(i_fln) = iflag_vtk
       else
         fline_prm%id_fline_file_type(i_fln) = iflag_vtk
       end if

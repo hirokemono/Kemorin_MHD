@@ -66,14 +66,25 @@
 !
 !
       if(my_rank .eq. 0) then
-        if(fline_prm%id_fline_file_type(i_fln) .eq. 0) then
+        write(*,*) 'output format ', fline_prm%id_fline_file_type(i_fln)
+        if(fline_prm%id_fline_file_type(i_fln) .eq. iflag_ucd) then
           call set_single_ucd_file_name(fline_prm%fline_header(i_fln),  &
      &        fline_prm%id_fline_file_type(i_fln),                      &
      &        istep_fline, file_name)
           write(*,*) 'output ', trim(file_name)
           open(id_fline_data_code, file=file_name)
 !
-          call write_global_fline(id_fline_data_code, fline_gl)
+          call write_global_fline_ucd(id_fline_data_code, fline_gl)
+          close(id_fline_data_code)
+        else if(fline_prm%id_fline_file_type(i_fln) .eq. iflag_vtk)     &
+     &        then
+          call set_single_ucd_file_name(fline_prm%fline_header(i_fln),  &
+     &        fline_prm%id_fline_file_type(i_fln),                      &
+     &        istep_fline, file_name)
+          write(*,*) 'output ', trim(file_name)
+          open(id_fline_data_code, file=file_name)
+!
+          call write_global_fline_vtk(id_fline_data_code, fline_gl)
           close(id_fline_data_code)
         else
           call add_int_suffix                                           &

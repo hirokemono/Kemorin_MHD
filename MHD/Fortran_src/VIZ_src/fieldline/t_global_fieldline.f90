@@ -13,7 +13,8 @@
 !!      subroutine raise_global_fline_connect(fline_gl)
 !!      subroutine raise_global_fline_connect(fline_gl)
 !!
-!!      subroutine write_global_fline(id_file, fline_gl)
+!!      subroutine write_global_fline_ucd(id_file, fline_gl)
+!!      subroutine write_global_fline_vtk(id_vtk, fline_gl)
 !!      subroutine write_global_fline_dx(id_file, fline_gl)
 !
       module t_global_fieldline
@@ -217,7 +218,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_global_fline(id_file, fline_gl)
+      subroutine write_global_fline_ucd(id_file, fline_gl)
 !
       integer(kind = kint), intent(in) :: id_file
       type(global_fieldline_data), intent(in) :: fline_gl
@@ -242,7 +243,61 @@
         write(id_file,'(i16,1pe16.7)') i, fline_gl%col_line_gl(i)
       end do
 !
-      end subroutine write_global_fline
+      end subroutine write_global_fline_ucd
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_global_fline_vtk(id_vtk, fline_gl)
+!
+      use m_geometry_constants
+      use m_phys_constants
+      use vtk_data_to_buffer
+      use vtk_data_IO
+!
+      integer(kind = kint), intent(in) :: id_vtk
+      type(global_fieldline_data), intent(in) :: fline_gl
+!
+      integer(kind = kint_gl) :: n8
+      integer(kind = kint) :: i, icellid
+      integer(kind = kint_gl) :: ie0(num_linear_edge)
+!
+!
+      n8 = fline_gl%ntot_nod_line_gl
+      write(id_vtk,'(a)',advance='NO') vtk_node_head(n8)
+
+      do i = 1, fline_gl%ntot_nod_line_gl
+        write(id_vtk,'(1p3e16.7)') fline_gl%xx_line_gl(1:3,i)
+      end do
+!
+      n8 = fline_gl%ntot_ele_line_gl
+      write(id_vtk,'(a)',advance='NO')                                  &
+     &               vtk_connect_head(n8, num_linear_edge)
+!
+      do i = 1, fline_gl%ntot_ele_line_gl
+        ie0(1:num_linear_edge)                                          &
+     &            = fline_gl%iedge_line_gl(1:num_linear_edge,i) - 1
+        write(id_vtk,'(a)',advance='NO')                                &
+     &              vtk_each_connect(num_linear_edge,ie0)
+      end do
+!
+      n8 = fline_gl%ntot_ele_line_gl
+      write(id_vtk,'(a)',advance='NO') vtk_cell_type_head(n8)
+!
+      icellid = vtk_cell_type(num_linear_edge)
+      do i = 1, fline_gl%ntot_ele_line_gl
+        write(id_vtk,'(a)',advance='NO') vtk_each_cell_type(icellid)
+      end do
+!
+      n8 = fline_gl%ntot_nod_line_gl
+      write(id_vtk,'(a)',advance='NO') vtk_fields_head(n8)
+      write(id_vtk,'(a)',advance='NO')                                  &
+     &    vtk_scalar_head(fline_gl%color_name_gl)
+!
+      n8 = fline_gl%ntot_nod_line_gl
+      call write_vtk_each_field                                         &
+     &   (id_vtk, n8, n_scalar, n8, fline_gl%col_line_gl)
+!
+      end subroutine write_global_fline_vtk
 !
 !  ---------------------------------------------------------------------
 !
