@@ -1,9 +1,9 @@
-//
+/*
 //  t_ctl_data_4_time_steps_c.h
 //  
 //
 //  Created by Hiroaki Matsui on 2018/05/18.
-//
+*/
 
 #ifndef t_ctl_data_4_time_steps_c_h__
 #define t_ctl_data_4_time_steps_c_h__

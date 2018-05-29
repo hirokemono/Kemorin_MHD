@@ -3,6 +3,7 @@
 
 #include "all_field_names_c.h"
 #include "control_elements_IO_c.h"
+#include "t_ctl_data_4_platforms_c.h"
 #include "t_ctl_data_4_time_steps_c.h"
 #include "t_SGS_MHD_control_c.h"
 
@@ -113,21 +114,6 @@ int read_sgs_model_control_c(FILE *fp, char buf[LENGTHBUF]){
 	return 1;
 }
 
-int read_mhd_restart_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "restart_file_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_mhd_restart_control_c %s\n", buf);
-	};
-	return 1;
-}
-int read_mhd_evo_scheme_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "time_loop_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_mhd_evo_scheme_control_c %s\n", buf);
-	};
-	return 1;
-}
-
 int read_section_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, struct visualization_controls_c *viz_ctls){
 	int icou = 0;
 	printf("alloc_section_controls_c %d\n", *viz_ctls->num_section_controls);
@@ -231,13 +217,6 @@ int read_sphere_data_control_c(FILE *fp, char buf[LENGTHBUF]){
 }
 
 
-int read_data_files_ctl_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "data_files_def") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_data_files_ctl_c %s\n", buf);
-	};
-	return 1;
-}
 int read_spherical_shell_ctl_c(FILE *fp, char buf[LENGTHBUF], struct parallel_sph_shell_control_c *shell_ctl){
 	while(find_control_end_flag_c(buf, "spherical_shell_ctl") == 0){
 		fgets(buf, LENGTHBUF, fp);
@@ -273,16 +252,12 @@ int read_mhd_control_ctl_c(FILE *fp, char buf[LENGTHBUF], struct sph_mhd_control
 	while(find_control_end_flag_c(buf, "control") == 0){
 		fgets(buf, LENGTHBUF, fp);
 		
-		if(right_begin_flag_c(buf, "time_step_ctl") > 0) *control_ctl->iflag_time_data_control = read_time_data_control_c(fp, buf, control_ctl->tctl);
-		if(right_begin_flag_c(buf, "restart_file_ctl") > 0) *control_ctl->iflag_mhd_restart_control = read_mhd_restart_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "time_loop_ctl") > 0) *control_ctl->iflag_mhd_evo_scheme_control = read_mhd_evo_scheme_control_c(fp, buf);
-	};
-	return 1;
-}
-int read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "sph_monitor_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_sph_monitor_ctl_c %s\n", buf);
+		if(right_begin_flag_c(buf, "time_step_ctl") > 0)
+			*control_ctl->iflag_time_data_control = read_time_data_control_c(fp, buf, "time_step_ctl", control_ctl->tctl);
+		if(right_begin_flag_c(buf, "restart_file_ctl") > 0) 
+			*control_ctl->iflag_mhd_restart_control = read_mhd_restart_control_c(fp, buf, "restart_file_ctl", control_ctl->mrst_ctl);
+		if(right_begin_flag_c(buf, "time_loop_ctl") > 0) 
+			*control_ctl->iflag_mhd_evo_scheme_control = read_mhd_evo_scheme_control_c(fp, buf, "time_loop_ctl", control_ctl->mevo_ctl);
 	};
 	return 1;
 }
@@ -297,7 +272,6 @@ int read_zonal_mean_control_c(FILE *fp, char buf[LENGTHBUF], struct sph_zonal_me
 			zm_ctls->zmean_psf_ctls->ctl_file_name = "NO_FILE";
 			*zm_ctls->iflag_zmean_section_controls = 1;
 		};
-	printf("*zm_ctls->iflag_zmean_section_controls %d\n", *zm_ctls->iflag_zmean_section_controls);
 		
 		if(right_file_flag_c(buf, "zonal_RMS_section_ctl", zm_ctls->zrms_psf_ctls->ctl_file_name) > 0){
 			*zm_ctls->iflag_zrms_section_controls = 1;
@@ -425,19 +399,6 @@ int write_sgs_model_control_c(FILE *fp, int level, int *iflag, struct sgs_model_
 	return level;
 }
 
-int write_mhd_restart_control_c(FILE *fp, int level, int *iflag, struct mhd_restart_control_c *mrst_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "restart_file_ctl");
-	level = write_end_flag_for_ctl_c(fp, level, "restart_file_ctl");
-	return level;
-}
-int write_mhd_evo_scheme_control_c(FILE *fp, int level, int *iflag, struct mhd_evo_scheme_control_c *mevo_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "time_loop_ctl");
-	level = write_end_flag_for_ctl_c(fp, level, "time_loop_ctl");
-	return level;
-}
-
 int write_sphere_domain_control_c(FILE *fp, int level, int *iflag){
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "num_domain_ctl");
@@ -451,12 +412,6 @@ int write_sphere_data_control_c(FILE *fp, int level, int *iflag){
 	return level;
 }
 
-int write_data_files_ctl_c(FILE *fp, int level, int *iflag){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "data_files_def");
-	level = write_end_flag_for_ctl_c(fp, level, "data_files_def");
-	return level;
-}
 int write_spherical_shell_ctl_c(FILE *fp, int level, int *iflag, struct parallel_sph_shell_control_c *shell_ctl){
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "spherical_shell_ctl");
@@ -509,25 +464,19 @@ int write_mhd_control_ctl_c(FILE *fp, int level, int *iflag, struct sph_mhd_cont
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "control");
 	
-	level = write_time_data_control_c(fp, level, control_ctl->iflag_time_data_control, control_ctl->tctl);
-	if(*control_ctl->iflag_mhd_restart_control > 0) fprintf(fp, "!\n");
-	level = write_mhd_restart_control_c(fp, level, control_ctl->iflag_mhd_restart_control, control_ctl->mrst_ctl);
-	if(*control_ctl->iflag_mhd_evo_scheme_control > 0) fprintf(fp, "!\n");
-	level = write_mhd_evo_scheme_control_c(fp, level, control_ctl->iflag_mhd_evo_scheme_control, control_ctl->mevo_ctl);
+	level = write_time_data_control_c(fp, level, "time_step_ctl", 
+                                      control_ctl->iflag_time_data_control, control_ctl->tctl);
+	level = write_mhd_restart_control_c(fp, level, *control_ctl->iflag_mhd_restart_control,
+				"restart_file_ctl", control_ctl->mrst_ctl);
+	level = write_mhd_evo_scheme_control_c(fp, level, *control_ctl->iflag_mhd_evo_scheme_control,
+				"time_loop_ctl", control_ctl->mevo_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, "control");
-	return level;
-}
-int write_sph_monitor_ctl_c(FILE *fp, int level, int *iflag){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "sph_monitor_ctl");
-	level = write_end_flag_for_ctl_c(fp, level, "sph_monitor_ctl");
 	return level;
 }
 int write_zonal_mean_control_c(FILE *fp, int level, int *iflag, struct sph_zonal_means_controls_c *zm_ctls){
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "zonal_mean_control");
-	printf("*zm_ctls->iflag_zmean_section_controls %d\n", *zm_ctls->iflag_zmean_section_controls);
 	if(*zm_ctls->iflag_zmean_section_controls > 0){
 		if(cmp_no_case_c(zm_ctls->zmean_psf_ctls->ctl_file_name, "NO_FILE") > 0){
 			level = write_begin_flag_for_ctl_c(fp, level, "zonal_mean_section_ctl");
@@ -668,18 +617,16 @@ int main(int argc,char *argv[])
 	fgets(buf, LENGTHBUF, fp);
 	if(right_begin_flag_c(buf, "MHD_control") > 0){
 		alloc_SGS_MHD_control_c(mhd_ctl);
-		
 		while(find_control_end_flag_c(buf, "MHD_control") == 0){
-			printf("go through %s\n", buf);
 			fgets(buf, LENGTHBUF, fp);
 			
-			if(right_begin_flag_c(buf, "data_files_def") > 0) *mhd_ctl->iflag_data_files_def = read_data_files_ctl_c(fp, buf);
-			if(right_begin_flag_c(buf, "org_data_files_def") > 0) *mhd_ctl->iflag_org_files_def = read_data_files_ctl_c(fp, buf);
-			if(right_begin_flag_c(buf, "new_data_files_def") > 0) *mhd_ctl->iflag_new_files_def = read_data_files_ctl_c(fp, buf);
+			if(right_begin_flag_c(buf, "data_files_def") > 0) *mhd_ctl->iflag_data_files_def = read_platform_data_control_c(fp, buf, "data_files_def", mhd_ctl->files);
+			if(right_begin_flag_c(buf, "org_data_files_def") > 0) *mhd_ctl->iflag_org_files_def = read_platform_data_control_c(fp, buf, "org_data_files_def", mhd_ctl->org_files);
+			if(right_begin_flag_c(buf, "new_data_files_def") > 0) *mhd_ctl->iflag_new_files_def = read_platform_data_control_c(fp, buf, "new_data_files_def", mhd_ctl->new_files);
 			if(right_begin_flag_c(buf, "spherical_shell_ctl") > 0) *mhd_ctl->iflag_spherical_shell_ctl = read_spherical_shell_ctl_c(fp, buf, mhd_ctl->shell_ctl);
 			if(right_begin_flag_c(buf, "model") > 0) *mhd_ctl->iflag_model = read_mhd_model_ctl_c(fp, buf, mhd_ctl->model_ctl);
 			if(right_begin_flag_c(buf, "control") > 0) *mhd_ctl->iflag_control = read_mhd_control_ctl_c(fp, buf, mhd_ctl->control_ctl);
-			if(right_begin_flag_c(buf, "sph_monitor_ctl") > 0) *mhd_ctl->iflag_sph_monitor_ctl = read_sph_monitor_ctl_c(fp, buf);
+			if(right_begin_flag_c(buf, "sph_monitor_ctl") > 0) *mhd_ctl->iflag_sph_monitor_ctl = read_sph_monitor_ctl_c(fp, buf, mhd_ctl->monitor_ctl);
 			if(right_begin_flag_c(buf, "zonal_mean_control") > 0) *mhd_ctl->iflag_zonal_mean_control = read_zonal_mean_control_c(fp, buf, mhd_ctl->zm_ctls);
 			if(right_begin_flag_c(buf, "visual_control") > 0) *mhd_ctl->iflag_visual_control = read_visual_control_c(fp, buf, mhd_ctl->viz_ctls);
 			
@@ -697,11 +644,14 @@ int main(int argc,char *argv[])
 	level = 0;
 	level = write_begin_flag_for_ctl_c(fp, level, "MHD_control");
 	
-	level = write_data_files_ctl_c(fp, level, mhd_ctl->iflag_data_files_def);
+	level = write_platform_data_control_c(fp, level, mhd_ctl->iflag_data_files_def, 
+				"data_files_def", mhd_ctl->files);
 	if(*mhd_ctl->iflag_org_files_def > 0) fprintf(fp, "!\n");
-	level = write_data_files_ctl_c(fp, level, mhd_ctl->iflag_org_files_def);
+	level = write_platform_data_control_c(fp, level, mhd_ctl->iflag_org_files_def, 
+				"org_data_files_def", mhd_ctl->org_files);
 	if(*mhd_ctl->iflag_new_files_def > 0) fprintf(fp, "!\n");
-	level = write_data_files_ctl_c(fp, level, mhd_ctl->iflag_new_files_def);
+	level = write_platform_data_control_c(fp, level, mhd_ctl->iflag_new_files_def, 
+				"new_data_files_def", mhd_ctl->new_files);
 	if(*mhd_ctl->iflag_spherical_shell_ctl > 0) fprintf(fp, "!\n");
 	level = write_spherical_shell_ctl_c(fp, level, mhd_ctl->iflag_spherical_shell_ctl, mhd_ctl->shell_ctl);
 	if(*mhd_ctl->iflag_model > 0) fprintf(fp, "!\n");
@@ -709,7 +659,7 @@ int main(int argc,char *argv[])
 	if(*mhd_ctl->iflag_control > 0) fprintf(fp, "!\n");
 	level = write_mhd_control_ctl_c(fp, level, mhd_ctl->iflag_control, mhd_ctl->control_ctl);
 	if(*mhd_ctl->iflag_sph_monitor_ctl > 0) fprintf(fp, "!\n");
-	level = write_sph_monitor_ctl_c(fp, level, mhd_ctl->iflag_sph_monitor_ctl);
+	level = write_sph_monitor_ctl_c(fp, level, mhd_ctl->iflag_sph_monitor_ctl, mhd_ctl->monitor_ctl);
 	if(*mhd_ctl->iflag_zonal_mean_control > 0) fprintf(fp, "!\n");
 	level = write_zonal_mean_control_c(fp, level, mhd_ctl->iflag_zonal_mean_control, mhd_ctl->zm_ctls);
 	if(*mhd_ctl->iflag_visual_control > 0) fprintf(fp, "!\n");

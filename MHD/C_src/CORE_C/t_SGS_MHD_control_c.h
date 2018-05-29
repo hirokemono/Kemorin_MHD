@@ -15,6 +15,8 @@
 #include "control_elements_IO_c.h"
 #include "t_ctl_data_4_platforms_c.h"
 #include "t_ctl_data_4_time_steps_c.h"
+#include "t_ctl_data_mhd_evo_scheme_c.h"
+#include "t_ctl_data_4_sph_monitor_c.h"
 
 
 struct sphere_data_control_c{
@@ -61,13 +63,6 @@ struct reference_temperature_c{
 	int iflag;
 };
 struct sgs_model_control_c{
-	int iflag;
-};
-
-struct mhd_restart_control_c{
-	int iflag;
-};
-struct mhd_evo_scheme_control_c{
 	int iflag;
 };
 
@@ -130,9 +125,6 @@ struct sph_mhd_control_control_c{
 	struct mhd_restart_control_c *mrst_ctl;
 	int *iflag_mhd_evo_scheme_control;
 	struct mhd_evo_scheme_control_c *mevo_ctl;
-};
-struct sph_monitor_control_c{
-	int iflag;
 };
 struct node_monitor_control_c{
 	int iflag;

@@ -101,7 +101,9 @@ void alloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_c
 	control_ctl->tctl = (struct time_data_control_c *) malloc(sizeof(struct time_data_control_c));
 	alloc_time_data_control_c(control_ctl->tctl);
 	control_ctl->mrst_ctl = (struct mhd_restart_control_c *) malloc(sizeof(struct mhd_restart_control_c));
+	alloc_mhd_restart_control_c(control_ctl->mrst_ctl);
 	control_ctl->mevo_ctl = (struct mhd_evo_scheme_control_c *) malloc(sizeof(struct mhd_evo_scheme_control_c));
+	alloc_mhd_evo_scheme_control_c(control_ctl->mevo_ctl);
 	return;
 }
 
@@ -112,7 +114,9 @@ void dealloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control
 	
 	dealloc_time_data_control_c(control_ctl->tctl);
 	free(control_ctl->tctl);
+	dealloc_mhd_restart_control_c(control_ctl->mrst_ctl);
 	free(control_ctl->mrst_ctl);
+	dealloc_mhd_evo_scheme_control_c(control_ctl->mevo_ctl);
 	free(control_ctl->mevo_ctl);
 	return;
 }
@@ -276,6 +280,7 @@ void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	alloc_sph_mhd_control_control_c(mhd_ctl->control_ctl);
 	
 	mhd_ctl->monitor_ctl = (struct sph_monitor_control_c *) malloc(sizeof(struct sph_monitor_control_c));
+	alloc_sph_monitor_ctl_c(mhd_ctl->monitor_ctl);
 	mhd_ctl->node_monitor_ctl = (struct node_monitor_control_c *) malloc(sizeof(struct node_monitor_control_c));
 	
 	mhd_ctl->viz_ctls = (struct visualization_controls_c *) malloc(sizeof(struct visualization_controls_c));
@@ -302,6 +307,7 @@ void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	free(mhd_ctl->zm_ctls);
 	dealloc_visualization_controls_c(mhd_ctl->viz_ctls);
 	free(mhd_ctl->viz_ctls);
+	dealloc_sph_monitor_ctl_c(mhd_ctl->monitor_ctl);
 	free(mhd_ctl->monitor_ctl);
 	free(mhd_ctl->node_monitor_ctl);
 	dealloc_sph_mhd_control_control_c(mhd_ctl->control_ctl);

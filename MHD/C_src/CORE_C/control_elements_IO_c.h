@@ -51,8 +51,8 @@ void write_file_flag_for_ctl_c(FILE *fp, int level, const char *label, const cha
 int write_begin_flag_for_ctl_c(FILE *FP, int level, const char *label);
 int write_end_flag_for_ctl_c(FILE *FP, int level, const char *label);
 
-int write_array_flag_for_ctl_c(FILE *fp, int level, char *label, int num);
-int write_end_array_flag_for_ctl_c(FILE *fp, int level, char *label);
+int write_array_flag_for_ctl_c(FILE *fp, int level, const char *label, int num);
+int write_end_array_flag_for_ctl_c(FILE *fp, int level, const char *label);
 
 int right_file_flag_c(const char buf[LENGTHBUF], const char *label, char *file_name);
 int right_begin_flag_c(const char buf[LENGTHBUF], const char *label);
@@ -73,13 +73,18 @@ void write_character_ctl_item_c(FILE *fp, int level, int maxlen,
 
 void read_integer_ctl_item_c(const char *buf, const char *label,
 			struct int_ctl_item *i_item);
-void write_ineger_ctl_item_c(FILE *fp, int level, int maxlen,
+void write_integer_ctl_item_c(FILE *fp, int level, int maxlen,
 			const char *label, struct int_ctl_item *i_item);
 
 void read_real_ctl_item_c(const char *buf, const char *label,
 			struct real_ctl_item *r_item);
 void write_real_ctl_item_c(FILE *fp, int level, int maxlen,
 			const char *label, struct real_ctl_item *r_item);
+
+void read_int2_ctl_item_c(const char *buf, const char *label,
+			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item);
+void write_int2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
+			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item);
 
 
 #endif

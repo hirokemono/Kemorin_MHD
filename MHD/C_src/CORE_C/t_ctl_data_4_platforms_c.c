@@ -1,9 +1,9 @@
-//
+/*
 //  t_ctl_data_4_platforms_c.c
 //  
 //
 //  Created by Hiroaki Matsui on 2018/05/18.
-//
+*/
 
 #include "t_ctl_data_4_platforms_c.h"
 
@@ -195,8 +195,8 @@ int write_platform_data_control_c(FILE *fp, int level, int *iflag,
     
     write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[0], files->debug_flag_c);
     
-    write_ineger_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[1], files->ndomain_c);
-    write_ineger_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[2], files->num_smp_c);
+    write_integer_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[1], files->ndomain_c);
+    write_integer_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[2], files->num_smp_c);
 	
     write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[3], files->mesh_file_prefix_c);
     write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[4], files->field_file_prefix_c);

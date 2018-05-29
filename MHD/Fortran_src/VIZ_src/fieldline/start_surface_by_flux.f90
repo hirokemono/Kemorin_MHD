@@ -162,12 +162,10 @@
      &           .and. rnd_flux(i) .le. flux_new) exit
             flux = flux_new
           end do
-!
           fline_prm%id_surf_start_fline(1,i+ist_line)                   &
      &            = fline_src%iele_start_item(1,inum)
           fline_prm%id_surf_start_fline(2,i+ist_line)                   &
      &            = fline_src%iele_start_item(2,inum)
-!
         end do
       end if
 !

@@ -1,13 +1,15 @@
-//
+/*
 //  t_ctl_data_4_time_steps_c.c
 //  
 //
 //  Created by Hiroaki Matsui on 2018/05/18.
-//
+*/
 
 #include "t_ctl_data_4_time_steps_c.h"
 
-const char label_time_data_ctl[39][KCHARA_C] = {
+#define NLBL_TIME_DATA_CTL   39
+
+const char label_time_data_ctl[NLBL_TIME_DATA_CTL][KCHARA_C] = {
     /*[ 0]*/    {"flexible_step_ctl"},
     /*[ 1]*/    {"elapsed_time_ctl"},
     
@@ -60,7 +62,7 @@ void alloc_time_data_control_c(struct time_data_control_c *tctl){
     int i;
     
     tctl->maxlen = 0;
-    for (i=0;i<39;i++){
+    for (i=0;i<NLBL_TIME_DATA_CTL;i++){
         if(strlen(label_time_data_ctl[i]) > tctl->maxlen){
             tctl->maxlen = strlen(label_time_data_ctl[i]);
         };
@@ -257,33 +259,33 @@ int write_time_data_control_c(FILE *fp, int level, const char *label,
     write_character_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[0], tctl->flexible_step_c);
     write_real_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[1], tctl->elapsed_time_c);
     
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[2], tctl->i_step_init_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[4], tctl->i_step_number_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[3], tctl->i_step_number_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[2], tctl->i_step_init_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[4], tctl->i_step_number_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[3], tctl->i_step_number_c);
     
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[5], tctl->i_step_check_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[6], tctl->i_step_rst_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[14], tctl->i_step_ucd_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[15], tctl->i_step_ucd_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[7], tctl->i_step_psf_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[8], tctl->i_step_iso_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[11], tctl->i_step_pvr_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[12], tctl->i_step_fline_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[13], tctl->i_step_lic_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[5], tctl->i_step_check_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[6], tctl->i_step_rst_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[14], tctl->i_step_ucd_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[15], tctl->i_step_ucd_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[7], tctl->i_step_psf_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[8], tctl->i_step_iso_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[11], tctl->i_step_pvr_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[12], tctl->i_step_fline_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[13], tctl->i_step_lic_c);
     
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[9], tctl->i_step_psf_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[10], tctl->i_step_iso_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[9], tctl->i_step_psf_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[10], tctl->i_step_iso_c);
     
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[16], tctl->i_step_monitor_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[17], tctl->i_step_sgs_coefs_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[18], tctl->i_step_boundary_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[19], tctl->i_diff_steps_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[16], tctl->i_step_monitor_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[17], tctl->i_step_sgs_coefs_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[18], tctl->i_step_boundary_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[19], tctl->i_diff_steps_c);
     
     write_real_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[20], tctl->dt_c);
     write_real_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[21], tctl->time_init_c);
     
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[26], tctl->start_rst_step_c);
-    write_ineger_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[27], tctl->end_rst_step_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[26], tctl->start_rst_step_c);
+    write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[27], tctl->end_rst_step_c);
     
     write_real_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[22], tctl->min_delta_t_c);
     write_real_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[23], tctl->max_delta_t_c);
