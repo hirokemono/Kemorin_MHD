@@ -108,13 +108,13 @@
 !
       do ip = 1, nprocs
         fline_tce%num_all_fline(ip,i_fln)                               &
-     &     = nint(fline_tce%flux_stack_fline(ip) / flux_4_each_line)
+     &     = nint((fline_tce%flux_stack_fline(ip)                       &
+     &      - fline_tce%flux_stack_fline(ip-1)) / flux_4_each_line)
       end do
       fline_src%num_line_local(i_fln)                                   &
-     &     = fline_tce%num_all_fline(my_rank+1,i_fln)                   &
-     &      - fline_tce%num_all_fline(my_rank,i_fln)
+     &     = fline_tce%num_all_fline(my_rank+1,i_fln)
 !
-      if(i_debug .gt. iflag_full_msg) then
+      if(i_debug .gt. 0) then
         write(my_rank+50,*)  'abs_flux_start',                          &
      &                      abs_flux_start_l, abs_flux_start
         write(my_rank+50,*)  'tot_flux_start',                          &
@@ -134,20 +134,20 @@
       ist_line = fline_prm%istack_each_field_line(i_fln-1)
       inum = ist_grp
 !
-!
       write(my_rank+50,*)  'random_seed',                               &
      &                      nRand, fline_src%num_line_local(i_fln)
       call random_seed(size = nRand)
 !
       num = fline_src%num_line_local(i_fln)
-      seed = clock
       allocate(seed(nRand))
       allocate(r_rnd(num))
       allocate(rnd_flux(num))
 !
+      if(iflag_debug .gt. 0) write(*,*)  'system_clock', num
+      call system_clock(count = clock)
+      seed = clock
+!
       if(num .gt. 0) then
-        write(*,*)  'system_clock'
-        call system_clock(count = clock)
         write(*,*)  'random_seed'
         call random_seed(put = seed)
         write(*,*)  'random_number'
@@ -172,6 +172,7 @@
       end if
 !
       deallocate(rnd_flux, r_rnd, seed)
+      call calypso_mpi_barrier
 !
       end subroutine s_start_surface_by_flux
 !

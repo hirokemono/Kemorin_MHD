@@ -236,6 +236,7 @@
       ray_left = 0.0
 !
       iflag_notrace = 1
+
       iflag_lic = 1
       iele =    isurf_org(1)
       isf_org = isurf_org(2)
@@ -330,9 +331,12 @@
 !
 !   3d lic calculation at current xx position
 !   if sampling by fixed step size
-          ray_len = norm2(xx_tgt - xx_st)
-          if(lic_p%iflag_vr_sample_mode .eq. 0) then
+          ray_len = sqrt( (xx_tgt(1) - xx_st(1))**2                     &
+       &                + (xx_tgt(2) - xx_st(2))**2                     &
+       &                + (xx_tgt(3) - xx_st(3))**2)
+          if(iflag_fixsize .eq. 1) then
             ray_len_left = ray_left + ray_len
+
             xx_lic_last = xx_st
             step_cnt = 0
             do while(ray_len_left .gt. zero)
@@ -355,10 +359,12 @@
               &      xyz_min_gl, xyz_max_gl, iflag_lic, c_tgt(1), grad_tgt)
 
   !   normalize gradient
-              grad_len = norm2(grad_tgt(1:3))
-              if(grad_len .ne. 0.0) then
-                grad_tgt(1:3) = grad_tgt(1:3) / norm2(grad_tgt(1:3))
-              endif
+                grad_len = sqrt(grad_tgt(1)*grad_tgt(1)                 &
+     &                        + grad_tgt(2)*grad_tgt(2)                 &
+     &                        + grad_tgt(3)*grad_tgt(3))
+                if(grad_len .ne. 0.0) then
+                  grad_tgt(1:3) = grad_tgt(1:3) / grad_len
+                endif
 
               call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_lic_last, xx_lic,           &
               &        c_tgt(1), grad_tgt, color_param, step_size, rgba_ray)
@@ -391,9 +397,11 @@
             ave_ray_len = ray_total_len / icount_line_cur_ray
 !
 !   normalize gradient
-            grad_len = norm2(grad_tgt(1:3))
+            grad_len = sqrt(grad_tgt(1)*grad_tgt(1)                     &
+     &                    + grad_tgt(2)*grad_tgt(2)                     &
+     &                    + grad_tgt(3)*grad_tgt(3))
             if(grad_len .ne. 0.0) then
-              grad_tgt(1:3) = grad_tgt(1:3) / norm2(grad_tgt(1:3))
+              grad_tgt(1:3) = grad_tgt(1:3) / grad_len
             endif
 
             call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_st, xx_tgt,                &
