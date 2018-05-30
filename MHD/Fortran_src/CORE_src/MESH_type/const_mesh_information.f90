@@ -124,22 +124,28 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
 !
-!
+!     initial const info in node and element data structure
+!     like center of element
+!     also initial smp processor address depends on multiprocessing
        if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
       call const_nod_ele_infos(my_rank, mesh%node, mesh%ele,            &
      &    group%nod_grp, group%ele_grp, group%surf_grp)
 !
+!     allocate and set node info for surface and edge
       if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
       call set_local_element_info(ele_mesh%surf, ele_mesh%edge)
 !
+!     set connectivity and geometry for surface and edge
       if (iflag_debug.gt.0) write(*,*) 'set_surface_and_edge'
       call set_surface_and_edge                                         &
      &   (mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge)
 !
+!     set connection relation of element and surface
       if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
       call const_ele_list_4_surface(mesh%ele, ele_mesh%surf)
 !
-!
+!     connectivity for surface group data and node info for each of them
+!     also the smp info for surface group data
       if (iflag_debug.gt.0) write(*,*) 'set_node_4_surf_group'
       call set_node_4_surf_group(mesh%node, mesh%ele,                   &
      &    ele_mesh%surf, group%surf_grp, group%surf_nod_grp)
@@ -150,7 +156,7 @@
 !     &     (my_rank, group%surf_grp%num_grp, group%surf_nod_grp)
 !      end if
 !
-!
+!     set surface and element group conectivity
        if (iflag_debug.eq.1) write(*,*) 'const_group_connectiviy_1st'
       call const_group_type_info                                        &
      &   (mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,            &
