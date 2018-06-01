@@ -54,7 +54,7 @@
      &   (field_tmp_ctl%num, field_ctl, field_tmp_ctl)
       call dealloc_control_array_c3(field_ctl)
 !
-      field_ctl%num = field_ctl%num + 1
+      field_ctl%num = field_tmp_ctl%num + 1
       call alloc_control_array_c3(field_ctl)
       call copy_field_ctl                                               &
      &   (field_tmp_ctl%num, field_tmp_ctl, field_ctl)
