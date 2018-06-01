@@ -173,7 +173,7 @@
       use m_2nd_pallalel_vector
 !
       use calypso_SR_int
-      use solver_SR_int
+      use solver_SR_type
       use select_copy_from_recv
 !
       integer(kind = kint), intent(in) :: NP_dest
@@ -200,11 +200,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'solver_send_recv_i'
       if (comm_dest%num_neib.gt.0) then
-        call solver_send_recv_i                                         &
-     &                (NP_dest, comm_dest%num_neib, comm_dest%id_neib,  &
-     &                 comm_dest%istack_import, comm_dest%item_import,  &
-     &                 comm_dest%istack_export, comm_dest%item_export,  &
-     &                 ivec_2nd(1) )
+        call SOLVER_SEND_RECV_int_type                                  &
+     &                (NP_dest, comm_dest, ivec_2nd(1) )
       end if
 !
       inod_global_itp(1:NP_dest) = ivec_2nd(1:NP_dest)
