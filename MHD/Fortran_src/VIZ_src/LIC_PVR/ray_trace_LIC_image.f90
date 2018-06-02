@@ -334,7 +334,7 @@
           ray_len = sqrt( (xx_tgt(1) - xx_st(1))**2                     &
        &                + (xx_tgt(2) - xx_st(2))**2                     &
        &                + (xx_tgt(3) - xx_st(3))**2)
-          if(iflag_fixsize .eq. 1) then
+          if(lic_p%iflag_vr_sample_mode .eq. 0) then
             ray_len_left = ray_left + ray_len
 
             xx_lic_last = xx_st
