@@ -56,6 +56,7 @@
       use sum_normal_4_surf_group
       use set_parallel_file_name
       use set_table_4_RHS_assemble
+      use extend_comm_table
 !
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
@@ -124,6 +125,12 @@
       call set_belonged_ele_and_next_nod                                &
      &   (mesh, next_tbl%neib_ele, next_tbl%neib_nod)
 !
+      call extend_node_comm_table                                       &
+     &   (mesh%nod_comm, mesh%node, next_tbl%neib_nod)
+!
+      call extend_ele_comm_table                                        &
+     &   (mesh%nod_comm, ele_mesh%ele_comm, mesh%node, mesh%ele,        &
+     &    next_tbl%neib_ele, next_tbl%neib_nod)
       end subroutine initialize_sleeve_extend
 !
 ! ----------------------------------------------------------------------
