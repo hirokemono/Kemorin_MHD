@@ -38,6 +38,9 @@
       type(node_data), intent(in) :: node
       type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
+      type(communication_table) :: new_comm
+      type(node_data) :: new_node
+      type(parallel_double_numbering) :: dbl_id2
 !>      Structure of double numbering
       type(parallel_double_numbering) :: dbl_id1
 !
@@ -57,14 +60,24 @@
       integer(kind = kint), allocatable :: ntot_recv_added
       integer(kind = kint), allocatable :: inod_recv_added(:)
       integer(kind = kint), allocatable :: irank_recv_added(:)
-      integer(kind = kint), allocatable :: iflag_recv_2_del(:)
+      integer(kind = kint), allocatable :: inod_new_id(:)
       integer(kind = kint_gl), allocatable :: inod_gl_recv_added(:)
       real(kind = kreal), allocatable :: xx_recv_added(:,:)
 !
+      integer(kind = kint), allocatable :: iflag_recv(:)
+      integer(kind = kint), allocatable :: iflag_send(:)
       integer(kind = kint), allocatable :: iflag_node(:)
       integer(kind = kint), allocatable :: iflag_ele(:)
 !
-      integer(kind = kint) :: inum, inod, i, ist, ied, icou
+      integer(kind = kint), allocatable :: inod_import_new(:)
+      integer(kind = kint), allocatable :: irank_import_new(:)
+      integer(kind = kint), allocatable :: inod_export_new(:)
+      integer(kind = kint), allocatable :: irank_export_new(:)
+!
+      integer(kind = kint), allocatable :: inod_lc_check(:)
+      integer(kind = kint), allocatable :: irank_lc_check(:)
+!
+      integer(kind = kint) :: inum, inod, i, ist, ied, icou, ip, num
       integer(kind = kint) :: jnum, jnod, j, jst, jed
 !
 !
@@ -155,7 +168,7 @@
 !
       allocate(inod_recv_added(ntot_recv_added))
       allocate(irank_recv_added(ntot_recv_added))
-      allocate(iflag_recv_2_del(ntot_recv_added))
+      allocate(inod_new_id(ntot_recv_added))
       allocate(inod_gl_recv_added(ntot_recv_added))
       allocate(xx_recv_added(ntot_recv_added,3))
 !
@@ -166,7 +179,7 @@
       inod_recv_added(1:ntot_recv_added) =     0
       irank_recv_added(1:ntot_recv_added) =    0
       inod_gl_recv_added(1:ntot_recv_added) =  0
-      iflag_recv_2_del(1:ntot_recv_added) =    0
+      inod_new_id(1:ntot_recv_added) =    0
 !$omp end parallel workshare
 !
       call added_geometry_send_recv(nod_comm,                           &
@@ -188,38 +201,300 @@
         ied = istack_recv_added(i)
 !
         do inum = ist, ied
+          if(inod_new_id(inum) .lt. 0) cycle
           if(irank_recv_added(inum) .eq. nod_comm%id_neib(i)) cycle
 !
           do j = 1, nod_comm%num_neib
-            if(irank_recv_added(inum) .ne. nod_comm%id_neib(j)) cycle
+            if(i .eq. j) cycle
 !
-            jst = istack_recv_added(i-1) + 1
-            jed = istack_recv_added(i)
+            jst = istack_recv_added(j-1) + 1
+            jed = istack_recv_added(j)
             do jnum = jst, jed
-              if(inod_recv_added(jnum) .eq. inod_recv_added(inum)) then
-                iflag_recv_2_del(inum) = 1
+              if(irank_recv_added(jnum) .eq. irank_recv_added(inum)     &
+     &         .and. inod_recv_added(jnum).eq.inod_recv_added(inum)     &
+     &         .and. inod_new_id(jnum).eq.0) then
+                inod_new_id(inum) = -1
                 exit
               end if
             end do
-            if(iflag_recv_2_del(inum) .gt. 0) exit
+            if(inod_new_id(inum) .lt. 0) exit
           end do
-          if(iflag_recv_2_del(inum) .gt. 0) exit
         end do
       end do
 !
-      do inum = 1, ntot_recv_added
-        if(iflag_recv_2_del(inum) .gt. 0) write(*,*) 'recv delete', my_rank, &
-     &      inum, irank_recv_added(inum), inod_recv_added(inum)
+      do i = 1, nod_comm%num_neib
+        ist = istack_recv_added(i-1) + 1
+        ied = istack_recv_added(i)
+!
+        do inum = ist, ied
+          if(inod_new_id(inum) .lt. 0) cycle
+          if(irank_recv_added(inum) .eq. nod_comm%id_neib(i)) cycle
+!
+          do jnum = 1, nod_comm%istack_import(nod_comm%num_neib)
+            jnod = nod_comm%item_import(jnum)
+            if(dbl_id1%irank_home(jnod) .eq. irank_recv_added(inum)     &
+     &       .and. dbl_id1%inod_local(jnod).eq.inod_recv_added(inum)    &
+     &       ) then
+              inod_new_id(inum) = -1
+              exit
+            end if
+          end do
+        end do
       end do
+!
+!
+!      do i = 1, nod_comm%num_neib
+!        ist = nod_comm%istack_import(i-1) + 1
+!        ied = nod_comm%istack_import(i)
+!        write(120+my_rank,*) 'import', nod_comm%id_neib(i), ist, ied
+!
+!        do inum = ist, ied
+!          inod = nod_comm%item_import(inum)
+!          write(120+my_rank,*) inum, inod,        &
+!     &        dbl_id1%irank_home(inod), dbl_id1%inod_local(inod), '  '
+!        end do
+!      end do
+!      do i = 1, nod_comm%num_neib
+!        ist = istack_recv_added(i-1) + 1
+!        ied = istack_recv_added(i)
+!        write(120+my_rank,*) 'istack_recv_added',   &
+!     &                        nod_comm%id_neib(i), ist, ied
+!
+!        do inum = ist, ied
+!          write(120+my_rank,*) inum, irank_recv_added(inum),   &
+!     &           inod_recv_added(inum), inod_new_id(inum) 
+!        end do
+!      end do
+!
 !
       call added_nod_id_send_recv(nod_comm,                             &
-     &    istack_recv_added, ntot_recv_added, iflag_recv_2_del,         &
+     &    istack_recv_added, ntot_recv_added, inod_new_id,              &
      &    istack_send_added, ntot_send_added, iflag_send_2_del)
 !
-      do inum = 1, ntot_send_added
-        if(iflag_send_2_del(inum) .gt. 0) write(*,*) 'send delete', my_rank, &
-     &      inum, irank_send_added(inum), inod_send_added(inum)
+!      do inum = 1, ntot_recv_added
+!        if(inod_new_id(inum) .lt. 0) write(*,*) 'recv delete', my_rank,&
+!     &      inum, irank_recv_added(inum), inod_recv_added(inum)
+!      end do
+!      do inum = 1, ntot_send_added
+!        if(iflag_send_2_del(inum) .lt. 0) write(*,*) 'send delete',    &
+!     &    my_rank, inum, irank_send_added(inum), inod_send_added(inum)
+!      end do
+!
+!
+      new_node%internal_node = node%internal_node
+      new_node%numnod = node%numnod
+      do inum = 1, ntot_recv_added
+        if(inod_new_id(inum) .eq. 0) then
+          new_node%numnod = new_node%numnod + 1
+        end if
       end do
+!
+      call alloc_node_geometry_base(new_node)
+      call alloc_double_numbering(new_node%numnod, dbl_id2)
+!
+!$omp parallel do
+      do inod = 1, node%numnod
+        new_node%inod_global(inod) = node%inod_global(inod)
+        new_node%xx(inod,1) = node%xx(inod,1)
+        new_node%xx(inod,2) = node%xx(inod,2)
+        new_node%xx(inod,3) = node%xx(inod,3)
+        dbl_id2%inod_local(inod) = dbl_id1%inod_local(inod)
+        dbl_id2%irank_home(inod) = dbl_id1%irank_home(inod)
+      end do
+!$omp end parallel do
+!
+      icou = node%numnod
+      do inum = 1, ntot_recv_added
+        if(inod_new_id(inum) .eq. 0) then
+          icou = icou + 1
+          inod_new_id(inum) = icou
+          new_node%inod_global(icou) = inod_gl_recv_added(inum)
+          new_node%xx(icou,1) = xx_recv_added(inum,1)
+          new_node%xx(icou,2) = xx_recv_added(inum,2)
+          new_node%xx(icou,3) = xx_recv_added(inum,3)
+          dbl_id2%inod_local(icou) = inod_recv_added(inum)
+          dbl_id2%irank_home(icou) = irank_recv_added(inum)
+        end if
+      end do
+!
+!      write(100+my_rank,*) new_node%numnod, &
+!     &             new_node%internal_node, node%numnod
+!      do inod = 1, new_node%numnod
+!        write(100+my_rank,*) inod, dbl_id2%inod_local(inod),  &
+!     &         dbl_id2%irank_home(inod), new_node%inod_global(inod) 
+!      end do
+!
+      allocate(iflag_recv(0:nprocs-1))
+      allocate(iflag_send(0:nprocs-1))
+      iflag_recv(0:nprocs-1) = 0
+      iflag_send(0:nprocs-1) = 0
+!
+      do inum = 1, ntot_recv_added
+        ip = irank_recv_added(inum)
+        iflag_recv(ip) = 1
+      end do
+!
+      do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i)
+        iflag_recv(ip) = -1
+      end do
+!
+      do ip = 0, nprocs-1
+        call MPI_Scatter(iflag_recv(0), ione, CALYPSO_INTEGER,          &
+     &                   iflag_send(ip), ione, CALYPSO_INTEGER,         &
+     &                   ip, CALYPSO_COMM, ierr_MPI)
+      end do
+!
+
+      new_comm%num_neib = 0
+      do ip = 0, nprocs-1
+        if(iflag_recv(ip).ne.0 .or. iflag_send(ip).ne.0) then
+          new_comm%num_neib = new_comm%num_neib + 1
+        end if
+      end do
+!
+!
+      call allocate_type_comm_tbl_num(new_comm)
+!
+      new_comm%id_neib(1:nod_comm%num_neib)                             &
+     &              = nod_comm%id_neib(1:nod_comm%num_neib)
+      icou = nod_comm%num_neib
+      do i = 0, nprocs-1
+        ip = mod(i+my_rank,nprocs)
+        if(iflag_recv(ip).gt.0 .or. iflag_send(ip).gt.0) then
+          icou = icou + 1
+          new_comm%id_neib(i) = ip
+        end if
+      end do
+!
+      do i = 1, nod_comm%num_neib
+        new_comm%num_import(i)                                          &
+     &       = nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
+      end do
+      do i = nod_comm%num_neib+1, new_comm%num_neib
+        new_comm%num_import(i) = 0
+      end do
+      do i = 1, new_comm%num_neib
+        ip = new_comm%id_neib(i)
+        do inum = 1, ntot_recv_added
+          if(irank_recv_added(inum).eq.ip                               &
+     &         .and. inod_new_id(inum).gt. 0) then
+            new_comm%num_import(i) = new_comm%num_import(i) + 1
+          end if
+        end do
+      end do
+!
+      call SOLVER_SEND_RECV_num_type                                    &
+     &   (new_comm, new_comm%num_import, new_comm%num_export)
+!
+      do i = 1, new_comm%num_neib
+        new_comm%istack_import(i) = new_comm%istack_import(i-1)         &
+     &                             + new_comm%num_import(i)
+        new_comm%istack_export(i) = new_comm%istack_export(i-1)         &
+     &                             + new_comm%num_export(i)
+      end do
+      new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
+      new_comm%ntot_export = new_comm%istack_export(new_comm%num_neib)
+!
+      call allocate_type_comm_tbl_item(new_comm)
+!
+      do i = 1, nod_comm%num_neib
+        ist = new_comm%istack_import(i-1)
+        jst = nod_comm%istack_import(i-1)
+        num = nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
+        do inum = 1, num
+          new_comm%item_import(ist+inum)                                &
+     &       = nod_comm%item_import(jst+inum)
+        end do
+!
+        ist = new_comm%istack_export(i-1)
+        jst = nod_comm%istack_export(i-1)
+        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
+        do inum = 1, num
+          new_comm%item_export(ist+inum)                                &
+     &       = nod_comm%item_export(jst+inum)
+        end do
+      end do
+!
+      do i = 1, new_comm%num_neib
+        ip = new_comm%id_neib(i)
+        icou = new_comm%istack_import(i-1)                              &
+     &        + nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
+        do inum = 1, ntot_recv_added
+          if(irank_recv_added(inum).eq.ip                               &
+     &         .and. inod_new_id(inum).gt.0) then
+            icou = icou + 1
+            new_comm%item_import(icou) = inod_new_id(inum)
+          end if
+        end do
+      end do
+!
+      allocate(inod_import_new(new_comm%ntot_import))
+      allocate(irank_import_new(new_comm%ntot_import))
+      inod_import_new = 0
+      irank_import_new = -1
+!
+      do inum = 1, new_comm%ntot_import
+        inod =  new_comm%item_import(inum)
+        inod_import_new(inum) =  dbl_id2%inod_local(inod)
+        irank_import_new(inum) = dbl_id2%irank_home(inod)
+      end do
+!
+      allocate(inod_export_new(new_comm%ntot_export))
+      allocate(irank_export_new(new_comm%ntot_export))
+      inod_export_new = 0
+      irank_export_new = -1
+!
+      call added_nod_id_send_recv(new_comm,                             &
+     &  new_comm%istack_import, new_comm%ntot_import, inod_import_new,  &
+     &  new_comm%istack_export, new_comm%ntot_export, inod_export_new)
+      call added_nod_id_send_recv(new_comm,                             &
+     &  new_comm%istack_import, new_comm%ntot_import, irank_import_new, &
+     &  new_comm%istack_export, new_comm%ntot_export, irank_export_new)
+!
+      do i = 1, new_comm%num_neib
+        ip = new_comm%id_neib(i)
+        ist = new_comm%istack_export(i-1) + 1
+        ied = new_comm%istack_export(i)
+        do inum = ist, ied
+          if(irank_export_new(inum) .eq. my_rank) then
+            new_comm%item_export(inum) = inod_export_new(inum)
+          end if
+        end do
+      end do
+!
+!
+      allocate(inod_lc_check(new_node%numnod))
+      allocate(irank_lc_check(new_node%numnod))
+      inod_lc_check =   0
+      irank_lc_check = -1
+!
+      do inod = 1, new_node%internal_node
+        inod_lc_check(inod) = inod
+        irank_lc_check(inod) = my_rank
+      end do
+!
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (new_node%numnod, new_comm, inod_lc_check)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (new_node%numnod, new_comm, irank_lc_check)
+!
+      write(50+my_rank,*) 'error list'
+      do inod = new_node%internal_node+1, new_node%numnod
+        if(dbl_id2%irank_home(inod) .ne. irank_lc_check(inod)           &
+     &    .and. dbl_id2%inod_local(inod) .ne. inod_lc_check(inod)) then
+          write(50+my_rank,*) inod, my_rank,                            &
+     &     dbl_id2%irank_home(inod), irank_lc_check(inod),              &
+     &     dbl_id2%inod_local(inod), inod_lc_check(inod)
+        end if
+      end do
+      close(50+my_rank)
+!
+      write(*,*) 'iflag_recv', my_rank, iflag_recv
+      write(*,*) 'iflag_send', my_rank, iflag_send
+      write(*,*) 'num_neib', my_rank,                                   &
+     &       nod_comm%num_neib, new_comm%num_neib
+      call calypso_mpi_barrier
 !
       end subroutine extend_node_comm_table
 !
@@ -462,8 +737,6 @@
             end do
           end do
         end if
-          if(iflag_recv_2_del(i) .eq. 0) write(*,*) 'ie_send_added(iele,1)', my_rank, i, &
-    &               irank_recv_added(i), iele_recv_added(i)
       end do
 !
       call added_nod_id_send_recv(nod_comm,                             &

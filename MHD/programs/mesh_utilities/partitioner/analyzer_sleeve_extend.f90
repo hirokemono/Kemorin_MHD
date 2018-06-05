@@ -127,10 +127,12 @@
 !
       call extend_node_comm_table                                       &
      &   (mesh%nod_comm, mesh%node, next_tbl%neib_nod)
+      return
 !
       call extend_ele_comm_table                                        &
      &   (mesh%nod_comm, ele_mesh%ele_comm, mesh%node, mesh%ele,        &
      &    next_tbl%neib_ele, next_tbl%neib_nod)
+!
       end subroutine initialize_sleeve_extend
 !
 ! ----------------------------------------------------------------------
