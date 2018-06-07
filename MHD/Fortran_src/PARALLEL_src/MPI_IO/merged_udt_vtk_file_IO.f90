@@ -75,7 +75,8 @@
       call link_nnod_stacks_2_ucd(nprocs, node, ele, m_ucd)
 !
       call alloc_double_numbering(node%numnod, dbl_id1)
-      call set_para_double_numbering(nod_comm, dbl_id1)
+      call set_para_double_numbering                                    &
+     &   (node%internal_node, nod_comm, dbl_id1)
 !
       call update_ele_by_double_address                                 &
      &   (node%istack_internod, dbl_id1, m_ucd, ucd)

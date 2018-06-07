@@ -31,6 +31,9 @@
       type(element_geometry), save :: ele_mesh
       type(next_nod_ele_table), save :: next_tbl
 !
+      type(mesh_geometry), save :: newmesh
+      type(mesh_groups), save :: newgroup
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -57,6 +60,7 @@
       use set_parallel_file_name
       use set_table_4_RHS_assemble
       use extend_comm_table
+      use extend_group_table
 !
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
@@ -126,12 +130,16 @@
      &   (mesh, next_tbl%neib_ele, next_tbl%neib_nod)
 !
       call extend_node_comm_table                                       &
-     &   (mesh%nod_comm, mesh%node, next_tbl%neib_nod)
-      return
+     &   (mesh%nod_comm, mesh%node, next_tbl%neib_nod,                  &
+     &    newmesh%nod_comm, newmesh%node)
 !
       call extend_ele_comm_table                                        &
      &   (mesh%nod_comm, ele_mesh%ele_comm, mesh%node, mesh%ele,        &
-     &    next_tbl%neib_ele, next_tbl%neib_nod)
+     &    next_tbl%neib_ele, next_tbl%neib_nod,                         &
+     &    newmesh%nod_comm, newmesh%node, newmesh%ele)
+      call s_extend_group_table(newmesh%nod_comm, group, newgroup)
+!
+      call mpi_output_mesh(distribute_mesh_file, newmesh, newgroup)
 !
       end subroutine initialize_sleeve_extend
 !

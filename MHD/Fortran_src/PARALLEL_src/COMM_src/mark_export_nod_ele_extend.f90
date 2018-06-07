@@ -19,6 +19,7 @@
       module mark_export_nod_ele_extend
 !
       use m_precision
+      use calypso_mpi
 !
       implicit none
 !
@@ -84,14 +85,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mark_used_ele_of_export(id_neib, num_neib,             &
-     &         istack_import, item_import, istack_export, item_export,  &
+     &         istack_export_new, item_export_new, istack_export, item_export,  &
      &         numnod, ntot_ele, istack_4_node, iele_4_node,            &
      &         numele, nnod_4_ele, ie, iflag_node, iflag_ele)
 !
       integer(kind = kint), intent(in) :: id_neib, num_neib
-      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
+      integer(kind = kint), intent(in) :: istack_export_new(0:num_neib)
       integer(kind = kint), intent(in)                                  &
-     &                     :: item_import(istack_import(num_neib))
+     &                 :: item_export_new(istack_export_new(num_neib))
       integer(kind = kint), intent(in) :: istack_export(0:num_neib)
       integer(kind = kint), intent(in)                                  &
      &                     :: item_export(istack_export(num_neib))
@@ -118,10 +119,10 @@
       iflag_ele(1:numele) = 0
 !$omp end parallel workshare
 !
-      ist = istack_import(id_neib-1) + 1
-      ied = istack_import(id_neib)
+      ist = istack_export_new(id_neib-1) + 1
+      ied = istack_export_new(id_neib)
       do inum = ist, ied
-        inod = item_import(inum)
+        inod = item_export_new(inum)
         iflag_node(inod) = 1
       end do
 !
@@ -129,7 +130,13 @@
       ied = istack_export(id_neib)
       do inum = ist, ied
         inod = item_export(inum)
-        iflag_node(inod) = 1
+        iflag_node(inod) = 0
+      end do
+!
+      ist = istack_export(id_neib-1) + 1
+      ied = istack_export(id_neib)
+      do inum = ist, ied
+        inod = item_export(inum)
         jst = istack_4_node(inod-1) + 1
         jed = istack_4_node(inod)
         do jnum = jst, jed
@@ -137,17 +144,20 @@
           iflag_ele(jele) = 1
         end do
       end do
+      return
 !
 !$omp parallel do private(jele,k1,inod,iflag)
       do jele = 1, numele
         if(iflag_ele(jele) .eq. 0) cycle
 !
-        iflag = 1
+        iflag = 0
         do k1 = 1, nnod_4_ele
           inod = ie(jele,k1)
-          iflag = iflag * iflag_node(inod)
+          if(my_rank .eq. 0 .and. jele .eq. 1)  &
+     &         write(*,*) 'test', k1, inod, iflag_node(inod)
+          if(iflag_node(inod) .gt. 0) iflag = 1
         end do
-        if(iflag .gt. 0) iflag_ele(jele) = 0
+        iflag_ele(jele) = iflag_ele(jele) * iflag
       end do
 !$omp end parallel do
 !
