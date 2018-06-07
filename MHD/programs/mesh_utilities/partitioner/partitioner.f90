@@ -166,15 +166,18 @@
       &   data_field_vec%d_ucd,                   &
       &   particles, num_particle, time_cost)
 
-      write(*,100) 'time cost', time_cost(1:num_domain)
-100   FORMAT(' ',F7.2)
 !cal partition table for new partition
       allocate(partition_tbl(num_domain))
       call cal_partition_tbl(time_cost, num_domain, partition_tbl)
-      write(*,*) 'partition tbl', partition_tbl(1:num_domain)
+
       allocate(part_num_node(num_domain))
       part_num_node(:) = partition_tbl(:)*org_mesh%node%numnod
-      write(*,*) 'target partition num', part_num_node(:)
+
+      if(iflag_part_debug .gt. 0) then
+        write(*,*) 'time cost', time_cost(1:num_domain)
+        write(*,*) 'partition tbl', partition_tbl(1:num_domain)
+        write(*,*) 'target partition num', part_num_node(:)
+      end if
 
 !      call allocate_dim_part_tbl(part_dim_tbl, ndivide_eb)
 !      call cal_part_dim_tbl(num_domain, ndivide_eb, partition_tbl, part_dim_tbl)
