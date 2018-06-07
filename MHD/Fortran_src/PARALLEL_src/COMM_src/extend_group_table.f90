@@ -53,8 +53,8 @@
 !
       call extend_node_group(new_ele%numele, new_ele_comm,              &
      &    org_group%ele_grp, new_group%ele_grp)
-!
-      call copy_surface_group(org_group%surf_grp, new_group%surf_grp)
+      call extend_surf_group(new_ele%numele, new_ele_comm,              &
+     &    org_group%surf_grp, new_group%surf_grp)
 !
       end subroutine s_extend_group_table
 !
@@ -156,6 +156,112 @@
       end do
 !
       end subroutine extend_node_group
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine extend_surf_group                                      &
+     &         (nnod, new_comm, old_sf_grp, new_sf_grp)
+!
+      use solver_SR_type
+!
+      integer(kind = kint) :: nnod
+      type(communication_table), intent(in) :: new_comm
+      type(surface_group_data), intent(in) :: old_sf_grp
+      type(surface_group_data), intent(inout) :: new_sf_grp
+!
+      integer(kind = kint) :: iflag_node(nnod)
+!
+      integer(kind = kint) :: igrp, inum, inod
+      integer(kind = kint) :: ist, ied, jst, num, icou
+!
+!
+      new_sf_grp%num_grp = old_sf_grp%num_grp
+      call allocate_sf_grp_type_num(new_sf_grp)
+!
+      if (new_sf_grp%num_grp .gt. 0) then
+        new_sf_grp%grp_name(1:old_sf_grp%num_grp)                       &
+     &          = old_sf_grp%grp_name(1:old_sf_grp%num_grp)
+      end if
+!
+      do igrp = 1, old_sf_grp%num_grp
+!$omp parallel workshare
+        iflag_node(1:nnod) = 0
+!$omp end parallel workshare
+!
+        ist = old_sf_grp%istack_grp(igrp-1) + 1
+        ied = old_sf_grp%istack_grp(igrp)
+        do inum = ist, ied
+          inod = old_sf_grp%item_sf_grp(1,inum)
+          iflag_node(inod) = old_sf_grp%item_sf_grp(2,inum)
+        end do
+!
+        call SOLVER_SEND_RECV_int_type(nnod, new_comm, iflag_node)
+!
+        do inum = ist, ied
+          inod = old_sf_grp%item_sf_grp(1,inum)
+          iflag_node(inod) = 0
+        end do
+!
+        new_sf_grp%istack_grp(igrp) = new_sf_grp%istack_grp(igrp-1)     &
+     &    + old_sf_grp%istack_grp(igrp) - old_sf_grp%istack_grp(igrp-1)
+        do inum = 1, new_comm%ntot_import
+          inod = new_comm%item_import(inum)
+          if(iflag_node(inod) .gt. 0) then
+            new_sf_grp%istack_grp(igrp)                                 &
+     &           = new_sf_grp%istack_grp(igrp) + 1
+          end if
+        end do
+      end do
+!
+      new_sf_grp%num_item = new_sf_grp%istack_grp(new_sf_grp%num_grp)
+      call allocate_sf_grp_type_item(new_sf_grp)
+!
+      do igrp = 1, old_sf_grp%num_grp
+        ist = old_sf_grp%istack_grp(igrp-1)
+        num = old_sf_grp%istack_grp(igrp)                               &
+     &       - old_sf_grp%istack_grp(igrp-1)
+!
+        jst = new_sf_grp%istack_grp(igrp-1)
+        do inum = 1, num
+          new_sf_grp%item_sf_grp(1,inum+jst)                            &
+     &           = old_sf_grp%item_sf_grp(1,inum+ist)
+          new_sf_grp%item_sf_grp(2,inum+jst)                            &
+     &           = old_sf_grp%item_sf_grp(2,inum+ist)
+        end do
+      end do
+!
+      do igrp = 1, old_sf_grp%num_grp
+!$omp parallel workshare
+        iflag_node(1:nnod) = 0
+!$omp end parallel workshare
+!
+        ist = old_sf_grp%istack_grp(igrp-1) + 1
+        ied = old_sf_grp%istack_grp(igrp)
+        do inum = ist, ied
+          inod = old_sf_grp%item_sf_grp(1,inum)
+          iflag_node(inod) = old_sf_grp%item_sf_grp(2,inum)
+        end do
+!
+        call SOLVER_SEND_RECV_int_type(nnod, new_comm, iflag_node)
+!
+        do inum = ist, ied
+          inod = old_sf_grp%item_sf_grp(1,inum)
+          iflag_node(inod) = 0
+        end do
+!
+        icou = new_sf_grp%istack_grp(igrp-1)                            &
+     &    + old_sf_grp%istack_grp(igrp) - old_sf_grp%istack_grp(igrp-1)
+        do inum = 1, new_comm%ntot_import
+          inod = new_comm%item_import(inum)
+          if(iflag_node(inod) .gt. 0) then
+            icou = icou + 1
+            new_sf_grp%item_sf_grp(1,icou) = inod
+            new_sf_grp%item_sf_grp(2,icou) = iflag_node(inod)
+          end if
+        end do
+      end do
+!
+      end subroutine extend_surf_group
 !
 !  ---------------------------------------------------------------------
 !
