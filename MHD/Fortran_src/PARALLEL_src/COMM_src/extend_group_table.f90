@@ -7,7 +7,8 @@
 !> @brief Mark node and element to extend export table
 !!
 !!@verbatim
-!!      subroutine s_extend_group_table(new_comm, org_grp, new_grp)
+!!      subroutine s_extend_group_table                                 &
+!!     &        (new_comm, new_node, org_group, new_group)
 !!@endverbatim
 !
       module extend_group_table
@@ -18,6 +19,7 @@
       use calypso_mpi
 !
       use t_mesh_data
+      use t_geometry_data
       use t_group_data
       use t_comm_table
 !
@@ -29,26 +31,135 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_extend_group_table(new_comm, org_grp, new_grp)
+      subroutine s_extend_group_table                                   &
+     &        (new_comm, new_node, org_group, new_group)
 !
       use copy_mesh_structures
 !
       type(communication_table), intent(in) :: new_comm
-      type(mesh_groups), intent(in) :: org_grp
-      type(mesh_groups), intent(inout) :: new_grp
+      type(node_data), intent(in) :: new_node
+      type(mesh_groups), intent(in) :: org_group
+      type(mesh_groups), intent(inout) :: new_group
 !
 !
       call extend_node_group                                            &
-     &   (new_comm, org_grp%nod_grp, new_grp%nod_grp)
+     &   (new_comm, new_node, org_group%nod_grp, new_group%nod_grp)
 !
-      call copy_group_data(org_grp%ele_grp, new_grp%ele_grp)
-      call copy_surface_group(org_grp%surf_grp, new_grp%surf_grp)
+!      call add_comm_table_in_node_group                                &
+!     &   (new_comm, org_group%nod_grp, new_group%nod_grp)
+!
+      call copy_group_data(org_group%ele_grp, new_group%ele_grp)
+      call copy_surface_group(org_group%surf_grp, new_group%surf_grp)
 !
       end subroutine s_extend_group_table
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine extend_node_group(new_comm, old_nod_grp, new_nod_grp)
+      subroutine extend_node_group                                      &
+     &        (new_comm, new_node, old_grp, new_grp)
+!
+      use solver_SR_type
+!
+      type(communication_table), intent(in) :: new_comm
+      type(node_data), intent(in) :: new_node
+      type(group_data), intent(in) :: old_grp
+      type(group_data), intent(inout) :: new_grp
+!
+      character(len=kchara), parameter :: import_head = 'import'
+      character(len=kchara), parameter :: export_head = 'export'
+      integer(kind = kint) :: iflag_node(new_node%numnod)
+!
+      integer(kind = kint) :: igrp, inum, inod
+      integer(kind = kint) :: ist, ied, jst, num, icou
+!
+!
+      new_grp%num_grp = old_grp%num_grp
+      call allocate_grp_type_num(new_grp)
+!
+      if (new_grp%num_grp .gt. 0) then
+        new_grp%grp_name(1:old_grp%num_grp)                             &
+     &          = old_grp%grp_name(1:old_grp%num_grp)
+      end if
+!
+      do igrp = 1, old_grp%num_grp
+!$omp parallel workshare
+        iflag_node(1:new_node%numnod) = 0
+!$omp end parallel workshare
+!
+        ist = old_grp%istack_grp(igrp-1) + 1
+        ied = old_grp%istack_grp(igrp)
+        do inum = ist, ied
+          inod = old_grp%item_grp(inum)
+          iflag_node(inod) = 1
+        end do
+!
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (new_node%numnod, new_comm, iflag_node)
+!
+        do inum = ist, ied
+          inod = old_grp%item_grp(inum)
+          iflag_node(inod) = 0
+        end do
+!
+        new_grp%istack_grp(igrp) = new_grp%istack_grp(igrp-1)           &
+     &        + old_grp%istack_grp(igrp) - old_grp%istack_grp(igrp-1)
+        do inum = 1, new_comm%ntot_import
+          inod = new_comm%item_import(inum)
+          new_grp%istack_grp(igrp) = new_grp%istack_grp(igrp)           &
+     &                              + iflag_node(inod)
+        end do
+      end do
+!
+      new_grp%num_item = new_grp%istack_grp(new_grp%num_grp)
+      call allocate_grp_type_item(new_grp)
+!
+      do igrp = 1, old_grp%num_grp
+        ist = old_grp%istack_grp(igrp-1)
+        num = old_grp%istack_grp(igrp) - old_grp%istack_grp(igrp-1)
+!
+        jst = new_grp%istack_grp(igrp-1)
+        do inum = 1, num
+          new_grp%item_grp(inum+jst) = old_grp%item_grp(inum+ist)
+        end do
+      end do
+!
+      do igrp = 1, old_grp%num_grp
+!$omp parallel workshare
+        iflag_node(1:new_node%numnod) = 0
+!$omp end parallel workshare
+!
+        ist = old_grp%istack_grp(igrp-1) + 1
+        ied = old_grp%istack_grp(igrp)
+        do inum = ist, ied
+          inod = old_grp%item_grp(inum)
+          iflag_node(inod) = 1
+        end do
+!
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (new_node%numnod, new_comm, iflag_node)
+!
+        do inum = ist, ied
+          inod = old_grp%item_grp(inum)
+          iflag_node(inod) = 0
+        end do
+!
+        icou = new_grp%istack_grp(igrp-1)                               &
+     &        + old_grp%istack_grp(igrp) - old_grp%istack_grp(igrp-1)
+        do inum = 1, new_comm%ntot_import
+          inod = new_comm%item_import(inum)
+          if(iflag_node(inod) .gt. 0) then
+            icou = icou + 1
+            new_grp%item_grp(icou) = inod
+          end if
+        end do
+      end do
+!
+      end subroutine extend_node_group
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine add_comm_table_in_node_group                           &
+     &         (new_comm, old_nod_grp, new_nod_grp)
 !
       use set_parallel_file_name
 !
@@ -129,7 +240,7 @@
         end do
       end do
 !
-      end subroutine extend_node_group
+      end subroutine add_comm_table_in_node_group
 !
 !  ---------------------------------------------------------------------
 !

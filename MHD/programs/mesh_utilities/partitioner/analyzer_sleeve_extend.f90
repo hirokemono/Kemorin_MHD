@@ -137,7 +137,8 @@
      &   (mesh%nod_comm, ele_mesh%ele_comm, mesh%node, mesh%ele,        &
      &    next_tbl%neib_ele, next_tbl%neib_nod,                         &
      &    newmesh%nod_comm, newmesh%node, newmesh%ele)
-      call s_extend_group_table(newmesh%nod_comm, group, newgroup)
+      call s_extend_group_table                                         &
+     &   (newmesh%nod_comm, newmesh%node, group, newgroup)
 !
       call mpi_output_mesh(distribute_mesh_file, newmesh, newgroup)
 !
