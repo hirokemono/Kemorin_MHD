@@ -49,8 +49,6 @@
       use m_ctl_param_partitioner
 !
       use copy_mesh_structures
-      use check_jacobians
-      use int_volume_of_domain
       use set_surf_grp_vectors
       use check_surface_groups
       use set_normal_vectors
@@ -59,7 +57,6 @@
       use nod_phys_send_recv
       use sum_normal_4_surf_group
       use set_parallel_file_name
-      use set_table_4_RHS_assemble
       use extend_comm_table
       use extend_group_table
 !
@@ -71,12 +68,6 @@
       use t_file_IO_parameter
       use t_mesh_data
       use t_read_mesh_data
-      use t_shape_functions
-      use t_jacobians
-!
-!>     Stracture for Jacobians
-      type(jacobians_type), save :: jacobians_T
-      type(shape_finctions_at_points), save :: spfs_T
 !
       type(FEM_file_IO_flags) :: FEM_mesh_flag_P
 !
@@ -107,25 +98,6 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry(ele_mesh%surf,                   &
-     &   group%surf_grp, group%tbls_surf_grp, group%surf_grp_geom)
-!
-!  -------------------------------
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-      allocate(jacobians_T%g_FEM)
-      call sel_max_int_point_by_etype                                   &
-     &   (mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
-      call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    mesh, ele_mesh%surf, group, spfs_T, jacobians_T)
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
-      call const_edge_vector(my_rank, nprocs,                           &
-     &    mesh%node, ele_mesh%edge, spfs_T%spf_1d, jacobians_T)
-!
-!
       if (iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
      &   (mesh, next_tbl%neib_ele, next_tbl%neib_nod)
@@ -136,8 +108,7 @@
 !
       call extend_ele_comm_table                                        &
      &   (mesh%nod_comm, ele_mesh%ele_comm, mesh%node, mesh%ele,        &
-     &    next_tbl%neib_ele, next_tbl%neib_nod,                         &
-     &    newmesh%nod_comm, newmesh%node,                               &
+     &    next_tbl%neib_ele, newmesh%nod_comm, newmesh%node,            &
      &    new_ele_mesh%ele_comm, newmesh%ele)
       call s_extend_group_table                                         &
      &   (newmesh%nod_comm, new_ele_mesh%ele_comm,                      &

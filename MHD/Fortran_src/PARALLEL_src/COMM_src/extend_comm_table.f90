@@ -504,7 +504,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine extend_ele_comm_table                                  &
-     &         (nod_comm, ele_comm, org_node, ele, neib_ele, neib_nod,  &
+     &         (nod_comm, ele_comm, org_node, ele, neib_ele,            &
      &          new_comm, new_node, new_ele_comm, new_ele)
 !
       use t_geometry_data
@@ -521,7 +521,6 @@
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
-      type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
       type(communication_table), intent(in) :: new_comm
 !
