@@ -72,6 +72,96 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine s_sort_by_position_with_ratio(nnod, ndiv, part_tbl,   &
+&          IGROUP, xx1, xx2, xx3, VAL, IS1)
+!
+      use quicksort
+      use sort_by_position_4_rcb
+      use cal_minmax_and_stacks
+      use sort_sphere_4_rcb
+      use m_ctl_param_partitioner
+!
+!
+      integer(kind = kint), intent(in) :: nnod
+      integer(kind = kint), intent(in) :: ndiv(3)
+      real(kind = kreal), intent(in) :: xx1(nnod), xx2(nnod), xx3(nnod)
+      real(kind = kreal), intent(inout) :: part_tbl(num_domain)
+!
+      real(kind = kreal), intent(inout) :: VAL(nnod)
+      integer(kind = kint), intent(inout) :: IS1(nnod)
+      integer(kind = kint), intent(inout) :: IGROUP(nnod)
+!
+      integer(kind = kint) :: group_id(num_domain), domain_id(num_domain)
+      integer(kind = kint) :: tbl_size, order, ncou, ip0, ndiv_2d, i
+!
+!
+      ip0 = ione
+      tbl_size = num_domain
+      order = ione
+      do i = 1, num_domain
+        domain_id(i) = i
+      end do
+!
+!      write(*,*) 'copy_position_sort_4_rcb'
+      call copy_position_sort_4_rcb(nnod, ip0, IGROUP, xx1, ncou,       &
+      &    VAL, IS1)
+!
+!        write(*,*) 'quicksort_real_w_index'
+      call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+!
+!        write(*,*) 'sorting_by_2nd_direction'
+      call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
+!
+      call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
+!
+      call set_domain_list_with_part_tbl                                &
+      &    (nnod, ncou, ione, ndiv(1), part_tbl, IS1,                   &
+      &     IGROUP, tbl_size, order, group_id, domain_id)
+      tbl_size = tbl_size / ndiv(1)
+      do ip0 = 1, ndiv(1)
+        call copy_position_sort_4_rcb(nnod, ip0, IGROUP, xx2, ncou,     &
+        &      VAL, IS1)
+!
+!        write(*,*) 'quicksort_real_w_index'
+        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+!
+!        write(*,*) 'sorting_by_2nd_direction'
+        call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
+!
+        call sorting_by_2nd_direction(nnod, ncou, xx3, xx1, VAL, IS1)
+!        write(*,*) 'set_domain_list_with_part_tbl size', tbl_size, ip0
+        call set_domain_list_with_part_tbl                              &
+        &    (nnod, ncou, ndiv(1), ndiv(2), part_tbl, IS1,              &
+        &     IGROUP, tbl_size, ip0, group_id, domain_id)
+!
+      end do
+!
+!
+      ndiv_2d = ndiv(1)*ndiv(2)
+      tbl_size = tbl_size / ndiv(2)
+      do ip0 = 1, ndiv_2d
+        call copy_position_sort_4_rcb(nnod, ip0, IGROUP, xx3, ncou,     &
+        &      VAL, IS1)
+!
+!        write(*,*) 'quicksort_real_w_index'
+        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+!
+!        write(*,*) 'sorting_by_2nd_direction'
+        call sorting_by_2nd_direction(nnod, ncou, xx3, xx1, VAL, IS1)
+!
+        call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
+!        write(*,*) 'set_domain_list_by_part_tbl size', tbl_size, ip0
+        call set_domain_list_with_part_tbl                              &
+        &    (nnod, ncou, ndiv_2d, ndiv(3), part_tbl, IS1,              &
+        &     IGROUP, tbl_size, ip0, group_id, domain_id)
+!
+      end do
+!
+!
+      end subroutine s_sort_by_position_with_ratio
+!
+!   --------------------------------------------------------------------
+!
       subroutine s_sort_by_position_w_grp(nnod, ndiv, num_mat,          &
      &          mat_name, ntot_node_ele_grp, inod_stack_ele_grp,        &
      &          inod_ele_grp, num_egrp_sel, egrp_sel_name, IGROUP,      &

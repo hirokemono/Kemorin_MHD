@@ -12,7 +12,8 @@ SOURCES = $(shell ls *.f90)
 MOD_PARTITIONER = \
 partitioner.o \
 set_partition_by_fine_mesh.o \
-grouping_for_partition.o
+grouping_for_partition.o \
+intelligent_partition.o
 
 MOD_ITP_PART = \
 distribute_para_itp_table.o

@@ -102,7 +102,7 @@
           isf_org = isurf_orgs(i,2)
           if(iflag_debug .eq. 1) write(50+my_rank,*) "ele: ", iele, "local surf: ", isf_org
           if(iflag_debug .eq. 1) write(50+my_rank,*) "global surf: ", isurf, "surf of ele", isf_4_ele(iele, isf_org)
-          if(iele .le. izero .or. iele .gt. nsurf) then
+          if(iele .le. izero .or. iele .gt. nelem) then
             if(iflag_debug .eq. 1) write(50+my_rank,*) "invalid element, end----------------------"
             iflag_comm = -5
             return
