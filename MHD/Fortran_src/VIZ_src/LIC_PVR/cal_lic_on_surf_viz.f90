@@ -380,13 +380,15 @@
         k_area = k_area + k_value
         if(iflag_debug .eq. 1) write(50 + my_rank, *) "nv: ", n_v, "nv sum:", nv_sum, "kernel area: ", k_area, "lic_v: ", lic_v
 
-        if(interior_surf(isurf_end) .eq. izero) then
-          isurf_start = isurf_end
-          iflag_comm = 10
-          exit
-        else
-          isurf_start = isurf_end
-        end if
+!        if(interior_surf(isurf_end) .eq. izero) then
+!          isurf_start = isurf_end
+!          iflag_comm = 10
+!          exit
+!        else
+!          isurf_start = isurf_end
+!        end if
+!       will use exterior surface(surface in ghost layer ) to cal lic
+        isurf_start = isurf_end
 
         if(flag_lic_end(lic_p, len_sum, i_iter) .eq. ione) then
 !        if(len_sum .ge.max_line_len) then
