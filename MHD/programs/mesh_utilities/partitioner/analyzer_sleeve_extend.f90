@@ -26,13 +26,14 @@
 !
       implicit none
 !
-      type(mesh_geometry), save :: mesh
-      type(mesh_groups), save :: group
-      type(element_geometry), save :: ele_mesh
-      type(next_nod_ele_table), save :: next_tbl
+      type(mesh_geometry), save, private :: mesh
+      type(mesh_groups), save, private :: group
+      type(element_geometry), save, private :: ele_mesh
+      type(next_nod_ele_table), save, private :: next_tbl
 !
-      type(mesh_geometry), save :: newmesh
-      type(mesh_groups), save :: newgroup
+      type(mesh_geometry), save, private :: newmesh
+      type(mesh_groups), save, private :: newgroup
+      type(element_geometry), save, private :: new_ele_mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -136,9 +137,11 @@
       call extend_ele_comm_table                                        &
      &   (mesh%nod_comm, ele_mesh%ele_comm, mesh%node, mesh%ele,        &
      &    next_tbl%neib_ele, next_tbl%neib_nod,                         &
-     &    newmesh%nod_comm, newmesh%node, newmesh%ele)
+     &    newmesh%nod_comm, newmesh%node,                               &
+     &    new_ele_mesh%ele_comm, newmesh%ele)
       call s_extend_group_table                                         &
-     &   (newmesh%nod_comm, newmesh%node, group, newgroup)
+     &   (newmesh%nod_comm, new_ele_mesh%ele_comm,                      &
+     &    newmesh%node, newmesh%ele, group, newgroup)
 !
       call mpi_output_mesh(distribute_mesh_file, newmesh, newgroup)
 !

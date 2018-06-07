@@ -14,6 +14,7 @@
       use m_precision
       use m_constants
       use m_phys_constants
+      use m_machine_parameter
 !
       use t_comm_table
 !
@@ -504,7 +505,7 @@
 !
       subroutine extend_ele_comm_table                                  &
      &         (nod_comm, ele_comm, org_node, ele, neib_ele, neib_nod,  &
-     &          new_comm, new_node, new_ele)
+     &          new_comm, new_node, new_ele_comm, new_ele)
 !
       use t_geometry_data
       use t_next_node_ele_4_node
@@ -512,6 +513,8 @@
       use solver_SR_type
       use extend_comm_table_SR
       use mark_export_nod_ele_extend
+      use const_mesh_information
+      use const_element_comm_tables
 !
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: ele_comm
@@ -521,14 +524,17 @@
       type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
       type(communication_table), intent(in) :: new_comm
-      type(node_data), intent(in) :: new_node
 !
+      type(node_data), intent(inout) :: new_node
+      type(communication_table), intent(inout) :: new_ele_comm
       type(element_data), intent(inout) :: new_ele
 !
 !>      Structure of double numbering
       type(parallel_double_numbering) :: dbl_id1
       type(parallel_double_numbering) :: dbl_id2
       type(parallel_double_numbering) :: dbl_ele
+!
+      type(belonged_table) :: new_blng_tbl
 !
       integer(kind = kint), allocatable :: num_send_added(:)
       integer(kind = kint), allocatable :: istack_send_added(:)
@@ -856,6 +862,11 @@
 !      end do
 !
       call calypso_mpi_barrier
+!
+      call allocate_sph_node_geometry(new_node)
+      call set_nod_and_ele_infos(new_node, new_ele)
+      call const_ele_comm_tbl                                           &
+     &   (new_node, new_ele, new_comm, new_blng_tbl, new_ele_comm)
 !
       end subroutine extend_ele_comm_table
 !

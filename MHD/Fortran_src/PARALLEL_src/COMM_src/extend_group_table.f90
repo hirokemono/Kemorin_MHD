@@ -32,23 +32,28 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_extend_group_table                                   &
-     &        (new_comm, new_node, org_group, new_group)
+     &        (new_comm, new_ele_comm, new_node, new_ele,               &
+     &         org_group, new_group)
 !
       use copy_mesh_structures
 !
-      type(communication_table), intent(in) :: new_comm
+      type(communication_table), intent(in) :: new_comm, new_ele_comm
       type(node_data), intent(in) :: new_node
+      type(element_data), intent(inout) :: new_ele
       type(mesh_groups), intent(in) :: org_group
+!
       type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call extend_node_group                                            &
-     &   (new_comm, new_node, org_group%nod_grp, new_group%nod_grp)
+      call extend_node_group(new_node%numnod, new_comm,                 &
+     &    org_group%nod_grp, new_group%nod_grp)
 !
 !      call add_comm_table_in_node_group                                &
 !     &   (new_comm, org_group%nod_grp, new_group%nod_grp)
 !
-      call copy_group_data(org_group%ele_grp, new_group%ele_grp)
+      call extend_node_group(new_ele%numele, new_ele_comm,              &
+     &    org_group%ele_grp, new_group%ele_grp)
+!
       call copy_surface_group(org_group%surf_grp, new_group%surf_grp)
 !
       end subroutine s_extend_group_table
@@ -56,18 +61,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine extend_node_group                                      &
-     &        (new_comm, new_node, old_grp, new_grp)
+     &         (nnod, new_comm, old_grp, new_grp)
 !
       use solver_SR_type
 !
+      integer(kind = kint) :: nnod
       type(communication_table), intent(in) :: new_comm
-      type(node_data), intent(in) :: new_node
       type(group_data), intent(in) :: old_grp
       type(group_data), intent(inout) :: new_grp
 !
-      character(len=kchara), parameter :: import_head = 'import'
-      character(len=kchara), parameter :: export_head = 'export'
-      integer(kind = kint) :: iflag_node(new_node%numnod)
+      integer(kind = kint) :: iflag_node(nnod)
 !
       integer(kind = kint) :: igrp, inum, inod
       integer(kind = kint) :: ist, ied, jst, num, icou
@@ -83,7 +86,7 @@
 !
       do igrp = 1, old_grp%num_grp
 !$omp parallel workshare
-        iflag_node(1:new_node%numnod) = 0
+        iflag_node(1:nnod) = 0
 !$omp end parallel workshare
 !
         ist = old_grp%istack_grp(igrp-1) + 1
@@ -93,8 +96,7 @@
           iflag_node(inod) = 1
         end do
 !
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_node%numnod, new_comm, iflag_node)
+        call SOLVER_SEND_RECV_int_type(nnod, new_comm, iflag_node)
 !
         do inum = ist, ied
           inod = old_grp%item_grp(inum)
@@ -125,7 +127,7 @@
 !
       do igrp = 1, old_grp%num_grp
 !$omp parallel workshare
-        iflag_node(1:new_node%numnod) = 0
+        iflag_node(1:nnod) = 0
 !$omp end parallel workshare
 !
         ist = old_grp%istack_grp(igrp-1) + 1
@@ -135,8 +137,7 @@
           iflag_node(inod) = 1
         end do
 !
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_node%numnod, new_comm, iflag_node)
+        call SOLVER_SEND_RECV_int_type(nnod, new_comm, iflag_node)
 !
         do inum = ist, ied
           inod = old_grp%item_grp(inum)
