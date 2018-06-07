@@ -304,7 +304,7 @@
 !
       use interpolate_imark_1pe
       use calypso_SR_int
-      use solver_SR_int
+      use solver_SR_type
 !
       type(element_data), intent(in) :: ele_org
       type(communication_table), intent(in) :: comm_dest
@@ -349,11 +349,7 @@
 !
 !
       if (comm_dest%num_neib.gt.0) then
-        call solver_send_recv_i                                         &
-     &                (NP_dest, comm_dest%num_neib, comm_dest%id_neib,  &
-     &                 comm_dest%istack_import, comm_dest%item_import,  &
-     &                 comm_dest%istack_export, comm_dest%item_export,  &
-     &                 ivec_2nd(1) )
+        call SOLVER_SEND_RECV_int_type(NP_dest, comm_dest, ivec_2nd(1))
       end if
 !
       i_vector_dest(1:NP_dest) = ivec_2nd(1:NP_dest)

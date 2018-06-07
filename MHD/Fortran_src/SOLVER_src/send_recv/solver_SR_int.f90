@@ -16,6 +16,9 @@
 !!      subroutine  solver_send_recv_i8                                 &
 !!     &          (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
 !!     &           STACK_EXPORT, NOD_EXPORT, iX8)
+!!
+!!      subroutine  solver_send_recv_num                                &
+!!     &          (NEIBPETOT, NEIBPE, nSEND, nRECV)
 !!@endverbatim
 !!
 !!@n @param  NP     Number of data points
@@ -33,10 +36,14 @@
 !!
 !!@n @param  ix(N)      integer data with NB components
 !!@n @param  ix8(N)     8 byte integer data with NB components
+!!
+!!@n @param  nSEND(NEIBPETOT)   Number of component to send
+!!@n @param  nRECV(NEIBPETOT)   Number of component to recv
 !
       module solver_SR_int
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -207,4 +214,50 @@
       end subroutine solver_send_recv_i8
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine  solver_send_recv_num                                  &
+     &          (NEIBPETOT, NEIBPE, nSEND, nRECV)
+!
+      use calypso_mpi
+      use m_solver_SR
+!
+!>       total neighboring pe count
+      integer(kind=kint )                , intent(in)   ::  NEIBPETOT
+!>       neighboring pe id                        (i-th pe)
+      integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE
+!>       imported node count for each neighbor pe (i-th pe)
+!
+!>       Number of componennt to send
+      integer (kind=kint), dimension(NEIBPETOT), intent(in):: nSEND
+!>       Number of componennt to recv
+      integer (kind=kint), dimension(NEIBPETOT), intent(inout):: nRECV
+!C
+!
+      integer (kind = kint) :: neib
+!
+!
+      call resize_iwork_4_SR                                            &
+     &   (NEIBPETOT, NEIBPETOT, NEIBPETOT, NEIBPETOT)
+!
+!C-- SEND
+      
+      do neib= 1, NEIBPETOT
+        call MPI_ISEND(nSEND(neib), ione, CALYPSO_INTEGER,              &
+     &      NEIBPE(neib), 0, CALYPSO_COMM, req1(neib), ierr_MPI)
+      end do
+!C
+!C-- RECEIVE
+      
+      do neib= 1, NEIBPETOT
+        call MPI_IRECV(nRECV(neib), ione, CALYPSO_INTEGER,              &
+     &      NEIBPE(neib), 0, CALYPSO_COMM, req2(neib), ierr_MPI)
+      end do
+!
+      call MPI_WAITALL(NEIBPETOT, req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL(NEIBPETOT, req1(1), sta1(1,1), ierr_MPI)
+!
+      end subroutine solver_send_recv_num
+!
+!  ---------------------------------------------------------------------
+!
       end module solver_SR_int

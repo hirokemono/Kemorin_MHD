@@ -13,6 +13,28 @@
 !!        type(mesh_geometry), intent(inout) ::    mesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!
+!!      subroutine const_ele_comm_tbl                                   &
+!!     &         (node, ele, nod_comm, belongs, ele_comm)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(belonged_table), intent(inout) :: belongs
+!!        type(communication_table), intent(inout) :: ele_comm
+!!      subroutine const_surf_comm_table                                &
+!!     &         (node, nod_comm, surf, belongs, surf_comm)
+!!        type(node_data), intent(in) :: node
+!!        type(surface_data), intent(in) :: surf
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(belonged_table), intent(inout) :: belongs
+!!        type(communication_table), intent(inout) :: surf_comm
+!!      subroutine const_edge_comm_table                                &
+!!     &         (node, nod_comm, edge, belongs, edge_comm)
+!!        type(node_data), intent(in) :: node
+!!        type(edge_data), intent(in) :: edge
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(belonged_table), intent(inout) :: belongs
+!!        type(communication_table), intent(inout) :: edge_comm
+!!
 !!      subroutine const_global_element_id(ele)
 !!      subroutine const_global_surface_id(surf, sf_comm)
 !!        type(surface_data), intent(inout) :: surf
@@ -39,9 +61,6 @@
       implicit none
 !
       type(belonged_table), save, private :: blng_tbl
-!
-!      private :: const_ele_comm_tbl, const_surf_comm_table
-!      private :: const_edge_comm_table
 !
 !-----------------------------------------------------------------------
 !

@@ -81,7 +81,8 @@
       subroutine deallocate_mesh_refine_org
 !
 !
-      deallocate( node_org_refine%inod_global, node_org_refine%xx, xi_org )
+      deallocate( node_org_refine%inod_global)
+      deallocate( node_org_refine%xx, xi_org )
       deallocate( ele_org_refine%iele_global, ele_org_refine%ie )
 !
       deallocate( istack_ele_refine_org )
