@@ -120,10 +120,13 @@
       domain_grps%surf_grp%num_item = merged_surf%numsurf_iso
        write(*,*) 'alloc_domain_stack_4_surf'
       call alloc_domain_stack_4_surf(num_pe, domain_grps)
+       write(*,*) 'alloc_merged_group_item'
       call alloc_merged_group_item(domain_grps%surf_grp)
 !
+       write(*,*) 'set_surf_domain_item_viewer'
       call set_surf_domain_item_viewer                                  &
      &   (merged_surf, domain_grps%surf_grp)
+       write(*,*) 'set_surf_domain_stack_viewer'
       call set_surf_domain_stack_viewer                                 &
      &   (num_pe, isurf_sf_stack, domain_grps%surf_grp)
 !

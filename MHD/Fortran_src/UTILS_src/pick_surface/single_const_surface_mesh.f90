@@ -198,11 +198,11 @@
        write(*,*) 's_const_merged_surf_data'
        call s_const_merged_surf_data(mgd_mesh)
 !
-!       write(*,*) 'const_merged_surface_4_ele_grp'
+       write(*,*) 'const_merged_surface_4_ele_grp'
        call const_merged_surface_4_ele_grp                              &
      &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
      &     mgd_sf_grp)
-!       write(*,*) 'const_merged_surface_4_sf_grp'
+       write(*,*) 'const_merged_surface_4_sf_grp'
        call const_merged_surface_4_sf_grp                               &
      &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp)
 !

@@ -7,7 +7,7 @@
 !>@brief Surface mesh data generator for kemoviewer
 !!
 !!@verbatim
-!!      subroutine choose_surface_mesh_para(mesh_file)
+!!      subroutine pickup_surface_mesh_para(mesh_file)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!@endverbatim
 !
@@ -20,6 +20,7 @@
       use m_machine_parameter
       use m_file_format_switch
 !
+      use t_mesh_data
       use t_geometry_data
       use t_surface_data
       use t_edge_data
@@ -30,13 +31,15 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter, private :: iflag_output_SURF = 0
+!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine choose_surface_mesh_para(mesh_file)
+      subroutine pickup_surface_mesh_para(mesh_file)
 !
       use m_node_quad_2_linear_sf
       use find_mesh_file_format
@@ -49,6 +52,10 @@
       type(field_IO_params), intent(inout) :: mesh_file
 !
       type(merged_viewer_mesh), save :: mgd_view_mesh1
+!
+      type(mesh_geometry), save :: mesh_p
+      type(mesh_groups), save :: group_p
+      type(element_geometry), save :: ele_mesh_p
 !
       type(element_data), save :: ele_p
       type(surface_data), save :: surf_p
@@ -68,19 +75,24 @@
       call MPI_BCAST(mesh_file%iflag_format, ione,                      &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call const_merged_mesh_para                                       &
-     &   (mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p)
+      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(mesh_file, nprocs, mesh_p, group_p,           &
+     &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge)
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
+      call FEM_mesh_init_with_IO(iflag_output_SURF,                     &
+     &    mesh_file, mesh_p, group_p, ele_mesh_p)
 !
-      call const_surf_mesh_4_viewer                                     &
-     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)
+      write(*,*) 'ele_mesh_p%surf%isf_isolate', ele_mesh_p%surf%isf_isolate
+!      call const_surf_mesh_4_viewer                                     &
+!     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)
 !
 !
-      call collect_surf_mesh_4_viewer                                   &
-     &   (mesh_file, surf_p, edge_p, mgd_view_mesh_p, mgd_view_mesh1)
+!      call collect_surf_mesh_4_viewer                                   &
+!     &   (mesh_file, surf_p, edge_p, mgd_view_mesh_p, mgd_view_mesh1)
 !
-      call deallocate_quad4_2_linear
+!      call deallocate_quad4_2_linear
 !
-      end subroutine choose_surface_mesh_para
+      end subroutine pickup_surface_mesh_para
 !
 !------------------------------------------------------------------
 !
@@ -179,5 +191,54 @@
       end subroutine collect_surf_mesh_4_viewer
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine choose_surface_mesh_para(mesh_file)
+!
+      use m_node_quad_2_linear_sf
+      use find_mesh_file_format
+      use mpi_load_mesh_data
+      use parallel_FEM_mesh_init
+      use single_const_surface_mesh
+      use const_surface_data
+      use set_parallel_file_name
+!
+      type(field_IO_params), intent(inout) :: mesh_file
+!
+      type(merged_viewer_mesh), save :: mgd_view_mesh1
+!
+      type(element_data), save :: ele_p
+      type(surface_data), save :: surf_p
+      type(edge_data), save :: edge_p
+      type(merged_mesh), save :: mgd_mesh_p
+      type(group_data_merged_surf), save :: mgd_sf_grp_p
+      type(merged_viewer_mesh), save :: mgd_view_mesh_p
+!
+!
+      mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
+!
+      if(my_rank .eq. 0) then
+        if(iflag_debug .eq. 0) write(*,*) 'find_merged_mesh_format'
+        call find_merged_mesh_format(mesh_file)
+      end if
+      call calypso_mpi_barrier
+      call MPI_BCAST(mesh_file%iflag_format, ione,                      &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+      call const_merged_mesh_para                                       &
+     &   (mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p)
+!
+      call const_surf_mesh_4_viewer                                     &
+     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)
+!
+!
+      call collect_surf_mesh_4_viewer                                   &
+     &   (mesh_file, surf_p, edge_p, mgd_view_mesh_p, mgd_view_mesh1)
+!
+      call deallocate_quad4_2_linear
+!
+      end subroutine choose_surface_mesh_para
+!
+!------------------------------------------------------------------
 !
       end module parallel_const_surface_mesh

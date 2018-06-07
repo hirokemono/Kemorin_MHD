@@ -29,6 +29,7 @@
 !
 !   set hash data for suface elements using sum of local node ID
 !
+      write(*,*) 'construct_surface_data'
       call construct_surface_data                                       &
      &   (mgd_mesh%merged%node, mgd_mesh%merged%ele,                    &
      &    mgd_mesh%merged_surf)
@@ -39,6 +40,7 @@
       call count_nsurf_4_each_domain                                    &
      &   (mgd_mesh%num_pe, mgd_mesh%merge_tbl,                          &
      &    mgd_mesh%merged_surf, mgd_mesh%istack_surfpe)
+      write(*,*) 'count_nsurf_4_each_domain end'
 !
       end subroutine s_const_merged_surf_data
 !
