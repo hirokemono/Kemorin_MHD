@@ -152,6 +152,7 @@
       subroutine output_elapsed_times
 !
       use calypso_mpi
+      use set_parallel_file_name
 !
       integer(kind = kint) :: i
       character(len=kchara) :: fname_tmp, file_name
