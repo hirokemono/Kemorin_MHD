@@ -79,7 +79,7 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	
 	mesh_s->nnod_viewer =  mesh_s->inod_sf_stack[mesh_s->num_pe_sf];
 	mesh_s->nsurf_viewer = mesh_s->isurf_sf_stack[mesh_s->num_pe_sf];
-	mesh_s->edgepetot_viewer = mesh_s->iedge_sf_stack[mesh_s->num_pe_sf];
+	mesh_s->nedge_viewer = mesh_s->iedge_sf_stack[mesh_s->num_pe_sf];
 	
 	offset = skip_comment_c(fp);
 	sum_offset = offset + sum_offset;
@@ -169,7 +169,7 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	alloc_edge_4_sf_viewer_s(mesh_s);
 	
 	if( mesh_s->nnod_4_edge == 3 ){
-		for (i = 0; i < mesh_s->edgepetot_viewer; i++) {
+		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			fgets(buf, LENGTHBUF, fp);
 			sscanf(buf, "%d %d %d %d", &itmp, 
 				&mesh_s->ie_edge_viewer[i][0], 
@@ -178,7 +178,7 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 		}
 	}
 	else{
-		for (i = 0; i < mesh_s->edgepetot_viewer; i++) {
+		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			fgets(buf, LENGTHBUF, fp);
 			sscanf(buf, "%d %d %d", &itmp, 
 				&mesh_s->ie_edge_viewer[i][0], 
@@ -187,8 +187,8 @@ int read_viewer_mesh(const char *file_name, struct viewer_mesh *mesh_s){
 	}
 	
 	/*printf("mesh_s->ie_edge_viewer %d %d\n", 
-	mesh_s->ie_edge_viewer[mesh_s->edgepetot_viewer-1][0],
-			mesh_s->ie_edge_viewer[mesh_s->edgepetot_viewer-1][1]);*/
+	mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][0],
+			mesh_s->ie_edge_viewer[mesh_s->nedge_viewer-1][1]);*/
 	
 	offset = skip_comment_c(fp);
 	sum_offset = offset + sum_offset;

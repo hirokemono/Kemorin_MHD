@@ -149,12 +149,12 @@
       integer(kind = kint) :: i, k
 !
 !
-      do i = 1, view_mesh%edgepetot_viewer
+      do i = 1, view_mesh%nedge_viewer
         view_mesh%iedge_gl_view(i)                                      &
      &          = i + mgd_view_mesh%iedge_sf_stack(my_rank)
       end do
       do k = 1, nnod_4_edge
-        do i = 1, view_mesh%edgepetot_viewer
+        do i = 1, view_mesh%nedge_viewer
           view_mesh%ie_edge_viewer(i,k)                                 &
      &          = view_mesh%ie_edge_viewer(i,k)                         &
      &           + mgd_view_mesh%inod_sf_stack(my_rank)

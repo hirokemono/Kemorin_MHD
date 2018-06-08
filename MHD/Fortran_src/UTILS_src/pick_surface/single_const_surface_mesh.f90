@@ -62,14 +62,14 @@
 !
 !  set mesh_information
 !
-      call const_merged_mesh_data                                       &
-     &   (mesh_file, ele_v, surf_v, edge_v, mgd_mesh1, mgd_sf_grp1)
-      write(*,*) 'const_surf_mesh_4_viewer'
-      call const_surf_mesh_4_viewer                                     &
-     &   (surf_v, edge_v, mgd_mesh1, mgd_sf_grp1, mgd_view_mesh1)
+!      call const_merged_mesh_data                                       &
+!     &   (mesh_file, ele_v, surf_v, edge_v, mgd_mesh1, mgd_sf_grp1)
+!      write(*,*) 'const_surf_mesh_4_viewer'
+!      call const_surf_mesh_4_viewer                                     &
+!     &   (surf_v, edge_v, mgd_mesh1, mgd_sf_grp1, mgd_view_mesh1)
 !
-      call sel_output_surface_grid(mesh_file%iflag_format,              &
-     &    surf_v%nnod_4_surf, edge_v%nnod_4_edge, mgd_view_mesh1)
+!      call sel_output_surface_grid(mesh_file%iflag_format,              &
+!     &    surf_v%nnod_4_surf, edge_v%nnod_4_edge, mgd_view_mesh1)
 !
       end subroutine choose_surface_mesh_sgl
 !

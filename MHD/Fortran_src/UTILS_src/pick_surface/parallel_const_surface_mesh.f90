@@ -67,13 +67,10 @@
       type(group_data_merged_surf), save :: mgd_sf_grp_p
       type(merged_viewer_mesh), save :: mgd_view_mesh_p
 !
+      type(viewer_mesh_data), save :: view_mesh_p
       integer(kind = kint), allocatable :: inod_ksm(:)
       integer(kind = kint), allocatable :: isurf_ksm(:)
       integer(kind = kint), allocatable :: iedge_ksm(:)
-      integer(kind = kint) :: numnod_ksm
-      integer(kind = kint) :: numsurf_ksm
-      integer(kind = kint) :: numedge_ksm
-      type(viewer_mesh_data), save :: view_mesh_p
 !
 !
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
@@ -108,10 +105,10 @@
      &  group_p%nod_grp, group_p%ele_grp, group_p%surf_grp,             &
      &  inod_ksm, isurf_ksm, iedge_ksm,                                 &
      &  view_mesh_p%nnod_viewer, view_mesh_p%nsurf_viewer,              &
-     &  view_mesh_p%edgepetot_viewer)
+     &  view_mesh_p%nedge_viewer)
 !
       write(*,*) my_rank, view_mesh_p%nnod_viewer, view_mesh_p%nsurf_viewer,          &
-     &  view_mesh_p%edgepetot_viewer
+     &  view_mesh_p%nedge_viewer
       
 !
 !      call const_surf_mesh_4_viewer                                     &

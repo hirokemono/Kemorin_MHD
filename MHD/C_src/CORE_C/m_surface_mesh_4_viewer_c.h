@@ -11,7 +11,7 @@ struct viewer_mesh {
 	int num_pe_sf;
 	
 	int nsurf_viewer;
-	int edgepetot_viewer;
+	int nedge_viewer;
 	int nnod_viewer;
 	
 	int nnod_4_surf;

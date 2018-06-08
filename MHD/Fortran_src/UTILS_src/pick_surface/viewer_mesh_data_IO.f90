@@ -220,9 +220,9 @@
       write(surface_id,'(a)') '!  global ID, connectivity'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i16)') view_mesh%edgepetot_viewer
+      write(surface_id,'(i16)') view_mesh%nedge_viewer
 !
-      do i = 1, view_mesh%edgepetot_viewer
+      do i = 1, view_mesh%nedge_viewer
        write(surface_id,'(10i16)')                                      &
      &               i, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do
@@ -255,7 +255,7 @@
 !
       call alloc_edge_data_4_sf(nnod_4_edge, view_mesh)
 !
-      do i = 1, view_mesh%edgepetot_viewer
+      do i = 1, view_mesh%nedge_viewer
        read(surface_id,*)                                               &
      &         itmp, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do

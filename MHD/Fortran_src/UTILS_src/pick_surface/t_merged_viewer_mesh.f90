@@ -104,7 +104,7 @@
      &   = mgd_view_mesh%inod_sf_stack(mgd_view_mesh%num_pe_sf)
       mgd_view_mesh%view_mesh%nsurf_viewer                              &
      &   = mgd_view_mesh%isurf_sf_stack(mgd_view_mesh%num_pe_sf)
-      mgd_view_mesh%view_mesh%edgepetot_viewer                          &
+      mgd_view_mesh%view_mesh%nedge_viewer                              &
      &   = mgd_view_mesh%iedge_sf_stack(mgd_view_mesh%num_pe_sf)
 !
       end subroutine num_merged_viewer_nod_surf_edge
@@ -120,11 +120,11 @@
       integer(kind = kint) :: i
 !
 !
-      write(50,*) 'edgepetot_viewer',                                   &
-     &           mgd_view_mesh%view_mesh%edgepetot_viewer
+      write(50,*) 'nedge_viewer',                                       &
+     &           mgd_view_mesh%view_mesh%nedge_viewer
       write(50,*) 'iedge_sf_stack', mgd_view_mesh%iedge_sf_stack
       write(50,*) 'ie_edge_viewer'
-      do i = 1, mgd_view_mesh%view_mesh%edgepetot_viewer
+      do i = 1, mgd_view_mesh%view_mesh%nedge_viewer
         write(50,*)                                                     &
      &    i, mgd_view_mesh%view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do

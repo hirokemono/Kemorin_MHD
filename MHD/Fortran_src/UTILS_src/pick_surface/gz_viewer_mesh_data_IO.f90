@@ -249,12 +249,12 @@ end subroutine write_surf_connect_viewer_gz
       write(textbuf,'(a,a1)') '!', char(0)
       call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(i15,a1)') view_mesh%edgepetot_viewer, char(0)
+      write(textbuf,'(i15,a1)') view_mesh%nedge_viewer, char(0)
       call gz_write_textbuf_w_lf
 !
 !
       write(fmt_txt,'(a5,i2,a9)') '(i15,', nnod_4_edge, '(i15),a1)'
-      do i = 1, view_mesh%edgepetot_viewer
+      do i = 1, view_mesh%nedge_viewer
         write(textbuf,fmt_txt)                                          &
      &         i, view_mesh%ie_edge_viewer(i,1:nnod_4_edge), char(0)
         call gz_write_textbuf_w_lf
@@ -296,7 +296,7 @@ end subroutine write_surf_connect_viewer_gz
 !
       call alloc_edge_data_4_sf(nnod_4_edge, view_mesh)
 !
-      do i = 1, view_mesh%edgepetot_viewer
+      do i = 1, view_mesh%nedge_viewer
         call get_one_line_from_gz_f
         read(textbuf,*) itmp, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do
