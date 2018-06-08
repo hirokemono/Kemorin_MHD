@@ -118,10 +118,10 @@ call gz_write_textbuf_w_lf
 write(textbuf,'(a,a1)') '!', char(0)
 call gz_write_textbuf_w_lf
 !
-write(textbuf,'(i15,a1)') view_mesh%nodpetot_viewer, char(0)
+write(textbuf,'(i15,a1)') view_mesh%nnod_viewer, char(0)
 call gz_write_textbuf_w_lf
 !
-do i = 1, view_mesh%nodpetot_viewer
+do i = 1, view_mesh%nnod_viewer
 write(textbuf,1002) i, view_mesh%xx_view(i,1:3), char(0)
 call gz_write_textbuf_w_lf
 end do
@@ -142,7 +142,7 @@ call skip_gz_comment_int(itmp)
 !
 call alloc_nod_position_viewer(view_mesh)
 !
-do i = 1, view_mesh%nodpetot_viewer
+do i = 1, view_mesh%nnod_viewer
 call get_one_line_from_gz_f
 read(textbuf,*) itmp, view_mesh%xx_view(i,1:3)
 end do

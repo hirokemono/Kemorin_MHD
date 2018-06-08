@@ -81,7 +81,7 @@
       call mpi_write_charahead(IO_param, len_int_txt,                   &
      &    integer_textline(mgd_view_mesh%num_pe_sf))
       call mpi_write_stack_over_domain                                  &
-     &   (IO_param, mgd_v_mesh_p%view_mesh%nodpetot_viewer)
+     &   (IO_param, mgd_v_mesh_p%view_mesh%nnod_viewer)
       call mpi_write_stack_over_domain                                  &
      &   (IO_param, mgd_v_mesh_p%view_mesh%surfpetot_viewer)
       call mpi_write_stack_over_domain                                  &
@@ -90,11 +90,11 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_node_viewer()), hd_node_viewer())
       call mpi_write_charahead(IO_param, len_int_txt,                   &
-     &    integer_textline(mgd_view_mesh%view_mesh%nodpetot_viewer))
+     &    integer_textline(mgd_view_mesh%view_mesh%nnod_viewer))
 !
 !
       call mpi_write_viewer_position(IO_param,                          &
-     &    mgd_v_mesh_p%view_mesh%nodpetot_viewer, ithree,               &
+     &    mgd_v_mesh_p%view_mesh%nnod_viewer, ithree,                   &
      &    mgd_v_mesh_p%view_mesh%inod_gl_view,                          &
      &    mgd_v_mesh_p%view_mesh%xx_view)
 !

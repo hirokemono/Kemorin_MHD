@@ -73,7 +73,7 @@
       type viewer_mesh_data
         integer(kind = kint)  ::  surfpetot_viewer
         integer(kind = kint)  ::  edgepetot_viewer
-        integer(kind = kint)  ::  nodpetot_viewer
+        integer(kind = kint)  ::  nnod_viewer
 !
         integer(kind = kint), allocatable  ::  ie_sf_viewer(:,:)
         integer(kind = kint), allocatable  ::  ie_edge_viewer(:,:)
@@ -98,10 +98,10 @@
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
-      allocate( view_mesh%xx_view(view_mesh%nodpetot_viewer,3) )
-      allocate( view_mesh%inod_gl_view(view_mesh%nodpetot_viewer) )
-      if(view_mesh%nodpetot_viewer .gt. 0) view_mesh%xx_view = 0.0d0
-      if(view_mesh%nodpetot_viewer .gt. 0) view_mesh%inod_gl_view = 0
+      allocate( view_mesh%xx_view(view_mesh%nnod_viewer,3) )
+      allocate( view_mesh%inod_gl_view(view_mesh%nnod_viewer) )
+      if(view_mesh%nnod_viewer .gt. 0) view_mesh%xx_view = 0.0d0
+      if(view_mesh%nnod_viewer .gt. 0) view_mesh%inod_gl_view = 0
 !
       end subroutine alloc_nod_position_viewer
 !

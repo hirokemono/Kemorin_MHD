@@ -100,7 +100,7 @@
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
 !
-      mgd_view_mesh%view_mesh%nodpetot_viewer                           &
+      mgd_view_mesh%view_mesh%nnod_viewer                               &
      &   = mgd_view_mesh%inod_sf_stack(mgd_view_mesh%num_pe_sf)
       mgd_view_mesh%view_mesh%surfpetot_viewer                          &
      &   = mgd_view_mesh%isurf_sf_stack(mgd_view_mesh%num_pe_sf)

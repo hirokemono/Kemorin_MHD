@@ -73,6 +73,7 @@
       integer(kind = kint) :: numnod_ksm
       integer(kind = kint) :: numsurf_ksm
       integer(kind = kint) :: numedge_ksm
+      type(viewer_mesh_data), save :: view_mesh_p
 !
 !
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
@@ -106,9 +107,12 @@
      &  mesh_p%node, mesh_p%nod_comm, ele_mesh_p%surf, ele_mesh_p%edge, &
      &  group_p%nod_grp, group_p%ele_grp, group_p%surf_grp,             &
      &  inod_ksm, isurf_ksm, iedge_ksm,                                 &
-     &  numnod_ksm, numsurf_ksm, numedge_ksm)
+     &  view_mesh_p%nnod_viewer, view_mesh_p%surfpetot_viewer,          &
+     &  view_mesh_p%edgepetot_viewer)
 !
-      write(*,*) my_rank, numnod_ksm, numsurf_ksm, numedge_ksm
+      write(*,*) my_rank, view_mesh_p%nnod_viewer, view_mesh_p%surfpetot_viewer,          &
+     &  view_mesh_p%edgepetot_viewer
+      
 !
 !      call const_surf_mesh_4_viewer                                     &
 !     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)
