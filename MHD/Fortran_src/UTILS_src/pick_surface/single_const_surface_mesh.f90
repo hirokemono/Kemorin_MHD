@@ -30,6 +30,8 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter, private :: iflag_add_comm_tbl = 1
+!
       private :: find_mesh_format_4_viewer
 !
 !------------------------------------------------------------------
@@ -43,7 +45,21 @@
       use find_mesh_file_format
       use viewer_IO_select_4_zlib
 !
+      use load_mesh_data
+      use const_mesh_information
+      use const_mesh_list_4_viewer
+!
       type(field_IO_params), intent(inout) :: mesh_file
+!
+      type(mesh_geometry), save :: mesh_p
+      type(mesh_groups), save :: group_p
+      type(element_geometry), save :: ele_mesh_p
+!
+      type(viewer_mesh_data), save :: view_mesh_p
+      integer(kind = kint), allocatable :: inod_ksm(:)
+      integer(kind = kint), allocatable :: isurf_ksm(:)
+      integer(kind = kint), allocatable :: iedge_ksm(:)
+!
 !
       type(element_data) :: ele_v
       type(surface_data) :: surf_v
@@ -53,6 +69,9 @@
       type(group_data_merged_surf) :: mgd_sf_grp1
       type(merged_viewer_mesh) :: mgd_view_mesh1
 !
+      integer(kind = kint) :: ip
+      integer(kind = kint) :: ierr
+!
 !
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
       write(*,*) 'find_mesh_format_4_viewer'
@@ -61,6 +80,37 @@
       call count_subdomains_4_viewer(mesh_file, mgd_mesh1%num_pe)
 !
 !  set mesh_information
+!
+       
+!
+      do ip = 1, mgd_mesh1%num_pe
+        call input_mesh(mesh_file, (ip-1), mesh_p, group_p,             &
+     &      ele_mesh_p%surf%nnod_4_surf,                                &
+     &      ele_mesh_p%edge%nnod_4_edge, ierr)
+        call const_mesh_infos((ip-1), mesh_p, group_p, ele_mesh_p)
+!
+        allocate(inod_ksm(mesh_p%node%numnod))
+        allocate(isurf_ksm(ele_mesh_p%surf%numsurf))
+        allocate(iedge_ksm(ele_mesh_p%edge%numedge))
+        inod_ksm = 0
+        isurf_ksm = 0
+        iedge_ksm = 0
+!
+        call s_const_mesh_list_4_viewer(iflag_add_comm_tbl,             &
+     &      mesh_p%node, mesh_p%nod_comm,                               &
+     &      ele_mesh_p%surf, ele_mesh_p%edge,                           &
+     &      group_p%nod_grp, group_p%ele_grp, group_p%surf_grp,         &
+     &      inod_ksm, isurf_ksm, iedge_ksm,                             &
+     &      view_mesh_p%nnod_viewer, view_mesh_p%nsurf_viewer,          &
+     &      view_mesh_p%nedge_viewer)
+!
+        write(*,*) ip-1, view_mesh_p%nnod_viewer,                       &
+     &             view_mesh_p%nsurf_viewer, view_mesh_p%nedge_viewer
+!
+        deallocate(inod_ksm,  isurf_ksm, iedge_ksm)
+        call dealloc_mesh_infomations(mesh_p, group_p, ele_mesh_p)
+      end do
+!
 !
 !      call const_merged_mesh_data                                       &
 !     &   (mesh_file, ele_v, surf_v, edge_v, mgd_mesh1, mgd_sf_grp1)

@@ -217,7 +217,7 @@
         if (iflag_tmp_tri_refine .eq. 0) exit
 !
         write(*,*) 'dealloc_mesh_infomations'
-        call dealloc_mesh_infomations                                   &
+        call dealloc_mesh_infos_w_normal                                &
      &     (org_mesh, org_group, org_ele_mesh)
 !
         write(*,*) 'set_mesh_data_from_type'
