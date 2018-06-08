@@ -53,6 +53,10 @@
       use set_edge_data_by_sf
       use extend_group_table
       use copy_mesh_structures
+      use set_parallel_file_name
+      use viewer_mesh_data_IO
+      use viewer_group_data_IO
+!
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
@@ -62,6 +66,7 @@
 !
       type(group_data), save :: new_nod_grp
 !
+      type(merged_viewer_mesh), save :: mgd_view_mesh_p
       type(viewer_mesh_data), allocatable :: view_mesh_p(:)
       type(viewer_surface_groups), allocatable :: domain_grps_p(:)
       type(viewer_node_groups), allocatable :: view_nod_grps_p(:)
@@ -83,6 +88,7 @@
 !
       integer(kind = kint) :: ip, inum
       integer(kind = kint) :: ierr
+      character(len = kchara) :: fname_tmp, file_name
 !
 !
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
@@ -93,6 +99,7 @@
 !
 !  set mesh_information
 !
+       call alloc_num_mesh_sf(ione, mgd_view_mesh_p)
        allocate(view_mesh_p(mgd_mesh1%num_pe))
        allocate(domain_grps_p(mgd_mesh1%num_pe))
        allocate(view_nod_grps_p(mgd_mesh1%num_pe))
@@ -195,6 +202,31 @@
      &        write(*,*) 'Wrong group item', ip-1, inum
         end do
 !
+        call add_int_suffix                                             &
+     &     ((ip-1), mesh_file%file_prefix, fname_tmp)
+        call add_ksm_extension(fname_tmp, file_name)
+        write(*,*) 'surface mesh file name: ', trim(file_name)
+        open (surface_id, file = file_name)
+!
+        mgd_view_mesh_p%inod_sf_stack(1) =  view_mesh_p(ip)%nnod_viewer
+        mgd_view_mesh_p%isurf_sf_stack(1) = view_mesh_p(ip)%nsurf_viewer
+        mgd_view_mesh_p%iedge_sf_stack(1) = view_mesh_p(ip)%nedge_viewer
+!
+        call write_domain_data_viewer(mgd_view_mesh_p)
+        call write_node_data_viewer(view_mesh_p(ip))
+        call write_surf_connect_viewer                                  &
+       &   (ele_mesh_p%surf%nnod_4_surf, view_mesh_p(ip))
+        call write_edge_connect_viewer                                  &
+       &   (ele_mesh_p%edge%nnod_4_edge, view_mesh_p(ip))
+!
+        call write_domain_group_viewer(ione, domain_grps_p(ip))
+!
+        call write_nod_group_viewer(ione, view_nod_grps_p(ip))
+        call write_ele_group_viewer(ione, view_ele_grps_p(ip))
+        call write_surf_group_viewer(ione, view_sf_grps_p(ip))
+        close(surface_id)
+!
+!
         call dealloc_merged_group_item(view_nod_grps_p(ip)%node_grp)
         call dealloc_viewer_node_grps_stack(view_nod_grps_p(ip))
 !
@@ -220,6 +252,7 @@
       end do
       deallocate(view_mesh_p, domain_grps_p)
       deallocate(view_nod_grps_p, view_ele_grps_p, view_sf_grps_p)
+      call dealloc_num_mesh_sf(mgd_view_mesh_p)
 !
 !
 !      call const_merged_mesh_data                                       &

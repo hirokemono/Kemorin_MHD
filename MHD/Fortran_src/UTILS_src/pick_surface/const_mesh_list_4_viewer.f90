@@ -732,8 +732,9 @@
       do inod = 1, numnod
         if(abs(iflag_node(inod)) .gt. 0) then
           icou = icou + 1
-          item(icou) = inod_ksm(inod)
-          if(item(icou) .eq. 0) write(*,*) 'Wrong at', icou, inod, inod_ksm(inod)
+          item(icou) = inod_ksm(inod) * iflag_node(inod)
+          if(item(icou) .eq. 0) write(*,*)                              &
+     &                        'Wrong at', icou, inod, inod_ksm(inod)
         end if
       end do
 !
