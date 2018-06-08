@@ -32,6 +32,7 @@
       implicit none
 !
       integer(kind = kint), parameter, private :: iflag_output_SURF = 0
+      integer(kind = kint), parameter, private :: iflag_add_comm_tbl = 1
 !
 !------------------------------------------------------------------
 !
@@ -49,6 +50,8 @@
       use const_surface_data
       use set_parallel_file_name
 !
+      use const_mesh_list_4_viewer
+!
       type(field_IO_params), intent(inout) :: mesh_file
 !
       type(merged_viewer_mesh), save :: mgd_view_mesh1
@@ -63,6 +66,13 @@
       type(merged_mesh), save :: mgd_mesh_p
       type(group_data_merged_surf), save :: mgd_sf_grp_p
       type(merged_viewer_mesh), save :: mgd_view_mesh_p
+!
+      integer(kind = kint), allocatable :: inod_ksm(:)
+      integer(kind = kint), allocatable :: isurf_ksm(:)
+      integer(kind = kint), allocatable :: iedge_ksm(:)
+      integer(kind = kint) :: numnod_ksm
+      integer(kind = kint) :: numsurf_ksm
+      integer(kind = kint) :: numedge_ksm
 !
 !
       mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
@@ -82,7 +92,24 @@
       call FEM_mesh_init_with_IO(iflag_output_SURF,                     &
      &    mesh_file, mesh_p, group_p, ele_mesh_p)
 !
-      write(*,*) 'ele_mesh_p%surf%isf_isolate', ele_mesh_p%surf%isf_isolate
+!      write(50+my_rank,*) 'iflag_surf_z', ele_mesh_p%surf%numsurf_iso
+!      write(50+my_rank,*) 'iflag_surf_z', ele_mesh_p%surf%isf_isolate
+!
+      allocate(inod_ksm(mesh_p%node%numnod))
+      allocate(isurf_ksm(ele_mesh_p%surf%numsurf))
+      allocate(iedge_ksm(ele_mesh_p%edge%numedge))
+      inod_ksm = 0
+      isurf_ksm = 0
+      iedge_ksm = 0
+!
+      call s_const_mesh_list_4_viewer(iflag_add_comm_tbl,               &
+     &  mesh_p%node, mesh_p%nod_comm, ele_mesh_p%surf, ele_mesh_p%edge, &
+     &  group_p%nod_grp, group_p%ele_grp, group_p%surf_grp,             &
+     &  inod_ksm, isurf_ksm, iedge_ksm,                                 &
+     &  numnod_ksm, numsurf_ksm, numedge_ksm)
+!
+      write(*,*) my_rank, numnod_ksm, numsurf_ksm, numedge_ksm
+!
 !      call const_surf_mesh_4_viewer                                     &
 !     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)
 !

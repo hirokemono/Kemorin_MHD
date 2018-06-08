@@ -4,7 +4,7 @@
 !! @author  H. Matsui
 !! @date Programmed in Jan., 2009
 !
-!> @brief Mark node and element to extend export table
+!> @brief Update group data for sleeve extender
 !!
 !!@verbatim
 !!      subroutine s_extend_group_table                                 &
