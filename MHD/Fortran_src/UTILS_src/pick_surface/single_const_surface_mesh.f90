@@ -55,7 +55,7 @@
       type(mesh_groups), save :: group_p
       type(element_geometry), save :: ele_mesh_p
 !
-      type(viewer_mesh_data), save :: view_mesh_p
+      type(viewer_mesh_data), allocatable :: view_mesh_p(:)
       integer(kind = kint), allocatable :: inod_ksm(:)
       integer(kind = kint), allocatable :: isurf_ksm(:)
       integer(kind = kint), allocatable :: iedge_ksm(:)
@@ -81,7 +81,7 @@
 !
 !  set mesh_information
 !
-       
+       allocate(view_mesh_p(mgd_mesh1%num_pe))
 !
       do ip = 1, mgd_mesh1%num_pe
         call input_mesh(mesh_file, (ip-1), mesh_p, group_p,             &
@@ -101,15 +101,19 @@
      &      ele_mesh_p%surf, ele_mesh_p%edge,                           &
      &      group_p%nod_grp, group_p%ele_grp, group_p%surf_grp,         &
      &      inod_ksm, isurf_ksm, iedge_ksm,                             &
-     &      view_mesh_p%nnod_viewer, view_mesh_p%nsurf_viewer,          &
-     &      view_mesh_p%nedge_viewer)
+     &      view_mesh_p(ip)%nnod_viewer, view_mesh_p(ip)%nsurf_viewer,  &
+     &      view_mesh_p(ip)%nedge_viewer)
 !
-        write(*,*) ip-1, view_mesh_p%nnod_viewer,                       &
-     &             view_mesh_p%nsurf_viewer, view_mesh_p%nedge_viewer
 !
         deallocate(inod_ksm,  isurf_ksm, iedge_ksm)
         call dealloc_mesh_infomations(mesh_p, group_p, ele_mesh_p)
       end do
+!
+      do ip = 1, mgd_mesh1%num_pe
+        write(*,*) ip-1, view_mesh_p(ip)%nnod_viewer,                   &
+     &      view_mesh_p(ip)%nsurf_viewer, view_mesh_p(ip)%nedge_viewer
+      end do
+      deallocate(view_mesh_p)
 !
 !
 !      call const_merged_mesh_data                                       &

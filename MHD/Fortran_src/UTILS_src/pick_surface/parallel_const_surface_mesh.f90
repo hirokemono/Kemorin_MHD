@@ -112,6 +112,8 @@
       
 !
       deallocate(inod_ksm,  isurf_ksm, iedge_ksm)
+      call dealloc_mesh_infomations(mesh_p, group_p, ele_mesh_p)
+!
 !      call const_surf_mesh_4_viewer                                     &
 !     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)
 !
