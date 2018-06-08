@@ -11,8 +11,8 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	/* int k, jst, jed; */
 	
 	printf("num_pe_sf: %d \n", mesh_s->num_pe_sf);
-	printf("nodpetot_viewer: %d \n", mesh_s->nodpetot_viewer);
-	printf("surfpetot_viewer: %d \n", mesh_s->surfpetot_viewer);
+	printf("nnod_viewer: %d \n", mesh_s->nnod_viewer);
+	printf("nsurf_viewer: %d \n", mesh_s->nsurf_viewer);
 	printf("edgepetot_viewer: %d \n", mesh_s->edgepetot_viewer);
 	
 	printf("inod_sf_stack");
@@ -33,13 +33,13 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	
 	
 	/* printf("node \n");
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++) {
+	for (i = 0; i < mesh_s->nnod_viewer; i++) {
 		printf(" %d %.12e %.12e %.12e \n", i, mesh_s->xx_view[i][0], mesh_s->xx_view[i][1], mesh_s->xx_view[i][2]);
 	};
 	*/
 	
 	/* printf("element type \n");
-	for (i = 0; i < mesh_s->surfpetot_viewer; i++) {
+	for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 		printf(" %d %d \n", i, mesh_s->surftyp_viewer[i]);
 	};
 	*/
@@ -52,7 +52,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	/*
 	printf("connectivity \n");
 	if( mesh_s->nnod_4_surf == 9 ){
-		for (i = 0; i < mesh_s->surfpetot_viewer; i++) {
+		for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 			printf(" %d %d %d %d %d %d %d %d %d %d \n", i, 
 					mesh_s->ie_sf_viewer[i][0], 
 					mesh_s->ie_sf_viewer[i][1], 
@@ -66,7 +66,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 		}
 	}
 	else if( mesh_s->nnod_4_surf == 8 ){
-		for (i = 0; i < mesh_s->surfpetot_viewer; i++) {
+		for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 			printf(" %d %d %d %d %d %d %d %d %d \n", i, 
 					mesh_s->ie_sf_viewer[i][0], 
 					mesh_s->ie_sf_viewer[i][1], 
@@ -79,7 +79,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 		}
 	}
 	else{
-		for (i = 0; i < mesh_s->surfpetot_viewer; i++) {
+		for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 			printf(" %d %d %d %d %d \n", i, 
 					mesh_s->ie_sf_viewer[i][0], 
 					mesh_s->ie_sf_viewer[i][1], 
@@ -108,7 +108,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	*/
 	/*
 	printf("edge connection for surface \n");
-	for (i = 0; i < mesh_s->surfpetot_viewer; i++) {
+	for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 		printf(" %d %d %d %d %d \n", i, 
 				mesh_s->iedge_sf_viewer[i][0], 
 				mesh_s->iedge_sf_viewer[i][1], 
@@ -305,7 +305,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	};
 	/*
 	printf("surf_norm_view surf_size_view \n");
-	for (i = 0; i < mesh_s->surfpetot_viewer; i++) {
+	for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 		for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
 			k = j + i*mesh_s->nsurf_each_tri;
 			printf("%d %d %.12e %.12e %.12e %.12e \n", i, j, 
@@ -316,7 +316,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	*/
 	/*
 	printf("surf_center_view \n");
-	for (i = 0; i < mesh_s->surfpetot_viewer; i++) {
+	for (i = 0; i < mesh_s->nsurf_viewer; i++) {
 		for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
 			k = j + i*mesh_s->nsurf_each_tri;
 			printf("%d %d %.12e %.12e %.12e \n", i, j, 

@@ -107,10 +107,10 @@
      &  mesh_p%node, mesh_p%nod_comm, ele_mesh_p%surf, ele_mesh_p%edge, &
      &  group_p%nod_grp, group_p%ele_grp, group_p%surf_grp,             &
      &  inod_ksm, isurf_ksm, iedge_ksm,                                 &
-     &  view_mesh_p%nnod_viewer, view_mesh_p%surfpetot_viewer,          &
+     &  view_mesh_p%nnod_viewer, view_mesh_p%nsurf_viewer,              &
      &  view_mesh_p%edgepetot_viewer)
 !
-      write(*,*) my_rank, view_mesh_p%nnod_viewer, view_mesh_p%surfpetot_viewer,          &
+      write(*,*) my_rank, view_mesh_p%nnod_viewer, view_mesh_p%nsurf_viewer,          &
      &  view_mesh_p%edgepetot_viewer
       
 !

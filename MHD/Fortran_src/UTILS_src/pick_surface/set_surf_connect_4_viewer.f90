@@ -60,7 +60,7 @@
      &   (mgd_mesh%num_pe, mgd_mesh%istack_surfpe, nsurf_sf)
 !
       call s_cal_total_and_stacks(num_pe, nsurf_sf, izero,              &
-     &    isurf_sf_stack, view_mesh%surfpetot_viewer)
+     &    isurf_sf_stack, view_mesh%nsurf_viewer)
 !
        write(*,*) 'allocate_sf_cvt_table_viewer'
       call allocate_sf_cvt_table_viewer                                 &

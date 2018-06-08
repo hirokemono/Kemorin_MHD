@@ -71,7 +71,7 @@
 !
 !
       type viewer_mesh_data
-        integer(kind = kint)  ::  surfpetot_viewer
+        integer(kind = kint)  ::  nsurf_viewer
         integer(kind = kint)  ::  edgepetot_viewer
         integer(kind = kint)  ::  nnod_viewer
 !
@@ -111,8 +111,8 @@
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
-      allocate(view_mesh%surftyp_viewer(view_mesh%surfpetot_viewer))
-      if(view_mesh%surfpetot_viewer .gt. 0) then
+      allocate(view_mesh%surftyp_viewer(view_mesh%nsurf_viewer))
+      if(view_mesh%nsurf_viewer .gt. 0) then
         view_mesh%surftyp_viewer = 0
       end if
 !
@@ -141,7 +141,7 @@
 !
       integer(kind  = kint) :: num
 !
-      num = view_mesh%surfpetot_viewer
+      num = view_mesh%nsurf_viewer
       allocate( view_mesh%ie_sf_viewer(num,nnod_4_surf) )
       allocate( view_mesh%isurf_gl_view(num) )
       if(num .gt. 0) view_mesh%ie_sf_viewer = 0
@@ -165,7 +165,7 @@
       if(num .gt. 0) view_mesh%ie_edge_viewer = 0
       if(num .gt. 0) view_mesh%iedge_gl_view = 0
 !
-      num = view_mesh%surfpetot_viewer
+      num = view_mesh%nsurf_viewer
       allocate(view_mesh%iedge_sf_viewer(num,nedge_4_surf))
       if(num .gt. 0) view_mesh%iedge_sf_viewer = 0
 !

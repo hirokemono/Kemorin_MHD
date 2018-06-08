@@ -74,7 +74,7 @@
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
       allocate( isf_merge2viewer(merged_surf%numsurf) )
-      allocate( isf_viewer2merge(view_mesh%surfpetot_viewer) )
+      allocate( isf_viewer2merge(view_mesh%nsurf_viewer) )
       isf_merge2viewer = 0
       isf_viewer2merge = 0
 !
@@ -189,7 +189,7 @@
       integer(kind = kint) :: inum, isurf
 !
 !
-      do inum = 1, view_mesh%surfpetot_viewer
+      do inum = 1, view_mesh%nsurf_viewer
         isurf = isf_viewer2merge(inum)
         view_mesh%ie_sf_viewer(inum,1:merged_surf%nnod_4_surf)          &
      &         = merged_surf%ie_surf(isurf,1:merged_surf%nnod_4_surf)

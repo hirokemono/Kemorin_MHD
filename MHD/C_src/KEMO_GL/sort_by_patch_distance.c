@@ -18,7 +18,7 @@ void copy_patch_distance_mesh(struct viewer_mesh *mesh_s){
 void sort_by_patch_distance_mesh(struct viewer_mesh *mesh_s, struct view_element *view_s){
 	int ip, i, j, ist, ied, num;
 	
-	num = mesh_s->nsurf_each_tri * mesh_s->surfpetot_viewer;
+	num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
 	set_distance_in_model(view_s, num, mesh_s->surf_center_view,  mesh_s->z_ele_view);
 	set_distance_in_model(view_s, mesh_s->num_pe_sf, mesh_s->domain_center,  mesh_s->z_center_view);
 	
