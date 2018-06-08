@@ -53,6 +53,9 @@
       use const_mesh_list_4_viewer
       use pickup_node_4_viewer
       use pickup_surface_4_viewer
+      use set_edge_data_by_sf
+      use extend_group_table
+      use copy_mesh_structures
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
@@ -62,6 +65,8 @@
       type(mesh_groups), save :: group_p
       type(element_geometry), save :: ele_mesh_p
 !
+      type(group_data), save :: new_nod_grp
+!
       type(element_data), save :: ele_p
       type(surface_data), save :: surf_p
       type(edge_data), save :: edge_p
@@ -70,6 +75,8 @@
       type(merged_viewer_mesh), save :: mgd_view_mesh_p
 !
       type(viewer_mesh_data), save :: view_mesh_p
+      type(viewer_surface_groups), save :: domain_grps_p
+!
       integer(kind = kint), allocatable :: inod_ksm(:)
       integer(kind = kint), allocatable :: isurf_ksm(:)
       integer(kind = kint), allocatable :: iedge_ksm(:)
@@ -89,6 +96,15 @@
       call mpi_input_mesh(mesh_file, nprocs, mesh_p, group_p,           &
      &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge)
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
+!
+      if(iflag_add_comm_tbl .gt. 0) then
+        call add_comm_table_in_node_group                               &
+     &     (nprocs, mesh_p%nod_comm, group_p%nod_grp, new_nod_grp)
+        call deallocate_grp_type(group_p%nod_grp)
+        call copy_group_data(new_nod_grp, group_p%nod_grp)
+        call deallocate_grp_type(new_nod_grp)
+      end if
+!
       call FEM_mesh_init_with_IO(iflag_output_SURF,                     &
      &    mesh_file, mesh_p, group_p, ele_mesh_p)
 !
@@ -102,12 +118,12 @@
       isurf_ksm = 0
       iedge_ksm = 0
 !
-      call s_const_mesh_list_4_viewer(iflag_add_comm_tbl,               &
-     &  mesh_p%node, mesh_p%nod_comm, ele_mesh_p%surf, ele_mesh_p%edge, &
-     &  group_p%nod_grp, group_p%ele_grp, group_p%surf_grp,             &
-     &  inod_ksm, isurf_ksm, iedge_ksm,                                 &
-     &  view_mesh_p%nnod_viewer, view_mesh_p%nsurf_viewer,              &
-     &  view_mesh_p%nedge_viewer)
+      call s_const_mesh_list_4_viewer                                   &
+     &   (mesh_p%node, ele_mesh_p%surf, ele_mesh_p%edge,                &
+     &    group_p%nod_grp, group_p%ele_grp, group_p%surf_grp,           &
+     &    inod_ksm, isurf_ksm, iedge_ksm,                               &
+     &    view_mesh_p%nnod_viewer, view_mesh_p%nsurf_viewer,            &
+     &    view_mesh_p%nedge_viewer)
 !
       call alloc_nod_position_viewer(view_mesh_p)
       call set_node_position_4_viewer                                   &
@@ -117,6 +133,13 @@
      &   (ele_mesh_p%surf%nnod_4_surf, view_mesh_p)
       call set_surf_connect_viewer(mesh_p%node, ele_mesh_p%surf,        &
      &    inod_ksm, isurf_ksm, view_mesh_p)
+       call set_surf_domain_id_viewer(ele_mesh_p%surf, view_mesh_p)
+!
+      call alloc_edge_data_4_sf                                         &
+     &   (ele_mesh_p%edge%nnod_4_edge, view_mesh_p)
+      call set_edges_connect_by_sf                                      &
+     &   (mesh_p%node, ele_mesh_p%surf, ele_mesh_p%edge,                &
+     &    inod_ksm, isurf_ksm, iedge_ksm, view_mesh_p)
 !
       write(*,*) my_rank, view_mesh_p%nnod_viewer,                      &
      &  view_mesh_p%nsurf_viewer, view_mesh_p%nedge_viewer
@@ -124,6 +147,14 @@
       deallocate(inod_ksm,  isurf_ksm, iedge_ksm)
       call dealloc_mesh_infomations(mesh_p, group_p, ele_mesh_p)
 !
+!
+!      call dealloc_merged_group_item(domain_grps_p%node_grp)
+!      call dealloc_merged_group_item(domain_grps_p%edge_grp)
+!      call dealloc_merged_group_item(domain_grps_p%surf_grp)
+!      call dealloc_viewer_surf_grps_stack(domain_grps_p)
+!
+      call dealloc_surf_type_viewer(view_mesh_p)
+      call dealloc_edge_data_4_sf(view_mesh_p)
       call dealloc_surf_connect_viewer(view_mesh_p)
       call dealloc_nod_position_viewer(view_mesh_p)
 !

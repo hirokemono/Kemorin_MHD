@@ -207,7 +207,7 @@
           do k1 = 1, surf%nnod_4_surf
             inod = surf%ie_surf(isurf,k1)
             view_mesh%ie_sf_viewer(inum,k1) = inod_ksm(inod)
-            if(inod_ksm(inod) .lt. 0) write(*,*)                        &
+            if(inod_ksm(inod) .le. 0) write(*,*)                        &
      &               'Wrong table in inod_ksm', inod
           end do
         end if

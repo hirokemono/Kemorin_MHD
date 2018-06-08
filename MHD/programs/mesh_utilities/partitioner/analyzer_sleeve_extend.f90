@@ -112,7 +112,7 @@
      &    next_tbl%neib_ele, newmesh%nod_comm, newmesh%node,            &
      &    new_ele_mesh%ele_comm, newmesh%ele)
       call s_extend_group_table                                         &
-     &   (newmesh%nod_comm, new_ele_mesh%ele_comm,                      &
+     &   (nprocs, newmesh%nod_comm, new_ele_mesh%ele_comm,              &
      &    newmesh%node, newmesh%ele, group, newgroup)
 !
       call mpi_output_mesh(distribute_mesh_file, newmesh, newgroup)

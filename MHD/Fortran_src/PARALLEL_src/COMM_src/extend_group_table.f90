@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine s_extend_group_table                                 &
-!!     &        (new_comm, new_node, org_group, new_group)
+!!     &        (nprocs, new_comm, new_ele_comm, new_node, new_ele,     &
+!!     &         org_group, new_group)
 !!@endverbatim
 !
       module extend_group_table
@@ -16,7 +17,6 @@
       use m_precision
       use m_constants
       use m_phys_constants
-      use calypso_mpi
 !
       use t_mesh_data
       use t_geometry_data
@@ -32,11 +32,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_extend_group_table                                   &
-     &        (new_comm, new_ele_comm, new_node, new_ele,               &
+     &        (nprocs, new_comm, new_ele_comm, new_node, new_ele,       &
      &         org_group, new_group)
 !
       use copy_mesh_structures
 !
+      integer(kind = kint), intent(in) :: nprocs
       type(communication_table), intent(in) :: new_comm, new_ele_comm
       type(node_data), intent(in) :: new_node
       type(element_data), intent(inout) :: new_ele
@@ -49,7 +50,7 @@
      &    org_group%nod_grp, new_group%nod_grp)
 !
 !      call add_comm_table_in_node_group                                &
-!     &   (new_comm, org_group%nod_grp, new_group%nod_grp)
+!     &   (nprocs, new_comm, org_group%nod_grp, new_group%nod_grp)
 !
       call extend_node_group(new_ele%numele, new_ele_comm,              &
      &    org_group%ele_grp, new_group%ele_grp)
@@ -266,10 +267,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine add_comm_table_in_node_group                           &
-     &         (new_comm, old_nod_grp, new_nod_grp)
+     &         (nprocs, new_comm, old_nod_grp, new_nod_grp)
 !
       use set_parallel_file_name
 !
+      integer(kind = kint), intent(in) :: nprocs
       type(communication_table), intent(in) :: new_comm
       type(group_data), intent(in) :: old_nod_grp
       type(group_data), intent(inout) :: new_nod_grp
@@ -304,6 +306,7 @@
         call add_int_suffix                                             &
      &     ((ip-1), export_head, new_nod_grp%grp_name(igrp))
       end do
+!
       n_import = 0
       n_export = 0
       do i = 1, new_comm%num_neib
@@ -313,6 +316,7 @@
         n_export(ip) = new_comm%istack_export(i)                        &
      &                - new_comm%istack_export(i-1)
       end do
+!
       do ip = 1, nprocs
         igrp = old_nod_grp%num_grp + ip
         new_nod_grp%istack_grp(igrp) = new_nod_grp%istack_grp(igrp-1)   &

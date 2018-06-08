@@ -265,6 +265,7 @@
       type(viewer_surface_groups), intent(inout) :: view_grps
 !
 !
+      view_grps%num_grp = num_pe
       allocate(view_grps%grp_name(view_grps%num_grp))
 !
       call alloc_merged_group_stack                                     &
