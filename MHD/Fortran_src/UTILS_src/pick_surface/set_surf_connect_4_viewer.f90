@@ -134,8 +134,8 @@
       view_ele_grps%num_grp = merged_grp%ele_grp%num_grp
       view_ele_grps%surf_grp%num_item                                   &
      &     = mgd_sf_grp%ntot_sf_iso_ele_grp_m
-       write(*,*) 'alloc_viewer_surf_grps_stack'
-      call alloc_viewer_surf_grps_stack(num_pe, view_ele_grps)
+       write(*,*) 'alloc_merged_surf_grps_stack'
+      call alloc_merged_surf_grps_stack(num_pe, view_ele_grps)
       call alloc_merged_group_item(view_ele_grps%surf_grp)
 !
       view_ele_grps%grp_name(1:view_ele_grps%num_grp)                   &
@@ -151,7 +151,7 @@
       view_sf_grps%num_grp = merged_grp%surf_grp%num_grp
       view_sf_grps%surf_grp%num_item = merged_grp%surf_grp%num_item
 !
-      call alloc_viewer_surf_grps_stack(num_pe, view_sf_grps)
+      call alloc_merged_surf_grps_stack(num_pe, view_sf_grps)
       call alloc_merged_group_item(view_sf_grps%surf_grp)
 !
       view_sf_grps%grp_name(1:view_sf_grps%num_grp)                     &

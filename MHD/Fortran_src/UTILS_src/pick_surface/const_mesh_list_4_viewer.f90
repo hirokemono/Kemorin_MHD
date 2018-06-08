@@ -11,6 +11,9 @@
 !!     &        (node, surf, edge, nod_grp, ele_grp, surf_grp,          &
 !!     &         inod_ksm, isurf_ksm, iedge_ksm,                        &
 !!     &         numnod_ksm, numsurf_ksm, numedge_ksm)
+!!      subroutine const_group_lists_4_viewer                           &
+!!     &        (node, surf, edge, group,inod_ksm, isurf_ksm, iedge_ksm,&
+!!     &         domain_grps, view_nod_grps, view_ele_grps, view_sf_grps)
 !!@endverbatim
 !
       module const_mesh_list_4_viewer
@@ -119,6 +122,62 @@
 !
 !------------------------------------------------------------------
 !
+      subroutine const_group_lists_4_viewer                             &
+     &        (node, surf, edge, group,inod_ksm, isurf_ksm, iedge_ksm,  &
+     &         domain_grps, view_nod_grps, view_ele_grps, view_sf_grps)
+!
+      use t_mesh_data
+      use t_merged_viewer_mesh
+!
+      type(node_data), intent(in) :: node
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+      type(mesh_groups), intent(in) :: group
+!
+      integer(kind = kint), intent(in) :: inod_ksm(node%numnod)
+      integer(kind = kint), intent(in) :: isurf_ksm(surf%numsurf)
+      integer(kind = kint), intent(in) :: iedge_ksm(edge%numedge)
+!
+      type(viewer_surface_groups), intent(inout) :: domain_grps
+!
+      type(viewer_node_groups), intent(inout) :: view_nod_grps
+      type(viewer_surface_groups), intent(inout) :: view_ele_grps
+      type(viewer_surface_groups), intent(inout) :: view_sf_grps
+!
+      integer(kind = kint), allocatable :: iflag_node(:)
+      integer(kind = kint), allocatable :: iflag_surf(:)
+      integer(kind = kint), allocatable :: iflag_edge(:)
+!
+!
+      allocate(iflag_node(node%numnod))
+      allocate(iflag_surf(surf%numsurf))
+      allocate(iflag_edge(edge%numedge))
+!
+      write(*,*) 'const_domain_groups_4_viewer'
+      call const_domain_groups_4_viewer(node, surf, edge,               &
+     &    inod_ksm, isurf_ksm, iedge_ksm,                               &
+     &    iflag_node, iflag_surf, iflag_edge, domain_grps)
+!
+      write(*,*) 'const_node_groups_4_viewer'
+      call const_node_groups_4_viewer(node, group%nod_grp,              &
+     &    inod_ksm, iflag_node, view_nod_grps)
+      write(*,*) 'const_element_groups_4_viewer'
+      call const_element_groups_4_viewer(node, surf, edge,              &
+     &    group%ele_grp, inod_ksm, isurf_ksm, iedge_ksm,                &
+     &    iflag_node, iflag_surf, iflag_edge,                           &
+     &    view_ele_grps)
+      write(*,*) 'const_surface_groups_4_viewer'
+      call const_surface_groups_4_viewer(node, surf, edge,              &
+     &    group%surf_grp, inod_ksm, isurf_ksm, iedge_ksm,               &
+     &    iflag_node, iflag_surf, iflag_edge,                           &
+     &    view_sf_grps)
+!
+      deallocate(iflag_node, iflag_surf, iflag_edge)
+!
+      end subroutine const_group_lists_4_viewer
+!
+!------------------------------------------------------------------
+!
       subroutine const_domain_groups_4_viewer(node, surf, edge,         &
      &          inod_ksm, isurf_ksm, iedge_ksm,                         &
      &          iflag_node, iflag_surf, iflag_edge, domain_grps)
@@ -179,14 +238,12 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine const_node_groups_4_viewer(node, surf, edge,           &
-     &          nod_grp, inod_ksm, iflag_node, view_grps)
+      subroutine const_node_groups_4_viewer                             &
+     &         (node, nod_grp, inod_ksm, iflag_node, view_grps)
 !
       use t_viewer_mesh
 !
       type(node_data), intent(in) :: node
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
       type(group_data), intent(in) :: nod_grp
 !
       integer(kind = kint), intent(in) :: inod_ksm(node%numnod)
@@ -531,8 +588,8 @@
       ist = surf_grp%istack_grp(igrp-1) + 1
       ied = surf_grp%istack_grp(igrp)
       do inum = ist, ied
-        iele = surf_grp%item_sf_grp(1,igrp)
-        k1 =   surf_grp%item_sf_grp(2,igrp)
+        iele = surf_grp%item_sf_grp(1,inum)
+        k1 =   surf_grp%item_sf_grp(2,inum)
         isurf = abs(surf%isf_4_ele(iele,k1))
         iflag_surf(isurf) = iflag_surf(isurf)                           &
      &                     + surf%isf_4_ele(iele,k1) / isurf
@@ -650,7 +707,7 @@
 !
       icou = istack_pre
       do inod = 1, numnod
-        icou = icou + iflag_node(inod)
+        icou = icou + abs(iflag_node(inod))
       end do
       count_group_item_4_viewer = icou
 !
@@ -673,9 +730,10 @@
 !
       icou = istack_pre
       do inod = 1, numnod
-        if(iflag_node(inod) .gt. 0) then
+        if(abs(iflag_node(inod)) .gt. 0) then
           icou = icou + 1
           item(icou) = inod_ksm(inod)
+          if(item(icou) .eq. 0) write(*,*) 'Wrong at', icou, inod, inod_ksm(inod)
         end if
       end do
 !

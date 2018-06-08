@@ -76,6 +76,9 @@
 !
       type(viewer_mesh_data), save :: view_mesh_p
       type(viewer_surface_groups), save :: domain_grps_p
+      type(viewer_node_groups), save :: view_nod_grps_p
+      type(viewer_surface_groups), save :: view_ele_grps_p
+      type(viewer_surface_groups), save :: view_sf_grps_p
 !
       integer(kind = kint), allocatable :: inod_ksm(:)
       integer(kind = kint), allocatable :: isurf_ksm(:)
@@ -141,17 +144,54 @@
      &   (mesh_p%node, ele_mesh_p%surf, ele_mesh_p%edge,                &
      &    inod_ksm, isurf_ksm, iedge_ksm, view_mesh_p)
 !
-      write(*,*) my_rank, view_mesh_p%nnod_viewer,                      &
+!
+      call const_group_lists_4_viewer                                   &
+     &   (mesh_p%node, ele_mesh_p%surf, ele_mesh_p%edge, group_p,       &
+     &    inod_ksm, isurf_ksm, iedge_ksm, domain_grps_p,                &
+     &    view_nod_grps_p, view_ele_grps_p, view_sf_grps_p)
+!
+      write(*,*) 'number of mesh', my_rank, view_mesh_p%nnod_viewer,    &
      &  view_mesh_p%nsurf_viewer, view_mesh_p%nedge_viewer
+      call calypso_mpi_barrier
+      write(*,*) 'domain group', my_rank,                               &
+     &  domain_grps_p%node_grp%num_item,                                &
+     &  domain_grps_p%surf_grp%num_item,                                &
+     &  domain_grps_p%edge_grp%num_item
+      write(*,*) 'node group', my_rank,                                 &
+     &  view_nod_grps_p%node_grp%num_item
+      call calypso_mpi_barrier
+      write(*,*) 'element group', my_rank,                              &
+     &  view_ele_grps_p%node_grp%num_item,                              &
+     &  view_ele_grps_p%surf_grp%num_item,                              &
+     &  view_ele_grps_p%edge_grp%num_item
+      call calypso_mpi_barrier
+      write(*,*) 'surface group', my_rank,                              &
+     &  view_sf_grps_p%node_grp%num_item,                               &
+     &  view_sf_grps_p%surf_grp%num_item,                               &
+     &  view_sf_grps_p%edge_grp%num_item
+      call calypso_mpi_barrier
 !
       deallocate(inod_ksm,  isurf_ksm, iedge_ksm)
       call dealloc_mesh_infomations(mesh_p, group_p, ele_mesh_p)
 !
 !
-!      call dealloc_merged_group_item(domain_grps_p%node_grp)
-!      call dealloc_merged_group_item(domain_grps_p%edge_grp)
-!      call dealloc_merged_group_item(domain_grps_p%surf_grp)
-!      call dealloc_viewer_surf_grps_stack(domain_grps_p)
+      call dealloc_merged_group_item(view_nod_grps_p%node_grp)
+      call dealloc_viewer_node_grps_stack(view_nod_grps_p)
+!
+      call dealloc_merged_group_item(view_ele_grps_p%node_grp)
+      call dealloc_merged_group_item(view_ele_grps_p%edge_grp)
+      call dealloc_merged_group_item(view_ele_grps_p%surf_grp)
+      call dealloc_viewer_surf_grps_stack(view_ele_grps_p)
+!
+      call dealloc_merged_group_item(view_sf_grps_p%node_grp)
+      call dealloc_merged_group_item(view_sf_grps_p%edge_grp)
+      call dealloc_merged_group_item(view_sf_grps_p%surf_grp)
+      call dealloc_viewer_surf_grps_stack(view_sf_grps_p)
+!
+      call dealloc_merged_group_item(domain_grps_p%node_grp)
+      call dealloc_merged_group_item(domain_grps_p%edge_grp)
+      call dealloc_merged_group_item(domain_grps_p%surf_grp)
+      call dealloc_viewer_surf_grps_stack(domain_grps_p)
 !
       call dealloc_surf_type_viewer(view_mesh_p)
       call dealloc_edge_data_4_sf(view_mesh_p)

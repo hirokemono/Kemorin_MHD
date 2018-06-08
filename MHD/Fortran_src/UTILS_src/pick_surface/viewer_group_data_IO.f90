@@ -154,7 +154,7 @@
       read(tmp_character,*) view_nod_grps%num_grp
 !
       num = num_pe * view_nod_grps%num_grp
-      call alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
+      call alloc_merged_node_grps_stack(num_pe, view_nod_grps)
       read(surface_id,*) view_nod_grps%node_grp%istack_sf(1:num)
 !
       view_nod_grps%node_grp%num_item                                   &
@@ -222,7 +222,7 @@
 !
       num = num_pe * view_ele_grps%num_grp
 !
-      call alloc_viewer_surf_grps_stack(num_pe, view_ele_grps)
+      call alloc_merged_surf_grps_stack(num_pe, view_ele_grps)
       read(surface_id,*) view_ele_grps%surf_grp%istack_sf(1:num)
 !
       view_ele_grps%surf_grp%num_item                                   &
@@ -312,7 +312,7 @@
       read(tmp_character,*) view_sf_grps%num_grp
       num = num_pe * view_sf_grps%num_grp
 !
-      call alloc_viewer_surf_grps_stack(num_pe, view_sf_grps)
+      call alloc_merged_surf_grps_stack(num_pe, view_sf_grps)
       read(surface_id,*) view_sf_grps%surf_grp%istack_sf(1:num)
 !
       view_sf_grps%surf_grp%num_item                                    &

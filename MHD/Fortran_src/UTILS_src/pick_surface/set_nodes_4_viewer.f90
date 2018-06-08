@@ -95,7 +95,7 @@
 !
       view_nod_grps%num_grp = merged_grp%nod_grp%num_grp
       view_nod_grps%node_grp%num_item = merged_grp%nod_grp%num_item
-      call alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
+      call alloc_merged_node_grps_stack(num_pe, view_nod_grps)
       call alloc_merged_group_item(view_nod_grps%node_grp)
 !
       view_nod_grps%grp_name(1:view_nod_grps%num_grp)                   &

@@ -151,7 +151,7 @@
 !
       call skip_gz_comment_int(view_nod_grps%num_grp)
 !
-      call alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
+      call alloc_merged_node_grps_stack(num_pe, view_nod_grps)
 !
       call read_gz_multi_int((num_pe*view_nod_grps%num_grp),            &
      &    view_nod_grps%node_grp%istack_sf(1))
@@ -224,7 +224,7 @@
       view_ele_grps%surf_grp%num_item                                   &
      &    = view_ele_grps%surf_grp%istack_sf(num)
 !
-      call alloc_viewer_surf_grps_stack(num_pe, view_ele_grps)
+      call alloc_merged_surf_grps_stack(num_pe, view_ele_grps)
       call read_gz_multi_int((num_pe*view_ele_grps%num_grp),            &
      &    view_ele_grps%surf_grp%istack_sf(1))
 !
@@ -312,7 +312,7 @@
       read(textbuf,*) view_sf_grps%num_grp
       num = num_pe * view_sf_grps%num_grp
 !
-      call alloc_viewer_surf_grps_stack(num_pe, view_sf_grps)
+      call alloc_merged_surf_grps_stack(num_pe, view_sf_grps)
       call read_gz_multi_int((num_pe*view_sf_grps%num_grp),             &
      &    view_sf_grps%surf_grp%istack_sf(1))
 !
