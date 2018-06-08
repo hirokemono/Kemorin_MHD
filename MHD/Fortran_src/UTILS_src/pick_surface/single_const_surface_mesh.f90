@@ -48,6 +48,8 @@
       use load_mesh_data
       use const_mesh_information
       use const_mesh_list_4_viewer
+      use pickup_node_4_viewer
+      use pickup_surface_4_viewer
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
@@ -104,6 +106,14 @@
      &      view_mesh_p(ip)%nnod_viewer, view_mesh_p(ip)%nsurf_viewer,  &
      &      view_mesh_p(ip)%nedge_viewer)
 !
+        call alloc_nod_position_viewer(view_mesh_p(ip))
+        call set_node_position_4_viewer                                 &
+     &     (mesh_p%node, inod_ksm, view_mesh_p(ip))
+!
+        call alloc_surf_connect_viewer                                  &
+     &     (ele_mesh_p%surf%nnod_4_surf, view_mesh_p(ip))
+        call set_surf_connect_viewer(mesh_p%node, ele_mesh_p%surf,      &
+     &      inod_ksm, isurf_ksm, view_mesh_p(ip))
 !
         deallocate(inod_ksm,  isurf_ksm, iedge_ksm)
         call dealloc_mesh_infomations(mesh_p, group_p, ele_mesh_p)
@@ -112,6 +122,8 @@
       do ip = 1, mgd_mesh1%num_pe
         write(*,*) ip-1, view_mesh_p(ip)%nnod_viewer,                   &
      &      view_mesh_p(ip)%nsurf_viewer, view_mesh_p(ip)%nedge_viewer
+        call dealloc_surf_connect_viewer(view_mesh_p(ip))
+        call dealloc_nod_position_viewer(view_mesh_p(ip))
       end do
       deallocate(view_mesh_p)
 !

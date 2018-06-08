@@ -20,8 +20,8 @@
 !!        type(mesh_geometry), intent(in) :: merged
 !!      subroutine renumber_surf_connect_4_viewer                       &
 !!     &         (nnod_4_surf, view_mesh, view_mesh)
-!!      subroutine set_node_position_4_viewer(merged, view_mesh)
-!!        type(mesh_geometry), intent(in) :: merged
+!!      subroutine set_node_position_4_viewer(node, inod_ksm, view_mesh)
+!!        type(node_data), intent(in) :: node
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!      subroutine set_node_group_item_viewer(merged_grp, nod_nod_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
@@ -189,19 +189,27 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_position_4_viewer(merged, view_mesh)
+      subroutine set_node_position_4_viewer(node, inod_ksm, view_mesh)
 !
       use t_mesh_data
 !
-      type(mesh_geometry), intent(in) :: merged
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: inod_ksm(node%numnod)
+!
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       integer(kind = kint) :: inum, inod
 !
 !
+!$omp parallel do
       do inum = 1, view_mesh%nnod_viewer
-        inod = inod_viewer2merge(inum)
-        view_mesh%xx_view(inum,1:3) = merged%node%xx(inod,1:3)
+        view_mesh%inod_gl_view(inum) = inum
+      end do
+!$omp end parallel do
+!
+      do inod = 1, node%numnod
+        inum = inod_ksm(inod)
+        if(inum .gt. 0) view_mesh%xx_view(inum,1:3) = node%xx(inod,1:3)
       end do
 !
       end subroutine set_node_position_4_viewer

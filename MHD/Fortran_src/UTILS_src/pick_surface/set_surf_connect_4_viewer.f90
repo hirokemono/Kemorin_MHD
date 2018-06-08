@@ -70,9 +70,8 @@
        write(*,*) 'deallocate_imark_surf'
       call deallocate_imark_surf
 !
-       write(*,*) 'alloc_surf_connect_viewer'
-      call alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
-      call set_surf_connect_viewer(mgd_mesh%merged_surf, view_mesh)
+!      call alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
+!      call set_surf_connect_viewer(mgd_mesh%merged_surf, view_mesh)
 !
       call s_set_groups_4_viewer_surface                                &
      &   (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp,        &

@@ -51,6 +51,8 @@
       use set_parallel_file_name
 !
       use const_mesh_list_4_viewer
+      use pickup_node_4_viewer
+      use pickup_surface_4_viewer
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
@@ -107,12 +109,23 @@
      &  view_mesh_p%nnod_viewer, view_mesh_p%nsurf_viewer,              &
      &  view_mesh_p%nedge_viewer)
 !
+      call alloc_nod_position_viewer(view_mesh_p)
+      call set_node_position_4_viewer                                   &
+     &   (mesh_p%node, inod_ksm, view_mesh_p)
+!
+      call alloc_surf_connect_viewer                                    &
+     &   (ele_mesh_p%surf%nnod_4_surf, view_mesh_p)
+      call set_surf_connect_viewer(mesh_p%node, ele_mesh_p%surf,        &
+     &    inod_ksm, isurf_ksm, view_mesh_p)
+!
       write(*,*) my_rank, view_mesh_p%nnod_viewer,                      &
      &  view_mesh_p%nsurf_viewer, view_mesh_p%nedge_viewer
-      
 !
       deallocate(inod_ksm,  isurf_ksm, iedge_ksm)
       call dealloc_mesh_infomations(mesh_p, group_p, ele_mesh_p)
+!
+      call dealloc_surf_connect_viewer(view_mesh_p)
+      call dealloc_nod_position_viewer(view_mesh_p)
 !
 !      call const_surf_mesh_4_viewer                                     &
 !     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)

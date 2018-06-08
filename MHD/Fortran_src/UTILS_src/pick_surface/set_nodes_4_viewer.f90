@@ -62,7 +62,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'alloc_nod_position_viewer'
       call alloc_nod_position_viewer(view_mesh)
-      call set_node_position_4_viewer(mgd_mesh%merged, view_mesh)
+!      call set_node_position_4_viewer(mgd_mesh%merged, view_mesh)
 !
       call renumber_surf_connect_4_viewer(nnod_4_surf, view_mesh)
 !
