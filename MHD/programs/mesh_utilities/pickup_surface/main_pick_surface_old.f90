@@ -41,7 +41,7 @@
      &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
       pick_mesh_file%file_prefix = file_head
-      call choose_surface_mesh_para(pick_mesh_file)
+      call pickup_surface_mesh_para(pick_mesh_file)
 !
       call calypso_MPI_finalize
       stop ' //// program normally finished //// '
