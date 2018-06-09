@@ -47,9 +47,7 @@
       use load_mesh_data
       use const_mesh_information
       use const_mesh_list_4_viewer
-      use pickup_node_4_viewer
       use pickup_surface_4_viewer
-      use set_edge_data_by_sf
       use extend_group_table
       use copy_mesh_structures
       use set_parallel_file_name
@@ -142,7 +140,7 @@
 !
         call alloc_edge_data_4_sf                                       &
      &     (ele_mesh_p%edge%nnod_4_edge, view_mesh_p(ip))
-        call set_edges_connect_by_sf                                    &
+        call set_edge_connect_viewer                                    &
      &     (mesh_p%node, ele_mesh_p%surf, ele_mesh_p%edge,              &
      &      inod_ksm, isurf_ksm, iedge_ksm, view_mesh_p(ip))
 !
