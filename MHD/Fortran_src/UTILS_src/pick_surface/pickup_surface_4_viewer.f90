@@ -3,16 +3,22 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
+!!      subroutine set_node_position_4_viewer(node, inod_ksm, view_mesh)
 !!      subroutine set_surf_connect_viewer                              &
 !!     &         (node, surf, inod_ksm, isurf_ksm, view_mesh)
-!!        type(surface_data), intent(in) :: merged_surf
+!!      subroutine set_edge_connect_viewer(node, surf, edge,            &
+!!     &          inod_ksm, isurf_ksm, iedge_ksm, view_mesh)
+!!        type(node_data), intent(in) :: node
+!!        type(surface_data), intent(in) :: surf
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
+!!        type(edge_data), intent(in) :: edge
 !
       module pickup_surface_4_viewer
 !
       use m_precision
       use t_geometry_data
       use t_surface_data
+      use t_edge_data
       use t_viewer_mesh
 !
       implicit none
@@ -20,6 +26,33 @@
 !------------------------------------------------------------------
 !
       contains
+!
+!------------------------------------------------------------------
+!
+      subroutine set_node_position_4_viewer(node, inod_ksm, view_mesh)
+!
+      use t_mesh_data
+!
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: inod_ksm(node%numnod)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+      integer(kind = kint) :: inum, inod
+!
+!
+!$omp parallel do
+      do inum = 1, view_mesh%nnod_viewer
+        view_mesh%inod_gl_view(inum) = inum
+      end do
+!$omp end parallel do
+!
+      do inod = 1, node%numnod
+        inum = inod_ksm(inod)
+        if(inum .gt. 0) view_mesh%xx_view(inum,1:3) = node%xx(inod,1:3)
+      end do
+!
+      end subroutine set_node_position_4_viewer
 !
 !------------------------------------------------------------------
 !
@@ -56,6 +89,57 @@
       end do
 !
       end subroutine set_surf_connect_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine set_edge_connect_viewer(node, surf, edge,              &
+     &          inod_ksm, isurf_ksm, iedge_ksm, view_mesh)
+!
+      type(node_data), intent(in) :: node
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+!
+      integer(kind = kint), intent(in) :: inod_ksm(node%numnod)
+      integer(kind = kint), intent(in) :: isurf_ksm(surf%numsurf)
+      integer(kind = kint), intent(in) :: iedge_ksm(edge%numedge)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+!
+      integer(kind = kint) :: iedge, isurf, inod, inum, k1
+!
+!
+!$omp parallel do
+      do inum = 1, view_mesh%nedge_viewer
+        view_mesh%iedge_gl_view(inum) = inum
+      end do
+!$omp end parallel do
+!
+      do iedge = 1, edge%numedge
+        inum = iedge_ksm(iedge)
+        if(inum .gt. 0) then
+          do k1 = 1, edge%nnod_4_edge
+            inod = edge%ie_edge(iedge,k1)
+            view_mesh%ie_edge_viewer(inum,k1) = inod_ksm(inod)
+              if(inod_ksm(inod) .le. 0) write(*,*)                      &
+     &               'Wrong table in inod_ksm', inod
+          end do
+        end if
+      end do
+      return
+!
+      do isurf = 1, surf%numsurf
+        inum = isurf_ksm(isurf)
+        if(inum .gt. 0) then
+          do k1 = 1, nedge_4_surf
+            iedge = abs(edge%iedge_4_sf(isurf,k1))
+            view_mesh%iedge_sf_viewer(inum,k1) = iedge_ksm(iedge)
+            if(iedge_ksm(iedge) .le. 0) write(*,*)                      &
+     &              'Wrong table in iedge_ksm', iedge, iedge_ksm(iedge)
+          end do
+        end if
+      end do
+!
+      end subroutine set_edge_connect_viewer
 !
 !------------------------------------------------------------------
 !

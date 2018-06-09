@@ -61,56 +61,73 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_edges_connect_by_sf(node, surf, edge,              &
-     &          inod_ksm, isurf_ksm, iedge_ksm, view_mesh)
+      subroutine set_edges_connect_by_sf(numnod, numsurf, numedge,      &
+     &          nnod_4_surf, nnod_4_edge, ie_surf,                      &
+     &          istack_edge_hash, iend_edge_hash, iedge_hash,           &
+     &          iedge_flag, ie_edge, iedge_4_sf, node_on_edge_sf)
 !
-      use t_geometry_data
-      use t_surface_data
-      use t_edge_data
-      use t_viewer_mesh
+      integer(kind = kint), intent(in) :: numnod, numsurf, numedge
+      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
+      integer(kind = kint), intent(in) :: ie_surf(numsurf, nnod_4_surf)
 !
-      type(node_data), intent(in) :: node
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
+      integer(kind = kint), intent(in) :: iend_edge_hash
+      integer(kind = kint), intent(in)                                  &
+     &                     :: istack_edge_hash(0:nnod_4_edge*numnod)
+      integer(kind = kint), intent(in)                                  &
+     &                     :: iedge_hash(nedge_4_surf*numsurf,2)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: iedge_flag(nedge_4_surf*numsurf)
 !
-      integer(kind = kint), intent(in) :: inod_ksm(node%numnod)
-      integer(kind = kint), intent(in) :: isurf_ksm(surf%numsurf)
-      integer(kind = kint), intent(in) :: iedge_ksm(edge%numedge)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: ie_edge(numedge,nnod_4_edge)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: iedge_4_sf(numsurf,nedge_4_surf)
+      integer(kind = kint), intent(in)                                  &
+     &                     :: node_on_edge_sf(nnod_4_edge,nedge_4_surf)
 !
-      type(viewer_mesh_data), intent(inout) :: view_mesh
+      integer(kind = kint) :: k1, k2, ihash, ist, ied
+      integer(kind = kint) :: i, isurf, is, iedge
+      integer(kind = kint) :: j, jsurf, js
 !
-      integer(kind = kint) :: iedge, isurf, inod, inum, k1
 !
+      iedge = 0
+      do ihash = 1, iend_edge_hash
+        ist = istack_edge_hash(ihash-1)+1
+        ied = istack_edge_hash(ihash)
+        do k1 = ist, ied
+          if (iedge_flag(k1) .eq. k1) then
+            iedge = iedge + 1
 !
-!$omp parallel do
-      do inum = 1, view_mesh%nedge_viewer
-        view_mesh%iedge_gl_view(inum) = inum
+            isurf = iedge_hash(k1,1)
+            is =    iedge_hash(k1,2)
+            iedge_4_sf(isurf,is) = iedge
+            do i = 1, nnod_4_edge
+              j = node_on_edge_sf(i,is)
+              ie_edge(iedge,i) = ie_surf(isurf,j)
+            end do
+!
+          end if
+        end do
       end do
-!$omp end parallel do
 !
-      do iedge = 1, edge%numedge
-        inum = iedge_ksm(iedge)
-        if(inum .gt. 0) then
-          do k1 = 1, edge%nnod_4_edge
-            inod = edge%ie_edge(iedge,k1)
-            view_mesh%ie_edge_viewer(inum,k1) = inod_ksm(inod)
-              if(inod_ksm(inod) .le. 0) write(*,*)                      &
-     &               'Wrong table in inod_ksm', inod
-          end do
-        end if
-      end do
-      return
 !
-      do isurf = 1, surf%numsurf
-        inum = isurf_ksm(isurf)
-        if(inum .gt. 0) then
-          do k1 = 1, nedge_4_surf
-            iedge = abs(edge%iedge_4_sf(isurf,k1))
-            view_mesh%iedge_sf_viewer(inum,k1) = iedge_ksm(iedge)
-            if(iedge_ksm(iedge) .le. 0) write(*,*)                      &
-     &              'Wrong table in iedge_ksm', iedge, iedge_ksm(iedge)
-          end do
-        end if
+!
+      do ihash = 1, iend_edge_hash
+        ist = istack_edge_hash(ihash-1)+1
+        ied = istack_edge_hash(ihash)
+        do k1 = ist, ied
+!
+          if (iedge_flag(k1) .ne. k1) then
+!
+            k2 = abs(iedge_flag(k1))
+            isurf = iedge_hash(k1,1)
+            is =   iedge_hash(k1,2)
+            jsurf = iedge_hash(k2,1)
+            js =   iedge_hash(k2,2)
+            iedge_4_sf(isurf,is)                                        &
+     &       = iedge_4_sf(jsurf,js) * (iedge_flag(k1) / k2)
+          end if
+        end do
       end do
 !
       end subroutine set_edges_connect_by_sf
