@@ -357,19 +357,6 @@
 !
 !------------------------------------------------------------------
 !
-!      subroutine const_merged_mesh_data                                 &
-!     &         (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp)
-!
-!       call set_overlapped_mesh_and_group                              &
-!     &    (mesh_file, ele%nnod_4_ele, mgd_mesh)
-!       call set_source_mesh_parameter                                  &
-!     &    (ele, surf, edge, mgd_mesh%merged_surf)
-!       call s_const_merged_surf_data(mgd_mesh)
-!
-!      end subroutine const_merged_mesh_data
-!
-!------------------------------------------------------------------
-!
 !      subroutine set_source_mesh_parameter                              &
 !     &         (ele, surf, edge, merged_surf)
 !

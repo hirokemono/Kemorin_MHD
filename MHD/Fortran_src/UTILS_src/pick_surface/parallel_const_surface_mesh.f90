@@ -240,19 +240,6 @@
 !
 !------------------------------------------------------------------
 !
-!      subroutine const_merged_mesh_para                                &
-!     &         (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp)
-!
-!
-!       call set_source_mesh_parameter                                   &
-!     &    (ele, surf, edge, mgd_mesh%merged_surf)
-!
-!       call s_const_merged_surf_data(mgd_mesh)
-!
-!      end subroutine const_merged_mesh_para
-!
-!------------------------------------------------------------------
-!
       subroutine collect_surf_mesh_4_viewer                             &
      &         (mesh_file,  surf, edge, mgd_v_mesh_p, mgd_view_mesh)
 !
@@ -305,9 +292,6 @@
 !      call calypso_mpi_barrier
 !      call MPI_BCAST(mesh_file%iflag_format, ione,                      &
 !     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-!      call const_merged_mesh_para                                       &
-!     &   (mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p)
 !
 !      call const_surf_mesh_4_viewer                                     &
 !     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)
