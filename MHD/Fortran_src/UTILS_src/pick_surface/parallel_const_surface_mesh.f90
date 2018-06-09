@@ -26,7 +26,6 @@
       use t_edge_data
       use t_file_IO_parameter
       use t_mesh_data_4_merge
-      use t_grp_data_merged_surfaces
       use t_merged_viewer_mesh
 !
       implicit none
@@ -231,9 +230,6 @@
       call dealloc_nod_position_viewer(mgd_view_mesh_p%view_mesh)
       call dealloc_num_mesh_sf(mgd_view_mesh_p)
 !
-!      call const_surf_mesh_4_viewer                                     &
-!     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)
-!
 !      call deallocate_quad4_2_linear
 !
       end subroutine pickup_surface_mesh_para
@@ -279,31 +275,5 @@
       end subroutine collect_surf_mesh_4_viewer
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-!      subroutine choose_surface_mesh_para(mesh_file)
-!
-!      mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
-!
-!      if(my_rank .eq. 0) then
-!        if(iflag_debug .eq. 0) write(*,*) 'find_merged_mesh_format'
-!        call find_merged_mesh_format(mesh_file)
-!      end if
-!      call calypso_mpi_barrier
-!      call MPI_BCAST(mesh_file%iflag_format, ione,                      &
-!     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-!      call const_surf_mesh_4_viewer                                     &
-!     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)
-!
-!
-!      call collect_surf_mesh_4_viewer                                   &
-!     &   (mesh_file, surf_p, edge_p, mgd_view_mesh_p, mgd_view_mesh1)
-!
-!      call deallocate_quad4_2_linear
-!
-!      end subroutine choose_surface_mesh_para
-!
-!------------------------------------------------------------------
 !
       end module parallel_const_surface_mesh

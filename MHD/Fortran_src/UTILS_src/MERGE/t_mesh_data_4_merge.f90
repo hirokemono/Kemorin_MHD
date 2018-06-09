@@ -16,9 +16,6 @@
 !!      subroutine dealloc_array_4_merge(mgd_mesh)
 !!      subroutine dealloc_number_of_mesh(mgd_mesh)
 !!
-!!      subroutine dealloc_surf_connect_merge(mgd_mesh)
-!!        type(merged_mesh), intent(inout) :: mgd_mesh
-!!
 !!      subroutine alloc_number_of_2nd_mesh(sec_mesh)
 !!      subroutine dealloc_number_of_2nd_mesh(sec_mesh)
 !!        type(second_mesh), intent(inout) :: sec_mesh
@@ -166,19 +163,6 @@
       end subroutine alloc_array_4_element
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine dealloc_surf_connect_merge(mgd_mesh)
-!
-      type(merged_mesh), intent(inout) :: mgd_mesh
-!
-!
-      call deallocate_surface_connect_type(mgd_mesh%merged_surf)
-      call deallocate_iso_surface_type(mgd_mesh%merged_surf)
-!
-      end subroutine dealloc_surf_connect_merge
-!
-! ------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine dealloc_array_4_merge(mgd_mesh)

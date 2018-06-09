@@ -25,7 +25,6 @@
       use t_file_IO_parameter
       use t_mesh_data_4_merge
       use t_viewer_mesh
-      use t_grp_data_merged_surfaces
       use t_merged_viewer_mesh
 !
       implicit none
@@ -314,46 +313,6 @@
       stop 'I cannot find mesh file!!'
 !
       end subroutine find_mesh_format_4_viewer
-!
-!------------------------------------------------------------------
-!
-!      subroutine const_surf_mesh_4_viewer                               &
-!     &         (surf, edge, mgd_mesh, mgd_sf_grp, mgd_view_mesh)
-!
-!      call alloc_num_mesh_sf(mgd_mesh%num_pe, mgd_view_mesh)
-!
-!       call s_set_surf_connect_4_viewer(surf%nnod_4_surf,               &
-!     &    mgd_mesh, mgd_sf_grp,  mgd_view_mesh%num_pe_sf,               &
-!     &     mgd_view_mesh%nsurf_sf, mgd_view_mesh%isurf_sf_stack,        &
-!     &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,          &
-!     &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
-!       write(*,*) 's_set_nodes_4_viewer'
-!       call s_set_nodes_4_viewer                                        &
-!     &    (surf%nnod_4_surf, mgd_mesh, mgd_view_mesh%num_pe_sf,         &
-!     &     mgd_view_mesh%nnod_sf, mgd_view_mesh%inod_sf_stack,          &
-!     &     mgd_view_mesh%view_mesh, mgd_view_mesh%view_nod_grps)
-!
-!       write(*,*) 'set_surf_domain_id_viewer'
-!       call set_surf_domain_id_viewer                                   &
-!     &    (mgd_mesh%merged_surf, mgd_view_mesh%view_mesh)
-!
-!
-!       call dealloc_array_4_merge(mgd_mesh)
-!
-!       write(*,*)  'construct_edge_4_viewer'
-!       call construct_edge_4_viewer(surf, edge,                         &
-!     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack,        &
-!     &     mgd_view_mesh%nedge_sf, mgd_view_mesh%iedge_sf_stack,        &
-!     &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,          &
-!     &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
-!       write(*,*)  's_set_nodes_4_groups_viewer'
-!       call s_set_nodes_4_groups_viewer                                 &
-!     &    (surf%nnod_4_surf, edge%nnod_4_edge,                          &
-!     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack,        &
-!     &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,          &
-!     &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
-!
-!      end subroutine const_surf_mesh_4_viewer
 !
 !------------------------------------------------------------------
 !
