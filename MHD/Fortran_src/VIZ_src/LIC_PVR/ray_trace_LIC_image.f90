@@ -365,7 +365,9 @@
                 if(grad_len .ne. 0.0) then
                   grad_tgt(1:3) = grad_tgt(1:3) / grad_len
                 endif
+! render section (clipping surface)
 
+!
               call s_lic_rgba_4_each_pixel(viewpoint_vec, xx_lic_last, xx_lic,           &
               &        c_tgt(1), grad_tgt, color_param, step_size, rgba_ray)
 

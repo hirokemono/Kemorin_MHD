@@ -177,7 +177,7 @@ subroutine simulate_field_line_integral(nnod, nele, nsurf,                &
       return
     end if
     if(itr_num .gt. 500) then
-      write(*,*) 'iteration too large in 1: ', itr_num
+      !write(*,*) 'iteration too large in 1: ', itr_num
       !write(*,*) 'total length: ', len_sum, 'kernel', k_value, 'step', step_len
       return
     end if
