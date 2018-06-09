@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_renumber_para_viewer_mesh                          &
-!!     &         (surf, edge, mgd_v_mesh_p, mgd_view_mesh)
+!!     &         (my_rank, surf, edge, mgd_v_mesh_p, mgd_view_mesh)
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
 !!        type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p
@@ -35,25 +35,16 @@
 !------------------------------------------------------------------
 !
       subroutine s_renumber_para_viewer_mesh                            &
-     &         (surf, edge, mgd_v_mesh_p, mgd_view_mesh)
+     &         (my_rank, surf, edge, mgd_v_mesh_p, mgd_view_mesh)
 !
-      use const_global_element_ids
-!
+      integer(kind = kint), intent(in) :: my_rank
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
       type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
 !
-      call count_number_of_node_stack4(mgd_v_mesh_p%inod_sf_stack(1),   &
-     &     mgd_view_mesh%inod_sf_stack)
-      call count_number_of_node_stack4(mgd_v_mesh_p%isurf_sf_stack(1),  &
-     &     mgd_view_mesh%isurf_sf_stack)
-      call count_number_of_node_stack4(mgd_v_mesh_p%iedge_sf_stack(1),  &
-     &     mgd_view_mesh%iedge_sf_stack)
-!
       call num_merged_viewer_nod_surf_edge(mgd_view_mesh)
-!
 !
       call set_global_node_info_4_viewer                                &
      &   (my_rank, mgd_view_mesh, mgd_v_mesh_p%view_mesh)
@@ -210,7 +201,8 @@
 !
       do i = 1, surf_grp%num_item
         surf_grp%item_sf(i) = surf_grp%item_sf(i)                       &
-     &                       + mgd_view_mesh%isurf_sf_stack(my_rank)
+     &                 + sign(mgd_view_mesh%isurf_sf_stack(my_rank),    &
+     &                        surf_grp%item_sf(i))
       end do
 !
       end subroutine set_global_surf_grp_items

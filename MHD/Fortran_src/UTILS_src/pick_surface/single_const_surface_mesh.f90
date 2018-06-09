@@ -56,6 +56,7 @@
       use set_parallel_file_name
       use viewer_mesh_data_IO
       use viewer_group_data_IO
+      use merge_viewer_mesh
 !
 !
       type(field_IO_params), intent(inout) :: mesh_file
@@ -202,15 +203,15 @@
      &        write(*,*) 'Wrong group item', ip-1, inum
         end do
 !
+        mgd_view_mesh_p%inod_sf_stack(1) =  view_mesh_p(ip)%nnod_viewer
+        mgd_view_mesh_p%isurf_sf_stack(1) = view_mesh_p(ip)%nsurf_viewer
+        mgd_view_mesh_p%iedge_sf_stack(1) = view_mesh_p(ip)%nedge_viewer
+!
         call add_int_suffix                                             &
      &     ((ip-1), mesh_file%file_prefix, fname_tmp)
         call add_ksm_extension(fname_tmp, file_name)
         write(*,*) 'surface mesh file name: ', trim(file_name)
         open (surface_id, file = file_name)
-!
-        mgd_view_mesh_p%inod_sf_stack(1) =  view_mesh_p(ip)%nnod_viewer
-        mgd_view_mesh_p%isurf_sf_stack(1) = view_mesh_p(ip)%nsurf_viewer
-        mgd_view_mesh_p%iedge_sf_stack(1) = view_mesh_p(ip)%nedge_viewer
 !
         call write_domain_data_viewer(mgd_view_mesh_p)
         call write_node_data_viewer(view_mesh_p(ip))
@@ -225,8 +226,16 @@
         call write_ele_group_viewer(ione, view_ele_grps_p(ip))
         call write_surf_group_viewer(ione, view_sf_grps_p(ip))
         close(surface_id)
+      end do
+      call dealloc_num_mesh_sf(mgd_view_mesh_p)
 !
+      call s_merge_viewer_mesh(mgd_mesh1%num_pe,                        &
+     &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge,     &
+     &    view_mesh_p, domain_grps_p,                                   &
+     &    view_nod_grps_p, view_ele_grps_p, view_sf_grps_p,             &
+     &    mgd_view_mesh_p)
 !
+      do ip = 1, mgd_mesh1%num_pe
         call dealloc_merged_group_item(view_nod_grps_p(ip)%node_grp)
         call dealloc_viewer_node_grps_stack(view_nod_grps_p(ip))
 !
@@ -252,17 +261,34 @@
       end do
       deallocate(view_mesh_p, domain_grps_p)
       deallocate(view_nod_grps_p, view_ele_grps_p, view_sf_grps_p)
+!
+      call sel_output_surface_grid(mesh_file%iflag_format,              &
+     &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge,     &
+     &    mgd_view_mesh_p)
+!
+      call dealloc_merged_group_item(mgd_view_mesh_p%view_nod_grps%node_grp)
+      call dealloc_viewer_node_grps_stack(mgd_view_mesh_p%view_nod_grps)
+!
+      call dealloc_merged_group_item(mgd_view_mesh_p%view_ele_grps%node_grp)
+      call dealloc_merged_group_item(mgd_view_mesh_p%view_ele_grps%edge_grp)
+      call dealloc_merged_group_item(mgd_view_mesh_p%view_ele_grps%surf_grp)
+      call dealloc_viewer_surf_grps_stack(mgd_view_mesh_p%view_ele_grps)
+!
+      call dealloc_merged_group_item(mgd_view_mesh_p%view_sf_grps%node_grp)
+      call dealloc_merged_group_item(mgd_view_mesh_p%view_sf_grps%edge_grp)
+      call dealloc_merged_group_item(mgd_view_mesh_p%view_sf_grps%surf_grp)
+      call dealloc_viewer_surf_grps_stack(mgd_view_mesh_p%view_sf_grps)
+!
+      call dealloc_merged_group_item(mgd_view_mesh_p%domain_grps%node_grp)
+      call dealloc_merged_group_item(mgd_view_mesh_p%domain_grps%edge_grp)
+      call dealloc_merged_group_item(mgd_view_mesh_p%domain_grps%surf_grp)
+      call dealloc_viewer_surf_grps_stack(mgd_view_mesh_p%domain_grps)
+!
+      call dealloc_surf_type_viewer(mgd_view_mesh_p%view_mesh)
+      call dealloc_edge_data_4_sf(mgd_view_mesh_p%view_mesh)
+      call dealloc_surf_connect_viewer(mgd_view_mesh_p%view_mesh)
+      call dealloc_nod_position_viewer(mgd_view_mesh_p%view_mesh)
       call dealloc_num_mesh_sf(mgd_view_mesh_p)
-!
-!
-!      call const_merged_mesh_data                                       &
-!     &   (mesh_file, ele_v, surf_v, edge_v, mgd_mesh1, mgd_sf_grp1)
-!      write(*,*) 'const_surf_mesh_4_viewer'
-!      call const_surf_mesh_4_viewer                                     &
-!     &   (surf_v, edge_v, mgd_mesh1, mgd_sf_grp1, mgd_view_mesh1)
-!
-!      call sel_output_surface_grid(mesh_file%iflag_format,              &
-!     &    surf_v%nnod_4_surf, edge_v%nnod_4_edge, mgd_view_mesh1)
 !
       end subroutine choose_surface_mesh_sgl
 !

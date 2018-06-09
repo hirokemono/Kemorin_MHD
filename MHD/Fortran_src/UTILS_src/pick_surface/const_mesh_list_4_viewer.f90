@@ -153,20 +153,16 @@
       allocate(iflag_surf(surf%numsurf))
       allocate(iflag_edge(edge%numedge))
 !
-      write(*,*) 'const_domain_groups_4_viewer'
       call const_domain_groups_4_viewer(node, surf, edge,               &
      &    inod_ksm, isurf_ksm, iedge_ksm,                               &
      &    iflag_node, iflag_surf, iflag_edge, domain_grps)
 !
-      write(*,*) 'const_node_groups_4_viewer'
       call const_node_groups_4_viewer(node, group%nod_grp,              &
      &    inod_ksm, iflag_node, view_nod_grps)
-      write(*,*) 'const_element_groups_4_viewer'
       call const_element_groups_4_viewer(node, surf, edge,              &
      &    group%ele_grp, inod_ksm, isurf_ksm, iedge_ksm,                &
      &    iflag_node, iflag_surf, iflag_edge,                           &
      &    view_ele_grps)
-      write(*,*) 'const_surface_groups_4_viewer'
       call const_surface_groups_4_viewer(node, surf, edge,              &
      &    group%surf_grp, inod_ksm, isurf_ksm, iedge_ksm,               &
      &    iflag_node, iflag_surf, iflag_edge,                           &
