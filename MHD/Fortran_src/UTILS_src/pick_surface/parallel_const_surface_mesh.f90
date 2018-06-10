@@ -259,10 +259,14 @@
       call count_number_of_node_stack4                                  &
      &   (mgd_v_mesh_p%view_mesh%nedge_viewer,                          &
      &    mgd_view_mesh%iedge_sf_stack)
+      call num_merged_viewer_nod_surf_edge(mgd_view_mesh)
 !
       write(*,*) 's_renumber_para_viewer_mesh'
       call s_renumber_para_viewer_mesh                                  &
-     &   (my_rank, surf, edge, mgd_v_mesh_p, mgd_view_mesh)
+     &   (mgd_view_mesh%inod_sf_stack(my_rank),                         &
+     &    mgd_view_mesh%isurf_sf_stack(my_rank),                        &
+     &    mgd_view_mesh%iedge_sf_stack(my_rank),                        &
+     &    surf, edge, mgd_v_mesh_p)
 !
       call sel_mpi_output_surface_grid                                  &
      &   (mesh_file%iflag_format, surf%nnod_4_surf, edge%nnod_4_edge,   &

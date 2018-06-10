@@ -125,7 +125,6 @@
           end do
         end if
       end do
-      return
 !
       do isurf = 1, surf%numsurf
         inum = isurf_ksm(isurf)

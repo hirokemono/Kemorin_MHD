@@ -246,8 +246,8 @@
 !
 !
       do ip = 1, nprocs
-        call set_global_node_grp_items                                  &
-     &     ((ip-1), mgd_view_mesh, sgl_grps(ip)%node_grp)
+        call set_global_group_items                                     &
+     &     (mgd_view_mesh%inod_sf_stack(ip-1), sgl_grps(ip)%node_grp)
       end do
 !
       end subroutine set_global_node_group_items
@@ -255,24 +255,23 @@
 !------------------------------------------------------------------
 !
       subroutine set_global_groups_items                                &
-     &         (nprocs, mgd_view_mesh, sgl_grps)
+     &         (nprocs, mgd_vmesh, sgl_grps)
 !
       use renumber_para_viewer_mesh
 !
       integer(kind = kint), intent(in) :: nprocs
-      type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
+      type(merged_viewer_mesh), intent(in) :: mgd_vmesh
       type(viewer_surface_groups), intent(inout) :: sgl_grps(nprocs)
 !
       integer(kind = kint) :: ip
 !
 !
       do ip = 1, nprocs
-        call set_global_node_grp_items                                  &
-     &   ((ip-1), mgd_view_mesh, sgl_grps(ip)%node_grp)
-        call set_global_surf_grp_items                                  &
-     &   ((ip-1), mgd_view_mesh, sgl_grps(ip)%surf_grp)
-        call set_global_edge_grp_items                                  &
-     &   ((ip-1), mgd_view_mesh, sgl_grps(ip)%edge_grp)
+        call shift_global_surf_grps_items                               &
+     &     (mgd_vmesh%inod_sf_stack(ip-1),                              &
+     &      mgd_vmesh%isurf_sf_stack(ip-1),                             &
+     &      mgd_vmesh%iedge_sf_stack(ip-1),                             &
+     &      sgl_grps(ip))
       end do
 !
       end subroutine set_global_groups_items
