@@ -30,8 +30,13 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: iflag_output_SURF = 0
-      integer(kind = kint), parameter, private :: iflag_add_comm_tbl = 1
+      integer(kind = kint), parameter :: iflag_output_SURF = 0
+      integer(kind = kint), parameter :: iflag_add_comm_tbl = 1
+      integer(kind = kint), parameter :: iflag_write_subdomain = 0
+!
+      private :: iflag_output_SURF, iflag_add_comm_tbl
+      private :: iflag_write_subdomain
+      private :: collect_surf_mesh_4_viewer
 !
 !------------------------------------------------------------------
 !
@@ -42,7 +47,6 @@
       subroutine pickup_surface_mesh_para(mesh_file)
 !
       use m_node_quad_2_linear_sf
-      use find_mesh_file_format
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
       use single_const_surface_mesh
@@ -53,9 +57,7 @@
       use pickup_surface_4_viewer
       use extend_group_table
       use copy_mesh_structures
-      use set_parallel_file_name
-      use viewer_mesh_data_IO
-      use viewer_group_data_IO
+      use viewer_IO_select_4_zlib
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
@@ -63,23 +65,9 @@
       type(mesh_groups), save :: group_p
       type(element_geometry), save :: ele_mesh_p
 !
+      type(merged_viewer_mesh), save :: mgd_v_mesh_s
       type(group_data), save :: new_nod_grp
 !
-      type(merged_viewer_mesh), save :: mgd_v_mesh_s
-!
-      type(index_list_4_pick_surface), save :: idx_lst_s
-      character(len = kchara) :: fname_tmp, file_name
-!
-!
-      mgd_v_mesh_s%surface_file_head = mesh_file%file_prefix
-!
-      if(my_rank .eq. 0) then
-        if(iflag_debug .eq. 0) write(*,*) 'find_merged_mesh_format'
-        call find_merged_mesh_format(mesh_file)
-      end if
-      call calypso_mpi_barrier
-      call MPI_BCAST(mesh_file%iflag_format, ione,                      &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(mesh_file, nprocs, mesh_p, group_p,           &
@@ -97,9 +85,6 @@
       call FEM_mesh_init_with_IO(iflag_output_SURF,                     &
      &    mesh_file, mesh_p, group_p, ele_mesh_p)
 !
-!      write(50+my_rank,*) 'iflag_surf_z', ele_mesh_p%surf%numsurf_iso
-!      write(50+my_rank,*) 'iflag_surf_z', ele_mesh_p%surf%isf_isolate
-!
       call alloc_num_mesh_sf(ione, mgd_v_mesh_s)
 !
       call const_viewer_mesh                                            &
@@ -107,33 +92,13 @@
      &    mgd_v_mesh_s%domain_grps, mgd_v_mesh_s%view_nod_grps,         &
      &    mgd_v_mesh_s%view_ele_grps, mgd_v_mesh_s%view_sf_grps)
 !
-      mgd_v_mesh_s%inod_sf_stack(1)                                     &
-     &      =  mgd_v_mesh_s%view_mesh%nnod_viewer
-      mgd_v_mesh_s%isurf_sf_stack(1)                                    &
-     &      = mgd_v_mesh_s%view_mesh%nsurf_viewer
-      mgd_v_mesh_s%iedge_sf_stack(1)                                    &
-     &      = mgd_v_mesh_s%view_mesh%nedge_viewer
-!
-      call add_int_suffix                                               &
-     &     (my_rank, mesh_file%file_prefix, fname_tmp)
-      call add_ksm_extension(fname_tmp, file_name)
-      write(*,*) 'surface mesh file name: ', trim(file_name)
-      open (surface_id, file = file_name)
-!
-      call write_domain_data_viewer(mgd_v_mesh_s)
-      call write_node_data_viewer(mgd_v_mesh_s%view_mesh)
-      call write_surf_connect_viewer(ione, mgd_v_mesh_s%isurf_sf_stack, &
-       &    ele_mesh_p%surf%nnod_4_surf, mgd_v_mesh_s%view_mesh)
-      call write_edge_connect_viewer                                    &
-       &   (ele_mesh_p%edge%nnod_4_edge, mgd_v_mesh_s%view_mesh)
-!
-      call write_domain_group_viewer(ione, mgd_v_mesh_s%domain_grps)
-!
-      call write_nod_group_viewer(ione, mgd_v_mesh_s%view_nod_grps)
-      call write_ele_group_viewer(ione, mgd_v_mesh_s%view_ele_grps)
-      call write_surf_group_viewer(ione, mgd_v_mesh_s%view_sf_grps)
-      close(surface_id)
-!
+      if(iflag_write_subdomain .gt. 0) then
+        call sel_output_single_surface_grid(my_rank, mesh_file,         &
+     &      ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge,   &
+     &      mgd_v_mesh_s%view_mesh, mgd_v_mesh_s%domain_grps,           &
+     &      mgd_v_mesh_s%view_nod_grps, mgd_v_mesh_s%view_ele_grps,     &
+     &      mgd_v_mesh_s%view_sf_grps)
+      end if
 !
       call collect_surf_mesh_4_viewer(mesh_file, ele_mesh_p%surf,       &
      &    ele_mesh_p%edge, mgd_v_mesh_s)
@@ -177,7 +142,6 @@
      &   (mgd_v_mesh%view_mesh%nedge_viewer,                            &
      &    mgd_view_prm%istack_v_edge)
 !
-      write(*,*) 's_renumber_para_viewer_mesh'
       call s_renumber_para_viewer_mesh                                  &
      &   (mgd_view_prm%istack_v_node(my_rank),                          &
      &    mgd_view_prm%istack_v_surf(my_rank),                          &
@@ -185,7 +149,7 @@
      &    surf, edge, mgd_v_mesh)
 !
       call sel_mpi_output_surface_grid                                  &
-     &   (mesh_file%iflag_format, surf%nnod_4_surf, edge%nnod_4_edge,   &
+     &   (mesh_file, surf%nnod_4_surf, edge%nnod_4_edge,                &
      &    mgd_v_mesh, mgd_view_prm)
 !
       call dealloc_mpi_viewer_mesh_param(mgd_view_prm)

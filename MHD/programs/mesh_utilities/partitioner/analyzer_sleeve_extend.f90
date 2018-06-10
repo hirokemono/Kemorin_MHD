@@ -93,7 +93,7 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
+      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_init_with_IO'
       call FEM_mesh_init_with_IO(iflag_output_SURF,                     &
      &    global_mesh_file, mesh, group, ele_mesh)
 !
@@ -121,12 +121,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-        subroutine analyze_sleeve_extend
+      subroutine analyze_sleeve_extend
+!
+      use m_ctl_param_partitioner
+      use parallel_const_surface_mesh
 !
 !
+      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_init_with_IO'
+      call pickup_surface_mesh_para(distribute_mesh_file)
+
       if (iflag_debug.gt.0) write(*,*) 'exit analyze'
 !
-        end subroutine analyze_sleeve_extend
+      end subroutine analyze_sleeve_extend
 !
 ! ----------------------------------------------------------------------
 !

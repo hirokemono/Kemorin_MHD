@@ -26,8 +26,6 @@
 !
 !
       type merged_viewer_mesh
-        character (len = kchara) :: surface_file_head = 'in_surface'
-!
         integer(kind = kint)  :: num_pe_sf
 !
         integer(kind = kint), allocatable :: nnod_sf(:)

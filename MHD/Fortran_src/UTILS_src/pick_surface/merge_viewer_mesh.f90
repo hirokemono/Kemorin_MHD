@@ -7,8 +7,19 @@
 !>@brief Surface mesh data generator for kemoviewer
 !!
 !!@verbatim
-!!      subroutine choose_surface_mesh_sgl(mesh_file)
-!!        type(field_IO_params), intent(inout) :: mesh_file
+!!      subroutine s_merge_viewer_mesh(nprocs,                          &
+!!     &          nnod_4_surf, nnod_4_edge, vmesh, domain_grps_p,       &
+!!     &          view_nod_grps_p, view_ele_grps_p, view_sf_grps_p,     &
+!!     &          mgd_vmesh)
+!!        type(viewer_mesh_data), intent(in) :: vmesh(nprocs)
+!!        type(viewer_surface_groups), intent(inout)                    &
+!!       &                             :: domain_grps_p(nprocs)
+!!        type(viewer_node_groups), intent(inout)                       &
+!!       &                             :: view_nod_grps_p(nprocs)
+!!        type(viewer_surface_groups), intent(inout)                    &
+!!       &                             :: view_ele_grps_p(nprocs)
+!!        type(viewer_surface_groups), intent(inout)                    &
+!!       &                             :: view_sf_grps_p(nprocs)
 !!@endverbatim
 !
       module merge_viewer_mesh
@@ -22,6 +33,12 @@
       use t_viewer_group
 !
       implicit none
+!
+      private :: count_merged_viewer_node, copy_2_merged_viewer_node
+      private :: copy_2_merged_viewer_surf, copy_2_merged_viewer_edge
+      private :: set_global_node_group_items, set_global_groups_items
+      private :: merged_viewer_nod_groups, merged_viewer_groups
+      private :: merge_viewer_group_stack, merge_viewer_group_item
 !
 !------------------------------------------------------------------
 !
@@ -50,7 +67,6 @@
       type(merged_viewer_mesh), intent(inout) :: mgd_vmesh
 !
 !
-      call alloc_num_mesh_sf(nprocs, mgd_vmesh)
       call count_merged_viewer_node(nprocs, vmesh, mgd_vmesh)
 !
       call alloc_nod_position_viewer(mgd_vmesh%view_mesh)
@@ -58,7 +74,7 @@
 !
       call alloc_surf_type_viewer(mgd_vmesh%view_mesh)
       call alloc_surf_connect_viewer(nnod_4_surf, mgd_vmesh%view_mesh)
-      call copy_2_merged_viewer_surface                                 &
+      call copy_2_merged_viewer_surf                                    &
      &   (nprocs, nnod_4_surf, vmesh, mgd_vmesh)
 !
       call alloc_edge_data_4_sf(nnod_4_edge, mgd_vmesh%view_mesh)
@@ -154,7 +170,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_2_merged_viewer_surface                           &
+      subroutine copy_2_merged_viewer_surf                              &
      &         (nprocs, nnod_4_surf, sgl_vmesh, mgd_vmesh)
 !
       integer(kind = kint), intent(in) :: nprocs
@@ -185,7 +201,7 @@
       end do
 !$omp end parallel
 !
-      end subroutine copy_2_merged_viewer_surface
+      end subroutine copy_2_merged_viewer_surf
 !
 !------------------------------------------------------------------
 !
@@ -359,9 +375,6 @@
      &     = mgd_grps%surf_grp%istack_sf(nprocs*mgd_grps%num_grp)
       mgd_grps%edge_grp%num_item                                        &
      &     = mgd_grps%edge_grp%istack_sf(nprocs*mgd_grps%num_grp)
-      write(*,*) 'mgd_grps%node_grp%num_item', &
-     &    mgd_grps%node_grp%num_item, mgd_grps%surf_grp%num_item,   &
-     &    mgd_grps%edge_grp%num_item 
 !
       call alloc_merged_group_item(mgd_grps%node_grp)
       call alloc_merged_group_item(mgd_grps%surf_grp)

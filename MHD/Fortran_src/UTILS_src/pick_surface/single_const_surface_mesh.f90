@@ -7,7 +7,7 @@
 !>@brief Surface mesh data generator for kemoviewer
 !!
 !!@verbatim
-!!      subroutine choose_surface_mesh_sgl(mesh_file)
+!!      subroutine choose_surface_mesh_sgl(num_pe_s, mesh_file)
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!@endverbatim
 !
@@ -30,6 +30,9 @@
       implicit none
 !
       integer(kind = kint), parameter, private :: iflag_add_comm_tbl = 1
+      integer(kind = kint), parameter :: iflag_write_subdomain = 0
+!
+      private :: iflag_write_subdomain
 !
       private :: find_mesh_format_4_viewer
 !
@@ -39,22 +42,18 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine choose_surface_mesh_sgl(mesh_file)
-!
-      use find_mesh_file_format
-      use viewer_IO_select_4_zlib
+      subroutine choose_surface_mesh_sgl(num_pe_s, mesh_file)
 !
       use load_mesh_data
       use const_mesh_information
       use const_mesh_list_4_viewer
       use extend_group_table
       use copy_mesh_structures
-      use set_parallel_file_name
-      use viewer_mesh_data_IO
-      use viewer_group_data_IO
+      use viewer_IO_select_4_zlib
       use merge_viewer_mesh
 !
 !
+      integer(kind = kint), intent(in) :: num_pe_s
       type(field_IO_params), intent(inout) :: mesh_file
 !
       type(mesh_geometry), save :: mesh_p
@@ -70,26 +69,16 @@
       type(viewer_surface_groups), allocatable :: view_ele_grps_p(:)
       type(viewer_surface_groups), allocatable :: view_sf_grps_p(:)
 !
-      integer(kind = kint) :: num_pe_s
       integer(kind = kint) :: ip, inum
       integer(kind = kint) :: ierr
       character(len = kchara) :: fname_tmp, file_name
 !
 !
-      mgd_view_mesh_p%surface_file_head = mesh_file%file_prefix
-      write(*,*) 'find_mesh_format_4_viewer'
-      call find_mesh_format_4_viewer(mesh_file)
-      write(*,*) 'count_subdomains_4_viewer'
-      call count_subdomains_4_viewer(mesh_file, num_pe_s)
-!
-!  set mesh_information
-!
-       call alloc_num_mesh_sf(ione, mgd_view_mesh_p)
-       allocate(view_mesh_p(num_pe_s))
-       allocate(domain_grps_p(num_pe_s))
-       allocate(view_nod_grps_p(num_pe_s))
-       allocate(view_ele_grps_p(num_pe_s))
-       allocate(view_sf_grps_p(num_pe_s))
+      allocate(view_mesh_p(num_pe_s))
+      allocate(domain_grps_p(num_pe_s))
+      allocate(view_nod_grps_p(num_pe_s))
+      allocate(view_ele_grps_p(num_pe_s))
+      allocate(view_sf_grps_p(num_pe_s))
 !
       do ip = 1, num_pe_s
         call input_mesh(mesh_file, (ip-1), mesh_p, group_p,             &
@@ -106,43 +95,24 @@
 !
         call const_mesh_infos((ip-1), mesh_p, group_p, ele_mesh_p)
 !
-        write(*,*) 'const_viewer_mesh', ip
         call const_viewer_mesh                                          &
      &     (mesh_p, ele_mesh_p, group_p, view_mesh_p(ip),               &
      &      domain_grps_p(ip), view_nod_grps_p(ip),                     &
      &      view_ele_grps_p(ip), view_sf_grps_p(ip))
 !
         call dealloc_mesh_infomations(mesh_p, group_p, ele_mesh_p)
+!
+        if(iflag_write_subdomain .gt. 0) then
+          call sel_output_single_surface_grid((ip-1), mesh_file,        &
+     &        ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge, &
+     &        view_mesh_p(ip), domain_grps_p(ip), view_nod_grps_p(ip),  &
+     &        view_ele_grps_p(ip), view_sf_grps_p(ip))
+        else
+          write(*,*) 'Viewer mesh data fpr ', (ip-1), ' is made'
+        end if
       end do
 !
-      do ip = 1, num_pe_s
-        mgd_view_mesh_p%inod_sf_stack(1) =  view_mesh_p(ip)%nnod_viewer
-        mgd_view_mesh_p%isurf_sf_stack(1) = view_mesh_p(ip)%nsurf_viewer
-        mgd_view_mesh_p%iedge_sf_stack(1) = view_mesh_p(ip)%nedge_viewer
-!
-        call add_int_suffix                                             &
-     &     ((ip-1), mesh_file%file_prefix, fname_tmp)
-        call add_ksm_extension(fname_tmp, file_name)
-        write(*,*) 'surface mesh file name: ', trim(file_name)
-        open (surface_id, file = file_name)
-!
-        call write_domain_data_viewer(mgd_view_mesh_p)
-        call write_node_data_viewer(view_mesh_p(ip))
-        call write_surf_connect_viewer                                  &
-       &   (ione, mgd_view_mesh_p%isurf_sf_stack,                       &
-       &    ele_mesh_p%surf%nnod_4_surf, view_mesh_p(ip))
-        call write_edge_connect_viewer                                  &
-       &   (ele_mesh_p%edge%nnod_4_edge, view_mesh_p(ip))
-!
-        call write_domain_group_viewer(ione, domain_grps_p(ip))
-!
-        call write_nod_group_viewer(ione, view_nod_grps_p(ip))
-        call write_ele_group_viewer(ione, view_ele_grps_p(ip))
-        call write_surf_group_viewer(ione, view_sf_grps_p(ip))
-        close(surface_id)
-      end do
-      call dealloc_num_mesh_sf(mgd_view_mesh_p)
-!
+      call alloc_num_mesh_sf(num_pe_s, mgd_view_mesh_p)
       call s_merge_viewer_mesh(num_pe_s,                                &
      &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge,     &
      &    view_mesh_p, domain_grps_p,                                   &
@@ -156,7 +126,7 @@
       deallocate(view_mesh_p, domain_grps_p)
       deallocate(view_nod_grps_p, view_ele_grps_p, view_sf_grps_p)
 !
-      call sel_output_surface_grid(mesh_file%iflag_format,              &
+      call sel_output_surface_grid(mesh_file,                           &
      &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge,     &
      &    mgd_view_mesh_p)
 !
@@ -300,9 +270,6 @@
       call dealloc_nod_position_viewer(view_mesh)
 !
       end subroutine dealloc_viewer_mesh
-!
-!------------------------------------------------------------------
-!
 !
 !------------------------------------------------------------------
 !

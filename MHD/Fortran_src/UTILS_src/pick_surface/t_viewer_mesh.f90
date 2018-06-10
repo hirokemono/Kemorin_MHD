@@ -36,9 +36,9 @@
 !
 !
       type viewer_mesh_data
+        integer(kind = kint)  ::  nnod_viewer
         integer(kind = kint)  ::  nsurf_viewer
         integer(kind = kint)  ::  nedge_viewer
-        integer(kind = kint)  ::  nnod_viewer
 !
         integer(kind = kint), allocatable  ::  ie_sf_viewer(:,:)
         integer(kind = kint), allocatable  ::  ie_edge_viewer(:,:)

@@ -75,7 +75,7 @@
 !  ========= Construct subdomain information for viewer ==============
 !
       write(*,*) 'choose_surface_mesh_sgl'
-      call choose_surface_mesh_sgl(distribute_mesh_file)
+      call choose_surface_mesh_sgl(num_domain, distribute_mesh_file)
 !
       stop ' * Partitioning finished'
 !
