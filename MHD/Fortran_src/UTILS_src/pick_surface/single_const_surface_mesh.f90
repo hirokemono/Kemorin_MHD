@@ -70,10 +70,7 @@
       type(viewer_surface_groups), allocatable :: view_ele_grps_p(:)
       type(viewer_surface_groups), allocatable :: view_sf_grps_p(:)
 !
-      type(index_list_4_pick_surface), save :: idx_lst_s
-!
-      type(merged_mesh) :: mgd_mesh1
-!
+      integer(kind = kint) :: num_pe_s
       integer(kind = kint) :: ip, inum
       integer(kind = kint) :: ierr
       character(len = kchara) :: fname_tmp, file_name
@@ -83,24 +80,24 @@
       write(*,*) 'find_mesh_format_4_viewer'
       call find_mesh_format_4_viewer(mesh_file)
       write(*,*) 'count_subdomains_4_viewer'
-      call count_subdomains_4_viewer(mesh_file, mgd_mesh1%num_pe)
+      call count_subdomains_4_viewer(mesh_file, num_pe_s)
 !
 !  set mesh_information
 !
        call alloc_num_mesh_sf(ione, mgd_view_mesh_p)
-       allocate(view_mesh_p(mgd_mesh1%num_pe))
-       allocate(domain_grps_p(mgd_mesh1%num_pe))
-       allocate(view_nod_grps_p(mgd_mesh1%num_pe))
-       allocate(view_ele_grps_p(mgd_mesh1%num_pe))
-       allocate(view_sf_grps_p(mgd_mesh1%num_pe))
+       allocate(view_mesh_p(num_pe_s))
+       allocate(domain_grps_p(num_pe_s))
+       allocate(view_nod_grps_p(num_pe_s))
+       allocate(view_ele_grps_p(num_pe_s))
+       allocate(view_sf_grps_p(num_pe_s))
 !
-      do ip = 1, mgd_mesh1%num_pe
+      do ip = 1, num_pe_s
         call input_mesh(mesh_file, (ip-1), mesh_p, group_p,             &
      &      ele_mesh_p%surf%nnod_4_surf,                                &
      &      ele_mesh_p%edge%nnod_4_edge, ierr)
 !
         if(iflag_add_comm_tbl .gt. 0) then
-          call add_comm_table_in_node_group(mgd_mesh1%num_pe,           &
+          call add_comm_table_in_node_group(num_pe_s,                   &
      &        mesh_p%nod_comm, group_p%nod_grp, new_nod_grp)
           call deallocate_grp_type(group_p%nod_grp)
           call copy_group_data(new_nod_grp, group_p%nod_grp)
@@ -118,7 +115,7 @@
         call dealloc_mesh_infomations(mesh_p, group_p, ele_mesh_p)
       end do
 !
-      do ip = 1, mgd_mesh1%num_pe
+      do ip = 1, num_pe_s
         mgd_view_mesh_p%inod_sf_stack(1) =  view_mesh_p(ip)%nnod_viewer
         mgd_view_mesh_p%isurf_sf_stack(1) = view_mesh_p(ip)%nsurf_viewer
         mgd_view_mesh_p%iedge_sf_stack(1) = view_mesh_p(ip)%nedge_viewer
@@ -145,13 +142,13 @@
       end do
       call dealloc_num_mesh_sf(mgd_view_mesh_p)
 !
-      call s_merge_viewer_mesh(mgd_mesh1%num_pe,                        &
+      call s_merge_viewer_mesh(num_pe_s,                                &
      &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge,     &
      &    view_mesh_p, domain_grps_p,                                   &
      &    view_nod_grps_p, view_ele_grps_p, view_sf_grps_p,             &
      &    mgd_view_mesh_p)
 !
-      do ip = 1, mgd_mesh1%num_pe
+      do ip = 1, num_pe_s
         call dealloc_viewer_mesh(view_mesh_p(ip), domain_grps_p(ip),    &
      &    view_nod_grps_p(ip), view_ele_grps_p(ip), view_sf_grps_p(ip))
       end do
