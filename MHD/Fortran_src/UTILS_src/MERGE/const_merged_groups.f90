@@ -12,8 +12,6 @@
 !!      subroutine const_merged_mesh_groups                             &
 !!     &         (num_pe, subdomain, merged, merge_tbl,                 &
 !!     &          sub_nod_grp, sub_ele_grp, sub_surf_grp, merged_grp)
-!!      subroutine const_merged_overlapped_groups(num_pe,               &
-!!     &          sub_nod_grp, sub_ele_grp, sub_surf_grp, merged_grp)
 !!        type(merged_stacks), intent(in) :: merge_tbl
 !!        type(mesh_geometry), intent(in) :: subdomain(num_pe)
 !!        type(group_data), intent(in) :: sub_nod_grp(num_pe)
@@ -191,57 +189,6 @@
       call deallocate_flags_merged_grp
 !
       end subroutine const_merged_mesh_groups
-!
-!-----------------------------------------------------------------------
-!
-      subroutine const_merged_overlapped_groups(num_pe,                 &
-     &          sub_nod_grp, sub_ele_grp, sub_surf_grp, merged_grp)
-!
-      use t_mesh_data
-      use t_group_data
-      use count_merged_groups
-      use set_overlap_groups
-!
-      integer(kind = kint), intent(in)  :: num_pe
-      type(group_data), intent(in) :: sub_nod_grp(num_pe)
-      type(group_data), intent(in) :: sub_ele_grp(num_pe)
-      type(surface_group_data), intent(in) :: sub_surf_grp(num_pe)
-!
-      type(mesh_groups), intent(inout) :: merged_grp
-!
-!    count merged group items
-!
-!      write(*,*) 'count_group_w_overlap'
-      call count_group_w_overlap                                        &
-     &    (num_pe, sub_nod_grp, merged_grp%nod_grp)
-!      write(*,*) 'count_group_w_overlap'
-      call count_group_w_overlap                                        &
-     &    (num_pe, sub_ele_grp, merged_grp%ele_grp)
-!
-!      write(*,*) 'count_surf_group_w_overlap'
-      call count_surf_group_w_overlap                                   &
-     &   (num_pe, sub_surf_grp, merged_grp%surf_grp)
-!
-!    allocate merged group items
-!
-       call allocate_grp_type_item(merged_grp%nod_grp)
-       call allocate_grp_type_item(merged_grp%ele_grp)
-       call allocate_sf_grp_type_item(merged_grp%surf_grp)
-!
-!    set merged group data
-!
-!      write(*,*) 'set_group_w_overlap'
-      call set_group_w_overlap                                          &
-     &   (num_pe, sub_nod_grp, merged_grp%nod_grp)
-!      write(*,*) 'set_group_w_overlap'
-      call set_group_w_overlap                                          &
-     &   (num_pe, sub_ele_grp, merged_grp%ele_grp)
-!
-!      write(*,*) 'set_surf_group_w_overlap'
-      call set_surf_group_w_overlap                                     &
-     &   (num_pe, sub_surf_grp, merged_grp%surf_grp)
-!
-      end subroutine const_merged_overlapped_groups
 !
 !-----------------------------------------------------------------------
 !

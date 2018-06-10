@@ -14,6 +14,7 @@
       use t_file_IO_parameter
       use t_mesh_data_4_merge
       use parallel_const_surface_mesh
+      use find_mesh_file_format
       use getarg_kemo
 !
       implicit    none
@@ -35,13 +36,18 @@
           call getarg_k(1, file_head)
           write(*,*) 'file prefix from command line: ', trim(file_head)
         end if
+        pick_mesh_file%file_prefix = file_head
+!
+        if(iflag_debug .eq. 0) write(*,*) 'find_merged_mesh_format'
+        call find_merged_mesh_format(pick_mesh_file)
       end if
       call calypso_mpi_barrier
-      call MPI_BCAST(file_head, kchara,                                 &
+      call MPI_BCAST(pick_mesh_file%file_prefix, kchara,                &
      &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(pick_mesh_file%iflag_format, ione,                 &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      pick_mesh_file%file_prefix = file_head
-      call choose_surface_mesh_para(pick_mesh_file)
+      call pickup_surface_mesh_para(pick_mesh_file)
 !
       call calypso_MPI_finalize
       stop ' //// program normally finished //// '

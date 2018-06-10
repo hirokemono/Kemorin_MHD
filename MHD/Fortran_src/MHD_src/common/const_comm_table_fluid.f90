@@ -63,7 +63,7 @@
       use t_geometry_data
 !
       use set_comm_table_fluid
-      use solver_SR_int
+      use solver_SR_type
 !
       integer(kind = kint), intent(in) :: num_pe
       integer(kind = kint), intent(in) :: iele_fl_smp_stack(0:np_smp)
@@ -80,11 +80,7 @@
       call mark_4_fluid_nod_by_ele(ele%numele, ele%nnod_4_ele, ele%ie,  &
      &    iele_fl_smp_stack(0), iele_fl_smp_stack(np_smp) )
 !
-      call solver_send_recv_i                                           &
-     &   (node%numnod, nod_comm%num_neib, nod_comm%id_neib,             &
-     &    nod_comm%istack_import, nod_comm%item_import,                 &
-     &    nod_comm%istack_export, nod_comm%item_export,                 &
-     &    iflag_nod)
+      call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm, iflag_nod)
 !
 !
       call mark_reduced_neib_domain(nod_comm%num_neib,                  &
