@@ -47,7 +47,6 @@
       use load_mesh_data
       use const_mesh_information
       use const_mesh_list_4_viewer
-      use pickup_surface_4_viewer
       use extend_group_table
       use copy_mesh_structures
       use set_parallel_file_name
@@ -71,9 +70,7 @@
       type(viewer_surface_groups), allocatable :: view_ele_grps_p(:)
       type(viewer_surface_groups), allocatable :: view_sf_grps_p(:)
 !
-      integer(kind = kint), allocatable :: inod_ksm(:)
-      integer(kind = kint), allocatable :: isurf_ksm(:)
-      integer(kind = kint), allocatable :: iedge_ksm(:)
+      type(index_list_4_pick_surface), save :: idx_lst_s
 !
       type(merged_mesh) :: mgd_mesh1
 !
@@ -112,87 +109,16 @@
 !
         call const_mesh_infos((ip-1), mesh_p, group_p, ele_mesh_p)
 !
-        allocate(inod_ksm(mesh_p%node%numnod))
-        allocate(isurf_ksm(ele_mesh_p%surf%numsurf))
-        allocate(iedge_ksm(ele_mesh_p%edge%numedge))
-        inod_ksm = 0
-        isurf_ksm = 0
-        iedge_ksm = 0
+        write(*,*) 'const_viewer_mesh', ip
+        call const_viewer_mesh                                          &
+     &     (mesh_p, ele_mesh_p, group_p, view_mesh_p(ip),               &
+     &      domain_grps_p(ip), view_nod_grps_p(ip),                     &
+     &      view_ele_grps_p(ip), view_sf_grps_p(ip))
 !
-        write(*,*) 's_const_mesh_list_4_viewer', ip
-        call s_const_mesh_list_4_viewer                                 &
-     &     (mesh_p%node, ele_mesh_p%surf, ele_mesh_p%edge,              &
-     &      group_p%nod_grp, group_p%ele_grp, group_p%surf_grp,         &
-     &      inod_ksm, isurf_ksm, iedge_ksm,                             &
-     &      view_mesh_p(ip)%nnod_viewer, view_mesh_p(ip)%nsurf_viewer,  &
-     &      view_mesh_p(ip)%nedge_viewer)
-!
-        call alloc_nod_position_viewer(view_mesh_p(ip))
-        call set_node_position_4_viewer                                 &
-     &     (mesh_p%node, inod_ksm, view_mesh_p(ip))
-!
-        call alloc_surf_connect_viewer                                  &
-     &     (ele_mesh_p%surf%nnod_4_surf, view_mesh_p(ip))
-        call set_surf_connect_viewer(mesh_p%node, ele_mesh_p%surf,      &
-     &      inod_ksm, isurf_ksm, view_mesh_p(ip))
-        call set_surf_domain_id_viewer                                  &
-     &     (ele_mesh_p%surf, view_mesh_p(ip))
-!
-        call alloc_edge_data_4_sf                                       &
-     &     (ele_mesh_p%edge%nnod_4_edge, view_mesh_p(ip))
-        call set_edge_connect_viewer                                    &
-     &     (mesh_p%node, ele_mesh_p%surf, ele_mesh_p%edge,              &
-     &      inod_ksm, isurf_ksm, iedge_ksm, view_mesh_p(ip))
-!
-!
-        call const_group_lists_4_viewer                                 &
-     &     (mesh_p%node, ele_mesh_p%surf, ele_mesh_p%edge, group_p,     &
-     &      inod_ksm, isurf_ksm, iedge_ksm, domain_grps_p(ip),          &
-     &      view_nod_grps_p(ip), view_ele_grps_p(ip),                   &
-     &      view_sf_grps_p(ip))
-!
-        deallocate(inod_ksm,  isurf_ksm, iedge_ksm)
         call dealloc_mesh_infomations(mesh_p, group_p, ele_mesh_p)
       end do
 !
       do ip = 1, mgd_mesh1%num_pe
-        write(*,*) 'number of mesh', ip-1, view_mesh_p(ip)%nnod_viewer, &
-     &      view_mesh_p(ip)%nsurf_viewer, view_mesh_p(ip)%nedge_viewer
-!
-        write(*,*) 'domain group', ip-1,                                &
-     &    domain_grps_p(ip)%node_grp%num_item,                          &
-     &    domain_grps_p(ip)%surf_grp%num_item,                          &
-     &    domain_grps_p(ip)%edge_grp%num_item
-        write(*,*) 'node group', ip-1,                                  &
-     &    view_nod_grps_p(ip)%node_grp%num_item
-        write(*,*) 'element group', ip-1,                               &
-     &    view_ele_grps_p(ip)%node_grp%num_item,                        &
-     &    view_ele_grps_p(ip)%surf_grp%num_item,                        &
-     &    view_ele_grps_p(ip)%edge_grp%num_item
-        write(*,*) 'surface group', ip-1,                               &
-     &    view_sf_grps_p(ip)%node_grp%num_item,                         &
-     &    view_sf_grps_p(ip)%surf_grp%num_item,                         &
-     &    view_sf_grps_p(ip)%edge_grp%num_item
-!
-        write(*,*) 'Check surface surface group',   &
-     &         view_sf_grps_p(ip)%node_grp%istack_sf
-        do inum = 1,  view_sf_grps_p(ip)%node_grp%num_item
-          if(view_sf_grps_p(ip)%node_grp%item_sf(inum) .eq. 0)  &
-     &        write(*,*) 'Wrong group item', ip-1, inum
-        end do
-        write(*,*) 'Check surface node group',   &
-     &         view_sf_grps_p(ip)%surf_grp%istack_sf
-        do inum = 1,  view_sf_grps_p(ip)%surf_grp%num_item
-          if(view_sf_grps_p(ip)%surf_grp%item_sf(inum) .eq. 0)  &
-     &        write(*,*) 'Wrong group item', ip-1, inum
-        end do
-        write(*,*) 'Check surface edge group', &
-     &            view_sf_grps_p(ip)%edge_grp%istack_sf
-        do inum = 1,  view_sf_grps_p(ip)%edge_grp%num_item
-          if(view_sf_grps_p(ip)%edge_grp%item_sf(inum) .eq. 0)  &
-     &        write(*,*) 'Wrong group item', ip-1, inum
-        end do
-!
         mgd_view_mesh_p%inod_sf_stack(1) =  view_mesh_p(ip)%nnod_viewer
         mgd_view_mesh_p%isurf_sf_stack(1) = view_mesh_p(ip)%nsurf_viewer
         mgd_view_mesh_p%iedge_sf_stack(1) = view_mesh_p(ip)%nedge_viewer
@@ -226,28 +152,8 @@
      &    mgd_view_mesh_p)
 !
       do ip = 1, mgd_mesh1%num_pe
-        call dealloc_merged_group_item(view_nod_grps_p(ip)%node_grp)
-        call dealloc_viewer_node_grps_stack(view_nod_grps_p(ip))
-!
-        call dealloc_merged_group_item(view_ele_grps_p(ip)%node_grp)
-        call dealloc_merged_group_item(view_ele_grps_p(ip)%edge_grp)
-        call dealloc_merged_group_item(view_ele_grps_p(ip)%surf_grp)
-        call dealloc_viewer_surf_grps_stack(view_ele_grps_p(ip))
-!
-        call dealloc_merged_group_item(view_sf_grps_p(ip)%node_grp)
-        call dealloc_merged_group_item(view_sf_grps_p(ip)%edge_grp)
-        call dealloc_merged_group_item(view_sf_grps_p(ip)%surf_grp)
-        call dealloc_viewer_surf_grps_stack(view_sf_grps_p(ip))
-!
-        call dealloc_merged_group_item(domain_grps_p(ip)%node_grp)
-        call dealloc_merged_group_item(domain_grps_p(ip)%edge_grp)
-        call dealloc_merged_group_item(domain_grps_p(ip)%surf_grp)
-        call dealloc_viewer_surf_grps_stack(domain_grps_p(ip))
-!
-        call dealloc_surf_type_viewer(view_mesh_p(ip))
-        call dealloc_edge_data_4_sf(view_mesh_p(ip))
-        call dealloc_surf_connect_viewer(view_mesh_p(ip))
-        call dealloc_nod_position_viewer(view_mesh_p(ip))
+        call dealloc_viewer_mesh(view_mesh_p(ip), domain_grps_p(ip),    &
+     &    view_nod_grps_p(ip), view_ele_grps_p(ip), view_sf_grps_p(ip))
       end do
       deallocate(view_mesh_p, domain_grps_p)
       deallocate(view_nod_grps_p, view_ele_grps_p, view_sf_grps_p)
@@ -256,28 +162,9 @@
      &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge,     &
      &    mgd_view_mesh_p)
 !
-      call dealloc_merged_group_item(mgd_view_mesh_p%view_nod_grps%node_grp)
-      call dealloc_viewer_node_grps_stack(mgd_view_mesh_p%view_nod_grps)
-!
-      call dealloc_merged_group_item(mgd_view_mesh_p%view_ele_grps%node_grp)
-      call dealloc_merged_group_item(mgd_view_mesh_p%view_ele_grps%edge_grp)
-      call dealloc_merged_group_item(mgd_view_mesh_p%view_ele_grps%surf_grp)
-      call dealloc_viewer_surf_grps_stack(mgd_view_mesh_p%view_ele_grps)
-!
-      call dealloc_merged_group_item(mgd_view_mesh_p%view_sf_grps%node_grp)
-      call dealloc_merged_group_item(mgd_view_mesh_p%view_sf_grps%edge_grp)
-      call dealloc_merged_group_item(mgd_view_mesh_p%view_sf_grps%surf_grp)
-      call dealloc_viewer_surf_grps_stack(mgd_view_mesh_p%view_sf_grps)
-!
-      call dealloc_merged_group_item(mgd_view_mesh_p%domain_grps%node_grp)
-      call dealloc_merged_group_item(mgd_view_mesh_p%domain_grps%edge_grp)
-      call dealloc_merged_group_item(mgd_view_mesh_p%domain_grps%surf_grp)
-      call dealloc_viewer_surf_grps_stack(mgd_view_mesh_p%domain_grps)
-!
-      call dealloc_surf_type_viewer(mgd_view_mesh_p%view_mesh)
-      call dealloc_edge_data_4_sf(mgd_view_mesh_p%view_mesh)
-      call dealloc_surf_connect_viewer(mgd_view_mesh_p%view_mesh)
-      call dealloc_nod_position_viewer(mgd_view_mesh_p%view_mesh)
+      call dealloc_viewer_mesh(mgd_view_mesh_p%view_mesh,               &
+     &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
+     &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
       call dealloc_num_mesh_sf(mgd_view_mesh_p)
 !
       end subroutine choose_surface_mesh_sgl
@@ -337,24 +224,94 @@
 !      end subroutine set_source_mesh_parameter
 !
 !------------------------------------------------------------------
+!------------------------------------------------------------------
 !
-      subroutine set_surf_domain_id_viewer(merged_surf, view_mesh)
+      subroutine const_viewer_mesh                                      &
+     &         (mesh, ele_mesh, group, view_mesh, domain_grps,          &
+     &          view_nod_grps, view_ele_grps, view_sf_grps)
 !
-      type(surface_data), intent(in) :: merged_surf
+      use t_const_mesh_data_4_viewer
+      use const_mesh_list_4_viewer
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(element_geometry), intent(in) :: ele_mesh
+      type(mesh_groups), intent(in) :: group
+!
       type(viewer_mesh_data), intent(inout) :: view_mesh
+      type(viewer_surface_groups), intent(inout) :: domain_grps
+      type(viewer_node_groups), intent(inout) :: view_nod_grps
+      type(viewer_surface_groups), intent(inout) :: view_ele_grps
+      type(viewer_surface_groups), intent(inout) :: view_sf_grps
+!
+      type(index_list_4_pick_surface) :: idx_lst_s
 !
 !
-      call alloc_surf_type_viewer(view_mesh)
+      call alloc_index_list_pick_surf                                   &
+     &   (mesh%node, ele_mesh%surf, ele_mesh%edge, idx_lst_s)
 !
-      if ( merged_surf%nnod_4_surf .eq. 4) then
-        view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer) = 221
-      else if ( merged_surf%nnod_4_surf .eq. 8) then
-        view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer) = 222
-      else if ( merged_surf%nnod_4_surf .eq. 9) then
-        view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer) = 223
-      end if
+      call const_index_list_4_viewer                                    &
+     &   (mesh%node, ele_mesh%surf, ele_mesh%edge,                      &
+     &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
+     &    idx_lst_s, view_mesh)
 !
-      end subroutine set_surf_domain_id_viewer
+      call const_mesh_data_4_viewer                                     &
+     &   (mesh%node, ele_mesh%surf, ele_mesh%edge,                      &
+     &    idx_lst_s, view_mesh)
+!
+!
+      call const_domain_groups_4_viewer                                 &
+     &   (mesh%node, ele_mesh%surf, ele_mesh%edge,                      &
+     &    idx_lst_s, domain_grps)
+!
+      call const_node_groups_4_viewer(mesh%node, group%nod_grp,         &
+     &    idx_lst_s%inod_ksm, idx_lst_s%iflag_node, view_nod_grps)
+      call const_element_groups_4_viewer                                &
+     &   (mesh%node, ele_mesh%surf, ele_mesh%edge,                      &
+     &    group%ele_grp, idx_lst_s, view_ele_grps)
+      call const_surface_groups_4_viewer                                &
+     &   (mesh%node, ele_mesh%surf, ele_mesh%edge,                      &
+     &    group%surf_grp, idx_lst_s, view_sf_grps)
+!
+      call dealloc_index_list_pick_surf(idx_lst_s)
+!
+      end subroutine const_viewer_mesh
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_viewer_mesh(view_mesh, domain_grps,            &
+     &          view_nod_grps, view_ele_grps, view_sf_grps)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+      type(viewer_surface_groups), intent(inout) :: domain_grps
+      type(viewer_node_groups), intent(inout) :: view_nod_grps
+      type(viewer_surface_groups), intent(inout) :: view_ele_grps
+      type(viewer_surface_groups), intent(inout) :: view_sf_grps
+!
+!
+      call dealloc_merged_group_item(view_nod_grps%node_grp)
+      call dealloc_viewer_node_grps_stack(view_nod_grps)
+!
+      call dealloc_merged_group_item(view_ele_grps%node_grp)
+      call dealloc_merged_group_item(view_ele_grps%edge_grp)
+      call dealloc_merged_group_item(view_ele_grps%surf_grp)
+      call dealloc_viewer_surf_grps_stack(view_ele_grps)
+!
+      call dealloc_merged_group_item(view_sf_grps%node_grp)
+      call dealloc_merged_group_item(view_sf_grps%edge_grp)
+      call dealloc_merged_group_item(view_sf_grps%surf_grp)
+      call dealloc_viewer_surf_grps_stack(view_sf_grps)
+!
+      call dealloc_merged_group_item(domain_grps%node_grp)
+      call dealloc_merged_group_item(domain_grps%edge_grp)
+      call dealloc_merged_group_item(domain_grps%surf_grp)
+      call dealloc_viewer_surf_grps_stack(domain_grps)
+!
+      call dealloc_surf_type_viewer(view_mesh)
+      call dealloc_edge_data_4_sf(view_mesh)
+      call dealloc_surf_connect_viewer(view_mesh)
+      call dealloc_nod_position_viewer(view_mesh)
+!
+      end subroutine dealloc_viewer_mesh
 !
 !------------------------------------------------------------------
 !

@@ -361,17 +361,20 @@
       character(len = kchara), intent(in) :: name(ngrp)
       type(viewer_group_data), intent(in) :: group
 !
-      integer(kind = kint) :: i, ist, ied
+      integer(kind = kint) :: i, ip, ist, ied
 !
 !
       write(id_file,'(8i16)') group%istack_sf(1:nprocs*ngrp)
 !
       if (ngrp .gt. 0) then
         do i = 1, ngrp
-          ist = group%istack_sf(nprocs*(i-1)) + 1
-          ied = group%istack_sf(nprocs*i    )
           write(id_file,'(a)') trim(name(i))
-          write(id_file,'(8i16)') group%item_sf(ist:ied)
+          do ip = 1, nprocs
+            ist = group%istack_sf(nprocs*(i-1)+ip-1) + 1
+            ied = group%istack_sf(nprocs*(i-1)+ip)
+            if(ied .gt. ist) write(id_file,'(8i16)')                    &
+     &                            group%item_sf(ist:ied)
+          end do
         end do
       else
         write(id_file,*) ''

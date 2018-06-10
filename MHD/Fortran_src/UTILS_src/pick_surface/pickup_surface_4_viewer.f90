@@ -1,8 +1,15 @@
+!> @file  pickup_surface_4_viewer.f90
+!!      module pickup_surface_4_viewer
+!!
+!! @author  H. Matsui
+!! @date Programmed in Jan., 2009
 !
-!      module pickup_surface_4_viewer
-!
-!      Written by Kemorin in Jan., 2007
-!
+!> @brief Mark node, surface, edge for viewer mesh
+!!
+!!@verbatim
+!!      subroutine set_node_list_4_ksm                                  &
+!!     &         (numnod, iflag_node, icou_nod, inod_ksm)
+!!
 !!      subroutine set_node_position_4_viewer(node, inod_ksm, view_mesh)
 !!      subroutine set_surf_connect_viewer                              &
 !!     &         (node, surf, inod_ksm, isurf_ksm, view_mesh)
@@ -12,6 +19,12 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!        type(edge_data), intent(in) :: edge
+!!
+!!      integer(kind = kint) function count_group_item_4_viewer         &
+!!     &                   (numnod, iflag_node, istack_pre)
+!!      subroutine set_group_item_4_viewer(numnod, iflag_node, inod_ksm,&
+!!     &          num_item, istack_pre, item)
+!!@endverbatim
 !
       module pickup_surface_4_viewer
 !
@@ -27,6 +40,30 @@
 !
       contains
 !
+!------------------------------------------------------------------
+!
+      subroutine set_node_list_4_ksm                                    &
+     &         (numnod, iflag_node, icou_nod, inod_ksm)
+!
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: iflag_node(numnod)
+!
+      integer(kind = kint), intent(inout) :: icou_nod
+      integer(kind = kint), intent(inout) :: inod_ksm(numnod)
+!
+      integer(kind = kint) :: inod
+!
+!
+      do inod = 1, numnod
+        if(iflag_node(inod) .ne. 0 .and. inod_ksm(inod) .eq. 0) then
+          icou_nod = icou_nod + 1
+          inod_ksm(inod) = icou_nod
+        end if
+      end do
+!
+      end subroutine set_node_list_4_ksm
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine set_node_position_4_viewer(node, inod_ksm, view_mesh)
@@ -139,6 +176,54 @@
       end do
 !
       end subroutine set_edge_connect_viewer
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      integer(kind = kint) function count_group_item_4_viewer           &
+     &                   (numnod, iflag_node, istack_pre)
+!
+      integer(kind = kint), intent(in)  :: numnod
+      integer(kind = kint), intent(in)  :: iflag_node(numnod)
+      integer(kind = kint), intent(in)  :: istack_pre
+!
+      integer(kind = kint) :: inod, icou
+!
+!
+      icou = istack_pre
+      do inod = 1, numnod
+        icou = icou + abs(iflag_node(inod))
+      end do
+      count_group_item_4_viewer = icou
+!
+      end function count_group_item_4_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine set_group_item_4_viewer(numnod, iflag_node, inod_ksm,  &
+     &          num_item, istack_pre, item)
+!
+      integer(kind = kint), intent(in)  :: numnod
+      integer(kind = kint), intent(in)  :: iflag_node(numnod)
+      integer(kind = kint), intent(in)  :: inod_ksm(numnod)
+      integer(kind = kint), intent(in)  :: num_item, istack_pre
+!
+      integer(kind = kint), intent(inout) :: item(num_item)
+!
+      integer(kind = kint) :: inod, icou
+!
+!
+      icou = istack_pre
+      do inod = 1, numnod
+        if(abs(iflag_node(inod)) .gt. 0) then
+          icou = icou + 1
+          item(icou) = inod_ksm(inod) * iflag_node(inod)
+          if(item(icou) .eq. 0) write(*,*)                              &
+     &                        'Wrong at', icou, inod, inod_ksm(inod)
+        end if
+      end do
+!
+      end subroutine set_group_item_4_viewer
 !
 !------------------------------------------------------------------
 !

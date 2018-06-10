@@ -357,14 +357,13 @@
       character(len = kchara), intent(in) :: name(ngrp)
       type(viewer_group_data), intent(in) :: group
 !
-      integer(kind = kint) :: i, ist, num
+      integer(kind = kint) :: i, ip, ist, num
 !
 !
       call write_gz_multi_int_8i10((nprocs*ngrp), group%istack_sf(1))
 !
       if (ngrp .gt. 0) then
         do i = 1, ngrp
-          ist = group%istack_sf(nprocs*(i-1)) + 1
           num = group%istack_sf(nprocs*i)                               &
      &         - group%istack_sf(nprocs*(i-1))
 !
@@ -375,7 +374,12 @@
             write(textbuf,'(a1)') char(0)
             call gz_write_textbuf_w_lf
           else
-            call write_gz_multi_int_8i10(num, group%item_sf(ist))
+            do ip = 1, nprocs
+              ist = group%istack_sf(nprocs*(i-1)+ip-1)
+              num = group%istack_sf(nprocs*(i-1)+ip) - ist
+              if(num .gt. 0) call write_gz_multi_int_8i10               &
+     &                          (num, group%item_sf(ist+1))
+            end do
           end if
         end do
       else

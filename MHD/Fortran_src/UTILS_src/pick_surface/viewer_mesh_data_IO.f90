@@ -65,6 +65,30 @@
 !
 !------------------------------------------------------------------
 !
+      subroutine write_sgl_domain_data_viewer(mgd_view_mesh)
+!
+      type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
+!
+!
+      write(surface_id,'(a)') '!'
+      write(surface_id,'(a)') '! number of domain '
+      write(surface_id,'(a)') '!   stack of node for domain '
+      write(surface_id,'(a)') '!   stack of surface for domain '
+      write(surface_id,'(a)') '!   stack of edge for domain '
+      write(surface_id,'(a)') '!'
+!
+      write(surface_id,'(i16)') mgd_view_mesh%num_pe_sf
+      write(surface_id,'(8i16)')                                        &
+     &   mgd_view_mesh%inod_sf_stack(1:mgd_view_mesh%num_pe_sf)
+      write(surface_id,'(8i16)')                                        &
+     &   mgd_view_mesh%isurf_sf_stack(1:mgd_view_mesh%num_pe_sf)
+      write(surface_id,'(8i16)')                                        &
+     &   mgd_view_mesh%iedge_sf_stack(1:mgd_view_mesh%num_pe_sf)
+!
+      end subroutine write_sgl_domain_data_viewer
+!
+!------------------------------------------------------------------
+!
       subroutine read_domain_data_viewer(mgd_view_mesh)
 !
       use skip_comment_f
@@ -106,9 +130,9 @@
       write(surface_id,'(i16)') view_mesh%nnod_viewer
 !
       do i = 1, view_mesh%nnod_viewer
-        write(surface_id,1002) i, view_mesh%xx_view(i,1:3)
+        write(surface_id,'(i16,1p3E25.15e3)')                           &
+     &       view_mesh%inod_gl_view(i), view_mesh%xx_view(i,1:3)
       end do
- 1002 format(i16, 1p3e23.12)
 !
       end subroutine write_node_data_viewer
 !
