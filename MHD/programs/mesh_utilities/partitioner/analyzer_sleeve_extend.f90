@@ -35,6 +35,8 @@
       type(mesh_groups), save, private :: newgroup
       type(element_geometry), save, private :: new_ele_mesh
 !
+      integer(kind = kint), parameter, private :: iflag_output_SURF = 0
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -57,6 +59,7 @@
       use nod_phys_send_recv
       use sum_normal_4_surf_group
       use set_parallel_file_name
+      use set_table_4_RHS_assemble
       use extend_comm_table
       use extend_group_table
 !
@@ -68,8 +71,6 @@
       use t_file_IO_parameter
       use t_mesh_data
       use t_read_mesh_data
-!
-      type(FEM_file_IO_flags) :: FEM_mesh_flag_P
 !
 !     --------------------- 
 !
@@ -92,8 +93,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
-      call FEM_mesh_init_with_IO(FEM_mesh_flag_P%iflag_output_SURF,     &
+      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_init_with_IO'
+      call FEM_mesh_init_with_IO(iflag_output_SURF,                     &
      &    global_mesh_file, mesh, group, ele_mesh)
 !
 !  -------------------------------
@@ -111,7 +112,7 @@
      &    next_tbl%neib_ele, newmesh%nod_comm, newmesh%node,            &
      &    new_ele_mesh%ele_comm, newmesh%ele)
       call s_extend_group_table                                         &
-     &   (newmesh%nod_comm, new_ele_mesh%ele_comm,                      &
+     &   (nprocs, newmesh%nod_comm, new_ele_mesh%ele_comm,              &
      &    newmesh%node, newmesh%ele, group, newgroup)
 !
       call mpi_output_mesh(distribute_mesh_file, newmesh, newgroup)
@@ -120,12 +121,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-        subroutine analyze_sleeve_extend
+      subroutine analyze_sleeve_extend
+!
+      use m_ctl_param_partitioner
+      use parallel_const_surface_mesh
 !
 !
+      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_init_with_IO'
+      call pickup_surface_mesh_para(distribute_mesh_file)
+
       if (iflag_debug.gt.0) write(*,*) 'exit analyze'
 !
-        end subroutine analyze_sleeve_extend
+      end subroutine analyze_sleeve_extend
 !
 ! ----------------------------------------------------------------------
 !

@@ -6,19 +6,6 @@
 !!      subroutine allocate_ioverlap_ele(merged)
 !!      subroutine allocate_ioverlap_nod(merged)
 !!      subroutine deallocate_ioverlap_ele
-!
-!!      subroutine copy_read_nodal_data_w_overlap                       &
-!!     &         (ip, subdomain, merge_tbl, merged)
-!!      subroutine copy_read_ele_data_w_overlap                         &
-!!     &         (ip, subdomain, merge_tbl, merged)
-!!        type(mesh_geometry), intent(in) :: subdomain
-!!        type(merged_stacks), intent(inout) :: merge_tbl
-!!        type(mesh_geometry), intent(inout) :: merged
-!!      subroutine cvt_ele_connect_w_overlap                            &
-!!     &         (ip, subdomain, merge_tbl, merged)
-!!        type(mesh_geometry), intent(in) :: subdomain
-!!        type(merged_stacks), intent(in) :: merge_tbl
-!!        type(mesh_geometry), intent(inout) :: merged
 !!
 !!      subroutine copy_read_nodal_data_2_merge                         &
 !!     &         (ip, subdomain, merge_tbl, merged)
@@ -89,82 +76,6 @@
       deallocate(ioverlap_n)
 !
       end subroutine deallocate_ioverlap_nod
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_read_nodal_data_w_overlap                         &
-     &         (ip, subdomain, merge_tbl, merged)
-!
-      integer(kind = kint), intent(in) :: ip
-      type(mesh_geometry), intent(in) :: subdomain
-!
-      type(merged_stacks), intent(inout) :: merge_tbl
-      type(mesh_geometry), intent(inout) :: merged
-!
-      integer(kind = kint) :: inod, inum
-!
-      do inod = 1, subdomain%node%numnod
-        inum = merge_tbl%istack_nod(ip-1) + inod
-!
-        merge_tbl%inod_local(inum) = inod
-        merge_tbl%idomain_nod(inum) = ip
-        merged%node%xx(inum,1:3) = subdomain%node%xx(inod,1:3)
-      end do
-      merge_tbl%nnod_merged  =  merge_tbl%nnod_merged                   &
-     &                         + subdomain%node%numnod
-!
-      end subroutine copy_read_nodal_data_w_overlap
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_read_ele_data_w_overlap                           &
-     &         (ip, subdomain, merge_tbl, merged)
-!
-      integer(kind = kint), intent(in) :: ip
-      type(mesh_geometry), intent(in) :: subdomain
-!
-      type(merged_stacks), intent(inout) :: merge_tbl
-      type(mesh_geometry), intent(inout) :: merged
-!
-      integer(kind = kint) :: iele, inum
-!
-!
-      do iele = 1, subdomain%ele%numele
-        inum = merge_tbl%istack_ele(ip-1) + iele
-!
-        merged%ele%elmtyp(inum) = subdomain%ele%elmtyp(iele)
-        merge_tbl%iele_local(inum) = iele
-        merge_tbl%idomain_ele(inum) = ip
-        merged%ele%ie(inum,1:merged%ele%nnod_4_ele)                     &
-     &         = subdomain%ele%ie(iele,1:merged%ele%nnod_4_ele)
-      end do
-      merge_tbl%nele_merged  =  merge_tbl%nele_merged                   &
-     &                         + subdomain%ele%numele
-!
-      end subroutine copy_read_ele_data_w_overlap
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine cvt_ele_connect_w_overlap                              &
-     &         (ip, subdomain, merge_tbl, merged)
-!
-      integer(kind = kint), intent(in) :: ip
-      type(mesh_geometry), intent(in) :: subdomain
-      type(merged_stacks), intent(in) :: merge_tbl
-!
-      type(mesh_geometry), intent(inout) :: merged
-!
-      integer(kind = kint) :: iele, inum
-!
-      do iele = 1, subdomain%ele%numele
-        inum = merge_tbl%istack_ele(ip-1) + iele
-        merged%ele%ie(inum,1:merged%ele%nnod_4_ele)                     &
-     &     = merged%ele%ie(inum,1:merged%ele%nnod_4_ele)                &
-     &      + merge_tbl%istack_nod(ip-1)
-      end do
-!
-      end subroutine cvt_ele_connect_w_overlap
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

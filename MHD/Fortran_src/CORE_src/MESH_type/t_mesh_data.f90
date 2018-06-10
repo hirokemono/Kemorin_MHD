@@ -7,9 +7,8 @@
 !
 !     Written by H. Matsui on Dec., 2008
 !
-!!      subroutine dealloc_mesh_infomations(nod_comm,                   &
-!!     &          node, ele, surf, edge, nod_grp, ele_grp, surf_grp,    &
-!!     &          tbls_ele_grp, tbls_sf_grp, surf_nod_grp)
+!!      subroutine dealloc_mesh_infos_w_normal(mesh, group, ele_mesh)
+!!      subroutine dealloc_mesh_infomations(mesh, group, ele_mesh)
 !!      subroutine dealloc_nod_ele_infos(node, ele, surf, edge,         &
 !!     &          nod_grp, ele_grp, surf_grp, nod_comm)
 !!      subroutine dealloc_mesh_infos(mesh, group)
@@ -111,6 +110,21 @@
 !
 !------------------------------------------------------------------
 !
+      subroutine dealloc_mesh_infos_w_normal(mesh, group, ele_mesh)
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
+!
+!
+      call dealloc_vect_surf_grp_nod(group%surf_nod_grp)
+!
+      call dealloc_mesh_infomations(mesh, group, ele_mesh)
+!
+      end subroutine dealloc_mesh_infos_w_normal
+!
+! ----------------------------------------------------------------------
+!
       subroutine dealloc_mesh_infomations(mesh, group, ele_mesh)
 !
       type(mesh_geometry), intent(inout) :: mesh
@@ -131,8 +145,8 @@
       call deallocate_surface_geom_type(ele_mesh%surf)
       call dealloc_edge_geometory(ele_mesh%edge)
 !
-!      call deallocate_iso_surface_type(ele_mesh%surf)
-!      call deallocate_ext_surface_type(ele_mesh%surf)
+      call deallocate_iso_surface_type(ele_mesh%surf)
+      call deallocate_ext_surface_type(ele_mesh%surf)
 !
       call dealloc_edge_param_smp(ele_mesh%edge)
       call deallocate_surf_param_smp_type(ele_mesh%surf)

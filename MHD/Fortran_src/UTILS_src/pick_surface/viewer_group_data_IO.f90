@@ -27,6 +27,7 @@
       use m_constants
 !
       use t_viewer_mesh
+      use t_viewer_group
       use m_viewer_mesh_labels
 !
       implicit none
@@ -46,14 +47,20 @@
       integer(kind = kint), intent(in)  :: num_pe
       type(viewer_surface_groups), intent(in) :: domain_grps
 !
+      integer(kind = kint) :: ip, ist, ied
+!
 !
       write(surface_id,'(a)', advance='NO') hd_domain_nod_grp()
 !
       write(surface_id,'(i16)') domain_grps%node_grp%num_item
       write(surface_id,'(8i16)')                                        &
      &   domain_grps%node_grp%istack_sf(1:num_pe)
-      write(surface_id,'(8i16)')                                        &
-     &   domain_grps%node_grp%item_sf(1:domain_grps%node_grp%num_item)
+      do ip = 1, num_pe
+        ist = domain_grps%node_grp%istack_sf(ip-1) + 1
+        ied = domain_grps%node_grp%istack_sf(ip)
+        if(ied .gt. ist) write(surface_id,'(8i16)')                     &
+     &                  domain_grps%node_grp%item_sf(ist:ied)
+      end do
 !
       write(surface_id,'(a)', advance='NO') hd_domain_surf_grp()
 !
@@ -61,8 +68,12 @@
       write(surface_id,'(8i16)')                                        &
      &   domain_grps%surf_grp%istack_sf(1:num_pe)
 !
-      write(surface_id,'(8i16)')                                        &
-     &   domain_grps%surf_grp%item_sf(1:domain_grps%surf_grp%num_item)
+      do ip = 1, num_pe
+        ist = domain_grps%surf_grp%istack_sf(ip-1) + 1
+        ied = domain_grps%surf_grp%istack_sf(ip)
+        if(ied .gt. ist) write(surface_id,'(8i16)')                     &
+     &                  domain_grps%surf_grp%item_sf(ist:ied)
+      end do
 !
       write(surface_id,'(a)', advance='NO') hd_domain_edge_grp()
 !
@@ -71,8 +82,12 @@
       write(surface_id,'(8i16)')                                        &
      &     domain_grps%edge_grp%istack_sf(1:num_pe)
 !
-      write(surface_id,'(8i16)')                                        &
-     &   domain_grps%edge_grp%item_sf(1:domain_grps%edge_grp%num_item)
+      do ip = 1, num_pe
+        ist = domain_grps%edge_grp%istack_sf(ip-1) + 1
+        ied = domain_grps%edge_grp%istack_sf(ip)
+        if(ied .gt. ist) write(surface_id,'(8i16)')                     &
+     &                  domain_grps%edge_grp%item_sf(ist:ied)
+      end do
 !
       end subroutine write_domain_group_viewer
 !
@@ -154,7 +169,7 @@
       read(tmp_character,*) view_nod_grps%num_grp
 !
       num = num_pe * view_nod_grps%num_grp
-      call alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
+      call alloc_merged_node_grps_stack(num_pe, view_nod_grps)
       read(surface_id,*) view_nod_grps%node_grp%istack_sf(1:num)
 !
       view_nod_grps%node_grp%num_item                                   &
@@ -222,7 +237,7 @@
 !
       num = num_pe * view_ele_grps%num_grp
 !
-      call alloc_viewer_surf_grps_stack(num_pe, view_ele_grps)
+      call alloc_merged_surf_grps_stack(num_pe, view_ele_grps)
       read(surface_id,*) view_ele_grps%surf_grp%istack_sf(1:num)
 !
       view_ele_grps%surf_grp%num_item                                   &
@@ -312,7 +327,7 @@
       read(tmp_character,*) view_sf_grps%num_grp
       num = num_pe * view_sf_grps%num_grp
 !
-      call alloc_viewer_surf_grps_stack(num_pe, view_sf_grps)
+      call alloc_merged_surf_grps_stack(num_pe, view_sf_grps)
       read(surface_id,*) view_sf_grps%surf_grp%istack_sf(1:num)
 !
       view_sf_grps%surf_grp%num_item                                    &
@@ -354,24 +369,31 @@
 !------------------------------------------------------------------
 !
       subroutine write_viewer_group_data(id_file, nprocs, ngrp,         &
-     &          name, group)
+     &          name, v_grp)
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nprocs, ngrp
       character(len = kchara), intent(in) :: name(ngrp)
-      type(viewer_group_data), intent(in) :: group
+      type(viewer_group_data), intent(in) :: v_grp
 !
-      integer(kind = kint) :: i, ist, ied
+      integer(kind = kint) :: i, ip, ist, ied
 !
 !
-      write(id_file,'(8i16)') group%istack_sf(1:nprocs*ngrp)
+      do i = 1, ngrp
+        ist = (i-1) * nprocs + 1
+        ied = i*nprocs
+        write(id_file,'(8i16)') v_grp%istack_sf(ist:ied)
+      end do
 !
       if (ngrp .gt. 0) then
         do i = 1, ngrp
-          ist = group%istack_sf(nprocs*(i-1)) + 1
-          ied = group%istack_sf(nprocs*i    )
           write(id_file,'(a)') trim(name(i))
-          write(id_file,'(8i16)') group%item_sf(ist:ied)
+          do ip = 1, nprocs
+            ist = v_grp%istack_sf(nprocs*(i-1)+ip-1) + 1
+            ied = v_grp%istack_sf(nprocs*(i-1)+ip)
+            if(ied .gt. ist) write(id_file,'(8i16)')                    &
+     &                            v_grp%item_sf(ist:ied)
+          end do
         end do
       else
         write(id_file,*) ''
@@ -382,24 +404,24 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_viewer_group_item(id_file, nprocs, ngrp,          &
-     &          name, group)
+     &          name, v_grp)
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: nprocs, ngrp
 !
       character(len = kchara), intent(inout) :: name(ngrp)
-      type(viewer_group_data), intent(inout) :: group
+      type(viewer_group_data), intent(inout) :: v_grp
 !
       integer(kind = kint) :: i, ist, ied
 !
 !
-      call alloc_merged_group_item(group)
+      call alloc_merged_group_item(v_grp)
 !
       do i = 1, ngrp
-        ist = group%istack_sf(nprocs*(i-1)) + 1
-        ied = group%istack_sf(nprocs*i    )
+        ist = v_grp%istack_sf(nprocs*(i-1)) + 1
+        ied = v_grp%istack_sf(nprocs*i    )
         read(id_file,*) name(i)
-        read(id_file,*) group%item_sf(ist:ied)
+        read(id_file,*) v_grp%item_sf(ist:ied)
       end do
 !
       end subroutine read_viewer_group_item

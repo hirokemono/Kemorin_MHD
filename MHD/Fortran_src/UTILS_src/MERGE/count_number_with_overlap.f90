@@ -59,7 +59,6 @@
       use t_mesh_data
       use mesh_IO_select
       use set_read_geometry_2_merge
-      use set_read_boundary_2_merge
       use set_element_data_4_IO
       use copy_mesh_structures
       use load_mesh_data

@@ -72,7 +72,7 @@
       call alloc_edge_connect(edge, surf%numsurf)
       call alloc_edge_4_ele(edge, ele%numele)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_sf'
+      if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_ele'
       call set_edges_connect_by_ele                                     &
      &   (nod%numnod, ele%numele, edge%numedge,                         &
      &    ele%nnod_4_ele, edge%nnod_4_edge, ele%ie,                     &

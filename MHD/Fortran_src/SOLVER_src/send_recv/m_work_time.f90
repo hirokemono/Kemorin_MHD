@@ -28,6 +28,8 @@
       implicit  none
 !
 !
+      integer(kind = kint) :: iflag_time_4_each_pe = 0
+!
       integer(kind = kint), parameter :: id_timer_file = 13
       character(len=kchara), parameter                                  &
      &                   :: time_file_name = 'time_total.dat'
@@ -46,7 +48,7 @@
 !
       real(kind=kreal) :: START_SRtime, END_SRtime, SendRecvtime
 !
-      private :: start_times!, elapsed
+      private :: start_times, elapsed
       private :: elapsed_total, elapsed_min, elapsed_max
 !
 ! ----------------------------------------------------------------------
@@ -150,8 +152,10 @@
       subroutine output_elapsed_times
 !
       use calypso_mpi
+      use set_parallel_file_name
 !
       integer(kind = kint) :: i
+      character(len=kchara) :: fname_tmp, file_name
 !
 !
       call MPI_REDUCE(elapsed, elapsed_total, num_elapsed,              &
@@ -161,13 +165,29 @@
       call MPI_REDUCE(elapsed, elapsed_max, num_elapsed,                &
      &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
 !
+!
+     if(iflag_time_4_each_pe .gt. 0) then
+        call add_int_suffix(my_rank, time_file_name, fname_tmp)
+        call add_dat_extension(fname_tmp, file_name)
+        open(id_timer_file,file=file_name,position='append')
+        write(id_timer_file,*) 'Average elapsed time'
+        do i = 1, num_elapsed
+          if(elapsed(i) .gt. zero) then
+            write(id_timer_file,'(i2,a2,a,a2,1pe20.11)')                &
+     &            i, '. ', trim(elapse_labels(i)), ': ', elapsed(i)
+          end if
+        end do
+      end if
+!
+!
       if (my_rank .ne. 0) return
 !
       do i = 1, num_elapsed
         elapsed(i) = elapsed_total(i) / dble(nprocs)
       end do
 !
-      open(id_timer_file,file=time_file_name,position='append')
+      call add_dat_extension(time_file_name, file_name)
+      open(id_timer_file,file=file_name,position='append')
       write(id_timer_file,*) 'Average elapsed time'
       do i = 1, num_elapsed
         if(elapsed(i) .gt. zero) then

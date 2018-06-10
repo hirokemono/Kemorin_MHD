@@ -13,15 +13,8 @@
 !!      subroutine alloc_array_4_node(mgd_mesh)
 !!      subroutine alloc_array_4_element(mgd_mesh)
 !!
-!!      subroutine alloc_num_surface_merge(mgd_mesh)
-!!
 !!      subroutine dealloc_array_4_merge(mgd_mesh)
 !!      subroutine dealloc_number_of_mesh(mgd_mesh)
-!!
-!!      subroutine dealloc_subdomain_groups(mgd_mesh)
-!!      subroutine dealloc_num_surface_merge(mgd_mesh)
-!!      subroutine dealloc_surf_connect_merge(mgd_mesh)
-!!        type(merged_mesh), intent(inout) :: mgd_mesh
 !!
 !!      subroutine alloc_number_of_2nd_mesh(sec_mesh)
 !!      subroutine dealloc_number_of_2nd_mesh(sec_mesh)
@@ -172,40 +165,6 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine alloc_num_surface_merge(mgd_mesh)
-!
-      type(merged_mesh), intent(inout) :: mgd_mesh
-!
-      allocate(mgd_mesh%istack_surfpe(0:mgd_mesh%num_pe) )
-      mgd_mesh%istack_surfpe = 0
-!
-      end subroutine alloc_num_surface_merge
-!
-!------------------------------------------------------------------
-!
-      subroutine dealloc_num_surface_merge(mgd_mesh)
-!
-      type(merged_mesh), intent(inout) :: mgd_mesh
-!
-      deallocate( mgd_mesh%istack_surfpe )
-!
-      end subroutine dealloc_num_surface_merge
-!
-! ------------------------------------------------------
-!
-      subroutine dealloc_surf_connect_merge(mgd_mesh)
-!
-      type(merged_mesh), intent(inout) :: mgd_mesh
-!
-!
-      call deallocate_surface_connect_type(mgd_mesh%merged_surf)
-      call deallocate_iso_surface_type(mgd_mesh%merged_surf)
-!
-      end subroutine dealloc_surf_connect_merge
-!
-! ------------------------------------------------------
-!------------------------------------------------------------------
-!
       subroutine dealloc_array_4_merge(mgd_mesh)
 !
       type(merged_mesh), intent(inout) :: mgd_mesh
@@ -229,26 +188,6 @@
        allocate( mgd_mesh%sub_surf_grp(mgd_mesh%num_pe) )
 !
       end subroutine alloc_subdomain_groups
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_subdomain_groups(mgd_mesh)
-!
-      type(merged_mesh), intent(inout) :: mgd_mesh
-      integer(kind = kint) :: ip
-!
-!
-      do ip = 1, mgd_mesh%num_pe
-        call deallocate_grp_type( mgd_mesh%sub_nod_grp(ip) )
-        call deallocate_grp_type( mgd_mesh%sub_ele_grp(ip) )
-        call deallocate_sf_grp_type( mgd_mesh%sub_surf_grp(ip) )
-      end do
-!
-      deallocate( mgd_mesh%sub_nod_grp )
-      deallocate( mgd_mesh%sub_ele_grp )
-      deallocate( mgd_mesh%sub_surf_grp )
-!
-      end subroutine dealloc_subdomain_groups
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

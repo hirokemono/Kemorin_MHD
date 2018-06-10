@@ -28,8 +28,8 @@ void alloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
 void alloc_node_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
 	/* allocate memory  xx_view[node #][direction]*/
-	mesh_s->xx_view = (double **)calloc(mesh_s->nodpetot_viewer,sizeof(double *));
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++){
+	mesh_s->xx_view = (double **)calloc(mesh_s->nnod_viewer,sizeof(double *));
+	for (i = 0; i < mesh_s->nnod_viewer; i++){
 		mesh_s->xx_view[i] = (double *)calloc(3,sizeof(double));
 	};
 	
@@ -37,7 +37,7 @@ void alloc_node_viewer_s(struct viewer_mesh *mesh_s){
 };
 
 void alloc_sf_type_viewer_s(struct viewer_mesh *mesh_s){
-	mesh_s->surftyp_viewer =  (int *)calloc(mesh_s->surfpetot_viewer,sizeof(int));
+	mesh_s->surftyp_viewer =  (int *)calloc(mesh_s->nsurf_viewer,sizeof(int));
 	return;
 };
 
@@ -141,8 +141,8 @@ void alloc_surface_params_s(struct viewer_mesh *mesh_s){
 void alloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
 	/* allocate memory  ie_sf_viewer[element #][node index]*/
-	mesh_s->ie_sf_viewer = (int **)calloc(mesh_s->surfpetot_viewer,sizeof(int *));
-	for (i = 0; i < mesh_s->surfpetot_viewer; i++){
+	mesh_s->ie_sf_viewer = (int **)calloc(mesh_s->nsurf_viewer,sizeof(int *));
+	for (i = 0; i < mesh_s->nsurf_viewer; i++){
 		mesh_s->ie_sf_viewer[i] = (int *)calloc(mesh_s->nnod_4_surf,sizeof(int));
 	};
 	return;
@@ -151,13 +151,13 @@ void alloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
 void alloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
 	/* allocate memory  ie_edge_viewer[edge #][local node ID]*/
-	mesh_s->ie_edge_viewer = (int **)calloc(mesh_s->edgepetot_viewer,sizeof(int *));
-	for (i = 0; i < mesh_s->edgepetot_viewer; i++){
+	mesh_s->ie_edge_viewer = (int **)calloc(mesh_s->nedge_viewer,sizeof(int *));
+	for (i = 0; i < mesh_s->nedge_viewer; i++){
 		mesh_s->ie_edge_viewer[i] = (int *)calloc(mesh_s->nnod_4_edge,sizeof(int));
 	};
 	/* allocate memory  iedge_sf_viewer[element #][local edge ID]*/
-	mesh_s->iedge_sf_viewer = (int **)calloc(mesh_s->surfpetot_viewer,sizeof(int *));
-	for (i = 0; i < mesh_s->surfpetot_viewer; i++){
+	mesh_s->iedge_sf_viewer = (int **)calloc(mesh_s->nsurf_viewer,sizeof(int *));
+	for (i = 0; i < mesh_s->nsurf_viewer; i++){
 		mesh_s->iedge_sf_viewer[i] = (int *)calloc(mesh_s->nedge_4_surf,sizeof(int));
 	};
 	
@@ -166,7 +166,7 @@ void alloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 
 void alloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
 	int i, num;
-	num = mesh_s->nsurf_each_tri * mesh_s->surfpetot_viewer;
+	num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
 	/* allocate memory  surf_norm_view[devided surface #][component] */
 	/* allocate memory  surf_center_view[devided surface #][component] */
 	mesh_s->surf_norm_view = (double **)calloc(num,sizeof(double *));
@@ -314,8 +314,8 @@ void alloc_domain_center_s(struct viewer_mesh *mesh_s){
 void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	int i, num;
 	/* allocate memory  xx_draw[node #][direction]*/
-	mesh_s->xx_draw = (double **)calloc(mesh_s->nodpetot_viewer,sizeof(double *));
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++){
+	mesh_s->xx_draw = (double **)calloc(mesh_s->nnod_viewer,sizeof(double *));
+	for (i = 0; i < mesh_s->nnod_viewer; i++){
 		mesh_s->xx_draw[i] = (double *)calloc(3,sizeof(double));
 	};
 	
@@ -371,7 +371,7 @@ static void dealloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
 
 static void dealloc_node_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++) free(mesh_s->xx_view[i]);
+	for (i = 0; i < mesh_s->nnod_viewer; i++) free(mesh_s->xx_view[i]);
 	free(mesh_s->xx_view);
 	return;
 };
@@ -379,7 +379,7 @@ static void dealloc_node_viewer_s(struct viewer_mesh *mesh_s){
 static void dealloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
 	
-	for (i = 0; i < mesh_s->surfpetot_viewer; i++) free(mesh_s->ie_sf_viewer[i]);
+	for (i = 0; i < mesh_s->nsurf_viewer; i++) free(mesh_s->ie_sf_viewer[i]);
 	free(mesh_s->ie_sf_viewer);
 	
 	free(mesh_s->node_quad_2_linear_tri);
@@ -390,9 +390,9 @@ static void dealloc_surf_connect_viewer_s(struct viewer_mesh *mesh_s){
 
 static void dealloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
-	for (i = 0; i < mesh_s->edgepetot_viewer; i++) free(mesh_s->ie_edge_viewer[i]);
+	for (i = 0; i < mesh_s->nedge_viewer; i++) free(mesh_s->ie_edge_viewer[i]);
 	free(mesh_s->ie_edge_viewer);
-	for (i = 0; i < mesh_s->surfpetot_viewer; i++) free(mesh_s->iedge_sf_viewer[i]);
+	for (i = 0; i < mesh_s->nsurf_viewer; i++) free(mesh_s->iedge_sf_viewer[i]);
 	free(mesh_s->iedge_sf_viewer);
 	
 	return;
@@ -400,7 +400,7 @@ static void dealloc_edge_4_sf_viewer_s(struct viewer_mesh *mesh_s){
 
 static void dealloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s){
 	int i, num;
-	num = mesh_s->nsurf_each_tri * mesh_s->surfpetot_viewer;
+	num = mesh_s->nsurf_each_tri * mesh_s->nsurf_viewer;
 	for (i = 0; i < num; i++) free(mesh_s->surf_norm_view[i]);
 	free(mesh_s->surf_norm_view);
 	for (i = 0; i < num; i++) free(mesh_s->surf_center_view[i]);
@@ -546,7 +546,7 @@ static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	free(mesh_s->dist_nod_domain);
 	
 	/* deallocate memory  xx_draw[node #][direction]*/
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++) free(mesh_s->xx_draw[i]);
+	for (i = 0; i < mesh_s->nnod_viewer; i++) free(mesh_s->xx_draw[i]);
 	free(mesh_s->xx_draw);
 	
 	return;
