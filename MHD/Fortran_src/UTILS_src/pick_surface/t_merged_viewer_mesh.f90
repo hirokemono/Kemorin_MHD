@@ -20,6 +20,7 @@
       use m_precision
       use m_constants
       use t_viewer_mesh
+      use t_viewer_group
 !
       implicit none
 !

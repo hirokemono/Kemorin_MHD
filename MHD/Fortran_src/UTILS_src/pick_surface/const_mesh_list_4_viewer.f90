@@ -38,6 +38,7 @@
       use t_edge_data
       use t_group_data
       use t_viewer_mesh
+      use t_viewer_group
       use t_const_mesh_data_4_viewer
 !
       implicit none

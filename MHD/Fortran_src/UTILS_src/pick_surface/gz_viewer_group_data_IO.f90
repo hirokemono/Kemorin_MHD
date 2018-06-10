@@ -25,7 +25,7 @@
 !
       use m_precision
 !
-      use t_viewer_mesh
+      use t_viewer_group
       use skip_gz_comment
       use m_viewer_mesh_labels
 !
@@ -44,39 +44,53 @@
       integer(kind = kint), intent(in)  :: num_pe
       type(viewer_surface_groups), intent(in) :: domain_grps
 !
+      integer(kind = kint) :: ip, ist, num
+!
 !
       textbuf = hd_domain_nod_grp() // char(0)
-      call gz_write_textbuf_w_lf
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(i16,a1)') domain_grps%node_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_gz_multi_int_8i10(num_pe,                              &
      &    domain_grps%node_grp%istack_sf(1) )
-      call write_gz_multi_int_8i10(domain_grps%node_grp%num_item,       &
-     &    domain_grps%node_grp%item_sf)
+      do ip = 1, num_pe
+        ist = domain_grps%node_grp%istack_sf(ip-1)
+        num = domain_grps%node_grp%istack_sf(ip) - ist
+        if(num .gt. 0) call write_gz_multi_int_8i10                     &
+     &                    (num, domain_grps%node_grp%item_sf(ist+1))
+      end do
 !
       textbuf = hd_domain_surf_grp() // char(0)
-      call gz_write_textbuf_w_lf
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(i16,a1)') domain_grps%surf_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_gz_multi_int_8i10(num_pe,                              &
      &    domain_grps%surf_grp%istack_sf(1) )
-      call write_gz_multi_int_8i10(domain_grps%surf_grp%num_item,       &
-     &    domain_grps%surf_grp%item_sf)
+      do ip = 1, num_pe
+        ist = domain_grps%surf_grp%istack_sf(ip-1)
+        num = domain_grps%surf_grp%istack_sf(ip) - ist
+        if(num .gt. 0) call write_gz_multi_int_8i10                     &
+     &                    (num, domain_grps%surf_grp%item_sf(ist+1))
+      end do
 !
       textbuf = hd_domain_edge_grp() // char(0)
-      call gz_write_textbuf_w_lf
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(i16,a1)') domain_grps%edge_grp%num_item, char(0)
       call gz_write_textbuf_w_lf
 !
       call write_gz_multi_int_8i10(num_pe,                              &
      &    domain_grps%edge_grp%istack_sf(1) )
-      call write_gz_multi_int_8i10(domain_grps%edge_grp%num_item,       &
-     &    domain_grps%edge_grp%item_sf)
+      do ip = 1, num_pe
+        ist = domain_grps%edge_grp%istack_sf(ip-1)
+        num = domain_grps%edge_grp%istack_sf(ip) - ist
+        if(num .gt. 0) call write_gz_multi_int_8i10                     &
+     &                    (num, domain_grps%edge_grp%item_sf(ist+1))
+      end do
 !
       end subroutine write_domain_group_viewer_gz
 !
@@ -94,8 +108,8 @@
       call read_gz_multi_int(num_pe, domain_grps%node_grp%istack_sf(1))
 !
       call alloc_merged_group_item(domain_grps%node_grp)
-      read(surface_id,*)                                                &
-     &   domain_grps%node_grp%item_sf(1:domain_grps%node_grp%num_item)
+      call read_gz_multi_int(domain_grps%node_grp%num_item,             &
+     &    domain_grps%node_grp%item_sf)
 !
 !      write(surface_id,'(a)') '! 3.1 surface ID for domain boundary'
 !
@@ -189,6 +203,7 @@
 !
 !
       textbuf = hd_ele_nod_grp() // char(0)
+      call gz_write_textbuf_no_lf
       write(textbuf,'(i16,a1)') view_ele_grps%num_grp, char(0)
       call gz_write_textbuf_w_lf
 !
@@ -196,7 +211,7 @@
      &    view_ele_grps%grp_name, view_ele_grps%node_grp)
 !
       textbuf = hd_ele_edge_grp() // char(0)
-      call gz_write_textbuf_w_lf
+      call gz_write_textbuf_no_lf
       write(textbuf,'(i16,a1)') view_ele_grps%num_grp, char(0)
       call gz_write_textbuf_w_lf
 !
@@ -270,7 +285,7 @@
       textbuf = hd_fem_sfgrp() // char(0)
       call gz_write_textbuf_no_lf
       textbuf = hd_surf_surf_grp() // char(0)
-      call gz_write_textbuf_w_lf
+      call gz_write_textbuf_no_lf
       write(textbuf,'(i16,a1)') view_sf_grps%num_grp, char(0)
       call gz_write_textbuf_w_lf
 !
@@ -279,7 +294,7 @@
 !
 !
       textbuf = hd_surf_nod_grp() // char(0)
-      call gz_write_textbuf_w_lf
+      call gz_write_textbuf_no_lf
       write(textbuf,'(i16,a1)') view_sf_grps%num_grp, char(0)
       call gz_write_textbuf_w_lf
 !
@@ -287,7 +302,7 @@
      &    view_sf_grps%grp_name, view_sf_grps%node_grp)
 !
       textbuf = hd_surf_edge_grp() // char(0)
-      call gz_write_textbuf_w_lf
+      call gz_write_textbuf_no_lf
       write(textbuf,'(i16,a1)') view_sf_grps%num_grp, char(0)
       call gz_write_textbuf_w_lf
 !
@@ -360,7 +375,10 @@
       integer(kind = kint) :: i, ip, ist, num
 !
 !
-      call write_gz_multi_int_8i10((nprocs*ngrp), group%istack_sf(1))
+      do i = 1, ngrp
+        ist = (i-1) * nprocs
+        call write_gz_multi_int_8i10(nprocs, group%istack_sf(ist+1))
+      end do
 !
       if (ngrp .gt. 0) then
         do i = 1, ngrp

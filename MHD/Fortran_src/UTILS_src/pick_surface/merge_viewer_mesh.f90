@@ -19,6 +19,7 @@
       use m_geometry_constants
       use t_merged_viewer_mesh
       use t_viewer_mesh
+      use t_viewer_group
 !
       implicit none
 !

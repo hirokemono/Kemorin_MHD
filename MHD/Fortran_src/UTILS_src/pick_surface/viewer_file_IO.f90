@@ -47,7 +47,8 @@
 !
 !      write(*,*) 'write_surf_connect_viewer'
       call write_surf_connect_viewer                                    &
-     &   (nnod_4_surf, mgd_view_mesh%view_mesh)
+     &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%isurf_sf_stack,        &
+     &    nnod_4_surf, mgd_view_mesh%view_mesh)
 !
 !      write(*,*) 'write_edge_connect_viewer'
       call write_edge_connect_viewer                                    &

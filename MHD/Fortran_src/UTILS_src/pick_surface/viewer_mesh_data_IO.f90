@@ -27,8 +27,10 @@
       module viewer_mesh_data_IO
 !
       use m_precision
+!
       use t_viewer_mesh
       use t_merged_viewer_mesh
+      use m_viewer_mesh_labels
 !
       implicit none
 !
@@ -46,12 +48,7 @@
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
 !
-      write(surface_id,'(a)') '!'
-      write(surface_id,'(a)') '! number of domain '
-      write(surface_id,'(a)') '!   stack of node for domain '
-      write(surface_id,'(a)') '!   stack of surface for domain '
-      write(surface_id,'(a)') '!   stack of edge for domain '
-      write(surface_id,'(a)') '!'
+      write(surface_id,'(a)',advance='NO') hd_ndomain_viewer()
 !
       write(surface_id,'(i16)') mgd_view_mesh%num_pe_sf
       write(surface_id,'(8i16)')                                        &
@@ -70,12 +67,7 @@
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
 !
-      write(surface_id,'(a)') '!'
-      write(surface_id,'(a)') '! number of domain '
-      write(surface_id,'(a)') '!   stack of node for domain '
-      write(surface_id,'(a)') '!   stack of surface for domain '
-      write(surface_id,'(a)') '!   stack of edge for domain '
-      write(surface_id,'(a)') '!'
+      write(surface_id,'(a)',advance='NO') hd_ndomain_viewer()
 !
       write(surface_id,'(i16)') mgd_view_mesh%num_pe_sf
       write(surface_id,'(8i16)')                                        &
@@ -121,12 +113,7 @@
 !
       integer(kind = kint) :: i
 !
-      write(surface_id,'(a)') '!'
-      write(surface_id,'(a)') '! 1. node information'
-      write(surface_id,'(a)') '! number_of node, intenal_node'
-      write(surface_id,'(a)') '! Global ID, x, y, z'
-      write(surface_id,'(a)') '!'
-!
+      write(surface_id,'(a)',advance='NO') hd_node_viewer()
       write(surface_id,'(i16)') view_mesh%nnod_viewer
 !
       do i = 1, view_mesh%nnod_viewer
@@ -160,23 +147,26 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_surf_connect_viewer(nnod_4_surf, view_mesh)
+      subroutine write_surf_connect_viewer                              &
+     &         (num_pe, isurf_sf_stack, nnod_4_surf, view_mesh)
 !
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: isurf_sf_stack(0:num_pe)
       integer(kind = kint), intent(in) :: nnod_4_surf
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ist, ied
 !
 !
-      write(surface_id,'(a)') '!'
-      write(surface_id,'(a)') '! 2. element information'
-      write(surface_id,'(a)') '! element type'
-      write(surface_id,'(a)') '! Global ID, connectivity'
-      write(surface_id,'(a)') '!'
+      write(surface_id,'(a)',advance='NO') hd_surf_viewer()
 !
       write(surface_id,'(i16)') view_mesh%nsurf_viewer
-      write(surface_id,1003)                                            &
-     &          view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer)
+      do i = 1, num_pe
+        ist = isurf_sf_stack(i-1) + 1
+        ied = isurf_sf_stack(i)
+        if(ied .gt. ist) write(surface_id,1003)                         &
+     &                  view_mesh%surftyp_viewer(ist:ied)
+      end do
 !
       do i = 1, view_mesh%nsurf_viewer
        write(surface_id,'(10i16)')                                      &
@@ -238,11 +228,7 @@
       integer(kind = kint) :: i
 !
 !
-      write(surface_id,'(a)') '!'
-      write(surface_id,'(a)') '!  edge information'
-      write(surface_id,'(a)') '!  edge type'
-      write(surface_id,'(a)') '!  global ID, connectivity'
-      write(surface_id,'(a)') '!'
+      write(surface_id,'(a)',advance='NO') hd_edge_viewer()
 !
       write(surface_id,'(i16)') view_mesh%nedge_viewer
 !
@@ -251,9 +237,7 @@
      &               i, view_mesh%ie_edge_viewer(i,1:nnod_4_edge)
       end do
 !
-      write(surface_id,'(a)') '!'
-      write(surface_id,'(a)') '!  edge ID for surfaces'
-      write(surface_id,'(a)') '!'
+      write(surface_id,'(a)',advance='NO') hd_edge_on_sf_viewer()
       write(surface_id,'(i16)') view_mesh%nsurf_viewer
       do i = 1, view_mesh%nsurf_viewer
         write(surface_id,'(10i16)')                                     &

@@ -32,6 +32,7 @@
       use t_merged_viewer_mesh
 !
       use skip_gz_comment
+      use m_viewer_mesh_labels
 !
       implicit none
 !
@@ -46,21 +47,8 @@
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! number of domain ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &                 '!   stack of node for domain ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &                 '!   stack of surface for domain ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &                 '!   stack of edge for domain ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_ndomain_viewer() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(i16,a1)') mgd_view_mesh%num_pe_sf, char(0)
       call gz_write_textbuf_w_lf
@@ -106,17 +94,8 @@
       integer(kind = kint) :: i
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 1. node information', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &                 '! number_of node, intenal_node', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! Global ID, x, y, z', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_node_viewer() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(i16,a1)') view_mesh%nnod_viewer, char(0)
       call gz_write_textbuf_w_lf
@@ -152,30 +131,29 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_surf_connect_viewer_gz(nnod_4_surf, view_mesh)
+      subroutine write_surf_connect_viewer_gz                           &
+     &         (num_pe, isurf_sf_stack, nnod_4_surf, view_mesh)
 !
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: isurf_sf_stack(0:num_pe)
       integer(kind = kint), intent(in) :: nnod_4_surf
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ist, num
       character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 2. element information', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! element type', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! Global ID, connectivity', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_surf_viewer() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(i16,a1)') view_mesh%nsurf_viewer, char(0)
       call gz_write_textbuf_w_lf
-      call write_gz_multi_int_10i8                                      &
-     &   (view_mesh%nsurf_viewer, view_mesh%surftyp_viewer)
+      do i = 1, num_pe
+        ist = isurf_sf_stack(i-1)
+        num = isurf_sf_stack(i) - isurf_sf_stack(i-1)
+        if(num .gt. 0)  call write_gz_multi_int_10i8                    &
+     &                     (num, view_mesh%surftyp_viewer(ist+1))
+      end do
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
      &                '(i16,', nnod_4_surf, '(i16),a1)'
@@ -238,16 +216,8 @@ end subroutine write_surf_connect_viewer_gz
       character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!  edge information', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!  edge type', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!  global ID, connectivity', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_edge_viewer() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(i16,a1)') view_mesh%nedge_viewer, char(0)
       call gz_write_textbuf_w_lf
@@ -260,12 +230,8 @@ end subroutine write_surf_connect_viewer_gz
         call gz_write_textbuf_w_lf
       end do
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!  edge ID for surfaces', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_edge_on_sf_viewer() // char(0)
+      call gz_write_textbuf_no_lf
       write(textbuf,'(i16,a1)') view_mesh%nsurf_viewer, char(0)
       call gz_write_textbuf_w_lf
 !

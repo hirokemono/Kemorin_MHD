@@ -129,7 +129,8 @@
         call write_domain_data_viewer(mgd_view_mesh_p)
         call write_node_data_viewer(view_mesh_p(ip))
         call write_surf_connect_viewer                                  &
-       &   (ele_mesh_p%surf%nnod_4_surf, view_mesh_p(ip))
+       &   (ione, mgd_view_mesh_p%isurf_sf_stack,                       &
+       &    ele_mesh_p%surf%nnod_4_surf, view_mesh_p(ip))
         call write_edge_connect_viewer                                  &
        &   (ele_mesh_p%edge%nnod_4_edge, view_mesh_p(ip))
 !
@@ -278,6 +279,8 @@
       subroutine dealloc_viewer_mesh(view_mesh, domain_grps,            &
      &          view_nod_grps, view_ele_grps, view_sf_grps)
 !
+      use t_viewer_group
+!
       type(viewer_mesh_data), intent(inout) :: view_mesh
       type(viewer_surface_groups), intent(inout) :: domain_grps
       type(viewer_node_groups), intent(inout) :: view_nod_grps
@@ -285,23 +288,11 @@
       type(viewer_surface_groups), intent(inout) :: view_sf_grps
 !
 !
-      call dealloc_merged_group_item(view_nod_grps%node_grp)
-      call dealloc_viewer_node_grps_stack(view_nod_grps)
+      call dealloc_viewer_node_grps_item(view_nod_grps)
+      call dealloc_viewer_surf_grps_item(view_ele_grps)
+      call dealloc_viewer_surf_grps_item(view_sf_grps)
 !
-      call dealloc_merged_group_item(view_ele_grps%node_grp)
-      call dealloc_merged_group_item(view_ele_grps%edge_grp)
-      call dealloc_merged_group_item(view_ele_grps%surf_grp)
-      call dealloc_viewer_surf_grps_stack(view_ele_grps)
-!
-      call dealloc_merged_group_item(view_sf_grps%node_grp)
-      call dealloc_merged_group_item(view_sf_grps%edge_grp)
-      call dealloc_merged_group_item(view_sf_grps%surf_grp)
-      call dealloc_viewer_surf_grps_stack(view_sf_grps)
-!
-      call dealloc_merged_group_item(domain_grps%node_grp)
-      call dealloc_merged_group_item(domain_grps%edge_grp)
-      call dealloc_merged_group_item(domain_grps%surf_grp)
-      call dealloc_viewer_surf_grps_stack(domain_grps)
+      call dealloc_viewer_surf_grps_item(domain_grps)
 !
       call dealloc_surf_type_viewer(view_mesh)
       call dealloc_edge_data_4_sf(view_mesh)
@@ -309,6 +300,9 @@
       call dealloc_nod_position_viewer(view_mesh)
 !
       end subroutine dealloc_viewer_mesh
+!
+!------------------------------------------------------------------
+!
 !
 !------------------------------------------------------------------
 !

@@ -122,8 +122,8 @@
 !
       call write_domain_data_viewer(mgd_v_mesh_s)
       call write_node_data_viewer(mgd_v_mesh_s%view_mesh)
-      call write_surf_connect_viewer                                    &
-       &   (ele_mesh_p%surf%nnod_4_surf, mgd_v_mesh_s%view_mesh)
+      call write_surf_connect_viewer(ione, mgd_v_mesh_s%isurf_sf_stack, &
+       &    ele_mesh_p%surf%nnod_4_surf, mgd_v_mesh_s%view_mesh)
       call write_edge_connect_viewer                                    &
        &   (ele_mesh_p%edge%nnod_4_edge, mgd_v_mesh_s%view_mesh)
 !
