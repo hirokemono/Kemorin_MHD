@@ -98,7 +98,7 @@
       call dealloc_phys_data_type(psf_dat%psf_phys)
       call dealloc_phys_name_type(psf_dat%psf_phys)
       call deallocate_ele_connect_type(psf_dat%psf_ele)
-      call deallocate_node_geometry_type(psf_dat%psf_nod)
+      call dealloc_node_geometry_w_sph(psf_dat%psf_nod)
 !
       end subroutine dealloc_psf_results
 !
@@ -121,7 +121,7 @@
       psf_ele%numele =     int(ucd%nele)
       psf_ele%nnod_4_ele = num_triangle
       psf_phys%ntot_phys = ucd%ntot_comp
-      call allocate_node_geometry_type(psf_nod)
+      call alloc_node_geometry_w_sph(psf_nod)
       call allocate_ele_connect_type(psf_ele)
 !
       psf_nod%inod_global(1:psf_nod%numnod)                             &

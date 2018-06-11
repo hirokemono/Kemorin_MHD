@@ -114,7 +114,7 @@
 !
       call copy_node_geometry_types(node, node_org_refine)
       call copy_element_connect_types(ele, ele_org_refine)
-      call allocate_sph_node_geometry(node_org_refine)
+      call alloc_sph_node_geometry(node_org_refine)
 !
       call allocate_mesh_refine_org
 !

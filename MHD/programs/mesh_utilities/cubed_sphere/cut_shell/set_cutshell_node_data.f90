@@ -44,7 +44,7 @@
 !
       call count_new_position_4_hemi(org_node, new_node)
 !
-      call allocate_node_geometry_type(new_node)
+      call alloc_node_geometry_w_sph(new_node)
       call set_new_position_4_hemi(org_node, new_node)
 !
       end subroutine set_new_node_4_hemi
@@ -59,7 +59,7 @@
 !
       call count_new_position_cut_shell(org_node, new_node)
 !
-      call allocate_node_geometry_type(new_node)
+      call alloc_node_geometry_w_sph(new_node)
       call set_new_position_cut_shell(org_node, new_node)
 !
       end subroutine set_new_node_4_cut_shell
@@ -77,7 +77,7 @@
 !
       call count_position_outer_core(org_node, new_node)
 !
-      call allocate_node_geometry_type(new_node)
+      call alloc_node_geometry_w_sph(new_node)
       call set_position_outer_core(org_node, new_node)
 !
       end subroutine set_new_node_outer_core
@@ -94,7 +94,7 @@
 !
       call count_position_h_outer_core(org_node, new_node)
 !
-      call allocate_node_geometry_type(new_node)
+      call alloc_node_geometry_w_sph(new_node)
       call set_position_h_outer_core(org_node, new_node)
 !
       end subroutine set_new_node_hemi_o_core

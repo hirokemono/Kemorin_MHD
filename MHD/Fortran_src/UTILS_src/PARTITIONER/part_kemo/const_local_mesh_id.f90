@@ -88,7 +88,7 @@
 !
       new_node%numnod = numnod_4_subdomain(ip)
       new_node%internal_node = num_intnod_sub(ip)
-      call allocate_node_geometry_type(new_node)
+      call alloc_node_geometry_w_sph(new_node)
       call set_local_node(ip, org_node, new_node)
 !
       end subroutine const_local_node_position

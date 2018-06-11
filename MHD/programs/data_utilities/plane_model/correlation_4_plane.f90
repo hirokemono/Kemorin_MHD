@@ -104,7 +104,7 @@
        end do
 !
        call deallocate_ioverlap_nod
-       call deallocate_node_geometry_type(mgd_mesh_pm%merged%node)
+       call dealloc_node_geometry_w_sph(mgd_mesh_pm%merged%node)
        call dealloc_2nd_merge_table(sec_mesh_pm)
 !
 !

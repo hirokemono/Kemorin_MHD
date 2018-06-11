@@ -132,7 +132,7 @@
       integer(kind = kint) :: i
 !
 !
-      call allocate_node_geometry_type(merged%node)
+      call alloc_node_geometry_w_sph(merged%node)
       call alloc_local_nod_id_tbl(merge_tbl)
 !
       do i = 1, merged%node%numnod
@@ -226,7 +226,7 @@
 !
 !
       do ip = 1, num_pe2
-        call allocate_node_geometry_type(subdomains_2(ip)%node)
+        call alloc_node_geometry_w_sph(subdomains_2(ip)%node)
         call allocate_ele_connect_type(subdomains_2(ip)%ele)
       end do
 !

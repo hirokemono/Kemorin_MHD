@@ -56,7 +56,7 @@
 !
       node_l%numnod = node_q%numnod + surf_q%numsurf + ele_q%numele
 !
-      call allocate_node_geometry_type(node_l)
+      call alloc_node_geometry_w_sph(node_l)
 !
       call set_position_on_surf                                         &
      &   (node_q%numnod, surf_q%numsurf, ele_q%numele,                  &

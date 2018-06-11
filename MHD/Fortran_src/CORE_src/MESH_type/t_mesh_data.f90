@@ -193,7 +193,7 @@
 !
 !
       call deallocate_ele_connect_type(mesh%ele)
-      call deallocate_node_geometry_type(mesh%node)
+      call dealloc_node_geometry_w_sph(mesh%node)
       call deallocate_type_comm_tbl(mesh%nod_comm)
 !
       call deallocate_grp_type(group%nod_grp)
@@ -225,7 +225,7 @@
 !
 !
       call deallocate_ele_connect_type(mesh%ele)
-      call deallocate_node_geometry_type(mesh%node)
+      call dealloc_node_geometry_w_sph(mesh%node)
       call deallocate_type_comm_tbl(mesh%nod_comm)
 !
       end subroutine dealloc_mesh_type

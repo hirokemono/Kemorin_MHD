@@ -134,7 +134,7 @@
       call count_numnod_local_sph_mesh                                  &
      &   (sph_params%iflag_shell_mode, ip_r, ip_t, stbl, node)
 !
-      call allocate_node_geometry_type(node)
+      call alloc_node_geometry_w_sph(node)
       call set_local_nodes_sph_mesh(sph_params%iflag_shell_mode,        &
      &    ip_r, ip_t, gauss%n_point, r_global, gauss%colat, stbl, node)
 !

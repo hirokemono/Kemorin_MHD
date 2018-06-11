@@ -129,8 +129,8 @@
      &      newmesh%ele)
         write(*,*) 'extend_ele_comm_table'
 !
-        write(*,*) 'allocate_sph_node_geometry'
-        call allocate_sph_node_geometry(newmesh%node)
+        write(*,*) 'alloc_sph_node_geometry'
+        call alloc_sph_node_geometry(newmesh%node)
         write(*,*) 'set_nod_and_ele_infos'
         call set_nod_and_ele_infos(newmesh%node, newmesh%ele)
         write(*,*)' const_element_comm_tbl_only'

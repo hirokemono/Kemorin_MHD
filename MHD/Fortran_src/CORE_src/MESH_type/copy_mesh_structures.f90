@@ -81,7 +81,7 @@
       call copy_group_data(group%ele_grp, tgt_ele_grp)
       call copy_surface_group(group%surf_grp, tgt_surf_grp)
 !
-      call allocate_sph_node_geometry(tgt_node)
+      call alloc_sph_node_geometry(tgt_node)
 !      call alloc_ele_geometry(tgt_ele)
       call set_3D_nnod_4_sfed_by_ele(tgt_ele%nnod_4_ele,                &
      &    tgt_surf%nnod_4_surf, tgt_edge%nnod_4_edge)
