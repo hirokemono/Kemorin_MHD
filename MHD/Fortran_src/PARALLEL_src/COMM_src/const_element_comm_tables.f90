@@ -11,7 +11,7 @@
 !!      subroutine const_element_comm_tbls(mesh, ele_mesh)
 !!      subroutine const_element_comm_tbl_only(mesh, ele_mesh)
 !!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
-!!      subroutine dealloc_ele_comm_tbl_only(ele_mesh)
+!!      subroutine dealloc_ele_comm_tbl_only(mesh, ele_mesh)
 !!        type(mesh_geometry), intent(inout) ::    mesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!
@@ -155,12 +155,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_ele_comm_tbl_only(ele_mesh)
+      subroutine dealloc_ele_comm_tbl_only(mesh, ele_mesh)
 !
+      type(mesh_geometry), intent(inout) :: mesh
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       call deallocate_type_comm_tbl(ele_mesh%ele_comm)
+      call dealloc_numele_stack(mesh%ele)
 !
       end subroutine dealloc_ele_comm_tbl_only
 !
