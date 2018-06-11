@@ -73,7 +73,7 @@
       call dealloc_itp_num_dest(itp_table%tbl_dest)
 !
       call deallocate_ele_connect_type(finermesh%ele)
-      call deallocate_node_geometry_type(finermesh%node)
+      call dealloc_node_geometry_w_sph(finermesh%node)
       call deallocate_type_comm_tbl(finermesh%nod_comm)
 !
       end subroutine s_set_partition_by_fine_mesh

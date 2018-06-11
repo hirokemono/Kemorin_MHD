@@ -32,12 +32,12 @@
       integer(kind = kint) :: inod
 !
 !
-      call deallocate_node_geometry_type(node)
+      call dealloc_node_geometry_w_sph(node)
 !
       node%numnod =        ele%numele
       node%internal_node = ele%numele
 !
-      call allocate_node_geometry_type(node)
+      call alloc_node_geometry_w_sph(node)
 !
 !$omp parallel do
       do inod = 1, node%numnod
@@ -80,13 +80,13 @@
 !
 !
       call set_nod_and_ele_infos(newmesh%node, newmesh%ele)
-      call deallocate_node_geometry_type(newmesh%node)
+      call dealloc_node_geometry_w_sph(newmesh%node)
 !
 !
       newmesh%node%numnod =         newmesh%ele%numele
       newmesh%node%internal_node = newmesh%ele%numele
 !
-      call allocate_node_geometry_type(newmesh%node)
+      call alloc_node_geometry_w_sph(newmesh%node)
 !
 !$omp parallel do
       do inod = 1, newmesh%node%numnod

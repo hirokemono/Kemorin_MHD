@@ -82,15 +82,6 @@ mod_list:
 
 module:
 	@echo \
-	kemoviewer_f.o:  \
-	'$$(KEMOVIEW_GLUTDIR)'/kemoviewer_f.f90  \
-	single_const_surface_mesh.o \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' -c '$$(F90FLAGS)' \
-	'$$(KEMOVIEW_GLUTDIR)'/kemoviewer_f.f90  \
-	>> $(MAKENAME)
-	
-	@echo \
 	kemoviewer_glut.o:  \
 	'$$(KEMOVIEW_GLUTDIR)'/kemoviewer_glut.c  \
 	kemo_mesh_viewer_glut.o \

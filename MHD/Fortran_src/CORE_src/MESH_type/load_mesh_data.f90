@@ -168,7 +168,7 @@
       call dealloc_node_geometry_base(mesh_IO%node)
       call deallocate_ele_connect_type(mesh_IO%ele)
 !
-      call allocate_sph_node_geometry(node)
+      call alloc_sph_node_geometry(node)
 !
       end subroutine set_mesh_geometry_data
 !
@@ -192,7 +192,7 @@
 !
       mesh%node%numnod =        izero
       mesh%node%internal_node = izero
-      call allocate_node_geometry_type(mesh%node)
+      call alloc_node_geometry_w_sph(mesh%node)
 !
       mesh%ele%numele = izero
       mesh%ele%first_ele_type = izero

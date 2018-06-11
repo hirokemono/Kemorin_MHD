@@ -57,7 +57,7 @@
 !
       call s_set_2nd_geometry_4_serial(merged_mesh_file, sec_mesh1)
 !
-      call deallocate_node_geometry_type(mgd_mesh1%merged%node)
+      call dealloc_node_geometry_w_sph(mgd_mesh1%merged%node)
       call dealloc_2nd_merge_table(sec_mesh1)
 !
 !  allocate restart data

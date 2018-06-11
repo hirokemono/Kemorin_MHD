@@ -41,7 +41,6 @@
       use m_precision
       use m_constants
       use m_geometry_constants
-      use calypso_mpi
 !
       use t_geometry_data
       use t_surface_data

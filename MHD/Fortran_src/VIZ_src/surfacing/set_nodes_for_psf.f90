@@ -271,7 +271,7 @@
 !
       do i = 1, num_iso
         call alloc_inod_psf(iso_list(i))
-        call allocate_node_geometry_type(iso_mesh(i)%node)
+        call alloc_node_geometry_w_sph(iso_mesh(i)%node)
         call const_global_numnod_list(iso_mesh(i)%node)
 !
         call set_node_on_edge_4_psf                                     &

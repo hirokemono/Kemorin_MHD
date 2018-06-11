@@ -15,8 +15,7 @@ cubed_sph      \
 PLANE_src      \
 PARTITIONER    \
 MERGE          \
-REFINER        \
-pick_surface   \
+REFINER
 
 SUBDIRS = \
 $(SUBDIR_NO_PG) \
@@ -91,7 +90,6 @@ mod_list:
 	'$$(MOD_ITP_TABLE)'    \
 	'$$(MOD_MERGE)'        \
 	'$$(MOD_PART_KEMO)'    \
-	'$$(MOD_PICK_SURFACE)' \
 	'$$(MOD_PLANE_MODEL)'  \
 	'$$(MOD_REFINE)'       \
 	'$$(MOD_DRAW_PG)'      >> $(MAKENAME)

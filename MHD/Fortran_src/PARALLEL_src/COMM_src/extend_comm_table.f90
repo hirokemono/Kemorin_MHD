@@ -164,10 +164,10 @@
       end do
       ntot_recv_added = istack_recv_added(nod_comm%num_neib)
 !
-      write(*,*) 'istack_send_added', my_rank, istack_send_added
-      write(*,*) 'ntot_send_added', my_rank, ntot_send_added
-      write(*,*) 'istack_recv_added', my_rank, istack_recv_added
-      write(*,*) 'ntot_recv_added', my_rank, ntot_recv_added
+!      write(*,*) 'istack_send_added', my_rank, istack_send_added
+!      write(*,*) 'ntot_send_added', my_rank, ntot_send_added
+!      write(*,*) 'istack_recv_added', my_rank, istack_recv_added
+!      write(*,*) 'ntot_recv_added', my_rank, ntot_recv_added
 !
       allocate(inod_recv_added(ntot_recv_added))
       allocate(irank_recv_added(ntot_recv_added))
@@ -505,7 +505,7 @@
 !
       subroutine extend_ele_comm_table                                  &
      &         (nod_comm, ele_comm, org_node, ele, neib_ele,            &
-     &          new_comm, new_node, new_ele_comm, new_ele)
+     &          new_comm, new_node, new_ele)
 !
       use t_geometry_data
       use t_next_node_ele_4_node
@@ -525,15 +525,12 @@
       type(communication_table), intent(in) :: new_comm
 !
       type(node_data), intent(inout) :: new_node
-      type(communication_table), intent(inout) :: new_ele_comm
       type(element_data), intent(inout) :: new_ele
 !
 !>      Structure of double numbering
       type(parallel_double_numbering) :: dbl_id1
       type(parallel_double_numbering) :: dbl_id2
       type(parallel_double_numbering) :: dbl_ele
-!
-      type(belonged_table) :: new_blng_tbl
 !
       integer(kind = kint), allocatable :: num_send_added(:)
       integer(kind = kint), allocatable :: istack_send_added(:)
@@ -615,7 +612,7 @@
       end do
       ntot_send_added = istack_send_added(nod_comm%num_neib)
 !
-      write(*,*) 'istack_send_added ele', istack_send_added
+!      write(*,*) 'istack_send_added ele', istack_send_added
 !
       allocate(iele_lc_added(ntot_send_added))
       allocate(iele_send_added(ntot_send_added))
@@ -691,10 +688,10 @@
       end do
       ntot_recv_added = istack_recv_added(nod_comm%num_neib)
 !
-      write(*,*) 'istack_send_added', my_rank, istack_send_added
-      write(*,*) 'ntot_send_added', my_rank, ntot_send_added
-      write(*,*) 'istack_recv_added', my_rank, istack_recv_added
-      write(*,*) 'ntot_recv_added', my_rank, ntot_recv_added
+!      write(*,*) 'istack_send_added', my_rank, istack_send_added
+!      write(*,*) 'ntot_send_added', my_rank, ntot_send_added
+!      write(*,*) 'istack_recv_added', my_rank, istack_recv_added
+!      write(*,*) 'ntot_recv_added', my_rank, ntot_recv_added
 !
       allocate(iele_recv_added(ntot_recv_added))
       allocate(irank_recv_added(ntot_recv_added))
@@ -861,11 +858,6 @@
 !      end do
 !
       call calypso_mpi_barrier
-!
-      call allocate_sph_node_geometry(new_node)
-      call set_nod_and_ele_infos(new_node, new_ele)
-      call const_ele_comm_tbl                                           &
-     &   (new_node, new_ele, new_comm, new_blng_tbl, new_ele_comm)
 !
       end subroutine extend_ele_comm_table
 !

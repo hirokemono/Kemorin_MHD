@@ -91,7 +91,7 @@
           call calypso_mpi_abort(ierr, 'Error in mesh data')
         end if
 !
-        call deallocate_node_geometry_type(mesh_filter%node)
+        call dealloc_node_geometry_w_sph(mesh_filter%node)
         call deallocate_type_comm_tbl(mesh_filter%nod_comm)
 !
 !     read filtering information

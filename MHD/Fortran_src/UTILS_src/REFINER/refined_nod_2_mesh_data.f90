@@ -34,7 +34,7 @@
      &          + ntot_nod_refine_surf + ntot_nod_refine_ele
       new_node%internal_node = new_node%numnod
 !
-      call allocate_node_geometry_type(new_node)
+      call alloc_node_geometry_w_sph(new_node)
 !
 !
       do inod = 1, new_node%numnod

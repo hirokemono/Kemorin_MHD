@@ -77,7 +77,7 @@
         call copy_ele_connect_from_IO                                   &
      &     (mesh_IO_2%ele, subdomains_2(ip)%ele)
 !
-        call allocate_sph_node_geometry(subdomains_2(ip)%node)
+        call alloc_sph_node_geometry(subdomains_2(ip)%node)
 !
         call deallocate_ele_connect_type(mesh_IO_2%ele)
         call dealloc_node_geometry_base(mesh_IO_2%node)
