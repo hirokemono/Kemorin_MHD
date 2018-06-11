@@ -9,7 +9,9 @@
 !!@verbatim
 !!      subroutine empty_element_comm_tbls(ele_mesh)
 !!      subroutine const_element_comm_tbls(mesh, ele_mesh)
+!!      subroutine const_element_comm_tbl_only(mesh, ele_mesh)
 !!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
+!!      subroutine dealloc_ele_comm_tbl_only(ele_mesh)
 !!        type(mesh_geometry), intent(inout) ::    mesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!
@@ -118,6 +120,23 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine const_element_comm_tbl_only(mesh, ele_mesh)
+!
+      use set_ele_id_4_node_type
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(element_geometry), intent(inout) :: ele_mesh
+!
+!
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
+      call const_ele_comm_tbl(mesh%node, mesh%ele, mesh%nod_comm,       &
+     &    blng_tbl, ele_mesh%ele_comm)
+      call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
+!
+      end subroutine const_element_comm_tbl_only
+!
+!-----------------------------------------------------------------------
+!
       subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
 !
       type(mesh_geometry), intent(inout) :: mesh
@@ -133,6 +152,17 @@
       call dealloc_numedge_stack(ele_mesh%edge)
 !
       end subroutine dealloc_ele_comm_tbls_gl_nele
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_ele_comm_tbl_only(ele_mesh)
+!
+      type(element_geometry), intent(inout) :: ele_mesh
+!
+!
+      call deallocate_type_comm_tbl(ele_mesh%ele_comm)
+!
+      end subroutine dealloc_ele_comm_tbl_only
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

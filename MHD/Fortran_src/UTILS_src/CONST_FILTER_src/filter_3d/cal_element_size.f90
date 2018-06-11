@@ -213,8 +213,7 @@
 !
       call deallocate_seed_moms_ele
 !
-      call dealloc_iele_belonged(next_tbl_f%neib_ele)
-      call dealloc_inod_next_node(next_tbl_f%neib_nod)
+      call dealloc_next_nod_ele_table(next_tbl_f)
 !
       end subroutine s_cal_element_size
 !

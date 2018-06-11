@@ -45,6 +45,7 @@
 !
       subroutine initialize_sleeve_extend
 !
+      use m_phys_constants
       use m_array_for_send_recv
       use m_default_file_prefix
       use m_control_data_4_part
@@ -59,9 +60,11 @@
       use nod_phys_send_recv
       use sum_normal_4_surf_group
       use set_parallel_file_name
+      use const_mesh_information
       use set_table_4_RHS_assemble
       use extend_comm_table
       use extend_group_table
+      use const_element_comm_tables
 !
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
@@ -91,13 +94,21 @@
       call mpi_input_mesh(global_mesh_file, nprocs, mesh, group,        &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
+!  ------  Initialize data communication for FEM data
+!
+      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(n_sym_tensor, mesh%node%numnod)
+!
+      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
+      call init_nod_send_recv(mesh)
+!
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_init_with_IO'
-      call FEM_mesh_init_with_IO(iflag_output_SURF,                     &
-     &    global_mesh_file, mesh, group, ele_mesh)
+      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
 !
-!  -------------------------------
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
+      call const_element_comm_tbl_only(mesh, ele_mesh)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
@@ -115,7 +126,12 @@
      &   (nprocs, newmesh%nod_comm, new_ele_mesh%ele_comm,              &
      &    newmesh%node, newmesh%ele, group, newgroup)
 !
+      call dealloc_next_nod_ele_table(next_tbl)
+      call dealloc_ele_comm_tbl_only(ele_mesh)
+      call dealloc_mesh_infomations(mesh, group, ele_mesh)
+!
       call mpi_output_mesh(distribute_mesh_file, newmesh, newgroup)
+      call dealloc_mesh_infos(newmesh, newgroup)
 !
       end subroutine initialize_sleeve_extend
 !
@@ -127,7 +143,7 @@
       use para_const_kemoview_mesh
 !
 !
-      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_init_with_IO'
+      if (iflag_debug.gt.0) write(*,*) 'pickup_surface_mesh_para'
       call pickup_surface_mesh_para(distribute_mesh_file)
 
       if (iflag_debug.gt.0) write(*,*) 'exit analyze'
