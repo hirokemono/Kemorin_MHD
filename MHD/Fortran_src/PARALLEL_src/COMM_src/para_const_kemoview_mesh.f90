@@ -1,5 +1,5 @@
-!>@file   parallel_const_surface_mesh.f90
-!!@brief  module parallel_const_surface_mesh
+!>@file   para_const_kemoview_mesh.f90
+!!@brief  module para_const_kemoview_mesh
 !!
 !!@author  H. Matsui
 !!@date Programmed in Dec., 2006
@@ -11,7 +11,7 @@
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!@endverbatim
 !
-      module parallel_const_surface_mesh
+      module para_const_kemoview_mesh
 !
       use m_precision
       use m_constants
@@ -49,15 +49,13 @@
       use m_node_quad_2_linear_sf
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
-      use single_const_surface_mesh
-      use const_surface_data
+      use single_const_kemoview_mesh
       use set_parallel_file_name
 !
-      use const_mesh_list_4_viewer
-      use pickup_surface_4_viewer
-      use extend_group_table
+      use const_viewer_mesh
+      use add_comm_table_in_node_grp
       use copy_mesh_structures
-      use viewer_IO_select_4_zlib
+      use viewer_mesh_IO_select
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
@@ -87,7 +85,7 @@
 !
       call alloc_num_mesh_sf(ione, mgd_v_mesh_s)
 !
-      call const_viewer_mesh                                            &
+      call s_const_viewer_mesh                                          &
      &   (mesh_p, ele_mesh_p, group_p, mgd_v_mesh_s%view_mesh,          &
      &    mgd_v_mesh_s%domain_grps, mgd_v_mesh_s%view_nod_grps,         &
      &    mgd_v_mesh_s%view_ele_grps, mgd_v_mesh_s%view_sf_grps)
@@ -119,7 +117,7 @@
      &         (mesh_file, surf, edge, mgd_v_mesh)
 !
       use renumber_para_viewer_mesh
-      use viewer_IO_select_4_zlib
+      use viewer_mesh_MPI_IO_select
       use const_global_element_ids
 !
       type(field_IO_params), intent(in) :: mesh_file
@@ -158,4 +156,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module parallel_const_surface_mesh
+      end module para_const_kemoview_mesh

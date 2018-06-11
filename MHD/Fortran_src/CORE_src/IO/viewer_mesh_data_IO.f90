@@ -220,8 +220,6 @@
 !
       subroutine write_edge_connect_viewer(nnod_4_edge, view_mesh)
 !
-      use m_geometry_constants
-!
       integer(kind = kint), intent(in) :: nnod_4_edge
       type(viewer_mesh_data), intent(in) :: view_mesh
 !

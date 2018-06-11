@@ -234,7 +234,7 @@
       use sph_file_IO_select
       use parallel_FEM_mesh_init
       use set_nnod_4_ele_by_type
-!      use parallel_const_surface_mesh
+      use para_const_kemoview_mesh
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -280,9 +280,9 @@
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'
 !
-!        if(FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
-!          call pickup_surface_mesh_para(mesh_file)
-!        end if
+        if(FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
+          call pickup_surface_mesh_para(mesh_file)
+        end if
       end if
 !
       if(FEM_mesh_flags%iflag_output_SURF .gt. 0) then
