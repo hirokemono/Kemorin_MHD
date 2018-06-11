@@ -166,9 +166,7 @@
      &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
 !
 !
-      write(*,*) 'Write each process test', iflag_time_4_each_pe
-     if(iflag_time_4_each_pe .gt. 0) then
-        write(*,*) 'Write each process times'
+      if(iflag_time_4_each_pe .gt. 0) then
         call add_int_suffix(my_rank, time_file_prefix, fname_tmp)
         call add_dat_extension(fname_tmp, file_name)
         open(id_timer_file,file=file_name,position='append')
