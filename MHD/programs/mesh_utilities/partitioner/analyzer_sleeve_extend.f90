@@ -127,13 +127,9 @@
      &     (mesh%nod_comm, ele_mesh%ele_comm, mesh%node, mesh%ele,      &
      &      next_tbl%neib_ele, newmesh%nod_comm, newmesh%node,          &
      &      newmesh%ele)
-        write(*,*) 'extend_ele_comm_table'
 !
-        write(*,*) 'alloc_sph_node_geometry'
         call alloc_sph_node_geometry(newmesh%node)
-        write(*,*) 'set_nod_and_ele_infos'
         call set_nod_and_ele_infos(newmesh%node, newmesh%ele)
-        write(*,*)' const_element_comm_tbl_only'
         call const_element_comm_tbl_only(newmesh, new_ele_mesh)
 !
 !
@@ -145,7 +141,6 @@
         call dealloc_ele_comm_tbl_only(mesh, ele_mesh)
         call dealloc_mesh_infomations(mesh, group, ele_mesh)
 !
-        write(*,*) 'set_mesh_data_from_type in', allocated(mesh%node%rr)
         call set_mesh_data_from_type(newmesh, newgroup, mesh%nod_comm,  &
      &      mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,          &
      &      group%nod_grp, group%ele_grp, group%surf_grp)

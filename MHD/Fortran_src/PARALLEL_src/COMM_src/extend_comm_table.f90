@@ -60,7 +60,7 @@
       integer(kind = kint), allocatable :: num_recv_added(:)
       integer(kind = kint), allocatable :: istack_recv_added(:)
 !
-      integer(kind = kint), allocatable :: ntot_recv_added
+      integer(kind = kint) :: ntot_recv_added
       integer(kind = kint), allocatable :: inod_recv_added(:)
       integer(kind = kint), allocatable :: irank_recv_added(:)
       integer(kind = kint), allocatable :: inod_new_id(:)
