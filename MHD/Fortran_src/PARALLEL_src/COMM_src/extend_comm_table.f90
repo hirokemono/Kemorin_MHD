@@ -547,7 +547,7 @@
       integer(kind = kint), allocatable :: num_recv_added(:)
       integer(kind = kint), allocatable :: istack_recv_added(:)
 !
-      integer(kind = kint), allocatable :: ntot_recv_added
+      integer(kind = kint) :: ntot_recv_added
       integer(kind = kint), allocatable :: iele_recv_added(:)
       integer(kind = kint), allocatable :: irank_recv_added(:)
       integer(kind = kint), allocatable :: iflag_recv_2_del(:)
@@ -565,9 +565,9 @@
       integer(kind = kint), allocatable :: iflag_sleeve2(:)
 !
       integer(kind = kint) :: inum, inod, i, ist, ied, icou
-      integer(kind = kint) :: jnum, jnod, j, jst, jed, jele
+      integer(kind = kint) :: jnum, jnod, jst, jed, jele
 !
-      integer(kind = kint) :: iele, k1, i1, iflag, ip
+      integer(kind = kint) :: iele, k1, ip
 !
 !
       call alloc_double_numbering(new_node%numnod, dbl_id1)
