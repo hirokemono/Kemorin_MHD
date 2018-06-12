@@ -383,6 +383,7 @@
         call copy_ele_to_extend_buffer(added_comm%istack_export(i-1),   &
      &      ele, dbl_ele, dbl_id1, iflag_ele, send_ebuf)
       end do
+      deallocate(iflag_node, iflag_ele)
 !
 !      call check_ie_send_added                                         &
 !     &   (my_rank, added_comm, ele, send_ebuf)
@@ -400,25 +401,32 @@
       call alloc_ele_buffer_2_extend                                    &
      &   (added_comm%ntot_import, ele, recv_ebuf)
 !
-      call added_global_id_send_recv                                    &
-     &   (added_comm%num_neib, added_comm%id_neib,                          &
-     &    added_comm%istack_export, added_comm%ntot_export, send_ebuf%iele_gl_add,       &
-     &    added_comm%istack_import, added_comm%ntot_import, recv_ebuf%iele_gl_add)
-      call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
-     &    added_comm%istack_export, added_comm%ntot_export, send_ebuf%iele_add,          &
-     &    added_comm%istack_import, added_comm%ntot_import, recv_ebuf%iele_add)
-      call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
-     &    added_comm%istack_export, added_comm%ntot_export, send_ebuf%irank_add,         &
-     &    added_comm%istack_import, added_comm%ntot_import, recv_ebuf%irank_add)
+      call added_global_id_send_recv(added_comm%num_neib,               &
+     &    added_comm%id_neib, added_comm%istack_export,                 &
+     &    added_comm%ntot_export, send_ebuf%iele_gl_add,                &
+     &    added_comm%istack_import, added_comm%ntot_import,             &
+     &    recv_ebuf%iele_gl_add)
+      call added_nod_id_send_recv(added_comm%num_neib,                  &
+     &    added_comm%id_neib, added_comm%istack_export,                 &
+     &    added_comm%ntot_export, send_ebuf%iele_add,                   &
+     &    added_comm%istack_import, added_comm%ntot_import,             &
+     &    recv_ebuf%iele_add)
+      call added_nod_id_send_recv(added_comm%num_neib,                  &
+     &    added_comm%id_neib, added_comm%istack_export,                 &
+     &    added_comm%ntot_export, send_ebuf%irank_add,                  &
+     &    added_comm%istack_import, added_comm%ntot_import,             &
+     &    recv_ebuf%irank_add)
       do k1 = 1, ele%nnod_4_ele
-        call added_nod_id_send_recv                                     &
-     &     (added_comm%num_neib, added_comm%id_neib,                        &
-     &      added_comm%istack_export, added_comm%ntot_export, send_ebuf%ie_added(1,k1),    &
-     &      added_comm%istack_import, added_comm%ntot_import, recv_ebuf%ie_added(1,k1))
-        call added_nod_id_send_recv                                     &
-     &     (added_comm%num_neib, added_comm%id_neib,                        &
-     &      added_comm%istack_export, added_comm%ntot_export, send_ebuf%ip_added(1,k1),    &
-     &      added_comm%istack_import, added_comm%ntot_import,  recv_ebuf%ip_added(1,k1))
+        call added_nod_id_send_recv(added_comm%num_neib,                &
+     &      added_comm%id_neib, added_comm%istack_export,               &
+     &      added_comm%ntot_export, send_ebuf%ie_added(1,k1),           &
+     &      added_comm%istack_import, added_comm%ntot_import,           &
+     &      recv_ebuf%ie_added(1,k1))
+        call added_nod_id_send_recv(added_comm%num_neib,                &
+     &      added_comm%id_neib, added_comm%istack_export,               &
+     &      added_comm%ntot_export, send_ebuf%ip_added(1,k1),           &
+     &      added_comm%istack_import, added_comm%ntot_import,           &
+     &      recv_ebuf%ip_added(1,k1))
       end do
 !
 !      call check_element_list_to_add                                   &
@@ -433,9 +441,11 @@
      &    recv_ebuf%iele_add, recv_ebuf%irank_add,                      &
      &    added_comm%item_import)
 !
-      call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
-     &    added_comm%istack_import, added_comm%ntot_import, added_comm%item_import,  &
-     &    added_comm%istack_export, added_comm%ntot_export, added_comm%item_export)
+      call added_nod_id_send_recv(added_comm%num_neib,                  &
+     &    added_comm%id_neib, added_comm%istack_import,                 &
+     &    added_comm%ntot_import, added_comm%item_import,               &
+     &    added_comm%istack_export, added_comm%ntot_export,             &
+     &    added_comm%item_export)
 !
       call count_ele_by_extend_sleeve(added_comm, ele, new_ele)
 !
