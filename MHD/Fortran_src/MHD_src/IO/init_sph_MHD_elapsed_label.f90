@@ -202,7 +202,9 @@
 !
       use m_work_time
       use t_spheric_parameter
+      use set_parallel_file_name
 !
+      character(len=kchara) ::  file_name
       integer(kind = kint), intent(in) :: nprocs
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -214,7 +216,8 @@
       integer(kind = kint), intent(in) :: nproc_rtp_IO(3)
 !
 !
-      open(id_timer_file,file=time_file_name,position='append')
+      call add_dat_extension(time_file_prefix, file_name)
+      open(id_timer_file,file=file_name,position='append')
 !
       write(id_timer_file,*)
       write(id_timer_file,*) '=========================================='
