@@ -19,282 +19,14 @@
       use t_comm_table
       use t_geometry_data
       use t_para_double_numbering
+      use t_work_extend_comm_table
 !
       implicit none
-!
-      type node_buffer_2_extend
-        integer(kind = kint) :: ntot
-        integer(kind = kint), allocatable :: inod_add(:)
-        integer(kind = kint), allocatable :: irank_add(:)
-        integer(kind = kint_gl), allocatable :: inod_gl_add(:)
-        real(kind = kreal), allocatable :: xx_add(:,:)
-      end type node_buffer_2_extend
-!
-      type ele_buffer_2_extend
-        integer(kind = kint) :: ntot
-        integer(kind = kint) :: nnod_4_ele
-        integer(kind = kint), allocatable :: iele_add(:)
-        integer(kind = kint), allocatable :: irank_add(:)
-        integer(kind = kint), allocatable :: iele_lc(:)
-        integer(kind = kint_gl), allocatable :: iele_gl_add(:)
-        integer(kind = kint), allocatable :: ie_added(:,:)
-        integer(kind = kint), allocatable :: ip_added(:,:)
-      end type ele_buffer_2_extend
 !
 !  ---------------------------------------------------------------------
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_added_comm_table_num(nod_comm, added_comm)
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(communication_table), intent(inout) :: added_comm
-!
-      added_comm%num_neib = nod_comm%num_neib
-      call allocate_type_comm_tbl_num(added_comm)
-!
-      if(added_comm%num_neib .gt. 0) then
-!$omp parallel workshare
-        added_comm%id_neib(1:nod_comm%num_neib)                         &
-     &      = nod_comm%id_neib(1:nod_comm%num_neib)
-!$omp end parallel workshare
-      end if
-!
-      end subroutine alloc_added_comm_table_num
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_node_buffer_2_extend(ntot_item, node_buf)
-!
-      integer(kind = kint), intent(in) :: ntot_item
-      type(node_buffer_2_extend), intent(inout) :: node_buf
-!
-!
-      node_buf%ntot = ntot_item
-      allocate(node_buf%inod_add(node_buf%ntot))
-      allocate(node_buf%irank_add(node_buf%ntot))
-      allocate(node_buf%xx_add(node_buf%ntot,3))
-      allocate(node_buf%inod_gl_add(node_buf%ntot))
-!
-      if(node_buf%ntot .le. 0) return
-!$omp parallel workshare
-      node_buf%xx_add(1:node_buf%ntot,1) = 0.0d0
-      node_buf%xx_add(1:node_buf%ntot,2) = 0.0d0
-      node_buf%xx_add(1:node_buf%ntot,3) = 0.0d0
-      node_buf%inod_add(1:node_buf%ntot) =     0
-      node_buf%irank_add(1:node_buf%ntot) =    0
-      node_buf%inod_gl_add(1:node_buf%ntot) =  0
-!$omp end parallel workshare
-!
-      end subroutine alloc_node_buffer_2_extend
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_ele_buffer_2_extend(ntot_item, ele, ele_buf)
-!
-      integer(kind = kint), intent(in) :: ntot_item
-      type(element_data), intent(in) :: ele
-      type(ele_buffer_2_extend), intent(inout) :: ele_buf
-!
-!
-      ele_buf%ntot = ntot_item
-      ele_buf%nnod_4_ele = ele%nnod_4_ele
-      allocate(ele_buf%iele_add(ele_buf%ntot))
-      allocate(ele_buf%irank_add(ele_buf%ntot))
-      allocate(ele_buf%iele_gl_add(ele_buf%ntot))
-      allocate(ele_buf%iele_lc(ele_buf%ntot))
-      allocate(ele_buf%ie_added(ele_buf%ntot,ele_buf%nnod_4_ele))
-      allocate(ele_buf%ip_added(ele_buf%ntot,ele_buf%nnod_4_ele))
-!
-      if(ele_buf%ntot .le. 0) return
-!$omp parallel workshare
-      ele_buf%iele_add(1:ele_buf%ntot) =     0
-      ele_buf%irank_add(1:ele_buf%ntot) =    0
-      ele_buf%iele_gl_add(1:ele_buf%ntot) =  0
-      ele_buf%iele_lc(1:ele_buf%ntot) =      0
-!$omp end parallel workshare
-!$omp parallel workshare
-      ele_buf%ie_added(1:ele_buf%ntot,1:ele_buf%nnod_4_ele) = 0
-      ele_buf%ip_added(1:ele_buf%ntot,1:ele_buf%nnod_4_ele) = 0
-!$omp end parallel workshare
-!
-      end subroutine alloc_ele_buffer_2_extend
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_node_buffer_2_extend(node_buf)
-!
-      type(node_buffer_2_extend), intent(inout) :: node_buf
-!
-!
-      deallocate(node_buf%inod_add)
-      deallocate(node_buf%irank_add)
-      deallocate(node_buf%xx_add)
-      deallocate(node_buf%inod_gl_add)
-!
-      end subroutine dealloc_node_buffer_2_extend
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_ele_buffer_2_extend(ele_buf)
-!
-      type(ele_buffer_2_extend), intent(inout) :: ele_buf
-!
-!
-      deallocate(ele_buf%iele_add)
-      deallocate(ele_buf%irank_add)
-      deallocate(ele_buf%iele_gl_add)
-      deallocate(ele_buf%iele_lc)
-      deallocate(ele_buf%ie_added)
-      deallocate(ele_buf%ip_added)
-!
-      end subroutine dealloc_ele_buffer_2_extend
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine check_num_of_added_table(my_rank, added_comm)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      type(communication_table), intent(inout) :: added_comm
-!
-!
-      write(*,*) 'istack_send_added', my_rank, added_comm%istack_export
-      write(*,*) 'ntot_send_added', my_rank, added_comm%ntot_export
-      write(*,*) 'istack_recv_added', my_rank, added_comm%istack_import
-      write(*,*) 'ntot_recv_added', my_rank, added_comm%ntot_import
-!
-      end subroutine check_num_of_added_table
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine check_added_impoert_items                              &
-     &         (my_rank, nod_comm, added_comm, dbl_id1, recv_nbuf)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      type(communication_table), intent(in) :: nod_comm, added_comm
-      type(parallel_double_numbering), intent(in) :: dbl_id1
-      type(node_buffer_2_extend), intent(in) :: recv_nbuf
-!
-      integer(kind = kint) :: inum, inod, i, ist, ied
-!
-!
-      do i = 1, nod_comm%num_neib
-        ist = nod_comm%istack_import(i-1) + 1
-        ied = nod_comm%istack_import(i)
-        write(120+my_rank,*) 'import', nod_comm%id_neib(i), ist, ied
-!
-        do inum = ist, ied
-          inod = nod_comm%item_import(inum)
-          write(120+my_rank,*) inum, inod,                              &
-     &        dbl_id1%irank_home(inod), dbl_id1%inod_local(inod), '  '
-        end do
-      end do
-      do i = 1, nod_comm%num_neib
-        ist = added_comm%istack_import(i-1) + 1
-        ied = added_comm%istack_import(i)
-        write(120+my_rank,*) 'added_comm%istack_import',                &
-     &                        nod_comm%id_neib(i), ist, ied
-!
-        do inum = ist, ied
-          write(120+my_rank,*) inum, recv_nbuf%irank_add(inum),         &
-     &         recv_nbuf%inod_add(inum), added_comm%item_import(inum)
-        end do
-      end do
-!
-      end subroutine check_added_impoert_items
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine check_delete_from_SR_list                              &
-     &         (my_rank, added_comm, send_nbuf, recv_nbuf)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      type(communication_table), intent(in) :: added_comm
-      type(node_buffer_2_extend), intent(in) :: send_nbuf, recv_nbuf
-!
-      integer(kind = kint) :: inum
-!
-!
-      do inum = 1, added_comm%ntot_import
-        if(added_comm%item_import(inum) .lt. 0) write(*,*)              &
-     &      'recv delete', my_rank, inum,                               &
-     &       recv_nbuf%irank_add(inum), recv_nbuf%inod_add(inum)
-      end do
-      do inum = 1, added_comm%ntot_export
-        if(added_comm%item_export(inum) .lt. 0) write(*,*)              &
-     &      'send delete', my_rank, inum,                               &
-     &       send_nbuf%irank_add(inum), send_nbuf%inod_add(inum)
-      end do
-!
-      end subroutine check_delete_from_SR_list
-!
-!  ---------------------------------------------------------------------
-
-      subroutine check_ie_send_added                                    &
-     &         (my_rank, added_comm, ele, send_ebuf)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      type(communication_table), intent(in) ::  added_comm
-      type(element_data), intent(in) :: ele
-      type(ele_buffer_2_extend), intent(in) :: send_ebuf
-!!
-      integer(kind = kint) :: inum, i, ist, ied
-!
-!
-      do i = 1, added_comm%num_neib
-        ist = added_comm%istack_export(i-1) + 1
-        ied = added_comm%istack_export(i)
-        write(50+my_rank,*) 'added_comm%istack_export',                 &
-     &                      i, added_comm%id_neib(i), ist, ied
-        do inum = ist, ied
-          if(send_ebuf%irank_add(inum) .eq. added_comm%id_neib(i)) then
-              write(50+my_rank,*) inum, send_ebuf%iele_lc(inum),        &
-     &         send_ebuf%ie_added(inum,1:ele%nnod_4_ele)
-              write(50+my_rank,*) inum, send_ebuf%irank_add(inum),      &
-     &         send_ebuf%ip_added(inum,1:ele%nnod_4_ele)
-          end if
-        end do
-      end do
-!
-      end subroutine check_ie_send_added
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine check_element_list_to_add                              &
-     &         (my_rank, added_comm, ele, send_ebuf, recv_ebuf)
-!
-      integer(kind = kint), intent(in) :: my_rank
-      type(communication_table), intent(in) ::  added_comm
-      type(element_data), intent(in) :: ele
-      type(ele_buffer_2_extend), intent(in) :: send_ebuf
-      type(ele_buffer_2_extend), intent(in) :: recv_ebuf
-!
-      integer(kind = kint) :: inum, i, ist, ied
-!
-!
-      do i = 1, added_comm%num_neib
-        ist = added_comm%istack_import(i-1) + 1
-        ied = added_comm%istack_import(i)
-        write(50+my_rank,*) 'istack_recv_added',  &
-     &                      i, added_comm%id_neib(i), ist, ied
-        do inum = ist, ied
-          if(send_ebuf%irank_add(inum) .eq. added_comm%id_neib(i)) then
-              write(50+my_rank,*) inum,                            &
-     &          recv_ebuf%ie_added(inum,1:ele%nnod_4_ele)
-              write(50+my_rank,*) inum,                            &
-     &          recv_ebuf%ip_added(inum,1:ele%nnod_4_ele)
-          end if
-        end do
-      end do
-!
-      end subroutine check_element_list_to_add
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine extend_node_comm_table(nod_comm, org_node, neib_nod,   &
@@ -306,6 +38,7 @@
       use extend_comm_table_SR
       use mark_export_nod_ele_extend
       use cal_minmax_and_stacks
+      use find_extended_comm_table
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: org_node
@@ -466,7 +199,7 @@
 !
       deallocate(iflag_recv, iflag_send)
 !
-      call count_extended_nod_import                                    &
+      call count_extended_node_import                                   &
      &   (recv_nbuf, nod_comm, added_comm, new_comm)
 !
       call SOLVER_SEND_RECV_num_type                                    &
@@ -481,7 +214,7 @@
 !
       call allocate_type_comm_tbl_item(new_comm)
 !
-      call set_extended_nod_nod_import                                  &
+      call set_extended_node_import                                     &
      &   (recv_nbuf, nod_comm, added_comm, new_comm)
 !
       call dealloc_node_buffer_2_extend(recv_nbuf)
@@ -511,7 +244,7 @@
      &  new_comm%istack_import, new_comm%ntot_import, irank_import_new, &
      &  new_comm%istack_export, new_comm%ntot_export, irank_export_new)
 !
-      call set_extended_nod_nod_export(nod_comm, added_comm,            &
+      call set_extended_node_export(nod_comm, added_comm,               &
      &          inod_export_new, irank_export_new, new_comm)
 !
       deallocate(inod_export_new, irank_export_new)
@@ -567,6 +300,7 @@
       use const_mesh_information
       use const_element_comm_tables
       use cal_minmax_and_stacks
+      use find_extended_comm_table
 !
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: ele_comm
@@ -725,190 +459,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine mark_extended_nod_neib_pe                              &
-     &         (nprocs, nod_comm, added_comm, recv_nbuf,                &
-     &          iflag_send, iflag_recv)
-!
-      type(communication_table), intent(in) :: nod_comm, added_comm
-      type(node_buffer_2_extend), intent(in) :: recv_nbuf
-      integer(kind = kint), intent(in) :: nprocs
-      integer(kind = kint), intent(inout) :: iflag_send(0:nprocs-1)
-      integer(kind = kint), intent(inout) :: iflag_recv(0:nprocs-1)
-!
-      integer(kind = kint) :: i, ip
-!
-!
-      do i = 1, added_comm%ntot_import
-        ip = recv_nbuf%irank_add(i)
-        iflag_recv(ip) = 1
-      end do
-!
-      do i = 1, nod_comm%num_neib
-        ip = nod_comm%id_neib(i)
-        iflag_recv(ip) = -1
-      end do
-!
-      end subroutine mark_extended_nod_neib_pe
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_extended_nod_neib_pe                             &
-     &         (nprocs, iflag_send, iflag_recv, new_comm)
-!
-      integer(kind = kint), intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: iflag_send(0:nprocs-1)
-      integer(kind = kint), intent(in) :: iflag_recv(0:nprocs-1)
-      type(communication_table), intent(inout) :: new_comm
-!
-      integer(kind = kint) :: ip, inum, icou
-!
-!
-      new_comm%num_neib = 0
-      do ip = 0, nprocs-1
-        if(iflag_recv(ip).ne.0 .or. iflag_send(ip).ne.0) then
-          new_comm%num_neib = new_comm%num_neib + 1
-        end if
-      end do
-!
-      end subroutine count_extended_nod_neib_pe
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_extended_nod_neib_pe(nprocs, my_rank,              &
-     &          iflag_send, iflag_recv, nod_comm, new_comm)
-!
-      integer(kind = kint), intent(in) :: nprocs, my_rank
-      integer(kind = kint), intent(in) :: iflag_send(0:nprocs-1)
-      integer(kind = kint), intent(in) :: iflag_recv(0:nprocs-1)
-      type(communication_table), intent(in) :: nod_comm
-      type(communication_table), intent(inout) :: new_comm
-!
-      integer(kind = kint) :: i, ip, inum, icou
-!
-!
-      new_comm%id_neib(1:nod_comm%num_neib)                             &
-     &              = nod_comm%id_neib(1:nod_comm%num_neib)
-      icou = nod_comm%num_neib
-      do i = 0, nprocs-1
-        ip = mod(i+my_rank,nprocs)
-        if(iflag_recv(ip).gt.0 .or. iflag_send(ip).gt.0) then
-          icou = icou + 1
-          new_comm%id_neib(i) = ip
-        end if
-      end do
-!
-      end subroutine set_extended_nod_neib_pe
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine count_extended_nod_import                              &
-     &        (recv_nbuf, nod_comm, added_comm, new_comm)
-!
-      type(communication_table), intent(in) :: nod_comm, added_comm
-      type(node_buffer_2_extend), intent(in) :: recv_nbuf
-      type(communication_table), intent(inout) :: new_comm
-!
-      integer(kind = kint) :: i, ip, inum
-!
-!
-      do i = 1, nod_comm%num_neib
-        new_comm%num_import(i)                                          &
-     &       = nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
-      end do
-      do i = nod_comm%num_neib+1, new_comm%num_neib
-        new_comm%num_import(i) = 0
-      end do
-      do i = 1, new_comm%num_neib
-        ip = new_comm%id_neib(i)
-        do inum = 1, added_comm%ntot_import
-          if(recv_nbuf%irank_add(inum).eq.ip                            &
-     &         .and. added_comm%item_import(inum).gt. 0) then
-            new_comm%num_import(i) = new_comm%num_import(i) + 1
-          end if
-        end do
-      end do
-!
-      end subroutine count_extended_nod_import
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_extended_nod_nod_import                            &
-     &        (recv_nbuf, nod_comm, added_comm, new_comm)
-!
-      type(communication_table), intent(in) :: nod_comm, added_comm
-      type(node_buffer_2_extend), intent(in) :: recv_nbuf
-      type(communication_table), intent(inout) :: new_comm
-!
-      integer(kind = kint) :: i, ip, inum, icou, ist, jst, num
-!
-!
-      do i = 1, nod_comm%num_neib
-        ist = new_comm%istack_import(i-1)
-        jst = nod_comm%istack_import(i-1)
-        num = nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
-        do inum = 1, num
-          new_comm%item_import(ist+inum)                                &
-     &       = nod_comm%item_import(jst+inum)
-        end do
-      end do
-!
-      do i = 1, new_comm%num_neib
-        ip = new_comm%id_neib(i)
-        icou = new_comm%istack_import(i-1)                              &
-     &        + nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
-        do inum = 1, added_comm%ntot_import
-          if(recv_nbuf%irank_add(inum).eq.ip                            &
-     &         .and. added_comm%item_import(inum).gt.0) then
-            icou = icou + 1
-            new_comm%item_import(icou) = added_comm%item_import(inum)
-          end if
-        end do
-      end do
-!
-      end subroutine set_extended_nod_nod_import
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_extended_nod_nod_export(nod_comm, added_comm,      &
-     &          inod_export_new, irank_export_new, new_comm)
-!
-      type(communication_table), intent(in) :: nod_comm, added_comm
-      type(communication_table), intent(inout) :: new_comm
-!
-      integer(kind = kint), intent(in)                                  &
-     &                     :: inod_export_new(new_comm%ntot_export)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: irank_export_new(new_comm%ntot_export)
-!
-      integer(kind = kint) :: i, ip, inum, ist, ied, jst, num
-!
-!
-      do i = 1, nod_comm%num_neib
-        ist = new_comm%istack_export(i-1)
-        jst = nod_comm%istack_export(i-1)
-        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
-        do inum = 1, num
-          new_comm%item_export(ist+inum)                                &
-     &       = nod_comm%item_export(jst+inum)
-        end do
-      end do
-      do i = 1, new_comm%num_neib
-        ip = new_comm%id_neib(i)
-        ist = new_comm%istack_export(i-1) + 1
-        ied = new_comm%istack_export(i)
-        do inum = ist, ied
-          if(irank_export_new(inum) .eq. my_rank) then
-            new_comm%item_export(inum) = inod_export_new(inum)
-          end if
-        end do
-      end do
-!
-      end subroutine set_extended_nod_nod_export
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine count_nodes_by_extend_sleeve                           &
      &         (added_comm, org_node, new_node)
 !
@@ -992,69 +542,6 @@
       end do
 !
       end subroutine check_nodes_by_extend_sleeve
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_node_to_extend_buffer(istack_pre,                 &
-     &          org_node, dbl_id1, iflag_node, send_nbuf)
-!
-      integer(kind = kint), intent(in) :: istack_pre
-      type(node_data), intent(in) :: org_node
-      type(parallel_double_numbering), intent(in) :: dbl_id1
-      integer(kind = kint), intent(in) :: iflag_node(org_node%numnod)
-!
-      type(node_buffer_2_extend), intent(inout) :: send_nbuf
-!
-      integer(kind = kint) :: icou, inod
-!
-      icou = istack_pre
-      do inod = 1, org_node%numnod
-        if(iflag_node(inod) .gt. 0) then
-          icou = icou + 1
-          send_nbuf%inod_add(icou) =    dbl_id1%inod_local(inod)
-          send_nbuf%irank_add(icou) =   dbl_id1%irank_home(inod)
-          send_nbuf%inod_gl_add(icou) = org_node%inod_global(inod)
-          send_nbuf%xx_add(icou,1) =    org_node%xx(inod,1)
-          send_nbuf%xx_add(icou,2) =    org_node%xx(inod,2)
-          send_nbuf%xx_add(icou,3) =    org_node%xx(inod,3)
-        end if
-      end do
-!
-      end subroutine copy_node_to_extend_buffer
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_ele_to_extend_buffer(istack_pre,                  &
-     &          org_ele, dbl_ele, dbl_id1, iflag_ele, send_ebuf)
-!
-      integer(kind = kint), intent(in) :: istack_pre
-      type(element_data), intent(in) :: org_ele
-      type(parallel_double_numbering), intent(in) :: dbl_id1
-      type(parallel_double_numbering), intent(in) :: dbl_ele
-      integer(kind = kint), intent(in) :: iflag_ele(org_ele%numele)
-!
-      type(ele_buffer_2_extend), intent(inout) :: send_ebuf
-!
-      integer(kind = kint) :: icou, iele, k1, inod
-!
-!
-        icou = istack_pre
-        do iele = 1, org_ele%numele
-          if(iflag_ele(iele) .gt. 0) then
-            icou = icou + 1
-            send_ebuf%iele_lc(icou) =     iele
-            send_ebuf%iele_add(icou) =    dbl_ele%inod_local(iele)
-            send_ebuf%irank_add(icou) =   dbl_ele%irank_home(iele)
-            send_ebuf%iele_gl_add(icou) = org_ele%iele_global(iele)
-            do k1 = 1, org_ele%nnod_4_ele
-              inod = org_ele%ie(iele,k1)
-              send_ebuf%ie_added(icou,k1) = dbl_id1%inod_local(inod)
-              send_ebuf%ip_added(icou,k1) = dbl_id1%irank_home(inod)
-            end do
-          end if
-        end do
-!
-      end subroutine copy_ele_to_extend_buffer
 !
 !  ---------------------------------------------------------------------
 !

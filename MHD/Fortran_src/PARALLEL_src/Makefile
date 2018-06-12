@@ -17,6 +17,7 @@ INTERPOLATE_PARA     \
 filtering            \
 SPH_SHELL_src        \
 CONST_SPH_GRID       \
+modify_MESH          \
 \
 MULTIGRID_src
 
@@ -66,7 +67,8 @@ mod_list:
 	'$$(MOD_MPI_IO)     $$(MOD_MPI_ZLIB_IO)'      \
 	'$$(MOD_MULTIGRID)  $$(MOD_FILTERING)'        \
 	'$$(MOD_COMM_SPH)   $$(MOD_SOLVER_SET_ORDER)' \
-	'$$(MOD_ITP_PARA)   $$(MOD_SPH_GRID)'         >> $(MAKENAME)
+	'$$(MOD_ITP_PARA)   $$(MOD_SPH_GRID)'         \
+	'$$(MOD_MODIFY_PARA_MESH)'                      >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
