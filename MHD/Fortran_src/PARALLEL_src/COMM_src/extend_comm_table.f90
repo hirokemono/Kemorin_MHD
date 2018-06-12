@@ -689,11 +689,6 @@
       type(ele_buffer_2_extend) :: recv_ebuf
 !
       integer(kind = kint), allocatable :: iele_lc_added(:)
-      integer(kind = kint), allocatable :: iele_send_added(:)
-      integer(kind = kint), allocatable :: irank_send_added(:)
-      integer(kind = kint_gl), allocatable :: iele_gl_send_added(:)
-      integer(kind = kint), allocatable :: ie_send_added(:,:)
-      integer(kind = kint), allocatable :: ip_send_added(:,:)
 !
       integer(kind = kint), allocatable :: iflag_node(:)
       integer(kind = kint), allocatable :: iflag_ele(:)
@@ -757,21 +752,9 @@
       call alloc_ele_buffer_2_extend                                    &
      &   (added_comm%ntot_export, ele, send_ebuf)
       allocate(iele_lc_added(added_comm%ntot_export))
-      allocate(iele_send_added(added_comm%ntot_export))
-      allocate(ie_send_added(added_comm%ntot_export,ele%nnod_4_ele))
-      allocate(ip_send_added(added_comm%ntot_export,ele%nnod_4_ele))
-      allocate(irank_send_added(added_comm%ntot_export))
-      allocate(iele_gl_send_added(added_comm%ntot_export))
 !
 !$omp parallel workshare
-      ie_send_added(1:added_comm%ntot_export,1:ele%nnod_4_ele) =    0
-      ip_send_added(1:added_comm%ntot_export,1:ele%nnod_4_ele) =    0
-!$omp end parallel workshare
-!$omp parallel workshare
       iele_lc_added(1:added_comm%ntot_export) =       0
-      iele_send_added(1:added_comm%ntot_export) =     0
-      irank_send_added(1:added_comm%ntot_export) =    0
-      iele_gl_send_added(1:added_comm%ntot_export) =  0
 !$omp end parallel workshare
 !
       do i = 1, nod_comm%num_neib
@@ -787,13 +770,13 @@
           if(iflag_ele(iele) .gt. 0) then
             icou = icou + 1
             iele_lc_added(icou) = iele
-            iele_send_added(icou) =    dbl_ele%inod_local(iele)
-            irank_send_added(icou) =   dbl_ele%irank_home(iele)
-            iele_gl_send_added(icou) = ele%iele_global(iele)
+            send_ebuf%iele_add(icou) =    dbl_ele%inod_local(iele)
+            send_ebuf%irank_add(icou) =   dbl_ele%irank_home(iele)
+            send_ebuf%iele_gl_add(icou) = ele%iele_global(iele)
             do k1 = 1, ele%nnod_4_ele
               inod = ele%ie(iele,k1)
-              ie_send_added(icou,k1) =    dbl_id1%inod_local(inod)
-              ip_send_added(icou,k1) =    dbl_id1%irank_home(inod)
+              send_ebuf%ie_added(icou,k1) = dbl_id1%inod_local(inod)
+              send_ebuf%ip_added(icou,k1) = dbl_id1%irank_home(inod)
             end do
           end if
         end do
@@ -805,11 +788,11 @@
         write(50+my_rank,*) 'added_comm%istack_export',                 &
      &                      i, added_comm%id_neib(i), ist, ied
         do inum = ist, ied
-          if(irank_send_added(inum) .eq. added_comm%id_neib(i)) then
-              write(50+my_rank,*) inum, iele_lc_added(inum),       &
-     &         ie_send_added(inum,1:ele%nnod_4_ele)
-              write(50+my_rank,*) inum, irank_send_added(inum),    &
-     &         ip_send_added(inum,1:ele%nnod_4_ele)
+          if(send_ebuf%irank_add(inum) .eq. added_comm%id_neib(i)) then
+              write(50+my_rank,*) inum, iele_lc_added(inum),            &
+     &         send_ebuf%ie_added(inum,1:ele%nnod_4_ele)
+              write(50+my_rank,*) inum, send_ebuf%irank_add(inum),      &
+     &         send_ebuf%ip_added(inum,1:ele%nnod_4_ele)
           end if
         end do
       end do
@@ -832,22 +815,22 @@
 !
       call added_global_id_send_recv                                    &
      &   (added_comm%num_neib, added_comm%id_neib,                          &
-     &    added_comm%istack_export, added_comm%ntot_export, iele_gl_send_added,       &
+     &    added_comm%istack_export, added_comm%ntot_export, send_ebuf%iele_gl_add,       &
      &    added_comm%istack_import, added_comm%ntot_import, recv_ebuf%iele_gl_add)
       call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
-     &    added_comm%istack_export, added_comm%ntot_export, iele_send_added,          &
+     &    added_comm%istack_export, added_comm%ntot_export, send_ebuf%iele_add,          &
      &    added_comm%istack_import, added_comm%ntot_import, recv_ebuf%iele_add)
       call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
-     &    added_comm%istack_export, added_comm%ntot_export, irank_send_added,         &
+     &    added_comm%istack_export, added_comm%ntot_export, send_ebuf%irank_add,         &
      &    added_comm%istack_import, added_comm%ntot_import, recv_ebuf%irank_add)
       do k1 = 1, ele%nnod_4_ele
         call added_nod_id_send_recv                                     &
      &     (added_comm%num_neib, added_comm%id_neib,                        &
-     &      added_comm%istack_export, added_comm%ntot_export, ie_send_added(1,k1),    &
+     &      added_comm%istack_export, added_comm%ntot_export, send_ebuf%ie_added(1,k1),    &
      &      added_comm%istack_import, added_comm%ntot_import, recv_ebuf%ie_added(1,k1))
         call added_nod_id_send_recv                                     &
      &     (added_comm%num_neib, added_comm%id_neib,                        &
-     &      added_comm%istack_export, added_comm%ntot_export, ip_send_added(1,k1),    &
+     &      added_comm%istack_export, added_comm%ntot_export, send_ebuf%ip_added(1,k1),    &
      &      added_comm%istack_import, added_comm%ntot_import,  recv_ebuf%ip_added(1,k1))
       end do
 !
@@ -857,7 +840,7 @@
 !        write(50+my_rank,*) 'istack_recv_added',  &
 !     &                      i, added_comm%id_neib(i), ist, ied
 !        do inum = ist, ied
-!          if(irank_send_added(inum) .eq. added_comm%id_neib(i)) then
+!          if(send_ebuf%irank_add(inum) .eq. added_comm%id_neib(i)) then
 !              write(50+my_rank,*) inum,                            &
 !     &          recv_ebuf%ie_added(inum,1:ele%nnod_4_ele)
 !              write(50+my_rank,*) inum,                            &
