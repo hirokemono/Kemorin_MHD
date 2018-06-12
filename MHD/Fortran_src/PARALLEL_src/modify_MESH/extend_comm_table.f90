@@ -66,9 +66,6 @@
       integer(kind = kint), allocatable :: inod_export_new(:)
       integer(kind = kint), allocatable :: irank_export_new(:)
 !
-      integer(kind = kint), allocatable :: inod_lc_check(:)
-      integer(kind = kint), allocatable :: irank_lc_check(:)
-!
       integer(kind = kint) :: inum, inod, i, ist, ied, icou, ip
       integer(kind = kint) :: j, nerror
 !
@@ -129,11 +126,11 @@
       call alloc_node_buffer_2_extend                                   &
      &   (added_comm%ntot_import, recv_nbuf)
 !
-      call added_geometry_send_recv                                     &
-     &   (added_comm%num_neib, added_comm%id_neib,                          &
+      call added_geometry_send_recv(added_comm%num_neib,                &
+     &   added_comm%id_neib,                          &
      &    added_comm%istack_export, added_comm%ntot_export, send_nbuf%xx_add,            &
      &    added_comm%istack_import, added_comm%ntot_import, recv_nbuf%xx_add)
-      call added_global_id_send_recv                                    &
+      call added_global_id_send_recv(added_comm%num_neib,               &
      &   (added_comm%num_neib, added_comm%id_neib,                          &
      &    added_comm%istack_export, added_comm%ntot_export, send_nbuf%inod_gl_add,       &
      &    added_comm%istack_import, added_comm%ntot_import, recv_nbuf%inod_gl_add)
@@ -156,7 +153,8 @@
 !      call check_added_impoert_items                                   &
 !     &   (my_rank, nod_comm, added_comm, dbl_id1, recv_nbuf)
 !
-      call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
+      call added_nod_id_send_recv(added_comm%num_neib,                  &
+     &    added_comm%id_neib,  &
      &    added_comm%istack_import, added_comm%ntot_import, added_comm%item_import,              &
      &    added_comm%istack_export, added_comm%ntot_export, added_comm%item_export)
 !
@@ -249,40 +247,7 @@
 !
       deallocate(inod_export_new, irank_export_new)
 !
-      allocate(inod_lc_check(new_node%numnod))
-      allocate(irank_lc_check(new_node%numnod))
-      inod_lc_check =   0
-      irank_lc_check = -1
-!
-      do inod = 1, new_node%internal_node
-        inod_lc_check(inod) = inod
-        irank_lc_check(inod) = my_rank
-      end do
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, inod_lc_check)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, irank_lc_check)
-!
-      icou = 0
-      do inod = new_node%internal_node+1, new_node%numnod
-        if(dbl_id2%irank_home(inod) .ne. irank_lc_check(inod)           &
-     &    .and. dbl_id2%inod_local(inod) .ne. inod_lc_check(inod)) then
-          if(icou .eq. 0) write(50+my_rank,*) 'error list'
-          write(50+my_rank,*) inod, my_rank,                            &
-     &     dbl_id2%irank_home(inod), irank_lc_check(inod),              &
-     &     dbl_id2%inod_local(inod), inod_lc_check(inod)
-          icou = icou + 1
-        end if
-      end do
-      call MPI_ALLREDUCE(icou, nerror, ione, CALYPSO_INTEGER, MPI_SUM, &
-     &    CALYPSO_COMM,ierr_MPI)
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &      'Number of wrong communication items:', nerror
-      call calypso_mpi_barrier
-!
-!      write(*,*) 'num_neib', my_rank,                                  &
-!     &       nod_comm%num_neib, new_comm%num_neib
+      call check_new_node_and_comm(new_comm, new_node, dbl_id2)
 !
       end subroutine extend_node_comm_table
 !
@@ -469,172 +434,58 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_nodes_by_extend_sleeve                           &
-     &         (added_comm, org_node, new_node)
+      subroutine check_new_node_and_comm(new_comm, new_node, dbl_id2)
 !
-      type(communication_table), intent(in) :: added_comm
-      type(node_data), intent(in) :: org_node
-      type(node_data), intent(inout) :: new_node
+      use calypso_MPI
 !
-      integer(kind = kint) :: inum
+      type(communication_table), intent(in) :: new_comm
+      type(node_data), intent(in) :: new_node
+      type(parallel_double_numbering), intent(in) :: dbl_id2
+!
+      integer(kind = kint), allocatable :: inod_lc_check(:)
+      integer(kind = kint), allocatable :: irank_lc_check(:)
+!
+      integer(kind = kint) :: inod, icou
+      integer(kind = kint) :: nerror
 !
 !
-      new_node%internal_node = org_node%internal_node
-      new_node%numnod = org_node%numnod
-      do inum = 1, added_comm%ntot_import
-        if(added_comm%item_import(inum) .eq. 0) then
-          new_node%numnod = new_node%numnod + 1
-        end if
-      end do
-!
-      end subroutine count_nodes_by_extend_sleeve
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_nodes_by_extend_sleeve(added_comm, recv_nbuf,      &
-     &          org_node, dbl_id1, new_node, dbl_id2)
-!
-      type(communication_table), intent(in) :: added_comm
-      type(node_data), intent(in) :: org_node
-      type(parallel_double_numbering), intent(in) :: dbl_id1
-      type(node_buffer_2_extend), intent(in) :: recv_nbuf
-!
-      type(node_data), intent(inout) :: new_node
-      type(parallel_double_numbering), intent(inout) :: dbl_id2
-!
-      integer(kind = kint) :: inum, inod, icou
-!
+      allocate(inod_lc_check(new_node%numnod))
+      allocate(irank_lc_check(new_node%numnod))
+      inod_lc_check =   0
+      irank_lc_check = -1
 !
 !$omp parallel do
-      do inod = 1, org_node%numnod
-        new_node%inod_global(inod) = org_node%inod_global(inod)
-        new_node%xx(inod,1) = org_node%xx(inod,1)
-        new_node%xx(inod,2) = org_node%xx(inod,2)
-        new_node%xx(inod,3) = org_node%xx(inod,3)
-        dbl_id2%inod_local(inod) = dbl_id1%inod_local(inod)
-        dbl_id2%irank_home(inod) = dbl_id1%irank_home(inod)
+      do inod = 1, new_node%internal_node
+        inod_lc_check(inod) = inod
+        irank_lc_check(inod) = my_rank
       end do
 !$omp end parallel do
 !
-      icou = org_node%numnod
-      do inum = 1, added_comm%ntot_import
-        if(added_comm%item_import(inum) .eq. 0) then
-          icou = icou + 1
-          added_comm%item_import(inum) = icou
-          new_node%inod_global(icou) = recv_nbuf%inod_gl_add(inum)
-          new_node%xx(icou,1) = recv_nbuf%xx_add(inum,1)
-          new_node%xx(icou,2) = recv_nbuf%xx_add(inum,2)
-          new_node%xx(icou,3) = recv_nbuf%xx_add(inum,3)
-          dbl_id2%inod_local(icou) = recv_nbuf%inod_add(inum)
-          dbl_id2%irank_home(icou) = recv_nbuf%irank_add(inum)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (new_node%numnod, new_comm, inod_lc_check)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (new_node%numnod, new_comm, irank_lc_check)
+!
+      icou = 0
+      do inod = new_node%internal_node+1, new_node%numnod
+        if(dbl_id2%irank_home(inod) .ne. irank_lc_check(inod)           &
+     &    .and. dbl_id2%inod_local(inod) .ne. inod_lc_check(inod)) then
+          if(icou .eq. 0) write(50+my_rank,*) 'error list'
+          write(50+my_rank,*) inod, my_rank,                            &
+     &     dbl_id2%irank_home(inod), irank_lc_check(inod),              &
+     &     dbl_id2%inod_local(inod), inod_lc_check(inod)
+           icou = icou + 1
         end if
       end do
 !
-      end subroutine set_nodes_by_extend_sleeve
+      call MPI_ALLREDUCE(icou, nerror, ione, CALYPSO_INTEGER, MPI_SUM, &
+     &    CALYPSO_COMM,ierr_MPI)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &      'Number of wrong communication items:', nerror
 !
-!  ---------------------------------------------------------------------
+      deallocate(inod_lc_check, irank_lc_check)
 !
-      subroutine check_nodes_by_extend_sleeve                           &
-     &         (org_node, new_node, dbl_id2)
-!
-      type(node_data), intent(in) :: org_node
-      type(node_data), intent(in) :: new_node
-      type(parallel_double_numbering), intent(in) :: dbl_id2
-!
-      integer(kind = kint) :: inod
-!
-!
-      write(100+my_rank,*) new_node%numnod,                             &
-     &             new_node%internal_node, org_node%numnod
-      do inod = 1, new_node%numnod
-        write(100+my_rank,*) inod, dbl_id2%inod_local(inod),            &
-     &         dbl_id2%irank_home(inod), new_node%inod_global(inod) 
-      end do
-!
-      end subroutine check_nodes_by_extend_sleeve
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_ele_by_extend_sleeve(added_comm, ele, new_ele)
-!
-      type(communication_table), intent(in) :: added_comm
-      type(element_data), intent(in) :: ele
-!
-      type(element_data), intent(inout) :: new_ele
-!
-      integer(kind = kint) :: inum
-!
-!
-      new_ele%numele =     ele%numele
-      new_ele%nnod_4_ele = ele%nnod_4_ele
-      new_ele%internal_ele = ele%internal_ele
-      do inum = 1, added_comm%ntot_import
-        if(added_comm%item_import(inum) .eq. 0) then
-          new_ele%numele = new_ele%numele + 1
-        end if
-      end do
-!
-      end subroutine count_ele_by_extend_sleeve
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_ele_by_extend_sleeve(added_comm, recv_ebuf,        &
-     &          ele, new_node, dbl_id2, new_ele)
-!
-      type(communication_table), intent(in) :: added_comm
-      type(ele_buffer_2_extend), intent(in) :: recv_ebuf
-      type(element_data), intent(in) :: ele
-      type(node_data), intent(in) :: new_node
-      type(parallel_double_numbering), intent(in) :: dbl_id2
-!
-      type(element_data), intent(inout) :: new_ele
-!
-      integer(kind = kint) :: inum, icou, ist, ied, i
-      integer(kind = kint) :: k1, jnod
-!
-!
-!$omp parallel workshare
-      new_ele%elmtyp(1:ele%numele) = ele%elmtyp(1:ele%numele)
-      new_ele%nodelm(1:ele%numele) = ele%nodelm(1:ele%numele)
-      new_ele%iele_global(1:ele%numele) = ele%iele_global(1:ele%numele)
-!$omp end parallel workshare
-!$omp parallel workshare
-      new_ele%elmtyp(ele%numele+1:new_ele%numele) = ele%elmtyp(1)
-      new_ele%nodelm(ele%numele+1:new_ele%numele) = ele%nodelm(1)
-!$omp end parallel workshare
-!
-!$omp parallel
-      do k1 = 1, ele%nnod_4_ele
-!$omp workshare
-        new_ele%ie(1:ele%numele,k1) = ele%ie(1:ele%numele,k1)
-!$omp end workshare nowait
-      end do
-!$omp end parallel
-!
-      icou = ele%numele
-      do i = 1, added_comm%num_neib
-        ist = added_comm%istack_import(i-1) + 1
-        ied = added_comm%istack_import(i)
-        do inum = ist, ied
-          if(added_comm%item_import(inum) .lt. 0)  cycle
-!
-          icou = icou + 1
-          new_ele%iele_global(icou) = recv_ebuf%iele_gl_add(inum)
-          do k1 = 1, ele%nnod_4_ele
-            do jnod = new_node%numnod, 1, -1
-              if(recv_ebuf%ip_added(inum,k1)                            &
-     &              .eq. dbl_id2%irank_home(jnod)                       &
-     &          .and. recv_ebuf%ie_added(inum,k1)                       &
-     &              .eq. dbl_id2%inod_local(jnod)) then
-                new_ele%ie(icou,k1) = jnod
-                exit
-              end if
-            end do
-          end do
-        end do
-      end do
-!
-      end subroutine set_ele_by_extend_sleeve
+      end subroutine check_new_node_and_comm
 !
 !  ---------------------------------------------------------------------
 !
