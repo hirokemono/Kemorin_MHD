@@ -26,6 +26,38 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine alloc_added_comm_table_num(nod_comm, added_comm)
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(inout) :: added_comm
+!
+      added_comm%num_neib = nod_comm%num_neib
+      call allocate_type_comm_tbl_num(added_comm)
+!
+      if(added_comm%num_neib .gt. 0) then
+!$omp parallel workshare
+        added_comm%id_neib(1:nod_comm%num_neib)                         &
+     &      = nod_comm%id_neib(1:nod_comm%num_neib)
+!$omp end parallel workshare
+      end if
+!
+      end subroutine alloc_added_comm_table_num
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_added_comm_table_num(added_comm)
+!
+      type(communication_table), intent(inout) :: added_comm
+!
+      call deallocate_type_import_num(added_comm)
+      call deallocate_type_export_num(added_comm)
+      call deallocate_type_neib_id(added_comm)
+!
+      end subroutine dealloc_added_comm_table_num
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine extend_node_comm_table(nod_comm, org_node, neib_nod,   &
      &          new_comm, new_node)
 !
@@ -47,20 +79,14 @@
       type(parallel_double_numbering) :: dbl_id1
       type(parallel_double_numbering) :: dbl_id2
 !
-      integer(kind = kint), allocatable :: num_send_added(:)
-      integer(kind = kint), allocatable :: istack_send_added(:)
+      type(communication_table) :: added_comm
 !
-      integer(kind = kint) :: ntot_send_added
       integer(kind = kint), allocatable :: inod_send_added(:)
       integer(kind = kint), allocatable :: irank_send_added(:)
       integer(kind = kint), allocatable :: iflag_send_2_del(:)
       integer(kind = kint_gl), allocatable :: inod_gl_send_added(:)
       real(kind = kreal), allocatable :: xx_send_added(:,:)
 !
-      integer(kind = kint), allocatable :: num_recv_added(:)
-      integer(kind = kint), allocatable :: istack_recv_added(:)
-!
-      integer(kind = kint) :: ntot_recv_added
       integer(kind = kint), allocatable :: inod_recv_added(:)
       integer(kind = kint), allocatable :: irank_recv_added(:)
       integer(kind = kint), allocatable :: inod_new_id(:)
@@ -91,10 +117,7 @@
       allocate(iflag_node(org_node%numnod))
       iflag_node(1:org_node%numnod) = 0
 !
-      allocate(num_send_added(nod_comm%num_neib))
-      allocate(istack_send_added(0:nod_comm%num_neib))
-      if(nod_comm%num_neib .gt. 0) num_send_added = 0
-      istack_send_added = 0
+      call alloc_added_comm_table_num(nod_comm, added_comm)
 !
       do i = 1, nod_comm%num_neib
         call mark_next_node_of_export(i, nod_comm%num_neib,             &
@@ -104,28 +127,29 @@
      &      neib_nod%inod_next, iflag_node)
 !
         do inod = 1, org_node%numnod
-          num_send_added(i) = num_send_added(i) + iflag_node(inod)
+          added_comm%num_export(i) = added_comm%num_export(i)           &
+     &                              + iflag_node(inod)
         end do
-        istack_send_added(i) = istack_send_added(i-1)                   &
-     &                          + num_send_added(i)
+        added_comm%istack_export(i) = added_comm%istack_export(i-1)     &
+     &                               + added_comm%num_export(i)
       end do
+      added_comm%ntot_export                                            &
+     &      = added_comm%istack_export(nod_comm%num_neib)
 !
-      ntot_send_added = istack_send_added(nod_comm%num_neib)
-!
-      allocate(inod_send_added(ntot_send_added))
-      allocate(xx_send_added(ntot_send_added,3))
-      allocate(irank_send_added(ntot_send_added))
-      allocate(iflag_send_2_del(ntot_send_added))
-      allocate(inod_gl_send_added(ntot_send_added))
+      allocate(inod_send_added(added_comm%ntot_export))
+      allocate(xx_send_added(added_comm%ntot_export,3))
+      allocate(irank_send_added(added_comm%ntot_export))
+      allocate(iflag_send_2_del(added_comm%ntot_export))
+      allocate(inod_gl_send_added(added_comm%ntot_export))
 !
 !$omp parallel workshare
-      xx_send_added(1:ntot_send_added,1) = 0.0d0
-      xx_send_added(1:ntot_send_added,2) = 0.0d0
-      xx_send_added(1:ntot_send_added,3) = 0.0d0
-      inod_send_added(1:ntot_send_added) =     0
-      irank_send_added(1:ntot_send_added) =    0
-      inod_gl_send_added(1:ntot_send_added) =  0
-      iflag_send_2_del(1:ntot_send_added) =    0
+      xx_send_added(1:added_comm%ntot_export,1) = 0.0d0
+      xx_send_added(1:added_comm%ntot_export,2) = 0.0d0
+      xx_send_added(1:added_comm%ntot_export,3) = 0.0d0
+      inod_send_added(1:added_comm%ntot_export) =     0
+      irank_send_added(1:added_comm%ntot_export) =    0
+      inod_gl_send_added(1:added_comm%ntot_export) =  0
+      iflag_send_2_del(1:added_comm%ntot_export) =    0
 !$omp end parallel workshare
 !
       do i = 1, nod_comm%num_neib
@@ -135,7 +159,7 @@
      &      org_node%numnod, neib_nod%ntot, neib_nod%istack_next,       &
      &      neib_nod%inod_next, iflag_node)
 !
-        icou = istack_send_added(i-1)
+        icou = added_comm%istack_export(i-1)
         do inod = 1, org_node%numnod
           if(iflag_node(inod) .gt. 0) then
             icou = icou + 1
@@ -150,58 +174,56 @@
       end do
 !
 !
-      allocate(num_recv_added(nod_comm%num_neib))
-      allocate(istack_recv_added(0:nod_comm%num_neib))
-      if(nod_comm%num_neib .gt. 0) num_recv_added = 0
-      istack_recv_added = 0
-!
       call SOLVER_SEND_RECV_num_type                                    &
-     &   (nod_comm, num_send_added, num_recv_added)
+     &   (nod_comm, added_comm%num_export, added_comm%num_import)
 !
       do i = 1, nod_comm%num_neib
-        istack_recv_added(i) = istack_recv_added(i-1)                   &
-     &                          + num_recv_added(i)
+        added_comm%istack_import(i) = added_comm%istack_import(i-1)     &
+     &                               + added_comm%num_import(i)
       end do
-      ntot_recv_added = istack_recv_added(nod_comm%num_neib)
+      added_comm%ntot_import                                            &
+     &      = added_comm%istack_import(nod_comm%num_neib)
 !
-!      write(*,*) 'istack_send_added', my_rank, istack_send_added
-!      write(*,*) 'ntot_send_added', my_rank, ntot_send_added
-!      write(*,*) 'istack_recv_added', my_rank, istack_recv_added
-!      write(*,*) 'ntot_recv_added', my_rank, ntot_recv_added
+!      write(*,*) 'istack_send_added', my_rank, added_comm%istack_export
+!      write(*,*) 'ntot_send_added', my_rank, added_comm%ntot_export
+!      write(*,*) 'istack_recv_added', my_rank, added_comm%istack_import
+!      write(*,*) 'ntot_recv_added', my_rank, added_comm%ntot_import
 !
-      allocate(inod_recv_added(ntot_recv_added))
-      allocate(irank_recv_added(ntot_recv_added))
-      allocate(inod_new_id(ntot_recv_added))
-      allocate(inod_gl_recv_added(ntot_recv_added))
-      allocate(xx_recv_added(ntot_recv_added,3))
+      allocate(inod_recv_added(added_comm%ntot_import))
+      allocate(irank_recv_added(added_comm%ntot_import))
+      allocate(inod_new_id(added_comm%ntot_import))
+      allocate(inod_gl_recv_added(added_comm%ntot_import))
+      allocate(xx_recv_added(added_comm%ntot_import,3))
 !
 !$omp parallel workshare
-      xx_recv_added(1:ntot_recv_added,1) = 0.0d0
-      xx_recv_added(1:ntot_recv_added,2) = 0.0d0
-      xx_recv_added(1:ntot_recv_added,3) = 0.0d0
-      inod_recv_added(1:ntot_recv_added) =     0
-      irank_recv_added(1:ntot_recv_added) =    0
-      inod_gl_recv_added(1:ntot_recv_added) =  0
-      inod_new_id(1:ntot_recv_added) =    0
+      xx_recv_added(1:added_comm%ntot_import,1) = 0.0d0
+      xx_recv_added(1:added_comm%ntot_import,2) = 0.0d0
+      xx_recv_added(1:added_comm%ntot_import,3) = 0.0d0
+      inod_recv_added(1:added_comm%ntot_import) =     0
+      irank_recv_added(1:added_comm%ntot_import) =    0
+      inod_gl_recv_added(1:added_comm%ntot_import) =  0
+      inod_new_id(1:added_comm%ntot_import) =    0
 !$omp end parallel workshare
 !
-      call added_geometry_send_recv(nod_comm,                           &
-     &    istack_send_added, ntot_send_added, xx_send_added,            &
-     &    istack_recv_added, ntot_recv_added, xx_recv_added)
-      call added_global_id_send_recv(nod_comm,                          &
-     &    istack_send_added, ntot_send_added, inod_gl_send_added,       &
-     &    istack_recv_added, ntot_recv_added, inod_gl_recv_added)
+      call added_geometry_send_recv                                     &
+     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    added_comm%istack_export, added_comm%ntot_export, xx_send_added,            &
+     &    added_comm%istack_import, added_comm%ntot_import, xx_recv_added)
+      call added_global_id_send_recv                                    &
+     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    added_comm%istack_export, added_comm%ntot_export, inod_gl_send_added,       &
+     &    added_comm%istack_import, added_comm%ntot_import, inod_gl_recv_added)
       call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
-     &    istack_send_added, ntot_send_added, inod_send_added,          &
-     &    istack_recv_added, ntot_recv_added, inod_recv_added)
+     &    added_comm%istack_export, added_comm%ntot_export, inod_send_added,          &
+     &    added_comm%istack_import, added_comm%ntot_import, inod_recv_added)
       call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
-     &    istack_send_added, ntot_send_added, irank_send_added,         &
-     &    istack_recv_added, ntot_recv_added, irank_recv_added)
+     &    added_comm%istack_export, added_comm%ntot_export, irank_send_added,         &
+     &    added_comm%istack_import, added_comm%ntot_import, irank_recv_added)
 !
 !
       do i = 1, nod_comm%num_neib
-        ist = istack_recv_added(i-1) + 1
-        ied = istack_recv_added(i)
+        ist = added_comm%istack_import(i-1) + 1
+        ied = added_comm%istack_import(i)
 !
         do inum = ist, ied
           if(inod_new_id(inum) .lt. 0) cycle
@@ -210,8 +232,8 @@
           do j = 1, nod_comm%num_neib
             if(i .eq. j) cycle
 !
-            jst = istack_recv_added(j-1) + 1
-            jed = istack_recv_added(j)
+            jst = added_comm%istack_import(j-1) + 1
+            jed = added_comm%istack_import(j)
             do jnum = jst, jed
               if(irank_recv_added(jnum) .eq. irank_recv_added(inum)     &
      &         .and. inod_recv_added(jnum).eq.inod_recv_added(inum)     &
@@ -226,8 +248,8 @@
       end do
 !
       do i = 1, nod_comm%num_neib
-        ist = istack_recv_added(i-1) + 1
-        ied = istack_recv_added(i)
+        ist = added_comm%istack_import(i-1) + 1
+        ied = added_comm%istack_import(i)
 !
         do inum = ist, ied
           if(inod_new_id(inum) .lt. 0) cycle
@@ -258,9 +280,9 @@
 !        end do
 !      end do
 !      do i = 1, nod_comm%num_neib
-!        ist = istack_recv_added(i-1) + 1
-!        ied = istack_recv_added(i)
-!        write(120+my_rank,*) 'istack_recv_added',   &
+!        ist = added_comm%istack_import(i-1) + 1
+!        ied = added_comm%istack_import(i)
+!        write(120+my_rank,*) 'added_comm%istack_import',   &
 !     &                        nod_comm%id_neib(i), ist, ied
 !
 !        do inum = ist, ied
@@ -271,14 +293,14 @@
 !
 !
       call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
-     &    istack_recv_added, ntot_recv_added, inod_new_id,              &
-     &    istack_send_added, ntot_send_added, iflag_send_2_del)
+     &    added_comm%istack_import, added_comm%ntot_import, inod_new_id,              &
+     &    added_comm%istack_export, added_comm%ntot_export, iflag_send_2_del)
 !
-!      do inum = 1, ntot_recv_added
+!      do inum = 1, added_comm%ntot_import
 !        if(inod_new_id(inum) .lt. 0) write(*,*) 'recv delete', my_rank,&
 !     &      inum, irank_recv_added(inum), inod_recv_added(inum)
 !      end do
-!      do inum = 1, ntot_send_added
+!      do inum = 1, added_comm%ntot_export
 !        if(iflag_send_2_del(inum) .lt. 0) write(*,*) 'send delete',    &
 !     &    my_rank, inum, irank_send_added(inum), inod_send_added(inum)
 !      end do
@@ -286,7 +308,7 @@
 !
       new_node%internal_node = org_node%internal_node
       new_node%numnod = org_node%numnod
-      do inum = 1, ntot_recv_added
+      do inum = 1, added_comm%ntot_import
         if(inod_new_id(inum) .eq. 0) then
           new_node%numnod = new_node%numnod + 1
         end if
@@ -307,7 +329,7 @@
 !$omp end parallel do
 !
       icou = org_node%numnod
-      do inum = 1, ntot_recv_added
+      do inum = 1, added_comm%ntot_import
         if(inod_new_id(inum) .eq. 0) then
           icou = icou + 1
           inod_new_id(inum) = icou
@@ -332,7 +354,7 @@
       iflag_recv(0:nprocs-1) = 0
       iflag_send(0:nprocs-1) = 0
 !
-      do inum = 1, ntot_recv_added
+      do inum = 1, added_comm%ntot_import
         ip = irank_recv_added(inum)
         iflag_recv(ip) = 1
       end do
@@ -379,7 +401,7 @@
       end do
       do i = 1, new_comm%num_neib
         ip = new_comm%id_neib(i)
-        do inum = 1, ntot_recv_added
+        do inum = 1, added_comm%ntot_import
           if(irank_recv_added(inum).eq.ip                               &
      &         .and. inod_new_id(inum).gt. 0) then
             new_comm%num_import(i) = new_comm%num_import(i) + 1
@@ -423,7 +445,7 @@
         ip = new_comm%id_neib(i)
         icou = new_comm%istack_import(i-1)                              &
      &        + nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
-        do inum = 1, ntot_recv_added
+        do inum = 1, added_comm%ntot_import
           if(irank_recv_added(inum).eq.ip                               &
      &         .and. inod_new_id(inum).gt.0) then
             icou = icou + 1
@@ -431,6 +453,8 @@
           end if
         end do
       end do
+!
+      call dealloc_added_comm_table_num(added_comm)
 !
       allocate(inod_import_new(new_comm%ntot_import))
       allocate(irank_import_new(new_comm%ntot_import))
@@ -532,10 +556,8 @@
       type(parallel_double_numbering) :: dbl_id2
       type(parallel_double_numbering) :: dbl_ele
 !
-      integer(kind = kint), allocatable :: num_send_added(:)
-      integer(kind = kint), allocatable :: istack_send_added(:)
+      type(communication_table) :: added_comm
 !
-      integer(kind = kint) :: ntot_send_added
       integer(kind = kint), allocatable :: iele_lc_added(:)
       integer(kind = kint), allocatable :: iele_send_added(:)
       integer(kind = kint), allocatable :: irank_send_added(:)
@@ -544,10 +566,6 @@
       integer(kind = kint), allocatable :: ie_send_added(:,:)
       integer(kind = kint), allocatable :: ip_send_added(:,:)
 !
-      integer(kind = kint), allocatable :: num_recv_added(:)
-      integer(kind = kint), allocatable :: istack_recv_added(:)
-!
-      integer(kind = kint) :: ntot_recv_added
       integer(kind = kint), allocatable :: iele_recv_added(:)
       integer(kind = kint), allocatable :: irank_recv_added(:)
       integer(kind = kint), allocatable :: iflag_recv_2_del(:)
@@ -586,15 +604,12 @@
       iflag_node(1:org_node%numnod) = 0
       iflag_ele(1:ele%numele) = 0
 !
-      allocate(num_send_added(nod_comm%num_neib))
-      allocate(istack_send_added(0:nod_comm%num_neib))
-      if(nod_comm%num_neib .gt. 0) num_send_added = 0
-      istack_send_added = 0
+      call alloc_added_comm_table_num(nod_comm, added_comm)
 !
       allocate(iflag_sleeve1(nod_comm%num_neib))
       allocate(iflag_sleeve2(new_comm%num_neib))
-      if(nod_comm%num_neib .gt. 0) num_send_added = 0
-      istack_send_added = 0
+      if(nod_comm%num_neib .gt. 0) iflag_sleeve1 = 0
+      if(nod_comm%num_neib .gt. 0) iflag_sleeve2 = 0
 !
       do i = 1, nod_comm%num_neib
         call mark_used_ele_of_export(i, nod_comm%num_neib,              &
@@ -605,33 +620,35 @@
      &      iflag_node, iflag_ele)
 !
         do inod = 1, ele%numele
-          num_send_added(i) = num_send_added(i) + iflag_ele(inod)
+          added_comm%num_export(i) = added_comm%num_export(i)           &
+     &                              + iflag_ele(inod)
         end do
-        istack_send_added(i) = istack_send_added(i-1)                   &
-     &                          + num_send_added(i)
+        added_comm%istack_export(i) = added_comm%istack_export(i-1)     &
+     &                          + added_comm%num_export(i)
       end do
-      ntot_send_added = istack_send_added(nod_comm%num_neib)
+      added_comm%ntot_export                                            &
+     &      = added_comm%istack_export(nod_comm%num_neib)
 !
-!      write(*,*) 'istack_send_added ele', istack_send_added
+!      write(*,*) 'istack_send_added ele', added_comm%istack_export
 !
-      allocate(iele_lc_added(ntot_send_added))
-      allocate(iele_send_added(ntot_send_added))
-      allocate(ie_send_added(ntot_send_added,ele%nnod_4_ele))
-      allocate(ip_send_added(ntot_send_added,ele%nnod_4_ele))
-      allocate(irank_send_added(ntot_send_added))
-      allocate(iflag_send_2_del(ntot_send_added))
-      allocate(iele_gl_send_added(ntot_send_added))
+      allocate(iele_lc_added(added_comm%ntot_export))
+      allocate(iele_send_added(added_comm%ntot_export))
+      allocate(ie_send_added(added_comm%ntot_export,ele%nnod_4_ele))
+      allocate(ip_send_added(added_comm%ntot_export,ele%nnod_4_ele))
+      allocate(irank_send_added(added_comm%ntot_export))
+      allocate(iflag_send_2_del(added_comm%ntot_export))
+      allocate(iele_gl_send_added(added_comm%ntot_export))
 !
 !$omp parallel workshare
-      ie_send_added(1:ntot_send_added,1:ele%nnod_4_ele) =    0
-      ip_send_added(1:ntot_send_added,1:ele%nnod_4_ele) =    0
+      ie_send_added(1:added_comm%ntot_export,1:ele%nnod_4_ele) =    0
+      ip_send_added(1:added_comm%ntot_export,1:ele%nnod_4_ele) =    0
 !$omp end parallel workshare
 !$omp parallel workshare
-      iele_lc_added(1:ntot_send_added) =       0
-      iele_send_added(1:ntot_send_added) =     0
-      irank_send_added(1:ntot_send_added) =    0
-      iele_gl_send_added(1:ntot_send_added) =  0
-      iflag_send_2_del(1:ntot_send_added) =    0
+      iele_lc_added(1:added_comm%ntot_export) =       0
+      iele_send_added(1:added_comm%ntot_export) =     0
+      irank_send_added(1:added_comm%ntot_export) =    0
+      iele_gl_send_added(1:added_comm%ntot_export) =  0
+      iflag_send_2_del(1:added_comm%ntot_export) =    0
 !$omp end parallel workshare
 !
       do i = 1, nod_comm%num_neib
@@ -642,7 +659,7 @@
      &      neib_ele%iele_4_node, ele%numele, ele%nnod_4_ele, ele%ie,   &
      &      iflag_node, iflag_ele)
 !
-        icou = istack_send_added(i-1)
+        icou = added_comm%istack_export(i-1)
         do iele = 1, ele%numele
           if(iflag_ele(iele) .gt. 0) then
             icou = icou + 1
@@ -660,9 +677,9 @@
       end do
 !
       do i = 1, nod_comm%num_neib
-        ist = istack_send_added(i-1) + 1
-        ied = istack_send_added(i)
-        write(50+my_rank,*) 'istack_send_added',  &
+        ist = added_comm%istack_export(i-1) + 1
+        ied = added_comm%istack_export(i)
+        write(50+my_rank,*) 'added_comm%istack_export',                 &
      &                      i, nod_comm%id_neib(i), ist, ied
         do inum = ist, ied
           if(irank_send_added(inum) .eq. nod_comm%id_neib(i)) then
@@ -674,66 +691,63 @@
         end do
       end do
 !
-      allocate(num_recv_added(nod_comm% num_neib))
-      allocate(istack_recv_added(0:nod_comm%num_neib))
-      if(nod_comm%num_neib .gt. 0) num_recv_added = 0
-      istack_recv_added = 0
-!
       call SOLVER_SEND_RECV_num_type                                    &
-     &   (nod_comm, num_send_added, num_recv_added)
+     &   (nod_comm, added_comm%num_export, added_comm%num_import)
 !
       do i = 1, nod_comm%num_neib
-        istack_recv_added(i) = istack_recv_added(i-1)                   &
-     &                          + num_recv_added(i)
+        added_comm%istack_import(i) = added_comm%istack_import(i-1)     &
+     &                               + added_comm%num_import(i)
       end do
-      ntot_recv_added = istack_recv_added(nod_comm%num_neib)
+      added_comm%ntot_import                                            &
+     &      = added_comm%istack_import(nod_comm%num_neib)
 !
-!      write(*,*) 'istack_send_added', my_rank, istack_send_added
-!      write(*,*) 'ntot_send_added', my_rank, ntot_send_added
-!      write(*,*) 'istack_recv_added', my_rank, istack_recv_added
-!      write(*,*) 'ntot_recv_added', my_rank, ntot_recv_added
+!      write(*,*) 'istack_send_added', my_rank, added_comm%istack_export
+!      write(*,*) 'ntot_send_added', my_rank, added_comm%ntot_export
+!      write(*,*) 'istack_recv_added', my_rank, added_comm%istack_import
+!      write(*,*) 'ntot_recv_added', my_rank, added_comm%ntot_import
 !
-      allocate(iele_recv_added(ntot_recv_added))
-      allocate(irank_recv_added(ntot_recv_added))
-      allocate(iflag_recv_2_del(ntot_recv_added))
-      allocate(iele_gl_recv_added(ntot_recv_added))
-      allocate(ie_recv_added(ntot_recv_added,ele%nnod_4_ele))
-      allocate(ip_recv_added(ntot_recv_added,ele%nnod_4_ele))
+      allocate(iele_recv_added(added_comm%ntot_import))
+      allocate(irank_recv_added(added_comm%ntot_import))
+      allocate(iflag_recv_2_del(added_comm%ntot_import))
+      allocate(iele_gl_recv_added(added_comm%ntot_import))
+      allocate(ie_recv_added(added_comm%ntot_import,ele%nnod_4_ele))
+      allocate(ip_recv_added(added_comm%ntot_import,ele%nnod_4_ele))
 !
 !$omp parallel workshare
-      iele_recv_added(1:ntot_recv_added) =     0
-      irank_recv_added(1:ntot_recv_added) =    0
-      iele_gl_recv_added(1:ntot_recv_added) =  0
-      iflag_recv_2_del(1:ntot_recv_added) =    0
+      iele_recv_added(1:added_comm%ntot_import) =     0
+      irank_recv_added(1:added_comm%ntot_import) =    0
+      iele_gl_recv_added(1:added_comm%ntot_import) =  0
+      iflag_recv_2_del(1:added_comm%ntot_import) =    0
 !$omp end parallel workshare
 !$omp parallel workshare
-      ie_recv_added(1:ntot_recv_added,1:ele%nnod_4_ele) =    0
-      ip_recv_added(1:ntot_recv_added,1:ele%nnod_4_ele) =    0
+      ie_recv_added(1:added_comm%ntot_import,1:ele%nnod_4_ele) =    0
+      ip_recv_added(1:added_comm%ntot_import,1:ele%nnod_4_ele) =    0
 !$omp end parallel workshare
 !
-      call added_global_id_send_recv(nod_comm,                          &
-     &    istack_send_added, ntot_send_added, iele_gl_send_added,       &
-     &    istack_recv_added, ntot_recv_added, iele_gl_recv_added)
+      call added_global_id_send_recv                                    &
+     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    added_comm%istack_export, added_comm%ntot_export, iele_gl_send_added,       &
+     &    added_comm%istack_import, added_comm%ntot_import, iele_gl_recv_added)
       call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
-     &    istack_send_added, ntot_send_added, iele_send_added,          &
-     &    istack_recv_added, ntot_recv_added, iele_recv_added)
+     &    added_comm%istack_export, added_comm%ntot_export, iele_send_added,          &
+     &    added_comm%istack_import, added_comm%ntot_import, iele_recv_added)
       call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
-     &    istack_send_added, ntot_send_added, irank_send_added,         &
-     &    istack_recv_added, ntot_recv_added, irank_recv_added)
+     &    added_comm%istack_export, added_comm%ntot_export, irank_send_added,         &
+     &    added_comm%istack_import, added_comm%ntot_import, irank_recv_added)
       do k1 = 1, ele%nnod_4_ele
         call added_nod_id_send_recv                                     &
      &     (nod_comm%num_neib, nod_comm%id_neib,                        &
-     &      istack_send_added, ntot_send_added, ie_send_added(1,k1),    &
-     &      istack_recv_added, ntot_recv_added, ie_recv_added(1,k1))
+     &      added_comm%istack_export, added_comm%ntot_export, ie_send_added(1,k1),    &
+     &      added_comm%istack_import, added_comm%ntot_import, ie_recv_added(1,k1))
         call added_nod_id_send_recv                                     &
      &     (nod_comm%num_neib, nod_comm%id_neib,                        &
-     &      istack_send_added, ntot_send_added, ip_send_added(1,k1),    &
-     &      istack_recv_added, ntot_recv_added, ip_recv_added(1,k1))
+     &      added_comm%istack_export, added_comm%ntot_export, ip_send_added(1,k1),    &
+     &      added_comm%istack_import, added_comm%ntot_import, ip_recv_added(1,k1))
       end do
 !
 !      do i = 1, nod_comm%num_neib
-!        ist = istack_recv_added(i-1) + 1
-!        ied = istack_recv_added(i)
+!        ist = added_comm%istack_import(i-1) + 1
+!        ied = added_comm%istack_import(i)
 !        write(50+my_rank,*) 'istack_recv_added',  &
 !     &                      i, nod_comm%id_neib(i), ist, ied
 !        do inum = ist, ied
@@ -763,8 +777,8 @@
       end do
 !
       do i = 1, nod_comm%num_neib
-        ist = istack_recv_added(i-1) + 1
-        ied = istack_recv_added(i)
+        ist = added_comm%istack_import(i-1) + 1
+        ied = added_comm%istack_import(i)
         do iele = ist, ied
           ip = irank_recv_added(iele) + 1
           jst = istack_ele_ip(ip-1) + 1
@@ -782,12 +796,12 @@
       end do
 !
       do i = 1, nod_comm%num_neib
-        ist = istack_recv_added(i-1) + 1
-        ied = istack_recv_added(i)
+        ist = added_comm%istack_import(i-1) + 1
+        ied = added_comm%istack_import(i)
         do iele = ist, ied
           if(iflag_recv_2_del(iele) .gt. 0) cycle
 !
-          do jele = 1, ntot_recv_added
+          do jele = 1, added_comm%ntot_import
             if(iele .eq. jele) cycle
             if(irank_recv_added(jele) .eq. irank_recv_added(iele)       &
      &       .and. iele_recv_added(jele) .eq. iele_recv_added(iele)     &
@@ -800,13 +814,13 @@
       end do
 !
       call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
-     &    istack_recv_added, ntot_recv_added, iflag_recv_2_del,         &
-     &    istack_send_added, ntot_send_added, iflag_send_2_del)
+     &    added_comm%istack_import, added_comm%ntot_import, iflag_recv_2_del,  &
+     &    added_comm%istack_export, added_comm%ntot_export, iflag_send_2_del)
 !
       new_ele%numele =     ele%numele
       new_ele%nnod_4_ele = ele%nnod_4_ele
       new_ele%internal_ele = ele%internal_ele
-      do inum = 1, ntot_recv_added
+      do inum = 1, added_comm%ntot_import
         if(iflag_recv_2_del(inum) .eq. 0) then
           new_ele%numele = new_ele%numele + 1
         end if
@@ -834,8 +848,8 @@
 !
       icou = ele%numele
       do i = 1, nod_comm%num_neib
-        ist = istack_recv_added(i-1) + 1
-        ied = istack_recv_added(i)
+        ist = added_comm%istack_import(i-1) + 1
+        ied = added_comm%istack_import(i)
         do inum = ist, ied
           if(iflag_recv_2_del(inum) .gt. 0)  cycle
 !
@@ -853,6 +867,8 @@
           end do
         end do
       end do
+!
+      call dealloc_added_comm_table_num(added_comm)
 !
 !      write(50+my_rank,*) 'new_ele%iele', new_ele%numele
 !      do i = 1, new_ele%numele
