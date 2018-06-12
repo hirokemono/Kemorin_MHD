@@ -15,12 +15,22 @@
 !!     &          istack_export, item_export,                           &
 !!     &          numnod, ntot_ele, istack_4_node, iele_4_node,         &
 !!     &          numele, nnod_4_ele, ie, iflag_node, iflag_ele)
+!!
+!!      subroutine mark_added_nod_import_to_del                         &
+!!     &         (numnod, inod_local, irank_home, num_neib, id_neib,    &
+!!     &          ntot_import, istack_import, item_import, num_neib_add,&
+!!     &          id_neib_add, ntot_import_add, istack_import_add,      &
+!!     &          inod_recv_add, irank_recv_add, iflag_recv_2_del)
+!!      subroutine mark_added_ele_import_to_del                         &
+!!     &         (nprocs, numele, iele_local, irank_home,               &
+!!     &          num_neib_add, ntot_import_add, istack_import_add,     &
+!!     &          iele_recv_add, irank_recv_add, iflag_recv_2_del)
 !!@endverbatim
 !
       module mark_export_nod_ele_extend
 !
       use m_precision
-      use calypso_mpi
+!      use calypso_mpi
 !
       implicit none
 !
@@ -155,8 +165,6 @@
         iflag = 0
         do k1 = 1, nnod_4_ele
           inod = ie(jele,k1)
-          if(my_rank .eq. 0 .and. jele .eq. 1)  &
-     &         write(*,*) 'test', k1, inod, iflag_node(inod)
           if(iflag_node(inod) .gt. 0) iflag = 1
         end do
         iflag_ele(jele) = iflag_ele(jele) * iflag
@@ -167,7 +175,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine mark_added_import_to_delete                            &
+      subroutine mark_added_nod_import_to_del                           &
      &         (numnod, inod_local, irank_home, num_neib, id_neib,      &
      &          ntot_import, istack_import, item_import, num_neib_add,  &
      &          id_neib_add, ntot_import_add, istack_import_add,        &
@@ -244,7 +252,93 @@
         end do
       end do
 !
-      end subroutine mark_added_import_to_delete
+      end subroutine mark_added_nod_import_to_del
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine mark_added_ele_import_to_del                           &
+     &         (nprocs, numele, iele_local, irank_home,                 &
+     &          num_neib_add, ntot_import_add, istack_import_add,       &
+     &          iele_recv_add, irank_recv_add, iflag_recv_2_del)
+!
+      integer(kind = kint), intent(in) :: nprocs, numele
+      integer(kind = kint), intent(in) :: iele_local(numele)
+      integer(kind = kint), intent(in) :: irank_home(numele)
+!
+      integer(kind = kint), intent(in) :: num_neib_add, ntot_import_add
+      integer(kind = kint), intent(in)                                  &
+     &            :: istack_import_add(0:num_neib_add)
+!
+      integer(kind = kint), intent(in)                                  &
+     &            :: iele_recv_add(ntot_import_add)
+      integer(kind = kint), intent(in)                                  &
+     &            :: irank_recv_add(ntot_import_add)
+!
+      integer(kind = kint), intent(inout)                               &
+     &            :: iflag_recv_2_del(ntot_import_add)
+!
+      integer(kind = kint), allocatable :: istack_ele_ip(:)
+      integer(kind = kint), allocatable :: iele_by_ip(:)
+!
+      integer(kind = kint) :: i, ist, ied, icou, iele, ip
+      integer(kind = kint) :: jst, jed, jnum, jele
+!
+!
+      allocate(istack_ele_ip(0:nprocs))
+      allocate(iele_by_ip(numele))
+      istack_ele_ip = 0
+      iele_by_ip =    0
+!
+      icou = 0
+      do ip = 1, nprocs
+        do iele = 1, numele
+          if(irank_home(iele) .eq. (ip-1)) then
+            icou = icou + 1
+            iele_by_ip(icou) = iele
+          end if
+        end do
+        istack_ele_ip(ip) = icou
+      end do
+!
+      do i = 1, num_neib_add
+        ist = istack_import_add(i-1) + 1
+        ied = istack_import_add(i)
+        do iele = ist, ied
+          ip = irank_recv_add(iele) + 1
+          jst = istack_ele_ip(ip-1) + 1
+          jed = istack_ele_ip(ip)
+          do jnum = jst, jed
+            jele = iele_by_ip(jnum)
+            if(iele_recv_add(iele) .eq. iele_local(jele)) then
+              iflag_recv_2_del(iele) = -1
+              exit
+            end if
+          end do
+!
+        end do
+      end do
+!
+      do i = 1, num_neib_add
+        ist = istack_import_add(i-1) + 1
+        ied = istack_import_add(i)
+        do iele = ist, ied
+          if(iflag_recv_2_del(iele) .lt. 0) cycle
+!
+          do jele = 1, istack_import_add(num_neib_add)
+            if(iele .eq. jele) cycle
+            if(   irank_recv_add(jele) .eq. irank_recv_add(iele)        &
+     &       .and. iele_recv_add(jele) .eq. iele_recv_add(iele)         &
+     &       .and. iflag_recv_2_del(jele) .eq. 0) then
+              iflag_recv_2_del(iele) = -1
+              exit
+            end if
+          end do
+        end do
+      end do
+!
+      deallocate(istack_ele_ip, iele_by_ip)
+!
+      end subroutine mark_added_ele_import_to_del
 !
 !  ---------------------------------------------------------------------
 !

@@ -490,15 +490,8 @@
       iflag_recv(0:nprocs-1) = 0
       iflag_send(0:nprocs-1) = 0
 !
-      do inum = 1, added_comm%ntot_import
-        ip = recv_nbuf%irank_add(inum)
-        iflag_recv(ip) = 1
-      end do
-!
-      do i = 1, nod_comm%num_neib
-        ip = nod_comm%id_neib(i)
-        iflag_recv(ip) = -1
-      end do
+      call mark_extended_nod_neib_pe(nprocs, nod_comm, added_comm,      &
+     &    recv_nbuf, iflag_send, iflag_recv)
 !
       do ip = 0, nprocs-1
         call MPI_Scatter(iflag_recv(0), ione, CALYPSO_INTEGER,          &
@@ -506,44 +499,18 @@
      &                   ip, CALYPSO_COMM, ierr_MPI)
       end do
 !
-
-      new_comm%num_neib = 0
-      do ip = 0, nprocs-1
-        if(iflag_recv(ip).ne.0 .or. iflag_send(ip).ne.0) then
-          new_comm%num_neib = new_comm%num_neib + 1
-        end if
-      end do
-!
+      call count_extended_nod_neib_pe                                   &
+     &   (nprocs, iflag_send, iflag_recv, new_comm)
 !
       call allocate_type_comm_tbl_num(new_comm)
 !
-      new_comm%id_neib(1:nod_comm%num_neib)                             &
-     &              = nod_comm%id_neib(1:nod_comm%num_neib)
-      icou = nod_comm%num_neib
-      do i = 0, nprocs-1
-        ip = mod(i+my_rank,nprocs)
-        if(iflag_recv(ip).gt.0 .or. iflag_send(ip).gt.0) then
-          icou = icou + 1
-          new_comm%id_neib(i) = ip
-        end if
-      end do
+      call set_extended_nod_neib_pe(nprocs, my_rank,                    &
+     &   iflag_send, iflag_recv, nod_comm, new_comm)
 !
-      do i = 1, nod_comm%num_neib
-        new_comm%num_import(i)                                          &
-     &       = nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
-      end do
-      do i = nod_comm%num_neib+1, new_comm%num_neib
-        new_comm%num_import(i) = 0
-      end do
-      do i = 1, new_comm%num_neib
-        ip = new_comm%id_neib(i)
-        do inum = 1, added_comm%ntot_import
-          if(recv_nbuf%irank_add(inum).eq.ip                            &
-     &         .and. added_comm%item_import(inum).gt. 0) then
-            new_comm%num_import(i) = new_comm%num_import(i) + 1
-          end if
-        end do
-      end do
+      deallocate(iflag_recv, iflag_send)
+!
+      call count_extended_nod_import                                    &
+     &   (recv_nbuf, nod_comm, added_comm, new_comm)
 !
       call SOLVER_SEND_RECV_num_type                                    &
      &   (new_comm, new_comm%num_import, new_comm%num_export)
@@ -655,8 +622,6 @@
 !      close(50+my_rank)
       call calypso_mpi_barrier
 !
-!      write(*,*) 'iflag_recv', my_rank, iflag_recv
-!      write(*,*) 'iflag_send', my_rank, iflag_send
 !      write(*,*) 'num_neib', my_rank,                                  &
 !     &       nod_comm%num_neib, new_comm%num_neib
 !
@@ -700,9 +665,6 @@
 !
       integer(kind = kint), allocatable :: iflag_node(:)
       integer(kind = kint), allocatable :: iflag_ele(:)
-!
-      integer(kind = kint), allocatable :: istack_ele_ip(:)
-      integer(kind = kint), allocatable :: iele_by_ip(:)
 !
       integer(kind = kint) :: inum, inod, i, ist, ied, icou
       integer(kind = kint) :: jnum, jnod, jst, jed, jele
@@ -827,60 +789,12 @@
 !
       call dealloc_ele_buffer_2_extend(send_ebuf)
 !
-      allocate(istack_ele_ip(0:nprocs))
-      allocate(iele_by_ip(ele%numele))
-      istack_ele_ip = 0
-      iele_by_ip =    0
-!
-      icou = 0
-      do ip = 1, nprocs
-        do iele = 1, ele%numele
-          if(dbl_ele%irank_home(iele) .eq. (ip-1)) then
-            icou = icou + 1
-            iele_by_ip(icou) = iele
-          end if
-        end do
-        istack_ele_ip(ip) = icou
-      end do
-!
-      do i = 1, added_comm%num_neib
-        ist = added_comm%istack_import(i-1) + 1
-        ied = added_comm%istack_import(i)
-        do iele = ist, ied
-          ip = recv_ebuf%irank_add(iele) + 1
-          jst = istack_ele_ip(ip-1) + 1
-          jed = istack_ele_ip(ip)
-          do jnum = jst, jed
-            jele = iele_by_ip(jnum)
-            if(recv_ebuf%iele_add(iele) .eq. dbl_ele%inod_local(jele))  &
-     &       then
-              added_comm%item_import(iele) = -1
-              exit
-            end if
-          end do
-!
-        end do
-      end do
-!
-      do i = 1, added_comm%num_neib
-        ist = added_comm%istack_import(i-1) + 1
-        ied = added_comm%istack_import(i)
-        do iele = ist, ied
-          if(added_comm%item_import(iele) .lt. 0) cycle
-!
-          do jele = 1, added_comm%ntot_import
-            if(iele .eq. jele) cycle
-            if(recv_ebuf%irank_add(jele)                                &
-     &           .eq. recv_ebuf%irank_add(iele)                         &
-     &       .and. recv_ebuf%iele_add(jele)                             &
-     &           .eq. recv_ebuf%iele_add(iele)                          &
-     &       .and. added_comm%item_import(jele) .eq. 0) then
-              added_comm%item_import(iele) = -1
-              exit
-            end if
-          end do
-        end do
-      end do
+      call mark_added_ele_import_to_del                                 &
+     &   (nprocs, ele%numele, dbl_ele%inod_local, dbl_ele%irank_home,   &
+     &    added_comm%num_neib, added_comm%ntot_import,                  &
+     &    added_comm%istack_import,                                     &
+     &    recv_ebuf%iele_add, recv_ebuf%irank_add,                      &
+     &    added_comm%item_import)
 !
       call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
      &    added_comm%istack_import, added_comm%ntot_import, added_comm%item_import,  &
@@ -949,6 +863,115 @@
       call calypso_mpi_barrier
 !
       end subroutine extend_ele_comm_table
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine mark_extended_nod_neib_pe                              &
+     &         (nprocs, nod_comm, added_comm, recv_nbuf,                &
+     &          iflag_send, iflag_recv)
+!
+      type(communication_table), intent(in) :: nod_comm, added_comm
+      type(node_buffer_2_extend), intent(in) :: recv_nbuf
+      integer(kind = kint), intent(in) :: nprocs
+      integer(kind = kint), intent(inout) :: iflag_send(0:nprocs-1)
+      integer(kind = kint), intent(inout) :: iflag_recv(0:nprocs-1)
+!
+      integer(kind = kint) :: i, ip
+!
+!
+      do i = 1, added_comm%ntot_import
+        ip = recv_nbuf%irank_add(i)
+        iflag_recv(ip) = 1
+      end do
+!
+      do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i)
+        iflag_recv(ip) = -1
+      end do
+!
+      end subroutine mark_extended_nod_neib_pe
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_extended_nod_neib_pe                             &
+     &         (nprocs, iflag_send, iflag_recv, new_comm)
+!
+      integer(kind = kint), intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: iflag_send(0:nprocs-1)
+      integer(kind = kint), intent(in) :: iflag_recv(0:nprocs-1)
+      type(communication_table), intent(inout) :: new_comm
+!
+      integer(kind = kint) :: ip, inum, icou
+!
+!
+      new_comm%num_neib = 0
+      do ip = 0, nprocs-1
+        if(iflag_recv(ip).ne.0 .or. iflag_send(ip).ne.0) then
+          new_comm%num_neib = new_comm%num_neib + 1
+        end if
+      end do
+!
+      end subroutine count_extended_nod_neib_pe
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_extended_nod_neib_pe(nprocs, my_rank,              &
+     &          iflag_send, iflag_recv, nod_comm, new_comm)
+!
+      integer(kind = kint), intent(in) :: nprocs, my_rank
+      integer(kind = kint), intent(in) :: iflag_send(0:nprocs-1)
+      integer(kind = kint), intent(in) :: iflag_recv(0:nprocs-1)
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(inout) :: new_comm
+!
+      integer(kind = kint) :: i, ip, inum, icou
+!
+!
+      new_comm%id_neib(1:nod_comm%num_neib)                             &
+     &              = nod_comm%id_neib(1:nod_comm%num_neib)
+      icou = nod_comm%num_neib
+      do i = 0, nprocs-1
+        ip = mod(i+my_rank,nprocs)
+        if(iflag_recv(ip).gt.0 .or. iflag_send(ip).gt.0) then
+          icou = icou + 1
+          new_comm%id_neib(i) = ip
+        end if
+      end do
+!
+      end subroutine set_extended_nod_neib_pe
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine count_extended_nod_import                              &
+     &        (recv_nbuf, nod_comm, added_comm, new_comm)
+!
+      type(communication_table), intent(in) :: nod_comm, added_comm
+      type(node_buffer_2_extend), intent(in) :: recv_nbuf
+      type(communication_table), intent(inout) :: new_comm
+!
+      integer(kind = kint) :: i, ip, inum
+!
+!
+      do i = 1, nod_comm%num_neib
+        new_comm%num_import(i)                                          &
+     &       = nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
+      end do
+      do i = nod_comm%num_neib+1, new_comm%num_neib
+        new_comm%num_import(i) = 0
+      end do
+      do i = 1, new_comm%num_neib
+        ip = new_comm%id_neib(i)
+        do inum = 1, added_comm%ntot_import
+          if(recv_nbuf%irank_add(inum).eq.ip                            &
+     &         .and. added_comm%item_import(inum).gt. 0) then
+            new_comm%num_import(i) = new_comm%num_import(i) + 1
+          end if
+        end do
+      end do
+!
+      end subroutine count_extended_nod_import
 !
 !  ---------------------------------------------------------------------
 !
