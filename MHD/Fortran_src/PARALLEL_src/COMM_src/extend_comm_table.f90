@@ -17,8 +17,28 @@
       use m_machine_parameter
 !
       use t_comm_table
+      use t_geometry_data
+      use t_para_double_numbering
 !
       implicit none
+!
+      type node_buffer_2_extend
+        integer(kind = kint) :: ntot
+        integer(kind = kint), allocatable :: inod_add(:)
+        integer(kind = kint), allocatable :: irank_add(:)
+        integer(kind = kint_gl), allocatable :: inod_gl_add(:)
+        real(kind = kreal), allocatable :: xx_add(:,:)
+      end type node_buffer_2_extend
+!
+      type ele_buffer_2_extend
+        integer(kind = kint) :: ntot
+        integer(kind = kint) :: nnod_4_ele
+        integer(kind = kint), allocatable :: iele_add(:)
+        integer(kind = kint), allocatable :: irank_add(:)
+        integer(kind = kint_gl), allocatable :: iele_gl_add(:)
+        integer(kind = kint), allocatable :: ie_added(:,:)
+        integer(kind = kint), allocatable :: ip_added(:,:)
+      end type ele_buffer_2_extend
 !
 !  ---------------------------------------------------------------------
 !
@@ -46,10 +66,149 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine alloc_node_buffer_2_extend(ntot_item, node_buf)
+!
+      integer(kind = kint), intent(in) :: ntot_item
+      type(node_buffer_2_extend), intent(inout) :: node_buf
+!
+!
+      node_buf%ntot = ntot_item
+      allocate(node_buf%inod_add(node_buf%ntot))
+      allocate(node_buf%irank_add(node_buf%ntot))
+      allocate(node_buf%xx_add(node_buf%ntot,3))
+      allocate(node_buf%inod_gl_add(node_buf%ntot))
+!
+      if(node_buf%ntot .le. 0) return
+!$omp parallel workshare
+      node_buf%xx_add(1:node_buf%ntot,1) = 0.0d0
+      node_buf%xx_add(1:node_buf%ntot,2) = 0.0d0
+      node_buf%xx_add(1:node_buf%ntot,3) = 0.0d0
+      node_buf%inod_add(1:node_buf%ntot) =     0
+      node_buf%irank_add(1:node_buf%ntot) =    0
+      node_buf%inod_gl_add(1:node_buf%ntot) =  0
+!$omp end parallel workshare
+!
+      end subroutine alloc_node_buffer_2_extend
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_ele_buffer_2_extend(ntot_item, ele, ele_buf)
+!
+      integer(kind = kint), intent(in) :: ntot_item
+      type(element_data), intent(in) :: ele
+      type(ele_buffer_2_extend), intent(inout) :: ele_buf
+!
+!
+      ele_buf%ntot = ntot_item
+      ele_buf%nnod_4_ele = ele%nnod_4_ele
+      allocate(ele_buf%iele_add(ele_buf%ntot))
+      allocate(ele_buf%irank_add(ele_buf%ntot))
+      allocate(ele_buf%iele_gl_add(ele_buf%ntot))
+      allocate(ele_buf%ie_added(ele_buf%ntot,ele_buf%nnod_4_ele))
+      allocate(ele_buf%ip_added(ele_buf%ntot,ele_buf%nnod_4_ele))
+!
+      if(ele_buf%ntot .le. 0) return
+!$omp parallel workshare
+      ele_buf%iele_add(1:ele_buf%ntot) =     0
+      ele_buf%irank_add(1:ele_buf%ntot) =    0
+      ele_buf%iele_gl_add(1:ele_buf%ntot) =  0
+!$omp end parallel workshare
+!$omp parallel workshare
+      ele_buf%ie_added(1:ele_buf%ntot,1:ele_buf%nnod_4_ele) = 0
+      ele_buf%ip_added(1:ele_buf%ntot,1:ele_buf%nnod_4_ele) = 0
+!$omp end parallel workshare
+!
+      end subroutine alloc_ele_buffer_2_extend
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_node_buffer_2_extend(node_buf)
+!
+      type(node_buffer_2_extend), intent(inout) :: node_buf
+!
+!
+      deallocate(node_buf%inod_add)
+      deallocate(node_buf%irank_add)
+      deallocate(node_buf%xx_add)
+      deallocate(node_buf%inod_gl_add)
+!
+      end subroutine dealloc_node_buffer_2_extend
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_ele_buffer_2_extend(ele_buf)
+!
+      type(ele_buffer_2_extend), intent(inout) :: ele_buf
+!
+!
+      deallocate(ele_buf%iele_add)
+      deallocate(ele_buf%irank_add)
+      deallocate(ele_buf%iele_gl_add)
+      deallocate(ele_buf%ie_added)
+      deallocate(ele_buf%ip_added)
+!
+      end subroutine dealloc_ele_buffer_2_extend
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine check_num_of_added_table(my_rank, added_comm)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(communication_table), intent(inout) :: added_comm
+!
+!
+      write(*,*) 'istack_send_added', my_rank, added_comm%istack_export
+      write(*,*) 'ntot_send_added', my_rank, added_comm%ntot_export
+      write(*,*) 'istack_recv_added', my_rank, added_comm%istack_import
+      write(*,*) 'ntot_recv_added', my_rank, added_comm%ntot_import
+!
+      end subroutine check_num_of_added_table
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine check_added_impoert_items                              &
+     &         (my_rank, nod_comm, added_comm, dbl_id1)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(communication_table), intent(in) :: nod_comm, added_comm
+      type(parallel_double_numbering), intent(in) :: dbl_id1
+!
+      integer(kind = kint) :: inum, inod, i, ist, ied
+
+!
+      do i = 1, nod_comm%num_neib
+        ist = nod_comm%istack_import(i-1) + 1
+        ied = nod_comm%istack_import(i)
+        write(120+my_rank,*) 'import', nod_comm%id_neib(i), ist, ied
+!
+        do inum = ist, ied
+          inod = nod_comm%item_import(inum)
+          write(120+my_rank,*) inum, inod,                              &
+     &        dbl_id1%irank_home(inod), dbl_id1%inod_local(inod), '  '
+        end do
+      end do
+      do i = 1, nod_comm%num_neib
+        ist = added_comm%istack_import(i-1) + 1
+        ied = added_comm%istack_import(i)
+        write(120+my_rank,*) 'added_comm%istack_import',                &
+     &                        nod_comm%id_neib(i), ist, ied
+!
+!        do inum = ist, ied
+!          write(120+my_rank,*) inum, irank_recv_added(inum),           &
+!     &           inod_recv_added(inum), added_comm%item_import(inum)
+!        end do
+      end do
+!
+      end subroutine check_added_impoert_items
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine extend_node_comm_table(nod_comm, org_node, neib_nod,   &
      &          new_comm, new_node)
 !
-      use t_geometry_data
       use t_next_node_ele_4_node
       use m_merged_ucd_data
       use solver_SR_type
@@ -70,6 +229,8 @@
 !>      added_comm%item_export :: export table or flag to be added
 !>      added_comm%item_import :: import table or flag to be added
       type(communication_table) :: added_comm
+      type(node_buffer_2_extend) :: send_nbuf
+      type(node_buffer_2_extend) :: recv_nbuf
 !
       integer(kind = kint), allocatable :: inod_send_added(:)
       integer(kind = kint), allocatable :: irank_send_added(:)
@@ -125,6 +286,8 @@
      &      = added_comm%istack_export(added_comm%num_neib)
 !
       call allocate_type_export_item(added_comm)
+      call alloc_node_buffer_2_extend                                   &
+     &   (added_comm%ntot_export, send_nbuf)
       allocate(inod_send_added(added_comm%ntot_export))
       allocate(xx_send_added(added_comm%ntot_export,3))
       allocate(irank_send_added(added_comm%ntot_export))
@@ -171,12 +334,11 @@
       added_comm%ntot_import                                            &
      &      = added_comm%istack_import(added_comm%num_neib)
 !
-!      write(*,*) 'istack_send_added', my_rank, added_comm%istack_export
-!      write(*,*) 'ntot_send_added', my_rank, added_comm%ntot_export
-!      write(*,*) 'istack_recv_added', my_rank, added_comm%istack_import
-!      write(*,*) 'ntot_recv_added', my_rank, added_comm%ntot_import
+!      call check_num_of_added_table(my_rank, added_comm)
 !
       call allocate_type_import_item(added_comm)
+      call alloc_node_buffer_2_extend                                   &
+     &   (added_comm%ntot_import, recv_nbuf)
       allocate(inod_recv_added(added_comm%ntot_import))
       allocate(irank_recv_added(added_comm%ntot_import))
       allocate(inod_gl_recv_added(added_comm%ntot_import))
@@ -253,30 +415,8 @@
         end do
       end do
 !
-!
-!      do i = 1, nod_comm%num_neib
-!        ist = nod_comm%istack_import(i-1) + 1
-!        ied = nod_comm%istack_import(i)
-!        write(120+my_rank,*) 'import', nod_comm%id_neib(i), ist, ied
-!
-!        do inum = ist, ied
-!          inod = nod_comm%item_import(inum)
-!          write(120+my_rank,*) inum, inod,        &
-!     &        dbl_id1%irank_home(inod), dbl_id1%inod_local(inod), '  '
-!        end do
-!      end do
-!      do i = 1, nod_comm%num_neib
-!        ist = added_comm%istack_import(i-1) + 1
-!        ied = added_comm%istack_import(i)
-!        write(120+my_rank,*) 'added_comm%istack_import',   &
-!     &                        nod_comm%id_neib(i), ist, ied
-!
-!        do inum = ist, ied
-!          write(120+my_rank,*) inum, irank_recv_added(inum),   &
-!     &           inod_recv_added(inum), added_comm%item_import(inum) 
-!        end do
-!      end do
-!
+!      call check_added_impoert_items                                   &
+!     &   (my_rank, nod_comm, added_comm, dbl_id1)
 !
       call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
      &    added_comm%istack_import, added_comm%ntot_import, added_comm%item_import,              &
@@ -291,6 +431,7 @@
 !     &    my_rank, inum, irank_send_added(inum), inod_send_added(inum)
 !      end do
 !
+      call dealloc_node_buffer_2_extend(send_nbuf)
 !
       new_node%internal_node = org_node%internal_node
       new_node%numnod = org_node%numnod
@@ -394,6 +535,8 @@
           end if
         end do
       end do
+!
+      call dealloc_node_buffer_2_extend(recv_nbuf)
 !
       call SOLVER_SEND_RECV_num_type                                    &
      &   (new_comm, new_comm%num_import, new_comm%num_export)
@@ -517,7 +660,6 @@
      &         (nod_comm, ele_comm, org_node, ele, neib_ele,            &
      &          new_comm, new_node, new_ele)
 !
-      use t_geometry_data
       use t_next_node_ele_4_node
       use m_merged_ucd_data
       use solver_SR_type
@@ -543,6 +685,8 @@
       type(parallel_double_numbering) :: dbl_ele
 !
       type(communication_table) :: added_comm
+      type(ele_buffer_2_extend) :: send_ebuf
+      type(ele_buffer_2_extend) :: recv_ebuf
 !
       integer(kind = kint), allocatable :: iele_lc_added(:)
       integer(kind = kint), allocatable :: iele_send_added(:)
@@ -550,12 +694,6 @@
       integer(kind = kint_gl), allocatable :: iele_gl_send_added(:)
       integer(kind = kint), allocatable :: ie_send_added(:,:)
       integer(kind = kint), allocatable :: ip_send_added(:,:)
-!
-      integer(kind = kint), allocatable :: iele_recv_added(:)
-      integer(kind = kint), allocatable :: irank_recv_added(:)
-      integer(kind = kint_gl), allocatable :: iele_gl_recv_added(:)
-      integer(kind = kint), allocatable :: ie_recv_added(:,:)
-      integer(kind = kint), allocatable :: ip_recv_added(:,:)
 !
       integer(kind = kint), allocatable :: iflag_node(:)
       integer(kind = kint), allocatable :: iflag_ele(:)
@@ -616,6 +754,8 @@
 !      write(*,*) 'istack_send_added ele', added_comm%istack_export
 !
       call allocate_type_export_item(added_comm)
+      call alloc_ele_buffer_2_extend                                    &
+     &   (added_comm%ntot_export, ele, send_ebuf)
       allocate(iele_lc_added(added_comm%ntot_export))
       allocate(iele_send_added(added_comm%ntot_export))
       allocate(ie_send_added(added_comm%ntot_export,ele%nnod_4_ele))
@@ -684,47 +824,31 @@
       added_comm%ntot_import                                            &
      &      = added_comm%istack_import(added_comm%num_neib)
 !
-!      write(*,*) 'istack_send_added', my_rank, added_comm%istack_export
-!      write(*,*) 'ntot_send_added', my_rank, added_comm%ntot_export
-!      write(*,*) 'istack_recv_added', my_rank, added_comm%istack_import
-!      write(*,*) 'ntot_recv_added', my_rank, added_comm%ntot_import
+!      call check_num_of_added_table(my_rank, added_comm)
 !
       call allocate_type_import_item(added_comm)
-      allocate(iele_recv_added(added_comm%ntot_import))
-      allocate(irank_recv_added(added_comm%ntot_import))
-      allocate(iele_gl_recv_added(added_comm%ntot_import))
-      allocate(ie_recv_added(added_comm%ntot_import,ele%nnod_4_ele))
-      allocate(ip_recv_added(added_comm%ntot_import,ele%nnod_4_ele))
-!
-!$omp parallel workshare
-      iele_recv_added(1:added_comm%ntot_import) =     0
-      irank_recv_added(1:added_comm%ntot_import) =    0
-      iele_gl_recv_added(1:added_comm%ntot_import) =  0
-!$omp end parallel workshare
-!$omp parallel workshare
-      ie_recv_added(1:added_comm%ntot_import,1:ele%nnod_4_ele) =    0
-      ip_recv_added(1:added_comm%ntot_import,1:ele%nnod_4_ele) =    0
-!$omp end parallel workshare
+      call alloc_ele_buffer_2_extend                                    &
+     &   (added_comm%ntot_import, ele, recv_ebuf)
 !
       call added_global_id_send_recv                                    &
      &   (added_comm%num_neib, added_comm%id_neib,                          &
      &    added_comm%istack_export, added_comm%ntot_export, iele_gl_send_added,       &
-     &    added_comm%istack_import, added_comm%ntot_import, iele_gl_recv_added)
+     &    added_comm%istack_import, added_comm%ntot_import, recv_ebuf%iele_gl_add)
       call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
      &    added_comm%istack_export, added_comm%ntot_export, iele_send_added,          &
-     &    added_comm%istack_import, added_comm%ntot_import, iele_recv_added)
+     &    added_comm%istack_import, added_comm%ntot_import, recv_ebuf%iele_add)
       call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
      &    added_comm%istack_export, added_comm%ntot_export, irank_send_added,         &
-     &    added_comm%istack_import, added_comm%ntot_import, irank_recv_added)
+     &    added_comm%istack_import, added_comm%ntot_import, recv_ebuf%irank_add)
       do k1 = 1, ele%nnod_4_ele
         call added_nod_id_send_recv                                     &
      &     (added_comm%num_neib, added_comm%id_neib,                        &
      &      added_comm%istack_export, added_comm%ntot_export, ie_send_added(1,k1),    &
-     &      added_comm%istack_import, added_comm%ntot_import, ie_recv_added(1,k1))
+     &      added_comm%istack_import, added_comm%ntot_import, recv_ebuf%ie_added(1,k1))
         call added_nod_id_send_recv                                     &
      &     (added_comm%num_neib, added_comm%id_neib,                        &
      &      added_comm%istack_export, added_comm%ntot_export, ip_send_added(1,k1),    &
-     &      added_comm%istack_import, added_comm%ntot_import, ip_recv_added(1,k1))
+     &      added_comm%istack_import, added_comm%ntot_import,  recv_ebuf%ip_added(1,k1))
       end do
 !
 !      do i = 1, added_comm%num_neib
@@ -735,12 +859,14 @@
 !        do inum = ist, ied
 !          if(irank_send_added(inum) .eq. added_comm%id_neib(i)) then
 !              write(50+my_rank,*) inum,                            &
-!     &         ie_recv_added(inum,1:ele%nnod_4_ele)
+!     &          recv_ebuf%ie_added(inum,1:ele%nnod_4_ele)
 !              write(50+my_rank,*) inum,                            &
-!     &         ip_recv_added(inum,1:ele%nnod_4_ele)
+!     &          recv_ebuf%ip_added(inum,1:ele%nnod_4_ele)
 !          end if
 !        end do
 !      end do
+!
+      call dealloc_ele_buffer_2_extend(send_ebuf)
 !
       allocate(istack_ele_ip(0:nprocs))
       allocate(iele_by_ip(ele%numele))
@@ -762,12 +888,12 @@
         ist = added_comm%istack_import(i-1) + 1
         ied = added_comm%istack_import(i)
         do iele = ist, ied
-          ip = irank_recv_added(iele) + 1
+          ip = recv_ebuf%irank_add(iele) + 1
           jst = istack_ele_ip(ip-1) + 1
           jed = istack_ele_ip(ip)
           do jnum = jst, jed
             jele = iele_by_ip(jnum)
-            if(iele_recv_added(iele) .eq. dbl_ele%inod_local(jele))     &
+            if(recv_ebuf%iele_add(iele) .eq. dbl_ele%inod_local(jele))  &
      &       then
               added_comm%item_import(iele) = 1
               exit
@@ -785,8 +911,10 @@
 !
           do jele = 1, added_comm%ntot_import
             if(iele .eq. jele) cycle
-            if(irank_recv_added(jele) .eq. irank_recv_added(iele)       &
-     &       .and. iele_recv_added(jele) .eq. iele_recv_added(iele)     &
+            if(recv_ebuf%irank_add(jele)                                &
+     &           .eq. recv_ebuf%irank_add(iele)                         &
+     &       .and. recv_ebuf%iele_add(jele)                             &
+     &           .eq. recv_ebuf%iele_add(iele)                          &
      &       .and. added_comm%item_import(jele) .eq. 0) then
               added_comm%item_import(iele) = 1
               exit
@@ -836,11 +964,12 @@
           if(added_comm%item_import(inum) .gt. 0)  cycle
 !
           icou = icou + 1
-          new_ele%iele_global(icou) = iele_gl_recv_added(inum)
+          new_ele%iele_global(icou) = recv_ebuf%iele_gl_add(inum)
           do k1 = 1, ele%nnod_4_ele
             do jnod = new_node%numnod, 1, -1
-              if(ip_recv_added(inum,k1) .eq. dbl_id2%irank_home(jnod)   &
-     &          .and. ie_recv_added(inum,k1)                            &
+              if(recv_ebuf%ip_added(inum,k1)                            &
+     &              .eq. dbl_id2%irank_home(jnod)                       &
+     &          .and. recv_ebuf%ie_added(inum,k1)                       &
      &              .eq. dbl_id2%inod_local(jnod)) then
                 new_ele%ie(icou,k1) = jnod
                 exit
@@ -850,6 +979,7 @@
         end do
       end do
 !
+      call dealloc_ele_buffer_2_extend(recv_ebuf)
       call deallocate_type_comm_tbl(added_comm)
 !
 !      write(50+my_rank,*) 'new_ele%iele', new_ele%numele
