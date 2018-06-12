@@ -11,9 +11,10 @@
 !!     &         istack_import, item_import, istack_export, item_export,&
 !!     &         numnod, ntot_next, istack_next, inod_next, iflag_node)
 !!      subroutine mark_used_ele_of_export(id_neib, num_neib,           &
-!!     &         istack_import, item_import, istack_export, item_export,&
-!!     &         numnod, ntot_ele, istack_4_node, iele_4_node,          &
-!!     &         numele, nnod_4_ele, ie, iflag_node, iflag_ele)
+!!     &          istack_export_new, item_export_new,                   &
+!!     &          istack_export, item_export,                           &
+!!     &          numnod, ntot_ele, istack_4_node, iele_4_node,         &
+!!     &          numele, nnod_4_ele, ie, iflag_node, iflag_ele)
 !!@endverbatim
 !
       module mark_export_nod_ele_extend
@@ -85,9 +86,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mark_used_ele_of_export(id_neib, num_neib,             &
-     &         istack_export_new, item_export_new, istack_export, item_export,  &
-     &         numnod, ntot_ele, istack_4_node, iele_4_node,            &
-     &         numele, nnod_4_ele, ie, iflag_node, iflag_ele)
+     &          istack_export_new, item_export_new,                     &
+     &          istack_export, item_export,                             &
+     &          numnod, ntot_ele, istack_4_node, iele_4_node,           &
+     &          numele, nnod_4_ele, ie, iflag_node, iflag_ele)
 !
       integer(kind = kint), intent(in) :: id_neib, num_neib
       integer(kind = kint), intent(in) :: istack_export_new(0:num_neib)
@@ -162,6 +164,87 @@
 !$omp end parallel do
 !
       end subroutine mark_used_ele_of_export
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine mark_added_import_to_delete                            &
+     &         (numnod, inod_local, irank_home, num_neib, id_neib,      &
+     &          ntot_import, istack_import, item_import, num_neib_add,  &
+     &          id_neib_add, ntot_import_add, istack_import_add,        &
+     &          inod_recv_add, irank_recv_add, iflag_recv_2_del)
+!
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: inod_local(numnod)
+      integer(kind = kint), intent(in) :: irank_home(numnod)
+!
+      integer(kind = kint), intent(in) :: num_neib, ntot_import
+      integer(kind = kint), intent(in) :: id_neib(num_neib)
+      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
+      integer(kind = kint), intent(in) :: item_import(ntot_import)
+!
+      integer(kind = kint), intent(in) :: num_neib_add, ntot_import_add
+      integer(kind = kint), intent(in) :: id_neib_add(num_neib_add)
+      integer(kind = kint), intent(in)                                  &
+     &            :: istack_import_add(0:num_neib_add)
+!
+      integer(kind = kint), intent(in)                                  &
+     &            :: inod_recv_add(ntot_import_add)
+      integer(kind = kint), intent(in)                                  &
+     &            :: irank_recv_add(ntot_import_add)
+!
+      integer(kind = kint), intent(inout)                               &
+     &            :: iflag_recv_2_del(ntot_import_add)
+!
+      integer(kind = kint) :: i, ist, ied, inum
+      integer(kind = kint) :: j, jst, jed, jnum, jnod
+!
+!
+      do i = 1, num_neib_add
+        ist = istack_import_add(i-1) + 1
+        ied = istack_import_add(i)
+!
+        do inum = ist, ied
+          if(iflag_recv_2_del(inum) .lt. 0) cycle
+          if(irank_recv_add(inum) .eq. id_neib_add(i)) cycle
+!
+          do j = 1, num_neib_add
+            if(i .eq. j) cycle
+!
+            jst = istack_import_add(j-1) + 1
+            jed = istack_import_add(j)
+            do jnum = jst, jed
+              if(   irank_recv_add(jnum) .eq. irank_recv_add(inum)      &
+     &         .and. inod_recv_add(jnum) .eq. inod_recv_add(inum)       &
+     &         .and. iflag_recv_2_del(jnum) .eq. 0) then
+                iflag_recv_2_del(inum) = -1
+                exit
+              end if
+            end do
+            if(iflag_recv_2_del(inum) .lt. 0) exit
+          end do
+        end do
+      end do
+!
+      do i = 1, num_neib
+        ist = istack_import_add(i-1) + 1
+        ied = istack_import_add(i)
+!
+        do inum = ist, ied
+          if(iflag_recv_2_del(inum) .lt. 0) cycle
+          if(irank_recv_add(inum) .eq. id_neib(i)) cycle
+!
+          do jnum = 1, istack_import(num_neib)
+            jnod = item_import(jnum)
+            if(    irank_home(jnod) .eq. irank_recv_add(inum)           &
+     &       .and. inod_local(jnod) .eq. inod_recv_add(inum)) then
+              iflag_recv_2_del(inum) = -1
+              exit
+            end if
+          end do
+        end do
+      end do
+!
+      end subroutine mark_added_import_to_delete
 !
 !  ---------------------------------------------------------------------
 !
