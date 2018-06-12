@@ -395,7 +395,7 @@
           iflag_comm = 1
           exit
         end if
-        if(i_iter .gt. 200) then
+        if(i_iter .gt. 100) then
           write(*,*) 'iteration too large in 1: ', i_iter
           !write(*,*) 'total length: ', len_sum, 'kernel', k_value, 'step', step_len
           return
@@ -409,7 +409,7 @@
         end if
         if(iflag_debug .eq. 1) write(50 + my_rank, *) "----dis is short for", i_iter, "iteration"
         do
-          if(i_iter .gt. 200) then
+          if(i_iter .gt. 100) then
             write(*,*) 'iteration too large in 2: ', i_iter
             !write(*,*) 'total length: ', len_sum, 'kernel', k_value, 'step', step_len
             return

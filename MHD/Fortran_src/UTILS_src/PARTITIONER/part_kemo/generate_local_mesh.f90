@@ -19,7 +19,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine PROC_LOCAL_MESH(node_org, ele_org, edge_org,           &
+      subroutine PROC_LOCAL_MESH(node_org, ele_org, edge_org,       &
+     &          surf_org, field_org,                                &
      &          group_org, included_ele)
 !
       use t_mesh_data
@@ -37,12 +38,15 @@
       use check_domain_prop_4_part
       use generate_comm_tables
       use local_mesh_by_part
+      use intelligent_partition
 !
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org
       type(mesh_groups), intent(in) :: group_org
       type(edge_data), intent(in) :: edge_org
       type(near_mesh), intent(inout) :: included_ele
+      type(surface_data), intent(in) :: surf_org
+      type(vector_field), intent(in) :: field_org
 !
       character(len=kchara), parameter :: work_file_header = 'work'
 !C
@@ -53,8 +57,8 @@
 !
       call CRE_LOCAL_DATA(num_domain, node_org%numnod,                  &
      &    ele_org, included_ele)
-      call increase_overlapping(num_domain, node_org%numnod, ele_org,   &
-     &    n_overlap, i_sleeve_ele, included_ele)
+      call increase_overlapping(num_domain, node_org, ele_org,          &
+     &    surf_org, field_org, included_ele)
 !
 !C
 !C-- INTERFACE info.

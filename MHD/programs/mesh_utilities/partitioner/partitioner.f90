@@ -192,8 +192,9 @@
 !C-- create subdomain mesh
 !      write(*,*) 'PROC_LOCAL_MESH'
       call PROC_LOCAL_MESH                                              &
-     &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge, org_group,    &
-     &    included_ele)
+     &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge,               &
+     &    org_ele_mesh%surf, data_field_vec,                            &
+     &    org_group, included_ele)
 !C
 !C-- Finalize
 !      write(*,*) 'dealloc_nod_ele_infos'
