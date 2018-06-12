@@ -196,8 +196,8 @@
      &                        nod_comm%id_neib(i), ist, ied
 !
 !        do inum = ist, ied
-!          write(120+my_rank,*) inum, irank_recv_added(inum),           &
-!     &           inod_recv_added(inum), added_comm%item_import(inum)
+!          write(120+my_rank,*) inum, recv_nbuf%irank_add(inum),        &
+!     &         recv_nbuf%inod_add(inum), added_comm%item_import(inum)
 !        end do
       end do
 !
@@ -236,11 +236,6 @@
       integer(kind = kint), allocatable :: irank_send_added(:)
       integer(kind = kint_gl), allocatable :: inod_gl_send_added(:)
       real(kind = kreal), allocatable :: xx_send_added(:,:)
-!
-      integer(kind = kint), allocatable :: inod_recv_added(:)
-      integer(kind = kint), allocatable :: irank_recv_added(:)
-      integer(kind = kint_gl), allocatable :: inod_gl_recv_added(:)
-      real(kind = kreal), allocatable :: xx_recv_added(:,:)
 !
       integer(kind = kint), allocatable :: iflag_recv(:)
       integer(kind = kint), allocatable :: iflag_send(:)
@@ -339,34 +334,21 @@
       call allocate_type_import_item(added_comm)
       call alloc_node_buffer_2_extend                                   &
      &   (added_comm%ntot_import, recv_nbuf)
-      allocate(inod_recv_added(added_comm%ntot_import))
-      allocate(irank_recv_added(added_comm%ntot_import))
-      allocate(inod_gl_recv_added(added_comm%ntot_import))
-      allocate(xx_recv_added(added_comm%ntot_import,3))
-!
-!$omp parallel workshare
-      xx_recv_added(1:added_comm%ntot_import,1) = 0.0d0
-      xx_recv_added(1:added_comm%ntot_import,2) = 0.0d0
-      xx_recv_added(1:added_comm%ntot_import,3) = 0.0d0
-      inod_recv_added(1:added_comm%ntot_import) =     0
-      irank_recv_added(1:added_comm%ntot_import) =    0
-      inod_gl_recv_added(1:added_comm%ntot_import) =  0
-!$omp end parallel workshare
 !
       call added_geometry_send_recv                                     &
      &   (added_comm%num_neib, added_comm%id_neib,                          &
      &    added_comm%istack_export, added_comm%ntot_export, xx_send_added,            &
-     &    added_comm%istack_import, added_comm%ntot_import, xx_recv_added)
+     &    added_comm%istack_import, added_comm%ntot_import, recv_nbuf%xx_add)
       call added_global_id_send_recv                                    &
      &   (added_comm%num_neib, added_comm%id_neib,                          &
      &    added_comm%istack_export, added_comm%ntot_export, inod_gl_send_added,       &
-     &    added_comm%istack_import, added_comm%ntot_import, inod_gl_recv_added)
+     &    added_comm%istack_import, added_comm%ntot_import, recv_nbuf%inod_gl_add)
       call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
      &    added_comm%istack_export, added_comm%ntot_export, inod_send_added,          &
-     &    added_comm%istack_import, added_comm%ntot_import, inod_recv_added)
+     &    added_comm%istack_import, added_comm%ntot_import, recv_nbuf%inod_add)
       call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
      &    added_comm%istack_export, added_comm%ntot_export, irank_send_added,         &
-     &    added_comm%istack_import, added_comm%ntot_import, irank_recv_added)
+     &    added_comm%istack_import, added_comm%ntot_import, recv_nbuf%irank_add)
 !
 !
       do i = 1, added_comm%num_neib
@@ -375,7 +357,8 @@
 !
         do inum = ist, ied
           if(added_comm%item_import(inum) .lt. 0) cycle
-          if(irank_recv_added(inum) .eq. added_comm%id_neib(i)) cycle
+          if(recv_nbuf%irank_add(inum) .eq. added_comm%id_neib(i))      &
+     &      cycle
 !
           do j = 1, added_comm%num_neib
             if(i .eq. j) cycle
@@ -383,9 +366,10 @@
             jst = added_comm%istack_import(j-1) + 1
             jed = added_comm%istack_import(j)
             do jnum = jst, jed
-              if(irank_recv_added(jnum) .eq. irank_recv_added(inum)     &
-     &         .and. inod_recv_added(jnum).eq.inod_recv_added(inum)     &
-     &         .and. added_comm%item_import(jnum).eq.0) then
+              if(recv_nbuf%irank_add(jnum).eq.recv_nbuf%irank_add(inum) &
+     &         .and. recv_nbuf%inod_add(jnum)                           &
+     &                   .eq.recv_nbuf%inod_add(inum)                   &
+     &         .and. added_comm%item_import(jnum) .eq. 0) then
                 added_comm%item_import(inum) = -1
                 exit
               end if
@@ -401,13 +385,13 @@
 !
         do inum = ist, ied
           if(added_comm%item_import(inum) .lt. 0) cycle
-          if(irank_recv_added(inum) .eq. nod_comm%id_neib(i)) cycle
+          if(recv_nbuf%irank_add(inum) .eq. nod_comm%id_neib(i)) cycle
 !
           do jnum = 1, nod_comm%istack_import(nod_comm%num_neib)
             jnod = nod_comm%item_import(jnum)
-            if(dbl_id1%irank_home(jnod) .eq. irank_recv_added(inum)     &
-     &       .and. dbl_id1%inod_local(jnod).eq.inod_recv_added(inum)    &
-     &       ) then
+            if(dbl_id1%irank_home(jnod) .eq. recv_nbuf%irank_add(inum)  &
+     &       .and. dbl_id1%inod_local(jnod)                             &
+     &               .eq.recv_nbuf%inod_add(inum)) then
               added_comm%item_import(inum) = -1
               exit
             end if
@@ -424,7 +408,7 @@
 !
 !      do inum = 1, added_comm%ntot_import
 !        if(added_comm%item_import(inum) .lt. 0) write(*,*) 'recv delete', my_rank,&
-!     &      inum, irank_recv_added(inum), inod_recv_added(inum)
+!     &      inum, recv_nbuf%irank_add(inum), recv_nbuf%inod_add(inum)
 !      end do
 !      do inum = 1, added_comm%ntot_export
 !        if(added_comm%item_export(inum) .lt. 0) write(*,*) 'send delete',    &
@@ -460,12 +444,12 @@
         if(added_comm%item_import(inum) .eq. 0) then
           icou = icou + 1
           added_comm%item_import(inum) = icou
-          new_node%inod_global(icou) = inod_gl_recv_added(inum)
-          new_node%xx(icou,1) = xx_recv_added(inum,1)
-          new_node%xx(icou,2) = xx_recv_added(inum,2)
-          new_node%xx(icou,3) = xx_recv_added(inum,3)
-          dbl_id2%inod_local(icou) = inod_recv_added(inum)
-          dbl_id2%irank_home(icou) = irank_recv_added(inum)
+          new_node%inod_global(icou) = recv_nbuf%inod_gl_add(inum)
+          new_node%xx(icou,1) = recv_nbuf%xx_add(inum,1)
+          new_node%xx(icou,2) = recv_nbuf%xx_add(inum,2)
+          new_node%xx(icou,3) = recv_nbuf%xx_add(inum,3)
+          dbl_id2%inod_local(icou) = recv_nbuf%inod_add(inum)
+          dbl_id2%irank_home(icou) = recv_nbuf%irank_add(inum)
         end if
       end do
 !
@@ -482,7 +466,7 @@
       iflag_send(0:nprocs-1) = 0
 !
       do inum = 1, added_comm%ntot_import
-        ip = irank_recv_added(inum)
+        ip = recv_nbuf%irank_add(inum)
         iflag_recv(ip) = 1
       end do
 !
@@ -529,14 +513,12 @@
       do i = 1, new_comm%num_neib
         ip = new_comm%id_neib(i)
         do inum = 1, added_comm%ntot_import
-          if(irank_recv_added(inum).eq.ip                               &
+          if(recv_nbuf%irank_add(inum).eq.ip                            &
      &         .and. added_comm%item_import(inum).gt. 0) then
             new_comm%num_import(i) = new_comm%num_import(i) + 1
           end if
         end do
       end do
-!
-      call dealloc_node_buffer_2_extend(recv_nbuf)
 !
       call SOLVER_SEND_RECV_num_type                                    &
      &   (new_comm, new_comm%num_import, new_comm%num_export)
@@ -575,7 +557,7 @@
         icou = new_comm%istack_import(i-1)                              &
      &        + nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
         do inum = 1, added_comm%ntot_import
-          if(irank_recv_added(inum).eq.ip                               &
+          if(recv_nbuf%irank_add(inum).eq.ip                            &
      &         .and. added_comm%item_import(inum).gt.0) then
             icou = icou + 1
             new_comm%item_import(icou) = added_comm%item_import(inum)
@@ -583,6 +565,7 @@
         end do
       end do
 !
+      call dealloc_node_buffer_2_extend(recv_nbuf)
       call deallocate_type_comm_tbl(added_comm)
 !
       allocate(inod_import_new(new_comm%ntot_import))
