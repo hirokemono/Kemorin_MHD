@@ -35,6 +35,7 @@
         integer(kind = kint) :: nnod_4_ele
         integer(kind = kint), allocatable :: iele_add(:)
         integer(kind = kint), allocatable :: irank_add(:)
+        integer(kind = kint), allocatable :: iele_lc(:)
         integer(kind = kint_gl), allocatable :: iele_gl_add(:)
         integer(kind = kint), allocatable :: ie_added(:,:)
         integer(kind = kint), allocatable :: ip_added(:,:)
@@ -104,6 +105,7 @@
       allocate(ele_buf%iele_add(ele_buf%ntot))
       allocate(ele_buf%irank_add(ele_buf%ntot))
       allocate(ele_buf%iele_gl_add(ele_buf%ntot))
+      allocate(ele_buf%iele_lc(ele_buf%ntot))
       allocate(ele_buf%ie_added(ele_buf%ntot,ele_buf%nnod_4_ele))
       allocate(ele_buf%ip_added(ele_buf%ntot,ele_buf%nnod_4_ele))
 !
@@ -112,6 +114,7 @@
       ele_buf%iele_add(1:ele_buf%ntot) =     0
       ele_buf%irank_add(1:ele_buf%ntot) =    0
       ele_buf%iele_gl_add(1:ele_buf%ntot) =  0
+      ele_buf%iele_lc(1:ele_buf%ntot) =      0
 !$omp end parallel workshare
 !$omp parallel workshare
       ele_buf%ie_added(1:ele_buf%ntot,1:ele_buf%nnod_4_ele) = 0
@@ -145,6 +148,7 @@
       deallocate(ele_buf%iele_add)
       deallocate(ele_buf%irank_add)
       deallocate(ele_buf%iele_gl_add)
+      deallocate(ele_buf%iele_lc)
       deallocate(ele_buf%ie_added)
       deallocate(ele_buf%ip_added)
 !
@@ -232,14 +236,12 @@
 !  ---------------------------------------------------------------------
 
       subroutine check_ie_send_added                                    &
-     &         (my_rank, added_comm, ele, send_ebuf, iele_lc_added)
+     &         (my_rank, added_comm, ele, send_ebuf)
 !
       integer(kind = kint), intent(in) :: my_rank
       type(communication_table), intent(in) ::  added_comm
       type(element_data), intent(in) :: ele
       type(ele_buffer_2_extend), intent(in) :: send_ebuf
-      integer(kind = kint), intent(in)                                  &
-     &                     :: iele_lc_added(added_comm%ntot_export)
 !!
       integer(kind = kint) :: inum, i, ist, ied
 !
@@ -251,7 +253,7 @@
      &                      i, added_comm%id_neib(i), ist, ied
         do inum = ist, ied
           if(send_ebuf%irank_add(inum) .eq. added_comm%id_neib(i)) then
-              write(50+my_rank,*) inum, iele_lc_added(inum),            &
+              write(50+my_rank,*) inum, send_ebuf%iele_lc(inum),        &
      &         send_ebuf%ie_added(inum,1:ele%nnod_4_ele)
               write(50+my_rank,*) inum, send_ebuf%irank_add(inum),      &
      &         send_ebuf%ip_added(inum,1:ele%nnod_4_ele)
@@ -334,8 +336,8 @@
       integer(kind = kint), allocatable :: inod_lc_check(:)
       integer(kind = kint), allocatable :: irank_lc_check(:)
 !
-      integer(kind = kint) :: inum, inod, i, ist, ied, icou, ip, num
-      integer(kind = kint) :: jnum, jnod, j, jst, jed
+      integer(kind = kint) :: inum, inod, i, ist, ied, icou, ip
+      integer(kind = kint) :: j, nerror
 !
 !
       call alloc_double_numbering(org_node%numnod, dbl_id1)
@@ -376,18 +378,8 @@
      &      org_node%numnod, neib_nod%ntot, neib_nod%istack_next,       &
      &      neib_nod%inod_next, iflag_node)
 !
-        icou = added_comm%istack_export(i-1)
-        do inod = 1, org_node%numnod
-          if(iflag_node(inod) .gt. 0) then
-            icou = icou + 1
-            send_nbuf%inod_add(icou) =    dbl_id1%inod_local(inod)
-            send_nbuf%irank_add(icou) =   dbl_id1%irank_home(inod)
-            send_nbuf%inod_gl_add(icou) = org_node%inod_global(inod)
-            send_nbuf%xx_add(icou,1) =    org_node%xx(inod,1)
-            send_nbuf%xx_add(icou,2) =    org_node%xx(inod,2)
-            send_nbuf%xx_add(icou,3) =    org_node%xx(inod,3)
-          end if
-        end do
+        call copy_node_to_extend_buffer(added_comm%istack_export(i-1),  &
+     &     org_node, dbl_id1, iflag_node, send_nbuf)
       end do
 !
 !
@@ -539,16 +531,21 @@
       call SOLVER_SEND_RECV_int_type                                    &
      &   (new_node%numnod, new_comm, irank_lc_check)
 !
-!      write(50+my_rank,*) 'error list'
-!      do inod = new_node%internal_node+1, new_node%numnod
-!        if(dbl_id2%irank_home(inod) .ne. irank_lc_check(inod)          &
-!     &    .and. dbl_id2%inod_local(inod) .ne. inod_lc_check(inod)) then
-!          write(50+my_rank,*) inod, my_rank,                           &
-!     &     dbl_id2%irank_home(inod), irank_lc_check(inod),             &
-!     &     dbl_id2%inod_local(inod), inod_lc_check(inod)
-!        end if
-!      end do
-!      close(50+my_rank)
+      icou = 0
+      do inod = new_node%internal_node+1, new_node%numnod
+        if(dbl_id2%irank_home(inod) .ne. irank_lc_check(inod)           &
+     &    .and. dbl_id2%inod_local(inod) .ne. inod_lc_check(inod)) then
+          if(icou .eq. 0) write(50+my_rank,*) 'error list'
+          write(50+my_rank,*) inod, my_rank,                            &
+     &     dbl_id2%irank_home(inod), irank_lc_check(inod),              &
+     &     dbl_id2%inod_local(inod), inod_lc_check(inod)
+          icou = icou + 1
+        end if
+      end do
+      call MPI_ALLREDUCE(icou, nerror, ione, CALYPSO_INTEGER, MPI_SUM, &
+     &    CALYPSO_COMM,ierr_MPI)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &      'Number of wrong communication items:', nerror
       call calypso_mpi_barrier
 !
 !      write(*,*) 'num_neib', my_rank,                                  &
@@ -591,13 +588,10 @@
       type(ele_buffer_2_extend) :: send_ebuf
       type(ele_buffer_2_extend) :: recv_ebuf
 !
-      integer(kind = kint), allocatable :: iele_lc_added(:)
-!
       integer(kind = kint), allocatable :: iflag_node(:)
       integer(kind = kint), allocatable :: iflag_ele(:)
 !
       integer(kind = kint) :: inum, inod, i, ist, ied, icou
-      integer(kind = kint) :: jnum, jnod, jst, jed, jele
 !
       integer(kind = kint) :: iele, k1, ip
 !
@@ -632,22 +626,17 @@
           added_comm%num_export(i) = added_comm%num_export(i)           &
      &                              + iflag_ele(inod)
         end do
-        added_comm%istack_export(i) = added_comm%istack_export(i-1)     &
-     &                          + added_comm%num_export(i)
       end do
-      added_comm%ntot_export                                            &
-     &      = added_comm%istack_export(added_comm%num_neib)
+!
+      call s_cal_total_and_stacks                                       &
+     &   (added_comm%num_neib, added_comm%num_export, izero,            &
+     &    added_comm%istack_export, added_comm%ntot_export)
 !
 !      write(*,*) 'istack_send_added ele', added_comm%istack_export
 !
       call allocate_type_export_item(added_comm)
       call alloc_ele_buffer_2_extend                                    &
      &   (added_comm%ntot_export, ele, send_ebuf)
-      allocate(iele_lc_added(added_comm%ntot_export))
-!
-!$omp parallel workshare
-      iele_lc_added(1:added_comm%ntot_export) =       0
-!$omp end parallel workshare
 !
       do i = 1, nod_comm%num_neib
         call mark_used_ele_of_export(i, nod_comm%num_neib,              &
@@ -657,25 +646,12 @@
      &      neib_ele%iele_4_node, ele%numele, ele%nnod_4_ele, ele%ie,   &
      &      iflag_node, iflag_ele)
 !
-        icou = added_comm%istack_export(i-1)
-        do iele = 1, ele%numele
-          if(iflag_ele(iele) .gt. 0) then
-            icou = icou + 1
-            iele_lc_added(icou) = iele
-            send_ebuf%iele_add(icou) =    dbl_ele%inod_local(iele)
-            send_ebuf%irank_add(icou) =   dbl_ele%irank_home(iele)
-            send_ebuf%iele_gl_add(icou) = ele%iele_global(iele)
-            do k1 = 1, ele%nnod_4_ele
-              inod = ele%ie(iele,k1)
-              send_ebuf%ie_added(icou,k1) = dbl_id1%inod_local(inod)
-              send_ebuf%ip_added(icou,k1) = dbl_id1%irank_home(inod)
-            end do
-          end if
-        end do
+        call copy_ele_to_extend_buffer(added_comm%istack_export(i-1),   &
+     &      ele, dbl_ele, dbl_id1, iflag_ele, send_ebuf)
       end do
 !
-      call check_ie_send_added                                          &
-     &   (my_rank, added_comm, ele, send_ebuf, iele_lc_added)
+!      call check_ie_send_added                                         &
+!     &   (my_rank, added_comm, ele, send_ebuf)
 !
       call SOLVER_SEND_RECV_num_type                                    &
      &   (added_comm, added_comm%num_export, added_comm%num_import)
@@ -727,57 +703,12 @@
      &    added_comm%istack_import, added_comm%ntot_import, added_comm%item_import,  &
      &    added_comm%istack_export, added_comm%ntot_export, added_comm%item_export)
 !
-      new_ele%numele =     ele%numele
-      new_ele%nnod_4_ele = ele%nnod_4_ele
-      new_ele%internal_ele = ele%internal_ele
-      do inum = 1, added_comm%ntot_import
-        if(added_comm%item_import(inum) .eq. 0) then
-          new_ele%numele = new_ele%numele + 1
-        end if
-      end do
+      call count_ele_by_extend_sleeve(added_comm, ele, new_ele)
 !
       call allocate_ele_connect_type(new_ele)
 !
-!$omp parallel workshare
-      new_ele%elmtyp(1:ele%numele) = ele%elmtyp(1:ele%numele)
-      new_ele%nodelm(1:ele%numele) = ele%nodelm(1:ele%numele)
-      new_ele%iele_global(1:ele%numele) = ele%iele_global(1:ele%numele)
-!$omp end parallel workshare
-!$omp parallel workshare
-      new_ele%elmtyp(ele%numele+1:new_ele%numele) = ele%elmtyp(1)
-      new_ele%nodelm(ele%numele+1:new_ele%numele) = ele%nodelm(1)
-!$omp end parallel workshare
-!
-!$omp parallel
-      do k1 = 1, ele%nnod_4_ele
-!$omp workshare
-        new_ele%ie(1:ele%numele,k1) = ele%ie(1:ele%numele,k1)
-!$omp end workshare nowait
-      end do
-!$omp end parallel
-!
-      icou = ele%numele
-      do i = 1, added_comm%num_neib
-        ist = added_comm%istack_import(i-1) + 1
-        ied = added_comm%istack_import(i)
-        do inum = ist, ied
-          if(added_comm%item_import(inum) .lt. 0)  cycle
-!
-          icou = icou + 1
-          new_ele%iele_global(icou) = recv_ebuf%iele_gl_add(inum)
-          do k1 = 1, ele%nnod_4_ele
-            do jnod = new_node%numnod, 1, -1
-              if(recv_ebuf%ip_added(inum,k1)                            &
-     &              .eq. dbl_id2%irank_home(jnod)                       &
-     &          .and. recv_ebuf%ie_added(inum,k1)                       &
-     &              .eq. dbl_id2%inod_local(jnod)) then
-                new_ele%ie(icou,k1) = jnod
-                exit
-              end if
-            end do
-          end do
-        end do
-      end do
+      call set_ele_by_extend_sleeve(added_comm, recv_ebuf, ele,         &
+     &    new_node, dbl_id2, new_ele)
 !
       call dealloc_ele_buffer_2_extend(recv_ebuf)
       call deallocate_type_comm_tbl(added_comm)
@@ -1005,7 +936,7 @@
 !
       type(communication_table), intent(in) :: added_comm
       type(node_data), intent(in) :: org_node
-      type(parallel_double_numbering), intent(inout) :: dbl_id1
+      type(parallel_double_numbering), intent(in) :: dbl_id1
       type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !
       type(node_data), intent(inout) :: new_node
@@ -1064,6 +995,149 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine copy_node_to_extend_buffer(istack_pre,                 &
+     &          org_node, dbl_id1, iflag_node, send_nbuf)
+!
+      integer(kind = kint), intent(in) :: istack_pre
+      type(node_data), intent(in) :: org_node
+      type(parallel_double_numbering), intent(in) :: dbl_id1
+      integer(kind = kint), intent(in) :: iflag_node(org_node%numnod)
+!
+      type(node_buffer_2_extend), intent(inout) :: send_nbuf
+!
+      integer(kind = kint) :: icou, inod
+!
+      icou = istack_pre
+      do inod = 1, org_node%numnod
+        if(iflag_node(inod) .gt. 0) then
+          icou = icou + 1
+          send_nbuf%inod_add(icou) =    dbl_id1%inod_local(inod)
+          send_nbuf%irank_add(icou) =   dbl_id1%irank_home(inod)
+          send_nbuf%inod_gl_add(icou) = org_node%inod_global(inod)
+          send_nbuf%xx_add(icou,1) =    org_node%xx(inod,1)
+          send_nbuf%xx_add(icou,2) =    org_node%xx(inod,2)
+          send_nbuf%xx_add(icou,3) =    org_node%xx(inod,3)
+        end if
+      end do
+!
+      end subroutine copy_node_to_extend_buffer
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_ele_to_extend_buffer(istack_pre,                  &
+     &          org_ele, dbl_ele, dbl_id1, iflag_ele, send_ebuf)
+!
+      integer(kind = kint), intent(in) :: istack_pre
+      type(element_data), intent(in) :: org_ele
+      type(parallel_double_numbering), intent(in) :: dbl_id1
+      type(parallel_double_numbering), intent(in) :: dbl_ele
+      integer(kind = kint), intent(in) :: iflag_ele(org_ele%numele)
+!
+      type(ele_buffer_2_extend), intent(inout) :: send_ebuf
+!
+      integer(kind = kint) :: icou, iele, k1, inod
+!
+!
+        icou = istack_pre
+        do iele = 1, org_ele%numele
+          if(iflag_ele(iele) .gt. 0) then
+            icou = icou + 1
+            send_ebuf%iele_lc(icou) =     iele
+            send_ebuf%iele_add(icou) =    dbl_ele%inod_local(iele)
+            send_ebuf%irank_add(icou) =   dbl_ele%irank_home(iele)
+            send_ebuf%iele_gl_add(icou) = org_ele%iele_global(iele)
+            do k1 = 1, org_ele%nnod_4_ele
+              inod = org_ele%ie(iele,k1)
+              send_ebuf%ie_added(icou,k1) = dbl_id1%inod_local(inod)
+              send_ebuf%ip_added(icou,k1) = dbl_id1%irank_home(inod)
+            end do
+          end if
+        end do
+!
+      end subroutine copy_ele_to_extend_buffer
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_ele_by_extend_sleeve(added_comm, ele, new_ele)
+!
+      type(communication_table), intent(in) :: added_comm
+      type(element_data), intent(in) :: ele
+!
+      type(element_data), intent(inout) :: new_ele
+!
+      integer(kind = kint) :: inum
+!
+!
+      new_ele%numele =     ele%numele
+      new_ele%nnod_4_ele = ele%nnod_4_ele
+      new_ele%internal_ele = ele%internal_ele
+      do inum = 1, added_comm%ntot_import
+        if(added_comm%item_import(inum) .eq. 0) then
+          new_ele%numele = new_ele%numele + 1
+        end if
+      end do
+!
+      end subroutine count_ele_by_extend_sleeve
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_ele_by_extend_sleeve(added_comm, recv_ebuf,        &
+     &          ele, new_node, dbl_id2, new_ele)
+!
+      type(communication_table), intent(in) :: added_comm
+      type(ele_buffer_2_extend), intent(in) :: recv_ebuf
+      type(element_data), intent(in) :: ele
+      type(node_data), intent(in) :: new_node
+      type(parallel_double_numbering), intent(in) :: dbl_id2
+!
+      type(element_data), intent(inout) :: new_ele
+!
+      integer(kind = kint) :: inum, icou, ist, ied, i
+      integer(kind = kint) :: k1, jnod
+!
+!
+!$omp parallel workshare
+      new_ele%elmtyp(1:ele%numele) = ele%elmtyp(1:ele%numele)
+      new_ele%nodelm(1:ele%numele) = ele%nodelm(1:ele%numele)
+      new_ele%iele_global(1:ele%numele) = ele%iele_global(1:ele%numele)
+!$omp end parallel workshare
+!$omp parallel workshare
+      new_ele%elmtyp(ele%numele+1:new_ele%numele) = ele%elmtyp(1)
+      new_ele%nodelm(ele%numele+1:new_ele%numele) = ele%nodelm(1)
+!$omp end parallel workshare
+!
+!$omp parallel
+      do k1 = 1, ele%nnod_4_ele
+!$omp workshare
+        new_ele%ie(1:ele%numele,k1) = ele%ie(1:ele%numele,k1)
+!$omp end workshare nowait
+      end do
+!$omp end parallel
+!
+      icou = ele%numele
+      do i = 1, added_comm%num_neib
+        ist = added_comm%istack_import(i-1) + 1
+        ied = added_comm%istack_import(i)
+        do inum = ist, ied
+          if(added_comm%item_import(inum) .lt. 0)  cycle
+!
+          icou = icou + 1
+          new_ele%iele_global(icou) = recv_ebuf%iele_gl_add(inum)
+          do k1 = 1, ele%nnod_4_ele
+            do jnod = new_node%numnod, 1, -1
+              if(recv_ebuf%ip_added(inum,k1)                            &
+     &              .eq. dbl_id2%irank_home(jnod)                       &
+     &          .and. recv_ebuf%ie_added(inum,k1)                       &
+     &              .eq. dbl_id2%inod_local(jnod)) then
+                new_ele%ie(icou,k1) = jnod
+                exit
+              end if
+            end do
+          end do
+        end do
+      end do
+!
+      end subroutine set_ele_by_extend_sleeve
 !
 !  ---------------------------------------------------------------------
 !
