@@ -10,6 +10,8 @@
 !!      subroutine allocate_type_comm_tbl_num(comm_tbl)
 !!      subroutine allocate_type_comm_tbl_item(comm_tbl)
 !!      subroutine deallocate_type_comm_tbl(comm_tbl)
+!!      subroutine deallocate_type_comm_tbl_num(comm_tbl)
+!!      subroutine deallocate_type_comm_tbl_item(comm_tbl)
 !!
 !!      subroutine empty_comm_table(comm_tbl)
 !!      subroutine copy_comm_tbl_type(comm_org, comm_new)
@@ -107,11 +109,35 @@
       type(communication_table), intent(inout) :: comm_tbl
 !
 !
-      call deallocate_type_neib_id(comm_tbl)
-      call deallocate_type_import(comm_tbl)
-      call deallocate_type_export(comm_tbl)
+      call deallocate_type_comm_tbl_item(comm_tbl)
+      call deallocate_type_comm_tbl_num(comm_tbl)
 !
       end subroutine deallocate_type_comm_tbl
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_type_comm_tbl_num(comm_tbl)
+!
+      type(communication_table), intent(inout) :: comm_tbl
+!
+!
+      call deallocate_type_neib_id(comm_tbl)
+      call deallocate_type_import_num(comm_tbl)
+      call deallocate_type_export_num(comm_tbl)
+!
+      end subroutine deallocate_type_comm_tbl_num
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_type_comm_tbl_item(comm_tbl)
+!
+      type(communication_table), intent(inout) :: comm_tbl
+!
+!
+      call deallocate_type_import_item(comm_tbl)
+      call deallocate_type_export_item(comm_tbl)
+!
+      end subroutine deallocate_type_comm_tbl_item
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

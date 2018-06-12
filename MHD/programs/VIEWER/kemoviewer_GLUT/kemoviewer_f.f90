@@ -14,6 +14,7 @@
       use t_mesh_data
       use t_file_IO_parameter
       use t_mesh_data_4_merge
+      use find_mesh_file_format
 !
       implicit    none
 !
@@ -25,6 +26,7 @@
       character(len = 1) :: chara_flag
 !
       type(field_IO_params), save :: mesh_file_viewer
+      integer(kind = kint) :: num_pe_s
 !
 !
       icount = iargc_kemo()
@@ -34,9 +36,11 @@
       else
         call getarg_k(1, file_head)
       end if
-!
       mesh_file_viewer%file_prefix = file_head
-      call choose_surface_mesh_sgl(mesh_file_viewer)
+!
+      call find_mesh_format_4_viewer(mesh_file_viewer)
+      call count_subdomains_4_viewer(mesh_file_viewer, num_pe_s)
+      call choose_surface_mesh_sgl(num_pe_s, mesh_file_viewer)
 !
       write(*,*) 'will you draw mesh? (y/n)'
       read(*,*) chara_flag

@@ -32,7 +32,7 @@
 !
       integer(kind = kint), parameter :: id_timer_file = 13
       character(len=kchara), parameter                                  &
-     &                   :: time_file_name = 'time_total.dat'
+     &                   :: time_file_prefix = 'time_total'
 !
       real (kind=kreal)  ::  total_time, total_start
 !
@@ -166,8 +166,8 @@
      &    CALYPSO_REAL, MPI_MAX, izero, CALYPSO_COMM, ierr_MPI)
 !
 !
-     if(iflag_time_4_each_pe .gt. 0) then
-        call add_int_suffix(my_rank, time_file_name, fname_tmp)
+      if(iflag_time_4_each_pe .gt. 0) then
+        call add_int_suffix(my_rank, time_file_prefix, fname_tmp)
         call add_dat_extension(fname_tmp, file_name)
         open(id_timer_file,file=file_name,position='append')
         write(id_timer_file,*) 'Average elapsed time'
@@ -186,7 +186,7 @@
         elapsed(i) = elapsed_total(i) / dble(nprocs)
       end do
 !
-      call add_dat_extension(time_file_name, file_name)
+      call add_dat_extension(time_file_prefix, file_name)
       open(id_timer_file,file=file_name,position='append')
       write(id_timer_file,*) 'Average elapsed time'
       do i = 1, num_elapsed

@@ -30,6 +30,7 @@
       use m_constants
 !
       use t_viewer_mesh
+      use t_viewer_group
       use t_calypso_mpi_IO_param
       use gz_MPI_ascii_data_IO
       use gz_MPI_domain_data_IO

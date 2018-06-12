@@ -99,7 +99,7 @@ void modify_object_multi_viewer_c(double dist, struct viewer_mesh *mesh_s){
 static void modify_object_sngl_viewer_c(struct viewer_mesh *mesh_s){
 	int i;
 	
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++) {
+	for (i = 0; i < mesh_s->nnod_viewer; i++) {
 		mesh_s->xx_draw[i][0] = ( mesh_s->xx_view[i][0] );
 		mesh_s->xx_draw[i][1] = ( mesh_s->xx_view[i][1] );
 		mesh_s->xx_draw[i][2] = ( mesh_s->xx_view[i][2] );

@@ -11,6 +11,7 @@
 !
       use t_file_IO_parameter
       use t_mesh_data_4_merge
+      use find_mesh_file_format
       use single_const_surface_mesh
       use getarg_kemo
 !
@@ -19,6 +20,7 @@
       character(len=kchara) :: file_head
       integer(kind = kint) :: icount
 !
+      integer(kind = kint) :: num_pe_s
       type(field_IO_params), save ::  pick_mesh_file
 !
       icount = iargc_kemo()
@@ -28,9 +30,14 @@
       else
         call getarg_k(1, file_head)
       end if
-!
       pick_mesh_file%file_prefix = file_head
-      call choose_surface_mesh_sgl(pick_mesh_file)
+!
+      write(*,*) 'find_mesh_format_4_viewer'
+      call find_mesh_format_4_viewer(pick_mesh_file)
+      write(*,*) 'count_subdomains_4_viewer'
+      call count_subdomains_4_viewer(pick_mesh_file, num_pe_s)
+!
+      call choose_surface_mesh_sgl(num_pe_s, pick_mesh_file)
 !
       stop ' //// program normally finished //// '
 !
