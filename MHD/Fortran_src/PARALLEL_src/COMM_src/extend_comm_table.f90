@@ -191,10 +191,10 @@
       call added_global_id_send_recv(nod_comm,                          &
      &    istack_send_added, ntot_send_added, inod_gl_send_added,       &
      &    istack_recv_added, ntot_recv_added, inod_gl_recv_added)
-      call added_nod_id_send_recv(nod_comm,                             &
+      call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
      &    istack_send_added, ntot_send_added, inod_send_added,          &
      &    istack_recv_added, ntot_recv_added, inod_recv_added)
-      call added_nod_id_send_recv(nod_comm,                             &
+      call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
      &    istack_send_added, ntot_send_added, irank_send_added,         &
      &    istack_recv_added, ntot_recv_added, irank_recv_added)
 !
@@ -270,7 +270,7 @@
 !      end do
 !
 !
-      call added_nod_id_send_recv(nod_comm,                             &
+      call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
      &    istack_recv_added, ntot_recv_added, inod_new_id,              &
      &    istack_send_added, ntot_send_added, iflag_send_2_del)
 !
@@ -448,10 +448,10 @@
       inod_export_new = 0
       irank_export_new = -1
 !
-      call added_nod_id_send_recv(new_comm,                             &
+      call added_nod_id_send_recv(new_comm%num_neib, new_comm%id_neib,  &
      &  new_comm%istack_import, new_comm%ntot_import, inod_import_new,  &
      &  new_comm%istack_export, new_comm%ntot_export, inod_export_new)
-      call added_nod_id_send_recv(new_comm,                             &
+      call added_nod_id_send_recv(new_comm%num_neib, new_comm%id_neib,  &
      &  new_comm%istack_import, new_comm%ntot_import, irank_import_new, &
      &  new_comm%istack_export, new_comm%ntot_export, irank_export_new)
 !
@@ -714,17 +714,19 @@
       call added_global_id_send_recv(nod_comm,                          &
      &    istack_send_added, ntot_send_added, iele_gl_send_added,       &
      &    istack_recv_added, ntot_recv_added, iele_gl_recv_added)
-      call added_nod_id_send_recv(nod_comm,                             &
+      call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
      &    istack_send_added, ntot_send_added, iele_send_added,          &
      &    istack_recv_added, ntot_recv_added, iele_recv_added)
-      call added_nod_id_send_recv(nod_comm,                             &
+      call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
      &    istack_send_added, ntot_send_added, irank_send_added,         &
      &    istack_recv_added, ntot_recv_added, irank_recv_added)
       do k1 = 1, ele%nnod_4_ele
-        call added_nod_id_send_recv(nod_comm,                           &
+        call added_nod_id_send_recv                                     &
+     &     (nod_comm%num_neib, nod_comm%id_neib,                        &
      &      istack_send_added, ntot_send_added, ie_send_added(1,k1),    &
      &      istack_recv_added, ntot_recv_added, ie_recv_added(1,k1))
-        call added_nod_id_send_recv(nod_comm,                           &
+        call added_nod_id_send_recv                                     &
+     &     (nod_comm%num_neib, nod_comm%id_neib,                        &
      &      istack_send_added, ntot_send_added, ip_send_added(1,k1),    &
      &      istack_recv_added, ntot_recv_added, ip_recv_added(1,k1))
       end do
@@ -797,7 +799,7 @@
         end do
       end do
 !
-      call added_nod_id_send_recv(nod_comm,                             &
+      call added_nod_id_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
      &    istack_recv_added, ntot_recv_added, iflag_recv_2_del,         &
      &    istack_send_added, ntot_send_added, iflag_send_2_del)
 !
