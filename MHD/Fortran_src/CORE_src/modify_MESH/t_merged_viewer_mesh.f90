@@ -1,8 +1,20 @@
+!>@file   t_merged_viewer_mesh.f90
+!!@brief  module t_merged_viewer_mesh
+!!
+!!@author  H. Matsui
+!!@date Programmed in Dec., 2006
 !
-!      module t_merged_viewer_mesh
-!
-!      Written by Kemorin
-!
+!>@brief Structure of surface mesh data for kemoviewer
+!!
+!!@verbatim
+!!      subroutine dealloc_viewer_mesh(view_mesh, domain_grps,          &
+!!     &          view_nod_grps, view_ele_grps, view_sf_grps)
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
+!!        type(viewer_surface_groups), intent(inout) :: domain_grps
+!!        type(viewer_node_groups), intent(inout) :: view_nod_grps
+!!        type(viewer_surface_groups), intent(inout) :: view_ele_grps
+!!        type(viewer_surface_groups), intent(inout) :: view_sf_grps
+!!
 !!      subroutine alloc_num_mesh_sf(num_pe, mgd_view_mesh)
 !!      subroutine dealloc_num_mesh_sf(mgd_view_mesh)
 !!
@@ -14,6 +26,7 @@
 !!        type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !!      subroutine check_edge_connent_viewer(nnod_4_edge, mgd_view_mesh)
 !!        type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
+!!@endverbatim
 !
       module t_merged_viewer_mesh
 !

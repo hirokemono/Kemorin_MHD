@@ -68,8 +68,6 @@
 !
       subroutine set_node_position_4_viewer(node, inod_ksm, view_mesh)
 !
-      use t_mesh_data
-!
       type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: inod_ksm(node%numnod)
 !
@@ -95,8 +93,6 @@
 !
       subroutine set_surf_connect_viewer                                &
      &         (node, surf, inod_ksm, isurf_ksm, view_mesh)
-!
-      use t_surface_data
 !
       type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf

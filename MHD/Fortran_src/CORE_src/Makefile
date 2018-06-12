@@ -21,7 +21,8 @@ spherical_harmonics  \
 gauss_integration    \
 jacobian             \
 FFT_wrapper          \
-SPH_SPECTR_src
+SPH_SPECTR_src       \
+modify_MESH
 
 
 #
@@ -66,19 +67,20 @@ lib_archve:
 mod_list:
 	@echo  MOD_CORE= \\ >> $(MAKENAME)
 	@echo  \
-	'$$(MOD_BASE)'       \
-	'$$(MOD_CTL)'        \
-	'$$(MOD_IO)'         \
-	'$$(MOD_BINARY_IO)'  \
-	'$$(MOD_ZLIB_IO)'    \
-	'$$(MOD_MPI_IO)'     \
-	'$$(MOD_MESH)'       \
-	'$$(MOD_MESH_T)'     \
-	'$$(MOD_GAUSS)'      \
-	'$$(MOD_JACOBI)'     \
-	'$$(MOD_SPH)'        \
-	'$$(MOD_FFT_WRAP)'   \
-	'$$(MOD_SPH_SPECTR)' \
+	'$$(MOD_BASE)'        \
+	'$$(MOD_CTL)'         \
+	'$$(MOD_IO)'          \
+	'$$(MOD_BINARY_IO)'   \
+	'$$(MOD_ZLIB_IO)'     \
+	'$$(MOD_MPI_IO)'      \
+	'$$(MOD_MESH)'        \
+	'$$(MOD_MESH_T)'      \
+	'$$(MOD_GAUSS)'       \
+	'$$(MOD_JACOBI)'      \
+	'$$(MOD_SPH)'         \
+	'$$(MOD_FFT_WRAP)'    \
+	'$$(MOD_SPH_SPECTR)'  \
+	'$$(MOD_MODIFY_MESH)' \
 	'$$(MOD_ITP)'     >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \

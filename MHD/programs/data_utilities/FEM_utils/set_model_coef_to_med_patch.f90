@@ -51,7 +51,7 @@
       psf_phys%num_phys =  num_comp
       psf_phys%ntot_phys = num_comp
 !
-      call allocate_node_geometry_type(psf_nod)
+      call alloc_node_geometry_w_sph(psf_nod)
       call allocate_ele_connect_type(psf_ele)
       call alloc_phys_name_type(psf_phys)
       call alloc_phys_data_type(psf_nod%numnod, psf_phys)

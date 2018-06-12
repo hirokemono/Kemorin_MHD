@@ -10,9 +10,9 @@
 !!@verbatim
 !!      subroutine alloc_numnod_stack(nprocs, node)
 !!      subroutine alloc_numele_stack(nprocs, ele)
-!!      subroutine allocate_node_geometry_type(node)
+!!      subroutine alloc_node_geometry_w_sph(node)
 !!      subroutine alloc_node_geometry_base(node)
-!!      subroutine allocate_sph_node_geometry(node)
+!!      subroutine alloc_sph_node_geometry(node)
 !!
 !!      subroutine allocate_ele_connect_type(ele)
 !!      subroutine alloc_element_types(ele)
@@ -25,7 +25,7 @@
 !!
 !!      subroutine dealloc_numnod_stack(node)
 !!      subroutine dealloc_numele_stack(ele)
-!!      subroutine deallocate_node_geometry_type(node)
+!!      subroutine dealloc_node_geometry_w_sph(node)
 !!      subroutine dealloc_node_geometry_base(node)
 !!      subroutine deallocate_sph_node_geometry(node)
 !!
@@ -198,14 +198,14 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine allocate_node_geometry_type(node)
+      subroutine alloc_node_geometry_w_sph(node)
 !
       type(node_data), intent(inout) :: node
 !
       call alloc_node_geometry_base(node)
-      call allocate_sph_node_geometry(node)
+      call alloc_sph_node_geometry(node)
 !
-      end subroutine allocate_node_geometry_type
+      end subroutine alloc_node_geometry_w_sph
 !
 !  ---------------------------------------------------------------------
 !
@@ -225,7 +225,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_sph_node_geometry(node)
+      subroutine alloc_sph_node_geometry(node)
 !
       type(node_data), intent(inout) :: node
 !
@@ -245,7 +245,7 @@
         node%theta = 0.0d00
       end if
 !
-      end subroutine allocate_sph_node_geometry
+      end subroutine alloc_sph_node_geometry
 !
 !  ---------------------------------------------------------------------
 !
@@ -390,14 +390,14 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine deallocate_node_geometry_type(node)
+      subroutine dealloc_node_geometry_w_sph(node)
 !
       type(node_data), intent(inout) :: node
 !
       call deallocate_sph_node_geometry(node)
       call dealloc_node_geometry_base(node)
 !
-      end subroutine deallocate_node_geometry_type
+      end subroutine dealloc_node_geometry_w_sph
 !
 !  ---------------------------------------------------------------------
 !

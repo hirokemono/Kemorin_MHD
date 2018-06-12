@@ -24,6 +24,8 @@
 !!      subroutine dealloc_inod_next_node(neib_nod)
 !!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !!
+!!      subroutine dealloc_next_nod_ele_table(next_tbl)
+!!        type(next_nod_ele_table), intent(inout) :: next_tbl
 !!      subroutine check_ele_id_4_node_type(my_rank, numnod, neib_ele)
 !!        integer(kind = kint), intent(in) :: my_rank, numnod
 !!        type(element_around_node), intent(in) :: neib_ele
@@ -155,6 +157,17 @@
       end subroutine alloc_inod_next_node
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_next_nod_ele_table(next_tbl)
+!
+      type(next_nod_ele_table), intent(inout) :: next_tbl
+!
+      call dealloc_iele_belonged(next_tbl%neib_ele)
+      call dealloc_inod_next_node(next_tbl%neib_nod)
+!
+      end subroutine dealloc_next_nod_ele_table
+!
 !-----------------------------------------------------------------------
 !
       subroutine dealloc_iele_belonged(neib_ele)

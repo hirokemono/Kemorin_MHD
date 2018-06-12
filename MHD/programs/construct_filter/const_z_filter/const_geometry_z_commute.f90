@@ -51,7 +51,7 @@
 !
       call set_numnod_z_commute(node, ele, surf, edge)
 !
-      call allocate_node_geometry_type(node)
+      call alloc_node_geometry_w_sph(node)
       call alloc_edge_connect(edge, surf%numsurf)
 !
       call set_element_z_commute(node, edge)

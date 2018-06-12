@@ -67,7 +67,7 @@
         call dealloc_inod_psf(psf_list(i_psf))
         call dealloc_numnod_stack(psf_mesh(i_psf)%node)
         call dealloc_numele_stack(psf_mesh(i_psf)%patch)
-        call deallocate_node_geometry_type(psf_mesh(i_psf)%node)
+        call dealloc_node_geometry_w_sph(psf_mesh(i_psf)%node)
         call deallocate_ele_connect_type(psf_mesh(i_psf)%patch)
       end do
 !
@@ -127,7 +127,7 @@
       do i_psf = 1, num_psf
         call alloc_inod_psf(psf_list(i_psf))
         call alloc_inod_grp_psf(psf_grp_list(i_psf))
-        call allocate_node_geometry_type(psf_mesh(i_psf)%node)
+        call alloc_node_geometry_w_sph(psf_mesh(i_psf)%node)
         call const_global_numnod_list(psf_mesh(i_psf)%node)
       end do
 !

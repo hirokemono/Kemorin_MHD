@@ -156,8 +156,7 @@
      &   (node%numnod, layer_comm, DJDS_tbl)
 !
       call dealloc_crs_connect(CRS_table)
-      call dealloc_iele_belonged(FEM_next%neib_ele)
-      call dealloc_inod_next_node(FEM_next%neib_nod)
+      call dealloc_next_nod_ele_table(FEM_next)
 !
       end subroutine set_djds_layer_connectivity
 !

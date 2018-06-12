@@ -1,8 +1,9 @@
-!>@file   single_const_surface_mesh.f90
-!!@brief  module single_const_surface_mesh
+!>@file   single_const_kemoview_mesh.f90
+!!@brief  module single_const_kemoview_mesh
 !!
 !!@author  H. Matsui
 !!@date Programmed in Dec., 2006
+!!      Modified in June, 2018
 !
 !>@brief Surface mesh data generator for kemoviewer
 !!
@@ -11,7 +12,7 @@
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!@endverbatim
 !
-      module single_const_surface_mesh
+      module single_const_kemoview_mesh
 !
       use m_precision
 !
@@ -23,7 +24,6 @@
       use t_surface_data
       use t_edge_data
       use t_file_IO_parameter
-      use t_mesh_data_4_merge
       use t_viewer_mesh
       use t_merged_viewer_mesh
 !
@@ -33,8 +33,6 @@
       integer(kind = kint), parameter :: iflag_write_subdomain = 0
 !
       private :: iflag_write_subdomain
-!
-      private :: find_mesh_format_4_viewer
 !
 !------------------------------------------------------------------
 !
@@ -47,9 +45,10 @@
       use load_mesh_data
       use const_mesh_information
       use const_mesh_list_4_viewer
-      use extend_group_table
+      use add_comm_table_in_node_grp
       use copy_mesh_structures
-      use viewer_IO_select_4_zlib
+      use const_viewer_mesh
+      use viewer_mesh_IO_select
       use merge_viewer_mesh
 !
 !
@@ -69,9 +68,8 @@
       type(viewer_surface_groups), allocatable :: view_ele_grps_p(:)
       type(viewer_surface_groups), allocatable :: view_sf_grps_p(:)
 !
-      integer(kind = kint) :: ip, inum
+      integer(kind = kint) :: ip
       integer(kind = kint) :: ierr
-      character(len = kchara) :: fname_tmp, file_name
 !
 !
       allocate(view_mesh_p(num_pe_s))
@@ -95,7 +93,7 @@
 !
         call const_mesh_infos((ip-1), mesh_p, group_p, ele_mesh_p)
 !
-        call const_viewer_mesh                                          &
+        call s_const_viewer_mesh                                        &
      &     (mesh_p, ele_mesh_p, group_p, view_mesh_p(ip),               &
      &      domain_grps_p(ip), view_nod_grps_p(ip),                     &
      &      view_ele_grps_p(ip), view_sf_grps_p(ip))
@@ -138,35 +136,6 @@
       end subroutine choose_surface_mesh_sgl
 !
 !------------------------------------------------------------------
-!
-      subroutine find_mesh_format_4_viewer(mesh_file)
-!
-      use t_file_IO_parameter
-      use m_file_format_switch
-      use mesh_file_name_by_param
-!
-      type(field_IO_params), intent(inout) ::  mesh_file
-!
-!  Detect file format
-      mesh_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_ascii_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_binary_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_gzip_bin_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      stop 'I cannot find mesh file!!'
-!
-      end subroutine find_mesh_format_4_viewer
-!
 !------------------------------------------------------------------
 !
 !      subroutine set_source_mesh_parameter                              &
@@ -192,85 +161,5 @@
 !      end subroutine set_source_mesh_parameter
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
 !
-      subroutine const_viewer_mesh                                      &
-     &         (mesh, ele_mesh, group, view_mesh, domain_grps,          &
-     &          view_nod_grps, view_ele_grps, view_sf_grps)
-!
-      use t_const_mesh_data_4_viewer
-      use const_mesh_list_4_viewer
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(element_geometry), intent(in) :: ele_mesh
-      type(mesh_groups), intent(in) :: group
-!
-      type(viewer_mesh_data), intent(inout) :: view_mesh
-      type(viewer_surface_groups), intent(inout) :: domain_grps
-      type(viewer_node_groups), intent(inout) :: view_nod_grps
-      type(viewer_surface_groups), intent(inout) :: view_ele_grps
-      type(viewer_surface_groups), intent(inout) :: view_sf_grps
-!
-      type(index_list_4_pick_surface) :: idx_lst_s
-!
-!
-      call alloc_index_list_pick_surf                                   &
-     &   (mesh%node, ele_mesh%surf, ele_mesh%edge, idx_lst_s)
-!
-      call const_index_list_4_viewer                                    &
-     &   (mesh%node, ele_mesh%surf, ele_mesh%edge,                      &
-     &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
-     &    idx_lst_s, view_mesh)
-!
-      call const_mesh_data_4_viewer                                     &
-     &   (mesh%node, ele_mesh%surf, ele_mesh%edge,                      &
-     &    idx_lst_s, view_mesh)
-!
-!
-      call const_domain_groups_4_viewer                                 &
-     &   (mesh%node, ele_mesh%surf, ele_mesh%edge,                      &
-     &    idx_lst_s, domain_grps)
-!
-      call const_node_groups_4_viewer(mesh%node, group%nod_grp,         &
-     &    idx_lst_s%inod_ksm, idx_lst_s%iflag_node, view_nod_grps)
-      call const_element_groups_4_viewer                                &
-     &   (mesh%node, ele_mesh%surf, ele_mesh%edge,                      &
-     &    group%ele_grp, idx_lst_s, view_ele_grps)
-      call const_surface_groups_4_viewer                                &
-     &   (mesh%node, ele_mesh%surf, ele_mesh%edge,                      &
-     &    group%surf_grp, idx_lst_s, view_sf_grps)
-!
-      call dealloc_index_list_pick_surf(idx_lst_s)
-!
-      end subroutine const_viewer_mesh
-!
-!------------------------------------------------------------------
-!
-      subroutine dealloc_viewer_mesh(view_mesh, domain_grps,            &
-     &          view_nod_grps, view_ele_grps, view_sf_grps)
-!
-      use t_viewer_group
-!
-      type(viewer_mesh_data), intent(inout) :: view_mesh
-      type(viewer_surface_groups), intent(inout) :: domain_grps
-      type(viewer_node_groups), intent(inout) :: view_nod_grps
-      type(viewer_surface_groups), intent(inout) :: view_ele_grps
-      type(viewer_surface_groups), intent(inout) :: view_sf_grps
-!
-!
-      call dealloc_viewer_node_grps_item(view_nod_grps)
-      call dealloc_viewer_surf_grps_item(view_ele_grps)
-      call dealloc_viewer_surf_grps_item(view_sf_grps)
-!
-      call dealloc_viewer_surf_grps_item(domain_grps)
-!
-      call dealloc_surf_type_viewer(view_mesh)
-      call dealloc_edge_data_4_sf(view_mesh)
-      call dealloc_surf_connect_viewer(view_mesh)
-      call dealloc_nod_position_viewer(view_mesh)
-!
-      end subroutine dealloc_viewer_mesh
-!
-!------------------------------------------------------------------
-!
-      end module single_const_surface_mesh
+      end module single_const_kemoview_mesh
