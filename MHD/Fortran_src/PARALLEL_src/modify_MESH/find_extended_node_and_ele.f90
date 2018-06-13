@@ -18,12 +18,13 @@
 !!        type(node_data), intent(inout) :: new_node
 !!        type(parallel_double_numbering), intent(inout) :: dbl_id2
 !!
-!!      subroutine count_ele_by_extend_sleeve(added_comm, ele, new_ele)
+!!      subroutine count_ele_by_extend_sleeve                           &
+!!     &         (added_comm, org_ele, new_ele)
 !!      subroutine set_ele_by_extend_sleeve(added_comm, recv_ebuf,      &
-!!     &          ele, new_node, dbl_id2, new_ele)
+!!     &          org_ele, new_node, dbl_id2, new_ele)
 !!        type(communication_table), intent(in) :: added_comm
 !!        type(ele_buffer_2_extend), intent(in) :: recv_ebuf
-!!        type(element_data), intent(in) :: ele
+!!        type(element_data), intent(in) :: org_ele
 !!        type(node_data), intent(in) :: new_node
 !!        type(parallel_double_numbering), intent(in) :: dbl_id2
 !!        type(element_data), intent(inout) :: new_ele
@@ -121,19 +122,20 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_ele_by_extend_sleeve(added_comm, ele, new_ele)
+      subroutine count_ele_by_extend_sleeve                             &
+     &         (added_comm, org_ele, new_ele)
 !
       type(communication_table), intent(in) :: added_comm
-      type(element_data), intent(in) :: ele
+      type(element_data), intent(in) :: org_ele
 !
       type(element_data), intent(inout) :: new_ele
 !
       integer(kind = kint) :: inum
 !
 !
-      new_ele%numele =     ele%numele
-      new_ele%nnod_4_ele = ele%nnod_4_ele
-      new_ele%internal_ele = ele%internal_ele
+      new_ele%numele =     org_ele%numele
+      new_ele%nnod_4_ele = org_ele%nnod_4_ele
+      new_ele%internal_ele = org_ele%internal_ele
       do inum = 1, added_comm%ntot_import
         if(added_comm%item_import(inum) .eq. 0) then
           new_ele%numele = new_ele%numele + 1
@@ -145,39 +147,43 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_ele_by_extend_sleeve(added_comm, recv_ebuf,        &
-     &          ele, new_node, dbl_id2, new_ele)
+     &          org_ele, new_node, dbl_id2, new_ele)
 !
       type(communication_table), intent(in) :: added_comm
       type(ele_buffer_2_extend), intent(in) :: recv_ebuf
-      type(element_data), intent(in) :: ele
+      type(element_data), intent(in) :: org_ele
       type(node_data), intent(in) :: new_node
       type(parallel_double_numbering), intent(in) :: dbl_id2
 !
       type(element_data), intent(inout) :: new_ele
 !
-      integer(kind = kint) :: inum, icou, ist, ied, i
+      integer(kind = kint) :: inum, icou, ist, ied, i, iele
       integer(kind = kint) :: k1, jnod
 !
 !
-!$omp parallel workshare
-      new_ele%elmtyp(1:ele%numele) = ele%elmtyp(1:ele%numele)
-      new_ele%nodelm(1:ele%numele) = ele%nodelm(1:ele%numele)
-      new_ele%iele_global(1:ele%numele) = ele%iele_global(1:ele%numele)
-!$omp end parallel workshare
-!$omp parallel workshare
-      new_ele%elmtyp(ele%numele+1:new_ele%numele) = ele%elmtyp(1)
-      new_ele%nodelm(ele%numele+1:new_ele%numele) = ele%nodelm(1)
-!$omp end parallel workshare
+!$omp parallel do
+      do iele = 1, org_ele%numele
+        new_ele%elmtyp(iele) = org_ele%elmtyp(iele)
+        new_ele%nodelm(iele) = org_ele%nodelm(iele)
+        new_ele%iele_global(iele) = org_ele%iele_global(iele)
+      end do
+!$omp end parallel do
+!$omp parallel do
+      do iele = org_ele%numele+1, new_ele%numele
+        new_ele%elmtyp(iele) = org_ele%elmtyp(1)
+        new_ele%nodelm(iele) = org_ele%nodelm(1)
+      end do
+!$omp end parallel do
 !
 !$omp parallel
-      do k1 = 1, ele%nnod_4_ele
+      do k1 = 1, org_ele%nnod_4_ele
 !$omp workshare
-        new_ele%ie(1:ele%numele,k1) = ele%ie(1:ele%numele,k1)
+        new_ele%ie(1:org_ele%numele,k1) = org_ele%ie(1:org_ele%numele,k1)
 !$omp end workshare nowait
       end do
 !$omp end parallel
 !
-      icou = ele%numele
+      icou = org_ele%numele
       do i = 1, added_comm%num_neib
         ist = added_comm%istack_import(i-1) + 1
         ied = added_comm%istack_import(i)
@@ -186,7 +192,7 @@
 !
           icou = icou + 1
           new_ele%iele_global(icou) = recv_ebuf%iele_gl_add(inum)
-          do k1 = 1, ele%nnod_4_ele
+          do k1 = 1, org_ele%nnod_4_ele
             do jnod = new_node%numnod, 1, -1
               if(recv_ebuf%ip_added(inum,k1)                            &
      &              .eq. dbl_id2%irank_home(jnod)                       &

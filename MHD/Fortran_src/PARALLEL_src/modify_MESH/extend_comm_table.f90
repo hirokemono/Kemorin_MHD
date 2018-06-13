@@ -38,6 +38,7 @@
       use extend_comm_table_SR
       use mark_export_nod_ele_extend
       use cal_minmax_and_stacks
+      use find_extended_node_and_ele
       use find_extended_comm_table
 !
       type(communication_table), intent(in) :: nod_comm
@@ -127,19 +128,25 @@
      &   (added_comm%ntot_import, recv_nbuf)
 !
       call added_geometry_send_recv(added_comm%num_neib,                &
-     &   added_comm%id_neib,                          &
-     &    added_comm%istack_export, added_comm%ntot_export, send_nbuf%xx_add,            &
-     &    added_comm%istack_import, added_comm%ntot_import, recv_nbuf%xx_add)
+     &    added_comm%id_neib, added_comm%istack_export,                 &
+     &    added_comm%ntot_export, send_nbuf%xx_add,                     &
+     &    added_comm%istack_import, added_comm%ntot_import,             &
+     &    recv_nbuf%xx_add)
       call added_global_id_send_recv(added_comm%num_neib,               &
-     &   (added_comm%num_neib, added_comm%id_neib,                          &
-     &    added_comm%istack_export, added_comm%ntot_export, send_nbuf%inod_gl_add,       &
-     &    added_comm%istack_import, added_comm%ntot_import, recv_nbuf%inod_gl_add)
-      call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
-     &    added_comm%istack_export, added_comm%ntot_export, send_nbuf%inod_add,          &
-     &    added_comm%istack_import, added_comm%ntot_import, recv_nbuf%inod_add)
-      call added_nod_id_send_recv(added_comm%num_neib, added_comm%id_neib,  &
-     &    added_comm%istack_export, added_comm%ntot_export, send_nbuf%irank_add,         &
-     &    added_comm%istack_import, added_comm%ntot_import, recv_nbuf%irank_add)
+     &    added_comm%id_neib, added_comm%istack_export,                 &
+     &    added_comm%ntot_export, send_nbuf%inod_gl_add,                &
+     &    added_comm%istack_import, added_comm%ntot_import,             &
+     &    recv_nbuf%inod_gl_add)
+      call added_nod_id_send_recv(added_comm%num_neib,                  &
+     &    added_comm%id_neib, added_comm%istack_export,                 &
+     &    added_comm%ntot_export, send_nbuf%inod_add,                   &
+     &    added_comm%istack_import, added_comm%ntot_import,             &
+     &    recv_nbuf%inod_add)
+      call added_nod_id_send_recv(added_comm%num_neib,                  &
+     &    added_comm%id_neib, added_comm%istack_export,                 &
+     &    added_comm%ntot_export, send_nbuf%irank_add,                  &
+     &    added_comm%istack_import, added_comm%ntot_import,             &
+     &    recv_nbuf%irank_add)
 !
       call mark_added_nod_import_to_del                                 &
      &   (org_node%numnod, dbl_id1%inod_local, dbl_id1%irank_home,      &
@@ -154,9 +161,10 @@
 !     &   (my_rank, nod_comm, added_comm, dbl_id1, recv_nbuf)
 !
       call added_nod_id_send_recv(added_comm%num_neib,                  &
-     &    added_comm%id_neib,  &
-     &    added_comm%istack_import, added_comm%ntot_import, added_comm%item_import,              &
-     &    added_comm%istack_export, added_comm%ntot_export, added_comm%item_export)
+     &    added_comm%id_neib, added_comm%istack_import,                 &
+     &    added_comm%ntot_import, added_comm%item_import,               &
+     &    added_comm%istack_export, added_comm%ntot_export,             &
+     &    added_comm%item_export)
 !
 !      call check_delete_from_SR_list                                   &
 !     &   (my_rank, added_comm, send_nbuf, recv_nbuf)
@@ -265,6 +273,7 @@
       use const_mesh_information
       use const_element_comm_tables
       use cal_minmax_and_stacks
+      use find_extended_node_and_ele
       use find_extended_comm_table
 !
       type(communication_table), intent(in) :: nod_comm
@@ -437,6 +446,7 @@
       subroutine check_new_node_and_comm(new_comm, new_node, dbl_id2)
 !
       use calypso_MPI
+      use solver_SR_type
 !
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
