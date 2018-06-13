@@ -87,7 +87,6 @@
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
-      type(FEM_mesh_control), intent(in) :: Fmesh_ctl
 !
       type(mhd_DNS_model_control), intent(inout) :: modelD_ctl
       type(sph_mhd_control_control), intent(inout) :: smctl_ctl

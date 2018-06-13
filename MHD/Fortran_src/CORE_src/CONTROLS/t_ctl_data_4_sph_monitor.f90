@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine read_sph_monitoring_ctl(hd_block, iflag, smonitor_ctl)
-!!      subroutine dealloc_vol_sopectr_ctl(smonitor_ctl)
+!!      subroutine dealloc_sph_monitoring_ctl(smonitor_ctl)
 !!
 !! -----------------------------------------------------------------
 !!
@@ -219,20 +219,6 @@
       smonitor_ctl%num_vspec_ctl = 0
 !
       end subroutine dealloc_sph_monitoring_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_vol_sopectr_ctl(smonitor_ctl)
-!
-      type(sph_monitor_control), intent(inout) :: smonitor_ctl
-!
-!
-      if(smonitor_ctl%num_vspec_ctl .le. 0) return
-      deallocate(smonitor_ctl%v_pwr)
-      smonitor_ctl%num_vspec_ctl = 0
-!
-      end subroutine dealloc_vol_sopectr_ctl
 !
 !  ---------------------------------------------------------------------
 !

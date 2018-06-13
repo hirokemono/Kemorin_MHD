@@ -190,6 +190,7 @@
 !
       use calypso_mpi
       use bcast_4_sphere_ctl
+      use bcast_4_platform_ctl
 !
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !

@@ -103,7 +103,7 @@
       use t_ctl_data_4_sph_utils
       use m_default_file_prefix
 !
-      type(spherical_spectr_data_util_ctl), intent(in) :: spu_ctl
+      type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
       type(time_step_param), intent(inout) :: time_SHR
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -199,7 +199,8 @@
         thermal_buo = spu_ctl%thermal_buoyancy_ctl%realvalue
       end if
 !
-      call dealloc_sph_monitoring_ctl(smonitor_ctl)
+      call dealloc_control_array_c3(spu_ctl%fld_ctl%field_ctl)
+      call dealloc_sph_monitoring_ctl(spu_ctl%smonitor_ctl)
 !
       end subroutine set_ctl_data_4_sph_utils
 !

@@ -66,7 +66,7 @@
       call turn_off_debug_flag_by_ctl(my_rank, SPH_TEST_ctl%plt)
       call read_control_4_const_shell(control_file_name, SPH_TEST_ctl)
       call set_control_sph_mesh                                         &
-     &   (SPH_TEST_ctl%plt, SPH_TEST_ctl%Fmesh_ctl,                     &
+     &   (SPH_TEST_ctl%plt, SPH_TEST_ctl%psph_ctl%Fmesh_ctl,            &
      &    test_sph_files%mesh_file_IO, test_sph_files%sph_file_IO,      &
      &    test_sph_files%FEM_mesh_flags)
 !

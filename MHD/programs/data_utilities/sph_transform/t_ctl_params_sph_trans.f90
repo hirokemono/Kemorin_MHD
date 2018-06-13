@@ -9,7 +9,7 @@
 !!      subroutine s_set_ctl_data_4_sph_trans                           &
 !!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
 !!     &          rj_fld, d_gauss, fem_fld, WK_sph)
-!!        type(spherical_transform_util_ctl), intent(in) :: spt_ctl
+!!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
 !!        type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
@@ -95,7 +95,7 @@
 !
       use m_sel_spherical_SRs
 !
-      type(spherical_transform_util_ctl), intent(in) :: spt_ctl
+      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(time_step_param), intent(inout) :: time_STR
       type(VIZ_step_params), intent(inout) :: viz_step_STR
       type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
@@ -154,6 +154,7 @@
      &   (spt_ctl%fld_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
      &   (spt_ctl%fld_ctl%field_ctl, fem_fld, ierr)
+      call dealloc_control_array_c3(spt_ctl%fld_ctl%field_ctl)
 !
 !
       files_param%cmb_radial_grp =  'CMB'
@@ -192,7 +193,7 @@
       use skip_comment_f
       use parallel_ucd_IO_select
 !
-      type(spherical_transform_util_ctl), intent(in) :: spt_ctl
+      type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(time_step_param), intent(inout) :: time_STR
       type(VIZ_step_params), intent(inout) :: viz_step_STR
       type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
@@ -222,8 +223,8 @@
 !
 !    file header for field data
 !
-      if(zm_spec_file_head_ctl%iflag .gt. 0) then
-        zm_spec_file_head = zm_spec_file_head_ctl%charavalue
+      if(spt_ctl%zm_spec_file_head_ctl%iflag .gt. 0) then
+        zm_spec_file_head = spt_ctl%zm_spec_file_head_ctl%charavalue
       end if
 !
 !   using rstart data for spherical dynamo
@@ -279,6 +280,7 @@
      &   (spt_ctl%fld_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
      &   (spt_ctl%fld_ctl%field_ctl, fem_fld, ierr)
+      call dealloc_control_array_c3(spt_ctl%fld_ctl%field_ctl)
 !
 !
       files_param%cmb_radial_grp =  'CMB'
