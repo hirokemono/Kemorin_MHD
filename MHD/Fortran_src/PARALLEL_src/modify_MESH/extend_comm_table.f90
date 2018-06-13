@@ -23,6 +23,7 @@
       use m_constants
       use m_phys_constants
       use m_machine_parameter
+      use calypso_mpi
 !
       use t_comm_table
       use t_geometry_data
@@ -266,7 +267,6 @@
 !
       subroutine check_new_node_and_comm(new_comm, new_node, dbl_id2)
 !
-      use calypso_MPI
       use solver_SR_type
 !
       type(communication_table), intent(in) :: new_comm
