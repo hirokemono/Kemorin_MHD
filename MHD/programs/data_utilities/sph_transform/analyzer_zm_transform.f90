@@ -28,7 +28,6 @@
 !
       subroutine init_zm_trans
 !
-      use m_ctl_data_4_sph_trans
       use parallel_load_data_4_sph
 !
 !     --------------------- 
@@ -38,12 +37,13 @@
 !
 ! ----   read controls
       if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_trans'
-      call read_control_data_sph_trans
+      call read_control_data_sph_trans(spt_ctl1)
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans(t_STR, viz_step_STR, files_STR,   &
+      call s_set_ctl_data_4_sph_trans                                   &
+     &   (spt_ctl1, t_STR, viz_step_STR, files_STR,                     &
      &    SPH_TRNS%fld, d_gauss_trans, field_STR, WK_sph_TRNS)
-      call set_ctl_data_4_zm_trans(files_STR%fst_file_IO)
+      call set_ctl_data_4_zm_trans(spt_ctl1, files_STR%fst_file_IO)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'

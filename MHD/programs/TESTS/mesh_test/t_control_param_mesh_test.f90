@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!!      subroutine set_ctl_params_4_test_mesh(plt, T_files)
-!!        type(platform_data_control), intent(in) :: plt
+!!      subroutine set_ctl_params_4_test_mesh(mesh_tctl, T_files)
+!!        type(mesh_test_control), intent(in) :: mesh_tctl
 !!        type(mesh_test_files_param), intent(inout) :: T_files
 !
       module t_control_param_mesh_test
@@ -27,22 +27,23 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_test_mesh(plt, T_files)
+      subroutine set_ctl_params_4_test_mesh(plt, mesh_tctl)
 !
       use calypso_mpi
-      use t_ctl_data_4_platforms
+      use t_ctl_data_mesh_test
       use m_machine_parameter
       use m_file_format_switch
       use set_control_platform_data
       use set_ctl_parallel_platform
 !
-      type(platform_data_control), intent(in) :: plt
+      type(mesh_test_control), intent(in) :: mesh_tctl
       type(mesh_test_files_param), intent(inout) :: T_files
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
-      call set_control_mesh_def(plt, T_files%mesh_file_IO)
-      call set_FEM_surface_output_flag(plt, T_files%iflag_output_SURF)
+      call set_control_mesh_def(mesh_tctl%plt, T_files%mesh_file_IO)
+      call set_FEM_surface_output_flag                                  &
+     &   (mesh_tctl%Fmesh_ctl, T_files%iflag_output_SURF)
       if(iflag_debug.gt.0) write(*,*)                                   &
      &   'mesh_file_head:  ', trim(T_files%mesh_file_IO%file_prefix)
 !

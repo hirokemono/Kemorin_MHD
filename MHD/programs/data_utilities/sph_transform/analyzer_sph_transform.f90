@@ -36,7 +36,6 @@
 !
       subroutine initialize_sph_transform
 !
-      use m_ctl_data_4_sph_trans
       use parallel_load_data_4_sph
 !
 !
@@ -47,10 +46,11 @@
 !
 ! ----   read controls
       if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_trans'
-      call read_control_data_sph_trans
+      call read_control_data_sph_trans(spt_ctl1)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_sph_transform'
-      call set_control_4_sph_transform(t_STR, viz_step_STR, files_STR,  &
+      call set_control_4_sph_transform                                  &
+     &   (spt_ctl1%t_STR, viz_step_STR, files_STR,                      &
      &    SPH_TRNS%fld, d_gauss_trans, field_STR, WK_sph_TRNS)
 !
 !  ------    set spectr grids

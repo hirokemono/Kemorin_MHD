@@ -33,7 +33,7 @@ collect_diff_4_comm_test.o \
 write_diff_4_comm_test.o \
 
 MOD_COMM_TEST = \
-m_ctl_data_comm_test.o \
+t_ctl_data_comm_test.o \
 mesh_send_recv_test.o \
 \
 t_control_param_comm_test.o \

@@ -21,6 +21,7 @@
       use m_read_control_elements
       use skip_comment_f
       use t_ctl_data_4_platforms
+      use t_ctl_data_4_FEM_mesh
       use t_read_control_arrays
       use t_control_elements
 !
@@ -38,12 +39,14 @@
 !>      Structure for original file names
       type(platform_data_control), save :: single_plt
 !
+!>      Structure for FEM mesh controls
+      type(FEM_mesh_control), save :: part_Fmesh
 !>      Patitioning method
       type(read_character_item), save :: part_method_ctl
 !>      Flag for element overlapping
       type(read_character_item), save :: element_overlap_ctl
 !>      Number of sleeve level
-      type(read_integer_item), save :: sleeve_level_ctl
+      type(read_integer_item), save :: sleeve_level_old
 !
 !>      Structure for list of bisection
 !!@n      ele_grp_ordering_ctl%c_tbl: Direction of bisectioning
@@ -94,6 +97,8 @@
      &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter                                  &
      &                    :: hd_org_data = 'org_data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_FEM_mesh = 'FEM_mesh_ctl'
 !
       character(len=kchara), parameter :: hd_org_f_ctl                  &
      &                      = 'original_file_ctl'
@@ -103,7 +108,8 @@
      &                      = 'decompose_ctl'
 !
       integer(kind=kint) :: i_platform =   0
-      integer(kind=kint) :: i_org_data =      0
+      integer(kind=kint) :: i_org_data =   0
+      integer(kind=kint) :: i_FEM_mesh =   0
 !
       integer (kind=kint) :: i_org_f_ctl =        0
       integer (kind=kint) :: i_ele_ordering_ctl = 0
@@ -166,6 +172,7 @@
       private :: hd_org_f_ctl
       private :: hd_platform, i_platform
       private :: hd_org_data, i_org_data
+      private :: hd_FEM_mesh, i_FEM_mesh
       private :: hd_ele_ordering_ctl, hd_decomp_ctl
       private :: i_ele_ordering_ctl, i_decomp_ctl
       private :: hd_nele_grp_ordering
@@ -249,6 +256,8 @@
         call read_control_platforms                                     &
      &     (hd_org_data, i_org_data, single_plt)
 !
+        call read_FEM_mesh_control(hd_FEM_mesh, i_FEM_mesh, part_Fmesh)
+!
         call read_ctl_data_4_decomp
         call read_ctl_data_4_ele_ordeirng
       end do
@@ -275,7 +284,7 @@
      &     (hd_num_r_layerd, ele_grp_layering_ctl)
 !
 !
-        call read_integer_ctl_type(hd_sleeve_level, sleeve_level_ctl)
+        call read_integer_ctl_type(hd_sleeve_level, sleeve_level_old)
 !
         call read_chara_ctl_type(hd_part_method, part_method_ctl)
         call read_chara_ctl_type(hd_ele_overlap, element_overlap_ctl)

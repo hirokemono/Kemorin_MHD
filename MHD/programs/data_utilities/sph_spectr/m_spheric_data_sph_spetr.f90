@@ -10,6 +10,7 @@
       module m_spheric_data_sph_spetr
 !
       use m_precision
+      use t_ctl_data_4_sph_utils
       use t_SPH_mesh_field_data
       use t_time_data
       use t_field_data_IO
@@ -20,6 +21,8 @@
       implicit none
 !
 !
+!>      Structure of mean square data
+      type(spherical_spectr_data_util_ctl), save :: spu_ctl1
 !>      Structure of spetr grid and data
       type(SPH_mesh_field_data), save :: SPH_dat_ss
 !

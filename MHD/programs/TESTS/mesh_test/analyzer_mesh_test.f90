@@ -39,7 +39,7 @@
 !
       use m_array_for_send_recv
       use m_default_file_prefix
-      use m_ctl_data_test_mesh
+      use t_ctl_data_mesh_test
       use t_control_param_mesh_test
 !
       use copy_mesh_structures
@@ -74,6 +74,7 @@
       type(jacobians_type), save :: jacobians_T
       type(shape_finctions_at_points), save :: spfs_T
 !
+      type(mesh_test_control), save :: mesh_tctl1
       type(mesh_test_files_param) ::  T_meshes
       type(mesh_geometry) :: mesh_IO
       type(surf_edge_IO_file) :: ele_mesh_IO
@@ -87,9 +88,9 @@
 !
 !     ----- read control data
 !
-      call read_control_4_mesh_test
+      call read_control_4_mesh_test(mesh_tctl1)
 !
-      call set_ctl_params_4_test_mesh(mesh_test_plt, T_meshes)
+      call set_ctl_params_4_test_mesh(mesh_tctl1, T_meshes)
 !
 !  --  read geometry
 !

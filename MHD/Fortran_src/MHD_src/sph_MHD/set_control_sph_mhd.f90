@@ -41,6 +41,7 @@
       use t_MHD_file_parameter
       use t_field_data_IO
       use t_ctl_data_4_platforms
+      use t_ctl_data_4_FEM_mesh
       use t_ctl_data_MHD_model
       use t_ctl_data_SPH_MHD_control
       use t_ctl_data_4_sph_monitor
@@ -86,6 +87,7 @@
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
+      type(FEM_mesh_control), intent(in) :: Fmesh_ctl
 !
       type(mhd_DNS_model_control), intent(inout) :: modelD_ctl
       type(sph_mhd_control_control), intent(inout) :: smctl_ctl
@@ -111,8 +113,8 @@
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call check_control_num_domains(plt)
       call set_control_smp_def(my_rank, plt)
-      call set_control_sph_mesh                                         &
-     &   (plt, MHD_files%mesh_file_IO, MHD_files%sph_file_IO,           &
+      call set_control_sph_mesh(plt, psph_ctl%Fmesh_ctl,                &
+     &    MHD_files%mesh_file_IO, MHD_files%sph_file_IO,                &
      &    MHD_files%FEM_mesh_flags)
       call set_control_restart_file_def(plt, MHD_files%fst_file_IO)
       call set_merged_ucd_file_define(plt, MHD_files%ucd_file_IO)
@@ -127,8 +129,8 @@
       if(psph_ctl%iflag_sph_shell .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
         call set_control_4_shell_grids                                  &
-     &     (nprocs, psph_ctl%spctl, psph_ctl%sdctl, sph_gen,            &
-     &      gen_sph, ierr)
+     &     (nprocs, psph_ctl%Fmesh_ctl, psph_ctl%spctl, psph_ctl%sdctl, &
+     &      sph_gen, gen_sph, ierr)
       end if
 !
 !   set forces
@@ -261,6 +263,8 @@
 !
       call set_ctl_params_no_heat_Nu(smonitor_ctl%Nusselt_file_prefix,  &
      &    rj_fld, monitor%Nusselt)
+!
+      call dealloc_sph_monitoring_ctl(smonitor_ctl)
 !
       end subroutine set_control_SPH_MHD_monitors
 !

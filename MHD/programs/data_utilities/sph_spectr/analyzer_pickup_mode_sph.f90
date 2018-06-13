@@ -27,7 +27,6 @@
 !
       subroutine initialization
 !
-      use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
       use m_legendre_transform_list
       use parallel_load_data_4_sph
@@ -42,10 +41,11 @@
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_utils'
-      call read_control_data_sph_utils
+      call read_control_data_sph_utils(spu_ctl1)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils(t_SHR, SPH_dat_ss%fld, pwr_spec)
+      call set_ctl_data_4_sph_utils                                     &
+     &   (spu_ctl1, t_SHR, SPH_dat_ss%fld, pwr_spec)
 !
 !       set spectr grids
 !

@@ -41,6 +41,9 @@
         type(layering_group_list) :: r_layer_grp
 !>        Structure of meridional group for SGS model
         type(layering_group_list) :: med_layer_grp
+!
+!>        Sleeve leavel of FEM mesh
+        integer(kind = kint) :: num_FEM_sleeve = 1
       end type construct_spherical_grid
 !
 !

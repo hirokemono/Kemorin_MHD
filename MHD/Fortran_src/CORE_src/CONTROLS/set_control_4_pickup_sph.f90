@@ -9,19 +9,19 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_params_sph_spectr(smonitor_ctl, pwr)
-!!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
+!!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!      subroutine set_ctl_params_layered_spectr(lp_ctl, pwr)
 !!        type(layerd_spectr_control), intent(inout) :: lp_ctl
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!      subroutine set_ctl_params_pick_sph                              &
 !!     &         (pspec_ctl, pick_list, picked_sph)
-!!        type(pick_spectr_control), intent(inout) :: pspec_ctl
+!!        type(pick_spectr_control), intent(in) :: pspec_ctl
 !!        type(pickup_mode_list), intent(inout) :: pick_list
 !!        type(picked_spectrum_data), intent(inout) :: picked_sph
 !!      subroutine set_ctl_params_pick_gauss                            &
 !!     &         (g_pwr, gauss_list, gauss_coef)
-!!        type(gauss_spectr_control), intent(inout) :: g_pwr
+!!        type(gauss_spectr_control), intent(in) :: g_pwr
 !!        type(pickup_mode_list), intent(inout) :: gauss_list
 !!        type(picked_spectrum_data), intent(inout) :: gauss_coef
 !!
@@ -52,10 +52,10 @@
       use output_sph_m_square_file
       use skip_comment_f
 !
-      type(sph_monitor_control), intent(inout) :: smonitor_ctl
+      type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(sph_mean_squares), intent(inout) :: pwr
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i, j, num_vspec
 !
 !
       if(smonitor_ctl%num_vspec_ctl .lt. 0) then
@@ -110,9 +110,6 @@
           pwr%v_spectr(j)%r_outside = -1.0
         end if
       end do
-      if(smonitor_ctl%num_vspec_ctl .gt. 0) then
-        call dealloc_vol_sopectr_ctl(smonitor_ctl)
-      end if
 !
       end subroutine set_ctl_params_sph_spectr
 !
@@ -176,7 +173,7 @@
       use output_sph_m_square_file
       use skip_comment_f
 !
-      type(pick_spectr_control), intent(inout) :: pspec_ctl
+      type(pick_spectr_control), intent(in) :: pspec_ctl
       type(pickup_mode_list), intent(inout) :: pick_list
       type(picked_spectrum_data), intent(inout) :: picked_sph
 !
@@ -210,7 +207,6 @@
         pick_list%idx_pick_mode(inum,2)                                 &
      &        = pspec_ctl%idx_pick_sph_ctl%int2(inum)
       end do
-      call dealloc_pick_sph_ctl(pspec_ctl)
 !
       pick_list%num_order = pspec_ctl%idx_pick_sph_m_ctl%num
       call alloc_pick_sph_m(pick_list)
@@ -219,7 +215,6 @@
         pick_list%idx_pick_m(inum)                                      &
      &        = pspec_ctl%idx_pick_sph_m_ctl%ivec(inum)
       end do
-      call dealloc_pick_sph_m_ctl(pspec_ctl)
 !
 !
       pick_list%num_degree = pspec_ctl%idx_pick_sph_l_ctl%num
@@ -230,7 +225,6 @@
           pick_list%idx_pick_l(inum)                                    &
      &          = pspec_ctl%idx_pick_sph_l_ctl%ivec(inum)
         end do
-      call dealloc_pick_sph_l_ctl(pspec_ctl)
       else if(pspec_ctl%picked_mode_head_ctl%iflag .gt. 0               &
      &   .and. pick_list%num_order .le. 0                               &
      &   .and. pick_list%num_modes .le. 0) then
@@ -249,8 +243,6 @@
           picked_sph%id_radius(inum)                                    &
      &          = pspec_ctl%idx_pick_layer_ctl%ivec(inum)
         end do
-!
-        call dealloc_num_pick_layer_ctl(pspec_ctl)
       end if
 !
       end subroutine set_ctl_params_pick_sph
@@ -263,7 +255,7 @@
       use t_ctl_data_pick_sph_spectr
       use t_pickup_sph_spectr_data
 !
-      type(gauss_spectr_control), intent(inout) :: g_pwr
+      type(gauss_spectr_control), intent(in) :: g_pwr
       type(pickup_mode_list), intent(inout) :: gauss_list
       type(picked_spectrum_data), intent(inout) :: gauss_coef
 !
@@ -303,9 +295,6 @@
      &        = g_pwr%idx_gauss_ctl%int2(inum)
       end do
 !
-      if(gauss_list%num_modes .gt. 0) then
-        call dealloc_pick_gauss_ctl(g_pwr)
-      end if
 !
 !
       gauss_list%num_order = g_pwr%idx_gauss_m_ctl%num
@@ -315,7 +304,6 @@
         gauss_list%idx_pick_m(inum)                                     &
      &        = g_pwr%idx_gauss_m_ctl%ivec(inum)
       end do
-      call dealloc_pick_gauss_m_ctl(g_pwr)
 !
 !
       gauss_list%num_degree = g_pwr%idx_gauss_l_ctl%num
@@ -326,7 +314,6 @@
           gauss_list%idx_pick_l(inum)                                   &
      &          = g_pwr%idx_gauss_l_ctl%ivec(inum)
         end do
-        call dealloc_pick_gauss_l_ctl(g_pwr)
       else if(g_pwr%gauss_coefs_prefix%iflag .gt. 0                     &
      &   .and. gauss_list%num_order .le. 0                              &
      &   .and. gauss_list%num_modes .le. 0) then
