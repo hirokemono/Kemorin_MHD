@@ -56,18 +56,10 @@
       use t_mesh_data
       use t_read_mesh_data
 !
-!     --------------------- 
-!
-      if (my_rank.eq.0) then
-        write(*,*) 'Test mesh commnucations'
-        write(*,*) 'Input file: mesh data'
-      end if
-!
 !     ----- read control data
 !
       call read_control_data_4_part
       call s_set_control_data_4_part
-!      if(my_rank .eq. 0) iflag_debug = 1
 !
 !  --  read geometry
 !
@@ -109,7 +101,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'pickup_surface_mesh_para'
       call pickup_surface_mesh_para(distribute_mesh_file)
-
+!
       if (iflag_debug.gt.0) write(*,*) 'exit analyze'
 !
       end subroutine analyze_sleeve_extend
