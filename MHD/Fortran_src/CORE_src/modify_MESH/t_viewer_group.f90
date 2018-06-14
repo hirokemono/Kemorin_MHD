@@ -153,6 +153,7 @@
 !
 !
       deallocate(view_nod_grps%grp_name)
+      call dealloc_merged_group_stack(view_nod_grps%node_grp)
       call dealloc_merged_group_item(view_nod_grps%node_grp)
 !
       end subroutine dealloc_viewer_node_grps_item
@@ -167,6 +168,10 @@
       call dealloc_merged_group_item(view_grps%surf_grp)
       call dealloc_merged_group_item(view_grps%edge_grp)
       call dealloc_merged_group_item(view_grps%node_grp)
+!
+      call dealloc_merged_group_stack(view_grps%surf_grp)
+      call dealloc_merged_group_stack(view_grps%edge_grp)
+      call dealloc_merged_group_stack(view_grps%node_grp)
 !
       end subroutine dealloc_viewer_surf_grps_item
 !
@@ -212,11 +217,22 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
+      subroutine dealloc_merged_group_stack(group)
+!
+      type(viewer_group_data), intent(inout) :: group
+!
+!
+      deallocate(group%istack_sf)
+!
+      end subroutine dealloc_merged_group_stack
+!
+!------------------------------------------------------------------
+!
       subroutine dealloc_merged_group_item(v_grp)
 !
       type(viewer_group_data), intent(inout) :: v_grp
 !
-      deallocate(v_grp%istack_sf)
+!
       deallocate(v_grp%item_sf)
 !
       end subroutine dealloc_merged_group_item

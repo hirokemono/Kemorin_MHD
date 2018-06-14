@@ -20,8 +20,6 @@
 !!      subroutine dealloc_surf_connect_viewer(view_mesh)
 !!      subroutine dealloc_edge_data_4_sf(view_mesh)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
-!!      subroutine dealloc_nod_position_viewer(view_mesh)
-!!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!@endverbatim
 !
       module t_viewer_mesh
