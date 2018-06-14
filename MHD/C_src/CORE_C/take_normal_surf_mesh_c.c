@@ -77,7 +77,7 @@ void take_normal_surf_mesh_c(struct viewer_mesh *mesh_s){
 	int iele, j, jnum;
 
 /*#pragma omp parallel for private(iele,j,jnum)*/
-	for(iele = 0; iele < mesh_s->surfpetot_viewer; iele++){
+	for(iele = 0; iele < mesh_s->nsurf_viewer; iele++){
 		for (j = 0; j < mesh_s->nsurf_each_tri; j++) {
 			jnum = j + iele * mesh_s->nsurf_each_tri;
 			set_center_of_each_surface(ITHREE, mesh_s->ie_sf_viewer[iele], 
@@ -92,14 +92,14 @@ void take_normal_surf_mesh_c(struct viewer_mesh *mesh_s){
 	
 	if (mesh_s->nnod_4_surf == 8){
 /*#pragma omp parallel for private(j, jnum, s_norm)*/
-		for(iele = 0; iele < mesh_s->surfpetot_viewer; iele++){
+		for(iele = 0; iele < mesh_s->nsurf_viewer; iele++){
 			jnum = iele * mesh_s->nsurf_each_tri;
 			ave_normal_4_two_tris(mesh_s->surf_size_view[jnum], mesh_s->surf_size_view[jnum+1], 
 						mesh_s->surf_norm_view[jnum], mesh_s->surf_norm_view[jnum+1]);
 		}
 	} else {
 /*#pragma omp parallel for private(j, jnum, s_norm)*/
-		for(iele = 0; iele < mesh_s->surfpetot_viewer; iele++){
+		for(iele = 0; iele < mesh_s->nsurf_viewer; iele++){
 			for (j = 0; j < mesh_s->nsurf_each_tri/2; j++) {
 				jnum = 2*j + iele * mesh_s->nsurf_each_tri;
 				ave_normal_4_two_tris(mesh_s->surf_size_view[jnum], mesh_s->surf_size_view[jnum+1], 
