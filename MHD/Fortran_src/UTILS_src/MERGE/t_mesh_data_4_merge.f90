@@ -123,6 +123,7 @@
 !
 !
       call dealloc_subdomain_stack(mgd_mesh%merge_tbl)
+      deallocate( mgd_mesh%subdomain )
 !
       end subroutine dealloc_number_of_mesh
 !
