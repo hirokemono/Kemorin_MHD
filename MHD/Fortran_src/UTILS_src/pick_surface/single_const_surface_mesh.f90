@@ -258,11 +258,11 @@
       call alloc_surf_type_viewer(view_mesh)
 !
       if ( merged_surf%nnod_4_surf .eq. 4) then
-        view_mesh%surftyp_viewer(1:view_mesh%surfpetot_viewer) = 221
+        view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer) = 221
       else if ( merged_surf%nnod_4_surf .eq. 8) then
-        view_mesh%surftyp_viewer(1:view_mesh%surfpetot_viewer) = 222
+        view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer) = 222
       else if ( merged_surf%nnod_4_surf .eq. 9) then
-        view_mesh%surftyp_viewer(1:view_mesh%surfpetot_viewer) = 223
+        view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer) = 223
       end if
 !
       end subroutine set_surf_domain_id_viewer

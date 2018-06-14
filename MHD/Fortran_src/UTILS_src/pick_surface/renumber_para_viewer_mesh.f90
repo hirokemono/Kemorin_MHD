@@ -122,12 +122,12 @@
       integer(kind = kint) :: i, k
 !
 !
-      do i = 1, view_mesh%surfpetot_viewer
+      do i = 1, view_mesh%nsurf_viewer
         view_mesh%isurf_gl_view(i)                                      &
      &          = i + mgd_view_mesh%isurf_sf_stack(my_rank)
       end do
       do k = 1, nnod_4_surf
-        do i = 1, view_mesh%surfpetot_viewer
+        do i = 1, view_mesh%nsurf_viewer
           view_mesh%ie_sf_viewer(i,k)                                   &
      &          = view_mesh%ie_sf_viewer(i,k)                           &
      &           + mgd_view_mesh%inod_sf_stack(my_rank)
@@ -163,7 +163,7 @@
 !
 !
       do k = 1, nedge_4_surf
-        do i = 1, view_mesh%surfpetot_viewer
+        do i = 1, view_mesh%nsurf_viewer
           if(view_mesh%iedge_sf_viewer(i,k) .gt. 0) then
             view_mesh%iedge_sf_viewer(i,k)                              &
      &          = view_mesh%iedge_sf_viewer(i,k)                        &

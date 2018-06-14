@@ -102,7 +102,7 @@
 !
       mgd_view_mesh%view_mesh%nodpetot_viewer                           &
      &   = mgd_view_mesh%inod_sf_stack(mgd_view_mesh%num_pe_sf)
-      mgd_view_mesh%view_mesh%surfpetot_viewer                          &
+      mgd_view_mesh%view_mesh%nsurf_viewer                              &
      &   = mgd_view_mesh%isurf_sf_stack(mgd_view_mesh%num_pe_sf)
       mgd_view_mesh%view_mesh%edgepetot_viewer                          &
      &   = mgd_view_mesh%iedge_sf_stack(mgd_view_mesh%num_pe_sf)

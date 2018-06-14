@@ -150,11 +150,11 @@
       write(surface_id,'(a)') '! Global ID, connectivity'
       write(surface_id,'(a)') '!'
 !
-      write(surface_id,'(i16)') view_mesh%surfpetot_viewer
+      write(surface_id,'(i16)') view_mesh%nsurf_viewer
       write(surface_id,1003)                                            &
-     &          view_mesh%surftyp_viewer(1:view_mesh%surfpetot_viewer)
+     &          view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer)
 !
-      do i = 1, view_mesh%surfpetot_viewer
+      do i = 1, view_mesh%nsurf_viewer
        write(surface_id,'(10i16)')                                      &
      &        i, view_mesh%ie_sf_viewer(i,1:nnod_4_surf)
       end do
@@ -187,7 +187,7 @@
       call alloc_surf_type_viewer(view_mesh)
 !
       read(surface_id,*)                                                &
-     &        view_mesh%surftyp_viewer(1:view_mesh%surfpetot_viewer)
+     &        view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer)
 !
       call set_3D_nnod_4_sfed_by_ele                                    &
      &   (nnod_4_ele, nnod_4_surf, nnod_4_edge)
@@ -195,7 +195,7 @@
 !
       call alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
 !
-      do i = 1, view_mesh%surfpetot_viewer
+      do i = 1, view_mesh%nsurf_viewer
        read(surface_id,*) itmp, view_mesh%ie_sf_viewer(i,1:nnod_4_surf)
       end do
 !
@@ -230,8 +230,8 @@
       write(surface_id,'(a)') '!'
       write(surface_id,'(a)') '!  edge ID for surfaces'
       write(surface_id,'(a)') '!'
-      write(surface_id,'(i16)') view_mesh%surfpetot_viewer
-      do i = 1, view_mesh%surfpetot_viewer
+      write(surface_id,'(i16)') view_mesh%nsurf_viewer
+      do i = 1, view_mesh%nsurf_viewer
         write(surface_id,'(10i16)')                                     &
      &            i, view_mesh%iedge_sf_viewer(i,1:nedge_4_surf)
       end do
@@ -263,7 +263,7 @@
       call skip_comment(tmp_character, surface_id)
       read(tmp_character,*) itmp
 !
-      do i = 1, view_mesh%surfpetot_viewer
+      do i = 1, view_mesh%nsurf_viewer
        read(surface_id,*)                                               &
      &         itmp, view_mesh%iedge_sf_viewer(i,1:nedge_4_surf)
       end do

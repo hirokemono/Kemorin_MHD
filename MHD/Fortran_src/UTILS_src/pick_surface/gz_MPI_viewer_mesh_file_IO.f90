@@ -85,7 +85,7 @@
       call gz_mpi_write_stack_over_domain                               &
      &   (IO_param, mgd_v_mesh_p%view_mesh%nodpetot_viewer)
       call gz_mpi_write_stack_over_domain                               &
-     &   (IO_param, mgd_v_mesh_p%view_mesh%surfpetot_viewer)
+     &   (IO_param, mgd_v_mesh_p%view_mesh%nsurf_viewer)
       call gz_mpi_write_stack_over_domain                               &
      &   (IO_param, mgd_v_mesh_p%view_mesh%edgepetot_viewer)
 !
@@ -104,14 +104,14 @@
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_surf_viewer()), hd_surf_viewer())
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
-     &    integer_textline(mgd_view_mesh%view_mesh%surfpetot_viewer))
+     &    integer_textline(mgd_view_mesh%view_mesh%nsurf_viewer))
 !
       call gz_mpi_write_viewer_element_type                             &
-     &   (IO_param, iten, mgd_v_mesh_p%view_mesh%surfpetot_viewer,      &
+     &   (IO_param, iten, mgd_v_mesh_p%view_mesh%nsurf_viewer,          &
      &    mgd_v_mesh_p%view_mesh%surftyp_viewer)
 !
       call gz_mpi_write_viewer_connect                                  &
-     &   (IO_param, mgd_v_mesh_p%view_mesh%surfpetot_viewer,            &
+     &   (IO_param, mgd_v_mesh_p%view_mesh%nsurf_viewer,                &
      &    nnod_4_surf, mgd_v_mesh_p%view_mesh%isurf_gl_view,            &
      &    mgd_v_mesh_p%view_mesh%ie_sf_viewer)
 !
@@ -130,11 +130,11 @@
       call gz_mpi_write_charahead(IO_param,                             &
      &    len(hd_edge_on_sf_viewer()), hd_edge_on_sf_viewer())
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
-     &    integer_textline(mgd_view_mesh%view_mesh%surfpetot_viewer))
+     &    integer_textline(mgd_view_mesh%view_mesh%nsurf_viewer))
 !
 !
       call gz_mpi_write_viewer_connect(IO_param,                        &
-     &    mgd_v_mesh_p%view_mesh%surfpetot_viewer, nedge_4_surf,        &
+     &    mgd_v_mesh_p%view_mesh%nsurf_viewer, nedge_4_surf,            &
      &    mgd_v_mesh_p%view_mesh%isurf_gl_view,                         &
      &    mgd_v_mesh_p%view_mesh%iedge_sf_viewer)
 !
