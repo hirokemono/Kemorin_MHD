@@ -617,7 +617,7 @@ extern "C" {
     int kemoview_get_curent_PSF_ID();
     
     int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag);
-    void kemoview_get_PSF_file_prefix(char *file_head);
+    int kemoview_get_PSF_file_prefix(char *file_head);
     
     void kemoview_set_PSF_field(int sel);
     void kemoview_set_PSF_component(int sel);

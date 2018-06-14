@@ -247,14 +247,14 @@ static void evolution_psf_viewer(){
 	return;
 }
 
-void evolution_fline_viewer(){
+int evolution_fline_viewer(){
 	int ierr;
 	if (kemo_sgl->fline_m->iflag_draw_fline > 0) {
 		kemo_sgl->fline_m->fline_step = kemo_sgl->psf_a->istep_sync;
 		ierr = refresh_FLINE_data(kemo_sgl->fline_d, kemo_sgl->psf_ucd_tmp,
                                   kemo_sgl->fline_m, kemo_sgl->ucd_menu);
 	}
-	return;
+	return ierr;
 }
 
 void kemoview_viewer_evolution(int istep){
@@ -677,10 +677,10 @@ int kemoview_get_PSF_full_path_file_prefix(char *file_head, int *iflag){
     return send_each_psf_file_header_full(kemo_sgl->psf_current_menu, file_head, iflag);
 }
 
-void kemoview_get_PSF_file_prefix(char *file_head){
+int kemoview_get_PSF_file_prefix(char *file_head){
 	int istep;
 	istep = send_each_psf_file_header(kemo_sgl->psf_current_menu, file_head);
-	return;
+	return istep;
 }
 
 void kemoview_set_PSF_field(int sel){
