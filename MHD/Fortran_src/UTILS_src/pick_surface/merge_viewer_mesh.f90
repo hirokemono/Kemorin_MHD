@@ -238,7 +238,8 @@
           do k1 = 1, nedge_4_surf
             mgd_vmesh%view_mesh%iedge_sf_viewer(ist+inum,k1)            &
      &          = sgl_vmesh(ip)%iedge_sf_viewer(inum,k1)                &
-     &           + mgd_vmesh%iedge_sf_stack(ip-1)
+     &           + sign(mgd_vmesh%iedge_sf_stack(ip-1),                 &
+     &                  sgl_vmesh(ip)%iedge_sf_viewer(inum,k1))
           end do
         end do
 !$omp end do nowait

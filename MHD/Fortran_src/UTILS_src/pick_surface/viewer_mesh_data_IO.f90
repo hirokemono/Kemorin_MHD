@@ -117,7 +117,8 @@
       write(surface_id,'(i16)') view_mesh%nnod_viewer
 !
       do i = 1, view_mesh%nnod_viewer
-        write(surface_id,'(i16,1p3E25.15e3)') i, view_mesh%xx_view(i,1:3)
+        write(surface_id,'(i16,1p3E25.15e3)')                           &
+     &       view_mesh%inod_gl_view(i), view_mesh%xx_view(i,1:3)
       end do
 !
       end subroutine write_node_data_viewer
@@ -146,19 +147,26 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_surf_connect_viewer(nnod_4_surf, view_mesh)
+      subroutine write_surf_connect_viewer                              &
+     &         (num_pe, isurf_sf_stack, nnod_4_surf, view_mesh)
 !
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: isurf_sf_stack(0:num_pe)
       integer(kind = kint), intent(in) :: nnod_4_surf
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ist, ied
 !
 !
       write(surface_id,'(a)',advance='NO') hd_surf_viewer()
 !
       write(surface_id,'(i16)') view_mesh%nsurf_viewer
-      write(surface_id,1003)                                            &
-     &          view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer)
+      do i = 1, num_pe
+        ist = isurf_sf_stack(i-1) + 1
+        ied = isurf_sf_stack(i)
+        if(ied .gt. ist) write(surface_id,1003)                         &
+     &                  view_mesh%surftyp_viewer(ist:ied)
+      end do
 !
       do i = 1, view_mesh%nsurf_viewer
        write(surface_id,'(10i16)')                                      &

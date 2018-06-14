@@ -56,7 +56,8 @@
 !
 !      write(*,*) 'write_surf_connect_viewer'
       call write_surf_connect_viewer                                    &
-     &   (nnod_4_surf, mgd_view_mesh%view_mesh)
+     &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%isurf_sf_stack,        &
+     &    nnod_4_surf, mgd_view_mesh%view_mesh)
 !
 !      write(*,*) 'write_edge_connect_viewer'
       call write_edge_connect_viewer                                    &
@@ -106,7 +107,8 @@
       call write_sgl_domain_data_viewer(view_mesh)
 !
       call write_node_data_viewer(view_mesh)
-      call write_surf_connect_viewer(nnod_4_surf, view_mesh)
+      call write_surf_connect_viewer                                    &
+     &   (ione, isurf_sf_stack, nnod_4_surf, view_mesh)
       call write_edge_connect_viewer(nnod_4_edge, view_mesh)
 !
       call write_domain_group_viewer(ione, domain_grps)
