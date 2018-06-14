@@ -1,8 +1,12 @@
+!>@file   viewer_file_IO.f90
+!!@brief  module viewer_file_IO
+!!
+!!@author  H. Matsui
+!!@date Programmed in Dec., 2006
 !
-!      module viewer_file_IO
-!
-!      Written by Kemorin on Jan., 2007
-!
+!>@brief ASCII viewer mesh file IO
+!!
+!!@verbatim
 !!      subroutine output_surface_grid                                  &
 !!     &         (file_name, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
 !!        type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
@@ -18,6 +22,7 @@
 !!      subroutine read_surface_grid(file_name,                         &
 !!     &          nnod_4_ele, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
 !!        type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
+!!@endverbatim
 !
       module viewer_file_IO
 !
