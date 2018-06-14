@@ -69,7 +69,7 @@
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
       allocate( inod_merge2viewer(merged%node%numnod) )
-      allocate( inod_viewer2merge(view_mesh%nodpetot_viewer) )
+      allocate( inod_viewer2merge(view_mesh%nnod_viewer) )
       inod_merge2viewer = 0
       inod_viewer2merge = 0
 !
@@ -199,7 +199,7 @@
       integer(kind = kint) :: inum, inod
 !
 !
-      do inum = 1, view_mesh%nodpetot_viewer
+      do inum = 1, view_mesh%nnod_viewer
         inod = inod_viewer2merge(inum)
         view_mesh%xx_view(inum,1:3) = merged%node%xx(inod,1:3)
       end do

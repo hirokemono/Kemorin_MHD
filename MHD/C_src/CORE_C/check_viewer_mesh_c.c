@@ -11,7 +11,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	/* int k, jst, jed; */
 	
 	printf("num_pe_sf: %d \n", mesh_s->num_pe_sf);
-	printf("nodpetot_viewer: %d \n", mesh_s->nodpetot_viewer);
+	printf("nnod_viewer: %d \n", mesh_s->nnod_viewer);
 	printf("nsurf_viewer: %d \n", mesh_s->nsurf_viewer);
 	printf("edgepetot_viewer: %d \n", mesh_s->edgepetot_viewer);
 	
@@ -33,7 +33,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	
 	
 	/* printf("node \n");
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++) {
+	for (i = 0; i < mesh_s->nnod_viewer; i++) {
 		printf(" %d %.12e %.12e %.12e \n", i, mesh_s->xx_view[i][0], mesh_s->xx_view[i][1], mesh_s->xx_view[i][2]);
 	};
 	*/

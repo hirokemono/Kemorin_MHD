@@ -98,7 +98,7 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->isurf_sf_stack);
 	read_group_stack_gz_viewer(mesh_s->num_pe_sf, 1, mesh_s->iedge_sf_stack);
 	
-	mesh_s->nodpetot_viewer =  mesh_s->inod_sf_stack[mesh_s->num_pe_sf];
+	mesh_s->nnod_viewer =  mesh_s->inod_sf_stack[mesh_s->num_pe_sf];
 	mesh_s->nsurf_viewer = mesh_s->isurf_sf_stack[mesh_s->num_pe_sf];
 	mesh_s->edgepetot_viewer = mesh_s->iedge_sf_stack[mesh_s->num_pe_sf];
 	
@@ -106,16 +106,16 @@ int read_viewer_mesh_gz_c(const char *file_name, struct viewer_mesh *mesh_s){
 	sscanf(buf, "%d", &itmp);
 	
 	alloc_node_viewer_s(mesh_s);
-	for (i= 0; i < mesh_s->nodpetot_viewer; i++) {
+	for (i= 0; i < mesh_s->nnod_viewer; i++) {
 		num_word[0] = skip_comment_gz_c(lbuf, buf);
 		sscanf(buf, "%d %lf %lf %lf", &itmp, 
 				&mesh_s->xx_view[i][0], 
 				&mesh_s->xx_view[i][1], 
 				&mesh_s->xx_view[i][2]);
 	};
-/*	printf("mesh_s->xx_view %e %e %e\n", mesh_s->xx_view[mesh_s->nodpetot_viewer-1][0],
-			mesh_s->xx_view[mesh_s->nodpetot_viewer-1][1],
-			mesh_s->xx_view[mesh_s->nodpetot_viewer-1][2]);*/
+/*	printf("mesh_s->xx_view %e %e %e\n", mesh_s->xx_view[mesh_s->nnod_viewer-1][0],
+			mesh_s->xx_view[mesh_s->nnod_viewer-1][1],
+			mesh_s->xx_view[mesh_s->nnod_viewer-1][2]);*/
 	
 	num_word[0] = skip_comment_gz_c(lbuf, buf);
 	sscanf(buf, "%d", &itmp);

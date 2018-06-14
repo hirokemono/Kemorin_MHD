@@ -51,7 +51,7 @@
       call count_used_node_4_viewer                                     &
      &   (mgd_mesh%merge_tbl, num_pe, nnod_sf)
       call s_cal_total_and_stacks(num_pe, nnod_sf, izero,               &
-     &    inod_sf_stack, view_mesh%nodpetot_viewer)
+     &    inod_sf_stack, view_mesh%nnod_viewer)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'allocate_nod_cvt_table_viewer'

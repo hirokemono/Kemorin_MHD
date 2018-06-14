@@ -28,8 +28,8 @@ void alloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
 void alloc_node_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
 	/* allocate memory  xx_view[node #][direction]*/
-	mesh_s->xx_view = (double **)calloc(mesh_s->nodpetot_viewer,sizeof(double *));
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++){
+	mesh_s->xx_view = (double **)calloc(mesh_s->nnod_viewer,sizeof(double *));
+	for (i = 0; i < mesh_s->nnod_viewer; i++){
 		mesh_s->xx_view[i] = (double *)calloc(3,sizeof(double));
 	};
 	
@@ -314,8 +314,8 @@ void alloc_domain_center_s(struct viewer_mesh *mesh_s){
 void alloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	int i, num;
 	/* allocate memory  xx_draw[node #][direction]*/
-	mesh_s->xx_draw = (double **)calloc(mesh_s->nodpetot_viewer,sizeof(double *));
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++){
+	mesh_s->xx_draw = (double **)calloc(mesh_s->nnod_viewer,sizeof(double *));
+	for (i = 0; i < mesh_s->nnod_viewer; i++){
 		mesh_s->xx_draw[i] = (double *)calloc(3,sizeof(double));
 	};
 	
@@ -371,7 +371,7 @@ static void dealloc_nummesh_viewer_s(struct viewer_mesh *mesh_s){
 
 static void dealloc_node_viewer_s(struct viewer_mesh *mesh_s){
 	int i;
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++) free(mesh_s->xx_view[i]);
+	for (i = 0; i < mesh_s->nnod_viewer; i++) free(mesh_s->xx_view[i]);
 	free(mesh_s->xx_view);
 	return;
 };
@@ -546,7 +546,7 @@ static void dealloc_mesh_draw_s(struct viewer_mesh *mesh_s){
 	free(mesh_s->dist_nod_domain);
 	
 	/* deallocate memory  xx_draw[node #][direction]*/
-	for (i = 0; i < mesh_s->nodpetot_viewer; i++) free(mesh_s->xx_draw[i]);
+	for (i = 0; i < mesh_s->nnod_viewer; i++) free(mesh_s->xx_draw[i]);
 	free(mesh_s->xx_draw);
 	
 	return;

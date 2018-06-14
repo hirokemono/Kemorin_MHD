@@ -102,7 +102,7 @@
       integer(kind = kint) :: i, k
 !
 !
-      do i = 1, view_mesh%nodpetot_viewer
+      do i = 1, view_mesh%nnod_viewer
         view_mesh%inod_gl_view(i)                                       &
      &          = i + mgd_view_mesh%inod_sf_stack(my_rank)
       end do

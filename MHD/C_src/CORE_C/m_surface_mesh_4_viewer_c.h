@@ -12,7 +12,7 @@ struct viewer_mesh {
 	
 	int nsurf_viewer;
 	int edgepetot_viewer;
-	int nodpetot_viewer;
+	int nnod_viewer;
 	
 	int nnod_4_surf;
 	int nnod_4_edge;
