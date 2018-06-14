@@ -18,7 +18,7 @@
       integer(kind=kint) :: np_smp = 1
 !
 !>      integer flag for minimum message
-      integer(kind = kint), parameter :: iflag_minimum_msg =  0
+      integer(kind = kint), parameter :: iflag_minimum_msg =  1
 !>      integer flag for routine name output
       integer(kind = kint), parameter :: iflag_routine_msg =  1
 !>      integer flag for full debug output

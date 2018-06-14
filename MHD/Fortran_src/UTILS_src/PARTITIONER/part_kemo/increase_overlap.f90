@@ -254,7 +254,7 @@
       integer(kind = kint), allocatable :: iflag_ele_tmp(:)
       real(kind = kreal) :: x_start(3), v_start(3), x_tgt(3), xi(2)
 !
-      write(*,*) 'selective extend overlap:', 'n_overlap:', n_overlap
+!      write(*,*) 'selective extend overlap:', 'n_overlap:', n_overlap
       icou = 0
       item_tmp_e = 0
       iflag_ele = 0
@@ -271,10 +271,10 @@
       do iwidth = 2, n_overlap
         iflag_ele_tmp = 0
         do icel = 1, ele%numele
-          if(iflag_ele(icel) .eq. 1) then
+          if(iflag_ele(icel) .ne. 0) then
+            iflag_ele_tmp(icel) = iflag_ele(icel)
       ! start a vector from center of current element, get the hitting surface
       ! the element on the other side of the surface will be the extended element
-            iflag_ele_tmp(icel) = 1
             x_start(1:3) = ele%x_ele(icel,1:3)
       ! interpolate center field data
             v_start(1:3) = 0.0
@@ -283,18 +283,61 @@
               v_start(1:3) = v_start(1:3) + field%d_ucd(inod,1:3)
             end do
             v_start(1:3) = v_start(1:3)/k
-            call find_line_end_in_1ele(1, node%numnod, ele%numele, surf%numsurf,        &
-            &      surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf, node%xx, icel, 0,    &
-            &      v_start, x_start, isf_tgt, x_tgt, xi)
-            !
-            if(isf_tgt .eq. 0) then
-              continue
+            if(iwidth .eq. 2 .and. iflag_ele(icel) .eq. 1) then
+              ! forward
+              call find_line_end_in_1ele(1, node%numnod, ele%numele, surf%numsurf,        &
+              &      surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf, node%xx, icel, 0,    &
+              &      v_start, x_start, isf_tgt, x_tgt, xi)
+              !
+              if(isf_tgt .ne. 0) then
+                isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
+                do i = 1, 2
+                  iele = surf%iele_4_surf(isurf_end,i,1)
+                  if(iele .ne. icel) iflag_ele_tmp(iele) = 2
+                end do
+              end if
+              ! backward
+              call find_line_end_in_1ele(-1, node%numnod, ele%numele, surf%numsurf,        &
+              &      surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf, node%xx, icel, 0,    &
+              &      v_start, x_start, isf_tgt, x_tgt, xi)
+              !
+              if(isf_tgt .ne. 0) then
+                isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
+                do i = 1, 2
+                  iele = surf%iele_4_surf(isurf_end,i,1)
+                  if(iele .ne. icel) iflag_ele_tmp(iele) = -1
+                end do
+              end if
             end if
-            isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
-            do i = 1, 2
-              iele = surf%iele_4_surf(isurf_end,i,1)
-              iflag_ele_tmp(iele) = 1
-            end do
+            if(iwidth .lt. 2) then
+              if(iflag_ele(icel) .eq. 2) then
+                ! forward
+                call find_line_end_in_1ele(1, node%numnod, ele%numele, surf%numsurf,        &
+                &      surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf, node%xx, icel, 0,    &
+                &      v_start, x_start, isf_tgt, x_tgt, xi)
+                !
+                if(isf_tgt .ne. 0) then
+                  isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
+                  do i = 1, 2
+                    iele = surf%iele_4_surf(isurf_end,i,1)
+                    if(iele .ne. icel) iflag_ele_tmp(iele) = 2
+                  end do
+                end if
+              else if(iflag_ele(icel) .eq. -1) then
+                ! backward
+                call find_line_end_in_1ele(-1, node%numnod, ele%numele, surf%numsurf,        &
+                &      surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf, node%xx, icel, 0,    &
+                &      v_start, x_start, isf_tgt, x_tgt, xi)
+                !
+                if(isf_tgt .ne. 0) then
+                  isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
+                  do i = 1, 2
+                    iele = surf%iele_4_surf(isurf_end,i,1)
+                    if(iele .ne. icel) iflag_ele_tmp(iele) = -1
+                  end do
+                end if
+              end if
+            end if
           end if
         end do
         iflag_ele(1:ele%numele) = iflag_ele_tmp(1:ele%numele)
@@ -303,7 +346,7 @@
       icou = 0
       item_tmp_e = 0
       do icel= 1, ele%numele
-        if ( iflag_ele(icel) .eq. 1) then
+        if ( iflag_ele(icel) .ne. 0) then
           icou = icou + 1
           item_tmp_e(icou) = icel
         end if
