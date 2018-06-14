@@ -48,8 +48,6 @@
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
-      type(merged_viewer_mesh), save :: mgd_view_mesh1
-!
       type(element_data), save :: ele_p
       type(surface_data), save :: surf_p
       type(edge_data), save :: edge_p
@@ -74,7 +72,7 @@
 !
 !
       call collect_surf_mesh_4_viewer                                   &
-     &   (mesh_file, surf_p, edge_p, mgd_view_mesh_p, mgd_view_mesh1)
+     &   (mesh_file, surf_p, edge_p, mgd_view_mesh_p)
 !
       call deallocate_quad4_2_linear
 !
@@ -151,7 +149,7 @@
 !------------------------------------------------------------------
 !
       subroutine collect_surf_mesh_4_viewer                             &
-     &         (mesh_file,  surf, edge, mgd_v_mesh_p, mgd_view_mesh)
+     &         (mesh_file,  surf, edge, mgd_v_mesh_p)
 !
       use renumber_para_viewer_mesh
       use viewer_mesh_IO_select
@@ -161,31 +159,29 @@
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
       type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p
-      type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
+      type(mpi_viewer_mesh_param) :: mgd_view_prm
 !
-      call alloc_num_mesh_sf(nprocs, mgd_view_mesh)
+      call alloc_mpi_viewer_mesh_param(nprocs, mgd_view_prm)
 !
       call count_number_of_node_stack4(mgd_v_mesh_p%inod_sf_stack(1),   &
-     &     mgd_view_mesh%inod_sf_stack)
+     &     mgd_view_prm%istack_v_node)
       call count_number_of_node_stack4(mgd_v_mesh_p%isurf_sf_stack(1),  &
-     &     mgd_view_mesh%isurf_sf_stack)
+     &     mgd_view_prm%istack_v_surf)
       call count_number_of_node_stack4(mgd_v_mesh_p%iedge_sf_stack(1),  &
-     &     mgd_view_mesh%iedge_sf_stack)
-!
-      call num_merged_viewer_nod_surf_edge(mgd_view_mesh)
+     &     mgd_view_prm%istack_v_edge)
 !
       call s_renumber_para_viewer_mesh                                  &
-     &   (mgd_view_mesh%inod_sf_stack(my_rank),  &
-     &    mgd_view_mesh%isurf_sf_stack(my_rank),  &
-     &    mgd_view_mesh%iedge_sf_stack(my_rank),  &
+     &   (mgd_view_prm%istack_v_node(my_rank),  &
+     &    mgd_view_prm%istack_v_surf(my_rank),  &
+     &    mgd_view_prm%istack_v_edge(my_rank),  &
      &    surf, edge, mgd_v_mesh_p)
 !
       call sel_mpi_output_surface_grid                                  &
      &   (mesh_file, surf%nnod_4_surf, edge%nnod_4_edge,                &
-     &    mgd_v_mesh_p, mgd_view_mesh)
+     &    mgd_v_mesh_p, mgd_view_prm)
 !
-      call dealloc_num_mesh_sf(mgd_view_mesh)
+      call dealloc_mpi_viewer_mesh_param(mgd_view_prm)
 !
       end subroutine collect_surf_mesh_4_viewer
 !

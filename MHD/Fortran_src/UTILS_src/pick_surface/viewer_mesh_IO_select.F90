@@ -28,7 +28,8 @@
 !!
 !!      subroutine sel_mpi_output_surface_grid                          &
 !!     &         (mesh_file, nnod_4_surf, nnod_4_edge,                  &
-!!     &          mgd_v_mesh_p, mgd_view_mesh)
+!!     &          mgd_v_mesh_p, mgd_view_prm)
+!!        type(mpi_viewer_mesh_param), intent(in) :: mgd_view_prm
 !!@endverbatim
 !
       module viewer_mesh_IO_select
@@ -155,14 +156,14 @@
 !
       subroutine sel_mpi_output_surface_grid                            &
      &         (mesh_file, nnod_4_surf, nnod_4_edge,                    &
-     &          mgd_v_mesh_p, mgd_view_mesh)
+     &          mgd_v_mesh_p, mgd_view_prm)
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: nnod_4_edge
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(merged_viewer_mesh), intent(in) :: mgd_v_mesh_p
-      type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
+      type(mpi_viewer_mesh_param), intent(in) :: mgd_view_prm
 !
       character(len = kchara) :: file_name
 !
@@ -173,13 +174,13 @@
 #ifdef ZLIB_IO
       if(mesh_file%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_mpi_write_viewer_mesh_file(file_name,                   &
-     &      nnod_4_surf, nnod_4_edge, mgd_v_mesh_p, mgd_view_mesh)
+     &      nnod_4_surf, nnod_4_edge, mgd_v_mesh_p, mgd_view_prm)
         return
       end if
 #endif
 !
       call mpi_write_viewer_mesh_file(file_name,                        &
-     &    nnod_4_surf, nnod_4_edge, mgd_v_mesh_p, mgd_view_mesh)
+     &    nnod_4_surf, nnod_4_edge, mgd_v_mesh_p, mgd_view_prm)
 !
       end subroutine sel_mpi_output_surface_grid
 !
