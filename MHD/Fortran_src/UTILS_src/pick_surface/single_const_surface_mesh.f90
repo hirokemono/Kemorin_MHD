@@ -40,6 +40,7 @@
 !
       subroutine choose_surface_mesh_sgl(mesh_file)
 !
+      use m_node_quad_2_linear_sf
       use find_mesh_file_format
       use viewer_mesh_IO_select
 !
@@ -79,17 +80,27 @@
         call const_surf_mesh_4_viewer                                   &
      &     (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p(ip))
 !
+       call dealloc_n_iso_surf_4_ele_grp(mgd_sf_grp_p)
+       call dealloc_iso_surf_4_egrp_m(mgd_sf_grp_p)
+       call dealloc_iso_surf_4_sgrp_m(mgd_sf_grp_p)
+!
+       call deallocate_inod_in_surf_type(surf_p)
+       call dealloc_inod_in_edge(edge_p)
+!
+       call deallocate_ext_surface_type(mgd_mesh_p%merged_surf)
+       call deallocate_inod_in_surf_type(mgd_mesh_p%merged_surf)
+       call deallocate_node_geometry_type(mgd_mesh_p%merged%node)
+       call deallocate_ele_connect_type(mgd_mesh_p%merged%ele)
+!
         call sel_output_single_surface_grid(id_rank, mesh_file,         &
-     &    surf_p%nnod_4_surf, edge_p%nnod_4_edge,             &
+     &    surf_p%nnod_4_surf, edge_p%nnod_4_edge,                       &
      &    mgd_view_mesh_p(ip)%view_mesh, mgd_view_mesh_p(ip)%domain_grps,       &
      &    mgd_view_mesh_p(ip)%view_nod_grps,    &
      &    mgd_view_mesh_p(ip)%view_ele_grps, &
      &    mgd_view_mesh_p(ip)%view_sf_grps)
 !
         call dealloc_number_of_mesh(mgd_mesh_p)
-!!
-!        call dealloc_iso_surf_4_egrp_m(mgd_sf_grp_p)
-!        call dealloc_n_iso_surf_4_ele_grp(mgd_sf_grp_p)
+        call deallocate_quad4_2_linear
       end do
 !
 !      call const_merged_mesh_data                                       &

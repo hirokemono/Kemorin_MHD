@@ -152,7 +152,7 @@
      &         (mesh_file,  surf, edge, mgd_v_mesh_p)
 !
       use renumber_para_viewer_mesh
-      use viewer_mesh_IO_select
+      use viewer_mesh_MPI_IO_select
       use const_global_element_ids
 !
       type(field_IO_params), intent(in) :: mesh_file
