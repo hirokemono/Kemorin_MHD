@@ -164,7 +164,7 @@
       do i = 1, num_pe
         ist = isurf_sf_stack(i-1) + 1
         ied = isurf_sf_stack(i)
-        if(ied .gt. ist) write(surface_id,1003)                         &
+        if(ied .ge. ist) write(surface_id,1003)                         &
      &                  view_mesh%surftyp_viewer(ist:ied)
       end do
 !

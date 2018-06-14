@@ -58,7 +58,7 @@
       do ip = 1, num_pe
         ist = domain_grps%node_grp%istack_sf(ip-1) + 1
         ied = domain_grps%node_grp%istack_sf(ip)
-        if(ied .gt. ist) write(surface_id,'(8i16)')                     &
+        if(ied .ge. ist) write(surface_id,'(8i16)')                     &
      &                  domain_grps%node_grp%item_sf(ist:ied)
       end do
 !
@@ -71,7 +71,7 @@
       do ip = 1, num_pe
         ist = domain_grps%surf_grp%istack_sf(ip-1) + 1
         ied = domain_grps%surf_grp%istack_sf(ip)
-        if(ied .gt. ist) write(surface_id,'(8i16)')                     &
+        if(ied .ge. ist) write(surface_id,'(8i16)')                     &
      &                  domain_grps%surf_grp%item_sf(ist:ied)
       end do
 !
@@ -85,7 +85,7 @@
       do ip = 1, num_pe
         ist = domain_grps%edge_grp%istack_sf(ip-1) + 1
         ied = domain_grps%edge_grp%istack_sf(ip)
-        if(ied .gt. ist) write(surface_id,'(8i16)')                     &
+        if(ied .ge. ist) write(surface_id,'(8i16)')                     &
      &                  domain_grps%edge_grp%item_sf(ist:ied)
       end do
 !
@@ -209,7 +209,7 @@
      &   (surface_id, num_pe, view_ele_grps%num_grp,                    &
      &    view_ele_grps%grp_name, view_ele_grps%node_grp)
 !
-      write(surface_id,'(a)', advance='NO') hd_surf_surf_grp()
+      write(surface_id,'(a)', advance='NO') hd_ele_edge_grp()
       write(surface_id,'(i16)') view_ele_grps%num_grp
 !
       call write_viewer_group_data                                      &
@@ -391,7 +391,7 @@
           do ip = 1, nprocs
             ist = v_grp%istack_sf(nprocs*(i-1)+ip-1) + 1
             ied = v_grp%istack_sf(nprocs*(i-1)+ip)
-            if(ied .gt. ist) write(id_file,'(8i16)')                    &
+            if(ied .ge. ist) write(id_file,'(8i16)')                    &
      &                            v_grp%item_sf(ist:ied)
           end do
         end do
