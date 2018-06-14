@@ -27,6 +27,7 @@
       use m_constants
 !
       use t_viewer_mesh
+      use t_viewer_group
       use m_viewer_mesh_labels
 !
       implicit none

@@ -20,6 +20,7 @@
       use m_geometry_constants
 !
       use t_viewer_mesh
+      use t_viewer_group
       use t_sum_hash
 !
       implicit    none

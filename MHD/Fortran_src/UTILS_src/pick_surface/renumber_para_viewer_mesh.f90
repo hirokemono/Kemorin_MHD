@@ -22,6 +22,7 @@
       use m_constants
       use m_geometry_constants
       use t_viewer_mesh
+      use t_viewer_group
       use t_merged_viewer_mesh
       use t_surface_data
       use t_edge_data

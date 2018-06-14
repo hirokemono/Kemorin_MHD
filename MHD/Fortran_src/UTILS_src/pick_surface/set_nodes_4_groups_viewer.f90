@@ -17,6 +17,7 @@
 !
       use m_machine_parameter
       use t_viewer_mesh
+      use t_viewer_group
       use const_node_list_4_viewer
 !
       implicit none

@@ -26,6 +26,7 @@
       use m_precision
 !
       use t_viewer_mesh
+      use t_viewer_group
 !
       implicit none
 !
@@ -33,7 +34,6 @@
 !
       contains
 !
-!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine set_surf_domain_stack_viewer                           &

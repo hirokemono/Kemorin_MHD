@@ -26,6 +26,7 @@
       use m_precision
 !
       use t_viewer_mesh
+      use t_viewer_group
       use skip_gz_comment
       use m_viewer_mesh_labels
 !

@@ -26,7 +26,6 @@
 !
       use m_precision
       use m_geometry_constants
-      use t_viewer_group
 !
       implicit none
 !

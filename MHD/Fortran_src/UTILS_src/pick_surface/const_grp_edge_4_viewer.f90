@@ -22,6 +22,7 @@
       use m_precision
 !
       use t_viewer_mesh
+      use t_viewer_group
       use t_sum_hash
 !
       implicit    none
