@@ -13,7 +13,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	printf("num_pe_sf: %d \n", mesh_s->num_pe_sf);
 	printf("nnod_viewer: %d \n", mesh_s->nnod_viewer);
 	printf("nsurf_viewer: %d \n", mesh_s->nsurf_viewer);
-	printf("edgepetot_viewer: %d \n", mesh_s->edgepetot_viewer);
+	printf("nedge_viewer: %d \n", mesh_s->nedge_viewer);
 	
 	printf("inod_sf_stack");
 	for (i = 0; i < mesh_s->num_pe_sf+1; i++) {
@@ -91,7 +91,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 	/*
 	printf("edge connectivity \n");
 	if( mesh_s->nnod_4_edge == 3 ){
-		for (i = 0; i < mesh_s->edgepetot_viewer; i++) {
+		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			printf(" %d %d %d %d \n", i, 
 					mesh_s->ie_edge_viewer[i][0], 
 					mesh_s->ie_edge_viewer[i][1], 
@@ -99,7 +99,7 @@ void check_viewer_kemo(struct viewer_mesh *mesh_s){
 		}
 	}
 	else{
-		for (i = 0; i < mesh_s->edgepetot_viewer; i++) {
+		for (i = 0; i < mesh_s->nedge_viewer; i++) {
 			printf(" %d %d %d \n", i, 
 					mesh_s->ie_edge_viewer[i][0], 
 					mesh_s->ie_edge_viewer[i][1]);

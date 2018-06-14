@@ -85,7 +85,7 @@
       call mpi_write_stack_over_domain                                  &
      &   (IO_param, mgd_v_mesh_p%view_mesh%nsurf_viewer)
       call mpi_write_stack_over_domain                                  &
-     &   (IO_param, mgd_v_mesh_p%view_mesh%edgepetot_viewer)
+     &   (IO_param, mgd_v_mesh_p%view_mesh%nedge_viewer)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_node_viewer()), hd_node_viewer())
@@ -117,10 +117,10 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_edge_viewer()), hd_edge_viewer())
       call mpi_write_charahead(IO_param, len_int_txt,                   &
-     &    integer_textline(mgd_view_mesh%view_mesh%edgepetot_viewer))
+     &    integer_textline(mgd_view_mesh%view_mesh%nedge_viewer))
 !
       call mpi_write_viewer_connect                                     &
-     &   (IO_param, mgd_v_mesh_p%view_mesh%edgepetot_viewer,            &
+     &   (IO_param, mgd_v_mesh_p%view_mesh%nedge_viewer,                &
      &    nnod_4_edge, mgd_v_mesh_p%view_mesh%iedge_gl_view,            &
      &    mgd_v_mesh_p%view_mesh%ie_edge_viewer)
 !

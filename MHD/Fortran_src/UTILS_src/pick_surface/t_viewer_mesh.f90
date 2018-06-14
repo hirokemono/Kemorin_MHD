@@ -35,9 +35,9 @@
 !
 !
       type viewer_mesh_data
-        integer(kind = kint)  ::  nsurf_viewer
-        integer(kind = kint)  ::  edgepetot_viewer
         integer(kind = kint)  ::  nnod_viewer
+        integer(kind = kint)  ::  nsurf_viewer
+        integer(kind = kint)  ::  nedge_viewer
 !
         integer(kind = kint), allocatable  ::  ie_sf_viewer(:,:)
         integer(kind = kint), allocatable  ::  ie_edge_viewer(:,:)
@@ -89,8 +89,8 @@
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
 !
-      allocate(view_mesh%edgetyp_viewer(view_mesh%edgepetot_viewer))
-      if(view_mesh%edgepetot_viewer .gt. 0) then
+      allocate(view_mesh%edgetyp_viewer(view_mesh%nedge_viewer))
+      if(view_mesh%nedge_viewer .gt. 0) then
         view_mesh%edgetyp_viewer = 0
       end if
 !
@@ -123,7 +123,7 @@
       integer(kind = kint) :: num
 !
 !
-      num = view_mesh%edgepetot_viewer
+      num = view_mesh%nedge_viewer
       allocate(view_mesh%ie_edge_viewer(num,nnod_4_edge))
       allocate(view_mesh%iedge_gl_view(num))
       if(num .gt. 0) view_mesh%ie_edge_viewer = 0
