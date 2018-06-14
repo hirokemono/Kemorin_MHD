@@ -41,7 +41,7 @@
 !
 !
       call set_nnod_4_ele_by_eletype(itype, nnod_4_ele)
-      call set_3D_nnod_4_sfed_by_ele                                   &
+      call set_3D_nnod_4_sfed_by_ele                                    &
      &   (nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !
       end subroutine set_3D_nnod_4_ele_by_type
