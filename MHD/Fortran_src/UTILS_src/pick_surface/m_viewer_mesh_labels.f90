@@ -36,7 +36,7 @@
 !
 !>      length of ilen_ndomain_viewer
       integer(kind = kint), parameter                                   &
-     &      :: ilen_ndomain_viewer = 1+21+1+3
+     &      :: ilen_ndomain_viewer = 1+21+31+31+31+1+6
 !>      length of hd_node_viewer
       integer(kind = kint), parameter                                   &
      &      :: ilen_node_viewer = 1+21+21+21+1+5
@@ -91,6 +91,9 @@
       hd_ndomain_viewer                                                 &
      &      = '!'  // char(10)                                          &
      &     // '! 0. number of domain' // char(10)                       &
+     &     // '!   stack of node for domain   '  // char(10)            &
+     &     // '!   stack of surface for domain'  // char(10)            &
+     &     // '!   stack of edge for domain   '  // char(10)            &
      &     // '!'  // char(10)
 !
       end function hd_ndomain_viewer
