@@ -22,10 +22,10 @@
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
 !!      subroutine alloc_domain_stack_4_surf(num_pe, domain_grps)
-!!      subroutine alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
+!!      subroutine alloc_merged_node_grps_stack(num_pe, view_nod_grps)
 !!      subroutine dealloc_viewer_node_grps_stack(view_nod_grps)
 !!        type(viewer_node_groups), intent(inout) :: view_nod_grps
-!!      subroutine alloc_viewer_surf_grps_stack(num_pe, view_grps)
+!!      subroutine alloc_merged_surf_grps_stack(num_pe, view_grps)
 !!      subroutine dealloc_viewer_surf_grps_stack(view_grps)
 !!        type(viewer_surface_groups), intent(inout) :: view_grps
 !!
@@ -236,7 +236,7 @@
 !
       domain_grps%num_grp = 1
 !
-      call alloc_viewer_surf_grps_stack(num_pe, domain_grps)
+      call alloc_merged_surf_grps_stack(num_pe, domain_grps)
 !
       domain_grps%grp_name = 'subdomains'
 !
@@ -244,7 +244,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine alloc_viewer_node_grps_stack(num_pe, view_nod_grps)
+      subroutine alloc_merged_node_grps_stack(num_pe, view_nod_grps)
 !
       integer(kind = kint), intent(in) :: num_pe
       type(viewer_node_groups), intent(inout) :: view_nod_grps
@@ -255,11 +255,11 @@
       call alloc_merged_group_stack                                     &
      &   (num_pe, view_nod_grps%num_grp, view_nod_grps%node_grp)
 !
-      end subroutine alloc_viewer_node_grps_stack
+      end subroutine alloc_merged_node_grps_stack
 !
 !------------------------------------------------------------------
 !
-      subroutine alloc_viewer_surf_grps_stack(num_pe, view_grps)
+      subroutine alloc_merged_surf_grps_stack(num_pe, view_grps)
 !
       integer(kind = kint), intent(in) :: num_pe
       type(viewer_surface_groups), intent(inout) :: view_grps
@@ -274,7 +274,7 @@
       call alloc_merged_group_stack                                     &
      &   (num_pe, view_grps%num_grp, view_grps%node_grp)
 !
-      end subroutine alloc_viewer_surf_grps_stack
+      end subroutine alloc_merged_surf_grps_stack
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
