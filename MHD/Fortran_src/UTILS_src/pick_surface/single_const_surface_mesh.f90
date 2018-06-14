@@ -50,7 +50,8 @@
       type(surface_data) :: surf_v
       type(edge_data) :: edge_v
 !
-      type(merged_mesh) :: mgd_mesh1
+      integer(kind = kint) :: nprocs_sf
+!
       type(group_data_merged_surf) :: mgd_sf_grp1
       type(merged_viewer_mesh) :: mgd_view_mesh1
       type(element_data), save :: ele_p
@@ -66,22 +67,29 @@
       write(*,*) 'find_mesh_format_4_viewer'
       call find_mesh_format_4_viewer(mesh_file)
       write(*,*) 'count_subdomains_4_viewer'
-      call count_subdomains_4_viewer(mesh_file, mgd_mesh1%num_pe)
+      call count_subdomains_4_viewer(mesh_file, nprocs_sf)
 !
 !  set mesh_information
 !
-      allocate(mgd_mesh_p(mgd_mesh1%num_pe))
-      allocate(mgd_sf_grp_p(mgd_mesh1%num_pe))
-      allocate(mgd_view_mesh_p(mgd_mesh1%num_pe))
+      allocate(mgd_mesh_p(nprocs_sf))
+      allocate(mgd_sf_grp_p(nprocs_sf))
+      allocate(mgd_view_mesh_p(nprocs_sf))
 !
-      do ip = 1, mgd_mesh1%num_pe
+      do ip = 1, nprocs_sf
         id_rank = ip - 1
         write(*,*) 'const_merged_mesh_sgl', ip
         call const_merged_mesh_sgl                                      &
      &    (id_rank, mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p(ip), mgd_sf_grp_p(ip))
 !
+        call alloc_num_mesh_sf(mgd_mesh_p(ip)%num_pe,  mgd_view_mesh_p(ip))
         call const_surf_mesh_4_viewer                                   &
-     &     (surf_p, edge_p, mgd_mesh_p(ip), mgd_sf_grp_p(ip), mgd_view_mesh_p(ip))
+     &     (surf_p, edge_p, mgd_mesh_p(ip), mgd_sf_grp_p(ip),   &
+     &   mgd_view_mesh_p(ip)%num_pe_sf, mgd_view_mesh_p(ip)%nnod_sf, &
+     &    mgd_view_mesh_p(ip)%nsurf_sf, mgd_view_mesh_p(ip)%nedge_sf,  &
+     &   mgd_view_mesh_p(ip)%inod_sf_stack, mgd_view_mesh_p(ip)%isurf_sf_stack, &
+     &    mgd_view_mesh_p(ip)%iedge_sf_stack, mgd_view_mesh_p(ip)%view_mesh,   &
+     &    mgd_view_mesh_p(ip)%domain_grps, mgd_view_mesh_p(ip)%view_nod_grps,   &
+     &    mgd_view_mesh_p(ip)%view_ele_grps, mgd_view_mesh_p(ip)%view_sf_grps)
 !
        call dealloc_n_iso_surf_4_ele_grp(mgd_sf_grp_p(ip))
        call dealloc_iso_surf_4_egrp_m(mgd_sf_grp_p(ip))
@@ -105,12 +113,6 @@
         call dealloc_number_of_mesh(mgd_mesh_p(ip))
         call deallocate_quad4_2_linear
       end do
-!
-!      call const_merged_mesh_data                                       &
-!     &   (mesh_file, ele_v, surf_v, edge_v, mgd_mesh1, mgd_sf_grp1)
-!      write(*,*) 'const_surf_mesh_4_viewer'
-!      call const_surf_mesh_4_viewer                                     &
-!     &   (surf_v, edge_v, mgd_mesh1, mgd_sf_grp1, mgd_view_mesh1)
 !
 !
       end subroutine choose_surface_mesh_sgl
@@ -148,7 +150,13 @@
 !------------------------------------------------------------------
 !
       subroutine const_surf_mesh_4_viewer                               &
-     &         (surf, edge, mgd_mesh, mgd_sf_grp, mgd_view_mesh)
+     &         (surf, edge, mgd_mesh, mgd_sf_grp,                       &
+     &   num_pe_sf, nnod_sf, &
+     &    nsurf_sf, nedge_sf,  &
+     &   inod_sf_stack, isurf_sf_stack, &
+     &    iedge_sf_stack, view_mesh,   &
+     &    domain_grps, view_nod_grps,   &
+     &    view_ele_grps, view_sf_grps)
 !
       use set_merged_geometry
       use const_merged_surf_data
@@ -158,49 +166,56 @@
       use const_edge_4_viewer
       use set_nodes_4_groups_viewer
 !
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
       type(merged_mesh), intent(inout) :: mgd_mesh
       type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
-      type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
+        integer(kind = kint), intent(in) :: num_pe_sf
+        integer(kind = kint), intent(inout) :: nnod_sf(:)
+        integer(kind = kint), intent(inout) :: nsurf_sf(:)
+        integer(kind = kint), intent(inout) :: nedge_sf(:)
+        integer(kind = kint), intent(inout) :: inod_sf_stack(:)
+        integer(kind = kint), intent(inout) :: isurf_sf_stack(:)
+        integer(kind = kint), intent(inout) :: iedge_sf_stack(:)
+!
+      type(viewer_mesh_data), intent(inout) :: view_mesh
+      type(viewer_surface_groups), intent(inout) :: domain_grps
+!
+      type(viewer_node_groups), intent(inout) :: view_nod_grps
+      type(viewer_surface_groups), intent(inout) :: view_ele_grps
+      type(viewer_surface_groups), intent(inout) :: view_sf_grps
 !
 !  pickup surface and nodes
 !
-!
-      call alloc_num_mesh_sf(mgd_mesh%num_pe, mgd_view_mesh)
-!
 !       write(*,*) 's_set_surf_connect_4_viewer'
        call s_set_surf_connect_4_viewer(surf%nnod_4_surf,               &
-     &    mgd_mesh, mgd_sf_grp,  mgd_view_mesh%num_pe_sf,               &
-     &     mgd_view_mesh%nsurf_sf, mgd_view_mesh%isurf_sf_stack,        &
-     &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,          &
-     &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
+     &    mgd_mesh, mgd_sf_grp,  num_pe_sf,               &
+     &     nsurf_sf, isurf_sf_stack,        &
+     &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*) 's_set_nodes_4_viewer'
        call s_set_nodes_4_viewer                                        &
-     &    (surf%nnod_4_surf, mgd_mesh, mgd_view_mesh%num_pe_sf,         &
-     &     mgd_view_mesh%nnod_sf, mgd_view_mesh%inod_sf_stack,          &
-     &     mgd_view_mesh%view_mesh, mgd_view_mesh%view_nod_grps)
+     &    (surf%nnod_4_surf, mgd_mesh, num_pe_sf,         &
+     &     nnod_sf, inod_sf_stack,          &
+     &     view_mesh, view_nod_grps)
 !
        write(*,*) 'set_surf_domain_id_viewer'
        call set_surf_domain_id_viewer                                   &
-     &    (mgd_mesh%merged_surf, mgd_view_mesh%view_mesh)
+     &    (mgd_mesh%merged_surf, view_mesh)
 !
 !
        call dealloc_array_4_merge(mgd_mesh)
 !
        write(*,*)  'construct_edge_4_viewer'
        call construct_edge_4_viewer(surf, edge,                         &
-     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack,        &
-     &     mgd_view_mesh%nedge_sf, mgd_view_mesh%iedge_sf_stack,        &
-     &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,          &
-     &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
+     &     num_pe_sf, inod_sf_stack,        &
+     &     nedge_sf, iedge_sf_stack,        &
+     &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
        write(*,*)  's_set_nodes_4_groups_viewer'
        call s_set_nodes_4_groups_viewer                                 &
      &    (surf%nnod_4_surf, edge%nnod_4_edge,                          &
-     &     mgd_view_mesh%num_pe_sf, mgd_view_mesh%inod_sf_stack,        &
-     &     mgd_view_mesh%view_mesh, mgd_view_mesh%domain_grps,          &
-     &     mgd_view_mesh%view_ele_grps, mgd_view_mesh%view_sf_grps)
+     &     num_pe_sf, inod_sf_stack,        &
+     &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !
       end subroutine const_surf_mesh_4_viewer
 !
@@ -380,5 +395,56 @@
       end subroutine const_merged_mesh_sgl
 !
 !------------------------------------------------------------------
+!
+      subroutine collect_single_viewer_mesh                             &
+     &         (nprocs_sf, mesh_file,  surf, edge, mgd_v_mesh_p)
+!
+      use renumber_para_viewer_mesh
+      use viewer_mesh_IO_select
+      use const_global_element_ids
+!
+      integer(kind = kint) :: nprocs_sf
+      type(field_IO_params), intent(in) :: mesh_file
+      type(surface_data), intent(inout) :: surf
+      type(edge_data), intent(inout) :: edge
+      type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p(nprocs_sf)
+!
+      type(merged_viewer_mesh) :: mgd_vmesh
+!
+      integer(kind = kint) :: ip
+!
+      call alloc_num_mesh_sf(nprocs_sf, mgd_vmesh)
+!
+      do ip = 1, nprocs_sf
+        mgd_vmesh%inod_sf_stack(ip)                                     &
+     &           = mgd_vmesh%inod_sf_stack(ip-1)                        &
+     &            + mgd_v_mesh_p(ip)%view_mesh%nnod_viewer
+        mgd_vmesh%isurf_sf_stack(ip)                                    &
+     &           = mgd_vmesh%isurf_sf_stack(ip-1)                       &
+     &            + mgd_v_mesh_p(ip)%view_mesh%nsurf_viewer
+        mgd_vmesh%iedge_sf_stack(ip)                                    &
+     &           = mgd_vmesh%iedge_sf_stack(ip-1)                       &
+     &            + mgd_v_mesh_p(ip)%view_mesh%nedge_viewer
+!
+        call s_renumber_para_viewer_mesh                                &
+     &     (mgd_vmesh%inod_sf_stack(ip-1),  &
+     &      mgd_vmesh%isurf_sf_stack(ip-1),  &
+     &      mgd_vmesh%iedge_sf_stack(ip-1),  &
+     &      surf, edge, mgd_vmesh)
+      end do
+!
+!      call s_merge_viewer_mesh(nprocs,                          &
+!     &          nnod_4_surf, nnod_4_edge, vmesh, domain_grps_p,       &
+!     &          view_nod_grps_p, view_ele_grps_p, view_sf_grps_p,     &
+!     &          mgd_vmesh)
+!
+      call sel_output_surface_grid                                      &
+     &   (mesh_file, surf%nnod_4_surf, edge%nnod_4_edge, mgd_vmesh)
+!
+      call dealloc_num_mesh_sf(mgd_vmesh)
+!
+      end subroutine collect_single_viewer_mesh
+!
+! -----------------------------------------------------------------------
 !
       end module single_const_surface_mesh

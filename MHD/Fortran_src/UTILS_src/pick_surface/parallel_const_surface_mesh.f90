@@ -67,8 +67,15 @@
       call const_merged_mesh_para                                       &
      &   (mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p)
 !
+      call alloc_num_mesh_sf(mgd_mesh_p%num_pe, mgd_view_mesh_p)
       call const_surf_mesh_4_viewer                                     &
-     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p, mgd_view_mesh_p)
+     &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p,                     &
+     &   mgd_view_mesh_p%num_pe_sf, mgd_view_mesh_p%nnod_sf, &
+     &    mgd_view_mesh_p%nsurf_sf, mgd_view_mesh_p%nedge_sf,  &
+     &   mgd_view_mesh_p%inod_sf_stack, mgd_view_mesh_p%isurf_sf_stack, &
+     &    mgd_view_mesh_p%iedge_sf_stack, mgd_view_mesh_p%view_mesh,   &
+     &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
+     &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
 !
 !
       call collect_surf_mesh_4_viewer                                   &
