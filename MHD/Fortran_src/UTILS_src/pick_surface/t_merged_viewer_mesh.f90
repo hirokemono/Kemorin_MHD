@@ -1,3 +1,6 @@
+!>@file   t_merged_viewer_mesh.f90
+!!@brief  module t_merged_viewer_mesh
+!!
 !!@author  H. Matsui
 !!@date Programmed in Dec., 2006
 !
@@ -29,8 +32,6 @@
 !
 !
       type merged_viewer_mesh
-        character (len = kchara) :: surface_file_head = 'in_surface'
-!
         integer(kind = kint)  :: num_pe_sf
 !
         integer(kind = kint), allocatable :: nnod_sf(:)

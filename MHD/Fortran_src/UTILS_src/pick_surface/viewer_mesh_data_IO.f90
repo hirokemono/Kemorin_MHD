@@ -5,6 +5,8 @@
 !
 !!      subroutine write_domain_data_viewer(mgd_view_mesh)
 !!        type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
+!!      subroutine write_sgl_domain_data_viewer(view_mesh)
+!!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!      subroutine read_domain_data_viewer(mgd_view_mesh)
 !!        type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !!
@@ -62,6 +64,22 @@
      &   mgd_view_mesh%iedge_sf_stack(1:mgd_view_mesh%num_pe_sf)
 !
       end subroutine write_domain_data_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine write_sgl_domain_data_viewer(view_mesh)
+!
+      type(viewer_mesh_data), intent(in) :: view_mesh
+!
+!
+!      write(surface_id,'(a)',advance='NO') hd_ndomain_viewer()
+!
+      write(surface_id,'(i16)') ione
+      write(surface_id,'(i16)') view_mesh%nnod_viewer
+      write(surface_id,'(i16)') view_mesh%nsurf_viewer
+      write(surface_id,'(i16)') view_mesh%nedge_viewer
+!
+      end subroutine write_sgl_domain_data_viewer
 !
 !------------------------------------------------------------------
 !

@@ -41,7 +41,7 @@
       subroutine choose_surface_mesh_sgl(mesh_file)
 !
       use find_mesh_file_format
-      use viewer_IO_select_4_zlib
+      use viewer_mesh_IO_select
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
@@ -54,7 +54,6 @@
       type(merged_viewer_mesh) :: mgd_view_mesh1
 !
 !
-      mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
       write(*,*) 'find_mesh_format_4_viewer'
       call find_mesh_format_4_viewer(mesh_file)
       write(*,*) 'count_subdomains_4_viewer'
@@ -68,7 +67,7 @@
       call const_surf_mesh_4_viewer                                     &
      &   (surf_v, edge_v, mgd_mesh1, mgd_sf_grp1, mgd_view_mesh1)
 !
-      call sel_output_surface_grid(mesh_file%iflag_format,              &
+      call sel_output_surface_grid(mesh_file,                           &
      &    surf_v%nnod_4_surf, edge_v%nnod_4_edge, mgd_view_mesh1)
 !
       end subroutine choose_surface_mesh_sgl
@@ -174,7 +173,7 @@
       use set_nodes_4_viewer
       use const_edge_4_viewer
       use set_nodes_4_groups_viewer
-      use viewer_IO_select_4_zlib
+      use viewer_mesh_IO_select
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(element_data), intent(inout) :: ele

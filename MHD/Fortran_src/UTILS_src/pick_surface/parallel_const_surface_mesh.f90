@@ -58,8 +58,6 @@
       type(merged_viewer_mesh), save :: mgd_view_mesh_p
 !
 !
-      mgd_view_mesh1%surface_file_head = mesh_file%file_prefix
-!
       if(my_rank .eq. 0) then
         if(iflag_debug .eq. 0) write(*,*) 'find_merged_mesh_format'
         call find_merged_mesh_format(mesh_file)
@@ -156,7 +154,7 @@
      &         (mesh_file,  surf, edge, mgd_v_mesh_p, mgd_view_mesh)
 !
       use renumber_para_viewer_mesh
-      use viewer_IO_select_4_zlib
+      use viewer_mesh_IO_select
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(surface_data), intent(inout) :: surf
@@ -171,7 +169,7 @@
      &   (surf, edge, mgd_v_mesh_p, mgd_view_mesh)
 !
       call sel_mpi_output_surface_grid                                  &
-     &   (mesh_file%iflag_format, surf%nnod_4_surf, edge%nnod_4_edge,   &
+     &   (mesh_file, surf%nnod_4_surf, edge%nnod_4_edge,                &
      &    mgd_v_mesh_p, mgd_view_mesh)
 !
       call dealloc_num_mesh_sf(mgd_view_mesh)
