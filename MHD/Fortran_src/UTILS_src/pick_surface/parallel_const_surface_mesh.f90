@@ -155,6 +155,7 @@
 !
       use renumber_para_viewer_mesh
       use viewer_mesh_IO_select
+      use const_global_element_ids
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(surface_data), intent(inout) :: surf
@@ -165,8 +166,20 @@
 !
       call alloc_num_mesh_sf(nprocs, mgd_view_mesh)
 !
+      call count_number_of_node_stack4(mgd_v_mesh_p%inod_sf_stack(1),   &
+     &     mgd_view_mesh%inod_sf_stack)
+      call count_number_of_node_stack4(mgd_v_mesh_p%isurf_sf_stack(1),  &
+     &     mgd_view_mesh%isurf_sf_stack)
+      call count_number_of_node_stack4(mgd_v_mesh_p%iedge_sf_stack(1),  &
+     &     mgd_view_mesh%iedge_sf_stack)
+!
+      call num_merged_viewer_nod_surf_edge(mgd_view_mesh)
+!
       call s_renumber_para_viewer_mesh                                  &
-     &   (surf, edge, mgd_v_mesh_p, mgd_view_mesh)
+     &   (mgd_view_mesh%inod_sf_stack(my_rank),  &
+     &    mgd_view_mesh%isurf_sf_stack(my_rank),  &
+     &    mgd_view_mesh%iedge_sf_stack(my_rank),  &
+     &    surf, edge, mgd_v_mesh_p)
 !
       call sel_mpi_output_surface_grid                                  &
      &   (mesh_file, surf%nnod_4_surf, edge%nnod_4_edge,                &
