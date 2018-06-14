@@ -209,8 +209,13 @@
       integer(kind = kint) :: i
 !
       do i = 1, surf_grp%num_item
-        surf_grp%item_sf(i) = surf_grp%item_sf(i)                       &
+        if(surf_grp%item_sf(i) .gt. 0) then
+          surf_grp%item_sf(i) = surf_grp%item_sf(i)                     &
      &                       + mgd_view_mesh%isurf_sf_stack(my_rank)
+        else
+          surf_grp%item_sf(i) = surf_grp%item_sf(i)                     &
+     &                       - mgd_view_mesh%isurf_sf_stack(my_rank)
+        end if
       end do
 !
       end subroutine set_global_surf_grp_items
