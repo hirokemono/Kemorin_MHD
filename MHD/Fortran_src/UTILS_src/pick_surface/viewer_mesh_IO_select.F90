@@ -37,6 +37,7 @@
 !
       use m_file_format_switch
       use t_merged_viewer_mesh
+      use t_file_IO_parameter
 !
       use viewer_file_IO
       use MPI_viewer_mesh_file_IO
