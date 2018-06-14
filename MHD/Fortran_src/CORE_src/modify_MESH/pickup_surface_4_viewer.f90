@@ -166,7 +166,8 @@
             iedge = abs(edge%iedge_4_sf(isurf,k1))
             view_mesh%iedge_sf_viewer(inum,k1) = iedge_ksm(iedge)
             if(iedge_ksm(iedge) .le. 0) write(*,*)                      &
-     &              'Wrong table in iedge_ksm', iedge, iedge_ksm(iedge)
+     &              'Wrong table in iedge_ksm', iedge, iedge_ksm(iedge), &
+     &              edge%iedge_global(iedge), edge%ie_edge(iedge,1:2)
           end do
         end if
       end do

@@ -32,7 +32,7 @@
 !
       integer(kind = kint), parameter :: iflag_output_SURF = 0
       integer(kind = kint), parameter :: iflag_add_comm_tbl = 1
-      integer(kind = kint), parameter :: iflag_write_subdomain = 0
+      integer(kind = kint), parameter :: iflag_write_subdomain = 1
 !
       private :: iflag_output_SURF, iflag_add_comm_tbl
       private :: iflag_write_subdomain

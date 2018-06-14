@@ -6,7 +6,7 @@
 !!      subroutine s_const_FEM_mesh_for_sph                             &
 !!     &         (ip_rank, nidx_rtp, r_global, gauss,                   &
 !!     &          s3d_ranks, stk_lc1d, sph_gl1d, sph_params, sph_rtp,   &
-!!     &          radial_rj_grp, mesh, group, stbl)
+!!     &          radial_rj_grp, mesh, group, ele_mesh, stbl)
 !!        type(gauss_points), intent(in) :: gauss
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -17,6 +17,7 @@
 !!        type(comm_table_make_sph), intent(inout) :: stbl
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::  group
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !
       module set_FEM_mesh_4_sph
 !
@@ -37,7 +38,7 @@
       subroutine s_const_FEM_mesh_for_sph                               &
      &         (ip_rank, nidx_rtp, r_global, gauss,                     &
      &          s3d_ranks, stk_lc1d, sph_gl1d, sph_params, sph_rtp,     &
-     &          radial_rj_grp, mesh, group, stbl)
+     &          radial_rj_grp, mesh, group, ele_mesh, stbl)
 !
       use t_spheric_parameter
       use t_gauss_points
@@ -45,12 +46,15 @@
       use t_comm_table
       use t_geometry_data
       use t_group_data
+      use t_surface_data
+      use t_edge_data
       use t_spheric_global_ranks
       use t_sph_mesh_1d_connect
       use t_sph_1d_global_index
 !
       use coordinate_converter
       use ordering_sph_mesh_to_rtp
+      use set_nnod_4_ele_by_type
 !
       type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_1d_index_stack), intent(in)  :: stk_lc1d
@@ -69,6 +73,7 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::  group
+      type(element_geometry), intent(inout) :: ele_mesh
 !
       integer(kind = kint) :: ip_r, ip_t
 !
@@ -103,6 +108,9 @@
      &    mesh%node%xx(1:mesh%node%numnod,1),                           &
      &    mesh%node%xx(1:mesh%node%numnod,2),                           &
      &    mesh%node%xx(1:mesh%node%numnod,3))
+!
+      call set_3D_nnod_4_sfed_by_ele(mesh%ele%nnod_4_ele,               &
+     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       end subroutine s_const_FEM_mesh_for_sph
 !

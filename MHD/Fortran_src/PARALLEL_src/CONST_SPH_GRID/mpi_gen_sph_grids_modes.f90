@@ -235,6 +235,11 @@
       use parallel_FEM_mesh_init
       use set_nnod_4_ele_by_type
       use para_const_kemoview_mesh
+      use parallel_sleeve_extension
+!
+      use m_array_for_send_recv
+      use nod_phys_send_recv
+      
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -249,6 +254,8 @@
       type(gauss_points) :: gauss_s
       type(comm_table_make_sph) :: stbl_s
       type(element_geometry) :: ele_mesh
+!
+      integer(kind = kint) :: i_level
 !
 !
       if(FEM_mesh_flags%iflag_access_FEM .eq. 0) return
@@ -271,20 +278,36 @@
      &   (my_rank, sph_rtp%nidx_rtp, gen_sph%s3d_radius%radius_1d_gl,   &
      &    gauss_s, gen_sph%s3d_ranks, gen_sph%stk_lc1d,                 &
      &    gen_sph%sph_gl1d, sph_params, sph_rtp, radial_rj_grp_lc,      &
-     &    femmesh%mesh, femmesh%group, stbl_s)
+     &    femmesh%mesh, femmesh%group, ele_mesh, stbl_s)
+!
+! Increase sleeve size
+      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(n_sym_tensor, femmesh%mesh%node%numnod)
+!
+      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
+      call init_nod_send_recv(femmesh%mesh)
+!
+      do i_level = 2, gen_sph%num_FEM_sleeve
+        if(my_rank .gt. 0) write(*,*) 'extend sleeve:', i_level
+        call para_sleeve_extension                                      &
+     &     (femmesh%mesh, femmesh%group, ele_mesh)
+      end do
 !
 ! Output mesh data
+      write(*,*) 'FEM_mesh_flags%iflag_access_FEM', FEM_mesh_flags%iflag_access_FEM
       if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then
         mesh_file%file_prefix = sph_file_head
         call mpi_output_mesh(mesh_file, femmesh%mesh, femmesh%group)
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'
 !
+        write(*,*) 'FEM_mesh_flags%iflag_output_VMESH', FEM_mesh_flags%iflag_output_VMESH
         if(FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
           call pickup_surface_mesh_para(mesh_file)
         end if
       end if
 !
+      write(*,*) 'FEM_mesh_flags%iflag_output_SURF', FEM_mesh_flags%iflag_output_SURF
       if(FEM_mesh_flags%iflag_output_SURF .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_init_with_IO'
         call set_3d_nnod_4_sfed_by_ele(femmesh%mesh%ele%nnod_4_ele,     &
