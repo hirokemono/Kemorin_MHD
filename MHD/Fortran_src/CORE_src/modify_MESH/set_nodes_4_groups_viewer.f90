@@ -4,8 +4,7 @@
 !      Written by Kemorin on Jan., 2007
 !
 !!      subroutine s_set_nodes_4_groups_viewer(nnod_4_surf, nnod_4_edge,&
-!!     &          num_pe, inod_sf_stack, view_mesh, domain_grps,        &
-!!     &          view_ele_grps, view_sf_grps)
+!!     &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!        type(viewer_surface_groups), intent(inout) :: domain_grps
 !!        type(viewer_surface_groups), intent(inout) :: view_ele_grps
@@ -44,12 +43,9 @@
 !------------------------------------------------------------------
 !
       subroutine s_set_nodes_4_groups_viewer(nnod_4_surf, nnod_4_edge,  &
-     &          num_pe, inod_sf_stack, view_mesh, domain_grps,          &
-     &          view_ele_grps, view_sf_grps)
+     &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
       type(viewer_surface_groups), intent(inout) :: domain_grps
@@ -62,19 +58,17 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_domain_viewer'
       call set_nod_4_domain_viewer(nnod_4_surf, nnod_4_edge,            &
-     &    num_pe, inod_sf_stack, view_mesh, domain_grps)
+     &    view_mesh, domain_grps)
 !
       call alloc_merged_group_item(view_ele_grps%node_grp)
       call alloc_merged_group_item(view_sf_grps%node_grp)
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_ele_group_viewer'
       call set_nod_4_ele_group_viewer(nnod_4_surf, nnod_4_edge,         &
-     &    num_pe, inod_sf_stack, view_mesh, domain_grps,                &
-     &    view_ele_grps)
+     &    view_mesh, domain_grps, view_ele_grps)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_surf_group_viewer'
       call set_nod_4_surf_group_viewer(nnod_4_surf, nnod_4_edge,        &
-     &    num_pe, inod_sf_stack, view_mesh, domain_grps,                &
-     &    view_sf_grps)
+     &    view_mesh, domain_grps, view_sf_grps)
 !
       call deallocate_imark_node_4_list
 !
@@ -84,11 +78,9 @@
 !------------------------------------------------------------------
 !
       subroutine set_nod_4_domain_viewer(nnod_4_surf, nnod_4_edge,      &
-     &          num_pe, inod_sf_stack, view_mesh, domain_grps)
+     &          view_mesh, domain_grps)
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
       type(viewer_surface_groups), intent(inout) :: domain_grps
@@ -108,12 +100,9 @@
 !------------------------------------------------------------------
 !
       subroutine set_nod_4_ele_group_viewer(nnod_4_surf, nnod_4_edge,   &
-     &          num_pe, inod_sf_stack, view_mesh, domain_grps,          &
-     &          view_ele_grps)
+     &          view_mesh, domain_grps, view_ele_grps)
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
       type(viewer_mesh_data), intent(in) :: view_mesh
       type(viewer_surface_groups), intent(in) :: domain_grps
 !
@@ -149,12 +138,9 @@
 !------------------------------------------------------------------
 !
       subroutine set_nod_4_surf_group_viewer(nnod_4_surf, nnod_4_edge,  &
-     &          num_pe, inod_sf_stack, view_mesh, domain_grps,          &
-     &          view_sf_grps)
+     &          view_mesh, domain_grps, view_sf_grps)
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
       type(viewer_mesh_data), intent(in) :: view_mesh
       type(viewer_surface_groups), intent(in) :: domain_grps
 !
