@@ -125,7 +125,7 @@
       call set_surf_domain_item_viewer                                  &
      &   (merged_surf, domain_grps%surf_grp)
       call set_surf_domain_stack_viewer                                 &
-     &   (num_pe, isurf_sf_stack, domain_grps%surf_grp)
+     &   (isurf_sf_stack(1), domain_grps%surf_grp)
 !
 !     renumber element group boundary
 !
@@ -140,7 +140,7 @@
 !
       call set_element_group_item_viewer                                &
      &   (mgd_sf_grp, view_ele_grps%surf_grp)
-      call set_element_group_stack_viewer(num_pe, isurf_sf_stack,       &
+      call set_element_group_stack_viewer(isurf_sf_stack(1),            &
      &    mgd_sf_grp, view_ele_grps%num_grp, view_ele_grps%surf_grp)
 !
 !     renumber surface boundary
@@ -156,7 +156,7 @@
 !
       call set_surface_group_item_viewer                                &
      &   (mgd_sf_grp, view_sf_grps%surf_grp)
-      call set_surface_group_stack_viewer(num_pe, isurf_sf_stack,       &
+      call set_surface_group_stack_viewer(isurf_sf_stack(1),            &
      &    merged_grp,  view_sf_grps%num_grp, view_sf_grps%surf_grp)
 !
       end subroutine s_set_groups_4_viewer_surface
