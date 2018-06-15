@@ -169,6 +169,7 @@
       integer(kind = kint) :: k1
 !
 !
+      numsurf_part = 0
       do k1 = 1, nsurf_4_ele*nele_grp
         if (isurf_flag(k1) .eq. 0) numsurf_part = numsurf_part + 1
       end do
