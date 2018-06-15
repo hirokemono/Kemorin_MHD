@@ -7,7 +7,7 @@
 !!     &         (nnod_4_surf, mgd_mesh, mgd_sf_grp,                    &
 !!     &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
-!!        type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+!!        type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       module set_surf_connect_4_viewer
 !
@@ -38,7 +38,7 @@
       integer(kind = kint), intent(in) :: nnod_4_surf
 !
       type(merged_mesh), intent(inout) :: mgd_mesh
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
       type(viewer_surface_groups), intent(inout) :: domain_grps
@@ -100,7 +100,7 @@
       integer(kind = kint), intent(in) :: nsurf_viewer
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(in) :: merged_surf
-      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
 !
       type(viewer_surface_groups), intent(inout) :: domain_grps
       type(viewer_surface_groups), intent(inout) :: view_ele_grps

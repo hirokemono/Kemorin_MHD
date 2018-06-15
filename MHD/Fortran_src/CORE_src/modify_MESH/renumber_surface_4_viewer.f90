@@ -9,7 +9,7 @@
 !!        type(viewer_group_data), intent(inout) :: domain_surf_grp
 !!      subroutine set_element_group_stack_viewer                       &
 !!     &         (nsurf_viewer, mgd_sf_grp, ngrp_ele_sf, ele_surf_grp)
-!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+!!        type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
 !!        type(viewer_group_data), intent(inout) :: ele_surf_grp
 !!      subroutine set_surface_group_stack_viewer                       &
 !!     &         (nsurf_viewer, merged_grp, ngrp_surf_sf, sf_surf_grp)
@@ -60,7 +60,7 @@
       use t_viewer_ele_grp_surface
 !
       integer(kind = kint), intent(in) :: nsurf_viewer
-      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
       integer(kind = kint), intent(in) :: ngrp_ele_sf
 !
       type(viewer_group_data), intent(inout) :: ele_surf_grp

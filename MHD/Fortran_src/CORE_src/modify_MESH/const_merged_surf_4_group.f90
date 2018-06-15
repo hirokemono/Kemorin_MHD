@@ -10,7 +10,7 @@
 !!        type(mesh_geometry), intent(in) :: merged
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!        type(surface_data), intent(in) :: merged_surf
-!!        type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+!!        type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       module const_merged_surf_4_group
 !
@@ -67,7 +67,7 @@
       type(mesh_geometry), intent(in) :: merged
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(inout) :: merged_surf
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       integer(kind = kint) :: igrp
       integer(kind = kint) :: ist_grp, ied_grp, nele_grp
@@ -149,7 +149,7 @@
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(in) :: merged_surf
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       integer(kind= kint) :: i, iele, isf
 !

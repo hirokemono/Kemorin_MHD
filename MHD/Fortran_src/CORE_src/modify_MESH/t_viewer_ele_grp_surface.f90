@@ -17,7 +17,7 @@
 !!      subroutine check_viewer_isuf_4_surf_grp(surf_grp, mgd_sf_grp)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: surf_grp
-!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+!!        type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
 !
       module t_viewer_ele_grp_surface
 !
@@ -25,7 +25,7 @@
 !
       implicit    none
 !
-      type group_data_merged_surf
+      type viewer_ele_grp_surface
         integer(kind=kint ) ::  ntot_sf_iso_ele_grp
         integer(kind=kint ), allocatable :: num_sf_iso_ele_grp(:)
         integer(kind=kint ), allocatable :: istack_sf_iso_ele_grp(:)
@@ -33,7 +33,7 @@
         integer(kind=kint ), allocatable :: isf_isolate_ele_grp(:)
 !
         integer(kind=kint ), allocatable :: isf_surf_grp(:)
-      end type group_data_merged_surf
+      end type viewer_ele_grp_surface
 !
 ! ------------------------------------------------------
 !
@@ -46,7 +46,7 @@
       use t_group_data
 !
       type(group_data), intent(in) :: ele_grp
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
 !
       allocate( mgd_sf_grp%num_sf_iso_ele_grp(ele_grp%num_grp) )
@@ -61,7 +61,7 @@
 !
       subroutine alloc_iso_surf_4_egrp_m(mgd_sf_grp)
 !
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       integer(kind = kint) :: num
 !
@@ -78,7 +78,7 @@
       use t_group_data
 !
       type(surface_group_data), intent(in) :: surf_grp
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       allocate( mgd_sf_grp%isf_surf_grp(surf_grp%num_item) )
       mgd_sf_grp%isf_surf_grp = 0
@@ -90,7 +90,7 @@
 !
       subroutine dealloc_n_iso_surf_4_ele_grp(mgd_sf_grp)
 !
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       deallocate( mgd_sf_grp%num_sf_iso_ele_grp )
       deallocate( mgd_sf_grp%istack_sf_iso_ele_grp )
@@ -101,7 +101,7 @@
 !
       subroutine dealloc_iso_surf_4_egrp_m(mgd_sf_grp)
 !
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       deallocate( mgd_sf_grp%isf_isolate_ele_grp )
 !
@@ -111,7 +111,7 @@
 !
       subroutine dealloc_iso_surf_4_sgrp_m(mgd_sf_grp)
 !
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       deallocate( mgd_sf_grp%isf_surf_grp )
 !
@@ -125,7 +125,7 @@
       use t_mesh_data
 !
       type(group_data), intent(in) :: ele_grp
-      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
 !
       integer(kind = kint) :: igrp, ist, ied
 !
@@ -149,7 +149,7 @@
       use t_group_data
 !
       type(surface_group_data), intent(in) :: surf_grp
-      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
 !
       integer(kind = kint) :: igrp, ist, ied
 !

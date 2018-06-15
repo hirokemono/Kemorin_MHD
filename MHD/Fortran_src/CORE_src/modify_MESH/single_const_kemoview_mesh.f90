@@ -56,7 +56,7 @@
       type(edge_data) :: edge_v
 !
 !
-      type(group_data_merged_surf) :: mgd_sf_grp1
+      type(viewer_ele_grp_surface) :: mgd_sf_grp1
       type(merged_viewer_mesh) :: mgd_view_mesh1
       type(element_data), save :: ele_p
       type(surface_data), save :: surf_p
@@ -115,7 +115,7 @@
         call deallocate_quad4_2_linear
       end do
 !
-      call collect_single_viewer_mesh                             &
+      call collect_single_viewer_mesh                                   &
      &  (nprocs_sf, mesh_file,  surf_p, edge_p, view_mesh, domain_grps, &
      &   view_nod_grps, view_ele_grps, view_sf_grps)
 !
@@ -176,7 +176,7 @@
       type(viewer_surface_groups), intent(inout) :: view_ele_grps
       type(viewer_surface_groups), intent(inout) :: view_sf_grps
 !
-      type(group_data_merged_surf) :: mgd_sf_grp
+      type(viewer_ele_grp_surface) :: mgd_sf_grp
 !
 !
        write(*,*) 'const_merged_surface_4_ele_grp'

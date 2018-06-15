@@ -15,7 +15,7 @@
 !!     &         (merged_grp, merged_surf, mgd_sf_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!        type(surface_data), intent(in) :: merged_surf
-!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+!!        type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
 !!      subroutine count_used_surface_4_viewer                          &
 !!     &         (num_pe, istack_surfpe, nsurf_sf)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
@@ -29,11 +29,11 @@
 !!        type(viewer_group_data), intent(inout) :: domain_surf_grp
 !!      subroutine set_element_group_item_viewer                        &
 !!     &         (mgd_sf_grp, ele_surf_grp)
-!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+!!        type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
 !!      subroutine set_surface_group_item_viewer                        &
 !!     &         (mgd_sf_grp, sf_surf_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
-!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+!!        type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
 !!        type(mesh_groups), intent(in) :: merged_grp
 !
       module pickup_surface_4_viewer
@@ -110,7 +110,7 @@
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(in) :: merged_surf
-      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
 !
       integer(kind = kint) :: inum, isurf
 !
@@ -223,7 +223,7 @@
       use t_viewer_ele_grp_surface
 
 !
-      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
       type(viewer_group_data), intent(inout) :: ele_surf_grp
 !
       integer(kind = kint) :: inum, isurf
@@ -244,7 +244,7 @@
 !
       use t_viewer_ele_grp_surface
 !
-      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
       type(viewer_group_data), intent(inout)  :: sf_surf_grp
 !
       integer(kind = kint) :: inum, isurf
