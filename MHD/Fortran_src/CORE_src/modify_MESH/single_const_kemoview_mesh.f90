@@ -62,7 +62,6 @@
       type(surface_data), save :: surf_p
       type(edge_data), save :: edge_p
       type(merged_mesh), allocatable :: mgd_mesh_p(:)
-      type(group_data_merged_surf), allocatable :: mgd_sf_grp_p(:)
 !
       type(viewer_mesh_data), allocatable :: view_mesh(:)
       type(viewer_surface_groups), allocatable :: domain_grps(:)
@@ -76,7 +75,6 @@
 !  set mesh_information
 !
       allocate(mgd_mesh_p(nprocs_sf))
-      allocate(mgd_sf_grp_p(nprocs_sf))
 !
       allocate(view_mesh(nprocs_sf))
       allocate(domain_grps(nprocs_sf))
@@ -88,11 +86,11 @@
         id_rank = ip - 1
         write(*,*) 'const_merged_mesh_sgl', ip
         call const_merged_mesh_sgl                                      &
-     &    (id_rank, nprocs_sf, mesh_file, ele_p, surf_p, edge_p,       &
-     &     mgd_mesh_p(ip), mgd_sf_grp_p(ip))
+     &    (id_rank, nprocs_sf, mesh_file, ele_p, surf_p, edge_p,        &
+     &     mgd_mesh_p(ip))
 !
         call const_surf_mesh_4_viewer                                   &
-     &     (surf_p, edge_p, mgd_mesh_p(ip), mgd_sf_grp_p(ip),           &
+     &     (surf_p, edge_p, mgd_mesh_p(ip),                             &
      &     view_mesh(ip), domain_grps(ip), view_nod_grps(ip),           &
      &     view_ele_grps(ip), view_sf_grps(ip))
 !
@@ -156,8 +154,8 @@
 !------------------------------------------------------------------
 !
       subroutine const_surf_mesh_4_viewer                               &
-     &       (surf, edge, mgd_mesh, mgd_sf_grp, view_mesh,              &
-     &        domain_grps, view_nod_grps, view_ele_grps, view_sf_grps)
+     &       (surf, edge, mgd_mesh, view_mesh, domain_grps,             &
+     &        view_nod_grps, view_ele_grps, view_sf_grps)
 !
       use set_merged_geometry
       use const_merged_surf_data
@@ -170,7 +168,6 @@
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
       type(merged_mesh), intent(inout) :: mgd_mesh
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
       type(viewer_surface_groups), intent(inout) :: domain_grps
@@ -178,6 +175,18 @@
       type(viewer_node_groups), intent(inout) :: view_nod_grps
       type(viewer_surface_groups), intent(inout) :: view_ele_grps
       type(viewer_surface_groups), intent(inout) :: view_sf_grps
+!
+      type(group_data_merged_surf) :: mgd_sf_grp
+!
+!
+       write(*,*) 'const_merged_surface_4_ele_grp'
+       call const_merged_surface_4_ele_grp                              &
+     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
+     &     mgd_sf_grp)
+!
+       write(*,*) 'const_merged_surface_4_sf_grp'
+       call const_merged_surface_4_sf_grp                               &
+     &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp)
 !
 !  pickup surface and nodes
 !
@@ -275,7 +284,7 @@
 !
       subroutine const_merged_mesh_sgl                                  &
      &         (id_rank, nprocs_sf, mesh_file, ele, surf, edge,         &
-     &          mgd_mesh, mgd_sf_grp)
+     &          mgd_mesh)
 !
       use t_file_IO_parameter
       use load_mesh_data
@@ -284,7 +293,6 @@
       use set_merged_geometry
       use mesh_IO_select
       use const_merged_surf_data
-      use const_merged_surf_4_group
       use copy_mesh_structures
       use add_comm_table_in_node_grp
 !
@@ -294,7 +302,6 @@
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
       type(merged_mesh), intent(inout) :: mgd_mesh
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
 !
       type(mesh_data) :: fem_IO_p
       type(group_data) :: new_nod_grp
@@ -340,14 +347,6 @@
 !
        write(*,*) 's_const_merged_surf_data'
        call s_const_merged_surf_data(mgd_mesh)
-!
-       write(*,*) 'const_merged_surface_4_ele_grp'
-       call const_merged_surface_4_ele_grp                              &
-     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
-     &     mgd_sf_grp)
-       write(*,*) 'const_merged_surface_4_sf_grp'
-       call const_merged_surface_4_sf_grp                               &
-     &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp)
 !
       end subroutine const_merged_mesh_sgl
 !
