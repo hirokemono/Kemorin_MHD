@@ -10,12 +10,13 @@
       module m_spheric_data_transform
 !
       use m_precision
+      use t_ctl_data_4_sph_trans
       use t_SPH_mesh_field_data
-      use t_time_data
       use t_field_data_IO
-      use t_file_IO_parameter
 !
       implicit none
+!
+      type(spherical_transform_util_ctl), save :: spt_ctl1
 !
 !>  Structure of grid and spectr data for spherical spectr method
       type(SPH_mesh_field_data), save :: SPH_TRNS

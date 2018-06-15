@@ -7,8 +7,7 @@
 !>@brief Surface mesh data generator for kemoviewer
 !!
 !!@verbatim
-!!      subroutine s_merge_viewer_mesh(nprocs,                          &
-!!     &          nnod_4_surf, nnod_4_edge, vmesh, domain_grps_p,       &
+!!      subroutine s_merge_viewer_mesh(nprocs, vmesh, domain_grps_p,    &
 !!     &          view_nod_grps_p, view_ele_grps_p, view_sf_grps_p,     &
 !!     &          mgd_vmesh)
 !!        type(viewer_mesh_data), intent(in) :: vmesh(nprocs)
@@ -46,13 +45,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_merge_viewer_mesh(nprocs,                            &
-     &          nnod_4_surf, nnod_4_edge, vmesh, domain_grps_p,         &
+      subroutine s_merge_viewer_mesh(nprocs, vmesh, domain_grps_p,      &
      &          view_nod_grps_p, view_ele_grps_p, view_sf_grps_p,       &
      &          mgd_vmesh)
 !
       integer(kind = kint), intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       type(viewer_mesh_data), intent(in) :: vmesh(nprocs)
 !
       type(viewer_surface_groups), intent(inout)                        &
@@ -78,13 +75,13 @@ write(*,*) 'each mesh surface:', vmesh(:)%nsurf_viewer
 write(*,*) 'each mesh node:', vmesh(:)%nnod_viewer
 write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
       call alloc_surf_type_viewer(mgd_vmesh%view_mesh)
-      call alloc_surf_connect_viewer(nnod_4_surf, mgd_vmesh%view_mesh)
-      call copy_2_merged_viewer_surf                                    &
-     &   (nprocs, nnod_4_surf, vmesh, mgd_vmesh)
+      call alloc_surf_connect_viewer                                    &
+     &   (vmesh(1)%nnod_v_surf, mgd_vmesh%view_mesh)
+      call copy_2_merged_viewer_surf(nprocs, vmesh, mgd_vmesh)
 !
-      call alloc_edge_data_4_sf(nnod_4_edge, mgd_vmesh%view_mesh)
-      call copy_2_merged_viewer_edge                                    &
-     &   (nprocs, nnod_4_edge, vmesh, mgd_vmesh)
+      call alloc_edge_data_4_sf                                         &
+     &   (vmesh(1)%nnod_v_edge, mgd_vmesh%view_mesh)
+      call copy_2_merged_viewer_edge(nprocs, vmesh, mgd_vmesh)
 !
       call set_global_groups_items                                      &
      &   (nprocs, mgd_vmesh, domain_grps_p)
@@ -176,10 +173,9 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !
       subroutine copy_2_merged_viewer_surf                              &
-     &         (nprocs, nnod_4_surf, sgl_vmesh, mgd_vmesh)
+     &         (nprocs, sgl_vmesh, mgd_vmesh)
 !
       integer(kind = kint), intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: nnod_4_surf
       type(viewer_mesh_data), intent(in) :: sgl_vmesh(nprocs)
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_vmesh
@@ -196,7 +192,7 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
           mgd_vmesh%view_mesh%isurf_gl_view(ist+inum) = ist + inum
           mgd_vmesh%view_mesh%surftyp_viewer(ist+inum)                  &
      &            = sgl_vmesh(ip)%surftyp_viewer(inum)
-          do k1 = 1, nnod_4_surf
+          do k1 = 1, mgd_vmesh%view_mesh%nnod_v_surf
             mgd_vmesh%view_mesh%ie_sf_viewer(ist+inum,k1)               &
      &          = sgl_vmesh(ip)%ie_sf_viewer(inum,k1)                   &
      &           + mgd_vmesh%inod_sf_stack(ip-1)
@@ -211,10 +207,9 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !------------------------------------------------------------------
 !
       subroutine copy_2_merged_viewer_edge                              &
-     &         (nprocs, nnod_4_edge, sgl_vmesh, mgd_vmesh)
+     &         (nprocs, sgl_vmesh, mgd_vmesh)
 !
       integer(kind = kint), intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: nnod_4_edge
       type(viewer_mesh_data), intent(in) :: sgl_vmesh(nprocs)
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_vmesh
@@ -228,7 +223,7 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
 !$omp do private(inum)
         do inum = 1, num
           mgd_vmesh%view_mesh%iedge_gl_view(ist+inum) = ist + inum
-          do k1 = 1, nnod_4_edge
+          do k1 = 1, mgd_vmesh%view_mesh%nnod_v_edge
             mgd_vmesh%view_mesh%ie_edge_viewer(ist+inum,k1)             &
      &          = sgl_vmesh(ip)%ie_edge_viewer(inum,k1)                 &
      &           + mgd_vmesh%inod_sf_stack(ip-1)
@@ -243,7 +238,8 @@ write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
           do k1 = 1, nedge_4_surf
             mgd_vmesh%view_mesh%iedge_sf_viewer(ist+inum,k1)            &
      &          = sgl_vmesh(ip)%iedge_sf_viewer(inum,k1)                &
-     &           + mgd_vmesh%iedge_sf_stack(ip-1)
+     &           + sign(mgd_vmesh%iedge_sf_stack(ip-1),                 &
+     &                  sgl_vmesh(ip)%iedge_sf_viewer(inum,k1))
           end do
         end do
 !$omp end do nowait

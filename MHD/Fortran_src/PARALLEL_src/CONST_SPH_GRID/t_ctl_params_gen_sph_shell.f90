@@ -16,7 +16,8 @@
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!      subroutine set_control_4_shell_grids(nprocs_check,              &
-!!     &          spctl, sdctl, sph, gen_sph, ierr)
+!!     &          Fmesh_ctl, spctl, sdctl, sph, gen_sph, ierr)
+!!        type(FEM_mesh_control), intent(in) :: Fmesh_ctl
 !!        type(sphere_data_control), intent(inout) :: spctl
 !!        type(sphere_domain_control), intent(inout) :: sdctl
 !!        type(sph_grids), intent(inout) :: sph
@@ -30,6 +31,7 @@
       use t_spheric_parameter
       use t_file_IO_parameter
       use t_ctl_data_4_platforms
+      use t_ctl_data_4_FEM_mesh
       use t_ctl_data_gen_sph_shell
       use t_ctl_data_4_sphere_model
       use t_ctl_data_4_divide_sphere
@@ -75,11 +77,12 @@
       integer(kind = kint) :: nprocs_check
 !
 !
-      call set_control_4_shell_filess(plt, nprocs_check, sph_files)
+      call set_control_4_shell_filess                                   &
+     &   (plt, psph_ctl%Fmesh_ctl, nprocs_check, sph_files)
 !
       call set_control_4_shell_grids                                    &
-     &   (nprocs_check, psph_ctl%spctl, psph_ctl%sdctl,                 &
-     &    sph, gen_sph, ierr)
+     &   (nprocs_check, psph_ctl%Fmesh_ctl, psph_ctl%spctl,             &
+     &    psph_ctl%sdctl, sph, gen_sph, ierr)
 !
       end subroutine set_control_4_gen_shell_grids
 !
@@ -87,12 +90,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_shell_filess                             &
-     &         (plt, nprocs_check, sph_files)
+     &         (plt, Fmesh_ctl, nprocs_check, sph_files)
 !
       use set_control_platform_data
       use gen_sph_grids_modes
 !
       type(platform_data_control), intent(in) :: plt
+      type(FEM_mesh_control), intent(in) :: Fmesh_ctl
       type(gen_sph_file_IO_params), intent(inout) ::  sph_files
       integer(kind = kint), intent(inout) :: nprocs_check
 !
@@ -103,8 +107,8 @@
       end if
 !
       call turn_off_debug_flag_by_ctl(izero, plt)
-      call set_control_sph_mesh                                         &
-     &   (plt, sph_files%mesh_file_IO, sph_files%sph_file_IO,           &
+      call set_control_sph_mesh(plt, Fmesh_ctl,                         &
+     &    sph_files%mesh_file_IO, sph_files%sph_file_IO,                &
      &    sph_files%FEM_mesh_flags)
 !
       end subroutine set_control_4_shell_filess
@@ -112,7 +116,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_shell_grids(nprocs_check,                &
-     &          spctl, sdctl, sph, gen_sph, ierr)
+     &          Fmesh_ctl, spctl, sdctl, sph, gen_sph, ierr)
 !
       use m_constants
       use m_machine_parameter
@@ -125,6 +129,7 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: nprocs_check
+      type(FEM_mesh_control), intent(in) :: Fmesh_ctl
       type(sphere_data_control), intent(inout) :: spctl
       type(sphere_domain_control), intent(inout) :: sdctl
       type(sph_grids), intent(inout) :: sph
@@ -189,6 +194,14 @@
      &      .lt. (sph%sph_params%l_truncation+1)) then
         write(*,*) "Grid has less than Nyquist's sampling theorem"
       end if
+!
+!
+      gen_sph%num_FEM_sleeve = 1
+      if(Fmesh_ctl%FEM_sleeve_level_ctl%iflag .gt. 0) then
+        gen_sph%num_FEM_sleeve                                          &
+     &        = Fmesh_ctl%FEM_sleeve_level_ctl%intvalue
+      end if
+      if(gen_sph%num_FEM_sleeve .lt. 1) gen_sph%num_FEM_sleeve = 1
 !
       end subroutine set_control_4_shell_grids
 !

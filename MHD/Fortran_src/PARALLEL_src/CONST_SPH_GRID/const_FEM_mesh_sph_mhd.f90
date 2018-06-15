@@ -66,6 +66,7 @@
       use mpi_load_mesh_data
       use sph_file_IO_select
       use para_const_kemoview_mesh
+      use parallel_sleeve_extension
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -78,6 +79,9 @@
       type(field_IO_params), intent(inout) ::  mesh_file
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
+!
+      type(element_geometry) :: ele_mesh
+      integer(kind = kint) :: i_level
 !
 !
       call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_SF)
@@ -95,7 +99,14 @@
       call s_const_FEM_mesh_for_sph                                     &
      &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r, gauss_SF,   &
      &    gen_sph%s3d_ranks, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
-     &    sph_params, sph_rtp, radial_rj_grp, mesh, group, stbl_SF)
+     &    sph_params, sph_rtp, radial_rj_grp, mesh, group, ele_mesh,    &
+     &    stbl_SF)
+!
+! Increase sleeve size
+      do i_level = 2, gen_sph%num_FEM_sleeve
+        if(my_rank .gt. 0) write(*,*) 'extend sleeve:', i_level
+        call para_sleeve_extension(mesh, group, ele_mesh)
+      end do
 !
 ! Output mesh data
       if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then

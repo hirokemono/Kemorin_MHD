@@ -10,6 +10,11 @@
 !!      subroutine s_extend_group_table                                 &
 !!     &        (nprocs, new_comm, new_ele_comm, new_node, new_ele,     &
 !!     &         org_group, new_group)
+!!        type(communication_table), intent(in) :: new_comm, new_ele_comm
+!!        type(node_data), intent(in) :: new_node
+!!        type(element_data), intent(inout) :: new_ele
+!!        type(mesh_groups), intent(in) :: org_group
+!!        type(mesh_groups), intent(inout) :: new_group
 !!@endverbatim
 !
       module extend_group_table
@@ -24,6 +29,8 @@
       use t_comm_table
 !
       implicit none
+!
+      private :: extend_node_group, extend_surf_group
 !
 !  ---------------------------------------------------------------------
 !

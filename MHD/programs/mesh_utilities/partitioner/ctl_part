@@ -11,8 +11,14 @@ begin partitioner_control
     mesh_file_prefix         'mesh/in'
 !
     mesh_file_fmt_ctl        'gzip'
-    memory_conservation_ctl     'NO'
   end data_files_def
+!
+  begin FEM_mesh_ctl
+    memory_conservation_ctl     'NO'
+!
+    sleeve_level_ctl           2
+    element_overlap_ctl        ON
+  end FEM_mesh_ctl
 !
 !    Example of order
 !      Conductive solid => conductive fluid
@@ -34,8 +40,6 @@ begin partitioner_control
 !
   begin decompose_ctl
     partitioning_method_ctl    RCB_xyz
-    sleeve_level_ctl           2
-    element_overlap_ctl        ON
 !
     array RCB_dir_ctl   4
       RCB_dir_ctl  radius   end

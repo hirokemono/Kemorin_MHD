@@ -3,7 +3,9 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!!      subroutine set_ctl_data_4_sph_utils(time_SHR, rj_fld, pwr)
+!!      subroutine set_ctl_data_4_sph_utils                             &
+!!     &         (spu_ctl, time_SHR, rj_fld, pwr)
+!!        type(spherical_spectr_data_util_ctl), intent(in) :: spu_ctl
 !!        type(time_step_param), intent(inout) :: time_SHR
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
@@ -87,7 +89,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_data_4_sph_utils                               &
-     &         (time_SHR, rj_fld, pwr)
+     &         (spu_ctl, time_SHR, rj_fld, pwr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -98,9 +100,10 @@
       use set_control_platform_data
       use set_control_4_pickup_sph
 !
-      use m_ctl_data_4_sph_utils
+      use t_ctl_data_4_sph_utils
       use m_default_file_prefix
 !
+      type(spherical_spectr_data_util_ctl), intent(inout) :: spu_ctl
       type(time_step_param), intent(inout) :: time_SHR
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -109,49 +112,49 @@
       integer(kind = kint) :: ierr
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, su_plt)
-      call set_control_smp_def(my_rank, su_plt)
-      call set_control_sph_mesh                                         &
-     &   (su_plt, files_SHR%mesh_file_IO, files_SHR%sph_file_IO,        &
+      call turn_off_debug_flag_by_ctl(my_rank, spu_ctl%plt)
+      call set_control_smp_def(my_rank, spu_ctl%plt)
+      call set_control_sph_mesh(spu_ctl%plt, spu_ctl%Fmesh_ctl,         &
+     &    files_SHR%mesh_file_IO, files_SHR%sph_file_IO,                &
      &    files_SHR%FEM_mesh_flags)
-      call set_control_mesh_file_def                                    &
-     &   (def_org_sph_rj_head, org_su_plt, files_SHR%org_rj_file_IO)
-      call set_control_mesh_file_def                                    &
-     &   (def_org_rst_header, org_su_plt, files_SHR%org_rst_file_IO)
+      call set_control_mesh_file_def(def_org_sph_rj_head,               &
+     &    spu_ctl%org_plt, files_SHR%org_rj_file_IO)
+      call set_control_mesh_file_def(def_org_rst_header,                &
+     &    spu_ctl%org_plt, files_SHR%org_rst_file_IO)
 !
 !      stepping parameter
 !
       call set_fixed_time_step_params                                   &
-     &   (t_su_ctl, time_SHR, ierr, e_message)
+     &   (spu_ctl%tstep_ctl, time_SHR, ierr, e_message)
       call copy_delta_t(time_SHR%init_d, time_SHR%time_d)
 !
 !    file header for field data
 !
-      if(su_plt%spectr_field_file_prefix%iflag .gt. 0) then
+      if(spu_ctl%plt%spectr_field_file_prefix%iflag .gt. 0) then
         call set_parallel_file_ctl_params(org_sph_file_head,            &
-     &      su_plt%spectr_field_file_prefix,                            &
-     &      su_plt%restart_file_fmt_ctl, spec_fst_param)
+     &      spu_ctl%plt%spectr_field_file_prefix,                       &
+     &      spu_ctl%plt%restart_file_fmt_ctl, spec_fst_param)
       end if
 !
-      if(zm_spec_file_head_ctl%iflag .gt. 0) then
+      if(spu_ctl%zm_spec_file_head_ctl%iflag .gt. 0) then
         call set_parallel_file_ctl_params(zm_sph_file_head,             &
-     &      zm_spec_file_head_ctl, su_plt%restart_file_fmt_ctl,         &
-     &      zm_sph_fst_param)
+     &      spu_ctl%zm_spec_file_head_ctl,                              &
+     &      spu_ctl%plt%restart_file_fmt_ctl, zm_sph_fst_param)
       end if
 !
 !   using restart data for spherical dynamo
 !
-      if(su_plt%restart_file_prefix%iflag .gt. 0) then
+      if(spu_ctl%plt%restart_file_prefix%iflag .gt. 0) then
         call set_parallel_file_ctl_params(org_sph_file_head,            &
-     &      su_plt%restart_file_prefix, su_plt%restart_file_fmt_ctl,    &
-     &      spec_fst_param)
+     &      spu_ctl%plt%restart_file_prefix,                            &
+     &      spu_ctl%plt%restart_file_fmt_ctl, spec_fst_param)
         time_SHR%ucd_step%increment = time_SHR%rst_step%increment
       end if
 !
       if( (files_SHR%org_rj_file_IO%iflag_IO) .gt. 0) then
         call set_parallel_file_ctl_params(org_sph_file_head,            &
-     &      org_su_plt%restart_file_prefix,                             &
-     &      org_su_plt%sph_file_fmt_ctl, spec_fst_param)
+     &      spu_ctl%org_plt%restart_file_prefix,                        &
+     &      spu_ctl%org_plt%sph_file_fmt_ctl, spec_fst_param)
         time_SHR%ucd_step%increment = time_SHR%rst_step%increment
       end if
 !
@@ -162,36 +165,42 @@
 !
 !     file header for reduced data
 !
-      if(ene_spec_head_ctl%iflag .gt. 0) then
-        ene_spec_head = ene_spec_head_ctl%charavalue
+      if(spu_ctl%ene_spec_head_ctl%iflag .gt. 0) then
+        ene_spec_head = spu_ctl%ene_spec_head_ctl%charavalue
       end if
 !
-      if(vol_ene_spec_head_ctl%iflag .gt. 0) then
-        vol_ene_spec_head = vol_ene_spec_head_ctl%charavalue
+      if(spu_ctl%vol_ene_spec_head_ctl%iflag .gt. 0) then
+        vol_ene_spec_head = spu_ctl%vol_ene_spec_head_ctl%charavalue
       end if
 !
 !   set pickup mode
 !
-      call set_ctl_params_layered_spectr(smonitor_u_ctl%lp_ctl, pwr)
-      call set_ctl_params_sph_spectr(smonitor_u_ctl, pwr)
-      call set_ctl_params_pick_sph(smonitor_u_ctl%pspec_ctl,            &
+      call set_ctl_params_layered_spectr                                &
+     &   (spu_ctl%smonitor_ctl%lp_ctl, pwr)
+      call set_ctl_params_sph_spectr(spu_ctl%smonitor_ctl, pwr)
+      call set_ctl_params_pick_sph(spu_ctl%smonitor_ctl%pspec_ctl,      &
      &    pick_list_u, pick_sph_u)
+!
       call set_ctl_params_pick_gauss                                    &
-     &   (smonitor_u_ctl%g_pwr, gauss_list_u, gauss_u)
+     &   (spu_ctl%smonitor_ctl%g_pwr, gauss_list_u, gauss_u)
 !
 !   set physical values
 !
-      call s_set_control_sph_data(fld_su_ctl%field_ctl, rj_fld, ierr)
+      call s_set_control_sph_data                                       &
+     &   (spu_ctl%fld_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
-     &   (fld_su_ctl%field_ctl, nod_fld, ierr)
+     &   (spu_ctl%fld_ctl%field_ctl, nod_fld, ierr)
 !
-      if(buoyancy_ratio_ctl%iflag .gt. 0) then
-        buo_ratio = buoyancy_ratio_ctl%realvalue
+      if(spu_ctl%buoyancy_ratio_ctl%iflag .gt. 0) then
+        buo_ratio = spu_ctl%buoyancy_ratio_ctl%realvalue
       end if
 !
-      if(thermal_buoyancy_ctl%iflag .gt. 0) then
-        thermal_buo = thermal_buoyancy_ctl%realvalue
+      if(spu_ctl%thermal_buoyancy_ctl%iflag .gt. 0) then
+        thermal_buo = spu_ctl%thermal_buoyancy_ctl%realvalue
       end if
+!
+      call dealloc_control_array_c3(spu_ctl%fld_ctl%field_ctl)
+      call dealloc_sph_monitoring_ctl(spu_ctl%smonitor_ctl)
 !
       end subroutine set_ctl_data_4_sph_utils
 !
