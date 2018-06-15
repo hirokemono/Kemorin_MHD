@@ -38,19 +38,19 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine choose_surface_mesh_sgl(mesh_file)
+      subroutine choose_surface_mesh_sgl(nprocs_sf, mesh_file)
 !
       use m_node_quad_2_linear_sf
       use find_mesh_file_format
       use viewer_mesh_IO_select
 !
+      integer(kind = kint), intent(in) :: nprocs_sf
       type(field_IO_params), intent(inout) :: mesh_file
 !
       type(element_data) :: ele_v
       type(surface_data) :: surf_v
       type(edge_data) :: edge_v
 !
-      integer(kind = kint) :: nprocs_sf
 !
       type(group_data_merged_surf) :: mgd_sf_grp1
       type(merged_viewer_mesh) :: mgd_view_mesh1
@@ -69,12 +69,6 @@
       type(viewer_surface_groups), allocatable :: view_sf_grps(:)
 !
       integer(kind = kint) :: ip, id_rank
-!
-!
-      write(*,*) 'find_mesh_format_4_viewer'
-      call find_mesh_format_4_viewer(mesh_file)
-      write(*,*) 'count_subdomains_4_viewer'
-      call count_subdomains_4_viewer(mesh_file, nprocs_sf)
 !
 !  set mesh_information
 !
