@@ -3,11 +3,10 @@
 !
 !      Written by Kemorin on Jan., 2007
 !
-!!      subroutine output_surface_grid_gz                               &
-!!     &         (file_name, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+!!     subroutine output_surface_grid_gz(file_name, mgd_view_mesh)
 !!        type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
-!!      subroutine read_surface_grid_gz(file_name,                      &
-!!     &          nnod_4_ele, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+!!      subroutine read_surface_grid_gz                                 &
+!!     &          (file_name, nnod_4_ele, mgd_view_mesh)
 !!        type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
       module gz_viewer_file_IO
@@ -30,11 +29,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine output_surface_grid_gz                                 &
-     &         (file_name, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+      subroutine output_surface_grid_gz(file_name, mgd_view_mesh)
 !
       character(len = kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
 !
@@ -51,11 +48,10 @@
 !      write(*,*) 'write_surf_connect_viewer_gz'
       call write_surf_connect_viewer_gz                                 &
      &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%isurf_sf_stack,        &
-     &    nnod_4_surf, mgd_view_mesh%view_mesh)
+     &    mgd_view_mesh%view_mesh)
 !
 !      write(*,*) 'write_edge_connect_viewer_gz'
-      call write_edge_connect_viewer_gz                                 &
-     &   (nnod_4_edge, mgd_view_mesh%view_mesh)
+      call write_edge_connect_viewer_gz(mgd_view_mesh%view_mesh)
 !
 !      write(*,*) 'write_domain_group_viewer_gz'
       call write_domain_group_viewer_gz                                 &
@@ -79,14 +75,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_surface_grid_gz(file_name,                        &
-     &          nnod_4_ele, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+      subroutine read_surface_grid_gz                                   &
+     &          (file_name, nnod_4_ele, mgd_view_mesh)
 !
       character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nnod_4_ele
-      integer(kind = kint), intent(inout) :: nnod_4_surf
-      integer(kind = kint), intent(inout) :: nnod_4_edge
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
+!
+      integer(kind = kint) :: nnod_4_edge
 !
 !
       call add_gzip_extension(file_name, gzip_name)
@@ -101,8 +97,7 @@
 !
 !      write(*,*) 'read_surf_connect_viewer_gz'
       call read_surf_connect_viewer_gz                                  &
-     &   (nnod_4_ele, nnod_4_surf, nnod_4_edge,                         &
-     &    mgd_view_mesh%view_mesh)
+     &   (nnod_4_ele, nnod_4_edge, mgd_view_mesh%view_mesh)
 !
 !      write(*,*) 'read_edge_connect_viewer_gz'
       call read_edge_connect_viewer_gz                                  &

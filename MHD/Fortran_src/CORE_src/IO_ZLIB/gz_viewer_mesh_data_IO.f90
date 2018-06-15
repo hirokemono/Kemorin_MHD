@@ -13,13 +13,14 @@
 !!      subroutine read_node_data_viewer_gz(view_mesh)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
-!!      subroutine write_surf_connect_viewer_gz(nnod_4_surf, view_mesh)
+!!      subroutine write_surf_connect_viewer_gz                         &
+!!     &         (num_pe, isurf_sf_stack, view_mesh)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!      subroutine read_surf_connect_viewer_gz                          &
-!!     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge, view_mesh)
+!!     &         (nnod_4_ele, nnod_4_edge, view_mesh)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!
-!!      subroutine write_edge_connect_viewer_gz(nnod_4_edge)
+!!      subroutine write_edge_connect_viewer_gz(view_mesh)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!      subroutine read_edge_connect_viewer_gz(nnod_4_edge, view_mesh)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
@@ -132,11 +133,10 @@
 !------------------------------------------------------------------
 !
       subroutine write_surf_connect_viewer_gz                           &
-     &         (num_pe, isurf_sf_stack, nnod_4_surf, view_mesh)
+     &         (num_pe, isurf_sf_stack, view_mesh)
 !
       integer(kind = kint), intent(in) :: num_pe
       integer(kind = kint), intent(in) :: isurf_sf_stack(0:num_pe)
-      integer(kind = kint), intent(in) :: nnod_4_surf
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
       integer(kind = kint) :: i, ist, num
@@ -156,10 +156,11 @@
       end do
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
-     &                '(i16,', nnod_4_surf, '(i16),a1)'
+     &                '(i16,', view_mesh%nnod_v_surf, '(i16),a1)'
       do i = 1, view_mesh%nsurf_viewer
         write(textbuf,fmt_txt)                                          &
-     &      i, view_mesh%ie_sf_viewer(i,1:nnod_4_surf), char(0)
+     &      i, view_mesh%ie_sf_viewer(i,1:view_mesh%nnod_v_surf),       &
+     &      char(0)
         call gz_write_textbuf_w_lf
       end do
 !
@@ -168,18 +169,18 @@ end subroutine write_surf_connect_viewer_gz
 !------------------------------------------------------------------
 !
       subroutine read_surf_connect_viewer_gz                            &
-     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge, view_mesh)
+     &         (nnod_4_ele, nnod_4_edge, view_mesh)
 !
       use m_geometry_constants
       use m_node_quad_2_linear_sf
       use set_nnod_4_ele_by_type
 !
       integer(kind = kint), intent(in) :: nnod_4_ele
-      integer(kind = kint), intent(inout) :: nnod_4_surf
       integer(kind = kint), intent(inout) :: nnod_4_edge
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       integer(kind = kint) :: i, itmp
+      integer(kind = kint) :: nnod_4_surf
 !
 !
       call skip_gz_comment_int(itmp)
@@ -205,11 +206,10 @@ end subroutine write_surf_connect_viewer_gz
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_edge_connect_viewer_gz(nnod_4_edge, view_mesh)
+      subroutine write_edge_connect_viewer_gz(view_mesh)
 !
       use m_geometry_constants
 !
-      integer(kind = kint), intent(in) :: nnod_4_edge
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
       integer(kind = kint) :: i
@@ -223,10 +223,12 @@ end subroutine write_surf_connect_viewer_gz
       call gz_write_textbuf_w_lf
 !
 !
-      write(fmt_txt,'(a5,i2,a9)') '(i16,', nnod_4_edge, '(i16),a1)'
+      write(fmt_txt,'(a5,i2,a9)')                                       &
+     &           '(i16,', view_mesh%nnod_v_edge, '(i16),a1)'
       do i = 1, view_mesh%nedge_viewer
         write(textbuf,fmt_txt)                                          &
-     &         i, view_mesh%ie_edge_viewer(i,1:nnod_4_edge), char(0)
+     &       i, view_mesh%ie_edge_viewer(i,1:view_mesh%nnod_v_edge),    &
+     &       char(0)
         call gz_write_textbuf_w_lf
       end do
 !

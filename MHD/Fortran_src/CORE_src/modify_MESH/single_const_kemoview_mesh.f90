@@ -106,11 +106,8 @@
 !
         if(iflag_write_subdomain .gt. 0) then
           call sel_output_single_surface_grid(id_rank, mesh_file,       &
-     &    surf_p%nnod_4_surf, edge_p%nnod_4_edge,                       &
-     &    view_mesh(ip), domain_grps(ip),       &
-     &    view_nod_grps(ip),    &
-     &    view_ele_grps(ip), &
-     &    view_sf_grps(ip))
+     &        view_mesh(ip), domain_grps(ip), view_nod_grps(ip),        &
+     &        view_ele_grps(ip), view_sf_grps(ip))
         end if
 !
         call dealloc_number_of_mesh(mgd_mesh_p(ip))
@@ -387,8 +384,7 @@
      &   surf%nnod_4_surf, edge%nnod_4_edge, view_mesh, domain_grps,    &
      &   view_nod_grps, view_ele_grps, view_sf_grps, mgd_vmesh)
 !
-      call sel_output_surface_grid                                      &
-     &   (mesh_file, surf%nnod_4_surf, edge%nnod_4_edge, mgd_vmesh)
+      call sel_output_surface_grid(mesh_file, mgd_vmesh)
 !
       call dealloc_num_mesh_sf(mgd_vmesh)
 !
