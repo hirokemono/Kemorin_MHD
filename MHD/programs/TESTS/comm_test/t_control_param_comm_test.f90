@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!!     subroutine s_input_control_comm_test(T_files)
-!!      type(comm_test_files_param), intent(inout) ::  T_files
+!!     subroutine s_input_control_comm_test(comm_tctl, T_files)
+!!       type(comm_test_control), intent(inout) :: comm_tctl
+!!       type(comm_test_files_param), intent(inout) ::  T_files
 !
       module t_control_param_comm_test
 !
@@ -29,41 +30,46 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_comm_test(T_files)
+      subroutine s_input_control_comm_test(comm_tctl, T_files)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_ctl_data_comm_test
+      use t_ctl_data_comm_test
 !
       use set_surface_data_4_IO
       use set_edge_data_4_IO
 !
+      type(comm_test_control), intent(inout) :: comm_tctl
       type(comm_test_files_param), intent(inout) ::  T_files
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_comm_test'
-      call read_control_4_comm_test
+      call read_control_4_comm_test(comm_tctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
-      call set_ctl_params_4_comm_test(comm_test_plt, T_files)
+      call set_ctl_params_4_comm_test                                   &
+     &  (comm_tctl%plt, comm_tctl%Fmesh_ctl, T_files)
 !
       end subroutine s_input_control_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_comm_test(plt, T_files)
+      subroutine set_ctl_params_4_comm_test(plt, Fmesh_ctl, T_files)
 !
       use calypso_mpi
       use set_control_platform_data
       use t_ctl_data_4_platforms
+      use t_ctl_data_4_FEM_mesh
 !
       type(platform_data_control), intent(in) :: plt
+      type(FEM_mesh_control), intent(in) :: Fmesh_ctl
       type(comm_test_files_param), intent(inout) :: T_files
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call set_control_smp_def(my_rank, plt)
       call set_control_mesh_def(plt, T_files%mesh_file_IO)
-      call set_FEM_surface_output_flag(plt, T_files%iflag_output_SURF)
+      call set_FEM_surface_output_flag                                  &
+     &   (Fmesh_ctl, T_files%iflag_output_SURF)
 !
       end subroutine set_ctl_params_4_comm_test
 !

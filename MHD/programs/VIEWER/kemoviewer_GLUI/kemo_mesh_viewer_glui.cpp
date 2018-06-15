@@ -783,6 +783,7 @@ static void make_3rd_level_fline_menu(){
 static void make_2nd_level_psf_menu(){
 	char tmp_menu[1024];
 	char psf_name[LENGTHBUF];
+    int istep;
 	
 	int num_psf =     kemoview_get_PSF_num_loaded();
 	int num_fld =     kemoview_get_PSF_num_field();
@@ -795,7 +796,7 @@ static void make_2nd_level_psf_menu(){
 	glut_menu_id->psf_root_menu = glutCreateMenu(psf_handler);
 	
 	if(num_psf > 1){
-		kemoview_get_PSF_file_prefix(psf_name);
+		istep = kemoview_get_PSF_file_prefix(psf_name);
 		sprintf(tmp_menu, "Current: %s", psf_name);
 		glutAddSubMenu(tmp_menu, glut_menu_id->ichoose_current_psf_menu);
 	} else {

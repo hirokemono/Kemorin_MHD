@@ -26,7 +26,7 @@ void glut_drawing_select() {
 
 
 void glut_current_PSF_select() {
-	int i;
+	int i, istep;
 	int id_current;
 	char title[LENGTHBUF];
 	char psf_name[LENGTHBUF];
@@ -35,7 +35,7 @@ void glut_current_PSF_select() {
 	for (i=0; i< kemoview_get_PSF_max_loaded(); i++) {
 		if(i != id_current && kemoview_get_PSF_loaded_flag(i) > 0){
 			kemoview_set_current_PSF(i);
-			kemoview_get_PSF_file_prefix(psf_name);
+			istep = kemoview_get_PSF_file_prefix(psf_name);
 			sprintf(title, "%d: %s", i, psf_name);
 			glutAddMenuEntry(title,i);
 		}

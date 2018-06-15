@@ -8,18 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine input_element_file                                   &
-!!     &         (my_rank_IO, file_prefix, ele_mesh_IO, ierr)
+!!     &         (my_rank_IO, file_name, ele_mesh_IO, ierr)
 !!      subroutine input_surface_file                                   &
-!!     &         (my_rank_IO, file_prefix, surf_mesh_IO, ierr)
+!!     &         (my_rank_IO, file_name, surf_mesh_IO, ierr)
 !!      subroutine input_edge_file                                      &
-!!     &         (my_rank_IO, file_prefix, edge_mesh_IO, ierr)
+!!     &         (my_rank_IO, file_name, edge_mesh_IO, ierr)
 !!
 !!      subroutine output_element_file                                  &
-!!     &         (my_rank_IO, ele_mesh_IO)
+!!     &         (my_rank_IO, file_name, ele_mesh_IO)
 !!      subroutine output_surface_file                                  &
-!!     &         (my_rank_IO, file_prefix, surf_mesh_IO)
+!!     &         (my_rank_IO, file_name, surf_mesh_IO)
 !!      subroutine output_edge_file                                     &
-!!     &         (my_rank_IO, file_prefix, edge_mesh_IO)
+!!     &         (my_rank_IO, file_name, edge_mesh_IO)
 !!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
@@ -41,9 +41,7 @@
 !   mesh file code
       integer(kind = kint), parameter ::  input_file_code = 14
 !
-      character(len=kchara) :: file_name
-!
-      private :: input_file_code, file_name
+      private :: input_file_code
 !
 !------------------------------------------------------------------
 !
@@ -52,18 +50,15 @@
 !------------------------------------------------------------------
 !
       subroutine input_element_file                                     &
-     &         (my_rank_IO, file_prefix, ele_mesh_IO, ierr)
+     &         (my_rank_IO, file_name, ele_mesh_IO, ierr)
 !
       use element_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
-!
-      call set_ele_comm_file_name(file_prefix, id_ascii_file_fmt,       &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read ascii element comm file: ', trim(file_name)
@@ -80,18 +75,15 @@
 !------------------------------------------------------------------
 !
       subroutine input_surface_file                                     &
-     &         (my_rank_IO, file_prefix, surf_mesh_IO, ierr)
+     &         (my_rank_IO, file_name, surf_mesh_IO, ierr)
 !
       use surface_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
-!
-      call set_surf_mesh_file_name(file_prefix, id_ascii_file_fmt,      &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read ascii surface mesh file: ', trim(file_name)
@@ -109,18 +101,15 @@
 !------------------------------------------------------------------
 !
       subroutine input_edge_file                                        &
-     &         (my_rank_IO, file_prefix, edge_mesh_IO, ierr)
+     &         (my_rank_IO, file_name, edge_mesh_IO, ierr)
 !
       use edge_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
       integer(kind = kint), intent(inout) :: ierr
 !
-!
-      call set_edge_mesh_file_name(file_prefix, id_ascii_file_fmt,      &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Read ascii edge mesh file: ', trim(file_name)
@@ -139,17 +128,14 @@
 !------------------------------------------------------------------
 !
       subroutine output_element_file                                    &
-     &         (my_rank_IO, file_prefix, ele_mesh_IO)
+     &         (my_rank_IO, file_name, ele_mesh_IO)
 !
       use element_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
 !
-!
-      call set_ele_comm_file_name(file_prefix, id_ascii_file_fmt,       &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii element comm file: ', trim(file_name)
@@ -166,17 +152,14 @@
 !------------------------------------------------------------------
 !
       subroutine output_surface_file                                    &
-     &         (my_rank_IO, file_prefix, surf_mesh_IO)
+     &         (my_rank_IO, file_name, surf_mesh_IO)
 !
       use surface_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
 !
-!
-      call set_surf_mesh_file_name(file_prefix, id_ascii_file_fmt,      &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii surface mesh file: ', trim(file_name)
@@ -194,17 +177,14 @@
 !------------------------------------------------------------------
 !
       subroutine output_edge_file                                       &
-     &         (my_rank_IO, file_prefix, edge_mesh_IO)
+     &         (my_rank_IO, file_name, edge_mesh_IO)
 !
       use edge_data_IO
 !
-      character(len=kchara), intent(in) :: file_prefix
+      character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
       type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !
-!
-      call set_edge_mesh_file_name(file_prefix, id_ascii_file_fmt,      &
-     &    my_rank_IO, file_name)
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
      &  'Write ascii edge mesh file: ', trim(file_name)

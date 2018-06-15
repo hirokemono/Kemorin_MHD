@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_params_sph_spectr(smonitor_ctl, pwr)
-!!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
+!!        type(sph_monitor_control), intent(in) :: smonitor_ctl
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!      subroutine set_ctl_params_layered_spectr(lp_ctl, pwr)
 !!        type(layerd_spectr_control), intent(in) :: lp_ctl
@@ -52,17 +52,18 @@
       use output_sph_m_square_file
       use skip_comment_f
 !
-      type(sph_monitor_control), intent(inout) :: smonitor_ctl
+      type(sph_monitor_control), intent(in) :: smonitor_ctl
       type(sph_mean_squares), intent(inout) :: pwr
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i, j, num_vspec
 !
 !
       if(smonitor_ctl%num_vspec_ctl .lt. 0) then
-        smonitor_ctl%num_vspec_ctl = 0
+        num_vspec = 1
+      else
+        num_vspec = smonitor_ctl%num_vspec_ctl + 1
       end if
-      call alloc_volume_spectr_data                                     &
-     &  ((smonitor_ctl%num_vspec_ctl+1), pwr)
+      call alloc_volume_spectr_data(num_vspec, pwr)
 !
       pwr%v_spectr(1)%iflag_volume_rms_spec                             &
      &        = smonitor_ctl%volume_pwr_spectr_prefix%iflag
@@ -80,8 +81,8 @@
       pwr%v_spectr(1)%r_inside =  -1.0
       pwr%v_spectr(1)%r_outside = -1.0
 !
-      do i = 1, smonitor_ctl%num_vspec_ctl
-        j = i + 1
+      do j = 2, num_vspec
+        i = j - 1
         pwr%v_spectr(j)%iflag_volume_rms_spec                           &
      &        = smonitor_ctl%v_pwr(i)%volume_spec_file_ctl%iflag
         if(pwr%v_spectr(j)%iflag_volume_rms_spec .gt. 0) then
@@ -110,9 +111,6 @@
           pwr%v_spectr(j)%r_outside = -1.0
         end if
       end do
-      if(smonitor_ctl%num_vspec_ctl .gt. 0) then
-        call dealloc_vol_sopectr_ctl(smonitor_ctl)
-      end if
 !
       end subroutine set_ctl_params_sph_spectr
 !

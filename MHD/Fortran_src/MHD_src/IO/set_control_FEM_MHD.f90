@@ -189,6 +189,8 @@
      &   (fmctl_ctl%mevo_ctl, fmctl_ctl%fint_ctl,                       &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop, FEM_prm)
 !
+      call dealloc_control_array_c3(model_ctl%fld_ctl%field_ctl)
+!
       end subroutine set_control_4_FEM_MHD
 !
 ! -----------------------------------------------------------------------
