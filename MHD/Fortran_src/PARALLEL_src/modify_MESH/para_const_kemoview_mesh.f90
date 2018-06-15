@@ -45,7 +45,6 @@
       subroutine pickup_surface_mesh_para(mesh_file)
 !
       use m_node_quad_2_linear_sf
-      use find_mesh_file_format
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
       use single_const_kemoview_mesh
@@ -63,24 +62,16 @@
       type(merged_viewer_mesh), save :: mgd_view_mesh_p
 !
 !
-      if(my_rank .eq. 0) then
-        if(iflag_debug .eq. 0) write(*,*) 'find_merged_mesh_format'
-        call find_merged_mesh_format(mesh_file)
-      end if
-      call calypso_mpi_barrier
-      call MPI_BCAST(mesh_file%iflag_format, ione,                      &
-     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-!
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(mesh_file, nprocs, mesh1, group1,             &
      &    surf_p%nnod_4_surf, edge_p%nnod_4_edge)
+      call allocate_quad4_2_linear(mesh1%ele%nnod_4_ele)
 !
       if(iflag_add_comm_tbl .gt. 0) then
         call add_comm_tbl_in_node_grp_mesh(nprocs, mesh1, group1)
       end if
-      call allocate_quad4_2_linear(mesh1%ele%nnod_4_ele)
 !
+      if(my_rank .eq. 0) write(*,*) 'Construct kemoviewer data'
       call const_surf_mesh_4_viewer                                     &
      &   (mesh1, group1, surf_p, edge_p, mgd_view_mesh_p%view_mesh,     &
      &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &

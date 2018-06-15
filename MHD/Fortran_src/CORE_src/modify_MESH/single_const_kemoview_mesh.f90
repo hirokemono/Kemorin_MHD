@@ -80,13 +80,14 @@
         if (iflag_debug.gt.0) write(*,*) 'input_mesh'
         call input_mesh(mesh_file, id_rank, mesh0, group0,              &
      &      surf0%nnod_4_surf, edge0%nnod_4_edge, ierr)
+        call allocate_quad4_2_linear(mesh0%ele%nnod_4_ele)
 !
 !
         if(iflag_add_comm_tbl .gt. 0) then
           call add_comm_tbl_in_node_grp_mesh(nprocs_sf, mesh0, group0)
         end if
 !
-        call allocate_quad4_2_linear(mesh0%ele%nnod_4_ele)
+        write(*,*) 'Construct kemoviewer data for rank ', id_rank
         call const_surf_mesh_4_viewer(mesh0, group0, surf0, edge0,      &
      &      view_mesh(ip), domain_grps(ip), view_nod_grps(ip),          &
      &      view_ele_grps(ip), view_sf_grps(ip))
@@ -148,11 +149,11 @@
       call set_local_element_info(surf, edge)
       call construct_surface_data(mesh%node, mesh%ele, surf)
 !
-       write(*,*) 'const_merged_surface_4_ele_grp'
+!       write(*,*) 'const_merged_surface_4_ele_grp'
        call const_merged_surface_4_ele_grp(mesh%node, mesh%ele,         &
      &     group, surf, mgd_sf_grp)
 !
-       write(*,*) 'const_merged_surface_4_sf_grp'
+!       write(*,*) 'const_merged_surface_4_sf_grp'
        call const_merged_surface_4_sf_grp(group, surf, mgd_sf_grp)
 !
 !  pickup surface and nodes

@@ -73,13 +73,10 @@
 !
       call dealloc_sum_hash(edge_sf_tbl)
 !
-         write(*,*)  'count_nedge_domain_4_domain'
       call count_nedge_domain_4_domain                                  &
      &   (view_mesh, domain_grps%edge_grp)
-         write(*,*)  'count_nedge_ele_grp_4_domain'
       call count_nedge_ele_grp_4_domain                                 &
      &   (view_mesh, view_ele_grps%num_grp, view_ele_grps%edge_grp)
-         write(*,*)  'count_nedge_ele_grp_4_domain'
       call count_nedge_ele_grp_4_domain                                 &
      &   (view_mesh, view_sf_grps%num_grp, view_sf_grps%edge_grp)
 !
@@ -104,14 +101,14 @@
 !
       call clear_sum_hash(ed_sf_tbl)
 !
-      write(*,*) 'const_edge_hash_4_sf'
+!      write(*,*) 'const_edge_hash_4_sf'
       call const_edge_hash_4_sf                                         &
      &   (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,                &
      &    nnod_4_surf, edge%nnod_4_edge, view_mesh%ie_sf_viewer,        &
      &    ed_sf_tbl%num_hash, ed_sf_tbl%istack_hash,                    &
      &    ed_sf_tbl%iend_hash, ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash)
 !
-      write(*,*) 'count_num_edges_by_sf'
+!      write(*,*) 'count_num_edges_by_sf'
       call count_num_edges_by_sf                                        &
      &   (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,                &
      &    edge%nnod_4_edge, ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash, &
@@ -119,7 +116,7 @@
 !
       call alloc_edge_data_4_sf(edge%nnod_4_edge, view_mesh)
 !
-      write(*,*) 'set_edges_connect_by_sf'
+!      write(*,*) 'set_edges_connect_by_sf'
       call set_edges_connect_by_sf(view_mesh%nnod_viewer,               &
      &    view_mesh%nsurf_viewer, view_mesh%nedge_viewer,               &
      &    nnod_4_surf, edge%nnod_4_edge, view_mesh%ie_sf_viewer,        &

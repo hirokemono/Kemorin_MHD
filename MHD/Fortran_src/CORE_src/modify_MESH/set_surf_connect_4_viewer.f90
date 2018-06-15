@@ -98,7 +98,7 @@
 !     renumber domain boundary
 !
       domain_grps%surf_grp%num_item = merged_surf%numsurf_iso
-       write(*,*) 'alloc_domain_stack_4_surf'
+!       write(*,*) 'alloc_domain_stack_4_surf'
       call alloc_domain_stack_4_surf(ione, domain_grps)
       call alloc_merged_group_item(domain_grps%surf_grp)
 !
