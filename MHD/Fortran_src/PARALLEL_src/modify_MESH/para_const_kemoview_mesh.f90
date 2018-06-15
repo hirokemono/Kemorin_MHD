@@ -55,8 +55,11 @@
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
+      type(mesh_geometry), save :: mesh1
+      type(mesh_groups), save :: group1
+!
       type(element_data), save :: ele_p
-      type(surface_data), save :: surf_p
+      type(surface_data), save :: surf_p, surf0
       type(edge_data), save :: edge_p
       type(merged_mesh), save :: mgd_mesh_p
       type(merged_viewer_mesh), save :: mgd_view_mesh_p
@@ -71,15 +74,15 @@
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       call const_merged_mesh_para                                       &
-     &   (mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p)
+     &   (mesh_file, mesh1, group1, surf0, ele_p, surf_p, edge_p, mgd_mesh_p)
 !
-      call const_surf_mesh_4_viewer                                     &
-     &   (mgd_mesh_p%merged, mgd_mesh_p%merged_grp, surf_p, edge_p,     &
-     &    mgd_mesh_p%merged_surf, mgd_view_mesh_p%view_mesh,            &
+      call const_surf_mesh_4_viewer(mesh1, group1, surf_p, edge_p,      &
+     &    surf0, mgd_view_mesh_p%view_mesh,            &
      &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
      &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
       call dealloc_array_4_merge(mgd_mesh_p)
 !
+!      call dealloc_mesh_infos(mesh1, group1)
 !
       if(iflag_write_subdomain .gt. 0) then
         call sel_output_single_surface_grid(my_rank, mesh_file,         &
@@ -100,7 +103,7 @@
 !------------------------------------------------------------------
 !
       subroutine const_merged_mesh_para                                 &
-     &         (mesh_file, ele, surf, edge, mgd_mesh)
+     &         (mesh_file, mesh, group, surf0, ele, surf, edge, mgd_mesh)
 !
       use t_file_IO_parameter
       use load_mesh_data
@@ -112,8 +115,19 @@
       use copy_mesh_structures
       use add_comm_table_in_node_grp
       use const_surface_data
+      use load_mesh_data
+!
+      use copy_mesh_structures
+      use set_element_data_4_IO
+      use set_nnod_4_ele_by_type
+      use const_mesh_information
 !
       type(field_IO_params), intent(in) :: mesh_file
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) :: group
+      type(surface_data), intent(inout) :: surf0
+!
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
@@ -121,6 +135,8 @@
 !
       type(mesh_data) :: fem_IO_p
       type(group_data) :: new_nod_grp
+      type(edge_data) :: edge0
+      integer(kind = kint) :: nnod_4_edge
 !
 !
       mgd_mesh%num_pe = ione
@@ -137,6 +153,28 @@
         call copy_group_data(new_nod_grp, fem_IO_p%group%nod_grp)
         call deallocate_grp_type(new_nod_grp)
       end if
+!
+!      call set_mesh                                                     &
+!     &  (fem_IO_p, mesh, group, nnod_4_surf, nnod_4_edge)
+      call copy_comm_tbl_type(fem_IO_p%mesh%nod_comm, mesh%nod_comm)
+      call copy_node_geometry_types(fem_IO_p%mesh%node, mesh%node)
+      call copy_ele_connect_from_IO(fem_IO_p%mesh%ele, mesh%ele)
+      call set_grp_data_from_IO(fem_IO_p%group,                         &
+     &    group%nod_grp, group%ele_grp, group%surf_grp)
+!
+      call alloc_sph_node_geometry(mesh%node)
+!
+      call set_3D_nnod_4_sfed_by_ele                                    &
+     &   (mesh%ele%nnod_4_ele, surf0%nnod_4_surf, nnod_4_edge)
+!
+!
+!      call const_nod_ele_infos                                    &
+!     &   (my_rank, node, ele, group%nod_grp, group%ele_grp, group%surf_grp)
+      call set_local_element_info(surf0, edge0)
+      call construct_surface_data                                       &
+     &   (mesh%node, mesh%ele, surf0)
+!
+!
 !
       call set_mesh_geometry_data(fem_IO_p%mesh,                        &
      &    mgd_mesh%subdomain(1)%nod_comm, mgd_mesh%subdomain(1)%node,   &
