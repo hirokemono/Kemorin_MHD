@@ -56,14 +56,10 @@
       type(edge_data) :: edge_v
 !
 !
-      type(viewer_ele_grp_surface) :: mgd_sf_grp1
-      type(merged_viewer_mesh) :: mgd_view_mesh1
-!
-      type(mesh_geometry), allocatable :: mesh0(:)
-      type(mesh_groups), allocatable :: group0(:)
+      type(mesh_geometry) :: mesh0
+      type(mesh_groups) :: group0
       type(surface_data), allocatable :: surf0(:)
 !
-      type(element_data), save :: ele_p
       type(edge_data), save :: edge_p
 !
       type(viewer_mesh_data), allocatable :: view_mesh(:)
@@ -77,8 +73,6 @@
 !
 !  set mesh_information
 !
-      allocate(mesh0(nprocs_sf))
-      allocate(group0(nprocs_sf))
       allocate(surf0(nprocs_sf))
 !
       allocate(view_mesh(nprocs_sf))
@@ -91,15 +85,16 @@
         id_rank = ip - 1
         write(*,*) 'const_merged_mesh_sgl', ip
         call const_merged_mesh_sgl                                      &
-     &    (id_rank, nprocs_sf, mesh_file, mesh0(ip), group0(ip), surf0(ip),         &
-     &     ele_p, edge_p)
+     &    (id_rank, nprocs_sf, mesh_file, mesh0, group0, surf0(ip),     &
+     &     edge_p)
 !
-        call allocate_quad4_2_linear(ele_p%nnod_4_ele)
-        call const_surf_mesh_4_viewer(mesh0(ip), group0(ip),            &
-     &      edge_p, surf0(ip),                         &
+        call allocate_quad4_2_linear(mesh0%ele%nnod_4_ele)
+        call const_surf_mesh_4_viewer(mesh0, group0,            &
+     &      edge_p, surf0(ip),                                          &
      &     view_mesh(ip), domain_grps(ip), view_nod_grps(ip),           &
      &     view_ele_grps(ip), view_sf_grps(ip))
 !
+       call dealloc_mesh_infos(mesh0, group0)
        call dealloc_inod_in_edge(edge_p)
 !
         if(iflag_write_subdomain .gt. 0) then
@@ -190,15 +185,11 @@
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*) 's_set_nodes_4_viewer'
 !
-      call deallocate_sf_grp_type(group%surf_grp)
-      call deallocate_grp_type(group%ele_grp)
-!
       call deallocate_surface_connect_type(surf)
       call deallocate_iso_surface_type(surf)
 !
        call s_set_nodes_4_viewer                                        &
      &    (surf%nnod_4_surf, mesh, group, view_mesh, view_nod_grps)
-       call deallocate_grp_type(group%nod_grp)
 !
 !       write(*,*) 'set_surf_domain_id_viewer'
        call set_surf_domain_id_viewer(surf, view_mesh)
@@ -241,8 +232,8 @@
 !------------------------------------------------------------------
 !
       subroutine const_merged_mesh_sgl                                  &
-     &         (id_rank, nprocs_sf, mesh_file, mesh0, group0, surf0, &
-     &          ele, edge0)
+     &         (id_rank, nprocs_sf, mesh_file, mesh0, group0, surf0,    &
+     &          edge0)
 !
       use t_file_IO_parameter
       use load_mesh_data
@@ -263,8 +254,6 @@
       type(mesh_geometry), intent(inout) :: mesh0
       type(mesh_groups), intent(inout) ::   group0
       type(surface_data), intent(inout) :: surf0
-!
-      type(element_data), intent(inout) :: ele
       type(edge_data), intent(inout) :: edge0
 !
       type(mesh_data) :: fem_IO_p
@@ -287,10 +276,7 @@
      &  (fem_IO_p, mesh0, group0, surf0%nnod_4_surf, edge0%nnod_4_edge)
 !
       call set_local_element_info(surf0, edge0)
-      call construct_surface_data                                       &
-     &   (mesh0%node, mesh0%ele, surf0)
-!
-      ele%nnod_4_ele = mesh0%ele%nnod_4_ele
+      call construct_surface_data(mesh0%node, mesh0%ele, surf0)
 !
       end subroutine const_merged_mesh_sgl
 !
