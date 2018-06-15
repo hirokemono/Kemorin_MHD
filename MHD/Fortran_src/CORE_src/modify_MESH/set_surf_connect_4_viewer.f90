@@ -39,6 +39,7 @@
 !
       type(merged_mesh), intent(inout) :: mgd_mesh
       type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
+!
       type(viewer_mesh_data), intent(inout) :: view_mesh
       type(viewer_surface_groups), intent(inout) :: domain_grps
       type(viewer_surface_groups), intent(inout) :: view_ele_grps
