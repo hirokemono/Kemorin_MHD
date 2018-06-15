@@ -33,20 +33,14 @@ const char label_platform_ctl[25][KCHARA_C] = {
     /*[17]*/    {"spectr_field_fmt_ctl"},
     /*[18]*/    {"coriolis_file_fmt_ctl"},
     
-    /*[19]*/    {"memory_conservation_ctl"},
-    /*[20]*/    {"FEM_mesh_output_switch"},
-    /*[21]*/    {"FEM_surface_output_switch"},
-    /*[22]*/    {"FEM_viewer_mesh_output_switch"},
-    /*[23]*/    {"delete_original_data_flag"},
-    
-    /*[24]*/    {"excluding_FEM_mesh_ctl"},
+    /*[19]*/    {"delete_original_data_flag"},
 };
 
 void alloc_platform_data_control_c(struct platform_data_control_c *files){
     int i;
     
     files->maxlen = 0;
-    for (i=0;i<25;i++){
+    for (i=0;i<20;i++){
         if(strlen(label_platform_ctl[i]) > files->maxlen){
             files->maxlen = strlen(label_platform_ctl[i]);
         };
@@ -95,19 +89,8 @@ void alloc_platform_data_control_c(struct platform_data_control_c *files){
     files->coriolis_file_fmt_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
     alloc_ctl_chara_item(files->coriolis_file_fmt_c);
 
-    files->memory_conservation_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(files->memory_conservation_c);
-    files->FEM_mesh_output_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(files->FEM_mesh_output_switch_c);
-    files->FEM_surface_output_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(files->FEM_surface_output_switch_c);
-    files->FEM_viewer_output_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(files->FEM_viewer_output_switch_c);
     files->del_org_data_ctl_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
     alloc_ctl_chara_item(files->del_org_data_ctl_c);
-
-    files->excluding_FEM_mesh_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(files->excluding_FEM_mesh_c);
     
     return;
 };
@@ -137,13 +120,7 @@ void dealloc_platform_data_control_c(struct platform_data_control_c *files){
     dealloc_ctl_chara_item(files->spectr_field_fmt_c);
     dealloc_ctl_chara_item(files->coriolis_file_fmt_c);
 
-    dealloc_ctl_chara_item(files->memory_conservation_c);
-    dealloc_ctl_chara_item(files->FEM_mesh_output_switch_c);
-    dealloc_ctl_chara_item(files->FEM_surface_output_switch_c);
-    dealloc_ctl_chara_item(files->FEM_viewer_output_switch_c);
     dealloc_ctl_chara_item(files->del_org_data_ctl_c);
-
-    dealloc_ctl_chara_item(files->excluding_FEM_mesh_c);
     return;
 };
 
@@ -177,13 +154,7 @@ int read_platform_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *labe
         read_character_ctl_item_c(buf, label_platform_ctl[17], files->spectr_field_fmt_c);
         read_character_ctl_item_c(buf, label_platform_ctl[18], files->coriolis_file_fmt_c);
 		
-        read_character_ctl_item_c(buf, label_platform_ctl[19], files->memory_conservation_c);
-        read_character_ctl_item_c(buf, label_platform_ctl[20], files->FEM_mesh_output_switch_c);
-        read_character_ctl_item_c(buf, label_platform_ctl[21], files->FEM_surface_output_switch_c);
-        read_character_ctl_item_c(buf, label_platform_ctl[22], files->FEM_viewer_output_switch_c);
-        read_character_ctl_item_c(buf, label_platform_ctl[23], files->del_org_data_ctl_c);
-		
-        read_character_ctl_item_c(buf, label_platform_ctl[24], files->excluding_FEM_mesh_c);
+        read_character_ctl_item_c(buf, label_platform_ctl[19], files->del_org_data_ctl_c);
 	};
     return 1;
 }
@@ -217,13 +188,7 @@ int write_platform_data_control_c(FILE *fp, int level, int *iflag,
     write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[17], files->spectr_field_fmt_c);
     write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[18], files->coriolis_file_fmt_c);
 	
-    write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[19], files->memory_conservation_c);
-    write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[20], files->FEM_mesh_output_switch_c);
-    write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[21], files->FEM_surface_output_switch_c);
-    write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[22], files->FEM_viewer_output_switch_c);
-    write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[23], files->del_org_data_ctl_c);
-	
-    write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[24], files->del_org_data_ctl_c);
+    write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[19], files->del_org_data_ctl_c);
 	
     level = write_end_flag_for_ctl_c(fp, level, label);
     return level;

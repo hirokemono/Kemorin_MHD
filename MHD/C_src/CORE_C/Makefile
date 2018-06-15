@@ -33,6 +33,7 @@ OBJ_KEMO_C = \
  control_elements_IO_c.o \
  control_arrays_IO_c.o \
  t_ctl_data_4_platforms_c.o \
+ t_ctl_data_4_FEM_mesh_c.o \
  t_ctl_data_4_time_steps_c.o \
  t_ctl_data_mhd_evo_scheme_c.o \
  t_ctl_data_4_sph_monitor_c.o \
@@ -431,6 +432,16 @@ module:
 	t_ctl_data_4_platforms_c.o: \
 	'$$(KEMO_C_DIR)'/t_ctl_data_4_platforms_c.c \
 	t_ctl_data_4_platforms_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_ctl_data_4_FEM_mesh_c.o: \
+	'$$(KEMO_C_DIR)'/t_ctl_data_4_FEM_mesh_c.c \
+	t_ctl_data_4_FEM_mesh_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	>> $(MAKENAME)

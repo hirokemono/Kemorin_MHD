@@ -41,13 +41,7 @@ struct platform_data_control_c{
     struct chara_ctl_item *spectr_field_fmt_c;
     struct chara_ctl_item *coriolis_file_fmt_c;
     
-    struct chara_ctl_item *memory_conservation_c;
-    struct chara_ctl_item *FEM_mesh_output_switch_c;
-    struct chara_ctl_item *FEM_surface_output_switch_c;
-    struct chara_ctl_item *FEM_viewer_output_switch_c;
     struct chara_ctl_item *del_org_data_ctl_c;
-    
-    struct chara_ctl_item *excluding_FEM_mesh_c;
 };
 
     
