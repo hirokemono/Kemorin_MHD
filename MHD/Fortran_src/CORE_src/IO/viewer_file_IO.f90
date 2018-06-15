@@ -7,11 +7,10 @@
 !>@brief ASCII viewer mesh file IO
 !!
 !!@verbatim
-!!      subroutine output_surface_grid                                  &
-!!     &         (file_name, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+!!      subroutine output_surface_grid(file_name, mgd_view_mesh)
 !!        type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
-!!      subroutine output_single_surface_grid(file_name, isurf_sf_stack,&
-!!     &           nnod_4_surf, nnod_4_edge, view_mesh, domain_grps,    &
+!!      subroutine output_single_surface_grid                           &
+!!     &         (file_name, isurf_sf_stack, view_mesh, domain_grps,    &
 !!     &          view_nod_grps, view_ele_grps, view_sf_grps)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!        type(viewer_surface_groups), intent(in) :: domain_grps
@@ -20,7 +19,7 @@
 !!        type(viewer_surface_groups), intent(in) :: view_sf_grps
 !!
 !!      subroutine read_surface_grid(file_name,                         &
-!!     &          nnod_4_ele, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+!!     &          nnod_4_ele, mgd_view_mesh)
 !!        type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !!@endverbatim
 !
@@ -41,12 +40,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine output_surface_grid                                    &
-     &         (file_name, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+      subroutine output_surface_grid(file_name, mgd_view_mesh)
 !
       character(len = kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: nnod_4_edge
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
 !
 !
@@ -62,11 +58,10 @@
 !      write(*,*) 'write_surf_connect_viewer'
       call write_surf_connect_viewer                                    &
      &   (mgd_view_mesh%num_pe_sf, mgd_view_mesh%isurf_sf_stack,        &
-     &    nnod_4_surf, mgd_view_mesh%view_mesh)
+     &    mgd_view_mesh%view_mesh)
 !
 !      write(*,*) 'write_edge_connect_viewer'
-      call write_edge_connect_viewer                                    &
-     &   (nnod_4_edge, mgd_view_mesh%view_mesh)
+      call write_edge_connect_viewer(mgd_view_mesh%view_mesh)
 !
 !      write(*,*) 'write_domain_group_viewer'
       call write_domain_group_viewer                                    &
@@ -90,14 +85,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine output_single_surface_grid(file_name, isurf_sf_stack,  &
-     &           nnod_4_surf, nnod_4_edge, view_mesh, domain_grps,      &
+      subroutine output_single_surface_grid                             &
+     &         (file_name, isurf_sf_stack, view_mesh, domain_grps,      &
      &          view_nod_grps, view_ele_grps, view_sf_grps)
 !
       character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: isurf_sf_stack(0:1)
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: nnod_4_edge
 !
       type(viewer_mesh_data), intent(in) :: view_mesh
       type(viewer_surface_groups), intent(in) :: domain_grps
@@ -113,8 +106,8 @@
 !
       call write_node_data_viewer(view_mesh)
       call write_surf_connect_viewer                                    &
-     &   (ione, isurf_sf_stack, nnod_4_surf, view_mesh)
-      call write_edge_connect_viewer(nnod_4_edge, view_mesh)
+     &   (ione, isurf_sf_stack, view_mesh)
+      call write_edge_connect_viewer(view_mesh)
 !
       call write_domain_group_viewer(ione, domain_grps)
 !
@@ -129,14 +122,13 @@
 !------------------------------------------------------------------
 !
       subroutine read_surface_grid(file_name,                           &
-     &          nnod_4_ele, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+     &          nnod_4_ele, mgd_view_mesh)
 !
       character(len = kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nnod_4_ele
-      integer(kind = kint), intent(inout) :: nnod_4_surf
-      integer(kind = kint), intent(inout) :: nnod_4_edge
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
+      integer(kind = kint) :: nnod_4_edge
 !
       write(*,*) 'surface mesh file name: ', trim(file_name)
       open (surface_id, file = file_name)
@@ -149,8 +141,7 @@
 !
 !      write(*,*) 'read_surf_connect_viewer'
       call read_surf_connect_viewer                                     &
-     &   (nnod_4_ele, nnod_4_surf, nnod_4_edge,                         &
-     &    mgd_view_mesh%view_mesh)
+     &   (nnod_4_ele, nnod_4_edge, mgd_view_mesh%view_mesh)
 !
 !      write(*,*) 'read_edge_connect_viewer'
       call read_edge_connect_viewer(nnod_4_edge,                        &

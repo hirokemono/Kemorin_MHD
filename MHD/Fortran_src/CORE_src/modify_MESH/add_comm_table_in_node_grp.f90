@@ -7,6 +7,9 @@
 !> @brief Update group data for sleeve extender
 !!
 !!@verbatim
+!!      subroutine add_comm_tbl_in_node_grp_mesh(nprocs, mesh, group)
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) ::   group
 !!      subroutine add_comm_table_in_node_group                         &
 !!     &         (nprocs, new_comm, old_nod_grp, new_nod_grp)
 !!        type(communication_table), intent(in) :: new_comm
@@ -32,6 +35,29 @@
       contains
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine add_comm_tbl_in_node_grp_mesh(nprocs, mesh, group)
+!
+      use copy_mesh_structures
+!
+      integer(kind = kint), intent(in) :: nprocs
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
+!
+      type(group_data) :: new_nod_grp
+!
+!
+      call add_comm_table_in_node_group(nprocs,                         &
+     &    mesh%nod_comm, group%nod_grp, new_nod_grp)
+!
+      call deallocate_grp_type(group%nod_grp)
+      call copy_group_data(new_nod_grp, group%nod_grp)
+      call deallocate_grp_type(new_nod_grp)
+!
+      end subroutine add_comm_tbl_in_node_grp_mesh
+!
+!------------------------------------------------------------------
 !
       subroutine add_comm_table_in_node_group                           &
      &         (nprocs, new_comm, old_nod_grp, new_nod_grp)

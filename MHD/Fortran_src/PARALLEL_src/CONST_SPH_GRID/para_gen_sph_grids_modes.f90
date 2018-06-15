@@ -37,6 +37,7 @@
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!
+!!      subroutine para_gen_fem_mesh_for_sph                            &
 !!     &         (ndomain_sph, FEM_mesh_flags,                          &
 !!     &          gen_sph, sph_params, sph_rj, sph_rtp, mesh_file)
 !!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
@@ -266,6 +267,7 @@
       use set_FEM_mesh_4_sph
       use load_mesh_data
       use sph_file_IO_select
+      use parallel_sleeve_extension
 !
       integer(kind = kint), intent(in) :: ndomain_sph
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
@@ -278,9 +280,12 @@
 !
       integer(kind = kint) :: ip_rank, ip
       type(mesh_data) :: femmesh
+      type(element_geometry) :: ele_mesh
       type(group_data) :: radial_rj_grp_lc
       type(gauss_points) :: gauss_s
       type(comm_table_make_sph) :: stbl_s
+!
+      integer(kind = kint) :: i_level
 !
 !
       if(FEM_mesh_flags%iflag_access_FEM .eq. 0) return
@@ -311,7 +316,15 @@
      &      sph_rtp%nidx_rtp, gen_sph%s3d_radius%radius_1d_gl, gauss_s, &
      &      gen_sph%s3d_ranks, gen_sph%stk_lc1d,                        &
      &      gen_sph%sph_gl1d, sph_params, sph_rtp,                      &
-     &      radial_rj_grp_lc, femmesh%mesh, femmesh%group, stbl_s)
+     &      radial_rj_grp_lc, femmesh%mesh, femmesh%group, ele_mesh,    &
+     &      stbl_s)
+!
+! Increase sleeve size
+      do i_level = 2, gen_sph%num_FEM_sleeve
+        if(my_rank .gt. 0) write(*,*) 'extend sleeve:', i_level
+        call para_sleeve_extension                                      &
+     &     (femmesh%mesh, femmesh%group, ele_mesh)
+      end do
 !
 ! Output mesh data
         if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then

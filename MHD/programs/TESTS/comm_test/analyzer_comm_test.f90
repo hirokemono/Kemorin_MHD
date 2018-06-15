@@ -15,6 +15,7 @@
       use m_machine_parameter
       use m_work_time
 !
+      use t_ctl_data_comm_test
       use t_mesh_data
       use t_belonged_element_4_node
       use t_file_IO_parameter
@@ -22,6 +23,7 @@
 !
       implicit none
 !
+      type(comm_test_control), save ::  comm_tctl1
       type(comm_test_files_param), save ::  T_files
       type(mesh_data), save :: test_fem
       type(element_geometry), save :: test_ele_mesh
@@ -84,7 +86,7 @@
 !     --------------------- 
 !
       if (iflag_debug.gt.0) write(*,*) 's_input_control_comm_test'
-      call s_input_control_comm_test(T_files)
+      call s_input_control_comm_test(comm_tctl1, T_files)
 !
 !  --  read geometry
 !

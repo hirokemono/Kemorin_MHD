@@ -138,6 +138,7 @@
 !
       call s_set_control_nodal_data(fld_ctl%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
+      call dealloc_control_array_c3(fld_ctl%field_ctl)
 !
       end subroutine set_ctl_interpolate_udt
 !

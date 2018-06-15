@@ -29,7 +29,6 @@
 !
       subroutine init_analyzer
 !
-      use m_ctl_data_4_sph_trans
       use parallel_load_data_4_sph
       use set_viz_time_labels
 !
@@ -43,9 +42,10 @@
 !   -----  read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_trans'
-      call read_control_data_sph_trans
+      call read_control_data_sph_trans(spt_ctl1)
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans(t_STR, viz_step_STR, files_STR,   &
+      call s_set_ctl_data_4_sph_trans                                   &
+     &   (spt_ctl1, t_STR, viz_step_STR, files_STR,                     &
      &    SPH_TRNS%fld, d_gauss_trans, field_STR, WK_sph_TRNS)
 !
 !  ------    set spectr grids
@@ -68,7 +68,7 @@
       call SPH_init_gauss_back_trans(files_STR, SPH_TRNS)
 !
       call init_visualize(femmesh_STR, elemesh_STR, field_STR,          &
-     &    viz_st_ctls, vizs_TRNS)
+     &    spt_ctl1%viz_ctls, vizs_TRNS)
 !
       end subroutine init_analyzer
 !

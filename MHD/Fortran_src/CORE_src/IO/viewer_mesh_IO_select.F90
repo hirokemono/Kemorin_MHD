@@ -7,17 +7,16 @@
 !>@brief  Viewer mesh file IO selector
 !!
 !!@verbatim
-!!      subroutine sel_output_surface_grid                              &
-!!     &         (mesh_file, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+!!      subroutine sel_output_surface_grid(mesh_file, mgd_view_mesh)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
-!!      subroutine sel_read_surface_grid(mesh_file,                     &
-!!     &          nnod_4_ele, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+!!      subroutine sel_read_surface_grid                                &
+!!     &         (mesh_file, nnod_4_ele, mgd_view_mesh)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !!
-!!      subroutine sel_output_single_surface_grid(id_rank, mesh_file,  &
-!!     &          nnod_4_surf, nnod_4_edge, view_mesh, domain_grps,    &
+!!      subroutine sel_output_single_surface_grid                       &
+!!     &         (id_rank, mesh_file, view_mesh, domain_grps,           &
 !!     &          view_nod_grps, view_ele_grps, view_sf_grps)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
@@ -50,11 +49,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_output_surface_grid                                &
-     &         (mesh_file, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
-!
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: nnod_4_edge
+      subroutine sel_output_surface_grid(mesh_file, mgd_view_mesh)
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(merged_viewer_mesh), intent(in) :: mgd_view_mesh
@@ -67,26 +62,22 @@
 !
 #ifdef ZLIB_IO
       if(mesh_file%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call output_surface_grid_gz                                     &
-     &     (file_name, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+        call output_surface_grid_gz(file_name, mgd_view_mesh)
         return
       end if
 #endif
 !
-      call output_surface_grid(file_name,                               &
-     &    nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+      call output_surface_grid(file_name, mgd_view_mesh)
 !
       end subroutine sel_output_surface_grid
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_surface_grid(mesh_file,                       &
-     &          nnod_4_ele, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+      subroutine sel_read_surface_grid                                  &
+     &         (mesh_file, nnod_4_ele, mgd_view_mesh)
 !
       type(field_IO_params), intent(in) :: mesh_file
       integer(kind = kint), intent(in) :: nnod_4_ele
-      integer(kind = kint), intent(inout) :: nnod_4_surf
-      integer(kind = kint), intent(inout) :: nnod_4_edge
 !
       type(merged_viewer_mesh), intent(inout) :: mgd_view_mesh
 !
@@ -98,27 +89,24 @@
 !
 #ifdef ZLIB_IO
       if(mesh_file%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call read_surface_grid_gz(file_name,                            &
-     &      nnod_4_ele, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+        call read_surface_grid_gz                                       &
+     &     (file_name, nnod_4_ele, mgd_view_mesh)
         return
       end if
 #endif
 !
-      call read_surface_grid(file_name,                                 &
-     &    nnod_4_ele, nnod_4_surf, nnod_4_edge, mgd_view_mesh)
+      call read_surface_grid(file_name, nnod_4_ele, mgd_view_mesh)
 !
       end subroutine sel_read_surface_grid
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine sel_output_single_surface_grid(id_rank, mesh_file,    &
-     &          nnod_4_surf, nnod_4_edge, view_mesh, domain_grps,      &
+      subroutine sel_output_single_surface_grid                         &
+     &         (id_rank, mesh_file, view_mesh, domain_grps,             &
      &          view_nod_grps, view_ele_grps, view_sf_grps)
 !
       integer(kind = kint), intent(in) :: id_rank
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: nnod_4_edge
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(viewer_mesh_data), intent(in) :: view_mesh
@@ -139,8 +127,8 @@
      &  (id_rank, mesh_file%file_prefix, fname_tmp)
       call add_ksm_extension(fname_tmp, file_name)
 !
-      call output_single_surface_grid(file_name, istack_nsurf,          &
-     &    nnod_4_surf, nnod_4_edge, view_mesh, domain_grps,             &
+      call output_single_surface_grid                                   &
+     &   (file_name, istack_nsurf, view_mesh, domain_grps,              &
      &    view_nod_grps, view_ele_grps, view_sf_grps)
 !
       end subroutine sel_output_single_surface_grid

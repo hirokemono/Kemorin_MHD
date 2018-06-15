@@ -62,6 +62,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
       call s_set_ctl_4_diff_udt_steps(t_d_ctl, time_U)
+      call dealloc_control_array_c3(fld_d_ctl%field_ctl)
 !
       end subroutine s_input_control_udt_diff
 !
@@ -96,6 +97,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
       call s_set_ctl_4_diff_udt_steps(t_d_ctl, time_U)
+      call dealloc_control_array_c3(fld_d_ctl%field_ctl)
 !
       end subroutine s_input_control_ave_udt
 !

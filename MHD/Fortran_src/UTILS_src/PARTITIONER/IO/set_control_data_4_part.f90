@@ -41,8 +41,8 @@
 !
 !
       iflag_memory_conserve = 1
-      if(part_plt%memory_conservation_ctl%iflag .gt. 0                  &
-     &  .and. no_flag(part_plt%memory_conservation_ctl%charavalue)      &
+      if(part_Fmesh%memory_conservation_ctl%iflag .gt. 0                &
+     &  .and. no_flag(part_Fmesh%memory_conservation_ctl%charavalue)    &
      &   ) then
         iflag_memory_conserve = 0
       end if
@@ -142,21 +142,26 @@
       end if
 !
 !
-      if (sleeve_level_ctl%iflag .gt. 0) then
-        n_overlap = sleeve_level_ctl%intvalue
+      if(part_Fmesh%FEM_sleeve_level_ctl%iflag .gt. 0) then
+        n_overlap = part_Fmesh%FEM_sleeve_level_ctl%intvalue
+      else if(sleeve_level_old%iflag .gt. 0) then
+        n_overlap = sleeve_level_old%intvalue
       else
         n_overlap = 1
       end if
+      if(n_overlap .lt. 1) n_overlap = 1
       write(*,*) 'sleeve level :', n_overlap
 !
-      if (element_overlap_ctl%iflag .gt. 0 .and. n_overlap .eq. 1) then
-        if(yes_flag(element_overlap_ctl%charavalue)) then
+      i_sleeve_ele = 0
+      if(n_overlap .eq. 1) then
+        if(part_Fmesh%FEM_element_overlap_ctl%iflag .gt. 0) then
           i_sleeve_ele = 1
           n_overlap =    2
-        else
-          i_sleeve_ele = 0
+        else if(element_overlap_ctl%iflag .gt. 0) then
+          i_sleeve_ele = 1
+          n_overlap =    2
         end if
-        write(*,*) 'element overlapping code: ', i_sleeve_ele
+        write(*,*) 'element overlapping flag: ', i_sleeve_ele
       end if
 !
 !

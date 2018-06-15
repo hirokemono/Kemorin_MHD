@@ -20,8 +20,6 @@
 !!      subroutine dealloc_surf_connect_viewer(view_mesh)
 !!      subroutine dealloc_edge_data_4_sf(view_mesh)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
-!!      subroutine dealloc_nod_position_viewer(view_mesh)
-!!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!@endverbatim
 !
       module t_viewer_mesh
@@ -39,6 +37,9 @@
         integer(kind = kint)  ::  nnod_viewer
         integer(kind = kint)  ::  nsurf_viewer
         integer(kind = kint)  ::  nedge_viewer
+!
+        integer(kind = kint)  ::  nnod_v_surf
+        integer(kind = kint)  ::  nnod_v_edge
 !
         integer(kind = kint), allocatable  ::  ie_sf_viewer(:,:)
         integer(kind = kint), allocatable  ::  ie_edge_viewer(:,:)
@@ -107,6 +108,7 @@
       integer(kind  = kint) :: num
 !
       num = view_mesh%nsurf_viewer
+      view_mesh%nnod_v_surf = nnod_4_surf
       allocate( view_mesh%ie_sf_viewer(num,nnod_4_surf) )
       allocate( view_mesh%isurf_gl_view(num) )
       if(num .gt. 0) view_mesh%ie_sf_viewer = 0
@@ -125,6 +127,7 @@
 !
 !
       num = view_mesh%nedge_viewer
+      view_mesh%nnod_v_edge = nnod_4_edge
       allocate(view_mesh%ie_edge_viewer(num,nnod_4_edge))
       allocate(view_mesh%iedge_gl_view(num))
       if(num .gt. 0) view_mesh%ie_edge_viewer = 0

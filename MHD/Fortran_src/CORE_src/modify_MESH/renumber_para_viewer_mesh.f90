@@ -8,11 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine s_renumber_para_viewer_mesh                          &
-!!     &         (nshift_node, nshift_surf, nshift_edge,                &
-!!     &          surf, edge, mgd_v_mesh_p)
-!!        type(surface_data), intent(in) :: surf
-!!        type(edge_data), intent(in) :: edge
-!!        type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p
+!!     &         (nshift_node, nshift_surf, nshift_edge, mgd_v_mesh)
+!!        type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh
 !!@endverbatim
 !
       module renumber_para_viewer_mesh
@@ -24,8 +21,6 @@
       use t_viewer_mesh
       use t_viewer_group
       use t_merged_viewer_mesh
-      use t_surface_data
-      use t_edge_data
 !
       implicit none
 !
@@ -36,38 +31,37 @@
 !------------------------------------------------------------------
 !
       subroutine s_renumber_para_viewer_mesh                            &
-     &         (nshift_node, nshift_surf, nshift_edge,                  &
-     &          surf, edge, mgd_v_mesh_p)
+     &         (nshift_node, nshift_surf, nshift_edge, mgd_v_mesh)
 !
       integer(kind = kint), intent(in) :: nshift_node, nshift_surf
       integer(kind = kint), intent(in) :: nshift_edge
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
-      type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p
+      type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh
 !
 !
       call set_global_node_info_4_viewer                                &
-     &   (nshift_node, mgd_v_mesh_p%view_mesh)
-      call set_global_surf_info_4_viewer(surf%nnod_4_surf,              &
-     &    nshift_node, nshift_surf, mgd_v_mesh_p%view_mesh)
-      call set_global_edge_info_4_viewer(edge%nnod_4_edge,              &
-     &    nshift_node, nshift_edge, mgd_v_mesh_p%view_mesh)
+     &   (nshift_node, mgd_v_mesh%view_mesh)
+      call set_global_surf_info_4_viewer                                &
+     &   (mgd_v_mesh%view_mesh%nnod_v_surf,                             &
+     &    nshift_node, nshift_surf, mgd_v_mesh%view_mesh)
+      call set_global_edge_info_4_viewer                                &
+     &   (mgd_v_mesh%view_mesh%nnod_v_edge,                             &
+     &    nshift_node, nshift_edge, mgd_v_mesh%view_mesh)
 !
 !
       call shift_global_surf_grps_items                                 &
      &   (nshift_node, nshift_surf, nshift_edge,                        &
-     &    mgd_v_mesh_p%domain_grps)
+     &    mgd_v_mesh%domain_grps)
 !
       call set_global_group_items                                       &
-     &   (nshift_node, mgd_v_mesh_p%view_nod_grps%node_grp)
+     &   (nshift_node, mgd_v_mesh%view_nod_grps%node_grp)
 !
       call shift_global_surf_grps_items                                 &
      &   (nshift_node, nshift_surf, nshift_edge,                        &
-     &    mgd_v_mesh_p%view_ele_grps)
+     &    mgd_v_mesh%view_ele_grps)
 !
       call shift_global_surf_grps_items                                 &
      &   (nshift_node, nshift_surf, nshift_edge,                        &
-     &    mgd_v_mesh_p%view_sf_grps)
+     &    mgd_v_mesh%view_sf_grps)
 !
       end subroutine s_renumber_para_viewer_mesh
 !

@@ -43,11 +43,6 @@
 !!      itp_file_fmt_ctl            'ascii'
 !!      coriolis_file_fmt_ctl       'ascii'
 !!
-!!      memory_conservation_ctl        'YES'
-!!      FEM_mesh_output_switch         'NO'
-!!      FEM_surface_output_switch      'NO'
-!!      FEM_viewer_mesh_output_switch  'NO'
-!!
 !!      delete_original_data_flag       'YES'
 !!    end data_files_def
 !! ------------------------------------------------------------------
@@ -86,10 +81,6 @@
 !>@n@param      itp_file_fmt_ctl         interpolation data file format
 !>@n@param      spectr_field_fmt_ctl     Spectr data file format
 !>@n@param      coriolis_file_fmt_ctl    integration data  file format
-!>
-!>
-!>@n@param      memory_conservation_ctl    memory conservation flag
-!>              File format for spherical shell grid data
 !
       module t_ctl_data_4_platforms
 !
@@ -126,94 +117,58 @@
 !
         type(read_character_item) :: debug_flag_ctl
 !
-        type(read_character_item) :: memory_conservation_ctl
-        type(read_character_item) :: FEM_mesh_output_switch
-        type(read_character_item) :: FEM_surface_output_switch
-        type(read_character_item) :: FEM_viewer_output_switch
-!
         type(read_character_item) :: del_org_data_ctl
-!
-!         Deprecated
-        type(read_character_item) :: excluding_FEM_mesh_ctl
       end type platform_data_control
 !
 !   file and domain controls
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_num_subdomain = 'num_subdomain_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_num_smp =   'num_smp_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_mesh_header = 'mesh_file_prefix'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_udt_header =   'field_file_prefix'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_rst_header =   'restart_file_prefix'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_spectr_header =   'spectr_field_file_prefix'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_sph_files_header = 'sph_file_prefix'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_coriolis_tri_int_name = 'coriolis_int_file_name'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_bc_data_file_name = 'boundary_data_file_name'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_itp_sph_to_fem =  'interpolate_sph_to_fem_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_itp_fem_to_sph =  'interpolate_fem_to_sph_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_mesh_file_fmt =  'mesh_file_fmt_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_rst_files_fmt =  'restart_file_fmt_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_udt_files_fmt =  'field_file_fmt_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_sph_files_fmt =  'sph_file_fmt_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_itp_files_fmt =  'itp_file_fmt_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_spect_field_fmt =  'spectr_field_fmt_ctl'
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_coriolis_file_fmt =  'coriolis_file_fmt_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_debug_flag_ctl =  'debug_flag_ctl'
 !
-      character(len=kchara), parameter                                  &
-     &       :: hd_mem_conserve =   'memory_conservation_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_FEM_mesh_output = 'FEM_mesh_output_switch'
-      character(len=kchara), parameter                                  &
-     &       :: hd_FEM_surf_output = 'FEM_surface_output_switch'
-      character(len=kchara), parameter                                  &
-     &       :: hd_FEM_viewer_output = 'FEM_viewer_mesh_output_switch'
-!
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &       :: hd_del_org_data = 'delete_original_data_flag'
-!
-!       Deprecated
-!
-      character(len=kchara), parameter                                  &
-     &       :: hd_exclude_FEM_mesh = 'excluding_FEM_mesh_ctl'
-!
-!
-      private :: hd_num_subdomain, hd_num_smp, hd_sph_files_header
-      private :: hd_mesh_header, hd_udt_header, hd_rst_header
-      private :: hd_spectr_header, hd_bc_data_file_name
-      private :: hd_mesh_file_fmt, hd_rst_files_fmt
-      private :: hd_udt_files_fmt, hd_sph_files_fmt
-      private :: hd_debug_flag_ctl, hd_mem_conserve
-      private :: hd_coriolis_tri_int_name
-      private :: hd_itp_sph_to_fem, hd_itp_fem_to_sph
-      private :: hd_itp_files_fmt, hd_coriolis_file_fmt
-      private :: hd_spect_field_fmt, hd_FEM_viewer_output
-      private :: hd_FEM_mesh_output, hd_FEM_surf_output
-      private :: hd_exclude_FEM_mesh, hd_del_org_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -283,17 +238,6 @@
      &      plt%coriolis_file_fmt_ctl)
 !
         call read_chara_ctl_type(hd_debug_flag_ctl, plt%debug_flag_ctl)
-        call read_chara_ctl_type(hd_mem_conserve,                       &
-     &      plt%memory_conservation_ctl)
-        call read_chara_ctl_type(hd_FEM_mesh_output,                    &
-     &      plt%FEM_mesh_output_switch)
-        call read_chara_ctl_type(hd_FEM_surf_output,                    &
-     &      plt%FEM_surface_output_switch)
-        call read_chara_ctl_type(hd_FEM_viewer_output,                  &
-     &      plt%FEM_viewer_output_switch)
-!
-        call read_chara_ctl_type(hd_exclude_FEM_mesh,                   &
-     &      plt%excluding_FEM_mesh_ctl)
 !
         call read_chara_ctl_type(hd_del_org_data, plt%del_org_data_ctl)
        end do
