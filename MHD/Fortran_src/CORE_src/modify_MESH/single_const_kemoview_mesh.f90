@@ -212,12 +212,8 @@
       write(*,*) 'isurf_sf_stack', isurf_sf_stack
 !
        call s_set_nodes_4_viewer                                        &
-     &    (surf%nnod_4_surf, mgd_mesh, num_pe_sf,         &
-     &     nnod_sf, inod_sf_stack,          &
-     &     view_mesh, view_nod_grps)
+     &    (surf%nnod_4_surf, mgd_mesh, view_mesh, view_nod_grps)
 !
-      write(*,*) 'nnod_sf', nnod_sf, view_mesh%nnod_viewer
-      write(*,*) 'inod_sf_stack', inod_sf_stack
 !       write(*,*) 'set_surf_domain_id_viewer'
        call set_surf_domain_id_viewer                                   &
      &    (mgd_mesh%merged_surf, view_mesh)

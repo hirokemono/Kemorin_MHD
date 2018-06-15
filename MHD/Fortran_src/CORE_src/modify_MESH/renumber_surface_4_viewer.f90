@@ -16,8 +16,8 @@
 !!     &         (num_pe, isurf_sf_stack, merged_grp,                   &
 !!     &          ngrp_surf_sf, sf_surf_grp)
 !!        type(viewer_group_data), intent(inout)  :: sf_surf_grp
-!!      subroutine set_node_group_stack_viewer(num_pe, inod_sf_stack,   &
-!!     &          merged_grp, ngrp_nod_sf, nod_nod_grp)
+!!      subroutine set_node_group_stack_viewer                          &
+!!     &         (nnod_viewer, merged_grp, ngrp_nod_sf, nod_nod_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
 !!        type(viewer_group_data), intent(inout) :: nod_nod_grp
 !
@@ -132,33 +132,28 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_group_stack_viewer(num_pe, inod_sf_stack,     &
-     &          merged_grp, ngrp_nod_sf, nod_nod_grp)
+      subroutine set_node_group_stack_viewer                            &
+     &         (nnod_viewer, merged_grp, ngrp_nod_sf, nod_nod_grp)
 !
       use t_mesh_data
 !
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
+      integer(kind = kint), intent(in) :: nnod_viewer
       type(mesh_groups), intent(in) :: merged_grp
       integer(kind = kint), intent(in) :: ngrp_nod_sf
       type(viewer_group_data), intent(inout) :: nod_nod_grp
 !
-      integer(kind = kint) :: igrp, ip, idx, iref, ist, ied, inum, inod
+      integer(kind = kint) :: igrp, ist, ied, inum, inod
 !
 !
       do igrp = 1, ngrp_nod_sf
-        do ip = 1, num_pe
-          idx = ip + (igrp-1) * num_pe
-          iref = inod_sf_stack(ip)
-          ist = nod_nod_grp%istack_sf(idx-1) + 1
-          ied = merged_grp%nod_grp%istack_grp(igrp)
+        ist = nod_nod_grp%istack_sf(igrp-1) + 1
+        ied = merged_grp%nod_grp%istack_grp(igrp)
 !
-          nod_nod_grp%istack_sf(idx) = nod_nod_grp%istack_sf(idx-1)
-          do inum = ist, ied
-            inod = abs( nod_nod_grp%item_sf(inum) )
-            if ( inod .gt. iref ) exit
-            nod_nod_grp%istack_sf(idx:(num_pe*ngrp_nod_sf)) = inum
-          end do
+        nod_nod_grp%istack_sf(igrp) = nod_nod_grp%istack_sf(igrp-1)
+        do inum = ist, ied
+          inod = abs( nod_nod_grp%item_sf(inum) )
+          if ( inod .gt. nnod_viewer ) exit
+          nod_nod_grp%istack_sf(igrp:ngrp_nod_sf) = inum
         end do
       end do
 !
