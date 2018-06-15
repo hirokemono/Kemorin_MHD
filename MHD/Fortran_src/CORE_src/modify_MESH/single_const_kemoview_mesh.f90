@@ -91,7 +91,7 @@
 !
         call const_surf_mesh_4_viewer                                   &
      &     (mgd_mesh_p(ip)%merged, mgd_mesh_p(ip)%merged_grp,           &
-     &      surf_p, edge_p, mgd_mesh_p(ip)%merged_surf,                 &
+     &      edge_p, mgd_mesh_p(ip)%merged_surf,                         &
      &     view_mesh(ip), domain_grps(ip), view_nod_grps(ip),           &
      &     view_ele_grps(ip), view_sf_grps(ip))
         call dealloc_array_4_merge(mgd_mesh_p(ip))
@@ -153,7 +153,7 @@
 !------------------------------------------------------------------
 !
       subroutine const_surf_mesh_4_viewer                               &
-     &       (mesh, group, surf, edge, surf_m, view_mesh, domain_grps,  &
+     &       (mesh, group, edge, surf, view_mesh, domain_grps,          &
      &        view_nod_grps, view_ele_grps, view_sf_grps)
 !
       use set_merged_geometry
@@ -166,10 +166,9 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(inout) :: group
 !
-      type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
 !
-      type(surface_data), intent(inout) :: surf_m
+      type(surface_data), intent(inout) :: surf
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
       type(viewer_surface_groups), intent(inout) :: domain_grps
@@ -183,34 +182,32 @@
 !
        write(*,*) 'const_merged_surface_4_ele_grp'
        call const_merged_surface_4_ele_grp(mesh%node, mesh%ele,         &
-     &     group, surf_m, mgd_sf_grp)
+     &     group, surf, mgd_sf_grp)
 !
        write(*,*) 'const_merged_surface_4_sf_grp'
-       call const_merged_surface_4_sf_grp                               &
-     &    (group, surf_m, mgd_sf_grp)
+       call const_merged_surface_4_sf_grp(group, surf, mgd_sf_grp)
 !
 !  pickup surface and nodes
 !
-       call s_set_surf_connect_4_viewer                                 &
-     &    (surf%nnod_4_surf, group, surf_m, mgd_sf_grp,                 &
+       call s_set_surf_connect_4_viewer(group, surf, mgd_sf_grp,        &
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*) 's_set_nodes_4_viewer'
 !
       call deallocate_sf_grp_type(group%surf_grp)
       call deallocate_grp_type(group%ele_grp)
 !
-      call deallocate_surface_connect_type(surf_m)
-      call deallocate_iso_surface_type(surf_m)
+      call deallocate_surface_connect_type(surf)
+      call deallocate_iso_surface_type(surf)
 !
        call s_set_nodes_4_viewer                                        &
      &    (surf%nnod_4_surf, mesh, group, view_mesh, view_nod_grps)
        call deallocate_grp_type(group%nod_grp)
 !
 !       write(*,*) 'set_surf_domain_id_viewer'
-       call set_surf_domain_id_viewer(surf_m, view_mesh)
+       call set_surf_domain_id_viewer(surf, view_mesh)
 !
 !       write(*,*)  'construct_edge_4_viewer'
-       call construct_edge_4_viewer(surf, edge,                         &
+       call construct_edge_4_viewer(surf%nnod_4_surf, edge,             &
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*)  's_set_nodes_4_groups_viewer'
        call s_set_nodes_4_groups_viewer                                 &

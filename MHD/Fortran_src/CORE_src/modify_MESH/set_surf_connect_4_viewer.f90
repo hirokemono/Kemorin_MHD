@@ -3,8 +3,7 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine s_set_surf_connect_4_viewer                          &
-!!     &         (nnod_4_surf, group, surf, mgd_sf_grp,                 &
+!!      subroutine s_set_surf_connect_4_viewer(group, surf, mgd_sf_grp, &
 !!     &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !!        type(mesh_groups), intent(in) :: group
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
@@ -32,8 +31,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_set_surf_connect_4_viewer                            &
-     &         (nnod_4_surf, group, surf, mgd_sf_grp,                   &
+      subroutine s_set_surf_connect_4_viewer(group, surf, mgd_sf_grp,   &
      &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !
       use t_mesh_data_4_merge
@@ -41,7 +39,6 @@
       use t_viewer_ele_grp_surface
       use pickup_surface_4_viewer
 !
-      integer(kind = kint), intent(in) :: nnod_4_surf
       type(mesh_groups), intent(in) :: group
 !
       type(surface_data), intent(inout) :: surf
@@ -64,7 +61,7 @@
 !
       call deallocate_imark_surf
 !
-      call alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
+      call alloc_surf_connect_viewer(surf%nnod_4_surf, view_mesh)
       call set_surf_connect_viewer(surf, view_mesh)
 !
       call s_set_groups_4_viewer_surface(group, surf, mgd_sf_grp,       &

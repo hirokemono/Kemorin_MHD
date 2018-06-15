@@ -3,9 +3,8 @@
 !
 !     Written by H. Matsui on Jan., 2007
 !
-!!      subroutine construct_edge_4_viewer(surf, edge,                  &
+!!      subroutine construct_edge_4_viewer(nnod_4_surf, edge,           &
 !!     &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
-!!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!        type(viewer_surface_groups), intent(inout) :: domain_grps
@@ -37,14 +36,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine construct_edge_4_viewer(surf, edge,                    &
+      subroutine construct_edge_4_viewer(nnod_4_surf, edge,             &
      &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !
-      use t_surface_data
       use t_edge_data
       use const_grp_edge_4_viewer
 !
-      type(surface_data), intent(in) :: surf
+      integer(kind = kint), intent(in) :: nnod_4_surf
       type(edge_data), intent(in) :: edge
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
@@ -57,18 +55,19 @@
      &   (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,                &
      &    nedge_4_surf, edge%nnod_4_edge, edge_sf_tbl)
 !
-      call const_all_edge_4_viewer(surf, edge, view_mesh, edge_sf_tbl)
+      call const_all_edge_4_viewer                                      &
+     &   (nnod_4_surf, edge, view_mesh, edge_sf_tbl)
 !
       call construct_edge_4_domain                                      &
-     &   (surf%nnod_4_surf, edge%nnod_4_edge, view_mesh,                &
+     &   (nnod_4_surf, edge%nnod_4_edge, view_mesh,                     &
      &    domain_grps%surf_grp, domain_grps%edge_grp, edge_sf_tbl)
 !
       call construct_edge_4_ele_grp                                     &
-     &   (surf%nnod_4_surf, edge%nnod_4_edge, view_mesh,                &
+     &   (nnod_4_surf, edge%nnod_4_edge, view_mesh,                     &
      &    view_ele_grps%num_grp,  view_ele_grps%surf_grp,               &
      &    view_ele_grps%edge_grp, edge_sf_tbl)
       call construct_edge_4_surf_grp                                    &
-     &   (surf%nnod_4_surf, edge%nnod_4_edge, view_mesh,                &
+     &   (nnod_4_surf, edge%nnod_4_edge, view_mesh,                     &
      &    view_sf_grps%num_grp, view_sf_grps%surf_grp,                  &
      &    view_sf_grps%edge_grp, edge_sf_tbl)
 !
@@ -89,14 +88,13 @@
 !------------------------------------------------------------------
 !
       subroutine const_all_edge_4_viewer                                &
-     &         (surf, edge, view_mesh, ed_sf_tbl)
+     &         (nnod_4_surf, edge, view_mesh, ed_sf_tbl)
 !
-      use t_surface_data
       use t_edge_data
       use set_edge_hash_by_sf
       use set_edge_data_by_sf
 !
-      type(surface_data), intent(in) :: surf
+      integer(kind = kint), intent(in) :: nnod_4_surf
       type(edge_data), intent(in) :: edge
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
@@ -109,7 +107,7 @@
       write(*,*) 'const_edge_hash_4_sf'
       call const_edge_hash_4_sf                                         &
      &   (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,                &
-     &    surf%nnod_4_surf, edge%nnod_4_edge, view_mesh%ie_sf_viewer,   &
+     &    nnod_4_surf, edge%nnod_4_edge, view_mesh%ie_sf_viewer,        &
      &    ed_sf_tbl%num_hash, ed_sf_tbl%istack_hash,                    &
      &    ed_sf_tbl%iend_hash, ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash)
 !
@@ -124,7 +122,7 @@
       write(*,*) 'set_edges_connect_by_sf'
       call set_edges_connect_by_sf(view_mesh%nnod_viewer,               &
      &    view_mesh%nsurf_viewer, view_mesh%nedge_viewer,               &
-     &    surf%nnod_4_surf, edge%nnod_4_edge, view_mesh%ie_sf_viewer,   &
+     &    nnod_4_surf, edge%nnod_4_edge, view_mesh%ie_sf_viewer,        &
      &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash,                      &
      &    view_mesh%ie_edge_viewer, view_mesh%iedge_sf_viewer,          &

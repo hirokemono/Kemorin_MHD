@@ -58,7 +58,7 @@
       type(mesh_geometry), save :: mesh1
       type(mesh_groups), save :: group1
 !
-      type(surface_data), save :: surf_p, surf0
+      type(surface_data), save :: surf_p
       type(edge_data), save :: edge_p
       type(merged_viewer_mesh), save :: mgd_view_mesh_p
 !
@@ -72,10 +72,10 @@
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       call const_merged_mesh_para                                       &
-     &   (mesh_file, mesh1, group1, surf0, surf_p, edge_p)
+     &   (mesh_file, mesh1, group1, surf_p, edge_p)
 !
-      call const_surf_mesh_4_viewer(mesh1, group1, surf_p, edge_p,      &
-     &    surf0, mgd_view_mesh_p%view_mesh,                             &
+      call const_surf_mesh_4_viewer(mesh1, group1, edge_p,              &
+     &    surf_p, mgd_view_mesh_p%view_mesh,                            &
      &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
      &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
 !
@@ -98,36 +98,27 @@
 !------------------------------------------------------------------
 !
       subroutine const_merged_mesh_para                                 &
-     &         (mesh_file, mesh, group, surf0, surf, edge)
+     &         (mesh_file, mesh, group, surf, edge)
 !
       use t_file_IO_parameter
-      use load_mesh_data
-      use set_group_types_4_IO
-      use count_number_with_overlap
-      use set_merged_geometry
       use mesh_MPI_IO_select
-      use single_const_kemoview_mesh
       use copy_mesh_structures
       use add_comm_table_in_node_grp
+      use const_mesh_information
       use const_surface_data
       use load_mesh_data
 !
-      use set_nnod_4_ele_by_type
-      use const_mesh_information
       use m_node_quad_2_linear_sf
 !
       type(field_IO_params), intent(in) :: mesh_file
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) :: group
-      type(surface_data), intent(inout) :: surf0
-!
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
 !
       type(mesh_data) :: fem_IO_p
       type(group_data) :: new_nod_grp
-      type(edge_data) :: edge0
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
@@ -142,17 +133,13 @@
       end if
 !
       call set_mesh                                                     &
-     &  (fem_IO_p, mesh, group, surf0%nnod_4_surf, edge0%nnod_4_edge)
+     &  (fem_IO_p, mesh, group, surf%nnod_4_surf, edge%nnod_4_edge)
 !
-      call set_local_element_info(surf0, edge0)
+      call set_local_element_info(surf, edge)
       call construct_surface_data                                       &
-     &   (mesh%node, mesh%ele, surf0)
-!
+     &   (mesh%node, mesh%ele, surf)
 !
       call allocate_quad4_2_linear(mesh%ele%nnod_4_ele)
-      call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (mesh%ele%nnod_4_ele, surf%nnod_4_surf, edge%nnod_4_edge)
-      call set_local_element_info(surf, edge)
 !
       end subroutine const_merged_mesh_para
 !
