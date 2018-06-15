@@ -79,6 +79,11 @@
      &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
      &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
 !
+        call deallocate_iso_surface_type(surf_p)
+        call deallocate_ext_surface_type(surf_p)
+        call deallocate_surface_connect_type(surf_p)
+        call deallocate_inod_in_surf_type(surf_p)
+!
        call dealloc_mesh_infos(mesh1, group1)
        call dealloc_inod_in_edge(edge_p)
 !

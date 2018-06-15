@@ -94,6 +94,11 @@
      &     view_mesh(ip), domain_grps(ip), view_nod_grps(ip),           &
      &     view_ele_grps(ip), view_sf_grps(ip))
 !
+        call deallocate_iso_surface_type(surf0(ip))
+        call deallocate_ext_surface_type(surf0(ip))
+        call deallocate_surface_connect_type(surf0(ip))
+        call deallocate_inod_in_surf_type(surf0(ip))
+!
        call dealloc_mesh_infos(mesh0, group0)
        call dealloc_inod_in_edge(edge_p)
 !
@@ -185,8 +190,6 @@
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*) 's_set_nodes_4_viewer'
 !
-      call deallocate_surface_connect_type(surf)
-      call deallocate_iso_surface_type(surf)
 !
        call s_set_nodes_4_viewer                                        &
      &    (surf%nnod_4_surf, mesh, group, view_mesh, view_nod_grps)
