@@ -90,8 +90,7 @@
       end if
 !
 !
-      call collect_surf_mesh_4_viewer                                   &
-     &   (mesh_file, surf_p, edge_p, mgd_view_mesh_p)
+      call collect_surf_mesh_4_viewer(mesh_file, mgd_view_mesh_p)
 !
       call deallocate_quad4_2_linear
 !
@@ -160,16 +159,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine collect_surf_mesh_4_viewer                             &
-     &         (mesh_file,  surf, edge, mgd_v_mesh)
+      subroutine collect_surf_mesh_4_viewer(mesh_file, mgd_v_mesh)
 !
       use renumber_para_viewer_mesh
       use viewer_mesh_MPI_IO_select
       use const_global_element_ids
 !
       type(field_IO_params), intent(in) :: mesh_file
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
       type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh
 !
       type(mpi_viewer_mesh_param) :: mgd_view_prm
@@ -186,8 +182,7 @@
       call s_renumber_para_viewer_mesh                                  &
      &   (mgd_view_prm%istack_v_node(my_rank),                          &
      &    mgd_view_prm%istack_v_surf(my_rank),                          &
-     &    mgd_view_prm%istack_v_edge(my_rank),                          &
-     &    surf%nnod_4_surf, edge%nnod_4_edge, mgd_v_mesh)
+     &    mgd_view_prm%istack_v_edge(my_rank), mgd_v_mesh)
 !
       call sel_mpi_output_surface_grid                                  &
      &   (mesh_file, mgd_v_mesh, mgd_view_prm)
