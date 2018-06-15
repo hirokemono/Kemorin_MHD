@@ -1,5 +1,5 @@
 !
-!      module t_grp_data_merged_surfaces
+!      module t_viewer_ele_grp_surface
 !
 !      Written by H. Matsui on Jan., 2007
 !
@@ -19,7 +19,7 @@
 !!        type(surface_group_data), intent(in) :: surf_grp
 !!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
 !
-      module t_grp_data_merged_surfaces
+      module t_viewer_ele_grp_surface
 !
       use m_precision
 !
@@ -168,4 +168,4 @@
       end subroutine check_viewer_isuf_4_surf_grp
 !
 !   ---------------------------------------------------------------------!
-      end module t_grp_data_merged_surfaces
+      end module t_viewer_ele_grp_surface

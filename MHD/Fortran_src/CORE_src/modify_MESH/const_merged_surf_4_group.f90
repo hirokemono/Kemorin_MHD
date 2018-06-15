@@ -57,7 +57,7 @@
       subroutine const_merged_surface_4_ele_grp                         &
      &         (merged, merged_grp, merged_surf, mgd_sf_grp)
 !
-      use t_grp_data_merged_surfaces
+      use t_viewer_ele_grp_surface
 !
       use set_surface_hash
       use mark_surf_hash
@@ -145,7 +145,7 @@
       subroutine const_merged_surface_4_sf_grp                          &
      &         (merged_grp, merged_surf, mgd_sf_grp)
 !
-      use t_grp_data_merged_surfaces
+      use t_viewer_ele_grp_surface
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(in) :: merged_surf

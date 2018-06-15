@@ -25,7 +25,7 @@
       use t_file_IO_parameter
       use t_mesh_data_4_merge
       use t_viewer_mesh
-      use t_grp_data_merged_surfaces
+      use t_viewer_ele_grp_surface
       use t_merged_viewer_mesh
 !
       implicit none

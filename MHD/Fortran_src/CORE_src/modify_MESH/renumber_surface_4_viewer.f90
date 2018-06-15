@@ -57,7 +57,7 @@
       subroutine set_element_group_stack_viewer                         &
      &         (nsurf_viewer, mgd_sf_grp, ngrp_ele_sf, ele_surf_grp)
 !
-      use t_grp_data_merged_surfaces
+      use t_viewer_ele_grp_surface
 !
       integer(kind = kint), intent(in) :: nsurf_viewer
       type(group_data_merged_surf), intent(in) :: mgd_sf_grp

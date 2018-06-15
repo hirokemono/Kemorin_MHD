@@ -106,7 +106,7 @@
 !
       use t_mesh_data
       use t_surface_data
-      use t_grp_data_merged_surfaces
+      use t_viewer_ele_grp_surface
 !
       type(mesh_groups), intent(in) :: merged_grp
       type(surface_data), intent(in) :: merged_surf
@@ -220,7 +220,7 @@
       subroutine set_element_group_item_viewer                          &
      &         (mgd_sf_grp, ele_surf_grp)
 !
-      use t_grp_data_merged_surfaces
+      use t_viewer_ele_grp_surface
 
 !
       type(group_data_merged_surf), intent(in) :: mgd_sf_grp
@@ -242,7 +242,7 @@
       subroutine set_surface_group_item_viewer                          &
      &         (mgd_sf_grp, sf_surf_grp)
 !
-      use t_grp_data_merged_surfaces
+      use t_viewer_ele_grp_surface
 !
       type(group_data_merged_surf), intent(in) :: mgd_sf_grp
       type(viewer_group_data), intent(inout)  :: sf_surf_grp
