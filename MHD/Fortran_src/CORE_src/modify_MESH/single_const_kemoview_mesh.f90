@@ -107,7 +107,7 @@
 !
        call deallocate_ext_surface_type(mgd_mesh_p(ip)%merged_surf)
        call deallocate_inod_in_surf_type(mgd_mesh_p(ip)%merged_surf)
-       call deallocate_node_geometry_type(mgd_mesh_p(ip)%merged%node)
+       call dealloc_node_geometry_w_sph(mgd_mesh_p(ip)%merged%node)
        call deallocate_ele_connect_type(mgd_mesh_p(ip)%merged%ele)
 !
         call sel_output_single_surface_grid(id_rank, mesh_file,         &
