@@ -9,9 +9,7 @@
 !!@verbatim
 !!      subroutine s_renumber_para_viewer_mesh                          &
 !!     &         (nshift_node, nshift_surf, nshift_edge,                &
-!!     &          surf, edge, mgd_v_mesh_p)
-!!        type(surface_data), intent(in) :: surf
-!!        type(edge_data), intent(in) :: edge
+!!     &          nnod_4_surf, nnod_4_edge, mgd_v_mesh_p)
 !!        type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p
 !!@endverbatim
 !
@@ -24,8 +22,6 @@
       use t_viewer_mesh
       use t_viewer_group
       use t_merged_viewer_mesh
-      use t_surface_data
-      use t_edge_data
 !
       implicit none
 !
@@ -37,20 +33,19 @@
 !
       subroutine s_renumber_para_viewer_mesh                            &
      &         (nshift_node, nshift_surf, nshift_edge,                  &
-     &          surf, edge, mgd_v_mesh_p)
+     &          nnod_4_surf, nnod_4_edge, mgd_v_mesh_p)
 !
+      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       integer(kind = kint), intent(in) :: nshift_node, nshift_surf
       integer(kind = kint), intent(in) :: nshift_edge
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
       type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p
 !
 !
       call set_global_node_info_4_viewer                                &
      &   (nshift_node, mgd_v_mesh_p%view_mesh)
-      call set_global_surf_info_4_viewer(surf%nnod_4_surf,              &
+      call set_global_surf_info_4_viewer(nnod_4_surf,                   &
      &    nshift_node, nshift_surf, mgd_v_mesh_p%view_mesh)
-      call set_global_edge_info_4_viewer(edge%nnod_4_edge,              &
+      call set_global_edge_info_4_viewer(nnod_4_edge,                   &
      &    nshift_node, nshift_edge, mgd_v_mesh_p%view_mesh)
 !
 !

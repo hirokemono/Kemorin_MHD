@@ -58,7 +58,6 @@
       type(mesh_geometry), save :: mesh1
       type(mesh_groups), save :: group1
 !
-      type(element_data), save :: ele_p
       type(surface_data), save :: surf_p, surf0
       type(edge_data), save :: edge_p
       type(merged_viewer_mesh), save :: mgd_view_mesh_p
@@ -73,7 +72,7 @@
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       call const_merged_mesh_para                                       &
-     &   (mesh_file, mesh1, group1, surf0, ele_p, surf_p, edge_p)
+     &   (mesh_file, mesh1, group1, surf0, surf_p, edge_p)
 !
       call const_surf_mesh_4_viewer(mesh1, group1, surf_p, edge_p,      &
      &    surf0, mgd_view_mesh_p%view_mesh,            &
@@ -101,7 +100,7 @@
 !------------------------------------------------------------------
 !
       subroutine const_merged_mesh_para                                 &
-     &         (mesh_file, mesh, group, surf0, ele, surf, edge)
+     &         (mesh_file, mesh, group, surf0, surf, edge)
 !
       use t_file_IO_parameter
       use load_mesh_data
@@ -125,14 +124,12 @@
       type(mesh_groups), intent(inout) :: group
       type(surface_data), intent(inout) :: surf0
 !
-      type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
 !
       type(mesh_data) :: fem_IO_p
       type(group_data) :: new_nod_grp
       type(edge_data) :: edge0
-      integer(kind = kint) :: nnod_4_edge
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
@@ -146,7 +143,6 @@
         call deallocate_grp_type(new_nod_grp)
       end if
 !
-      ele%nnod_4_ele = fem_IO_p%mesh%ele%nnod_4_ele
       call set_mesh                                                     &
      &  (fem_IO_p, mesh, group, surf0%nnod_4_surf, edge0%nnod_4_edge)
 !
@@ -155,9 +151,9 @@
      &   (mesh%node, mesh%ele, surf0)
 !
 !
-      call allocate_quad4_2_linear(ele%nnod_4_ele)
+      call allocate_quad4_2_linear(mesh%ele%nnod_4_ele)
       call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (ele%nnod_4_ele, surf%nnod_4_surf, edge%nnod_4_edge)
+     &   (mesh%ele%nnod_4_ele, surf%nnod_4_surf, edge%nnod_4_edge)
       call set_local_element_info(surf, edge)
 !
       end subroutine const_merged_mesh_para
@@ -188,14 +184,13 @@
      &  (mgd_v_mesh%view_mesh%nedge_viewer, mgd_view_prm%istack_v_edge)
 !
       call s_renumber_para_viewer_mesh                                  &
-     &   (mgd_view_prm%istack_v_node(my_rank),  &
-     &    mgd_view_prm%istack_v_surf(my_rank),  &
-     &    mgd_view_prm%istack_v_edge(my_rank),  &
-     &    surf, edge, mgd_v_mesh)
+     &   (mgd_view_prm%istack_v_node(my_rank),                          &
+     &    mgd_view_prm%istack_v_surf(my_rank),                          &
+     &    mgd_view_prm%istack_v_edge(my_rank),                          &
+     &    surf%nnod_4_surf, edge%nnod_4_edge, mgd_v_mesh)
 !
       call sel_mpi_output_surface_grid                                  &
-     &   (mesh_file, surf%nnod_4_surf, edge%nnod_4_edge,                &
-     &    mgd_v_mesh, mgd_view_prm)
+     &   (mesh_file, mgd_v_mesh, mgd_view_prm)
 !
       call dealloc_mpi_viewer_mesh_param(mgd_view_prm)
 !

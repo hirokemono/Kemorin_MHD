@@ -7,8 +7,8 @@
 !>@brief  Viewer mesh file IO for gzipped format
 !!
 !!@verbatim
-!!      subroutine gz_mpi_write_viewer_mesh_file(file_name,             &
-!!     &          nnod_4_surf, nnod_4_edge, mgd_v_mesh, mgd_view_prm)
+!!      subroutine gz_mpi_write_viewer_mesh_file                        &
+!!     &         (file_name, mgd_v_mesh, mgd_view_prm)
 !!        type(merged_viewer_mesh), intent(in) :: mgd_v_mesh
 !!        type(mpi_viewer_mesh_param), intent(in) :: mgd_view_prm
 !!@endverbatim
@@ -32,14 +32,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_viewer_mesh_file(file_name,               &
-     &          nnod_4_surf, nnod_4_edge, mgd_v_mesh, mgd_view_prm)
+      subroutine gz_mpi_write_viewer_mesh_file                          &
+     &         (file_name, mgd_v_mesh, mgd_view_prm)
 !
       use MPI_ascii_data_IO
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       type(merged_viewer_mesh), intent(in) :: mgd_v_mesh
       type(mpi_viewer_mesh_param), intent(in) :: mgd_view_prm
 !
@@ -54,8 +53,8 @@
       call open_write_mpi_file                                          &
      &   (gzip_name, nprocs, my_rank, IO_param)
 !
-      call gz_write_viewer_mesh_infos(nnod_4_surf, nnod_4_edge,         &
-     &     mgd_v_mesh, mgd_view_prm, IO_param)
+      call gz_write_viewer_mesh_infos                                   &
+     &   (mgd_v_mesh, mgd_view_prm, IO_param)
 !
       call close_mpi_file(IO_param)
 !
@@ -63,15 +62,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_write_viewer_mesh_infos(nnod_4_surf, nnod_4_edge,   &
-     &          mgd_v_mesh, mgd_view_prm, IO_param)
+      subroutine gz_write_viewer_mesh_infos                             &
+     &         (mgd_v_mesh, mgd_view_prm, IO_param)
 !
       use m_viewer_mesh_labels
       use m_fem_mesh_labels
       use gz_MPI_ascii_data_IO
       use gz_MPI_viewer_mesh_IO
 !
-      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       type(merged_viewer_mesh), intent(in) :: mgd_v_mesh
       type(mpi_viewer_mesh_param), intent(in) :: mgd_view_prm
 !
@@ -111,7 +109,8 @@
 !
       call gz_mpi_write_viewer_connect                                  &
      &   (IO_param, mgd_v_mesh%view_mesh%nsurf_viewer,                  &
-     &    nnod_4_surf, mgd_v_mesh%view_mesh%isurf_gl_view,              &
+     &    mgd_v_mesh%view_mesh%nnod_v_surf,                             &
+     &    mgd_v_mesh%view_mesh%isurf_gl_view,                           &
      &    mgd_v_mesh%view_mesh%ie_sf_viewer)
 !
 !
@@ -122,7 +121,8 @@
 !
       call gz_mpi_write_viewer_connect                                  &
      &   (IO_param, mgd_v_mesh%view_mesh%nedge_viewer,                  &
-     &    nnod_4_edge, mgd_v_mesh%view_mesh%iedge_gl_view,              &
+     &    mgd_v_mesh%view_mesh%nnod_v_edge,                             &
+     &    mgd_v_mesh%view_mesh%iedge_gl_view,                           &
      &    mgd_v_mesh%view_mesh%ie_edge_viewer)
 !
 !
