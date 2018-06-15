@@ -115,8 +115,6 @@
       use const_surface_data
       use load_mesh_data
 !
-      use copy_mesh_structures
-      use set_element_data_4_IO
       use set_nnod_4_ele_by_type
       use const_mesh_information
       use m_node_quad_2_linear_sf
@@ -148,28 +146,13 @@
         call deallocate_grp_type(new_nod_grp)
       end if
 !
-!      call set_mesh                                                     &
-!     &  (fem_IO_p, mesh, group, nnod_4_surf, nnod_4_edge)
-      call copy_comm_tbl_type(fem_IO_p%mesh%nod_comm, mesh%nod_comm)
-      call copy_node_geometry_types(fem_IO_p%mesh%node, mesh%node)
-      call copy_ele_connect_from_IO(fem_IO_p%mesh%ele, mesh%ele)
-      call set_grp_data_from_IO(fem_IO_p%group,                         &
-     &    group%nod_grp, group%ele_grp, group%surf_grp)
+      ele%nnod_4_ele = fem_IO_p%mesh%ele%nnod_4_ele
+      call set_mesh                                                     &
+     &  (fem_IO_p, mesh, group, surf0%nnod_4_surf, edge0%nnod_4_edge)
 !
-      call alloc_sph_node_geometry(mesh%node)
-!
-      call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (mesh%ele%nnod_4_ele, surf0%nnod_4_surf, nnod_4_edge)
-!
-!
-!      call const_nod_ele_infos                                    &
-!     &   (my_rank, node, ele, group%nod_grp, group%ele_grp, group%surf_grp)
       call set_local_element_info(surf0, edge0)
       call construct_surface_data                                       &
      &   (mesh%node, mesh%ele, surf0)
-!
-      call dealloc_groups_data(fem_IO_p%group)
-      ele%nnod_4_ele = fem_IO_p%mesh%ele%nnod_4_ele
 !
 !
       call allocate_quad4_2_linear(ele%nnod_4_ele)
