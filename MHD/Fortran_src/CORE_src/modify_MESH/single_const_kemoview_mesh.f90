@@ -30,7 +30,7 @@
       implicit none
 !
       integer(kind = kint), parameter, private :: iflag_add_comm_tbl = 1
-      integer(kind = kint), parameter :: iflag_write_subdomain = 0
+      integer(kind = kint), parameter :: iflag_write_subdomain = 1
 !
       private :: iflag_write_subdomain
 !
@@ -78,10 +78,14 @@
       allocate(view_ele_grps_p(num_pe_s))
       allocate(view_sf_grps_p(num_pe_s))
 !
+write(*,*) 'num_pe_s', num_pe_s
       do ip = 1, num_pe_s
+write(*,*) 'choose_surface_mesh_sgl, ip', ip
         call input_mesh(mesh_file, (ip-1), mesh_p, group_p,             &
      &      ele_mesh_p%surf%nnod_4_surf,                                &
      &      ele_mesh_p%edge%nnod_4_edge, ierr)
+write(*,*) mesh_p%node%numnod, mesh_p%node%internal_node, mesh_p%ele%numele
+write(*,*) ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge
 !
         if(iflag_add_comm_tbl .gt. 0) then
           call add_comm_table_in_node_group(num_pe_s,                   &
@@ -111,6 +115,9 @@
       end do
 !
       call alloc_num_mesh_sf(num_pe_s, mgd_view_mesh_p)
+write(*,*) 's_merge_viewer_mesh',num_pe_s,ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge
+write(*,*) 'each mesh node:', view_mesh_p(:)%nnod_viewer
+write(*,*) 'each mesh surface:', view_mesh_p(:)%nsurf_viewer
       call s_merge_viewer_mesh(num_pe_s,                                &
      &    ele_mesh_p%surf%nnod_4_surf, ele_mesh_p%edge%nnod_4_edge,     &
      &    view_mesh_p, domain_grps_p,                                   &

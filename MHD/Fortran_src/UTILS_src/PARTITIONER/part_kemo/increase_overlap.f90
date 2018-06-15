@@ -62,7 +62,7 @@
       allocate( iflag_ele(ele%numele) )
       allocate( item_tmp_e(ele%numele) )
 !
-      iflag_selective_ext = 1
+      iflag_selective_ext = 0
       iflag_nod = 0
       iflag_ele = 0
       item_tmp_e = 0
