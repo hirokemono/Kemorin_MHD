@@ -3,9 +3,9 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine allocate_imark_nod_pick_node(merged)
-!!      subroutine allocate_nod_cvt_table_viewer(merged, view_mesh)
-!!        type(mesh_geometry), intent(in) :: merged
+!!      subroutine allocate_imark_nod_pick_node(mesh)
+!!      subroutine allocate_nod_cvt_table_viewer(mesh, view_mesh)
+!!        type(mesh_geometry), intent(in) :: mesh
 !!      subroutine deallocate_imark_nod_pick_node
 !!      subroutine deallocate_nod_cvt_table_viewer
 !!
@@ -13,15 +13,14 @@
 !!     &         (nnod_4_surf, merged_grp, view_mesh)
 !!        type(mesh_groups), intent(in)  :: merged_grp
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
-!!      subroutine count_used_node_4_viewer(merge_tbl, nnod_viewer)
-!!        type(merged_stacks), intent(in) :: merge_tbl
+!!      subroutine count_used_node_4_viewer(numnod, nnod_viewer)
 !!
-!!      subroutine set_node_cvt_table_viewer(merged, imark_node)
-!!        type(mesh_geometry), intent(in) :: merged
+!!      subroutine set_node_cvt_table_viewer(mesh, imark_node)
+!!        type(mesh_geometry), intent(in) :: mesh
 !!      subroutine renumber_surf_connect_4_viewer                       &
 !!     &         (nnod_4_surf, view_mesh, view_mesh)
-!!      subroutine set_node_position_4_viewer(merged, view_mesh)
-!!        type(mesh_geometry), intent(in) :: merged
+!!      subroutine set_node_position_4_viewer(mesh, view_mesh)
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!      subroutine set_node_group_item_viewer(merged_grp, nod_nod_grp)
 !!        type(mesh_groups), intent(in) :: merged_grp
@@ -49,27 +48,27 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_imark_nod_pick_node(merged)
+      subroutine allocate_imark_nod_pick_node(mesh)
 !
       use t_mesh_data
 !
-      type(mesh_geometry), intent(in) :: merged
+      type(mesh_geometry), intent(in) :: mesh
 !
-      allocate( imark_node(merged%node%numnod) )
+      allocate( imark_node(mesh%node%numnod) )
       imark_node = 0
 !
       end subroutine allocate_imark_nod_pick_node
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_nod_cvt_table_viewer(merged, view_mesh)
+      subroutine allocate_nod_cvt_table_viewer(mesh, view_mesh)
 !
       use t_mesh_data
 !
-      type(mesh_geometry), intent(in) :: merged
+      type(mesh_geometry), intent(in) :: mesh
       type(viewer_mesh_data), intent(in) :: view_mesh
 !
-      allocate( inod_merge2viewer(merged%node%numnod) )
+      allocate( inod_merge2viewer(mesh%node%numnod) )
       allocate( inod_viewer2merge(view_mesh%nnod_viewer) )
       inod_merge2viewer = 0
       inod_viewer2merge = 0
@@ -123,18 +122,18 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine count_used_node_4_viewer(merge_tbl, nnod_viewer)
+      subroutine count_used_node_4_viewer(numnod, nnod_viewer)
 !
       use t_merged_geometry_data
 !
-      type(merged_stacks), intent(in) :: merge_tbl
+      integer(kind = kint), intent(in) ::numnod
 !
       integer(kind = kint), intent(inout) ::nnod_viewer
 !
       integer(kind = kint) :: inod
 !
       nnod_viewer = 0
-      do inod = 1, merge_tbl%istack_nod(1)
+      do inod = 1, numnod
         nnod_viewer = nnod_viewer + imark_node(inod)
       end do
 !
@@ -143,17 +142,17 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_node_cvt_table_viewer(merged)
+      subroutine set_node_cvt_table_viewer(mesh)
 !
       use t_mesh_data
 !
-      type(mesh_geometry), intent(in) :: merged
+      type(mesh_geometry), intent(in) :: mesh
 !
       integer(kind = kint) :: inod, inum
 !
 !
       inum = 0
-      do inod = 1, merged%node%numnod
+      do inod = 1, mesh%node%numnod
         if ( imark_node(inod) .gt. 0 ) then
           inum = inum + 1
           inod_merge2viewer(inod) = inum
@@ -185,11 +184,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_position_4_viewer(merged, view_mesh)
+      subroutine set_node_position_4_viewer(mesh, view_mesh)
 !
       use t_mesh_data
 !
-      type(mesh_geometry), intent(in) :: merged
+      type(mesh_geometry), intent(in) :: mesh
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
       integer(kind = kint) :: inum, inod
@@ -197,7 +196,7 @@
 !
       do inum = 1, view_mesh%nnod_viewer
         inod = inod_viewer2merge(inum)
-        view_mesh%xx_view(inum,1:3) = merged%node%xx(inod,1:3)
+        view_mesh%xx_view(inum,1:3) = mesh%node%xx(inod,1:3)
       end do
 !
       end subroutine set_node_position_4_viewer

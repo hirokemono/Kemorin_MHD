@@ -78,6 +78,7 @@
      &   (surf_p, edge_p, mgd_mesh_p, mgd_view_mesh_p%view_mesh,        &
      &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
      &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
+      call dealloc_array_4_merge(mgd_mesh_p)
 !
 !
       if(iflag_write_subdomain .gt. 0) then

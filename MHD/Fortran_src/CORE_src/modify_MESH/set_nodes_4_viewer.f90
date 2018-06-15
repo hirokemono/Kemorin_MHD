@@ -3,9 +3,10 @@
 !
 !      Written by Kemorin in Jan., 2007
 !
-!!      subroutine s_set_nodes_4_viewer(nnod_4_surf, mgd_mesh,          &
+!!      subroutine s_set_nodes_4_viewer(nnod_4_surf, mesh, group,       &
 !!     &          view_mesh, view_nod_grps)
-!!        type(merged_mesh), intent(inout) :: mgd_mesh
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) :: group
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
 !!        type(viewer_node_groups), intent(inout) :: view_nod_grps
 !
@@ -28,47 +29,46 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_set_nodes_4_viewer(nnod_4_surf, mgd_mesh,            &
+      subroutine s_set_nodes_4_viewer(nnod_4_surf, mesh, group,         &
      &          view_mesh, view_nod_grps)
 !
-      use t_mesh_data_4_merge
+      use t_merged_geometry_data
+      use t_mesh_data
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
 !
-      type(merged_mesh), intent(inout) :: mgd_mesh
       type(viewer_mesh_data), intent(inout) :: view_mesh
       type(viewer_node_groups), intent(inout) :: view_nod_grps
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_imark_nod_pick_node'
-      call allocate_imark_nod_pick_node(mgd_mesh%merged)
-      call mark_used_node_4_viewer                                      &
-     &   (nnod_4_surf, mgd_mesh%merged_grp, view_mesh)
+      call allocate_imark_nod_pick_node(mesh)
+      call mark_used_node_4_viewer(nnod_4_surf, group, view_mesh)
 !
       call count_used_node_4_viewer                                     &
-     &   (mgd_mesh%merge_tbl, view_mesh%nnod_viewer)
+     &   (mesh%node%numnod, view_mesh%nnod_viewer)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'allocate_nod_cvt_table_viewer'
-      call allocate_nod_cvt_table_viewer(mgd_mesh%merged, view_mesh)
-      call set_node_cvt_table_viewer(mgd_mesh%merged)
+      call allocate_nod_cvt_table_viewer(mesh, view_mesh)
+      call set_node_cvt_table_viewer(mesh)
 !
       call deallocate_imark_nod_pick_node
 !
       if(iflag_debug .gt. 0) write(*,*) 'alloc_nod_position_viewer'
       call alloc_nod_position_viewer(view_mesh)
-      call set_node_position_4_viewer(mgd_mesh%merged, view_mesh)
+      call set_node_position_4_viewer(mesh, view_mesh)
 !
       call renumber_surf_connect_4_viewer(nnod_4_surf, view_mesh)
 !
-      call s_set_nod_grp_4_viewer_surface(mgd_mesh%merged_grp,          &
-     &    view_mesh%nnod_viewer, view_nod_grps)
+      call s_set_nod_grp_4_viewer_surface                               &
+     &   (group, view_mesh%nnod_viewer, view_nod_grps)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &           'deallocate_nod_cvt_table_viewer'
       call deallocate_nod_cvt_table_viewer
-!
-      call deallocate_grp_type(mgd_mesh%merged_grp%nod_grp)
 !
       end subroutine s_set_nodes_4_viewer
 !

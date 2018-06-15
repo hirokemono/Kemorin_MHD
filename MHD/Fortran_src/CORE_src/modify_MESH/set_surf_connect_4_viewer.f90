@@ -4,10 +4,16 @@
 !      Written by Kemorin in Jan., 2007
 !
 !!      subroutine s_set_surf_connect_4_viewer                          &
-!!     &         (nnod_4_surf, mgd_mesh, mgd_sf_grp,                    &
+!!     &         (nnod_4_surf, group, surf, mgd_sf_grp,                 &
 !!     &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
+!!        type(mesh_groups), intent(in) :: group
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
+!!        type(surface_data), intent(inout) :: surf
 !!        type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
+!!        type(viewer_surface_groups), intent(inout) :: domain_grps
+!!        type(viewer_surface_groups), intent(inout) :: view_ele_grps
+!!        type(viewer_surface_groups), intent(inout) :: view_sf_grps
 !
       module set_surf_connect_4_viewer
 !
@@ -27,7 +33,7 @@
 !------------------------------------------------------------------
 !
       subroutine s_set_surf_connect_4_viewer                            &
-     &         (nnod_4_surf, mgd_mesh, mgd_sf_grp,                      &
+     &         (nnod_4_surf, group, surf, mgd_sf_grp,                   &
      &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !
       use t_mesh_data_4_merge
@@ -36,8 +42,9 @@
       use pickup_surface_4_viewer
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
+      type(mesh_groups), intent(in) :: group
 !
-      type(merged_mesh), intent(inout) :: mgd_mesh
+      type(surface_data), intent(inout) :: surf
       type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
@@ -46,40 +53,25 @@
       type(viewer_surface_groups), intent(inout) :: view_sf_grps
 !
 !
-       write(*,*) 'allocate_imark_surf'
-      call allocate_imark_surf(mgd_mesh%merged_surf)
-      call mark_used_surface_4_viewer                                   &
-     &   (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp)
+      call allocate_imark_surf(surf)
+      call mark_used_surface_4_viewer(group, surf, mgd_sf_grp)
 !
-       write(*,*) 'count_used_surface_4_viewer'
       call count_used_surface_4_viewer                                  &
-     &   (mgd_mesh%istack_surfpe, view_mesh%nsurf_viewer)
+     &   (surf%numsurf, view_mesh%nsurf_viewer)
 !
-       write(*,*) 'allocate_sf_cvt_table_viewer'
-      call allocate_sf_cvt_table_viewer                                 &
-     &   (mgd_mesh%merged_surf, view_mesh)
-      call set_surf_cvt_table_viewer(mgd_mesh%merged_surf)
+      call allocate_sf_cvt_table_viewer(surf, view_mesh)
+      call set_surf_cvt_table_viewer(surf)
 !
-       write(*,*) 'deallocate_imark_surf'
       call deallocate_imark_surf
 !
-       write(*,*) 'alloc_surf_connect_viewer'
       call alloc_surf_connect_viewer(nnod_4_surf, view_mesh)
-      call set_surf_connect_viewer(mgd_mesh%merged_surf, view_mesh)
+      call set_surf_connect_viewer(surf, view_mesh)
 !
-      call s_set_groups_4_viewer_surface                                &
-     &   (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp,        &
+      call s_set_groups_4_viewer_surface(group, surf, mgd_sf_grp,       &
      &    view_mesh%nsurf_viewer, domain_grps,                          &
      &    view_ele_grps, view_sf_grps)
 !
-       write(*,*) 'deallocate_sf_cvt_table_viewer'
       call deallocate_sf_cvt_table_viewer
-!
-      call deallocate_sf_grp_type(mgd_mesh%merged_grp%surf_grp)
-      call deallocate_grp_type(mgd_mesh%merged_grp%ele_grp)
-!
-      call dealloc_surf_connect_merge(mgd_mesh)
-      call dealloc_num_surface_merge(mgd_mesh)
 !
       end subroutine s_set_surf_connect_4_viewer
 !
