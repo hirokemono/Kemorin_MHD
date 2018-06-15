@@ -14,6 +14,7 @@
       module set_nodes_4_groups_viewer
 !
       use m_precision
+      use m_constants
 !
       use m_machine_parameter
       use t_viewer_mesh
@@ -96,11 +97,11 @@
       call mark_node_4_domain_viewer                                    &
      &   (nnod_4_surf, nnod_4_edge, view_mesh,                          &
      &    domain_grps%edge_grp, domain_grps%surf_grp)
-      call count_nod_stack_4_domain_viewer                              &
-     &   (num_pe, inod_sf_stack, domain_grps%node_grp)
+      call count_nod_stack_4_ele_gp_viewer                              &
+     &   (ione, view_mesh%nnod_viewer, domain_grps%node_grp)
       call alloc_merged_group_item(domain_grps%node_grp)
-      call const_nod_4_domain_viewer                                    &
-     &   (num_pe, inod_sf_stack, domain_grps%node_grp)
+      call const_nod_4_ele_gp_viewer                                    &
+     &   (ione, view_mesh%nnod_viewer, domain_grps%node_grp)
 !
       end subroutine set_nod_4_domain_viewer
 !
@@ -123,7 +124,7 @@
 !
       do igrp = 1, view_ele_grps%num_grp
         call mark_node_4_ele_grp_viewer                                 &
-     &     (igrp, nnod_4_surf, nnod_4_edge, num_pe, view_mesh,          &
+     &     (igrp, nnod_4_surf, nnod_4_edge, view_mesh,                  &
      &      domain_grps%edge_grp, view_ele_grps%surf_grp,               &
      &      view_ele_grps%edge_grp)
 !
@@ -132,15 +133,15 @@
         ele_nod_item_tmp(1:ied) = view_ele_grps%node_grp%item_sf(1:ied)
         call dealloc_merged_group_item(view_ele_grps%node_grp)
 !
-        call count_nod_stack_4_ele_gp_viewer(igrp,                      &
-     &     num_pe, inod_sf_stack, view_ele_grps%node_grp)
+        call count_nod_stack_4_ele_gp_viewer                            &
+     &     (igrp, view_mesh%nnod_viewer, view_ele_grps%node_grp)
 !
         call alloc_merged_group_item(view_ele_grps%node_grp)
         view_ele_grps%node_grp%item_sf(1:ied) = ele_nod_item_tmp(1:ied)
         call deallocate_ele_gp_nod_item_tmp
 !
-        call const_nod_4_ele_gp_viewer(igrp,                            &
-     &      num_pe, inod_sf_stack, view_ele_grps%node_grp)
+        call const_nod_4_ele_gp_viewer                                  &
+     &     (igrp, view_mesh%nnod_viewer, view_ele_grps%node_grp)
       end do
 !
       end subroutine set_nod_4_ele_group_viewer
@@ -164,7 +165,7 @@
 !
       do igrp = 1, view_sf_grps%num_grp
         call mark_node_4_surf_grp_viewer                                &
-     &     (igrp, nnod_4_surf, nnod_4_edge, num_pe, view_mesh,          &
+     &     (igrp, nnod_4_surf, nnod_4_edge, view_mesh,                  &
      &      domain_grps%edge_grp, view_sf_grps%surf_grp,                &
      &      view_sf_grps%edge_grp)
 !
@@ -173,15 +174,15 @@
         surf_nod_item_tmp(1:ied) = view_sf_grps%node_grp%item_sf(1:ied)
         call dealloc_merged_group_item(view_sf_grps%node_grp)
 !
-        call count_nod_stack_4_sf_gp_viewer(igrp,                       &
-     &      num_pe, inod_sf_stack, view_sf_grps%node_grp)
+        call count_nod_stack_4_ele_gp_viewer                            &
+     &    (igrp, view_mesh%nnod_viewer, view_sf_grps%node_grp)
 !
         call alloc_merged_group_item(view_sf_grps%node_grp)
         view_sf_grps%node_grp%item_sf(1:ied) = surf_nod_item_tmp(1:ied)
         call deallocate_sf_gp_nod_item_tmp
 !
-        call const_nod_4_sf_gp_viewer(igrp,                             &
-     &      num_pe, inod_sf_stack, view_sf_grps%node_grp)
+        call const_nod_4_ele_gp_viewer                                  &
+     &     (igrp, view_mesh%nnod_viewer, view_sf_grps%node_grp)
       end do
 !
       end subroutine set_nod_4_surf_group_viewer

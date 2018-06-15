@@ -12,39 +12,27 @@
 !!        type(viewer_group_data), intent(in) :: domain_edge_grp
 !!        type(viewer_group_data), intent(in) :: domain_surf_grp
 !!      subroutine mark_node_4_ele_grp_viewer                           &
-!!     &         (igrp, nnod_4_surf, nnod_4_edge, num_pe, view_mesh,    &
+!!     &         (igrp, nnod_4_surf, nnod_4_edge, view_mesh,            &
 !!     &          domain_edge_grp, ele_surf_grp, ele_edge_grp)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!        type(viewer_group_data), intent(in) :: domain_edge_grp
 !!        type(viewer_group_data), intent(in) :: ele_surf_grp
 !!        type(viewer_group_data), intent(in) :: ele_edge_grp
 !!      subroutine mark_node_4_surf_grp_viewer                          &
-!!     &         (igrp, nnod_4_surf, nnod_4_edge, num_pe, view_mesh,    &
+!!     &         (igrp, nnod_4_surf, nnod_4_edge, view_mesh,            &
 !!     &          domain_edge_grp, sf_surf_grp, sf_edge_grp)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!        type(viewer_group_data), intent(in) :: domain_edge_grp
 !!        type(viewer_group_data), intent(in)  :: sf_surf_grp
 !!        type(viewer_group_data), intent(in)  :: sf_edge_grp
 !!
-!!      subroutine count_nod_stack_4_domain_viewer                      &
-!!     &         (num_pe, inod_sf_stack, domain_nod_grp)
-!!        type(viewer_group_data), intent(inout) :: domain_nod_grp
 !!      subroutine count_nod_stack_4_ele_gp_viewer                      &
-!!     &         (igrp, num_pe, inod_sf_stack, ele_nod_grp)
+!!     &         (igrp, nnod_viewer, ele_nod_grp)
 !!        type(viewer_group_data), intent(inout) :: ele_nod_grp
-!!      subroutine count_nod_stack_4_sf_gp_viewer                       &
-!!     &         (igrp, num_pe, inod_sf_stack, sf_nod_grp)
-!!        type(viewer_group_data), intent(inout) :: sf_nod_grp
 !!
-!!      subroutine const_nod_4_domain_viewer                            &
-!!     &         (num_pe, inod_sf_stack, domain_nod_grp)
-!!       type(viewer_group_data), intent(inout) :: domain_nod_grp
 !!      subroutine const_nod_4_ele_gp_viewer                            &
-!!     &         (igrp, num_pe, inod_sf_stack, ele_nod_grp)
+!!     &         (igrp, nnod_viewerk, ele_nod_grp)
 !!        type(viewer_group_data), intent(inout) :: ele_nod_grp
-!!      subroutine const_nod_4_sf_gp_viewer                             &
-!!     &         (igrp, num_pe, inod_sf_stack, sf_nod_grp)
-!!        type(viewer_group_data), intent(inout) :: sf_nod_grp
 !
       module const_node_list_4_viewer
 !
@@ -117,12 +105,11 @@
 !------------------------------------------------------------------
 !
       subroutine mark_node_4_ele_grp_viewer                             &
-     &         (igrp, nnod_4_surf, nnod_4_edge, num_pe, view_mesh,      &
+     &         (igrp, nnod_4_surf, nnod_4_edge, view_mesh,              &
      &          domain_edge_grp, ele_surf_grp, ele_edge_grp)
 !
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
-      integer(kind = kint), intent(in) :: num_pe
       type(viewer_mesh_data), intent(in) :: view_mesh
       type(viewer_group_data), intent(in) :: ele_surf_grp
       type(viewer_group_data), intent(in) :: ele_edge_grp
@@ -133,8 +120,8 @@
 !
       imark_node = 0
 !
-      ist = ele_edge_grp%istack_sf( (igrp-1)*num_pe ) + 1
-      ied = ele_edge_grp%istack_sf( (igrp  )*num_pe )
+      ist = ele_edge_grp%istack_sf(igrp-1) + 1
+      ied = ele_edge_grp%istack_sf(igrp)
       do k1 = 1, nnod_4_edge
         do inum = ist, ied
           iedge = abs(ele_edge_grp%item_sf(inum))
@@ -144,8 +131,8 @@
       end do
 !
       if (nnod_4_surf .eq. num_lag_sf) then
-        ist = ele_surf_grp%istack_sf( (igrp-1)*num_pe ) + 1
-        ied = ele_surf_grp%istack_sf( (igrp  )*num_pe )
+        ist = ele_surf_grp%istack_sf(igrp-1) + 1
+        ied = ele_surf_grp%istack_sf(igrp)
         do inum = 1, domain_edge_grp%num_item
           isurf = abs(ele_surf_grp%item_sf(inum))
           inod = view_mesh%ie_sf_viewer(isurf,num_lag_sf)
@@ -158,12 +145,11 @@
 !------------------------------------------------------------------
 !
       subroutine mark_node_4_surf_grp_viewer                            &
-     &         (igrp, nnod_4_surf, nnod_4_edge, num_pe, view_mesh,      &
+     &         (igrp, nnod_4_surf, nnod_4_edge, view_mesh,              &
      &          domain_edge_grp, sf_surf_grp, sf_edge_grp)
 !
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
-      integer(kind = kint), intent(in) :: num_pe
       type(viewer_mesh_data), intent(in) :: view_mesh
       type(viewer_group_data), intent(in) :: domain_edge_grp
       type(viewer_group_data), intent(in)  :: sf_surf_grp
@@ -174,8 +160,8 @@
 !
       imark_node = 0
 !
-      ist = sf_edge_grp%istack_sf( (igrp-1)*num_pe ) + 1
-      ied = sf_edge_grp%istack_sf( (igrp  )*num_pe )
+      ist = sf_edge_grp%istack_sf(igrp-1) + 1
+      ied = sf_edge_grp%istack_sf(igrp  )
       do k1 = 1, nnod_4_edge
         do inum = ist, ied
           iedge = abs( sf_edge_grp%item_sf(inum) )
@@ -185,8 +171,8 @@
       end do
 !
       if (nnod_4_surf .eq. num_lag_sf) then
-        ist = sf_surf_grp%istack_sf( (igrp-1)*num_pe ) + 1
-        ied = sf_surf_grp%istack_sf( (igrp  )*num_pe )
+        ist = sf_surf_grp%istack_sf(igrp-1) + 1
+        ied = sf_surf_grp%istack_sf(igrp  )
         do inum = 1, domain_edge_grp%num_item
           isurf = sf_surf_grp%item_sf(inum)
           inod = view_mesh%ie_sf_viewer(isurf,num_lag_sf)
@@ -199,160 +185,45 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine count_nod_stack_4_domain_viewer                        &
-     &         (num_pe, inod_sf_stack, domain_nod_grp)
-!
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
-      type(viewer_group_data), intent(inout) :: domain_nod_grp
-!
-!
-      integer(kind = kint) :: ip, ist, ied, inod
-!
-      do ip = 1, num_pe
-        ist = inod_sf_stack(ip-1) + 1
-        ied = inod_sf_stack(ip)
-        domain_nod_grp%istack_sf(ip) = domain_nod_grp%istack_sf(ip-1)
-        do inod = ist, ied
-          domain_nod_grp%istack_sf(ip) = domain_nod_grp%istack_sf(ip)   &
-     &                                  + imark_node(inod)
-        end do
-      end do
-      domain_nod_grp%num_item = domain_nod_grp%istack_sf(num_pe)
-!
-      end subroutine count_nod_stack_4_domain_viewer
-!
-!------------------------------------------------------------------
-!
       subroutine count_nod_stack_4_ele_gp_viewer                        &
-     &         (igrp, num_pe, inod_sf_stack, ele_nod_grp)
+     &         (igrp, nnod_viewer, ele_nod_grp)
 !
       integer(kind = kint), intent(in) :: igrp
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
+      integer(kind = kint), intent(in) :: nnod_viewer
       type(viewer_group_data), intent(inout) :: ele_nod_grp
 !
-      integer(kind = kint) :: ip, idx, ist, ied, inod
+      integer(kind = kint) :: inod
 !
-      do ip = 1, num_pe
-        idx = (igrp-1)*num_pe + ip
-        ist = inod_sf_stack(ip-1) + 1
-        ied = inod_sf_stack(ip)
-        ele_nod_grp%istack_sf(idx) = ele_nod_grp%istack_sf(idx-1)
-        do inod = ist, ied
-          ele_nod_grp%istack_sf(idx) = ele_nod_grp%istack_sf(idx)       &
+      ele_nod_grp%istack_sf(igrp) = ele_nod_grp%istack_sf(igrp-1)
+      do inod = 1, nnod_viewer
+        ele_nod_grp%istack_sf(igrp) = ele_nod_grp%istack_sf(igrp)      &
      &                                + imark_node(inod)
-        end do
       end do
-      ele_nod_grp%num_item = ele_nod_grp%istack_sf( igrp*num_pe )
+      ele_nod_grp%num_item = ele_nod_grp%istack_sf(igrp)
 !
       end subroutine count_nod_stack_4_ele_gp_viewer
 !
 !------------------------------------------------------------------
-!
-      subroutine count_nod_stack_4_sf_gp_viewer                         &
-     &         (igrp, num_pe, inod_sf_stack, sf_nod_grp)
-!
-      integer(kind = kint), intent(in) :: igrp
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
-      type(viewer_group_data), intent(inout) :: sf_nod_grp
-!
-      integer(kind = kint) :: ip, idx, ist, ied, inod
-!
-      do ip = 1, num_pe
-        idx = (igrp-1)*num_pe + ip
-        ist = inod_sf_stack(ip-1) + 1
-        ied = inod_sf_stack(ip)
-        sf_nod_grp%istack_sf(idx) = sf_nod_grp%istack_sf(idx-1)
-        do inod = ist, ied
-          sf_nod_grp%istack_sf(idx) = sf_nod_grp%istack_sf(idx)         &
-     &                               + imark_node(inod)
-        end do
-      end do
-      sf_nod_grp%num_item = sf_nod_grp%istack_sf(igrp*num_pe)
-!
-      end subroutine count_nod_stack_4_sf_gp_viewer
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine const_nod_4_domain_viewer                              &
-     &         (num_pe, inod_sf_stack, domain_nod_grp)
-!
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
-      type(viewer_group_data), intent(inout) :: domain_nod_grp
-!
-      integer(kind = kint) :: ip, ist, ied, inod, icou
-!
-      do ip = 1, num_pe
-        ist = inod_sf_stack(ip-1) + 1
-        ied = inod_sf_stack(ip)
-        icou = domain_nod_grp%istack_sf(ip-1)
-        do inod = ist, ied
-          if (imark_node(inod) .eq. 1) then
-            icou = icou + 1
-            domain_nod_grp%item_sf(icou) = inod
-          end if
-        end do
-      end do
-!
-      end subroutine const_nod_4_domain_viewer
-!
 !------------------------------------------------------------------
 !
       subroutine const_nod_4_ele_gp_viewer                              &
-     &         (igrp, num_pe, inod_sf_stack, ele_nod_grp)
+     &         (igrp, nnod_viewer, ele_nod_grp)
 !
       integer(kind = kint), intent(in) :: igrp
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
+      integer(kind = kint), intent(in) :: nnod_viewer
       type(viewer_group_data), intent(inout) :: ele_nod_grp
 !
-      integer(kind = kint) :: ip, idx, ist, ied, inod, icou
+      integer(kind = kint) :: inod, icou
 !
-      do ip = 1, num_pe
-        idx = (igrp-1)*num_pe + ip
-        ist = inod_sf_stack(ip-1) + 1
-        ied = inod_sf_stack(ip)
-        icou = ele_nod_grp%istack_sf(idx-1)
-        do inod = ist, ied
-          if (imark_node(inod) .eq. 1) then
-            icou = icou + 1
-            ele_nod_grp%item_sf(icou) = inod
-          end if
-        end do
+      icou = ele_nod_grp%istack_sf(igrp-1)
+      do inod = 1, nnod_viewer
+        if (imark_node(inod) .eq. 1) then
+          icou = icou + 1
+          ele_nod_grp%item_sf(icou) = inod
+        end if
       end do
 !
       end subroutine const_nod_4_ele_gp_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine const_nod_4_sf_gp_viewer                               &
-     &         (igrp, num_pe, inod_sf_stack, sf_nod_grp)
-!
-      integer(kind = kint), intent(in) :: igrp
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
-      type(viewer_group_data), intent(inout) :: sf_nod_grp
-!
-      integer(kind = kint) :: ip, idx, ist, ied, inod, icou
-!
-      do ip = 1, num_pe
-        idx = (igrp-1)*num_pe + ip
-        ist = inod_sf_stack(ip-1) + 1
-        ied = inod_sf_stack(ip)
-        icou = sf_nod_grp%istack_sf(idx-1)
-        do inod = ist, ied
-          if (imark_node(inod) .eq. 1) then
-            icou = icou + 1
-            sf_nod_grp%item_sf(icou) = inod
-          end if
-        end do
-      end do
-!
-      end subroutine const_nod_4_sf_gp_viewer
 !
 !------------------------------------------------------------------
 !
