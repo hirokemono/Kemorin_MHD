@@ -30,8 +30,6 @@
 !
       implicit none
 !
-      private :: find_mesh_format_4_viewer
-!
       integer(kind = kint), parameter :: iflag_output_SURF = 0
       integer(kind = kint), parameter :: iflag_add_comm_tbl = 1
       integer(kind = kint), parameter :: iflag_write_subdomain = 0
@@ -47,20 +45,18 @@
       use m_node_quad_2_linear_sf
       use find_mesh_file_format
       use viewer_mesh_IO_select
+      use load_mesh_data
+      use add_comm_table_in_node_grp
 !
       integer(kind = kint), intent(in) :: nprocs_sf
       type(field_IO_params), intent(inout) :: mesh_file
 !
-      type(element_data) :: ele_v
-      type(surface_data) :: surf_v
-      type(edge_data) :: edge_v
 !
-!
-      type(mesh_geometry) :: mesh0
-      type(mesh_groups) :: group0
+      type(mesh_geometry), save  :: mesh0
+      type(mesh_groups), save  :: group0
       type(surface_data), allocatable :: surf0(:)
+      type(edge_data), save :: edge0
 !
-      type(edge_data), save :: edge_p
 !
       type(viewer_mesh_data), allocatable :: view_mesh(:)
       type(viewer_surface_groups), allocatable :: domain_grps(:)
@@ -69,7 +65,7 @@
       type(viewer_surface_groups), allocatable :: view_ele_grps(:)
       type(viewer_surface_groups), allocatable :: view_sf_grps(:)
 !
-      integer(kind = kint) :: ip, id_rank
+      integer(kind = kint) :: ip, id_rank, ierr
 !
 !  set mesh_information
 !
@@ -83,24 +79,27 @@
 !
       do ip = 1, nprocs_sf
         id_rank = ip - 1
-        write(*,*) 'const_merged_mesh_sgl', ip
-        call const_merged_mesh_sgl                                      &
-     &    (id_rank, nprocs_sf, mesh_file, mesh0, group0, surf0(ip),     &
-     &     edge_p)
+        if (iflag_debug.gt.0) write(*,*) 'input_mesh'
+        call input_mesh(mesh_file, id_rank, mesh0, group0,              &
+     &      surf0(ip)%nnod_4_surf, edge0%nnod_4_edge, ierr)
+!
+!
+        if(iflag_add_comm_tbl .gt. 0) then
+          call add_comm_tbl_in_node_grp_mesh(nprocs_sf, mesh0, group0)
+        end if
 !
         call allocate_quad4_2_linear(mesh0%ele%nnod_4_ele)
-        call const_surf_mesh_4_viewer(mesh0, group0,            &
-     &      edge_p, surf0(ip),                                          &
-     &     view_mesh(ip), domain_grps(ip), view_nod_grps(ip),           &
-     &     view_ele_grps(ip), view_sf_grps(ip))
+        call const_surf_mesh_4_viewer(mesh0, group0, surf0(ip), edge0,  &
+     &      view_mesh(ip), domain_grps(ip), view_nod_grps(ip),          &
+     &      view_ele_grps(ip), view_sf_grps(ip))
 !
         call deallocate_iso_surface_type(surf0(ip))
         call deallocate_ext_surface_type(surf0(ip))
         call deallocate_surface_connect_type(surf0(ip))
         call deallocate_inod_in_surf_type(surf0(ip))
 !
-       call dealloc_mesh_infos(mesh0, group0)
-       call dealloc_inod_in_edge(edge_p)
+        call dealloc_mesh_infos(mesh0, group0)
+        call dealloc_inod_in_edge(edge0)
 !
         if(iflag_write_subdomain .gt. 0) then
           call sel_output_single_surface_grid(id_rank, mesh_file,       &
@@ -119,38 +118,8 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine find_mesh_format_4_viewer(mesh_file)
-!
-      use t_file_IO_parameter
-      use m_file_format_switch
-      use mesh_file_name_by_param
-!
-      type(field_IO_params), intent(inout) ::  mesh_file
-!
-!  Detect file format
-      mesh_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_ascii_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_binary_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_gzip_bin_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      mesh_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(mesh_file, izero) .eq. 0) return
-!
-      stop 'I cannot find mesh file!!'
-!
-      end subroutine find_mesh_format_4_viewer
-!
-!------------------------------------------------------------------
-!
       subroutine const_surf_mesh_4_viewer                               &
-     &       (mesh, group, edge, surf, view_mesh, domain_grps,          &
+     &       (mesh, group, surf, edge, view_mesh, domain_grps,          &
      &        view_nod_grps, view_ele_grps, view_sf_grps)
 !
       use set_merged_geometry
@@ -159,13 +128,14 @@
       use set_nodes_4_viewer
       use const_edge_4_viewer
       use set_nodes_4_groups_viewer
+      use const_mesh_information
+      use const_surface_data
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(inout) :: group
-!
-      type(edge_data), intent(in) :: edge
+      type(mesh_groups), intent(in) :: group
 !
       type(surface_data), intent(inout) :: surf
+      type(edge_data), intent(inout) :: edge
 !
       type(viewer_mesh_data), intent(inout) :: view_mesh
       type(viewer_surface_groups), intent(inout) :: domain_grps
@@ -176,6 +146,9 @@
 !
       type(viewer_ele_grp_surface) :: mgd_sf_grp
 !
+!
+      call set_local_element_info(surf, edge)
+      call construct_surface_data(mesh%node, mesh%ele, surf)
 !
        write(*,*) 'const_merged_surface_4_ele_grp'
        call const_merged_surface_4_ele_grp(mesh%node, mesh%ele,         &
@@ -232,57 +205,6 @@
       end subroutine set_surf_domain_id_viewer
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine const_merged_mesh_sgl                                  &
-     &         (id_rank, nprocs_sf, mesh_file, mesh0, group0, surf0,    &
-     &          edge0)
-!
-      use t_file_IO_parameter
-      use load_mesh_data
-      use set_group_types_4_IO
-      use mesh_IO_select
-      use const_surface_data
-      use copy_mesh_structures
-      use add_comm_table_in_node_grp
-!
-      use load_mesh_data
-      use const_mesh_information
-      use copy_mesh_structures
-      use set_element_data_4_IO
-!
-      integer(kind = kint), intent(in) :: id_rank, nprocs_sf
-      type(field_IO_params), intent(in) :: mesh_file
-!
-      type(mesh_geometry), intent(inout) :: mesh0
-      type(mesh_groups), intent(inout) ::   group0
-      type(surface_data), intent(inout) :: surf0
-      type(edge_data), intent(inout) :: edge0
-!
-      type(mesh_data) :: fem_IO_p
-      type(group_data) :: new_nod_grp
-      integer(kind = kint) :: ierr
-!
-!
-      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call sel_read_mesh(mesh_file, id_rank, fem_IO_p, ierr)
-!
-      if(iflag_add_comm_tbl .gt. 0) then
-        call add_comm_table_in_node_group(nprocs_sf,                    &
-     &     fem_IO_p%mesh%nod_comm, fem_IO_p%group%nod_grp, new_nod_grp)
-        call deallocate_grp_type(fem_IO_p%group%nod_grp)
-        call copy_group_data(new_nod_grp, fem_IO_p%group%nod_grp)
-        call deallocate_grp_type(new_nod_grp)
-      end if
-!
-      call set_mesh                                                     &
-     &  (fem_IO_p, mesh0, group0, surf0%nnod_4_surf, edge0%nnod_4_edge)
-!
-      call set_local_element_info(surf0, edge0)
-      call construct_surface_data(mesh0%node, mesh0%ele, surf0)
-!
-      end subroutine const_merged_mesh_sgl
-!
 !------------------------------------------------------------------
 !
       subroutine collect_single_viewer_mesh                             &

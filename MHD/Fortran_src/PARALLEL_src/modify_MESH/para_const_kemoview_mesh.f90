@@ -52,6 +52,7 @@
       use single_const_kemoview_mesh
       use set_parallel_file_name
       use viewer_mesh_IO_select
+      use add_comm_table_in_node_grp
 !
       type(field_IO_params), intent(inout) :: mesh_file
 !
@@ -71,21 +72,28 @@
       call MPI_BCAST(mesh_file%iflag_format, ione,                      &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call const_merged_mesh_para                                       &
-     &   (mesh_file, mesh1, group1, surf_p, edge_p)
 !
-      call const_surf_mesh_4_viewer(mesh1, group1, edge_p,              &
-     &    surf_p, mgd_view_mesh_p%view_mesh,                            &
+      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(mesh_file, nprocs, mesh1, group1,             &
+     &    surf_p%nnod_4_surf, edge_p%nnod_4_edge)
+!
+      if(iflag_add_comm_tbl .gt. 0) then
+        call add_comm_tbl_in_node_grp_mesh(nprocs, mesh1, group1)
+      end if
+      call allocate_quad4_2_linear(mesh1%ele%nnod_4_ele)
+!
+      call const_surf_mesh_4_viewer                                     &
+     &   (mesh1, group1, surf_p, edge_p, mgd_view_mesh_p%view_mesh,     &
      &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
      &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
 !
-        call deallocate_iso_surface_type(surf_p)
-        call deallocate_ext_surface_type(surf_p)
-        call deallocate_surface_connect_type(surf_p)
-        call deallocate_inod_in_surf_type(surf_p)
+      call deallocate_iso_surface_type(surf_p)
+      call deallocate_ext_surface_type(surf_p)
+      call deallocate_surface_connect_type(surf_p)
+      call deallocate_inod_in_surf_type(surf_p)
 !
-       call dealloc_mesh_infos(mesh1, group1)
-       call dealloc_inod_in_edge(edge_p)
+      call dealloc_mesh_infos(mesh1, group1)
+      call dealloc_inod_in_edge(edge_p)
 !
       if(iflag_write_subdomain .gt. 0) then
         call sel_output_single_surface_grid(my_rank, mesh_file,         &
@@ -103,54 +111,6 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine const_merged_mesh_para                                 &
-     &         (mesh_file, mesh, group, surf, edge)
-!
-      use t_file_IO_parameter
-      use mesh_MPI_IO_select
-      use copy_mesh_structures
-      use add_comm_table_in_node_grp
-      use const_mesh_information
-      use const_surface_data
-      use load_mesh_data
-!
-      use m_node_quad_2_linear_sf
-!
-      type(field_IO_params), intent(in) :: mesh_file
-!
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) :: group
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
-!
-      type(mesh_data) :: fem_IO_p
-      type(group_data) :: new_nod_grp
-!
-!
-      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call sel_mpi_read_mesh(mesh_file, fem_IO_p)
-!
-      if(iflag_add_comm_tbl .gt. 0) then
-        call add_comm_table_in_node_group(nprocs,                       &
-     &     fem_IO_p%mesh%nod_comm, fem_IO_p%group%nod_grp, new_nod_grp)
-        call deallocate_grp_type(fem_IO_p%group%nod_grp)
-        call copy_group_data(new_nod_grp, fem_IO_p%group%nod_grp)
-        call deallocate_grp_type(new_nod_grp)
-      end if
-!
-      call set_mesh                                                     &
-     &  (fem_IO_p, mesh, group, surf%nnod_4_surf, edge%nnod_4_edge)
-!
-      call set_local_element_info(surf, edge)
-      call construct_surface_data                                       &
-     &   (mesh%node, mesh%ele, surf)
-!
-      call allocate_quad4_2_linear(mesh%ele%nnod_4_ele)
-!
-      end subroutine const_merged_mesh_para
-!
-!------------------------------------------------------------------
-!
       subroutine collect_surf_mesh_4_viewer(mesh_file, mgd_v_mesh)
 !
       use renumber_para_viewer_mesh
@@ -161,6 +121,7 @@
       type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh
 !
       type(mpi_viewer_mesh_param) :: mgd_view_prm
+!
 !
       call alloc_mpi_viewer_mesh_param(nprocs, mgd_view_prm)
 !
