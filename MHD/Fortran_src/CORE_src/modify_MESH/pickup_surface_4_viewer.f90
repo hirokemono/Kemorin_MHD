@@ -1,40 +1,56 @@
-!> @file  pickup_surface_4_viewer.f90
-!!      module pickup_surface_4_viewer
-!!
-!! @author  H. Matsui
-!! @date Programmed in Jan., 2009
 !
-!> @brief Mark node, surface, edge for viewer mesh
+!      module pickup_surface_4_viewer
+!
+!      Written by Kemorin in Jan., 2007
+!
+!!      subroutine allocate_imark_surf(merged_surf)
+!!      subroutine allocate_sf_cvt_table_viewer(merged_surf, view_mesh)
+!!        type(mesh_geometry), intent(in) :: merged
+!!        type(viewer_mesh_data), intent(in) :: view_mesh
+!!        type(surface_data), intent(in) :: merged_surf
+!!      subroutine deallocate_imark_surf
+!!      subroutine deallocate_sf_cvt_table_viewer
 !!
-!!@verbatim
-!!      subroutine set_node_list_4_ksm                                  &
-!!     &         (numnod, iflag_node, icou_nod, inod_ksm)
-!!
-!!      subroutine set_node_position_4_viewer(node, inod_ksm, view_mesh)
-!!      subroutine set_surf_connect_viewer                              &
-!!     &         (node, surf, inod_ksm, isurf_ksm, view_mesh)
-!!      subroutine set_edge_connect_viewer(node, surf, edge,            &
-!!     &          inod_ksm, isurf_ksm, iedge_ksm, view_mesh)
-!!        type(node_data), intent(in) :: node
-!!        type(surface_data), intent(in) :: surf
+!!      subroutine mark_used_surface_4_viewer                           &
+!!     &         (merged_grp, merged_surf, mgd_sf_grp)
+!!        type(mesh_groups), intent(in) :: merged_grp
+!!        type(surface_data), intent(in) :: merged_surf
+!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+!!      subroutine count_used_surface_4_viewer                          &
+!!     &         (num_pe, istack_surfpe, nsurf_sf)
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
-!!        type(edge_data), intent(in) :: edge
 !!
-!!      integer(kind = kint) function count_group_item_4_viewer         &
-!!     &                   (numnod, iflag_node, istack_pre)
-!!      subroutine set_group_item_4_viewer(numnod, iflag_node, inod_ksm,&
-!!     &          num_item, istack_pre, item)
-!!@endverbatim
+!!      subroutine set_surf_cvt_table_viewer(merged_surf)
+!!      subroutine set_surf_connect_viewer(merged_surf, view_mesh)
+!!        type(surface_data), intent(in) :: merged_surf
+!!        type(viewer_mesh_data), intent(inout) :: view_mesh
+!!      subroutine set_surf_domain_item_viewer                          &
+!!     &         (merged_surf, domain_surf_grp)
+!!        type(viewer_group_data), intent(inout) :: domain_surf_grp
+!!      subroutine set_element_group_item_viewer                        &
+!!     &         (mgd_sf_grp, ele_surf_grp)
+!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+!!      subroutine set_surface_group_item_viewer                        &
+!!     &         (mgd_sf_grp, sf_surf_grp)
+!!        type(mesh_groups), intent(in) :: merged_grp
+!!        type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+!!        type(mesh_groups), intent(in) :: merged_grp
 !
       module pickup_surface_4_viewer
 !
       use m_precision
-      use t_geometry_data
       use t_surface_data
-      use t_edge_data
       use t_viewer_mesh
+      use t_viewer_group
 !
       implicit none
+!
+!
+      integer(kind = kint), allocatable :: imark_surf(:)
+      integer(kind = kint), allocatable :: isf_merge2viewer(:)
+      integer(kind = kint), allocatable :: isf_viewer2merge(:)
+!
+      private :: imark_surf, isf_merge2viewer, isf_viewer2merge
 !
 !------------------------------------------------------------------
 !
@@ -42,185 +58,210 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_node_list_4_ksm                                    &
-     &         (numnod, iflag_node, icou_nod, inod_ksm)
+      subroutine allocate_imark_surf(merged_surf)
 !
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: iflag_node(numnod)
+      type(surface_data), intent(in) :: merged_surf
 !
-      integer(kind = kint), intent(inout) :: icou_nod
-      integer(kind = kint), intent(inout) :: inod_ksm(numnod)
+      allocate( imark_surf(merged_surf%numsurf) )
+      imark_surf = 0
 !
-      integer(kind = kint) :: inod
+      end subroutine allocate_imark_surf
+!
+!------------------------------------------------------------------
+!
+      subroutine allocate_sf_cvt_table_viewer(merged_surf, view_mesh)
+!
+      type(surface_data), intent(in) :: merged_surf
+      type(viewer_mesh_data), intent(in) :: view_mesh
+!
+      allocate( isf_merge2viewer(merged_surf%numsurf) )
+      allocate( isf_viewer2merge(view_mesh%nsurf_viewer) )
+      isf_merge2viewer = 0
+      isf_viewer2merge = 0
+!
+      end subroutine allocate_sf_cvt_table_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_imark_surf
+!
+      deallocate( imark_surf )
+!
+      end subroutine deallocate_imark_surf
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_sf_cvt_table_viewer
+!
+      deallocate( isf_merge2viewer )
+      deallocate( isf_viewer2merge )
+!
+      end subroutine deallocate_sf_cvt_table_viewer
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine mark_used_surface_4_viewer                             &
+     &         (merged_grp, merged_surf, mgd_sf_grp)
+!
+      use t_mesh_data
+      use t_surface_data
+      use t_grp_data_merged_surfaces
+!
+      type(mesh_groups), intent(in) :: merged_grp
+      type(surface_data), intent(in) :: merged_surf
+      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+!
+      integer(kind = kint) :: inum, isurf
 !
 !
-      do inod = 1, numnod
-        if(iflag_node(inod) .ne. 0 .and. inod_ksm(inod) .eq. 0) then
-          icou_nod = icou_nod + 1
-          inod_ksm(inod) = icou_nod
+      do inum = 1, merged_surf%numsurf_iso
+        isurf = abs( merged_surf%isf_isolate(inum) )
+        imark_surf(isurf) = 1
+      end do
+!
+      do inum = 1, mgd_sf_grp%ntot_sf_iso_ele_grp_m
+        isurf = abs( mgd_sf_grp%isf_isolate_ele_grp_m(inum) )
+        imark_surf(isurf) = 1
+      end do
+!
+      do inum = 1, merged_grp%surf_grp%num_item
+        isurf = abs( mgd_sf_grp%isf_surf_grp_m(inum) )
+        imark_surf(isurf) = 1
+      end do
+!
+      end subroutine mark_used_surface_4_viewer
+!
+! ------------------------------------------------------
+!
+      subroutine count_used_surface_4_viewer                            &
+     &         (num_pe, istack_surfpe, nsurf_sf)
+!
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: istack_surfpe(0:num_pe)
+!
+      integer(kind = kint), intent(inout) :: nsurf_sf(num_pe)
+!
+      integer(kind = kint) :: ip, ist, ied, isurf
+!
+      do ip = 1, num_pe
+        ist = istack_surfpe(ip-1) + 1
+        ied = istack_surfpe(ip)
+        nsurf_sf(ip) = 0
+        do isurf = ist, ied
+          nsurf_sf(ip) = nsurf_sf(ip) + imark_surf(isurf)
+        end do
+      end do
+!
+      end subroutine count_used_surface_4_viewer
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine set_surf_cvt_table_viewer(merged_surf)
+!
+      use t_surface_data
+!
+      type(surface_data), intent(in) :: merged_surf
+!
+      integer(kind = kint) :: isurf, inum
+!
+!
+      inum = 0
+      do isurf = 1, merged_surf%numsurf
+        if ( imark_surf(isurf) .gt. 0 ) then
+          inum = inum + 1
+          isf_merge2viewer(isurf) = inum
+          isf_viewer2merge(inum) = isurf
         end if
       end do
 !
-      end subroutine set_node_list_4_ksm
+      end subroutine set_surf_cvt_table_viewer
 !
-!------------------------------------------------------------------
-!------------------------------------------------------------------
+! ------------------------------------------------------
 !
-      subroutine set_node_position_4_viewer(node, inod_ksm, view_mesh)
+      subroutine set_surf_connect_viewer(merged_surf, view_mesh)
 !
-      type(node_data), intent(in) :: node
-      integer(kind = kint), intent(in) :: inod_ksm(node%numnod)
+      use t_surface_data
 !
+      type(surface_data), intent(in) :: merged_surf
       type(viewer_mesh_data), intent(inout) :: view_mesh
 !
-      integer(kind = kint) :: inum, inod
+      integer(kind = kint) :: inum, isurf
 !
 !
-!$omp parallel do
-      do inum = 1, view_mesh%nnod_viewer
-        view_mesh%inod_gl_view(inum) = inum
-      end do
-!$omp end parallel do
-!
-      do inod = 1, node%numnod
-        inum = inod_ksm(inod)
-        if(inum .gt. 0) view_mesh%xx_view(inum,1:3) = node%xx(inod,1:3)
-      end do
-!
-      end subroutine set_node_position_4_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine set_surf_connect_viewer                                &
-     &         (node, surf, inod_ksm, isurf_ksm, view_mesh)
-!
-      type(node_data), intent(in) :: node
-      type(surface_data), intent(in) :: surf
-      integer(kind = kint), intent(in) :: inod_ksm(node%numnod)
-      integer(kind = kint), intent(in) :: isurf_ksm(surf%numsurf)
-!
-      type(viewer_mesh_data), intent(inout) :: view_mesh
-!
-      integer(kind = kint) :: inum, isurf, k1, inod
-!
-!$omp parallel do
       do inum = 1, view_mesh%nsurf_viewer
-        view_mesh%isurf_gl_view(inum) = inum
-      end do
-!$omp end parallel do
-!
-      do isurf = 1, surf%numsurf
-        inum = isurf_ksm(isurf)
-        if(inum .gt. 0) then
-          do k1 = 1, surf%nnod_4_surf
-            inod = surf%ie_surf(isurf,k1)
-            view_mesh%ie_sf_viewer(inum,k1) = inod_ksm(inod)
-            if(inod_ksm(inod) .le. 0) write(*,*)                        &
-     &               'Wrong table in inod_ksm', inod
-          end do
-        end if
+        isurf = isf_viewer2merge(inum)
+        view_mesh%ie_sf_viewer(inum,1:merged_surf%nnod_4_surf)          &
+     &         = merged_surf%ie_surf(isurf,1:merged_surf%nnod_4_surf)
       end do
 !
       end subroutine set_surf_connect_viewer
 !
-!------------------------------------------------------------------
+! ------------------------------------------------------
+! ------------------------------------------------------
 !
-      subroutine set_edge_connect_viewer(node, surf, edge,              &
-     &          inod_ksm, isurf_ksm, iedge_ksm, view_mesh)
+      subroutine set_surf_domain_item_viewer                            &
+     &         (merged_surf, domain_surf_grp)
 !
-      type(node_data), intent(in) :: node
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
+      use t_surface_data
 !
-      integer(kind = kint), intent(in) :: inod_ksm(node%numnod)
-      integer(kind = kint), intent(in) :: isurf_ksm(surf%numsurf)
-      integer(kind = kint), intent(in) :: iedge_ksm(edge%numedge)
+      type(surface_data), intent(in) :: merged_surf
+      type(viewer_group_data), intent(inout) :: domain_surf_grp
 !
-      type(viewer_mesh_data), intent(inout) :: view_mesh
-!
-      integer(kind = kint) :: iedge, isurf, inod, inum, k1
+      integer(kind = kint) :: inum, isurf
 !
 !
-!$omp parallel do
-      do inum = 1, view_mesh%nedge_viewer
-        view_mesh%iedge_gl_view(inum) = inum
-      end do
-!$omp end parallel do
-!
-      do iedge = 1, edge%numedge
-        inum = iedge_ksm(iedge)
-        if(inum .gt. 0) then
-          do k1 = 1, edge%nnod_4_edge
-            inod = edge%ie_edge(iedge,k1)
-            view_mesh%ie_edge_viewer(inum,k1) = inod_ksm(inod)
-              if(inod_ksm(inod) .le. 0) write(*,*)                      &
-     &               'Wrong table in inod_ksm', inod
-          end do
-        end if
+      do inum = 1, domain_surf_grp%num_item
+        isurf = abs( merged_surf%isf_isolate(inum) )
+        domain_surf_grp%item_sf(inum) = isf_merge2viewer(isurf)         &
+     &                    * (merged_surf%isf_isolate(inum) / isurf)
       end do
 !
-      do isurf = 1, surf%numsurf
-        inum = isurf_ksm(isurf)
-        if(inum .gt. 0) then
-          do k1 = 1, nedge_4_surf
-            iedge = abs(edge%iedge_4_sf(isurf,k1))
-            view_mesh%iedge_sf_viewer(inum,k1) = iedge_ksm(iedge)
-            if(iedge_ksm(iedge) .le. 0) write(*,*)                      &
-     &              'Wrong table in iedge_ksm', iedge, iedge_ksm(iedge), &
-     &              edge%iedge_global(iedge), edge%ie_edge(iedge,1:2)
-          end do
-        end if
-      end do
-!
-      end subroutine set_edge_connect_viewer
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      integer(kind = kint) function count_group_item_4_viewer           &
-     &                   (numnod, iflag_node, istack_pre)
-!
-      integer(kind = kint), intent(in)  :: numnod
-      integer(kind = kint), intent(in)  :: iflag_node(numnod)
-      integer(kind = kint), intent(in)  :: istack_pre
-!
-      integer(kind = kint) :: inod, icou
-!
-!
-      icou = istack_pre
-      do inod = 1, numnod
-        icou = icou + abs(iflag_node(inod))
-      end do
-      count_group_item_4_viewer = icou
-!
-      end function count_group_item_4_viewer
+      end subroutine set_surf_domain_item_viewer
 !
 !------------------------------------------------------------------
 !
-      subroutine set_group_item_4_viewer(numnod, iflag_node, inod_ksm,  &
-     &          num_item, istack_pre, item)
+      subroutine set_element_group_item_viewer                          &
+     &         (mgd_sf_grp, ele_surf_grp)
 !
-      integer(kind = kint), intent(in)  :: numnod
-      integer(kind = kint), intent(in)  :: iflag_node(numnod)
-      integer(kind = kint), intent(in)  :: inod_ksm(numnod)
-      integer(kind = kint), intent(in)  :: num_item, istack_pre
+      use t_grp_data_merged_surfaces
+
 !
-      integer(kind = kint), intent(inout) :: item(num_item)
+      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      type(viewer_group_data), intent(inout) :: ele_surf_grp
 !
-      integer(kind = kint) :: inod, icou
+      integer(kind = kint) :: inum, isurf
 !
 !
-      icou = istack_pre
-      do inod = 1, numnod
-        if(abs(iflag_node(inod)) .gt. 0) then
-          icou = icou + 1
-          item(icou) = inod_ksm(inod) * iflag_node(inod)
-          if(item(icou) .eq. 0) write(*,*)                              &
-     &                        'Wrong at', icou, inod, inod_ksm(inod)
-        end if
+      do inum = 1, ele_surf_grp%num_item
+        isurf = abs( mgd_sf_grp%isf_isolate_ele_grp_m(inum) )
+        ele_surf_grp%item_sf(inum) = isf_merge2viewer(isurf)            &
+     &         * (mgd_sf_grp%isf_isolate_ele_grp_m(inum) / isurf)
       end do
 !
-      end subroutine set_group_item_4_viewer
+      end subroutine set_element_group_item_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine set_surface_group_item_viewer                          &
+     &         (mgd_sf_grp, sf_surf_grp)
+!
+      use t_grp_data_merged_surfaces
+!
+      type(group_data_merged_surf), intent(in) :: mgd_sf_grp
+      type(viewer_group_data), intent(inout)  :: sf_surf_grp
+!
+      integer(kind = kint) :: inum, isurf
+!
+!
+      do inum = 1, sf_surf_grp%num_item
+        isurf = abs( mgd_sf_grp%isf_surf_grp_m(inum) )
+        sf_surf_grp%item_sf(inum) = isf_merge2viewer(isurf)             &
+     &                     * (mgd_sf_grp%isf_surf_grp_m(inum) / isurf)
+      end do
+!
+      end subroutine set_surface_group_item_viewer
 !
 !------------------------------------------------------------------
 !
