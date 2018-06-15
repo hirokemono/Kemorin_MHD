@@ -122,7 +122,7 @@
 !
       view_ele_grps%num_grp = merged_grp%ele_grp%num_grp
       view_ele_grps%surf_grp%num_item                                   &
-     &     = mgd_sf_grp%ntot_sf_iso_ele_grp_m
+     &     = mgd_sf_grp%ntot_sf_iso_ele_grp
       call alloc_merged_surf_grps_stack(ione, view_ele_grps)
       call alloc_merged_group_item(view_ele_grps%surf_grp)
 !

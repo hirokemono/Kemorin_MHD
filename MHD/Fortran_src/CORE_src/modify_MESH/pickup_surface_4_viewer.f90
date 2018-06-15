@@ -120,13 +120,13 @@
         imark_surf(isurf) = 1
       end do
 !
-      do inum = 1, mgd_sf_grp%ntot_sf_iso_ele_grp_m
-        isurf = abs( mgd_sf_grp%isf_isolate_ele_grp_m(inum) )
+      do inum = 1, mgd_sf_grp%ntot_sf_iso_ele_grp
+        isurf = abs( mgd_sf_grp%isf_isolate_ele_grp(inum) )
         imark_surf(isurf) = 1
       end do
 !
       do inum = 1, merged_grp%surf_grp%num_item
-        isurf = abs( mgd_sf_grp%isf_surf_grp_m(inum) )
+        isurf = abs( mgd_sf_grp%isf_surf_grp(inum) )
         imark_surf(isurf) = 1
       end do
 !
@@ -230,9 +230,9 @@
 !
 !
       do inum = 1, ele_surf_grp%num_item
-        isurf = abs( mgd_sf_grp%isf_isolate_ele_grp_m(inum) )
+        isurf = abs( mgd_sf_grp%isf_isolate_ele_grp(inum) )
         ele_surf_grp%item_sf(inum) = isf_merge2viewer(isurf)            &
-     &         * (mgd_sf_grp%isf_isolate_ele_grp_m(inum) / isurf)
+     &         * (mgd_sf_grp%isf_isolate_ele_grp(inum) / isurf)
       end do
 !
       end subroutine set_element_group_item_viewer
@@ -251,9 +251,9 @@
 !
 !
       do inum = 1, sf_surf_grp%num_item
-        isurf = abs( mgd_sf_grp%isf_surf_grp_m(inum) )
+        isurf = abs( mgd_sf_grp%isf_surf_grp(inum) )
         sf_surf_grp%item_sf(inum) = isf_merge2viewer(isurf)             &
-     &                     * (mgd_sf_grp%isf_surf_grp_m(inum) / isurf)
+     &                     * (mgd_sf_grp%isf_surf_grp(inum) / isurf)
       end do
 !
       end subroutine set_surface_group_item_viewer

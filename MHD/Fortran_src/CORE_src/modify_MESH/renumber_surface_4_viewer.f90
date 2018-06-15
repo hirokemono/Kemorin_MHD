@@ -71,7 +71,7 @@
       do igrp = 1, ngrp_ele_sf
         ist = ele_surf_grp%istack_sf(igrp-1) + 1
         ele_surf_grp%istack_sf(igrp) = ele_surf_grp%istack_sf(igrp-1)
-        do inum = ist, mgd_sf_grp%istack_sf_iso_ele_grp_m(igrp)
+        do inum = ist, mgd_sf_grp%istack_sf_iso_ele_grp(igrp)
           isurf = abs( ele_surf_grp%item_sf(inum) )
           if (isurf .gt. nsurf_viewer) exit
           ele_surf_grp%istack_sf(igrp) = inum

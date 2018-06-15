@@ -100,42 +100,42 @@
 !
 !    count independent surfaces for element group
 !
-        ist_grp = mgd_sf_grp%istack_sf_iso_ele_grp_m(igrp-1)
+        ist_grp = mgd_sf_grp%istack_sf_iso_ele_grp(igrp-1)
 !
         call allocate_iso_surf_4_egrp_tmp                               &
-     &     (mgd_sf_grp%ntot_sf_iso_ele_grp_m)
+     &     (mgd_sf_grp%ntot_sf_iso_ele_grp)
         isf_isolate_ele_grp_tmp(1:ist_grp)                              &
-     &          = mgd_sf_grp%isf_isolate_ele_grp_m(1:ist_grp)
+     &          = mgd_sf_grp%isf_isolate_ele_grp(1:ist_grp)
         call dealloc_iso_surf_4_egrp_m(mgd_sf_grp)
 !
 !        write(*,*) 'count_part_surface', igrp
         call count_part_surface                                         &
      &     (merged%ele%numele, nele_grp, surf_ele_tbl%iflag_hash,       &
-     &      mgd_sf_grp%num_sf_iso_ele_grp_m(igrp) )
-        mgd_sf_grp%istack_sf_iso_ele_grp_m(igrp)                        &
-     &      = mgd_sf_grp%istack_sf_iso_ele_grp_m(igrp-1) &
-     &       + mgd_sf_grp%num_sf_iso_ele_grp_m(igrp)
-        mgd_sf_grp%ntot_sf_iso_ele_grp_m                                &
-     &       = mgd_sf_grp%istack_sf_iso_ele_grp_m(igrp)
+     &      mgd_sf_grp%num_sf_iso_ele_grp(igrp) )
+        mgd_sf_grp%istack_sf_iso_ele_grp(igrp)                          &
+     &      = mgd_sf_grp%istack_sf_iso_ele_grp(igrp-1) &
+     &       + mgd_sf_grp%num_sf_iso_ele_grp(igrp)
+        mgd_sf_grp%ntot_sf_iso_ele_grp                                  &
+     &       = mgd_sf_grp%istack_sf_iso_ele_grp(igrp)
 !
 !    set independent surfaces for element group
 !
         call alloc_iso_surf_4_egrp_m(mgd_sf_grp)
-        mgd_sf_grp%isf_isolate_ele_grp_m(1:ist_grp)                     &
+        mgd_sf_grp%isf_isolate_ele_grp(1:ist_grp)                       &
      &          = isf_isolate_ele_grp_tmp(1:ist_grp)
         call deallocate_iso_surf_4_egrp_tmp
 !
 !        write(*,*) 'set_part_surface', igrp
         call set_part_surface(merged%ele%numele, nele_grp,              &
-     &      mgd_sf_grp%num_sf_iso_ele_grp_m(igrp),                      &
+     &      mgd_sf_grp%num_sf_iso_ele_grp(igrp),                        &
      &      merged_surf%isf_4_ele, surf_ele_tbl%id_hash,                &
      &      surf_ele_tbl%iflag_hash,                                    &
-     &      mgd_sf_grp%isf_isolate_ele_grp_m(ist_grp+1))
+     &      mgd_sf_grp%isf_isolate_ele_grp(ist_grp+1))
 !
         call dealloc_sum_hash(surf_ele_tbl)
       end do
 !
-!      call check_merged_isurf_4_ele_grp                                &
+!      call check_viewer_isurf_4_ele_grp                                &
 !     &   (merged_grp%ele_grp, mgd_sf_grp)
 !
       end subroutine const_merged_surface_4_ele_grp
@@ -158,10 +158,10 @@
       do i = 1, merged_grp%surf_grp%num_item
         iele = merged_grp%surf_grp%item_sf_grp(1,i)
         isf =  merged_grp%surf_grp%item_sf_grp(2,i)
-        mgd_sf_grp%isf_surf_grp_m(i) = merged_surf%isf_4_ele(iele,isf)
+        mgd_sf_grp%isf_surf_grp(i) = merged_surf%isf_4_ele(iele,isf)
       end do
 !
-!      call check_merged_isurf_4_surf_grp                               &
+!      call check_viewer_isuf_4_surf_grp                                &
 !     &   (merged_grp%surf_grp, mgd_sf_grp)
 !
       end subroutine const_merged_surface_4_sf_grp
