@@ -20,7 +20,6 @@
 !!
 !!      subroutine dealloc_subdomain_groups(mgd_mesh)
 !!      subroutine dealloc_num_surface_merge(mgd_mesh)
-!!      subroutine dealloc_surf_connect_merge(mgd_mesh)
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
 !!
 !!      subroutine alloc_number_of_2nd_mesh(sec_mesh)
@@ -70,9 +69,6 @@
         type(group_data), allocatable :: sub_nod_grp(:)
         type(group_data), allocatable :: sub_ele_grp(:)
         type(surface_group_data), allocatable :: sub_surf_grp(:)
-!
-!
-        type(surface_data) :: merged_surf
 !
         integer(kind=kint ), allocatable :: istack_surfpe(:)
       end type merged_mesh
@@ -191,18 +187,6 @@
       deallocate( mgd_mesh%istack_surfpe )
 !
       end subroutine dealloc_num_surface_merge
-!
-! ------------------------------------------------------
-!
-      subroutine dealloc_surf_connect_merge(mgd_mesh)
-!
-      type(merged_mesh), intent(inout) :: mgd_mesh
-!
-!
-      call deallocate_surface_connect_type(mgd_mesh%merged_surf)
-      call deallocate_iso_surface_type(mgd_mesh%merged_surf)
-!
-      end subroutine dealloc_surf_connect_merge
 !
 ! ------------------------------------------------------
 !------------------------------------------------------------------

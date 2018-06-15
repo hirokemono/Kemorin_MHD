@@ -6,7 +6,6 @@
 !!      subroutine s_set_surf_connect_4_viewer(group, surf, mgd_sf_grp, &
 !!     &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !!        type(mesh_groups), intent(in) :: group
-!!        type(merged_mesh), intent(inout) :: mgd_mesh
 !!        type(surface_data), intent(inout) :: surf
 !!        type(viewer_ele_grp_surface), intent(inout) :: mgd_sf_grp
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
@@ -75,8 +74,7 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine s_set_groups_4_viewer_surface                          &
-     &         (merged_grp, merged_surf, mgd_sf_grp,                    &
+      subroutine s_set_groups_4_viewer_surface(group, surf, mgd_sf_grp, &
      &          nsurf_viewer, domain_grps, view_ele_grps, view_sf_grps)
 !
       use t_mesh_data
@@ -87,8 +85,8 @@
       use pickup_surface_4_viewer
 !
       integer(kind = kint), intent(in) :: nsurf_viewer
-      type(mesh_groups), intent(in) :: merged_grp
-      type(surface_data), intent(in) :: merged_surf
+      type(mesh_groups), intent(in) :: group
+      type(surface_data), intent(in) :: surf
       type(viewer_ele_grp_surface), intent(in) :: mgd_sf_grp
 !
       type(viewer_surface_groups), intent(inout) :: domain_grps
@@ -97,26 +95,25 @@
 !
 !     renumber domain boundary
 !
-      domain_grps%surf_grp%num_item = merged_surf%numsurf_iso
+      domain_grps%surf_grp%num_item = surf%numsurf_iso
 !       write(*,*) 'alloc_domain_stack_4_surf'
       call alloc_domain_stack_4_surf(ione, domain_grps)
       call alloc_merged_group_item(domain_grps%surf_grp)
 !
-      call set_surf_domain_item_viewer                                  &
-     &   (merged_surf, domain_grps%surf_grp)
+      call set_surf_domain_item_viewer(surf, domain_grps%surf_grp)
       call set_surf_domain_stack_viewer                                 &
      &   (nsurf_viewer, domain_grps%surf_grp)
 !
 !     renumber element group boundary
 !
-      view_ele_grps%num_grp = merged_grp%ele_grp%num_grp
+      view_ele_grps%num_grp = group%ele_grp%num_grp
       view_ele_grps%surf_grp%num_item                                   &
      &     = mgd_sf_grp%ntot_sf_iso_ele_grp
       call alloc_merged_surf_grps_stack(ione, view_ele_grps)
       call alloc_merged_group_item(view_ele_grps%surf_grp)
 !
       view_ele_grps%grp_name(1:view_ele_grps%num_grp)                   &
-     &     = merged_grp%ele_grp%grp_name(1:view_ele_grps%num_grp)
+     &     = group%ele_grp%grp_name(1:view_ele_grps%num_grp)
 !
       call set_element_group_item_viewer                                &
      &   (mgd_sf_grp, view_ele_grps%surf_grp)
@@ -125,19 +122,19 @@
 !
 !     renumber surface boundary
 !
-      view_sf_grps%num_grp = merged_grp%surf_grp%num_grp
-      view_sf_grps%surf_grp%num_item = merged_grp%surf_grp%num_item
+      view_sf_grps%num_grp = group%surf_grp%num_grp
+      view_sf_grps%surf_grp%num_item = group%surf_grp%num_item
 !
       call alloc_merged_surf_grps_stack(ione, view_sf_grps)
       call alloc_merged_group_item(view_sf_grps%surf_grp)
 !
       view_sf_grps%grp_name(1:view_sf_grps%num_grp)                     &
-     &        = merged_grp%surf_grp%grp_name(1:view_sf_grps%num_grp)
+     &        = group%surf_grp%grp_name(1:view_sf_grps%num_grp)
 !
       call set_surface_group_item_viewer                                &
      &   (mgd_sf_grp, view_sf_grps%surf_grp)
       call set_surface_group_stack_viewer(nsurf_viewer,                 &
-     &    merged_grp,  view_sf_grps%num_grp, view_sf_grps%surf_grp)
+     &    group, view_sf_grps%num_grp, view_sf_grps%surf_grp)
 !
       end subroutine s_set_groups_4_viewer_surface
 !
