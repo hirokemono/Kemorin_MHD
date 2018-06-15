@@ -75,7 +75,7 @@
      &   (mesh_file, mesh1, group1, surf0, surf_p, edge_p)
 !
       call const_surf_mesh_4_viewer(mesh1, group1, surf_p, edge_p,      &
-     &    surf0, mgd_view_mesh_p%view_mesh,            &
+     &    surf0, mgd_view_mesh_p%view_mesh,                             &
      &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
      &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
 !
@@ -84,10 +84,10 @@
       if(iflag_write_subdomain .gt. 0) then
         call sel_output_single_surface_grid(my_rank, mesh_file,         &
      &      mgd_view_mesh_p%view_mesh, mgd_view_mesh_p%domain_grps,     &
-     &      mgd_view_mesh_p%view_nod_grps, mgd_view_mesh_p%view_ele_grps, &
+     &      mgd_view_mesh_p%view_nod_grps,                              &
+     &      mgd_view_mesh_p%view_ele_grps,                              &
      &      mgd_view_mesh_p%view_sf_grps)
       end if
-!
 !
       call collect_surf_mesh_4_viewer(mesh_file, mgd_view_mesh_p)
 !

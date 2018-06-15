@@ -115,8 +115,8 @@
       end do
 !
       call collect_single_viewer_mesh                                   &
-     &  (nprocs_sf, mesh_file,  surf_p, edge_p, view_mesh, domain_grps, &
-     &   view_nod_grps, view_ele_grps, view_sf_grps)
+     &   (nprocs_sf, mesh_file, view_mesh, domain_grps,                 &
+     &    view_nod_grps, view_ele_grps, view_sf_grps)
 !
       end subroutine choose_surface_mesh_sgl
 !
@@ -357,32 +357,33 @@
 !------------------------------------------------------------------
 !
       subroutine collect_single_viewer_mesh                             &
-     &  (nprocs_sf, mesh_file,  surf, edge, view_mesh, domain_grps, &
-     &   view_nod_grps, view_ele_grps, view_sf_grps)
+     &         (nprocs_sf, mesh_file, view_mesh, domain_grps,           &
+     &          view_nod_grps, view_ele_grps, view_sf_grps)
 !
       use viewer_mesh_IO_select
       use merge_viewer_mesh
 !
       integer(kind = kint) :: nprocs_sf
       type(field_IO_params), intent(in) :: mesh_file
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
 !
       type(viewer_mesh_data), intent(in) :: view_mesh(nprocs_sf)
 !
-      type(viewer_surface_groups), intent(inout) :: domain_grps(nprocs_sf)
+      type(viewer_surface_groups), intent(inout)                        &
+     &                  :: domain_grps(nprocs_sf)
 !
-      type(viewer_node_groups), intent(inout) :: view_nod_grps(nprocs_sf)
-      type(viewer_surface_groups), intent(inout) :: view_ele_grps(nprocs_sf)
-      type(viewer_surface_groups), intent(inout) :: view_sf_grps(nprocs_sf)
+      type(viewer_node_groups), intent(inout)                           &
+     &                  :: view_nod_grps(nprocs_sf)
+      type(viewer_surface_groups), intent(inout)                        &
+     &                  :: view_ele_grps(nprocs_sf)
+      type(viewer_surface_groups), intent(inout)                        &
+     &                  :: view_sf_grps(nprocs_sf)
 !
       type(merged_viewer_mesh)  :: mgd_vmesh
 !
 !
       call alloc_num_mesh_sf(nprocs_sf, mgd_vmesh)
-      call s_merge_viewer_mesh(nprocs_sf,                               &
-     &   surf%nnod_4_surf, edge%nnod_4_edge, view_mesh, domain_grps,    &
-     &   view_nod_grps, view_ele_grps, view_sf_grps, mgd_vmesh)
+      call s_merge_viewer_mesh(nprocs_sf, view_mesh, domain_grps,       &
+     &    view_nod_grps, view_ele_grps, view_sf_grps, mgd_vmesh)
 !
       call sel_output_surface_grid(mesh_file, mgd_vmesh)
 !
