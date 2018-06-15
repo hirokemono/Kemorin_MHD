@@ -181,7 +181,8 @@
 !
        write(*,*) 'const_merged_surface_4_ele_grp'
        call const_merged_surface_4_ele_grp                              &
-     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
+     &    (mgd_mesh%merged%node, mgd_mesh%merged%ele, &
+     &     mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
      &     mgd_sf_grp)
 !
        write(*,*) 'const_merged_surface_4_sf_grp'
