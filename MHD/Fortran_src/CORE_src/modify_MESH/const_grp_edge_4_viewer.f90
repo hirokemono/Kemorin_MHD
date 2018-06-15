@@ -4,13 +4,13 @@
 !     Written by H. Matsui on Jan., 2007
 !
 !!      subroutine construct_edge_4_ele_grp                             &
-!!     &         (nnod_4_surf, nnod_4_edge, num_pe, view_mesh,          &
+!!     &         (nnod_4_surf, nnod_4_edge, view_mesh,                  &
 !!     &          ngrp_ele_sf, ele_surf_grp, ele_edge_grp, edge_sf_tbl)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!        type(viewer_group_data), intent(in)  :: ele_surf_grp
 !!        type(viewer_group_data), intent(inout)  :: ele_edge_grp
 !!      subroutine construct_edge_4_surf_grp                            &
-!!     &         (nnod_4_surf, nnod_4_edge, num_pe, view_mesh,          &
+!!     &         (nnod_4_surf, nnod_4_edge, view_mesh,                  &
 !!     &          ngrp_surf_sf, sf_surf_grp, sf_edge_grp, edge_sf_tbl)
 !!        type(viewer_mesh_data), intent(in) :: view_mesh
 !!        type(viewer_group_data), intent(in)  :: sf_surf_grp
@@ -43,7 +43,7 @@
 !------------------------------------------------------------------
 !
       subroutine construct_edge_4_ele_grp                               &
-     &         (nnod_4_surf, nnod_4_edge, num_pe, view_mesh,            &
+     &         (nnod_4_surf, nnod_4_edge, view_mesh,                    &
      &          ngrp_ele_sf, ele_surf_grp, ele_edge_grp, edge_sf_tbl)
 !
       use set_edge_hash_by_sf
@@ -51,7 +51,6 @@
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       integer(kind = kint), intent(in) :: ngrp_ele_sf
-      integer(kind = kint), intent(in) :: num_pe
       type(viewer_mesh_data), intent(in) :: view_mesh
       type(viewer_group_data), intent(in)  :: ele_surf_grp
 !
@@ -64,9 +63,9 @@
       call alloc_merged_group_item(ele_edge_grp)
 !
       do igrp = 1, ngrp_ele_sf
-        ngrp = ele_surf_grp%istack_sf(igrp*num_pe)                      &
-     &        - ele_surf_grp%istack_sf( (igrp-1)*num_pe )
-        ist = ele_surf_grp%istack_sf((igrp-1)*num_pe) + 1
+        ngrp = ele_surf_grp%istack_sf(igrp)                             &
+     &        - ele_surf_grp%istack_sf(igrp-1)
+        ist = ele_surf_grp%istack_sf(igrp-1) + 1
 !
 !   set hash data for edge elements using sum of local node ID
 !
@@ -82,7 +81,7 @@
      &      edge_sf_tbl%iflag_hash)
 !
 !
-        ist = ele_edge_grp%istack_sf( (igrp-1)*num_pe )
+        ist = ele_edge_grp%istack_sf(igrp-1)
 !
         call allocate_ele_edge_item_tmp(ele_edge_grp)
         ele_edge_item_tmp(1:ele_edge_grp%num_item)                      &
@@ -93,9 +92,9 @@
      &     (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,              &
      &      nnod_4_edge, edge_sf_tbl%istack_hash,                       &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%iflag_hash, nedge_grp)
-        ele_edge_grp%istack_sf(igrp*num_pe)                             &
-     &        = ele_edge_grp%istack_sf((igrp-1)*num_pe) + nedge_grp
-        ele_edge_grp%num_item = ele_edge_grp%istack_sf(igrp*num_pe)
+        ele_edge_grp%istack_sf(igrp)                                    &
+     &        = ele_edge_grp%istack_sf(igrp-1) + nedge_grp
+        ele_edge_grp%num_item = ele_edge_grp%istack_sf(igrp)
 !
         call alloc_merged_group_item(ele_edge_grp)
         ele_edge_grp%item_sf(1:ist) = ele_edge_item_tmp(1:ist)
@@ -118,7 +117,7 @@
 !------------------------------------------------------------------
 !
       subroutine construct_edge_4_surf_grp                              &
-     &         (nnod_4_surf, nnod_4_edge, num_pe, view_mesh,            &
+     &         (nnod_4_surf, nnod_4_edge, view_mesh,                    &
      &          ngrp_surf_sf, sf_surf_grp, sf_edge_grp, edge_sf_tbl)
 !
       use set_edge_hash_by_sf
@@ -126,7 +125,6 @@
 !
       integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
       integer(kind = kint), intent(in) :: ngrp_surf_sf
-      integer(kind = kint), intent(in) :: num_pe
       type(viewer_mesh_data), intent(in) :: view_mesh
       type(viewer_group_data), intent(in)  :: sf_surf_grp
       type(viewer_group_data), intent(inout)  :: sf_edge_grp
@@ -138,9 +136,9 @@
       call alloc_merged_group_item(sf_edge_grp)
 !
       do igrp = 1, ngrp_surf_sf
-        ngrp = sf_surf_grp%istack_sf( igrp*num_pe )                     &
-     &        - sf_surf_grp%istack_sf( (igrp-1)*num_pe )
-        ist = sf_surf_grp%istack_sf( (igrp-1)*num_pe ) + 1
+        ngrp = sf_surf_grp%istack_sf(igrp)                              &
+     &        - sf_surf_grp%istack_sf(igrp-1)
+        ist = sf_surf_grp%istack_sf(igrp-1) + 1
 !
 !   set hash data for edge elements using sum of local node ID
 !
@@ -165,12 +163,12 @@
      &     (view_mesh%nnod_viewer, view_mesh%nsurf_viewer,              &
      &      nnod_4_edge, edge_sf_tbl%istack_hash,                       &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%iflag_hash, nedge_grp)
-        sf_edge_grp%istack_sf(igrp*num_pe)                              &
-     &        = sf_edge_grp%istack_sf((igrp-1)*num_pe) + nedge_grp
-        sf_edge_grp%num_item = sf_edge_grp%istack_sf(igrp*num_pe)
+        sf_edge_grp%istack_sf(igrp)                                     &
+     &        = sf_edge_grp%istack_sf(igrp-1) + nedge_grp
+        sf_edge_grp%num_item = sf_edge_grp%istack_sf(igrp)
 !
         call alloc_merged_group_item(sf_edge_grp)
-        ist = sf_edge_grp%istack_sf( (igrp-1)*num_pe )
+        ist = sf_edge_grp%istack_sf(igrp-1)
         sf_edge_grp%item_sf(1:ist) = surf_edge_item_tmp(1:ist)
         call deallocate_sf_edge_item_tmp
 !

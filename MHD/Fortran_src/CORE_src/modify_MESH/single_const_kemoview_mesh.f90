@@ -227,7 +227,6 @@
 !
 !       write(*,*)  'construct_edge_4_viewer'
        call construct_edge_4_viewer(surf, edge,                         &
-     &     num_pe_sf, inod_sf_stack,        &
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*)  's_set_nodes_4_groups_viewer'
        call s_set_nodes_4_groups_viewer                                 &

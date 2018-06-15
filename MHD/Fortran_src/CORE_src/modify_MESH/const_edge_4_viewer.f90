@@ -3,9 +3,8 @@
 !
 !     Written by H. Matsui on Jan., 2007
 !
-!!      subroutine construct_edge_4_viewer(surf, edge, num_pe,          &
-!!     &          inod_sf_stack, nedge_sf, iedge_sf_stack, view_mesh,   &
-!!     &          domain_grps, view_ele_grps, view_sf_grps)
+!!      subroutine construct_edge_4_viewer(surf, edge,                  &
+!!     &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
 !!        type(viewer_mesh_data), intent(inout) :: view_mesh
@@ -29,6 +28,8 @@
 !
       private :: edge_sf_tbl
       private :: const_all_edge_4_viewer, construct_edge_4_domain
+      private :: count_nedge_domain_4_domain
+      private :: count_nedge_ele_grp_4_domain
 !
 !------------------------------------------------------------------
 !
@@ -36,17 +37,13 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine construct_edge_4_viewer(surf, edge, num_pe,            &
-     &          inod_sf_stack, view_mesh,     &
-     &          domain_grps, view_ele_grps, view_sf_grps)
+      subroutine construct_edge_4_viewer(surf, edge,                    &
+     &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !
       use t_surface_data
       use t_edge_data
       use const_grp_edge_4_viewer
-      use count_edge_domain_4_viewer
 !
-      integer(kind = kint), intent(in)  :: num_pe
-      integer(kind = kint), intent(in) :: inod_sf_stack(0:num_pe)
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
 !
@@ -67,27 +64,25 @@
      &    domain_grps%surf_grp, domain_grps%edge_grp, edge_sf_tbl)
 !
       call construct_edge_4_ele_grp                                     &
-     &   (surf%nnod_4_surf, edge%nnod_4_edge, num_pe, view_mesh,        &
+     &   (surf%nnod_4_surf, edge%nnod_4_edge, view_mesh,                &
      &    view_ele_grps%num_grp,  view_ele_grps%surf_grp,               &
      &    view_ele_grps%edge_grp, edge_sf_tbl)
       call construct_edge_4_surf_grp                                    &
-     &   (surf%nnod_4_surf, edge%nnod_4_edge, num_pe, view_mesh,        &
+     &   (surf%nnod_4_surf, edge%nnod_4_edge, view_mesh,                &
      &    view_sf_grps%num_grp, view_sf_grps%surf_grp,                  &
      &    view_sf_grps%edge_grp, edge_sf_tbl)
 !
       call dealloc_sum_hash(edge_sf_tbl)
 !
          write(*,*)  'count_nedge_domain_4_domain'
-      call count_nedge_domain_4_domain(num_pe, inod_sf_stack,           &
-     &    view_mesh, domain_grps%edge_grp)
+      call count_nedge_domain_4_domain                                  &
+     &   (view_mesh, domain_grps%edge_grp)
          write(*,*)  'count_nedge_ele_grp_4_domain'
       call count_nedge_ele_grp_4_domain                                 &
-     &   (num_pe, inod_sf_stack, view_mesh,                             &
-     &    view_ele_grps%num_grp, view_ele_grps%edge_grp)
-         write(*,*)  'count_nedge_surf_grp_4_domain'
-      call count_nedge_surf_grp_4_domain                                &
-     &   (num_pe, inod_sf_stack, view_mesh,                             &
-     &    view_sf_grps%num_grp, view_sf_grps%edge_grp)
+     &   (view_mesh, view_ele_grps%num_grp, view_ele_grps%edge_grp)
+         write(*,*)  'count_nedge_ele_grp_4_domain'
+      call count_nedge_ele_grp_4_domain                                 &
+     &   (view_mesh, view_sf_grps%num_grp, view_sf_grps%edge_grp)
 !
       end subroutine construct_edge_4_viewer
 !
@@ -181,6 +176,57 @@
      &    domain_edge_grp%item_sf)
 !
       end subroutine construct_edge_4_domain
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine count_nedge_domain_4_domain                            &
+     &         (view_mesh, domain_edge_grp)
+!
+      type(viewer_mesh_data), intent(in) :: view_mesh
+      type(viewer_group_data), intent(inout) :: domain_edge_grp
+!
+      integer(kind = kint) :: inum, iedge, inod
+!
+!
+      do inum = 1, domain_edge_grp%num_item
+        iedge = abs(domain_edge_grp%item_sf(inum) )
+        inod = view_mesh%ie_edge_viewer(iedge,1)
+        if ( inod .gt. view_mesh%nnod_viewer ) exit
+        domain_edge_grp%istack_sf(1) = inum
+      end do
+!
+      end subroutine count_nedge_domain_4_domain
+!
+!------------------------------------------------------------------
+!
+      subroutine count_nedge_ele_grp_4_domain                           &
+     &         (view_mesh, ngrp_ele_sf, ele_edge_grp)
+!
+      type(viewer_mesh_data), intent(in) :: view_mesh
+      integer(kind = kint), intent(in) :: ngrp_ele_sf
+!
+      type(viewer_group_data), intent(inout) :: ele_edge_grp
+!
+      integer(kind = kint) :: igrp, ist, inum, iedge, inod
+      integer(kind = kint) :: nn
+!
+!
+      do igrp = 1, ngrp_ele_sf
+        nn = ele_edge_grp%istack_sf(igrp)
+        ist = ele_edge_grp%istack_sf(igrp-1) + 1
+        ele_edge_grp%istack_sf(igrp)                            &
+     &          = ele_edge_grp%istack_sf(igrp-1)
+        do inum = ist, nn
+          iedge = abs( ele_edge_grp%item_sf(inum) )
+          inod = view_mesh%ie_edge_viewer(iedge,1)
+          if ( inod .gt. view_mesh%nnod_viewer ) exit
+!
+          ele_edge_grp%istack_sf(igrp) = inum
+        end do
+      end do
+!
+      end subroutine count_nedge_ele_grp_4_domain
 !
 !------------------------------------------------------------------
 !
