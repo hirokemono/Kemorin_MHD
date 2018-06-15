@@ -54,7 +54,7 @@
 !
       type(mesh_geometry), save  :: mesh0
       type(mesh_groups), save  :: group0
-      type(surface_data), allocatable :: surf0(:)
+      type(surface_data), save :: surf0
       type(edge_data), save :: edge0
 !
 !
@@ -69,8 +69,6 @@
 !
 !  set mesh_information
 !
-      allocate(surf0(nprocs_sf))
-!
       allocate(view_mesh(nprocs_sf))
       allocate(domain_grps(nprocs_sf))
       allocate(view_nod_grps(nprocs_sf))
@@ -81,22 +79,23 @@
         id_rank = ip - 1
         if (iflag_debug.gt.0) write(*,*) 'input_mesh'
         call input_mesh(mesh_file, id_rank, mesh0, group0,              &
-     &      surf0(ip)%nnod_4_surf, edge0%nnod_4_edge, ierr)
+     &      surf0%nnod_4_surf, edge0%nnod_4_edge, ierr)
+        call allocate_quad4_2_linear(mesh0%ele%nnod_4_ele)
 !
 !
         if(iflag_add_comm_tbl .gt. 0) then
           call add_comm_tbl_in_node_grp_mesh(nprocs_sf, mesh0, group0)
         end if
 !
-        call allocate_quad4_2_linear(mesh0%ele%nnod_4_ele)
-        call const_surf_mesh_4_viewer(mesh0, group0, surf0(ip), edge0,  &
+        write(*,*) 'Construct kemoviewer data for rank ', id_rank
+        call const_surf_mesh_4_viewer(mesh0, group0, surf0, edge0,      &
      &      view_mesh(ip), domain_grps(ip), view_nod_grps(ip),          &
      &      view_ele_grps(ip), view_sf_grps(ip))
 !
-        call deallocate_iso_surface_type(surf0(ip))
-        call deallocate_ext_surface_type(surf0(ip))
-        call deallocate_surface_connect_type(surf0(ip))
-        call deallocate_inod_in_surf_type(surf0(ip))
+        call deallocate_iso_surface_type(surf0)
+        call deallocate_ext_surface_type(surf0)
+        call deallocate_surface_connect_type(surf0)
+        call deallocate_inod_in_surf_type(surf0)
 !
         call dealloc_mesh_infos(mesh0, group0)
         call dealloc_inod_in_edge(edge0)
@@ -150,11 +149,11 @@
       call set_local_element_info(surf, edge)
       call construct_surface_data(mesh%node, mesh%ele, surf)
 !
-       write(*,*) 'const_merged_surface_4_ele_grp'
+!       write(*,*) 'const_merged_surface_4_ele_grp'
        call const_merged_surface_4_ele_grp(mesh%node, mesh%ele,         &
      &     group, surf, mgd_sf_grp)
 !
-       write(*,*) 'const_merged_surface_4_sf_grp'
+!       write(*,*) 'const_merged_surface_4_sf_grp'
        call const_merged_surface_4_sf_grp(group, surf, mgd_sf_grp)
 !
 !  pickup surface and nodes

@@ -115,7 +115,7 @@
      &     (ele%numele, nele_grp, surf_ele_tbl%iflag_hash,              &
      &      mgd_sf_grp%num_sf_iso_ele_grp(igrp) )
         mgd_sf_grp%istack_sf_iso_ele_grp(igrp)                          &
-     &      = mgd_sf_grp%istack_sf_iso_ele_grp(igrp-1) &
+     &      = mgd_sf_grp%istack_sf_iso_ele_grp(igrp-1)                  &
      &       + mgd_sf_grp%num_sf_iso_ele_grp(igrp)
         mgd_sf_grp%ntot_sf_iso_ele_grp                                  &
      &       = mgd_sf_grp%istack_sf_iso_ele_grp(igrp)
