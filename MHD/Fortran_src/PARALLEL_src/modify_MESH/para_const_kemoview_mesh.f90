@@ -32,7 +32,7 @@
 !
       integer(kind = kint), parameter :: iflag_output_SURF = 0
       integer(kind = kint), parameter :: iflag_add_comm_tbl = 1
-      integer(kind = kint), parameter :: iflag_write_subdomain = 1
+      integer(kind = kint), parameter :: iflag_write_subdomain = 0
 !
       private :: iflag_output_SURF, iflag_add_comm_tbl
       private :: iflag_write_subdomain
@@ -75,7 +75,7 @@
       call const_merged_mesh_para                                       &
      &   (mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p)
 !
-      call alloc_num_mesh_sf(mgd_mesh_p%num_pe, mgd_view_mesh_p)
+      call alloc_num_mesh_sf(ione, mgd_view_mesh_p)
       call const_surf_mesh_4_viewer                                     &
      &   (surf_p, edge_p, mgd_mesh_p, mgd_sf_grp_p,                     &
      &   mgd_view_mesh_p%num_pe_sf, mgd_view_mesh_p%nnod_sf, &
@@ -84,6 +84,7 @@
      &    mgd_view_mesh_p%iedge_sf_stack, mgd_view_mesh_p%view_mesh,   &
      &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
      &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
+      call dealloc_num_mesh_sf(mgd_view_mesh_p)
 !
 !
       if(iflag_write_subdomain .gt. 0) then
@@ -184,7 +185,7 @@
 !------------------------------------------------------------------
 !
       subroutine collect_surf_mesh_4_viewer                             &
-     &         (mesh_file,  surf, edge, mgd_v_mesh_p)
+     &         (mesh_file,  surf, edge, mgd_v_mesh)
 !
       use renumber_para_viewer_mesh
       use viewer_mesh_MPI_IO_select
@@ -193,28 +194,28 @@
       type(field_IO_params), intent(in) :: mesh_file
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
-      type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh_p
+      type(merged_viewer_mesh), intent(inout) :: mgd_v_mesh
 !
       type(mpi_viewer_mesh_param) :: mgd_view_prm
 !
       call alloc_mpi_viewer_mesh_param(nprocs, mgd_view_prm)
 !
-      call count_number_of_node_stack4(mgd_v_mesh_p%inod_sf_stack(1),   &
-     &     mgd_view_prm%istack_v_node)
-      call count_number_of_node_stack4(mgd_v_mesh_p%isurf_sf_stack(1),  &
-     &     mgd_view_prm%istack_v_surf)
-      call count_number_of_node_stack4(mgd_v_mesh_p%iedge_sf_stack(1),  &
-     &     mgd_view_prm%istack_v_edge)
+      call count_number_of_node_stack4                                  &
+     &  (mgd_v_mesh%view_mesh%nnod_viewer, mgd_view_prm%istack_v_node)
+      call count_number_of_node_stack4                                  &
+     &  (mgd_v_mesh%view_mesh%nsurf_viewer, mgd_view_prm%istack_v_surf)
+      call count_number_of_node_stack4                                  &
+     &  (mgd_v_mesh%view_mesh%nedge_viewer, mgd_view_prm%istack_v_edge)
 !
       call s_renumber_para_viewer_mesh                                  &
      &   (mgd_view_prm%istack_v_node(my_rank),  &
      &    mgd_view_prm%istack_v_surf(my_rank),  &
      &    mgd_view_prm%istack_v_edge(my_rank),  &
-     &    surf, edge, mgd_v_mesh_p)
+     &    surf, edge, mgd_v_mesh)
 !
       call sel_mpi_output_surface_grid                                  &
      &   (mesh_file, surf%nnod_4_surf, edge%nnod_4_edge,                &
-     &    mgd_v_mesh_p, mgd_view_prm)
+     &    mgd_v_mesh, mgd_view_prm)
 !
       call dealloc_mpi_viewer_mesh_param(mgd_view_prm)
 !

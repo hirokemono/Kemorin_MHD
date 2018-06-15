@@ -34,7 +34,7 @@
 !
       integer(kind = kint), parameter :: iflag_output_SURF = 0
       integer(kind = kint), parameter :: iflag_add_comm_tbl = 1
-      integer(kind = kint), parameter :: iflag_write_subdomain = 1
+      integer(kind = kint), parameter :: iflag_write_subdomain = 0
 !
 !------------------------------------------------------------------
 !
@@ -102,10 +102,7 @@
      &    mgd_view_mesh_p(ip)%iedge_sf_stack, view_mesh(ip),   &
      &    domain_grps(ip), view_nod_grps(ip),   &
      &    view_ele_grps(ip), view_sf_grps(ip))
-!
-       call dealloc_n_iso_surf_4_ele_grp(mgd_sf_grp_p(ip))
-       call dealloc_iso_surf_4_egrp_m(mgd_sf_grp_p(ip))
-       call dealloc_iso_surf_4_sgrp_m(mgd_sf_grp_p(ip))
+      call dealloc_num_mesh_sf( mgd_view_mesh_p(ip))
 !
        call deallocate_inod_in_surf_type(surf_p)
        call dealloc_inod_in_edge(edge_p)
@@ -205,82 +202,47 @@
 !
 !  pickup surface and nodes
 !
-!       write(*,*) 's_set_surf_connect_4_viewer'
+       write(*,*) 's_set_surf_connect_4_viewer', mgd_mesh%num_pe
        call s_set_surf_connect_4_viewer(surf%nnod_4_surf,               &
      &    mgd_mesh, mgd_sf_grp,  num_pe_sf,               &
      &     nsurf_sf, isurf_sf_stack,        &
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*) 's_set_nodes_4_viewer'
+      write(*,*) 'nsurf_sf', nsurf_sf,  view_mesh%nsurf_viewer
+      write(*,*) 'isurf_sf_stack', isurf_sf_stack
+!
        call s_set_nodes_4_viewer                                        &
      &    (surf%nnod_4_surf, mgd_mesh, num_pe_sf,         &
      &     nnod_sf, inod_sf_stack,          &
      &     view_mesh, view_nod_grps)
 !
-       write(*,*) 'set_surf_domain_id_viewer'
+      write(*,*) 'nnod_sf', nnod_sf, view_mesh%nnod_viewer
+      write(*,*) 'inod_sf_stack', inod_sf_stack
+!       write(*,*) 'set_surf_domain_id_viewer'
        call set_surf_domain_id_viewer                                   &
      &    (mgd_mesh%merged_surf, view_mesh)
 !
 !
        call dealloc_array_4_merge(mgd_mesh)
 !
-       write(*,*)  'construct_edge_4_viewer'
+!       write(*,*)  'construct_edge_4_viewer'
        call construct_edge_4_viewer(surf, edge,                         &
      &     num_pe_sf, inod_sf_stack,        &
      &     nedge_sf, iedge_sf_stack,        &
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
-       write(*,*)  's_set_nodes_4_groups_viewer'
+      write(*,*) 'nedge_sf', nedge_sf,  view_mesh%nedge_viewer
+      write(*,*) 'iedge_sf_stack', iedge_sf_stack
+!       write(*,*)  's_set_nodes_4_groups_viewer'
        call s_set_nodes_4_groups_viewer                                 &
      &    (surf%nnod_4_surf, edge%nnod_4_edge,                          &
      &     num_pe_sf, inod_sf_stack,        &
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !
+       call dealloc_n_iso_surf_4_ele_grp(mgd_sf_grp)
+       call dealloc_iso_surf_4_egrp_m(mgd_sf_grp)
+       call dealloc_iso_surf_4_sgrp_m(mgd_sf_grp)
+!
       end subroutine const_surf_mesh_4_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine const_merged_mesh_data                                 &
-     &         (mesh_file, ele, surf, edge, mgd_mesh, mgd_sf_grp)
-!
-      use set_merged_geometry
-      use const_merged_surf_data
-      use const_merged_surf_4_group
-      use set_surf_connect_4_viewer
-      use set_nodes_4_viewer
-      use const_edge_4_viewer
-      use set_nodes_4_groups_viewer
-      use viewer_mesh_IO_select
-!
-      type(field_IO_params), intent(in) :: mesh_file
-      type(element_data), intent(inout) :: ele
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
-      type(merged_mesh), intent(inout) :: mgd_mesh
-      type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
-!
-!  set mesh_information
-!
-       write(*,*) 'set_overlapped_mesh_and_group'
-       call set_overlapped_mesh_and_group                               &
-     &    (mesh_file, ele%nnod_4_ele, mgd_mesh)
-!
-       write(*,*) 'set_source_mesh_parameter'
-       call set_source_mesh_parameter                                   &
-     &    (ele, surf, edge, mgd_mesh%merged_surf)
-!
-!  choose surface
-!
-       write(*,*) 's_const_merged_surf_data'
-       call s_const_merged_surf_data(mgd_mesh)
-!
-!       write(*,*) 'const_merged_surface_4_ele_grp'
-       call const_merged_surface_4_ele_grp                              &
-     &    (mgd_mesh%merged, mgd_mesh%merged_grp, mgd_mesh%merged_surf,  &
-     &     mgd_sf_grp)
-!       write(*,*) 'const_merged_surface_4_sf_grp'
-       call const_merged_surface_4_sf_grp                               &
-     &    (mgd_mesh%merged_grp, mgd_mesh%merged_surf, mgd_sf_grp)
-!
-      end subroutine const_merged_mesh_data
 !
 !------------------------------------------------------------------
 !
