@@ -203,9 +203,8 @@
 !  pickup surface and nodes
 !
        write(*,*) 's_set_surf_connect_4_viewer', mgd_mesh%num_pe
-       call s_set_surf_connect_4_viewer(surf%nnod_4_surf,               &
-     &    mgd_mesh, mgd_sf_grp,  num_pe_sf,               &
-     &     nsurf_sf, isurf_sf_stack,        &
+       call s_set_surf_connect_4_viewer                                 &
+     &    (surf%nnod_4_surf, mgd_mesh, mgd_sf_grp,                      &
      &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !       write(*,*) 's_set_nodes_4_viewer'
       write(*,*) 'nsurf_sf', nsurf_sf,  view_mesh%nsurf_viewer

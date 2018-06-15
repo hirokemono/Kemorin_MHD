@@ -135,22 +135,17 @@
 ! ------------------------------------------------------
 !
       subroutine count_used_surface_4_viewer                            &
-     &         (num_pe, istack_surfpe, nsurf_sf)
+     &         (istack_surfpe, nsurf_viewer)
 !
-      integer(kind = kint), intent(in) :: num_pe
-      integer(kind = kint), intent(in) :: istack_surfpe(0:num_pe)
+      integer(kind = kint), intent(in) :: istack_surfpe(0:1)
 !
-      integer(kind = kint), intent(inout) :: nsurf_sf(num_pe)
+      integer(kind = kint), intent(inout) :: nsurf_viewer
 !
       integer(kind = kint) :: ip, ist, ied, isurf
 !
-      do ip = 1, num_pe
-        ist = istack_surfpe(ip-1) + 1
-        ied = istack_surfpe(ip)
-        nsurf_sf(ip) = 0
-        do isurf = ist, ied
-          nsurf_sf(ip) = nsurf_sf(ip) + imark_surf(isurf)
-        end do
+      nsurf_viewer = 0
+      do isurf = 1, istack_surfpe(1)
+        nsurf_viewer = nsurf_viewer + imark_surf(isurf)
       end do
 !
       end subroutine count_used_surface_4_viewer
