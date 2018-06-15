@@ -50,7 +50,6 @@
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
       use single_const_kemoview_mesh
-      use const_surface_data
       use set_parallel_file_name
       use viewer_mesh_IO_select
 !
@@ -75,7 +74,7 @@
      &   (mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p)
 !
       call const_surf_mesh_4_viewer                                     &
-     &   (mgd_mesh_p%merged, mgd_mesh%merged_grp, surf_p, edge_p,       &
+     &   (mgd_mesh_p%merged, mgd_mesh_p%merged_grp, surf_p, edge_p,     &
      &    mgd_mesh_p%merged_surf, mgd_view_mesh_p%view_mesh,            &
      &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
      &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
@@ -110,9 +109,9 @@
       use set_merged_geometry
       use mesh_MPI_IO_select
       use single_const_kemoview_mesh
-      use const_merged_surf_data
       use copy_mesh_structures
       use add_comm_table_in_node_grp
+      use const_surface_data
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(element_data), intent(inout) :: ele
@@ -161,8 +160,9 @@
        call set_source_mesh_parameter                                   &
      &    (ele, surf, edge, mgd_mesh%merged_surf)
 !
-       write(*,*) 's_const_merged_surf_data'
-       call s_const_merged_surf_data(mgd_mesh)
+      call construct_surface_data                                       &
+     &   (mgd_mesh%merged%node, mgd_mesh%merged%ele,                    &
+     &    mgd_mesh%merged_surf)
 !
       end subroutine const_merged_mesh_para
 !

@@ -160,7 +160,6 @@
      &        view_nod_grps, view_ele_grps, view_sf_grps)
 !
       use set_merged_geometry
-      use const_merged_surf_data
       use const_merged_surf_4_group
       use set_surf_connect_4_viewer
       use set_nodes_4_viewer
@@ -299,7 +298,7 @@
       use count_number_with_overlap
       use set_merged_geometry
       use mesh_IO_select
-      use const_merged_surf_data
+      use const_surface_data
       use copy_mesh_structures
       use add_comm_table_in_node_grp
 !
@@ -352,8 +351,9 @@
        call set_source_mesh_parameter                                   &
      &    (ele, surf, edge, mgd_mesh%merged_surf)
 !
-       write(*,*) 's_const_merged_surf_data'
-       call s_const_merged_surf_data(mgd_mesh)
+      call construct_surface_data                                       &
+     &   (mgd_mesh%merged%node, mgd_mesh%merged%ele,                    &
+     &    mgd_mesh%merged_surf)
 !
       end subroutine const_merged_mesh_sgl
 !
