@@ -116,6 +116,8 @@
       use single_const_kemoview_mesh
       use const_merged_surf_data
       use const_merged_surf_4_group
+      use copy_mesh_structures
+      use add_comm_table_in_node_grp
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(element_data), intent(inout) :: ele
@@ -125,6 +127,7 @@
       type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
 !
       type(mesh_data) :: fem_IO_p
+      type(group_data) :: new_nod_grp
 !
 !
       mgd_mesh%num_pe = ione
@@ -134,13 +137,13 @@
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call sel_mpi_read_mesh(mesh_file, fem_IO_p)
 !
-!      if(iflag_add_comm_tbl .gt. 0) then
-!        call add_comm_table_in_node_group                              &
-!     &     (nprocs, mesh_p%nod_comm, group_p%nod_grp, new_nod_grp)
-!        call deallocate_grp_type(group_p%nod_grp)
-!        call copy_group_data(new_nod_grp, group_p%nod_grp)
-!        call deallocate_grp_type(new_nod_grp)
-!      end if
+      if(iflag_add_comm_tbl .gt. 0) then
+        call add_comm_table_in_node_group(nprocs,                       &
+     &     fem_IO_p%mesh%nod_comm, fem_IO_p%group%nod_grp, new_nod_grp)
+        call deallocate_grp_type(fem_IO_p%group%nod_grp)
+        call copy_group_data(new_nod_grp, fem_IO_p%group%nod_grp)
+        call deallocate_grp_type(new_nod_grp)
+      end if
 !
       call set_mesh_geometry_data(fem_IO_p%mesh,                        &
      &    mgd_mesh%subdomain(1)%nod_comm, mgd_mesh%subdomain(1)%node,   &

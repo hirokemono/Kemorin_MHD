@@ -32,6 +32,10 @@
 !
       private :: find_mesh_format_4_viewer
 !
+      integer(kind = kint), parameter :: iflag_output_SURF = 0
+      integer(kind = kint), parameter :: iflag_add_comm_tbl = 1
+      integer(kind = kint), parameter :: iflag_write_subdomain = 1
+!
 !------------------------------------------------------------------
 !
       contains
@@ -86,7 +90,8 @@
         id_rank = ip - 1
         write(*,*) 'const_merged_mesh_sgl', ip
         call const_merged_mesh_sgl                                      &
-     &    (id_rank, mesh_file, ele_p, surf_p, edge_p, mgd_mesh_p(ip), mgd_sf_grp_p(ip))
+     &    (id_rank, nprocs_sf, mesh_file, ele_p, surf_p, edge_p,       &
+     &     mgd_mesh_p(ip), mgd_sf_grp_p(ip))
 !
         call alloc_num_mesh_sf(mgd_mesh_p(ip)%num_pe,  mgd_view_mesh_p(ip))
         call const_surf_mesh_4_viewer                                   &
@@ -110,12 +115,14 @@
        call dealloc_node_geometry_w_sph(mgd_mesh_p(ip)%merged%node)
        call deallocate_ele_connect_type(mgd_mesh_p(ip)%merged%ele)
 !
-        call sel_output_single_surface_grid(id_rank, mesh_file,         &
+        if(iflag_write_subdomain .gt. 0) then
+          call sel_output_single_surface_grid(id_rank, mesh_file,       &
      &    surf_p%nnod_4_surf, edge_p%nnod_4_edge,                       &
      &    view_mesh(ip), domain_grps(ip),       &
      &    view_nod_grps(ip),    &
      &    view_ele_grps(ip), &
      &    view_sf_grps(ip))
+        end if
 !
         call dealloc_number_of_mesh(mgd_mesh_p(ip))
         call deallocate_quad4_2_linear
@@ -338,7 +345,7 @@
 !------------------------------------------------------------------
 !
       subroutine const_merged_mesh_sgl                                  &
-     &         (id_rank, mesh_file, ele, surf, edge,                    &
+     &         (id_rank, nprocs_sf, mesh_file, ele, surf, edge,         &
      &          mgd_mesh, mgd_sf_grp)
 !
       use t_file_IO_parameter
@@ -349,8 +356,10 @@
       use mesh_IO_select
       use const_merged_surf_data
       use const_merged_surf_4_group
+      use copy_mesh_structures
+      use add_comm_table_in_node_grp
 !
-      integer(kind = kint) :: id_rank
+      integer(kind = kint), intent(in) :: id_rank, nprocs_sf
       type(field_IO_params), intent(in) :: mesh_file
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
@@ -359,6 +368,7 @@
       type(group_data_merged_surf), intent(inout) :: mgd_sf_grp
 !
       type(mesh_data) :: fem_IO_p
+      type(group_data) :: new_nod_grp
       integer(kind = kint) :: ierr
 !
 !
@@ -368,6 +378,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call sel_read_mesh(mesh_file, id_rank, fem_IO_p, ierr)
+!
+      if(iflag_add_comm_tbl .gt. 0) then
+        call add_comm_table_in_node_group(nprocs_sf,                    &
+     &     fem_IO_p%mesh%nod_comm, fem_IO_p%group%nod_grp, new_nod_grp)
+        call deallocate_grp_type(fem_IO_p%group%nod_grp)
+        call copy_group_data(new_nod_grp, fem_IO_p%group%nod_grp)
+        call deallocate_grp_type(new_nod_grp)
+      end if
 !
       call set_mesh_geometry_data(fem_IO_p%mesh,                        &
      &    mgd_mesh%subdomain(1)%nod_comm, mgd_mesh%subdomain(1)%node,   &
