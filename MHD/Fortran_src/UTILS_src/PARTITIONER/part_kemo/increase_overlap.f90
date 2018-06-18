@@ -293,7 +293,7 @@
                 isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
                 do i = 1, 2
                   iele = surf%iele_4_surf(isurf_end,i,1)
-                  if(iele .ne. icel) iflag_ele_tmp(iele) = 2
+                  if(iele .ne. icel .and. iele .ne. 0) iflag_ele_tmp(iele) = 2
                 end do
               end if
               ! backward
@@ -305,11 +305,11 @@
                 isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
                 do i = 1, 2
                   iele = surf%iele_4_surf(isurf_end,i,1)
-                  if(iele .ne. icel) iflag_ele_tmp(iele) = -1
+                  if(iele .ne. icel .and. iele .ne. 0) iflag_ele_tmp(iele) = -1
                 end do
               end if
             end if
-            if(iwidth .lt. 2) then
+            if(iwidth .gt. 2) then
               if(iflag_ele(icel) .eq. 2) then
                 ! forward
                 call find_line_end_in_1ele(1, node%numnod, ele%numele, surf%numsurf,        &
@@ -320,7 +320,7 @@
                   isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
                   do i = 1, 2
                     iele = surf%iele_4_surf(isurf_end,i,1)
-                    if(iele .ne. icel) iflag_ele_tmp(iele) = 2
+                    if(iele .ne. icel .and. iele .ne. 0) iflag_ele_tmp(iele) = 2
                   end do
                 end if
               else if(iflag_ele(icel) .eq. -1) then
@@ -333,7 +333,7 @@
                   isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
                   do i = 1, 2
                     iele = surf%iele_4_surf(isurf_end,i,1)
-                    if(iele .ne. icel) iflag_ele_tmp(iele) = -1
+                    if(iele .ne. icel .and. iele .ne. 0) iflag_ele_tmp(iele) = -1
                   end do
                 end if
               end if
