@@ -65,9 +65,11 @@
       use m_control_data_4_merge
 !
       use bcast_4_assemble_sph_ctl
+      use sph_file_MPI_IO_select
       use sph_file_IO_select
       use field_IO_select
       use parallel_sph_assemble
+      use share_spectr_index_data
 !
       integer(kind = kint) :: ip, jp, irank_new, jloop
 !
@@ -91,14 +93,16 @@
 !  set original spectr data
 !
       iflag_sph_file_fmt = ifmt_org_sph_file
-      call share_org_sph_rj_data                                        &
+      call set_local_rj_mesh_4_merge                                    &
      &   (org_sph_head, np_sph_org, org_sph_mesh)
+      call share_org_sph_rj_data(np_sph_org, org_sph_mesh)
 !
 !  set new spectr data
 !
       iflag_sph_file_fmt = ifmt_new_sph_file
-      call load_new_spectr_rj_data                                      &
-     &   (new_sph_head, np_sph_org, np_sph_new,                         &
+      call set_local_rj_mesh_4_merge                                    &
+     &   (new_sph_head, np_sph_new, new_sph_mesh)
+      call load_new_spectr_rj_data(np_sph_org, np_sph_new,              &
      &    org_sph_mesh, new_sph_mesh, j_table)
 !
 !     Share number of nodes for new mesh
@@ -146,9 +150,9 @@
      &      new_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r, r_itp)
       end if
 !
-      call share_r_interpolation_tbl(np_sph_new, new_sph_mesh,          &
-     &          r_itp, nlayer_ICB_org, nlayer_CMB_org,                  &
-     &          nlayer_ICB_new, nlayer_CMB_new)
+      call share_r_interpolation_tbl                                    &
+     &   (new_sph_mesh(1), r_itp, nlayer_ICB_org, nlayer_CMB_org,       &
+     &    nlayer_ICB_new, nlayer_CMB_new)
 !
 !      Construct field list from spectr file
 !
@@ -182,6 +186,7 @@
       use r_interpolate_marged_sph
       use set_field_file_names
       use parallel_sph_assemble
+      use share_field_data
 !
       integer(kind = kint) :: istep, icou
       integer(kind = kint) :: ip, jp, irank_new
@@ -214,8 +219,7 @@
 !
 !     Bloadcast original spectr data
         do ip = 1, np_sph_org
-          call share_original_spectr_data(ip, np_sph_org,               &
-     &        org_sph_mesh, org_sph_phys)
+          call share_each_field_data(ip, org_sph_phys(ip))
 !
 !     Copy spectr data to temporal array
           do jp = 1, np_sph_new

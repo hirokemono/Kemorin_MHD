@@ -144,13 +144,7 @@
         call copy_rj_phys_name_from_IO(org_fst_IO, new_phys)
 !
         do ip = 1, np_sph_org
-          org_phys(ip)%num_phys =  new_phys%num_phys
-          org_phys(ip)%ntot_phys = new_phys%ntot_phys
-          call alloc_phys_name_type(org_phys(ip))
-!
-          org_phys(ip)%num_component =    new_phys%num_component
-          org_phys(ip)%istack_component = new_phys%istack_component
-          org_phys(ip)%phys_name =        new_phys%phys_name
+          call copy_field_name_type(new_phys, org_phys(ip))
         end do
       end if
 !
