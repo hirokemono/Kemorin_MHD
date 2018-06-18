@@ -74,6 +74,22 @@
         call dealloc_ele_grp_ordering_ctl
       end if
 !
+      iflag_new_partition = 0
+      if(new_part_method_ctl%iflag .gt. 0) then
+        if( cmp_no_case(new_part_method_ctl%charavalue,'YES')) then
+          iflag_new_partition = 1
+        end if
+      end if
+      write(*,*) 'ifag_new_partition', iflag_new_partition
+
+      iflag_new_ghost_cell = 0
+      if(selective_ghost_ctl%iflag .gt. 0) then
+        if( cmp_no_case(selective_ghost_ctl%charavalue,'YES')) then
+          iflag_new_ghost_cell = 1
+        end if
+      end if
+      write(*,*) 'iflag_new_ghost_cell', iflag_new_ghost_cell
+!
       if (part_method_ctl%iflag .gt. 0) then
         if(     cmp_no_case(part_method_ctl%charavalue,'RCB_xyz')       &
      &     .or. cmp_no_case(part_method_ctl%charavalue,'RCB')) then

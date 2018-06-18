@@ -54,6 +54,9 @@
       integer(kind = kint), allocatable :: igrp_ele_ordering(:)
       character(len=kchara), allocatable :: ele_grp_ordering(:)
 !
+      integer(kind = kint) :: iflag_new_partition
+      integer(kind = kint) :: iflag_new_ghost_cell
+!
       character(len=kchara) :: finer_inter_file_head
 !
       type(field_IO_params), save :: global_mesh_file

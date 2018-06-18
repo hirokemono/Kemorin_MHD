@@ -47,6 +47,10 @@
       type(read_character_item), save :: element_overlap_ctl
 !>      Number of sleeve level
       type(read_integer_item), save :: sleeve_level_old
+!>      Flag for new patitioning method
+      type(read_character_item), save :: new_part_method_ctl
+!>      Flag for selective ghost cells generation overlapping
+      type(read_character_item), save :: selective_ghost_ctl
 !
 !>      Structure for list of bisection
 !!@n      ele_grp_ordering_ctl%c_tbl: Direction of bisectioning
@@ -106,6 +110,8 @@
      &                      = 'ordering_by_ele_grp'
       character(len=kchara), parameter :: hd_decomp_ctl                 &
      &                      = 'decompose_ctl'
+      character(len=kchara), parameter :: hd_part_ghost_ctl             &
+     &                      = 'part_ghost_ctl'
 !
       integer(kind=kint) :: i_platform =   0
       integer(kind=kint) :: i_org_data =   0
@@ -114,6 +120,14 @@
       integer (kind=kint) :: i_org_f_ctl =        0
       integer (kind=kint) :: i_ele_ordering_ctl = 0
       integer (kind=kint) :: i_decomp_ctl =       0
+      integer (kind=kint) :: i_part_ghost_ctl =   0
+!
+!   3rd level for new partition and ghost cells
+!
+      character(len=kchara), parameter :: hd_new_partition              &
+     &                      = 'new_partition_ctl'
+      character(len=kchara), parameter :: hd_selective_ghost            &
+     &                      = 'selective_ghost_cell'
 !
 !   3rd level for ordering_ctl
 !
@@ -258,6 +272,7 @@
 !
         call read_FEM_mesh_control(hd_FEM_mesh, i_FEM_mesh, part_Fmesh)
 !
+        call read_ctl_data_4_part_ghost
         call read_ctl_data_4_decomp
         call read_ctl_data_4_ele_ordeirng
       end do
@@ -304,6 +319,29 @@
       end do
 !
       end subroutine read_ctl_data_4_decomp
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_ctl_data_4_part_ghost
+!
+!
+      if(right_begin_flag(hd_part_ghost_ctl) .eq. 0) return
+      if (i_part_ghost_ctl .gt. 0) return
+      do
+!
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_part_ghost_ctl,                   &
+        &    i_part_ghost_ctl)
+        if(i_part_ghost_ctl .gt. 0) exit
+!
+        call read_chara_ctl_type                                        &
+        &     (hd_new_partition, new_part_method_ctl)
+        call read_chara_ctl_type                                        &
+        &     (hd_selective_ghost, selective_ghost_ctl)
+      end do
+!
+      end subroutine
 !
 ! -----------------------------------------------------------------------
 !

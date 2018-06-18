@@ -140,53 +140,54 @@
 !  ========= Regrouping after estimate computation load =======
 !
 ! part_plt contain info about num of subdomains
-      num_particle = num_domain * 10
-      allocate(particles(num_particle))
-      write(*,*) 'generatie sample particle for estimation'
-      call choose_particles_from_eles(org_mesh%ele, data_field_vec, particles, num_particle)
-! debug out put
-      if(iflag_part_debug .gt. 0) then
-        do iprint = 1, num_particle
-          write(*,*) 'Particles for load estimation:  '
-          write(*,*) 'particle: ', iprint
-          write(*,*) 'pos: ', particles(iprint)%pos
-          write(*,*) 'vec: ', particles(iprint)%vec
-          write(*,*) 'element id:', particles(iprint)%ele_id
-          write(*,*) 'group id:', particles(iprint)%group_id
-        end do
+      if(iflag_new_partition .eq. 1) then
+        num_particle = num_domain * 10
+        allocate(particles(num_particle))
+        write(*,*) 'generatie sample particle for estimation'
+        call choose_particles_from_eles(org_mesh%ele, data_field_vec, particles, num_particle)
+  ! debug out put
+        if(iflag_part_debug .gt. 0) then
+          do iprint = 1, num_particle
+            write(*,*) 'Particles for load estimation:  '
+            write(*,*) 'particle: ', iprint
+            write(*,*) 'pos: ', particles(iprint)%pos
+            write(*,*) 'vec: ', particles(iprint)%vec
+            write(*,*) 'element id:', particles(iprint)%ele_id
+            write(*,*) 'group id:', particles(iprint)%group_id
+          end do
+        end if
+
+        allocate(time_cost(num_domain))
+
+        call seed_particles(org_mesh%node%numnod, org_mesh%ele%numele,    &
+        &   org_ele_mesh%surf%numsurf, org_ele_mesh%surf%nnod_4_surf,     &
+        &   org_ele_mesh%surf%isf_4_ele, org_ele_mesh%surf%ie_surf,       &
+        &   org_ele_mesh%surf%iele_4_surf,                                &
+        &   org_ele_mesh%surf%interior_surf, org_mesh%node%xx,            &
+        &   data_field_vec%d_ucd,                   &
+        &   particles, num_particle, time_cost)
+
+  !cal partition table for new partition
+        allocate(partition_tbl(num_domain))
+        call cal_partition_tbl(time_cost, num_domain, partition_tbl)
+
+        allocate(part_num_node(num_domain))
+        part_num_node(:) = partition_tbl(:)*org_mesh%node%numnod
+
+        if(iflag_part_debug .gt. 0) then
+          write(*,*) 'time cost', time_cost(1:num_domain)
+          write(*,*) 'partition tbl', partition_tbl(1:num_domain)
+          write(*,*) 'target partition num', part_num_node(:)
+        end if
+
+  !      call allocate_dim_part_tbl(part_dim_tbl, ndivide_eb)
+  !      call cal_part_dim_tbl(num_domain, ndivide_eb, partition_tbl, part_dim_tbl)
+
+        call regrouping_for_partition                                      &
+        &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge,               &
+        &    org_group%nod_grp, org_group%ele_grp,                         &
+        &    org_group%tbls_ele_grp, partition_tbl)
       end if
-
-      allocate(time_cost(num_domain))
-
-      call seed_particles(org_mesh%node%numnod, org_mesh%ele%numele,    &
-      &   org_ele_mesh%surf%numsurf, org_ele_mesh%surf%nnod_4_surf,     &
-      &   org_ele_mesh%surf%isf_4_ele, org_ele_mesh%surf%ie_surf,       &
-      &   org_ele_mesh%surf%iele_4_surf,                                &
-      &   org_ele_mesh%surf%interior_surf, org_mesh%node%xx,            &
-      &   data_field_vec%d_ucd,                   &
-      &   particles, num_particle, time_cost)
-
-!cal partition table for new partition
-      allocate(partition_tbl(num_domain))
-      call cal_partition_tbl(time_cost, num_domain, partition_tbl)
-
-      allocate(part_num_node(num_domain))
-      part_num_node(:) = partition_tbl(:)*org_mesh%node%numnod
-
-      if(iflag_part_debug .gt. 0) then
-        write(*,*) 'time cost', time_cost(1:num_domain)
-        write(*,*) 'partition tbl', partition_tbl(1:num_domain)
-        write(*,*) 'target partition num', part_num_node(:)
-      end if
-
-!      call allocate_dim_part_tbl(part_dim_tbl, ndivide_eb)
-!      call cal_part_dim_tbl(num_domain, ndivide_eb, partition_tbl, part_dim_tbl)
-
-      call regrouping_for_partition                                      &
-      &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge,               &
-      &    org_group%nod_grp, org_group%ele_grp,                         &
-      &    org_group%tbls_ele_grp, partition_tbl)
-
 !
 !C===
 !C-- create subdomain mesh

@@ -35,7 +35,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine increase_overlapping(Ndomain, node, ele, surf,        &
-     &           field, included_ele)
+     &           field, iflag_selective, included_ele)
 !
       use t_geometry_data
       use t_surface_data
@@ -47,10 +47,11 @@
       type(node_data), intent(in) :: node
       type(vector_field), intent(in) :: field
       integer(kind = kint), intent(in) :: Ndomain
+      integer(kind= kint), intent(in) :: iflag_selective
 !      integer(kind = kint), intent(in) :: n_overlap, i_sleeve_ele
       type(near_mesh), intent(inout) :: included_ele
 !
-      integer(kind= kint) :: ip, inum, icel, iflag_selective_ext
+      integer(kind= kint) :: ip, inum, icel
 !
 !
       included_ele%ntot = included_ele%istack_nod(Ndomain)
@@ -62,13 +63,12 @@
       allocate( iflag_ele(ele%numele) )
       allocate( item_tmp_e(ele%numele) )
 !
-      iflag_selective_ext = 0
       iflag_nod = 0
       iflag_ele = 0
       item_tmp_e = 0
       do ip= 1, Ndomain
 ! extend overlap one by layer, new extend overlap layer is stored in near_ele_tmp
-      if(iflag_selective_ext .eq. 0) then
+      if(iflag_selective .eq. 0) then
         call mark_extented_overlap                                      &
      &     (ip, n_overlap, i_sleeve_ele, node%numnod,                   &
      &      ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,             &

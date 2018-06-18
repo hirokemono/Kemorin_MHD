@@ -58,7 +58,7 @@
       call CRE_LOCAL_DATA(num_domain, node_org%numnod,                  &
      &    ele_org, included_ele)
       call increase_overlapping(num_domain, node_org, ele_org,          &
-     &    surf_org, field_org, included_ele)
+     &    surf_org, field_org, iflag_new_ghost_cell, included_ele)
 !
 !C
 !C-- INTERFACE info.
