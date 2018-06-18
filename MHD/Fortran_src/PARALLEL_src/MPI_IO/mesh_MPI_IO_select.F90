@@ -87,7 +87,7 @@
         call gz_mpi_read_mesh(nprocs_in, id_rank, file_name, fem_IO)
 #endif
 !
-      else
+      else if(id_rank .lt. nprocs_in) then
         call sel_read_mesh(mesh_file, id_rank, fem_IO, ierr)
       end if 
 !
@@ -130,7 +130,7 @@
      &     (nprocs_in, id_rank, file_name, mesh_IO)
 #endif
 !
-      else
+      else if(id_rank .lt. nprocs_in) then
         call sel_read_mesh_geometry(mesh_file, id_rank, mesh_IO, ierr)
       end if 
 !
@@ -172,7 +172,7 @@
      &     (nprocs_in, id_rank, file_name, mesh_IO)
 #endif
 !
-      else
+      else if(id_rank .lt. nprocs_in) then
         call sel_read_node_size(mesh_file, id_rank, mesh_IO, ierr)
       end if 
 !
@@ -215,7 +215,7 @@
      &     (nprocs_in, id_rank, file_name, mesh_IO)
 #endif
 !
-      else
+      else if(id_rank .lt. nprocs_in) then
         call sel_read_geometry_size(mesh_file, id_rank, mesh_IO, ierr)
       end if 
 !
@@ -256,7 +256,7 @@
      &     (nprocs_in, id_rank, file_name, fem_IO)
 #endif
 !
-      else
+      else if(id_rank .lt. nprocs_in) then
         call sel_write_mesh_file(mesh_file, id_rank, fem_IO)
       end if
 !
