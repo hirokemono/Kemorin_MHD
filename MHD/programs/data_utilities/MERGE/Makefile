@@ -6,10 +6,11 @@ MERGE_SRCDIR =     $$(DATA_UTILS_DIR)/MERGE
 
 TARGET_MERGE =  merge_field
 TARGET_M_MESH = merge_mesh
-TARGET_NEWUDT = assemble_udt
+TARGET_NEWUDT_SGL = sgl_assemble_udt
 TARGET_NEWRST = assemble_restart
 
 TARGET_NEWSPH = assemble_sph
+TARGET_NEWUDT = assemble_udt
 
 
 TARGET_UPDATE_RST =   update_restart
@@ -43,8 +44,9 @@ MOD_MERGE_MESH = \
 assemble_mesh.o
 
 
-MOD_NEWUDT = \
+MOD_NEWUDT_SGL = \
 assemble_2nd_mesh.o
+
 
 MOD_NEWRST = \
 assemble_newrst.o
@@ -55,6 +57,10 @@ update_restart.o
 MOD_NEWSPH = \
 main_assemble_sph.o \
 analyzer_assemble_sph.o
+
+MOD_NEWUDT = \
+main_assemble_udt.o \
+analyzer_assemble_udt.o
 
 MOD_ADD_TIME_SPH = \
 add_time_data_to_sph.o
@@ -71,6 +77,7 @@ dir_list:
 target_list:
 	@echo 'TARGET_MERGE =  $$(BUILDDIR)/$(TARGET_MERGE)'  >> $(MAKENAME)
 	@echo 'TARGET_M_MESH = $$(BUILDDIR)/$(TARGET_M_MESH)' >> $(MAKENAME)
+	@echo 'TARGET_NEWUDT_SGL = $$(BUILDDIR)/$(TARGET_NEWUDT_SGL)' >> $(MAKENAME)
 	@echo 'TARGET_NEWUDT = $$(BUILDDIR)/$(TARGET_NEWUDT)' >> $(MAKENAME)
 	@echo 'TARGET_NEWRST = $$(BUILDDIR)/$(TARGET_NEWRST)' >> $(MAKENAME)
 	@echo 'TARGET_NEWSPH = $$(BUILDDIR)/$(TARGET_NEWSPH)' >> $(MAKENAME)
@@ -83,7 +90,7 @@ target_task:
 	'$$(TARGET_MERGE)        $$(TARGET_M_MESH)'            \
 	'$$(TARGET_NEWUDT)       $$(TARGET_NEWRST)'            \
 	'$$(TARGET_NEWSPH)       $$(TARGET_UPDATE_RST)'        \
-	'$$(TARGET_ADD_TIME_SPH)'    >> $(MAKENAME)
+	'$$(TARGET_ADD_TIME_SPH) $$(TARGET_NEWUDT_SGL)'    >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
@@ -102,6 +109,13 @@ target_task:
 	@echo '$$(TARGET_NEWUDT)': '$$(MOD_NEWUDT) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWUDT)' '$$(MOD_NEWUDT)' \
+	'-L. $$(LIBS_MERGE)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_NEWUDT_SGL)': '$$(MOD_NEWUDT_SGL) $$(LIB_FILES_MERGE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWUDT_SGL)' '$$(MOD_NEWUDT_SGL)' \
 	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -152,6 +166,8 @@ mod_list:
 	@echo  $(MOD_MERGE_MESH)     >> $(MAKENAME)
 	@echo  MOD_NEWUDT=  \\       >> $(MAKENAME)
 	@echo  $(MOD_NEWUDT)         >> $(MAKENAME)
+	@echo  MOD_NEWUDT_SGL=  \\       >> $(MAKENAME)
+	@echo  $(MOD_NEWUDT_SGL)         >> $(MAKENAME)
 	@echo  MOD_NEWRST=  \\       >> $(MAKENAME)
 	@echo  $(MOD_NEWRST)         >> $(MAKENAME)
 	@echo  MOD_UPDATE_RST=  \\   >> $(MAKENAME)
