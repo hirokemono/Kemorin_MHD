@@ -18,7 +18,7 @@
 !!      subroutine set_mesh                                             &
 !!     &         (mesh, group, nnod_4_surf, nnod_4_edge)
 !!      subroutine set_mesh_geometry_data(mesh_IO, nod_comm, node, ele)
-!!      subroutine set_node_geometry_data(mesh_IO, nod_comm, node)
+!!      subroutine set_node_geometry_data(mesh_IO, node)
 !!      subroutine set_zero_mesh_data(mesh, nnod_4_surf, nnod_4_edge)
 !!
 !!      subroutine set_grp_data_from_IO(nod_grp, ele_grp, surf_grp)
@@ -175,20 +175,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_node_geometry_data(mesh_IO, nod_comm, node)
+      subroutine set_node_geometry_data(mesh_IO, node)
 !
       use set_element_data_4_IO
       use copy_mesh_structures
 !
       type(mesh_geometry), intent(inout) :: mesh_IO
-      type(communication_table), intent(inout) :: nod_comm
       type(node_data), intent(inout) ::           node
 !
 !
-      call copy_comm_tbl_type(mesh_IO%nod_comm, nod_comm)
       call copy_node_geometry_types(mesh_IO%node, node)
 !
-      call deallocate_type_comm_tbl(mesh_IO%nod_comm)
+      call deallocate_type_neib_id(mesh_IO%nod_comm)
       call dealloc_node_geometry_base(mesh_IO%node)
 !
       end subroutine set_node_geometry_data

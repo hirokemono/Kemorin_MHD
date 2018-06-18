@@ -29,9 +29,15 @@
       use parallel_assemble_sph
       use copy_rj_phys_data_4_IO
 !
+      use t_mesh_data
+      use t_para_double_numbering
+      use load_mesh_data_4_merge
+!
       implicit none
 !
       type(time_data), save :: init_t
+!
+      type(mesh_geometry), allocatable, save :: org_mesh(:)
 !
       type(sph_mesh_data), allocatable, save :: org_sph_mesh(:)
       type(phys_data), allocatable, save ::     org_sph_phys(:)
@@ -65,6 +71,8 @@
       use m_control_param_merge
       use m_control_data_4_merge
 !
+      use m_geometry_data_4_merge
+!
       use bcast_4_assemble_sph_ctl
       use sph_file_MPI_IO_select
       use sph_file_IO_select
@@ -76,7 +84,7 @@
 !
       write(*,*) 'Simulation start: PE. ', my_rank
       if(my_rank .eq. 0) then
-        write(*,*) ' Dou you prepare folloing data???'
+        write(*,*) ' Do you prepare folloing data???'
         write(*,*) ' original mesh data:  mesh/in.PE#'
         write(*,*) ' transfered mesh data:  mesh_target/in.PE#'
         write(*,*) ' control data for this routine:  control_merge'
@@ -96,7 +104,6 @@
      &          'istep_start, istep_end, increment_step',               &
      &           istep_start, istep_end, increment_step
 !
-      allocate( org_sph_mesh(np_sph_org) )
       allocate( org_sph_phys(np_sph_org) )
       allocate( new_sph_mesh(np_sph_new) )
       allocate( new_sph_phys(np_sph_new) )
@@ -104,11 +111,12 @@
 !
 !  set original spectr data
 !
-      iflag_sph_file_fmt = ifmt_org_sph_file
-      call set_local_rj_mesh_4_merge                                    &
-     &   (org_sph_head, np_sph_org, org_sph_mesh)
+      allocate( org_mesh(mgd_mesh1%num_pe) )
+      call load_local_node_4_merge                                      &
+     &   (merge_org_mesh_file, mgd_mesh1%num_pe, org_mesh)
+      return
       call share_org_sph_rj_data                                        &
-     &   (org_sph_head, np_sph_org, org_sph_mesh)
+     &   (np_sph_org, org_sph_mesh)
 !
 !  set new spectr data
 !
@@ -147,25 +155,6 @@
         new_fst_IO(jloop)%istack_numnod_IO = istack_nnod_list
       end do
       deallocate(istack_nnod_list)
-!
-!     construct radial interpolation table
-!
-      if(my_rank .eq. 0) then
-        call set_sph_boundary_4_merge(org_sph_mesh(1)%sph_grps,         &
-     &      nlayer_ICB_org, nlayer_CMB_org)
-        call set_sph_boundary_4_merge(new_sph_mesh(1)%sph_grps,         &
-     &      nlayer_ICB_new, nlayer_CMB_new)
-!
-        call sph_radial_interpolation_coef                              &
-     &     (org_sph_mesh(1)%sph%sph_rj%nidx_rj(1),                      &
-     &      org_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r,                  &
-     &      new_sph_mesh(1)%sph%sph_rj%nidx_rj(1),                      &
-     &      new_sph_mesh(1)%sph%sph_rj%radius_1d_rj_r, r_itp)
-      end if
-!
-      call share_r_interpolation_tbl                                    &
-     &   (new_sph_mesh(1), r_itp, nlayer_ICB_org, nlayer_CMB_org,       &
-     &    nlayer_ICB_new, nlayer_CMB_new)
 !
 !      Construct field list from spectr file
 !
@@ -209,6 +198,7 @@
 !
 !     ---------------------
 !
+      return
       do istep = istep_start, istep_end, increment_step
 !
 !     Load original spectr data

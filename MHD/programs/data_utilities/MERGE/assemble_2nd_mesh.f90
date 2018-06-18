@@ -44,7 +44,7 @@
 !
       call calypso_MPI_init
 !
-       write(*,*) ' Dou you prepare folloing data???'
+       write(*,*) ' Do you prepare folloing data???'
        write(*,*) ' original mesh data:  mesh/in.PE#'
        write(*,*) ' transfered mesh data:  mesh_target/in.PE#'
        write(*,*) ' control data for this routine:  control_merge'

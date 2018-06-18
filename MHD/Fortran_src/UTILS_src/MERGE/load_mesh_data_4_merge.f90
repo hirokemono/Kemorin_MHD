@@ -121,15 +121,16 @@
       integer(kind = kint) :: id_rank, iloop, ip
 !
 !
+!
       do iloop = 0, (nprocs_in-1) / nprocs
         id_rank = my_rank + iloop * nprocs
         ip = id_rank + 1
-        call sel_mpi_read_geometry_size                                 &
+        call sel_mpi_read_mesh_geometry                                 &
      &     (nprocs_in, id_rank, mesh_file, mesh_IO_m)
 !
         if(id_rank .lt. nprocs_in) then
-          call set_node_geometry_data                                   &
-     &       (mesh_IO_m, mesh(ip)%nod_comm, mesh(ip)%node)
+          call set_mesh_geometry_data(mesh_IO_m, mesh(ip)%nod_comm,     &
+     &        mesh(ip)%node, mesh(ip)%ele)
         end if
       end do
 !
