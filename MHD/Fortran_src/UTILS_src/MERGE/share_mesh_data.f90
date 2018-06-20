@@ -116,6 +116,8 @@
 !
       subroutine share_each_element_data(ip_org, ele)
 !
+      use set_nnod_4_ele_by_type
+!
       integer(kind = kint), intent(in) :: ip_org
       type(element_data), intent(inout) :: ele
 !
