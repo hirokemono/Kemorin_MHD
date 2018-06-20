@@ -37,9 +37,9 @@
 !
       type mesh_test_control
 !>        Structure for file settings
-        type(platform_data_control), save :: plt
+        type(platform_data_control) :: plt
 !>        Structure of mesh IO controls and sleeve informations
-        type(platform_data_control), save :: Fmesh_ctl
+        type(FEM_mesh_control) :: Fmesh_ctl
       end type mesh_test_control
 !
 !     Top level
@@ -57,7 +57,6 @@
       integer(kind=kint), private :: i_FEM_mesh =   0
 !
       private :: read_test_mesh_ctl_data
-      private :: hd_platform, i_platform
 !
 !   --------------------------------------------------------------------
 !

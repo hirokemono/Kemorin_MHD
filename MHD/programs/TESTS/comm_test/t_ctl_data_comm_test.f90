@@ -26,6 +26,7 @@
       use m_precision
 !
       use t_ctl_data_4_platforms
+      use t_ctl_data_4_FEM_mesh
       use m_read_control_elements
       use skip_comment_f
 !
@@ -39,9 +40,9 @@
 !>      Structure for file settings
       type comm_test_control
 !>        Structure for file settings
-        type(platform_data_control), save :: plt
+        type(platform_data_control) :: plt
 !>        Structure of mesh IO controls and sleeve informations
-        type(platform_data_control), save :: Fmesh_ctl
+        type(FEM_mesh_control) :: Fmesh_ctl
       end type comm_test_control
 !
 !     Label for the entry
