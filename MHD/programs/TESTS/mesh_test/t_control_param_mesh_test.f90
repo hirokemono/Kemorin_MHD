@@ -27,7 +27,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_test_mesh(plt, mesh_tctl)
+      subroutine set_ctl_params_4_test_mesh(mesh_tctl, T_files)
 !
       use calypso_mpi
       use t_ctl_data_mesh_test
@@ -40,7 +40,7 @@
       type(mesh_test_files_param), intent(inout) :: T_files
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt)
+      call turn_off_debug_flag_by_ctl(my_rank, mesh_tctl%plt)
       call set_control_mesh_def(mesh_tctl%plt, T_files%mesh_file_IO)
       call set_FEM_surface_output_flag                                  &
      &   (mesh_tctl%Fmesh_ctl, T_files%iflag_output_SURF)
@@ -48,8 +48,8 @@
      &   'mesh_file_head:  ', trim(T_files%mesh_file_IO%file_prefix)
 !
       np_smp = 1
-      if (plt%num_smp_ctl%iflag .gt. 0) then
-        np_smp = plt%num_smp_ctl%intvalue
+      if(mesh_tctl%plt%num_smp_ctl%iflag .gt. 0) then
+        np_smp = mesh_tctl%plt%num_smp_ctl%intvalue
       end if
       if (iflag_debug.gt.0) write(*,*) 'np_smp', np_smp
 !
