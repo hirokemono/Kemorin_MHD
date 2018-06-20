@@ -84,7 +84,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine assemble_2nd_udt_mesh                                  &
+      subroutine sgl_assemble_2nd_udt_mesh                              &
      &         (ucd_param, merged, num_pe2, subdomains_2, ucd)
 !
       use m_file_format_switch
@@ -126,6 +126,31 @@
           call deallocate_ucd_ele(ucd)
         end if
       end do
+!
+      end subroutine sgl_assemble_2nd_udt_mesh
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine assemble_2nd_udt_mesh                                  &
+     &         (ucd_param, merged, my_rank, new_mesh, ucd)
+!
+      use m_file_format_switch
+      use set_ucd_data_to_type
+      use ucd_IO_select
+!
+      integer(kind = kint), intent(in)  :: my_rank
+      type(field_IO_params), intent(in) :: ucd_param
+      type(mesh_geometry), intent(in) :: merged
+      type(mesh_geometry), intent(in) :: new_mesh
+      type(ucd_data), intent(inout) :: ucd
+!
+!
+      call link_global_mesh_2_ucd(new_mesh%node, new_mesh%ele, ucd)
+!
+      call sel_write_grd_file(my_rank, ucd_param, ucd)
+!
+      call deallocate_ucd_node(ucd)
+      call deallocate_ucd_ele(ucd)
 !
       end subroutine assemble_2nd_udt_mesh
 !

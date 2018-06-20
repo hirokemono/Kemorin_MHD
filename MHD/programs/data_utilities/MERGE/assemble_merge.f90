@@ -59,7 +59,7 @@
 !   read field name and number of components
 !
       call init_ucd_data_4_merge                                        &
-     &   (istep_start, original_ucd_param, fem_time_IO, fem_ucd)
+     &   (istep_start, original_ucd_param, fem_time_IO)
 !
 !    set list array for merged field
 !

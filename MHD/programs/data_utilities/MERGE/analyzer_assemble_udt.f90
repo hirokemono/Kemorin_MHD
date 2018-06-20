@@ -17,11 +17,11 @@
       use m_constants
       use calypso_mpi
 !
+      use m_geometry_data_4_merge
       use m_machine_parameter
       use m_control_param_newsph
       use r_interpolate_marged_sph
       use t_SPH_mesh_field_data
-      use t_time_data
       use t_field_data_IO
       use t_assembled_field_IO
 !
@@ -30,14 +30,24 @@
       use copy_rj_phys_data_4_IO
 !
       use t_mesh_data
-      use t_para_double_numbering
-      use load_mesh_data_4_merge
+      use t_time_data
+      use t_ucd_data
 !
       implicit none
 !
       type(time_data), save :: init_t
 !
       type(mesh_geometry), allocatable, save :: org_mesh(:)
+      type(mesh_geometry), save :: new_mesh
+      type(ucd_data), save :: second_ucd
+!
+      integer(kind = kint), allocatable :: istack_recv(:)
+      integer(kind = kint), allocatable :: item_send(:)
+      integer(kind = kint), allocatable :: item_recv(:)
+!>        Instance for FEM field data IO
+      type(time_data), save :: fem_time_IO
+!
+!
 !
       type(sph_mesh_data), allocatable, save :: org_sph_mesh(:)
       type(phys_data), allocatable, save ::     org_sph_phys(:)
@@ -70,16 +80,18 @@
       use m_error_IDs
       use m_control_param_merge
       use m_control_data_4_merge
+      use m_array_for_send_recv
 !
-      use m_geometry_data_4_merge
+      use m_original_ucd_4_merge
+      use mpi_load_mesh_data
+      use load_mesh_data_4_merge
+      use search_original_domain_node
+      use output_newdomain_ucd
+      use nod_phys_send_recv
 !
-      use bcast_4_assemble_sph_ctl
-      use sph_file_MPI_IO_select
-      use sph_file_IO_select
-      use field_IO_select
-      use parallel_sph_assemble
-!
-      integer(kind = kint) :: ip, jp, irank_new, jloop
+      integer(kind = kint) :: ip, jp, irank_new, jloop, inod
+      integer(kind = kint_gl) :: min_inod_gl, max_inod_gl
+      integer(kind = kint) :: nnod_4_surf, nnod_4_edge
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -109,74 +121,54 @@
       allocate( new_sph_phys(np_sph_new) )
       allocate(j_table(np_sph_org,np_sph_new))
 !
-!  set original spectr data
+!  set new mesh data
+!
+      call mpi_input_mesh_geometry                                      &
+     &   (nprocs, merged_mesh_file, new_mesh, nnod_4_surf, nnod_4_edge)
+!
+!  set original mesh data
 !
       allocate( org_mesh(mgd_mesh1%num_pe) )
       call load_local_node_4_merge                                      &
      &   (merge_org_mesh_file, mgd_mesh1%num_pe, org_mesh)
-      return
-      call share_org_sph_rj_data                                        &
-     &   (np_sph_org, org_sph_mesh)
 !
-!  set new spectr data
+      allocate(istack_recv(0:mgd_mesh1%num_pe))
+      allocate(item_send(new_mesh%node%internal_node))
+      allocate(item_recv(new_mesh%node%internal_node))
 !
-      iflag_sph_file_fmt = ifmt_new_sph_file
-      call set_local_rj_mesh_4_merge                                    &
-     &   (new_sph_head, np_sph_new, new_sph_mesh)
-      call load_new_spectr_rj_data(np_sph_org, np_sph_new,              &
-     &    org_sph_mesh, new_sph_mesh, j_table)
+      istack_recv = 0
+!$omp parallel workshare
+      item_send = 0
+      item_recv = 0
+!$omp end parallel workshare
 !
-!     Share number of nodes for new mesh
+      call s_search_original_domain_node(mgd_mesh1%num_pe, org_mesh,    &
+     &    new_mesh%node, istack_recv, item_send, item_recv)
 !
-      nloop_new = (np_sph_new-1)/nprocs + 1
-      allocate(new_fst_IO(nloop_new))
+!   read field name and number of components
 !
-      allocate(nnod_list_lc(np_sph_new))
-      allocate(nnod_list(np_sph_new))
-      allocate(istack_nnod_list(0:np_sph_new))
-      nnod_list_lc(1:np_sph_new) = 0
-      nnod_list(1:np_sph_new) = 0
+      write(*,*) 'init_ucd_data_4_merge'
+      call init_ucd_data_4_merge                                        &
+     &   (istep_start, original_ucd_param, fem_time_IO)
 !
-      do jp = 1, np_sph_new
-        irank_new = jp - 1
-        if(mod(irank_new,nprocs) .ne. my_rank) cycle
-        nnod_list_lc(jp) = new_sph_mesh(jp)%sph%sph_rj%nnod_rj
-      end do
+!    set list array for merged field
 !
-      call MPI_allREDUCE(nnod_list_lc, nnod_list, np_sph_new,           &
-     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call set_field_list_4_merge(mgd_mesh1%merged_fld)
+      write(*,*) 'set_field_list_4_merge'
+      call alloc_phys_data_type                                         &
+     &   (new_mesh%node%numnod, mgd_mesh1%merged_fld)
 !
-      istack_nnod_list(0) = 0
-      do jp = 1, np_sph_new
-        istack_nnod_list(jp) = istack_nnod_list(jp-1) + nnod_list(jp)
-      end do
-      do jloop = 1, nloop_new
-        call alloc_merged_field_stack(np_sph_new, new_fst_IO(jloop))
-        new_fst_IO(jloop)%istack_numnod_IO = istack_nnod_list
-      end do
-      deallocate(istack_nnod_list)
-!
-!      Construct field list from spectr file
-!
-      call load_field_name_assemble_sph                                 &
-     &   (istep_start, np_sph_org, org_sph_fst_param,                   &
-     &    org_sph_phys(1), new_sph_phys(1), fst_time_IO)
-!
-      call share_spectr_field_names(np_sph_org, np_sph_new,             &
-     &    new_sph_mesh, org_sph_phys, new_sph_phys)
+      write(*,*) 'assemble_2nd_udt_mesh'
+      call assemble_2nd_udt_mesh                                        &
+     &   (assemble_ucd_param, mgd_mesh1%merged, my_rank,                &
+     &    new_mesh, second_ucd)
 !
 !
-!      do jp = 1, np_sph_new
-!        if(mod(jp-1,nprocs) .ne. my_rank) cycle
-!        do ip = 1, np_sph_org
-!          do j = 1, org_sph_mesh(1)%sph%sph_rj%nidx_rj(2)
-!            if(j_table(ip,jp)%j_org_to_new(j).gt. 0)                   &
-!     &          write(50+my_rank,*) jp, ip, j,                         &
-!     &                              j_table(ip,jp)%j_org_to_new(j)
-!          end do
-!        end do
-!      end do
-!      write(*,*) 'init_assemble_udt end'
+      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(n_sym_tensor, new_mesh%node%numnod)
+!
+      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
+      call init_nod_send_recv(new_mesh)
 !
       end subroutine init_assemble_udt
 !
@@ -185,101 +177,35 @@
       subroutine analyze_assemble_udt
 !
       use m_phys_labels
-      use r_interpolate_marged_sph
-      use set_field_file_names
-      use parallel_sph_assemble
-      use share_field_data
+      use m_control_param_merge
+      use search_original_domain_node
 !
       integer(kind = kint) :: istep, icou
       integer(kind = kint) :: ip, jp, irank_new
       integer(kind = kint) :: iloop, jloop
       integer(kind = kint) :: istep_out
 !
+      type(phys_data) :: new_fld
+      type(field_IO) :: new_fIO
 !
-!     ---------------------
+      call alloc_phys_name_type(new_fld)
+      call alloc_phys_data_type(new_mesh%node%numnod, new_fld)
 !
-      return
-      do istep = istep_start, istep_end, increment_step
+      call alloc_phys_data_IO(new_fIO)
+      call alloc_merged_field_stack(nprocs, new_fIO)
+!      call count_number_of_node_stack                                   &
+!     &   (new_fIO%nnod_IO, new_fIO%istack_numnod_IO)
 !
-!     Load original spectr data
-        do iloop = 0, (np_sph_org-1)/nprocs
-          irank_new = my_rank + iloop * nprocs
-          ip = irank_new + 1
-          call load_org_sph_data                                        &
-     &       (irank_new, istep, np_sph_org, org_sph_fst_param,          &
-     &        org_sph_mesh(ip)%sph, init_t, org_sph_phys(ip))
-          call calypso_mpi_barrier
-        end do
 !
-        istep_out = istep
-        if(iflag_newtime .gt. 0) then
-          istep_out =          istep_new_rst / increment_new_step
-          init_t%i_time_step = istep_new_rst
-          init_t%time =        time_new
-        end if
+!      do istep = istep_start, istep_end, increment_step
+!        call assemble_field_data                                        &
+!     &     (istep, mgd_mesh1%num_pe, new_mesh, ifield_2_copy,           &
+!     &      istack_recv, item_send, item_recv,                          &
+!     &      original_ucd_param, assemble_ucd_param, new_fld, new_fIO)
+!      end do
+!      deallocate(j_table)
 !
-        call share_time_step_data(init_t)
-!
-!     Bloadcast original spectr data
-        do ip = 1, np_sph_org
-         call share_each_field_data(ip, org_sph_phys(ip))
-!
-!     Copy spectr data to temporal array
-          do jp = 1, np_sph_new
-           if(mod(jp-1,nprocs) .ne. my_rank) cycle
-            call set_assembled_sph_data(org_sph_mesh(ip)%sph,           &
-     &          new_sph_mesh(jp)%sph, j_table(ip,jp), r_itp,            &
-     &          org_sph_phys(ip), new_sph_phys(jp))
-          end do
-          call dealloc_phys_data_type(org_sph_phys(ip))
-        end do
-!
-        do jloop = 1, nloop_new
-          irank_new = my_rank + (jloop-1) * nprocs
-          jp = irank_new + 1
-
-          if(irank_new .lt. np_sph_new) then
-            call const_assembled_sph_data                               &
-     &          (b_sph_ratio, init_t, new_sph_mesh(jp)%sph, r_itp,      &
-     &           new_sph_phys(jp), new_fst_IO(jloop), fst_time_IO)
-          end if
-        end do
-!
-        call sel_write_SPH_assemble_field(np_sph_new, istep_out,        &
-     &      nloop_new, new_sph_fst_param, fst_time_IO, new_fst_IO)
-!
-        do jloop = 1, nloop_new
-          irank_new = my_rank + (jloop-1) * nprocs
-          if(irank_new .lt. np_sph_new) then
-            call dealloc_phys_data_IO(new_fst_IO(jloop))
-            call dealloc_phys_name_IO(new_fst_IO(jloop))
-          end if
-        end do
-        call calypso_mpi_barrier
-      end do
-!
-      do jp = 1, np_sph_new
-        if(mod(jp-1,nprocs) .ne. my_rank) cycle
-        do ip = 1, np_sph_org
-          call dealloc_mode_table_4_assemble(j_table(ip,jp))
-        end do
-      end do
-      deallocate(j_table)
-!
-      deallocate(org_sph_mesh, org_sph_phys)
-      deallocate(new_sph_mesh, new_sph_phys)
-!
-      call calypso_MPI_barrier
-!
-      if(iflag_delete_org_sph .gt. 0) then
-        icou = 0
-        do istep = istep_start, istep_end, increment_step
-          icou = icou + 1
-          if(mod(icou,nprocs) .ne. my_rank) cycle
-          call delete_SPH_fld_file                                      &
-     &        (org_sph_fst_param, np_sph_org, istep)
-        end do
-      end if
+      deallocate(istack_recv, item_send, item_recv)
 !
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'

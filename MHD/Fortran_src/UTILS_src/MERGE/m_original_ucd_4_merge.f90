@@ -4,8 +4,7 @@
 !!      subroutine allocate_subdomain_parameters
 !!      subroutine deallocate_subdomain_parameters
 !!
-!!      subroutine init_ucd_data_4_merge                                &
-!!     &         (istep, org_ucd_param, t_IO, ucd)
+!!      subroutine init_ucd_data_4_merge(istep, org_ucd_param, t_IO)
 !!      subroutine read_ucd_data_4_merge                                &
 !!     &         (istep, num_pe, subdomain, merge_tbl, org_ucd_param,   &
 !!     &          t_IO, ucd, merged_fld)
@@ -56,8 +55,7 @@
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_ucd_data_4_merge                                  &
-     &         (istep, org_ucd_param, t_IO, ucd)
+      subroutine init_ucd_data_4_merge(istep, org_ucd_param, t_IO)
 !
       use m_constants
       use m_control_param_merge
@@ -69,9 +67,9 @@
       integer (kind = kint), intent(in) :: istep
       type(field_IO_params), intent(in) :: org_ucd_param
       type(time_data), intent(inout) :: t_IO
-      type(ucd_data), intent(inout) :: ucd
 !
       integer (kind = kint) :: i
+      type(ucd_data) :: ucd
 !
 !
       ucd%nnod = ione
