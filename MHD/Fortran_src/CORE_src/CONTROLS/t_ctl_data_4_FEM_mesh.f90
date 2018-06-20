@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine read_FEM_mesh_control(hd_block, iflag, Fmesh_ctl)
 !!        type(FEM_mesh_control), intent(inout) :: Fmesh_ctl
+!!      subroutine write_FEM_mesh_control                               &
+!!     &         (id_file, hd_block, Fmesh_ctl, level)
 !!
 !! ------------------------------------------------------------------
 !!      Example of control parameters
@@ -89,7 +91,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, iflag)
+        iflag =  find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
 !
@@ -110,6 +112,49 @@
        end do
 !
       end subroutine read_FEM_mesh_control
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_FEM_mesh_control                                 &
+     &         (id_file, hd_block, Fmesh_ctl, level)
+!
+      use m_machine_parameter
+      use m_read_control_elements
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_file
+      character(len=kchara), intent(in) :: hd_block
+      type(FEM_mesh_control), intent(in) :: Fmesh_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+      maxlen = max(maxlen, len_trim(hd_mem_conserve))
+      maxlen = max(maxlen, len_trim(hd_FEM_mesh_output))
+      maxlen = max(maxlen, len_trim(hd_FEM_surf_output))
+      maxlen = max(maxlen, len_trim(hd_FEM_viewer_output))
+      maxlen = max(maxlen, len_trim(hd_sleeve_level))
+      maxlen = max(maxlen, len_trim(hd_ele_overlap))
+!
+      write(id_file,'(a)') '!'
+      call write_chara_ctl_type(id_file, level, maxlen,                 &
+     &    hd_mem_conserve, Fmesh_ctl%memory_conservation_ctl)
+      call write_chara_ctl_type(id_file, level, maxlen,                 &
+     &    hd_FEM_mesh_output, Fmesh_ctl%FEM_mesh_output_switch)
+      call write_chara_ctl_type(id_file, level, maxlen,                 &
+     &    hd_FEM_surf_output, Fmesh_ctl%FEM_surface_output_switch)
+      call write_chara_ctl_type(id_file, level, maxlen,                 &
+     &    hd_FEM_viewer_output, Fmesh_ctl%FEM_viewer_output_switch)
+!
+      call write_integer_ctl_type(id_file, level, maxlen,               &
+     &    hd_sleeve_level, Fmesh_ctl%FEM_sleeve_level_ctl)
+      call write_chara_ctl_type(id_file, level, maxlen,                 &
+     &    hd_ele_overlap, Fmesh_ctl%FEM_element_overlap_ctl)
+!
+      level =  write_end_flag_for_ctl(id_file, level, hd_block)
+!
+      end subroutine write_FEM_mesh_control
 !
 !  ---------------------------------------------------------------------
 !

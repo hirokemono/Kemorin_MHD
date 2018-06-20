@@ -7,9 +7,9 @@
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!        type(phys_data), intent(inout) :: fld
 !!        integer (kind = kint), intent(inout) :: ierr
-!
-!     subroutine ordering_field_type_by_viz(fld)
-!     subroutine ordering_field_type_by_comp_viz(fld)
+!!
+!!     subroutine ordering_field_type_by_viz(fld)
+!!     subroutine ordering_field_type_by_comp_viz(fld)
 !
       module set_control_nodal_data
 !

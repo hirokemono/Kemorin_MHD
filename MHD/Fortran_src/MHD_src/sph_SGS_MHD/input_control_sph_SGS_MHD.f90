@@ -81,18 +81,21 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(FEM_mesh_field_data), intent(inout) :: FEM_dat
 !
+      integer(kind = kint) :: ierr
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD(MHD_ctl%plt, MHD_ctl%org_plt,      &
-     &    MHD_ctl%model_ctl, MHD_ctl%smctl_ctl, MHD_ctl%smonitor_ctl,   &
-     &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_maker2%sph_tmp,       &
-     &    SPH_MHD%fld, MHD_files, SPH_model%bc_IO,                      &
-     &    SPH_SGS%SGS_par, SPH_SGS%dynamic, MHD_step,                   &
+     &    MHD_ctl%model_ctl, MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl,       &
+     &    MHD_ctl%psph_ctl, sph_maker2%sph_tmp, MHD_files,              &
+     &    SPH_model%bc_IO, SPH_SGS%SGS_par, SPH_SGS%dynamic, MHD_step,  &
      &    SPH_model%MHD_prop, SPH_model%MHD_BC, trns_WK%WK_sph,         &
-     &    sph_maker2%gen_sph, monitor)
+     &    sph_maker2%gen_sph)
 !
-      call s_set_control_4_SPH_to_FEM(MHD_ctl%psph_ctl%spctl,           &
-     &    SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field)
+      call set_control_SGS_SPH_MHD_field                                &
+     &   (MHD_ctl%model_ctl, MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl,    &
+     &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD%sph,             &
+     &    SPH_MHD%fld, FEM_dat%field, monitor)
 !
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &

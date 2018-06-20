@@ -117,7 +117,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_udt_ele_grp, i_ele_grp_udt)
+        i_ele_grp_udt = find_control_end_flag(hd_udt_ele_grp)
         if(i_ele_grp_udt .gt. 0) exit
 !
         call read_control_time_step_data                                &
@@ -142,7 +142,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_grouping_plot, i_grouping_plot)
+        i_grouping_plot = find_control_end_flag(hd_grouping_plot)
         if(i_grouping_plot .gt. 0) exit
 !
 !

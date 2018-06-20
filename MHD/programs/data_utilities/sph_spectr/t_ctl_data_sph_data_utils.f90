@@ -129,7 +129,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_control_d_sph, i_hard)
+        i_hard = find_control_end_flag(hd_control_d_sph)
         if(i_hard .gt. 0) exit
 !
         call read_control_platforms(hd_platform, i_platform, ctl%plt)
@@ -154,7 +154,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_file_def, i_hard)
+        i_hard = find_control_end_flag(hd_file_def)
         if(i_hard .gt. 0) exit
 !
         call read_chara_ctl_type                                        &
@@ -205,7 +205,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_rename_def, i_hard)
+        i_hard = find_control_end_flag(hd_rename_def)
         if(i_hard .gt. 0) exit
 !
 !

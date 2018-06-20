@@ -146,7 +146,6 @@
       use lead_fields_4_sph_mhd
       use sph_SGS_MHD_rst_IO_control
       use input_control_sph_MHD
-      use forces_from_sph_trans
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -241,8 +240,7 @@
 !
 !*  -----------  data transfer to FEM array --------------
 !*
-      call SPH_to_FEM_bridge_MHD(sph%sph_params, sph%sph_rtp,           &
-     &    WK, mesh, FEM_d1%iphys, FEM_d1%field)
+      call SPH_to_FEM_bridge_MHD(sph, WK, mesh, FEM_d1%field)
 !
 ! ----  Take zonal mean
 !
@@ -301,12 +299,13 @@
 !
       call sph_back_trans_4_MHD(SPH_MHD%sph, SPH_MHD%comms,             &
      &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, omega_sph, trans_p,    &
-     &    trns_WK%gt_cor, SPH_MHD%ipol, SPH_MHD%fld, trns_WK%trns_MHD,  &
-     &    trns_WK%WK_sph, trns_WK%MHD_mul_FFTW, trns_WK%cor_rlm)
+     &    trns_WK%gt_cor, SPH_MHD%fld, trns_WK%trns_MHD%b_trns,         &
+     &    trns_WK%trns_MHD%backward, trns_WK%WK_sph,                    &
+     &    trns_WK%trns_MHD%mul_FFTW, trns_WK%cor_rlm)
 !
       call sph_forward_trans_snapshot_MHD                               &
-     &   (SPH_MHD%sph, SPH_MHD%comms, trans_p, trns_WK%trns_snap,       &
-     &     SPH_MHD%ipol, trns_WK%WK_sph, SPH_MHD%fld)
+     &   (SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
+     &    trns_WK%trns_snap%forward,  trns_WK%WK_sph, SPH_MHD%fld)
 !
 ! ----  Take zonal mean
 !

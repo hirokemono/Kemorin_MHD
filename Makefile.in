@@ -87,8 +87,8 @@ OPENGL_LIBS= @GL_LIBS@
 PGPLOT_LIBS= @PGPLOT_LIBS@
 #
 #   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
-GTK2_CFLAGS= @GTK2_CFLAGS@
-GTK2_LIBS= @GTK2_LIBS@
+GTK3_CFLAGS= @GTK3_CFLAGS@
+GTK3_LIBS= @GTK3_LIBS@
 #
 #   GLUI settings (Requirement: OpenGL, GLUT, libpng)
 #     It Turns on if C++ compiler is defined
@@ -136,8 +136,8 @@ makemake: $(MAKE_MOD_DEP)
 		OPENGL_INC="$(OPENGL_INC)" \
 		OPENGL_LIBS="$(OPENGL_LIBS)" \
 		PGPLOT_LIBS="$(PGPLOT_LIBS)" \
-		GTK2_CFLAGS="$(GTK2_CFLAGS)" \
-		GTK2_LIBS="$(GTK2_LIBS)" \
+		GTK3_CFLAGS="$(GTK3_CFLAGS)" \
+		GTK3_LIBS="$(GTK3_LIBS)" \
 		HDF5_FFLAGS="$(HDF5_FFLAGS)" \
 		HDF5_LDFLAGS="$(HDF5_LDFLAGS)" \
 		HDF5_FLIBS="$(HDF5_FLIBS)" \

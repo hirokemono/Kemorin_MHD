@@ -127,7 +127,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_cor_plane_ctl, i_cor_plane_ctl)
+        i_cor_plane_ctl = find_control_end_flag(hd_cor_plane_ctl)
         if(i_cor_plane_ctl .gt. 0) exit
 !
 !
@@ -153,7 +153,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_hard, i_hard)
+        i_hard = find_control_end_flag(hd_hard)
         if(i_hard .gt. 0) exit
 !
         call read_chara_ctl_type(hd_mesh_head_ctl, cor_mesh_head_ctl)
@@ -178,7 +178,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_model, i_model)
+        i_model = find_control_end_flag(hd_model)
         if(i_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
@@ -197,7 +197,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_control, i_control)
+        i_control = find_control_end_flag(hd_control)
         if(i_control .gt. 0) exit
 !
         call read_control_time_step_data                                &

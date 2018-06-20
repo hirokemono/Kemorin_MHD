@@ -248,7 +248,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_part_ctl, i_part_ctl)
+        i_part_ctl = find_control_end_flag(hd_part_ctl)
         if(i_part_ctl .gt. 0) exit
 !
 !
@@ -274,7 +274,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_decomp_ctl, i_decomp_ctl)
+        i_decomp_ctl = find_control_end_flag(hd_decomp_ctl)
         if(i_decomp_ctl .gt. 0) exit
 !
 !
@@ -315,8 +315,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_ele_ordering_ctl,                 &
-     &     i_ele_ordering_ctl)
+        i_ele_ordering_ctl = find_control_end_flag(hd_ele_ordering_ctl)
         if(i_ele_ordering_ctl .gt. 0) exit
 !
         call read_control_array_c1                                      &

@@ -256,7 +256,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_table_control, i_table_control)
+        i_table_control = find_control_end_flag(hd_table_control)
         if(i_table_control .gt. 0) exit
 !
         call read_control_platforms(hd_platform, i_platform, src_plt)
@@ -280,7 +280,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_distribute_itp, i_distribute_itp)
+        i_distribute_itp = find_control_end_flag(hd_distribute_itp)
         if(i_distribute_itp .gt. 0) exit
 !
         call read_control_platforms(hd_platform, i_platform, src_plt)
@@ -302,7 +302,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_itp_files, i_itp_files)
+        i_itp_files = find_control_end_flag(hd_itp_files)
         if(i_itp_files .gt. 0) exit
 !
 !
@@ -330,7 +330,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_itp_model, i_itp_model)
+        i_itp_model = find_control_end_flag(hd_itp_model)
         if(i_itp_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
@@ -351,7 +351,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_iteration_ctl, i_iteration_ctl)
+        i_iteration_ctl = find_control_end_flag(hd_iteration_ctl)
         if(i_iteration_ctl .gt. 0) exit
 !
         call read_control_array_i_r(hd_eps_4_itp, eps_4_itp_ctl)
@@ -373,7 +373,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_element_hash, i_element_hash)
+        i_element_hash = find_control_end_flag(hd_element_hash)
         if(i_element_hash .gt. 0) exit
 !
 !

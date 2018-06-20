@@ -18,6 +18,7 @@
 #define DELETE_POINT 4
 
 GtkWidget *rangew;
+GtkWidget *ftmpw;
 GtkWidget *spin1, *spin2;
 
 static int i_selected;
@@ -83,25 +84,25 @@ static void cb_tree_clicked (GtkTreeSelection *selection, gpointer user_data)
 
 static void dataChange(GtkWidget *entry, gpointer data)
 {
-	gtk_value = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_value = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 }
 static void colorChange(GtkWidget *entry, gpointer data)
 {
-	gtk_color = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_color = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 }
 static void opacityChange(GtkWidget *entry, gpointer data)
 {
-	gtk_opacity = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_opacity = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 }
 
 static void MinChange(GtkWidget *entry, gpointer data)
 {
-	gtk_min = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_min = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 /*	printf("gtk_min %d\n", gtk_min);*/
 }
 static void MaxChange(GtkWidget *entry, gpointer data)
 {
-	gtk_max = (double) gtk_spin_button_get_value_as_float(GTK_SPIN_BUTTON(entry));
+	gtk_max = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 /*	printf("gtk_max %d\n", gtk_max);*/
 }
 static void NlineChange(GtkWidget *entry, gpointer data)
@@ -234,7 +235,7 @@ static void gtk_colormap_menu(double range_min, double range_max, const char *ti
 	GtkWidget *vbox1;
 	GtkWidget *lavel0, *lavel1, *lavel2, *lavel3, *lavel4;
 	GtkWidget *bot1, *bot2, *bot3, *bot4;
-	GtkObject *adj_data, *adj_color;
+	GtkAdjustment *adj_data, *adj_color;
 	
 	char min_text[30], max_text[30];
 	
@@ -265,22 +266,22 @@ static void gtk_colormap_menu(double range_min, double range_max, const char *ti
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
 	
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
-	hbox1 = gtk_hbox_new(FALSE, 5);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox1);
-	hbox2 = gtk_hbox_new(FALSE, 5);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox2);
-	vbox1 = gtk_vbox_new(FALSE, 5);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), vbox1);
-	hbox4 = gtk_hbox_new(FALSE, 5);
+	hbox4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox4);
-	hbox3 = gtk_hbox_new(FALSE, 5);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox3);
-	hbox5 = gtk_hbox_new(FALSE, 5);
+	hbox5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox5);
-	hbox6 = gtk_hbox_new(FALSE, 5);
+	hbox6 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox6);
 	
 	
@@ -342,7 +343,7 @@ static void gtk_opacitymap_menu(double range_min, double range_max, const char *
 	GtkWidget *vbox1;
 	GtkWidget *lavel0, *lavel1, *lavel2, *lavel3, *lavel4;
 	GtkWidget *bot1, *bot2, *bot3, *bot4;
-	GtkObject *adj_data, *adj_opasity;
+	GtkAdjustment *adj_data, *adj_opasity;
 	
 	char min_text[30], max_text[30];
 	
@@ -374,22 +375,22 @@ static void gtk_opacitymap_menu(double range_min, double range_max, const char *
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
 	
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
-	hbox1 = gtk_hbox_new(FALSE, 5);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox1);
-	hbox2 = gtk_hbox_new(FALSE, 5);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox2);
-	vbox1 = gtk_vbox_new(FALSE, 5);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), vbox1);
-	hbox4 = gtk_hbox_new(FALSE, 5);
+	hbox4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox4);
-	hbox3 = gtk_hbox_new(FALSE, 5);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox3);
-	hbox5 = gtk_hbox_new(FALSE, 5);
+	hbox5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox5);
-	hbox6 = gtk_hbox_new(FALSE, 5);
+	hbox6 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), hbox6);
 	
 	
@@ -449,7 +450,7 @@ static void gtk_range_menu(double range_min, double range_max,
 	GtkWidget *box1, *box2, *box3, *box5;
 	GtkWidget *lavel0, *lavel1, *lavel2, *lavel3;
 	GtkWidget *bot1, *bot2;
-	GtkObject *adj_min, *adj_max;
+	GtkAdjustment *adj_min, *adj_max;
 	
     double delta;
 	char min_text[30], max_text[30];
@@ -466,16 +467,16 @@ static void gtk_range_menu(double range_min, double range_max,
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
 
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
-	box1 = gtk_hbox_new(FALSE, 5);
+	box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box1);
-	box2 = gtk_hbox_new(FALSE, 5);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box2);
-	box3 = gtk_hbox_new(FALSE, 5);
+	box3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box3);
-	box5 = gtk_hbox_new(FALSE, 5);
+	box5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box5);
 	
 	
@@ -521,7 +522,7 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	GtkWidget *box1, *box2, *box3, *box5;
 	GtkWidget *lavel0, *lavel2;
 	GtkWidget *bot2;
-	GtkObject *adj;
+	GtkAdjustment *adj;
 	
 	char current_text[30];
 	
@@ -536,16 +537,16 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
 
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
-	box1 = gtk_hbox_new(FALSE, 5);
+	box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box1);
-	box2 = gtk_hbox_new(FALSE, 5);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box2);
-	box3 = gtk_hbox_new(FALSE, 5);
+	box3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box3);
-	box5 = gtk_hbox_new(FALSE, 5);
+	box5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box5);
 	
 	
@@ -572,34 +573,39 @@ static void gtk_opacity_menu(double current_value, const char *title){
 	return;
 }
 
-static void set_PSFcolor_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
+static void set_PSFcolor_GTK(GtkColorChooser *colordialog)
 {
+	GdkRGBA gcolor;
 	gdouble dcolor[4];
 	
-	
-	gtk_color_selection_get_color( GTK_COLOR_SELECTION(colordialog->colorsel), dcolor);
-	gtk_widget_destroy(colordialog);
+	gtk_color_chooser_get_rgba(colordialog, &gcolor);
+	gtk_widget_destroy(rangew);
+	gtk_widget_destroy(ftmpw);
 	gtk_main_quit();
 	
-	dcolor[3] = (float) kemoview_get_PSF_max_opacity();
+	dcolor[0] = gcolor.red;
+	dcolor[1] = gcolor.green;
+	dcolor[2] = gcolor.blue;
+	dcolor[3] = (gdouble) kemoview_get_PSF_max_opacity();
 	kemoview_set_PSF_single_color(dcolor);
 	kemoview_set_PSF_patch_color_mode(SINGLE_COLOR);
 	draw_mesh_keep_menu();
 	return;
 }
 
-static void set_background_GTK(GtkWidget *widget, GtkColorSelectionDialog *colordialog)
+static void set_background_GTK(GtkColorChooser *colordialog)
 {
+	GdkRGBA gcolor;
 	GLfloat color[4];
-	gdouble dcolor[4];
 	
-	gtk_color_selection_get_color( GTK_COLOR_SELECTION(colordialog->colorsel), dcolor);
-	gtk_widget_destroy(colordialog);
+	gtk_color_chooser_get_rgba(colordialog, &gcolor);
+	gtk_widget_destroy(rangew);
+	gtk_widget_destroy(ftmpw);
 	gtk_main_quit();
 	
-    color[0] = (GLfloat) dcolor[0];
-    color[1] = (GLfloat) dcolor[1];
-    color[2] = (GLfloat) dcolor[2];
+    color[0] = (GLfloat) gcolor.red;
+    color[1] = (GLfloat) gcolor.green;
+    color[2] = (GLfloat) gcolor.blue;
 	/*printf("New background Color (R,G,B): %.7e %.7e %.7e \n", color[0], color[1], color[2]);*/
 	
 	draw_mesh_keep_menu();
@@ -609,36 +615,116 @@ static void set_background_GTK(GtkWidget *widget, GtkColorSelectionDialog *color
 	return;
 }
 
-static void gtk_PSFcolorselect(const char *title){
-	rangew = gtk_color_selection_dialog_new(title);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button),
-				"clicked", GTK_SIGNAL_FUNC(set_PSFcolor_GTK), rangew);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button),
-				"clicked", GTK_SIGNAL_FUNC(destroy), rangew);
-	gtk_widget_show_all(rangew);
-	gtk_main();
+static void kemoview_gtk_PSFcolorsel(GtkButton *button, gpointer data){
+	int response;
+	GtkColorChooser *chooser;
+	GtkWindow *parent;
 	
+	parent = GTK_WINDOW(g_object_get_data(G_OBJECT(data), "parent"));
+	
+	rangew = gtk_color_chooser_dialog_new("Choose color", parent);
+	gtk_widget_show_all(rangew);
+	
+	response = gtk_dialog_run(GTK_DIALOG(rangew));
+	if (response == GTK_RESPONSE_OK){
+		chooser = GTK_COLOR_CHOOSER(rangew);
+		set_PSFcolor_GTK(chooser);
+		g_print ("color selected \n");
+		iflag_set = IONE;
+	}
+	else if( response == GTK_RESPONSE_CANCEL ){
+		g_print( "Cancel button was pressed.\n" );
+		gtk_widget_destroy(rangew);
+	}
+	return;
+}
+
+static void gtk_PSFcolorselect(const char *title){
+	GtkWidget *hbox;
+	GtkWidget *entry;
+	GtkWidget *button;
+	
+	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	
+	gtk_window_set_title(GTK_WINDOW(ftmpw), title);
+	gtk_widget_set_size_request(ftmpw, 150, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
+	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	
+	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
+	
+	/* Set button   */
+	entry = gtk_entry_new();
+	button = gtk_button_new_with_label("_select");
+	g_signal_connect(G_OBJECT(button), "clicked", 
+				G_CALLBACK(kemoview_gtk_PSFcolorsel), (gpointer)entry);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	gtk_widget_show_all(ftmpw);
+	gtk_main();
+	return;
+}
+
+
+static void kemoview_gtk_BGcolorsel(GtkButton *button, gpointer data){
+	int response;
+	GtkColorChooser *chooser;
+	GtkWindow *parent;
+	
+	parent = GTK_WINDOW(g_object_get_data(G_OBJECT(data), "parent"));
+	
+	rangew = gtk_color_chooser_dialog_new("Choose color", parent);
+	gtk_widget_show_all(rangew);
+	
+	response = gtk_dialog_run(GTK_DIALOG(rangew));
+	if (response == GTK_RESPONSE_OK){
+		chooser = GTK_COLOR_CHOOSER(rangew);
+		set_background_GTK(chooser);
+		g_print ("color selected \n");
+		iflag_set = IONE;
+	}
+	else if( response == GTK_RESPONSE_CANCEL ){
+		g_print( "Cancel button was pressed.\n" );
+		gtk_widget_destroy(rangew);
+	}
 	return;
 }
 
 static void gtk_BGcolorselect(GLfloat color[4], const char *title){
-	rangew = gtk_color_selection_dialog_new(title);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->ok_button),
-				"clicked", GTK_SIGNAL_FUNC(set_background_GTK), rangew);
-	gtk_signal_connect(GTK_OBJECT (GTK_COLOR_SELECTION_DIALOG (rangew)->cancel_button),
-				"clicked", GTK_SIGNAL_FUNC(destroy), rangew);
-	gtk_widget_show_all(rangew);
-	gtk_main();
+	GtkWidget *hbox;
+	GtkWidget *entry;
+	GtkWidget *button;
 	
+	ftmpw = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	
+	gtk_window_set_title(GTK_WINDOW(ftmpw), title);
+	gtk_widget_set_size_request(ftmpw, 150, -1);
+	gtk_container_set_border_width(GTK_CONTAINER(ftmpw), 5);
+	g_signal_connect(G_OBJECT(ftmpw), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+	
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	
+	gtk_container_add(GTK_CONTAINER(ftmpw), hbox);
+	
+	/* Set button   */
+	entry = gtk_entry_new();
+	button = gtk_button_new_with_label("_select");
+	g_signal_connect(G_OBJECT(button), "clicked", 
+				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)entry);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	gtk_widget_show_all(ftmpw);
+	gtk_main();
 	return;
 }
+
 
 static void gtk_nline_menu(int nline, const char *title){
 	GtkWidget *box;
 	GtkWidget *box1, *box2, *box3, *box5;
 	GtkWidget *lavel0, *lavel2;
 	GtkWidget *bot2;
-	GtkObject *adj;
+	GtkAdjustment *adj;
 	
 	char min_text[30];
 	
@@ -653,16 +739,16 @@ static void gtk_nline_menu(int nline, const char *title){
 	gtk_container_set_border_width(GTK_CONTAINER(rangew), 5);
 
 	
-	box = gtk_vbox_new(FALSE, 10);
+	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add(GTK_CONTAINER(rangew), box);
 	
-	box1 = gtk_hbox_new(FALSE, 5);
+	box1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box1);
-	box2 = gtk_hbox_new(FALSE, 5);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box2);
-	box3 = gtk_hbox_new(FALSE, 5);
+	box3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box3);
-	box5 = gtk_hbox_new(FALSE, 5);
+	box5 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(box), box5);
 	
 	

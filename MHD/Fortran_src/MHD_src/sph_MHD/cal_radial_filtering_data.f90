@@ -8,11 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine count_radial_point_4_filter(sph_rj, r_filter)
-!!      subroutine count_fiiltering_area(num_moms, sph_rj,              &
-!!     &          radial_rj_grp, r_filter, num_OC, kmin_OC, kmax_OC)
-!!      subroutine set_filtering_points(num_OC, kmin_OC, kmax_OC,       &
+!!      subroutine count_fiiltering_area(num_moms,                      &
+!!     &          sph_rj, radial_rj_grp, radial_rtp_grp, r_filter,      &
+!!     &          num_rj_OC,  kmin_rj_OC,  kmax_rj_OC,                  &
+!!     &          num_rtp_OC, kmin_rtp_OC, kmax_rtp_OC)
+!!      subroutine set_filtering_points                                 &
+!!     &          (num_rj_OC, kmin_rj_OC, kmax_rj_OC,                   &
 !!     &           num_moms, num_sides, sph_rj, r_filter)
-!!      subroutine cal_radial_fileters(kmin_OC, kmax_OC,                &
+!!      subroutine cal_radial_fileters(kmin_rj_OC, kmax_rj_OC,          &
 !!     &          num_moms, num_sides, filter_mom, sph_rj, r_filter)
 !!      subroutine cal_each_radial_filter_coefs                         &
 !!     &         (r_point, dr_point, num_moms, num_sides, radius,       &
@@ -56,14 +59,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_fiiltering_area(num_moms, sph_rj, radial_rj_grp, &
-     &          r_filter, num_OC, kmin_OC, kmax_OC)
+      subroutine count_fiiltering_area(num_moms,                        &
+     &          sph_rj, radial_rj_grp, radial_rtp_grp, r_filter,        &
+     &          num_rj_OC,  kmin_rj_OC,  kmax_rj_OC,                    &
+     &          num_rtp_OC, kmin_rtp_OC, kmax_rtp_OC)
 !
       integer(kind = kint), intent(in)  :: num_moms
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(group_data), intent(in) :: radial_rj_grp
+      type(group_data), intent(in) :: radial_rj_grp, radial_rtp_grp
       type(filter_coefficients_type), intent(inout) :: r_filter
-      integer(kind = kint), intent(inout)  :: num_OC, kmin_OC, kmax_OC
+      integer(kind = kint), intent(inout)  :: num_rj_OC, num_rtp_OC
+      integer(kind = kint), intent(inout)  :: kmin_rj_OC, kmin_rtp_OC
+      integer(kind = kint), intent(inout)  :: kmax_rj_OC, kmax_rtp_OC
 !
       integer(kind = kint) :: inum, ist, ied, num, igrp, i
       integer(kind = kint) :: igrp_ocore
@@ -80,29 +87,39 @@
 !
       ist = radial_rj_grp%istack_grp(igrp_ocore-1) + 1
       ied = radial_rj_grp%istack_grp(igrp_ocore)
-      kmin_OC = radial_rj_grp%item_grp(ist)
-      kmax_OC = radial_rj_grp%item_grp(ist)
+      kmin_rj_OC = radial_rj_grp%item_grp(ist)
+      kmax_rj_OC = radial_rj_grp%item_grp(ist)
       do inum = ist+1, ied
-        kmin_OC = min(kmin_OC, radial_rj_grp%item_grp(inum))
-        kmax_OC = max(kmax_OC, radial_rj_grp%item_grp(inum))
+        kmin_rj_OC = min(kmin_rj_OC, radial_rj_grp%item_grp(inum))
+        kmax_rj_OC = max(kmax_rj_OC, radial_rj_grp%item_grp(inum))
       end do
-      num_OC = ied - ist + 1
+      num_rj_OC = ied - ist + 1
+!
+      ist = radial_rtp_grp%istack_grp(igrp_ocore-1) + 1
+      ied = radial_rtp_grp%istack_grp(igrp_ocore)
+      kmin_rtp_OC = radial_rtp_grp%item_grp(ist)
+      kmax_rtp_OC = radial_rtp_grp%item_grp(ist)
+      do inum = ist+1, ied
+        kmin_rtp_OC = min(kmin_rtp_OC, radial_rtp_grp%item_grp(inum))
+        kmax_rtp_OC = max(kmax_rtp_OC, radial_rtp_grp%item_grp(inum))
+      end do
+      num_rtp_OC = ied - ist + 1
 !
       i = 0
       r_filter%istack_near_nod(0) = 0
-      do inum = kmin_OC+1, kmax_OC-1
+      do inum = kmin_rj_OC+1, kmax_rj_OC-1
         i = i + 1
         r_filter%inod_filter(i) = inum
         r_filter%nnod_near(i) =   num_moms
       end do
 !
-      do inum = 1, kmin_OC
+      do inum = 1, kmin_rj_OC
         i = i + 1
         r_filter%inod_filter(i) = inum
         r_filter%nnod_near(i) =   ione
       end do
 !
-      do inum = kmax_OC, sph_rj%nidx_rj(1)
+      do inum = kmax_rj_OC, sph_rj%nidx_rj(1)
         i = i + 1
         r_filter%inod_filter(i) = inum
         r_filter%nnod_near(i) =   ione
@@ -119,10 +136,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_filtering_points(num_OC, kmin_OC, kmax_OC,         &
+      subroutine set_filtering_points                                   &
+     &          (num_rj_OC, kmin_rj_OC, kmax_rj_OC,                     &
      &           num_moms, num_sides, sph_rj, r_filter)
 !
-      integer(kind = kint), intent(in)  :: num_OC, kmin_OC, kmax_OC
+      integer(kind = kint), intent(in) :: num_rj_OC
+      integer(kind = kint), intent(in) :: kmin_rj_OC, kmax_rj_OC
       type(sph_rj_grid), intent(in) ::  sph_rj
       integer(kind = kint), intent(in)  :: num_moms, num_sides
       type(filter_coefficients_type), intent(inout) :: r_filter
@@ -131,16 +150,16 @@
 !
 !
       i = 0
-      do inum = kmin_OC+1, kmax_OC-1
+      do inum = kmin_rj_OC+1, kmax_rj_OC-1
         i = i + 1
         inod = r_filter%inod_filter(i)
         ist =  r_filter%istack_near_nod(i-1)
         neib = r_filter%nnod_near(i)
 !
-        if((inod-num_sides) .lt. kmin_OC) then
-          jstart = kmin_OC - 1
-        else if((inod+num_sides) .gt. kmax_OC) then
-          jstart = kmax_OC - num_moms
+        if((inod-num_sides) .lt. kmin_rj_OC) then
+          jstart = kmin_rj_OC - 1
+        else if((inod+num_sides) .gt. kmax_rj_OC) then
+          jstart = kmax_rj_OC - num_moms
         else
           jstart = inod - num_sides
         end if
@@ -150,7 +169,7 @@
         end do
       end do
 !
-      do inum = num_OC-1, sph_rj%nidx_rj(1)
+      do inum = num_rj_OC-1, sph_rj%nidx_rj(1)
         ist = r_filter%istack_near_nod(inum-1) + 1
         r_filter%inod_near(ist) = r_filter%inod_filter(inum)
         r_filter%func(ist) =   one
@@ -161,10 +180,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_radial_fileters(kmin_OC, kmax_OC,                  &
+      subroutine cal_radial_fileters(kmin_rj_OC, kmax_rj_OC,            &
      &          num_moms, num_sides, filter_mom, sph_rj, r_filter)
 !
-      integer(kind = kint), intent(in)  :: kmin_OC, kmax_OC
+      integer(kind = kint), intent(in)  :: kmin_rj_OC, kmax_rj_OC
       integer(kind = kint), intent(in)  :: num_moms, num_sides
       real(kind = kreal), intent(in) :: filter_mom(0:num_moms-1)
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -176,7 +195,7 @@
 !
 !
       i = 0
-      do inum = kmin_OC+1, kmax_OC-1
+      do inum = kmin_rj_OC+1, kmax_rj_OC-1
         i = i + 1
         inod =   r_filter%inod_filter(i)
         ist =    r_filter%istack_near_nod(i-1) + 1

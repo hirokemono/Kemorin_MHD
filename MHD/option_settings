@@ -127,8 +127,8 @@ OPENGL_LIBS=
 PGPLOT_LIBS= -L/hsfs/home0/matsui/local/lib -lpgplot -lX11
 #
 #   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
-GTK2_CFLAGS= 
-GTK2_LIBS= 
+GTK3_CFLAGS= 
+GTK3_LIBS= 
 #
 #   GLUI settings (Requirement: OpenGL, GLUT, libpng)
 #     It Turns on if C++ compiler is defined
@@ -356,8 +356,8 @@ OPENGL_LIBS= -framework GLUT -framework OpenGL  -framework Cocoa
 PGPLOT_LIBS=  -L/Users/matsui/local/pgplot/lib -lpgplot  -L/Users/matsui/local/lib -lpng   -L/Users/matsui/local/lib -lz   -L/usr/X11/lib -R/usr/X11/lib -lX11 -L/usr/local/lib -laquaterm  -Wl,-framework -Wl,Foundation
 #
 #   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
-GTK2_CFLAGS= -D_REENTRANT -I/usr/local/homebrew/Cellar/gtk+/2.24.10/include/gtk-2.0 -I/usr/local/homebrew/Cellar/gtk+/2.24.10/lib/gtk-2.0/include -I/usr/local/homebrew/Cellar/atk/2.4.0/include/atk-1.0 -I/usr/local/homebrew/Cellar/gdk-pixbuf/2.26.1/include/gdk-pixbuf-2.0 -I/usr/local/homebrew/Cellar/pango/1.30.0/include/pango-1.0 -I/usr/local/homebrew/Cellar/glib/2.32.1/include/glib-2.0 -I/usr/local/homebrew/Cellar/glib/2.32.1/lib/glib-2.0/include -I/usr/local/homebrew/Cellar/gettext/0.18.1.1/include -I/usr/local/homebrew/Cellar/pixman/0.24.4/include/pixman-1 -I/usr/X11/include/cairo -I/usr/X11/include -I/usr/X11/include/freetype2 -I/usr/X11/include/libpng15  
-GTK2_LIBS= -L/usr/local/homebrew/Cellar/gtk+/2.24.10/lib -L/usr/local/homebrew/Cellar/atk/2.4.0/lib -L/usr/local/homebrew/Cellar/gdk-pixbuf/2.26.1/lib -L/usr/local/homebrew/Cellar/glib/2.32.1/lib -L/usr/local/homebrew/Cellar/pango/1.30.0/lib -L/usr/local/homebrew/Cellar/gettext/0.18.1.1/lib -L/usr/X11/lib -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 -lintl  
+GTK3_CFLAGS= -D_REENTRANT -I/usr/local/homebrew/Cellar/gtk+/2.24.10/include/gtk-2.0 -I/usr/local/homebrew/Cellar/gtk+/2.24.10/lib/gtk-2.0/include -I/usr/local/homebrew/Cellar/atk/2.4.0/include/atk-1.0 -I/usr/local/homebrew/Cellar/gdk-pixbuf/2.26.1/include/gdk-pixbuf-2.0 -I/usr/local/homebrew/Cellar/pango/1.30.0/include/pango-1.0 -I/usr/local/homebrew/Cellar/glib/2.32.1/include/glib-2.0 -I/usr/local/homebrew/Cellar/glib/2.32.1/lib/glib-2.0/include -I/usr/local/homebrew/Cellar/gettext/0.18.1.1/include -I/usr/local/homebrew/Cellar/pixman/0.24.4/include/pixman-1 -I/usr/X11/include/cairo -I/usr/X11/include -I/usr/X11/include/freetype2 -I/usr/X11/include/libpng15  
+GTK3_LIBS= -L/usr/local/homebrew/Cellar/gtk+/2.24.10/lib -L/usr/local/homebrew/Cellar/atk/2.4.0/lib -L/usr/local/homebrew/Cellar/gdk-pixbuf/2.26.1/lib -L/usr/local/homebrew/Cellar/glib/2.32.1/lib -L/usr/local/homebrew/Cellar/pango/1.30.0/lib -L/usr/local/homebrew/Cellar/gettext/0.18.1.1/lib -L/usr/X11/lib -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 -lintl  
 #
 # -------------------------------------------------------------------------------
 # Intel mac with gfortran-openmpi (Macport)
@@ -437,8 +437,8 @@ OPENGL_LIBS= -framework GLUT -framework OpenGL  -framework Cocoa
 PGPLOT_LIBS=  -L/usr/local/pgplot/lib -lpgplot  -L/Users/matsui/local/lib -lpng   -L/Users/matsui/local/lib -lz   -L/usr/X11/lib -lX11 -L/opt/local/lib -laquaterm  -Wl,-framework -Wl,Foundation
 #
 #   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
-GTK2_CFLAGS= 
-GTK2_LIBS= 
+GTK3_CFLAGS= 
+GTK3_LIBS= 
 #
 # -------------------------------------------------------------------------------
 # Intel cluster with Myrinet (Sirens)
@@ -476,80 +476,6 @@ GTK2_LIBS=
   --enable-libpng  --with-zlib=/usr/lib64/ --with-blas=yes --enable-fftw3 \
   --without-pgplot --without-aquaterm
 #
-#
-#  directories of CALYPSO
-#
-SRCDIR = /home/matsui/src_0323
-INSTDIR= /usr/local
-#
-MHDDIR = $(SRCDIR)/MHD
-MAKEDIR= $(SRCDIR)/work
-BUILDDIR= $(SRCDIR)/bin
-#
-# MPI settings
-#
-MPICHDIR =    
-MPICHLIBDIR = $(MPICHDIR)/lib
-MPICHBINDIR = $(MPICHDIR)/bin
-MPICHINCDIR = 
-MPILIBS =      
-#
-#    compilers
-#
-F90 = ifort
-CC =  icc
-CXX = icc
-
-F90_LOCAL = $(F90)
-
-MPIF90 = mpif90
-MPICC =  mpicc
-
-AR = xiar
-RANLIB = ranlib
-
-#
-# FC_NAME_MANGLE definition for Fortran-C connection
-#    C routtine name mangle flag for Fortran connection
-#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
-# FC_NAME_MANGLE -DWITH_FLAG is defined to use cocoa Framework
-#
-
-FC_NAME_MANGLE = -DFC_NAME_LOWER_USCORE
-COCOA_FLAG =     
-
-#
-#  optimization
-#
-F90OPTFLAGS= -ipo -O3 -no-prec-div -xHost -warn all -g   -fopenmp
-OPTFLAGS =   -ipo -O3 -no-prec-div -xHost -Wall -g    -fopenmp
-CXXFLAGS =   -g -O2  -fopenmp
-#
-#   libpng and zlib settings
-#
-ZLIB_INC =  -I/home/matsui/local/include
-ZLIB_LIBS = -L/home/matsui/local/lib -lz 
-PNG_INC =   -I/home/matsui/local/include -I/home/matsui/local/include
-PNG_LIBS =  -L/home/matsui/local/lib -lpng  -L/home/matsui/local/lib -lz 
-#
-#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
-#
-OPENGL_INC =  -I/usr/X11/include
-OPENGL_LIBS= -lglut -lGLU -lGL  -lSM -lICE  -lX11 -lX11 -lXext -lXmu -lXt -lXi 
-#
-#   PGPLOT settings (Requirement: pgplot, libpng)
-#
-PGPLOT_LIBS=  -L/home/matsui/local/pgplot/lib -lpgplot  -L/home/matsui/local/lib
- -lpng  -L/home/matsui/local/lib -lz   -L/home/matsui/local/lib -lz   -lX11 
-#
-#   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
-GTK2_CFLAGS= -I/usr/include/gtk-2.0 -I/usr/lib64/gtk-2.0/include -I/usr/include/
-atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I
-/usr/lib64/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng12  
-GTK2_LIBS= -L/lib64 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -
-lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0 
-
-
 # -------------------------------------------------------------------------------
 # Intel XEON cluster in Texas (stampede)
 # -------------------------------------------------------------------------------
@@ -724,98 +650,6 @@ CXXFLAGS =
 CFLAGS='-O3' FCFLAGS='-O3 -homp -hvector3 -hfp3' \
 PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/opt/fftw/3.3.0.4/sandybridge/lib/pkgconfig
 #
-#  Makefile for Kemo's Dynamo toolkit
-#    Written by H. Matsui
-#
-SHELL           = /bin/sh
-#
-#  directories of Kemo's Dynamo toolkit
-#
-SRCDIR = /home/matsui/src_kemo
-INSTDIR= /home/matsui/local
-#
-MHDDIR = $(SRCDIR)/MHD
-MAKEDIR= $(SRCDIR)/work
-BUILDDIR= $(SRCDIR)/bin
-#
-# MPI settings
-#
-MPICHDIR =    
-MPICHLIBDIR = $(MPICHDIR)/lib
-MPICHBINDIR = $(MPICHDIR)/bin
-MPICHINCDIR = 
-MPILIBS =      
-#
-#    compilers
-#
-F90 = ftn
-CC =  cc
-CXX = 
-
-F90_LOCAL = $(F90)
-
-MPIF90 = ftn
-MPICC =  cc
-
-GMAKE = make
-AR = ar
-RANLIB = ranlib
-
-#
-# OPENMP_F77FLAGS OprnMP option for fortran compiler
-# FC_NAME_MANGLE definition for Fortran-C connection
-#    C routtine name mangle flag for Fortran connection
-#     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
-# FC_NAME_MANGLE -DWITH_FLAG is defined to use cocoa Framework
-#
-OPENMP_F77FLAGS = -homp
-FC_NAME_MANGLE = -DFC_NAME_LOWER_USCORE
-COCOA_FLAG =     
-
-#
-#  optimization
-#
-F90OPTFLAGS= -g -O3 -homp -hvector3 -hscalar3 -hfp3   
-OPTFLAGS =   -g -O3    
-CXXFLAGS =     
-#
-#   libpng and zlib settings
-#
-ZLIB_CFLAGS =  -I/usr/include
-ZLIB_LIBS =    -L/usr/lib -lz 
-PNG_CFLAGS =   -I/usr/include/libpng12  
-PNG_LIBS =     -lpng12  
-#
-#    FFTW3 settings
-#
-FFTW3_CFLAGS= -I/opt/fftw/3.3.0.4/sandybridge/include  
-FFTW3_LIBS=   -L/opt/fftw/3.3.0.4/sandybridge/lib -lfftw3 -lcray_memcpy  
-#
-#    HDF5 fortran wrapper settings
-#
-HDF5_FFLAGS=    
-HDF5_LDFLAGS=   
-HDF5_FLIBS=     
-#
-#   GLUT settings (Requirement: OpenGL, GLUT, libpng)
-#
-OPENGL_INC =  -I/usr/X11/include
-OPENGL_LIBS= 
-#
-#   PGPLOT settings (Requirement: pgplot, libpng)
-#
-PGPLOT_LIBS= 
-#
-#   GTK+ settings (Requirement: OpenGL, GLUT, libpng)
-GTK2_CFLAGS= -I/usr/include/gtk-2.0 -I/usr/lib64/gtk-2.0/include -I/usr/include/
-atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I
-/usr/lib64/glib-2.0/include -I/usr/include/pixman-1 -I/usr/include/freetype2 -I/
-usr/include/libpng12  
-GTK2_LIBS= -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_
-pixbuf-2.0 -lpangocairo-1.0 -lcairo -lpango-1.0 -lfreetype -lz -lfontconfig -lgo
-bject-2.0 -lgmodule-2.0 -lglib-2.0  
-#
-
 
 # -------------------------------------------------------------------------------
 # -------------------------------------------------------------------------------

@@ -234,6 +234,10 @@
 !!         @f$ \nu \partial_{j}\partial_{j} B_{i} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_mag_diffuse = 'magnetic_diffusion'
+!>        Field label for thermal diffusion
+!!         @f$ \kappa \partial_{i}\partial_{i} T @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_thermal_diffusion = 'thermal_diffusion'
 !>        Field label for compositional diffusion
 !!         @f$ \kappa \partial_{i}\partial_{i} C @f$
       character(len=kchara), parameter                                  &
@@ -388,6 +392,7 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_Csim_SGS_comp_buo = 'Csim_SGS_composit_buo'
 !
+!      SGS terms by wider filter
 !
 !>        Field label for SGS heat flux with wider filter
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$
@@ -412,6 +417,35 @@
 !!            - \bar{u}_{j}\bar{B}_{k} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_wide_SGS_vp_induct = 'wide_SGS_vp_induction'
+!
+!
+!      SGS terms by double filtering
+!
+!>        Field label for SGS heat flux with wider filter
+!!         @f$ \overline{\overline{u_{i}T}}
+!!            - \bar{\bar{u}}_{i}\bar{\bar{T}} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_dbl_SGS_h_flux = 'double_SGS_heat_flux'
+!>        Field label for SGS composition flux with wider filter
+!!         @f$ \overline{\overline{u_{i}C}}
+!!            - \bar{\bar{u}}_{i}\bar{\bar{C}} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_dbl_SGS_c_flux = 'double_SGS_composit_flux'
+!>        Field label for SGS inertia term with wider filter
+!!         @f$ e_{ijk}\left(\overline{\overline{\omega_{j}u_{k}}}
+!!            - \bar{\bar{\omega}}_{j}\bar{\bar{u}}_{k} \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_dbl_SGS_inertia = 'double_SGS_inertia'
+!>        Field label for SGS Lorentz force with wider filter
+!!         @f$ e_{ijk}\left(\overline{\overline{\J_{j}B_{k}}}
+!!            - \bar{\bar{J}}_{j}\bar{\bar{B}}_{k} \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_dbl_SGS_Lorentz = 'double_SGS_Lorentz'
+!>        Field label for SGS induction with wider filter
+!!         @f$ e_{ijk}\left(\overline{\overline{\u_{j}B_{k}}}
+!!            - \bar{\bar{u}}_{j}\bar{\bar{B}}_{k} \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_dbl_SGS_vp_induct = 'double_SGS_vp_induction'
 !
 !  scalars
 !
@@ -518,10 +552,6 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_cross_helicity =    'cross_helicity'
 !
-!>        Field label for thermal diffusion
-!!         @f$ \kappa \partial_{i}\partial_{i} T @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_thermal_diffusion = 'thermal_diffusion'
 !>        Field label for advection for temperature
 !!         @f$ u_{i} \partial_{i} T @f$
       character(len=kchara), parameter                                  &
@@ -780,7 +810,6 @@
       character(len=kchara), parameter :: fhd_SGS_comp =   'comp_4_SGS'
 !
 !  difference of field
-!
 !>        Field label for gradient of @f$ u_{x} @f$
       character(len=kchara), parameter :: fhd_grad_v_1 =  'grad_v_1'
 !>        Field label for gradient of @f$ u_{y} @f$
@@ -826,10 +855,6 @@
 !>         or @f$  \partial T_{0} / dr@f$
       character(len=kchara), parameter                                  &
      &             :: fhd_grad_ref_temp = 'grad_reference_temp'
-!>        Field label for gradient of @f$ \tilde{T} @f$
-      character(len=kchara), parameter                                  &
-     &             :: fhd_grad_filter_temp = 'grad_filtered_temp'
-!>        Field label for gradient of @f$ \tilde{C} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_grad_composit = 'grad_composition'
 !>        Field label for gradient of perturbation of composition
@@ -840,6 +865,67 @@
 !>         or @f$  \partial C_{0} / dr@f$
       character(len=kchara), parameter                                  &
      &             :: fhd_grad_ref_light = 'grad_reference_composition'
+!
+!
+!
+!  difference of filtered field
+!>        Field label for gradient of @f$ \tilde{u}_{x} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_v_1 =  'grad_filtered_v_1'
+!>        Field label for gradient of @f$ \tilde{u}_{y} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_v_2 =  'grad_filtered_v_2'
+!>        Field label for gradient of @f$ \tilde{u}_{z} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_v_3 =  'grad_filtered_v_3'
+!
+!>        Field label for gradient of @f$ \tilde{\omega}_{x} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_w_1 =  'grad_filtered_w_1'
+!>        Field label for gradient of @f$ \tilde{\omega}_{y} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_w_2 =  'grad_filtered_w_2'
+!>        Field label for gradient of @f$ \tilde{\omega}_{z} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_w_3 =  'grad_filtered_w_3'
+!
+!>        Field label for gradient of @f$ \tilde{A}_{x} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_a_1 =  'grad_filtered_a_1'
+!>        Field label for gradient of @f$ \tilde{A}_{y} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_a_2 =  'grad_filtered_a_2'
+!>        Field label for gradient of @f$ \tilde{A}_{z} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_a_3 =  'grad_filtered_a_3'
+!
+!>        Field label for gradient of @f$ \tilde{B}_{x} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_b_1 =  'grad_filtered_b_1'
+!>        Field label for gradient of @f$ \tilde{B}_{y} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_b_2 =  'grad_filtered_b_2'
+!>        Field label for gradient of @f$ \tilde{B}_{z} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_b_3 =  'grad_filtered_b_3'
+!
+!>        Field label for gradient of @f$ \tilde{J}_{x} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_j_1 =  'grad_filtered_j_1'
+!>        Field label for gradient of @f$ \tilde{J}_{y} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_j_2 =  'grad_filtered_j_2'
+!>        Field label for gradient of @f$ \tilde{J}_{z} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_j_3 =  'grad_filtered_j_3'
+!
+!>        Field label for gradient of @f$ \tilde{T} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_temp = 'grad_filtered_temp'
+!>        Field label for gradient of @f$ C @f$
+!>        Field label for gradient of @f$ \tilde{C} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_filter_comp = 'grad_filtered_comp'
 !
 !  wider filtered field
 !
@@ -873,6 +959,42 @@
 !>        Field label for filtered grad. of composition by wider filter
       character(len=kchara), parameter                                  &
      &      :: fhd_w_filter_grad_comp = 'wide_filter_grad_composition'
+!
+!
+!  double filtered field
+!
+!>        Field label for filtered velocity by double filtering
+      character(len=kchara), parameter                                  &
+     &             :: fhd_d_filter_velo = 'double_filter_velo'
+!>        Field label for filtered vorticity by double filtering
+      character(len=kchara), parameter                                  &
+     &             :: fhd_d_filter_vort = 'double_filter_vorticity'
+!>        Field label for filtered magnetic vector potential
+!!        by double filtering
+      character(len=kchara), parameter                                  &
+     &             :: fhd_d_filter_vecp = 'double_filter_vecp'
+!>        Field label for filtered magnetic field by double filtering
+      character(len=kchara), parameter                                  &
+     &             :: fhd_d_filter_magne = 'double_filter_magne'
+!>        Field label for filtered current density by double filtering
+      character(len=kchara), parameter                                  &
+     &             :: fhd_d_filter_current = 'double_filter_current'
+!
+!>        Field label for filtered temperature by double filtering
+      character(len=kchara), parameter                                  &
+     &      :: fhd_d_filter_temp =      'double_filter_temp'
+!>        Field label for filtered grad. of temperature
+!!        by double filtering
+      character(len=kchara), parameter                                  &
+     &      :: fhd_d_filter_grad_temp = 'double_filter_grad_temp'
+!
+!>        Field label for filtered compostiion by double filtering
+      character(len=kchara), parameter                                  &
+     &      :: fhd_d_filter_comp =    'double_filter_composition'
+!>        Field label for filtered grad. of composition
+!>        by double filtering
+      character(len=kchara), parameter                                  &
+     &      :: fhd_d_filter_grad_comp = 'double_filter_grad_comp'
 !
 !  divergence of momentum equations
 !
@@ -1009,30 +1131,6 @@
       character(len=kchara), parameter                                  &
      &             :: fhd_composition_scale = 'composition_scale'
 !
-!   --------------------------------------------------------------------
-!
-!>        Term label for heat equation
-      character(len=kchara), parameter                                  &
-     &             :: thd_heat_flux =  'heat'
-!>        Term label for advection term
-      character(len=kchara), parameter                                  &
-     &             :: thd_advection =  'inertia'
-!>        Term label for Lorentz term
-      character(len=kchara), parameter                                  &
-     &             :: thd_lorentz =    'Lorentz'
-!>        Term label for Coriolis term
-      character(len=kchara), parameter                                  &
-     &             :: thd_coriolis =   'Coriolis'
-!>        Term label for induction term
-      character(len=kchara), parameter                                  &
-     &             :: thd_induction =  'induction'
-!>        Term label for cpmpositional flux term
-      character(len=kchara), parameter                                  &
-     &             :: thd_comp_flux =  'comp_flux'
-!>        Term label for gravity
-      character(len=kchara), parameter                                  &
-     &             :: thd_gravity =    'gravity'
-!
 !
 !>        Field label for buoyancy flux
 !!         @f$ -u_{i} \alpha_{T} g_{i} T @f$
@@ -1071,5 +1169,30 @@
 !
 !>        Field label for background magnetic field @f$ B_{0} @f$
       character(len=kchara), parameter :: fhd_back_B = 'background_B'
+!
+!   --------------------------------------------------------------------
+!
+!>        Term label for heat equation
+      character(len=kchara), parameter                                  &
+     &             :: thd_heat_flux =  'heat'
+!>        Term label for advection term
+      character(len=kchara), parameter                                  &
+     &             :: thd_advection =  'inertia'
+!>        Term label for Lorentz term
+      character(len=kchara), parameter                                  &
+     &             :: thd_lorentz =    'Lorentz'
+!>        Term label for Coriolis term
+      character(len=kchara), parameter                                  &
+     &             :: thd_coriolis =   'Coriolis'
+!>        Term label for induction term
+      character(len=kchara), parameter                                  &
+     &             :: thd_induction =  'induction'
+!>        Term label for cpmpositional flux term
+      character(len=kchara), parameter                                  &
+     &             :: thd_comp_flux =  'comp_flux'
+!>        Term label for gravity
+      character(len=kchara), parameter                                  &
+     &             :: thd_gravity =    'gravity'
+!
 !
       end module m_phys_labels

@@ -112,7 +112,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_viz_only_file, i_viz_only_file)
+        i_viz_only_file = find_control_end_flag(hd_viz_only_file)
         if(i_viz_only_file .eq. 1) exit
 !
         call read_control_platforms(hd_platform, i_platform, viz_plt)

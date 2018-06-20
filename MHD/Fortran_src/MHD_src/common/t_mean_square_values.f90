@@ -14,7 +14,7 @@
 !!        type(mean_square_values), intent(inout) :: fem_msq
 !!
 !!      subroutine output_monitor_file                                  &
-!!     &         (my_rank, i_step_MHD, time, nod_fld, fem_msq)
+!!     &         (my_rank, i_step_MHD, time, iphys, fem_msq, msq_list)
 !!        real(kind = kreal), intent(in) :: time
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(mean_square_values), intent(in) :: fem_msq
@@ -28,6 +28,7 @@
 !
       use m_precision
       use t_phys_address
+      use t_mean_square_filed_list
 !
       implicit  none
 !
@@ -149,7 +150,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_monitor_file                                    &
-     &         (my_rank, i_step_MHD, time, nod_fld, fem_msq)
+     &         (my_rank, i_step_MHD, time, iphys, fem_msq, msq_list)
 !
       use t_phys_data
 !
@@ -157,13 +158,15 @@
       integer(kind=kint), intent(in) :: i_step_MHD
       real(kind = kreal), intent(in) :: time
 !
-      type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys
       type(mean_square_values), intent(in) :: fem_msq
+      type(mean_square_list), intent(in) :: msq_list
 !
 !
       if ( my_rank .gt. 0 ) return
 !
-      call open_monitor_file(my_rank, nod_fld, fem_msq)
+      call open_monitor_file                                            &
+     &   (my_rank, iphys, fem_msq, msq_list)
 !
       write(time_step_data_code,'(i16,1p1000e20.11)')                   &
      &     i_step_MHD, time, fem_msq%ave_global(1:fem_msq%num_ave)
@@ -177,17 +180,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine open_monitor_file(my_rank, nod_fld, fem_msq)
+      subroutine open_monitor_file                                      &
+     &         (my_rank, iphys, fem_msq, msq_list)
 !
       use t_phys_data
       use time_step_file_IO
 !
       integer (kind=kint), intent(in) :: my_rank
-      type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys
+      type(mean_square_list), intent(in) :: msq_list
       type(mean_square_values), intent(in) :: fem_msq
 !
       character(len=kchara) :: vector_label(3)
-      integer (kind=kint) :: i
 !
 !
 !
@@ -213,7 +217,7 @@
      &      status='replace')
 !
       call write_monitor_labels                                         &
-     &   (time_step_data_code, rms_data_code, nod_fld)
+     &   (time_step_data_code, rms_data_code, iphys, msq_list)
 !
       end subroutine open_monitor_file
 !

@@ -3,6 +3,35 @@
 
 #include "skip_comment_c.h"
 
+/* trim tail */
+char *ltrim(char *s)
+{
+    if (s && *s) {
+        size_t len = strlen(s);
+        size_t lws = strspn(s, " \n\r\t\v");
+        memmove(s, s + lws, len -= lws);
+        s[len] = '\0';
+    }
+    return s;
+}
+
+/* trim head spaces */
+char *rtrim(char *s)
+{
+    if (s && *s) {
+        size_t len = strlen(s);
+        while (len && isspace(s[len-1])) --len;
+        s[len] = '\0';
+    }
+    return s;
+}
+
+/* trim both sides spaces */
+char *trim(char *s)
+{
+  return ltrim(rtrim(s));
+}
+
 long skip_comment_c(FILE *fp){
 	long offset = 0;
 	char buf[LENGTHBUF];    /* array for reading line */
@@ -16,6 +45,12 @@ long skip_comment_c(FILE *fp){
 	return offset;
 };
 
+static int toCapital(char c) {
+  if (c >= 'a' && c <= 'z') {
+   c = c - ('a' - 'A');
+  };
+  return c;
+}
 
 int count_comps_by_comma_c(FILE *fp){
 	int num_comps = 0;
@@ -170,7 +205,44 @@ int compare_string(int length, const char *string1, const char *string2){
 	return iflag;
 }
 
+int cmp_no_case_c(const char *string1, const char *string2) {
+  int iflag = 1;
+  while (*string1 != '\0' || *string2 != '\0')
+    { if (toCapital(*string1) != toCapital(*string2)) {
+        iflag = 0;
+        break;
+      }
+      else {string1++; string2++;}
+    };
+  return iflag;
+}
 
+int check_cautation_require(const char *string){
+	int iflag = 0;
+	while (*string != '\0'){
+		if (*string == '/' || *string == ';' || *string == ',') {
+			iflag = 1;
+			break;
+		} else {
+			string++;
+		};
+	}
+	return iflag;
+}
+
+void strip_cautation_marks(char *string){
+	char *tmp;
+	int i, length;
+	length = strlen(string);
+	if (string[0] == '\x27' || *string == '\x22'){
+		for(i=0;i<length-2;i++){
+			string[i] = string[i+1];
+		}
+		string[length-2] = '\0';
+	};
+	trim(string);
+	return;
+}
 
 int get_index_from_file_head(const char *file_head, char *stripped_fhead){
 	char buf[100];    /* buffer for reading line */

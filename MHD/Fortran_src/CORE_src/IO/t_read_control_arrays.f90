@@ -860,7 +860,7 @@
       call find_control_array_flag(label, array_c2%num)
       if(array_c2%num.gt.0 .and. array_c2%icou.eq.0) then
         call alloc_control_array_c2(array_c2)
-        call read_control_array_chara2_list(label, array_c2%num,       &
+        call read_control_array_chara2_list(label, array_c2%num,        &
      &      array_c2%icou, array_c2%c1_tbl, array_c2%c2_tbl)
       end if
 !

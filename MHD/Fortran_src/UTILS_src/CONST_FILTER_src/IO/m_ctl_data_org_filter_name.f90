@@ -65,8 +65,8 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_org_filter_fnames,                &
-     &      i_org_filter_fnames)
+        i_org_filter_fnames                                             &
+     &      = find_control_end_flag(hd_org_filter_fnames)
         if(i_org_filter_fnames .gt. 0) exit
 !
 !

@@ -48,7 +48,7 @@
         type(parallel_sph_shell_control) :: psph_ctl
 !
 !>        Control structure for MHD/model
-        type(mhd_DNS_model_control) :: Dmodel_ctl
+        type(mhd_DNS_model_control) :: model_ctl
 !>        Control structure for MHD/control
         type(sph_mhd_control_control) :: smctl_ctl
 !
@@ -121,7 +121,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_mhd_ctl, i_mhd_ctl)
+        i_mhd_ctl = find_control_end_flag(hd_mhd_ctl)
         if(i_mhd_ctl .gt. 0) exit
 !
 !
@@ -134,7 +134,7 @@
      &     (hd_sph_shell, MHD_ctl%psph_ctl)
 !
         call read_sph_mhd_model                                         &
-     &     (hd_model, i_model, MHD_ctl%Dmodel_ctl)
+     &     (hd_model, i_model, MHD_ctl%model_ctl)
         call read_sph_mhd_control                                       &
      &     (hd_control, i_control, MHD_ctl%smctl_ctl)
 !
@@ -163,7 +163,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_mhd_ctl, i_mhd_ctl)
+        i_mhd_ctl = find_control_end_flag(hd_mhd_ctl)
         if(i_mhd_ctl .gt. 0) exit
 !
 !
@@ -176,7 +176,7 @@
      &     (hd_sph_shell, MHD_ctl%psph_ctl)
 !
         call read_sph_mhd_model                                         &
-     &     (hd_model, i_model, MHD_ctl%Dmodel_ctl)
+     &     (hd_model, i_model, MHD_ctl%model_ctl)
         call read_sph_mhd_control                                       &
      &     (hd_control, i_control, MHD_ctl%smctl_ctl)
 !
@@ -218,7 +218,7 @@
       call bcast_ctl_data_4_platform(MHD_ctl%plt)
       call bcast_ctl_data_4_platform(MHD_ctl%org_plt)
 !
-      call bcast_sph_mhd_model(MHD_ctl%Dmodel_ctl)
+      call bcast_sph_mhd_model(MHD_ctl%model_ctl)
       call bcast_sph_mhd_control(MHD_ctl%smctl_ctl)
 !
       call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)

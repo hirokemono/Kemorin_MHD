@@ -207,7 +207,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_shell_ctl, i_shell_ctl)
+        i_shell_ctl = find_control_end_flag(hd_shell_ctl)
         if(i_shell_ctl .gt. 0) exit
 !
         call read_ctl_4_shell_def
@@ -228,7 +228,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_cubed_sph_def, i_cubed_sph_def)
+        i_cubed_sph_def = find_control_end_flag(hd_cubed_sph_def)
         if(i_cubed_sph_def .gt. 0) exit
 !
         call read_control_array_i_r                                     &
@@ -261,7 +261,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_boundaries, i_boundaries)
+        i_boundaries = find_control_end_flag(hd_boundaries)
         if(i_boundaries .gt. 0) exit
 !
         call read_ctl_nod_bc_4_shell
@@ -285,7 +285,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_node_grp_def, i_node_grp_def)
+        i_node_grp_def = find_control_end_flag(hd_node_grp_def)
         if(i_node_grp_def .gt. 0) exit
 !
         call read_control_array_c_i(hd_num_nod_grp, node_grp_name_ctl)
@@ -305,7 +305,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_ele_grp_def, i_ele_grp_def)
+        i_ele_grp_def = find_control_end_flag(hd_ele_grp_def)
         if(i_ele_grp_def .gt. 0) exit
 !
         call read_control_array_c_i(hd_num_ele_grp, elem_grp_name_ctl)
@@ -325,7 +325,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_surf_grp_def, i_surf_grp_def)
+        i_surf_grp_def = find_control_end_flag(hd_surf_grp_def)
         if(i_surf_grp_def .gt. 0) exit
 !
         call read_control_array_c_i(hd_num_sf_grp, surf_grp_name_ctl)
@@ -345,7 +345,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_coarse_shell, i_coarse_shell)
+        i_coarse_shell = find_control_end_flag(hd_coarse_shell)
         if(i_coarse_shell .gt. 0) exit
 !
         call read_control_array_i2                                      &

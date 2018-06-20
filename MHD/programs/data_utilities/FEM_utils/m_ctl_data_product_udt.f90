@@ -133,7 +133,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_prod_control, i_prod_control)
+        i_prod_control = find_control_end_flag(hd_prod_control)
         if(i_prod_control .gt. 0) exit
 !
         call read_control_platforms(hd_platform, i_platform, pu_plt)
@@ -157,7 +157,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_prod_files, i_prod_files)
+        i_prod_files = find_control_end_flag(hd_prod_files)
         if(i_prod_files .gt. 0) exit
 !
 !
@@ -179,7 +179,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_prod_model, i_prod_model)
+        i_prod_model = find_control_end_flag(hd_prod_model)
         if(i_prod_model .gt. 0) exit
 !
 !

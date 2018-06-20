@@ -124,6 +124,7 @@
      &          nod_fld, MHD_IO, fem_sq)
 !
       use m_fem_mhd_restart
+      use t_FEM_MHD_mean_square
 !
       use nod_phys_send_recv
       use lead_physical_values
@@ -133,7 +134,6 @@
       use copy_nodal_fields
       use input_control
 !
-      use time_step_data_IO_control
       use node_monitor_IO
       use FEM_sgs_model_coefs_IO
       use output_viz_file_control
@@ -228,8 +228,7 @@
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
-     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                     &
-     &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
+     &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !
       call output_monitor_control(MHD_step%flex_p%istep_max_dt,         &
      &    MHD_step%point_step, MHD_step%time_d, femmesh%mesh, nod_fld)

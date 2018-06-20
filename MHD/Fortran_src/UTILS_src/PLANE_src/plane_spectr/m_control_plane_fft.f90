@@ -126,7 +126,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_fft_plane_ctl, i_fft_plane_ctl)
+        i_fft_plane_ctl = find_control_end_flag(hd_fft_plane_ctl)
         if(i_fft_plane_ctl .gt. 0) exit
 !
 !
@@ -154,7 +154,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_model, i_model)
+        i_model = find_control_end_flag(hd_model)
         if(i_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
@@ -173,7 +173,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_control, i_control)
+        i_control = find_control_end_flag(hd_control)
         if(i_control .gt. 0) exit
 !
         call read_control_time_step_data                                &
@@ -192,7 +192,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_spec_file, i_spec_file)
+        i_spec_file = find_control_end_flag(hd_spec_file)
         if(i_spec_file .gt. 0) exit
 !
         call read_chara_ctl_type(hd_plane_spec_mode_head,               &

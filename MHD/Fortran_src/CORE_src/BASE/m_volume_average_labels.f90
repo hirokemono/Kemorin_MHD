@@ -29,7 +29,7 @@
 !>        Field label for kinetic enegy
       character(len=kchara), parameter :: e_hd_k_ene = 'K_ene'
 !>        Field label for divergence of velocity
-      character(len=kchara), parameter :: e_hd_div_v = 'div_v'
+      character(len=kchara), parameter :: e_hd_div_v = 'div_V'
 !
 !>        Field label for angular momentum
       character(len=kchara), parameter :: e_hd_lvec(3)                  &
@@ -67,7 +67,7 @@
      &                      :: e_hd_fil_k_ene = 'filter_K_ene'
 !>        Field label for divergence of filtered velocity
       character(len=kchara), parameter                                  &
-     &                      :: e_hd_fil_div_v = 'div_filter_v'
+     &                      :: e_hd_fil_div_v = 'div_filter_V'
 !
 !>        Field label for filtered angular momentum
       character(len=kchara), parameter :: e_hd_fil_lvec(3)              &

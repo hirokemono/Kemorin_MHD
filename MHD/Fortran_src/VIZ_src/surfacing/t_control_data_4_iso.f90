@@ -202,7 +202,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, iso_c%i_iso_ctl)
+        iso_c%i_iso_ctl = find_control_end_flag(hd_block)
         if(iso_c%i_iso_ctl .gt. 0) exit
 !
         call read_iso_result_control(iso_c)
@@ -231,7 +231,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_iso_define, iso_c%i_iso_define)
+        iso_c%i_iso_define = find_control_end_flag(hd_iso_define)
         if(iso_c%i_iso_define .gt. 0) exit
 !
         call  read_iso_plot_area_ctl(iso_c)
@@ -260,9 +260,9 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_field_on_iso, iso_c%i_iso_result)
+        iso_c%i_iso_result = find_control_end_flag(hd_field_on_iso)
         if(iso_c%i_iso_result .gt. 0) exit
-        call find_control_end_flag(hd_iso_result, iso_c%i_iso_result)
+        iso_c%i_iso_result = find_control_end_flag(hd_iso_result)
         if(iso_c%i_iso_result .gt. 0) exit
 !
         call read_control_array_c2                                      &
@@ -289,8 +289,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_iso_plot_area,                    &
-     &      iso_c%i_iso_plot_area)
+        iso_c%i_iso_plot_area = find_control_end_flag(hd_iso_plot_area)
         if(iso_c%i_iso_plot_area .gt. 0) exit
 !
         call read_control_array_c1(hd_iso_area, iso_c%iso_area_ctl)

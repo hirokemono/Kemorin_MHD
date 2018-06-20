@@ -78,7 +78,7 @@
       use set_control_sph_mhd
       use set_control_sph_data_MHD
       use parallel_load_data_4_sph
-      use set_control_4_SPH_to_FEM
+      use set_control_nodal_data
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
@@ -100,16 +100,17 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD                                        &
-     &   (DMHD_ctl%plt, DMHD_ctl%org_plt, DMHD_ctl%Dmodel_ctl,          &
-     &    DMHD_ctl%smctl_ctl, DMHD_ctl%smonitor_ctl,                    &
-     &    DMHD_ctl%nmtr_ctl, DMHD_ctl%psph_ctl, sph_maker2%sph_tmp,     &
-     &    rj_fld, MHD_files, bc_IO, MHD_step, MHD_prop,                 &
-     &    MHD_BC, WK%WK_sph, sph_maker2%gen_sph, monitor)
+     &   (DMHD_ctl%plt, DMHD_ctl%org_plt, DMHD_ctl%model_ctl,           &
+     &    DMHD_ctl%smctl_ctl, DMHD_ctl%nmtr_ctl, DMHD_ctl%psph_ctl,     &
+     &    sph_maker2%sph_tmp, MHD_files, bc_IO, MHD_step, MHD_prop,     &
+     &    MHD_BC, WK%WK_sph, sph_maker2%gen_sph)
 !
-      call s_set_control_4_SPH_to_FEM                                   &
-     &   (DMHD_ctl%psph_ctl%spctl, sph, rj_fld, nod_fld)
+      call set_control_SPH_MHD_w_viz                                    &
+     &   (DMHD_ctl%model_ctl, DMHD_ctl%psph_ctl, DMHD_ctl%smonitor_ctl, &
+     &    MHD_prop, sph, rj_fld, nod_fld, monitor)
+!
       call set_ctl_params_dynamobench                                   &
-     &   (DMHD_ctl%Dmodel_ctl%fld_ctl%field_ctl,                        &
+     &   (DMHD_ctl%model_ctl%fld_ctl%field_ctl,                         &
      &    DMHD_ctl%smonitor_ctl%meq_ctl, cdat%circle, cdat%d_circle,    &
      &    bench)
 !

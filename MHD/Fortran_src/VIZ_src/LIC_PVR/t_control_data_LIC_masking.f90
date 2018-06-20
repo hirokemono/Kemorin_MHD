@@ -74,7 +74,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_masking_ctl, i_masking)
+        i_masking = find_control_end_flag(hd_masking_ctl)
         if(i_masking .gt. 0) exit
 !
 !

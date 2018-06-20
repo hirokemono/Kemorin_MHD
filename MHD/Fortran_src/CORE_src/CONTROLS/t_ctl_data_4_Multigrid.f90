@@ -7,7 +7,11 @@
 !>@brief  Structure for reading parameters for MGCG
 !!
 !!@verbatim
+!!      subroutine dealloc_control_Multigrid(MG_ctl)
 !!      subroutine read_control_Multigrid(hd_block, iflag, MG_ctl)
+!!        type(MGCG_control), intent(inout) :: MG_ctl
+!!      subroutine write_control_Multigrid                              &
+!!     &         (id_file, hd_block, MG_ctl, level)
 !!        type(MGCG_control), intent(inout) :: MG_ctl
 !!!!!!!!  setting for MGCG solver !!!!!!!!!!!!!!!!!!!!!
 !!
@@ -192,11 +196,27 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine dealloc_control_Multigrid(MG_ctl)
+!
+      type(MGCG_control), intent(inout) :: MG_ctl
+!
+      call dealloc_control_array_int(MG_ctl%num_MG_subdomain_ctl)
+      call dealloc_control_array_chara(MG_ctl%MG_mesh_prefix_ctl)
+      call dealloc_control_array_chara(MG_ctl%MG_fine_2_coarse_tbl)
+      call dealloc_control_array_chara(MG_ctl%MG_coarse_2_fine_tbl)
+      call dealloc_control_array_chara(MG_ctl%MG_f2c_ele_tbl_ctl)
+      call dealloc_control_array_chara(MG_ctl%MG_mesh_fmt_ctl)
+      call dealloc_control_array_chara(MG_ctl%MG_table_fmt_ctl)
+!
+      end subroutine dealloc_control_Multigrid
+!
+!  ---------------------------------------------------------------------
+!
       subroutine read_control_Multigrid(hd_block, iflag, MG_ctl)
 !
       use m_machine_parameter
       use m_read_control_elements
-      use skip_comment_f
+      use write_control_arrays
 !
       character(len=kchara), intent(in) :: hd_block
 !
@@ -209,7 +229,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, iflag)
+        iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
 !
@@ -247,6 +267,82 @@
       end do
 !
       end subroutine read_control_Multigrid
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine write_control_Multigrid                                &
+     &         (id_file, hd_block, MG_ctl, level)
+!
+      use m_machine_parameter
+      use m_read_control_elements
+      use write_control_elements
+      use write_control_arrays
+!
+      integer(kind = kint), intent(in) :: id_file
+      character(len=kchara), intent(in) :: hd_block
+      type(MGCG_control), intent(in) :: MG_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      maxlen = max(maxlen, len_trim(hd_MG_METHOD))
+      maxlen = max(maxlen, len_trim(hd_MG_PRECOND))
+      maxlen = max(maxlen, len_trim(hd_MG_residual))
+      maxlen = max(maxlen, len_trim(hd_maxiter_mid))
+      maxlen = max(maxlen, len_trim(hd_maxiter_coarsest))
+      maxlen = max(maxlen, len_trim(hd_num_MG_level))
+      maxlen = max(maxlen, len_trim(hd_num_MG_subdomain))
+      maxlen = max(maxlen, len_trim(hd_num_MG_subdomain))
+      maxlen = max(maxlen, len_trim(hd_MG_mesh_header))
+      maxlen = max(maxlen, len_trim(hd_MG_fine_2_coarse_tbl))
+      maxlen = max(maxlen, len_trim(hd_MG_coarse_2_fine_tbl))
+      maxlen = max(maxlen, len_trim(hd_MG_f2c_ele_tbl))
+      maxlen = max(maxlen, len_trim(hd_MG_mesh_file_fmt))
+      maxlen = max(maxlen, len_trim(hd_MG_tbl_file_fmt))
+!
+      write(id_file,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_file, level, hd_block)
+!
+        call write_chara_ctl_type(id_file, level, maxlen,               &
+     &      hd_MG_METHOD, MG_ctl%MG_METHOD_ctl)
+        call write_chara_ctl_type(id_file, level, maxlen,               &
+     &      hd_MG_PRECOND, MG_ctl%MG_PRECOND_ctl)
+!
+        call write_real_ctl_type(id_file, level, maxlen,                &
+     &      hd_MG_residual, MG_ctl%MG_residual_ctl)
+!
+        call write_integer_ctl_type(id_file, level, maxlen,             &
+     &      hd_maxiter_mid, MG_ctl%maxiter_mid_ctl)
+        call write_integer_ctl_type(id_file, level, maxlen,             &
+     &      hd_maxiter_coarsest, MG_ctl%maxiter_coarsest_ctl)
+!
+        call write_integer_ctl_type(id_file, level, maxlen,             &
+     &      hd_num_MG_level, MG_ctl%num_multigrid_level_ctl)
+!
+!
+        call write_control_array_i1(id_file, level,                     &
+     &      hd_num_MG_subdomain, MG_ctl%num_MG_subdomain_ctl)
+!
+        call write_control_array_c1(id_file, level,                     &
+     &      hd_MG_mesh_header, MG_ctl%MG_mesh_prefix_ctl)
+!
+        call write_control_array_c1(id_file, level,                     &
+     &      hd_MG_fine_2_coarse_tbl, MG_ctl%MG_fine_2_coarse_tbl)
+        call write_control_array_c1(id_file, level,                     &
+     &      hd_MG_coarse_2_fine_tbl, MG_ctl%MG_coarse_2_fine_tbl)
+        call write_control_array_c1(id_file, level,                     &
+     &      hd_MG_f2c_ele_tbl, MG_ctl%MG_f2c_ele_tbl_ctl)
+!
+        call write_control_array_c1(id_file, level,                     &
+     &      hd_MG_mesh_file_fmt, MG_ctl%MG_mesh_fmt_ctl)
+        call write_control_array_c1(id_file, level,                     &
+     &      hd_MG_tbl_file_fmt, MG_ctl%MG_table_fmt_ctl)
+!
+      level =  write_end_flag_for_ctl(id_file, level, hd_block)
+!
+      end subroutine write_control_Multigrid
 !
 !  ---------------------------------------------------------------------
 !
