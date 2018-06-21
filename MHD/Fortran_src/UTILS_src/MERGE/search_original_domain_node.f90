@@ -297,57 +297,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_field_data_4_assemble                             &
-     &         (num_item, item_send, item_recv, ifield_2_copy,          &
-     &          nnod_org, nfld_org, ncomp_org, istack_comp_org, d_org,  &
-     &          nnod_new, nfld_new, ncomp_new, istack_comp_new, d_new)
-!
-      integer(kind = kint), intent(in) :: num_item
-      integer(kind = kint), intent(in) :: item_send(num_item)
-      integer(kind = kint), intent(in) :: item_recv(num_item)
-!
-      integer(kind = kint), intent(in) :: nnod_org
-      integer(kind = kint), intent(in) :: nfld_org, ncomp_org
-      integer(kind = kint), intent(in) :: istack_comp_org(0:nfld_org)
-      real(kind = kreal), intent(in) :: d_org(nnod_org,ncomp_org)
-!
-      integer(kind = kint), intent(in) :: nnod_new
-      integer(kind = kint), intent(in) :: nfld_new, ncomp_new
-      integer(kind = kint), intent(in) :: istack_comp_new(0:nfld_new)
-!
-      integer(kind = kint), intent(in) :: ifield_2_copy(nfld_new)
-!
-      real(kind = kreal), intent(inout) :: d_new(nnod_new,ncomp_new)
-!
-!
-      integer(kind = kint) :: ifld, ist_org,ist_new, jfld, nd
-      integer(kind = kint) :: inum, inod_org, inod_new, ncomp
-!
-!
-      do jfld = 1, nfld_new
-        ifld = ifield_2_copy(jfld)
-        if(ifld .eq. 0) cycle
-!
-        ist_org = istack_comp_org(jfld-1)
-        ist_new = istack_comp_new(ifld-1)
-        ncomp = istack_comp_new(ifld) - istack_comp_new(ifld-1)
-!omp parallel
-        do nd = 1, ncomp
-!omp do private(inum,inod_new,inod_org)
-          do inum = 1, num_item
-            inod_new = item_recv(inum)
-            inod_org = item_send(inum)
-            d_new(inod_new,ist_new+nd) = d_org(inod_org,ist_org+nd)
-          end do
-!omp end do
-        end do
-!omp end parallel
-      end do
-!
-      end subroutine copy_field_data_4_assemble
-!
-! -----------------------------------------------------------------------
-!
       subroutine assemble_field_data                                    &
      &         (istep_fld, nprocs_org, new_mesh, ifield_2_copy,         &
      &          istack_recv, item_send, item_recv,                      &
@@ -361,6 +310,7 @@
       use field_IO_select
       use nod_phys_send_recv
       use share_field_data
+      use assemble_nodal_fields
 !
       integer(kind = kint), intent(in) :: istep_fld
       type(field_IO_params), intent(in) :: org_ucd_param
@@ -396,11 +346,7 @@
         ist = istack_recv(ip-1) + 1
         num = istack_recv(ip) - istack_recv(ip-1)
         call copy_field_data_4_assemble                                 &
-     &    (num, item_send(ist), item_recv(ist), ifield_2_copy,          &
-     &     org_fIO%nnod_IO, org_fIO%num_field_IO, org_fIO%ntot_comp_IO, &
-     &     org_fIO%istack_comp_IO, org_fIO%d_IO,                        &
-     &     new_fld%n_point, new_fld%num_phys, new_fld%ntot_phys,        &
-     &     new_fld%istack_component, new_fld%d_fld)
+     &    (num, item_send(ist), item_recv(ist), org_fIO, new_fld)
 !
        call dealloc_phys_IO(org_fIO)
       end do

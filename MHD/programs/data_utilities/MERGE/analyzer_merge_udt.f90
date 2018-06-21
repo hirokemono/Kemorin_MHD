@@ -24,7 +24,6 @@
       use t_mesh_data
       use t_phys_data
       use t_time_data
-      use t_ucd_data
       use t_field_data_IO
 !
       use field_IO_select
@@ -36,9 +35,6 @@
 !
       type(time_data), save :: t_IO
       type(field_IO), save :: fld_IO_m
-!
-      type(ucd_data), save :: ucd_m
-      type(merged_ucd_data), save :: mucd_m
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,15 +48,14 @@
       use m_control_param_merge
       use m_control_data_4_merge
       use m_array_for_send_recv
-!
       use m_original_ucd_4_merge
+!
       use mpi_load_mesh_data
       use load_mesh_data_4_merge
-      use output_newdomain_ucd
       use nod_phys_send_recv
       use const_element_comm_tables
       use const_mesh_information
-      use cal_minmax_and_stacks
+      use assemble_nodal_fields
 !
       integer(kind = kint) :: icou, jp, jfld, ifld, inod
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
@@ -85,11 +80,13 @@
 !
 !  set mesh data
 !
-      call mpi_input_mesh_geometry                                      &
-     &   (nprocs, merge_org_mesh_file, mesh_m, nnod_4_surf, nnod_4_edge)
+      call mpi_input_mesh_geometry(nprocs, merge_org_mesh_file,         &
+     &    mesh_m, nnod_4_surf, nnod_4_edge)
       call set_nod_and_ele_infos(mesh_m%node, mesh_m%ele)
       call const_global_numnod_list(mesh_m%node)
       call const_global_numele_list(mesh_m%ele)
+!
+!  Initialize communicator
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(n_sym_tensor, mesh_m%node%numnod)
@@ -102,49 +99,8 @@
       call sel_read_alloc_step_FEM_file(nprocs, my_rank,                &
      &    istep_start, original_ucd_param, t_IO, fld_IO_m)
 !
-      if(my_rank .eq. 0) then
-        do jfld = 1, fld_IO_m%num_field_IO
-          write(*,*) 'fld_IO_m', jfld, trim(fld_IO_m%fld_name(jfld))
-        end do
-      end if
-!
-      new_fld%num_phys = 0
-      do ifld = 1, num_nod_phys
-        do jfld = 1, fld_IO_m%num_field_IO
-          if(ucd_on_label(ifld) .eq. fld_IO_m%fld_name(jfld)) then
-            new_fld%num_phys = new_fld%num_phys + 1
-            exit
-          end if
-        end do
-      end do
-!
-      call alloc_phys_name_type(new_fld)
-!
-      icou = 0
-      do ifld = 1, num_nod_phys
-        do jfld = 1, fld_IO_m%num_field_IO
-          if(ucd_on_label(ifld) .eq. fld_IO_m%fld_name(jfld)) then
-            icou = icou + 1
-            new_fld%phys_name(icou) = ucd_on_label(ifld)
-            new_fld%num_component(icou) = fld_IO_m%istack_comp_IO(jfld) &
-     &                               - fld_IO_m%istack_comp_IO(jfld-1)
-          end if
-        end do
-      end do
-      call s_cal_total_and_stacks                                       &
-     &   (new_fld%num_phys, new_fld%num_component, izero,               &
-     &    new_fld%istack_component, new_fld%ntot_phys)
-      new_fld%num_phys_viz = new_fld%num_phys
-      new_fld%ntot_phys_viz = new_fld%ntot_phys
-!
-      if(my_rank .eq. 0) then
-        do ifld = 1, new_fld%num_phys
-          write(*,*) 'new_fld', ifld, trim(new_fld%phys_name(ifld)),    &
-     &                 new_fld%istack_component(ifld)
-        end do
-      end if
-!
-      call alloc_phys_data_type(mesh_m%node%numnod, new_fld)
+      call init_field_data_4_assemble_ucd                               &
+     &   (num_nod_phys, ucd_on_label, mesh_m%node, fld_IO_m, new_fld)
 !
       call dealloc_phys_data_IO(fld_IO_m)
       call dealloc_phys_name_IO(fld_IO_m)
@@ -154,6 +110,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine analyze_merge_udt
+!
+      use t_ucd_data
 !
       use m_phys_labels
       use m_control_param_merge
@@ -165,17 +123,20 @@
 !
       integer(kind = kint) :: istep
 !
+      type(ucd_data), save :: ucd_m
+      type(merged_ucd_data), save :: mucd_m
+!
 !
       call link_num_field_2_ucd(new_fld, ucd_m)
       call link_local_mesh_2_ucd(mesh_m%node, mesh_m%ele, ucd_m)
       call link_field_data_to_ucd(new_fld, ucd_m)
-      write(*,*) 'ucd_m', ucd_m%nnod, ucd_m%num_field, new_fld%num_phys
 !
-      if (assemble_ucd_param%iflag_format/icent .ne. iflag_single/icent) then
+      if(assemble_ucd_param%iflag_format/icent .ne. iflag_single/icent) &
+     & then
         assemble_ucd_param%iflag_format                                 &
      &       = assemble_ucd_param%iflag_format + 100
       end if
-      write(*,*) 'assemble_ucd_param%iflag_format', assemble_ucd_param%iflag_format
+!
       call init_merged_ucd(assemble_ucd_param%iflag_format,             &
      &    mesh_m%node, mesh_m%ele, mesh_m%nod_comm, ucd_m, mucd_m)
 !
