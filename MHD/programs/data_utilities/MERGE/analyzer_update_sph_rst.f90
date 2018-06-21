@@ -213,6 +213,8 @@
           istep_out =          istep_new_rst / increment_new_step
           init_t%i_time_step = istep_new_rst
           init_t%time =        time_new
+        else
+          call reset_time_data(init_t)
         end if
 !
         call share_time_step_data(init_t)
