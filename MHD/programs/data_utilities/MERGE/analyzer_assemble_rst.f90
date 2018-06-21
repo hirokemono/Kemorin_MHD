@@ -65,6 +65,7 @@
       use share_field_data
       use assemble_nodal_fields
       use load_mesh_data_4_merge
+      use set_field_to_restart
 !
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
       type(field_IO), save :: fld_IO_m
@@ -160,6 +161,7 @@
       use nod_phys_send_recv
       use load_mesh_data_4_merge
       use set_field_file_names
+      use set_merged_restart_data
 !
       integer(kind = kint) :: istep, icou
 !
@@ -175,6 +177,10 @@
         call assemble_field_data                                        &
      &     (mgd_mesh1%num_pe, istack_recv, item_send, item_recv,        &
      &      new_fld, t_IO_m, org_fIO)
+!
+!   re-scaling for magnetic field
+        call rescale_4_magne(new_fld)
+!
 !
         call nod_fields_send_recv(new_mesh, new_fld)
 !

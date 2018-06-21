@@ -12,9 +12,8 @@
 !!        type(phys_data), intent(in) :: merged_fld
 !!        type(mesh_geometry), intent(in) :: subdomains_2
 !!        type(field_IO), intent(inout) :: fld_IO
-!!      subroutine rescale_4_magne(merge_tbl, merged_fld)
-!!        type(merged_stacks), intent(in) :: merge_tbl
-!!        type(phys_data), intent(inout) :: merged_fld
+!!      subroutine rescale_4_magne(fld)
+!!        type(phys_data), intent(inout) :: fld
 !
       module set_merged_restart_data
 !
@@ -79,31 +78,29 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine rescale_4_magne(merge_tbl, merged_fld)
+      subroutine rescale_4_magne(fld)
 !
       use m_control_param_merge
       use m_phys_labels
       use t_phys_data
       use t_merged_geometry_data
 !
-      type(merged_stacks), intent(in) :: merge_tbl
-      type(phys_data), intent(inout) :: merged_fld
+      type(phys_data), intent(inout) :: fld
 !
       integer(kind = kint) :: i, j, jst, jed, inod
 !
 !
-      do i = 1, merged_fld%num_phys
-        jst = merged_fld%istack_component(i-1) + 1
-        jed = merged_fld%istack_component(i)
-        if (    merged_fld%phys_name(i) .eq. fhd_vecp                   &
-     &     .or. merged_fld%phys_name(i) .eq. fhd_magne                  &
-     &     .or. merged_fld%phys_name(i) .eq. fhd_mag_potential          &
-     &     .or. merged_fld%phys_name(i) .eq. fhd_pre_uxb                &
-     &     .or. merged_fld%phys_name(i) .eq. fhd_chk_uxb) then
+      do i = 1, fld%num_phys
+        jst = fld%istack_component(i-1) + 1
+        jed = fld%istack_component(i)
+        if (    fld%phys_name(i) .eq. fhd_vecp                          &
+     &     .or. fld%phys_name(i) .eq. fhd_magne                         &
+     &     .or. fld%phys_name(i) .eq. fhd_mag_potential                 &
+     &     .or. fld%phys_name(i) .eq. fhd_pre_uxb                       &
+     &     .or. fld%phys_name(i) .eq. fhd_chk_uxb) then
           do j = jst, jed
-            do inod = 1, merge_tbl%nnod_merged
-              merged_fld%d_fld(inod,j)                                  &
-     &              = b_ratio * merged_fld%d_fld(inod,j)
+            do inod = 1, fld%n_point
+              fld%d_fld(inod,j) = b_ratio * fld%d_fld(inod,j)
             end do
           end do
         end if
