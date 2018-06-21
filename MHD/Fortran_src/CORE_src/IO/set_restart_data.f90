@@ -216,36 +216,29 @@
 !
       real(kind = kreal), intent(inout) :: d_nod(nnod,ntot_comp)
 !
-      integer(kind=kint)  :: i, j, numdir
-      integer(kind=kint)  :: ndir, ist_rst, ist_nod
-      integer(kind=kint), allocatable  :: ifield_2_copy(:)
+      integer(kind=kint)  :: i, j, numdir, inod
+      integer(kind=kint)  :: ist_rst, ist_nod, nd
 !
 !
-      allocate(ifield_2_copy(num_fld))
-      ifield_2_copy(1:num_fld) = 0
-!
-      do i = 1, num_fld
-        do j = 1, num_fld_IO
+      do j = 1, num_fld_IO
+        do i = 1, num_fld
           if (phys_name(i) .eq. field_IO_name(j)) then
-            ifield_2_copy(i) = j
+            ist_nod = istack_comp(i-1)
+            ist_rst = istack_comp_IO(j-1)
+            numdir =  istack_comp(i) - istack_comp(i-1)
+!$omp parallel private(inod)
+            do nd = 1, numdir
+!$omp do
+              do inod = 1, nnod
+                d_nod(inod,ist_nod+nd) = dat_IO(inod,ist_rst+nd)
+              end do
+!$omp end do nowait
+            end do
+!$omp end parallel
             exit
           end if
         end do
       end do
-!
-      do i = 1, num_fld
-        if(ifield_2_copy(i) .eq. 0)  cycle
-!
-        ist_nod = istack_comp(i-1)
-        ist_rst = istack_comp_IO(j-1)
-        ndir =  istack_comp(i) - istack_comp(i-1)
-!$omp parallel workshare
-        d_nod(1:nnod,ist_nod+1:ist_nod+ndir)                            &
-     &              = dat_IO(1:nnod,ist_rst+1:ist_rst+ndir)
-!$omp end parallel workshare
-      end do
-!
-      deallocate(ifield_2_copy)
 !
       end subroutine copy_field_data_from_rst_IO
 !
