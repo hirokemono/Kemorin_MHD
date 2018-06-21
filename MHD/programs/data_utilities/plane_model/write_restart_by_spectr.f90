@@ -95,14 +95,8 @@
 !
       id_rank = ip - 1
 !
-      pl_fld_IO%nnod_IO = nnod
 !
-      pl_fld_IO%num_field_IO = merged_fld%num_phys
-      pl_fld_IO%ntot_comp_IO = merged_fld%ntot_phys
-      call alloc_phys_name_IO(pl_fld_IO)
-      call alloc_phys_data_IO(pl_fld_IO)
-!
-      call simple_copy_fld_name_to_rst(merged_fld, pl_fld_IO)
+      call simple_init_fld_name_to_rst(nnod, merged_fld, pl_fld_IO)
       call simple_copy_fld_dat_to_rst_IO                                &
      &   (nnod, merged_fld%ntot_phys, rst_from_sp,                      &
      &    pl_fld_IO%ntot_comp_IO, pl_fld_IO%nnod_IO, pl_fld_IO%d_IO)

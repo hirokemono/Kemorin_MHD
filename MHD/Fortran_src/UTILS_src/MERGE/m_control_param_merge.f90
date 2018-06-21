@@ -175,6 +175,7 @@
 !
       call set_control_4_newudt(num_pe2)
 !
+      write(*,*) 'source_plt%restart_file_prefix', source_plt%restart_file_prefix%iflag
       call set_parallel_file_ctl_params(org_rst_def_head,               &
      &    source_plt%restart_file_prefix,                               &
      &    source_plt%restart_file_fmt_ctl, org_fst_param)

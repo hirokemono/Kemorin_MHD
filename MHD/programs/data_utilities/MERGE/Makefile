@@ -6,10 +6,11 @@ MERGE_SRCDIR =     $$(DATA_UTILS_DIR)/MERGE
 
 TARGET_MERGE =  merge_field
 TARGET_M_MESH = merge_mesh
-TARGET_NEWRST = assemble_restart
+TARGET_NEWRST_SGL = sgl_assemble_restart
 
 TARGET_NEWSPH = assemble_sph
 TARGET_NEWUDT = assemble_udt
+TARGET_NEWRST = assemble_restart
 
 
 TARGET_UPDATE_RST =   update_restart
@@ -45,6 +46,10 @@ assemble_mesh.o
 
 
 MOD_NEWRST = \
+main_assemble_rst.o \
+analyzer_assemble_rst.o
+
+MOD_NEWRST_SGL = \
 assemble_newrst.o
 
 MOD_UPDATE_RST = \
@@ -75,6 +80,7 @@ target_list:
 	@echo 'TARGET_M_MESH = $$(BUILDDIR)/$(TARGET_M_MESH)' >> $(MAKENAME)
 	@echo 'TARGET_NEWUDT = $$(BUILDDIR)/$(TARGET_NEWUDT)' >> $(MAKENAME)
 	@echo 'TARGET_NEWRST = $$(BUILDDIR)/$(TARGET_NEWRST)' >> $(MAKENAME)
+	@echo 'TARGET_NEWRST_SGL = $$(BUILDDIR)/$(TARGET_NEWRST_SGL)' >> $(MAKENAME)
 	@echo 'TARGET_NEWSPH = $$(BUILDDIR)/$(TARGET_NEWSPH)' >> $(MAKENAME)
 	@echo 'TARGET_UPDATE_RST =   $$(BUILDDIR)/$(TARGET_UPDATE_RST)'   >> $(MAKENAME)
 	@echo 'TARGET_ADD_TIME_SPH = $$(BUILDDIR)/$(TARGET_ADD_TIME_SPH)' >> $(MAKENAME)
@@ -85,7 +91,7 @@ target_task:
 	'$$(TARGET_MERGE)        $$(TARGET_M_MESH)'            \
 	'$$(TARGET_NEWUDT)       $$(TARGET_NEWRST)'            \
 	'$$(TARGET_NEWSPH)       $$(TARGET_UPDATE_RST)'        \
-	'$$(TARGET_ADD_TIME_SPH)'    \
+	'$$(TARGET_ADD_TIME_SPH) $$(TARGET_NEWRST_SGL)'    \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_MERGE)' \
@@ -112,6 +118,13 @@ target_task:
 	@echo '$$(TARGET_NEWRST)': '$$(MOD_NEWRST) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWRST)' '$$(MOD_NEWRST)' \
+	'-L. $$(LIBS_MERGE)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_NEWRST_SGL)': '$$(MOD_NEWRST_SGL) $$(LIB_FILES_MERGE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWRST_SGL)' '$$(MOD_NEWRST_SGL)' \
 	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -157,6 +170,8 @@ mod_list:
 	@echo  $(MOD_NEWUDT)         >> $(MAKENAME)
 	@echo  MOD_NEWRST=  \\       >> $(MAKENAME)
 	@echo  $(MOD_NEWRST)         >> $(MAKENAME)
+	@echo  MOD_NEWRST_SGL=  \\       >> $(MAKENAME)
+	@echo  $(MOD_NEWRST_SGL)         >> $(MAKENAME)
 	@echo  MOD_UPDATE_RST=  \\   >> $(MAKENAME)
 	@echo  $(MOD_UPDATE_RST)     >> $(MAKENAME)
 	@echo  MOD_NEWSPH=  \\       >> $(MAKENAME)

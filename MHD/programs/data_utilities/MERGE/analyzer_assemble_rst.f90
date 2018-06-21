@@ -1,5 +1,5 @@
-!>@file   analyzer_assemble_udt.f90
-!!@brief  module analyzer_assemble_udt
+!>@file   analyzer_assemble_rst.f90
+!!@brief  module analyzer_assemble_rst
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2010
@@ -7,11 +7,11 @@
 !>@brief  Main loop to assemble spectr data
 !!
 !!@verbatim
-!!      subroutine init_assemble_udt
-!!      subroutine analyze_assemble_udt
+!!      subroutine init_assemble_rst
+!!      subroutine analyze_assemble_rst
 !!@endverbatim
 !
-      module analyzer_assemble_udt
+      module analyzer_assemble_rst
 !
       use m_precision
       use m_constants
@@ -28,6 +28,7 @@
       use t_field_data_IO
 !
       use field_IO_select
+      use set_field_to_restart
 !
       implicit none
 !
@@ -36,6 +37,7 @@
       type(phys_data), save :: new_fld
 !
       type(time_data), save :: t_IO_m
+      type(field_IO), save :: new_fIO
 !
       integer(kind = kint), allocatable :: istack_recv(:)
       integer(kind = kint), allocatable :: item_send(:)
@@ -47,7 +49,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_assemble_udt
+      subroutine init_assemble_rst
 !
       use m_error_IDs
       use m_control_param_merge
@@ -83,7 +85,7 @@
       call read_control_4_merge
 !
       call set_control_4_merge(mgd_mesh1%num_pe)
-      call set_control_4_newudt(sec_mesh1%num_pe2)
+      call set_control_4_newrst(sec_mesh1%num_pe2)
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
@@ -129,36 +131,31 @@
 !   read field name and number of components
 !
       call sel_read_alloc_step_FEM_file(mgd_mesh1%num_pe, izero,        &
-     &    istep_start, original_ucd_param, t_IO_m, fld_IO_m)
+     &    istep_start, org_fst_param, t_IO_m, fld_IO_m)
 !
       if(my_rank .eq. 0) then
-        call init_field_name_4_assemble_ucd(num_nod_phys, ucd_on_label, &
-     &      fld_IO_m, new_fld)
+        call init_field_name_4_assemble_rst(fld_IO_m, new_fld)
 !
         call dealloc_phys_data_IO(fld_IO_m)
         call dealloc_phys_name_IO(fld_IO_m)
       end if
 !
       call share_phys_field_names(new_fld)
-      new_fld%num_phys_viz =  new_fld%num_phys
-      new_fld%ntot_phys_viz = new_fld%ntot_phys
 !
       call alloc_phys_data_type(new_mesh%node%numnod, new_fld)
 !
-      end subroutine init_assemble_udt
+      call simple_init_fld_name_to_rst                                  &
+     &   (new_mesh%node%numnod, new_fld, new_fIO)
+!
+      end subroutine init_assemble_rst
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze_assemble_udt
-!
-      use t_ucd_data
+      subroutine analyze_assemble_rst
 !
       use m_phys_labels
       use m_control_param_merge
       use search_original_domain_node
-      use set_ucd_data_to_type
-      use merged_udt_vtk_file_IO
-      use parallel_ucd_IO_select
       use assemble_nodal_fields
       use nod_phys_send_recv
       use load_mesh_data_4_merge
@@ -168,28 +165,11 @@
 !
       type(field_IO), allocatable :: org_fIO(:)
 !
-      type(ucd_data), save :: ucd_m
-      type(merged_ucd_data), save :: mucd_m
-!
-!
-      call link_num_field_2_ucd(new_fld, ucd_m)
-      call link_local_mesh_2_ucd(new_mesh%node, new_mesh%ele, ucd_m)
-      call link_field_data_to_ucd(new_fld, ucd_m)
 !
       allocate(org_fIO(mgd_mesh1%num_pe))
 !
-      if(assemble_ucd_param%iflag_format/icent .eq. iflag_single/icent) &
-     & then
-        call init_merged_ucd(assemble_ucd_param%iflag_format,           &
-     &      new_mesh%node, new_mesh%ele, new_mesh%nod_comm,             &
-     &     ucd_m, mucd_m)
-      end if
-!
-      if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'
-      call sel_write_parallel_ucd_mesh(assemble_ucd_param, ucd_m, mucd_m)
-!
       do istep = istep_start, istep_end, increment_step
-        call load_local_FEM_field_4_merge(istep, original_ucd_param,    &
+        call load_local_FEM_field_4_merge(istep, org_fst_param,         &
      &      mgd_mesh1%num_pe, t_IO_m, org_fIO)
 !
         call assemble_field_data                                        &
@@ -198,8 +178,10 @@
 !
         call nod_fields_send_recv(new_mesh, new_fld)
 !
-        call sel_write_parallel_ucd_file                                &
-     &     (istep, assemble_ucd_param, t_IO_m, ucd_m, mucd_m)
+        call simple_copy_fld_data_to_rst                                &
+     &     (new_mesh%node, new_fld, new_fIO)
+        call sel_write_step_FEM_field_file                              &
+     &     (nprocs, my_rank, istep, new_fst_param, t_IO_m, new_fIO)
       end do
 !
 !
@@ -211,15 +193,15 @@
           icou = icou + 1
           if(mod(icou,nprocs) .ne. my_rank) cycle
           call delete_FEM_fld_file                                      &
-     &        (original_ucd_param, mgd_mesh1%num_pe, istep)
+     &        (org_fst_param, mgd_mesh1%num_pe, istep)
         end do
       end if
 !
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine analyze_assemble_udt
+      end subroutine analyze_assemble_rst
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_assemble_udt
+      end module analyzer_assemble_rst

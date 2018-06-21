@@ -187,13 +187,9 @@
 !
 !     write data
 !
-        plane_fst_IO%num_field_IO =  num_rst_new
-        plane_fst_IO%ntot_comp_IO = ntot_rst_new
-        call alloc_phys_name_IO(plane_fst_IO)
-        call alloc_phys_data_IO(plane_fst_IO)
-!
-        call simple_copy_fld_name_to_rst                                &
-     &     (mgd_mesh_pl%merged_fld, plane_fst_IO)
+        call simple_init_fld_name_to_rst                                &
+     &     (mgd_mesh_pl%merged%node%numnod, mgd_mesh_pl%merged_fld,     &
+     &      plane_fst_IO)
         call simple_copy_fld_data_to_rst                                &
      &     (mgd_mesh_pl%merged%node, mgd_mesh_pl%merged_fld,            &
      &      plane_fst_IO)

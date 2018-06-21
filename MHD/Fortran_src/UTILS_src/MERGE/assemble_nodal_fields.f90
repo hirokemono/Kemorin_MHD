@@ -7,10 +7,13 @@
 !>@brief  Assemble nodal field data
 !!
 !!@verbatim
+!!      subroutine init_field_name_4_assemble_rst(fld_IO, fld)
 !!      subroutine init_field_name_4_assemble_ucd                       &
 !!     &         (nfld_label, ucd_on_label, fld_IO, fld)
-!!      subroutine copy_field_data_4_assemble                           &
-!!     &         (num_item, item_send, item_recv, fld_IO, fld)
+!!
+!!      subroutine assemble_field_data                                  &
+!!     &         (nprocs_org, istack_recv, item_send, item_recv,        &
+!!     &          new_fld, t_IO, org_fIO)
 !!        type(field_IO), intent(in) :: fld_IO
 !!        type(phys_data), intent(inout) :: fld
 !!@endverbatim
@@ -28,10 +31,48 @@
 !
       private :: count_fields_4_assemble_ucd
       private :: set_field_name_4_assemble_ucd
+      private :: copy_field_data_4_assemble
 !
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine init_field_name_4_assemble_rst(fld_IO, fld)
+!
+      type(field_IO), intent(in) :: fld_IO
+!
+      type(phys_data), intent(inout) :: fld
+!
+      integer(kind = kint) :: ifld
+!
+!
+      if(iflag_debug .eq. 0) then
+        do ifld = 1, fld_IO%num_field_IO
+          write(*,*) 'fld_IO', ifld, trim(fld_IO%fld_name(ifld))
+        end do
+      end if
+!
+      fld%num_phys = fld_IO%num_field_IO
+      call alloc_phys_name_type(fld)
+!
+      do ifld = 1, fld%num_phys
+        fld%phys_name(ifld) =        fld_IO%fld_name(ifld)
+        fld%istack_component(ifld) = fld_IO%istack_comp_IO(ifld)
+        fld%num_component(ifld) =    fld_IO%istack_comp_IO(ifld)       &
+     &                             - fld_IO%istack_comp_IO(ifld-1)
+      end do
+      fld%ntot_phys = fld%istack_component(fld%num_phys)
+!
+      if(iflag_debug .eq. 0) then
+        do ifld = 1, fld%num_phys
+          write(*,*) 'fld', ifld, trim(fld%phys_name(ifld)),            &
+     &                 fld%istack_component(ifld)
+        end do
+      end if
+!
+      end subroutine init_field_name_4_assemble_rst
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,9 +118,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine assemble_field_data(istep_fld, nprocs_org,             &
-     &          istack_recv, item_send, item_recv,                      &
-     &          org_ucd_param, new_fld, t_IO, org_fIO)
+      subroutine assemble_field_data                                    &
+     &         (nprocs_org, istack_recv, item_send, item_recv,          &
+     &          new_fld, t_IO, org_fIO)
 !
       use m_control_param_newsph
       use t_phys_data
@@ -88,9 +129,6 @@
       use set_field_to_restart
       use field_IO_select
       use share_field_data
-!
-      integer(kind = kint), intent(in) :: istep_fld
-      type(field_IO_params), intent(in) :: org_ucd_param
 !
       type(phys_data), intent(inout) :: new_fld
       type(time_data), intent(inout) :: t_IO

@@ -18,8 +18,8 @@
 !!     &          field_IO_name, nnod_IO, dat_IO)
 !!
 !!      subroutine simple_copy_fld_name_to_rst_IO                       &
-!!     &         (num_fld, istack_comp, phys_name,                      &
-!!     &          num_fld_IO, ncomp_IO, istack_comp_IO, field_IO_name)
+!!     &         (num_fld, istack_comp, phys_name, num_fld_IO,          &
+!!     &          ntot_comp_IO, ncomp_IO, istack_comp_IO, field_IO_name)
 !!      subroutine simple_copy_fld_dat_to_rst_IO(nnod, ntot_comp, d_nod,&
 !!     &          ntot_comp_IO, nnod_IO, dat_IO)
 !!
@@ -152,8 +152,8 @@
 !------------------------------------------------------------------
 !
       subroutine simple_copy_fld_name_to_rst_IO                         &
-     &         (num_fld, istack_comp, phys_name,                        &
-     &          num_fld_IO, ncomp_IO, istack_comp_IO, field_IO_name)
+     &         (num_fld, istack_comp, phys_name, num_fld_IO,            &
+     &          ntot_comp_IO, ncomp_IO, istack_comp_IO, field_IO_name)
 !
       integer(kind=kint), intent(in)  :: num_fld
       integer(kind=kint), intent(in)  :: istack_comp(0:num_fld)
@@ -163,6 +163,7 @@
       character(len=kchara), intent(inout) :: field_IO_name(num_fld_IO)
       integer(kind=kint), intent(inout) :: ncomp_IO(num_fld_IO)
       integer(kind=kint), intent(inout) :: istack_comp_IO(0:num_fld_IO)
+      integer(kind=kint), intent(inout) :: ntot_comp_IO
 !
       integer(kind=kint)  :: i
 !
@@ -173,6 +174,7 @@
         ncomp_IO(i) =       istack_comp(i) - istack_comp(i-1)
         istack_comp_IO(i) = istack_comp(i)
       end do
+      ntot_comp_IO = istack_comp_IO(num_fld)
 !
       end subroutine simple_copy_fld_name_to_rst_IO
 !
