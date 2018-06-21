@@ -13,10 +13,10 @@
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!      subroutine mpi_input_mesh_geometry                              &
-!!     &         (n_subdomain, mesh_file, mesh, nnod_4_surf, nnod_4_edge)
+!!     &         (mesh_file, n_subdomain, mesh, nnod_4_surf, nnod_4_edge)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_geometry), intent(inout) :: mesh
-!!      subroutine mpi_input_node_geometry(n_subdomain, mesh_file, node)
+!!      subroutine mpi_input_node_geometry(mesh_file, n_subdomain, node)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(node_data), intent(inout) :: node
 !!
@@ -86,7 +86,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine mpi_input_mesh_geometry                                &
-     &         (n_subdomain, mesh_file, mesh, nnod_4_surf, nnod_4_edge)
+     &         (mesh_file, n_subdomain, mesh, nnod_4_surf, nnod_4_edge)
 !
       use mesh_MPI_IO_select
       use load_mesh_data
@@ -113,7 +113,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_input_node_geometry(n_subdomain, mesh_file, node)
+      subroutine mpi_input_node_geometry(mesh_file, n_subdomain, node)
 !
       use mesh_MPI_IO_select
       use load_mesh_data

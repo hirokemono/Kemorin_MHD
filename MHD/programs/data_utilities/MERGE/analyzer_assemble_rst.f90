@@ -95,7 +95,7 @@
 !  set new mesh data
 !
       call mpi_input_mesh_geometry                                      &
-     &   (nprocs, merged_mesh_file, new_mesh, nnod_4_surf, nnod_4_edge)
+     &   (merged_mesh_file, nprocs, new_mesh, nnod_4_surf, nnod_4_edge)
       call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
       call const_global_numnod_list(new_mesh%node)
       call const_global_numele_list(new_mesh%ele)

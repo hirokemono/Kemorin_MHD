@@ -56,7 +56,6 @@
       use const_mesh_information
       use assemble_nodal_fields
 !
-      integer(kind = kint) :: icou, jp, jfld, ifld, inod
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -79,7 +78,7 @@
 !
 !  set mesh data
 !
-      call mpi_input_mesh_geometry(nprocs, merge_org_mesh_file,         &
+      call mpi_input_mesh_geometry(merge_org_mesh_file, nprocs,         &
      &    mesh_m, nnod_4_surf, nnod_4_edge)
       call set_nod_and_ele_infos(mesh_m%node, mesh_m%ele)
       call const_global_numnod_list(mesh_m%node)
@@ -115,6 +114,7 @@
 !
       use m_phys_labels
       use m_control_param_merge
+      use m_file_format_switch
       use set_field_to_restart
       use nod_phys_send_recv
       use set_ucd_data_to_type

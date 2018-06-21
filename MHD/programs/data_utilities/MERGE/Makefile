@@ -42,7 +42,8 @@ main_merge_udt.o \
 analyzer_merge_udt.o
 
 MOD_MERGE_MESH = \
-assemble_mesh.o
+main_merge_mesh.o \
+analyzer_merge_mesh.o
 
 MOD_MERGE_MESH_SGL = \
 assemble_mesh.o
@@ -105,6 +106,13 @@ target_task:
 	@echo '$$(TARGET_M_MESH)': '$$(MOD_MERGE_MESH) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_M_MESH)' '$$(MOD_MERGE_MESH)' \
+	'-L. $$(LIBS_MERGE)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_M_MESH_SGL)': '$$(MOD_MERGE_MESH_SGL) $$(LIB_FILES_MERGE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_M_MESH_SGL)' '$$(MOD_MERGE_MESH_SGL)' \
 	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
