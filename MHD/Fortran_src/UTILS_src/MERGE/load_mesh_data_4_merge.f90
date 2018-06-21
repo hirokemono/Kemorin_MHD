@@ -191,7 +191,7 @@
       do iloop = 0, (nprocs_in-1) / nprocs
         id_rank = my_rank + iloop * nprocs
         ip = id_rank + 1
-        call sel_read_rst_comps                                         &
+        call sel_read_rst_file                                          &
      &     (id_rank, istep_fld, fld_IO_param, t_IO, fld_IO(ip))
       end do
 !

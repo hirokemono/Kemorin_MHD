@@ -6,11 +6,11 @@ MERGE_SRCDIR =     $$(DATA_UTILS_DIR)/MERGE
 
 TARGET_MERGE =  merge_field
 TARGET_M_MESH = merge_mesh
-TARGET_UPDATE_RST_SGL = sgl_update_restart
 
 TARGET_NEWSPH = assemble_sph
 TARGET_NEWUDT = assemble_udt
 TARGET_NEWRST = assemble_restart
+TARGET_ADD_TIME_SPH_SGL = sgl_add_time_4_fld
 
 
 TARGET_UPDATE_RST =   update_restart
@@ -53,9 +53,6 @@ MOD_UPDATE_RST = \
 main_update_restart.o \
 analyzer_update_rst.o
 
-MOD_UPDATE_RST_SGL = \
-update_restart.o
-
 MOD_NEWSPH = \
 main_assemble_sph.o \
 analyzer_assemble_sph.o
@@ -65,6 +62,9 @@ main_assemble_udt.o \
 analyzer_assemble_udt.o
 
 MOD_ADD_TIME_SPH = \
+add_time_data_to_sph.o
+
+MOD_ADD_TIME_SPH_SGL = \
 add_time_data_to_sph.o
 
 
@@ -81,7 +81,7 @@ target_list:
 	@echo 'TARGET_M_MESH = $$(BUILDDIR)/$(TARGET_M_MESH)' >> $(MAKENAME)
 	@echo 'TARGET_NEWUDT = $$(BUILDDIR)/$(TARGET_NEWUDT)' >> $(MAKENAME)
 	@echo 'TARGET_NEWRST = $$(BUILDDIR)/$(TARGET_NEWRST)' >> $(MAKENAME)
-	@echo 'TARGET_UPDATE_RST_SGL = $$(BUILDDIR)/$(TARGET_UPDATE_RST_SGL)' >> $(MAKENAME)
+	@echo 'TARGET_ADD_TIME_SPH_SGL = $$(BUILDDIR)/$(TARGET_ADD_TIME_SPH_SGL)' >> $(MAKENAME)
 	@echo 'TARGET_NEWSPH = $$(BUILDDIR)/$(TARGET_NEWSPH)' >> $(MAKENAME)
 	@echo 'TARGET_UPDATE_RST =   $$(BUILDDIR)/$(TARGET_UPDATE_RST)'   >> $(MAKENAME)
 	@echo 'TARGET_ADD_TIME_SPH = $$(BUILDDIR)/$(TARGET_ADD_TIME_SPH)' >> $(MAKENAME)
@@ -92,7 +92,7 @@ target_task:
 	'$$(TARGET_MERGE)        $$(TARGET_M_MESH)'            \
 	'$$(TARGET_NEWUDT)       $$(TARGET_NEWRST)'            \
 	'$$(TARGET_NEWSPH)       $$(TARGET_UPDATE_RST)'        \
-	'$$(TARGET_ADD_TIME_SPH) $$(TARGET_UPDATE_RST_SGL)'    \
+	'$$(TARGET_ADD_TIME_SPH) $$(TARGET_ADD_TIME_SPH_SGL)'    \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_MERGE)' \
@@ -130,17 +130,10 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
-	@echo '$$(TARGET_UPDATE_RST_SGL)': '$$(MOD_UPDATE_RST_SGL) $$(LIB_FILES_MERGE)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_UPDATE_RST_SGL)' '$$(MOD_UPDATE_RST_SGL)' \
-	'-L. $$(LIBS_MERGE)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_ADD_TIME_SPH)': '$$(MOD_ADD_TIME_SPH)' \
+	@echo '$$(TARGET_ADD_TIME_SPH_SGL)': '$$(MOD_ADD_TIME_SPH_SGL)' \
 	'$$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ADD_TIME_SPH)' '$$(MOD_ADD_TIME_SPH)' \
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ADD_TIME_SPH_SGL)' '$$(MOD_ADD_TIME_SPH_SGL)' \
 	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -149,6 +142,14 @@ target_task:
 	'$$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWSPH)' '$$(MOD_NEWSPH)' \
+	'-L. $$(LIBS_MERGE)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
+	@echo '$$(TARGET_ADD_TIME_SPH)': '$$(MOD_ADD_TIME_SPH)' \
+	'$$(LIB_FILES_MERGE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ADD_TIME_SPH)' '$$(MOD_ADD_TIME_SPH)' \
 	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -173,8 +174,8 @@ mod_list:
 	@echo  $(MOD_NEWRST)         >> $(MAKENAME)
 	@echo  MOD_UPDATE_RST=  \\   >> $(MAKENAME)
 	@echo  $(MOD_UPDATE_RST)     >> $(MAKENAME)
-	@echo  MOD_UPDATE_RST_SGL=  \\   >> $(MAKENAME)
-	@echo  $(MOD_UPDATE_RST_SGL)     >> $(MAKENAME)
+	@echo  MOD_ADD_TIME_SPH_SGL=  \\   >> $(MAKENAME)
+	@echo  $(MOD_ADD_TIME_SPH_SGL)     >> $(MAKENAME)
 	@echo  MOD_NEWSPH=  \\       >> $(MAKENAME)
 	@echo  $(MOD_NEWSPH)         >> $(MAKENAME)
 	@echo  MOD_ADD_TIME_SPH=  \\ >> $(MAKENAME)
