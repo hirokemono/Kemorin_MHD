@@ -62,7 +62,8 @@ main_assemble_udt.o \
 analyzer_assemble_udt.o
 
 MOD_ADD_TIME_SPH = \
-add_time_data_to_sph.o
+main_update_sph.o \
+analyzer_update_sph_rst.o
 
 MOD_ADD_TIME_SPH_SGL = \
 add_time_data_to_sph.o
