@@ -116,9 +116,6 @@
         call copy_field_data_4_assemble                                 &
      &     (num, item_send(ist), item_recv(ist), org_fIO(ip), new_fld)
 !
-        write(*,*) 'org_fIO(ip)%fld_name', org_fIO(ip)%fld_name
-        write(*,*) 'new_fld%phys_name', new_fld%phys_name
-!
         call dealloc_merged_field_stack(org_fIO(ip))
         call dealloc_phys_data_IO(org_fIO(ip))
         call dealloc_phys_name_IO(org_fIO(ip))
