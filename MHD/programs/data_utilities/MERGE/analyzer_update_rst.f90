@@ -1,5 +1,5 @@
-!>@file   analyzer_assemble_rst.f90
-!!@brief  module analyzer_assemble_rst
+!>@file   analyzer_update_rst.f90
+!!@brief  module analyzer_update_rst
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2010
@@ -7,11 +7,11 @@
 !>@brief  Main loop to assemble spectr data
 !!
 !!@verbatim
-!!      subroutine init_assemble_rst
-!!      subroutine analyze_assemble_rst
+!!      subroutine init_update_retstart
+!!      subroutine analyze_update_restart
 !!@endverbatim
 !
-      module analyzer_assemble_rst
+      module analyzer_update_rst
 !
       use m_precision
       use m_constants
@@ -49,7 +49,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_assemble_rst
+      subroutine init_update_retstart
 !
       use m_error_IDs
       use m_control_param_merge
@@ -66,6 +66,7 @@
       use assemble_nodal_fields
       use load_mesh_data_4_merge
       use set_field_to_restart
+      use input_old_file_sel_4_zlib
 !
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
       type(field_IO), save :: fld_IO_m
@@ -131,10 +132,9 @@
 !
 !   read field name and number of components
 !
-      call sel_read_alloc_step_FEM_file(mgd_mesh1%num_pe, izero,        &
-     &    istep_start, org_fst_param, t_IO_m, fld_IO_m)
-!
       if(my_rank .eq. 0) then
+        call sel_read_rst_comps                                         &
+     &     (izero, istep_start, org_fst_param, t_IO_m, fld_IO_m)
         call init_field_name_by_restart(fld_IO_m, new_fld)
 !
         call dealloc_phys_data_IO(fld_IO_m)
@@ -148,11 +148,11 @@
       call simple_init_fld_name_to_rst                                  &
      &   (new_mesh%node%numnod, new_fld, new_fIO)
 !
-      end subroutine init_assemble_rst
+      end subroutine init_update_retstart
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze_assemble_rst
+      subroutine analyze_update_restart
 !
       use m_phys_labels
       use m_control_param_merge
@@ -171,7 +171,7 @@
       allocate(org_fIO(mgd_mesh1%num_pe))
 !
       do istep = istep_start, istep_end, increment_step
-        call load_local_FEM_field_4_merge(istep, org_fst_param,         &
+        call load_old_FEM_restart_4_merge(istep, org_fst_param,         &
      &      mgd_mesh1%num_pe, t_IO_m, org_fIO)
 !
         call assemble_field_data                                        &
@@ -180,7 +180,6 @@
 !
 !   re-scaling for magnetic field
         call rescale_4_magne(new_fld)
-!
 !
         call nod_fields_send_recv(new_mesh, new_fld)
 !
@@ -206,8 +205,8 @@
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !
-      end subroutine analyze_assemble_rst
+      end subroutine analyze_update_restart
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_assemble_rst
+      end module analyzer_update_rst

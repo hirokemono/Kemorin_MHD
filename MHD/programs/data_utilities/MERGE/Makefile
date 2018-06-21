@@ -50,6 +50,10 @@ main_assemble_rst.o \
 analyzer_assemble_rst.o
 
 MOD_UPDATE_RST = \
+main_update_restart.o \
+analyzer_update_rst.o
+
+MOD_UPDATE_RST_SGL = \
 update_restart.o
 
 MOD_NEWSPH = \
@@ -126,6 +130,13 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	
+	@echo '$$(TARGET_UPDATE_RST_SGL)': '$$(MOD_UPDATE_RST_SGL) $$(LIB_FILES_MERGE)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_UPDATE_RST_SGL)' '$$(MOD_UPDATE_RST_SGL)' \
+	'-L. $$(LIBS_MERGE)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	
 	@echo '$$(TARGET_ADD_TIME_SPH)': '$$(MOD_ADD_TIME_SPH)' \
 	'$$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
@@ -162,6 +173,8 @@ mod_list:
 	@echo  $(MOD_NEWRST)         >> $(MAKENAME)
 	@echo  MOD_UPDATE_RST=  \\   >> $(MAKENAME)
 	@echo  $(MOD_UPDATE_RST)     >> $(MAKENAME)
+	@echo  MOD_UPDATE_RST_SGL=  \\   >> $(MAKENAME)
+	@echo  $(MOD_UPDATE_RST_SGL)     >> $(MAKENAME)
 	@echo  MOD_NEWSPH=  \\       >> $(MAKENAME)
 	@echo  $(MOD_NEWSPH)         >> $(MAKENAME)
 	@echo  MOD_ADD_TIME_SPH=  \\ >> $(MAKENAME)
