@@ -41,10 +41,6 @@ MOD_MERGE_UCD = \
 main_merge_udt.o \
 analyzer_merge_udt.o
 
-MOD_MERGE_MESH = \
-main_merge_mesh.o \
-analyzer_merge_mesh.o
-
 MOD_MERGE_MESH_SGL = \
 assemble_mesh.o
 
@@ -79,7 +75,6 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_MERGE =  $$(BUILDDIR)/$(TARGET_MERGE)'  >> $(MAKENAME)
-	@echo 'TARGET_M_MESH = $$(BUILDDIR)/$(TARGET_M_MESH)' >> $(MAKENAME)
 	@echo 'TARGET_NEWUDT = $$(BUILDDIR)/$(TARGET_NEWUDT)' >> $(MAKENAME)
 	@echo 'TARGET_NEWRST = $$(BUILDDIR)/$(TARGET_NEWRST)' >> $(MAKENAME)
 	@echo 'TARGET_M_MESH_SGL = $$(BUILDDIR)/$(TARGET_M_MESH_SGL)' >> $(MAKENAME)
@@ -90,22 +85,15 @@ target_list:
 
 target_task:
 	@echo assembles: \
-	'$$(TARGET_MERGE)        $$(TARGET_M_MESH)'            \
+	'$$(TARGET_MERGE)        $$(TARGET_M_MESH_SGL)'            \
 	'$$(TARGET_NEWUDT)       $$(TARGET_NEWRST)'            \
 	'$$(TARGET_NEWSPH)       $$(TARGET_UPDATE_RST)'        \
-	'$$(TARGET_ADD_TIME_SPH) $$(TARGET_M_MESH_SGL)'    \
+	'$$(TARGET_ADD_TIME_SPH)'    \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MERGE)' '$$(MOD_MERGE_UCD)' \
-	'-L. $$(LIBS_MERGE)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '$$(TARGET_M_MESH)': '$$(MOD_MERGE_MESH) $$(LIB_FILES_MERGE)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_M_MESH)' '$$(MOD_MERGE_MESH)' \
 	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -166,8 +154,6 @@ lib_name:
 mod_list:
 	@echo  MOD_MERGE_UCD=  \\    >> $(MAKENAME)
 	@echo  $(MOD_MERGE_UCD)      >> $(MAKENAME)
-	@echo  MOD_MERGE_MESH=  \\   >> $(MAKENAME)
-	@echo  $(MOD_MERGE_MESH)     >> $(MAKENAME)
 	@echo  MOD_NEWUDT=  \\       >> $(MAKENAME)
 	@echo  $(MOD_NEWUDT)         >> $(MAKENAME)
 	@echo  MOD_NEWRST=  \\       >> $(MAKENAME)
