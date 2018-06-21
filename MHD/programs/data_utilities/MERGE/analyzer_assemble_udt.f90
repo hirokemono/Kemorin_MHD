@@ -20,7 +20,6 @@
       use m_geometry_data_4_merge
       use m_machine_parameter
       use m_control_param_newsph
-      use t_assembled_field_IO
 !
       use t_mesh_data
       use t_phys_data
