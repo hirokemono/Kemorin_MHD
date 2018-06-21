@@ -22,6 +22,12 @@
 !!     &         (mesh_file, nprocs_in, mesh)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_geometry), intent(inout) :: mesh(nprocs_in)
+!!
+!!      subroutine load_local_FEM_field_4_merge                         &
+!!     &         (fld_IO_param, nprocs_in, mesh, t_IO, field_IO)
+!!        type(field_IO_params), intent(in) ::  fld_IO_param
+!!        type(time_data), intent(inout) :: t_IO
+!!        type(field_IO), intent(inout) :: field_IO(nprocs_in)
 !!@endverbatim
 !
       module load_mesh_data_4_merge
@@ -34,6 +40,8 @@
       use t_geometry_data
       use t_comm_table
       use t_group_data
+      use t_time_data
+      use t_field_data_IO
 !
       implicit none
 !
@@ -133,6 +141,33 @@
       end do
 !
       end subroutine load_local_node_4_merge
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine load_local_FEM_field_4_merge                           &
+     &         (istep_fld, fld_IO_param, nprocs_in, t_IO, fld_IO)
+!
+      use mesh_MPI_IO_select
+      use field_IO_select
+!
+      integer(kind = kint), intent(in) :: istep_fld
+      integer(kind = kint), intent(in) ::  nprocs_in
+      type(field_IO_params), intent(in) ::  fld_IO_param
+      type(time_data), intent(inout) :: t_IO
+      type(field_IO), intent(inout) :: fld_IO(nprocs_in)
+!
+      integer(kind = kint) :: id_rank, iloop, ip
+!
+!
+      do iloop = 0, (nprocs_in-1) / nprocs
+        id_rank = my_rank + iloop * nprocs
+        ip = id_rank + 1
+        call sel_read_alloc_step_FEM_file(nprocs_in, id_rank,           &
+     &      istep_fld, fld_IO_param, t_IO, fld_IO(ip))
+      end do
+!
+      end subroutine load_local_FEM_field_4_merge
 !
 ! -----------------------------------------------------------------------
 !

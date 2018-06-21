@@ -33,7 +33,7 @@
       type(mesh_geometry), save :: mesh_m
       type(phys_data), save :: new_fld
 !
-      type(time_data), save :: t_IO
+      type(time_data), save :: t_IO_m
       type(field_IO), save :: fld_IO_m
 !
 ! ----------------------------------------------------------------------
@@ -97,10 +97,11 @@
 !   read field name and number of components
 !
       call sel_read_alloc_step_FEM_file(nprocs, my_rank,                &
-     &    istep_start, original_ucd_param, t_IO, fld_IO_m)
+     &    istep_start, original_ucd_param, t_IO_m, fld_IO_m)
 !
-      call init_field_data_4_assemble_ucd                               &
-     &   (num_nod_phys, ucd_on_label, mesh_m%node, fld_IO_m, new_fld)
+      call init_field_name_4_assemble_ucd(num_nod_phys, ucd_on_label,   &
+     &    fld_IO_m, new_fld)
+      call alloc_phys_data_type(mesh_m%node%numnod, new_fld)
 !
       call dealloc_phys_data_IO(fld_IO_m)
       call dealloc_phys_name_IO(fld_IO_m)
@@ -145,7 +146,7 @@
 !
       do istep = istep_start, istep_end, increment_step
         call sel_read_alloc_step_FEM_file(nprocs, my_rank,              &
-     &      istep, original_ucd_param, t_IO, fld_IO_m)
+     &      istep, original_ucd_param, t_IO_m, fld_IO_m)
 !
         call copy_field_data_from_restart                               &
      &     (mesh_m%node, fld_IO_m, new_fld)
@@ -155,7 +156,7 @@
         call nod_fields_send_recv(mesh_m, new_fld)
 !
         call sel_write_parallel_ucd_file                                &
-     &     (istep, assemble_ucd_param, t_IO, ucd_m, mucd_m)
+     &     (istep, assemble_ucd_param, t_IO_m, ucd_m, mucd_m)
       end do
 !
       call calypso_MPI_barrier

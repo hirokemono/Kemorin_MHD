@@ -107,19 +107,34 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine share_field_IO_names(fld_IO)
+      subroutine share_field_IO_names(ip_org, fld_IO)
 !
       use t_field_data_IO
       use cal_minmax_and_stacks
 !
+      integer(kind = kint), intent(in) :: ip_org
       type(field_IO), intent(inout) :: fld_IO
 !
-      call share_field_num(fld_IO%num_field_IO, fld_IO%ntot_comp_IO)
+      integer(kind = kint) ::  irank_org
 !
-      if(my_rank .ne. 0) call alloc_phys_name_IO(fld_IO)
 !
-      call share_field_stack(fld_IO%num_field_IO,                       &
-     &    fld_IO%istack_comp_IO(1), fld_IO%fld_name)
+      irank_org = mod(ip_org-1,nprocs)
+!        write(*,*) 'MPI_Bcast fld_IO%num_field_IO', ip
+      call MPI_Bcast(fld_IO%num_field_IO, ione,                         &
+     &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+!        write(*,*) 'MPI_Bcast fld_IO%ntot_comp_IO', ip
+      call MPI_Bcast(fld_IO%ntot_comp_IO, ione,                         &
+     &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+!
+      if(my_rank .ne. irank_org) call alloc_phys_name_IO(fld_IO)
+!
+!
+!        write(*,*) 'MPI_Bcast fld_IO%istack_comp_IO', ip
+      call MPI_Bcast(fld_IO%istack_comp_IO, (fld_IO%num_field_IO+1),    &
+     &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+!        write(*,*) 'MPI_Bcast phys_name', ip
+      call MPI_Bcast(fld_IO%fld_name, (fld_IO%num_field_IO*kchara),     &
+     &    CALYPSO_CHARACTER, irank_org, CALYPSO_COMM, ierr_MPI)
       call s_cal_numbers_from_stack(fld_IO%num_field_IO,                &
      &    fld_IO%num_comp_IO, fld_IO%istack_comp_IO)
 !

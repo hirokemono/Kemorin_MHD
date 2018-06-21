@@ -20,18 +20,14 @@
       use m_geometry_data_4_merge
       use m_machine_parameter
       use m_control_param_newsph
-      use r_interpolate_marged_sph
-      use t_SPH_mesh_field_data
-      use t_field_data_IO
       use t_assembled_field_IO
 !
-      use new_SPH_restart
-      use parallel_assemble_sph
-      use copy_rj_phys_data_4_IO
-!
       use t_mesh_data
+      use t_phys_data
       use t_time_data
-      use t_ucd_data
+      use t_field_data_IO
+!
+      use field_IO_select
 !
       implicit none
 !
@@ -39,35 +35,16 @@
 !
       type(mesh_geometry), allocatable, save :: org_mesh(:)
       type(mesh_geometry), save :: new_mesh
-      type(ucd_data), save :: second_ucd
+      type(phys_data), save :: new_fld
+!
+      type(time_data), save :: t_IO_m
+      type(field_IO), save :: fld_IO_m
 !
       integer(kind = kint), allocatable :: istack_recv(:)
       integer(kind = kint), allocatable :: item_send(:)
       integer(kind = kint), allocatable :: item_recv(:)
 !>        Instance for FEM field data IO
       type(time_data), save :: fem_time_IO
-!
-!
-!
-      type(sph_mesh_data), allocatable, save :: org_sph_mesh(:)
-      type(phys_data), allocatable, save ::     org_sph_phys(:)
-!
-      type(sph_mesh_data), allocatable, save :: new_sph_mesh(:)
-      type(phys_data), allocatable, save ::     new_sph_phys(:)
-!
-      integer(kind = kint) :: nloop_new
-      type(field_IO), allocatable, save :: new_fst_IO(:)
-      type(time_data), save :: fst_time_IO
-!
-      integer(kind = kint), allocatable :: nnod_list_lc(:)
-      integer(kind = kint), allocatable :: nnod_list(:)
-      integer(kind = kint_gl), allocatable :: istack_nnod_list(:)
-!
-!
-      type(sph_radial_itp_data), save :: r_itp
-      type(rj_assemble_tbl), allocatable, save :: j_table(:,:)
-      integer(kind = kint) :: nlayer_ICB_org, nlayer_CMB_org
-      integer(kind = kint) :: nlayer_ICB_new, nlayer_CMB_new
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,12 +61,16 @@
 !
       use m_original_ucd_4_merge
       use mpi_load_mesh_data
-      use load_mesh_data_4_merge
       use search_original_domain_node
       use output_newdomain_ucd
       use nod_phys_send_recv
+      use const_element_comm_tables
+      use const_mesh_information
+      use share_field_data
+      use assemble_nodal_fields
+      use load_mesh_data_4_merge
 !
-      integer(kind = kint) :: ip, jp, irank_new, jloop, inod
+      integer(kind = kint) :: ip, jp, ifld
       integer(kind = kint_gl) :: min_inod_gl, max_inod_gl
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
 !
@@ -116,15 +97,22 @@
      &          'istep_start, istep_end, increment_step',               &
      &           istep_start, istep_end, increment_step
 !
-      allocate( org_sph_phys(np_sph_org) )
-      allocate( new_sph_mesh(np_sph_new) )
-      allocate( new_sph_phys(np_sph_new) )
-      allocate(j_table(np_sph_org,np_sph_new))
-!
 !  set new mesh data
 !
       call mpi_input_mesh_geometry                                      &
      &   (nprocs, merged_mesh_file, new_mesh, nnod_4_surf, nnod_4_edge)
+      call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
+      call const_global_numnod_list(new_mesh%node)
+      call const_global_numele_list(new_mesh%ele)
+!
+!  Initialize communicator
+!
+      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver                                   &
+     &   (n_sym_tensor, new_mesh%node%numnod)
+!
+      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
+      call init_nod_send_recv(new_mesh)
 !
 !  set original mesh data
 !
@@ -147,28 +135,30 @@
 !
 !   read field name and number of components
 !
-      write(*,*) 'init_ucd_data_4_merge'
-      call init_ucd_data_4_merge                                        &
-     &   (istep_start, original_ucd_param, fem_time_IO)
+      call sel_read_alloc_step_FEM_file(mgd_mesh1%num_pe, izero,        &
+     &    istep_start, original_ucd_param, t_IO_m, fld_IO_m)
 !
-!    set list array for merged field
+      if(my_rank .eq. 0) then
+        call init_field_name_4_assemble_ucd(num_nod_phys, ucd_on_label, &
+     &      fld_IO_m, new_fld)
 !
-      call set_field_list_4_merge(mgd_mesh1%merged_fld)
-      write(*,*) 'set_field_list_4_merge'
-      call alloc_phys_data_type                                         &
-     &   (new_mesh%node%numnod, mgd_mesh1%merged_fld)
+        call dealloc_phys_data_IO(fld_IO_m)
+        call dealloc_phys_name_IO(fld_IO_m)
+      end if
 !
-      write(*,*) 'assemble_2nd_udt_mesh'
-      call assemble_2nd_udt_mesh                                        &
-     &   (assemble_ucd_param, mgd_mesh1%merged, my_rank,                &
-     &    new_mesh, second_ucd)
+      call share_phys_field_names(new_fld)
+      new_fld%num_phys_viz =  new_fld%num_phys
+      new_fld%ntot_phys_viz = new_fld%ntot_phys
 !
+      call alloc_phys_data_type(new_mesh%node%numnod, new_fld)
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, new_mesh%node%numnod)
-!
-      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(new_mesh)
+!      if(i_debug .eq. 0) then
+!        do ifld = 1, new_fld%num_phys
+!          write(*,*) my_rank, 'new_fld', ifld,                         &
+!     &                 trim(new_fld%phys_name(ifld)),                  &
+!     &                 new_fld%istack_component(ifld)
+!        end do
+!      end if
 !
       end subroutine init_assemble_udt
 !
@@ -176,34 +166,59 @@
 !
       subroutine analyze_assemble_udt
 !
+      use t_ucd_data
+!
       use m_phys_labels
       use m_control_param_merge
       use search_original_domain_node
+      use set_ucd_data_to_type
+      use merged_udt_vtk_file_IO
+      use parallel_ucd_IO_select
+      use assemble_nodal_fields
+      use nod_phys_send_recv
+      use load_mesh_data_4_merge
 !
       integer(kind = kint) :: istep, icou
-      integer(kind = kint) :: ip, jp, irank_new
-      integer(kind = kint) :: iloop, jloop
+      integer(kind = kint) :: ip, jp
       integer(kind = kint) :: istep_out
 !
-      type(phys_data) :: new_fld
+      type(field_IO), allocatable :: org_fIO(:)
       type(field_IO) :: new_fIO
 !
-      call alloc_phys_name_type(new_fld)
-      call alloc_phys_data_type(new_mesh%node%numnod, new_fld)
-!
-      call alloc_phys_data_IO(new_fIO)
-      call alloc_merged_field_stack(nprocs, new_fIO)
-!      call count_number_of_node_stack                                   &
-!     &   (new_fIO%nnod_IO, new_fIO%istack_numnod_IO)
+      type(ucd_data), save :: ucd_m
+      type(merged_ucd_data), save :: mucd_m
 !
 !
-!      do istep = istep_start, istep_end, increment_step
-!        call assemble_field_data                                        &
-!     &     (istep, mgd_mesh1%num_pe, new_mesh, ifield_2_copy,           &
-!     &      istack_recv, item_send, item_recv,                          &
-!     &      original_ucd_param, assemble_ucd_param, new_fld, new_fIO)
-!      end do
-!      deallocate(j_table)
+      call link_num_field_2_ucd(new_fld, ucd_m)
+      call link_local_mesh_2_ucd(new_mesh%node, new_mesh%ele, ucd_m)
+      call link_field_data_to_ucd(new_fld, ucd_m)
+!
+      allocate(org_fIO(mgd_mesh1%num_pe))
+!
+      if(assemble_ucd_param%iflag_format/icent .eq. iflag_single/icent) &
+     & then
+        call init_merged_ucd(assemble_ucd_param%iflag_format,           &
+     &      new_mesh%node, new_mesh%ele, new_mesh%nod_comm,             &
+     &     ucd_m, mucd_m)
+      end if
+!
+      if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'
+      call sel_write_parallel_ucd_mesh(assemble_ucd_param, ucd_m, mucd_m)
+!
+      do istep = istep_start, istep_end, increment_step
+        call load_local_FEM_field_4_merge(istep, original_ucd_param,    &
+     &      mgd_mesh1%num_pe, t_IO_m, org_fIO)
+!
+        call assemble_field_data(istep, mgd_mesh1%num_pe,               &
+     &      istack_recv, item_send, item_recv,                          &
+     &      original_ucd_param, new_fld, t_IO_m, org_fIO)
+!
+        call nod_fields_send_recv(new_mesh, new_fld)
+!
+        call sel_write_parallel_ucd_file                                &
+     &     (istep, assemble_ucd_param, t_IO_m, ucd_m, mucd_m)
+      end do
+!
 !
       deallocate(istack_recv, item_send, item_recv)
 !
