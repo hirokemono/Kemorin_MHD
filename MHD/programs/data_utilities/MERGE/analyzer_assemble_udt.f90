@@ -177,6 +177,7 @@
       use assemble_nodal_fields
       use nod_phys_send_recv
       use load_mesh_data_4_merge
+      use set_field_file_names
 !
       integer(kind = kint) :: istep, icou
       integer(kind = kint) :: ip, jp
@@ -221,6 +222,16 @@
 !
 !
       deallocate(istack_recv, item_send, item_recv)
+!
+      if(iflag_delete_org .gt. 0) then
+        icou = 0
+        do istep = istep_start, istep_end, increment_step
+          icou = icou + 1
+          if(mod(icou,nprocs) .ne. my_rank) cycle
+          call delete_FEM_fld_file                                      &
+     &        (original_ucd_param, mgd_mesh1%num_pe, istep)
+        end do
+      end if
 !
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
