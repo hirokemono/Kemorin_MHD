@@ -6,7 +6,6 @@ MERGE_SRCDIR =     $$(DATA_UTILS_DIR)/MERGE
 
 TARGET_MERGE =  merge_field
 TARGET_M_MESH = merge_mesh
-TARGET_MERGE_SGL =  sgl_merge_field
 TARGET_NEWUDT_SGL = sgl_assemble_udt
 TARGET_NEWRST = assemble_restart
 
@@ -41,9 +40,6 @@ SOURCES = $(shell ls *.f90)
 MOD_MERGE_UCD = \
 main_merge_udt.o \
 analyzer_merge_udt.o
-
-MOD_MERGE_UCD_SGL = \
-assemble_merge.o
 
 MOD_MERGE_MESH = \
 assemble_mesh.o
@@ -82,7 +78,6 @@ dir_list:
 target_list:
 	@echo 'TARGET_MERGE =  $$(BUILDDIR)/$(TARGET_MERGE)'  >> $(MAKENAME)
 	@echo 'TARGET_M_MESH = $$(BUILDDIR)/$(TARGET_M_MESH)' >> $(MAKENAME)
-	@echo 'TARGET_MERGE_SGL =  $$(BUILDDIR)/$(TARGET_MERGE_SGL)'  >> $(MAKENAME)
 	@echo 'TARGET_NEWUDT_SGL = $$(BUILDDIR)/$(TARGET_NEWUDT_SGL)' >> $(MAKENAME)
 	@echo 'TARGET_NEWUDT = $$(BUILDDIR)/$(TARGET_NEWUDT)' >> $(MAKENAME)
 	@echo 'TARGET_NEWRST = $$(BUILDDIR)/$(TARGET_NEWRST)' >> $(MAKENAME)
@@ -96,21 +91,12 @@ target_task:
 	'$$(TARGET_MERGE)        $$(TARGET_M_MESH)'            \
 	'$$(TARGET_NEWUDT)       $$(TARGET_NEWRST)'            \
 	'$$(TARGET_NEWSPH)       $$(TARGET_UPDATE_RST)'        \
-	'$$(TARGET_ADD_TIME_SPH) '    \
-	'$$(TARGET_MERGE_SGL) $$(TARGET_NEWUDT_SGL)'    \
+	'$$(TARGET_ADD_TIME_SPH) $$(TARGET_NEWUDT_SGL)'    \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MERGE)': '$$(MOD_MERGE_UCD) $$(LIB_FILES_MERGE)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MERGE)' '$$(MOD_MERGE_UCD)' \
-	'-L. $$(LIBS_MERGE)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_MERGE_SGL)': '$$(MOD_MERGE_UCD_SGL) $$(LIB_FILES_MERGE)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MERGE_SGL)' '$$(MOD_MERGE_UCD_SGL)' \
 	'-L. $$(LIBS_MERGE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -182,8 +168,6 @@ mod_list:
 	@echo  $(MOD_MERGE_MESH)     >> $(MAKENAME)
 	@echo  MOD_NEWUDT=  \\       >> $(MAKENAME)
 	@echo  $(MOD_NEWUDT)         >> $(MAKENAME)
-	@echo  MOD_MERGE_UCD_SGL=  \\       >> $(MAKENAME)
-	@echo  $(MOD_MERGE_UCD_SGL)         >> $(MAKENAME)
 	@echo  MOD_NEWUDT_SGL=  \\       >> $(MAKENAME)
 	@echo  $(MOD_NEWUDT_SGL)         >> $(MAKENAME)
 	@echo  MOD_NEWRST=  \\       >> $(MAKENAME)
