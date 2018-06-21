@@ -31,20 +31,15 @@
 !
       implicit none
 !
-      type(time_data), save :: init_t
-!
       type(mesh_geometry), allocatable, save :: org_mesh(:)
       type(mesh_geometry), save :: new_mesh
       type(phys_data), save :: new_fld
 !
       type(time_data), save :: t_IO_m
-      type(field_IO), save :: fld_IO_m
 !
       integer(kind = kint), allocatable :: istack_recv(:)
       integer(kind = kint), allocatable :: item_send(:)
       integer(kind = kint), allocatable :: item_recv(:)
-!>        Instance for FEM field data IO
-      type(time_data), save :: fem_time_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,7 +54,6 @@
       use m_control_data_4_merge
       use m_array_for_send_recv
 !
-      use m_original_ucd_4_merge
       use mpi_load_mesh_data
       use search_original_domain_node
       use output_newdomain_ucd
@@ -70,9 +64,8 @@
       use assemble_nodal_fields
       use load_mesh_data_4_merge
 !
-      integer(kind = kint) :: ip, jp, ifld
-      integer(kind = kint_gl) :: min_inod_gl, max_inod_gl
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
+      type(field_IO), save :: fld_IO_m
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -152,14 +145,6 @@
 !
       call alloc_phys_data_type(new_mesh%node%numnod, new_fld)
 !
-!      if(i_debug .eq. 0) then
-!        do ifld = 1, new_fld%num_phys
-!          write(*,*) my_rank, 'new_fld', ifld,                         &
-!     &                 trim(new_fld%phys_name(ifld)),                  &
-!     &                 new_fld%istack_component(ifld)
-!        end do
-!      end if
-!
       end subroutine init_assemble_udt
 !
 ! ----------------------------------------------------------------------
@@ -180,11 +165,8 @@
       use set_field_file_names
 !
       integer(kind = kint) :: istep, icou
-      integer(kind = kint) :: ip, jp
-      integer(kind = kint) :: istep_out
 !
       type(field_IO), allocatable :: org_fIO(:)
-      type(field_IO) :: new_fIO
 !
       type(ucd_data), save :: ucd_m
       type(merged_ucd_data), save :: mucd_m

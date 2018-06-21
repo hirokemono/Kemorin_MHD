@@ -48,7 +48,6 @@
       use m_control_param_merge
       use m_control_data_4_merge
       use m_array_for_send_recv
-      use m_original_ucd_4_merge
 !
       use mpi_load_mesh_data
       use load_mesh_data_4_merge
