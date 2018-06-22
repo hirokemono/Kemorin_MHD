@@ -62,7 +62,7 @@
       integer(kind = kint) :: num_particle
       integer(kind = kint) :: iflag_part_debug
 ! initial debug flag
-      iflag_part_debug = 0
+      iflag_part_debug = 1
 
 !
 !  read control file
@@ -141,7 +141,7 @@
 !
 ! part_plt contain info about num of subdomains
       if(iflag_new_partition .eq. 1) then
-        num_particle = num_domain * 10
+        num_particle = num_domain * 100
         allocate(particles(num_particle))
         write(*,*) 'generatie sample particle for estimation'
         call choose_particles_from_eles(org_mesh%ele, data_field_vec, particles, num_particle)

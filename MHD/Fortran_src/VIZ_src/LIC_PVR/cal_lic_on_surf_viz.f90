@@ -395,21 +395,22 @@
           iflag_comm = 1
           exit
         end if
-        if(i_iter .gt. 100) then
+        if(i_iter .gt. 200) then
           !write(*,*) 'iteration too large in 1: ', i_iter
           !write(*,*) 'total length: ', len_sum, 'kernel', k_value, 'step', step_len
           return
         end if
       end do
 
-      if(flag_lic_end(lic_p, len_sum, i_iter) .eq. izero) then
+!      if(flag_lic_end(lic_p, len_sum, i_iter) .eq. izero) then
+      if(flag_lic_end(lic_p, len_sum, i_iter) .eq. 2) then ! never enter this loop
         avg_stepsize = len_sum / i_iter
         if (avg_stepsize .lt. 0.005) then
           avg_stepsize = 0.005
         end if
         if(iflag_debug .eq. 1) write(50 + my_rank, *) "----dis is short for", i_iter, "iteration"
         do
-          if(i_iter .gt. 100) then
+          if(i_iter .gt. 200) then
             !write(*,*) 'iteration too large in 2: ', i_iter
             !write(*,*) 'total length: ', len_sum, 'kernel', k_value, 'step', step_len
             return

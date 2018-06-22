@@ -81,13 +81,13 @@ end subroutine allocate_dim_part_tbl
 !
 subroutine simulate_field_line_integral(nnod, nele, nsurf,                &
 &           nnod_4_surf, isf_4_ele, iele_4_surf, ie_surf, interior_surf,  &
-&           iflag_dir, xx, field_vec, isurf_org,                          &
+&           iflag_dir, xx, field_vec, isurf_org, group_id,                &
 &           x_start, v_start, line_len, itr_num, iflag_comm)
 !
 
 !
   integer(kind = kint), intent(in) :: nnod, nele, nsurf
-  integer(kind = kint), intent(in) :: nnod_4_surf
+  integer(kind = kint), intent(in) :: nnod_4_surf, group_id
   integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
   integer(kind = kint), intent(in) :: isf_4_ele(nele,nsurf_4_ele)
   integer(kind = kint), intent(in) :: iele_4_surf(nsurf, 2, 2)
@@ -99,7 +99,7 @@ subroutine simulate_field_line_integral(nnod, nele, nsurf,                &
   integer(kind=kint), intent(inout) :: itr_num
   integer(kind=kint), intent(inout) :: iflag_comm, iflag_dir
 !
-  integer(kind = kint) :: i
+  integer(kind = kint) :: i, node_id
   integer(kind = kint) ::isurf_start, isurf_end, isf_org, isf_tgt, iele
   real(kind = kreal) :: xi(2)
   real(kind = kreal) :: step_len, integral_len, x_org(3), x_tgt(3), v_tgt(3)
@@ -164,19 +164,20 @@ subroutine simulate_field_line_integral(nnod, nele, nsurf,                &
     integral_len = integral_len + step_len
     x_start(1:3) =  x_tgt(1:3)
 
-    if(interior_surf(isurf_end) .eq. izero) then
-      isurf_start = isurf_end
-      iflag_comm = 10
-      return
-    else
-      isurf_start = isurf_end
-    end if
+    do i = 1, nnod_4_surf
+      node_id = ie_surf(isurf_end,i)
+      if(IGROUP_nod(node_id) .ne. group_id) then
+        iflag_comm = 10
+        return
+      end if
+    end do
+    isurf_start = isurf_end
 
     if(integral_len .ge. line_len) then
       iflag_comm = 1
       return
     end if
-    if(itr_num .gt. 500) then
+    if(itr_num .gt. 200) then
       !write(*,*) 'iteration too large in 1: ', itr_num
       !write(*,*) 'total length: ', len_sum, 'kernel', k_value, 'step', step_len
       return
@@ -241,7 +242,7 @@ subroutine seed_particles(nnod, nele, nsurf, nnod_4_surf,      &
     &      ie_surf, isurf_hit, xi, field, new_vec)
     call simulate_field_line_integral(nnod, nele, nsurf,                      &
     &           nnod_4_surf, isf_4_ele, iele_4_surf, ie_surf, interior_surf,  &
-    &           iflag_dir, xx, field, isurf_org,                              &
+    &           iflag_dir, xx, field, isurf_org, particles(i)%group_id,       &
     &           new_pos, new_vec, particles(i)%line_len, itr_num, iflag_comm)
     !write(*,*) 'foward iter_num ', itr_num, 'forward res ', iflag_comm
     ! backward integral
@@ -264,7 +265,7 @@ subroutine seed_particles(nnod, nele, nsurf, nnod_4_surf,      &
     &      ie_surf, isurf_hit, xi, field, new_vec)
     call simulate_field_line_integral(nnod, nele, nsurf,                      &
     &           nnod_4_surf, isf_4_ele, iele_4_surf, ie_surf, interior_surf,  &
-    &           iflag_dir, xx, field, isurf_org,                              &
+    &           iflag_dir, xx, field, isurf_org, particles(i)%group_id,       &
     &           new_pos, new_vec, particles(i)%line_len, itr_num, iflag_comm)
     !write(*,*) 'total iter_num ', itr_num, 'backward res ', iflag_comm
     time_cost_cnt(particles(i)%group_id) = time_cost_cnt(particles(i)%group_id) + 1
