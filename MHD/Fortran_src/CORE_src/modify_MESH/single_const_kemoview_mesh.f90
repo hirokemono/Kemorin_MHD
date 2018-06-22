@@ -30,8 +30,7 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: iflag_output_SURF = 0
-      integer(kind = kint), parameter :: iflag_add_comm_tbl = 1
+      integer(kind = kint) :: iflag_add_comm_tbl = 1
       integer(kind = kint), parameter :: iflag_write_subdomain = 0
 !
 !------------------------------------------------------------------
@@ -68,6 +67,8 @@
       integer(kind = kint) :: ip, id_rank, ierr
 !
 !  set mesh_information
+!
+      if(nprocs_sf .eq. 1) iflag_add_comm_tbl = 0
 !
       allocate(view_mesh(nprocs_sf))
       allocate(domain_grps(nprocs_sf))

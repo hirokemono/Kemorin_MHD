@@ -494,6 +494,7 @@
       integer(kind = kint) :: i, ist, num
       integer(kind = kint_gl) :: num_item_l(group_IO%num_grp)
       integer(kind = kint_gl) :: istack_g(0:group_IO%num_grp)
+      character(len=1) :: chara_dat
 !
 !
       call mpi_write_charahead(IO_param, len_int_txt,                   &
@@ -519,10 +520,15 @@
      &      len_one_word_textline(group_IO%grp_name(i)),                &
      &      one_word_textline(group_IO%grp_name(i)))
 !
-        ist = group_IO%istack_grp(i-1) + 1
-        num = group_IO%istack_grp(i) - group_IO%istack_grp(i-1)
-        call mpi_write_grp_item                                         &
-     &     (IO_param, ieight, num, group_IO%item_grp(ist), nshift8)
+        if(istack_g(i) .le. istack_g(i-1)) then
+          write(chara_dat,'(a1)') char(10)
+          call mpi_write_charahead(IO_param, ione, chara_dat)
+        else
+          ist = group_IO%istack_grp(i-1) + 1
+          num = group_IO%istack_grp(i) - group_IO%istack_grp(i-1)
+          call mpi_write_grp_item                                       &
+     &       (IO_param, ieight, num, group_IO%item_grp(ist), nshift8)
+        end if
       end do
       call deallocate_grp_type(group_IO)
 !
@@ -544,6 +550,7 @@
       integer(kind = kint) :: i, num
       integer(kind = kint_gl) :: num_item_l(surf_grp_IO%num_grp)
       integer(kind = kint_gl) :: istack_g(0:surf_grp_IO%num_grp)
+      character(len=1) :: chara_dat
 !
 !
       call mpi_write_charahead(IO_param, len_int_txt,                   &
@@ -569,10 +576,15 @@
      &      len_one_word_textline(surf_grp_IO%grp_name(i)),             &
      &      one_word_textline(surf_grp_IO%grp_name(i)))
 !
-        num = surf_grp_IO%istack_grp(i) - surf_grp_IO%istack_grp(i-1)
-        call mpi_write_surf_grp_item(IO_param, ieight,                  &
-     &      surf_grp_IO%num_item, surf_grp_IO%istack_grp(i-1),          &
-     &      num, surf_grp_IO%item_sf_grp, nshift8_ele)
+        if(istack_g(i) .le. istack_g(i-1)) then
+          write(chara_dat,'(a1)') char(10)
+          call mpi_write_charahead(IO_param, ione, chara_dat)
+        else
+          num = surf_grp_IO%istack_grp(i) - surf_grp_IO%istack_grp(i-1)
+          call mpi_write_surf_grp_item(IO_param, ieight,                &
+     &        surf_grp_IO%num_item, surf_grp_IO%istack_grp(i-1),        &
+     &        num, surf_grp_IO%item_sf_grp, nshift8_ele)
+        end if
       end do
 !
       end subroutine mpi_write_merged_surf_grp
@@ -595,7 +607,7 @@
 !$omp parallel workshare
        int_tmp(1:num) = int_dat(1:num) + nshift8
 !$omp end parallel workshare
-      call mpi_write_merged_comm_table(IO_param, ncolumn, num, int_tmp)
+      call mpi_write_merged_group_item(IO_param, ncolumn, num, int_tmp)
 !
       end subroutine mpi_write_grp_item
 !
@@ -617,19 +629,19 @@
 !$omp parallel workshare
        int_tmp(1:num) = int_dat(1,ist+1:ist+num) + nshift8_ele
 !$omp end parallel workshare
-      call mpi_write_merged_comm_table(IO_param, ncolumn, num, int_tmp)
+      call mpi_write_merged_group_item(IO_param, ncolumn, num, int_tmp)
 !
 !
 !$omp parallel workshare
        int_tmp(1:num) = int_dat(2,ist+1:ist+num)
 !$omp end parallel workshare
-      call mpi_write_merged_comm_table(IO_param, ncolumn, num, int_tmp)
+      call mpi_write_merged_group_item(IO_param, ncolumn, num, int_tmp)
 !
       end subroutine mpi_write_surf_grp_item
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_write_merged_comm_table                            &
+      subroutine mpi_write_merged_group_item                            &
      &         (IO_param, ncolumn, num, int_dat)
 !
       use m_calypso_mpi_IO
@@ -670,7 +682,7 @@
      &      multi_int8_textline(nrest, int_dat(num-nrest+1)))
       end if
 !
-      end subroutine mpi_write_merged_comm_table
+      end subroutine mpi_write_merged_group_item
 !
 ! -----------------------------------------------------------------------
 !
