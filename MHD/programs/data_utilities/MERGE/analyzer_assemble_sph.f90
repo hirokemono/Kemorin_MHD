@@ -28,6 +28,7 @@
       use new_SPH_restart
       use parallel_assemble_sph
       use copy_rj_phys_data_4_IO
+      use assemble_sph_fields
 !
       implicit none
 !
@@ -68,7 +69,6 @@
       use sph_file_MPI_IO_select
       use sph_file_IO_select
       use field_IO_select
-      use parallel_sph_assemble
       use share_spectr_index_data
 !
       integer(kind = kint) :: ip, jp, irank_new, jloop
@@ -185,7 +185,6 @@
       use m_phys_labels
       use r_interpolate_marged_sph
       use set_field_file_names
-      use parallel_sph_assemble
       use share_field_data
 !
       integer(kind = kint) :: istep, icou

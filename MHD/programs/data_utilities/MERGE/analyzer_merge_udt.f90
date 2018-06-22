@@ -19,7 +19,6 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_geometry_data_4_merge
 !
       use t_mesh_data
       use t_phys_data
@@ -30,6 +29,7 @@
 !
       implicit none
 !
+      integer(kind = kint), save :: ndomain_org
       type(mesh_geometry), save :: mesh_m
       type(phys_data), save :: new_fld
 !
@@ -69,7 +69,7 @@
 !   read control data
 !
       call read_control_4_merge
-      call set_control_4_merge(mgd_mesh1%num_pe)
+      call set_control_4_merge(ndomain_org)
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &

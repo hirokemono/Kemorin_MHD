@@ -19,7 +19,6 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_geometry_data_4_merge
 !
       use t_mesh_data
       use t_calypso_mpi_IO_param
@@ -27,6 +26,7 @@
 !
       implicit none
 !
+      integer(kind = kint), save :: ndomain_org
       type(mesh_geometry), save :: mesh_m
       type(mesh_groups), save :: group_m
 !
@@ -60,8 +60,8 @@
 !   read control data
 !
       call read_control_4_merge
-      call set_control_4_merge(mgd_mesh1%num_pe)
-      call set_control_4_newudt(mgd_mesh1%num_pe)
+      call set_control_4_merge(ndomain_org)
+      call set_control_4_newudt(ndomain_org)
 !
 !
 !  set mesh data

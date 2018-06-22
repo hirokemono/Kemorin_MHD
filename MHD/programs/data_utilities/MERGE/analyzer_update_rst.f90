@@ -17,7 +17,6 @@
       use m_constants
       use calypso_mpi
 !
-      use m_geometry_data_4_merge
       use m_machine_parameter
       use m_control_param_newsph
 !
@@ -31,6 +30,7 @@
 !
       implicit none
 !
+      integer(kind = kint), save :: ndomain_org
       type(mesh_geometry), allocatable, save :: org_mesh(:)
       type(mesh_geometry), save :: new_mesh
       type(phys_data), save :: new_fld
@@ -57,7 +57,6 @@
 !
       use mpi_load_mesh_data
       use search_original_domain_node
-      use output_newdomain_ucd
       use nod_phys_send_recv
       use const_element_comm_tables
       use const_mesh_information
@@ -68,6 +67,7 @@
       use input_old_file_sel_4_zlib
 !
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
+      integer(kind = kint) :: num_pe2
       type(field_IO), save :: fld_IO_m
 !
 !
@@ -85,8 +85,8 @@
 !
       call read_control_4_merge
 !
-      call set_control_4_merge(mgd_mesh1%num_pe)
-      call set_control_4_newrst(sec_mesh1%num_pe2)
+      call set_control_4_merge(ndomain_org)
+      call set_control_4_newrst(num_pe2)
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
@@ -112,11 +112,11 @@
 !
 !  set original mesh data
 !
-      allocate( org_mesh(mgd_mesh1%num_pe) )
+      allocate( org_mesh(ndomain_org) )
       call load_local_node_4_merge                                      &
-     &   (merge_org_mesh_file, mgd_mesh1%num_pe, org_mesh)
+     &   (merge_org_mesh_file, ndomain_org, org_mesh)
 !
-      allocate(istack_recv(0:mgd_mesh1%num_pe))
+      allocate(istack_recv(0:ndomain_org))
       allocate(item_send(new_mesh%node%internal_node))
       allocate(item_recv(new_mesh%node%internal_node))
 !
@@ -126,7 +126,7 @@
       item_recv = 0
 !$omp end parallel workshare
 !
-      call s_search_original_domain_node(mgd_mesh1%num_pe, org_mesh,    &
+      call s_search_original_domain_node(ndomain_org, org_mesh,         &
      &    new_mesh%node, istack_recv, item_send, item_recv)
 !
 !   read field name and number of components
@@ -167,14 +167,14 @@
       type(field_IO), allocatable :: org_fIO(:)
 !
 !
-      allocate(org_fIO(mgd_mesh1%num_pe))
+      allocate(org_fIO(ndomain_org))
 !
       do istep = istep_start, istep_end, increment_step
         call load_old_FEM_restart_4_merge(istep, org_fst_param,         &
-     &      mgd_mesh1%num_pe, t_IO_m, org_fIO)
+     &      ndomain_org, t_IO_m, org_fIO)
 !
         call assemble_field_data                                        &
-     &     (mgd_mesh1%num_pe, istack_recv, item_send, item_recv,        &
+     &     (ndomain_org, istack_recv, item_send, item_recv,             &
      &      new_fld, t_IO_m, org_fIO)
 !
 !   re-scaling for magnetic field
@@ -197,7 +197,7 @@
           icou = icou + 1
           if(mod(icou,nprocs) .ne. my_rank) cycle
           call delete_FEM_fld_file                                      &
-     &        (org_fst_param, mgd_mesh1%num_pe, istep)
+     &        (org_fst_param, ndomain_org, istep)
         end do
       end if
 !

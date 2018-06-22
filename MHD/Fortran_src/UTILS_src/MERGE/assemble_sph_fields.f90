@@ -1,5 +1,5 @@
-!>@file   parallel_sph_assemble.f90
-!!@brief  module parallel_sph_assemble
+!>@file   assemble_sph_fields.f90
+!!@brief  module assemble_sph_fields
 !!
 !!@author H. Matsui
 !!@date Programmed in Jan., 2014
@@ -21,7 +21,7 @@
 !!@endverbatim
 !!
 !
-      module parallel_sph_assemble
+      module assemble_sph_fields
 !
       use m_precision
       use m_constants
@@ -123,4 +123,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module parallel_sph_assemble
+      end module assemble_sph_fields
