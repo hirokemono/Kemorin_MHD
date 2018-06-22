@@ -9,11 +9,15 @@
 !!@verbatim
 !!      subroutine mpi_read_group_data(IO_param, group_IO)
 !!      subroutine mpi_read_surf_grp_data(IO_param, surf_grp_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(group_data), intent(inout) :: group_IO
+!!        type(surface_group_data), intent(inout) :: surf_grp_IO
 !!
 !!      subroutine mpi_write_grp_data(IO_param, group_IO)
 !!      subroutine mpi_write_surf_grp_data(IO_param, surf_grp_IO)
-!!        type(group_data), intent(inout) :: group_IO
-!!        type(surface_group_data), intent(inout) :: surf_grp_IO
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(group_data), intent(in) :: group_IO
+!!        type(surface_group_data), intent(in) :: surf_grp_IO
 !!@endverbatim
 !
       module MPI_groups_IO
@@ -70,7 +74,6 @@
           call mpi_read_comm_table                                      &
      &       (IO_param, ieight, num, group_IO%item_grp(ist:ied))
         end do
-!
       end if
 !
       end subroutine mpi_read_group_data
@@ -120,7 +123,7 @@
       subroutine mpi_write_grp_data(IO_param, group_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(group_data), intent(inout) :: group_IO
+      type(group_data), intent(in) :: group_IO
 !
       integer(kind = kint) :: i, ist, ied, num
 !
@@ -141,7 +144,6 @@
         call mpi_write_comm_table                                       &
      &     (IO_param, ieight, num, group_IO%item_grp(ist:ied))
       end do
-      call deallocate_grp_type(group_IO)
 !
       end subroutine mpi_write_grp_data
 !
@@ -150,7 +152,7 @@
       subroutine mpi_write_surf_grp_data(IO_param, surf_grp_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(surface_group_data), intent(inout) :: surf_grp_IO
+      type(surface_group_data), intent(in) :: surf_grp_IO
 !
       integer(kind = kint) :: i, num
 !

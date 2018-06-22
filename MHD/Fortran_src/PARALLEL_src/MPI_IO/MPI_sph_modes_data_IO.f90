@@ -202,6 +202,7 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_sph_para()), hd_sph_para())
       call mpi_write_domain_info(IO_param, comm_IO)
+      call deallocate_type_neib_id(comm_IO)
 !
       call mpi_write_gl_reso_sph(IO_param, sph_IO)
       call mpi_write_rank_4_sph(IO_param, sph_IO)
@@ -215,24 +216,29 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rtp_comm()), hd_rtp_comm())
       call mpi_write_import_data(IO_param, comm_IO)
+      call deallocate_type_import(comm_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_grphd()), hd_grphd())
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_ngrphd()), hd_ngrphd())
       call mpi_write_grp_data(IO_param, sph_grps_IO%bc_rtp_grp)
+      call deallocate_grp_type(sph_grps_IO%bc_rtp_grp)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rgrphd()), hd_rgrphd())
       call mpi_write_grp_data(IO_param, sph_grps_IO%radial_rtp_grp)
+      call deallocate_grp_type(sph_grps_IO%radial_rtp_grp)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_tgrphd()), hd_tgrphd())
       call mpi_write_grp_data(IO_param, sph_grps_IO%theta_rtp_grp)
+      call deallocate_grp_type(sph_grps_IO%theta_rtp_grp)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_pgrphd()), hd_pgrphd())
       call mpi_write_grp_data(IO_param, sph_grps_IO%zonal_rtp_grp)
+      call deallocate_grp_type(sph_grps_IO%zonal_rtp_grp)
 !
       end subroutine mpi_write_geom_rtp_data
 !
@@ -251,6 +257,7 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_sph_para()), hd_sph_para())
       call mpi_write_domain_info(IO_param, comm_IO)
+      call deallocate_type_neib_id(comm_IO)
 !
       call mpi_write_gl_reso_sph(IO_param, sph_IO)
       call mpi_write_rank_4_sph(IO_param, sph_IO)
@@ -264,16 +271,19 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rj_comm()), hd_rj_comm())
       call mpi_write_import_data(IO_param, comm_IO)
+      call deallocate_type_import(comm_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_grphd()), hd_grphd())
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_kgrphd()), hd_kgrphd())
       call mpi_write_grp_data(IO_param, sph_grps_IO%radial_rj_grp)
+      call deallocate_grp_type(sph_grps_IO%radial_rj_grp)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_jgrphd()), hd_jgrphd())
       call mpi_write_grp_data(IO_param, sph_grps_IO%sphere_rj_grp)
+      call deallocate_grp_type(sph_grps_IO%sphere_rj_grp)
 !
       end subroutine mpi_write_spectr_rj_data
 !
@@ -291,6 +301,7 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_sph_para()), hd_sph_para())
       call mpi_write_domain_info(IO_param, comm_IO)
+      call deallocate_type_neib_id(comm_IO)
 !
       call mpi_write_gl_reso_sph(IO_param, sph_IO)
       call mpi_write_rank_4_sph(IO_param, sph_IO)
@@ -304,6 +315,7 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rtp_comm()), hd_rtp_comm())
       call mpi_write_import_data(IO_param, comm_IO)
+      call deallocate_type_import(comm_IO)
 !
       end subroutine mpi_write_geom_rtm_data
 !
@@ -321,6 +333,8 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_sph_para()), hd_sph_para())
       call mpi_write_domain_info(IO_param, comm_IO)
+      call deallocate_type_neib_id(comm_IO)
+!
       call mpi_write_gl_reso_sph(IO_param, sph_IO)
       call mpi_write_rank_4_sph(IO_param, sph_IO)
 !
@@ -333,6 +347,7 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_rj_comm()), hd_rj_comm())
       call mpi_write_import_data(IO_param, comm_IO)
+      call deallocate_type_import(comm_IO)
 !
       end subroutine mpi_write_modes_rlm_data
 !
