@@ -61,7 +61,7 @@
 !
       call read_control_4_merge
       call set_control_4_merge(ndomain_org)
-      call set_control_4_newudt(ndomain_org)
+      ierr_MPI = set_control_4_newudt(nprocs)
 !
 !
 !  set mesh data

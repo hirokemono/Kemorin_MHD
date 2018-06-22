@@ -4,9 +4,9 @@
 !
 !      subroutine deallocate_control_4_merge
 !
-!!       subroutine set_control_4_merge(num_pe)
-!!      subroutine set_control_4_newrst(num_pe2)
-!!      subroutine set_control_4_newudt(num_pe2)
+!!      subroutine set_control_4_merge(num_pe)
+!!      integer(kind = kint) function set_control_4_newrst(nprocs)
+!!      integer(kind = kint) function set_control_4_newudt(nprocs)
 !
       module m_control_param_merge
 !
@@ -167,18 +167,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_newrst(num_pe2)
+      integer(kind = kint) function set_control_4_newrst(nprocs)
 !
       use m_control_data_4_merge
       use m_file_format_switch
       use set_control_platform_data
 !
-      integer(kind = kint), intent(inout) :: num_pe2
+      integer(kind = kint), intent(inout) :: nprocs
 !
 !
-      call set_control_4_newudt(num_pe2)
+      set_control_4_newrst = 0
+      if(set_control_4_newudt(nprocs) .gt. 0) then
+        set_control_4_newrst = 1
+        return
+      end if
 !
-      write(*,*) 'source_plt%restart_file_prefix', source_plt%restart_file_prefix%iflag
       call set_parallel_file_ctl_params(org_rst_def_head,               &
      &    source_plt%restart_file_prefix,                               &
      &    source_plt%restart_file_fmt_ctl, org_fst_param)
@@ -197,11 +200,11 @@
         increment_step = t_mge_ctl%i_step_rst_ctl%intvalue
       end if
 !
-      end subroutine set_control_4_newrst
+      end function set_control_4_newrst
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_newudt(num_pe2)
+      integer(kind = kint) function set_control_4_newudt(nprocs)
 !
       use m_control_data_4_merge
       use m_file_format_switch
@@ -209,14 +212,18 @@
       use skip_comment_f
       use set_control_platform_data
 !
-      integer(kind = kint), intent(inout) :: num_pe2
+      integer(kind = kint), intent(in) :: nprocs
 !
 !
-      if (assemble_plt%ndomain_ctl%iflag .gt. 0) then
-        num_pe2 = assemble_plt%ndomain_ctl%intvalue
-      else
+      set_control_4_newudt = 0
+      if(assemble_plt%ndomain_ctl%iflag .eq. 0) then
         write(*,*) 'Set number of subdomains for new grid'
-        stop
+        set_control_4_newudt = 1
+        return
+      end if
+      if(assemble_plt%ndomain_ctl%intvalue .ne. nprocs) then
+        set_control_4_newudt = 1
+        return
       end if
 !
       call set_control_mesh_file_def                                    &
@@ -228,7 +235,7 @@
         end if
       end if
 !
-      end subroutine set_control_4_newudt
+      end function set_control_4_newudt
 !
 ! -----------------------------------------------------------------------
 !

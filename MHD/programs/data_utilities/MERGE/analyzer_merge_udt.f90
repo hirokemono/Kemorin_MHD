@@ -70,6 +70,11 @@
 !
       call read_control_4_merge
       call set_control_4_merge(ndomain_org)
+      if(ndomain_org .ne. nprocs) then
+        write(e_message,'(a)')                                          &
+     &     'No. of processes and targed sub domain shold be the same.'
+        call calypso_mpi_abort(ierr_mesh, e_message)
+      end if
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &

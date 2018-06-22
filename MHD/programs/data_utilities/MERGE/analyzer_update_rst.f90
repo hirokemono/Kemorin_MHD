@@ -67,7 +67,6 @@
       use input_old_file_sel_4_zlib
 !
       integer(kind = kint) :: nnod_4_surf, nnod_4_edge
-      integer(kind = kint) :: num_pe2
       type(field_IO), save :: fld_IO_m
 !
 !
@@ -86,7 +85,11 @@
       call read_control_4_merge
 !
       call set_control_4_merge(ndomain_org)
-      call set_control_4_newrst(num_pe2)
+      if(set_control_4_newrst(nprocs) .gt. 0) then
+        write(e_message,'(a)')                                          &
+     &     'No. of processes and targed sub domain shold be the same.'
+        call calypso_mpi_abort(ierr_mesh, e_message)
+      end if
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
