@@ -51,7 +51,7 @@
       subroutine set_domain_local_id_by_type2                           &
      &         (nprocs, mesh_info, merge_tbl_2)
 !
-      use t_mesh_data_4_merge
+      use t_merged_geometry_data
 !
       integer(kind = kint), intent(in) :: nprocs
       type(mesh_data), intent(in) :: mesh_info(nprocs)

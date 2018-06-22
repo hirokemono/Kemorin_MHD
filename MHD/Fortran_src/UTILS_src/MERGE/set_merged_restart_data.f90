@@ -23,7 +23,6 @@
       use m_control_param_merge
       use m_phys_labels
       use t_phys_data
-      use t_merged_geometry_data
 !
       type(phys_data), intent(inout) :: fld
 !

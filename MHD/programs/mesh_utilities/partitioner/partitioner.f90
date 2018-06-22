@@ -11,7 +11,6 @@
       use t_surface_data
       use t_edge_data
       use t_near_mesh_id_4_node
-      use t_mesh_data_4_merge
 !
       use m_control_data_4_part
       use m_ctl_param_partitioner
