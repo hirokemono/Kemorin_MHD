@@ -289,12 +289,12 @@
           iflag_comm = -10
           return
         end if
-
-        if(interior_surf(isurf_start) .eq. izero) then
-          iflag_comm = 10
-          return
-        end if
-        isf_tgt = 0
+!
+!        if(interior_surf(isurf_start) .eq. izero) then
+!          iflag_comm = 10
+!          return
+!        end if
+!        isf_tgt = 0
 
         do i = 1, 2
           iele = iele_4_surf(isurf_start,i,1)
