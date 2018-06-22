@@ -23,13 +23,13 @@
 !!      subroutine count_internal_node_grp                              &
 !!     &         (internal_node, nod_grp, new_nod_grp)
 !!      subroutine set_internal_node_grp                                &
-!!     &         (nshift, internal_node, nod_grp, new_nod_grp)
+!!     &         (internal_node, nod_grp, new_nod_grp)
 !!        type(group_data), intent(in) :: nod_grp
 !!        type(group_data), intent(inout) :: new_nod_grp
 !!      subroutine count_internal_element_grp                           &
 !!     &         (nele, iele_to_new, ele_grp, new_ele_grp)
 !!      subroutine set_internal_element_grp                             &
-!!     &          (nshift, nele, iele_to_new, ele_grp, new_ele_grp)
+!!     &         (nele, iele_to_new, ele_grp, new_ele_grp)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(group_data), intent(inout) :: new_ele_grp
 !!      subroutine count_internal_surface_grp                           &
@@ -184,10 +184,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_internal_node_grp                                  &
-     &         (nshift, internal_node, nod_grp, new_nod_grp)
+     &         (internal_node, nod_grp, new_nod_grp)
 !
       integer(kind=kint), intent(in) :: internal_node
-      integer(kind=kint), intent(in) :: nshift
       type(group_data), intent(in) :: nod_grp
 !
       type(group_data), intent(inout) :: new_nod_grp
@@ -202,8 +201,7 @@
         do inum = ist, ied
           if(nod_grp%item_grp(inum) .le. internal_node) then
             icou = icou + 1
-            new_nod_grp%item_grp(icou)                                  &
-     &           = nod_grp%item_grp(inum) + nshift
+            new_nod_grp%item_grp(icou) = nod_grp%item_grp(inum)
           end if
         end do
       end do
@@ -243,9 +241,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_internal_element_grp                               &
-     &          (nshift, nele, iele_to_new, ele_grp, new_ele_grp)
+     &         (nele, iele_to_new, ele_grp, new_ele_grp)
 !
-      integer(kind=kint), intent(in) :: nshift, nele
+      integer(kind=kint), intent(in) :: nele
       integer(kind=kint), intent(in)  :: iele_to_new(nele)
       type(group_data), intent(in) :: ele_grp
 !
@@ -262,7 +260,7 @@
           iele = ele_grp%item_grp(inum)
           if(iele_to_new(iele) .gt. 0) then
             icou = icou + 1
-            new_ele_grp%item_grp(icou) = iele_to_new(iele) + nshift
+            new_ele_grp%item_grp(icou) = iele_to_new(iele)
           end if
         end do
       end do

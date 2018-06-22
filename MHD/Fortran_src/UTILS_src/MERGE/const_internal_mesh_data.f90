@@ -141,7 +141,6 @@
       integer(kind = kint), intent(in) :: iele_to_new(ele%numele)
 !
       type(mesh_groups), intent(inout) :: new_group
-      integer(kind = kint) :: nshift
 !
 !
 !  Node greoup
@@ -152,9 +151,8 @@
      &   (node%internal_node, group%nod_grp, new_group%nod_grp)
 !
       call allocate_grp_type_item(new_group%nod_grp)
-      nshift = int(node%istack_internod(my_rank))
-      call set_internal_node_grp(nshift, node%internal_node,            &
-     &    group%nod_grp, new_group%nod_grp)
+      call set_internal_node_grp                                        &
+     &   (node%internal_node, group%nod_grp, new_group%nod_grp)
 !
 !
 !  element greoup
@@ -164,8 +162,7 @@
      &   (ele%numele, iele_to_new, group%ele_grp, new_group%ele_grp)
 !
       call allocate_grp_type_item(new_group%ele_grp)
-      nshift = int(ele%istack_interele(my_rank))
-      call set_internal_element_grp(nshift, ele%numele, iele_to_new,    &
+      call set_internal_element_grp(ele%numele, iele_to_new,            &
      &    group%ele_grp, new_group%ele_grp)
 !
 !

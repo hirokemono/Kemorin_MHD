@@ -167,7 +167,8 @@
 !
       call mpi_write_merged_geometry_data(IO_param, mesh)
       call mpi_write_merged_mesh_groups                                 &
-     &   (mesh%ele%istack_interele(my_rank), IO_param, group)
+     &   (mesh%node%istack_internod(my_rank),                           &
+     &    mesh%ele%istack_interele(my_rank), IO_param, group)
 !
       call close_mpi_file(IO_param)
 !
@@ -212,36 +213,81 @@
 !------------------------------------------------------------------
 !
       subroutine mpi_write_merged_mesh_groups                           &
-     &         (nshift8_ele, IO_param, mesh_group_IO)
+     &         (nshift8_node, nshift8_ele, IO_param, mesh_group_IO)
 !
       use m_fem_mesh_labels
       use MPI_groups_IO
 !
-      integer(kind=kint_gl), intent(in) :: nshift8_ele
+      integer(kind=kint_gl), intent(in) :: nshift8_node, nshift8_ele
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(mesh_groups), intent(inout) ::   mesh_group_IO
-!
-      go to 10
 !
 !   write node group
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_nodgrp()), hd_fem_nodgrp())
-      call mpi_write_grp_data                                           &
-     &   (IO_param, mesh_group_IO%nod_grp)
+      call mpi_write_merged_grp                                         &
+     &   (nshift8_node, IO_param, mesh_group_IO%nod_grp)
 !  write element group
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_elegrp()), hd_fem_elegrp())
-      call mpi_write_grp_data                                           &
-     &   (IO_param, mesh_group_IO%ele_grp)
+      call mpi_write_merged_grp                                         &
+     &   (nshift8_ele, IO_param, mesh_group_IO%ele_grp)
 !  write surface group
-!
-  10  continue
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_sfgrp()), hd_fem_sfgrp())
       call mpi_write_merged_surf_grp                                    &
      &   (nshift8_ele, IO_param, mesh_group_IO%surf_grp)
 !
       end subroutine mpi_write_merged_mesh_groups
+!
+!------------------------------------------------------------------
+!
+      subroutine mpi_write_merged_grp(nshift8, IO_param, group_IO)
+!
+      use MPI_ascii_data_IO
+      use MPI_domain_data_IO
+      use data_IO_to_textline
+!
+      integer(kind=kint_gl), intent(in) :: nshift8
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(group_data), intent(inout) :: group_IO
+!
+      integer(kind = kint) :: i, ist, num
+      integer(kind = kint_gl) :: num_item_l(group_IO%num_grp)
+      integer(kind = kint_gl) :: istack_g(0:group_IO%num_grp)
+!
+!
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(group_IO%num_grp))
+!
+      do i = 1, group_IO%num_grp
+        num_item_l(i) = group_IO%istack_grp(i)                          &
+     &                 - group_IO%istack_grp(i-1)
+      end do
+      call MPI_allREDUCE(num_item_l, istack_g(1), group_IO%num_grp,     &
+     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      istack_g(0) = 0
+      do i = 1, group_IO%num_grp
+        istack_g(i) = istack_g(i) + istack_g(i-1)
+      end do
+!
+      call mpi_write_charahead(IO_param,                                &
+     &    len_multi_int_textline(group_IO%num_grp),                     &
+     &    int_stack8_textline(group_IO%num_grp, istack_g))
+!
+      do i = 1, group_IO%num_grp
+        call mpi_write_charahead(IO_param,                              &
+     &      len_one_word_textline(group_IO%grp_name(i)),                &
+     &      one_word_textline(group_IO%grp_name(i)))
+!
+        ist = group_IO%istack_grp(i-1) + 1
+        num = group_IO%istack_grp(i) - group_IO%istack_grp(i-1)
+        call mpi_write_grp_item                                         &
+     &     (IO_param, ieight, num, group_IO%item_grp(ist), nshift8)
+      end do
+      call deallocate_grp_type(group_IO)
+!
+      end subroutine mpi_write_merged_grp
 !
 !------------------------------------------------------------------
 !
@@ -293,6 +339,28 @@
       end subroutine mpi_write_merged_surf_grp
 !
 !------------------------------------------------------------------
+!
+      subroutine mpi_write_grp_item                                     &
+     &         (IO_param, ncolumn, num, int_dat, nshift8)
+!
+      use MPI_domain_data_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint_gl), intent(in) :: nshift8
+      integer(kind=kint), intent(in) :: num, ncolumn
+      integer(kind=kint), intent(in) :: int_dat(num)
+!
+      integer(kind = kint_gl) :: int_tmp(num)
+!
+!
+!$omp parallel workshare
+       int_tmp(1:num) = int_dat(1:num) + nshift8
+!$omp end parallel workshare
+      call mpi_write_merged_comm_table(IO_param, ncolumn, num, int_tmp)
+!
+      end subroutine mpi_write_grp_item
+!
+! -----------------------------------------------------------------------
 !
       subroutine mpi_write_surf_grp_item(IO_param, ncolumn,             &
      &          ntot, ist, num, int_dat, nshift8_ele)
