@@ -19,6 +19,7 @@
       use m_constants
 !
       use t_viewer_mesh
+      use t_mesh_data
 !
       implicit none
 !
@@ -33,7 +34,6 @@
       subroutine s_set_surf_connect_4_viewer(group, surf, mgd_sf_grp,   &
      &          view_mesh, domain_grps, view_ele_grps, view_sf_grps)
 !
-      use t_mesh_data_4_merge
       use t_surface_data
       use t_viewer_ele_grp_surface
       use pickup_surface_4_viewer

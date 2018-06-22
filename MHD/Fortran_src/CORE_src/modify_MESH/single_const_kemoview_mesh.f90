@@ -19,11 +19,11 @@
       use m_machine_parameter
       use m_file_format_switch
 !
+      use t_mesh_data
       use t_geometry_data
       use t_surface_data
       use t_edge_data
       use t_file_IO_parameter
-      use t_mesh_data_4_merge
       use t_viewer_mesh
       use t_viewer_ele_grp_surface
       use t_merged_viewer_mesh
@@ -122,7 +122,6 @@
      &       (mesh, group, surf, edge, view_mesh, domain_grps,          &
      &        view_nod_grps, view_ele_grps, view_sf_grps)
 !
-      use set_merged_geometry
       use const_merged_surf_4_group
       use set_surf_connect_4_viewer
       use set_nodes_4_viewer
