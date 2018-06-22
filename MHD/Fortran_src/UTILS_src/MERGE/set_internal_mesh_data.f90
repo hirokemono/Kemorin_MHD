@@ -14,7 +14,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(node_data), intent(inout) :: new_node
 !!      subroutine set_internal_element_connent                         &
-!!     &         (my_rank, node, ele, dbl_nod, iele_to_org, new_ele)
+!!     &         (ele, iele_to_org, new_ele)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(parallel_double_numbering), intent(in) :: dbl_nod
@@ -116,36 +116,30 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_internal_element_connent                           &
-     &         (my_rank, node, ele, dbl_nod, iele_to_org, new_ele)
+     &         (ele, iele_to_org, new_ele)
 !
-      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(parallel_double_numbering), intent(in) :: dbl_nod
-      integer(kind=kint), intent(in)  :: my_rank
       integer(kind=kint), intent(in)  :: iele_to_org(ele%numele)
 !
       type(element_data), intent(inout) :: new_ele
 !
-      integer(kind = kint) :: inum, iele, k1, inod, irank
+      integer(kind = kint) :: inum, iele, k1
 !
 !
 !$omp parallel do private(inum,iele)
       do inum = 1, new_ele%numele
         iele = iele_to_org(inum)
-        new_ele%iele_global(inum) = inum + ele%istack_interele(my_rank)
+        new_ele%iele_global(inum) = inum
         new_ele%elmtyp(inum) =      ele%elmtyp(iele)
         new_ele%nodelm(inum) =      ele%nodelm(iele)
       end do
 !$omp end parallel do
 !
       do k1 = 1, ele%nnod_4_ele
-!$omp parallel do private(inum,iele,inod,irank)
+!$omp parallel do private(inum,iele)
         do inum = 1, new_ele%numele
           iele = iele_to_org(inum)
-          inod = ele%ie(iele,k1)
-          irank = dbl_nod%irank_home(inod)
-          new_ele%ie(inum,k1) = dbl_nod%inod_local(inod)                &
-     &                         + int(node%istack_internod(irank))
+          new_ele%ie(inum,k1) = ele%ie(iele,k1)
         end do
 !$omp end parallel do
       end do

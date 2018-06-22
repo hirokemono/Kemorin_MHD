@@ -90,6 +90,7 @@
 !
       subroutine analyze_merge_mesh
 !
+      use t_para_double_numbering
       use m_phys_labels
       use m_control_param_merge
       use m_file_format_switch
@@ -98,13 +99,21 @@
 !
       type(mesh_geometry), save :: new_mesh
       type(mesh_groups), save :: new_group
+      type(parallel_double_numbering), save :: dbl_nod
 !
+!
+      call alloc_double_numbering(mesh_m%node%numnod, dbl_nod)
+      call set_para_double_numbering                                    &
+     &   (mesh_m%node%internal_node, mesh_m%nod_comm, dbl_nod)
 !
       call s_const_internal_mesh_data                                   &
      &   (mesh_m, group_m, new_mesh, new_group)
 !
       merged_mesh_file%iflag_format = iflag_single
-      call mpi_output_merged_mesh(merged_mesh_file, new_mesh, new_group)
+      call mpi_output_merged_mesh                                       &
+     &   (merged_mesh_file, new_mesh, new_group, dbl_nod)
+!
+      call dealloc_double_numbering(dbl_nod)
 !
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
@@ -114,8 +123,9 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_output_merged_mesh(mesh_file, mesh, group)
+      subroutine mpi_output_merged_mesh(mesh_file, mesh, group, dbl_nod)
 !
+      use t_para_double_numbering
       use mesh_MPI_IO_select
       use set_element_data_4_IO
       use copy_mesh_structures
@@ -125,6 +135,7 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
+      type(parallel_double_numbering), intent(in) :: dbl_nod
 !
 !
       write(*,*) 'mesh%node%istack_numnod', mesh%node%istack_numnod
@@ -134,15 +145,16 @@
 !
 !       save mesh information
       call mpi_write_merged_mesh_file                                   &
-     &   (nprocs, my_rank, mesh_file, mesh, group)
+     &   (nprocs, my_rank, mesh_file, mesh, group, dbl_nod)
 !
       end subroutine mpi_output_merged_mesh
 !
 ! -----------------------------------------------------------------------
 !
       subroutine mpi_write_merged_mesh_file                             &
-     &         (nprocs_in, my_rank_IO, mesh_file, mesh, group)
+     &         (nprocs_in, my_rank_IO, mesh_file, mesh, group, dbl_nod)
 !
+      use t_para_double_numbering
       use m_machine_parameter
       use m_fem_mesh_labels
       use mesh_data_IO
@@ -153,6 +165,7 @@
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
+      type(parallel_double_numbering), intent(in) :: dbl_nod
 !
       type(calypso_MPI_IO_params):: IO_param
       character(len=kchara) :: file_name
@@ -165,7 +178,7 @@
       call open_write_mpi_file                                          &
      &   (file_name, nprocs_in, my_rank_IO, IO_param)
 !
-      call mpi_write_merged_geometry_data(IO_param, mesh)
+      call mpi_write_merged_geometry_data(IO_param, mesh, dbl_nod)
       call mpi_write_merged_mesh_groups                                 &
      &   (mesh%node%istack_internod(my_rank),                           &
      &    mesh%ele%istack_interele(my_rank), IO_param, group)
@@ -176,8 +189,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine mpi_write_merged_geometry_data(IO_param, mesh_IO)
+      subroutine mpi_write_merged_geometry_data                         &
+     &         (IO_param, mesh_IO, dbl_nod)
 !
+      use t_para_double_numbering
       use m_fem_mesh_labels
       use MPI_domain_data_IO
       use MPI_node_geometry_IO
@@ -185,28 +200,37 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(mesh_geometry), intent(inout) :: mesh_IO
+      type(parallel_double_numbering), intent(in) :: dbl_nod
 !
-      return
+      character(len=1) :: chara_dat
+!
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_para()), hd_fem_para())
-      call mpi_write_domain_info(IO_param, mesh_IO%nod_comm)
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(izero))
+      call mpi_write_charahead(IO_param, len_int_txt,                   &
+     &    integer_textline(izero))
+      write(chara_dat,'(a1)') char(10)
+      call mpi_write_charahead(IO_param, ione, chara_dat)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_node()), hd_fem_node())
-      call mpi_write_geometry_info(IO_param, mesh_IO%node)
+      call mpi_write_merged_geometry(IO_param, mesh_IO%node)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_elem()), hd_fem_elem())
-      call mpi_write_element_info(IO_param, mesh_IO%ele)
+      call mpi_write_merged_element                                     &
+     &   (IO_param, mesh_IO%node, mesh_IO%ele, dbl_nod)
 !
+      write(chara_dat,'(a1)') char(10)
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_import()), hd_fem_import())
-      call mpi_write_import_data(IO_param, mesh_IO%nod_comm)
+      call mpi_write_charahead(IO_param, ione, chara_dat)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_export()), hd_fem_export())
-      call mpi_write_export_data(IO_param, mesh_IO%nod_comm)
+      call mpi_write_charahead(IO_param, ione, chara_dat)
 !
       end subroutine mpi_write_merged_geometry_data
 !
@@ -241,6 +265,221 @@
       end subroutine mpi_write_merged_mesh_groups
 !
 !------------------------------------------------------------------
+!
+      subroutine mpi_write_merged_geometry(IO_param, nod_IO)
+!
+      use MPI_ascii_data_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(node_data), intent(inout) :: nod_IO
+!
+      integer(kind = kint_gl) :: num_item_l(2)
+      integer(kind = kint_gl) :: istack_g(2)
+!
+!
+      num_item_l(1) = nod_IO%numnod
+      num_item_l(2) = nod_IO%internal_node
+      call MPI_allREDUCE(num_item_l(1), istack_g(1), itwo,              &
+     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+!
+      call mpi_write_charahead(IO_param, len_multi_int_textline(itwo),  &
+     &    multi_int8_textline(itwo, istack_g(1)))
+!
+      call mpi_write_merged_node_position(IO_param,                     &
+     &    nod_IO%numnod, ithree, nod_IO%inod_global, nod_IO%xx)
+!
+      call dealloc_node_geometry_base(nod_IO)
+!
+      end subroutine mpi_write_merged_geometry
+!
+!------------------------------------------------------------------
+!
+      subroutine mpi_write_merged_node_position                         &
+     &         (IO_param, nnod, numdir, id_global, xx)
+!
+      use m_calypso_mpi_IO
+      use data_IO_to_textline
+      use MPI_ascii_data_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: nnod, numdir
+      integer(kind=kint_gl), intent(in) :: id_global(nnod)
+      real(kind=kreal), intent(in) :: xx(nnod, numdir)
+!
+      integer(kind = kint) :: i, led, ilength
+      real(kind = kreal) :: xx_tmp(numdir)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+!
+      ilength = len_int8_and_vector_textline(numdir)
+      led = nnod * len_int8_and_vector_textline(numdir)
+      call set_istack_4_parallell_data(led, IO_param)
+!
+      ioffset = IO_param%ioff_gl                                        &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(nnod .le. 0) then
+        call calypso_mpi_seek_write_chara                               &
+     &     (IO_param%id_file, ioffset, ione, char(10))
+      else
+        do i = 1, nnod
+          xx_tmp(1:numdir) = xx(i,1:numdir)
+          call calypso_mpi_seek_write_chara                             &
+     &       (IO_param%id_file, ioffset, ilength,                       &
+     &        int8_and_vector_textline(id_global(i), numdir, xx_tmp))
+        end do
+      end if
+      call calypso_mpi_barrier
+!
+      end subroutine mpi_write_merged_node_position
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_write_merged_element                               &
+     &         (IO_param, node_IO, ele_IO, dbl_nod)
+!
+      use t_para_double_numbering
+      use MPI_ascii_data_IO
+      use MPI_integer_list_IO
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(element_data), intent(inout) :: ele_IO
+      type(node_data), intent(inout) :: node_IO
+      type(parallel_double_numbering), intent(in) :: dbl_nod
+!
+      integer(kind = kint_gl) :: num_item_l(1)
+      integer(kind = kint_gl) :: istack_g(1)
+!
+!
+      num_item_l(1) = ele_IO%numele
+      call MPI_allREDUCE(num_item_l(1), istack_g(1), ione,              &
+     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+!
+      call mpi_write_charahead(IO_param, len_multi_int_textline(ione),  &
+     &    multi_int8_textline(ione, istack_g(1)))
+!
+!      call mpi_write_num_of_data(IO_param, ele_IO%numele)
+      call mpi_write_merged_element_type                                &
+     &   (IO_param, iten, ele_IO%numele, ele_IO%elmtyp)
+!
+      call mpi_write_merged_ele_connect(IO_param,                       &
+     &    ele_IO%numele, ele_IO%nnod_4_ele, ele_IO%iele_global,         &
+     &    ele_IO%ie, ele_IO%istack_interele, node_IO%istack_internod,   &
+     &    dbl_nod%nnod_local, dbl_nod%inod_local, dbl_nod%irank_home)
+!
+      call deallocate_ele_connect_type(ele_IO)
+!
+      end subroutine mpi_write_merged_element
+!
+!------------------------------------------------------------------
+!
+      subroutine mpi_write_merged_element_type                          &
+     &         (IO_param, ncolumn, num, int_dat)
+!
+      use MPI_ascii_data_IO
+      use data_IO_to_textline
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: num, ncolumn
+      integer(kind=kint), intent(in) :: int_dat(num)
+!
+      integer(kind = kint) :: i, nrest, loop, led
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+!
+      led = izero
+      if(num .gt. 0) then
+        nrest = mod((num-1),ncolumn) + 1
+        loop = (num-1)/ncolumn
+        led = len_multi_6digit_line(ncolumn) * loop                     &
+     &       + len_multi_6digit_line(nrest)
+      end if
+!
+      call set_istack_4_parallell_data(led, IO_param)
+!
+      ioffset = IO_param%ioff_gl                                        &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(num .gt. 0) then
+        do i = 0, (num-1)/ncolumn - 1
+          call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,  &
+     &        len_multi_6digit_line(ncolumn),                           &
+     &        mul_6digit_int_line(ncolumn, int_dat(ncolumn*i+1)))
+        end do
+        nrest = mod((num-1),ncolumn) + 1
+        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
+     &      len_multi_6digit_line(nrest),                               &
+     &      mul_6digit_int_line(nrest, int_dat(num-nrest+1)))
+      end if
+!
+      end subroutine mpi_write_merged_element_type
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_write_merged_ele_connect(IO_param,                 &
+     &          nele, nnod_4_ele, id_global, ie, istack_interele,       &
+     &          istack_internod, nnod_local, inod_local, irank_home)
+!
+      use MPI_ascii_data_IO
+      use data_IO_to_textline
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      integer(kind=kint), intent(in) :: nele, nnod_4_ele
+      integer(kind=kint_gl), intent(in) :: id_global(nele)
+      integer(kind=kint), intent(in) :: ie(nele,nnod_4_ele)
+!
+      integer(kind=kint_gl), intent(in) :: istack_internod(0:nprocs)
+      integer(kind=kint_gl), intent(in) :: istack_interele(0:nprocs)
+      integer(kind=kint), intent(in) :: nnod_local
+      integer(kind=kint), intent(in) :: inod_local(nnod_local)
+      integer(kind=kint), intent(in) :: irank_home(nnod_local)
+!
+      integer(kind = kint) :: k1, inod, irank
+      integer(kind = kint) :: i, led, ilength
+      integer(kind = kint_gl) :: ie_tmp(0:nnod_4_ele)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+!
+!
+      ilength = len_multi_int_textline(nnod_4_ele+1)
+!
+      led = izero
+      if(nele .gt. 0) then
+        led = ilength * nele
+      end if
+!
+      call set_istack_4_parallell_data(led, IO_param)
+!
+      ioffset = IO_param%ioff_gl                                        &
+     &         + IO_param%istack_merged(IO_param%id_rank)
+      IO_param%ioff_gl = IO_param%ioff_gl                               &
+     &         + IO_param%istack_merged(IO_param%nprocs_in)
+!
+      if(IO_param%id_rank .ge. IO_param%nprocs_in) return
+      if(nele .gt. 0) then
+        do i = 1, nele
+          ie_tmp(0) = id_global(i) + istack_interele(my_rank)
+!
+          do k1 = 1, nnod_4_ele
+            inod = ie(i,k1)
+            irank = irank_home(inod)
+            ie_tmp(k1) = inod_local(inod) + istack_internod(irank)
+          end do
+!
+          call calypso_mpi_seek_write_chara                             &
+     &       (IO_param%id_file, ioffset, ilength,                       &
+     &        multi_int8_textline((nnod_4_ele+1), ie_tmp))
+        end do
+      end if
+!
+      end subroutine mpi_write_merged_ele_connect
+!
+! -----------------------------------------------------------------------
 !
       subroutine mpi_write_merged_grp(nshift8, IO_param, group_IO)
 !

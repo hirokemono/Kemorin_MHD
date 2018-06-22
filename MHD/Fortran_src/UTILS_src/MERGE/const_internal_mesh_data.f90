@@ -55,7 +55,7 @@
 !$omp end parallel workshare
 !
       call const_internal_mesh_geometry                                 &
-     &   (mesh%nod_comm, mesh%node, mesh%ele, iele_to_new, iele_to_org, &
+     &   (mesh%node, mesh%ele, iele_to_new, iele_to_org,                &
      &    new_mesh%nod_comm, new_mesh%node, new_mesh%ele)
 !
       call const_internal_group_data                                    &
@@ -68,13 +68,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_internal_mesh_geometry                           &
-     &         (nod_comm, node, ele, iele_to_new, iele_to_org,          &
+     &         (node, ele, iele_to_new, iele_to_org,                    &
      &          new_comm, new_node, new_ele)
 !
-      use t_para_double_numbering
       use set_internal_mesh_data
 !
-      type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
 !
@@ -85,12 +83,6 @@
       integer(kind = kint), intent(inout) :: iele_to_new(ele%numele)
       integer(kind = kint), intent(inout) :: iele_to_org(ele%numele)
 !
-      type(parallel_double_numbering) :: dbl_nod
-!
-!
-      call alloc_double_numbering(node%numnod, dbl_nod)
-      call set_para_double_numbering                                    &
-     &   (node%internal_node, nod_comm, dbl_nod)
 !
       call find_internal_element                                        &
      &   (node%internal_node, ele%numele, ele%ie(1,1),                  &
@@ -118,13 +110,11 @@
       call allocate_ele_connect_type(new_ele)
 !
       call set_internal_element_connent                                 &
-     &   (my_rank, node, ele, dbl_nod, iele_to_org, new_ele)
+     &   (ele, iele_to_org, new_ele)
 !
       call alloc_numele_stack(nprocs, new_ele)
       new_ele%istack_numele =   ele%istack_interele
       new_ele%istack_interele = ele%istack_interele
-!
-      call dealloc_double_numbering(dbl_nod)
 !
       end subroutine const_internal_mesh_geometry
 !
