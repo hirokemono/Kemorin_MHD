@@ -11,6 +11,7 @@
       module m_control_param_merge
 !
       use m_precision
+      use m_machine_parameter
       use t_file_IO_parameter
 !
       implicit    none
@@ -140,10 +141,12 @@
          end if
        end do
 !
-       write(*,*) 'ucd_on_label', num_nod_phys
-       do i = 1, num_nod_phys
-         write(*,*) i, trim(ucd_on_label(i))
-       end do
+       if(iflag_debug .gt. 0) then
+         write(*,*) 'ucd_on_label', num_nod_phys
+         do i = 1, num_nod_phys
+           write(*,*) i, trim(ucd_on_label(i))
+         end do
+       end if
 !
       istep_start = 1
       if(t_mge_ctl%i_step_init_ctl%iflag .gt. 0) then
