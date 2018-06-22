@@ -7,6 +7,8 @@
 !!     &         (mesh_file, nnod_4_ele, mgd_mesh)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
+!!      subroutine count_num_geometry_w_overlap                         &
+!!     &         (num_pe, subdomain, table, merged)
 !!      subroutine count_subdomain_ngrp_stack(num_pe, sub, istack)
 !
       module count_number_with_overlap
