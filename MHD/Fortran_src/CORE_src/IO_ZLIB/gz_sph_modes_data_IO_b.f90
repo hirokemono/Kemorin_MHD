@@ -15,6 +15,9 @@
 !!     &         (my_rank_IO, comm_IO, sph_IO, ierr)
 !!      subroutine gz_read_modes_rlm_data_b                             &
 !!     &         (my_rank_IO, comm_IO, sph_IO, ierr)
+!!        type(communication_table), intent(inout) :: comm_IO
+!!        type(sph_IO_data), intent(inout) :: sph_IO
+!!        type(sph_group_data), intent(inout) :: sph_grps_IO
 !!
 !!      subroutine gz_write_geom_rtp_data_b                             &
 !!     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
@@ -24,9 +27,9 @@
 !!     &         (my_rank_IO, comm_IO, sph_IO)
 !!      subroutine gz_write_modes_rlm_data_b                            &
 !!     &         (my_rank_IO, comm_IO, sph_IO)
-!!        type(communication_table), intent(inout) :: comm_IO
-!!        type(sph_IO_data), intent(inout) :: sph_IO
-!!        type(sph_group_data), intent(inout) :: sph_grps_IO
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(sph_IO_data), intent(in) :: sph_IO
+!!        type(sph_group_data), intent(in) :: sph_grps_IO
 !!@endverbatim
 !!
 !!@param my_rank    Process ID
@@ -197,9 +200,9 @@
       use gz_groups_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
-      type(sph_group_data), intent(inout) :: sph_grps_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
+      type(sph_group_data), intent(in) :: sph_grps_IO
 !
 !
 !      write(*,*) '! domain and communication'
@@ -235,9 +238,9 @@
       use gz_groups_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
-      type(sph_group_data), intent(inout) :: sph_grps_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
+      type(sph_group_data), intent(in) :: sph_grps_IO
 !
 !
 !      write(*,*) '! domain and communication'
@@ -269,8 +272,8 @@
      &         (my_rank_IO, comm_IO, sph_IO)
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
 !
       call gz_write_domain_info_b(my_rank_IO, comm_IO)
@@ -289,8 +292,8 @@
      &         (my_rank_IO, comm_IO, sph_IO)
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
 !
       call gz_write_domain_info_b(my_rank_IO, comm_IO)

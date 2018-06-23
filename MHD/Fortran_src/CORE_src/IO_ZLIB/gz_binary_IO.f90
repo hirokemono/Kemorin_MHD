@@ -178,7 +178,7 @@
       subroutine gz_write_1d_vector_b(num, real_dat)
 !
       integer(kind = kint), intent(in) :: num
-      real(kind = kreal), intent(inout) :: real_dat(num)
+      real(kind = kreal), intent(in) :: real_dat(num)
 !
       integer(kind = kint) :: ilength, ierr
 !

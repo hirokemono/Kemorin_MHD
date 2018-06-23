@@ -10,6 +10,8 @@
 !!@verbatim
 !!      subroutine gz_write_geometry_data_b(my_rank_IO, mesh_IO)
 !!      subroutine gz_write_mesh_groups_b(mesh_group_IO)
+!!        type(mesh_geometry), intent(in) :: mesh_IO
+!!        type(mesh_groups), intent(in) ::   mesh_group_IO
 !!
 !!      subroutine gz_read_num_node_b(my_rank_IO, mesh_IO, ierr)
 !!      subroutine gz_read_num_node_ele_b(my_rank_IO, mesh_IO, ierr)
@@ -43,7 +45,7 @@
       use gz_element_connect_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(mesh_geometry), intent(inout) :: mesh_IO
+      type(mesh_geometry), intent(in) :: mesh_IO
 !
 !
       call gz_write_domain_info_b(my_rank_IO, mesh_IO%nod_comm)
@@ -62,7 +64,7 @@
 !
       use gz_groups_IO_b
 !
-      type(mesh_groups), intent(inout) ::   mesh_group_IO
+      type(mesh_groups), intent(in) ::   mesh_group_IO
 !
 !
 !   write node group
