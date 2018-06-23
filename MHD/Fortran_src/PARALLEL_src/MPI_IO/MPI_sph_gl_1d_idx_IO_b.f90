@@ -15,7 +15,7 @@
 !!      subroutine mpi_write_rtp_gl_1d_table_b(IO_param, sph_IO)
 !!      subroutine mpi_write_rj_gl_1d_table_b (IO_param, sph_IO)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
-!!        type(sph_IO_data), intent(inout) :: sph_IO
+!!        type(sph_IO_data), intent(in) :: sph_IO
 !!@endverbatim
 !
       module MPI_sph_gl_1d_idx_IO_b
@@ -118,7 +118,7 @@
       subroutine mpi_write_rtp_gl_1d_table_b(IO_param, sph_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
       integer(kind = kint) :: nvect
 !
@@ -148,11 +148,6 @@
       call mpi_write_int_vector_b                                       &
      &   (IO_param, nvect, sph_IO%idx_gl_3)
 !
-      call dealloc_num_idx_sph_IO(sph_IO)
-      call dealloc_idx_sph_1d1_IO(sph_IO)
-      call dealloc_idx_sph_1d2_IO(sph_IO)
-      call dealloc_idx_sph_1d3_IO(sph_IO)
-!
       end subroutine mpi_write_rtp_gl_1d_table_b
 !
 ! ----------------------------------------------------------------------
@@ -160,7 +155,7 @@
       subroutine mpi_write_rj_gl_1d_table_b(IO_param, sph_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
       integer(kind = kint) :: nvect
 !
@@ -184,10 +179,6 @@
       call set_istack_4_parallell_data(nvect, IO_param)
       call mpi_write_int_vector_b                                       &
      &   (IO_param, nvect, sph_IO%idx_gl_2)
-!
-      call dealloc_num_idx_sph_IO(sph_IO)
-      call dealloc_idx_sph_1d1_IO(sph_IO)
-      call dealloc_idx_sph_1d2_IO(sph_IO)
 !
       end subroutine mpi_write_rj_gl_1d_table_b
 !
