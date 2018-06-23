@@ -9,17 +9,25 @@
 !!@verbatim
 !!      subroutine gz_mpi_read_surf_connect                             &
 !!     &         (IO_param, comm_IO, ele_IO, sfed_IO)
-!!      subroutine gz_mpi_write_surf_connect                            &
-!!     &         (IO_param, comm_IO, ele_IO, sfed_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(communication_table), intent(inout) :: comm_IO
-!!        type(node_data), intent(inout) :: nod_IO
 !!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!      subroutine gz_mpi_write_surf_connect                            &
+!!     &         (IO_param, comm_IO, ele_IO, sfed_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(element_data), intent(in) :: ele_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
 !!      subroutine gz_mpi_read_surf_geometry(IO_param, nod_IO, sfed_IO)
-!!      subroutine gz_mpi_write_surf_geometry(IO_param, nod_IO, sfed_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(node_data), intent(inout) :: nod_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!      subroutine gz_mpi_write_surf_geometry(IO_param, nod_IO, sfed_IO)
+!!        type(calypso_MPI_IO_params), intent(in) :: IO_param
+!!        type(node_data), intent(in) :: nod_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!@endverbatim
 !
       module gz_MPI_surface_data_IO
@@ -144,8 +152,8 @@
       subroutine gz_mpi_write_surf_geometry(IO_param, nod_IO, sfed_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(node_data), intent(inout) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(node_data), intent(in) :: nod_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       call gz_mpi_write_charahead                                       &

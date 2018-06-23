@@ -17,7 +17,7 @@
 !!      subroutine gz_mpi_write_import_data(IO_param, comm_IO)
 !!      subroutine gz_mpi_write_export_data(IO_param, comm_IO)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
-!!        type(communication_table), intent(inout) :: comm_IO
+!!        type(communication_table), intent(in) :: comm_IO
 !!
 !!      subroutine gz_mpi_read_int_stack(IO_param, num, istack, ntot)
 !!      subroutine gz_mpi_read_comm_table                               &
@@ -127,7 +127,7 @@
       subroutine gz_mpi_write_domain_info(IO_param, comm_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call gz_mpi_write_charahead(IO_param, len_int_txt,                &
@@ -135,8 +135,6 @@
 !
       call gz_mpi_write_int_vector                                      &
      &   (IO_param, comm_IO%num_neib, comm_IO%id_neib)
-!
-      call deallocate_type_neib_id(comm_IO)
 !
       end subroutine gz_mpi_write_domain_info
 !
@@ -146,7 +144,7 @@
       subroutine gz_mpi_write_import_data(IO_param, comm_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call gz_mpi_write_int_stack                                       &
@@ -155,8 +153,6 @@
       call gz_mpi_write_comm_table                                      &
      &   (IO_param, ione, comm_IO%ntot_import, comm_IO%item_import)
 !
-      call deallocate_type_import(comm_IO)
-!
       end subroutine gz_mpi_write_import_data
 !
 ! -----------------------------------------------------------------------
@@ -164,7 +160,7 @@
       subroutine gz_mpi_write_export_data(IO_param, comm_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call gz_mpi_write_int_stack                                       &
@@ -172,8 +168,6 @@
 !
       call gz_mpi_write_comm_table                                      &
      &   (IO_param, ione, comm_IO%ntot_export, comm_IO%item_export)
-!
-      call deallocate_type_export(comm_IO)
 !
       end subroutine gz_mpi_write_export_data
 !
