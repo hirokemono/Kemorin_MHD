@@ -78,7 +78,7 @@
       use gz_domain_data_IO
 !
       integer (kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       textbuf = hd_ecomm_para() // char(0)
@@ -135,8 +135,8 @@
 !
       use gz_node_geometry_IO
 !
-      type(node_data), intent(inout) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(node_data), intent(in) :: nod_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       textbuf = hd_ecomm_point() // char(0)

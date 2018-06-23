@@ -9,17 +9,21 @@
 !!@verbatim
 !!      subroutine gz_read_surface_connection                           &
 !!     &         (my_rank_IO, comm_IO, ele_IO, sfed_IO, ierr)
-!!      subroutine gz_write_surface_connection                          &
-!!     &         (my_rank_IO, comm_IO, ele_IO, sfed_IO)
 !!        type(communication_table), intent(inout) :: comm_IO
-!!        type(node_data), intent(inout) :: nod_IO
 !!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!      subroutine gz_write_surface_connection                          &
+!!     &         (my_rank_IO, comm_IO, ele_IO, sfed_IO)
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(element_data), intent(in) :: ele_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
 !!      subroutine gz_read_surface_geometry(nod_IO, sfed_IO)
+!!        type(node_data), intent(in) :: nod_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!      subroutine gz_write_surface_geometry(nod_IO, sfed_IO)
-!!        type(node_data), intent(inout) :: nod_IO
-!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!        type(node_data), intent(in) :: nod_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!@endverbatim
 !
       module gz_surface_data_IO
@@ -107,9 +111,9 @@
       use gz_element_connect_IO
 !
       integer (kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(element_data), intent(inout) :: ele_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(element_data), intent(in) :: ele_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       textbuf = hd_surf_para() // char(0)
@@ -183,8 +187,8 @@
 !
       use gz_node_geometry_IO
 !
-      type(node_data), intent(inout) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(node_data), intent(in) :: nod_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       textbuf = hd_surf_point() // char(0)

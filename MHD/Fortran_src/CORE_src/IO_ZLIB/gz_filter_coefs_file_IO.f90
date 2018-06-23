@@ -101,6 +101,11 @@
 !
       call close_gzfile_f
 !
+      call deallocate_type_neib_id(filter_IO%nod_comm)
+      call deallocate_type_import(filter_IO%nod_comm)
+      call deallocate_type_export(filter_IO%nod_comm)
+      call dealloc_node_geometry_base(filter_IO%node)
+!
       end subroutine write_sort_filter_coef_file_gz
 !
 !------------------------------------------------------------------
@@ -158,6 +163,11 @@
       call gz_write_filter_geometry                                     &
      &   (my_rank_IO, filter_IO%nod_comm, filter_IO%node)
       call close_gzfile_f
+!
+      call deallocate_type_neib_id(filter_IO%nod_comm)
+      call deallocate_type_import(filter_IO%nod_comm)
+      call deallocate_type_export(filter_IO%nod_comm)
+      call dealloc_node_geometry_base(filter_IO%node)
 !
       end subroutine write_filter_geometry_file_gz
 !

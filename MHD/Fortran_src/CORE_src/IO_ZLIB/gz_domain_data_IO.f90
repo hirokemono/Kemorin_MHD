@@ -15,7 +15,7 @@
 !!      subroutine gz_write_domain_info(my_rank_IO, comm_IO)
 !!      subroutine gz_write_import_data(comm_IO)
 !!      subroutine gz_write_export_data(comm_IO)
-!!        type(communication_table), intent(inout) :: comm_IO
+!!        type(communication_table), intent(in) :: comm_IO
 !!@endverbatim
 !
       module gz_domain_data_IO
@@ -122,7 +122,7 @@
       use m_sph_modes_grid_labels
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       write(textbuf,'(i16,a1)') my_rank_IO, char(0)
@@ -138,22 +138,18 @@
         call gz_write_textbuf_w_lf
       end if
 !
-      call deallocate_type_neib_id(comm_IO)
-!
       end subroutine gz_write_domain_info
 !
 !------------------------------------------------------------------
 !
       subroutine gz_write_import_data(comm_IO)
 !
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call write_send_recv_data_gz                                      &
      &   (comm_IO%num_neib, comm_IO%ntot_import,                        &
      &    comm_IO%istack_import, comm_IO%item_import)
-!
-      call deallocate_type_import(comm_IO)
 !
       end subroutine gz_write_import_data
 !
@@ -161,14 +157,12 @@
 !
       subroutine gz_write_export_data(comm_IO)
 !
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call write_send_recv_data_gz                                      &
      &   (comm_IO%num_neib, comm_IO%ntot_export,                        &
      &    comm_IO%istack_export, comm_IO%item_export)
-!
-      call deallocate_type_export(comm_IO)
 !
       end subroutine gz_write_export_data
 !
