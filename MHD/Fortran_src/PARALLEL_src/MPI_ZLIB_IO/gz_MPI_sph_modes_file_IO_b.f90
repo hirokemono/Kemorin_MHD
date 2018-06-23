@@ -163,6 +163,18 @@
 !
       call close_mpi_file(IO_param)
 !
+      call deallocate_type_neib_id(sph_file%comm_IO)
+      call deallocate_type_import(sph_file%comm_IO)
+      call dealloc_num_idx_sph_IO(sph_file%sph_IO)
+      call dealloc_idx_sph_1d1_IO(sph_file%sph_IO)
+      call dealloc_idx_sph_1d2_IO(sph_file%sph_IO)
+      call dealloc_idx_sph_1d3_IO(sph_file%sph_IO)
+      call dealloc_nod_id_sph_IO(sph_file%sph_IO)
+      call deallocate_grp_type(sph_file%sph_grp_IO%bc_rtp_grp)
+      call deallocate_grp_type(sph_file%sph_grp_IO%radial_rtp_grp)
+      call deallocate_grp_type(sph_file%sph_grp_IO%theta_rtp_grp)
+      call deallocate_grp_type(sph_file%sph_grp_IO%zonal_rtp_grp)
+!
       end subroutine gz_mpi_write_geom_rtp_file_b
 !
 !------------------------------------------------------------------
@@ -186,6 +198,15 @@
 !
       call close_mpi_file(IO_param)
 !
+      call deallocate_type_neib_id(sph_file%comm_IO)
+      call deallocate_type_import(sph_file%comm_IO)
+      call dealloc_num_idx_sph_IO(sph_file%sph_IO)
+      call dealloc_idx_sph_1d1_IO(sph_file%sph_IO)
+      call dealloc_idx_sph_1d2_IO(sph_file%sph_IO)
+      call dealloc_nod_id_sph_IO(sph_file%sph_IO)
+      call deallocate_grp_type(sph_file%sph_grp_IO%radial_rj_grp)
+      call deallocate_grp_type(sph_file%sph_grp_IO%sphere_rj_grp)
+!
       end subroutine gz_mpi_write_spectr_rj_file_b
 !
 !------------------------------------------------------------------
@@ -207,6 +228,14 @@
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
 !
       call close_mpi_file(IO_param)
+!
+      call deallocate_type_neib_id(sph_file%comm_IO)
+      call deallocate_type_import(sph_file%comm_IO)
+      call dealloc_num_idx_sph_IO(sph_file%sph_IO)
+      call dealloc_idx_sph_1d1_IO(sph_file%sph_IO)
+      call dealloc_idx_sph_1d2_IO(sph_file%sph_IO)
+      call dealloc_idx_sph_1d3_IO(sph_file%sph_IO)
+      call dealloc_nod_id_sph_IO(sph_file%sph_IO)
 !
       end subroutine gz_mpi_write_geom_rtm_file_b
 !
@@ -230,6 +259,13 @@
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
 !
       call close_mpi_file(IO_param)
+!
+      call deallocate_type_neib_id(sph_file%comm_IO)
+      call deallocate_type_import(sph_file%comm_IO)
+      call dealloc_num_idx_sph_IO(sph_file%sph_IO)
+      call dealloc_idx_sph_1d1_IO(sph_file%sph_IO)
+      call dealloc_idx_sph_1d2_IO(sph_file%sph_IO)
+      call dealloc_nod_id_sph_IO(sph_file%sph_IO)
 !
       end subroutine gz_mpi_write_modes_rlm_file_b
 !
