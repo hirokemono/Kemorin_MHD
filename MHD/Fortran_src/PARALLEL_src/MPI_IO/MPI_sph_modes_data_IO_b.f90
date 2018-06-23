@@ -169,6 +169,7 @@
 !
 !
       call mpi_write_domain_info_b(IO_param, comm_IO)
+      call deallocate_type_neib_id(comm_IO)
       call mpi_write_gl_reso_sph_b(IO_param, sph_IO)
       call mpi_write_rank_4_sph_b(IO_param, sph_IO)
 !
@@ -176,11 +177,16 @@
       call mpi_write_gl_nodes_sph_b(IO_param, sph_IO)
 !
       call mpi_write_import_data_b(IO_param, comm_IO)
+      call deallocate_type_import(comm_IO)
 !
       call mpi_write_grp_data_b(IO_param, sph_grps_IO%bc_rtp_grp)
       call mpi_write_grp_data_b(IO_param, sph_grps_IO%radial_rtp_grp)
       call mpi_write_grp_data_b(IO_param, sph_grps_IO%theta_rtp_grp)
       call mpi_write_grp_data_b(IO_param, sph_grps_IO%zonal_rtp_grp)
+      call deallocate_grp_type(sph_grps_IO%bc_rtp_grp)
+      call deallocate_grp_type(sph_grps_IO%radial_rtp_grp)
+      call deallocate_grp_type(sph_grps_IO%theta_rtp_grp)
+      call deallocate_grp_type(sph_grps_IO%zonal_rtp_grp)
 !
       end subroutine mpi_write_geom_rtp_data_b
 !
@@ -197,6 +203,7 @@
 !
 !
       call mpi_write_domain_info_b(IO_param, comm_IO)
+      call deallocate_type_neib_id(comm_IO)
       call mpi_write_gl_reso_sph_b(IO_param, sph_IO)
       call mpi_write_rank_4_sph_b(IO_param, sph_IO)
 !
@@ -204,9 +211,12 @@
       call mpi_write_gl_nodes_sph_b(IO_param, sph_IO)
 !
       call mpi_write_import_data_b(IO_param, comm_IO)
+      call deallocate_type_import(comm_IO)
 !
       call mpi_write_grp_data_b(IO_param, sph_grps_IO%radial_rj_grp)
       call mpi_write_grp_data_b(IO_param, sph_grps_IO%sphere_rj_grp)
+      call deallocate_grp_type(sph_grps_IO%radial_rj_grp)
+      call deallocate_grp_type(sph_grps_IO%sphere_rj_grp)
 !
       end subroutine mpi_write_spectr_rj_data_b
 !
@@ -222,6 +232,7 @@
 !
 !
       call mpi_write_domain_info_b(IO_param, comm_IO)
+      call deallocate_type_neib_id(comm_IO)
       call mpi_write_gl_reso_sph_b(IO_param, sph_IO)
       call mpi_write_rank_4_sph_b(IO_param, sph_IO)
 !
@@ -229,6 +240,7 @@
       call mpi_write_gl_nodes_sph_b(IO_param, sph_IO)
 !
       call mpi_write_import_data_b(IO_param, comm_IO)
+      call deallocate_type_import(comm_IO)
 !
       end subroutine mpi_write_geom_rtm_data_b
 !
@@ -244,6 +256,7 @@
 !
 !
       call mpi_write_domain_info_b(IO_param, comm_IO)
+      call deallocate_type_neib_id(comm_IO)
       call mpi_write_gl_reso_sph_b(IO_param, sph_IO)
       call mpi_write_rank_4_sph_b(IO_param, sph_IO)
 !
@@ -251,6 +264,7 @@
       call mpi_write_gl_nodes_sph_b(IO_param, sph_IO)
 !
       call mpi_write_import_data_b(IO_param, comm_IO)
+      call deallocate_type_import(comm_IO)
 !
       end subroutine mpi_write_modes_rlm_data_b
 !

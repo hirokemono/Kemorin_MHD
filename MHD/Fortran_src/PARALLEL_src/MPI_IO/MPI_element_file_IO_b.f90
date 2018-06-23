@@ -148,6 +148,12 @@
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
+      call deallocate_type_neib_id(ele_mesh_IO%comm)
+      call deallocate_type_import(ele_mesh_IO%comm)
+      call deallocate_type_export(ele_mesh_IO%comm)
+!      call dealloc_node_geometry_base(nod_IO)
+!      call dealloc_ele_scalar_IO(sfed_IO)
+!
       end subroutine mpi_output_element_file_b
 !
 !------------------------------------------------------------------
@@ -174,6 +180,15 @@
 !     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
+      call deallocate_type_neib_id(surf_mesh_IO%comm)
+      call deallocate_type_import(surf_mesh_IO%comm)
+      call deallocate_type_export(surf_mesh_IO%comm)
+      call deallocate_ele_connect_type(surf_mesh_IO%ele)
+      call dealloc_surface_connect_IO(surf_mesh_IO%sfed)
+!      call dealloc_node_geometry_base(surf_mesh_IO%node)
+!      call dealloc_ele_vector_IO(surf_mesh_IO%sfed)
+!      call dealloc_ele_scalar_IO(surf_mesh_IO%sfed)
+!
       end subroutine mpi_output_surface_file_b
 !
 !------------------------------------------------------------------
@@ -199,6 +214,16 @@
 !      call mpi_write_edge_geometry_b(IO_param,                         &
 !     &   edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_mpi_file(IO_param)
+!
+      call deallocate_type_neib_id(edge_mesh_IO%comm)
+      call deallocate_type_import(edge_mesh_IO%comm)
+      call deallocate_type_export(edge_mesh_IO%comm)
+      call deallocate_ele_connect_type(edge_mesh_IO%ele)
+      call dealloc_surface_connect_IO(edge_mesh_IO%sfed)
+      call dealloc_edge_connect_IO(edge_mesh_IO%sfed)
+!      call dealloc_node_geometry_base(edge_mesh_IO%node)
+!      call dealloc_ele_vector_IO(edge_mesh_IO%sfed)
+!      call dealloc_ele_scalar_IO(edge_mesh_IO%sfed)
 !
       end subroutine mpi_output_edge_file_b
 !

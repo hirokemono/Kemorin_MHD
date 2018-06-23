@@ -8,13 +8,20 @@
 !!
 !!@verbatim
 !!      subroutine mpi_read_element_comm_table(IO_param, comm_IO)
-!!      subroutine mpi_write_element_comm_table(IO_param, comm_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(communication_table), intent(inout) :: comm_IO
+!!      subroutine mpi_write_element_comm_table(IO_param, comm_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(communication_table), intent(in) :: comm_IO
 !!
 !!      subroutine mpi_read_element_geometry(IO_param, nod_IO, sfed_IO)
-!!      subroutine mpi_write_element_geometry(IO_param, nod_IO, sfed_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(node_data), intent(inout) :: nod_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!      subroutine mpi_write_element_geometry(IO_param, nod_IO, sfed_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(node_data), intent(in) :: nod_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!@endverbatim
 !
       module MPI_element_data_IO
@@ -67,7 +74,7 @@
       use m_fem_mesh_labels
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call mpi_write_charahead                                          &
@@ -75,17 +82,14 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_para()), hd_fem_para())
       call mpi_write_domain_info(IO_param, comm_IO)
-      call deallocate_type_neib_id(comm_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_ecomm_import()), hd_ecomm_import())
       call mpi_write_import_data(IO_param, comm_IO)
-      call deallocate_type_import(comm_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_ecomm_export()), hd_ecomm_export())
       call mpi_write_export_data(IO_param, comm_IO)
-      call deallocate_type_export(comm_IO)
 !
       end subroutine mpi_write_element_comm_table
 !

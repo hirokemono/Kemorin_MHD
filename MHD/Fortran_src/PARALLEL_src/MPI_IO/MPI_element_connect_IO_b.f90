@@ -10,12 +10,15 @@
 !!      subroutine mpi_write_element_info_b(IO_param, ele_IO)
 !!      subroutine mpi_write_surface_4_element_b(IO_param, sfed_IO)
 !!      subroutine mpi_write_edge_4_element_b(IO_param, sfed_IO)
+!!        type(element_data), intent(in) :: ele_IO
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
 !!      subroutine mpi_read_element_info_b(IO_param, ele_IO)
-!!        type(element_data), intent(inout) :: ele_IO
-!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!      subroutine mpi_read_surface_4_element_b(IO_param, sfed_IO)
 !!      subroutine mpi_read_edge_4_element_b(IO_param, sfed_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!@endverbatim
 !
@@ -43,7 +46,7 @@
       subroutine mpi_write_element_info_b(IO_param, ele_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(element_data), intent(inout) :: ele_IO
+      type(element_data), intent(in) :: ele_IO
 !
       integer (kind = kint) :: num
 !
@@ -60,8 +63,6 @@
       call mul_istack_4_parallell_vect(ele_IO%nnod_4_ele, IO_param)
       call mpi_write_int_vector_b(IO_param, num, ele_IO%ie)
 !
-      call deallocate_ele_connect_type(ele_IO)
-!
       end subroutine mpi_write_element_info_b
 !
 !------------------------------------------------------------------
@@ -69,7 +70,7 @@
       subroutine mpi_write_surface_4_element_b(IO_param, sfed_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
       integer(kind = kint) :: num
 !
@@ -81,8 +82,6 @@
       call mul_istack_4_parallell_vect(sfed_IO%nsurf_in_ele, IO_param)
       call mpi_write_int_vector_b(IO_param, num, sfed_IO%isf_for_ele)
 !
-      call dealloc_surface_connect_IO(sfed_IO)
-!
       end subroutine mpi_write_surface_4_element_b
 !
 !------------------------------------------------------------------
@@ -90,7 +89,7 @@
       subroutine mpi_write_edge_4_element_b(IO_param, sfed_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
       integer(kind = kint) :: num
 !
@@ -101,8 +100,6 @@
       num = sfed_IO%ned_4_ele * sfed_IO%nedge_in_ele
       call mul_istack_4_parallell_vect(sfed_IO%nedge_in_ele, IO_param)
       call mpi_write_int_vector_b(IO_param, num, sfed_IO%iedge_for_ele)
-!
-      call dealloc_edge_connect_IO(sfed_IO)
 !
       end subroutine mpi_write_edge_4_element_b
 !

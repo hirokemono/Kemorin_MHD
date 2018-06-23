@@ -39,7 +39,6 @@
       implicit none
 !
       type(calypso_MPI_IO_params), save, private :: IO_param
-      character(len=kchara), private :: file_name
 !
 !------------------------------------------------------------------
 !
@@ -149,6 +148,9 @@
 !     &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_mpi_file(IO_param)
 !
+      call deallocate_type_neib_id(ele_mesh_IO%comm)
+      call deallocate_type_import(ele_mesh_IO%comm)
+      call deallocate_type_export(ele_mesh_IO%comm)
 !      call dealloc_node_geometry_base(ele_mesh_IO%node)
 !      call dealloc_ele_scalar_IO(ele_mesh_IO%sfed)
 !
@@ -177,6 +179,12 @@
 !      call mpi_write_surface_geometry(IO_param,                        &
 !     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_mpi_file(IO_param)
+!
+      call deallocate_type_neib_id(surf_mesh_IO%comm)
+      call deallocate_type_import(surf_mesh_IO%comm)
+      call deallocate_type_export(surf_mesh_IO%comm)
+      call deallocate_ele_connect_type(surf_mesh_IO%ele)
+      call dealloc_surface_connect_IO(surf_mesh_IO%sfed)
 !
       end subroutine mpi_output_surface_file
 !

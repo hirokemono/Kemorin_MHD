@@ -11,14 +11,16 @@
 !!     &         (IO_param, comm_IO, ele_IO, sfed_IO)
 !!      subroutine mpi_write_surface_connection                         &
 !!     &         (IO_param, comm_IO, ele_IO, sfed_IO)
-!!        type(communication_table), intent(inout) :: comm_IO
-!!        type(node_data), intent(inout) :: nod_IO
-!!        type(element_data), intent(inout) :: ele_IO
-!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(element_data), intent(in) :: ele_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
 !!      subroutine mpi_read_surface_geometry(IO_param, nod_IO, sfed_IO)
 !!      subroutine mpi_write_surface_geometry(IO_param, nod_IO, sfed_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(node_data), intent(inout) :: nod_IO
+!!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!@endverbatim
 !
@@ -86,9 +88,9 @@
       use m_fem_mesh_labels
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
-      type(element_data), intent(inout) :: ele_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(element_data), intent(in) :: ele_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       call mpi_write_charahead                                          &
@@ -96,28 +98,23 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_fem_para()), hd_fem_para())
       call mpi_write_domain_info(IO_param, comm_IO)
-      call deallocate_type_neib_id(comm_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_surf_connect()), hd_surf_connect())
       call mpi_write_element_info(IO_param, ele_IO)
-      call deallocate_ele_connect_type(ele_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_surf_on_ele()), hd_surf_on_ele())
       call mpi_write_surface_4_element(IO_param, sfed_IO)
-      call dealloc_surface_connect_IO(sfed_IO)
 !
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_surf_import()), hd_surf_import())
       call mpi_write_import_data(IO_param, comm_IO)
-      call deallocate_type_import(comm_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_surf_export()), hd_surf_export())
       call mpi_write_export_data(IO_param, comm_IO)
-      call deallocate_type_export(comm_IO)
 !
       end subroutine mpi_write_surface_connection
 !
