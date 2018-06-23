@@ -86,7 +86,7 @@
       real(kind = kreal) :: rgba_tmp(4)
 !
       !type(noise_mask), allocatable :: n_mask
-      integer(kind = kint) :: k_size
+      integer(kind = kint) :: k_size, sample_cnt
       real(kind = kreal), allocatable :: k_ary(:)
       real(kind = kreal) :: range_max, range_min
 
@@ -95,6 +95,8 @@
       k_size = 128
       allocate(k_ary(k_size))
       call generate_kernal_ary(k_size, k_ary)
+!
+      sample_cnt = 0
 
       !range_min = 3.0
       !range_max = 14.0
@@ -119,8 +121,10 @@
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),             &
      &       k_size, k_ary, node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
+        sample_cnt = sample_cnt + icount_pvr_trace(inum)
       end do
 !$omp end parallel do
+      write(*,*) "pvr sampling cnt:", my_rank, sample_cnt
 !
       end subroutine ray_trace_each_lic_image
 !

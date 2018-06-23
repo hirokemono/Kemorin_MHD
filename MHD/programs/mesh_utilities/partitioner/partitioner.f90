@@ -56,7 +56,8 @@
       &      :: def_magnetic_field_name = 'magnetic_field'
       type(vector_field), save :: data_field_vec
       type(simulate_particle), pointer :: particles(:)
-      real(kind = kreal), pointer :: time_cost(:)
+      !real(kind = kreal), pointer :: time_cost(:)
+      type(time_esti), pointer:: time_cost(:)
       real(kind = kreal), pointer :: partition_tbl(:), part_num_node(:)
       !type(dimension_part_tbl) :: part_dim_tbl
       integer(kind = kint) :: num_particle
@@ -175,7 +176,7 @@
         part_num_node(:) = partition_tbl(:)*org_mesh%node%numnod
 
         if(iflag_part_debug .gt. 0) then
-          write(*,*) 'time cost', time_cost(1:num_domain)
+          write(*,*) 'time cost', time_cost(1:num_domain)%ave_time
           write(*,*) 'partition tbl', partition_tbl(1:num_domain)
           write(*,*) 'target partition num', part_num_node(:)
         end if

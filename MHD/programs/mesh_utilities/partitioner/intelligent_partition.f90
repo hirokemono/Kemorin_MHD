@@ -59,6 +59,12 @@ type dimension_part_tbl
   type(ratio_ptr), dimension(3)::part_dim(3)
 end type dimension_part_tbl
 !
+type time_esti
+  real(kind = kreal) :: total_time
+  real(kind = kreal) :: ave_time
+  integer(kind = kint_gl) :: cnt
+end type time_esti
+!
 ! -------------------------------------------------------------------
 !
 contains
@@ -204,7 +210,8 @@ subroutine seed_particles(nnod, nele, nsurf, nnod_4_surf,      &
   real(kind = kreal), intent(in) :: field(nnod,3), xx(nnod,3)
   integer(kind = kint), intent(in) :: num_particle
   type(simulate_particle), intent(in) :: particles(num_particle)
-  real(kind = kreal), intent(inout) :: time_cost(num_domain)
+  !real(kind = kreal), intent(inout) :: time_cost(num_domain)
+  type(time_esti), intent(inout) :: time_cost(num_domain)
 !
   integer(kind = kint) :: isurf_org(3), isurf_hit
   integer(kind = kint) :: i, iele, iflag_dir, iflag_found_sf, iflag_comm
@@ -212,8 +219,8 @@ subroutine seed_particles(nnod, nele, nsurf, nnod_4_surf,      &
   real(kind = kreal) :: xx_org(3), vec_org(3), new_pos(3), new_vec(3), xi(2)
   real(kind = kreal) :: time_cost_cnt(num_domain), aver_time_cost
 !
-  time_cost_cnt(:) = 0.0
-  time_cost(:) = 0.0
+  time_cost(:)%total_time = 0.0
+  time_cost(:)%cnt = 0
   do i = 1, num_particle
     iele = particles(i)%ele_id
     if(iele .le. izero .or. iele .gt. nele) then
@@ -268,15 +275,16 @@ subroutine seed_particles(nnod, nele, nsurf, nnod_4_surf,      &
     &           iflag_dir, xx, field, isurf_org, particles(i)%group_id,       &
     &           new_pos, new_vec, particles(i)%line_len, itr_num, iflag_comm)
     !write(*,*) 'total iter_num ', itr_num, 'backward res ', iflag_comm
-    time_cost_cnt(particles(i)%group_id) = time_cost_cnt(particles(i)%group_id) + 1
-    time_cost(particles(i)%group_id) = time_cost(particles(i)%group_id) + itr_num
+    time_cost(particles(i)%group_id)%cnt = time_cost(particles(i)%group_id)%cnt + 1
+    time_cost(particles(i)%group_id)%total_time =       &
+    &           time_cost(particles(i)%group_id)%total_time + itr_num
   end do
   cnt = 0
   aver_time_cost = 0.0
   do i = 1, num_domain
-    if(time_cost_cnt(i) .ne. 0.0) then
-      time_cost(i) = time_cost(i) / time_cost_cnt(i)
-      aver_time_cost = aver_time_cost + time_cost(i)
+    if(time_cost(i)%cnt .ne. 0) then
+      time_cost(i)%ave_time = time_cost(i)%total_time / time_cost(i)%cnt
+      aver_time_cost = aver_time_cost + time_cost(i)%ave_time
       cnt = cnt + 1
     end if
   end do
@@ -286,8 +294,8 @@ subroutine seed_particles(nnod, nele, nsurf, nnod_4_surf,      &
     aver_time_cost = 1.0
   end if
   do i = 1, num_domain
-    if(time_cost(i) .eq. 0.0) then
-      time_cost(i) = aver_time_cost
+    if(time_cost(i)%cnt .eq. 0.0) then
+      time_cost(i)%ave_time = aver_time_cost
     end if
   end do
 end subroutine seed_particles
@@ -433,7 +441,8 @@ end subroutine choose_particles_from_eles
 subroutine cal_partition_tbl(time_cost, num_domain, partition_tbl)
 !
   integer(kind = kint), intent(in) :: num_domain
-  real(kind = kreal), intent(in) :: time_cost(num_domain)
+  !real(kind = kreal), intent(in) :: time_cost(num_domain)
+  type(time_esti), intent(in) :: time_cost(num_domain)
   real(kind = kreal), intent(inout) :: partition_tbl(num_domain)
 !
   real(kind = kreal) :: M
@@ -441,8 +450,8 @@ integer(kind = kint) :: i
 !
   M = 0.0
   do i = 1, num_domain
-    if(time_cost(i) .ne. 0.0) then
-      M = M + 1/time_cost(i)
+    if(time_cost(i)%ave_time .ne. 0.0) then
+      M = M + 1/time_cost(i)%ave_time
     end if
   end do
 
@@ -452,9 +461,10 @@ integer(kind = kint) :: i
     partition_tbl(1:num_domain) = 1.0 / num_domain
     return
   end if
+
   do i = 1, num_domain
-    if(time_cost(i) .ne. 0.0) then
-      partition_tbl(i) = M / time_cost(i)
+    if(time_cost(i)%ave_time .ne. 0.0) then
+      partition_tbl(i) = M / time_cost(i)%ave_time
     end if
   end do
 end subroutine cal_partition_tbl
