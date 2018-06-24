@@ -15,7 +15,7 @@
 !!      subroutine write_domain_info(id_file, my_rank_IO, comm_IO)
 !!      subroutine write_import_data(id_file, comm_IO)
 !!      subroutine write_export_data(id_file, comm_IO)
-!!        type(communication_table), intent(inout) :: comm_IO
+!!        type(communication_table), intent(in) :: comm_IO
 !!@endverbatim
 !!
 !@param id_file file ID
@@ -127,7 +127,7 @@
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
 !      write(id_file,'(a)') '! '
@@ -146,8 +146,6 @@
         write(id_file,'(a)') ''
       end if
 !
-      call deallocate_type_neib_id(comm_IO)
-!
       end subroutine write_domain_info
 !
 !------------------------------------------------------------------
@@ -156,14 +154,12 @@
       subroutine write_import_data(id_file, comm_IO)
 !
       integer(kind = kint), intent(in) :: id_file
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call write_send_recv_data                                         &
      &   (id_file, comm_IO%num_neib, comm_IO%ntot_import,               &
      &    comm_IO%istack_import, comm_IO%item_import)
-!
-      call deallocate_type_import(comm_IO)
 !
       end subroutine write_import_data
 !
@@ -172,14 +168,12 @@
       subroutine write_export_data(id_file, comm_IO)
 !
       integer(kind = kint), intent(in) :: id_file
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call write_send_recv_data                                         &
      &   (id_file, comm_IO%num_neib, comm_IO%ntot_export,               &
      &    comm_IO%istack_export, comm_IO%item_export)
-!
-      call deallocate_type_export(comm_IO)
 !
       end subroutine write_export_data
 !

@@ -165,6 +165,15 @@
 !
       close(input_file_code)
 !
+      call deallocate_type_neib_id(fem_IO%mesh%nod_comm)
+      call deallocate_type_import(fem_IO%mesh%nod_comm)
+      call deallocate_type_export(fem_IO%mesh%nod_comm)
+      call dealloc_node_geometry_base(fem_IO%mesh%node)
+      call deallocate_ele_connect_type(fem_IO%mesh%ele)
+      call deallocate_grp_type(fem_IO%group%nod_grp)
+      call deallocate_grp_type(fem_IO%group%ele_grp)
+      call deallocate_sf_grp_type(fem_IO%group%surf_grp)
+!
       end subroutine write_mesh_file
 !
 !  ---------------------------------------------------------------------
@@ -193,6 +202,9 @@
          (input_file_code, my_rank_IO, mesh_IO)
       close(input_file_code)
 !
+      call deallocate_type_neib_id(mesh_IO%nod_comm)
+      call dealloc_node_geometry_base(mesh_IO%node)
+!
       end subroutine write_node_position_sph
 !
 !  ---------------------------------------------------------------------
@@ -220,6 +232,9 @@
       call output_node_cyl_geometry                                     &
          (input_file_code, my_rank_IO, mesh_IO)
       close(input_file_code)
+!
+      call deallocate_type_neib_id(mesh_IO%nod_comm)
+      call dealloc_node_geometry_base(mesh_IO%node)
 !
       end subroutine write_node_position_cyl
 !

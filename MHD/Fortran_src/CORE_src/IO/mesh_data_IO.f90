@@ -10,6 +10,8 @@
 !!@verbatim
 !!      subroutine write_geometry_data(id_file, my_rank_IO, mesh_IO)
 !!      subroutine write_mesh_groups(id_file, mesh_group_IO)
+!!        type(mesh_geometry), intent(in) :: mesh_IO
+!!        type(mesh_groups), intent(in) ::   mesh_group_IO
 !!
 !!      subroutine read_num_node(id_file, my_rank_IO, mesh_IO, ierr)
 !!      subroutine read_num_node_ele(id_file, my_rank_IO, mesh_IO, ierr)
@@ -20,14 +22,18 @@
 !!
 !!      subroutine write_filter_geometry                                &
 !!     &         (id_file, my_rank_IO, comm_IO, nod_IO)
+!!        type(node_data), intent(in) :: nod_IO
+!!        type(communication_table), intent(in) :: comm_IO
 !!      subroutine read_filter_geometry                                 &
 !!     &         (id_file, my_rank_IO, comm_IO, nod_IO, ierr)
+!!        type(node_data), intent(inout) :: nod_IO
+!!        type(communication_table), intent(inout) :: comm_IO
 !!
 !!      subroutine output_node_sph_geometry                             &
 !!     &         (id_file, my_rank_IO, mesh_IO)
 !!      subroutine output_node_cyl_geometry                             &
 !!     &         (id_file, my_rank_IO, mesh_IO)
-!!        type(mesh_geometry), intent(inout) :: mesh_IO
+!!        type(mesh_geometry), intent(in) :: mesh_IO
 !!@endverbatim
 !
       module mesh_data_IO
@@ -55,7 +61,7 @@
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(mesh_geometry), intent(inout) :: mesh_IO
+      type(mesh_geometry), intent(in) :: mesh_IO
 !
 !
       write(id_file,'(a)', advance='NO') hd_fem_para()
@@ -86,7 +92,7 @@
       use groups_IO
 !
       integer(kind = kint), intent(in) :: id_file
-      type(mesh_groups), intent(inout) ::   mesh_group_IO
+      type(mesh_groups), intent(in) ::   mesh_group_IO
 !
 !
 !   write node group
@@ -209,8 +215,8 @@
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(node_data), intent(inout) :: nod_IO
-      type(communication_table), intent(inout) :: comm_IO
+      type(node_data), intent(in) :: nod_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       write(id_file,'(a)', advance='NO') hd_fem_para()
@@ -270,7 +276,7 @@
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(mesh_geometry), intent(inout) :: mesh_IO
+      type(mesh_geometry), intent(in) :: mesh_IO
 !
 !
       write(id_file,'(a)', advance='NO') hd_fem_para_sph()
@@ -291,7 +297,7 @@
 !
       integer(kind = kint), intent(in) :: id_file
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(mesh_geometry), intent(inout) :: mesh_IO
+      type(mesh_geometry), intent(in) :: mesh_IO
 !
 !
       write(id_file,'(a)', advance='NO') hd_fem_para_cyl()

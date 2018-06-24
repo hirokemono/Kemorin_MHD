@@ -85,6 +85,12 @@
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)
 !
+      call deallocate_type_neib_id(ele_mesh_IO%comm)
+      call deallocate_type_import(ele_mesh_IO%comm)
+      call deallocate_type_export(ele_mesh_IO%comm)
+      call dealloc_node_geometry_base(ele_mesh_IO%node)
+      call dealloc_ele_scalar_IO(ele_mesh_IO%sfed)
+!
       end subroutine output_element_xyz_file
 !
 !------------------------------------------------------------------
@@ -114,6 +120,12 @@
       call write_element_geometry_sph(input_file_code,                  &
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)
+!
+      call deallocate_type_neib_id(ele_mesh_IO%comm)
+      call deallocate_type_import(ele_mesh_IO%comm)
+      call deallocate_type_export(ele_mesh_IO%comm)
+      call dealloc_node_geometry_base(ele_mesh_IO%node)
+      call dealloc_ele_scalar_IO(ele_mesh_IO%sfed)
 !
       end subroutine output_element_sph_file
 !
@@ -145,6 +157,12 @@
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       close(input_file_code)
 !
+      call deallocate_type_neib_id(ele_mesh_IO%comm)
+      call deallocate_type_import(ele_mesh_IO%comm)
+      call deallocate_type_export(ele_mesh_IO%comm)
+      call dealloc_node_geometry_base(ele_mesh_IO%node)
+      call dealloc_ele_scalar_IO(ele_mesh_IO%sfed)
+!
       end subroutine output_element_cyl_file
 !
 !------------------------------------------------------------------
@@ -171,11 +189,20 @@
 !
       open (input_file_code, file = file_name, form = 'formatted')
       call write_surface_connection                                     &
-     &  (input_file_code, my_rank_IO, surf_mesh_IO%comm,                &
-     &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
+     &   (input_file_code, my_rank_IO, surf_mesh_IO%comm,               &
+     &    surf_mesh_IO%ele, surf_mesh_IO%sfed)
       call write_surface_geometry(input_file_code,                      &
      &    surf_mesh_IO%node, surf_mesh_IO%sfed)
       close (input_file_code)
+!
+      call deallocate_type_neib_id(surf_mesh_IO%comm)
+      call deallocate_type_import(surf_mesh_IO%comm)
+      call deallocate_type_export(surf_mesh_IO%comm)
+      call deallocate_ele_connect_type(surf_mesh_IO%ele)
+      call dealloc_surface_connect_IO( surf_mesh_IO%sfed)
+      call dealloc_node_geometry_base(surf_mesh_IO%node)
+      call dealloc_ele_vector_IO(surf_mesh_IO%sfed)
+      call dealloc_ele_scalar_IO(surf_mesh_IO%sfed)
 !
       end subroutine output_surface_xyz_file
 !
@@ -199,11 +226,20 @@
 !
       open (input_file_code, file = file_name, form = 'formatted')
       call write_surface_connection                                     &
-     &  (input_file_code, my_rank_IO, surf_mesh_IO%comm,                &
-     &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
+     &   (input_file_code, my_rank_IO, surf_mesh_IO%comm,               &
+     &    surf_mesh_IO%ele, surf_mesh_IO%sfed)
       call write_surface_geometry_sph(input_file_code,                  &
-     &   surf_mesh_IO%node, surf_mesh_IO%sfed)
+     &    surf_mesh_IO%node, surf_mesh_IO%sfed)
       close (input_file_code)
+!
+      call deallocate_type_neib_id(surf_mesh_IO%comm)
+      call deallocate_type_import(surf_mesh_IO%comm)
+      call deallocate_type_export(surf_mesh_IO%comm)
+      call deallocate_ele_connect_type(surf_mesh_IO%ele)
+      call dealloc_surface_connect_IO( surf_mesh_IO%sfed)
+      call dealloc_node_geometry_base(surf_mesh_IO%node)
+      call dealloc_ele_vector_IO(surf_mesh_IO%sfed)
+      call dealloc_ele_scalar_IO(surf_mesh_IO%sfed)
 !
       end subroutine output_surface_sph_file
 !
@@ -227,11 +263,20 @@
 !
       open (input_file_code, file = file_name, form = 'formatted')
       call write_surface_connection                                     &
-     &  (input_file_code, my_rank_IO, surf_mesh_IO%comm,                &
-     &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
+     &   (input_file_code, my_rank_IO, surf_mesh_IO%comm,               &
+     &    surf_mesh_IO%ele, surf_mesh_IO%sfed)
       call write_surface_geometry_cyl(input_file_code,                  &
      &    surf_mesh_IO%node, surf_mesh_IO%sfed)
       close (input_file_code)
+!
+      call deallocate_type_neib_id(surf_mesh_IO%comm)
+      call deallocate_type_import(surf_mesh_IO%comm)
+      call deallocate_type_export(surf_mesh_IO%comm)
+      call deallocate_ele_connect_type(surf_mesh_IO%ele)
+      call dealloc_surface_connect_IO( surf_mesh_IO%sfed)
+      call dealloc_node_geometry_base(surf_mesh_IO%node)
+      call dealloc_ele_vector_IO(surf_mesh_IO%sfed)
+      call dealloc_ele_scalar_IO(surf_mesh_IO%sfed)
 !
       end subroutine output_surface_cyl_file
 !
@@ -259,11 +304,21 @@
 !
       open (input_file_code, file = file_name, form = 'formatted')
       call write_edge_connection                                        &
-     &  (input_file_code, my_rank_IO, edge_mesh_IO%comm,                &
-     &   edge_mesh_IO%ele, edge_mesh_IO%sfed)
+     &   (input_file_code, my_rank_IO, edge_mesh_IO%comm,               &
+     &    edge_mesh_IO%ele, edge_mesh_IO%sfed)
       call write_edge_geometry(input_file_code,                         &
-     &   edge_mesh_IO%node, edge_mesh_IO%sfed)
+     &    edge_mesh_IO%node, edge_mesh_IO%sfed)
       close (input_file_code)
+!
+      call deallocate_type_neib_id(edge_mesh_IO%comm)
+      call deallocate_type_import(edge_mesh_IO%comm)
+      call deallocate_type_export(edge_mesh_IO%comm)
+      call deallocate_ele_connect_type(edge_mesh_IO%ele)
+      call dealloc_surface_connect_IO(edge_mesh_IO%sfed)
+      call dealloc_edge_connect_IO(edge_mesh_IO%sfed)
+      call dealloc_node_geometry_base(edge_mesh_IO%node)
+      call dealloc_ele_vector_IO(edge_mesh_IO%sfed)
+      call dealloc_ele_scalar_IO(edge_mesh_IO%sfed)
 !
       end subroutine output_edge_xyz_file
 !
@@ -293,6 +348,16 @@
      &    edge_mesh_IO%node, edge_mesh_IO%sfed)
       close (input_file_code)
 !
+      call deallocate_type_neib_id(edge_mesh_IO%comm)
+      call deallocate_type_import(edge_mesh_IO%comm)
+      call deallocate_type_export(edge_mesh_IO%comm)
+      call deallocate_ele_connect_type(edge_mesh_IO%ele)
+      call dealloc_surface_connect_IO(edge_mesh_IO%sfed)
+      call dealloc_edge_connect_IO(edge_mesh_IO%sfed)
+      call dealloc_node_geometry_base(edge_mesh_IO%node)
+      call dealloc_ele_vector_IO(edge_mesh_IO%sfed)
+      call dealloc_ele_scalar_IO(edge_mesh_IO%sfed)
+!
       end subroutine output_edge_sph_file
 !
 !------------------------------------------------------------------
@@ -319,8 +384,18 @@
      &   (input_file_code, my_rank_IO, edge_mesh_IO%comm,               &
      &    edge_mesh_IO%ele, edge_mesh_IO%sfed)
       call write_edge_geometry_cyl(input_file_code,                     &
-     &   edge_mesh_IO%node, edge_mesh_IO%sfed)
+     &    edge_mesh_IO%node, edge_mesh_IO%sfed)
       close (input_file_code)
+!
+      call deallocate_type_neib_id(edge_mesh_IO%comm)
+      call deallocate_type_import(edge_mesh_IO%comm)
+      call deallocate_type_export(edge_mesh_IO%comm)
+      call deallocate_ele_connect_type(edge_mesh_IO%ele)
+      call dealloc_surface_connect_IO(edge_mesh_IO%sfed)
+      call dealloc_edge_connect_IO(edge_mesh_IO%sfed)
+      call dealloc_node_geometry_base(edge_mesh_IO%node)
+      call dealloc_ele_vector_IO(edge_mesh_IO%sfed)
+      call dealloc_ele_scalar_IO(edge_mesh_IO%sfed)
 !
       end subroutine output_edge_cyl_file
 !

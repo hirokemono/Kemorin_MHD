@@ -9,11 +9,13 @@
 !!@verbatim
 !!      subroutine read_group_datamesh_file_id, rj_grp_IO)
 !!      subroutine read_surf_grp_data(id_file, surf_grp_IO)
+!!        type(group_data), intent(inout) :: rj_grp_IO
+!!        type(surface_group_data), intent(inout) :: surf_grp_IO
 !!
 !!      subroutine write_grp_data(id_file, rj_grp_IO)
 !!      subroutine write_surf_grp_data(id_file, surf_grp_IO)
-!!        type(group_data), intent(inout) :: rj_grp_IO
-!!        type(surface_group_data), intent(inout) :: surf_grp_IO
+!!        type(group_data), intent(in) :: rj_grp_IO
+!!        type(surface_group_data), intent(in) :: surf_grp_IO
 !!@endverbatim
 !
       module groups_IO
@@ -105,14 +107,12 @@
       use t_group_data
 !
       integer(kind = kint), intent(in) :: id_file
-      type(group_data), intent(inout) :: rj_grp_IO
+      type(group_data), intent(in) :: rj_grp_IO
 !
 !
       call write_group_data(id_file, rj_grp_IO%num_grp,                 &
      &    rj_grp_IO%num_item, rj_grp_IO%istack_grp,                     &
      &    rj_grp_IO%grp_name, rj_grp_IO%item_grp)
-!
-      call deallocate_grp_type(rj_grp_IO)
 !
       end subroutine write_grp_data
 !
@@ -124,14 +124,12 @@
       use t_group_data
 !
       integer(kind = kint), intent(in) :: id_file
-      type(surface_group_data), intent(inout) :: surf_grp_IO
+      type(surface_group_data), intent(in) :: surf_grp_IO
 !
 !
       call write_surf_group_data(id_file, surf_grp_IO%num_grp,          &
      &    surf_grp_IO%num_item, surf_grp_IO%istack_grp,                 &
      &    surf_grp_IO%grp_name, surf_grp_IO%item_sf_grp)
-!
-      call deallocate_sf_grp_type(surf_grp_IO)
 !
       end subroutine write_surf_grp_data
 !
