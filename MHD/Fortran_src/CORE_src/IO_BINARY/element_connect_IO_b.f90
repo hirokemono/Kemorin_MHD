@@ -8,8 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine write_element_info_b(ele_IO)
+!!        type(element_data), intent(in) :: ele_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!      subroutine write_surface_4_element_b(sfed_IO)
 !!      subroutine write_edge_4_element_b(sfed_IO)
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
 !!      subroutine read_number_of_element_b(ele_IO)
 !!      subroutine read_element_info_b(ele_IO)
@@ -39,7 +42,7 @@
 !
       use binary_IO
 !
-      type(element_data), intent(inout) :: ele_IO
+      type(element_data), intent(in) :: ele_IO
 !
       integer (kind = kint) :: i
       integer (kind = kint), allocatable :: ie_tmp(:)
@@ -57,8 +60,6 @@
       end do
       deallocate(ie_tmp)
 !
-      call deallocate_ele_connect_type(ele_IO)
-!
       end subroutine write_element_info_b
 !
 !------------------------------------------------------------------
@@ -67,7 +68,7 @@
 !
       use binary_IO
 !
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
       integer(kind = kint) :: num
 !
@@ -77,8 +78,6 @@
       call write_one_integer_b(sfed_IO%nsurf_in_ele)
       call write_mul_integer_b(num, sfed_IO%isf_for_ele)
 !
-      call dealloc_surface_connect_IO(sfed_IO)
-!
       end subroutine write_surface_4_element_b
 !
 !------------------------------------------------------------------
@@ -87,7 +86,7 @@
 !
       use binary_IO
 !
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
       integer(kind = kint) :: num
 !
@@ -96,8 +95,6 @@
       call write_one_integer_b(sfed_IO%ned_4_ele)
       call write_one_integer_b(sfed_IO%nedge_in_ele)
       call write_mul_integer_b(num, sfed_IO%iedge_for_ele)
-!
-      call dealloc_edge_connect_IO(sfed_IO)
 !
       end subroutine write_edge_4_element_b
 !

@@ -10,6 +10,8 @@
 !!@verbatim
 !!      subroutine write_geometry_data_b(my_rank_IO, mesh_IO)
 !!      subroutine write_mesh_groups_b(mesh_group_IO)
+!!        type(mesh_geometry), intent(in) :: mesh_IO
+!!        type(mesh_groups), intent(in) ::   mesh_group_IO
 !!
 !!      subroutine read_num_node_b(my_rank_IO, mesh_IO, ierr)
 !!      subroutine read_num_node_ele_b(my_rank_IO, mesh_IO, ierr)
@@ -20,6 +22,8 @@
 !!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!
 !!      subroutine write_filter_geometry_b(my_rank_IO, comm_IO, nod_IO)
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(node_data), intent(in) :: nod_IO
 !!      subroutine read_filter_geometry_b                               &
 !!     &         (my_rank_IO, comm_IO, nod_IO, ierr)
 !!        type(communication_table), intent(inout) :: comm_IO
@@ -50,7 +54,7 @@
       use element_connect_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(mesh_geometry), intent(inout) :: mesh_IO
+      type(mesh_geometry), intent(in) :: mesh_IO
 !
 !
       call write_domain_info_b(my_rank_IO, mesh_IO%nod_comm)
@@ -69,7 +73,7 @@
 !
       use groups_IO_b
 !
-      type(mesh_groups), intent(inout) ::   mesh_group_IO
+      type(mesh_groups), intent(in) ::   mesh_group_IO
 !
 !
 !   write node group
@@ -89,8 +93,8 @@
       use node_geometry_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(node_data), intent(inout) :: nod_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(node_data), intent(in) :: nod_IO
 !
 !
       call write_domain_info_b(my_rank_IO, comm_IO)

@@ -9,17 +9,21 @@
 !!@verbatim
 !!      subroutine read_surface_connection_b                            &
 !!     &         (my_rank_IO, comm_IO, ele_IO, sfed_IO, ierr)
-!!      subroutine write_surface_connection_b                           &
-!!     &         (my_rank_IO, comm_IO, ele_IO, sfed_IO)
 !!        type(communication_table), intent(inout) :: comm_IO
-!!        type(node_data), intent(inout) :: nod_IO
 !!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!      subroutine write_surface_connection_b                           &
+!!     &         (my_rank_IO, comm_IO, ele_IO, sfed_IO)
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(element_data), intent(in) :: ele_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
 !!      subroutine read_surface_geometry_b(nod_IO, sfed_IO)
-!!      subroutine write_surface_geometry_b(nod_IO, sfed_IO)
 !!        type(node_data), intent(inout) :: nod_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!      subroutine write_surface_geometry_b(nod_IO, sfed_IO)
+!!        type(node_data), intent(in) :: nod_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!@endverbatim
 !
       module surface_data_IO_b
@@ -75,9 +79,9 @@
       use element_connect_IO_b
 !
       integer (kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(element_data), intent(inout) :: ele_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(element_data), intent(in) :: ele_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       call write_domain_info_b(my_rank_IO, comm_IO)
@@ -115,8 +119,8 @@
 !
       use node_geometry_IO_b
 !
-      type(node_data), intent(inout) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(node_data), intent(in) :: nod_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       call write_geometry_info_b(nod_IO)
