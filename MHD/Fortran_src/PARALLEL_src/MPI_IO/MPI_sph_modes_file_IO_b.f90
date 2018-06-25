@@ -156,10 +156,7 @@
       call deallocate_type_neib_id(sph_file%comm_IO)
       call deallocate_type_import(sph_file%comm_IO)
       call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
-      call deallocate_grp_type(sph_file%sph_grp_IO%bc_rtp_grp)
-      call deallocate_grp_type(sph_file%sph_grp_IO%radial_rtp_grp)
-      call deallocate_grp_type(sph_file%sph_grp_IO%theta_rtp_grp)
-      call deallocate_grp_type(sph_file%sph_grp_IO%zonal_rtp_grp)
+      call dealloc_sph_grid_group(sph_file%sph_grp_IO)
 !
       end subroutine mpi_write_geom_rtp_file_b
 !
@@ -185,8 +182,7 @@
       call deallocate_type_neib_id(sph_file%comm_IO)
       call deallocate_type_import(sph_file%comm_IO)
       call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
-      call deallocate_grp_type(sph_file%sph_grp_IO%radial_rj_grp)
-      call deallocate_grp_type(sph_file%sph_grp_IO%sphere_rj_grp)
+      call dealloc_sph_mode_group(sph_file%sph_grp_IO)
 !
       end subroutine mpi_write_spectr_rj_file_b
 !

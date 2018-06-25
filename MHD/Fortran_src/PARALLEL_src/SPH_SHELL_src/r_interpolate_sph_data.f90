@@ -373,8 +373,7 @@
       call deallocate_type_import(comm_IO)
       call deallocate_type_neib_id(comm_IO)
 !
-      call deallocate_grp_type(sph_grps_IO%radial_rj_grp)
-      call deallocate_grp_type(sph_grps_IO%sphere_rj_grp)
+      call dealloc_sph_mode_group(sph_grps_IO)
 !
       end subroutine copy_original_sph_rj_from_IO
 !

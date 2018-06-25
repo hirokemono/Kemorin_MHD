@@ -132,9 +132,7 @@
         call deallocate_ele_param_smp_type(para_mesh(ip)%mesh%ele)
         call deallocate_node_param_smp_type(para_mesh(ip)%mesh%node)
 !
-        call deallocate_grp_type(para_mesh(ip)%group%nod_grp)
-        call deallocate_grp_type(para_mesh(ip)%group%ele_grp)
-        call deallocate_sf_grp_type(para_mesh(ip)%group%surf_grp)
+        call dealloc_groups_data(para_mesh(ip)%group)
 !
         call deallocate_ele_connect_type(para_mesh(ip)%mesh%ele)
         call dealloc_node_geometry_w_sph(para_mesh(ip)%mesh%node)

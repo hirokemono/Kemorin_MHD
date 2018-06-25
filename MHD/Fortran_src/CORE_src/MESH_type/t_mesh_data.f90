@@ -192,13 +192,8 @@
       type(mesh_groups), intent(inout) ::   group
 !
 !
-      call deallocate_ele_connect_type(mesh%ele)
-      call dealloc_node_geometry_w_sph(mesh%node)
-      call deallocate_type_comm_tbl(mesh%nod_comm)
-!
-      call deallocate_grp_type(group%nod_grp)
-      call deallocate_grp_type(group%ele_grp)
-      call deallocate_sf_grp_type(group%surf_grp)
+      call dealloc_mesh_type(mesh)
+      call dealloc_groups_data(group)
 !
       end subroutine dealloc_mesh_infos
 !

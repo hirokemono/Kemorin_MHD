@@ -112,12 +112,9 @@
       call set_gruop_stracture                                          &
      &   (sph_file%sph_grp_IO%zonal_rtp_grp, sph_grps%zonal_rtp_grp)
 !
-      call deallocate_grp_type(sph_file%sph_grp_IO%bc_rtp_grp)
-      call deallocate_grp_type(sph_file%sph_grp_IO%radial_rtp_grp)
-      call deallocate_grp_type(sph_file%sph_grp_IO%theta_rtp_grp)
-      call deallocate_grp_type(sph_file%sph_grp_IO%zonal_rtp_grp)
-!
       call count_num_rtp_smp(sph_rtp, ierr)
+!
+      call dealloc_sph_grid_group(sph_file%sph_grp_IO)
 !
       end subroutine input_geom_rtp_sph_trans
 !
@@ -150,10 +147,8 @@
       call set_gruop_stracture                                          &
      &   (sph_file%sph_grp_IO%sphere_rj_grp, sph_grps%sphere_rj_grp)
 !
-      call deallocate_grp_type(sph_file%sph_grp_IO%radial_rj_grp)
-      call deallocate_grp_type(sph_file%sph_grp_IO%sphere_rj_grp)
-!
       call count_num_rj_smp(sph_rj, ierr)
+      call dealloc_sph_mode_group(sph_file%sph_grp_IO)
 !
       end subroutine input_modes_rj_sph_trans
 !
@@ -240,10 +235,7 @@
       call set_gruop_stracture                                          &
      &   (sph_grps%zonal_rtp_grp, sph_file%sph_grp_IO%zonal_rtp_grp)
 !
-      call deallocate_grp_type(sph_grps%bc_rtp_grp)
-      call deallocate_grp_type(sph_grps%radial_rtp_grp)
-      call deallocate_grp_type(sph_grps%theta_rtp_grp)
-      call deallocate_grp_type(sph_grps%zonal_rtp_grp)
+      call dealloc_sph_grid_group(sph_grps)
 !
       end subroutine output_geom_rtp_sph_trans
 !
@@ -273,8 +265,7 @@
       call set_gruop_stracture                                          &
      &   (sph_grps%sphere_rj_grp, sph_file%sph_grp_IO%sphere_rj_grp)
 !
-      call deallocate_grp_type(sph_grps%radial_rj_grp)
-      call deallocate_grp_type(sph_grps%sphere_rj_grp)
+      call dealloc_sph_mode_group(sph_grps)
 !
       end subroutine output_modes_rj_sph_trans
 !
