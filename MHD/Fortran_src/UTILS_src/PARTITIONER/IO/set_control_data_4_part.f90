@@ -40,14 +40,22 @@
 !   set local data format
 !
 !
-      iflag_memory_conserve = 1
+      iflag_memory_conserve = 0
       if(part_Fmesh%memory_conservation_ctl%iflag .gt. 0                &
-     &  .and. no_flag(part_Fmesh%memory_conservation_ctl%charavalue)    &
+     &  .and. yes_flag(part_Fmesh%memory_conservation_ctl%charavalue)   &
      &   ) then
-        iflag_memory_conserve = 0
+        iflag_memory_conserve = 1
+      end if
+!
+      iflag_viewer_output = 0
+      if(part_Fmesh%FEM_viewer_output_switch%iflag .gt. 0               &
+     &  .and. yes_flag(part_Fmesh%FEM_viewer_output_switch%charavalue)  &
+     &   ) then
+        iflag_viewer_output = 1
       end if
 !
       write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
+      write(*,*) 'iflag_viewer_output', iflag_viewer_output
 !
 !
       if (single_plt%mesh_file_prefix%iflag .gt. 0) then
