@@ -195,7 +195,7 @@
      &    new_node, dbl_id2, new_ele)
 !
       call dealloc_ele_buffer_2_extend(recv_ebuf)
-      call deallocate_type_comm_tbl(added_comm)
+      call dealloc_comm_table(added_comm)
 !
       call dealloc_double_numbering(dbl_id2)
       call dealloc_double_numbering(dbl_ele)

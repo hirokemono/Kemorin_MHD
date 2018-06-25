@@ -66,7 +66,7 @@
 !
         nnod_s_domin = nnod_s_domin + mesh_IO_p%node%internal_node
 !
-        call deallocate_type_neib_id(mesh_IO_p%nod_comm)
+        call dealloc_neib_id(mesh_IO_p%nod_comm)
       end do
 !
       end subroutine count_nnod_whole_domain
@@ -111,7 +111,7 @@
       end do
 !
       call dealloc_node_geometry_base(mesh_IO_p%node)
-      call deallocate_type_neib_id(mesh_IO_p%nod_comm)
+      call dealloc_neib_id(mesh_IO_p%nod_comm)
 !
       end subroutine set_domain_grp_each_domain
 !

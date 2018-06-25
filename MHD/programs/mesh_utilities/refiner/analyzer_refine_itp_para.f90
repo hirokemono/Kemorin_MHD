@@ -136,7 +136,7 @@
 !
         call deallocate_ele_connect_type(para_mesh(ip)%mesh%ele)
         call dealloc_node_geometry_w_sph(para_mesh(ip)%mesh%node)
-        call deallocate_type_comm_tbl(para_mesh(ip)%mesh%nod_comm)
+        call dealloc_comm_table(para_mesh(ip)%mesh%nod_comm)
       end do
 !
       end subroutine dealloc_parallel_mesh_in_1pe

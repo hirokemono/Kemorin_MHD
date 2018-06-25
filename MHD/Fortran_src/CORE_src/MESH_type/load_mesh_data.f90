@@ -168,7 +168,7 @@
       call copy_node_geometry_types(mesh_IO%node, node)
       call copy_ele_connect_from_IO(mesh_IO%ele, ele)
 !
-      call deallocate_type_comm_tbl(mesh_IO%nod_comm)
+      call dealloc_comm_table(mesh_IO%nod_comm)
       call dealloc_node_geometry_base(mesh_IO%node)
       call deallocate_ele_connect_type(mesh_IO%ele)
 !
@@ -189,7 +189,7 @@
 !
       call copy_node_geometry_types(mesh_IO%node, node)
 !
-      call deallocate_type_neib_id(mesh_IO%nod_comm)
+      call dealloc_neib_id(mesh_IO%nod_comm)
       call dealloc_node_geometry_base(mesh_IO%node)
 !
       end subroutine set_node_geometry_data

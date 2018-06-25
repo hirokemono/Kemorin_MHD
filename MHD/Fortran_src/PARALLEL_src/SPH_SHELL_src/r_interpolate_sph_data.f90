@@ -370,8 +370,7 @@
 !
       call dealloc_sph_mode_idx_IO(sph_IO)
 !
-      call deallocate_type_import(comm_IO)
-      call deallocate_type_neib_id(comm_IO)
+      call dealloc_import_table(comm_IO)
 !
       call dealloc_sph_mode_group(sph_grps_IO)
 !

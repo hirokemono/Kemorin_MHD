@@ -149,7 +149,7 @@
         new_ele%numele =  mesh_IO_f%ele%numele
 !
         call dealloc_node_geometry_base(mesh_IO_f%node)
-        call deallocate_type_neib_id(mesh_IO_f%nod_comm)
+        call dealloc_neib_id(mesh_IO_f%nod_comm)
 !
         call add_int_suffix(my_rank2, new_filter_coef_head, file_name)
 !
@@ -163,7 +163,7 @@
         call copy_filtering_geometry_from_IO(filter_IO%node)
 !
         call dealloc_node_geometry_base(filter_IO%node)
-        call deallocate_type_comm_tbl(filter_IO%nod_comm)
+        call dealloc_comm_table(filter_IO%nod_comm)
 !
 !        write(*,*) 'set_global_nodid_4_newfilter'
         call set_global_nodid_4_newfilter
@@ -196,7 +196,7 @@
         call deallocate_fluid_filter_coefs
 !
         call deallocate_globalnod_filter
-        call deallocate_type_comm_tbl(filtering%comm)
+        call dealloc_comm_table(filtering%comm)
 !
       end subroutine filters_4_each_newdomain
 !

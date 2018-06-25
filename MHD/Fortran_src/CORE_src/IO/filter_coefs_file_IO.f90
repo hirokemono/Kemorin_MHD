@@ -94,9 +94,7 @@
      &   (filter_coef_code, filter_IO%filters)
       close(filter_coef_code)
 !
-      call deallocate_type_neib_id(filter_IO%nod_comm)
-      call deallocate_type_import(filter_IO%nod_comm)
-      call deallocate_type_export(filter_IO%nod_comm)
+      call dealloc_comm_table(filter_IO%nod_comm)
       call dealloc_node_geometry_base(filter_IO%node)
 !
       end subroutine write_sorted_filter_coef_file
@@ -153,9 +151,7 @@
 !
       close(filter_coef_code)
 !
-      call deallocate_type_neib_id(filter_IO%nod_comm)
-      call deallocate_type_import(filter_IO%nod_comm)
-      call deallocate_type_export(filter_IO%nod_comm)
+      call dealloc_comm_table(filter_IO%nod_comm)
       call dealloc_node_geometry_base(filter_IO%node)
 !
       end subroutine write_filter_geometry_file

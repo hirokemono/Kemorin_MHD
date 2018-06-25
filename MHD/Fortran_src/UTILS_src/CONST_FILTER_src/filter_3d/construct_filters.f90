@@ -286,7 +286,7 @@
         end if
 !
         call dealloc_node_geometry_base(nod_IO)
-        call deallocate_type_comm_tbl(comm_IO)
+        call dealloc_comm_table(comm_IO)
       end if
 !
 !
@@ -404,7 +404,7 @@ integer(kind = kint) :: ierr
         end if
 !
         call dealloc_node_geometry_base(nod_IO)
-        call deallocate_type_comm_tbl(comm_IO)
+        call dealloc_comm_table(comm_IO)
       end if
 !
 !  ---------------------------------------------------

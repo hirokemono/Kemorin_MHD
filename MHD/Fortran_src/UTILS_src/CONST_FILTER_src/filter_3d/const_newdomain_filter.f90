@@ -61,7 +61,7 @@
         numele = mesh_IO_f%ele%numele
 !
         call dealloc_node_geometry_base(mesh_IO_f%node)
-        call deallocate_type_neib_id(mesh_IO_f%nod_comm)
+        call dealloc_neib_id(mesh_IO_f%nod_comm)
 !
 !     read filtering information
 !
@@ -109,7 +109,7 @@
         numele = mesh_IO_f%ele%numele
 !
         call dealloc_node_geometry_base(mesh_IO_f%node)
-        call deallocate_type_neib_id(mesh_IO_f%nod_comm)
+        call dealloc_neib_id(mesh_IO_f%nod_comm)
 !
 !     read filtering information
 !

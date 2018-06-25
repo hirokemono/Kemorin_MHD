@@ -221,7 +221,7 @@
 !
       call deallocate_ele_connect_type(mesh%ele)
       call dealloc_node_geometry_w_sph(mesh%node)
-      call deallocate_type_comm_tbl(mesh%nod_comm)
+      call dealloc_comm_table(mesh%nod_comm)
 !
       end subroutine dealloc_mesh_type
 !
@@ -232,7 +232,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call deallocate_type_comm_tbl(ele_mesh%ele_comm)
+      call dealloc_comm_table(ele_mesh%ele_comm)
 !
       call dealloc_surf_mesh_type(ele_mesh)
       call dealloc_edge_mesh_type(ele_mesh)
@@ -246,7 +246,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call deallocate_type_comm_tbl(ele_mesh%surf_comm)
+      call dealloc_comm_table(ele_mesh%surf_comm)
       call deallocate_surface_connect_type(ele_mesh%surf)
 !
       end subroutine dealloc_surf_mesh_type
@@ -258,7 +258,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call deallocate_type_comm_tbl(ele_mesh%edge_comm)
+      call dealloc_comm_table(ele_mesh%edge_comm)
       call dealloc_edge_connect(ele_mesh%edge)
       call dealloc_edge_4_ele(ele_mesh%edge)
 !

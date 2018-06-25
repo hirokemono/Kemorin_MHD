@@ -93,7 +93,7 @@
 !
 !          write(*,*) 'copy_comm_tbl_type(my_rank, new_comm)'
       call copy_comm_tbl_type(new_comm, filter_IO%nod_comm)
-      call deallocate_type_comm_tbl(new_comm)
+      call dealloc_comm_table(new_comm)
 !
 !          write(*,*) 'copy_filtering_geometry_to_IO'
       call copy_filtering_geometry_to_IO(filter_IO%node)

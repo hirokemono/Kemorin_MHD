@@ -227,7 +227,7 @@
      &   (recv_nbuf, nod_comm, added_comm, new_comm)
 !
       call dealloc_node_buffer_2_extend(recv_nbuf)
-      call deallocate_type_comm_tbl(added_comm)
+      call dealloc_comm_table(added_comm)
 !
 !
       allocate(inod_import_new(new_comm%ntot_import))

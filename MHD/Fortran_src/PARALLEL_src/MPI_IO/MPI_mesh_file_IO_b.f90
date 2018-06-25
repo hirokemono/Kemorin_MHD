@@ -162,11 +162,9 @@
       call mpi_write_mesh_groups_b(IO_param, fem_IO%group)
       call close_mpi_file(IO_param)
 !
+      call dealloc_comm_table(fem_IO%mesh%nod_comm)
       call dealloc_node_geometry_base(fem_IO%mesh%node)
       call deallocate_ele_connect_type(fem_IO%mesh%ele)
-      call deallocate_type_neib_id(fem_IO%mesh%nod_comm)
-      call deallocate_type_import(fem_IO%mesh%nod_comm)
-      call deallocate_type_export(fem_IO%mesh%nod_comm)
 !
       call dealloc_groups_data(fem_IO%group)
 !

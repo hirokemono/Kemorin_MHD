@@ -155,8 +155,7 @@
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
       call close_gzfile_f
 !
-      call deallocate_type_neib_id(sph_file%comm_IO)
-      call deallocate_type_import(sph_file%comm_IO)
+      call dealloc_import_table(sph_file%comm_IO)
       call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
       call dealloc_sph_grid_group(sph_file%sph_grp_IO)
 !
@@ -181,8 +180,7 @@
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
       call close_gzfile_f
 !
-      call deallocate_type_neib_id(sph_file%comm_IO)
-      call deallocate_type_import(sph_file%comm_IO)
+      call dealloc_import_table(sph_file%comm_IO)
       call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
       call dealloc_sph_mode_group(sph_file%sph_grp_IO)
 !
@@ -205,8 +203,7 @@
      &   (my_rank_IO, sph_file%comm_IO, sph_file%sph_IO)
       call close_gzfile_f
 !
-      call deallocate_type_neib_id(sph_file%comm_IO)
-      call deallocate_type_import(sph_file%comm_IO)
+      call dealloc_import_table(sph_file%comm_IO)
       call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
 !
       end subroutine gz_write_geom_rtm_file_b
@@ -228,8 +225,7 @@
      &   (my_rank_IO, sph_file%comm_IO, sph_file%sph_IO)
       call close_gzfile_f
 !
-      call deallocate_type_neib_id(sph_file%comm_IO)
-      call deallocate_type_import(sph_file%comm_IO)
+      call dealloc_import_table(sph_file%comm_IO)
       call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
 !
       end subroutine gz_write_modes_rlm_file_b

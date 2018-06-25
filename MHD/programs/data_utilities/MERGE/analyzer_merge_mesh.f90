@@ -110,7 +110,7 @@
      &    merged_mesh_file, new_mesh, new_group, dbl_nod)
       call dealloc_node_geometry_base(new_mesh%node)
       call deallocate_ele_connect_type(new_mesh%ele)
-      call deallocate_type_comm_tbl(new_mesh%nod_comm)
+      call dealloc_comm_table(new_mesh%nod_comm)
       call dealloc_groups_data(new_group)
 !
       call dealloc_double_numbering(dbl_nod)
