@@ -331,8 +331,7 @@
 !
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_part_ghost_ctl,                   &
-        &    i_part_ghost_ctl)
+        i_part_ghost_ctl = find_control_end_flag(hd_part_ghost_ctl)
         if(i_part_ghost_ctl .gt. 0) exit
 !
         call read_chara_ctl_type                                        &

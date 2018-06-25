@@ -19,8 +19,8 @@
       use m_ctl_param_partitioner
 !
       use m_control_data_4_merge
-      use m_original_ucd_4_merge
-      use m_geometry_data_4_merge
+!      use m_original_ucd_4_merge
+!      use m_geometry_data_4_merge
       use m_control_param_merge
       use ucd_IO_select
       use intelligent_partition
@@ -56,6 +56,7 @@
       integer(kind = kint), parameter :: my_rank = izero
       integer(kind = kint) :: ierr, iprint, ifield, icomp
       integer(kind = kint) :: icou
+      integer(kind = kint) :: num_pe
 !
       type(time_data), save :: fem_time_IO
       type(ucd_data), save :: fem_ucd
@@ -71,7 +72,7 @@
       integer(kind = kint) :: num_particle
       integer(kind = kint) :: iflag_part_debug
 ! initial debug flag
-      iflag_part_debug = 1
+      iflag_part_debug = 0
 
 !
 !  read control file
@@ -91,8 +92,8 @@
 !  ========= Read global field data for load balance partition =======
       write(*,*) 'read control_merge'
       call read_control_4_merge
-      call set_control_4_merge(mgd_mesh1%num_pe)
-      call set_control_4_newudt(sec_mesh1%num_pe2)
+      call set_control_4_merge(num_pe)
+      !call set_control_4_newudt(sec_mesh1%num_pe2)
 
       call sel_read_udt_param(izero, istep_start, original_ucd_param, fem_time_IO, fem_ucd)
 
@@ -146,6 +147,7 @@
 !     &   org_group%surf_grp_geom)
 !
 !  -------------------------------
+!  ========= compute element volume ===============
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
       allocate(jacobians_T%g_FEM)
@@ -153,6 +155,7 @@
      &   (org_mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
       call const_jacobian_and_single_vol                                &
      &   (org_mesh, org_group, spfs_T, jacobians_T)
+write(*,*) org_mesh%ele%volume_ele(:)
 !
 !  ========= Routines for partitioner ==============
 !
