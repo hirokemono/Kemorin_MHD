@@ -30,7 +30,7 @@
 !
       implicit  none
 !
-      private :: cal_flux_for_1sgrp
+      private :: cal_flux_for_1sgrp, cal_area_for_1sgrp
 !
 !  ---------------------------------------------------------------------
 !
@@ -74,12 +74,22 @@
       ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
       num_grp = fline_src%nele_start_grp(i_fln)
 !
-      call cal_flux_for_1sgrp(node%numnod, ele%numele, surf%numsurf,    &
-     &    surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele,               &
-     &    ele%interior_ele, surf%vnorm_surf, surf%area_surf, num_grp,   &
-     &    fline_src%iele_start_item(1,ist_grp),                         &
-     &    fline_src%vector_nod_fline(1,1,i_fln),                        &
-     &    fline_src%flux_start(ist_grp) )
+      if(     fline_prm%id_fline_start_dist(i_fln)                      &
+     &                             .eq. iflag_random_by_area            &
+     &   .or. fline_prm%id_fline_start_dist(i_fln)                      &
+     &                             .eq. iflag_no_random) then
+        call cal_area_for_1sgrp(ele%numele, surf%numsurf,               &
+     &      surf%isf_4_ele, ele%interior_ele, surf%area_surf,           &
+     &      num_grp, fline_src%iele_start_item(1,ist_grp),              &
+     &      fline_src%flux_start(ist_grp) )
+      else
+        call cal_flux_for_1sgrp(node%numnod, ele%numele, surf%numsurf,  &
+     &      surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele,             &
+     &      ele%interior_ele, surf%vnorm_surf, surf%area_surf, num_grp, &
+     &      fline_src%iele_start_item(1,ist_grp),                       &
+     &      fline_src%vector_nod_fline(1,1,i_fln),                      &
+     &      fline_src%flux_start(ist_grp) )
+      end if
 !
       abs_flux_start_l = 0.0d0
       tot_flux_start_l = 0.0d0
@@ -234,6 +244,41 @@
 !$omp end parallel do
 !
       end subroutine cal_flux_for_1sgrp
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cal_area_for_1sgrp                                     &
+     &         (numele, numsurf, isf_4_ele, interior_ele, area_surf,    &
+     &          num_sgrp, isurf_grp, flux)
+!
+      use m_geometry_constants
+!
+      integer(kind = kint), intent(in) :: numele, numsurf
+      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      integer(kind = kint), intent(in) :: num_sgrp
+      integer(kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
+      integer(kind = kint), intent(in) :: interior_ele(numele)
+      real(kind = kreal), intent(in) :: area_surf(numsurf)
+!
+      real(kind = kreal), intent(inout) :: flux(num_sgrp)
+!
+      integer (kind = kint) :: iele, isf, isurf, inum
+!
+!
+      flux(1:num_sgrp) = 0.0d0
+!
+!$omp  parallel do private(inum,iele,isf,isurf)
+      do inum = 1, num_sgrp
+        iele = isurf_grp(1,inum)
+        isf =  isurf_grp(2,inum)
+        isurf = abs(isf_4_ele(iele,isf))
+!
+        flux(inum) = flux(inum)                                         &
+     &              + area_surf(isurf)  * dble(interior_ele(iele))
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_area_for_1sgrp
 !
 !  ---------------------------------------------------------------------
 !

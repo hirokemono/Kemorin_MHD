@@ -77,7 +77,8 @@
      &      ie_surf, isurf, xi, fline_src%color_nod_fline(1,i_fln),     &
      &      fline_tce%c_fline_start(inum1))
 !
-        if( fline_prm%id_fline_direction(i_fln) .eq. 1) then
+        if( fline_prm%id_fline_direction(i_fln)                         &
+     &                                 .eq. iflag_forward_trace) then
            call set_forward_fline_start_surf                            &
      &        (fline_prm%iflag_outward_flux_fline(iline),               &
      &         iele, isf_1ele, isurf,                                   &
@@ -85,7 +86,8 @@
      &         fline_tce%iflag_fline(inum1),                            &
      &         fline_tce%isf_fline_start(1,inum1))
 !
-        else if( fline_prm%id_fline_direction(i_fln) .eq. -1) then
+        else if( fline_prm%id_fline_direction(i_fln)                    &
+     &                                 .eq. iflag_backward_trace) then
            call set_backward_fline_start_surf                           &
      &         (fline_prm%iflag_outward_flux_fline(iline),              &
      &          iele, isf_1ele, isurf,                                  &

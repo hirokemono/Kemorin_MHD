@@ -59,6 +59,40 @@
         character(len = kchara), allocatable :: name_color_output(:)
       end type fieldline_paramters
 !
+!
+      character(len = kchara), parameter                                &
+     &               :: cflag_surface_group = 'surface_group'
+      character(len = kchara), parameter                                &
+     &               :: cflag_surface_list =  'surface_list'
+      character(len = kchara), parameter                                &
+     &               :: cflag_position_list = 'position_list'
+      character(len = kchara), parameter                                &
+     &               :: cflag_spray_in_domain = 'spray_in_domain'
+      integer(kind = kint), parameter :: iflag_surface_group =   0
+      integer(kind = kint), parameter :: iflag_surface_list =    1
+      integer(kind = kint), parameter :: iflag_position_list =   2
+      integer(kind = kint), parameter :: iflag_spray_in_domain = 3
+!
+      character(len = kchara), parameter                                &
+     &               :: cflag_forward_trace =  'forward'
+      character(len = kchara), parameter                                &
+     &               :: cflag_backward_trace = 'backward'
+      character(len = kchara), parameter                                &
+     &               :: cflag_both_trace =     'both'
+      integer(kind = kint), parameter :: iflag_backward_trace = -1
+      integer(kind = kint), parameter :: iflag_both_trace =      0
+      integer(kind = kint), parameter :: iflag_forward_trace =   1
+!
+      character(len = kchara), parameter                                &
+     &               :: cflag_random_by_amp =  'amplitude'
+      character(len = kchara), parameter                                &
+     &               :: cflag_random_by_area = 'area_size'
+      character(len = kchara), parameter                                &
+     &               :: cflag_no_random =      'no_random'
+      integer(kind = kint), parameter :: iflag_random_by_amp =   0
+      integer(kind = kint), parameter :: iflag_random_by_area =  1
+      integer(kind = kint), parameter :: iflag_no_random =       2
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -265,15 +299,18 @@
 !
         write(*,*) 'num_each_field_line: ',                             &
      &            fline_prm%num_each_field_line(i_fln)
-        if     (fline_prm%id_fline_start_type(i_fln) .eq. 0) then
+        if     (fline_prm%id_fline_start_type(i_fln)                    &
+     &                          .eq. iflag_surface_group) then
           write(*,*) 'igrp_start_fline_surf_grp: ',                     &
      &              fline_prm%igrp_start_fline_surf_grp(i_fln)
-        else if(fline_prm%id_fline_start_type(i_fln) .eq. 1) then
+        else if(fline_prm%id_fline_start_type(i_fln)                    &
+     &                          .eq. iflag_surface_list) then
           ist = fline_prm%istack_each_field_line(i_fln-1)
           do i = 1, fline_prm%num_each_field_line(i_fln)
             write(*,*) i, fline_prm%id_gl_surf_start_fline(1:2,ist+i)
           end do
-        else if(fline_prm%id_fline_start_type(i_fln) .eq. 2) then
+        else if(fline_prm%id_fline_start_type(i_fln)                    &
+     &                          .eq. iflag_position_list) then
           ist = fline_prm%istack_each_field_line(i_fln-1)
           do i = 1, fline_prm%num_each_field_line(i_fln)
             write(*,*) i, fline_prm%xx_surf_start_fline(1:3,ist+i)

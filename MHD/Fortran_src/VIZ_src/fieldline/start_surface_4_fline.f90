@@ -88,7 +88,8 @@
      &    fline_tce%num_all_fline(1,i_fln), ione, CALYPSO_INTEGER,      &
      &    CALYPSO_COMM, ierr_MPI)
 !
-      if( fline_prm%id_fline_direction(i_fln) .eq. 0) then
+      if(fline_prm%id_fline_direction(i_fln)                            &
+     &                                  .eq. iflag_both_trace) then
         fline_tce%num_all_fline(1:nprocs,i_fln)                         &
      &        = 2 * fline_tce%num_all_fline(1:nprocs,i_fln)
       end if
