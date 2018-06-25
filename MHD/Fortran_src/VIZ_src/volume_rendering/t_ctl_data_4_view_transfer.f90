@@ -265,7 +265,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, mat%i_view_transform)
+        mat%i_view_transform = find_control_end_flag(hd_block)
         if(mat%i_view_transform .gt. 0) exit
 !
         call read_projection_mat_ctl(mat)
@@ -308,7 +308,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_project_mat, mat%i_project_mat)
+        mat%i_project_mat = find_control_end_flag(hd_project_mat)
         if(mat%i_project_mat .gt. 0) exit
 !
         call read_real_ctl_type(hd_perspect_angle,                      &
@@ -335,7 +335,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_image_size, mat%i_image_size)
+        mat%i_image_size = find_control_end_flag(hd_image_size)
         if(mat%i_image_size .gt. 0) exit
 !
         call read_integer_ctl_type(hd_x_pixel, mat%num_xpixel_ctl)
@@ -356,7 +356,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_stereo_view, mat%i_stereo_view)
+        mat%i_stereo_view = find_control_end_flag(hd_stereo_view)
         if(mat%i_stereo_view .gt. 0) exit
 !
         call read_real_ctl_type(hd_focalpoint, mat%focalpoint_ctl)

@@ -167,7 +167,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, psph_ctl%iflag_sph_shell)
+        psph_ctl%iflag_sph_shell = find_control_end_flag(hd_block)
         if(psph_ctl%iflag_sph_shell .gt. 0) exit
 !
         call read_FEM_mesh_control                                      &

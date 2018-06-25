@@ -11,16 +11,15 @@
 !!      subroutine dealloc_sph_filter_type(dynamic_SPH)
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!
-!!      subroutine init_filter_4_SPH_MHD(sph_params, sph_rj, sph_grps,  &
-!!     &          num_sph_filteres, sph_filters)
-!!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!      subroutine init_filter_4_SPH_MHD                                &
+!!     &         (sph, sph_grps, leg, num_sph_filteres, sph_filters)
+!!        type(sph_grids), intent(in) ::  sph
 !!        type(sph_group_data), intent(in) :: sph_grps
+!!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
-!!      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_rtp, sph_d_grp, &
+!!      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_d_grp,          &
 !!     &          MHD_prop, ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(sph_rtp_grid), intent(in) ::  sph_rtp
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
@@ -38,6 +37,7 @@
       use t_spheric_parameter
       use t_spheric_group
       use t_sph_filtering_data
+      use t_schmidt_poly_on_rtm
       use t_filter_coefficients
       use t_SGS_control_parameter
       use t_SGS_model_coefs
@@ -107,16 +107,16 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine init_filter_4_SPH_MHD(sph_params, sph_rj, sph_grps,    &
-     &          num_sph_filteres, sph_filters)
+      subroutine init_filter_4_SPH_MHD                                  &
+     &         (sph, sph_grps, leg, num_sph_filteres, sph_filters)
 !
       use calypso_mpi
       use wider_radial_filter_data
 !
       integer(kind = kint), intent(in) :: num_sph_filteres
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_grids), intent(in) ::  sph
       type(sph_group_data), intent(in) :: sph_grps
+      type(legendre_4_sph_trans), intent(in) :: leg
       type(sph_filters_type), intent(inout)                             &
      &                        :: sph_filters(num_sph_filteres)
 !
@@ -128,25 +128,35 @@
         i2 = sph_filters(i)%id_2nd_ref_filter
         if(sph_filters(i)%itype_radial_filter                           &
      &                  .eq. iflag_recursive_filter) then
-          call radial_wider_fileters(sph_rj, sph_filters(i1)%r_filter,  &
+          call radial_wider_fileters                                    &
+     &       (sph%sph_rj, sph_filters(i1)%r_filter,                     &
      &        sph_filters(i2)%r_filter, sph_filters(i)%r_filter)
         else
           if(iflag_debug.gt.0) write(*,*)' const_sph_radial_filter'
-          call const_sph_radial_filter(sph_rj, sph_grps, sph_filters(i))
+          call const_sph_radial_filter                                  &
+     &       (sph%sph_rj, sph_grps, sph_filters(i))
         end if
 !
         if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
-        call const_filter_on_sphere                                     &
-     &     (sph_filters(i)%itype_sph_filter, sph_params%l_truncation,   &
+        call const_filter_on_sphere(sph_filters(i)%itype_sph_filter,    &
+     &      sph%sph_params%l_truncation,                                &
      &      sph_filters(i1)%sph_moments, sph_filters(i2)%sph_moments,   &
      &      sph_filters(i1)%sph_filter, sph_filters(i2)%sph_filter,     &
      &      sph_filters(i)%sph_moments, sph_filters(i)%sph_filter)
 !
+        if(iflag_debug.gt.0) write(*,*)' const_filter_on_sphere'
+        call init_sph_2nd_order_moments_rtp                             &
+     &     (sph%sph_rtp, sph%sph_rj, leg, sph_filters(i))
+!
         if(iflag_debug .gt. 0) then
           write(*,*) 'check_radial_filter for no. ', i
-          call check_radial_filter(sph_rj, sph_filters(i)%r_filter)
+          call check_radial_filter(sph%sph_rj, sph_filters(i)%r_filter)
           write(*,*) 'check_horiz_filter_weight for no. ', i
           call check_horiz_filter_weight(sph_filters(i)%sph_filter)
+        end if
+        if(i_debug .gt. 0) then
+          write(*,*) 'check_sph_2nd_moments for no. ', i, my_rank
+          call check_sph_2nd_moments(sph%sph_rtp, leg, sph_filters(i))
         end if
         call calypso_mpi_barrier
       end do
@@ -155,14 +165,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_rtp, sph_d_grp,   &
+      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_d_grp,            &
      &          MHD_prop, ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
 !
       use t_physical_property
       use count_sgs_components
 !
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(sph_rtp_grid), intent(in) ::  sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
@@ -206,8 +215,9 @@
       call cal_r_gaussian_moments(sph_filters%width,                    &
      &    sph_filters%r_moments)
 !
-      call const_radial_filter(sph_rj, sph_grps,                        &
-     &    sph_filters%r_moments, sph_filters%r_filter)
+      call const_radial_filter(sph_rj, sph_grps, sph_filters%r_moments, &
+     &    sph_filters%kr_SGS_in, sph_filters%kr_SGS_out,                &
+     &    sph_filters%r_filter)
 !
       end subroutine const_sph_radial_filter
 !
@@ -217,6 +227,8 @@
      &         (itype_sph_filter,  l_truncation,                        &
      &          ref1_moments, ref2_moments, ref1_filter, ref2_filter,   &
      &          sph_moments, sph_filter)
+!
+      use cal_sph_filtering_data
 !
       integer(kind = kint), intent(in) :: itype_sph_filter
       integer(kind = kint), intent(in) :: l_truncation
@@ -262,17 +274,20 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_radial_filter                                    &
-     &         (sph_rj, sph_grps, r_moments, r_filter)
+      subroutine const_radial_filter(sph_rj, sph_grps, r_moments,       &
+     &          kmin_rtp_OC, kmax_rtp_OC, r_filter)
 !
       use cal_radial_filtering_data
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(sph_group_data), intent(in) :: sph_grps
       type(sph_filter_moment), intent(in) :: r_moments
+!
+      integer(kind = kint), intent(inout) :: kmin_rtp_OC, kmax_rtp_OC
       type(filter_coefficients_type), intent(inout) :: r_filter
 !
-      integer(kind = kint) :: num_OC, kmin_OC, kmax_OC
+      integer(kind = kint) :: num_rj_OC, kmin_rj_OC, kmax_rj_OC
+      integer(kind = kint) :: num_rtp_OC
 !
 !
       r_filter%ngrp_node = 1
@@ -284,16 +299,18 @@
       call alloc_inod_filter_comb(r_filter)
 !
       call count_fiiltering_area(r_moments%num_momentum, sph_rj,        &
-     &    sph_grps%radial_rj_grp, r_filter, num_OC, kmin_OC, kmax_OC)
+     &    sph_grps%radial_rj_grp, sph_grps%radial_rtp_grp, r_filter,    &
+     &    num_rj_OC, kmin_rj_OC, kmax_rj_OC,                            &
+     &    num_rtp_OC, kmin_rtp_OC, kmax_rtp_OC)
 !
       call alloc_3d_filter_comb(r_filter)
       call alloc_3d_filter_func(r_filter)
 !
-      call set_filtering_points(num_OC, kmin_OC, kmax_OC,               &
+      call set_filtering_points(num_rj_OC, kmin_rj_OC, kmax_rj_OC,      &
      &    r_moments%num_momentum, r_moments%nfilter_sides,              &
      &    sph_rj, r_filter)
 
-      call cal_radial_fileters(kmin_OC, kmax_OC,                        &
+      call cal_radial_fileters(kmin_rj_OC, kmax_rj_OC,                  &
      &    r_moments%num_momentum, r_moments%nfilter_sides,              &
      &    r_moments%filter_mom, sph_rj, r_filter)
 !

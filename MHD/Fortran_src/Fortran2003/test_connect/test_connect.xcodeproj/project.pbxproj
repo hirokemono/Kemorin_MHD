@@ -1,0 +1,322 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		18E527C520A3DDD100B4CA19 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 18E527C420A3DDD100B4CA19 /* main.m */; };
+		18E527D220A3DE7E00B4CA19 /* libkemo_solver.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E527CC20A3DE7D00B4CA19 /* libkemo_solver.a */; };
+		18E527D320A3DE7E00B4CA19 /* libkemo_c.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E527CD20A3DE7D00B4CA19 /* libkemo_c.a */; };
+		18E527D420A3DE7E00B4CA19 /* libkemo_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E527CE20A3DE7D00B4CA19 /* libkemo_core.a */; };
+		18E527D520A3DE7E00B4CA19 /* libkemo_MHD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E527CF20A3DE7E00B4CA19 /* libkemo_MHD.a */; };
+		18E527D620A3DE7E00B4CA19 /* libkemo_parallel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E527D020A3DE7E00B4CA19 /* libkemo_parallel.a */; };
+		18E527D720A3DE7E00B4CA19 /* libkemo_viz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E527D120A3DE7E00B4CA19 /* libkemo_viz.a */; };
+		18E527D920A3DFC600B4CA19 /* read_mhd_control_4_c.o in Frameworks */ = {isa = PBXBuildFile; fileRef = 18E527D820A3DFC600B4CA19 /* read_mhd_control_4_c.o */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		18E527DC20A52EE700B4CA19 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			fileType = sourcecode.c;
+			isEditable = 1;
+			outputFiles = (
+			);
+			script = "# <com.apple.compilers.gcc>\n";
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		18E527BF20A3DDD100B4CA19 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		18E527C120A3DDD100B4CA19 /* test_connect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test_connect; sourceTree = BUILT_PRODUCTS_DIR; };
+		18E527C420A3DDD100B4CA19 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		18E527CC20A3DE7D00B4CA19 /* libkemo_solver.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_solver.a; path = ../../../../../../src_kemo/work/libkemo_solver.a; sourceTree = "<group>"; };
+		18E527CD20A3DE7D00B4CA19 /* libkemo_c.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_c.a; path = ../../../../../../src_kemo/work/libkemo_c.a; sourceTree = "<group>"; };
+		18E527CE20A3DE7D00B4CA19 /* libkemo_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_core.a; path = ../../../../../../src_kemo/work/libkemo_core.a; sourceTree = "<group>"; };
+		18E527CF20A3DE7E00B4CA19 /* libkemo_MHD.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_MHD.a; path = ../../../../../../src_kemo/work/libkemo_MHD.a; sourceTree = "<group>"; };
+		18E527D020A3DE7E00B4CA19 /* libkemo_parallel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_parallel.a; path = ../../../../../../src_kemo/work/libkemo_parallel.a; sourceTree = "<group>"; };
+		18E527D120A3DE7E00B4CA19 /* libkemo_viz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_viz.a; path = ../../../../../../src_kemo/work/libkemo_viz.a; sourceTree = "<group>"; };
+		18E527D820A3DFC600B4CA19 /* read_mhd_control_4_c.o */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.objfile"; name = read_mhd_control_4_c.o; path = ../../../../../../../tests/read_mhd_control_4_c.o; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		18E527BE20A3DDD100B4CA19 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18E527D220A3DE7E00B4CA19 /* libkemo_solver.a in Frameworks */,
+				18E527D320A3DE7E00B4CA19 /* libkemo_c.a in Frameworks */,
+				18E527D920A3DFC600B4CA19 /* read_mhd_control_4_c.o in Frameworks */,
+				18E527D420A3DE7E00B4CA19 /* libkemo_core.a in Frameworks */,
+				18E527D520A3DE7E00B4CA19 /* libkemo_MHD.a in Frameworks */,
+				18E527D620A3DE7E00B4CA19 /* libkemo_parallel.a in Frameworks */,
+				18E527D720A3DE7E00B4CA19 /* libkemo_viz.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		18E527B820A3DDD100B4CA19 = {
+			isa = PBXGroup;
+			children = (
+				18E527C320A3DDD100B4CA19 /* test_connect */,
+				18E527C220A3DDD100B4CA19 /* Products */,
+				18E527CB20A3DE7D00B4CA19 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		18E527C220A3DDD100B4CA19 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				18E527C120A3DDD100B4CA19 /* test_connect */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		18E527C320A3DDD100B4CA19 /* test_connect */ = {
+			isa = PBXGroup;
+			children = (
+				18E527C420A3DDD100B4CA19 /* main.m */,
+				18E527D820A3DFC600B4CA19 /* read_mhd_control_4_c.o */,
+			);
+			path = test_connect;
+			sourceTree = "<group>";
+		};
+		18E527CB20A3DE7D00B4CA19 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				18E527CD20A3DE7D00B4CA19 /* libkemo_c.a */,
+				18E527CE20A3DE7D00B4CA19 /* libkemo_core.a */,
+				18E527CF20A3DE7E00B4CA19 /* libkemo_MHD.a */,
+				18E527D020A3DE7E00B4CA19 /* libkemo_parallel.a */,
+				18E527CC20A3DE7D00B4CA19 /* libkemo_solver.a */,
+				18E527D120A3DE7E00B4CA19 /* libkemo_viz.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		18E527C020A3DDD100B4CA19 /* test_connect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18E527C820A3DDD100B4CA19 /* Build configuration list for PBXNativeTarget "test_connect" */;
+			buildPhases = (
+				18E527BD20A3DDD100B4CA19 /* Sources */,
+				18E527BE20A3DDD100B4CA19 /* Frameworks */,
+				18E527BF20A3DDD100B4CA19 /* CopyFiles */,
+			);
+			buildRules = (
+				18E527DC20A52EE700B4CA19 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = test_connect;
+			productName = test_connect;
+			productReference = 18E527C120A3DDD100B4CA19 /* test_connect */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		18E527B920A3DDD100B4CA19 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = "Hiroaki Matsui";
+				TargetAttributes = {
+					18E527C020A3DDD100B4CA19 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 18E527BC20A3DDD100B4CA19 /* Build configuration list for PBXProject "test_connect" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 18E527B820A3DDD100B4CA19;
+			productRefGroup = 18E527C220A3DDD100B4CA19 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				18E527C020A3DDD100B4CA19 /* test_connect */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		18E527BD20A3DDD100B4CA19 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18E527C520A3DDD100B4CA19 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		18E527C620A3DDD100B4CA19 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		18E527C720A3DDD100B4CA19 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		18E527C920A3DDD100B4CA19 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				"LIBRARY_SEARCH_PATHS[arch=*]" = /Users/matsui/src_kemo/work;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		18E527CA20A3DDD100B4CA19 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		18E527BC20A3DDD100B4CA19 /* Build configuration list for PBXProject "test_connect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18E527C620A3DDD100B4CA19 /* Debug */,
+				18E527C720A3DDD100B4CA19 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		18E527C820A3DDD100B4CA19 /* Build configuration list for PBXNativeTarget "test_connect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18E527C920A3DDD100B4CA19 /* Debug */,
+				18E527CA20A3DDD100B4CA19 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 18E527B920A3DDD100B4CA19 /* Project object */;
+}

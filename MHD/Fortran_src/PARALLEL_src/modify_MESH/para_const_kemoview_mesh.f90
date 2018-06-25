@@ -29,11 +29,10 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: iflag_output_SURF = 0
-      integer(kind = kint), parameter :: iflag_add_comm_tbl = 1
+      integer(kind = kint) :: iflag_add_comm_tbl = 1
       integer(kind = kint), parameter :: iflag_write_subdomain = 0
 !
-      private :: iflag_output_SURF, iflag_add_comm_tbl
+      private :: iflag_add_comm_tbl
       private :: iflag_write_subdomain
 !
 !------------------------------------------------------------------
@@ -61,6 +60,8 @@
       type(edge_data), save :: edge_p
       type(merged_viewer_mesh), save :: mgd_view_mesh_p
 !
+!
+      if(nprocs .eq. 1) iflag_add_comm_tbl = 0
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(mesh_file, nprocs, mesh1, group1,             &

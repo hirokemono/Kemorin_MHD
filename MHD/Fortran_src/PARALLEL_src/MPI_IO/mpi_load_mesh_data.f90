@@ -9,7 +9,16 @@
 !!@verbatim
 !!      subroutine mpi_input_mesh(mesh_file, n_subdomain,               &
 !!     &          mesh, group, nnod_4_surf, nnod_4_edge)
-!!      subroutine mpi_input_mesh_geometry(mesh_file, mesh)
+!!        type(field_IO_params), intent(in) ::  mesh_file
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) ::   group
+!!      subroutine mpi_input_mesh_geometry                              &
+!!     &         (mesh_file, n_subdomain, mesh, nnod_4_surf, nnod_4_edge)
+!!        type(field_IO_params), intent(in) ::  mesh_file
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!      subroutine mpi_input_node_geometry(mesh_file, n_subdomain, node)
+!!        type(field_IO_params), intent(in) ::  mesh_file
+!!        type(node_data), intent(inout) :: node
 !!
 !!      subroutine sync_group_name_4_empty(nprocs_mesh,                 &
 !!     &          nod_grp, ele_grp, sf_grp)
@@ -61,7 +70,7 @@
 !
 !
       if(my_rank .lt. n_subdomain) then
-        call sel_mpi_read_mesh(mesh_file, fem_IO_m)
+        call sel_mpi_read_mesh(nprocs, my_rank, mesh_file, fem_IO_m)
         call set_mesh(fem_IO_m, mesh, group, nnod_4_surf, nnod_4_edge)
       else
         call set_zero_mesh_data(mesh, nnod_4_surf, nnod_4_edge)
@@ -76,23 +85,56 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_input_mesh_geometry(mesh_file, mesh)
+      subroutine mpi_input_mesh_geometry                                &
+     &         (mesh_file, n_subdomain, mesh, nnod_4_surf, nnod_4_edge)
 !
       use mesh_MPI_IO_select
       use load_mesh_data
 !
+      integer(kind = kint), intent(in) :: n_subdomain
       type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_geometry), intent(inout) :: mesh
+      integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
 !
       type(mesh_geometry) :: mesh_IO_m
 !
 !
-      call sel_mpi_read_mesh_geometry(mesh_file, mesh_IO_m)
-      call set_mesh_geometry_data(mesh_IO_m,                            &
-     &    mesh%nod_comm, mesh%node, mesh%ele)
+      if(my_rank .lt. n_subdomain) then
+        call sel_mpi_read_mesh_geometry                                 &
+     &     (nprocs, my_rank, mesh_file, mesh_IO_m)
+        call set_mesh_geometry_data(mesh_IO_m,                          &
+     &      mesh%nod_comm, mesh%node, mesh%ele)
+      else
+        call set_zero_mesh_data(mesh, nnod_4_surf, nnod_4_edge)
+      end if
 !
       end subroutine mpi_input_mesh_geometry
+!
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_input_node_geometry(mesh_file, n_subdomain, node)
+!
+      use mesh_MPI_IO_select
+      use load_mesh_data
+!
+      integer(kind = kint), intent(in) :: n_subdomain
+      type(field_IO_params), intent(in) ::  mesh_file
+!
+      type(node_data), intent(inout) :: node
+!
+      type(mesh_geometry) :: mesh_IO_m
+!
+!
+      if(my_rank .lt. n_subdomain) then
+        call sel_mpi_read_geometry_size                                 &
+     &     (nprocs, my_rank, mesh_file, mesh_IO_m)
+        call set_node_geometry_data(mesh_IO_m, node)
+      else
+        call set_zero_node_data(node)
+      end if
+!
+      end subroutine mpi_input_node_geometry
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -196,7 +238,8 @@
      &   (group%nod_grp, group%ele_grp, group%surf_grp, fem_IO_m%group)
 !
 !       save mesh information
-      call sel_mpi_write_mesh_file(mesh_file, fem_IO_m)
+      call sel_mpi_write_mesh_file                                      &
+     &   (nprocs, my_rank, mesh_file, fem_IO_m)
 !
       end subroutine mpi_output_mesh
 !

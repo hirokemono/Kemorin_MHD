@@ -169,6 +169,8 @@
 !
       call set_subdomains_4_sph_shell                                   &
      &    (nprocs_check, sdctl, gen_sph%s3d_ranks, ierr, e_message)
+      call dealloc_ndomain_rtp_ctl(sdctl)
+!
       if (ierr .gt. 0) return
 !
 !

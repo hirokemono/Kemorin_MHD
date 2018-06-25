@@ -102,9 +102,8 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_solver_test_ctl,                  &
-     &      i_solver_test_ctl)
-!
+        i_solver_test_ctl = find_control_end_flag(hd_solver_test_ctl)
+        if (i_solver_test_ctl .gt. 0) exit
 !
         call read_CG_solver_param_ctl                                   &
      &   (hd_solver_ctl, i_solver_ctl, CG_test_ctl)

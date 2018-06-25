@@ -297,7 +297,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, psf_c%i_psf_ctl)
+        psf_c%i_psf_ctl = find_control_end_flag(hd_block)
         if(psf_c%i_psf_ctl .gt. 0) exit
 !
         if(right_begin_flag(hd_surface_define) .gt. 0) then
@@ -331,8 +331,8 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_surface_define,                   &
-     &         psf_c%i_surface_define)
+        psf_c%i_surface_define                                          &
+     &       = find_control_end_flag(hd_surface_define)
         if(psf_c%i_surface_define .gt. 0) exit
 !
 !
@@ -370,8 +370,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag                                      &
-     &     (hd_output_field, psf_c%i_output_field)
+        psf_c%i_output_field = find_control_end_flag(hd_output_field)
         if(psf_c%i_output_field .gt. 0) exit
 !
         call read_control_array_c2                                      &
@@ -392,7 +391,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_plot_area, psf_c%i_plot_area)
+        psf_c%i_plot_area = find_control_end_flag(hd_plot_area)
         if(psf_c%i_plot_area .gt. 0) exit
 !
         call read_control_array_c1(hd_plot_grp, psf_c%psf_area_ctl)

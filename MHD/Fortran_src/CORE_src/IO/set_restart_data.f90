@@ -18,8 +18,8 @@
 !!     &          field_IO_name, nnod_IO, dat_IO)
 !!
 !!      subroutine simple_copy_fld_name_to_rst_IO                       &
-!!     &         (num_fld, istack_comp, phys_name,                      &
-!!     &          num_fld_IO, ncomp_IO, istack_comp_IO, field_IO_name)
+!!     &         (num_fld, istack_comp, phys_name, num_fld_IO,          &
+!!     &          ntot_comp_IO, ncomp_IO, istack_comp_IO, field_IO_name)
 !!      subroutine simple_copy_fld_dat_to_rst_IO(nnod, ntot_comp, d_nod,&
 !!     &          ntot_comp_IO, nnod_IO, dat_IO)
 !!
@@ -152,8 +152,8 @@
 !------------------------------------------------------------------
 !
       subroutine simple_copy_fld_name_to_rst_IO                         &
-     &         (num_fld, istack_comp, phys_name,                        &
-     &          num_fld_IO, ncomp_IO, istack_comp_IO, field_IO_name)
+     &         (num_fld, istack_comp, phys_name, num_fld_IO,            &
+     &          ntot_comp_IO, ncomp_IO, istack_comp_IO, field_IO_name)
 !
       integer(kind=kint), intent(in)  :: num_fld
       integer(kind=kint), intent(in)  :: istack_comp(0:num_fld)
@@ -163,6 +163,7 @@
       character(len=kchara), intent(inout) :: field_IO_name(num_fld_IO)
       integer(kind=kint), intent(inout) :: ncomp_IO(num_fld_IO)
       integer(kind=kint), intent(inout) :: istack_comp_IO(0:num_fld_IO)
+      integer(kind=kint), intent(inout) :: ntot_comp_IO
 !
       integer(kind=kint)  :: i
 !
@@ -173,6 +174,7 @@
         ncomp_IO(i) =       istack_comp(i) - istack_comp(i-1)
         istack_comp_IO(i) = istack_comp(i)
       end do
+      ntot_comp_IO = istack_comp_IO(num_fld)
 !
       end subroutine simple_copy_fld_name_to_rst_IO
 !
@@ -216,36 +218,29 @@
 !
       real(kind = kreal), intent(inout) :: d_nod(nnod,ntot_comp)
 !
-      integer(kind=kint)  :: i, j, numdir
-      integer(kind=kint)  :: ndir, ist_rst, ist_nod
-      integer(kind=kint), allocatable  :: ifield_2_copy(:)
+      integer(kind=kint)  :: i, j, numdir, inod
+      integer(kind=kint)  :: ist_rst, ist_nod, nd
 !
 !
-      allocate(ifield_2_copy(num_fld))
-      ifield_2_copy(1:num_fld) = 0
-!
-      do i = 1, num_fld
-        do j = 1, num_fld_IO
+      do j = 1, num_fld_IO
+        do i = 1, num_fld
           if (phys_name(i) .eq. field_IO_name(j)) then
-            ifield_2_copy(i) = j
+            ist_nod = istack_comp(i-1)
+            ist_rst = istack_comp_IO(j-1)
+            numdir =  istack_comp(i) - istack_comp(i-1)
+!$omp parallel private(inod)
+            do nd = 1, numdir
+!$omp do
+              do inod = 1, nnod
+                d_nod(inod,ist_nod+nd) = dat_IO(inod,ist_rst+nd)
+              end do
+!$omp end do nowait
+            end do
+!$omp end parallel
             exit
           end if
         end do
       end do
-!
-      do i = 1, num_fld
-        if(ifield_2_copy(i) .eq. 0)  cycle
-!
-        ist_nod = istack_comp(i-1)
-        ist_rst = istack_comp_IO(j-1)
-        ndir =  istack_comp(i) - istack_comp(i-1)
-!$omp parallel workshare
-        d_nod(1:nnod,ist_nod+1:ist_nod+ndir)                            &
-     &              = dat_IO(1:nnod,ist_rst+1:ist_rst+ndir)
-!$omp end parallel workshare
-      end do
-!
-      deallocate(ifield_2_copy)
 !
       end subroutine copy_field_data_from_rst_IO
 !

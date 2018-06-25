@@ -167,7 +167,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_filter_control, i_filter_control)
+        i_filter_control = find_control_end_flag(hd_filter_control)
         if(i_filter_control .gt. 0) exit
 !
 !
@@ -196,8 +196,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_filter_area_ctl,                  &
-     &      i_filter_area_ctl)
+        i_filter_area_ctl = find_control_end_flag(hd_filter_area_ctl)
         if(i_filter_area_ctl .gt. 0) exit
 !
         call read_control_array_c1(hd_filter_area, filter_area_ctl)
@@ -215,7 +214,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_deltax_ctl, i_deltax_ctl)
+        i_deltax_ctl = find_control_end_flag(hd_deltax_ctl)
         if(i_deltax_ctl .gt. 0) exit
 !
         call read_dx_solver_param_ctl
@@ -236,7 +235,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_esize_solver, i_esize_solver_ctl)
+        i_esize_solver_ctl = find_control_end_flag(hd_esize_solver)
         if(i_esize_solver_ctl .gt. 0) exit
 !
 !

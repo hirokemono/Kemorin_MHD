@@ -265,7 +265,7 @@
       type(mesh_data) :: fem_IO_m
 !
 !
-      call sel_mpi_read_mesh(mesh_file, fem_IO_m)
+      call sel_mpi_read_mesh(nprocs, my_rank, mesh_file, fem_IO_m)
 !
 !
       call set_mesh_geometry_data(fem_IO_m%mesh,                        &

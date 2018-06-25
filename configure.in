@@ -298,32 +298,32 @@ then
 		CXX=""
 	fi
 	
-# Check GTK+2
+# Check GTK+3
 	if test ${USE_gtk} = "yes"
 	then
-		PKG_CHECK_MODULES([GTK2], gtk+-2.0, have_gtk=yes, AC_MSG_ERROR(Cannot find GTK+ 2.0))
+		PKG_CHECK_MODULES([GTK3], gtk+-3.0, have_gtk=yes, AC_MSG_ERROR(Cannot find GTK+ 3.0))
 		echo "have_gtk=$have_gtk"
 	fi
 	
 	if test ${have_gtk} = "yes"
 	then
-		PKGFLAGS_GTK="gtk+-2.0"
+		PKGFLAGS_GTK="gtk+-3.0"
 	else
 		PKGFLAGS_GTK=""
 	fi
 else
 	CXX=""
 	PKGFLAGS_GTK=""
-	GTK2_CFLAGS=""
-	GTK2_LIBS=""
+	GTK3_CFLAGS=""
+	GTK3_LIBS=""
 fi
 
 AC_SUBST(CXX)
 AC_SUBST(CXXFLAGS)
 
 AC_SUBST(PKGFLAGS_GTK)
-AC_SUBST(GTK2_CFLAGS)
-AC_SUBST(GTK2_LIBS)
+AC_SUBST(GTK3_CFLAGS)
+AC_SUBST(GTK3_LIBS)
 
 # Check pgplot for Fortran compiler
 LIBS="${PNG_LIBS} ${X_LIBS} ${AQUATERM_LIBS}"
@@ -392,10 +392,10 @@ if test -n "${CXX}"; then
 else
         AC_MSG_RESULT(    Use GLUI...            no)
 fi
-if test -n "${GTK2_LIBS}"; then
-        AC_MSG_RESULT(    Use GTK2+...          yes)
+if test -n "${GTK3_LIBS}"; then
+        AC_MSG_RESULT(    Use GTK3+...          yes)
 else
-        AC_MSG_RESULT(    Use GTK2+...           no)
+        AC_MSG_RESULT(    Use GTK3+...           no)
 fi
 if test -n "${PGPLOT_LIBS}"; then
         AC_MSG_RESULT(    Use PGPLOT...         yes)

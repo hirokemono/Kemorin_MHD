@@ -159,7 +159,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, iflag)
+        iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
         call read_control_array_c_r(hd_dimless, dless_ctl%dimless)
@@ -182,7 +182,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, iflag)
+        iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
         call read_thermal_ctl(hd_thermal, i_thermal, eqs_ctl%heat_ctl)

@@ -18,7 +18,11 @@
 !!      subroutine set_mesh                                             &
 !!     &         (mesh, group, nnod_4_surf, nnod_4_edge)
 !!      subroutine set_mesh_geometry_data(mesh_IO, nod_comm, node, ele)
+!!      subroutine set_node_geometry_data(mesh_IO, node)
 !!      subroutine set_zero_mesh_data(mesh, nnod_4_surf, nnod_4_edge)
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!      subroutine set_zero_node_data(node)
+!!        type(node_data), intent(inout) :: node
 !!
 !!      subroutine set_grp_data_from_IO(nod_grp, ele_grp, surf_grp)
 !!      subroutine set_grp_data_to_IO(nod_grp, ele_grp, surf_grp)
@@ -173,6 +177,24 @@
       end subroutine set_mesh_geometry_data
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine set_node_geometry_data(mesh_IO, node)
+!
+      use set_element_data_4_IO
+      use copy_mesh_structures
+!
+      type(mesh_geometry), intent(inout) :: mesh_IO
+      type(node_data), intent(inout) ::           node
+!
+!
+      call copy_node_geometry_types(mesh_IO%node, node)
+!
+      call deallocate_type_neib_id(mesh_IO%nod_comm)
+      call dealloc_node_geometry_base(mesh_IO%node)
+!
+      end subroutine set_node_geometry_data
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine set_zero_mesh_data(mesh, nnod_4_surf, nnod_4_edge)
@@ -202,6 +224,21 @@
      &   (mesh%ele%nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !
       end subroutine set_zero_mesh_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_zero_node_data(node)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(inout) :: node
+!
+!
+      node%numnod =        izero
+      node%internal_node = izero
+      call alloc_node_geometry_w_sph(node)
+!
+      end subroutine set_zero_node_data
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

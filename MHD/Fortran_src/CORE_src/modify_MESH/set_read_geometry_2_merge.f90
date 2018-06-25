@@ -27,13 +27,6 @@
 !!        type(mesh_geometry), intent(in) :: subdomain
 !!        type(merged_stacks), intent(inout) :: merge_tbl
 !!        type(mesh_geometry), intent(inout) :: merged
-!!
-!!      subroutine copy_udt_field_data_merge(ip, ifield_2_copy,         &
-!!     &          org_fld, ucd, subdomain, merge_tbl, merged_fld)
-!!        type(phys_data), intent(in) :: org_fld
-!!        type(ucd_data), intent(in) :: ucd
-!!        type(mesh_geometry), intent(in) :: subdomain
-!!        type(phys_data), intent(inout) :: merged_fld
 !
       module set_read_geometry_2_merge
 !
@@ -263,56 +256,5 @@
       end subroutine copy_read_ele_data_2_merge
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine copy_udt_field_data_merge(ip, ifield_2_copy,           &
-     &          org_fld, ucd, subdomain, merge_tbl, merged_fld)
-!
-      use t_phys_data
-      use t_ucd_data
-!
-      type(phys_data), intent(in) :: org_fld
-      type(ucd_data), intent(in) :: ucd
-      type(mesh_geometry), intent(in) :: subdomain
-      type(merged_stacks), intent(in) :: merge_tbl
-      integer(kind = kint), intent(in) :: ip
-      integer(kind=kint), intent(in) :: ifield_2_copy(org_fld%num_phys)
-!
-      type(phys_data), intent(inout) :: merged_fld
-!
-      integer(kind = kint) :: i, ic0, ic, j, nd
-      integer(kind = kint) :: inod
-      integer(kind = kint_gl) :: inod_gl
-!
-!
-      do inod = 1, subdomain%node%numnod
-        inod_gl = subdomain%node%inod_global(inod)
-!
-        if    (ioverlap_n(inod_gl) .ge. 1 ) then
-          if(merge_tbl%idomain_nod(inod_gl) .eq. ip) then
-            do  j = 1, org_fld%num_phys
-              ic0 = org_fld%istack_component(j-1)
-!
-              if(ifield_2_copy(j) .gt. 0 ) then
-                i = ifield_2_copy(j)
-                ic = merged_fld%istack_component(i-1)
-                do nd = 1, org_fld%num_component(j)
-                  merged_fld%d_fld(inod_gl,ic+nd)                       &
-     &                     = ucd%d_ucd(inod,ic0+nd)
-                end do
-              end if
-            end do
-          end if
-!
-        else if(ioverlap_n(inod_gl) .eq. 0 ) then
-          write(*,*) ' ioverlap error !! stop !'
-          write(*,*) ' ip, inode ', ip, inod_gl, inod
-          stop
-        endif
-!
-      end do
-!
-      end subroutine copy_udt_field_data_merge
-!
-! -----------------------------------------------------------------------
 !
       end module set_read_geometry_2_merge

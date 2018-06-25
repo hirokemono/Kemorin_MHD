@@ -120,7 +120,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_mesh_test_ctl, i_mesh_test_ctl)
+        i_mesh_test_ctl = find_control_end_flag(hd_mesh_test_ctl)
         if(i_mesh_test_ctl .gt. 0) exit
 !
 !
@@ -145,7 +145,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_bc_def, i_bc_def)
+        i_bc_def = find_control_end_flag(hd_bc_def)
         if(i_bc_def .gt. 0) exit
 !
 !

@@ -139,7 +139,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, pvr%i_pvr_ctl)
+        pvr%i_pvr_ctl = find_control_end_flag(hd_block)
         if(pvr%i_pvr_ctl .gt. 0) exit
 !
 !

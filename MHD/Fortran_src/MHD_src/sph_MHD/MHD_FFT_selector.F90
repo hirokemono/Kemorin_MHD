@@ -21,11 +21,12 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine fwd_MHD_FFT_sel_to_send(sph_rtp, comm_rtp,           &
-!!     &          ncomp_fwd, n_WS, frc_rtp, WS, WK_FFTs, MHD_mul_FFTW)
+!!     &          ncomp_fwd, n_WS, trns_fwd, WS, WK_FFTs, MHD_mul_FFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
+!!        type(address_each_sph_trans), intent(inout) :: trns_fwd
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for FFT in ISPACK
@@ -81,6 +82,7 @@
       use m_machine_parameter
       use t_sph_FFTPACK5
       use t_sph_ISPACK_FFT
+      use t_addresses_sph_transform
       use m_FFT_selector
 !
 #ifdef FFTW3
@@ -171,7 +173,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine fwd_MHD_FFT_sel_to_send(sph_rtp, comm_rtp,             &
-     &          ncomp_fwd, n_WS, frc_rtp, WS, WK_FFTs, MHD_mul_FFTW)
+     &          ncomp_fwd, n_WS, trns_fwd, WS, WK_FFTs, MHD_mul_FFTW)
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
@@ -180,39 +182,42 @@
       type(sph_comm_tbl), intent(in)  :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_fwd, n_WS
-      real (kind=kreal), intent(inout)                                  &
-     &                   :: frc_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
       real (kind=kreal), intent(inout) :: WS(n_WS)
+      type(address_each_sph_trans), intent(inout) :: trns_fwd
       type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
       if(iflag_FFT .eq. iflag_ISPACK) then
-        call sph_FTTRUF_to_send                                         &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+        call sph_FTTRUF_to_send(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,     &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1), WK_FFTs%sph_ispack)
+     &      comm_rtp%irev_sr, trns_fwd%fld_rtp, WS(1),                  &
+     &      WK_FFTs%sph_ispack)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call MHD_multi_fwd_FFTW_to_send(ncomp_fwd, sph_rtp%nnod_rtp,    &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
-     &      n_WS, comm_rtp%irev_sr, frc_rtp, WS(1), MHD_mul_FFTW)
+     &      n_WS, comm_rtp%irev_sr, trns_fwd%fld_rtp, WS(1),            &
+     &      MHD_mul_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_fwd_FFTW_to_send                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
+     &      comm_rtp%irev_sr, trns_fwd%fld_rtp, WS(1),                  &
+     &      WK_FFTs%sph_fld_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send                                &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1), WK_FFTs%sph_sgl_FFTW)
+     &      comm_rtp%irev_sr, trns_fwd%fld_rtp, WS(1),                  &
+     &      WK_FFTs%sph_sgl_FFTW)
 #endif
       else
         call sph_RFFTMF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1), WK_FFTs%sph_FFTPACK)
+     &      comm_rtp%irev_sr, trns_fwd%fld_rtp, WS(1),                  &
+     &      WK_FFTs%sph_FFTPACK)
       end if
 !
       end subroutine fwd_MHD_FFT_sel_to_send

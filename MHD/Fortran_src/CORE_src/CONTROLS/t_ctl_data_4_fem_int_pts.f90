@@ -11,6 +11,8 @@
 !!      subroutine read_control_fem_int_points                          &
 !!     &         (hd_block, iflag, fint_ctl)
 !!        type(fem_intergration_control), intent(inout) :: fint_ctl
+!!      subroutine write_control_fem_int_points                         &
+!!     &         (id_file, hd_block, fint_ctl, level)
 !! ----------------------------------------------------------------------
 !!
 !!    begin intg_point_num_ctl
@@ -78,7 +80,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, iflag)
+        iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
         call read_integer_ctl_type                                      &
@@ -90,6 +92,42 @@
       end do
 !
       end subroutine read_control_fem_int_points
+!
+!   --------------------------------------------------------------------
+!
+      subroutine write_control_fem_int_points                           &
+     &         (id_file, hd_block, fint_ctl, level)
+!
+      use m_machine_parameter
+      use m_read_control_elements
+      use write_control_elements
+!
+      integer(kind = kint), intent(in) :: id_file
+      character(len=kchara), intent(in) :: hd_block
+      type(fem_intergration_control), intent(in) :: fint_ctl
+!
+      integer(kind = kint), intent(inout) :: level
+!
+      integer(kind = kint) :: maxlen = 0
+!
+!
+      maxlen = max(maxlen, len_trim(hd_intgration_points))
+      maxlen = max(maxlen, len_trim(hd_intg_point_poisson))
+      maxlen = max(maxlen, len_trim(hd_intg_point_t_evo))
+!
+      write(id_file,'(a1)') '!'
+      level = write_begin_flag_for_ctl(id_file, level, hd_block)
+!
+      call write_integer_ctl_type(id_file, level, maxlen,               &
+     &    hd_intgration_points, fint_ctl%integration_points_ctl)
+      call write_integer_ctl_type(id_file, level, maxlen,               &
+     &    hd_intg_point_poisson, fint_ctl%intg_point_poisson_ctl)
+      call write_integer_ctl_type(id_file, level, maxlen,               &
+     &    hd_intg_point_t_evo, fint_ctl%intg_point_t_evo_ctl)
+!
+      level =  write_end_flag_for_ctl(id_file, level, hd_block)
+!
+      end subroutine write_control_fem_int_points
 !
 !   --------------------------------------------------------------------
 !

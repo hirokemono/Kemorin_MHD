@@ -103,7 +103,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_viz_control, i_viz_control)
+        i_viz_control = find_control_end_flag(hd_viz_control)
         if(i_viz_control .eq. 1) exit
 !
         call find_control_array_flag                                    &

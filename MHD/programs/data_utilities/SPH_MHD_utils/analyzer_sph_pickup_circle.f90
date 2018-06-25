@@ -56,6 +56,7 @@
       use input_control_sph_MHD
 !
       type(construct_spherical_grid), save :: gen_sph_c
+      type(phys_data), save :: nod_fld_c
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -71,12 +72,15 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD                                    &
      &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
-     &    MHD_ctl1%smctl_ctl, MHD_ctl1%smonitor_ctl,                    &
-     &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, SPH_MHD1%fld,  &
-     &    MHD_files1, SPH_model1%bc_IO, SPH_SGS1%SGS_par,               &
+     &    MHD_ctl1%smctl_ctl, MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl,     &
+     &    sph_gen, MHD_files1, SPH_model1%bc_IO, SPH_SGS1%SGS_par,      &
      &    SPH_SGS1%dynamic, MHD_step1, SPH_model1%MHD_prop,             &
-     &    SPH_model1%MHD_BC, SPH_WK1%trns_WK%WK_sph, gen_sph_c,         &
-     &    SPH_WK1%monitor)
+     &    SPH_model1%MHD_BC, SPH_WK1%trns_WK%WK_sph, gen_sph_c)
+      call set_control_SGS_SPH_MHD_field                                &
+     &   (MHD_ctl1%model_ctl, MHD_ctl1%psph_ctl, MHD_ctl1%smonitor_ctl, &
+     &    SPH_SGS1%SGS_par, SPH_model1%MHD_prop, SPH_MHD1%sph,          &
+     &    SPH_MHD1%fld, nod_fld_c, SPH_WK1%monitor)
+!
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call set_ctl_params_pick_circle                                   &

@@ -9,10 +9,10 @@
 !
       use m_constants
       use m_ctl_param_plot_pg
-      use m_ctl_data_plot_pg
       use m_drawpg_fem
       use m_isoline_dat_pg
       use m_psf_results
+      use t_ctl_data_plot_pg
       use set_control_draw_pg
       use set_components_flags
       use contour_fem_pg
@@ -25,6 +25,7 @@
 !
       implicit none
 !
+      type(controls_with_pgplot), save :: pg_ctl1
 !
       integer(kind = kint) :: iw, iw2, iw3
 !
@@ -37,10 +38,13 @@
 !*
 !*  ---------  input setting  ------------
 !*
-      call read_control_draw_pg
+      call read_control_draw_pg(pg_ctl1)
 !
-      call s_set_control_draw_pg
-      call set_control_draw_zplane
+      call set_step_control_draw_pg(pg_ctl1%t_pg_ctl)
+      call s_set_control_draw_pg                                        &
+     &   (pg_ctl1%pg_panel_ctl, pg_ctl1%pg_fld_ctl)
+      call set_control_draw_zplane(pg_ctl1%pg_section_ctl)
+      call dealloc_plot_ctl_data(pg_ctl1)
 !
 !*
 !* ----------open pgplot  ----------------

@@ -145,7 +145,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_viz_ctl, i_viz_ctl)
+        i_viz_ctl = find_control_end_flag(hd_viz_ctl)
         if(i_viz_ctl .eq. 1) exit
 !
         call find_control_array_flag(hd_psf_ctl, psf_ctls%num_psf_ctl)

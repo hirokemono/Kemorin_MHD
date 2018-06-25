@@ -155,7 +155,6 @@
 !
         pwr%kr_4_rms(1:pwr%nri_rms)                                     &
      &         = lp_ctl%idx_spec_layer_ctl%ivec(1:pwr%nri_rms)
-!
       else
         pwr%nri_rms = -1
       end if
@@ -233,6 +232,7 @@
         call alloc_pick_sph_l(pick_list)
       end if
 !
+!
 !   set pickup layer
       picked_sph%num_layer = 0
       if(pspec_ctl%idx_pick_layer_ctl%num .gt. 0) then
@@ -294,8 +294,6 @@
         gauss_list%idx_pick_mode(inum,2)                                &
      &        = g_pwr%idx_gauss_ctl%int2(inum)
       end do
-!
-!
 !
       gauss_list%num_order = g_pwr%idx_gauss_m_ctl%num
       call alloc_pick_sph_m(gauss_list)

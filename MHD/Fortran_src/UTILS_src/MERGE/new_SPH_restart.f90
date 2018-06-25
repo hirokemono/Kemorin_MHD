@@ -24,7 +24,8 @@
 !!     &          org_fst_param, org_phys, new_phys, t_IO)
 !!      subroutine load_org_sph_data(irank, istep, np_sph_org,          &
 !!     &          org_fst_param, org_sph, init_d, org_phys)
-!!     &          np_sph_org, org_sph, init_d, org_phys)
+!!      subroutine load_old_fmt_sph_data(irank, istep, np_sph_org,      &
+!!     &          org_fst_param, org_sph, org_phys)
 !!        type(sph_grids), intent(in) :: org_sph
 !!        type(time_data), intent(inout) :: time_d
 !!        type(phys_data), intent(inout) :: org_phys
@@ -144,13 +145,7 @@
         call copy_rj_phys_name_from_IO(org_fst_IO, new_phys)
 !
         do ip = 1, np_sph_org
-          org_phys(ip)%num_phys =  new_phys%num_phys
-          org_phys(ip)%ntot_phys = new_phys%ntot_phys
-          call alloc_phys_name_type(org_phys(ip))
-!
-          org_phys(ip)%num_component =    new_phys%num_component
-          org_phys(ip)%istack_component = new_phys%istack_component
-          org_phys(ip)%phys_name =        new_phys%phys_name
+          call copy_field_name_type(new_phys, org_phys(ip))
         end do
       end if
 !
@@ -198,6 +193,39 @@
       end if
 !
       end subroutine load_org_sph_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine load_old_fmt_sph_data(irank, istep, np_sph_org,        &
+     &          org_fst_param, org_sph, org_phys)
+!
+      use input_old_file_sel_4_zlib
+      use copy_rj_phys_data_4_IO
+!
+      integer(kind=kint ), intent(in) :: np_sph_org
+!
+      integer(kind = kint), intent(in) :: irank, istep
+      type(sph_grids), intent(in) :: org_sph
+      type(field_IO_params), intent(in) :: org_fst_param
+!
+      type(phys_data), intent(inout) :: org_phys
+!
+!>      Field data IO structure for original data
+      type(field_IO) :: org_fst_IO
+!
+!
+      call sel_read_alloc_field_file                                    &
+     &   (irank, istep, org_fst_param, org_fst_IO)
+!
+      if(irank .lt. np_sph_org) then
+        call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
+        call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)
+!
+        call dealloc_phys_data_IO(org_fst_IO)
+        call dealloc_phys_name_IO(org_fst_IO)
+      end if
+!
+      end subroutine load_old_fmt_sph_data
 !
 ! -----------------------------------------------------------------------
 !

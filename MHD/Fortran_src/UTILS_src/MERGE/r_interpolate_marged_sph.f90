@@ -164,12 +164,13 @@
 !
       write(*,*) 'r_itp%kr_inner_domain', r_itp%kr_inner_domain
       write(*,*) 'r_itp%kr_outer_domain', r_itp%kr_outer_domain
-!      do k = 1, nri_new
-!        write(*,'(i5,1pe16.8,2i5,1p3e16.8)') k, r_new(k),             &
-!     &         r_itp%k_old2new_in(k), r_itp%k_old2new_out(k),         &
-!     &         r_org(k_old2new_in(k)),  r_org(k_old2new_out(k)),      &
-!     &         r_itp%coef_old2new_in(k)
-!      end do
+      do k = 1, nri_new
+        write(*,'(i5,1pe16.8,2i5,1p3e16.8)') k, r_new(k),             &
+     &         r_itp%k_old2new_in(k), r_itp%k_old2new_out(k),         &
+     &         r_org(r_itp%k_old2new_in(k)),                          &
+     &         r_org(r_itp%k_old2new_out(k)),                         &
+     &         r_itp%coef_old2new_in(k)
+      end do
 !
       end subroutine sph_radial_interpolation_coef
 !

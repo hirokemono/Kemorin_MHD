@@ -17,6 +17,8 @@
       integer(kind = kint) :: num_domain
       character(len=kchara) :: org_mesh_header
 !
+      integer(kind = kint) :: iflag_viewer_output = 0
+!
       integer(kind = kint) :: n_overlap =    1
       integer(kind = kint) :: i_sleeve_ele = 0
 !

@@ -31,7 +31,6 @@
       use radial_interpolate
       use read_positions_of_spectr
       use set_merged_udt_2_IO
-      use output_newdomain_ucd
       use vtk_file_IO
       use ucd_IO_select
 !

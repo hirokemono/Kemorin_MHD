@@ -12,6 +12,8 @@
       use t_edge_data
       use t_near_mesh_id_4_node
       use t_mesh_data_4_merge
+      use t_jacobians
+      use t_fem_gauss_int_coefs
 !
       use m_control_data_4_part
       use m_ctl_param_partitioner
@@ -35,6 +37,9 @@
       use load_mesh_data
       use const_mesh_information
 !
+      use int_volume_of_single_domain
+      use set_surf_grp_vectors
+!
       use single_const_kemoview_mesh
 !
       implicit none
@@ -44,6 +49,9 @@
       type(element_geometry), save :: org_ele_mesh
 !
       type(near_mesh), save :: included_ele
+!>     Stracture for Jacobians
+      type(jacobians_type), save :: jacobians_T
+      type(shape_finctions_at_points), save :: spfs_T
 !
       integer(kind = kint), parameter :: my_rank = izero
       integer(kind = kint) :: ierr, iprint, ifield, icomp
@@ -130,6 +138,22 @@
         write(*,*) 'interior_surf', shape(org_ele_mesh%surf%interior_surf)
       end if
 !
+!  -------------------------------
+!
+!      if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
+!      call pick_surface_group_geometry(org_ele_mesh%surf,               &
+!     &   org_group%surf_grp, org_group%tbls_surf_grp,                   &
+!     &   org_group%surf_grp_geom)
+!
+!  -------------------------------
+!
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
+      allocate(jacobians_T%g_FEM)
+      call sel_max_int_point_by_etype                                   &
+     &   (org_mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
+      call const_jacobian_and_single_vol                                &
+     &   (org_mesh, org_group, spfs_T, jacobians_T)
+!
 !  ========= Routines for partitioner ==============
 !
 !      write(*,*) 'initialize_partitioner'
@@ -204,8 +228,10 @@
 !
 !  ========= Construct subdomain information for viewer ==============
 !
-      write(*,*) 'choose_surface_mesh_sgl'
-      call choose_surface_mesh_sgl(num_domain, distribute_mesh_file)
+      if(iflag_viewer_output .gt. 0) then
+        write(*,*) 'choose_surface_mesh_sgl'
+        call choose_surface_mesh_sgl(num_domain, distribute_mesh_file)
+      end if
 !
       stop ' * Partitioning finished'
 !

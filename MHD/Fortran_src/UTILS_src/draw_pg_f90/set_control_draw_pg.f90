@@ -3,15 +3,20 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine s_set_control_draw_pg
-!      subroutine set_control_draw_zplane
-!      subroutine set_control_draw_map
-!      subroutine set_psffield_id_4_plot_pg(psf_phys)
+!!      subroutine set_step_control_draw_pg(t_pg_ctl)
+!!        type(time_data_control), intent(in) :: t_pg_ctl
+!!      subroutine s_set_control_draw_pg(pg_panel_ctl, pg_fld_ctl)
+!!      subroutine set_control_draw_zplane(pg_section_ctl)
+!!        type(pgpolot_section_ctl), intent(in) :: pg_section_ctl
+!!      subroutine set_control_draw_map(pg_map_ctl)
+!!        type(pgpolot_map_ctl), intent(in) :: pg_map_ctl
+!!      subroutine set_psffield_id_4_plot_pg(psf_phys)
 !
       module set_control_draw_pg
 !
       use m_precision
 !
+      use t_ctl_data_plot_pg
       use m_machine_parameter
       use m_ctl_param_plot_pg
 !
@@ -23,17 +28,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_control_draw_pg
+      subroutine set_step_control_draw_pg(t_pg_ctl)
 !
-      use m_ctl_data_plot_pg
-      use m_isoline_dat_pg
-      use m_file_format_switch
-      use m_field_file_format
-      use set_components_flags
       use skip_comment_f
 !
-      integer(kind= kint) :: i, j
-      character(len=kchara) :: tmpchara
+      type(time_data_control), intent(in) :: t_pg_ctl
 !
 !
       start_time_pg = 0.0d0
@@ -62,15 +61,40 @@
       end if
 !
 !
+      if (iflag_debug .gt. 0) then
+        write(*,*) 'ist_pg',        ist_pg
+        write(*,*) 'ied_pg',        ied_pg
+        write(*,*) 'inc_pg',        inc_pg
+      end if
+!
+      end subroutine set_step_control_draw_pg
+!
+!-----------------------------------------------------------------------
+!
+      subroutine s_set_control_draw_pg(pg_panel_ctl, pg_fld_ctl)
+!
+      use m_isoline_dat_pg
+      use m_file_format_switch
+      use m_field_file_format
+      use set_components_flags
+      use skip_comment_f
+!
+      type(pgplot_panel_ctl), intent(in) :: pg_panel_ctl
+      type(pgplot_field_ctl), intent(in) :: pg_fld_ctl
+!
+      integer(kind= kint) :: i, j
+      character(len=kchara) :: tmpchara
+!
+!
       npanel_window = 1
-      if(num_panels_ctl%iflag .gt. 0) then
-        npanel_window = num_panels_ctl%intvalue
+      if(pg_panel_ctl%num_panels_ctl%iflag .gt. 0) then
+        npanel_window = pg_panel_ctl%num_panels_ctl%intvalue
       end if
 !
 !
       idisp_mode = 1
-      if(contour_type_ctl%iflag .gt. 0) then
-        tmpchara = contour_type_ctl%charavalue
+      if(pg_panel_ctl%contour_type_ctl%iflag .gt. 0) then
+        tmpchara = pg_panel_ctl%contour_type_ctl%charavalue
         if     (cmp_no_case(tmpchara, 'Both')                           &
      &     .or. cmp_no_case(tmpchara, 'Line_and_Fill')) then
           idisp_mode = 3
@@ -82,8 +106,8 @@
 !
 !
       icolor_mode = 1
-      if(color_mode_ctl%iflag .gt. 0) then
-        tmpchara = color_mode_ctl%charavalue
+      if(pg_panel_ctl%color_mode_ctl%iflag .gt. 0) then
+        tmpchara = pg_panel_ctl%color_mode_ctl%charavalue
         if     (cmp_no_case(tmpchara, 'Rainbow')                        &
      &     .or. cmp_no_case(tmpchara, 'Color')        ) then
           icolor_mode = 1
@@ -96,21 +120,22 @@
       end if
 !
 !
-      if(psf_file_head_ctl%iflag .gt. 0) then
-        pg_psf_file_prefix = psf_file_head_ctl%charavalue
+      if(pg_fld_ctl%psf_file_head_ctl%iflag .gt. 0) then
+        pg_psf_file_prefix = pg_fld_ctl%psf_file_head_ctl%charavalue
       else
         write(*,*) 'set file header for psf data'
         stop
       end if
-      call choose_ucd_file_format(psf_data_fmt_ctl%charavalue,          &
-     &    psf_data_fmt_ctl%iflag, iflag_pg_psf_fmt)
+      call choose_ucd_file_format                                       &
+     &   (pg_fld_ctl%psf_data_fmt_ctl%charavalue,                       &
+     &    pg_fld_ctl%psf_data_fmt_ctl%iflag, iflag_pg_psf_fmt)
 !
-      if(map_grid_file_ctl%iflag .gt. 0) then
-        fhead_map_grid =  map_grid_file_ctl%charavalue
+      if(pg_fld_ctl%map_grid_file_ctl%iflag .gt. 0) then
+        fhead_map_grid =  pg_fld_ctl%map_grid_file_ctl%charavalue
       end if
 !
-      if(plot_field_ctl%icou .gt. 0) then
-        ntot_plot_pg = plot_field_ctl%num
+      if(pg_fld_ctl%plot_field_ctl%icou .gt. 0) then
+        ntot_plot_pg = pg_fld_ctl%plot_field_ctl%num
       else
         write(*,*) 'set number of component to plot'
         stop
@@ -119,11 +144,11 @@
       call allocate_plot_param_pg
 !
         field_name_4_plot(1:ntot_plot_pg)                               &
-     &       = plot_field_ctl%c1_tbl(1:ntot_plot_pg)
+     &       = pg_fld_ctl%plot_field_ctl%c1_tbl(1:ntot_plot_pg)
         comp_name_4_plot(1:ntot_plot_pg)                                &
-     &       = plot_field_ctl%c2_tbl(1:ntot_plot_pg)
+     &       = pg_fld_ctl%plot_field_ctl%c2_tbl(1:ntot_plot_pg)
         field_label_4_plot(1:ntot_plot_pg)                              &
-     &       = plot_field_ctl%c3_tbl(1:ntot_plot_pg)
+     &       = pg_fld_ctl%plot_field_ctl%c3_tbl(1:ntot_plot_pg)
 !
       do i = 1, ntot_plot_pg
         call s_set_components_flags( comp_name_4_plot(i),               &
@@ -133,40 +158,35 @@
       end do
 !
 !
-      if(contour_range_ctl%num .gt. 0) then
-        do i = 1, contour_range_ctl%num
-          j = contour_range_ctl%int1(i)
-          num_line_pg(j) =  contour_range_ctl%int2(i)
-          range_pg(1,j) =   contour_range_ctl%vec1(i)
-          range_pg(2,j) =   contour_range_ctl%vec2(i)
+      if(pg_fld_ctl%contour_range_ctl%num .gt. 0) then
+        do i = 1, pg_fld_ctl%contour_range_ctl%num
+          j = pg_fld_ctl%contour_range_ctl%int1(i)
+          num_line_pg(j) =  pg_fld_ctl%contour_range_ctl%int2(i)
+          range_pg(1,j) =   pg_fld_ctl%contour_range_ctl%vec1(i)
+          range_pg(2,j) =   pg_fld_ctl%contour_range_ctl%vec2(i)
         end do
 !
-        do i = 1, contour_range_ctl%num
-          nmax_line = max(contour_range_ctl%int2(i),nmax_line)
+        do i = 1, pg_fld_ctl%contour_range_ctl%num
+          nmax_line                                                     &
+     &        = max(pg_fld_ctl%contour_range_ctl%int2(i),nmax_line)
         end do
       end if
 !
       call allocate_data_4_isoline
 !
-      if(vector_scale_ctl%num .gt. 0) then
-        do i = 1, vector_scale_ctl%num
-          j = vector_scale_ctl%int1(i)
-          nskip_vect_pg(j) =  vector_scale_ctl%int2(i)
-          scale_pg(j) = vector_scale_ctl%vect(i)
+      if(pg_fld_ctl%vector_scale_ctl%num .gt. 0) then
+        do i = 1, pg_fld_ctl%vector_scale_ctl%num
+          j = pg_fld_ctl%vector_scale_ctl%int1(i)
+          nskip_vect_pg(j) =  pg_fld_ctl%vector_scale_ctl%int2(i)
+          scale_pg(j) =       pg_fld_ctl%vector_scale_ctl%vect(i)
         end do
 !
       end if
-!
-      call dealloc_control_array_i2_r(vector_scale_ctl)
-      call dealloc_control_array_i2_r2(contour_range_ctl)
 !
       if (iflag_debug .gt. 0) then
         write(*,*) 'npanel_window', npanel_window
         write(*,*) 'idisp_mode',    idisp_mode
         write(*,*) 'icolor_mode',   icolor_mode
-        write(*,*) 'ist_pg',        ist_pg
-        write(*,*) 'ied_pg',        ied_pg
-        write(*,*) 'inc_pg',        inc_pg
 !
         write(*,*) 'nmax_line',            nmax_line
         write(*,*) 'iflag_pg_psf_fmt',   iflag_pg_psf_fmt
@@ -181,8 +201,9 @@
      &               ncomp_org_4_plot(i)
           write(*,*)
         end do
-        do i = 1, vector_scale_ctl%num
-          write(*,*) 'interval, scale', i, nskip_vect_pg(i), scale_pg(i)
+        do i = 1, pg_fld_ctl%vector_scale_ctl%num
+          write(*,*) 'interval, scale',                                 &
+     &              i, nskip_vect_pg(i), scale_pg(i)
         end do
       end if
 !
@@ -190,25 +211,26 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_control_draw_zplane
+      subroutine set_control_draw_zplane(pg_section_ctl)
 !
-      use m_ctl_data_plot_pg
+      type(pgpolot_section_ctl), intent(in) :: pg_section_ctl
 !
 !
-      if(outer_radius_ctl%iflag .gt. 0) then
-        shell_size = outer_radius_ctl%realvalue
+      if(pg_section_ctl%outer_radius_ctl%iflag .gt. 0) then
+        shell_size = pg_section_ctl%outer_radius_ctl%realvalue
       else
         shell_size = 20.0d0 / 13.0d0
       end if
 !
-      if(ro_ri_ratio_ctl%iflag .gt. 0) then
-        shell_ratio = ro_ri_ratio_ctl%realvalue
+      if(pg_section_ctl%ro_ri_ratio_ctl%iflag .gt. 0) then
+        shell_ratio = pg_section_ctl%ro_ri_ratio_ctl%realvalue
       else
         shell_ratio = 0.35d0
       end if
 !
-      if(pg_plane_size_ctl%iflag .gt. 0) then
-        plane_size(1:2) = pg_plane_size_ctl%realvalue(1:2)
+      if(pg_section_ctl%pg_plane_size_ctl%iflag .gt. 0) then
+        plane_size(1:2)                                                 &
+     &      = pg_section_ctl%pg_plane_size_ctl%realvalue(1:2)
       else
         plane_size(1:2) = 1.0d0
       end if
@@ -223,26 +245,29 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_control_draw_map
+      subroutine set_control_draw_map(pg_map_ctl)
 !
       use m_spheric_constants
-      use m_ctl_data_plot_pg
       use skip_comment_f
+!
+      type(pgpolot_map_ctl), intent(in) :: pg_map_ctl
+      character(len = kchara) :: ctmp
 !
 !
       id_shell_mode_pg = iflag_MESH_same
-      if(pg_grid_type_ctl%iflag .gt. 0) then
-        if(cmp_no_case(pg_grid_type_ctl%charavalue, 'No_pole'   ))      &
+      if(pg_map_ctl%pg_grid_type_ctl%iflag .gt. 0) then
+        ctmp = pg_map_ctl%pg_grid_type_ctl%charavalue
+        if(cmp_no_case(ctmp, 'No_pole'   ))                             &
      &          id_shell_mode_pg = iflag_MESH_same
-        if(cmp_no_case(pg_grid_type_ctl%charavalue, 'With_pole' ))      &
+        if(cmp_no_case(ctmp, 'With_pole' ))                             &
      &          id_shell_mode_pg = iflag_MESH_w_pole
-        if(cmp_no_case(pg_grid_type_ctl%charavalue,'With_center'))      &
+        if(cmp_no_case(ctmp,'With_center'))                             &
      &          id_shell_mode_pg = iflag_MESH_w_center
       end if
 !
 !
-      if(radial_ID_ctl%iflag .gt. 0) then
-        id_radial = radial_ID_ctl%intvalue
+      if(pg_map_ctl%radial_ID_ctl%iflag .gt. 0) then
+        id_radial = pg_map_ctl%radial_ID_ctl%intvalue
       else
         id_radial = 1
       end if

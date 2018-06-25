@@ -236,7 +236,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_entry, i_diff_control)
+        i_diff_control = find_control_end_flag(hd_entry)
         if(i_diff_control .gt. 0) exit
 !
         call read_control_platforms(hd_platform, i_platform, d_plt)
@@ -260,7 +260,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_diff_files, i_diff_files)
+        i_diff_files = find_control_end_flag(hd_diff_files)
         if(i_diff_files .gt. 0) exit
 !
 !
@@ -280,7 +280,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_diff_model, i_diff_model)
+        i_diff_model = find_control_end_flag(hd_diff_model)
         if(i_diff_model .gt. 0) exit
 !
 !

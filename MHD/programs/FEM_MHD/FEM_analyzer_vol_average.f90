@@ -102,12 +102,12 @@
      &         (i_step, MHD_files, femmesh, iphys_nod, FEM_model,       &
      &          MHD_step, SGS_MHD_wk, nod_fld, fem_sq)
 !
+      use t_FEM_MHD_mean_square
       use nod_phys_send_recv
       use lead_physical_values
       use copy_nodal_fields
       use input_control
 !
-      use time_step_data_IO_control
       use output_parallel_ucd_file
       use FEM_MHD_evolution
 !
@@ -152,8 +152,7 @@
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    iphys_nod, nod_fld, SGS_MHD_wk%iphys_ele,                     &
      &    SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int%jcs,                   &
-     &    fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                     &
-     &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq%msq)
+     &    SGS_MHD_wk%rhs_mat, SGS_MHD_wk%mhd_fem_wk, fem_sq)
 !
       end subroutine FEM_analyze_vol_average
 !

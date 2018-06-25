@@ -8,9 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_back_transform                              &
-!!     &         (SPH_model, iphys, trans_p, WK, SPH_MHD)
+!!     &         (SPH_model, trans_p, WK, SPH_MHD)
 !!        type(SPH_MHD_model_data), intent(in) :: SPH_model
-!!        type(phys_address), intent(in) :: iphys
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -46,7 +45,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_sph_back_transform                                &
-     &         (SPH_model, iphys, trans_p, WK, SPH_MHD)
+     &         (SPH_model, trans_p, WK, SPH_MHD)
 !
       use t_physical_property
       use t_poloidal_rotation
@@ -60,7 +59,6 @@
       use init_sphrical_transform_MHD
       use set_address_all_sph_trans
 !
-      type(phys_address), intent(in) :: iphys
       type(SPH_MHD_model_data), intent(in) :: SPH_model
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
@@ -79,27 +77,22 @@
       call init_pole_transform(SPH_MHD%sph%sph_rtp)
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
-     &                     'set_addresses_backward_trans'
-      call set_addresses_backward_trans(SPH_MHD%fld, WK%trns_MHD,       &
+     &                     'set_all_spherical_transform'
+      call set_all_spherical_transform(SPH_MHD%fld, WK%trns_MHD,        &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-!
-      if(iflag_debug .ge. iflag_routine_msg) then
-        call check_address_trans_sph_MHD                                &
-     &     (SPH_MHD%ipol, SPH_MHD%idpdr, SPH_MHD%itor, iphys,           &
-     &      WK%trns_MHD, ncomp_max_trans)
-        do i_fld = 1, SPH_MHD%fld%num_phys_viz
-          write(*,*) i_fld, trim(WK%trns_MHD%b_trns_name(i_fld))
-        end do
-      end if
 !
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
 !
-      call sel_sph_transform_MHD(izero, SPH_MHD%ipol,                   &
-     &    SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
+      call init_leg_fourier_trans_MHD                                   &
+     &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &
+     &    ncomp_max_trans, trans_p, WK)
+!
+      call sel_sph_transform_MHD                                        &
+     &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    WK%trns_MHD, WK%trns_SGS, WK%WK_sph, WK%MHD_mul_FFTW,         &
-     &    WK%SGS_mul_FFTW, trans_p, WK%gt_cor, WK%cor_rlm, SPH_MHD%fld)
+     &    WK%trns_MHD, WK%WK_sph, trans_p, WK%gt_cor, WK%cor_rlm,       &
+     &    SPH_MHD%fld)
 !
       end subroutine init_sph_back_transform
 !
@@ -109,7 +102,6 @@
      &           rj_fld, trns_MHD, WK_sph)
 !
       use m_solver_SR
-      use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
       use m_machine_parameter
@@ -135,25 +127,25 @@
       integer(kind = kint) :: nscalar_trans
 !
 !
-      if(trns_MHD%ncomp_rj_2_rtp .le. 0) return
+      if(trns_MHD%backward%ncomp .le. 0) return
 !
-      nscalar_trans = trns_MHD%nscalar_rj_2_rtp                         &
-     &               + 6*trns_MHD%ntensor_rj_2_rtp
-      call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rj_2_rtp,        &
+      nscalar_trans = trns_MHD%backward%num_scalar                      &
+     &               + 6*trns_MHD%backward%num_tensor
+      call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
      &   comms_sph%comm_rj, comms_sph%comm_rlm)
-      call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rj_2_rtp,        &
+      call check_calypso_sph_comm_buf_N(trns_MHD%backward%ncomp,        &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       call copy_all_spectr_to_send                                      &
-     &   (sph%sph_rtp%nnod_pole, trns_MHD%ncomp_rj_2_rtp,               &
-     &    sph%sph_rj, comms_sph%comm_rj, rj_fld, trns_MHD,              &
-     &    n_WS, WS, trns_MHD%flc_pole)
+     &   (sph%sph_rtp%nnod_pole, trns_MHD%backward%ncomp,               &
+     &    sph%sph_rj, comms_sph%comm_rj, rj_fld, trns_MHD%backward,     &
+     &    n_WS, WS, trns_MHD%backward%flc_pole)
 !
       call sph_b_trans_w_poles                                          &
-     &   (trns_MHD%ncomp_rj_2_rtp, trns_MHD%nvector_rj_2_rtp,           &
+     &   (trns_MHD%backward%ncomp, trns_MHD%backward%num_vector,        &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
-     &    n_WS, n_WR, WS(1), WR(1), trns_MHD%fld_rtp,                   &
-     &    trns_MHD%flc_pole, trns_MHD%fld_pole, WK_sph)
+     &    n_WS, n_WR, WS(1), WR(1), trns_MHD%backward%fld_rtp,          &
+     &    trns_MHD%backward%flc_pole, trns_MHD%backward%fld_pole, WK_sph)
 !
       end subroutine sph_all_back_transform
 !
@@ -185,7 +177,7 @@
 !
 !$omp parallel workshare
       fld1_rtp(1:nnod_rtp,1:ncomp_rtp)                                  &
-           = trns_MHD%fld_rtp(1:nnod_rtp,1:ncomp_rtp)
+           = trns_MHD%backward%fld_rtp(1:nnod_rtp,1:ncomp_rtp)
 !$omp end parallel workshare
 !
 !       Transform second data

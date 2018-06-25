@@ -75,7 +75,7 @@
       integer(kind = kint) :: nnod_rtp, ncomp_rtp
 !
       nnod_rtp =  sph%sph_rtp%nnod_rtp
-      ncomp_rtp = trns_MHD%ncomp_rj_2_rtp
+      ncomp_rtp = trns_MHD%backward%ncomp
       allocate(fld1_rtp(nnod_rtp,ncomp_rtp))
 !
       call sph_back_transform_dual(sph, comms_sph, trans_p,             &
@@ -85,8 +85,8 @@
 !       Evaluate correlation in zonal
 !
       call ovrwrt_zonal_correlate_rtp(ncomp_rtp, nnod_rtp,              &
-     &    sph%sph_rtp%nidx_rtp, fld1_rtp, trns_MHD%fld_rtp)
-      trns_MHD%fld_pole = 0.0d0
+     &    sph%sph_rtp%nidx_rtp, fld1_rtp, trns_MHD%backward%fld_rtp)
+      trns_MHD%backward%fld_pole = 0.0d0
 !
       deallocate(fld1_rtp)
 !
@@ -115,7 +115,7 @@
 !       Transform first data
 !
       nnod_rtp =  sph%sph_rtp%nnod_rtp
-      ncomp_rtp = trns_MHD%ncomp_rj_2_rtp
+      ncomp_rtp = trns_MHD%backward%ncomp
       allocate(fld1_rtp(nnod_rtp,ncomp_rtp))
 !
       call sph_back_transform_dual(sph, comms_sph, trans_p,             &
@@ -125,8 +125,8 @@
 !       Evaluate correlation in zonal
 !
       call ovrwrt_zonal_rms_ratio_rtp(ncomp_rtp, nnod_rtp,              &
-     &    sph%sph_rtp%nidx_rtp, fld1_rtp, trns_MHD%fld_rtp)
-      trns_MHD%fld_pole = 0.0d0
+     &    sph%sph_rtp%nidx_rtp, fld1_rtp, trns_MHD%backward%fld_rtp)
+      trns_MHD%backward%fld_pole = 0.0d0
 !
       deallocate(fld1_rtp)
 !

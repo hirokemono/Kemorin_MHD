@@ -168,7 +168,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, fln%i_vr_fline_ctl)
+        fln%i_vr_fline_ctl = find_control_end_flag(hd_block)
         if(fln%i_vr_fline_ctl .gt. 0) exit
 !
 !

@@ -29,9 +29,9 @@ target_task:
 	@echo '$$(TARGET_KEMOVIEW_GTK)': '$$(MOD_KEMOVIEW_GTK)' \
 	'$$(LIB_KEMO_C_FILE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(CC)' '$$(OPTFLAGS_GL) $$(GTK2_CFLAGS)' -o '$$(TARGET_KEMOVIEW_GTK)' \
+	@echo '	''$$(CC)' '$$(OPTFLAGS_GL) $$(GTK3_CFLAGS)' -o '$$(TARGET_KEMOVIEW_GTK)' \
 	'$$(MOD_KEMOVIEW_GTK) -L. $$(LIB_KEMO_C)' \
-	'$$(GTK2_LIBS) $$(OPENGL_LIBS)' >> $(MAKENAME)
+	'$$(GTK3_LIBS) $$(OPENGL_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 lib_name:
@@ -48,7 +48,7 @@ module:
 	'$$(KEMOVIEW_GTKDIR)'/kemoviewer_gtk.c  \
 	kemo_mesh_viewer_gtk.o \
 	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK2_CFLAGS)' \
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
 	'$$(KEMOVIEW_GTKDIR)'/kemoviewer_gtk.c \
 	>> $(MAKENAME)
 	
@@ -61,7 +61,7 @@ module:
 	const_viewer_menu_glut.o \
 	view_modifier_glut.o \
 	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK2_CFLAGS)' \
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
 	'$$(KEMOVIEW_GTKDIR)'/kemo_mesh_viewer_gtk.c \
 	>> $(MAKENAME)
 	
@@ -70,7 +70,7 @@ module:
 	'$$(KEMOVIEW_GTKDIR)'/kemoview_fileselector_gtk.c  \
 	kemoview_glut_routines.o \
 	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK2_CFLAGS)' \
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
 	'$$(KEMOVIEW_GTKDIR)'/kemoview_fileselector_gtk.c \
 	>> $(MAKENAME)
 	
@@ -79,7 +79,7 @@ module:
 	'$$(KEMOVIEW_GTKDIR)'/kemoview_gtk_window_input.c  \
 	kemoview_glut_routines.o \
 	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK2_CFLAGS)' \
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
 	'$$(KEMOVIEW_GTKDIR)'/kemoview_gtk_window_input.c \
 	>> $(MAKENAME)
 

@@ -184,6 +184,8 @@
       call set_ctl_params_pick_gauss                                    &
      &   (spu_ctl%smonitor_ctl%g_pwr, gauss_list_u, gauss_u)
 !
+      call dealloc_sph_monitoring_ctl(spu_ctl%smonitor_ctl)
+!
 !   set physical values
 !
       call s_set_control_sph_data                                       &

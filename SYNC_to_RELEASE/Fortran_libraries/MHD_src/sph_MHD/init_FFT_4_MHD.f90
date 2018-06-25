@@ -76,11 +76,11 @@
 !
       call init_sph_FFT_select(my_rank, sph_rtp, ncomp_tot, WK_FFTs)
       call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,             &
-     &    trns_MHD%ncomp_rtp_2_rj, trns_MHD%ncomp_rj_2_rtp,             &
+     &    trns_MHD%forward%ncomp, trns_MHD%backward%ncomp,              &
      &    MHD_mul_FFTW)
       if(iflag_SGS .gt. 0) then
         call init_MHD_FFT_select(my_rank, sph_rtp, ncomp_tot,           &
-     &      trns_SGS%ncomp_rtp_2_rj, trns_SGS%ncomp_rj_2_rtp,           &
+     &      trns_SGS%forward%ncomp, trns_SGS%backward%ncomp,            &
      &      SGS_mul_FFTW)
       end if
 !
@@ -204,16 +204,16 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_MHD_FFT_select'
       call init_sph_FFT_select(my_rank, sph_rtp, ncomp, WK_FFTs)
       call init_MHD_FFT_select(my_rank, sph_rtp, ncomp,                 &
-     &    trns_MHD%ncomp_rtp_2_rj, trns_MHD%ncomp_rj_2_rtp,             &
+     &    trns_MHD%forward%ncomp, trns_MHD%backward%ncomp,              &
      &    TEST_mul_FFTW)
 !
       if(iflag_debug .gt. 0) write(*,*) 'back_MHD_FFT_sel_from_recv'
       starttime = MPI_WTIME()
       call back_MHD_FFT_sel_from_recv(sph_rtp, comm_rtp,                &
-     &    trns_MHD%ncomp_rj_2_rtp, n_WR, WR, trns_MHD%fld_rtp,          &
+     &    trns_MHD%backward%ncomp, n_WR, WR, trns_MHD%fld_rtp,          &
      &    WK_FFTs, TEST_mul_FFTW)
       call fwd_MHD_FFT_sel_to_send(sph_rtp, comm_rtp,                   &
-     &    trns_MHD%ncomp_rtp_2_rj, n_WS, trns_MHD%frc_rtp, WS,          &
+     &    trns_MHD%forward%ncomp, n_WS, trns_MHD%forward, WS,           &
      &    WK_FFTs, TEST_mul_FFTW)
       endtime = MPI_WTIME() - starttime
 !

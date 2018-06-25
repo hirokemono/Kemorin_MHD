@@ -194,7 +194,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, iflag)
+        iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
         call read_control_array_c1(hd_num_forces, frc_ctl%force_names)
@@ -217,7 +217,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, iflag)
+        iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
         call read_control_array_c_r                                     &
@@ -243,7 +243,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, iflag)
+        iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
 !
@@ -268,7 +268,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, iflag)
+        iflag = find_control_end_flag(hd_block)
         if(iflag .gt. 0) exit
 !
         call read_control_array_c_r(hd_magne_vect, mcv_ctl%ext_magne)

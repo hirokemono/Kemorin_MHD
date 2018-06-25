@@ -129,8 +129,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_add_ele_grp_ctl,                  &
-     &      i_add_ele_grp_ctl)
+        i_add_ele_grp_ctl = find_control_end_flag(hd_add_ele_grp_ctl)
         if(i_add_ele_grp_ctl .gt. 0) exit
 !
         call read_control_platforms                                     &
@@ -153,8 +152,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_add_ele_grp_para,                 &
-     &      i_add_ele_grp_para)
+        i_add_ele_grp_para = find_control_end_flag(hd_add_ele_grp_para)
         if(i_add_ele_grp_para .gt. 0) exit
 !
         call read_control_array_c_r2                                    &

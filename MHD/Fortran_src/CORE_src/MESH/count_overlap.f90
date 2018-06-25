@@ -7,6 +7,8 @@
 !> @brief Check overlapped element
 !!
 !!@verbatim
+!!      integer(kind = kint) function count_interier_element            &
+!!     &                            (internal_node, numele, ie)
 !!      subroutine set_overlap_flag(np_smp, inum_smp_stack,             &
 !!     &          internal_node, numele, ie, internal_n, interior_flag)
 !!
@@ -29,6 +31,27 @@
 !
 ! ----------------------------------------------------------------------
 !
+      integer(kind = kint) function count_interier_element              &
+     &                            (internal_node, numele, ie)
+!
+      integer(kind = kint), intent(in) :: internal_node, numele
+      integer(kind = kint), intent(in) :: ie(numele,1)
+!
+      integer (kind = kint) :: icou, iele
+!
+!
+      icou = 0
+!$omp parallel do private(iele) reduction(+:icou)
+      do iele = 1, numele
+        if(ie(iele,1) .le. internal_node) icou = icou + 1
+      end do
+!$omp end parallel do
+      count_interier_element = icou
+!
+      end function count_interier_element
+!
+! ----------------------------------------------------------------------
+!
       subroutine set_overlap_flag(np_smp, inum_smp_stack,               &
      &          internal_node, numele, ie, internal_n, interior_flag)
 !
@@ -41,6 +64,7 @@
       integer(kind = kint), intent(inout) :: interior_flag(numele)
 !
       integer (kind = kint) :: ip, inod, inum
+!
 !
 !$omp parallel do private(inum, inod)
       do ip = 1, np_smp

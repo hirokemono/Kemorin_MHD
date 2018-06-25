@@ -64,7 +64,7 @@
       field_ctl%c2_tbl(field_ctl%num) = 'Viz_off'
       field_ctl%c3_tbl(field_ctl%num) = 'Monitor_off'
 !
-      if(iflag_debug .eq. iflag_full_msg) then
+      if(iflag_debug .gt. 0) then
         write(*,*) trim(field_ctl%c1_tbl(field_ctl%num) ),              &
      &            ' is added at field ID ',   field_ctl%num
       end if

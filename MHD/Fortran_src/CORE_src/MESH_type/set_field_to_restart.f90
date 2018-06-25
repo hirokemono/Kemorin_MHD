@@ -15,7 +15,7 @@
 !!      subroutine copy_field_data_to_restart(node, phys, fld_IO)
 !!      subroutine copy_field_data_from_restart(node, fld_IO, phys)
 !!
-!!      subroutine simple_copy_fld_name_to_rst(phys, fld_IO)
+!!      subroutine simple_init_fld_name_to_rst(numnod, phys, fld_IO)
 !!      subroutine simple_copy_fld_data_to_rst(node, phys, fld_IO)
 !!@endverbatim
 !
@@ -126,18 +126,25 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine simple_copy_fld_name_to_rst(phys, fld_IO)
+      subroutine simple_init_fld_name_to_rst(numnod, phys, fld_IO)
 !
+      integer(kind = kint), intent(in) :: numnod
       type(phys_data), intent(in) :: phys
       type(field_IO), intent(inout) :: fld_IO
 !
 !
+      fld_IO%num_field_IO = phys%num_phys
+      call alloc_phys_name_IO(fld_IO)
+!
       call simple_copy_fld_name_to_rst_IO                               &
      &   (phys%num_phys, phys%istack_component, phys%phys_name,         &
-     &    fld_IO%num_field_IO, fld_IO%num_comp_IO,                      &
-     &    fld_IO%istack_comp_IO, fld_IO%fld_name)
+     &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
+     &    fld_IO%num_comp_IO, fld_IO%istack_comp_IO, fld_IO%fld_name)
 !
-      end subroutine simple_copy_fld_name_to_rst
+      fld_IO%nnod_IO = numnod
+      call alloc_phys_data_IO(fld_IO)
+!
+      end subroutine simple_init_fld_name_to_rst
 !
 !------------------------------------------------------------------
 !

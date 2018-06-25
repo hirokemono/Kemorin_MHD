@@ -9,6 +9,8 @@
 !!      subroutine sel_sph_model_coefs                                  &
 !!     &         (numdir, ngrp_dynamic, stab_wt, ifld_sgs, icomp_sgs,   &
 !!     &          nfld_sgs, ncomp_sgs,  sgs_zl, sgs_zt, sgs_c)
+!!      subroutine cal_scalar_sph_model_coefs                           &
+!!     &         (ngrp_dynamic, stab_wt, sgs_zl, sgs_zt, sgs_c)
 !!@endverbatim
 !
       module cal_sph_model_coefs
@@ -20,7 +22,7 @@
 !
       implicit none
 !
-      private :: cal_scalar_sph_model_coefs, cal_vector_sph_model_coefs
+      private :: cal_vector_sph_model_coefs
 !
 !  ---------------------------------------------------------------------
 !

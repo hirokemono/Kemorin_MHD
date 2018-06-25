@@ -84,7 +84,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_filter_control, i_filter_control)
+        i_filter_control = find_control_end_flag(hd_filter_control)
         if(i_filter_control .gt. 0) exit
 !
 !

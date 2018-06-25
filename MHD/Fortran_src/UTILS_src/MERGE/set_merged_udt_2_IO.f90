@@ -4,7 +4,6 @@
 !      Written by H. Matsui on Apr., 2010
 !
 !!      subroutine link_merged_node_2_ucd_IO(merged, merge_tbl, ucd)
-!!      subroutine link_merged_ele_2_ucd_IO(merged, merge_tbl, ucd)
 !!      subroutine link_merged_field_2_udt_IO                           &
 !!     &         (merged_fld, merge_tbl, ucd)
 !!        type(mesh_geometry), intent(in) :: merged
@@ -54,42 +53,6 @@
 !$omp end parallel do
 !
       end subroutine link_merged_node_2_ucd_IO
-!
-! -----------------------------------------------------------------------
-!
-      subroutine link_merged_ele_2_ucd_IO(merged, merge_tbl, ucd)
-!
-      use set_ucd_data
-!
-      type(mesh_geometry), intent(in) :: merged
-      type(merged_stacks), intent(in) :: merge_tbl
-      type(ucd_data), intent(inout) :: ucd
-!
-      integer(kind = kint_gl) :: iele
-      integer(kind = kint) :: k1
-!
-!
-      ucd%nele = merge_tbl%nele_merged
-      ucd%nnod_4_ele = merged%ele%nnod_4_ele
-      call allocate_ucd_ele(ucd)
-!
-!$omp parallel private(iele,k1)
-!$omp do
-      do iele = 1, ucd%nele
-        ucd%iele_global(iele) = merged%ele%iele_global(iele)
-      end do
-!$omp end do nowait
-!
-      do k1 = 1, ucd%nnod_4_ele
-!$omp do
-        do iele = 1, ucd%nele
-          ucd%ie(iele,k1) = merged%ele%ie(iele,k1)
-        end do
-!$omp end do nowait
-      end do
-!$omp end parallel
-!
-      end subroutine link_merged_ele_2_ucd_IO
 !
 ! -----------------------------------------------------------------------
 !

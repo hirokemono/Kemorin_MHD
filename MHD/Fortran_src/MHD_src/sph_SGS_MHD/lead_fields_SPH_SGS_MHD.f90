@@ -87,11 +87,11 @@
 !
 !
       call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
-     &    MHD_prop, trans_p, SPH_MHD%ipol, WK, SPH_MHD%fld)
+     &    MHD_prop, trans_p, WK, SPH_MHD%fld)
 !
       call lead_SGS_terms_4_SPH                                         &
      &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms,                  &
-     &    trans_p, SPH_MHD%ipol, WK, dynamic_SPH, SPH_MHD%fld)
+     &    trans_p, WK, dynamic_SPH, SPH_MHD%fld)
 !
       call gradients_of_vectors_sph                                     &
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
@@ -200,6 +200,7 @@
       call cal_sph_enegy_fluxes                                         &
      &   (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,         &
      &    ipol, trns_MHD, trns_snap,  WK_sph, rj_fld)
+      call calypso_mpi_barrier
 !
 !      Work of SGS terms
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then
@@ -207,16 +208,15 @@
         call SGS_fluxes_for_snapshot                                    &
      &     (sph%sph_rtp, MHD_prop%fl_prop, trns_MHD%b_trns,             &
      &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,        &
-     &      trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,           &
-     &      trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,         &
-     &      trns_MHD%fld_rtp, trns_SGS%frc_rtp,                         &
-     &      trns_snap%fld_rtp, trns_snap%frc_rtp)
+     &      trns_MHD%backward, trns_SGS%forward, trns_snap%backward,    &
+     &      trns_snap%forward)
       end if
+      call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
       call sph_forward_trans_snapshot_MHD                               &
-     &   (sph, comms_sph, trans_p, trns_snap, ipol, WK_sph, rj_fld)
+     &   (sph, comms_sph, trans_p, trns_snap%forward, WK_sph, rj_fld)
       call calypso_mpi_barrier
 !
       end subroutine enegy_fluxes_SPH_SGS_MHD
@@ -224,7 +224,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_SGS_terms_4_SPH(SGS_param, sph, comms_sph,        &
-     &          trans_p, ipol, WK, dynamic_SPH, rj_fld)
+     &          trans_p, WK, dynamic_SPH, rj_fld)
 !
       use sph_transforms_4_SGS
       use swap_phi_order_4_sph_trans
@@ -234,7 +234,6 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
@@ -247,7 +246,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
       call sph_pole_trans_SGS_MHD                                       &
-     &   (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_SGS)
+     &   (sph, comms_sph, trans_p, rj_fld, WK%trns_SGS%backward)
 !
       if(SGS_param%iflag_dynamic .gt. id_SGS_none) then
         if(iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'

@@ -6,12 +6,9 @@
 !>@brief Least square for model coefficients
 !!
 !!@verbatim
-!!      subroutine sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp,      &
-!!     &          numdir, frc_simi, frc_wide,  sgs_zl, sgs_zt)
-!!      subroutine sel_int_zonal_4_buo_coefs(sph_rtp, sph_d_grp,        &
-!!     &          frc_simi, frc_wide, sgs_zl, sgs_zt)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+!!      subroutine cal_dynamic_SGS_4_sph_MHD                            &
+!!     &         (sph_rtp, sph_d_grp, stab_weight, numdir, ifld_sgs,    &
+!!     &          flux_simi, flux_wide, flux_dble, wk_sgs)
 !!@endverbatim
 !
       module zonal_lsq_4_model_coefs
@@ -19,333 +16,109 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_phys_constants
       use calypso_mpi
 !
       use t_spheric_rtp_data
       use t_groups_sph_dynamic
+      use t_ele_info_4_dynamic
 !
       implicit none
 !
-      private :: int_zonal_for_model_coefs_pin
-      private :: int_zonal_for_model_coefs_pout
-      private :: int_zonal_buo_coefs_pin, int_zonal_buo_coefs_pout
+      private :: sel_int_zonal_4_model_coefs
 !
 !  ---------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine cal_dynamic_SGS_4_sph_MHD                              &
+     &         (sph_rtp, sph_d_grp, stab_weight, numdir, ifld_sgs,      &
+     &          flux_simi, flux_wide, flux_dble, wk_sgs)
+!
+      use m_FFT_selector
+      use cal_sph_model_coefs
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+      real(kind = kreal), intent(in) :: stab_weight
+      integer(kind = kint), intent(in) :: numdir
+!
+      integer(kind = kint), intent(in) :: ifld_sgs
+!
+      real(kind = kreal), intent(in)                                    &
+     &                   :: flux_simi(sph_rtp%nnod_rtp,numdir)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: flux_wide(sph_rtp%nnod_rtp,numdir)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: flux_dble(sph_rtp%nnod_rtp,numdir)
+!
+      type(dynamic_model_data), intent(inout) :: wk_sgs
+!
+!
+      if(iflag_debug .gt. 0) write(*,*) 'sel_int_zonal_4_model_coefs'
+      call sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp,              &
+     &    numdir, flux_simi, flux_wide, flux_dble,                      &
+     &    wk_sgs%comp_coef(1,ifld_sgs), wk_sgs%comp_clip(1,ifld_sgs))
+!
+      if(iflag_debug .gt. 0) write(*,*) 'cal_scalar_sph_model_coefs'
+      call cal_scalar_sph_model_coefs                                   &
+     &   (sph_d_grp%ngrp_dynamic, stab_weight,                          &
+     &    wk_sgs%comp_coef(1,ifld_sgs), wk_sgs%comp_clip(1,ifld_sgs),   &
+     &    wk_sgs%fld_coef(1,ifld_sgs))
+!
+      end subroutine cal_dynamic_SGS_4_sph_MHD
+!
+! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp,        &
-     &          numdir, frc_simi, frc_wide,  sgs_zl, sgs_zt)
+     &          numdir, frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
 !
       use m_FFT_selector
+      use zonal_int_4_sph_Csim_pin
+      use zonal_int_4_sph_Csim_pout
 !
       integer(kind = kint), intent(in) :: numdir
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
-      real(kind = kreal), intent(in) :: frc_simi(sph_rtp%nnod_rtp,numdir)
-      real(kind = kreal), intent(in) :: frc_wide(sph_rtp%nnod_rtp,numdir)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: frc_simi(sph_rtp%nnod_rtp,numdir)
+      real(kind = kreal), intent(in)                                    &
+     &                    :: frc_wide(sph_rtp%nnod_rtp,numdir)
+      real(kind = kreal), intent(in)                                    &
+     &                    :: frc_dble(sph_rtp%nnod_rtp,numdir)
 !
       real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zl(sph_d_grp%ngrp_dynamic,numdir)
+     &                   :: sgs_zl(sph_d_grp%ngrp_dynamic)
       real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zt(sph_d_grp%ngrp_dynamic,numdir)
-!
-      integer(kind = kint) :: nd
+     &                   :: sgs_zt(sph_d_grp%ngrp_dynamic)
 !
 !
-      if(iflag_FFT .eq. iflag_FFTW) then
-        do nd = 1, numdir
-          call int_zonal_for_model_coefs_pin(sph_rtp, sph_d_grp,        &
-     &      frc_simi(1,nd), frc_wide(1,nd), sgs_zl(1,nd), sgs_zt(1,nd))
-        end do
+      if(numdir .eq. n_sym_tensor) then
+        if(iflag_FFT .eq. iflag_FFTW) then
+          call zonal_int_tentor_Csim_pin(sph_rtp, sph_d_grp,            &
+     &        frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
+        else
+          call zonal_int_tentor_Csim_pout(sph_rtp, sph_d_grp,           &
+     &        frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
+        end if
       else
-        do nd = 1, numdir
-          call int_zonal_for_model_coefs_pout(sph_rtp, sph_d_grp,       &
-     &      frc_simi(1,nd), frc_wide(1,nd), sgs_zl(1,nd), sgs_zt(1,nd))
-        end do
+        if(iflag_FFT .eq. iflag_FFTW) then
+          call zonal_int_vector_Csim_pin(sph_rtp, sph_d_grp,            &
+     &        frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
+        else
+          call zonal_int_vector_Csim_pout(sph_rtp, sph_d_grp,           &
+     &        frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
+        end if
       end if
 !
       end subroutine sel_int_zonal_4_model_coefs
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine sel_int_zonal_4_buo_coefs(sph_rtp, sph_d_grp,          &
-     &          frc_simi, frc_wide, sgs_zl, sgs_zt)
-!
-      use m_FFT_selector
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-!
-      real(kind = kreal), intent(in) :: frc_simi(sph_rtp%nnod_rtp)
-      real(kind = kreal), intent(in) :: frc_wide(sph_rtp%nnod_rtp)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zl(sph_d_grp%ngrp_dynamic)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zt(sph_d_grp%ngrp_dynamic)
-!
-!
-      if(iflag_FFT .eq. iflag_FFTW) then
-        call int_zonal_buo_coefs_pin(sph_rtp, sph_d_grp,                &
-     &      frc_simi, frc_wide, sgs_zl, sgs_zt)
-      else
-        call int_zonal_buo_coefs_pout(sph_rtp, sph_d_grp,               &
-     &      frc_simi, frc_wide, sgs_zl, sgs_zt)
-      end if
-!
-      end subroutine sel_int_zonal_4_buo_coefs
-!
-! ----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine int_zonal_for_model_coefs_pin(sph_rtp, sph_d_grp,      &
-     &          frc_simi, frc_wide, sgs_zl, sgs_zt)
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-!
-      real(kind = kreal), intent(in) :: frc_simi(sph_rtp%nnod_rtp)
-      real(kind = kreal), intent(in) :: frc_wide(sph_rtp%nnod_rtp)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zl(sph_d_grp%ngrp_dynamic)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zt(sph_d_grp%ngrp_dynamic)
-!
-      integer(kind = kint) :: klgrp, kgrp, lgrp, kst, ked, lst, led
-      integer(kind = kint) :: k,l,m,kr,lt,i1
-!
-!
-!$omp parallel workshare
-      sgs_zl(1:sph_d_grp%ngrp_dynamic) = 0.0d0
-      sgs_zt(1:sph_d_grp%ngrp_dynamic) = 0.0d0
-!$omp end parallel workshare
-!
-!$omp  parallel do                                                      &
-!$omp& private(klgrp,kgrp,lgrp,kst,ked,lst,led,k,l,kr,lt,i1)
-      do lgrp = 1, sph_d_grp%ngrp_rt(2)
-        lst = sph_d_grp%istack_dynamic_lt(lgrp-1) + 1
-        led = sph_d_grp%istack_dynamic_lt(lgrp)
-        do kgrp = 1, sph_d_grp%ngrp_rt(1)
-          kst = sph_d_grp%istack_dynamic_kr(kgrp-1) + 1
-          ked = sph_d_grp%istack_dynamic_kr(kgrp)
-          klgrp = kgrp + (lgrp - 1) * (sph_d_grp%ngrp_rt(1) + 1)
-!
-          do l = lst, led
-            lt = sph_d_grp%lt_dynamic(l)
-            do k = kst, ked
-              kr = sph_d_grp%kr_dynamic(k)
-              do m = 1, sph_rtp%nidx_rtp(3)
-                i1 = m + (kr-1)*sph_rtp%nidx_rtp(3)                     &
-     &                 + (lt-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(3)
-!
-                sgs_zl(klgrp) = sgs_zl(klgrp)                           &
-     &                         + frc_wide(i1) * frc_simi(i1)
-                sgs_zt(klgrp) = sgs_zt(klgrp)                           &
-     &                         + frc_wide(i1) * frc_wide(i1)
-              end do
-            end do
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
-      do lgrp = 1, sph_d_grp%ngrp_rt(2)
-        klgrp = lgrp * (sph_d_grp%ngrp_rt(1) + 1)
-        sgs_zt(klgrp) = 1.0d-30
-      end do
-!
-      end subroutine int_zonal_for_model_coefs_pin
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine int_zonal_buo_coefs_pin(sph_rtp, sph_d_grp,            &
-     &          frc_simi, frc_wide, sgs_zl, sgs_zt)
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-!
-      real(kind = kreal), intent(in) :: frc_simi(sph_rtp%nnod_rtp)
-      real(kind = kreal), intent(in) :: frc_wide(sph_rtp%nnod_rtp)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zl(sph_d_grp%ngrp_dynamic)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zt(sph_d_grp%ngrp_dynamic)
-!
-      integer(kind = kint) :: klgrp, kgrp, lgrp, kst, ked, lst, led
-      integer(kind = kint) :: k,l,m,kr,lt,i1
-!
-!
-!$omp parallel workshare
-      sgs_zl(1:sph_d_grp%ngrp_dynamic) = 0.0d0
-      sgs_zt(1:sph_d_grp%ngrp_dynamic) = 0.0d0
-!$omp end parallel workshare
-!
-!$omp parallel do private(klgrp,kgrp,lgrp,kst,ked,lst,led,k,l,kr,lt,i1)
-      do lgrp = 1, sph_d_grp%ngrp_rt(2)
-        lst = sph_d_grp%istack_dynamic_lt(lgrp-1) + 1
-        led = sph_d_grp%istack_dynamic_lt(lgrp)
-        do kgrp = 1, sph_d_grp%ngrp_rt(1)
-          kst = sph_d_grp%istack_dynamic_kr(kgrp-1) + 1
-          ked = sph_d_grp%istack_dynamic_kr(kgrp)
-          klgrp = kgrp + (lgrp - 1) * (sph_d_grp%ngrp_rt(1) + 1)
-!
-          do l = lst, led
-            lt = sph_d_grp%lt_dynamic(l)
-            do k = kst, ked
-              kr = sph_d_grp%kr_dynamic(k)
-              do m = 1, sph_rtp%nidx_rtp(3)
-                i1 = m + (kr-1)*sph_rtp%nidx_rtp(3)                     &
-     &                 + (lt-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(3)
-!
-                sgs_zl(klgrp) = sgs_zl(klgrp)                           &
-     &                         + abs(frc_wide(i1) * frc_simi(i1))
-                sgs_zt(klgrp) = sgs_zt(klgrp)                           &
-     &                         + frc_wide(i1) * frc_wide(i1)
-              end do
-            end do
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
-      do lgrp = 1, sph_d_grp%ngrp_rt(2)
-        klgrp = lgrp * (sph_d_grp%ngrp_rt(1) + 1)
-        sgs_zt(klgrp) = 1.0d-30
-      end do
-!
-      end subroutine int_zonal_buo_coefs_pin
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine int_zonal_for_model_coefs_pout(sph_rtp, sph_d_grp,     &
-     &          frc_simi, frc_wide, sgs_zl, sgs_zt)
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-!
-      real(kind = kreal), intent(in) :: frc_simi(sph_rtp%nnod_rtp)
-      real(kind = kreal), intent(in) :: frc_wide(sph_rtp%nnod_rtp)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zl(sph_d_grp%ngrp_dynamic)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zt(sph_d_grp%ngrp_dynamic)
-!
-      integer(kind = kint) :: klgrp, kgrp, lgrp, kst, ked, lst, led
-      integer(kind = kint) :: k,l,m,kr,lt,i1
-!
-!
-!$omp parallel workshare
-      sgs_zl(1:sph_d_grp%ngrp_dynamic) = 0.0d0
-      sgs_zt(1:sph_d_grp%ngrp_dynamic) = 0.0d0
-!$omp end parallel workshare
-!
-!$omp parallel
-      do m = 1, sph_rtp%nidx_rtp(3)
-!$omp do private(klgrp,kgrp,lgrp,kst,ked,lst,led,k,l,kr,lt,i1)
-        do lgrp = 1, sph_d_grp%ngrp_rt(2)
-          lst = sph_d_grp%istack_dynamic_lt(lgrp-1) + 1
-          led = sph_d_grp%istack_dynamic_lt(lgrp)
-          do kgrp = 1, sph_d_grp%ngrp_rt(1)
-            kst = sph_d_grp%istack_dynamic_kr(kgrp-1) + 1
-            ked = sph_d_grp%istack_dynamic_kr(kgrp)
-            klgrp = kgrp + (lgrp - 1) * (sph_d_grp%ngrp_rt(1) + 1)
-!
-            do l = lst, led
-              lt = sph_d_grp%lt_dynamic(l)
-              do k = kst, ked
-                kr = sph_d_grp%kr_dynamic(k)
-                i1 = kr + (lt-1)*sph_rtp%nidx_rtp(1)                    &
-     &                  + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
-!
-                sgs_zl(klgrp) = sgs_zl(klgrp)                           &
-     &                         + frc_wide(i1) * frc_simi(i1)
-                sgs_zt(klgrp) = sgs_zt(klgrp)                           &
-     &                         + frc_wide(i1) * frc_wide(i1)
-              end do
-            end do
-          end do
-        end do
-!$omp end do
-      end do
-!$omp end parallel
-!
-      do lgrp = 1, sph_d_grp%ngrp_rt(2)
-        klgrp = lgrp * (sph_d_grp%ngrp_rt(1) + 1)
-        sgs_zt(klgrp) = 1.0d-30
-      end do
-!
-      end subroutine int_zonal_for_model_coefs_pout
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine int_zonal_buo_coefs_pout(sph_rtp, sph_d_grp,           &
-     &          frc_simi, frc_wide,  sgs_zl, sgs_zt)
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_dynamic_model_group), intent(in) :: sph_d_grp
-!
-      real(kind = kreal), intent(in) :: frc_simi(sph_rtp%nnod_rtp)
-      real(kind = kreal), intent(in) :: frc_wide(sph_rtp%nnod_rtp)
-!
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zl(sph_d_grp%ngrp_dynamic)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: sgs_zt(sph_d_grp%ngrp_dynamic)
-!
-      integer(kind = kint) :: klgrp, kgrp, lgrp, kst, ked, lst, led
-      integer(kind = kint) :: k,l,m,kr,lt,i1
-!
-!
-!$omp parallel workshare
-      sgs_zl(1:sph_d_grp%ngrp_dynamic) = 0.0d0
-      sgs_zt(1:sph_d_grp%ngrp_dynamic) = 0.0d0
-!$omp end parallel workshare
-!
-      do m = 1, sph_rtp%nidx_rtp(3)
-!$omp parallel do private(klgrp,kgrp,lgrp,kst,ked,lst,led,k,l,kr,lt,i1)
-        do lgrp = 1, sph_d_grp%ngrp_rt(2)
-          lst = sph_d_grp%istack_dynamic_lt(lgrp-1) + 1
-          led = sph_d_grp%istack_dynamic_lt(lgrp)
-          do kgrp = 1, sph_d_grp%ngrp_rt(1)
-            kst = sph_d_grp%istack_dynamic_kr(kgrp-1) + 1
-            ked = sph_d_grp%istack_dynamic_kr(kgrp)
-            klgrp = kgrp + (lgrp - 1) * (sph_d_grp%ngrp_rt(1) + 1)
-!
-            do l = lst, led
-              lt = sph_d_grp%lt_dynamic(l)
-              do k = kst, ked
-                kr = sph_d_grp%kr_dynamic(k)
-                i1 = kr + (lt-1)*sph_rtp%nidx_rtp(1)                    &
-     &                  + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
-!
-                sgs_zl(klgrp) = sgs_zl(klgrp)                           &
-     &                         + abs(frc_wide(i1) * frc_simi(i1))
-                sgs_zt(klgrp) = sgs_zt(klgrp)                           &
-     &                         + frc_wide(i1) * frc_wide(i1)
-              end do
-            end do
-          end do
-        end do
-!$omp end parallel do
-      end do
-!
-      do lgrp = 1, sph_d_grp%ngrp_rt(2)
-        klgrp = lgrp * (sph_d_grp%ngrp_rt(1) + 1)
-        sgs_zt(klgrp) = 1.0d-30
-      end do
-!
-      end subroutine int_zonal_buo_coefs_pout
-!
-!  ---------------------------------------------------------------------
 !
       end module zonal_lsq_4_model_coefs
  

@@ -217,7 +217,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, color%i_pvr_lighting)
+        color%i_pvr_lighting = find_control_end_flag(hd_block)
         if(color%i_pvr_lighting .gt. 0) exit
 !
         call read_control_array_r3                                      &
@@ -242,7 +242,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_block, color%i_pvr_colordef)
+        color%i_pvr_colordef = find_control_end_flag(hd_block)
         if(color%i_pvr_colordef .gt. 0) exit
 !
 !

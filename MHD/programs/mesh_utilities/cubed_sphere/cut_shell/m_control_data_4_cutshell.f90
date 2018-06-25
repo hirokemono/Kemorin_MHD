@@ -100,7 +100,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_cutshell_ctl, i_cutshell_ctl)
+        i_cutshell_ctl = find_control_end_flag(hd_cutshell_ctl)
         if(i_cutshell_ctl .gt. 0) exit
 !
 !
@@ -121,7 +121,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_files_ctl, i_files_ctl)
+        i_files_ctl = find_control_end_flag(hd_files_ctl)
         if(i_files_ctl .gt. 0) exit
 !
 !
@@ -144,7 +144,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_cutshell_param, i_cutshell_param)
+        i_cutshell_param = find_control_end_flag(hd_cutshell_param)
         if(i_cutshell_param .gt. 0) exit
 !
         call read_chara_ctl_type(hd_cutshell_type, cutshell_type_ctl)

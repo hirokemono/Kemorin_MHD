@@ -824,7 +824,7 @@ void draw_mesh_kemo(int iflag_streo_shutter, int iflag_dmesh) {
 	glutInit(&narg_glut, arg_glut);
 	
 	/*! GTK Initialization*/
-	gtk_set_locale();
+	/* gtk_set_locale(); */
 	gtk_init (&narg_glut, &arg_glut);
     
 	/*! Initializations with GLUT*/
