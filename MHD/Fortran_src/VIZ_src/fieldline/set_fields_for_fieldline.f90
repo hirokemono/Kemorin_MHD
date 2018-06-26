@@ -5,8 +5,9 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine set_local_field_4_fline                              &
-!!     &          (num_fline, node, nod_fld, fline_prm, fline_src)
+!!     &       (num_fline, node, nod_fld, fln_prm, fline_prm, fline_src)
 !!        type(node_data), intent(in) :: node
+!!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !!      subroutine count_nsurf_for_starting                             &
 !!     &         (i_fln, ele, sf_grp, igrp_seed, fline_src)
 !!      subroutine set_isurf_for_starting                               &
@@ -48,13 +49,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_local_field_4_fline                                &
-     &          (num_fline, node, nod_fld, fline_prm, fline_src)
+     &       (num_fline, node, nod_fld, fln_prm, fline_prm, fline_src)
 !
       use convert_components_4_viz
 !
       integer(kind = kint) :: num_fline
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
+      type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
       type(fieldline_paramters), intent(in) :: fline_prm
 !
       type(fieldline_source), intent(inout) :: fline_src
@@ -64,17 +66,17 @@
 !
 !
       do i_fln = 1, num_fline
-        i_field = fline_prm%ifield_4_fline(i_fln)
+        i_field = fln_prm(i_fln)%ifield_4_fline
         ist_fld = nod_fld%istack_component(i_field-1)
         num_comp = nod_fld%istack_component(i_field) - ist_fld
 !
         if (iflag_debug .gt. 0) write(*,*)                              &
      &    'convert_comps_4_viz ifield_4_fline', i_field
         call convert_comps_4_viz(node%numnod, node%istack_nod_smp,      &
-     &      node%xx, node%rr,node%a_r, node%ss, node%a_s, ithree,       &
-     &      num_comp, fline_prm%icomp_4_fline(i_fln),                   &
-     &      nod_fld%d_fld(1,ist_fld+1),                                 &
-     &      fline_src%vector_nod_fline(1,1,i_fln) )
+     &     node%xx, node%rr,node%a_r, node%ss, node%a_s, ithree,        &
+     &     num_comp, fln_prm(i_fln)%icomp_4_fline,                      &
+     &     nod_fld%d_fld(1,ist_fld+1),                                  &
+     &     fline_src%vector_nod_fline(1,1,i_fln) )
 !
         i_field = fline_prm%ifield_linecolor(i_fln)
         ist_fld = nod_fld%istack_component(i_field-1)

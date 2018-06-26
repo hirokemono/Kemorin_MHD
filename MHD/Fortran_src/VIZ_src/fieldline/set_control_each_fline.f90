@@ -200,6 +200,7 @@
       type(fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: i, ist, ncomp(1), ncomp_org(1)
+      integer(kind = kint) :: ifield_tmp(1), icomp_tmp(1)
       character(len=kchara) :: tmpfield(1)
       character(len=kchara) :: tmpcomp(1)
       character(len=kchara) :: tmpchara(1)
@@ -209,9 +210,11 @@
       tmpcomp(1) =  'vector'
       call set_components_4_viz                                         &
      &   (nod_fld%num_phys, nod_fld%phys_name, ione, tmpfield, tmpcomp, &
-     &    ione, fline_prm%ifield_4_fline(i_fln),                        &
-     &    fline_prm%icomp_4_fline(i_fln), ncomp, ncomp_org, tmpchara)
-      if(fline_prm%icomp_4_fline(i_fln) .ne. icomp_VECTOR) then
+     &    ione, ifield_tmp, icomp_tmp, ncomp, ncomp_org, tmpchara)
+      fln_prm%ifield_4_fline = ifield_tmp(1)
+      fln_prm%icomp_4_fline =  icomp_tmp(1)
+!
+      if(fln_prm%icomp_4_fline .ne. icomp_VECTOR) then
         call calypso_MPI_abort(ierr_fld,                                &
      &      'Choose vector field for field line')
       end if

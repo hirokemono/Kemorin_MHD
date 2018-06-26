@@ -42,6 +42,11 @@
 !
 !>        Maximum step length for line tracing
         integer(kind = kint) :: max_line_stepping = 1000
+!
+!>        Field address for fieldline
+        integer(kind = kint) :: ifield_4_fline = 0
+!>        Component address for fieldline
+        integer(kind = kint) :: icomp_4_fline = 0
       end type fieldline_paramter
 !
       type fieldline_paramters
@@ -60,8 +65,6 @@
         integer(kind = kint), allocatable :: iflag_outward_flux_fline(:)
         real(kind = kreal), allocatable :: xx_surf_start_fline(:,:)
 !
-        integer(kind = kint), allocatable :: ifield_4_fline(:)
-        integer(kind = kint), allocatable :: icomp_4_fline(:)
         integer(kind = kint), allocatable :: ifield_linecolor(:)
         integer(kind = kint), allocatable :: icomp_linecolor(:)
         character(len = kchara), allocatable :: name_color_output(:)
@@ -126,15 +129,11 @@
         fline_prm%num_each_field_line =    0
       end if
 !
-      allocate(fline_prm%ifield_4_fline(num_fline)   )
-      allocate(fline_prm%icomp_4_fline(num_fline)    )
       allocate(fline_prm%ifield_linecolor(num_fline) )
       allocate(fline_prm%icomp_linecolor(num_fline) )
       allocate(fline_prm%name_color_output(num_fline) )
 !
       if(num_fline .gt. 0) then
-        fline_prm%ifield_4_fline =     0
-        fline_prm%icomp_4_fline =      0
         fline_prm%ifield_linecolor =   0
         fline_prm%icomp_linecolor =    0
       end if
@@ -203,8 +202,6 @@
       deallocate(fline_prm%num_each_field_line)
       deallocate(fline_prm%istack_each_field_line)
 !
-      deallocate(fline_prm%ifield_4_fline   )
-      deallocate(fline_prm%icomp_4_fline    )
       deallocate(fline_prm%ifield_linecolor )
       deallocate(fline_prm%icomp_linecolor )
       deallocate(fline_prm%name_color_output )
@@ -258,8 +255,8 @@
      &            fln_prm%id_seed_distribution
         write(*,*) 'max_line_stepping: ', fln_prm%max_line_stepping
 !
-        write(*,*) 'ifield_4_fline: ', fline_prm%ifield_4_fline(i_fln)
-        write(*,*) 'icomp_4_fline: ',  fline_prm%icomp_4_fline(i_fln)
+        write(*,*) 'ifield_4_fline: ', fln_prm%ifield_4_fline
+        write(*,*) 'icomp_4_fline: ',  fln_prm%icomp_4_fline
         write(*,*) 'ifield_linecolor: ',                                &
      &            fline_prm%ifield_linecolor(i_fln)
         write(*,*) 'icomp_linecolor: ',                                 &
