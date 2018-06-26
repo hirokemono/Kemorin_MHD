@@ -25,8 +25,11 @@
 !
 !        integer(kind = kint) :: num_fline
 !
+      type fieldline_paramter
+        character(len = kchara) :: fline_prefix
+      end type fieldline_paramter
+!
       type fieldline_paramters
-        character(len = kchara), allocatable :: fline_header(:)
 !
         integer(kind = kint), allocatable :: id_fline_file_type(:)
 !
@@ -105,7 +108,6 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
 !
-      allocate(fline_prm%fline_header(num_fline))
       allocate(fline_prm%id_fline_file_type(num_fline))
 !
       allocate(fline_prm%id_fline_start_type(num_fline))
@@ -206,7 +208,6 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
 !
-      deallocate(fline_prm%fline_header)
       deallocate(fline_prm%id_fline_file_type)
 !
       deallocate(fline_prm%id_fline_start_type)
@@ -259,17 +260,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine check_control_params_fline(i_fln, fline_prm)
+      subroutine check_control_params_fline(i_fln, fln_prm, fline_prm)
 !
       integer(kind = kint), intent(in) :: i_fln
       integer(kind = kint) :: i, ist, ied
 !
+      type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(in) :: fline_prm
 !
 !
         write(*,*) 'field line parameters for No.', i_fln
-        write(*,*) 'fline_header: ',                                    &
-     &            trim(fline_prm%fline_header(i_fln))
+        write(*,*) 'fline_header: ', trim(fln_prm%fline_prefix)
         write(*,*) 'id_fline_file_type: ',                              &
      &            fline_prm%id_fline_file_type(i_fln)
         write(*,*) 'id_fline_direction: ',                              &

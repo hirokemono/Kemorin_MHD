@@ -4,8 +4,9 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine s_collect_fline_data                                 &
-!!     &         (istep_fline, i_fln, fline_prm, fline_lc, fline_gl)
+!!      subroutine s_collect_fline_data(istep_fline, i_fln, fln_prm,    &
+!!     &          fline_prm, fline_lc, fline_gl)
+!!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(in) :: fline_prm
 !!        type(local_fieldline), intent(in) :: fline_lc
 !!        type(global_fieldline_data), intent(inout) :: fline_gl
@@ -30,8 +31,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_collect_fline_data                                   &
-     &         (istep_fline, i_fln, fline_prm, fline_lc, fline_gl)
+      subroutine s_collect_fline_data(istep_fline, i_fln, fln_prm,      &
+     &          fline_prm, fline_lc, fline_gl)
 !
       use t_control_params_4_fline
       use m_field_file_format
@@ -39,6 +40,7 @@
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: istep_fline, i_fln
+      type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(in) :: fline_prm
       type(local_fieldline), intent(in) :: fline_lc
 !
@@ -68,7 +70,7 @@
       if(my_rank .eq. 0) then
         write(*,*) 'output format ', fline_prm%id_fline_file_type(i_fln)
         if(fline_prm%id_fline_file_type(i_fln) .eq. iflag_ucd) then
-          call set_single_ucd_file_name(fline_prm%fline_header(i_fln),  &
+          call set_single_ucd_file_name(fln_prm%fline_prefix,           &
      &        fline_prm%id_fline_file_type(i_fln),                      &
      &        istep_fline, file_name)
           write(*,*) 'output ', trim(file_name)
@@ -78,7 +80,7 @@
           close(id_fline_data_code)
         else if(fline_prm%id_fline_file_type(i_fln) .eq. iflag_vtk)     &
      &        then
-          call set_single_ucd_file_name(fline_prm%fline_header(i_fln),  &
+          call set_single_ucd_file_name(fln_prm%fline_prefix,           &
      &        fline_prm%id_fline_file_type(i_fln),                      &
      &        istep_fline, file_name)
           write(*,*) 'output ', trim(file_name)
@@ -88,7 +90,7 @@
           close(id_fline_data_code)
         else
           call add_int_suffix                                           &
-     &       (istep_fline, fline_prm%fline_header(i_fln), ftmp_1)
+     &       (istep_fline, fln_prm%fline_prefix, ftmp_1)
           call add_dx_extension(ftmp_1, file_name)
           write(*,*) 'output ', trim(file_name)
           open(id_fline_data_code, file=file_name)

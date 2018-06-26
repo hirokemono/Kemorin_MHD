@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_set_fline_control(mesh, group, nod_fld,            &
-!!     &          num_fline, fline_ctls, fline_prm, fline_src)
+!!     &          num_fline, fline_ctls, fln_prm, fline_prm, fline_src)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
@@ -34,7 +34,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_fline_control(mesh, group, nod_fld,              &
-     &          num_fline, fline_ctls, fline_prm, fline_src)
+     &          num_fline, fline_ctls, fln_prm, fline_prm, fline_src)
 !
       use t_control_data_flines
       use t_control_params_4_fline
@@ -47,6 +47,7 @@
       type(phys_data), intent(in) :: nod_fld
 !
       type(fieldline_controls), intent(inout) :: fline_ctls
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(fieldline_source), intent(inout) :: fline_src
 !
@@ -66,7 +67,7 @@
 !
       do i = 1, num_fline
         call count_control_4_fline(i, fline_ctls%fline_ctl_struct(i),   &
-     &      mesh%ele, group%ele_grp, group%surf_grp,                    &
+     &      mesh%ele, group%ele_grp, group%surf_grp, fln_prm(i),        &
      &      fline_prm, fline_src)
       end do
 !
@@ -83,7 +84,7 @@
         call deallocate_cont_dat_fline(fline_ctls%fline_ctl_struct(i))
 !
         if(iflag_debug .gt. 0) then
-          call check_control_params_fline(i, fline_prm)
+          call check_control_params_fline(i, fln_prm(i), fline_prm)
         end if
       end do
 !

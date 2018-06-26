@@ -49,7 +49,7 @@
 !
       subroutine count_control_4_fline                                  &
      &         (i_fln, fln, ele, ele_grp, sf_grp,                       &
-     &          fline_prm, fline_src)
+     &          fln_prm, fline_prm, fline_src)
 !
       use m_field_file_format
 !
@@ -64,6 +64,7 @@
       integer(kind = kint), intent(in) :: i_fln
       type(fline_ctl), intent(in) :: fln
 !
+      type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(fieldline_source), intent(inout) :: fline_src
 !
@@ -71,10 +72,9 @@
 !
 !
       if(fln%fline_file_head_ctl%iflag .gt. 0) then
-        fline_prm%fline_header(i_fln)                                   &
-     &             =  fln%fline_file_head_ctl%charavalue
+        fln_prm%fline_prefix =  fln%fline_file_head_ctl%charavalue
       else
-        fline_prm%fline_header(i_fln) =  'field_line'
+        fln_prm%fline_prefix =  'field_line'
       end if
 !
       character_256 = fln%fline_output_type_ctl%charavalue
