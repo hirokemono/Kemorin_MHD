@@ -130,7 +130,7 @@
         call s_const_field_lines                                        &
      &     (i_fln, femmesh%mesh%node, femmesh%mesh%ele,                 &
      &      ele_mesh%surf, ele_4_nod, femmesh%mesh%nod_comm,            &
-     &      fline%fline_prm, fline%fline_src,                           &
+     &      fline%fln_prm(i_fln), fline%fline_prm, fline%fline_src,     &
      &      fline%fline_tce, fline%fline_lc)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln

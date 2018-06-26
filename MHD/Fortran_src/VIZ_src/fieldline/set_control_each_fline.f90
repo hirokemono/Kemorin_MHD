@@ -144,11 +144,10 @@
           fline_prm%num_each_field_line(i_fln) = 8
         end if
 !
+        fln_prm%max_line_stepping = 1000
         if(fln%max_line_stepping_ctl%iflag .gt. 0) then
-          fline_prm%max_line_stepping(i_fln)                            &
+          fln_prm%max_line_stepping                                     &
      &           = fln%max_line_stepping_ctl%intvalue
-        else
-          fline_prm%max_line_stepping(i_fln) = 1000
         end if
 !
         if(fln%start_surf_grp_ctl%iflag .gt. 0) then

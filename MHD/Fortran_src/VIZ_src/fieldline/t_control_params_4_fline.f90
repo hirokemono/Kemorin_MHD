@@ -37,11 +37,12 @@
         integer(kind = kint) :: id_fline_direction = 0
 !>        Distoribution of seed point
         integer(kind = kint) :: id_seed_distribution = 0
+!
+!>        Maximum step length for line tracing
+        integer(kind = kint) :: max_line_stepping = 1000
       end type fieldline_paramter
 !
       type fieldline_paramters
-        integer(kind = kint), allocatable :: max_line_stepping(:)
-!
         integer(kind = kint), allocatable :: nele_grp_area_fline(:)
         integer(kind = kint), allocatable :: istack_grp_area_fline(:)
         integer(kind = kint) :: ntot_ele_grp_area_fline
@@ -112,8 +113,6 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
 !
-      allocate(fline_prm%max_line_stepping(num_fline))
-!
       allocate(fline_prm%nele_grp_area_fline(num_fline))
       allocate(fline_prm%istack_grp_area_fline(0:num_fline))
 !
@@ -128,7 +127,6 @@
         fline_prm%nele_grp_area_fline =   0
         fline_prm%num_each_field_line =    0
         fline_prm%igrp_start_fline_surf_grp = 0
-        fline_prm%max_line_stepping = 0
       end if
 !
       allocate(fline_prm%ifield_4_fline(num_fline)   )
@@ -202,8 +200,6 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
 !
-      deallocate(fline_prm%max_line_stepping)
-!
       deallocate(fline_prm%nele_grp_area_fline)
       deallocate(fline_prm%istack_grp_area_fline)
 !
@@ -265,8 +261,7 @@
         write(*,*) 'id_fline_seed_type: ', fln_prm%id_fline_seed_type
         write(*,*) 'id_seed_distribution: ',                            &
      &            fln_prm%id_seed_distribution
-        write(*,*) 'max_line_stepping: ',                               &
-     &            fline_prm%max_line_stepping(i_fln)
+        write(*,*) 'max_line_stepping: ', fln_prm%max_line_stepping
 !
         write(*,*) 'ifield_4_fline: ', fline_prm%ifield_4_fline(i_fln)
         write(*,*) 'icomp_4_fline: ',  fline_prm%icomp_4_fline(i_fln)

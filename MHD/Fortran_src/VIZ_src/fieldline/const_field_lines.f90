@@ -15,12 +15,13 @@
 !!@verbatim
 !!      subroutine s_const_field_lines                                  &
 !!     &         (i_fln, node, ele, surf, ele_4_nod, nod_comm,          &
-!!     &          fline_prm, fline_src, fline_tce, fline_lc)
+!!     &          fln_prm, fline_prm, fline_src, fline_tce, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(communication_table), intent(in) :: nod_comm
+!!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(in) :: fline_prm
 !!        type(fieldline_source), intent(in) :: fline_src
 !!        type(fieldline_trace), intent(inout) :: fline_tce
@@ -48,7 +49,7 @@
 !
       subroutine s_const_field_lines                                    &
      &         (i_fln, node, ele, surf, ele_4_nod, nod_comm,            &
-     &          fline_prm, fline_src, fline_tce, fline_lc)
+     &          fln_prm, fline_prm, fline_src, fline_tce, fline_lc)
 !
 !
       use t_control_params_4_fline
@@ -68,6 +69,7 @@
       type(surface_data), intent(in) :: surf
       type(element_around_node), intent(in) :: ele_4_nod
       type(communication_table), intent(in) :: nod_comm
+      type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(in) :: fline_prm
       type(fieldline_source), intent(in) :: fline_src
 !
@@ -103,7 +105,7 @@
      &       (node%numnod, ele%numele, surf%numsurf,                    &
      &        surf%nnod_4_surf, node%xx, surf%ie_surf, surf%isf_4_ele,  &
      &        surf%iele_4_surf, surf%interior_surf, surf%vnorm_surf,    &
-     &        fline_prm%max_line_stepping(i_fln),                       &
+     &        fln_prm%max_line_stepping,                                &
      &        fline_prm%iflag_fline_used_ele(1,i_fln),                  &
      &        fline_tce%iflag_fline(i),                                 &
      &        fline_src%vector_nod_fline(1,1,i_fln),                    &
