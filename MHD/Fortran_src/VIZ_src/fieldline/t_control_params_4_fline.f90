@@ -30,10 +30,12 @@
         character(len = kchara) :: fline_prefix
 !>        File format for field line data file
         integer(kind = kint) :: iformat_file_file
+!
+!>        Distoribution of seed point type
+        integer(kind = kint) :: id_fline_seed_type
       end type fieldline_paramter
 !
       type fieldline_paramters
-        integer(kind = kint), allocatable :: id_fline_start_type(:)
         integer(kind = kint), allocatable :: id_fline_direction(:)
         integer(kind = kint), allocatable :: id_fline_start_dist(:)
         integer(kind = kint), allocatable :: max_line_stepping(:)
@@ -108,7 +110,6 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
 !
-      allocate(fline_prm%id_fline_start_type(num_fline))
       allocate(fline_prm%id_fline_direction(num_fline))
       allocate(fline_prm%id_fline_start_dist(num_fline))
       allocate(fline_prm%max_line_stepping(num_fline))
@@ -124,7 +125,6 @@
       fline_prm%istack_grp_area_fline = 0
       fline_prm%istack_each_field_line = 0
       if(num_fline .gt. 0) then
-        fline_prm%id_fline_start_type =  0
         fline_prm%id_fline_direction =   0
         fline_prm%id_fline_start_dist =  0
 !
@@ -205,7 +205,6 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
 !
-      deallocate(fline_prm%id_fline_start_type)
       deallocate(fline_prm%id_fline_direction)
       deallocate(fline_prm%id_fline_start_dist)
       deallocate(fline_prm%max_line_stepping)
@@ -269,8 +268,7 @@
         write(*,*) 'file format: ', fln_prm%iformat_file_file
         write(*,*) 'id_fline_direction: ',                              &
      &            fline_prm%id_fline_direction(i_fln)
-        write(*,*) 'id_fline_start_type: ',                             &
-     &            fline_prm%id_fline_start_type(i_fln)
+        write(*,*) 'id_fline_seed_type: ', fln_prm%id_fline_seed_type
         write(*,*) 'id_fline_start_dist: ',                             &
      &            fline_prm%id_fline_start_dist(i_fln)
         write(*,*) 'max_line_stepping: ',                               &
@@ -294,17 +292,17 @@
 !
         write(*,*) 'num_each_field_line: ',                             &
      &            fline_prm%num_each_field_line(i_fln)
-        if     (fline_prm%id_fline_start_type(i_fln)                    &
+        if     (fln_prm%id_fline_seed_type                              &
      &                          .eq. iflag_surface_group) then
           write(*,*) 'igrp_start_fline_surf_grp: ',                     &
      &              fline_prm%igrp_start_fline_surf_grp(i_fln)
-        else if(fline_prm%id_fline_start_type(i_fln)                    &
+        else if(fln_prm%id_fline_seed_type                              &
      &                          .eq. iflag_surface_list) then
           ist = fline_prm%istack_each_field_line(i_fln-1)
           do i = 1, fline_prm%num_each_field_line(i_fln)
             write(*,*) i, fline_prm%id_gl_surf_start_fline(1:2,ist+i)
           end do
-        else if(fline_prm%id_fline_start_type(i_fln)                    &
+        else if(fln_prm%id_fline_seed_type                              &
      &                          .eq. iflag_position_list) then
           ist = fline_prm%istack_each_field_line(i_fln-1)
           do i = 1, fline_prm%num_each_field_line(i_fln)

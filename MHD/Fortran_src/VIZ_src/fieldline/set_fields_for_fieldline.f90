@@ -14,10 +14,11 @@
 !!        type(element_data), intent(in) :: ele
 !!      subroutine s_set_fields_for_fieldline                           &
 !!     &         (i_fln, mesh, ele_mesh, group,                         &
-!!     &          fline_prm, fline_src, fline_tce)
+!!     &          fln_prm, fline_prm, fline_src, fline_tce)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_groups), intent(in) :: group
+!!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(fieldline_source), intent(inout) :: fline_src
@@ -162,7 +163,7 @@
 !
       subroutine s_set_fields_for_fieldline                             &
      &         (i_fln, mesh, ele_mesh, group,                           &
-     &          fline_prm, fline_src, fline_tce)
+     &          fln_prm, fline_prm, fline_src, fline_tce)
 !
       use t_mesh_data
       use start_surface_by_gl_table
@@ -175,29 +176,28 @@
       type(mesh_geometry), intent(in) :: mesh
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_groups), intent(in) :: group
+      type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(fieldline_source), intent(inout) :: fline_src
       type(fieldline_trace), intent(inout) :: fline_tce
 !
 !
-      if(fline_prm%id_fline_start_type(i_fln)                           &
-     &                           .eq. iflag_surface_group) then
+      if(fln_prm%id_fline_seed_type .eq. iflag_surface_group) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_flux'
         call s_start_surface_by_flux                                    &
      &     (i_fln, mesh%node, mesh%ele, ele_mesh%surf,                  &
      &      fline_prm, fline_src, fline_tce)
-      else if(fline_prm%id_fline_start_type(i_fln)                      &
+      else if(fln_prm%id_fline_seed_type                                &
      &                           .eq. iflag_spray_in_domain) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_volume'
         call s_start_surface_by_volume(i_fln, mesh%ele, group%ele_grp,  &
      &      fline_prm, fline_src, fline_tce)
-      else if(fline_prm%id_fline_start_type(i_fln)                      &
-     &                           .eq. iflag_surface_list) then
+      else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_gl_table'
         call s_start_surface_by_gl_table                                &
      &     (i_fln, mesh%ele, group%ele_grp, fline_prm, fline_src)
-      else if(fline_prm%id_fline_start_type(i_fln)                      &
+      else if(fln_prm%id_fline_seed_type                                &
      &                           .eq. iflag_spray_in_domain) then
       end if
 !

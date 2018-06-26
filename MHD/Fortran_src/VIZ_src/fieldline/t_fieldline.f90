@@ -121,7 +121,8 @@
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
         call s_set_fields_for_fieldline                                 &
      &     (i_fln, femmesh%mesh, ele_mesh, femmesh%group,               &
-     &      fline%fline_prm, fline%fline_src, fline%fline_tce)
+     &      fline%fln_prm(i_fln), fline%fline_prm,                      &
+     &      fline%fline_src, fline%fline_tce)
       end do
 !
       do i_fln = 1, fline%num_fline

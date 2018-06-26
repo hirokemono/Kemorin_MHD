@@ -78,7 +78,7 @@
       do i = 1, num_fline
         call set_control_4_fline(i, fline_ctls%fline_ctl_struct(i),     &
      &      mesh%ele, group%ele_grp, group%surf_grp, nod_fld,           &
-     &      fline_prm, fline_src)
+     &      fln_prm(i), fline_prm, fline_src)
         call set_iflag_fline_used_ele                                   &
      &     (i, mesh%ele, group%ele_grp, fline_prm)
         call deallocate_cont_dat_fline(fline_ctls%fline_ctl_struct(i))

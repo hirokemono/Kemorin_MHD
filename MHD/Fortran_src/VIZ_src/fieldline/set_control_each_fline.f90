@@ -5,10 +5,10 @@
 !
 !!      subroutine count_control_4_fline                                &
 !!     &         (i_fln, fln, ele, ele_grp, sf_grp,                     &
-!!     &          fline_prm, fline_src)
+!!     &          fln_prm, fline_prm, fline_src)
 !!      subroutine set_control_4_fline                                  &
 !!     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld,            &
-!!     &          fline_prm, fline_src)
+!!     &          fln_prm, fline_prm, fline_src)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -99,13 +99,13 @@
 !
       character_256 = fln%starting_type_ctl%charavalue
       if     (cmp_no_case(character_256, cflag_surface_group)) then
-        fline_prm%id_fline_start_type(i_fln) =  iflag_surface_group
+        fln_prm%id_fline_seed_type =  iflag_surface_group
       else if(cmp_no_case(character_256, cflag_surface_list)) then 
-        fline_prm%id_fline_start_type(i_fln) =  iflag_surface_list
+        fln_prm%id_fline_seed_type =  iflag_surface_list
       else if(cmp_no_case(character_256, cflag_position_list)) then 
-        fline_prm%id_fline_start_type(i_fln) =  iflag_position_list
+        fln_prm%id_fline_seed_type =  iflag_position_list
       else if(cmp_no_case(character_256, cflag_spray_in_domain)) then 
-        fline_prm%id_fline_start_type(i_fln) =  iflag_spray_in_domain
+        fln_prm%id_fline_seed_type =  iflag_spray_in_domain
       end if
 !
 !
@@ -119,8 +119,7 @@
       end if
 !
 !
-      if     (fline_prm%id_fline_start_type(i_fln)                      &
-     &                          .eq. iflag_surface_group) then
+      if     (fln_prm%id_fline_seed_type .eq. iflag_surface_group) then
         fline_prm%id_fline_start_dist(i_fln) =  iflag_random_by_amp
         character_256 = fln%selection_type_ctl%charavalue
         if     (cmp_no_case(character_256, cflag_random_by_amp)) then
@@ -130,15 +129,14 @@
         else if(cmp_no_case(character_256, cflag_no_random)) then 
           fline_prm%id_fline_start_dist(i_fln) =  iflag_no_random
         end if
-      else if(fline_prm%id_fline_start_type(i_fln)                      &
+      else if(fln_prm%id_fline_seed_type                                &
      &                          .eq. iflag_spray_in_domain) then
         fline_prm%id_fline_start_dist(i_fln) =  iflag_no_random
       end if
 !
-      if(    fline_prm%id_fline_start_type(i_fln)                       &
-     &                          .eq. iflag_surface_group                &
-     &  .or. fline_prm%id_fline_start_type(i_fln)                       &
-     &                          .eq. iflag_spray_in_domain) then
+      if(    fln_prm%id_fline_seed_type .eq. iflag_surface_group        &
+     &  .or. fln_prm%id_fline_seed_type .eq. iflag_spray_in_domain)     &
+     &      then
         if(fln%num_fieldline_ctl%iflag .gt. 0) then
           fline_prm%num_each_field_line(i_fln)                          &
      &           = fln%num_fieldline_ctl%intvalue
@@ -162,14 +160,12 @@
         call count_nsurf_for_starting                                   &
      &     (i_fln, ele, sf_grp, fline_prm, fline_src)
 !
-      else if(fline_prm%id_fline_start_type(i_fln)                      &
-     &                          .eq. iflag_surface_list) then
+      else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(fln%seed_surface_ctl%num .gt. 0) then
           fline_prm%num_each_field_line(i_fln)                          &
      &                  = fln%seed_surface_ctl%num
         end if
-      else if(fline_prm%id_fline_start_type(i_fln)                      &
-     &                          .eq. iflag_position_list) then
+      else if(fln_prm%id_fline_seed_type .eq. iflag_position_list) then
         if(fln%seed_point_ctl%num .gt. 0) then
           fline_prm%num_each_field_line(i_fln) = fln%seed_point_ctl%num
         end if
@@ -185,7 +181,7 @@
 !
       subroutine set_control_4_fline                                    &
      &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld,              &
-     &          fline_prm, fline_src)
+     &          fln_prm, fline_prm, fline_src)
 !
       use t_source_of_filed_line
       use set_components_flags
@@ -199,6 +195,7 @@
       integer(kind = kint), intent(in) :: i_fln
       type(fline_ctl), intent(inout) :: fln
 !
+      type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(fieldline_source), intent(inout) :: fline_src
 !
@@ -239,20 +236,17 @@
 !
 !
       ist = fline_prm%istack_each_field_line(i_fln-1)
-      if(fline_prm%id_fline_start_type(i_fln)                           &
-     &                       .eq. iflag_surface_group) then
+      if(fln_prm%id_fline_seed_type .eq. iflag_surface_group) then
         call set_isurf_for_starting                                     &
      &     (i_fln, ele, sf_grp, fline_prm, fline_src)
-      else if(fline_prm%id_fline_start_type(i_fln)                      &
-     &                       .eq. iflag_surface_list) then
+      else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         do i = 1, fline_prm%num_each_field_line(i_fln)
           fline_prm%id_gl_surf_start_fline(1,i+ist)                     &
      &          = fln%seed_surface_ctl%int1(i)
           fline_prm%id_gl_surf_start_fline(2,i+ist)                     &
      &          = fln%seed_surface_ctl%int2(i)
         end do
-      else if(fline_prm%id_fline_start_type(i_fln)                      &
-     &                       .eq. iflag_position_list) then
+      else if(fln_prm%id_fline_seed_type .eq. iflag_position_list) then
         do i = 1, fline_prm%num_each_field_line(i_fln)
           fline_prm%xx_surf_start_fline(1,i+ist)                        &
      &         = fln%seed_point_ctl%vec1(i)
