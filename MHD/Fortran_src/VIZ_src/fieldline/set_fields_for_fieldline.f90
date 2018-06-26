@@ -187,7 +187,7 @@
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_flux'
         call s_start_surface_by_flux                                    &
      &     (i_fln, mesh%node, mesh%ele, ele_mesh%surf,                  &
-     &      fline_prm, fline_src, fline_tce)
+     &      fln_prm, fline_prm, fline_src, fline_tce)
       else if(fln_prm%id_fline_seed_type                                &
      &                           .eq. iflag_spray_in_domain) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_volume'

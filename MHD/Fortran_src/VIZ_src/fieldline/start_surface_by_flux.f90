@@ -5,10 +5,11 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_start_surface_by_flux(i_fln, node, ele, surf,      &
-!!     &          fline_prm, fline_src, fline_tce)
+!!     &          fln_prm, fline_prm, fline_src, fline_tce)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
 !!        type(fieldline_source), intent(inout) :: fline_src
 !!        type(fieldline_trace), intent(inout) :: fline_tce
@@ -39,7 +40,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_by_flux(i_fln, node, ele, surf,        &
-     &          fline_prm, fline_src, fline_tce)
+     &          fln_prm, fline_prm, fline_src, fline_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -51,6 +52,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
+      type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(fieldline_source), intent(inout) :: fline_src
       type(fieldline_trace), intent(inout) :: fline_tce
@@ -67,10 +69,8 @@
       num_grp = fline_src%nele_start_grp(i_fln)
       call calypso_mpi_barrier
 !
-      if(     fline_prm%id_fline_start_dist(i_fln)                      &
-     &                             .eq. iflag_random_by_area            &
-     &   .or. fline_prm%id_fline_start_dist(i_fln)                      &
-     &                             .eq. iflag_no_random) then
+      if(     fln_prm%id_seed_distribution .eq. iflag_random_by_area    &
+     &   .or. fln_prm%id_seed_distribution .eq. iflag_no_random) then
         if(iflag_debug .gt. 0) write(*,*) 'cal_area_for_1sgrp'
         call cal_area_for_1sgrp(ele%numele, surf%numsurf,               &
      &      surf%isf_4_ele, ele%interior_ele, surf%area_surf,           &
@@ -140,8 +140,7 @@
 !
       ist_line = fline_prm%istack_each_field_line(i_fln-1) + 1
       num_line = fline_prm%istack_each_field_line(i_fln) - ist_line
-      if(fline_prm%id_fline_start_dist(i_fln)                           &
-     &                                  .eq. iflag_no_random) then
+      if(fln_prm%id_seed_distribution  .eq. iflag_no_random) then
         if(iflag_debug .gt. 0) write(*,*) 'start_surface_witout_random'
         call start_surface_witout_random                                &
      &   (i_fln, fline_src, abs_flux_start_l,                           &

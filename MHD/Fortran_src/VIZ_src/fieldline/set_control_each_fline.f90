@@ -120,18 +120,18 @@
 !
 !
       if     (fln_prm%id_fline_seed_type .eq. iflag_surface_group) then
-        fline_prm%id_fline_start_dist(i_fln) =  iflag_random_by_amp
+        fln_prm%id_seed_distribution =  iflag_random_by_amp
         character_256 = fln%selection_type_ctl%charavalue
         if     (cmp_no_case(character_256, cflag_random_by_amp)) then
-          fline_prm%id_fline_start_dist(i_fln) =  iflag_random_by_amp
+          fln_prm%id_seed_distribution =  iflag_random_by_amp
         else if(cmp_no_case(character_256, cflag_random_by_area)) then
-          fline_prm%id_fline_start_dist(i_fln) =  iflag_random_by_area
+          fln_prm%id_seed_distribution =  iflag_random_by_area
         else if(cmp_no_case(character_256, cflag_no_random)) then 
-          fline_prm%id_fline_start_dist(i_fln) =  iflag_no_random
+          fln_prm%id_seed_distribution =  iflag_no_random
         end if
       else if(fln_prm%id_fline_seed_type                                &
      &                          .eq. iflag_spray_in_domain) then
-        fline_prm%id_fline_start_dist(i_fln) =  iflag_no_random
+        fln_prm%id_seed_distribution =  iflag_no_random
       end if
 !
       if(    fln_prm%id_fline_seed_type .eq. iflag_surface_group        &
