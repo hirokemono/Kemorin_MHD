@@ -79,11 +79,11 @@
 !
       character_256 = fln%fline_output_type_ctl%charavalue
       if     (cmp_no_case(character_256, 'ucd')) then
-        fline_prm%id_fline_file_type(i_fln) = iflag_ucd
+        fln_prm%iformat_file_file = iflag_ucd
       else if(cmp_no_case(character_256, 'vtk')) then
-        fline_prm%id_fline_file_type(i_fln) = iflag_vtk
+        fln_prm%iformat_file_file = iflag_vtk
       else
-        fline_prm%id_fline_file_type(i_fln) = iflag_vtk
+        fln_prm%iformat_file_file = iflag_vtk
       end if
 !
       call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
