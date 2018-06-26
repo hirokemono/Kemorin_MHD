@@ -37,6 +37,8 @@
         integer(kind = kint) :: id_fline_direction = 0
 !>        Distoribution of seed point
         integer(kind = kint) :: id_seed_distribution = 0
+!>        Surface group ID for seed points
+        integer(kind = kint) :: igrp_start_fline_surf_grp = 0
 !
 !>        Maximum step length for line tracing
         integer(kind = kint) :: max_line_stepping = 1000
@@ -49,8 +51,6 @@
         integer(kind = kint), allocatable :: id_ele_grp_area_fline(:)
 !
         integer(kind = kint), allocatable :: iflag_fline_used_ele(:,:)
-!
-        integer(kind = kint), allocatable :: igrp_start_fline_surf_grp(:)
 !
         integer(kind = kint), allocatable :: num_each_field_line(:)
         integer(kind = kint), allocatable :: istack_each_field_line(:)
@@ -119,14 +119,11 @@
       allocate(fline_prm%num_each_field_line(num_fline))
       allocate(fline_prm%istack_each_field_line(0:num_fline))
 !
-      allocate(fline_prm%igrp_start_fline_surf_grp(num_fline))
-!
       fline_prm%istack_grp_area_fline = 0
       fline_prm%istack_each_field_line = 0
       if(num_fline .gt. 0) then
         fline_prm%nele_grp_area_fline =   0
         fline_prm%num_each_field_line =    0
-        fline_prm%igrp_start_fline_surf_grp = 0
       end if
 !
       allocate(fline_prm%ifield_4_fline(num_fline)   )
@@ -206,8 +203,6 @@
       deallocate(fline_prm%num_each_field_line)
       deallocate(fline_prm%istack_each_field_line)
 !
-      deallocate(fline_prm%igrp_start_fline_surf_grp)
-!
       deallocate(fline_prm%ifield_4_fline   )
       deallocate(fline_prm%icomp_4_fline    )
       deallocate(fline_prm%ifield_linecolor )
@@ -284,7 +279,7 @@
         if     (fln_prm%id_fline_seed_type                              &
      &                          .eq. iflag_surface_group) then
           write(*,*) 'igrp_start_fline_surf_grp: ',                     &
-     &              fline_prm%igrp_start_fline_surf_grp(i_fln)
+     &              fln_prm%igrp_start_fline_surf_grp
         else if(fln_prm%id_fline_seed_type                              &
      &                          .eq. iflag_surface_list) then
           ist = fline_prm%istack_each_field_line(i_fln-1)

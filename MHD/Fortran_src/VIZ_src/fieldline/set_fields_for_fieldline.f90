@@ -8,9 +8,9 @@
 !!     &          (num_fline, node, nod_fld, fline_prm, fline_src)
 !!        type(node_data), intent(in) :: node
 !!      subroutine count_nsurf_for_starting                             &
-!!     &         (i_fln, ele, sf_grp, fline_prm, fline_src)
+!!     &         (i_fln, ele, sf_grp, igrp_seed, fline_src)
 !!      subroutine set_isurf_for_starting                               &
-!!     &         (i_fln, ele, sf_grp, fline_prm, fline_src)
+!!     &         (i_fln, ele, sf_grp, igrp_seed, fline_src)
 !!        type(element_data), intent(in) :: ele
 !!      subroutine s_set_fields_for_fieldline                           &
 !!     &         (i_fln, mesh, ele_mesh, group,                         &
@@ -94,24 +94,23 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_nsurf_for_starting                               &
-     &         (i_fln, ele, sf_grp, fline_prm, fline_src)
+     &         (i_fln, ele, sf_grp, igrp_seed, fline_src)
 !
       integer(kind = kint), intent(in) :: i_fln
+      integer(kind = kint), intent(in) :: igrp_seed
 !
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
-      type(fieldline_paramters), intent(in) :: fline_prm
 !
       type(fieldline_source), intent(inout) :: fline_src
 !
-      integer(kind = kint) :: igrp, isurf, iele, icou, ist, ied
+      integer(kind = kint) :: isurf, iele, icou, ist, ied
 !
 !
-      igrp = fline_prm%igrp_start_fline_surf_grp(i_fln)
 !
       icou = 0
-      ist = sf_grp%istack_grp(igrp-1) + 1
-      ied = sf_grp%istack_grp(igrp)
+      ist = sf_grp%istack_grp(igrp_seed-1) + 1
+      ied = sf_grp%istack_grp(igrp_seed)
       do isurf = ist, ied
         iele = sf_grp%item_sf_grp(1,isurf)
         if(ele%interior_ele(iele) .ne. izero) icou = icou + 1
@@ -128,24 +127,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_isurf_for_starting                                 &
-     &         (i_fln, ele, sf_grp, fline_prm, fline_src)
+     &         (i_fln, ele, sf_grp, igrp_seed, fline_src)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
-      type(fieldline_paramters), intent(in) :: fline_prm
+      integer(kind = kint), intent(in) :: igrp_seed
 !
       type(fieldline_source), intent(inout) :: fline_src
 !
-      integer(kind = kint) :: igrp, isurf, inum, iele, ist, ied
+      integer(kind = kint) :: isurf, inum, iele, ist, ied
 !
-!
-      igrp = fline_prm%igrp_start_fline_surf_grp(i_fln)
 !
       inum = fline_src%istack_ele_start_grp(i_fln-1)
-      ist = sf_grp%istack_grp(igrp-1) + 1
-      ied = sf_grp%istack_grp(igrp)
+      ist = sf_grp%istack_grp(igrp_seed-1) + 1
+      ied = sf_grp%istack_grp(igrp_seed)
       do isurf = ist, ied
         iele = sf_grp%item_sf_grp(1,isurf)
         if(ele%interior_ele(iele) .ne. izero) then

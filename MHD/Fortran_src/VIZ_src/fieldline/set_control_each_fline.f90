@@ -153,11 +153,12 @@
         if(fln%start_surf_grp_ctl%iflag .gt. 0) then
           call set_surf_grp_id_4_viz(sf_grp%num_grp, sf_grp%grp_name,   &
      &        fln%start_surf_grp_ctl%charavalue,                        &
-     &        fline_prm%igrp_start_fline_surf_grp(i_fln))
+     &        fln_prm%igrp_start_fline_surf_grp)
         end if
 !
         call count_nsurf_for_starting                                   &
-     &     (i_fln, ele, sf_grp, fline_prm, fline_src)
+     &     (i_fln, ele, sf_grp, fln_prm%igrp_start_fline_surf_grp,      &
+     &      fline_src)
 !
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(fln%seed_surface_ctl%num .gt. 0) then
@@ -237,7 +238,8 @@
       ist = fline_prm%istack_each_field_line(i_fln-1)
       if(fln_prm%id_fline_seed_type .eq. iflag_surface_group) then
         call set_isurf_for_starting                                     &
-     &     (i_fln, ele, sf_grp, fline_prm, fline_src)
+     &     (i_fln, ele, sf_grp, fln_prm%igrp_start_fline_surf_grp,      &
+     &      fline_src)
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         do i = 1, fline_prm%num_each_field_line(i_fln)
           fline_prm%id_gl_surf_start_fline(1,i+ist)                     &
