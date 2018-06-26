@@ -111,11 +111,11 @@
 !
       character_256 = fln%line_direction_ctl%charavalue
       if     (cmp_no_case(character_256, cflag_forward_trace)) then
-        fline_prm%id_fline_direction(i_fln) =  iflag_forward_trace
+        fln_prm%id_fline_direction =  iflag_forward_trace
       else if(cmp_no_case(character_256, cflag_backward_trace)) then 
-        fline_prm%id_fline_direction(i_fln) =  iflag_backward_trace
+        fln_prm%id_fline_direction =  iflag_backward_trace
       else if(cmp_no_case(character_256, cflag_both_trace)) then 
-        fline_prm%id_fline_direction(i_fln) =  iflag_both_trace
+        fln_prm%id_fline_direction =  iflag_both_trace
       end if
 !
 !
