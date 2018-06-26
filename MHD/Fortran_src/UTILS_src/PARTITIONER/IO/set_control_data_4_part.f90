@@ -110,6 +110,9 @@
      &     .or. cmp_no_case(part_method_ctl%charavalue,'ES_xyz')) then
             NTYP_div = iPART_EQ_XYZ
 !
+        else if(cmp_no_case(part_method_ctl%charavalue,'ES_vol')) then
+        NTYP_div = iPART_EQV_XYZ
+!
         else if(cmp_no_case(part_method_ctl%charavalue,'ES_sph')) then
             NTYP_div = iPART_EQ_SPH
 !
@@ -253,7 +256,7 @@
         write  (*,*) idir_rcb(1:NPOWER_rcb)
 !
 !
-      else if (NTYP_div .eq. iPART_EQ_XYZ) then
+      else if (NTYP_div .eq. iPART_EQ_XYZ .or. NTYP_div .eq. iPART_EQV_XYZ) then
         if(ndomain_section_ctl%num .ne. 3)                              &
      &         stop 'number of subdomain should be 3 directions'
 !

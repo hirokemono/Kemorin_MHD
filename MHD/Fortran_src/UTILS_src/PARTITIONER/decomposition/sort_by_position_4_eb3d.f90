@@ -301,4 +301,94 @@
 !
 !   --------------------------------------------------------------------
 !
+subroutine s_sort_by_position_with_volume(nnod, ndiv,                   &
+&          n_volume, tot_vol, IGROUP, xx1, xx2, xx3, VAL, IS1)
+!
+use quicksort
+use sort_by_position_4_rcb
+use cal_minmax_and_stacks
+use sort_sphere_4_rcb
+use m_ctl_param_partitioner
+!
+!
+integer(kind = kint), intent(in) :: nnod
+integer(kind = kint), intent(in) :: ndiv(3)
+real(kind = kreal), intent(in) :: xx1(nnod), xx2(nnod), xx3(nnod)
+real(kind = kreal), intent(in) :: n_volume(nnod), tot_vol
+!
+real(kind = kreal), intent(inout) :: VAL(nnod)
+integer(kind = kint), intent(inout) :: IS1(nnod)
+integer(kind = kint), intent(inout) :: IGROUP(nnod)
+!
+integer(kind = kint) :: group_id(num_domain), domain_id(num_domain)
+integer(kind = kint) :: tbl_size, order, ncou, ip0, ndiv_2d, i
+!
+real(kind = kreal) :: grp_volume
+!
+ip0 = ione
+tbl_size = num_domain
+order = ione
+do i = 1, num_domain
+  domain_id(i) = i
+end do
+!
+!      write(*,*) 'copy_position_sort_4_rcb'
+call copy_position_sort_4_rcb(nnod, ip0, IGROUP, xx1, ncou,       &
+&    VAL, IS1)
+!
+!        write(*,*) 'quicksort_real_w_index'
+call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+!
+!        write(*,*) 'sorting_by_2nd_direction'
+call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
+!
+call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
+!
+grp_volume = tot_vol / ndiv(1)
+call set_domain_list_by_volume(nnod, ione, ndiv(1), ncou,         &
+&           grp_volume, IS1, n_volume, IGROUP)
+
+grp_volume = grp_volume / ndiv(2)
+do ip0 = 1, ndiv(1)
+  call copy_position_sort_4_rcb(nnod, ip0, IGROUP, xx2, ncou,     &
+  &      VAL, IS1)
+!
+!        write(*,*) 'quicksort_real_w_index'
+  call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+!
+!        write(*,*) 'sorting_by_2nd_direction'
+  call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
+!
+  call sorting_by_2nd_direction(nnod, ncou, xx3, xx1, VAL, IS1)
+!        write(*,*) 'set_domain_list_with_part_tbl size', tbl_size, ip0
+  call set_domain_list_by_volume(nnod, ndiv(1), ndiv(2), ncou,    &
+  &           grp_volume, IS1, n_volume, IGROUP)
+!
+end do
+!
+!
+grp_volume = grp_volume / ndiv(3)
+ndiv_2d = ndiv(1)*ndiv(2)
+do ip0 = 1, ndiv_2d
+  call copy_position_sort_4_rcb(nnod, ip0, IGROUP, xx3, ncou,     &
+  &      VAL, IS1)
+!
+!        write(*,*) 'quicksort_real_w_index'
+  call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+!
+!        write(*,*) 'sorting_by_2nd_direction'
+  call sorting_by_2nd_direction(nnod, ncou, xx3, xx1, VAL, IS1)
+!
+  call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
+!        write(*,*) 'set_domain_list_by_part_tbl size', tbl_size, ip0
+  call set_domain_list_by_volume(nnod, ndiv_2d, ndiv(3), ncou,    &
+  &           grp_volume, IS1, n_volume, IGROUP)
+!
+end do
+!
+!
+end subroutine s_sort_by_position_with_volume
+!
+!   --------------------------------------------------------------------
+!
       end module sort_by_position_4_eb3d

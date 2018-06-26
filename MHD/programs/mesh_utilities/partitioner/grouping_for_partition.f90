@@ -21,7 +21,8 @@
 !------------------------------------------------------------------
 !
       subroutine grouping_for_partitioner                               &
-     &         (node, ele, edge, nod_grp, ele_grp, ele_grp_data)
+     &         (node, ele, edge, nod_grp, ele_grp,                      &
+     &          ele_grp_data, node_volume)
 !
       use m_constants
       use m_error_IDs
@@ -48,6 +49,7 @@
       type(group_data), intent(in) :: nod_grp
       type(group_data), intent(in) :: ele_grp
       type(element_group_table), intent(in) :: ele_grp_data
+      real(kind = kreal), intent(in) :: node_volume(node%numnod)
 !
       integer(kind = kint) :: ierr
 !
@@ -78,6 +80,10 @@
       else if (NTYP_div .eq. iPART_EQ_XYZ) then
         call equaly_bisection                                           &
      &     (node%numnod, node%internal_node, node%xx)
+      else if (NTYP_div .eq. iPART_EQV_XYZ) then
+        call equaly_volume_bisection                                    &
+        &     (node%numnod, node%internal_node, node%xx,                &
+        &     node_volume, ele%volume)
 !
       else if (NTYP_div .eq. iPART_EQ_SPH) then
         call eb_spherical(node%numnod, node%internal_node,              &
@@ -233,6 +239,7 @@
       &   .or. NTYP_div.eq.iPART_MeTiS_RSB                               &
       &   .or. NTYP_div.eq.iPART_CUBED_SPHERE                            &
       &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
+      &   .or. NTYP_div.eq.iPART_EQV_XYZ                                 &
       &   .or. NTYP_div.eq.iPART_EQ_SPH) then
         call copy_domain_list_to_IO(node%numnod, node%internal_node)
         call output_group_4_partition

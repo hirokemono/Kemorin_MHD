@@ -71,6 +71,7 @@
       !type(dimension_part_tbl) :: part_dim_tbl
       integer(kind = kint) :: num_particle
       integer(kind = kint) :: iflag_part_debug
+      real(kind = kreal), pointer :: node_volume(:)
 ! initial debug flag
       iflag_part_debug = 0
 
@@ -155,7 +156,10 @@
      &   (org_mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
       call const_jacobian_and_single_vol                                &
      &   (org_mesh, org_group, spfs_T, jacobians_T)
-write(*,*) org_mesh%ele%volume_ele(:)
+!  ========= estimate node volume ==============
+      write(*,*) 'estimate node volume'
+      allocate(node_volume(org_mesh%node%numnod))
+      call cal_node_volue(org_mesh%node , org_mesh%ele, node_volume)
 !
 !  ========= Routines for partitioner ==============
 !
@@ -164,7 +168,8 @@ write(*,*) org_mesh%ele%volume_ele(:)
 !      write(*,*) 'grouping_for_partitioner'
       call grouping_for_partitioner                                     &
      &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge,               &
-     &    org_group%nod_grp, org_group%ele_grp, org_group%tbls_ele_grp)
+     &    org_group%nod_grp, org_group%ele_grp,                         &
+     &    org_group%tbls_ele_grp, node_volume)
 !  ========= Regrouping after estimate computation load =======
 !
 ! part_plt contain info about num of subdomains
@@ -215,7 +220,13 @@ write(*,*) org_mesh%ele%volume_ele(:)
         &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge,               &
         &    org_group%nod_grp, org_group%ele_grp,                         &
         &    org_group%tbls_ele_grp, partition_tbl)
+        deallocate(part_num_node)
+        deallocate(partition_tbl)
+        deallocate(time_cost)
+        deallocate(particles)
       end if
+      deallocate(node_volume)
+
 !
 !C===
 !C-- create subdomain mesh

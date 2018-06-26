@@ -214,6 +214,41 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine set_domain_list_by_volume(nnod, nlevel_1st, nproc,     &
+      &           ncou, grp_volume, sort_item, node_volume, ig_item)
+!
+      use int_volume_of_single_domain
+!
+      integer(kind = kint), intent(in) :: nnod, nproc, nlevel_1st, ncou
+      integer(kind = kint), intent(in) :: sort_item(nnod)
+      real(kind = kreal), intent(in) :: node_volume(nnod)
+      real(kind = kreal), intent(in) :: grp_volume
+      integer(kind = kint), intent(inout) :: ig_item(nnod)
+!
+      integer(kind = kint) :: ii, ic, in, icou
+      real(kind = kreal) :: total_volume, fnode_volume
+!
+      ii = 1
+      icou= 0
+      total_volume = 0.0
+write(*,*) 'divided group volume: ', grp_volume
+      do icou = 1, ncou
+        in = sort_item(icou)
+        fnode_volume = node_volume(in)
+        total_volume = total_volume + fnode_volume
+        if(total_volume .gt. grp_volume) then
+          total_volume = 0.0
+          if(ii .lt. nproc) then
+            ii = ii + 1
+          end if
+        end if
+        ig_item(in) = ig_item(in) + (ii-1)*nlevel_1st
+      end do
+!
+      end subroutine set_domain_list_by_volume
+!
+!   --------------------------------------------------------------------
+!
       subroutine set_domain_list_with_part_tbl                          &
       &           (nnod, ncou, nlevel, nproc, part_tbl,                 &
       &            sort_item, ig_item, tbl_size, order,                 &

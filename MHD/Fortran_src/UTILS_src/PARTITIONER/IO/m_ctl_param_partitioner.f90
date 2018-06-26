@@ -28,6 +28,7 @@
       integer(kind = kint), parameter :: iPART_RCB_SPH = 2
 !
       integer(kind = kint), parameter :: iPART_EQ_XYZ =  8
+      integer(kind = kint), parameter :: iPART_EQV_XYZ =  11
       integer(kind = kint), parameter :: iPART_EQ_SPH =  9
       integer(kind = kint), parameter :: iPART_LAYER_SPH = 10
 !
