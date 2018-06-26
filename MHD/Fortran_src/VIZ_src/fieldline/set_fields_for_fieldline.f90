@@ -167,6 +167,7 @@
       use t_mesh_data
       use start_surface_by_gl_table
       use start_surface_by_flux
+      use start_surface_in_volume
       use start_surface_4_fline
 !
       integer(kind = kint), intent(in) :: i_fln
@@ -185,6 +186,11 @@
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_flux'
         call s_start_surface_by_flux                                    &
      &     (i_fln, mesh%node, mesh%ele, ele_mesh%surf,                  &
+     &      fline_prm, fline_src, fline_tce)
+      else if(fline_prm%id_fline_start_type(i_fln)                      &
+     &                           .eq. iflag_spray_in_domain) then
+        if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_volume'
+        call s_start_surface_by_volume(i_fln, mesh%ele, group%ele_grp,  &
      &      fline_prm, fline_src, fline_tce)
       else if(fline_prm%id_fline_start_type(i_fln)                      &
      &                           .eq. iflag_surface_list) then
