@@ -114,7 +114,7 @@
         fline_prm%id_fline_direction(i_fln) =  iflag_forward_trace
       else if(cmp_no_case(character_256, cflag_backward_trace)) then 
         fline_prm%id_fline_direction(i_fln) =  iflag_backward_trace
-      else if(cmp_no_case(character_256, cflag_both_trace))) then 
+      else if(cmp_no_case(character_256, cflag_both_trace)) then 
         fline_prm%id_fline_direction(i_fln) =  iflag_both_trace
       end if
 !
@@ -122,8 +122,8 @@
       if     (fline_prm%id_fline_start_type(i_fln)                      &
      &                          .eq. iflag_surface_group) then
         fline_prm%id_fline_start_dist(i_fln) =  iflag_random_by_amp
-        character_256 = fln%starting_type_ctl%charavalue
-        if     (cmp_no_case((character_256, cflag_random_by_amp)) then
+        character_256 = fln%selection_type_ctl%charavalue
+        if     (cmp_no_case(character_256, cflag_random_by_amp)) then
           fline_prm%id_fline_start_dist(i_fln) =  iflag_random_by_amp
         else if(cmp_no_case(character_256, cflag_random_by_area)) then
           fline_prm%id_fline_start_dist(i_fln) =  iflag_random_by_area

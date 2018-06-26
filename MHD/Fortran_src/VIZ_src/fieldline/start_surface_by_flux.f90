@@ -55,34 +55,29 @@
       type(fieldline_source), intent(inout) :: fline_src
       type(fieldline_trace), intent(inout) :: fline_tce
 !
-      integer(kind = kint) :: ist_grp, num_grp, i, ip, inum
-      integer(kind = kint) :: ist_line, num
-      real(kind = kreal) :: flux, flux_new
-!
-      real(kind = 8), allocatable :: r_rnd(:)
-      real(kind = kreal), allocatable :: rnd_flux(:)
+      integer(kind = kint) :: ist_grp, num_grp, i, ip
+      integer(kind = kint) :: ist_line, num_line
 !
       real(kind = kreal) :: tot_flux_start, tot_flux_start_l
       real(kind = kreal) :: abs_flux_start, abs_flux_start_l
       real(kind = kreal) :: flux_4_each_line
 !
-      integer(kind = 4) :: nRand = 2
-      integer(kind = 4) ::  count, clock
-      integer(kind = 4), allocatable :: seed(:)
-!
 !
       ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
       num_grp = fline_src%nele_start_grp(i_fln)
+      call calypso_mpi_barrier
 !
       if(     fline_prm%id_fline_start_dist(i_fln)                      &
      &                             .eq. iflag_random_by_area            &
      &   .or. fline_prm%id_fline_start_dist(i_fln)                      &
      &                             .eq. iflag_no_random) then
+        if(iflag_debug .gt. 0) write(*,*) 'cal_area_for_1sgrp'
         call cal_area_for_1sgrp(ele%numele, surf%numsurf,               &
      &      surf%isf_4_ele, ele%interior_ele, surf%area_surf,           &
      &      num_grp, fline_src%iele_start_item(1,ist_grp),              &
      &      fline_src%flux_start(ist_grp) )
       else
+        if(iflag_debug .gt. 0) write(*,*) 'cal_flux_for_1sgrp'
         call cal_flux_for_1sgrp(node%numnod, ele%numele, surf%numsurf,  &
      &      surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele,             &
      &      ele%interior_ele, surf%vnorm_surf, surf%area_surf, num_grp, &
@@ -90,6 +85,7 @@
      &      fline_src%vector_nod_fline(1,1,i_fln),                      &
      &      fline_src%flux_start(ist_grp) )
       end if
+      call calypso_mpi_barrier
 !
       abs_flux_start_l = 0.0d0
       tot_flux_start_l = 0.0d0
@@ -140,46 +136,24 @@
       end if
       write(my_rank+50,*)  'adjusted flux_4_each_line',                 &
      &                     flux_4_each_line
+      call calypso_mpi_barrier
 !
-      ist_line = fline_prm%istack_each_field_line(i_fln-1)
-      inum = ist_grp
-!
-      write(my_rank+50,*)  'random_seed',                               &
-     &                      nRand, fline_src%num_line_local(i_fln)
-      call random_seed(size = nRand)
-!
-      num = fline_src%num_line_local(i_fln)
-      allocate(seed(nRand))
-      allocate(r_rnd(num))
-      allocate(rnd_flux(num))
-!
-      if(iflag_debug .gt. 0) write(*,*)  'system_clock', num
-      call system_clock(count = clock)
-      seed = clock
-!
-      if(num .gt. 0) then
-        write(*,*)  'random_seed'
-        call random_seed(put = seed)
-        write(*,*)  'random_number'
-        call random_number(r_rnd) 
-        do i = 1, fline_src%num_line_local(i_fln)
-          rnd_flux(i) = r_rnd(i) * abs_flux_start_l
-!
-          flux = 0.0d0
-          do inum = ist_grp+1, fline_src%istack_ele_start_grp(i_fln)
-            flux_new = flux + abs(fline_src%flux_start(inum))
-            if(rnd_flux(i) .gt. flux                                    &
-     &           .and. rnd_flux(i) .le. flux_new) exit
-            flux = flux_new
-          end do
-          fline_prm%id_surf_start_fline(1,i+ist_line)                   &
-     &            = fline_src%iele_start_item(1,inum)
-          fline_prm%id_surf_start_fline(2,i+ist_line)                   &
-     &            = fline_src%iele_start_item(2,inum)
-        end do
+      ist_line = fline_prm%istack_each_field_line(i_fln-1) + 1
+      num_line = fline_prm%istack_each_field_line(i_fln) - ist_line
+      if(fline_prm%id_fline_start_dist(i_fln)                           &
+     &                                  .eq. iflag_no_random) then
+        if(iflag_debug .gt. 0) write(*,*) 'start_surface_witout_random'
+        call start_surface_witout_random                                &
+     &   (i_fln, fline_src, abs_flux_start_l,                           &
+     &    num_line, fline_prm%id_surf_start_fline(1,ist_line))
+      else
+        if(iflag_debug .gt. 0) write(*,*) 'start_surface_by_random'
+        call start_surface_by_random                                    &
+     &     (i_fln, fline_src, abs_flux_start_l,                         &
+     &      num_line, fline_prm%id_surf_start_fline(1, ist_line))
       end if
 !
-      deallocate(rnd_flux, r_rnd, seed)
+      write(*,*) 'calypso_mpi_barrier'
       call calypso_mpi_barrier
 !
       end subroutine s_start_surface_by_flux
@@ -279,6 +253,123 @@
 !$omp end parallel do
 !
       end subroutine cal_area_for_1sgrp
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine start_surface_by_random                                &
+     &         (i_fln, fline_src, abs_flux_start_l,                     &
+     &          num_line, id_surf_start_fline)
+!
+      use extend_field_line
+      use cal_field_on_surf_viz
+      use set_fline_start_surface
+!
+      type(fieldline_source), intent(in) :: fline_src
+      real(kind = kreal), intent(in) :: abs_flux_start_l
+      integer(kind = kint), intent(in) :: i_fln
+!
+      integer(kind = kint), intent(in) :: num_line
+!
+      integer(kind = kint), intent(inout)                               &
+     &                          :: id_surf_start_fline(2,num_line)
+!
+      integer(kind = kint) :: ist_grp, i, inum, num
+      real(kind = kreal) :: flux, flux_new
+!
+!
+      real(kind = 8), allocatable :: r_rnd(:)
+      real(kind = kreal), allocatable :: rnd_flux(:)
+!
+      integer(kind = 4) :: nRand = 2
+      integer(kind = 4) ::  count, clock
+      integer(kind = 4), allocatable :: seed(:)
+!
+!
+      ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
+!
+      write(my_rank+50,*)  'random_seed',                               &
+     &                      nRand, fline_src%num_line_local(i_fln)
+      call random_seed(size = nRand)
+!
+      num = fline_src%num_line_local(i_fln)
+      allocate(seed(nRand))
+      allocate(r_rnd(num))
+      allocate(rnd_flux(num))
+!
+      if(iflag_debug .gt. 0) write(*,*)  'system_clock', num
+      call system_clock(count = clock)
+      seed = clock
+!
+      if(num .gt. 0) then
+        if(iflag_debug .gt. 0) write(*,*)  'random_seed'
+        call random_seed(put = seed)
+        if(iflag_debug .gt. 0) write(*,*)  'random_number'
+        call random_number(r_rnd) 
+        do i = 1, fline_src%num_line_local(i_fln)
+          rnd_flux(i) = r_rnd(i) * abs_flux_start_l
+!
+          flux = 0.0d0
+          do inum = ist_grp, fline_src%istack_ele_start_grp(i_fln)
+            flux_new = flux + abs(fline_src%flux_start(inum))
+            if(rnd_flux(i) .gt. flux                                    &
+     &           .and. rnd_flux(i) .le. flux_new) exit
+            flux = flux_new
+          end do
+          id_surf_start_fline(1,i) = fline_src%iele_start_item(1,inum)
+          id_surf_start_fline(2,i) = fline_src%iele_start_item(2,inum)
+        end do
+      end if
+!
+      deallocate(rnd_flux, r_rnd, seed)
+      call calypso_mpi_barrier
+!
+      end subroutine start_surface_by_random
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine start_surface_witout_random                            &
+     &         (i_fln, fline_src, abs_flux_start_l,                     &
+     &          num_line, id_surf_start_fline)
+!
+      use extend_field_line
+      use cal_field_on_surf_viz
+      use set_fline_start_surface
+!
+      type(fieldline_source), intent(in) :: fline_src
+      real(kind = kreal), intent(in) :: abs_flux_start_l
+      integer(kind = kint), intent(in) :: i_fln
+      integer(kind = kint), intent(in) :: num_line
+!
+      integer(kind = kint), intent(inout)                               &
+     &                          :: id_surf_start_fline(2,num_line)
+!
+      integer(kind = kint) :: ist_grp, ied_grp, icou, inum
+      real(kind = kreal) :: flux, ref_flux
+!
+!
+!
+      ref_flux = abs_flux_start_l / num_line
+      ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
+      ied_grp = fline_src%istack_ele_start_grp(i_fln)
+      icou = 0
+      if(fline_src%num_line_local(i_fln) .gt. 0) then
+        flux = 0.0d0
+        do inum = ist_grp, ied_grp
+          flux = flux + abs(fline_src%flux_start(inum))
+          if(flux .gt. ref_flux) then
+            icou = icou + 1
+            id_surf_start_fline(1,icou)                                &
+     &               = fline_src%iele_start_item(1,inum)
+            id_surf_start_fline(2,icou)                                &
+     &               = fline_src%iele_start_item(2,inum)
+            flux = 0.0d0
+          end if
+          if(icou .ge. num_line) exit
+        end do
+      end if
+!
+      end subroutine start_surface_witout_random
 !
 !  ---------------------------------------------------------------------
 !
