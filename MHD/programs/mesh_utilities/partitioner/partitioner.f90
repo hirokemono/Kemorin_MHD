@@ -56,9 +56,6 @@
 !
 !  read global mesh
 !
-!      call sel_read_mesh(global_mesh_file, my_rank, fem_IO_i, ierr)
-!      call set_mesh(fem_IO_i, org_fem%mesh, org_fem%group,              &
-!     &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
       call input_mesh                                                   &
      &   (global_mesh_file, my_rank, org_fem, org_ele_mesh, ierr)
       if(ierr .gt. 0) stop 'Global mesh is wrong!'
