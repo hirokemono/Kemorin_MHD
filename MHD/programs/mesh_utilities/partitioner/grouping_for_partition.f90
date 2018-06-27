@@ -76,6 +76,7 @@
 !C===
 !
       else if (NTYP_div .eq. iPART_EQ_XYZ) then
+        write(*,*) 'equaly_bisection'
         call equaly_bisection                                           &
      &     (node%numnod, node%internal_node, node%xx)
 !

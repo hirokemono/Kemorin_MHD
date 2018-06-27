@@ -40,7 +40,7 @@
       type(mesh_groups), intent(inout) :: org_group
 !
 !
-!      write(*,*) 'quick_mesh_chk_4_part'
+      write(*,*) 'quick_mesh_chk_4_part'
       call quick_mesh_chk_4_part(org_mesh%node, org_mesh%ele,           &
      &    org_group%nod_grp, org_group%ele_grp, org_group%surf_grp)
 !
