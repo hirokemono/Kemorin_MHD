@@ -36,14 +36,13 @@
       type(mesh_data), intent(inout) :: para_mesh(nprocs)
 !
       integer(kind = kint) :: ip, id_rank, ierr
-      integer(kind = kint) :: nnod_4_surf, nnod_4_edge
+      type(element_geometry) :: ele_mesh
 !
 !
       do ip = 1, nprocs
         id_rank = ip - 1
-        call input_mesh(mesh_file, id_rank,                             &
-     &      para_mesh(ip)%mesh, para_mesh(ip)%group,                    &
-     &      nnod_4_surf, nnod_4_edge, ierr)
+        call input_mesh                                                 &
+     &     (mesh_file, id_rank, para_mesh(ip), ele_mesh, ierr)
         call set_nod_and_ele_infos                                      &
      &     (para_mesh(ip)%mesh%node, para_mesh(ip)%mesh%ele)
 !

@@ -74,9 +74,7 @@
       do ip = 1, nprocs_sf
         id_rank = ip - 1
         if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-        call input_mesh(mesh_file, id_rank, fem0%mesh, fem0%group,      &
-     &      ele_mesh0%surf%nnod_4_surf, ele_mesh0%edge%nnod_4_edge,     &
-     &      ierr)
+        call input_mesh(mesh_file, id_rank, fem0, ele_mesh0, ierr)
         call allocate_quad4_2_linear(fem0%mesh%ele%nnod_4_ele)
 !
 !

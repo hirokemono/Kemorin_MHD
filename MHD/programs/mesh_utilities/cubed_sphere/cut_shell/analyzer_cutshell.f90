@@ -19,7 +19,7 @@
 !
       type(mesh_data), save :: original_fem
       type(mesh_data), save :: cutted_fem
-      integer(kind = kint) :: nnod_4_surf, nnod_4_edge
+      type(element_geometry), save :: org_ele_mesh
 !
 !   --------------------------------------------------------------------
 !
@@ -44,8 +44,7 @@
 !  read global mesh
 !
       call input_mesh(original_mesh_file, my_rank,                      &
-     &    original_fem%mesh, original_fem%group,                        &
-     &    nnod_4_surf, nnod_4_edge, ierr)
+     &    original_fem, org_ele_mesh, ierr)
       if(ierr .ne. 0) stop 'Mesh data is wrong!'
 !
 !

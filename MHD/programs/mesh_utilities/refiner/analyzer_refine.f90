@@ -56,9 +56,7 @@
 !  read global mesh
 !
       call input_mesh                                                   &
-     &   (original_mesh_file, my_rank, org_fem%mesh, org_fem%group,     &
-     &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
-     &    ierr)
+     &   (original_mesh_file, my_rank, org_fem, org_ele_mesh, ierr)
       if(ierr .gt. 0) stop 'Original mesh is wrong!!'
 !
       if(iflag_read_old_refine_file .gt. 0) then
