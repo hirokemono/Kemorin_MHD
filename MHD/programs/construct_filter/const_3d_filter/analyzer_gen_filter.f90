@@ -34,8 +34,7 @@
 !
       type(field_IO_params), save ::  mesh_filter_file
 !
-      type(mesh_geometry), save :: mesh_filter
-      type(mesh_groups), save :: group_filter
+      type(mesh_data), save :: fem_f
       type(element_geometry), save :: ele_filter
 !
       type(shape_finctions_at_points), save :: spfs_f
@@ -105,7 +104,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
-     &   (mesh_filter_file, nprocs, mesh_filter, group_filter,          &
+     &   (mesh_filter_file, nprocs, fem_f%mesh, fem_f%group,            &
      &    ele_filter%surf%nnod_4_surf, ele_filter%edge%nnod_4_edge)
 !
 !     --------------------- 
@@ -114,27 +113,27 @@
       call s_cal_1d_moments(FEM_elen_f)
 !
       call s_set_element_list_4_filter                                  &
-     &   (mesh_filter%ele, group_filter%ele_grp)
+     &   (fem_f%mesh%ele, fem_f%group%ele_grp)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos                                             &
-     &   (my_rank, mesh_filter, group_filter, ele_filter)
+     &   (my_rank, fem_f%mesh, fem_f%group, ele_filter)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
      &   write(*,*) 'alloc_vectors_surf_group'
       call alloc_vectors_surf_group                                     &
-     &  (group_filter%surf_grp%num_grp, group_filter%surf_grp%num_item, &
-     &   group_filter%surf_grp_geom)
+     &  (fem_f%group%surf_grp%num_grp, fem_f%group%surf_grp%num_item,   &
+     &   fem_f%group%surf_grp_geom)
 !
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
      &   write(*,*) 'pick_surface_group_geometry'
       call pick_surface_group_geometry                                  &
-     &   (ele_filter%surf, group_filter%surf_grp,                       &
-     &    group_filter%tbls_surf_grp, group_filter%surf_grp_geom)
+     &   (ele_filter%surf, fem_f%group%surf_grp,                        &
+     &    fem_f%group%tbls_surf_grp, fem_f%group%surf_grp_geom)
 !
 !  -------------------------------
 !  -------------------------------
@@ -147,25 +146,25 @@
      &    spfs_f%spf_3d, spfs_f%spf_2d, spfs_f%spf_1d)
 !
       call const_jacobian_and_volume(my_rank, nprocs,                   &
-     &    mesh_filter%node, group_filter%surf_grp,                      &
-     &    group_filter%infty_grp, mesh_filter%ele,                      &
+     &    fem_f%mesh%node, fem_f%group%surf_grp,                        &
+     &    fem_f%group%infty_grp, fem_f%mesh%ele,                        &
      &    spfs_f%spf_3d, fem_int_f%jcs)
 !
 !      call check_jacobians_trilinear                                   &
-!     &   (my_rank, mesh_filter%ele, fem_int_f%jcs%jac_3d_l)
+!     &   (my_rank, fem_f%mesh%ele, fem_int_f%jcs%jac_3d_l)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
-      FEM_elen_f%nnod_filter_mom = mesh_filter%node%numnod
-      FEM_elen_f%nele_filter_mom = mesh_filter%ele%numele
+      FEM_elen_f%nnod_filter_mom = fem_f%mesh%node%numnod
+      FEM_elen_f%nele_filter_mom = fem_f%mesh%ele%numele
       FEM_momenet1%num_filter_moms = 2
       call alloc_jacobians_ele(FEM_elen_f%nele_filter_mom, filter_dxi1)
       call alloc_elen_ele_type                                          &
      &   (FEM_elen_f%nele_filter_mom, FEM_elen_f%elen_ele)
 !
       call s_int_element_length(FEM_elen_f%nele_filter_mom,             &
-     &    mesh_filter%node, mesh_filter%ele,                            &
+     &    fem_f%mesh%node, fem_f%mesh%ele,                              &
      &    fem_int_f%jcs%g_FEM, spfs_f%spf_3d,                           &
      &    filter_dxi1%dxi_ele, FEM_elen_f%elen_ele%moms)
       call dealloc_vol_shape_func(spfs_f%spf_3d)
@@ -206,13 +205,13 @@
 !  ---------------------------------------------------
 !
       if(iflag_debug.eq.1)  write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(ithree, mesh_filter%node%numnod)
+      call allocate_vector_for_solver(ithree, fem_f%mesh%node%numnod)
 !
-      call init_nod_send_recv(mesh_filter)
+      call init_nod_send_recv(fem_f%mesh)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
-      call s_cal_element_size(mesh_filter, ele_filter,                  &
-     &    group_filter, tbl_crs_f, mat_tbl_f, rhs_mat_f, fem_int_f,     &
+      call s_cal_element_size(fem_f%mesh, ele_filter,                   &
+     &    fem_f%group, tbl_crs_f, mat_tbl_f, rhs_mat_f, fem_int_f,      &
      &    FEM_elen_f, filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
@@ -229,9 +228,9 @@
 !  ---------------------------------------------------
 !
       if (iflag_tgt_filter_type .gt. -10)  then
-        call copy_node_data_to_filter(mesh_filter%node)
+        call copy_node_data_to_filter(fem_f%mesh%node)
         call copy_comm_tbl_types                                        &
-     &     (mesh_filter%nod_comm, filtering_gen%comm)
+     &     (fem_f%mesh%nod_comm, filtering_gen%comm)
 !
         call copy_filtering_geometry_to_IO(filter_IO%node)
         call copy_comm_tbl_type(filtering_gen%comm, filter_IO%nod_comm)
@@ -242,7 +241,7 @@
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter(file_name, mesh_filter, fem_int_f,     &
+        call select_const_filter(file_name, fem_f%mesh, fem_int_f,     &
     &       tbl_crs_f, rhs_mat_f, FEM_elen_f, dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !

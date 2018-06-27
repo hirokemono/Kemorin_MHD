@@ -25,8 +25,7 @@
 !
       implicit none
 !
-      type(mesh_geometry), save :: mesh
-      type(mesh_groups), save :: group
+      type(mesh_data), save :: fem_T
       type(element_geometry), save :: ele_mesh
 !
 ! ----------------------------------------------------------------------
@@ -95,20 +94,22 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(T_meshes%mesh_file_IO, nprocs, mesh, group,   &
+      call mpi_input_mesh                                               &
+     &   (T_meshes%mesh_file_IO, nprocs, fem_T%mesh, fem_T%group,       &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_init_with_IO'
       call FEM_mesh_init_with_IO(T_meshes%iflag_output_SURF,            &
-     &    T_meshes%mesh_file_IO, mesh, group, ele_mesh)
+     &    T_meshes%mesh_file_IO, fem_T%mesh, fem_T%group, ele_mesh)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
       call pick_surface_group_geometry(ele_mesh%surf,                   &
-     &   group%surf_grp, group%tbls_surf_grp, group%surf_grp_geom)
+     &   fem_T%group%surf_grp, fem_T%group%tbls_surf_grp,               &
+     &   fem_T%group%surf_grp_geom)
 !
 !  -------------------------------
 !  -------------------------------
@@ -116,13 +117,13 @@
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
       allocate(jacobians_T%g_FEM)
       call sel_max_int_point_by_etype                                   &
-     &   (mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
+     &   (fem_T%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    mesh, ele_mesh%surf, group, spfs_T, jacobians_T)
+     &    fem_T%mesh, ele_mesh%surf, fem_T%group, spfs_T, jacobians_T)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
       call const_edge_vector(my_rank, nprocs,                           &
-     &    mesh%node, ele_mesh%edge, spfs_T%spf_1d, jacobians_T)
+     &    fem_T%mesh%node, ele_mesh%edge, spfs_T%spf_1d, jacobians_T)
 !
 !  -------------------------------
 !
@@ -144,7 +145,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'output_test_mesh_informations'
       call output_test_mesh_informations                               &
-     &   (my_rank, mesh, ele_mesh, mesh_IO, ele_mesh_IO)
+     &   (my_rank, fem_T%mesh, ele_mesh, mesh_IO, ele_mesh_IO)
 !
       end subroutine initialize_mesh_test
 !

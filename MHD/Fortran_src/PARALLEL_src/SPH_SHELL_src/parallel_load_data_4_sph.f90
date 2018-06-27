@@ -8,13 +8,14 @@
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_mesh                           &
 !!     &         (FEM_mesh_flags, sph, comms_sph, sph_grps,             &
-!!     &          mesh, group, ele_mesh, mesh_file, gen_sph)
+!!     &          fem, ele_mesh, mesh_file, gen_sph)
 !!      subroutine load_para_SPH_rj_mesh(sph, comms_sph, sph_grps)
 !!      subroutine load_para_sph_mesh(sph, bc_rtp_grp, sph_grps)
 !!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) ::  sph_grps
+!!        type(mesh_data), intent(inout) :: fem
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -61,7 +62,7 @@
 !
       subroutine load_para_SPH_and_FEM_mesh                             &
      &         (FEM_mesh_flags, sph, comms_sph, sph_grps,               &
-     &          mesh, group, ele_mesh, mesh_file, gen_sph)
+     &          fem, ele_mesh, mesh_file, gen_sph)
 !
       use t_mesh_data
 !
@@ -70,8 +71,7 @@
       type(sph_comm_tables), intent(inout) :: comms_sph
       type(sph_group_data), intent(inout) ::  sph_grps
 !
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) ::   group
+      type(mesh_data), intent(inout) :: fem
       type(element_geometry), intent(inout) :: ele_mesh
       type(field_IO_params), intent(inout) ::  mesh_file
 !
@@ -83,7 +83,7 @@
       call load_FEM_mesh_4_SPH(FEM_mesh_flags,                          &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
-     &    mesh, group, ele_mesh, mesh_file, gen_sph)
+     &    fem, ele_mesh, mesh_file, gen_sph)
 !
       end subroutine load_para_SPH_and_FEM_mesh
 !
@@ -106,7 +106,7 @@
 !
       subroutine load_FEM_mesh_4_SPH(FEM_mesh_flags, sph_params,        &
      &          sph_rtp, sph_rj, radial_rtp_grp, radial_rj_grp,         &
-     &          mesh, group, ele_mesh, mesh_file, gen_sph)
+     &          fem, ele_mesh, mesh_file, gen_sph)
 !
       use calypso_mpi
       use t_mesh_data
@@ -129,8 +129,7 @@
       type(group_data), intent(in) :: radial_rtp_grp
       type(group_data), intent(in) :: radial_rj_grp
 !
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) ::   group
+      type(mesh_data), intent(inout) ::   fem
       type(element_geometry), intent(inout) :: ele_mesh
       type(field_IO_params), intent(inout) ::  mesh_file
 !
@@ -142,10 +141,10 @@
 !  --  load FEM mesh data
       if(check_exist_mesh(mesh_file, my_rank) .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-        call mpi_input_mesh(mesh_file, nprocs, mesh, group,             &
+        call mpi_input_mesh(mesh_file, nprocs, fem%mesh, fem%group,     &
      &      ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
         call set_fem_center_mode_4_SPH                                  &
-     &     (mesh%node%internal_node, sph_rtp, sph_params)
+     &     (fem%mesh%node%internal_node, sph_rtp, sph_params)
         return
       end if
 !
@@ -163,11 +162,12 @@
      &    sph_params, sph_rtp, sph_rj, radial_rtp_grp, radial_rj_grp,   &
      &    femmesh_s%mesh, femmesh_s%group, mesh_file, gen_sph)
 !      call compare_mesh_type                                           &
-!     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, femmesh_s%mesh)
-!      call compare_mesh_groups(group%nod_grp, femmesh_s%group)
+!     &   (my_rank, fem%mesh%nod_comm, mesh%node, mesh%ele,             &
+!     &    femmesh_s%mesh)
+!      call compare_mesh_groups(fem%group%nod_grp, femmesh_s%group)
 !
-      call set_mesh_data_from_type                                      &
-     &   (femmesh_s%mesh, femmesh_s%group, mesh, ele_mesh, group)
+      call set_mesh_data_from_type(femmesh_s%mesh, femmesh_s%group,     &
+     &    fem%mesh, ele_mesh, fem%group)
 !
       end subroutine load_FEM_mesh_4_SPH
 !

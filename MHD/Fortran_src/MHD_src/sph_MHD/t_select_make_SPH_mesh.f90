@@ -101,8 +101,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh(MHD_files%FEM_mesh_flags,         &
-     &    sph, comms_sph, sph_grps, geofem%mesh, geofem%group,          &
-     &    ele_mesh, MHD_files%mesh_file_IO, sph_maker%gen_sph)
+     &    sph, comms_sph, sph_grps, geofem, ele_mesh,                   &
+     &    MHD_files%mesh_file_IO, sph_maker%gen_sph)
 !
       end subroutine select_make_SPH_mesh
 !

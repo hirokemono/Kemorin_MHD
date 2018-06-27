@@ -178,7 +178,7 @@
       if (iflag_debug.gt.0) write(*,*) 'set_nod_and_ele_infos'
       call set_nod_and_ele_infos(node, ele)
 !      if (iflag_debug.gt.0) then
-!        call check_nod_size_smp_type(mesh%node, my_rank)
+!        call check_nod_size_smp_type(node, my_rank)
 !      end if
 !
        if (iflag_debug.gt.0) write(*,*) 'count_num_groups_smp'

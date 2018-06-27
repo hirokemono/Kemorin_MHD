@@ -27,8 +27,7 @@
       implicit none
 !
       integer(kind = kint), save :: ndomain_org
-      type(mesh_geometry), save :: mesh_m
-      type(mesh_groups), save :: group_m
+      type(mesh_data), save :: fem_m
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,18 +66,19 @@
 !  set mesh data
 !
       call mpi_input_mesh(merge_org_mesh_file, nprocs,                  &
-     &    mesh_m, group_m, nnod_4_surf, nnod_4_edge)
-      call set_nod_and_ele_infos(mesh_m%node, mesh_m%ele)
-      call const_global_numnod_list(mesh_m%node)
-      call const_global_numele_list(mesh_m%ele)
+     &    fem_m%mesh, fem_m%group, nnod_4_surf, nnod_4_edge)
+      call set_nod_and_ele_infos(fem_m%mesh%node, fem_m%mesh%ele)
+      call const_global_numnod_list(fem_m%mesh%node)
+      call const_global_numele_list(fem_m%mesh%ele)
 !
 !  Initialize communicator
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, mesh_m%node%numnod)
+      call allocate_vector_for_solver                                   &
+     &   (n_sym_tensor, fem_m%mesh%node%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(mesh_m)
+      call init_nod_send_recv(fem_m%mesh)
 !
       end subroutine init_merge_mesh
 !
@@ -98,12 +98,12 @@
       type(parallel_double_numbering), save :: dbl_nod
 !
 !
-      call alloc_double_numbering(mesh_m%node%numnod, dbl_nod)
+      call alloc_double_numbering(fem_m%mesh%node%numnod, dbl_nod)
       call set_para_double_numbering                                    &
-     &   (mesh_m%node%internal_node, mesh_m%nod_comm, dbl_nod)
+     &   (fem_m%mesh%node%internal_node, fem_m%mesh%nod_comm, dbl_nod)
 !
       call s_const_internal_mesh_data                                   &
-     &   (mesh_m, group_m, new_mesh, new_group)
+     &   (fem_m%mesh, fem_m%group, new_mesh, new_group)
 !
       merged_mesh_file%iflag_format = iflag_single
       call mpi_write_merged_mesh_file(nprocs, my_rank,                  &
@@ -114,7 +114,7 @@
       call dealloc_groups_data(new_group)
 !
       call dealloc_double_numbering(dbl_nod)
-      call dealloc_mesh_infos(mesh_m, group_m)
+      call dealloc_mesh_infos(fem_m%mesh, fem_m%group)
 !
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'

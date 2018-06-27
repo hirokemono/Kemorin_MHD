@@ -2,7 +2,9 @@
 !      module input_control_test_MG
 !     Written by H. Matsui on Apr., 2008
 !
-!     subroutine s_input_control_test_MG(mesh, group, surf, edge)
+!!     subroutine s_input_control_test_MG(fem, ele_mesh)
+!!        type(mesh_data), intent(inout) :: fem
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !
 !
 !
@@ -25,7 +27,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_test_MG(mesh, group, surf, edge)
+      subroutine s_input_control_test_MG(fem, ele_mesh)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -36,10 +38,8 @@
       use mpi_load_mesh_data
       use set_MG_mesh_data
 !
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) :: group
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
+      type(mesh_data), intent(inout) :: fem
+      type(element_geometry), intent(inout) :: ele_mesh
 !
       type(field_IO_params), save ::  mesh_file_test
 !
@@ -54,8 +54,8 @@
 !  --  read geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_file_test, nprocs, mesh, group,          &
-     &    surf%nnod_4_surf, edge%nnod_4_edge)
+      call mpi_input_mesh(mesh_file_test, nprocs, fem%mesh, fem%group,  &
+     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
 !  --  read geometry data for MG
 !

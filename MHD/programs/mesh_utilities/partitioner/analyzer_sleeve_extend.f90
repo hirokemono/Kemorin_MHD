@@ -28,9 +28,8 @@
 !
       implicit none
 !
-      type(mesh_geometry), save, private :: mesh
-      type(mesh_groups), save, private :: group
-      type(element_geometry), save, private :: ele_mesh
+      type(mesh_data), save, private :: fem_EXT
+      type(element_geometry), save, private :: e_mesh_EXT
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,16 +63,18 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(global_mesh_file, nprocs, mesh, group,        &
-     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
+      call mpi_input_mesh                                               &
+     &   (global_mesh_file, nprocs, fem_EXT%mesh, fem_EXT%group,        &
+     &    e_mesh_EXT%surf%nnod_4_surf, e_mesh_EXT%edge%nnod_4_edge)
 !
 !  ------  Initialize data communication for FEM data
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, mesh%node%numnod)
+      call allocate_vector_for_solver                                   &
+     &   (n_sym_tensor, fem_EXT%mesh%node%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(mesh)
+      call init_nod_send_recv(fem_EXT%mesh)
 !
       end subroutine initialize_sleeve_extend
 !
@@ -92,12 +93,14 @@
 !
       do ilevel = 1, num_extend
         if(my_rank .eq. 0) write(*,*) 'para_sleeve_extension', ilevel
-        call para_sleeve_extension(mesh, group, ele_mesh)
+        call para_sleeve_extension                                      &
+     &     (fem_EXT%mesh, fem_EXT%group, e_mesh_EXT)
       end do
 !
 !
-      call mpi_output_mesh(distribute_mesh_file, mesh, group)
-      call dealloc_mesh_infos(mesh, group)
+      call mpi_output_mesh                                              &
+     &   (distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)
+      call dealloc_mesh_infos(fem_EXT%mesh, fem_EXT%group)
 !
       if (iflag_debug.gt.0) write(*,*) 'pickup_surface_mesh_para'
       call pickup_surface_mesh_para(distribute_mesh_file)
