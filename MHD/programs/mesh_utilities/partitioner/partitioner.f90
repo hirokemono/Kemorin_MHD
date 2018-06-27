@@ -17,6 +17,7 @@
 !
       use m_control_data_4_part
       use m_ctl_param_partitioner
+      use m_domain_group_4_partition
 !
       use init_partitioner
       use grouping_for_partition
@@ -31,10 +32,12 @@
 !
       use single_const_kemoview_mesh
 !
+      use mesh_IO_select
+      use set_nnod_4_ele_by_type
+!
       implicit none
 !
-      type(mesh_geometry), save :: org_mesh
-      type(mesh_groups), save :: org_group
+      type(mesh_data), save :: org_fem
       type(element_geometry), save :: org_ele_mesh
 !
       type(near_mesh), save :: included_ele
@@ -44,6 +47,7 @@
 !
       integer(kind = kint), parameter :: my_rank = izero
       integer(kind = kint) :: ierr
+      type(mesh_data) :: fem_IO_i
 !
 !  read control file
 !
@@ -52,49 +56,49 @@
 !
 !  read global mesh
 !
-      call input_mesh(global_mesh_file, my_rank, org_mesh, org_group,   &
+!      call sel_read_mesh(global_mesh_file, my_rank, fem_IO_i, ierr)
+!      call set_mesh(fem_IO_i, org_fem%mesh, org_fem%group,              &
+!     &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
+      call input_mesh                                                   &
+     &   (global_mesh_file, my_rank, org_fem%mesh, org_fem%group,       &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
      &    ierr)
       if(ierr .gt. 0) stop 'Global mesh is wrong!'
 !
 !      write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, org_mesh, org_group, org_ele_mesh)
-!
-!  -------------------------------
-!
-!      if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-!      call pick_surface_group_geometry(org_ele_mesh%surf,               &
-!     &   org_group%surf_grp, org_group%tbls_surf_grp,                   &
-!     &   org_group%surf_grp_geom)
+      call const_mesh_infos                                             &
+     &   (my_rank, org_fem%mesh, org_fem%group, org_ele_mesh)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
       allocate(jacobians_T%g_FEM)
       call sel_max_int_point_by_etype                                   &
-     &   (org_mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
+     &   (org_fem%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
       call const_jacobian_and_single_vol                                &
-     &   (org_mesh, org_group, spfs_T, jacobians_T)
+     &   (org_fem%mesh, org_fem%group, spfs_T, jacobians_T)
+!
 !
 !  ========= Routines for partitioner ==============
 !
 !      write(*,*) 'initialize_partitioner'
-      call initialize_partitioner(org_mesh, org_group)
+      call initialize_partitioner(org_fem%mesh, org_fem%group)
 !      write(*,*) 'grouping_for_partitioner'
       call grouping_for_partitioner                                     &
-     &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge,               &
-     &    org_group%nod_grp, org_group%ele_grp, org_group%tbls_ele_grp)
-!
+     &   (org_fem%mesh%node, org_fem%mesh%ele, org_ele_mesh%edge,       &
+     &    org_fem%group%nod_grp, org_fem%group%ele_grp,                 &
+     &    org_fem%group%tbls_ele_grp)
 !C===
 !C-- create subdomain mesh
 !      write(*,*) 'PROC_LOCAL_MESH'
       call PROC_LOCAL_MESH                                              &
-     &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge, org_group,    &
-     &    included_ele)
+     &   (org_fem%mesh%node, org_fem%mesh%ele, org_ele_mesh%edge,       &
+     &    org_fem%group, included_ele)
 !C
 !C-- Finalize
 !      write(*,*) 'dealloc_nod_ele_infos'
-      call dealloc_nod_ele_infos(org_mesh, org_group, org_ele_mesh)
+      call dealloc_nod_ele_infos                                        &
+     &   (org_fem%mesh, org_fem%group, org_ele_mesh)
 !
 !  ========= Construct subdomain information for viewer ==============
 !

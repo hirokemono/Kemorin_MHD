@@ -19,9 +19,7 @@
       use m_machine_parameter
       use m_file_format_switch
 !
-      use t_geometry_data
-      use t_surface_data
-      use t_edge_data
+      use t_mesh_data
       use t_file_IO_parameter
       use t_mesh_data_4_merge
       use t_viewer_mesh
@@ -51,11 +49,8 @@
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      type(mesh_geometry), save  :: mesh0
-      type(mesh_groups), save  :: group0
-      type(surface_data), save :: surf0
-      type(edge_data), save :: edge0
-!
+      type(mesh_data), save :: fem0
+      type(element_geometry), save :: ele_mesh0
 !
       type(viewer_mesh_data), allocatable :: view_mesh(:)
       type(viewer_surface_groups), allocatable :: domain_grps(:)
@@ -79,27 +74,30 @@
       do ip = 1, nprocs_sf
         id_rank = ip - 1
         if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-        call input_mesh(mesh_file, id_rank, mesh0, group0,              &
-     &      surf0%nnod_4_surf, edge0%nnod_4_edge, ierr)
-        call allocate_quad4_2_linear(mesh0%ele%nnod_4_ele)
+        call input_mesh(mesh_file, id_rank, fem0%mesh, fem0%group,      &
+     &      ele_mesh0%surf%nnod_4_surf, ele_mesh0%edge%nnod_4_edge,     &
+     &      ierr)
+        call allocate_quad4_2_linear(fem0%mesh%ele%nnod_4_ele)
 !
 !
         if(iflag_add_comm_tbl .gt. 0) then
-          call add_comm_tbl_in_node_grp_mesh(nprocs_sf, mesh0, group0)
+          call add_comm_tbl_in_node_grp_mesh                            &
+     &       (nprocs_sf, fem0%mesh, fem0%group)
         end if
 !
         write(*,*) 'Construct kemoviewer data for rank ', id_rank
-        call const_surf_mesh_4_viewer(mesh0, group0, surf0, edge0,      &
+        call const_surf_mesh_4_viewer                                   &
+     &     (fem0%mesh, fem0%group, ele_mesh0%surf, ele_mesh0%edge,      &
      &      view_mesh(ip), domain_grps(ip), view_nod_grps(ip),          &
      &      view_ele_grps(ip), view_sf_grps(ip))
 !
-        call deallocate_iso_surface_type(surf0)
-        call deallocate_ext_surface_type(surf0)
-        call deallocate_surface_connect_type(surf0)
-        call deallocate_inod_in_surf_type(surf0)
+        call deallocate_iso_surface_type(ele_mesh0%surf)
+        call deallocate_ext_surface_type(ele_mesh0%surf)
+        call deallocate_surface_connect_type(ele_mesh0%surf)
+        call deallocate_inod_in_surf_type(ele_mesh0%surf)
 !
-        call dealloc_mesh_infos(mesh0, group0)
-        call dealloc_inod_in_edge(edge0)
+        call dealloc_mesh_infos(fem0%mesh, fem0%group)
+        call dealloc_inod_in_edge(ele_mesh0%edge)
 !
         if(iflag_write_subdomain .gt. 0) then
           call sel_output_single_surface_grid(id_rank, mesh_file,       &

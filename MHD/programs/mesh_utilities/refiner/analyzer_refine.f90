@@ -25,8 +25,7 @@
       integer(kind = kint), parameter, private :: my_rank = 0
       integer(kind = kint), parameter, private :: ifile_type = 0
 !
-      type(mesh_geometry), save :: org_mesh
-      type(mesh_groups), save :: org_group
+      type(mesh_data), save :: org_fem
       type(element_geometry), save :: org_ele_mesh
 !
       type(mesh_data), save :: refined_fem
@@ -56,15 +55,16 @@
 !
 !  read global mesh
 !
-      call input_mesh(original_mesh_file, my_rank, org_mesh, org_group, &
+      call input_mesh                                                   &
+     &   (original_mesh_file, my_rank, org_fem%mesh, org_fem%group,     &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
      &    ierr)
       if(ierr .gt. 0) stop 'Original mesh is wrong!!'
 !
       if(iflag_read_old_refine_file .gt. 0) then
-        call read_refinement_table(org_mesh%ele%numele)
+        call read_refinement_table(org_fem%mesh%ele%numele)
       else
-        call allocate_old_refine_level(org_mesh%ele%numele)
+        call allocate_old_refine_level(org_fem%mesh%ele%numele)
       end if
 !C
 !C +--------------+
@@ -72,12 +72,12 @@
 !C +--------------+
 !C
       call set_num_node_for_ele_by_etype                                &
-     &   (org_mesh%node, org_mesh%ele, ierr)
+     &   (org_fem%mesh%node, org_fem%mesh%ele, ierr)
 !C
 !    set refine flags
 !
         write(*,*) 'set_ele_grp_id_4_refine'
-        call set_ele_grp_id_4_refine(org_group%ele_grp)
+        call set_ele_grp_id_4_refine(org_fem%group%ele_grp)
 !
       end subroutine  initialize_refine
 !
@@ -114,78 +114,83 @@
       do
         if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
         call const_mesh_infos                                           &
-     &     (my_rank, org_mesh, org_group, org_ele_mesh)
+     &     (my_rank, org_fem%mesh, org_fem%group, org_ele_mesh)
 !
         write(*,*) 'allocate_refine_flags'
         call allocate_refine_flags                                      &
-     &     (org_mesh%ele%numele, org_ele_mesh%surf%numsurf,             &
+     &     (org_fem%mesh%ele%numele, org_ele_mesh%surf%numsurf,         &
      &      org_ele_mesh%edge%numedge, nsurf_4_ele, nedge_4_ele)
 !
         if(iflag_tmp_tri_refine .eq. 0) then
           write(*,*) 's_set_element_refine_flag'
           call s_set_element_refine_flag                                &
-     &       (org_mesh%ele, org_ele_mesh%surf, org_group%ele_grp)
+     &       (org_fem%mesh%ele, org_ele_mesh%surf,                      &
+     &        org_fem%group%ele_grp)
         end if
 !
         write(*,*) 's_set_refine_flags_4_tri'
-        call s_set_refine_flags_4_tri(org_mesh%node, org_mesh%ele)
+        call s_set_refine_flags_4_tri                                   &
+     &     (org_fem%mesh%node, org_fem%mesh%ele)
 !
 !
         write(*,*) 's_set_all_refine_flags'
-        call s_set_all_refine_flags(org_mesh%ele,                       &
+        call s_set_all_refine_flags(org_fem%mesh%ele,                   &
      &      org_ele_mesh%surf, org_ele_mesh%edge)
 !
         write(*,*) 'check_hanging_surface'
-        call check_hanging_surface(org_mesh%ele%numele,                 &
+        call check_hanging_surface(org_fem%mesh%ele%numele,             &
      &      org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge,       &
      &      org_ele_mesh%surf%isf_4_ele, org_ele_mesh%surf%iele_4_surf, &
      &      org_ele_mesh%edge%iedge_4_ele)
 !
-!      call check_refine_flags(org_mesh%ele%numele,                     &
+!      call check_refine_flags(org_fem%mesh%ele%numele,                     &
 !     &    org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
 !      call check_local_refine_flags                                    &
-!     &   (org_mesh%ele%numele, nsurf_4_ele, nedge_4_ele)
+!     &   (org_fem%mesh%ele%numele, nsurf_4_ele, nedge_4_ele)
 !
 !   set refined nodes
 !
         call allocate_num_refine_node                                   &
-     &     (org_mesh%node%numnod, org_mesh%ele%numele,                  &
+     &     (org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
      &      org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
         write(*,*) 's_count_nnod_for_refine'
-        call s_count_nnod_for_refine(org_mesh%node, org_mesh%ele,       &
+        call s_count_nnod_for_refine                                    &
+     &     (org_fem%mesh%node, org_fem%mesh%ele,                        &
      &      org_ele_mesh%surf, org_ele_mesh%edge)
 !
         call allocate_item_refine_node
         write(*,*) 's_set_refined_node_id'
         call s_set_refined_node_id                                      &
-     &     (org_mesh%node%numnod, org_mesh%ele%numele,                  &
+     &     (org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
      &      org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
 !
         write(*,*) 's_set_local_position_4_refine'
-        call s_set_local_position_4_refine(org_mesh%ele%numele,         &
+        call s_set_local_position_4_refine(org_fem%mesh%ele%numele,     &
       &    org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
 !
 !      call check_refine_items                                          &
-!     &   (org_mesh%node%numnod, org_mesh%ele%numele,                   &
+!     &   (org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,                   &
 !     &    org_ele_mesh%surf%numsurf, org_ele_mesh%edge%numedge)
 !
-         refined_fem%mesh%nod_comm%num_neib = org_mesh%nod_comm%num_neib
+         refined_fem%mesh%nod_comm%num_neib                             &
+     &        = org_fem%mesh%nod_comm%num_neib
         call allocate_type_comm_tbl_num(refined_fem%mesh%nod_comm)
         call allocate_type_comm_tbl_item(refined_fem%mesh%nod_comm)
 !
         write(*,*) 's_set_refined_position'
-        call s_set_refined_position(org_mesh%node, org_mesh%ele,        &
+        call s_set_refined_position                                     &
+     &     (org_fem%mesh%node, org_fem%mesh%ele,                        &
      &      org_ele_mesh%surf, org_ele_mesh%edge)
 !
         refined_fem%mesh%nod_comm%num_neib = 0
 !
         write(*,*) 's_refined_nod_2_mesh_data'
         call s_refined_nod_2_mesh_data                                  &
-     &     (org_mesh%node, refined_fem%mesh%node)
+     &     (org_fem%mesh%node, refined_fem%mesh%node)
 !
 !
         call s_const_refined_connectivity                               &
-     &     (org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge)
+     &     (org_fem%mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge)
 !
         call s_refined_ele_2_mesh_data(refined_fem%mesh%ele)
         call set_3D_nnod_4_sfed_by_ele                                  &
@@ -198,15 +203,13 @@
      &      org_ele_mesh%edge%numedge, org_ele_mesh%edge%nnod_4_edge,   &
      &      org_ele_mesh%surf%ie_surf, org_ele_mesh%edge%ie_edge)
 !
-        call s_const_refined_group(org_mesh%node, org_mesh%ele,         &
-     &      org_ele_mesh%surf, org_ele_mesh%edge,                       &
-     &      org_group%nod_grp, org_group%ele_grp, org_group%surf_grp,   &
+        call s_const_refined_group                                      &
+     &     (org_fem%mesh, org_ele_mesh, org_fem%group,                  &
      &      refined_fem%mesh, refined_fem%group)
 !
         write(*,*) 's_const_refine_interpolate_tbl'
-        call s_const_refine_interpolate_tbl(my_rank, org_mesh%node,     &
-     &      org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge,         &
-     &      refined_fem%mesh)
+        call s_const_refine_interpolate_tbl                             &
+     &     (my_rank, org_fem%mesh, org_ele_mesh, refined_fem%mesh)
 !
         call deallocate_refine_flags
         call deallocate_refined_local_posi
@@ -218,14 +221,12 @@
 !
         write(*,*) 'dealloc_mesh_infos_w_normal'
         call dealloc_mesh_infos_w_normal                                &
-     &     (org_mesh, org_group, org_ele_mesh)
+     &     (org_fem%mesh, org_fem%group, org_ele_mesh)
 !
         write(*,*) 'set_mesh_data_from_type'
         call set_mesh_data_from_type                                    &
      &     (refined_fem%mesh, refined_fem%group,                        &
-     &      org_mesh%nod_comm, org_mesh%node, org_mesh%ele,             &
-     &      org_ele_mesh%surf, org_ele_mesh%edge,                       &
-     &      org_group%nod_grp, org_group%ele_grp, org_group%surf_grp)
+     &      org_fem%mesh, org_ele_mesh, org_fem%group)
 !
         org_ele_mesh%surf%nnod_4_surf = finer_elemesh%surf%nnod_4_surf
         org_ele_mesh%edge%nnod_4_edge = finer_elemesh%edge%nnod_4_edge

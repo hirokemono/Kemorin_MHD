@@ -93,9 +93,8 @@
       call dealloc_ele_comm_tbl_only(mesh, ele_mesh)
       call dealloc_mesh_infomations(mesh, group, ele_mesh)
 !
-      call set_mesh_data_from_type(newmesh, newgroup, mesh%nod_comm,    &
-     &    mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,            &
-     &    group%nod_grp, group%ele_grp, group%surf_grp)
+      call set_mesh_data_from_type                                      &
+     &   (newmesh, newgroup, mesh, ele_mesh, group)
       call deallocate_sph_node_geometry(newmesh%node)
       call dealloc_ele_comm_tbl_only(newmesh, new_ele_mesh)
       call deallocate_ele_geometry_type(newmesh%ele)

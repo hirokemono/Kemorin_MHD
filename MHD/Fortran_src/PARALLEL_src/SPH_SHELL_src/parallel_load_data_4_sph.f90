@@ -166,10 +166,8 @@
 !     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, femmesh_s%mesh)
 !      call compare_mesh_groups(group%nod_grp, femmesh_s%group)
 !
-      call set_mesh_data_from_type(femmesh_s%mesh, femmesh_s%group,     &
-     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
-     &      ele_mesh%surf, ele_mesh%edge,                               &
-     &      group%nod_grp, group%ele_grp, group%surf_grp)
+      call set_mesh_data_from_type                                      &
+     &   (femmesh_s%mesh, femmesh_s%group, mesh, ele_mesh, group)
 !
       end subroutine load_FEM_mesh_4_SPH
 !

@@ -19,6 +19,7 @@
 !
       subroutine s_set_refined_position(node, ele, surf, edge)
 !
+      use t_mesh_data
       use t_geometry_data
       use t_surface_data
       use t_edge_data

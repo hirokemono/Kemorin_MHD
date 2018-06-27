@@ -1,13 +1,11 @@
 !const_refine_interpolate.f90
 !     Written by H. Matsui on Oct., 2007
 !
-!      subroutine s_const_refine_interpolate_tbl                        &
-!     &         (my_rank, node, ele, surf, edge, newmesh)
-!        type(node_data), intent(in) :: node
-!        type(element_data), intent(in) :: ele
-!        type(surface_data), intent(in) :: surf
-!        type(edge_data), intent(in) :: edge
-!        type(mesh_geometry), intent(in) :: newmesh
+!!      subroutine s_const_refine_interpolate_tbl                       &
+!!     &         (my_rank, org_mesh, org_e_mesh, newmesh)
+!!        type(mesh_geometry), intent(in) :: org_mesh
+!!        type(element_geometry), intent(in) :: org_e_mesh
+!!        type(mesh_geometry), intent(in) :: newmesh
 !
       module  const_refine_interpolate
 !
@@ -41,7 +39,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine s_const_refine_interpolate_tbl                         &
-     &         (my_rank, node, ele, surf, edge, newmesh)
+     &         (my_rank, org_mesh, org_e_mesh, newmesh)
 !
       use t_mesh_data
       use t_geometry_data
@@ -51,10 +49,8 @@
       use refinment_info_IO
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
+      type(mesh_geometry), intent(in) :: org_mesh
+      type(element_geometry), intent(in) :: org_e_mesh
       type(mesh_geometry), intent(in) :: newmesh
 !
       type(interpolate_table)  :: itp_refine
@@ -62,26 +58,30 @@
 !
       if(iflag_tmp_tri_refine .eq. 0 .and. iflag_merge .eq. 0) then
         write(*,*) 'const_single_refine_itp_tbl'
-        call const_single_refine_itp_tbl(my_rank, ele, surf, edge,      &
+        call const_single_refine_itp_tbl                                &
+     &     (my_rank, org_mesh%ele, org_e_mesh%surf, org_e_mesh%edge,    &
      &      newmesh%node%numnod, itp_refine)
-        call write_refinement_table(ele%numele, ione)
+        call write_refinement_table(org_mesh%ele%numele, ione)
       else if(iflag_tmp_tri_refine .gt. 0 .or. iflag_merge .eq. 0) then
         write(*,*) 'copy_original_mesh_conn_refine'
-        call copy_original_mesh_conn_refine(node, ele)
+        call copy_original_mesh_conn_refine                             &
+     &     (org_mesh%node, org_mesh%ele)
 !
         iflag_merge = 1
 !
       else if(iflag_merge .gt. 0) then
         write(*,*) 'const_second_refine_itp_tbl'
-        call const_second_refine_itp_tbl(ele, surf, edge,               &
+        call const_second_refine_itp_tbl                                &
+     &     (org_mesh%ele, org_e_mesh%surf, org_e_mesh%edge,             &
      &      newmesh%node%numnod, itp_refine)
         write(*,*) 'const_merged_refine_itp_tbl'
-        call const_merged_refine_itp_tbl(my_rank, ele%nnod_4_ele,       &
+        call const_merged_refine_itp_tbl                                &
+     &     (my_rank, org_mesh%ele%nnod_4_ele,                           &
      &      newmesh%node%numnod, newmesh%ele%nnod_4_ele,                &
      &      newmesh%node%xx)
 !
         write(*,*) 'write_merged_refinement_tbl'
-        call write_merged_refinement_tbl(ele%numele)
+        call write_merged_refinement_tbl(org_mesh%ele%numele)
 !
       end if
 !

@@ -45,6 +45,7 @@
       use nod_phys_send_recv
       use mpi_load_mesh_data
 !
+      integer :: i, num_in, num_ex
 !
       if(my_rank .eq. 0)  write(*,*) 'check commnication tables'
 !
@@ -90,20 +91,33 @@
 !
 !  --  read geometry
 !
+      if(my_rank .eq. 0) iflag_debug = 1
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
      &   (T_files%mesh_file_IO, nprocs, test_fem%mesh, test_fem%group,  &
      &    test_ele_mesh%surf%nnod_4_surf,                               &
      &    test_ele_mesh%edge%nnod_4_edge)
 !
-      call FEM_mesh_init_with_IO                                        &
-     &   (T_files%iflag_output_SURF, T_files%mesh_file_IO,              &
-     &    test_fem%mesh, test_fem%group, test_ele_mesh)
+      do i = 1, test_fem%mesh%nod_comm%num_neib
+        num_in = test_fem%mesh%nod_comm%istack_import(i) &
+     &          - test_fem%mesh%nod_comm%istack_import(i-1)
+        num_ex = test_fem%mesh%nod_comm%istack_export(i) &
+     &          - test_fem%mesh%nod_comm%istack_export(i-1)
+        write(50+my_rank,*) 'id_neib:', test_fem%mesh%nod_comm%id_neib(i),  &
+     &      num_in, num_ex
+      end do
+      close(50+my_rank)
+      call calypso_mpi_barrier
+      call calypso_mpi_abort(1,'tako')
 !
 !  -------------------------------------------
 !
       call allocate_iccg_int8_matrix(test_fem%mesh%node%numnod)
       call allocate_cflag_collect_diff
+!
+      call FEM_mesh_init_with_IO                                        &
+     &   (T_files%iflag_output_SURF, T_files%mesh_file_IO,              &
+     &    test_fem%mesh, test_fem%group, test_ele_mesh)
 !
       end subroutine initialize_communication_test
 !
@@ -124,6 +138,7 @@
       use const_element_comm_tables
 !
 !
+      call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv4_test'
       call node_send_recv4_test                                         &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm)

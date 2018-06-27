@@ -3,16 +3,13 @@
 !
 !      Writen by H. Matsui on Oct., 2007
 !
-!      subroutine s_const_refined_group                                 &
-!     &         (node, ele, surf, edge, nod_grp, ele_grp, sf_grp,       &
-!     &          newmesh, newgroup)
-!        type(surface_data), intent(in) :: surf
-!        type(edge_data), intent(in) :: edge
-!        type(group_data), intent(in) :: nod_grp
-!        type(group_data), intent(in) :: ele_grp
-!        type(surface_group_data), intent(in) :: sf_grp
-!        type(mesh_geometry), intent(inout) :: newmesh
-!        type(mesh_groups), intent(inout) :: newgroup
+!!      subroutine s_const_refined_group                                &
+!!     &         (org_mesh, org_e_mesh, org_grp, newmesh, newgroup)
+!!       type(mesh_geometry), intent(in) :: org_mesh
+!!        type(element_geometry), intent(in) :: org_e_mesh
+!!        type(mesh_groups), intent(inout) :: org_grp
+!!        type(mesh_geometry), intent(inout) :: newmesh
+!!        type(mesh_groups), intent(inout) :: newgroup
 !
       module const_refined_group
 !
@@ -36,28 +33,25 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_refined_group                                  &
-     &         (node, ele, surf, edge, nod_grp, ele_grp, sf_grp,        &
-     &          newmesh, newgroup)
+     &         (org_mesh, org_e_mesh, org_grp, newmesh, newgroup)
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
-      type(group_data), intent(in) :: nod_grp
-      type(group_data), intent(in) :: ele_grp
-      type(surface_group_data), intent(in) :: sf_grp
+      type(mesh_geometry), intent(in) :: org_mesh
+      type(element_geometry), intent(in) :: org_e_mesh
+      type(mesh_groups), intent(inout) :: org_grp
 !
       type(mesh_geometry), intent(inout) :: newmesh
       type(mesh_groups), intent(inout) :: newgroup
 !
 !
       call const_refined_node_group                                     &
-     &   (node, ele, surf, edge, nod_grp, newgroup%nod_grp)
+     &   (org_mesh%node, org_mesh%ele, org_e_mesh%surf,                 &
+     &    org_e_mesh%edge, org_grp%nod_grp, newgroup%nod_grp)
 !
-      call const_refined_ele_group(ele_grp, newgroup%ele_grp)
+      call const_refined_ele_group(org_grp%ele_grp, newgroup%ele_grp)
 !
       call const_refined_surf_group                                     &
-     &   (surf, edge, sf_grp, newmesh%node%numnod, newgroup%surf_grp)
+     &   (org_e_mesh%surf, org_e_mesh%edge, org_grp%surf_grp,           &
+     &    newmesh%node%numnod, newgroup%surf_grp)
 !
       end subroutine s_const_refined_group
 !
