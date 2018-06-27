@@ -125,6 +125,46 @@
 !
 !   --------------------------------------------------------------------
 !
+subroutine proportion_volume_bisection(nnod, inter_nod, xx,         &
+&         part_volume, n_volume)
+!
+integer(kind = kint), intent(in)  :: nnod, inter_nod
+real(kind= kreal), intent(in) :: xx(nnod,3)
+real(kind = kreal), intent(inout) :: part_volume(num_domain)
+real(kind = kreal), intent(in) :: n_volume(nnod)
+!
+integer(kind = kint) :: i, node_grp_cnt(num_domain)
+real(kind = kreal) :: volume_grp_cnt(num_domain)
+!
+!C
+!C +-----+
+!C | EB  |
+!C +-----+
+!C===
+call allocate_work_4_rcb(nnod)
+
+IGROUP_nod(1:nnod)= 0
+IGROUP_nod(1:inter_nod)= 1
+
+call s_sort_by_position_with_ratio_volume(inter_nod, ndivide_eb,    &
+&   part_volume, n_volume, IGROUP_nod(1), xx(1,1),                  &
+&   xx(1,2), xx(1,3), VAL, IS1)
+! verify partition
+node_grp_cnt(:) = 0
+volume_grp_cnt(:) = 0
+do i = 1, nnod
+  node_grp_cnt(IGROUP_nod(i)) = node_grp_cnt(IGROUP_nod(i)) + 1
+  volume_grp_cnt(IGROUP_nod(i)) = volume_grp_cnt(IGROUP_nod(i)) + n_volume(i)
+end do
+write(*,*) 'num of node in group ', node_grp_cnt(:)
+write(*,*) 'volume of node in group ', volume_grp_cnt(:)
+!
+call deallocate_work_4_rcb
+!
+end subroutine proportion_volume_bisection
+!
+!   --------------------------------------------------------------------
+!
       subroutine eb_spherical(nnod, inter_nod,                          &
      &          radius, colatitude, longitude)
 !

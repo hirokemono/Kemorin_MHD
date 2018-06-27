@@ -195,7 +195,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine regrouping_for_partition                               &
-      &         (node, ele, edge, nod_grp, ele_grp, ele_grp_data, part_tbl)
+      &         (node, ele, edge, nod_grp, ele_grp,                     &
+      &          ele_grp_data, part_tbl, part_volume, n_volume)
 !
       use m_constants
       use m_error_IDs
@@ -221,12 +222,21 @@
       type(group_data), intent(in) :: ele_grp
       type(element_group_table), intent(in) :: ele_grp_data
       real(kind = kreal), intent(inout) :: part_tbl(num_domain)
+      real(kind = kreal), intent(inout) :: part_volume(num_domain)
+      real(kind = kreal), intent(in) :: n_volume(node%numnod)
 !
       integer(kind = kint) :: ierr
-
+!
+      write(*,*) 'regrouping dataset by: ', NTYP_div
+!
       if (NTYP_div .eq. iPART_EQ_XYZ) then
         call proportionally_bisection                                           &
         &     (node%numnod, node%internal_node, node%xx, part_tbl)
+      end if
+!
+      if (NTYP_div .eq. iPART_EQV_XYZ) then
+        call proportion_volume_bisection                                           &
+        &     (node%numnod, node%internal_node, node%xx, part_volume, n_volume)
       end if
 
 !

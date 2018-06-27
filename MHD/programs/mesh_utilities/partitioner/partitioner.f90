@@ -68,12 +68,13 @@
       !real(kind = kreal), pointer :: time_cost(:)
       type(time_esti), pointer:: time_cost(:)
       real(kind = kreal), pointer :: partition_tbl(:), part_num_node(:)
+      real(kind = kreal), pointer :: partition_volume(:)
       !type(dimension_part_tbl) :: part_dim_tbl
       integer(kind = kint) :: num_particle
       integer(kind = kint) :: iflag_part_debug, iflag_part_detail
       real(kind = kreal), pointer :: node_volume(:)
 ! initial debug flag
-      iflag_part_debug = 0
+      iflag_part_debug = 1
       iflag_part_detail = 0
 
 !
@@ -208,10 +209,14 @@
         allocate(part_num_node(num_domain))
         part_num_node(:) = partition_tbl(:)*org_mesh%node%numnod
 
+        allocate(partition_volume(num_domain))
+        partition_volume(:) = partition_tbl(:)*org_mesh%ele%volume
+
         if(iflag_part_debug .gt. 0) then
           write(*,*) 'time cost', time_cost(1:num_domain)%ave_time
           write(*,*) 'partition tbl', partition_tbl(1:num_domain)
           write(*,*) 'target partition num', part_num_node(:)
+          write(*,*) 'partition volume', partition_volume(:)
         end if
 
   !      call allocate_dim_part_tbl(part_dim_tbl, ndivide_eb)
@@ -220,7 +225,8 @@
         call regrouping_for_partition                                      &
         &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge,               &
         &    org_group%nod_grp, org_group%ele_grp,                         &
-        &    org_group%tbls_ele_grp, partition_tbl)
+        &    org_group%tbls_ele_grp, partition_tbl,                        &
+        &    partition_volume, node_volume)
         deallocate(part_num_node)
         deallocate(partition_tbl)
         deallocate(time_cost)
