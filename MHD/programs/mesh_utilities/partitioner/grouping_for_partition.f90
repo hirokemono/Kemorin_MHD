@@ -151,6 +151,7 @@
      &   .or. NTYP_div.eq.iPART_MeTiS_RSB                               &
      &   .or. NTYP_div.eq.iPART_CUBED_SPHERE                            &
      &   .or. NTYP_div.eq.iPART_EQ_XYZ                                  &
+     &   .or. NTYP_div.eq.iPART_EQV_XYZ                                  &
      &   .or. NTYP_div.eq.iPART_EQ_SPH) then
         call copy_domain_list_to_IO(node%numnod, node%internal_node)
         call output_group_4_partition
