@@ -70,10 +70,11 @@
       real(kind = kreal), pointer :: partition_tbl(:), part_num_node(:)
       !type(dimension_part_tbl) :: part_dim_tbl
       integer(kind = kint) :: num_particle
-      integer(kind = kint) :: iflag_part_debug
+      integer(kind = kint) :: iflag_part_debug, iflag_part_detail
       real(kind = kreal), pointer :: node_volume(:)
 ! initial debug flag
       iflag_part_debug = 0
+      iflag_part_detail = 0
 
 !
 !  read control file
@@ -179,7 +180,7 @@
         write(*,*) 'generatie sample particle for estimation'
         call choose_particles_from_eles(org_mesh%ele, data_field_vec, particles, num_particle)
   ! debug out put
-        if(iflag_part_debug .gt. 0) then
+        if(iflag_part_detail .gt. 0) then
           do iprint = 1, num_particle
             write(*,*) 'Particles for load estimation:  '
             write(*,*) 'particle: ', iprint
