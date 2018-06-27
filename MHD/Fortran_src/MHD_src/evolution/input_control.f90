@@ -126,8 +126,7 @@
 !
 !  --  load FEM mesh data
       call mpi_input_mesh                                               &
-     &   (MHD_files%mesh_file_IO, nprocs, femmesh%mesh, femmesh%group,  &
-     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
+     &   (MHD_files%mesh_file_IO, nprocs, femmesh, ele_mesh)
 !
       call input_meshes_4_MHD(SGS_par%model_p, MHD_prop, MHD_BC,        &
      &    femmesh%mesh, femmesh%group, IO_bc, SGS_par%filter_p,         &
@@ -185,8 +184,7 @@
 !
 !  --  load FEM mesh data
       call mpi_input_mesh                                               &
-     &   (MHD_files%mesh_file_IO, nprocs, femmesh%mesh, femmesh%group,  &
-     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
+     &   (MHD_files%mesh_file_IO, nprocs, femmesh, ele_mesh)
 !
       call input_meshes_4_MHD(SGS_par%model_p, MHD_prop,                &
      &    MHD_BC, femmesh%mesh, femmesh%group, IO_bc, SGS_par%filter_p, &

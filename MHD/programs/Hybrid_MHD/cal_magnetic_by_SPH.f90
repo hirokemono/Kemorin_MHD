@@ -86,8 +86,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
-     &   (mesh_file_H, nprocs, mesh_sph%mesh, mesh_sph%group,           &
-     &    ele_mesh_sph%surf%nnod_4_surf, ele_mesh_sph%edge%nnod_4_edge)
+     &   (mesh_file_H, nprocs, mesh_sph, ele_mesh_sph)
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization                                      &

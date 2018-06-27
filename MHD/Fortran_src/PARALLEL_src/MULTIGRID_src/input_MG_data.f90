@@ -51,10 +51,7 @@
         mesh_file%iflag_format = MG_file%ifmt_MG_mesh_file(i_level)
         mesh_file%file_prefix = MG_file%MG_mesh_file_head(i_level)
         call mpi_input_mesh(mesh_file, MGCG_WK%MG_mpi(i_level)%nprocs,  &
-     &      MGCG_FEM%MG_mesh(i_level)%mesh,                             &
-     &      MGCG_FEM%MG_mesh(i_level)%group,                            &
-     &      MGCG_FEM%MG_ele_mesh(i_level)%surf%nnod_4_surf,             &
-     &      MGCG_FEM%MG_ele_mesh(i_level)%edge%nnod_4_edge)
+     &      MGCG_FEM%MG_mesh(i_level), MGCG_FEM%MG_ele_mesh(i_level))
       end do
 !
       end subroutine input_MG_mesh

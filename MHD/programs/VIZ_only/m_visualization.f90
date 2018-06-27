@@ -139,9 +139,8 @@
 !   --------------------------------
 !
 !       load mesh informations
-      call mpi_input_mesh(mesh_file_VIZ, nprocs,                        &
-     &    femmesh_VIZ%mesh, femmesh_VIZ%group,                          &
-     &    elemesh_VIZ%surf%nnod_4_surf, elemesh_VIZ%edge%nnod_4_edge)
+      call mpi_input_mesh                                               &
+     &   (mesh_file_VIZ, nprocs, femmesh_VIZ, elemesh_VIZ)
 !
        if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
        call FEM_mesh_initialization                                     &

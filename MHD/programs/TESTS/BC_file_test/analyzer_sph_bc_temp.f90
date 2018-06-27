@@ -52,8 +52,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
-     &   (mesh_file_TEC, nprocs, femmesh%mesh, femmesh%group,           &
-     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
+     &   (mesh_file_TEC, nprocs, femmesh, ele_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos                                             &

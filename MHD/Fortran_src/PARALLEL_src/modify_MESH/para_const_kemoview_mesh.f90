@@ -62,8 +62,7 @@
       if(nprocs .eq. 1) iflag_add_comm_tbl = 0
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_file, nprocs, fem_v%mesh, fem_v%group,   &
-     &    ele_mesh_v%surf%nnod_4_surf, ele_mesh_v%edge%nnod_4_edge)
+      call mpi_input_mesh(mesh_file, nprocs, fem_v, ele_mesh_v)
       call allocate_quad4_2_linear(fem_v%mesh%ele%nnod_4_ele)
 !
       if(iflag_add_comm_tbl .gt. 0) then

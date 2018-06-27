@@ -95,8 +95,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
-     &   (T_meshes%mesh_file_IO, nprocs, fem_T%mesh, fem_T%group,       &
-     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
+     &   (T_meshes%mesh_file_IO, nprocs, fem_T, ele_mesh)
 !
 !  -------------------------------
 !

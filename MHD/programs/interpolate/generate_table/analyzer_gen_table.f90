@@ -66,9 +66,8 @@
 !
 !     ----- construct mesh informations for target mesh
 !
-      call mpi_input_mesh(itp_dest_mesh_file, nprocs,                   &
-     &    org_femmesh%mesh, org_femmesh%group,                          &
-     &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
+      call mpi_input_mesh                                               &
+     &   (itp_dest_mesh_file, nprocs, org_femmesh, org_ele_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos                                             &

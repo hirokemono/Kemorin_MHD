@@ -17,8 +17,7 @@
       implicit none
 !
       type(mesh_data), save :: fem_add
-!
-      integer(kind = kint) :: nnod_4_surf, nnod_4_edge
+      type(element_geometry), save :: e_mesh_add
 !
 !   --------------------------------------------------------------------
 !
@@ -46,8 +45,8 @@
 !
 !  read global mesh
 !
-      call mpi_input_mesh(original_mesh_file, nprocs,                   &
-     &    fem_add%mesh, fem_add%group, nnod_4_surf, nnod_4_edge)
+      call mpi_input_mesh                                               &
+     &   (original_mesh_file, nprocs, fem_add, e_mesh_add)
       call const_nod_ele_infos                                          &
      &   (my_rank, fem_add%mesh%node, fem_add%mesh%ele,                 &
      &    fem_add%group%nod_grp, fem_add%group%ele_grp,                 &

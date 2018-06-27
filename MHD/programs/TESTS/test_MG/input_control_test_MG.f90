@@ -54,8 +54,7 @@
 !  --  read geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_file_test, nprocs, fem%mesh, fem%group,  &
-     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
+      call mpi_input_mesh(mesh_file_test, nprocs, fem, ele_mesh)
 !
 !  --  read geometry data for MG
 !

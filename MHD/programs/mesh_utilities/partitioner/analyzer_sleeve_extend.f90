@@ -64,8 +64,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
-     &   (global_mesh_file, nprocs, fem_EXT%mesh, fem_EXT%group,        &
-     &    e_mesh_EXT%surf%nnod_4_surf, e_mesh_EXT%edge%nnod_4_edge)
+     &   (global_mesh_file, nprocs, fem_EXT, e_mesh_EXT)
 !
 !  ------  Initialize data communication for FEM data
 !

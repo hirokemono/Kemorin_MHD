@@ -7,11 +7,10 @@
 !>@brief Copy FEM mesh data from IO structure
 !!
 !!@verbatim
-!!      subroutine mpi_input_mesh(mesh_file, n_subdomain,               &
-!!     &          mesh, group, nnod_4_surf, nnod_4_edge)
-!!        type(field_IO_params), intent(in) ::  mesh_file
-!!        type(mesh_geometry), intent(inout) :: mesh
-!!        type(mesh_groups), intent(inout) ::   group
+!!      subroutine mpi_input_mesh                                       &
+!!     &         (mesh_file, n_subdomain, fem, ele_mesh)
+!!        type(mesh_data), intent(inout) :: fem
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!      subroutine mpi_input_mesh_geometry                              &
 !!     &         (mesh_file, n_subdomain, mesh, nnod_4_surf, nnod_4_edge)
 !!        type(field_IO_params), intent(in) ::  mesh_file
@@ -52,8 +51,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_input_mesh(mesh_file, n_subdomain,                 &
-     &          mesh, group, nnod_4_surf, nnod_4_edge)
+      subroutine mpi_input_mesh                                         &
+     &         (mesh_file, n_subdomain, fem, ele_mesh)
 !
       use mesh_MPI_IO_select
       use set_nnod_4_ele_by_type
@@ -62,24 +61,25 @@
       integer(kind = kint), intent(in) :: n_subdomain
       type(field_IO_params), intent(in) ::  mesh_file
 !
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) ::   group
-      integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
+      type(mesh_data), intent(inout) :: fem
+      type(element_geometry), intent(inout) :: ele_mesh
 !
       type(mesh_data) :: fem_IO_m
 !
 !
       if(my_rank .lt. n_subdomain) then
         call sel_mpi_read_mesh(nprocs, my_rank, mesh_file, fem_IO_m)
-        call set_mesh(fem_IO_m, mesh, group, nnod_4_surf, nnod_4_edge)
+        call set_mesh(fem_IO_m, fem%mesh, fem%group,                    &
+     &      ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
       else
-        call set_zero_mesh_data(mesh, nnod_4_surf, nnod_4_edge)
+        call set_zero_mesh_data(fem%mesh,                               &
+     &      ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
       end if
 !
       if(n_subdomain .ge. nprocs) return
 !
-      call sync_group_name_4_empty                                      &
-     &    (n_subdomain, group%nod_grp, group%ele_grp, group%surf_grp)
+      call sync_group_name_4_empty(n_subdomain,                         &
+     &    fem%group%nod_grp, fem%group%ele_grp, fem%group%surf_grp)
 !
       end subroutine mpi_input_mesh
 !

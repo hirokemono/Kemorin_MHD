@@ -94,17 +94,15 @@
       if(my_rank .eq. 0) iflag_debug = 1
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
-     &   (T_files%mesh_file_IO, nprocs, test_fem%mesh, test_fem%group,  &
-     &    test_ele_mesh%surf%nnod_4_surf,                               &
-     &    test_ele_mesh%edge%nnod_4_edge)
+     &   (T_files%mesh_file_IO, nprocs, test_fem, test_ele_mesh)
 !
       do i = 1, test_fem%mesh%nod_comm%num_neib
         num_in = test_fem%mesh%nod_comm%istack_import(i) &
      &          - test_fem%mesh%nod_comm%istack_import(i-1)
         num_ex = test_fem%mesh%nod_comm%istack_export(i) &
      &          - test_fem%mesh%nod_comm%istack_export(i-1)
-        write(50+my_rank,*) 'id_neib:', test_fem%mesh%nod_comm%id_neib(i),  &
-     &      num_in, num_ex
+        write(50+my_rank,*) 'id_neib:',                                 &
+     &      test_fem%mesh%nod_comm%id_neib(i), num_in, num_ex
       end do
       close(50+my_rank)
       call calypso_mpi_barrier
