@@ -23,6 +23,7 @@
       integer(kind = kint) :: icount
 !
       type(field_IO_params), save ::  pick_mesh_file
+      type(parallel_make_vierwer_mesh), save :: par_view1
 !
 !
       call calypso_MPI_init
@@ -47,7 +48,7 @@
       call MPI_BCAST(pick_mesh_file%iflag_format, ione,                 &
      &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call pickup_surface_mesh_para(pick_mesh_file)
+      call pickup_surface_mesh_para(pick_mesh_file, par_view1)
 !
       call calypso_MPI_finalize
       stop ' //// program normally finished //// '

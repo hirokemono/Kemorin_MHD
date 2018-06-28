@@ -58,6 +58,7 @@
 !
       use mesh_IO_select
       use set_nnod_4_ele_by_type
+      use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(in) :: my_rank
       type(field_IO_params), intent(in) ::  mesh_file
@@ -66,11 +67,18 @@
       type(element_geometry), intent(inout) :: ele_mesh
       integer(kind = kint), intent(inout) :: ierr
 !
-      type(mesh_data) :: fem_IO_i
 !
+      call sel_read_mesh(mesh_file, my_rank, fem, ierr)
 !
-      call sel_read_mesh(mesh_file, my_rank, fem_IO_i, ierr)
-      call set_mesh(fem_IO_i, fem%mesh, fem%group,                      &
+      call s_cal_numbers_from_stack(fem%group%nod_grp%num_grp,          &
+     &    fem%group%nod_grp%nitem_grp, fem%group%nod_grp%istack_grp)
+      call s_cal_numbers_from_stack(fem%group%ele_grp%num_grp,          &
+     &    fem%group%ele_grp%nitem_grp, fem%group%ele_grp%istack_grp)
+      call s_cal_numbers_from_stack(fem%group%surf_grp%num_grp,         &
+     &    fem%group%surf_grp%nitem_grp, fem%group%surf_grp%istack_grp)
+!
+      call alloc_sph_node_geometry(fem%mesh%node)
+      call set_3D_nnod_4_sfed_by_ele(fem%mesh%ele%nnod_4_ele,           &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       end subroutine input_mesh

@@ -45,6 +45,8 @@
       type(jacobians_type), save :: jacobians_T
       type(shape_finctions_at_points), save :: spfs_T
 !
+      type(single_make_vierwer_mesh), save :: sgl_viewer_p
+!
       integer(kind = kint), parameter :: my_rank = izero
       integer(kind = kint) :: ierr
       type(mesh_data) :: fem_IO_i
@@ -99,7 +101,8 @@
 !
       if(iflag_viewer_output .gt. 0) then
         write(*,*) 'choose_surface_mesh_sgl'
-        call choose_surface_mesh_sgl(num_domain, distribute_mesh_file)
+        call choose_surface_mesh_sgl                                    &
+     &     (num_domain, distribute_mesh_file, sgl_viewer_p)
       end if
 !
       stop ' * Partitioning finished'

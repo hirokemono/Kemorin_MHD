@@ -23,6 +23,7 @@
       use t_surface_data
       use t_edge_data
       use t_next_node_ele_4_node
+      use para_const_kemoview_mesh
 !
       use mpi_load_mesh_data
 !
@@ -30,6 +31,7 @@
 !
       type(mesh_data), save, private :: fem_EXT
       type(element_geometry), save, private :: e_mesh_EXT
+      type(parallel_make_vierwer_mesh), save, private :: par_viexw_ex
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,7 +86,6 @@
       use m_ctl_param_partitioner
 !
       use parallel_sleeve_extension
-      use para_const_kemoview_mesh
 !
       integer(kind = kint) :: num_extend = 3
       integer(kind = kint) :: ilevel
@@ -102,7 +103,7 @@
       call dealloc_mesh_infos(fem_EXT%mesh, fem_EXT%group)
 !
       if (iflag_debug.gt.0) write(*,*) 'pickup_surface_mesh_para'
-      call pickup_surface_mesh_para(distribute_mesh_file)
+      call pickup_surface_mesh_para(distribute_mesh_file, par_viexw_ex)
 !
       if (iflag_debug.gt.0) write(*,*) 'exit analyze'
 !

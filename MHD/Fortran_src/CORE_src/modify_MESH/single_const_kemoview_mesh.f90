@@ -7,8 +7,9 @@
 !>@brief Surface mesh data generator for kemoviewer
 !!
 !!@verbatim
-!!      subroutine choose_surface_mesh_sgl(mesh_file)
+!!      subroutine choose_surface_mesh_sgl(np, mesh_file, sgl_viewer)
 !!        type(field_IO_params), intent(inout) :: mesh_file
+!!        type(single_make_vierwer_mesh), intent(inout) :: sgl_viewer
 !!@endverbatim
 !
       module single_const_kemoview_mesh
@@ -31,174 +32,100 @@
       integer(kind = kint) :: iflag_add_comm_tbl = 1
       integer(kind = kint), parameter :: iflag_write_subdomain = 0
 !
+      type single_make_vierwer_mesh
+        type(mesh_data) :: fem
+        type(element_geometry) :: ele_mesh
+!
+        integer(kind = kint) :: nprocs_sf
+        type(viewer_mesh_data), allocatable :: view_mesh(:)
+        type(viewer_surface_groups), allocatable :: domain_grps(:)
+!
+        type(viewer_node_groups), allocatable :: view_nod_grps(:)
+        type(viewer_surface_groups), allocatable :: view_ele_grps(:)
+        type(viewer_surface_groups), allocatable :: view_sf_grps(:)
+      end type single_make_vierwer_mesh
+!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine choose_surface_mesh_sgl(nprocs_sf, mesh_file)
+      subroutine choose_surface_mesh_sgl(np, mesh_file, sgl_viewer)
 !
       use m_node_quad_2_linear_sf
       use find_mesh_file_format
       use viewer_mesh_IO_select
       use load_mesh_data
       use add_comm_table_in_node_grp
+      use const_kemoview_mesh
 !
-      integer(kind = kint), intent(in) :: nprocs_sf
+      integer(kind = kint), intent(in) :: np
       type(field_IO_params), intent(inout) :: mesh_file
+      type(single_make_vierwer_mesh), intent(inout) :: sgl_viewer
 !
-!
-      type(mesh_data), save :: fem0
-      type(element_geometry), save :: ele_mesh0
-!
-      type(viewer_mesh_data), allocatable :: view_mesh(:)
-      type(viewer_surface_groups), allocatable :: domain_grps(:)
-!
-      type(viewer_node_groups), allocatable :: view_nod_grps(:)
-      type(viewer_surface_groups), allocatable :: view_ele_grps(:)
-      type(viewer_surface_groups), allocatable :: view_sf_grps(:)
 !
       integer(kind = kint) :: ip, id_rank, ierr
 !
 !  set mesh_information
 !
-      if(nprocs_sf .eq. 1) iflag_add_comm_tbl = 0
+      sgl_viewer%nprocs_sf = np
+      if(sgl_viewer%nprocs_sf .eq. 1) iflag_add_comm_tbl = 0
 !
-      allocate(view_mesh(nprocs_sf))
-      allocate(domain_grps(nprocs_sf))
-      allocate(view_nod_grps(nprocs_sf))
-      allocate(view_ele_grps(nprocs_sf))
-      allocate(view_sf_grps(nprocs_sf))
+      allocate(sgl_viewer%view_mesh(sgl_viewer%nprocs_sf))
+      allocate(sgl_viewer%domain_grps(sgl_viewer%nprocs_sf))
+      allocate(sgl_viewer%view_nod_grps(sgl_viewer%nprocs_sf))
+      allocate(sgl_viewer%view_ele_grps(sgl_viewer%nprocs_sf))
+      allocate(sgl_viewer%view_sf_grps(sgl_viewer%nprocs_sf))
 !
-      do ip = 1, nprocs_sf
+      do ip = 1, sgl_viewer%nprocs_sf
         id_rank = ip - 1
         if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-        call input_mesh(mesh_file, id_rank, fem0, ele_mesh0, ierr)
-        call allocate_quad4_2_linear(fem0%mesh%ele%nnod_4_ele)
+        call input_mesh(mesh_file, id_rank,                             &
+     &     sgl_viewer%fem, sgl_viewer%ele_mesh, ierr)
+        call allocate_quad4_2_linear                                    &
+     &     (sgl_viewer%fem%mesh%ele%nnod_4_ele)
 !
 !
         if(iflag_add_comm_tbl .gt. 0) then
-          call add_comm_tbl_in_node_grp_mesh                            &
-     &       (nprocs_sf, fem0%mesh, fem0%group)
+          call add_comm_tbl_in_node_grp_mesh(sgl_viewer%nprocs_sf,      &
+     &        sgl_viewer%fem%mesh, sgl_viewer%fem%group)
         end if
 !
         write(*,*) 'Construct kemoviewer data for rank ', id_rank
         call const_surf_mesh_4_viewer                                   &
-     &     (fem0%mesh, fem0%group, ele_mesh0%surf, ele_mesh0%edge,      &
-     &      view_mesh(ip), domain_grps(ip), view_nod_grps(ip),          &
-     &      view_ele_grps(ip), view_sf_grps(ip))
+     &     (sgl_viewer%fem%mesh, sgl_viewer%fem%group,                  &
+     &      sgl_viewer%ele_mesh%surf, sgl_viewer%ele_mesh%edge,         &
+     &      sgl_viewer%view_mesh(ip), sgl_viewer%domain_grps(ip),       &
+     &      sgl_viewer%view_nod_grps(ip), sgl_viewer%view_ele_grps(ip), &
+     &      sgl_viewer%view_sf_grps(ip))
 !
-        call deallocate_iso_surface_type(ele_mesh0%surf)
-        call deallocate_ext_surface_type(ele_mesh0%surf)
-        call deallocate_surface_connect_type(ele_mesh0%surf)
-        call deallocate_inod_in_surf_type(ele_mesh0%surf)
+        call deallocate_iso_surface_type(sgl_viewer%ele_mesh%surf)
+        call deallocate_ext_surface_type(sgl_viewer%ele_mesh%surf)
+        call deallocate_surface_connect_type(sgl_viewer%ele_mesh%surf)
+        call deallocate_inod_in_surf_type(sgl_viewer%ele_mesh%surf)
 !
-        call dealloc_mesh_infos(fem0%mesh, fem0%group)
-        call dealloc_inod_in_edge(ele_mesh0%edge)
+        call dealloc_mesh_infos                                         &
+     &     (sgl_viewer%fem%mesh, sgl_viewer%fem%group)
+        call dealloc_inod_in_edge(sgl_viewer%ele_mesh%edge)
 !
         if(iflag_write_subdomain .gt. 0) then
           call sel_output_single_surface_grid(id_rank, mesh_file,       &
-     &        view_mesh(ip), domain_grps(ip), view_nod_grps(ip),        &
-     &        view_ele_grps(ip), view_sf_grps(ip))
+     &        sgl_viewer%view_mesh(ip), sgl_viewer%domain_grps(ip),     &
+     &        sgl_viewer%view_nod_grps(ip),                             &
+     &        sgl_viewer%view_ele_grps(ip),                             &
+     &        sgl_viewer%view_sf_grps(ip))
         end if
 !
         call deallocate_quad4_2_linear
       end do
 !
       call collect_single_viewer_mesh                                   &
-     &   (nprocs_sf, mesh_file, view_mesh, domain_grps,                 &
-     &    view_nod_grps, view_ele_grps, view_sf_grps)
+     &   (sgl_viewer%nprocs_sf, mesh_file, sgl_viewer%view_mesh,        &
+     &    sgl_viewer%domain_grps, sgl_viewer%view_nod_grps,             &
+     &    sgl_viewer%view_ele_grps, sgl_viewer%view_sf_grps)
 !
       end subroutine choose_surface_mesh_sgl
-!
-!------------------------------------------------------------------
-!
-      subroutine const_surf_mesh_4_viewer                               &
-     &       (mesh, group, surf, edge, view_mesh, domain_grps,          &
-     &        view_nod_grps, view_ele_grps, view_sf_grps)
-!
-      use set_merged_geometry
-      use const_merged_surf_4_group
-      use set_surf_connect_4_viewer
-      use set_nodes_4_viewer
-      use const_edge_4_viewer
-      use set_nodes_4_groups_viewer
-      use const_mesh_information
-      use const_surface_data
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
-!
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
-!
-      type(viewer_mesh_data), intent(inout) :: view_mesh
-      type(viewer_surface_groups), intent(inout) :: domain_grps
-!
-      type(viewer_node_groups), intent(inout) :: view_nod_grps
-      type(viewer_surface_groups), intent(inout) :: view_ele_grps
-      type(viewer_surface_groups), intent(inout) :: view_sf_grps
-!
-      type(viewer_ele_grp_surface) :: mgd_sf_grp
-!
-!
-      call set_local_element_info(surf, edge)
-      call construct_surface_data(mesh%node, mesh%ele, surf)
-!
-!       write(*,*) 'const_merged_surface_4_ele_grp'
-       call const_merged_surface_4_ele_grp(mesh%node, mesh%ele,         &
-     &     group, surf, mgd_sf_grp)
-!
-!       write(*,*) 'const_merged_surface_4_sf_grp'
-       call const_merged_surface_4_sf_grp(group, surf, mgd_sf_grp)
-!
-!  pickup surface and nodes
-!
-       call s_set_surf_connect_4_viewer(group, surf, mgd_sf_grp,        &
-     &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
-!       write(*,*) 's_set_nodes_4_viewer'
-!
-!
-       call s_set_nodes_4_viewer                                        &
-     &    (surf%nnod_4_surf, mesh, group, view_mesh, view_nod_grps)
-!
-!       write(*,*) 'set_surf_domain_id_viewer'
-       call set_surf_domain_id_viewer(surf, view_mesh)
-!
-!       write(*,*)  'construct_edge_4_viewer'
-       call construct_edge_4_viewer(surf%nnod_4_surf, edge,             &
-     &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
-!       write(*,*)  's_set_nodes_4_groups_viewer'
-       call s_set_nodes_4_groups_viewer                                 &
-     &    (surf%nnod_4_surf, edge%nnod_4_edge,                          &
-     &     view_mesh, domain_grps, view_ele_grps, view_sf_grps)
-!
-       call dealloc_n_iso_surf_4_ele_grp(mgd_sf_grp)
-       call dealloc_iso_surf_4_egrp_m(mgd_sf_grp)
-       call dealloc_iso_surf_4_sgrp_m(mgd_sf_grp)
-!
-      end subroutine const_surf_mesh_4_viewer
-!
-!------------------------------------------------------------------
-!
-      subroutine set_surf_domain_id_viewer(merged_surf, view_mesh)
-!
-      type(surface_data), intent(in) :: merged_surf
-      type(viewer_mesh_data), intent(inout) :: view_mesh
-!
-!
-      call alloc_surf_type_viewer(view_mesh)
-!
-      if ( merged_surf%nnod_4_surf .eq. 4) then
-        view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer) = 221
-      else if ( merged_surf%nnod_4_surf .eq. 8) then
-        view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer) = 222
-      else if ( merged_surf%nnod_4_surf .eq. 9) then
-        view_mesh%surftyp_viewer(1:view_mesh%nsurf_viewer) = 223
-      end if
-!
-      end subroutine set_surf_domain_id_viewer
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

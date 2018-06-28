@@ -7,8 +7,9 @@
 !>@brief Surface mesh data generator for kemoviewer
 !!
 !!@verbatim
-!!      subroutine pickup_surface_mesh_para(mesh_file)
+!!      subroutine pickup_surface_mesh_para(mesh_file, par_v)
 !!        type(field_IO_params), intent(inout) :: mesh_file
+!!        type(parallel_make_vierwer_mesh), intent(inout) :: par_v
 !!@endverbatim
 !
       module para_const_kemoview_mesh
@@ -35,64 +36,68 @@
       private :: iflag_add_comm_tbl
       private :: iflag_write_subdomain
 !
+      type parallel_make_vierwer_mesh
+        type(mesh_data) :: fem
+        type(element_geometry) :: ele_mesh
+!
+        type(merged_viewer_mesh) ::  mgd_vmesh
+      end type parallel_make_vierwer_mesh
+!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine pickup_surface_mesh_para(mesh_file)
+      subroutine pickup_surface_mesh_para(mesh_file, par_v)
 !
       use m_node_quad_2_linear_sf
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
-      use single_const_kemoview_mesh
+      use const_kemoview_mesh
       use set_parallel_file_name
       use viewer_mesh_IO_select
       use add_comm_table_in_node_grp
 !
       type(field_IO_params), intent(inout) :: mesh_file
-!
-      type(mesh_data), save :: fem_v
-      type(element_geometry), save :: ele_mesh_v
-!
-      type(merged_viewer_mesh), save :: mgd_view_mesh_p
+      type(parallel_make_vierwer_mesh), intent(inout) :: par_v
 !
 !
       if(nprocs .eq. 1) iflag_add_comm_tbl = 0
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_file, nprocs, fem_v, ele_mesh_v)
-      call allocate_quad4_2_linear(fem_v%mesh%ele%nnod_4_ele)
+      call mpi_input_mesh(mesh_file, nprocs, par_v%fem, par_v%ele_mesh)
+      call allocate_quad4_2_linear(par_v%fem%mesh%ele%nnod_4_ele)
 !
       if(iflag_add_comm_tbl .gt. 0) then
         call add_comm_tbl_in_node_grp_mesh                              &
-     &     (nprocs, fem_v%mesh, fem_v%group)
+     &     (nprocs, par_v%fem%mesh, par_v%fem%group)
       end if
 !
       if(my_rank .eq. 0) write(*,*) 'Construct kemoviewer data'
-      call const_surf_mesh_4_viewer(fem_v%mesh, fem_v%group,            &
-     &    ele_mesh_v%surf, ele_mesh_v%edge, mgd_view_mesh_p%view_mesh,  &
-     &    mgd_view_mesh_p%domain_grps, mgd_view_mesh_p%view_nod_grps,   &
-     &    mgd_view_mesh_p%view_ele_grps, mgd_view_mesh_p%view_sf_grps)
+      call const_surf_mesh_4_viewer(par_v%fem%mesh, par_v%fem%group,    &
+     &    par_v%ele_mesh%surf, par_v%ele_mesh%edge,                     &
+     &    par_v%mgd_vmesh%view_mesh, par_v%mgd_vmesh%domain_grps,       &
+     &    par_v%mgd_vmesh%view_nod_grps, par_v%mgd_vmesh%view_ele_grps, &
+     &    par_v%mgd_vmesh%view_sf_grps)
 !
-      call deallocate_iso_surface_type(ele_mesh_v%surf)
-      call deallocate_ext_surface_type(ele_mesh_v%surf)
-      call deallocate_surface_connect_type(ele_mesh_v%surf)
-      call deallocate_inod_in_surf_type(ele_mesh_v%surf)
+      call deallocate_iso_surface_type(par_v%ele_mesh%surf)
+      call deallocate_ext_surface_type(par_v%ele_mesh%surf)
+      call deallocate_surface_connect_type(par_v%ele_mesh%surf)
+      call deallocate_inod_in_surf_type(par_v%ele_mesh%surf)
 !
-      call dealloc_mesh_infos(fem_v%mesh, fem_v%group)
-      call dealloc_inod_in_edge(ele_mesh_v%edge)
+      call dealloc_mesh_infos(par_v%fem%mesh, par_v%fem%group)
+      call dealloc_inod_in_edge(par_v%ele_mesh%edge)
 !
       if(iflag_write_subdomain .gt. 0) then
         call sel_output_single_surface_grid(my_rank, mesh_file,         &
-     &      mgd_view_mesh_p%view_mesh, mgd_view_mesh_p%domain_grps,     &
-     &      mgd_view_mesh_p%view_nod_grps,                              &
-     &      mgd_view_mesh_p%view_ele_grps,                              &
-     &      mgd_view_mesh_p%view_sf_grps)
+     &       par_v%mgd_vmesh%view_mesh,  par_v%mgd_vmesh%domain_grps,   &
+     &       par_v%mgd_vmesh%view_nod_grps,                             &
+     &       par_v%mgd_vmesh%view_ele_grps,                             &
+     &       par_v%mgd_vmesh%view_sf_grps)
       end if
 !
-      call collect_surf_mesh_4_viewer(mesh_file, mgd_view_mesh_p)
+      call collect_surf_mesh_4_viewer(mesh_file,  par_v%mgd_vmesh)
 !
       call deallocate_quad4_2_linear
 !

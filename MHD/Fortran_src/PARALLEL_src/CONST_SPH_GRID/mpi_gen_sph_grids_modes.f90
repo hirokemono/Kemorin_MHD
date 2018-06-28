@@ -254,6 +254,7 @@
       type(gauss_points) :: gauss_s
       type(comm_table_make_sph) :: stbl_s
       type(element_geometry) :: ele_mesh
+      type(parallel_make_vierwer_mesh) :: par_view
 !
       integer(kind = kint) :: i_level
 !
@@ -282,7 +283,8 @@
 !
 ! Increase sleeve size
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, femmesh%mesh%node%numnod)
+      call allocate_vector_for_solver                                   &
+     &   (n_sym_tensor, femmesh%mesh%node%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(femmesh%mesh)
@@ -294,20 +296,23 @@
       end do
 !
 ! Output mesh data
-      write(*,*) 'FEM_mesh_flags%iflag_access_FEM', FEM_mesh_flags%iflag_access_FEM
+      write(*,*) 'FEM_mesh_flags%iflag_access_FEM',                     &
+     &          FEM_mesh_flags%iflag_access_FEM
       if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then
         mesh_file%file_prefix = sph_file_head
         call mpi_output_mesh(mesh_file, femmesh%mesh, femmesh%group)
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'
 !
-        write(*,*) 'FEM_mesh_flags%iflag_output_VMESH', FEM_mesh_flags%iflag_output_VMESH
+        write(*,*) 'FEM_mesh_flags%iflag_output_VMESH',                 &
+     &            FEM_mesh_flags%iflag_output_VMESH
         if(FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
-          call pickup_surface_mesh_para(mesh_file)
+          call pickup_surface_mesh_para(mesh_file, par_view)
         end if
       end if
 !
-      write(*,*) 'FEM_mesh_flags%iflag_output_SURF', FEM_mesh_flags%iflag_output_SURF
+      write(*,*) 'FEM_mesh_flags%iflag_output_SURF',                    &
+     &          FEM_mesh_flags%iflag_output_SURF
       if(FEM_mesh_flags%iflag_output_SURF .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_init_with_IO'
         call set_3d_nnod_4_sfed_by_ele(femmesh%mesh%ele%nnod_4_ele,     &

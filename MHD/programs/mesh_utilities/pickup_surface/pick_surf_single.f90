@@ -22,6 +22,7 @@
 !
       integer(kind = kint) :: num_pe_s
       type(field_IO_params), save ::  pick_mesh_file
+      type(single_make_vierwer_mesh), save :: sgl_viewer1
 !
       icount = iargc_kemo()
       if(icount .eq. 0) then
@@ -37,7 +38,8 @@
       write(*,*) 'count_subdomains_4_viewer'
       call count_subdomains_4_viewer(pick_mesh_file, num_pe_s)
 !
-      call choose_surface_mesh_sgl(num_pe_s, pick_mesh_file)
+      call choose_surface_mesh_sgl                                      &
+     &   (num_pe_s, pick_mesh_file, sgl_viewer1)
 !
       stop ' //// program normally finished //// '
 !
