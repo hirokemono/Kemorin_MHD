@@ -108,9 +108,7 @@
       merged_mesh_file%iflag_format = iflag_single
       call mpi_write_merged_mesh_file(nprocs, my_rank,                  &
      &    merged_mesh_file, new_mesh, new_group, dbl_nod)
-      call dealloc_node_geometry_base(new_mesh%node)
-      call deallocate_ele_connect_type(new_mesh%ele)
-      call dealloc_comm_table(new_mesh%nod_comm)
+      call dealloc_mesh_geometry_base(new_mesh)
       call dealloc_groups_data(new_group)
 !
       call dealloc_double_numbering(dbl_nod)

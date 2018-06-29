@@ -79,9 +79,7 @@
 !
         call alloc_sph_node_geometry(subdomains_2(ip)%node)
 !
-        call deallocate_ele_connect_type(mesh_IO_2%ele)
-        call dealloc_node_geometry_base(mesh_IO_2%node)
-        call dealloc_comm_table(mesh_IO_2%nod_comm)
+        call dealloc_mesh_geometry_base(mesh_IO_2)
       end do
 !
       end subroutine set_2nd_mesh_for_single

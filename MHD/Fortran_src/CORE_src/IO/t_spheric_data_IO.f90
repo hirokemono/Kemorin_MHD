@@ -67,7 +67,7 @@
         type(mul_sph_group_data), pointer :: sph_grp_IO
       end type multi_sph_file_data
 !
-      private :: alloc_multi_sph_group_IO, dealloc_multi_sph_group_IO
+      private :: alloc_multi_sph_group_IO
 !
 !------------------------------------------------------------------
 !
@@ -98,7 +98,8 @@
       deallocate(sph_file%sph_IO)
       deallocate(sph_file%comm_IO)
 !
-      call dealloc_multi_sph_group_IO(sph_file%sph_grp_IO)
+      call dealloc_sph_grid_group(sph_file%sph_grp_IO)
+      call dealloc_sph_mode_group(sph_file%sph_grp_IO)
 !
       end subroutine dealloc_multi_mesh_data_IO
 !
@@ -120,23 +121,6 @@
       allocate(sph_grp_IO%sphere_rj_grp(nloop))
 !
       end subroutine alloc_multi_sph_group_IO
-!
-!------------------------------------------------------------------
-!
-      subroutine dealloc_multi_sph_group_IO(sph_grp_IO)
-!
-      type(mul_sph_group_data), intent(inout) :: sph_grp_IO
-!
-!
-      deallocate(sph_grp_IO%bc_rtp_grp)
-      deallocate(sph_grp_IO%radial_rtp_grp)
-      deallocate(sph_grp_IO%theta_rtp_grp)
-      deallocate(sph_grp_IO%zonal_rtp_grp)
-!
-      deallocate(sph_grp_IO%radial_rj_grp)
-      deallocate(sph_grp_IO%sphere_rj_grp)
-!
-      end subroutine dealloc_multi_sph_group_IO
 !
 !------------------------------------------------------------------
 !

@@ -148,8 +148,7 @@
         new_node%numnod = mesh_IO_f%node%numnod
         new_ele%numele =  mesh_IO_f%ele%numele
 !
-        call dealloc_node_geometry_base(mesh_IO_f%node)
-        call dealloc_neib_id(mesh_IO_f%nod_comm)
+        call dealloc_node_geometry_IO(mesh_IO_f)
 !
         call add_int_suffix(my_rank2, new_filter_coef_head, file_name)
 !

@@ -241,6 +241,18 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine dealloc_node_geometry_IO(mesh)
+!
+      type(mesh_geometry), intent(inout) :: mesh
+!
+!
+      call dealloc_node_geometry_base(mesh%node)
+      call dealloc_neib_id(mesh%nod_comm)
+!
+      end subroutine dealloc_node_geometry_IO
+!
+!   --------------------------------------------------------------------
+!
       subroutine dealloc_ele_surf_edge_type(ele_mesh)
 !
       type(element_geometry), intent(inout) :: ele_mesh

@@ -90,9 +90,7 @@
         if(ierr .gt. 0) stop 'Mesh is wrong!!'
 !
         call copy_node_geometry_types(mesh_IO_p%node, node_plane)
-!
-        call dealloc_node_geometry_base(mesh_IO_p%node)
-        call dealloc_neib_id(mesh_IO_p%nod_comm)
+        call dealloc_node_geometry_IO(mesh_IO_p)
 !
         call alloc_phys_data_type                                       &
      &     (mgd_mesh_pl%merged%node%numnod, mgd_mesh_pl%merged_fld)

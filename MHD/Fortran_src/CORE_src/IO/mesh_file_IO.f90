@@ -193,8 +193,7 @@
          (input_file_code, my_rank_IO, mesh_IO)
       close(input_file_code)
 !
-      call dealloc_neib_id(mesh_IO%nod_comm)
-      call dealloc_node_geometry_base(mesh_IO%node)
+      call dealloc_node_geometry_IO(mesh_IO)
 !
       end subroutine write_node_position_sph
 !
@@ -224,8 +223,7 @@
          (input_file_code, my_rank_IO, mesh_IO)
       close(input_file_code)
 !
-      call dealloc_neib_id(mesh_IO%nod_comm)
-      call dealloc_node_geometry_base(mesh_IO%node)
+      call dealloc_node_geometry_IO(mesh_IO)
 !
       end subroutine write_node_position_cyl
 !

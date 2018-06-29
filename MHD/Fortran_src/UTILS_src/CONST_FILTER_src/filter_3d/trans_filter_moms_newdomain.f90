@@ -130,9 +130,7 @@
      &      = max(max_gl_ele_newdomain,mesh_IO_f%ele%iele_global(iele))
       end do
 !
-      call deallocate_ele_connect_type(mesh_IO_f%ele)
-      call dealloc_node_geometry_base(mesh_IO_f%node)
-      call dealloc_comm_table(mesh_IO_f%nod_comm)
+      call dealloc_mesh_geometry_base(mesh_IO_f)
 !
       end subroutine count_nele_newdomain_para
 !
@@ -158,8 +156,7 @@
         max_gl_ele_newdomain = max_gl_ele_newdomain                     &
      &                        + mesh_IO_f%ele%numele
 !
-        call dealloc_node_geometry_base(mesh_IO_f%node)
-        call dealloc_neib_id(mesh_IO_f%nod_comm)
+        call dealloc_node_geometry_IO(mesh_IO_f)
       end do
 !
       end subroutine count_nele_newdomain_single
@@ -208,9 +205,7 @@
      &                               new_ele_mesh%surf%nnod_4_surf,     &
      &                               new_ele_mesh%edge%nnod_4_edge)
 !
-      call deallocate_ele_connect_type(mesh_IO_f%ele)
-      call dealloc_node_geometry_base(mesh_IO_f%node)
-      call dealloc_comm_table(mesh_IO_f%nod_comm)
+      call dealloc_mesh_geometry_base(mesh_IO_f)
 !
 !    construct new filter table
 !
@@ -326,10 +321,7 @@
      &     (tgt_mesh_file, my_rank_org, mesh_IO_f, ierr)
 !
         call copy_ele_connect_from_IO(mesh_IO_f%ele, org_ele)
-!
-        call deallocate_ele_connect_type(mesh_IO_f%ele)
-        call dealloc_node_geometry_base(mesh_IO_f%node)
-        call dealloc_comm_table(mesh_IO_f%nod_comm)
+        call dealloc_mesh_geometry_base(mesh_IO_f)
 !
         call set_3D_nnod_4_sfed_by_ele(org_ele%nnod_4_ele,              &
      &     org_surf%nnod_4_surf, org_edge%nnod_4_edge)

@@ -198,8 +198,7 @@
 !
       call copy_node_geometry_types(mesh_IO%node, node)
 !
-      call dealloc_neib_id(mesh_IO%nod_comm)
-      call dealloc_node_geometry_base(mesh_IO%node)
+      call dealloc_node_geometry_IO(mesh_IO)
 !
       end subroutine set_node_geometry_data
 !

@@ -60,8 +60,7 @@
         call copy_node_geometry_types(mesh_IO_f%node, node)
         numele = mesh_IO_f%ele%numele
 !
-        call dealloc_node_geometry_base(mesh_IO_f%node)
-        call dealloc_neib_id(mesh_IO_f%nod_comm)
+        call dealloc_node_geometry_IO(mesh_IO_f)
 !
 !     read filtering information
 !
@@ -108,8 +107,7 @@
         call copy_node_geometry_types(mesh_IO_f%node, node)
         numele = mesh_IO_f%ele%numele
 !
-        call dealloc_node_geometry_base(mesh_IO_f%node)
-        call dealloc_neib_id(mesh_IO_f%nod_comm)
+        call dealloc_node_geometry_IO(mesh_IO_f)
 !
 !     read filtering information
 !

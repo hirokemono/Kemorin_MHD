@@ -110,8 +110,7 @@
         id_glnode_org(inod_g) = inod_g
       end do
 !
-      call dealloc_node_geometry_base(mesh_IO_p%node)
-      call dealloc_neib_id(mesh_IO_p%nod_comm)
+      call dealloc_node_geometry_IO(mesh_IO_p)
 !
       end subroutine set_domain_grp_each_domain
 !
