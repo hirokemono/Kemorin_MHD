@@ -140,16 +140,18 @@
 !
       ist_line = fline_prm%istack_each_field_line(i_fln-1) + 1
       num_line = fline_prm%istack_each_field_line(i_fln) - ist_line
-      if(fln_prm%id_seed_distribution  .eq. iflag_no_random) then
-        if(iflag_debug .gt. 0) write(*,*) 'start_surface_witout_random'
-        call start_surface_witout_random                                &
-     &   (i_fln, fline_src, abs_flux_start_l,                           &
-     &    num_line, fline_prm%id_surf_start_fline(1,ist_line))
-      else
-        if(iflag_debug .gt. 0) write(*,*) 'start_surface_by_random'
-        call start_surface_by_random                                    &
-     &     (i_fln, fline_src, abs_flux_start_l,                         &
-     &      num_line, fline_prm%id_surf_start_fline(1, ist_line))
+      if(num_line .gt. 0) then
+        if(fln_prm%id_seed_distribution  .eq. iflag_no_random) then
+          if(iflag_debug .gt. 0) write(*,*) 'start_surface_witout_random'
+          call start_surface_witout_random                              &
+     &       (i_fln, fline_src, abs_flux_start_l,                       &
+     &        num_line, fline_prm%id_surf_start_fline(1,ist_line))
+        else
+          if(iflag_debug .gt. 0) write(*,*) 'start_surface_by_random'
+          call start_surface_by_random                                  &
+     &       (i_fln, fline_src, abs_flux_start_l,                       &
+     &        num_line, fline_prm%id_surf_start_fline(1, ist_line))
+        end if
       end if
 !
       write(*,*) 'calypso_mpi_barrier'
@@ -345,7 +347,6 @@
 !
       integer(kind = kint) :: ist_grp, ied_grp, icou, inum
       real(kind = kreal) :: flux, ref_flux
-!
 !
 !
       ref_flux = abs_flux_start_l / num_line
