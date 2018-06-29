@@ -162,8 +162,7 @@
         call copy_comm_tbl_type(filter_IO%nod_comm, filtering%comm)
         call copy_filtering_geometry_from_IO(filter_IO%node)
 !
-        call dealloc_node_geometry_base(filter_IO%node)
-        call dealloc_comm_table(filter_IO%nod_comm)
+        call dealloc_filter_geometry_data(filter_IO)
 !
 !        write(*,*) 'set_global_nodid_4_newfilter'
         call set_global_nodid_4_newfilter

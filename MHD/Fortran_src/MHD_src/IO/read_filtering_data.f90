@@ -108,8 +108,7 @@
       call copy_3d_filter_stacks(filter_IO_t%filters, filtering%filter)
       call copy_3d_filter_weights(filter_IO_t%filters, filtering%filter)
 !
-      call dealloc_node_geometry_base(filter_IO_t%node)
-      call dealloc_comm_table(filter_IO_t%nod_comm)
+      call dealloc_filter_geometry_data(filter_IO_t)
       call dealloc_3d_filter_function(filter_IO_t%filters)
 !
       call deallocate_globalnod_filter

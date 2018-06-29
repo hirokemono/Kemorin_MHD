@@ -59,8 +59,7 @@
       if (iflag_debug.eq.1) write(*,*) 'copy_filter_comm_tbl_from_IO'
       call copy_filtering_geometry_from_IO(filter_IO_t%node)
       call copy_comm_tbl_type(filter_IO_t%nod_comm, filtering%comm)
-      call dealloc_node_geometry_base(filter_IO_t%node)
-      call dealloc_comm_table(filter_IO_t%nod_comm)
+      call dealloc_filter_geometry_data(filter_IO_t)
 !
       call alloc_nod_data_4_filter(nnod_filtering, wk_filter)
 !

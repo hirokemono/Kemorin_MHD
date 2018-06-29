@@ -94,8 +94,7 @@
      &   (filter_coef_code, filter_IO%filters)
       close(filter_coef_code)
 !
-      call dealloc_comm_table(filter_IO%nod_comm)
-      call dealloc_node_geometry_base(filter_IO%node)
+      call dealloc_filter_geometry_data(filter_IO)
 !
       end subroutine write_sorted_filter_coef_file
 !
@@ -151,8 +150,7 @@
 !
       close(filter_coef_code)
 !
-      call dealloc_comm_table(filter_IO%nod_comm)
-      call dealloc_node_geometry_base(filter_IO%node)
+      call dealloc_filter_geometry_data(filter_IO)
 !
       end subroutine write_filter_geometry_file
 !

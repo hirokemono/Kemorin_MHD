@@ -7,6 +7,8 @@
 !>@brief Structure for filtering informations
 !!
 !!@verbatim
+!!      subroutine dealloc_filter_geometry_data(filter_IO)
+!!        type(filter_file_data), intent(inout) :: filter_IO
 !!@endverbatim
 !
       module t_filter_file_data
@@ -29,5 +31,21 @@
         type (filter_coefficients_type) :: filters
       end type filter_file_data
 !
+!------------------------------------------------------------------
+!
+      contains
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_filter_geometry_data(filter_IO)
+!
+      type(filter_file_data), intent(inout) :: filter_IO
+!
+      call dealloc_comm_table(filter_IO%nod_comm)
+      call dealloc_node_geometry_base(filter_IO%node)
+!
+      end subroutine dealloc_filter_geometry_data
+!
+!------------------------------------------------------------------
 !
       end module t_filter_file_data
