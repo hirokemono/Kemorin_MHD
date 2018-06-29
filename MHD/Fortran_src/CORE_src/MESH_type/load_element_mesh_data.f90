@@ -103,17 +103,24 @@
       call sel_write_ele_mesh_file                                      &
      &   (mesh_file, my_rank_IO, ele_mesh_IO)
 !
+call dealloc_comm_table(ele_mesh_IO%comm)
+!      call dealloc_ele_geometry_data(ele_mesh_IO)
 !
       call set_surface_mesh_to_IO                                       &
      &   (mesh%ele, ele_mesh%surf, ele_mesh%surf_comm, ele_mesh_IO)
       call sel_write_surf_mesh_file                                     &
      &   (mesh_file, my_rank_IO, ele_mesh_IO)
 !
+      call dealloc_surface_mesh_IO(ele_mesh_IO)
+!      call dealloc_surf_geometry_data(ele_mesh_IO)
 !
       call set_edge_mesh_to_IO(mesh%ele, ele_mesh%surf, ele_mesh%edge,  &
      &   ele_mesh%edge_comm, ele_mesh_IO)
       call sel_write_edge_mesh_file                                     &
      &   (mesh_file, my_rank_IO, ele_mesh_IO)
+!
+      call dealloc_edge_mesh_IO(ele_mesh_IO)
+!      call dealloc_surf_geometry_data(ele_mesh_IO)
 !
       end subroutine output_element_surface_edge
 !
@@ -138,6 +145,7 @@
 !          and s_int_volume_of_domain
 !      call copy_ele_geometry_from_IO                                   &
 !     &   (ele_mesh_IO%node, ele_mesh_IO%sfed, ele)
+!      call dealloc_ele_geometry_data(ele_mesh_IO)
 !
 !      call position_2_sph( ele%numele, ele%x_ele,                      &
 !     &    ele%r_ele, ele%theta_ele,   ele%phi_ele,                     &
@@ -167,6 +175,7 @@
 !            and const_global_surface_id
       call copy_surf_connect_from_IO                                    &
      &   (surf_mesh_IO%ele, surf_mesh_IO%sfed, surf, ele%numele)
+      call dealloc_surface_mesh_IO(surf_mesh_IO)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                    'set_surf_rotation_flag after load'
@@ -178,6 +187,7 @@
 !          and int_normal_4_all_surface
 !      call copy_surf_geometry_from_IO                                  &
 !     &   (surf_mesh_IO%node, surf_mesh_IO%sfed, surf)
+!      call dealloc_surf_geometry_data(surf_mesh_IO)
 !
 !      call position_2_sph(surf%numsurf, surf%x_surf,                   &
 !     &    surf%r_surf, surf%theta_surf, surf%phi_surf,                 &
@@ -201,18 +211,18 @@
 !
 !
 !       Subsittuiton of const_surf_comm_table
-      call copy_comm_tbl_type(edge_mesh_IO%comm, edge_comm)
-!
 !       Subsittuiton of construct_edge_data
 !            and const_global_edge_id
       call copy_edge_connect_from_IO                                    &
      &   (edge_mesh_IO%ele, edge_mesh_IO%sfed,                          &
      &    edge, ele%numele, surf%numsurf)
+      call dealloc_edge_mesh_IO(edge_mesh_IO)
 !
 !       Subsittuiton of set_center_of_edge
 !          and s_int_edge_vector
 !      call copy_edge_geometry_from_IO                                  &
 !     &   (edge_mesh_IO%node, edge_mesh_IO%sfed, edge)
+!      call dealloc_surf_geometry_data(edge_mesh_IO)
 !
 !      call position_2_sph(edge%numedge, edge%x_edge,                   &
 !     &    edge%r_edge, edge%theta_edge, edge%phi_edge,                 &

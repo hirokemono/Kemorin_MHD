@@ -13,6 +13,9 @@
 !!     &         (my_rank_IO, file_name, surf_mesh_IO, ierr)
 !!      subroutine gz_input_edge_file_b                                 &
 !!     &         (my_rank_IO, file_name, edge_mesh_IO, ierr)
+!!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
+!!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
+!!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !!
 !!      subroutine gz_output_element_file_b                             &
 !!     &         (my_rank_IO, ele_mesh_IO)
@@ -20,9 +23,9 @@
 !!     &         (my_rank_IO, file_name, surf_mesh_IO)
 !!      subroutine gz_output_edge_file_b                                &
 !!     &         (my_rank_IO, file_name, edge_mesh_IO)
-!!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
-!!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
-!!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
+!!        type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
+!!        type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
+!!        type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !!@endverbatim
 !!
 !!@param my_rank_IO  MPI rank
@@ -128,7 +131,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
+      type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -139,10 +142,6 @@
 !      call gz_write_element_geometry_b                                 &
 !     &   (ele_mesh_IO%node, ele_mesh_IO%sfed)
       call close_gzfile_f
-!
-      call dealloc_comm_table(ele_mesh_IO%comm)
-!      call dealloc_node_geometry_base(ele_mesh_IO%node)
-!      call dealloc_ele_scalar_IO(ele_mesh_IO%sfed)
 !
       end subroutine gz_output_element_file_b
 !
@@ -155,7 +154,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
+      type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -168,13 +167,6 @@
 !     &   (surf_mesh_IO%node, surf_mesh_IO%sfed)
       call close_gzfile_f
 !
-      call dealloc_comm_table(surf_mesh_IO%comm)
-      call deallocate_ele_connect_type(surf_mesh_IO%ele)
-      call dealloc_surface_connect_IO(surf_mesh_IO%sfed)
-!      call dealloc_node_geometry_base(surf_mesh_IO%node)
-!      call dealloc_ele_vector_IO(urf_mesh_IO%sfed)
-!      call dealloc_ele_scalar_IO(urf_mesh_IO%sfed)
-!
       end subroutine gz_output_surface_file_b
 !
 !------------------------------------------------------------------
@@ -186,7 +178,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
+      type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -198,14 +190,6 @@
 !      call gz_write_edge_geometry_b                                    &
 !     &   (edge_mesh_IO%node, edge_mesh_IO%sfed)
       call close_gzfile_f
-!
-      call dealloc_comm_table(edge_mesh_IO%comm)
-      call deallocate_ele_connect_type(edge_mesh_IO%ele)
-      call dealloc_surface_connect_IO(edge_mesh_IO%sfed)
-      call dealloc_edge_connect_IO(edge_mesh_IO%sfed)
-!      call dealloc_node_geometry_base(edge_mesh_IO%node)
-!      call dealloc_ele_vector_IO(edge_mesh_IO%sfed)
-!      call dealloc_ele_scalar_IO(edge_mesh_IO%sfed)
 !
       end subroutine gz_output_edge_file_b
 !

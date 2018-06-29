@@ -23,9 +23,9 @@
 !!     &         (mesh_file, my_rank_IO, surf_mesh_IO)
 !!      subroutine sel_write_edge_mesh_file                             &
 !!     &         (mesh_file, my_rank_IO, edge_mesh_IO)
-!!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
-!!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
-!!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
+!!        type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
+!!        type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
+!!        type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !!@endverbatim
 !
       module element_mesh_IO_select
@@ -166,7 +166,7 @@
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
-      type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
+      type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
 !
 !
       call ele_mesh_file_name_by_param                                  &
@@ -200,7 +200,7 @@
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
-      type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
+      type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
 !
 !
       call surf_mesh_file_name_by_param                                 &
@@ -234,7 +234,7 @@
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
-      type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
+      type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !
 !
       call edge_mesh_file_name_by_param                                 &

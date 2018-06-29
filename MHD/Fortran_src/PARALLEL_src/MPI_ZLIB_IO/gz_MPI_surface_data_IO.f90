@@ -94,9 +94,9 @@
       use m_fem_mesh_labels
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
-      type(element_data), intent(inout) :: ele_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(element_data), intent(in) :: ele_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       call gz_mpi_write_charahead                                       &

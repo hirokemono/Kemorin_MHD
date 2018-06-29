@@ -211,6 +211,9 @@
         call sel_write_ele_mesh_file(mesh_file, my_rank, ele_mesh_IO)
       end if
 !
+      call dealloc_comm_table(ele_mesh_IO%comm)
+!      call dealloc_ele_geometry_data(ele_mesh_IO)
+!
       end subroutine sel_mpi_write_ele_mesh_file
 !
 !  ---------------------------------------------------------------------
@@ -246,6 +249,9 @@
         call sel_write_surf_mesh_file(mesh_file, my_rank, surf_mesh_IO)
       end if
 !
+      call dealloc_surface_mesh_IO(surf_mesh_IO)
+!      call dealloc_surf_geometry_data(surf_mesh_IO)
+!
       end subroutine sel_mpi_write_surf_mesh_file
 !
 !  ---------------------------------------------------------------------
@@ -280,6 +286,9 @@
       else
         call sel_write_edge_mesh_file(mesh_file, my_rank, edge_mesh_IO)
       end if
+!
+      call dealloc_edge_mesh_IO(edge_mesh_IO)
+!      call dealloc_surf_geometry_data(edge_mesh_IO)
 !
       end subroutine sel_mpi_write_edge_mesh_file
 !

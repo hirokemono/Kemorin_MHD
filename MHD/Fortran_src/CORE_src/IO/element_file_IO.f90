@@ -13,6 +13,9 @@
 !!     &         (my_rank_IO, file_name, surf_mesh_IO, ierr)
 !!      subroutine input_edge_file                                      &
 !!     &         (my_rank_IO, file_name, edge_mesh_IO, ierr)
+!!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
+!!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
+!!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
 !!
 !!      subroutine output_element_file                                  &
 !!     &         (my_rank_IO, file_name, ele_mesh_IO)
@@ -20,9 +23,9 @@
 !!     &         (my_rank_IO, file_name, surf_mesh_IO)
 !!      subroutine output_edge_file                                     &
 !!     &         (my_rank_IO, file_name, edge_mesh_IO)
-!!        type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
-!!        type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
-!!        type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
+!!        type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
+!!        type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
+!!        type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !!@endverbatim
 !!
 !!@param my_rank_IO  MPI rank
@@ -134,7 +137,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: ele_mesh_IO
+      type(surf_edge_IO_file), intent(in) :: ele_mesh_IO
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -158,7 +161,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: surf_mesh_IO
+      type(surf_edge_IO_file), intent(in) :: surf_mesh_IO
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -183,7 +186,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(surf_edge_IO_file), intent(inout) :: edge_mesh_IO
+      type(surf_edge_IO_file), intent(in) :: edge_mesh_IO
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -195,7 +198,7 @@
      &   edge_mesh_IO%ele, edge_mesh_IO%sfed)
 !      call write_edge_geometry(input_file_code,                        &
 !     &   edge_mesh_IO%node, edge_mesh_IO%sfed)
-      close (input_file_code)
+      close(input_file_code)
 !
       end subroutine output_edge_file
 !
