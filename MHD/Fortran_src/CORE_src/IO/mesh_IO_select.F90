@@ -180,7 +180,7 @@
       integer(kind= kint), intent(in) :: my_rank_IO
       type(field_IO_params), intent(in) ::  mesh_file
 !
-      type(mesh_data), intent(inout) :: fem_IO
+      type(mesh_data), intent(in) :: fem_IO
 !
 !
       call set_mesh_file_name_by_param                                  &

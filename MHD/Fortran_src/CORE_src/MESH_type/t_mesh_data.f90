@@ -14,6 +14,7 @@
 !!      subroutine dealloc_mesh_infos(mesh, group)
 !!
 !!      subroutine dealloc_mesh_type(mesh)
+!!      subroutine dealloc_mesh_geometry_base(mesh)
 !!      subroutine dealloc_groups_data(group)
 !!
 !!      subroutine dealloc_ele_surf_edge_type(ele_mesh)
@@ -224,6 +225,19 @@
       call dealloc_comm_table(mesh%nod_comm)
 !
       end subroutine dealloc_mesh_type
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_mesh_geometry_base(mesh)
+!
+      type(mesh_geometry), intent(inout) :: mesh
+!
+!
+      call deallocate_ele_connect_type(mesh%ele)
+      call dealloc_node_geometry_base(mesh%node)
+      call dealloc_comm_table(mesh%nod_comm)
+!
+      end subroutine dealloc_mesh_geometry_base
 !
 !   --------------------------------------------------------------------
 !

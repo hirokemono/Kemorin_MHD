@@ -19,7 +19,7 @@
 !!        type(mesh_geometry), intent(inout) :: mesh_IO
 !!
 !!      subroutine write_mesh_file_b(my_rank_IO, file_name, fem_IO)
-!!        type(mesh_data), intent(inout) :: fem_IO
+!!        type(mesh_data), intent(in) :: fem_IO
 !!@endverbatim
 !
       module mesh_file_IO_b
@@ -131,7 +131,7 @@
       integer(kind = kint), intent(in) :: my_rank_IO
       character(len=kchara), intent(in) :: file_name
 !
-      type(mesh_data), intent(inout) :: fem_IO
+      type(mesh_data), intent(in) :: fem_IO
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -141,11 +141,6 @@
       call write_geometry_data_b(my_rank_IO, fem_IO%mesh)
       call write_mesh_groups_b(fem_IO%group)
       call close_binary_file
-!
-      call dealloc_comm_table(fem_IO%mesh%nod_comm)
-      call dealloc_node_geometry_base(fem_IO%mesh%node)
-      call deallocate_ele_connect_type(fem_IO%mesh%ele)
-      call dealloc_groups_data(fem_IO%group)
 !
       end subroutine write_mesh_file_b
 !

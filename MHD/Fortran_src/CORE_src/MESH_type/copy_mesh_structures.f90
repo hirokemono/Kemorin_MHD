@@ -84,8 +84,7 @@
      &    tgt_e_mesh%surf%nnod_4_surf, tgt_e_mesh%edge%nnod_4_edge)
 !
       call dealloc_groups_data(group)
-      call deallocate_ele_connect_type(mesh%ele)
-      call dealloc_node_geometry_base(mesh%node)
+      call dealloc_mesh_geometry_base(mesh)
 !
       end subroutine set_mesh_data_from_type
 !

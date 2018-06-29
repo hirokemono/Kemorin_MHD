@@ -260,6 +260,9 @@
         call sel_write_mesh_file(mesh_file, id_rank, fem_IO)
       end if
 !
+      call dealloc_mesh_geometry_base(fem_IO%mesh)
+      call dealloc_groups_data(fem_IO%group)
+!
       end subroutine sel_mpi_write_mesh_file
 !
 !  ---------------------------------------------------------------------

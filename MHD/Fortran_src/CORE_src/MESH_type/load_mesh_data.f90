@@ -131,6 +131,9 @@
 !       save mesh information
       call sel_write_mesh_file(mesh_file, my_rank, fem_IO_i)
 !
+      call dealloc_mesh_geometry_base(fem_IO_i%mesh)
+      call dealloc_groups_data(fem_IO_i%group)
+!
       end subroutine output_mesh
 !
 ! -----------------------------------------------------------------------
@@ -176,9 +179,7 @@
       call copy_node_geometry_types(mesh_IO%node, node)
       call copy_ele_connect_from_IO(mesh_IO%ele, ele)
 !
-      call dealloc_comm_table(mesh_IO%nod_comm)
-      call dealloc_node_geometry_base(mesh_IO%node)
-      call deallocate_ele_connect_type(mesh_IO%ele)
+      call dealloc_mesh_geometry_base(mesh_IO)
 !
       call alloc_sph_node_geometry(node)
 !
