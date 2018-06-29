@@ -132,7 +132,7 @@
 !
       call deallocate_ele_connect_type(mesh_IO_f%ele)
       call dealloc_node_geometry_base(mesh_IO_f%node)
-      call deallocate_type_comm_tbl(mesh_IO_f%nod_comm)
+      call dealloc_comm_table(mesh_IO_f%nod_comm)
 !
       end subroutine count_nele_newdomain_para
 !
@@ -159,7 +159,7 @@
      &                        + mesh_IO_f%ele%numele
 !
         call dealloc_node_geometry_base(mesh_IO_f%node)
-        call deallocate_type_neib_id(mesh_IO_f%nod_comm)
+        call dealloc_neib_id(mesh_IO_f%nod_comm)
       end do
 !
       end subroutine count_nele_newdomain_single
@@ -210,7 +210,7 @@
 !
       call deallocate_ele_connect_type(mesh_IO_f%ele)
       call dealloc_node_geometry_base(mesh_IO_f%node)
-      call deallocate_type_comm_tbl(mesh_IO_f%nod_comm)
+      call dealloc_comm_table(mesh_IO_f%nod_comm)
 !
 !    construct new filter table
 !
@@ -329,7 +329,7 @@
 !
         call deallocate_ele_connect_type(mesh_IO_f%ele)
         call dealloc_node_geometry_base(mesh_IO_f%node)
-        call deallocate_type_comm_tbl(mesh_IO_f%nod_comm)
+        call dealloc_comm_table(mesh_IO_f%nod_comm)
 !
         call set_3D_nnod_4_sfed_by_ele(org_ele%nnod_4_ele,              &
      &     org_surf%nnod_4_surf, org_edge%nnod_4_edge)

@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine gz_write_geometry_data(my_rank_IO, mesh_IO)
 !!      subroutine gz_write_mesh_groups(mesh_group_IO)
-!!        type(mesh_geometry), intent(inout) :: mesh_IO
-!!        type(mesh_groups), intent(inout) ::   mesh_group_IO
+!!        type(mesh_geometry), intent(in) :: mesh_IO
+!!        type(mesh_groups), intent(in) ::   mesh_group_IO
 !!
 !!      subroutine gz_read_num_node(my_rank_IO, mesh_IO, ierr)
 !!      subroutine gz_read_num_node_ele(my_rank_IO, mesh_IO, ierr)
@@ -20,6 +20,8 @@
 !!        type(mesh_groups), intent(inout) ::   mesh_group_IO
 !!
 !!      subroutine gz_write_filter_geometry(my_rank_IO, comm_IO, nod_IO)
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(node_data), intent(in) :: nod_IO
 !!      subroutine gz_read_filter_geometry                              &
 !!      &         (my_rank_IO, comm_IO, nod_IO, ierr)
 !!        type(communication_table), intent(inout) :: comm_IO
@@ -52,7 +54,7 @@
       use m_fem_mesh_labels
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(mesh_geometry), intent(inout) :: mesh_IO
+      type(mesh_geometry), intent(in) :: mesh_IO
 !
 !
       textbuf = hd_fem_para() // char(0)
@@ -90,9 +92,9 @@
       subroutine gz_write_mesh_groups(mesh_group_IO)
 !
       use m_fem_mesh_labels
-      use gz_sph_rj_groups_IO
+      use gz_groups_IO
 !
-      type(mesh_groups), intent(inout) ::   mesh_group_IO
+      type(mesh_groups), intent(in) ::   mesh_group_IO
 !
 !
 !   write node group
@@ -119,8 +121,8 @@
       use m_fem_mesh_labels
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(node_data), intent(inout) :: nod_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(node_data), intent(in) :: nod_IO
 !
 !
       textbuf = hd_fem_para() // char(0)
@@ -217,7 +219,7 @@
       subroutine gz_read_mesh_groups(mesh_group_IO)
 !
       use m_fem_mesh_labels
-      use gz_sph_rj_groups_IO
+      use gz_groups_IO
 !
       type(mesh_groups), intent(inout) ::   mesh_group_IO
 !

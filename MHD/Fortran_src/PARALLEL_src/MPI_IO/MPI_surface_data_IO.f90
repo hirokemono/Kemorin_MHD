@@ -11,14 +11,16 @@
 !!     &         (IO_param, comm_IO, ele_IO, sfed_IO)
 !!      subroutine mpi_write_surface_connection                         &
 !!     &         (IO_param, comm_IO, ele_IO, sfed_IO)
-!!        type(communication_table), intent(inout) :: comm_IO
-!!        type(node_data), intent(inout) :: nod_IO
-!!        type(element_data), intent(inout) :: ele_IO
-!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(element_data), intent(in) :: ele_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
 !!      subroutine mpi_read_surface_geometry(IO_param, nod_IO, sfed_IO)
 !!      subroutine mpi_write_surface_geometry(IO_param, nod_IO, sfed_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(node_data), intent(inout) :: nod_IO
+!!        type(element_data), intent(inout) :: ele_IO
 !!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
 !!@endverbatim
 !
@@ -86,9 +88,9 @@
       use m_fem_mesh_labels
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
-      type(element_data), intent(inout) :: ele_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(element_data), intent(in) :: ele_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       call mpi_write_charahead                                          &
@@ -151,14 +153,17 @@
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_surf_point()), hd_surf_point())
       call mpi_write_geometry_info(IO_param, nod_IO)
+      call dealloc_node_geometry_base(nod_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_surf_norm()), hd_surf_norm())
       call mpi_write_vect_in_ele(IO_param, nod_IO, sfed_IO)
+      call dealloc_ele_vector_IO(sfed_IO)
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_surf_area()), hd_surf_area())
       call mpi_write_scl_in_ele(IO_param, nod_IO, sfed_IO)
+      call dealloc_ele_scalar_IO(sfed_IO)
 !
       end subroutine mpi_write_surface_geometry
 !

@@ -15,6 +15,9 @@
 !!     &         (id_file, my_rank_IO, comm_IO, sph_IO, ierr)
 !!      subroutine read_spectr_modes_rlm_data                           &
 !!     &         (id_file, my_rank_IO, comm_IO, sph_IO, ierr)
+!!        type(communication_table), intent(inout) :: comm_IO
+!!        type(sph_IO_data), intent(inout) :: sph_IO
+!!        type(sph_group_data), intent(inout) :: sph_grps_IO
 !!
 !!      subroutine write_geom_rtp_data                                  &
 !!     &         (id_file, my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
@@ -24,9 +27,9 @@
 !!     &         (id_file, my_rank_IO, comm_IO, sph_IO)
 !!      subroutine write_modes_rlm_data                                 &
 !!     &         (id_file, my_rank_IO, comm_IO, sph_IO)
-!!        type(communication_table), intent(inout) :: comm_IO
-!!        type(sph_IO_data), intent(inout) :: sph_IO
-!!        type(sph_group_data), intent(inout) :: sph_grps_IO
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(sph_IO_data), intent(in) :: sph_IO
+!!        type(sph_group_data), intent(in) :: sph_grps_IO
 !!@endverbatim
 !
       module sph_modes_grids_data_IO
@@ -196,9 +199,9 @@
 !
       use groups_IO
 !
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
-      type(sph_group_data), intent(inout) :: sph_grps_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
+      type(sph_group_data), intent(in) :: sph_grps_IO
 !
       integer(kind = kint), intent(in) :: id_file, my_rank_IO
 !
@@ -213,6 +216,7 @@
 !
 !      write(*,*) '! global ID for each direction'
       call write_rtp_gl_1d_table(id_file, sph_IO)
+!
 !
       write(id_file,'(a)', advance='NO') hd_rtp_glbl()
       call write_gl_nodes_sph(id_file, sph_IO)
@@ -236,8 +240,6 @@
       write(id_file,'(a)', advance='NO') hd_pgrphd()
       call write_grp_data(id_file, sph_grps_IO%zonal_rtp_grp)
 !
-!      write(*,*) 'finish!!'
-!
       end subroutine write_geom_rtp_data
 !
 !------------------------------------------------------------------
@@ -247,9 +249,9 @@
 !
       use groups_IO
 !
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
-      type(sph_group_data), intent(inout) :: sph_grps_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
+      type(sph_group_data), intent(in) :: sph_grps_IO
 !
       integer(kind = kint), intent(in) :: id_file, my_rank_IO
 !
@@ -285,8 +287,8 @@
       subroutine write_geom_rtm_data                                    &
      &         (id_file, my_rank_IO, comm_IO, sph_IO)
 !
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
       integer(kind = kint), intent(in) :: id_file, my_rank_IO
 !
@@ -316,8 +318,8 @@
 !
       integer(kind = kint), intent(in) :: id_file, my_rank_IO
 !
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
 !
       write(id_file,'(a)', advance='NO') hd_sph_para()

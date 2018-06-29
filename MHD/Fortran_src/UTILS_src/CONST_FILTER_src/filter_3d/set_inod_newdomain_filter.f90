@@ -59,7 +59,7 @@
         call copy_node_geometry_types(mesh_IO_f%node, new_node)
 !
         call dealloc_node_geometry_base(mesh_IO_f%node)
-        call deallocate_type_neib_id(mesh_IO_f%nod_comm)
+        call dealloc_neib_id(mesh_IO_f%nod_comm)
 !
         call marking_used_node_4_filtering                              &
      &     (ip2, ifmt_3d_filter, mesh_file, org_node, org_ele%numele)

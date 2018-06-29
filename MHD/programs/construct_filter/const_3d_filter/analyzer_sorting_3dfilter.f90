@@ -92,7 +92,7 @@
         end if
 !
         call dealloc_node_geometry_w_sph(mesh_filter%node)
-        call deallocate_type_comm_tbl(mesh_filter%nod_comm)
+        call dealloc_comm_table(mesh_filter%nod_comm)
 !
 !     read filtering information
 !
@@ -126,7 +126,7 @@
      &     (filtering_gen%filter, filter_IO%filters)
 !
         call deallocate_globalnod_filter
-        call deallocate_type_comm_tbl(filtering_gen%comm)
+        call dealloc_comm_table(filtering_gen%comm)
 !
         ifmt_filter_file = ifmt_3d_filter
         filter_file_head = filter_3d_head

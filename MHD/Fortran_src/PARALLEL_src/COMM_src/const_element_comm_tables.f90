@@ -143,9 +143,9 @@
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call deallocate_type_comm_tbl(ele_mesh%ele_comm)
-      call deallocate_type_comm_tbl(ele_mesh%surf_comm)
-      call deallocate_type_comm_tbl(ele_mesh%edge_comm)
+      call dealloc_comm_table(ele_mesh%ele_comm)
+      call dealloc_comm_table(ele_mesh%surf_comm)
+      call dealloc_comm_table(ele_mesh%edge_comm)
 !
       call dealloc_numnod_stack(mesh%node)
       call dealloc_numele_stack(mesh%ele)
@@ -161,7 +161,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call deallocate_type_comm_tbl(ele_mesh%ele_comm)
+      call dealloc_comm_table(ele_mesh%ele_comm)
       call dealloc_numele_stack(mesh%ele)
 !
       end subroutine dealloc_ele_comm_tbl_only

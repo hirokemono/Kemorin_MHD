@@ -16,7 +16,8 @@
 !!      subroutine gz_mpi_write_domain_info_b(IO_param, comm_IO)
 !!      subroutine gz_mpi_write_import_data_b(IO_param, comm_IO)
 !!      subroutine gz_mpi_write_export_data_b(IO_param, comm_IO)
-!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param!!        type(communication_table), intent(inout) :: comm_IO
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(communication_table), intent(in) :: comm_IO
 !!@endverbatim
 !
       module gz_MPI_domain_data_IO_b
@@ -102,11 +103,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_domain_info_b                             &
-     &         (IO_param, comm_IO)
+      subroutine gz_mpi_write_domain_info_b(IO_param, comm_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call gz_mpi_write_one_inthead_b(IO_param, IO_param%nprocs_in)
@@ -114,8 +114,6 @@
 !
       call gz_mpi_write_int_vector_b                                    &
      &   (IO_param, comm_IO%num_neib, comm_IO%id_neib)
-!
-      call deallocate_type_neib_id(comm_IO)
 !
       end subroutine gz_mpi_write_domain_info_b
 !
@@ -125,15 +123,13 @@
       subroutine gz_mpi_write_import_data_b(IO_param, comm_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call gz_mpi_write_integer_stack_b                                 &
      &   (IO_param, comm_IO%num_neib, comm_IO%istack_import)
       call gz_mpi_write_int_vector_b                                    &
      &   (IO_param, comm_IO%ntot_import, comm_IO%item_import)
-!
-      call deallocate_type_import(comm_IO)
 !
       end subroutine gz_mpi_write_import_data_b
 !
@@ -142,15 +138,13 @@
       subroutine gz_mpi_write_export_data_b(IO_param, comm_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call gz_mpi_write_integer_stack_b                                 &
      &   (IO_param, comm_IO%num_neib, comm_IO%istack_export)
       call gz_mpi_write_int_vector_b                                    &
      &   (IO_param, comm_IO%ntot_export, comm_IO%item_export)
-!
-      call deallocate_type_export(comm_IO)
 !
       end subroutine gz_mpi_write_export_data_b
 !

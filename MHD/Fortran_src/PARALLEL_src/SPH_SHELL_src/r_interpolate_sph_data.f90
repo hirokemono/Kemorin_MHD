@@ -368,17 +368,11 @@
 !
       r_org(1:n_rj_org) = sph_IO%r_gl_1(1:n_rj_org)
 !
-      call dealloc_num_idx_sph_IO(sph_IO)
-      call dealloc_nod_id_sph_IO(sph_IO)
-      call dealloc_idx_sph_1d1_IO(sph_IO)
-      call dealloc_idx_sph_1d2_IO(sph_IO)
+      call dealloc_sph_mode_idx_IO(sph_IO)
 !
+      call dealloc_import_table(comm_IO)
 !
-      call deallocate_type_import(comm_IO)
-      call deallocate_type_neib_id(comm_IO)
-!
-      call deallocate_grp_type(sph_grps_IO%radial_rj_grp)
-      call deallocate_grp_type(sph_grps_IO%sphere_rj_grp)
+      call dealloc_sph_mode_group(sph_grps_IO)
 !
       end subroutine copy_original_sph_rj_from_IO
 !

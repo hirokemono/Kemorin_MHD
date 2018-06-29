@@ -163,6 +163,10 @@
 !
       call close_mpi_file(IO_param)
 !
+      call dealloc_import_table(sph_file%comm_IO)
+      call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
+      call dealloc_sph_grid_group(sph_file%sph_grp_IO)
+!
       end subroutine gz_mpi_write_geom_rtp_file_b
 !
 !------------------------------------------------------------------
@@ -186,6 +190,10 @@
 !
       call close_mpi_file(IO_param)
 !
+      call dealloc_import_table(sph_file%comm_IO)
+      call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
+      call dealloc_sph_mode_group(sph_file%sph_grp_IO)
+!
       end subroutine gz_mpi_write_spectr_rj_file_b
 !
 !------------------------------------------------------------------
@@ -207,6 +215,9 @@
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
 !
       call close_mpi_file(IO_param)
+!
+      call dealloc_import_table(sph_file%comm_IO)
+      call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
 !
       end subroutine gz_mpi_write_geom_rtm_file_b
 !
@@ -230,6 +241,9 @@
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
 !
       call close_mpi_file(IO_param)
+!
+      call dealloc_import_table(sph_file%comm_IO)
+      call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
 !
       end subroutine gz_mpi_write_modes_rlm_file_b
 !

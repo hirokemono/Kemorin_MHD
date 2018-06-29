@@ -74,7 +74,7 @@
 !
       call deallocate_ele_connect_type(finermesh%ele)
       call dealloc_node_geometry_w_sph(finermesh%node)
-      call deallocate_type_comm_tbl(finermesh%nod_comm)
+      call dealloc_comm_table(finermesh%nod_comm)
 !
       end subroutine s_set_partition_by_fine_mesh
 !

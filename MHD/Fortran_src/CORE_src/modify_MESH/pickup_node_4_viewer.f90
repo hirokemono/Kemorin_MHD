@@ -124,8 +124,6 @@
 !
       subroutine count_used_node_4_viewer(numnod, nnod_viewer)
 !
-      use t_merged_geometry_data
-!
       integer(kind = kint), intent(in) ::numnod
 !
       integer(kind = kint), intent(inout) ::nnod_viewer

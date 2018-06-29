@@ -63,8 +63,7 @@
       comm_sph%item_sr(1:comm_sph%ntot_item_sr)                         &
      &      = comm%item_import(1:comm_sph%ntot_item_sr)
 !
-      call deallocate_type_import(comm)
-      call deallocate_type_neib_id(comm)
+      call dealloc_import_table(comm)
 !
       end subroutine copy_comm_sph_from_IO
 !

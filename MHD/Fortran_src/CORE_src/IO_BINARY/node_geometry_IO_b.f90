@@ -9,11 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine write_geometry_info_b(nod_IO)
-!!        type(node_data), intent(inout) :: nod_IO
+!!        type(node_data), intent(in) :: nod_IO
 !!      subroutine write_scalar_in_element_b(nod_IO, sfed_IO)
 !!      subroutine write_vector_in_element_b(nod_IO, sfed_IO)
-!!        type(node_data), intent(inout) :: nod_IO
-!!        type(surf_edge_IO_data), intent(inout) :: sfed_IO
+!!        type(node_data), intent(in) :: nod_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
 !!      subroutine read_number_of_node_b(nod_IO)
 !!      subroutine read_geometry_info_b(nod_IO)
@@ -47,7 +47,7 @@
 !
       use binary_IO
 !
-      type(node_data), intent(inout) :: nod_IO
+      type(node_data), intent(in) :: nod_IO
 !
 !
       call write_one_integer_b(nod_IO%numnod)
@@ -55,8 +55,6 @@
 !
       call write_mul_int8_b(nod_IO%numnod, nod_IO%inod_global)
       call write_2d_vector_b(nod_IO%numnod, n_vector, nod_IO%xx)
-!
-      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine write_geometry_info_b
 !
@@ -66,15 +64,13 @@
 !
       use binary_IO
 !
-      type(node_data), intent(inout) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(node_data), intent(in) :: nod_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       call write_one_integer_b(nod_IO%numnod)
       call write_one_integer_b(nod_IO%internal_node)
       call write_1d_vector_b(nod_IO%numnod, sfed_IO%ele_scalar)
-!
-      call dealloc_ele_scalar_IO(sfed_IO)
 !
       end subroutine write_scalar_in_element_b
 !
@@ -84,8 +80,8 @@
 !
       use binary_IO
 !
-      type(node_data), intent(inout) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(node_data), intent(in) :: nod_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       call write_one_integer_b(nod_IO%numnod)
@@ -93,8 +89,6 @@
 !
       call write_2d_vector_b                                            &
      &   (nod_IO%numnod, n_vector, sfed_IO%ele_vector)
-!
-      call dealloc_ele_vector_IO(sfed_IO)
 !
       end subroutine write_vector_in_element_b
 !

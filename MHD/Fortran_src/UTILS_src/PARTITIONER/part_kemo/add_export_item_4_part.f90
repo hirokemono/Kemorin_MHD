@@ -79,7 +79,7 @@
               num_export_copy(1:nneib2_old)                             &
      &              = new_comm%num_export(1:nneib2_old)
 !
-              call deallocate_type_comm_tbl_num(new_comm)
+              call dealloc_comm_tbl_num(new_comm)
 !
               call allocate_type_comm_tbl_num(new_comm)
 !

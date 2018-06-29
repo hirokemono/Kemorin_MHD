@@ -165,6 +165,11 @@
 !
       close(input_file_code)
 !
+      call dealloc_comm_table(fem_IO%mesh%nod_comm)
+      call dealloc_node_geometry_base(fem_IO%mesh%node)
+      call deallocate_ele_connect_type(fem_IO%mesh%ele)
+      call dealloc_groups_data(fem_IO%group)
+!
       end subroutine write_mesh_file
 !
 !  ---------------------------------------------------------------------
@@ -193,6 +198,9 @@
          (input_file_code, my_rank_IO, mesh_IO)
       close(input_file_code)
 !
+      call dealloc_neib_id(mesh_IO%nod_comm)
+      call dealloc_node_geometry_base(mesh_IO%node)
+!
       end subroutine write_node_position_sph
 !
 !  ---------------------------------------------------------------------
@@ -220,6 +228,9 @@
       call output_node_cyl_geometry                                     &
          (input_file_code, my_rank_IO, mesh_IO)
       close(input_file_code)
+!
+      call dealloc_neib_id(mesh_IO%nod_comm)
+      call dealloc_node_geometry_base(mesh_IO%node)
 !
       end subroutine write_node_position_cyl
 !

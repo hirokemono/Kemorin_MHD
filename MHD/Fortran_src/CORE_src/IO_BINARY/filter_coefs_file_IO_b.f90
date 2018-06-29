@@ -91,6 +91,9 @@
 !
       call close_binary_file
 !
+      call dealloc_comm_table(filter_IO%nod_comm)
+      call dealloc_node_geometry_base(filter_IO%node)
+!
       end subroutine write_sorted_filter_coef_file_b
 !
 !------------------------------------------------------------------
@@ -140,6 +143,9 @@
       call write_filter_geometry_b                                      &
      &   (my_rank_IO, filter_IO%nod_comm, filter_IO%node)
       call close_binary_file
+!
+      call dealloc_comm_table(filter_IO%nod_comm)
+      call dealloc_node_geometry_base(filter_IO%node)
 !
       end subroutine write_filter_geometry_file_b
 !

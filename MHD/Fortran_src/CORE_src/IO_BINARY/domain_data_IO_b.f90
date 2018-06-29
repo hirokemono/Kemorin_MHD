@@ -15,7 +15,7 @@
 !!      subroutine write_domain_info_b(my_rank_IO, comm_IO)
 !!      subroutine write_import_data_b(comm_IO)
 !!      subroutine write_export_data_b(comm_IO)
-!!        type(communication_table), intent(inout) :: comm_IO
+!!        type(communication_table), intent(in) :: comm_IO
 !!@endverbatim
 !!
 !@param id_file file ID
@@ -113,15 +113,13 @@
       subroutine write_domain_info_b(my_rank_IO, comm_IO)
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call write_one_integer_b(my_rank_IO)
       call write_one_integer_b(comm_IO%num_neib)
 !
       call write_mul_integer_b(comm_IO%num_neib, comm_IO%id_neib)
-!
-      call deallocate_type_neib_id(comm_IO)
 !
       end subroutine write_domain_info_b
 !
@@ -130,7 +128,7 @@
 !
       subroutine write_import_data_b(comm_IO)
 !
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call write_integer_stack_b                                        &
@@ -138,23 +136,19 @@
       call write_mul_integer_b                                          &
     &    (comm_IO%ntot_import, comm_IO%item_import)
 !
-      call deallocate_type_import(comm_IO)
-!
       end subroutine write_import_data_b
 !
 ! -----------------------------------------------------------------------
 !
       subroutine write_export_data_b(comm_IO)
 !
-      type(communication_table), intent(inout) :: comm_IO
+      type(communication_table), intent(in) :: comm_IO
 !
 !
       call write_integer_stack_b                                        &
      &   (comm_IO%num_neib, comm_IO%istack_export)
       call write_mul_integer_b                                          &
      &   (comm_IO%ntot_export, comm_IO%item_export)
-!
-      call deallocate_type_export(comm_IO)
 !
       end subroutine write_export_data_b
 !

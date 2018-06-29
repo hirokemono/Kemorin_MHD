@@ -60,7 +60,7 @@
       call copy_filtering_geometry_from_IO(filter_IO_t%node)
       call copy_comm_tbl_type(filter_IO_t%nod_comm, filtering%comm)
       call dealloc_node_geometry_base(filter_IO_t%node)
-      call deallocate_type_comm_tbl(filter_IO_t%nod_comm)
+      call dealloc_comm_table(filter_IO_t%nod_comm)
 !
       call alloc_nod_data_4_filter(nnod_filtering, wk_filter)
 !

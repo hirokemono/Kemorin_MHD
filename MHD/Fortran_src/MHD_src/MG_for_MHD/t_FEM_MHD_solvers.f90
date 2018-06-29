@@ -103,7 +103,7 @@
 !
       call copy_comm_tbl_types                                          &
      &   (DJDS_comm_fl, MHD_mat%MG_comm_fluid(0))
-      call deallocate_type_comm_tbl(DJDS_comm_fl)
+      call dealloc_comm_table(DJDS_comm_fl)
 !
       end subroutine set_MHD_connectivities
 !

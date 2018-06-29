@@ -22,7 +22,6 @@
 !
       use t_mesh_data
       use t_file_IO_parameter
-      use t_mesh_data_4_merge
       use t_viewer_mesh
       use t_viewer_ele_grp_surface
       use t_merged_viewer_mesh
@@ -44,6 +43,8 @@
         type(viewer_surface_groups), allocatable :: view_ele_grps(:)
         type(viewer_surface_groups), allocatable :: view_sf_grps(:)
       end type single_make_vierwer_mesh
+!
+private :: collect_single_viewer_mesh
 !
 !------------------------------------------------------------------
 !

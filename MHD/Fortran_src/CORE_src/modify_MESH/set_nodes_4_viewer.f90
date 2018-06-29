@@ -32,7 +32,6 @@
       subroutine s_set_nodes_4_viewer(nnod_4_surf, mesh, group,         &
      &          view_mesh, view_nod_grps)
 !
-      use t_merged_geometry_data
       use t_mesh_data
 !
       integer(kind = kint), intent(in) :: nnod_4_surf

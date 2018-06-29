@@ -61,7 +61,7 @@
         call copy_filtering_geometry_from_IO(nod_IO)
 !
         call dealloc_node_geometry_base(nod_IO)
-        call deallocate_type_comm_tbl(comm_IO)
+        call dealloc_comm_table(comm_IO)
 !
         write(*,*) 'read_filter_neib_4_sort', inter_nod_3dfilter
         call read_filter_neib_4_sort(filter_coef_code)
@@ -74,7 +74,7 @@
         call copy_filtering_geometry_from_IO(nod_IO)
 !
         call dealloc_node_geometry_base(nod_IO)
-        call deallocate_type_comm_tbl(comm_IO)
+        call dealloc_comm_table(comm_IO)
 !
         call read_filter_neib_4_sort_b
         call close_binary_file
@@ -126,7 +126,7 @@
       end if
 !
       call dealloc_node_geometry_base(nod_IO)
-      call deallocate_type_comm_tbl(comm_IO)
+      call dealloc_comm_table(comm_IO)
       call deallocate_nod_ele_near_1nod
 !
       end subroutine s_read_filter_file_4_sorting

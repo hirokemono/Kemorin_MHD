@@ -9,9 +9,9 @@
 !!@verbatim
 !!      subroutine allocate_type_comm_tbl_num(comm_tbl)
 !!      subroutine allocate_type_comm_tbl_item(comm_tbl)
-!!      subroutine deallocate_type_comm_tbl(comm_tbl)
-!!      subroutine deallocate_type_comm_tbl_num(comm_tbl)
-!!      subroutine deallocate_type_comm_tbl_item(comm_tbl)
+!!      subroutine dealloc_comm_table(comm_tbl)
+!!      subroutine dealloc_import_table(comm_tbl)
+!!      subroutine dealloc_comm_tbl_num(comm_tbl)
 !!
 !!      subroutine empty_comm_table(comm_tbl)
 !!      subroutine copy_comm_tbl_type(comm_org, comm_new)
@@ -22,12 +22,7 @@
 !!      subroutine allocate_type_import_item(comm_tbl)
 !!      subroutine allocate_type_export_item(comm_tbl)
 !!
-!!      subroutine deallocate_type_neib_id(comm_tbl)
-!!      subroutine deallocate_type_import(comm_tbl)
-!!      subroutine deallocate_type_export(comm_tbl)
-!!      subroutine deallocate_type_import_num(comm_tbl)
-!!      subroutine deallocate_type_import_item(comm_tbl)
-!!      subroutine deallocate_type_export_item(comm_tbl)
+!!      subroutine dealloc_neib_id(comm_tbl)
 !!
 !!      subroutine link_comm_tbl_types(comm_org, comm_tbl)
 !!        type(communication_table), intent(in) :: comm_org
@@ -73,6 +68,10 @@
         integer(kind = kint), pointer :: item_export(:)
       end type communication_table
 !
+      private :: dealloc_comm_tbl_item
+      private :: dealloc_import_num,  dealloc_export_num
+      private :: dealloc_import_item, dealloc_export_item
+!
 !------------------------------------------------------------------
 !
       contains
@@ -104,40 +103,53 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine deallocate_type_comm_tbl(comm_tbl)
+      subroutine dealloc_comm_table(comm_tbl)
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
 !
-      call deallocate_type_comm_tbl_item(comm_tbl)
-      call deallocate_type_comm_tbl_num(comm_tbl)
+      call dealloc_comm_tbl_item(comm_tbl)
+      call dealloc_comm_tbl_num(comm_tbl)
 !
-      end subroutine deallocate_type_comm_tbl
+      end subroutine dealloc_comm_table
 !
 !------------------------------------------------------------------
 !
-      subroutine deallocate_type_comm_tbl_num(comm_tbl)
+      subroutine dealloc_import_table(comm_tbl)
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
+      call dealloc_import_num(comm_tbl)
+      call dealloc_import_item(comm_tbl)
 !
-      call deallocate_type_neib_id(comm_tbl)
-      call deallocate_type_import_num(comm_tbl)
-      call deallocate_type_export_num(comm_tbl)
+      call dealloc_neib_id(comm_tbl)
 !
-      end subroutine deallocate_type_comm_tbl_num
+      end subroutine dealloc_import_table
 !
 !------------------------------------------------------------------
 !
-      subroutine deallocate_type_comm_tbl_item(comm_tbl)
+      subroutine dealloc_comm_tbl_num(comm_tbl)
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
 !
-      call deallocate_type_import_item(comm_tbl)
-      call deallocate_type_export_item(comm_tbl)
+      call dealloc_neib_id(comm_tbl)
+      call dealloc_import_num(comm_tbl)
+      call dealloc_export_num(comm_tbl)
 !
-      end subroutine deallocate_type_comm_tbl_item
+      end subroutine dealloc_comm_tbl_num
+!
+!------------------------------------------------------------------
+!
+      subroutine dealloc_comm_tbl_item(comm_tbl)
+!
+      type(communication_table), intent(inout) :: comm_tbl
+!
+!
+      call dealloc_import_item(comm_tbl)
+      call dealloc_export_item(comm_tbl)
+!
+      end subroutine dealloc_comm_tbl_item
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
@@ -254,78 +266,56 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine deallocate_type_neib_id(comm_tbl)
+      subroutine dealloc_neib_id(comm_tbl)
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
       deallocate(comm_tbl%id_neib)
 !
-      end subroutine deallocate_type_neib_id
+      end subroutine dealloc_neib_id
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine deallocate_type_import(comm_tbl)
-!
-      type(communication_table), intent(inout) :: comm_tbl
-!
-      call deallocate_type_import_num(comm_tbl)
-      call deallocate_type_import_item(comm_tbl)
-!
-      end subroutine deallocate_type_import
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_type_export(comm_tbl)
-!
-      type(communication_table), intent(inout) :: comm_tbl
-!
-      call deallocate_type_export_num(comm_tbl)
-      call deallocate_type_export_item(comm_tbl)
-!
-      end subroutine deallocate_type_export
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_type_import_num(comm_tbl)
+      subroutine dealloc_import_num(comm_tbl)
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
       deallocate(comm_tbl%num_import)
       deallocate(comm_tbl%istack_import)
 !
-      end subroutine deallocate_type_import_num
+      end subroutine dealloc_import_num
 !
 !------------------------------------------------------------------
 !
-      subroutine deallocate_type_export_num(comm_tbl)
+      subroutine dealloc_export_num(comm_tbl)
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
       deallocate(comm_tbl%num_export)
       deallocate(comm_tbl%istack_export)
 !
-      end subroutine deallocate_type_export_num
+      end subroutine dealloc_export_num
 !
 !------------------------------------------------------------------
 !
-      subroutine deallocate_type_import_item(comm_tbl)
+      subroutine dealloc_import_item(comm_tbl)
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
       deallocate(comm_tbl%item_import)
 !
-      end subroutine deallocate_type_import_item
+      end subroutine dealloc_import_item
 !
 !------------------------------------------------------------------
 !
-      subroutine deallocate_type_export_item(comm_tbl)
+      subroutine dealloc_export_item(comm_tbl)
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
       deallocate(comm_tbl%item_export)
 !
-      end subroutine deallocate_type_export_item
+      end subroutine dealloc_export_item
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

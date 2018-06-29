@@ -9,11 +9,13 @@
 !!@verbatim
 !!      subroutine read_group_data_b(group_IO)
 !!      subroutine read_surf_grp_data_b(surf_grp_IO)
+!!        type(group_data), intent(inout) :: group_IO
+!!        type(surface_group_data), intent(inout) :: surf_grp_IO
 !!
 !!      subroutine write_grp_data_b(group_IO)
 !!      subroutine write_surf_grp_data_b(surf_grp_IO)
-!!        type(group_data), intent(inout) :: group_IO
-!!        type(surface_group_data), intent(inout) :: surf_grp_IO
+!!        type(group_data), intent(in) :: group_IO
+!!        type(surface_group_data), intent(in) :: surf_grp_IO
 !!@endverbatim
 !
       module groups_IO_b
@@ -91,7 +93,7 @@
 !
       subroutine write_grp_data_b(group_IO)
 !
-      type(group_data), intent(inout) :: group_IO
+      type(group_data), intent(in) :: group_IO
 !
 !
       call write_one_integer_b(group_IO%num_grp)
@@ -100,15 +102,13 @@
      &   (group_IO%num_grp, group_IO%grp_name)
       call write_mul_integer_b(group_IO%num_item, group_IO%item_grp)
 !
-      call deallocate_grp_type(group_IO)
-!
       end subroutine write_grp_data_b
 !
 !------------------------------------------------------------------
 !
       subroutine write_surf_grp_data_b(surf_grp_IO)
 !
-      type(surface_group_data), intent(inout) :: surf_grp_IO
+      type(surface_group_data), intent(in) :: surf_grp_IO
 !
       integer(kind = kint) :: nitem
 !
@@ -121,8 +121,6 @@
 !
       nitem = 2 * surf_grp_IO%num_item
       call write_mul_integer_b(nitem, surf_grp_IO%item_sf_grp)
-!
-      call deallocate_sf_grp_type(surf_grp_IO)
 !
       end subroutine write_surf_grp_data_b
 !

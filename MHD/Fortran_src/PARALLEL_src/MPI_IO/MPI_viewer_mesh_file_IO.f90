@@ -18,7 +18,6 @@
       use m_precision
       use m_constants
 !
-      use t_mesh_data_4_merge
       use t_merged_viewer_mesh
       use t_calypso_mpi_IO_param
 !

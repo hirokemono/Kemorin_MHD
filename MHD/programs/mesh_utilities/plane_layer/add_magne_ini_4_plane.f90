@@ -133,7 +133,7 @@
         call copy_node_geometry_types(mesh_IO_p%node, node_plane)
 !
         call dealloc_node_geometry_base(mesh_IO_p%node)
-        call deallocate_type_neib_id(mesh_IO_p%nod_comm)
+        call dealloc_neib_id(mesh_IO_p%nod_comm)
 !
 !     allocate added restart data
 !

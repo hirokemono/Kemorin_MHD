@@ -106,11 +106,7 @@
      &       = sph_IO%idx_gl_3(1:rtp%nidx_rtp(3),2)
 !$omp end parallel workshare
 !
-      call dealloc_nod_id_sph_IO(sph_IO)
-      call dealloc_num_idx_sph_IO(sph_IO)
-      call dealloc_idx_sph_1d1_IO(sph_IO)
-      call dealloc_idx_sph_1d2_IO(sph_IO)
-      call dealloc_idx_sph_1d3_IO(sph_IO)
+      call dealloc_sph_grid_idx_IO(sph_IO)
 !
       end subroutine copy_sph_node_4_rtp_from_IO
 !
@@ -163,11 +159,7 @@
      &      = sph_IO%idx_gl_3(1:rtm%nidx_rtm(3),2)
 !$omp end parallel workshare
 !
-      call dealloc_nod_id_sph_IO(sph_IO)
-      call dealloc_num_idx_sph_IO(sph_IO)
-      call dealloc_idx_sph_1d1_IO(sph_IO)
-      call dealloc_idx_sph_1d2_IO(sph_IO)
-      call dealloc_idx_sph_1d3_IO(sph_IO)
+      call dealloc_sph_grid_idx_IO(sph_IO)
 !
       end subroutine copy_sph_node_4_rtm_from_IO
 !
@@ -217,10 +209,7 @@
      &       = sph_IO%idx_gl_2(1:rlm%nidx_rlm(2),3)
 !$omp end parallel workshare
 !
-      call dealloc_nod_id_sph_IO(sph_IO)
-      call dealloc_num_idx_sph_IO(sph_IO)
-      call dealloc_idx_sph_1d1_IO(sph_IO)
-      call dealloc_idx_sph_1d2_IO(sph_IO)
+      call dealloc_sph_mode_idx_IO(sph_IO)
 !
       end subroutine copy_sph_node_4_rlm_from_IO
 !
@@ -273,10 +262,7 @@
      &      = sph_IO%idx_gl_2(1:rj%nidx_rj(2),3)
 !$omp end parallel workshare
 !
-      call dealloc_nod_id_sph_IO(sph_IO)
-      call dealloc_num_idx_sph_IO(sph_IO)
-      call dealloc_idx_sph_1d1_IO(sph_IO)
-      call dealloc_idx_sph_1d2_IO(sph_IO)
+      call dealloc_sph_mode_idx_IO(sph_IO)
 !
       end subroutine copy_sph_node_4_rj_from_IO
 !

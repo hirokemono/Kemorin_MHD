@@ -9,11 +9,13 @@
 !!@verbatim
 !!      subroutine mpi_read_rtp_gl_1d_table(IO_param, sph_IO)
 !!      subroutine mpi_read_rj_gl_1d_table(IO_param, sph_IO)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!        type(sph_IO_data), intent(inout) :: sph_IO
 !!
 !!      subroutine mpi_write_rtp_gl_1d_table(IO_param, sph_IO)
 !!      subroutine mpi_write_rj_gl_1d_table(IO_param, sph_IO)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
-!!        type(sph_IO_data), intent(inout) :: sph_IO
+!!        type(sph_IO_data), intent(in) :: sph_IO
 !!@endverbatim
 !
       module MPI_sph_gl_1d_idx_IO
@@ -140,7 +142,7 @@
       subroutine mpi_write_rtp_gl_1d_table(IO_param, sph_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
 !
       call mpi_write_charahead                                          &
@@ -178,12 +180,6 @@
      &    sph_IO%nidx_sph(3), sph_IO%ncomp_table_1d(3),                 &
      &    sph_IO%idx_gl_3)
 !
-!
-      call dealloc_num_idx_sph_IO(sph_IO)
-      call dealloc_idx_sph_1d1_IO(sph_IO)
-      call dealloc_idx_sph_1d2_IO(sph_IO)
-      call dealloc_idx_sph_1d3_IO(sph_IO)
-!
       end subroutine mpi_write_rtp_gl_1d_table
 !
 ! ----------------------------------------------------------------------
@@ -191,7 +187,7 @@
       subroutine mpi_write_rj_gl_1d_table(IO_param, sph_IO)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
 !
       call mpi_write_charahead                                          &
@@ -218,10 +214,6 @@
       call mpi_write_1d_gl_address(IO_param,                            &
      &    sph_IO%nidx_sph(2), sph_IO%ncomp_table_1d(2),                 &
      &    sph_IO%idx_gl_2)
-!
-      call dealloc_num_idx_sph_IO(sph_IO)
-      call dealloc_idx_sph_1d1_IO(sph_IO)
-      call dealloc_idx_sph_1d2_IO(sph_IO)
 !
       end subroutine mpi_write_rj_gl_1d_table
 !

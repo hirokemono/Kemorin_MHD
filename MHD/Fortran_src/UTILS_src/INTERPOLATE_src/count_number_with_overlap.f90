@@ -7,6 +7,8 @@
 !!     &         (mesh_file, nnod_4_ele, mgd_mesh)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(merged_mesh), intent(inout) :: mgd_mesh
+!!      subroutine count_num_geometry_w_overlap                         &
+!!     &         (num_pe, subdomain, table, merged)
 !!      subroutine count_subdomain_ngrp_stack(num_pe, sub, istack)
 !
       module count_number_with_overlap
@@ -58,7 +60,6 @@
 !
       use t_mesh_data
       use mesh_IO_select
-      use set_read_geometry_2_merge
       use set_element_data_4_IO
       use copy_mesh_structures
       use load_mesh_data
@@ -176,28 +177,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_subdomain_item_stack(num_pe, sub, istack)
-!
-      use t_group_data
-!
-      integer (kind = kint), intent(in) :: num_pe
-      type(group_data), intent(in) :: sub(num_pe)
-!
-      integer (kind = kint), intent(inout) :: istack(0:num_pe)
-!
-      integer(kind = kint) :: ip
-!
-!
-      istack(0) = izero
-      do ip = 1, num_pe
-        istack(ip) = istack(ip-1) + sub(ip)%num_item
-      end do
-!
-      end subroutine count_subdomain_item_stack
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine count_subdomain_sf_ngrp_stack(num_pe, sub_sf, istack)
 !
       use t_group_data
@@ -216,27 +195,6 @@
       end do
 !
       end subroutine count_subdomain_sf_ngrp_stack
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_subdomain_sf_item_stack(num_pe, sub_sf, istack)
-!
-      use t_group_data
-!
-      integer (kind = kint), intent(in) :: num_pe
-      type(surface_group_data), intent(in) :: sub_sf(num_pe)
-!
-      integer (kind = kint), intent(inout) :: istack(0:num_pe)
-!
-      integer(kind = kint) :: ip
-!
-!
-      istack(0) = izero
-      do ip = 1, num_pe
-        istack(ip) = istack(ip-1) + sub_sf(ip)%num_item
-      end do
-!
-      end subroutine count_subdomain_sf_item_stack
 !
 !  ---------------------------------------------------------------------
 !

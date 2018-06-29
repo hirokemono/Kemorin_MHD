@@ -94,6 +94,9 @@
      &   (filter_coef_code, filter_IO%filters)
       close(filter_coef_code)
 !
+      call dealloc_comm_table(filter_IO%nod_comm)
+      call dealloc_node_geometry_base(filter_IO%node)
+!
       end subroutine write_sorted_filter_coef_file
 !
 !------------------------------------------------------------------
@@ -144,9 +147,12 @@
 !
       open(filter_coef_code, file=file_name, form='formatted')
       call write_filter_geometry(filter_coef_code, my_rank_IO,          &
-     &   filter_IO%nod_comm, filter_IO%node)
+     &    filter_IO%nod_comm, filter_IO%node)
 !
       close(filter_coef_code)
+!
+      call dealloc_comm_table(filter_IO%nod_comm)
+      call dealloc_node_geometry_base(filter_IO%node)
 !
       end subroutine write_filter_geometry_file
 !

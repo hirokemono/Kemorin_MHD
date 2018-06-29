@@ -15,6 +15,9 @@
 !!     &         (my_rank_IO, comm_IO, sph_IO, ierr)
 !!      subroutine read_spectr_modes_rlm_data_gz                        &
 !!     &         (my_rank_IO, comm_IO, sph_IO, ierr)
+!!        type(communication_table), intent(inout) :: comm_IO
+!!        type(sph_IO_data), intent(inout) :: sph_IO
+!!        type(sph_group_data), intent(inout) :: sph_grps_IO
 !!
 !!      subroutine write_geom_rtp_data_gz                               &
 !!     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
@@ -22,9 +25,9 @@
 !!     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
 !!      subroutine write_geom_rtm_data_gz(my_rank_IO, comm_IO, sph_IO)
 !!      subroutine write_modes_rlm_data_gz(my_rank_IO, comm_IO, sph_IO)
-!!        type(communication_table), intent(inout) :: comm_IO
-!!        type(sph_IO_data), intent(inout) :: sph_IO
-!!        type(sph_group_data), intent(inout) :: sph_grps_IO
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(sph_IO_data), intent(in) :: sph_IO
+!!        type(sph_group_data), intent(in) :: sph_grps_IO
 !!@endverbatim
 !!
 !!@param my_rank    Process ID
@@ -54,7 +57,7 @@
       subroutine read_geom_rtp_data_gz                                  &
      &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO, ierr)
 !
-      use gz_sph_rj_groups_IO
+      use gz_groups_IO
 !
       integer(kind = kint), intent(in) :: my_rank_IO
 !
@@ -99,7 +102,7 @@
       subroutine read_spectr_modes_rj_data_gz                           &
      &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO, ierr)
 !
-      use gz_sph_rj_groups_IO
+      use gz_groups_IO
 !
       integer(kind = kint), intent(in) :: my_rank_IO
 !
@@ -188,12 +191,12 @@
       subroutine write_geom_rtp_data_gz                                 &
      &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
 !
-      use gz_sph_rj_groups_IO
+      use gz_groups_IO
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
-      type(sph_group_data), intent(inout) :: sph_grps_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
+      type(sph_group_data), intent(in) :: sph_grps_IO
 !
 !
       textbuf = hd_sph_para() // char(0)
@@ -236,8 +239,6 @@
       call gz_write_textbuf_no_lf
       call write_grp_data_gz(sph_grps_IO%zonal_rtp_grp)
 !
-!      write(*,*) 'finish!!'
-!
       end subroutine write_geom_rtp_data_gz
 !
 !------------------------------------------------------------------
@@ -245,12 +246,12 @@
       subroutine write_spectr_modes_rj_data_gz                          &
      &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
 !
-      use gz_sph_rj_groups_IO
+      use gz_groups_IO
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
-      type(sph_group_data), intent(inout) :: sph_grps_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
+      type(sph_group_data), intent(in) :: sph_grps_IO
 !
 !
       textbuf = hd_sph_para() // char(0)
@@ -292,8 +293,8 @@
       subroutine write_geom_rtm_data_gz(my_rank_IO, comm_IO, sph_IO)
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
 !
       textbuf = hd_sph_para() // char(0)
@@ -323,8 +324,8 @@
       subroutine write_modes_rlm_data_gz(my_rank_IO, comm_IO, sph_IO)
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
 !
       textbuf = hd_sph_para() // char(0)

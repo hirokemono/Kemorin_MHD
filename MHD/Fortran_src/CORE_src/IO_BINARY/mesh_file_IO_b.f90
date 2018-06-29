@@ -142,6 +142,11 @@
       call write_mesh_groups_b(fem_IO%group)
       call close_binary_file
 !
+      call dealloc_comm_table(fem_IO%mesh%nod_comm)
+      call dealloc_node_geometry_base(fem_IO%mesh%node)
+      call deallocate_ele_connect_type(fem_IO%mesh%ele)
+      call dealloc_groups_data(fem_IO%group)
+!
       end subroutine write_mesh_file_b
 !
 !  ---------------------------------------------------------------------

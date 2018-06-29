@@ -15,6 +15,9 @@
 !!     &         (my_rank_IO, comm_IO, sph_IO, ierr)
 !!      subroutine read_modes_rlm_data_b                                &
 !!     &         (my_rank_IO, comm_IO, sph_IO, ierr)
+!!        type(communication_table), intent(inout) :: comm_IO
+!!        type(sph_IO_data), intent(inout) :: sph_IO
+!!        type(sph_group_data), intent(inout) :: sph_grps_IO
 !!
 !!      subroutine write_geom_rtp_data_b                                &
 !!     &        (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
@@ -22,9 +25,9 @@
 !!     &         (my_rank_IO, comm_IO, sph_IO, sph_grps_IO)
 !!      subroutine write_geom_rtm_data_b(my_rank_IO, comm_IO, sph_IO)
 !!      subroutine write_modes_rlm_data_b(my_rank_IO, comm_IO, sph_IO)
-!!        type(communication_table), intent(inout) :: comm_IO
-!!        type(sph_IO_data), intent(inout) :: sph_IO
-!!        type(sph_group_data), intent(inout) :: sph_grps_IO
+!!        type(communication_table), intent(in) :: comm_IO
+!!        type(sph_IO_data), intent(in) :: sph_IO
+!!        type(sph_group_data), intent(in) :: sph_grps_IO
 !!@endverbatim
 !!
 !!@param my_rank    Process ID
@@ -189,9 +192,9 @@
       use groups_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
-      type(sph_group_data), intent(inout) :: sph_grps_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
+      type(sph_group_data), intent(in) :: sph_grps_IO
 !
 !
 !      write(*,*) '! domain and communication'
@@ -227,9 +230,9 @@
       use groups_IO_b
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
-      type(sph_group_data), intent(inout) :: sph_grps_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
+      type(sph_group_data), intent(in) :: sph_grps_IO
 !
 !
 !      write(*,*) '! domain and communication'
@@ -260,11 +263,12 @@
       subroutine write_geom_rtm_data_b(my_rank_IO, comm_IO, sph_IO)
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
 !
       call write_domain_info_b(my_rank_IO, comm_IO)
+!
       call write_gl_resolution_sph_b(sph_IO)
       call write_rank_4_sph_b(sph_IO)
       call write_rtp_gl_1d_table_b(sph_IO)
@@ -279,11 +283,12 @@
       subroutine write_modes_rlm_data_b(my_rank_IO, comm_IO, sph_IO)
 !
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(communication_table), intent(inout) :: comm_IO
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(communication_table), intent(in) :: comm_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
 !
       call write_domain_info_b(my_rank_IO, comm_IO)
+!
       call write_gl_resolution_sph_b(sph_IO)
       call write_rank_4_sph_b(sph_IO)
       call write_rj_gl_1d_table_b(sph_IO)

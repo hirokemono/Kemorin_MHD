@@ -10,6 +10,8 @@
 !!      subroutine gz_write_geometry_info_b(nod_IO)
 !!      subroutine gz_write_scalar_in_element_b(nod_IO, sfed_IO)
 !!      subroutine gz_write_vector_in_element_b(nod_IO, sfed_IO)
+!!        type(node_data), intent(in) :: nod_IO
+!!        type(surf_edge_IO_data), intent(in) :: sfed_IO
 !!
 !!      subroutine gz_read_number_of_node_b(nod_IO)
 !!      subroutine gz_read_geometry_info_b(nod_IO)
@@ -40,7 +42,7 @@
 !
       use gz_binary_IO
 !
-      type(node_data), intent(inout) :: nod_IO
+      type(node_data), intent(in) :: nod_IO
 !
 !
       call gz_write_one_integer_b(nod_IO%numnod)
@@ -48,8 +50,6 @@
 !
       call gz_write_mul_int8_b(nod_IO%numnod, nod_IO%inod_global)
       call gz_write_2d_vector_b(nod_IO%numnod, ithree, nod_IO%xx)
-!
-      call dealloc_node_geometry_base(nod_IO)
 !
       end subroutine gz_write_geometry_info_b
 !
@@ -59,16 +59,14 @@
 !
       use gz_binary_IO
 !
-      type(node_data), intent(inout) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(node_data), intent(in) :: nod_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       call gz_write_one_integer_b(nod_IO%numnod)
       call gz_write_one_integer_b(nod_IO%internal_node)
 !
       call gz_write_1d_vector_b(nod_IO%numnod, sfed_IO%ele_scalar)
-!
-      call dealloc_ele_scalar_IO(sfed_IO)
 !
       end subroutine gz_write_scalar_in_element_b
 !
@@ -78,8 +76,8 @@
 !
       use gz_binary_IO
 !
-      type(node_data), intent(inout) :: nod_IO
-      type(surf_edge_IO_data), intent(inout) :: sfed_IO
+      type(node_data), intent(in) :: nod_IO
+      type(surf_edge_IO_data), intent(in) :: sfed_IO
 !
 !
       call gz_write_one_integer_b(nod_IO%numnod)
@@ -87,8 +85,6 @@
 !
       call gz_write_2d_vector_b                                         &
      &   (nod_IO%numnod, n_vector, sfed_IO%ele_scalar)
-!
-      call dealloc_ele_vector_IO(sfed_IO)
 !
       end subroutine gz_write_vector_in_element_b
 !
