@@ -170,6 +170,11 @@
       call output_modes_rj_sph_trans(sph_params,                        &
      &    sph_rj, comm_rj_lc, sph_grp_lc, sph_file)
 !
+      call dealloc_type_sph_1d_index_rj(sph_rj)
+      call dealloc_spheric_param_rj(sph_rj)
+      call dealloc_type_sph_comm_item(comm_rj_lc)
+      call dealloc_sph_mode_group(sph_grp_lc)
+!
       end subroutine const_sph_rj_modes
 !
 ! ----------------------------------------------------------------------
@@ -243,6 +248,11 @@
      &                 'output_geom_rtp_sph_trans', ip_rank
       call output_geom_rtp_sph_trans(sph_params,                        &
      &    sph_rtp, comm_rtp_lc, sph_grp_lc, sph_file)
+!
+      call dealloc_type_sph_1d_index_rtp(sph_rtp)
+      call dealloc_type_spheric_param_rtp(sph_rtp)
+      call dealloc_type_sph_comm_item(comm_rtp_lc)
+      call dealloc_sph_grid_group(sph_grp_lc)
 !
       end subroutine const_sph_rtp_grids
 !

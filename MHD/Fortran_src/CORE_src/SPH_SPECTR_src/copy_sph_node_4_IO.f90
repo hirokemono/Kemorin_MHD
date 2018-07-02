@@ -64,7 +64,7 @@
 !
       integer(kind = kint), intent(inout) :: l_truncation
       type(sph_rtp_grid), intent(inout) :: rtp
-      type(sph_IO_data), intent(inout) :: sph_IO
+      type(sph_IO_data), intent(in) :: sph_IO
 !
       integer(kind = kint) :: i
 !

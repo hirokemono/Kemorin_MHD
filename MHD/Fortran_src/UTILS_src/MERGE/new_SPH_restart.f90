@@ -85,6 +85,7 @@
           call input_modes_rj_sph_trans(sph_file,                       &
      &       sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,   &
      &       sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params, ierr)
+          call dealloc_rj_mode_IO(sph_file)
         end if
       end do
 !

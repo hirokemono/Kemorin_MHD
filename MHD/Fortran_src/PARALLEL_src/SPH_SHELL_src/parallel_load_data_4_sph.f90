@@ -194,6 +194,8 @@
      &    comms_sph%comm_rtp, sph_grps, sph%sph_params, ierr)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, 'error in RTP mesh')
 !
+      call dealloc_rtp_grid_IO(sph_file_l)
+!
       call set_reverse_import_table(sph%sph_rtp%nnod_rtp,               &
      &    comms_sph%comm_rtp%ntot_item_sr, comms_sph%comm_rtp%item_sr,  &
      &    comms_sph%comm_rtp%irev_sr)
@@ -204,6 +206,8 @@
       call input_modes_rj_sph_trans(sph_file_l, sph%sph_rj,             &
      &    comms_sph%comm_rj, sph_grps, sph%sph_params, ierr)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, 'error in RJ mesh')
+!
+      call dealloc_rj_mode_IO(sph_file_l)
 !
       call set_reverse_import_table(sph%sph_rj%nnod_rj,                 &
      &    comms_sph%comm_rj%ntot_item_sr, comms_sph%comm_rj%item_sr,    &
@@ -217,6 +221,8 @@
      &    sph%sph_rtm, comms_sph%comm_rtm, sph%sph_params, ierr)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, 'error in RTM mesh')
 !
+      call dealloc_rtm_grid_IO(sph_file_l)
+!
       call set_reverse_import_table(sph%sph_rtm%nnod_rtm,               &
      &    comms_sph%comm_rtm%ntot_item_sr, comms_sph%comm_rtm%item_sr,  &
      &    comms_sph%comm_rtm%irev_sr)
@@ -227,6 +233,7 @@
       call input_modes_rlm_sph_trans(sph_file_l,                        &
      &    sph%sph_rlm, comms_sph%comm_rlm, sph%sph_params, ierr)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, 'error in RLM mesh')
+      call dealloc_rlm_mode_IO(sph_file_l)
 !
       call set_reverse_import_table(sph%sph_rlm%nnod_rlm,               &
      &    comms_sph%comm_rlm%ntot_item_sr, comms_sph%comm_rlm%item_sr,  &
@@ -265,6 +272,8 @@
       call sel_mpi_read_spectr_rj_file(nprocs, my_rank, sph_file_l)
       call input_modes_rj_sph_trans(sph_file_l,                         &
      &    sph_rj, comm_rj, sph_grps, sph_params, ierr)
+      call dealloc_rj_mode_IO(sph_file_l)
+!
       call set_reverse_import_table(sph_rj%nnod_rj,                     &
      &    comm_rj%ntot_item_sr, comm_rj%item_sr, comm_rj%irev_sr)
 !
