@@ -11,8 +11,8 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(fieldline_source), intent(inout) :: fline_src
-!!        type(fieldline_trace), intent(inout) :: fline_tce
+!!        type(all_fieldline_source), intent(inout) :: fline_src
+!!        type(all_fieldline_trace), intent(inout) :: fline_tce
 !
       module start_surface_by_flux
 !
@@ -54,8 +54,8 @@
 !
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(fieldline_source), intent(inout) :: fline_src
-      type(fieldline_trace), intent(inout) :: fline_tce
+      type(all_fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_trace), intent(inout) :: fline_tce
 !
       integer(kind = kint) :: ist_grp, num_grp, i, ip
       integer(kind = kint) :: ist_line, num_line
@@ -266,7 +266,7 @@
       use cal_field_on_surf_viz
       use set_fline_start_surface
 !
-      type(fieldline_source), intent(in) :: fline_src
+      type(all_fieldline_source), intent(in) :: fline_src
       real(kind = kreal), intent(in) :: abs_flux_start_l
       integer(kind = kint), intent(in) :: i_fln
 !
@@ -337,7 +337,7 @@
       use cal_field_on_surf_viz
       use set_fline_start_surface
 !
-      type(fieldline_source), intent(in) :: fline_src
+      type(all_fieldline_source), intent(in) :: fline_src
       real(kind = kreal), intent(in) :: abs_flux_start_l
       integer(kind = kint), intent(in) :: i_fln
       integer(kind = kint), intent(in) :: num_line

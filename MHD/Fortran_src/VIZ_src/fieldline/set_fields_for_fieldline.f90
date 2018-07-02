@@ -22,8 +22,8 @@
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
 !!        type(surface_group_data), intent(in) :: sf_grp
-!!        type(fieldline_source), intent(inout) :: fline_src
-!!        type(fieldline_trace), intent(inout) :: fline_tce
+!!        type(all_fieldline_source), intent(inout) :: fline_src
+!!        type(all_fieldline_trace), intent(inout) :: fline_tce
 !
       module set_fields_for_fieldline
 !
@@ -58,7 +58,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !
-      type(fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: i_fln
       integer(kind = kint) :: i_field, ist_fld, num_comp
@@ -103,7 +103,7 @@
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
 !
-      type(fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: isurf, iele, icou, ist, ied
 !
@@ -136,7 +136,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: igrp_seed
 !
-      type(fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: isurf, inum, iele, ist, ied
 !
@@ -177,8 +177,8 @@
       type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(fieldline_source), intent(inout) :: fline_src
-      type(fieldline_trace), intent(inout) :: fline_tce
+      type(all_fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_trace), intent(inout) :: fline_tce
 !
 !
       if(fln_prm%id_fline_seed_type .eq. iflag_surface_group) then

@@ -11,8 +11,8 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(fieldline_source), intent(inout) :: fline_src
-!!        type(fieldline_trace), intent(inout) :: fline_tce
+!!        type(all_fieldline_source), intent(inout) :: fline_src
+!!        type(all_fieldline_trace), intent(inout) :: fline_tce
 !
       module start_surface_4_fline
 !
@@ -52,8 +52,8 @@
 !
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(fieldline_source), intent(inout) :: fline_src
-      type(fieldline_trace), intent(inout) :: fline_tce
+      type(all_fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_trace), intent(inout) :: fline_tce
 !
       integer(kind = kint) :: i, ist, ied, inum
       integer(kind = kint) :: ist_line, iele, isf, isurf

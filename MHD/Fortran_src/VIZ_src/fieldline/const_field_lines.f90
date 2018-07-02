@@ -23,8 +23,8 @@
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(in) :: fline_prm
-!!        type(fieldline_source), intent(in) :: fline_src
-!!        type(fieldline_trace), intent(inout) :: fline_tce
+!!        type(all_fieldline_source), intent(in) :: fline_src
+!!        type(all_fieldline_trace), intent(inout) :: fline_tce
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
 !
@@ -71,9 +71,9 @@
       type(communication_table), intent(in) :: nod_comm
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(in) :: fline_prm
-      type(fieldline_source), intent(in) :: fline_src
+      type(all_fieldline_source), intent(in) :: fline_src
 !
-      type(fieldline_trace), intent(inout) :: fline_tce
+      type(all_fieldline_trace), intent(inout) :: fline_tce
       type(local_fieldline), intent(inout) :: fline_lc
 !
       integer(kind = kint) :: iflag_comm
@@ -192,7 +192,7 @@
       integer(kind = kint), intent(in) :: istack_import(0:num_neib)
       integer(kind = kint), intent(in) :: item_import(ntot_import)
 !
-      type(fieldline_trace), intent(inout) :: fline_tce
+      type(all_fieldline_trace), intent(inout) :: fline_tce
 !
       integer(kind = kint) :: inod, iele, isf, ip, ist, ied, inum
 !
@@ -262,7 +262,7 @@
       integer(kind = kint), intent(in) :: istack_export(0:num_neib)
       integer(kind = kint), intent(in) :: item_export(ntot_export)
 !
-      type(fieldline_trace), intent(inout) :: fline_tce
+      type(all_fieldline_trace), intent(inout) :: fline_tce
 !
       integer(kind = kint) :: ip, ip_org, ist_lin, ied_lin, iline
       integer(kind = kint) :: inum, inod, ist_ele, ied_ele, jnum, jele
@@ -325,7 +325,7 @@
       use t_source_of_filed_line
 !
       integer(kind = kint), intent(in) :: i_fln
-      type(fieldline_trace), intent(inout) :: fline_tce
+      type(all_fieldline_trace), intent(inout) :: fline_tce
 !
       integer(kind = kint) :: ist_lin, ied_lin, iline, icou, ip
 !

@@ -10,7 +10,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(fieldline_source), intent(inout) :: fline_src
+!!        type(all_fieldline_source), intent(inout) :: fline_src
 !
       module set_fline_control
 !
@@ -49,7 +49,7 @@
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: i
 !

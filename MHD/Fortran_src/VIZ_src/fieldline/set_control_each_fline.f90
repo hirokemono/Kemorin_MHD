@@ -15,7 +15,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fline_ctl), intent(inout) :: fln
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(fieldline_source), intent(inout) :: fline_src
+!!        type(all_fieldline_source), intent(inout) :: fline_src
 !!      subroutine set_iflag_fline_used_ele(ele, ele_grp, fln_prm)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
@@ -65,7 +65,7 @@
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_source), intent(inout) :: fline_src
 !
       character(len=kchara) :: character_256
 !
@@ -193,7 +193,7 @@
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: i, ist, ncomp(1), ncomp_org(1)
       integer(kind = kint) :: ifield_tmp(1), icomp_tmp(1)

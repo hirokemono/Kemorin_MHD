@@ -9,8 +9,8 @@
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(fieldline_source), intent(inout) :: fline_src
-!!        type(fieldline_trace), intent(inout) :: fline_tce
+!!        type(all_fieldline_source), intent(inout) :: fline_src
+!!        type(all_fieldline_trace), intent(inout) :: fline_tce
 !
       module start_surface_in_volume
 !
@@ -51,14 +51,13 @@
       type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(fieldline_source), intent(inout) :: fline_src
-      type(fieldline_trace), intent(inout) :: fline_tce
+      type(all_fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_trace), intent(inout) :: fline_tce
 !
-      integer(kind = kint) :: i, ip
+      integer(kind = kint) :: ip
       integer(kind = kint) :: ist_line, num_line
 !
       real(kind = kreal) :: volume_local, total_volume, volume_start_l
-      real(kind = kreal) :: flux_4_each_line
 !
       integer(kind = kint), allocatable :: iflag_ele(:)
 !
@@ -82,13 +81,13 @@
      &                          + fline_tce%flux_stack_fline(ip)
       end do
       total_volume = fline_tce%flux_stack_fline(nprocs)
-      flux_4_each_line = total_volume                                   &
+      volume_start_l = total_volume                                     &
      &                    / dble(fline_prm%num_each_field_line(i_fln))
 !
       do ip = 1, nprocs
         fline_tce%num_all_fline(ip,i_fln)                               &
      &     = nint((fline_tce%flux_stack_fline(ip)                       &
-     &      - fline_tce%flux_stack_fline(ip-1)) / flux_4_each_line)
+     &      - fline_tce%flux_stack_fline(ip-1)) / volume_start_l)
       end do
       fline_src%num_line_local(i_fln)                                   &
      &     = fline_tce%num_all_fline(my_rank+1,i_fln)
@@ -98,7 +97,7 @@
      &                      volume_start_l, total_volume
         write(my_rank+50,*)  'original num_each_field_line',            &
      &                    i_fln, fline_src%num_line_local(i_fln)
-        write(my_rank+50,*)  'flux_4_each_line', flux_4_each_line
+        write(my_rank+50,*)  'volume_start_l', volume_start_l
       end if
 !
       ist_line = fline_prm%istack_each_field_line(i_fln-1) + 1
@@ -125,7 +124,7 @@
       use set_fline_start_surface
 !
       type(element_data), intent(in) :: ele
-      type(fieldline_source), intent(in) :: fline_src
+      type(all_fieldline_source), intent(in) :: fline_src
       real(kind = kreal), intent(in) :: vol_4_start
       integer(kind = kint), intent(in) :: iflag_ele(ele%numele)
 !

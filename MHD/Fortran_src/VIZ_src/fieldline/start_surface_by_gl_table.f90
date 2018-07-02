@@ -10,7 +10,7 @@
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(fieldline_source), intent(inout) :: fline_src
+!!        type(all_fieldline_source), intent(inout) :: fline_src
 !
       module start_surface_by_gl_table
 !
@@ -50,7 +50,7 @@
       type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_source), intent(inout) :: fline_src
 !
 !
       call cnt_start_surface_by_gl_table                                &
@@ -84,7 +84,7 @@
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(in) :: fline_prm
 !
-      type(fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_source), intent(inout) :: fline_src
 !
       integer(kind = kint) :: inum, ist_grp, ied_grp
       integer(kind = kint) :: jgrp
@@ -131,7 +131,7 @@
       integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
       integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
 !
-      type(fieldline_source), intent(in) :: fline_src
+      type(all_fieldline_source), intent(in) :: fline_src
       type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm

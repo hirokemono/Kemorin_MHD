@@ -42,8 +42,8 @@
         type(fieldline_paramter), allocatable :: fln_prm(:)
 !
         type(fieldline_paramters) :: fline_prm
-        type(fieldline_source) :: fline_src
-        type(fieldline_trace) :: fline_tce
+        type(all_fieldline_source) :: fline_src
+        type(all_fieldline_trace) :: fline_tce
         type(local_fieldline) :: fline_lc
         type(global_fieldline_data) :: fline_gl
       end type fieldline_module
