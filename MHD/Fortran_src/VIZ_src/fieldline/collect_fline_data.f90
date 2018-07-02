@@ -4,10 +4,9 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine s_collect_fline_data(istep_fline, i_fln, fln_prm,    &
-!!     &          fline_prm, fline_lc, fline_gl)
+!!      subroutine s_collect_fline_data(istep_fline, fln_prm,           &
+!!     &          fline_lc, fline_gl)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
-!!        type(fieldline_paramters), intent(in) :: fline_prm
 !!        type(local_fieldline), intent(in) :: fline_lc
 !!        type(global_fieldline_data), intent(inout) :: fline_gl
 !
@@ -31,17 +30,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_collect_fline_data(istep_fline, i_fln, fln_prm,      &
-     &          fline_prm, fline_lc, fline_gl)
+      subroutine s_collect_fline_data(istep_fline, fln_prm,             &
+     &          fline_lc, fline_gl)
 !
       use t_control_params_4_fline
       use m_field_file_format
       use set_ucd_file_names
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: istep_fline, i_fln
+      integer(kind = kint), intent(in) :: istep_fline
       type(fieldline_paramter), intent(in) :: fln_prm
-      type(fieldline_paramters), intent(in) :: fline_prm
       type(local_fieldline), intent(in) :: fline_lc
 !
       type(global_fieldline_data), intent(inout) :: fline_gl

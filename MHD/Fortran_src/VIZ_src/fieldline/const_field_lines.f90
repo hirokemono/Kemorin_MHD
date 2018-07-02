@@ -106,7 +106,7 @@
      &        surf%nnod_4_surf, node%xx, surf%ie_surf, surf%isf_4_ele,  &
      &        surf%iele_4_surf, surf%interior_surf, surf%vnorm_surf,    &
      &        fln_prm%max_line_stepping,                                &
-     &        fline_prm%iflag_fline_used_ele(1,i_fln),                  &
+     &        fln_prm%iflag_fline_used_ele,                             &
      &        fline_tce%iflag_fline(i),                                 &
      &        fline_src%vector_nod_fline(1,1,i_fln),                    &
      &        fline_src%color_nod_fline(1,i_fln),                       &

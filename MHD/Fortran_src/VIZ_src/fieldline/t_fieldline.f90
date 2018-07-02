@@ -134,9 +134,8 @@
      &      fline%fline_tce, fline%fline_lc)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
-       call s_collect_fline_data                                        &
-     &    (istep_fline, i_fln, fline%fln_prm(i_fln),                    &
-     &     fline%fline_prm, fline%fline_lc, fline%fline_gl)
+       call s_collect_fline_data(istep_fline, fline%fln_prm(i_fln),     &
+     &     fline%fline_lc, fline%fline_gl)
       end do
 !
       end subroutine FLINE_visualize
@@ -150,7 +149,7 @@
 !
       call dealloc_control_params_fline(fline%fline_prm)
       call dealloc_fline_starts_ctl(fline%fline_prm)
-      call dealloc_iflag_fline_used_ele(fline%fline_prm)
+      call dealloc_iflag_fline_used_ele(fline%num_fline, fline%fln_prm)
 !
       call dealloc_local_data_4_fline(fline%fline_src)
       call dealloc_local_start_grp_item(fline%fline_src)

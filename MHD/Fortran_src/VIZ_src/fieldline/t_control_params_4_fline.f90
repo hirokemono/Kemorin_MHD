@@ -8,9 +8,11 @@
 !!      subroutine alloc_iflag_fline_used_ele                           &
 !!     &         (num_fline, ele, fline_prm)
 !!        type(element_data), intent(in) :: ele
+!!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!      subroutine dealloc_control_params_fline(fline_prm)
 !!      subroutine dealloc_fline_starts_ctl(fline_prm)
-!!      subroutine dealloc_iflag_fline_used_ele(fline_prm)
+!!      subroutine dealloc_iflag_fline_used_ele(num_fline, fln_prm)
+!!        type(fieldline_paramters), intent(inout) :: fln_prm
 !!
 !!      subroutine check_control_params_fline(i_fln)
 !
@@ -53,6 +55,9 @@
         integer(kind = kint) :: icomp_linecolor = 0
 !>        Field name for fieldline color
         character(len = kchara) :: name_color_output
+!
+!>        Element flagg to use in fieldline
+        integer(kind = kint), allocatable :: iflag_fline_used_ele(:)
       end type fieldline_paramter
 !
       type fieldline_paramters
@@ -60,8 +65,6 @@
         integer(kind = kint), allocatable :: istack_grp_area_fline(:)
         integer(kind = kint) :: ntot_ele_grp_area_fline
         integer(kind = kint), allocatable :: id_ele_grp_area_fline(:)
-!
-        integer(kind = kint), allocatable :: iflag_fline_used_ele(:,:)
 !
         integer(kind = kint), allocatable :: num_each_field_line(:)
         integer(kind = kint), allocatable :: istack_each_field_line(:)
@@ -168,17 +171,23 @@
 !  ---------------------------------------------------------------------
 !
       subroutine alloc_iflag_fline_used_ele                             &
-     &         (num_fline, ele, fline_prm)
+     &         (num_fline, ele, fln_prm)
 !
       use t_geometry_data
 !
       integer(kind = kint), intent(in) :: num_fline
       type(element_data), intent(in) :: ele
-      type(fieldline_paramters), intent(inout) :: fline_prm
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+!
+      integer(kind = kint) :: i
 !
 !
-      allocate(fline_prm%iflag_fline_used_ele(ele%numele,num_fline))
-      fline_prm%iflag_fline_used_ele = 0
+      do i = 1, num_fline
+        allocate(fln_prm(i)%iflag_fline_used_ele(ele%numele))
+!$omp parallel workshare
+        fln_prm(i)%iflag_fline_used_ele = 0
+!$omp end parallel workshare
+      end do
 !
       end subroutine alloc_iflag_fline_used_ele
 !
@@ -215,11 +224,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_iflag_fline_used_ele(fline_prm)
+      subroutine dealloc_iflag_fline_used_ele(num_fline, fln_prm)
 !
-      type(fieldline_paramters), intent(inout) :: fline_prm
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !
-      deallocate(fline_prm%iflag_fline_used_ele)
+      integer(kind = kint) :: i
+!
+      do i = 1, num_fline
+        deallocate(fln_prm(i)%iflag_fline_used_ele)
+      end do
 !
       end subroutine dealloc_iflag_fline_used_ele
 !

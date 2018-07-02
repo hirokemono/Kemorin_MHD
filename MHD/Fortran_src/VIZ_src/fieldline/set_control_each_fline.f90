@@ -17,7 +17,7 @@
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
 !!        type(fieldline_source), intent(inout) :: fline_src
 !!      subroutine set_iflag_fline_used_ele                             &
-!!     &         (i_fln, ele, ele_grp, fline_prm)
+!!     &         (i_fln, ele, ele_grp, fln_prm, fline_prm)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
@@ -266,7 +266,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_iflag_fline_used_ele                               &
-     &         (i_fln, ele, ele_grp, fline_prm)
+     &         (i_fln, ele, ele_grp, fln_prm, fline_prm)
 !
       use set_iflag_for_used_ele
 !
@@ -275,6 +275,7 @@
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
 !
+      type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
       integer(kind = kint) :: jst_grp
@@ -286,7 +287,7 @@
      &    ele_grp%num_item, ele_grp%istack_grp, ele_grp%item_grp,       &
      &    fline_prm%nele_grp_area_fline(i_fln),                         &
      &    fline_prm%id_ele_grp_area_fline(jst_grp),                     &
-     &    fline_prm%iflag_fline_used_ele(1,i_fln))
+     &    fln_prm%iflag_fline_used_ele)
 !
       end subroutine set_iflag_fline_used_ele
 !

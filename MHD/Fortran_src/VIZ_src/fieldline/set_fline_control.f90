@@ -71,7 +71,7 @@
      &      fline_prm, fline_src)
       end do
 !
-      call alloc_iflag_fline_used_ele(num_fline, mesh%ele, fline_prm)
+      call alloc_iflag_fline_used_ele(num_fline, mesh%ele, fln_prm)
       call alloc_fline_starts_ctl(num_fline, fline_prm)
       call alloc_local_start_grp_item(num_fline, fline_src)
 !
@@ -80,7 +80,7 @@
      &      mesh%ele, group%ele_grp, group%surf_grp, nod_fld,           &
      &      fln_prm(i), fline_prm, fline_src)
         call set_iflag_fline_used_ele                                   &
-     &     (i, mesh%ele, group%ele_grp, fline_prm)
+     &     (i, mesh%ele, group%ele_grp, fln_prm(i), fline_prm)
         call deallocate_cont_dat_fline(fline_ctls%fline_ctl_struct(i))
 !
         if(iflag_debug .gt. 0) then
