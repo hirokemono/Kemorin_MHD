@@ -49,7 +49,7 @@
       character(len=kchara) :: ftmp_1, file_name
 !
 !
-      fline_gl%color_name_gl = fline_prm%name_color_output(i_fln)
+      fline_gl%color_name_gl = fln_prm%name_color_output
       call collect_number_of_fline(fline_lc, fline_gl)
 !
       if(fline_gl%ntot_nod_line_gl                                      &

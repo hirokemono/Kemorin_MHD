@@ -47,6 +47,12 @@
         integer(kind = kint) :: ifield_4_fline = 0
 !>        Component address for fieldline
         integer(kind = kint) :: icomp_4_fline = 0
+!>        Field address for fieldline color
+        integer(kind = kint) :: ifield_linecolor = 0
+!>        Component address for fieldline color
+        integer(kind = kint) :: icomp_linecolor = 0
+!>        Field name for fieldline color
+        character(len = kchara) :: name_color_output
       end type fieldline_paramter
 !
       type fieldline_paramters
@@ -64,10 +70,6 @@
         integer(kind = kint), allocatable :: id_gl_surf_start_fline(:,:)
         integer(kind = kint), allocatable :: iflag_outward_flux_fline(:)
         real(kind = kreal), allocatable :: xx_surf_start_fline(:,:)
-!
-        integer(kind = kint), allocatable :: ifield_linecolor(:)
-        integer(kind = kint), allocatable :: icomp_linecolor(:)
-        character(len = kchara), allocatable :: name_color_output(:)
       end type fieldline_paramters
 !
 !
@@ -127,15 +129,6 @@
       if(num_fline .gt. 0) then
         fline_prm%nele_grp_area_fline =   0
         fline_prm%num_each_field_line =    0
-      end if
-!
-      allocate(fline_prm%ifield_linecolor(num_fline) )
-      allocate(fline_prm%icomp_linecolor(num_fline) )
-      allocate(fline_prm%name_color_output(num_fline) )
-!
-      if(num_fline .gt. 0) then
-        fline_prm%ifield_linecolor =   0
-        fline_prm%icomp_linecolor =    0
       end if
 !
       end subroutine alloc_control_params_fline
@@ -202,10 +195,6 @@
       deallocate(fline_prm%num_each_field_line)
       deallocate(fline_prm%istack_each_field_line)
 !
-      deallocate(fline_prm%ifield_linecolor )
-      deallocate(fline_prm%icomp_linecolor )
-      deallocate(fline_prm%name_color_output )
-!
       end subroutine dealloc_control_params_fline
 !
 !  ---------------------------------------------------------------------
@@ -257,12 +246,10 @@
 !
         write(*,*) 'ifield_4_fline: ', fln_prm%ifield_4_fline
         write(*,*) 'icomp_4_fline: ',  fln_prm%icomp_4_fline
-        write(*,*) 'ifield_linecolor: ',                                &
-     &            fline_prm%ifield_linecolor(i_fln)
-        write(*,*) 'icomp_linecolor: ',                                 &
-     &            fline_prm%icomp_linecolor(i_fln)
+        write(*,*) 'ifield_linecolor: ', fln_prm%ifield_linecolor
+        write(*,*) 'icomp_linecolor: ', fln_prm%icomp_linecolor
         write(*,*) 'name_color_output: ',                               &
-     &            trim(fline_prm%name_color_output(i_fln))
+     &            trim(fln_prm%name_color_output)
 !
         ist = fline_prm%istack_grp_area_fline(i_fln-1) + 1
         ied = fline_prm%istack_grp_area_fline(i_fln  )
