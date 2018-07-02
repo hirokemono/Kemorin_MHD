@@ -107,6 +107,10 @@
      &   (sph_params, sph_rlm, comm_rlm_lc, sph_file_m)
 !
       call sel_mpi_write_modes_rlm_file(nprocs, my_rank, sph_file_m)
+!
+      call dealloc_import_table(sph_file_m%comm_IO)
+      call dealloc_sph_mode_idx_IO(sph_file_m%sph_IO)
+!
       write(*,'(a,i6,a)') 'Spherical transform table for domain',       &
      &          my_rank, ' is done.'
 !
@@ -146,6 +150,10 @@
      &   (sph_params, sph_rtm, comm_rtm_lc, sph_file_m)
 !
       call sel_mpi_write_geom_rtm_file(nprocs, my_rank, sph_file_m)
+!
+      call dealloc_import_table(sph_file_m%comm_IO)
+      call dealloc_sph_grid_idx_IO(sph_file_m%sph_IO)
+!
       write(*,'(a,i6,a)') 'Legendre transform table rtm',               &
      &          my_rank, ' is done.'
 !
@@ -178,6 +186,11 @@
      &    sph_params, sph_rj, sph_rlm, sph_file_m, sph_lcx_m)
 !
       call sel_mpi_write_spectr_rj_file(nprocs, my_rank, sph_file_m)
+!
+      call dealloc_import_table(sph_file_m%comm_IO)
+      call dealloc_sph_mode_idx_IO(sph_file_m%sph_IO)
+      call dealloc_sph_mode_group(sph_file_m%sph_grp_IO)
+!
       write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
      &          my_rank, ' is done.'
       call dealloc_rj_1d_local_idx(sph_lcx_m)
@@ -210,8 +223,14 @@
      &    sph_params, sph_rtp, sph_rtm, sph_file_m, sph_lcx_m)
 !
       call sel_mpi_write_geom_rtp_file(nprocs, my_rank, sph_file_m)
+!
+      call dealloc_import_table(sph_file_m%comm_IO)
+      call dealloc_sph_grid_idx_IO(sph_file_m%sph_IO)
+      call dealloc_sph_grid_group(sph_file_m%sph_grp_IO)
+!
       write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
      &          my_rank, ' is done.'
+!
       call dealloc_rtp_1d_local_idx(sph_lcx_m)
 !
       end subroutine mpi_gen_sph_rtp_grids

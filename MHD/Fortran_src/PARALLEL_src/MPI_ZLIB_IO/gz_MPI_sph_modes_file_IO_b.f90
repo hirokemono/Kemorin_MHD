@@ -25,7 +25,7 @@
 !!     &         (file_name, nprocs_in, my_rank_IO, sph_file)
 !!      subroutine gz_mpi_write_modes_rlm_file_b                        &
 !!     &         (file_name, nprocs_in, my_rank_IO, sph_file)
-!!        type(sph_file_data_type), intent(inout) :: sph_file
+!!        type(sph_file_data_type), intent(in) :: sph_file
 !!@endverbatim
 !!
 !!@param nprocs_in  Number of subdomain
@@ -150,7 +150,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -163,10 +163,6 @@
 !
       call close_mpi_file(IO_param)
 !
-      call dealloc_import_table(sph_file%comm_IO)
-      call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
-      call dealloc_sph_grid_group(sph_file%sph_grp_IO)
-!
       end subroutine gz_mpi_write_geom_rtp_file_b
 !
 !------------------------------------------------------------------
@@ -176,7 +172,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -190,10 +186,6 @@
 !
       call close_mpi_file(IO_param)
 !
-      call dealloc_import_table(sph_file%comm_IO)
-      call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
-      call dealloc_sph_mode_group(sph_file%sph_grp_IO)
-!
       end subroutine gz_mpi_write_spectr_rj_file_b
 !
 !------------------------------------------------------------------
@@ -203,7 +195,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -216,9 +208,6 @@
 !
       call close_mpi_file(IO_param)
 !
-      call dealloc_import_table(sph_file%comm_IO)
-      call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
-!
       end subroutine gz_mpi_write_geom_rtm_file_b
 !
 !------------------------------------------------------------------
@@ -228,7 +217,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, my_rank_IO
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -241,9 +230,6 @@
      &   (IO_param, sph_file%comm_IO, sph_file%sph_IO)
 !
       call close_mpi_file(IO_param)
-!
-      call dealloc_import_table(sph_file%comm_IO)
-      call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
 !
       end subroutine gz_mpi_write_modes_rlm_file_b
 !

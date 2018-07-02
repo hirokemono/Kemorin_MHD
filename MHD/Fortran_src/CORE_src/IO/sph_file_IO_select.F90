@@ -19,7 +19,7 @@
 !!      subroutine sel_write_spectr_modes_rj_file(my_rank, sph_file)
 !!      subroutine sel_write_geom_rtm_file(my_rank, sph_file)
 !!      subroutine sel_write_modes_rlm_file(my_rank, sph_file)
-!!        type(sph_file_data_type), intent(inout) :: sph_file
+!!        type(sph_file_data_type), intent(in) :: sph_file
 !!
 !!      integer(kind = kint) function check_exsist_rtp_file(my_rank)
 !!      integer(kind = kint) function check_exsist_rj_file(my_rank)
@@ -211,7 +211,7 @@
       subroutine sel_write_geom_rtp_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       call set_sph_rtp_file_name(sph_file_head, iflag_sph_file_fmt,     &
@@ -239,7 +239,7 @@
       subroutine sel_write_spectr_modes_rj_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       call set_sph_rj_file_name(sph_file_head, iflag_sph_file_fmt,      &
@@ -270,7 +270,7 @@
       subroutine sel_write_geom_rtm_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       call set_sph_rtm_file_name(sph_file_head, iflag_sph_file_fmt,     &
@@ -298,7 +298,7 @@
       subroutine sel_write_modes_rlm_file(my_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       call set_sph_rlm_file_name(sph_file_head, iflag_sph_file_fmt,     &

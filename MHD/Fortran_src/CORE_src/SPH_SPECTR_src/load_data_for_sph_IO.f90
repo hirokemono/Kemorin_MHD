@@ -114,6 +114,8 @@
 !
       call count_num_rtp_smp(sph_rtp, ierr)
 !
+      call dealloc_import_table(sph_file%comm_IO)
+      call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
       call dealloc_sph_grid_group(sph_file%sph_grp_IO)
 !
       end subroutine input_geom_rtp_sph_trans
@@ -148,6 +150,9 @@
      &   (sph_file%sph_grp_IO%sphere_rj_grp, sph_grps%sphere_rj_grp)
 !
       call count_num_rj_smp(sph_rj, ierr)
+!
+      call dealloc_import_table(sph_file%comm_IO)
+      call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
       call dealloc_sph_mode_group(sph_file%sph_grp_IO)
 !
       end subroutine input_modes_rj_sph_trans
@@ -176,6 +181,9 @@
 !
       call count_num_rtm_smp(sph_rtm, ierr)
 !
+      call dealloc_import_table(sph_file%comm_IO)
+      call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
+!
       end subroutine input_geom_rtm_sph_trans
 !
 ! -----------------------------------------------------------------------
@@ -201,6 +209,9 @@
      &   (sph_rlm%nnod_rlm, sph_file%comm_IO, comm_rlm)
 !
       call count_num_rlm_smp(sph_rlm, ierr)
+!
+      call dealloc_import_table(sph_file%comm_IO)
+      call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
 !
       end subroutine input_modes_rlm_sph_trans
 !
@@ -235,6 +246,9 @@
       call set_gruop_stracture                                          &
      &   (sph_grps%zonal_rtp_grp, sph_file%sph_grp_IO%zonal_rtp_grp)
 !
+      call dealloc_type_sph_comm_item(comm_rtp)
+      call dealloc_type_sph_1d_index_rtp(sph_rtp)
+      call dealloc_type_spheric_param_rtp(sph_rtp)
       call dealloc_sph_grid_group(sph_grps)
 !
       end subroutine output_geom_rtp_sph_trans
@@ -265,6 +279,9 @@
       call set_gruop_stracture                                          &
      &   (sph_grps%sphere_rj_grp, sph_file%sph_grp_IO%sphere_rj_grp)
 !
+      call dealloc_type_sph_1d_index_rj(sph_rj)
+      call dealloc_spheric_param_rj(sph_rj)
+      call dealloc_type_sph_comm_item(comm_rj)
       call dealloc_sph_mode_group(sph_grps)
 !
       end subroutine output_modes_rj_sph_trans
@@ -288,6 +305,10 @@
      &   (sph_params%l_truncation, sph_rtm, sph_file%sph_IO)
       call copy_comm_sph_to_comm_tbl(comm_rtm, sph_file%comm_IO)
 !
+      call dealloc_type_sph_comm_item(comm_rtm)
+      call dealloc_type_sph_1d_index_rtm(sph_rtm)
+      call dealloc_type_spheric_param_rtm(sph_rtm)
+!
       end subroutine output_geom_rtm_sph_trans
 !
 ! -----------------------------------------------------------------------
@@ -308,6 +329,10 @@
       call copy_sph_node_4_rlm_to_IO                                    &
      &   (sph_params%l_truncation, sph_rlm, sph_file%sph_IO)
       call copy_comm_sph_to_comm_tbl(comm_rlm, sph_file%comm_IO)
+!
+      call dealloc_type_sph_comm_item(comm_rlm)
+      call dealloc_type_sph_1d_index_rlm(sph_rlm)
+      call dealloc_type_spheric_param_rlm(sph_rlm)
 !
       end subroutine output_modes_rlm_sph_trans
 !

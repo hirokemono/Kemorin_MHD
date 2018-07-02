@@ -55,6 +55,7 @@
 !
       subroutine init_gen_sph_grids
 !
+      use m_error_IDs
 !
       num_elapsed = 4
       call allocate_elapsed_times
@@ -72,6 +73,12 @@
      &    sph_const, sph_files1, gen_sph_G, ierr_MPI)
       if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !
+      if(gen_sph_G%s3d_ranks%ndomain_sph .eq. nprocs) then
+        write(e_message,'(a,a)') 'The number of MPI processes ',        &
+     &             'must be equal to the number of subdomains.'
+        call calypso_mpi_abort(ierr_P_MPI, e_message)
+      end if
+!
       end subroutine init_gen_sph_grids
 !
 ! ----------------------------------------------------------------------
@@ -79,7 +86,6 @@
       subroutine analyze_gen_sph_grids
 !
       use parallel_gen_sph_grids
-      use para_gen_sph_grids_modes
       use mpi_gen_sph_grids_modes
 !
 !  ========= Generate spherical harmonics table ========================
@@ -88,17 +94,9 @@
       call para_gen_sph_grids(sph_const, gen_sph_G)
 !
       call start_elapsed_time(4)
-      if(gen_sph_G%s3d_ranks%ndomain_sph .eq. nprocs) then
-        call mpi_gen_fem_mesh_for_sph(sph_files1%FEM_mesh_flags,        &
-     &      gen_sph_G, sph_const%sph_params, sph_const%sph_rj,          &
-     &      sph_const%sph_rtp, sph_files1%mesh_file_IO)
-      else
-        if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
-        call para_gen_fem_mesh_for_sph(gen_sph_G%s3d_ranks%ndomain_sph, &
-     &      sph_files1%FEM_mesh_flags, gen_sph_G, sph_const%sph_params, &
-     &      sph_const%sph_rj, sph_const%sph_rtp,  &
-     &      sph_files1%mesh_file_IO)
-      end if
+      call mpi_gen_fem_mesh_for_sph(sph_files1%FEM_mesh_flags,          &
+     &    gen_sph_G, sph_const%sph_params, sph_const%sph_rj,            &
+     &    sph_const%sph_rtp, sph_files1%mesh_file_IO)
       call end_elapsed_time(4)
       call end_elapsed_time(1)
 !

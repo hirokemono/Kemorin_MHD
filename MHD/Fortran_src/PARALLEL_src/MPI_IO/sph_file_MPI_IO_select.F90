@@ -15,6 +15,7 @@
 !!     &         (nprocs_in, id_rank, sph_file)
 !!      subroutine sel_mpi_read_modes_rlm_file                          &
 !!     &         (nprocs_in, id_rank, sph_file)
+!!        type(sph_file_data_type), intent(inout) :: sph_file
 !!
 !!      subroutine sel_mpi_write_geom_rtp_file                          &
 !!     &         (nprocs_in, id_rank, sph_file)
@@ -24,6 +25,7 @@
 !!     &         (nprocs_in, id_rank, sph_file)
 !!      subroutine sel_mpi_write_modes_rlm_file                         &
 !!     &         (nprocs_in, id_rank, sph_file)
+!!        type(sph_file_data_type), intent(in) :: sph_file
 !!@endverbatim
 !!
 !!@param sph_file_name  file name for IO (.gz is appended in this module)
@@ -239,7 +241,7 @@
      &         (nprocs_in, id_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       call set_sph_rtp_file_name(sph_file_head, iflag_sph_file_fmt,     &
@@ -277,7 +279,7 @@
      &         (nprocs_in, id_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       call set_sph_rj_file_name(sph_file_head, iflag_sph_file_fmt,      &
@@ -315,7 +317,7 @@
      &         (nprocs_in, id_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       call set_sph_rtm_file_name(sph_file_head, iflag_sph_file_fmt,     &
@@ -353,7 +355,7 @@
      &         (nprocs_in, id_rank, sph_file)
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       call set_sph_rlm_file_name(sph_file_head, iflag_sph_file_fmt,     &

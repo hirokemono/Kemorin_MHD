@@ -25,7 +25,7 @@
 !!     &         (file_name, my_rank_IO, sph_file)
 !!      subroutine write_modes_rlm_file_b                               &
 !!     &         (file_name, my_rank_IO, sph_file)
-!!        type(sph_file_data_type), intent(inout) :: sph_file
+!!        type(sph_file_data_type), intent(in) :: sph_file
 !!@endverbatim
 !!
 !!@param my_rank_IO    Process ID
@@ -143,7 +143,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -152,10 +152,6 @@
       call write_geom_rtp_data_b(my_rank_IO,                            &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
       call close_binary_file
-!
-      call dealloc_import_table(sph_file%comm_IO)
-      call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
-      call dealloc_sph_grid_group(sph_file%sph_grp_IO)
 !
       end subroutine write_geom_rtp_file_b
 !
@@ -168,7 +164,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -177,10 +173,6 @@
       call write_spectr_modes_rj_data_b(my_rank_IO,                     &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
       call close_binary_file
-!
-      call dealloc_import_table(sph_file%comm_IO)
-      call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
-      call dealloc_sph_mode_group(sph_file%sph_grp_IO)
 !
       end subroutine write_spectr_modes_rj_file_b
 !
@@ -191,7 +183,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -200,9 +192,6 @@
       call write_geom_rtm_data_b                                        &
      &   (my_rank_IO, sph_file%comm_IO, sph_file%sph_IO)
       call close_binary_file
-!
-      call dealloc_import_table(sph_file%comm_IO)
-      call dealloc_sph_grid_idx_IO(sph_file%sph_IO)
 !
       end subroutine write_geom_rtm_file_b
 !
@@ -213,7 +202,7 @@
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank_IO
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_file_data_type), intent(in) :: sph_file
 !
 !
       if(my_rank_IO.eq.0 .or. i_debug .gt. 0) write(*,*)                &
@@ -222,9 +211,6 @@
       call write_modes_rlm_data_b                                       &
      &   (my_rank_IO, sph_file%comm_IO, sph_file%sph_IO)
       call close_binary_file
-!
-      call dealloc_import_table(sph_file%comm_IO)
-      call dealloc_sph_mode_idx_IO(sph_file%sph_IO)
 !
       end subroutine write_modes_rlm_file_b
 !
