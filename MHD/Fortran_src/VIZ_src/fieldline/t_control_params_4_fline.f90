@@ -56,16 +56,15 @@
 !>        Field name for fieldline color
         character(len = kchara) :: name_color_output
 !
-!>        Element flagg to use in fieldline
+!>        Number of element group to use in fieldline
+        integer(kind = kint) :: nele_grp_area_fline = 0
+!>        Element group list to use in fieldline
+        integer(kind = kint), allocatable :: id_ele_grp_area_fline(:)
+!>        Element flag to use in fieldline
         integer(kind = kint), allocatable :: iflag_fline_used_ele(:)
       end type fieldline_paramter
 !
       type fieldline_paramters
-        integer(kind = kint), allocatable :: nele_grp_area_fline(:)
-        integer(kind = kint), allocatable :: istack_grp_area_fline(:)
-        integer(kind = kint) :: ntot_ele_grp_area_fline
-        integer(kind = kint), allocatable :: id_ele_grp_area_fline(:)
-!
         integer(kind = kint), allocatable :: num_each_field_line(:)
         integer(kind = kint), allocatable :: istack_each_field_line(:)
         integer(kind = kint) :: ntot_each_field_line
@@ -121,16 +120,11 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
 !
-      allocate(fline_prm%nele_grp_area_fline(num_fline))
-      allocate(fline_prm%istack_grp_area_fline(0:num_fline))
-!
       allocate(fline_prm%num_each_field_line(num_fline))
       allocate(fline_prm%istack_each_field_line(0:num_fline))
 !
-      fline_prm%istack_grp_area_fline = 0
       fline_prm%istack_each_field_line = 0
       if(num_fline .gt. 0) then
-        fline_prm%nele_grp_area_fline =   0
         fline_prm%num_each_field_line =    0
       end if
 !
@@ -138,19 +132,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_fline_starts_ctl(num_fline, fline_prm)
+      subroutine alloc_fline_starts_ctl(num_fline, fln_prm, fline_prm)
 !
       integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
       type(fieldline_paramters), intent(inout) :: fline_prm
-      integer(kind = kint) :: num
+      integer(kind = kint) :: i, num
 !
-      fline_prm%ntot_ele_grp_area_fline                                 &
-     &       = fline_prm%istack_grp_area_fline(num_fline)
       fline_prm%ntot_each_field_line                                    &
      &       = fline_prm%istack_each_field_line(num_fline)
 !
-      num = fline_prm%ntot_ele_grp_area_fline
-      allocate(fline_prm%id_ele_grp_area_fline(num))
+      do i = 1, num_fline
+        num = fln_prm(i)%nele_grp_area_fline
+        allocate(fln_prm(i)%id_ele_grp_area_fline(num))
+        if(num .gt. 0) fln_prm(i)%id_ele_grp_area_fline = 0
+      end do
 !
       num = fline_prm%ntot_each_field_line
       allocate(fline_prm%id_surf_start_fline(2,num))
@@ -159,7 +155,6 @@
       allocate(fline_prm%iflag_outward_flux_fline(num))
 !
       if(num .gt. 0) then
-        fline_prm%id_ele_grp_area_fline = 0
         fline_prm%id_surf_start_fline =   0
         fline_prm%id_gl_surf_start_fline = 0
         fline_prm%iflag_outward_flux_fline = 0
@@ -198,9 +193,6 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
 !
-      deallocate(fline_prm%nele_grp_area_fline)
-      deallocate(fline_prm%istack_grp_area_fline)
-!
       deallocate(fline_prm%num_each_field_line)
       deallocate(fline_prm%istack_each_field_line)
 !
@@ -208,12 +200,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_fline_starts_ctl(fline_prm)
+      subroutine dealloc_fline_starts_ctl(num_fline, fln_prm, fline_prm)
 !
+      integer(kind = kint), intent(in) :: num_fline
+      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
+      integer(kind = kint) :: i
 !
-      deallocate(fline_prm%id_ele_grp_area_fline)
+      do i = 1, num_fline
+        deallocate(fln_prm(i)%id_ele_grp_area_fline)
+      end do
+!
 !
       deallocate(fline_prm%id_surf_start_fline)
       deallocate(fline_prm%id_gl_surf_start_fline)
@@ -265,12 +263,8 @@
         write(*,*) 'name_color_output: ',                               &
      &            trim(fln_prm%name_color_output)
 !
-        ist = fline_prm%istack_grp_area_fline(i_fln-1) + 1
-        ied = fline_prm%istack_grp_area_fline(i_fln  )
         write(*,*) 'nele_grp_area_fline: ',                             &
-     &            fline_prm%nele_grp_area_fline(i_fln)
-        write(*,*) 'ntot_ele_grp_area_fline: ',                         &
-     &            fline_prm%id_ele_grp_area_fline(ist:ied)
+     &            fln_prm%nele_grp_area_fline
 !
         write(*,*) 'num_each_field_line: ',                             &
      &            fline_prm%num_each_field_line(i_fln)

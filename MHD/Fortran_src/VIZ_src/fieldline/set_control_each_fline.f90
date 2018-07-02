@@ -16,11 +16,10 @@
 !!        type(fline_ctl), intent(inout) :: fln
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
 !!        type(fieldline_source), intent(inout) :: fline_src
-!!      subroutine set_iflag_fline_used_ele                             &
-!!     &         (i_fln, ele, ele_grp, fln_prm, fline_prm)
+!!      subroutine set_iflag_fline_used_ele(ele, ele_grp, fln_prm)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
-!!        type(fieldline_paramters), intent(inout) :: fline_prm
+!!        type(fieldline_paramter), intent(inout) :: fln_prm
 !
       module set_control_each_fline
 !
@@ -88,12 +87,9 @@
 !
       call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
-     &     fline_prm%nele_grp_area_fline(i_fln) )
-      fline_prm%istack_grp_area_fline(i_fln)                            &
-     &      = fline_prm%istack_grp_area_fline(i_fln-1)                  &
-     &       + fline_prm%nele_grp_area_fline(i_fln)
+     &    fln_prm%nele_grp_area_fline)
 !
-      if ( fline_prm%nele_grp_area_fline(i_fln) .eq. 0)                 &
+      if(fln_prm%nele_grp_area_fline .eq. 0)                            &
      &  call calypso_MPI_abort(ierr_mesh, 'set correct element group')
 !
 !
@@ -231,11 +227,9 @@
         call calypso_MPI_abort(ierr_fld,'field color should be scalar')
       end if
 !
-      ist = fline_prm%istack_grp_area_fline(i_fln-1) + 1
       call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
      &    fln%fline_area_grp_ctl%num, fln%fline_area_grp_ctl%c_tbl,     &
-     &    fline_prm%istack_grp_area_fline(i_fln),                       &
-     &    fline_prm%id_ele_grp_area_fline(ist) )
+     &    fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline)
 !
 !
       ist = fline_prm%istack_each_field_line(i_fln-1)
@@ -265,28 +259,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_iflag_fline_used_ele                               &
-     &         (i_fln, ele, ele_grp, fln_prm, fline_prm)
+      subroutine set_iflag_fline_used_ele(ele, ele_grp, fln_prm)
 !
       use set_iflag_for_used_ele
-!
-      integer(kind = kint), intent(in) :: i_fln
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
-      type(fieldline_paramters), intent(inout) :: fline_prm
-!
-      integer(kind = kint) :: jst_grp
 !
 !
-      jst_grp = fline_prm%istack_grp_area_fline(i_fln-1) + 1
       call s_set_iflag_for_used_ele                                     &
      &   (ele%numele, ele%interior_ele, ele_grp%num_grp,                &
      &    ele_grp%num_item, ele_grp%istack_grp, ele_grp%item_grp,       &
-     &    fline_prm%nele_grp_area_fline(i_fln),                         &
-     &    fline_prm%id_ele_grp_area_fline(jst_grp),                     &
+     &    fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline,   &
      &    fln_prm%iflag_fline_used_ele)
 !
       end subroutine set_iflag_fline_used_ele

@@ -115,7 +115,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
       call set_local_field_4_fline                                      &
      &   (fline%num_fline, femmesh%mesh%node, nod_fld,                  &
-     &    fline%fln_prm, fline%fline_prm, fline%fline_src)
+     &    fline%fln_prm, fline%fline_src)
 !
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
@@ -148,7 +148,8 @@
 !
 !
       call dealloc_control_params_fline(fline%fline_prm)
-      call dealloc_fline_starts_ctl(fline%fline_prm)
+      call dealloc_fline_starts_ctl                                     &
+     &   (fline%num_fline, fline%fln_prm, fline%fline_prm)
       call dealloc_iflag_fline_used_ele(fline%num_fline, fline%fln_prm)
 !
       call dealloc_local_data_4_fline(fline%fline_src)

@@ -5,8 +5,9 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_start_surface_by_volume(i_fln, ele, ele_grp,       &
-!!     &          fline_prm, fline_src, fline_tce)
+!!     &          fln_prm, fline_prm, fline_src, fline_tce)
 !!        type(group_data), intent(in) :: ele_grp
+!!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
 !!        type(fieldline_source), intent(inout) :: fline_src
 !!        type(fieldline_trace), intent(inout) :: fline_tce
@@ -37,7 +38,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_by_volume(i_fln, ele, ele_grp,         &
-     &          fline_prm, fline_src, fline_tce)
+     &          fln_prm, fline_prm, fline_src, fline_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -47,12 +48,13 @@
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
+      type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(fieldline_source), intent(inout) :: fline_src
       type(fieldline_trace), intent(inout) :: fline_tce
 !
-      integer(kind = kint) :: ist_grp, num_grp, i, ip
+      integer(kind = kint) :: i, ip
       integer(kind = kint) :: ist_line, num_line
 !
       real(kind = kreal) :: volume_local, total_volume, volume_start_l
@@ -64,11 +66,9 @@
       call calypso_mpi_barrier
       allocate(iflag_ele(ele%numele))
 !
-      ist_grp = fline_prm%istack_grp_area_fline(i_fln-1)
-      num_grp = fline_prm%istack_grp_area_fline(i_fln) - ist_grp
       if(iflag_debug .gt. 0) write(*,*) 'cal_volume_for_fline_area'
       call cal_volume_for_fline_area(ele, ele_grp,                      &
-     &     num_grp, fline_prm%id_ele_grp_area_fline(ist_grp+1),         &
+     &     fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline,  &
      &     iflag_ele, volume_local)
 !
       call MPI_AllGather(volume_local, ione,                            &

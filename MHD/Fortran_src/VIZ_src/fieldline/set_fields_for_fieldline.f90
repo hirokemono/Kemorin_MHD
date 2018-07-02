@@ -5,7 +5,7 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine set_local_field_4_fline                              &
-!!     &       (num_fline, node, nod_fld, fln_prm, fline_prm, fline_src)
+!!     &       (num_fline, node, nod_fld, fln_prm, fline_src)
 !!        type(node_data), intent(in) :: node
 !!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !!      subroutine count_nsurf_for_starting                             &
@@ -49,7 +49,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_local_field_4_fline                                &
-     &       (num_fline, node, nod_fld, fln_prm, fline_prm, fline_src)
+     &       (num_fline, node, nod_fld, fln_prm, fline_src)
 !
       use convert_components_4_viz
 !
@@ -57,7 +57,6 @@
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-      type(fieldline_paramters), intent(in) :: fline_prm
 !
       type(fieldline_source), intent(inout) :: fline_src
 !
@@ -191,11 +190,12 @@
      &                           .eq. iflag_spray_in_domain) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_volume'
         call s_start_surface_by_volume(i_fln, mesh%ele, group%ele_grp,  &
-     &      fline_prm, fline_src, fline_tce)
+     &      fln_prm, fline_prm, fline_src, fline_tce)
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_gl_table'
         call s_start_surface_by_gl_table                                &
-     &     (i_fln, mesh%ele, group%ele_grp, fline_prm, fline_src)
+     &     (i_fln, mesh%ele, group%ele_grp, fln_prm,                    &
+     &      fline_prm, fline_src)
       else if(fln_prm%id_fline_seed_type                                &
      &                           .eq. iflag_spray_in_domain) then
       end if
