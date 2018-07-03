@@ -57,9 +57,6 @@
 !
         integer(kind= kint), allocatable :: id_fline_export(:,:)
         real(kind = kreal), allocatable ::  fline_export(:,:)
-!
-        integer(kind= kint), allocatable :: isf_fline_global(:,:)
-        real(kind = kreal), allocatable ::  fline_global(:,:)
       end type all_fieldline_trace
 !
 !  ---------------------------------------------------------------------
