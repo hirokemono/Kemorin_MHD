@@ -38,7 +38,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_4_fline(i_fln, node, ele, surf,        &
-     &          fln_prm, fline_prm, fline_src, fline_tce)
+     &          fln_prm, fline_prm, fline_src, fline_tce, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -54,6 +54,7 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(all_fieldline_source), intent(inout) :: fline_src
       type(all_fieldline_trace), intent(inout) :: fline_tce
+      type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: i, ist, ied, inum
       integer(kind = kint) :: ist_line, iele, isf, isurf
@@ -87,19 +88,19 @@
 !
       call MPI_AllGather                                                &
      &   (fline_src%num_line_local(i_fln), ione, CALYPSO_INTEGER,       &
-     &    fline_tce%num_all_fline(1,i_fln), ione, CALYPSO_INTEGER,      &
+     &    fln_tce%num_current_fline, ione, CALYPSO_INTEGER,             &
      &    CALYPSO_COMM, ierr_MPI)
 !
       if(fln_prm%id_fline_direction .eq. iflag_both_trace) then
-        fline_tce%num_all_fline(1:nprocs,i_fln)                         &
-     &        = 2 * fline_tce%num_all_fline(1:nprocs,i_fln)
+        fln_tce%num_current_fline(1:nprocs)                             &
+     &        = 2 * fln_tce%num_current_fline(1:nprocs)
       end if
 !
       fline_tce%istack_all_fline(0,i_fln) = fline_tce%ntot_gl_fline
       do i = 1, nprocs
         fline_tce%istack_all_fline(i,i_fln)                             &
      &        = fline_tce%istack_all_fline(i-1,i_fln)                   &
-     &         + fline_tce%num_all_fline(i,i_fln)
+     &         + fln_tce%num_current_fline(i)
       end do
       fline_tce%ntot_gl_fline                                           &
      &        = fline_tce%istack_all_fline(nprocs,i_fln)
@@ -112,8 +113,8 @@
       if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'ntot_gl_fline', fline_tce%ntot_gl_fline
         write(50+my_rank,*) 'ntot_gl_fline', fline_tce%ntot_gl_fline
-        write(50+my_rank,*) 'num_all_fline',                            &
-     &                   fline_tce%num_all_fline(:,i_fln)
+        write(50+my_rank,*) 'num_current_fline',                        &
+     &                   fln_tce%num_current_fline(:)
         write(50+my_rank,*) 'istack_all_fline',                         &
      &                   fline_tce%istack_all_fline(:,i_fln)
 !

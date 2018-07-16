@@ -41,6 +41,8 @@
 !
         type(fieldline_paramter), allocatable :: fln_prm(:)
 !
+        type(each_fieldline_trace), allocatable :: fln_tce(:)
+!
         type(fieldline_paramters) :: fline_prm
         type(all_fieldline_source) :: fline_src
         type(all_fieldline_trace) :: fline_tce
@@ -71,6 +73,7 @@
       if(fline%num_fline .le. 0) return
 !
       allocate(fline%fln_prm(fline%num_fline))
+      allocate(fline%fln_tce(fline%num_fline))
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
       call s_set_fline_control(femmesh%mesh, femmesh%group, nod_fld,    &
@@ -83,7 +86,9 @@
       call alloc_start_point_fline                                      &
      &   (fline%fline_prm%ntot_each_field_line, fline%fline_src)
       call alloc_num_gl_start_fline(nprocs, fline%num_fline,            &
-     &    fline%fline_prm%ntot_each_field_line, fline%fline_tce)
+     &    fline%fline_prm%num_each_field_line,                          &
+     &    fline%fline_prm%ntot_each_field_line,                         &
+     &    fline%fln_tce, fline%fline_tce)
       call alloc_local_fline(fline%fline_lc)
       call alloc_global_fline_num(fline%fline_gl)
 !
@@ -122,7 +127,7 @@
         call s_set_fields_for_fieldline                                 &
      &     (i_fln, femmesh%mesh, ele_mesh, femmesh%group,               &
      &      fline%fln_prm(i_fln), fline%fline_prm,                      &
-     &      fline%fline_src, fline%fline_tce)
+     &      fline%fline_src, fline%fline_tce, fline%fln_tce(i_fln))
       end do
 !
       do i_fln = 1, fline%num_fline
@@ -130,8 +135,8 @@
         call s_const_field_lines                                        &
      &     (i_fln, femmesh%mesh%node, femmesh%mesh%ele,                 &
      &      ele_mesh%surf, ele_4_nod, femmesh%mesh%nod_comm,            &
-     &      fline%fln_prm(i_fln), fline%fline_prm, fline%fline_src,     &
-     &      fline%fline_tce, fline%fline_lc)
+     &      fline%fln_prm(i_fln), fline%fline_src,                      &
+     &      fline%fln_tce(i_fln), fline%fline_tce, fline%fline_lc)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
        call s_collect_fline_data(istep_fline, fline%fln_prm(i_fln),     &
@@ -156,11 +161,12 @@
       call dealloc_local_start_grp_item(fline%fline_src)
       call dealloc_start_point_fline(fline%fline_src)
 !
-      call dealloc_num_gl_start_fline(fline%fline_tce)
+      call dealloc_num_gl_start_fline                                   &
+     &   (fline%num_fline, fline%fln_tce, fline%fline_tce)
       call dealloc_local_fline(fline%fline_lc)
       call dealloc_global_fline_num(fline%fline_gl)
 !
-      deallocate(fline%fln_prm)
+      deallocate(fline%fln_tce, fline%fln_prm)
 !
       end subroutine FLINE_finalize
 !

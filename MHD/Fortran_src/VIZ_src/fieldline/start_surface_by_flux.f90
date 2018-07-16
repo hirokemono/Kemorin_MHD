@@ -40,7 +40,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_by_flux(i_fln, node, ele, surf,        &
-     &          fln_prm, fline_prm, fline_src, fline_tce)
+     &          fln_prm, fline_prm, fline_src, fline_tce, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -56,6 +56,7 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(all_fieldline_source), intent(inout) :: fline_src
       type(all_fieldline_trace), intent(inout) :: fline_tce
+      type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ist_grp, num_grp, i, ip
       integer(kind = kint) :: ist_line, num_line
@@ -113,12 +114,12 @@
      &                    / dble(fline_prm%num_each_field_line(i_fln))
 !
       do ip = 1, nprocs
-        fline_tce%num_all_fline(ip,i_fln)                               &
+        fln_tce%num_current_fline(ip)                                   &
      &     = nint((fline_tce%flux_stack_fline(ip)                       &
      &      - fline_tce%flux_stack_fline(ip-1)) / flux_4_each_line)
       end do
       fline_src%num_line_local(i_fln)                                   &
-     &     = fline_tce%num_all_fline(my_rank+1,i_fln)
+     &      = fln_tce%num_current_fline(my_rank)
 !
       if(i_debug .gt. 0) then
         write(my_rank+50,*)  'abs_flux_start',                          &
