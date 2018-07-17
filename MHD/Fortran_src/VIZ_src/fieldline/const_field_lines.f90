@@ -349,6 +349,9 @@
      &    CALYPSO_COMM, ierr_MPI)
 !
       do ip = 1, nprocs
+        fln_tce%istack_current_fline(ip)                                &
+     &                   = fln_tce%istack_current_fline(ip-1)           &
+     &                    + fln_tce%num_current_fline(ip)
         fline_tce%istack_all_fline(ip,i_fln)                            &
      &                   = fline_tce%istack_all_fline(ip-1,i_fln)       &
      &                    + fln_tce%num_current_fline(ip)

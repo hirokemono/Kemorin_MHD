@@ -96,8 +96,12 @@
      &        = 2 * fln_tce%num_current_fline(1:nprocs)
       end if
 !
+      fln_tce%istack_current_fline(0) = 0
       fline_tce%istack_all_fline(0,i_fln) = fline_tce%ntot_gl_fline
       do i = 1, nprocs
+        fln_tce%istack_current_fline(i)                                 &
+     &        = fln_tce%istack_current_fline(i-1)                       &
+     &         + fln_tce%num_current_fline(i)
         fline_tce%istack_all_fline(i,i_fln)                             &
      &        = fline_tce%istack_all_fline(i-1,i_fln)                   &
      &         + fln_tce%num_current_fline(i)
