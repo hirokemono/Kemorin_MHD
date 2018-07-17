@@ -118,7 +118,7 @@
      &        fln_tce%isf_fline_start(1,inum),                          &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
-     &        fln_tce%c_fline_start(inum), fline_tce%icount_fline(i),   &
+     &        fln_tce%c_fline_start(inum), fln_tce%icount_fline(inum),  &
      &        iflag_comm, fline_lc)
           write(50+my_rank,*) 'extension end for ', i, iflag_comm
 !
@@ -222,7 +222,7 @@
         end do
 !
         fln_tce%id_fline_export(2,i) = fline_tce%iflag_fline(iline)
-        fln_tce%id_fline_export(3,i) = fline_tce%icount_fline(iline)
+        fln_tce%id_fline_export(3,i) = fln_tce%icount_fline(i)
         fln_tce%id_fline_export(4,i) = int(iele_global(iele))
         fln_tce%id_fline_export(5,i) = isf
         fln_tce%id_fline_export(6,i) = int(inod_global(inod))
@@ -358,8 +358,7 @@
           icou1 = icou1 + 1
           fline_tce%iflag_fline(icou1)                                   &
      &         = fln_tce%id_fline_export(2,i)
-          fline_tce%icount_fline(icou1)                                  &
-     &         = fln_tce%id_fline_export(3,i)
+          fln_tce%icount_fline(icou) = fln_tce%id_fline_export(3,i)
           fln_tce%isf_fline_start(1:3,icou)                             &
      &         = fln_tce%id_fline_export(4:6,i)
 !
