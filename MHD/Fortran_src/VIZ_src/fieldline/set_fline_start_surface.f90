@@ -76,7 +76,7 @@
 !
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf, xi, fline_src%vector_nod_fline(1,1,i_fln),  &
-     &      fline_tce%v_fline_start(1,inum11))
+     &      fln_tce%v_fline_start(1,inum1))
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf, xi, fline_src%color_nod_fline(1,i_fln),     &
      &      fln_tce%c_fline_start(inum1))
@@ -110,8 +110,8 @@
           inum12 = inum11 + fline_src%num_line_local(i_fln)
           fline_tce%xx_fline_start(1:3,inum12)                           &
      &          = fline_tce%xx_fline_start(1:3,inum11)
-          fline_tce%v_fline_start(1:3,inum12)                            &
-     &          = fline_tce%v_fline_start(1:3,inum11)
+          fln_tce%v_fline_start(1:3,inum2)                              &
+     &          = fln_tce%v_fline_start(1:3,inum1)
           fln_tce%c_fline_start(inum2) = fln_tce%c_fline_start(inum1)
 !
            call set_backward_fline_start_surf                           &
