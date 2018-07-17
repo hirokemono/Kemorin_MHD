@@ -5,7 +5,7 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine alloc_local_start_grp_num(num_fline, fline_src)
-!!      subroutine alloc_local_start_grp_item(num_fline, fline_src)
+!!      subroutine alloc_local_start_grp_item(nele_start_grp, fln_src)
 !!      subroutine alloc_local_data_4_fline(node, fln_src)
 !!        type(node_data), intent(in) :: node
 !!        type(each_fieldline_source), intent(inout) :: fln_src
@@ -16,8 +16,8 @@
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
 !!      subroutine dealloc_local_data_4_fline(fln_src)
-!!      subroutine dealloc_local_start_grp_item(fline_src)
-!!      subroutine dealloc_start_point_fline(fline_src)
+!!      subroutine dealloc_local_start_grp_item(fln_src)
+!!      subroutine dealloc_start_point_fline(fln_src)
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine dealloc_num_gl_start_fline(fln_tce)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -33,13 +33,14 @@
         integer(kind = kint) :: ntot_ele_start_grp
         integer(kind = kint), allocatable :: istack_ele_start_grp(:)
         integer(kind = kint), allocatable :: nele_start_grp(:)
-        integer(kind = kint), allocatable :: iele_start_item(:,:)
-        real(kind = kreal),   allocatable :: flux_start(:)
       end type all_fieldline_source
 !
       type each_fieldline_source
         real(kind = kreal), allocatable :: vector_nod_fline(:,:)
         real(kind = kreal), allocatable :: color_nod_fline(:)
+!
+        integer(kind = kint), allocatable :: iele_start_item(:,:)
+        real(kind = kreal),   allocatable :: flux_start(:)
 !
         integer(kind = kint) :: num_line_local = 0
         real(kind = kreal), allocatable :: xx_start_fline(:,:)
@@ -84,21 +85,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_local_start_grp_item(num_fline, fline_src)
+      subroutine alloc_local_start_grp_item(nele_start_grp, fln_src)
 !
-      integer(kind = kint), intent(in) :: num_fline
-      type(all_fieldline_source), intent(inout) :: fline_src
-!
-      integer(kind = kint) :: num
+      integer(kind = kint), intent(in) :: nele_start_grp
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
 !
-      fline_src%ntot_ele_start_grp                                      &
-     &            = fline_src%istack_ele_start_grp(num_fline)
-      num = fline_src%ntot_ele_start_grp
-!
-      allocate(fline_src%iele_start_item(2,num))
-      allocate(fline_src%flux_start(num))
-      if(num .gt. 0) fline_src%iele_start_item = 0
+      allocate(fln_src%iele_start_item(2,nele_start_grp))
+      allocate(fln_src%flux_start(nele_start_grp))
+      if(nele_start_grp .gt. 0) fln_src%iele_start_item = 0
 !
       end subroutine alloc_local_start_grp_item
 !
@@ -181,14 +176,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_local_start_grp_item(fline_src)
+      subroutine dealloc_local_start_grp_item(fln_src)
 !
-      type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
 !
-      deallocate(fline_src%nele_start_grp)
-      deallocate(fline_src%istack_ele_start_grp)
-      deallocate(fline_src%iele_start_item, fline_src%flux_start)
+!      deallocate(fline_src%nele_start_grp)
+!      deallocate(fline_src%istack_ele_start_grp)
+      deallocate(fln_src%iele_start_item, fln_src%flux_start)
 !
       end subroutine dealloc_local_start_grp_item
 !

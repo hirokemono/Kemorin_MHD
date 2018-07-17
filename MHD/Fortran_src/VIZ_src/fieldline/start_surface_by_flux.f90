@@ -58,7 +58,7 @@
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: ist_grp, num_grp, i, ip
+      integer(kind = kint) :: i, ip
       integer(kind = kint) :: ist_line, num_line
 !
       real(kind = kreal) :: tot_flux_start, tot_flux_start_l
@@ -66,34 +66,30 @@
       real(kind = kreal) :: flux_4_each_line
 !
 !
-      ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
-      num_grp = fline_src%nele_start_grp(i_fln)
-      call calypso_mpi_barrier
-!
       if(     fln_prm%id_seed_distribution .eq. iflag_random_by_area    &
      &   .or. fln_prm%id_seed_distribution .eq. iflag_no_random) then
         if(iflag_debug .gt. 0) write(*,*) 'cal_area_for_1sgrp'
         call cal_area_for_1sgrp(ele%numele, surf%numsurf,               &
      &      surf%isf_4_ele, ele%interior_ele, surf%area_surf,           &
-     &      num_grp, fline_src%iele_start_item(1,ist_grp),              &
-     &      fline_src%flux_start(ist_grp) )
+     &      fline_src%nele_start_grp(i_fln), fln_src%iele_start_item,   &
+     &      fln_src%flux_start)
       else
         if(iflag_debug .gt. 0) write(*,*) 'cal_flux_for_1sgrp'
         call cal_flux_for_1sgrp(node%numnod, ele%numele, surf%numsurf,  &
      &      surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele,             &
-     &      ele%interior_ele, surf%vnorm_surf, surf%area_surf, num_grp, &
-     &      fline_src%iele_start_item(1,ist_grp),                       &
-     &      fln_src%vector_nod_fline, fline_src%flux_start(ist_grp) )
+     &      ele%interior_ele, surf%vnorm_surf, surf%area_surf,          &
+     &      fline_src%nele_start_grp(i_fln), fln_src%iele_start_item,   &
+     &      fln_src%vector_nod_fline, fln_src%flux_start)
       end if
       call calypso_mpi_barrier
 !
       abs_flux_start_l = 0.0d0
       tot_flux_start_l = 0.0d0
-      do i = ist_grp, fline_src%istack_ele_start_grp(i_fln)
+      do i = 1, fline_src%nele_start_grp(i_fln)
         abs_flux_start_l                                                &
-     &            = abs_flux_start_l + abs(fline_src%flux_start(i))
+     &            = abs_flux_start_l + abs(fln_src%flux_start(i))
         tot_flux_start_l                                                &
-     &            = tot_flux_start_l + fline_src%flux_start(i)
+     &            = tot_flux_start_l + fln_src%flux_start(i)
       end do
 !
       call MPI_allREDUCE(tot_flux_start_l, tot_flux_start, ione,        &
@@ -275,7 +271,7 @@
       integer(kind = kint), intent(inout)                               &
      &                          :: id_surf_start_fline(2,num_line)
 !
-      integer(kind = kint) :: ist_grp, i, inum, num
+      integer(kind = kint) :: i, inum, num
       real(kind = kreal) :: flux, flux_new
 !
 !
@@ -286,8 +282,6 @@
       integer(kind = 4) ::  count, clock
       integer(kind = 4), allocatable :: seed(:)
 !
-!
-      ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
 !
       write(my_rank+50,*)  'random_seed',                               &
      &                      nRand, fln_src%num_line_local
@@ -311,14 +305,14 @@
           rnd_flux(i) = r_rnd(i) * abs_flux_start_l
 !
           flux = 0.0d0
-          do inum = ist_grp, fline_src%istack_ele_start_grp(i_fln)
-            flux_new = flux + abs(fline_src%flux_start(inum))
+          do inum = 1, fline_src%nele_start_grp(i_fln)
+            flux_new = flux + abs(fln_src%flux_start(inum))
             if(rnd_flux(i) .gt. flux                                    &
      &           .and. rnd_flux(i) .le. flux_new) exit
             flux = flux_new
           end do
-          id_surf_start_fline(1,i) = fline_src%iele_start_item(1,inum)
-          id_surf_start_fline(2,i) = fline_src%iele_start_item(2,inum)
+          id_surf_start_fline(1,i) = fln_src%iele_start_item(1,inum)
+          id_surf_start_fline(2,i) = fln_src%iele_start_item(2,inum)
         end do
       end if
 !
@@ -346,24 +340,22 @@
       integer(kind = kint), intent(inout)                               &
      &                          :: id_surf_start_fline(2,num_line)
 !
-      integer(kind = kint) :: ist_grp, ied_grp, icou, inum
+      integer(kind = kint) :: icou, inum
       real(kind = kreal) :: flux, ref_flux
 !
 !
       ref_flux = abs_flux_start_l / num_line
-      ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
-      ied_grp = fline_src%istack_ele_start_grp(i_fln)
       icou = 0
       if(fln_src%num_line_local .gt. 0) then
         flux = 0.0d0
-        do inum = ist_grp, ied_grp
-          flux = flux + abs(fline_src%flux_start(inum))
+        do inum = 1, fline_src%nele_start_grp(i_fln)
+          flux = flux + abs(fln_src%flux_start(inum))
           if(flux .gt. ref_flux) then
             icou = icou + 1
             id_surf_start_fline(1,icou)                                &
-     &               = fline_src%iele_start_item(1,inum)
+     &               = fln_src%iele_start_item(1,inum)
             id_surf_start_fline(2,icou)                                &
-     &               = fline_src%iele_start_item(2,inum)
+     &               = fln_src%iele_start_item(2,inum)
             flux = 0.0d0
           end if
           if(icou .ge. num_line) exit

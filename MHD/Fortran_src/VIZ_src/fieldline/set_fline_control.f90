@@ -34,7 +34,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_fline_control(mesh, group, nod_fld,              &
-     &          num_fline, fline_ctls, fln_prm, fline_prm, fline_src)
+     &          num_fline, fline_ctls, fln_prm, fline_prm, fline_src, fln_src)
 !
       use t_control_data_flines
       use t_control_params_4_fline
@@ -50,6 +50,7 @@
       type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
 !
       integer(kind = kint) :: i
 !
@@ -73,12 +74,15 @@
 !
       call alloc_iflag_fline_used_ele(num_fline, mesh%ele, fln_prm)
       call alloc_fline_starts_ctl(num_fline, fln_prm, fline_prm)
-      call alloc_local_start_grp_item(num_fline, fline_src)
+      do i = 1, num_fline
+        call alloc_local_start_grp_item                                 &
+     &     (fline_src%nele_start_grp(i), fln_src(i))
+      end do
 !
       do i = 1, num_fline
         call set_control_4_fline(i, fline_ctls%fline_ctl_struct(i),     &
      &      mesh%ele, group%ele_grp, group%surf_grp, nod_fld,           &
-     &      fln_prm(i), fline_prm, fline_src)
+     &      fln_prm(i), fline_prm, fline_src, fln_src(i))
         call set_iflag_fline_used_ele                                   &
      &     (mesh%ele, group%ele_grp, fln_prm(i))
         call deallocate_cont_dat_fline(fline_ctls%fline_ctl_struct(i))

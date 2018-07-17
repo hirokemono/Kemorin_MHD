@@ -11,8 +11,9 @@
 !!      subroutine count_nsurf_for_starting                             &
 !!     &         (i_fln, ele, sf_grp, igrp_seed, fline_src)
 !!      subroutine set_isurf_for_starting                               &
-!!     &         (i_fln, ele, sf_grp, igrp_seed, fline_src)
+!!     &         (ele, sf_grp, igrp_seed, fln_src)
 !!        type(element_data), intent(in) :: ele
+!!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine s_set_fields_for_fieldline                           &
 !!     &         (i_fln, mesh, ele_mesh, group,                         &
 !!     &          fln_prm, fline_prm, fline_src, fln_tce)
@@ -127,30 +128,26 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_isurf_for_starting                                 &
-     &         (i_fln, ele, sf_grp, igrp_seed, fline_src)
-!
-      integer(kind = kint), intent(in) :: i_fln
+     &         (ele, sf_grp, igrp_seed, fln_src)
 !
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: igrp_seed
 !
-      type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
       integer(kind = kint) :: isurf, inum, iele, ist, ied
 !
 !
-      inum = fline_src%istack_ele_start_grp(i_fln-1)
+      inum = 0
       ist = sf_grp%istack_grp(igrp_seed-1) + 1
       ied = sf_grp%istack_grp(igrp_seed)
       do isurf = ist, ied
         iele = sf_grp%item_sf_grp(1,isurf)
         if(ele%interior_ele(iele) .ne. izero) then
           inum = inum + 1
-          fline_src%iele_start_item(1,inum)                             &
-     &         = sf_grp%item_sf_grp(1,isurf)
-          fline_src%iele_start_item(2,inum)                             &
-     &         = sf_grp%item_sf_grp(2,isurf)
+          fln_src%iele_start_item(1,inum) = sf_grp%item_sf_grp(1,isurf)
+          fln_src%iele_start_item(2,inum) = sf_grp%item_sf_grp(2,isurf)
         end if
       end do
 !

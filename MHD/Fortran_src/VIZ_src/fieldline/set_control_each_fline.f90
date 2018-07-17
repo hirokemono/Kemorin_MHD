@@ -177,7 +177,7 @@
 !
       subroutine set_control_4_fline                                    &
      &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld,              &
-     &          fln_prm, fline_prm, fline_src)
+     &          fln_prm, fline_prm, fline_src, fln_src)
 !
       use t_source_of_filed_line
       use set_components_flags
@@ -194,6 +194,7 @@
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
       integer(kind = kint) :: i, ist, ncomp(1), ncomp_org(1)
       integer(kind = kint) :: ifield_tmp(1), icomp_tmp(1)
@@ -235,8 +236,7 @@
       ist = fline_prm%istack_each_field_line(i_fln-1)
       if(fln_prm%id_fline_seed_type .eq. iflag_surface_group) then
         call set_isurf_for_starting                                     &
-     &     (i_fln, ele, sf_grp, fln_prm%igrp_start_fline_surf_grp,      &
-     &      fline_src)
+     &     (ele, sf_grp, fln_prm%igrp_start_fline_surf_grp, fln_src)
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         do i = 1, fline_prm%num_each_field_line(i_fln)
           fline_prm%id_gl_surf_start_fline(1,i+ist)                     &
