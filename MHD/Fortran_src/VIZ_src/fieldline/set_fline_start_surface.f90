@@ -87,7 +87,7 @@
      &         iele, isf_1ele, isurf,                                   &
      &         numsurf, nnod_4_surf, ie_surf, iele_4_surf,              &
      &         fline_tce%iflag_fline(inum11),                            &
-     &         fline_tce%isf_fline_start(1,inum11))
+     &         fln_tce%isf_fline_start(1,inum1))
 !
         else if(fln_prm%id_fline_direction .eq. iflag_backward_trace)   &
      &      then
@@ -96,7 +96,7 @@
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
      &          fline_tce%iflag_fline(inum11),                           &
-     &          fline_tce%isf_fline_start(1,inum11))
+     &          fln_tce%isf_fline_start(1,inum1))
 !
         else
            call set_forward_fline_start_surf                            &
@@ -104,7 +104,7 @@
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
      &          fline_tce%iflag_fline(inum11),                           &
-     &          fline_tce%isf_fline_start(1,inum11))
+     &          fln_tce%isf_fline_start(1,inum1))
 !
           inum2 = inum1 + fline_src%num_line_local(i_fln)
           inum12 = inum11 + fline_src%num_line_local(i_fln)
@@ -119,7 +119,7 @@
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
      &          fline_tce%iflag_fline(inum12),                          &
-     &          fline_tce%isf_fline_start(1,inum12))
+     &          fln_tce%isf_fline_start(1,inum2))
         end if
       end do
 !

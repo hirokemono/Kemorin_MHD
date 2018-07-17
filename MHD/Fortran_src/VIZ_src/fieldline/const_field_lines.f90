@@ -88,10 +88,9 @@
      &         'istack_current_fline', fln_tce%istack_current_fline(:)
         ist = fln_tce%istack_current_fline(my_rank) + 1
         ied = fln_tce%istack_current_fline(my_rank+1)
-        write(my_rank+50,*) 'isf_fline_start(1:3,i)'
+        write(my_rank+50,*) 'isf_fline_start(1:3,inum)'
         do inum = ist, ied
-          i = inum + fline_tce%istack_all_fline(i_fln)
-          write(my_rank+50,*) i, fline_tce%isf_fline_start(1:3,i)
+          write(my_rank+50,*) inum, fln_tce%isf_fline_start(1:3,inum)
         end do
       end if
       call calypso_MPI_barrier
@@ -116,7 +115,7 @@
      &        fline_tce%iflag_fline(i),                                 &
      &        fline_src%vector_nod_fline(1,1,i_fln),                    &
      &        fline_src%color_nod_fline(1,i_fln),                       &
-     &        fline_tce%isf_fline_start(1,i),                           &
+     &        fln_tce%isf_fline_start(1,inum),                          &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(inum), fline_tce%icount_fline(i),   &
@@ -207,9 +206,9 @@
       iline = i + fline_tce%istack_all_fline(i_fln)
 !
       if(iflag_comm .eq. ione) then
-        iele = fline_tce%isf_fline_start(1,iline)
-        isf =  fline_tce%isf_fline_start(2,iline)
-        inod = fline_tce%isf_fline_start(3,iline)
+        iele = fln_tce%isf_fline_start(1,i)
+        isf =  fln_tce%isf_fline_start(2,i)
+        inod = fln_tce%isf_fline_start(3,i)
         do ip = 1, num_neib
           ist = istack_import(ip-1) + 1
           ied = istack_import(ip)
@@ -361,7 +360,7 @@
      &         = fln_tce%id_fline_export(2,i)
           fline_tce%icount_fline(icou1)                                  &
      &         = fln_tce%id_fline_export(3,i)
-          fline_tce%isf_fline_start(1:3,icou1)                           &
+          fln_tce%isf_fline_start(1:3,icou)                             &
      &         = fln_tce%id_fline_export(4:6,i)
 !
           fln_tce%xx_fline_start(1:3,icou)                              &

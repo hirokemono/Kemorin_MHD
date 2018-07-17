@@ -44,6 +44,7 @@
         integer(kind = kint), allocatable :: istack_current_fline(:)
         integer(kind = kint), allocatable :: num_current_fline(:)
 !
+        integer(kind= kint), allocatable :: isf_fline_start(:,:)
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
         real(kind = kreal), allocatable ::  c_fline_start(:)
@@ -60,7 +61,6 @@
 !
         integer(kind= kint), allocatable :: iflag_fline(:)
         integer(kind= kint), allocatable :: icount_fline(:)
-        integer(kind= kint), allocatable :: isf_fline_start(:,:)
       end type all_fieldline_trace
 !
 !  ---------------------------------------------------------------------
@@ -167,9 +167,12 @@
         fln_tce(i)%num_current_fline =    0
 !
         num = 2*num_each_field_line(i)
+        allocate(fln_tce(i)%isf_fline_start(3,num))
+!
         allocate(fln_tce(i)%xx_fline_start(3,num))
         allocate(fln_tce(i)%v_fline_start(3,num))
         allocate(fln_tce(i)%c_fline_start(num))
+        fln_tce(i)%isf_fline_start = 0
         fln_tce(i)%v_fline_start =  0.0d0
         fln_tce(i)%c_fline_start =  0.0d0
         fln_tce(i)%xx_fline_start = 0.0d0
@@ -186,7 +189,6 @@
       num = 2*ntot_each_field_line
       allocate(fline_tce%icount_fline(num))
       allocate(fline_tce%iflag_fline(num))
-      allocate(fline_tce%isf_fline_start(3,num))
 !
       fline_tce%ntot_gl_fline =    0
       fline_tce%istack_all_fline = 0
@@ -194,7 +196,6 @@
 !
       fline_tce%icount_fline = 0
       fline_tce%iflag_fline =  0
-      fline_tce%isf_fline_start = 0
 !
       end subroutine alloc_num_gl_start_fline
 !
@@ -250,6 +251,7 @@
         deallocate(fln_tce(i)%istack_current_fline)
         deallocate(fln_tce(i)%num_current_fline)
 !
+        deallocate(fln_tce(i)%isf_fline_start)
         deallocate(fln_tce(i)%xx_fline_start)
         deallocate(fln_tce(i)%v_fline_start)
         deallocate(fln_tce(i)%c_fline_start)
@@ -263,7 +265,6 @@
 !
       deallocate(fline_tce%icount_fline)
       deallocate(fline_tce%iflag_fline)
-      deallocate(fline_tce%isf_fline_start)
 !
       end subroutine dealloc_num_gl_start_fline
 !
