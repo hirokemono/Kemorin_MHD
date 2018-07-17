@@ -136,7 +136,7 @@
           write(50+my_rank,*) 'isf_fline_start', i,                     &
      &                         fline_tce%isf_fline_start(1:3,i)
           write(50+my_rank,'(a,1p3e16.5)') 'start_point',               &
-     &      fline_tce%xx_fline_start(1:3,i)
+     &      fln_tce%xx_fline_start(1:3,inum)
         end do
       end if
 !

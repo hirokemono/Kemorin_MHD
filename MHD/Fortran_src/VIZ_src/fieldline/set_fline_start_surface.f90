@@ -71,7 +71,7 @@
 !     &              iele, isf_1ele, numnod, numsurf
         isurf = abs(isf_4_ele(iele,isf_1ele))
 !
-        fline_tce%xx_fline_start(1:3,inum11)                             &
+        fln_tce%xx_fline_start(1:3,inum1)                               &
      &       =  fline_src%xx_start_fline(1:3,iline)
 !
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
@@ -108,8 +108,8 @@
 !
           inum2 = inum1 + fline_src%num_line_local(i_fln)
           inum12 = inum11 + fline_src%num_line_local(i_fln)
-          fline_tce%xx_fline_start(1:3,inum12)                           &
-     &          = fline_tce%xx_fline_start(1:3,inum11)
+          fln_tce%xx_fline_start(1:3,inum2)                             &
+     &          = fln_tce%xx_fline_start(1:3,inum1)
           fln_tce%v_fline_start(1:3,inum2)                              &
      &          = fln_tce%v_fline_start(1:3,inum1)
           fln_tce%c_fline_start(inum2) = fln_tce%c_fline_start(inum1)

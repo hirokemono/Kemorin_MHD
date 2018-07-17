@@ -117,7 +117,7 @@
      &        fline_src%vector_nod_fline(1,1,i_fln),                    &
      &        fline_src%color_nod_fline(1,i_fln),                       &
      &        fline_tce%isf_fline_start(1,i),                           &
-     &        fline_tce%xx_fline_start(1,i),                            &
+     &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &
      &        fln_tce%c_fline_start(inum), fline_tce%icount_fline(i),   &
      &        iflag_comm, fline_lc)
@@ -228,8 +228,7 @@
         fln_tce%id_fline_export(5,i) = isf
         fln_tce%id_fline_export(6,i) = int(inod_global(inod))
 !
-        fln_tce%fline_export(1:3,i)                                     &
-     &      = fline_tce%xx_fline_start(1:3,iline)
+        fln_tce%fline_export(1:3,i) = fln_tce%xx_fline_start(1:3,i)
         fln_tce%fline_export(4:6,i) = fln_tce%v_fline_start(1:3,i)
         fln_tce%fline_export(7,i) = fln_tce%c_fline_start(i)
       else
@@ -365,7 +364,7 @@
           fline_tce%isf_fline_start(1:3,icou1)                           &
      &         = fln_tce%id_fline_export(4:6,i)
 !
-          fline_tce%xx_fline_start(1:3,icou1)                            &
+          fln_tce%xx_fline_start(1:3,icou)                              &
      &         = fln_tce%fline_export(1:3,i)
           fln_tce%v_fline_start(1:3,icou) = fln_tce%fline_export(4:6,i)
           fln_tce%c_fline_start(icou) = fln_tce%fline_export(7,i)
