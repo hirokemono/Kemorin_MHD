@@ -186,17 +186,17 @@
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_flux'
         call s_start_surface_by_flux                                    &
      &     (i_fln, mesh%node, mesh%ele, ele_mesh%surf,                  &
-     &      fln_prm, fline_prm, fline_src, fln_tce)
+     &      fln_prm, fline_prm, fline_src, fln_src, fln_tce)
       else if(fln_prm%id_fline_seed_type                                &
      &                           .eq. iflag_spray_in_domain) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_volume'
         call s_start_surface_by_volume(i_fln, mesh%ele, group%ele_grp,  &
-     &      fln_prm, fline_prm, fline_src, fln_tce)
+     &      fln_prm, fline_prm, fline_src, fln_src, fln_tce)
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_gl_table'
         call s_start_surface_by_gl_table                                &
      &     (i_fln, mesh%ele, group%ele_grp, fln_prm,                    &
-     &      fline_prm, fline_src)
+     &      fline_prm, fline_src, fln_src)
       else if(fln_prm%id_fline_seed_type                                &
      &                           .eq. iflag_spray_in_domain) then
       end if

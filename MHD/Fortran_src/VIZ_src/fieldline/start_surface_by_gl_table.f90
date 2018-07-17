@@ -37,7 +37,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_by_gl_table                            &
-     &         (i_fln, ele, ele_grp, fln_prm, fline_prm, fline_src)
+     &         (i_fln, ele, ele_grp, fln_prm, fline_prm, fline_src, fln_src)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -51,13 +51,15 @@
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
 !
-      call cnt_start_surface_by_gl_table                                &
-     &     (i_fln, ele%numele, ele%iele_global,                         &
-     &      ele%interior_ele, ele_grp%num_grp, ele_grp%num_item,        &
-     &      ele_grp%istack_grp, ele_grp%item_grp, fln_prm,              &
-     &      fline_prm, fline_src)
+      fln_src%num_line_local                                            &
+     &   = cnt_start_surface_by_gl_table                                &
+     &   (i_fln, ele%numele, ele%iele_global,                           &
+     &    ele%interior_ele, ele_grp%num_grp, ele_grp%num_item,          &
+     &    ele_grp%istack_grp, ele_grp%item_grp, fln_prm,                &
+     &    fline_prm, fline_src)
       call set_start_surface_by_gl_table                                &
      &     (i_fln, ele%numele, ele%iele_global,                         &
      &      ele%interior_ele, ele_grp%num_grp, ele_grp%num_item,        &
@@ -68,8 +70,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cnt_start_surface_by_gl_table(i_fln, numele,           &
-     &          iele_global, interior_ele, num_mat, num_mat_bc,         &
+      integer(kind = kint) function cnt_start_surface_by_gl_table       &
+     &         (i_fln,                                                  &
+     &          numele, iele_global, interior_ele, num_mat, num_mat_bc, &
      &          mat_istack, mat_item, fln_prm, fline_prm, fline_src)
 !
       integer(kind = kint), intent(in) :: i_fln
@@ -84,7 +87,7 @@
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(in) :: fline_prm
 !
-      type(all_fieldline_source), intent(inout) :: fline_src
+      type(all_fieldline_source), intent(in) :: fline_src
 !
       integer(kind = kint) :: inum, ist_grp, ied_grp
       integer(kind = kint) :: jgrp
@@ -111,9 +114,9 @@
           end do
         end do
       end do
-      fline_src%num_line_local(i_fln) = icou
+      cnt_start_surface_by_gl_table = icou
 !
-      end subroutine cnt_start_surface_by_gl_table
+      end function cnt_start_surface_by_gl_table
 !
 !  ---------------------------------------------------------------------
 !

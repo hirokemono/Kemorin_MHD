@@ -38,7 +38,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_by_volume(i_fln, ele, ele_grp,         &
-     &          fln_prm, fline_prm, fline_src, fln_tce)
+     &          fln_prm, fline_prm, fline_src, fln_src, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -52,6 +52,7 @@
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ip
@@ -89,14 +90,13 @@
      &     = nint((fln_tce%flux_stack_fline(ip)                         &
      &      - fln_tce%flux_stack_fline(ip-1)) / volume_start_l)
       end do
-      fline_src%num_line_local(i_fln)                                   &
-     &      = fln_tce%num_current_fline(my_rank+1)
+      fln_src%num_line_local = fln_tce%num_current_fline(my_rank+1)
 !
       if(i_debug .gt. 0) then
         write(my_rank+50,*)  'total_volume',                            &
      &                      volume_start_l, total_volume
         write(my_rank+50,*)  'original num_each_field_line',            &
-     &                    i_fln, fline_src%num_line_local(i_fln)
+     &                      fln_src%num_line_local
         write(my_rank+50,*)  'volume_start_l', volume_start_l
       end if
 !
@@ -104,7 +104,7 @@
       num_line = fline_prm%istack_each_field_line(i_fln) - ist_line
       if(iflag_debug .gt. 0) write(*,*) 'set_start_surface_in_domain'
       call set_start_surface_in_domain                                  &
-     &   (i_fln, ele, fline_src, volume_start_l, iflag_ele,             &
+     &   (ele, fln_src%num_line_local, volume_start_l, iflag_ele,       &
      &    num_line, fline_prm%id_surf_start_fline(1,ist_line))
 !
       deallocate(iflag_ele)
@@ -116,7 +116,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_start_surface_in_domain                            &
-     &         (i_fln, ele, fline_src, vol_4_start, iflag_ele,          &
+     &         (ele, num_line_local, vol_4_start, iflag_ele,            &
      &          num_line, id_surf_start_fline)
 !
       use extend_field_line
@@ -124,11 +124,10 @@
       use set_fline_start_surface
 !
       type(element_data), intent(in) :: ele
-      type(all_fieldline_source), intent(in) :: fline_src
+      integer(kind = kint), intent(in) :: num_line_local
       real(kind = kreal), intent(in) :: vol_4_start
       integer(kind = kint), intent(in) :: iflag_ele(ele%numele)
 !
-      integer(kind = kint), intent(in) :: i_fln
       integer(kind = kint), intent(in) :: num_line
 !
       integer(kind = kint), intent(inout)                               &
@@ -141,7 +140,7 @@
 !
       ref_flux = vol_4_start / num_line
       icou = 0
-      if(fline_src%num_line_local(i_fln) .gt. 0) then
+      if(num_line_local .gt. 0) then
         flux = 0.0d0
         do iele = 1, ele%numele
           flux = flux + ele%volume_ele(iele) * dble(iflag_ele(iele))

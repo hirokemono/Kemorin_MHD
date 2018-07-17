@@ -37,10 +37,10 @@
         integer(kind = kint), allocatable :: iele_start_item(:,:)
         real(kind = kreal),   allocatable :: flux_start(:)
 !
-        integer(kind = kint), allocatable :: num_line_local(:)
       end type all_fieldline_source
 !
       type each_fieldline_source
+        integer(kind = kint) :: num_line_local = 0
         real(kind = kreal), allocatable :: xx_start_fline(:,:)
         real(kind = kreal), allocatable :: flux_start_fline(:)
       end type each_fieldline_source
@@ -76,12 +76,8 @@
       allocate(fline_src%nele_start_grp(num_fline))
       allocate(fline_src%istack_ele_start_grp(0:num_fline))
 !
-      allocate(fline_src%num_line_local(num_fline))
-!
       fline_src%nele_start_grp =       0
       fline_src%istack_ele_start_grp = 0
-!
-      fline_src%num_line_local = 0
 !
       end subroutine alloc_local_start_grp_num
 !
@@ -193,7 +189,6 @@
       deallocate(fline_src%nele_start_grp)
       deallocate(fline_src%istack_ele_start_grp)
       deallocate(fline_src%iele_start_item, fline_src%flux_start)
-      deallocate(fline_src%num_line_local)
 !
       end subroutine dealloc_local_start_grp_item
 !

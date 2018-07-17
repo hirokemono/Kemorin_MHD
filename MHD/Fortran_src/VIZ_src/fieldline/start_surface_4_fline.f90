@@ -62,7 +62,7 @@
 !
 !
       ist_line = fline_prm%istack_each_field_line(i_fln-1)
-      do i = 1, fline_src%num_line_local(i_fln)
+      do i = 1, fln_src%num_line_local
         inum = i + ist_line
         iele = fline_prm%id_surf_start_fline(1,inum)
         isf =  fline_prm%id_surf_start_fline(2,inum)
@@ -86,7 +86,7 @@
       end do
 !
       call MPI_AllGather                                                &
-     &   (fline_src%num_line_local(i_fln), ione, CALYPSO_INTEGER,       &
+     &   (fln_src%num_line_local, ione, CALYPSO_INTEGER,                &
      &    fln_tce%num_current_fline, ione, CALYPSO_INTEGER,             &
      &    CALYPSO_COMM, ierr_MPI)
 !
@@ -113,9 +113,8 @@
         write(50+my_rank,*) 'istack_current_fline',                     &
      &                   fln_tce%istack_current_fline(:)
 !
-        write(50+my_rank,*) 'num_line_local',                           &
-     &                  fline_src%num_line_local(i_fln)
-        do i = 1, fline_src%num_line_local(i_fln)
+        write(50+my_rank,*) 'num_line_local', fln_src%num_line_local
+        do i = 1, fln_src%num_line_local
           write(50+my_rank,*) 'id_surf_start_fline', i,                 &
      &                  fline_prm%id_surf_start_fline(1:2,i+ist_line)
           write(50+my_rank,'(a,1p4e16.5)') 'start_point, flux',         &

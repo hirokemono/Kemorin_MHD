@@ -61,7 +61,7 @@
 !
 !
       ist_line = fline_prm%istack_each_field_line(i_fln-1)
-      do i = 1, fline_src%num_line_local(i_fln)
+      do i = 1, fln_src%num_line_local
         iline = i + ist_line
         inum1 = i + fln_tce%istack_current_fline(my_rank)
         iele =     fline_prm%id_surf_start_fline(1,iline)
@@ -105,7 +105,7 @@
      &          fln_tce%iflag_fline(inum1),                             &
      &          fln_tce%isf_fline_start(1,inum1))
 !
-          inum2 = inum1 + fline_src%num_line_local(i_fln)
+          inum2 = inum1 + fln_src%num_line_local
           fln_tce%xx_fline_start(1:3,inum2)                             &
      &          = fln_tce%xx_fline_start(1:3,inum1)
           fln_tce%v_fline_start(1:3,inum2)                              &
