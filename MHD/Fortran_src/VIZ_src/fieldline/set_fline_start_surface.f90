@@ -74,10 +74,10 @@
      &       = fln_src%xx_start_fline(1:3,i)
 !
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf, xi, fline_src%vector_nod_fline(1,1,i_fln),  &
+     &      ie_surf, isurf, xi, fln_src%vector_nod_fline,               &
      &      fln_tce%v_fline_start(1,inum1))
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf, xi, fline_src%color_nod_fline(1,i_fln),     &
+     &      ie_surf, isurf, xi, fln_src%color_nod_fline,                &
      &      fln_tce%c_fline_start(inum1))
 !
         if(fln_prm%id_fline_direction .eq. iflag_forward_trace) then

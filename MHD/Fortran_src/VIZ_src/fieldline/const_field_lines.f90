@@ -49,7 +49,7 @@
 !
       subroutine s_const_field_lines                                    &
      &         (i_fln, node, ele, surf, ele_4_nod, nod_comm,            &
-     &          fln_prm, fline_src, fln_tce, fline_lc)
+     &          fln_prm, fline_src, fln_src, fln_tce, fline_lc)
 !
 !
       use t_control_params_4_fline
@@ -71,6 +71,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(fieldline_paramter), intent(in) :: fln_prm
       type(all_fieldline_source), intent(in) :: fline_src
+      type(each_fieldline_source), intent(in) :: fln_src
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
       type(local_fieldline), intent(inout) :: fline_lc
@@ -111,8 +112,7 @@
      &        fln_prm%max_line_stepping,                                &
      &        fln_prm%iflag_fline_used_ele,                             &
      &        fln_tce%iflag_fline(inum),                                &
-     &        fline_src%vector_nod_fline(1,1,i_fln),                    &
-     &        fline_src%color_nod_fline(1,i_fln),                       &
+     &        fln_src%vector_nod_fline, fln_src%color_nod_fline,        &
      &        fln_tce%isf_fline_start(1,inum),                          &
      &        fln_tce%xx_fline_start(1,inum),                           &
      &        fln_tce%v_fline_start(1,inum),                            &

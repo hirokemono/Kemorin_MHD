@@ -83,8 +83,7 @@
      &      surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele,             &
      &      ele%interior_ele, surf%vnorm_surf, surf%area_surf, num_grp, &
      &      fline_src%iele_start_item(1,ist_grp),                       &
-     &      fline_src%vector_nod_fline(1,1,i_fln),                      &
-     &      fline_src%flux_start(ist_grp) )
+     &      fln_src%vector_nod_fline, fline_src%flux_start(ist_grp) )
       end if
       call calypso_mpi_barrier
 !

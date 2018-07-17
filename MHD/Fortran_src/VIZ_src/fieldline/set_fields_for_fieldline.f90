@@ -49,7 +49,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_local_field_4_fline                                &
-     &       (num_fline, node, nod_fld, fln_prm, fline_src)
+     &       (num_fline, node, nod_fld, fln_prm, fline_src, fln_src)
 !
       use convert_components_4_viz
 !
@@ -59,6 +59,7 @@
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !
       type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
 !
       integer(kind = kint) :: i_fln
       integer(kind = kint) :: i_field, ist_fld, num_comp
@@ -74,8 +75,7 @@
         call convert_comps_4_viz(node%numnod, node%istack_nod_smp,      &
      &     node%xx, node%rr,node%a_r, node%ss, node%a_s, ithree,        &
      &     num_comp, fln_prm(i_fln)%icomp_4_fline,                      &
-     &     nod_fld%d_fld(1,ist_fld+1),                                  &
-     &     fline_src%vector_nod_fline(1,1,i_fln) )
+     &     nod_fld%d_fld(1,ist_fld+1), fln_src(i_fln)%vector_nod_fline)
 !
         i_field = fln_prm(i_fln)%ifield_linecolor
         ist_fld = nod_fld%istack_component(i_field-1)
@@ -85,8 +85,7 @@
         call convert_comps_4_viz(node%numnod, node%istack_nod_smp,      &
      &      node%xx, node%rr, node%a_r, node%ss, node%a_s, ione,        &
      &      num_comp, fln_prm(i_fln)%icomp_linecolor,                   &
-     &      nod_fld%d_fld(1,ist_fld+1),                                 &
-     &      fline_src%color_nod_fline(1,i_fln) )
+     &      nod_fld%d_fld(1,ist_fld+1), fln_src(i_fln)%color_nod_fline)
       end do
 !
 !

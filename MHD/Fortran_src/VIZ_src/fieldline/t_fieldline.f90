@@ -84,10 +84,10 @@
      &   fline%fline_src)
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_local_data_4_fline'
-      call alloc_local_data_4_fline                                     &
-     &   (fline%num_fline, femmesh%mesh%node, fline%fline_src)
 !
       do i = 1, fline%num_fline
+        call alloc_local_data_4_fline                                   &
+     &     (femmesh%mesh%node, fline%fln_src(i))
         call alloc_start_point_fline                                    &
      &     (fline%fline_prm%num_each_field_line(i), fline%fln_src(i))
         call alloc_num_gl_start_fline(nprocs,                           &
@@ -125,7 +125,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
       call set_local_field_4_fline                                      &
      &   (fline%num_fline, femmesh%mesh%node, nod_fld,                  &
-     &    fline%fln_prm, fline%fline_src)
+     &    fline%fln_prm, fline%fline_src, fline%fln_src)
 !
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
@@ -140,7 +140,7 @@
         call s_const_field_lines                                        &
      &     (i_fln, femmesh%mesh%node, femmesh%mesh%ele,                 &
      &      ele_mesh%surf, ele_4_nod, femmesh%mesh%nod_comm,            &
-     &      fline%fln_prm(i_fln), fline%fline_src,                      &
+     &      fline%fln_prm(i_fln), fline%fline_src, fline%fln_src(i_fln), &
      &      fline%fln_tce(i_fln), fline%fline_lc)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
@@ -164,13 +164,13 @@
      &   (fline%num_fline, fline%fln_prm, fline%fline_prm)
       call dealloc_iflag_fline_used_ele(fline%num_fline, fline%fln_prm)
 !
-      call dealloc_local_data_4_fline(fline%fline_src)
       call dealloc_local_start_grp_item(fline%fline_src)
 !
       call dealloc_local_fline(fline%fline_lc)
       call dealloc_global_fline_num(fline%fline_gl)
 !
       do i = 1, fline%num_fline
+        call dealloc_local_data_4_fline(fline%fln_src(i))
         call dealloc_start_point_fline(fline%fln_src(i))
         call dealloc_num_gl_start_fline(fline%fln_tce(i))
       end do

@@ -6,14 +6,16 @@
 !
 !!      subroutine alloc_local_start_grp_num(num_fline, fline_src)
 !!      subroutine alloc_local_start_grp_item(num_fline, fline_src)
-!!      subroutine alloc_local_data_4_fline(num_fline, node, fline_src)
+!!      subroutine alloc_local_data_4_fline(node, fln_src)
 !!        type(node_data), intent(in) :: node
+!!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine alloc_start_point_fline(num_each_field_line, fln_src)
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine alloc_num_gl_start_fline                             &
 !!     &         (nprocs, num_each_field_line, fln_tce)
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
-!!      subroutine dealloc_local_data_4_fline(fline_src)
+!!
+!!      subroutine dealloc_local_data_4_fline(fln_src)
 !!      subroutine dealloc_local_start_grp_item(fline_src)
 !!      subroutine dealloc_start_point_fline(fline_src)
 !!        type(each_fieldline_source), intent(inout) :: fln_src
@@ -28,18 +30,17 @@
 !
 !
       type all_fieldline_source
-        real(kind = kreal), allocatable :: vector_nod_fline(:,:,:)
-        real(kind = kreal), allocatable :: color_nod_fline(:,:)
-!
         integer(kind = kint) :: ntot_ele_start_grp
         integer(kind = kint), allocatable :: istack_ele_start_grp(:)
         integer(kind = kint), allocatable :: nele_start_grp(:)
         integer(kind = kint), allocatable :: iele_start_item(:,:)
         real(kind = kreal),   allocatable :: flux_start(:)
-!
       end type all_fieldline_source
 !
       type each_fieldline_source
+        real(kind = kreal), allocatable :: vector_nod_fline(:,:)
+        real(kind = kreal), allocatable :: color_nod_fline(:)
+!
         integer(kind = kint) :: num_line_local = 0
         real(kind = kreal), allocatable :: xx_start_fline(:,:)
         real(kind = kreal), allocatable :: flux_start_fline(:)
@@ -103,20 +104,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_local_data_4_fline(num_fline, node, fline_src)
+      subroutine alloc_local_data_4_fline(node, fln_src)
 !
       use t_geometry_data
 !
-      integer(kind = kint), intent(in) :: num_fline
       type(node_data), intent(in) :: node
-      type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
 !
-      allocate(fline_src%vector_nod_fline(node%numnod,3,num_fline))
-      allocate(fline_src%color_nod_fline(node%numnod,num_fline))
+      allocate(fln_src%vector_nod_fline(node%numnod,3))
+      allocate(fln_src%color_nod_fline(node%numnod))
 !
-      fline_src%vector_nod_fline = 0.0d0
-      fline_src%color_nod_fline =  0.0d0
+      fln_src%vector_nod_fline = 0.0d0
+      fln_src%color_nod_fline =  0.0d0
 !
       end subroutine alloc_local_data_4_fline
 !
@@ -194,12 +194,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_local_data_4_fline(fline_src)
+      subroutine dealloc_local_data_4_fline(fln_src)
 !
-      type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
 !
-      deallocate(fline_src%vector_nod_fline, fline_src%color_nod_fline)
+      deallocate(fln_src%vector_nod_fline, fln_src%color_nod_fline)
 !
       end subroutine dealloc_local_data_4_fline
 !
