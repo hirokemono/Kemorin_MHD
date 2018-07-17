@@ -97,14 +97,11 @@
       end if
 !
       fln_tce%istack_current_fline(0) = 0
-      fline_tce%istack_all_fline(i_fln) = fline_tce%ntot_gl_fline
       do i = 1, nprocs
         fln_tce%istack_current_fline(i)                                 &
      &        = fln_tce%istack_current_fline(i-1)                       &
      &         + fln_tce%num_current_fline(i)
       end do
-      fline_tce%ntot_gl_fline = fln_tce%istack_current_fline(nprocs)    &
-     &                         + fline_tce%istack_all_fline(i_fln)
 !
       call set_fline_start_surf(my_rank, i_fln,                         &
      &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
@@ -112,8 +109,6 @@
      &    fln_prm, fline_prm, fline_src, fline_tce, fln_tce)
 !
       if(i_debug .gt. iflag_full_msg) then
-        write(50+my_rank,*) 'ntot_gl_fline', fline_tce%ntot_gl_fline
-        write(50+my_rank,*) 'ntot_gl_fline', fline_tce%ntot_gl_fline
         write(50+my_rank,*) 'num_current_fline',                        &
      &                   fln_tce%num_current_fline(:)
         write(50+my_rank,*) 'istack_current_fline',                     &

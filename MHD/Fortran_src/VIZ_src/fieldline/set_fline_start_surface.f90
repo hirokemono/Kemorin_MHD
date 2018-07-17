@@ -56,7 +56,7 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint)  :: i, iline, iele, isf_1ele, isurf
-      integer(kind = kint)  :: ist_line, inum1, inum2, inum11, inum12
+      integer(kind = kint)  :: ist_line, inum1, inum2
       real(kind = kreal), parameter :: xi(2) = (/zero, zero/)
 !
 !
@@ -64,7 +64,6 @@
       do i = 1, fline_src%num_line_local(i_fln)
         iline = i + ist_line
         inum1 = i + fln_tce%istack_current_fline(my_rank)
-        inum11 = inum1 + fline_tce%istack_all_fline(i_fln)
         iele =     fline_prm%id_surf_start_fline(1,iline)
         isf_1ele = fline_prm%id_surf_start_fline(2,iline)
 !        write(*,*) 'iline', my_rank, i, iline, inum1, &
@@ -107,7 +106,6 @@
      &          fln_tce%isf_fline_start(1,inum1))
 !
           inum2 = inum1 + fline_src%num_line_local(i_fln)
-          inum12 = inum11 + fline_src%num_line_local(i_fln)
           fln_tce%xx_fline_start(1:3,inum2)                             &
      &          = fln_tce%xx_fline_start(1:3,inum1)
           fln_tce%v_fline_start(1:3,inum2)                              &
