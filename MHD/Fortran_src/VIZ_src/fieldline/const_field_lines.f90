@@ -123,23 +123,23 @@
      &        iflag_comm, fline_lc)
           write(50+my_rank,*) 'extension end for ', i, iflag_comm
 !
-          call set_fline_start_2_bcast(iflag_comm, i, node%numnod,      &
+          call set_fline_start_2_bcast                                  &
+     &         (i_fln, iflag_comm, inum, node%numnod,                   &
      &          ele%numele, node%inod_global, ele%iele_global,          &
      &          nod_comm%num_neib, nod_comm%id_neib,                    &
      &          nod_comm%ntot_import,  nod_comm%istack_import,          &
-     &          nod_comm%item_import, fline_tce)
+     &          nod_comm%item_import, fline_tce, fln_tce)
         end do
         call calypso_MPI_barrier
 !
         do ip = 1, nprocs
           src_rank = ip - 1
-          ist = fln_tce%istack_current_fline(ip-1)                      &
-     &         + fline_tce%istack_all_fline(i_fln)
+          ist = fln_tce%istack_current_fline(ip-1)
           num7 = 7 * fln_tce%num_current_fline(ip)
           if(num7 .gt. 0) then
-            call mpi_Bcast(fline_tce%id_fline_export(1,ist+1), num7,    &
+            call mpi_Bcast(fln_tce%id_fline_export(1,ist+1), num7,      &
      &          CALYPSO_INTEGER, src_rank, CALYPSO_COMM, ierr_MPI)
-            call mpi_Bcast(fline_tce%fline_export(1,ist+1), num7,       &
+            call mpi_Bcast(fln_tce%fline_export(1,ist+1), num7,         &
      &          CALYPSO_REAL, src_rank, CALYPSO_COMM, ierr_MPI)
           end if
         end do
@@ -147,10 +147,9 @@
         if(iflag_debug .gt. 0) then
           write(my_rank+50,*)                                           &
      &        'i, new_start_pe, iflag_fline, new_start_cont'
-          do inum = 1, fln_tce%istack_current_fline(nprocs)
-            i = inum + fline_tce%istack_all_fline(i_fln)
+          do i = 1, fln_tce%istack_current_fline(nprocs)
             write(my_rank+50,'(10i16)')                                 &
-     &              i, fline_tce%id_fline_export(1:3,i)
+     &              i, fln_tce%id_fline_export(1:3,i)
           end do
         end if
 !
@@ -159,8 +158,7 @@
      &      surf%isf_4_ele, surf%iele_4_surf, ele_4_nod%ntot,           &
      &      ele_4_nod%istack_4_node, ele_4_nod%iele_4_node,             &
      &      nod_comm%num_neib, nod_comm%id_neib, nod_comm%ntot_export,  &
-     &      nod_comm%istack_export, nod_comm%item_export,               &
-     &      fline_tce, fln_tce)
+     &      nod_comm%istack_export, nod_comm%item_export, fln_tce)
         call set_fline_start_from_neib(i_fln, fline_tce, fln_tce)
 !
         nline = fln_tce%istack_current_fline(nprocs)                    &
@@ -181,14 +179,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_2_bcast(iflag_comm, iline,             &
+      subroutine set_fline_start_2_bcast(i_fln, iflag_comm, i,          &
      &          numnod, numele, inod_global, iele_global,               &
      &          num_neib, id_neib, ntot_import, istack_import,          &
-     &          item_import, fline_tce)
+     &          item_import, fline_tce, fln_tce)
 !
       use t_source_of_filed_line
 !
-      integer(kind = kint), intent(in) :: iflag_comm, iline
+      integer(kind = kint), intent(in) :: iflag_comm, i_fln, i
 !
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
@@ -200,9 +198,13 @@
       integer(kind = kint), intent(in) :: item_import(ntot_import)
 !
       type(all_fieldline_trace), intent(inout) :: fline_tce
+      type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: inod, iele, isf, ip, ist, ied, inum
+      integer(kind = kint) :: iline
 !
+!
+      iline = i + fline_tce%istack_all_fline(i_fln)
 !
       if(iflag_comm .eq. ione) then
         iele = fline_tce%isf_fline_start(1,iline)
@@ -213,31 +215,29 @@
           ied = istack_import(ip)
           do inum = ist, ied
             if(item_import(inum) .eq. inod) then
-              fline_tce%id_fline_export(1,iline) = id_neib(ip)
-              fline_tce%id_fline_export(7,iline) = 1 + inum - ist
+              fln_tce%id_fline_export(1,i) = id_neib(ip)
+              fln_tce%id_fline_export(7,i) = 1 + inum - ist
               exit
             end if
           end do
         end do
 !
-        fline_tce%id_fline_export(2,iline)                              &
-     &      = fline_tce%iflag_fline(iline)
-        fline_tce%id_fline_export(3,iline)                              &
-     &      = fline_tce%icount_fline(iline)
-        fline_tce%id_fline_export(4,iline) = int(iele_global(iele))
-        fline_tce%id_fline_export(5,iline) = isf
-        fline_tce%id_fline_export(6,iline) = int(inod_global(inod))
+        fln_tce%id_fline_export(2,i) = fline_tce%iflag_fline(iline)
+        fln_tce%id_fline_export(3,i) = fline_tce%icount_fline(iline)
+        fln_tce%id_fline_export(4,i) = int(iele_global(iele))
+        fln_tce%id_fline_export(5,i) = isf
+        fln_tce%id_fline_export(6,i) = int(inod_global(inod))
 !
-        fline_tce%fline_export(1:3,iline)                               &
+        fln_tce%fline_export(1:3,i)                                     &
      &      = fline_tce%xx_fline_start(1:3,iline)
-        fline_tce%fline_export(4:6,iline)                               &
+        fln_tce%fline_export(4:6,i)                                     &
      &      = fline_tce%v_fline_start(1:3,iline)
-        fline_tce%fline_export(7,iline)                                 &
+        fln_tce%fline_export(7,i)                                       &
      &      = fline_tce%c_fline_start(iline)
       else
-        fline_tce%id_fline_export(1,iline) =   -ione
-        fline_tce%id_fline_export(2:7,iline) = izero
-        fline_tce%fline_export(1:7,iline) =     zero
+        fln_tce%id_fline_export(1,i) =   -ione
+        fln_tce%id_fline_export(2:7,i) = izero
+        fln_tce%fline_export(1:7,i) =     zero
       end if
 !
       end subroutine set_fline_start_2_bcast
@@ -248,8 +248,7 @@
      &          numnod, numele, numsurf, iele_global,                   &
      &          isf_4_ele, iele_4_surf, ntot_ele_4_node,                &
      &          iele_stack_4_node, iele_4_node, num_neib, id_neib,      &
-     &          ntot_export, istack_export, item_export,                &
-     &          fline_tce, fln_tce)
+     &          ntot_export, istack_export, item_export, fln_tce)
 !
       use m_geometry_constants
       use t_source_of_filed_line
@@ -270,10 +269,9 @@
       integer(kind = kint), intent(in) :: istack_export(0:num_neib)
       integer(kind = kint), intent(in) :: item_export(ntot_export)
 !
-      type(all_fieldline_trace), intent(inout) :: fline_tce
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: ip, ip_org, ist_lin, ied_lin, iline, i
+      integer(kind = kint) :: ip, ip_org, ist_lin, ied_lin, i
       integer(kind = kint) :: inum, inod, ist_ele, ied_ele, jnum, jele
       integer(kind = kint) :: isf, isurf
 !
@@ -284,39 +282,33 @@
         ist_lin = fln_tce%istack_current_fline(ip_org-1) + 1
         ied_lin = fln_tce%istack_current_fline(ip_org)
         do i = ist_lin, ied_lin
-          iline = i + fline_tce%istack_all_fline(i_fln)
-          if(fline_tce%id_fline_export(1,iline) .eq. my_rank) then
-            inum = fline_tce%id_fline_export(7,iline)                   &
-     &            + istack_export(ip-1)
+          if(fln_tce%id_fline_export(1,i) .eq. my_rank) then
+            inum = fln_tce%id_fline_export(7,i) + istack_export(ip-1)
             inod = item_export(inum)
 !            write(60+my_rank,*) 'recover node', inod,                  &
-!     &           inod_global(inod),fline_tce%id_fline_export(6,iline)
+!     &           inod_global(inod),fln_tce%id_fline_export(6,i)
 !
-            fline_tce%id_fline_export(6,iline) = inod
+            fln_tce%id_fline_export(6,i) = inod
             ist_ele = iele_stack_4_node(inod-1) + 1
             ied_ele = iele_stack_4_node(inod)
             do jnum = ist_ele, ied_ele
               jele = iele_4_node(jnum)
               if(iele_global(jele)                                      &
-     &               .eq. fline_tce%id_fline_export(4,iline)) then
+     &               .eq. fln_tce%id_fline_export(4,i)) then
 !                write(60+my_rank,*) 'recover ele',                     &
 !      &                      jele, iele_global(jele)
-                isf =  fline_tce%id_fline_export(5,iline)
+                isf =  fln_tce%id_fline_export(5,i)
                 isurf = abs(isf_4_ele(jele,isf))
 !
                 if(isf_4_ele(jele,isf) .lt. 0) then
-                  fline_tce%id_fline_export(4,iline)                    &
-     &                  = iele_4_surf(isurf,1,1)
-                  fline_tce%id_fline_export(5,iline)                    &
-     &                  = iele_4_surf(isurf,1,2)
+                  fln_tce%id_fline_export(4,i) = iele_4_surf(isurf,1,1)
+                  fln_tce%id_fline_export(5,i) = iele_4_surf(isurf,1,2)
                 else
-                  fline_tce%id_fline_export(4,iline)                    &
-     &                  = iele_4_surf(isurf,2,1)
-                  fline_tce%id_fline_export(5,iline)                    &
-     &                  = iele_4_surf(isurf,2,2)
+                  fln_tce%id_fline_export(4,i) = iele_4_surf(isurf,2,1)
+                  fln_tce%id_fline_export(5,i) = iele_4_surf(isurf,2,2)
                 end if
 !                write(60+my_rank,*) 'recover surf',                    &
-!     &                         fline_tce%id_fline_export(4:5,iline)
+!     &                         fln_tce%id_fline_export(4:5,i)
 !
                 exit
               end if
@@ -345,7 +337,7 @@
       icou = 0
       do i = 1, ied_lin
         iline = i + fline_tce%istack_all_fline(i_fln)
-        if(fline_tce%id_fline_export(1,iline) .eq. my_rank) then
+        if(fln_tce%id_fline_export(1,i) .eq. my_rank) then
           icou = icou + 1
         end if
       end do
@@ -364,21 +356,20 @@
      &       + fline_tce%istack_all_fline(i_fln)
       do i = 1, ied_lin
         iline = i + fline_tce%istack_all_fline(i_fln)
-        if(fline_tce%id_fline_export(1,iline) .eq. my_rank) then
+        if(fln_tce%id_fline_export(1,i) .eq. my_rank) then
           icou = icou + 1
           fline_tce%iflag_fline(icou)                                   &
-     &         = fline_tce%id_fline_export(2,iline)
+     &         = fln_tce%id_fline_export(2,i)
           fline_tce%icount_fline(icou)                                  &
-     &         = fline_tce%id_fline_export(3,iline)
+     &         = fln_tce%id_fline_export(3,i)
           fline_tce%isf_fline_start(1:3,icou)                           &
-     &         = fline_tce%id_fline_export(4:6,iline)
+     &         = fln_tce%id_fline_export(4:6,i)
 !
           fline_tce%xx_fline_start(1:3,icou)                            &
-     &         = fline_tce%fline_export(1:3,iline)
+     &         = fln_tce%fline_export(1:3,i)
           fline_tce%v_fline_start(1:3,icou)                             &
-     &         = fline_tce%fline_export(4:6,iline)
-          fline_tce%c_fline_start(icou)                                 &
-     &         = fline_tce%fline_export(7,iline)
+     &         = fln_tce%fline_export(4:6,i)
+          fline_tce%c_fline_start(icou) = fln_tce%fline_export(7,i)
         end if
       end do
 !

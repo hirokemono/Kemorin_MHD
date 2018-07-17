@@ -43,6 +43,9 @@
       type each_fieldline_trace
         integer(kind = kint), allocatable :: istack_current_fline(:)
         integer(kind = kint), allocatable :: num_current_fline(:)
+!
+        integer(kind= kint), allocatable :: id_fline_export(:,:)
+        real(kind = kreal), allocatable ::  fline_export(:,:)
       end type each_fieldline_trace
 !
       type all_fieldline_trace
@@ -57,9 +60,6 @@
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
         real(kind = kreal), allocatable ::  v_fline_start(:,:)
         real(kind = kreal), allocatable ::  c_fline_start(:)
-!
-        integer(kind= kint), allocatable :: id_fline_export(:,:)
-        real(kind = kreal), allocatable ::  fline_export(:,:)
       end type all_fieldline_trace
 !
 !  ---------------------------------------------------------------------
@@ -164,6 +164,12 @@
         allocate(fln_tce(i)%num_current_fline(nprocs))
         fln_tce(i)%istack_current_fline = 0
         fln_tce(i)%num_current_fline =    0
+!
+        num = 2*num_each_field_line(i)
+        allocate(fln_tce(i)%id_fline_export(7,num))
+        allocate(fln_tce(i)%fline_export(7,num))
+        fln_tce(i)%id_fline_export = 0
+        fln_tce(i)%fline_export = 0.0d0
       end do
 !
       allocate(fline_tce%istack_all_fline(num_fline))
@@ -187,11 +193,6 @@
       fline_tce%xx_fline_start = 0.0d0
       fline_tce%v_fline_start =  0.0d0
       fline_tce%c_fline_start =  0.0d0
-!
-      allocate(fline_tce%id_fline_export(7,num))
-      allocate(fline_tce%fline_export(7,num))
-      fline_tce%id_fline_export = 0
-      fline_tce%fline_export = 0.0d0
 !
       end subroutine alloc_num_gl_start_fline
 !
@@ -246,6 +247,9 @@
       do i = 1, num_fline
         deallocate(fln_tce(i)%istack_current_fline)
         deallocate(fln_tce(i)%num_current_fline)
+!
+        deallocate(fln_tce(i)%id_fline_export)
+        deallocate(fln_tce(i)%fline_export)
       end do
 !
       deallocate(fline_tce%istack_all_fline)
@@ -257,9 +261,6 @@
       deallocate(fline_tce%xx_fline_start)
       deallocate(fline_tce%v_fline_start)
       deallocate(fline_tce%c_fline_start)
-!
-      deallocate(fline_tce%id_fline_export)
-      deallocate(fline_tce%fline_export)
 !
       end subroutine dealloc_num_gl_start_fline
 !
