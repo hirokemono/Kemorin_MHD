@@ -48,7 +48,7 @@
       type all_fieldline_trace
         integer(kind = kint) :: ntot_gl_fline = 0
 !
-        integer(kind = kint), allocatable :: istack_all_fline(:,:)
+        integer(kind = kint), allocatable :: istack_all_fline(:)
         real(kind = kreal),   allocatable :: flux_stack_fline(:)
 !
         integer(kind= kint), allocatable :: iflag_fline(:)
@@ -166,7 +166,7 @@
         fln_tce(i)%num_current_fline =    0
       end do
 !
-      allocate(fline_tce%istack_all_fline(0:nprocs,num_fline))
+      allocate(fline_tce%istack_all_fline(num_fline))
       allocate(fline_tce%flux_stack_fline(0:nprocs))
 !
       num = 2*ntot_each_field_line

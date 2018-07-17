@@ -7,7 +7,7 @@
 !!      subroutine set_fline_start_surf(my_rank, i_fln,                 &
 !!     &          numnod, numele, numsurf, nnod_4_surf,                 &
 !!     &          ie_surf, isf_4_ele, iele_4_surf,                      &
-!!     &          fln_prm, fline_prm, fline_src, fline_tce)
+!!     &          fln_prm, fline_prm, fline_src, fline_tce, fln_tce)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(in) :: fline_prm
 !!        type(all_fieldline_source), intent(in) :: fline_src
@@ -31,7 +31,7 @@
       subroutine set_fline_start_surf(my_rank, i_fln,                   &
      &          numnod, numele, numsurf, nnod_4_surf,                   &
      &          ie_surf, isf_4_ele, iele_4_surf,                        &
-     &          fln_prm, fline_prm, fline_src, fline_tce)
+     &          fln_prm, fline_prm, fline_src, fline_tce, fln_tce)
 !
       use m_constants
       use m_geometry_constants
@@ -53,6 +53,7 @@
 !
       type(all_fieldline_source), intent(in) :: fline_src
       type(all_fieldline_trace), intent(inout) :: fline_tce
+      type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint)  :: i, iline, iele, isf_1ele, isurf
       integer(kind = kint)  :: ist_line, inum1,  inum2
@@ -62,7 +63,8 @@
       ist_line = fline_prm%istack_each_field_line(i_fln-1)
       do i = 1, fline_src%num_line_local(i_fln)
         iline = i + ist_line
-        inum1 = i + fline_tce%istack_all_fline(my_rank,i_fln)
+        inum1 = i + fln_tce%istack_current_fline(my_rank)               &
+     &            + fline_tce%istack_all_fline(i_fln)
         iele =     fline_prm%id_surf_start_fline(1,iline)
         isf_1ele = fline_prm%id_surf_start_fline(2,iline)
 !        write(*,*) 'iline', my_rank, i, iline, inum1, &
