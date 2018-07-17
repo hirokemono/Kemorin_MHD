@@ -119,7 +119,7 @@
      &        fline_tce%isf_fline_start(1,i),                           &
      &        fline_tce%xx_fline_start(1,i),                            &
      &        fline_tce%v_fline_start(1,i),                             &
-     &        fline_tce%c_fline_start(i), fline_tce%icount_fline(i),    &
+     &        fln_tce%c_fline_start(inum), fline_tce%icount_fline(i),   &
      &        iflag_comm, fline_lc)
           write(50+my_rank,*) 'extension end for ', i, iflag_comm
 !
@@ -232,8 +232,7 @@
      &      = fline_tce%xx_fline_start(1:3,iline)
         fln_tce%fline_export(4:6,i)                                     &
      &      = fline_tce%v_fline_start(1:3,iline)
-        fln_tce%fline_export(7,i)                                       &
-     &      = fline_tce%c_fline_start(iline)
+        fln_tce%fline_export(7,i) = fln_tce%c_fline_start(i)
       else
         fln_tce%id_fline_export(1,i) =   -ione
         fln_tce%id_fline_export(2:7,i) = izero
@@ -330,7 +329,7 @@
       type(all_fieldline_trace), intent(inout) :: fline_tce
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: ied_lin, iline, i, icou, ip
+      integer(kind = kint) :: ied_lin, iline, i, icou, ip, icou1
 !
 !
       ied_lin = fln_tce%istack_current_fline(nprocs)
@@ -352,24 +351,26 @@
      &                    + fln_tce%num_current_fline(ip)
       end do
 !
-      icou =   fln_tce%istack_current_fline(my_rank)                    &
+      icou =   fln_tce%istack_current_fline(my_rank)
+      icou1 =   fln_tce%istack_current_fline(my_rank)                   &
      &       + fline_tce%istack_all_fline(i_fln)
       do i = 1, ied_lin
         iline = i + fline_tce%istack_all_fline(i_fln)
         if(fln_tce%id_fline_export(1,i) .eq. my_rank) then
           icou = icou + 1
-          fline_tce%iflag_fline(icou)                                   &
+          icou1 = icou1 + 1
+          fline_tce%iflag_fline(icou1)                                   &
      &         = fln_tce%id_fline_export(2,i)
-          fline_tce%icount_fline(icou)                                  &
+          fline_tce%icount_fline(icou1)                                  &
      &         = fln_tce%id_fline_export(3,i)
-          fline_tce%isf_fline_start(1:3,icou)                           &
+          fline_tce%isf_fline_start(1:3,icou1)                           &
      &         = fln_tce%id_fline_export(4:6,i)
 !
-          fline_tce%xx_fline_start(1:3,icou)                            &
+          fline_tce%xx_fline_start(1:3,icou1)                            &
      &         = fln_tce%fline_export(1:3,i)
-          fline_tce%v_fline_start(1:3,icou)                             &
+          fline_tce%v_fline_start(1:3,icou1)                             &
      &         = fln_tce%fline_export(4:6,i)
-          fline_tce%c_fline_start(icou) = fln_tce%fline_export(7,i)
+          fln_tce%c_fline_start(icou) = fln_tce%fline_export(7,i)
         end if
       end do
 !

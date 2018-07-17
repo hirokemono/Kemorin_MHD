@@ -56,38 +56,38 @@
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint)  :: i, iline, iele, isf_1ele, isurf
-      integer(kind = kint)  :: ist_line, inum1,  inum2
+      integer(kind = kint)  :: ist_line, inum1, inum2, inum11, inum12
       real(kind = kreal), parameter :: xi(2) = (/zero, zero/)
 !
 !
       ist_line = fline_prm%istack_each_field_line(i_fln-1)
       do i = 1, fline_src%num_line_local(i_fln)
         iline = i + ist_line
-        inum1 = i + fln_tce%istack_current_fline(my_rank)               &
-     &            + fline_tce%istack_all_fline(i_fln)
+        inum1 = i + fln_tce%istack_current_fline(my_rank)
+        inum11 = inum1 + fline_tce%istack_all_fline(i_fln)
         iele =     fline_prm%id_surf_start_fline(1,iline)
         isf_1ele = fline_prm%id_surf_start_fline(2,iline)
 !        write(*,*) 'iline', my_rank, i, iline, inum1, &
 !     &              iele, isf_1ele, numnod, numsurf
         isurf = abs(isf_4_ele(iele,isf_1ele))
 !
-        fline_tce%xx_fline_start(1:3,inum1)                             &
+        fline_tce%xx_fline_start(1:3,inum11)                             &
      &       =  fline_src%xx_start_fline(1:3,iline)
 !
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf, xi, fline_src%vector_nod_fline(1,1,i_fln),  &
-     &      fline_tce%v_fline_start(1,inum1))
+     &      fline_tce%v_fline_start(1,inum11))
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf, xi, fline_src%color_nod_fline(1,i_fln),     &
-     &      fline_tce%c_fline_start(inum1))
+     &      fln_tce%c_fline_start(inum1))
 !
         if(fln_prm%id_fline_direction .eq. iflag_forward_trace) then
            call set_forward_fline_start_surf                            &
      &        (fline_prm%iflag_outward_flux_fline(iline),               &
      &         iele, isf_1ele, isurf,                                   &
      &         numsurf, nnod_4_surf, ie_surf, iele_4_surf,              &
-     &         fline_tce%iflag_fline(inum1),                            &
-     &         fline_tce%isf_fline_start(1,inum1))
+     &         fline_tce%iflag_fline(inum11),                            &
+     &         fline_tce%isf_fline_start(1,inum11))
 !
         else if(fln_prm%id_fline_direction .eq. iflag_backward_trace)   &
      &      then
@@ -95,31 +95,31 @@
      &         (fline_prm%iflag_outward_flux_fline(iline),              &
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
-     &          fline_tce%iflag_fline(inum1),                           &
-     &          fline_tce%isf_fline_start(1,inum1))
+     &          fline_tce%iflag_fline(inum11),                           &
+     &          fline_tce%isf_fline_start(1,inum11))
 !
         else
            call set_forward_fline_start_surf                            &
      &         (fline_prm%iflag_outward_flux_fline(iline),              &
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
-     &          fline_tce%iflag_fline(inum1),                           &
-     &          fline_tce%isf_fline_start(1,inum1))
+     &          fline_tce%iflag_fline(inum11),                           &
+     &          fline_tce%isf_fline_start(1,inum11))
 !
           inum2 = inum1 + fline_src%num_line_local(i_fln)
-          fline_tce%xx_fline_start(1:3,inum2)                           &
-     &          = fline_tce%xx_fline_start(1:3,inum1)
-          fline_tce%v_fline_start(1:3,inum2)                            &
-     &          = fline_tce%v_fline_start(1:3,inum1)
-          fline_tce%c_fline_start(inum2)                                &
-     &          = fline_tce%c_fline_start(inum1)
+          inum12 = inum11 + fline_src%num_line_local(i_fln)
+          fline_tce%xx_fline_start(1:3,inum12)                           &
+     &          = fline_tce%xx_fline_start(1:3,inum11)
+          fline_tce%v_fline_start(1:3,inum12)                            &
+     &          = fline_tce%v_fline_start(1:3,inum11)
+          fln_tce%c_fline_start(inum2) = fln_tce%c_fline_start(inum1)
 !
            call set_backward_fline_start_surf                           &
      &         (fline_prm%iflag_outward_flux_fline(iline),              &
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
-     &          fline_tce%iflag_fline(inum2),                           &
-     &          fline_tce%isf_fline_start(1,inum2))
+     &          fline_tce%iflag_fline(inum12),                          &
+     &          fline_tce%isf_fline_start(1,inum12))
         end if
       end do
 !
