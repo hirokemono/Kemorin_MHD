@@ -5,14 +5,14 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_start_surface_by_flux(i_fln, node, ele, surf,      &
-!!     &          fln_prm, fline_prm, fline_src, fline_tce)
+!!     &          fln_prm, fline_prm, fline_src, fln_tce)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
 !!        type(all_fieldline_source), intent(inout) :: fline_src
-!!        type(all_fieldline_trace), intent(inout) :: fline_tce
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       module start_surface_by_flux
 !
@@ -40,7 +40,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_by_flux(i_fln, node, ele, surf,        &
-     &          fln_prm, fline_prm, fline_src, fline_tce, fln_tce)
+     &          fln_prm, fline_prm, fline_src, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -55,7 +55,6 @@
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(all_fieldline_source), intent(inout) :: fline_src
-      type(all_fieldline_trace), intent(inout) :: fline_tce
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ist_grp, num_grp, i, ip
@@ -100,23 +99,23 @@
       call MPI_allREDUCE(tot_flux_start_l, tot_flux_start, ione,        &
      &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_AllGather(abs_flux_start_l, ione,                        &
-     &      CALYPSO_REAL, fline_tce%flux_stack_fline(1), ione,          &
+     &      CALYPSO_REAL, fln_tce%flux_stack_fline(1), ione,            &
      &      CALYPSO_REAL, CALYPSO_COMM, ierr_MPI)
 !
-      fline_tce%flux_stack_fline(0) = 0.0d0
+      fln_tce%flux_stack_fline(0) = 0.0d0
       do ip = 1, nprocs
-        fline_tce%flux_stack_fline(ip)                                  &
-     &                         = fline_tce%flux_stack_fline(ip-1)       &
-     &                          + fline_tce%flux_stack_fline(ip)
+        fln_tce%flux_stack_fline(ip)                                    &
+     &                         = fln_tce%flux_stack_fline(ip-1)         &
+     &                          + fln_tce%flux_stack_fline(ip)
       end do
-      abs_flux_start = fline_tce%flux_stack_fline(nprocs)
+      abs_flux_start = fln_tce%flux_stack_fline(nprocs)
       flux_4_each_line = abs_flux_start                                 &
      &                    / dble(fline_prm%num_each_field_line(i_fln))
 !
       do ip = 1, nprocs
         fln_tce%num_current_fline(ip)                                   &
-     &     = nint((fline_tce%flux_stack_fline(ip)                       &
-     &      - fline_tce%flux_stack_fline(ip-1)) / flux_4_each_line)
+     &     = nint((fln_tce%flux_stack_fline(ip)                         &
+     &      - fln_tce%flux_stack_fline(ip-1)) / flux_4_each_line)
       end do
       fline_src%num_line_local(i_fln)                                   &
      &      = fln_tce%num_current_fline(my_rank)

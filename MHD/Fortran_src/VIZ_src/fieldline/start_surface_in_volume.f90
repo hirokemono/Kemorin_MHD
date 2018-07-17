@@ -5,12 +5,12 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_start_surface_by_volume(i_fln, ele, ele_grp,       &
-!!     &          fln_prm, fline_prm, fline_src, fline_tce)
+!!     &          fln_prm, fline_prm, fline_src, fln_tce)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
 !!        type(all_fieldline_source), intent(inout) :: fline_src
-!!        type(all_fieldline_trace), intent(inout) :: fline_tce
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       module start_surface_in_volume
 !
@@ -38,7 +38,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_by_volume(i_fln, ele, ele_grp,         &
-     &          fln_prm, fline_prm, fline_src, fline_tce, fln_tce)
+     &          fln_prm, fline_prm, fline_src, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -52,7 +52,6 @@
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(all_fieldline_source), intent(inout) :: fline_src
-      type(all_fieldline_trace), intent(inout) :: fline_tce
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ip
@@ -72,23 +71,23 @@
      &     iflag_ele, volume_local)
 !
       call MPI_AllGather(volume_local, ione,                            &
-     &    CALYPSO_REAL, fline_tce%flux_stack_fline(1), ione,            &
+     &    CALYPSO_REAL, fln_tce%flux_stack_fline(1), ione,              &
      &    CALYPSO_REAL, CALYPSO_COMM, ierr_MPI)
 !
-      fline_tce%flux_stack_fline(0) = 0.0d0
+      fln_tce%flux_stack_fline(0) = 0.0d0
       do ip = 1, nprocs
-        fline_tce%flux_stack_fline(ip)                                  &
-     &                         = fline_tce%flux_stack_fline(ip-1)       &
-     &                          + fline_tce%flux_stack_fline(ip)
+        fln_tce%flux_stack_fline(ip)                                    &
+     &                         = fln_tce%flux_stack_fline(ip-1)         &
+     &                          + fln_tce%flux_stack_fline(ip)
       end do
-      total_volume = fline_tce%flux_stack_fline(nprocs)
+      total_volume = fln_tce%flux_stack_fline(nprocs)
       volume_start_l = total_volume                                     &
      &                    / dble(fline_prm%num_each_field_line(i_fln))
 !
       do ip = 1, nprocs
         fln_tce%num_current_fline(ip)                                   &
-     &     = nint((fline_tce%flux_stack_fline(ip)                       &
-     &      - fline_tce%flux_stack_fline(ip-1)) / volume_start_l)
+     &     = nint((fln_tce%flux_stack_fline(ip)                         &
+     &      - fln_tce%flux_stack_fline(ip-1)) / volume_start_l)
       end do
       fline_src%num_line_local(i_fln)                                   &
      &      = fln_tce%num_current_fline(my_rank+1)

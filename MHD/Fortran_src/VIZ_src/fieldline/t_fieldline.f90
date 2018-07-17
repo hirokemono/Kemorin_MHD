@@ -45,7 +45,6 @@
 !
         type(fieldline_paramters) :: fline_prm
         type(all_fieldline_source) :: fline_src
-        type(all_fieldline_trace) :: fline_tce
         type(local_fieldline) :: fline_lc
         type(global_fieldline_data) :: fline_gl
       end type fieldline_module
@@ -86,8 +85,7 @@
       call alloc_start_point_fline                                      &
      &   (fline%fline_prm%ntot_each_field_line, fline%fline_src)
       call alloc_num_gl_start_fline(nprocs, fline%num_fline,            &
-     &    fline%fline_prm%num_each_field_line,                          &
-     &    fline%fln_tce, fline%fline_tce)
+     &    fline%fline_prm%num_each_field_line, fline%fln_tce)
       call alloc_local_fline(fline%fline_lc)
       call alloc_global_fline_num(fline%fline_gl)
 !
@@ -126,7 +124,7 @@
         call s_set_fields_for_fieldline                                 &
      &     (i_fln, femmesh%mesh, ele_mesh, femmesh%group,               &
      &      fline%fln_prm(i_fln), fline%fline_prm,                      &
-     &      fline%fline_src, fline%fline_tce, fline%fln_tce(i_fln))
+     &      fline%fline_src, fline%fln_tce(i_fln))
       end do
 !
       do i_fln = 1, fline%num_fline
@@ -160,8 +158,7 @@
       call dealloc_local_start_grp_item(fline%fline_src)
       call dealloc_start_point_fline(fline%fline_src)
 !
-      call dealloc_num_gl_start_fline                                   &
-     &   (fline%num_fline, fline%fln_tce, fline%fline_tce)
+      call dealloc_num_gl_start_fline(fline%num_fline, fline%fln_tce)
       call dealloc_local_fline(fline%fline_lc)
       call dealloc_global_fline_num(fline%fline_gl)
 !
