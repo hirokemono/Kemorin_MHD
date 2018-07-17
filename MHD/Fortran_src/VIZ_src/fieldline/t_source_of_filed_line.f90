@@ -10,12 +10,12 @@
 !!        type(node_data), intent(in) :: node
 !!      subroutine alloc_start_point_fline                              &
 !!     &         (ntot_each_field_line, fline_src)
-!!      subroutine alloc_num_gl_start_fline(nprocs, num_fline,          &
-!!     &          num_each_field_line, fln_tce)
+!!      subroutine alloc_num_gl_start_fline                             &
+!!     &         (nprocs, num_each_field_line, fln_tce)
 !!      subroutine dealloc_local_data_4_fline(fline_src)
 !!      subroutine dealloc_local_start_grp_item(fline_src)
 !!      subroutine dealloc_start_point_fline(fline_src)
-!!      subroutine dealloc_num_gl_start_fline(num_fline, fln_tce)
+!!      subroutine dealloc_num_gl_start_fline(fln_tce)
 !
       module t_source_of_filed_line
 !
@@ -138,47 +138,43 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_num_gl_start_fline(nprocs, num_fline,            &
-     &          num_each_field_line, fln_tce)
+      subroutine alloc_num_gl_start_fline                               &
+     &         (nprocs, num_each_field_line, fln_tce)
 !
-      integer(kind = kint), intent(in) :: num_fline, nprocs
-      integer(kind = kint), intent(in) :: num_each_field_line(num_fline)
-      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
+      integer(kind = kint), intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: num_each_field_line
+      type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint) :: num, i
-!
-!
-      do i = 1, num_fline
-        allocate(fln_tce(i)%istack_current_fline(0:nprocs))
-        allocate(fln_tce(i)%num_current_fline(nprocs))
-        allocate(fln_tce(i)%flux_stack_fline(0:nprocs))
-        fln_tce(i)%istack_current_fline = 0
-        fln_tce(i)%num_current_fline =    0
-        fln_tce(i)%flux_stack_fline = 0.0d0
-!
-        num = 2*num_each_field_line(i)
-        allocate(fln_tce(i)%iflag_fline(num))
-        allocate(fln_tce(i)%icount_fline(num))
-        allocate(fln_tce(i)%isf_fline_start(3,num))
-!
-        allocate(fln_tce(i)%xx_fline_start(3,num))
-        allocate(fln_tce(i)%v_fline_start(3,num))
-        allocate(fln_tce(i)%c_fline_start(num))
-!
-        fln_tce(i)%iflag_fline =  0
-        fln_tce(i)%icount_fline = 0
-        fln_tce(i)%isf_fline_start = 0
-        fln_tce(i)%v_fline_start =  0.0d0
-        fln_tce(i)%c_fline_start =  0.0d0
-        fln_tce(i)%xx_fline_start = 0.0d0
-!
-        allocate(fln_tce(i)%id_fline_export(7,num))
-        allocate(fln_tce(i)%fline_export(7,num))
-        fln_tce(i)%id_fline_export = 0
-        fln_tce(i)%fline_export = 0.0d0
-      end do
+      integer(kind = kint) :: num
 !
 !
+      allocate(fln_tce%istack_current_fline(0:nprocs))
+      allocate(fln_tce%num_current_fline(nprocs))
+      allocate(fln_tce%flux_stack_fline(0:nprocs))
+      fln_tce%istack_current_fline = 0
+      fln_tce%num_current_fline =    0
+      fln_tce%flux_stack_fline = 0.0d0
+!
+      num = 2*num_each_field_line
+      allocate(fln_tce%iflag_fline(num))
+      allocate(fln_tce%icount_fline(num))
+      allocate(fln_tce%isf_fline_start(3,num))
+!
+      allocate(fln_tce%xx_fline_start(3,num))
+      allocate(fln_tce%v_fline_start(3,num))
+      allocate(fln_tce%c_fline_start(num))
+!
+      fln_tce%iflag_fline =  0
+      fln_tce%icount_fline = 0
+      fln_tce%isf_fline_start = 0
+      fln_tce%v_fline_start =  0.0d0
+      fln_tce%c_fline_start =  0.0d0
+      fln_tce%xx_fline_start = 0.0d0
+!
+      allocate(fln_tce%id_fline_export(7,num))
+      allocate(fln_tce%fline_export(7,num))
+      fln_tce%id_fline_export = 0
+      fln_tce%fline_export = 0.0d0
 !
       end subroutine alloc_num_gl_start_fline
 !
@@ -220,29 +216,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_num_gl_start_fline(num_fline, fln_tce)
+      subroutine dealloc_num_gl_start_fline(fln_tce)
 !
-      integer(kind = kint), intent(in) :: num_fline
-      type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
-!
-      integer(kind = kint) :: i
+      type(each_fieldline_trace), intent(inout) :: fln_tce
 !
 !
-      do i = 1, num_fline
-        deallocate(fln_tce(i)%istack_current_fline)
-        deallocate(fln_tce(i)%num_current_fline)
-        deallocate(fln_tce(i)%flux_stack_fline)
+      deallocate(fln_tce%istack_current_fline)
+      deallocate(fln_tce%num_current_fline)
+      deallocate(fln_tce%flux_stack_fline)
 !
-        deallocate(fln_tce(i)%iflag_fline)
-        deallocate(fln_tce(i)%icount_fline)
-        deallocate(fln_tce(i)%isf_fline_start)
-        deallocate(fln_tce(i)%xx_fline_start)
-        deallocate(fln_tce(i)%v_fline_start)
-        deallocate(fln_tce(i)%c_fline_start)
+      deallocate(fln_tce%iflag_fline)
+      deallocate(fln_tce%icount_fline)
+      deallocate(fln_tce%isf_fline_start)
+      deallocate(fln_tce%xx_fline_start)
+      deallocate(fln_tce%v_fline_start)
+      deallocate(fln_tce%c_fline_start)
 !
-        deallocate(fln_tce(i)%id_fline_export)
-        deallocate(fln_tce(i)%fline_export)
-      end do
+      deallocate(fln_tce%id_fline_export)
+      deallocate(fln_tce%fline_export)
 !
       end subroutine dealloc_num_gl_start_fline
 !

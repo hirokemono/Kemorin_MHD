@@ -67,6 +67,8 @@
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_module), intent(inout) :: fline
 !
+      integer(kind = kint) ::i
+!
 !
       fline%num_fline = fline_ctls%num_fline_ctl
       if(fline%num_fline .le. 0) return
@@ -84,8 +86,12 @@
      &   (fline%num_fline, femmesh%mesh%node, fline%fline_src)
       call alloc_start_point_fline                                      &
      &   (fline%fline_prm%ntot_each_field_line, fline%fline_src)
-      call alloc_num_gl_start_fline(nprocs, fline%num_fline,            &
-     &    fline%fline_prm%num_each_field_line, fline%fln_tce)
+!
+      do i = 1, fline%num_fline
+        call alloc_num_gl_start_fline(nprocs,                           &
+     &      fline%fline_prm%num_each_field_line(i), fline%fln_tce(i))
+      end do
+!
       call alloc_local_fline(fline%fline_lc)
       call alloc_global_fline_num(fline%fline_gl)
 !
@@ -148,6 +154,8 @@
 !
       type(fieldline_module), intent(inout) :: fline
 !
+      integer(kind = kint) :: i
+!
 !
       call dealloc_control_params_fline(fline%fline_prm)
       call dealloc_fline_starts_ctl                                     &
@@ -158,9 +166,12 @@
       call dealloc_local_start_grp_item(fline%fline_src)
       call dealloc_start_point_fline(fline%fline_src)
 !
-      call dealloc_num_gl_start_fline(fline%num_fline, fline%fln_tce)
       call dealloc_local_fline(fline%fline_lc)
       call dealloc_global_fline_num(fline%fline_gl)
+!
+      do i = 1, fline%num_fline
+        call dealloc_num_gl_start_fline(fline%fln_tce(i))
+      end do
 !
       deallocate(fline%fln_tce, fline%fln_prm)
 !

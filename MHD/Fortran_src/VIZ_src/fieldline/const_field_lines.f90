@@ -148,8 +148,8 @@
           end do
         end if
 !
-        call recover_local_fline_start(i_fln,                           &
-     &      node%numnod, ele%numele, surf%numsurf, ele%iele_global,     &
+        call recover_local_fline_start                                  &
+     &     (node%numnod, ele%numele, surf%numsurf, ele%iele_global,     &
      &      surf%isf_4_ele, surf%iele_4_surf, ele_4_nod%ntot,           &
      &      ele_4_nod%istack_4_node, ele_4_nod%iele_4_node,             &
      &      nod_comm%num_neib, nod_comm%id_neib, nod_comm%ntot_export,  &
@@ -232,16 +232,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine recover_local_fline_start(i_fln,                       &
-     &          numnod, numele, numsurf, iele_global,                   &
+      subroutine recover_local_fline_start                              &
+     &         (numnod, numele, numsurf, iele_global,                   &
      &          isf_4_ele, iele_4_surf, ntot_ele_4_node,                &
      &          iele_stack_4_node, iele_4_node, num_neib, id_neib,      &
      &          ntot_export, istack_export, item_export, fln_tce)
 !
       use m_geometry_constants
       use t_source_of_filed_line
-!
-      integer(kind = kint), intent(in) :: i_fln
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer (kind=kint_gl), intent(in) :: iele_global(numele)
