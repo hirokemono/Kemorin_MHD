@@ -86,7 +86,7 @@
      &        (fline_prm%iflag_outward_flux_fline(iline),               &
      &         iele, isf_1ele, isurf,                                   &
      &         numsurf, nnod_4_surf, ie_surf, iele_4_surf,              &
-     &         fline_tce%iflag_fline(inum11),                            &
+     &         fln_tce%iflag_fline(inum1),                              &
      &         fln_tce%isf_fline_start(1,inum1))
 !
         else if(fln_prm%id_fline_direction .eq. iflag_backward_trace)   &
@@ -95,7 +95,7 @@
      &         (fline_prm%iflag_outward_flux_fline(iline),              &
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
-     &          fline_tce%iflag_fline(inum11),                           &
+     &          fln_tce%iflag_fline(inum1),                             &
      &          fln_tce%isf_fline_start(1,inum1))
 !
         else
@@ -103,7 +103,7 @@
      &         (fline_prm%iflag_outward_flux_fline(iline),              &
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
-     &          fline_tce%iflag_fline(inum11),                           &
+     &          fln_tce%iflag_fline(inum1),                             &
      &          fln_tce%isf_fline_start(1,inum1))
 !
           inum2 = inum1 + fline_src%num_line_local(i_fln)
@@ -118,7 +118,7 @@
      &         (fline_prm%iflag_outward_flux_fline(iline),              &
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
-     &          fline_tce%iflag_fline(inum12),                          &
+     &          fln_tce%iflag_fline(inum2),                             &
      &          fln_tce%isf_fline_start(1,inum2))
         end if
       end do

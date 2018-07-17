@@ -87,7 +87,6 @@
      &   (fline%fline_prm%ntot_each_field_line, fline%fline_src)
       call alloc_num_gl_start_fline(nprocs, fline%num_fline,            &
      &    fline%fline_prm%num_each_field_line,                          &
-     &    fline%fline_prm%ntot_each_field_line,                         &
      &    fline%fln_tce, fline%fline_tce)
       call alloc_local_fline(fline%fline_lc)
       call alloc_global_fline_num(fline%fline_gl)
@@ -136,7 +135,7 @@
      &     (i_fln, femmesh%mesh%node, femmesh%mesh%ele,                 &
      &      ele_mesh%surf, ele_4_nod, femmesh%mesh%nod_comm,            &
      &      fline%fln_prm(i_fln), fline%fline_src,                      &
-     &      fline%fln_tce(i_fln), fline%fline_tce, fline%fline_lc)
+     &      fline%fln_tce(i_fln), fline%fline_lc)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
        call s_collect_fline_data(istep_fline, fline%fln_prm(i_fln),     &

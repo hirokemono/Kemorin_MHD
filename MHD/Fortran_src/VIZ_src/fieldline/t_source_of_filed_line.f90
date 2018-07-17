@@ -44,6 +44,7 @@
         integer(kind = kint), allocatable :: istack_current_fline(:)
         integer(kind = kint), allocatable :: num_current_fline(:)
 !
+        integer(kind= kint), allocatable :: iflag_fline(:)
         integer(kind= kint), allocatable :: icount_fline(:)
         integer(kind= kint), allocatable :: isf_fline_start(:,:)
         real(kind = kreal), allocatable ::  xx_fline_start(:,:)
@@ -60,7 +61,6 @@
         integer(kind = kint), allocatable :: istack_all_fline(:)
         real(kind = kreal),   allocatable :: flux_stack_fline(:)
 !
-        integer(kind= kint), allocatable :: iflag_fline(:)
       end type all_fieldline_trace
 !
 !  ---------------------------------------------------------------------
@@ -146,19 +146,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine alloc_num_gl_start_fline(nprocs, num_fline,            &
-     &          num_each_field_line, ntot_each_field_line,              &
-     &          fln_tce, fline_tce)
+     &          num_each_field_line, fln_tce, fline_tce)
 !
       integer(kind = kint), intent(in) :: num_fline, nprocs
       integer(kind = kint), intent(in) :: num_each_field_line(num_fline)
-      integer(kind = kint), intent(in) :: ntot_each_field_line
       type(each_fieldline_trace), intent(inout) :: fln_tce(num_fline)
       type(all_fieldline_trace), intent(inout) :: fline_tce
 !
       integer(kind = kint) :: num, i
 !
 !
-      write(*,*) 'ntot_each_field_line', ntot_each_field_line
       write(*,*) 'num_each_field_line', num_each_field_line
       do i = 1, num_fline
         allocate(fln_tce(i)%istack_current_fline(0:nprocs))
@@ -167,6 +164,7 @@
         fln_tce(i)%num_current_fline =    0
 !
         num = 2*num_each_field_line(i)
+        allocate(fln_tce(i)%iflag_fline(num))
         allocate(fln_tce(i)%icount_fline(num))
         allocate(fln_tce(i)%isf_fline_start(3,num))
 !
@@ -174,6 +172,7 @@
         allocate(fln_tce(i)%v_fline_start(3,num))
         allocate(fln_tce(i)%c_fline_start(num))
 !
+        fln_tce(i)%iflag_fline =  0
         fln_tce(i)%icount_fline = 0
         fln_tce(i)%isf_fline_start = 0
         fln_tce(i)%v_fline_start =  0.0d0
@@ -189,14 +188,11 @@
       allocate(fline_tce%istack_all_fline(num_fline))
       allocate(fline_tce%flux_stack_fline(0:nprocs))
 !
-      num = 2*ntot_each_field_line
-      allocate(fline_tce%iflag_fline(num))
 !
       fline_tce%ntot_gl_fline =    0
       fline_tce%istack_all_fline = 0
       fline_tce%flux_stack_fline = 0.0d0
 !
-      fline_tce%iflag_fline =  0
 !
       end subroutine alloc_num_gl_start_fline
 !
@@ -252,6 +248,7 @@
         deallocate(fln_tce(i)%istack_current_fline)
         deallocate(fln_tce(i)%num_current_fline)
 !
+        deallocate(fln_tce(i)%iflag_fline)
         deallocate(fln_tce(i)%icount_fline)
         deallocate(fln_tce(i)%isf_fline_start)
         deallocate(fln_tce(i)%xx_fline_start)
@@ -265,7 +262,6 @@
       deallocate(fline_tce%istack_all_fline)
       deallocate(fline_tce%flux_stack_fline)
 !
-      deallocate(fline_tce%iflag_fline)
 !
       end subroutine dealloc_num_gl_start_fline
 !
