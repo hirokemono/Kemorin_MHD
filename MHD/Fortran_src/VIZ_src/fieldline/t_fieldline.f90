@@ -41,6 +41,7 @@
 !
         type(fieldline_paramter), allocatable :: fln_prm(:)
 !
+        type(each_fieldline_source), allocatable :: fln_src(:)
         type(each_fieldline_trace), allocatable :: fln_tce(:)
 !
         type(fieldline_paramters) :: fline_prm
@@ -74,6 +75,7 @@
       if(fline%num_fline .le. 0) return
 !
       allocate(fline%fln_prm(fline%num_fline))
+      allocate(fline%fln_src(fline%num_fline))
       allocate(fline%fln_tce(fline%num_fline))
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
@@ -84,10 +86,10 @@
       if (iflag_debug.eq.1) write(*,*) 'allocate_local_data_4_fline'
       call alloc_local_data_4_fline                                     &
      &   (fline%num_fline, femmesh%mesh%node, fline%fline_src)
-      call alloc_start_point_fline                                      &
-     &   (fline%fline_prm%ntot_each_field_line, fline%fline_src)
 !
       do i = 1, fline%num_fline
+        call alloc_start_point_fline                                    &
+     &     (fline%fline_prm%num_each_field_line(i), fline%fln_src(i))
         call alloc_num_gl_start_fline(nprocs,                           &
      &      fline%fline_prm%num_each_field_line(i), fline%fln_tce(i))
       end do
@@ -130,7 +132,7 @@
         call s_set_fields_for_fieldline                                 &
      &     (i_fln, femmesh%mesh, ele_mesh, femmesh%group,               &
      &      fline%fln_prm(i_fln), fline%fline_prm,                      &
-     &      fline%fline_src, fline%fln_tce(i_fln))
+     &      fline%fline_src, fline%fln_src(i_fln), fline%fln_tce(i_fln))
       end do
 !
       do i_fln = 1, fline%num_fline
@@ -164,16 +166,16 @@
 !
       call dealloc_local_data_4_fline(fline%fline_src)
       call dealloc_local_start_grp_item(fline%fline_src)
-      call dealloc_start_point_fline(fline%fline_src)
 !
       call dealloc_local_fline(fline%fline_lc)
       call dealloc_global_fline_num(fline%fline_gl)
 !
       do i = 1, fline%num_fline
+        call dealloc_start_point_fline(fline%fln_src(i))
         call dealloc_num_gl_start_fline(fline%fln_tce(i))
       end do
 !
-      deallocate(fline%fln_tce, fline%fln_prm)
+      deallocate(fline%fln_src, fline%fln_tce, fline%fln_prm)
 !
       end subroutine FLINE_finalize
 !

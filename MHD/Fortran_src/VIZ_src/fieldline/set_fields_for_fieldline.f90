@@ -161,7 +161,7 @@
 !
       subroutine s_set_fields_for_fieldline                             &
      &         (i_fln, mesh, ele_mesh, group,                           &
-     &          fln_prm, fline_prm, fline_src, fln_tce)
+     &          fln_prm, fline_prm, fline_src, fln_src, fln_tce)
 !
       use t_mesh_data
       use start_surface_by_gl_table
@@ -178,6 +178,7 @@
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
 !
@@ -203,7 +204,7 @@
       if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline'
       call s_start_surface_4_fline                                      &
      &   (i_fln, mesh%node, mesh%ele, ele_mesh%surf,                    &
-     &    fln_prm, fline_prm, fline_src, fln_tce)
+     &    fln_prm, fline_prm, fline_src, fln_src, fln_tce)
 !
       end subroutine s_set_fields_for_fieldline
 !

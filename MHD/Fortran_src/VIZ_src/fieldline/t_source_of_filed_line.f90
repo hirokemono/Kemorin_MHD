@@ -8,14 +8,17 @@
 !!      subroutine alloc_local_start_grp_item(num_fline, fline_src)
 !!      subroutine alloc_local_data_4_fline(num_fline, node, fline_src)
 !!        type(node_data), intent(in) :: node
-!!      subroutine alloc_start_point_fline                              &
-!!     &         (ntot_each_field_line, fline_src)
+!!      subroutine alloc_start_point_fline(num_each_field_line, fln_src)
+!!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine alloc_num_gl_start_fline                             &
 !!     &         (nprocs, num_each_field_line, fln_tce)
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!      subroutine dealloc_local_data_4_fline(fline_src)
 !!      subroutine dealloc_local_start_grp_item(fline_src)
 !!      subroutine dealloc_start_point_fline(fline_src)
+!!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine dealloc_num_gl_start_fline(fln_tce)
+!!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       module t_source_of_filed_line
 !
@@ -35,10 +38,12 @@
         real(kind = kreal),   allocatable :: flux_start(:)
 !
         integer(kind = kint), allocatable :: num_line_local(:)
-!
-        real(kind = kreal),   allocatable :: xx_start_fline(:,:)
-        real(kind = kreal),   allocatable :: flux_start_fline(:)
       end type all_fieldline_source
+!
+      type each_fieldline_source
+        real(kind = kreal), allocatable :: xx_start_fline(:,:)
+        real(kind = kreal), allocatable :: flux_start_fline(:)
+      end type each_fieldline_source
 !
       type each_fieldline_trace
         integer(kind = kint), allocatable :: istack_current_fline(:)
@@ -121,18 +126,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_start_point_fline                                &
-     &         (ntot_each_field_line, fline_src)
+      subroutine alloc_start_point_fline(num_each_field_line, fln_src)
 !
-      integer(kind = kint), intent(in) :: ntot_each_field_line
-      type(all_fieldline_source), intent(inout) :: fline_src
+      integer(kind = kint), intent(in) :: num_each_field_line
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
 !
-      allocate(fline_src%xx_start_fline(3,ntot_each_field_line))
-      allocate(fline_src%flux_start_fline(ntot_each_field_line))
+      allocate(fln_src%xx_start_fline(3,num_each_field_line))
+      allocate(fln_src%flux_start_fline(num_each_field_line))
 !
-      fline_src%xx_start_fline = 0.0d0
-      fline_src%flux_start_fline =  0.0d0
+      fln_src%xx_start_fline = 0.0d0
+      fln_src%flux_start_fline =  0.0d0
 !
       end subroutine alloc_start_point_fline
 !
@@ -206,11 +210,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_start_point_fline(fline_src)
+      subroutine dealloc_start_point_fline(fln_src)
 !
-      type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
-      deallocate(fline_src%xx_start_fline, fline_src%flux_start_fline)
+      deallocate(fln_src%xx_start_fline, fln_src%flux_start_fline)
 !
       end subroutine dealloc_start_point_fline
 !

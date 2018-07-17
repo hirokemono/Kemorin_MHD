@@ -38,7 +38,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_4_fline(i_fln, node, ele, surf,        &
-     &          fln_prm, fline_prm, fline_src, fln_tce)
+     &          fln_prm, fline_prm, fline_src, fln_src, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -53,6 +53,7 @@
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: i, ist, ied, inum
@@ -66,22 +67,21 @@
         iele = fline_prm%id_surf_start_fline(1,inum)
         isf =  fline_prm%id_surf_start_fline(2,inum)
         isurf = abs(surf%isf_4_ele(iele,isf))
-        fline_src%xx_start_fline(1:3,inum) =   surf%x_surf(isurf,1:3)
+        fln_src%xx_start_fline(1:3,i) =   surf%x_surf(isurf,1:3)
         xi(1:2) = zero
         call cal_field_on_surf_vector                                   &
      &     (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,  &
      &      isurf, xi, fline_src%vector_nod_fline(1,1,i_fln), vec_surf)
 !
-        fline_src%flux_start_fline(inum)                                &
+        fln_src%flux_start_fline(i)                                     &
      &                     = (vec_surf(1) * surf%vnorm_surf(isurf,1)    &
      &                      + vec_surf(2) * surf%vnorm_surf(isurf,2)    &
      &                      + vec_surf(3) * surf%vnorm_surf(isurf,3))   &
      &                     * dble(surf%isf_4_ele(iele,isf) / isurf)
 !
-        if(fline_src%flux_start_fline(inum) .gt. zero) then
+        if(fln_src%flux_start_fline(i) .gt. zero) then
           fline_prm%iflag_outward_flux_fline(inum) = 1
-          fline_src%flux_start_fline(inum)                              &
-     &                     = -fline_src%flux_start_fline(inum)
+          fln_src%flux_start_fline(i) = -fln_src%flux_start_fline(i)
         end if
       end do
 !
@@ -105,7 +105,7 @@
       call set_fline_start_surf(my_rank, i_fln,                         &
      &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
      &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,               &
-     &    fln_prm, fline_prm, fline_src, fln_tce)
+     &    fln_prm, fline_prm, fline_src, fln_src, fln_tce)
 !
       if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'num_current_fline',                        &
@@ -119,8 +119,8 @@
           write(50+my_rank,*) 'id_surf_start_fline', i,                 &
      &                  fline_prm%id_surf_start_fline(1:2,i+ist_line)
           write(50+my_rank,'(a,1p4e16.5)') 'start_point, flux',         &
-     &                  fline_src%xx_start_fline(1:3,i+ist_line),       &
-     &                  fline_src%flux_start_fline(i+ist_line)
+     &                  fln_src%xx_start_fline(1:3,i),                  &
+     &                  fln_src%flux_start_fline(i)
         end do
 !
         ist = fln_tce%istack_current_fline(my_rank) + 1

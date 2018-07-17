@@ -31,7 +31,7 @@
       subroutine set_fline_start_surf(my_rank, i_fln,                   &
      &          numnod, numele, numsurf, nnod_4_surf,                   &
      &          ie_surf, isf_4_ele, iele_4_surf,                        &
-     &          fln_prm, fline_prm, fline_src, fln_tce)
+     &          fln_prm, fline_prm, fline_src, fln_src, fln_tce)
 !
       use m_constants
       use m_geometry_constants
@@ -50,6 +50,7 @@
       integer(kind = kint), intent(in) :: i_fln
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(in) :: fline_prm
+      type(each_fieldline_source), intent(in) :: fln_src
 !
       type(all_fieldline_source), intent(in) :: fline_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -70,7 +71,7 @@
         isurf = abs(isf_4_ele(iele,isf_1ele))
 !
         fln_tce%xx_fline_start(1:3,inum1)                               &
-     &       =  fline_src%xx_start_fline(1:3,iline)
+     &       = fln_src%xx_start_fline(1:3,i)
 !
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf, xi, fline_src%vector_nod_fline(1,1,i_fln),  &
