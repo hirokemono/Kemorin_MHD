@@ -108,7 +108,8 @@
      &     = nint((fln_tce%flux_stack_fline(ip)                         &
      &      - fln_tce%flux_stack_fline(ip-1)) / flux_4_each_line)
       end do
-      fln_src%num_line_local = fln_tce%num_current_fline(my_rank)
+      fln_src%num_line_local                                            &
+     &     = fln_tce%num_current_fline(my_rank+1)
 !
       if(i_debug .gt. 0) then
         write(my_rank+50,*)  'abs_flux_start',                          &
@@ -130,7 +131,8 @@
 !
       if(fln_prm%num_each_field_line .gt. 0) then
         if(fln_prm%id_seed_distribution  .eq. iflag_no_random) then
-          if(iflag_debug .gt. 0) write(*,*) 'start_surface_witout_random'
+          if(iflag_debug .gt. 0)                                        &
+     &        write(*,*) 'start_surface_witout_random'
           call start_surface_witout_random(fln_src, abs_flux_start_l,   &
      &        fln_prm%num_each_field_line, fln_prm%id_surf_start_fline)
         else
@@ -329,23 +331,28 @@
       real(kind = kreal) :: flux, ref_flux
 !
 !
-      ref_flux = abs_flux_start_l / num_line
+      if(fln_src%num_line_local .le. 0) return
+!
+      ref_flux = abs_flux_start_l / dble(fln_src%num_line_local+1)
       icou = 0
-      if(fln_src%num_line_local .gt. 0) then
-        flux = 0.0d0
-        do inum = 1, fln_src%nele_start_grp
-          flux = flux + abs(fln_src%flux_start(inum))
-          if(flux .gt. ref_flux) then
-            icou = icou + 1
-            id_surf_start_fline(1,icou)                                &
+      flux = 0.0d0
+      do inum = 1, fln_src%nele_start_grp
+        flux = flux + abs(fln_src%flux_start(inum))
+        if(flux .ge. ref_flux) then
+          icou = icou + 1
+          id_surf_start_fline(1,icou)                                  &
      &               = fln_src%iele_start_item(1,inum)
-            id_surf_start_fline(2,icou)                                &
+          id_surf_start_fline(2,icou)                                  &
      &               = fln_src%iele_start_item(2,inum)
-            flux = 0.0d0
-          end if
-          if(icou .ge. num_line) exit
-        end do
-      end if
+          flux = 0.0d0
+        end if
+        if(icou .ge. fln_src%num_line_local) exit
+      end do
+!
+      write(*,*) 'icou', my_rank, icou, num_line, fln_src%num_line_local
+      write(50+my_rank,*) 'nele_start_grp', fln_src%nele_start_grp
+      write(50+my_rank,*) 'id_surf_start_fline', id_surf_start_fline(1,:)
+!
 !
       end subroutine start_surface_witout_random
 !

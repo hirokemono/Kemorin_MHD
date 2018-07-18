@@ -128,7 +128,6 @@
       real(kind = kreal) :: flux, ref_flux
 !
 !
-!
       ref_flux = vol_4_start                                            &
      &          * dble(num_line_local) / dble(num_line_local+1)
       icou = 0
@@ -145,10 +144,6 @@
           if(icou .ge. num_line_local) exit
         end do
       end if
-!
-      write(*,*) 'icou', my_rank, icou, num_line, num_line_local
-      write(50+my_rank,*) 'numele', ele%numele
-      write(50+my_rank,*) 'id_surf_start_fline', id_surf_start_fline(1,:)
 !
       end subroutine set_start_surface_in_domain
 !
