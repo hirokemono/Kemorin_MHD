@@ -93,7 +93,7 @@
 !
       call dealloc_comm_table(surf_mesh_IO%comm)
       call deallocate_ele_connect_type(surf_mesh_IO%ele)
-      call dealloc_surface_mesh_IO(surf_mesh_IO)
+      call dealloc_surface_connect_IO(surf_mesh_IO%sfed)
 !
       end subroutine dealloc_surface_mesh_IO
 !

@@ -103,7 +103,7 @@
       call sel_write_ele_mesh_file                                      &
      &   (mesh_file, my_rank_IO, ele_mesh_IO)
 !
-call dealloc_comm_table(ele_mesh_IO%comm)
+      call dealloc_comm_table(ele_mesh_IO%comm)
 !      call dealloc_ele_geometry_data(ele_mesh_IO)
 !
       call set_surface_mesh_to_IO                                       &
