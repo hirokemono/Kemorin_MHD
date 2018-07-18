@@ -14,8 +14,8 @@
 !!
 !!@verbatim
 !!      subroutine s_const_field_lines                                  &
-!!     &         (i_fln, node, ele, surf, ele_4_nod, nod_comm,          &
-!!     &          fln_prm, fline_prm, fline_src, fln_tce, fline_lc)
+!!     &         (node, ele, surf, ele_4_nod, nod_comm,                 &
+!!     &          fln_prm, fln_src, fln_tce, fline_lc)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -23,7 +23,7 @@
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(in) :: fline_prm
-!!        type(all_fieldline_source), intent(in) :: fline_src
+!!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!@endverbatim
@@ -48,9 +48,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_const_field_lines                                    &
-     &         (i_fln, node, ele, surf, ele_4_nod, nod_comm,            &
-     &          fln_prm, fline_src, fln_src, fln_tce, fline_lc)
-!
+     &         (node, ele, surf, ele_4_nod, nod_comm,                   &
+     &          fln_prm, fln_src, fln_tce, fline_lc)
 !
       use t_control_params_4_fline
       use t_comm_table
@@ -62,15 +61,12 @@
       use t_source_of_filed_line
       use extend_field_line
 !
-      integer(kind= kint), intent(in) :: i_fln
-!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(element_around_node), intent(in) :: ele_4_nod
       type(communication_table), intent(in) :: nod_comm
       type(fieldline_paramter), intent(in) :: fln_prm
-      type(all_fieldline_source), intent(in) :: fline_src
       type(each_fieldline_source), intent(in) :: fln_src
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -101,7 +97,7 @@
       do
         ist = fln_tce%istack_current_fline(my_rank) + 1
         ied = fln_tce%istack_current_fline(my_rank+1)
-        write(*,*) 'fln_tce%istack_current_fline', my_rank, i_fln,      &
+        write(*,*) 'fln_tce%istack_current_fline', my_rank,             &
      &            fln_tce%istack_current_fline(my_rank:my_rank+1),      &
      &            fln_tce%num_current_fline(my_rank+1)
         do inum = ist, ied
@@ -168,7 +164,7 @@
         if(nline .le. 0) exit
       end do
 !
-!      call check_local_fline_dx( (my_rank+60+i_fln*100), fline_lc)
+!      call check_local_fline_dx( (my_rank+60), fline_lc)
 !
       end subroutine s_const_field_lines
 !

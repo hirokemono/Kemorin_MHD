@@ -5,7 +5,7 @@
 !
 !!      subroutine count_control_4_fline                                &
 !!     &         (i_fln, fln, ele, ele_grp, sf_grp,                     &
-!!     &          fln_prm, fline_prm, fline_src)
+!!     &          fln_prm, fline_prm, fln_src)
 !!      subroutine set_control_4_fline                                  &
 !!     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld,            &
 !!     &          fln_prm, fline_prm, fln_src)
@@ -48,7 +48,7 @@
 !
       subroutine count_control_4_fline                                  &
      &         (i_fln, fln, ele, ele_grp, sf_grp,                       &
-     &          fln_prm, fline_prm, fline_src)
+     &          fln_prm, fline_prm, fln_src)
 !
       use m_field_file_format
 !
@@ -65,7 +65,7 @@
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(all_fieldline_source), intent(inout) :: fline_src
+      type(each_fieldline_source), intent(inout) :: fln_src
 !
       character(len=kchara) :: character_256
 !
@@ -152,9 +152,8 @@
      &        fln_prm%igrp_start_fline_surf_grp)
         end if
 !
-        fline_src%nele_start_grp(i_fln)                                 &
-     &     = count_nsurf_for_starting                                   &
-     &     (ele, sf_grp, fln_prm%igrp_start_fline_surf_grp)
+        fln_src%nele_start_grp = count_nsurf_for_starting(ele, sf_grp,  &
+     &                          fln_prm%igrp_start_fline_surf_grp)
 !
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(fln%seed_surface_ctl%num .gt. 0) then

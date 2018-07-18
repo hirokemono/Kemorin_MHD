@@ -45,7 +45,6 @@
         type(each_fieldline_trace), allocatable :: fln_tce(:)
 !
         type(fieldline_paramters) :: fline_prm
-        type(all_fieldline_source) :: fline_src
         type(local_fieldline) :: fline_lc
         type(global_fieldline_data) :: fline_gl
       end type fieldline_module
@@ -80,8 +79,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
       call s_set_fline_control(femmesh%mesh, femmesh%group, nod_fld,    &
-     &   fline%num_fline, fline_ctls, fline%fln_prm, fline%fline_prm,   &
-     &   fline%fline_src, fline%fln_src)
+     &    fline%num_fline, fline_ctls, fline%fln_prm, fline%fline_prm,  &
+     &    fline%fln_src)
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_local_data_4_fline'
 !
@@ -132,15 +131,15 @@
         call s_set_fields_for_fieldline                                 &
      &     (i_fln, femmesh%mesh, ele_mesh, femmesh%group,               &
      &      fline%fln_prm(i_fln), fline%fline_prm,                      &
-     &      fline%fline_src, fline%fln_src(i_fln), fline%fln_tce(i_fln))
+     &      fline%fln_src(i_fln), fline%fln_tce(i_fln))
       end do
 !
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_const_field_lines', i_fln
         call s_const_field_lines                                        &
-     &     (i_fln, femmesh%mesh%node, femmesh%mesh%ele,                 &
+     &     (femmesh%mesh%node, femmesh%mesh%ele,                        &
      &      ele_mesh%surf, ele_4_nod, femmesh%mesh%nod_comm,            &
-     &      fline%fln_prm(i_fln), fline%fline_src, fline%fln_src(i_fln), &
+     &      fline%fln_prm(i_fln), fline%fln_src(i_fln),                 &
      &      fline%fln_tce(i_fln), fline%fline_lc)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln

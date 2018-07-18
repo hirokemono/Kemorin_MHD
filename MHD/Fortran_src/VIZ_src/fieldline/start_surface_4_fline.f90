@@ -5,13 +5,13 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_start_surface_4_fline(i_fln, node, ele, surf,      &
-!!     &          fln_prm, fline_prm, fline_src, fln_tce)
+!!     &          fln_prm, fline_prm, fln_src, fln_tce)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(all_fieldline_source), intent(inout) :: fline_src
+!!        type(each_fieldline_source), intent(inout) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       module start_surface_4_fline
@@ -38,7 +38,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_4_fline(i_fln, node, ele, surf,        &
-     &          fln_prm, fline_prm, fline_src, fln_src, fln_tce)
+     &          fln_prm, fline_prm, fln_src, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -52,7 +52,6 @@
 !
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(all_fieldline_source), intent(inout) :: fline_src
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
@@ -105,7 +104,7 @@
       call set_fline_start_surf(my_rank, i_fln,                         &
      &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &
      &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,               &
-     &    fln_prm, fline_prm, fline_src, fln_src, fln_tce)
+     &    fln_prm, fline_prm, fln_src, fln_tce)
 !
       if(i_debug .gt. iflag_full_msg) then
         write(50+my_rank,*) 'num_current_fline',                        &

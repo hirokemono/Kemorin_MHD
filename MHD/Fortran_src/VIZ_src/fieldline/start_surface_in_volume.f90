@@ -5,11 +5,11 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_start_surface_by_volume(i_fln, ele, ele_grp,       &
-!!     &          fln_prm, fline_prm, fline_src, fln_tce)
+!!     &          fln_prm, fline_prm, fln_src, fln_tce)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(all_fieldline_source), intent(inout) :: fline_src
+!!        type(each_fieldline_source), intent(inout) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       module start_surface_in_volume
@@ -38,7 +38,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_by_volume(i_fln, ele, ele_grp,         &
-     &          fln_prm, fline_prm, fline_src, fln_src, fln_tce)
+     &          fln_prm, fline_prm, fln_src, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -51,7 +51,6 @@
       type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(all_fieldline_source), intent(inout) :: fline_src
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !

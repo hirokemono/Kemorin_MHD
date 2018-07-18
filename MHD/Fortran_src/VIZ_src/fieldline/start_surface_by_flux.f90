@@ -5,13 +5,13 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_start_surface_by_flux(i_fln, node, ele, surf,      &
-!!     &          fln_prm, fline_prm, fline_src, fln_tce)
+!!     &          fln_prm, fline_prm, fln_src, fln_tce)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(all_fieldline_source), intent(inout) :: fline_src
+!!        type(each_fieldline_source), intent(inout) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       module start_surface_by_flux
@@ -32,6 +32,7 @@
       implicit  none
 !
       private :: cal_flux_for_1sgrp, cal_area_for_1sgrp
+      private :: start_surface_by_random, start_surface_witout_random
 !
 !  ---------------------------------------------------------------------
 !
@@ -40,7 +41,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_by_flux(i_fln, node, ele, surf,        &
-     &          fln_prm, fline_prm, fline_src, fln_src, fln_tce)
+     &          fln_prm, fline_prm, fln_src, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -54,7 +55,6 @@
 !
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(all_fieldline_source), intent(inout) :: fline_src
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
@@ -71,21 +71,21 @@
         if(iflag_debug .gt. 0) write(*,*) 'cal_area_for_1sgrp'
         call cal_area_for_1sgrp(ele%numele, surf%numsurf,               &
      &      surf%isf_4_ele, ele%interior_ele, surf%area_surf,           &
-     &      fline_src%nele_start_grp(i_fln), fln_src%iele_start_item,   &
+     &      fln_src%nele_start_grp, fln_src%iele_start_item,            &
      &      fln_src%flux_start)
       else
         if(iflag_debug .gt. 0) write(*,*) 'cal_flux_for_1sgrp'
         call cal_flux_for_1sgrp(node%numnod, ele%numele, surf%numsurf,  &
      &      surf%nnod_4_surf, surf%ie_surf, surf%isf_4_ele,             &
      &      ele%interior_ele, surf%vnorm_surf, surf%area_surf,          &
-     &      fline_src%nele_start_grp(i_fln), fln_src%iele_start_item,   &
+     &      fln_src%nele_start_grp, fln_src%iele_start_item,            &
      &      fln_src%vector_nod_fline, fln_src%flux_start)
       end if
       call calypso_mpi_barrier
 !
       abs_flux_start_l = 0.0d0
       tot_flux_start_l = 0.0d0
-      do i = 1, fline_src%nele_start_grp(i_fln)
+      do i = 1, fln_src%nele_start_grp
         abs_flux_start_l                                                &
      &            = abs_flux_start_l + abs(fln_src%flux_start(i))
         tot_flux_start_l                                                &
@@ -138,13 +138,11 @@
       if(num_line .gt. 0) then
         if(fln_prm%id_seed_distribution  .eq. iflag_no_random) then
           if(iflag_debug .gt. 0) write(*,*) 'start_surface_witout_random'
-          call start_surface_witout_random                              &
-     &       (i_fln, fline_src, fln_src, abs_flux_start_l,              &
+          call start_surface_witout_random(fln_src, abs_flux_start_l,   &
      &        num_line, fline_prm%id_surf_start_fline(1,ist_line))
         else
           if(iflag_debug .gt. 0) write(*,*) 'start_surface_by_random'
-          call start_surface_by_random                                  &
-     &       (i_fln, fline_src, fln_src, abs_flux_start_l,              &
+          call start_surface_by_random(fln_src, abs_flux_start_l,       &
      &        num_line, fline_prm%id_surf_start_fline(1, ist_line))
         end if
       end if
@@ -253,8 +251,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine start_surface_by_random                                &
-     &         (i_fln, fline_src, fln_src, abs_flux_start_l,            &
+      subroutine start_surface_by_random(fln_src, abs_flux_start_l,     &
      &          num_line, id_surf_start_fline)
 !
       use extend_field_line
@@ -262,9 +259,7 @@
       use set_fline_start_surface
 !
       type(each_fieldline_source), intent(in) :: fln_src
-      type(all_fieldline_source), intent(in) :: fline_src
       real(kind = kreal), intent(in) :: abs_flux_start_l
-      integer(kind = kint), intent(in) :: i_fln
 !
       integer(kind = kint), intent(in) :: num_line
 !
@@ -305,7 +300,7 @@
           rnd_flux(i) = r_rnd(i) * abs_flux_start_l
 !
           flux = 0.0d0
-          do inum = 1, fline_src%nele_start_grp(i_fln)
+          do inum = 1, fln_src%nele_start_grp
             flux_new = flux + abs(fln_src%flux_start(inum))
             if(rnd_flux(i) .gt. flux                                    &
      &           .and. rnd_flux(i) .le. flux_new) exit
@@ -323,8 +318,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine start_surface_witout_random                            &
-     &         (i_fln, fline_src, fln_src, abs_flux_start_l,            &
+      subroutine start_surface_witout_random(fln_src, abs_flux_start_l, &
      &          num_line, id_surf_start_fline)
 !
       use extend_field_line
@@ -332,9 +326,7 @@
       use set_fline_start_surface
 !
       type(each_fieldline_source), intent(in) :: fln_src
-      type(all_fieldline_source), intent(in) :: fline_src
       real(kind = kreal), intent(in) :: abs_flux_start_l
-      integer(kind = kint), intent(in) :: i_fln
       integer(kind = kint), intent(in) :: num_line
 !
       integer(kind = kint), intent(inout)                               &
@@ -348,7 +340,7 @@
       icou = 0
       if(fln_src%num_line_local .gt. 0) then
         flux = 0.0d0
-        do inum = 1, fline_src%nele_start_grp(i_fln)
+        do inum = 1, fln_src%nele_start_grp
           flux = flux + abs(fln_src%flux_start(inum))
           if(flux .gt. ref_flux) then
             icou = icou + 1

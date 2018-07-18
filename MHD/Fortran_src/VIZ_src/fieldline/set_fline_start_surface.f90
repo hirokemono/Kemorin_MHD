@@ -7,10 +7,10 @@
 !!      subroutine set_fline_start_surf(my_rank, i_fln,                 &
 !!     &          numnod, numele, numsurf, nnod_4_surf,                 &
 !!     &          ie_surf, isf_4_ele, iele_4_surf,                      &
-!!     &          fln_prm, fline_prm, fline_src, fln_tce)
+!!     &          fln_prm, fline_prm, fln_src, fln_tce)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(in) :: fline_prm
-!!        type(all_fieldline_source), intent(in) :: fline_src
+!!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       module set_fline_start_surface
@@ -31,7 +31,7 @@
       subroutine set_fline_start_surf(my_rank, i_fln,                   &
      &          numnod, numele, numsurf, nnod_4_surf,                   &
      &          ie_surf, isf_4_ele, iele_4_surf,                        &
-     &          fln_prm, fline_prm, fline_src, fln_src, fln_tce)
+     &          fln_prm, fline_prm, fln_src, fln_tce)
 !
       use m_constants
       use m_geometry_constants
@@ -52,7 +52,6 @@
       type(fieldline_paramters), intent(in) :: fline_prm
       type(each_fieldline_source), intent(in) :: fln_src
 !
-      type(all_fieldline_source), intent(in) :: fline_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint)  :: i, iline, iele, isf_1ele, isurf
