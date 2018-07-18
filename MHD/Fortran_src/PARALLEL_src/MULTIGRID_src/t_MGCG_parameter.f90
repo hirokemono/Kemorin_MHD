@@ -5,7 +5,7 @@
 !
 !!      subroutine set_MGCG_parameter(MG_ctl, MG_param)
 !!      subroutine set_MGCG_file_controls(n_level, MG_ctl, MG_file)
-!!        type(MGCG_control), intent(inout) :: MG_ctl!
+!!        type(MGCG_control), intent(in) :: MG_ctl
 !!        type(MGCG_parameter), intent(inout) :: MG_param
 !!        type(MGCG_file_list), intent(inout) :: MG_file
 !
@@ -138,7 +138,7 @@
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: n_level
-      type(MGCG_control), intent(inout) :: MG_ctl
+      type(MGCG_control), intent(in) :: MG_ctl
       type(MGCG_file_list), intent(inout) :: MG_file
 !
       integer(kind = kint) :: i
@@ -192,13 +192,6 @@
           call calypso_MPI_abort(ierr_file, e_message)
         end if
       end if
-!
-      call dealloc_control_array_chara(MG_ctl%MG_mesh_prefix_ctl)
-      call dealloc_control_array_chara(MG_ctl%MG_fine_2_coarse_tbl)
-      call dealloc_control_array_chara(MG_ctl%MG_coarse_2_fine_tbl)
-      call dealloc_control_array_chara(MG_ctl%MG_f2c_ele_tbl_ctl)
-      call dealloc_control_array_chara(MG_ctl%MG_mesh_fmt_ctl)
-      call dealloc_control_array_chara(MG_ctl%MG_table_fmt_ctl)
 !
       if (iflag_debug .gt. 0) then
         do i = 1, MG_file%nlevel_f

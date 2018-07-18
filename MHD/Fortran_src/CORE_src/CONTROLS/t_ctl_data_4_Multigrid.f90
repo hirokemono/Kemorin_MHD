@@ -208,6 +208,14 @@
       call dealloc_control_array_chara(MG_ctl%MG_mesh_fmt_ctl)
       call dealloc_control_array_chara(MG_ctl%MG_table_fmt_ctl)
 !
+      MG_ctl%num_multigrid_level_ctl%iflag = 0
+!
+      MG_ctl%MG_METHOD_ctl%iflag =           0
+      MG_ctl%MG_PRECOND_ctl%iflag =          0
+      MG_ctl%maxiter_mid_ctl%iflag =         0
+      MG_ctl%maxiter_coarsest_ctl%iflag =    0
+      MG_ctl%MG_residual_ctl%iflag =         0
+!
       end subroutine dealloc_control_Multigrid
 !
 !  ---------------------------------------------------------------------

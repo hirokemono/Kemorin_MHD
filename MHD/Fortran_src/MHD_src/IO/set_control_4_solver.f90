@@ -118,6 +118,7 @@
         call set_ctl_data_4_Multigrid                                   &
      &     (CG_ctl%MG_ctl, FEM_PRM%MG_param, FEM_PRM%MG_file,           &
      &      MGCG_WK, MGCG_FEM)
+        call dealloc_control_Multigrid(CG_ctl%MG_ctl)
         call alloc_MGCG_MHD_data(MGCG_WK, MGCG_MHD_FEM)
       end if
 !

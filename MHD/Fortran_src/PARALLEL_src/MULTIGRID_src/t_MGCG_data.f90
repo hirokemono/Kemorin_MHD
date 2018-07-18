@@ -13,7 +13,7 @@
 !!      subroutine split_multigrid_comms(MGCG_WK)
 !!      subroutine set_ctl_data_4_Multigrid                             &
 !!     &         (MG_ctl, MG_param, MG_file, MGCG_WK, MGCG_FEM)
-!!       type(MGCG_control), intent(inout) :: MG_ctl
+!!       type(MGCG_control), intent(in) :: MG_ctl
 !!       type(MGCG_parameter), intent(inout) :: MG_param
 !!       type(MGCG_file_list), intent(inout) :: MG_file
 !!       type(MGCG_data), intent(inout) :: MGCG_WK
@@ -191,23 +191,24 @@
       use t_ctl_data_4_Multigrid
       use set_parallel_file_name
 !
-      type(MGCG_control), intent(inout) :: MG_ctl
+      type(MGCG_control), intent(in) :: MG_ctl
       type(MGCG_parameter), intent(inout) :: MG_param
       type(MGCG_file_list), intent(inout) :: MG_file
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, nlevel
 !
 !
       call set_MGCG_parameter(MG_ctl, MG_param)
 !
       if (MG_ctl%num_multigrid_level_ctl%iflag .eq. 0) then
-        MG_ctl%num_multigrid_level_ctl%intvalue = 0
+        nlevel = 0
+      else
+        nlevel = MG_ctl%num_multigrid_level_ctl%intvalue
       end if
 !
-      call alloc_MGCG_data                                              &
-     &   (MG_ctl%num_multigrid_level_ctl%intvalue, MGCG_WK)
+      call alloc_MGCG_data(nlevel, MGCG_WK)
       call alloc_MGCG_mesh(MGCG_WK, MGCG_FEM)
 !
       if (MGCG_WK%num_MG_level .gt. 0) then
@@ -232,8 +233,6 @@
      &               MGCG_WK%MG_mpi(i)%nprocs
         end do
       end if
-!
-      call dealloc_control_array_int(MG_ctl%num_MG_subdomain_ctl)
 !
       call set_MGCG_file_controls                                      &
      &   (MGCG_WK%num_MG_level, MG_ctl, MG_file)
