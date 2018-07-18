@@ -81,7 +81,7 @@
 !
         if(fln_prm%id_fline_direction .eq. iflag_forward_trace) then
            call set_forward_fline_start_surf                            &
-     &        (fline_prm%iflag_outward_flux_fline(iline),               &
+     &        (fln_prm%iflag_outward_flux_fline(i),                     &
      &         iele, isf_1ele, isurf,                                   &
      &         numsurf, nnod_4_surf, ie_surf, iele_4_surf,              &
      &         fln_tce%iflag_fline(inum1),                              &
@@ -90,7 +90,7 @@
         else if(fln_prm%id_fline_direction .eq. iflag_backward_trace)   &
      &      then
            call set_backward_fline_start_surf                           &
-     &         (fline_prm%iflag_outward_flux_fline(iline),              &
+     &         (fln_prm%iflag_outward_flux_fline(i),                    &
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
      &          fln_tce%iflag_fline(inum1),                             &
@@ -98,7 +98,7 @@
 !
         else
            call set_forward_fline_start_surf                            &
-     &         (fline_prm%iflag_outward_flux_fline(iline),              &
+     &         (fln_prm%iflag_outward_flux_fline(i),                    &
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
      &          fln_tce%iflag_fline(inum1),                             &
@@ -112,7 +112,7 @@
           fln_tce%c_fline_start(inum2) = fln_tce%c_fline_start(inum1)
 !
            call set_backward_fline_start_surf                           &
-     &         (fline_prm%iflag_outward_flux_fline(iline),              &
+     &         (fln_prm%iflag_outward_flux_fline(i),                    &
      &          iele, isf_1ele, isurf,                                  &
      &          numsurf, nnod_4_surf, ie_surf, iele_4_surf,             &
      &          fln_tce%iflag_fline(inum2),                             &

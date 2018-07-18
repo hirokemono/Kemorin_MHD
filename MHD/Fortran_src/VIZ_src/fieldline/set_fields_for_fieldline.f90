@@ -21,7 +21,7 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_groups), intent(in) :: group
-!!        type(fieldline_paramter), intent(in) :: fln_prm
+!!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(each_fieldline_source), intent(inout) :: fln_src
@@ -162,8 +162,8 @@
       type(mesh_geometry), intent(in) :: mesh
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_groups), intent(in) :: group
-      type(fieldline_paramter), intent(in) :: fln_prm
 !
+      type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce

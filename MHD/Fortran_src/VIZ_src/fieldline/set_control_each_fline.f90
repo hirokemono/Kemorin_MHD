@@ -244,12 +244,9 @@
         end do
       else if(fln_prm%id_fline_seed_type .eq. iflag_position_list) then
         do i = 1, fline_prm%num_each_field_line(i_fln)
-          fline_prm%xx_surf_start_fline(1,i+ist)                        &
-     &         = fln%seed_point_ctl%vec1(i)
-          fline_prm%xx_surf_start_fline(2,i+ist)                        &
-     &         = fln%seed_point_ctl%vec2(i)
-          fline_prm%xx_surf_start_fline(3,i+ist)                        &
-     &         = fln%seed_point_ctl%vec3(i)
+          fln_prm%xx_surf_start_fline(1,i) = fln%seed_point_ctl%vec1(i)
+          fln_prm%xx_surf_start_fline(2,i) = fln%seed_point_ctl%vec2(i)
+          fln_prm%xx_surf_start_fline(3,i) = fln%seed_point_ctl%vec3(i)
         end do
       end if
 !

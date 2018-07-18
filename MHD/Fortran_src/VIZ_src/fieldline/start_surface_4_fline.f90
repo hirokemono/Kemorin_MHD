@@ -50,7 +50,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
-      type(fieldline_paramter), intent(in) :: fln_prm
+      type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -79,7 +79,7 @@
      &                     * dble(surf%isf_4_ele(iele,isf) / isurf)
 !
         if(fln_src%flux_start_fline(i) .gt. zero) then
-          fline_prm%iflag_outward_flux_fline(inum) = 1
+          fln_prm%iflag_outward_flux_fline(i) = 1
           fln_src%flux_start_fline(i) = -fln_src%flux_start_fline(i)
         end if
       end do
