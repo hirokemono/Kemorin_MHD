@@ -308,6 +308,8 @@
       call s_set_control_4_model                                        &
      &    (model_ctl%reft_ctl, model_ctl%refc_ctl,                      &
      &     smctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl, MHD_prop)
+      call dealloc_t_evo_name_ctl(model_ctl%evo_ctl)
+      call dealloc_monitor_data_ctl(nmtr_ctl)
 !
 !   set spherical shell parameters
 !

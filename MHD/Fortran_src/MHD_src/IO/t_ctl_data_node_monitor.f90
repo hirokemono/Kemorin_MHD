@@ -3,7 +3,10 @@
 !
 !        programmed by H.Matsui on March. 2006
 !
-!!      subroutine read_monitor_data_ctl
+!!      subroutine read_monitor_data_ctl(hd_block, iflag, nmtr_ctl)
+!!      subroutine bcast_monitor_data_ctl(nmtr_ctl)
+!!      subroutine dealloc_monitor_data_ctl(nmtr_ctl)
+!!        type(node_monitor_control), intent(inout) :: nmtr_ctl
 !!
 !!   --------------------------------------------------------------------
 !!
@@ -81,6 +84,17 @@
       call bcast_ctl_array_c1(nmtr_ctl%group_4_monitor_ctl)
 !
       end subroutine bcast_monitor_data_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_monitor_data_ctl(nmtr_ctl)
+!
+      type(node_monitor_control), intent(inout) :: nmtr_ctl
+!
+!
+      call dealloc_control_array_chara(nmtr_ctl%group_4_monitor_ctl)
+!
+      end subroutine dealloc_monitor_data_ctl
 !
 !   --------------------------------------------------------------------
 !
