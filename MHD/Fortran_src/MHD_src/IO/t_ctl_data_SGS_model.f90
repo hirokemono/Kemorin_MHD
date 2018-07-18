@@ -584,6 +584,8 @@
       type(SGS_model_control), intent(inout) :: sgs_ctl
 !
 !
+      call dealloc_3d_filtering_ctl(sgs_ctl%s3df_ctl)
+!
       call dealloc_control_array_chara(sgs_ctl%SGS_terms_ctl)
       call dealloc_control_array_chara(sgs_ctl%commutate_fld_ctl)
 !

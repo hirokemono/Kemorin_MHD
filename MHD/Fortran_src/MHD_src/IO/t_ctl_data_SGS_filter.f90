@@ -5,6 +5,7 @@
 !
 !!      subroutine read_3d_filtering_ctl(hd_block, iflag, s3df_ctl)
 !!      subroutine bcast_3d_filtering_ctl(s3df_ctl)
+!!      subroutine dealloc_3d_filtering_ctl(s3df_ctl)
 !!        type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
 !!      subroutine read_control_4_SGS_filter(hd_block, sphf_ctl)
 !!      subroutine bcast_control_4_SGS_filter(sphf_ctl)
@@ -266,6 +267,24 @@
       call bcast_ctl_type_r1(sphf_ctl%sphere_filter_width_ctl)
 !
       end subroutine bcast_control_4_SGS_filter
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_3d_filtering_ctl(s3df_ctl)
+!
+      type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
+!
+!
+      call dealloc_control_array_chara(s3df_ctl%whole_filter_grp_ctl)
+      call dealloc_control_array_chara(s3df_ctl%fluid_filter_grp_ctl)
+!
+      s3df_ctl%momentum_filter_ctl%iflag =   0
+      s3df_ctl%heat_filter_ctl%iflag =       0
+      s3df_ctl%induction_filter_ctl%iflag =  0
+      s3df_ctl%compostion_filter_ctl%iflag = 0
+!
+      end subroutine dealloc_3d_filtering_ctl
 !
 !   --------------------------------------------------------------------
 !

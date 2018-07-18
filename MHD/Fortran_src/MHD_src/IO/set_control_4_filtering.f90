@@ -16,7 +16,7 @@
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(read_character_item), intent(in) :: SGS_filter_name_ctl
 !!        type(filter_file_control), intent(in) :: ffile_ctl
-!!        type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
+!!        type(SGS_3d_filter_control), intent(in) :: s3df_ctl
 !!        type(SGS_filtering_params), intent(inout) :: filter_param
 !!@endverbatim
 !
@@ -60,7 +60,7 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(read_character_item), intent(in) :: SGS_filter_name_ctl
       type(filter_file_control), intent(in) :: ffile_ctl
-      type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
+      type(SGS_3d_filter_control), intent(in) :: s3df_ctl
       type(SGS_filtering_params), intent(inout) :: filter_param
 !
       integer(kind = kint) :: iflag
@@ -113,11 +113,11 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'whole_filter_grp'
         call set_control_filter_area                                    &
-     &         (s3df_ctl%whole_filter_grp_ctl, filter_param%whole)
+     &     (s3df_ctl%whole_filter_grp_ctl, filter_param%whole)
 !
         if (iflag_debug.eq.1) write(*,*) 'whole_filter_grp'
         call set_control_filter_area                                    &
-     &         (s3df_ctl%fluid_filter_grp_ctl, filter_param%fluid)
+     &     (s3df_ctl%fluid_filter_grp_ctl, filter_param%fluid)
 !
 !
         if (ht_prop%iflag_scheme .gt. id_no_evolution) then
@@ -183,7 +183,6 @@
         end if
       end if
 !
-!
       end subroutine s_set_control_4_filtering
 !
 ! -----------------------------------------------------------------------
@@ -194,14 +193,19 @@
       use t_SGS_control_parameter
       use t_read_control_arrays
 !
-      type(ctl_array_chara), intent(inout)  :: filter_grp_ctl
+      type(ctl_array_chara), intent(in)  :: filter_grp_ctl
       type(SGS_filter_area_params), intent(inout) :: f_area
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, num
 !
 !
-      if (filter_grp_ctl%icou .eq. 0) filter_grp_ctl%num =   1
-      call alloc_filter_group_param(filter_grp_ctl%num, f_area)
+      if (filter_grp_ctl%icou .eq. 0) then
+        num = 1
+      else
+        num = filter_grp_ctl%num
+      end if
+!
+      call alloc_filter_group_param(num, f_area)
 !
       if (filter_grp_ctl%icou .gt. 0) then
         do i = 1, f_area%num_f_group
@@ -217,8 +221,6 @@
           write(*,*) i, trim(f_area%f_gourp_name(i))
         end do
       end if
-!
-      call dealloc_control_array_chara(filter_grp_ctl)
 !
       end subroutine set_control_filter_area
 !
