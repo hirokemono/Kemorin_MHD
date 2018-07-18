@@ -9,6 +9,7 @@
 !!        type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
 !!      subroutine read_control_4_SGS_filter(hd_block, sphf_ctl)
 !!      subroutine bcast_control_4_SGS_filter(sphf_ctl)
+!!      subroutine reset_control_4_SGS_filter(sphf_ctl)
 !!        type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
 !!
 !!!!!!!!!  filter Model !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -285,6 +286,21 @@
       s3df_ctl%compostion_filter_ctl%iflag = 0
 !
       end subroutine dealloc_3d_filtering_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine reset_control_4_SGS_filter(sphf_ctl)
+!
+      type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
+!
+!
+      sphf_ctl%sph_filter_type_ctl%iflag = 0
+      sphf_ctl%maximum_moments_ctl%iflag = 0
+!
+      sphf_ctl%radial_filter_width_ctl%iflag = 0
+      sphf_ctl%sphere_filter_width_ctl%iflag = 0
+!
+      end subroutine reset_control_4_SGS_filter
 !
 !   --------------------------------------------------------------------
 !

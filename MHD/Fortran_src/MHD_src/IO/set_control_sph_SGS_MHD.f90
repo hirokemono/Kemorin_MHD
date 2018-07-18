@@ -173,9 +173,6 @@
         call set_control_SPH_SGS_filters                                &
      &     (model_ctl%sgs_ctl, SGS_par%model_p, dynamic_SPH)
       end if
-      if(model_ctl%sgs_ctl%num_sph_filter_ctl .gt. 0) then
-        call dealloc_sph_filter_ctl(model_ctl%sgs_ctl)
-      end if
       call dealloc_sgs_ctl(model_ctl%sgs_ctl)
 !
 !

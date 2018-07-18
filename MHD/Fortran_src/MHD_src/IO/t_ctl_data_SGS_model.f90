@@ -5,8 +5,8 @@
 !
 !!      subroutine read_sgs_ctl(hd_block, iflag, sgs_ctl)
 !!      subroutine bcast_sgs_ctl(sgs_ctl)
+!!      subroutine dealloc_sgs_ctl(sgs_ctl)
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
-!!      subroutine dealloc_sph_filter_ctl(sgs_ctl)
 !!
 !!!!!!!!!  SGS Model !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     SGS_model_ctl: gradient.........nonlinear gradient model
@@ -347,6 +347,8 @@
 !
       private :: hd_filter_fnames, i_filter_fnames
 !
+      private :: dealloc_sph_filter_ctl
+!
 !   --------------------------------------------------------------------
 !
       contains
@@ -360,17 +362,6 @@
       allocate(sgs_ctl%sph_filter_ctl(sgs_ctl%num_sph_filter_ctl))
 !
       end subroutine alloc_sph_filter_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_sph_filter_ctl(sgs_ctl)
-!
-      type(SGS_model_control), intent(inout) :: sgs_ctl
-!
-      deallocate(sgs_ctl%sph_filter_ctl)
-      sgs_ctl%num_sph_filter_ctl = 0
-!
-      end subroutine dealloc_sph_filter_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -584,6 +575,8 @@
       type(SGS_model_control), intent(inout) :: sgs_ctl
 !
 !
+      call dealloc_sph_filter_ctl(sgs_ctl)
+!
       call dealloc_3d_filtering_ctl(sgs_ctl%s3df_ctl)
 !
       call dealloc_control_array_chara(sgs_ctl%SGS_terms_ctl)
@@ -627,6 +620,26 @@
       sgs_ctl%ngrp_med_ave_ctl%iflag =     0
 !
       end subroutine dealloc_sgs_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_sph_filter_ctl(sgs_ctl)
+!
+      type(SGS_model_control), intent(inout) :: sgs_ctl
+!
+      integer(kind = kint) :: i
+!
+!
+      if(sgs_ctl%num_sph_filter_ctl .gt. 0) then
+        do i = 1, sgs_ctl%num_sph_filter_ctl
+          call reset_control_4_SGS_filter(sgs_ctl%sph_filter_ctl(i))
+        end do
+!
+        deallocate(sgs_ctl%sph_filter_ctl)
+      end if
+      sgs_ctl%num_sph_filter_ctl = 0
+!
+      end subroutine dealloc_sph_filter_ctl
 !
 !   --------------------------------------------------------------------
 !
