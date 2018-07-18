@@ -3,7 +3,8 @@
 !
 !        programmed by H.Matsui on Apr., 2006
 !
-!      subroutine set_peri_cube_paramteres
+!!      subroutine set_peri_cube_paramteres(cubed_sph_c)
+!!        type(control_data_cubed_sph), intent(in) :: cubed_sph_c
 !
       module set_peri_cube_control
 !
@@ -17,20 +18,23 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_peri_cube_paramteres
+      subroutine set_peri_cube_paramteres(cubed_sph_c)
 !
       use m_numref_cubed_sph
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
-      use m_control_data_cubed_sph
+      use t_control_data_cubed_sph
+      use set_cubed_sph_control
+!
+      type(control_data_cubed_sph), intent(in) :: cubed_sph_c
 !
       integer(kind = kint) :: i, j, jst, jed
       character(len=kchara) :: tmpchara
 !
 !
       iflag_domain_shell = 1
-!      if(domain_shape_ctl%iflag .gt. 0) then
-!        tmpchara = domain_shape_ctl%charavalue
+!      if(cubed_sph_c%domain_shape_ctl%iflag .gt. 0) then
+!        tmpchara = cubed_sph_c%domain_shape_ctl%charavalue
 !        if     (cmp_no_case(tmpchara, 'sphere')) then
 !          iflag_domain_shell = 1
 !        else if(cmp_no_case(tmpchara, 'spherical_shell')) then
@@ -41,8 +45,8 @@
 !     &            trim(tmpchara)
 !
       iflag_mesh = 2
-      if(divide_type_ctl%iflag .gt. 0) then
-        tmpchara = divide_type_ctl%charavalue
+      if(cubed_sph_c%divide_type_ctl%iflag .gt. 0) then
+        tmpchara = cubed_sph_c%divide_type_ctl%charavalue
         if     (cmp_no_case(tmpchara, 'cube')) then
           iflag_mesh = 1
         else if(cmp_no_case(tmpchara, 'sphere' )) then
@@ -53,8 +57,8 @@
 !
 !
       iflag_quad = 1
-      if(high_ele_type_ctl%iflag .gt. 0) then
-        tmpchara = high_ele_type_ctl%charavalue
+      if(cubed_sph_c%high_ele_type_ctl%iflag .gt. 0) then
+        tmpchara = cubed_sph_c%high_ele_type_ctl%charavalue
         if     (cmp_no_case(tmpchara, 'quad')                           &
      &     .or. cmp_no_case(tmpchara, 'quadrature')) then
           iflag_quad = 1
@@ -65,55 +69,7 @@
       write(*,*) iflag_quad, trim(tmpchara)
 !
 !
-      num_hemi = 4
-      if(numele_4_90deg%iflag .gt. 0) then
-        num_hemi =       numele_4_90deg%intvalue
-      end if
-!
-      n_shell = radial_pnt_ctl%num
-!
-      nr_adj = 1
-      if(nend_adjust_ctl%iflag .gt. 0) then
-        nr_adj =  nend_adjust_ctl%intvalue
-      end if
-
-      if(nstart_cube_ctl%iflag .gt. 0) then
-         nr_back = nstart_cube_ctl%intvalue
-      else
-         nr_back = n_shell
-      end if
-!
-      ncube_vertical = num_hemi
-      if(numele_4_vertical_ctl%iflag .gt. 0) then
-        ncube_vertical = numele_4_vertical_ctl%iflag
-      end if
-!
-      write(*,*) 'n_shell', n_shell
-      write(*,*) 'nr_adj', nr_adj
-      write(*,*) 'nr_back', nr_back
-!
-      call allocate_shell_radius
-!
-      do i = 1, n_shell
-        j = radial_pnt_ctl%ivec(i)
-        r_nod(j) = radial_pnt_ctl%vect(i)
-      end do
-!
-!   set ICB and CMB address
-!
-      if (nlayer_ICB_ctl%iflag .gt. 0) then
-        nlayer_ICB = nlayer_ICB_ctl%intvalue
-      else
-        nlayer_ICB = 1
-      end if
-!
-      if (nlayer_CMB_ctl%iflag .gt. 0) then
-        nlayer_CMB = nlayer_CMB_ctl%intvalue
-      else
-        nlayer_CMB = n_shell
-      end if
-!
-      nlayer_EXT = n_shell
+      call set_cubed_sph_grid_ctl(cubed_sph_c)
 !
 !   set node group table
 !
@@ -145,17 +101,13 @@
       call allocate_surf_grp_layer_csp
 !
 !
-!
-      max_coarse_level = sph_coarsing_ctl%num
+      max_coarse_level = cubed_sph_c%sph_coarsing_ctl%num
       call allocate_coarsing_parameter
 !
       icoarse_level(1:max_coarse_level,1)                               &
-     &      = sph_coarsing_ctl%int1(1:max_coarse_level)
+     &      = cubed_sph_c%sph_coarsing_ctl%int1(1:max_coarse_level)
       icoarse_level(1:max_coarse_level,2)                               &
-     &      = sph_coarsing_ctl%int2(1:max_coarse_level)
-!
-      call dealloc_control_array_i_r(radial_pnt_ctl)
-      call dealloc_control_array_i2(sph_coarsing_ctl)
+     &      = cubed_sph_c%sph_coarsing_ctl%int2(1:max_coarse_level)
 !
       end subroutine set_peri_cube_paramteres
 !

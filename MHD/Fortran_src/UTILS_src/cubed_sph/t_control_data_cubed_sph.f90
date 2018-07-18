@@ -1,9 +1,13 @@
 !
-!      module m_control_data_cubed_sph
+!      module t_control_data_cubed_sph
 !
 !      Written by H. Matsui on Apr., 2006
 !
-      module m_control_data_cubed_sph
+!!      subroutine read_control_4_shell(cubed_sph_c)
+!!      subroutine dealloc_control_data_cubed_sph(cubed_sph_c)
+!!        type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
+!
+      module t_control_data_cubed_sph
 !
       use m_precision
       use m_read_control_elements
@@ -15,65 +19,68 @@
 !
       character(len = kchara) :: name_ctl_shell = 'ctl_shell'
 !
-      type(read_character_item), save :: domain_shape_ctl
-      type(read_character_item), save :: divide_type_ctl
-      type(read_character_item), save :: high_ele_type_ctl
-      type(read_integer_item), save :: numele_4_90deg
-      type(read_integer_item), save :: numele_4_vertical_ctl
-      type(read_integer_item), save :: nend_adjust_ctl
-      type(read_integer_item), save :: nstart_cube_ctl
+      type control_data_cubed_sph
+        type(read_character_item) :: domain_shape_ctl
+        type(read_character_item) :: divide_type_ctl
+        type(read_character_item) :: high_ele_type_ctl
 !
-!>      Structure for radial points
+        type(read_integer_item) :: numele_4_90deg
+        type(read_integer_item) :: numele_4_vertical_ctl
+        type(read_integer_item) :: nend_adjust_ctl
+        type(read_integer_item) :: nstart_cube_ctl
+!
+!>       Structure for radial points
 !!@n      radial_pnt_ctl%ivec:  radial address
 !!@n      radial_pnt_ctl%vect:  radius
-      type(ctl_array_ir), save :: radial_pnt_ctl
+        type(ctl_array_ir) :: radial_pnt_ctl
 !
 !
-      type(read_integer_item), save :: nlayer_ICB_ctl
-      type(read_integer_item), save :: nlayer_CMB_ctl
+        type(read_integer_item) :: nlayer_ICB_ctl
+        type(read_integer_item) :: nlayer_CMB_ctl
 !
-!>      Structure for node group name and stack
+!>       Structure for node group name and stack
 !!@n      node_grp_name_ctl%num:    Number of node group
 !!@n      node_grp_name_ctl%c_tbl:  Node group name
 !!@n      node_grp_name_ctl%ivec:   Stack for each node group
-      type(ctl_array_ci), save :: node_grp_name_ctl
-!>      Structure for node group name and stack
+        type(ctl_array_ci) :: node_grp_name_ctl
+!>       Structure for node group name and stack
 !!@n      node_grp_layer_ctl%num:  Number of total layers for node group
 !!@n      node_grp_layer_ctl%ivec: List of radial layer
-      type(ctl_array_int), save :: node_grp_layer_ctl
+        type(ctl_array_int) :: node_grp_layer_ctl
 !
-!>      Structure for element group name and stack
+!>       Structure for element group name and stack
 !!@n      elem_grp_name_ctl%num:    Number of element group
 !!@n      elem_grp_name_ctl%c_tbl:  element group name
 !!@n      elem_grp_name_ctl%ivec:   Stack for each element group
-      type(ctl_array_ci), save :: elem_grp_name_ctl
-!>      Structure for node group name and stack
+        type(ctl_array_ci) :: elem_grp_name_ctl
+!>       Structure for node group name and stack
 !!@n      elem_grp_layer_ctl%num:  Number of total layers
 !!                                for element group
 !!@n      elem_grp_layer_ctl%ivec: List of radial layer
-      type(ctl_array_int), save :: elem_grp_layer_ctl
+        type(ctl_array_int) :: elem_grp_layer_ctl
 !
-!>      Structure for surface group name and stack
+!>       Structure for surface group name and stack
 !!@n      surf_grp_name_ctl%num:    Number of surface group
 !!@n      surf_grp_name_ctl%c_tbl:  surface group name
 !!@n      surf_grp_name_ctl%ivec:   Stack for each surface group
-      type(ctl_array_ci), save :: surf_grp_name_ctl
-!>      Structure for node group name and stack
+        type(ctl_array_ci) :: surf_grp_name_ctl
+!>       Structure for node group name and stack
 !!@n      surf_grp_layer_ctl%num:  Number of total layers
 !!                                for element group
 !!@n      surf_grp_layer_ctl%c_tbl: List of surface type name
 !!@n      surf_grp_layer_ctl%ivec: List of radial layer
-      type(ctl_array_ci), save :: surf_grp_layer_ctl
+        type(ctl_array_ci) :: surf_grp_layer_ctl
 !
-!>      Structure for radial points
+!>       Structure for radial points
 !!@n      edge_latitude_ctl%ivec:  radial address
 !!@n      edge_latitude_ctl%vect:  radius
-      type(ctl_array_ir), save :: edge_latitude_ctl
+        type(ctl_array_ir) :: edge_latitude_ctl
 !
-!>      Structure for coarsing level
+!>       Structure for coarsing level
 !!@n      sph_coarsing_ctl%int1: Coarsing level for radial direction
 !!@n      sph_coarsing_ctl%int2: Coarsing level on sphere
-      type(ctl_array_i2), save :: sph_coarsing_ctl
+        type(ctl_array_i2) :: sph_coarsing_ctl
+      end type control_data_cubed_sph
 !
 !   Top level
 !
@@ -188,20 +195,60 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_shell
+      subroutine read_control_4_shell(cubed_sph_c)
+!
+      type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
+!
 !
       open (ctl_file_code, file=name_ctl_shell)
 !
-      call read_control_data_4_shell
+      call read_control_data_4_shell(cubed_sph_c)
 !
       close(ctl_file_code)
 !
       end subroutine read_control_4_shell
 !
 !   --------------------------------------------------------------------
+!
+      subroutine dealloc_control_data_cubed_sph(cubed_sph_c)
+!
+      type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
+!
+!
+      call dealloc_control_array_i_r(cubed_sph_c%radial_pnt_ctl)
+!
+      call dealloc_control_array_int(cubed_sph_c%node_grp_layer_ctl)
+      call dealloc_control_array_c_i(cubed_sph_c%node_grp_name_ctl)
+!
+      call dealloc_control_array_int(cubed_sph_c%elem_grp_layer_ctl)
+      call dealloc_control_array_c_i(cubed_sph_c%elem_grp_name_ctl)
+!
+      call dealloc_control_array_c_i(cubed_sph_c%surf_grp_layer_ctl)
+      call dealloc_control_array_c_i(cubed_sph_c%surf_grp_name_ctl)
+!
+      call dealloc_control_array_i_r(cubed_sph_c%edge_latitude_ctl)
+      call dealloc_control_array_i2(cubed_sph_c%sph_coarsing_ctl)
+!
+      cubed_sph_c%nlayer_ICB_ctl%iflag = 0
+      cubed_sph_c%nlayer_CMB_ctl%iflag = 0
+!
+      cubed_sph_c%numele_4_90deg%iflag = 0
+      cubed_sph_c%numele_4_vertical_ctl%iflag = 0
+      cubed_sph_c%nend_adjust_ctl%iflag = 0
+      cubed_sph_c%nstart_cube_ctl%iflag = 0
+!
+      cubed_sph_c%domain_shape_ctl%iflag =  0
+      cubed_sph_c%divide_type_ctl%iflag =   0
+      cubed_sph_c%high_ele_type_ctl%iflag = 0
+!
+      end subroutine dealloc_control_data_cubed_sph
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_data_4_shell
+      subroutine read_control_data_4_shell(cubed_sph_c)
+!
+      type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
 !
 !
       do
@@ -210,9 +257,9 @@
         i_shell_ctl = find_control_end_flag(hd_shell_ctl)
         if(i_shell_ctl .gt. 0) exit
 !
-        call read_ctl_4_shell_def
-        call read_ctl_shell_boundary
-        call read_ctl_4_coarse_shell
+        call read_ctl_4_shell_def(cubed_sph_c)
+        call read_ctl_shell_boundary(cubed_sph_c)
+        call read_ctl_4_coarse_shell(cubed_sph_c)
       end do
 !
       end subroutine read_control_data_4_shell
@@ -220,7 +267,9 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_4_shell_def
+      subroutine read_ctl_4_shell_def(cubed_sph_c)
+!
+      type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
 !
 !
       if(right_begin_flag(hd_cubed_sph_def) .eq. 0) return
@@ -232,28 +281,35 @@
         if(i_cubed_sph_def .gt. 0) exit
 !
         call read_control_array_i_r                                     &
-       &   (hd_cubed_sph_radius, radial_pnt_ctl)
+       &   (hd_cubed_sph_radius, cubed_sph_c%radial_pnt_ctl)
         call read_control_array_i_r                                     &
-       &   (hd_edge_latitude, edge_latitude_ctl)
+       &   (hd_edge_latitude, cubed_sph_c%edge_latitude_ctl)
 !
 !
-        call read_chara_ctl_type(hd_domain_shape, domain_shape_ctl)
-        call read_chara_ctl_type(hd_divide_def, divide_type_ctl)
-        call read_chara_ctl_type(hd_high_ele_type,                      &
-     &      high_ele_type_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_domain_shape, cubed_sph_c%domain_shape_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_divide_def, cubed_sph_c%divide_type_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_high_ele_type, cubed_sph_c%high_ele_type_ctl)
 !
-        call read_integer_ctl_type(hd_numele_4_90deg, numele_4_90deg)
-        call read_integer_ctl_type(hd_numele_4_vert,                    &
-     &      numele_4_vertical_ctl)
-        call read_integer_ctl_type(hd_nend_adjust, nend_adjust_ctl)
-        call read_integer_ctl_type(hd_nstart_cube, nstart_cube_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_numele_4_90deg, cubed_sph_c%numele_4_90deg)
+        call read_integer_ctl_type                                      &
+     &     (hd_numele_4_vert, cubed_sph_c%numele_4_vertical_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_nend_adjust, cubed_sph_c%nend_adjust_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_nstart_cube, cubed_sph_c%nstart_cube_ctl)
       end do
 !
       end subroutine read_ctl_4_shell_def
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_shell_boundary
+      subroutine read_ctl_shell_boundary(cubed_sph_c)
+!
+      type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
 !
 !
       if(right_begin_flag(hd_boundaries) .eq. 0) return
@@ -264,20 +320,24 @@
         i_boundaries = find_control_end_flag(hd_boundaries)
         if(i_boundaries .gt. 0) exit
 !
-        call read_ctl_nod_bc_4_shell
-        call read_ctl_ele_bc_4_shell
-        call read_ctl_surf_bc_4_shell
+        call read_ctl_nod_bc_4_shell(cubed_sph_c)
+        call read_ctl_ele_bc_4_shell(cubed_sph_c)
+        call read_ctl_surf_bc_4_shell(cubed_sph_c)
 !
 !
-        call read_integer_ctl_type(hd_nlayer_ICB, nlayer_ICB_ctl)
-        call read_integer_ctl_type(hd_nlayer_CMB, nlayer_CMB_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_nlayer_ICB, cubed_sph_c%nlayer_ICB_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_nlayer_CMB, cubed_sph_c%nlayer_CMB_ctl)
       end do
 !
       end subroutine read_ctl_shell_boundary
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_nod_bc_4_shell
+      subroutine read_ctl_nod_bc_4_shell(cubed_sph_c)
+!
+      type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
 !
 !
       if(right_begin_flag(hd_node_grp_def) .eq. 0) return
@@ -288,16 +348,19 @@
         i_node_grp_def = find_control_end_flag(hd_node_grp_def)
         if(i_node_grp_def .gt. 0) exit
 !
-        call read_control_array_c_i(hd_num_nod_grp, node_grp_name_ctl)
+        call read_control_array_c_i                                     &
+     &     (hd_num_nod_grp, cubed_sph_c%node_grp_name_ctl)
         call read_control_array_i1                                      &
-     &     (hd_num_nod_layer, node_grp_layer_ctl)
+     &     (hd_num_nod_layer, cubed_sph_c%node_grp_layer_ctl)
       end do
 !
       end subroutine read_ctl_nod_bc_4_shell
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_ele_bc_4_shell
+      subroutine read_ctl_ele_bc_4_shell(cubed_sph_c)
+!
+      type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
 !
 !
       if(right_begin_flag(hd_ele_grp_def) .eq. 0) return
@@ -308,16 +371,19 @@
         i_ele_grp_def = find_control_end_flag(hd_ele_grp_def)
         if(i_ele_grp_def .gt. 0) exit
 !
-        call read_control_array_c_i(hd_num_ele_grp, elem_grp_name_ctl)
+        call read_control_array_c_i                                     &
+     &     (hd_num_ele_grp, cubed_sph_c%elem_grp_name_ctl)
         call read_control_array_i1                                      &
-     &     (hd_num_ele_layer, elem_grp_layer_ctl)
+     &     (hd_num_ele_layer, cubed_sph_c%elem_grp_layer_ctl)
       end do
 !
       end subroutine read_ctl_ele_bc_4_shell
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_surf_bc_4_shell
+      subroutine read_ctl_surf_bc_4_shell(cubed_sph_c)
+!
+      type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
 !
 !
       if(right_begin_flag(hd_surf_grp_def) .eq. 0) return
@@ -328,16 +394,19 @@
         i_surf_grp_def = find_control_end_flag(hd_surf_grp_def)
         if(i_surf_grp_def .gt. 0) exit
 !
-        call read_control_array_c_i(hd_num_sf_grp, surf_grp_name_ctl)
         call read_control_array_c_i                                     &
-     &     (hd_num_sf_layer, surf_grp_layer_ctl)
+     &     (hd_num_sf_grp, cubed_sph_c%surf_grp_name_ctl)
+        call read_control_array_c_i                                     &
+     &     (hd_num_sf_layer, cubed_sph_c%surf_grp_layer_ctl)
       end do
 !
       end subroutine read_ctl_surf_bc_4_shell
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_ctl_4_coarse_shell
+      subroutine read_ctl_4_coarse_shell(cubed_sph_c)
+!
+      type(control_data_cubed_sph), intent(inout) :: cubed_sph_c
 !
 !
       if(right_begin_flag(hd_coarse_shell) .eq. 0) return
@@ -349,11 +418,11 @@
         if(i_coarse_shell .gt. 0) exit
 !
         call read_control_array_i2                                      &
-     &     (hd_num_level_coarse, sph_coarsing_ctl)
+     &     (hd_num_level_coarse, cubed_sph_c%sph_coarsing_ctl)
       end do
 !
       end subroutine read_ctl_4_coarse_shell
 !
 !   --------------------------------------------------------------------
 !
-      end module m_control_data_cubed_sph
+      end module t_control_data_cubed_sph

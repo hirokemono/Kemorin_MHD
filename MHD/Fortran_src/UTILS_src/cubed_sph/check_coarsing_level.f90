@@ -23,7 +23,6 @@
       use m_numref_cubed_sph
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
-      use m_control_data_cubed_sph
       use m_cubed_sph_surf_mesh
 !
 !
@@ -75,7 +74,6 @@
       use m_numref_cubed_sph
       use m_cubed_sph_radius
       use m_cubed_sph_grp_param
-      use m_control_data_cubed_sph
       use m_cubed_sph_surf_mesh
 !
       integer(kind = kint) :: i, ilevel_tmp
