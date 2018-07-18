@@ -129,7 +129,8 @@
 !
 !
 !
-      ref_flux = vol_4_start / num_line
+      ref_flux = vol_4_start                                            &
+     &          * dble(num_line_local) / dble(num_line_local+1)
       icou = 0
       if(num_line_local .gt. 0) then
         flux = 0.0d0
@@ -141,9 +142,13 @@
             id_surf_start_fline(2,icou) = 5
             flux = 0.0d0
           end if
-          if(icou .ge. num_line) exit
+          if(icou .ge. num_line_local) exit
         end do
       end if
+!
+      write(*,*) 'icou', my_rank, icou, num_line, num_line_local
+      write(50+my_rank,*) 'numele', ele%numele
+      write(50+my_rank,*) 'id_surf_start_fline', id_surf_start_fline(1,:)
 !
       end subroutine set_start_surface_in_domain
 !

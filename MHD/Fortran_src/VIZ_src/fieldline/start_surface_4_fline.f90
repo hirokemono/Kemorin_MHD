@@ -78,6 +78,8 @@
         end if
       end do
 !
+      call calypso_mpi_barrier
+      write(*,*) 'MPI_AllGather'
       call MPI_AllGather                                                &
      &   (fln_src%num_line_local, ione, CALYPSO_INTEGER,                &
      &    fln_tce%num_current_fline, ione, CALYPSO_INTEGER,             &
@@ -123,7 +125,6 @@
      &      fln_tce%xx_fline_start(1:3,inum)
         end do
       end if
-!
 !
       end subroutine s_start_surface_4_fline
 !
