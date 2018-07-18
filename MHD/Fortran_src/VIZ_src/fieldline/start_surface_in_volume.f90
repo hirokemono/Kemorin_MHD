@@ -4,11 +4,10 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine s_start_surface_by_volume(i_fln, ele, ele_grp,       &
-!!     &          fln_prm, fline_prm, fln_src, fln_tce)
+!!      subroutine s_start_surface_by_volume                            &
+!!     &         (ele, ele_grp, fln_prm, fln_src, fln_tce)
 !!        type(group_data), intent(in) :: ele_grp
-!!        type(fieldline_paramter), intent(in) :: fln_prm
-!!        type(fieldline_paramters), intent(inout) :: fline_prm
+!!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !
@@ -37,25 +36,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_start_surface_by_volume(i_fln, ele, ele_grp,         &
-     &          fln_prm, fline_prm, fln_src, fln_tce)
+      subroutine s_start_surface_by_volume                              &
+     &         (ele, ele_grp, fln_prm, fln_src, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
       use set_fline_start_surface
 !
-      integer(kind = kint), intent(in) :: i_fln
-!
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
 !
-      type(fieldline_paramters), intent(inout) :: fline_prm
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ip
-      integer(kind = kint) :: num_line
 !
       real(kind = kreal) :: volume_local, total_volume, volume_start_l
 !
@@ -81,8 +76,7 @@
      &                          + fln_tce%flux_stack_fline(ip)
       end do
       total_volume = fln_tce%flux_stack_fline(nprocs)
-      volume_start_l = total_volume                                     &
-     &                    / dble(fline_prm%num_each_field_line(i_fln))
+      volume_start_l = total_volume / dble(fln_prm%num_each_field_line)
 !
       do ip = 1, nprocs
         fln_tce%num_current_fline(ip)                                   &
@@ -99,11 +93,10 @@
         write(my_rank+50,*)  'volume_start_l', volume_start_l
       end if
 !
-      num_line = fline_prm%num_each_field_line(i_fln)
       if(iflag_debug .gt. 0) write(*,*) 'set_start_surface_in_domain'
       call set_start_surface_in_domain                                  &
      &   (ele, fln_src%num_line_local, volume_start_l, iflag_ele,       &
-     &    num_line, fln_prm%id_surf_start_fline)
+     &    fln_prm%num_each_field_line, fln_prm%id_surf_start_fline)
 !
       deallocate(iflag_ele)
       call calypso_mpi_barrier

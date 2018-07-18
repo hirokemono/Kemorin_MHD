@@ -44,7 +44,6 @@
         type(each_fieldline_source), allocatable :: fln_src(:)
         type(each_fieldline_trace), allocatable :: fln_tce(:)
 !
-        type(fieldline_paramters) :: fline_prm
         type(local_fieldline) :: fline_lc
         type(global_fieldline_data) :: fline_gl
       end type fieldline_module
@@ -79,8 +78,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
       call s_set_fline_control(femmesh%mesh, femmesh%group, nod_fld,    &
-     &    fline%num_fline, fline_ctls, fline%fln_prm, fline%fline_prm,  &
-     &    fline%fln_src)
+     &    fline%num_fline, fline_ctls, fline%fln_prm, fline%fln_src)
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_local_data_4_fline'
 !
@@ -88,9 +86,9 @@
         call alloc_local_data_4_fline                                   &
      &     (femmesh%mesh%node, fline%fln_src(i))
         call alloc_start_point_fline                                    &
-     &     (fline%fline_prm%num_each_field_line(i), fline%fln_src(i))
+     &     (fline%fln_prm(i)%num_each_field_line, fline%fln_src(i))
         call alloc_num_gl_start_fline(nprocs,                           &
-     &      fline%fline_prm%num_each_field_line(i), fline%fln_tce(i))
+     &      fline%fln_prm(i)%num_each_field_line, fline%fln_tce(i))
       end do
 !
       call alloc_local_fline(fline%fline_lc)
@@ -129,9 +127,9 @@
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
         call s_set_fields_for_fieldline                                 &
-     &     (i_fln, femmesh%mesh, ele_mesh, femmesh%group,               &
-     &      fline%fln_prm(i_fln), fline%fline_prm,                      &
-     &      fline%fln_src(i_fln), fline%fln_tce(i_fln))
+     &     (femmesh%mesh, ele_mesh, femmesh%group,                      &
+     &      fline%fln_prm(i_fln), fline%fln_src(i_fln),                 &
+     &      fline%fln_tce(i_fln))
       end do
 !
       do i_fln = 1, fline%num_fline
@@ -157,8 +155,6 @@
 !
       integer(kind = kint) :: i
 !
-!
-      call dealloc_control_params_fline(fline%fline_prm)
 !
       call dealloc_local_fline(fline%fline_lc)
       call dealloc_global_fline_num(fline%fline_gl)

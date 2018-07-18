@@ -4,13 +4,12 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine s_start_surface_by_flux(i_fln, node, ele, surf,      &
-!!     &          fln_prm, fline_prm, fln_src, fln_tce)
+!!      subroutine s_start_surface_by_flux(node, ele, surf,             &
+!!     &          fln_prm, fln_src, fln_tce)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
-!!        type(fieldline_paramter), intent(in) :: fln_prm
-!!        type(fieldline_paramters), intent(inout) :: fline_prm
+!!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !
@@ -40,26 +39,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_start_surface_by_flux(i_fln, node, ele, surf,        &
-     &          fln_prm, fline_prm, fln_src, fln_tce)
+      subroutine s_start_surface_by_flux(node, ele, surf,               &
+     &          fln_prm, fln_src, fln_tce)
 !
       use extend_field_line
       use cal_field_on_surf_viz
       use set_fline_start_surface
-!
-      integer(kind = kint), intent(in) :: i_fln
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
-      type(fieldline_paramters), intent(inout) :: fline_prm
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: i, ip
-      integer(kind = kint) :: num_line
 !
       real(kind = kreal) :: tot_flux_start, tot_flux_start_l
       real(kind = kreal) :: abs_flux_start, abs_flux_start_l
@@ -105,8 +100,8 @@
      &                          + fln_tce%flux_stack_fline(ip)
       end do
       abs_flux_start = fln_tce%flux_stack_fline(nprocs)
-      flux_4_each_line = abs_flux_start                                 &
-     &                    / dble(fline_prm%num_each_field_line(i_fln))
+      flux_4_each_line                                                  &
+     &      = abs_flux_start / dble(fln_prm%num_each_field_line)
 !
       do ip = 1, nprocs
         fln_tce%num_current_fline(ip)                                   &
@@ -120,7 +115,7 @@
      &                      abs_flux_start_l, abs_flux_start
         write(my_rank+50,*)  'tot_flux_start',                          &
      &                      tot_flux_start_l, tot_flux_start
-        write(my_rank+50,*)  'original num_each_field_line',            &
+        write(my_rank+50,*)  'original num_line_local',                 &
      &                      fln_src%num_line_local
         write(my_rank+50,*)  'flux_4_each_line', flux_4_each_line
       end if
@@ -133,16 +128,15 @@
      &                     flux_4_each_line
       call calypso_mpi_barrier
 !
-      num_line = fline_prm%num_each_field_line(i_fln)
-      if(num_line .gt. 0) then
+      if(fln_prm%num_each_field_line .gt. 0) then
         if(fln_prm%id_seed_distribution  .eq. iflag_no_random) then
           if(iflag_debug .gt. 0) write(*,*) 'start_surface_witout_random'
           call start_surface_witout_random(fln_src, abs_flux_start_l,   &
-     &        num_line, fln_prm%id_surf_start_fline)
+     &        fln_prm%num_each_field_line, fln_prm%id_surf_start_fline)
         else
           if(iflag_debug .gt. 0) write(*,*) 'start_surface_by_random'
           call start_surface_by_random(fln_src, abs_flux_start_l,       &
-     &        num_line, fln_prm%id_surf_start_fline)
+     &        fln_prm%num_each_field_line, fln_prm%id_surf_start_fline)
         end if
       end if
 !

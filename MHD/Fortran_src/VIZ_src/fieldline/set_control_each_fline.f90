@@ -4,17 +4,15 @@
 !        programmed by H.Matsui on May. 2006
 !
 !!      subroutine count_control_4_fline                                &
-!!     &         (i_fln, fln, ele, ele_grp, sf_grp,                     &
-!!     &          fln_prm, fline_prm, fln_src)
+!!     &         (fln, ele, ele_grp, sf_grp, fln_prm, fln_src)
 !!      subroutine set_control_4_fline                                  &
-!!     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld,            &
-!!     &          fln_prm, fline_prm, fln_src)
+!!     &         (fln, ele, ele_grp, sf_grp, nod_fld, fln_prm, fln_src)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fline_ctl), intent(inout) :: fln
-!!        type(fieldline_paramters), intent(inout) :: fline_prm
+!!        type(fieldline_paramter), intent(inout) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine set_iflag_fline_used_ele(ele, ele_grp, fln_prm)
 !!        type(element_data), intent(in) :: ele
@@ -47,8 +45,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_control_4_fline                                  &
-     &         (i_fln, fln, ele, ele_grp, sf_grp,                       &
-     &          fln_prm, fline_prm, fln_src)
+     &         (fln, ele, ele_grp, sf_grp, fln_prm, fln_src)
 !
       use m_field_file_format
 !
@@ -60,11 +57,9 @@
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: sf_grp
 !
-      integer(kind = kint), intent(in) :: i_fln
       type(fline_ctl), intent(in) :: fln
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
-      type(fieldline_paramters), intent(inout) :: fline_prm
       type(each_fieldline_source), intent(inout) :: fln_src
 !
       character(len=kchara) :: character_256
@@ -134,10 +129,9 @@
      &  .or. fln_prm%id_fline_seed_type .eq. iflag_spray_in_domain)     &
      &      then
         if(fln%num_fieldline_ctl%iflag .gt. 0) then
-          fline_prm%num_each_field_line(i_fln)                          &
-     &           = fln%num_fieldline_ctl%intvalue
+          fln_prm%num_each_field_line = fln%num_fieldline_ctl%intvalue
         else
-          fline_prm%num_each_field_line(i_fln) = 8
+          fln_prm%num_each_field_line = 8
         end if
 !
         fln_prm%max_line_stepping = 1000
@@ -157,26 +151,20 @@
 !
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(fln%seed_surface_ctl%num .gt. 0) then
-          fline_prm%num_each_field_line(i_fln)                          &
-     &                  = fln%seed_surface_ctl%num
+          fln_prm%num_each_field_line = fln%seed_surface_ctl%num
         end if
       else if(fln_prm%id_fline_seed_type .eq. iflag_position_list) then
         if(fln%seed_point_ctl%num .gt. 0) then
-          fline_prm%num_each_field_line(i_fln) = fln%seed_point_ctl%num
+          fln_prm%num_each_field_line = fln%seed_point_ctl%num
         end if
       end if
-      fline_prm%istack_each_field_line(i_fln)                           &
-     &          = fline_prm%istack_each_field_line(i_fln-1)             &
-     &            + fline_prm%num_each_field_line(i_fln)
-!
 !
       end subroutine count_control_4_fline
 !
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_fline                                    &
-     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld,              &
-     &          fln_prm, fline_prm, fln_src)
+     &         (fln, ele, ele_grp, sf_grp, nod_fld, fln_prm, fln_src)
 !
       use t_source_of_filed_line
       use set_components_flags
@@ -187,11 +175,9 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data), intent(in) :: nod_fld
 !
-      integer(kind = kint), intent(in) :: i_fln
       type(fline_ctl), intent(inout) :: fln
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
-      type(fieldline_paramters), intent(inout) :: fline_prm
       type(each_fieldline_source), intent(inout) :: fln_src
 !
       integer(kind = kint) :: i, ncomp(1), ncomp_org(1)
@@ -235,14 +221,14 @@
         call set_isurf_for_starting                                     &
      &     (ele, sf_grp, fln_prm%igrp_start_fline_surf_grp, fln_src)
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
-        do i = 1, fline_prm%num_each_field_line(i_fln)
+        do i = 1, fln_prm%num_each_field_line
           fln_prm%id_gl_surf_start_fline(1,i)                           &
      &          = fln%seed_surface_ctl%int1(i)
           fln_prm%id_gl_surf_start_fline(2,i)                           &
      &          = fln%seed_surface_ctl%int2(i)
         end do
       else if(fln_prm%id_fline_seed_type .eq. iflag_position_list) then
-        do i = 1, fline_prm%num_each_field_line(i_fln)
+        do i = 1, fln_prm%num_each_field_line
           fln_prm%xx_surf_start_fline(1,i) = fln%seed_point_ctl%vec1(i)
           fln_prm%xx_surf_start_fline(2,i) = fln%seed_point_ctl%vec2(i)
           fln_prm%xx_surf_start_fline(3,i) = fln%seed_point_ctl%vec3(i)

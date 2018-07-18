@@ -4,12 +4,12 @@
 !     Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_set_fline_control(mesh, group, nod_fld,            &
-!!     &          num_fline, fline_ctls, fln_prm, fline_prm, fln_src)
+!!     &          num_fline, fline_ctls, fln_prm, fln_src)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
-!!        type(fieldline_paramters), intent(inout) :: fline_prm
+!!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!        type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
 !
       module set_fline_control
@@ -34,7 +34,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_fline_control(mesh, group, nod_fld,              &
-     &          num_fline, fline_ctls, fln_prm, fline_prm, fln_src)
+     &          num_fline, fline_ctls, fln_prm, fln_src)
 !
       use t_control_data_flines
       use t_control_params_4_fline
@@ -48,15 +48,12 @@
 !
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-      type(fieldline_paramters), intent(inout) :: fline_prm
       type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
 !
       integer(kind = kint) :: i
 !
 !
       ctl_file_code = fline_ctl_file_code
-!
-      call alloc_control_params_fline(num_fline, fline_prm)
 !
       do i = 1, num_fline
         call read_control_4_fline                                       &
@@ -65,27 +62,28 @@
       end do
 !
       do i = 1, num_fline
-        call count_control_4_fline(i, fline_ctls%fline_ctl_struct(i),   &
-     &      mesh%ele, group%ele_grp, group%surf_grp, fln_prm(i),        &
-     &      fline_prm, fln_src(i))
+        call count_control_4_fline(fline_ctls%fline_ctl_struct(i),      &
+     &      mesh%ele, group%ele_grp, group%surf_grp,                    &
+     &      fln_prm(i), fln_src(i))
       end do
 !
-      call alloc_iflag_fline_used_ele(num_fline, mesh%ele, fln_prm)
-      call alloc_fline_starts_ctl(num_fline, fln_prm, fline_prm)
       do i = 1, num_fline
+        call alloc_iflag_fline_used_ele(mesh%ele, fln_prm(i))
+        call alloc_fline_starts_ctl(fln_prm(i))
         call alloc_local_start_grp_item(fln_src(i))
       end do
 !
       do i = 1, num_fline
-        call set_control_4_fline(i, fline_ctls%fline_ctl_struct(i),     &
+        call set_control_4_fline(fline_ctls%fline_ctl_struct(i),        &
      &      mesh%ele, group%ele_grp, group%surf_grp, nod_fld,           &
-     &      fln_prm(i), fline_prm, fln_src(i))
+     &      fln_prm(i), fln_src(i))
         call set_iflag_fline_used_ele                                   &
      &     (mesh%ele, group%ele_grp, fln_prm(i))
         call deallocate_cont_dat_fline(fline_ctls%fline_ctl_struct(i))
 !
         if(iflag_debug .gt. 0) then
-          call check_control_params_fline(i, fln_prm(i), fline_prm)
+          write(*,*) 'field line parameters for No.', i
+          call check_control_params_fline(fln_prm(i))
         end if
       end do
 !

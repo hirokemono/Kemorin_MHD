@@ -22,7 +22,6 @@
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(fieldline_paramter), intent(in) :: fln_prm
-!!        type(fieldline_paramters), intent(in) :: fline_prm
 !!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!        type(local_fieldline), intent(inout) :: fline_lc
