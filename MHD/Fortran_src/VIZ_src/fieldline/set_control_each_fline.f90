@@ -205,9 +205,11 @@
       call set_components_4_viz                                         &
      &   (nod_fld%num_phys, nod_fld%phys_name,                          &
      &    ione, tmpfield, tmpcomp, ione, ifield_tmp, icomp_tmp,         &
-     &    ncomp, ncomp_org, fln_prm%name_color_output)
+     &    ncomp, ncomp_org, tmpchara)
       fln_prm%ifield_linecolor = ifield_tmp(1)
       fln_prm%icomp_linecolor =  icomp_tmp(1)
+      fln_prm%name_color_output =  icomp_tmp(1)
+!
       if(ncomp(1) .ne. ione) then
         call calypso_MPI_abort(ierr_fld,'field color should be scalar')
       end if
