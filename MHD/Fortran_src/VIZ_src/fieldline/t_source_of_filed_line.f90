@@ -8,10 +8,11 @@
 !!      subroutine alloc_local_data_4_fline(node, fln_src)
 !!        type(node_data), intent(in) :: node
 !!        type(each_fieldline_source), intent(inout) :: fln_src
-!!      subroutine alloc_start_point_fline(num_each_field_line, fln_src)
+!!      subroutine alloc_start_point_fline(fln_prm, fln_src)
+!!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_source), intent(inout) :: fln_src
-!!      subroutine alloc_num_gl_start_fline                             &
-!!     &         (nprocs, num_each_field_line, fln_tce)
+!!      subroutine alloc_num_gl_start_fline(nprocs, fln_prm, fln_tce)
+!!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !!
 !!      subroutine dealloc_local_data_4_fline(fln_src)
@@ -24,6 +25,7 @@
       module t_source_of_filed_line
 !
       use m_precision
+      use t_control_params_4_fline
 !
       implicit  none
 !
@@ -94,14 +96,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_start_point_fline(num_each_field_line, fln_src)
+      subroutine alloc_start_point_fline(fln_prm, fln_src)
 !
-      integer(kind = kint), intent(in) :: num_each_field_line
+      type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
 !
+      integer(kind = kint) :: num
 !
-      allocate(fln_src%xx_start_fline(3,num_each_field_line))
-      allocate(fln_src%flux_start_fline(num_each_field_line))
+!
+      num = fln_prm%num_each_field_line
+      allocate(fln_src%xx_start_fline(3,num))
+      allocate(fln_src%flux_start_fline(num))
 !
       fln_src%xx_start_fline = 0.0d0
       fln_src%flux_start_fline =  0.0d0
@@ -110,11 +115,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_num_gl_start_fline                               &
-     &         (nprocs, num_each_field_line, fln_tce)
+      subroutine alloc_num_gl_start_fline(nprocs, fln_prm, fln_tce)
 !
       integer(kind = kint), intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: num_each_field_line
+      type(fieldline_paramter), intent(in) :: fln_prm
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: num
@@ -127,7 +131,7 @@
       fln_tce%num_current_fline =    0
       fln_tce%flux_stack_fline = 0.0d0
 !
-      num = 2*num_each_field_line
+      num = 2 * fln_prm%num_each_field_line
       allocate(fln_tce%iflag_fline(num))
       allocate(fln_tce%icount_fline(num))
       allocate(fln_tce%isf_fline_start(3,num))

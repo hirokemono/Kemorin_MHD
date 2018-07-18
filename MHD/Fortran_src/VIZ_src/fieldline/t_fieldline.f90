@@ -91,9 +91,9 @@
         call alloc_local_data_4_fline                                   &
      &     (femmesh%mesh%node, fline%fln_src(i_fln))
         call alloc_start_point_fline                                    &
-     &     (fline%fln_prm(i_fln)%num_each_field_line, fline%fln_src(i_fln))
+     &     (fline%fln_prm(i_fln), fline%fln_src(i_fln))
         call alloc_num_gl_start_fline(nprocs,                           &
-     &      fline%fln_prm(i_fln)%num_each_field_line, fline%fln_tce(i_fln))
+     &      fline%fln_prm(i_fln), fline%fln_tce(i_fln))
       end do
 !
       call alloc_local_fline(fline%fline_lc)
