@@ -1,5 +1,5 @@
-!>@file   m_control_data_4_part.f90
-!!@brief  module m_control_data_4_part
+!>@file   t_control_data_4_part.f90
+!!@brief  module t_control_data_4_part
 !!
 !!@author H. Matsui
 !!@date Programmed in Sep., 2007
@@ -7,14 +7,11 @@
 !>@brief  Control data for partitioner
 !!
 !!@verbatim
-!!      subroutine dealloc_num_bisection_ctl
-!!      subroutine dealloc_num_subdomains_ctl
-!!      subroutine dealloc_ele_grp_ordering_ctl
-!!      subroutine dealloc_ele_grp_layer_ctl
-!!      subroutine read_control_data_4_part
+!!      subroutine dealloc_ctl_data_4_part(part_ctl)
+!!      subroutine read_control_data_4_part(part_ctl)
 !!@endverbatim
 !
-      module m_control_data_4_part
+      module t_control_data_4_part
 !
       use m_precision
 !
@@ -34,56 +31,58 @@
       integer (kind=kint), parameter :: my_rank = 0
 !
 !
-!>      Structure for file names
-      type(platform_data_control), save :: part_plt
-!>      Structure for original file names
-      type(platform_data_control), save :: single_plt
+      type control_data_4_partitioner
+!>        Structure for file names
+        type(platform_data_control) :: part_plt
+!>        Structure for original file names
+        type(platform_data_control) :: single_plt
 !
-!>      Structure for FEM mesh controls
-      type(FEM_mesh_control), save :: part_Fmesh
-!>      Patitioning method
-      type(read_character_item), save :: part_method_ctl
-!>      Flag for element overlapping
-      type(read_character_item), save :: element_overlap_ctl
-!>      Number of sleeve level
-      type(read_integer_item), save :: sleeve_level_old
+!>        Structure for FEM mesh controls
+        type(FEM_mesh_control) :: part_Fmesh
+!>        Patitioning method
+        type(read_character_item) :: part_method_ctl
+!>        Flag for element overlapping
+        type(read_character_item) :: element_overlap_ctl
+!>        Number of sleeve level
+        type(read_integer_item) :: sleeve_level_old
 !
-!>      Structure for list of bisection
-!!@n      ele_grp_ordering_ctl%c_tbl: Direction of bisectioning
-      type(ctl_array_chara), save :: RCB_dir_ctl
+!>        Structure for list of bisection
+!!@n        ele_grp_ordering_ctl%c_tbl: Direction of bisectioning
+        type(ctl_array_chara) :: RCB_dir_ctl
 !
-!>      Structure for number of subdomains
-!!@n      ndomain_section_ctl%c_tbl:  Direction of sectioning
-!!@n      ndomain_section_ctl%ivect:  Number of domains
-      type(ctl_array_ci), save :: ndomain_section_ctl
+!>        Structure for number of subdomains
+!!@n        ndomain_section_ctl%c_tbl:  Direction of sectioning
+!!@n        ndomain_section_ctl%ivect:  Number of domains
+        type(ctl_array_ci) :: ndomain_section_ctl
 !
-!>      Structure for element group list for layering
-!!@n      ele_grp_ordering_ctl%c_tbl:  list of element group
-      type(ctl_array_chara), save :: ele_grp_layering_ctl
+!>        Structure for element group list for layering
+!!@n        ele_grp_ordering_ctl%c_tbl:  list of element group
+        type(ctl_array_chara) :: ele_grp_layering_ctl
 !
-!>      File name for sphere file data
-      type(read_character_item), save :: sphere_file_name_ctl
-!>      File name for MeTiS imput
-      type(read_character_item), save :: metis_input_file_ctl
-!>      File name for MeTiS domain file
-      type(read_character_item), save :: metis_domain_file_ctl
+!>        File name for sphere file data
+        type(read_character_item) :: sphere_file_name_ctl
+!>        File name for MeTiS imput
+        type(read_character_item) :: metis_input_file_ctl
+!>        File name for MeTiS domain file
+        type(read_character_item) :: metis_domain_file_ctl
 !
-!>      File name for domain grouping file name
-      type(read_character_item), save :: domain_group_file_ctl
+!>        File name for domain grouping file name
+        type(read_character_item) :: domain_group_file_ctl
 !
-!>      File name for finer mesh file prefix
-      type(read_character_item), save :: finer_mesh_head_ctl
-!>      File format for finer mesh file prefix
-      type(read_character_item), save :: finer_mesh_fmt_ctl
+!>        File name for finer mesh file prefix
+        type(read_character_item) :: finer_mesh_head_ctl
+!>        File format for finer mesh file prefix
+        type(read_character_item) :: finer_mesh_fmt_ctl
 !
-!>      File name for interpolation table for finer mesh file
-      type(read_character_item), save :: itp_tbl_head_ctl
-!>      File format for finer mesh file
-      type(read_character_item), save :: itp_tbl_format_ctl
+!>        File name for interpolation table for finer mesh file
+        type(read_character_item) :: itp_tbl_head_ctl
+!>        File format for finer mesh file
+        type(read_character_item) :: itp_tbl_format_ctl
 !
-!>      Structure for element group list for ordering
-!!@n      ele_grp_ordering_ctl%c_tbl:  list of element group
-      type(ctl_array_chara), save :: ele_grp_ordering_ctl
+!>        Structure for element group list for ordering
+!!@n        ele_grp_ordering_ctl%c_tbl:  list of element group
+        type(ctl_array_chara) :: ele_grp_ordering_ctl
+      end type control_data_4_partitioner
 !
 !   Top level
 !
@@ -191,47 +190,42 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_num_bisection_ctl
+      subroutine dealloc_ctl_data_4_part(part_ctl)
 !
-      call dealloc_control_array_chara(RCB_dir_ctl)
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
-      end subroutine dealloc_num_bisection_ctl
+      call dealloc_control_array_chara(part_ctl%RCB_dir_ctl)
+      call dealloc_control_array_c_i(part_ctl%ndomain_section_ctl)
+      call dealloc_control_array_chara(part_ctl%ele_grp_ordering_ctl)
+      call dealloc_control_array_chara(part_ctl%ele_grp_layering_ctl)
 !
-! -----------------------------------------------------------------------
+      part_ctl%sphere_file_name_ctl%iflag = 0
+      part_ctl%metis_input_file_ctl%iflag = 0
+      part_ctl%metis_domain_file_ctl%iflag = 0
 !
-      subroutine dealloc_num_subdomains_ctl
+      part_ctl%domain_group_file_ctl%iflag = 0
 !
-      call dealloc_control_array_c_i(ndomain_section_ctl)
+      part_ctl%finer_mesh_head_ctl%iflag = 0
+      part_ctl%finer_mesh_fmt_ctl%iflag = 0
 !
-      end subroutine dealloc_num_subdomains_ctl
+      part_ctl%itp_tbl_head_ctl%iflag = 0
+      part_ctl%itp_tbl_format_ctl%iflag = 0
 !
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_ele_grp_ordering_ctl
-!
-      call dealloc_control_array_chara(ele_grp_ordering_ctl)
-!
-      end subroutine dealloc_ele_grp_ordering_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_ele_grp_layer_ctl
-!
-      call dealloc_control_array_chara(ele_grp_layering_ctl)
-!
-      end subroutine dealloc_ele_grp_layer_ctl
+      end subroutine dealloc_ctl_data_4_part
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_data_4_part
+      subroutine read_control_data_4_part(part_ctl)
+!
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
 !
       ctl_file_code = control_file_code
       open (ctl_file_code, file = control_file_name)
 !
       call load_ctl_label_and_line
-      call read_part_control_data
+      call read_part_control_data(part_ctl)
 !
       close(ctl_file_code)
 !
@@ -240,7 +234,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-       subroutine read_part_control_data
+       subroutine read_part_control_data(part_ctl)
+!
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
 !
       if(right_begin_flag(hd_part_ctl) .eq. 0) return
@@ -252,21 +248,25 @@
         if(i_part_ctl .gt. 0) exit
 !
 !
-        call read_control_platforms(hd_platform, i_platform, part_plt)
         call read_control_platforms                                     &
-     &     (hd_org_data, i_org_data, single_plt)
+     &     (hd_platform, i_platform, part_ctl%part_plt)
+        call read_control_platforms                                     &
+     &     (hd_org_data, i_org_data, part_ctl%single_plt)
 !
-        call read_FEM_mesh_control(hd_FEM_mesh, i_FEM_mesh, part_Fmesh)
+        call read_FEM_mesh_control                                      &
+     &     (hd_FEM_mesh, i_FEM_mesh, part_ctl%part_Fmesh)
 !
-        call read_ctl_data_4_decomp
-        call read_ctl_data_4_ele_ordeirng
+        call read_ctl_data_4_decomp(part_ctl)
+        call read_ctl_data_4_ele_ordeirng(part_ctl)
       end do
 !
       end subroutine read_part_control_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------!
-      subroutine read_ctl_data_4_decomp
+      subroutine read_ctl_data_4_decomp(part_ctl)
+!
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
 !
       if(right_begin_flag(hd_decomp_ctl) .eq. 0) return
@@ -278,36 +278,46 @@
         if(i_decomp_ctl .gt. 0) exit
 !
 !
-        call read_control_array_c1(hd_num_rcb, RCB_dir_ctl)
-        call read_control_array_c_i(hd_num_es, ndomain_section_ctl)
         call read_control_array_c1                                      &
-     &     (hd_num_r_layerd, ele_grp_layering_ctl)
+     &     (hd_num_rcb, part_ctl%RCB_dir_ctl)
+        call read_control_array_c_i                                     &
+     &     (hd_num_es, part_ctl%ndomain_section_ctl)
+        call read_control_array_c1                                      &
+     &     (hd_num_r_layerd, part_ctl%ele_grp_layering_ctl)
 !
 !
-        call read_integer_ctl_type(hd_sleeve_level, sleeve_level_old)
+        call read_integer_ctl_type                                      &
+     &     (hd_sleeve_level, part_ctl%sleeve_level_old)
 !
-        call read_chara_ctl_type(hd_part_method, part_method_ctl)
-        call read_chara_ctl_type(hd_ele_overlap, element_overlap_ctl)
-        call read_chara_ctl_type(hd_sph_sf_file, sphere_file_name_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_metis_in_file, metis_input_file_ctl)
+     &     (hd_part_method, part_ctl%part_method_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_metis_dom_file, metis_domain_file_ctl)
+     &     (hd_ele_overlap, part_ctl%element_overlap_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_fine_mesh_file, finer_mesh_head_ctl)
+     &     (hd_sph_sf_file, part_ctl%sphere_file_name_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_fine_fmt_file, finer_mesh_fmt_ctl)
-        call read_chara_ctl_type(hd_fine_itp_file, itp_tbl_head_ctl)
+     &     (hd_metis_in_file, part_ctl%metis_input_file_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_domain_tbl_file, domain_group_file_ctl)
-        call read_chara_ctl_type(hd_fmt_itp_tbl, itp_tbl_format_ctl)
+     &     (hd_metis_dom_file, part_ctl%metis_domain_file_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_fine_mesh_file, part_ctl%finer_mesh_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_fine_fmt_file, part_ctl%finer_mesh_fmt_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_fine_itp_file, part_ctl%itp_tbl_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_domain_tbl_file, part_ctl%domain_group_file_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_fmt_itp_tbl, part_ctl%itp_tbl_format_ctl)
       end do
 !
       end subroutine read_ctl_data_4_decomp
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_ele_ordeirng
+      subroutine read_ctl_data_4_ele_ordeirng(part_ctl)
+!
+      type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
 !
       if(right_begin_flag(hd_ele_ordering_ctl) .eq. 0) return
@@ -319,11 +329,11 @@
         if(i_ele_ordering_ctl .gt. 0) exit
 !
         call read_control_array_c1                                      &
-     &     (hd_nele_grp_ordering, ele_grp_ordering_ctl)
+     &     (hd_nele_grp_ordering, part_ctl%ele_grp_ordering_ctl)
       end do
 !
       end subroutine read_ctl_data_4_ele_ordeirng
 !
 ! -----------------------------------------------------------------------!
-      end module m_control_data_4_part
+      end module t_control_data_4_part
 

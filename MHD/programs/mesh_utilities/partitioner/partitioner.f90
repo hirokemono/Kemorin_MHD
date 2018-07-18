@@ -14,8 +14,8 @@
 !
       use t_jacobians
       use t_fem_gauss_int_coefs
+      use t_control_data_4_part
 !
-      use m_control_data_4_part
       use m_ctl_param_partitioner
       use m_domain_group_4_partition
 !
@@ -37,6 +37,8 @@
 !
       implicit none
 !
+      type(control_data_4_partitioner), save :: part_ctl1
+!
       type(mesh_data), save :: org_fem
       type(element_geometry), save :: org_ele_mesh
 !
@@ -53,8 +55,9 @@
 !
 !  read control file
 !
-      call read_control_data_4_part
-      call s_set_control_data_4_part
+      call read_control_data_4_part(part_ctl1)
+      call s_set_control_data_4_part(part_ctl1)
+      call dealloc_ctl_data_4_part(part_ctl1)
 !
 !  read global mesh
 !

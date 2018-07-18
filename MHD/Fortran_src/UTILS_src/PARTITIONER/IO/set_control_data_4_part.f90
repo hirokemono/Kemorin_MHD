@@ -3,13 +3,18 @@
 !
 !      Written by Kemorin on Sep. 2007
 !
-!      subroutine s_set_control_data_4_part
+!!      subroutine s_set_control_data_4_part(part_ctl)
+!!        type(control_data_4_partitioner), intent(in) :: part_ctl
 !
       module set_control_data_4_part
 !
       use m_precision
 !
-      implicit    none
+      implicit none
+!
+      private :: set_FEM_mesh_ctl_4_part, set_partition_method
+      private :: set_control_XYZ_RCB, set_control_SPH_RCB
+      private :: set_control_EQ_XYZ, set_control_EQ_SPH
 !
 ! -----------------------------------------------------------------------
 !
@@ -17,27 +22,134 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_data_4_part
+      subroutine s_set_control_data_4_part(part_ctl)
 !
-      use m_control_data_4_part
+      use t_control_data_4_part
       use m_default_file_prefix
 !
       use m_ctl_param_partitioner
       use m_partitioner_comm_table
-      use read_sphere_surface
       use m_subdomain_table_IO
       use m_metis_IO
       use m_file_format_switch
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
-      use skip_comment_f
 !
-      integer(kind = kint) :: i
+      type(control_data_4_partitioner), intent(in) :: part_ctl
 !
 !
-      call set_control_mesh_def(part_plt, distribute_mesh_file)
+      call set_control_mesh_def                                         &
+     &   (part_ctl%part_plt, distribute_mesh_file)
 !
 !   set local data format
+!
+!
+      if (part_ctl%single_plt%mesh_file_prefix%iflag .gt. 0) then
+        global_mesh_file%file_prefix                                    &
+     &      = part_ctl%single_plt%mesh_file_prefix%charavalue
+      else
+        write(*,*) 'Set original mesh data'
+        stop
+      end if
+      call choose_file_format(part_ctl%single_plt%mesh_file_fmt_ctl,    &
+     &    global_mesh_file%iflag_format)
+!
+      nele_grp_ordering = 0
+      if (part_ctl%ele_grp_ordering_ctl%icou .eq. 1) then
+        nele_grp_ordering = part_ctl%ele_grp_ordering_ctl%num
+!
+        allocate(ele_grp_ordering(nele_grp_ordering))
+        allocate(igrp_ele_ordering(nele_grp_ordering))
+        ele_grp_ordering(1:nele_grp_ordering)                           &
+     &      = part_ctl%ele_grp_ordering_ctl%c_tbl(1:nele_grp_ordering)
+      end if
+!
+      call set_partition_method(part_ctl%part_method_ctl)
+!
+      call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
+     &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl)
+!
+!
+      if (NTYP_div .eq. iPART_RCB_XYZ) then
+        call set_control_XYZ_RCB(part_ctl%RCB_dir_ctl)
+      else if( NTYP_div .eq. iPART_RCB_SPH) then
+        call set_control_SPH_RCB(part_ctl%RCB_dir_ctl)
+!
+      else if (NTYP_div .eq. iPART_EQ_XYZ) then
+        call set_control_EQ_XYZ(part_ctl%ndomain_section_ctl)
+      else if (NTYP_div.eq.iPART_CUBED_SPHERE                           &
+     &    .or. NTYP_div.eq.iPART_EQ_SPH                                 &
+     &    .or. NTYP_div.eq.iPART_LAYER_SPH) then
+        call set_control_EQ_SPH(part_ctl%ndomain_section_ctl,           &
+     &    part_ctl%ele_grp_layering_ctl, part_ctl%sphere_file_name_ctl)
+!
+      else if (NTYP_div .eq. iPART_DECMP_MESH_TBL                       &
+     &    .or. NTYP_div .eq. iPART_FINE_MESH_TBL) then
+        if (part_ctl%domain_group_file_ctl%iflag .eq. 1) then
+          fname_subdomain = part_ctl%domain_group_file_ctl%charavalue
+        else
+          write(*,*) 'set domain table file name'
+          stop
+        end if
+!
+        if(NTYP_div .eq. iPART_FINE_MESH_TBL) then
+          if (part_ctl%itp_tbl_head_ctl%iflag .eq. 1) then
+            finer_inter_file_head                                       &
+     &            = part_ctl%itp_tbl_head_ctl%charavalue
+          else
+            write(*,*) 'set interpolate file name'
+            stop
+          end if
+!
+          call set_file_control_params(def_finer_mesh,                  &
+      &      part_ctl%finer_mesh_head_ctl, part_ctl%finer_mesh_fmt_ctl, &
+      &      finer_mesh_file)
+!
+          call choose_file_format                                       &
+     &       (part_ctl%itp_tbl_format_ctl, ifmt_itp_table_file)
+        end if
+!
+      else if(NTYP_div .eq. iPART_MeTiS_RSB) then
+        if (part_ctl%metis_domain_file_ctl%iflag .eq. 1) then
+          metis_sdom_name = part_ctl%metis_domain_file_ctl%charavalue
+        else
+          write(*,*) 'set MeTiS input file name'
+          stop
+        end if
+!
+      else if (iPART_GEN_MeTiS .eq. iPART_GEN_MeTiS) then
+        if (part_ctl%metis_input_file_ctl%iflag .eq. 1) then
+          metis_file_name = part_ctl%metis_input_file_ctl%charavalue
+        else
+          write(*,*) 'set MeTiS domain file name'
+          stop
+        end if
+!
+        write ( *,'(/,"generate MeTiS/RSB input")')
+        write  ( *,'(/,"*** GRID  file   ", a)')  org_mesh_header
+        write  ( *,'(/,"*** MeTiS/RSB input  ", a)')  metis_file_name
+      end if
+!
+      end subroutine s_set_control_data_4_part
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_FEM_mesh_ctl_4_part                                &
+     &         (part_Fmesh, sleeve_level_old, element_overlap_ctl)
+!
+      use t_ctl_data_4_FEM_mesh
+      use t_control_elements
+      use m_default_file_prefix
+!
+      use m_ctl_param_partitioner
+      use m_partitioner_comm_table
+      use m_subdomain_table_IO
+      use m_file_format_switch
+      use skip_comment_f
+!
+      type(FEM_mesh_control), intent(in) :: part_Fmesh
+      type(read_integer_item), intent(in) :: sleeve_level_old
+      type(read_character_item), intent(in)  :: element_overlap_ctl
 !
 !
       iflag_memory_conserve = 0
@@ -58,29 +170,40 @@
       write(*,*) 'iflag_viewer_output', iflag_viewer_output
 !
 !
-      if (single_plt%mesh_file_prefix%iflag .gt. 0) then
-        global_mesh_file%file_prefix                                    &
-     &      = single_plt%mesh_file_prefix%charavalue
+      if(part_Fmesh%FEM_sleeve_level_ctl%iflag .gt. 0) then
+        n_overlap = part_Fmesh%FEM_sleeve_level_ctl%intvalue
+      else if(sleeve_level_old%iflag .gt. 0) then
+        n_overlap = sleeve_level_old%intvalue
       else
-        write(*,*) 'Set original mesh data'
-        stop
+        n_overlap = 1
       end if
-      call choose_file_format                                           &
-     &   (single_plt%mesh_file_fmt_ctl, global_mesh_file%iflag_format)
+      if(n_overlap .lt. 1) n_overlap = 1
+      write(*,*) 'sleeve level :', n_overlap
 !
-      write(*,*) 'i_part_method', part_method_ctl%iflag
-!
-      nele_grp_ordering = 0
-      if (ele_grp_ordering_ctl%icou .eq. 1) then
-        nele_grp_ordering = ele_grp_ordering_ctl%num
-!
-        allocate(ele_grp_ordering(nele_grp_ordering))
-        allocate(igrp_ele_ordering(nele_grp_ordering))
-        ele_grp_ordering(1:nele_grp_ordering)                           &
-     &      = ele_grp_ordering_ctl%c_tbl(1:nele_grp_ordering)
-!
-        call dealloc_ele_grp_ordering_ctl
+      i_sleeve_ele = 0
+      if(n_overlap .eq. 1) then
+        if(part_Fmesh%FEM_element_overlap_ctl%iflag .gt. 0) then
+          i_sleeve_ele = 1
+          n_overlap =    2
+        else if(element_overlap_ctl%iflag .gt. 0) then
+          i_sleeve_ele = 1
+          n_overlap =    2
+        end if
+        write(*,*) 'element overlapping flag: ', i_sleeve_ele
       end if
+!
+      end subroutine set_FEM_mesh_ctl_4_part
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_partition_method(part_method_ctl)
+!
+      use t_control_elements
+      use m_ctl_param_partitioner
+      use skip_comment_f
+!
+      type(read_character_item), intent(in) :: part_method_ctl
+!
 !
       if (part_method_ctl%iflag .gt. 0) then
         if(     cmp_no_case(part_method_ctl%charavalue,'RCB_xyz')       &
@@ -149,31 +272,21 @@
         stop
       end if
 !
+      end subroutine set_partition_method
 !
-      if(part_Fmesh%FEM_sleeve_level_ctl%iflag .gt. 0) then
-        n_overlap = part_Fmesh%FEM_sleeve_level_ctl%intvalue
-      else if(sleeve_level_old%iflag .gt. 0) then
-        n_overlap = sleeve_level_old%intvalue
-      else
-        n_overlap = 1
-      end if
-      if(n_overlap .lt. 1) n_overlap = 1
-      write(*,*) 'sleeve level :', n_overlap
+! -----------------------------------------------------------------------
 !
-      i_sleeve_ele = 0
-      if(n_overlap .eq. 1) then
-        if(part_Fmesh%FEM_element_overlap_ctl%iflag .gt. 0) then
-          i_sleeve_ele = 1
-          n_overlap =    2
-        else if(element_overlap_ctl%iflag .gt. 0) then
-          i_sleeve_ele = 1
-          n_overlap =    2
-        end if
-        write(*,*) 'element overlapping flag: ', i_sleeve_ele
-      end if
+      subroutine set_control_XYZ_RCB(RCB_dir_ctl)
+!
+      use t_read_control_arrays
+      use m_ctl_param_partitioner
+      use skip_comment_f
+!
+      type(ctl_array_chara), intent(in) :: RCB_dir_ctl
+!
+      integer(kind = kint) :: i
 !
 !
-      if (NTYP_div .eq. iPART_RCB_XYZ) then
         NPOWER_rcb = RCB_dir_ctl%num
         num_domain = 2**NPOWER_rcb
         allocate( idir_rcb(NPOWER_rcb) )
@@ -196,9 +309,21 @@
           stop
         end if
 !
-        call dealloc_num_bisection_ctl
+      end subroutine set_control_XYZ_RCB
 !
-      else if( NTYP_div .eq. iPART_RCB_SPH) then
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_SPH_RCB(RCB_dir_ctl)
+!
+      use t_read_control_arrays
+      use m_ctl_param_partitioner
+      use skip_comment_f
+!
+      type(ctl_array_chara), intent(in) :: RCB_dir_ctl
+!
+      integer(kind = kint) :: i
+!
+!
         NPOWER_rcb = RCB_dir_ctl%num
         num_domain = 2**NPOWER_rcb
         allocate( idir_rcb(NPOWER_rcb) )
@@ -229,15 +354,26 @@
           stop
         end if
 !
-        call dealloc_num_bisection_ctl
-!
         write(*,'(/,"### Spherical RECURSIVE COORDINATE BiSECTION")')
         write (*,*)  "number of level: ", NPOWER_rcb
         write (*,'(" Direction Code r:1, theta:2, phi:3")')
         write  (*,*) idir_rcb(1:NPOWER_rcb)
 !
+      end subroutine set_control_SPH_RCB
 !
-      else if (NTYP_div .eq. iPART_EQ_XYZ) then
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_EQ_XYZ(ndomain_section_ctl)
+!
+      use t_read_control_arrays
+      use m_ctl_param_partitioner
+      use skip_comment_f
+!
+      type(ctl_array_ci), intent(in) :: ndomain_section_ctl
+!
+      integer(kind = kint) :: i
+!
+!
         if(ndomain_section_ctl%num .ne. 3)                              &
      &         stop 'number of subdomain should be 3 directions'
 !
@@ -252,11 +388,26 @@
         end do
         num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
 !
-        call dealloc_num_subdomains_ctl
+      end subroutine set_control_EQ_XYZ
 !
-      else if (NTYP_div.eq.iPART_CUBED_SPHERE                           &
-     &    .or. NTYP_div.eq.iPART_EQ_SPH                                 &
-     &    .or. NTYP_div.eq.iPART_LAYER_SPH) then
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_EQ_SPH(ndomain_section_ctl,                &
+     &          ele_grp_layering_ctl, sphere_file_name_ctl)
+!
+      use t_read_control_arrays
+      use t_control_elements
+      use m_ctl_param_partitioner
+      use read_sphere_surface
+      use skip_comment_f
+!
+      type(ctl_array_ci), intent(in) :: ndomain_section_ctl
+      type(ctl_array_chara), intent(in) :: ele_grp_layering_ctl
+      type(read_character_item), intent(in) :: sphere_file_name_ctl
+!
+      integer(kind = kint) :: i
+!
+!
         if(ndomain_section_ctl%num .ne. 3)                              &
      &         stop 'number of subdomain should be 3 directions'
 !
@@ -283,8 +434,6 @@
         end do
         num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
 !
-        call dealloc_num_subdomains_ctl
-!
         if(NTYP_div .eq. iPART_LAYER_SPH) then
           num_egrp_layer = ele_grp_layering_ctl%num
           allocate(grp_layer_name(num_egrp_layer))
@@ -293,7 +442,6 @@
             grp_layer_name(1:num_egrp_layer)                            &
      &          = ele_grp_layering_ctl%c_tbl(1:num_egrp_layer)
           end if
-          call dealloc_ele_grp_layer_ctl
 !
         else if ( NTYP_div .eq. iPART_CUBED_SPHERE) then
           iflag_sphere_data = sphere_file_name_ctl%iflag
@@ -306,53 +454,7 @@
           end if
         end if
 !
-!
-      else if (NTYP_div .eq. iPART_DECMP_MESH_TBL                       &
-     &    .or. NTYP_div .eq. iPART_FINE_MESH_TBL) then
-        if (domain_group_file_ctl%iflag .eq. 1) then
-          fname_subdomain = domain_group_file_ctl%charavalue
-        else
-          write(*,*) 'set domain table file name'
-          stop
-        end if
-!
-        if(NTYP_div .eq. iPART_FINE_MESH_TBL) then
-          if (itp_tbl_head_ctl%iflag .eq. 1) then
-            finer_inter_file_head = itp_tbl_head_ctl%charavalue
-          else
-            write(*,*) 'set interpolate file name'
-            stop
-          end if
-!
-          call set_file_control_params(def_finer_mesh,                  &
-      &       finer_mesh_head_ctl, finer_mesh_fmt_ctl, finer_mesh_file)
-!
-          call choose_file_format                                       &
-     &       (itp_tbl_format_ctl, ifmt_itp_table_file)
-        end if
-!
-      else if(NTYP_div .eq. iPART_MeTiS_RSB) then
-        if (metis_domain_file_ctl%iflag .eq. 1) then
-          metis_sdom_name = metis_domain_file_ctl%charavalue
-        else
-          write(*,*) 'set MeTiS input file name'
-          stop
-        end if
-!
-      else if (iPART_GEN_MeTiS .eq. iPART_GEN_MeTiS) then
-        if (metis_input_file_ctl%iflag .eq. 1) then
-          metis_file_name = metis_input_file_ctl%charavalue
-        else
-          write(*,*) 'set MeTiS domain file name'
-          stop
-        end if
-!
-        write ( *,'(/,"generate MeTiS/RSB input")')
-        write  ( *,'(/,"*** GRID  file   ", a)')  org_mesh_header
-        write  ( *,'(/,"*** MeTiS/RSB input  ", a)')  metis_file_name
-      end if
-!
-      end subroutine s_set_control_data_4_part
+      end subroutine set_control_EQ_SPH
 !
 ! -----------------------------------------------------------------------
 !

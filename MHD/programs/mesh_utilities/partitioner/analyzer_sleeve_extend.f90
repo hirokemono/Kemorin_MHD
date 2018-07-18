@@ -23,11 +23,14 @@
       use t_surface_data
       use t_edge_data
       use t_next_node_ele_4_node
+      use t_control_data_4_part
       use para_const_kemoview_mesh
 !
       use mpi_load_mesh_data
 !
       implicit none
+!
+      type(control_data_4_partitioner), save, private :: part_ctl1
 !
       type(mesh_data), save, private :: fem_EXT
       type(element_geometry), save, private :: e_mesh_EXT
@@ -44,7 +47,6 @@
       use m_phys_constants
       use m_array_for_send_recv
       use m_default_file_prefix
-      use m_control_data_4_part
       use m_ctl_param_partitioner
 !
       use nod_phys_send_recv
@@ -59,8 +61,9 @@
 !
 !     ----- read control data
 !
-      call read_control_data_4_part
-      call s_set_control_data_4_part
+      call read_control_data_4_part(part_ctl1)
+      call s_set_control_data_4_part(part_ctl1)
+      call dealloc_ctl_data_4_part(part_ctl1)
 !
 !  --  read geometry
 !
