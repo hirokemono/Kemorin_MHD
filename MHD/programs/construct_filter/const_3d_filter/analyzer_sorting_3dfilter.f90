@@ -13,9 +13,11 @@
       use t_filtering_data
       use t_filter_coefficients
       use t_file_IO_parameter
+      use t_ctl_data_gen_3d_filter
 !
       implicit none
 !
+      type(ctl_data_gen_3d_filter), save :: fil3_ctl_f
       type(field_IO_params), save ::  mesh_filter_file
       type(mesh_geometry), save :: mesh_filter
       type(filtering_data_type), save :: filtering_gen
@@ -30,8 +32,8 @@
 !
       use m_ctl_params_4_gen_filter
 !
-      use m_ctl_data_gen_3d_filter
       use set_ctl_gen_filter
+      use set_control_platform_data
 !
 !
       if (my_rank.eq.0) then
@@ -42,12 +44,13 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sort_filter'
-      call read_control_4_sort_filter
+      call read_control_4_sort_filter(fil3_ctl_f)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_file_heads_3d_comm_filter'
-      call set_file_heads_3d_comm_filter                                &
-     &   (ffile_3d_ctl, mesh_filter_file)
-      call set_numdomain_3d_comm_filter(nprocs)
+      call set_control_mesh_def                                         &
+     &   (fil3_ctl_f%gen_filter_plt, mesh_filter_file)
+      call set_file_heads_3d_comm_filter(fil3_ctl_f%ffile_3d_ctl)
+      call set_numdomain_3d_comm_filter(fil3_ctl_f, nprocs)
 !
 !
       end subroutine sort_3dfilter_init

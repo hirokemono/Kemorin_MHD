@@ -28,10 +28,12 @@
       use t_filter_moments
       use t_filtering_data
       use t_filter_file_data
+      use t_ctl_data_gen_3d_filter
 !
       implicit none
 !
 !
+      type(ctl_data_gen_3d_filter), save :: fil3_ctl_f
       type(field_IO_params), save ::  mesh_filter_file
 !
       type(mesh_data), save :: fem_f
@@ -61,7 +63,6 @@
       subroutine generate_filter_init
 !
       use m_filter_file_names
-      use m_ctl_data_gen_3d_filter
 !
       use const_mesh_information
       use cal_1d_moments_4_fliter
@@ -80,6 +81,7 @@
       use sum_normal_4_surf_group
       use const_jacobians_3d
       use set_ctl_gen_filter
+      use set_control_platform_data
       use mpi_load_mesh_data
 !
 !
@@ -93,12 +95,14 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_filter'
-      call read_control_4_gen_filter
+      call read_control_4_gen_filter(fil3_ctl_f)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_gen_filter'
-      call set_file_heads_3d_comm_filter                                &
-     &   (ffile_3d_ctl, mesh_filter_file)
-      call set_ctl_params_gen_filter(FEM_elen_f)
+      call set_control_mesh_def                                         &
+     &   (fil3_ctl_f%gen_filter_plt, mesh_filter_file)
+      call set_file_heads_3d_comm_filter(fil3_ctl_f%ffile_3d_ctl)
+      call set_ctl_params_gen_filter(fil3_ctl_f, FEM_elen_f)
+      call dealloc_dx_solver_param_ctl(fil3_ctl_f)
 !
 !  --  read geometry
 !

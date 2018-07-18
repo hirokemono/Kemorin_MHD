@@ -3,9 +3,12 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!!      subroutine set_ctl_params_gen_filter(FEM_elens)
-!!      subroutine set_file_heads_3d_comm_filter(ffile_ctl, mesh_file)
+!!      subroutine set_ctl_params_gen_filter(fil3_ctl, FEM_elens)
+!!        type(ctl_data_gen_3d_filter), intent(in) :: fil3_ctl
+!!      subroutine set_file_heads_3d_comm_filter(ffile_ctl)
 !!        type(filter_file_control), intent(in) :: ffile_ctl
+!!      subroutine set_numdomain_3d_comm_filter(fil3_ctl, nprocs)
+!!        type(ctl_data_gen_3d_filter), intent(in) :: fil3_ctl
 !
       module set_ctl_gen_filter
 !
@@ -13,7 +16,7 @@
       use m_machine_parameter
       use t_file_IO_parameter
       use m_ctl_data_gen_filter
-      use m_ctl_data_gen_3d_filter
+      use t_ctl_data_gen_3d_filter
       use m_ctl_params_4_gen_filter
       use m_ctl_param_newdom_filter
 !
@@ -25,7 +28,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_gen_filter(FEM_elens)
+      subroutine set_ctl_params_gen_filter(fil3_ctl, FEM_elens)
 !
       use calypso_mpi
       use m_error_IDs
@@ -36,6 +39,7 @@
 !
       use skip_comment_f
 !
+      type(ctl_data_gen_3d_filter), intent(in) :: fil3_ctl
       type(gradient_model_data_type), intent(inout) :: FEM_elens
 !
       integer(kind = kint) :: i
@@ -43,8 +47,8 @@
 !
 !
       np_smp = 1
-      if(gen_filter_plt%num_smp_ctl%iflag .gt. 0) then
-         np_smp = gen_filter_plt%num_smp_ctl%intvalue
+      if(fil3_ctl%gen_filter_plt%num_smp_ctl%iflag .gt. 0) then
+         np_smp = fil3_ctl%gen_filter_plt%num_smp_ctl%intvalue
       end if
 !
       num_int_points = 4
@@ -57,7 +61,7 @@
         minimum_comp = minimum_comp_ctl%intvalue
       end if
 !
-      num_filtering_grp = filter_area_ctl%num
+      num_filtering_grp = fil3_ctl%filter_area_ctl%num
       if (iflag_debug.gt.0) then
         write(*,*) 'np_smp', np_smp
         write(*,*) 'num_int_points', num_int_points
@@ -73,8 +77,7 @@
       else if ( num_filtering_grp .gt. 0) then
         call allocate_ref_filter_area
         filter_area_name(1:num_filtering_grp)                           &
-     &        = filter_area_ctl%c_tbl(1:num_filtering_grp)
-        call deallocate_filtering_area_ctl
+     &        = fil3_ctl%filter_area_ctl%c_tbl(1:num_filtering_grp)
       end if
 !
       if (iflag_debug.gt.0)                                             &
@@ -151,8 +154,6 @@
           write(*,*) 'iref_mom_type', iref_mom_type
         end if
       end if
-!
-      call dealloc_control_array_i_c_r(ref_filter_mom_ctl)
 !
       if (minimum_det_ctl%iflag .gt. 0) then
         minimum_det_mat = minimum_det_ctl%realvalue
@@ -263,8 +264,9 @@
 !
 !
       itype_mass_matrix = 0
-      if(mass_matrix_type_ctl%iflag .gt. 0) then
-        if(cmp_no_case(mass_matrix_type_ctl%charavalue,'CONSIST')) then
+      if(fil3_ctl%mass_matrix_type_ctl%iflag .gt. 0) then
+        tmpchara = fil3_ctl%mass_matrix_type_ctl%charavalue
+        if(cmp_no_case(tmpchara, 'CONSIST')) then
           itype_mass_matrix = 1
         end if
       end if
@@ -328,23 +330,23 @@
       sigma_elesize =       1.0d0
       sigma_diag_elesize  = 1.0d0
 !
-      if(method_esize_ctl%iflag .gt. 0) then
-        method_elesize =      method_esize_ctl%charavalue
+      if(fil3_ctl%method_esize_ctl%iflag .gt. 0) then
+        method_elesize = fil3_ctl%method_esize_ctl%charavalue
       end if
-      if(precond_esize_ctl%iflag .gt. 0) then
-        precond_elesize =     precond_esize_ctl%charavalue
+      if(fil3_ctl%precond_esize_ctl%iflag .gt. 0) then
+        precond_elesize = fil3_ctl%precond_esize_ctl%charavalue
       end if
-      if(itr_esize_ctl%iflag .gt. 0) then
-        itr_elesize =         itr_esize_ctl%intvalue
+      if(fil3_ctl%itr_esize_ctl%iflag .gt. 0) then
+        itr_elesize = fil3_ctl%itr_esize_ctl%intvalue
       end if
-      if(eps_esize_ctl%iflag .gt. 0) then
-        eps_elesize =         eps_esize_ctl%realvalue
+      if(fil3_ctl%eps_esize_ctl%iflag .gt. 0) then
+        eps_elesize = fil3_ctl%eps_esize_ctl%realvalue
       end if
-      if(sigma_esize_ctl%iflag .gt. 0) then
-        sigma_elesize =       sigma_esize_ctl%realvalue
+      if(fil3_ctl%sigma_esize_ctl%iflag .gt. 0) then
+        sigma_elesize = fil3_ctl%sigma_esize_ctl%realvalue
       end if
-      if(sigma_diag_esize_ctl%iflag .gt. 0) then
-        sigma_diag_elesize =  sigma_diag_esize_ctl%realvalue
+      if(fil3_ctl%sigma_diag_esize_ctl%iflag .gt. 0) then
+        sigma_diag_elesize =  fil3_ctl%sigma_diag_esize_ctl%realvalue
       end if
 !
       if (iflag_debug.gt.0) then
@@ -364,24 +366,20 @@
         call calypso_MPI_abort(ierr_file, e_message)
       end if
 !
+      call dealloc_control_array_i_c_r(ref_filter_mom_ctl)
+!
       end subroutine set_ctl_params_gen_filter
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_file_heads_3d_comm_filter(ffile_ctl, mesh_file)
+      subroutine set_file_heads_3d_comm_filter(ffile_ctl)
 !
       use t_ctl_data_filter_files
       use m_file_format_switch
       use m_filter_file_names
-      use set_control_platform_data
 !
       type(filter_file_control), intent(in) :: ffile_ctl
-      type(field_IO_params), intent(inout) :: mesh_file
 !
-!
-      call set_control_mesh_def(gen_filter_plt, mesh_file)
-      if (iflag_debug.gt.0) write(*,*)                                  &
-     &                'mesh_file_head ', mesh_file%file_prefix
 !
       if (ffile_ctl%filter_head_ctl%iflag .ne. 0) then
         filter_3d_head = ffile_ctl%filter_head_ctl%charavalue
@@ -424,13 +422,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_numdomain_3d_comm_filter(nprocs)
+      subroutine set_numdomain_3d_comm_filter(fil3_ctl, nprocs)
 !
+      type(ctl_data_gen_3d_filter), intent(in) :: fil3_ctl
       integer(kind = kint), intent(inout) :: nprocs
 !
 !
-      if (gen_filter_plt%ndomain_ctl%iflag .ne. 0) then
-        nprocs = gen_filter_plt%ndomain_ctl%intvalue
+      if(fil3_ctl%gen_filter_plt%ndomain_ctl%iflag .ne. 0) then
+        nprocs = fil3_ctl%gen_filter_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'set number of domains'
         stop
