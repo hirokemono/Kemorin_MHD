@@ -12,8 +12,8 @@
 !!@verbatim
 !!      subroutine s_set_control_SGS_commute                            &
 !!     &         (SGS_param, sgs_ctl, cmt_param, Cdiff_file_IO)
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
-!!        type(SGS_model_control_params), intent(inout) :: SGS_param
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        type(commutation_control_params), intent(inout) :: cmt_param
 !!        type(field_IO_params), intent(inout) :: Csim_file_IO
 !!        type(field_IO_params), intent(inout) :: Cdiff_file_IO
@@ -51,7 +51,7 @@
       use t_field_data_IO
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(SGS_model_control), intent(inout) :: sgs_ctl
+      type(SGS_model_control), intent(in) :: sgs_ctl
       type(commutation_control_params), intent(inout) :: cmt_param
       type(field_IO_params), intent(inout) :: Cdiff_file_IO
 !
@@ -112,8 +112,6 @@
           end if
         end if
       end if
-!
-      call dealloc_control_array_chara(sgs_ctl%commutate_fld_ctl)
 !
       if (iflag_debug .gt. 0)  then
         write(*,*) 'iflag_commute_temp:     ', cmt_param%iflag_c_temp

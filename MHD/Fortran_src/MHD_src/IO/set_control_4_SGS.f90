@@ -13,7 +13,7 @@
 !!      subroutine set_control_SGS_model                                &
 !!     &         (sgs_ctl, SGS_param, filter_param, Csim_file_IO,       &
 !!     &          i_step_sgs_coefs)
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
+!!        type(SGS_model_control), intent(in) :: sgs_ctl
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!        type(field_IO_params), intent(inout) :: Csim_file_IO
 !!        type(SGS_filtering_params), intent(inout) :: filter_param
@@ -53,7 +53,7 @@
       use t_ctl_data_SGS_model
       use t_field_data_IO
 !
-      type(SGS_model_control), intent(inout) :: sgs_ctl
+      type(SGS_model_control), intent(in) :: sgs_ctl
       type(SGS_model_control_params), intent(inout) :: SGS_param
       type(SGS_filtering_params), intent(inout) :: filter_param
       type(field_IO_params), intent(inout) :: Csim_file_IO
@@ -151,7 +151,6 @@
 !
         end if
       end if
-      call dealloc_control_array_chara(sgs_ctl%SGS_terms_ctl)
 !
       if (SGS_param%iflag_SGS .ne. id_SGS_none) then
         if (iflag_debug .gt. 0)  then

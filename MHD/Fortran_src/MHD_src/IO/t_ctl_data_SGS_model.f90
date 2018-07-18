@@ -579,4 +579,53 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine dealloc_sgs_ctl(sgs_ctl)
+!
+      type(SGS_model_control), intent(inout) :: sgs_ctl
+!
+!
+      call dealloc_control_array_chara(sgs_ctl%SGS_terms_ctl)
+      call dealloc_control_array_chara(sgs_ctl%commutate_fld_ctl)
+!
+      sgs_ctl%SGS_model_name_ctl%iflag =  0
+      sgs_ctl%SGS_filter_name_ctl%iflag = 0
+      sgs_ctl%DIFF_model_coef_ctl%iflag = 0
+!
+      sgs_ctl%SGS_negative_clip_ctl%iflag =   0
+      sgs_ctl%SGS_marging_ctl%iflag =         0
+      sgs_ctl%SGS_perturbation_ctl%iflag =    0
+      sgs_ctl%SGS_model_coef_type_ctl%iflag = 0
+!
+      sgs_ctl%heat_flux_csim_type_ctl%iflag =  0
+      sgs_ctl%comp_flux_csim_type_ctl%iflag =  0
+      sgs_ctl%mom_flux_csim_type_ctl%iflag =   0
+      sgs_ctl%maxwell_csim_type_ctl%iflag =    0
+      sgs_ctl%uxb_csim_type_ctl%iflag =        0
+      sgs_ctl%SGS_model_coef_coord_ctl%iflag = 0
+      sgs_ctl%SGS_buo_Csim_usage_ctl%iflag =   0
+!
+!
+      sgs_ctl%delta_to_shrink_dynamic_ctl%iflag = 0
+      sgs_ctl%clipping_limit_ctl%iflag =          0
+!
+      sgs_ctl%SGS_hf_factor_ctl%iflag =   0
+      sgs_ctl%SGS_cf_factor_ctl%iflag =   0
+      sgs_ctl%SGS_mf_factor_ctl%iflag =   0
+      sgs_ctl%SGS_mxwl_factor_ctl%iflag = 0
+      sgs_ctl%SGS_uxb_factor_ctl%iflag =  0
+!
+      sgs_ctl%delta_to_extend_dynamic_ctl%iflag = 0
+      sgs_ctl%stabilize_weight_ctl%iflag =        0
+!
+      sgs_ctl%istep_dynamic_ctl%iflag =    0
+      sgs_ctl%min_step_dynamic_ctl%iflag = 0
+      sgs_ctl%max_step_dynamic_ctl%iflag = 0
+!
+      sgs_ctl%ngrp_radial_ave_ctl%iflag =  0
+      sgs_ctl%ngrp_med_ave_ctl%iflag =     0
+!
+      end subroutine dealloc_sgs_ctl
+!
+!   --------------------------------------------------------------------
+!
       end module t_ctl_data_SGS_model

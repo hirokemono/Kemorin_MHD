@@ -141,6 +141,7 @@
       call set_control_SGS_model                                        &
      &   (model_ctl%sgs_ctl, SGS_par%model_p, SGS_par%filter_p,         &
      &    MHD_files%Csim_file_IO, SGS_par%i_step_sgs_coefs)
+
       call s_set_control_SGS_commute                                    &
      &   (SGS_par%model_p, model_ctl%sgs_ctl, SGS_par%commute_p,        &
      &    MHD_files%Cdiff_file_IO)
@@ -156,6 +157,7 @@
      &    SGS_par%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,       &
      &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
      &    SGS_par%filter_p)
+      call dealloc_sgs_ctl(model_ctl%sgs_ctl)
 !
 !   set fields
 !
