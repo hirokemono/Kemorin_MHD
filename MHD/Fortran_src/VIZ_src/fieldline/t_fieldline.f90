@@ -159,14 +159,14 @@
 !
 !
       call dealloc_control_params_fline(fline%fline_prm)
-      call dealloc_fline_starts_ctl                                     &
-     &   (fline%num_fline, fline%fln_prm, fline%fline_prm)
-      call dealloc_iflag_fline_used_ele(fline%num_fline, fline%fln_prm)
 !
       call dealloc_local_fline(fline%fline_lc)
       call dealloc_global_fline_num(fline%fline_gl)
 !
       do i = 1, fline%num_fline
+        call dealloc_iflag_fline_used_ele(fline%fln_prm(i))
+        call dealloc_fline_starts_ctl(fline%fln_prm(i))
+!
         call dealloc_local_start_grp_item(fline%fln_src(i))
         call dealloc_local_data_4_fline(fline%fln_src(i))
         call dealloc_start_point_fline(fline%fln_src(i))

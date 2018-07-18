@@ -10,8 +10,8 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
 !!      subroutine dealloc_control_params_fline(fline_prm)
-!!      subroutine dealloc_fline_starts_ctl(fline_prm)
-!!      subroutine dealloc_iflag_fline_used_ele(num_fline, fln_prm)
+!!      subroutine dealloc_fline_starts_ctl(fln_prm)
+!!      subroutine dealloc_iflag_fline_used_ele(fln_prm)
 !!        type(fieldline_paramters), intent(inout) :: fln_prm
 !!
 !!      subroutine check_control_params_fline(i_fln)
@@ -63,6 +63,8 @@
 !>        Element flag to use in fieldline
         integer(kind = kint), allocatable :: iflag_fline_used_ele(:)
 !
+!>        local surface ID for seed points
+        integer(kind = kint), allocatable :: id_surf_start_fline(:,:)
 !>        global surface ID for seed points
         integer(kind = kint), allocatable                              &
      &                       :: id_gl_surf_start_fline(:,:)
@@ -77,7 +79,6 @@
         integer(kind = kint), allocatable :: num_each_field_line(:)
         integer(kind = kint), allocatable :: istack_each_field_line(:)
         integer(kind = kint) :: ntot_each_field_line
-        integer(kind = kint), allocatable :: id_surf_start_fline(:,:)
       end type fieldline_paramters
 !
 !
@@ -154,23 +155,18 @@
         if(num .gt. 0) fln_prm(i)%id_ele_grp_area_fline = 0
 !
         num = fline_prm%num_each_field_line(i)
+        allocate(fln_prm(i)%id_surf_start_fline(2,num))
         allocate(fln_prm(i)%id_gl_surf_start_fline(2,num))
         allocate(fln_prm(i)%iflag_outward_flux_fline(num))
         allocate(fln_prm(i)%xx_surf_start_fline(3,num))
 !
         if(num .gt. 0) then
+          fln_prm(i)%id_surf_start_fline =   0
           fln_prm(i)%id_gl_surf_start_fline =   0
           fln_prm(i)%iflag_outward_flux_fline = 0
           fln_prm(i)%xx_surf_start_fline = 0.0d0
         end if
       end do
-!
-      num = fline_prm%ntot_each_field_line
-      allocate(fline_prm%id_surf_start_fline(2,num))
-!
-      if(num .gt. 0) then
-        fline_prm%id_surf_start_fline =   0
-      end if
 !
       end subroutine alloc_fline_starts_ctl
 !
@@ -211,39 +207,28 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_fline_starts_ctl(num_fline, fln_prm, fline_prm)
+      subroutine dealloc_fline_starts_ctl(fln_prm)
 !
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-      type(fieldline_paramters), intent(inout) :: fline_prm
-!
-      integer(kind = kint) :: i
-!
-      do i = 1, num_fline
-        deallocate(fln_prm(i)%id_ele_grp_area_fline)
-!
-        deallocate(fln_prm(i)%id_gl_surf_start_fline)
-        deallocate(fln_prm(i)%iflag_outward_flux_fline)
-        deallocate(fln_prm(i)%xx_surf_start_fline)
-      end do
+      type(fieldline_paramter), intent(inout) :: fln_prm
 !
 !
-      deallocate(fline_prm%id_surf_start_fline)
+      deallocate(fln_prm%id_ele_grp_area_fline)
+!
+      deallocate(fln_prm%id_surf_start_fline)
+      deallocate(fln_prm%id_gl_surf_start_fline)
+      deallocate(fln_prm%iflag_outward_flux_fline)
+      deallocate(fln_prm%xx_surf_start_fline)
 !
       end subroutine dealloc_fline_starts_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_iflag_fline_used_ele(num_fline, fln_prm)
+      subroutine dealloc_iflag_fline_used_ele(fln_prm)
 !
-      integer(kind = kint), intent(in) :: num_fline
-      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
+      type(fieldline_paramter), intent(inout) :: fln_prm
 !
-      integer(kind = kint) :: i
 !
-      do i = 1, num_fline
-        deallocate(fln_prm(i)%iflag_fline_used_ele)
-      end do
+      deallocate(fln_prm%iflag_fline_used_ele)
 !
       end subroutine dealloc_iflag_fline_used_ele
 !

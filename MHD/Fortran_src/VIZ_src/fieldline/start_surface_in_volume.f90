@@ -48,14 +48,14 @@
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
-      type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
+      type(fieldline_paramter), intent(inout) :: fln_prm
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: ip
-      integer(kind = kint) :: ist_line, num_line
+      integer(kind = kint) :: num_line
 !
       real(kind = kreal) :: volume_local, total_volume, volume_start_l
 !
@@ -99,12 +99,11 @@
         write(my_rank+50,*)  'volume_start_l', volume_start_l
       end if
 !
-      ist_line = fline_prm%istack_each_field_line(i_fln-1) + 1
-      num_line = fline_prm%istack_each_field_line(i_fln) - fline_prm%istack_each_field_line(i_fln-1)
+      num_line = fline_prm%num_each_field_line(i_fln)
       if(iflag_debug .gt. 0) write(*,*) 'set_start_surface_in_domain'
       call set_start_surface_in_domain                                  &
      &   (ele, fln_src%num_line_local, volume_start_l, iflag_ele,       &
-     &    num_line, fline_prm%id_surf_start_fline(1,ist_line))
+     &    num_line, fln_prm%id_surf_start_fline)
 !
       deallocate(iflag_ele)
       call calypso_mpi_barrier

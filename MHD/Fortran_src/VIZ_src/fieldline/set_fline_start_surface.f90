@@ -4,12 +4,10 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine set_fline_start_surf(my_rank, i_fln,                 &
-!!     &          numnod, numele, numsurf, nnod_4_surf,                 &
-!!     &          ie_surf, isf_4_ele, iele_4_surf,                      &
-!!     &          fln_prm, fline_prm, fln_src, fln_tce)
+!!      subroutine set_fline_start_surf(my_rank, numnod, numele,        &
+!!     &          numsurf, nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf,&
+!!     &          fln_prm, fln_src, fln_tce)
 !!        type(fieldline_paramter), intent(in) :: fln_prm
-!!        type(fieldline_paramters), intent(in) :: fline_prm
 !!        type(each_fieldline_source), intent(in) :: fln_src
 !!        type(each_fieldline_trace), intent(inout) :: fln_tce
 !
@@ -28,10 +26,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fline_start_surf(my_rank, i_fln,                   &
-     &          numnod, numele, numsurf, nnod_4_surf,                   &
-     &          ie_surf, isf_4_ele, iele_4_surf,                        &
-     &          fln_prm, fline_prm, fln_src, fln_tce)
+      subroutine set_fline_start_surf(my_rank, numnod, numele,          &
+     &          numsurf, nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf,  &
+     &          fln_prm, fln_src, fln_tce)
 !
       use m_constants
       use m_geometry_constants
@@ -47,26 +44,20 @@
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
 !
-      integer(kind = kint), intent(in) :: i_fln
       type(fieldline_paramter), intent(in) :: fln_prm
-      type(fieldline_paramters), intent(in) :: fline_prm
       type(each_fieldline_source), intent(in) :: fln_src
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
-      integer(kind = kint)  :: i, iline, iele, isf_1ele, isurf
-      integer(kind = kint)  :: ist_line, inum1, inum2
+      integer(kind = kint)  :: i, iele, isf_1ele, isurf
+      integer(kind = kint)  :: inum1, inum2
       real(kind = kreal), parameter :: xi(2) = (/zero, zero/)
 !
 !
-      ist_line = fline_prm%istack_each_field_line(i_fln-1)
       do i = 1, fln_src%num_line_local
-        iline = i + ist_line
         inum1 = i + fln_tce%istack_current_fline(my_rank)
-        iele =     fline_prm%id_surf_start_fline(1,iline)
-        isf_1ele = fline_prm%id_surf_start_fline(2,iline)
-!        write(*,*) 'iline', my_rank, i, iline, inum1, &
-!     &              iele, isf_1ele, numnod, numsurf
+        iele =     fln_prm%id_surf_start_fline(1,i)
+        isf_1ele = fln_prm%id_surf_start_fline(2,i)
         isurf = abs(isf_4_ele(iele,isf_1ele))
 !
         fln_tce%xx_fline_start(1:3,inum1)                               &

@@ -188,9 +188,8 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 's_start_surface_4_fline'
-      call s_start_surface_4_fline                                      &
-     &   (i_fln, mesh%node, mesh%ele, ele_mesh%surf,                    &
-     &    fln_prm, fline_prm, fln_src, fln_tce)
+      call s_start_surface_4_fline(mesh%node, mesh%ele, ele_mesh%surf,  &
+     &    fln_prm, fln_src, fln_tce)
 !
       end subroutine s_set_fields_for_fieldline
 !

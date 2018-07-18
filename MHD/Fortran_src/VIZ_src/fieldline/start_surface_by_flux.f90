@@ -53,13 +53,13 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
-      type(fieldline_paramter), intent(in) :: fln_prm
+      type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(each_fieldline_source), intent(inout) :: fln_src
       type(each_fieldline_trace), intent(inout) :: fln_tce
 !
       integer(kind = kint) :: i, ip
-      integer(kind = kint) :: ist_line, num_line
+      integer(kind = kint) :: num_line
 !
       real(kind = kreal) :: tot_flux_start, tot_flux_start_l
       real(kind = kreal) :: abs_flux_start, abs_flux_start_l
@@ -133,17 +133,16 @@
      &                     flux_4_each_line
       call calypso_mpi_barrier
 !
-      ist_line = fline_prm%istack_each_field_line(i_fln-1) + 1
-      num_line = fline_prm%istack_each_field_line(i_fln) - fline_prm%istack_each_field_line(i_fln-1)
+      num_line = fline_prm%num_each_field_line(i_fln)
       if(num_line .gt. 0) then
         if(fln_prm%id_seed_distribution  .eq. iflag_no_random) then
           if(iflag_debug .gt. 0) write(*,*) 'start_surface_witout_random'
           call start_surface_witout_random(fln_src, abs_flux_start_l,   &
-     &        num_line, fline_prm%id_surf_start_fline(1,ist_line))
+     &        num_line, fln_prm%id_surf_start_fline)
         else
           if(iflag_debug .gt. 0) write(*,*) 'start_surface_by_random'
           call start_surface_by_random(fln_src, abs_flux_start_l,       &
-     &        num_line, fline_prm%id_surf_start_fline(1, ist_line))
+     &        num_line, fln_prm%id_surf_start_fline)
         end if
       end if
 !

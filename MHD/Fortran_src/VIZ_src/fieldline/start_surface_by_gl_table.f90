@@ -47,8 +47,8 @@
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
-      type(fieldline_paramter), intent(in) :: fln_prm
 !
+      type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(each_fieldline_source), intent(inout) :: fln_src
 !
@@ -126,7 +126,7 @@
       integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
       integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
 !
-      type(fieldline_paramter), intent(in) :: fln_prm
+      type(fieldline_paramter), intent(inout) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
@@ -135,7 +135,7 @@
       integer(kind = kint_gl) :: iele_g
 !
 !
-      icou = fline_prm%istack_each_field_line(i_fln-1)
+      icou = 0
       do inum = 1, fline_prm%num_each_field_line(i_fln)
         iele_g = fln_prm%id_gl_surf_start_fline(1,inum)
         do jgrp = 1, fln_prm%nele_grp_area_fline
@@ -147,8 +147,8 @@
             if(iele_g.eq.iele_global(jele)                              &
      &           .and. interior_ele(jele) .gt. 0) then
               icou = icou + 1
-              fline_prm%id_surf_start_fline(1,icou) = jele
-              fline_prm%id_surf_start_fline(2,icou)                     &
+              fln_prm%id_surf_start_fline(1,icou) = jele
+              fln_prm%id_surf_start_fline(2,icou)                       &
      &             = fln_prm%id_gl_surf_start_fline(2,inum)
               exit
             end if
