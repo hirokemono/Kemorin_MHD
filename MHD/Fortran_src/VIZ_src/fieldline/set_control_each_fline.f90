@@ -8,14 +8,14 @@
 !!     &          fln_prm, fline_prm, fline_src)
 !!      subroutine set_control_4_fline                                  &
 !!     &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld,            &
-!!     &          fln_prm, fline_prm, fline_src)
+!!     &          fln_prm, fline_prm, fln_src)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fline_ctl), intent(inout) :: fln
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(all_fieldline_source), intent(inout) :: fline_src
+!!        type(each_fieldline_source), intent(inout) :: fln_src
 !!      subroutine set_iflag_fline_used_ele(ele, ele_grp, fln_prm)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
@@ -152,9 +152,9 @@
      &        fln_prm%igrp_start_fline_surf_grp)
         end if
 !
-        call count_nsurf_for_starting                                   &
-     &     (i_fln, ele, sf_grp, fln_prm%igrp_start_fline_surf_grp,      &
-     &      fline_src)
+        fline_src%nele_start_grp(i_fln)                                 &
+     &     = count_nsurf_for_starting                                   &
+     &     (ele, sf_grp, fln_prm%igrp_start_fline_surf_grp)
 !
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(fln%seed_surface_ctl%num .gt. 0) then
@@ -177,7 +177,7 @@
 !
       subroutine set_control_4_fline                                    &
      &         (i_fln, fln, ele, ele_grp, sf_grp, nod_fld,              &
-     &          fln_prm, fline_prm, fline_src, fln_src)
+     &          fln_prm, fline_prm, fln_src)
 !
       use t_source_of_filed_line
       use set_components_flags
@@ -193,7 +193,6 @@
 !
       type(fieldline_paramter), intent(inout) :: fln_prm
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(all_fieldline_source), intent(inout) :: fline_src
       type(each_fieldline_source), intent(inout) :: fln_src
 !
       integer(kind = kint) :: i, ist, ncomp(1), ncomp_org(1)

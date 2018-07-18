@@ -5,12 +5,12 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine s_start_surface_by_gl_table                          &
-!!     &         (i_fln, ele, ele_grp, fln_prm, fline_prm, fline_src)
+!!     &         (i_fln, ele, ele_grp, fln_prm, fline_prm, fln_src)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(fieldline_paramter), intent(in) :: fln_prm
 !!        type(fieldline_paramters), intent(inout) :: fline_prm
-!!        type(all_fieldline_source), intent(inout) :: fline_src
+!!        type(each_fieldline_source), intent(inout) :: fln_src
 !
       module start_surface_by_gl_table
 !
@@ -37,7 +37,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_start_surface_by_gl_table                            &
-     &         (i_fln, ele, ele_grp, fln_prm, fline_prm, fline_src, fln_src)
+     &         (i_fln, ele, ele_grp, fln_prm, fline_prm, fln_src)
 !
       use extend_field_line
       use cal_field_on_surf_viz
@@ -50,7 +50,6 @@
       type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
-      type(all_fieldline_source), intent(inout) :: fline_src
       type(each_fieldline_source), intent(inout) :: fln_src
 !
 !
@@ -58,13 +57,11 @@
      &   = cnt_start_surface_by_gl_table                                &
      &   (i_fln, ele%numele, ele%iele_global,                           &
      &    ele%interior_ele, ele_grp%num_grp, ele_grp%num_item,          &
-     &    ele_grp%istack_grp, ele_grp%item_grp, fln_prm,                &
-     &    fline_prm, fline_src)
+     &    ele_grp%istack_grp, ele_grp%item_grp, fln_prm, fline_prm)
       call set_start_surface_by_gl_table                                &
      &     (i_fln, ele%numele, ele%iele_global,                         &
      &      ele%interior_ele, ele_grp%num_grp, ele_grp%num_item,        &
-     &      ele_grp%istack_grp, ele_grp%item_grp, fline_src,            &
-     &      fln_prm, fline_prm)
+     &      ele_grp%istack_grp, ele_grp%item_grp, fln_prm, fline_prm)
 !
       end subroutine s_start_surface_by_gl_table
 !
@@ -73,7 +70,7 @@
       integer(kind = kint) function cnt_start_surface_by_gl_table       &
      &         (i_fln,                                                  &
      &          numele, iele_global, interior_ele, num_mat, num_mat_bc, &
-     &          mat_istack, mat_item, fln_prm, fline_prm, fline_src)
+     &          mat_istack, mat_item, fln_prm, fline_prm)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
@@ -87,8 +84,6 @@
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(in) :: fline_prm
 !
-      type(all_fieldline_source), intent(in) :: fline_src
-!
       integer(kind = kint) :: inum, ist_grp, ied_grp
       integer(kind = kint) :: jgrp
       integer(kind = kint) :: icou, jnum, jele, jg, jst, jed
@@ -96,8 +91,8 @@
 !
 !
       icou = 0
-      ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
-      ied_grp = fline_src%istack_ele_start_grp(i_fln)
+      ist_grp = fline_prm%istack_each_field_line(i_fln-1) + 1
+      ied_grp = fline_prm%istack_each_field_line(i_fln)
       do inum = ist_grp, ied_grp
         iele_g = fline_prm%id_gl_surf_start_fline(1,inum)
         do jgrp = 1, fln_prm%nele_grp_area_fline
@@ -122,7 +117,7 @@
 !
       subroutine set_start_surface_by_gl_table(i_fln, numele,           &
      &          iele_global, interior_ele, num_mat, num_mat_bc,         &
-     &          mat_istack, mat_item, fline_src, fln_prm, fline_prm)
+     &          mat_istack, mat_item, fln_prm, fline_prm)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
@@ -134,7 +129,6 @@
       integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
       integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
 !
-      type(all_fieldline_source), intent(in) :: fline_src
       type(fieldline_paramter), intent(in) :: fln_prm
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
@@ -146,8 +140,8 @@
 !
 !
       icou = fline_prm%istack_each_field_line(i_fln-1)
-      ist_grp = fline_src%istack_ele_start_grp(i_fln-1) + 1
-      ied_grp = fline_src%istack_ele_start_grp(i_fln)
+      ist_grp = fline_prm%istack_each_field_line(i_fln-1) + 1
+      ied_grp = fline_prm%istack_each_field_line(i_fln)
       do inum = ist_grp, ied_grp
         iele_g = fline_prm%id_gl_surf_start_fline(1,inum)
         do jgrp = 1, fln_prm%nele_grp_area_fline

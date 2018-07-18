@@ -30,8 +30,6 @@
 !
 !
       type all_fieldline_source
-        integer(kind = kint) :: ntot_ele_start_grp
-        integer(kind = kint), allocatable :: istack_ele_start_grp(:)
         integer(kind = kint), allocatable :: nele_start_grp(:)
       end type all_fieldline_source
 !
@@ -76,10 +74,7 @@
 !
 !
       allocate(fline_src%nele_start_grp(num_fline))
-      allocate(fline_src%istack_ele_start_grp(0:num_fline))
-!
       fline_src%nele_start_grp =       0
-      fline_src%istack_ele_start_grp = 0
 !
       end subroutine alloc_local_start_grp_num
 !
@@ -182,7 +177,6 @@
 !
 !
 !      deallocate(fline_src%nele_start_grp)
-!      deallocate(fline_src%istack_ele_start_grp)
       deallocate(fln_src%iele_start_item, fln_src%flux_start)
 !
       end subroutine dealloc_local_start_grp_item

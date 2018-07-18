@@ -5,11 +5,12 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine set_local_field_4_fline                              &
-!!     &       (num_fline, node, nod_fld, fln_prm, fline_src)
+!!     &         (num_fline, node, nod_fld, fln_prm, fln_src)
 !!        type(node_data), intent(in) :: node
 !!        type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
-!!      subroutine count_nsurf_for_starting                             &
-!!     &         (i_fln, ele, sf_grp, igrp_seed, fline_src)
+!!        type(each_fieldline_source), intent(inout):: fln_src(num_fline)
+!!      integer(kind = kint) function count_nsurf_for_starting          &
+!!     &                            (ele, sf_grp, igrp_seed)
 !!      subroutine set_isurf_for_starting                               &
 !!     &         (ele, sf_grp, igrp_seed, fln_src)
 !!        type(element_data), intent(in) :: ele
@@ -50,7 +51,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_local_field_4_fline                                &
-     &       (num_fline, node, nod_fld, fln_prm, fline_src, fln_src)
+     &         (num_fline, node, nod_fld, fln_prm, fln_src)
 !
       use convert_components_4_viz
 !
@@ -59,7 +60,6 @@
       type(phys_data), intent(in) :: nod_fld
       type(fieldline_paramter), intent(in) :: fln_prm(num_fline)
 !
-      type(all_fieldline_source), intent(inout) :: fline_src
       type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
 !
       integer(kind = kint) :: i_fln
@@ -94,19 +94,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_nsurf_for_starting                               &
-     &         (i_fln, ele, sf_grp, igrp_seed, fline_src)
+      integer(kind = kint) function count_nsurf_for_starting            &
+     &                            (ele, sf_grp, igrp_seed)
 !
-      integer(kind = kint), intent(in) :: i_fln
       integer(kind = kint), intent(in) :: igrp_seed
 !
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
 !
-      type(all_fieldline_source), intent(inout) :: fline_src
-!
       integer(kind = kint) :: isurf, iele, icou, ist, ied
-!
 !
 !
       icou = 0
@@ -117,13 +113,9 @@
         if(ele%interior_ele(iele) .ne. izero) icou = icou + 1
       end do
 !
-      fline_src%nele_start_grp(i_fln) = icou
-      fline_src%istack_ele_start_grp(i_fln)                             &
-     &             = fline_src%istack_ele_start_grp(i_fln-1)            &
-     &              + fline_src%nele_start_grp(i_fln)
+      count_nsurf_for_starting = icou
 !
-!
-      end subroutine count_nsurf_for_starting
+      end function count_nsurf_for_starting
 !
 !  ---------------------------------------------------------------------
 !
@@ -191,8 +183,7 @@
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         if(iflag_debug .gt. 0) write(*,*) 's_start_surface_by_gl_table'
         call s_start_surface_by_gl_table                                &
-     &     (i_fln, mesh%ele, group%ele_grp, fln_prm,                    &
-     &      fline_prm, fline_src, fln_src)
+     &     (i_fln, mesh%ele, group%ele_grp, fln_prm, fline_prm, fln_src)
       else if(fln_prm%id_fline_seed_type                                &
      &                           .eq. iflag_spray_in_domain) then
       end if

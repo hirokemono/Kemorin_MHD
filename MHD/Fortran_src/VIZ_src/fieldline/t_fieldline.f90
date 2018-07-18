@@ -125,7 +125,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
       call set_local_field_4_fline                                      &
      &   (fline%num_fline, femmesh%mesh%node, nod_fld,                  &
-     &    fline%fln_prm, fline%fline_src, fline%fln_src)
+     &    fline%fln_prm, fline%fln_src)
 !
       do i_fln = 1, fline%num_fline
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
