@@ -194,7 +194,7 @@
       type(fieldline_paramters), intent(inout) :: fline_prm
       type(each_fieldline_source), intent(inout) :: fln_src
 !
-      integer(kind = kint) :: i, ist, ncomp(1), ncomp_org(1)
+      integer(kind = kint) :: i, ncomp(1), ncomp_org(1)
       integer(kind = kint) :: ifield_tmp(1), icomp_tmp(1)
       character(len=kchara) :: tmpfield(1)
       character(len=kchara) :: tmpcomp(1)
@@ -231,15 +231,14 @@
      &    fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline)
 !
 !
-      ist = fline_prm%istack_each_field_line(i_fln-1)
       if(fln_prm%id_fline_seed_type .eq. iflag_surface_group) then
         call set_isurf_for_starting                                     &
      &     (ele, sf_grp, fln_prm%igrp_start_fline_surf_grp, fln_src)
       else if(fln_prm%id_fline_seed_type .eq. iflag_surface_list) then
         do i = 1, fline_prm%num_each_field_line(i_fln)
-          fline_prm%id_gl_surf_start_fline(1,i+ist)                     &
+          fln_prm%id_gl_surf_start_fline(1,i)                           &
      &          = fln%seed_surface_ctl%int1(i)
-          fline_prm%id_gl_surf_start_fline(2,i+ist)                     &
+          fln_prm%id_gl_surf_start_fline(2,i)                           &
      &          = fln%seed_surface_ctl%int2(i)
         end do
       else if(fln_prm%id_fline_seed_type .eq. iflag_position_list) then

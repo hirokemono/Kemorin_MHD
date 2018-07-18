@@ -84,17 +84,14 @@
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(in) :: fline_prm
 !
-      integer(kind = kint) :: inum, ist_grp, ied_grp
-      integer(kind = kint) :: jgrp
+      integer(kind = kint) :: inum, jgrp
       integer(kind = kint) :: icou, jnum, jele, jg, jst, jed
       integer(kind = kint_gl) :: iele_g
 !
 !
       icou = 0
-      ist_grp = fline_prm%istack_each_field_line(i_fln-1) + 1
-      ied_grp = fline_prm%istack_each_field_line(i_fln)
-      do inum = ist_grp, ied_grp
-        iele_g = fline_prm%id_gl_surf_start_fline(1,inum)
+      do inum = 1, fline_prm%num_each_field_line(i_fln)
+        iele_g = fln_prm%id_gl_surf_start_fline(1,inum)
         do jgrp = 1, fln_prm%nele_grp_area_fline
           jg = fln_prm%id_ele_grp_area_fline(jgrp)
           jst = mat_istack(jg-1) + 1
@@ -133,17 +130,14 @@
 !
       type(fieldline_paramters), intent(inout) :: fline_prm
 !
-      integer(kind = kint) :: inum, ist_grp, ied_grp
-      integer(kind = kint) :: jgrp
+      integer(kind = kint) :: inum, jgrp
       integer(kind = kint) :: icou, jnum, jele, jg, jst, jed
       integer(kind = kint_gl) :: iele_g
 !
 !
       icou = fline_prm%istack_each_field_line(i_fln-1)
-      ist_grp = fline_prm%istack_each_field_line(i_fln-1) + 1
-      ied_grp = fline_prm%istack_each_field_line(i_fln)
-      do inum = ist_grp, ied_grp
-        iele_g = fline_prm%id_gl_surf_start_fline(1,inum)
+      do inum = 1, fline_prm%num_each_field_line(i_fln)
+        iele_g = fln_prm%id_gl_surf_start_fline(1,inum)
         do jgrp = 1, fln_prm%nele_grp_area_fline
           jg = fln_prm%id_ele_grp_area_fline(jgrp)
           jst = mat_istack(jg-1) + 1
@@ -155,7 +149,7 @@
               icou = icou + 1
               fline_prm%id_surf_start_fline(1,icou) = jele
               fline_prm%id_surf_start_fline(2,icou)                     &
-     &             = fline_prm%id_gl_surf_start_fline(2,inum)
+     &             = fln_prm%id_gl_surf_start_fline(2,inum)
               exit
             end if
           end do

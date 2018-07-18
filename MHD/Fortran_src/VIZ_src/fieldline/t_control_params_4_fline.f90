@@ -63,6 +63,9 @@
 !>        Element flag to use in fieldline
         integer(kind = kint), allocatable :: iflag_fline_used_ele(:)
 !
+!>        global surface ID for seed points
+        integer(kind = kint), allocatable                              &
+     &                       :: id_gl_surf_start_fline(:,:)
 !>        outward flux flag
         integer(kind = kint), allocatable                              &
      &                       :: iflag_outward_flux_fline(:)
@@ -75,7 +78,6 @@
         integer(kind = kint), allocatable :: istack_each_field_line(:)
         integer(kind = kint) :: ntot_each_field_line
         integer(kind = kint), allocatable :: id_surf_start_fline(:,:)
-        integer(kind = kint), allocatable :: id_gl_surf_start_fline(:,:)
       end type fieldline_paramters
 !
 !
@@ -152,10 +154,12 @@
         if(num .gt. 0) fln_prm(i)%id_ele_grp_area_fline = 0
 !
         num = fline_prm%num_each_field_line(i)
+        allocate(fln_prm(i)%id_gl_surf_start_fline(2,num))
         allocate(fln_prm(i)%iflag_outward_flux_fline(num))
         allocate(fln_prm(i)%xx_surf_start_fline(3,num))
 !
         if(num .gt. 0) then
+          fln_prm(i)%id_gl_surf_start_fline =   0
           fln_prm(i)%iflag_outward_flux_fline = 0
           fln_prm(i)%xx_surf_start_fline = 0.0d0
         end if
@@ -163,11 +167,9 @@
 !
       num = fline_prm%ntot_each_field_line
       allocate(fline_prm%id_surf_start_fline(2,num))
-      allocate(fline_prm%id_gl_surf_start_fline(2,num))
 !
       if(num .gt. 0) then
         fline_prm%id_surf_start_fline =   0
-        fline_prm%id_gl_surf_start_fline = 0
       end if
 !
       end subroutine alloc_fline_starts_ctl
@@ -220,13 +222,13 @@
       do i = 1, num_fline
         deallocate(fln_prm(i)%id_ele_grp_area_fline)
 !
+        deallocate(fln_prm(i)%id_gl_surf_start_fline)
         deallocate(fln_prm(i)%iflag_outward_flux_fline)
         deallocate(fln_prm(i)%xx_surf_start_fline)
       end do
 !
 !
       deallocate(fline_prm%id_surf_start_fline)
-      deallocate(fline_prm%id_gl_surf_start_fline)
 !
       end subroutine dealloc_fline_starts_ctl
 !
@@ -251,10 +253,10 @@
       subroutine check_control_params_fline(i_fln, fln_prm, fline_prm)
 !
       integer(kind = kint), intent(in) :: i_fln
-      integer(kind = kint) :: i, ist
-!
       type(fieldline_paramter), intent(in) :: fln_prm
       type(fieldline_paramters), intent(in) :: fline_prm
+!
+      integer(kind = kint) :: i
 !
 !
         write(*,*) 'field line parameters for No.', i_fln
@@ -284,9 +286,8 @@
      &              fln_prm%igrp_start_fline_surf_grp
         else if(fln_prm%id_fline_seed_type                              &
      &                          .eq. iflag_surface_list) then
-          ist = fline_prm%istack_each_field_line(i_fln-1)
           do i = 1, fline_prm%num_each_field_line(i_fln)
-            write(*,*) i, fline_prm%id_gl_surf_start_fline(1:2,ist+i)
+            write(*,*) i, fln_prm%id_gl_surf_start_fline(1:2,i)
           end do
         else if(fln_prm%id_fline_seed_type                              &
      &                          .eq. iflag_position_list) then
