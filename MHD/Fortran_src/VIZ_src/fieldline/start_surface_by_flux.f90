@@ -134,7 +134,7 @@
       call calypso_mpi_barrier
 !
       ist_line = fline_prm%istack_each_field_line(i_fln-1) + 1
-      num_line = fline_prm%istack_each_field_line(i_fln) - ist_line
+      num_line = fline_prm%istack_each_field_line(i_fln) - fline_prm%istack_each_field_line(i_fln-1)
       if(num_line .gt. 0) then
         if(fln_prm%id_seed_distribution  .eq. iflag_no_random) then
           if(iflag_debug .gt. 0) write(*,*) 'start_surface_witout_random'

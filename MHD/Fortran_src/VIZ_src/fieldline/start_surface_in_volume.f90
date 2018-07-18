@@ -100,7 +100,7 @@
       end if
 !
       ist_line = fline_prm%istack_each_field_line(i_fln-1) + 1
-      num_line = fline_prm%istack_each_field_line(i_fln) - ist_line
+      num_line = fline_prm%istack_each_field_line(i_fln) - fline_prm%istack_each_field_line(i_fln-1)
       if(iflag_debug .gt. 0) write(*,*) 'set_start_surface_in_domain'
       call set_start_surface_in_domain                                  &
      &   (ele, fln_src%num_line_local, volume_start_l, iflag_ele,       &
