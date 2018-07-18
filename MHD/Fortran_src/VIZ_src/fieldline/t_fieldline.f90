@@ -66,7 +66,7 @@
       type(fieldline_controls), intent(inout) :: fline_ctls
       type(fieldline_module), intent(inout) :: fline
 !
-      integer(kind = kint) ::i
+      integer(kind = kint) :: i_fln
 !
 !
       fline%num_fline = fline_ctls%num_fline_ctl
@@ -76,19 +76,24 @@
       allocate(fline%fln_src(fline%num_fline))
       allocate(fline%fln_tce(fline%num_fline))
 !
-      if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
-      call s_set_fline_control(femmesh%mesh, femmesh%group, nod_fld,    &
-     &    fline%num_fline, fline_ctls, fline%fln_prm, fline%fln_src)
+      if (iflag_debug.eq.1) write(*,*) 'read_controls_4_fline'
+      call read_controls_4_fline(fline%num_fline, fline_ctls)
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_local_data_4_fline'
+      do i_fln = 1, fline%num_fline
+        call s_set_fline_control(femmesh%mesh, femmesh%group, nod_fld,  &
+     &      fline_ctls%fline_ctl_struct(i_fln), fline%fln_prm(i_fln),   &
+     &      fline%fln_src(i_fln))
+      end do
 !
-      do i = 1, fline%num_fline
+      call dealloc_fline_fhead_ctl(fline_ctls)
+!
+      do i_fln = 1, fline%num_fline
         call alloc_local_data_4_fline                                   &
-     &     (femmesh%mesh%node, fline%fln_src(i))
+     &     (femmesh%mesh%node, fline%fln_src(i_fln))
         call alloc_start_point_fline                                    &
-     &     (fline%fln_prm(i)%num_each_field_line, fline%fln_src(i))
+     &     (fline%fln_prm(i_fln)%num_each_field_line, fline%fln_src(i_fln))
         call alloc_num_gl_start_fline(nprocs,                           &
-     &      fline%fln_prm(i)%num_each_field_line, fline%fln_tce(i))
+     &      fline%fln_prm(i_fln)%num_each_field_line, fline%fln_tce(i_fln))
       end do
 !
       call alloc_local_fline(fline%fline_lc)
@@ -120,11 +125,10 @@
       if (fline%num_fline.le.0 .or. istep_fline .le. 0) return
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
-      call set_local_field_4_fline                                      &
-     &   (fline%num_fline, femmesh%mesh%node, nod_fld,                  &
-     &    fline%fln_prm, fline%fln_src)
-!
       do i_fln = 1, fline%num_fline
+        call set_local_field_4_fline(femmesh%mesh%node, nod_fld,        &
+     &    fline%fln_prm(i_fln), fline%fln_src(i_fln))
+!
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
         call s_set_fields_for_fieldline                                 &
      &     (femmesh%mesh, ele_mesh, femmesh%group,                      &

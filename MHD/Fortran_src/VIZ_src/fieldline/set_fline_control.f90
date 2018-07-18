@@ -3,14 +3,16 @@
 !
 !     Written by H. Matsui on Aug., 2011
 !
+!!      subroutine read_controls_4_fline(num_fline, fline_ctls)
 !!      subroutine s_set_fline_control(mesh, group, nod_fld,            &
-!!     &          num_fline, fline_ctls, fln_prm, fln_src)
+!!     &          fline_ctl_struct, fln_prm, fln_src)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(fieldline_controls), intent(inout) :: fline_ctls
-!!        type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-!!        type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
+!!        type(fline_ctl), intent(inout)  :: fline_ctl_struct
+!!        type(fieldline_paramter), intent(inout) :: fln_prm
+!!        type(each_fieldline_source), intent(inout) :: fln_src
 !
       module set_fline_control
 !
@@ -33,22 +35,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_fline_control(mesh, group, nod_fld,              &
-     &          num_fline, fline_ctls, fln_prm, fln_src)
+      subroutine read_controls_4_fline(num_fline, fline_ctls)
 !
       use t_control_data_flines
-      use t_control_params_4_fline
-      use t_source_of_filed_line
-      use set_control_each_fline
 !
       integer(kind = kint), intent(in) :: num_fline
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) :: group
-      type(phys_data), intent(in) :: nod_fld
 !
       type(fieldline_controls), intent(inout) :: fline_ctls
-      type(fieldline_paramter), intent(inout) :: fln_prm(num_fline)
-      type(each_fieldline_source), intent(inout) :: fln_src(num_fline)
 !
       integer(kind = kint) :: i
 !
@@ -61,33 +54,47 @@
      &      fline_ctls%fline_ctl_struct(i))
       end do
 !
-      do i = 1, num_fline
-        call count_control_4_fline(fline_ctls%fline_ctl_struct(i),      &
-     &      mesh%ele, group%ele_grp, group%surf_grp,                    &
-     &      fln_prm(i), fln_src(i))
-      end do
+      end subroutine read_controls_4_fline
 !
-      do i = 1, num_fline
-        call alloc_iflag_fline_used_ele(mesh%ele, fln_prm(i))
-        call alloc_fline_starts_ctl(fln_prm(i))
-        call alloc_local_start_grp_item(fln_src(i))
-      end do
+!   --------------------------------------------------------------------
 !
-      do i = 1, num_fline
-        call set_control_4_fline(fline_ctls%fline_ctl_struct(i),        &
-     &      mesh%ele, group%ele_grp, group%surf_grp, nod_fld,           &
-     &      fln_prm(i), fln_src(i))
-        call set_iflag_fline_used_ele                                   &
-     &     (mesh%ele, group%ele_grp, fln_prm(i))
-        call deallocate_cont_dat_fline(fline_ctls%fline_ctl_struct(i))
+      subroutine s_set_fline_control(mesh, group, nod_fld,              &
+     &          fline_ctl_struct, fln_prm, fln_src)
 !
-        if(iflag_debug .gt. 0) then
-          write(*,*) 'field line parameters for No.', i
-          call check_control_params_fline(fln_prm(i))
-        end if
-      end do
+      use t_control_data_flines
+      use t_control_params_4_fline
+      use t_source_of_filed_line
+      use set_control_each_fline
 !
-      call dealloc_fline_fhead_ctl(fline_ctls)
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
+      type(phys_data), intent(in) :: nod_fld
+!
+      type(fline_ctl), intent(inout)  :: fline_ctl_struct
+      type(fieldline_paramter), intent(inout) :: fln_prm
+      type(each_fieldline_source), intent(inout) :: fln_src
+!
+      integer(kind = kint) :: i
+!
+!
+      call count_control_4_fline(fline_ctl_struct,                      &
+     &    mesh%ele, group%ele_grp, group%surf_grp, fln_prm, fln_src)
+!
+      call alloc_iflag_fline_used_ele(mesh%ele, fln_prm)
+      call alloc_fline_starts_ctl(fln_prm)
+      call alloc_local_start_grp_item(fln_src)
+!
+      call set_control_4_fline(fline_ctl_struct,                        &
+     &    mesh%ele, group%ele_grp, group%surf_grp, nod_fld,             &
+     &    fln_prm, fln_src)
+      call set_iflag_fline_used_ele                                     &
+     &   (mesh%ele, group%ele_grp, fln_prm)
+      call deallocate_cont_dat_fline(fline_ctl_struct)
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'field line parameters for No.', i
+        call check_control_params_fline(fln_prm)
+      end if
 !
       end subroutine s_set_fline_control
 !
