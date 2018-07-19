@@ -11,13 +11,11 @@ SOURCES = $(shell ls *.f90)
 
 MOD_GEN_TABLE = \
 main_gen_itp_tbl.o \
-analyzer_gen_table.o \
-input_control_gen_table.o
+analyzer_gen_table.o
 
 MOD_GEN_ELE_TABLE = \
 main_gen_ele_itp_tbl.o \
-analyzer_gen_ele_table.o \
-input_control_gen_table.o
+analyzer_gen_ele_table.o
 
 
 #

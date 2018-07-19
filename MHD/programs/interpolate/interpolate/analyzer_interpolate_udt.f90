@@ -21,8 +21,11 @@
       use t_ucd_data
       use t_interpolate_table
       use t_IO_step_parameter
+      use t_ctl_data_gen_table
 !
       implicit none
+!
+      type(ctl_data_gen_table), save :: gtbl_ctl1
 !
       type(time_step_param), save :: t_ITP
 !
@@ -52,7 +55,6 @@
 !
       subroutine initialize_itp_udt
 !
-      use m_ctl_data_gen_table
       use m_ctl_params_4_gen_table
 !
       use init_nodal_field_address
@@ -69,11 +71,12 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &    new_femmesh, new_ele_mesh, itp_udt, t_ITP, ierr)
+      call s_input_control_interpolate(gtbl_ctl1,                       &
+     &    org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,         &
+     &    itp_udt, t_ITP, ierr)
 !
-      call set_ctl_interpolate_udt(fld_gt_ctl, nod_fld_ITP)
-      call dealloc_phys_control(fld_gt_ctl)
+      call set_ctl_interpolate_udt(gtbl_ctl1%fld_gt_ctl, nod_fld_ITP)
+      call dealloc_phys_control(gtbl_ctl1%fld_gt_ctl)
 !
 !     --------------------- 
 !

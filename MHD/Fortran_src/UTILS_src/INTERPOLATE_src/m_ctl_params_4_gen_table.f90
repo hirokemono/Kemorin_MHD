@@ -3,9 +3,10 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine allocate_search_param
-!      subroutine deallocate_search_param
-!      subroutine set_ctl_params_4_gen_table
+!!      subroutine allocate_search_param
+!!      subroutine deallocate_search_param
+!!      subroutine set_ctl_params_4_gen_table(gtbl_ctl)
+!!        type(ctl_data_gen_table), intent(in) :: gtbl_ctl
 !
       module m_ctl_params_4_gen_table
 !
@@ -81,34 +82,36 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_gen_table
+      subroutine set_ctl_params_4_gen_table(gtbl_ctl)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use m_2nd_pallalel_vector
-      use m_ctl_data_gen_table
       use m_search_bolck_4_itp
       use m_file_format_switch
       use m_default_file_prefix
+      use t_ctl_data_gen_table
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
       use skip_comment_f
 !
+      type(ctl_data_gen_table), intent(in) :: gtbl_ctl
 !
-      call turn_off_debug_flag_by_ctl(my_rank, src_plt)
-      call set_control_smp_def(my_rank, src_plt)
 !
-      call set_control_mesh_def(src_plt, itp_org_mesh_file)
+      call turn_off_debug_flag_by_ctl(my_rank, gtbl_ctl%src_plt)
+      call set_control_smp_def(my_rank, gtbl_ctl%src_plt)
 !
-      if (table_head_ctl%iflag .ne. 0) then
-        table_file_head = table_head_ctl%charavalue
+      call set_control_mesh_def(gtbl_ctl%src_plt, itp_org_mesh_file)
+!
+      if (gtbl_ctl%table_head_ctl%iflag .ne. 0) then
+        table_file_head = gtbl_ctl%table_head_ctl%charavalue
       end if
 !
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, dst_plt, itp_dest_mesh_file)
+     &   (def_new_mesh_head, gtbl_ctl%dst_plt, itp_dest_mesh_file)
       call choose_file_format                                           &
-     &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
+     &   (gtbl_ctl%fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
       if (iflag_debug.eq.1)  then
         write(*,*) 'np_smp', np_smp, np_smp
@@ -121,15 +124,15 @@
 !
 !
       ndomain_org = 1
-      if (src_plt%ndomain_ctl%iflag .gt. 0) then
-        ndomain_org = src_plt%ndomain_ctl%intvalue
+      if (gtbl_ctl%src_plt%ndomain_ctl%iflag .gt. 0) then
+        ndomain_org = gtbl_ctl%src_plt%ndomain_ctl%intvalue
       end if
 !
       nprocs_2nd = ndomain_org
       if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
 !
-      if (dst_plt%ndomain_ctl%iflag .gt. 0) then
-        ndomain_dest = dst_plt%ndomain_ctl%intvalue
+      if (gtbl_ctl%dst_plt%ndomain_ctl%iflag .gt. 0) then
+        ndomain_dest = gtbl_ctl%dst_plt%ndomain_ctl%intvalue
       else
         ndomain_dest = 1
       end if
@@ -141,8 +144,9 @@
       end if
 !
 !
-      if (reverse_element_table_ctl%iflag .ne. 0                        &
-     &    .and. yes_flag(reverse_element_table_ctl%charavalue)) then
+      if (gtbl_ctl%reverse_element_table_ctl%iflag .ne. 0               &
+     &   .and. yes_flag(gtbl_ctl%reverse_element_table_ctl%charavalue)  &
+     & ) then
         iflag_reverse_itp_tbl = 1
       end if
 !
@@ -152,27 +156,27 @@
 !
       num_xyz_block(1:3) = 1
       if (id_ele_hash_type .eq. 1) then
-        if(num_radial_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(1) = num_radial_divide_ctl%intvalue
+        if(gtbl_ctl%num_radial_divide_ctl%iflag .gt. 0) then
+          num_xyz_block(1) = gtbl_ctl%num_radial_divide_ctl%intvalue
         end if
-        if(num_theta_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(2) = num_theta_divide_ctl%intvalue
+        if(gtbl_ctl%num_theta_divide_ctl%iflag .gt. 0) then
+          num_xyz_block(2) = gtbl_ctl%num_theta_divide_ctl%intvalue
         end if
-        if(num_phi_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(3) = num_phi_divide_ctl%intvalue
+        if(gtbl_ctl%num_phi_divide_ctl%iflag .gt. 0) then
+          num_xyz_block(3) = gtbl_ctl%num_phi_divide_ctl%intvalue
         end if
         if (iflag_debug.eq.1) then
           write(*,*) 'num_xyz_block',  num_xyz_block
         end if
       else
-        if(num_x_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(1) = num_x_divide_ctl%intvalue
+        if(gtbl_ctl%num_x_divide_ctl%iflag .gt. 0) then
+          num_xyz_block(1) = gtbl_ctl%num_x_divide_ctl%intvalue
         end if
-        if(num_y_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(2) = num_y_divide_ctl%intvalue
+        if(gtbl_ctl%num_y_divide_ctl%iflag .gt. 0) then
+          num_xyz_block(2) = gtbl_ctl%num_y_divide_ctl%intvalue
         end if
-        if(num_z_divide_ctl%iflag .gt. 0) then
-          num_xyz_block(3) = num_z_divide_ctl%intvalue
+        if(gtbl_ctl%num_z_divide_ctl%iflag .gt. 0) then
+          num_xyz_block(3) = gtbl_ctl%num_z_divide_ctl%intvalue
         end if
       end if
 !
@@ -182,9 +186,11 @@
       end if
 !
 !
-      if(itr_refine_ctl%iflag .gt. 0) maxitr = itr_refine_ctl%intvalue
-      if(eps_refine_ctl%iflag .gt. 0) then
-        eps_iter = eps_refine_ctl%realvalue
+      if(gtbl_ctl%itr_refine_ctl%iflag .gt. 0) then
+        maxitr = gtbl_ctl%itr_refine_ctl%intvalue
+      end if
+      if(gtbl_ctl%eps_refine_ctl%iflag .gt. 0) then
+        eps_iter = gtbl_ctl%eps_refine_ctl%realvalue
       end if
 !
       if (iflag_debug.eq.1)  then
@@ -192,18 +198,16 @@
         write(*,*) 'eps_iter ', eps_iter
       end if
 !
-      num_search_times = eps_4_itp_ctl%num
+      num_search_times = gtbl_ctl%eps_4_itp_ctl%num
       call allocate_search_param
 !
       if (num_search_times .gt. 0) then
         i_search_sleeve(1:num_search_times)                             &
-     &      = eps_4_itp_ctl%ivec(1:num_search_times)
+     &      = gtbl_ctl%eps_4_itp_ctl%ivec(1:num_search_times)
         search_error_level(1:num_search_times)                          &
-     &      = eps_4_itp_ctl%vect(1:num_search_times)
+     &      = gtbl_ctl%eps_4_itp_ctl%vect(1:num_search_times)
 !
       end if
-!
-      call dealloc_control_array_i_r(eps_4_itp_ctl)
 !
       if (iflag_debug.eq.1)  then
         write(*,*) 'num_search_times ', num_search_times

@@ -1,5 +1,5 @@
-!>@file   m_ctl_data_gen_table.f90
-!!@brief  module m_ctl_data_gen_table
+!>@file   t_ctl_data_gen_table.f90
+!!@brief  module t_ctl_data_gen_table
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2006
@@ -7,14 +7,17 @@
 !>@brief Structure for reading parameters to generate interpolate table
 !!
 !!@verbatim
-!!      subroutine read_control_4_gen_itp_table
-!!      subroutine read_control_4_interpolate
-!!      subroutine read_control_4_distribute_itp
+!!      subroutine read_control_4_gen_itp_table(gtbl_ctl)
+!!      subroutine read_control_4_interpolate(gtbl_ctl)
+!!      subroutine read_control_4_distribute_itp(gtbl_ctl)
+!!
+!!      subroutine dealloc_ctl_data_gen_table(gtbl_ctl)
+!!        type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !!@endverbatim
 !
 !     required module for 3rd level
 !
-      module m_ctl_data_gen_table
+      module t_ctl_data_gen_table
 !
       use m_precision
 !
@@ -40,58 +43,60 @@
      &                 :: fname_dist_itp_ctl = "ctl_distribute_itp"
 !
 !
-!>      Structure for original mesh file controls
-      type(platform_data_control), save :: src_plt
-!>      Structure for target mesh file controls
-      type(platform_data_control), save :: dst_plt
+      type ctl_data_gen_table
+!>        Structure for original mesh file controls
+        type(platform_data_control) :: src_plt
+!>        Structure for target mesh file controls
+        type(platform_data_control) :: dst_plt
 !
-!>      Structure for field information control
-      type(field_control), save :: fld_gt_ctl
-!>      Structure for time stepping control
-      type(time_data_control), save :: t_gt_ctl
+!>        Structure for field information control
+        type(field_control) :: fld_gt_ctl
+!>        Structure for time stepping control
+        type(time_data_control) :: t_gt_ctl
 !
-!>      file prefix for interpolation table
-      type(read_character_item), save :: table_head_ctl
+!>        file prefix for interpolation table
+        type(read_character_item) :: table_head_ctl
 !
-!>      file format for interpolation table
-      type(read_character_item), save :: fmt_itp_table_file_ctl
+!>        file format for interpolation table
+        type(read_character_item) :: fmt_itp_table_file_ctl
 !
-!>      file prefix for interpolation table
-      type(read_character_item), save :: itp_node_head_ctl
+!>        file prefix for interpolation table
+        type(read_character_item) :: itp_node_head_ctl
 !
-!>      switch for element interpolation table
-      type(read_character_item), save :: reverse_element_table_ctl
+!>        switch for element interpolation table
+        type(read_character_item) :: reverse_element_table_ctl
 !
-!>      file prefix for single interpolation table
-      type(read_character_item), save :: single_itp_tbl_head_ctl
+!>        file prefix for single interpolation table
+        type(read_character_item) :: single_itp_tbl_head_ctl
 !
-!>      Structure for element hash type
-      type(read_character_item), save :: ele_hash_type_ctl
+!>        Structure for element hash type
+        type(read_character_item) :: ele_hash_type_ctl
 !
-!>      Structure for element grouping in radial direction
-      type(read_integer_item), save :: num_radial_divide_ctl
-!>      Structure for element grouping in meridional direction
-      type(read_integer_item), save :: num_theta_divide_ctl
-!>      Structure for element grouping in zonal direction
-      type(read_integer_item), save :: num_phi_divide_ctl
+!>        Structure for element grouping in radial direction
+        type(read_integer_item) :: num_radial_divide_ctl
+!>        Structure for element grouping in meridional direction
+        type(read_integer_item) :: num_theta_divide_ctl
+!>        Structure for element grouping in zonal direction
+        type(read_integer_item) :: num_phi_divide_ctl
 !
-!>      Structure for element grouping in x direction
-      type(read_integer_item), save :: num_x_divide_ctl
-!>      Structure for element grouping in y direction
-      type(read_integer_item), save :: num_y_divide_ctl
-!>      Structure for element grouping in z direction
-      type(read_integer_item), save :: num_z_divide_ctl
+!>        Structure for element grouping in x direction
+        type(read_integer_item) :: num_x_divide_ctl
+!>        Structure for element grouping in y direction
+        type(read_integer_item) :: num_y_divide_ctl
+!>        Structure for element grouping in z direction
+        type(read_integer_item) :: num_z_divide_ctl
 !
-!>      Structure for error torrance for refine interpolation
-!!@n      eps_4_itp_ctl%ivec:  level for interpolation
-!!@n      eps_4_itp_ctl%vect:  Error torrance for interpolation
-      type(ctl_array_ir), save :: eps_4_itp_ctl
+!>        Structure for error torrance for refine interpolation
+!!@n        eps_4_itp_ctl%ivec:  level for interpolation
+!!@n        eps_4_itp_ctl%vect:  Error torrance for interpolation
+        type(ctl_array_ir) :: eps_4_itp_ctl
 !
-!>      Structure for maximum iteration counts
-      type(read_integer_item), save :: itr_refine_ctl
+!>        Structure for maximum iteration counts
+        type(read_integer_item) :: itr_refine_ctl
 !
-!>      Structure for error torrance
-      type(read_real_item), save :: eps_refine_ctl
+!>        Structure for error torrance
+        type(read_real_item) :: eps_refine_ctl
+      end type ctl_data_gen_table
 !
 !
 !
@@ -202,14 +207,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_gen_itp_table
+      subroutine read_control_4_gen_itp_table(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
 !
       ctl_file_code = table_ctl_file_code
       open(ctl_file_code, file=fname_table_ctl, status='old')
 !
       call load_ctl_label_and_line
-      call read_const_itp_tbl_ctl_data
+      call read_const_itp_tbl_ctl_data(gtbl_ctl)
 !
       close(ctl_file_code)
 !
@@ -217,14 +224,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_interpolate
+      subroutine read_control_4_interpolate(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
 !
       ctl_file_code = table_ctl_file_code
       open(ctl_file_code, file=fname_itp_ctl, status='old')
 !
       call load_ctl_label_and_line
-      call read_const_itp_tbl_ctl_data
+      call read_const_itp_tbl_ctl_data(gtbl_ctl)
 !
       close(ctl_file_code)
 !
@@ -232,23 +241,55 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_distribute_itp
+      subroutine read_control_4_distribute_itp(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
 !
       ctl_file_code = table_ctl_file_code
       open(ctl_file_code, file=fname_dist_itp_ctl, status='old')
 !
       call load_ctl_label_and_line
-      call read_control_dist_itp_data
+      call read_control_dist_itp_data(gtbl_ctl)
 !
       close(ctl_file_code)
 !
       end subroutine read_control_4_distribute_itp
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine dealloc_ctl_data_gen_table(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+!
+!
+      call dealloc_control_array_i_r(gtbl_ctl%eps_4_itp_ctl)
+!
+      gtbl_ctl%table_head_ctl%iflag = 0
+      gtbl_ctl%fmt_itp_table_file_ctl%iflag = 0
+      gtbl_ctl%itp_node_head_ctl%iflag = 0
+      gtbl_ctl%reverse_element_table_ctl%iflag = 0
+      gtbl_ctl%single_itp_tbl_head_ctl%iflag = 0
+      gtbl_ctl%ele_hash_type_ctl%iflag = 0
+      gtbl_ctl%num_radial_divide_ctl%iflag = 0
+      gtbl_ctl%num_theta_divide_ctl%iflag = 0
+      gtbl_ctl%num_phi_divide_ctl%iflag = 0
+!
+      gtbl_ctl%num_x_divide_ctl%iflag = 0
+      gtbl_ctl%num_y_divide_ctl%iflag = 0
+      gtbl_ctl%num_z_divide_ctl%iflag = 0
+!
+      gtbl_ctl%itr_refine_ctl%iflag = 0
+      gtbl_ctl%eps_refine_ctl%iflag = 0
+!
+      end subroutine dealloc_ctl_data_gen_table
+!
+!  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_const_itp_tbl_ctl_data
+      subroutine read_const_itp_tbl_ctl_data(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
 !
       if(right_begin_flag(hd_table_control) .eq. 0) return
@@ -259,20 +300,24 @@
         i_table_control = find_control_end_flag(hd_table_control)
         if(i_table_control .gt. 0) exit
 !
-        call read_control_platforms(hd_platform, i_platform, src_plt)
-        call read_control_platforms(hd_new_data, i_new_data, dst_plt)
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, gtbl_ctl%src_plt)
+        call read_control_platforms                                     &
+     &     (hd_new_data, i_new_data, gtbl_ctl%dst_plt)
 !
-        call read_itp_files_ctl
-        call read_element_hash_ctl
-        call read_itaration_param_ctl
-        call read_itaration_model_ctl
+        call read_itp_files_ctl(gtbl_ctl)
+        call read_element_hash_ctl(gtbl_ctl)
+        call read_itaration_param_ctl(gtbl_ctl)
+        call read_itaration_model_ctl(gtbl_ctl)
       end do
 !
       end subroutine read_const_itp_tbl_ctl_data
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_dist_itp_data
+      subroutine read_control_dist_itp_data(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
 !
       if(right_begin_flag(hd_distribute_itp) .eq. 0) return
@@ -283,10 +328,12 @@
         i_distribute_itp = find_control_end_flag(hd_distribute_itp)
         if(i_distribute_itp .gt. 0) exit
 !
-        call read_control_platforms(hd_platform, i_platform, src_plt)
-        call read_control_platforms(hd_new_data, i_new_data, dst_plt)
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, gtbl_ctl%src_plt)
+        call read_control_platforms                                     &
+     &     (hd_new_data, i_new_data, gtbl_ctl%dst_plt)
 !
-        call read_itp_files_ctl
+        call read_itp_files_ctl(gtbl_ctl)
       end do
 !
       end subroutine read_control_dist_itp_data
@@ -294,7 +341,9 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_itp_files_ctl
+      subroutine read_itp_files_ctl(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
 !
       if(right_begin_flag(hd_itp_files) .eq. 0) return
@@ -306,23 +355,26 @@
         if(i_itp_files .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_table_head_ctl, table_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_itp_node_head_ctl, itp_node_head_ctl)
+     &     (hd_table_head_ctl, gtbl_ctl%table_head_ctl)
         call read_chara_ctl_type                                        &
-     &     (hd_single_itp_tbl, single_itp_tbl_head_ctl)
+     &     (hd_itp_node_head_ctl, gtbl_ctl%itp_node_head_ctl)
         call read_chara_ctl_type                                        &
-     &      (hd_reverse_ele_tbl, reverse_element_table_ctl)
+     &     (hd_single_itp_tbl, gtbl_ctl%single_itp_tbl_head_ctl)
+        call read_chara_ctl_type                                        &
+     &      (hd_reverse_ele_tbl, gtbl_ctl%reverse_element_table_ctl)
 !
         call read_chara_ctl_type                                        &
-     &     (hd_fmt_itp_tbl, fmt_itp_table_file_ctl)
+     &     (hd_fmt_itp_tbl, gtbl_ctl%fmt_itp_table_file_ctl)
       end do
 !
       end subroutine read_itp_files_ctl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_itaration_model_ctl
+      subroutine read_itaration_model_ctl(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
 !
       if(right_begin_flag(hd_itp_model) .eq. 0) return
@@ -334,16 +386,18 @@
         if(i_itp_model .gt. 0) exit
 !
         call read_phys_data_control                                     &
-     &     (hd_phys_values, i_phys_values, fld_gt_ctl)
+     &     (hd_phys_values, i_phys_values, gtbl_ctl%fld_gt_ctl)
         call read_control_time_step_data                                &
-     &     (hd_time_step, i_tstep, t_gt_ctl)
+     &     (hd_time_step, i_tstep, gtbl_ctl%t_gt_ctl)
       end do
 !
       end subroutine read_itaration_model_ctl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_itaration_param_ctl
+      subroutine read_itaration_param_ctl(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
 !
       if(right_begin_flag(hd_iteration_ctl) .eq. 0) return
@@ -354,18 +408,21 @@
         i_iteration_ctl = find_control_end_flag(hd_iteration_ctl)
         if(i_iteration_ctl .gt. 0) exit
 !
-        call read_control_array_i_r(hd_eps_4_itp, eps_4_itp_ctl)
+        call read_control_array_i_r                                     &
+     &     (hd_eps_4_itp, gtbl_ctl%eps_4_itp_ctl)
 !
-        call read_integer_ctl_type(hd_itr, itr_refine_ctl)
+        call read_integer_ctl_type(hd_itr, gtbl_ctl%itr_refine_ctl)
 !
-        call read_real_ctl_type(hd_eps, eps_refine_ctl)
+        call read_real_ctl_type(hd_eps, gtbl_ctl%eps_refine_ctl)
       end do
 !
       end subroutine read_itaration_param_ctl
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_element_hash_ctl
+      subroutine read_element_hash_ctl(gtbl_ctl)
+!
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !
 !
       if(right_begin_flag(hd_element_hash) .eq. 0) return
@@ -377,22 +434,26 @@
         if(i_element_hash .gt. 0) exit
 !
 !
-        call read_chara_ctl_type(hd_hash_type, ele_hash_type_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_hash_type, gtbl_ctl%ele_hash_type_ctl)
 ! 
         call read_integer_ctl_type(hd_search_radius,                    &
-     &      num_radial_divide_ctl)
+     &      gtbl_ctl%num_radial_divide_ctl)
         call read_integer_ctl_type(hd_num_hash_elev,                    &
-     &      num_theta_divide_ctl)
+     &      gtbl_ctl%num_theta_divide_ctl)
         call read_integer_ctl_type(hd_num_hash_azim,                    &
-     &      num_phi_divide_ctl)
+     &      gtbl_ctl%num_phi_divide_ctl)
 !
-        call read_integer_ctl_type(hd_num_hash_x, num_x_divide_ctl)
-        call read_integer_ctl_type(hd_num_hash_y, num_y_divide_ctl)
-        call read_integer_ctl_type(hd_num_hash_z, num_z_divide_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_num_hash_x, gtbl_ctl%num_x_divide_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_num_hash_y, gtbl_ctl%num_y_divide_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_num_hash_z, gtbl_ctl%num_z_divide_ctl)
       end do
 !
       end subroutine read_element_hash_ctl
 !
 !   --------------------------------------------------------------------
 !
-      end module m_ctl_data_gen_table
+      end module t_ctl_data_gen_table

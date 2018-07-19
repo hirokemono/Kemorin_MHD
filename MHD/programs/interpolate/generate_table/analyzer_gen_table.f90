@@ -20,8 +20,11 @@
       use t_jacobians
       use t_interpolate_table
       use t_interpolate_coefs_dest
+      use t_ctl_data_gen_table
 !
       implicit none
+!
+      type(ctl_data_gen_table), save :: gtbl_ctl1
 !
       type(mesh_data), save :: org_femmesh
       type(element_geometry), save :: org_ele_mesh
@@ -46,7 +49,6 @@
       use m_2nd_pallalel_vector
       use t_shape_functions
 !
-      use input_control_gen_table
       use const_mesh_information
       use set_table_4_RHS_assemble
       use set_2nd_geometry_4_table
@@ -61,8 +63,11 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 's_input_control_generate_table'
-      call s_input_control_generate_table
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_itp_table'
+      call read_control_4_gen_itp_table(gtbl_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_table'
+      call set_ctl_params_4_gen_table(gtbl_ctl1)
+      call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
 !     ----- construct mesh informations for target mesh
 !

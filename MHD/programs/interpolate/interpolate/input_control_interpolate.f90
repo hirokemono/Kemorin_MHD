@@ -3,14 +3,15 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine s_input_control_interpolate                           &
-!     &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,  &
-!     &          itp_info, t_param, ierr)
-!       type(mesh_data), intent(inout) :: org_femmesh
-!       type(element_geometry), intent(inout) :: org_ele_mesh
-!       type(mesh_data), intent(inout) :: new_femmesh
-!       type(element_geometry), intent(inout) :: new_ele_mesh
-!       type(interpolate_table), intent(inout) :: itp_info
+!!      subroutine s_input_control_interpolate(gtbl_ctl,                &
+!!     &          org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh, &
+!!     &          itp_info, t_param, ierr)
+!!        type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
+!!        type(mesh_data), intent(inout) :: org_femmesh
+!!        type(element_geometry), intent(inout) :: org_ele_mesh
+!!        type(mesh_data), intent(inout) :: new_femmesh
+!!        type(element_geometry), intent(inout) :: new_ele_mesh
+!!        type(interpolate_table), intent(inout) :: itp_info
 !!        type(time_step_param), intent(inout) :: t_param
 !      subroutine set_ctl_interpolate_udt(fld_ctl, nod_fld)
 !        type(field_control), intent(in) :: fld_ctl
@@ -31,18 +32,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_interpolate                            &
-     &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,   &
+      subroutine s_input_control_interpolate(gtbl_ctl,                  &
+     &          org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,   &
      &          itp_info, t_param, ierr)
 !
       use t_mesh_data
       use t_interpolate_table
       use t_step_parameter
       use t_IO_step_parameter
+      use t_ctl_data_gen_table
 !
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
-      use m_ctl_data_gen_table
       use m_interpolate_table_IO
 !
       use set_ctl_interpolation
@@ -54,6 +55,7 @@
       use copy_interpolate_types
       use interpolate_nod_field_2_type
 !
+      type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
       type(mesh_data), intent(inout) :: org_femmesh
       type(element_geometry), intent(inout) :: org_ele_mesh
 !
@@ -64,14 +66,15 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
+!
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_interpolate'
-      call read_control_4_interpolate
+      call read_control_4_interpolate(gtbl_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_interpolation'
-      call set_ctl_params_interpolation
+      call set_ctl_params_interpolation(gtbl_ctl)
 !
       call set_fixed_time_step_params                                   &
-     &   (t_gt_ctl, t_param, ierr, e_message)
+     &   (gtbl_ctl%t_gt_ctl, t_param, ierr, e_message)
 !
 !  --  read geometry for origin (if exist)
 !

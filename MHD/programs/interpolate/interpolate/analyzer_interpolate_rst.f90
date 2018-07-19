@@ -22,8 +22,11 @@
       use t_phys_address
       use t_interpolate_table
       use t_IO_step_parameter
+      use t_ctl_data_gen_table
 !
       implicit none
+!
+      type(ctl_data_gen_table), save :: gtbl_ctl1
 !
       type(time_step_param), save :: t_ITP
 !
@@ -73,8 +76,9 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &    new_femmesh, new_ele_mesh, itp_rst, t_ITP, ierr)
+      call s_input_control_interpolate(gtbl_ctl1,                       &
+     &    org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,         &
+     &    itp_rst, t_ITP, ierr)
 !
 !     --------------------- 
 !
