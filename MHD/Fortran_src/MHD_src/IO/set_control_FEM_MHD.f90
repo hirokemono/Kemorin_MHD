@@ -157,7 +157,6 @@
      &    SGS_par%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,       &
      &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
      &    SGS_par%filter_p)
-      call dealloc_sgs_ctl(model_ctl%sgs_ctl)
 !
 !   set fields
 !
@@ -193,7 +192,8 @@
      &   (fmctl_ctl%mevo_ctl, fmctl_ctl%fint_ctl,                       &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop, FEM_prm)
 !
-      call dealloc_control_array_c3(model_ctl%fld_ctl%field_ctl)
+      call dealloc_phys_control(model_ctl%fld_ctl)
+      call dealloc_sgs_ctl(model_ctl%sgs_ctl)
 !
       end subroutine set_control_4_FEM_MHD
 !

@@ -73,6 +73,7 @@
      &    new_femmesh, new_ele_mesh, itp_udt, t_ITP, ierr)
 !
       call set_ctl_interpolate_udt(fld_gt_ctl, nod_fld_ITP)
+      call dealloc_phys_control(fld_gt_ctl)
 !
 !     --------------------- 
 !

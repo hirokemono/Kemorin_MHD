@@ -154,8 +154,6 @@
      &   (spt_ctl%fld_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
      &   (spt_ctl%fld_ctl%field_ctl, fem_fld, ierr)
-      call dealloc_control_array_c3(spt_ctl%fld_ctl%field_ctl)
-!
 !
       files_param%cmb_radial_grp =  'CMB'
       if(spt_ctl%cmb_radial_grp_ctl%iflag .gt. 0) then
@@ -170,6 +168,8 @@
       if(spt_ctl%gauss_sph_fhead_ctl%iflag .gt. 0) then
         d_gauss%fhead_gauss = spt_ctl%gauss_sph_fhead_ctl%charavalue
       end if
+!
+      call dealloc_phys_control(spt_ctl%fld_ctl)
 !
       end subroutine set_control_4_sph_transform
 !
@@ -280,8 +280,6 @@
      &   (spt_ctl%fld_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
      &   (spt_ctl%fld_ctl%field_ctl, fem_fld, ierr)
-      call dealloc_control_array_c3(spt_ctl%fld_ctl%field_ctl)
-!
 !
       files_param%cmb_radial_grp =  'CMB'
       if(spt_ctl%cmb_radial_grp_ctl%iflag .gt. 0) then
@@ -296,6 +294,8 @@
       if(spt_ctl%gauss_sph_fhead_ctl%iflag .gt. 0) then
         d_gauss%fhead_gauss = spt_ctl%gauss_sph_fhead_ctl%charavalue
       end if
+!
+      call dealloc_phys_control(spt_ctl%fld_ctl)
 !
       end subroutine s_set_ctl_data_4_sph_trans
 !

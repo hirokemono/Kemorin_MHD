@@ -201,7 +201,7 @@
         thermal_buo = spu_ctl%thermal_buoyancy_ctl%realvalue
       end if
 !
-      call dealloc_control_array_c3(spu_ctl%fld_ctl%field_ctl)
+      call dealloc_phys_control(spu_ctl%fld_ctl)
       call dealloc_sph_monitoring_ctl(spu_ctl%smonitor_ctl)
 !
       end subroutine set_ctl_data_4_sph_utils

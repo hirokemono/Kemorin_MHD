@@ -60,12 +60,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
       call s_set_control_nodal_data(fld_d_ctl%field_ctl, nod_fld, ierr)
-      call dealloc_control_array_c3(fld_d_ctl%field_ctl)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
       call s_set_ctl_4_diff_udt_steps(t_d_ctl, time_U)
-      call dealloc_control_array_c3(fld_d_ctl%field_ctl)
+      call dealloc_phys_control(fld_d_ctl)
 !
       end subroutine set_ctl_params_correlate_udt
 !

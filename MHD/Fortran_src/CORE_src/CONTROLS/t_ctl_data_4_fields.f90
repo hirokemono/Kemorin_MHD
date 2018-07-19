@@ -117,7 +117,7 @@
       call dealloc_control_array_chara(fld_ctl%quad_phys)
       call dealloc_control_array_chara(fld_ctl%linear_phys)
 !
-       end subroutine dealloc_phys_control
+      end subroutine dealloc_phys_control
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
