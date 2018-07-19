@@ -55,7 +55,7 @@
       character(len=kchara), parameter :: cflag_SGS_t = 'SGS_theta'
 !
       private :: cflag_SGS_r, cflag_SGS_t
-      private :: set_control_4_shell_filess
+      private :: set_control_4_shell_files
       private :: set_ctl_radius_4_shell, set_control_4_SGS_shell
 !
 !  ---------------------------------------------------------------------
@@ -77,19 +77,21 @@
       integer(kind = kint) :: nprocs_check
 !
 !
-      call set_control_4_shell_filess                                   &
+      call set_control_4_shell_files                                    &
      &   (plt, psph_ctl%Fmesh_ctl, nprocs_check, sph_files)
 !
       call set_control_4_shell_grids                                    &
      &   (nprocs_check, psph_ctl%Fmesh_ctl, psph_ctl%spctl,             &
      &    psph_ctl%sdctl, sph, gen_sph, ierr)
+      call dealloc_control_shell_define(psph_ctl%spctl)
+      call reset_control_shell_define(psph_ctl%spctl)
 !
       end subroutine set_control_4_gen_shell_grids
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_shell_filess                             &
+      subroutine set_control_4_shell_files                              &
      &         (plt, Fmesh_ctl, nprocs_check, sph_files)
 !
       use set_control_platform_data
@@ -111,7 +113,7 @@
      &    sph_files%mesh_file_IO, sph_files%sph_file_IO,                &
      &    sph_files%FEM_mesh_flags)
 !
-      end subroutine set_control_4_shell_filess
+      end subroutine set_control_4_shell_files
 !
 !  ---------------------------------------------------------------------
 !
@@ -130,7 +132,7 @@
 !
       integer(kind = kint), intent(in) :: nprocs_check
       type(FEM_mesh_control), intent(in) :: Fmesh_ctl
-      type(sphere_data_control), intent(inout) :: spctl
+      type(sphere_data_control), intent(in) :: spctl
       type(sphere_domain_control), intent(inout) :: sdctl
       type(sph_grids), intent(inout) :: sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
@@ -218,7 +220,7 @@
       use const_sph_radial_grid
       use skip_comment_f
 !
-      type(sphere_data_control), intent(inout) :: spctl
+      type(sphere_data_control), intent(in) :: spctl
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(sph_rj_grid), intent(inout) :: sph_rj
@@ -228,6 +230,7 @@
 !
       integer(kind = kint) :: i, kr, icou
       real(kind = kreal) :: ICB_to_CMB_ratio, fluid_core_size
+      real(kind = kreal) :: r_in, r_out
 !
 !
       sph_params%iflag_radial_grid =  igrid_Chebyshev
@@ -339,24 +342,22 @@
         end if
 !
         if(spctl%Min_radius_ctl%iflag.eq.0) then
-          spctl%Min_radius_ctl%realvalue = sph_params%radius_ICB
-        end if
-        if(spctl%Max_radius_ctl%iflag.eq.0) then
-          spctl%Max_radius_ctl%realvalue = sph_params%radius_CMB
+          r_in = sph_params%radius_ICB
+        else
+          r_in = spctl%Min_radius_ctl%realvalue
         end if
 !
-        if(spctl%Min_radius_ctl%realvalue .eq. zero) then
-          sph_rj%iflag_rj_center = 1
+        if(spctl%Max_radius_ctl%iflag.eq.0) then
+          r_out = sph_params%radius_CMB
+        else
+          r_out = spctl%Max_radius_ctl%realvalue
         end if
+!
+        if(r_in .eq. zero)  sph_rj%iflag_rj_center = 1
 !
         call count_set_radial_grid(spctl%num_fluid_grid_ctl%intvalue,   &
-     &      spctl%Min_radius_ctl%realvalue,                             &
-     &      spctl%Max_radius_ctl%realvalue, sph_params, sph_rtp,        &
-     &      s3d_radius)
+     &      r_in,  r_out, sph_params, sph_rtp, s3d_radius)
       end if
-!
-      call dealloc_control_array_c_i(spctl%radial_grp_ctl)
-      call dealloc_control_array_i_r(spctl%radius_ctl)
 !
 !       Check whole sphere model
       if(sph_params%iflag_radial_grid .eq. igrid_half_Chebyshev) then
@@ -368,7 +369,7 @@
         end if
 !
         if(spctl%Min_radius_ctl%iflag .ne. 0                            &
-     &     .and. spctl%Min_radius_ctl%realvalue .ne. zero) then
+     &     .and. r_in .ne. zero) then
           write(*,*)                                                    &
      &     'Set minimum radius to be zero for whole sphere'
           ierr = ierr_mesh
@@ -395,7 +396,7 @@
       use t_control_1D_layering
 !
       type(sph_grids), intent(in) :: sph
-      type(sphere_data_control), intent(inout) :: spctl
+      type(sphere_data_control), intent(in) :: spctl
       type(layering_group_list), intent(inout) :: r_layer_grp
       type(layering_group_list), intent(inout) :: med_layer_grp
 !

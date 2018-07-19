@@ -1,33 +1,42 @@
-!m_control_data_refine_para.f90
-!      module m_control_data_refine_para
+!t_control_data_refine_para.f90
+!      module t_control_data_refine_para
 !
 !      Written by Kemorin on Oct., 2007
 !
-!       subroutine read_control_data_ref_para_itp
+!!       subroutine read_control_data_ref_para_itp(para__refine_c)
+!!        type(control_data_refine_para), intent(inout) :: para__refine_c
 !
-      module m_control_data_refine_para
+      module t_control_data_refine_para
 !
       use m_precision
 !
-      use t_ctl_data_4_platforms
       use t_control_elements
+      use t_ctl_data_4_platforms
+      use t_control_data_4_refine
       use m_read_control_elements
       use skip_comment_f
 !
       implicit    none
 !
-      integer (kind = kint), parameter :: control_file_code = 13
+      integer (kind = kint), parameter :: ctl_refine_code = 13
       character (len = kchara), parameter                               &
-     &         :: control_file_name = 'ctl_para_refine_table'
+     &         :: ctl_refine_file_name = 'ctl_para_refine_table'
 !
-      type(platform_data_control), save :: para_refine_plt
+      type file_ctls_refine_para
+        type(platform_data_control) :: para_refine_plt
 !
-      type(read_integer_item), save :: nprocs_course_ctl
+        type(read_integer_item) :: nprocs_course_ctl
 !
-      type(read_character_item), save :: course_mesh_file_head_ctl
-      type(read_character_item), save :: c2f_para_head_ctl
-      type(read_character_item), save :: f2c_para_head_ctl
-      type(read_character_item), save :: refine_info_para_head_ctl
+        type(read_character_item) :: course_mesh_file_head_ctl
+        type(read_character_item) :: c2f_para_head_ctl
+        type(read_character_item) :: f2c_para_head_ctl
+        type(read_character_item) :: refine_info_para_head_ctl
+      end type file_ctls_refine_para
+!
+      type control_data_refine_para
+        type(control_data_4_refine) :: refine_ctl
+        type(file_ctls_refine_para) :: p_refine_ctl
+      end type control_data_refine_para
 !
 !
 !   Top level
@@ -74,14 +83,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine read_control_data_ref_para_itp
+       subroutine read_control_data_ref_para_itp(para__refine_c)
+!
+      type(control_data_refine_para), intent(inout) :: para__refine_c
 !
 !
-      ctl_file_code = control_file_code
-      open (ctl_file_code, file = control_file_name)
+      ctl_file_code = ctl_refine_code
+      open (ctl_file_code, file = ctl_refine_file_name)
 !
       call load_ctl_label_and_line
-      call read_ref_para_itp_ctl_data
+      call read_ref_para_itp_ctl_data                                   &
+     &   (para__refine_c%refine_ctl, para__refine_c%p_refine_ctl)
 !
       close(ctl_file_code)
 !
@@ -90,9 +102,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_ref_para_itp_ctl_data
+      subroutine read_ref_para_itp_ctl_data(refine_ctl, p_refine_ctl)
 !
-      use m_control_data_4_refine
+      type(control_data_4_refine), intent(inout) :: refine_ctl
+      type(file_ctls_refine_para), intent(inout) :: p_refine_ctl
 !
 !
       if(right_begin_flag(hd_para_refine_tbl_ctl) .eq. 0) return
@@ -105,17 +118,19 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, para_refine_plt)
+     &     (hd_platform, i_platform, p_refine_ctl%para_refine_plt)
 !
-        call read_ctl_data_4_course_mesh
-        call read_ctl_data_4_refine_mesh
+        call read_ctl_data_4_course_mesh(p_refine_ctl)
+        call read_ctl_data_4_refine_mesh(refine_ctl)
       end do
 !
       end subroutine read_ref_para_itp_ctl_data
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine read_ctl_data_4_course_mesh
+       subroutine read_ctl_data_4_course_mesh(p_refine_ctl)
+!
+      type(file_ctls_refine_para), intent(inout) :: p_refine_ctl
 !
 !
       if(right_begin_flag(hd_course_mesh_para_ctl) .eq. 0) return
@@ -129,21 +144,21 @@
 !
 !
         call read_integer_ctl_type(hd_num_course_subdomain,             &
-     &      nprocs_course_ctl)
+     &      p_refine_ctl%nprocs_course_ctl)
 !
         call read_chara_ctl_type(hd_course_mesh_file_head,              &
-     &      course_mesh_file_head_ctl)
+     &      p_refine_ctl%course_mesh_file_head_ctl)
         call read_chara_ctl_type(hd_course_to_fine_p_head,              &
-     &      c2f_para_head_ctl)
+     &      p_refine_ctl%c2f_para_head_ctl)
         call read_chara_ctl_type(hd_fine_to_course_p_head,              &
-     &      f2c_para_head_ctl)
+     &      p_refine_ctl%f2c_para_head_ctl)
 !
         call read_chara_ctl_type(hd_fine_to_course_ele_head,            &
-     &      refine_info_para_head_ctl)
+     &      p_refine_ctl%refine_info_para_head_ctl)
       end do
 !
       end subroutine read_ctl_data_4_course_mesh
 !
 ! -----------------------------------------------------------------------
 !
-      end module m_control_data_refine_para
+      end module t_control_data_refine_para

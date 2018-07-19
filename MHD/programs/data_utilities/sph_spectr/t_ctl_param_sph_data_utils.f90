@@ -14,6 +14,9 @@
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(diff_spectrum_ctl), intent(in) :: f_ctl
 !!        type(diff_spectrum_file_param), intent(inout) :: files
+!!      subroutine set_control_rename_sph_fld(field_list, rename)
+!!        type(rename_spectr_ctl), intent(in) :: field_list
+!!        type(rename_list), intent(inout) :: rename
 !!@endverbatim
 !
       module t_ctl_param_sph_data_utils
@@ -133,7 +136,7 @@
       use set_ctl_parallel_platform
       use set_control_platform_data
 !
-      type(rename_spectr_ctl), intent(inout) :: field_list
+      type(rename_spectr_ctl), intent(in) :: field_list
       type(rename_list), intent(inout) :: rename
 !
       integer(kind = kint) :: i
@@ -146,8 +149,6 @@
         rename%org_name(i) = field_list%field_to_rename_ctl%c1_tbl(i)
         rename%new_name(i) = field_list%field_to_rename_ctl%c2_tbl(i)
       end do
-!
-      call dealloc_control_array_c2(field_list%field_to_rename_ctl)
 !
       end subroutine set_control_rename_sph_fld
 !

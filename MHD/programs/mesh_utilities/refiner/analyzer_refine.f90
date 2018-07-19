@@ -19,11 +19,14 @@
       use t_surface_data
       use t_edge_data
       use t_comm_table
+      use t_control_data_4_refine
 !
       implicit none
 !
       integer(kind = kint), parameter, private :: my_rank = 0
       integer(kind = kint), parameter, private :: ifile_type = 0
+!
+      type(control_data_4_refine), save :: refine_ctl1
 !
       type(mesh_data), save :: org_fem
       type(element_geometry), save :: org_ele_mesh
@@ -39,7 +42,6 @@
 
       subroutine  initialize_refine
 !
-      use m_control_data_4_refine
       use load_mesh_data
       use set_nnod_for_ele_by_type
       use set_control_id_4_refiner
@@ -48,8 +50,9 @@
       integer(kind=kint) :: ierr
 !
 !
-      call read_control_data_4_refiner
-      call set_control_4_refiner
+      call read_control_data_4_refiner(refine_ctl1)
+      call set_control_4_refiner(refine_ctl1)
+      call dealloc_control_data_4_refiner(refine_ctl1)
 !
       call set_refine_type_to_id
 !

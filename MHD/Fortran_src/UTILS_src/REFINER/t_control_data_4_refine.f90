@@ -1,12 +1,13 @@
 !
-!      module m_control_data_4_refine
+!      module t_control_data_4_refine
 !
 !      Written by Kemorin on Oct., 2007
 !
-!      subroutine read_control_data_4_refiner
-!      subroutine read_ctl_data_4_refine_mesh
+!!      subroutine read_control_data_4_refiner(refine_ctl)
+!!      subroutine read_ctl_data_4_refine_mesh(refine_ctl)
+!!      subroutine dealloc_control_data_4_refiner(refine_ctl)
 !
-      module m_control_data_4_refine
+      module t_control_data_4_refine
 !
       use m_precision
 !
@@ -22,18 +23,20 @@
      &         :: control_file_name = 'ctl_refine'
 !
 !
-      type(platform_data_control), save :: source_plt
-      type(platform_data_control), save :: refined_plt
+      type control_data_4_refine
+        type(platform_data_control) :: source_plt
+        type(platform_data_control) :: refined_plt
 !
-      type(read_character_item), save :: coarse_2_fine_head_ctl
-      type(read_character_item), save :: fine_2_course_head_ctl
-      type(read_character_item), save :: refine_info_head_ctl
-      type(read_character_item), save :: old_refine_info_head_ctl
+        type(read_character_item) :: coarse_2_fine_head_ctl
+        type(read_character_item) :: fine_2_course_head_ctl
+        type(read_character_item) :: refine_info_head_ctl
+        type(read_character_item) :: old_refine_info_head_ctl
 !
-      type(read_character_item), save :: interpolate_type_ctl
+        type(read_character_item) :: interpolate_type_ctl
 !
-      type(ctl_array_c2), save :: refined_ele_grp_ctl
-      type(ctl_array_ci), save :: refine_i_ele_grp_ctl
+        type(ctl_array_c2) :: refined_ele_grp_ctl
+        type(ctl_array_ci) :: refine_i_ele_grp_ctl
+      end type control_data_4_refine
 !
 !
 !   Top level
@@ -96,7 +99,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_data_4_refiner
+      subroutine read_control_data_4_refiner(refine_ctl)
+!
+      type(control_data_4_refine), intent(inout) :: refine_ctl
 !
 !
       ctl_file_code = control_file_code
@@ -104,16 +109,37 @@
       open (ctl_file_code, file = control_file_name)
 !
       call load_ctl_label_and_line
-      call read_refine_control_data
+      call read_refine_control_data(refine_ctl)
 !
       close(ctl_file_code)
 !
       end subroutine read_control_data_4_refiner
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine dealloc_control_data_4_refiner(refine_ctl)
+!
+      type(control_data_4_refine), intent(inout) :: refine_ctl
+!
+!
+      call dealloc_control_array_c2(refine_ctl%refined_ele_grp_ctl)
+      call dealloc_control_array_c_i(refine_ctl%refine_i_ele_grp_ctl)
+!
+      refine_ctl%coarse_2_fine_head_ctl%iflag =   0
+      refine_ctl%fine_2_course_head_ctl%iflag =   0
+      refine_ctl%refine_info_head_ctl%iflag =     0
+      refine_ctl%old_refine_info_head_ctl%iflag = 0
+!
+      refine_ctl%interpolate_type_ctl%iflag = 0
+!
+      end subroutine dealloc_control_data_4_refiner
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_refine_control_data
+      subroutine read_refine_control_data(refine_ctl)
+!
+      type(control_data_4_refine), intent(inout) :: refine_ctl
 !
 !
       if(right_begin_flag(hd_refine_ctl) .eq. 0) return
@@ -125,11 +151,11 @@
         if(i_refine_ctl .gt. 0) exit
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, source_plt)
+     &     (hd_platform, i_platform, refine_ctl%source_plt)
         call read_control_platforms                                     &
-     &     (hd_new_data, i_new_data, refined_plt)
-        call read_ctl_data_4_refine_mesh
-        call read_ctl_data_4_refine_type
+     &     (hd_new_data, i_new_data, refine_ctl%refined_plt)
+        call read_ctl_data_4_refine_mesh(refine_ctl)
+        call read_ctl_data_4_refine_type(refine_ctl)
       end do
 !
       end subroutine read_refine_control_data
@@ -137,7 +163,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_refine_mesh
+      subroutine read_ctl_data_4_refine_mesh(refine_ctl)
+!
+      type(control_data_4_refine), intent(inout) :: refine_ctl
 !
 !
       if(right_begin_flag(hd_single_refine_files) .eq. 0) return
@@ -151,21 +179,23 @@
 !
 !
         call read_chara_ctl_type(hd_course_to_fine_ctl,                 &
-     &      coarse_2_fine_head_ctl)
+     &      refine_ctl%coarse_2_fine_head_ctl)
         call read_chara_ctl_type(hd_fine_to_course_ctl,                 &
-     &      fine_2_course_head_ctl)
+     &      refine_ctl%fine_2_course_head_ctl)
 !
         call read_chara_ctl_type(hd_refine_info_ctl,                    &
-     &      refine_info_head_ctl)
+     &      refine_ctl%refine_info_head_ctl)
         call read_chara_ctl_type(hd_old_refine_info_ctl,                &
-     &      old_refine_info_head_ctl)
+     &      refine_ctl%old_refine_info_head_ctl)
       end do
 !
       end subroutine read_ctl_data_4_refine_mesh
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_refine_type
+      subroutine read_ctl_data_4_refine_type(refine_ctl)
+!
+      type(control_data_4_refine), intent(inout) :: refine_ctl
 !
 !
       if(right_begin_flag(hd_refine_param) .eq. 0) return
@@ -178,15 +208,16 @@
 !
 !
         call read_control_array_c2                                      &
-     &     (hd_num_ref_type, refined_ele_grp_ctl)
+     &     (hd_num_ref_type, refine_ctl%refined_ele_grp_ctl)
 !
         call read_control_array_c_i                                     &
-     &     (hd_num_ref_code, refine_i_ele_grp_ctl)
+     &     (hd_num_ref_code, refine_ctl%refine_i_ele_grp_ctl)
 !
-        call read_chara_ctl_type(hd_itp_type, interpolate_type_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_itp_type, refine_ctl%interpolate_type_ctl)
       end do
 !
       end subroutine read_ctl_data_4_refine_type
 !
 ! -----------------------------------------------------------------------!
-      end module m_control_data_4_refine
+      end module t_control_data_4_refine

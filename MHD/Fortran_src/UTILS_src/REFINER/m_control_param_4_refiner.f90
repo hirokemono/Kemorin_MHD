@@ -3,11 +3,12 @@
 !
 !      Written by Kemorin on Oct., 2007
 !
-!      subroutine allocate_refine_param
-!      subroutine deallocate_refine_param
-!      subroutine deallocate_refine_param_chara
-!
-!      subroutine set_control_4_refiner
+!!      subroutine allocate_refine_param
+!!      subroutine deallocate_refine_param
+!!      subroutine deallocate_refine_param_chara
+!!
+!!      subroutine set_control_4_refiner
+!!        type(control_data_4_refine), intent(in) :: refine_ctl
 !
       module m_control_param_4_refiner
 !
@@ -80,42 +81,49 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_refiner
+      subroutine set_control_4_refiner(refine_ctl)
 !
-      use m_control_data_4_refine
+      use t_control_data_4_refine
       use m_default_file_prefix
       use skip_comment_f
       use set_control_platform_data
 !
+      type(control_data_4_refine), intent(in) :: refine_ctl
+!
       character(len = kchara) :: tmpchara
 !
 !
-      call set_control_mesh_def(source_plt, original_mesh_file)
+      call set_control_mesh_def                                         &
+     &   (refine_ctl%source_plt, original_mesh_file)
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, refined_plt, refined_mesh_file)
+     &   (def_new_mesh_head, refine_ctl%refined_plt, refined_mesh_file)
 !
 !
-      if (coarse_2_fine_head_ctl%iflag .gt. 0) then
-        course_2_fine_head = coarse_2_fine_head_ctl%charavalue
+      if (refine_ctl%coarse_2_fine_head_ctl%iflag .gt. 0) then
+        course_2_fine_head                                              &
+     &      = refine_ctl%coarse_2_fine_head_ctl%charavalue
       end if
 !
-      if (fine_2_course_head_ctl%iflag .gt. 0) then
-        fine_2_course_head = fine_2_course_head_ctl%charavalue
+      if (refine_ctl%fine_2_course_head_ctl%iflag .gt. 0) then
+        fine_2_course_head                                              &
+     &      = refine_ctl%fine_2_course_head_ctl%charavalue
       end if
 !
-      if (refine_info_head_ctl%iflag .gt. 0) then
-        refine_info_head = refine_info_head_ctl%charavalue
+      if (refine_ctl%refine_info_head_ctl%iflag .gt. 0) then
+        refine_info_head = refine_ctl%refine_info_head_ctl%charavalue
       end if
 !
-      iflag_read_old_refine_file = old_refine_info_head_ctl%iflag
+      iflag_read_old_refine_file                                        &
+     &        = refine_ctl%old_refine_info_head_ctl%iflag
       if (iflag_read_old_refine_file .gt. 0) then
-        old_refine_info_head = old_refine_info_head_ctl%charavalue
+        old_refine_info_head                                            &
+     &         = refine_ctl%old_refine_info_head_ctl%charavalue
       end if
 !
 !
       iflag_interpolate_type = 0
-      if (interpolate_type_ctl%iflag .gt. 0) then
-        tmpchara = interpolate_type_ctl%charavalue
+      if (refine_ctl%interpolate_type_ctl%iflag .gt. 0) then
+        tmpchara = refine_ctl%interpolate_type_ctl%charavalue
         if (   cmp_no_case(tmpchara, 'project_sphere')                  &
      &    .or. cmp_no_case(tmpchara, 'project_to_sphere')) then
           iflag_interpolate_type = 2
@@ -126,10 +134,10 @@
       end if
 !
 !
-      if (refined_ele_grp_ctl%icou .gt. 0) then
-        num_refine_type = refined_ele_grp_ctl%num
-      else if (refine_i_ele_grp_ctl%icou .gt. 0) then
-        num_refine_type = refine_i_ele_grp_ctl%num
+      if (refine_ctl%refined_ele_grp_ctl%icou .gt. 0) then
+        num_refine_type = refine_ctl%refined_ele_grp_ctl%num
+      else if(refine_ctl%refine_i_ele_grp_ctl%icou .gt. 0) then
+        num_refine_type = refine_ctl%refine_i_ele_grp_ctl%num
       else
         write(*,*) 'set refine type and area'
         stop
@@ -138,30 +146,27 @@
       if (num_refine_type .gt. 0) then
         call allocate_refine_param
 !
-        if (refined_ele_grp_ctl%icou .gt. 0) then
+        if (refine_ctl%refined_ele_grp_ctl%icou .gt. 0) then
 !
           iflag_redefine_tri = 1
           refined_ele_grp(1:num_refine_type)                            &
-     &         = refined_ele_grp_ctl%c1_tbl(1:num_refine_type)
+     &       = refine_ctl%refined_ele_grp_ctl%c1_tbl(1:num_refine_type)
           refined_ele_type(1:num_refine_type)                           &
-     &         = refined_ele_grp_ctl%c2_tbl(1:num_refine_type)
-          call alloc_control_array_c2(refined_ele_grp_ctl)
+     &       = refine_ctl%refined_ele_grp_ctl%c2_tbl(1:num_refine_type)
 !
-        else if (refine_i_ele_grp_ctl%icou .gt. 0) then
+        else if(refine_ctl%refine_i_ele_grp_ctl%icou .gt. 0) then
 !
           iflag_redefine_tri = 0
           refined_ele_grp(1:num_refine_type)                            &
-     &         = refine_i_ele_grp_ctl%c_tbl(1:num_refine_type)
+     &      = refine_ctl%refine_i_ele_grp_ctl%c_tbl(1:num_refine_type)
           iflag_refine_type(1:num_refine_type)                          &
-     &         = refine_i_ele_grp_ctl%ivec(1:num_refine_type)
+     &      = refine_ctl%refine_i_ele_grp_ctl%ivec(1:num_refine_type)
         end if
 !
       else
         write(*,*) 'set refine type and area'
         stop
       end if
-!
-      call dealloc_control_array_c_i(refine_i_ele_grp_ctl)
 !
       end subroutine set_control_4_refiner
 !

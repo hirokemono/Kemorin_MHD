@@ -10,16 +10,20 @@
       module  analyzer_refine_itp_para
 !
       use m_precision
+      use m_constants
 !
       use m_machine_parameter
       use m_para_refine_itp_tables
       use m_control_param_refine_para
       use t_mesh_data_4_merge
+      use t_control_data_refine_para
       use set_parallel_mesh_in_1pe
 !
       implicit none
 !
       integer(kind = kint), parameter, private :: ifile_type = 0
+!
+      type(control_data_refine_para), save, private :: para__refine_c1
 !
       type(merged_mesh), save, private :: mgd_mesh_rf
       type(second_mesh), save, private :: sec_mesh_rf
@@ -34,8 +38,6 @@
 !
       subroutine  init_refine_itp_para
 !
-      use m_constants
-      use m_control_data_refine_para
       use m_interpolate_table_IO
       use itp_table_IO_select_4_zlib
       use num_nod_ele_merge_by_type
@@ -43,9 +45,10 @@
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'read_control_data_ref_para_itp'
-      call read_control_data_ref_para_itp
+      call read_control_data_ref_para_itp(para__refine_c1)
       if(iflag_debug.gt.0) write(*,*) 'set_control_param_refine_para'
-      call set_control_param_refine_para
+      call set_control_param_refine_para                                &
+     &   (para__refine_c1%refine_ctl, para__refine_c1%p_refine_ctl)
 !
       call alloc_para_fine_mesh_type
       call s_set_parallel_mesh_in_1pe                                   &

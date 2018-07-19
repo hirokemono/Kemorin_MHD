@@ -12,6 +12,7 @@
 !!        type(diff_spectrum_ctl), intent(inout) :: f_ctl
 !!      subroutine read_rename_spectr_control(list)
 !!      subroutine bcast_rename_spectr_control(list)
+!!      subroutine dealloc_rename_spectr_control(field_list)
 !!        type(rename_spectr_ctl), intent(inout) :: list
 !!
 !!  begin spectr_dat_util_ctl
@@ -226,6 +227,16 @@
       call bcast_ctl_array_c2(field_list%field_to_rename_ctl)
 !
       end subroutine bcast_rename_spectr_control
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_rename_spectr_control(field_list)
+!
+      type(rename_spectr_ctl), intent(inout) :: field_list
+!
+      call dealloc_control_array_c2(field_list%field_to_rename_ctl)
+!
+      end subroutine dealloc_rename_spectr_control
 !
 ! -----------------------------------------------------------------------
 !

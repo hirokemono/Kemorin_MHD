@@ -317,6 +317,7 @@
      &     (nprocs, psph_ctl%Fmesh_ctl, psph_ctl%spctl, psph_ctl%sdctl, &
      &      sph_gen, gen_sph, ierr)
       end if
+      call dealloc_control_shell_define(psph_ctl%spctl)
 !
 !   set forces
 !

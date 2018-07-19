@@ -75,6 +75,7 @@
       call set_control_diff_sph_field(ctl1%plt, ctl1%tctl,              &
      &     ctl1%file_list, files1, istart, iend, increment)
       call set_control_rename_sph_fld(ctl1%field_list, rename1)
+      call dealloc_rename_spectr_control(ctl1%field_list)
 !
       do istep_fld = istart, iend, increment
         call difference_of_two_spectr(istep_fld, files1, rename1)
