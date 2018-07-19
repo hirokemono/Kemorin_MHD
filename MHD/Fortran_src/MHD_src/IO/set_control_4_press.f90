@@ -13,8 +13,8 @@
 !!     &         (fl_prop, node_bc_P_ctl, surf_bc_PN_ctl,               &
 !!     &          press_nod, wall_surf)
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(ctl_array_c2r), intent(inout) :: node_bc_P_ctl
-!!        type(ctl_array_c2r), intent(inout) :: surf_bc_PN_ctl
+!!        type(ctl_array_c2r), intent(in) :: node_bc_P_ctl
+!!        type(ctl_array_c2r), intent(in) :: surf_bc_PN_ctl
 !!        type(boundary_condition_list), intent(inout) :: press_nod
 !!        type(boundary_condition_list), intent(inout) :: wall_surf
 !!@endverbatim
@@ -44,8 +44,8 @@
       use set_surface_group_types
 !
       type(fluid_property), intent(in) :: fl_prop
-      type(ctl_array_c2r), intent(inout) :: node_bc_P_ctl
-      type(ctl_array_c2r), intent(inout) :: surf_bc_PN_ctl
+      type(ctl_array_c2r), intent(in) :: node_bc_P_ctl
+      type(ctl_array_c2r), intent(in) :: surf_bc_PN_ctl
       type(boundary_condition_list), intent(inout) :: press_nod
       type(boundary_condition_list), intent(inout) :: wall_surf
 !
@@ -108,9 +108,6 @@
      &       wall_surf%ibc_type(i) )
         end do
       end if
-!
-      call dealloc_control_array_c2_r(node_bc_P_ctl)
-      call dealloc_control_array_c2_r(surf_bc_PN_ctl)
 !
       end subroutine s_set_control_4_press
 !

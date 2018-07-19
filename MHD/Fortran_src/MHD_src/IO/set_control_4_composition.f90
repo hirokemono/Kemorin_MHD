@@ -12,8 +12,8 @@
 !!     &         (cp_prop, node_bc_C_ctl, surf_bc_CF_ctl,               &
 !!     &          light_nod, light_surf)
 !!        type(scalar_property), intent(in) :: cp_prop
-!!        type(ctl_array_c2r), intent(inout) :: node_bc_C_ctl
-!!        type(ctl_array_c2r), intent(inout) :: surf_bc_CF_ctl
+!!        type(ctl_array_c2r), intent(in) :: node_bc_C_ctl
+!!        type(ctl_array_c2r), intent(in) :: surf_bc_CF_ctl
 !!        type(boundary_condition_list), intent(inout) :: light_nod
 !!        type(boundary_condition_list), intent(inout) :: light_surf
 !!@endverbatim
@@ -43,8 +43,8 @@
       use set_surface_group_types
 !
       type(scalar_property), intent(in) :: cp_prop
-      type(ctl_array_c2r), intent(inout) :: node_bc_C_ctl
-      type(ctl_array_c2r), intent(inout) :: surf_bc_CF_ctl
+      type(ctl_array_c2r), intent(in) :: node_bc_C_ctl
+      type(ctl_array_c2r), intent(in) :: surf_bc_CF_ctl
       type(boundary_condition_list), intent(inout) :: light_nod
       type(boundary_condition_list), intent(inout) :: light_surf
 !
@@ -121,9 +121,6 @@
           end do
         end if
       end if
-!
-      call dealloc_control_array_c2_r(node_bc_C_ctl)
-      call dealloc_control_array_c2_r(surf_bc_CF_ctl)
 !
       end subroutine s_set_control_4_composition
 !

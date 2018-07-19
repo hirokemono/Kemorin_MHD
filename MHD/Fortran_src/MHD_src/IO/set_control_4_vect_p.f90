@@ -13,8 +13,8 @@
 !!     &         (cd_prop, node_bc_A_ctl, surf_bc_AN_ctl,               &
 !!     &          a_potential_nod, a_potential_surf)
 !!        type(conductive_property), intent(in) :: cd_prop
-!!        type(ctl_array_c2r), intent(inout) :: node_bc_A_ctl
-!!        type(ctl_array_c2r), intent(inout) :: surf_bc_AN_ctl
+!!        type(ctl_array_c2r), intent(in) :: node_bc_A_ctl
+!!        type(ctl_array_c2r), intent(in) :: surf_bc_AN_ctl
 !!        type(boundary_condition_list), intent(inout) :: a_potential_nod
 !!        type(boundary_condition_list), intent(inout)                  &
 !!     &                                :: a_potential_surf
@@ -46,8 +46,8 @@
       use skip_comment_f
 !
       type(conductive_property), intent(in) :: cd_prop
-      type(ctl_array_c2r), intent(inout) :: node_bc_A_ctl
-      type(ctl_array_c2r), intent(inout) :: surf_bc_AN_ctl
+      type(ctl_array_c2r), intent(in) :: node_bc_A_ctl
+      type(ctl_array_c2r), intent(in) :: surf_bc_AN_ctl
       type(boundary_condition_list), intent(inout) :: a_potential_nod
       type(boundary_condition_list), intent(inout) :: a_potential_surf
 !
@@ -126,9 +126,6 @@
           end do
         end if
       end if
-!
-      call dealloc_control_array_c2_r(node_bc_A_ctl)
-      call dealloc_control_array_c2_r(surf_bc_AN_ctl)
 !
       end subroutine s_set_control_4_vect_p
 !

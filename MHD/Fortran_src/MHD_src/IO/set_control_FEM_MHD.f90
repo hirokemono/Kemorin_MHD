@@ -182,7 +182,10 @@
 !   set boundary conditions
 !
       call set_control_FEM_MHD_bcs                                      &
-     &   (MHD_prop, MHD_BC, model_ctl%nbc_ctl, model_ctl%sbc_ctl)
+     &   (MHD_prop, model_ctl%nbc_ctl, model_ctl%sbc_ctl, MHD_BC)
+!
+      call dealloc_bc_4_node_ctl(model_ctl%nbc_ctl)
+      call dealloc_bc_4_surf_ctl(model_ctl%sbc_ctl)
 !
 !   set control parameters
 !
@@ -208,7 +211,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_FEM_MHD_bcs                                &
-     &         (MHD_prop, MHD_BC, nbc_ctl, sbc_ctl)
+     &         (MHD_prop, nbc_ctl, sbc_ctl, MHD_BC)
 !
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
@@ -224,9 +227,10 @@
       use set_control_4_infty
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(node_bc_control), intent(in) :: nbc_ctl
+      type(surf_bc_control), intent(in) :: sbc_ctl
+!
       type(MHD_BC_lists), intent(inout) :: MHD_BC
-      type(node_bc_control), intent(inout) :: nbc_ctl
-      type(surf_bc_control), intent(inout) :: sbc_ctl
 !
 !
 !   set boundary conditions for temperature

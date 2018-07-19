@@ -12,8 +12,8 @@
 !!     &         (cd_prop, node_bc_J_ctl, surf_bc_JN_ctl,               &
 !!     &          current_nod, current_surf)
 !!        type(conductive_property), intent(in) :: cd_prop
-!!        type(ctl_array_c2r), intent(inout) :: node_bc_J_ctl
-!!        type(ctl_array_c2r), intent(inout) :: surf_bc_JN_ctl
+!!        type(ctl_array_c2r), intent(in) :: node_bc_J_ctl
+!!        type(ctl_array_c2r), intent(in) :: surf_bc_JN_ctl
 !!        type(boundary_condition_list), intent(inout) :: current_nod
 !!        type(boundary_condition_list), intent(inout) :: current_surf
 !!@endverbatim
@@ -43,8 +43,8 @@
       use set_surface_group_types
 !
       type(conductive_property), intent(in) :: cd_prop
-      type(ctl_array_c2r), intent(inout) :: node_bc_J_ctl
-      type(ctl_array_c2r), intent(inout) :: surf_bc_JN_ctl
+      type(ctl_array_c2r), intent(in) :: node_bc_J_ctl
+      type(ctl_array_c2r), intent(in) :: surf_bc_JN_ctl
       type(boundary_condition_list), intent(inout) :: current_nod
       type(boundary_condition_list), intent(inout) :: current_surf
 !
@@ -117,9 +117,6 @@
           end do
         end if
       end if
-!
-      call dealloc_control_array_c2_r(node_bc_J_ctl)
-      call dealloc_control_array_c2_r(surf_bc_JN_ctl)
 !
       end subroutine s_set_control_4_current
 !

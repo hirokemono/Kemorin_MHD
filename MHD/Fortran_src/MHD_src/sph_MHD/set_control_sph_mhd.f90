@@ -34,7 +34,11 @@
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!      subroutine set_control_SPH_MHD_bcs                              &
-!!     &         (MHD_prop, MHD_BC, nbc_ctl, sbc_ctl)
+!!     &         (MHD_prop, nbc_ctl, sbc_ctl, MHD_BC)
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(node_bc_control), intent(in) :: nbc_ctl
+!!        type(surf_bc_control), intent(in) :: sbc_ctl
+!!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!      subroutine set_control_SPH_MHD_monitors                         &
 !!     &         (smonitor_ctl, rj_fld, monitor)
 !!@endverbatim
@@ -254,7 +258,10 @@
 !   set boundary conditions
 !
       call set_control_SPH_MHD_bcs                                      &
-     &   (MHD_prop, MHD_BC, Dmodel_ctl%nbc_ctl, Dmodel_ctl%sbc_ctl)
+     &   (MHD_prop, Dmodel_ctl%nbc_ctl, Dmodel_ctl%sbc_ctl, MHD_BC)
+!
+      call dealloc_bc_4_node_ctl(Dmodel_ctl%nbc_ctl)
+      call dealloc_bc_4_surf_ctl(Dmodel_ctl%sbc_ctl)
 !
 !   set control parameters
 !
@@ -271,7 +278,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SPH_MHD_bcs                                &
-     &         (MHD_prop, MHD_BC, nbc_ctl, sbc_ctl)
+     &         (MHD_prop, nbc_ctl, sbc_ctl, MHD_BC)
 !
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
@@ -283,9 +290,10 @@
       use set_control_4_composition
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(node_bc_control), intent(in) :: nbc_ctl
+      type(surf_bc_control), intent(in) :: sbc_ctl
+!
       type(MHD_BC_lists), intent(inout) :: MHD_BC
-      type(node_bc_control), intent(inout) :: nbc_ctl
-      type(surf_bc_control), intent(inout) :: sbc_ctl
 !
 !
 !   set boundary conditions for temperature
@@ -294,6 +302,7 @@
       call s_set_control_4_temp(MHD_prop%ht_prop,                       &
      &    nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl,                &
      &    MHD_BC%temp_BC%nod_BC, MHD_BC%temp_BC%surf_BC)
+!
 !
 !   set boundary conditions for velocity
 !
@@ -307,8 +316,7 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_press'
       call s_set_control_4_press(MHD_prop%fl_prop,                      &
      &    nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl,                &
-     &    MHD_BC%press_BC%nod_BC, MHD_BC%press_BC%surf_BC)
-!
+     &    MHD_BC%press_BC%nod_BC, MHD_BC%press_BC%surf_BC)!
 !   set boundary conditions for composition variation
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_composition'

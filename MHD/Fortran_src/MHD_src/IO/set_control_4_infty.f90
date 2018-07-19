@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!     subroutine s_set_control_4_infty(surf_bc_INF_ctl)
-!!        type(ctl_array_c2r), intent(inout) :: surf_bc_INF_ctl
+!!        type(ctl_array_c2r), intent(in) :: surf_bc_INF_ctl
 !!@endverbatim
 !
       module set_control_4_infty
@@ -31,7 +31,7 @@
       use const_bc_infinity_surf
       use set_surface_group_types
 !
-      type(ctl_array_c2r), intent(inout) :: surf_bc_INF_ctl
+      type(ctl_array_c2r), intent(in) :: surf_bc_INF_ctl
 !
       integer (kind = kint) :: i
 !
@@ -58,8 +58,6 @@
      &       ibc_infty_type(i))
         end do
       end if
-!
-      call dealloc_control_array_c2_r(surf_bc_INF_ctl)
 !
       end subroutine s_set_control_4_infty
 !

@@ -353,7 +353,10 @@
 !   set boundary conditions
 !
       call set_control_SPH_MHD_bcs                                      &
-     &   (MHD_prop, MHD_BC, model_ctl%nbc_ctl, model_ctl%sbc_ctl)
+     &   (MHD_prop, model_ctl%nbc_ctl, model_ctl%sbc_ctl, MHD_BC)
+!
+      call dealloc_bc_4_node_ctl(model_ctl%nbc_ctl)
+      call dealloc_bc_4_surf_ctl(model_ctl%sbc_ctl)
 !
 !   set control parameters
 !

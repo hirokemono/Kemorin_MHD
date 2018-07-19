@@ -13,8 +13,8 @@
 !!     &         (cd_prop, node_bc_MP_ctl, surf_bc_MPN_ctl,             &
 !!     &          e_potential_nod, e_potential_surf)
 !!        type(conductive_property), intent(in)  :: cd_prop
-!!        type(ctl_array_c2r), intent(inout) :: node_bc_MP_ctl
-!!        type(ctl_array_c2r), intent(inout) :: surf_bc_MPN_ctl
+!!        type(ctl_array_c2r), intent(in) :: node_bc_MP_ctl
+!!        type(ctl_array_c2r), intent(in) :: surf_bc_MPN_ctl
 !!        type(boundary_condition_list), intent(inout)                  &
 !!                                      :: e_potential_nod
 !!        type(boundary_condition_list), intent(inout)                  &
@@ -46,8 +46,8 @@
       use set_surface_group_types
 !
       type(conductive_property), intent(in)  :: cd_prop
-      type(ctl_array_c2r), intent(inout) :: node_bc_MP_ctl
-      type(ctl_array_c2r), intent(inout) :: surf_bc_MPN_ctl
+      type(ctl_array_c2r), intent(in) :: node_bc_MP_ctl
+      type(ctl_array_c2r), intent(in) :: surf_bc_MPN_ctl
       type(boundary_condition_list), intent(inout) :: e_potential_nod
       type(boundary_condition_list), intent(inout) :: e_potential_surf
 !
@@ -104,9 +104,6 @@
      &        e_potential_surf%ibc_type(i) )
         end do
       end if
-!
-      call dealloc_control_array_c2_r(node_bc_MP_ctl)
-      call dealloc_control_array_c2_r(surf_bc_MPN_ctl)
 !
       end subroutine s_set_control_4_mag_p
 !
