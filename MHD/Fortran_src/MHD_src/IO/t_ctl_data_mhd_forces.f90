@@ -2,9 +2,6 @@
 !      module t_ctl_data_mhd_forces
 !
 !        programmed by H.Matsui on March. 2006
-!
-!!      subroutine dealloc_name_force_ctl(frc_ctl)
-!!        type(forces_control), intent(inout) :: frc_ctl
 !!
 !!      subroutine read_forces_ctl(hd_block, iflag, frc_ctl)
 !!        type(forces_control), intent(inout) :: frc_ctl
@@ -19,6 +16,12 @@
 !!      subroutine bcast_gravity_ctl(g_ctl)
 !!      subroutine bcast_coriolis_ctl(cor_ctl)
 !!      subroutine bcast_magneto_ctl(mcv_ctl)
+!!
+!!      subroutine dealloc_name_force_ctl(frc_ctl)
+!!        type(forces_control), intent(inout) :: frc_ctl
+!!      subroutine dealloc_gravity_ctl(g_ctl)
+!!      subroutine dealloc_coriolis_ctl(cor_ctl)
+!!      subroutine dealloc_magneto_ctl(mcv_ctl)
 !!
 !!    begin forces_define
 !!!!!  define of forces !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -169,18 +172,6 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_name_force_ctl(frc_ctl)
-!
-      type(forces_control), intent(inout) :: frc_ctl
-!
-!
-      call dealloc_control_array_chara(frc_ctl%force_names)
-!
-      end subroutine dealloc_name_force_ctl
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine read_forces_ctl(hd_block, iflag, frc_ctl)
 !
       character(len=kchara), intent(in) :: hd_block
@@ -324,6 +315,53 @@
       call bcast_ctl_type_c1(mcv_ctl%magneto_cv)
 !
       end subroutine bcast_magneto_ctl
+!
+!   --------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_name_force_ctl(frc_ctl)
+!
+      type(forces_control), intent(inout) :: frc_ctl
+!
+!
+      call dealloc_control_array_chara(frc_ctl%force_names)
+!
+      end subroutine dealloc_name_force_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_gravity_ctl(g_ctl)
+!
+      type(gravity_control), intent(inout) :: g_ctl
+!
+!
+      call dealloc_control_array_c_r(g_ctl%gravity_vector)
+      g_ctl%gravity%iflag = 0
+!
+      end subroutine dealloc_gravity_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_coriolis_ctl(cor_ctl)
+!
+      type(coriolis_control), intent(inout) :: cor_ctl
+!
+!
+      call dealloc_control_array_c_r(cor_ctl%system_rotation)
+!
+      end subroutine dealloc_coriolis_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_magneto_ctl(mcv_ctl)
+!
+      type(magneto_convection_control), intent(inout) :: mcv_ctl
+!
+!
+      call dealloc_control_array_c_r(mcv_ctl%ext_magne)
+      mcv_ctl%magneto_cv%iflag = 0
+!
+      end subroutine dealloc_magneto_ctl
 !
 !   --------------------------------------------------------------------
 !

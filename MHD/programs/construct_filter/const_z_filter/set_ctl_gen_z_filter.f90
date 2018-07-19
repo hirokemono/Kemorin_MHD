@@ -4,7 +4,8 @@
 !     Written by H. Matsui on July, 2006
 !
 !!      subroutine set_ctl_params_4_gen_z_filter                        &
-!!     &         (mat_crs, CG_param, DJDS_param)
+!!     &         (z_filter_ctl, mat_crs, CG_param, DJDS_param)
+!!        type(ctl_data_gen_z_filter), intent(in) :: z_filter_ctl
 !!        type(CRS_matrix), intent(inout) :: mat_crs
 !!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(inout) :: DJDS_param
@@ -12,10 +13,13 @@
       module set_ctl_gen_z_filter
 !
       use m_precision
+      use t_ctl_data_gen_z_filter
       use t_crs_matrix
       use t_iccg_parameter
 !
       implicit none
+!
+      private :: set_ctl_parameters_z_filter
 !
 !   --------------------------------------------------------------------
 !
@@ -24,18 +28,57 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_params_4_gen_z_filter                          &
-     &         (mat_crs, CG_param, DJDS_param)
+     &         (z_filter_ctl, mat_crs, CG_param, DJDS_param)
+!
+      use m_constants
+      use m_machine_parameter
+      use m_commute_filter_z
+!
+      use set_parallel_file_name
+!
+      type(ctl_data_gen_z_filter), intent(in) :: z_filter_ctl
+!
+      type(CRS_matrix), intent(inout) :: mat_crs
+      type(CG_poarameter), intent(inout) :: CG_param
+      type(DJDS_poarameter), intent(inout) :: DJDS_param
+!
+!
+      if (z_filter_ctl%z_filter_head_ctl%iflag .ne. 0) then
+        filter_z_file_head = z_filter_ctl%z_filter_head_ctl%charavalue
+      else
+        filter_z_file_head = 'filter_node_l.0'
+      end if
+      call add_dat_extension(filter_z_file_head, filter_z_file_name)
+      write(*,*) 'filter_z_file_name ', filter_z_file_name
+!
+      if(z_filter_ctl%ip_smp_z_ctl%iflag .ne. 0) then
+        np_smp = z_filter_ctl%ip_smp_z_ctl%intvalue
+      else
+        np_smp = 1
+      end if
+      write(*,*) 'np_smp', np_smp
+!
+      call set_ctl_parameters_z_filter                                  &
+     &   (z_filter_ctl%gen_f_ctl, mat_crs, CG_param, DJDS_param)
+!
+      end subroutine set_ctl_params_4_gen_z_filter
+!
+!   --------------------------------------------------------------------
+!
+      subroutine set_ctl_parameters_z_filter                            &
+     &         (gen_f_ctl, mat_crs, CG_param, DJDS_param)
 !
       use m_constants
       use m_machine_parameter
       use m_commute_filter_z
       use m_ctl_data_4_plane_model
-      use m_ctl_data_gen_filter
-      use m_ctl_data_gen_z_filter
       use m_spheric_constants
+      use t_ctl_data_gen_filter
 !
       use set_parallel_file_name
       use skip_comment_f
+!
+      type(ctl_data_gen_filter), intent(in) :: gen_f_ctl
 !
       type(CRS_matrix), intent(inout) :: mat_crs
       type(CG_poarameter), intent(inout) :: CG_param
@@ -46,21 +89,6 @@
 !
 !
       pi = four * atan(one)
-!
-      if (z_filter_head_ctl%iflag .ne. 0) then
-        filter_z_file_head = z_filter_head_ctl%charavalue
-      else
-        filter_z_file_head = 'filter_node_l.0'
-      end if
-      call add_dat_extension(filter_z_file_head, filter_z_file_name)
-      write(*,*) 'filter_z_file_name ', filter_z_file_name
-!
-      if (ip_smp_z_ctl%iflag .ne. 0) then
-        np_smp = ip_smp_z_ctl%intvalue
-      else
-        np_smp = 1
-      end if
-      write(*,*) 'np_smp', np_smp
 !
 !    set plane layer parameters
 !
@@ -99,8 +127,8 @@
 !
 !   set number of integration points
 !
-      if (num_int_points_ctl%iflag .ne. 0) then
-        i_int_z_filter = num_int_points_ctl%intvalue
+      if(gen_f_ctl%num_int_points_ctl%iflag .ne. 0) then
+        i_int_z_filter = gen_f_ctl%num_int_points_ctl%intvalue
       else
         i_int_z_filter = 6
       end if
@@ -108,21 +136,21 @@
 !
 !   set filter types
 !
-      if (reference_filter_ctl%icou .ne. 0) then
-        num_filter_z = reference_filter_ctl%num
+      if(gen_f_ctl%reference_filter_ctl%icou .ne. 0) then
+        num_filter_z = gen_f_ctl%reference_filter_ctl%num
       else
         num_filter_z = 1
       end if
-      if (horizontal_filter_ctl%icou .ne. 0) then
-        num_filter_h = horizontal_filter_ctl%num
+      if(gen_f_ctl%horizontal_filter_ctl%icou .ne. 0) then
+        num_filter_h = gen_f_ctl%horizontal_filter_ctl%num
       else
         num_filter_h = 1
       end if
 !
-      type_filter_z = reference_filter_ctl%c_tbl(1)
-      type_filter_h = horizontal_filter_ctl%c_tbl(1)
-      f_width =   reference_filter_ctl%vect(1)
-      f_width_h = horizontal_filter_ctl%vect(1)
+      type_filter_z = gen_f_ctl%reference_filter_ctl%c_tbl(1)
+      type_filter_h = gen_f_ctl%horizontal_filter_ctl%c_tbl(1)
+      f_width =   gen_f_ctl%reference_filter_ctl%vect(1)
+      f_width_h = gen_f_ctl%horizontal_filter_ctl%vect(1)
 !
       if      (cmp_no_case(type_filter_z, 'tophat')) then
        iflag_filter = 0
@@ -143,22 +171,23 @@
       write(*,*) 'iflag_filter', iflag_filter, iflag_filter_h
       write(*,*) 'width', f_width, f_width_h
 !
-      if (num_ele_4_filter_ctl%iflag .ne. 0) then
-        numfilter = num_ele_4_filter_ctl%intvalue
+      if(gen_f_ctl%num_ele_4_filter_ctl%iflag .ne. 0) then
+        numfilter = gen_f_ctl%num_ele_4_filter_ctl%intvalue
       else
         numfilter = 2
       end if
 !
 !
-      ncomp_norm = ref_filter_mom_ctl%num
+      ncomp_norm = gen_f_ctl%ref_filter_mom_ctl%num
       call allocate_z_filter_mom_params
 !
       if (ncomp_norm.gt.0) then
         kcomp_norm(1:ncomp_norm)                                        &
-     &                      = ref_filter_mom_ctl%ivec(1:ncomp_norm)
-        f_mom(1:ncomp_norm) = ref_filter_mom_ctl%vect(1:ncomp_norm)
+     &              = gen_f_ctl%ref_filter_mom_ctl%ivec(1:ncomp_norm)
+        f_mom(1:ncomp_norm)                                             &
+     &              = gen_f_ctl%ref_filter_mom_ctl%vect(1:ncomp_norm)
         filter_moment_type(1:ncomp_norm)                                &
-     &                      = ref_filter_mom_ctl%c_tbl(1:ncomp_norm)
+     &              = gen_f_ctl%ref_filter_mom_ctl%c_tbl(1:ncomp_norm)
         write(*,*) 'kcomp_norm(i), f_mom(i), filter_moment_type(i)'
         do i = 1, ncomp_norm
           write(*,*) i, kcomp_norm(i), f_mom(i),                        &
@@ -169,20 +198,17 @@
 !     set solver information
 !
       mat_crs%SOLVER_crs = 'CRS'
-      if(f_solver_type_ctl%iflag .gt. 0) then
-        mat_crs%SOLVER_crs =  f_solver_type_ctl%charavalue
+      if(gen_f_ctl%f_solver_type_ctl%iflag .gt. 0) then
+        mat_crs%SOLVER_crs =  gen_f_ctl%f_solver_type_ctl%charavalue
       end if
 !
-      call set_control_4_CG_solver(CG_filter_ctl, CG_param)
+      call set_control_4_CG_solver(gen_f_ctl%CG_filter_ctl, CG_param)
       call set_control_4_DJDS_solver                                    &
-     &   (CG_filter_ctl%DJDS_ctl, DJDS_param)
+     &   (gen_f_ctl%CG_filter_ctl%DJDS_ctl, DJDS_param)
 !
       call copy_from_iccg_parameter(CG_param, mat_crs)
 !
-      call dealloc_control_array_c_r(reference_filter_ctl)
-      call dealloc_control_array_c_r(horizontal_filter_ctl)
-!
-      end subroutine set_ctl_params_4_gen_z_filter
+      end subroutine set_ctl_parameters_z_filter
 !
 !   --------------------------------------------------------------------
 !

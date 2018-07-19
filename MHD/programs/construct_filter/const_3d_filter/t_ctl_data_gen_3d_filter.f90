@@ -3,17 +3,18 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine read_control_4_gen_filter(fil3_ctl)
-!!      subroutine read_control_4_sort_filter(fil3_ctl)
-!!      subroutine dealloc_dx_solver_param_ctl(fil3_ctl)
+!!      subroutine read_control_4_gen_filter(filter3d_ctl)
+!!      subroutine read_control_4_sort_filter(filter3d_ctl)
+!!      subroutine dealloc_ctl_data_gen_3d_filter(fil3_ctl)
+!!        type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
 !!        type(ctl_data_gen_3d_filter), intent(inout) :: fil3_ctl
 !!
 !
       module t_ctl_data_gen_3d_filter
 !
       use m_precision
-      use m_ctl_data_gen_filter
       use m_read_control_elements
+      use t_ctl_data_gen_filter
       use t_ctl_data_4_platforms
       use t_read_control_arrays
       use t_ctl_data_filter_files
@@ -30,7 +31,7 @@
      &                        :: fname_sort_flt_ctl = "ctl_sort_filter"
 !
 !
-      type ctl_data_gen_3d_filter
+      type ctl_data_3d_filter
 !>        Structure for file settings
         type(platform_data_control) :: gen_filter_plt
 !>        Structure for filtering groups
@@ -47,6 +48,11 @@
         type(read_real_item) :: eps_esize_ctl
         type(read_real_item) :: sigma_esize_ctl
         type(read_real_item) :: sigma_diag_esize_ctl
+      end type ctl_data_3d_filter
+!
+      type ctl_data_gen_3d_filter
+        type(ctl_data_gen_filter) :: gen_f_ctl
+        type(ctl_data_3d_filter) :: fil3_ctl
       end type ctl_data_gen_3d_filter
 !
 !     Top level
@@ -110,6 +116,8 @@
 !
       private :: hd_filter_fnames, i_filter_fnames
       private :: read_dx_solver_param_ctl
+      private :: read_const_filter_ctl_data
+      private :: dealloc_dx_solver_param_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -117,9 +125,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_gen_filter(fil3_ctl)
+      subroutine read_control_4_gen_filter(filter3d_ctl)
 !
-      type(ctl_data_gen_3d_filter), intent(inout) :: fil3_ctl
+      type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
 !
 !
       ctl_file_code = filter_ctl_file_code
@@ -127,7 +135,8 @@
       open(ctl_file_code, file=fname_filter_ctl, status='old')
 !
       call load_ctl_label_and_line
-      call read_const_filter_ctl_data(fil3_ctl)
+      call read_const_filter_ctl_data                                   &
+     &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl)
 !
       close(ctl_file_code)
 !
@@ -135,9 +144,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_4_sort_filter(fil3_ctl)
+      subroutine read_control_4_sort_filter(filter3d_ctl)
 !
-      type(ctl_data_gen_3d_filter), intent(inout) :: fil3_ctl
+      type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
 !
 !
       ctl_file_code = filter_ctl_file_code
@@ -145,21 +154,34 @@
       open(ctl_file_code, file=fname_sort_flt_ctl, status='old')
 !
       call load_ctl_label_and_line
-      call read_const_filter_ctl_data(fil3_ctl)
+      call read_const_filter_ctl_data                                   &
+     &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl)
 !
       close(ctl_file_code)
 !
       end subroutine read_control_4_sort_filter
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine dealloc_ctl_data_gen_3d_filter(filter3d_ctl)
+!
+      type(ctl_data_gen_3d_filter), intent(inout) :: filter3d_ctl
+!
+!
+      call dealloc_filter_param_ctl(filter3d_ctl%gen_f_ctl)
+      call dealloc_dx_solver_param_ctl(filter3d_ctl%fil3_ctl)
+!
+      end subroutine dealloc_ctl_data_gen_3d_filter
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_const_filter_ctl_data(fil3_ctl)
+      subroutine read_const_filter_ctl_data(gen_f_ctl, fil3_ctl)
 !
-      use m_ctl_data_gen_filter
       use m_ctl_data_org_filter_name
 !
-      type(ctl_data_gen_3d_filter), intent(inout) :: fil3_ctl
+      type(ctl_data_gen_filter), intent(inout) :: gen_f_ctl
+      type(ctl_data_3d_filter), intent(inout) :: fil3_ctl
 !
 !
       if(right_begin_flag(hd_filter_control) .eq. 0) return
@@ -174,7 +196,7 @@
         call read_control_platforms                                     &
      &     (hd_platform, i_platform, fil3_ctl%gen_filter_plt)
 !
-        call read_filter_param_ctl
+        call read_filter_param_ctl(gen_f_ctl)
         call read_filter_fnames_control                                 &
      &     (hd_filter_fnames, i_filter_fnames, fil3_ctl%ffile_3d_ctl)
         call read_org_filter_fnames_ctl
@@ -190,7 +212,7 @@
 !
       subroutine read_filter_area_ctl(fil3_ctl)
 !
-      type(ctl_data_gen_3d_filter), intent(inout) :: fil3_ctl
+      type(ctl_data_3d_filter), intent(inout) :: fil3_ctl
 !
 !
       if(right_begin_flag(hd_filter_area_ctl) .eq. 0) return
@@ -211,7 +233,7 @@
 !
       subroutine read_element_size_ctl(fil3_ctl)
 !
-      type(ctl_data_gen_3d_filter), intent(inout) :: fil3_ctl
+      type(ctl_data_3d_filter), intent(inout) :: fil3_ctl
 !
 !
       if(right_begin_flag(hd_deltax_ctl) .eq. 0) return
@@ -234,7 +256,7 @@
 !
       subroutine read_dx_solver_param_ctl(fil3_ctl)
 !
-      type(ctl_data_gen_3d_filter), intent(inout) :: fil3_ctl
+      type(ctl_data_3d_filter), intent(inout) :: fil3_ctl
 !
 !
       if(right_begin_flag(hd_esize_solver) .eq. 0) return
@@ -268,7 +290,7 @@
 !
       subroutine dealloc_dx_solver_param_ctl(fil3_ctl)
 !
-      type(ctl_data_gen_3d_filter), intent(inout) :: fil3_ctl
+      type(ctl_data_3d_filter), intent(inout) :: fil3_ctl
 !
 !
       call dealloc_control_array_chara(fil3_ctl%filter_area_ctl)

@@ -9,10 +9,10 @@
 !!@verbatim
 !!      subroutine s_set_control_4_force                                &
 !!     &         (frc_ctl, g_ctl, cor_ctl, mcv_ctl, fl_prop, cd_prop)
-!!        type(forces_control), intent(inout) :: frc_ctl
-!!        type(gravity_control), intent(inout) :: g_ctl
-!!        type(coriolis_control), intent(inout) :: cor_ctl
-!!        type(magneto_convection_control), intent(inout) :: mcv_ctl
+!!        type(forces_control), intent(in) :: frc_ctl
+!!        type(gravity_control), intent(in) :: g_ctl
+!!        type(coriolis_control), intent(in) :: cor_ctl
+!!        type(magneto_convection_control), intent(in) :: mcv_ctl
 !!        type(fluid_property), intent(inout) :: fl_prop
 !!        type(conductive_property), intent(inout) :: cd_prop
 !!@endverbatim
@@ -40,10 +40,10 @@
       use t_ctl_data_mhd_forces
       use skip_comment_f
 !
-      type(forces_control), intent(inout) :: frc_ctl
-      type(gravity_control), intent(inout) :: g_ctl
-      type(coriolis_control), intent(inout) :: cor_ctl
-      type(magneto_convection_control), intent(inout) :: mcv_ctl
+      type(forces_control), intent(in) :: frc_ctl
+      type(gravity_control), intent(in) :: g_ctl
+      type(coriolis_control), intent(in) :: cor_ctl
+      type(magneto_convection_control), intent(in) :: mcv_ctl
 !
       type(fluid_property), intent(inout) :: fl_prop
       type(conductive_property), intent(inout) :: cd_prop
@@ -73,7 +73,6 @@
         call alloc_force_list(fl_prop)
         fl_prop%name_force(1:fl_prop%num_force)                         &
      &          = frc_ctl%force_names%c_tbl(1:fl_prop%num_force)
-        call dealloc_name_force_ctl(frc_ctl)
 !
         do i = 1, fl_prop%num_force
           tmpchara = fl_prop%name_force(i)
@@ -256,10 +255,6 @@
         end if
       end if
 !
-      call dealloc_control_array_c_r(g_ctl%gravity_vector)
-      call dealloc_control_array_c_r(cor_ctl%system_rotation)
-      call dealloc_control_array_c_r(mcv_ctl%ext_magne)
-!
      if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'name_force '
         do i = 1, fl_prop%num_force
@@ -277,7 +272,6 @@
           write(*,'(a, 1p3E25.15e3)') 'rotation:', fl_prop%sys_rot(1:3)
         end if
       end if
-!
 !
       end subroutine s_set_control_4_force
 !

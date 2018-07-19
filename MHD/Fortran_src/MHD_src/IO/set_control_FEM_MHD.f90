@@ -136,6 +136,11 @@
       call set_control_rotation_form(MHD_prop%iflag_all_scheme,         &
      &    MHD_prop%fl_prop, fmctl_ctl%mevo_ctl, FEM_prm)
 !
+      call dealloc_name_force_ctl(model_ctl%frc_ctl)
+      call dealloc_gravity_ctl(model_ctl%g_ctl)
+      call dealloc_coriolis_ctl(model_ctl%cor_ctl)
+      call dealloc_magneto_ctl(model_ctl%mcv_ctl)
+!
 !   set parameters for SGS model
 !
       call set_control_SGS_model                                        &
@@ -167,9 +172,12 @@
 !   set control parameters
 !
       call s_set_control_4_normalize                                    &
-     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, MHD_prop%MHD_coef_list,   &
-     &    model_ctl%dless_ctl, model_ctl%eqs_ctl)
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
+     &    MHD_prop%cp_prop, model_ctl%dless_ctl, model_ctl%eqs_ctl,     &
+     &    MHD_prop%MHD_coef_list)
+!
+      call dealloc_dimless_ctl(model_ctl%dless_ctl)
+      call dealloc_coef_term_ctl(model_ctl%eqs_ctl)
 !
 !   set boundary conditions
 !

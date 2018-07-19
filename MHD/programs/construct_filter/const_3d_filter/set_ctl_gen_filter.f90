@@ -3,24 +3,29 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!!      subroutine set_ctl_params_gen_filter(fil3_ctl, FEM_elens)
-!!        type(ctl_data_gen_3d_filter), intent(in) :: fil3_ctl
-!!      subroutine set_file_heads_3d_comm_filter(ffile_ctl)
-!!        type(filter_file_control), intent(in) :: ffile_ctl
-!!      subroutine set_numdomain_3d_comm_filter(fil3_ctl, nprocs)
-!!        type(ctl_data_gen_3d_filter), intent(in) :: fil3_ctl
+!!      subroutine set_controls_gen_3dfilter                            &
+!!     &         (filter3d_ctl, FEM_elens, mesh_file)
+!!      subroutine set_controls_sort_3dfilter                           &
+!!     &         (filter3d_ctl, mesh_file, nprocs)
+!!        type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
+!!        type(gradient_model_data_type), intent(inout) :: FEM_elens
+!!        type(field_IO_params), intent(inout) ::  mesh_file
 !
       module set_ctl_gen_filter
 !
       use m_precision
       use m_machine_parameter
       use t_file_IO_parameter
-      use m_ctl_data_gen_filter
+      use t_ctl_data_gen_filter
       use t_ctl_data_gen_3d_filter
       use m_ctl_params_4_gen_filter
       use m_ctl_param_newdom_filter
 !
       implicit none
+!
+      private :: set_ctl_params_gen_filter
+      private :: set_file_heads_3d_comm_filter
+      private :: set_numdomain_3d_comm_filter
 !
 !   --------------------------------------------------------------------
 !
@@ -28,7 +33,54 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_gen_filter(fil3_ctl, FEM_elens)
+      subroutine set_controls_gen_3dfilter                              &
+     &         (filter3d_ctl, FEM_elens, mesh_file)
+!
+      use t_filter_elength
+      use set_control_platform_data
+!
+      type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
+      type(gradient_model_data_type), intent(inout) :: FEM_elens
+      type(field_IO_params), intent(inout) ::  mesh_file
+!
+!
+!
+      if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_gen_filter'
+      call set_control_mesh_def                                         &
+     &   (filter3d_ctl%fil3_ctl%gen_filter_plt, mesh_file)
+      call set_file_heads_3d_comm_filter                                &
+     &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl)
+      call set_ctl_params_gen_filter                                    &
+     &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl, FEM_elens)
+!
+      end subroutine set_controls_gen_3dfilter
+!
+!   --------------------------------------------------------------------
+!
+      subroutine set_controls_sort_3dfilter                             &
+     &         (filter3d_ctl, mesh_file, nprocs)
+!
+      use set_control_platform_data
+!
+      type(ctl_data_gen_3d_filter), intent(in) :: filter3d_ctl
+      type(field_IO_params), intent(inout) ::  mesh_file
+      integer(kind = kint), intent(inout) :: nprocs
+!
+!
+      call set_control_mesh_def                                         &
+     &   (filter3d_ctl%fil3_ctl%gen_filter_plt, mesh_file)
+      call set_file_heads_3d_comm_filter                                &
+     &   (filter3d_ctl%gen_f_ctl, filter3d_ctl%fil3_ctl%ffile_3d_ctl)
+      call set_numdomain_3d_comm_filter                                 &
+     &   (filter3d_ctl%fil3_ctl, nprocs)
+!
+      end subroutine set_controls_sort_3dfilter
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine set_ctl_params_gen_filter                              &
+     &         (gen_f_ctl, fil3_ctl, FEM_elens)
 !
       use calypso_mpi
       use m_error_IDs
@@ -39,7 +91,8 @@
 !
       use skip_comment_f
 !
-      type(ctl_data_gen_3d_filter), intent(in) :: fil3_ctl
+      type(ctl_data_gen_filter), intent(in) :: gen_f_ctl
+      type(ctl_data_3d_filter), intent(in) :: fil3_ctl
       type(gradient_model_data_type), intent(inout) :: FEM_elens
 !
       integer(kind = kint) :: i
@@ -52,13 +105,13 @@
       end if
 !
       num_int_points = 4
-      if (num_int_points_ctl%iflag .ne. 0) then
-        num_int_points = num_int_points_ctl%intvalue
+      if(gen_f_ctl%num_int_points_ctl%iflag .ne. 0) then
+        num_int_points = gen_f_ctl%num_int_points_ctl%intvalue
       end if
 !
       minimum_comp = 11
-      if(minimum_comp_ctl%iflag .gt. 0) then
-        minimum_comp = minimum_comp_ctl%intvalue
+      if(gen_f_ctl%minimum_comp_ctl%iflag .gt. 0) then
+        minimum_comp = gen_f_ctl%minimum_comp_ctl%intvalue
       end if
 !
       num_filtering_grp = fil3_ctl%filter_area_ctl%num
@@ -86,7 +139,7 @@
      &   write(*,*) 'filter_area_name ', filter_area_name
 !
 !
-      num_ref_filter = reference_filter_ctl%num
+      num_ref_filter = gen_f_ctl%reference_filter_ctl%num
       FEM_elens%filter_conf%nf_type = num_ref_filter
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'num_ref_filter', num_ref_filter
@@ -97,17 +150,19 @@
         
         do i = 1, num_ref_filter
           iref_filter_type(i) = iflag_tophat_filter
-          if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Gaussian')     &
-     &          ) iref_filter_type(i) = iflag_gaussian_filter
-          if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Linear')       &
-     &          ) iref_filter_type(i) = iflag_linear_filter
-          if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Tophat')       &
-     &          ) iref_filter_type(i) = iflag_tophat_filter
+          tmpchara = gen_f_ctl%reference_filter_ctl%c_tbl(i)
+          if(cmp_no_case(tmpchara, 'Gaussian')) then
+            iref_filter_type(i) = iflag_gaussian_filter
+          else if(cmp_no_case(tmpchara, 'Linear')) then
+            iref_filter_type(i) = iflag_linear_filter
+          else if(cmp_no_case(tmpchara, 'Tophat')) then
+            iref_filter_type(i) = iflag_tophat_filter
+          end if
 !
           FEM_elens%filter_conf%filter_type(i)                          &
-     &          = reference_filter_ctl%c_tbl(i)
+     &          = gen_f_ctl%reference_filter_ctl%c_tbl(i)
 !
-          ref_filter_width(i) = reference_filter_ctl%vect(i)
+          ref_filter_width(i) = gen_f_ctl%reference_filter_ctl%vect(i)
           FEM_elens%filter_conf%f_width(i) = ref_filter_width(i)
         end do
 !
@@ -118,9 +173,7 @@
 !
       end if
 !
-      call dealloc_control_array_c_r(reference_filter_ctl)
-!
-      num_moments_order = ref_filter_mom_ctl%num
+      num_moments_order = gen_f_ctl%ref_filter_mom_ctl%num
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'num_moments_order', num_moments_order
 !
@@ -128,8 +181,8 @@
         call allocate_moment_parameter
 !
         do i = 1, num_moments_order
-          mom_order(i) = ref_filter_mom_ctl%ivec(i)
-          mom_value(i) = ref_filter_mom_ctl%vect(i)
+          mom_order(i) = gen_f_ctl%ref_filter_mom_ctl%ivec(i)
+          mom_value(i) = gen_f_ctl%ref_filter_mom_ctl%vect(i)
         end do
 !
         max_num_order_1d = mom_order(1)
@@ -141,7 +194,8 @@
         num_order_1d = num_moments_order
 !
         do i = 1, num_moments_order
-          if(cmp_no_case(ref_filter_mom_ctl%c_tbl(i), 'refered')) then
+          tmpchara = gen_f_ctl%ref_filter_mom_ctl%c_tbl(i)
+          if(cmp_no_case(tmpchara, 'refered')) then
             iref_mom_type(i) = 1
           else
             iref_mom_type(i) = 0
@@ -155,18 +209,18 @@
         end if
       end if
 !
-      if (minimum_det_ctl%iflag .gt. 0) then
-        minimum_det_mat = minimum_det_ctl%realvalue
+      if(gen_f_ctl%minimum_det_ctl%iflag .gt. 0) then
+        minimum_det_mat = gen_f_ctl%minimum_det_ctl%realvalue
       end if
 !
-      if (maximum_neighbour_ctl%iflag .gt. 0) then
-        maximum_neighbour = maximum_neighbour_ctl%intvalue
+      if(gen_f_ctl%maximum_neighbour_ctl%iflag .gt. 0) then
+        maximum_neighbour = gen_f_ctl%maximum_neighbour_ctl%intvalue
       else
         maximum_neighbour = 2
       end if
 !
-      if (tgt_filter_type_ctl%iflag .gt. 0) then
-        tmpchara = tgt_filter_type_ctl%charavalue
+      if (gen_f_ctl%tgt_filter_type_ctl%iflag .gt. 0) then
+        tmpchara = gen_f_ctl%tgt_filter_type_ctl%charavalue
         if     (cmp_no_case(tmpchara,'TOPHAT')) then
           iflag_tgt_filter_type = 2
         else if(cmp_no_case(tmpchara,'LINEAR')) then
@@ -186,8 +240,8 @@
         iflag_tgt_filter_type = 0
       end if
 !
-      if (filter_correction_ctl%iflag .gt. 0) then
-        if      (yes_flag(filter_correction_ctl%charavalue)) then
+      if(gen_f_ctl%filter_correction_ctl%iflag .gt. 0) then
+        if(yes_flag(gen_f_ctl%filter_correction_ctl%charavalue)) then
           if (iflag_tgt_filter_type .gt. 0) then
             iflag_tgt_filter_type = -iflag_tgt_filter_type
           end if
@@ -205,8 +259,8 @@
       end if
 !
 !
-      if (filter_fixed_point_ctl%iflag .gt. 0) then
-        if      (yes_flag(filter_fixed_point_ctl%charavalue)) then
+      if(gen_f_ctl%filter_fixed_point_ctl%iflag .gt. 0) then
+        if(yes_flag(gen_f_ctl%filter_fixed_point_ctl%charavalue)) then
           iflag_use_fixed_points = 1
         else
           iflag_use_fixed_points = 0
@@ -215,8 +269,8 @@
         iflag_use_fixed_points = 0
       end if
 !
-      if (negative_center_ctl%iflag .gt. 0) then
-        if      (yes_flag(negative_center_ctl%charavalue)) then
+      if(gen_f_ctl%negative_center_ctl%iflag .gt. 0) then
+        if(yes_flag(gen_f_ctl%negative_center_ctl%charavalue)) then
           iflag_negative_center = 0
         else
           iflag_negative_center = 1
@@ -225,18 +279,19 @@
         iflag_negative_center = 1
       end if
 !
-      if (ilevel_filter_error_info%iflag .gt. 0) then
-        iflag_err_level_filter = ilevel_filter_error_info%intvalue
+      if(gen_f_ctl%ilevel_filter_error_info%iflag .gt. 0) then
+        iflag_err_level_filter                                          &
+     &      = gen_f_ctl%ilevel_filter_error_info%intvalue
       else
         iflag_err_level_filter = 0
       end if
 !
-      if (maximum_rms_ctl%iflag .gt. 0) then
-        max_rms_weight_limit = maximum_rms_ctl%realvalue
+      if(gen_f_ctl%maximum_rms_ctl%iflag .gt. 0) then
+        max_rms_weight_limit = gen_f_ctl%maximum_rms_ctl%realvalue
       end if
 !
-      if (momentum_type_ctl%iflag .gt. 0) then
-        tmpchara = momentum_type_ctl%charavalue
+      if(gen_f_ctl%momentum_type_ctl%iflag .gt. 0) then
+        tmpchara = gen_f_ctl%momentum_type_ctl%charavalue
         if     (cmp_no_case(tmpchara,'NO_CROSS')) then
           iflag_momentum_type = 1
         else if(cmp_no_case(tmpchara,'NORMAL')) then
@@ -248,9 +303,9 @@
         iflag_momentum_type = 0
       end if
 !
-      if (ordering_list_ctl%iflag.gt.0                                  &
+      if(gen_f_ctl%ordering_list_ctl%iflag.gt.0                        &
      &     .and. iflag_tgt_filter_type.eq.0) then
-        tmpchara = ordering_list_ctl%charavalue
+        tmpchara = gen_f_ctl%ordering_list_ctl%charavalue
         if     (cmp_no_case(tmpchara,'CONNECTION')) then
           iflag_ordering_list = 0
         else if(cmp_no_case(tmpchara,'DISTANCE')) then
@@ -272,54 +327,54 @@
       end if
 !
 !
-      if(cmp_no_case(f_solver_type_ctl%charavalue,'ITERATIVE')) then
-        id_solver_type = 1
-      else
-        id_solver_type = 0
+      id_solver_type = 0
+      if(gen_f_ctl%f_solver_type_ctl%iflag .gt. 0) then
+        tmpchara = gen_f_ctl%f_solver_type_ctl%charavalue
+        if(cmp_no_case(tmpchara,'ITERATIVE')) id_solver_type = 1
       end if
 !
-      if (start_node_ctl%iflag .gt. 0) then
-        inod_start_filter = start_node_ctl%intvalue
+      if(gen_f_ctl%start_node_ctl%iflag .gt. 0) then
+        inod_start_filter = gen_f_ctl%start_node_ctl%intvalue
       else
         inod_start_filter = 1
       end if
 !
-      if (end_node_ctl%iflag .gt. 0) then
-        inod_end_filter = end_node_ctl%intvalue
+      if(gen_f_ctl%end_node_ctl%iflag .gt. 0) then
+        inod_end_filter = gen_f_ctl%end_node_ctl%intvalue
       else
         inod_end_filter = -1
       end if
 !
-      if (ist_num_free_ctl%iflag .gt. 0) then
-        ist_num_free = ist_num_free_ctl%intvalue
+      if(gen_f_ctl%ist_num_free_ctl%iflag .gt. 0) then
+        ist_num_free = gen_f_ctl%ist_num_free_ctl%intvalue
       else
         ist_num_free = -1
       end if
 !
 !
-      if (ied_num_free_ctl%iflag .gt. 0) then
-        ied_num_free = ied_num_free_ctl%intvalue
+      if(gen_f_ctl%ied_num_free_ctl%iflag .gt. 0) then
+        ied_num_free = gen_f_ctl%ied_num_free_ctl%intvalue
       else
         ied_num_free = -1
       end if
 !
-      if(CG_filter_ctl%method_ctl%iflag .gt. 0)  then
-        method =  CG_filter_ctl%method_ctl%charavalue
+      if(gen_f_ctl%CG_filter_ctl%method_ctl%iflag .gt. 0)  then
+        method =  gen_f_ctl%CG_filter_ctl%method_ctl%charavalue
       end if
-      if(CG_filter_ctl%precond_ctl%iflag .gt. 0) then
-        precond = CG_filter_ctl%precond_ctl%charavalue
+      if(gen_f_ctl%CG_filter_ctl%precond_ctl%iflag .gt. 0) then
+        precond = gen_f_ctl%CG_filter_ctl%precond_ctl%charavalue
       end if
-      if(CG_filter_ctl%itr_ctl%iflag .gt. 0)        then
-        itr = CG_filter_ctl%itr_ctl%intvalue
+      if(gen_f_ctl%CG_filter_ctl%itr_ctl%iflag .gt. 0)        then
+        itr = gen_f_ctl%CG_filter_ctl%itr_ctl%intvalue
       end if
-      if(CG_filter_ctl%eps_ctl%iflag .gt. 0)        then
-        eps = CG_filter_ctl%eps_ctl%realvalue
+      if(gen_f_ctl%CG_filter_ctl%eps_ctl%iflag .gt. 0)        then
+        eps = gen_f_ctl%CG_filter_ctl%eps_ctl%realvalue
       end if
-      if(CG_filter_ctl%sigma_ctl%iflag .gt. 0)      then
-        sigma = CG_filter_ctl%sigma_ctl%realvalue
+      if(gen_f_ctl%CG_filter_ctl%sigma_ctl%iflag .gt. 0)      then
+        sigma = gen_f_ctl%CG_filter_ctl%sigma_ctl%realvalue
       end if
-      if(CG_filter_ctl%sigma_diag_ctl%iflag .gt. 0) then
-        sigma_diag =  CG_filter_ctl%sigma_diag_ctl%realvalue
+      if(gen_f_ctl%CG_filter_ctl%sigma_diag_ctl%iflag .gt. 0) then
+        sigma_diag =  gen_f_ctl%CG_filter_ctl%sigma_diag_ctl%realvalue
       end if
 !
 !
@@ -366,18 +421,17 @@
         call calypso_MPI_abort(ierr_file, e_message)
       end if
 !
-      call dealloc_control_array_i_c_r(ref_filter_mom_ctl)
-!
       end subroutine set_ctl_params_gen_filter
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_file_heads_3d_comm_filter(ffile_ctl)
+      subroutine set_file_heads_3d_comm_filter(gen_f_ctl, ffile_ctl)
 !
       use t_ctl_data_filter_files
       use m_file_format_switch
       use m_filter_file_names
 !
+      type(ctl_data_gen_filter), intent(in) :: gen_f_ctl
       type(filter_file_control), intent(in) :: ffile_ctl
 !
 !
@@ -406,8 +460,8 @@
       end if
 !
       omitted_ratio = 1.0d-30
-      if(omitted_ratio_ctl%iflag .gt. 0) then
-        omitted_ratio = omitted_ratio_ctl%realvalue
+      if(gen_f_ctl%omitted_ratio_ctl%iflag .gt. 0) then
+        omitted_ratio = gen_f_ctl%omitted_ratio_ctl%realvalue
       end if
 !
 !   set data format
@@ -424,7 +478,7 @@
 !
       subroutine set_numdomain_3d_comm_filter(fil3_ctl, nprocs)
 !
-      type(ctl_data_gen_3d_filter), intent(in) :: fil3_ctl
+      type(ctl_data_3d_filter), intent(in) :: fil3_ctl
       integer(kind = kint), intent(inout) :: nprocs
 !
 !

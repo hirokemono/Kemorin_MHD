@@ -5,6 +5,7 @@
 !
 !!      subroutine read_momentum_ctl(hd_block, iflag, mom_ctl)
 !!      subroutine bcast_momentum_ctl(mom_ctl)
+!!      subroutine dealloc_momentum_ctl(mom_ctl)
 !!        type(momentum_equation_control), intent(inout) :: mom_ctl
 !!
 !!   --------------------------------------------------------------------
@@ -161,6 +162,24 @@
       call bcast_ctl_array_cr(mom_ctl%coef_4_Lorentz)
 !
       end subroutine bcast_momentum_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_momentum_ctl(mom_ctl)
+!
+      type(momentum_equation_control), intent(inout) :: mom_ctl
+!
+!
+      call dealloc_control_array_c_r(mom_ctl%coef_4_intertia)
+      call dealloc_control_array_c_r(mom_ctl%coef_4_grad_p)
+      call dealloc_control_array_c_r(mom_ctl%coef_4_viscous)
+!
+      call dealloc_control_array_c_r(mom_ctl%coef_4_termal_buo)
+      call dealloc_control_array_c_r(mom_ctl%coef_4_comp_buo)
+      call dealloc_control_array_c_r(mom_ctl%coef_4_Coriolis)
+      call dealloc_control_array_c_r(mom_ctl%coef_4_Lorentz)
+!
+      end subroutine dealloc_momentum_ctl
 !
 !   --------------------------------------------------------------------
 !

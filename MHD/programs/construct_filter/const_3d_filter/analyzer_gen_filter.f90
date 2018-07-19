@@ -33,7 +33,7 @@
       implicit none
 !
 !
-      type(ctl_data_gen_3d_filter), save :: fil3_ctl_f
+      type(ctl_data_gen_3d_filter), save :: filter3d_ctl1
       type(field_IO_params), save ::  mesh_filter_file
 !
       type(mesh_data), save :: fem_f
@@ -81,7 +81,6 @@
       use sum_normal_4_surf_group
       use const_jacobians_3d
       use set_ctl_gen_filter
-      use set_control_platform_data
       use mpi_load_mesh_data
 !
 !
@@ -95,14 +94,12 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_filter'
-      call read_control_4_gen_filter(fil3_ctl_f)
+      call read_control_4_gen_filter(filter3d_ctl1)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_gen_filter'
-      call set_control_mesh_def                                         &
-     &   (fil3_ctl_f%gen_filter_plt, mesh_filter_file)
-      call set_file_heads_3d_comm_filter(fil3_ctl_f%ffile_3d_ctl)
-      call set_ctl_params_gen_filter(fil3_ctl_f, FEM_elen_f)
-      call dealloc_dx_solver_param_ctl(fil3_ctl_f)
+      if (iflag_debug.eq.1) write(*,*) 'set_controls_gen_3dfilter'
+      call set_controls_gen_3dfilter                                    &
+     &   (filter3d_ctl1, FEM_elen_f, mesh_filter_file)
+      call dealloc_ctl_data_gen_3d_filter(filter3d_ctl1)
 !
 !  --  read geometry
 !

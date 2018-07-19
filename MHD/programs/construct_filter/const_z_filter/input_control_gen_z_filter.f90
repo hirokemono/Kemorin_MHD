@@ -25,8 +25,11 @@
       use t_edge_data
       use t_iccg_parameter
       use t_crs_matrix
+      use t_ctl_data_gen_z_filter
 !
       implicit none
+!
+      type(ctl_data_gen_z_filter), save, private :: z_filter_ctl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,7 +44,6 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_ctl_data_gen_z_filter
       use set_ctl_gen_z_filter
       use const_geometry_z_commute
 !
@@ -56,10 +58,10 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_z_filter'
-      call read_control_4_z_filter
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_z_filter'
-      call set_ctl_params_4_gen_z_filter(mat_crs, CG_param, DJDS_param)
+      call read_control_4_z_filter(z_filter_ctl1)
+      call set_ctl_params_4_gen_z_filter                                &
+     &   (z_filter_ctl1, mat_crs, CG_param, DJDS_param)
+      call dealloc_ctl_data_gen_z_filter(z_filter_ctl1)
 !
 !  --  set geometry
 !

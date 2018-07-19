@@ -11,6 +11,7 @@
 !!      subroutine read_thermal_ctl(hd_block, iflag, heat_ctl)
 !!      subroutine read_composition_eq_ctl(hd_block, iflag, comp_ctl)
 !!      subroutine bcast_thermal_ctl(heat_ctl)
+!!      subroutine dealloc_thermal_ctl(heat_ctl)
 !!        type(heat_equation_control), intent(inout) :: heat_ctl
 !!        type(heat_equation_control), intent(inout) :: comp_ctl
 !!
@@ -182,6 +183,19 @@
       call bcast_ctl_array_cr(heat_ctl%coef_4_source)
 !
       end subroutine bcast_thermal_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_thermal_ctl(heat_ctl)
+!
+      type(heat_equation_control), intent(inout) :: heat_ctl
+!
+!
+      call dealloc_control_array_c_r(heat_ctl%coef_4_adv_flux)
+      call dealloc_control_array_c_r(heat_ctl%coef_4_diffuse)
+      call dealloc_control_array_c_r(heat_ctl%coef_4_source)
+!
+      end subroutine dealloc_thermal_ctl
 !
 ! -----------------------------------------------------------------------
 !

@@ -1,65 +1,69 @@
 !
-!      module m_ctl_data_gen_filter
+!      module t_ctl_data_gen_filter
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine read_filter_param_ctl
+!!      subroutine read_filter_param_ctl(gen_f_ctl)
+!!      subroutine dealloc_filter_param_ctl(gen_f_ctl)
+!!        type(ctl_data_gen_filter), intent(inout) :: gen_f_ctl
 !
-      module m_ctl_data_gen_filter
+      module t_ctl_data_gen_filter
 !
       use m_precision
 !
       use calypso_mpi
       use m_machine_parameter
+      use m_read_control_elements
       use t_control_elements
       use t_read_control_arrays
       use t_ctl_data_4_solvers
-      use m_read_control_elements
 !
       implicit  none
 !
 !
-      type(read_integer_item), save :: num_int_points_ctl
-      type(read_integer_item), save :: minimum_comp_ctl
-      type(read_integer_item), save :: num_ele_4_filter_ctl
-      type(read_real_item), save :: omitted_ratio_ctl
-      type(read_real_item), save :: minimum_det_ctl
-      type(read_real_item), save :: maximum_rms_ctl
-      type(read_character_item), save :: ordering_list_ctl
-      type(read_character_item), save :: tgt_filter_type_ctl
-      type(read_character_item), save :: momentum_type_ctl
-      type(read_character_item), save :: filter_correction_ctl
-      type(read_character_item), save :: filter_fixed_point_ctl
-      type(read_character_item), save :: negative_center_ctl
+      type ctl_data_gen_filter
+        type(read_integer_item) :: num_int_points_ctl
+        type(read_integer_item) :: minimum_comp_ctl
+        type(read_integer_item) :: num_ele_4_filter_ctl
+        type(read_real_item) :: omitted_ratio_ctl
+        type(read_real_item) :: minimum_det_ctl
+        type(read_real_item) :: maximum_rms_ctl
+        type(read_character_item) :: ordering_list_ctl
+        type(read_character_item) :: tgt_filter_type_ctl
+        type(read_character_item) :: momentum_type_ctl
+        type(read_character_item) :: filter_correction_ctl
+        type(read_character_item) :: filter_fixed_point_ctl
+        type(read_character_item) :: negative_center_ctl
 !
-      type(read_integer_item), save :: maximum_neighbour_ctl
-      type(read_integer_item), save :: ilevel_filter_error_info
+        type(read_integer_item) :: maximum_neighbour_ctl
+        type(read_integer_item) :: ilevel_filter_error_info
 !
-      type(read_integer_item), save :: start_node_ctl
-      type(read_integer_item), save :: end_node_ctl
-      type(read_integer_item), save :: ist_num_free_ctl
-      type(read_integer_item), save :: ied_num_free_ctl
+        type(read_integer_item) :: start_node_ctl
+        type(read_integer_item) :: end_node_ctl
+        type(read_integer_item) :: ist_num_free_ctl
+        type(read_integer_item) :: ied_num_free_ctl
 !
-!>      Structure for list of reference filter mode
-!!@n      reference_filter_ctl%c_tbl: list of filter type
-!!@n      reference_filter_ctl%vect:  list of filter width
-      type(ctl_array_cr), save  :: reference_filter_ctl
+!>        Structure for list of reference filter mode
+!!@n        reference_filter_ctl%c_tbl: list of filter type
+!!@n        reference_filter_ctl%vect:  list of filter width
+        type(ctl_array_cr)  :: reference_filter_ctl
 !
-!>      Structure for list of horizontal filter mode
-!!@n      horizontal_filter_ctl%c_tbl: list of filter type
-!!@n      horizontal_filter_ctl%vect:  list of filter width
-      type(ctl_array_cr), save  :: horizontal_filter_ctl
+!>        Structure for list of horizontal filter mode
+!!@n        horizontal_filter_ctl%c_tbl: list of filter type
+!!@n        horizontal_filter_ctl%vect:  list of filter width
+        type(ctl_array_cr)  :: horizontal_filter_ctl
 !
-!>      Structure for reference moments for filter
-!!@n      ref_filter_mom_ctl%ivec:  Order of reference filter moments
-!!@n      ref_filter_mom_ctl%c_tbl: Type of reference filter moments
-!!@n      ref_filter_mom_ctl%vect:  Value of filter moments
-      type(ctl_array_icr), save :: ref_filter_mom_ctl
+!>        Structure for reference moments for filter
+!!@n        ref_filter_mom_ctl%ivec:  Order of reference filter moments
+!!@n        ref_filter_mom_ctl%c_tbl: Type of reference filter moments
+!!@n        ref_filter_mom_ctl%vect:  Value of filter moments
+        type(ctl_array_icr) :: ref_filter_mom_ctl
 !
-!>      Structure for CG solver control
-      type(solver_control), save :: CG_filter_ctl
+!>        Structure for CG solver control
+        type(solver_control) :: CG_filter_ctl
 !
-      type(read_character_item), save :: f_solver_type_ctl
+        type(read_character_item) :: f_solver_type_ctl
+      end type ctl_data_gen_filter
 !
 !
 !     label for entry
@@ -138,10 +142,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_param_ctl
+      subroutine read_filter_param_ctl(gen_f_ctl)
 !
       use m_read_control_elements
       use skip_comment_f
+!
+      type(ctl_data_gen_filter), intent(inout) :: gen_f_ctl
 !
 !
       if(right_begin_flag(hd_filter_param_ctl) .eq. 0) return
@@ -154,57 +160,101 @@
 !
 !
         call read_CG_solver_param_ctl                                   &
-     &   (hd_solver_ctl, i_solver_ctl, CG_filter_ctl)
+     &     (hd_solver_ctl, i_solver_ctl, gen_f_ctl%CG_filter_ctl)
 !
         call read_control_array_i_c_r                                   &
-     &     (hd_order_moments, ref_filter_mom_ctl)
+     &     (hd_order_moments, gen_f_ctl%ref_filter_mom_ctl)
 !
         call read_control_array_c_r                                     &
-     &     (hd_ref_filter, reference_filter_ctl)
+     &     (hd_ref_filter, gen_f_ctl%reference_filter_ctl)
         call read_control_array_c_r                                     &
-     &     (hd_horiz_filter, horizontal_filter_ctl)
+     &     (hd_horiz_filter, gen_f_ctl%horizontal_filter_ctl)
 !
 !
-        call read_chara_ctl_type(hd_solver_type, f_solver_type_ctl)
-        call read_chara_ctl_type(hd_ordering_list, ordering_list_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_solver_type, gen_f_ctl%f_solver_type_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_ordering_list, gen_f_ctl%ordering_list_ctl)
         call read_chara_ctl_type(hd_tgt_filter_type,                    &
-     &       tgt_filter_type_ctl)
+     &      gen_f_ctl%tgt_filter_type_ctl)
         call read_chara_ctl_type(hd_momentum_type,                      &
-     &      momentum_type_ctl)
+     &      gen_f_ctl%momentum_type_ctl)
         call read_chara_ctl_type(hd_filter_corection,                   &
-     &      filter_correction_ctl)
+     &      gen_f_ctl%filter_correction_ctl)
         call read_chara_ctl_type(hd_filter_fixed_point,                 &
-     &      filter_fixed_point_ctl)
+     &      gen_f_ctl%filter_fixed_point_ctl)
         call read_chara_ctl_type(hd_filter_negative_center,             &
-     &      negative_center_ctl)
+     &      gen_f_ctl%negative_center_ctl)
 !
 !
-        call read_real_ctl_type(hd_omitted_ratio, omitted_ratio_ctl)
-        call read_real_ctl_type(hd_minimum_det, minimum_det_ctl)
-        call read_real_ctl_type(hd_maximum_rms, maximum_rms_ctl)
+        call read_real_ctl_type                                         &
+     &     (hd_omitted_ratio, gen_f_ctl%omitted_ratio_ctl)
+        call read_real_ctl_type                                         &
+     &     (hd_minimum_det, gen_f_ctl%minimum_det_ctl)
+        call read_real_ctl_type                                         &
+     &     (hd_maximum_rms, gen_f_ctl%maximum_rms_ctl)
 !
 !
         call read_integer_ctl_type(hd_num_int_points,                   &
-     &      num_int_points_ctl)
+     &      gen_f_ctl%num_int_points_ctl)
         call read_integer_ctl_type(hd_minimum_comp,                     &
-     &      minimum_comp_ctl)
+     &      gen_f_ctl%minimum_comp_ctl)
         call read_integer_ctl_type(hd_nele_filtering,                   &
-     &      num_ele_4_filter_ctl)
+     &      gen_f_ctl%num_ele_4_filter_ctl)
         call read_integer_ctl_type(hd_maximum_neighbour,                &
-     &      maximum_neighbour_ctl)
+     &      gen_f_ctl%maximum_neighbour_ctl)
 !
-        call read_integer_ctl_type(hd_start_node_ctl, start_node_ctl)
-        call read_integer_ctl_type(hd_end_node_ctl, end_node_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_start_node_ctl, gen_f_ctl%start_node_ctl)
+        call read_integer_ctl_type                                      &
+     &     (hd_end_node_ctl, gen_f_ctl%end_node_ctl)
         call read_integer_ctl_type(hd_start_nfree_mat,                  &
-     &      ist_num_free_ctl)
+     &      gen_f_ctl%ist_num_free_ctl)
         call read_integer_ctl_type(hd_end_nfree_mat,                    &
-     &      ied_num_free_ctl)
+     &      gen_f_ctl%ied_num_free_ctl)
         call read_integer_ctl_type(hd_err_level_commute,                &
-     &      ilevel_filter_error_info)
+     &      gen_f_ctl%ilevel_filter_error_info)
       end do
 !
       end subroutine read_filter_param_ctl
 !
 !   --------------------------------------------------------------------
 !
-      end module m_ctl_data_gen_filter
+      subroutine dealloc_filter_param_ctl(gen_f_ctl)
+!
+      type(ctl_data_gen_filter), intent(inout) :: gen_f_ctl
+!
+!
+      call dealloc_control_array_c_r(gen_f_ctl%reference_filter_ctl)
+      call dealloc_control_array_c_r(gen_f_ctl%horizontal_filter_ctl)
+!
+      call dealloc_control_array_i_c_r(gen_f_ctl%ref_filter_mom_ctl)
+!
+      gen_f_ctl%num_int_points_ctl%iflag =     0
+      gen_f_ctl%minimum_comp_ctl%iflag =       0
+      gen_f_ctl%num_ele_4_filter_ctl%iflag =   0
+      gen_f_ctl%omitted_ratio_ctl%iflag =      0
+      gen_f_ctl%minimum_det_ctl%iflag =        0
+      gen_f_ctl%maximum_rms_ctl%iflag =        0
+      gen_f_ctl%ordering_list_ctl%iflag =      0
+      gen_f_ctl%tgt_filter_type_ctl%iflag =    0
+      gen_f_ctl%momentum_type_ctl%iflag =      0
+      gen_f_ctl%filter_correction_ctl%iflag =  0
+      gen_f_ctl%filter_fixed_point_ctl%iflag = 0
+      gen_f_ctl%negative_center_ctl%iflag =    0
+!
+      gen_f_ctl%maximum_neighbour_ctl%iflag =    0
+      gen_f_ctl%ilevel_filter_error_info%iflag = 0
+!
+      gen_f_ctl%start_node_ctl%iflag =   0
+      gen_f_ctl%end_node_ctl%iflag =     0
+      gen_f_ctl%ist_num_free_ctl%iflag = 0
+      gen_f_ctl%ied_num_free_ctl%iflag = 0
+!
+      gen_f_ctl%f_solver_type_ctl%iflag = 0
+!
+      end subroutine dealloc_filter_param_ctl
+!
+!   --------------------------------------------------------------------
+!
+      end module t_ctl_data_gen_filter

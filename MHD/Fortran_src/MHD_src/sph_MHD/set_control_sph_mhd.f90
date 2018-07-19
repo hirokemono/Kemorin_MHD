@@ -226,6 +226,11 @@
      &    Dmodel_ctl%cor_ctl, Dmodel_ctl%mcv_ctl,                       &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop)
 !
+      call dealloc_name_force_ctl(Dmodel_ctl%frc_ctl)
+      call dealloc_gravity_ctl(Dmodel_ctl%g_ctl)
+      call dealloc_coriolis_ctl(Dmodel_ctl%cor_ctl)
+      call dealloc_magneto_ctl(Dmodel_ctl%mcv_ctl)
+!
 !   set parameters for general information
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
@@ -238,9 +243,12 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_normalize'
       call s_set_control_4_normalize                                    &
-     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, MHD_prop%MHD_coef_list,   &
-     &    Dmodel_ctl%dless_ctl, Dmodel_ctl%eqs_ctl)
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop, MHD_prop%ht_prop,         &
+     &    MHD_prop%cp_prop, Dmodel_ctl%dless_ctl, Dmodel_ctl%eqs_ctl,   &
+     &    MHD_prop%MHD_coef_list)
+!
+      call dealloc_dimless_ctl(Dmodel_ctl%dless_ctl)
+      call dealloc_coef_term_ctl(Dmodel_ctl%eqs_ctl)
 !
 !   set boundary conditions
 !
