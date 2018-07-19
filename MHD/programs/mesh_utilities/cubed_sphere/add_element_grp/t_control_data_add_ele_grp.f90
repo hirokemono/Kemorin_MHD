@@ -1,16 +1,12 @@
-!m_control_data_add_ele_grp.f90
-!      module m_control_data_add_ele_grp
+!t_control_data_add_ele_grp.f90
+!      module t_control_data_add_ele_grp
 !
 !      Written by H. Matsui on Mar., 2008
 !
-!       subroutine read_control_add_elegrp
+!       subroutine read_control_add_elegrp(addgrp_c)
+!!        type(control_data_add_ele_grp), intent(inout) :: addgrp_c
 !
-!      subroutine dealloc_r_ele_grp_list_ctl
-!      subroutine dealloc_t_ele_grp_list_ctl
-!      subroutine dealloc_s_ele_grp_list_ctl
-!      subroutine dealloc_z_ele_grp_list_ctl
-!
-      module m_control_data_add_ele_grp
+      module t_control_data_add_ele_grp
 !
       use m_precision
 !
@@ -26,33 +22,35 @@
       character (len = kchara), parameter                               &
      &         :: control_file_name = 'ctl_add_ele_grp'
 !
-      type(platform_data_control), save :: source_plt
-      type(platform_data_control), save :: added_plt
+      type control_data_add_ele_grp
+        type(platform_data_control) :: source_plt
+        type(platform_data_control) :: added_plt
 !
-      type(read_character_item), save :: sph_grp_direction_ctl
+        type(read_character_item) :: sph_grp_direction_ctl
 !
-!>      Structure for element grouping in radial direction
+!>       Structure for element grouping in radial direction
 !!@n      r_ele_grouping_ctl%c_tbl: Name of each grouping
 !!@n      r_ele_grouping_ctl%vec1:  Minimum radius for each grouping
 !!@n      r_ele_grouping_ctl%vec2:  Maximum radius for each grouping
-      type(ctl_array_cr2), save :: r_ele_grouping_ctl
-!>      Structure for element grouping in meridional direction
+        type(ctl_array_cr2) :: r_ele_grouping_ctl
+!>       Structure for element grouping in meridional direction
 !!@n      t_ele_grouping_ctl%c_tbl: Name of each grouping
 !!@n      t_ele_grouping_ctl%vec1:  Minimum colatitude for each grouping
 !!@n      t_ele_grouping_ctl%vec2:  Maximum colatitude for each grouping
-      type(ctl_array_cr2), save :: t_ele_grouping_ctl
-!>      Structure for element grouping in cylindrical direction
+        type(ctl_array_cr2) :: t_ele_grouping_ctl
+!>       Structure for element grouping in cylindrical direction
 !!@n      s_ele_grouping_ctl%c_tbl: Name of each grouping
 !!@n      s_ele_grouping_ctl%vec1:  Minimum cylindorical radius
 !!                                  for each grouping
 !!@n      s_ele_grouping_ctl%vec2:  Maximum cylindorical radius
 !!                                  for each grouping
-      type(ctl_array_cr2), save :: s_ele_grouping_ctl
-!>      Structure for element grouping in z direction
+        type(ctl_array_cr2) :: s_ele_grouping_ctl
+!>       Structure for element grouping in z direction
 !!@n      z_ele_grouping_ctl%c_tbl: Name of each grouping
 !!@n      z_ele_grouping_ctl%vec1:  Minimum z for each grouping
 !!@n      z_ele_grouping_ctl%vec2:  Maximum z for each grouping
-      type(ctl_array_cr2), save :: z_ele_grouping_ctl
+        type(ctl_array_cr2) :: z_ele_grouping_ctl
+      end type control_data_add_ele_grp
 !
 !   Top level
 !
@@ -106,14 +104,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_add_elegrp
+      subroutine read_control_add_elegrp(addgrp_c)
+!
+      type(control_data_add_ele_grp), intent(inout) :: addgrp_c
 !
 !
       ctl_file_code = control_file_code
       open (ctl_file_code, file = control_file_name)
 !
       call load_ctl_label_and_line
-      call read_control_4_add_egrp_data
+      call read_control_4_add_egrp_data(addgrp_c)
 !
       close(ctl_file_code)
 !
@@ -121,7 +121,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_control_4_add_egrp_data
+      subroutine dealloc_control_add_elegrp(addgrp_c)
+!
+      type(control_data_add_ele_grp), intent(inout) :: addgrp_c
+!
+!
+      call dealloc_control_array_c_r2(addgrp_c%r_ele_grouping_ctl)
+      call dealloc_control_array_c_r2(addgrp_c%s_ele_grouping_ctl)
+      call dealloc_control_array_c_r2(addgrp_c%t_ele_grouping_ctl)
+      call dealloc_control_array_c_r2(addgrp_c%z_ele_grouping_ctl)
+!
+      end subroutine dealloc_control_add_elegrp
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_control_4_add_egrp_data(addgrp_c)
+!
+      type(control_data_add_ele_grp), intent(inout) :: addgrp_c
 !
 !
       if(right_begin_flag(hd_add_ele_grp_ctl) .eq. 0) return
@@ -133,10 +150,11 @@
         if(i_add_ele_grp_ctl .gt. 0) exit
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, source_plt)
-        call read_control_platforms(hd_new_data, i_new_data, added_plt)
+     &     (hd_platform, i_platform, addgrp_c%source_plt)
+        call read_control_platforms                                     &
+     &     (hd_new_data, i_new_data, addgrp_c%added_plt)
 !
-        call read_ctl_data_4_add_2d_egrp
+        call read_ctl_data_4_add_2d_egrp(addgrp_c)
       end do
 !
       end subroutine read_control_4_add_egrp_data
@@ -144,7 +162,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_add_2d_egrp
+      subroutine read_ctl_data_4_add_2d_egrp(addgrp_c)
+!
+      type(control_data_add_ele_grp), intent(inout) :: addgrp_c
 !
 !
       if(right_begin_flag(hd_add_ele_grp_para) .eq. 0) return
@@ -156,21 +176,21 @@
         if(i_add_ele_grp_para .gt. 0) exit
 !
         call read_control_array_c_r2                                    &
-     &      (hd_num_r_ele_grping, r_ele_grouping_ctl)
+     &      (hd_num_r_ele_grping, addgrp_c%r_ele_grouping_ctl)
         call read_control_array_c_r2                                    &
-     &      (hd_num_t_ele_grping, t_ele_grouping_ctl)
+     &      (hd_num_t_ele_grping, addgrp_c%t_ele_grouping_ctl)
         call read_control_array_c_r2                                    &
-     &      (hd_num_s_ele_grping, s_ele_grouping_ctl)
+     &      (hd_num_s_ele_grping, addgrp_c%s_ele_grouping_ctl)
         call read_control_array_c_r2                                    &
-     &      (hd_num_z_ele_grping, z_ele_grouping_ctl)
+     &      (hd_num_z_ele_grping, addgrp_c%z_ele_grouping_ctl)
 !
 !
         call read_chara_ctl_type(hd_2nd_grp_direction,                  &
-     &      sph_grp_direction_ctl)
+     &      addgrp_c%sph_grp_direction_ctl)
       end do
 !
       end subroutine read_ctl_data_4_add_2d_egrp
 !
 ! -----------------------------------------------------------------------!
-      end module m_control_data_add_ele_grp
+      end module t_control_data_add_ele_grp
 

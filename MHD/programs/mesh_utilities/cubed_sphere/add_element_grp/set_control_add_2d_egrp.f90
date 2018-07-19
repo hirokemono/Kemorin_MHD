@@ -19,29 +19,32 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_add_2d_egrp
+      subroutine s_set_control_add_2d_egrp(addgrp_c)
 !
       use calypso_mpi
       use m_constants
       use m_default_file_prefix
-      use m_control_data_add_ele_grp
       use m_add_ele_grp_parameter
+      use t_control_data_add_ele_grp
       use set_ctl_parallel_platform
       use set_control_platform_data
       use skip_comment_f
+!
+      type(control_data_add_ele_grp), intent(in) :: addgrp_c
 !
       real(kind = kreal) :: pi
       character(len=kchara) :: tmpchara
 !
 !
-      call check_control_num_domains(source_plt)
-      call turn_off_debug_flag_by_ctl(my_rank, source_plt)
-      call set_control_mesh_def(source_plt, original_mesh_file)
+      call check_control_num_domains(addgrp_c%source_plt)
+      call turn_off_debug_flag_by_ctl(my_rank, addgrp_c%source_plt)
+      call set_control_mesh_def                                         &
+     &   (addgrp_c%source_plt, original_mesh_file)
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, added_plt, modified_mesh_file)
+     &   (def_new_mesh_head, addgrp_c%added_plt, modified_mesh_file)
 !
-      if (sph_grp_direction_ctl%iflag .gt. 0) then
-        tmpchara = sph_grp_direction_ctl%charavalue
+      if (addgrp_c%sph_grp_direction_ctl%iflag .gt. 0) then
+        tmpchara = addgrp_c%sph_grp_direction_ctl%charavalue
         if     (cmp_no_case(tmpchara, 'sphere')                         &
      &     .or. cmp_no_case(tmpchara, 'r_theta')                        &
      &     .or. cmp_no_case(tmpchara, 'theta')                          &
@@ -65,52 +68,52 @@
         call calypso_MPI_abort(ierr_mesh, 'set correct grouping mode')
       end if
 !
-      if (r_ele_grouping_ctl%icou .gt. 0) then
-        num_r_ele_grp = r_ele_grouping_ctl%num
+      if (addgrp_c%r_ele_grouping_ctl%icou .gt. 0) then
+        num_r_ele_grp = addgrp_c%r_ele_grouping_ctl%num
         call allocate_add_r_ele_grping
 !
         r_ele_grp_name(1:num_r_ele_grp)                                 &
-     &        = r_ele_grouping_ctl%c_tbl(1:num_r_ele_grp)
+     &        = addgrp_c%r_ele_grouping_ctl%c_tbl(1:num_r_ele_grp)
         minmax_r_ele_grping(1:num_r_ele_grp,1)                          &
-     &        = r_ele_grouping_ctl%vec1(1:num_r_ele_grp)
+     &        = addgrp_c%r_ele_grouping_ctl%vec1(1:num_r_ele_grp)
         minmax_r_ele_grping(1:num_r_ele_grp,2)                          &
-     &        = r_ele_grouping_ctl%vec2(1:num_r_ele_grp)
+     &        = addgrp_c%r_ele_grouping_ctl%vec2(1:num_r_ele_grp)
       end if
 !
-      if (s_ele_grouping_ctl%icou .gt. 0) then
-        num_s_ele_grp = s_ele_grouping_ctl%num
+      if (addgrp_c%s_ele_grouping_ctl%icou .gt. 0) then
+        num_s_ele_grp = addgrp_c%s_ele_grouping_ctl%num
         call allocate_add_s_ele_grping
 !
         s_ele_grp_name(1:num_s_ele_grp)                                 &
-     &        = s_ele_grouping_ctl%c_tbl(1:num_s_ele_grp)
+     &        = addgrp_c%s_ele_grouping_ctl%c_tbl(1:num_s_ele_grp)
         minmax_s_ele_grping(1:num_s_ele_grp,1)                          &
-     &        = s_ele_grouping_ctl%vec1(1:num_s_ele_grp)
+     &        = addgrp_c%s_ele_grouping_ctl%vec1(1:num_s_ele_grp)
         minmax_s_ele_grping(1:num_s_ele_grp,2)                          &
-     &        = s_ele_grouping_ctl%vec2(1:num_s_ele_grp)
+     &        = addgrp_c%s_ele_grouping_ctl%vec2(1:num_s_ele_grp)
       end if
 !
-      if (t_ele_grouping_ctl%icou .gt. 0) then
-        num_t_ele_grp = t_ele_grouping_ctl%num
+      if (addgrp_c%t_ele_grouping_ctl%icou .gt. 0) then
+        num_t_ele_grp = addgrp_c%t_ele_grouping_ctl%num
         call allocate_add_t_ele_grping
 !
         t_ele_grp_name(1:num_t_ele_grp)                                 &
-     &        = t_ele_grouping_ctl%c_tbl(1:num_t_ele_grp)
+     &        = addgrp_c%t_ele_grouping_ctl%c_tbl(1:num_t_ele_grp)
         minmax_t_ele_grping(1:num_t_ele_grp,1)                          &
-     &        = t_ele_grouping_ctl%vec1(1:num_t_ele_grp)
+     &        = addgrp_c%t_ele_grouping_ctl%vec1(1:num_t_ele_grp)
         minmax_t_ele_grping(1:num_t_ele_grp,2)                          &
-     &        = t_ele_grouping_ctl%vec2(1:num_t_ele_grp)
+     &        = addgrp_c%t_ele_grouping_ctl%vec2(1:num_t_ele_grp)
       end if
 !
-      if (z_ele_grouping_ctl%icou .gt. 0) then
-        num_z_ele_grp = z_ele_grouping_ctl%num
+      if (addgrp_c%z_ele_grouping_ctl%icou .gt. 0) then
+        num_z_ele_grp = addgrp_c%z_ele_grouping_ctl%num
         call allocate_add_z_ele_grping
 !
         z_ele_grp_name(1:num_z_ele_grp)                                 &
-     &        = z_ele_grouping_ctl%c_tbl(1:num_z_ele_grp)
+     &        = addgrp_c%z_ele_grouping_ctl%c_tbl(1:num_z_ele_grp)
         minmax_z_ele_grping(1:num_z_ele_grp,1)                          &
-     &        = z_ele_grouping_ctl%vec1(1:num_z_ele_grp)
+     &        = addgrp_c%z_ele_grouping_ctl%vec1(1:num_z_ele_grp)
         minmax_z_ele_grping(1:num_z_ele_grp,2)                          &
-     &        = z_ele_grouping_ctl%vec2(1:num_z_ele_grp)
+     &        = addgrp_c%z_ele_grouping_ctl%vec2(1:num_z_ele_grp)
       end if
 !
 !
@@ -125,11 +128,6 @@
      &        = minmax_t_ele_grping(1:num_t_ele_grp,2) * pi
         end if
       end if
-!
-      call dealloc_control_array_c_r2(r_ele_grouping_ctl)
-      call dealloc_control_array_c_r2(s_ele_grouping_ctl)
-      call dealloc_control_array_c_r2(t_ele_grouping_ctl)
-      call dealloc_control_array_c_r2(z_ele_grouping_ctl)
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'iflag_grping_direction', iflag_grping_direction

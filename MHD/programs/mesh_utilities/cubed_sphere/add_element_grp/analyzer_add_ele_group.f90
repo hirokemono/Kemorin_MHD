@@ -13,11 +13,14 @@
       use m_constants
       use m_machine_parameter
       use t_mesh_data
+      use t_control_data_add_ele_grp
 !
       implicit none
 !
       type(mesh_data), save :: fem_add
       type(element_geometry), save :: e_mesh_add
+!
+      type(control_data_add_ele_grp), save :: addgrp_c1
 !
 !   --------------------------------------------------------------------
 !
@@ -28,7 +31,6 @@
       subroutine  initialize_add_egrp
 !
       use calypso_mpi
-      use m_control_data_add_ele_grp
       use m_add_ele_grp_parameter
       use m_work_4_add_egrp_sph
       use mpi_load_mesh_data
@@ -40,8 +42,9 @@
 !
 !
 !
-      call read_control_add_elegrp
-      call s_set_control_add_2d_egrp
+      call read_control_add_elegrp(addgrp_c1)
+      call s_set_control_add_2d_egrp(addgrp_c1)
+      call dealloc_control_add_elegrp(addgrp_c1)
 !
 !  read global mesh
 !

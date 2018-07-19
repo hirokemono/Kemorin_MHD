@@ -10,7 +10,7 @@ SRC_ADDGRP_SPH = $(shell ls *.f90)
 MOD_ADDGRP_SPH = \
 add_elegrp_sph.o \
 \
-m_control_data_add_ele_grp.o \
+t_control_data_add_ele_grp.o \
 m_add_ele_grp_parameter.o \
 m_work_4_add_egrp_sph.o \
 \
