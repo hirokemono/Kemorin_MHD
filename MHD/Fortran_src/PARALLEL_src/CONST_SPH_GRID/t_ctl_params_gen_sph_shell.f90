@@ -19,7 +19,7 @@
 !!     &          Fmesh_ctl, spctl, sdctl, sph, gen_sph, ierr)
 !!        type(FEM_mesh_control), intent(in) :: Fmesh_ctl
 !!        type(sphere_data_control), intent(inout) :: spctl
-!!        type(sphere_domain_control), intent(inout) :: sdctl
+!!        type(sphere_domain_control), intent(in) :: sdctl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!@endverbatim
@@ -83,7 +83,7 @@
       call set_control_4_shell_grids                                    &
      &   (nprocs_check, psph_ctl%Fmesh_ctl, psph_ctl%spctl,             &
      &    psph_ctl%sdctl, sph, gen_sph, ierr)
-      call dealloc_control_shell_define(psph_ctl%spctl)
+      call dealloc_parallel_shell_ctl(psph_ctl)
       call reset_control_shell_define(psph_ctl%spctl)
 !
       end subroutine set_control_4_gen_shell_grids
@@ -133,7 +133,7 @@
       integer(kind = kint), intent(in) :: nprocs_check
       type(FEM_mesh_control), intent(in) :: Fmesh_ctl
       type(sphere_data_control), intent(in) :: spctl
-      type(sphere_domain_control), intent(inout) :: sdctl
+      type(sphere_domain_control), intent(in) :: sdctl
       type(sph_grids), intent(inout) :: sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
       integer(kind = kint), intent(inout) :: ierr
@@ -171,7 +171,6 @@
 !
       call set_subdomains_4_sph_shell                                   &
      &    (nprocs_check, sdctl, gen_sph%s3d_ranks, ierr, e_message)
-      call dealloc_ndomain_rtp_ctl(sdctl)
 !
       if (ierr .gt. 0) return
 !

@@ -51,8 +51,8 @@
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(ctl_array_c3), intent(inout) :: field_ctl
 !
+      type(ctl_array_c3), intent(inout) :: field_ctl
       type(phys_data), intent(inout) :: nod_fld, ele_fld
 !
       integer(kind = kint) :: ierr

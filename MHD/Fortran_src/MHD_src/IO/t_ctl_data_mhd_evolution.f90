@@ -13,8 +13,7 @@
 !!      subroutine bcast_mhd_time_evo_ctl(evo_ctl)
 !!        type(mhd_evolution_control), intent(inout) :: evo_ctl
 !!
-!!      subroutine dealloc_ele_fl_grp_ctl(earea_ctl)
-!!      subroutine dealloc_ele_cd_grp_ctl(earea_ctl)
+!!      subroutine dealloc_ele_area_grp_ctl(earea_ctl)
 !!      subroutine read_mhd_layer_ctl(hd_block, iflag, earea_ctl)
 !!      subroutine bcast_mhd_layer_ctl(earea_ctl)
 !!        type(mhd_evo_area_control), intent(inout) :: earea_ctl
@@ -114,23 +113,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_ele_fl_grp_ctl(earea_ctl)
+      subroutine dealloc_ele_area_grp_ctl(earea_ctl)
 !
       type(mhd_evo_area_control), intent(inout) :: earea_ctl
 !
       call dealloc_control_array_chara(earea_ctl%evo_fluid_group_ctl)
-!
-      end subroutine dealloc_ele_fl_grp_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_ele_cd_grp_ctl(earea_ctl)
-!
-      type(mhd_evo_area_control), intent(inout) :: earea_ctl
-!
       call dealloc_control_array_chara(earea_ctl%evo_conduct_group_ctl)
 !
-      end subroutine dealloc_ele_cd_grp_ctl
+      end subroutine dealloc_ele_area_grp_ctl
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

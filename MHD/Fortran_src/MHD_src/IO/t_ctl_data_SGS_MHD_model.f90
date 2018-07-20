@@ -13,6 +13,7 @@
 !!@verbatim
 !!      subroutine read_sph_sgs_mhd_model(hd_block, iflag, model_ctl)
 !!      subroutine bcast_sph_sgs_mhd_model(model_ctl)
+!!      subroutine dealloc_sph_sgs_mhd_model(model_ctl)
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!@endverbatim
 !
@@ -231,6 +232,33 @@
       call bcast_sgs_ctl(model_ctl%sgs_ctl)
 !
       end subroutine bcast_sph_sgs_mhd_model
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_sph_sgs_mhd_model(model_ctl)
+!
+      use bcast_4_field_ctl
+!
+      type(mhd_model_control), intent(inout) :: model_ctl
+!
+!
+      call dealloc_phys_control(model_ctl%fld_ctl)
+      call dealloc_t_evo_name_ctl(model_ctl%evo_ctl)
+      call dealloc_ele_area_grp_ctl(model_ctl%earea_ctl)
+!
+      call dealloc_bc_4_node_ctl(model_ctl%nbc_ctl)
+      call dealloc_bc_4_surf_ctl(model_ctl%sbc_ctl)
+!
+      call dealloc_dimless_ctl(model_ctl%dless_ctl)
+      call dealloc_coef_term_ctl(model_ctl%eqs_ctl)
+      call dealloc_name_force_ctl(model_ctl%frc_ctl)
+      call dealloc_gravity_ctl(model_ctl%g_ctl)
+      call dealloc_coriolis_ctl(model_ctl%cor_ctl)
+      call dealloc_magneto_ctl(model_ctl%mcv_ctl)
+!
+      call dealloc_sgs_ctl(model_ctl%sgs_ctl)
+!
+      end subroutine dealloc_sph_sgs_mhd_model
 !
 !   --------------------------------------------------------------------
 !

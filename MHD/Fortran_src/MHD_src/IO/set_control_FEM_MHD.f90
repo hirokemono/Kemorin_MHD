@@ -119,7 +119,6 @@
       call s_set_control_4_model                                        &
      &   (model_ctl%reft_ctl, model_ctl%refc_ctl,                       &
      &    fmctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl, MHD_prop)
-      call dealloc_t_evo_name_ctl(model_ctl%evo_ctl)
       call dealloc_monitor_data_ctl(nmtr_ctl)
 !
 !   set element groups for evolution
@@ -135,11 +134,6 @@
      &    MHD_prop%fl_prop, MHD_prop%cd_prop)
       call set_control_rotation_form(MHD_prop%iflag_all_scheme,         &
      &    MHD_prop%fl_prop, fmctl_ctl%mevo_ctl, FEM_prm)
-!
-      call dealloc_name_force_ctl(model_ctl%frc_ctl)
-      call dealloc_gravity_ctl(model_ctl%g_ctl)
-      call dealloc_coriolis_ctl(model_ctl%cor_ctl)
-      call dealloc_magneto_ctl(model_ctl%mcv_ctl)
 !
 !   set parameters for SGS model
 !
@@ -176,21 +170,15 @@
      &    MHD_prop%cp_prop, model_ctl%dless_ctl, model_ctl%eqs_ctl,     &
      &    MHD_prop%MHD_coef_list)
 !
-      call dealloc_dimless_ctl(model_ctl%dless_ctl)
-      call dealloc_coef_term_ctl(model_ctl%eqs_ctl)
-!
 !   set boundary conditions
 !
       call set_control_FEM_MHD_bcs                                      &
      &   (MHD_prop, model_ctl%nbc_ctl, model_ctl%sbc_ctl, MHD_BC)
 !
-      call dealloc_bc_4_node_ctl(model_ctl%nbc_ctl)
-      call dealloc_bc_4_surf_ctl(model_ctl%sbc_ctl)
-!
 !   set control parameters
 !
       call s_set_control_4_time_steps                                   &
-     &   (MHD_step, fmctl_ctl%mrst_ctl, fmctl_ctl%tctl)
+     &   (fmctl_ctl%mrst_ctl, fmctl_ctl%tctl, MHD_step)
 !
       call s_set_control_4_crank(fmctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
@@ -202,9 +190,6 @@
       call set_control_4_FEM_params                                     &
      &   (fmctl_ctl%mevo_ctl, fmctl_ctl%fint_ctl,                       &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop, FEM_prm)
-!
-      call dealloc_phys_control(model_ctl%fld_ctl)
-      call dealloc_sgs_ctl(model_ctl%sgs_ctl)
 !
       end subroutine set_control_4_FEM_MHD
 !

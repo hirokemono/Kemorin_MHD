@@ -87,6 +87,8 @@
      &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl,                         &
      &    MHD_ctl1%smonitor_ctl%meq_ctl, cdat1%circle, cdat1%d_circle)
 !
+      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl1)
+!
 !   Load spherical harmonics data
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'

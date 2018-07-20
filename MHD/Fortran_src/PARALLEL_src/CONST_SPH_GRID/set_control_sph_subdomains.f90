@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine set_subdomains_4_sph_shell                           &
 !!     &         (nprocs_check, sdctl, s3d_ranks, ierr, e_message)
-!!        type(sphere_domain_control), intent(inout) :: sdctl
+!!        type(sphere_domain_control), intent(in) :: sdctl
 !!        type(spheric_global_rank), intent(inout) :: s3d_ranks
 !!@endverbatim
 !
@@ -57,8 +57,8 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: nprocs_check
+      type(sphere_domain_control), intent(in) :: sdctl
 !
-      type(sphere_domain_control), intent(inout) :: sdctl
       type(spheric_global_rank), intent(inout) :: s3d_ranks
       integer(kind = kint), intent(inout) :: ierr
       character(len = kchara), intent(inout) :: e_message

@@ -102,6 +102,8 @@
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, sph_maker2,       &
      &    FEM_dat%geofem, FEM_dat%ele_mesh, MHD_files)
 !
+      call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
+!
       call sph_boundary_IO_control                                      &
      &   (SPH_model%MHD_prop, SPH_model%MHD_BC, SPH_model%bc_IO)
 !

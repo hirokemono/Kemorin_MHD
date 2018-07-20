@@ -582,6 +582,8 @@
       call dealloc_control_array_chara(sgs_ctl%SGS_terms_ctl)
       call dealloc_control_array_chara(sgs_ctl%commutate_fld_ctl)
 !
+      call dealloc_ctl_data_ele_layering(sgs_ctl%elayer_ctl)
+!
       sgs_ctl%SGS_model_name_ctl%iflag =  0
       sgs_ctl%SGS_filter_name_ctl%iflag = 0
       sgs_ctl%DIFF_model_coef_ctl%iflag = 0

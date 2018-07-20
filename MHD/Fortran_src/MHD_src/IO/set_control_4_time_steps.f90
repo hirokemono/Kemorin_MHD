@@ -9,10 +9,10 @@
 !> @brief set parameters for time stepping
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_time_steps(MHD_step, mr_ctl, tctl)
+!!      subroutine s_set_control_4_time_steps(mr_ctl, tctl, MHD_step)
 !!        type(mhd_restart_control), intent(in) :: mr_ctl
+!!        type(time_data_control), intent(in) :: tctl
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!        type(time_data_control), intent(inout) :: tctl
 !!@endverbatim
 !
       module set_control_4_time_steps
@@ -43,7 +43,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_time_steps(MHD_step, mr_ctl, tctl)
+      subroutine s_set_control_4_time_steps(mr_ctl, tctl, MHD_step)
 !
       use t_time_data
       use t_ctl_data_mhd_evo_scheme
@@ -52,8 +52,8 @@
       use skip_comment_f
 !
       type(mhd_restart_control), intent(in) :: mr_ctl
+      type(time_data_control), intent(in) :: tctl
       type(MHD_step_param), intent(inout) :: MHD_step
-      type(time_data_control), intent(inout) :: tctl
 !
 !
 !  control for restert
@@ -75,7 +75,7 @@
       end if
 !
       call set_control_flex_time_steps                                  &
-     &   (MHD_step%init_d, MHD_step%flex_p, tctl)
+     &   (tctl, MHD_step%init_d, MHD_step%flex_p)
 !
 !   parameters for time evolution
 !
@@ -116,7 +116,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_flex_time_steps(init_d, flex_p, tctl)
+      subroutine set_control_flex_time_steps(tctl, init_d, flex_p)
 !
       use t_time_data
       use t_ctl_data_mhd_evo_scheme
@@ -124,9 +124,9 @@
       use cal_num_digits
       use skip_comment_f
 !
+      type(time_data_control), intent(in) :: tctl
       type(time_data), intent(in) :: init_d
       type(flexible_stepping_parameter), intent(inout) :: flex_p
-      type(time_data_control), intent(inout) :: tctl
 !
 !
       call cal_num_digit_real                                           &
@@ -182,7 +182,7 @@
 !
       subroutine set_fixed_time_step_controls(tctl, MHD_step)
 !
-      type(time_data_control), intent(inout) :: tctl
+      type(time_data_control), intent(in) :: tctl
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: ierr
@@ -217,12 +217,12 @@
 !
       subroutine set_flex_time_step_controls(tctl, MHD_step)
 !
-      type(time_data_control), intent(inout) :: tctl
+      type(time_data_control), intent(in) :: tctl
       type(MHD_step_param), intent(inout) :: MHD_step
 !
 !
       call set_flex_time_step_params                                    &
-     &   (MHD_step%flex_p, tctl, MHD_step%init_d, MHD_step%finish_d,    &
+     &   (tctl, MHD_step%flex_p, MHD_step%init_d, MHD_step%finish_d,    &
      &    MHD_step%rst_step, MHD_step%ucd_step)
 !
       call set_output_step_4_flex_step(ione, MHD_step%flex_p%dt_max,    &
@@ -248,14 +248,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_flex_time_step_params(flex_p, tctl,                &
+      subroutine set_flex_time_step_params(tctl, flex_p,                &
      &          init_d, finish_d, rst_step, ucd_step)
 !
+      type(time_data_control), intent(in) :: tctl
       type(time_data), intent(inout) :: init_d
       type(finish_data), intent(inout) :: finish_d
 !
       type(flexible_stepping_parameter), intent(inout) :: flex_p
-      type(time_data_control), intent(inout) :: tctl
       type(IO_step_param), intent(inout) :: rst_step, ucd_step
 !
 !>      Start step for restarting file

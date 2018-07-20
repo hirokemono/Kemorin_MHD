@@ -12,7 +12,7 @@
 !!
 !!@verbatim
 !!      subroutine read_sph_mhd_control_data(MHD_ctl)
-!!      subroutine bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
+!!      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
 !!@endverbatim
 !
       module t_ctl_data_SGS_MHD
@@ -128,6 +128,26 @@
       end subroutine read_control_4_sph_SGS_MHD
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
+!
+      use t_ctl_data_SPH_MHD_control
+      use bcast_4_platform_ctl
+      use bcast_4_field_ctl
+      use bcast_4_sph_monitor_ctl
+      use bcast_4_sphere_ctl
+!
+      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+!
+!
+      call dealloc_monitor_data_ctl(MHD_ctl%nmtr_ctl)
+      call dealloc_parallel_shell_ctl(MHD_ctl%psph_ctl)
+      call dealloc_sph_sgs_mhd_model(MHD_ctl%model_ctl)
+      call dealloc_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
+!
+      end subroutine dealloc_sph_sgs_mhd_ctl_data
+!
+!   --------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine read_sph_mhd_control_data(MHD_ctl)

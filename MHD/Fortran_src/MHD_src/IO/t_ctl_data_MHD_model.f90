@@ -13,6 +13,7 @@
 !!@verbatim
 !!      subroutine read_sph_mhd_model(hd_block, iflag, Dmodel_ctl)
 !!      subroutine bcast_sph_mhd_model(Dmodel_ctl)
+!!      subroutine dealloc_sph_mhd_model(Dmodel_ctl)
 !!        type(mhd_DNS_model_control), intent(inout) :: Dmodel_ctl
 !!@endverbatim
 !
@@ -225,6 +226,29 @@
       call bcast_ref_scalar_ctl(Dmodel_ctl%refc_ctl)
 !
       end subroutine bcast_sph_mhd_model
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_sph_mhd_model(Dmodel_ctl)
+!
+      type(mhd_DNS_model_control), intent(inout) :: Dmodel_ctl
+!
+!
+      call dealloc_phys_control(Dmodel_ctl%fld_ctl)
+      call dealloc_t_evo_name_ctl(Dmodel_ctl%evo_ctl)
+      call dealloc_ele_area_grp_ctl(Dmodel_ctl%earea_ctl)
+!
+      call dealloc_bc_4_node_ctl(Dmodel_ctl%nbc_ctl)
+      call dealloc_bc_4_surf_ctl(Dmodel_ctl%sbc_ctl)
+!
+      call dealloc_dimless_ctl(Dmodel_ctl%dless_ctl)
+      call dealloc_coef_term_ctl(Dmodel_ctl%eqs_ctl)
+      call dealloc_name_force_ctl(Dmodel_ctl%frc_ctl)
+      call dealloc_gravity_ctl(Dmodel_ctl%g_ctl)
+      call dealloc_coriolis_ctl(Dmodel_ctl%cor_ctl)
+      call dealloc_magneto_ctl(Dmodel_ctl%mcv_ctl)
+!
+      end subroutine dealloc_sph_mhd_model
 !
 !   --------------------------------------------------------------------
 !

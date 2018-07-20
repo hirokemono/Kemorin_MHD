@@ -9,10 +9,10 @@
 !!@verbatim
 !!      subroutine s_set_control_evo_layers                             &
 !!     &        (earea_ctl, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
+!!        type(mhd_evo_area_control), intent(in) :: earea_ctl
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(conductive_property), intent(inout)  :: cd_prop
-!!        type(mhd_evo_area_control), intent(inout) :: earea_ctl
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!@endverbatim
 !
@@ -40,10 +40,10 @@
       subroutine s_set_control_evo_layers                               &
      &        (earea_ctl, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !
+      type(mhd_evo_area_control), intent(in) :: earea_ctl
       type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(inout)  :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(mhd_evo_area_control), intent(inout) :: earea_ctl
+      type(conductive_property), intent(inout)  :: cd_prop
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
 !
@@ -76,7 +76,7 @@
 !
       subroutine set_fluid_layer_egrp_name(earea_ctl, FEM_prm)
 !
-      type(mhd_evo_area_control), intent(inout) :: earea_ctl
+      type(mhd_evo_area_control), intent(in) :: earea_ctl
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
 !
@@ -88,7 +88,6 @@
      &      FEM_prm%fluid_group)
         FEM_prm%fluid_group%group_name                                  &
      &        =  earea_ctl%evo_fluid_group_ctl%c_tbl
-        call dealloc_ele_fl_grp_ctl(earea_ctl)
       end if
 !
       end subroutine set_fluid_layer_egrp_name
@@ -97,7 +96,7 @@
 !
       subroutine set_conduct_layer_egrp_name(earea_ctl, FEM_prm)
 !
-      type(mhd_evo_area_control), intent(inout) :: earea_ctl
+      type(mhd_evo_area_control), intent(in) :: earea_ctl
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
 !
@@ -109,7 +108,6 @@
      &      FEM_prm%condutive_group)
         FEM_prm%condutive_group%group_name                              &
      &            =  earea_ctl%evo_conduct_group_ctl%c_tbl
-        call dealloc_ele_cd_grp_ctl(earea_ctl)
       end if
 !
       end subroutine set_conduct_layer_egrp_name

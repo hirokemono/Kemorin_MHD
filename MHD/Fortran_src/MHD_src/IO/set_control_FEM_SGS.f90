@@ -13,8 +13,8 @@
 !!      subroutine s_set_control_FEM_SGS                                &
 !!     &         (ffile_ctl, sgs_ctl, elayer_ctl, SGS_param)
 !!        type(filter_file_control), intent(in) :: ffile_ctl
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
-!!        type(layering_control), intent(inout) :: elayer_ctl
+!!        type(SGS_model_control), intent(in) :: sgs_ctl
+!!        type(layering_control), intent(in) :: elayer_ctl
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!@endverbatim
 !
@@ -50,8 +50,8 @@
       use set_control_ele_layering
 !
       type(filter_file_control), intent(in) :: ffile_ctl
-      type(SGS_model_control), intent(inout) :: sgs_ctl
-      type(layering_control), intent(inout) :: elayer_ctl
+      type(SGS_model_control), intent(in) :: sgs_ctl
+      type(layering_control), intent(in) :: elayer_ctl
       type(SGS_model_control_params), intent(inout) :: SGS_param
 !
       character(len=kchara) :: tmpchara
@@ -157,7 +157,6 @@
 !
       if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call s_set_control_ele_layering(elayer_ctl)
-        call dealloc_ctl_data_ele_layering(elayer_ctl)
       end if
 !
       if (SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then

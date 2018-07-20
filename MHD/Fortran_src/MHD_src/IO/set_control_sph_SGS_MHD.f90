@@ -16,11 +16,11 @@
 !!     &          MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
-!!        type(mhd_model_control), intent(inout) :: model_ctl
-!!        type(sph_mhd_control_control), intent(inout) :: smctl_ctl
+!!        type(mhd_model_control), intent(in) :: model_ctl
+!!        type(sph_mhd_control_control), intent(in) :: smctl_ctl
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
-!!        type(node_monitor_control), intent(inout) :: nmtr_ctl
-!!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+!!        type(node_monitor_control), intent(in) :: nmtr_ctl
+!!        type(parallel_sph_shell_control), intent(in) :: psph_ctl
 !!        type(sph_grids), intent(inout) :: sph_gen
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -87,8 +87,8 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mhd_model_control), intent(inout) :: model_ctl
-      type(sph_monitor_control), intent(inout) :: smonitor_ctl
-      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+      type(sph_monitor_control), intent(in) :: smonitor_ctl
+      type(parallel_sph_shell_control), intent(in) :: psph_ctl
       type(sph_grids), intent(inout) :: sph
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
@@ -144,10 +144,10 @@
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
 !
-      type(mhd_model_control), intent(inout) :: model_ctl
-      type(sph_mhd_control_control), intent(inout) :: smctl_ctl
-      type(node_monitor_control), intent(inout) :: nmtr_ctl
-      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+      type(mhd_model_control), intent(in) :: model_ctl
+      type(sph_mhd_control_control), intent(in) :: smctl_ctl
+      type(node_monitor_control), intent(in) :: nmtr_ctl
+      type(parallel_sph_shell_control), intent(in) :: psph_ctl
       type(sph_grids), intent(inout) :: sph_gen
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
@@ -173,8 +173,6 @@
         call set_control_SPH_SGS_filters                                &
      &     (model_ctl%sgs_ctl, SGS_par%model_p, dynamic_SPH)
       end if
-      call dealloc_sgs_ctl(model_ctl%sgs_ctl)
-!
 !
 !   set parameters for data files
 !
@@ -275,10 +273,10 @@
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
 !
-      type(mhd_model_control), intent(inout) :: model_ctl
-      type(sph_mhd_control_control), intent(inout) :: smctl_ctl
-      type(node_monitor_control), intent(inout) :: nmtr_ctl
-      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+      type(mhd_model_control), intent(in) :: model_ctl
+      type(sph_mhd_control_control), intent(in) :: smctl_ctl
+      type(node_monitor_control), intent(in) :: nmtr_ctl
+      type(parallel_sph_shell_control), intent(in) :: psph_ctl
       type(sph_grids), intent(inout) :: sph_gen
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
@@ -306,8 +304,6 @@
       call s_set_control_4_model                                        &
      &    (model_ctl%reft_ctl, model_ctl%refc_ctl,                      &
      &     smctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl, MHD_prop)
-      call dealloc_t_evo_name_ctl(model_ctl%evo_ctl)
-      call dealloc_monitor_data_ctl(nmtr_ctl)
 !
 !   set spherical shell parameters
 !
@@ -317,7 +313,6 @@
      &     (nprocs, psph_ctl%Fmesh_ctl, psph_ctl%spctl, psph_ctl%sdctl, &
      &      sph_gen, gen_sph, ierr)
       end if
-      call dealloc_control_shell_define(psph_ctl%spctl)
 !
 !   set forces
 !
@@ -325,11 +320,6 @@
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
      &    model_ctl%cor_ctl, model_ctl%mcv_ctl,                         &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop)
-!
-      call dealloc_name_force_ctl(model_ctl%frc_ctl)
-      call dealloc_gravity_ctl(model_ctl%g_ctl)
-      call dealloc_coriolis_ctl(model_ctl%cor_ctl)
-      call dealloc_magneto_ctl(model_ctl%mcv_ctl)
 !
 !   set parameters for general information
 !
@@ -347,22 +337,16 @@
      &    MHD_prop%cp_prop, model_ctl%dless_ctl, model_ctl%eqs_ctl,     &
      &    MHD_prop%MHD_coef_list)
 !
-      call dealloc_dimless_ctl(model_ctl%dless_ctl)
-      call dealloc_coef_term_ctl(model_ctl%eqs_ctl)
-!
 !   set boundary conditions
 !
       call set_control_SPH_MHD_bcs                                      &
      &   (MHD_prop, model_ctl%nbc_ctl, model_ctl%sbc_ctl, MHD_BC)
 !
-      call dealloc_bc_4_node_ctl(model_ctl%nbc_ctl)
-      call dealloc_bc_4_surf_ctl(model_ctl%sbc_ctl)
-!
 !   set control parameters
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
       call s_set_control_4_time_steps                                   &
-     &   (MHD_step, smctl_ctl%mrst_ctl, smctl_ctl%tctl)
+     &   (smctl_ctl%mrst_ctl, smctl_ctl%tctl, MHD_step)
 !
       call s_set_control_4_crank(smctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

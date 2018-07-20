@@ -108,15 +108,9 @@
       type(sphere_domain_control), intent(inout) :: sdctl
 !
 !
-      if (sdctl%ndomain_sph_grid_ctl%num .gt. 0) then
-        call dealloc_control_array_c_i(sdctl%ndomain_sph_grid_ctl)
-      end if
-      if (sdctl%ndomain_legendre_ctl%num .gt. 0) then
-        call dealloc_control_array_c_i(sdctl%ndomain_legendre_ctl)
-      end if
-      if(sdctl%ndomain_spectr_ctl%num .gt. 0) then
-        call dealloc_control_array_c_i(sdctl%ndomain_spectr_ctl)
-      end if
+      call dealloc_control_array_c_i(sdctl%ndomain_sph_grid_ctl)
+      call dealloc_control_array_c_i(sdctl%ndomain_legendre_ctl)
+      call dealloc_control_array_c_i(sdctl%ndomain_spectr_ctl)
 !
       end subroutine dealloc_ndomain_rtp_ctl
 !

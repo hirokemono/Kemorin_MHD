@@ -16,6 +16,7 @@
 !!
 !!      subroutine bcast_sph_mhd_ctl_w_psf(MHD_ctl)
 !!      subroutine bcast_sph_mhd_ctl_data(MHD_ctl)
+!!      subroutine dealloc_sph_mhd_ctl_data(MHD_ctl)
 !!        type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
 !!@endverbatim
 !
@@ -227,6 +228,20 @@
       call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
       end subroutine bcast_sph_mhd_ctl_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine dealloc_sph_mhd_ctl_data(MHD_ctl)
+!
+      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
+!
+!
+      call dealloc_monitor_data_ctl(MHD_ctl%nmtr_ctl)
+      call dealloc_parallel_shell_ctl(MHD_ctl%psph_ctl)
+      call dealloc_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
+      call dealloc_sph_mhd_model(MHD_ctl%model_ctl)
+!
+      end subroutine dealloc_sph_mhd_ctl_data
 !
 !   --------------------------------------------------------------------
 !

@@ -212,4 +212,23 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine dealloc_parallel_shell_ctl(psph_ctl)
+!
+      use calypso_mpi
+      use bcast_4_sphere_ctl
+      use bcast_4_platform_ctl
+!
+      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
+!
+!
+      psph_ctl%iflag_sph_shell = 0
+      psph_ctl%ifile_sph_shell = 0
+!
+      call dealloc_control_shell_define(psph_ctl%spctl)
+      call dealloc_ndomain_rtp_ctl(psph_ctl%sdctl)
+!
+      end subroutine dealloc_parallel_shell_ctl
+!
+! -----------------------------------------------------------------------
+!
       end module t_ctl_data_gen_sph_shell
