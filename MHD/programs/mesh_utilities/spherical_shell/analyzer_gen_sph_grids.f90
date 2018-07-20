@@ -73,9 +73,11 @@
      &    sph_const, sph_files1, gen_sph_G, ierr_MPI)
       if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !
-      if(gen_sph_G%s3d_ranks%ndomain_sph .eq. nprocs) then
-        write(e_message,'(a,a)') 'The number of MPI processes ',        &
-     &             'must be equal to the number of subdomains.'
+      if(gen_sph_G%s3d_ranks%ndomain_sph .ne. nprocs) then
+        if(my_rank .eq. 0) write(*,*) 'The number of MPI processes ',   &
+     &      'must be equal to the number of subdomains.', char(10),     &
+     &      'Current subdomains: ', gen_sph_G%s3d_ranks%ndomain_sph
+        write(e_message,'(a)') 'Parallellization error'
         call calypso_mpi_abort(ierr_P_MPI, e_message)
       end if
 !
