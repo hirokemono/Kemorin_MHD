@@ -329,6 +329,8 @@
      &       'Set radial groupig more than domain decomposition'
         call calypso_mpi_abort(1, e_message)
       else if(SGS_param%ngrp_rave_dynamic .gt. nlayer_fluid) then
+        write(*,*) 'SGS_param%ngrp_rave_dynamic', my_rank,              &
+     &            SGS_param%ngrp_rave_dynamic, nlayer_fluid
         write(e_message,*)                                              &
      &       'Set radial groupig less than radial node points'
         call calypso_mpi_abort(1, e_message)
@@ -337,7 +339,10 @@
         write(e_message,*)                                              &
      &       'Set meridional groupig more than domain decomposition'
         call calypso_mpi_abort(1, e_message)
-      else if(SGS_param%ngrp_rave_dynamic .gt. sph_rtp%nidx_rtp(2)) then
+      else if(SGS_param%ngrp_medave_dynamic .gt. sph_rtp%nidx_rtp(2))   &
+     &    then
+        write(*,*) 'SGS_param%ngrp_rave_dynamic', my_rank,              &
+     &            SGS_param%ngrp_medave_dynamic, sph_rtp%nidx_rtp(2)
         write(e_message,*)                                              &
      &       'Set meridional groupig less than meridional node points'
         call calypso_mpi_abort(1, e_message)
