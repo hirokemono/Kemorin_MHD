@@ -135,7 +135,9 @@
      &   (fhd_SGS_rot_Lorentz, n_vector, ipol%i_SGS_rot_Lorentz,        &
      &    itor%i_SGS_rot_Lorentz, iphys%i_SGS_rot_Lorentz,              &
      &    b_trns%i_SGS_rot_Lorentz, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_SGS_induction, n_vector,  &
+!
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_SGS_induction, fhd_SGS_induction, n_vector,            &
      &    ipol%i_SGS_induction, itor%i_SGS_induction,                   &
      &    iphys%i_SGS_induction, b_trns%i_SGS_induction, trns_back)
 !
@@ -153,54 +155,54 @@
      &    ipol%i_grad_composit, itor%i_grad_composit,                   &
      &    iphys%i_grad_composit, b_trns%i_grad_composit, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_grad_v_1, n_vector,       &
-     &    ipol%i_grad_vx, itor%i_grad_vx, iphys%i_grad_vx,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_vx, fhd_grad_v_1,      &
+     &    n_vector, ipol%i_grad_vx, itor%i_grad_vx, iphys%i_grad_vx,    &
      &    b_trns%i_grad_vx, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_v_2, n_vector,       &
-     &    ipol%i_grad_vy, itor%i_grad_vy, iphys%i_grad_vy,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_vy, fhd_grad_v_2,      &
+     &     n_vector, ipol%i_grad_vy, itor%i_grad_vy, iphys%i_grad_vy,   &
      &    b_trns%i_grad_vy, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_v_3, n_vector,       &
-     &    ipol%i_grad_vz, itor%i_grad_vz, iphys%i_grad_vz,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_vy, fhd_grad_v_3,      &
+     &     n_vector, ipol%i_grad_vz, itor%i_grad_vz, iphys%i_grad_vz,   &
      &    b_trns%i_grad_vz, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_grad_w_1, n_vector,       &
-     &    ipol%i_grad_wx, itor%i_grad_wx, iphys%i_grad_wx,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_wx, fhd_grad_w_1,      &
+     &     n_vector, ipol%i_grad_wx, itor%i_grad_wx, iphys%i_grad_wx,   &
      &    b_trns%i_grad_wx, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_w_2, n_vector,       &
-     &    ipol%i_grad_wy, itor%i_grad_wy, iphys%i_grad_wy,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_wy, fhd_grad_w_2,      &
+     &     n_vector, ipol%i_grad_wy, itor%i_grad_wy, iphys%i_grad_wy,   &
      &    b_trns%i_grad_wy, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_w_3, n_vector,       &
-     &    ipol%i_grad_wz, itor%i_grad_wz, iphys%i_grad_wz,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_wz, fhd_grad_w_3,      &
+     &     n_vector, ipol%i_grad_wz, itor%i_grad_wz, iphys%i_grad_wz,   &
      &    b_trns%i_grad_wz, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_grad_a_1, n_vector,       &
-     &    ipol%i_grad_ax, itor%i_grad_ax, iphys%i_grad_ax,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_ax, fhd_grad_a_1,      &
+     &     n_vector, ipol%i_grad_ax, itor%i_grad_ax, iphys%i_grad_ax,   &
      &    b_trns%i_grad_ax, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_a_2, n_vector,       &
-     &    ipol%i_grad_ay, itor%i_grad_ay, iphys%i_grad_ay,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_ay, fhd_grad_a_2,      &
+     &     n_vector, ipol%i_grad_ay, itor%i_grad_ay, iphys%i_grad_ay,   &
      &    b_trns%i_grad_ay, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_a_3, n_vector,       &
-     &    ipol%i_grad_az, itor%i_grad_az, iphys%i_grad_az,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_az, fhd_grad_a_3,      &
+     &     n_vector, ipol%i_grad_az, itor%i_grad_az, iphys%i_grad_az,   &
      &    b_trns%i_grad_az, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_grad_b_1, n_vector,       &
-     &    ipol%i_grad_bx, itor%i_grad_bx, iphys%i_grad_bx,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_bx, fhd_grad_b_1,      &
+     &     n_vector, ipol%i_grad_bx, itor%i_grad_bx, iphys%i_grad_bx,   &
      &    b_trns%i_grad_bx, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_b_2, n_vector,       &
-     &    ipol%i_grad_by, itor%i_grad_by, iphys%i_grad_by,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_by, fhd_grad_b_2,      &
+     &     n_vector, ipol%i_grad_by, itor%i_grad_by, iphys%i_grad_by,   &
      &    b_trns%i_grad_by, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_b_3, n_vector,       &
-     &    ipol%i_grad_bz, itor%i_grad_bz, iphys%i_grad_bz,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_bz, fhd_grad_b_3,      &
+     &     n_vector, ipol%i_grad_bz, itor%i_grad_bz, iphys%i_grad_bz,   &
      &    b_trns%i_grad_bz, trns_back)
 !
-      call add_field_name_4_sph_trns_snap(fhd_grad_j_1, n_vector,       &
-     &    ipol%i_grad_jx, itor%i_grad_jx, iphys%i_grad_jx,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_jx, fhd_grad_j_1,      &
+     &     n_vector, ipol%i_grad_jx, itor%i_grad_jx, iphys%i_grad_jx,   &
      &    b_trns%i_grad_jx, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_j_2, n_vector,       &
-     &    ipol%i_grad_jy, itor%i_grad_jy, iphys%i_grad_jy,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_jy, fhd_grad_j_2,      &
+     &     n_vector, ipol%i_grad_jy, itor%i_grad_jy, iphys%i_grad_jy,   &
      &    b_trns%i_grad_jy, trns_back)
-      call add_field_name_4_sph_trns_snap(fhd_grad_j_3, n_vector,       &
-     &    ipol%i_grad_jz, itor%i_grad_jz, iphys%i_grad_jz,              &
+      call add_field_name_4_sph_trns(ipol%i_grad_jz, fhd_grad_j_3,      &
+     &     n_vector, ipol%i_grad_jz, itor%i_grad_jz, iphys%i_grad_jz,   &
      &    b_trns%i_grad_jz, trns_back)
       trns_back%num_vector = trns_back%nfield
 !
