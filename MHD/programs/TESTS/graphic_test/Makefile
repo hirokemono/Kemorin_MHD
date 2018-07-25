@@ -173,9 +173,9 @@ target_task:
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PNG_2_BMP_F)': '$$(OBJ_PNG_2_BMP_F)  $$(LIB_KEMO_C_FILE)' \
 	 >> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(OPTFLAGS)' -o '$$(TARGET_PNG_2_BMP_F)' \
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PNG_2_BMP_F)' \
 	'$$(OBJ_PNG_2_BMP_F)' \
-	'-L. $$(LIB_KEMO_C)  $$(PNG_LIBS)' >> $(MAKENAME)
+	'-L. $$(LIB_KEMO_C)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 
