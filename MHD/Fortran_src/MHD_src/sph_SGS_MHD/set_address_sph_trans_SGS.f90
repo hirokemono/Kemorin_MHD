@@ -15,8 +15,9 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_SIMI
 !!      subroutine init_sph_trns_fld_dyn_simi                           &
-!!     &         (SPH_MHD, iphys, trns_DYNS,                            &
+!!     &         (SGS_param, SPH_MHD, iphys, trns_DYNS,                 &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(phys_address), intent(in) :: iphys
 !!        type(address_4_sph_trans), intent(inout) :: trns_DYNS
@@ -59,7 +60,7 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'Address for backward transform: ',                  &
+        write(*,*) 'Address for backward transform (trns_SIMI): ',      &
      &             'transform, poloidal, toroidal, grid data'
       end if
 !
@@ -111,12 +112,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_trns_fld_dyn_simi                             &
-     &         (SPH_MHD, iphys, trns_DYNS,                              &
+     &         (SGS_param, SPH_MHD, iphys, trns_DYNS,                   &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
+      use t_SGS_control_parameter
       use address_bwd_sph_trans_SGS
       use address_fwd_sph_trans_SGS
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(phys_address), intent(in) :: iphys
       type(address_4_sph_trans), intent(inout) :: trns_DYNS
@@ -126,7 +129,8 @@
 !
 !
       if(iflag_debug .gt. 0) then
-        write(*,*) 'Spherical transform field table for dynamnic SGS'
+        write(*,*)                                                      &
+     &   'Spherical transform field table for dynamnic SGS (trns_DYNS)'
         write(*,*) 'Address for backward transform: ',                  &
      &             'transform, poloidal, toroidal, grid data'
       end if
@@ -158,8 +162,11 @@
       call alloc_sph_trns_field_name(trns_DYNS%forward)
 !
       trns_DYNS%forward%num_vector = 0
-      call f_trans_address_SGS_works(SPH_MHD%ipol, SPH_MHD%itor,        &
-     &    iphys, trns_DYNS%f_trns, trns_DYNS%forward)
+!
+      if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+        call f_trans_address_SGS_works(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &      iphys, trns_DYNS%f_trns, trns_DYNS%forward)
+      end if
       trns_DYNS%forward%num_scalar = trns_DYNS%forward%nfield           &
      &                              - trns_DYNS%forward%num_vector
       trns_DYNS%forward%num_tensor = 0

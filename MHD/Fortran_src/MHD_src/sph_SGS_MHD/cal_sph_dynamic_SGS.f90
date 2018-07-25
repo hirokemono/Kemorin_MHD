@@ -200,7 +200,7 @@
 !
 !
       call start_elapsed_time(16)
-      if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD dyns'
+      if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD SGS'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
      &    trns_SGS%forward, WK_sph, trns_SGS%mul_FFTW, rj_fld)
       call end_elapsed_time(16)
