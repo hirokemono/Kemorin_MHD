@@ -169,7 +169,6 @@
       use t_spheric_parameter
       use t_sph_trans_arrays_MHD
 !
-      use coordinate_convert_4_sph
       use set_address_sph_trans_snap
 !
       type(sph_grids), intent(in) :: sph

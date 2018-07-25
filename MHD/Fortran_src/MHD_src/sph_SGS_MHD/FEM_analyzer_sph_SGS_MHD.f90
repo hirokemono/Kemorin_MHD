@@ -51,7 +51,7 @@
       use t_sph_trans_arrays_MHD
       use t_SGS_control_parameter
 !
-      use FEM_analyzer_sph_MHD
+      use set_address_sph_trans_snap
       use SGS_MHD_fields_to_FEM
 !
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -63,10 +63,24 @@
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      call SPH_to_FEM_bridge_MHD(sph, WK, geofem%mesh, nod_fld)
+      call calypso_mpi_barrier
+      if (iflag_debug.gt.0) write(*,*) 'copy_force_from_transform MHD'
+      call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
+     &    WK%trns_MHD%forward, geofem%mesh, nod_fld)
 !
-      if(SGS_par%model_p%iflag_SGS .eq. 0) return
-      call copy_SGS_MHD_fld_from_trans(sph, WK, geofem%mesh, nod_fld)
+      if(SGS_par%model_p%iflag_SGS .gt. 0) then
+        call copy_SGS_MHD_fld_from_trans(sph, WK, geofem%mesh, nod_fld)
+      end if
+!
+!
+      call calypso_mpi_barrier
+      if (iflag_debug.gt.0) write(*,*) 'copy_field_from_transform SNAP'
+      call copy_field_from_transform(sph%sph_params, sph%sph_rtp,       &
+     &    WK%trns_snap%backward, geofem%mesh, nod_fld)
+      call calypso_mpi_barrier
+      if (iflag_debug.gt.0) write(*,*) 'copy_force_from_transform SNAP'
+      call copy_force_from_transform(sph%sph_params, sph%sph_rtp,       &
+     &    WK%trns_snap%forward, geofem%mesh, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_SGS_MHD
 !

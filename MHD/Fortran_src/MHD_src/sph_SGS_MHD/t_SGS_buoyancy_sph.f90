@@ -28,16 +28,14 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(work_4_sph_SGS_buoyancy), intent(inout) :: wk_sgs_buo
 !!
-!!      subroutine magnify_sph_ave_SGS_buoyancy(sph_rj, sph_rtp, ipol,  &
-!!     &          ifld_sgs, wk_sgs_buo, rj_fld, fg_trns, trns_f_SGS)
-!!      subroutine magnify_vol_ave_SGS_buoyancy(sph_rtp, ipol, ifld_sgs,&
-!!     &          wk_sgs_buo, rj_fld, fg_trns, trns_f_SGS)
+!!      subroutine magnify_sph_ave_SGS_buoyancy                         &
+!!     &         (sph_rtp, ifld_sgs, wk_sgs_buo, fg_trns, trns_f_SGS)
+!!      subroutine magnify_vol_ave_SGS_buoyancy(sph_rtp, ifld_sgs,     &
+!!     &          wk_sgs_buo, fg_trns, trns_f_SGS)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
 !!        type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
-!!        type(phys_data), intent(inout) :: rj_fld
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
 !!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
@@ -215,7 +213,11 @@
       if(sph_rj%idx_rj_degree_zero .gt. izero) then
         wk_sgs_buo%Cbuo_ave_sph_lc(1:sph_rj%nidx_rj(1),1:2) = 0.0d0
 !
+        write(*,*) 'ipol%i_Csim_SGS_buoyancy', ipol%i_Csim_SGS_buoyancy
+        write(*,*) 'ipol%i_Csim_SGS_comp_buo', ipol%i_Csim_SGS_comp_buo
+!
         if(ipol%i_Csim_SGS_buoyancy .gt. 0) then
+          write(*,*) 'ave_one_scalar_sph_spectr thermnal'
           call ave_one_scalar_sph_spectr                                &
      &       (ipol%i_Csim_SGS_buoyancy, sph_rj%nidx_rj,                 &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
@@ -224,6 +226,7 @@
         end if
 !
         if(ipol%i_Csim_SGS_comp_buo .gt. 0) then
+          write(*,*) 'ave_one_scalar_sph_spectr composition'
           call ave_one_scalar_sph_spectr                                &
      &       (ipol%i_Csim_SGS_comp_buo, sph_rj%nidx_rj,                 &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
@@ -231,6 +234,8 @@
      &        itwo, itwo, wk_sgs_buo%Cbuo_ave_sph_lc)
         end if
 !
+        if (iflag_debug.gt.0) write(*,*) 'radial_integration'
+!        write(*,*) 'wk_sgs_buo%Cbuo_ave_sph_lc',wk_sgs_buo%Cbuo_ave_sph_lc
         call radial_integration                                         &
      &     (sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
      &      sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, itwo,             &
@@ -243,90 +248,74 @@
       call MPI_allREDUCE                                                &
      &   (wk_sgs_buo%Cbuo_vol_lc, wk_sgs_buo%Cbuo_vol_gl, itwo,         &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      write(*,*) 'wk_sgs_buo%Cbuo_vol_gl', wk_sgs_buo%Cbuo_vol_gl
 !
       end subroutine volume_averaged_SGS_buoyancy
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine magnify_sph_ave_SGS_buoyancy(sph_rj, sph_rtp, ipol,    &
-     &          ifld_sgs, wk_sgs_buo, rj_fld, fg_trns, trns_f_SGS)
+      subroutine magnify_sph_ave_SGS_buoyancy                           &
+     &         (sph_rtp, ifld_sgs, wk_sgs_buo, fg_trns, trns_f_SGS)
 !
       use t_rms_4_sph_spectr
       use t_spheric_parameter
-      use t_phys_data
       use t_SGS_model_coefs
       use radial_int_for_sph_spec
       use volume_average_4_sph
       use prod_buo_model_coefs_sph
       use SGS_buo_coefs_sph_MHD
 !
-      type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(phys_address), intent(in) :: ipol
       type(SGS_terms_address), intent(in) :: ifld_sgs
       type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
       type(phys_address), intent(in) :: fg_trns
 !
-      type(phys_data), intent(inout) :: rj_fld
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
-!$omp parallel
-      if((ipol%i_Csim_SGS_buoyancy*ipol%i_Csim_SGS_comp_buo) .gt. 0)    &
-     &    then
-        call prod_dbl_radial_buo_coefs_rj(sph_rj%nidx_rj,               &
-     &      wk_sgs_buo%Cbuo_ave_sph_gl, ipol%i_SGS_inertia,             &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
+        call sel_prod_dbl_radial_buo_coefs(sph_rtp,                     &
+     &     wk_sgs_buo%Cbuo_ave_sph_rtp, fg_trns, trns_f_SGS)
+      else if(ifld_sgs%i_buoyancy .gt. 0) then
+        call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
+     &     wk_sgs_buo%Cbuo_ave_sph_rtp(1,1), fg_trns, trns_f_SGS)
+      else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
+        call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
+     &     wk_sgs_buo%Cbuo_ave_sph_rtp(1,2), fg_trns, trns_f_SGS)
       end if
-!$omp end parallel
-!
-      call sel_mag_sph_ave_SGS_buo_rtp (sph_rtp, ifld_sgs,              &
-     &    wk_sgs_buo%Cbuo_ave_sph_rtp, fg_trns, trns_f_SGS)
 !
       end subroutine magnify_sph_ave_SGS_buoyancy
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine magnify_vol_ave_SGS_buoyancy(sph_rtp, ipol, ifld_sgs,  &
-     &          wk_sgs_buo, rj_fld, fg_trns, trns_f_SGS)
+      subroutine magnify_vol_ave_SGS_buoyancy(sph_rtp, ifld_sgs,        &
+     &          wk_sgs_buo, fg_trns, trns_f_SGS)
 !
       use t_rms_4_sph_spectr
       use t_spheric_parameter
-      use t_phys_data
       use t_SGS_model_coefs
       use radial_int_for_sph_spec
       use volume_average_4_sph
       use prod_buo_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(phys_address), intent(in) :: ipol
       type(SGS_terms_address), intent(in) :: ifld_sgs
       type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
       type(phys_address), intent(in) :: fg_trns
 !
-      type(phys_data), intent(inout) :: rj_fld
       type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !
 !
       if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
         call product_double_vol_buo_coefs                               &
-     &     (wk_sgs_buo%Cbuo_vol_gl, ipol%i_SGS_inertia,                 &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        call product_double_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl, fg_trns%i_SGS_inertia,              &
      &      sph_rtp%nnod_rtp, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else if(ifld_sgs%i_buoyancy .gt. 0) then
         call product_single_vol_buo_coefs                               &
-     &     (wk_sgs_buo%Cbuo_vol_gl(1), ipol%i_SGS_inertia,              &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        call product_single_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl(1), fg_trns%i_SGS_inertia,           &
      &      sph_rtp%nnod_rtp, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
-        call product_single_vol_buo_coefs                               &
-     &     (wk_sgs_buo%Cbuo_vol_gl(2), ipol%i_SGS_inertia,              &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call product_single_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl(2), fg_trns%i_SGS_inertia,           &
      &      sph_rtp%nnod_rtp, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)

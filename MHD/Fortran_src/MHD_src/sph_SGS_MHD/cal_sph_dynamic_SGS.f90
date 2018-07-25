@@ -147,6 +147,7 @@
 !
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none                   &
      &  .and. istep_dynamic .eq. 0) then
+        if(iflag_debug.ge.1) write(*,*) 'dynamic_buo_SGS_by_pseudo_sph'
         call dynamic_buo_SGS_by_pseudo_sph(SGS_param, sph, comms_sph,   &
      &      MHD_prop, trans_p, WK%trns_MHD, WK%trns_SGS, WK%trns_DYNS,  &
      &      WK%WK_sph,  dynamic_SPH, ipol, rj_fld)
@@ -155,17 +156,18 @@
 !
       call start_elapsed_time(17)
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+        if(iflag_debug.ge.1) write(*,*) 'product_buo_model_coefs_4_sph'
         call product_buo_model_coefs_4_sph                              &
      &         (SGS_param, sph, comms_sph, trans_p, WK%trns_SGS,        &
-     &          WK%WK_sph, dynamic_SPH, ipol, rj_fld)
-      else
-        call start_elapsed_time(16)
-        if (iflag_debug.eq.1) write(*,*)                                &
-     &            'sph_forward_trans_SGS_MHD SGS'
-        call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
-     &      WK%trns_SGS%forward, WK%WK_sph, WK%trns_SGS%mul_FFTW, rj_fld)
-        call end_elapsed_time(16)
+     &          WK%WK_sph, dynamic_SPH)
       end if
+!
+      call start_elapsed_time(16)
+      if (iflag_debug.eq.1) write(*,*)                                  &
+     &            'sph_forward_trans_SGS_MHD SGS'
+      call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
+     &    WK%trns_SGS%forward, WK%WK_sph, WK%trns_SGS%mul_FFTW, rj_fld)
+      call end_elapsed_time(16)
 !
       if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'
       call rot_SGS_terms_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,         &

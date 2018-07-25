@@ -98,6 +98,20 @@
      &    ipol%i_SGS_comp_buo_wk, itor%i_SGS_comp_buo_wk,               &
      &    iphys%i_SGS_comp_buo_wk, f_trns%i_SGS_comp_buo_wk, trns_fwd)
 !
+!
+!   SGS buoyancy
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_Csim_SGS_buoyancy, fhd_Csim_SGS_buoyancy, n_scalar,    &
+     &    ipol%i_Csim_SGS_buoyancy, itor%i_Csim_SGS_buoyancy,           &
+     &    iphys%i_Csim_SGS_buoyancy, f_trns%i_Csim_SGS_buoyancy,        &
+     &    trns_fwd)
+!   SGS compostional buoyancy
+      call add_field_name_4_sph_trns                                    &
+     &   (ipol%i_Csim_SGS_comp_buo, fhd_Csim_SGS_comp_buo, n_scalar,    &
+     &    ipol%i_Csim_SGS_comp_buo, itor%i_Csim_SGS_comp_buo,           &
+     &    iphys%i_Csim_SGS_comp_buo, f_trns%i_Csim_SGS_comp_buo,        &
+     &    trns_fwd)
+!
       end subroutine f_trans_address_SGS_works
 !
 !-----------------------------------------------------------------------

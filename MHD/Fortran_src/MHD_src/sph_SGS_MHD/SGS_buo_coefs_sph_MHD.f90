@@ -11,8 +11,6 @@
 !!     &         (sph_rtp, sph_d_grp, stablize_weight, frc_rtp,         &
 !!     &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,&
 !!     &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
-!!      subroutine sel_mag_sph_ave_SGS_buo_rtp(sph_rtp, ifld_sgs,       &
-!!     &          Cbuo_ave_sph_rtp, fg_trns, trns_f_SGS)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
 !!        type(phys_address), intent(in) :: fg_trns
@@ -24,6 +22,14 @@
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
 !!        type(dynamic_model_data), intent(in) :: wk_sgs
+!!
+!!      subroutine sel_prod_sgl_radial_buo_coefs                        &
+!!     &         (sph_rtp, sgs_c, fg_trns, trns_f_SGS)
+!!      subroutine sel_prod_dbl_radial_buo_coefs                        &
+!!     &         (sph_rtp, sgs_c, fg_trns, trns_f_SGS)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(phys_address), intent(in) :: fg_trns
+!!        type(address_each_sph_trans), intent(inout) :: trns_f_SGS
 !!@endverbatim
 !
       module SGS_buo_coefs_sph_MHD
@@ -48,8 +54,6 @@
       private :: sel_int_zonal_4_buo_coefs
       private :: sel_product_single_buo_coefs
       private :: sel_product_double_buo_coefs
-      private :: sel_prod_sgl_radial_buo_coefs
-      private :: sel_prod_dbl_radial_buo_coefs
 !
 !  ---------------------------------------------------------------------
 !
@@ -92,37 +96,6 @@
      &    wk_sgs%comp_clip, wk_sgs%fld_coef)
 !
       end subroutine cal_SGS_buo_coefs_sph_MHD
-!
-! ----------------------------------------------------------------------
-!
-      subroutine sel_mag_sph_ave_SGS_buo_rtp(sph_rtp, ifld_sgs,         &
-     &          Cbuo_ave_sph_rtp, fg_trns, trns_f_SGS)
-!
-      use t_rms_4_sph_spectr
-      use t_spheric_parameter
-      use t_phys_data
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(SGS_terms_address), intent(in) :: ifld_sgs
-      type(phys_address), intent(in) :: fg_trns
-      real(kind = kreal), intent(in)                                    &
-     &                   :: Cbuo_ave_sph_rtp(sph_rtp%nidx_rtp(1),2)
-!
-      type(address_each_sph_trans), intent(inout) :: trns_f_SGS
-!
-!
-      if     (ifld_sgs%i_buoyancy*ifld_sgs%i_comp_buoyancy .gt. 0) then
-        call sel_prod_dbl_radial_buo_coefs(sph_rtp,                     &
-     &     Cbuo_ave_sph_rtp, fg_trns, trns_f_SGS)
-      else if(ifld_sgs%i_buoyancy .gt. 0) then
-        call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
-     &     Cbuo_ave_sph_rtp(1,1), fg_trns, trns_f_SGS)
-      else if(ifld_sgs%i_comp_buoyancy .gt. 0) then
-        call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
-     &     Cbuo_ave_sph_rtp(1,2), fg_trns, trns_f_SGS)
-      end if
-!
-      end subroutine sel_mag_sph_ave_SGS_buo_rtp
 !
 ! ----------------------------------------------------------------------
 !

@@ -130,7 +130,6 @@
      &      trns_b_snap%fld_rtp(1,bs_trns%i_SGS_induction),             &
      &      trns_b_MHD%fld_rtp(1,b_trns%i_magne),                       &
      &      trns_f_snap%fld_rtp(1,fs_trns%i_SGS_me_gen))
-        write(*,*) 'ikakakakakakak', bs_trns%i_SGS_induction
       end if
 !$omp end parallel
 !
