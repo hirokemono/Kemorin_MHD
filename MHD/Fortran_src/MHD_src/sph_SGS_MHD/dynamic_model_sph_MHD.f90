@@ -78,7 +78,7 @@
         call cal_dynamic_SGS_4_sph_MHD                                  &
      &     (sph_rtp, dynamic_SPH%sph_d_grp, SGS_param%stab_weight,      &
      &      n_vector, dynamic_SPH%ifld_sgs%i_mom_flux,                  &
-     &      trns_f_SIMI%fld_rtp(1,fg_trns%i_SGS_Lorentz),               &
+     &      trns_f_SIMI%fld_rtp(1,fg_trns%i_SGS_inertia),               &
      &      trns_b_wide%fld_rtp(1,bw_trns%i_wide_SGS_inertia),          &
      &      trns_b_dble%fld_rtp(1,bd_trns%i_dbl_SGS_inertia),           &
      &      dynamic_SPH%wk_sgs)
