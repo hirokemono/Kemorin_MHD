@@ -213,11 +213,8 @@
       if(sph_rj%idx_rj_degree_zero .gt. izero) then
         wk_sgs_buo%Cbuo_ave_sph_lc(1:sph_rj%nidx_rj(1),1:2) = 0.0d0
 !
-        write(*,*) 'ipol%i_Csim_SGS_buoyancy', ipol%i_Csim_SGS_buoyancy
-        write(*,*) 'ipol%i_Csim_SGS_comp_buo', ipol%i_Csim_SGS_comp_buo
-!
         if(ipol%i_Csim_SGS_buoyancy .gt. 0) then
-          write(*,*) 'ave_one_scalar_sph_spectr thermnal'
+!          write(*,*) 'ave_one_scalar_sph_spectr thermnal'
           call ave_one_scalar_sph_spectr                                &
      &       (ipol%i_Csim_SGS_buoyancy, sph_rj%nidx_rj,                 &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
@@ -226,7 +223,7 @@
         end if
 !
         if(ipol%i_Csim_SGS_comp_buo .gt. 0) then
-          write(*,*) 'ave_one_scalar_sph_spectr composition'
+!          write(*,*) 'ave_one_scalar_sph_spectr composition'
           call ave_one_scalar_sph_spectr                                &
      &       (ipol%i_Csim_SGS_comp_buo, sph_rj%nidx_rj,                 &
      &        sph_rj%idx_rj_degree_zero, sph_rj%inod_rj_center,         &
@@ -248,7 +245,7 @@
       call MPI_allREDUCE                                                &
      &   (wk_sgs_buo%Cbuo_vol_lc, wk_sgs_buo%Cbuo_vol_gl, itwo,         &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      write(*,*) 'wk_sgs_buo%Cbuo_vol_gl', wk_sgs_buo%Cbuo_vol_gl
+!      write(*,*) 'wk_sgs_buo%Cbuo_vol_gl', wk_sgs_buo%Cbuo_vol_gl
 !
       end subroutine volume_averaged_SGS_buoyancy
 !
