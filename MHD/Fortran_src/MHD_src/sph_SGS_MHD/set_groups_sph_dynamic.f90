@@ -320,29 +320,48 @@
       type(make_sph_dynamic_model_grp), intent(in) :: wk_dgrp
 !
       integer(kind = kint) :: nlayer_fluid
+      integer(kind = kint) :: ip_r, ip_t, i, kr, kr_gl
+      integer(kind = kint) :: nri_fluid, ngrp_r, ngrp_t
 !
 !
+      ip_r =  sph_rtp%irank_sph_rtp(1) + 1
+      ip_t =  sph_rtp%irank_sph_rtp(2) + 1
+      ngrp_r = wk_dgrp%istack_r_gl_ngrp(ip_r)                           &
+     &       - wk_dgrp%istack_r_gl_ngrp(ip_r-1)
+      ngrp_t = wk_dgrp%istack_t_gl_ngrp(ip_t)                           &
+     &       - wk_dgrp%istack_t_gl_ngrp(ip_t-1)
+!
+      i = 0
+      do kr = 1, sph_rtp%nidx_rtp(1)
+        kr_gl = sph_rtp%idx_gl_1d_rtp_r(kr)
+        if(kr_gl .ge. sph_params%nlayer_ICB                             &
+     &       .and. kr_gl .le. sph_params%nlayer_CMB) i = i + 1
+      end do
+      nri_fluid = i
 !
       nlayer_fluid = sph_params%nlayer_CMB - sph_params%nlayer_ICB + 1
-      if(SGS_param%ngrp_rave_dynamic .lt. wk_dgrp%nprocs_rt(1)) then
+      if(ngrp_r .lt. 1) then
+        write(*,*) 'SGS_param%ngrp_rave_dynamic', my_rank,              &
+     &            ngrp_t, wk_dgrp%nprocs_rt(1)
         write(e_message,*)                                              &
      &       'Set radial groupig more than domain decomposition'
         call calypso_mpi_abort(1, e_message)
-      else if(SGS_param%ngrp_rave_dynamic .gt. nlayer_fluid) then
+      else if(ngrp_r .gt. nri_fluid) then
         write(*,*) 'SGS_param%ngrp_rave_dynamic', my_rank,              &
-     &            SGS_param%ngrp_rave_dynamic, nlayer_fluid
+     &            ngrp_r, nri_fluid
         write(e_message,*)                                              &
      &       'Set radial groupig less than radial node points'
         call calypso_mpi_abort(1, e_message)
       end if
-      if(SGS_param%ngrp_medave_dynamic .lt. wk_dgrp%nprocs_rt(2)) then
+      if(ngrp_t .lt. 1) then
+        write(*,*) 'SGS_param%ngrp_medave_dynamic', my_rank,            &
+     &            SGS_param%ngrp_medave_dynamic, wk_dgrp%nprocs_rt(2)
         write(e_message,*)                                              &
      &       'Set meridional groupig more than domain decomposition'
         call calypso_mpi_abort(1, e_message)
-      else if(SGS_param%ngrp_medave_dynamic .gt. sph_rtp%nidx_rtp(2))   &
-     &    then
-        write(*,*) 'SGS_param%ngrp_rave_dynamic', my_rank,              &
-     &            SGS_param%ngrp_medave_dynamic, sph_rtp%nidx_rtp(2)
+      else if(ngrp_t .gt. sph_rtp%nidx_rtp(2)) then
+        write(*,*) 'SGS_param%ngrp_medave_dynamic', my_rank,            &
+     &            ngrp_t, sph_rtp%nidx_rtp(2)
         write(e_message,*)                                              &
      &       'Set meridional groupig less than meridional node points'
         call calypso_mpi_abort(1, e_message)
