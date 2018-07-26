@@ -229,7 +229,7 @@
      &                 + (lt-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(3)
 !
                 sgs_zl(klgrp) = sgs_zl(klgrp)                           &
-     &                         + abs(frc_wide(i1) * frc_simi(i1))
+     &                         + frc_simi(i1) * frc_simi(i1)
                 sgs_zt(klgrp) = sgs_zt(klgrp)                           &
      &                         + frc_wide(i1) * frc_wide(i1)
               end do
