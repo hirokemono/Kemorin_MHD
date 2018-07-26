@@ -244,6 +244,13 @@
         sgs_zt(klgrp) = 1.0d-30
       end do
 !
+!$omp parallel workshare
+      sgs_zl(1:sph_d_grp%ngrp_dynamic)                                  &
+     &     = sqrt(sgs_zl(1:sph_d_grp%ngrp_dynamic))
+      sgs_zt(1:sph_d_grp%ngrp_dynamic)                                  &
+     &     = sqrt(sgs_zt(1:sph_d_grp%ngrp_dynamic))
+!$omp end parallel workshare
+!
       end subroutine int_zonal_buo_coefs_pin
 !
 !  ---------------------------------------------------------------------
