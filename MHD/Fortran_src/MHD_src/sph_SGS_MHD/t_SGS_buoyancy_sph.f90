@@ -309,6 +309,8 @@
      &     (wk_sgs_buo%Cbuo_vol_gl, fg_trns%i_SGS_inertia,              &
      &      sph_rtp%nnod_rtp, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else if(ifld_sgs%i_buoyancy .gt. 0) then
+        write(*,*) 'product_single_vol_buo_coefs thermal',     &
+     &            wk_sgs_buo%Cbuo_vol_gl(1)
         call product_single_vol_buo_coefs                               &
      &     (wk_sgs_buo%Cbuo_vol_gl(1), fg_trns%i_SGS_inertia,           &
      &      sph_rtp%nnod_rtp, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
