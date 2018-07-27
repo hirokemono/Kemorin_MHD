@@ -15,10 +15,10 @@
       use calypso_mpi
 !
       use t_groups_sph_dynamic
+      use t_work_sph_dynamic_grping
 !
       implicit  none
 !
-      private :: set_sph_dynamic_istack_global
       private :: check_num_grouping_sph_dynamic
       private :: set_istack_dynamic_sph_grp
 !
@@ -42,30 +42,72 @@
 !
       type(sph_dynamic_model_group), intent(inout) :: sph_d_grp
 !
-      integer(kind = kint) :: max
+      integer(kind = kint) :: nlayer_fl, max, ntot
       type(make_sph_dynamic_model_grp) :: wk_dgrp1
 !
 !
-      call alloc_mk_sph_dgrp_flag(sph_rtp, wk_dgrp1)
-      call count_nprocs_meridional_plans(sph_rtp, wk_dgrp1)
+      nlayer_fl = num_fluid_layer(sph_params, sph_rtp)
+      call alloc_mk_sph_dgrp_flag(nprocs, wk_dgrp1)
 !
-      if(iflag_debug .gt. 0) then
-        call ckeck_dynamic_grp_iflag(sph_params, sph_rtp, wk_dgrp1)
-      end if
+      call MPI_Allgather                                                &
+     &   (sph_rtp%irank_sph_rtp(1), ione, CALYPSO_INTEGER,              &
+     &    wk_dgrp1%irank_list_r, ione, CALYPSO_INTEGER, CALYPSO_COMM,   &
+     &    ierr_MPI)
+      call MPI_Allgather                                                &
+     &   (sph_rtp%irank_sph_rtp(2), ione, CALYPSO_INTEGER,              &
+     &    wk_dgrp1%irank_list_t, ione, CALYPSO_INTEGER,                 &
+     &    CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Allgather(nlayer_fl, ione, CALYPSO_INTEGER,              &
+     &    wk_dgrp1%nri_pe_list, ione, CALYPSO_INTEGER,                  &
+     &    CALYPSO_COMM, ierr_MPI)
+      call MPI_Allgather(sph_rtp%nidx_rtp(2), ione, CALYPSO_INTEGER,    &
+     &    wk_dgrp1%nth_pe_list, ione, CALYPSO_INTEGER,                  &
+     &    CALYPSO_COMM, ierr_MPI)
+      wk_dgrp1%nprocs_rt(1) = maxval(wk_dgrp1%irank_list_r,1) + 1
+      wk_dgrp1%nprocs_rt(2) = maxval(wk_dgrp1%irank_list_t,1) + 1
+!
 !
       call alloc_mk_sph_dgrp_stack(wk_dgrp1)
-      call set_sph_dynamic_istack_global                                &
-     &         (sph_params, sph_rtp, wk_dgrp1)
+!
+      call find_num_rt_grid_4_fluid(wk_dgrp1)
+      call s_cal_total_and_stacks                                       &
+     &   (wk_dgrp1%nprocs_rt(1), wk_dgrp1%nri_1d_list,                  &
+     &    (sph_params%nlayer_ICB-1), wk_dgrp1%istack_global_kr, ntot)
+!
+      call s_cal_total_and_stacks                                       &
+     &   (wk_dgrp1%nprocs_rt(2), wk_dgrp1%nth_1d_list,                  &
+     &    izero, wk_dgrp1%istack_global_lt, ntot)
+!
+!
+      if(iflag_debug .gt. 0) call ckeck_global_nums_4_dynamic(wk_dgrp1)
+!
       call dealloc_mk_sph_dgrp_flag(wk_dgrp1)
 !
-      call count_number_4_smp(wk_dgrp1%nprocs_rt(1), ione,              &
-     &   SGS_param%ngrp_rave_dynamic, wk_dgrp1%istack_r_gl_ngrp, max)
-      call count_number_4_smp(wk_dgrp1%nprocs_rt(2), ione,              &
-     &   SGS_param%ngrp_medave_dynamic, wk_dgrp1%istack_t_gl_ngrp, max)
+      if(SGS_param%ngrp_rave_dynamic .eq. sph_rtp%nidx_global_rtp(1))   &
+     & then
+        call s_cal_total_and_stacks                                     &
+     &     (wk_dgrp1%nprocs_rt(1), wk_dgrp1%nri_1d_list,                &
+     &      izero, wk_dgrp1%istack_r_gl_ngrp, ntot)
+      else
+        call count_number_4_smp(wk_dgrp1%nprocs_rt(1),                  &
+     &      ione, SGS_param%ngrp_rave_dynamic,                          &
+     &      wk_dgrp1%istack_r_gl_ngrp, max)
+      end if
 !
+      if(SGS_param%ngrp_medave_dynamic .eq. sph_rtp%nidx_global_rtp(2)) &
+     & then
+        call s_cal_total_and_stacks                                     &
+     &     (wk_dgrp1%nprocs_rt(2), wk_dgrp1%nth_1d_list,                &
+     &      izero, wk_dgrp1%istack_t_gl_ngrp, ntot)
+      else
+        call count_number_4_smp(wk_dgrp1%nprocs_rt(2),                  &
+     &      ione, SGS_param%ngrp_medave_dynamic,                        &
+     &      wk_dgrp1%istack_t_gl_ngrp, max)
+      end if
 !
-      call check_num_grouping_sph_dynamic                               &
-     &   (SGS_param, sph_params, sph_rtp, wk_dgrp1)
+      call check_num_grouping_sph_dynamic(nlayer_fl,                    &
+     &    SGS_param, sph_rtp, wk_dgrp1)
 !
       call alloc_mk_sph_istack_dynamic(SGS_param, wk_dgrp1)
       call set_istack_dynamic_sph_grp(wk_dgrp1)
@@ -85,7 +127,6 @@
 !
 !
       call dealloc_mk_sph_istack_dynamic(wk_dgrp1)
-      call dealloc_mk_sph_dgrp_stack(wk_dgrp1)
 !
       call alloc_sph_dynamic_grp_item(sph_rtp, sph_d_grp)
       call set_sph_dynamic_grp_item(sph_params, sph_rtp, sph_d_grp)
@@ -237,99 +278,18 @@
       end subroutine set_sph_dynamic_grp_item
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      subroutine count_nprocs_meridional_plans(sph_rtp, wk_dgrp)
-!
-      use t_spheric_rtp_data
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(make_sph_dynamic_model_grp), intent(inout) :: wk_dgrp
-!
-      integer(kind = kint) :: kr, kr_gl, lt, lt_gl
-!
-!
-      if(sph_rtp%irank_sph_rtp(2) .eq. 0                                &
-     &      .and. sph_rtp%irank_sph_rtp(3) .eq. 0) then
-        do kr = 1, sph_rtp%nidx_rtp(1)
-          kr_gl = sph_rtp%idx_gl_1d_rtp_r(kr)
-          wk_dgrp%iflag_kr_l(kr_gl) = sph_rtp%irank_sph_rtp(1) + 1
-        end do
-      end if
-!
-      call MPI_allREDUCE(wk_dgrp%iflag_kr_l, wk_dgrp%iflag_kr_g,        &
-     &    sph_rtp%nidx_global_rtp(1), CALYPSO_INTEGER, MPI_SUM,         &
-     &    CALYPSO_COMM, ierr_MPI)
-      wk_dgrp%nprocs_rt(1) = maxval(wk_dgrp%iflag_kr_g)
-!
-      if(sph_rtp%irank_sph_rtp(1) .eq. 0                                &
-     &      .and. sph_rtp%irank_sph_rtp(3) .eq. 0) then
-        do lt = 1, sph_rtp%nidx_rtp(2)
-          lt_gl = sph_rtp%idx_gl_1d_rtp_t(lt)
-          wk_dgrp%iflag_lt_l(lt_gl) = sph_rtp%irank_sph_rtp(2) + 1
-        end do
-      end if
-!
-      call MPI_allREDUCE(wk_dgrp%iflag_lt_l, wk_dgrp%iflag_lt_g,        &
-     &    sph_rtp%nidx_global_rtp(2), CALYPSO_INTEGER, MPI_SUM,         &
-     &    CALYPSO_COMM, ierr_MPI)
-      wk_dgrp%nprocs_rt(2) = maxval(wk_dgrp%iflag_lt_g)
-!
-      end subroutine count_nprocs_meridional_plans
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_sph_dynamic_istack_global                          &
-     &         (sph_params, sph_rtp, wk_dgrp)
+      integer(kind = kint) function num_fluid_layer                     &
+     &                            (sph_params, sph_rtp)
 !
       use t_spheric_parameter
       use t_spheric_rtp_data
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(make_sph_dynamic_model_grp), intent(inout) :: wk_dgrp
 !
-      integer(kind = kint) :: kr, kr_gl, lt, lt_gl
+      integer(kind = kint) :: i, kr, kr_gl
 !
-!
-      wk_dgrp%istack_global_kr(0) = sph_params%nlayer_ICB - 1
-      do kr_gl = sph_params%nlayer_ICB, sph_params%nlayer_CMB
-        kr = wk_dgrp%iflag_kr_g(kr_gl)
-        wk_dgrp%istack_global_kr(kr) = kr_gl
-      end do
-      do lt_gl = 1, sph_rtp%nidx_global_rtp(2)
-        lt = wk_dgrp%iflag_lt_g(lt_gl)
-        wk_dgrp%istack_global_lt(lt) = lt_gl
-      end do
-!
-      end subroutine set_sph_dynamic_istack_global
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_num_grouping_sph_dynamic                         &
-     &         (SGS_param, sph_params, sph_rtp, wk_dgrp)
-!
-      use t_SGS_control_parameter
-      use t_spheric_parameter
-      use t_spheric_rtp_data
-!
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-!
-      type(make_sph_dynamic_model_grp), intent(in) :: wk_dgrp
-!
-      integer(kind = kint) :: nlayer_fluid
-      integer(kind = kint) :: ip_r, ip_t, i, kr, kr_gl
-      integer(kind = kint) :: nri_fluid, ngrp_r, ngrp_t
-!
-!
-      ip_r =  sph_rtp%irank_sph_rtp(1) + 1
-      ip_t =  sph_rtp%irank_sph_rtp(2) + 1
-      ngrp_r = wk_dgrp%istack_r_gl_ngrp(ip_r)                           &
-     &       - wk_dgrp%istack_r_gl_ngrp(ip_r-1)
-      ngrp_t = wk_dgrp%istack_t_gl_ngrp(ip_t)                           &
-     &       - wk_dgrp%istack_t_gl_ngrp(ip_t-1)
 !
       i = 0
       do kr = 1, sph_rtp%nidx_rtp(1)
@@ -337,71 +297,9 @@
         if(kr_gl .ge. sph_params%nlayer_ICB                             &
      &       .and. kr_gl .le. sph_params%nlayer_CMB) i = i + 1
       end do
-      nri_fluid = i
+      num_fluid_layer = i
 !
-      nlayer_fluid = sph_params%nlayer_CMB - sph_params%nlayer_ICB + 1
-      if(ngrp_r .lt. 1) then
-        write(*,*) 'SGS_param%ngrp_rave_dynamic', my_rank,              &
-     &            ngrp_t, wk_dgrp%nprocs_rt(1)
-        write(e_message,*)                                              &
-     &       'Set radial groupig more than domain decomposition'
-        call calypso_mpi_abort(1, e_message)
-      else if(ngrp_r .gt. nri_fluid) then
-        write(*,*) 'SGS_param%ngrp_rave_dynamic', my_rank,              &
-     &            ngrp_r, nri_fluid
-        write(e_message,*)                                              &
-     &       'Set radial groupig less than radial node points'
-        call calypso_mpi_abort(1, e_message)
-      end if
-      if(ngrp_t .lt. 1) then
-        write(*,*) 'SGS_param%ngrp_medave_dynamic', my_rank,            &
-     &            SGS_param%ngrp_medave_dynamic, wk_dgrp%nprocs_rt(2)
-        write(e_message,*)                                              &
-     &       'Set meridional groupig more than domain decomposition'
-        call calypso_mpi_abort(1, e_message)
-      else if(ngrp_t .gt. sph_rtp%nidx_rtp(2)) then
-        write(*,*) 'SGS_param%ngrp_medave_dynamic', my_rank,            &
-     &            ngrp_t, sph_rtp%nidx_rtp(2)
-        write(e_message,*)                                              &
-     &       'Set meridional groupig less than meridional node points'
-        call calypso_mpi_abort(1, e_message)
-      end if
-!
-      end subroutine check_num_grouping_sph_dynamic
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_istack_dynamic_sph_grp(wk_dgrp)
-!
-      use cal_minmax_and_stacks
-!
-      type(make_sph_dynamic_model_grp), intent(inout) :: wk_dgrp
-!
-      integer(kind = kint) :: i, max, num, ist
-      integer(kind = kint) :: kst, ked, lst, led
-!
-!
-      do i = 1, wk_dgrp%nprocs_rt(1)
-        num = wk_dgrp%istack_r_gl_ngrp(i)                               &
-     &       - wk_dgrp%istack_r_gl_ngrp(i-1)
-        ist = wk_dgrp%istack_r_gl_ngrp(i-1)
-        kst = wk_dgrp%istack_global_kr(i-1) + 1
-        ked = wk_dgrp%istack_global_kr(i)
-        call count_number_4_smp(num, kst, ked,                          &
-     &      wk_dgrp%istack_rgrp(ist), max)
-      end do
-!
-      do i = 1, wk_dgrp%nprocs_rt(2)
-        num = wk_dgrp%istack_t_gl_ngrp(i)                               &
-     &       - wk_dgrp%istack_t_gl_ngrp(i-1)
-        ist = wk_dgrp%istack_t_gl_ngrp(i-1)
-        lst = wk_dgrp%istack_global_lt(i-1) + 1
-        led = wk_dgrp%istack_global_lt(i)
-        call count_number_4_smp(num, lst, led,                          &
-     &      wk_dgrp%istack_tgrp(ist), max)
-      end do
-!
-      end subroutine set_istack_dynamic_sph_grp
+      end function num_fluid_layer
 !
 ! -----------------------------------------------------------------------
 !
