@@ -104,7 +104,8 @@
      &   (sph, trns_MHD%b_trns, trns_ngTMP%f_trns,                      &
      &    trns_MHD%backward, trns_ngTMP%forward)
 !
-      if (iflag_debug.eq.1) write(*,*) 'Forward transform: trns_ngTMP'
+      if (iflag_debug.eq.1) write(*,*)                                  &
+     &        'sph_forward_trans_SGS_MHD trns_ngTMP'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
      &    trns_ngTMP%forward, WK_sph, trns_ngTMP%mul_FFTW, rj_fld)
 !
@@ -112,7 +113,8 @@
       call overwrt_grad_of_vectors_sph                                  &
      &    (sph, r_2nd, sph_MHD_bc, trans_p%leg, ipol, rj_fld)
 !
-      if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
+      if (iflag_debug.eq.1) write(*,*)                                  &
+     &       'sph_back_trans_SGS_MHD trns_ngTMP'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
      &    rj_fld, trns_ngTMP%backward, WK_sph, trns_ngTMP%mul_FFTW)
 !

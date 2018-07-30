@@ -72,6 +72,8 @@
       use cal_dynamic_SGS_buoyancy
       use scale_similarity_sph_SGS
       use nonlinear_gradient_sph_SGS
+      use dynamic_model_sph_MHD
+      use copy_Csim_4_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step, i_step_sgs_coefs
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -145,21 +147,36 @@
       call end_elapsed_time(15)
 !
 !
-      if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none                   &
-     &  .and. istep_dynamic .eq. 0) then
-        if(iflag_debug.ge.1) write(*,*) 'dynamic_buo_SGS_by_pseudo_sph'
-        call dynamic_buo_SGS_by_pseudo_sph(SGS_param, sph, comms_sph,   &
-     &      MHD_prop, trans_p, WK%trns_MHD, WK%trns_SGS, WK%trns_DYNS,  &
-     &      WK%WK_sph,  dynamic_SPH, ipol, rj_fld)
+      if(istep_dynamic .eq. 0) then
+        if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+          if(iflag_debug.ge.1) write(*,*) 'dynamic_buo_SGS_by_pseudo_sph'
+          call const_dynamic_SGS_4_buo_sph                              &
+     &       (SGS_param%stab_weight, sph%sph_rtp, MHD_prop%fl_prop,     &
+     &        WK%trns_MHD, WK%trns_SGS, WK%trns_Csim, dynamic_SPH)
+        end if
+!
+        if(iflag_debug.ge.1) write(*,*) 'copy_model_coefs_4_sph_snap'
+        call copy_model_coefs_4_sph_snap                                &
+     &    (sph%sph_rtp, dynamic_SPH%sph_d_grp, dynamic_SPH%ifld_sgs,    &
+     &     dynamic_SPH%wk_sgs, WK%trns_Csim)
+!
+        call start_elapsed_time(16)
+        if (iflag_debug.eq.1) write(*,*)                                &
+     &                     'sph_forward_trans_SGS_MHD Csim'
+        call sph_forward_trans_SGS_MHD                                  &
+     &     (sph, comms_sph, trans_p, WK%trns_Csim%forward,              &
+     &      WK%WK_sph, WK%trns_Csim%mul_FFTW, rj_fld)
+        call end_elapsed_time(16)
       end if
+!
 !
 !
       call start_elapsed_time(17)
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
         if(iflag_debug.ge.1) write(*,*) 'product_buo_model_coefs_4_sph'
         call product_buo_model_coefs_4_sph                              &
-     &         (SGS_param, sph, comms_sph, trans_p, WK%trns_SGS,        &
-     &          WK%WK_sph, dynamic_SPH)
+     &     (istep_dynamic, SGS_param, sph, ipol,                        &
+     &      WK%trns_SGS, dynamic_SPH, rj_fld)
       end if
 !
       call start_elapsed_time(16)

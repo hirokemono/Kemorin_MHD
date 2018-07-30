@@ -30,7 +30,7 @@
 !!        type(address_4_sph_trans), intent(inout) :: trns_DYNG
 !!
 !!      subroutine set_addresses_trans_sph_ngCsim                       &
-!!     &         (SPH_MHD, iphys, trns_Csim,                            &
+!!     &         (SGS_param, SPH_MHD, iphys, trns_Csim,                 &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !!        type(SPH_mesh_field_data), intent(in) :: SPH_MHD
 !!        type(phys_address), intent(in) :: iphys
@@ -253,12 +253,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_addresses_trans_sph_ngCsim                         &
-     &         (SPH_MHD, iphys, trns_Csim,                              &
+     &         (SGS_param, SPH_MHD, iphys, trns_Csim,                   &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
+      use t_SGS_control_parameter
       use address_bwd_sph_trans_SGS
       use address_fwd_sph_trans_Csim
+      use address_fwd_sph_trans_SGS
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(SPH_mesh_field_data), intent(in) :: SPH_MHD
       type(phys_address), intent(in) :: iphys
       type(address_4_sph_trans), intent(inout) :: trns_Csim
@@ -296,6 +299,10 @@
       trns_Csim%forward%num_vector = 0
       call f_trans_address_scalar_Csim(SPH_MHD%ipol, SPH_MHD%itor,      &
      &    iphys, trns_Csim%f_trns, trns_Csim%forward)
+      if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+        call f_trans_address_SGS_works(SPH_MHD%ipol, SPH_MHD%itor,      &
+     &      iphys, trns_Csim%f_trns, trns_Csim%forward)
+      end if
       trns_Csim%forward%num_scalar = trns_Csim%forward%nfield           &
      &                              - trns_Csim%forward%num_vector
       trns_Csim%forward%num_tensor = 0

@@ -7,32 +7,15 @@
 !>@brief Evaluate SGS buoyancy terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine dynamic_buo_SGS_by_pseudo_sph                        &
-!!     &         (SGS_param,  sph, comms_sph, MHD_prop, trans_p,        &
-!!     &          trns_MHD, trns_SGS, trns_DYNS, WK_sph, dynamic_SPH,   &
-!!     &          ipol, rj_fld)
+!!      subroutine product_buo_model_coefs_4_sph                        &
+!!     &         (istep_dynamic, SGS_param, sph, ipol,                  &
+!!     &          trns_SGS, dynamic_SPH, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
-!!        type(sph_comm_tables), intent(in) :: comms_sph
-!!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
-!!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
-!!        type(address_4_sph_trans), intent(inout) :: trns_DYNS
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine product_buo_model_coefs_4_sph                        &
-!!     &         (SGS_param, sph, comms_sph, trans_p, trns_SGS,         &
-!!     &          WK_sph, dynamic_SPH)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        type(sph_grids), intent(in) :: sph
-!!        type(sph_comm_tables), intent(in) :: comms_sph
-!!        type(parameters_4_sph_trans), intent(in) :: trans_p
-!!        type(address_4_sph_trans), intent(inout) :: trns_SGS
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
-!!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!@endverbatim
 !
 !
@@ -66,83 +49,21 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine dynamic_buo_SGS_by_pseudo_sph                          &
-     &         (SGS_param,  sph, comms_sph, MHD_prop, trans_p,          &
-     &          trns_MHD, trns_SGS, trns_DYNS, WK_sph, dynamic_SPH,     &
-     &          ipol, rj_fld)
-!
-      use t_SGS_buoyancy_sph
-      use sph_transforms_4_SGS
-      use dynamic_model_sph_MHD
-      use copy_Csim_4_sph_MHD
-!
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(sph_grids), intent(in) :: sph
-      type(sph_comm_tables), intent(in) :: comms_sph
-      type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(phys_address), intent(in) :: ipol
-!
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(address_4_sph_trans), intent(inout) :: trns_SGS
-      type(address_4_sph_trans), intent(inout) :: trns_DYNS
-      type(spherical_trns_works), intent(inout) :: WK_sph
-      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &       'const_dynamic_SGS_4_buo_sph', iflag_debug
-      call const_dynamic_SGS_4_buo_sph                                  &
-     &   (SGS_param%stab_weight, sph%sph_rtp, MHD_prop%fl_prop,         &
-     &    trns_MHD%b_trns, trns_SGS%f_trns, trns_DYNS%f_trns,           &
-     &    trns_MHD%backward, trns_SGS%forward, trns_DYNS%forward,       &
-     &    dynamic_SPH)
-!
-      if(SGS_param%iflag_SGS_buo_usage .ne. id_use_zonal) then
-        call copy_Csim_buo_4_sph_trans                                  &
-     &    (sph%sph_rtp, dynamic_SPH%sph_d_grp, dynamic_SPH%ifld_sgs,    &
-     &     dynamic_SPH%wk_sgs, trns_DYNS)
-!
-        call start_elapsed_time(16)
-        if (iflag_debug.eq.1) write(*,*)                                &
-     &                     'sph_forward_trans_SGS_MHD dyns'
-        call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
-     &      trns_DYNS%forward, WK_sph, trns_DYNS%mul_FFTW, rj_fld)
-        call end_elapsed_time(16)
-!
-        if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
-          if (iflag_debug.eq.1) write(*,*)                              &
-     &                      'sphere_averaged_SGS_buoyancy'
-          call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
-     &        ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
-        else if(SGS_param%iflag_SGS_buo_usage .eq. id_use_volume) then
-          if (iflag_debug.eq.1) write(*,*)                              &
-     &                     'volume_averaged_SGS_buoyancy'
-          call volume_averaged_SGS_buoyancy(sph%sph_params,             &
-     &        sph%sph_rj, ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
-        end if
-      end if
-!
-      end subroutine dynamic_buo_SGS_by_pseudo_sph
-!
-!*   ------------------------------------------------------------------
-!
       subroutine product_buo_model_coefs_4_sph                          &
-     &         (SGS_param, sph, comms_sph, trans_p, trns_SGS,           &
-     &          WK_sph, dynamic_SPH)
+     &         (istep_dynamic, SGS_param, sph, ipol,                    &
+     &          trns_SGS, dynamic_SPH, rj_fld)
 !
       use t_SGS_buoyancy_sph
       use SGS_buo_coefs_sph_MHD
 !
+      integer(kind = kint), intent(in) :: istep_dynamic
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
-      type(sph_comm_tables), intent(in) :: comms_sph
-      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(phys_address), intent(in) :: ipol
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
-      type(spherical_trns_works), intent(inout) :: WK_sph
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+      type(phys_data), intent(inout) :: rj_fld
 !
 !
       call start_elapsed_time(84)
@@ -154,6 +75,13 @@
      &      dynamic_SPH%wk_sgs, trns_SGS%forward)
 !
       else if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
+        if(istep_dynamic .eq. 0) then
+          if (iflag_debug.eq.1) write(*,*)                              &
+     &                      'sphere_averaged_SGS_buoyancy'
+          call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
+     &        ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
+        end if
+!
 !        if(iflag_debug.eq.1) write(*,*)                                &
 !     &                    'magnify_sph_ave_SGS_buoyancy'
         call magnify_sph_ave_SGS_buoyancy(sph%sph_rtp,                  &
@@ -161,6 +89,13 @@
      &      trns_SGS%f_trns, trns_SGS%forward)
 !
       else if(SGS_param%iflag_SGS_buo_usage .eq. id_use_volume) then
+        if(istep_dynamic .eq. 0) then
+          if (iflag_debug.eq.1) write(*,*)                              &
+     &                     'volume_averaged_SGS_buoyancy'
+          call volume_averaged_SGS_buoyancy(sph%sph_params,             &
+     &        sph%sph_rj, ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
+        end if
+!
 !        if(iflag_debug.eq.1) write(*,*)                                &
 !     &                    'magnify_vol_ave_SGS_buoyancy'
         call magnify_vol_ave_SGS_buoyancy(sph%sph_rtp,                  &

@@ -95,11 +95,10 @@
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
-          call init_sph_trns_fld_dyn_simi                               &
-     &       (SGS_param, SPH_MHD, iphys, WK%trns_DYNS,                  &
+          call init_sph_trns_fld_dyn_simi(SPH_MHD, iphys, WK%trns_DYNS, &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_addresses_trans_sph_Csim                             &
-     &       (SPH_MHD, iphys, WK%trns_Csim,                             &
+     &       (SGS_param, SPH_MHD, iphys, WK%trns_Csim,                  &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
 !
@@ -120,7 +119,7 @@
      &       (SPH_MHD, iphys, WK%trns_DYNG,                             &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_addresses_trans_sph_ngCsim                           &
-     &       (SPH_MHD, iphys, WK%trns_Csim,                             &
+     &       (SGS_param, SPH_MHD, iphys, WK%trns_Csim,                  &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
       end if
