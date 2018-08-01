@@ -17,6 +17,7 @@
 #include "t_ctl_data_4_time_steps_c.h"
 #include "t_ctl_data_mhd_evo_scheme_c.h"
 #include "t_ctl_data_4_sph_monitor_c.h"
+#include "t_ctl_data_SGS_model_c.h"
 
 
 struct sphere_data_control_c{
@@ -60,9 +61,6 @@ struct magneto_convection_control_c{
 	int iflag;
 };
 struct reference_temperature_c{
-	int iflag;
-};
-struct sgs_model_control_c{
 	int iflag;
 };
 
@@ -116,7 +114,7 @@ struct mhd_model_control_c{
 	int *iflag_reference_comp_control;
 	struct reference_temperature_c *refc_ctl;
 	int *iflag_sgs_model_control;
-	struct sgs_model_control_c *sgs_ctl;
+	struct SGS_model_control_c *sgs_ctl;
 };
 struct sph_mhd_control_control_c{
 	int *iflag_time_data_control;

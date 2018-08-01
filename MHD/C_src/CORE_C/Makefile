@@ -37,6 +37,7 @@ OBJ_KEMO_C = \
  t_ctl_data_4_time_steps_c.o \
  t_ctl_data_mhd_evo_scheme_c.o \
  t_ctl_data_4_sph_monitor_c.o \
+ t_ctl_data_SGS_model_c.o \
  t_SGS_MHD_control_c.o \
  \
  read_viewer_mesh_gz_c.o \
@@ -477,6 +478,7 @@ module:
 	t_ctl_data_4_platforms_c.o \
 	t_ctl_data_4_time_steps_c.o \
 	t_ctl_data_mhd_evo_scheme_c.o \
+	t_ctl_data_SGS_model_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -485,6 +487,17 @@ module:
 	t_ctl_data_4_sph_monitor_c.o: \
 	'$$(KEMO_C_DIR)'/t_ctl_data_4_sph_monitor_c.c \
 	t_ctl_data_4_sph_monitor_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_ctl_data_SGS_model_c.o: \
+	'$$(KEMO_C_DIR)'/t_ctl_data_SGS_model_c.c \
+	t_ctl_data_SGS_model_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	control_arrays_IO_c.o \

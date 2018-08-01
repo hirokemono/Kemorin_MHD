@@ -87,7 +87,6 @@
 !>        Structure for fluid group to start
         type(read_character_item) :: start_fl_layer_grp_name_ctl
 !
-!
 !>        Structure for number of groups on sphere
         type(read_integer_item) :: ngrp_SGS_on_sphere_ctl
       end type layering_control

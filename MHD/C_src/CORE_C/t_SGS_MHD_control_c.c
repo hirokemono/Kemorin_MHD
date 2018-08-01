@@ -56,7 +56,9 @@ void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	model_ctl->mcv_ctl = (struct magneto_convection_control_c *) malloc(sizeof(struct magneto_convection_control_c));
 	model_ctl->reft_ctl = (struct reference_temperature_c *) malloc(sizeof(struct reference_temperature_c));
 	model_ctl->refc_ctl = (struct reference_temperature_c *) malloc(sizeof(struct reference_temperature_c));
-	model_ctl->sgs_ctl = (struct sgs_model_control_c *) malloc(sizeof(struct sgs_model_control_c));
+	model_ctl->sgs_ctl = (struct SGS_model_control_c *) malloc(sizeof(struct SGS_model_control_c));
+	alloc_SGS_model_ctl_c(model_ctl->sgs_ctl);
+	
 	return;
 }
 
@@ -75,6 +77,8 @@ void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	free(model_ctl->iflag_reference_temp_control);
 	free(model_ctl->iflag_reference_comp_control);
 	free(model_ctl->iflag_sgs_model_control);
+	
+	dealloc_SGS_model_ctl_c(model_ctl->sgs_ctl);
 	
 	free(model_ctl->fld_ctl);
 	free(model_ctl->evo_ctl);

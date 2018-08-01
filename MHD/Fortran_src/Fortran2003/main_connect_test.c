@@ -106,13 +106,6 @@ int read_reference_temperature_c(FILE *fp, char buf[LENGTHBUF], const char *labe
 	};
 	return 1;
 }
-int read_sgs_model_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "SGS_control") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_sgs_model_control_c %s\n", buf);
-	};
-	return 1;
-}
 
 int read_section_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, struct visualization_controls_c *viz_ctls){
 	int icou = 0;
@@ -244,7 +237,7 @@ int read_mhd_model_ctl_c(FILE *fp, char buf[LENGTHBUF], struct mhd_model_control
 		if(right_begin_flag_c(buf, "Magneto_convection_def") > 0) *model_ctl->iflag_magneto_convection_control = read_magneto_convection_control_c(fp, buf);
 		if(right_begin_flag_c(buf, "temperature_define") > 0) *model_ctl->iflag_reference_temp_control = read_reference_temperature_c(fp, buf, "temperature_define");
 		if(right_begin_flag_c(buf, "composition_define") > 0) *model_ctl->iflag_reference_comp_control = read_reference_temperature_c(fp, buf, "composition_define");
-		if(right_begin_flag_c(buf, "SGS_control") > 0) *model_ctl->iflag_sgs_model_control = read_sgs_model_control_c(fp, buf);
+		if(right_begin_flag_c(buf, "SGS_control") > 0) *model_ctl->iflag_sgs_model_control = read_SGS_model_ctl_c(fp, buf, "SGS_control", model_ctl->sgs_ctl);
 	};
 	return 1;
 }
@@ -392,12 +385,6 @@ int write_reference_temperature_c(FILE *fp, int level, const char *label,
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 }
-int write_sgs_model_control_c(FILE *fp, int level, int *iflag, struct sgs_model_control_c *sgs_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "SGS_control");
-	level = write_end_flag_for_ctl_c(fp, level, "SGS_control");
-	return level;
-}
 
 int write_sphere_domain_control_c(FILE *fp, int level, int *iflag){
 	if(*iflag == 0) return level;
@@ -455,7 +442,8 @@ int write_mhd_model_ctl_c(FILE *fp, int level, int *iflag, struct mhd_model_cont
 	level = write_reference_temperature_c(fp, level, "composition_define",
 				model_ctl->iflag_reference_comp_control, model_ctl->refc_ctl);
 	if(*model_ctl->iflag_sgs_model_control > 0) fprintf(fp, "!\n");
-	level = write_sgs_model_control_c(fp, level, model_ctl->iflag_sgs_model_control, model_ctl->sgs_ctl);
+	level = write_SGS_model_ctl_c(fp, level, model_ctl->iflag_sgs_model_control, 
+				"SGS_control", model_ctl->sgs_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, "model");
 	return level;

@@ -87,4 +87,13 @@ void write_int2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
 			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item);
 
 
+void find_max_length_c2r(const char *label, struct ctl_c2r_item *c2r_ctl, int *maxlen);
+int alloc_ctl_c2r_array(int num, struct ctl_c2r_array *array_c2r);
+void dealloc_ctl_c2r_array(struct ctl_c2r_array *array_c2r);
+int read_control_array_c2_r_list_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
+			struct ctl_c2r_array *array_c2r);
+void write_control_array_c2_r_list_c(FILE *fp, int level, int num,
+			const char *label, struct ctl_c2r_array *array_c2r);
+
+
 #endif

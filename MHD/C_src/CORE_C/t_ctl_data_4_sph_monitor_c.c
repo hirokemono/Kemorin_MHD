@@ -26,7 +26,7 @@ const char label_sph_monitor_ctl[NLBL_SPH_MONITOR][KCHARA_C] = {
     
 	/*[ 5]*/    {"volume_average_prefix"},
     /*[ 6]*/    {"volume_pwr_spectr_prefix"},
-    /*[ 7]*/    {"nusselt_number_prefix"},
+    /*[ 7]*/    {"nusselt_number_prefix"}
 };
 
 const char label_pick_spectr_ctl[NLBL_PICK_SPECTR][KCHARA_C] = {
@@ -35,7 +35,7 @@ const char label_pick_spectr_ctl[NLBL_PICK_SPECTR][KCHARA_C] = {
     
     /*[ 2]*/    {"pick_sph_spectr_ctl"},
     /*[ 3]*/    {"pick_sph_degree_ctl"},
-    /*[ 4]*/    {"pick_sph_order_ctl"},
+    /*[ 4]*/    {"pick_sph_order_ctl"}
 };
 
 const char label_gauss_spectr_ctl[NLBL_GAUSS_SPECTR][KCHARA_C] = {
@@ -44,7 +44,7 @@ const char label_gauss_spectr_ctl[NLBL_GAUSS_SPECTR][KCHARA_C] = {
     
     /*[ 2]*/    {"pick_gauss_coefs_ctl"},
     /*[ 3]*/    {"pick_gauss_coef_degree_ctl"},
-    /*[ 4]*/    {"pick_gauss_coef_order_ctl"},
+    /*[ 4]*/    {"pick_gauss_coef_order_ctl"}
 };
 
 const char label_layerd_spectr_ctl[NLBL_LAYERD_SPECTR][KCHARA_C] = {
@@ -54,7 +54,7 @@ const char label_layerd_spectr_ctl[NLBL_LAYERD_SPECTR][KCHARA_C] = {
     /*[ 2]*/    {"degree_spectr_switch"},
     /*[ 3]*/    {"order_spectr_switch"},
     /*[ 4]*/    {"diff_lm_spectr_switch"},
-    /*[ 5]*/    {"axisymmetric_spectr_switch"},
+    /*[ 5]*/    {"axisymmetric_spectr_switch"}
 };
 
 const char label_volume_spectr_ctl[NLBL_VOLUME_SPECTR][KCHARA_C] = {
@@ -62,14 +62,14 @@ const char label_volume_spectr_ctl[NLBL_VOLUME_SPECTR][KCHARA_C] = {
     /*[ 1]*/    {"volume_average_prefix"},
     
     /*[ 2]*/    {"inner_radius_ctl"},
-    /*[ 3]*/    {"outer_radius_ctl"},
+    /*[ 3]*/    {"outer_radius_ctl"}
 };
 
 const char label_mid_equator_ctl[NLBL_MID_EQUATOR][KCHARA_C] = {
-    /*[ 3]*/    {"pick_circle_coord_ctl"},
-    /*[ 0]*/    {"nphi_mid_eq_ctl"},
-    /*[ 1]*/    {"pick_cylindrical_radius_ctl"},
-    /*[ 2]*/    {"pick_vertical_position_ctl"},
+    /*[ 0]*/    {"pick_circle_coord_ctl"},
+    /*[ 1]*/    {"nphi_mid_eq_ctl"},
+    /*[ 2]*/    {"pick_cylindrical_radius_ctl"},
+    /*[ 3]*/    {"pick_vertical_position_ctl"}
 };
 
 void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){

@@ -293,7 +293,7 @@ void find_max_length_c2r(const char *label, struct ctl_c2r_item *c2r_ctl, int *m
 };
 
 
-void write_control_c2_r_list_c(FILE *fp, int level, int maxlen[3],
+static void write_control_c2_r_list_c(FILE *fp, int level, int maxlen[3],
 			const char *label, struct ctl_c2r_item *c2r_ctl){
 	
 	write_space_4_parse_c(fp, level);
@@ -305,33 +305,7 @@ void write_control_c2_r_list_c(FILE *fp, int level, int maxlen[3],
 	return;
 }
 
-void write_control_array_c2_r_list_c(FILE *fp, int level, int num,
-			const char *label, struct ctl_c2r_array *array_c2r){
-	int i;
-	
-	array_c2r->maxlen[0] = strlen(label);
-	array_c2r->maxlen[1] = 0;
-	array_c2r->maxlen[2] = 0;
-	for(i=0;i<array_c2r->num;i++){
-		find_max_length_c2r(label, &array_c2r->c2r_ctl[i], array_c2r->maxlen);
-	}
-	
-	
-	write_space_4_parse_c(fp, level);
-	write_one_label_cont_c(fp, strlen(label_begin), label_begin);
-	write_one_label_cont_c(fp, strlen(label_begin), label_array);
-	write_one_label_cont_c(fp, strlen(label), label);
-	fprintf(fp, "%d \n", array_c2r->num);
-	for(i=0;i<array_c2r->num;i++){
-		write_control_c2_r_list_c(fp, (level+1), array_c2r->maxlen, label, &array_c2r->c2r_ctl[i]);
-	}
-	write_space_4_parse_c(fp, level);
-	write_one_label_cont_c(fp, strlen(label_end), label_end);
-	write_one_label_w_lf_c(fp, label_array);
-	return;
-}
-
-int alloc_ctl_c2r_item(struct ctl_c2r_item *c2r_ctl){
+static int alloc_ctl_c2r_item(struct ctl_c2r_item *c2r_ctl){
 	
 	c2r_ctl->c1_tbl = (char *)calloc(KCHARA_C+1, sizeof(char));
 	c2r_ctl->c2_tbl = (char *)calloc(KCHARA_C+1, sizeof(char));
@@ -341,13 +315,14 @@ int alloc_ctl_c2r_item(struct ctl_c2r_item *c2r_ctl){
 	return 0;
 }
 
-void dealloc_ctl_c2r_item(struct ctl_c2r_item *c2r_ctl){
+static void dealloc_ctl_c2r_item(struct ctl_c2r_item *c2r_ctl){
 	free(c2r_ctl->c2_tbl);
 	free(c2r_ctl->c1_tbl);
 	return;
 }
 
-void read_control_c2_r_list_c(const char buf[LENGTHBUF], const char *label, struct ctl_c2r_item *c2r_ctl){
+static void read_control_c2_r_list_c(const char buf[LENGTHBUF], const char *label,
+			struct ctl_c2r_item *c2r_ctl){
 	char header_chara[KCHARA_C];
 	
 	sscanf(buf, "%s", header_chara);
@@ -403,4 +378,30 @@ int read_control_array_c2_r_list_c(FILE *fp, char buf[LENGTHBUF], const char *la
 	return num;
 }
 
+void write_control_array_c2_r_list_c(FILE *fp, int level, int num,
+			const char *label, struct ctl_c2r_array *array_c2r){
+	int i;
+	
+	array_c2r->maxlen[0] = strlen(label);
+	array_c2r->maxlen[1] = 0;
+	array_c2r->maxlen[2] = 0;
+	for(i=0;i<array_c2r->num;i++){
+		find_max_length_c2r(label, &array_c2r->c2r_ctl[i], array_c2r->maxlen);
+	}
+	
+	
+	write_space_4_parse_c(fp, level);
+	write_one_label_cont_c(fp, strlen(label_begin), label_begin);
+	write_one_label_cont_c(fp, strlen(label_begin), label_array);
+	write_one_label_cont_c(fp, strlen(label), label);
+	fprintf(fp, "%d \n", array_c2r->num);
+	for(i=0;i<array_c2r->num;i++){
+		write_control_c2_r_list_c(fp, (level+1), array_c2r->maxlen, label,
+					&array_c2r->c2r_ctl[i]);
+	}
+	write_space_4_parse_c(fp, level);
+	write_one_label_cont_c(fp, strlen(label_end), label_end);
+	write_one_label_w_lf_c(fp, label_array);
+	return;
+}
 

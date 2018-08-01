@@ -7,9 +7,9 @@
 
 #include "t_ctl_data_4_FEM_mesh_c.h"
 
+#define NLBL_FEM_MESH_CTL  6
 
-
-const char label_FEM_mesh_ctl[6][KCHARA_C] = {
+const char label_FEM_mesh_ctl[NLBL_FEM_MESH_CTL][KCHARA_C] = {
     /*[0]*/    {"memory_conservation_ctl"},
     /*[1]*/    {"FEM_mesh_output_switch"},
     /*[2]*/    {"FEM_surface_output_switch"},
@@ -23,7 +23,7 @@ void alloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh){
     int i;
     
     Fmesh->maxlen = 0;
-    for (i=0;i<6;i++){
+    for (i=0;i<NLBL_FEM_MESH_CTL;i++){
         if(strlen(label_FEM_mesh_ctl[i]) > Fmesh->maxlen){
             Fmesh->maxlen = strlen(label_FEM_mesh_ctl[i]);
         };
