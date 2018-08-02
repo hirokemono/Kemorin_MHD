@@ -41,6 +41,15 @@ struct i2_ctl_array{
     struct int_ctl_item **i2_array_item;
 };
 
+struct chara_real_ctl_array{
+    int maxlen[2];
+    
+    int num;
+    int icou;
+    struct chara_ctl_item **c_array_item;
+    struct real_ctl_item **r_array_item;
+};
+
 /* prototype */
 
 
@@ -64,6 +73,13 @@ void read_int2_ctl_array_c(FILE *fp, char *buf, const char *label,
 			struct i2_ctl_array *i2_array);
 void write_int2_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct i2_ctl_array *i2_array);
+
+void alloc_ctl_cr_array(struct chara_real_ctl_array *cr_array);
+void dealloc_ctl_cr_array(struct chara_real_ctl_array *cr_array);
+void read_cr_ctl_array_c(FILE *fp, char *buf, const char *label,
+			struct chara_real_ctl_array *cr_array);
+void write_cr_ctl_array_c(FILE *fp, int level, int maxlen,
+			const char *label, struct chara_real_ctl_array *cr_array);
 
 
 #endif /* control_arrays_IO_c.h */

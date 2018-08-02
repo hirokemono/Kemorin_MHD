@@ -148,10 +148,6 @@
 !
       character(len=kchara), parameter                                  &
      &        :: hd_rotation_vec =   'rotation_vec'
-      character(len=kchara), parameter                                  &
-     &        :: hd_sph_coriolis_file  = 'tri_sph_int_file'
-      character(len=kchara), parameter                                  &
-     &        :: hd_sph_coriolis_fmt = 'sph_int_file_format'
 !
 !   4th level for external magnetic field
 !
@@ -161,8 +157,7 @@
      &        :: hd_magne_vect = 'ext_magne_vec'
 !
 !
-      private :: hd_num_forces, hd_sph_coriolis_file
-      private :: hd_sph_coriolis_fmt
+      private :: hd_num_forces
       private :: hd_gravity_type, hd_gravity_vect
       private :: hd_magneto_cv, hd_magne_vect
 !

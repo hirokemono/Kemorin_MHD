@@ -185,3 +185,77 @@ void write_int2_ctl_array_c(FILE *fp, int level, int maxlen,
 	return;
 }
 
+
+void alloc_ctl_cr_array(struct chara_real_ctl_array *cr_array){
+	int i;
+	
+	cr_array->c_array_item = (struct chara_ctl_item **) malloc(cr_array->num*sizeof(struct chara_ctl_item *));
+	cr_array->r_array_item = (struct real_ctl_item **) malloc(cr_array->num*sizeof(struct real_ctl_item *));
+	for(i=0;i<cr_array->num;i++){
+		cr_array->c_array_item[i] = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+		cr_array->r_array_item[i] = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
+		alloc_ctl_chara_item(cr_array->c_array_item[i]);
+		init_ctl_real_item(cr_array->r_array_item[i]);
+	};
+	cr_array->icou = 0;
+	return;
+}
+void dealloc_ctl_cr_array(struct chara_real_ctl_array *cr_array){
+	int i;
+	
+	if(cr_array->num < 0) return;
+	for(i=0;i<cr_array->num;i++){
+		dealloc_ctl_chara_item(cr_array->c_array_item[i]);
+		free(cr_array->c_array_item[i]);
+		free(cr_array->r_array_item[i]);
+	};
+	free(cr_array->c_array_item);
+	free(cr_array->r_array_item);
+	return;
+}
+void read_cr_ctl_array_c(FILE *fp, char *buf, const char *label,
+			struct chara_real_ctl_array *cr_array){
+	
+	if(cr_array->icou > 0) return;
+	if(find_control_array_flag_c(buf, label, &cr_array->num) == 0) return;
+	
+	if(cr_array->num > 0) alloc_ctl_cr_array(cr_array);
+	fgets(buf, LENGTHBUF, fp);
+	while(find_control_end_array_flag_c(buf, label, cr_array->num, cr_array->icou) == 0){
+		if(cr_array->icou >= cr_array->num){
+			printf("Numnber of item is larger than defined \n");
+			return;
+		}
+		
+		read_cr_ctl_item_c(buf, label, cr_array->c_array_item[cr_array->icou],
+					cr_array->r_array_item[cr_array->icou]);
+		cr_array->icou = cr_array->icou + cr_array->c_array_item[cr_array->icou]->iflag;
+		
+		fgets(buf, LENGTHBUF, fp);
+	};
+	
+	return;
+}
+void write_cr_ctl_array_c(FILE *fp, int level, int maxlen,
+			const char *label, struct chara_real_ctl_array *cr_array){
+	int i;
+	
+	if(cr_array->icou == 0) return;
+	
+	cr_array->maxlen[0] = strlen(label);
+	cr_array->maxlen[1] = strlen(cr_array->c_array_item[0]->c_tbl);
+	for(i=0;i<cr_array->num;i++){
+		if(strlen(cr_array->c_array_item[i]->c_tbl) > cr_array->maxlen[1]){
+			cr_array->maxlen[1] = strlen(cr_array->c_array_item[i]->c_tbl);
+		};
+	};
+	
+	level = write_array_flag_for_ctl_c(fp, level, label, cr_array->num);
+	for(i=0;i<cr_array->num;i++){
+		write_cr_ctl_item_c(fp, level, cr_array->maxlen,
+					label, cr_array->c_array_item[i], cr_array->r_array_item[i]);
+	};
+	level = write_end_array_flag_for_ctl_c(fp, level, label);
+	return;
+}
+

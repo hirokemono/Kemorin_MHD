@@ -18,6 +18,8 @@
 #include "t_ctl_data_mhd_evo_scheme_c.h"
 #include "t_ctl_data_4_sph_monitor_c.h"
 #include "t_ctl_data_SGS_model_c.h"
+#include "t_ctl_data_temp_model_c.h"
+#include "t_ctl_data_mhd_forces_c.h"
 
 
 struct sphere_data_control_c{
@@ -46,21 +48,6 @@ struct dimless_control_c{
 	int iflag;
 };
 struct equations_control_c{
-	int iflag;
-};
-struct forces_control_c{
-	int iflag;
-};
-struct gravity_control_c{
-	int iflag;
-};
-struct coriolis_control_c{
-	int iflag;
-};
-struct magneto_convection_control_c{
-	int iflag;
-};
-struct reference_temperature_c{
 	int iflag;
 };
 
@@ -98,17 +85,17 @@ struct mhd_model_control_c{
 	int *iflag_surf_bc_control;
 	struct surf_bc_control_c *sbc_ctl;
 	int *iflag_forces_control;
-	struct forces_control_c *frc_ctl;
+	struct forces_ctl_c *frc_ctl;
 	int *iflag_dimless_control;
 	struct dimless_control_c *dless_ctl;
 	int *iflag_equations_control;
 	struct equations_control_c *eqs_ctl;
 	int *iflag_gravity_control;
-	struct gravity_control_c *g_ctl;
+	struct gravity_ctl_c *g_ctl;
 	int *iflag_coriolis_control;
-	struct coriolis_control_c *cor_ctl;
+	struct coriolis_ctl_c *cor_ctl;
 	int *iflag_magneto_convection_control;
-	struct magneto_convection_control_c *mcv_ctl;
+	struct magneto_cv_ctl_c *mcv_ctl;
 	int *iflag_reference_temp_control;
 	struct reference_temperature_c *reft_ctl;
 	int *iflag_reference_comp_control;

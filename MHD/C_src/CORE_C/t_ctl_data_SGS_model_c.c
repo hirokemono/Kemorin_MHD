@@ -106,14 +106,14 @@ const char label_SGS_model_ctl[NLBL_SGS_MODEL_CTL][KCHARA_C] = {
 };
 
 void alloc_filter_file_ctl_c(struct filter_file_ctl_c *ffile_c){
-    int i;
-    
-    ffile_c->maxlen = 0;
-    for (i=0;i<NLBL_FILTGER_FILE_CTL;i++){
-        if(strlen(label_filter_file_ctl[i]) > ffile_c->maxlen){
-            ffile_c->maxlen = strlen(label_filter_file_ctl[i]);
-        };
-    };
+	int i;
+	
+	ffile_c->maxlen = 0;
+	for (i=0;i<NLBL_FILTGER_FILE_CTL;i++){
+		if(strlen(label_filter_file_ctl[i]) > ffile_c->maxlen){
+			ffile_c->maxlen = strlen(label_filter_file_ctl[i]);
+		};
+	};
 	
 	
 	ffile_c->filter_head_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
@@ -194,23 +194,23 @@ int read_filter_file_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		fgets(buf, LENGTHBUF, fp);
 		
-        read_character_ctl_item_c(buf, label_filter_file_ctl[ 0], ffile_c->filter_head_c);
-        read_character_ctl_item_c(buf, label_filter_file_ctl[ 1], ffile_c->filter_elen_head_c);
-        read_character_ctl_item_c(buf, label_filter_file_ctl[ 2], ffile_c->filter_moms_head_c);
-        read_character_ctl_item_c(buf, label_filter_file_ctl[ 3], ffile_c->filter_coef_head_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[ 0], ffile_c->filter_head_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[ 1], ffile_c->filter_elen_head_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[ 2], ffile_c->filter_moms_head_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[ 3], ffile_c->filter_coef_head_c);
 		
-        read_character_ctl_item_c(buf, label_filter_file_ctl[ 4], ffile_c->filter_wide_head_c);
-        read_character_ctl_item_c(buf, label_filter_file_ctl[ 5], ffile_c->model_coef_ini_head_c);
-        read_character_ctl_item_c(buf, label_filter_file_ctl[ 6], ffile_c->commute_coef_ini_head_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[ 4], ffile_c->filter_wide_head_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[ 5], ffile_c->model_coef_ini_head_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[ 6], ffile_c->commute_coef_ini_head_c);
 		
-        read_character_ctl_item_c(buf, label_filter_file_ctl[ 7], ffile_c->filter_elen_format_c);
-        read_character_ctl_item_c(buf, label_filter_file_ctl[ 8], ffile_c->filter_3d_format_c);
-        read_character_ctl_item_c(buf, label_filter_file_ctl[ 9], ffile_c->filter_wide_format_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[ 7], ffile_c->filter_elen_format_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[ 8], ffile_c->filter_3d_format_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[ 9], ffile_c->filter_wide_format_c);
 		
-        read_character_ctl_item_c(buf, label_filter_file_ctl[10], ffile_c->model_coef_rst_format_c);
-        read_character_ctl_item_c(buf, label_filter_file_ctl[11], ffile_c->commute_coef_rst_format_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[10], ffile_c->model_coef_rst_format_c);
+		read_character_ctl_item_c(buf, label_filter_file_ctl[11], ffile_c->commute_coef_rst_format_c);
 	};
-    return 1;
+	return 1;
 };
 
 int write_filter_file_ctl_c(FILE *fp, int level, int *iflag,
@@ -219,36 +219,36 @@ int write_filter_file_ctl_c(FILE *fp, int level, int *iflag,
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 0], ffile_c->filter_head_c);
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 1], ffile_c->filter_elen_head_c);
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 2], ffile_c->filter_moms_head_c);
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 3], ffile_c->filter_coef_head_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 0], ffile_c->filter_head_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 1], ffile_c->filter_elen_head_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 2], ffile_c->filter_moms_head_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 3], ffile_c->filter_coef_head_c);
 	
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 4], ffile_c->filter_wide_head_c);
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 5], ffile_c->model_coef_ini_head_c);
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 6], ffile_c->commute_coef_ini_head_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 4], ffile_c->filter_wide_head_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 5], ffile_c->model_coef_ini_head_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 6], ffile_c->commute_coef_ini_head_c);
 	
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 7], ffile_c->filter_elen_format_c);
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 8], ffile_c->filter_3d_format_c);
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 9], ffile_c->filter_wide_format_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 7], ffile_c->filter_elen_format_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 8], ffile_c->filter_3d_format_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 9], ffile_c->filter_wide_format_c);
 	
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[10], ffile_c->model_coef_rst_format_c);
-    write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[11], ffile_c->commute_coef_rst_format_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[10], ffile_c->model_coef_rst_format_c);
+	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[11], ffile_c->commute_coef_rst_format_c);
 	
-    level = write_end_flag_for_ctl_c(fp, level, label);
+	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };
 
 
 void alloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
-    int i;
-    
-    elayer_c->maxlen = 0;
-    for (i=0;i<NLBL_LAYERING_CTL;i++){
-        if(strlen(label_layering_ctl[i]) > elayer_c->maxlen){
-            elayer_c->maxlen = strlen(label_layering_ctl[i]);
-        };
-    };
+	int i;
+	
+	elayer_c->maxlen = 0;
+	for (i=0;i<NLBL_LAYERING_CTL;i++){
+		if(strlen(label_layering_ctl[i]) > elayer_c->maxlen){
+			elayer_c->maxlen = strlen(label_layering_ctl[i]);
+		};
+	};
 	
 	elayer_c->layering_grp_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	elayer_c->start_layering_grp_name_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
@@ -258,16 +258,16 @@ void alloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 	alloc_ctl_chara_item(elayer_c->start_layering_grp_name_c);
 	alloc_ctl_chara_item(elayer_c->start_fl_layer_grp_name_c);
 	
-    elayer_c->num_layering_grp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    elayer_c->num_fl_layer_grp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    elayer_c->ngrp_SGS_on_sphere_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	elayer_c->num_layering_grp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	elayer_c->num_fl_layer_grp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	elayer_c->ngrp_SGS_on_sphere_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	
 	elayer_c->layer_grp_name_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
 	elayer_c->igrp_stack_layer_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	
 	init_ctl_int_item(elayer_c->num_layering_grp_c);
-    init_ctl_int_item(elayer_c->num_fl_layer_grp_c);
-    init_ctl_int_item(elayer_c->ngrp_SGS_on_sphere_c);
+	init_ctl_int_item(elayer_c->num_fl_layer_grp_c);
+	init_ctl_int_item(elayer_c->ngrp_SGS_on_sphere_c);
 	
 	return;
 };
@@ -278,10 +278,10 @@ void dealloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 	dealloc_ctl_chara_item(elayer_c->start_layering_grp_name_c);
 	dealloc_ctl_chara_item(elayer_c->start_fl_layer_grp_name_c);
 	
-    dealloc_ctl_chara_array(elayer_c->layer_grp_name_c);
+	dealloc_ctl_chara_array(elayer_c->layer_grp_name_c);
 	free(elayer_c->layer_grp_name_c);
 	
-    dealloc_ctl_int_array(elayer_c->igrp_stack_layer_c);
+	dealloc_ctl_int_array(elayer_c->igrp_stack_layer_c);
 	free(elayer_c->igrp_stack_layer_c);
 	
 	free(elayer_c->layering_grp_type_c);
@@ -301,19 +301,19 @@ int read_layering_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		fgets(buf, LENGTHBUF, fp);
 		
-        read_character_ctl_item_c(buf, label_layering_ctl[ 0], elayer_c->layering_grp_type_c);
+		read_character_ctl_item_c(buf, label_layering_ctl[ 0], elayer_c->layering_grp_type_c);
 		
 		read_character_ctl_array_c(fp, buf, label_layering_ctl[1], elayer_c->layer_grp_name_c);
 		read_integer_ctl_array_c(fp, buf, label_layering_ctl[2], elayer_c->igrp_stack_layer_c);
 		
 		read_character_ctl_item_c(buf, label_layering_ctl[ 4], elayer_c->start_layering_grp_name_c);
-        read_character_ctl_item_c(buf, label_layering_ctl[ 6], elayer_c->start_fl_layer_grp_name_c);
+		read_character_ctl_item_c(buf, label_layering_ctl[ 6], elayer_c->start_fl_layer_grp_name_c);
 		
-        read_integer_ctl_item_c(buf, label_layering_ctl[ 3], elayer_c->num_layering_grp_c);
-        read_integer_ctl_item_c(buf, label_layering_ctl[ 5], elayer_c->num_fl_layer_grp_c);
-        read_integer_ctl_item_c(buf, label_layering_ctl[ 7], elayer_c->ngrp_SGS_on_sphere_c);
+		read_integer_ctl_item_c(buf, label_layering_ctl[ 3], elayer_c->num_layering_grp_c);
+		read_integer_ctl_item_c(buf, label_layering_ctl[ 5], elayer_c->num_fl_layer_grp_c);
+		read_integer_ctl_item_c(buf, label_layering_ctl[ 7], elayer_c->ngrp_SGS_on_sphere_c);
 	};
-    return 1;
+	return 1;
 };
 
 int write_layering_ctl_c(FILE *fp, int level, int *iflag,
@@ -322,7 +322,7 @@ int write_layering_ctl_c(FILE *fp, int level, int *iflag,
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-    write_character_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 0], elayer_c->layering_grp_type_c);
+	write_character_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 0], elayer_c->layering_grp_type_c);
 	
 	if(elayer_c->layer_grp_name_c->num > 0) fprintf(fp, "!\n");
 	write_character_ctl_array_c(fp, level, strlen(label_layering_ctl[1]),
@@ -332,27 +332,27 @@ int write_layering_ctl_c(FILE *fp, int level, int *iflag,
 	write_integer_ctl_array_c(fp, level, strlen(label_layering_ctl[2]),
 				label_layering_ctl[2], elayer_c->igrp_stack_layer_c);
 	
-    write_integer_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 3], elayer_c->num_layering_grp_c);
+	write_integer_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 3], elayer_c->num_layering_grp_c);
 	write_character_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 4], elayer_c->start_layering_grp_name_c);
-    write_integer_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 5], elayer_c->num_fl_layer_grp_c);
-    write_character_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 6], elayer_c->start_fl_layer_grp_name_c);
+	write_integer_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 5], elayer_c->num_fl_layer_grp_c);
+	write_character_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 6], elayer_c->start_fl_layer_grp_name_c);
 	
-    write_integer_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 7], elayer_c->ngrp_SGS_on_sphere_c);
+	write_integer_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 7], elayer_c->ngrp_SGS_on_sphere_c);
 	
-    level = write_end_flag_for_ctl_c(fp, level, label);
+	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };
 
 
 void alloc_each_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
-    int i;
-    
-    sph_filter_c->maxlen = 0;
-    for (i=0;i<NLBL_SPH_FILTER_CTL;i++){
-        if(strlen(label_sph_filter_ctl[i]) > sph_filter_c->maxlen){
-            sph_filter_c->maxlen = strlen(label_sph_filter_ctl[i]);
-        };
-    };
+	int i;
+	
+	sph_filter_c->maxlen = 0;
+	for (i=0;i<NLBL_SPH_FILTER_CTL;i++){
+		if(strlen(label_sph_filter_ctl[i]) > sph_filter_c->maxlen){
+			sph_filter_c->maxlen = strlen(label_sph_filter_ctl[i]);
+		};
+	};
 	
 	sph_filter_c->sph_filter_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	sph_filter_c->radial_filter_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
@@ -360,9 +360,9 @@ void alloc_each_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 	alloc_ctl_chara_item(sph_filter_c->sph_filter_type_c);
 	alloc_ctl_chara_item(sph_filter_c->radial_filter_type_c);
 	
-    sph_filter_c->maximum_moments_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    sph_filter_c->first_reference_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    sph_filter_c->second_reference_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	sph_filter_c->maximum_moments_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	sph_filter_c->first_reference_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	sph_filter_c->second_reference_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	
 	init_ctl_int_item(sph_filter_c->maximum_moments_c);
 	init_ctl_int_item(sph_filter_c->first_reference_c);
@@ -401,17 +401,17 @@ int read_each_sph_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		fgets(buf, LENGTHBUF, fp);
 		
-        read_character_ctl_item_c(buf, label_sph_filter_ctl[ 0], sph_filter_c->sph_filter_type_c);
-        read_character_ctl_item_c(buf, label_sph_filter_ctl[ 1], sph_filter_c->radial_filter_type_c);
+		read_character_ctl_item_c(buf, label_sph_filter_ctl[ 0], sph_filter_c->sph_filter_type_c);
+		read_character_ctl_item_c(buf, label_sph_filter_ctl[ 1], sph_filter_c->radial_filter_type_c);
 		
-        read_integer_ctl_item_c(buf, label_sph_filter_ctl[ 2], sph_filter_c->maximum_moments_c);
-        read_integer_ctl_item_c(buf, label_sph_filter_ctl[ 5], sph_filter_c->first_reference_c);
-        read_integer_ctl_item_c(buf, label_sph_filter_ctl[ 6], sph_filter_c->second_reference_c);
+		read_integer_ctl_item_c(buf, label_sph_filter_ctl[ 2], sph_filter_c->maximum_moments_c);
+		read_integer_ctl_item_c(buf, label_sph_filter_ctl[ 5], sph_filter_c->first_reference_c);
+		read_integer_ctl_item_c(buf, label_sph_filter_ctl[ 6], sph_filter_c->second_reference_c);
 		
-        read_real_ctl_item_c(buf, label_sph_filter_ctl[ 3], sph_filter_c->sphere_filter_width_c);
-        read_real_ctl_item_c(buf, label_sph_filter_ctl[ 4], sph_filter_c->radial_filter_width_c);
+		read_real_ctl_item_c(buf, label_sph_filter_ctl[ 3], sph_filter_c->sphere_filter_width_c);
+		read_real_ctl_item_c(buf, label_sph_filter_ctl[ 4], sph_filter_c->radial_filter_width_c);
 	};
-    return 1;
+	return 1;
 };
 
 int write_each_sph_filter_ctl_c(FILE *fp, int level, int *iflag,
@@ -420,30 +420,30 @@ int write_each_sph_filter_ctl_c(FILE *fp, int level, int *iflag,
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-    write_character_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 0], sph_filter_c->sph_filter_type_c);
-    write_character_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 1], sph_filter_c->radial_filter_type_c);
+	write_character_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 0], sph_filter_c->sph_filter_type_c);
+	write_character_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 1], sph_filter_c->radial_filter_type_c);
 	
-    write_integer_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 2], sph_filter_c->maximum_moments_c);
-    write_real_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 3], sph_filter_c->sphere_filter_width_c);
-    write_real_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 4], sph_filter_c->radial_filter_width_c);
+	write_integer_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 2], sph_filter_c->maximum_moments_c);
+	write_real_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 3], sph_filter_c->sphere_filter_width_c);
+	write_real_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 4], sph_filter_c->radial_filter_width_c);
 	
 	write_integer_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 5], sph_filter_c->first_reference_c);
-    write_integer_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 6], sph_filter_c->second_reference_c);
+	write_integer_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 6], sph_filter_c->second_reference_c);
 	
-    level = write_end_flag_for_ctl_c(fp, level, label);
+	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };
 
 
 void alloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c){
-    int i;
-    
-    s3df_c->maxlen = 0;
-    for (i=0;i<NLBL_SGS_3D_FILTER_CTL;i++){
-        if(strlen(label_SGS_3d_filter_ctl[i]) > s3df_c->maxlen){
-            s3df_c->maxlen = strlen(label_SGS_3d_filter_ctl[i]);
-        };
-    };
+	int i;
+	
+	s3df_c->maxlen = 0;
+	for (i=0;i<NLBL_SGS_3D_FILTER_CTL;i++){
+		if(strlen(label_SGS_3d_filter_ctl[i]) > s3df_c->maxlen){
+			s3df_c->maxlen = strlen(label_SGS_3d_filter_ctl[i]);
+		};
+	};
 	
 	s3df_c->whole_filter_grp_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
 	s3df_c->fluid_filter_grp_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
@@ -463,8 +463,8 @@ void alloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c){
 
 void dealloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c){
 	
-    dealloc_ctl_chara_array(s3df_c->whole_filter_grp_ctl);
-    dealloc_ctl_chara_array(s3df_c->fluid_filter_grp_ctl);
+	dealloc_ctl_chara_array(s3df_c->whole_filter_grp_ctl);
+	dealloc_ctl_chara_array(s3df_c->fluid_filter_grp_ctl);
 	free(s3df_c->whole_filter_grp_ctl);
 	free(s3df_c->fluid_filter_grp_ctl);
 	
@@ -491,11 +491,11 @@ int read_SGS_3d_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_character_ctl_array_c(fp, buf, label_SGS_3d_filter_ctl[ 1], s3df_c->fluid_filter_grp_ctl);
 		
 		read_character_ctl_item_c(buf, label_SGS_3d_filter_ctl[ 2], s3df_c->momentum_filter_ctl);
-        read_character_ctl_item_c(buf, label_SGS_3d_filter_ctl[ 3], s3df_c->heat_filter_ctl);
-        read_character_ctl_item_c(buf, label_SGS_3d_filter_ctl[ 4], s3df_c->induction_filter_ctl);
-        read_character_ctl_item_c(buf, label_SGS_3d_filter_ctl[ 5], s3df_c->compostion_filter_ctl);
+		read_character_ctl_item_c(buf, label_SGS_3d_filter_ctl[ 3], s3df_c->heat_filter_ctl);
+		read_character_ctl_item_c(buf, label_SGS_3d_filter_ctl[ 4], s3df_c->induction_filter_ctl);
+		read_character_ctl_item_c(buf, label_SGS_3d_filter_ctl[ 5], s3df_c->compostion_filter_ctl);
 	};
-    return 1;
+	return 1;
 };
 
 int write_SGS_3d_filter_ctl_c(FILE *fp, int level, int *iflag,
@@ -512,12 +512,12 @@ int write_SGS_3d_filter_ctl_c(FILE *fp, int level, int *iflag,
 	write_character_ctl_array_c(fp, level, strlen(label_SGS_3d_filter_ctl[1]),
 				label_SGS_3d_filter_ctl[1], s3df_c->fluid_filter_grp_ctl);
 	
-    write_character_ctl_item_c(fp, level, s3df_c->maxlen, label_SGS_3d_filter_ctl[ 2], s3df_c->momentum_filter_ctl);
-    write_character_ctl_item_c(fp, level, s3df_c->maxlen, label_SGS_3d_filter_ctl[ 3], s3df_c->heat_filter_ctl);
-    write_character_ctl_item_c(fp, level, s3df_c->maxlen, label_SGS_3d_filter_ctl[ 4], s3df_c->induction_filter_ctl);
-    write_character_ctl_item_c(fp, level, s3df_c->maxlen, label_SGS_3d_filter_ctl[ 5], s3df_c->compostion_filter_ctl);
+	write_character_ctl_item_c(fp, level, s3df_c->maxlen, label_SGS_3d_filter_ctl[ 2], s3df_c->momentum_filter_ctl);
+	write_character_ctl_item_c(fp, level, s3df_c->maxlen, label_SGS_3d_filter_ctl[ 3], s3df_c->heat_filter_ctl);
+	write_character_ctl_item_c(fp, level, s3df_c->maxlen, label_SGS_3d_filter_ctl[ 4], s3df_c->induction_filter_ctl);
+	write_character_ctl_item_c(fp, level, s3df_c->maxlen, label_SGS_3d_filter_ctl[ 5], s3df_c->compostion_filter_ctl);
 	
-    level = write_end_flag_for_ctl_c(fp, level, label);
+	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };
 
@@ -576,14 +576,14 @@ int write_sph_filter_ctl_c(FILE *fp, int level, const char *label,
 
 
 void alloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
-    int i;
-    
-    SGS_ctl_c->maxlen = 0;
-    for (i=0;i<NLBL_SGS_MODEL_CTL;i++){
-        if(strlen(label_SGS_model_ctl[i]) > SGS_ctl_c->maxlen){
-            SGS_ctl_c->maxlen = strlen(label_SGS_model_ctl[i]);
-        };
-    };
+	int i;
+	
+	SGS_ctl_c->maxlen = 0;
+	for (i=0;i<NLBL_SGS_MODEL_CTL;i++){
+		if(strlen(label_SGS_model_ctl[i]) > SGS_ctl_c->maxlen){
+			SGS_ctl_c->maxlen = strlen(label_SGS_model_ctl[i]);
+		};
+	};
 	
 	SGS_ctl_c->ffile_c = (struct filter_file_ctl_c *) malloc(sizeof(struct filter_file_ctl_c));
 	alloc_filter_file_ctl_c(SGS_ctl_c->ffile_c);
@@ -627,11 +627,11 @@ void alloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 	alloc_ctl_chara_item(SGS_ctl_c->SGS_model_coef_coord_c);
 	alloc_ctl_chara_item(SGS_ctl_c->SGS_buo_Csim_usage_c);
 	
-    SGS_ctl_c->istep_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    SGS_ctl_c->min_step_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    SGS_ctl_c->max_step_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    SGS_ctl_c->ngrp_radial_ave_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    SGS_ctl_c->ngrp_med_ave_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	SGS_ctl_c->istep_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	SGS_ctl_c->min_step_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	SGS_ctl_c->max_step_dynamic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	SGS_ctl_c->ngrp_radial_ave_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
+	SGS_ctl_c->ngrp_med_ave_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	
 	init_ctl_int_item(SGS_ctl_c->istep_dynamic_c);
 	init_ctl_int_item(SGS_ctl_c->min_step_dynamic_c);
@@ -677,8 +677,8 @@ void dealloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 	free(SGS_ctl_c->elayer_c);
 	free(SGS_ctl_c->s3df_c);
 	
-    dealloc_ctl_chara_array(SGS_ctl_c->SGS_terms_c);
-    dealloc_ctl_chara_array(SGS_ctl_c->commutate_fld_c);
+	dealloc_ctl_chara_array(SGS_ctl_c->SGS_terms_c);
+	dealloc_ctl_chara_array(SGS_ctl_c->commutate_fld_c);
 	free(SGS_ctl_c->SGS_terms_c);
 	free(SGS_ctl_c->commutate_fld_c);
 	
@@ -751,43 +751,43 @@ int read_SGS_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_character_ctl_array_c(fp, buf, label_SGS_model_ctl[30], SGS_ctl_c->commutate_fld_c);
 		
 		read_character_ctl_item_c(buf, label_SGS_model_ctl[ 0], SGS_ctl_c->SGS_model_name_c);
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[ 1], SGS_ctl_c->SGS_filter_name_c);
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[10], SGS_ctl_c->DIFF_model_coef_c);
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[ 2], SGS_ctl_c->SGS_negative_clip_c);
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[ 9], SGS_ctl_c->SGS_marging_c);
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[18], SGS_ctl_c->SGS_perturbation_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[ 1], SGS_ctl_c->SGS_filter_name_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[10], SGS_ctl_c->DIFF_model_coef_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[ 2], SGS_ctl_c->SGS_negative_clip_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[ 9], SGS_ctl_c->SGS_marging_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[18], SGS_ctl_c->SGS_perturbation_c);
 		
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[21], SGS_ctl_c->SGS_model_coef_type_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[21], SGS_ctl_c->SGS_model_coef_type_c);
 		
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[22], SGS_ctl_c->heat_flux_csim_type_c);
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[23], SGS_ctl_c->comp_flux_csim_type_c);
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[24], SGS_ctl_c->mom_flux_csim_type_c);
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[25], SGS_ctl_c->maxwell_csim_type_c);
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[26], SGS_ctl_c->uxb_csim_type_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[22], SGS_ctl_c->heat_flux_csim_type_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[23], SGS_ctl_c->comp_flux_csim_type_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[24], SGS_ctl_c->mom_flux_csim_type_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[25], SGS_ctl_c->maxwell_csim_type_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[26], SGS_ctl_c->uxb_csim_type_c);
 		
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[27], SGS_ctl_c->SGS_model_coef_coord_c);
-        read_character_ctl_item_c(buf, label_SGS_model_ctl[28], SGS_ctl_c->SGS_buo_Csim_usage_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[27], SGS_ctl_c->SGS_model_coef_coord_c);
+		read_character_ctl_item_c(buf, label_SGS_model_ctl[28], SGS_ctl_c->SGS_buo_Csim_usage_c);
 		
-        read_integer_ctl_item_c(buf, label_SGS_model_ctl[12], SGS_ctl_c->istep_dynamic_c);
-        read_integer_ctl_item_c(buf, label_SGS_model_ctl[14], SGS_ctl_c->min_step_dynamic_c);
+		read_integer_ctl_item_c(buf, label_SGS_model_ctl[12], SGS_ctl_c->istep_dynamic_c);
+		read_integer_ctl_item_c(buf, label_SGS_model_ctl[14], SGS_ctl_c->min_step_dynamic_c);
 		read_integer_ctl_item_c(buf, label_SGS_model_ctl[15], SGS_ctl_c->max_step_dynamic_c);
 		
-        read_integer_ctl_item_c(buf, label_SGS_model_ctl[19], SGS_ctl_c->ngrp_radial_ave_c);
+		read_integer_ctl_item_c(buf, label_SGS_model_ctl[19], SGS_ctl_c->ngrp_radial_ave_c);
 		read_integer_ctl_item_c(buf, label_SGS_model_ctl[20], SGS_ctl_c->ngrp_med_ave_c);
 		
-        read_real_ctl_item_c(buf, label_SGS_model_ctl[13], SGS_ctl_c->stabilize_weight_c);
-        read_real_ctl_item_c(buf, label_SGS_model_ctl[16], SGS_ctl_c->delta_to_shrink_dynamic_c);
-        read_real_ctl_item_c(buf, label_SGS_model_ctl[17], SGS_ctl_c->delta_to_extend_dynamic_c);
+		read_real_ctl_item_c(buf, label_SGS_model_ctl[13], SGS_ctl_c->stabilize_weight_c);
+		read_real_ctl_item_c(buf, label_SGS_model_ctl[16], SGS_ctl_c->delta_to_shrink_dynamic_c);
+		read_real_ctl_item_c(buf, label_SGS_model_ctl[17], SGS_ctl_c->delta_to_extend_dynamic_c);
 		
-        read_real_ctl_item_c(buf, label_SGS_model_ctl[ 3], SGS_ctl_c->clipping_limit_c);
+		read_real_ctl_item_c(buf, label_SGS_model_ctl[ 3], SGS_ctl_c->clipping_limit_c);
 		
-        read_real_ctl_item_c(buf, label_SGS_model_ctl[ 4], SGS_ctl_c->SGS_hf_factor_c);
-        read_real_ctl_item_c(buf, label_SGS_model_ctl[ 5], SGS_ctl_c->SGS_cf_factor_c);
-        read_real_ctl_item_c(buf, label_SGS_model_ctl[ 6], SGS_ctl_c->SGS_mf_factor_c);
-        read_real_ctl_item_c(buf, label_SGS_model_ctl[ 7], SGS_ctl_c->SGS_mxwl_factor_c);
-        read_real_ctl_item_c(buf, label_SGS_model_ctl[ 8], SGS_ctl_c->SGS_uxb_factor_c);
+		read_real_ctl_item_c(buf, label_SGS_model_ctl[ 4], SGS_ctl_c->SGS_hf_factor_c);
+		read_real_ctl_item_c(buf, label_SGS_model_ctl[ 5], SGS_ctl_c->SGS_cf_factor_c);
+		read_real_ctl_item_c(buf, label_SGS_model_ctl[ 6], SGS_ctl_c->SGS_mf_factor_c);
+		read_real_ctl_item_c(buf, label_SGS_model_ctl[ 7], SGS_ctl_c->SGS_mxwl_factor_c);
+		read_real_ctl_item_c(buf, label_SGS_model_ctl[ 8], SGS_ctl_c->SGS_uxb_factor_c);
 	};
-    return 1;
+	return 1;
 };
  
 int write_SGS_model_ctl_c(FILE *fp, int level, int *iflag,
@@ -796,12 +796,12 @@ int write_SGS_model_ctl_c(FILE *fp, int level, int *iflag,
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 0], SGS_ctl_c->SGS_model_name_c);
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 1], SGS_ctl_c->SGS_filter_name_c);
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 2], SGS_ctl_c->SGS_negative_clip_c);
-    write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 3], SGS_ctl_c->clipping_limit_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 0], SGS_ctl_c->SGS_model_name_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 1], SGS_ctl_c->SGS_filter_name_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 2], SGS_ctl_c->SGS_negative_clip_c);
+	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 3], SGS_ctl_c->clipping_limit_c);
 	
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 9], SGS_ctl_c->SGS_marging_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 9], SGS_ctl_c->SGS_marging_c);
 	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[10], SGS_ctl_c->DIFF_model_coef_c);
 	
 	if(SGS_ctl_c->iflag_3dfilter_ctl > 0) fprintf(fp, "!\n");
@@ -809,32 +809,32 @@ int write_SGS_model_ctl_c(FILE *fp, int level, int *iflag,
 				label_SGS_model_ctl[11], SGS_ctl_c->s3df_c);
 	
 	
-    write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[12], SGS_ctl_c->istep_dynamic_c);
-    write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[13], SGS_ctl_c->stabilize_weight_c);
-    write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[14], SGS_ctl_c->min_step_dynamic_c);
-    write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[15], SGS_ctl_c->max_step_dynamic_c);
-    write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[16], SGS_ctl_c->delta_to_shrink_dynamic_c);
-    write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[17], SGS_ctl_c->delta_to_extend_dynamic_c);
+	write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[12], SGS_ctl_c->istep_dynamic_c);
+	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[13], SGS_ctl_c->stabilize_weight_c);
+	write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[14], SGS_ctl_c->min_step_dynamic_c);
+	write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[15], SGS_ctl_c->max_step_dynamic_c);
+	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[16], SGS_ctl_c->delta_to_shrink_dynamic_c);
+	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[17], SGS_ctl_c->delta_to_extend_dynamic_c);
 	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[18], SGS_ctl_c->SGS_perturbation_c);
 	
-    write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[19], SGS_ctl_c->ngrp_radial_ave_c);
-    write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[20], SGS_ctl_c->ngrp_med_ave_c);
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[21], SGS_ctl_c->SGS_model_coef_type_c);
+	write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[19], SGS_ctl_c->ngrp_radial_ave_c);
+	write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[20], SGS_ctl_c->ngrp_med_ave_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[21], SGS_ctl_c->SGS_model_coef_type_c);
 	
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[22], SGS_ctl_c->heat_flux_csim_type_c);
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[23], SGS_ctl_c->comp_flux_csim_type_c);
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[24], SGS_ctl_c->mom_flux_csim_type_c);
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[25], SGS_ctl_c->maxwell_csim_type_c);
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[26], SGS_ctl_c->uxb_csim_type_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[22], SGS_ctl_c->heat_flux_csim_type_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[23], SGS_ctl_c->comp_flux_csim_type_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[24], SGS_ctl_c->mom_flux_csim_type_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[25], SGS_ctl_c->maxwell_csim_type_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[26], SGS_ctl_c->uxb_csim_type_c);
 	
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[27], SGS_ctl_c->SGS_model_coef_coord_c);
-    write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[28], SGS_ctl_c->SGS_buo_Csim_usage_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[27], SGS_ctl_c->SGS_model_coef_coord_c);
+	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[28], SGS_ctl_c->SGS_buo_Csim_usage_c);
 	
-    write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 4], SGS_ctl_c->SGS_hf_factor_c);
-    write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 5], SGS_ctl_c->SGS_cf_factor_c);
-    write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 6], SGS_ctl_c->SGS_mf_factor_c);
-    write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 7], SGS_ctl_c->SGS_mxwl_factor_c);
-    write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 8], SGS_ctl_c->SGS_uxb_factor_c);
+	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 4], SGS_ctl_c->SGS_hf_factor_c);
+	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 5], SGS_ctl_c->SGS_cf_factor_c);
+	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 6], SGS_ctl_c->SGS_mf_factor_c);
+	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 7], SGS_ctl_c->SGS_mxwl_factor_c);
+	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 8], SGS_ctl_c->SGS_uxb_factor_c);
 	
 	if(SGS_ctl_c->SGS_terms_c->num > 0) fprintf(fp, "!\n");
 	write_character_ctl_array_c(fp, level, strlen(label_SGS_model_ctl[29]),

@@ -57,13 +57,6 @@ int read_surf_bc_control_c(FILE *fp, char buf[LENGTHBUF]){
 	};
 	return 1;
 }
-int read_forces_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "forces_define") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_forces_control_c %s\n", buf);
-	};
-	return 1;
-}
 int read_dimless_control_c(FILE *fp, char buf[LENGTHBUF]){
 	while(find_control_end_flag_c(buf, "dimensionless_ctl") == 0){
 		fgets(buf, LENGTHBUF, fp);
@@ -75,34 +68,6 @@ int read_equations_control_c(FILE *fp, char buf[LENGTHBUF]){
 	while(find_control_end_flag_c(buf, "coefficients_ctl") == 0){
 		fgets(buf, LENGTHBUF, fp);
 		printf("Block read_equations_control_c %s\n", buf);
-	};
-	return 1;
-}
-int read_gravity_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "gravity_define") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_gravity_control_c %s\n", buf);
-	};
-	return 1;
-}
-int read_coriolis_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "Coriolis_define") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_coriolis_control_c %s\n", buf);
-	};
-	return 1;
-}
-int read_magneto_convection_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "Magneto_convection_def") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_magneto_convection_control_c %s\n", buf);
-	};
-	return 1;
-}
-int read_reference_temperature_c(FILE *fp, char buf[LENGTHBUF], const char *label){
-	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_reference_temperature_c %s\n", buf);
 	};
 	return 1;
 }
@@ -223,21 +188,58 @@ int read_mhd_model_ctl_c(FILE *fp, char buf[LENGTHBUF], struct mhd_model_control
 	while(find_control_end_flag_c(buf, "model") == 0){
 		fgets(buf, LENGTHBUF, fp);
 		
-		if(right_begin_flag_c(buf, "phys_values_ctl") > 0) *model_ctl->iflag_field_control = read_field_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "time_evolution_ctl") > 0) *model_ctl->iflag_mhd_evolution_control = read_mhd_evolution_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "layers_ctl") > 0) *model_ctl->iflag_mhd_evo_area_control = read_mhd_evo_area_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "boundary_condition") > 0) *model_ctl->iflag_node_bc_control = read_node_bc_control_c(fp, buf, "boundary_condition");
-		if(right_begin_flag_c(buf, "bc_4_node") > 0) *model_ctl->iflag_node_bc_control = read_node_bc_control_c(fp, buf, "bc_4_node");
-		if(right_begin_flag_c(buf, "bc_4_surface") > 0) *model_ctl->iflag_surf_bc_control = read_surf_bc_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "forces_define") > 0) *model_ctl->iflag_forces_control = read_forces_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "dimensionless_ctl") > 0) *model_ctl->iflag_dimless_control = read_dimless_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "coefficients_ctl") > 0) *model_ctl->iflag_equations_control = read_equations_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "gravity_define") > 0) *model_ctl->iflag_gravity_control = read_gravity_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "Coriolis_define") > 0) *model_ctl->iflag_coriolis_control = read_coriolis_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "Magneto_convection_def") > 0) *model_ctl->iflag_magneto_convection_control = read_magneto_convection_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "temperature_define") > 0) *model_ctl->iflag_reference_temp_control = read_reference_temperature_c(fp, buf, "temperature_define");
-		if(right_begin_flag_c(buf, "composition_define") > 0) *model_ctl->iflag_reference_comp_control = read_reference_temperature_c(fp, buf, "composition_define");
-		if(right_begin_flag_c(buf, "SGS_control") > 0) *model_ctl->iflag_sgs_model_control = read_SGS_model_ctl_c(fp, buf, "SGS_control", model_ctl->sgs_ctl);
+		if(right_begin_flag_c(buf, "phys_values_ctl") > 0) {
+			*model_ctl->iflag_field_control = read_field_control_c(fp, buf);
+		};
+		if(right_begin_flag_c(buf, "time_evolution_ctl") > 0) {
+			*model_ctl->iflag_mhd_evolution_control = read_mhd_evolution_control_c(fp, buf);
+		};
+		if(right_begin_flag_c(buf, "layers_ctl") > 0) {
+			*model_ctl->iflag_mhd_evo_area_control = read_mhd_evo_area_control_c(fp, buf);
+		};
+		if(right_begin_flag_c(buf, "boundary_condition") > 0) {
+			*model_ctl->iflag_node_bc_control = read_node_bc_control_c(fp, buf, "boundary_condition");
+		};
+		if(right_begin_flag_c(buf, "bc_4_node") > 0) {
+			*model_ctl->iflag_node_bc_control = read_node_bc_control_c(fp, buf, "bc_4_node");
+		};
+		if(right_begin_flag_c(buf, "bc_4_surface") > 0) {
+			*model_ctl->iflag_surf_bc_control = read_surf_bc_control_c(fp, buf);
+		};
+		if(right_begin_flag_c(buf, "forces_define") > 0) {
+			*model_ctl->iflag_forces_control = read_forces_ctl_c(fp, buf,
+						"forces_define", model_ctl->frc_ctl);
+		};
+		if(right_begin_flag_c(buf, "dimensionless_ctl") > 0) {
+			*model_ctl->iflag_dimless_control = read_dimless_control_c(fp, buf);
+		};
+		if(right_begin_flag_c(buf, "coefficients_ctl") > 0) {
+			*model_ctl->iflag_equations_control = read_equations_control_c(fp, buf);
+		};
+		if(right_begin_flag_c(buf, "gravity_define") > 0) {
+			*model_ctl->iflag_gravity_control = read_gravity_ctl_c(fp, buf,
+						"gravity_define", model_ctl->g_ctl);
+		};
+		if(right_begin_flag_c(buf, "Coriolis_define") > 0) {
+			*model_ctl->iflag_coriolis_control = read_coriolis_ctl_c(fp, buf,
+						"Coriolis_define", model_ctl->cor_ctl);
+		};
+		if(right_begin_flag_c(buf, "Magneto_convection_def") > 0) {
+			*model_ctl->iflag_magneto_convection_control = read_magneto_cv_ctl_c(fp, buf, 
+						"Magneto_convection_def", model_ctl->mcv_ctl);
+		};
+		if(right_begin_flag_c(buf, "temperature_define") > 0) {
+			*model_ctl->iflag_reference_temp_control = read_ref_temperature_ctl_c(fp, buf, 
+						"temperature_define", model_ctl->reft_ctl);
+		};
+		if(right_begin_flag_c(buf, "composition_define") > 0) {
+			*model_ctl->iflag_reference_comp_control = read_ref_composition_ctl_c(fp, buf,
+						"composition_define", model_ctl->refc_ctl);
+		};
+		if(right_begin_flag_c(buf, "SGS_control") > 0) {
+			*model_ctl->iflag_sgs_model_control = read_SGS_model_ctl_c(fp, buf, "SGS_control", 
+						model_ctl->sgs_ctl);
+		};
 	};
 	return 1;
 }
@@ -342,12 +344,6 @@ int write_surf_bc_control_c(FILE *fp, int level, int *iflag, struct surf_bc_cont
 	level = write_end_flag_for_ctl_c(fp, level, "bc_4_surface");
 	return level;
 }
-int write_forces_control_c(FILE *fp, int level, int *iflag, struct forces_control_c *frc_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "forces_define");
-	level = write_end_flag_for_ctl_c(fp, level, "forces_define");
-	return level;
-}
 int write_dimless_control_c(FILE *fp, int level, int *iflag, struct dimless_control_c *dless_ctl){
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "dimensionless_ctl");
@@ -358,31 +354,6 @@ int write_equations_control_c(FILE *fp, int level, int *iflag, struct equations_
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "coefficients_ctl");
 	level = write_end_flag_for_ctl_c(fp, level, "coefficients_ctl");
-	return level;
-}
-int write_gravity_control_c(FILE *fp, int level, int *iflag, struct gravity_control_c *g_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "gravity_define");
-	level = write_end_flag_for_ctl_c(fp, level, "gravity_define");
-	return level;
-}
-int write_coriolis_control_c(FILE *fp, int level, int *iflag, struct coriolis_control_c *cor_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "Coriolis_define");
-	level = write_end_flag_for_ctl_c(fp, level, "Coriolis_define");
-	return level;
-}
-int write_magneto_convection_control_c(FILE *fp, int level, int *iflag, struct magneto_convection_control_c *mcv_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "Magneto_convection_def");
-	level = write_end_flag_for_ctl_c(fp, level, "Magneto_convection_def");
-	return level;
-}
-int write_reference_temperature_c(FILE *fp, int level, const char *label,
-			int *iflag, struct reference_temperature_c *reft_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, label);
-	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 }
 
@@ -428,19 +399,23 @@ int write_mhd_model_ctl_c(FILE *fp, int level, int *iflag, struct mhd_model_cont
 	if(*model_ctl->iflag_equations_control > 0) fprintf(fp, "!\n");
 	level = write_equations_control_c(fp, level, model_ctl->iflag_equations_control, model_ctl->eqs_ctl);
 	if(*model_ctl->iflag_forces_control > 0) fprintf(fp, "!\n");
-	level = write_forces_control_c(fp, level, model_ctl->iflag_forces_control, model_ctl->frc_ctl);
+	level = write_forces_ctl_c(fp, level, model_ctl->iflag_forces_control, 
+				"forces_define", model_ctl->frc_ctl);
 	if(*model_ctl->iflag_gravity_control > 0) fprintf(fp, "!\n");
-	level = write_gravity_control_c(fp, level, model_ctl->iflag_gravity_control, model_ctl->g_ctl);
+	level = write_gravity_ctl_c(fp, level, model_ctl->iflag_gravity_control, 
+				"gravity_define", model_ctl->g_ctl);
 	if(*model_ctl->iflag_coriolis_control > 0) fprintf(fp, "!\n");
-	level = write_coriolis_control_c(fp, level, model_ctl->iflag_coriolis_control, model_ctl->cor_ctl);
+	level = write_coriolis_ctl_c(fp, level, model_ctl->iflag_coriolis_control, 
+				"Coriolis_define", model_ctl->cor_ctl);
 	if(*model_ctl->iflag_magneto_convection_control > 0) fprintf(fp, "!\n");
-	level = write_magneto_convection_control_c(fp, level, model_ctl->iflag_magneto_convection_control, model_ctl->mcv_ctl);
+	level = write_magneto_cv_ctl_c(fp, level, model_ctl->iflag_magneto_convection_control, 
+				"Magneto_convection_def", model_ctl->mcv_ctl);
 	if(*model_ctl->iflag_reference_temp_control > 0) fprintf(fp, "!\n");
-	level = write_reference_temperature_c(fp, level, "temperature_define",
-				model_ctl->iflag_reference_temp_control, model_ctl->reft_ctl);
+	level = write_ref_temperature_ctl_c(fp, level, model_ctl->iflag_reference_temp_control, 
+				"temperature_define", model_ctl->reft_ctl);
 	if(*model_ctl->iflag_reference_comp_control > 0) fprintf(fp, "!\n");
-	level = write_reference_temperature_c(fp, level, "composition_define",
-				model_ctl->iflag_reference_comp_control, model_ctl->refc_ctl);
+	level = write_ref_composition_ctl_c(fp, level, model_ctl->iflag_reference_comp_control,
+				"composition_define", model_ctl->refc_ctl);
 	if(*model_ctl->iflag_sgs_model_control > 0) fprintf(fp, "!\n");
 	level = write_SGS_model_ctl_c(fp, level, model_ctl->iflag_sgs_model_control, 
 				"SGS_control", model_ctl->sgs_ctl);
