@@ -38,10 +38,10 @@ void read_character_ctl_array_c(FILE *fp, char *buf, const char *label,
 	if(c_array->num > 0) alloc_ctl_chara_array(c_array);
 	fgets(buf, LENGTHBUF, fp);
 	while(find_control_end_array_flag_c(buf, label, c_array->num, c_array->icou) == 0){
-		fgets(buf, LENGTHBUF, fp);
-		
 		read_character_ctl_item_c(buf, label, c_array->c_array_item[c_array->icou]);
 		c_array->icou = c_array->icou + c_array->c_array_item[c_array->icou]->iflag;
+		
+		fgets(buf, LENGTHBUF, fp);
 	};
 	
 	return;
@@ -51,7 +51,6 @@ void write_character_ctl_array_c(FILE *fp, int level, int maxlen,
 	int i;
 	
 	if(c_array->icou == 0) return;
-	
 	level = write_array_flag_for_ctl_c(fp, level, label, c_array->num);
 	for(i=0;i<c_array->num;i++){
 		write_character_ctl_item_c(fp, level, strlen(label),
@@ -93,7 +92,7 @@ void read_integer_ctl_array_c(FILE *fp, char *buf, const char *label,
 	fgets(buf, LENGTHBUF, fp);
 	while(find_control_end_array_flag_c(buf, label, i_array->num, i_array->icou) == 0){
 		if(i_array->icou >= i_array->num){
-			printf("Numnber of item is larger than defined \n");
+			printf("Number of item is larger than defined \n");
 			return;
 		}
 		
@@ -157,7 +156,7 @@ void read_int2_ctl_array_c(FILE *fp, char *buf, const char *label,
 	fgets(buf, LENGTHBUF, fp);
 	while(find_control_end_array_flag_c(buf, label, i2_array->num, i2_array->icou) == 0){
 		if(i2_array->icou >= i2_array->num){
-			printf("Numnber of item is larger than defined \n");
+			printf("Number of item is larger than defined \n");
 			return;
 		}
 		
@@ -223,7 +222,7 @@ void read_cr_ctl_array_c(FILE *fp, char *buf, const char *label,
 	fgets(buf, LENGTHBUF, fp);
 	while(find_control_end_array_flag_c(buf, label, cr_array->num, cr_array->icou) == 0){
 		if(cr_array->icou >= cr_array->num){
-			printf("Numnber of item is larger than defined \n");
+			printf("Number of item is larger than defined \n");
 			return;
 		}
 		

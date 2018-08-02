@@ -20,6 +20,7 @@
 #include "t_ctl_data_SGS_model_c.h"
 #include "t_ctl_data_temp_model_c.h"
 #include "t_ctl_data_mhd_forces_c.h"
+#include "t_ctl_data_mhd_normalize_c.h"
 
 
 struct sphere_data_control_c{
@@ -42,12 +43,6 @@ struct node_bc_control_c{
 	int iflag;
 };
 struct surf_bc_control_c{
-	int iflag;
-};
-struct dimless_control_c{
-	int iflag;
-};
-struct equations_control_c{
 	int iflag;
 };
 
@@ -87,9 +82,9 @@ struct mhd_model_control_c{
 	int *iflag_forces_control;
 	struct forces_ctl_c *frc_ctl;
 	int *iflag_dimless_control;
-	struct dimless_control_c *dless_ctl;
+	struct dimless_ctl_c *dless_ctl;
 	int *iflag_equations_control;
-	struct equations_control_c *eqs_ctl;
+	struct equations_ctl_c *eqs_ctl;
 	int *iflag_gravity_control;
 	struct gravity_ctl_c *g_ctl;
 	int *iflag_coriolis_control;

@@ -57,20 +57,6 @@ int read_surf_bc_control_c(FILE *fp, char buf[LENGTHBUF]){
 	};
 	return 1;
 }
-int read_dimless_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "dimensionless_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_dimless_control_c %s\n", buf);
-	};
-	return 1;
-}
-int read_equations_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "coefficients_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_equations_control_c %s\n", buf);
-	};
-	return 1;
-}
 
 int read_section_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, struct visualization_controls_c *viz_ctls){
 	int icou = 0;
@@ -211,10 +197,12 @@ int read_mhd_model_ctl_c(FILE *fp, char buf[LENGTHBUF], struct mhd_model_control
 						"forces_define", model_ctl->frc_ctl);
 		};
 		if(right_begin_flag_c(buf, "dimensionless_ctl") > 0) {
-			*model_ctl->iflag_dimless_control = read_dimless_control_c(fp, buf);
+			*model_ctl->iflag_dimless_control = read_dimless_ctl_c(fp, buf, 
+						"dimensionless_ctl", model_ctl->dless_ctl);
 		};
 		if(right_begin_flag_c(buf, "coefficients_ctl") > 0) {
-			*model_ctl->iflag_equations_control = read_equations_control_c(fp, buf);
+			*model_ctl->iflag_equations_control = read_equations_ctl_c(fp, buf, 
+						"coefficients_ctl", model_ctl->eqs_ctl);
 		};
 		if(right_begin_flag_c(buf, "gravity_define") > 0) {
 			*model_ctl->iflag_gravity_control = read_gravity_ctl_c(fp, buf,
@@ -344,18 +332,6 @@ int write_surf_bc_control_c(FILE *fp, int level, int *iflag, struct surf_bc_cont
 	level = write_end_flag_for_ctl_c(fp, level, "bc_4_surface");
 	return level;
 }
-int write_dimless_control_c(FILE *fp, int level, int *iflag, struct dimless_control_c *dless_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "dimensionless_ctl");
-	level = write_end_flag_for_ctl_c(fp, level, "dimensionless_ctl");
-	return level;
-}
-int write_equations_control_c(FILE *fp, int level, int *iflag, struct equations_control_c *eqs_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "coefficients_ctl");
-	level = write_end_flag_for_ctl_c(fp, level, "coefficients_ctl");
-	return level;
-}
 
 int write_sphere_domain_control_c(FILE *fp, int level, int *iflag){
 	if(*iflag == 0) return level;
@@ -395,9 +371,11 @@ int write_mhd_model_ctl_c(FILE *fp, int level, int *iflag, struct mhd_model_cont
 	if(*model_ctl->iflag_surf_bc_control > 0) fprintf(fp, "!\n");
 	level = write_surf_bc_control_c(fp, level, model_ctl->iflag_surf_bc_control, model_ctl->sbc_ctl);
 	if(*model_ctl->iflag_dimless_control > 0) fprintf(fp, "!\n");
-	level = write_dimless_control_c(fp, level, model_ctl->iflag_dimless_control, model_ctl->dless_ctl);
+	level = write_dimless_ctl_c(fp, level, model_ctl->iflag_dimless_control, 
+				"dimensionless_ctl", model_ctl->dless_ctl);
 	if(*model_ctl->iflag_equations_control > 0) fprintf(fp, "!\n");
-	level = write_equations_control_c(fp, level, model_ctl->iflag_equations_control, model_ctl->eqs_ctl);
+	level = write_equations_ctl_c(fp, level, model_ctl->iflag_equations_control, 
+				"coefficients_ctl", model_ctl->eqs_ctl);
 	if(*model_ctl->iflag_forces_control > 0) fprintf(fp, "!\n");
 	level = write_forces_ctl_c(fp, level, model_ctl->iflag_forces_control, 
 				"forces_define", model_ctl->frc_ctl);

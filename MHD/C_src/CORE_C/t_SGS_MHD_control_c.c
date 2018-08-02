@@ -48,8 +48,11 @@ void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	model_ctl->earea_ctl = (struct mhd_evo_area_control_c *) malloc(sizeof(struct mhd_evo_area_control_c));
 	model_ctl->nbc_ctl = (struct node_bc_control_c *) malloc(sizeof(struct node_bc_control_c));
 	model_ctl->sbc_ctl = (struct surf_bc_control_c *) malloc(sizeof(struct surf_bc_control_c));
-	model_ctl->dless_ctl = (struct dimless_control_c *) malloc(sizeof(struct dimless_control_c));
-	model_ctl->eqs_ctl = (struct equations_control_c *) malloc(sizeof(struct equations_control_c));
+	
+	model_ctl->dless_ctl = (struct dimless_ctl_c *) malloc(sizeof(struct dimless_ctl_c));
+	alloc_dimless_ctl_c(model_ctl->dless_ctl);
+	model_ctl->eqs_ctl = (struct equations_ctl_c *) malloc(sizeof(struct equations_ctl_c));
+	alloc_equations_ctl_c(model_ctl->eqs_ctl);
 	
 	model_ctl->frc_ctl = (struct forces_ctl_c *) malloc(sizeof(struct forces_ctl_c));
 	alloc_forces_ctl_c(model_ctl->frc_ctl);
@@ -93,8 +96,13 @@ void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	free(model_ctl->earea_ctl);
 	free(model_ctl->nbc_ctl);
 	free(model_ctl->sbc_ctl);
+	
+	
+	dealloc_dimless_ctl_c(model_ctl->dless_ctl);
 	free(model_ctl->dless_ctl);
+	dealloc_equations_ctl_c(model_ctl->eqs_ctl);
 	free(model_ctl->eqs_ctl);
+	
 	dealloc_forces_ctl_c(model_ctl->frc_ctl);
 	free(model_ctl->frc_ctl);
 	dealloc_gravity_ctl_c(model_ctl->g_ctl);

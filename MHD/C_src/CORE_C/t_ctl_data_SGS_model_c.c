@@ -730,7 +730,6 @@ int read_SGS_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	int iflag;
 	
 	while(find_control_end_flag_c(buf, label) == 0){
-		printf("Tako %d\n", SGS_ctl_c->maxlen);
 		fgets(buf, LENGTHBUF, fp);
 		
 		iflag = find_control_array_flag_c(buf, label_SGS_model_ctl[33], &SGS_ctl_c->num_sph_filter_c);
