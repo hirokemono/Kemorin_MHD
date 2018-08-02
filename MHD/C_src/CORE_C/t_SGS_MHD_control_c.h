@@ -21,6 +21,7 @@
 #include "t_ctl_data_temp_model_c.h"
 #include "t_ctl_data_mhd_forces_c.h"
 #include "t_ctl_data_mhd_normalize_c.h"
+#include "t_ctl_data_MHD_boundary_c.h"
 
 
 struct sphere_data_control_c{
@@ -37,12 +38,6 @@ struct mhd_evolution_control_c{
 	int iflag;
 };
 struct mhd_evo_area_control_c{
-	int iflag;
-};
-struct node_bc_control_c{
-	int iflag;
-};
-struct surf_bc_control_c{
 	int iflag;
 };
 
@@ -76,9 +71,9 @@ struct mhd_model_control_c{
 	int *iflag_mhd_evo_area_control;
 	struct mhd_evo_area_control_c *earea_ctl;
 	int *iflag_node_bc_control;
-	struct node_bc_control_c *nbc_ctl;
+	struct MHD_boundary_ctl_c *nbc_ctl;
 	int *iflag_surf_bc_control;
-	struct surf_bc_control_c *sbc_ctl;
+	struct MHD_boundary_ctl_c *sbc_ctl;
 	int *iflag_forces_control;
 	struct forces_ctl_c *frc_ctl;
 	int *iflag_dimless_control;

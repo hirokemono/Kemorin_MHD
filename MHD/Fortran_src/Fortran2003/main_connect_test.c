@@ -43,20 +43,6 @@ int read_mhd_evo_area_control_c(FILE *fp, char buf[LENGTHBUF]){
 	};
 	return 1;
 }
-int read_node_bc_control_c(FILE *fp, char buf[LENGTHBUF], const char *label){
-	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_node_bc_control_c %s\n", buf);
-	};
-	return 1;
-}
-int read_surf_bc_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "bc_4_surface") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_surf_bc_control_c %s\n", buf);
-	};
-	return 1;
-}
 
 int read_section_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, struct visualization_controls_c *viz_ctls){
 	int icou = 0;
@@ -184,13 +170,16 @@ int read_mhd_model_ctl_c(FILE *fp, char buf[LENGTHBUF], struct mhd_model_control
 			*model_ctl->iflag_mhd_evo_area_control = read_mhd_evo_area_control_c(fp, buf);
 		};
 		if(right_begin_flag_c(buf, "boundary_condition") > 0) {
-			*model_ctl->iflag_node_bc_control = read_node_bc_control_c(fp, buf, "boundary_condition");
+			*model_ctl->iflag_node_bc_control = read_MHD_node_bc_ctl_c(fp, buf, 
+						"boundary_condition", model_ctl->nbc_ctl);
 		};
 		if(right_begin_flag_c(buf, "bc_4_node") > 0) {
-			*model_ctl->iflag_node_bc_control = read_node_bc_control_c(fp, buf, "bc_4_node");
+			*model_ctl->iflag_node_bc_control = read_MHD_node_bc_ctl_c(fp, buf, 
+						"bc_4_node", model_ctl->nbc_ctl);
 		};
 		if(right_begin_flag_c(buf, "bc_4_surface") > 0) {
-			*model_ctl->iflag_surf_bc_control = read_surf_bc_control_c(fp, buf);
+			*model_ctl->iflag_surf_bc_control = read_MHD_surf_bc_ctl_c(fp, buf, 
+						"bc_4_surface", model_ctl->sbc_ctl);
 		};
 		if(right_begin_flag_c(buf, "forces_define") > 0) {
 			*model_ctl->iflag_forces_control = read_forces_ctl_c(fp, buf,
@@ -320,18 +309,6 @@ int write_mhd_evo_area_control_c(FILE *fp, int level, int *iflag, struct mhd_evo
 	level = write_end_flag_for_ctl_c(fp, level, "layers_ctl");
 	return level;
 }
-int write_node_bc_control_c(FILE *fp, int level, int *iflag, struct node_bc_control_c *nbc_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "boundary_condition");
-	level = write_end_flag_for_ctl_c(fp, level, "boundary_condition");
-	return level;
-}
-int write_surf_bc_control_c(FILE *fp, int level, int *iflag, struct surf_bc_control_c *sbc_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "bc_4_surface");
-	level = write_end_flag_for_ctl_c(fp, level, "bc_4_surface");
-	return level;
-}
 
 int write_sphere_domain_control_c(FILE *fp, int level, int *iflag){
 	if(*iflag == 0) return level;
@@ -367,9 +344,11 @@ int write_mhd_model_ctl_c(FILE *fp, int level, int *iflag, struct mhd_model_cont
 	if(*model_ctl->iflag_mhd_evo_area_control > 0) fprintf(fp, "!\n");
 	level = write_mhd_evo_area_control_c(fp, level, model_ctl->iflag_mhd_evo_area_control, model_ctl->earea_ctl);
 	if(*model_ctl->iflag_node_bc_control > 0) fprintf(fp, "!\n");
-	level = write_node_bc_control_c(fp, level, model_ctl->iflag_node_bc_control, model_ctl->nbc_ctl);
+	level = write_MHD_node_bc_ctl_c(fp, level, model_ctl->iflag_node_bc_control, 
+				"boundary_condition", model_ctl->nbc_ctl);
 	if(*model_ctl->iflag_surf_bc_control > 0) fprintf(fp, "!\n");
-	level = write_surf_bc_control_c(fp, level, model_ctl->iflag_surf_bc_control, model_ctl->sbc_ctl);
+	level = write_MHD_surf_bc_ctl_c(fp, level, model_ctl->iflag_surf_bc_control, 
+				"bc_4_surface", model_ctl->sbc_ctl);
 	if(*model_ctl->iflag_dimless_control > 0) fprintf(fp, "!\n");
 	level = write_dimless_ctl_c(fp, level, model_ctl->iflag_dimless_control, 
 				"dimensionless_ctl", model_ctl->dless_ctl);

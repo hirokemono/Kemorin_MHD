@@ -258,3 +258,89 @@ void write_cr_ctl_array_c(FILE *fp, int level, int maxlen,
 	return;
 }
 
+
+void alloc_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array){
+	int i;
+	
+	c2r_array->c1_array_item = (struct chara_ctl_item **) malloc(c2r_array->num*sizeof(struct chara_ctl_item *));
+	c2r_array->c2_array_item = (struct chara_ctl_item **) malloc(c2r_array->num*sizeof(struct chara_ctl_item *));
+	c2r_array->r_array_item = (struct real_ctl_item **) malloc(c2r_array->num*sizeof(struct real_ctl_item *));
+	for(i=0;i<c2r_array->num;i++){
+		c2r_array->c1_array_item[i] = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+		c2r_array->c2_array_item[i] = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+		c2r_array->r_array_item[i] = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
+		alloc_ctl_chara_item(c2r_array->c1_array_item[i]);
+		alloc_ctl_chara_item(c2r_array->c2_array_item[i]);
+		init_ctl_real_item(c2r_array->r_array_item[i]);
+	};
+	c2r_array->icou = 0;
+	return;
+}
+void dealloc_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array){
+	int i;
+	
+	if(c2r_array->num < 0) return;
+	for(i=0;i<c2r_array->num;i++){
+		dealloc_ctl_chara_item(c2r_array->c1_array_item[i]);
+		dealloc_ctl_chara_item(c2r_array->c2_array_item[i]);
+		free(c2r_array->c1_array_item[i]);
+		free(c2r_array->c2_array_item[i]);
+		free(c2r_array->r_array_item[i]);
+	};
+	free(c2r_array->c1_array_item);
+	free(c2r_array->c2_array_item);
+	free(c2r_array->r_array_item);
+	return;
+}
+void read_c2r_ctl_array_c(FILE *fp, char *buf, const char *label,
+			struct chara2_real_ctl_array *c2r_array){
+	
+	if(c2r_array->icou > 0) return;
+	if(find_control_array_flag_c(buf, label, &c2r_array->num) == 0) return;
+	
+	if(c2r_array->num > 0) alloc_ctl_c2r_array(c2r_array);
+	fgets(buf, LENGTHBUF, fp);
+	while(find_control_end_array_flag_c(buf, label, c2r_array->num, c2r_array->icou) == 0){
+		if(c2r_array->icou >= c2r_array->num){
+			printf("Number of item is larger than defined \n");
+			return;
+		}
+		
+		read_c2r_ctl_item_c(buf, label, c2r_array->c1_array_item[c2r_array->icou],
+					c2r_array->c2_array_item[c2r_array->icou],
+					c2r_array->r_array_item[c2r_array->icou]);
+		c2r_array->icou = c2r_array->icou + c2r_array->c1_array_item[c2r_array->icou]->iflag;
+		
+		fgets(buf, LENGTHBUF, fp);
+	};
+	
+	return;
+}
+void write_c2r_ctl_array_c(FILE *fp, int level, int maxlen,
+			const char *label, struct chara2_real_ctl_array *c2r_array){
+	int i;
+	
+	if(c2r_array->icou == 0) return;
+	
+	c2r_array->maxlen[0] = strlen(label);
+	c2r_array->maxlen[1] = strlen(c2r_array->c1_array_item[0]->c_tbl);
+	c2r_array->maxlen[2] = strlen(c2r_array->c2_array_item[0]->c_tbl);
+	for(i=0;i<c2r_array->num;i++){
+		if(strlen(c2r_array->c1_array_item[i]->c_tbl) > c2r_array->maxlen[1]){
+			c2r_array->maxlen[1] = strlen(c2r_array->c1_array_item[i]->c_tbl);
+		};
+		if(strlen(c2r_array->c2_array_item[i]->c_tbl) > c2r_array->maxlen[2]){
+			c2r_array->maxlen[2] = strlen(c2r_array->c2_array_item[i]->c_tbl);
+		};
+	};
+	
+	level = write_array_flag_for_ctl_c(fp, level, label, c2r_array->num);
+	for(i=0;i<c2r_array->num;i++){
+		write_c2r_ctl_item_c(fp, level, c2r_array->maxlen,
+					label, c2r_array->c1_array_item[i], c2r_array->c2_array_item[i], 
+					c2r_array->r_array_item[i]);
+	};
+	level = write_end_array_flag_for_ctl_c(fp, level, label);
+	return;
+}
+

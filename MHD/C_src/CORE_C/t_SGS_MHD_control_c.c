@@ -46,8 +46,11 @@ void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	model_ctl->fld_ctl = (struct field_control_c *) malloc(sizeof(struct field_control_c));
 	model_ctl->evo_ctl = (struct mhd_evolution_control_c *) malloc(sizeof(struct mhd_evolution_control_c));
 	model_ctl->earea_ctl = (struct mhd_evo_area_control_c *) malloc(sizeof(struct mhd_evo_area_control_c));
-	model_ctl->nbc_ctl = (struct node_bc_control_c *) malloc(sizeof(struct node_bc_control_c));
-	model_ctl->sbc_ctl = (struct surf_bc_control_c *) malloc(sizeof(struct surf_bc_control_c));
+	
+	model_ctl->nbc_ctl = (struct MHD_boundary_ctl_c *) malloc(sizeof(struct MHD_boundary_ctl_c));
+	alloc_MHD_node_bc_ctl_c(model_ctl->nbc_ctl);
+	model_ctl->sbc_ctl = (struct MHD_boundary_ctl_c *) malloc(sizeof(struct MHD_boundary_ctl_c));
+	alloc_MHD_surf_bc_ctl_c(model_ctl->sbc_ctl);
 	
 	model_ctl->dless_ctl = (struct dimless_ctl_c *) malloc(sizeof(struct dimless_ctl_c));
 	alloc_dimless_ctl_c(model_ctl->dless_ctl);
@@ -94,7 +97,10 @@ void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	free(model_ctl->fld_ctl);
 	free(model_ctl->evo_ctl);
 	free(model_ctl->earea_ctl);
+	
+	dealloc_MHD_boundary_ctl_c(model_ctl->nbc_ctl);
 	free(model_ctl->nbc_ctl);
+	dealloc_MHD_boundary_ctl_c(model_ctl->sbc_ctl);
 	free(model_ctl->sbc_ctl);
 	
 	
