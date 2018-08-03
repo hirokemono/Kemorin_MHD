@@ -288,6 +288,36 @@ void write_int2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
 }
 
 
+void read_ci_ctl_item_c(const char *buf, const char *label,
+			struct chara_ctl_item *c_item, struct int_ctl_item *i_item){
+	char header_chara[KCHARA_C];
+	
+	if(c_item->iflag > 0) return;
+	
+	sscanf(buf, "%s", header_chara);
+	if(cmp_no_case_c(header_chara, label) > 0){
+		sscanf(buf, "%s %s %d", header_chara, c_item->c_tbl, &i_item->i_data);
+		strip_cautation_marks(c_item->c_tbl);
+		c_item->iflag = 1;
+		i_item->iflag = 1;
+	};
+	
+	return;
+}
+
+void write_ci_ctl_item_c(FILE *fp, int level, int maxlen[2], const char *label,
+			struct chara_ctl_item *c_item, struct int_ctl_item *i_item){
+	
+    if( (c_item->iflag * i_item->iflag) == 0) return;
+	
+	write_space_4_parse_c(fp, level);
+	write_one_label_cont_c(fp, maxlen[0], label);
+	write_one_label_cont_c(fp, maxlen[1], c_item->c_tbl);
+    fprintf(fp, "%d\n", i_item->i_data);
+	return;
+}
+
+
 void read_cr_ctl_item_c(const char *buf, const char *label,
 			struct chara_ctl_item *c_item, struct real_ctl_item *r_item){
 	char header_chara[KCHARA_C];
@@ -314,6 +344,34 @@ void write_cr_ctl_item_c(FILE *fp, int level, int maxlen[2], const char *label,
 	write_one_label_cont_c(fp, maxlen[0], label);
 	write_one_label_cont_c(fp, maxlen[1], c_item->c_tbl);
     fprintf(fp, "%.12e\n", r_item->r_data);
+	return;
+}
+
+
+void read_ir_ctl_item_c(const char *buf, const char *label,
+			struct int_ctl_item *i_item, struct real_ctl_item *r_item){
+	char header_chara[KCHARA_C];
+	
+	if(i_item->iflag > 0) return;
+	
+	sscanf(buf, "%s", header_chara);
+	if(cmp_no_case_c(header_chara, label) > 0){
+		sscanf(buf, "%s %d %lf", header_chara, &i_item->i_data, &r_item->r_data);
+		i_item->iflag = 1;
+		r_item->iflag = 1;
+	};
+	
+	return;
+}
+
+void write_ir_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
+			struct int_ctl_item *i_item, struct real_ctl_item *r_item){
+	
+    if( (i_item->iflag * r_item->iflag) == 0) return;
+	
+	write_space_4_parse_c(fp, level);
+	write_one_label_cont_c(fp, maxlen, label);
+    fprintf(fp, "%d  %.12e\n", i_item->i_data, r_item->r_data);
 	return;
 }
 

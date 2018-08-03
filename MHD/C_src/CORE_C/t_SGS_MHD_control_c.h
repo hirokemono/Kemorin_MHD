@@ -13,6 +13,7 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
+
 #include "t_ctl_data_4_platforms_c.h"
 #include "t_ctl_data_4_time_steps_c.h"
 #include "t_ctl_data_mhd_evo_scheme_c.h"
@@ -25,13 +26,9 @@
 #include "t_ctl_data_mhd_evolution_c.h"
 #include "t_ctl_data_4_fields_c.h"
 
+#include "t_ctl_data_4_sphere_model_c.h"
+#include "t_ctl_data_4_FEM_mesh_c.h"
 
-struct sphere_data_control_c{
-	int iflag;
-};
-struct sphere_domain_control_c{
-	int iflag;
-};
 
 struct section_controls_c{
 	char *ctl_file_name;
@@ -50,11 +47,14 @@ struct fieldline_controls_c{
 };
 
 struct parallel_sph_shell_control_c{
-	int *iflag_sph_shell;
-	struct sphere_data_control_c *sp_ctl;
+	int *iflag_FEM_mesh_ctl;
+	struct FEM_mesh_control_c *Fmesh_ctl;
 	int *iflag_sph_domain;
-	struct sphere_domain_control_c *sd_ctl;
+	struct sphere_domain_ctl_c *sdctl_c;
+	int *iflag_sph_shell;
+	struct sphere_data_ctl_c *spctl_c;
 };
+
 struct mhd_model_control_c{
 	int *iflag_field_control;
 	struct field_ctl_c *fld_ctl;

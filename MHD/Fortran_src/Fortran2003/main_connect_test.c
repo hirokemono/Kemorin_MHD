@@ -107,29 +107,22 @@ int read_fieldline_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
 }
 
 
-
-int read_sphere_domain_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "num_domain_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_sphere_domain_control_c %s\n", buf);
-	};
-	return 1;
-}
-int read_sphere_data_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "num_grid_sph") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_sphere_data_control_c %s\n", buf);
-	};
-	return 1;
-}
-
-
 int read_spherical_shell_ctl_c(FILE *fp, char buf[LENGTHBUF], struct parallel_sph_shell_control_c *shell_ctl){
 	while(find_control_end_flag_c(buf, "spherical_shell_ctl") == 0){
 		fgets(buf, LENGTHBUF, fp);
 		
-		if(right_begin_flag_c(buf, "num_domain_ctl") > 0) *shell_ctl->iflag_sph_domain = read_sphere_domain_control_c(fp, buf);
-		if(right_begin_flag_c(buf, "num_grid_sph") > 0) *shell_ctl->iflag_sph_shell = read_sphere_data_control_c(fp, buf);
+		if(right_begin_flag_c(buf, "FEM_mesh_ctl") > 0){
+			*shell_ctl->iflag_FEM_mesh_ctl = read_FEM_mesh_control_c(fp, buf,
+						"FEM_mesh_ctl", shell_ctl->Fmesh_ctl);
+		};
+		if(right_begin_flag_c(buf, "num_domain_ctl") > 0){
+			*shell_ctl->iflag_sph_domain = read_sphere_domain_ctl_c(fp, buf,
+						"num_domain_ctl", shell_ctl->sdctl_c);
+		};
+		if(right_begin_flag_c(buf, "num_grid_sph") > 0){
+			*shell_ctl->iflag_sph_shell = read_sphere_data_ctl_c(fp, buf,
+						"num_grid_sph", shell_ctl->spctl_c);
+		};
 	};
 	return 1;
 }
@@ -271,30 +264,23 @@ int read_visual_control_c(FILE *fp, char buf[LENGTHBUF], struct visualization_co
 	return 1;
 }
 
-int write_sphere_domain_control_c(FILE *fp, int level, int *iflag){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "num_domain_ctl");
-	level = write_end_flag_for_ctl_c(fp, level, "num_domain_ctl");
-	return level;
-}
-int write_sphere_data_control_c(FILE *fp, int level, int *iflag){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "num_grid_sph");
-	level = write_end_flag_for_ctl_c(fp, level, "num_grid_sph");
-	return level;
-}
-
 int write_spherical_shell_ctl_c(FILE *fp, int level, int *iflag, struct parallel_sph_shell_control_c *shell_ctl){
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "spherical_shell_ctl");
 	
-	level = write_sphere_domain_control_c(fp, level, shell_ctl->iflag_sph_shell);
+	level = write_FEM_mesh_control_c(fp, level, shell_ctl->iflag_FEM_mesh_ctl,
+				"FEM_mesh_ctl", shell_ctl->Fmesh_ctl);
 	if(*shell_ctl->iflag_sph_domain > 0) fprintf(fp, "!\n");
-	level = write_sphere_data_control_c(fp, level, shell_ctl->iflag_sph_domain);
+	level = write_sphere_domain_ctl_c(fp, level, shell_ctl->iflag_sph_domain,
+				"num_domain_ctl", shell_ctl->sdctl_c);
+	if(*shell_ctl->iflag_sph_shell > 0) fprintf(fp, "!\n");
+	level = write_sphere_data_ctl_c(fp, level, shell_ctl->iflag_sph_shell,
+				"num_grid_sph", shell_ctl->spctl_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, "spherical_shell_ctl");
 	return level;
 }
+
 int write_mhd_model_ctl_c(FILE *fp, int level, int *iflag, struct mhd_model_control_c *model_ctl){
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "model");
