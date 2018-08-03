@@ -159,9 +159,8 @@ int read_platform_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *labe
     return 1;
 }
 
-int write_platform_data_control_c(FILE *fp, int level, int *iflag, 
-			const char *label, struct platform_data_control_c *files){
-    if(*iflag == 0) return level;
+int write_platform_data_control_c(FILE *fp, int level, const char *label, 
+                                  struct platform_data_control_c *files){
     level = write_begin_flag_for_ctl_c(fp, level, label);
     
     write_character_ctl_item_c(fp, level, files->maxlen, label_platform_ctl[0], files->debug_flag_c);

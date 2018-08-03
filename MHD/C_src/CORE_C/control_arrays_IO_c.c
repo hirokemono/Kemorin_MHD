@@ -448,7 +448,8 @@ void read_chara3_ctl_array_c(FILE *fp, char *buf, const char *label,
 	fgets(buf, LENGTHBUF, fp);
 	while(find_control_end_array_flag_c(buf, label, c3_array->num, c3_array->icou) == 0){
 		if(c3_array->icou >= c3_array->num){
-			printf("Number of char3 item is larger than defined \n");
+			printf("Number of char3 item is larger than defined, %d %d \n",
+						c3_array->icou, c3_array->num);
 			return;
 		}
 		

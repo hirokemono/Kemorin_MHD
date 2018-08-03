@@ -252,8 +252,7 @@ int read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 }
 
 int write_time_data_control_c(FILE *fp, int level, const char *label, 
-			int *iflag, struct time_data_control_c *tctl){
-    if(*iflag == 0) return level;
+			struct time_data_control_c *tctl){
     level = write_begin_flag_for_ctl_c(fp, level, label);
     
     write_character_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[0], tctl->flexible_step_c);

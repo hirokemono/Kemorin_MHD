@@ -123,9 +123,8 @@ int read_pick_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 	};
 	return 1;
 }
-int write_pick_spectr_control_c(FILE *fp, int level, int iflag,
-			const char *label, struct pick_spectr_control_c *pspec_ctl_c){
-	if(iflag == 0) return level;
+int write_pick_spectr_control_c(FILE *fp, int level, const char *label, 
+                                struct pick_spectr_control_c *pspec_ctl_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, pspec_ctl_c->maxlen, 
@@ -197,10 +196,8 @@ int read_gauss_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 	};
 	return 1;
 }
-int write_gauss_spectr_control_c(FILE *fp, int level, int iflag,
-			const char *label, struct gauss_spectr_control_c *g_pwr){
-	
-	if(iflag == 0) return level;
+int write_gauss_spectr_control_c(FILE *fp, int level, const char *label, 
+                                 struct gauss_spectr_control_c *g_pwr){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, g_pwr->maxlen, 
@@ -283,10 +280,8 @@ int read_layerd_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 	};
 	return 1;
 }
-int write_layerd_spectr_control_c(FILE *fp, int level, int iflag,
-			const char *label, struct layerd_spectr_control_c *lp_ctl){
-	
-	if(iflag == 0) return level;
+int write_layerd_spectr_control_c(FILE *fp, int level, const char *label, 
+                                  struct layerd_spectr_control_c *lp_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, lp_ctl->maxlen, 
@@ -356,10 +351,8 @@ static int read_each_volume_spectr_ctl_c(FILE *fp, char buf[LENGTHBUF],
 	};
 	return 1;
 };
-static int write_each_volume_spectr_ctl_c(FILE *fp, int level, int iflag,
+static int write_each_volume_spectr_ctl_c(FILE *fp, int level,
 			const char *label, struct volume_spectr_control_c *v_pwr_c){
-	
-	if(iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, v_pwr_c->maxlen, 
@@ -420,9 +413,8 @@ int write_volume_spectr_control_c(FILE *fp, int level, const char *label,
 	fprintf(fp, "!\n");
 	level = write_array_flag_for_ctl_c(fp, level, label, monitor_ctl->num_vspec_c);
 	for(i=0;i<monitor_ctl->num_vspec_c;i++){
-		write_each_volume_spectr_ctl_c(fp, level, monitor_ctl->num_vspec_c, 
-					label, monitor_ctl->v_pwr_c[i]);
-		fprintf(fp, "!\n");
+        if(i>0){fprintf(fp, "!\n");};
+		write_each_volume_spectr_ctl_c(fp, level, label, monitor_ctl->v_pwr_c[i]);
 	};
 	level = write_end_array_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -474,11 +466,8 @@ int read_mid_equator_control_c(FILE *fp, char buf[LENGTHBUF],
 	};
 	return 1;
 }
-int write_mid_equator_control_c(FILE *fp, int level, int iflag,
-			const char *label, struct mid_equator_control_c *meq_ctl){
-	
-	if(iflag == 0) return level;
-	fprintf(fp, "!\n");
+int write_mid_equator_control_c(FILE *fp, int level, const char *label, 
+                                struct mid_equator_control_c *meq_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, meq_ctl->maxlen, 
@@ -574,30 +563,35 @@ int read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
 	return 1;
 }
 
-int write_sph_monitor_ctl_c(FILE *fp, int level, int *iflag,
+int write_sph_monitor_ctl_c(FILE *fp, int level, const char *label,
 			struct sph_monitor_control_c *monitor_ctl){
-	
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "sph_monitor_ctl");
+	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
     write_character_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[5], monitor_ctl->volume_average_prefix_c);
     write_character_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[6], monitor_ctl->volume_pwr_spectr_prefix_c);
 	write_character_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[7], monitor_ctl->Nusselt_file_prefix_c);
 	
-	if(monitor_ctl->iflag_pspec_ctl > 0) fprintf(fp, "!\n");
-	level = write_pick_spectr_control_c(fp, level, monitor_ctl->iflag_pspec_ctl,
-				label_sph_monitor_ctl[3], monitor_ctl->pspec_ctl_c);
-	if(monitor_ctl->iflag_g_pwr > 0) fprintf(fp, "!\n");
-	level = write_gauss_spectr_control_c(fp, level, monitor_ctl->iflag_g_pwr,
-				label_sph_monitor_ctl[2], monitor_ctl->g_pwr);
-	if(monitor_ctl->iflag_lp_ctl > 0) fprintf(fp, "!\n");
-	level = write_layerd_spectr_control_c(fp, level, monitor_ctl->iflag_lp_ctl,
-				label_sph_monitor_ctl[1], monitor_ctl->lp_ctl);
+    if(monitor_ctl->iflag_pspec_ctl > 0){ 
+        fprintf(fp, "!\n");
+        level = write_pick_spectr_control_c(fp, level, label_sph_monitor_ctl[3], monitor_ctl->pspec_ctl_c);
+    };
+    if(monitor_ctl->iflag_g_pwr > 0){
+        fprintf(fp, "!\n");
+        level = write_gauss_spectr_control_c(fp, level, label_sph_monitor_ctl[2], monitor_ctl->g_pwr);
+    };
+    if(monitor_ctl->iflag_lp_ctl > 0){
+        fprintf(fp, "!\n");
+        level = write_layerd_spectr_control_c(fp, level, label_sph_monitor_ctl[1], monitor_ctl->lp_ctl);
+    };
+    
 	level = write_volume_spectr_control_c(fp, level, 
 				label_sph_monitor_ctl[0], monitor_ctl);
-	level = write_mid_equator_control_c(fp, level, monitor_ctl->iflag_meq_ctl,
-				label_sph_monitor_ctl[4], monitor_ctl->meq_ctl);
+    
+    if(monitor_ctl->iflag_meq_ctl > 0){
+        fprintf(fp, "!\n");
+        level = write_mid_equator_control_c(fp, level, label_sph_monitor_ctl[4], monitor_ctl->meq_ctl);
+    };
 	
-	level = write_end_flag_for_ctl_c(fp, level, "sph_monitor_ctl");
+	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };

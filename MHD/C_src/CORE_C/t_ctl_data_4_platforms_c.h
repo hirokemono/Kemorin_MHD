@@ -52,8 +52,8 @@ void dealloc_platform_data_control_c(struct platform_data_control_c *files);
 
 int read_platform_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
 			struct platform_data_control_c *files);
-int write_platform_data_control_c(FILE *fp, int level, int *iflag, 
-			const char *label, struct platform_data_control_c *files);
+int write_platform_data_control_c(FILE *fp, int level, const char *label, 
+                                  struct platform_data_control_c *files);
 
 
 #endif /* t_ctl_data_4_platforms_c_h */

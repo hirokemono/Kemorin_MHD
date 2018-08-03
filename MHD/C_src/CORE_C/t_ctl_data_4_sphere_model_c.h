@@ -66,14 +66,14 @@ void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c);
 void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c);
 int read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sphere_domain_ctl_c *sdctl_c);
-int write_sphere_domain_ctl_c(FILE *fp, int level, int *iflag,
+int write_sphere_domain_ctl_c(FILE *fp, int level,
 			const char *label, struct sphere_domain_ctl_c *sdctl_c);
 
 void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c);
 void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c);
 int read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sphere_data_ctl_c *spctl_c);
-int write_sphere_data_ctl_c(FILE *fp, int level, int *iflag,
+int write_sphere_data_ctl_c(FILE *fp, int level,
 			const char *label, struct sphere_data_ctl_c *spctl_c);
 
 

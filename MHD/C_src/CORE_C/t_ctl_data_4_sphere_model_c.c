@@ -110,11 +110,9 @@ int read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_sphere_domain_ctl_c(FILE *fp, int level, int *iflag,
+int write_sphere_domain_ctl_c(FILE *fp, int level,
 			const char *label, struct sphere_domain_ctl_c *sdctl_c){
-	
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, label);
+    level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, sdctl_c->maxlen, label_sphere_domain_ctl[ 0], sdctl_c->inner_decomp_c);
 	
@@ -268,10 +266,8 @@ int read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_sphere_data_ctl_c(FILE *fp, int level, int *iflag,
+int write_sphere_data_ctl_c(FILE *fp, int level,
 			const char *label, struct sphere_data_ctl_c *spctl_c){
-	
-	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 3], spctl_c->ltr_c);

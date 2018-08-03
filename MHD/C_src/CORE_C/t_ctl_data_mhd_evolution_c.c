@@ -52,11 +52,10 @@ int read_mhd_evolution_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_mhd_evolution_ctl_c(FILE *fp, int level, int *iflag,
+int write_mhd_evolution_ctl_c(FILE *fp, int level,
 			const char *label, struct mhd_evolution_ctl_c *evo_ctl){
-	
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, label);
+
+    level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_array_c(fp, level, strlen(label_mhd_evolution_ctl[0]),
 				label_mhd_evolution_ctl[0], evo_ctl->t_evo_field_c);
@@ -103,10 +102,9 @@ int read_mhd_evo_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_mhd_evo_area_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct mhd_evo_area_ctl_c *earea_ctl){
+int write_mhd_evo_area_ctl_c(FILE *fp, int level, const char *label, 
+                             struct mhd_evo_area_ctl_c *earea_ctl){
 	
-	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_array_c(fp, level, strlen(label_mhd_evo_area_ctl[0]),

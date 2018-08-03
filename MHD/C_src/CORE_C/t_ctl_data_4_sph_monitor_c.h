@@ -101,21 +101,21 @@ void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c);
 void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c);
 int read_pick_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct pick_spectr_control_c *pspec_ctl_c);
-int write_pick_spectr_control_c(FILE *fp, int level, int iflag,
-			const char *label, struct pick_spectr_control_c *pspec_ctl_c);
+int write_pick_spectr_control_c(FILE *fp, int level, const char *label, 
+                                struct pick_spectr_control_c *pspec_ctl_c);
 
 void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr);
 void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr);
 int read_gauss_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct gauss_spectr_control_c *g_pwr);
-int write_gauss_spectr_control_c(FILE *fp, int level, int iflag,
+int write_gauss_spectr_control_c(FILE *fp, int level,
 			const char *label, struct gauss_spectr_control_c *g_pwr);
 
 void alloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl);
 void dealloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl);
 int read_layerd_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct layerd_spectr_control_c *lp_ctl);
-int write_layerd_spectr_control_c(FILE *fp, int level, int iflag,
+int write_layerd_spectr_control_c(FILE *fp, int level,
 			const char *label, struct layerd_spectr_control_c *lp_ctl);
 
 void alloc_volume_spectr_control_c(struct sph_monitor_control_c *monitor_ctl);
@@ -129,7 +129,7 @@ void alloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl);
 void dealloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl);
 int read_mid_equator_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mid_equator_control_c *meq_ctl);
-int write_mid_equator_control_c(FILE *fp, int level, int iflag,
+int write_mid_equator_control_c(FILE *fp, int level,
 			const char *label, struct mid_equator_control_c *meq_ctl);
 
 
@@ -137,7 +137,7 @@ void alloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl);
 void dealloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl);
 int read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
 			struct sph_monitor_control_c *monitor_ctl);
-int write_sph_monitor_ctl_c(FILE *fp, int level, int *iflag,
+int write_sph_monitor_ctl_c(FILE *fp, int level, const char *label,
 			struct sph_monitor_control_c *monitor_ctl);
 
 

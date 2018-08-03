@@ -75,9 +75,7 @@ int read_FEM_mesh_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
     return 1;
 }
 
-int write_FEM_mesh_control_c(FILE *fp, int level, int *iflag, 
-                                  const char *label, struct FEM_mesh_control_c *Fmesh){
-    if(*iflag == 0) return level;
+int write_FEM_mesh_control_c(FILE *fp, int level, const char *label, struct FEM_mesh_control_c *Fmesh){
     level = write_begin_flag_for_ctl_c(fp, level, label);
     
     write_character_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[0], Fmesh->memory_conservation_c);

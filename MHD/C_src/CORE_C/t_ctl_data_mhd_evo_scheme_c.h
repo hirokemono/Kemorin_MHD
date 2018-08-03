@@ -63,15 +63,15 @@ void alloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl);
 void dealloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl);
 int read_mhd_restart_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mhd_restart_control_c *mrst_ctl);
-int write_mhd_restart_control_c(FILE *fp, int level, int iflag,
-			const char *label, struct mhd_restart_control_c *mrst_ctl);
+int write_mhd_restart_control_c(FILE *fp, int level, const char *label, 
+                                struct mhd_restart_control_c *mrst_ctl);
 
 void alloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl);
 void dealloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl);
 int read_mhd_evo_scheme_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mhd_evo_scheme_control_c *mevo_ctl);
-int write_mhd_evo_scheme_control_c(FILE *fp, int level, int iflag,
-			const char *label, struct mhd_evo_scheme_control_c *mevo_ctl);
+int write_mhd_evo_scheme_control_c(FILE *fp, int level, const char *label, 
+                                   struct mhd_evo_scheme_control_c *mevo_ctl);
 
 
 #endif /* t_ctl_data_mhd_evo_scheme_c_h__ */

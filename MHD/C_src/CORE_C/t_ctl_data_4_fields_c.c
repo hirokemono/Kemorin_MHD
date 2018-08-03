@@ -61,10 +61,7 @@ int read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_field_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct field_ctl_c *fld_ctl){
-	
-	if(*iflag == 0) return level;
+int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c *fld_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_chara3_ctl_array_c(fp, level, strlen(label_field_ctl[0]),

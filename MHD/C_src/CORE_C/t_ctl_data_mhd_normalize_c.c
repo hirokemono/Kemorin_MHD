@@ -120,10 +120,8 @@ int read_momentum_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *labe
 	return 1;
 };
 
-int write_momentum_equation_ctl_c(FILE *fp, int level, int *iflag,
+int write_momentum_equation_ctl_c(FILE *fp, int level,
 			const char *label, struct momentum_equation_ctl_c *mom_ctl_c){
-	
-	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 /*	if(mom_ctl_c->coef_4_intertia_c->num > 0) fprintf(fp, "!\n"); */
@@ -206,10 +204,8 @@ int read_induction_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *lab
 	return 1;
 };
 
-int write_induction_equation_ctl_c(FILE *fp, int level, int *iflag,
+int write_induction_equation_ctl_c(FILE *fp, int level,
 			const char *label, struct induction_equation_ctl_c *induct_ctl_c){
-	
-	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 /*	if(induct_ctl_c->coef_4_magne_evo_c->num > 0) fprintf(fp, "!\n"); */
@@ -275,11 +271,9 @@ int read_heat_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_heat_equation_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct heat_equation_ctl_c *heat_ctl_c){
-	
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, label);
+int write_heat_equation_ctl_c(FILE *fp, int level, const char *label,
+                              struct heat_equation_ctl_c *heat_ctl_c){
+    level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 /*	if(heat_ctl_c->coef_4_adv_flux_c->num > 0) fprintf(fp, "!\n"); */
 	write_cr_ctl_array_c(fp, level, strlen(label_heat_equation_ctl[0]),
@@ -327,10 +321,8 @@ int read_comp_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_comp_equation_ctl_c(FILE *fp, int level, int *iflag,
+int write_comp_equation_ctl_c(FILE *fp, int level,
 			const char *label, struct heat_equation_ctl_c *comp_ctl_c){
-	
-	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 /*	if(comp_ctl_c->coef_4_adv_flux_c->num > 0) fprintf(fp, "!\n"); */
@@ -383,10 +375,9 @@ int read_dimless_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_dimless_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct dimless_ctl_c *dless_ctl_c){
+int write_dimless_ctl_c(FILE *fp, int level, const char *label,
+                        struct dimless_ctl_c *dless_ctl_c){
 	
-	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_cr_ctl_array_c(fp, level, strlen(label_comp_equation_ctl[0]),
@@ -458,28 +449,25 @@ int read_equations_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_equations_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct equations_ctl_c *eqs_ctl_c){
-	
-	if(*iflag == 0) return level;
+int write_equations_ctl_c(FILE *fp, int level, const char *label, struct equations_ctl_c *eqs_ctl_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-/*	if(eqs_ctl_c->iflag_heat_ctl > 0) fprintf(fp, "!\n"); */
-	level = write_heat_equation_ctl_c(fp, level, &eqs_ctl_c->iflag_heat_ctl,
-				label_equations_ctl[ 1], eqs_ctl_c->heat_ctl_c);
-	
-	if(eqs_ctl_c->iflag_comp_ctl > 0) fprintf(fp, "!\n");
-	level = write_comp_equation_ctl_c(fp, level, &eqs_ctl_c->iflag_comp_ctl,
-				label_equations_ctl[ 2], eqs_ctl_c->comp_ctl_c);
-	
-	if(eqs_ctl_c->iflag_mom_ctl > 0) fprintf(fp, "!\n");
-	level = write_momentum_equation_ctl_c(fp, level, &eqs_ctl_c->iflag_mom_ctl,
-				label_equations_ctl[ 0], eqs_ctl_c->mom_ctl_c);
-	
-	if(eqs_ctl_c->iflag_induct_ctl > 0) fprintf(fp, "!\n");
-	level = write_induction_equation_ctl_c(fp, level, &eqs_ctl_c->iflag_induct_ctl,
-				label_equations_ctl[ 3], eqs_ctl_c->induct_ctl_c);
-	
+    if(eqs_ctl_c->iflag_heat_ctl > 0){
+/*        fprintf(fp, "!\n");*/
+        level = write_heat_equation_ctl_c(fp, level, label_equations_ctl[ 1], eqs_ctl_c->heat_ctl_c);
+    };
+    if(eqs_ctl_c->iflag_comp_ctl > 0){
+        fprintf(fp, "!\n");
+        level = write_comp_equation_ctl_c(fp, level, label_equations_ctl[ 2], eqs_ctl_c->comp_ctl_c);
+    };
+    if(eqs_ctl_c->iflag_mom_ctl > 0){
+        fprintf(fp, "!\n");
+        level = write_momentum_equation_ctl_c(fp, level, label_equations_ctl[ 0], eqs_ctl_c->mom_ctl_c);
+    };
+    if(eqs_ctl_c->iflag_induct_ctl > 0){
+        fprintf(fp, "!\n");
+        level = write_induction_equation_ctl_c(fp, level, label_equations_ctl[ 3], eqs_ctl_c->induct_ctl_c);
+    };
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };

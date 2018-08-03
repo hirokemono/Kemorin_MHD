@@ -34,8 +34,7 @@ void dealloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh);
 
 int read_FEM_mesh_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
                                  struct FEM_mesh_control_c *Fmesh);
-int write_FEM_mesh_control_c(FILE *fp, int level, int *iflag, 
-                                  const char *label, struct FEM_mesh_control_c *Fmesh);
+int write_FEM_mesh_control_c(FILE *fp, int level, const char *label, struct FEM_mesh_control_c *Fmesh);
 
 
 #endif /* t_ctl_data_4_FEM_mesh_c_h */

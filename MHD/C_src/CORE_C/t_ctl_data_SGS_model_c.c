@@ -213,10 +213,9 @@ int read_filter_file_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_filter_file_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct filter_file_ctl_c *ffile_c){
+int write_filter_file_ctl_c(FILE *fp, int level, const char *label, 
+                            struct filter_file_ctl_c *ffile_c){
 	
-	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, ffile_c->maxlen, label_filter_file_ctl[ 0], ffile_c->filter_head_c);
@@ -316,11 +315,8 @@ int read_layering_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_layering_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct layering_ctl_c *elayer_c){
-	
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, label);
+int write_layering_ctl_c(FILE *fp, int level, const char *label, struct layering_ctl_c *elayer_c){
+		level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 0], elayer_c->layering_grp_type_c);
 	
@@ -414,11 +410,9 @@ int read_each_sph_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_each_sph_filter_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct sph_filter_ctl_c *sph_filter_c){
-	
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, label);
+int write_each_sph_filter_ctl_c(FILE *fp, int level, const char *label, 
+                                struct sph_filter_ctl_c *sph_filter_c){
+    level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 0], sph_filter_c->sph_filter_type_c);
 	write_character_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 1], sph_filter_c->radial_filter_type_c);
@@ -498,11 +492,9 @@ int read_SGS_3d_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_SGS_3d_filter_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct SGS_3d_filter_ctl_c *s3df_c){
-	
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, label);
+int write_SGS_3d_filter_ctl_c(FILE *fp, int level, const char *label,
+                              struct SGS_3d_filter_ctl_c *s3df_c){
+    level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	if(s3df_c->whole_filter_grp_ctl->num > 0) fprintf(fp, "!\n");
 	write_character_ctl_array_c(fp, level, strlen(label_SGS_3d_filter_ctl[0]),
@@ -566,8 +558,7 @@ int write_sph_filter_ctl_c(FILE *fp, int level, const char *label,
 	fprintf(fp, "!\n");
 	level = write_array_flag_for_ctl_c(fp, level, label, SGS_ctl_c->num_sph_filter_c);
 	for(i=0;i<SGS_ctl_c->num_sph_filter_c;i++){
-		write_each_sph_filter_ctl_c(fp, level, &SGS_ctl_c->num_sph_filter_c, 
-					label, SGS_ctl_c->sph_filter_c[i]);
+		write_each_sph_filter_ctl_c(fp, level, label, SGS_ctl_c->sph_filter_c[i]);
 		fprintf(fp, "!\n");
 	};
 	level = write_end_array_flag_for_ctl_c(fp, level, label);
@@ -789,11 +780,9 @@ int read_SGS_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
  
-int write_SGS_model_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct SGS_model_control_c *SGS_ctl_c){
-	
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, label);
+int write_SGS_model_ctl_c(FILE *fp, int level, const char *label, 
+                          struct SGS_model_control_c *SGS_ctl_c){
+    level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 0], SGS_ctl_c->SGS_model_name_c);
 	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 1], SGS_ctl_c->SGS_filter_name_c);
@@ -803,10 +792,10 @@ int write_SGS_model_ctl_c(FILE *fp, int level, int *iflag,
 	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 9], SGS_ctl_c->SGS_marging_c);
 	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[10], SGS_ctl_c->DIFF_model_coef_c);
 	
-	if(SGS_ctl_c->iflag_3dfilter_ctl > 0) fprintf(fp, "!\n");
-	level = write_SGS_3d_filter_ctl_c(fp, level, &SGS_ctl_c->iflag_3dfilter_ctl,
-				label_SGS_model_ctl[11], SGS_ctl_c->s3df_c);
-	
+    if(SGS_ctl_c->iflag_3dfilter_ctl > 0){
+        fprintf(fp, "!\n");
+        level = write_SGS_3d_filter_ctl_c(fp, level, label_SGS_model_ctl[11], SGS_ctl_c->s3df_c);
+    };
 	
 	write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[12], SGS_ctl_c->istep_dynamic_c);
 	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[13], SGS_ctl_c->stabilize_weight_c);
@@ -843,17 +832,18 @@ int write_SGS_model_ctl_c(FILE *fp, int level, int *iflag,
 	write_character_ctl_array_c(fp, level, strlen(label_SGS_model_ctl[30]),
 				label_SGS_model_ctl[30], SGS_ctl_c->commutate_fld_c);
 	
-	if(SGS_ctl_c->iflag_file_ctl > 0) fprintf(fp, "!\n");
-	level = write_filter_file_ctl_c(fp, level, &SGS_ctl_c->iflag_file_ctl,
-				label_SGS_model_ctl[31], SGS_ctl_c->ffile_c);
-	
-	if(SGS_ctl_c->iflag_layer_ctl > 0) fprintf(fp, "!\n");
-	level = write_layering_ctl_c(fp, level, &SGS_ctl_c->iflag_layer_ctl,
-				label_SGS_model_ctl[32], SGS_ctl_c->elayer_c);
-	
-	if(SGS_ctl_c->num_sph_filter_c > 0) fprintf(fp, "!\n");
-	level = write_sph_filter_ctl_c(fp, level, 
-				label_SGS_model_ctl[33], SGS_ctl_c);
+    if(SGS_ctl_c->iflag_file_ctl > 0){
+        fprintf(fp, "!\n");
+        level = write_filter_file_ctl_c(fp, level, label_SGS_model_ctl[31], SGS_ctl_c->ffile_c);
+    };
+	if(SGS_ctl_c->iflag_layer_ctl > 0){
+        fprintf(fp, "!\n");
+        level = write_layering_ctl_c(fp, level, label_SGS_model_ctl[32], SGS_ctl_c->elayer_c);
+    };
+    if(SGS_ctl_c->num_sph_filter_c > 0){
+        fprintf(fp, "!\n");
+        level = write_sph_filter_ctl_c(fp, level, label_SGS_model_ctl[33], SGS_ctl_c);
+    };
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };

@@ -36,14 +36,14 @@ void alloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl);
 void dealloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl);
 int read_mhd_evolution_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct mhd_evolution_ctl_c *evo_ctl);
-int write_mhd_evolution_ctl_c(FILE *fp, int level, int *iflag,
+int write_mhd_evolution_ctl_c(FILE *fp, int level,
 			const char *label, struct mhd_evolution_ctl_c *evo_ctl);
 
 void alloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl);
 void dealloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl);
 int read_mhd_evo_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct mhd_evo_area_ctl_c *earea_ctl);
-int write_mhd_evo_area_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct mhd_evo_area_ctl_c *earea_ctl);
+int write_mhd_evo_area_ctl_c(FILE *fp, int level, const char *label, 
+                             struct mhd_evo_area_ctl_c *earea_ctl);
 
 #endif /* t_ctl_data_mhd_evolution_c_h_ */

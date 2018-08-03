@@ -64,10 +64,8 @@ int read_forces_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_forces_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct forces_ctl_c *frc_ctl){
-	
-	if(*iflag == 0) return level;
+int write_forces_ctl_c(FILE *fp, int level,	const char *label, 
+                       struct forces_ctl_c *frc_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_array_c(fp, level, strlen(label_forces_ctl[0]),
@@ -118,10 +116,8 @@ int read_gravity_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_gravity_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct gravity_ctl_c *g_ctl){
-	
-	if(*iflag == 0) return level;
+int write_gravity_ctl_c(FILE *fp, int level, const char *label,
+                        struct gravity_ctl_c *g_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, g_ctl->maxlen, label_gravity_ctl[0], g_ctl->gravity_c);
@@ -168,10 +164,8 @@ int read_coriolis_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_coriolis_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct coriolis_ctl_c *cor_ctl){
-	
-	if(*iflag == 0) return level;
+int write_coriolis_ctl_c(FILE *fp, int level, const char *label, 
+                         struct coriolis_ctl_c *cor_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_cr_ctl_array_c(fp, level, strlen(label_coriolis_ctl[0]),
@@ -222,10 +216,8 @@ int read_magneto_cv_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	return 1;
 };
 
-int write_magneto_cv_ctl_c(FILE *fp, int level, int *iflag,
-			const char *label, struct magneto_cv_ctl_c *mcv_ctl){
-	
-	if(*iflag == 0) return level;
+int write_magneto_cv_ctl_c(FILE *fp, int level, const char *label, 
+                           struct magneto_cv_ctl_c *mcv_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, mcv_ctl->maxlen, label_magneto_cv_ctl[0], mcv_ctl->magneto_cv_c);

@@ -80,11 +80,8 @@ int read_mhd_restart_control_c(FILE *fp, char buf[LENGTHBUF],
 	};
 	return 1;
 }
-int write_mhd_restart_control_c(FILE *fp, int level, int iflag,
-			const char *label, struct mhd_restart_control_c *mrst_ctl){
-	
-	if(iflag == 0) return level;
-	fprintf(fp, "!\n");
+int write_mhd_restart_control_c(FILE *fp, int level, const char *label, 
+                                struct mhd_restart_control_c *mrst_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	write_character_ctl_item_c(fp, level, mrst_ctl->maxlen, 
 				label_mhd_restart_control[0], mrst_ctl->restart_flag_c);
@@ -254,11 +251,8 @@ int read_mhd_evo_scheme_control_c(FILE *fp, char buf[LENGTHBUF],
 	};
 	return 1;
 }
-int write_mhd_evo_scheme_control_c(FILE *fp, int level, int iflag,
-			const char *label, struct mhd_evo_scheme_control_c *mevo_ctl){
-	
-	if(iflag == 0) return level;
-	fprintf(fp, "!\n");
+int write_mhd_evo_scheme_control_c(FILE *fp, int level, const char *label, 
+                                   struct mhd_evo_scheme_control_c *mevo_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	write_character_ctl_item_c(fp, level, mevo_ctl->maxlen, 
 				label_mhd_evo_scheme_control[15], mevo_ctl->scheme_c);
