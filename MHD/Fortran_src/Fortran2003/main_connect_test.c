@@ -21,29 +21,6 @@ struct field_control{
 
 struct field_control *fld_ctl;
 
-
-int read_field_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "phys_values_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_field_control_c %s\n", buf);
-	};
-	return 1;
-}
-int read_mhd_evolution_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "time_evolution_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_mhd_evolution_control_c %s\n", buf);
-	};
-	return 1;
-}
-int read_mhd_evo_area_control_c(FILE *fp, char buf[LENGTHBUF]){
-	while(find_control_end_flag_c(buf, "layers_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_mhd_evo_area_control_c %s\n", buf);
-	};
-	return 1;
-}
-
 int read_section_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, struct visualization_controls_c *viz_ctls){
 	int icou = 0;
 	printf("alloc_section_controls_c %d\n", *viz_ctls->num_section_controls);
@@ -161,13 +138,16 @@ int read_mhd_model_ctl_c(FILE *fp, char buf[LENGTHBUF], struct mhd_model_control
 		fgets(buf, LENGTHBUF, fp);
 		
 		if(right_begin_flag_c(buf, "phys_values_ctl") > 0) {
-			*model_ctl->iflag_field_control = read_field_control_c(fp, buf);
+			*model_ctl->iflag_field_control = read_field_ctl_c(fp, buf, 
+						"phys_values_ctl", model_ctl->fld_ctl);
 		};
 		if(right_begin_flag_c(buf, "time_evolution_ctl") > 0) {
-			*model_ctl->iflag_mhd_evolution_control = read_mhd_evolution_control_c(fp, buf);
+			*model_ctl->iflag_mhd_evolution_control = read_mhd_evolution_ctl_c(fp, buf,
+						"time_evolution_ctl", model_ctl->evo_ctl);
 		};
 		if(right_begin_flag_c(buf, "layers_ctl") > 0) {
-			*model_ctl->iflag_mhd_evo_area_control = read_mhd_evo_area_control_c(fp, buf);
+			*model_ctl->iflag_mhd_evo_area_control = read_mhd_evo_area_ctl_c(fp, buf,
+						"layers_ctl", model_ctl->earea_ctl);
 		};
 		if(right_begin_flag_c(buf, "boundary_condition") > 0) {
 			*model_ctl->iflag_node_bc_control = read_MHD_node_bc_ctl_c(fp, buf, 
@@ -291,25 +271,6 @@ int read_visual_control_c(FILE *fp, char buf[LENGTHBUF], struct visualization_co
 	return 1;
 }
 
-int write_field_control_c(FILE *fp, int level, int *iflag, struct field_control_c *fld_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "phys_values_ctl");
-	level = write_end_flag_for_ctl_c(fp, level, "phys_values_ctl");
-	return level;
-}
-int write_mhd_evolution_control_c(FILE *fp, int level, int *iflag, struct mhd_evolution_control_c *evo_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "time_evolution_ctl");
-	level = write_end_flag_for_ctl_c(fp, level, "time_evolution_ctl");
-	return level;
-}
-int write_mhd_evo_area_control_c(FILE *fp, int level, int *iflag, struct mhd_evo_area_control_c *earea_ctl){
-	if(*iflag == 0) return level;
-	level = write_begin_flag_for_ctl_c(fp, level, "layers_ctl");
-	level = write_end_flag_for_ctl_c(fp, level, "layers_ctl");
-	return level;
-}
-
 int write_sphere_domain_control_c(FILE *fp, int level, int *iflag){
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "num_domain_ctl");
@@ -338,11 +299,14 @@ int write_mhd_model_ctl_c(FILE *fp, int level, int *iflag, struct mhd_model_cont
 	if(*iflag == 0) return level;
 	level = write_begin_flag_for_ctl_c(fp, level, "model");
 	
-	level = write_field_control_c(fp, level, model_ctl->iflag_field_control, model_ctl->fld_ctl);
+	level = write_field_ctl_c(fp, level, model_ctl->iflag_field_control,
+				"phys_values_ctl", model_ctl->fld_ctl);
 	if(*model_ctl->iflag_mhd_evolution_control > 0) fprintf(fp, "!\n");
-	level = write_mhd_evolution_control_c(fp, level, model_ctl->iflag_mhd_evolution_control, model_ctl->evo_ctl);
+	level = write_mhd_evolution_ctl_c(fp, level, model_ctl->iflag_mhd_evolution_control, 
+				"time_evolution_ctl", model_ctl->evo_ctl);
 	if(*model_ctl->iflag_mhd_evo_area_control > 0) fprintf(fp, "!\n");
-	level = write_mhd_evo_area_control_c(fp, level, model_ctl->iflag_mhd_evo_area_control, model_ctl->earea_ctl);
+	level = write_mhd_evo_area_ctl_c(fp, level, model_ctl->iflag_mhd_evo_area_control, 
+				"layers_ctl", model_ctl->earea_ctl);
 	if(*model_ctl->iflag_node_bc_control > 0) fprintf(fp, "!\n");
 	level = write_MHD_node_bc_ctl_c(fp, level, model_ctl->iflag_node_bc_control, 
 				"boundary_condition", model_ctl->nbc_ctl);

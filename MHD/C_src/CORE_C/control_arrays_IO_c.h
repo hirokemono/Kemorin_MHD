@@ -50,6 +50,16 @@ struct chara_real_ctl_array{
     struct real_ctl_item **r_array_item;
 };
 
+struct chara3_ctl_array{
+    int maxlen[3];
+    
+    int num;
+    int icou;
+    struct chara_ctl_item **c1_array_item;
+    struct chara_ctl_item **c2_array_item;
+    struct chara_ctl_item **c3_array_item;
+};
+
 struct chara2_real_ctl_array{
     int maxlen[3];
     
@@ -90,6 +100,13 @@ void read_cr_ctl_array_c(FILE *fp, char *buf, const char *label,
 			struct chara_real_ctl_array *cr_array);
 void write_cr_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct chara_real_ctl_array *cr_array);
+
+void alloc_ctl_chara3_array(struct chara3_ctl_array *c3_array);
+void dealloc_ctl_chara3_array(struct chara3_ctl_array *c3_array);
+void read_chara3_ctl_array_c(FILE *fp, char *buf, const char *label,
+			struct chara3_ctl_array *c3_array);
+void write_chara3_ctl_array_c(FILE *fp, int level, int maxlen,
+			const char *label, struct chara3_ctl_array *c3_array);
 
 void alloc_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array);
 void dealloc_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array);

@@ -22,22 +22,14 @@
 #include "t_ctl_data_mhd_forces_c.h"
 #include "t_ctl_data_mhd_normalize_c.h"
 #include "t_ctl_data_MHD_boundary_c.h"
+#include "t_ctl_data_mhd_evolution_c.h"
+#include "t_ctl_data_4_fields_c.h"
 
 
 struct sphere_data_control_c{
 	int iflag;
 };
 struct sphere_domain_control_c{
-	int iflag;
-};
-
-struct field_control_c{
-	int iflag;
-};
-struct mhd_evolution_control_c{
-	int iflag;
-};
-struct mhd_evo_area_control_c{
 	int iflag;
 };
 
@@ -65,11 +57,11 @@ struct parallel_sph_shell_control_c{
 };
 struct mhd_model_control_c{
 	int *iflag_field_control;
-	struct field_control_c *fld_ctl;
+	struct field_ctl_c *fld_ctl;
 	int *iflag_mhd_evolution_control;
-	struct mhd_evolution_control_c *evo_ctl;
+	struct mhd_evolution_ctl_c *evo_ctl;
 	int *iflag_mhd_evo_area_control;
-	struct mhd_evo_area_control_c *earea_ctl;
+	struct mhd_evo_area_ctl_c *earea_ctl;
 	int *iflag_node_bc_control;
 	struct MHD_boundary_ctl_c *nbc_ctl;
 	int *iflag_surf_bc_control;
