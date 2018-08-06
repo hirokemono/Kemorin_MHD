@@ -328,7 +328,6 @@ int read_modeview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 						label_modeview_ctl[11], mat_c->streo_view_c);
 		};
 	};
-	printf("mat_c->viewpoint_ctl->num read %d\n", mat_c->viewpoint_ctl->num);
 	return 1;
 };
 
@@ -389,11 +388,9 @@ int read_modeview_file_c(const char *file_name, char buf[LENGTHBUF],
 		fprintf(stderr, "Cannot open file!\n");
 		exit (2);                    /* terminate with error message */
 	};
-	printf("alloc_modeview_ctl_c \n");
 	
 	fgets(buf, LENGTHBUF, FP_View);
 	if(right_begin_flag_c(buf, label_modeview_head) > 0){
-		printf("read_modeview_ctl_c \n");
 		iflag = read_modeview_ctl_c(FP_View, buf, label_modeview_head, mat_c);
 	};
 	fclose(FP_View);
