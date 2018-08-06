@@ -30,6 +30,7 @@ void alloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl){
 	};
 	
 	evo_ctl->t_evo_field_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
+	init_ctl_chara_array(evo_ctl->t_evo_field_c);
 	
 	return;
 };
@@ -77,6 +78,8 @@ void alloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl){
 	
 	earea_ctl->evo_fluid_group_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
 	earea_ctl->evo_conduct_group_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
+	init_ctl_chara_array(earea_ctl->evo_fluid_group_c);
+	init_ctl_chara_array(earea_ctl->evo_conduct_group_c);
 	
 	return;
 };

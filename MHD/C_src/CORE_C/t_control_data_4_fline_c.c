@@ -53,6 +53,7 @@ void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	alloc_ctl_chara_item(fline_c->fline_color_comp_ctl);
 	
 	fline_c->fline_area_grp_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
+	init_ctl_chara_array(fline_c->fline_area_grp_ctl);
 	
 	fline_c->starting_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	fline_c->selection_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
@@ -69,7 +70,9 @@ void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	init_ctl_int_item(fline_c->max_line_stepping_ctl);
 	
 	fline_c->seed_point_ctl = (struct real3_ctl_array *) malloc(sizeof(struct real3_ctl_array));
+	init_ctl_real3_array(fline_c->seed_point_ctl);
 	fline_c->seed_surface_ctl = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
+	init_ctl_int2_array(fline_c->seed_surface_ctl);
 	
 	return;
 };

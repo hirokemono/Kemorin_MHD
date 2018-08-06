@@ -28,9 +28,12 @@ void alloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	};
 	
 	fld_ctl->field_c = (struct chara3_ctl_array *) malloc(sizeof(struct chara3_ctl_array));
+	init_ctl_chara3_array(fld_ctl->field_c);
 	
 	fld_ctl->quad_phys_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
 	fld_ctl->linear_phys_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
+	init_ctl_chara_array(fld_ctl->quad_phys_c);
+	init_ctl_chara_array(fld_ctl->linear_phys_c);
 	
 	return;
 };

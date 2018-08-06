@@ -42,6 +42,7 @@ void alloc_forces_ctl_c(struct forces_ctl_c *frc_ctl){
 	};
 	
 	frc_ctl->force_names_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
+	init_ctl_chara_array(frc_ctl->force_names_c);
 	
 	return;
 };
@@ -87,8 +88,8 @@ void alloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
 	};
 	
 	g_ctl->gravity_vec_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
+	init_ctl_cr_array(g_ctl->gravity_vec_c);
 	g_ctl->gravity_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	
 	alloc_ctl_chara_item(g_ctl->gravity_c);
 	
 	return;
@@ -142,6 +143,7 @@ void alloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){
 	};
 	
 	cor_ctl->system_rotation_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
+	init_ctl_cr_array(cor_ctl->system_rotation_c);
 	
 	return;
 };
@@ -187,8 +189,8 @@ void alloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
 	};
 	
 	mcv_ctl->ext_magne_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
+	init_ctl_cr_array(mcv_ctl->ext_magne_c);
 	mcv_ctl->magneto_cv_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	
 	alloc_ctl_chara_item(mcv_ctl->magneto_cv_c);
 	
 	return;

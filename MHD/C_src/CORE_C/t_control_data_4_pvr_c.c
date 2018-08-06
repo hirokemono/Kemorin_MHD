@@ -82,7 +82,9 @@ void alloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 	};
 	
 	area_c->pvr_area_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
+	init_ctl_chara_array(area_c->pvr_area_ctl);
 	area_c->surf_enhanse_ctl = (struct chara2_real_ctl_array *) malloc(sizeof(struct chara2_real_ctl_array));
+	init_ctl_c2r_array(area_c->surf_enhanse_ctl);
 	
 	return;
 };

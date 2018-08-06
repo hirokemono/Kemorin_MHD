@@ -52,6 +52,15 @@ void alloc_MHD_node_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl){
 	nod_bc_ctl->bc_A_ctl = (struct chara2_real_ctl_array *) malloc(sizeof(struct chara2_real_ctl_array));
 	nod_bc_ctl->bc_J_ctl = (struct chara2_real_ctl_array *) malloc(sizeof(struct chara2_real_ctl_array));
 	nod_bc_ctl->bc_infty_ctl = (struct chara2_real_ctl_array *) malloc(sizeof(struct chara2_real_ctl_array));
+    init_ctl_c2r_array(nod_bc_ctl->bc_T_ctl);
+    init_ctl_c2r_array(nod_bc_ctl->bc_U_ctl);
+    init_ctl_c2r_array(nod_bc_ctl->bc_P_ctl);
+    init_ctl_c2r_array(nod_bc_ctl->bc_C_ctl);
+    init_ctl_c2r_array(nod_bc_ctl->bc_B_ctl);
+    init_ctl_c2r_array(nod_bc_ctl->bc_MP_ctl);
+    init_ctl_c2r_array(nod_bc_ctl->bc_A_ctl);
+    init_ctl_c2r_array(nod_bc_ctl->bc_J_ctl);
+    init_ctl_c2r_array(nod_bc_ctl->bc_infty_ctl);
 	
 	return;
 };
@@ -75,6 +84,15 @@ void alloc_MHD_surf_bc_ctl_c(struct MHD_boundary_ctl_c *surf_bc_ctl){
 	surf_bc_ctl->bc_A_ctl = (struct chara2_real_ctl_array *) malloc(sizeof(struct chara2_real_ctl_array));
 	surf_bc_ctl->bc_J_ctl = (struct chara2_real_ctl_array *) malloc(sizeof(struct chara2_real_ctl_array));
 	surf_bc_ctl->bc_infty_ctl = (struct chara2_real_ctl_array *) malloc(sizeof(struct chara2_real_ctl_array));
+	init_ctl_c2r_array(surf_bc_ctl->bc_T_ctl);
+	init_ctl_c2r_array(surf_bc_ctl->bc_U_ctl);
+	init_ctl_c2r_array(surf_bc_ctl->bc_P_ctl);
+	init_ctl_c2r_array(surf_bc_ctl->bc_C_ctl);
+	init_ctl_c2r_array(surf_bc_ctl->bc_B_ctl);
+	init_ctl_c2r_array(surf_bc_ctl->bc_MP_ctl);
+	init_ctl_c2r_array(surf_bc_ctl->bc_A_ctl);
+	init_ctl_c2r_array(surf_bc_ctl->bc_J_ctl);
+	init_ctl_c2r_array(surf_bc_ctl->bc_infty_ctl);
 	
 	return;
 };

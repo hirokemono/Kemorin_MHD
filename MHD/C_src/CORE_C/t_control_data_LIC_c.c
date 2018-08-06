@@ -59,6 +59,7 @@ void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	alloc_ctl_chara_item(mask_ctl->component_ctl);
 	
 	mask_ctl->mask_range_ctl = (struct real2_ctl_array *) malloc(sizeof(struct real2_ctl_array));
+	init_ctl_real2_array(mask_ctl->mask_range_ctl);
 	
 	return;
 };

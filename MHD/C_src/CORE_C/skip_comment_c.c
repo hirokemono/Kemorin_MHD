@@ -81,7 +81,7 @@ int set_field_coordinate_flag(const char *data_name){
 	int iflag_coord;
 	int len;
 	
-    len = strlen(data_name);
+    len = (int) strlen(data_name);
 /*	printf("%d %s \n",len, data_name);*/
 	
 	if (data_name[len-4] == '_' && data_name[len-3] == 's'
@@ -231,9 +231,8 @@ int check_cautation_require(const char *string){
 }
 
 void strip_cautation_marks(char *string){
-	char *tmp;
 	int i, length;
-	length = strlen(string);
+	length = (int) strlen(string);
 	if (string[0] == '\x27' || *string == '\x22'){
 		for(i=0;i<length-2;i++){
 			string[i] = string[i+1];

@@ -70,6 +70,9 @@ void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	sdctl_c->ndomain_sph_grid_c = (struct chara_int_ctl_array *) malloc(sizeof(struct chara_int_ctl_array));
 	sdctl_c->ndomain_legendre_c = (struct chara_int_ctl_array *) malloc(sizeof(struct chara_int_ctl_array));
 	sdctl_c->ndomain_spectr_c = (struct chara_int_ctl_array *) malloc(sizeof(struct chara_int_ctl_array));
+	init_ctl_ci_array(sdctl_c->ndomain_sph_grid_c);
+	init_ctl_ci_array(sdctl_c->ndomain_legendre_c);
+	init_ctl_ci_array(sdctl_c->ndomain_spectr_c);
 	
 	return;
 };
@@ -157,7 +160,9 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	init_ctl_int_item(spctl_c->ngrid_azimuth_c);
 	
 	spctl_c->radius_c = (struct int_real_ctl_array *) malloc(sizeof(struct int_real_ctl_array));
+	init_ctl_ir_array(spctl_c->radius_c);
 	spctl_c->radial_grp_c = (struct chara_int_ctl_array *) malloc(sizeof(struct chara_int_ctl_array));
+	init_ctl_ci_array(spctl_c->radial_grp_c);
 	
 	spctl_c->radial_grid_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	spctl_c->num_fluid_grid_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
@@ -184,6 +189,8 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	
 	spctl_c->radial_layer_list_c = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
 	spctl_c->med_layer_list_c = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
+	init_ctl_int2_array(spctl_c->radial_layer_list_c);
+	init_ctl_int2_array(spctl_c->med_layer_list_c);
 	
 	return;
 };

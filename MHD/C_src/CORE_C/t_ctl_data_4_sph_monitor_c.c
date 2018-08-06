@@ -90,6 +90,10 @@ void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
 	pspec_ctl_c->idx_pick_sph_l_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	pspec_ctl_c->idx_pick_sph_m_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	
+    init_ctl_int_array(pspec_ctl_c->idx_pick_layer_c);
+    init_ctl_int2_array(pspec_ctl_c->idx_pick_sph_c);
+    init_ctl_int_array(pspec_ctl_c->idx_pick_sph_l_c);
+    init_ctl_int_array(pspec_ctl_c->idx_pick_sph_m_c);
 	
 	return;
 };
@@ -150,35 +154,38 @@ int write_pick_spectr_control_c(FILE *fp, int level, const char *label,
 }
 
 void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
-    int i;
-    g_pwr->maxlen = 0;
-    for (i=0;i<NLBL_GAUSS_SPECTR;i++){
-        if(strlen(label_gauss_spectr_ctl[i]) > g_pwr->maxlen){
-            g_pwr->maxlen = strlen(label_gauss_spectr_ctl[i]);
-        };
+	int i;
+	g_pwr->maxlen = 0;
+	for (i=0;i<NLBL_GAUSS_SPECTR;i++){
+		if(strlen(label_gauss_spectr_ctl[i]) > g_pwr->maxlen){
+			g_pwr->maxlen = strlen(label_gauss_spectr_ctl[i]);
+		};
 	};
 	
 	g_pwr->gauss_coefs_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(g_pwr->gauss_coefs_prefix_c);
+	alloc_ctl_chara_item(g_pwr->gauss_coefs_prefix_c);
 	g_pwr->gauss_coefs_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_ctl_real_item(g_pwr->gauss_coefs_radius_c);
 	
 	g_pwr->idx_gauss_c = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
 	g_pwr->idx_gauss_l_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	g_pwr->idx_gauss_m_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
+	init_ctl_int2_array(g_pwr->idx_gauss_c);
+	init_ctl_int_array(g_pwr->idx_gauss_l_c);
+	init_ctl_int_array(g_pwr->idx_gauss_l_c);
 	
 	return;
 };
 void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
-    dealloc_ctl_int2_array(g_pwr->idx_gauss_c);
+	dealloc_ctl_int2_array(g_pwr->idx_gauss_c);
 	free(g_pwr->idx_gauss_c);
-    dealloc_ctl_int_array(g_pwr->idx_gauss_l_c);
+	dealloc_ctl_int_array(g_pwr->idx_gauss_l_c);
 	free(g_pwr->idx_gauss_l_c);
-    dealloc_ctl_int_array(g_pwr->idx_gauss_m_c);
+	dealloc_ctl_int_array(g_pwr->idx_gauss_m_c);
 	free(g_pwr->idx_gauss_m_c);
 	
-    dealloc_ctl_chara_item(g_pwr->gauss_coefs_prefix_c);
-    free(g_pwr->gauss_coefs_prefix_c);
+	dealloc_ctl_chara_item(g_pwr->gauss_coefs_prefix_c);
+	free(g_pwr->gauss_coefs_prefix_c);
 	
 	return;
 };

@@ -71,11 +71,18 @@ void alloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
 	mom_ctl_c->coef_4_viscous_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	mom_ctl_c->coef_4_intertia_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	mom_ctl_c->coef_4_grad_p_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
+	init_ctl_cr_array(mom_ctl_c->coef_4_viscous_c);
+	init_ctl_cr_array(mom_ctl_c->coef_4_intertia_c);
+	init_ctl_cr_array(mom_ctl_c->coef_4_grad_p_c);
 	
 	mom_ctl_c->coef_4_termal_buo_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	mom_ctl_c->coef_4_comp_buo_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	mom_ctl_c->coef_4_Coriolis_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	mom_ctl_c->coef_4_Lorentz_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
+	init_ctl_cr_array(mom_ctl_c->coef_4_termal_buo_c);
+	init_ctl_cr_array(mom_ctl_c->coef_4_comp_buo_c);
+	init_ctl_cr_array(mom_ctl_c->coef_4_Coriolis_c);
+	init_ctl_cr_array(mom_ctl_c->coef_4_Lorentz_c);
 	
 	return;
 };
@@ -172,6 +179,10 @@ void alloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ctl_
 	induct_ctl_c->coef_4_mag_diffuse_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	induct_ctl_c->coef_4_mag_potential_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	induct_ctl_c->coef_4_induction_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
+	init_ctl_cr_array(induct_ctl_c->coef_4_magne_evo_c);
+	init_ctl_cr_array(induct_ctl_c->coef_4_mag_diffuse_c);
+	init_ctl_cr_array(induct_ctl_c->coef_4_mag_potential_c);
+	init_ctl_cr_array(induct_ctl_c->coef_4_induction_c);
 	
 	return;
 };
@@ -242,6 +253,9 @@ void alloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c){
 	heat_ctl_c->coef_4_adv_flux_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	heat_ctl_c->coef_4_diffuse_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	heat_ctl_c->coef_4_source_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
+	init_ctl_cr_array(heat_ctl_c->coef_4_adv_flux_c);
+	init_ctl_cr_array(heat_ctl_c->coef_4_diffuse_c);
+	init_ctl_cr_array(heat_ctl_c->coef_4_source_c);
 	
 	return;
 };
@@ -353,6 +367,7 @@ void alloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c){
 	};
 	
 	dless_ctl_c->dimless_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
+	init_ctl_cr_array(dless_ctl_c->dimless_c);
 	
 	return;
 };

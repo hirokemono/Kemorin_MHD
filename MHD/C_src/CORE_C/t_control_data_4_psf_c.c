@@ -51,6 +51,10 @@ void alloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	psf_def_c->psf_normal_ctl = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	psf_def_c->psf_center_ctl = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	psf_def_c->psf_axis_ctl = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
+	init_ctl_cr_array(psf_def_c->psf_coefs_ctl);
+	init_ctl_cr_array(psf_def_c->psf_normal_ctl);
+	init_ctl_cr_array(psf_def_c->psf_center_ctl);
+	init_ctl_cr_array(psf_def_c->psf_axis_ctl);
 	
 	psf_def_c->radius_psf_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	psf_def_c->psf_group_name_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
@@ -58,6 +62,7 @@ void alloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	alloc_ctl_chara_item(psf_def_c->psf_group_name_ctl);
 	
 	psf_def_c->psf_area_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
+	init_ctl_chara_array(psf_def_c->psf_area_ctl);
 	
 	return;
 };
@@ -148,6 +153,7 @@ void alloc_psf_field_ctl_c(struct psf_field_ctl_c *psf_fld_c){
 	};
 	
 	psf_fld_c->psf_out_field_ctl = (struct chara2_ctl_array *) malloc(sizeof(struct chara2_ctl_array));
+	init_ctl_chara2_array(psf_fld_c->psf_out_field_ctl);
 	
 	return;
 };

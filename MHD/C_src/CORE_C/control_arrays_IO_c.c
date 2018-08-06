@@ -8,6 +8,11 @@
 #include "control_arrays_IO_c.h"
 
 
+void init_ctl_chara_array(struct chara_ctl_array *c_array){
+	c_array->num = 0;
+	c_array->icou = 0;
+	return;
+};
 void alloc_ctl_chara_array(struct chara_ctl_array *c_array){
 	int i;
 	
@@ -16,7 +21,6 @@ void alloc_ctl_chara_array(struct chara_ctl_array *c_array){
 		c_array->c_array_item[i] = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 		alloc_ctl_chara_item(c_array->c_array_item[i]);
 	};
-	c_array->icou = 0;
 	return;
 }
 void dealloc_ctl_chara_array(struct chara_ctl_array *c_array){
@@ -28,6 +32,7 @@ void dealloc_ctl_chara_array(struct chara_ctl_array *c_array){
 		free(c_array->c_array_item[i]);
 	};
 	free(c_array->c_array_item);
+	init_ctl_chara_array(c_array);
 	return;
 }
 void read_character_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -53,7 +58,7 @@ void write_character_ctl_array_c(FILE *fp, int level, int maxlen,
 	if(c_array->icou == 0) return;
 	level = write_array_flag_for_ctl_c(fp, level, label, c_array->num);
 	for(i=0;i<c_array->num;i++){
-		write_character_ctl_item_c(fp, level, strlen(label),
+		write_character_ctl_item_c(fp, level, (int) strlen(label),
 					label, c_array->c_array_item[i]);
 	};
 	level = write_end_array_flag_for_ctl_c(fp, level, label);
@@ -61,6 +66,12 @@ void write_character_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
+void init_ctl_int_array(struct int_ctl_array *i_array){
+	i_array->num = 0;
+	i_array->icou = 0;
+	return;
+	return;
+}
 void alloc_ctl_int_array(struct int_ctl_array *i_array){
 	int i;
 	
@@ -69,7 +80,6 @@ void alloc_ctl_int_array(struct int_ctl_array *i_array){
 		i_array->i_array_item[i] = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 		init_ctl_int_item(i_array->i_array_item[i]);
 	};
-	i_array->icou = 0;
 	return;
 }
 void dealloc_ctl_int_array(struct int_ctl_array *i_array){
@@ -80,6 +90,7 @@ void dealloc_ctl_int_array(struct int_ctl_array *i_array){
 		free(i_array->i_array_item[i]);
 	};
 	free(i_array->i_array_item);
+	init_ctl_int_array(i_array);
 	return;
 }
 void read_integer_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -113,7 +124,7 @@ void write_integer_ctl_array_c(FILE *fp, int level, int maxlen,
 	
 	level = write_array_flag_for_ctl_c(fp, level, label, i_array->num);
 	for(i=0;i<i_array->num;i++){
-		write_integer_ctl_item_c(fp, level, strlen(label),
+		write_integer_ctl_item_c(fp, level, (int) strlen(label),
 					label, i_array->i_array_item[i]);
 	};
 	level = write_end_array_flag_for_ctl_c(fp, level, label);
@@ -121,6 +132,11 @@ void write_integer_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
+void init_ctl_chara2_array(struct chara2_ctl_array *c2_array){
+	c2_array->num = 0;
+	c2_array->icou = 0;
+	return;
+};
 void alloc_ctl_chara2_array(struct chara2_ctl_array *c2_array){
 	int i;
 	
@@ -147,6 +163,7 @@ void dealloc_ctl_chara2_array(struct chara2_ctl_array *c2_array){
 	};
 	free(c2_array->c1_array_item);
 	free(c2_array->c2_array_item);
+	init_ctl_chara2_array(c2_array);
 	return;
 }
 void read_chara2_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -180,11 +197,11 @@ void write_chara2_ctl_array_c(FILE *fp, int level, int maxlen,
 	
 	if(c2_array->icou == 0) return;
 	
-	c2_array->maxlen[0] = strlen(label);
-	c2_array->maxlen[1] = strlen(c2_array->c1_array_item[0]->c_tbl);
+	c2_array->maxlen[0] = (int) strlen(label);
+	c2_array->maxlen[1] = (int) strlen(c2_array->c1_array_item[0]->c_tbl);
 	for(i=0;i<c2_array->num;i++){
-		if(strlen(c2_array->c1_array_item[i]->c_tbl) > c2_array->maxlen[1]){
-			c2_array->maxlen[1] = strlen(c2_array->c1_array_item[i]->c_tbl);
+		if((int) strlen(c2_array->c1_array_item[i]->c_tbl) > c2_array->maxlen[1]){
+			c2_array->maxlen[1] = (int) strlen(c2_array->c1_array_item[i]->c_tbl);
 		};
 	};
 	
@@ -198,6 +215,11 @@ void write_chara2_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
+void init_ctl_int2_array(struct int2_ctl_array *i2_array){
+	i2_array->num = 0;
+	i2_array->icou = 0;
+	return;
+};
 void alloc_ctl_int2_array(struct int2_ctl_array *i2_array){
 	int i;
 	
@@ -222,6 +244,7 @@ void dealloc_ctl_int2_array(struct int2_ctl_array *i2_array){
 	};
 	free(i2_array->i1_array_item);
 	free(i2_array->i2_array_item);
+	init_ctl_int2_array(i2_array);
 	return;
 }
 void read_int2_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -256,7 +279,7 @@ void write_int2_ctl_array_c(FILE *fp, int level, int maxlen,
 	
 	level = write_array_flag_for_ctl_c(fp, level, label, i2_array->num);
 	for(i=0;i<i2_array->num;i++){
-		write_int2_ctl_item_c(fp, level, strlen(label),
+		write_int2_ctl_item_c(fp, level, (int) strlen(label),
 					label, i2_array->i1_array_item[i], i2_array->i2_array_item[i]);
 	};
 	level = write_end_array_flag_for_ctl_c(fp, level, label);
@@ -264,6 +287,11 @@ void write_int2_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
+void init_ctl_real2_array(struct real2_ctl_array *r2_array){
+	r2_array->num = 0;
+	r2_array->icou = 0;
+	return;
+};
 void alloc_ctl_real2_array(struct real2_ctl_array *r2_array){
 	int i;
 	
@@ -288,6 +316,7 @@ void dealloc_ctl_real2_array(struct real2_ctl_array *r2_array){
 	};
 	free(r2_array->r1_array_item);
 	free(r2_array->r2_array_item);
+	init_ctl_real2_array(r2_array);
 	return;
 }
 void read_real2_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -322,7 +351,7 @@ void write_real2_ctl_array_c(FILE *fp, int level, int maxlen,
 	
 	level = write_array_flag_for_ctl_c(fp, level, label, r2_array->num);
 	for(i=0;i<r2_array->num;i++){
-		write_real2_ctl_item_c(fp, level, strlen(label),
+		write_real2_ctl_item_c(fp, level, (int) strlen(label),
 					label, r2_array->r1_array_item[i], r2_array->r2_array_item[i]);
 	};
 	level = write_end_array_flag_for_ctl_c(fp, level, label);
@@ -330,6 +359,11 @@ void write_real2_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
+void init_ctl_ci_array(struct chara_int_ctl_array *ci_array){
+	ci_array->num = 0;
+	ci_array->icou = 0;
+	return;
+};
 void alloc_ctl_ci_array(struct chara_int_ctl_array *ci_array){
 	int i;
 	
@@ -355,6 +389,7 @@ void dealloc_ctl_ci_array(struct chara_int_ctl_array *ci_array){
 	};
 	free(ci_array->c_array_item);
 	free(ci_array->i_array_item);
+	init_ctl_ci_array(ci_array);
 	return;
 }
 void read_ci_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -387,11 +422,11 @@ void write_ci_ctl_array_c(FILE *fp, int level, int maxlen,
 	
 	if(ci_array->icou == 0) return;
 	
-	ci_array->maxlen[0] = strlen(label);
-	ci_array->maxlen[1] = strlen(ci_array->c_array_item[0]->c_tbl);
+	ci_array->maxlen[0] = (int) strlen(label);
+	ci_array->maxlen[1] = (int) strlen(ci_array->c_array_item[0]->c_tbl);
 	for(i=0;i<ci_array->num;i++){
 		if(strlen(ci_array->c_array_item[i]->c_tbl) > ci_array->maxlen[1]){
-			ci_array->maxlen[1] = strlen(ci_array->c_array_item[i]->c_tbl);
+			ci_array->maxlen[1] = (int) strlen(ci_array->c_array_item[i]->c_tbl);
 		};
 	};
 	
@@ -405,6 +440,11 @@ void write_ci_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
+void init_ctl_cr_array(struct chara_real_ctl_array *cr_array){
+	cr_array->num = 0;
+	cr_array->icou = 0;
+	return;
+};
 void alloc_ctl_cr_array(struct chara_real_ctl_array *cr_array){
 	int i;
 	
@@ -430,6 +470,7 @@ void dealloc_ctl_cr_array(struct chara_real_ctl_array *cr_array){
 	};
 	free(cr_array->c_array_item);
 	free(cr_array->r_array_item);
+	init_ctl_cr_array(cr_array);
 	return;
 }
 void read_cr_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -462,11 +503,11 @@ void write_cr_ctl_array_c(FILE *fp, int level, int maxlen,
 	
 	if(cr_array->icou == 0) return;
 	
-	cr_array->maxlen[0] = strlen(label);
-	cr_array->maxlen[1] = strlen(cr_array->c_array_item[0]->c_tbl);
+	cr_array->maxlen[0] = (int) strlen(label);
+	cr_array->maxlen[1] = (int) strlen(cr_array->c_array_item[0]->c_tbl);
 	for(i=0;i<cr_array->num;i++){
 		if(strlen(cr_array->c_array_item[i]->c_tbl) > cr_array->maxlen[1]){
-			cr_array->maxlen[1] = strlen(cr_array->c_array_item[i]->c_tbl);
+			cr_array->maxlen[1] = (int) strlen(cr_array->c_array_item[i]->c_tbl);
 		};
 	};
 	
@@ -480,6 +521,11 @@ void write_cr_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
+void init_ctl_ir_array(struct int_real_ctl_array *ir_array){
+	ir_array->num = 0;
+	ir_array->icou = 0;
+	return;
+};
 void alloc_ctl_ir_array(struct int_real_ctl_array *ir_array){
 	int i;
 	
@@ -504,6 +550,7 @@ void dealloc_ctl_ir_array(struct int_real_ctl_array *ir_array){
 	};
 	free(ir_array->i_array_item);
 	free(ir_array->r_array_item);
+	init_ctl_ir_array(ir_array);
 	return;
 }
 void read_ir_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -538,7 +585,7 @@ void write_ir_ctl_array_c(FILE *fp, int level, int maxlen,
 	
 	level = write_array_flag_for_ctl_c(fp, level, label, ir_array->num);
 	for(i=0;i<ir_array->num;i++){
-		write_ir_ctl_item_c(fp, level, strlen(label),
+		write_ir_ctl_item_c(fp, level, (int) strlen(label),
 					label, ir_array->i_array_item[i], ir_array->r_array_item[i]);
 	};
 	level = write_end_array_flag_for_ctl_c(fp, level, label);
@@ -546,6 +593,11 @@ void write_ir_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
+void init_ctl_chara3_array(struct chara3_ctl_array *c3_array){
+	c3_array->num = 0;
+	c3_array->icou = 0;
+	return;
+};
 void alloc_ctl_chara3_array(struct chara3_ctl_array *c3_array){
 	int i;
 	
@@ -578,6 +630,7 @@ void dealloc_ctl_chara3_array(struct chara3_ctl_array *c3_array){
 	free(c3_array->c1_array_item);
 	free(c3_array->c2_array_item);
 	free(c3_array->c3_array_item);
+	init_ctl_chara3_array(c3_array);
 	return;
 }
 void read_chara3_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -612,15 +665,15 @@ void write_chara3_ctl_array_c(FILE *fp, int level, int maxlen,
 	
 	if(c3_array->icou == 0) return;
 	
-	c3_array->maxlen[0] = strlen(label);
-	c3_array->maxlen[1] = strlen(c3_array->c1_array_item[0]->c_tbl);
-	c3_array->maxlen[2] = strlen(c3_array->c2_array_item[0]->c_tbl);
+	c3_array->maxlen[0] = (int) strlen(label);
+	c3_array->maxlen[1] = (int) strlen(c3_array->c1_array_item[0]->c_tbl);
+	c3_array->maxlen[2] = (int) strlen(c3_array->c2_array_item[0]->c_tbl);
 	for(i=0;i<c3_array->num;i++){
 		if(strlen(c3_array->c1_array_item[i]->c_tbl) > c3_array->maxlen[1]){
-			c3_array->maxlen[1] = strlen(c3_array->c1_array_item[i]->c_tbl);
+			c3_array->maxlen[1] = (int) strlen(c3_array->c1_array_item[i]->c_tbl);
 		};
 		if(strlen(c3_array->c2_array_item[i]->c_tbl) > c3_array->maxlen[2]){
-			c3_array->maxlen[2] = strlen(c3_array->c2_array_item[i]->c_tbl);
+			c3_array->maxlen[2] = (int) strlen(c3_array->c2_array_item[i]->c_tbl);
 		};
 	};
 	
@@ -635,6 +688,11 @@ void write_chara3_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
+void init_ctl_real3_array(struct real3_ctl_array *r3_array){
+	r3_array->num = 0;
+	r3_array->icou = 0;
+	return;
+};
 void alloc_ctl_real3_array(struct real3_ctl_array *r3_array){
 	int i;
 	
@@ -664,6 +722,7 @@ void dealloc_ctl_real3_array(struct real3_ctl_array *r3_array){
 	free(r3_array->r1_array_item);
 	free(r3_array->r2_array_item);
 	free(r3_array->r3_array_item);
+	init_ctl_real3_array(r3_array);
 	return;
 }
 void read_real3_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -700,7 +759,7 @@ void write_real3_ctl_array_c(FILE *fp, int level, int maxlen,
 	
 	level = write_array_flag_for_ctl_c(fp, level, label, r3_array->num);
 	for(i=0;i<r3_array->num;i++){
-		write_real3_ctl_item_c(fp, level, strlen(label),
+		write_real3_ctl_item_c(fp, level, (int) strlen(label),
 					label, r3_array->r1_array_item[i], r3_array->r2_array_item[i], 
 					r3_array->r3_array_item[i]);
 	};
@@ -709,6 +768,11 @@ void write_real3_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
+void init_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array){
+	c2r_array->num = 0;
+	c2r_array->icou = 0;
+	return;
+};
 void alloc_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array){
 	int i;
 	
@@ -740,6 +804,7 @@ void dealloc_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array){
 	free(c2r_array->c1_array_item);
 	free(c2r_array->c2_array_item);
 	free(c2r_array->r_array_item);
+	init_ctl_c2r_array(c2r_array);
 	return;
 }
 void read_c2r_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -773,15 +838,15 @@ void write_c2r_ctl_array_c(FILE *fp, int level, int maxlen,
 	
 	if(c2r_array->icou == 0) return;
 	
-	c2r_array->maxlen[0] = strlen(label);
-	c2r_array->maxlen[1] = strlen(c2r_array->c1_array_item[0]->c_tbl);
-	c2r_array->maxlen[2] = strlen(c2r_array->c2_array_item[0]->c_tbl);
+	c2r_array->maxlen[0] = (int) strlen(label);
+	c2r_array->maxlen[1] = (int) strlen(c2r_array->c1_array_item[0]->c_tbl);
+	c2r_array->maxlen[2] = (int) strlen(c2r_array->c2_array_item[0]->c_tbl);
 	for(i=0;i<c2r_array->num;i++){
 		if(strlen(c2r_array->c1_array_item[i]->c_tbl) > c2r_array->maxlen[1]){
-			c2r_array->maxlen[1] = strlen(c2r_array->c1_array_item[i]->c_tbl);
+			c2r_array->maxlen[1] = (int) strlen(c2r_array->c1_array_item[i]->c_tbl);
 		};
 		if(strlen(c2r_array->c2_array_item[i]->c_tbl) > c2r_array->maxlen[2]){
-			c2r_array->maxlen[2] = strlen(c2r_array->c2_array_item[i]->c_tbl);
+			c2r_array->maxlen[2] = (int) strlen(c2r_array->c2_array_item[i]->c_tbl);
 		};
 	};
 	

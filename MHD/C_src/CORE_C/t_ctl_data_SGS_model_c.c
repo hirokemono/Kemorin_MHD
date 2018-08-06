@@ -263,6 +263,8 @@ void alloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 	
 	elayer_c->layer_grp_name_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
 	elayer_c->igrp_stack_layer_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
+	init_ctl_chara_array(elayer_c->layer_grp_name_c);
+	init_ctl_int_array(elayer_c->igrp_stack_layer_c);
 	
 	init_ctl_int_item(elayer_c->num_layering_grp_c);
 	init_ctl_int_item(elayer_c->num_fl_layer_grp_c);
@@ -441,12 +443,13 @@ void alloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c){
 	
 	s3df_c->whole_filter_grp_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
 	s3df_c->fluid_filter_grp_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
+	init_ctl_chara_array(s3df_c->whole_filter_grp_ctl);
+	init_ctl_chara_array(s3df_c->fluid_filter_grp_ctl);
 	
 	s3df_c->momentum_filter_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	s3df_c->heat_filter_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	s3df_c->induction_filter_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	s3df_c->compostion_filter_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	
 	alloc_ctl_chara_item(s3df_c->momentum_filter_ctl);
 	alloc_ctl_chara_item(s3df_c->heat_filter_ctl);
 	alloc_ctl_chara_item(s3df_c->induction_filter_ctl);
@@ -587,6 +590,8 @@ void alloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 	
 	SGS_ctl_c->SGS_terms_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
 	SGS_ctl_c->commutate_fld_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
+	init_ctl_chara_array(SGS_ctl_c->SGS_terms_c);
+	init_ctl_chara_array(SGS_ctl_c->commutate_fld_c);
 	
 	SGS_ctl_c->SGS_model_name_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	SGS_ctl_c->SGS_filter_name_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));

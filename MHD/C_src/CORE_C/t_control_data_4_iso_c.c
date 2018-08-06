@@ -51,6 +51,7 @@ void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	init_ctl_real_item(iso_def_c->isosurf_value_ctl);
 	
 	iso_def_c->iso_area_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
+	init_ctl_chara_array(iso_def_c->iso_area_ctl);
 	
 	return;
 };
@@ -117,6 +118,7 @@ void alloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 	
 	iso_fld_c->result_value_iso_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	iso_fld_c->iso_out_field_ctl = (struct chara2_ctl_array *) malloc(sizeof(struct chara2_ctl_array));
+	init_ctl_chara2_array(iso_fld_c->iso_out_field_ctl);
 	
 	return;
 };

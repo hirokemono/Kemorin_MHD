@@ -119,6 +119,7 @@ struct chara2_real_ctl_array{
 /* prototype */
 
 
+void init_ctl_chara_array(struct chara_ctl_array *c_array);
 void alloc_ctl_chara_array(struct chara_ctl_array *c_array);
 void dealloc_ctl_chara_array(struct chara_ctl_array *c_array);
 void read_character_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -126,6 +127,7 @@ void read_character_ctl_array_c(FILE *fp, char *buf, const char *label,
 void write_character_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct chara_ctl_array *c_array);
 
+void init_ctl_int_array(struct int_ctl_array *i_array);
 void alloc_ctl_int_array(struct int_ctl_array *i_array);
 void dealloc_ctl_int_array(struct int_ctl_array *i_array);
 void read_integer_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -133,6 +135,7 @@ void read_integer_ctl_array_c(FILE *fp, char *buf, const char *label,
 void write_integer_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct int_ctl_array *i_array);
 
+void init_ctl_chara2_array(struct chara2_ctl_array *c2_array);
 void alloc_ctl_chara2_array(struct chara2_ctl_array *c2_array);
 void dealloc_ctl_chara2_array(struct chara2_ctl_array *c2_array);
 void read_chara2_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -140,6 +143,7 @@ void read_chara2_ctl_array_c(FILE *fp, char *buf, const char *label,
 void write_chara2_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct chara2_ctl_array *c2_array);
 
+void init_ctl_int2_array(struct int2_ctl_array *i2_array);
 void alloc_ctl_int2_array(struct int2_ctl_array *i2_array);
 void dealloc_ctl_int2_array(struct int2_ctl_array *i2_array);
 void read_int2_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -147,6 +151,7 @@ void read_int2_ctl_array_c(FILE *fp, char *buf, const char *label,
 void write_int2_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct int2_ctl_array *i2_array);
 
+void init_ctl_real2_array(struct real2_ctl_array *r2_array);
 void alloc_ctl_real2_array(struct real2_ctl_array *r2_array);
 void dealloc_ctl_real2_array(struct real2_ctl_array *r2_array);
 void read_real2_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -154,6 +159,7 @@ void read_real2_ctl_array_c(FILE *fp, char *buf, const char *label,
 void write_real2_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct real2_ctl_array *r2_array);
 
+void init_ctl_ci_array(struct chara_int_ctl_array *ci_array);
 void alloc_ctl_ci_array(struct chara_int_ctl_array *ci_array);
 void dealloc_ctl_ci_array(struct chara_int_ctl_array *ci_array);
 void read_ci_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -161,6 +167,7 @@ void read_ci_ctl_array_c(FILE *fp, char *buf, const char *label,
 void write_ci_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct chara_int_ctl_array *ci_array);
 
+void init_ctl_cr_array(struct chara_real_ctl_array *cr_array);
 void alloc_ctl_cr_array(struct chara_real_ctl_array *cr_array);
 void dealloc_ctl_cr_array(struct chara_real_ctl_array *cr_array);
 void read_cr_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -168,6 +175,7 @@ void read_cr_ctl_array_c(FILE *fp, char *buf, const char *label,
 void write_cr_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct chara_real_ctl_array *cr_array);
 
+void init_ctl_ir_array(struct int_real_ctl_array *ir_array);
 void alloc_ctl_ir_array(struct int_real_ctl_array *ir_array);
 void dealloc_ctl_ir_array(struct int_real_ctl_array *ir_array);
 void read_ir_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -175,6 +183,7 @@ void read_ir_ctl_array_c(FILE *fp, char *buf, const char *label,
 void write_ir_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct int_real_ctl_array *ir_array);
 
+void init_ctl_chara3_array(struct chara3_ctl_array *c3_array);
 void alloc_ctl_chara3_array(struct chara3_ctl_array *c3_array);
 void dealloc_ctl_chara3_array(struct chara3_ctl_array *c3_array);
 void read_chara3_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -182,6 +191,7 @@ void read_chara3_ctl_array_c(FILE *fp, char *buf, const char *label,
 void write_chara3_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct chara3_ctl_array *c3_array);
 
+void init_ctl_real3_array(struct real3_ctl_array *r3_array);
 void alloc_ctl_real3_array(struct real3_ctl_array *r3_array);
 void dealloc_ctl_real3_array(struct real3_ctl_array *r3_array);
 void read_real3_ctl_array_c(FILE *fp, char *buf, const char *label,
@@ -189,6 +199,7 @@ void read_real3_ctl_array_c(FILE *fp, char *buf, const char *label,
 void write_real3_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct real3_ctl_array *r3_array);
 
+void init_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array);
 void alloc_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array);
 void dealloc_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array);
 void read_c2r_ctl_array_c(FILE *fp, char *buf, const char *label,

@@ -22,7 +22,7 @@ void write_space_4_parse_c(FILE *fp, int level){
 
 void adjust_text_output(FILE *fp, int maxlen,  const char *label){
 	int len;
-	len = maxlen - strlen(label) - 2*check_cautation_require(label);
+	len = maxlen - (int) strlen(label) - 2*check_cautation_require(label);
 	write_spaces_c(fp, len);
 	return;
 }
@@ -165,7 +165,7 @@ int count_max_length_of_label(int num, const char *label[KCHARA_C]){
 	maxlen = 0;
 	for (i=0;i<num;i++){
 		if(strlen(label[i]) > maxlen){
-			maxlen = strlen(label[i]);
+			maxlen = (int) strlen(label[i]);
 		};
 	};
 	

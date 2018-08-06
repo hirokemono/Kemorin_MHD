@@ -92,4 +92,8 @@ int read_modeview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_modeview_ctl_c(FILE *fp, int level, const char *label, 
 			struct modeview_ctl_c *mat_c);
 
+int read_modeview_file_c(const char *file_name, char buf[LENGTHBUF],
+			struct modeview_ctl_c *mat_c);
+int write_modeview_file_c(const char *file_name, struct modeview_ctl_c *mat_c);
+
 #endif /* t_ctl_data_4_view_transfer_c_h_ */
