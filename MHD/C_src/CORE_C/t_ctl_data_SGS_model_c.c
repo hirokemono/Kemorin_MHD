@@ -316,7 +316,7 @@ int read_layering_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 };
 
 int write_layering_ctl_c(FILE *fp, int level, const char *label, struct layering_ctl_c *elayer_c){
-		level = write_begin_flag_for_ctl_c(fp, level, label);
+	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 0], elayer_c->layering_grp_type_c);
 	
@@ -727,15 +727,18 @@ int read_SGS_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		if(iflag > 0) iflag = read_sph_filter_ctl_c(fp, buf, label_SGS_model_ctl[33],
 					SGS_ctl_c);
 		
-		if(right_begin_flag_c(buf, label_SGS_model_ctl[31]) > 0) 
-		SGS_ctl_c->iflag_file_ctl = read_filter_file_ctl_c(fp, buf, 
-					label_SGS_model_ctl[31], SGS_ctl_c->ffile_c);
-		if(right_begin_flag_c(buf, label_SGS_model_ctl[32]) > 0) 
-		SGS_ctl_c->iflag_layer_ctl = read_layering_ctl_c(fp, buf, 
+		if(right_begin_flag_c(buf, label_SGS_model_ctl[31]) > 0){
+			SGS_ctl_c->iflag_file_ctl = read_filter_file_ctl_c(fp, buf, 
+						label_SGS_model_ctl[31], SGS_ctl_c->ffile_c);
+		};
+		if(right_begin_flag_c(buf, label_SGS_model_ctl[32]) > 0){
+			SGS_ctl_c->iflag_layer_ctl = read_layering_ctl_c(fp, buf, 
 					label_SGS_model_ctl[32], SGS_ctl_c->elayer_c);
-		if(right_begin_flag_c(buf, label_SGS_model_ctl[11]) > 0) 
-		SGS_ctl_c->iflag_3dfilter_ctl = read_SGS_3d_filter_ctl_c(fp, buf, 
+		};
+		if(right_begin_flag_c(buf, label_SGS_model_ctl[11]) > 0){
+			SGS_ctl_c->iflag_3dfilter_ctl = read_SGS_3d_filter_ctl_c(fp, buf, 
 					label_SGS_model_ctl[11], SGS_ctl_c->s3df_c);
+		};
 		
 		read_character_ctl_array_c(fp, buf, label_SGS_model_ctl[29], SGS_ctl_c->SGS_terms_c);
 		read_character_ctl_array_c(fp, buf, label_SGS_model_ctl[30], SGS_ctl_c->commutate_fld_c);
@@ -792,10 +795,10 @@ int write_SGS_model_ctl_c(FILE *fp, int level, const char *label,
 	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[ 9], SGS_ctl_c->SGS_marging_c);
 	write_character_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[10], SGS_ctl_c->DIFF_model_coef_c);
 	
-    if(SGS_ctl_c->iflag_3dfilter_ctl > 0){
-        fprintf(fp, "!\n");
-        level = write_SGS_3d_filter_ctl_c(fp, level, label_SGS_model_ctl[11], SGS_ctl_c->s3df_c);
-    };
+	if(SGS_ctl_c->iflag_3dfilter_ctl > 0){
+		fprintf(fp, "!\n");
+		level = write_SGS_3d_filter_ctl_c(fp, level, label_SGS_model_ctl[11], SGS_ctl_c->s3df_c);
+	};
 	
 	write_integer_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[12], SGS_ctl_c->istep_dynamic_c);
 	write_real_ctl_item_c(fp, level, SGS_ctl_c->maxlen, label_SGS_model_ctl[13], SGS_ctl_c->stabilize_weight_c);
@@ -832,18 +835,18 @@ int write_SGS_model_ctl_c(FILE *fp, int level, const char *label,
 	write_character_ctl_array_c(fp, level, strlen(label_SGS_model_ctl[30]),
 				label_SGS_model_ctl[30], SGS_ctl_c->commutate_fld_c);
 	
-    if(SGS_ctl_c->iflag_file_ctl > 0){
-        fprintf(fp, "!\n");
-        level = write_filter_file_ctl_c(fp, level, label_SGS_model_ctl[31], SGS_ctl_c->ffile_c);
-    };
+	if(SGS_ctl_c->iflag_file_ctl > 0){
+		fprintf(fp, "!\n");
+		level = write_filter_file_ctl_c(fp, level, label_SGS_model_ctl[31], SGS_ctl_c->ffile_c);
+	};
 	if(SGS_ctl_c->iflag_layer_ctl > 0){
-        fprintf(fp, "!\n");
-        level = write_layering_ctl_c(fp, level, label_SGS_model_ctl[32], SGS_ctl_c->elayer_c);
-    };
-    if(SGS_ctl_c->num_sph_filter_c > 0){
-        fprintf(fp, "!\n");
-        level = write_sph_filter_ctl_c(fp, level, label_SGS_model_ctl[33], SGS_ctl_c);
-    };
+		fprintf(fp, "!\n");
+		level = write_layering_ctl_c(fp, level, label_SGS_model_ctl[32], SGS_ctl_c->elayer_c);
+	};
+	if(SGS_ctl_c->num_sph_filter_c > 0){
+		fprintf(fp, "!\n");
+		level = write_sph_filter_ctl_c(fp, level, label_SGS_model_ctl[33], SGS_ctl_c);
+	};
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };

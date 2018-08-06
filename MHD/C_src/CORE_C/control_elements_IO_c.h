@@ -24,24 +24,11 @@ struct real_ctl_item{
 	double r_data;
 };
 
-struct chara_real_ctl_item{
-	int iflag;
-	char *c_tbl;
-	double r_data;
-};
-
 struct chara2_real_ctl_item{
 	int iflag;
 	char *c1_tbl;
 	char *c2_tbl;
 	double *vect;
-};
-
-struct ctl_c2r_array{
-	int num;
-	int icou;
-	int *maxlen;
-	struct chara2_real_ctl_item *c2r_ctl;
 };
 
 
@@ -66,6 +53,7 @@ int find_control_end_flag_c(const char buf[LENGTHBUF], const char *label);
 int find_control_array_flag_c(const char buf[LENGTHBUF], const char *label, int *num);
 int find_control_end_array_flag_c(const char buf[LENGTHBUF], const char *label, int num, int icou);
 
+int count_max_length_of_label(int num, const char *label[KCHARA_C]);
 
 void alloc_ctl_chara_item(struct chara_ctl_item *c_item);
 void dealloc_ctl_chara_item(struct chara_ctl_item *c_item);
@@ -86,10 +74,20 @@ void read_real_ctl_item_c(const char *buf, const char *label,
 void write_real_ctl_item_c(FILE *fp, int level, int maxlen,
 			const char *label, struct real_ctl_item *r_item);
 
+void read_chara2_ctl_item_c(const char *buf, const char *label,
+			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item);
+void write_chara2_ctl_item_c(FILE *fp, int level, int maxlen[2], const char *label, 
+			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item);
+
 void read_int2_ctl_item_c(const char *buf, const char *label,
 			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item);
 void write_int2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
 			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item);
+
+void read_real2_ctl_item_c(const char *buf, const char *label,
+			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item);
+void write_real2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
+			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item);
 
 void read_ci_ctl_item_c(const char *buf, const char *label,
 			struct chara_ctl_item *c_item, struct int_ctl_item *i_item);
@@ -112,6 +110,13 @@ void read_chara3_ctl_item_c(const char *buf, const char *label,
 void write_chara3_ctl_item_c(FILE *fp, int level, int maxlen[3], const char *label, 
 			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item, 
 			struct chara_ctl_item *c3_item);
+
+void read_real3_ctl_item_c(const char *buf, const char *label,
+			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item, 
+			struct real_ctl_item *r3_item);
+void write_real3_ctl_item_c(FILE *fp, int level, int maxlen, const char *label, 
+			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item, 
+			struct real_ctl_item *r3_item);
 
 void read_c2r_ctl_item_c(const char *buf, const char *label,
 			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item, 

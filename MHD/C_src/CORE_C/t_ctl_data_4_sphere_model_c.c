@@ -182,8 +182,8 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	init_ctl_int_item(spctl_c->num_radial_layer_c);
 	init_ctl_int_item(spctl_c->num_med_layer_c);
 	
-	spctl_c->radial_layer_list_c = (struct i2_ctl_array *) malloc(sizeof(struct i2_ctl_array));
-	spctl_c->med_layer_list_c = (struct i2_ctl_array *) malloc(sizeof(struct i2_ctl_array));
+	spctl_c->radial_layer_list_c = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
+	spctl_c->med_layer_list_c = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
 	
 	return;
 };
@@ -220,8 +220,8 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	free(spctl_c->num_radial_layer_c);
 	free(spctl_c->num_med_layer_c);
 	
-	dealloc_ctl_i2_array(spctl_c->radial_layer_list_c);
-	dealloc_ctl_i2_array(spctl_c->med_layer_list_c);
+	dealloc_ctl_int2_array(spctl_c->radial_layer_list_c);
+	dealloc_ctl_int2_array(spctl_c->med_layer_list_c);
 	free(spctl_c->radial_layer_list_c);
 	free(spctl_c->med_layer_list_c);
 	

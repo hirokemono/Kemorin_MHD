@@ -121,7 +121,84 @@ void write_integer_ctl_array_c(FILE *fp, int level, int maxlen,
 }
 
 
-void alloc_ctl_i2_array(struct i2_ctl_array *i2_array){
+void alloc_ctl_chara2_array(struct chara2_ctl_array *c2_array){
+	int i;
+	
+	c2_array->c1_array_item = (struct chara_ctl_item **) malloc(c2_array->num*sizeof(struct chara_ctl_item *));
+	c2_array->c2_array_item = (struct chara_ctl_item **) malloc(c2_array->num*sizeof(struct chara_ctl_item *));
+	for(i=0;i<c2_array->num;i++){
+		c2_array->c1_array_item[i] = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+		c2_array->c2_array_item[i] = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
+		alloc_ctl_chara_item(c2_array->c1_array_item[i]);
+		alloc_ctl_chara_item(c2_array->c2_array_item[i]);
+	};
+	c2_array->icou = 0;
+	return;
+}
+void dealloc_ctl_chara2_array(struct chara2_ctl_array *c2_array){
+	int i;
+	
+	if(c2_array->num < 0) return;
+	for(i=0;i<c2_array->num;i++){
+		dealloc_ctl_chara_item(c2_array->c1_array_item[i]);
+		dealloc_ctl_chara_item(c2_array->c2_array_item[i]);
+		free(c2_array->c1_array_item[i]);
+		free(c2_array->c2_array_item[i]);
+	};
+	free(c2_array->c1_array_item);
+	free(c2_array->c2_array_item);
+	return;
+}
+void read_chara2_ctl_array_c(FILE *fp, char *buf, const char *label,
+			struct chara2_ctl_array *c2_array){
+	
+	if(c2_array->icou > 0) return;
+	if(find_control_array_flag_c(buf, label, &c2_array->num) == 0) return;
+    if(c2_array->num == 0) return;
+	
+	if(c2_array->num > 0) alloc_ctl_chara2_array(c2_array);
+	fgets(buf, LENGTHBUF, fp);
+	while(find_control_end_array_flag_c(buf, label, c2_array->num, c2_array->icou) == 0){
+		if(c2_array->icou >= c2_array->num){
+			printf("Number of char3 item is larger than defined, %d %d \n",
+						c2_array->icou, c2_array->num);
+			return;
+		}
+		
+		read_chara2_ctl_item_c(buf, label, c2_array->c1_array_item[c2_array->icou],
+					c2_array->c2_array_item[c2_array->icou]);
+		c2_array->icou = c2_array->icou + c2_array->c1_array_item[c2_array->icou]->iflag;
+		
+		fgets(buf, LENGTHBUF, fp);
+	};
+	
+	return;
+}
+void write_chara2_ctl_array_c(FILE *fp, int level, int maxlen,
+			const char *label, struct chara2_ctl_array *c2_array){
+	int i;
+	
+	if(c2_array->icou == 0) return;
+	
+	c2_array->maxlen[0] = strlen(label);
+	c2_array->maxlen[1] = strlen(c2_array->c1_array_item[0]->c_tbl);
+	for(i=0;i<c2_array->num;i++){
+		if(strlen(c2_array->c1_array_item[i]->c_tbl) > c2_array->maxlen[1]){
+			c2_array->maxlen[1] = strlen(c2_array->c1_array_item[i]->c_tbl);
+		};
+	};
+	
+	level = write_array_flag_for_ctl_c(fp, level, label, c2_array->num);
+	for(i=0;i<c2_array->num;i++){
+		write_chara2_ctl_item_c(fp, level, c2_array->maxlen,
+					label, c2_array->c1_array_item[i], c2_array->c2_array_item[i]);
+	};
+	level = write_end_array_flag_for_ctl_c(fp, level, label);
+	return;
+}
+
+
+void alloc_ctl_int2_array(struct int2_ctl_array *i2_array){
 	int i;
 	
 	i2_array->i1_array_item = (struct int_ctl_item **) malloc(i2_array->num*sizeof(struct int_ctl_item *));
@@ -135,7 +212,7 @@ void alloc_ctl_i2_array(struct i2_ctl_array *i2_array){
 	i2_array->icou = 0;
 	return;
 }
-void dealloc_ctl_i2_array(struct i2_ctl_array *i2_array){
+void dealloc_ctl_int2_array(struct int2_ctl_array *i2_array){
 	int i;
 	
 	if(i2_array->num < 0) return;
@@ -148,13 +225,13 @@ void dealloc_ctl_i2_array(struct i2_ctl_array *i2_array){
 	return;
 }
 void read_int2_ctl_array_c(FILE *fp, char *buf, const char *label,
-			struct i2_ctl_array *i2_array){
+			struct int2_ctl_array *i2_array){
 	
 	if(i2_array->icou > 0) return;
 	if(find_control_array_flag_c(buf, label, &i2_array->num) == 0) return;
     if(i2_array->num == 0) return;
 	
-	if(i2_array->num > 0) alloc_ctl_i2_array(i2_array);
+	if(i2_array->num > 0) alloc_ctl_int2_array(i2_array);
 	fgets(buf, LENGTHBUF, fp);
 	while(find_control_end_array_flag_c(buf, label, i2_array->num, i2_array->icou) == 0){
 		if(i2_array->icou >= i2_array->num){
@@ -172,7 +249,7 @@ void read_int2_ctl_array_c(FILE *fp, char *buf, const char *label,
 	return;
 }
 void write_int2_ctl_array_c(FILE *fp, int level, int maxlen,
-			const char *label, struct i2_ctl_array *i2_array){
+			const char *label, struct int2_ctl_array *i2_array){
 	int i;
 	
 	if(i2_array->icou == 0) return;
@@ -181,6 +258,72 @@ void write_int2_ctl_array_c(FILE *fp, int level, int maxlen,
 	for(i=0;i<i2_array->num;i++){
 		write_int2_ctl_item_c(fp, level, strlen(label),
 					label, i2_array->i1_array_item[i], i2_array->i2_array_item[i]);
+	};
+	level = write_end_array_flag_for_ctl_c(fp, level, label);
+	return;
+}
+
+
+void alloc_ctl_real2_array(struct real2_ctl_array *r2_array){
+	int i;
+	
+	r2_array->r1_array_item = (struct real_ctl_item **) malloc(r2_array->num*sizeof(struct real_ctl_item *));
+	r2_array->r2_array_item = (struct real_ctl_item **) malloc(r2_array->num*sizeof(struct real_ctl_item *));
+	for(i=0;i<r2_array->num;i++){
+		r2_array->r1_array_item[i] = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
+		r2_array->r2_array_item[i] = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
+		init_ctl_real_item(r2_array->r1_array_item[i]);
+		init_ctl_real_item(r2_array->r2_array_item[i]);
+	};
+	r2_array->icou = 0;
+	return;
+}
+void dealloc_ctl_real2_array(struct real2_ctl_array *r2_array){
+	int i;
+	
+	if(r2_array->num < 0) return;
+	for(i=0;i<r2_array->num;i++){
+		free(r2_array->r1_array_item[i]);
+		free(r2_array->r2_array_item[i]);
+	};
+	free(r2_array->r1_array_item);
+	free(r2_array->r2_array_item);
+	return;
+}
+void read_real2_ctl_array_c(FILE *fp, char *buf, const char *label,
+			struct real2_ctl_array *r2_array){
+	
+	if(r2_array->icou > 0) return;
+	if(find_control_array_flag_c(buf, label, &r2_array->num) == 0) return;
+    if(r2_array->num == 0) return;
+	
+	if(r2_array->num > 0) alloc_ctl_real2_array(r2_array);
+	fgets(buf, LENGTHBUF, fp);
+	while(find_control_end_array_flag_c(buf, label, r2_array->num, r2_array->icou) == 0){
+		if(r2_array->icou >= r2_array->num){
+			printf("Number of int2 item is larger than defined \n");
+			return;
+		}
+		
+		read_real2_ctl_item_c(buf, label, r2_array->r1_array_item[r2_array->icou],
+					r2_array->r2_array_item[r2_array->icou]);
+		r2_array->icou = r2_array->icou + r2_array->r1_array_item[r2_array->icou]->iflag;
+		
+		fgets(buf, LENGTHBUF, fp);
+	};
+	
+	return;
+}
+void write_real2_ctl_array_c(FILE *fp, int level, int maxlen,
+			const char *label, struct real2_ctl_array *r2_array){
+	int i;
+	
+	if(r2_array->icou == 0) return;
+	
+	level = write_array_flag_for_ctl_c(fp, level, label, r2_array->num);
+	for(i=0;i<r2_array->num;i++){
+		write_real2_ctl_item_c(fp, level, strlen(label),
+					label, r2_array->r1_array_item[i], r2_array->r2_array_item[i]);
 	};
 	level = write_end_array_flag_for_ctl_c(fp, level, label);
 	return;
@@ -486,6 +629,80 @@ void write_chara3_ctl_array_c(FILE *fp, int level, int maxlen,
 		write_chara3_ctl_item_c(fp, level, c3_array->maxlen,
 					label, c3_array->c1_array_item[i], c3_array->c2_array_item[i], 
 					c3_array->c3_array_item[i]);
+	};
+	level = write_end_array_flag_for_ctl_c(fp, level, label);
+	return;
+}
+
+
+void alloc_ctl_real3_array(struct real3_ctl_array *r3_array){
+	int i;
+	
+	r3_array->r1_array_item = (struct real_ctl_item **) malloc(r3_array->num*sizeof(struct real_ctl_item *));
+	r3_array->r2_array_item = (struct real_ctl_item **) malloc(r3_array->num*sizeof(struct real_ctl_item *));
+	r3_array->r3_array_item = (struct real_ctl_item **) malloc(r3_array->num*sizeof(struct real_ctl_item *));
+	for(i=0;i<r3_array->num;i++){
+		r3_array->r1_array_item[i] = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
+		r3_array->r2_array_item[i] = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
+		r3_array->r3_array_item[i] = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
+		init_ctl_real_item(r3_array->r1_array_item[i]);
+		init_ctl_real_item(r3_array->r2_array_item[i]);
+		init_ctl_real_item(r3_array->r3_array_item[i]);
+	};
+	r3_array->icou = 0;
+	return;
+}
+void dealloc_ctl_real3_array(struct real3_ctl_array *r3_array){
+	int i;
+	
+	if(r3_array->num < 0) return;
+	for(i=0;i<r3_array->num;i++){
+		free(r3_array->r1_array_item[i]);
+		free(r3_array->r2_array_item[i]);
+		free(r3_array->r3_array_item[i]);
+	};
+	free(r3_array->r1_array_item);
+	free(r3_array->r2_array_item);
+	free(r3_array->r3_array_item);
+	return;
+}
+void read_real3_ctl_array_c(FILE *fp, char *buf, const char *label,
+			struct real3_ctl_array *r3_array){
+	
+	if(r3_array->icou > 0) return;
+	if(find_control_array_flag_c(buf, label, &r3_array->num) == 0) return;
+    if(r3_array->num == 0) return;
+	
+	if(r3_array->num > 0) alloc_ctl_real3_array(r3_array);
+	fgets(buf, LENGTHBUF, fp);
+	while(find_control_end_array_flag_c(buf, label, r3_array->num, r3_array->icou) == 0){
+		if(r3_array->icou >= r3_array->num){
+			printf("Number of char3 item is larger than defined, %d %d \n",
+						r3_array->icou, r3_array->num);
+			return;
+		}
+		
+		read_real3_ctl_item_c(buf, label, r3_array->r1_array_item[r3_array->icou],
+					r3_array->r2_array_item[r3_array->icou],
+					r3_array->r3_array_item[r3_array->icou]);
+		r3_array->icou = r3_array->icou + r3_array->r1_array_item[r3_array->icou]->iflag;
+		
+		fgets(buf, LENGTHBUF, fp);
+	};
+	
+	return;
+}
+void write_real3_ctl_array_c(FILE *fp, int level, int maxlen,
+			const char *label, struct real3_ctl_array *r3_array){
+	int i;
+	
+	if(r3_array->icou == 0) return;
+	
+	level = write_array_flag_for_ctl_c(fp, level, label, r3_array->num);
+	for(i=0;i<r3_array->num;i++){
+		write_real3_ctl_item_c(fp, level, strlen(label),
+					label, r3_array->r1_array_item[i], r3_array->r2_array_item[i], 
+					r3_array->r3_array_item[i]);
 	};
 	level = write_end_array_flag_for_ctl_c(fp, level, label);
 	return;

@@ -157,7 +157,21 @@ int find_control_end_array_flag_c(const char buf[LENGTHBUF], const char *label, 
 	};
 	
 	return iflag;
-}
+};
+
+int count_max_length_of_label(int num, const char *label[KCHARA_C]){
+	int i, maxlen;
+	
+	maxlen = 0;
+	for (i=0;i<num;i++){
+		if(strlen(label[i]) > maxlen){
+			maxlen = strlen(label[i]);
+		};
+	};
+	
+	return maxlen;
+};
+
 
 
 void alloc_ctl_chara_item(struct chara_ctl_item *c_item){
@@ -262,6 +276,37 @@ void write_real_ctl_item_c(FILE *fp, int level, int maxlen,
 }
 
 
+void read_chara2_ctl_item_c(const char *buf, const char *label,
+			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item){
+	char header_chara[KCHARA_C];
+	
+	if(c1_item->iflag > 0) return;
+	
+	sscanf(buf, "%s", header_chara);
+	if(cmp_no_case_c(header_chara, label) > 0){
+		sscanf(buf, "%s %s %s", header_chara, c1_item->c_tbl, c2_item->c_tbl);
+		strip_cautation_marks(c1_item->c_tbl);
+		strip_cautation_marks(c2_item->c_tbl);
+		c1_item->iflag = 1;
+		c2_item->iflag = 1;
+	};
+	
+	return;
+}
+
+void write_chara2_ctl_item_c(FILE *fp, int level, int maxlen[2], const char *label,
+			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item){
+	
+    if( (c1_item->iflag * c2_item->iflag) == 0) return;
+	
+	write_space_4_parse_c(fp, level);
+	write_one_label_cont_c(fp, maxlen[0], label);
+	write_one_label_cont_c(fp, maxlen[1], c1_item->c_tbl);
+	write_one_label_w_lf_c(fp, c2_item->c_tbl);
+	return;
+}
+
+
 void read_int2_ctl_item_c(const char *buf, const char *label,
 			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item){
 	char header_chara[KCHARA_C];
@@ -284,6 +329,32 @@ void write_int2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen, label);
 	fprintf(fp, "%d  %d\n", i1_item->i_data, i2_item->i_data);
+	return;
+}
+
+
+void read_real2_ctl_item_c(const char *buf, const char *label,
+			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item){
+	char header_chara[KCHARA_C];
+	
+	if(r1_item->iflag > 0) return;
+	sscanf(buf, "%s", header_chara);
+	if(cmp_no_case_c(header_chara, label) > 0){
+		sscanf(buf, "%s %lf %lf", header_chara, &r1_item->r_data, &r2_item->r_data);
+		r1_item->iflag = 1;
+		r2_item->iflag = 1;
+	};
+	
+	return;
+}
+
+void write_real2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
+			 struct real_ctl_item *r1_item, struct real_ctl_item *r2_item){
+	
+	if( (r1_item->iflag * r2_item->iflag) == 0) return;
+	write_space_4_parse_c(fp, level);
+	write_one_label_cont_c(fp, maxlen, label);
+	fprintf(fp, "%.12e  %.12e\n", r1_item->r_data, r2_item->r_data);
 	return;
 }
 
@@ -409,6 +480,39 @@ void write_chara3_ctl_item_c(FILE *fp, int level, int maxlen[3], const char *lab
 	write_one_label_cont_c(fp, maxlen[1], c1_item->c_tbl);
 	write_one_label_cont_c(fp, maxlen[2], c2_item->c_tbl);
 	write_one_label_w_lf_c(fp, c3_item->c_tbl);
+	return;
+}
+
+
+void read_real3_ctl_item_c(const char *buf, const char *label,
+			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item, 
+			struct real_ctl_item *r3_item){
+	char header_chara[KCHARA_C];
+	
+	if(r1_item->iflag > 0) return;
+	
+	sscanf(buf, "%s", header_chara);
+	if(cmp_no_case_c(header_chara, label) > 0){
+		sscanf(buf, "%s %lf %lf %lf", header_chara,
+					&r1_item->r_data, &r2_item->r_data, &r3_item->r_data);
+		r1_item->iflag = 1;
+		r2_item->iflag = 1;
+		r3_item->iflag = 1;
+	};
+	
+	return;
+}
+
+void write_real3_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
+			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item, 
+			struct real_ctl_item *r3_item){
+	
+    if( (r1_item->iflag * r2_item->iflag * r3_item->iflag) == 0) return;
+	
+	write_space_4_parse_c(fp, level);
+	write_one_label_cont_c(fp, maxlen, label);
+	fprintf(fp, "%.12e  %.12e  %.12e\n", 
+				r1_item->r_data, r2_item->r_data, r3_item->r_data);
 	return;
 }
 

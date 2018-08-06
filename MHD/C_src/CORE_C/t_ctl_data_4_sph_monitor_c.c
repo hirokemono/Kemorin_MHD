@@ -86,7 +86,7 @@ void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
     alloc_ctl_chara_item(pspec_ctl_c->picked_mode_head_c);
 	
 	pspec_ctl_c->idx_pick_layer_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
-	pspec_ctl_c->idx_pick_sph_c = (struct i2_ctl_array *) malloc(sizeof(struct i2_ctl_array));
+	pspec_ctl_c->idx_pick_sph_c = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
 	pspec_ctl_c->idx_pick_sph_l_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	pspec_ctl_c->idx_pick_sph_m_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	
@@ -94,7 +94,7 @@ void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
 	return;
 };
 void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
-    dealloc_ctl_i2_array(pspec_ctl_c->idx_pick_sph_c);
+    dealloc_ctl_int2_array(pspec_ctl_c->idx_pick_sph_c);
 	free(pspec_ctl_c->idx_pick_sph_c);
     dealloc_ctl_int_array(pspec_ctl_c->idx_pick_sph_l_c);
 	free(pspec_ctl_c->idx_pick_sph_l_c);
@@ -163,14 +163,14 @@ void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
 	g_pwr->gauss_coefs_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_ctl_real_item(g_pwr->gauss_coefs_radius_c);
 	
-	g_pwr->idx_gauss_c = (struct i2_ctl_array *) malloc(sizeof(struct i2_ctl_array));
+	g_pwr->idx_gauss_c = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
 	g_pwr->idx_gauss_l_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	g_pwr->idx_gauss_m_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	
 	return;
 };
 void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
-    dealloc_ctl_i2_array(g_pwr->idx_gauss_c);
+    dealloc_ctl_int2_array(g_pwr->idx_gauss_c);
 	free(g_pwr->idx_gauss_c);
     dealloc_ctl_int_array(g_pwr->idx_gauss_l_c);
 	free(g_pwr->idx_gauss_l_c);

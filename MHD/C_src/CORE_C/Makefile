@@ -44,7 +44,18 @@ OBJ_KEMO_C = \
  t_ctl_data_MHD_boundary_c.o \
  t_ctl_data_mhd_evolution_c.o \
  t_ctl_data_4_fields_c.o \
+ \
  t_ctl_data_4_sphere_model_c.o \
+ \
+ t_control_data_4_psf_c.o \
+ t_control_data_4_iso_c.o \
+ t_control_data_4_fline_c.o \
+ t_ctl_data_4_view_transfer_c.o \
+ t_ctl_data_pvr_colormap_c.o \
+ t_control_data_LIC_c.o \
+ t_control_data_4_pvr_c.o \
+ t_control_data_LIC_pvr_c.o \
+ \
  t_SGS_MHD_control_c.o \
  \
  read_viewer_mesh_gz_c.o \
@@ -493,6 +504,11 @@ module:
 	t_ctl_data_mhd_evolution_c.o \
 	t_ctl_data_4_fields_c.o \
 	t_ctl_data_4_sphere_model_c.o \
+	t_control_data_4_psf_c.o \
+	t_control_data_4_iso_c.o \
+	t_control_data_4_fline_c.o \
+	t_control_data_4_pvr_c.o \
+	t_control_data_LIC_pvr_c.o \
 	t_ctl_data_4_FEM_mesh_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -589,6 +605,102 @@ module:
 	t_ctl_data_4_sphere_model_c.o: \
 	'$$(KEMO_C_DIR)'/t_ctl_data_4_sphere_model_c.c \
 	t_ctl_data_4_sphere_model_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_data_4_psf_c.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_4_psf_c.c \
+	t_control_data_4_psf_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_data_4_fline_c.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_4_fline_c.c \
+	t_control_data_4_fline_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_ctl_data_4_view_transfer_c.o: \
+	'$$(KEMO_C_DIR)'/t_ctl_data_4_view_transfer_c.c \
+	t_ctl_data_4_view_transfer_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_ctl_data_pvr_colormap_c.o: \
+	'$$(KEMO_C_DIR)'/t_ctl_data_pvr_colormap_c.c \
+	t_ctl_data_pvr_colormap_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_data_LIC_c.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_LIC_c.c \
+	t_control_data_LIC_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_data_4_pvr_c.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_4_pvr_c.c \
+	t_control_data_4_pvr_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	t_control_data_4_psf_c.o \
+	t_ctl_data_pvr_colormap_c.o \
+	t_ctl_data_4_view_transfer_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_data_LIC_pvr_c.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_LIC_pvr_c.c \
+	t_control_data_LIC_pvr_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	t_control_data_4_psf_c.o \
+	t_ctl_data_pvr_colormap_c.o \
+	t_ctl_data_4_view_transfer_c.o \
+	t_control_data_4_pvr_c.o \
+	t_control_data_LIC_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_data_4_iso_c.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_4_iso_c.c \
+	t_control_data_4_iso_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	control_arrays_IO_c.o \
