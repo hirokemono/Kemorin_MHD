@@ -174,8 +174,8 @@
         call read_plot_area_ctl(hd_plot_area, pvr%i_plot_area,          &
      &      pvr%pvr_area_ctl, pvr%surf_enhanse_ctl)
         call read_lighting_ctl(hd_pvr_lighting, pvr%color)
-        call read_pvr_colorbar_ctl(pvr%cbar_ctl)
-        call read_pvr_rotation_ctl(pvr%movie)
+        call read_pvr_colorbar_ctl(hd_pvr_colorbar, pvr%cbar_ctl)
+        call read_pvr_rotation_ctl(hd_pvr_rotation, pvr%movie)
 !
         call read_lic_control_data(hd_lic_ctl, lic_ctl)
 !

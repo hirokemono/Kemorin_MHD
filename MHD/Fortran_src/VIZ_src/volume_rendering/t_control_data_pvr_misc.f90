@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      subroutine read_control_pvr_section_def(pvr_sect_ctl)
-!!      subroutine read_pvr_section_ctl(pvr_sect_ctl)
+!!      subroutine read_pvr_section_ctl(hd_pvr_sections, pvr_sect_ctl)
 !!        type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
 !!
-!!      subroutine read_pvr_isosurface_ctl(pvr_iso_ctl)
+!!      subroutine read_pvr_isosurface_ctl(hd_pvr_isosurf, pvr_iso_ctl)
 !!        type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
 !!
-!!      subroutine read_pvr_colorbar_ctl(cbar_ctl)
+!!      subroutine read_pvr_colorbar_ctl(hd_pvr_colorbar, cbar_ctl)
 !!        type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !!
-!!      subroutine read_pvr_rotation_ctl(movie)
+!!      subroutine read_pvr_rotation_ctl(hd_pvr_rotation, movie)
 !!        type(pvr_movie_ctl), intent(inout) :: movie
 !!      subroutine read_plot_area_ctl(hd_plot_area, i_plot_area,        &
 !!     &           pvr_area_ctl, surf_enhanse_ctl)
@@ -48,6 +48,22 @@
 !!!
 !!    axis_label_switch      ON
 !!  end colorbar_ctl
+!!!
+!!  array section_ctl  2
+!!    file section_ctl     ctl_psf_eq
+!!    begin section_ctl
+!!      ...
+!!    end section_ctl
+!!  end array section_ctl
+!!!
+!!  array isosurface_ctl  2
+!!    begin isosurface_ctl
+!!      isosurf_value       0.3
+!!      opacity_ctl         0.9
+!!      surface_direction   normal
+!!    end isosurface_ctl
+!!     ...
+!!  end array isosurface_ctl
 !!!
 !!  begin image_rotation_ctl
 !!    rotation_axis_ctl       z
@@ -110,12 +126,6 @@
         integer (kind=kint) :: i_pvr_rotation = 0
       end type pvr_movie_ctl
 !
-!     2nd level for volume_rendering
-!
-      character(len=kchara) :: hd_pvr_sections = 'section_ctl'
-      character(len=kchara) :: hd_pvr_isosurf =  'isosurface_ctl'
-      character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
-      character(len=kchara) :: hd_pvr_rotation =  'image_rotation_ctl'
 !
 !     4th level for area group
 !
@@ -145,8 +155,7 @@
       character(len=kchara) :: hd_movie_rot_axis =  'rotation_axis_ctl'
       character(len=kchara) :: hd_movie_rot_frame = 'num_frames_ctl'
 !
-      private :: hd_plot_grp, hd_sf_enhanse
-      private :: hd_pvr_colorbar, hd_pvr_rotation, hd_isosurf_value
+      private :: hd_plot_grp, hd_sf_enhanse, hd_isosurf_value
       private :: hd_colorbar_switch, hd_pvr_opacity, hd_iso_direction
       private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
       private :: hd_colorbar_scale, hd_pvr_font_size, hd_cbar_range
@@ -190,9 +199,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_section_ctl(pvr_sect_ctl)
+      subroutine read_pvr_section_ctl(hd_pvr_sections, pvr_sect_ctl)
 !
+      character(len=kchara), intent(in) :: hd_pvr_sections
       type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
+!
       integer(kind = kint) :: i_flag, i_psf_ctl1
 !
 !
@@ -222,9 +233,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_isosurface_ctl(pvr_iso_ctl)
+      subroutine read_pvr_isosurface_ctl(hd_pvr_isosurf, pvr_iso_ctl)
 !
+      character(len=kchara), intent(in) :: hd_pvr_isosurf
       type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
+!
       integer(kind = kint) :: i_flag
 !
 !
@@ -247,8 +260,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_colorbar_ctl(cbar_ctl)
+      subroutine read_pvr_colorbar_ctl(hd_pvr_colorbar, cbar_ctl)
 !
+      character(len=kchara), intent(in) :: hd_pvr_colorbar
       type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !
 !
@@ -286,8 +300,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_rotation_ctl(movie)
+      subroutine read_pvr_rotation_ctl(hd_pvr_rotation, movie)
 !
+      character(len=kchara), intent(in) :: hd_pvr_rotation
       type(pvr_movie_ctl), intent(inout) :: movie
 !
 !

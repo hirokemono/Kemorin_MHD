@@ -49,6 +49,22 @@
 !!   ...
 !!  end colorbar_ctl
 !!!
+!!  array section_ctl  2
+!!    file section_ctl     ctl_psf_eq
+!!    begin section_ctl
+!!      ...
+!!    end section_ctl
+!!  end array section_ctl
+!!!
+!!  array isosurface_ctl  2
+!!    begin isosurface_ctl
+!!      isosurf_value       0.3
+!!      opacity_ctl         0.9
+!!      surface_direction   normal
+!!    end isosurface_ctl
+!!     ...
+!!  end array isosurface_ctl
+!!!
 !!  begin image_rotation_ctl
 !!   ...
 !!  end image_rotation_ctl
@@ -145,6 +161,12 @@
 !
       character(len=kchara) :: hd_output_field_def = 'output_field'
       character(len=kchara) :: hd_output_comp_def =  'output_component'
+!
+      character(len=kchara) :: hd_pvr_sections = 'section_ctl'
+      character(len=kchara) :: hd_pvr_isosurf =  'isosurface_ctl'
+!
+      character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
+      character(len=kchara) :: hd_pvr_rotation =  'image_rotation_ctl'
 !
 !     3rd level for surface_define
 !
@@ -276,8 +298,8 @@
         call read_plot_area_ctl(hd_plot_area, pvr%i_plot_area,          &
      &      pvr%pvr_area_ctl, pvr%surf_enhanse_ctl)
         call read_lighting_ctl(hd_pvr_lighting, pvr%color)
-        call read_pvr_colorbar_ctl(pvr%cbar_ctl)
-        call read_pvr_rotation_ctl(pvr%movie)
+        call read_pvr_colorbar_ctl(hd_pvr_colorbar, pvr%cbar_ctl)
+        call read_pvr_rotation_ctl(hd_pvr_rotation, pvr%movie)
 !
 !
         call read_chara_ctl_type(hd_pvr_updated, pvr%updated_ctl)
@@ -337,7 +359,8 @@
 !
         if(right_begin_flag(hd_pvr_sections) .gt. 0) then
           pvr%i_pvr_sect = pvr%i_pvr_sect + 1
-          call read_pvr_section_ctl(pvr%pvr_sect_ctl(pvr%i_pvr_sect))
+          call read_pvr_section_ctl                                     &
+     &       (hd_pvr_sections, pvr%pvr_sect_ctl(pvr%i_pvr_sect))
         end if
       end do
 !
@@ -361,7 +384,8 @@
 !
         if(right_begin_flag(hd_pvr_isosurf) .gt. 0) then
           pvr%i_pvr_iso = pvr%i_pvr_iso + 1
-          call read_pvr_isosurface_ctl(pvr%pvr_iso_ctl(pvr%i_pvr_iso))
+          call read_pvr_isosurface_ctl                                  &
+     &       (hd_pvr_isosurf, pvr%pvr_iso_ctl(pvr%i_pvr_iso))
         end if
       end do
 !
