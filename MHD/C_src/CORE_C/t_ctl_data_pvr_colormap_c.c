@@ -10,6 +10,8 @@
 #define NLBL_COLORMAP_CTL   13
 #define NLBL_LIGHTING_CTL    4
 
+FILE *FP_Colormap;
+
 const char label_colormap_ctl[NLBL_COLORMAP_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"colormap_mode_ctl"},
 	
@@ -38,13 +40,16 @@ const char label_lighting_ctl[NLBL_LIGHTING_CTL][KCHARA_C] = {
 	/*[ 3]*/	{"specular_coef"}
 };
 
+const char label_colormap_head[KCHARA_C] = "pvr_color_ctl";
+
+
 void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	int i;
 	
 	cmap_c->maxlen = 0;
 	for (i=0;i<NLBL_COLORMAP_CTL;i++){
-		if(strlen(label_colormap_ctl[i]) > cmap_c->maxlen){
-			cmap_c->maxlen = strlen(label_colormap_ctl[i]);
+		if((int) strlen(label_colormap_ctl[i]) > cmap_c->maxlen){
+			cmap_c->maxlen = (int) strlen(label_colormap_ctl[i]);
 		};
 	};
 	
@@ -64,6 +69,7 @@ void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	alloc_ctl_chara_item(cmap_c->data_mapping_ctl);
 	
 	cmap_c->colortbl_ctl = (struct real2_ctl_array *) malloc(sizeof(struct real2_ctl_array));
+	init_ctl_real2_array(cmap_c->colortbl_ctl);
 	
 	cmap_c->opacity_style_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_ctl_chara_item(cmap_c->opacity_style_ctl);
@@ -101,6 +107,7 @@ void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	dealloc_ctl_chara_item(cmap_c->data_mapping_ctl);
 	free(cmap_c->data_mapping_ctl);
 	
+	dealloc_ctl_real2_array(cmap_c->colortbl_ctl);
 	free(cmap_c->colortbl_ctl);
 	
 	dealloc_ctl_chara_item(cmap_c->opacity_style_ctl);
@@ -183,8 +190,8 @@ void alloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
 	
 	light_c->maxlen = 0;
 	for (i=0;i<NLBL_LIGHTING_CTL;i++){
-		if(strlen(label_lighting_ctl[i]) > light_c->maxlen){
-			light_c->maxlen = strlen(label_lighting_ctl[i]);
+		if((int) strlen(label_lighting_ctl[i]) > light_c->maxlen){
+			light_c->maxlen = (int) strlen(label_lighting_ctl[i]);
 		};
 	};
 	
@@ -238,5 +245,39 @@ int write_lighting_ctl_c(FILE *fp, int level, const char *label,
 	write_real_ctl_item_c(fp, level, light_c->maxlen, label_lighting_ctl[ 3], light_c->specular_coef_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
+	return level;
+};
+
+
+int read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
+			struct colormap_ctl_c *cmap_c){
+	int iflag = 0;
+	
+	if ((FP_Colormap = fopen(file_name, "r")) == NULL) {
+		fprintf(stderr, "Cannot open file!\n");
+		exit (2);                    /* terminate with error message */
+	};
+	
+    skip_comment_c(FP_Colormap);
+	fgets(buf, LENGTHBUF, FP_Colormap);
+	if(right_begin_flag_c(buf, label_colormap_head) > 0){
+		iflag = read_colormap_ctl_c(FP_Colormap, buf, label_colormap_head, cmap_c);
+	};
+	fclose(FP_Colormap);
+	
+	return iflag;
+};
+
+int write_colormap_file_c(const char *file_name, struct colormap_ctl_c *cmap_c){
+	int level;
+	
+	if ((FP_Colormap = fopen(file_name, "w")) == NULL) {
+		fprintf(stderr, "Cannot open file!\n");
+		exit (2);                    /* terminate with error message */
+	};
+	
+	level = write_colormap_ctl_c(FP_Colormap, 0, label_colormap_head, cmap_c);
+	fclose(FP_Colormap);
+	
 	return level;
 };

@@ -18,6 +18,7 @@ char *trim(char *s);
 char *trim(char *s);
 
 long skip_comment_c(FILE *fp);
+
 int set_field_coordinate_flag(const char *data_name);
 int read_field_name_from_buffer(int len_buf, char *buf, char *data_name);
 void read_field_names(FILE *fp, int num, char **data_name, int *id_coord);

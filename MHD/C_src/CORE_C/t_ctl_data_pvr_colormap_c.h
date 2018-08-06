@@ -72,4 +72,8 @@ int read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_lighting_ctl_c(FILE *fp, int level, const char *label, 
 			struct lighting_ctl_c *light_c);
 
+int read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
+			struct colormap_ctl_c *cmap_c);
+int write_colormap_file_c(const char *file_name, struct colormap_ctl_c *cmap_c);
+
 #endif /* t_ctl_data_pvr_colormap_c_h_ */
