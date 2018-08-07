@@ -26,7 +26,7 @@ void alloc_ctl_chara_array(struct chara_ctl_array *c_array){
 void dealloc_ctl_chara_array(struct chara_ctl_array *c_array){
 	int i;
 	
-	if(c_array->num < 0) return;
+	if(c_array->num == 0) return;
 	for(i=0;i<c_array->num;i++){
 		dealloc_ctl_chara_item(c_array->c_array_item[i]);
 		free(c_array->c_array_item[i]);
@@ -85,7 +85,7 @@ void alloc_ctl_int_array(struct int_ctl_array *i_array){
 void dealloc_ctl_int_array(struct int_ctl_array *i_array){
 	int i;
 	
-	if(i_array->num < 0) return;
+	if(i_array->num == 0) return;
 	for(i=0;i<i_array->num;i++){
 		free(i_array->i_array_item[i]);
 	};
@@ -154,7 +154,7 @@ void alloc_ctl_chara2_array(struct chara2_ctl_array *c2_array){
 void dealloc_ctl_chara2_array(struct chara2_ctl_array *c2_array){
 	int i;
 	
-	if(c2_array->num < 0) return;
+	if(c2_array->num == 0) return;
 	for(i=0;i<c2_array->num;i++){
 		dealloc_ctl_chara_item(c2_array->c1_array_item[i]);
 		dealloc_ctl_chara_item(c2_array->c2_array_item[i]);
@@ -177,7 +177,7 @@ void read_chara2_ctl_array_c(FILE *fp, char *buf, const char *label,
 	fgets(buf, LENGTHBUF, fp);
 	while(find_control_end_array_flag_c(buf, label, c2_array->num, c2_array->icou) == 0){
 		if(c2_array->icou >= c2_array->num){
-			printf("Number of char3 item is larger than defined, %d %d \n",
+			printf("Number of char2 item is larger than defined, %d %d \n",
 						c2_array->icou, c2_array->num);
 			return;
 		}
@@ -237,7 +237,7 @@ void alloc_ctl_int2_array(struct int2_ctl_array *i2_array){
 void dealloc_ctl_int2_array(struct int2_ctl_array *i2_array){
 	int i;
 	
-	if(i2_array->num < 0) return;
+	if(i2_array->num == 0) return;
 	for(i=0;i<i2_array->num;i++){
 		free(i2_array->i1_array_item[i]);
 		free(i2_array->i2_array_item[i]);
@@ -309,7 +309,7 @@ void alloc_ctl_real2_array(struct real2_ctl_array *r2_array){
 void dealloc_ctl_real2_array(struct real2_ctl_array *r2_array){
 	int i;
 	
-	if(r2_array->num < 0) return;
+	if(r2_array->num == 0) return;
 	for(i=0;i<r2_array->num;i++){
 		free(r2_array->r1_array_item[i]);
 		free(r2_array->r2_array_item[i]);
@@ -381,7 +381,7 @@ void alloc_ctl_ci_array(struct chara_int_ctl_array *ci_array){
 void dealloc_ctl_ci_array(struct chara_int_ctl_array *ci_array){
 	int i;
 	
-	if(ci_array->num < 0) return;
+	if(ci_array->num == 0) return;
 	for(i=0;i<ci_array->num;i++){
 		dealloc_ctl_chara_item(ci_array->c_array_item[i]);
 		free(ci_array->c_array_item[i]);
@@ -543,7 +543,7 @@ void alloc_ctl_ir_array(struct int_real_ctl_array *ir_array){
 void dealloc_ctl_ir_array(struct int_real_ctl_array *ir_array){
 	int i;
 	
-	if(ir_array->num < 0) return;
+	if(ir_array->num == 0) return;
 	for(i=0;i<ir_array->num;i++){
 		free(ir_array->i_array_item[i]);
 		free(ir_array->r_array_item[i]);
@@ -618,7 +618,7 @@ void alloc_ctl_chara3_array(struct chara3_ctl_array *c3_array){
 void dealloc_ctl_chara3_array(struct chara3_ctl_array *c3_array){
 	int i;
 	
-	if(c3_array->num < 0) return;
+	if(c3_array->num == 0) return;
 	for(i=0;i<c3_array->num;i++){
 		dealloc_ctl_chara_item(c3_array->c1_array_item[i]);
 		dealloc_ctl_chara_item(c3_array->c2_array_item[i]);
@@ -713,7 +713,7 @@ void alloc_ctl_real3_array(struct real3_ctl_array *r3_array){
 void dealloc_ctl_real3_array(struct real3_ctl_array *r3_array){
 	int i;
 	
-	if(r3_array->num < 0) return;
+	if(r3_array->num == 0) return;
 	for(i=0;i<r3_array->num;i++){
 		free(r3_array->r1_array_item[i]);
 		free(r3_array->r2_array_item[i]);
@@ -736,7 +736,7 @@ void read_real3_ctl_array_c(FILE *fp, char *buf, const char *label,
 	fgets(buf, LENGTHBUF, fp);
 	while(find_control_end_array_flag_c(buf, label, r3_array->num, r3_array->icou) == 0){
 		if(r3_array->icou >= r3_array->num){
-			printf("Number of char3 item is larger than defined, %d %d \n",
+			printf("Number of real3 item is larger than defined, %d %d \n",
 						r3_array->icou, r3_array->num);
 			return;
 		}
@@ -793,7 +793,7 @@ void alloc_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array){
 void dealloc_ctl_c2r_array(struct chara2_real_ctl_array *c2r_array){
 	int i;
 	
-	if(c2r_array->num < 0) return;
+	if(c2r_array->num == 0) return;
 	for(i=0;i<c2r_array->num;i++){
 		dealloc_ctl_chara_item(c2r_array->c1_array_item[i]);
 		dealloc_ctl_chara_item(c2r_array->c2_array_item[i]);

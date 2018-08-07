@@ -22,9 +22,9 @@
 !!      position_of_lights    0.0  10.0    0.0   end
 !!    end array position_of_lights
 !!!
-!!    ambient_coef              0.5
-!!    diffuse_coef              5.6
-!!    specular_coef             0.8
+!!    ambient_coef_ctl              0.5
+!!    diffuse_coef_ctl              5.6
+!!    specular_coef_ctl             0.8
 !!  end lighting_ctl
 !!
 !!  begin colormap_ctl

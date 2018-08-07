@@ -51,6 +51,8 @@ struct iso_ctl_c{
 
 void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c);
 void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c);
+int read_iso_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+                        struct iso_define_ctl_c *iso_def_c);
 int read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_define_ctl_c *iso_def_c);
 int write_iso_define_ctl_c(FILE *fp, int level, const char *label, 
@@ -69,6 +71,10 @@ int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_ctl_c *iso_c);
 int write_iso_ctl_c(FILE *fp, int level, const char *label, 
 			struct iso_ctl_c *iso_c);
+
+int read_iso_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
+                        struct iso_ctl_c *iso_c);
+int write_iso_ctl_file_c(const char *file_name, struct iso_ctl_c *iso_c);
 
 
 #endif /* t_control_data_4_iso_c_h_ */

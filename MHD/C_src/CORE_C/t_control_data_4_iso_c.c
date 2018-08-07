@@ -7,15 +7,20 @@
 
 #include "t_control_data_4_iso_c.h"
 
-#define NLBL_ISO_DEFINE_CTL   4
+#define NLBL_ISO_DEFINE_CTL   6
 #define NLBL_ISO_FIELD_CTL    3
-#define NLBL_ISO_CTL          4
+#define NLBL_ISO_CTL          6
+
+FILE *FP_ISO;
 
 const char label_iso_define_ctl[NLBL_ISO_DEFINE_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"isosurf_field"},
 	/*[ 1]*/	{"isosurf_component"},
 	/*[ 2]*/	{"isosurf_value"},
-	/*[ 3]*/	{"isosurf_area_ctl"}
+	/*[ 3]*/	{"isosurf_area_ctl"},
+    
+    /*[ 4]*/    {"plot_area_ctl"},
+    /*[ 5]*/    {"chosen_ele_grp_ctl"},
 };
 
 const char label_iso_field_ctl[NLBL_ISO_FIELD_CTL][KCHARA_C] = {
@@ -29,8 +34,15 @@ const char label_iso_ctl[NLBL_ISO_CTL][KCHARA_C] = {
 	/*[ 1]*/	{"iso_output_type"},
 	
 	/*[ 2]*/	{"isosurf_define"},
-	/*[ 3]*/	{"field_on_isosurf"}
+	/*[ 3]*/	{"field_on_isosurf"},
+    
+    /*[ 4]*/    {"iso_file_head"},
+    /*[ 5]*/    {"isosurf_result_define"}
 };
+
+const char label_iso_head[KCHARA_C] = "isosurface_ctl";
+const char label_old_iso_head[KCHARA_C] = "isosurf_rendering";
+
 
 void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	int i;
@@ -38,7 +50,7 @@ void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	iso_def_c->maxlen = 0;
 	for (i=0;i<NLBL_ISO_DEFINE_CTL;i++){
 		if(strlen(label_iso_define_ctl[i]) > iso_def_c->maxlen){
-			iso_def_c->maxlen = strlen(label_iso_define_ctl[i]);
+			iso_def_c->maxlen = (int) strlen(label_iso_define_ctl[i]);
 		};
 	};
 	
@@ -71,9 +83,22 @@ void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	return;
 };
 
+
+int read_iso_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+                        struct iso_define_ctl_c *iso_def_c){
+    while(find_control_end_flag_c(buf, label) == 0){
+        fgets(buf, LENGTHBUF, fp);
+        
+        read_character_ctl_array_c(fp, buf, label_iso_define_ctl[ 5], iso_def_c->iso_area_ctl);
+    };
+    return 1;
+};
+
 int read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_define_ctl_c *iso_def_c){
-	while(find_control_end_flag_c(buf, label) == 0){
+    int iflag;
+
+    while(find_control_end_flag_c(buf, label) == 0){
 		fgets(buf, LENGTHBUF, fp);
 		
 		read_character_ctl_item_c(buf, label_iso_define_ctl[ 0], iso_def_c->isosurf_data_ctl);
@@ -82,6 +107,11 @@ int read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_real_ctl_item_c(buf, label_iso_define_ctl[ 2], iso_def_c->isosurf_value_ctl);
 		
 		read_character_ctl_array_c(fp, buf, label_iso_define_ctl[ 3], iso_def_c->iso_area_ctl);
+        
+        if(right_begin_flag_c(buf, label_iso_define_ctl[ 4]) > 0){
+            iflag = read_iso_area_ctl_c(fp, buf, 
+                                        label_iso_define_ctl[ 4], iso_def_c);
+        };
 	};
 	return 1;
 };
@@ -109,7 +139,7 @@ void alloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 	iso_fld_c->maxlen = 0;
 	for (i=0;i<NLBL_ISO_FIELD_CTL;i++){
 		if(strlen(label_iso_field_ctl[i]) > iso_fld_c->maxlen){
-			iso_fld_c->maxlen = strlen(label_iso_field_ctl[i]);
+			iso_fld_c->maxlen = (int) strlen(label_iso_field_ctl[i]);
 		};
 	};
 	
@@ -169,7 +199,7 @@ void alloc_iso_ctl_c(struct iso_ctl_c *iso_c){
 	iso_c->maxlen = 0;
 	for (i=0;i<NLBL_ISO_CTL;i++){
 		if(strlen(label_iso_ctl[i]) > iso_c->maxlen){
-			iso_c->maxlen = strlen(label_iso_ctl[i]);
+			iso_c->maxlen = (int) strlen(label_iso_ctl[i]);
 		};
 	};
 	
@@ -212,6 +242,7 @@ int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		fgets(buf, LENGTHBUF, fp);
 		
 		read_character_ctl_item_c(buf, label_iso_ctl[ 0], iso_c->iso_file_head_ctl);
+        read_character_ctl_item_c(buf, label_iso_ctl[ 4], iso_c->iso_file_head_ctl);
 		read_character_ctl_item_c(buf, label_iso_ctl[ 1], iso_c->iso_output_type_ctl);
 		
 		if(right_begin_flag_c(buf, label_iso_ctl[ 2]) > 0){
@@ -222,6 +253,10 @@ int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			iso_c->iflag_iso_output_field = read_iso_field_ctl_c(fp, buf, 
 						label_iso_ctl[ 3], iso_c->iso_fld_c);
 		};
+        if(right_begin_flag_c(buf, label_iso_ctl[ 5]) > 0){
+            iso_c->iflag_iso_output_field = read_iso_field_ctl_c(fp, buf, 
+                        label_iso_ctl[ 5], iso_c->iso_fld_c);
+        };
 	};
 	return 1;
 };
@@ -245,4 +280,41 @@ int write_iso_ctl_c(FILE *fp, int level, const char *label,
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };
+
+
+int read_iso_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
+                        struct iso_ctl_c *iso_c){
+    int iflag = 0;
+    
+    if ((FP_ISO = fopen(file_name, "r")) == NULL) {
+        fprintf(stderr, "Cannot open file!\n");
+        exit (2);                    /* terminate with error message */
+    };
+    
+    skip_comment_c(FP_ISO);
+    fgets(buf, LENGTHBUF, FP_ISO);
+    if(right_begin_flag_c(buf, label_iso_head) > 0){
+        iflag = read_psf_ctl_c(FP_ISO, buf, label_iso_head, iso_c);
+    } else if(right_begin_flag_c(buf, label_old_iso_head) > 0){
+        iflag = read_psf_ctl_c(FP_ISO, buf, label_old_iso_head, iso_c);
+    };
+    fclose(FP_ISO);
+    
+    return iflag;
+};
+
+int write_iso_ctl_file_c(const char *file_name, struct iso_ctl_c *iso_c){
+    int level;
+
+    if ((FP_ISO = fopen(file_name, "w")) == NULL) {
+        fprintf(stderr, "Cannot open file!\n");
+        exit (2);                    /* terminate with error message */
+    };
+    
+    level = write_iso_ctl_c(FP_ISO, 0, label_iso_head, iso_c);
+    fclose(FP_ISO);
+    
+    return level;
+};
+
 

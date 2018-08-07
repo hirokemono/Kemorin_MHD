@@ -29,7 +29,8 @@ struct pvr_section_ctl_c{
 	int maxlen;
 	
 	char *fname_sect_ctl;
-	struct psf_ctl_c *psf_c;
+	int iflag_psf_define_ctl;
+	struct psf_define_ctl_c *psf_def_c;
 	struct real_ctl_item *opacity_ctl;
 };
 
@@ -86,8 +87,10 @@ struct pvr_ctl_c{
 	int iflag_plot_area_ctl;
 	struct pvr_plot_area_ctl_c *area_c;
 	int iflag_modeview_ctl;
+	char *pvr_modelview_file_name;
 	struct modeview_ctl_c *mat_c;
 	int iflag_colormap_ctl;
+    char *pvr_colormap_file_name;
 	struct colormap_ctl_c *color_c;
 	int iflag_lighting_ctl;
 	struct lighting_ctl_c *light_c;
@@ -153,9 +156,18 @@ int write_pvr_isosurfs_ctl_c(FILE *fp, int level, const char *label,
 
 void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c);
 void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c);
+void read_pvr_ctl_items(FILE *fp, char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c);
+int write_pvr_ctl_items(FILE *fp, int level, struct pvr_ctl_c *pvr_c);
 int read_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_ctl_c *pvr_c);
 int write_pvr_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_ctl_c *pvr_c);
+
+int read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c);
+void write_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c);
+
+int read_pvr_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
+                        struct pvr_ctl_c *pvr_c);
+int write_pvr_ctl_file_c(const char *file_name, struct pvr_ctl_c *pvr_c);
 
 #endif /* t_control_data_4_pvr_c_h_ */

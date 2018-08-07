@@ -247,6 +247,7 @@ void alloc_psf_ctl_c(struct psf_ctl_c *psf_c){
 void dealloc_psf_ctl_c(struct psf_ctl_c *psf_c){
 	dealloc_psf_define_ctl_c(psf_c->psf_def_c);
 	free(psf_c->psf_def_c);
+    free(psf_c->psf_def_file_name);
 	dealloc_psf_field_ctl_c(psf_c->psf_fld_c);
 	free(psf_c->psf_fld_c);
 	
@@ -274,7 +275,6 @@ int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		if(right_begin_flag_c(buf, label_psf_ctl[ 2]) > 0){
 			psf_c->iflag_surface_define = read_psf_define_ctl_c(fp, buf, 
 						label_psf_ctl[ 2], psf_c->psf_def_c);
-            psf_c->psf_def_file_name = "NO_FILE";
         } else if(right_file_flag_c(buf, label_psf_ctl[ 2], psf_c->psf_def_file_name)){
             psf_c->iflag_surface_define = -1;
         };

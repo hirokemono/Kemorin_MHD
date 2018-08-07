@@ -13,7 +13,7 @@
 FILE *FP_Colormap;
 
 const char label_colormap_ctl[NLBL_COLORMAP_CTL][KCHARA_C] = {
-	/*[ 0]*/	{"colormap_mode_ctl"},
+	/*[ 0]*/	{"colormap_ctl"},
 	
 	/*[ 1]*/	{"LIC_color_field"},
 	/*[ 2]*/	{"LIC_color_componenet"},
@@ -35,9 +35,9 @@ const char label_colormap_ctl[NLBL_COLORMAP_CTL][KCHARA_C] = {
 const char label_lighting_ctl[NLBL_LIGHTING_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"position_of_lights"},
 	
-	/*[ 1]*/	{"ambient_coef"},
-	/*[ 2]*/	{"diffuse_coef"},
-	/*[ 3]*/	{"specular_coef"}
+	/*[ 1]*/	{"ambient_coef_ctl"},
+	/*[ 2]*/	{"diffuse_coef_ctl"},
+	/*[ 3]*/	{"specular_coef_ctl"}
 };
 
 const char label_colormap_head[KCHARA_C] = "pvr_color_ctl";

@@ -49,7 +49,7 @@ void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	mask_ctl->maxlen = 0;
 	for (i=0;i<NLBL_LIC_MASKING_CTL;i++){
 		if(strlen(label_lic_masking_ctl_c[i]) > mask_ctl->maxlen){
-			mask_ctl->maxlen = strlen(label_lic_masking_ctl_c[i]);
+			mask_ctl->maxlen = (int) strlen(label_lic_masking_ctl_c[i]);
 		};
 	};
 	
@@ -157,7 +157,7 @@ void alloc_lic_ctl_c(struct lic_ctl_c *lic_c){
 	lic_c->maxlen = 0;
 	for (i=0;i<NLBL_LIC_CTL;i++){
 		if(strlen(label_lic_ctl_c[i]) > lic_c->maxlen){
-			lic_c->maxlen = strlen(label_lic_ctl_c[i]);
+			lic_c->maxlen = (int) strlen(label_lic_ctl_c[i]);
 		};
 	};
 	
