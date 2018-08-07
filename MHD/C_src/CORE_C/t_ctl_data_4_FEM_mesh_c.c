@@ -62,7 +62,7 @@ int read_FEM_mesh_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
                                  struct FEM_mesh_control_c *Fmesh){
     while(find_control_end_flag_c(buf, label) == 0){
         
-        fgets(buf, LENGTHBUF, fp);
+        skip_comment_read_line(fp, buf);
         
         read_character_ctl_item_c(buf, label_FEM_mesh_ctl[0], Fmesh->memory_conservation_c);
         read_character_ctl_item_c(buf, label_FEM_mesh_ctl[1], Fmesh->FEM_mesh_output_switch_c);

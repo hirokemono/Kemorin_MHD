@@ -99,7 +99,7 @@ int read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sphere_domain_ctl_c *sdctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_sphere_domain_ctl[ 0], sdctl_c->inner_decomp_c);
 		
@@ -239,7 +239,7 @@ int read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sphere_data_ctl_c *spctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[ 3], spctl_c->ltr_c);
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[ 4], spctl_c->phi_symmetry_c);

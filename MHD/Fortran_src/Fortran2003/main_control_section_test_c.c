@@ -36,11 +36,7 @@ int main(int argc,char *argv[])
 	alloc_psf_ctl_c(psf_c0);
 	
 	iflag = read_psf_ctl_file_c(file_name, buf, psf_c0);
-    
-    if(psf_c0->iflag_surface_define ==-1){
-        strcat(psf_c0->psf_def_file_name, "_2");
-    }
-    
+    rename_psf_define_file_c(psf_c0);
 	iflag = write_psf_ctl_file_c(file_name_2, psf_c0);
     
     dealloc_psf_ctl_c(psf_c0);

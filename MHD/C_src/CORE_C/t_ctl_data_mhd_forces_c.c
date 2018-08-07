@@ -58,7 +58,7 @@ void dealloc_forces_ctl_c(struct forces_ctl_c *frc_ctl){
 int read_forces_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct forces_ctl_c *frc_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_array_c(fp, buf, label_forces_ctl[ 0], frc_ctl->force_names_c);
 	};
@@ -109,7 +109,7 @@ void dealloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
 int read_gravity_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct gravity_ctl_c *g_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_gravity_ctl[ 0], g_ctl->gravity_c);
 		read_cr_ctl_array_c(fp, buf, label_gravity_ctl[ 1], g_ctl->gravity_vec_c);
@@ -159,7 +159,7 @@ void dealloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){
 int read_coriolis_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct coriolis_ctl_c *cor_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_cr_ctl_array_c(fp, buf, label_coriolis_ctl[ 0], cor_ctl->system_rotation_c);
 	};
@@ -210,7 +210,7 @@ void dealloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
 int read_magneto_cv_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct magneto_cv_ctl_c *mcv_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_magneto_cv_ctl[ 0], mcv_ctl->magneto_cv_c);
 		read_cr_ctl_array_c(fp, buf, label_magneto_cv_ctl[ 1], mcv_ctl->ext_magne_c);

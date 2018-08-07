@@ -67,7 +67,7 @@ int write_iso_field_ctl_c(FILE *fp, int level, const char *label,
 
 void alloc_iso_ctl_c(struct iso_ctl_c *iso_c);
 void dealloc_iso_ctl_c(struct iso_ctl_c *iso_c);
-int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+int read_iso_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_ctl_c *iso_c);
 int write_iso_ctl_c(FILE *fp, int level, const char *label, 
 			struct iso_ctl_c *iso_c);

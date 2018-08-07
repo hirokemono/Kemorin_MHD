@@ -78,20 +78,32 @@ int write_end_array_flag_for_ctl_c(FILE *fp, int level, const char *label){
 	return (level - 1);
 }
 
-int right_file_flag_c(const char buf[LENGTHBUF], const char *label, char *file_name){
+void skip_comment_read_line(FILE *fp, char buf[LENGTHBUF]){
+    
+    long offset = skip_comment_c(fp);
+    fgets(buf, LENGTHBUF, fp);
+    return;
+};
+
+
+int right_file_flag_c(const char buf[LENGTHBUF], const char *label){
 	int iflag = 0;
 	char header_chara[KCHARA_C], item_name[KCHARA_C];
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label_file) > 0){
 		sscanf(buf, "%s %s", header_chara, item_name);
-		if(cmp_no_case_c(label, item_name) > 0){
-			sscanf(buf, "%s %s %s", header_chara, item_name, file_name);
-			strip_cautation_marks(file_name);
-			iflag = 1;
-		};
+		iflag = cmp_no_case_c(label, item_name);
 	};
 	return iflag;
+}
+
+int read_file_flag_c(const char buf[LENGTHBUF], char *file_name){
+    char header_chara[KCHARA_C], item_name[KCHARA_C];
+    
+    sscanf(buf, "%s %s %s", header_chara, item_name, file_name);
+    strip_cautation_marks(file_name);
+    return -1;
 }
 
 int right_begin_flag_c(const char buf[LENGTHBUF], const char *label){

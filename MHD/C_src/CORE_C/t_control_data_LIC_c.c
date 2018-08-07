@@ -82,7 +82,7 @@ int read_lic_masking_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct lic_masking_ctl_c *mask_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_lic_masking_ctl_c[ 0], mask_ctl->field_name_ctl);
 		read_character_ctl_item_c(buf, label_lic_masking_ctl_c[ 1], mask_ctl->component_ctl);
@@ -125,7 +125,7 @@ int read_lic_masking_ctls_c(FILE *fp, char buf[LENGTHBUF],
 	
 	alloc_lic_masking_ctls_c(lic_c);
 	while(find_control_end_array_flag_c(buf, label, lic_c->num_lic_masking_ctl, icou) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		if(right_begin_flag_c(buf, label) > 0){
 			iflag = read_lic_masking_ctl_c(fp, buf, label, lic_c->mask_ctl[icou]);
@@ -262,7 +262,7 @@ int read_lic_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	
 	while(find_control_end_flag_c(buf, label) == 0){
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_lic_ctl_c[ 0], lic_c->LIC_field_ctl);
 		

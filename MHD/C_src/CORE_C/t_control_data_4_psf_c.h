@@ -79,6 +79,7 @@ int read_psf_define_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct psf_define_ctl_c *psf_def_c);
 int write_psf_define_file_c(const char *file_name, struct psf_define_ctl_c *psf_def_c);
 
+void rename_psf_define_file_c(struct psf_ctl_c *psf_c);
 int read_psf_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct psf_ctl_c *psf_c);
 int write_psf_ctl_file_c(const char *file_name, struct psf_ctl_c *psf_c);

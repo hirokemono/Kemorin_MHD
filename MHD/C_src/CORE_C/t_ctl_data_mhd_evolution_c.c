@@ -46,7 +46,7 @@ void dealloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl){
 int read_mhd_evolution_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct mhd_evolution_ctl_c *evo_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_array_c(fp, buf, label_mhd_evolution_ctl[ 0], evo_ctl->t_evo_field_c);
 	};
@@ -97,7 +97,7 @@ void dealloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl){
 int read_mhd_evo_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct mhd_evo_area_ctl_c *earea_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_array_c(fp, buf, label_mhd_evo_area_ctl[ 0], earea_ctl->evo_fluid_group_c);
 		read_character_ctl_array_c(fp, buf, label_mhd_evo_area_ctl[ 1], earea_ctl->evo_conduct_group_c);

@@ -87,7 +87,7 @@ void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 int read_iso_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
                         struct iso_define_ctl_c *iso_def_c){
     while(find_control_end_flag_c(buf, label) == 0){
-        fgets(buf, LENGTHBUF, fp);
+        skip_comment_read_line(fp, buf);
         
         read_character_ctl_array_c(fp, buf, label_iso_define_ctl[ 5], iso_def_c->iso_area_ctl);
     };
@@ -99,7 +99,7 @@ int read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
     int iflag;
 
     while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_iso_define_ctl[ 0], iso_def_c->isosurf_data_ctl);
 		read_character_ctl_item_c(buf, label_iso_define_ctl[ 1], iso_def_c->isosurf_comp_ctl);
@@ -168,7 +168,7 @@ void dealloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 int read_iso_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_field_ctl_c *iso_fld_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_iso_field_ctl[ 0], iso_fld_c->iso_result_type_ctl);
 		read_real_ctl_item_c(buf, label_iso_field_ctl[ 1], iso_fld_c->result_value_iso_ctl);
@@ -236,10 +236,10 @@ void dealloc_iso_ctl_c(struct iso_ctl_c *iso_c){
 	return;
 };
 
-int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+int read_iso_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_ctl_c *iso_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_iso_ctl[ 0], iso_c->iso_file_head_ctl);
         read_character_ctl_item_c(buf, label_iso_ctl[ 4], iso_c->iso_file_head_ctl);
@@ -294,9 +294,9 @@ int read_iso_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
     skip_comment_c(FP_ISO);
     fgets(buf, LENGTHBUF, FP_ISO);
     if(right_begin_flag_c(buf, label_iso_head) > 0){
-        iflag = read_psf_ctl_c(FP_ISO, buf, label_iso_head, iso_c);
+        iflag = read_iso_ctl_c(FP_ISO, buf, label_iso_head, iso_c);
     } else if(right_begin_flag_c(buf, label_old_iso_head) > 0){
-        iflag = read_psf_ctl_c(FP_ISO, buf, label_old_iso_head, iso_c);
+        iflag = read_iso_ctl_c(FP_ISO, buf, label_old_iso_head, iso_c);
     };
     fclose(FP_ISO);
     

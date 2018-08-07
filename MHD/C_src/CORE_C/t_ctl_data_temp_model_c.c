@@ -68,7 +68,7 @@ int read_reftemp_point_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct reference_point_ctl_c *ref_c){
 	
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_real_ctl_item_c(buf, label_reference_point_ctl[ 0], ref_c->depth_c);
 		read_real_ctl_item_c(buf, label_reference_point_ctl[ 1], ref_c->value_c);
@@ -80,7 +80,7 @@ int read_refcomp_point_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct reference_point_ctl_c *ref_c){
 	
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_real_ctl_item_c(buf, label_reference_point_ctl[ 0], ref_c->depth_c);
 		read_real_ctl_item_c(buf, label_reference_point_ctl[ 2], ref_c->value_c);
@@ -145,7 +145,7 @@ int read_rtakepiro_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct takepiro_model_ctl_c *takepiro_c){
 	
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_real_ctl_item_c(buf, label_takepiro_model_ctl[ 0], takepiro_c->stratified_sigma_c);
 		read_real_ctl_item_c(buf, label_takepiro_model_ctl[ 1], takepiro_c->stratified_width_c);
@@ -221,7 +221,7 @@ int read_ref_temperature_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct reference_temperature_c *reft_ctl){
 	
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		if(right_begin_flag_c(buf, label_ref_temperature_ctl[ 1]) > 0) 
 		reft_ctl->iflag_low_temp_ctl = read_reftemp_point_ctl_c(fp, buf, 
@@ -244,7 +244,7 @@ int read_ref_composition_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct reference_temperature_c *refc_ctl){
 	
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		if(right_begin_flag_c(buf, label_ref_temperature_ctl[ 4]) > 0) 
 		refc_ctl->iflag_low_temp_ctl = read_refcomp_point_ctl_c(fp, buf, 

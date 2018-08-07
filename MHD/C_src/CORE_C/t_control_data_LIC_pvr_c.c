@@ -58,8 +58,8 @@ int read_LIC_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct LIC_pvr_ctl_c *lic_pvr_c){
 	
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
-
+		skip_comment_read_line(fp, buf);
+		
         read_character_ctl_item_c(buf, label_LIC_pvr_ctl[ 1],
                                   lic_pvr_c->pvr_c->file_head_ctl);
         read_character_ctl_item_c(buf, label_LIC_pvr_ctl[ 2],
@@ -96,6 +96,10 @@ int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label,
 	return level;
 };
 
+void rename_LIC_pvr_ctl_subfiles(struct LIC_pvr_ctl_c *lic_pvr_c){
+    rename_pvr_ctl_subfiles(lic_pvr_c->pvr_c);
+    return;
+};
 
 int read_LIC_pvr_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
                         struct LIC_pvr_ctl_c *lic_pvr_c){

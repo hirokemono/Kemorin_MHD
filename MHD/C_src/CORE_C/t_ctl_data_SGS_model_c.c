@@ -192,7 +192,7 @@ int read_filter_file_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct filter_file_ctl_c *ffile_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_filter_file_ctl[ 0], ffile_c->filter_head_c);
 		read_character_ctl_item_c(buf, label_filter_file_ctl[ 1], ffile_c->filter_elen_head_c);
@@ -300,7 +300,7 @@ int read_layering_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct layering_ctl_c *elayer_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_layering_ctl[ 0], elayer_c->layering_grp_type_c);
 		
@@ -397,7 +397,7 @@ int read_each_sph_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sph_filter_ctl_c *sph_filter_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_sph_filter_ctl[ 0], sph_filter_c->sph_filter_type_c);
 		read_character_ctl_item_c(buf, label_sph_filter_ctl[ 1], sph_filter_c->radial_filter_type_c);
@@ -482,7 +482,7 @@ int read_SGS_3d_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct SGS_3d_filter_ctl_c *s3df_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_array_c(fp, buf, label_SGS_3d_filter_ctl[ 0], s3df_c->whole_filter_grp_ctl);
 		read_character_ctl_array_c(fp, buf, label_SGS_3d_filter_ctl[ 1], s3df_c->fluid_filter_grp_ctl);
@@ -544,7 +544,7 @@ int read_sph_filter_ctl_c(FILE *fp, char buf[LENGTHBUF],
 	
 	alloc_sph_filter_ctl_c(SGS_ctl_c);
 	while(find_control_end_array_flag_c(buf, label, SGS_ctl_c->num_sph_filter_c, icou) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		if(right_begin_flag_c(buf, label) > 0){
 			iflag = read_each_sph_filter_ctl_c(fp, buf, label, SGS_ctl_c->sph_filter_c[icou]);
@@ -726,7 +726,7 @@ int read_SGS_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	int iflag;
 	
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		iflag = find_control_array_flag_c(buf, label_SGS_model_ctl[33], &SGS_ctl_c->num_sph_filter_c);
 		if(iflag > 0) iflag = read_sph_filter_ctl_c(fp, buf, label_SGS_model_ctl[33],

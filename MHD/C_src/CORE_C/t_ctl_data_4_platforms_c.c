@@ -42,7 +42,7 @@ void alloc_platform_data_control_c(struct platform_data_control_c *files){
     files->maxlen = 0;
     for (i=0;i<20;i++){
         if(strlen(label_platform_ctl[i]) > files->maxlen){
-            files->maxlen = strlen(label_platform_ctl[i]);
+            files->maxlen = (int) strlen(label_platform_ctl[i]);
         };
     };
     
@@ -128,7 +128,7 @@ int read_platform_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *labe
 			struct platform_data_control_c *files){
 	while(find_control_end_flag_c(buf, label) == 0){
 		
-        fgets(buf, LENGTHBUF, fp);
+        skip_comment_read_line(fp, buf);
 
         read_character_ctl_item_c(buf, label_platform_ctl[0], files->debug_flag_c);
         

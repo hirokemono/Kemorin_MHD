@@ -64,7 +64,7 @@ void alloc_time_data_control_c(struct time_data_control_c *tctl){
     tctl->maxlen = 0;
     for (i=0;i<NLBL_TIME_DATA_CTL;i++){
         if(strlen(label_time_data_ctl[i]) > tctl->maxlen){
-            tctl->maxlen = strlen(label_time_data_ctl[i]);
+            tctl->maxlen = (int) strlen(label_time_data_ctl[i]);
         };
     };
     
@@ -198,7 +198,7 @@ void dealloc_time_data_control_c(struct time_data_control_c *tctl){
 int read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct time_data_control_c *tctl){
     while(find_control_end_flag_c(buf, label) == 0){
-        fgets(buf, LENGTHBUF, fp);
+        skip_comment_read_line(fp, buf);
 
         read_character_ctl_item_c(buf, label_time_data_ctl[0], tctl->flexible_step_c);
         read_real_ctl_item_c(buf, label_time_data_ctl[1], tctl->elapsed_time_c);

@@ -113,7 +113,7 @@ void dealloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
 int read_momentum_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct momentum_equation_ctl_c *mom_ctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_cr_ctl_array_c(fp, buf, label_momentum_equation_ctl[ 0], mom_ctl_c->coef_4_intertia_c);
 		read_cr_ctl_array_c(fp, buf, label_momentum_equation_ctl[ 1], mom_ctl_c->coef_4_grad_p_c);
@@ -205,7 +205,7 @@ void dealloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ct
 int read_induction_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct induction_equation_ctl_c *induct_ctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_cr_ctl_array_c(fp, buf, label_induction_equation_ctl[ 0], induct_ctl_c->coef_4_magne_evo_c);
 		read_cr_ctl_array_c(fp, buf, label_induction_equation_ctl[ 1], induct_ctl_c->coef_4_mag_potential_c);
@@ -276,7 +276,7 @@ void dealloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c){
 int read_heat_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct heat_equation_ctl_c *heat_ctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_cr_ctl_array_c(fp, buf, label_heat_equation_ctl[ 0], heat_ctl_c->coef_4_adv_flux_c);
 		read_cr_ctl_array_c(fp, buf, label_heat_equation_ctl[ 1], heat_ctl_c->coef_4_diffuse_c);
@@ -326,7 +326,7 @@ void alloc_comp_equation_ctl_c(struct heat_equation_ctl_c *comp_ctl_c){
 int read_comp_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct heat_equation_ctl_c *comp_ctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_cr_ctl_array_c(fp, buf, label_comp_equation_ctl[ 0], comp_ctl_c->coef_4_adv_flux_c);
 		read_cr_ctl_array_c(fp, buf, label_comp_equation_ctl[ 1], comp_ctl_c->coef_4_diffuse_c);
@@ -383,7 +383,7 @@ void dealloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c){
 int read_dimless_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct dimless_ctl_c *dless_ctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_cr_ctl_array_c(fp, buf, label_dimless_ctl[ 0], dless_ctl_c->dimless_c);
 	};
@@ -443,7 +443,7 @@ void dealloc_equations_ctl_c(struct equations_ctl_c *eqs_ctl_c){
 int read_equations_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct equations_ctl_c *eqs_ctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		if(right_begin_flag_c(buf, label_equations_ctl[ 1]) > 0) 
 		eqs_ctl_c->iflag_heat_ctl = read_heat_equation_ctl_c(fp, buf, 

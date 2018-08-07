@@ -163,6 +163,7 @@ int read_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_pvr_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_ctl_c *pvr_c);
 
+void rename_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c);
 int read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c);
 void write_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c);
 

@@ -8,6 +8,9 @@
 #ifndef t_control_data_LIC_pvr_c_h_
 #define t_control_data_LIC_pvr_c_h_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
@@ -36,6 +39,7 @@ int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label,
 			struct LIC_pvr_ctl_c *lic_pvr_c);
 
 
+void rename_LIC_pvr_ctl_subfiles(struct LIC_pvr_ctl_c *lic_pvr_c);
 int read_LIC_pvr_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
                         struct LIC_pvr_ctl_c *lic_pvr_c);
 int write_LIC_pvr_ctl_file_c(const char *file_name, struct LIC_pvr_ctl_c *lic_pvr_c);

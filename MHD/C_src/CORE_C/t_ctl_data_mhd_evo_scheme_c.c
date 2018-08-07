@@ -74,7 +74,7 @@ void dealloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl){
 int read_mhd_restart_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mhd_restart_control_c *mrst_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_mhd_restart_control[0], mrst_ctl->restart_flag_c);
 	};
@@ -213,7 +213,7 @@ void dealloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl)
 int read_mhd_evo_scheme_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mhd_evo_scheme_control_c *mevo_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_mhd_evo_scheme_control[15], mevo_ctl->scheme_c);
 		

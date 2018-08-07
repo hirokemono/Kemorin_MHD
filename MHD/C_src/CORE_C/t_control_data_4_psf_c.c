@@ -106,7 +106,7 @@ void dealloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 int read_psf_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct psf_define_ctl_c *psf_def_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_array_c(fp, buf, label_psf_define_ctl[ 9], psf_def_c->psf_area_ctl);
 	};
@@ -118,7 +118,7 @@ int read_psf_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	int iflag;
 	
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_psf_define_ctl[ 0], psf_def_c->section_method_ctl);
 		
@@ -198,7 +198,7 @@ void dealloc_psf_field_ctl_c(struct psf_field_ctl_c *psf_fld_c){
 int read_psf_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct psf_field_ctl_c *psf_fld_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_chara2_ctl_array_c(fp, buf, label_psf_field_ctl[ 0], psf_fld_c->psf_out_field_ctl);
 	};
@@ -265,7 +265,7 @@ void dealloc_psf_ctl_c(struct psf_ctl_c *psf_c){
 int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct psf_ctl_c *psf_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_psf_ctl[ 0], psf_c->psf_file_head_ctl);
         read_character_ctl_item_c(buf, label_psf_ctl[ 4], psf_c->psf_file_head_ctl);
@@ -275,8 +275,8 @@ int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		if(right_begin_flag_c(buf, label_psf_ctl[ 2]) > 0){
 			psf_c->iflag_surface_define = read_psf_define_ctl_c(fp, buf, 
 						label_psf_ctl[ 2], psf_c->psf_def_c);
-        } else if(right_file_flag_c(buf, label_psf_ctl[ 2], psf_c->psf_def_file_name)){
-            psf_c->iflag_surface_define = -1;
+        } else if(right_file_flag_c(buf, label_psf_ctl[ 2])){
+            psf_c->iflag_surface_define = read_file_flag_c(buf, psf_c->psf_def_file_name);
         };
 		if(right_begin_flag_c(buf, label_psf_ctl[ 3]) > 0){
 			psf_c->iflag_output_field = read_psf_field_ctl_c(fp, buf, 
@@ -309,7 +309,6 @@ int write_psf_ctl_c(FILE *fp, int level, const char *label,
 	return level;
 };
 
-
 int read_psf_define_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct psf_define_ctl_c *psf_def_c){
 	int iflag = 0;
@@ -340,6 +339,13 @@ int write_psf_define_file_c(const char *file_name, struct psf_define_ctl_c *psf_
 	fclose(FP_PSF);
 	
 	return level;
+};
+
+void rename_psf_define_file_c(struct psf_ctl_c *psf_c){
+    if(psf_c->iflag_surface_define ==-1){
+        strcat(psf_c->psf_def_file_name, "_2");
+    }
+    return;
 };
 
 int read_psf_ctl_file_c(const char *file_name, char buf[LENGTHBUF],

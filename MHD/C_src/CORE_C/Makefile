@@ -55,7 +55,9 @@ OBJ_KEMO_C = \
  t_control_data_LIC_c.o \
  t_control_data_4_pvr_c.o \
  t_control_data_LIC_pvr_c.o \
+ t_control_data_vizs_c.o \
  \
+ t_control_data_visualizer_c.o \
  t_SGS_MHD_control_c.o \
  \
  read_viewer_mesh_gz_c.o \
@@ -509,6 +511,7 @@ module:
 	t_control_data_4_fline_c.o \
 	t_control_data_4_pvr_c.o \
 	t_control_data_LIC_pvr_c.o \
+	t_control_data_vizs_c.o \
 	t_ctl_data_4_FEM_mesh_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -704,6 +707,36 @@ module:
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_data_vizs_c.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_vizs_c.c \
+	t_control_data_vizs_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	t_control_data_4_psf_c.o \
+	t_control_data_4_iso_c.o \
+	t_control_data_4_fline_c.o \
+	t_control_data_4_pvr_c.o \
+	t_control_data_LIC_pvr_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_data_visualizer_c.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_visualizer_c.c \
+	t_control_data_visualizer_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	t_ctl_data_4_platforms_c.o \
+	t_ctl_data_4_time_steps_c.o \
+	t_control_data_vizs_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

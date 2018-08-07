@@ -128,7 +128,7 @@ void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 int read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct colormap_ctl_c *cmap_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_colormap_ctl[ 0], cmap_c->colormap_mode_ctl);
 		
@@ -223,7 +223,7 @@ void dealloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
 int read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct lighting_ctl_c *light_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_real3_ctl_array_c(fp, buf, label_lighting_ctl[ 0], light_c->light_position_ctl);
 		

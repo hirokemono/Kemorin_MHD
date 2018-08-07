@@ -115,7 +115,7 @@ void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
 int read_pick_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct pick_spectr_control_c *pspec_ctl_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_pick_spectr_ctl[0], pspec_ctl_c->picked_mode_head_c);
 		
@@ -192,7 +192,7 @@ void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
 int read_gauss_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct gauss_spectr_control_c *g_pwr){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		read_character_ctl_item_c(buf, label_gauss_spectr_ctl[0], g_pwr->gauss_coefs_prefix_c);
 		
 		read_real_ctl_item_c(buf, label_gauss_spectr_ctl[1], g_pwr->gauss_coefs_radius_c);
@@ -274,7 +274,7 @@ void dealloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl){
 int read_layerd_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct layerd_spectr_control_c *lp_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_layerd_spectr_ctl[0], lp_ctl->layered_pwr_spectr_prefix_c);
 		
@@ -348,7 +348,7 @@ static int read_each_volume_spectr_ctl_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct volume_spectr_control_c *v_pwr_c){
 	
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_volume_spectr_ctl[0], v_pwr_c->volume_spec_file_c);
 		read_character_ctl_item_c(buf, label_volume_spectr_ctl[1], v_pwr_c->volume_ave_file_c);
@@ -403,7 +403,7 @@ int read_volume_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 	
 	alloc_volume_spectr_control_c(monitor_ctl);
 	while(find_control_end_array_flag_c(buf, label, monitor_ctl->num_vspec_c, icou) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		if(right_begin_flag_c(buf, label) > 0){
 			iflag = read_each_volume_spectr_ctl_c(fp, buf, label, monitor_ctl->v_pwr_c[icou]);
@@ -463,7 +463,7 @@ void dealloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl){
 int read_mid_equator_control_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct mid_equator_control_c *meq_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_mid_equator_ctl[0], meq_ctl->pick_circle_coord_c);
 		
@@ -544,7 +544,7 @@ int read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
 	int iflag = 0;
 	
 	while(find_control_end_flag_c(buf, "sph_monitor_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		iflag = find_control_array_flag_c(buf, label_sph_monitor_ctl[0], &monitor_ctl->num_vspec_c);
 		if(iflag > 0) iflag = read_volume_spectr_control_c(fp, buf, label_sph_monitor_ctl[0],

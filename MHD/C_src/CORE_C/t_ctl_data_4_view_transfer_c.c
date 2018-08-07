@@ -79,7 +79,7 @@ void dealloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c){
 int read_image_size_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct image_size_ctl_c *img_size_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		read_integer_ctl_item_c(buf, label_image_size_ctl[ 0], img_size_c->num_xpixel_ctl);
 		read_integer_ctl_item_c(buf, label_image_size_ctl[ 1], img_size_c->num_ypixel_ctl);
 	};
@@ -129,7 +129,7 @@ void dealloc_streo_view_ctl_c(struct streo_view_ctl_c *streo_view_c){
 int read_streo_view_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct streo_view_ctl_c *streo_view_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_real_ctl_item_c(buf, label_streo_view_ctl[ 0], streo_view_c->focalpoint_ctl);
 		read_real_ctl_item_c(buf, label_streo_view_ctl[ 1], streo_view_c->eye_separation_ctl);
@@ -186,7 +186,7 @@ void dealloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c){
 int read_projection_mat_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct projection_mat_ctl_c *projection_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 0], projection_c->perspective_angle_ctl);
 		read_real_ctl_item_c(buf, label_projection_mat_ctl[ 1], projection_c->perspective_xy_ratio_ctl);
@@ -300,7 +300,7 @@ void dealloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 int read_modeview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct modeview_ctl_c *mat_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_cr_ctl_array_c(fp, buf, label_modeview_ctl[ 0], mat_c->lookpoint_ctl);
 		read_cr_ctl_array_c(fp, buf, label_modeview_ctl[ 1], mat_c->viewpoint_ctl);

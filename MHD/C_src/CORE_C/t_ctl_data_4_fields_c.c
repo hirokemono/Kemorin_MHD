@@ -54,7 +54,7 @@ void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 int read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct field_ctl_c *fld_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_chara3_ctl_array_c(fp, buf, label_field_ctl[ 0], fld_ctl->field_c);
 		

@@ -33,11 +33,10 @@ char *trim(char *s)
 }
 
 long skip_comment_c(FILE *fp){
-	long offset = 0;
-	char buf[LENGTHBUF];    /* array for reading line */
+    char buf[LENGTHBUF];    /* array for reading line */
+	long offset = ftell(fp);
 	
 	while ((fgets(buf, LENGTHBUF, fp)) != NULL) {
-		/*printf("buf: %s \n",buf);*/
 		if ((buf[0] != '!') && (buf[0] != '#') && (buf[0] != '\n')) break;
 		offset = ftell(fp);
 	};

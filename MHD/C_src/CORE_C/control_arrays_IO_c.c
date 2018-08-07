@@ -41,12 +41,12 @@ void read_character_ctl_array_c(FILE *fp, char *buf, const char *label,
 	if(find_control_array_flag_c(buf, label, &c_array->num) == 0) return;
 	
 	if(c_array->num > 0) alloc_ctl_chara_array(c_array);
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, c_array->num, c_array->icou) == 0){
 		read_character_ctl_item_c(buf, label, c_array->c_array_item[c_array->icou]);
 		c_array->icou = c_array->icou + c_array->c_array_item[c_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;
@@ -101,7 +101,7 @@ void read_integer_ctl_array_c(FILE *fp, char *buf, const char *label,
 	
 	if(i_array->num > 0) alloc_ctl_int_array(i_array);
 	
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, i_array->num, i_array->icou) == 0){
 		if(i_array->icou >= i_array->num){
 			printf("Number of int item is larger than defined \n");
@@ -111,7 +111,7 @@ void read_integer_ctl_array_c(FILE *fp, char *buf, const char *label,
 		read_integer_ctl_item_c(buf, label, i_array->i_array_item[i_array->icou]);
 		i_array->icou = i_array->icou + i_array->i_array_item[i_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;
@@ -174,7 +174,7 @@ void read_chara2_ctl_array_c(FILE *fp, char *buf, const char *label,
     if(c2_array->num == 0) return;
 	
 	if(c2_array->num > 0) alloc_ctl_chara2_array(c2_array);
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, c2_array->num, c2_array->icou) == 0){
 		if(c2_array->icou >= c2_array->num){
 			printf("Number of char2 item is larger than defined, %d %d \n",
@@ -186,7 +186,7 @@ void read_chara2_ctl_array_c(FILE *fp, char *buf, const char *label,
 					c2_array->c2_array_item[c2_array->icou]);
 		c2_array->icou = c2_array->icou + c2_array->c1_array_item[c2_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;
@@ -255,7 +255,7 @@ void read_int2_ctl_array_c(FILE *fp, char *buf, const char *label,
     if(i2_array->num == 0) return;
 	
 	if(i2_array->num > 0) alloc_ctl_int2_array(i2_array);
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, i2_array->num, i2_array->icou) == 0){
 		if(i2_array->icou >= i2_array->num){
 			printf("Number of int2 item is larger than defined \n");
@@ -266,7 +266,7 @@ void read_int2_ctl_array_c(FILE *fp, char *buf, const char *label,
 					i2_array->i2_array_item[i2_array->icou]);
 		i2_array->icou = i2_array->icou + i2_array->i1_array_item[i2_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;
@@ -327,7 +327,7 @@ void read_real2_ctl_array_c(FILE *fp, char *buf, const char *label,
     if(r2_array->num == 0) return;
 	
 	if(r2_array->num > 0) alloc_ctl_real2_array(r2_array);
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, r2_array->num, r2_array->icou) == 0){
 		if(r2_array->icou >= r2_array->num){
 			printf("Number of int2 item is larger than defined \n");
@@ -338,7 +338,7 @@ void read_real2_ctl_array_c(FILE *fp, char *buf, const char *label,
 					r2_array->r2_array_item[r2_array->icou]);
 		r2_array->icou = r2_array->icou + r2_array->r1_array_item[r2_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;
@@ -400,7 +400,7 @@ void read_ci_ctl_array_c(FILE *fp, char *buf, const char *label,
     if(ci_array->num == 0) return;
 	
 	if(ci_array->num > 0) alloc_ctl_ci_array(ci_array);
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, ci_array->num, ci_array->icou) == 0){
 		if(ci_array->icou >= ci_array->num){
 			printf("Number of char_real item is larger than defined \n");
@@ -411,7 +411,7 @@ void read_ci_ctl_array_c(FILE *fp, char *buf, const char *label,
 					ci_array->i_array_item[ci_array->icou]);
 		ci_array->icou = ci_array->icou + ci_array->c_array_item[ci_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;
@@ -481,7 +481,7 @@ void read_cr_ctl_array_c(FILE *fp, char *buf, const char *label,
     if(cr_array->num == 0) return;
 	
 	if(cr_array->num > 0) alloc_ctl_cr_array(cr_array);
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, cr_array->num, cr_array->icou) == 0){
 		if(cr_array->icou >= cr_array->num){
 			printf("Number of char_real item is larger than defined \n");
@@ -492,7 +492,7 @@ void read_cr_ctl_array_c(FILE *fp, char *buf, const char *label,
 					cr_array->r_array_item[cr_array->icou]);
 		cr_array->icou = cr_array->icou + cr_array->c_array_item[cr_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;
@@ -561,7 +561,7 @@ void read_ir_ctl_array_c(FILE *fp, char *buf, const char *label,
     if(ir_array->num == 0) return;
 	
 	if(ir_array->num > 0) alloc_ctl_ir_array(ir_array);
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, ir_array->num, ir_array->icou) == 0){
 		if(ir_array->icou >= ir_array->num){
 			printf("Number of int_real item is larger than defined \n");
@@ -572,7 +572,7 @@ void read_ir_ctl_array_c(FILE *fp, char *buf, const char *label,
 					ir_array->r_array_item[ir_array->icou]);
 		ir_array->icou = ir_array->icou + ir_array->i_array_item[ir_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;
@@ -641,7 +641,7 @@ void read_chara3_ctl_array_c(FILE *fp, char *buf, const char *label,
     if(c3_array->num == 0) return;
 	
 	if(c3_array->num > 0) alloc_ctl_chara3_array(c3_array);
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, c3_array->num, c3_array->icou) == 0){
 		if(c3_array->icou >= c3_array->num){
 			printf("Number of char3 item is larger than defined, %d %d \n",
@@ -654,7 +654,7 @@ void read_chara3_ctl_array_c(FILE *fp, char *buf, const char *label,
 					c3_array->c3_array_item[c3_array->icou]);
 		c3_array->icou = c3_array->icou + c3_array->c1_array_item[c3_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;
@@ -733,7 +733,7 @@ void read_real3_ctl_array_c(FILE *fp, char *buf, const char *label,
     if(r3_array->num == 0) return;
 	
 	if(r3_array->num > 0) alloc_ctl_real3_array(r3_array);
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, r3_array->num, r3_array->icou) == 0){
 		if(r3_array->icou >= r3_array->num){
 			printf("Number of real3 item is larger than defined, %d %d \n",
@@ -746,7 +746,7 @@ void read_real3_ctl_array_c(FILE *fp, char *buf, const char *label,
 					r3_array->r3_array_item[r3_array->icou]);
 		r3_array->icou = r3_array->icou + r3_array->r1_array_item[r3_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;
@@ -815,7 +815,7 @@ void read_c2r_ctl_array_c(FILE *fp, char *buf, const char *label,
     if(c2r_array->num == 0) return;
 	
 	if(c2r_array->num > 0) alloc_ctl_c2r_array(c2r_array);
-	fgets(buf, LENGTHBUF, fp);
+	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, c2r_array->num, c2r_array->icou) == 0){
 		if(c2r_array->icou >= c2r_array->num){
 			printf("Number of char2_real item is larger than defined \n");
@@ -827,7 +827,7 @@ void read_c2r_ctl_array_c(FILE *fp, char *buf, const char *label,
 					c2r_array->r_array_item[c2r_array->icou]);
 		c2r_array->icou = c2r_array->icou + c2r_array->c1_array_item[c2r_array->icou]->iflag;
 		
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 	};
 	
 	return;

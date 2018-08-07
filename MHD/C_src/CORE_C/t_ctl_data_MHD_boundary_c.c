@@ -125,7 +125,7 @@ void dealloc_MHD_boundary_ctl_c(struct MHD_boundary_ctl_c *bc_ctl){
 int read_MHD_node_bc_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct MHD_boundary_ctl_c *nod_bc_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_c2r_ctl_array_c(fp, buf, label_MHD_node_bc_ctl[ 0], nod_bc_ctl->bc_T_ctl);
 		read_c2r_ctl_array_c(fp, buf, label_MHD_node_bc_ctl[ 1], nod_bc_ctl->bc_U_ctl);
@@ -142,7 +142,7 @@ int read_MHD_node_bc_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int read_MHD_surf_bc_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct MHD_boundary_ctl_c *surf_bc_ctl){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_c2r_ctl_array_c(fp, buf, label_MHD_surf_bc_ctl[ 0], surf_bc_ctl->bc_T_ctl);
 		read_c2r_ctl_array_c(fp, buf, label_MHD_surf_bc_ctl[ 1], surf_bc_ctl->bc_U_ctl);

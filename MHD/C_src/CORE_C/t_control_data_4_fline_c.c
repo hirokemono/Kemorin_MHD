@@ -121,7 +121,7 @@ void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 int read_fline_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct fline_ctl_c *fline_c){
 	while(find_control_end_flag_c(buf, label) == 0){
-		fgets(buf, LENGTHBUF, fp);
+		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_item_c(buf, label_fline_ctl[ 0], fline_c->fline_file_head_ctl);
 		read_character_ctl_item_c(buf, label_fline_ctl[ 1], fline_c->fline_output_type_ctl);
