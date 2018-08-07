@@ -9,6 +9,8 @@
 
 #define NLBL_FLINE_CTL   14
 
+FILE *FP_fline;
+
 const char label_fline_ctl[NLBL_FLINE_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"fline_file_head"},
 	/*[ 1]*/	{"fline_output_type"},
@@ -30,13 +32,15 @@ const char label_fline_ctl[NLBL_FLINE_CTL][KCHARA_C] = {
 	/*[13]*/	{"starting_gl_surface_id"}
 };
 
+const char label_fline_head[KCHARA_C] = "field_line";
+
 void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	int i;
 	
 	fline_c->maxlen = 0;
 	for (i=0;i<NLBL_FLINE_CTL;i++){
-		if(strlen(label_fline_ctl[i]) > fline_c->maxlen){
-			fline_c->maxlen = strlen(label_fline_ctl[i]);
+		if((int) strlen(label_fline_ctl[i]) > fline_c->maxlen){
+			fline_c->maxlen = (int) strlen(label_fline_ctl[i]);
 		};
 	};
 	
@@ -114,7 +118,7 @@ void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	return;
 };
 
-int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+int read_fline_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct fline_ctl_c *fline_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		fgets(buf, LENGTHBUF, fp);
@@ -173,5 +177,40 @@ int write_fline_ctl_c(FILE *fp, int level, const char *label,
 	write_int2_ctl_array_c(fp, level, fline_c->maxlen, label_fline_ctl[13], fline_c->seed_surface_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
+	return level;
+};
+
+
+
+int read_fline_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
+			struct fline_ctl_c *fline_c){
+	int iflag = 0;
+	
+	if ((FP_fline = fopen(file_name, "r")) == NULL) {
+		fprintf(stderr, "Cannot open file!\n");
+		exit (2);                    /* terminate with error message */
+	};
+	
+    skip_comment_c(FP_fline);
+	fgets(buf, LENGTHBUF, FP_fline);
+	if(right_begin_flag_c(buf, label_fline_head) > 0){
+		iflag = read_fline_ctl_c(FP_fline, buf, label_fline_head, fline_c);
+	};
+	fclose(FP_fline);
+	
+	return iflag;
+};
+
+int write_fline_ctl_file_c(const char *file_name, struct fline_ctl_c *fline_c){
+	int level;
+	
+	if ((FP_fline = fopen(file_name, "w")) == NULL) {
+		fprintf(stderr, "Cannot open file!\n");
+		exit (2);                    /* terminate with error message */
+	};
+	
+	level = write_fline_ctl_c(FP_fline, 0, label_fline_head, fline_c);
+	fclose(FP_fline);
+	
 	return level;
 };

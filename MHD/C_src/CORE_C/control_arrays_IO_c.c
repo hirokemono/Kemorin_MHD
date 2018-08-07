@@ -462,7 +462,7 @@ void alloc_ctl_cr_array(struct chara_real_ctl_array *cr_array){
 void dealloc_ctl_cr_array(struct chara_real_ctl_array *cr_array){
 	int i;
 	
-	if(cr_array->num < 0) return;
+	if(cr_array->num == 0) return;
 	for(i=0;i<cr_array->num;i++){
 		dealloc_ctl_chara_item(cr_array->c_array_item[i]);
 		free(cr_array->c_array_item[i]);

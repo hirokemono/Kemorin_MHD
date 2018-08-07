@@ -48,8 +48,9 @@ void write_one_label_w_lf_c(FILE *fp, const char *label){
 
 
 void write_file_flag_for_ctl_c(FILE *fp, int level, const char *label, const char *file_name){
-	write_space_4_parse_c(fp, level);
-	fprintf(fp, "%s  %s  %s\n", label_file, label, file_name);
+    write_space_4_parse_c(fp, level);
+    write_one_label_cont_c(fp, (int) strlen(label), label);
+    write_one_label_w_lf_c(fp, file_name);
 	return;
 }
 

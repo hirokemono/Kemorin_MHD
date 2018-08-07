@@ -8,7 +8,7 @@ begin field_line
 !
   array chosen_ele_grp_ctl 1
     chosen_ele_grp_ctl   outer_core_ele   end
-  end array
+  end array chosen_ele_grp_ctl
 !
 !  starting_type:    position_list, surface_list,  or surface_group
   line_direction_ctl        forward
@@ -23,11 +23,11 @@ begin field_line
 !
   array starting_point_ctl  10
     starting_point_ctl  0.0  0.0  0.0
-  end array
+  end array starting_point_ctl
 !
   array starting_gl_surface_id  10
     starting_gl_surface_id  12  3
-  end array
+  end array starting_gl_surface_id
 !
 !   field type:
 !     scalar, vector, sym_tensor, asym_tensor
@@ -39,4 +39,4 @@ begin field_line
   coloring_field_ctl        magnetic_field   end
   coloring_comp_ctl        radial   end
 !
-end
+end field_line

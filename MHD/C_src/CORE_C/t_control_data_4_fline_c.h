@@ -43,9 +43,13 @@ struct fline_ctl_c{
 
 void alloc_fline_ctl_c(struct fline_ctl_c *fline_c);
 void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c);
-int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+int read_fline_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct fline_ctl_c *fline_c);
 int write_fline_ctl_c(FILE *fp, int level, const char *label, 
 			struct fline_ctl_c *fline_c);
+
+int read_fline_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
+			struct fline_ctl_c *fline_c);
+int write_fline_ctl_file_c(const char *file_name, struct fline_ctl_c *fline_c);
 
 #endif /* t_control_data_4_fline_c_h_ */

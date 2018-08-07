@@ -44,6 +44,7 @@ struct psf_ctl_c{
 	struct chara_ctl_item *psf_output_type_ctl;
 	
 	int iflag_surface_define;
+    char *psf_def_file_name;
 	struct psf_define_ctl_c *psf_def_c;
 	int iflag_output_field;
 	struct psf_field_ctl_c *psf_fld_c;
@@ -72,5 +73,14 @@ int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct psf_ctl_c *psf_c);
 int write_psf_ctl_c(FILE *fp, int level, const char *label, 
 			struct psf_ctl_c *psf_c);
+
+
+int read_psf_define_file_c(const char *file_name, char buf[LENGTHBUF],
+			struct psf_define_ctl_c *psf_def_c);
+int write_psf_define_file_c(const char *file_name, struct psf_define_ctl_c *psf_def_c);
+
+int read_psf_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
+			struct psf_ctl_c *psf_c);
+int write_psf_ctl_file_c(const char *file_name, struct psf_ctl_c *psf_c);
 
 #endif /* t_control_data_4_psf_c_h_ */
