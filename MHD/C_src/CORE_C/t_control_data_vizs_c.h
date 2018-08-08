@@ -16,7 +16,7 @@
 #include "t_control_data_4_iso_c.h"
 #include "t_control_data_4_psf_c.h"
 #include "t_control_data_4_fline_c.h"
-#include "t_control_data_4_pvr_c.h"
+#include "t_control_data_PVR_ctl_list.h"
 #include "t_control_data_LIC_ctl_list.h"
 
 struct sectioning_ctl_c{
@@ -46,14 +46,6 @@ struct fieldline_ctl_c{
 	struct fieldline_ctl_c *_next;
 };
 
-struct volume_rendering_ctl_c{
-    char *fname_pvr_ctl;
-    int iflag_pvr_ctl;
-    struct pvr_ctl_c *pvr_c;
-	
-	struct volume_rendering_ctl_c *_prev;
-	struct volume_rendering_ctl_c *_next;
-};
 
 struct visualizers_ctl_c{
     int maxlen;
@@ -67,9 +59,7 @@ struct visualizers_ctl_c{
     int num_fieldlines_ctl;
     struct fieldline_ctl_c        **fldlines_c;
     
-    int num_volume_renderings_ctl;
-    struct volume_rendering_ctl_c **v_render_c;
-    
+    struct PVR_ctl_list pvr_ctl_list;
     struct LIC_PVR_ctl_list lic_ctl_list;
 };
 
@@ -102,15 +92,6 @@ int write_fieldline_ctl_c(FILE *fp, int level, const char *label,
 void read_fieldline_ctl_file_c(char buf[LENGTHBUF], struct fieldline_ctl_c *fldlines_c);
 void write_fieldline_ctl_file_c(struct fieldline_ctl_c *fldlines_c);
 
-void alloc_volume_rendering_ctl_c(struct volume_rendering_ctl_c *v_render_c);
-void dealloc_volume_rendering_ctl_c(struct volume_rendering_ctl_c *v_render_c);
-int read_volume_rendering_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct volume_rendering_ctl_c *v_render_c);
-int write_volume_rendering_ctl_c(FILE *fp, int level, const char *label, 
-			struct volume_rendering_ctl_c *v_render_c);
-void read_volume_rendering_ctl_file_c(char buf[LENGTHBUF], struct volume_rendering_ctl_c *v_render_c);
-void write_volume_rendering_ctl_file_c(struct volume_rendering_ctl_c *v_render_c);
-
 
 void alloc_sectionings_ctl_c(struct visualizers_ctl_c *viz_c);
 int read_sectionings_ctl_c(FILE *fp, char buf[LENGTHBUF], 
@@ -130,11 +111,6 @@ int read_fieldlines_ctl_c(FILE *fp, char buf[LENGTHBUF],
 int write_fieldlines_ctl_c(FILE *fp, int level, const char *label, 
 			struct visualizers_ctl_c *viz_c);
 
-void alloc_volume_renderings_ctl_c(struct visualizers_ctl_c *viz_c);
-int read_volume_renderings_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct visualizers_ctl_c *viz_c);
-int write_volume_renderings_ctl_c(FILE *fp, int level, const char *label, 
-			struct visualizers_ctl_c *viz_c);
 
 void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c);
 void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c);
