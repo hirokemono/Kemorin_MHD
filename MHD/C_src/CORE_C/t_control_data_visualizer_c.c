@@ -102,6 +102,7 @@ int read_visualizers_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
                         struct viz_only_ctl_c *viz_only){
     int iflag = 0;
     
+    printf("Read Visualizer control: %s\n", file_name);
     if ((FP_VIZ = fopen(file_name, "r")) == NULL) {
         fprintf(stderr, "Cannot open file!\n");
         exit (2);                    /* terminate with error message */
@@ -123,6 +124,7 @@ int write_visualizers_ctl_file_c(const char *file_name, struct viz_only_ctl_c *v
     
 	write_vizs_ctl_files_c(viz_only->viz_c);
     
+    printf("Write Visualizer control: %s\n", file_name);
     if ((FP_VIZ = fopen(file_name, "w")) == NULL) {
         fprintf(stderr, "Cannot open file!\n");
         exit (2);                    /* terminate with error message */

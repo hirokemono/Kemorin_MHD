@@ -26,33 +26,13 @@
 #include "t_ctl_data_mhd_evolution_c.h"
 #include "t_ctl_data_4_fields_c.h"
 
+#include "t_control_data_vizs_c.h"
 #include "t_ctl_data_4_sphere_model_c.h"
 #include "t_ctl_data_4_FEM_mesh_c.h"
 
 
 struct section_controls_c{
 	char *ctl_file_name;
-};
-struct isosurf_controls_c{
-	char *ctl_file_name;
-};
-struct volume_rendering_controls_c{
-	char *ctl_file_name;
-};
-struct lic_rendering_controls_c{
-	char *ctl_file_name;
-};
-struct fieldline_controls_c{
-	char *ctl_file_name;
-};
-
-struct parallel_sph_shell_control_c{
-	int iflag_FEM_mesh_ctl;
-	struct FEM_mesh_control_c *Fmesh_ctl;
-	int iflag_sph_domain;
-	struct sphere_domain_ctl_c *sdctl_c;
-	int iflag_sph_shell;
-	struct sphere_data_ctl_c *spctl_c;
 };
 
 struct mhd_model_control_c{
@@ -96,18 +76,7 @@ struct sph_mhd_control_control_c{
 struct node_monitor_control_c{
 	int iflag;
 };
-struct visualization_controls_c{
-	int num_section_controls;
-	struct section_controls_c **psf_ctls;
-	int num_isosurf_controls;
-	struct isosurf_controls_c **iso_ctls;
-	int num_volume_rendering_controls;
-	struct volume_rendering_controls_c **pvr_ctls;
-	int num_lic_rendering_controls;
-	struct lic_rendering_controls_c **lic_ctls;
-	int num_fieldline_controls;
-	struct fieldline_controls_c **fline_ctls;
-};
+
 struct sph_zonal_means_controls_c{
 	int iflag_zmean_section_controls;
 	struct section_controls_c *zmean_psf_ctls;
@@ -138,29 +107,18 @@ struct SGS_MHD_control_c{
 	struct node_monitor_control_c *node_monitor_ctl;
 	
 	int iflag_visual_control;
-	struct visualization_controls_c *viz_ctls;
+	struct visualizers_ctl_c *viz_c;
 	int iflag_zonal_mean_control;
 	struct sph_zonal_means_controls_c *zm_ctls;
 };
 
 /* Prototypes */
 
-void alloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl);
-void dealloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl);
-
 void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl);
 void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl);
 
 void alloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_ctl);
 void dealloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_ctl);
-
-void init_visualization_controls_c(struct visualization_controls_c *viz_ctls);
-void alloc_section_controls_c(struct visualization_controls_c *viz_ctls);
-void alloc_isosurf_controls_c(struct visualization_controls_c *viz_ctls);
-void alloc_volume_rendering_controls_c(struct visualization_controls_c *viz_ctls);
-void alloc_fieldline_controls_c(struct visualization_controls_c *viz_ctls);
-void alloc_lic_rendering_controls_c(struct visualization_controls_c *viz_ctls);
-void dealloc_visualization_controls_c(struct visualization_controls_c *viz_ctls);
 
 void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_controls_c *zm_ctls);
 void dealloc_sph_zonal_means_controls_c(struct sph_zonal_means_controls_c *zm_ctls);

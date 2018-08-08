@@ -187,7 +187,7 @@ int write_pvr_section_ctl_c(FILE *fp, int level, const char *label,
 	
 	if(pvr_sect_ctl->iflag_psf_define_ctl == 1){
 		fprintf(fp, "!\n");
-		write_psf_define_ctl_c(fp, level, label_pvr_sections_ctl[ 0], pvr_sect_ctl->psf_def_c);
+		level = write_psf_define_ctl_c(fp, level, label_pvr_sections_ctl[ 0], pvr_sect_ctl->psf_def_c);
 	} else if(pvr_sect_ctl->iflag_psf_define_ctl == -1){
 		write_file_flag_for_ctl_c(fp, level, label_pvr_sections_ctl[ 0], pvr_sect_ctl->fname_sect_ctl);
 	};

@@ -46,6 +46,7 @@ OBJ_KEMO_C = \
  t_ctl_data_4_fields_c.o \
  \
  t_ctl_data_4_sphere_model_c.o \
+ t_control_data_sph_grid_c.o \
  \
  t_control_data_4_psf_c.o \
  t_control_data_4_iso_c.o \
@@ -63,6 +64,7 @@ OBJ_KEMO_C = \
  t_control_data_vizs_c.o \
  \
  t_control_data_visualizer_c.o \
+ t_control_data_gen_sph_grid_c.o \
  t_SGS_MHD_control_c.o \
  \
  read_viewer_mesh_gz_c.o \
@@ -621,6 +623,19 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	t_control_data_sph_grid_c.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_sph_grid_c.c \
+	t_control_data_sph_grid_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	t_ctl_data_4_FEM_mesh_c.o \
+	t_ctl_data_4_sphere_model_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	t_control_data_4_psf_c.o: \
 	'$$(KEMO_C_DIR)'/t_control_data_4_psf_c.c \
 	t_control_data_4_psf_c.h \
@@ -802,6 +817,19 @@ module:
 	t_ctl_data_4_platforms_c.o \
 	t_ctl_data_4_time_steps_c.o \
 	t_control_data_vizs_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_data_gen_sph_grid_c.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_gen_sph_grid_c.c \
+	t_control_data_gen_sph_grid_c.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	t_ctl_data_4_platforms_c.o \
+	t_control_data_sph_grid_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

@@ -151,104 +151,6 @@ void dealloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control
 }
 
 
-void init_visualization_controls_c(struct visualization_controls_c *viz_ctls){
-    viz_ctls->num_section_controls = 0;
-    viz_ctls->num_isosurf_controls = 0;
-	viz_ctls->num_volume_rendering_controls = 0;
-	viz_ctls->num_fieldline_controls = 0;
-	viz_ctls->num_lic_rendering_controls = 0;
-	return;
-}
-
-void alloc_section_controls_c(struct visualization_controls_c *viz_ctls){
-	int i, num;
-	num = viz_ctls->num_section_controls;
-	viz_ctls->psf_ctls = (struct section_controls_c **) malloc(num*sizeof(struct section_controls_c *));
-	
-	for(i=0;i<num;i++){
-		viz_ctls->psf_ctls[i] = (struct section_controls_c *) malloc(sizeof(struct section_controls_c));
-		viz_ctls->psf_ctls[i]->ctl_file_name = (char *)calloc(KCHARA_C, sizeof(char));
-	};
-	return;
-}
-void alloc_isosurf_controls_c(struct visualization_controls_c *viz_ctls){
-	int i, num;
-	num = viz_ctls->num_isosurf_controls;
-	viz_ctls->iso_ctls = (struct isosurf_controls_c **) malloc(num*sizeof(struct isosurf_controls_c *));
-	
-	for(i=0;i<num;i++){
-		viz_ctls->iso_ctls[i] = (struct isosurf_controls_c *) malloc(sizeof(struct isosurf_controls_c));
-		viz_ctls->iso_ctls[i]->ctl_file_name = (char *)calloc(KCHARA_C, sizeof(char));
-	};
-	return;
-}
-void alloc_volume_rendering_controls_c(struct visualization_controls_c *viz_ctls){
-	int i, num;
-	num = viz_ctls->num_volume_rendering_controls;
-	viz_ctls->pvr_ctls = (struct volume_rendering_controls_c **) malloc(num*sizeof(struct volume_rendering_controls_c *));
-	
-	for(i=0;i<num;i++){
-		viz_ctls->pvr_ctls[i] = (struct volume_rendering_controls_c *) malloc(sizeof(struct volume_rendering_controls_c));
-		viz_ctls->pvr_ctls[i]->ctl_file_name = (char *)calloc(KCHARA_C, sizeof(char));
-	};
-	return;
-}
-void alloc_fieldline_controls_c(struct visualization_controls_c *viz_ctls){
-	int i, num;
-	num = viz_ctls->num_fieldline_controls;
-	viz_ctls->fline_ctls = (struct fieldline_controls_c **) malloc(num*sizeof(struct fieldline_controls_c *));
-	
-	for(i=0;i<num;i++){
-		viz_ctls->fline_ctls[i] = (struct fieldline_controls_c *) malloc(sizeof(struct fieldline_controls_c));
-		viz_ctls->fline_ctls[i]->ctl_file_name = (char *)calloc(KCHARA_C, sizeof(char));
-	};
-	return;
-}
-void alloc_lic_rendering_controls_c(struct visualization_controls_c *viz_ctls){
-	int i, num;
-	num = viz_ctls->num_lic_rendering_controls;
-	viz_ctls->lic_ctls = (struct lic_rendering_controls_c **) malloc(num*sizeof(struct lic_rendering_controls_c *));
-	
-	for(i=0;i<num;i++){
-		viz_ctls->lic_ctls[i] = (struct lic_rendering_controls_c *) malloc(sizeof(struct lic_rendering_controls_c));
-		viz_ctls->lic_ctls[i]->ctl_file_name = (char *)calloc(KCHARA_C, sizeof(char));
-	};
-	return;
-}
-
-void dealloc_visualization_controls_c(struct visualization_controls_c *viz_ctls){
-	int i;
-	
-	for(i=0;i<viz_ctls->num_section_controls;i++){
-		free(viz_ctls->psf_ctls[i]->ctl_file_name);
-		free(viz_ctls->psf_ctls[i]);
-	};
-	for(i=0;i<viz_ctls->num_isosurf_controls;i++){
-		free(viz_ctls->iso_ctls[i]->ctl_file_name);
-		free(viz_ctls->iso_ctls[i]);
-	};
-	for(i=0;i<viz_ctls->num_volume_rendering_controls;i++){
-		free(viz_ctls->pvr_ctls[i]->ctl_file_name);
-		free(viz_ctls->pvr_ctls[i]);
-	};
-	for(i=0;i<viz_ctls->num_fieldline_controls;i++){
-		free(viz_ctls->fline_ctls[i]->ctl_file_name);
-		free(viz_ctls->fline_ctls[i]);
-	};
-	for(i=0;i<viz_ctls->num_lic_rendering_controls;i++){
-		free(viz_ctls->lic_ctls[i]->ctl_file_name);
-		free(viz_ctls->lic_ctls[i]);
-	};
-    init_visualization_controls_c(viz_ctls);
-	
-	free(viz_ctls->psf_ctls);
-	free(viz_ctls->iso_ctls);
-	free(viz_ctls->pvr_ctls);
-	free(viz_ctls->fline_ctls);
-	free(viz_ctls->lic_ctls);
-	return;
-}
-
 void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_controls_c *zm_ctls){
 	zm_ctls->iflag_zmean_section_controls = 0;
 	zm_ctls->zmean_psf_ctls = (struct section_controls_c *) malloc(sizeof(struct section_controls_c));
@@ -307,8 +209,8 @@ void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	alloc_sph_monitor_ctl_c(mhd_ctl->monitor_ctl);
 	mhd_ctl->node_monitor_ctl = (struct node_monitor_control_c *) malloc(sizeof(struct node_monitor_control_c));
 	
-	mhd_ctl->viz_ctls = (struct visualization_controls_c *) malloc(sizeof(struct visualization_controls_c));
-	init_visualization_controls_c(mhd_ctl->viz_ctls);
+	mhd_ctl->viz_c = (struct visualizers_ctl_c *) malloc(sizeof(struct visualizers_ctl_c));
+	alloc_vizs_ctl_c(mhd_ctl->viz_c);
 	mhd_ctl->zm_ctls = (struct sph_zonal_means_controls_c *) malloc(sizeof(struct sph_zonal_means_controls_c));
 	alloc_sph_zonal_means_controls_c(mhd_ctl->zm_ctls);
 	return;
@@ -329,8 +231,8 @@ void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	
 	dealloc_sph_zonal_means_controls_c(mhd_ctl->zm_ctls);
 	free(mhd_ctl->zm_ctls);
-	dealloc_visualization_controls_c(mhd_ctl->viz_ctls);
-	free(mhd_ctl->viz_ctls);
+	dealloc_vizs_ctl_c(mhd_ctl->viz_c);
+	free(mhd_ctl->viz_c);
 	dealloc_sph_monitor_ctl_c(mhd_ctl->monitor_ctl);
 	free(mhd_ctl->monitor_ctl);
 	free(mhd_ctl->node_monitor_ctl);

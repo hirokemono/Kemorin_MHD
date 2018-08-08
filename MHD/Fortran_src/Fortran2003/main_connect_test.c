@@ -21,111 +21,7 @@ struct field_control{
 
 struct field_control *fld_ctl;
 
-int read_section_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, struct visualization_controls_c *viz_ctls){
-	int icou = 0;
-	printf("alloc_section_controls_c %d\n", viz_ctls->num_section_controls);
-	alloc_section_controls_c(viz_ctls);
-	while(find_control_end_array_flag_c(buf, label, viz_ctls->num_section_controls, icou) == 0){
-		fgets(buf, LENGTHBUF, fp);
-		
-		icou = icou + right_file_flag_c(buf, label, viz_ctls->psf_ctls[icou]->ctl_file_name);
-		if(right_begin_flag_c(buf, label) > 0){
-			viz_ctls->psf_ctls[icou]->ctl_file_name = "NO_FILE";
-			icou = icou + 1;
-		};
-		
-		printf("Block read_section_controls_c %d %s\n", icou, buf);
-	};
-	return 1;
-}
-int read_isosurf_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, struct visualization_controls_c *viz_ctls){
-	int icou = 0;
-	printf("alloc_isosurf_controls_c %d\n",viz_ctls->num_isosurf_controls);
-	alloc_isosurf_controls_c(viz_ctls);
-	while(find_control_end_array_flag_c(buf, label, viz_ctls->num_isosurf_controls, icou) == 0){
-		fgets(buf, LENGTHBUF, fp);
-		
-		icou = icou + right_file_flag_c(buf, label, viz_ctls->iso_ctls[icou]->ctl_file_name);
-		if(right_begin_flag_c(buf, label) > 0){
-			viz_ctls->iso_ctls[icou]->ctl_file_name = "NO_FILE";
-			icou = icou + 1;
-		};
-		
-		printf("Block read_isosurf_controls_c %d %s\n", icou, buf);
-	};
-	return 1;
-}
-int read_volume_rendering_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, struct visualization_controls_c *viz_ctls){
-	int icou = 0;
-	printf("alloc_volume_rendering_controls_c %d\n",viz_ctls->num_volume_rendering_controls);
-	alloc_volume_rendering_controls_c(viz_ctls);
-	while(find_control_end_array_flag_c(buf, label, viz_ctls->num_volume_rendering_controls, icou) == 0){
-		fgets(buf, LENGTHBUF, fp);
-		printf("Block read_volume_rendering_controls_c %d %s\n", icou, buf);
-		
-		icou = icou + right_file_flag_c(buf, label, viz_ctls->pvr_ctls[icou]->ctl_file_name);
-		if(right_begin_flag_c(buf, label) > 0){
-			viz_ctls->pvr_ctls[icou]->ctl_file_name = "NO_FILE";
-			icou = icou + 1;
-		};
-		
-	};
-	return 1;
-}
-int read_lic_rendering_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, struct visualization_controls_c *viz_ctls){
-	int icou = 0;
-	alloc_lic_rendering_controls_c(viz_ctls);
-	while(find_control_end_array_flag_c(buf, "LIC_rendering", viz_ctls->num_lic_rendering_controls, icou) == 0){
-		fgets(buf, LENGTHBUF, fp);
-		
-		icou = icou + right_file_flag_c(buf, label, viz_ctls->lic_ctls[icou]->ctl_file_name);
-		if(right_begin_flag_c(buf, label) > 0){
-			viz_ctls->lic_ctls[icou]->ctl_file_name = "NO_FILE";
-			icou = icou + 1;
-		};
-		
-		printf("Block read_lic_rendering_controls_c %d %s\n", icou, buf);
-	};
-	return 1;
-}
-int read_fieldline_controls_c(FILE *fp, char buf[LENGTHBUF], const char *label, struct visualization_controls_c *viz_ctls){
-	int icou = 0;
-	printf("alloc_fieldline_controls_c %d\n",viz_ctls->num_fieldline_controls);
-	alloc_fieldline_controls_c(viz_ctls);
-	while(find_control_end_array_flag_c(buf, "fieldline", viz_ctls->num_fieldline_controls, icou) == 0){
-		fgets(buf, LENGTHBUF, fp);
-		
-		icou = icou + right_file_flag_c(buf, label, viz_ctls->fline_ctls[icou]->ctl_file_name);
-		if(right_begin_flag_c(buf, label) > 0){
-			viz_ctls->fline_ctls[icou]->ctl_file_name = "NO_FILE";
-			icou = icou + 1;
-		};
-		
-		printf("Block read_fieldline_controls_c %d %s\n", icou, buf);
-	};
-	return 1;
-}
 
-
-int read_spherical_shell_ctl_c(FILE *fp, char buf[LENGTHBUF], struct parallel_sph_shell_control_c *shell_ctl){
-	while(find_control_end_flag_c(buf, "spherical_shell_ctl") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		
-		if(right_begin_flag_c(buf, "FEM_mesh_ctl") > 0){
-			shell_ctl->iflag_FEM_mesh_ctl = read_FEM_mesh_control_c(fp, buf,
-						"FEM_mesh_ctl", shell_ctl->Fmesh_ctl);
-		};
-		if(right_begin_flag_c(buf, "num_domain_ctl") > 0){
-			shell_ctl->iflag_sph_domain = read_sphere_domain_ctl_c(fp, buf,
-						"num_domain_ctl", shell_ctl->sdctl_c);
-		};
-		if(right_begin_flag_c(buf, "num_grid_sph") > 0){
-			shell_ctl->iflag_sph_shell = read_sphere_data_ctl_c(fp, buf,
-						"num_grid_sph", shell_ctl->spctl_c);
-		};
-	};
-	return 1;
-}
 int read_mhd_model_ctl_c(FILE *fp, char buf[LENGTHBUF], struct mhd_model_control_c *model_ctl){
 	while(find_control_end_flag_c(buf, "model") == 0){
 		fgets(buf, LENGTHBUF, fp);
@@ -227,58 +123,6 @@ int read_zonal_mean_control_c(FILE *fp, char buf[LENGTHBUF], struct sph_zonal_me
 		};
 	};
 	return 1;
-}
-int read_visual_control_c(FILE *fp, char buf[LENGTHBUF], struct visualization_controls_c *viz_ctls){
-	int iflag;
-	while(find_control_end_flag_c(buf, "visual_control") == 0){
-		fgets(buf, LENGTHBUF, fp);
-		
-		iflag = find_control_array_flag_c(buf, "cross_section_ctl", &viz_ctls->num_section_controls);
-		printf("num_section_controls %d\n", viz_ctls->num_section_controls);
-		if(iflag > 0) iflag = read_section_controls_c(fp, buf, "cross_section_ctl", viz_ctls);
-		
-		iflag = find_control_array_flag_c(buf, "isosurface_ctl", &viz_ctls->num_isosurf_controls);
-		printf("num_isosurf_controls %d\n", viz_ctls->num_isosurf_controls);
-		if(iflag > 0) iflag = read_isosurf_controls_c(fp, buf, "isosurface_ctl", viz_ctls);
-		
-		iflag = find_control_array_flag_c(buf, "volume_rendering", &viz_ctls->num_volume_rendering_controls);
-		printf("num_volume_rendering_controls %d\n", viz_ctls->num_volume_rendering_controls);
-		if(iflag > 0) iflag = read_volume_rendering_controls_c(fp, buf, "volume_rendering", viz_ctls);
-		
-		iflag = find_control_array_flag_c(buf, "LIC_rendering", &viz_ctls->num_lic_rendering_controls);
-		printf("num_lic_rendering_controls %d\n", viz_ctls->num_lic_rendering_controls);
-		if(iflag > 0) iflag = read_lic_rendering_controls_c(fp, buf, "LIC_rendering", viz_ctls);
-		
-		iflag = find_control_array_flag_c(buf, "fieldline", &viz_ctls->num_fieldline_controls);
-		printf("num_fieldline_controls %d\n", viz_ctls->num_fieldline_controls);
-		if(iflag > 0) iflag = read_fieldline_controls_c(fp, buf, "fieldline", viz_ctls);
-		
-		iflag = find_control_array_flag_c(buf, "surface_rendering", &viz_ctls->num_section_controls);
-		printf("num_section_controls %d\n", viz_ctls->num_section_controls);
-		if(iflag > 0) iflag = read_section_controls_c(fp, buf, "surface_rendering", viz_ctls);
-		
-		iflag = find_control_array_flag_c(buf, "isosurf_rendering", &viz_ctls->num_isosurf_controls);
-		printf("num_isosurf_controls %d\n", viz_ctls->num_isosurf_controls);
-		if(iflag > 0) iflag = read_isosurf_controls_c(fp, buf, "isosurf_rendering", viz_ctls);
-	};
-	return 1;
-}
-
-int write_spherical_shell_ctl_c(FILE *fp, int level, const char *label, 
-                                struct parallel_sph_shell_control_c *shell_ctl){
-	level = write_begin_flag_for_ctl_c(fp, level, label);
-	
-    if(shell_ctl->iflag_FEM_mesh_ctl > 0){
-        level = write_FEM_mesh_control_c(fp, level, "FEM_mesh_ctl", shell_ctl->Fmesh_ctl);
-    };
-	if(shell_ctl->iflag_sph_domain > 0) fprintf(fp, "!\n");
-	level = write_sphere_domain_ctl_c(fp, level, "num_domain_ctl", shell_ctl->sdctl_c);
-    if(shell_ctl->iflag_sph_shell > 0){
-        fprintf(fp, "!\n");
-        level = write_sphere_data_ctl_c(fp, level, "num_grid_sph", shell_ctl->spctl_c);
-    };
-	level = write_end_flag_for_ctl_c(fp, level, label);
-	return level;
 }
 
 int write_mhd_model_ctl_c(FILE *fp, int level, const char *label,
@@ -386,83 +230,6 @@ int write_zonal_mean_control_c(FILE *fp, int level, const char *label, struct sp
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 }
-int write_visual_control_c(FILE *fp, int level, const char *label, struct visualization_controls_c *viz_ctls){
-	int i;
-	level = write_begin_flag_for_ctl_c(fp, level, label);
-	
-	if(viz_ctls->num_section_controls > 0){
-		level = write_array_flag_for_ctl_c(fp, level, "cross_section_ctl", viz_ctls->num_section_controls);
-		for(i=0;i<viz_ctls->num_section_controls;i++){
-			if(cmp_no_case_c(viz_ctls->psf_ctls[i]->ctl_file_name, "NO_FILE") > 0){
-				level = write_begin_flag_for_ctl_c(fp, level, "cross_section_ctl");
-				level = write_end_flag_for_ctl_c(fp, level, "cross_section_ctl");
-			} else {
-				write_file_flag_for_ctl_c(fp, level, "cross_section_ctl", viz_ctls->psf_ctls[i]->ctl_file_name);
-			};
-		};
-		level = write_end_array_flag_for_ctl_c(fp, level, "cross_section_ctl");
-	};
-	
-	if(viz_ctls->num_isosurf_controls > 0){
-		fprintf(fp, "!\n");
-		level = write_array_flag_for_ctl_c(fp, level, "isosurface_ctl", viz_ctls->num_isosurf_controls);
-		for(i=0;i<viz_ctls->num_isosurf_controls;i++){
-			if(cmp_no_case_c(viz_ctls->iso_ctls[i]->ctl_file_name, "NO_FILE") > 0){
-				level = write_begin_flag_for_ctl_c(fp, level, "isosurface_ctl");
-				level = write_end_flag_for_ctl_c(fp, level, "isosurface_ctl");
-			} else {
-				write_file_flag_for_ctl_c(fp, level, "isosurface_ctl", viz_ctls->iso_ctls[i]->ctl_file_name);
-			};
-		};
-		level = write_end_array_flag_for_ctl_c(fp, level, "isosurface_ctl");
-	};
-	
-	if(viz_ctls->num_volume_rendering_controls > 0){
-		fprintf(fp, "!\n");
-		level = write_array_flag_for_ctl_c(fp, level, "volume_rendering", viz_ctls->num_volume_rendering_controls);
-		for(i=0;i<viz_ctls->num_volume_rendering_controls;i++){
-			if(cmp_no_case_c(viz_ctls->pvr_ctls[i]->ctl_file_name, "NO_FILE") > 0){
-				level = write_begin_flag_for_ctl_c(fp, level, "volume_rendering");
-				level = write_end_flag_for_ctl_c(fp, level, "volume_rendering");
-			} else {
-				write_file_flag_for_ctl_c(fp, level, "volume_rendering", viz_ctls->pvr_ctls[i]->ctl_file_name);
-			};
-		};
-		level = write_end_array_flag_for_ctl_c(fp, level, "volume_rendering");
-	};
-	
-	if(viz_ctls->num_lic_rendering_controls > 0){
-		fprintf(fp, "!\n");
-		level = write_array_flag_for_ctl_c(fp, level, "LIC_rendering", viz_ctls->num_lic_rendering_controls);
-		for(i=0;i<viz_ctls->num_lic_rendering_controls;i++){
-			if(cmp_no_case_c(viz_ctls->lic_ctls[i]->ctl_file_name, "NO_FILE") > 0){
-				level = write_begin_flag_for_ctl_c(fp, level, "LIC_rendering");
-				level = write_end_flag_for_ctl_c(fp, level, "LIC_rendering");
-			} else {
-				write_file_flag_for_ctl_c(fp, level, "LIC_rendering", viz_ctls->lic_ctls[i]->ctl_file_name);
-			};
-		};
-		level = write_end_array_flag_for_ctl_c(fp, level, "LIC_rendering");
-	};
-	
-	if(viz_ctls->num_fieldline_controls > 0){
-		fprintf(fp, "!\n");
-		level = write_array_flag_for_ctl_c(fp, level, "fieldline", viz_ctls->num_fieldline_controls);
-		for(i=0;i<viz_ctls->num_fieldline_controls;i++){
-			if(cmp_no_case_c(viz_ctls->fline_ctls[i]->ctl_file_name, "NO_FILE") > 0){
-				level = write_begin_flag_for_ctl_c(fp, level, "fieldline");
-				level = write_end_flag_for_ctl_c(fp, level, "fieldline");
-			} else {
-				write_file_flag_for_ctl_c(fp, level, "fieldline", viz_ctls->fline_ctls[i]->ctl_file_name);
-			};
-		};
-		level = write_end_array_flag_for_ctl_c(fp, level, "fieldline");
-	};
-	
-	level = write_end_flag_for_ctl_c(fp, level, label);
-	return level;
-}
-
 
 int main(int argc,char *argv[])
 {
@@ -518,7 +285,7 @@ int main(int argc,char *argv[])
 				mhd_ctl->iflag_new_files_def = read_platform_data_control_c(fp, buf, "new_data_files_def", mhd_ctl->new_files);
 			};
 			if(right_begin_flag_c(buf, "spherical_shell_ctl") > 0){
-				mhd_ctl->iflag_spherical_shell_ctl = read_spherical_shell_ctl_c(fp, buf, mhd_ctl->shell_ctl);
+				mhd_ctl->iflag_spherical_shell_ctl = read_spherical_shell_ctl_c(fp, buf, "spherical_shell_ctl", mhd_ctl->shell_ctl);
 			};
 			if(right_begin_flag_c(buf, "model") > 0){
 				mhd_ctl->iflag_model = read_mhd_model_ctl_c(fp, buf, mhd_ctl->model_ctl);
@@ -533,7 +300,8 @@ int main(int argc,char *argv[])
 				mhd_ctl->iflag_zonal_mean_control = read_zonal_mean_control_c(fp, buf, mhd_ctl->zm_ctls);
 			};
 			if(right_begin_flag_c(buf, "visual_control") > 0){
-				mhd_ctl->iflag_visual_control = read_visual_control_c(fp, buf, mhd_ctl->viz_ctls);
+				mhd_ctl->iflag_visual_control = read_vizs_ctl_c(fp, buf, 
+							"visual_control", mhd_ctl->viz_c);
             };
         };
 	};
@@ -581,7 +349,7 @@ int main(int argc,char *argv[])
 	};
 	if(mhd_ctl->iflag_visual_control > 0){
 		fprintf(fp, "!\n");
-		level = write_visual_control_c(fp, level, "visual_control", mhd_ctl->viz_ctls);
+		level = write_vizs_ctl_c(fp, level, "visual_control", mhd_ctl->viz_c);
 	};
 	
 	level = write_end_flag_for_ctl_c(fp, level, "MHD_control");

@@ -1,5 +1,5 @@
 /*
-//  main_control_VIZ_test_c.c
+//  main_control_gen_sph_test_c.c
 //  
 //
 //  Created by Hiroaki Matsui on 2018/08/03.
@@ -8,15 +8,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "t_control_data_visualizer_c.h"
+#include "t_control_data_gen_sph_grid_c.h"
 
 
-struct viz_only_ctl_c *viz_only0;
+struct gen_sph_grid_ctl_c *gen_sph_c0;
 
 int main(int argc,char *argv[])
 {
 	char buf[LENGTHBUF];      /* character buffer for reading line */
-	char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/ctl_viz";
+	char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_sph_shell";
 	char file_name_2[LENGTHBUF];
 	int iflag;
 	
@@ -32,14 +32,14 @@ int main(int argc,char *argv[])
     printf("read visualizer control file name: %s\n", file_name);
     printf("Write visualizer control file name: %s\n", file_name_2);
 
-    viz_only0 = (struct viz_only_ctl_c *) malloc(sizeof(struct viz_only_ctl_c));
-	alloc_visualizers_ctl_c(viz_only0);
+    gen_sph_c0 = (struct gen_sph_grid_ctl_c *) malloc(sizeof(struct gen_sph_grid_ctl_c));
+	alloc_gen_sph_shell_ctl_c(gen_sph_c0);
     
-	iflag = read_visualizers_ctl_file_c(file_name, buf, viz_only0);
-    rename_visualizer_subfiles_c(viz_only0);
-	iflag = write_visualizers_ctl_file_c(file_name_2, viz_only0);
+	iflag = read_gen_sph_shell_file_c(file_name, buf, gen_sph_c0);
+    rename_gen_sph_subfiles_c(gen_sph_c0);
+	iflag = write_gen_sph_shell_file_c(file_name_2, gen_sph_c0);
 
-    dealloc_visualizers_ctl_c(viz_only0);
-	free(viz_only0);
+    dealloc_gen_sph_shell_ctl_c(gen_sph_c0);
+	free(gen_sph_c0);
 	return 0;
 }

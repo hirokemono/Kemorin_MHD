@@ -390,7 +390,7 @@ int read_modeview_file_c(const char *file_name, char buf[LENGTHBUF],
 		exit (2);                    /* terminate with error message */
 	};
 	
-	fgets(buf, LENGTHBUF, FP_View);
+	skip_comment_read_line(FP_View, buf);
 	if(right_begin_flag_c(buf, label_modeview_head) > 0){
 		iflag = read_modeview_ctl_c(FP_View, buf, label_modeview_head, mat_c);
 	};
