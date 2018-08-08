@@ -145,7 +145,9 @@ struct ISO_ctl_list *set_ISO_ctl_list_pointer(int index, struct ISO_ctl_list *he
 void rename_ISO_subfile_list(struct ISO_ctl_list *head){
     head = head->_next;
 	while (head != NULL){
-		strcat(head->isosurfs_c->fname_iso_ctl, "_2");
+        if(head->isosurfs_c->iflag_iso_ctl == -1){
+            strcat(head->isosurfs_c->fname_iso_ctl, "_2");
+        };
 		head = head->_next;
 	};
 	return;

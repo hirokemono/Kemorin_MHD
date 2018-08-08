@@ -146,7 +146,9 @@ struct PVR_ctl_list *set_PVR_ctl_list_pointer(int index, struct PVR_ctl_list *he
 void rename_PVR_subfile_list(struct PVR_ctl_list *head){
     head = head->_next;
 	while (head != NULL){
-		strcat(head->v_render_c->fname_pvr_ctl, "_2");
+        if(head->v_render_c->iflag_pvr_ctl == -1){
+            strcat(head->v_render_c->fname_pvr_ctl, "_2");
+        };
 		rename_pvr_ctl_subfiles(head->v_render_c->pvr_c);
 		head = head->_next;
 	};

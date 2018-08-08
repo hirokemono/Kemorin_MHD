@@ -145,7 +145,9 @@ struct PSF_ctl_list *set_PSF_ctl_list_pointer(int index, struct PSF_ctl_list *he
 void rename_PSF_subfile_list(struct PSF_ctl_list *head){
     head = head->_next;
 	while (head != NULL){
-		strcat(head->sections_c->fname_psf_ctl, "_2");
+        if(head->sections_c->iflag_psf_ctl == -1){
+            strcat(head->sections_c->fname_psf_ctl, "_2");
+        };
 		rename_psf_define_file_c(head->sections_c->psf_c);
 		head = head->_next;
 	};

@@ -146,7 +146,9 @@ struct LIC_PVR_ctl_list *set_LIC_PVR_ctl_list_pointer(int index, struct LIC_PVR_
 void rename_LIC_PVR_subfile_list(struct LIC_PVR_ctl_list *head){
     head = head->_next;
 	while (head != NULL){
-		strcat(head->lic_render_c->fname_lic_pvr_ctl, "_2");
+        if(head->lic_render_c->iflag_lic_pvr_ctl == -1){
+            strcat(head->lic_render_c->fname_lic_pvr_ctl, "_2");
+        };
 		rename_LIC_pvr_ctl_subfiles(head->lic_render_c->lic_pvr_c);
 		head = head->_next;
 	};

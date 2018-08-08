@@ -15,50 +15,22 @@
 #include "control_elements_IO_c.h"
 #include "t_control_data_PSF_ctl_list.h"
 #include "t_control_data_ISO_ctl_list.h"
-#include "t_control_data_4_fline_c.h"
+#include "t_control_data_FLINE_ctl_list.h"
 #include "t_control_data_PVR_ctl_list.h"
 #include "t_control_data_LIC_ctl_list.h"
-
-struct fieldline_ctl_c{
-    char *fname_fline_ctl;
-    int iflag_fline_ctl;
-    struct fline_ctl_c *fline_c;
-	
-	struct fieldline_ctl_c *_prev;
-	struct fieldline_ctl_c *_next;
-};
 
 
 struct visualizers_ctl_c{
     int maxlen;
     
-    int num_fieldlines_ctl;
-    struct fieldline_ctl_c        **fldlines_c;
-    
     struct PSF_ctl_list psf_ctl_list;
     struct ISO_ctl_list iso_ctl_list;
     struct PVR_ctl_list pvr_ctl_list;
     struct LIC_PVR_ctl_list lic_ctl_list;
+    struct FLINE_ctl_list fline_ctl_list;
 };
 
 /* prototypes */
-
-void alloc_fieldline_ctl_c(struct fieldline_ctl_c *fldlines_c);
-void dealloc_fieldline_ctl_c(struct fieldline_ctl_c *fldlines_c);
-int read_fieldline_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct fieldline_ctl_c *fldlines_c);
-int write_fieldline_ctl_c(FILE *fp, int level, const char *label, 
-			struct fieldline_ctl_c *fldlines_c);
-void read_fieldline_ctl_file_c(char buf[LENGTHBUF], struct fieldline_ctl_c *fldlines_c);
-void write_fieldline_ctl_file_c(struct fieldline_ctl_c *fldlines_c);
-
-
-void alloc_fieldlines_ctl_c(struct visualizers_ctl_c *viz_c);
-int read_fieldlines_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct visualizers_ctl_c *viz_c);
-int write_fieldlines_ctl_c(FILE *fp, int level, const char *label, 
-			struct visualizers_ctl_c *viz_c);
-
 
 void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c);
 void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c);
