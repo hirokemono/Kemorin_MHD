@@ -13,20 +13,11 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
+#include "t_control_data_PSF_ctl_list.h"
 #include "t_control_data_4_iso_c.h"
-#include "t_control_data_4_psf_c.h"
 #include "t_control_data_4_fline_c.h"
 #include "t_control_data_PVR_ctl_list.h"
 #include "t_control_data_LIC_ctl_list.h"
-
-struct sectioning_ctl_c{
-	char *fname_psf_ctl;
-    int iflag_psf_ctl;
-    struct psf_ctl_c *psf_c;
-	
-	struct sectioning_ctl_c *_prev;
-	struct sectioning_ctl_c *_next;
-};
 
 struct isosurface_ctl_c{
     char *fname_iso_ctl;
@@ -50,29 +41,18 @@ struct fieldline_ctl_c{
 struct visualizers_ctl_c{
     int maxlen;
     
-    int num_sectionings_ctl;
-    struct sectioning_ctl_c       **sections_c;
-    
     int num_isosurfaces_ctl;
     struct isosurface_ctl_c       **isosurfs_c;
     
     int num_fieldlines_ctl;
     struct fieldline_ctl_c        **fldlines_c;
     
+    struct PSF_ctl_list psf_ctl_list;
     struct PVR_ctl_list pvr_ctl_list;
     struct LIC_PVR_ctl_list lic_ctl_list;
 };
 
 /* prototypes */
-
-void alloc_sectioning_ctl_c(struct sectioning_ctl_c *sections_c);
-void dealloc_sectioning_ctl_c(struct sectioning_ctl_c *sections_c);
-int read_sectioning_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct sectioning_ctl_c *sections_c);
-int write_sectioning_ctl_c(FILE *fp, int level, const char *label, 
-			struct sectioning_ctl_c *sections_c);
-void read_sectioning_ctl_file_c(char buf[LENGTHBUF], struct sectioning_ctl_c *sections_c);
-void write_sectioning_ctl_file_c(struct sectioning_ctl_c *sections_c);
 
 void alloc_isosurface_ctl_c(struct isosurface_ctl_c *isosurfs_c);
 void dealloc_isosurface_ctl_c(struct isosurface_ctl_c *isosurfs_c);
@@ -92,12 +72,6 @@ int write_fieldline_ctl_c(FILE *fp, int level, const char *label,
 void read_fieldline_ctl_file_c(char buf[LENGTHBUF], struct fieldline_ctl_c *fldlines_c);
 void write_fieldline_ctl_file_c(struct fieldline_ctl_c *fldlines_c);
 
-
-void alloc_sectionings_ctl_c(struct visualizers_ctl_c *viz_c);
-int read_sectionings_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct visualizers_ctl_c *viz_c);
-int write_sectionings_ctl_c(FILE *fp, int level, const char *label, 
-			struct visualizers_ctl_c *viz_c);
 
 void alloc_isosurfaces_ctl_c(struct visualizers_ctl_c *viz_c);
 int read_isosurfaces_ctl_c(FILE *fp, char buf[LENGTHBUF], 

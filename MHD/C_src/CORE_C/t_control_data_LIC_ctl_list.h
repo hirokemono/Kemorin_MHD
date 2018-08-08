@@ -45,6 +45,7 @@ void clear_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head);
 struct LIC_PVR_ctl_list *add_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *current);
 void delete_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *current);
 int count_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head);
+struct LIC_PVR_ctl_list *set_LIC_PVR_ctl_list_pointer(int index, struct LIC_PVR_ctl_list *head);
 
 void rename_LIC_PVR_subfile_list(struct LIC_PVR_ctl_list *head);
 void read_LIC_PVR_subfile_list(char buf[LENGTHBUF], struct LIC_PVR_ctl_list *head);

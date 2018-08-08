@@ -74,13 +74,11 @@ void init_PVR_ctl_list(struct PVR_ctl_list *head){
 };
 
 void clear_PVR_ctl_list(struct PVR_ctl_list *head){
-	struct PVR_ctl_list *next = head->_next;
-    head = next;
+    head =  head->_next;
     while (head != NULL) {
 		dealloc_volume_rendering_ctl_c(head->v_render_c);
 		free(head);
-        next = head->_next;
-		head = next;
+		head =  head->_next;
 	}
 	return;
 };
@@ -124,46 +122,51 @@ void delete_PVR_ctl_list(struct PVR_ctl_list *current){
 
 int count_PVR_ctl_list(struct PVR_ctl_list *head){
 	int num = 0;
-	struct PVR_ctl_list *next = head->_next;
-	head = next;
+	head = head->_next;
 	while (head != NULL){
-		next = head->_next;
-		head = next;
+		head = head->_next;
 		num = num + 1;
 	};
 	return num;
 };
 
+struct PVR_ctl_list *set_PVR_ctl_list_pointer(int index, struct PVR_ctl_list *head){
+    int num = 0;
+    head = head->_next;
+    while (head != NULL){
+        if(num == index) break;
+        head = head->_next;
+        num = num + 1;
+    };
+    if(head == NULL) printf("array does not exist at index %d of %d.\n", index, num);
+    return head;
+};
+
+
 void rename_PVR_subfile_list(struct PVR_ctl_list *head){
-	struct PVR_ctl_list *next = head->_next;
-    head = next;
+    head = head->_next;
 	while (head != NULL){
 		strcat(head->v_render_c->fname_pvr_ctl, "_2");
 		rename_pvr_ctl_subfiles(head->v_render_c->pvr_c);
-		next = head->_next;
-		head = next;
+		head = head->_next;
 	};
 	return;
 };
 
 void read_PVR_subfile_list(char buf[LENGTHBUF], struct PVR_ctl_list *head){
-	struct PVR_ctl_list *next = head->_next;
-    head = next;
+    head = head->_next;
 	while (head != NULL){
 		read_volume_rendering_ctl_file_c(buf, head->v_render_c);
-		next = head->_next;
-		head = next;
+		head = head->_next;
 	};
 	return;
 };
 
 void write_PVR_subfile_list(struct PVR_ctl_list *head){
-    struct PVR_ctl_list *next = head->_next;
-    head = next;
+    head = head->_next;
 	while (head != NULL){
 		write_volume_rendering_ctl_file_c(head->v_render_c);
-		next = head->_next;
-		head = next;
+		head = head->_next;
 	};
 	return;
 };

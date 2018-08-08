@@ -21,62 +21,6 @@ const char label_viz_ctl[NLBL_VIZ_CTL][KCHARA_C] = {
 };
 
 
-
-void alloc_sectioning_ctl_c(struct sectioning_ctl_c *sections_c){
-	sections_c->iflag_psf_ctl = 0;
-	sections_c->fname_psf_ctl = (char *)calloc(KCHARA_C, sizeof(char));
-	sections_c->psf_c = (struct psf_ctl_c *) malloc(sizeof(struct psf_ctl_c));
-	alloc_psf_ctl_c(sections_c->psf_c);
-	return;
-};
-
-void dealloc_sectioning_ctl_c(struct sectioning_ctl_c *sections_c){
-	dealloc_psf_ctl_c(sections_c->psf_c);
-	free(sections_c->psf_c);
-	free(sections_c->fname_psf_ctl);
-	sections_c->iflag_psf_ctl = 0;
-	return;
-};
-
-int read_sectioning_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct sectioning_ctl_c *sections_c){
-	
-	if(right_begin_flag_c(buf, label) > 0){
-		sections_c->iflag_psf_ctl = read_psf_ctl_c(fp, buf, label, sections_c->psf_c);
-	} else if(right_file_flag_c(buf, label)){
-		sections_c->iflag_psf_ctl = read_file_flag_c(buf, sections_c->fname_psf_ctl);
-	} else {
-		sections_c->iflag_psf_ctl = 0;
-	};
-	return abs(sections_c->iflag_psf_ctl);
-};
-
-int write_sectioning_ctl_c(FILE *fp, int level, const char *label, 
-			struct sectioning_ctl_c *sections_c){
-	
-	if(sections_c->iflag_psf_ctl == 1){
-		level = write_psf_ctl_c(fp, level, label, sections_c->psf_c);
-	} else if(sections_c->iflag_psf_ctl == -1){
-		write_file_flag_for_ctl_c(fp, level, label, sections_c->fname_psf_ctl);
-	};
-	return level;
-};
-
-void read_sectioning_ctl_file_c(char buf[LENGTHBUF], struct sectioning_ctl_c *sections_c){
-	if(sections_c->iflag_psf_ctl == -1){
-		read_psf_ctl_file_c(sections_c->fname_psf_ctl, buf, sections_c->psf_c);
-	};
- 	return;
-};
-
-void write_sectioning_ctl_file_c(struct sectioning_ctl_c *sections_c){
-	if(sections_c->iflag_psf_ctl == -1){
-		write_psf_ctl_file_c(sections_c->fname_psf_ctl, sections_c->psf_c);
-	};
- 	return;
-};
-
-
 void alloc_isosurface_ctl_c(struct isosurface_ctl_c *isosurfs_c){
 	isosurfs_c->iflag_iso_ctl = 0;
 	isosurfs_c->fname_iso_ctl = (char *)calloc(KCHARA_C, sizeof(char));
@@ -188,48 +132,6 @@ void write_fieldline_ctl_file_c(struct fieldline_ctl_c *fldlines_c){
 
 
 
-void alloc_sectionings_ctl_c(struct visualizers_ctl_c *viz_c){
-	int i;
-	
-	for(i=0;i<viz_c->num_sectionings_ctl;i++){
-		viz_c->sections_c[i] = (struct sectioning_ctl_c *) malloc(sizeof(struct sectioning_ctl_c));
-		alloc_sectioning_ctl_c(viz_c->sections_c[i]);
-	};
-	return;
-};
-
-int read_sectionings_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct visualizers_ctl_c *viz_c){
-	int iflag = 0;
-	int icou = 0;
-	
-    if(viz_c->num_sectionings_ctl == 0) return icou;
-	alloc_sectionings_ctl_c(viz_c);
-    skip_comment_read_line(fp, buf);
-    while(find_control_end_array_flag_c(buf, label, viz_c->num_sectionings_ctl, icou) == 0
-          || icou < viz_c->num_sectionings_ctl){
-		iflag = read_sectioning_ctl_c(fp, buf, label, viz_c->sections_c[icou]);
-		icou = icou + iflag;
-        skip_comment_read_line(fp, buf);
-	};
-	return icou;
-};
-
-int write_sectionings_ctl_c(FILE *fp, int level, const char *label, 
-			struct visualizers_ctl_c *viz_c){
-	int i = 0;
-	
-	if(viz_c->num_sectionings_ctl == 0) return level;
-	fprintf(fp, "!\n");
-	level = write_array_flag_for_ctl_c(fp, level, label, viz_c->num_sectionings_ctl);
-	for(i=0;i<viz_c->num_sectionings_ctl;i++){
-		level = write_sectioning_ctl_c(fp, level, label, viz_c->sections_c[i]);
-	};
-	level = write_end_array_flag_for_ctl_c(fp, level, label);
-	return level;
-};
-
-
 void alloc_isosurfaces_ctl_c(struct visualizers_ctl_c *viz_c){
 	int i;
 	
@@ -322,14 +224,13 @@ void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 		};
 	};
 	
-	viz_c->sections_c = (struct sectioning_ctl_c **) malloc(sizeof(struct sectioning_ctl_c *));
 	viz_c->isosurfs_c = (struct isosurface_ctl_c **) malloc(sizeof(struct isosurface_ctl_c *));
 	viz_c->fldlines_c = (struct fieldline_ctl_c **) malloc(sizeof(struct fieldline_ctl_c *));
 	
+	init_PSF_ctl_list(&viz_c->psf_ctl_list);
 	init_PVR_ctl_list(&viz_c->pvr_ctl_list);
 	init_LIC_PVR_ctl_list(&viz_c->lic_ctl_list);
 	
-	viz_c->num_sectionings_ctl = 0;
 	viz_c->num_isosurfaces_ctl = 0;
 	viz_c->num_fieldlines_ctl =  0;
 	return;
@@ -338,12 +239,6 @@ void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	int i;
 	/*
-	for(i=0;i<viz_c->num_sectionings_ctl;i++){
-		dealloc_sectioning_ctl_c(viz_c->sections_c[i]);
-		free(viz_c->sections_c[i]);
-	};
-	free(viz_c->sections_c);
-	
 	for(i=0;i<viz_c->num_isosurfaces_ctl;i++){
 		dealloc_isosurface_ctl_c(viz_c->isosurfs_c[i]);
 		free(viz_c->isosurfs_c[i]);
@@ -356,10 +251,10 @@ void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	};
 	free(viz_c->fldlines_c);
 	*/
+	clear_PSF_ctl_list(&viz_c->psf_ctl_list);
 	clear_PVR_ctl_list(&viz_c->pvr_ctl_list);
 	clear_LIC_PVR_ctl_list(&viz_c->lic_ctl_list);
 	
-	viz_c->num_sectionings_ctl = 0;
 	viz_c->num_isosurfaces_ctl = 0;
 	viz_c->num_fieldlines_ctl =  0;
 	return;
@@ -372,21 +267,17 @@ int read_vizs_ctl_c(FILE *fp, char buf[LENGTHBUF],
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		iflag = find_control_array_flag_c(buf, label_viz_ctl[ 0], &viz_c->num_sectionings_ctl);
-		if(iflag > 0) iflag = read_sectionings_ctl_c(fp, buf, label_viz_ctl[ 0], viz_c);
-		
 		iflag = find_control_array_flag_c(buf, label_viz_ctl[ 1], &viz_c->num_isosurfaces_ctl);
 		if(iflag > 0) iflag = read_isosurfaces_ctl_c(fp, buf, label_viz_ctl[ 1], viz_c);
 		
 		iflag = find_control_array_flag_c(buf, label_viz_ctl[ 2], &viz_c->num_fieldlines_ctl);
 		if(iflag > 0) iflag = read_fieldlines_ctl_c(fp, buf, label_viz_ctl[ 2], viz_c);
 		
+		iflag = read_PSF_ctl_list(fp, buf, label_viz_ctl[ 0], &viz_c->psf_ctl_list);
 		iflag = read_PVR_ctl_list(fp, buf, label_viz_ctl[ 3], &viz_c->pvr_ctl_list);
 		iflag = read_LIC_PVR_ctl_list(fp, buf, label_viz_ctl[ 4], &viz_c->lic_ctl_list);
 		
-		
-		iflag = find_control_array_flag_c(buf, label_viz_ctl[ 5], &viz_c->num_sectionings_ctl);
-		if(iflag > 0) iflag = read_sectionings_ctl_c(fp, buf, label_viz_ctl[ 5], viz_c);
+		iflag = read_PSF_ctl_list(fp, buf, label_viz_ctl[ 5], &viz_c->psf_ctl_list);
 		
 		iflag = find_control_array_flag_c(buf, label_viz_ctl[ 6], &viz_c->num_isosurfaces_ctl);
 		if(iflag > 0) iflag = read_isosurfaces_ctl_c(fp, buf, label_viz_ctl[ 6], viz_c);
@@ -398,10 +289,6 @@ int write_vizs_ctl_c(FILE *fp, int level, const char *label,
 			struct visualizers_ctl_c *viz_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	if(viz_c->num_sectionings_ctl > 0){
-		level = write_sectionings_ctl_c(fp, level, label_viz_ctl[ 0], viz_c);
-	};
-	
 	if(viz_c->num_isosurfaces_ctl > 0){
 		fprintf(fp, "!\n");
 		level = write_isosurfaces_ctl_c(fp, level, label_viz_ctl[ 1], viz_c);
@@ -412,6 +299,7 @@ int write_vizs_ctl_c(FILE *fp, int level, const char *label,
 		level = write_fieldlines_ctl_c(fp, level, label_viz_ctl[ 2], viz_c);
 	};
 	
+	level = write_PSF_ctl_list(fp, level, label_viz_ctl[ 0], &viz_c->psf_ctl_list);
 	level = write_PVR_ctl_list(fp, level, label_viz_ctl[ 3], &viz_c->pvr_ctl_list);
 	level = write_LIC_PVR_ctl_list(fp, level, label_viz_ctl[ 4], &viz_c->lic_ctl_list);
 	
@@ -422,12 +310,6 @@ int write_vizs_ctl_c(FILE *fp, int level, const char *label,
 void rename_vizs_ctl_subfiles(struct visualizers_ctl_c *viz_c){
     int i;
     
-    for(i=0;i<viz_c->num_sectionings_ctl;i++){
-		if(viz_c->sections_c[i]->iflag_psf_ctl == -1){
-			strcat(viz_c->sections_c[i]->fname_psf_ctl, "_2");
-            rename_psf_define_file_c(viz_c->sections_c[i]->psf_c);
-		};
-    };
     for(i=0;i<viz_c->num_isosurfaces_ctl;i++){
 		if(viz_c->isosurfs_c[i]->iflag_iso_ctl == -1){
 			strcat(viz_c->isosurfs_c[i]->fname_iso_ctl, "_2");
@@ -439,6 +321,7 @@ void rename_vizs_ctl_subfiles(struct visualizers_ctl_c *viz_c){
 		};
     };
 	
+	rename_PSF_subfile_list(&viz_c->psf_ctl_list);
 	rename_PVR_subfile_list(&viz_c->pvr_ctl_list);
 	rename_LIC_PVR_subfile_list(&viz_c->lic_ctl_list);
     return;
@@ -447,9 +330,6 @@ void rename_vizs_ctl_subfiles(struct visualizers_ctl_c *viz_c){
 void read_vizs_ctl_files_c(char buf[LENGTHBUF], struct visualizers_ctl_c *viz_c){
     int i;
 	
-    for(i=0;i<viz_c->num_sectionings_ctl;i++){
-		read_sectioning_ctl_file_c(buf, viz_c->sections_c[i]);
-    };
 	for(i=0;i<viz_c->num_isosurfaces_ctl;i++){
 		read_isosurface_ctl_file_c(buf, viz_c->isosurfs_c[i]);
     };
@@ -457,6 +337,7 @@ void read_vizs_ctl_files_c(char buf[LENGTHBUF], struct visualizers_ctl_c *viz_c)
 		read_fieldline_ctl_file_c(buf, viz_c->fldlines_c[i]);
     };
 	
+	read_PSF_subfile_list(buf, &viz_c->psf_ctl_list);
 	read_PVR_subfile_list(buf, &viz_c->pvr_ctl_list);
 	read_LIC_PVR_subfile_list(buf, &viz_c->lic_ctl_list);
 	return;
@@ -465,9 +346,6 @@ void read_vizs_ctl_files_c(char buf[LENGTHBUF], struct visualizers_ctl_c *viz_c)
 void write_vizs_ctl_files_c(struct visualizers_ctl_c *viz_c){
     int i;
     
-    for(i=0;i<viz_c->num_sectionings_ctl;i++){
-		write_sectioning_ctl_file_c(viz_c->sections_c[i]);
-    };
 	for(i=0;i<viz_c->num_isosurfaces_ctl;i++){
 		write_isosurface_ctl_file_c(viz_c->isosurfs_c[i]);
     };
@@ -475,6 +353,7 @@ void write_vizs_ctl_files_c(struct visualizers_ctl_c *viz_c){
 		write_fieldline_ctl_file_c(viz_c->fldlines_c[i]);
     };
 	
+	write_PSF_subfile_list(&viz_c->psf_ctl_list);
 	write_PVR_subfile_list(&viz_c->pvr_ctl_list);
 	write_LIC_PVR_subfile_list(&viz_c->lic_ctl_list);
     

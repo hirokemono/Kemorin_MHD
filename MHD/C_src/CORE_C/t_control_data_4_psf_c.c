@@ -353,6 +353,7 @@ int read_psf_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct psf_ctl_c *psf_c){
 	int iflag = 0;
 	
+    printf("read PVR control file name: %s\n", file_name);
 	if ((FP_PSF = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!\n");
 		exit (2);                    /* terminate with error message */
@@ -380,6 +381,7 @@ int write_psf_ctl_file_c(const char *file_name, struct psf_ctl_c *psf_c){
         write_psf_define_file_c(psf_c->psf_def_file_name, psf_c->psf_def_c);
     };
 	
+    printf("write PVR control file name: %s\n", file_name);
 	if ((FP_PSF = fopen(file_name, "w")) == NULL) {
 		fprintf(stderr, "Cannot open file!\n");
 		exit (2);                    /* terminate with error message */

@@ -45,6 +45,7 @@ void clear_PVR_ctl_list(struct PVR_ctl_list *head);
 struct PVR_ctl_list *add_PVR_ctl_list(struct PVR_ctl_list *current);
 void delete_PVR_ctl_list(struct PVR_ctl_list *current);
 int count_PVR_ctl_list(struct PVR_ctl_list *head);
+struct PVR_ctl_list *set_PVR_ctl_list_pointer(int index, struct PVR_ctl_list *head);
 
 void rename_PVR_subfile_list(struct PVR_ctl_list *head);
 void read_PVR_subfile_list(char buf[LENGTHBUF], struct PVR_ctl_list *head);
