@@ -12,7 +12,7 @@
 !  ---------------------------------------------------------------------
 !     example of control for Kemo's field line
 !!
-!  begin field_line
+!  begin fieldline
 !    fline_file_head    'psf'
 !    fline_output_type   ucd
 !!
@@ -49,7 +49,7 @@
 !    coloring_field_ctl        magnetic_field   end
 !    coloring_comp_ctl        radial   end
 !!
-!  end field_line
+!  end fieldline
 !  ---------------------------------------------------------------------
 !
       module t_control_data_4_fline

@@ -17,46 +17,42 @@
 #include "t_control_data_4_psf_c.h"
 #include "t_control_data_4_fline_c.h"
 #include "t_control_data_4_pvr_c.h"
-#include "t_control_data_LIC_pvr_c.h"
+#include "t_control_data_LIC_ctl_list.h"
 
 struct sectioning_ctl_c{
-    int maxlen;
-    
-    char *fname_psf_ctl;
+	char *fname_psf_ctl;
     int iflag_psf_ctl;
     struct psf_ctl_c *psf_c;
+	
+	struct sectioning_ctl_c *_prev;
+	struct sectioning_ctl_c *_next;
 };
 
 struct isosurface_ctl_c{
-    int maxlen;
-    
     char *fname_iso_ctl;
     int iflag_iso_ctl;
     struct iso_ctl_c *iso_c;
+	
+	struct isosurface_ctl_c *_prev;
+	struct isosurface_ctl_c *_next;
 };
 
 struct fieldline_ctl_c{
-    int maxlen;
-    
     char *fname_fline_ctl;
     int iflag_fline_ctl;
     struct fline_ctl_c *fline_c;
+	
+	struct fieldline_ctl_c *_prev;
+	struct fieldline_ctl_c *_next;
 };
 
 struct volume_rendering_ctl_c{
-    int maxlen;
-    
     char *fname_pvr_ctl;
     int iflag_pvr_ctl;
     struct pvr_ctl_c *pvr_c;
-};
-
-struct LIC_rendering_ctl_c{
-    int maxlen;
-    
-    char *fname_lic_pvr_ctl;
-    int iflag_lic_pvr_ctl;
-    struct LIC_pvr_ctl_c *lic_pvr_c;
+	
+	struct volume_rendering_ctl_c *_prev;
+	struct volume_rendering_ctl_c *_next;
 };
 
 struct visualizers_ctl_c{
@@ -75,7 +71,7 @@ struct visualizers_ctl_c{
     struct volume_rendering_ctl_c **v_render_c;
     
     int num_LIC_renderings_ctl;
-    struct LIC_rendering_ctl_c    **lic_render_c;
+    struct LIC_PVR_ctl_list lic_ctl_list;
 };
 
 /* prototypes */
@@ -116,15 +112,6 @@ int write_volume_rendering_ctl_c(FILE *fp, int level, const char *label,
 void read_volume_rendering_ctl_file_c(char buf[LENGTHBUF], struct volume_rendering_ctl_c *v_render_c);
 void write_volume_rendering_ctl_file_c(struct volume_rendering_ctl_c *v_render_c);
 
-void alloc_LIC_rendering_ctl_c(struct LIC_rendering_ctl_c *lic_render_c);
-void dealloc_LIC_renderingctl_c(struct LIC_rendering_ctl_c *lic_render_c);
-int read_LIC_rendering_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct LIC_rendering_ctl_c *lic_render_c);
-int write_LIC_rendering_ctl_c(FILE *fp, int level, const char *label, 
-			struct LIC_rendering_ctl_c *lic_render_c);
-void read_LIC_rendering_ctl_file_c(char buf[LENGTHBUF], struct LIC_rendering_ctl_c *lic_render_c);
-void write_LIC_rendering_ctl_file_c(struct LIC_rendering_ctl_c *lic_render_c);
-
 
 void alloc_sectionings_ctl_c(struct visualizers_ctl_c *viz_c);
 int read_sectionings_ctl_c(FILE *fp, char buf[LENGTHBUF], 
@@ -148,12 +135,6 @@ void alloc_volume_renderings_ctl_c(struct visualizers_ctl_c *viz_c);
 int read_volume_renderings_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct visualizers_ctl_c *viz_c);
 int write_volume_renderings_ctl_c(FILE *fp, int level, const char *label, 
-			struct visualizers_ctl_c *viz_c);
-
-void alloc_LIC_renderings_ctl_c(struct visualizers_ctl_c *viz_c);
-int read_LIC_renderings_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct visualizers_ctl_c *viz_c);
-int write_LIC_renderings_ctl_c(FILE *fp, int level, const char *label, 
 			struct visualizers_ctl_c *viz_c);
 
 void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c);

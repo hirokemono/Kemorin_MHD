@@ -384,6 +384,7 @@ int read_modeview_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct modeview_ctl_c *mat_c){
 	int iflag = 0;
 	
+    printf("Read PVR modelview file name: %s\n", file_name);
 	if ((FP_View = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!\n");
 		exit (2);                    /* terminate with error message */
@@ -401,6 +402,7 @@ int read_modeview_file_c(const char *file_name, char buf[LENGTHBUF],
 int write_modeview_file_c(const char *file_name, struct modeview_ctl_c *mat_c){
 	int level;
 	
+    printf("Write PVR modelview file name: %s\n", file_name);
 	if ((FP_View = fopen(file_name, "w")) == NULL) {
 		fprintf(stderr, "Cannot open file!\n");
 		exit (2);                    /* terminate with error message */

@@ -789,20 +789,16 @@ int read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 	int i;
 	
 	if(pvr_c->iflag_modeview_ctl ==-1){
-		printf("Read PVR modelview file name: %s\n", pvr_c->pvr_modelview_file_name);
 		read_modeview_file_c(pvr_c->pvr_modelview_file_name, buf,
 							 pvr_c->mat_c);
 	};
 	if(pvr_c->iflag_colormap_ctl ==-1){
-		printf("Read PVR colormap file name: %s\n", pvr_c->pvr_colormap_file_name);
 		read_colormap_file_c(pvr_c->pvr_colormap_file_name, buf,
 							   pvr_c->color_c);
 	};
 	
 	for (i=0;i<pvr_c->num_pvr_sect_ctl;i++){
 		if(pvr_c->pvr_sect_ctl[i]->iflag_psf_define_ctl == -1){
-            printf("Read PVR sections file name %d: %s\n", 
-                   i, pvr_c->pvr_sect_ctl[i]->fname_sect_ctl);
 			read_psf_define_file_c(pvr_c->pvr_sect_ctl[i]->fname_sect_ctl, buf,
 						pvr_c->pvr_sect_ctl[i]->psf_def_c);
 		};
@@ -815,18 +811,14 @@ void write_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
 	int i;
 	
 	if(pvr_c->iflag_modeview_ctl ==-1){
-		printf("write PVR modelview file name: %s\n", pvr_c->pvr_modelview_file_name);
 		write_modeview_file_c(pvr_c->pvr_modelview_file_name, pvr_c->mat_c);
 	};
 	if(pvr_c->iflag_colormap_ctl ==-1){
-		printf("write PVR colormap file name: %s\n", pvr_c->pvr_colormap_file_name);
 		write_colormap_file_c(pvr_c->pvr_colormap_file_name, pvr_c->color_c);
 	};
 	
 	for (i=0;i<pvr_c->num_pvr_sect_ctl;i++){
 		if(pvr_c->pvr_sect_ctl[i]->iflag_psf_define_ctl == -1){
-            printf("write PVR sections file name %d: %s\n", 
-                   i, pvr_c->pvr_sect_ctl[i]->fname_sect_ctl);
 			write_psf_define_file_c(pvr_c->pvr_sect_ctl[i]->fname_sect_ctl,
 						pvr_c->pvr_sect_ctl[i]->psf_def_c);
 		};
@@ -844,8 +836,7 @@ int read_pvr_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 		exit (2);					/* terminate with error message */
 	};
 	
-	skip_comment_c(FP_PVR);
-	fgets(buf, LENGTHBUF, FP_PVR);
+	skip_comment_read_line(FP_PVR, buf);
 	if(right_begin_flag_c(buf, label_pvr_head) > 0){
 		iflag = read_pvr_ctl_c(FP_PVR, buf, label_pvr_head, pvr_c);
 	};

@@ -107,8 +107,7 @@ int read_visualizers_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
         exit (2);                    /* terminate with error message */
     };
     
-    skip_comment_c(FP_VIZ);
-    fgets(buf, LENGTHBUF, FP_VIZ);
+    skip_comment_read_line(FP_VIZ, buf);
     if(right_begin_flag_c(buf, label_viz_only_head) > 0){
         iflag = read_visualizers_ctl_c(FP_VIZ, buf, label_viz_only_head, viz_only);
     };

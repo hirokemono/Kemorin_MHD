@@ -241,62 +241,6 @@ void write_volume_rendering_ctl_file_c(struct volume_rendering_ctl_c *v_render_c
 };
 
 
-void alloc_LIC_rendering_ctl_c(struct LIC_rendering_ctl_c *lic_render_c){
-	lic_render_c->iflag_lic_pvr_ctl = 0;
-	lic_render_c->fname_lic_pvr_ctl = (char *)calloc(KCHARA_C, sizeof(char));
-	lic_render_c->lic_pvr_c = (struct LIC_pvr_ctl_c *) malloc(sizeof(struct LIC_pvr_ctl_c));
-	alloc_LIC_pvr_ctl_c(lic_render_c->lic_pvr_c);
-	return;
-
-};
-
-void dealloc_LIC_renderingctl_c(struct LIC_rendering_ctl_c *lic_render_c){
-	dealloc_LIC_pvr_ctl_c(lic_render_c->lic_pvr_c);
-	free(lic_render_c->lic_pvr_c);
-	free(lic_render_c->fname_lic_pvr_ctl);
-	lic_render_c->iflag_lic_pvr_ctl = 0;
-	return;
-};
-
-int read_LIC_rendering_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct LIC_rendering_ctl_c *lic_render_c){
-	
-	if(right_begin_flag_c(buf, label) > 0){
-		lic_render_c->iflag_lic_pvr_ctl = read_LIC_pvr_ctl_c(fp, buf, label, lic_render_c->lic_pvr_c);
-	} else if(right_file_flag_c(buf, label)){
-		lic_render_c->iflag_lic_pvr_ctl = read_file_flag_c(buf, lic_render_c->fname_lic_pvr_ctl);
-	} else {
-		lic_render_c->iflag_lic_pvr_ctl = 0;
-	};
-	return abs(lic_render_c->iflag_lic_pvr_ctl);
-};
-
-int write_LIC_rendering_ctl_c(FILE *fp, int level, const char *label, 
-			struct LIC_rendering_ctl_c *lic_render_c){
-	
-	if(lic_render_c->iflag_lic_pvr_ctl == 1){
-		level = write_LIC_pvr_ctl_c(fp, level, label, lic_render_c->lic_pvr_c);
-	} else if(lic_render_c->iflag_lic_pvr_ctl == -1){
-		write_file_flag_for_ctl_c(fp, level, label, lic_render_c->fname_lic_pvr_ctl);
-	};
-	return level;
-};
-
-void read_LIC_rendering_ctl_file_c(char buf[LENGTHBUF], struct LIC_rendering_ctl_c *lic_render_c){
-	if(lic_render_c->iflag_lic_pvr_ctl == -1){
-		read_LIC_pvr_ctl_file_c(lic_render_c->fname_lic_pvr_ctl, buf, lic_render_c->lic_pvr_c);
-	};
- 	return;
-};
-
-void write_LIC_rendering_ctl_file_c(struct LIC_rendering_ctl_c *lic_render_c){
-	if(lic_render_c->iflag_lic_pvr_ctl == -1){
-		write_LIC_pvr_ctl_file_c(lic_render_c->fname_lic_pvr_ctl, lic_render_c->lic_pvr_c);
-	};
- 	return;
-};
-
-
 void alloc_sectionings_ctl_c(struct visualizers_ctl_c *viz_c){
 	int i;
 	
@@ -462,47 +406,6 @@ int write_volume_renderings_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_LIC_renderings_ctl_c(struct visualizers_ctl_c *viz_c){
-	int i;
-	
-	for(i=0;i<viz_c->num_LIC_renderings_ctl;i++){
-		viz_c->lic_render_c[i] = (struct LIC_rendering_ctl_c *) malloc(sizeof(struct LIC_rendering_ctl_c));
-		alloc_LIC_rendering_ctl_c(viz_c->lic_render_c[i]);
-	};
-	return;
-};
-
-int read_LIC_renderings_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct visualizers_ctl_c *viz_c){
-	int iflag = 0;
-	int icou = 0;
-	
-    if(viz_c->num_LIC_renderings_ctl == 0) return icou;
-	alloc_LIC_renderings_ctl_c(viz_c);
-    skip_comment_read_line(fp, buf);
-	while(find_control_end_array_flag_c(buf, label, viz_c->num_LIC_renderings_ctl, icou) == 0){
-		iflag = read_LIC_rendering_ctl_c(fp, buf, label, viz_c->lic_render_c[icou]);
-		icou = icou + iflag;
-        skip_comment_read_line(fp, buf);
-	};
-	return icou;
-};
-
-int write_LIC_renderings_ctl_c(FILE *fp, int level, const char *label, 
-			struct visualizers_ctl_c *viz_c){
-	int i = 0;
-	
-	if(viz_c->num_LIC_renderings_ctl == 0) return level;
-	fprintf(fp, "!\n");
-	level = write_array_flag_for_ctl_c(fp, level, label, viz_c->num_LIC_renderings_ctl);
-	for(i=0;i<viz_c->num_LIC_renderings_ctl;i++){
-		level = write_LIC_rendering_ctl_c(fp, level, label, viz_c->lic_render_c[i]);
-	};
-	level = write_end_array_flag_for_ctl_c(fp, level, label);
-	return level;
-};
-
-
 void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	int i;
 	
@@ -517,7 +420,9 @@ void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	viz_c->isosurfs_c = (struct isosurface_ctl_c **) malloc(sizeof(struct isosurface_ctl_c *));
 	viz_c->fldlines_c = (struct fieldline_ctl_c **) malloc(sizeof(struct fieldline_ctl_c *));
 	viz_c->v_render_c = (struct volume_rendering_ctl_c **) malloc(sizeof(struct volume_rendering_ctl_c *));
-	viz_c->lic_render_c = (struct LIC_rendering_ctl_c **) malloc(sizeof(struct LIC_rendering_ctl_c *));
+
+    init_LIC_PVR_ctl_list(&viz_c->lic_ctl_list);
+	
 	viz_c->num_sectionings_ctl = 0;
 	viz_c->num_isosurfaces_ctl = 0;
 	viz_c->num_fieldlines_ctl =  0;
@@ -528,7 +433,7 @@ void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 
 void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	int i;
-	
+	/*
 	for(i=0;i<viz_c->num_sectionings_ctl;i++){
 		dealloc_sectioning_ctl_c(viz_c->sections_c[i]);
 		free(viz_c->sections_c[i]);
@@ -552,12 +457,8 @@ void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 		free(viz_c->v_render_c[i]);
 	};
 	free(viz_c->v_render_c);
-	
-	for(i=0;i<viz_c->num_LIC_renderings_ctl;i++){
-		dealloc_LIC_renderingctl_c(viz_c->lic_render_c[i]);
-		free(viz_c->lic_render_c[i]);
-	};
-	free(viz_c->lic_render_c);
+	*/
+	clear_LIC_PVR_ctl_list(&viz_c->lic_ctl_list);
 	
 	viz_c->num_sectionings_ctl = 0;
 	viz_c->num_isosurfaces_ctl = 0;
@@ -587,7 +488,8 @@ int read_vizs_ctl_c(FILE *fp, char buf[LENGTHBUF],
 		if(iflag > 0) iflag = read_volume_renderings_ctl_c(fp, buf, label_viz_ctl[ 3], viz_c);
 		
 		iflag = find_control_array_flag_c(buf, label_viz_ctl[ 4], &viz_c->num_LIC_renderings_ctl);
-		if(iflag > 0) iflag = read_LIC_renderings_ctl_c(fp, buf, label_viz_ctl[ 4], viz_c);
+		if(iflag > 0) iflag = read_LIC_PVR_ctl_list(fp, buf, viz_c->num_LIC_renderings_ctl, 
+					label_viz_ctl[ 4], &viz_c->lic_ctl_list);
 		
 		
 		iflag = find_control_array_flag_c(buf, label_viz_ctl[ 5], &viz_c->num_sectionings_ctl);
@@ -622,10 +524,7 @@ int write_vizs_ctl_c(FILE *fp, int level, const char *label,
 		level = write_volume_renderings_ctl_c(fp, level, label_viz_ctl[ 3], viz_c);
 	};
 	
-	if(viz_c->num_LIC_renderings_ctl > 0){
-		fprintf(fp, "!\n");
-		level = write_LIC_renderings_ctl_c(fp, level, label_viz_ctl[ 4], viz_c);
-	};
+	level = write_LIC_PVR_ctl_list(fp, level, label_viz_ctl[ 4], &viz_c->lic_ctl_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -656,12 +555,8 @@ void rename_vizs_ctl_subfiles(struct visualizers_ctl_c *viz_c){
 			rename_pvr_ctl_subfiles(viz_c->v_render_c[i]->pvr_c);
 		};
 	};
-	for(i=0;i<viz_c->num_LIC_renderings_ctl;i++){
-		if(viz_c->lic_render_c[i]->iflag_lic_pvr_ctl == -1){
-			strcat(viz_c->lic_render_c[i]->fname_lic_pvr_ctl, "_2");
-			rename_LIC_pvr_ctl_subfiles(viz_c->lic_render_c[i]->lic_pvr_c);
-		};
-    };
+	
+	rename_LIC_PVR_subfile_list(&viz_c->lic_ctl_list);
     return;
 };
 
@@ -679,10 +574,9 @@ void read_vizs_ctl_files_c(char buf[LENGTHBUF], struct visualizers_ctl_c *viz_c)
     };
     for(i=0;i<viz_c->num_volume_renderings_ctl;i++){
 		read_volume_rendering_ctl_file_c(buf, viz_c->v_render_c[i]);
-    };
-    for(i=0;i<viz_c->num_LIC_renderings_ctl;i++){
-		read_LIC_rendering_ctl_file_c(buf, viz_c->lic_render_c[i]);
 	};
+	
+	read_LIC_PVR_subfile_list(buf, &viz_c->lic_ctl_list);
 	return;
 };
 
@@ -701,9 +595,7 @@ void write_vizs_ctl_files_c(struct visualizers_ctl_c *viz_c){
     for(i=0;i<viz_c->num_volume_renderings_ctl;i++){
 		write_volume_rendering_ctl_file_c(viz_c->v_render_c[i]);
     };
-    for(i=0;i<viz_c->num_LIC_renderings_ctl;i++){
-		write_LIC_rendering_ctl_file_c(viz_c->lic_render_c[i]);
-	};
+	write_LIC_PVR_subfile_list(&viz_c->lic_ctl_list);
     
     return;
 };

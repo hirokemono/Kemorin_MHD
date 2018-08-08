@@ -32,7 +32,7 @@ const char label_fline_ctl[NLBL_FLINE_CTL][KCHARA_C] = {
 	/*[13]*/	{"starting_gl_surface_id"}
 };
 
-const char label_fline_head[KCHARA_C] = "field_line";
+const char label_fline_head[KCHARA_C] = "fieldline";
 
 void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	int i;
@@ -191,8 +191,7 @@ int read_fline_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 		exit (2);                    /* terminate with error message */
 	};
 	
-    skip_comment_c(FP_fline);
-	fgets(buf, LENGTHBUF, FP_fline);
+	skip_comment_read_line(FP_fline, buf);
 	if(right_begin_flag_c(buf, label_fline_head) > 0){
 		iflag = read_fline_ctl_c(FP_fline, buf, label_fline_head, fline_c);
 	};

@@ -55,6 +55,7 @@ OBJ_KEMO_C = \
  t_control_data_LIC_c.o \
  t_control_data_4_pvr_c.o \
  t_control_data_LIC_pvr_c.o \
+ t_control_data_LIC_ctl_list.o \
  t_control_data_vizs_c.o \
  \
  t_control_data_visualizer_c.o \
@@ -701,6 +702,18 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	t_control_data_LIC_ctl_list.o: \
+	'$$(KEMO_C_DIR)'/t_control_data_LIC_ctl_list.c \
+	t_control_data_LIC_ctl_list.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	t_control_data_LIC_pvr_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	t_control_data_4_iso_c.o: \
 	'$$(KEMO_C_DIR)'/t_control_data_4_iso_c.c \
 	t_control_data_4_iso_c.h \
@@ -722,7 +735,7 @@ module:
 	t_control_data_4_iso_c.o \
 	t_control_data_4_fline_c.o \
 	t_control_data_4_pvr_c.o \
-	t_control_data_LIC_pvr_c.o \
+	t_control_data_LIC_ctl_list.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

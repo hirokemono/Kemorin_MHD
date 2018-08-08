@@ -313,13 +313,13 @@ int read_psf_define_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct psf_define_ctl_c *psf_def_c){
 	int iflag = 0;
 	
+    printf("read PVR sections file name: %s\n", file_name);
 	if ((FP_PSF = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!\n");
 		exit (2);                    /* terminate with error message */
 	};
 	
-    skip_comment_c(FP_PSF);
-	fgets(buf, LENGTHBUF, FP_PSF);
+	skip_comment_read_line(FP_PSF, buf);
 	if(right_begin_flag_c(buf, label_psf_ctl[2]) > 0){
 		iflag = read_psf_define_ctl_c(FP_PSF, buf, label_psf_ctl[2], psf_def_c);
 	};
@@ -330,6 +330,7 @@ int read_psf_define_file_c(const char *file_name, char buf[LENGTHBUF],
 int write_psf_define_file_c(const char *file_name, struct psf_define_ctl_c *psf_def_c){
 	int level;
 	
+    printf("write PVR sections file name: %s\n", file_name);
 	if ((FP_PSF = fopen(file_name, "w")) == NULL) {
 		fprintf(stderr, "Cannot open file!\n");
 		exit (2);                    /* terminate with error message */
@@ -357,8 +358,7 @@ int read_psf_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 		exit (2);                    /* terminate with error message */
 	};
 	
-    skip_comment_c(FP_PSF);
-	fgets(buf, LENGTHBUF, FP_PSF);
+	skip_comment_read_line(FP_PSF, buf);
 	if(right_begin_flag_c(buf, label_psf_head) > 0){
 		iflag = read_psf_ctl_c(FP_PSF, buf, label_psf_head, psf_c);
 	} else if(right_begin_flag_c(buf, label_old_psf_head) > 0){
@@ -367,7 +367,6 @@ int read_psf_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 	fclose(FP_PSF);
 	
     if(psf_c->iflag_surface_define ==-1){
-        printf("Read PSF definition file name: %s\n", psf_c->psf_def_file_name);
         read_psf_define_file_c(psf_c->psf_def_file_name, buf,
                                psf_c->psf_def_c);
     };
@@ -378,7 +377,6 @@ int write_psf_ctl_file_c(const char *file_name, struct psf_ctl_c *psf_c){
 	int level;
     
     if(psf_c->iflag_surface_define ==-1){
-        printf("write PSF definition file name: %s\n", psf_c->psf_def_file_name);
         write_psf_define_file_c(psf_c->psf_def_file_name, psf_c->psf_def_c);
     };
 	

@@ -291,8 +291,7 @@ int read_iso_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
         exit (2);                    /* terminate with error message */
     };
     
-    skip_comment_c(FP_ISO);
-    fgets(buf, LENGTHBUF, FP_ISO);
+    skip_comment_read_line(FP_ISO, buf);
     if(right_begin_flag_c(buf, label_iso_head) > 0){
         iflag = read_iso_ctl_c(FP_ISO, buf, label_iso_head, iso_c);
     } else if(right_begin_flag_c(buf, label_old_iso_head) > 0){

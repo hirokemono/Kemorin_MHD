@@ -253,13 +253,13 @@ int read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
 			struct colormap_ctl_c *cmap_c){
 	int iflag = 0;
 	
+    printf("Read PVR colormap file name: %s\n", file_name);
 	if ((FP_Colormap = fopen(file_name, "r")) == NULL) {
 		fprintf(stderr, "Cannot open file!\n");
 		exit (2);                    /* terminate with error message */
 	};
 	
-    skip_comment_c(FP_Colormap);
-	fgets(buf, LENGTHBUF, FP_Colormap);
+    skip_comment_read_line(FP_Colormap, buf);
 	if(right_begin_flag_c(buf, label_colormap_head) > 0){
 		iflag = read_colormap_ctl_c(FP_Colormap, buf, label_colormap_head, cmap_c);
 	};
@@ -271,6 +271,7 @@ int read_colormap_file_c(const char *file_name, char buf[LENGTHBUF],
 int write_colormap_file_c(const char *file_name, struct colormap_ctl_c *cmap_c){
 	int level;
 	
+    printf("Write PVR colormap file name: %s\n", file_name);
 	if ((FP_Colormap = fopen(file_name, "w")) == NULL) {
 		fprintf(stderr, "Cannot open file!\n");
 		exit (2);                    /* terminate with error message */
