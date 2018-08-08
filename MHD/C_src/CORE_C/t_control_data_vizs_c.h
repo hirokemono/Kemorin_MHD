@@ -70,7 +70,6 @@ struct visualizers_ctl_c{
     int num_volume_renderings_ctl;
     struct volume_rendering_ctl_c **v_render_c;
     
-    int num_LIC_renderings_ctl;
     struct LIC_PVR_ctl_list lic_ctl_list;
 };
 

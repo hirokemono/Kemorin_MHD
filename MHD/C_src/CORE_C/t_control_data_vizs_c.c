@@ -427,7 +427,6 @@ void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	viz_c->num_isosurfaces_ctl = 0;
 	viz_c->num_fieldlines_ctl =  0;
 	viz_c->num_volume_renderings_ctl = 0;
-	viz_c->num_LIC_renderings_ctl =    0;
 	return;
 };
 
@@ -464,7 +463,6 @@ void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	viz_c->num_isosurfaces_ctl = 0;
 	viz_c->num_fieldlines_ctl =  0;
 	viz_c->num_volume_renderings_ctl = 0;
-	viz_c->num_LIC_renderings_ctl =    0;
 	return;
 };
 
@@ -487,9 +485,7 @@ int read_vizs_ctl_c(FILE *fp, char buf[LENGTHBUF],
 		iflag = find_control_array_flag_c(buf, label_viz_ctl[ 3], &viz_c->num_volume_renderings_ctl);
 		if(iflag > 0) iflag = read_volume_renderings_ctl_c(fp, buf, label_viz_ctl[ 3], viz_c);
 		
-		iflag = find_control_array_flag_c(buf, label_viz_ctl[ 4], &viz_c->num_LIC_renderings_ctl);
-		if(iflag > 0) iflag = read_LIC_PVR_ctl_list(fp, buf, viz_c->num_LIC_renderings_ctl, 
-					label_viz_ctl[ 4], &viz_c->lic_ctl_list);
+		iflag = read_LIC_PVR_ctl_list(fp, buf, label_viz_ctl[ 4], &viz_c->lic_ctl_list);
 		
 		
 		iflag = find_control_array_flag_c(buf, label_viz_ctl[ 5], &viz_c->num_sectionings_ctl);

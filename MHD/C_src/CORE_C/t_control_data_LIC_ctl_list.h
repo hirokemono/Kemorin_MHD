@@ -1,12 +1,12 @@
 /*
-//  t_control_data_lic_ctl_list.h
+//  t_control_data_LIC_ctl_list.h
 //  
 //
 //  Created by Hiroaki Matsui on 2018/08/07.
 */
 
-#ifndef t_control_data_lic_ctl_list_h_
-#define t_control_data_lic_ctl_list_h_
+#ifndef t_control_data_LIC_ctl_list_h_
+#define t_control_data_LIC_ctl_list_h_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +31,7 @@ struct LIC_PVR_ctl_list{
 /* prototypes */
 
 void alloc_LIC_rendering_ctl_c(struct LIC_rendering_ctl_c *lic_render_c);
-void dealloc_LIC_renderingctl_c(struct LIC_rendering_ctl_c *lic_render_c);
+void dealloc_LIC_rendering_ctl_c(struct LIC_rendering_ctl_c *lic_render_c);
 int read_LIC_rendering_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct LIC_rendering_ctl_c *lic_render_c);
 int write_LIC_rendering_ctl_c(FILE *fp, int level, const char *label, 
@@ -40,16 +40,20 @@ void read_LIC_rendering_ctl_file_c(char buf[LENGTHBUF], struct LIC_rendering_ctl
 void write_LIC_rendering_ctl_file_c(struct LIC_rendering_ctl_c *lic_render_c);
 
 
-int init_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head);
-int clear_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head);
-LIC_PVR_ctl_list *add_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *current);
+void init_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head);
+void clear_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head);
+struct LIC_PVR_ctl_list *add_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *current);
 void delete_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *current);
-int count_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *current)；
+int count_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head);
 
-int read_LIC_PVR_ctl_list(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct LIC_PVR_ctl_list *current){
+void rename_LIC_PVR_subfile_list(struct LIC_PVR_ctl_list *head);
+void read_LIC_PVR_subfile_list(char buf[LENGTHBUF], struct LIC_PVR_ctl_list *head);
+void write_LIC_PVR_subfile_list(struct LIC_PVR_ctl_list *head);
+
+int read_LIC_PVR_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
+			struct LIC_PVR_ctl_list *head);
 int write_LIC_PVR_ctl_list(FILE *fp, int level, const char *label, 
-			struct LIC_PVR_ctl_list *current);
+			struct LIC_PVR_ctl_list *head);
 
-#endif /* t_control_data_lic_ctl_list_h_ */
+#endif /* t_control_data_LIC_ctl_list_h_ */
 
