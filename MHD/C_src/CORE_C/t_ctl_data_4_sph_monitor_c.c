@@ -539,11 +539,11 @@ void dealloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl){
 	return;
 };
 
-int read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF], 
+int read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
 			struct sph_monitor_control_c *monitor_ctl){
 	int iflag = 0;
 	
-	while(find_control_end_flag_c(buf, "sph_monitor_ctl") == 0){
+	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
 		iflag = find_control_array_flag_c(buf, label_sph_monitor_ctl[0], &monitor_ctl->num_vspec_c);

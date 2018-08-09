@@ -13,78 +13,21 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
+#include "control_arrays_IO_c.h"
 
 #include "t_ctl_data_4_platforms_c.h"
-#include "t_ctl_data_4_time_steps_c.h"
-#include "t_ctl_data_mhd_evo_scheme_c.h"
-#include "t_ctl_data_4_sph_monitor_c.h"
-#include "t_ctl_data_SGS_model_c.h"
-#include "t_ctl_data_temp_model_c.h"
-#include "t_ctl_data_mhd_forces_c.h"
-#include "t_ctl_data_mhd_normalize_c.h"
-#include "t_ctl_data_MHD_boundary_c.h"
-#include "t_ctl_data_mhd_evolution_c.h"
-#include "t_ctl_data_4_fields_c.h"
+#include "t_ctl_data_SGS_MHD_model_c.h"
+#include "t_control_data_sph_grid_c.h"
 
 #include "t_control_data_vizs_c.h"
-#include "t_ctl_data_4_sphere_model_c.h"
-#include "t_ctl_data_4_FEM_mesh_c.h"
+#include "t_ctl_data_4_sph_monitor_c.h"
+#include "t_ctl_data_node_monitor_c.h"
+#include "t_ctl_data_zonal_means_c.h"
 
-
-struct section_controls_c{
-	char *ctl_file_name;
-};
-
-struct mhd_model_control_c{
-	int iflag_field_control;
-	struct field_ctl_c *fld_ctl;
-	int iflag_mhd_evolution_control;
-	struct mhd_evolution_ctl_c *evo_ctl;
-	int iflag_mhd_evo_area_control;
-	struct mhd_evo_area_ctl_c *earea_ctl;
-	int iflag_node_bc_control;
-	struct MHD_boundary_ctl_c *nbc_ctl;
-	int iflag_surf_bc_control;
-	struct MHD_boundary_ctl_c *sbc_ctl;
-	int iflag_forces_control;
-	struct forces_ctl_c *frc_ctl;
-	int iflag_dimless_control;
-	struct dimless_ctl_c *dless_ctl;
-	int iflag_equations_control;
-	struct equations_ctl_c *eqs_ctl;
-	int iflag_gravity_control;
-	struct gravity_ctl_c *g_ctl;
-	int iflag_coriolis_control;
-	struct coriolis_ctl_c *cor_ctl;
-	int iflag_magneto_convection_control;
-	struct magneto_cv_ctl_c *mcv_ctl;
-	int iflag_reference_temp_control;
-	struct reference_temperature_c *reft_ctl;
-	int iflag_reference_comp_control;
-	struct reference_temperature_c *refc_ctl;
-	int iflag_sgs_model_control;
-	struct SGS_model_control_c *sgs_ctl;
-};
-struct sph_mhd_control_control_c{
-	int iflag_time_data_control;
-	struct time_data_control_c *tctl;
-	int iflag_mhd_restart_control;
-	struct mhd_restart_control_c *mrst_ctl;
-	int iflag_mhd_evo_scheme_control;
-	struct mhd_evo_scheme_control_c *mevo_ctl;
-};
-struct node_monitor_control_c{
-	int iflag;
-};
-
-struct sph_zonal_means_controls_c{
-	int iflag_zmean_section_controls;
-	struct section_controls_c *zmean_psf_ctls;
-	int iflag_zrms_section_controls;
-	struct section_controls_c *zrms_psf_ctls;
-};
 
 struct SGS_MHD_control_c{
+	int maxlen;
+	
 	int iflag_data_files_def;
 	struct platform_data_control_c *files;
 	int iflag_org_files_def;
@@ -93,7 +36,7 @@ struct SGS_MHD_control_c{
 	struct platform_data_control_c *new_files;
 	
 	int iflag_spherical_shell_ctl;
-	int ifile_spherical_shell_ctl;
+	char *shell_ctl_file_name;
 	struct parallel_sph_shell_control_c *shell_ctl;
 	
 	int iflag_model;
@@ -102,29 +45,36 @@ struct SGS_MHD_control_c{
 	struct sph_mhd_control_control_c *control_ctl;
 	
 	int iflag_sph_monitor_ctl;
-	struct sph_monitor_control_c *monitor_ctl;
+	struct sph_monitor_control_c *smtr_ctl;
 	int iflag_node_monitor_ctl;
-	struct node_monitor_control_c *node_monitor_ctl;
+	struct node_monitor_ctl_c *nmtr_ctl;
 	
 	int iflag_visual_control;
 	struct visualizers_ctl_c *viz_c;
 	int iflag_zonal_mean_control;
-	struct sph_zonal_means_controls_c *zm_ctls;
+	struct sph_zonal_means_ctl_c *zm_ctls;
 };
 
 /* Prototypes */
 
-void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl);
-void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl);
-
-void alloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_ctl);
-void dealloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_ctl);
-
-void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_controls_c *zm_ctls);
-void dealloc_sph_zonal_means_controls_c(struct sph_zonal_means_controls_c *zm_ctls);
-
 void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl);
 void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl);
+
+int read_SGS_MHD_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
+			struct SGS_MHD_control_c *mhd_ctl);
+void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl);
+int read_SGS_MHD_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
+			struct SGS_MHD_control_c *mhd_ctl);
+int write_SGS_MHD_control_c(FILE *fp, int level, const char *label, 
+			struct SGS_MHD_control_c *mhd_ctl);
+
+void rename_SGS_MHD_ctl_subfile_c(struct SGS_MHD_control_c *mhd_ctl);
+void read_SGS_MHD_ctl_subfile_c(char buf[LENGTHBUF], struct SGS_MHD_control_c *mhd_ctl);
+void write_SGS_MHD_ctl_subfile_c(struct SGS_MHD_control_c *mhd_ctl);
+
+void read_SGS_MHD_control_file_c(const char *file_name, char buf[LENGTHBUF],
+                        struct SGS_MHD_control_c *mhd_ctl);
+void write_SGS_MHD_control_file_c(const char *file_name, struct SGS_MHD_control_c *mhd_ctl);
 
 
 #endif /* t_SGS_MHD_control_c_h */

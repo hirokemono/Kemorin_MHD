@@ -15,9 +15,6 @@
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
 
-
-/* prototype */
-
 struct pick_spectr_control_c{
     int maxlen;
     
@@ -135,7 +132,7 @@ int write_mid_equator_control_c(FILE *fp, int level,
 
 void alloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl);
 void dealloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl);
-int read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
+int read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
 			struct sph_monitor_control_c *monitor_ctl);
 int write_sph_monitor_ctl_c(FILE *fp, int level, const char *label,
 			struct sph_monitor_control_c *monitor_ctl);
