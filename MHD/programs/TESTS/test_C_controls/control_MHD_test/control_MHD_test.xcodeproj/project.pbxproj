@@ -7,7 +7,44 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1863611C211BCA9E00FFA949 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863611B211BCA9E00FFA949 /* main.c */; };
+		18636123211BCAAC00FFA949 /* main_control_MHD_test.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636122211BCAAC00FFA949 /* main_control_MHD_test.c */; };
+		1863612A211BCB1600FFA949 /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636124211BCB1400FFA949 /* control_elements_IO_c.c */; };
+		1863612B211BCB1600FFA949 /* control_arrays_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636126211BCB1400FFA949 /* control_arrays_IO_c.c */; };
+		1863612C211BCB1600FFA949 /* all_field_names_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636128211BCB1500FFA949 /* all_field_names_c.c */; };
+		18636131211BCB3300FFA949 /* kemosrc_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863612D211BCB3200FFA949 /* kemosrc_param_c.c */; };
+		18636132211BCB3300FFA949 /* skip_comment_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863612E211BCB3300FFA949 /* skip_comment_c.c */; };
+		18636177211BCB6F00FFA949 /* t_control_data_ISO_ctl_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636133211BCB5400FFA949 /* t_control_data_ISO_ctl_list.c */; };
+		18636178211BCB6F00FFA949 /* t_ctl_data_SGS_MHD_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636135211BCB5500FFA949 /* t_ctl_data_SGS_MHD_model_c.c */; };
+		18636179211BCB6F00FFA949 /* t_SGS_MHD_control_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863613C211BCB5600FFA949 /* t_SGS_MHD_control_c.c */; };
+		1863617A211BCB6F00FFA949 /* t_ctl_data_mhd_evolution_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863613D211BCB5600FFA949 /* t_ctl_data_mhd_evolution_c.c */; };
+		1863617B211BCB6F00FFA949 /* t_control_data_4_psf_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863613F211BCB5600FFA949 /* t_control_data_4_psf_c.c */; };
+		1863617D211BCB6F00FFA949 /* t_ctl_data_node_monitor_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636142211BCB5700FFA949 /* t_ctl_data_node_monitor_c.c */; };
+		1863617E211BCB6F00FFA949 /* t_ctl_data_SGS_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636143211BCB5700FFA949 /* t_ctl_data_SGS_model_c.c */; };
+		1863617F211BCB6F00FFA949 /* t_ctl_data_temp_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636144211BCB5700FFA949 /* t_ctl_data_temp_model_c.c */; };
+		18636180211BCB6F00FFA949 /* t_control_data_4_fline_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636146211BCB5800FFA949 /* t_control_data_4_fline_c.c */; };
+		18636181211BCB6F00FFA949 /* t_control_data_LIC_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636147211BCB5800FFA949 /* t_control_data_LIC_c.c */; };
+		18636182211BCB6F00FFA949 /* t_ctl_data_4_sphere_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636148211BCB5900FFA949 /* t_ctl_data_4_sphere_model_c.c */; };
+		18636183211BCB6F00FFA949 /* t_ctl_data_pvr_colormap_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636149211BCB5900FFA949 /* t_ctl_data_pvr_colormap_c.c */; };
+		18636184211BCB6F00FFA949 /* t_control_data_4_pvr_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863614A211BCB5A00FFA949 /* t_control_data_4_pvr_c.c */; };
+		18636185211BCB6F00FFA949 /* t_control_data_sph_grid_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863614C211BCB5A00FFA949 /* t_control_data_sph_grid_c.c */; };
+		18636186211BCB6F00FFA949 /* t_ctl_data_MHD_boundary_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863614D211BCB5B00FFA949 /* t_ctl_data_MHD_boundary_c.c */; };
+		18636187211BCB6F00FFA949 /* t_ctl_data_4_fields_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636151211BCB5D00FFA949 /* t_ctl_data_4_fields_c.c */; };
+		18636188211BCB6F00FFA949 /* t_ctl_data_mhd_forces_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636152211BCB5E00FFA949 /* t_ctl_data_mhd_forces_c.c */; };
+		18636189211BCB6F00FFA949 /* t_ctl_data_mhd_evo_scheme_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636154211BCB5F00FFA949 /* t_ctl_data_mhd_evo_scheme_c.c */; };
+		1863618A211BCB6F00FFA949 /* t_control_data_FLINE_ctl_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636156211BCB5F00FFA949 /* t_control_data_FLINE_ctl_list.c */; };
+		1863618B211BCB6F00FFA949 /* t_control_data_LIC_pvr_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863615B211BCB6200FFA949 /* t_control_data_LIC_pvr_c.c */; };
+		1863618C211BCB6F00FFA949 /* t_ctl_data_4_platforms_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863615F211BCB6300FFA949 /* t_ctl_data_4_platforms_c.c */; };
+		1863618D211BCB6F00FFA949 /* t_control_data_PSF_ctl_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636161211BCB6400FFA949 /* t_control_data_PSF_ctl_list.c */; };
+		1863618E211BCB6F00FFA949 /* t_control_data_4_iso_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636162211BCB6500FFA949 /* t_control_data_4_iso_c.c */; };
+		18636190211BCB6F00FFA949 /* t_ctl_data_4_FEM_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636165211BCB6600FFA949 /* t_ctl_data_4_FEM_mesh_c.c */; };
+		18636191211BCB6F00FFA949 /* t_ctl_data_zonal_means_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636168211BCB6900FFA949 /* t_ctl_data_zonal_means_c.c */; };
+		18636192211BCB6F00FFA949 /* t_ctl_data_4_view_transfer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636169211BCB6900FFA949 /* t_ctl_data_4_view_transfer_c.c */; };
+		18636193211BCB6F00FFA949 /* t_ctl_data_mhd_normalize_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863616A211BCB6A00FFA949 /* t_ctl_data_mhd_normalize_c.c */; };
+		18636194211BCB6F00FFA949 /* t_ctl_data_4_time_steps_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863616D211BCB6B00FFA949 /* t_ctl_data_4_time_steps_c.c */; };
+		18636195211BCB6F00FFA949 /* t_control_data_PVR_ctl_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863616F211BCB6C00FFA949 /* t_control_data_PVR_ctl_list.c */; };
+		18636196211BCB6F00FFA949 /* t_control_data_vizs_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636170211BCB6C00FFA949 /* t_control_data_vizs_c.c */; };
+		18636197211BCB6F00FFA949 /* t_ctl_data_4_sph_monitor_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636173211BCB6D00FFA949 /* t_ctl_data_4_sph_monitor_c.c */; };
+		18636198211BCB6F00FFA949 /* t_control_data_LIC_ctl_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636174211BCB6E00FFA949 /* t_control_data_LIC_ctl_list.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +61,81 @@
 
 /* Begin PBXFileReference section */
 		18636118211BCA9E00FFA949 /* control_MHD_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = control_MHD_test; sourceTree = BUILT_PRODUCTS_DIR; };
-		1863611B211BCA9E00FFA949 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		18636122211BCAAC00FFA949 /* main_control_MHD_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_control_MHD_test.c; path = ../../main_control_MHD_test.c; sourceTree = "<group>"; };
+		18636124211BCB1400FFA949 /* control_elements_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_c.c; path = ../../../../../C_src/CONTROLS/control_elements_IO_c.c; sourceTree = "<group>"; };
+		18636125211BCB1400FFA949 /* control_arrays_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_arrays_IO_c.h; path = ../../../../../C_src/CONTROLS/control_arrays_IO_c.h; sourceTree = "<group>"; };
+		18636126211BCB1400FFA949 /* control_arrays_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_arrays_IO_c.c; path = ../../../../../C_src/CONTROLS/control_arrays_IO_c.c; sourceTree = "<group>"; };
+		18636127211BCB1500FFA949 /* control_elements_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_elements_IO_c.h; path = ../../../../../C_src/CONTROLS/control_elements_IO_c.h; sourceTree = "<group>"; };
+		18636128211BCB1500FFA949 /* all_field_names_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = all_field_names_c.c; path = ../../../../../C_src/CONTROLS/all_field_names_c.c; sourceTree = "<group>"; };
+		18636129211BCB1600FFA949 /* all_field_names_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = all_field_names_c.h; path = ../../../../../C_src/CONTROLS/all_field_names_c.h; sourceTree = "<group>"; };
+		1863612D211BCB3200FFA949 /* kemosrc_param_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemosrc_param_c.c; path = ../../../../../C_src/CORE_C/kemosrc_param_c.c; sourceTree = "<group>"; };
+		1863612E211BCB3300FFA949 /* skip_comment_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = skip_comment_c.c; path = ../../../../../C_src/CORE_C/skip_comment_c.c; sourceTree = "<group>"; };
+		1863612F211BCB3300FFA949 /* kemosrc_param_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemosrc_param_c.h; path = ../../../../../C_src/CORE_C/kemosrc_param_c.h; sourceTree = "<group>"; };
+		18636130211BCB3300FFA949 /* skip_comment_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = skip_comment_c.h; path = ../../../../../C_src/CORE_C/skip_comment_c.h; sourceTree = "<group>"; };
+		18636133211BCB5400FFA949 /* t_control_data_ISO_ctl_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_ISO_ctl_list.c; path = ../../../../../C_src/CONTROLS/t_control_data_ISO_ctl_list.c; sourceTree = "<group>"; };
+		18636134211BCB5500FFA949 /* t_control_data_LIC_pvr_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_LIC_pvr_c.h; path = ../../../../../C_src/CONTROLS/t_control_data_LIC_pvr_c.h; sourceTree = "<group>"; };
+		18636135211BCB5500FFA949 /* t_ctl_data_SGS_MHD_model_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_SGS_MHD_model_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_SGS_MHD_model_c.c; sourceTree = "<group>"; };
+		18636136211BCB5500FFA949 /* t_ctl_data_pvr_colormap_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_pvr_colormap_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_pvr_colormap_c.h; sourceTree = "<group>"; };
+		18636137211BCB5500FFA949 /* t_ctl_data_SGS_MHD_model_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_SGS_MHD_model_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_SGS_MHD_model_c.h; sourceTree = "<group>"; };
+		18636138211BCB5500FFA949 /* t_control_data_4_pvr_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_4_pvr_c.h; path = ../../../../../C_src/CONTROLS/t_control_data_4_pvr_c.h; sourceTree = "<group>"; };
+		18636139211BCB5500FFA949 /* t_ctl_data_4_platforms_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_platforms_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_platforms_c.h; sourceTree = "<group>"; };
+		1863613A211BCB5500FFA949 /* t_control_data_FLINE_ctl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_FLINE_ctl_list.h; path = ../../../../../C_src/CONTROLS/t_control_data_FLINE_ctl_list.h; sourceTree = "<group>"; };
+		1863613B211BCB5600FFA949 /* t_control_data_ISO_ctl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_ISO_ctl_list.h; path = ../../../../../C_src/CONTROLS/t_control_data_ISO_ctl_list.h; sourceTree = "<group>"; };
+		1863613C211BCB5600FFA949 /* t_SGS_MHD_control_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_SGS_MHD_control_c.c; path = ../../../../../C_src/CONTROLS/t_SGS_MHD_control_c.c; sourceTree = "<group>"; };
+		1863613D211BCB5600FFA949 /* t_ctl_data_mhd_evolution_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_mhd_evolution_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_mhd_evolution_c.c; sourceTree = "<group>"; };
+		1863613E211BCB5600FFA949 /* t_ctl_data_4_time_steps_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_time_steps_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_time_steps_c.h; sourceTree = "<group>"; };
+		1863613F211BCB5600FFA949 /* t_control_data_4_psf_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_4_psf_c.c; path = ../../../../../C_src/CONTROLS/t_control_data_4_psf_c.c; sourceTree = "<group>"; };
+		18636141211BCB5700FFA949 /* t_ctl_data_4_FEM_mesh_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_FEM_mesh_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_FEM_mesh_c.h; sourceTree = "<group>"; };
+		18636142211BCB5700FFA949 /* t_ctl_data_node_monitor_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_node_monitor_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_node_monitor_c.c; sourceTree = "<group>"; };
+		18636143211BCB5700FFA949 /* t_ctl_data_SGS_model_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_SGS_model_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_SGS_model_c.c; sourceTree = "<group>"; };
+		18636144211BCB5700FFA949 /* t_ctl_data_temp_model_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_temp_model_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_temp_model_c.c; sourceTree = "<group>"; };
+		18636145211BCB5800FFA949 /* t_ctl_data_mhd_normalize_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_mhd_normalize_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_mhd_normalize_c.h; sourceTree = "<group>"; };
+		18636146211BCB5800FFA949 /* t_control_data_4_fline_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_4_fline_c.c; path = ../../../../../C_src/CONTROLS/t_control_data_4_fline_c.c; sourceTree = "<group>"; };
+		18636147211BCB5800FFA949 /* t_control_data_LIC_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_LIC_c.c; path = ../../../../../C_src/CONTROLS/t_control_data_LIC_c.c; sourceTree = "<group>"; };
+		18636148211BCB5900FFA949 /* t_ctl_data_4_sphere_model_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_sphere_model_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_sphere_model_c.c; sourceTree = "<group>"; };
+		18636149211BCB5900FFA949 /* t_ctl_data_pvr_colormap_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_pvr_colormap_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_pvr_colormap_c.c; sourceTree = "<group>"; };
+		1863614A211BCB5A00FFA949 /* t_control_data_4_pvr_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_4_pvr_c.c; path = ../../../../../C_src/CONTROLS/t_control_data_4_pvr_c.c; sourceTree = "<group>"; };
+		1863614B211BCB5A00FFA949 /* t_control_data_4_fline_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_4_fline_c.h; path = ../../../../../C_src/CONTROLS/t_control_data_4_fline_c.h; sourceTree = "<group>"; };
+		1863614C211BCB5A00FFA949 /* t_control_data_sph_grid_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_sph_grid_c.c; path = ../../../../../C_src/CONTROLS/t_control_data_sph_grid_c.c; sourceTree = "<group>"; };
+		1863614D211BCB5B00FFA949 /* t_ctl_data_MHD_boundary_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_MHD_boundary_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_MHD_boundary_c.c; sourceTree = "<group>"; };
+		1863614E211BCB5B00FFA949 /* t_ctl_data_SGS_model_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_SGS_model_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_SGS_model_c.h; sourceTree = "<group>"; };
+		1863614F211BCB5C00FFA949 /* t_ctl_data_MHD_boundary_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_MHD_boundary_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_MHD_boundary_c.h; sourceTree = "<group>"; };
+		18636150211BCB5C00FFA949 /* t_control_data_4_iso_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_4_iso_c.h; path = ../../../../../C_src/CONTROLS/t_control_data_4_iso_c.h; sourceTree = "<group>"; };
+		18636151211BCB5D00FFA949 /* t_ctl_data_4_fields_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_fields_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_fields_c.c; sourceTree = "<group>"; };
+		18636152211BCB5E00FFA949 /* t_ctl_data_mhd_forces_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_mhd_forces_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_mhd_forces_c.c; sourceTree = "<group>"; };
+		18636153211BCB5E00FFA949 /* t_control_data_LIC_ctl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_LIC_ctl_list.h; path = ../../../../../C_src/CONTROLS/t_control_data_LIC_ctl_list.h; sourceTree = "<group>"; };
+		18636154211BCB5F00FFA949 /* t_ctl_data_mhd_evo_scheme_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_mhd_evo_scheme_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_mhd_evo_scheme_c.c; sourceTree = "<group>"; };
+		18636155211BCB5F00FFA949 /* t_ctl_data_mhd_evo_scheme_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_mhd_evo_scheme_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h; sourceTree = "<group>"; };
+		18636156211BCB5F00FFA949 /* t_control_data_FLINE_ctl_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_FLINE_ctl_list.c; path = ../../../../../C_src/CONTROLS/t_control_data_FLINE_ctl_list.c; sourceTree = "<group>"; };
+		18636158211BCB6000FFA949 /* t_control_data_vizs_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_vizs_c.h; path = ../../../../../C_src/CONTROLS/t_control_data_vizs_c.h; sourceTree = "<group>"; };
+		18636159211BCB6100FFA949 /* t_ctl_data_node_monitor_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_node_monitor_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_node_monitor_c.h; sourceTree = "<group>"; };
+		1863615A211BCB6100FFA949 /* t_ctl_data_zonal_means_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_zonal_means_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_zonal_means_c.h; sourceTree = "<group>"; };
+		1863615B211BCB6200FFA949 /* t_control_data_LIC_pvr_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_LIC_pvr_c.c; path = ../../../../../C_src/CONTROLS/t_control_data_LIC_pvr_c.c; sourceTree = "<group>"; };
+		1863615C211BCB6200FFA949 /* t_ctl_data_4_sph_monitor_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_sph_monitor_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_sph_monitor_c.h; sourceTree = "<group>"; };
+		1863615D211BCB6300FFA949 /* t_ctl_data_4_sphere_model_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_sphere_model_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_sphere_model_c.h; sourceTree = "<group>"; };
+		1863615E211BCB6300FFA949 /* t_control_data_4_psf_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_4_psf_c.h; path = ../../../../../C_src/CONTROLS/t_control_data_4_psf_c.h; sourceTree = "<group>"; };
+		1863615F211BCB6300FFA949 /* t_ctl_data_4_platforms_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_platforms_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_platforms_c.c; sourceTree = "<group>"; };
+		18636160211BCB6400FFA949 /* t_ctl_data_mhd_forces_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_mhd_forces_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_mhd_forces_c.h; sourceTree = "<group>"; };
+		18636161211BCB6400FFA949 /* t_control_data_PSF_ctl_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_PSF_ctl_list.c; path = ../../../../../C_src/CONTROLS/t_control_data_PSF_ctl_list.c; sourceTree = "<group>"; };
+		18636162211BCB6500FFA949 /* t_control_data_4_iso_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_4_iso_c.c; path = ../../../../../C_src/CONTROLS/t_control_data_4_iso_c.c; sourceTree = "<group>"; };
+		18636163211BCB6600FFA949 /* t_control_data_sph_grid_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_sph_grid_c.h; path = ../../../../../C_src/CONTROLS/t_control_data_sph_grid_c.h; sourceTree = "<group>"; };
+		18636165211BCB6600FFA949 /* t_ctl_data_4_FEM_mesh_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_FEM_mesh_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_FEM_mesh_c.c; sourceTree = "<group>"; };
+		18636166211BCB6700FFA949 /* t_control_data_LIC_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_LIC_c.h; path = ../../../../../C_src/CONTROLS/t_control_data_LIC_c.h; sourceTree = "<group>"; };
+		18636167211BCB6800FFA949 /* t_ctl_data_temp_model_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_temp_model_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_temp_model_c.h; sourceTree = "<group>"; };
+		18636168211BCB6900FFA949 /* t_ctl_data_zonal_means_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_zonal_means_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_zonal_means_c.c; sourceTree = "<group>"; };
+		18636169211BCB6900FFA949 /* t_ctl_data_4_view_transfer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_view_transfer_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_view_transfer_c.c; sourceTree = "<group>"; };
+		1863616A211BCB6A00FFA949 /* t_ctl_data_mhd_normalize_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_mhd_normalize_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_mhd_normalize_c.c; sourceTree = "<group>"; };
+		1863616B211BCB6A00FFA949 /* t_control_data_PSF_ctl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_PSF_ctl_list.h; path = ../../../../../C_src/CONTROLS/t_control_data_PSF_ctl_list.h; sourceTree = "<group>"; };
+		1863616C211BCB6A00FFA949 /* t_ctl_data_4_fields_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_fields_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_fields_c.h; sourceTree = "<group>"; };
+		1863616D211BCB6B00FFA949 /* t_ctl_data_4_time_steps_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_time_steps_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_time_steps_c.c; sourceTree = "<group>"; };
+		1863616E211BCB6B00FFA949 /* t_ctl_data_4_view_transfer_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_view_transfer_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_view_transfer_c.h; sourceTree = "<group>"; };
+		1863616F211BCB6C00FFA949 /* t_control_data_PVR_ctl_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_PVR_ctl_list.c; path = ../../../../../C_src/CONTROLS/t_control_data_PVR_ctl_list.c; sourceTree = "<group>"; };
+		18636170211BCB6C00FFA949 /* t_control_data_vizs_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_vizs_c.c; path = ../../../../../C_src/CONTROLS/t_control_data_vizs_c.c; sourceTree = "<group>"; };
+		18636171211BCB6C00FFA949 /* t_SGS_MHD_control_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_SGS_MHD_control_c.h; path = ../../../../../C_src/CONTROLS/t_SGS_MHD_control_c.h; sourceTree = "<group>"; };
+		18636172211BCB6D00FFA949 /* t_ctl_data_mhd_evolution_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_mhd_evolution_c.h; path = ../../../../../C_src/CONTROLS/t_ctl_data_mhd_evolution_c.h; sourceTree = "<group>"; };
+		18636173211BCB6D00FFA949 /* t_ctl_data_4_sph_monitor_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_sph_monitor_c.c; path = ../../../../../C_src/CONTROLS/t_ctl_data_4_sph_monitor_c.c; sourceTree = "<group>"; };
+		18636174211BCB6E00FFA949 /* t_control_data_LIC_ctl_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_LIC_ctl_list.c; path = ../../../../../C_src/CONTROLS/t_control_data_LIC_ctl_list.c; sourceTree = "<group>"; };
+		18636176211BCB6E00FFA949 /* t_control_data_PVR_ctl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_PVR_ctl_list.h; path = ../../../../../C_src/CONTROLS/t_control_data_PVR_ctl_list.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +168,81 @@
 		1863611A211BCA9E00FFA949 /* control_MHD_test */ = {
 			isa = PBXGroup;
 			children = (
-				1863611B211BCA9E00FFA949 /* main.c */,
+				18636122211BCAAC00FFA949 /* main_control_MHD_test.c */,
+				1863612D211BCB3200FFA949 /* kemosrc_param_c.c */,
+				1863612F211BCB3300FFA949 /* kemosrc_param_c.h */,
+				1863612E211BCB3300FFA949 /* skip_comment_c.c */,
+				18636130211BCB3300FFA949 /* skip_comment_c.h */,
+				18636128211BCB1500FFA949 /* all_field_names_c.c */,
+				18636129211BCB1600FFA949 /* all_field_names_c.h */,
+				18636126211BCB1400FFA949 /* control_arrays_IO_c.c */,
+				18636125211BCB1400FFA949 /* control_arrays_IO_c.h */,
+				18636124211BCB1400FFA949 /* control_elements_IO_c.c */,
+				18636127211BCB1500FFA949 /* control_elements_IO_c.h */,
+				18636146211BCB5800FFA949 /* t_control_data_4_fline_c.c */,
+				1863614B211BCB5A00FFA949 /* t_control_data_4_fline_c.h */,
+				18636162211BCB6500FFA949 /* t_control_data_4_iso_c.c */,
+				18636150211BCB5C00FFA949 /* t_control_data_4_iso_c.h */,
+				1863613F211BCB5600FFA949 /* t_control_data_4_psf_c.c */,
+				1863615E211BCB6300FFA949 /* t_control_data_4_psf_c.h */,
+				1863614A211BCB5A00FFA949 /* t_control_data_4_pvr_c.c */,
+				18636138211BCB5500FFA949 /* t_control_data_4_pvr_c.h */,
+				18636156211BCB5F00FFA949 /* t_control_data_FLINE_ctl_list.c */,
+				1863613A211BCB5500FFA949 /* t_control_data_FLINE_ctl_list.h */,
+				18636133211BCB5400FFA949 /* t_control_data_ISO_ctl_list.c */,
+				1863613B211BCB5600FFA949 /* t_control_data_ISO_ctl_list.h */,
+				18636147211BCB5800FFA949 /* t_control_data_LIC_c.c */,
+				18636166211BCB6700FFA949 /* t_control_data_LIC_c.h */,
+				18636174211BCB6E00FFA949 /* t_control_data_LIC_ctl_list.c */,
+				18636153211BCB5E00FFA949 /* t_control_data_LIC_ctl_list.h */,
+				1863615B211BCB6200FFA949 /* t_control_data_LIC_pvr_c.c */,
+				18636134211BCB5500FFA949 /* t_control_data_LIC_pvr_c.h */,
+				18636161211BCB6400FFA949 /* t_control_data_PSF_ctl_list.c */,
+				1863616B211BCB6A00FFA949 /* t_control_data_PSF_ctl_list.h */,
+				1863616F211BCB6C00FFA949 /* t_control_data_PVR_ctl_list.c */,
+				18636176211BCB6E00FFA949 /* t_control_data_PVR_ctl_list.h */,
+				1863614C211BCB5A00FFA949 /* t_control_data_sph_grid_c.c */,
+				18636163211BCB6600FFA949 /* t_control_data_sph_grid_c.h */,
+				18636170211BCB6C00FFA949 /* t_control_data_vizs_c.c */,
+				18636158211BCB6000FFA949 /* t_control_data_vizs_c.h */,
+				18636165211BCB6600FFA949 /* t_ctl_data_4_FEM_mesh_c.c */,
+				18636141211BCB5700FFA949 /* t_ctl_data_4_FEM_mesh_c.h */,
+				18636151211BCB5D00FFA949 /* t_ctl_data_4_fields_c.c */,
+				1863616C211BCB6A00FFA949 /* t_ctl_data_4_fields_c.h */,
+				1863615F211BCB6300FFA949 /* t_ctl_data_4_platforms_c.c */,
+				18636139211BCB5500FFA949 /* t_ctl_data_4_platforms_c.h */,
+				18636173211BCB6D00FFA949 /* t_ctl_data_4_sph_monitor_c.c */,
+				1863615C211BCB6200FFA949 /* t_ctl_data_4_sph_monitor_c.h */,
+				18636148211BCB5900FFA949 /* t_ctl_data_4_sphere_model_c.c */,
+				1863615D211BCB6300FFA949 /* t_ctl_data_4_sphere_model_c.h */,
+				1863616D211BCB6B00FFA949 /* t_ctl_data_4_time_steps_c.c */,
+				1863613E211BCB5600FFA949 /* t_ctl_data_4_time_steps_c.h */,
+				18636169211BCB6900FFA949 /* t_ctl_data_4_view_transfer_c.c */,
+				1863616E211BCB6B00FFA949 /* t_ctl_data_4_view_transfer_c.h */,
+				1863614D211BCB5B00FFA949 /* t_ctl_data_MHD_boundary_c.c */,
+				1863614F211BCB5C00FFA949 /* t_ctl_data_MHD_boundary_c.h */,
+				18636154211BCB5F00FFA949 /* t_ctl_data_mhd_evo_scheme_c.c */,
+				18636155211BCB5F00FFA949 /* t_ctl_data_mhd_evo_scheme_c.h */,
+				1863613D211BCB5600FFA949 /* t_ctl_data_mhd_evolution_c.c */,
+				18636172211BCB6D00FFA949 /* t_ctl_data_mhd_evolution_c.h */,
+				18636152211BCB5E00FFA949 /* t_ctl_data_mhd_forces_c.c */,
+				18636160211BCB6400FFA949 /* t_ctl_data_mhd_forces_c.h */,
+				1863616A211BCB6A00FFA949 /* t_ctl_data_mhd_normalize_c.c */,
+				18636145211BCB5800FFA949 /* t_ctl_data_mhd_normalize_c.h */,
+				18636142211BCB5700FFA949 /* t_ctl_data_node_monitor_c.c */,
+				18636159211BCB6100FFA949 /* t_ctl_data_node_monitor_c.h */,
+				18636149211BCB5900FFA949 /* t_ctl_data_pvr_colormap_c.c */,
+				18636136211BCB5500FFA949 /* t_ctl_data_pvr_colormap_c.h */,
+				18636135211BCB5500FFA949 /* t_ctl_data_SGS_MHD_model_c.c */,
+				18636137211BCB5500FFA949 /* t_ctl_data_SGS_MHD_model_c.h */,
+				18636143211BCB5700FFA949 /* t_ctl_data_SGS_model_c.c */,
+				1863614E211BCB5B00FFA949 /* t_ctl_data_SGS_model_c.h */,
+				18636144211BCB5700FFA949 /* t_ctl_data_temp_model_c.c */,
+				18636167211BCB6800FFA949 /* t_ctl_data_temp_model_c.h */,
+				18636168211BCB6900FFA949 /* t_ctl_data_zonal_means_c.c */,
+				1863615A211BCB6100FFA949 /* t_ctl_data_zonal_means_c.h */,
+				1863613C211BCB5600FFA949 /* t_SGS_MHD_control_c.c */,
+				18636171211BCB6C00FFA949 /* t_SGS_MHD_control_c.h */,
 			);
 			path = control_MHD_test;
 			sourceTree = "<group>";
@@ -119,7 +304,44 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1863611C211BCA9E00FFA949 /* main.c in Sources */,
+				18636194211BCB6F00FFA949 /* t_ctl_data_4_time_steps_c.c in Sources */,
+				1863617A211BCB6F00FFA949 /* t_ctl_data_mhd_evolution_c.c in Sources */,
+				1863618A211BCB6F00FFA949 /* t_control_data_FLINE_ctl_list.c in Sources */,
+				1863612A211BCB1600FFA949 /* control_elements_IO_c.c in Sources */,
+				18636182211BCB6F00FFA949 /* t_ctl_data_4_sphere_model_c.c in Sources */,
+				18636181211BCB6F00FFA949 /* t_control_data_LIC_c.c in Sources */,
+				18636177211BCB6F00FFA949 /* t_control_data_ISO_ctl_list.c in Sources */,
+				18636191211BCB6F00FFA949 /* t_ctl_data_zonal_means_c.c in Sources */,
+				18636185211BCB6F00FFA949 /* t_control_data_sph_grid_c.c in Sources */,
+				1863618D211BCB6F00FFA949 /* t_control_data_PSF_ctl_list.c in Sources */,
+				1863617B211BCB6F00FFA949 /* t_control_data_4_psf_c.c in Sources */,
+				18636179211BCB6F00FFA949 /* t_SGS_MHD_control_c.c in Sources */,
+				18636193211BCB6F00FFA949 /* t_ctl_data_mhd_normalize_c.c in Sources */,
+				18636178211BCB6F00FFA949 /* t_ctl_data_SGS_MHD_model_c.c in Sources */,
+				1863618B211BCB6F00FFA949 /* t_control_data_LIC_pvr_c.c in Sources */,
+				18636195211BCB6F00FFA949 /* t_control_data_PVR_ctl_list.c in Sources */,
+				1863612C211BCB1600FFA949 /* all_field_names_c.c in Sources */,
+				18636197211BCB6F00FFA949 /* t_ctl_data_4_sph_monitor_c.c in Sources */,
+				18636184211BCB6F00FFA949 /* t_control_data_4_pvr_c.c in Sources */,
+				1863617E211BCB6F00FFA949 /* t_ctl_data_SGS_model_c.c in Sources */,
+				18636131211BCB3300FFA949 /* kemosrc_param_c.c in Sources */,
+				18636190211BCB6F00FFA949 /* t_ctl_data_4_FEM_mesh_c.c in Sources */,
+				18636198211BCB6F00FFA949 /* t_control_data_LIC_ctl_list.c in Sources */,
+				18636180211BCB6F00FFA949 /* t_control_data_4_fline_c.c in Sources */,
+				18636189211BCB6F00FFA949 /* t_ctl_data_mhd_evo_scheme_c.c in Sources */,
+				1863618E211BCB6F00FFA949 /* t_control_data_4_iso_c.c in Sources */,
+				1863617F211BCB6F00FFA949 /* t_ctl_data_temp_model_c.c in Sources */,
+				18636187211BCB6F00FFA949 /* t_ctl_data_4_fields_c.c in Sources */,
+				18636123211BCAAC00FFA949 /* main_control_MHD_test.c in Sources */,
+				18636196211BCB6F00FFA949 /* t_control_data_vizs_c.c in Sources */,
+				1863617D211BCB6F00FFA949 /* t_ctl_data_node_monitor_c.c in Sources */,
+				18636186211BCB6F00FFA949 /* t_ctl_data_MHD_boundary_c.c in Sources */,
+				18636188211BCB6F00FFA949 /* t_ctl_data_mhd_forces_c.c in Sources */,
+				18636132211BCB3300FFA949 /* skip_comment_c.c in Sources */,
+				18636183211BCB6F00FFA949 /* t_ctl_data_pvr_colormap_c.c in Sources */,
+				18636192211BCB6F00FFA949 /* t_ctl_data_4_view_transfer_c.c in Sources */,
+				1863618C211BCB6F00FFA949 /* t_ctl_data_4_platforms_c.c in Sources */,
+				1863612B211BCB1600FFA949 /* control_arrays_IO_c.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

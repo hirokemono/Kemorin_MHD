@@ -17,6 +17,7 @@
 #include "t_control_data_4_psf_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "t_ctl_data_4_view_transfer_c.h"
+#include "t_control_data_pvr_isosurf_list.h"
 
 struct pvr_plot_area_ctl_c{
 	int maxlen;
@@ -34,13 +35,6 @@ struct pvr_section_ctl_c{
 	struct real_ctl_item *opacity_ctl;
 };
 
-struct pvr_isosurf_ctl_c{
-	int maxlen;
-	
-	struct real_ctl_item *isosurf_value_ctl;
-	struct real_ctl_item *opacity_ctl;
-	struct chara_ctl_item *isosurf_type_ctl;
-};
 
 struct pvr_colorbar_ctl_c{
 	int maxlen;
@@ -101,8 +95,8 @@ struct pvr_ctl_c{
 	
 	int num_pvr_sect_ctl;
 	struct pvr_section_ctl_c **pvr_sect_ctl;
-	int num_pvr_iso_ctl;
-	struct pvr_isosurf_ctl_c **pvr_iso_ctl;
+	
+	struct pvr_iso_ctl_list pvr_iso_c_list;
 };
 
 /* prototypes */
@@ -120,13 +114,6 @@ int read_pvr_section_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_section_ctl_c *pvr_sect_ctl);
 int write_pvr_section_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_section_ctl_c *pvr_sect_ctl);
-
-void alloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_ctl);
-void dealloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_ctl);
-int read_pvr_isosurf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct pvr_isosurf_ctl_c *pvr_iso_ctl);
-int write_pvr_isosurf_ctl_c(FILE *fp, int level, const char *label,
-			struct pvr_isosurf_ctl_c *pvr_iso_ctl);
 
 void alloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
 void dealloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
@@ -146,12 +133,6 @@ void alloc_pvr_sections_ctl_c(struct pvr_ctl_c *pvr_c);
 int read_pvr_sections_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct pvr_ctl_c *pvr_c);
 int write_pvr_sections_ctl_c(FILE *fp, int level, const char *label, 
-			struct pvr_ctl_c *pvr_c);
-
-void alloc_pvr_isosurfs_ctl_c(struct pvr_ctl_c *pvr_c);
-int read_pvr_isosurfs_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct pvr_ctl_c *pvr_c);
-int write_pvr_isosurfs_ctl_c(FILE *fp, int level, const char *label, 
 			struct pvr_ctl_c *pvr_c);
 
 void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c);

@@ -9,7 +9,6 @@
 
 #define NLBL_PVR_PLOT_AREA_CTL  2
 #define NLBL_PVR_SECTIONS_CTL   2
-#define NLBL_PVR_ISOSURF_CTL    3
 #define NLBL_PVR_COLORBAR_CTL   7
 #define NLBL_PVR_MOVIE_CTL      2
 #define NLBL_PVR_CTL            18
@@ -24,12 +23,6 @@ const char label_pvr_plot_area_ctl[NLBL_PVR_PLOT_AREA_CTL][KCHARA_C] = {
 const char label_pvr_sections_ctl[NLBL_PVR_SECTIONS_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"surface_define"},
 	/*[ 1]*/	{"opacity_ctl"},
-};
-
-const char label_pvr_isosurf_ctl[NLBL_PVR_ISOSURF_CTL][KCHARA_C] = {
-	/*[ 0]*/	{"isosurf_value"},
-	/*[ 1]*/	{"opacity_ctl"},
-	/*[ 2]*/	{"surface_direction"},
 };
 
 const char label_pvr_colorbar_ctl[NLBL_PVR_COLORBAR_CTL][KCHARA_C] = {
@@ -195,66 +188,6 @@ int write_pvr_section_ctl_c(FILE *fp, int level, const char *label,
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };
-
-
-void alloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_ctl){
-	int i;
-	
-	pvr_iso_ctl->maxlen = 0;
-	for (i=0;i<NLBL_PVR_ISOSURF_CTL;i++){
-		if(strlen(label_pvr_isosurf_ctl[i]) > pvr_iso_ctl->maxlen){
-			pvr_iso_ctl->maxlen = (int) strlen(label_pvr_isosurf_ctl[i]);
-		};
-	};
-	
-	pvr_iso_ctl->isosurf_value_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	pvr_iso_ctl->opacity_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(pvr_iso_ctl->isosurf_value_ctl);
-	init_ctl_real_item(pvr_iso_ctl->opacity_ctl);
-	
-	pvr_iso_ctl->isosurf_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(pvr_iso_ctl->isosurf_type_ctl);
-	
-	return;
-};
-
-void dealloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_ctl){
-	
-	free(pvr_iso_ctl->isosurf_value_ctl);
-	free(pvr_iso_ctl->opacity_ctl);
-	
-	dealloc_ctl_chara_item(pvr_iso_ctl->isosurf_type_ctl);
-	free(pvr_iso_ctl->isosurf_type_ctl);
-	
-	return;
-};
-
-
-int read_pvr_isosurf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct pvr_isosurf_ctl_c *pvr_iso_ctl){
-	while(find_control_end_flag_c(buf, label) == 0){
-		
-		skip_comment_read_line(fp, buf);
-		
-		read_real_ctl_item_c(buf, label_pvr_isosurf_ctl[ 0], pvr_iso_ctl->isosurf_value_ctl);
-		read_real_ctl_item_c(buf, label_pvr_isosurf_ctl[ 1], pvr_iso_ctl->opacity_ctl);
-		read_character_ctl_item_c(buf, label_pvr_isosurf_ctl[ 2], pvr_iso_ctl->isosurf_type_ctl);
-	};
-	return 1;
-};
-
-int write_pvr_isosurf_ctl_c(FILE *fp, int level, const char *label,
-			struct pvr_isosurf_ctl_c *pvr_iso_ctl){
-	level = write_begin_flag_for_ctl_c(fp, level, label);
-	
-	write_real_ctl_item_c(fp, level, pvr_iso_ctl->maxlen, label_pvr_isosurf_ctl[ 0], pvr_iso_ctl->isosurf_value_ctl);
-	write_real_ctl_item_c(fp, level, pvr_iso_ctl->maxlen, label_pvr_isosurf_ctl[ 1], pvr_iso_ctl->opacity_ctl);
-	write_character_ctl_item_c(fp, level, pvr_iso_ctl->maxlen, label_pvr_isosurf_ctl[ 2], pvr_iso_ctl->isosurf_type_ctl);
-	
-	level = write_end_flag_for_ctl_c(fp, level, label);
-	return level;
-};
-
 
 
 void alloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
@@ -448,49 +381,6 @@ int write_pvr_sections_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_pvr_isosurfs_ctl_c(struct pvr_ctl_c *pvr_c){
-	int i;
-	
-	for(i=0;i<pvr_c->num_pvr_iso_ctl;i++){
-		pvr_c->pvr_iso_ctl[i] = (struct pvr_isosurf_ctl_c *) malloc(sizeof(struct pvr_isosurf_ctl_c));
-		alloc_pvr_isosurf_ctl_c(pvr_c->pvr_iso_ctl[i]);
-	};
-	
-	return;
-};
-
-int read_pvr_isosurfs_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct pvr_ctl_c *pvr_c){
-	int iflag = 0;
-	int icou = 0;
-	
-	alloc_pvr_isosurfs_ctl_c(pvr_c);
-	while(find_control_end_array_flag_c(buf, label, pvr_c->num_pvr_iso_ctl, icou) == 0){
-		skip_comment_read_line(fp, buf);
-		
-		if(right_begin_flag_c(buf, label) > 0){
-			iflag = read_pvr_isosurf_ctl_c(fp, buf, label, pvr_c->pvr_iso_ctl[icou]);
-			icou = icou + iflag;
-		};
-	};
-	return 1;
-}
-
-int write_pvr_isosurfs_ctl_c(FILE *fp, int level, const char *label, 
-			struct pvr_ctl_c *pvr_c){
-	int i;
-	
-	if(pvr_c->num_pvr_iso_ctl == 0) return level;
-	fprintf(fp, "!\n");
-	level = write_array_flag_for_ctl_c(fp, level, label, pvr_c->num_pvr_iso_ctl);
-	for(i=0;i<pvr_c->num_pvr_iso_ctl;i++){
-		write_pvr_isosurf_ctl_c(fp, level, label, pvr_c->pvr_iso_ctl[i]);
-		fprintf(fp, "!\n");
-	};
-	level = write_end_array_flag_for_ctl_c(fp, level, label);
-	return level;
-};
-
 void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	int i;
 	
@@ -551,9 +441,9 @@ void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	alloc_pvr_movie_ctl_c(pvr_c->movie_c);
 	
 	pvr_c->num_pvr_sect_ctl = 0;
-	pvr_c->num_pvr_iso_ctl = 0;
 	pvr_c->pvr_sect_ctl = (struct pvr_section_ctl_c **) malloc(sizeof(struct pvr_section_ctl_c *));
-	pvr_c->pvr_iso_ctl = (struct pvr_isosurf_ctl_c **) malloc(sizeof(struct pvr_isosurf_ctl_c *));
+	
+	init_pvr_iso_ctl_list(&pvr_c->pvr_iso_c_list);
 	
 	return;
 };
@@ -611,12 +501,7 @@ void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	free(pvr_c->pvr_sect_ctl);
 	pvr_c->num_pvr_sect_ctl = 0;
 	
-	for(i=0;i<pvr_c->num_pvr_iso_ctl;i++){
-		dealloc_pvr_isosurf_ctl_c(pvr_c->pvr_iso_ctl[i]);
-		free(pvr_c->pvr_iso_ctl[i]);
-	};
-	free(pvr_c->pvr_iso_ctl);
-	pvr_c->num_pvr_iso_ctl = 0;
+	clear_pvr_iso_ctl_list(&pvr_c->pvr_iso_c_list);
 	
 	pvr_c->iflag_plot_area_ctl =    0;
 	pvr_c->iflag_modeview_ctl =     0;
@@ -675,8 +560,7 @@ void read_pvr_ctl_items(FILE *fp, char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 	iflag = find_control_array_flag_c(buf, label_pvr_ctl[15], &pvr_c->num_pvr_sect_ctl);
 	if(iflag > 0) iflag = read_pvr_sections_ctl_c(fp, buf, label_pvr_ctl[15], pvr_c);
 	
-	iflag = find_control_array_flag_c(buf, label_pvr_ctl[16], &pvr_c->num_pvr_iso_ctl);
-	if(iflag > 0) iflag = read_pvr_isosurfs_ctl_c(fp, buf, label_pvr_ctl[16], pvr_c);
+	iflag = read_pvr_iso_ctl_list(fp, buf, label_pvr_ctl[16], &pvr_c->pvr_iso_c_list);
 	
 	return;
 };
@@ -732,10 +616,8 @@ int write_pvr_ctl_items(FILE *fp, int level, struct pvr_ctl_c *pvr_c){
 		fprintf(fp, "!\n");
 		level = write_pvr_sections_ctl_c(fp, level, label_pvr_ctl[15], pvr_c);
 	};
-	if(pvr_c->num_pvr_iso_ctl > 0){
-		fprintf(fp, "!\n");
-		level = write_pvr_isosurfs_ctl_c(fp, level, label_pvr_ctl[16], pvr_c);
-	};
+	level = write_pvr_iso_ctl_list(fp, level, label_pvr_ctl[16], &pvr_c->pvr_iso_c_list);
+	
 	return level;
 };
 

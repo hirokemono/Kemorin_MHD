@@ -16,6 +16,7 @@
 		186360A8211BC89200FFA949 /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 186360A1211BC89100FFA949 /* control_elements_IO_c.c */; };
 		186360A9211BC89200FFA949 /* kemosrc_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 186360A2211BC89100FFA949 /* kemosrc_param_c.c */; };
 		186360AB211BC8A100FFA949 /* main_control_PVR_test_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 186360AA211BC8A000FFA949 /* main_control_PVR_test_c.c */; };
+		1863619B211CAE0600FFA949 /* t_control_data_pvr_isosurf_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 1863619A211CAE0600FFA949 /* t_control_data_pvr_isosurf_list.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -49,6 +50,8 @@
 		186360A4211BC89100FFA949 /* skip_comment_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = skip_comment_c.h; path = ../../../../../C_src/CORE_C/skip_comment_c.h; sourceTree = "<group>"; };
 		186360A5211BC89100FFA949 /* kemosrc_param_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemosrc_param_c.h; path = ../../../../../C_src/CORE_C/kemosrc_param_c.h; sourceTree = "<group>"; };
 		186360AA211BC8A000FFA949 /* main_control_PVR_test_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_control_PVR_test_c.c; path = ../../main_control_PVR_test_c.c; sourceTree = "<group>"; };
+		18636199211CAE0600FFA949 /* t_control_data_pvr_isosurf_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_pvr_isosurf_list.h; path = ../../../../../C_src/CONTROLS/t_control_data_pvr_isosurf_list.h; sourceTree = "<group>"; };
+		1863619A211CAE0600FFA949 /* t_control_data_pvr_isosurf_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_pvr_isosurf_list.c; path = ../../../../../C_src/CONTROLS/t_control_data_pvr_isosurf_list.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +91,8 @@
 				18636098211BC85200FFA949 /* t_ctl_data_pvr_colormap_c.h */,
 				18636092211BC85100FFA949 /* t_control_data_4_psf_c.c */,
 				18636097211BC85200FFA949 /* t_control_data_4_psf_c.h */,
+				1863619A211CAE0600FFA949 /* t_control_data_pvr_isosurf_list.c */,
+				18636199211CAE0600FFA949 /* t_control_data_pvr_isosurf_list.h */,
 				18636093211BC85100FFA949 /* t_control_data_4_pvr_c.c */,
 				18636099211BC85200FFA949 /* t_control_data_4_pvr_c.h */,
 				1863609F211BC89100FFA949 /* control_arrays_IO_c.c */,
@@ -168,6 +173,7 @@
 				1863609D211BC85200FFA949 /* t_ctl_data_pvr_colormap_c.c in Sources */,
 				186360A6211BC89200FFA949 /* control_arrays_IO_c.c in Sources */,
 				186360A9211BC89200FFA949 /* kemosrc_param_c.c in Sources */,
+				1863619B211CAE0600FFA949 /* t_control_data_pvr_isosurf_list.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
