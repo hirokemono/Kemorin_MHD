@@ -55,7 +55,7 @@ void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	sdctl_c->maxlen = 0;
 	for (i=0;i<NLBL_SPHERE_DOMAIN_CTL;i++){
 		if(strlen(label_sphere_domain_ctl[i]) > sdctl_c->maxlen){
-			sdctl_c->maxlen = strlen(label_sphere_domain_ctl[i]);
+			sdctl_c->maxlen = (int) strlen(label_sphere_domain_ctl[i]);
 		};
 	};
 	
@@ -140,7 +140,7 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	spctl_c->maxlen = 0;
 	for (i=0;i<NLBL_SPHERE_DATA_CTL;i++){
 		if(strlen(label_sphere_data_ctl[i]) > spctl_c->maxlen){
-			spctl_c->maxlen = strlen(label_sphere_data_ctl[i]);
+			spctl_c->maxlen = (int) strlen(label_sphere_data_ctl[i]);
 		};
 	};
 	

@@ -8,6 +8,8 @@ OBJ_KEMO_CTL_C = \
  control_elements_IO_c.o \
  control_arrays_IO_c.o \
  \
+ all_field_names_c.o \
+ \
  t_ctl_data_4_platforms_c.o \
  t_ctl_data_4_FEM_mesh_c.o \
  t_ctl_data_4_time_steps_c.o \
@@ -66,6 +68,16 @@ mod_list:
 
 
 module:
+	@echo \
+	all_field_names_c.o: \
+	'$$(KEMO_CTL_C_DIR)'/all_field_names_c.c \
+	all_field_names_c.h \
+	kemosrc_param_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
+	'$$(KEMO_CTL_C_DIR)'/all_field_names_c.c \
+	>> $(MAKENAME)
+	
 	@echo \
 	control_elements_IO_c.o: \
 	'$$(KEMO_CTL_C_DIR)'/control_elements_IO_c.c \

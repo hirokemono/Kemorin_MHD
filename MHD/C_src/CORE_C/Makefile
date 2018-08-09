@@ -15,8 +15,6 @@ OBJ_KEMO_C = \
  write_image_2_bmp.o \
  read_image_2_bmp.o \
  \
- all_field_names_c.o \
- \
  m_surface_mesh_4_viewer_c.o \
  m_grouping_mesh_4_viewer_c.o \
  m_psf_data_4_viewer_c.o \
@@ -189,16 +187,6 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
 	'$$(KEMO_C_DIR)'/read_image_2_bmp.c \
-	>> $(MAKENAME)
-	
-	@echo \
-	all_field_names_c.o: \
-	'$$(KEMO_C_DIR)'/all_field_names_c.c \
-	all_field_names_c.h \
-	kemosrc_param_c.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
-	'$$(KEMO_C_DIR)'/all_field_names_c.c \
 	>> $(MAKENAME)
 	
 	@echo \

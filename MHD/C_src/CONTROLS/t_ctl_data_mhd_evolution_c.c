@@ -25,7 +25,7 @@ void alloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl){
 	evo_ctl->maxlen = 0;
 	for (i=0;i<NLBL_MHD_EVOLUTION_CTL;i++){
 		if(strlen(label_mhd_evolution_ctl[i]) > evo_ctl->maxlen){
-			evo_ctl->maxlen = strlen(label_mhd_evolution_ctl[i]);
+			evo_ctl->maxlen = (int) strlen(label_mhd_evolution_ctl[i]);
 		};
 	};
 	
@@ -58,7 +58,7 @@ int write_mhd_evolution_ctl_c(FILE *fp, int level,
 
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_array_c(fp, level, strlen(label_mhd_evolution_ctl[0]),
+	write_character_ctl_array_c(fp, level, (int) strlen(label_mhd_evolution_ctl[0]),
 				label_mhd_evolution_ctl[0], evo_ctl->t_evo_field_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -72,7 +72,7 @@ void alloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl){
 	earea_ctl->maxlen = 0;
 	for (i=0;i<NLBL_MHD_EVO_AREA_CTL;i++){
 		if(strlen(label_mhd_evo_area_ctl[i]) > earea_ctl->maxlen){
-			earea_ctl->maxlen = strlen(label_mhd_evo_area_ctl[i]);
+			earea_ctl->maxlen = (int) strlen(label_mhd_evo_area_ctl[i]);
 		};
 	};
 	
@@ -110,11 +110,11 @@ int write_mhd_evo_area_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_array_c(fp, level, strlen(label_mhd_evo_area_ctl[0]),
+	write_character_ctl_array_c(fp, level, (int) strlen(label_mhd_evo_area_ctl[0]),
 				label_mhd_evo_area_ctl[0], earea_ctl->evo_fluid_group_c);
 	
 	if(earea_ctl->evo_conduct_group_c->num > 0) fprintf(fp, "!\n");
-	write_character_ctl_array_c(fp, level, strlen(label_mhd_evo_area_ctl[1]),
+	write_character_ctl_array_c(fp, level, (int) strlen(label_mhd_evo_area_ctl[1]),
 				label_mhd_evo_area_ctl[1], earea_ctl->evo_conduct_group_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);

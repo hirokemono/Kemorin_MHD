@@ -21,8 +21,7 @@ int main(int argc,char *argv[])
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
 	char file_name_2[LENGTHBUF];
-	int i, j;
-	int level;
+	int i;
 	
 	fld_ctl = (struct field_control *) malloc(sizeof(struct field_control));
 	fld_ctl->fld_def = (struct all_field_def*)malloc(sizeof(struct all_field_def));
@@ -37,13 +36,13 @@ int main(int argc,char *argv[])
 		printf("field_name %d: %s %d\n", i, fld_ctl->fld_def->field_names[i], fld_ctl->fld_def->field_comps[i]);
 	}
 	
-	
+	/*
 	if (argc <= 1) {
 		printf("Input control file in standard input. \n");
 		return 1;
 	};
 	strngcopy(file_name, argv[1]);
-    
+    */
 	strngcopy(file_name_2, file_name);
 	strcat(file_name_2, "_2");
 	

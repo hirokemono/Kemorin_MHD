@@ -26,7 +26,7 @@ const char label_SGS_MHD_ctl[NLBL_SGS_MHD_CTL][KCHARA_C] = {
     /*[ 9]*/    {"monitor_data_ctl"}
 };
 
-const char label_MHD_control_head[KCHARA_C] = "control_MHD";
+const char label_MHD_control_head[KCHARA_C] = "MHD_control";
 
 void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	int i;
@@ -203,7 +203,7 @@ int write_SGS_MHD_control_c(FILE *fp, int level, const char *label,
 		fprintf(fp, "!\n");
 		level = write_vizs_ctl_c(fp, level, label_SGS_MHD_ctl[8], mhd_ctl->viz_c);
 	};
-	if(mhd_ctl->iflag_visual_control > 0){
+	if(mhd_ctl->iflag_node_monitor_ctl > 0){
 		fprintf(fp, "!\n");
 		level = write_node_monitor_ctl_c(fp, level, label_SGS_MHD_ctl[9], mhd_ctl->nmtr_ctl);
 	};
