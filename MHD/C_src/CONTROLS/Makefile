@@ -32,6 +32,7 @@ OBJ_KEMO_CTL_C = \
  t_control_data_4_fline_c.o \
  t_ctl_data_4_view_transfer_c.o \
  t_ctl_data_pvr_colormap_c.o \
+ t_control_data_pvr_section_list.o \
  t_control_data_pvr_isosurf_list.o \
  t_control_data_LIC_c.o \
  t_control_data_4_pvr_c.o \
@@ -355,6 +356,18 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	t_control_data_pvr_section_list.o: \
+	'$$(KEMO_CTL_C_DIR)'/t_control_data_pvr_section_list.c \
+	t_control_data_pvr_section_list.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	t_control_data_4_psf_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	t_control_data_pvr_isosurf_list.o: \
 	'$$(KEMO_CTL_C_DIR)'/t_control_data_pvr_isosurf_list.c \
 	t_control_data_pvr_isosurf_list.h \
@@ -386,6 +399,7 @@ module:
 	t_control_data_4_psf_c.o \
 	t_ctl_data_pvr_colormap_c.o \
 	t_ctl_data_4_view_transfer_c.o \
+	t_control_data_pvr_section_list.o \
 	t_control_data_pvr_isosurf_list.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \

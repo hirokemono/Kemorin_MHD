@@ -14,9 +14,9 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
-#include "t_control_data_4_psf_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "t_ctl_data_4_view_transfer_c.h"
+#include "t_control_data_pvr_section_list.h"
 #include "t_control_data_pvr_isosurf_list.h"
 
 struct pvr_plot_area_ctl_c{
@@ -25,16 +25,6 @@ struct pvr_plot_area_ctl_c{
 	struct chara_ctl_array *pvr_area_ctl;
 	struct chara2_real_ctl_array *surf_enhanse_ctl;
 };
-
-struct pvr_section_ctl_c{
-	int maxlen;
-	
-	char *fname_sect_ctl;
-	int iflag_psf_define_ctl;
-	struct psf_define_ctl_c *psf_def_c;
-	struct real_ctl_item *opacity_ctl;
-};
-
 
 struct pvr_colorbar_ctl_c{
 	int maxlen;
@@ -93,10 +83,8 @@ struct pvr_ctl_c{
 	int iflag_pvr_movie_ctl;
 	struct pvr_movie_ctl_c *movie_c;
 	
-	int num_pvr_sect_ctl;
-	struct pvr_section_ctl_c **pvr_sect_ctl;
-	
-	struct pvr_iso_ctl_list pvr_iso_c_list;
+	struct pvr_sect_ctl_list pvr_sect_c_list;
+	struct pvr_iso_ctl_list  pvr_iso_c_list;
 };
 
 /* prototypes */
@@ -107,13 +95,6 @@ int read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_plot_area_ctl_c *area_c);
 int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_plot_area_ctl_c *area_c);
-
-void alloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_ctl);
-void dealloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_ctl);
-int read_pvr_section_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct pvr_section_ctl_c *pvr_sect_ctl);
-int write_pvr_section_ctl_c(FILE *fp, int level, const char *label,
-			struct pvr_section_ctl_c *pvr_sect_ctl);
 
 void alloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
 void dealloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
@@ -128,12 +109,6 @@ int read_pvr_movie_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_movie_ctl_c *movie_c);
 int write_pvr_movie_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_movie_ctl_c *movie_c);
-
-void alloc_pvr_sections_ctl_c(struct pvr_ctl_c *pvr_c);
-int read_pvr_sections_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct pvr_ctl_c *pvr_c);
-int write_pvr_sections_ctl_c(FILE *fp, int level, const char *label, 
-			struct pvr_ctl_c *pvr_c);
 
 void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c);
 void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c);

@@ -191,6 +191,7 @@ int write_pvr_iso_ctl_list(FILE *fp, int level, const char *label,
 	while (head != NULL) {	/* Go through null pointer*/
 		level = write_pvr_isosurf_ctl_c(fp, level, label, head->pvr_iso_c);
 		head = head->_next;
+		fprintf(fp, "!\n");
 	}
 	level = write_end_array_flag_for_ctl_c(fp, level, label);
 	return level;

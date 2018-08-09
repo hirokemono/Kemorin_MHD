@@ -18,7 +18,7 @@ int main(int argc,char *argv[])
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/ctl_pvr_wz";
 	char file_name_2[LENGTHBUF];
-	int iflag, i;
+	int iflag;
 /*
     if (argc <= 1) {
 		printf("Input control file in standard input. \n");

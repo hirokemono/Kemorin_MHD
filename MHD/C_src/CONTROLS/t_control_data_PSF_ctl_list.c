@@ -176,7 +176,7 @@ int read_PSF_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct PSF_ctl_list *head){
 	int iflag = 0;
 	int icou = 0;
-	int num_array;
+	int num_array = 0;
 	
 	iflag = find_control_array_flag_c(buf, label, &num_array);
 	if(iflag == 0) return iflag;
