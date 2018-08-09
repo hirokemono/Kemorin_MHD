@@ -7,11 +7,17 @@ C_SRCDIR = $$(MHDDIR)/C_src
 LIB_KEMO_C =       -lkemo_c
 LIB_KEMO_C_FILE = libkemo_c.a
 
-OBJS_C= $$(OBJ_KEMO_C)
-LIBDIRS = CORE_C
+OBJS_C= \
+$$(OBJ_KEMO_C) \
+$$(OBJ_KEMO_CTL_C)
+
+LIBDIRS = \
+CORE_C \
+CONTROLS
 
 SUBDIRS = \
 CORE_C    \
+CONTROLS  \
 KEMO_GL   \
 KEMO_GLUT
 
