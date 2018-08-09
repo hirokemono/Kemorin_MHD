@@ -379,12 +379,24 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	t_control_data_lic_masking_list.o: \
+	'$$(KEMO_CTL_C_DIR)'/t_control_data_lic_masking_list.c \
+	t_control_data_lic_masking_list.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	t_control_data_LIC_c.o: \
 	'$$(KEMO_CTL_C_DIR)'/t_control_data_LIC_c.c \
 	t_control_data_LIC_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	control_arrays_IO_c.o \
+	t_control_data_lic_masking_list.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

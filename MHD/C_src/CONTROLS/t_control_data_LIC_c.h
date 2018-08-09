@@ -14,19 +14,8 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
-#include "t_control_data_4_psf_c.h"
-#include "t_ctl_data_pvr_colormap_c.h"
-#include "t_ctl_data_4_view_transfer_c.h"
+#include "t_control_data_lic_masking_list.h"
 
-
-struct lic_masking_ctl_c{
-	int maxlen;
-	
-	struct chara_ctl_item *field_name_ctl;
-	struct chara_ctl_item *component_ctl;
-	
-	struct real2_ctl_array *mask_range_ctl;
-};
 
 struct lic_ctl_c{
 	int maxlen;
@@ -55,26 +44,10 @@ struct lic_ctl_c{
 	struct chara_ctl_item *reflection_ref_type_ctl;
 	struct real_ctl_item *reflection_parameter_ctl;
 	
-	int num_lic_masking_ctl;
-	struct lic_masking_ctl_c **mask_ctl;
+	struct lic_masking_ctl_list lic_mask_list;
 };
 
 /* prototypes */
-
-void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl);
-void dealloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl);
-int read_lic_masking_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct lic_masking_ctl_c *mask_ctl);
-int write_lic_masking_ctl_c(FILE *fp, int level, const char *label, 
-			struct lic_masking_ctl_c *mask_ctl);
-
-
-void alloc_lic_masking_ctls_c(struct lic_ctl_c *lic_c);
-int read_lic_masking_ctls_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct lic_ctl_c *lic_c);
-int write_lic_masking_ctls_c(FILE *fp, int level, const char *label, 
-			struct lic_ctl_c *lic_c);
-
 
 void alloc_lic_ctl_c(struct lic_ctl_c *lic_c);
 void dealloc_lic_ctl_c(struct lic_ctl_c *lic_c);
