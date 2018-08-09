@@ -8,6 +8,7 @@ const char field_names[NUM_FIELD][NCHARA_FIELD] = {
 			{"t_step"},
 			{"time"},
 			{"velocity"},
+			{"vorticity"},
 			{"pressure"},
 			{"vector_potential"},
 			{"magnetic_field"},
@@ -237,6 +238,7 @@ const char field_names[NUM_FIELD][NCHARA_FIELD] = {
 			
 			{"div_SGS_h_flux"},
 			{"div_SGS_c_flux"},
+			{"div_SGS_m_flux"},
 			{"momentum_flux_w_SGS"},
 			{"maxwell_tensor_w_sgs"},
 			{"intertia_w_SGS"},
@@ -301,12 +303,18 @@ const char field_names[NUM_FIELD][NCHARA_FIELD] = {
 			{"SGS_grad"},
 			{"SGS_grad_f"},
 			{"SGS_diffuse"},
+			
+			{"velocity_scale"},
+			{"magnetic_scale"},
+			{"temperature_scale"},
+			{"composition_scale"},
 		};
 
 const int field_comps[NUM_FIELD] = {
 			/*{"t_step"}*/  1,
 			/*{"time"}*/  1,
 			/*{"velocity"}*/  3,
+			/*{"vorticity"}*/  3,
 			/*{"pressure"}*/  1,
 			/*{"vector_potential"}*/  3,
 			/*{"magnetic_field"}*/  3,
@@ -536,6 +544,7 @@ const int field_comps[NUM_FIELD] = {
 			
 			/*{"div_SGS_h_flux"}*/  1,
 			/*{"div_SGS_c_flux"}*/  1,
+			/*{"div_SGS_m_flux"}*/  3,
 			/*{"momentum_flux_w_SGS"}*/  6,
 			/*{"maxwell_tensor_w_sgs"}*/  6,
 			/*{"intertia_w_SGS"}*/  3,
@@ -596,10 +605,15 @@ const int field_comps[NUM_FIELD] = {
 			/*{"temp_4_SGS"}*/  1,
 			/*{"comp_4_SGS"}*/  1,
 			
-			/*{"SGS_simi"}*/  6,
-			/*{"SGS_grad"}*/  6,
-			/*{"SGS_grad_f"}*/  6,
+			/*{"SGS_simi"}*/     6,
+			/*{"SGS_grad"}*/     6,
+			/*{"SGS_grad_f"}*/   6,
 			/*{"SGS_diffuse"}*/  3,
+			
+			/*{"velocity_scale"}*/     1,
+			/*{"magnetic_scale"}*/     1,
+			/*{"temperature_scale"}*/  1,
+			/*{"composition_scale"}*/  1,
 		};
 
 int alloc_copy_field_cond_dimension_list_c(struct all_field_def *fld_def){
