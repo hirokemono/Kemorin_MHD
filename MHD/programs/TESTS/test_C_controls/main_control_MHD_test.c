@@ -6,7 +6,7 @@
 #include "t_SGS_MHD_control_c.h"
 
 struct field_control{
-	struct all_field_def *fld_def;
+	struct field_def *fld_def;
 	int *iflag_use;
 	int *iflag_viz;
 	int *iflag_monitor;
@@ -21,19 +21,22 @@ int main(int argc,char *argv[])
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
 	char file_name_2[LENGTHBUF];
+    char fld_name[NCHARA_FIELD];
+    char fld_math[KCHARA_C];
 	int i;
+    
+    int num_comps;
 	
 	fld_ctl = (struct field_control *) malloc(sizeof(struct field_control));
-	fld_ctl->fld_def = (struct all_field_def*)malloc(sizeof(struct all_field_def));
-	fld_ctl->iflag_use = (int *)calloc(fld_ctl->fld_def->num_field, sizeof(int));
-	fld_ctl->iflag_viz = (int *)calloc(fld_ctl->fld_def->num_field, sizeof(int));
-	fld_ctl->iflag_monitor = (int *)calloc(fld_ctl->fld_def->num_field, sizeof(int));
-	
-	i = alloc_copy_field_cond_dimension_list_c(fld_ctl->fld_def);
-	
-	printf("baka %d\n", fld_ctl->fld_def->num_field);
-	for(i=0;i<fld_ctl->fld_def->num_field;i++){
-		printf("field_name %d: %s %d\n", i, fld_ctl->fld_def->field_names[i], fld_ctl->fld_def->field_comps[i]);
+	fld_ctl->fld_def = (struct field_def *)malloc(sizeof(struct field_def));
+	fld_ctl->iflag_use = (int *)calloc(NUM_FIELD, sizeof(int));
+	fld_ctl->iflag_viz = (int *)calloc(NUM_FIELD, sizeof(int));
+	fld_ctl->iflag_monitor = (int *)calloc(NUM_FIELD, sizeof(int));
+		
+    printf("baka %d\n", NUM_FIELD);
+	for(i=0;i<NUM_FIELD;i++){
+        num_comps = get_field_properties(i, fld_name, fld_math);
+		printf("field_name %d: %s %d %s\n", i, fld_name, num_comps, fld_math);
 	}
 	
 	/*

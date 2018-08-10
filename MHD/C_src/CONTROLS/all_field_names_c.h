@@ -5,20 +5,19 @@
 #define ALL_FIELD_NAMES_C_
 
 #include <stdlib.h>
+#include "kemosrc_param_c.h"
 
-#define NUM_FIELD 256
+#define NUM_FIELD 255
 #define NCHARA_FIELD 30
 
-struct all_field_def{
-	int num_field;
-	char **field_names;
-	int *field_comps;
+struct field_def{
+	int num_comps;
+	char field_name[NCHARA_FIELD];
+	char field_math[KCHARA_C];
 };
 
 /* Prototypes */ 
 
-int alloc_copy_field_cond_dimension_list_c(struct all_field_def *fld_def);
-void dealloc_copy_field_cond_dimension_list_c(struct all_field_def *fld_def);
-
+int get_field_properties(int index, char *name, char *math);
 
 #endif
