@@ -15,6 +15,11 @@ const char label_pvr_sections_ctl[NLBL_PVR_SECTIONS_CTL][KCHARA_C] = {
 };
 
 
+void get_label_pvr_sections_ctl(int index, char *label){
+    if(index < NLBL_PVR_SECTIONS_CTL) strngcopy(label, label_pvr_sections_ctl[index]);
+    return;
+};
+
 void alloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c){
 	int i;
 	

@@ -34,6 +34,11 @@ const char label_fline_ctl[NLBL_FLINE_CTL][KCHARA_C] = {
 
 const char label_fline_head[KCHARA_C] = "fieldline";
 
+void get_label_fline_ctl(int index, char *label){
+    if(index < NLBL_FLINE_CTL) strngcopy(label, label_fline_ctl[index]);
+    return;
+};
+
 void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	int i;
 	

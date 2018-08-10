@@ -58,6 +58,8 @@ struct mhd_evo_scheme_control_c{
 };
 
 /* prototype */
+void get_label_mhd_restart_control(int index, char *label);
+void get_label_mhd_evo_scheme_control(int index, char *label);
 
 void alloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl);
 void dealloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl);

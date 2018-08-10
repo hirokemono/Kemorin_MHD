@@ -58,6 +58,11 @@ const char label_time_data_ctl[NLBL_TIME_DATA_CTL][KCHARA_C] = {
     /*[38]*/    {"delta_t_boundary_ctl"}
 };
 
+void get_label_time_data_ctl(int index, char *label){
+    if(index < NLBL_TIME_DATA_CTL) strngcopy(label, label_time_data_ctl[index]);
+    return;
+};
+
 void alloc_time_data_control_c(struct time_data_control_c *tctl){
     int i;
     

@@ -68,6 +68,12 @@ struct equations_ctl_c{
 
 
 /* prototype */
+void get_label_momentum_equation_ctl(int index, char *label);
+void get_label_induction_equation_ctl(int index, char *label);
+void get_label_heat_equation_ctl(int index, char *label);
+void get_label_comp_equation_ctl(int index, char *label);
+void get_label_dimless_ctl(int index, char *label);
+void get_label_equations_ctl(int index, char *label);
 
 void alloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c);
 void dealloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c);

@@ -33,6 +33,7 @@ struct volume_spectr_ctl_list{
 };
 
 /* prototypes */
+void get_label_volume_spectr_ctl(int index, char *label);
 
 void alloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c);
 void dealloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c);

@@ -28,6 +28,7 @@ struct FEM_mesh_control_c{
 
 
 /* prototypes */
+void get_label_FEM_mesh_ctl(int index, char *label);
 
 void alloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh);
 void dealloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh);

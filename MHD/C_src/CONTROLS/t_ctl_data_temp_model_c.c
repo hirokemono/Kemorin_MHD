@@ -37,13 +37,28 @@ const char label_ref_temperature_ctl[NLBL_REF_TEMPERATURE_CTL][KCHARA_C] = {
 	/*[ 7]*/	{"takepiro_model_ctl"}
 };
 
+
+void get_label_reference_point_ctl(int index, char *label){
+    if(index < NLBL_REFERENCE_POINT) strngcopy(label, label_reference_point_ctl[index]);
+    return;
+};
+void get_label_takepiro_model_ctl(int index, char *label){
+    if(index < NLBL_TAKEPIRO_MODEL) strngcopy(label, label_takepiro_model_ctl[index]);
+    return;
+};
+void get_label_ref_temperature_ctl(int index, char *label){
+    if(index < NLBL_REF_TEMPERATURE_CTL) strngcopy(label, label_ref_temperature_ctl[index]);
+    return;
+};
+
+
 void alloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c){
 	int i;
 	
 	ref_c->maxlen = 0;
 	for (i=0;i<NLBL_REFERENCE_POINT;i++){
 		if(strlen(label_reference_point_ctl[i]) > ref_c->maxlen){
-			ref_c->maxlen = strlen(label_reference_point_ctl[i]);
+			ref_c->maxlen = (int) strlen(label_reference_point_ctl[i]);
 		};
 	};
 	
@@ -117,7 +132,7 @@ void alloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c){
 	takepiro_c->maxlen = 0;
 	for (i=0;i<NLBL_TAKEPIRO_MODEL;i++){
 		if(strlen(label_takepiro_model_ctl[i]) > takepiro_c->maxlen){
-			takepiro_c->maxlen = strlen(label_takepiro_model_ctl[i]);
+			takepiro_c->maxlen = (int) strlen(label_takepiro_model_ctl[i]);
 		};
 	};
 	
@@ -172,7 +187,7 @@ void alloc_ref_temperature_ctl_c(struct reference_temperature_c *reft_ctl){
 	reft_ctl->maxlen = 0;
 	for (i=0;i<NLBL_REF_TEMPERATURE_CTL;i++){
 		if(strlen(label_ref_temperature_ctl[i]) > reft_ctl->maxlen){
-			reft_ctl->maxlen = strlen(label_ref_temperature_ctl[i]);
+			reft_ctl->maxlen = (int) strlen(label_ref_temperature_ctl[i]);
 		};
 	};
 	

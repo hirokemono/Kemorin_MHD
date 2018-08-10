@@ -43,6 +43,16 @@ const char label_lighting_ctl[NLBL_LIGHTING_CTL][KCHARA_C] = {
 const char label_colormap_head[KCHARA_C] = "pvr_color_ctl";
 
 
+void get_label_colormap_ctl(int index, char *label){
+    if(index < NLBL_COLORMAP_CTL) strngcopy(label, label_colormap_ctl[index]);
+    return;
+};
+void get_label_lighting_ctl(int index, char *label){
+    if(index < NLBL_LIGHTING_CTL) strngcopy(label, label_lighting_ctl[index]);
+    return;
+};
+
+
 void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	int i;
 	

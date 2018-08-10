@@ -56,6 +56,7 @@ struct SGS_MHD_control_c{
 };
 
 /* Prototypes */
+void get_label_SGS_MHD_ctl(int index, char *label);
 
 void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl);
 void dealloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl);

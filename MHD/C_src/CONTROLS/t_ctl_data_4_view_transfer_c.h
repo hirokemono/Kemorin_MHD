@@ -63,6 +63,10 @@ struct modeview_ctl_c{
 };
 
 /* prototypes */
+void get_label_image_size_ctl(int index, char *label);
+void get_label_streo_view_ctl(int index, char *label);
+void get_label_projection_mat_ctl(int index, char *label);
+void get_label_modeview_ctl(int index, char *label);
 
 void alloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c);
 void dealloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c);

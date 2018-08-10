@@ -89,6 +89,11 @@ struct pvr_ctl_c{
 
 /* prototypes */
 
+void get_label_pvr_plot_area_ctl(int index, char *label);
+void get_label_pvr_colorbar_ctl(int index, char *label);
+void get_label_pvr_movie_ctl(int index, char *label);
+void get_label_pvr_ctl(int index, char *label);
+
 void alloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c);
 void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c);
 int read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,

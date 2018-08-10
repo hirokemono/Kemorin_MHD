@@ -45,6 +45,18 @@ const char label_psf_head[KCHARA_C] = "cross_section_ctl";
 const char label_old_psf_head[KCHARA_C] = "surface_rendering";
 
 
+void get_label_psf_define_ctl(int index, char *label){
+    if(index < NLBL_PSF_DEFINE_CTL) strngcopy(label, label_psf_define_ctl[index]);
+    return;
+};
+void get_label_psf_field_ctl(int index, char *label){
+    if(index < NLBL_PSF_FIELD_CTL) strngcopy(label, label_psf_field_ctl[index]);
+    return;
+};
+void get_label_psf_ctl(int index, char *label){
+    if(index < NLBL_PSF_CTL) strngcopy(label, label_psf_ctl[index]);
+    return;
+};
 
 void alloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	int i;

@@ -94,6 +94,25 @@ const char label_SGS_model_ctl[NLBL_SGS_MODEL_CTL][KCHARA_C] = {
 	/*[33]*/	{"sph_filter_ctl"}
 };
 
+
+void get_label_filter_file_ctl(int index, char *label){
+    if(index < NLBL_FILTGER_FILE_CTL) strngcopy(label, label_filter_file_ctl[index]);
+    return;
+};
+void get_label_layering_ctl(int index, char *label){
+    if(index < NLBL_LAYERING_CTL) strngcopy(label, label_layering_ctl[index]);
+    return;
+};
+void get_label_SGS_3d_filter_ctl(int index, char *label){
+    if(index < NLBL_SGS_3D_FILTER_CTL) strngcopy(label, label_SGS_3d_filter_ctl[index]);
+    return;
+};
+void get_label_SGS_model_ctl(int index, char *label){
+    if(index < NLBL_SGS_MODEL_CTL) strngcopy(label, label_SGS_model_ctl[index]);
+    return;
+};
+
+
 void alloc_filter_file_ctl_c(struct filter_file_ctl_c *ffile_c){
 	int i;
 	

@@ -17,6 +17,13 @@ const char label_volume_spectr_ctl[NLBL_VOLUME_SPECTR][KCHARA_C] = {
     /*[ 3]*/    {"outer_radius_ctl"}
 };
 
+
+void get_label_volume_spectr_ctl(int index, char *label){
+    if(index < NLBL_VOLUME_SPECTR) strngcopy(label, label_volume_spectr_ctl[index]);
+    return;
+};
+
+
 void alloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c){
     int i;
     

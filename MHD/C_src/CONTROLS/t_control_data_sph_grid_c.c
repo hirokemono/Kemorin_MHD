@@ -19,6 +19,12 @@ const char label_sph_shell_ctl[NLBL_SPH_SHELL_CTL][KCHARA_C] = {
 
 const char label_sph_shell_head[KCHARA_C] = "spherical_shell_ctl";
 
+
+void get_label_sph_shell_ctl(int index, char *label){
+    if(index < NLBL_SPH_SHELL_CTL) strngcopy(label, label_sph_shell_ctl[index]);
+    return;
+};
+
 void alloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl){
 	int i;
 	

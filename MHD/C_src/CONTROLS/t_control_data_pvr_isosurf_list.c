@@ -15,6 +15,11 @@ const char label_pvr_isosurf_ctl[NLBL_PVR_ISOSURF_CTL][KCHARA_C] = {
 	/*[ 2]*/	{"surface_direction"},
 };
 
+void get_label_pvr_isosurf_ctl(int index, char *label){
+    if(index < NLBL_PVR_ISOSURF_CTL) strngcopy(label, label_pvr_isosurf_ctl[index]);
+    return;
+};
+
 void alloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c){
 	int i;
 	

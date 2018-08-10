@@ -35,6 +35,17 @@ const char label_mhd_control_ctl[NLBL_MHD_CONTROL_CTL][KCHARA_C] = {
     /*[ 2]*/    {"time_loop_ctl"}
 };
 
+
+void get_label_mhd_model_ctl(int index, char *label){
+    if(index < NLBL_MHD_MODEL_CTL) strngcopy(label, label_mhd_model_ctl[index]);
+    return;
+};
+void get_label_mhd_control_ctl(int index, char *label){
+    if(index < NLBL_MHD_CONTROL_CTL) strngcopy(label, label_mhd_control_ctl[index]);
+    return;
+};
+
+
 void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
     int i;
     

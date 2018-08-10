@@ -19,6 +19,12 @@ const char label_sph_filter_ctl[NLBL_SPH_FILTER_CTL][KCHARA_C] = {
 	/*[ 6]*/	{"second_reference_filter_ID"}
 };
 
+void get_label_sph_filter_ctl(int index, char *label){
+    if(index < NLBL_SPH_FILTER_CTL) strngcopy(label, label_sph_filter_ctl[index]);
+    return;
+};
+
+
 void alloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 	int i;
 	

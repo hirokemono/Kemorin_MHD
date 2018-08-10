@@ -49,6 +49,16 @@ const char label_sphere_data_ctl[NLBL_SPHERE_DATA_CTL][KCHARA_C] = {
 };
 
 
+void get_label_sphere_domain_ctl(int index, char *label){
+    if(index < NLBL_SPHERE_DOMAIN_CTL) strngcopy(label, label_sphere_domain_ctl[index]);
+    return;
+};
+void get_label_sphere_data_ctl(int index, char *label){
+    if(index < NLBL_SPHERE_DATA_CTL) strngcopy(label, label_sphere_data_ctl[index]);
+    return;
+};
+
+
 void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	int i;
 	

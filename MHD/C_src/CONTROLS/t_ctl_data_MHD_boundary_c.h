@@ -30,6 +30,8 @@ struct MHD_boundary_ctl_c{
 };
 
 /* prototype */
+void get_label_MHD_node_bc_ctl(int index, char *label);
+void get_label_MHD_surf_bc_ctl(int index, char *label);
 
 void alloc_MHD_node_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl);
 void alloc_MHD_surf_bc_ctl_c(struct MHD_boundary_ctl_c *surf_bc_ctl);

@@ -28,6 +28,7 @@ const char label_sph_monitor_ctl[NLBL_SPH_MONITOR][KCHARA_C] = {
     /*[ 7]*/    {"nusselt_number_prefix"}
 };
 
+
 const char label_pick_spectr_ctl[NLBL_PICK_SPECTR][KCHARA_C] = {
     /*[ 0]*/    {"picked_sph_prefix"},
     /*[ 1]*/    {"pick_layer_ctl"},
@@ -61,6 +62,28 @@ const char label_mid_equator_ctl[NLBL_MID_EQUATOR][KCHARA_C] = {
     /*[ 1]*/    {"nphi_mid_eq_ctl"},
     /*[ 2]*/    {"pick_cylindrical_radius_ctl"},
     /*[ 3]*/    {"pick_vertical_position_ctl"}
+};
+
+
+void get_label_sph_monitor_ctl(int index, char *label){
+    if(index < NLBL_SPH_MONITOR) strngcopy(label, label_sph_monitor_ctl[index]);
+    return;
+};
+void get_label_pick_spectr_ctl(int index, char *label){
+    if(index < NLBL_PICK_SPECTR) strngcopy(label, label_pick_spectr_ctl[index]);
+    return;
+};
+void get_label_gauss_spectr_ctl(int index, char *label){
+    if(index < NLBL_GAUSS_SPECTR) strngcopy(label, label_gauss_spectr_ctl[index]);
+    return;
+};
+void get_label_layerd_spectr_ctl(int index, char *label){
+    if(index < NLBL_LAYERD_SPECTR) strngcopy(label, label_layerd_spectr_ctl[index]);
+    return;
+};
+void get_label_mid_equator_ctl(int index, char *label){
+    if(index < NLBL_MID_EQUATOR) strngcopy(label, label_mid_equator_ctl[index]);
+    return;
 };
 
 void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){

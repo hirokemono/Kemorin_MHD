@@ -61,6 +61,8 @@ struct sphere_data_ctl_c{
 
 
 /* prototypes */
+void get_label_sphere_domain_ctl(int index, char *label);
+void get_label_sphere_data_ctl(int index, char *label);
 
 void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c);
 void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c);

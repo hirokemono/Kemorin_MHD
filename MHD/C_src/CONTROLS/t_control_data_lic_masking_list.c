@@ -9,10 +9,16 @@
 
 #define NLBL_LIC_MASKING_CTL  3
 
-const char label_lic_masking_ctl_c[NLBL_LIC_MASKING_CTL][KCHARA_C] = {
+const char label_lic_masking_ctl[NLBL_LIC_MASKING_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"masking_field"},
 	/*[ 1]*/	{"masking_component"},
 	/*[ 2]*/	{"masking_range"}
+};
+
+
+void get_label_lic_masking_ctl(int index, char *label){
+    if(index < NLBL_LIC_MASKING_CTL) strngcopy(label, label_lic_masking_ctl[index]);
+    return;
 };
 
 void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
@@ -20,8 +26,8 @@ void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	
 	mask_ctl->maxlen = 0;
 	for (i=0;i<NLBL_LIC_MASKING_CTL;i++){
-		if(strlen(label_lic_masking_ctl_c[i]) > mask_ctl->maxlen){
-			mask_ctl->maxlen = (int) strlen(label_lic_masking_ctl_c[i]);
+		if(strlen(label_lic_masking_ctl[i]) > mask_ctl->maxlen){
+			mask_ctl->maxlen = (int) strlen(label_lic_masking_ctl[i]);
 		};
 	};
 	
@@ -56,10 +62,10 @@ int read_lic_masking_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_lic_masking_ctl_c[ 0], mask_ctl->field_name_ctl);
-		read_character_ctl_item_c(buf, label_lic_masking_ctl_c[ 1], mask_ctl->component_ctl);
+		read_character_ctl_item_c(buf, label_lic_masking_ctl[ 0], mask_ctl->field_name_ctl);
+		read_character_ctl_item_c(buf, label_lic_masking_ctl[ 1], mask_ctl->component_ctl);
 		
-		read_real2_ctl_array_c(fp, buf, label_lic_masking_ctl_c[ 2], mask_ctl->mask_range_ctl);
+		read_real2_ctl_array_c(fp, buf, label_lic_masking_ctl[ 2], mask_ctl->mask_range_ctl);
 	};
 	return 1;
 };
@@ -69,10 +75,10 @@ int write_lic_masking_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl_c[ 0], mask_ctl->field_name_ctl);
-	write_character_ctl_item_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl_c[ 1], mask_ctl->component_ctl);
+	write_character_ctl_item_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl[ 0], mask_ctl->field_name_ctl);
+	write_character_ctl_item_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl[ 1], mask_ctl->component_ctl);
 	
-	write_real2_ctl_array_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl_c[ 2], mask_ctl->mask_range_ctl);
+	write_real2_ctl_array_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl[ 2], mask_ctl->mask_range_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

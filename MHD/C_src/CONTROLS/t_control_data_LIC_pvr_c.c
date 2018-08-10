@@ -21,6 +21,12 @@ const char label_LIC_pvr_ctl[NLBL_LIC_PVR_CTL][KCHARA_C] = {
 const char label_LIC_pvr_head[KCHARA_C] = "LIC_rendering";
 
 
+void get_label_LIC_pvr_ctl(int index, char *label){
+    if(index < NLBL_LIC_PVR_CTL) strngcopy(label, label_LIC_pvr_ctl[index]);
+    return;
+};
+
+
 void alloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c){
 	int i;
 	

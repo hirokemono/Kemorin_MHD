@@ -18,6 +18,11 @@ const char label_gen_sph_grid_ctl[NLBL_GEN_SPH_GRID_CTL][KCHARA_C] = {
 const char label_gen_sph_grid_head[KCHARA_C] = "control_MHD";
 
 
+void get_label_gen_sph_grid_ctl(int index, char *label){
+    if(index < NLBL_GEN_SPH_GRID_CTL) strngcopy(label, label_gen_sph_grid_ctl[index]);
+    return;
+};
+
 void alloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c){
 	int i;
 	

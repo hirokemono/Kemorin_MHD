@@ -49,13 +49,24 @@ const char label_mhd_evo_scheme_control[NLBL_MHD_EVO_SCHEME_CTL][KCHARA_C] = {
     /*[23]*/    {"Legendre_vector_length_ctl"},
 };
 
+
+void get_label_mhd_restart_control(int index, char *label){
+    if(index < NLBL_MHD_REATART_CTL) strngcopy(label, label_mhd_restart_control[index]);
+    return;
+};
+void get_label_mhd_evo_scheme_control(int index, char *label){
+    if(index < NLBL_MHD_EVO_SCHEME_CTL) strngcopy(label, label_mhd_evo_scheme_control[index]);
+    return;
+};
+
+
 void alloc_mhd_restart_control_c(struct mhd_restart_control_c *mrst_ctl){
     int i;
     
     mrst_ctl->maxlen = 0;
     for (i=0;i<NLBL_MHD_REATART_CTL;i++){
         if(strlen(label_mhd_restart_control[i]) > mrst_ctl->maxlen){
-            mrst_ctl->maxlen = strlen(label_mhd_restart_control[i]);
+            mrst_ctl->maxlen = (int) strlen(label_mhd_restart_control[i]);
         };
 	};
 	
@@ -95,7 +106,7 @@ void alloc_mhd_evo_scheme_control_c(struct mhd_evo_scheme_control_c *mevo_ctl){
     mevo_ctl->maxlen = 0;
     for (i=0;i<NLBL_MHD_EVO_SCHEME_CTL;i++){
         if(strlen(label_mhd_evo_scheme_control[i]) > mevo_ctl->maxlen){
-            mevo_ctl->maxlen = strlen(label_mhd_evo_scheme_control[i]);
+            mevo_ctl->maxlen = (int) strlen(label_mhd_evo_scheme_control[i]);
         };
 	};
 	

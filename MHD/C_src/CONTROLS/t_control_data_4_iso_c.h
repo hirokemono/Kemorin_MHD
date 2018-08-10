@@ -49,6 +49,10 @@ struct iso_ctl_c{
 
 /* prototypes */
 
+void get_label_iso_define_ctl(int index, char *label);
+void get_label_iso_field_ctl(int index, char *label);
+void get_label_iso_ctl(int index, char *label);
+
 void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c);
 void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c);
 int read_iso_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,

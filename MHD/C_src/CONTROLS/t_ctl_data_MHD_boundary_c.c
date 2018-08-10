@@ -21,6 +21,7 @@ const char label_MHD_node_bc_ctl[NLBL_NODE_BC_CTL][KCHARA_C] = {
 	/*[ 7]*/	{"bc_current"},
 };
 
+
 const char label_MHD_surf_bc_ctl[NLBL_SURF_BC_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"heat_flux_surf"},
 	/*[ 1]*/	{"velocity_surf"},
@@ -33,13 +34,24 @@ const char label_MHD_surf_bc_ctl[NLBL_SURF_BC_CTL][KCHARA_C] = {
 	/*[ 8]*/	{"infinity_surf"}
 };
 
+
+void get_label_MHD_node_bc_ctl(int index, char *label){
+    if(index < NLBL_NODE_BC_CTL) strngcopy(label, label_MHD_node_bc_ctl[index]);
+    return;
+};
+void get_label_MHD_surf_bc_ctl(int index, char *label){
+    if(index < NLBL_SURF_BC_CTL) strngcopy(label, label_MHD_surf_bc_ctl[index]);
+    return;
+};
+
+
 void alloc_MHD_node_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl){
 	int i;
 	
 	nod_bc_ctl->maxlen = 0;
 	for (i=0;i<NLBL_NODE_BC_CTL;i++){
 		if(strlen(label_MHD_node_bc_ctl[i]) > nod_bc_ctl->maxlen){
-			nod_bc_ctl->maxlen = strlen(label_MHD_node_bc_ctl[i]);
+			nod_bc_ctl->maxlen = (int) strlen(label_MHD_node_bc_ctl[i]);
 		};
 	};
 	
@@ -71,7 +83,7 @@ void alloc_MHD_surf_bc_ctl_c(struct MHD_boundary_ctl_c *surf_bc_ctl){
 	surf_bc_ctl->maxlen = 0;
 	for (i=0;i<NLBL_SURF_BC_CTL;i++){
 		if(strlen(label_MHD_surf_bc_ctl[i]) > surf_bc_ctl->maxlen){
-			surf_bc_ctl->maxlen = strlen(label_MHD_surf_bc_ctl[i]);
+			surf_bc_ctl->maxlen = (int) strlen(label_MHD_surf_bc_ctl[i]);
 		};
 	};
 	
@@ -162,35 +174,35 @@ int write_MHD_node_bc_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_node_bc_ctl[0]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_node_bc_ctl[0]),
 				label_MHD_node_bc_ctl[0], nod_bc_ctl->bc_T_ctl);
 	
 	if(nod_bc_ctl->bc_U_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_node_bc_ctl[1]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_node_bc_ctl[1]),
 				label_MHD_node_bc_ctl[1], nod_bc_ctl->bc_U_ctl);
 	
 	if(nod_bc_ctl->bc_P_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_node_bc_ctl[2]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_node_bc_ctl[2]),
 				label_MHD_node_bc_ctl[2], nod_bc_ctl->bc_P_ctl);
 	
 	if(nod_bc_ctl->bc_C_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_node_bc_ctl[3]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_node_bc_ctl[3]),
 				label_MHD_node_bc_ctl[3], nod_bc_ctl->bc_C_ctl);
 	
 	if(nod_bc_ctl->bc_B_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_node_bc_ctl[4]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_node_bc_ctl[4]),
 				label_MHD_node_bc_ctl[4], nod_bc_ctl->bc_B_ctl);
 	
 	if(nod_bc_ctl->bc_MP_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_node_bc_ctl[5]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_node_bc_ctl[5]),
 				label_MHD_node_bc_ctl[5], nod_bc_ctl->bc_MP_ctl);
 	
 	if(nod_bc_ctl->bc_A_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_node_bc_ctl[6]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_node_bc_ctl[6]),
 				label_MHD_node_bc_ctl[6], nod_bc_ctl->bc_A_ctl);
 	
 	if(nod_bc_ctl->bc_J_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_node_bc_ctl[7]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_node_bc_ctl[7]),
 				label_MHD_node_bc_ctl[7], nod_bc_ctl->bc_J_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -202,39 +214,39 @@ int write_MHD_surf_bc_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_surf_bc_ctl[0]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_surf_bc_ctl[0]),
 				label_MHD_surf_bc_ctl[0], surf_bc_ctl->bc_T_ctl);
 	
 	if(surf_bc_ctl->bc_U_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_surf_bc_ctl[1]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_surf_bc_ctl[1]),
 				label_MHD_surf_bc_ctl[1], surf_bc_ctl->bc_U_ctl);
 	
 	if(surf_bc_ctl->bc_P_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_surf_bc_ctl[2]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_surf_bc_ctl[2]),
 				label_MHD_surf_bc_ctl[2], surf_bc_ctl->bc_P_ctl);
 	
 	if(surf_bc_ctl->bc_C_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_surf_bc_ctl[3]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_surf_bc_ctl[3]),
 				label_MHD_surf_bc_ctl[3], surf_bc_ctl->bc_C_ctl);
 	
 	if(surf_bc_ctl->bc_B_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_surf_bc_ctl[4]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_surf_bc_ctl[4]),
 				label_MHD_surf_bc_ctl[4], surf_bc_ctl->bc_B_ctl);
 	
 	if(surf_bc_ctl->bc_MP_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_surf_bc_ctl[5]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_surf_bc_ctl[5]),
 				label_MHD_surf_bc_ctl[5], surf_bc_ctl->bc_MP_ctl);
 	
 	if(surf_bc_ctl->bc_A_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_surf_bc_ctl[6]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_surf_bc_ctl[6]),
 				label_MHD_surf_bc_ctl[6], surf_bc_ctl->bc_A_ctl);
 	
 	if(surf_bc_ctl->bc_J_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_surf_bc_ctl[7]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_surf_bc_ctl[7]),
 				label_MHD_surf_bc_ctl[7], surf_bc_ctl->bc_J_ctl);
 	
 	if(surf_bc_ctl->bc_infty_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, strlen(label_MHD_surf_bc_ctl[8]),
+	write_c2r_ctl_array_c(fp, level, (int) strlen(label_MHD_surf_bc_ctl[8]),
 				label_MHD_surf_bc_ctl[8], surf_bc_ctl->bc_infty_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);

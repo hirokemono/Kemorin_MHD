@@ -28,6 +28,8 @@ struct gen_sph_grid_ctl_c{
 
 /* prototypes */
 
+void get_label_gen_sph_grid_ctl(int index, char *label);
+
 void alloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c);
 void dealloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c);
 int read_gen_sph_shell_ctl_c(FILE *fp, char buf[LENGTHBUF], 

@@ -36,6 +36,12 @@ const char label_lic_ctl_c[NLBL_LIC_CTL][KCHARA_C] = {
 	/*[17]*/	{"referection_parameter"}
 };
 
+
+void get_label_lic_ctl_c(int index, char *label){
+    if(index < NLBL_LIC_CTL) strngcopy(label, label_lic_ctl_c[index]);
+    return;
+};
+
 void alloc_lic_ctl_c(struct lic_ctl_c *lic_c){
 	int i;
 	

@@ -39,10 +39,22 @@ const char label_iso_ctl[NLBL_ISO_CTL][KCHARA_C] = {
     /*[ 4]*/    {"iso_file_head"},
     /*[ 5]*/    {"isosurf_result_define"}
 };
-
 const char label_iso_head[KCHARA_C] = "isosurface_ctl";
 const char label_old_iso_head[KCHARA_C] = "isosurf_rendering";
 
+
+void get_label_iso_define_ctl(int index, char *label){
+    if(index < NLBL_ISO_DEFINE_CTL) strngcopy(label, label_iso_define_ctl[index]);
+    return;
+};
+void get_label_iso_field_ctl(int index, char *label){
+    if(index < NLBL_ISO_FIELD_CTL) strngcopy(label, label_iso_field_ctl[index]);
+    return;
+};
+void get_label_iso_ctl(int index, char *label){
+    if(index < NLBL_ISO_CTL) strngcopy(label, label_iso_ctl[index]);
+    return;
+};
 
 void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	int i;

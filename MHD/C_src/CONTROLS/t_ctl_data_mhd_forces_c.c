@@ -31,13 +31,31 @@ const char label_magneto_cv_ctl[NLBL_MAGNETO_CV_CTL][KCHARA_C] = {
 };
 
 
+void get_label_forces_ctl(int index, char *label){
+    if(index < NLBL_FORCES_CTL) strngcopy(label, label_forces_ctl[index]);
+    return;
+};
+void get_label_gravity_ctl(int index, char *label){
+    if(index < NLBL_GRAVITY_CTL) strngcopy(label, label_gravity_ctl[index]);
+    return;
+};
+void get_label_coriolis_ctl(int index, char *label){
+    if(index < NLBL_CORIOLIS_CTL) strngcopy(label, label_coriolis_ctl[index]);
+    return;
+};
+void get_label_magneto_cv_ctl(int index, char *label){
+    if(index < NLBL_MAGNETO_CV_CTL) strngcopy(label, label_magneto_cv_ctl[index]);
+    return;
+};
+
+
 void alloc_forces_ctl_c(struct forces_ctl_c *frc_ctl){
 	int i;
 	
 	frc_ctl->maxlen = 0;
 	for (i=0;i<NLBL_FORCES_CTL;i++){
 		if(strlen(label_forces_ctl[i]) > frc_ctl->maxlen){
-			frc_ctl->maxlen = strlen(label_forces_ctl[i]);
+			frc_ctl->maxlen = (int) strlen(label_forces_ctl[i]);
 		};
 	};
 	
@@ -69,7 +87,7 @@ int write_forces_ctl_c(FILE *fp, int level,	const char *label,
                        struct forces_ctl_c *frc_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_array_c(fp, level, strlen(label_forces_ctl[0]),
+	write_character_ctl_array_c(fp, level, (int) strlen(label_forces_ctl[0]),
 				label_forces_ctl[0], frc_ctl->force_names_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -83,7 +101,7 @@ void alloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
 	g_ctl->maxlen = 0;
 	for (i=0;i<NLBL_GRAVITY_CTL;i++){
 		if(strlen(label_gravity_ctl[i]) > g_ctl->maxlen){
-			g_ctl->maxlen = strlen(label_gravity_ctl[i]);
+			g_ctl->maxlen = (int) strlen(label_gravity_ctl[i]);
 		};
 	};
 	
@@ -124,7 +142,7 @@ int write_gravity_ctl_c(FILE *fp, int level, const char *label,
 	write_character_ctl_item_c(fp, level, g_ctl->maxlen, label_gravity_ctl[0], g_ctl->gravity_c);
 	
 	if(g_ctl->gravity_vec_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_gravity_ctl[1]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_gravity_ctl[1]),
 				label_gravity_ctl[1], g_ctl->gravity_vec_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -138,7 +156,7 @@ void alloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){
 	cor_ctl->maxlen = 0;
 	for (i=0;i<NLBL_CORIOLIS_CTL;i++){
 		if(strlen(label_coriolis_ctl[i]) > cor_ctl->maxlen){
-			cor_ctl->maxlen = strlen(label_coriolis_ctl[i]);
+			cor_ctl->maxlen = (int) strlen(label_coriolis_ctl[i]);
 		};
 	};
 	
@@ -170,7 +188,7 @@ int write_coriolis_ctl_c(FILE *fp, int level, const char *label,
                          struct coriolis_ctl_c *cor_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_cr_ctl_array_c(fp, level, strlen(label_coriolis_ctl[0]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_coriolis_ctl[0]),
 				label_coriolis_ctl[0], cor_ctl->system_rotation_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -184,7 +202,7 @@ void alloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
 	mcv_ctl->maxlen = 0;
 	for (i=0;i<NLBL_MAGNETO_CV_CTL;i++){
 		if(strlen(label_magneto_cv_ctl[i]) > mcv_ctl->maxlen){
-			mcv_ctl->maxlen = strlen(label_magneto_cv_ctl[i]);
+			mcv_ctl->maxlen = (int) strlen(label_magneto_cv_ctl[i]);
 		};
 	};
 	
@@ -225,7 +243,7 @@ int write_magneto_cv_ctl_c(FILE *fp, int level, const char *label,
 	write_character_ctl_item_c(fp, level, mcv_ctl->maxlen, label_magneto_cv_ctl[0], mcv_ctl->magneto_cv_c);
 	
 	if(mcv_ctl->ext_magne_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_magneto_cv_ctl[1]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_magneto_cv_ctl[1]),
 				label_magneto_cv_ctl[1], mcv_ctl->ext_magne_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);

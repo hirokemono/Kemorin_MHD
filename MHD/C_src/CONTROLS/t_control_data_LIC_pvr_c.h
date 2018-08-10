@@ -30,6 +30,7 @@ struct LIC_pvr_ctl_c{
 };
 
 /* prototypes */
+void get_label_LIC_pvr_ctl(int index, char *label);
 
 void alloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c);
 void dealloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c);

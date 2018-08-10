@@ -19,6 +19,17 @@ const char label_mhd_evo_area_ctl[NLBL_MHD_EVO_AREA_CTL][KCHARA_C] = {
 	/*[ 1]*/	{"conduct_ele_grp"}
 };
 
+
+void get_label_mhd_evolution_ctl(int index, char *label){
+    if(index < NLBL_MHD_EVOLUTION_CTL) strngcopy(label, label_mhd_evolution_ctl[index]);
+    return;
+};
+void get_label_mhd_evo_area_ctl(int index, char *label){
+    if(index < NLBL_MHD_EVO_AREA_CTL) strngcopy(label, label_mhd_evo_area_ctl[index]);
+    return;
+};
+
+
 void alloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl){
 	int i;
 	

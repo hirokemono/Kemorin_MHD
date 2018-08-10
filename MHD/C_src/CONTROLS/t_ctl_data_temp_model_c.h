@@ -44,6 +44,9 @@ struct reference_temperature_c{
 };
 
 /* prototypes */
+void get_label_reference_point_ctl(int index, char *label);
+void get_label_takepiro_model_ctl(int index, char *label);
+void get_label_ref_temperature_ctl(int index, char *label);
 
 void alloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c);
 void dealloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c);

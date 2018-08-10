@@ -83,6 +83,11 @@ struct sph_monitor_control_c{
 };
 
 /* prototypes */
+void get_label_sph_monitor_ctl(int index, char *label);
+void get_label_pick_spectr_ctl(int index, char *label);
+void get_label_gauss_spectr_ctl(int index, char *label);
+void get_label_layerd_spectr_ctl(int index, char *label);
+void get_label_mid_equator_ctl(int index, char *label);
 
 void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c);
 void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c);

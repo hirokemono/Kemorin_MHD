@@ -7,8 +7,9 @@
 
 #include "t_ctl_data_4_platforms_c.h"
 
+#define NLBL_PLATFORM_CTL 20
 
-const char label_platform_ctl[25][KCHARA_C] = {
+const char label_platform_ctl[NLBL_PLATFORM_CTL][KCHARA_C] = {
     /*[ 0]*/    {"debug_flag_ctl"},
     
     /*[ 1]*/    {"num_subdomain_ctl"},
@@ -33,14 +34,20 @@ const char label_platform_ctl[25][KCHARA_C] = {
     /*[17]*/    {"spectr_field_fmt_ctl"},
     /*[18]*/    {"coriolis_file_fmt_ctl"},
     
-    /*[19]*/    {"delete_original_data_flag"},
+    /*[19]*/    {"delete_original_data_flag"}
+};
+
+
+void get_label_platform_ctl(int index, char *label){
+    if(index < NLBL_PLATFORM_CTL) strngcopy(label, label_platform_ctl[index]);
+    return;
 };
 
 void alloc_platform_data_control_c(struct platform_data_control_c *files){
     int i;
     
     files->maxlen = 0;
-    for (i=0;i<20;i++){
+    for (i=0;i<NLBL_PLATFORM_CTL;i++){
         if(strlen(label_platform_ctl[i]) > files->maxlen){
             files->maxlen = (int) strlen(label_platform_ctl[i]);
         };

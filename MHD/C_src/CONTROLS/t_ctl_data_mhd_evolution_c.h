@@ -31,6 +31,8 @@ struct mhd_evo_area_ctl_c{
 
 
 /* prototype */
+void get_label_mhd_evolution_ctl(int index, char *label);
+void get_label_mhd_evo_area_ctl(int index, char *label);
 
 void alloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl);
 void dealloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl);

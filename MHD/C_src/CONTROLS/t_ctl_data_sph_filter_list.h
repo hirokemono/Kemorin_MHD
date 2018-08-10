@@ -37,6 +37,7 @@ struct sph_filter_ctl_list{
 };
 
 /* prototypes */
+void get_label_sph_filter_ctl(int index, char *label);
 
 void alloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c);
 void dealloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c);

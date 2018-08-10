@@ -14,6 +14,12 @@ const char label_sph_zonal_means_ctl[NLBL_SPH_ZONAL_MEAN_CTL][KCHARA_C] = {
     /*[ 1]*/    {"zonal_RMS_section_ctl"}
 };
 
+void get_label_sph_zonal_means_ctl(int index, char *label){
+    if(index < NLBL_SPH_ZONAL_MEAN_CTL) strngcopy(label, label_sph_zonal_means_ctl[index]);
+    return;
+};
+
+
 void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
 	int i;
 	

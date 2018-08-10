@@ -19,13 +19,18 @@ const char label_FEM_mesh_ctl[NLBL_FEM_MESH_CTL][KCHARA_C] = {
     /*[5]*/    {"excluding_FEM_mesh_ctl"},
 };
 
+void get_label_FEM_mesh_ctl(int index, char *label){
+    if(index < NLBL_FEM_MESH_CTL) strngcopy(label, label_FEM_mesh_ctl[index]);
+    return;
+};
+
 void alloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh){
     int i;
     
     Fmesh->maxlen = 0;
     for (i=0;i<NLBL_FEM_MESH_CTL;i++){
         if(strlen(label_FEM_mesh_ctl[i]) > Fmesh->maxlen){
-            Fmesh->maxlen = strlen(label_FEM_mesh_ctl[i]);
+            Fmesh->maxlen = (int) strlen(label_FEM_mesh_ctl[i]);
         };
     };
     

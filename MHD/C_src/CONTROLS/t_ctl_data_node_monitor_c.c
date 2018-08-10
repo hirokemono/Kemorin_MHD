@@ -16,13 +16,18 @@ const char label_node_monitor_ctl[NLBL_NODE_MONITOR][KCHARA_C] = {
 };
 
 
+void get_label_node_monitor_ctl(int index, char *label){
+    if(index < NLBL_NODE_MONITOR) strngcopy(label, label_node_monitor_ctl[index]);
+    return;
+};
+
 void alloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
     int i;
     
     nmtr_ctl->maxlen = 0;
     for (i=0;i<NLBL_NODE_MONITOR;i++){
         if(strlen(label_node_monitor_ctl[i]) > nmtr_ctl->maxlen){
-            nmtr_ctl->maxlen = strlen(label_node_monitor_ctl[i]);
+            nmtr_ctl->maxlen = (int) strlen(label_node_monitor_ctl[i]);
         };
 	};
 	
@@ -60,15 +65,15 @@ int write_node_monitor_ctl_c(FILE *fp, int level, const char *label,
 			struct node_monitor_ctl_c *nmtr_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_array_c(fp, level, strlen(label_node_monitor_ctl[0]),
+	write_character_ctl_array_c(fp, level, (int) strlen(label_node_monitor_ctl[0]),
 			label_node_monitor_ctl[0], nmtr_ctl->group_4_monitor_ctl);
 	
 	if(nmtr_ctl->xx_4_monitor_ctl->num > 0) fprintf(fp, "!\n");
-	write_real3_ctl_array_c(fp, level, strlen(label_node_monitor_ctl[1]),
+	write_real3_ctl_array_c(fp, level, (int) strlen(label_node_monitor_ctl[1]),
 			label_node_monitor_ctl[1], nmtr_ctl->xx_4_monitor_ctl);
 	
 	if(nmtr_ctl->node_4_monitor_ctl->num > 0) fprintf(fp, "!\n");
-	write_int2_ctl_array_c(fp, level, strlen(label_node_monitor_ctl[2]),
+	write_int2_ctl_array_c(fp, level, (int) strlen(label_node_monitor_ctl[2]),
 			label_node_monitor_ctl[2], nmtr_ctl->node_4_monitor_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);

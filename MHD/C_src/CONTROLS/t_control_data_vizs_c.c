@@ -21,6 +21,11 @@ const char label_viz_ctl[NLBL_VIZ_CTL][KCHARA_C] = {
 };
 
 
+void get_label_viz_ctl(int index, char *label){
+    if(index < NLBL_VIZ_CTL) strngcopy(label, label_viz_ctl[index]);
+    return;
+};
+
 void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	int i;
 	

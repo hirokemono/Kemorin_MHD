@@ -63,6 +63,24 @@ const char label_pvr_ctl[NLBL_PVR_CTL][KCHARA_C] = {
 const char label_pvr_head[KCHARA_C] = "volume_rendering";
 
 
+void get_label_pvr_plot_area_ctl(int index, char *label){
+    if(index < NLBL_PVR_PLOT_AREA_CTL) strngcopy(label, label_pvr_plot_area_ctl[index]);
+    return;
+};
+void get_label_pvr_colorbar_ctl(int index, char *label){
+    if(index < NLBL_PVR_COLORBAR_CTL) strngcopy(label, label_pvr_colorbar_ctl[index]);
+    return;
+};
+void get_label_pvr_movie_ctl(int index, char *label){
+    if(index < NLBL_PVR_MOVIE_CTL) strngcopy(label, label_pvr_movie_ctl[index]);
+    return;
+};
+void get_label_pvr_ctl(int index, char *label){
+    if(index < NLBL_PVR_CTL) strngcopy(label, label_pvr_ctl[index]);
+    return;
+};
+
+
 void alloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 	int i;
 	

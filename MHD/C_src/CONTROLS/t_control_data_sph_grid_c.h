@@ -28,6 +28,7 @@ struct parallel_sph_shell_control_c{
 };
 
 /* prototypes */
+void get_label_sph_shell_ctl(int index, char *label);
 
 void alloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl);
 void dealloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl);

@@ -42,6 +42,11 @@ struct magneto_cv_ctl_c{
 };
 
 /* prototype */
+void get_label_forces_ctl(int index, char *label);
+void get_label_gravity_ctl(int index, char *label);
+void get_label_coriolis_ctl(int index, char *label);
+void get_label_magneto_cv_ctl(int index, char *label);
+
 
 void alloc_forces_ctl_c(struct forces_ctl_c *frc_ctl);
 void dealloc_forces_ctl_c(struct forces_ctl_c *frc_ctl);

@@ -16,6 +16,11 @@ const char label_field_ctl[NLBL_FIELD_CTL][KCHARA_C] = {
 	/*[ 2]*/	{"linear_field_name_ctl"}
 };
 
+void get_label_field_ctl(int index, char *label){
+    if(index < NLBL_FIELD_CTL) strngcopy(label, label_field_ctl[index]);
+    return;
+};
+
 
 void alloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	int i;
@@ -23,7 +28,7 @@ void alloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	fld_ctl->maxlen = 0;
 	for (i=0;i<NLBL_FIELD_CTL;i++){
 		if(strlen(label_field_ctl[i]) > fld_ctl->maxlen){
-			fld_ctl->maxlen = strlen(label_field_ctl[i]);
+			fld_ctl->maxlen = (int) strlen(label_field_ctl[i]);
 		};
 	};
 	
@@ -67,14 +72,14 @@ int read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c *fld_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara3_ctl_array_c(fp, level, strlen(label_field_ctl[0]),
+	write_chara3_ctl_array_c(fp, level, (int) strlen(label_field_ctl[0]),
 				label_field_ctl[0], fld_ctl->field_c);
 	
 	if(fld_ctl->quad_phys_c->num > 0) fprintf(fp, "!\n");
-	write_character_ctl_array_c(fp, level, strlen(label_field_ctl[1]),
+	write_character_ctl_array_c(fp, level, (int) strlen(label_field_ctl[1]),
 				label_field_ctl[1], fld_ctl->quad_phys_c);
 	if(fld_ctl->linear_phys_c->num > 0) fprintf(fp, "!\n");
-	write_character_ctl_array_c(fp, level, strlen(label_field_ctl[2]),
+	write_character_ctl_array_c(fp, level, (int) strlen(label_field_ctl[2]),
 				label_field_ctl[2], fld_ctl->linear_phys_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);

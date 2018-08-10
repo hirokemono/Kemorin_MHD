@@ -28,6 +28,12 @@ const char label_SGS_MHD_ctl[NLBL_SGS_MHD_CTL][KCHARA_C] = {
 
 const char label_MHD_control_head[KCHARA_C] = "MHD_control";
 
+
+void get_label_SGS_MHD_ctl(int index, char *label){
+    if(index < NLBL_SGS_MHD_CTL) strngcopy(label, label_SGS_MHD_ctl[index]);
+    return;
+};
+
 void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl){
 	int i;
 	

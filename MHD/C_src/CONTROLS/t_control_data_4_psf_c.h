@@ -53,6 +53,10 @@ struct psf_ctl_c{
 
 /* prototypes */
 
+void get_label_psf_define_ctl(int index, char *label);
+void get_label_psf_field_ctl(int index, char *label);
+void get_label_psf_ctl(int index, char *label);
+
 void alloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c);
 void dealloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c);
 int read_psf_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,

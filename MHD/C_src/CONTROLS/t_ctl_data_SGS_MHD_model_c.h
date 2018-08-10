@@ -69,6 +69,8 @@ struct sph_mhd_control_control_c{
 };
 
 /* Prototypes */
+void get_label_mhd_model_ctl(int index, char *label);
+void get_label_mhd_control_ctl(int index, char *label);
 
 void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl);
 void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl);

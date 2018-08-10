@@ -24,6 +24,7 @@ struct node_monitor_ctl_c{
 };
 
 /* prototype */
+void get_label_node_monitor_ctl(int index, char *label);
 
 void alloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl);
 void dealloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl);

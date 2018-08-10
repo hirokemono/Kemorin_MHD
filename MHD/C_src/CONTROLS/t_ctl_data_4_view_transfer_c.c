@@ -50,6 +50,24 @@ const char label_modeview_ctl[NLBL_MODELVIEW_CTL][KCHARA_C] = {
 
 const char label_modeview_head[KCHARA_C] = "view_transform_ctl";
 
+void get_label_image_size_ctl(int index, char *label){
+    if(index < NLBL_IMAGE_SIZE_CTL) strngcopy(label, label_image_size_ctl[index]);
+    return;
+};
+void get_label_streo_view_ctl(int index, char *label){
+    if(index < NLBL_STEREO_VIEW_CTL) strngcopy(label, label_streo_view_ctl[index]);
+    return;
+};
+void get_label_projection_mat_ctl(int index, char *label){
+    if(index < NLBL_PROJECTION_MAT_CTL) strngcopy(label, label_projection_mat_ctl[index]);
+    return;
+};
+void get_label_modeview_ctl(int index, char *label){
+    if(index < NLBL_MODELVIEW_CTL) strngcopy(label, label_modeview_ctl[index]);
+    return;
+};
+
+
 void alloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c){
 	int i;
 	

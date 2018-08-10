@@ -20,6 +20,11 @@ const char label_viz_only_ctl[NLBL_VIZ_ONLY_CTL][KCHARA_C] = {
 const char label_viz_only_head[KCHARA_C] = "visualizer";
 
 
+void get_label_viz_only_ctl(int index, char *label){
+    if(index < NLBL_VIZ_ONLY_CTL) strngcopy(label, label_viz_only_ctl[index]);
+    return;
+};
+
 void alloc_visualizers_ctl_c(struct viz_only_ctl_c *viz_only){
 	viz_only->iflag_platform_data_control = 0;
 	viz_only->iflag_time_data_control = 0;

@@ -58,13 +58,39 @@ const char label_equations_ctl[NLBL_EQUATIONS_CTL][KCHARA_C] = {
 };
 
 
+void get_label_momentum_equation_ctl(int index, char *label){
+    if(index < NLBL_MOMENTUM_EQ_CTL) strngcopy(label, label_momentum_equation_ctl[index]);
+    return;
+};
+void get_label_induction_equation_ctl(int index, char *label){
+    if(index < NLBL_INDUCTION_EQ_CTL) strngcopy(label, label_induction_equation_ctl[index]);
+    return;
+};
+void get_label_heat_equation_ctl(int index, char *label){
+    if(index < NLBL_HEAT_EQ_CTL) strngcopy(label, label_heat_equation_ctl[index]);
+    return;
+};
+void get_label_comp_equation_ctl(int index, char *label){
+    if(index < NLBL_HEAT_EQ_CTL) strngcopy(label, label_comp_equation_ctl[index]);
+    return;
+};
+void get_label_dimless_ctl(int index, char *label){
+    if(index < NLBL_DIMLESS_CTL) strngcopy(label, label_dimless_ctl[index]);
+    return;
+};
+void get_label_equations_ctl(int index, char *label){
+    if(index < NLBL_EQUATIONS_CTL) strngcopy(label, label_equations_ctl[index]);
+    return;
+};
+
+
 void alloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
 	int i;
 	
 	mom_ctl_c->maxlen = 0;
 	for (i=0;i<NLBL_MOMENTUM_EQ_CTL;i++){
 		if(strlen(label_momentum_equation_ctl[i]) > mom_ctl_c->maxlen){
-			mom_ctl_c->maxlen = strlen(label_momentum_equation_ctl[i]);
+			mom_ctl_c->maxlen = (int) strlen(label_momentum_equation_ctl[i]);
 		};
 	};
 	
@@ -132,32 +158,32 @@ int write_momentum_equation_ctl_c(FILE *fp, int level,
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 /*	if(mom_ctl_c->coef_4_intertia_c->num > 0) fprintf(fp, "!\n"); */
-	write_cr_ctl_array_c(fp, level, strlen(label_momentum_equation_ctl[0]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[0]),
 				label_momentum_equation_ctl[0], mom_ctl_c->coef_4_intertia_c);
 	
 	if(mom_ctl_c->coef_4_grad_p_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_momentum_equation_ctl[1]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[1]),
 				label_momentum_equation_ctl[1], mom_ctl_c->coef_4_grad_p_c);
 	
 	if(mom_ctl_c->coef_4_viscous_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_momentum_equation_ctl[2]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[2]),
 				label_momentum_equation_ctl[2], mom_ctl_c->coef_4_viscous_c);
 	
 	
 	if(mom_ctl_c->coef_4_termal_buo_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_momentum_equation_ctl[3]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[3]),
 				label_momentum_equation_ctl[3], mom_ctl_c->coef_4_termal_buo_c);
 	
 	if(mom_ctl_c->coef_4_comp_buo_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_momentum_equation_ctl[4]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[4]),
 				label_momentum_equation_ctl[4], mom_ctl_c->coef_4_comp_buo_c);
 	
 	if(mom_ctl_c->coef_4_Coriolis_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_momentum_equation_ctl[5]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[5]),
 				label_momentum_equation_ctl[5], mom_ctl_c->coef_4_Coriolis_c);
 	
 	if(mom_ctl_c->coef_4_Lorentz_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_momentum_equation_ctl[6]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[6]),
 				label_momentum_equation_ctl[6], mom_ctl_c->coef_4_Lorentz_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -171,7 +197,7 @@ void alloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ctl_
 	induct_ctl_c->maxlen = 0;
 	for (i=0;i<NLBL_MOMENTUM_EQ_CTL;i++){
 		if(strlen(label_induction_equation_ctl[i]) > induct_ctl_c->maxlen){
-			induct_ctl_c->maxlen = strlen(label_induction_equation_ctl[i]);
+			induct_ctl_c->maxlen = (int) strlen(label_induction_equation_ctl[i]);
 		};
 	};
 	
@@ -220,19 +246,19 @@ int write_induction_equation_ctl_c(FILE *fp, int level,
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 /*	if(induct_ctl_c->coef_4_magne_evo_c->num > 0) fprintf(fp, "!\n"); */
-	write_cr_ctl_array_c(fp, level, strlen(label_induction_equation_ctl[0]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_induction_equation_ctl[0]),
 				label_induction_equation_ctl[0], induct_ctl_c->coef_4_magne_evo_c);
 	
 	if(induct_ctl_c->coef_4_mag_potential_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_induction_equation_ctl[1]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_induction_equation_ctl[1]),
 				label_induction_equation_ctl[1], induct_ctl_c->coef_4_mag_potential_c);
 	
 	if(induct_ctl_c->coef_4_mag_diffuse_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_induction_equation_ctl[2]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_induction_equation_ctl[2]),
 				label_induction_equation_ctl[2], induct_ctl_c->coef_4_mag_diffuse_c);
 	
 	if(induct_ctl_c->coef_4_induction_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_induction_equation_ctl[3]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_induction_equation_ctl[3]),
 				label_induction_equation_ctl[3], induct_ctl_c->coef_4_induction_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -246,7 +272,7 @@ void alloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c){
 	heat_ctl_c->maxlen = 0;
 	for (i=0;i<NLBL_MOMENTUM_EQ_CTL;i++){
 		if(strlen(label_heat_equation_ctl[i]) > heat_ctl_c->maxlen){
-			heat_ctl_c->maxlen = strlen(label_heat_equation_ctl[i]);
+			heat_ctl_c->maxlen = (int) strlen(label_heat_equation_ctl[i]);
 		};
 	};
 	
@@ -290,15 +316,15 @@ int write_heat_equation_ctl_c(FILE *fp, int level, const char *label,
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 /*	if(heat_ctl_c->coef_4_adv_flux_c->num > 0) fprintf(fp, "!\n"); */
-	write_cr_ctl_array_c(fp, level, strlen(label_heat_equation_ctl[0]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_heat_equation_ctl[0]),
 				label_heat_equation_ctl[0], heat_ctl_c->coef_4_adv_flux_c);
 	
 	if(heat_ctl_c->coef_4_diffuse_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_heat_equation_ctl[1]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_heat_equation_ctl[1]),
 				label_heat_equation_ctl[1], heat_ctl_c->coef_4_diffuse_c);
 	
 	if(heat_ctl_c->coef_4_source_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_heat_equation_ctl[2]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_heat_equation_ctl[2]),
 				label_heat_equation_ctl[2], heat_ctl_c->coef_4_source_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -312,7 +338,7 @@ void alloc_comp_equation_ctl_c(struct heat_equation_ctl_c *comp_ctl_c){
 	comp_ctl_c->maxlen = 0;
 	for (i=0;i<NLBL_MOMENTUM_EQ_CTL;i++){
 		if(strlen(label_comp_equation_ctl[i]) > comp_ctl_c->maxlen){
-			comp_ctl_c->maxlen = strlen(label_comp_equation_ctl[i]);
+			comp_ctl_c->maxlen = (int) strlen(label_comp_equation_ctl[i]);
 		};
 	};
 	
@@ -340,15 +366,15 @@ int write_comp_equation_ctl_c(FILE *fp, int level,
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 /*	if(comp_ctl_c->coef_4_adv_flux_c->num > 0) fprintf(fp, "!\n"); */
-	write_cr_ctl_array_c(fp, level, strlen(label_comp_equation_ctl[0]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_comp_equation_ctl[0]),
 				label_comp_equation_ctl[0], comp_ctl_c->coef_4_adv_flux_c);
 	
 	if(comp_ctl_c->coef_4_diffuse_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_comp_equation_ctl[1]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_comp_equation_ctl[1]),
 				label_comp_equation_ctl[1], comp_ctl_c->coef_4_diffuse_c);
 	
 	if(comp_ctl_c->coef_4_source_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, strlen(label_comp_equation_ctl[2]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_comp_equation_ctl[2]),
 				label_comp_equation_ctl[2], comp_ctl_c->coef_4_source_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -362,7 +388,7 @@ void alloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c){
 	dless_ctl_c->maxlen = 0;
 	for (i=0;i<NLBL_MOMENTUM_EQ_CTL;i++){
 		if(strlen(label_dimless_ctl[i]) > dless_ctl_c->maxlen){
-			dless_ctl_c->maxlen = strlen(label_dimless_ctl[i]);
+			dless_ctl_c->maxlen = (int) strlen(label_dimless_ctl[i]);
 		};
 	};
 	
@@ -395,7 +421,7 @@ int write_dimless_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_cr_ctl_array_c(fp, level, strlen(label_comp_equation_ctl[0]),
+	write_cr_ctl_array_c(fp, level, (int) strlen(label_comp_equation_ctl[0]),
 				label_dimless_ctl[0], dless_ctl_c->dimless_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -409,7 +435,7 @@ void alloc_equations_ctl_c(struct equations_ctl_c *eqs_ctl_c){
 	eqs_ctl_c->maxlen = 0;
 	for (i=0;i<NLBL_MOMENTUM_EQ_CTL;i++){
 		if(strlen(label_equations_ctl[i]) > eqs_ctl_c->maxlen){
-			eqs_ctl_c->maxlen = strlen(label_equations_ctl[i]);
+			eqs_ctl_c->maxlen = (int) strlen(label_equations_ctl[i]);
 		};
 	};
 	

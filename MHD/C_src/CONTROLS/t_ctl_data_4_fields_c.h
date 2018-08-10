@@ -25,6 +25,7 @@ struct field_ctl_c{
 };
 
 /* prototype */
+void get_label_field_ctl(int index, char *label);
 
 void alloc_field_ctl_c(struct field_ctl_c *fld_ctl);
 void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl);

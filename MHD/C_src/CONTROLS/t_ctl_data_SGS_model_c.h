@@ -119,6 +119,10 @@ struct SGS_model_control_c{
 
 
 /* prototype */
+void get_label_filter_file_ctl(int index, char *label);
+void get_label_layering_ctl(int index, char *label);
+void get_label_SGS_3d_filter_ctl(int index, char *label);
+void get_label_SGS_model_ctl(int index, char *label);
 
 void alloc_filter_file_ctl_c(struct filter_file_ctl_c *ffile_c);
 void dealloc_filter_file_ctl_c(struct filter_file_ctl_c *ffile_c);

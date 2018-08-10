@@ -34,6 +34,7 @@ struct pvr_sect_ctl_list{
 
 /* prototypes */
 
+void get_label_pvr_sections_ctl(int index, char *label);
 
 void alloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c);
 void dealloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c);

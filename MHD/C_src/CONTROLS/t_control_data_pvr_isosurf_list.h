@@ -30,6 +30,7 @@ struct pvr_iso_ctl_list{
 };
 
 /* prototypes */
+void get_label_pvr_isosurf_ctl(int index, char *label);
 
 void alloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c);
 void dealloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c);

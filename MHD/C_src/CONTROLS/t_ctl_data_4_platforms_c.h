@@ -46,6 +46,7 @@ struct platform_data_control_c{
 
     
 /* prototypes */
+void get_label_platform_ctl(int index, char *label);
 
 void alloc_platform_data_control_c(struct platform_data_control_c *files);
 void dealloc_platform_data_control_c(struct platform_data_control_c *files);

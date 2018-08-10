@@ -48,6 +48,7 @@ struct lic_ctl_c{
 };
 
 /* prototypes */
+void get_label_lic_ctl_c(int index, char *label);
 
 void alloc_lic_ctl_c(struct lic_ctl_c *lic_c);
 void dealloc_lic_ctl_c(struct lic_ctl_c *lic_c);
