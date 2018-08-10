@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_ctl_data_4_volume_spectr_list.h"
 
 struct pick_spectr_control_c{
     int maxlen;
@@ -24,16 +25,6 @@ struct pick_spectr_control_c{
     struct int2_ctl_array *idx_pick_sph_c;
     struct int_ctl_array *idx_pick_sph_l_c;
     struct int_ctl_array *idx_pick_sph_m_c;
-};
-
-struct volume_spectr_control_c{
-    int maxlen;
-    
-    struct chara_ctl_item *volume_spec_file_c;
-    struct chara_ctl_item *volume_ave_file_c;
-	
-    struct real_ctl_item *inner_radius_c;
-    struct real_ctl_item *outer_radius_c;
 };
 
 struct layerd_spectr_control_c{
@@ -81,15 +72,14 @@ struct sph_monitor_control_c{
 	int iflag_pspec_ctl;
 	struct pick_spectr_control_c *pspec_ctl_c;
 	
-	int num_vspec_c;
-	struct volume_spectr_control_c **v_pwr_c;
-	
 	int iflag_g_pwr;
 	struct gauss_spectr_control_c *g_pwr;
 	int iflag_lp_ctl;
 	struct layerd_spectr_control_c *lp_ctl;
 	int iflag_meq_ctl;
 	struct mid_equator_control_c *meq_ctl;
+	
+	struct volume_spectr_ctl_list v_pwr_list;
 };
 
 /* prototypes */
@@ -114,13 +104,6 @@ int read_layerd_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct layerd_spectr_control_c *lp_ctl);
 int write_layerd_spectr_control_c(FILE *fp, int level,
 			const char *label, struct layerd_spectr_control_c *lp_ctl);
-
-void alloc_volume_spectr_control_c(struct sph_monitor_control_c *monitor_ctl);
-void dealloc_volume_spectr_control_c(struct sph_monitor_control_c *monitor_ctl);
-int read_volume_spectr_control_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct sph_monitor_control_c *monitor_ctl);
-int write_volume_spectr_control_c(FILE *fp, int level, const char *label, 
-			struct sph_monitor_control_c *monitor_ctl);
 
 void alloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl);
 void dealloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl);

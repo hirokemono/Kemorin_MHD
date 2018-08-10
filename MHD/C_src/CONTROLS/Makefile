@@ -14,8 +14,10 @@ OBJ_KEMO_CTL_C = \
  t_ctl_data_4_FEM_mesh_c.o \
  t_ctl_data_4_time_steps_c.o \
  t_ctl_data_mhd_evo_scheme_c.o \
+ t_ctl_data_4_volume_spectr_list.o \
  t_ctl_data_4_sph_monitor_c.o \
  t_ctl_data_node_monitor_c.o \
+ t_ctl_data_sph_filter_list.o \
  t_ctl_data_SGS_model_c.o \
  t_ctl_data_temp_model_c.o \
  t_ctl_data_mhd_forces_c.o \
@@ -178,12 +180,24 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	t_ctl_data_4_volume_spectr_list.o: \
+	'$$(KEMO_CTL_C_DIR)'/t_ctl_data_4_volume_spectr_list.c \
+	t_ctl_data_4_volume_spectr_list.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	t_ctl_data_4_sph_monitor_c.o: \
 	'$$(KEMO_CTL_C_DIR)'/t_ctl_data_4_sph_monitor_c.c \
 	t_ctl_data_4_sph_monitor_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	control_arrays_IO_c.o \
+	t_ctl_data_4_volume_spectr_list.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -212,12 +226,24 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	t_ctl_data_sph_filter_list.o: \
+	'$$(KEMO_CTL_C_DIR)'/t_ctl_data_sph_filter_list.c \
+	t_ctl_data_sph_filter_list.h \
+	kemosrc_param_c.o \
+	control_elements_IO_c.o \
+	control_arrays_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	t_ctl_data_SGS_model_c.o: \
 	'$$(KEMO_CTL_C_DIR)'/t_ctl_data_SGS_model_c.c \
 	t_ctl_data_SGS_model_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	control_arrays_IO_c.o \
+	t_ctl_data_sph_filter_list.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

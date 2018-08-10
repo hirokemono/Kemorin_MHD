@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_ctl_data_sph_filter_list.h"
 
 struct filter_file_ctl_c{
 	int maxlen;
@@ -48,19 +49,6 @@ struct layering_ctl_c{
 	struct chara_ctl_item *start_fl_layer_grp_name_c;
 	
 	struct int_ctl_item *ngrp_SGS_on_sphere_c;
-};
-
-struct sph_filter_ctl_c{
-	int maxlen;
-	
-	struct chara_ctl_item *sph_filter_type_c;
-	struct chara_ctl_item *radial_filter_type_c;
-	struct int_ctl_item *maximum_moments_c;
-	struct real_ctl_item *sphere_filter_width_c;
-	struct real_ctl_item *radial_filter_width_c;
-	
-	struct int_ctl_item *first_reference_c;
-	struct int_ctl_item *second_reference_c;
 };
 
 struct SGS_3d_filter_ctl_c{
@@ -126,8 +114,7 @@ struct SGS_model_control_c{
 	int iflag_3dfilter_ctl;
 	struct SGS_3d_filter_ctl_c *s3df_c;
 	
-	int num_sph_filter_c;
-	struct sph_filter_ctl_c **sph_filter_c;
+	struct sph_filter_ctl_list sph_filter_list;
 };
 
 
@@ -147,26 +134,12 @@ int read_layering_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_layering_ctl_c(FILE *fp, int level, const char *label, 
                          struct layering_ctl_c *elayer_c);
 
-void alloc_each_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c);
-void dealloc_each_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c);
-int read_each_sph_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct sph_filter_ctl_c *sph_filter_c);
-int write_each_sph_filter_ctl_c(FILE *fp, int level, const char *label, 
-                                struct sph_filter_ctl_c *sph_filter_c);
-
 void alloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c);
 void dealloc_SGS_3d_filter_ctl_c(struct SGS_3d_filter_ctl_c *s3df_c);
 int read_SGS_3d_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct SGS_3d_filter_ctl_c *s3df_c);
 int write_SGS_3d_filter_ctl_c(FILE *fp, int level, const char *label, 
                               struct SGS_3d_filter_ctl_c *s3df_c);
-
-void alloc_sph_filter_ctl_c(struct SGS_model_control_c *SGS_ctl_c);
-void dealloc_sph_filter_ctl_c(struct SGS_model_control_c *SGS_ctl_c);
-int read_sph_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct SGS_model_control_c *SGS_ctl_c);
-int write_sph_filter_ctl_c(FILE *fp, int level, const char *label, 
-			struct SGS_model_control_c *SGS_ctl_c);
 
 void alloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c);
 void dealloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c);

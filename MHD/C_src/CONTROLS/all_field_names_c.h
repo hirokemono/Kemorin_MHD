@@ -6,7 +6,7 @@
 
 #include <stdlib.h>
 
-#define NUM_FIELD 255
+#define NUM_FIELD 256
 #define NCHARA_FIELD 30
 
 struct all_field_def{
