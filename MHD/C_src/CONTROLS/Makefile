@@ -36,6 +36,7 @@ OBJ_KEMO_CTL_C = \
  t_ctl_data_pvr_colormap_c.o \
  t_control_data_pvr_section_list.o \
  t_control_data_pvr_isosurf_list.o \
+ t_control_data_lic_masking_list.o \
  t_control_data_LIC_c.o \
  t_control_data_4_pvr_c.o \
  t_control_data_LIC_pvr_c.o \

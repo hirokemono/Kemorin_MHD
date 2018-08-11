@@ -590,7 +590,6 @@ void dealloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 
 int read_SGS_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct SGS_model_control_c *SGS_ctl_c){
-	int iflag;
 	
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);

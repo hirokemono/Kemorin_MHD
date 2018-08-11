@@ -8,6 +8,8 @@
 #ifndef t_SGS_MHD_control_c_h_
 #define t_SGS_MHD_control_c_h_
 
+#define NLBL_SGS_MHD_CTL        10
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,6 +58,7 @@ struct SGS_MHD_control_c{
 };
 
 /* Prototypes */
+void get_label_MHD_control_head(char *label);
 void get_label_SGS_MHD_ctl(int index, char *label);
 
 void alloc_SGS_MHD_control_c(struct SGS_MHD_control_c *mhd_ctl);

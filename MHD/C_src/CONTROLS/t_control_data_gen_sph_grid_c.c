@@ -8,7 +8,7 @@
 #include "t_control_data_gen_sph_grid_c.h"
 #define NLBL_GEN_SPH_GRID_CTL  2
 
-FILE *FP_VIZ;
+FILE *FP_GRID;
 
 const char label_gen_sph_grid_ctl[NLBL_GEN_SPH_GRID_CTL][KCHARA_C] = {
     /*[ 0]*/    {"data_files_def"},
@@ -108,16 +108,16 @@ int read_gen_sph_shell_file_c(const char *file_name, char buf[LENGTHBUF],
     int iflag = 0;
     
     printf("Read spherical shell generation control: %s\n", file_name);
-    if ((FP_VIZ = fopen(file_name, "r")) == NULL) {
+    if ((FP_GRID = fopen(file_name, "r")) == NULL) {
         fprintf(stderr, "Cannot open file!\n");
         exit (2);                    /* terminate with error message */
     };
     
-    skip_comment_read_line(FP_VIZ, buf);
+    skip_comment_read_line(FP_GRID, buf);
     if(right_begin_flag_c(buf, label_gen_sph_grid_head) > 0){
-        iflag = read_gen_sph_shell_ctl_c(FP_VIZ, buf, label_gen_sph_grid_head, gen_sph_c);
+        iflag = read_gen_sph_shell_ctl_c(FP_GRID, buf, label_gen_sph_grid_head, gen_sph_c);
     };
-    fclose(FP_VIZ);
+    fclose(FP_GRID);
 	
     if(gen_sph_c->iflag_shell_ctl ==-1){
 		read_spherical_shell_file_c(gen_sph_c->fname_shell_ctl, buf, gen_sph_c->shell_ctl);
@@ -134,13 +134,13 @@ int write_gen_sph_shell_file_c(const char *file_name, struct gen_sph_grid_ctl_c 
 	};
     
     printf("Write spherical shell generation control: %s\n", file_name);
-    if ((FP_VIZ = fopen(file_name, "w")) == NULL) {
+    if ((FP_GRID = fopen(file_name, "w")) == NULL) {
         fprintf(stderr, "Cannot open file!\n");
         exit (2);                    /* terminate with error message */
     };
     
-    level = write_gen_sph_shell_ctl_c(FP_VIZ, 0, label_gen_sph_grid_head, gen_sph_c);
-    fclose(FP_VIZ);
+    level = write_gen_sph_shell_ctl_c(FP_GRID, 0, label_gen_sph_grid_head, gen_sph_c);
+    fclose(FP_GRID);
     
     return level;
 };

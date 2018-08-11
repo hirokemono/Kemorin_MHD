@@ -65,6 +65,8 @@ void read_character_ctl_item_c(const char *buf, const char *label,
 			struct chara_ctl_item *c_item);
 void write_character_ctl_item_c(FILE *fp, int level, int maxlen,
 			const char *label, struct chara_ctl_item *c_item);
+int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item);
+void set_boolean_by_chara_ctl_item(int iflag, struct chara_ctl_item *c_item);
 
 void init_ctl_int_item(struct int_ctl_item *i_item);
 void read_integer_ctl_item_c(const char *buf, const char *label,

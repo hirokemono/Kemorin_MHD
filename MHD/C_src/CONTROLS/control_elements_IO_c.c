@@ -227,6 +227,22 @@ void write_character_ctl_item_c(FILE *fp, int level, int maxlen,
 	return;
 }
 
+int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item){
+    int iflag = 0;
+    iflag = cmp_no_case_c(c_item->c_tbl, "ON");
+    if(iflag == 0) iflag = cmp_no_case_c(c_item->c_tbl, "YES");
+    return iflag;
+};
+
+void set_boolean_by_chara_ctl_item(int iflag, struct chara_ctl_item *c_item){
+    if(iflag > 0){
+        c_item->c_tbl = "On";
+    } else {
+        c_item->c_tbl = "Off";
+    };
+    return;
+};
+
 
 void init_ctl_int_item(struct int_ctl_item *i_item){
 	i_item->iflag = 0;

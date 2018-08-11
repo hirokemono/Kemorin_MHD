@@ -1,27 +1,21 @@
 
 #include <gtk/gtk.h>
 #include "t_SGS_MHD_control_c.h"
-#include "control_elements_IO_GTK.h"
-
-void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c, struct chara_ctl_item *ptem_t);
-
 
 int iflag_read_mhd = 0;
 struct SGS_MHD_control_c *mhd_ctl;
+
+void set_control_box(GtkWidget *vbox0);
+
+
 GtkWidget *window;
+GtkWidget *expander_Top;
 GtkWidget *vbox_0;
-
-GtkWidget *entry_3, *entry_4, *entry_5;
-
-double rtest = 2.5;
-int ntest = 66;
-char *ctest = "ahahahaha";
-struct chara_ctl_item *ptem_test;
-
 
 static void cb_New(GtkButton *button, gpointer data)
 {
-	draw_MHD_control_list(vbox_0, mhd_ctl, ptem_test);
+	printf("takotakotako \n");
+	gtk_widget_destroy (expander_Top);
 	gtk_widget_show_all(window);
 }
 
@@ -41,8 +35,8 @@ static void cb_Open(GtkButton *button, gpointer data)
 	
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	
-	parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
-	entry = GTK_ENTRY(data);
+  parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
+  entry = GTK_ENTRY(data);
 
 	/* generate file selection widget*/
 	dialog = gtk_file_chooser_dialog_new("File Chooser Dialog", GTK_WINDOW(parent), action[0],
@@ -62,18 +56,17 @@ static void cb_Open(GtkButton *button, gpointer data)
 		g_free(folder);
     /* Show file name in entry */
 		gtk_entry_set_text(entry, read_file_name);
-		/*
+		
 		mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
 		alloc_SGS_MHD_control_c(mhd_ctl);
 		iflag_read_mhd = 1;
-		*/
+		
 		read_SGS_MHD_control_file_c(read_file_name, buf, mhd_ctl);
 		
-		gtk_entry_set_text(GTK_ENTRY(entry_3), (const gchar *) mhd_ctl->files->sph_file_prefix_c->c_tbl);
-		
 		g_free(read_file_name);
-		
-		draw_MHD_control_list(vbox_0, mhd_ctl, ptem_test);
+	
+		set_control_box(vbox_0);
+		gtk_container_add(GTK_CONTAINER(window), vbox_0);
 		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
@@ -81,6 +74,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 		g_print( "Another response was received.\n" );
 	}
 	gtk_widget_destroy(dialog);
+	
 }
 
 static void cb_Save(GtkButton *button, gpointer data)
@@ -93,7 +87,7 @@ static void cb_Save(GtkButton *button, gpointer data)
 	GtkFileChooserAction action[] = {GTK_FILE_CHOOSER_ACTION_OPEN, GTK_FILE_CHOOSER_ACTION_SAVE,
 			GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER};
   gint response;
-	gchar *write_file_name;
+  gchar *write_file_name;
 
   parent = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
   entry = GTK_ENTRY(data);
@@ -138,106 +132,15 @@ void expander_MHD_ctl_callback(GObject *object, GParamSpec *param_spec, gpointer
 	gtk_widget_show_all(window);
 };
 
-static void cb3_entry(GtkEntry *entry, gpointer data)
-{
-	printf("ntest: %s: %s\n", (char *) data, ctest);
-//	struct chara_ctl_item *c_item = data;
-//	printf("file %d : %s \n", c_item->iflag, c_item->c_tbl);
-	if(mhd_ctl->files->sph_file_prefix_c->c_tbl != NULL) {
-//		mhd_ctl->files->sph_file_prefix_c->c_tbl = gtk_entry_get_text(entry);
-		printf("file: %s \n", mhd_ctl->files->sph_file_prefix_c->c_tbl);
-	};
-}
 
-void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c, struct chara_ctl_item *ptem_t){
-	GtkWidget *expander_Top;
-	GtkWidget *expander_MHD_ctl[NLBL_SGS_MHD_CTL];
-	
-	GtkWidget *hbox_1, *vbox_1, *Frame_1;
-	GtkWidget *hbox_2[NLBL_SGS_MHD_CTL], *vbox_2[NLBL_SGS_MHD_CTL], *Frame_2[NLBL_SGS_MHD_CTL];
-	GtkWidget *hbox_3;
-	
-	int i;
-	char *c_label;
-	
-	c_label = (char *)calloc(KCHARA_C, sizeof(char));
-	
-	
-	/* Generate expander */
-	get_label_MHD_control_head(c_label);
-	expander_Top = gtk_expander_new_with_mnemonic(c_label);
-	/*g_signal_connect(expander_Top, "notify::expanded", G_CALLBACK(expander_MHD_ctl_callback), NULL);*/
-	
-	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	Frame_1 = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
-	
-	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
-		get_label_SGS_MHD_ctl(i, c_label);
-		expander_MHD_ctl[i] =  gtk_expander_new(c_label);
-		gtk_box_pack_start(GTK_BOX(vbox_1), expander_MHD_ctl[i], TRUE, TRUE, 0);
-		
-		vbox_2[i] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-		
-		if(i == 0){
-			hbox_3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-			get_label_platform_ctl(0, c_label);
-			gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new(c_label), FALSE, FALSE, 0);
-			
-			entry_3 = gtk_entry_new();
-			printf("ctest in main: %s \n", ctest);
-			g_signal_connect(G_OBJECT(entry_3), "activate", G_CALLBACK(cb3_entry), 
-						(gpointer) ctest);
-//						(void *) mhd_ctl->files->sph_file_prefix_c);
-			gtk_box_pack_start(GTK_BOX(hbox_3), entry_3, TRUE, TRUE, 0);
-			
-			
-			get_label_platform_ctl(0, c_label);
-			hbox_3 = make_toggle_hbox(c_label, MHD_c->files->debug_flag_c, FALSE, TRUE);
-			gtk_box_pack_start(GTK_BOX(vbox_2[0]), hbox_3, FALSE, FALSE, 0);
-			
-			get_label_platform_ctl(1, c_label);
-			hbox_3 = make_integer_hbox(c_label, MHD_c->files->ndomain_c);
-			gtk_box_pack_start(GTK_BOX(vbox_2[0]), hbox_3, FALSE, FALSE, 0);
-			
-			get_label_platform_ctl(4, c_label);
-			hbox_3 = make_text_hbox(c_label, MHD_c->files->field_file_prefix_c);
-			gtk_box_pack_start(GTK_BOX(vbox_2[0]), hbox_3, FALSE, FALSE, 0);
-            
-            get_label_platform_ctl(5, c_label);
-            hbox_3 = make_filename_hbox(c_label, MHD_c->files->restart_file_prefix_c);
-            gtk_box_pack_start(GTK_BOX(vbox_2[0]), hbox_3, FALSE, FALSE, 0);
-		};
-		
-		Frame_2[i] = gtk_frame_new("");
-		gtk_frame_set_shadow_type(GTK_FRAME(Frame_2[i]), GTK_SHADOW_IN);
-		gtk_container_add(GTK_CONTAINER(Frame_2[i]), vbox_2[i]);
-		
-		hbox_2[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-		gtk_box_pack_start(GTK_BOX(hbox_2[i]), gtk_label_new("  "), FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(hbox_2[i]), Frame_2[i], TRUE, TRUE, 0);
-		gtk_container_add(GTK_CONTAINER(expander_MHD_ctl[i]), hbox_2[i]);
-	};
-	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
-	
-	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
-	gtk_container_add(GTK_CONTAINER(expander_Top), hbox_1);
-	gtk_box_pack_start(GTK_BOX(vbox0), expander_Top, TRUE, TRUE, 0);
-};
-
-void draw_MHD_control_bottuns(GtkWidget *vbox0){
+void set_file_box(GtkWidget *vbox0){
 	GtkWidget *button_N, *button_O, *button_S, *button_Q;
 	GtkWidget *hbox;
 	GtkWidget *label;
 	GtkWidget *entry;
 	
-	
-	mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
-	alloc_SGS_MHD_control_c(mhd_ctl);
-
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	
 	label = gtk_label_new("File:");
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
@@ -263,17 +166,74 @@ void draw_MHD_control_bottuns(GtkWidget *vbox0){
 	gtk_box_pack_start(GTK_BOX(hbox), button_Q, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, FALSE, 0);
-	
-}
+};
 
+
+void set_control_box(GtkWidget *vbox0){
+	GtkWidget *hbox_1, *vbox_1, *Frame_1;
+	GtkWidget *hbox_2[NLBL_SGS_MHD_CTL], *vbox_2[NLBL_SGS_MHD_CTL], *Frame_2[NLBL_SGS_MHD_CTL];
+	GtkWidget *hbox_3, *entry_3;
+	GtkWidget *expander_MHD_ctl[NLBL_SGS_MHD_CTL];
+	
+	int i;
+	char *c_label;
+	
+	c_label = (char *)calloc(KCHARA_C, sizeof(char));
+	
+	/* Generate expander */
+	get_label_MHD_control_head(c_label);
+	expander_Top = gtk_expander_new_with_mnemonic(c_label);
+	
+	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	Frame_1 = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
+	
+	for (i=0;i<NLBL_SGS_MHD_CTL;i++){
+		get_label_SGS_MHD_ctl(i, c_label);
+		expander_MHD_ctl[i] =  gtk_expander_new(c_label);
+		gtk_box_pack_start(GTK_BOX(vbox_1), expander_MHD_ctl[i], TRUE, TRUE, 0);
+		
+		vbox_2[i] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+		
+		if(i == 0){
+			hbox_3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+			get_label_platform_ctl(0, c_label);
+			gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new(c_label), FALSE, FALSE, 0);
+			
+			printf("Baka\n");
+			if(iflag_read_mhd > 0){
+				entry_3 = gtk_entry_new();
+				gtk_box_pack_start(GTK_BOX(hbox_3), entry_3, TRUE, TRUE, 0);
+				g_object_set_data(G_OBJECT(entry_3), mhd_ctl->files->debug_flag_c->c_tbl, (gpointer)window);
+				gtk_box_pack_start(GTK_BOX(hbox_3), gtk_label_new(mhd_ctl->files->debug_flag_c->c_tbl), FALSE, FALSE, 0);
+			};
+			gtk_box_pack_start(GTK_BOX(vbox_2[0]), hbox_3, FALSE, FALSE, 0);
+		};
+		
+		Frame_2[i] = gtk_frame_new("");
+		gtk_frame_set_shadow_type(GTK_FRAME(Frame_2[i]), GTK_SHADOW_IN);
+		gtk_container_add(GTK_CONTAINER(Frame_2[i]), vbox_2[i]);
+		
+		hbox_2[i] = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+		gtk_box_pack_start(GTK_BOX(hbox_2[i]), gtk_label_new("  "), FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(hbox_2[i]), Frame_2[i], TRUE, TRUE, 0);
+		gtk_container_add(GTK_CONTAINER(expander_MHD_ctl[i]), hbox_2[i]);
+	};
+	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
+	
+	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(expander_Top), hbox_1);
+	gtk_box_pack_start(GTK_BOX(vbox0), expander_Top, TRUE, TRUE, 0);
+};
 
 int main(int argc, char** argv)
 {
-//	GtkWidget *scroll_window;
+	GtkWidget *scroll_window;
 	
 	mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
 	alloc_SGS_MHD_control_c(mhd_ctl);
-	iflag_read_mhd = 1;
 	
 	gtk_init(&argc, &argv);
 
@@ -283,18 +243,15 @@ int main(int argc, char** argv)
 	g_signal_connect(G_OBJECT(window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 	
 	vbox_0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	gtk_container_add(GTK_CONTAINER(window), vbox_0);
 	/*
 	scroll_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX(vbox_0), scroll_window, TRUE, TRUE, 0);
 	*/
 	
-			ptem_test = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-			alloc_ctl_chara_item(ptem_test);
-			ptem_test->iflag = 111;
-			ptem_test->c_tbl = "gggg";
+	gtk_box_pack_start(GTK_BOX(vbox_0), gtk_label_new(" BoxBoxBox "), TRUE, TRUE, 0);
+	set_file_box(vbox_0);
+	gtk_container_add(GTK_CONTAINER(window), vbox_0);
 	
-	draw_MHD_control_bottuns(vbox_0);
 	
 	gtk_widget_show_all(window);
 	gtk_main();

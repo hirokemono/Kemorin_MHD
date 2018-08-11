@@ -57,9 +57,11 @@ int main(int argc,char *argv[])
 	alloc_SGS_MHD_control_c(mhd_ctl);
 	
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
-	rename_SGS_MHD_ctl_subfile_c(mhd_ctl);
 	write_SGS_MHD_control_file_c(file_name_2, mhd_ctl);
-	
+
+    rename_SGS_MHD_ctl_subfile_c(mhd_ctl);
+    write_SGS_MHD_ctl_subfile_c(mhd_ctl);
+
 	dealloc_SGS_MHD_control_c(mhd_ctl);
 	free(mhd_ctl);
 	

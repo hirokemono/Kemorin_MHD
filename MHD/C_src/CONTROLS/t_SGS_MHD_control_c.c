@@ -7,8 +7,6 @@
 
 #include "t_SGS_MHD_control_c.h"
 
-#define NLBL_SGS_MHD_CTL        10
-
 FILE *FP_MHD;
 
 const char label_SGS_MHD_ctl[NLBL_SGS_MHD_CTL][KCHARA_C] = {
@@ -31,6 +29,10 @@ const char label_MHD_control_head[KCHARA_C] = "MHD_control";
 
 void get_label_SGS_MHD_ctl(int index, char *label){
     if(index < NLBL_SGS_MHD_CTL) strngcopy(label, label_SGS_MHD_ctl[index]);
+    return;
+};
+void get_label_MHD_control_head(char *label){
+    strngcopy(label, label_MHD_control_head);
     return;
 };
 
@@ -291,9 +293,7 @@ void read_SGS_MHD_control_file_c(const char *file_name, char buf[LENGTHBUF],
 
 void write_SGS_MHD_control_file_c(const char *file_name, struct SGS_MHD_control_c *mhd_ctl){
     int level = 0;
-    
-	write_SGS_MHD_ctl_subfile_c(mhd_ctl);
-    
+        
     printf("Write spherical shell dynamo control: %s\n", file_name);
     if ((FP_MHD = fopen(file_name, "w")) == NULL) {
         fprintf(stderr, "Cannot open file!\n");

@@ -1,28 +1,26 @@
 
 #include <gtk/gtk.h>
 #include "t_SGS_MHD_control_c.h"
-#include "control_elements_IO_GTK.h"
-
-void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c, struct chara_ctl_item *ptem_t);
-
 
 int iflag_read_mhd = 0;
 struct SGS_MHD_control_c *mhd_ctl;
 GtkWidget *window;
-GtkWidget *vbox_0;
 
 GtkWidget *entry_3, *entry_4, *entry_5;
 
 double rtest = 2.5;
 int ntest = 66;
 char *ctest = "ahahahaha";
+struct chara_ctl_item item_test = {55, "tako_tako"};
 struct chara_ctl_item *ptem_test;
-
 
 static void cb_New(GtkButton *button, gpointer data)
 {
-	draw_MHD_control_list(vbox_0, mhd_ctl, ptem_test);
-	gtk_widget_show_all(window);
+	
+	/*
+	mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
+	alloc_SGS_MHD_control_c(mhd_ctl);
+	*/
 }
 
 static void cb_Open(GtkButton *button, gpointer data)
@@ -72,9 +70,6 @@ static void cb_Open(GtkButton *button, gpointer data)
 		gtk_entry_set_text(GTK_ENTRY(entry_3), (const gchar *) mhd_ctl->files->sph_file_prefix_c->c_tbl);
 		
 		g_free(read_file_name);
-		
-		draw_MHD_control_list(vbox_0, mhd_ctl, ptem_test);
-		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
 	}else{
@@ -149,7 +144,32 @@ static void cb3_entry(GtkEntry *entry, gpointer data)
 	};
 }
 
-void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c, struct chara_ctl_item *ptem_t){
+static void cb4_entry(GtkEntry *entry, gpointer data)
+{
+	printf("ntest: %d: %d\n", *(int *) data, ntest);
+//	struct chara_ctl_item *c_item = data;
+//	printf("file %d : %s \n", c_item->iflag, c_item->c_tbl);
+//	if(mhd_ctl->files->sph_file_prefix_c->c_tbl != NULL) {
+//		mhd_ctl->files->sph_file_prefix_c->c_tbl = gtk_entry_get_text(entry);
+//		printf("file: %s \n", mhd_ctl->files->sph_file_prefix_c->c_tbl);
+//	};
+}
+
+static void cb5_entry(GtkEntry *entry, gpointer data)
+{
+	struct chara_ctl_item *item_recv = (struct chara_ctl_item *) data;
+	
+	printf("ntest: %d: %s\n", item_recv->iflag, item_recv->c_tbl);
+//	struct chara_ctl_item *c_item = data;
+//	printf("file %d : %s \n", c_item->iflag, c_item->c_tbl);
+	if(mhd_ctl->files->sph_file_prefix_c->c_tbl != NULL) {
+//		mhd_ctl->files->sph_file_prefix_c->c_tbl = gtk_entry_get_text(entry);
+		printf("file %d: %s \n", mhd_ctl->files->sph_file_prefix_c->iflag, 
+					mhd_ctl->files->sph_file_prefix_c->c_tbl);
+	};
+}
+
+void draw_MHD_control_list(GtkWidget *vbox_0, struct SGS_MHD_control_c *MHD_c, struct chara_ctl_item *ptem_t){
 	GtkWidget *expander_Top;
 	GtkWidget *expander_MHD_ctl[NLBL_SGS_MHD_CTL];
 	
@@ -191,22 +211,25 @@ void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c, st
 //						(void *) mhd_ctl->files->sph_file_prefix_c);
 			gtk_box_pack_start(GTK_BOX(hbox_3), entry_3, TRUE, TRUE, 0);
 			
+			entry_4 = gtk_entry_new();
+			printf("ntest in main: %d \n", ntest);
+			g_signal_connect(G_OBJECT(entry_4), "activate", G_CALLBACK(cb4_entry), 
+						(gpointer) &ntest);
+//						(void *) mhd_ctl->files->sph_file_prefix_c);
+			gtk_box_pack_start(GTK_BOX(hbox_3), entry_4, TRUE, TRUE, 0);
 			
-			get_label_platform_ctl(0, c_label);
-			hbox_3 = make_toggle_hbox(c_label, MHD_c->files->debug_flag_c, FALSE, TRUE);
-			gtk_box_pack_start(GTK_BOX(vbox_2[0]), hbox_3, FALSE, FALSE, 0);
 			
-			get_label_platform_ctl(1, c_label);
-			hbox_3 = make_integer_hbox(c_label, MHD_c->files->ndomain_c);
-			gtk_box_pack_start(GTK_BOX(vbox_2[0]), hbox_3, FALSE, FALSE, 0);
+			printf("item_test in main: %d: %s\n", item_test.iflag, item_test.c_tbl);
+			printf("ctem_test in main: %d: %s\n", ptem_t->iflag, ptem_t->c_tbl);
+			printf("sph_file_prefix_c in main: %d: %s\n", MHD_c->files->sph_file_prefix_c->iflag, 
+						MHD_c->files->sph_file_prefix_c->c_tbl);
+			entry_5 = gtk_entry_new();
+			g_signal_connect(G_OBJECT(entry_5), "activate", G_CALLBACK(cb5_entry), 
+//						(gpointer) ptem_t);
+						(gpointer) MHD_c->files->sph_file_prefix_c);
+			gtk_box_pack_start(GTK_BOX(hbox_3), entry_5, TRUE, TRUE, 0);
 			
-			get_label_platform_ctl(4, c_label);
-			hbox_3 = make_text_hbox(c_label, MHD_c->files->field_file_prefix_c);
 			gtk_box_pack_start(GTK_BOX(vbox_2[0]), hbox_3, FALSE, FALSE, 0);
-            
-            get_label_platform_ctl(5, c_label);
-            hbox_3 = make_filename_hbox(c_label, MHD_c->files->restart_file_prefix_c);
-            gtk_box_pack_start(GTK_BOX(vbox_2[0]), hbox_3, FALSE, FALSE, 0);
 		};
 		
 		Frame_2[i] = gtk_frame_new("");
@@ -224,10 +247,11 @@ void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c, st
 	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
 	gtk_container_add(GTK_CONTAINER(expander_Top), hbox_1);
-	gtk_box_pack_start(GTK_BOX(vbox0), expander_Top, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_0), expander_Top, TRUE, TRUE, 0);
+		
 };
 
-void draw_MHD_control_bottuns(GtkWidget *vbox0){
+void draw_MHD_control_bottuns(GtkWidget *vbox_0){
 	GtkWidget *button_N, *button_O, *button_S, *button_Q;
 	GtkWidget *hbox;
 	GtkWidget *label;
@@ -262,13 +286,14 @@ void draw_MHD_control_bottuns(GtkWidget *vbox0){
 	gtk_box_pack_start(GTK_BOX(hbox), button_S, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), button_Q, FALSE, FALSE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(vbox0), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_0), hbox, FALSE, FALSE, 0);
 	
 }
 
 
 int main(int argc, char** argv)
 {
+	GtkWidget *vbox_0;
 //	GtkWidget *scroll_window;
 	
 	mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
@@ -294,6 +319,7 @@ int main(int argc, char** argv)
 			ptem_test->iflag = 111;
 			ptem_test->c_tbl = "gggg";
 	
+	draw_MHD_control_list(vbox_0, mhd_ctl, ptem_test);
 	draw_MHD_control_bottuns(vbox_0);
 	
 	gtk_widget_show_all(window);
