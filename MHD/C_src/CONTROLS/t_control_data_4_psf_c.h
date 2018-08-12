@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_real_IO.h"
 #include "t_control_chara2_IO.h"
 
 struct psf_define_ctl_c{
@@ -21,10 +22,10 @@ struct psf_define_ctl_c{
 	
 	struct chara_ctl_item *section_method_ctl;
 	
-	struct chara_real_ctl_array *psf_coefs_ctl;
-	struct chara_real_ctl_array *psf_normal_ctl;
-	struct chara_real_ctl_array *psf_center_ctl;
-	struct chara_real_ctl_array *psf_axis_ctl;
+	struct chara_real_ctl_list psf_coefs_list;
+	struct chara_real_ctl_list psf_normal_list;
+	struct chara_real_ctl_list psf_center_list;
+	struct chara_real_ctl_list psf_axis_list;
 	
 	struct real_ctl_item *radius_psf_ctl;
 	struct chara_ctl_item *psf_group_name_ctl;

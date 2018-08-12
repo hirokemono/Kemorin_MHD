@@ -14,43 +14,44 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_real_IO.h"
 
 
 struct momentum_equation_ctl_c{
 	int maxlen;
 	
-	struct chara_real_ctl_array *coef_4_viscous_c;
-	struct chara_real_ctl_array *coef_4_intertia_c;
-	struct chara_real_ctl_array *coef_4_grad_p_c;
+	struct chara_real_ctl_list coef_4_viscous_list;
+	struct chara_real_ctl_list coef_4_intertia_list;
+	struct chara_real_ctl_list coef_4_grad_p_list;
 	
-	struct chara_real_ctl_array *coef_4_termal_buo_c;
-	struct chara_real_ctl_array *coef_4_comp_buo_c;
-	struct chara_real_ctl_array *coef_4_Coriolis_c;
-	struct chara_real_ctl_array *coef_4_Lorentz_c;
+	struct chara_real_ctl_list coef_4_termal_buo_list;
+	struct chara_real_ctl_list coef_4_comp_buo_list;
+	struct chara_real_ctl_list coef_4_Coriolis_list;
+	struct chara_real_ctl_list coef_4_Lorentz_list;
 };
 
 struct induction_equation_ctl_c{
 	int maxlen;
 	
-	struct chara_real_ctl_array *coef_4_magne_evo_c;
-	struct chara_real_ctl_array *coef_4_mag_diffuse_c;
-	struct chara_real_ctl_array *coef_4_mag_potential_c;
-	struct chara_real_ctl_array *coef_4_induction_c;
+	struct chara_real_ctl_list coef_4_magne_evo_list;
+	struct chara_real_ctl_list coef_4_mag_diffuse_list;
+	struct chara_real_ctl_list coef_4_mag_potential_list;
+	struct chara_real_ctl_list coef_4_induction_list;
 };
 
 struct heat_equation_ctl_c{
 	int maxlen;
 	
-	struct chara_real_ctl_array *coef_4_adv_flux_c;
-	struct chara_real_ctl_array *coef_4_diffuse_c;
-	struct chara_real_ctl_array *coef_4_source_c;
+	struct chara_real_ctl_list coef_4_adv_flux_list;
+	struct chara_real_ctl_list coef_4_diffuse_list;
+	struct chara_real_ctl_list coef_4_source_list;
 };
 
 
 struct dimless_ctl_c{
 	int maxlen;
 	
-	struct chara_real_ctl_array *dimless_c;
+	struct chara_real_ctl_list dimless_list;
 };
 
 struct equations_ctl_c{
@@ -89,6 +90,7 @@ int read_induction_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *lab
 int write_induction_equation_ctl_c(FILE *fp, int level, const char *label, 
                                    struct induction_equation_ctl_c *induct_ctl_c);
 
+void alloc_scalar_advection_eq_ctl_c(struct heat_equation_ctl_c *scalar_ctl_c);
 void alloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c);
 void dealloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c);
 int read_heat_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,

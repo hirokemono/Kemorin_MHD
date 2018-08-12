@@ -71,14 +71,10 @@ void alloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	psf_def_c->section_method_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_ctl_chara_item(psf_def_c->section_method_ctl);
 	
-	psf_def_c->psf_coefs_ctl = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	psf_def_c->psf_normal_ctl = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	psf_def_c->psf_center_ctl = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	psf_def_c->psf_axis_ctl = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	init_ctl_cr_array(psf_def_c->psf_coefs_ctl);
-	init_ctl_cr_array(psf_def_c->psf_normal_ctl);
-	init_ctl_cr_array(psf_def_c->psf_center_ctl);
-	init_ctl_cr_array(psf_def_c->psf_axis_ctl);
+	init_chara_real_ctl_list(&psf_def_c->psf_coefs_list);
+	init_chara_real_ctl_list(&psf_def_c->psf_normal_list);
+	init_chara_real_ctl_list(&psf_def_c->psf_center_list);
+	init_chara_real_ctl_list(&psf_def_c->psf_axis_list);
 	
 	psf_def_c->radius_psf_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	psf_def_c->psf_group_name_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
@@ -96,14 +92,10 @@ void dealloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	dealloc_ctl_chara_item(psf_def_c->section_method_ctl);
 	free(psf_def_c->section_method_ctl);
 	
-	dealloc_ctl_cr_array(psf_def_c->psf_coefs_ctl);
-	dealloc_ctl_cr_array(psf_def_c->psf_normal_ctl);
-	dealloc_ctl_cr_array(psf_def_c->psf_center_ctl);
-	dealloc_ctl_cr_array(psf_def_c->psf_axis_ctl);
-	free(psf_def_c->psf_coefs_ctl);
-	free(psf_def_c->psf_normal_ctl);
-	free(psf_def_c->psf_center_ctl);
-	free(psf_def_c->psf_axis_ctl);
+	clear_chara_real_ctl_list(&psf_def_c->psf_coefs_list);
+	clear_chara_real_ctl_list(&psf_def_c->psf_normal_list);
+	clear_chara_real_ctl_list(&psf_def_c->psf_center_list);
+	clear_chara_real_ctl_list(&psf_def_c->psf_axis_list);
 	
 	free(psf_def_c->radius_psf_ctl);
 	dealloc_ctl_chara_item(psf_def_c->psf_group_name_ctl);
@@ -134,10 +126,10 @@ int read_psf_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_character_ctl_item_c(buf, label_psf_define_ctl[ 0], psf_def_c->section_method_ctl);
 		
-		read_cr_ctl_array_c(fp, buf, label_psf_define_ctl[ 1], psf_def_c->psf_coefs_ctl);
-		read_cr_ctl_array_c(fp, buf, label_psf_define_ctl[ 2], psf_def_c->psf_normal_ctl);
-		read_cr_ctl_array_c(fp, buf, label_psf_define_ctl[ 3], psf_def_c->psf_center_ctl);
-		read_cr_ctl_array_c(fp, buf, label_psf_define_ctl[ 4], psf_def_c->psf_axis_ctl);
+		read_chara_real_ctl_list(fp, buf, label_psf_define_ctl[ 1], &psf_def_c->psf_coefs_list);
+		read_chara_real_ctl_list(fp, buf, label_psf_define_ctl[ 2], &psf_def_c->psf_normal_list);
+		read_chara_real_ctl_list(fp, buf, label_psf_define_ctl[ 3], &psf_def_c->psf_center_list);
+		read_chara_real_ctl_list(fp, buf, label_psf_define_ctl[ 4], &psf_def_c->psf_axis_list);
 		
 		read_real_ctl_item_c(buf, label_psf_define_ctl[ 5], psf_def_c->radius_psf_ctl);
 		
@@ -159,17 +151,10 @@ int write_psf_define_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_character_ctl_item_c(fp, level, psf_def_c->maxlen, label_psf_define_ctl[ 0], psf_def_c->section_method_ctl);
 	
-	if(psf_def_c->psf_coefs_ctl->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, psf_def_c->maxlen, label_psf_define_ctl[ 1], psf_def_c->psf_coefs_ctl);
-	
-	if(psf_def_c->psf_normal_ctl->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, psf_def_c->maxlen, label_psf_define_ctl[ 2], psf_def_c->psf_normal_ctl);
-	
-	if(psf_def_c->psf_center_ctl->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, psf_def_c->maxlen, label_psf_define_ctl[ 3], psf_def_c->psf_center_ctl);
-	
-	if(psf_def_c->psf_axis_ctl->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, psf_def_c->maxlen, label_psf_define_ctl[ 4], psf_def_c->psf_axis_ctl);
+	write_chara_real_ctl_list(fp, level, label_psf_define_ctl[ 1], &psf_def_c->psf_coefs_list);
+	write_chara_real_ctl_list(fp, level, label_psf_define_ctl[ 2], &psf_def_c->psf_normal_list);
+	write_chara_real_ctl_list(fp, level, label_psf_define_ctl[ 3], &psf_def_c->psf_center_list);
+	write_chara_real_ctl_list(fp, level, label_psf_define_ctl[ 4], &psf_def_c->psf_axis_list);
 	
 	write_real_ctl_item_c(fp, level, psf_def_c->maxlen, label_psf_define_ctl[ 5], psf_def_c->radius_psf_ctl);
 	

@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_real_IO.h"
 
 struct forces_ctl_c{
 	int maxlen;
@@ -25,20 +26,20 @@ struct gravity_ctl_c{
 	int maxlen;
 	
 	struct chara_ctl_item *gravity_c;
-	struct chara_real_ctl_array *gravity_vec_c;
+	struct chara_real_ctl_list gravity_vec_list;
 };
 
 struct coriolis_ctl_c{
 	int maxlen;
 	
-	struct chara_real_ctl_array *system_rotation_c;
+	struct chara_real_ctl_list system_rotation_list;
 };
 
 struct magneto_cv_ctl_c{
 	int maxlen;
 	
 	struct chara_ctl_item *magneto_cv_c;
-	struct chara_real_ctl_array *ext_magne_c;
+	struct chara_real_ctl_list ext_magne_list;
 };
 
 /* prototype */

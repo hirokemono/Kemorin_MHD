@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_real_IO.h"
 #include "t_control_chara2_real_IO.h"
 
 struct image_size_ctl_c{
@@ -44,16 +45,16 @@ struct modeview_ctl_c{
 	
 	struct chara2_real_ctl_list modelview_mat_ctl;
 	
-	struct chara_real_ctl_array *lookpoint_ctl;
-	struct chara_real_ctl_array *viewpoint_ctl;
-	struct chara_real_ctl_array *up_dir_ctl;
-	struct chara_real_ctl_array *view_rot_vec_ctl;
+	struct chara_real_ctl_list lookpoint_list;
+	struct chara_real_ctl_list viewpoint_list;
+	struct chara_real_ctl_list up_dir_list;
+	struct chara_real_ctl_list view_rot_vec_list;
 	
     struct real_ctl_item *view_rotation_deg_ctl;
     struct real_ctl_item *scale_factor_ctl;
 	
-	struct chara_real_ctl_array *scale_vector_ctl;
-	struct chara_real_ctl_array *viewpt_in_viewer_ctl;
+	struct chara_real_ctl_list scale_vector_list;
+	struct chara_real_ctl_list viewpt_in_viewer_list;
 	
 	int iflag_image_size_ctl;
 	struct image_size_ctl_c *img_size_c;

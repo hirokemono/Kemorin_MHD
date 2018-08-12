@@ -94,45 +94,28 @@ void alloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
 		};
 	};
 	
-	mom_ctl_c->coef_4_viscous_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	mom_ctl_c->coef_4_intertia_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	mom_ctl_c->coef_4_grad_p_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	init_ctl_cr_array(mom_ctl_c->coef_4_viscous_c);
-	init_ctl_cr_array(mom_ctl_c->coef_4_intertia_c);
-	init_ctl_cr_array(mom_ctl_c->coef_4_grad_p_c);
+	init_chara_real_ctl_list(&mom_ctl_c->coef_4_viscous_list);
+	init_chara_real_ctl_list(&mom_ctl_c->coef_4_intertia_list);
+	init_chara_real_ctl_list(&mom_ctl_c->coef_4_grad_p_list);
 	
-	mom_ctl_c->coef_4_termal_buo_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	mom_ctl_c->coef_4_comp_buo_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	mom_ctl_c->coef_4_Coriolis_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	mom_ctl_c->coef_4_Lorentz_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	init_ctl_cr_array(mom_ctl_c->coef_4_termal_buo_c);
-	init_ctl_cr_array(mom_ctl_c->coef_4_comp_buo_c);
-	init_ctl_cr_array(mom_ctl_c->coef_4_Coriolis_c);
-	init_ctl_cr_array(mom_ctl_c->coef_4_Lorentz_c);
+	init_chara_real_ctl_list(&mom_ctl_c->coef_4_termal_buo_list);
+	init_chara_real_ctl_list(&mom_ctl_c->coef_4_comp_buo_list);
+	init_chara_real_ctl_list(&mom_ctl_c->coef_4_Coriolis_list);
+	init_chara_real_ctl_list(&mom_ctl_c->coef_4_Lorentz_list);
 	
 	return;
 };
 
 void dealloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
 	
-	dealloc_ctl_cr_array(mom_ctl_c->coef_4_viscous_c);
-	dealloc_ctl_cr_array(mom_ctl_c->coef_4_intertia_c);
-	dealloc_ctl_cr_array(mom_ctl_c->coef_4_grad_p_c);
+	clear_chara_real_ctl_list(&mom_ctl_c->coef_4_viscous_list);
+	clear_chara_real_ctl_list(&mom_ctl_c->coef_4_intertia_list);
+	clear_chara_real_ctl_list(&mom_ctl_c->coef_4_grad_p_list);
 	
-	free(mom_ctl_c->coef_4_viscous_c);
-	free(mom_ctl_c->coef_4_intertia_c);
-	free(mom_ctl_c->coef_4_grad_p_c);
-	
-	dealloc_ctl_cr_array(mom_ctl_c->coef_4_termal_buo_c);
-	dealloc_ctl_cr_array(mom_ctl_c->coef_4_comp_buo_c);
-	dealloc_ctl_cr_array(mom_ctl_c->coef_4_Coriolis_c);
-	dealloc_ctl_cr_array(mom_ctl_c->coef_4_Lorentz_c);
-	
-	free(mom_ctl_c->coef_4_termal_buo_c);
-	free(mom_ctl_c->coef_4_comp_buo_c);
-	free(mom_ctl_c->coef_4_Coriolis_c);
-	free(mom_ctl_c->coef_4_Lorentz_c);
-	
+	clear_chara_real_ctl_list(&mom_ctl_c->coef_4_termal_buo_list);
+	clear_chara_real_ctl_list(&mom_ctl_c->coef_4_comp_buo_list);
+	clear_chara_real_ctl_list(&mom_ctl_c->coef_4_Coriolis_list);
+	clear_chara_real_ctl_list(&mom_ctl_c->coef_4_Lorentz_list);
 	return;
 };
 
@@ -141,14 +124,14 @@ int read_momentum_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *labe
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_cr_ctl_array_c(fp, buf, label_momentum_equation_ctl[ 0], mom_ctl_c->coef_4_intertia_c);
-		read_cr_ctl_array_c(fp, buf, label_momentum_equation_ctl[ 1], mom_ctl_c->coef_4_grad_p_c);
-		read_cr_ctl_array_c(fp, buf, label_momentum_equation_ctl[ 2], mom_ctl_c->coef_4_viscous_c);
+		read_chara_real_ctl_list(fp, buf, label_momentum_equation_ctl[ 0], &mom_ctl_c->coef_4_intertia_list);
+		read_chara_real_ctl_list(fp, buf, label_momentum_equation_ctl[ 1], &mom_ctl_c->coef_4_grad_p_list);
+		read_chara_real_ctl_list(fp, buf, label_momentum_equation_ctl[ 2], &mom_ctl_c->coef_4_viscous_list);
 		
-		read_cr_ctl_array_c(fp, buf, label_momentum_equation_ctl[ 3], mom_ctl_c->coef_4_termal_buo_c);
-		read_cr_ctl_array_c(fp, buf, label_momentum_equation_ctl[ 4], mom_ctl_c->coef_4_comp_buo_c);
-		read_cr_ctl_array_c(fp, buf, label_momentum_equation_ctl[ 5], mom_ctl_c->coef_4_Coriolis_c);
-		read_cr_ctl_array_c(fp, buf, label_momentum_equation_ctl[ 6], mom_ctl_c->coef_4_Lorentz_c);
+		read_chara_real_ctl_list(fp, buf, label_momentum_equation_ctl[ 3], &mom_ctl_c->coef_4_termal_buo_list);
+		read_chara_real_ctl_list(fp, buf, label_momentum_equation_ctl[ 4], &mom_ctl_c->coef_4_comp_buo_list);
+		read_chara_real_ctl_list(fp, buf, label_momentum_equation_ctl[ 5], &mom_ctl_c->coef_4_Coriolis_list);
+		read_chara_real_ctl_list(fp, buf, label_momentum_equation_ctl[ 6], &mom_ctl_c->coef_4_Lorentz_list);
 	};
 	return 1;
 };
@@ -157,34 +140,15 @@ int write_momentum_equation_ctl_c(FILE *fp, int level,
 			const char *label, struct momentum_equation_ctl_c *mom_ctl_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-/*	if(mom_ctl_c->coef_4_intertia_c->num > 0) fprintf(fp, "!\n"); */
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[0]),
-				label_momentum_equation_ctl[0], mom_ctl_c->coef_4_intertia_c);
-	
-	if(mom_ctl_c->coef_4_grad_p_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[1]),
-				label_momentum_equation_ctl[1], mom_ctl_c->coef_4_grad_p_c);
-	
-	if(mom_ctl_c->coef_4_viscous_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[2]),
-				label_momentum_equation_ctl[2], mom_ctl_c->coef_4_viscous_c);
+	write_chara_real_ctl_list(fp, level, label_momentum_equation_ctl[0], &mom_ctl_c->coef_4_intertia_list);
+	write_chara_real_ctl_list(fp, level, label_momentum_equation_ctl[1], &mom_ctl_c->coef_4_grad_p_list);
+	write_chara_real_ctl_list(fp, level, label_momentum_equation_ctl[2], &mom_ctl_c->coef_4_viscous_list);
 	
 	
-	if(mom_ctl_c->coef_4_termal_buo_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[3]),
-				label_momentum_equation_ctl[3], mom_ctl_c->coef_4_termal_buo_c);
-	
-	if(mom_ctl_c->coef_4_comp_buo_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[4]),
-				label_momentum_equation_ctl[4], mom_ctl_c->coef_4_comp_buo_c);
-	
-	if(mom_ctl_c->coef_4_Coriolis_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[5]),
-				label_momentum_equation_ctl[5], mom_ctl_c->coef_4_Coriolis_c);
-	
-	if(mom_ctl_c->coef_4_Lorentz_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_momentum_equation_ctl[6]),
-				label_momentum_equation_ctl[6], mom_ctl_c->coef_4_Lorentz_c);
+	write_chara_real_ctl_list(fp, level, label_momentum_equation_ctl[3], &mom_ctl_c->coef_4_termal_buo_list);
+	write_chara_real_ctl_list(fp, level, label_momentum_equation_ctl[4], &mom_ctl_c->coef_4_comp_buo_list);
+	write_chara_real_ctl_list(fp, level, label_momentum_equation_ctl[5], &mom_ctl_c->coef_4_Coriolis_list);
+	write_chara_real_ctl_list(fp, level, label_momentum_equation_ctl[6], &mom_ctl_c->coef_4_Lorentz_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -201,30 +165,19 @@ void alloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ctl_
 		};
 	};
 	
-	induct_ctl_c->coef_4_magne_evo_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	induct_ctl_c->coef_4_mag_diffuse_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	induct_ctl_c->coef_4_mag_potential_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	induct_ctl_c->coef_4_induction_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	init_ctl_cr_array(induct_ctl_c->coef_4_magne_evo_c);
-	init_ctl_cr_array(induct_ctl_c->coef_4_mag_diffuse_c);
-	init_ctl_cr_array(induct_ctl_c->coef_4_mag_potential_c);
-	init_ctl_cr_array(induct_ctl_c->coef_4_induction_c);
+	init_chara_real_ctl_list(&induct_ctl_c->coef_4_magne_evo_list);
+	init_chara_real_ctl_list(&induct_ctl_c->coef_4_mag_diffuse_list);
+	init_chara_real_ctl_list(&induct_ctl_c->coef_4_mag_potential_list);
+	init_chara_real_ctl_list(&induct_ctl_c->coef_4_induction_list);
 	
 	return;
 };
 
 void dealloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ctl_c){
-	
-	dealloc_ctl_cr_array(induct_ctl_c->coef_4_magne_evo_c);
-	dealloc_ctl_cr_array(induct_ctl_c->coef_4_mag_diffuse_c);
-	dealloc_ctl_cr_array(induct_ctl_c->coef_4_mag_potential_c);
-	dealloc_ctl_cr_array(induct_ctl_c->coef_4_induction_c);
-	
-	free(induct_ctl_c->coef_4_magne_evo_c);
-	free(induct_ctl_c->coef_4_mag_diffuse_c);
-	free(induct_ctl_c->coef_4_mag_potential_c);
-	free(induct_ctl_c->coef_4_induction_c);
-	
+	clear_chara_real_ctl_list(&induct_ctl_c->coef_4_magne_evo_list);
+	clear_chara_real_ctl_list(&induct_ctl_c->coef_4_mag_diffuse_list);
+	clear_chara_real_ctl_list(&induct_ctl_c->coef_4_mag_potential_list);
+	clear_chara_real_ctl_list(&induct_ctl_c->coef_4_induction_list);
 	return;
 };
 
@@ -233,10 +186,10 @@ int read_induction_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *lab
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_cr_ctl_array_c(fp, buf, label_induction_equation_ctl[ 0], induct_ctl_c->coef_4_magne_evo_c);
-		read_cr_ctl_array_c(fp, buf, label_induction_equation_ctl[ 1], induct_ctl_c->coef_4_mag_potential_c);
-		read_cr_ctl_array_c(fp, buf, label_induction_equation_ctl[ 2], induct_ctl_c->coef_4_mag_diffuse_c);
-		read_cr_ctl_array_c(fp, buf, label_induction_equation_ctl[ 3], induct_ctl_c->coef_4_induction_c);
+		read_chara_real_ctl_list(fp, buf, label_induction_equation_ctl[ 0], &induct_ctl_c->coef_4_magne_evo_list);
+		read_chara_real_ctl_list(fp, buf, label_induction_equation_ctl[ 1], &induct_ctl_c->coef_4_mag_potential_list);
+		read_chara_real_ctl_list(fp, buf, label_induction_equation_ctl[ 2], &induct_ctl_c->coef_4_mag_diffuse_list);
+		read_chara_real_ctl_list(fp, buf, label_induction_equation_ctl[ 3], &induct_ctl_c->coef_4_induction_list);
 	};
 	return 1;
 };
@@ -245,26 +198,24 @@ int write_induction_equation_ctl_c(FILE *fp, int level,
 			const char *label, struct induction_equation_ctl_c *induct_ctl_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-/*	if(induct_ctl_c->coef_4_magne_evo_c->num > 0) fprintf(fp, "!\n"); */
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_induction_equation_ctl[0]),
-				label_induction_equation_ctl[0], induct_ctl_c->coef_4_magne_evo_c);
-	
-	if(induct_ctl_c->coef_4_mag_potential_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_induction_equation_ctl[1]),
-				label_induction_equation_ctl[1], induct_ctl_c->coef_4_mag_potential_c);
-	
-	if(induct_ctl_c->coef_4_mag_diffuse_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_induction_equation_ctl[2]),
-				label_induction_equation_ctl[2], induct_ctl_c->coef_4_mag_diffuse_c);
-	
-	if(induct_ctl_c->coef_4_induction_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_induction_equation_ctl[3]),
-				label_induction_equation_ctl[3], induct_ctl_c->coef_4_induction_c);
+	write_chara_real_ctl_list(fp, level, label_induction_equation_ctl[0], &induct_ctl_c->coef_4_magne_evo_list);
+	write_chara_real_ctl_list(fp, level, label_induction_equation_ctl[1], &induct_ctl_c->coef_4_mag_potential_list);
+	write_chara_real_ctl_list(fp, level, label_induction_equation_ctl[2], &induct_ctl_c->coef_4_mag_diffuse_list);
+	write_chara_real_ctl_list(fp, level, label_induction_equation_ctl[3], &induct_ctl_c->coef_4_induction_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
 };
 
+
+void alloc_scalar_advection_eq_ctl_c(struct heat_equation_ctl_c *scalar_ctl_c){
+    
+    init_chara_real_ctl_list(&scalar_ctl_c->coef_4_adv_flux_list);
+    init_chara_real_ctl_list(&scalar_ctl_c->coef_4_diffuse_list);
+    init_chara_real_ctl_list(&scalar_ctl_c->coef_4_source_list);
+    
+    return;
+};
 
 void alloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c){
 	int i;
@@ -276,25 +227,15 @@ void alloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c){
 		};
 	};
 	
-	heat_ctl_c->coef_4_adv_flux_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	heat_ctl_c->coef_4_diffuse_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	heat_ctl_c->coef_4_source_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	init_ctl_cr_array(heat_ctl_c->coef_4_adv_flux_c);
-	init_ctl_cr_array(heat_ctl_c->coef_4_diffuse_c);
-	init_ctl_cr_array(heat_ctl_c->coef_4_source_c);
-	
+    alloc_scalar_advection_eq_ctl_c(heat_ctl_c);
 	return;
 };
 
 void dealloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c){
 	
-	dealloc_ctl_cr_array(heat_ctl_c->coef_4_adv_flux_c);
-	dealloc_ctl_cr_array(heat_ctl_c->coef_4_diffuse_c);
-	dealloc_ctl_cr_array(heat_ctl_c->coef_4_source_c);
-	
-	free(heat_ctl_c->coef_4_adv_flux_c);
-	free(heat_ctl_c->coef_4_diffuse_c);
-	free(heat_ctl_c->coef_4_source_c);
+	clear_chara_real_ctl_list(&heat_ctl_c->coef_4_adv_flux_list);
+	clear_chara_real_ctl_list(&heat_ctl_c->coef_4_diffuse_list);
+	clear_chara_real_ctl_list(&heat_ctl_c->coef_4_source_list);
 	
 	return;
 };
@@ -304,9 +245,9 @@ int read_heat_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_cr_ctl_array_c(fp, buf, label_heat_equation_ctl[ 0], heat_ctl_c->coef_4_adv_flux_c);
-		read_cr_ctl_array_c(fp, buf, label_heat_equation_ctl[ 1], heat_ctl_c->coef_4_diffuse_c);
-		read_cr_ctl_array_c(fp, buf, label_heat_equation_ctl[ 2], heat_ctl_c->coef_4_source_c);
+		read_chara_real_ctl_list(fp, buf, label_heat_equation_ctl[ 0], &heat_ctl_c->coef_4_adv_flux_list);
+		read_chara_real_ctl_list(fp, buf, label_heat_equation_ctl[ 1], &heat_ctl_c->coef_4_diffuse_list);
+		read_chara_real_ctl_list(fp, buf, label_heat_equation_ctl[ 2], &heat_ctl_c->coef_4_source_list);
 	};
 	return 1;
 };
@@ -315,17 +256,9 @@ int write_heat_equation_ctl_c(FILE *fp, int level, const char *label,
                               struct heat_equation_ctl_c *heat_ctl_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-/*	if(heat_ctl_c->coef_4_adv_flux_c->num > 0) fprintf(fp, "!\n"); */
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_heat_equation_ctl[0]),
-				label_heat_equation_ctl[0], heat_ctl_c->coef_4_adv_flux_c);
-	
-	if(heat_ctl_c->coef_4_diffuse_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_heat_equation_ctl[1]),
-				label_heat_equation_ctl[1], heat_ctl_c->coef_4_diffuse_c);
-	
-	if(heat_ctl_c->coef_4_source_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_heat_equation_ctl[2]),
-				label_heat_equation_ctl[2], heat_ctl_c->coef_4_source_c);
+	write_chara_real_ctl_list(fp, level, label_heat_equation_ctl[0], &heat_ctl_c->coef_4_adv_flux_list);
+	write_chara_real_ctl_list(fp, level, label_heat_equation_ctl[1], &heat_ctl_c->coef_4_diffuse_list);
+	write_chara_real_ctl_list(fp, level, label_heat_equation_ctl[2], &heat_ctl_c->coef_4_source_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -342,10 +275,7 @@ void alloc_comp_equation_ctl_c(struct heat_equation_ctl_c *comp_ctl_c){
 		};
 	};
 	
-	comp_ctl_c->coef_4_adv_flux_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	comp_ctl_c->coef_4_diffuse_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	comp_ctl_c->coef_4_source_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	
+    alloc_scalar_advection_eq_ctl_c(comp_ctl_c);
 	return;
 };
 
@@ -354,9 +284,9 @@ int read_comp_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_cr_ctl_array_c(fp, buf, label_comp_equation_ctl[ 0], comp_ctl_c->coef_4_adv_flux_c);
-		read_cr_ctl_array_c(fp, buf, label_comp_equation_ctl[ 1], comp_ctl_c->coef_4_diffuse_c);
-		read_cr_ctl_array_c(fp, buf, label_comp_equation_ctl[ 2], comp_ctl_c->coef_4_source_c);
+		read_chara_real_ctl_list(fp, buf, label_comp_equation_ctl[ 0], &comp_ctl_c->coef_4_adv_flux_list);
+		read_chara_real_ctl_list(fp, buf, label_comp_equation_ctl[ 1], &comp_ctl_c->coef_4_diffuse_list);
+		read_chara_real_ctl_list(fp, buf, label_comp_equation_ctl[ 2], &comp_ctl_c->coef_4_source_list);
 	};
 	return 1;
 };
@@ -365,17 +295,9 @@ int write_comp_equation_ctl_c(FILE *fp, int level,
 			const char *label, struct heat_equation_ctl_c *comp_ctl_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-/*	if(comp_ctl_c->coef_4_adv_flux_c->num > 0) fprintf(fp, "!\n"); */
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_comp_equation_ctl[0]),
-				label_comp_equation_ctl[0], comp_ctl_c->coef_4_adv_flux_c);
-	
-	if(comp_ctl_c->coef_4_diffuse_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_comp_equation_ctl[1]),
-				label_comp_equation_ctl[1], comp_ctl_c->coef_4_diffuse_c);
-	
-	if(comp_ctl_c->coef_4_source_c->num > 0) fprintf(fp, "!\n");
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_comp_equation_ctl[2]),
-				label_comp_equation_ctl[2], comp_ctl_c->coef_4_source_c);
+	write_chara_real_ctl_list(fp, level, label_comp_equation_ctl[0], &comp_ctl_c->coef_4_adv_flux_list);
+	write_chara_real_ctl_list(fp, level, label_comp_equation_ctl[1], &comp_ctl_c->coef_4_diffuse_list);
+	write_chara_real_ctl_list(fp, level, label_comp_equation_ctl[2], &comp_ctl_c->coef_4_source_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -392,16 +314,14 @@ void alloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c){
 		};
 	};
 	
-	dless_ctl_c->dimless_c = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
-	init_ctl_cr_array(dless_ctl_c->dimless_c);
+	init_chara_real_ctl_list(&dless_ctl_c->dimless_list);
 	
 	return;
 };
 
 void dealloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c){
 	
-	dealloc_ctl_cr_array(dless_ctl_c->dimless_c);
-	free(dless_ctl_c->dimless_c);
+	clear_chara_real_ctl_list(&dless_ctl_c->dimless_list);
 	
 	return;
 };
@@ -411,7 +331,7 @@ int read_dimless_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_cr_ctl_array_c(fp, buf, label_dimless_ctl[ 0], dless_ctl_c->dimless_c);
+		read_chara_real_ctl_list(fp, buf, label_dimless_ctl[ 0], &dless_ctl_c->dimless_list);
 	};
 	return 1;
 };
@@ -421,8 +341,7 @@ int write_dimless_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_cr_ctl_array_c(fp, level, (int) strlen(label_comp_equation_ctl[0]),
-				label_dimless_ctl[0], dless_ctl_c->dimless_c);
+	write_chara_real_ctl_list(fp, level, label_dimless_ctl[0], &dless_ctl_c->dimless_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
