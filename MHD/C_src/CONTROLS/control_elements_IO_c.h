@@ -11,6 +11,13 @@
 #include "kemosrc_param_c.h"
 #include "skip_comment_c.h"
 
+struct maxlen_1{
+    int mlen;
+};
+struct maxlen_3{
+    int mlen[3];
+};
+
 struct chara_ctl_item{
 	int iflag;
 	char *c_tbl;

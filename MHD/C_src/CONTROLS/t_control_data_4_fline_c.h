@@ -13,8 +13,8 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
-#include "control_lists_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_real3_IO.h"
 
 struct fline_ctl_c{
 	int maxlen;
