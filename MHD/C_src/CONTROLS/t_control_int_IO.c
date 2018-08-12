@@ -38,6 +38,15 @@ int write_integer_ctl_item_c(FILE *fp, int level, int maxlen,
     return level;
 };
 
+int copy_from_int_ctl_item(struct int_ctl_item *i_item){
+	if(i_item->iflag == 0) return 0.0;
+	return i_item->i_data;
+};
+void copy_to_int_ctl_item(int index, struct int_ctl_item *i_item){
+	i_item->iflag = 1;
+	i_item->i_data = index;
+	return;
+};
 
 
 void init_int_ctl_list(struct int_ctl_list *head){

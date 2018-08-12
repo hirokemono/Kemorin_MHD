@@ -78,11 +78,11 @@
 
 - (IBAction) LoadViewMatrixFile:(id)pId;
 {
-	NSArray *MatrixFileTypes = [NSArray arrayWithObjects:@"dat",@"DAT",nil];
+/*    NSArray *MatrixFileTypes = [NSArray arrayWithObjects:@"dat",@"DAT",nil];*/
     
 	NSOpenPanel *ViewMatrixOpenPanelObj	= [NSOpenPanel openPanel];
 	[ViewMatrixOpenPanelObj setTitle:@"Choose View Matrix data"];
-    [ViewMatrixOpenPanelObj setAllowedFileTypes:MatrixFileTypes];
+/*    [ViewMatrixOpenPanelObj setAllowedFileTypes:MatrixFileTypes];*/
     [ViewMatrixOpenPanelObj beginSheetModalForWindow:window 
                                  completionHandler:^(NSInteger ViewMatrixOpenInteger){
     if(ViewMatrixOpenInteger == NSFileHandlingPanelOKButton){

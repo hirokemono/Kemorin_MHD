@@ -48,18 +48,32 @@ int write_chara_ctl_item_c(FILE *fp, int level, int maxlen,
 
 int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item){
     int iflag = 0;
-    iflag = cmp_no_case_c(c_item->c_tbl, "ON");
+	if(c_item->iflag == 0) return iflag;
+	
+	iflag = cmp_no_case_c(c_item->c_tbl, "ON");
     if(iflag == 0) iflag = cmp_no_case_c(c_item->c_tbl, "YES");
     return iflag;
 };
 
 void set_boolean_by_chara_ctl_item(int iflag, struct chara_ctl_item *c_item){
+	c_item->iflag = 1;
     if(iflag > 0){
-        c_item->c_tbl = "On";
+        sprintf(c_item->c_tbl, "%s", "On");
     } else {
-        c_item->c_tbl = "Off";
+        sprintf(c_item->c_tbl, "%s", "Off");
     };
     return;
+};
+
+void copy_from_chara_ctl_item(struct chara_ctl_item *c_item, char *c_data){
+	if(c_item->iflag == 0) return;
+	sprintf(c_data, "%s", c_item->c_tbl);
+	return;
+};
+void copy_to_chara_ctl_item(const char *c_data, struct chara_ctl_item *c_item){
+	c_item->iflag = 1;
+	sprintf(c_item->c_tbl, "%s", c_data);
+	return;
 };
 
 

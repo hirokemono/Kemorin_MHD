@@ -53,5 +53,15 @@ int write_real3_ctl_list(FILE *fp, int level, const char *label,
                        struct real3_ctl_list *head);
 
 
+void copy_from_real3_ctl_item(struct real3_ctl_item *r3_item, 
+			double *r1, double *r2, double *r3);
+void copy_to_real3_ctl_item(double r1, double r2, double r3,
+			struct real3_ctl_item *r3_item);
+
+void copy_from_real3_ctl_list(struct real3_ctl_list *head, int num,
+			double *v1, double *v2, double *v3);
+void copy_to_real3_ctl_list(int num, double *v1, double *v2, double *v3,
+			struct real3_ctl_list *head);
+
 
 #endif /* t_control_real3_IO_h_ */

@@ -41,6 +41,9 @@ int write_chara_ctl_item_c(FILE *fp, int level, int maxlen,
 int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item);
 void set_boolean_by_chara_ctl_item(int iflag, struct chara_ctl_item *c_item);
 
+void copy_from_chara_ctl_item(struct chara_ctl_item *c_item, char *c_data);
+void copy_to_chara_ctl_item(const char *c_data, struct chara_ctl_item *c_item);
+
 void init_chara_ctl_list(struct chara_ctl_list *head);
 void clear_chara_ctl_list(struct chara_ctl_list *head);
 struct chara_ctl_list *add_chara_ctl_list(struct chara_ctl_list *current);

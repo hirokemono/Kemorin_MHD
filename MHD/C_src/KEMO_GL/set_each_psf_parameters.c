@@ -225,5 +225,5 @@ void read_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const ch
 	read_colormap_control_file_s(file_name, psf_menu->cmap_psf);
 }
 void check_each_PSF_colormap_control(struct psf_menu_val *psf_menu){
-	output_colormap_control_s(stdout, psf_menu->cmap_psf);
+	check_colormap_control_file_s(psf_menu->cmap_psf);
 }

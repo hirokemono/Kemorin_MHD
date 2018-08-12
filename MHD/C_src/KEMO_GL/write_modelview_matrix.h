@@ -16,18 +16,19 @@
 #include "m_gl_transfer_matrix.h"
 #include "m_kemoviewer_menu.h"
 #include "skip_comment_c.h"
+#include "control_elements_IO_c.h"
+#include "t_control_int_IO.h"
+#include "t_ctl_data_4_view_transfer_c.h"
 
 /* prototypes */
 
-void output_GL_modelview_parameters(FILE *fp, struct view_element *view);
-void output_GL_modelview_matrix(FILE *fp, struct view_element *view);
-void output_GL_projection_matrix(FILE *fp, struct view_element *view);
-void output_stereo_parameter(FILE *fp, struct view_element *view);
+void GL_modelview_matrix_to_ctl(FILE *fp, struct view_element *view);
 
-void input_GL_modelview_parameters(FILE *fp, struct view_element *view);
-void input_GL_modelview_matrix(FILE *fp, struct view_element *view);
-void input_GL_projection_matrix(FILE *fp, struct view_element *view);
-void input_stereo_parameter(FILE *fp, struct view_element *view);
+void copy_GL_stereo_params_to_ctl(struct view_element *view, struct streo_view_ctl_c *streo_view_c);
+void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modeview_ctl_c *mat_c);
+
+void copy_GL_stereo_params_from_ctl(struct streo_view_ctl_c *streo_view_c, struct view_element *view);
+void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view_element *view);
 
 void write_GL_modelview_file(const char *file_name, int iflag_view, struct view_element *view);
 void read_GL_modelview_file(const char *file_name, int iflag_view, struct view_element *view);

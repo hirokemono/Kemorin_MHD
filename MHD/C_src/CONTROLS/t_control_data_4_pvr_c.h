@@ -15,33 +15,21 @@
 #include "control_elements_IO_c.h"
 #include "t_control_int_IO.h"
 #include "t_control_chara_IO.h"
-#include "t_control_real2_IO.h"
 #include "t_control_chara2_real_IO.h"
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "t_ctl_data_4_view_transfer_c.h"
 #include "t_control_data_pvr_section_list.h"
 #include "t_control_data_pvr_isosurf_list.h"
 
+#define NLBL_PVR_PLOT_AREA_CTL  2
+#define NLBL_PVR_MOVIE_CTL      2
+#define NLBL_PVR_CTL            18
+
 struct pvr_plot_area_ctl_c{
 	int maxlen;
 	
 	struct chara_ctl_list pvr_area_list;
 	struct chara2_real_ctl_list surf_enhanse_ctl;
-};
-
-struct pvr_colorbar_ctl_c{
-	int maxlen;
-	
-	struct chara_ctl_item *colorbar_switch_ctl;
-	struct chara_ctl_item *colorbar_scale_ctl;
-	struct chara_ctl_item *zeromarker_flag_ctl;
-	
-	struct int_ctl_item *font_size_ctl;
-	struct int_ctl_item *ngrid_cbar_ctl;
-	
-	struct real2_ctl_item *cbar_range_ctl;
-	
-	struct chara_ctl_item *axis_switch_ctl;
 };
 
 struct pvr_movie_ctl_c{
@@ -75,13 +63,13 @@ struct pvr_ctl_c{
 	int iflag_modeview_ctl;
 	char *pvr_modelview_file_name;
 	struct modeview_ctl_c *mat_c;
-	int iflag_colormap_ctl;
-    char *pvr_colormap_file_name;
-	struct colormap_ctl_c *color_c;
 	int iflag_lighting_ctl;
 	struct lighting_ctl_c *light_c;
-	int iflag_pvr_colorbar_ctl;
-	struct pvr_colorbar_ctl_c *cbar_c;
+	
+	char *pvr_colormap_file_name;
+	int iflag_cmap_cbar_ctl;
+	struct pvr_colormap_bar_ctl_c *cmap_cbar_c;
+	
 	int iflag_pvr_movie_ctl;
 	struct pvr_movie_ctl_c *movie_c;
 	
@@ -92,7 +80,6 @@ struct pvr_ctl_c{
 /* prototypes */
 
 void get_label_pvr_plot_area_ctl(int index, char *label);
-void get_label_pvr_colorbar_ctl(int index, char *label);
 void get_label_pvr_movie_ctl(int index, char *label);
 void get_label_pvr_ctl(int index, char *label);
 
@@ -102,13 +89,6 @@ int read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_plot_area_ctl_c *area_c);
 int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_plot_area_ctl_c *area_c);
-
-void alloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
-void dealloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c);
-int read_pvr_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct pvr_colorbar_ctl_c *cbar_c);
-int write_pvr_colorbar_ctl_c(FILE *fp, int level, const char *label,
-			struct pvr_colorbar_ctl_c *cbar_c);
 
 void alloc_pvr_movie_ctl_c(struct pvr_movie_ctl_c *movie_c);
 void dealloc_pvr_movie_ctl_c(struct pvr_movie_ctl_c *movie_c);

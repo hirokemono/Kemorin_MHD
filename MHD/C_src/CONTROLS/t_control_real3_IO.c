@@ -158,3 +158,42 @@ int write_real3_ctl_list(FILE *fp, int level, const char *label,
     return level;
 };
 
+
+void copy_from_real3_ctl_item(struct real3_ctl_item *r3_item, 
+			double *r1, double *r2, double *r3){
+	if(r3_item->iflag == 0) return;
+	*r1 = r3_item->r_data[0];
+	*r2 = r3_item->r_data[1];
+	*r3 = r3_item->r_data[2];
+	return;
+};
+void copy_to_real3_ctl_item(double r1, double r2, double r3,
+			struct real3_ctl_item *r3_item){
+	r3_item->iflag = 1;
+	r3_item->r_data[0] = r1;
+	r3_item->r_data[1] = r2;
+	r3_item->r_data[2] = r3;
+	return;
+};
+
+void copy_from_real3_ctl_list(struct real3_ctl_list *head, int num,
+			double *v1, double *v2, double *v3){
+	int i;
+    head = head->_next;
+	for(i=0; i<num; i++){
+		if(head != NULL) break;
+        copy_from_real3_ctl_item(head->r3_item, &v1[i], &v2[i], &v3[i]);
+	};
+	return;
+};
+void copy_to_real3_ctl_list(int num, double *v1, double *v2, double *v3,
+			struct real3_ctl_list *head) {
+	int i;
+	
+	for(i=0;i<num;i++){
+		head = add_real3_ctl_list(head);
+		copy_to_real3_ctl_item(v1[i], v2[i], v3[i], head->r3_item);
+	};
+	return;
+};
+

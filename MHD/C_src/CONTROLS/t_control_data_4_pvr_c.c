@@ -7,27 +7,11 @@
 
 #include "t_control_data_4_pvr_c.h"
 
-#define NLBL_PVR_PLOT_AREA_CTL  2
-#define NLBL_PVR_COLORBAR_CTL   7
-#define NLBL_PVR_MOVIE_CTL      2
-#define NLBL_PVR_CTL            18
-
 FILE *FP_PVR;
 
 const char label_pvr_plot_area_ctl[NLBL_PVR_PLOT_AREA_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"chosen_ele_grp_ctl"},
 	/*[ 1]*/	{"surface_enhanse_ctl"},
-};
-
-const char label_pvr_colorbar_ctl[NLBL_PVR_COLORBAR_CTL][KCHARA_C] = {
-	/*[ 0]*/	{"colorbar_switch_ctl"},
-	/*[ 1]*/	{"colorbar_scale_ctl"},
-	/*[ 2]*/	{"iflag_zeromarker"},
-	/*[ 3]*/	{"colorbar_range"},
-	/*[ 4]*/	{"font_size_ctl"},
-	/*[ 5]*/	{"num_grid_ctl"},
-	
-	/*[ 6]*/	{"axis_label_switch"},
 };
 
 const char label_pvr_movie_ctl[NLBL_PVR_MOVIE_CTL][KCHARA_C] = {
@@ -57,7 +41,9 @@ const char label_pvr_ctl[NLBL_PVR_CTL][KCHARA_C] = {
 	/*[14]*/	{"image_rotation_ctl"},
 	
 	/*[15]*/	{"section_ctl"},
-	/*[16]*/	{"isosurface_ctl"}
+	/*[16]*/	{"isosurface_ctl"},
+	
+	/*[17]*/	{"colormap_ctl"}
 };
 
 const char label_pvr_head[KCHARA_C] = "volume_rendering";
@@ -65,10 +51,6 @@ const char label_pvr_head[KCHARA_C] = "volume_rendering";
 
 void get_label_pvr_plot_area_ctl(int index, char *label){
     if(index < NLBL_PVR_PLOT_AREA_CTL) strngcopy(label, label_pvr_plot_area_ctl[index]);
-    return;
-};
-void get_label_pvr_colorbar_ctl(int index, char *label){
-    if(index < NLBL_PVR_COLORBAR_CTL) strngcopy(label, label_pvr_colorbar_ctl[index]);
     return;
 };
 void get_label_pvr_movie_ctl(int index, char *label){
@@ -123,97 +105,6 @@ int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_chara_ctl_list(fp, level, label_pvr_plot_area_ctl[ 0], &area_c->pvr_area_list);
 	level = write_c2r_ctl_list(fp, level, label_pvr_plot_area_ctl[ 1], &area_c->surf_enhanse_ctl);
-	
-	level = write_end_flag_for_ctl_c(fp, level, label);
-	return level;
-};
-
-
-void alloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
-	int i;
-	
-	cbar_c->maxlen = 0;
-	for (i=0;i<NLBL_PVR_COLORBAR_CTL;i++){
-		if(strlen(label_pvr_colorbar_ctl[i]) > cbar_c->maxlen){
-			cbar_c->maxlen = (int) strlen(label_pvr_colorbar_ctl[i]);
-		};
-	};
-	
-	cbar_c->colorbar_switch_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	cbar_c->colorbar_scale_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	cbar_c->zeromarker_flag_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(cbar_c->colorbar_switch_ctl);
-	alloc_chara_ctl_item_c(cbar_c->colorbar_scale_ctl);
-	alloc_chara_ctl_item_c(cbar_c->zeromarker_flag_ctl);
-	
-	cbar_c->font_size_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	cbar_c->ngrid_cbar_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_int_ctl_item_c(cbar_c->font_size_ctl);
-	init_int_ctl_item_c(cbar_c->ngrid_cbar_ctl);
-	
-	cbar_c->cbar_range_ctl = (struct real2_ctl_item *) malloc(sizeof(struct real2_ctl_item));
-	init_real2_ctl_item_c(cbar_c->cbar_range_ctl);
-	
-	cbar_c->axis_switch_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_chara_ctl_item_c(cbar_c->axis_switch_ctl);
-	
-	return;
-};
-
-void dealloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
-	
-	dealloc_chara_ctl_item_c(cbar_c->colorbar_switch_ctl);
-	dealloc_chara_ctl_item_c(cbar_c->colorbar_scale_ctl);
-	dealloc_chara_ctl_item_c(cbar_c->zeromarker_flag_ctl);
-	free(cbar_c->colorbar_switch_ctl);
-	free(cbar_c->colorbar_scale_ctl);
-	free(cbar_c->zeromarker_flag_ctl);
-	
-	free(cbar_c->font_size_ctl);
-	free(cbar_c->ngrid_cbar_ctl);
-	
-	free(cbar_c->cbar_range_ctl);
-	
-	dealloc_chara_ctl_item_c(cbar_c->axis_switch_ctl);
-	free(cbar_c->axis_switch_ctl);
-	
-	return;
-};
-
-int read_pvr_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct pvr_colorbar_ctl_c *cbar_c){
-	while(find_control_end_flag_c(buf, label) == 0){
-		
-		skip_comment_read_line(fp, buf);
-		
-		read_chara_ctl_item_c(buf, label_pvr_colorbar_ctl[ 0], cbar_c->colorbar_switch_ctl);
-		read_chara_ctl_item_c(buf, label_pvr_colorbar_ctl[ 1], cbar_c->colorbar_scale_ctl);
-		read_chara_ctl_item_c(buf, label_pvr_colorbar_ctl[ 2], cbar_c->zeromarker_flag_ctl);
-		
-		read_real2_ctl_item_c(buf, label_pvr_colorbar_ctl[ 3], cbar_c->cbar_range_ctl);
-		
-		read_integer_ctl_item_c(buf, label_pvr_colorbar_ctl[ 4], cbar_c->font_size_ctl);
-		read_integer_ctl_item_c(buf, label_pvr_colorbar_ctl[ 5], cbar_c->ngrid_cbar_ctl);
-		
-		read_chara_ctl_item_c(buf, label_pvr_colorbar_ctl[ 6], cbar_c->axis_switch_ctl);
-	};
-	return 1;
-};
-
-int write_pvr_colorbar_ctl_c(FILE *fp, int level, const char *label,
-			struct pvr_colorbar_ctl_c *cbar_c){
-	level = write_begin_flag_for_ctl_c(fp, level, label);
-	
-	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 0], cbar_c->colorbar_switch_ctl);
-	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 1], cbar_c->colorbar_scale_ctl);
-	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 2], cbar_c->zeromarker_flag_ctl);
-	
-	write_real2_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 4], cbar_c->cbar_range_ctl);
-	
-	write_integer_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 4], cbar_c->font_size_ctl);
-	write_integer_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 5], cbar_c->ngrid_cbar_ctl);
-	
-	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 6], cbar_c->axis_switch_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -305,9 +196,8 @@ void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	
 	pvr_c->iflag_plot_area_ctl =    0;
 	pvr_c->iflag_modeview_ctl =     0;
-	pvr_c->iflag_colormap_ctl =     0;
 	pvr_c->iflag_lighting_ctl =     0;
-	pvr_c->iflag_pvr_colorbar_ctl = 0;
+	pvr_c->iflag_cmap_cbar_ctl =    0;
 	pvr_c->iflag_pvr_movie_ctl =    0;
 	
 	pvr_c->area_c = (struct pvr_plot_area_ctl_c *) malloc(sizeof(struct pvr_plot_area_ctl_c));
@@ -317,15 +207,12 @@ void alloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	pvr_c->mat_c = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
 	alloc_modeview_ctl_c(pvr_c->mat_c);
 	
-    pvr_c->pvr_colormap_file_name = (char *)calloc(KCHARA_C, sizeof(char));
-	pvr_c->color_c = (struct colormap_ctl_c *) malloc(sizeof(struct colormap_ctl_c));
-	alloc_colormap_ctl_c(pvr_c->color_c);
-	
 	pvr_c->light_c = (struct lighting_ctl_c *) malloc(sizeof(struct lighting_ctl_c));
 	alloc_lighting_ctl_c(pvr_c->light_c);
 	
-	pvr_c->cbar_c = (struct pvr_colorbar_ctl_c *) malloc(sizeof(struct pvr_colorbar_ctl_c));
-	alloc_pvr_colorbar_ctl_c(pvr_c->cbar_c);
+    pvr_c->pvr_colormap_file_name = (char *)calloc(KCHARA_C, sizeof(char));
+	pvr_c->cmap_cbar_c = (struct pvr_colormap_bar_ctl_c *) malloc(sizeof(struct pvr_colormap_bar_ctl_c));
+	alloc_colormap_colorbar_ctl_c(pvr_c->cmap_cbar_c);
 	
 	pvr_c->movie_c = (struct pvr_movie_ctl_c *) malloc(sizeof(struct pvr_movie_ctl_c));
 	alloc_pvr_movie_ctl_c(pvr_c->movie_c);
@@ -366,15 +253,12 @@ void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	free(pvr_c->mat_c);
     free(pvr_c->pvr_modelview_file_name);
 	
-	dealloc_colormap_ctl_c(pvr_c->color_c);
-	free(pvr_c->color_c);
-    free(pvr_c->pvr_colormap_file_name);
-    
 	dealloc_lighting_ctl_c(pvr_c->light_c);
 	free(pvr_c->light_c);
 	
-	dealloc_pvr_colorbar_ctl_c(pvr_c->cbar_c);
-	free(pvr_c->cbar_c);
+	dealloc_colormap_colorbar_ctl_c(pvr_c->cmap_cbar_c);
+	free(pvr_c->cmap_cbar_c);
+    free(pvr_c->pvr_colormap_file_name);
 	
 	dealloc_pvr_movie_ctl_c(pvr_c->movie_c);
 	free(pvr_c->movie_c);
@@ -384,9 +268,8 @@ void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
 	
 	pvr_c->iflag_plot_area_ctl =    0;
 	pvr_c->iflag_modeview_ctl =     0;
-	pvr_c->iflag_colormap_ctl =     0;
 	pvr_c->iflag_lighting_ctl =     0;
-	pvr_c->iflag_pvr_colorbar_ctl = 0;
+	pvr_c->iflag_cmap_cbar_ctl =    0;
 	pvr_c->iflag_pvr_movie_ctl =    0;
 	
 	return;
@@ -415,22 +298,25 @@ void read_pvr_ctl_items(FILE *fp, char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 	} else if(right_file_flag_c(buf, label_pvr_ctl[10])){
 		pvr_c->iflag_modeview_ctl = read_file_flag_c(buf, pvr_c->pvr_modelview_file_name);
 	};
-
-	if(right_begin_flag_c(buf, label_pvr_ctl[11]) > 0){
-		pvr_c->iflag_colormap_ctl = read_colormap_ctl_c(fp, buf, 
-					label_pvr_ctl[11], pvr_c->color_c);
-	} else if(right_file_flag_c(buf, label_pvr_ctl[11])){
-		pvr_c->iflag_colormap_ctl = read_file_flag_c(buf, pvr_c->pvr_colormap_file_name);
-	};
-        
+	
 	if(right_begin_flag_c(buf, label_pvr_ctl[12]) > 0){
 		pvr_c->iflag_lighting_ctl = read_lighting_ctl_c(fp, buf, 
 					label_pvr_ctl[12], pvr_c->light_c);
 	};
-	if(right_begin_flag_c(buf, label_pvr_ctl[13]) > 0){
-		pvr_c->iflag_pvr_colorbar_ctl = read_pvr_colorbar_ctl_c(fp, buf, 
-					label_pvr_ctl[13], pvr_c->cbar_c);
+	
+	if(right_file_flag_c(buf, label_pvr_ctl[11])){
+		pvr_c->iflag_cmap_cbar_ctl = read_file_flag_c(buf, pvr_c->pvr_colormap_file_name);
+	}else{
+		pvr_c->cmap_cbar_c->iflag_colormap_ctl = read_colormap_ctl_c(fp, buf, 
+			label_pvr_ctl[11], pvr_c->cmap_cbar_c->cmap_c);
+		pvr_c->cmap_cbar_c->iflag_colormap_ctl = read_colormap_ctl_c(fp, buf, 
+			label_pvr_ctl[17], pvr_c->cmap_cbar_c->cmap_c);
+		
+		pvr_c->cmap_cbar_c->iflag_colorbar_ctl = read_colorbar_ctl_c(fp, buf, 
+			label_pvr_ctl[13], pvr_c->cmap_cbar_c->cbar_c);
 	};
+	
+	
 	if(right_begin_flag_c(buf, label_pvr_ctl[14]) > 0){
 		pvr_c->iflag_pvr_movie_ctl = read_pvr_movie_ctl_c(fp, buf, 
 					label_pvr_ctl[14], pvr_c->movie_c);
@@ -443,49 +329,51 @@ void read_pvr_ctl_items(FILE *fp, char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 };
 
 int write_pvr_ctl_items(FILE *fp, int level, struct pvr_ctl_c *pvr_c){
-	write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 0], pvr_c->updated_ctl);
+	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 0], pvr_c->updated_ctl);
 	
-	write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 3], pvr_c->monitoring_ctl);
-	write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 4], pvr_c->transparent_ctl);
-	write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 5], pvr_c->streo_ctl);
-	write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 6], pvr_c->anaglyph_ctl);
+	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 3], pvr_c->monitoring_ctl);
+	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 4], pvr_c->transparent_ctl);
+	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 5], pvr_c->streo_ctl);
+	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 6], pvr_c->anaglyph_ctl);
 	
-	write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 7], pvr_c->pvr_field_ctl);
-	write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 8], pvr_c->pvr_comp_ctl);
+	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 7], pvr_c->pvr_field_ctl);
+	level = write_chara_ctl_item_c(fp, level, pvr_c->maxlen, label_pvr_ctl[ 8], pvr_c->pvr_comp_ctl);
     
 	if(pvr_c->iflag_plot_area_ctl > 0){
 		fprintf(fp, "!\n");
-		write_pvr_plot_area_ctl_c(fp, level, label_pvr_ctl[ 9], pvr_c->area_c);
+		level = write_pvr_plot_area_ctl_c(fp, level, label_pvr_ctl[ 9], pvr_c->area_c);
 	};
 	
 	if(pvr_c->iflag_modeview_ctl > 0){
 		fprintf(fp, "!\n");
-		write_modeview_ctl_c(fp, level, label_pvr_ctl[10], pvr_c->mat_c);
+		level = write_modeview_ctl_c(fp, level, label_pvr_ctl[10], pvr_c->mat_c);
 	} else if(pvr_c->iflag_modeview_ctl == -1){
 		fprintf(fp, "!\n");
 		write_file_flag_for_ctl_c(fp, level, label_pvr_ctl[10], pvr_c->pvr_modelview_file_name);
 	};
 	
-	if(pvr_c->iflag_colormap_ctl == 1){
-		fprintf(fp, "!\n");
-		write_colormap_ctl_c(fp, level, label_pvr_ctl[11], pvr_c->color_c);
-	} else if(pvr_c->iflag_colormap_ctl == -1){
-		fprintf(fp, "!\n");
-		write_file_flag_for_ctl_c(fp, level, label_pvr_ctl[11], pvr_c->pvr_colormap_file_name);
-	};
-	
 	if(pvr_c->iflag_lighting_ctl > 0){
 		fprintf(fp, "!\n");
-		write_lighting_ctl_c(fp, level, label_pvr_ctl[12], pvr_c->light_c);
+		level = write_lighting_ctl_c(fp, level, label_pvr_ctl[12], pvr_c->light_c);
 	};
 	
-	if(pvr_c->iflag_pvr_colorbar_ctl > 0){
+	if(pvr_c->iflag_cmap_cbar_ctl == -1){
 		fprintf(fp, "!\n");
-		write_pvr_colorbar_ctl_c(fp, level, label_pvr_ctl[13], pvr_c->cbar_c);
+		write_file_flag_for_ctl_c(fp, level, label_pvr_ctl[11], pvr_c->pvr_colormap_file_name);
+	}else{
+		if(pvr_c->cmap_cbar_c->iflag_colormap_ctl == 1){
+			fprintf(fp, "!\n");
+			level = write_colormap_ctl_c(fp, level, label_pvr_ctl[17], pvr_c->cmap_cbar_c->cmap_c);
+		};
+		if(pvr_c->cmap_cbar_c->iflag_colorbar_ctl == 1){
+			fprintf(fp, "!\n");
+			level = write_colorbar_ctl_c(fp, level, label_pvr_ctl[13], pvr_c->cmap_cbar_c->cbar_c);
+		};
 	};
+	
 	if(pvr_c->iflag_pvr_movie_ctl > 0){
 		fprintf(fp, "!\n");
-		write_pvr_movie_ctl_c(fp, level, label_pvr_ctl[14], pvr_c->movie_c);
+		level = write_pvr_movie_ctl_c(fp, level, label_pvr_ctl[14], pvr_c->movie_c);
 	};
 	
 	level = write_pvr_section_ctl_list(fp, level, label_pvr_ctl[15], &pvr_c->pvr_sect_c_list);
@@ -525,7 +413,7 @@ void rename_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
     if(pvr_c->iflag_modeview_ctl ==-1){
         strcat(pvr_c->pvr_modelview_file_name, "_2");
     }
-    if(pvr_c->iflag_colormap_ctl ==-1){
+    if(pvr_c->iflag_cmap_cbar_ctl ==-1){
         strcat(pvr_c->pvr_colormap_file_name, "_2");
     }
 	
@@ -534,13 +422,14 @@ void rename_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
 }
 
 int read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
+    int iflag;
 	if(pvr_c->iflag_modeview_ctl ==-1){
-		read_modeview_file_c(pvr_c->pvr_modelview_file_name, buf,
+		iflag = read_modeview_file_c(pvr_c->pvr_modelview_file_name, buf,
 							 pvr_c->mat_c);
 	};
-	if(pvr_c->iflag_colormap_ctl ==-1){
-		read_colormap_file_c(pvr_c->pvr_colormap_file_name, buf,
-							   pvr_c->color_c);
+	if(pvr_c->iflag_cmap_cbar_ctl ==-1){
+		iflag = read_colormap_file_c(pvr_c->pvr_colormap_file_name, buf,
+							   pvr_c->cmap_cbar_c);
 	};
 	
 	read_pvr_section_subfile_list(buf, &pvr_c->pvr_sect_c_list);
@@ -549,11 +438,12 @@ int read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 };
 
 void write_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
+    int iflag;
 	if(pvr_c->iflag_modeview_ctl ==-1){
-		write_modeview_file_c(pvr_c->pvr_modelview_file_name, pvr_c->mat_c);
+		iflag = write_modeview_file_c(pvr_c->pvr_modelview_file_name, pvr_c->mat_c);
 	};
-	if(pvr_c->iflag_colormap_ctl ==-1){
-		write_colormap_file_c(pvr_c->pvr_colormap_file_name, pvr_c->color_c);
+	if(pvr_c->iflag_cmap_cbar_ctl ==-1){
+		iflag = write_colormap_file_c(pvr_c->pvr_colormap_file_name, pvr_c->cmap_cbar_c);
 	};
 	
 	write_pvr_section_subfile_list(&pvr_c->pvr_sect_c_list);

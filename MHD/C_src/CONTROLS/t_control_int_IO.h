@@ -37,6 +37,9 @@ int read_integer_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_integer_ctl_item_c(FILE *fp, int level, int maxlen, 
 			const char *label, struct int_ctl_item *i_item);
 
+int copy_from_int_ctl_item(struct int_ctl_item *i_item);
+void copy_to_int_ctl_item(int index, struct int_ctl_item *i_item);
+
 void init_int_ctl_list(struct int_ctl_list *head);
 void clear_int_ctl_list(struct int_ctl_list *head);
 struct int_ctl_list *add_int_ctl_list(struct int_ctl_list *current);

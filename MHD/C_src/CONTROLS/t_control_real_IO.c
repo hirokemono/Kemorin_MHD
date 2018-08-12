@@ -39,7 +39,6 @@ int write_real_ctl_item_c(FILE *fp, int level, int maxlen,
 };
 
 
-
 void init_real_ctl_list(struct real_ctl_list *head){
     head->_prev = NULL;
     head->_next = NULL;
@@ -56,6 +55,7 @@ void clear_real_ctl_list(struct real_ctl_list *head){
 	
     return;
 };
+
 
 struct real_ctl_list *add_real_ctl_list(struct real_ctl_list *current){
     struct real_ctl_list *added;
@@ -157,5 +157,35 @@ int write_real_ctl_list(FILE *fp, int level, const char *label,
     }
     level = write_end_array_flag_for_ctl_c(fp, level, label);
     return level;
+};
+
+
+double copy_from_real_ctl_item(struct real_ctl_item *r_item){
+	if(r_item->iflag == 0) return 0.0;
+	return r_item->r_data;
+};
+void copy_to_real_ctl_item(double value, struct real_ctl_item *r_item){
+	r_item->iflag = 1;
+	r_item->r_data = value;
+	return;
+};
+
+void copy_from_real_ctl_list(struct real_ctl_list *head, int num, double *vector) {
+	int i;
+    head = head->_next;
+	for(i=0; i<num; i++){
+		if(head != NULL) break;
+        vector[i] = copy_from_real_ctl_item(head->r_item);
+	};
+	return;
+};
+void copy_to_real_ctl_list(int num, double *vector, struct real_ctl_list *head) {
+	int i;
+	
+	for(i=0;i<num;i++){
+		head = add_chara_real_ctl_list(head);
+		copy_to_real_ctl_item(vector[i], head->r_item);
+	};
+	return;
 };
 

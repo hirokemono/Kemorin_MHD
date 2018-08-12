@@ -50,4 +50,14 @@ int read_real2_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_real2_ctl_list(FILE *fp, int level, const char *label, 
                        struct real2_ctl_list *head);
 
+void copy_from_real2_ctl_item(struct real2_ctl_item *r2_item, 
+			double *r1, double *r2);
+void copy_to_real2_ctl_item(double r1, double r2,
+			struct real2_ctl_item *r2_item);
+
+void copy_from_real2_ctl_list(struct real2_ctl_list *head, int num,
+			double *v1, double *v2);
+void copy_to_real2_ctl_list(int num, double *v1, double *v2,
+			struct real2_ctl_list *head);
+
 #endif /* t_control_real2_IO_h_ */

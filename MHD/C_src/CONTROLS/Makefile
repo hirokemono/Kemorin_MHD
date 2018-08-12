@@ -547,6 +547,7 @@ module:
 	t_ctl_data_pvr_colormap_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
+	t_control_int_IO.o \
 	t_control_chara_IO.o \
 	t_control_real_IO.o \
 	t_control_real2_IO.o \
@@ -613,7 +614,6 @@ module:
 	control_elements_IO_c.o \
 	t_control_int_IO.o \
 	t_control_chara_IO.o \
-	t_control_real2_IO.o \
 	t_control_chara2_real_IO.o \
 	t_control_data_4_psf_c.o \
 	t_ctl_data_pvr_colormap_c.o \

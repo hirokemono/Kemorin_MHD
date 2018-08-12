@@ -45,4 +45,7 @@ int find_control_end_array_flag_c(const char buf[LENGTHBUF], const char *label, 
 
 int count_max_length_of_label(int num, const char *label[KCHARA_C]);
 
+int find_direction_from_ctl(const char *c_tbl);
+void set_direction_from_ctl(int i, char *c_tbl);
+
 #endif

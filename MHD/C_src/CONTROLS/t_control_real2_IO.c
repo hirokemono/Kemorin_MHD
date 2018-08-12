@@ -161,3 +161,40 @@ int write_real2_ctl_list(FILE *fp, int level, const char *label,
     return level;
 };
 
+
+void copy_from_real2_ctl_item(struct real2_ctl_item *r2_item, 
+			double *r1, double *r2){
+	if(r2_item->iflag == 0) return;
+	*r1 = r2_item->r_data[0];
+	*r2 = r2_item->r_data[1];
+	return;
+};
+void copy_to_real2_ctl_item(double r1, double r2,
+			struct real2_ctl_item *r2_item){
+	r2_item->iflag = 1;
+	r2_item->r_data[0] = r1;
+	r2_item->r_data[1] = r2;
+	return;
+};
+
+void copy_from_real2_ctl_list(struct real2_ctl_list *head, int num,
+			double *v1, double *v2){
+	int i;
+    head = head->_next;
+	for(i=0; i<num; i++){
+		if(head != NULL) break;
+        copy_from_real2_ctl_item(head->r2_item, &v1[i], &v2[i]);
+	};
+	return;
+};
+void copy_to_real2_ctl_list(int num, double *v1, double *v2,
+			struct real2_ctl_list *head) {
+	int i;
+	
+	for(i=0;i<num;i++){
+		head = add_real2_ctl_list(head);
+		copy_to_real2_ctl_item(v1[i], v2[i], head->r2_item);
+	};
+	return;
+};
+

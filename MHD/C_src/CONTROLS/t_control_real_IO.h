@@ -49,4 +49,11 @@ int read_real_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_real_ctl_list(FILE *fp, int level, const char *label, 
                        struct real_ctl_list *head);
 
+
+double copy_from_real_ctl_item(struct real_ctl_item *r_item);
+void copy_to_real_ctl_item(double value, struct real_ctl_item *r_item);
+void copy_from_real_ctl_list(struct real_ctl_list *head, int num, double *vector);
+void copy_to_real_ctl_list(int num, double *vector, struct real_ctl_list *head);
+
+
 #endif /* t_control_real_IO_h_ */

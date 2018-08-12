@@ -9,255 +9,140 @@
 
 #include "write_modelview_matrix.h"
 
-FILE *fp_mat;
+struct modeview_ctl_c *mat_c0;
 
-void output_GL_modelview_matrix(FILE *fp, struct view_element *view) {
+void copy_mat44_from_ctl(struct chara2_real_ctl_list *head, double mat44[16]) {
 	int i, j;
 	
-	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
-	
-	fprintf(fp, "    array modelview_matrix_ctl    16\n");
-	for (j = 0; j < 4; j++) {
-		for (i = 0; i < 4; i++) {
-			fprintf(fp, "      modelview_matrix_ctl   %d  %d   %.12e \n",
-					(i+1), (j+1), view->mat_object_2_eye[i+4*j]);
-		};
-		fprintf(fp, "!\n");
-	};
-	fprintf(fp, "    end array modelview_matrix_ctl\n");
-	fprintf(fp, "!\n");
-	
+    head = head->_next;
+    while (head != NULL){
+		i = find_direction_from_ctl(head->c2r_item->c1_tbl);
+		j = find_direction_from_ctl(head->c2r_item->c2_tbl);
+		if(i>-1 && i<4 && j>-1 && j<4){mat44[i+4*j] = head->c2r_item->r_data;};
+		
+        head = head->_next;
+    };
 	return;
-}
-
-
-void output_GL_projection_matrix(FILE *fp, struct view_element *view) {
+};
+void copy_mat44_to_ctl(double mat44[16], struct chara2_real_ctl_list *head) {
 	int i, j;
 	
-	glGetDoublev(GL_PROJECTION_MATRIX, view->mat_eye_2_clip);
-	
-	fprintf(fp, "    begin projection_matrix_ctl\n");
-	for (j = 0; j < 4; j++) {
-		for (i = 0; i < 4; i++) {
-			fprintf(fp, "      matrix44_comp_ctl   %d  %d   %.12e \n",
-					(i+1), (j+1), view->mat_eye_2_clip[i+4*j]);
+	for(j=0;j<4;j++){
+		for(i=0;i<4;i++){
+			head = add_c2r_ctl_list(head);
+			
+			head->c2r_item->iflag = 1;
+			set_direction_from_ctl(i, head->c2r_item->c1_tbl);
+			set_direction_from_ctl(j, head->c2r_item->c2_tbl);
+			head->c2r_item->r_data = mat44[i+4*j];
 		};
-		fprintf(fp, "!\n");
 	};
-	fprintf(fp, "    end projection_matrix_ctl\n");
-	fprintf(fp, "!\n");
+	
 	
 	return;
-}
+};
 
-void output_stereo_parameter(FILE *fp, struct view_element *view) {
-	fprintf(fp, "    begin streo_view_parameter_ctl\n");
-	fprintf(fp, "      focal_point_ctl            %.12e end\n", view->focal_length);
-	fprintf(fp, "      eye_separation_ctl         %.12e end\n", view->eye_separation);
-	fprintf(fp, "    end streo_view_parameter_ctl\n");
-    
+void copy_vector_from_ctl(struct chara_real_ctl_list *head, double vector[3]) {
+	int i;
+	
+    head = head->_next;
+    while (head != NULL){
+		i = find_direction_from_ctl(head->cr_item->c_tbl);
+		if(i>-1 && i<3) vector[i] = head->cr_item->r_data;
+		
+		head = head->_next;
+	};
+	
 	return;
+};
+void copy_vector_to_ctl(double *vector, struct chara_real_ctl_list *head) {
+	int i;
+	
+	for(i=0;i<3;i++){
+		head = add_chara_real_ctl_list(head);
+		
+		head->cr_item->iflag = 1;
+		set_direction_from_ctl(i, head->cr_item->c_tbl);
+		head->cr_item->r_data = vector[i];
+	};
+	return;
+};
+
+
+void copy_GL_stereo_params_to_ctl(struct view_element *view, struct streo_view_ctl_c *streo_view_c) {
+	copy_to_real_ctl_item(view->focal_length, streo_view_c->focalpoint_ctl);
+	copy_to_real_ctl_item(view->eye_separation, streo_view_c->eye_separation_ctl);
 }
 
 
-void output_GL_modelview_parameters(FILE *fp, struct view_element *view) {
+void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modeview_ctl_c *mat_c) {
 	int i;
 	double viewpt_in_view[3];
 	double lookat_in_view[3];
+    double drotation[3];
 	
 	for (i = 0; i < 3; i++) viewpt_in_view[i] = -view->shift[i];
 	for (i = 0; i < 3; i++) lookat_in_view[i] = -view->shift[i];
+    for (i = 0; i < 3; i++) drotation[i] = view->rotation[i+1];
 	lookat_in_view[2] = view->x_lookat[2];
 	
-	fprintf(fp, "    begin image_size_ctl\n");
-	fprintf(fp, "      x_pixel_ctl   %d\n", view->nx_window);
-	fprintf(fp, "      y_pixel_ctl   %d\n", view->ny_window);
-	fprintf(fp, "    end image_size_ctl\n");
-	fprintf(fp, "!\n");
+	mat_c->iflag_image_size_ctl = 1;
+	copy_to_int_ctl_item(view->nx_window, mat_c->img_size_c->num_xpixel_ctl);
+	copy_to_int_ctl_item(view->ny_window, mat_c->img_size_c->num_ypixel_ctl);
 	
+	copy_vector_to_ctl(viewpt_in_view, &mat_c->viewpt_in_viewer_list);
 	
-	fprintf(fp, "    array viewpoint_in_viewer_ctl  3\n");
-	fprintf(fp, "      viewpoint_in_viewer_ctl   x   %.12e \n",viewpt_in_view[0]);
-	fprintf(fp, "      viewpoint_in_viewer_ctl   y   %.12e \n",viewpt_in_view[1]);
-	fprintf(fp, "      viewpoint_in_viewer_ctl   z   %.12e \n",viewpt_in_view[2]);
-	fprintf(fp, "    end array viewpoint_in_viewer_ctl\n");
-	fprintf(fp, "!\n");
+	copy_to_real_ctl_item(view->iso_scale, mat_c->scale_factor_ctl);
 	
-	fprintf(fp, "    scale_factor_ctl      %.12e\n", view->iso_scale);
-	fprintf(fp, "!\n");
+	copy_vector_to_ctl(lookat_in_view, &mat_c->lookpoint_list);
 	
-	fprintf(fp, "    array look_at_point_ctl  3\n");
-	fprintf(fp, "      look_at_point_ctl         x   %.12e \n", lookat_in_view[0]);
-	fprintf(fp, "      look_at_point_ctl         y   %.12e \n", lookat_in_view[1]);
-	fprintf(fp, "      look_at_point_ctl         z   %.12e \n", lookat_in_view[2]);
-	fprintf(fp, "    end array look_at_point_ctl\n");
-	fprintf(fp, "!\n");
+	copy_vector_to_ctl(drotation, &mat_c->view_rot_vec_list);
+	copy_to_real_ctl_item(view->rotation[0], mat_c->view_rotation_deg_ctl);
 	
-	fprintf(fp, "    array view_rotation_vec_ctl  3\n");
-	fprintf(fp, "      view_rotation_vec_ctl     x   %.12e \n", view->rotation[1]);
-	fprintf(fp, "      view_rotation_vec_ctl     y   %.12e \n", view->rotation[2]);
-	fprintf(fp, "      view_rotation_vec_ctl     z   %.12e \n", view->rotation[3]);
-	fprintf(fp, "    end array view_rotation_vec_ctl\n");
-	fprintf(fp, "    view_rotation_deg_ctl   %.12e \n", view->rotation[0]);
-	fprintf(fp, "!\n");
-	
-	fprintf(fp, "    begin projection_matrix_ctl\n");
-	fprintf(fp, "      perspective_angle_ctl      %.12e \n", view->aperture);
-	fprintf(fp, "      perspective_xy_ratio_ctl   %.12e \n", view->aspect);
-	fprintf(fp, "      perspective_near_ctl       %.12e \n", view->near);
-	fprintf(fp, "      perspective_far_ctl        %.12e \n", view->far);
-	fprintf(fp, "    end projection_matrix_ctl\n");
-	fprintf(fp, "!\n");
+    mat_c->iflag_projection_mat_ctl = 1;
+	copy_to_real_ctl_item(view->aperture, mat_c->projection_c->perspective_angle_ctl);
+	copy_to_real_ctl_item(view->aspect, mat_c->projection_c->perspective_xy_ratio_ctl);
+	copy_to_real_ctl_item(view->near, mat_c->projection_c->perspective_near_ctl);
+	copy_to_real_ctl_item(view->far, mat_c->projection_c->perspective_far_ctl);
 	
 	return;
 }
 
 
-void input_GL_modelview_matrix(FILE *fp, struct view_element *view) {
-	int i, j, k;
-    long offset;
-	char buf[LENGTHBUF];            /* character buffer for reading line */
-	char ctmp[32], ctmp1[32], ctmp2[32];   /* character buffer for reading line */
-    
-    offset = skip_comment_c(fp);
-	for (k = 0; k < 12; k++) {
-        offset = skip_comment_c(fp);
-        fgets(buf, LENGTHBUF, fp);
-        sscanf(buf, "%s %s %s %s", ctmp, ctmp1, ctmp2, ctmp);
-        i = atoi(ctmp1);
-        j = atoi(ctmp2);
-        view->mat_object_2_eye[i+4*(j-1)] = atof(ctmp);
-	};
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-	
+void copy_GL_stereo_params_from_ctl(struct streo_view_ctl_c *streo_view_c, struct view_element *view) {
+	view->focal_length = copy_from_real_ctl_item(streo_view_c->focalpoint_ctl);
+	view->eye_separation = copy_from_real_ctl_item(streo_view_c->eye_separation_ctl);
 	return;
 }
 
-void input_GL_projection_matrix(FILE *fp, struct view_element *view) {
-	int i, j, k;
-    long offset;
-	char buf[LENGTHBUF];            /* character buffer for reading line */
-	char ctmp[32], ctmp1[32], ctmp2[32];   /* character buffer for reading line */
-    
-    offset = skip_comment_c(fp);
-	for (k = 0; k < 12; k++) {
-        offset = skip_comment_c(fp);
-        fgets(buf, LENGTHBUF, fp);
-        sscanf(buf, "%s %s %s %s", ctmp, ctmp1, ctmp2, ctmp);
-        i = atoi(ctmp1);
-        j = atoi(ctmp2);
-        view->mat_eye_2_clip[i+4*(j-1)] = atof(ctmp);
-	};
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-	
-	return;
-}
-
-
-void input_stereo_parameter(FILE *fp, struct view_element *view) {
-    long offset;
-	char buf[LENGTHBUF];      /* character buffer for reading line */
-	char ctmp[32];            /* character buffer for reading line */
-    
-    
-    offset = skip_comment_c(fp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s %s", ctmp, ctmp);
-    view->focal_length = atof(ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s %s", ctmp, ctmp);
-    view->eye_separation = atof(ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-    
-	return;
-}
-
-void input_GL_modelview_parameters(FILE *fp, struct view_element *view) {
-	int i, k;
+void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view_element *view) {
+	int i;
 	double viewpt_in_view[3];
 	double lookat_in_view[3];
-    
-    long offset;
-	char buf[LENGTHBUF];      /* character buffer for reading line */
-	char ctmp[32];            /* character buffer for reading line */
-    
-    offset = skip_comment_c(fp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s %s", ctmp, ctmp);
-    view->nx_window = atoi(ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s %s", ctmp, ctmp);
-    view->ny_window = atoi(ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
+    double drotation[3];
 	
+	if(mat_c->iflag_image_size_ctl > 0){
+		view->nx_window = copy_from_int_ctl_item(mat_c->img_size_c->num_xpixel_ctl);
+		view->ny_window = copy_from_int_ctl_item(mat_c->img_size_c->num_ypixel_ctl);
+	};
 	
-    offset = skip_comment_c(fp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-    for (i=0; i<3; i++) {
-        fgets(buf, LENGTHBUF, fp);
-        sscanf(buf, "%s %s %s ", ctmp, ctmp, ctmp);
-        viewpt_in_view[i] = atof(ctmp);
+	copy_vector_from_ctl(&mat_c->viewpt_in_viewer_list, viewpt_in_view);
+    
+    view->iso_scale = copy_from_real_ctl_item(mat_c->scale_factor_ctl);
+    
+	copy_vector_from_ctl(&mat_c->lookpoint_list, lookat_in_view);
+	
+	copy_vector_from_ctl(&mat_c->view_rot_vec_list, drotation);
+    view->rotation[0] = copy_from_real_ctl_item(mat_c->view_rotation_deg_ctl);
+	
+    if(mat_c->iflag_projection_mat_ctl > 0){
+        view->aperture = copy_from_real_ctl_item(mat_c->projection_c->perspective_angle_ctl);
+        view->aspect = copy_from_real_ctl_item(mat_c->projection_c->perspective_xy_ratio_ctl);
+        view->near = copy_from_real_ctl_item(mat_c->projection_c->perspective_near_ctl);
+        view->far = copy_from_real_ctl_item(mat_c->projection_c->perspective_far_ctl);
     };
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-    
-    offset = skip_comment_c(fp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s %s ", ctmp, ctmp);
-    view->iso_scale = atof(ctmp);
-    
-    offset = skip_comment_c(fp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-    for (i=0; i<3; i++) {
-        fgets(buf, LENGTHBUF, fp);
-        sscanf(buf, "%s %s %s ", ctmp, ctmp, ctmp);
-        lookat_in_view[i] = atof(ctmp);
-    };
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
 	
-    offset = skip_comment_c(fp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-    for (k=0; k<3; k++) {
-        fgets(buf, LENGTHBUF, fp);
-        sscanf(buf, "%s %s %s ", ctmp, ctmp, ctmp);
-        view->rotation[i+1] = atof(ctmp);
-    };
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s %s ", ctmp, ctmp);
-    view->rotation[0] = atof(ctmp);
-	
-    offset = skip_comment_c(fp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s %s ", ctmp, ctmp);
-    view->aperture = atof(ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s %s ", ctmp, ctmp);
-    view->aspect = atof(ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s %s ", ctmp, ctmp);
-    view->near = atof(ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s %s ", ctmp, ctmp);
-    view->far = atof(ctmp);
-    fgets(buf, LENGTHBUF, fp);
-    sscanf(buf, "%s",  ctmp);
-	
+    for (i = 0; i < 3; i++) view->rotation[i+1] = drotation[i];
 	for (i = 0; i < 3; i++) view->shift[i] = -viewpt_in_view[i];
 	view->x_lookat[2] = lookat_in_view[2];
 	return;
@@ -265,53 +150,47 @@ void input_GL_modelview_parameters(FILE *fp, struct view_element *view) {
 
 
 void write_GL_modelview_file(const char *file_name, int iflag_view, struct view_element *view){
-    
-	printf("ViewMatrix file name: %s \n",file_name);
-	if ((fp_mat = fopen(file_name, "w")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
-		exit (2);                    /* terminate with error message */
-	}
-    
-	fprintf(fp_mat, "  begin view_transform_ctl\n");
-	fprintf(fp_mat, "!\n");
-    
+	
+	mat_c0 = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
+	alloc_modeview_ctl_c(mat_c0);
+	
+	copy_GL_modelview_params_to_ctl(view, mat_c0);
+	if(iflag_view == VIEW_STEREO){
+		mat_c0->iflag_streo_view_ctl = 1;
+		copy_GL_stereo_params_to_ctl(view, mat_c0->streo_view_c);
+	};
     /*
-    output_GL_modelview_matrix(fp_mat, view);
-    output_GL_projection_matrix(fp_mat, view);
+	glGetDoublev(GL_MODELVIEW_MATRIX, view->mat_object_2_eye);
+    copy_mat44_to_ctl(view->mat_object_2_eye, &mat_c0->modelview_mat_ctl);
+    copy_mat44_to_ctl(view->mat_eye_2_clip, &mat_c0->projection_mat_ctl);
     */
     
-    output_GL_modelview_parameters(fp_mat, view);
-	if(iflag_view == VIEW_STEREO) output_stereo_parameter(fp_mat, view);
-    
-	fprintf(fp_mat, "  end view_transform_ctl\n");
-	fprintf(fp_mat, "!\n");
-    
-	fclose(fp_mat);
+	write_modeview_file_c(file_name, mat_c0);
+	free(mat_c0);
 	return;
 }
 
 
 void read_GL_modelview_file(const char *file_name, int iflag_view, struct view_element *view){
-	long  offset;
 	char buf[LENGTHBUF];      /* character buffer for reading line */
-	char ctmp[32];            /* character buffer for reading line */
+	
+	mat_c0 = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
+	alloc_modeview_ctl_c(mat_c0);
+	
+	read_modeview_file_c(file_name, buf, mat_c0);
     
-	printf("ViewMatrix file name: %s \n",file_name);
-	if ((fp_mat = fopen(file_name, "r")) == NULL) {
-		fprintf(stderr, "Cannot open file!\n");
-		exit (2);                    /* terminate with error message */
+	copy_GL_modelview_params_from_ctl(mat_c0, view);
+	if(mat_c0->iflag_streo_view_ctl > 0){
+		copy_GL_stereo_params_from_ctl(mat_c0->streo_view_c, view);
+		iflag_view == VIEW_STEREO;
+	};
+	
+	/*
+	copy_mat44_from_ctl(view->mat_object_2_eye, &mat_c0->modelview_mat_ctl);
+	if(mat_c0->iflag_projection_mat_ctl > 0){
+		copy_mat44_from_ctl(view->mat_eye_2_clip, &mat_c0->projection_mat_ctl);
 	}
-    
-    offset = skip_comment_c(fp_mat);
-    fgets(buf, LENGTHBUF, fp_mat);
-    sscanf(buf, "%s",  ctmp);
-    
-	input_GL_modelview_parameters(fp_mat, view);
-	if(iflag_view == VIEW_STEREO) input_stereo_parameter(fp_mat, view);
-    
-    fgets(buf, LENGTHBUF, fp_mat);
-    sscanf(buf, "%s",  ctmp);
-    
-	fclose(fp_mat);
+	*/
+	free(mat_c0);
 	return;
 }

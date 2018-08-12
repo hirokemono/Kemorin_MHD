@@ -186,3 +186,28 @@ int count_max_length_of_label(int num, const char *label[KCHARA_C]){
 	return maxlen;
 };
 
+int find_direction_from_ctl(const char *c_tbl) {
+	if(cmp_no_case_c(c_tbl, "x") + cmp_no_case_c(c_tbl, "1") > 0){
+		return 0;
+	}else if(cmp_no_case_c(c_tbl, "y") + cmp_no_case_c(c_tbl, "2") > 0){
+		return 1;
+	}else if(cmp_no_case_c(c_tbl, "z") + cmp_no_case_c(c_tbl, "3") > 0){
+		return 2;
+	}else if(cmp_no_case_c(c_tbl, "w") + cmp_no_case_c(c_tbl, "4") > 0){
+		return 3;
+	};
+	return -1;
+};
+void set_direction_from_ctl(int i, char *c_tbl){
+	if(i == 0){
+        sprintf(c_tbl, "%s", "x");
+	}else if(i == 1){
+        sprintf(c_tbl, "%s", "y");
+	}else if(i == 2){
+        sprintf(c_tbl, "%s", "z");
+	}else if(i == 3){
+        sprintf(c_tbl, "%s", "w");
+	};
+	return;
+};
+
