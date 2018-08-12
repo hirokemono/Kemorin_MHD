@@ -53,4 +53,4 @@ int read_chara2_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_chara2_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara2_ctl_list *head);
 
-#endif /* t_control_chara3_IO_h_ */
+#endif /* t_control_chara2_IO_h_ */

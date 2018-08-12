@@ -94,11 +94,6 @@ void read_real2_ctl_item_c(const char *buf, const char *label,
 void write_real2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
 			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item);
 
-void read_ci_ctl_item_c(const char *buf, const char *label,
-			struct chara_ctl_item *c_item, struct int_ctl_item *i_item);
-void write_ci_ctl_item_c(FILE *fp, int level, int maxlen[2], const char *label, 
-			struct chara_ctl_item *c_item, struct int_ctl_item *i_item);
-
 void read_cr_ctl_item_c(const char *buf, const char *label,
 			struct chara_ctl_item *c_item, struct real_ctl_item *r_item);
 void write_cr_ctl_item_c(FILE *fp, int level, int maxlen[2], const char *label, 

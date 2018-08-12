@@ -77,16 +77,6 @@ struct int_real_ctl_array{
     struct real_ctl_item **r_array_item;
 };
 
-struct chara3_ctl_array{
-    int maxlen[3];
-    
-    int num;
-    int icou;
-    struct chara_ctl_item **c1_array_item;
-    struct chara_ctl_item **c2_array_item;
-    struct chara_ctl_item **c3_array_item;
-};
-
 /* prototype */
 
 
@@ -121,14 +111,6 @@ void read_real2_ctl_array_c(FILE *fp, char *buf, const char *label,
 			struct real2_ctl_array *r2_array);
 void write_real2_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct real2_ctl_array *r2_array);
-
-void init_ctl_ci_array(struct chara_int_ctl_array *ci_array);
-void alloc_ctl_ci_array(struct chara_int_ctl_array *ci_array);
-void dealloc_ctl_ci_array(struct chara_int_ctl_array *ci_array);
-void read_ci_ctl_array_c(FILE *fp, char *buf, const char *label,
-			struct chara_int_ctl_array *ci_array);
-void write_ci_ctl_array_c(FILE *fp, int level, int maxlen,
-			const char *label, struct chara_int_ctl_array *ci_array);
 
 void init_ctl_cr_array(struct chara_real_ctl_array *cr_array);
 void alloc_ctl_cr_array(struct chara_real_ctl_array *cr_array);

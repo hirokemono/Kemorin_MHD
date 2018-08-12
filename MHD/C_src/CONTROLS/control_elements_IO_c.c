@@ -359,34 +359,6 @@ void write_real2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
 }
 
 
-void read_ci_ctl_item_c(const char *buf, const char *label,
-			struct chara_ctl_item *c_item, struct int_ctl_item *i_item){
-	char header_chara[KCHARA_C];
-	
-	if(c_item->iflag > 0) return;
-	
-	sscanf(buf, "%s", header_chara);
-	if(cmp_no_case_c(header_chara, label) > 0){
-		sscanf(buf, "%s %s %d", header_chara, c_item->c_tbl, &i_item->i_data);
-		strip_cautation_marks(c_item->c_tbl);
-		c_item->iflag = 1;
-		i_item->iflag = 1;
-	};
-	
-	return;
-}
-
-void write_ci_ctl_item_c(FILE *fp, int level, int maxlen[2], const char *label,
-			struct chara_ctl_item *c_item, struct int_ctl_item *i_item){
-	
-    if( (c_item->iflag * i_item->iflag) == 0) return;
-	
-	write_space_4_parse_c(fp, level);
-	write_one_label_cont_c(fp, maxlen[0], label);
-	write_one_label_cont_c(fp, maxlen[1], c_item->c_tbl);
-    fprintf(fp, "%d\n", i_item->i_data);
-	return;
-}
 
 
 void read_cr_ctl_item_c(const char *buf, const char *label,

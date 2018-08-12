@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_int_IO.h"
 
 struct sphere_domain_ctl_c{
 	int maxlen;
@@ -22,9 +23,9 @@ struct sphere_domain_ctl_c{
 	struct int_ctl_item *num_radial_domain_c;
 	struct int_ctl_item *num_horiz_domain_c;
 	
-	struct chara_int_ctl_array *ndomain_sph_grid_c;
-	struct chara_int_ctl_array *ndomain_legendre_c;
-	struct chara_int_ctl_array *ndomain_spectr_c;
+	struct chara_int_ctl_list ndomain_sph_grid_list;
+	struct chara_int_ctl_list ndomain_legendre_list;
+	struct chara_int_ctl_list ndomain_spectr_list;
 };
 
 struct sphere_data_ctl_c{
@@ -40,7 +41,7 @@ struct sphere_data_ctl_c{
 	struct int_ctl_item *ngrid_azimuth_c;
 	
 	struct int_real_ctl_array *radius_c;
-	struct chara_int_ctl_array *radial_grp_c;
+	struct chara_int_ctl_list radial_grp_list;
 	
 	struct chara_ctl_item *radial_grid_type_c;
 	struct int_ctl_item *num_fluid_grid_c;
