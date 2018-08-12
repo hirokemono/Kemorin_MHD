@@ -13,6 +13,7 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
+#include "control_lists_IO_c.h"
 #include "control_arrays_IO_c.h"
 
 struct image_size_ctl_c{
@@ -41,7 +42,7 @@ struct projection_mat_ctl_c{
 struct modeview_ctl_c{
 	int maxlen;
 	
-	struct chara2_real_ctl_array *modelview_mat_ctl;
+	struct chara2_real_ctl_list modelview_mat_ctl;
 	
 	struct chara_real_ctl_array *lookpoint_ctl;
 	struct chara_real_ctl_array *viewpoint_ctl;

@@ -93,8 +93,7 @@ void alloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 	
 	area_c->pvr_area_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
 	init_ctl_chara_array(area_c->pvr_area_ctl);
-	area_c->surf_enhanse_ctl = (struct chara2_real_ctl_array *) malloc(sizeof(struct chara2_real_ctl_array));
-	init_ctl_c2r_array(area_c->surf_enhanse_ctl);
+	init_c2r_ctl_list(&area_c->surf_enhanse_ctl);
 	
 	return;
 };
@@ -102,9 +101,8 @@ void alloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 	
 	dealloc_ctl_chara_array(area_c->pvr_area_ctl);
-	dealloc_ctl_c2r_array(area_c->surf_enhanse_ctl);
+	clear_c2r_ctl_list(&area_c->surf_enhanse_ctl);
 	free(area_c->pvr_area_ctl);
-	free(area_c->surf_enhanse_ctl);
 	
 	return;
 };
@@ -116,7 +114,7 @@ int read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		skip_comment_read_line(fp, buf);
 		
 		read_character_ctl_array_c(fp, buf, label_pvr_plot_area_ctl[0], area_c->pvr_area_ctl);
-		read_c2r_ctl_array_c(fp, buf, label_pvr_plot_area_ctl[1], area_c->surf_enhanse_ctl);
+		read_c2r_ctl_list(fp, buf, label_pvr_plot_area_ctl[1], &area_c->surf_enhanse_ctl);
 	};
 	return 1;
 };
@@ -126,9 +124,7 @@ int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
 	write_character_ctl_array_c(fp, level, area_c->maxlen, label_pvr_plot_area_ctl[ 0], area_c->pvr_area_ctl);
-	
-	if(area_c->surf_enhanse_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, area_c->maxlen, label_pvr_plot_area_ctl[ 1], area_c->surf_enhanse_ctl);
+	level = write_c2r_ctl_list(fp, level, label_pvr_plot_area_ctl[ 1], &area_c->surf_enhanse_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

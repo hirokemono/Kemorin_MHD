@@ -24,13 +24,6 @@ struct real_ctl_item{
 	double r_data;
 };
 
-struct chara2_real_ctl_item{
-	int iflag;
-	char *c1_tbl;
-	char *c2_tbl;
-	double *vect;
-};
-
 
 /* Prototypes */ 
 
@@ -124,11 +117,5 @@ void write_real3_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
 			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item, 
 			struct real_ctl_item *r3_item);
 
-void read_c2r_ctl_item_c(const char *buf, const char *label,
-			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item, 
-			struct real_ctl_item *r_item);
-void write_c2r_ctl_item_c(FILE *fp, int level, int maxlen[3], const char *label, 
-			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item, 
-			struct real_ctl_item *r_item);
 
 #endif

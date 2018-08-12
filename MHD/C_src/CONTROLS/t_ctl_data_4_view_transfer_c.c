@@ -242,8 +242,7 @@ void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 		};
 	};
 	
-	mat_c->modelview_mat_ctl = (struct chara2_real_ctl_array *) malloc(sizeof(struct chara2_real_ctl_array));
-	init_ctl_c2r_array(mat_c->modelview_mat_ctl);
+	init_c2r_ctl_list(&mat_c->modelview_mat_ctl);
 	
 	mat_c->lookpoint_ctl = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
 	mat_c->viewpoint_ctl = (struct chara_real_ctl_array *) malloc(sizeof(struct chara_real_ctl_array));
@@ -281,8 +280,7 @@ void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 
 void dealloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 	
-	dealloc_ctl_c2r_array(mat_c->modelview_mat_ctl);
-	free(mat_c->modelview_mat_ctl);
+	clear_c2r_ctl_list(&mat_c->modelview_mat_ctl);
 	
 	dealloc_ctl_cr_array(mat_c->lookpoint_ctl);
 	dealloc_ctl_cr_array(mat_c->viewpoint_ctl);
@@ -331,7 +329,7 @@ int read_modeview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_cr_ctl_array_c(fp, buf, label_modeview_ctl[ 6], mat_c->scale_vector_ctl);
 		read_cr_ctl_array_c(fp, buf, label_modeview_ctl[ 7], mat_c->viewpt_in_viewer_ctl);
 		
-		read_c2r_ctl_array_c(fp, buf, label_modeview_ctl[ 8],mat_c->modelview_mat_ctl);
+		read_c2r_ctl_list(fp, buf, label_modeview_ctl[ 8], &mat_c->modelview_mat_ctl);
 		
 		if(right_begin_flag_c(buf, label_modeview_ctl[ 9]) > 0){
 			mat_c->iflag_image_size_ctl = read_image_size_ctl_c(fp, buf, 
@@ -381,8 +379,7 @@ int write_modeview_ctl_c(FILE *fp, int level, const char *label,
 	if(mat_c->scale_vector_ctl->num > 0) fprintf(fp, "!\n");
 	write_cr_ctl_array_c(fp, level, mat_c->maxlen, label_modeview_ctl[ 6], mat_c->scale_vector_ctl);
 	
-	if(mat_c->modelview_mat_ctl->num > 0) fprintf(fp, "!\n");
-	write_c2r_ctl_array_c(fp, level, mat_c->maxlen, label_modeview_ctl[ 8], mat_c->modelview_mat_ctl);
+	write_c2r_ctl_list(fp, level, label_modeview_ctl[ 8], &mat_c->modelview_mat_ctl);
 	
 	if(mat_c->iflag_projection_mat_ctl > 0){
 		fprintf(fp, "!\n");

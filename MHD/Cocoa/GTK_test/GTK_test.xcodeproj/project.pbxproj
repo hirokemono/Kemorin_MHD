@@ -66,6 +66,7 @@
 		18812C30211F773300BF714B /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C2C211F773200BF714B /* control_elements_IO_c.c */; };
 		18812C31211F773300BF714B /* control_arrays_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C2E211F773300BF714B /* control_arrays_IO_c.c */; };
 		18812C34211F864800BF714B /* control_elements_IO_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C33211F864800BF714B /* control_elements_IO_GTK.c */; };
+		18812C3B211FA3D800BF714B /* control_lists_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C39211FA3D800BF714B /* control_lists_IO_c.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -198,6 +199,8 @@
 		18812C2F211F773300BF714B /* control_elements_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_elements_IO_c.h; path = ../../C_src/CONTROLS/control_elements_IO_c.h; sourceTree = "<group>"; };
 		18812C33211F864800BF714B /* control_elements_IO_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_GTK.c; path = ../../C_src/GTK/control_elements_IO_GTK.c; sourceTree = "<group>"; };
 		18812C35211F864F00BF714B /* control_elements_IO_GTK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = control_elements_IO_GTK.h; path = ../../programs/TESTS/GTK3_test/control_elements_IO_GTK.h; sourceTree = "<group>"; };
+		18812C39211FA3D800BF714B /* control_lists_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_lists_IO_c.c; path = ../../C_src/CONTROLS/control_lists_IO_c.c; sourceTree = "<group>"; };
+		18812C3A211FA3D800BF714B /* control_lists_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_lists_IO_c.h; path = ../../C_src/CONTROLS/control_lists_IO_c.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -268,6 +271,8 @@
 			children = (
 				18812C2E211F773300BF714B /* control_arrays_IO_c.c */,
 				18812C2D211F773300BF714B /* control_arrays_IO_c.h */,
+				18812C39211FA3D800BF714B /* control_lists_IO_c.c */,
+				18812C3A211FA3D800BF714B /* control_lists_IO_c.h */,
 				18812C2C211F773200BF714B /* control_elements_IO_c.c */,
 				18812C2F211F773300BF714B /* control_elements_IO_c.h */,
 				18812C25211F765900BF714B /* kemosrc_param_c.c */,
@@ -445,6 +450,7 @@
 				18812C34211F864800BF714B /* control_elements_IO_GTK.c in Sources */,
 				18812C2B211F76A700BF714B /* file_dialog.c in Sources */,
 				18812C0C211F762200BF714B /* t_ctl_data_mhd_forces_c.c in Sources */,
+				18812C3B211FA3D800BF714B /* control_lists_IO_c.c in Sources */,
 				18812BFC211F762200BF714B /* t_ctl_data_mhd_evolution_c.c in Sources */,
 				18812C02211F762200BF714B /* t_ctl_data_temp_model_c.c in Sources */,
 				18812C12211F762300BF714B /* t_control_data_4_iso_c.c in Sources */,
