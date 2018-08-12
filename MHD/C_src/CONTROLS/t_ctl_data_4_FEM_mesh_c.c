@@ -35,18 +35,18 @@ void alloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh){
     };
     
     Fmesh->memory_conservation_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(Fmesh->memory_conservation_c);
+    alloc_chara_ctl_item_c(Fmesh->memory_conservation_c);
     Fmesh->FEM_mesh_output_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(Fmesh->FEM_mesh_output_switch_c);
+    alloc_chara_ctl_item_c(Fmesh->FEM_mesh_output_switch_c);
     Fmesh->FEM_surface_output_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(Fmesh->FEM_surface_output_switch_c);
+    alloc_chara_ctl_item_c(Fmesh->FEM_surface_output_switch_c);
     Fmesh->FEM_viewer_output_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(Fmesh->FEM_viewer_output_switch_c);
+    alloc_chara_ctl_item_c(Fmesh->FEM_viewer_output_switch_c);
     
     Fmesh->FEM_sleeve_level_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_ctl_int_item(Fmesh->FEM_sleeve_level_c);
     Fmesh->FEM_element_overlap_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(Fmesh->FEM_element_overlap_c);
+    alloc_chara_ctl_item_c(Fmesh->FEM_element_overlap_c);
     
     return;
 };
@@ -54,12 +54,12 @@ void alloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh){
 void dealloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh){
     free(Fmesh->FEM_sleeve_level_c);
     
-    dealloc_ctl_chara_item(Fmesh->memory_conservation_c);
-    dealloc_ctl_chara_item(Fmesh->FEM_mesh_output_switch_c);
-    dealloc_ctl_chara_item(Fmesh->FEM_surface_output_switch_c);
-    dealloc_ctl_chara_item(Fmesh->FEM_viewer_output_switch_c);
+    dealloc_chara_ctl_item_c(Fmesh->memory_conservation_c);
+    dealloc_chara_ctl_item_c(Fmesh->FEM_mesh_output_switch_c);
+    dealloc_chara_ctl_item_c(Fmesh->FEM_surface_output_switch_c);
+    dealloc_chara_ctl_item_c(Fmesh->FEM_viewer_output_switch_c);
 
-    dealloc_ctl_chara_item(Fmesh->FEM_element_overlap_c);
+    dealloc_chara_ctl_item_c(Fmesh->FEM_element_overlap_c);
     return;
 };
 
@@ -69,13 +69,13 @@ int read_FEM_mesh_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
         
         skip_comment_read_line(fp, buf);
         
-        read_character_ctl_item_c(buf, label_FEM_mesh_ctl[0], Fmesh->memory_conservation_c);
-        read_character_ctl_item_c(buf, label_FEM_mesh_ctl[1], Fmesh->FEM_mesh_output_switch_c);
-        read_character_ctl_item_c(buf, label_FEM_mesh_ctl[2], Fmesh->FEM_surface_output_switch_c);
-        read_character_ctl_item_c(buf, label_FEM_mesh_ctl[3], Fmesh->FEM_viewer_output_switch_c);
+        read_chara_ctl_item_c(buf, label_FEM_mesh_ctl[0], Fmesh->memory_conservation_c);
+        read_chara_ctl_item_c(buf, label_FEM_mesh_ctl[1], Fmesh->FEM_mesh_output_switch_c);
+        read_chara_ctl_item_c(buf, label_FEM_mesh_ctl[2], Fmesh->FEM_surface_output_switch_c);
+        read_chara_ctl_item_c(buf, label_FEM_mesh_ctl[3], Fmesh->FEM_viewer_output_switch_c);
         
         read_integer_ctl_item_c(buf, label_FEM_mesh_ctl[4], Fmesh->FEM_sleeve_level_c);
-        read_character_ctl_item_c(buf, label_FEM_mesh_ctl[5], Fmesh->FEM_element_overlap_c);
+        read_chara_ctl_item_c(buf, label_FEM_mesh_ctl[5], Fmesh->FEM_element_overlap_c);
     };
     return 1;
 }
@@ -83,13 +83,13 @@ int read_FEM_mesh_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_FEM_mesh_control_c(FILE *fp, int level, const char *label, struct FEM_mesh_control_c *Fmesh){
     level = write_begin_flag_for_ctl_c(fp, level, label);
     
-    write_character_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[0], Fmesh->memory_conservation_c);
-    write_character_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[1], Fmesh->FEM_mesh_output_switch_c);
-    write_character_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[2], Fmesh->FEM_surface_output_switch_c);
-    write_character_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[3], Fmesh->FEM_viewer_output_switch_c);
+    write_chara_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[0], Fmesh->memory_conservation_c);
+    write_chara_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[1], Fmesh->FEM_mesh_output_switch_c);
+    write_chara_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[2], Fmesh->FEM_surface_output_switch_c);
+    write_chara_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[3], Fmesh->FEM_viewer_output_switch_c);
     
     write_integer_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[4], Fmesh->FEM_sleeve_level_c);
-    write_character_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[5], Fmesh->FEM_element_overlap_c);
+    write_chara_ctl_item_c(fp, level, Fmesh->maxlen, label_FEM_mesh_ctl[5], Fmesh->FEM_element_overlap_c);
     
     level = write_end_flag_for_ctl_c(fp, level, label);
     return level;

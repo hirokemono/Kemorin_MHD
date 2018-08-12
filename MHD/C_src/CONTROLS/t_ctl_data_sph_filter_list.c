@@ -38,8 +38,8 @@ void alloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 	sph_filter_c->sph_filter_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	sph_filter_c->radial_filter_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	
-	alloc_ctl_chara_item(sph_filter_c->sph_filter_type_c);
-	alloc_ctl_chara_item(sph_filter_c->radial_filter_type_c);
+	alloc_chara_ctl_item_c(sph_filter_c->sph_filter_type_c);
+	alloc_chara_ctl_item_c(sph_filter_c->radial_filter_type_c);
 	
 	sph_filter_c->maximum_moments_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	sph_filter_c->first_reference_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
@@ -60,8 +60,8 @@ void alloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 
 void dealloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 	
-	dealloc_ctl_chara_item(sph_filter_c->sph_filter_type_c);
-	dealloc_ctl_chara_item(sph_filter_c->radial_filter_type_c);
+	dealloc_chara_ctl_item_c(sph_filter_c->sph_filter_type_c);
+	dealloc_chara_ctl_item_c(sph_filter_c->radial_filter_type_c);
 	
 	free(sph_filter_c->sph_filter_type_c);
 	free(sph_filter_c->radial_filter_type_c);
@@ -82,8 +82,8 @@ int read_sph_filter_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_sph_filter_ctl[ 0], sph_filter_c->sph_filter_type_c);
-		read_character_ctl_item_c(buf, label_sph_filter_ctl[ 1], sph_filter_c->radial_filter_type_c);
+		read_chara_ctl_item_c(buf, label_sph_filter_ctl[ 0], sph_filter_c->sph_filter_type_c);
+		read_chara_ctl_item_c(buf, label_sph_filter_ctl[ 1], sph_filter_c->radial_filter_type_c);
 		
 		read_integer_ctl_item_c(buf, label_sph_filter_ctl[ 2], sph_filter_c->maximum_moments_c);
 		read_integer_ctl_item_c(buf, label_sph_filter_ctl[ 5], sph_filter_c->first_reference_c);
@@ -99,8 +99,8 @@ int write_sph_filter_ctl_c(FILE *fp, int level, const char *label,
                                 struct sph_filter_ctl_c *sph_filter_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 0], sph_filter_c->sph_filter_type_c);
-	write_character_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 1], sph_filter_c->radial_filter_type_c);
+	write_chara_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 0], sph_filter_c->sph_filter_type_c);
+	write_chara_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 1], sph_filter_c->radial_filter_type_c);
 	
 	write_integer_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 2], sph_filter_c->maximum_moments_c);
 	write_real_ctl_item_c(fp, level, sph_filter_c->maxlen, label_sph_filter_ctl[ 3], sph_filter_c->sphere_filter_width_c);

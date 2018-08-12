@@ -14,12 +14,13 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_IO.h"
 #include "t_control_chara_real_IO.h"
 
 struct forces_ctl_c{
 	int maxlen;
 	
-	struct chara_ctl_array *force_names_c;
+	struct chara_ctl_list force_names_list;
 };
 
 struct gravity_ctl_c{

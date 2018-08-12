@@ -187,63 +187,6 @@ int count_max_length_of_label(int num, const char *label[KCHARA_C]){
 };
 
 
-
-void alloc_ctl_chara_item(struct chara_ctl_item *c_item){
-	
-	c_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
-	c_item->iflag = 0;
-	return;
-}
-
-void dealloc_ctl_chara_item(struct chara_ctl_item *c_item){
-	
-	free(c_item->c_tbl);
-	return;
-}
-
-void read_character_ctl_item_c(const char *buf, const char *label,
-			struct chara_ctl_item *c_item){
-	char header_chara[KCHARA_C];
-	
-	if(c_item->iflag > 0) return;
-	
-	sscanf(buf, "%s", header_chara);
-	if(cmp_no_case_c(header_chara, label) > 0){
-		sscanf(buf, "%s %s", header_chara, c_item->c_tbl);
-		strip_cautation_marks(c_item->c_tbl);
-		c_item->iflag = 1;
-	};
-	
-	return;
-}
-
-void write_character_ctl_item_c(FILE *fp, int level, int maxlen,
-			const char *label, struct chara_ctl_item *c_item){
-	
-	if(c_item->iflag == 0) return;
-	write_space_4_parse_c(fp, level);
-	write_one_label_cont_c(fp, maxlen, label);
-	write_one_label_w_lf_c(fp, c_item->c_tbl);
-	return;
-}
-
-int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item){
-    int iflag = 0;
-    iflag = cmp_no_case_c(c_item->c_tbl, "ON");
-    if(iflag == 0) iflag = cmp_no_case_c(c_item->c_tbl, "YES");
-    return iflag;
-};
-
-void set_boolean_by_chara_ctl_item(int iflag, struct chara_ctl_item *c_item){
-    if(iflag > 0){
-        c_item->c_tbl = "On";
-    } else {
-        c_item->c_tbl = "Off";
-    };
-    return;
-};
-
-
 void init_ctl_int_item(struct int_ctl_item *i_item){
 	i_item->iflag = 0;
 	return;

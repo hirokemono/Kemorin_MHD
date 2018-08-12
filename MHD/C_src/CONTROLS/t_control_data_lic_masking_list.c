@@ -33,8 +33,8 @@ void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	
 	mask_ctl->field_name_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	mask_ctl->component_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(mask_ctl->field_name_ctl);
-	alloc_ctl_chara_item(mask_ctl->component_ctl);
+	alloc_chara_ctl_item_c(mask_ctl->field_name_ctl);
+	alloc_chara_ctl_item_c(mask_ctl->component_ctl);
 	
 	init_real2_ctl_list(&mask_ctl->mask_range_list);
 	
@@ -43,8 +43,8 @@ void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 
 void dealloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	
-	dealloc_ctl_chara_item(mask_ctl->field_name_ctl);
-	dealloc_ctl_chara_item(mask_ctl->component_ctl);
+	dealloc_chara_ctl_item_c(mask_ctl->field_name_ctl);
+	dealloc_chara_ctl_item_c(mask_ctl->component_ctl);
 	free(mask_ctl->field_name_ctl);
 	free(mask_ctl->component_ctl);
 	
@@ -60,8 +60,8 @@ int read_lic_masking_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_lic_masking_ctl[ 0], mask_ctl->field_name_ctl);
-		read_character_ctl_item_c(buf, label_lic_masking_ctl[ 1], mask_ctl->component_ctl);
+		read_chara_ctl_item_c(buf, label_lic_masking_ctl[ 0], mask_ctl->field_name_ctl);
+		read_chara_ctl_item_c(buf, label_lic_masking_ctl[ 1], mask_ctl->component_ctl);
 		
 		read_real2_ctl_list(fp, buf, label_lic_masking_ctl[ 2], &mask_ctl->mask_range_list);
 	};
@@ -73,8 +73,8 @@ int write_lic_masking_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl[ 0], mask_ctl->field_name_ctl);
-	write_character_ctl_item_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl[ 1], mask_ctl->component_ctl);
+	write_chara_ctl_item_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl[ 0], mask_ctl->field_name_ctl);
+	write_chara_ctl_item_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl[ 1], mask_ctl->component_ctl);
 	
 	write_real2_ctl_list(fp, level, label_lic_masking_ctl[ 2], &mask_ctl->mask_range_list);
 	

@@ -74,7 +74,7 @@ void alloc_time_data_control_c(struct time_data_control_c *tctl){
     };
     
     tctl->flexible_step_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(tctl->flexible_step_c);
+    alloc_chara_ctl_item_c(tctl->flexible_step_c);
     
     tctl->i_step_init_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_ctl_int_item(tctl->i_step_init_c);
@@ -154,7 +154,7 @@ void alloc_time_data_control_c(struct time_data_control_c *tctl){
 };
 
 void dealloc_time_data_control_c(struct time_data_control_c *tctl){
-    dealloc_ctl_chara_item(tctl->flexible_step_c);
+    dealloc_chara_ctl_item_c(tctl->flexible_step_c);
     free(tctl->flexible_step_c);
     
     free(tctl->i_step_init_c);
@@ -205,7 +205,7 @@ int read_time_data_control_c(FILE *fp, char buf[LENGTHBUF], const char *label,
     while(find_control_end_flag_c(buf, label) == 0){
         skip_comment_read_line(fp, buf);
 
-        read_character_ctl_item_c(buf, label_time_data_ctl[0], tctl->flexible_step_c);
+        read_chara_ctl_item_c(buf, label_time_data_ctl[0], tctl->flexible_step_c);
         read_real_ctl_item_c(buf, label_time_data_ctl[1], tctl->elapsed_time_c);
         
         read_integer_ctl_item_c(buf, label_time_data_ctl[2], tctl->i_step_init_c);
@@ -260,7 +260,7 @@ int write_time_data_control_c(FILE *fp, int level, const char *label,
 			struct time_data_control_c *tctl){
     level = write_begin_flag_for_ctl_c(fp, level, label);
     
-    write_character_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[0], tctl->flexible_step_c);
+    write_chara_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[0], tctl->flexible_step_c);
     write_real_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[1], tctl->elapsed_time_c);
     
     write_integer_ctl_item_c(fp, level, tctl->maxlen, label_time_data_ctl[2], tctl->i_step_init_c);

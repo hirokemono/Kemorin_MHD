@@ -11,6 +11,7 @@
 
 #include <gtk/gtk.h>
 #include "control_elements_IO_c.h"
+#include "t_control_chara_IO.h"
 
 GtkWidget *make_toggle_hbox (const char *label, struct chara_ctl_item *ctl_item,
 			gboolean is_on, gboolean is_sensitive);

@@ -31,18 +31,18 @@ void alloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
         };
 	};
 	
-	nmtr_ctl->group_4_monitor_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
-    init_ctl_chara_array(nmtr_ctl->group_4_monitor_ctl);
+    init_chara_ctl_list(&nmtr_ctl->group_4_monitor_list);
     init_real3_ctl_list(&nmtr_ctl->xx_4_monitor_list);
     init_int2_ctl_list(&nmtr_ctl->node_4_monitor_list);
+    return;
 };
 
 void dealloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
-    dealloc_ctl_chara_array(nmtr_ctl->group_4_monitor_ctl);
+    clear_chara_ctl_list(&nmtr_ctl->group_4_monitor_list);
     clear_real3_ctl_list(&nmtr_ctl->xx_4_monitor_list);
     clear_int2_ctl_list(&nmtr_ctl->node_4_monitor_list);
 	
-    free(nmtr_ctl->group_4_monitor_ctl);
+    return;
 };
 
 int read_node_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
@@ -50,7 +50,7 @@ int read_node_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_array_c(fp, buf, label_node_monitor_ctl[0], nmtr_ctl->group_4_monitor_ctl);
+		read_chara_ctl_list(fp, buf, label_node_monitor_ctl[0], &nmtr_ctl->group_4_monitor_list);
 		read_real3_ctl_list(fp, buf, label_node_monitor_ctl[1], &nmtr_ctl->xx_4_monitor_list);
 		read_int2_ctl_list(fp, buf, label_node_monitor_ctl[2], &nmtr_ctl->node_4_monitor_list);
 	};
@@ -61,8 +61,7 @@ int write_node_monitor_ctl_c(FILE *fp, int level, const char *label,
 			struct node_monitor_ctl_c *nmtr_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_array_c(fp, level, (int) strlen(label_node_monitor_ctl[0]),
-			label_node_monitor_ctl[0], nmtr_ctl->group_4_monitor_ctl);
+	write_chara_ctl_list(fp, level, label_node_monitor_ctl[0], &nmtr_ctl->group_4_monitor_list);
 	
 	write_real3_ctl_list(fp, level, label_node_monitor_ctl[1], &nmtr_ctl->xx_4_monitor_list);
 	write_int2_ctl_list(fp, level, label_node_monitor_ctl[2], &nmtr_ctl->node_4_monitor_list);

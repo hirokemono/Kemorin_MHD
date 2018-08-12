@@ -68,30 +68,27 @@ void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	
 	iso_def_c->isosurf_data_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	iso_def_c->isosurf_comp_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(iso_def_c->isosurf_data_ctl);
-	alloc_ctl_chara_item(iso_def_c->isosurf_comp_ctl);
+	alloc_chara_ctl_item_c(iso_def_c->isosurf_data_ctl);
+	alloc_chara_ctl_item_c(iso_def_c->isosurf_comp_ctl);
 	
 	iso_def_c->isosurf_value_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_ctl_real_item(iso_def_c->isosurf_value_ctl);
 	
-	iso_def_c->iso_area_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
-	init_ctl_chara_array(iso_def_c->iso_area_ctl);
+	init_chara_ctl_list(&iso_def_c->iso_area_list);
 	
 	return;
 };
 
 void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	
-	dealloc_ctl_chara_item(iso_def_c->isosurf_data_ctl);
-	dealloc_ctl_chara_item(iso_def_c->isosurf_comp_ctl);
+	dealloc_chara_ctl_item_c(iso_def_c->isosurf_data_ctl);
+	dealloc_chara_ctl_item_c(iso_def_c->isosurf_comp_ctl);
 	free(iso_def_c->isosurf_data_ctl);
 	free(iso_def_c->isosurf_comp_ctl);
 	
 	free(iso_def_c->isosurf_value_ctl);
 	
-	dealloc_ctl_chara_array(iso_def_c->iso_area_ctl);
-	free(iso_def_c->iso_area_ctl);
-	
+	clear_chara_ctl_list(&iso_def_c->iso_area_list);
 	return;
 };
 
@@ -101,7 +98,7 @@ int read_iso_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
     while(find_control_end_flag_c(buf, label) == 0){
         skip_comment_read_line(fp, buf);
         
-        read_character_ctl_array_c(fp, buf, label_iso_define_ctl[ 5], iso_def_c->iso_area_ctl);
+        read_chara_ctl_list(fp, buf, label_iso_define_ctl[ 5], &iso_def_c->iso_area_list);
     };
     return 1;
 };
@@ -113,12 +110,12 @@ int read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
     while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_iso_define_ctl[ 0], iso_def_c->isosurf_data_ctl);
-		read_character_ctl_item_c(buf, label_iso_define_ctl[ 1], iso_def_c->isosurf_comp_ctl);
+		read_chara_ctl_item_c(buf, label_iso_define_ctl[ 0], iso_def_c->isosurf_data_ctl);
+		read_chara_ctl_item_c(buf, label_iso_define_ctl[ 1], iso_def_c->isosurf_comp_ctl);
 		
 		read_real_ctl_item_c(buf, label_iso_define_ctl[ 2], iso_def_c->isosurf_value_ctl);
 		
-		read_character_ctl_array_c(fp, buf, label_iso_define_ctl[ 3], iso_def_c->iso_area_ctl);
+		read_chara_ctl_list(fp, buf, label_iso_define_ctl[ 3], &iso_def_c->iso_area_list);
         
         if(right_begin_flag_c(buf, label_iso_define_ctl[ 4]) > 0){
             iflag = read_iso_area_ctl_c(fp, buf, 
@@ -132,13 +129,12 @@ int write_iso_define_ctl_c(FILE *fp, int level, const char *label,
 			struct iso_define_ctl_c *iso_def_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, iso_def_c->maxlen, label_iso_define_ctl[ 0], iso_def_c->isosurf_data_ctl);
-	write_character_ctl_item_c(fp, level, iso_def_c->maxlen, label_iso_define_ctl[ 1], iso_def_c->isosurf_comp_ctl);
+	write_chara_ctl_item_c(fp, level, iso_def_c->maxlen, label_iso_define_ctl[ 0], iso_def_c->isosurf_data_ctl);
+	write_chara_ctl_item_c(fp, level, iso_def_c->maxlen, label_iso_define_ctl[ 1], iso_def_c->isosurf_comp_ctl);
 	
 	write_real_ctl_item_c(fp, level, iso_def_c->maxlen, label_iso_define_ctl[ 2], iso_def_c->isosurf_value_ctl);
 	
-	if(iso_def_c->iso_area_ctl->num > 0) fprintf(fp, "!\n");
-	write_character_ctl_array_c(fp, level, iso_def_c->maxlen, label_iso_define_ctl[ 3], iso_def_c->iso_area_ctl);
+	write_chara_ctl_list(fp, level, label_iso_define_ctl[ 3], &iso_def_c->iso_area_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -156,7 +152,7 @@ void alloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 	};
 	
 	iso_fld_c->iso_result_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(iso_fld_c->iso_result_type_ctl);
+	alloc_chara_ctl_item_c(iso_fld_c->iso_result_type_ctl);
 	
 	iso_fld_c->result_value_iso_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_chara2_ctl_list(&iso_fld_c->iso_out_field_list);
@@ -166,7 +162,7 @@ void alloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 
 void dealloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 	
-	dealloc_ctl_chara_item(iso_fld_c->iso_result_type_ctl);
+	dealloc_chara_ctl_item_c(iso_fld_c->iso_result_type_ctl);
 	free(iso_fld_c->iso_result_type_ctl);
 	free(iso_fld_c->result_value_iso_ctl);
 	
@@ -180,7 +176,7 @@ int read_iso_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_iso_field_ctl[ 0], iso_fld_c->iso_result_type_ctl);
+		read_chara_ctl_item_c(buf, label_iso_field_ctl[ 0], iso_fld_c->iso_result_type_ctl);
 		read_real_ctl_item_c(buf, label_iso_field_ctl[ 1], iso_fld_c->result_value_iso_ctl);
 		
 		read_chara2_ctl_list(fp, buf, label_iso_field_ctl[ 2], &iso_fld_c->iso_out_field_list);
@@ -192,7 +188,7 @@ int write_iso_field_ctl_c(FILE *fp, int level, const char *label,
 			struct iso_field_ctl_c *iso_fld_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, iso_fld_c->maxlen, label_iso_field_ctl[ 0], iso_fld_c->iso_result_type_ctl);
+	write_chara_ctl_item_c(fp, level, iso_fld_c->maxlen, label_iso_field_ctl[ 0], iso_fld_c->iso_result_type_ctl);
 	write_real_ctl_item_c(fp, level, iso_fld_c->maxlen, label_iso_field_ctl[ 1], iso_fld_c->result_value_iso_ctl);
 	
 	write_chara2_ctl_list(fp, level, label_iso_field_ctl[ 2], &iso_fld_c->iso_out_field_list);
@@ -222,8 +218,8 @@ void alloc_iso_ctl_c(struct iso_ctl_c *iso_c){
 	
 	iso_c->iso_file_head_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	iso_c->iso_output_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(iso_c->iso_file_head_ctl);
-	alloc_ctl_chara_item(iso_c->iso_output_type_ctl);
+	alloc_chara_ctl_item_c(iso_c->iso_file_head_ctl);
+	alloc_chara_ctl_item_c(iso_c->iso_output_type_ctl);
 	
 	return;
 };
@@ -234,8 +230,8 @@ void dealloc_iso_ctl_c(struct iso_ctl_c *iso_c){
 	dealloc_iso_field_ctl_c(iso_c->iso_fld_c);
 	free(iso_c->iso_fld_c);
 	
-	dealloc_ctl_chara_item(iso_c->iso_file_head_ctl);
-	dealloc_ctl_chara_item(iso_c->iso_output_type_ctl);
+	dealloc_chara_ctl_item_c(iso_c->iso_file_head_ctl);
+	dealloc_chara_ctl_item_c(iso_c->iso_output_type_ctl);
 	free(iso_c->iso_file_head_ctl);
 	free(iso_c->iso_output_type_ctl);
 	
@@ -250,9 +246,9 @@ int read_iso_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_iso_ctl[ 0], iso_c->iso_file_head_ctl);
-        read_character_ctl_item_c(buf, label_iso_ctl[ 4], iso_c->iso_file_head_ctl);
-		read_character_ctl_item_c(buf, label_iso_ctl[ 1], iso_c->iso_output_type_ctl);
+		read_chara_ctl_item_c(buf, label_iso_ctl[ 0], iso_c->iso_file_head_ctl);
+        read_chara_ctl_item_c(buf, label_iso_ctl[ 4], iso_c->iso_file_head_ctl);
+		read_chara_ctl_item_c(buf, label_iso_ctl[ 1], iso_c->iso_output_type_ctl);
 		
 		if(right_begin_flag_c(buf, label_iso_ctl[ 2]) > 0){
 			iso_c->iflag_isosurf_define = read_iso_define_ctl_c(fp, buf, 
@@ -274,8 +270,8 @@ int write_iso_ctl_c(FILE *fp, int level, const char *label,
 			struct iso_ctl_c *iso_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, iso_c->maxlen, label_iso_ctl[ 0], iso_c->iso_file_head_ctl);
-	write_character_ctl_item_c(fp, level, iso_c->maxlen, label_iso_ctl[ 1], iso_c->iso_output_type_ctl);
+	write_chara_ctl_item_c(fp, level, iso_c->maxlen, label_iso_ctl[ 0], iso_c->iso_file_head_ctl);
+	write_chara_ctl_item_c(fp, level, iso_c->maxlen, label_iso_ctl[ 1], iso_c->iso_output_type_ctl);
 	
     if(iso_c->iflag_isosurf_define > 0){
         fprintf(fp, "!\n");

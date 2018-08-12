@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_IO.h"
 #include "t_control_chara3_IO.h"
 
 struct field_ctl_c{
@@ -21,8 +22,8 @@ struct field_ctl_c{
 	
 	struct chara3_ctl_list field_list;
 	
-	struct chara_ctl_array *quad_phys_c;
-	struct chara_ctl_array *linear_phys_c;
+	struct chara_ctl_list quad_phys_list;
+	struct chara_ctl_list linear_phys_list;
 };
 
 /* prototype */

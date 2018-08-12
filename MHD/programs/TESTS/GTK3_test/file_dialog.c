@@ -1,7 +1,8 @@
 
 #include <gtk/gtk.h>
-#include "t_SGS_MHD_control_c.h"
 #include "control_elements_IO_GTK.h"
+#include "t_control_chara_IO.h"
+#include "t_SGS_MHD_control_c.h"
 
 void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c, struct chara_ctl_item *ptem_t);
 

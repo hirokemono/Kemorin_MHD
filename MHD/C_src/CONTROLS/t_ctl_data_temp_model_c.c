@@ -203,8 +203,8 @@ void alloc_ref_temperature_ctl_c(struct reference_temperature_c *reft_ctl){
 	reft_ctl->reference_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	reft_ctl->stratified_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	
-	alloc_ctl_chara_item(reft_ctl->reference_c);
-	alloc_ctl_chara_item(reft_ctl->stratified_c);
+	alloc_chara_ctl_item_c(reft_ctl->reference_c);
+	alloc_chara_ctl_item_c(reft_ctl->stratified_c);
 	
 	return;
 };
@@ -223,8 +223,8 @@ void dealloc_ref_temperature_ctl_c(struct reference_temperature_c *reft_ctl){
 	free(reft_ctl->takepiro_c);
 	reft_ctl->iflag_takepiro_c = 0;
 	
-	dealloc_ctl_chara_item(reft_ctl->reference_c);
-	dealloc_ctl_chara_item(reft_ctl->stratified_c);
+	dealloc_chara_ctl_item_c(reft_ctl->reference_c);
+	dealloc_chara_ctl_item_c(reft_ctl->stratified_c);
 	
 	free(reft_ctl->reference_c);
 	free(reft_ctl->stratified_c);
@@ -248,8 +248,8 @@ int read_ref_temperature_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		reft_ctl->iflag_takepiro_c = read_rtakepiro_model_ctl_c(fp, buf, 
 					label_ref_temperature_ctl[ 7], reft_ctl->takepiro_c);
 		
-		read_character_ctl_item_c(buf, label_ref_temperature_ctl[ 0], reft_ctl->reference_c);
-		read_character_ctl_item_c(buf, label_ref_temperature_ctl[ 6], reft_ctl->stratified_c);
+		read_chara_ctl_item_c(buf, label_ref_temperature_ctl[ 0], reft_ctl->reference_c);
+		read_chara_ctl_item_c(buf, label_ref_temperature_ctl[ 6], reft_ctl->stratified_c);
 		
 	};
 	return 1;
@@ -271,8 +271,8 @@ int read_ref_composition_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		refc_ctl->iflag_takepiro_c = read_rtakepiro_model_ctl_c(fp, buf, 
 					label_ref_temperature_ctl[ 7], refc_ctl->takepiro_c);
 		
-		read_character_ctl_item_c(buf, label_ref_temperature_ctl[ 3], refc_ctl->reference_c);
-		read_character_ctl_item_c(buf, label_ref_temperature_ctl[ 6], refc_ctl->stratified_c);
+		read_chara_ctl_item_c(buf, label_ref_temperature_ctl[ 3], refc_ctl->reference_c);
+		read_chara_ctl_item_c(buf, label_ref_temperature_ctl[ 6], refc_ctl->stratified_c);
 	};
 	return 1;
 };
@@ -281,7 +281,7 @@ int write_ref_temperature_ctl_c(FILE *fp, int level, const char *label,
                                 struct reference_temperature_c *reft_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, reft_ctl->maxlen, label_ref_temperature_ctl[ 0], reft_ctl->reference_c);
+	write_chara_ctl_item_c(fp, level, reft_ctl->maxlen, label_ref_temperature_ctl[ 0], reft_ctl->reference_c);
 	
     if(reft_ctl->iflag_low_temp_ctl > 0){
         fprintf(fp, "!\n");
@@ -293,7 +293,7 @@ int write_ref_temperature_ctl_c(FILE *fp, int level, const char *label,
     };
 	if(reft_ctl->iflag_takepiro_c > 0) fprintf(fp, "!\n");
 	
-	write_character_ctl_item_c(fp, level, reft_ctl->maxlen, label_ref_temperature_ctl[ 6], reft_ctl->stratified_c);
+	write_chara_ctl_item_c(fp, level, reft_ctl->maxlen, label_ref_temperature_ctl[ 6], reft_ctl->stratified_c);
 	
     if(reft_ctl->iflag_takepiro_c > 0){
         level = write_takepiro_model_ctl_c(fp, level, label_ref_temperature_ctl[ 7], reft_ctl->takepiro_c);
@@ -306,7 +306,7 @@ int write_ref_composition_ctl_c(FILE *fp, int level, const char *label,
                                 struct reference_temperature_c *refc_ctl){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, refc_ctl->maxlen, label_ref_temperature_ctl[ 3], refc_ctl->reference_c);
+	write_chara_ctl_item_c(fp, level, refc_ctl->maxlen, label_ref_temperature_ctl[ 3], refc_ctl->reference_c);
 	
     if(refc_ctl->iflag_low_temp_ctl > 0){ 
         fprintf(fp, "!\n");
@@ -317,7 +317,7 @@ int write_ref_composition_ctl_c(FILE *fp, int level, const char *label,
         level = write_refcomp_point_ctl_c(fp, level, label_ref_temperature_ctl[ 5], refc_ctl->high_c);
     };
     
-	write_character_ctl_item_c(fp, level, refc_ctl->maxlen, label_ref_temperature_ctl[ 6], refc_ctl->stratified_c);
+	write_chara_ctl_item_c(fp, level, refc_ctl->maxlen, label_ref_temperature_ctl[ 6], refc_ctl->stratified_c);
 	
     if(refc_ctl->iflag_takepiro_c > 0){
         level = write_takepiro_model_ctl_c(fp, level, label_ref_temperature_ctl[ 7], refc_ctl->takepiro_c);

@@ -53,44 +53,44 @@ void alloc_lic_ctl_c(struct lic_ctl_c *lic_c){
 	};
 	
 	lic_c->LIC_field_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(lic_c->LIC_field_ctl);
+	alloc_chara_ctl_item_c(lic_c->LIC_field_ctl);
 	
 	lic_c->color_field_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->color_component_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->opacity_field_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->opacity_component_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(lic_c->color_field_ctl);
-	alloc_ctl_chara_item(lic_c->color_component_ctl);
-	alloc_ctl_chara_item(lic_c->opacity_field_ctl);
-	alloc_ctl_chara_item(lic_c->opacity_component_ctl);
+	alloc_chara_ctl_item_c(lic_c->color_field_ctl);
+	alloc_chara_ctl_item_c(lic_c->color_component_ctl);
+	alloc_chara_ctl_item_c(lic_c->opacity_field_ctl);
+	alloc_chara_ctl_item_c(lic_c->opacity_component_ctl);
 	
 	lic_c->noise_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->noise_file_prefix_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->noise_resolution_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	alloc_ctl_chara_item(lic_c->noise_type_ctl);
-	alloc_ctl_chara_item(lic_c->noise_file_prefix_ctl);
+	alloc_chara_ctl_item_c(lic_c->noise_type_ctl);
+	alloc_chara_ctl_item_c(lic_c->noise_file_prefix_ctl);
 	init_ctl_int_item(lic_c->noise_resolution_ctl);
 	
 	lic_c->kernel_function_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->kernal_file_prefix_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(lic_c->kernel_function_type_ctl);
-	alloc_ctl_chara_item(lic_c->kernal_file_prefix_ctl);
+	alloc_chara_ctl_item_c(lic_c->kernel_function_type_ctl);
+	alloc_chara_ctl_item_c(lic_c->kernal_file_prefix_ctl);
 	
 	lic_c->LIC_trace_length_def_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->LIC_trace_length_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	lic_c->LIC_trace_count_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	alloc_ctl_chara_item(lic_c->LIC_trace_length_def_ctl);
+	alloc_chara_ctl_item_c(lic_c->LIC_trace_length_def_ctl);
 	init_ctl_real_item(lic_c->LIC_trace_length_ctl);
 	init_ctl_int_item(lic_c->LIC_trace_count_ctl);
 	
 	lic_c->normalization_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->normalization_value_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	alloc_ctl_chara_item(lic_c->normalization_type_ctl);
+	alloc_chara_ctl_item_c(lic_c->normalization_type_ctl);
 	init_ctl_real_item(lic_c->normalization_value_ctl);
 	
 	lic_c->reflection_ref_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->reflection_parameter_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	alloc_ctl_chara_item(lic_c->reflection_ref_type_ctl);
+	alloc_chara_ctl_item_c(lic_c->reflection_ref_type_ctl);
 	init_ctl_real_item(lic_c->reflection_parameter_ctl);
 	
 	init_lic_masking_ctl_list(&lic_c->lic_mask_list);
@@ -100,39 +100,39 @@ void alloc_lic_ctl_c(struct lic_ctl_c *lic_c){
 
 
 void dealloc_lic_ctl_c(struct lic_ctl_c *lic_c){
-	dealloc_ctl_chara_item(lic_c->LIC_field_ctl);
+	dealloc_chara_ctl_item_c(lic_c->LIC_field_ctl);
 	free(lic_c->LIC_field_ctl);
 	
-	dealloc_ctl_chara_item(lic_c->color_field_ctl);
-	dealloc_ctl_chara_item(lic_c->color_component_ctl);
-	dealloc_ctl_chara_item(lic_c->opacity_field_ctl);
-	dealloc_ctl_chara_item(lic_c->opacity_component_ctl);
+	dealloc_chara_ctl_item_c(lic_c->color_field_ctl);
+	dealloc_chara_ctl_item_c(lic_c->color_component_ctl);
+	dealloc_chara_ctl_item_c(lic_c->opacity_field_ctl);
+	dealloc_chara_ctl_item_c(lic_c->opacity_component_ctl);
 	free(lic_c->color_field_ctl);
 	free(lic_c->color_component_ctl);
 	free(lic_c->opacity_field_ctl);
 	free(lic_c->opacity_component_ctl);
 	
-	dealloc_ctl_chara_item(lic_c->noise_type_ctl);
-	dealloc_ctl_chara_item(lic_c->noise_file_prefix_ctl);
+	dealloc_chara_ctl_item_c(lic_c->noise_type_ctl);
+	dealloc_chara_ctl_item_c(lic_c->noise_file_prefix_ctl);
 	free(lic_c->noise_type_ctl);
 	free(lic_c->noise_file_prefix_ctl);
 	free(lic_c->noise_resolution_ctl);
 	
-	dealloc_ctl_chara_item(lic_c->kernel_function_type_ctl);
-	dealloc_ctl_chara_item(lic_c->kernal_file_prefix_ctl);
+	dealloc_chara_ctl_item_c(lic_c->kernel_function_type_ctl);
+	dealloc_chara_ctl_item_c(lic_c->kernal_file_prefix_ctl);
 	free(lic_c->kernel_function_type_ctl);
 	free(lic_c->kernal_file_prefix_ctl);
 	
-	dealloc_ctl_chara_item(lic_c->LIC_trace_length_def_ctl);
+	dealloc_chara_ctl_item_c(lic_c->LIC_trace_length_def_ctl);
 	free(lic_c->LIC_trace_length_def_ctl);
 	free(lic_c->LIC_trace_length_ctl);
 	free(lic_c->LIC_trace_count_ctl);
 	
-	dealloc_ctl_chara_item(lic_c->normalization_type_ctl);
+	dealloc_chara_ctl_item_c(lic_c->normalization_type_ctl);
 	free(lic_c->normalization_type_ctl);
 	free(lic_c->normalization_value_ctl);
 	
-	dealloc_ctl_chara_item(lic_c->reflection_ref_type_ctl);
+	dealloc_chara_ctl_item_c(lic_c->reflection_ref_type_ctl);
 	free(lic_c->reflection_ref_type_ctl);
 	free(lic_c->reflection_parameter_ctl);
 	
@@ -149,30 +149,30 @@ int read_lic_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_lic_ctl_c[ 0], lic_c->LIC_field_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[ 0], lic_c->LIC_field_ctl);
 		
-		read_character_ctl_item_c(buf, label_lic_ctl_c[ 1], lic_c->color_field_ctl);
-		read_character_ctl_item_c(buf, label_lic_ctl_c[ 2], lic_c->color_component_ctl);
-		read_character_ctl_item_c(buf, label_lic_ctl_c[ 3], lic_c->opacity_field_ctl);
-		read_character_ctl_item_c(buf, label_lic_ctl_c[ 4], lic_c->opacity_component_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[ 1], lic_c->color_field_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[ 2], lic_c->color_component_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[ 3], lic_c->opacity_field_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[ 4], lic_c->opacity_component_ctl);
 		
 		iflag = read_lic_masking_ctl_list(fp, buf, label_lic_ctl_c[ 5], &lic_c->lic_mask_list);
 		
-		read_character_ctl_item_c(buf, label_lic_ctl_c[ 6], lic_c->noise_type_ctl);
-		read_character_ctl_item_c(buf, label_lic_ctl_c[ 7], lic_c->noise_file_prefix_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[ 6], lic_c->noise_type_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[ 7], lic_c->noise_file_prefix_ctl);
 		read_integer_ctl_item_c(buf, label_lic_ctl_c[ 8], lic_c->noise_resolution_ctl);
 		
-		read_character_ctl_item_c(buf, label_lic_ctl_c[ 9], lic_c->kernel_function_type_ctl);
-		read_character_ctl_item_c(buf, label_lic_ctl_c[10], lic_c->kernal_file_prefix_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[ 9], lic_c->kernel_function_type_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[10], lic_c->kernal_file_prefix_ctl);
 		
-		read_character_ctl_item_c(buf, label_lic_ctl_c[11], lic_c->LIC_trace_length_def_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[11], lic_c->LIC_trace_length_def_ctl);
 		read_real_ctl_item_c(buf, label_lic_ctl_c[12], lic_c->LIC_trace_length_ctl);
 		read_integer_ctl_item_c(buf, label_lic_ctl_c[13], lic_c->LIC_trace_count_ctl);
 		
-		read_character_ctl_item_c(buf, label_lic_ctl_c[14], lic_c->normalization_type_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[14], lic_c->normalization_type_ctl);
 		read_real_ctl_item_c(buf, label_lic_ctl_c[15], lic_c->normalization_value_ctl);
 		
-		read_character_ctl_item_c(buf, label_lic_ctl_c[16], lic_c->reflection_ref_type_ctl);
+		read_chara_ctl_item_c(buf, label_lic_ctl_c[16], lic_c->reflection_ref_type_ctl);
 		read_real_ctl_item_c(buf, label_lic_ctl_c[17], lic_c->reflection_parameter_ctl);
 	};
 	return 1;
@@ -183,31 +183,31 @@ int write_lic_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 0], lic_c->LIC_field_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 0], lic_c->LIC_field_ctl);
 	
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 1], lic_c->color_field_ctl);
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 2], lic_c->color_component_ctl);
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 3], lic_c->opacity_field_ctl);
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 4], lic_c->opacity_component_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 1], lic_c->color_field_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 2], lic_c->color_component_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 3], lic_c->opacity_field_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 4], lic_c->opacity_component_ctl);
 	
 	level = write_lic_masking_ctl_list(fp, level, label_lic_ctl_c[ 5], &lic_c->lic_mask_list);
 	
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 6], lic_c->noise_type_ctl);
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 7], lic_c->noise_file_prefix_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 6], lic_c->noise_type_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 7], lic_c->noise_file_prefix_ctl);
 	write_integer_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 8], lic_c->noise_resolution_ctl);
 	
 	
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 9], lic_c->kernel_function_type_ctl);
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[10], lic_c->kernal_file_prefix_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[ 9], lic_c->kernel_function_type_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[10], lic_c->kernal_file_prefix_ctl);
 	
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[11], lic_c->LIC_trace_length_def_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[11], lic_c->LIC_trace_length_def_ctl);
 	write_real_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[12], lic_c->LIC_trace_length_ctl);
 	write_integer_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[13], lic_c->LIC_trace_count_ctl);
 	
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[14], lic_c->normalization_type_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[14], lic_c->normalization_type_ctl);
 	write_real_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[15], lic_c->normalization_value_ctl);
 	
-	write_character_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[16], lic_c->reflection_ref_type_ctl);
+	write_chara_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[16], lic_c->reflection_ref_type_ctl);
 	write_real_ctl_item_c(fp, level, lic_c->maxlen, label_lic_ctl_c[17], lic_c->reflection_parameter_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);

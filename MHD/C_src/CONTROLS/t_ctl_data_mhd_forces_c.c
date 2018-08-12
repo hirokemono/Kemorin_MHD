@@ -59,17 +59,13 @@ void alloc_forces_ctl_c(struct forces_ctl_c *frc_ctl){
 		};
 	};
 	
-	frc_ctl->force_names_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
-	init_ctl_chara_array(frc_ctl->force_names_c);
+	init_chara_ctl_list(&frc_ctl->force_names_list);
 	
 	return;
 };
 
 void dealloc_forces_ctl_c(struct forces_ctl_c *frc_ctl){
-	
-	dealloc_ctl_chara_array(frc_ctl->force_names_c);
-	free(frc_ctl->force_names_c);
-	
+	clear_chara_ctl_list(&frc_ctl->force_names_list);
 	return;
 };
 
@@ -78,7 +74,7 @@ int read_forces_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_array_c(fp, buf, label_forces_ctl[ 0], frc_ctl->force_names_c);
+		read_chara_ctl_list(fp, buf, label_forces_ctl[ 0], &frc_ctl->force_names_list);
 	};
 	return 1;
 };
@@ -87,8 +83,7 @@ int write_forces_ctl_c(FILE *fp, int level,	const char *label,
                        struct forces_ctl_c *frc_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_array_c(fp, level, (int) strlen(label_forces_ctl[0]),
-				label_forces_ctl[0], frc_ctl->force_names_c);
+	write_chara_ctl_list(fp, level, label_forces_ctl[0], &frc_ctl->force_names_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -107,7 +102,7 @@ void alloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
 	
 	init_chara_real_ctl_list(&g_ctl->gravity_vec_list);
 	g_ctl->gravity_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(g_ctl->gravity_c);
+	alloc_chara_ctl_item_c(g_ctl->gravity_c);
 	
 	return;
 };
@@ -116,7 +111,7 @@ void dealloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
 	
 	clear_chara_real_ctl_list(&g_ctl->gravity_vec_list);
 	
-	dealloc_ctl_chara_item(g_ctl->gravity_c);
+	dealloc_chara_ctl_item_c(g_ctl->gravity_c);
 	free(g_ctl->gravity_c);
 	
 	return;
@@ -127,7 +122,7 @@ int read_gravity_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_gravity_ctl[ 0], g_ctl->gravity_c);
+		read_chara_ctl_item_c(buf, label_gravity_ctl[ 0], g_ctl->gravity_c);
 		read_chara_real_ctl_list(fp, buf, label_gravity_ctl[ 1], &g_ctl->gravity_vec_list);
 	};
 	return 1;
@@ -137,7 +132,7 @@ int write_gravity_ctl_c(FILE *fp, int level, const char *label,
                         struct gravity_ctl_c *g_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, g_ctl->maxlen, label_gravity_ctl[0], g_ctl->gravity_c);
+	write_chara_ctl_item_c(fp, level, g_ctl->maxlen, label_gravity_ctl[0], g_ctl->gravity_c);
 	
 	write_chara_real_ctl_list(fp, level, label_gravity_ctl[1], &g_ctl->gravity_vec_list);
 	
@@ -201,7 +196,7 @@ void alloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
 	
 	init_chara_real_ctl_list(&mcv_ctl->ext_magne_list);
 	mcv_ctl->magneto_cv_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(mcv_ctl->magneto_cv_c);
+	alloc_chara_ctl_item_c(mcv_ctl->magneto_cv_c);
 	
 	return;
 };
@@ -210,7 +205,7 @@ void dealloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
 	
 	clear_chara_real_ctl_list(&mcv_ctl->ext_magne_list);
 	
-	dealloc_ctl_chara_item(mcv_ctl->magneto_cv_c);
+	dealloc_chara_ctl_item_c(mcv_ctl->magneto_cv_c);
 	free(mcv_ctl->magneto_cv_c);
 	
 	return;
@@ -221,7 +216,7 @@ int read_magneto_cv_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_magneto_cv_ctl[ 0], mcv_ctl->magneto_cv_c);
+		read_chara_ctl_item_c(buf, label_magneto_cv_ctl[ 0], mcv_ctl->magneto_cv_c);
 		read_chara_real_ctl_list(fp, buf, label_magneto_cv_ctl[ 1], &mcv_ctl->ext_magne_list);
 	};
 	return 1;
@@ -231,7 +226,7 @@ int write_magneto_cv_ctl_c(FILE *fp, int level, const char *label,
                            struct magneto_cv_ctl_c *mcv_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, mcv_ctl->maxlen, label_magneto_cv_ctl[0], mcv_ctl->magneto_cv_c);
+	write_chara_ctl_item_c(fp, level, mcv_ctl->maxlen, label_magneto_cv_ctl[0], mcv_ctl->magneto_cv_c);
 	
 	write_chara_real_ctl_list(fp, level, label_magneto_cv_ctl[1], &mcv_ctl->ext_magne_list);
 	

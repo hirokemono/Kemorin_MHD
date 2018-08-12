@@ -14,13 +14,14 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_IO.h"
 #include "t_control_int2_IO.h"
 #include "t_control_real3_IO.h"
 
 struct node_monitor_ctl_c{
     int maxlen;
     
-    struct chara_ctl_array *group_4_monitor_ctl;
+    struct chara_ctl_list group_4_monitor_list;
     struct real3_ctl_list xx_4_monitor_list;
     struct int2_ctl_list node_4_monitor_list;
 };

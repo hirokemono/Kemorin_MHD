@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_IO.h"
 #include "t_control_int2_IO.h"
 #include "t_control_real3_IO.h"
 
@@ -27,7 +28,7 @@ struct fline_ctl_c{
 	struct chara_ctl_item *fline_color_field_ctl;
 	struct chara_ctl_item *fline_color_comp_ctl;
 	
-	struct chara_ctl_array *fline_area_grp_ctl;
+    struct chara_ctl_list fline_area_grp_list;
 	
 	struct chara_ctl_item *starting_type_ctl;
 	struct chara_ctl_item *selection_type_ctl;

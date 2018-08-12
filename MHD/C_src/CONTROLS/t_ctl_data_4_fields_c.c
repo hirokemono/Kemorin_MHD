@@ -34,10 +34,8 @@ void alloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	
 	init_chara3_ctl_list(&fld_ctl->field_list);
 	
-	fld_ctl->quad_phys_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
-	fld_ctl->linear_phys_c = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
-	init_ctl_chara_array(fld_ctl->quad_phys_c);
-	init_ctl_chara_array(fld_ctl->linear_phys_c);
+	init_chara_ctl_list(&fld_ctl->quad_phys_list);
+	init_chara_ctl_list(&fld_ctl->linear_phys_list);
 	
 	return;
 };
@@ -46,10 +44,8 @@ void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	
 	clear_chara3_ctl_list(&fld_ctl->field_list);
 	
-	dealloc_ctl_chara_array(fld_ctl->quad_phys_c);
-	dealloc_ctl_chara_array(fld_ctl->linear_phys_c);
-	free(fld_ctl->quad_phys_c);
-	free(fld_ctl->linear_phys_c);
+	clear_chara_ctl_list(&fld_ctl->quad_phys_list);
+	clear_chara_ctl_list(&fld_ctl->linear_phys_list);
 	
 	return;
 };
@@ -61,8 +57,8 @@ int read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_chara3_ctl_list(fp, buf, label_field_ctl[ 0], &fld_ctl->field_list);
 		
-		read_character_ctl_array_c(fp, buf, label_field_ctl[ 1], fld_ctl->quad_phys_c);
-		read_character_ctl_array_c(fp, buf, label_field_ctl[ 2], fld_ctl->linear_phys_c);
+		read_chara_ctl_list(fp, buf, label_field_ctl[ 1], &fld_ctl->quad_phys_list);
+		read_chara_ctl_list(fp, buf, label_field_ctl[ 2], &fld_ctl->linear_phys_list);
 	};
 	return 1;
 };
@@ -72,12 +68,8 @@ int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c
 	
 	write_chara3_ctl_list(fp, level, label_field_ctl[0], &fld_ctl->field_list);
 	
-	if(fld_ctl->quad_phys_c->num > 0) fprintf(fp, "!\n");
-	write_character_ctl_array_c(fp, level, (int) strlen(label_field_ctl[1]),
-				label_field_ctl[1], fld_ctl->quad_phys_c);
-	if(fld_ctl->linear_phys_c->num > 0) fprintf(fp, "!\n");
-	write_character_ctl_array_c(fp, level, (int) strlen(label_field_ctl[2]),
-				label_field_ctl[2], fld_ctl->linear_phys_c);
+	write_chara_ctl_list(fp, level, label_field_ctl[1], &fld_ctl->quad_phys_list);
+	write_chara_ctl_list(fp, level, label_field_ctl[2], &fld_ctl->linear_phys_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

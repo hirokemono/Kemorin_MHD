@@ -1,5 +1,6 @@
 
 #include <gtk/gtk.h>
+#include "t_control_chara_IO.h"
 #include "t_SGS_MHD_control_c.h"
 
 int iflag_read_mhd = 0;

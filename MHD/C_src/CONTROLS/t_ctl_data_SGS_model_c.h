@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_IO.h"
 #include "t_ctl_data_sph_filter_list.h"
 
 struct filter_file_ctl_c{
@@ -40,7 +41,7 @@ struct layering_ctl_c{
 	int maxlen;
 	
 	struct chara_ctl_item *layering_grp_type_c;
-	struct chara_ctl_array *layer_grp_name_c;
+	struct chara_ctl_list layer_grp_name_list;
 	struct int_ctl_array *igrp_stack_layer_c;
 	
 	struct int_ctl_item *num_layering_grp_c;
@@ -54,8 +55,8 @@ struct layering_ctl_c{
 struct SGS_3d_filter_ctl_c{
 	int maxlen;
 	
-	struct chara_ctl_array *whole_filter_grp_ctl;
-	struct chara_ctl_array *fluid_filter_grp_ctl;
+	struct chara_ctl_list whole_filter_grp_list;
+	struct chara_ctl_list fluid_filter_grp_item;
 	
 	struct chara_ctl_item *momentum_filter_ctl;
 	struct chara_ctl_item *heat_filter_ctl;
@@ -102,8 +103,8 @@ struct SGS_model_control_c{
 	struct real_ctl_item *SGS_mxwl_factor_c;
 	struct real_ctl_item *SGS_uxb_factor_c;
 	
-	struct chara_ctl_array *SGS_terms_c;
-	struct chara_ctl_array *commutate_fld_c;
+	struct chara_ctl_list SGS_terms_list;
+	struct chara_ctl_list commutate_fld_list;
 	
 	int iflag_file_ctl;
 	struct filter_file_ctl_c *ffile_c;

@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_IO.h"
 #include "t_control_chara2_IO.h"
 
 struct iso_define_ctl_c{
@@ -24,7 +25,7 @@ struct iso_define_ctl_c{
 	
 	struct real_ctl_item *isosurf_value_ctl;
 	
-	struct chara_ctl_array *iso_area_ctl;
+	struct chara_ctl_list iso_area_list;
 };
 
 struct iso_field_ctl_c{

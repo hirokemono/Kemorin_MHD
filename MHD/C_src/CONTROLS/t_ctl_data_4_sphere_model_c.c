@@ -70,7 +70,7 @@ void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	};
 	
 	sdctl_c->inner_decomp_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(sdctl_c->inner_decomp_c);
+	alloc_chara_ctl_item_c(sdctl_c->inner_decomp_c);
 	
 	sdctl_c->num_radial_domain_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	sdctl_c->num_horiz_domain_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
@@ -86,7 +86,7 @@ void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 
 void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	
-	dealloc_ctl_chara_item(sdctl_c->inner_decomp_c);
+	dealloc_chara_ctl_item_c(sdctl_c->inner_decomp_c);
 	free(sdctl_c->inner_decomp_c);
 	
 	free(sdctl_c->num_radial_domain_c);
@@ -105,7 +105,7 @@ int read_sphere_domain_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_sphere_domain_ctl[ 0], sdctl_c->inner_decomp_c);
+		read_chara_ctl_item_c(buf, label_sphere_domain_ctl[ 0], sdctl_c->inner_decomp_c);
 		
 		read_integer_ctl_item_c(buf, label_sphere_domain_ctl[ 1], sdctl_c->num_radial_domain_c);
 		read_integer_ctl_item_c(buf, label_sphere_domain_ctl[ 2], sdctl_c->num_horiz_domain_c);
@@ -121,7 +121,7 @@ int write_sphere_domain_ctl_c(FILE *fp, int level,
 			const char *label, struct sphere_domain_ctl_c *sdctl_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, sdctl_c->maxlen, label_sphere_domain_ctl[ 0], sdctl_c->inner_decomp_c);
+	write_chara_ctl_item_c(fp, level, sdctl_c->maxlen, label_sphere_domain_ctl[ 0], sdctl_c->inner_decomp_c);
 	
 	write_integer_ctl_item_c(fp, level, sdctl_c->maxlen, label_sphere_domain_ctl[ 1], sdctl_c->num_radial_domain_c);
 	write_integer_ctl_item_c(fp, level, sdctl_c->maxlen, label_sphere_domain_ctl[ 2], sdctl_c->num_horiz_domain_c);
@@ -152,8 +152,8 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	
 	spctl_c->sph_grid_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	spctl_c->sph_coef_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(spctl_c->sph_grid_type_c);
-	alloc_ctl_chara_item(spctl_c->sph_coef_type_c);
+	alloc_chara_ctl_item_c(spctl_c->sph_grid_type_c);
+	alloc_chara_ctl_item_c(spctl_c->sph_coef_type_c);
 	
 	spctl_c->ngrid_elevation_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	spctl_c->ngrid_azimuth_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
@@ -165,7 +165,7 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	
 	spctl_c->radial_grid_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	spctl_c->num_fluid_grid_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	alloc_ctl_chara_item(spctl_c->radial_grid_type_c);
+	alloc_chara_ctl_item_c(spctl_c->radial_grid_type_c);
 	init_ctl_int_item(spctl_c->num_fluid_grid_c);
 	
 	spctl_c->Min_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
@@ -197,8 +197,8 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	free(spctl_c->ltr_c);
 	free(spctl_c->phi_symmetry_c);
 	
-	dealloc_ctl_chara_item(spctl_c->sph_grid_type_c);
-	dealloc_ctl_chara_item(spctl_c->sph_coef_type_c);
+	dealloc_chara_ctl_item_c(spctl_c->sph_grid_type_c);
+	dealloc_chara_ctl_item_c(spctl_c->sph_coef_type_c);
 	free(spctl_c->sph_grid_type_c);
 	free(spctl_c->sph_coef_type_c);
 	
@@ -208,7 +208,7 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	clear_int_real_ctl_list(&spctl_c->radius_list);
 	clear_chara_int_ctl_list(&spctl_c->radial_grp_list);
 	
-	dealloc_ctl_chara_item(spctl_c->radial_grid_type_c);
+	dealloc_chara_ctl_item_c(spctl_c->radial_grid_type_c);
 	free(spctl_c->radial_grid_type_c);
 	free(spctl_c->num_fluid_grid_c);
 	
@@ -237,15 +237,15 @@ int read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[ 3], spctl_c->ltr_c);
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[ 4], spctl_c->phi_symmetry_c);
 		
-		read_character_ctl_item_c(buf, label_sphere_data_ctl[ 6], spctl_c->sph_grid_type_c);
-		read_character_ctl_item_c(buf, label_sphere_data_ctl[ 5], spctl_c->sph_coef_type_c);
+		read_chara_ctl_item_c(buf, label_sphere_data_ctl[ 6], spctl_c->sph_grid_type_c);
+		read_chara_ctl_item_c(buf, label_sphere_data_ctl[ 5], spctl_c->sph_coef_type_c);
 		
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[ 1], spctl_c->ngrid_elevation_c);
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[ 2], spctl_c->ngrid_azimuth_c);
 		
 		read_int_real_ctl_list(fp, buf, label_sphere_data_ctl[ 0], &spctl_c->radius_list);
 		
-		read_character_ctl_item_c(buf, label_sphere_data_ctl[ 7], spctl_c->radial_grid_type_c);
+		read_chara_ctl_item_c(buf, label_sphere_data_ctl[ 7], spctl_c->radial_grid_type_c);
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[ 8], spctl_c->num_fluid_grid_c);
 		
 		read_real_ctl_item_c(buf, label_sphere_data_ctl[ 9], spctl_c->Min_radius_c);
@@ -273,15 +273,15 @@ int write_sphere_data_ctl_c(FILE *fp, int level,
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 3], spctl_c->ltr_c);
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 4], spctl_c->phi_symmetry_c);
 	
-	write_character_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 6], spctl_c->sph_grid_type_c);
-	write_character_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 5], spctl_c->sph_coef_type_c);
+	write_chara_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 6], spctl_c->sph_grid_type_c);
+	write_chara_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 5], spctl_c->sph_coef_type_c);
 	
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 1], spctl_c->ngrid_elevation_c);
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 2], spctl_c->ngrid_azimuth_c);
 	
 	write_int_real_ctl_list(fp, level, label_sphere_data_ctl[ 0], &spctl_c->radius_list);
 	
-	write_character_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 7], spctl_c->radial_grid_type_c);
+	write_chara_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 7], spctl_c->radial_grid_type_c);
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 8], spctl_c->num_fluid_grid_c);
 	
 	write_real_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 9], spctl_c->Min_radius_c);

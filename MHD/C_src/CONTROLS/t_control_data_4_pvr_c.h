@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_IO.h"
 #include "t_control_real2_IO.h"
 #include "t_control_chara2_real_IO.h"
 #include "t_ctl_data_pvr_colormap_c.h"
@@ -24,7 +25,7 @@
 struct pvr_plot_area_ctl_c{
 	int maxlen;
 	
-	struct chara_ctl_array *pvr_area_ctl;
+	struct chara_ctl_list pvr_area_list;
 	struct chara2_real_ctl_list surf_enhanse_ctl;
 };
 

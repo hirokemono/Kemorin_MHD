@@ -97,7 +97,7 @@ void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
 	};
 	
 	pspec_ctl_c->picked_mode_head_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(pspec_ctl_c->picked_mode_head_c);
+    alloc_chara_ctl_item_c(pspec_ctl_c->picked_mode_head_c);
 	
 	pspec_ctl_c->idx_pick_layer_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	pspec_ctl_c->idx_pick_sph_l_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
@@ -119,7 +119,7 @@ void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
     dealloc_ctl_int_array(pspec_ctl_c->idx_pick_layer_c);
 	free(pspec_ctl_c->idx_pick_layer_c);
 	
-    dealloc_ctl_chara_item(pspec_ctl_c->picked_mode_head_c);
+    dealloc_chara_ctl_item_c(pspec_ctl_c->picked_mode_head_c);
     free(pspec_ctl_c->picked_mode_head_c);
 	
 	return;
@@ -129,7 +129,7 @@ int read_pick_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_pick_spectr_ctl[0], pspec_ctl_c->picked_mode_head_c);
+		read_chara_ctl_item_c(buf, label_pick_spectr_ctl[0], pspec_ctl_c->picked_mode_head_c);
 		
 		read_integer_ctl_array_c(fp, buf, label_pick_spectr_ctl[1], pspec_ctl_c->idx_pick_layer_c);
 		
@@ -143,7 +143,7 @@ int write_pick_spectr_control_c(FILE *fp, int level, const char *label,
                                 struct pick_spectr_control_c *pspec_ctl_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, pspec_ctl_c->maxlen, 
+	write_chara_ctl_item_c(fp, level, pspec_ctl_c->maxlen, 
 				label_pick_spectr_ctl[0], pspec_ctl_c->picked_mode_head_c);
 	
 	if(pspec_ctl_c->idx_pick_layer_c->num > 0) fprintf(fp, "!\n");
@@ -173,7 +173,7 @@ void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
 	};
 	
 	g_pwr->gauss_coefs_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(g_pwr->gauss_coefs_prefix_c);
+	alloc_chara_ctl_item_c(g_pwr->gauss_coefs_prefix_c);
 	g_pwr->gauss_coefs_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_ctl_real_item(g_pwr->gauss_coefs_radius_c);
 	
@@ -192,7 +192,7 @@ void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
 	dealloc_ctl_int_array(g_pwr->idx_gauss_m_c);
 	free(g_pwr->idx_gauss_m_c);
 	
-	dealloc_ctl_chara_item(g_pwr->gauss_coefs_prefix_c);
+	dealloc_chara_ctl_item_c(g_pwr->gauss_coefs_prefix_c);
 	free(g_pwr->gauss_coefs_prefix_c);
 	
 	return;
@@ -201,7 +201,7 @@ int read_gauss_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct gauss_spectr_control_c *g_pwr){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
-		read_character_ctl_item_c(buf, label_gauss_spectr_ctl[0], g_pwr->gauss_coefs_prefix_c);
+		read_chara_ctl_item_c(buf, label_gauss_spectr_ctl[0], g_pwr->gauss_coefs_prefix_c);
 		
 		read_real_ctl_item_c(buf, label_gauss_spectr_ctl[1], g_pwr->gauss_coefs_radius_c);
 		
@@ -215,7 +215,7 @@ int write_gauss_spectr_control_c(FILE *fp, int level, const char *label,
                                  struct gauss_spectr_control_c *g_pwr){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, g_pwr->maxlen, 
+	write_chara_ctl_item_c(fp, level, g_pwr->maxlen, 
 				label_gauss_spectr_ctl[0], g_pwr->gauss_coefs_prefix_c);
 	write_real_ctl_item_c(fp, level, g_pwr->maxlen, 
 				label_gauss_spectr_ctl[1], g_pwr->gauss_coefs_radius_c);
@@ -244,16 +244,16 @@ void alloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl){
 	};
 	
 	lp_ctl->layered_pwr_spectr_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(lp_ctl->layered_pwr_spectr_prefix_c);
+    alloc_chara_ctl_item_c(lp_ctl->layered_pwr_spectr_prefix_c);
 	
 	lp_ctl->degree_spectr_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(lp_ctl->degree_spectr_switch_c);
+    alloc_chara_ctl_item_c(lp_ctl->degree_spectr_switch_c);
 	lp_ctl->order_spectr_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(lp_ctl->order_spectr_switch_c);
+    alloc_chara_ctl_item_c(lp_ctl->order_spectr_switch_c);
 	lp_ctl->diff_lm_spectr_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(lp_ctl->diff_lm_spectr_switch_c);
+    alloc_chara_ctl_item_c(lp_ctl->diff_lm_spectr_switch_c);
 	lp_ctl->axis_spectr_switch_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(lp_ctl->axis_spectr_switch_c);
+    alloc_chara_ctl_item_c(lp_ctl->axis_spectr_switch_c);
 	
 	lp_ctl->idx_spec_layer_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	
@@ -263,16 +263,16 @@ void dealloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl){
     dealloc_ctl_int_array(lp_ctl->idx_spec_layer_c);
 	free(lp_ctl->idx_spec_layer_c);
 	
-    dealloc_ctl_chara_item(lp_ctl->degree_spectr_switch_c);
+    dealloc_chara_ctl_item_c(lp_ctl->degree_spectr_switch_c);
     free(lp_ctl->degree_spectr_switch_c);
-    dealloc_ctl_chara_item(lp_ctl->order_spectr_switch_c);
+    dealloc_chara_ctl_item_c(lp_ctl->order_spectr_switch_c);
     free(lp_ctl->order_spectr_switch_c);
-    dealloc_ctl_chara_item(lp_ctl->diff_lm_spectr_switch_c);
+    dealloc_chara_ctl_item_c(lp_ctl->diff_lm_spectr_switch_c);
     free(lp_ctl->diff_lm_spectr_switch_c);
-    dealloc_ctl_chara_item(lp_ctl->axis_spectr_switch_c);
+    dealloc_chara_ctl_item_c(lp_ctl->axis_spectr_switch_c);
     free(lp_ctl->axis_spectr_switch_c);
 	
-	dealloc_ctl_chara_item(lp_ctl->layered_pwr_spectr_prefix_c);
+	dealloc_chara_ctl_item_c(lp_ctl->layered_pwr_spectr_prefix_c);
     free(lp_ctl->layered_pwr_spectr_prefix_c);
 	
 	return;
@@ -282,12 +282,12 @@ int read_layerd_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_layerd_spectr_ctl[0], lp_ctl->layered_pwr_spectr_prefix_c);
+		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[0], lp_ctl->layered_pwr_spectr_prefix_c);
 		
-		read_character_ctl_item_c(buf, label_layerd_spectr_ctl[2], lp_ctl->degree_spectr_switch_c);
-		read_character_ctl_item_c(buf, label_layerd_spectr_ctl[3], lp_ctl->order_spectr_switch_c);
-		read_character_ctl_item_c(buf, label_layerd_spectr_ctl[4], lp_ctl->diff_lm_spectr_switch_c);
-		read_character_ctl_item_c(buf, label_layerd_spectr_ctl[5], lp_ctl->axis_spectr_switch_c);
+		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[2], lp_ctl->degree_spectr_switch_c);
+		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[3], lp_ctl->order_spectr_switch_c);
+		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[4], lp_ctl->diff_lm_spectr_switch_c);
+		read_chara_ctl_item_c(buf, label_layerd_spectr_ctl[5], lp_ctl->axis_spectr_switch_c);
 		
 		read_integer_ctl_array_c(fp, buf, label_layerd_spectr_ctl[1], lp_ctl->idx_spec_layer_c);
 	};
@@ -297,20 +297,20 @@ int write_layerd_spectr_control_c(FILE *fp, int level, const char *label,
                                   struct layerd_spectr_control_c *lp_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, lp_ctl->maxlen, 
+	write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[0], lp_ctl->layered_pwr_spectr_prefix_c);
 	
 	if(lp_ctl->idx_spec_layer_c->num > 0) fprintf(fp, "!\n");
 	write_integer_ctl_array_c(fp, level, (int) strlen(label_layerd_spectr_ctl[1]),
 				label_layerd_spectr_ctl[1], lp_ctl->idx_spec_layer_c);
 	
-	write_character_ctl_item_c(fp, level, lp_ctl->maxlen, 
+	write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[2], lp_ctl->degree_spectr_switch_c);
-	write_character_ctl_item_c(fp, level, lp_ctl->maxlen, 
+	write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[3], lp_ctl->order_spectr_switch_c);
-	write_character_ctl_item_c(fp, level, lp_ctl->maxlen, 
+	write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[4], lp_ctl->diff_lm_spectr_switch_c);
-	write_character_ctl_item_c(fp, level, lp_ctl->maxlen, 
+	write_chara_ctl_item_c(fp, level, lp_ctl->maxlen, 
 				label_layerd_spectr_ctl[5], lp_ctl->axis_spectr_switch_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -329,7 +329,7 @@ void alloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl){
 	};
 	
 	meq_ctl->pick_circle_coord_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(meq_ctl->pick_circle_coord_c);
+    alloc_chara_ctl_item_c(meq_ctl->pick_circle_coord_c);
 	
 	meq_ctl->nphi_mid_eq_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	init_ctl_int_item(meq_ctl->nphi_mid_eq_c);
@@ -342,7 +342,7 @@ void alloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl){
 };
 void dealloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl){
 	
-    dealloc_ctl_chara_item(meq_ctl->pick_circle_coord_c);
+    dealloc_chara_ctl_item_c(meq_ctl->pick_circle_coord_c);
 	free(meq_ctl->pick_circle_coord_c);
 	
 	free(meq_ctl->nphi_mid_eq_c);
@@ -356,7 +356,7 @@ int read_mid_equator_control_c(FILE *fp, char buf[LENGTHBUF],
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_mid_equator_ctl[0], meq_ctl->pick_circle_coord_c);
+		read_chara_ctl_item_c(buf, label_mid_equator_ctl[0], meq_ctl->pick_circle_coord_c);
 		
 		read_integer_ctl_item_c(buf, label_mid_equator_ctl[1], meq_ctl->nphi_mid_eq_c);
 		read_real_ctl_item_c(buf, label_mid_equator_ctl[2], meq_ctl->pick_s_c);
@@ -368,7 +368,7 @@ int write_mid_equator_control_c(FILE *fp, int level, const char *label,
                                 struct mid_equator_control_c *meq_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, meq_ctl->maxlen, 
+	write_chara_ctl_item_c(fp, level, meq_ctl->maxlen, 
 				label_mid_equator_ctl[0], meq_ctl->pick_circle_coord_c);
 	
 	write_integer_ctl_item_c(fp, level, meq_ctl->maxlen, 
@@ -402,22 +402,22 @@ void alloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl){
 	alloc_mid_equator_control_c(monitor_ctl->meq_ctl);
     
     monitor_ctl->volume_average_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(monitor_ctl->volume_average_prefix_c);
+    alloc_chara_ctl_item_c(monitor_ctl->volume_average_prefix_c);
     monitor_ctl->volume_pwr_spectr_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(monitor_ctl->volume_pwr_spectr_prefix_c);
+    alloc_chara_ctl_item_c(monitor_ctl->volume_pwr_spectr_prefix_c);
     monitor_ctl->Nusselt_file_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	alloc_ctl_chara_item(monitor_ctl->Nusselt_file_prefix_c);
+	alloc_chara_ctl_item_c(monitor_ctl->Nusselt_file_prefix_c);
 	
 	init_sph_vol_spectr_list(&monitor_ctl->v_pwr_list);
 	return;
 };
 
 void dealloc_sph_monitor_ctl_c(struct sph_monitor_control_c *monitor_ctl){
-    dealloc_ctl_chara_item(monitor_ctl->volume_average_prefix_c);
+    dealloc_chara_ctl_item_c(monitor_ctl->volume_average_prefix_c);
     free(monitor_ctl->volume_average_prefix_c);
-    dealloc_ctl_chara_item(monitor_ctl->volume_pwr_spectr_prefix_c);
+    dealloc_chara_ctl_item_c(monitor_ctl->volume_pwr_spectr_prefix_c);
     free(monitor_ctl->volume_pwr_spectr_prefix_c);
-    dealloc_ctl_chara_item(monitor_ctl->Nusselt_file_prefix_c);
+    dealloc_chara_ctl_item_c(monitor_ctl->Nusselt_file_prefix_c);
 	free(monitor_ctl->Nusselt_file_prefix_c);
 	
 	dealloc_mid_equator_control_c(monitor_ctl->meq_ctl);
@@ -454,9 +454,9 @@ int read_sph_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		monitor_ctl->iflag_meq_ctl = read_mid_equator_control_c(fp, buf, 
 					label_sph_monitor_ctl[4], monitor_ctl->meq_ctl);
 		
-		read_character_ctl_item_c(buf, label_sph_monitor_ctl[5], monitor_ctl->volume_average_prefix_c);
-        read_character_ctl_item_c(buf, label_sph_monitor_ctl[6], monitor_ctl->volume_pwr_spectr_prefix_c);
-        read_character_ctl_item_c(buf, label_sph_monitor_ctl[7], monitor_ctl->Nusselt_file_prefix_c);
+		read_chara_ctl_item_c(buf, label_sph_monitor_ctl[5], monitor_ctl->volume_average_prefix_c);
+        read_chara_ctl_item_c(buf, label_sph_monitor_ctl[6], monitor_ctl->volume_pwr_spectr_prefix_c);
+        read_chara_ctl_item_c(buf, label_sph_monitor_ctl[7], monitor_ctl->Nusselt_file_prefix_c);
 	};
 	return 1;
 }
@@ -465,9 +465,9 @@ int write_sph_monitor_ctl_c(FILE *fp, int level, const char *label,
 			struct sph_monitor_control_c *monitor_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-    write_character_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[5], monitor_ctl->volume_average_prefix_c);
-    write_character_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[6], monitor_ctl->volume_pwr_spectr_prefix_c);
-	write_character_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[7], monitor_ctl->Nusselt_file_prefix_c);
+    write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[5], monitor_ctl->volume_average_prefix_c);
+    write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[6], monitor_ctl->volume_pwr_spectr_prefix_c);
+	write_chara_ctl_item_c(fp, level, monitor_ctl->maxlen, label_sph_monitor_ctl[7], monitor_ctl->Nusselt_file_prefix_c);
 	
     if(monitor_ctl->iflag_pspec_ctl > 0){ 
         fprintf(fp, "!\n");

@@ -35,9 +35,9 @@ void alloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c){
 	};
 	
 	v_pwr_c->volume_spec_file_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(v_pwr_c->volume_spec_file_c);
+    alloc_chara_ctl_item_c(v_pwr_c->volume_spec_file_c);
 	v_pwr_c->volume_ave_file_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-    alloc_ctl_chara_item(v_pwr_c->volume_ave_file_c);
+    alloc_chara_ctl_item_c(v_pwr_c->volume_ave_file_c);
 	
 	v_pwr_c->inner_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_ctl_real_item(v_pwr_c->inner_radius_c);
@@ -49,9 +49,9 @@ void alloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c){
 
 void dealloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c){
 	
-    dealloc_ctl_chara_item(v_pwr_c->volume_spec_file_c);
+    dealloc_chara_ctl_item_c(v_pwr_c->volume_spec_file_c);
 	free(v_pwr_c->volume_spec_file_c);
-	dealloc_ctl_chara_item(v_pwr_c->volume_ave_file_c);
+	dealloc_chara_ctl_item_c(v_pwr_c->volume_ave_file_c);
 	free(v_pwr_c->volume_ave_file_c);
 	
 	free(v_pwr_c->inner_radius_c);
@@ -66,8 +66,8 @@ int read_volume_spectr_control_c(FILE *fp, char buf[LENGTHBUF], const char *labe
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_character_ctl_item_c(buf, label_volume_spectr_ctl[0], v_pwr_c->volume_spec_file_c);
-		read_character_ctl_item_c(buf, label_volume_spectr_ctl[1], v_pwr_c->volume_ave_file_c);
+		read_chara_ctl_item_c(buf, label_volume_spectr_ctl[0], v_pwr_c->volume_spec_file_c);
+		read_chara_ctl_item_c(buf, label_volume_spectr_ctl[1], v_pwr_c->volume_ave_file_c);
 		
 		read_real_ctl_item_c(buf, label_volume_spectr_ctl[2], v_pwr_c->inner_radius_c);
 		read_real_ctl_item_c(buf, label_volume_spectr_ctl[3], v_pwr_c->outer_radius_c);
@@ -79,9 +79,9 @@ int write_volume_spectr_control_c(FILE *fp, int level, const char *label,
 			struct volume_spectr_control_c *v_pwr_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_character_ctl_item_c(fp, level, v_pwr_c->maxlen, 
+	write_chara_ctl_item_c(fp, level, v_pwr_c->maxlen, 
 				label_volume_spectr_ctl[0], v_pwr_c->volume_spec_file_c);
-	write_character_ctl_item_c(fp, level, v_pwr_c->maxlen, 
+	write_chara_ctl_item_c(fp, level, v_pwr_c->maxlen, 
 				label_volume_spectr_ctl[1], v_pwr_c->volume_ave_file_c);
 	
 	write_real_ctl_item_c(fp, level, v_pwr_c->maxlen, 

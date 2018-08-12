@@ -14,19 +14,20 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara_IO.h"
 
 
 struct mhd_evolution_ctl_c{
 	int maxlen;
 	
-	struct chara_ctl_array *t_evo_field_c;
+	struct chara_ctl_list t_evo_field_list;
 };
 
 struct mhd_evo_area_ctl_c{
 	int maxlen;
 	
-	struct chara_ctl_array *evo_fluid_group_c;
-	struct chara_ctl_array *evo_conduct_group_c;
+	struct chara_ctl_list evo_fluid_group_list;
+	struct chara_ctl_list evo_conduct_group_list;
 };
 
 

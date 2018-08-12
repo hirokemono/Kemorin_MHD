@@ -66,9 +66,9 @@ int read_LIC_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-        read_character_ctl_item_c(buf, label_LIC_pvr_ctl[ 1],
+        read_chara_ctl_item_c(buf, label_LIC_pvr_ctl[ 1],
                                   lic_pvr_c->pvr_c->file_head_ctl);
-        read_character_ctl_item_c(buf, label_LIC_pvr_ctl[ 2],
+        read_chara_ctl_item_c(buf, label_LIC_pvr_ctl[ 2],
                                   lic_pvr_c->pvr_c->file_fmt_ctl);
         
 		read_pvr_ctl_items(fp, buf, lic_pvr_c->pvr_c);
@@ -85,9 +85,9 @@ int write_LIC_pvr_ctl_c(FILE *fp, int level, const char *label,
 			struct LIC_pvr_ctl_c *lic_pvr_c){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 
-    write_character_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, label_LIC_pvr_ctl[ 1], 
+    write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, label_LIC_pvr_ctl[ 1], 
                                lic_pvr_c->pvr_c->file_head_ctl);
-    write_character_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, label_LIC_pvr_ctl[ 2], 
+    write_chara_ctl_item_c(fp, level, lic_pvr_c->pvr_c->maxlen, label_LIC_pvr_ctl[ 2], 
                                lic_pvr_c->pvr_c->file_fmt_ctl);
     
     if(lic_pvr_c->iflag_lic_ctl > 0){
