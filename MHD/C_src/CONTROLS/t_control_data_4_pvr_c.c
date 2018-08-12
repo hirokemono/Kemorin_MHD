@@ -153,10 +153,8 @@ void alloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 	init_ctl_int_item(cbar_c->font_size_ctl);
 	init_ctl_int_item(cbar_c->ngrid_cbar_ctl);
 	
-	cbar_c->cbar_min_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	cbar_c->cbar_max_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(cbar_c->cbar_min_ctl);
-	init_ctl_real_item(cbar_c->cbar_max_ctl);
+	cbar_c->cbar_range_ctl = (struct real2_ctl_item *) malloc(sizeof(struct real2_ctl_item));
+	init_real2_ctl_item_c(cbar_c->cbar_range_ctl);
 	
 	cbar_c->axis_switch_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_ctl_chara_item(cbar_c->axis_switch_ctl);
@@ -176,8 +174,7 @@ void dealloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 	free(cbar_c->font_size_ctl);
 	free(cbar_c->ngrid_cbar_ctl);
 	
-	free(cbar_c->cbar_min_ctl);
-	free(cbar_c->cbar_max_ctl);
+	free(cbar_c->cbar_range_ctl);
 	
 	dealloc_ctl_chara_item(cbar_c->axis_switch_ctl);
 	free(cbar_c->axis_switch_ctl);
@@ -195,8 +192,7 @@ int read_pvr_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_character_ctl_item_c(buf, label_pvr_colorbar_ctl[ 1], cbar_c->colorbar_scale_ctl);
 		read_character_ctl_item_c(buf, label_pvr_colorbar_ctl[ 2], cbar_c->zeromarker_flag_ctl);
 		
-		read_real2_ctl_item_c(buf, label_pvr_colorbar_ctl[ 3],
-					cbar_c->cbar_min_ctl, cbar_c->cbar_max_ctl);
+		read_real2_ctl_item_c(buf, label_pvr_colorbar_ctl[ 3], cbar_c->cbar_range_ctl);
 		
 		read_integer_ctl_item_c(buf, label_pvr_colorbar_ctl[ 4], cbar_c->font_size_ctl);
 		read_integer_ctl_item_c(buf, label_pvr_colorbar_ctl[ 5], cbar_c->ngrid_cbar_ctl);
@@ -214,8 +210,7 @@ int write_pvr_colorbar_ctl_c(FILE *fp, int level, const char *label,
 	write_character_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 1], cbar_c->colorbar_scale_ctl);
 	write_character_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 2], cbar_c->zeromarker_flag_ctl);
 	
-	write_real2_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 4],
-					cbar_c->cbar_min_ctl, cbar_c->cbar_max_ctl);
+	write_real2_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 4], cbar_c->cbar_range_ctl);
 	
 	write_integer_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 4], cbar_c->font_size_ctl);
 	write_integer_ctl_item_c(fp, level, cbar_c->maxlen, label_pvr_colorbar_ctl[ 5], cbar_c->ngrid_cbar_ctl);

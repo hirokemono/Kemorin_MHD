@@ -11,9 +11,6 @@
 #include "kemosrc_param_c.h"
 #include "skip_comment_c.h"
 
-struct maxlen_1{
-    int mlen;
-};
 struct maxlen_2{
     int mlen[2];
 };
@@ -88,11 +85,6 @@ void read_int2_ctl_item_c(const char *buf, const char *label,
 			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item);
 void write_int2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
 			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item);
-
-void read_real2_ctl_item_c(const char *buf, const char *label,
-			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item);
-void write_real2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
-			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item);
 
 void read_cr_ctl_item_c(const char *buf, const char *label,
 			struct chara_ctl_item *c_item, struct real_ctl_item *r_item);

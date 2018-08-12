@@ -36,8 +36,8 @@ struct chara_real_ctl_list{
 
 void alloc_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item);
 void dealloc_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item);
-int read_chara_real_ctl_item_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct chara_real_ctl_item *cr_item);
+int read_chara_real_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+                               struct chara_real_ctl_item *cr_item);
 int write_chara_real_ctl_item_c(FILE *fp, int level, int maxlen[2], 
 			const char *label, struct chara_real_ctl_item *cr_item);
 

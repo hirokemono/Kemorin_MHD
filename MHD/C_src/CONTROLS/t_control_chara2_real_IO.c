@@ -23,8 +23,8 @@ void dealloc_c2r_ctl_item_c(struct chara2_real_ctl_item *c2r_item){
     return;
 };
 
-int read_c2r_ctl_item_c(FILE *fp, char buf[LENGTHBUF], 
-                          const char *label, struct chara2_real_ctl_item *c2r_item){
+int read_c2r_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+                        struct chara2_real_ctl_item *c2r_item){
 	char header_chara[KCHARA_C];
 	
 	if(c2r_item->iflag > 0) return 0;
@@ -156,7 +156,7 @@ int read_c2r_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     skip_comment_read_line(fp, buf);
     while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
         head = add_c2r_ctl_list(head);
-        iflag = read_c2r_ctl_item_c(fp, buf, label, head->c2r_item);
+        iflag = read_c2r_ctl_item_c(buf, label, head->c2r_item);
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
     };

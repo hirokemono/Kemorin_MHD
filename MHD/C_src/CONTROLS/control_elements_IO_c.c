@@ -333,33 +333,6 @@ void write_int2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
 }
 
 
-void read_real2_ctl_item_c(const char *buf, const char *label,
-			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item){
-	char header_chara[KCHARA_C];
-	
-	if(r1_item->iflag > 0) return;
-	sscanf(buf, "%s", header_chara);
-	if(cmp_no_case_c(header_chara, label) > 0){
-		sscanf(buf, "%s %lf %lf", header_chara, &r1_item->r_data, &r2_item->r_data);
-		r1_item->iflag = 1;
-		r2_item->iflag = 1;
-	};
-	
-	return;
-}
-
-void write_real2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
-			 struct real_ctl_item *r1_item, struct real_ctl_item *r2_item){
-	
-	if( (r1_item->iflag * r2_item->iflag) == 0) return;
-	write_space_4_parse_c(fp, level);
-	write_one_label_cont_c(fp, maxlen, label);
-	fprintf(fp, "%.12e  %.12e\n", r1_item->r_data, r2_item->r_data);
-	return;
-}
-
-
-
 
 void read_cr_ctl_item_c(const char *buf, const char *label,
 			struct chara_ctl_item *c_item, struct real_ctl_item *r_item){

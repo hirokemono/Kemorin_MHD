@@ -15,8 +15,8 @@ void init_real3_ctl_item_c(struct real3_ctl_item *r3_item){
     return;
 };
 
-int read_real3_ctl_item_c(FILE *fp, char buf[LENGTHBUF], 
-                          const char *label, struct real3_ctl_item *r3_item){
+int read_real3_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+                          struct real3_ctl_item *r3_item){
 	char header_chara[KCHARA_C];
 	
 	if(r3_item->iflag > 0) return 0;
@@ -43,23 +43,17 @@ int write_real3_ctl_item_c(FILE *fp, int level, int maxlen,
 
 
 void init_real3_ctl_list(struct real3_ctl_list *head){
-    head->mlen1 = (struct maxlen_1 *) malloc(sizeof(struct maxlen_1));
-    head->mlen1->mlen = 0;
-	
     head->_prev = NULL;
     head->_next = NULL;
     return;
 };
 
 void clear_real3_ctl_list(struct real3_ctl_list *head){
-	free(head->mlen1);
-	
     head = head->_next;
     while (head != NULL) {
         free(head);
         head = head->_next;
 	}
-	
     return;
 };
 
@@ -76,7 +70,6 @@ struct real3_ctl_list *add_real3_ctl_list(struct real3_ctl_list *current){
         exit(0);
     }
 	init_real3_ctl_item_c(added->r3_item);
-	added->mlen1 = current->mlen1;
     
     /* replace from  current -> p2　to current -> p1 -> p2 */
     old_next= current->_next;
@@ -134,7 +127,7 @@ int read_real3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     skip_comment_read_line(fp, buf);
     while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
         head = add_real3_ctl_list(head);
-        iflag = read_real3_ctl_item_c(fp, buf, label, head->r3_item);
+        iflag = read_real3_ctl_item_c(buf, label, head->r3_item);
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
     };
@@ -153,12 +146,11 @@ int write_real3_ctl_list(FILE *fp, int level, const char *label,
     if(num == 0) return level;
     
     fprintf(fp, "!\n");
-    head->mlen1->mlen = (int) strlen(label);
     level = write_array_flag_for_ctl_c(fp, level, label, num);
     head = head->_next;
     
     while (head != NULL) {    /* Go through null pointer*/
-        level = write_real3_ctl_item_c(fp, level, head->mlen1->mlen,
+        level = write_real3_ctl_item_c(fp, level, (int) strlen(label),
                                      label, head->r3_item);
         head = head->_next;
     }

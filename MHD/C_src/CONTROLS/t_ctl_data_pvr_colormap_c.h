@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_real2_IO.h"
 #include "t_control_real3_IO.h"
 
 struct colormap_ctl_c{
@@ -27,11 +28,11 @@ struct colormap_ctl_c{
 	struct chara_ctl_item *lic_opacity_comp_ctl;
 	
 	struct chara_ctl_item *data_mapping_ctl;
-	struct real2_ctl_array *colortbl_ctl;
+	struct real2_ctl_list colortbl_list;
 	
 	struct chara_ctl_item *opacity_style_ctl;
 	struct real_ctl_item *fix_opacity_ctl;
-	struct real2_ctl_array *linear_opacity_ctl;
+	struct real2_ctl_list linear_opacity_list;
 	struct real3_ctl_list step_opacity_list;
 	
 	struct real_ctl_item *range_min_ctl;

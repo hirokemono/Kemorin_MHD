@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_real2_IO.h"
 #include "t_control_chara2_real_IO.h"
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "t_ctl_data_4_view_transfer_c.h"
@@ -37,8 +38,7 @@ struct pvr_colorbar_ctl_c{
 	struct int_ctl_item *font_size_ctl;
 	struct int_ctl_item *ngrid_cbar_ctl;
 	
-	struct real_ctl_item *cbar_min_ctl;
-	struct real_ctl_item *cbar_max_ctl;
+	struct real2_ctl_item *cbar_range_ctl;
 	
 	struct chara_ctl_item *axis_switch_ctl;
 };

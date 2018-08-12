@@ -22,8 +22,8 @@ void dealloc_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item){
     return;
 };
 
-int read_chara_real_ctl_item_c(FILE *fp, char buf[LENGTHBUF], 
-                          const char *label, struct chara_real_ctl_item *cr_item){
+int read_chara_real_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+                               struct chara_real_ctl_item *cr_item){
 	char header_chara[KCHARA_C];
 	
 	if(cr_item->iflag > 0) return 0;
@@ -150,7 +150,7 @@ int read_chara_real_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     skip_comment_read_line(fp, buf);
     while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
         head = add_chara_real_ctl_list(head);
-        iflag = read_chara_real_ctl_item_c(fp, buf, label, head->cr_item);
+        iflag = read_chara_real_ctl_item_c(buf, label, head->cr_item);
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
     };

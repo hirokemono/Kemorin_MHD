@@ -25,7 +25,6 @@ struct real3_ctl_item{
 
 struct real3_ctl_list{
     struct real3_ctl_item *r3_item;
-    struct maxlen_1 *mlen1;
     
     struct real3_ctl_list *_prev;
     struct real3_ctl_list *_next;
@@ -35,8 +34,8 @@ struct real3_ctl_list{
 
 
 void init_real3_ctl_item_c(struct real3_ctl_item *r3_item);
-int read_real3_ctl_item_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct real3_ctl_item *r3_item);
+int read_real3_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+			struct real3_ctl_item *r3_item);
 int write_real3_ctl_item_c(FILE *fp, int level, int maxlen, 
 			const char *label, struct real3_ctl_item *r3_item);
 

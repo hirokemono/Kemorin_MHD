@@ -37,8 +37,8 @@ struct chara3_ctl_list{
 
 void alloc_chara3_ctl_item_c(struct chara3_ctl_item *c3_item);
 void dealloc_chara3_ctl_item_c(struct chara3_ctl_item *c3_item);
-int read_chara3_ctl_item_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct chara3_ctl_item *c3_item);
+int read_chara3_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+                           struct chara3_ctl_item *c3_item);
 int write_chara3_ctl_item_c(FILE *fp, int level, int maxlen[3], 
 			const char *label, struct chara3_ctl_item *c3_item);
 

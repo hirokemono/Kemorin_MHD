@@ -41,15 +41,6 @@ struct int2_ctl_array{
     struct int_ctl_item **i2_array_item;
 };
 
-struct real2_ctl_array{
-    int maxlen;
-    
-    int num;
-    int icou;
-    struct real_ctl_item **r1_array_item;
-    struct real_ctl_item **r2_array_item;
-};
-
 struct int_real_ctl_array{
     int maxlen;
     
@@ -85,14 +76,6 @@ void read_int2_ctl_array_c(FILE *fp, char *buf, const char *label,
 			struct int2_ctl_array *i2_array);
 void write_int2_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct int2_ctl_array *i2_array);
-
-void init_ctl_real2_array(struct real2_ctl_array *r2_array);
-void alloc_ctl_real2_array(struct real2_ctl_array *r2_array);
-void dealloc_ctl_real2_array(struct real2_ctl_array *r2_array);
-void read_real2_ctl_array_c(FILE *fp, char *buf, const char *label,
-			struct real2_ctl_array *r2_array);
-void write_real2_ctl_array_c(FILE *fp, int level, int maxlen,
-			const char *label, struct real2_ctl_array *r2_array);
 
 void init_ctl_ir_array(struct int_real_ctl_array *ir_array);
 void alloc_ctl_ir_array(struct int_real_ctl_array *ir_array);

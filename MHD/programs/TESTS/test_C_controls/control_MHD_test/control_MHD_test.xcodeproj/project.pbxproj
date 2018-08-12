@@ -56,6 +56,7 @@
 		18812C49211FD64B00BF714B /* t_control_chara2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C48211FD64B00BF714B /* t_control_chara2_IO.c */; };
 		18812C4D211FD9FA00BF714B /* t_control_chara_int_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C4B211FD9FA00BF714B /* t_control_chara_int_IO.c */; };
 		18812C4F211FDE4300BF714B /* t_control_chara_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C4E211FDE4200BF714B /* t_control_chara_real_IO.c */; };
+		18812C53211FE92D00BF714B /* t_control_real2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C52211FE92D00BF714B /* t_control_real2_IO.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -169,6 +170,8 @@
 		18812C4C211FD9FA00BF714B /* t_control_chara_int_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara_int_IO.h; path = ../../../../../C_src/CONTROLS/t_control_chara_int_IO.h; sourceTree = "<group>"; };
 		18812C4E211FDE4200BF714B /* t_control_chara_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_real_IO.c; path = ../../../../../C_src/CONTROLS/t_control_chara_real_IO.c; sourceTree = "<group>"; };
 		18812C50211FDE4900BF714B /* t_control_chara_real_IO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = t_control_chara_real_IO.h; path = ../../../../../C_src/CONTROLS/t_control_chara_real_IO.h; sourceTree = "<group>"; };
+		18812C51211FE90100BF714B /* t_control_real2_IO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = t_control_real2_IO.h; path = ../../../../../C_src/CONTROLS/t_control_real2_IO.h; sourceTree = "<group>"; };
+		18812C52211FE92D00BF714B /* t_control_real2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_real2_IO.c; path = ../../../../../C_src/CONTROLS/t_control_real2_IO.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,6 +223,8 @@
 				18812C4A211FD65A00BF714B /* t_control_chara2_IO.h */,
 				18812C40211FD0B300BF714B /* t_control_chara2_real_IO.c */,
 				18812C3F211FD0B200BF714B /* t_control_chara2_real_IO.h */,
+				18812C52211FE92D00BF714B /* t_control_real2_IO.c */,
+				18812C51211FE90100BF714B /* t_control_real2_IO.h */,
 				18812C44211FD24800BF714B /* t_control_chara3_IO.h */,
 				18812C42211FD23F00BF714B /* t_control_chara3_IO.c */,
 				18812C46211FD38000BF714B /* t_control_real3_IO.c */,
@@ -386,6 +391,7 @@
 				18812C4F211FDE4300BF714B /* t_control_chara_real_IO.c in Sources */,
 				18636184211BCB6F00FFA949 /* t_control_data_4_pvr_c.c in Sources */,
 				1863617E211BCB6F00FFA949 /* t_ctl_data_SGS_model_c.c in Sources */,
+				18812C53211FE92D00BF714B /* t_control_real2_IO.c in Sources */,
 				18636131211BCB3300FFA949 /* kemosrc_param_c.c in Sources */,
 				18636190211BCB6F00FFA949 /* t_ctl_data_4_FEM_mesh_c.c in Sources */,
 				18812C4D211FD9FA00BF714B /* t_control_chara_int_IO.c in Sources */,

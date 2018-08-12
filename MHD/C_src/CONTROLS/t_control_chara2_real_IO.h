@@ -35,8 +35,8 @@ struct chara2_real_ctl_list{
 
 void alloc_c2r_ctl_item_c(struct chara2_real_ctl_item *c2r_item);
 void dealloc_c2r_ctl_item_c(struct chara2_real_ctl_item *c2r_item);
-int read_c2r_ctl_item_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct chara2_real_ctl_item *c2r_item);
+int read_c2r_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+                        struct chara2_real_ctl_item *c2r_item);
 int write_c2r_ctl_item_c(FILE *fp, int level, int maxlen[3], 
 			const char *label, struct chara2_real_ctl_item *c2r_item);
 
