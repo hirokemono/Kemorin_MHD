@@ -13,12 +13,13 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
+#include "control_lists_IO_c.h"
 #include "control_arrays_IO_c.h"
 
 struct field_ctl_c{
 	int maxlen;
 	
-	struct chara3_ctl_array *field_c;
+	struct chara3_ctl_list field_list;
 	
 	struct chara_ctl_array *quad_phys_c;
 	struct chara_ctl_array *linear_phys_c;

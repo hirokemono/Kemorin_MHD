@@ -13,6 +13,7 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
+#include "control_lists_IO_c.h"
 #include "control_arrays_IO_c.h"
 
 struct fline_ctl_c{
@@ -35,7 +36,7 @@ struct fline_ctl_c{
 	struct int_ctl_item *num_fieldline_ctl;
 	struct int_ctl_item *max_line_stepping_ctl;
 	
-	struct real3_ctl_array *seed_point_ctl;
+	struct real3_ctl_list seed_point_list;
 	struct int2_ctl_array *seed_surface_ctl;
 };
 

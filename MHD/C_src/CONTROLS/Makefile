@@ -6,6 +6,7 @@ KEMO_CTL_C_DIR = $$(C_SRCDIR)/CONTROLS
 
 OBJ_KEMO_CTL_C = \
  control_elements_IO_c.o \
+ control_3elements_IO_c.o \
  control_lists_IO_c.o \
  control_arrays_IO_c.o \
  \
@@ -95,12 +96,24 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
+	control_3elements_IO_c.o: \
+	'$$(KEMO_CTL_C_DIR)'/control_3elements_IO_c.c \
+	control_3elements_IO_c.h \
+	kemosrc_param_c.o \
+	skip_comment_c.o \
+	control_elements_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
 	control_lists_IO_c.o: \
 	'$$(KEMO_CTL_C_DIR)'/control_lists_IO_c.c \
 	control_lists_IO_c.h \
 	kemosrc_param_c.o \
 	skip_comment_c.o \
 	control_elements_IO_c.o \
+	control_3elements_IO_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -321,6 +334,7 @@ module:
 	t_ctl_data_4_fields_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
+	control_lists_IO_c.o \
 	control_arrays_IO_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \

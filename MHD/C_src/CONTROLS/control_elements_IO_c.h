@@ -103,19 +103,4 @@ void read_ir_ctl_item_c(const char *buf, const char *label,
 void write_ir_ctl_item_c(FILE *fp, int level, int maxlen, const char *label, 
 			struct int_ctl_item *i_item, struct real_ctl_item *r_item);
 
-void read_chara3_ctl_item_c(const char *buf, const char *label,
-			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item, 
-			struct chara_ctl_item *c3_item);
-void write_chara3_ctl_item_c(FILE *fp, int level, int maxlen[3], const char *label, 
-			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item, 
-			struct chara_ctl_item *c3_item);
-
-void read_real3_ctl_item_c(const char *buf, const char *label,
-			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item, 
-			struct real_ctl_item *r3_item);
-void write_real3_ctl_item_c(FILE *fp, int level, int maxlen, const char *label, 
-			struct real_ctl_item *r1_item, struct real_ctl_item *r2_item, 
-			struct real_ctl_item *r3_item);
-
-
 #endif

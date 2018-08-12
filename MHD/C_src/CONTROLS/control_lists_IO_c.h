@@ -13,18 +13,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include "kemosrc_param_c.h"
+#include "skip_comment_c.h"
 #include "control_elements_IO_c.h"
+#include "control_3elements_IO_c.h"
 
-struct maxlen_3{
-    int mlen[3];
+
+struct chara3_ctl_list{
+    struct chara3_ctl_item *c3_item;
+    struct maxlen_3 *mlen3;
+    
+    struct chara3_ctl_list *_prev;
+    struct chara3_ctl_list *_next;
 };
 
-struct chara2_real_ctl_item{
-	
-	int iflag;
-	char *c1_tbl;
-	char *c2_tbl;
-	double r_data;
+struct real3_ctl_list{
+    struct real3_ctl_item *r3_item;
+    struct maxlen_1 *mlen1;
+    
+    struct real3_ctl_list *_prev;
+    struct real3_ctl_list *_next;
 };
 
 struct chara2_real_ctl_list{
@@ -37,13 +44,30 @@ struct chara2_real_ctl_list{
 
 /* prototypes */
 
-void alloc_c2r_ctl_item_c(struct chara2_real_ctl_item *c2r_item);
-void dealloc_c2r_ctl_item_c(struct chara2_real_ctl_item *c2r_item);
-int read_c2r_ctl_item_c(FILE *fp, char buf[LENGTHBUF], 
-			const char *label, struct chara2_real_ctl_item *c2r_item);
-int write_c2r_ctl_item_c(FILE *fp, int level, int maxlen[3], 
-			const char *label, struct chara2_real_ctl_item *c2r_item);
+void init_chara3_ctl_list(struct chara3_ctl_list *head);
+void clear_chara3_ctl_list(struct chara3_ctl_list *head);
+struct chara3_ctl_list *add_chara3_ctl_list(struct chara3_ctl_list *current);
+void delete_chara3_ctl_list(struct chara3_ctl_list *current);
+int count_chara3_ctl_list(struct chara3_ctl_list *head);
+struct chara3_ctl_list *set_chara3_ctl_list_pointer(int index, struct chara3_ctl_list *head);
 
+int read_chara3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
+                      struct chara3_ctl_list *head);
+int write_chara3_ctl_list(FILE *fp, int level, const char *label, 
+                       struct chara3_ctl_list *head);
+
+
+void init_real3_ctl_list(struct real3_ctl_list *head);
+void clear_real3_ctl_list(struct real3_ctl_list *head);
+struct real3_ctl_list *add_real3_ctl_list(struct real3_ctl_list *current);
+void delete_real3_ctl_list(struct real3_ctl_list *current);
+int count_real3_ctl_list(struct real3_ctl_list *head);
+struct real3_ctl_list *set_real3_ctl_list_pointer(int index, struct real3_ctl_list *head);
+
+int read_real3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
+                      struct real3_ctl_list *head);
+int write_real3_ctl_list(FILE *fp, int level, const char *label, 
+                       struct real3_ctl_list *head);
 
 
 void init_c2r_ctl_list(struct chara2_real_ctl_list *head);

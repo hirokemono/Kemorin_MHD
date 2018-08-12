@@ -13,13 +13,14 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
+#include "control_lists_IO_c.h"
 #include "control_arrays_IO_c.h"
 
 struct node_monitor_ctl_c{
     int maxlen;
     
     struct chara_ctl_array *group_4_monitor_ctl;
-    struct real3_ctl_array *xx_4_monitor_ctl;
+    struct real3_ctl_list xx_4_monitor_list;
     struct int2_ctl_array *node_4_monitor_ctl;
 };
 

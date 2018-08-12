@@ -13,6 +13,7 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
+#include "control_lists_IO_c.h"
 #include "control_arrays_IO_c.h"
 
 struct colormap_ctl_c{
@@ -31,7 +32,7 @@ struct colormap_ctl_c{
 	struct chara_ctl_item *opacity_style_ctl;
 	struct real_ctl_item *fix_opacity_ctl;
 	struct real2_ctl_array *linear_opacity_ctl;
-	struct real3_ctl_array *step_opacity_ctl;
+	struct real3_ctl_list step_opacity_list;
 	
 	struct real_ctl_item *range_min_ctl;
 	struct real_ctl_item *range_max_ctl;
@@ -44,7 +45,7 @@ struct lighting_ctl_c{
 	struct real_ctl_item *diffuse_coef_ctl;
 	struct real_ctl_item *specular_coef_ctl;
 	
-	struct real3_ctl_array *light_position_ctl;
+	struct real3_ctl_list light_position_list;
 };
 
 struct pvr_colormap_ctl_c{
