@@ -1,6 +1,8 @@
 
 #include <gtk/gtk.h>
 #include "control_elements_IO_c.h"
+#include "t_control_int_IO.h"
+#include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
 #include "t_SGS_MHD_control_c.h"
 

@@ -148,8 +148,8 @@ void alloc_pvr_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 	
 	cbar_c->font_size_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	cbar_c->ngrid_cbar_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_ctl_int_item(cbar_c->font_size_ctl);
-	init_ctl_int_item(cbar_c->ngrid_cbar_ctl);
+	init_int_ctl_item_c(cbar_c->font_size_ctl);
+	init_int_ctl_item_c(cbar_c->ngrid_cbar_ctl);
 	
 	cbar_c->cbar_range_ctl = (struct real2_ctl_item *) malloc(sizeof(struct real2_ctl_item));
 	init_real2_ctl_item_c(cbar_c->cbar_range_ctl);
@@ -233,7 +233,7 @@ void alloc_pvr_movie_ctl_c(struct pvr_movie_ctl_c *movie_c){
 	movie_c->rotation_axis_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	movie_c->num_frames_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	alloc_chara_ctl_item_c(movie_c->rotation_axis_ctl);
-	init_ctl_int_item(movie_c->num_frames_ctl);
+	init_int_ctl_item_c(movie_c->num_frames_ctl);
 	
 	return;
 };

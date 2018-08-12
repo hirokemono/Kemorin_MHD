@@ -74,8 +74,8 @@ void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	fline_c->num_fieldline_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	fline_c->max_line_stepping_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	alloc_chara_ctl_item_c(fline_c->start_surf_grp_ctl);
-	init_ctl_int_item(fline_c->num_fieldline_ctl);
-	init_ctl_int_item(fline_c->max_line_stepping_ctl);
+	init_int_ctl_item_c(fline_c->num_fieldline_ctl);
+	init_int_ctl_item_c(fline_c->max_line_stepping_ctl);
 	
 	init_real3_ctl_list(&fline_c->seed_point_list);
 	init_int2_ctl_list(&fline_c->seed_surface_list);

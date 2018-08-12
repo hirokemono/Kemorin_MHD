@@ -77,47 +77,47 @@ void alloc_time_data_control_c(struct time_data_control_c *tctl){
     alloc_chara_ctl_item_c(tctl->flexible_step_c);
     
     tctl->i_step_init_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_init_c);
+    init_int_ctl_item_c(tctl->i_step_init_c);
     tctl->i_step_number_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_number_c);
+    init_int_ctl_item_c(tctl->i_step_number_c);
     tctl->elapsed_time_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
     init_real_ctl_item_c(tctl->elapsed_time_c);
     
     tctl->i_step_check_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_check_c);
+    init_int_ctl_item_c(tctl->i_step_check_c);
     tctl->i_step_rst_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_rst_c);
+    init_int_ctl_item_c(tctl->i_step_rst_c);
     tctl->i_step_pvr_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_pvr_c);
+    init_int_ctl_item_c(tctl->i_step_pvr_c);
     tctl->i_step_psf_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_psf_c);
+    init_int_ctl_item_c(tctl->i_step_psf_c);
     tctl->i_step_iso_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_iso_c);
+    init_int_ctl_item_c(tctl->i_step_iso_c);
     tctl->i_step_ucd_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_ucd_c);
+    init_int_ctl_item_c(tctl->i_step_ucd_c);
     tctl->i_step_fline_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_fline_c);
+    init_int_ctl_item_c(tctl->i_step_fline_c);
     tctl->i_step_lic_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_lic_c);
+    init_int_ctl_item_c(tctl->i_step_lic_c);
     
     tctl->i_step_monitor_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_monitor_c);
+    init_int_ctl_item_c(tctl->i_step_monitor_c);
     tctl->i_step_sgs_coefs_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_sgs_coefs_c);
+    init_int_ctl_item_c(tctl->i_step_sgs_coefs_c);
     tctl->i_step_boundary_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_step_boundary_c);
+    init_int_ctl_item_c(tctl->i_step_boundary_c);
     
     tctl->dt_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
     init_real_ctl_item_c(tctl->dt_c);
     tctl->time_init_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
     init_real_ctl_item_c(tctl->time_init_c);
     tctl->i_diff_steps_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->i_diff_steps_c);
+    init_int_ctl_item_c(tctl->i_diff_steps_c);
     
     tctl->start_rst_step_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->start_rst_step_c);
+    init_int_ctl_item_c(tctl->start_rst_step_c);
     tctl->end_rst_step_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(tctl->end_rst_step_c);
+    init_int_ctl_item_c(tctl->end_rst_step_c);
     tctl->min_delta_t_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
     init_real_ctl_item_c(tctl->min_delta_t_c);
     tctl->max_delta_t_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));

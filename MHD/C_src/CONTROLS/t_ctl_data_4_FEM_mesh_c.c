@@ -44,7 +44,7 @@ void alloc_FEM_mesh_control_c(struct FEM_mesh_control_c *Fmesh){
     alloc_chara_ctl_item_c(Fmesh->FEM_viewer_output_switch_c);
     
     Fmesh->FEM_sleeve_level_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(Fmesh->FEM_sleeve_level_c);
+    init_int_ctl_item_c(Fmesh->FEM_sleeve_level_c);
     Fmesh->FEM_element_overlap_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
     alloc_chara_ctl_item_c(Fmesh->FEM_element_overlap_c);
     

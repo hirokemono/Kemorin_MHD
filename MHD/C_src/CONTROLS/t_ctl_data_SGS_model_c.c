@@ -269,13 +269,12 @@ void alloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 	elayer_c->num_fl_layer_grp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	elayer_c->ngrp_SGS_on_sphere_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	
-	elayer_c->igrp_stack_layer_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	init_chara_ctl_list(&elayer_c->layer_grp_name_list);
-	init_ctl_int_array(elayer_c->igrp_stack_layer_c);
+	init_int_ctl_list(&elayer_c->igrp_stack_layer_list);
 	
-	init_ctl_int_item(elayer_c->num_layering_grp_c);
-	init_ctl_int_item(elayer_c->num_fl_layer_grp_c);
-	init_ctl_int_item(elayer_c->ngrp_SGS_on_sphere_c);
+	init_int_ctl_item_c(elayer_c->num_layering_grp_c);
+	init_int_ctl_item_c(elayer_c->num_fl_layer_grp_c);
+	init_int_ctl_item_c(elayer_c->ngrp_SGS_on_sphere_c);
 	
 	return;
 };
@@ -288,8 +287,7 @@ void dealloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 	
 	clear_chara_ctl_list(&elayer_c->layer_grp_name_list);
 	
-	dealloc_ctl_int_array(elayer_c->igrp_stack_layer_c);
-	free(elayer_c->igrp_stack_layer_c);
+	clear_int_ctl_list(&elayer_c->igrp_stack_layer_list);
 	
 	free(elayer_c->layering_grp_type_c);
 	free(elayer_c->start_layering_grp_name_c);
@@ -311,7 +309,7 @@ int read_layering_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_ctl_item_c(buf, label_layering_ctl[ 0], elayer_c->layering_grp_type_c);
 		
 		read_chara_ctl_list(fp, buf, label_layering_ctl[1], &elayer_c->layer_grp_name_list);
-		read_integer_ctl_array_c(fp, buf, label_layering_ctl[2], elayer_c->igrp_stack_layer_c);
+		read_int_ctl_list(fp, buf, label_layering_ctl[2], &elayer_c->igrp_stack_layer_list);
 		
 		read_chara_ctl_item_c(buf, label_layering_ctl[ 4], elayer_c->start_layering_grp_name_c);
 		read_chara_ctl_item_c(buf, label_layering_ctl[ 6], elayer_c->start_fl_layer_grp_name_c);
@@ -330,9 +328,7 @@ int write_layering_ctl_c(FILE *fp, int level, const char *label, struct layering
 	
 	write_chara_ctl_list(fp, level, label_layering_ctl[1], &elayer_c->layer_grp_name_list);
 	
-	if(elayer_c->igrp_stack_layer_c->num > 0) fprintf(fp, "!\n");
-	write_integer_ctl_array_c(fp, level, (int) strlen(label_layering_ctl[2]),
-				label_layering_ctl[2], elayer_c->igrp_stack_layer_c);
+	write_int_ctl_list(fp, level, label_layering_ctl[2], &elayer_c->igrp_stack_layer_list);
 	
 	write_integer_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 3], elayer_c->num_layering_grp_c);
 	write_chara_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 4], elayer_c->start_layering_grp_name_c);
@@ -481,11 +477,11 @@ void alloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 	SGS_ctl_c->ngrp_radial_ave_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	SGS_ctl_c->ngrp_med_ave_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	
-	init_ctl_int_item(SGS_ctl_c->istep_dynamic_c);
-	init_ctl_int_item(SGS_ctl_c->min_step_dynamic_c);
-	init_ctl_int_item(SGS_ctl_c->max_step_dynamic_c);
-	init_ctl_int_item(SGS_ctl_c->ngrp_radial_ave_c);
-	init_ctl_int_item(SGS_ctl_c->ngrp_med_ave_c);
+	init_int_ctl_item_c(SGS_ctl_c->istep_dynamic_c);
+	init_int_ctl_item_c(SGS_ctl_c->min_step_dynamic_c);
+	init_int_ctl_item_c(SGS_ctl_c->max_step_dynamic_c);
+	init_int_ctl_item_c(SGS_ctl_c->ngrp_radial_ave_c);
+	init_int_ctl_item_c(SGS_ctl_c->ngrp_med_ave_c);
 	
 	SGS_ctl_c->stabilize_weight_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	SGS_ctl_c->delta_to_shrink_dynamic_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));

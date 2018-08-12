@@ -80,8 +80,8 @@ void alloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c){
 	
 	img_size_c->num_xpixel_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	img_size_c->num_ypixel_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-	init_ctl_int_item(img_size_c->num_xpixel_ctl);
-	init_ctl_int_item(img_size_c->num_ypixel_ctl);
+	init_int_ctl_item_c(img_size_c->num_xpixel_ctl);
+	init_int_ctl_item_c(img_size_c->num_ypixel_ctl);
 	
 	return;
 };

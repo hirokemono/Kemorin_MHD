@@ -13,7 +13,6 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
-#include "control_arrays_IO_c.h"
 #include "t_control_data_4_psf_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "t_ctl_data_4_view_transfer_c.h"

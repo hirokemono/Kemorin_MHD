@@ -13,7 +13,7 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
-#include "control_arrays_IO_c.h"
+#include "t_control_int_IO.h"
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
 #include "t_ctl_data_sph_filter_list.h"
@@ -43,7 +43,7 @@ struct layering_ctl_c{
 	
 	struct chara_ctl_item *layering_grp_type_c;
 	struct chara_ctl_list layer_grp_name_list;
-	struct int_ctl_array *igrp_stack_layer_c;
+	struct int_ctl_list igrp_stack_layer_list;
 	
 	struct int_ctl_item *num_layering_grp_c;
 	struct int_ctl_item *num_fl_layer_grp_c;

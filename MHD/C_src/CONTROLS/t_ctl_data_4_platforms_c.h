@@ -13,6 +13,7 @@
 #include <string.h>
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
+#include "t_control_int_IO.h"
 #include "t_control_chara_IO.h"
 
 struct platform_data_control_c{

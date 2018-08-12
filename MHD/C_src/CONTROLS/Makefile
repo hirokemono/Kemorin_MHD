@@ -6,10 +6,10 @@ KEMO_CTL_C_DIR = $$(C_SRCDIR)/CONTROLS
 
 OBJ_KEMO_CTL_C = \
  control_elements_IO_c.o \
- control_arrays_IO_c.o \
  \
  t_control_chara_IO.o \
  t_control_real_IO.o \
+ t_control_int_IO.o \
  t_control_int2_IO.o \
  t_control_int_real_IO.o \
  t_control_chara_int_IO.o \
@@ -106,17 +106,6 @@ module:
 	>> $(MAKENAME)
 	
 	@echo \
-	control_arrays_IO_c.o: \
-	'$$(KEMO_CTL_C_DIR)'/control_arrays_IO_c.c \
-	control_arrays_IO_c.h \
-	kemosrc_param_c.o \
-	skip_comment_c.o \
-	control_elements_IO_c.o \
-	>> $(MAKENAME)
-	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
-	>> $(MAKENAME)
-	
-	@echo \
 	t_control_chara_IO.o: \
 	'$$(KEMO_CTL_C_DIR)'/t_control_chara_IO.c \
 	t_control_chara_IO.h \
@@ -131,6 +120,17 @@ module:
 	t_control_real_IO.o: \
 	'$$(KEMO_CTL_C_DIR)'/t_control_real_IO.c \
 	t_control_real_IO.h \
+	kemosrc_param_c.o \
+	skip_comment_c.o \
+	control_elements_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_int_IO.o: \
+	'$$(KEMO_CTL_C_DIR)'/t_control_int_IO.c \
+	t_control_int_IO.h \
 	kemosrc_param_c.o \
 	skip_comment_c.o \
 	control_elements_IO_c.o \
@@ -243,6 +243,7 @@ module:
 	t_ctl_data_4_platforms_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
+	t_control_int_IO.o \
 	t_control_chara_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -254,6 +255,7 @@ module:
 	t_ctl_data_4_FEM_mesh_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
+	t_control_int_IO.o \
 	t_control_chara_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -265,6 +267,7 @@ module:
 	t_ctl_data_4_time_steps_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
+	t_control_int_IO.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
 	>> $(MAKENAME)
@@ -277,6 +280,7 @@ module:
 	t_ctl_data_mhd_evo_scheme_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
+	t_control_int_IO.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
 	>> $(MAKENAME)
@@ -325,7 +329,6 @@ module:
 	t_ctl_data_4_volume_spectr_list.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
 	>> $(MAKENAME)
@@ -338,9 +341,9 @@ module:
 	t_ctl_data_4_sph_monitor_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
+	t_control_int_IO.o \
 	t_control_int2_IO.o \
 	t_ctl_data_4_volume_spectr_list.o \
 	>> $(MAKENAME)
@@ -353,8 +356,8 @@ module:
 	t_ctl_data_node_monitor_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_chara_IO.o \
+	t_control_int_IO.o \
 	t_control_int2_IO.o \
 	t_control_real3_IO.o \
 	>> $(MAKENAME)
@@ -367,7 +370,6 @@ module:
 	t_ctl_data_zonal_means_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_data_4_psf_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -379,7 +381,7 @@ module:
 	t_ctl_data_sph_filter_list.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
+	t_control_int_IO.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
 	>> $(MAKENAME)
@@ -392,7 +394,7 @@ module:
 	t_ctl_data_SGS_model_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
+	t_control_int_IO.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
 	t_ctl_data_sph_filter_list.o \
@@ -418,7 +420,6 @@ module:
 	t_ctl_data_mhd_forces_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_chara_IO.o \
 	t_control_chara_int_IO.o \
 	>> $(MAKENAME)
@@ -431,7 +432,6 @@ module:
 	t_ctl_data_mhd_normalize_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_chara_int_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -454,7 +454,6 @@ module:
 	t_ctl_data_mhd_evolution_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_chara_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -466,7 +465,6 @@ module:
 	t_ctl_data_4_fields_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_chara_IO.o \
 	t_control_chara3_IO.o \
 	>> $(MAKENAME)
@@ -479,9 +477,9 @@ module:
 	t_ctl_data_4_sphere_model_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
+	t_control_int_IO.o \
 	t_control_int2_IO.o \
 	t_control_int_real_IO.o \
 	t_control_chara_int_IO.o \
@@ -495,7 +493,6 @@ module:
 	t_control_data_sph_grid_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_ctl_data_4_FEM_mesh_c.o \
 	t_ctl_data_4_sphere_model_c.o \
 	>> $(MAKENAME)
@@ -508,7 +505,6 @@ module:
 	t_control_data_4_psf_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
 	t_control_chara_int_IO.o \
@@ -523,7 +519,7 @@ module:
 	t_control_data_4_fline_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
+	t_control_int_IO.o \
 	t_control_chara_IO.o \
 	t_control_int2_IO.o \
 	t_control_real3_IO.o \
@@ -537,7 +533,7 @@ module:
 	t_ctl_data_4_view_transfer_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
+	t_control_int_IO.o \
 	t_control_real_IO.o \
 	t_control_chara_int_IO.o \
 	t_control_chara2_real_IO.o \
@@ -551,7 +547,6 @@ module:
 	t_ctl_data_pvr_colormap_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_chara_IO.o \
 	t_control_real_IO.o \
 	t_control_real2_IO.o \
@@ -566,7 +561,6 @@ module:
 	t_control_data_pvr_section_list.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_real_IO.o \
 	t_control_data_4_psf_c.o \
 	>> $(MAKENAME)
@@ -579,7 +573,6 @@ module:
 	t_control_data_pvr_isosurf_list.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
 	>> $(MAKENAME)
@@ -592,7 +585,6 @@ module:
 	t_control_data_lic_masking_list.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_chara_IO.o \
 	t_control_real2_IO.o \
 	>> $(MAKENAME)
@@ -605,7 +597,7 @@ module:
 	t_control_data_LIC_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
+	t_control_int_IO.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
 	t_control_data_lic_masking_list.o \
@@ -619,7 +611,7 @@ module:
 	t_control_data_4_pvr_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
+	t_control_int_IO.o \
 	t_control_chara_IO.o \
 	t_control_real2_IO.o \
 	t_control_chara2_real_IO.o \
@@ -638,7 +630,6 @@ module:
 	t_control_data_LIC_pvr_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_data_4_psf_c.o \
 	t_ctl_data_pvr_colormap_c.o \
 	t_ctl_data_4_view_transfer_c.o \
@@ -654,7 +645,6 @@ module:
 	t_control_data_PSF_ctl_list.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_data_4_psf_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -666,7 +656,6 @@ module:
 	t_control_data_ISO_ctl_list.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_data_4_iso_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -678,7 +667,6 @@ module:
 	t_control_data_PVR_ctl_list.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_data_4_pvr_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -690,7 +678,6 @@ module:
 	t_control_data_LIC_ctl_list.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_data_LIC_pvr_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -702,7 +689,6 @@ module:
 	t_control_data_FLINE_ctl_list.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_data_4_fline_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -714,7 +700,6 @@ module:
 	t_control_data_4_iso_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_real_IO.o \
 	t_control_chara_IO.o \
 	t_control_chara2_IO.o \
@@ -728,7 +713,6 @@ module:
 	t_control_data_vizs_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_control_data_PSF_ctl_list.o \
 	t_control_data_ISO_ctl_list.o \
 	t_control_data_FLINE_ctl_list.o \
@@ -744,7 +728,6 @@ module:
 	t_control_data_visualizer_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_ctl_data_4_platforms_c.o \
 	t_ctl_data_4_time_steps_c.o \
 	t_control_data_vizs_c.o \
@@ -758,7 +741,6 @@ module:
 	t_control_data_gen_sph_grid_c.h \
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
-	control_arrays_IO_c.o \
 	t_ctl_data_4_platforms_c.o \
 	t_control_data_sph_grid_c.o \
 	>> $(MAKENAME)

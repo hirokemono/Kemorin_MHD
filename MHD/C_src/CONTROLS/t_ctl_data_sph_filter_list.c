@@ -45,9 +45,9 @@ void alloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 	sph_filter_c->first_reference_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	sph_filter_c->second_reference_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	
-	init_ctl_int_item(sph_filter_c->maximum_moments_c);
-	init_ctl_int_item(sph_filter_c->first_reference_c);
-	init_ctl_int_item(sph_filter_c->second_reference_c);
+	init_int_ctl_item_c(sph_filter_c->maximum_moments_c);
+	init_int_ctl_item_c(sph_filter_c->first_reference_c);
+	init_int_ctl_item_c(sph_filter_c->second_reference_c);
 	
 	sph_filter_c->sphere_filter_width_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	sph_filter_c->radial_filter_width_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));

@@ -18,11 +18,6 @@ struct maxlen_3{
     int mlen[3];
 };
 
-struct int_ctl_item{
-	int iflag;
-	int i_data;
-};
-
 /* Prototypes */ 
 
 void write_spaces_c(FILE *fp, int num_space);
@@ -49,11 +44,5 @@ int find_control_array_flag_c(const char buf[LENGTHBUF], const char *label, int 
 int find_control_end_array_flag_c(const char buf[LENGTHBUF], const char *label, int num, int icou);
 
 int count_max_length_of_label(int num, const char *label[KCHARA_C]);
-
-void init_ctl_int_item(struct int_ctl_item *i_item);
-void read_integer_ctl_item_c(const char *buf, const char *label,
-			struct int_ctl_item *i_item);
-void write_integer_ctl_item_c(FILE *fp, int level, int maxlen,
-			const char *label, struct int_ctl_item *i_item);
 
 #endif

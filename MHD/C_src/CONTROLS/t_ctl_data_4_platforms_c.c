@@ -57,9 +57,9 @@ void alloc_platform_data_control_c(struct platform_data_control_c *files){
     alloc_chara_ctl_item_c(files->debug_flag_c);
     
     files->ndomain_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(files->ndomain_c);
+    init_int_ctl_item_c(files->ndomain_c);
     files->num_smp_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
-    init_ctl_int_item(files->num_smp_c);
+    init_int_ctl_item_c(files->num_smp_c);
 
     files->mesh_file_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
     alloc_chara_ctl_item_c(files->mesh_file_prefix_c);
