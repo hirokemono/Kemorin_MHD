@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_int2_IO.h"
 #include "t_control_real3_IO.h"
 
 struct fline_ctl_c{
@@ -37,7 +38,7 @@ struct fline_ctl_c{
 	struct int_ctl_item *max_line_stepping_ctl;
 	
 	struct real3_ctl_list seed_point_list;
-	struct int2_ctl_array *seed_surface_ctl;
+	struct int2_ctl_list seed_surface_list;
 };
 
 /* prototypes */

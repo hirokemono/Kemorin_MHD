@@ -32,19 +32,17 @@ void alloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
 	};
 	
 	nmtr_ctl->group_4_monitor_ctl = (struct chara_ctl_array *) malloc(sizeof(struct chara_ctl_array));
-	nmtr_ctl->node_4_monitor_ctl = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
     init_ctl_chara_array(nmtr_ctl->group_4_monitor_ctl);
     init_real3_ctl_list(&nmtr_ctl->xx_4_monitor_list);
-    init_ctl_int2_array(nmtr_ctl->node_4_monitor_ctl);
+    init_int2_ctl_list(&nmtr_ctl->node_4_monitor_list);
 };
 
 void dealloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
     dealloc_ctl_chara_array(nmtr_ctl->group_4_monitor_ctl);
     clear_real3_ctl_list(&nmtr_ctl->xx_4_monitor_list);
-    dealloc_ctl_int2_array(nmtr_ctl->node_4_monitor_ctl);
+    clear_int2_ctl_list(&nmtr_ctl->node_4_monitor_list);
 	
     free(nmtr_ctl->group_4_monitor_ctl);
-    free(nmtr_ctl->node_4_monitor_ctl);
 };
 
 int read_node_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
@@ -54,7 +52,7 @@ int read_node_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
 		
 		read_character_ctl_array_c(fp, buf, label_node_monitor_ctl[0], nmtr_ctl->group_4_monitor_ctl);
 		read_real3_ctl_list(fp, buf, label_node_monitor_ctl[1], &nmtr_ctl->xx_4_monitor_list);
-		read_int2_ctl_array_c(fp, buf, label_node_monitor_ctl[2], nmtr_ctl->node_4_monitor_ctl);
+		read_int2_ctl_list(fp, buf, label_node_monitor_ctl[2], &nmtr_ctl->node_4_monitor_list);
 	};
 	return 1;
 };
@@ -67,10 +65,7 @@ int write_node_monitor_ctl_c(FILE *fp, int level, const char *label,
 			label_node_monitor_ctl[0], nmtr_ctl->group_4_monitor_ctl);
 	
 	write_real3_ctl_list(fp, level, label_node_monitor_ctl[1], &nmtr_ctl->xx_4_monitor_list);
-	
-	if(nmtr_ctl->node_4_monitor_ctl->num > 0) fprintf(fp, "!\n");
-	write_int2_ctl_array_c(fp, level, (int) strlen(label_node_monitor_ctl[2]),
-			label_node_monitor_ctl[2], nmtr_ctl->node_4_monitor_ctl);
+	write_int2_ctl_list(fp, level, label_node_monitor_ctl[2], &nmtr_ctl->node_4_monitor_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

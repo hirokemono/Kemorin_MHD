@@ -14,6 +14,8 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_int2_IO.h"
+#include "t_control_int_real_IO.h"
 #include "t_control_chara_int_IO.h"
 
 struct sphere_domain_ctl_c{
@@ -40,7 +42,7 @@ struct sphere_data_ctl_c{
 	struct int_ctl_item *ngrid_elevation_c;
 	struct int_ctl_item *ngrid_azimuth_c;
 	
-	struct int_real_ctl_array *radius_c;
+	struct int_real_ctl_list radius_list;
 	struct chara_int_ctl_list radial_grp_list;
 	
 	struct chara_ctl_item *radial_grid_type_c;
@@ -56,8 +58,8 @@ struct sphere_data_ctl_c{
 	struct int_ctl_item *num_radial_layer_c;
 	struct int_ctl_item *num_med_layer_c;
 	
-	struct int2_ctl_array *radial_layer_list_c;
-	struct int2_ctl_array *med_layer_list_c;
+	struct int2_ctl_list radial_layer_list;
+	struct int2_ctl_list med_layer_list;
 };
 
 

@@ -80,20 +80,4 @@ void read_real_ctl_item_c(const char *buf, const char *label,
 void write_real_ctl_item_c(FILE *fp, int level, int maxlen,
 			const char *label, struct real_ctl_item *r_item);
 
-
-void read_int2_ctl_item_c(const char *buf, const char *label,
-			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item);
-void write_int2_ctl_item_c(FILE *fp, int level, int maxlen, const char *label,
-			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item);
-
-void read_cr_ctl_item_c(const char *buf, const char *label,
-			struct chara_ctl_item *c_item, struct real_ctl_item *r_item);
-void write_cr_ctl_item_c(FILE *fp, int level, int maxlen[2], const char *label, 
-			struct chara_ctl_item *c_item, struct real_ctl_item *r_item);
-
-void read_ir_ctl_item_c(const char *buf, const char *label,
-			struct int_ctl_item *i_item, struct real_ctl_item *r_item);
-void write_ir_ctl_item_c(FILE *fp, int level, int maxlen, const char *label, 
-			struct int_ctl_item *i_item, struct real_ctl_item *r_item);
-
 #endif

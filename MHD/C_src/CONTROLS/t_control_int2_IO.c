@@ -1,57 +1,57 @@
 /*
-//  t_control_real2_IO.c
+//  t_control_int2_IO.c
 //  
 //
 //  Created by Hiroaki Matsui on 2018/08/11.
 */
 
-#include "t_control_real2_IO.h"
+#include "t_control_int2_IO.h"
 
 
-void init_real2_ctl_item_c(struct real2_ctl_item *r2_item){
-	r2_item->r_data[0] = 0.0;
-	r2_item->r_data[1] = 0.0;
-	r2_item->iflag = 0;
+void init_int2_ctl_item_c(struct int2_ctl_item *i2_item){
+	i2_item->i_data[0] = 0;
+	i2_item->i_data[1] = 0;
+	i2_item->iflag = 0;
     return;
 };
 
-int read_real2_ctl_item_c(char buf[LENGTHBUF], const char *label, 
-                          struct real2_ctl_item *r2_item){
+int read_int2_ctl_item_c(char buf[LENGTHBUF], const char *label, 
+                          struct int2_ctl_item *i2_item){
 	char header_chara[KCHARA_C];
 	
-	if(r2_item->iflag > 0) return 0;
+	if(i2_item->iflag > 0) return 0;
 	
 	sscanf(buf, "%s", header_chara);
 	if(cmp_no_case_c(header_chara, label) > 0){
-		sscanf(buf, "%s %lf %lf", header_chara, 
-					&r2_item->r_data[0], &r2_item->r_data[1]);
-		r2_item->iflag = 1;
+		sscanf(buf, "%s %d %d", header_chara, 
+					&i2_item->i_data[0], &i2_item->i_data[1]);
+		i2_item->iflag = 1;
 	};
 	return 1;
 };
 
-int write_real2_ctl_item_c(FILE *fp, int level, int maxlen, 
-                           const char *label, struct real2_ctl_item *r2_item){
+int write_int2_ctl_item_c(FILE *fp, int level, int maxlen, 
+                           const char *label, struct int2_ctl_item *i2_item){
     
-	if(r2_item->iflag == 0) return level;
+	if(i2_item->iflag == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen, label);
-	fprintf(fp, "%.12e  %.12e\n", r2_item->r_data[0], r2_item->r_data[1]);
+	fprintf(fp, "%d  %d\n", i2_item->i_data[0], i2_item->i_data[1]);
     return level;
 };
 
 
 
-void init_real2_ctl_list(struct real2_ctl_list *head){
+void init_int2_ctl_list(struct int2_ctl_list *head){
     head->_prev = NULL;
     head->_next = NULL;
     return;
 };
 
-void clear_real2_ctl_list(struct real2_ctl_list *head){
+void clear_int2_ctl_list(struct int2_ctl_list *head){
     head = head->_next;
     while (head != NULL) {
-        init_real2_ctl_item_c(head->r2_item);
+        init_int2_ctl_item_c(head->i2_item);
         free(head);
         head = head->_next;
 	}
@@ -59,19 +59,19 @@ void clear_real2_ctl_list(struct real2_ctl_list *head){
     return;
 };
 
-struct real2_ctl_list *add_real2_ctl_list(struct real2_ctl_list *current){
-    struct real2_ctl_list *added;
-    struct real2_ctl_list *old_next;
+struct int2_ctl_list *add_int2_ctl_list(struct int2_ctl_list *current){
+    struct int2_ctl_list *added;
+    struct int2_ctl_list *old_next;
     
-    if ((added = (struct real2_ctl_list *) malloc(sizeof(struct real2_ctl_list))) == NULL) {
+    if ((added = (struct int2_ctl_list *) malloc(sizeof(struct int2_ctl_list))) == NULL) {
         printf("malloc error\n");
         exit(0);
     }
-    if ((added->r2_item = (struct real2_ctl_item *) malloc(sizeof(struct real2_ctl_item))) == NULL) {
-        printf("malloc error for r2_item\n");
+    if ((added->i2_item = (struct int2_ctl_item *) malloc(sizeof(struct int2_ctl_item))) == NULL) {
+        printf("malloc error for i2_item\n");
         exit(0);
     }
-	init_real2_ctl_item_c(added->r2_item);
+	init_int2_ctl_item_c(added->i2_item);
     
     /* replace from  current -> p2　to current -> p1 -> p2 */
     old_next= current->_next;
@@ -83,12 +83,12 @@ struct real2_ctl_list *add_real2_ctl_list(struct real2_ctl_list *current){
     return added;
 };
 
-void delete_real2_ctl_list(struct real2_ctl_list *current){
-    struct real2_ctl_list *old_prev = current->_prev;
-    struct real2_ctl_list *old_next = current->_next;
+void delete_int2_ctl_list(struct int2_ctl_list *current){
+    struct int2_ctl_list *old_prev = current->_prev;
+    struct int2_ctl_list *old_next = current->_next;
     
-    init_real2_ctl_item_c(current->r2_item);
-    free(current->r2_item);
+    init_int2_ctl_item_c(current->i2_item);
+    free(current->i2_item);
     free(current);
     
     old_prev->_next = old_next;
@@ -96,7 +96,7 @@ void delete_real2_ctl_list(struct real2_ctl_list *current){
     return;
 };
 
-int count_real2_ctl_list(struct real2_ctl_list *head){
+int count_int2_ctl_list(struct int2_ctl_list *head){
     int num = 0;
     head = head->_next;
     while (head != NULL){
@@ -106,7 +106,7 @@ int count_real2_ctl_list(struct real2_ctl_list *head){
     return num;
 };
 
-struct real2_ctl_list *set_real2_ctl_list_pointer(int index, struct real2_ctl_list *head){
+struct int2_ctl_list *set_int2_ctl_list_pointer(int index, struct int2_ctl_list *head){
     int num = 0;
     head = head->_next;
     while (head != NULL){
@@ -118,8 +118,8 @@ struct real2_ctl_list *set_real2_ctl_list_pointer(int index, struct real2_ctl_li
     return head;
 };
 
-int read_real2_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
-                      struct real2_ctl_list *head){
+int read_int2_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
+                      struct int2_ctl_list *head){
     int iflag = 0;
     int icou = 0;
     int num_array = 0;
@@ -129,8 +129,8 @@ int read_real2_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     
     skip_comment_read_line(fp, buf);
     while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
-        head = add_real2_ctl_list(head);
-        iflag = read_real2_ctl_item_c(buf, label, head->r2_item);
+        head = add_int2_ctl_list(head);
+        iflag = read_int2_ctl_item_c(buf, label, head->i2_item);
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
     };
@@ -141,10 +141,10 @@ int read_real2_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     return icou;
 };
 
-int write_real2_ctl_list(FILE *fp, int level, const char *label, 
-                       struct real2_ctl_list *head){
+int write_int2_ctl_list(FILE *fp, int level, const char *label, 
+                       struct int2_ctl_list *head){
     
-    int num = count_real2_ctl_list(head);
+    int num = count_int2_ctl_list(head);
     
     if(num == 0) return level;
     
@@ -153,8 +153,8 @@ int write_real2_ctl_list(FILE *fp, int level, const char *label,
     head = head->_next;
     
     while (head != NULL) {    /* Go through null pointer*/
-        level = write_real2_ctl_item_c(fp, level, (int) strlen(label),
-                                     label, head->r2_item);
+        level = write_int2_ctl_item_c(fp, level, (int) strlen(label),
+                                     label, head->i2_item);
         head = head->_next;
     }
     level = write_end_array_flag_for_ctl_c(fp, level, label);

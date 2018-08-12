@@ -100,20 +100,18 @@ void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
     alloc_ctl_chara_item(pspec_ctl_c->picked_mode_head_c);
 	
 	pspec_ctl_c->idx_pick_layer_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
-	pspec_ctl_c->idx_pick_sph_c = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
 	pspec_ctl_c->idx_pick_sph_l_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	pspec_ctl_c->idx_pick_sph_m_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	
     init_ctl_int_array(pspec_ctl_c->idx_pick_layer_c);
-    init_ctl_int2_array(pspec_ctl_c->idx_pick_sph_c);
+    init_int2_ctl_list(&pspec_ctl_c->idx_pick_sph_list);
     init_ctl_int_array(pspec_ctl_c->idx_pick_sph_l_c);
     init_ctl_int_array(pspec_ctl_c->idx_pick_sph_m_c);
 	
 	return;
 };
 void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
-    dealloc_ctl_int2_array(pspec_ctl_c->idx_pick_sph_c);
-	free(pspec_ctl_c->idx_pick_sph_c);
+    clear_int2_ctl_list(&pspec_ctl_c->idx_pick_sph_list);
     dealloc_ctl_int_array(pspec_ctl_c->idx_pick_sph_l_c);
 	free(pspec_ctl_c->idx_pick_sph_l_c);
     dealloc_ctl_int_array(pspec_ctl_c->idx_pick_sph_m_c);
@@ -135,7 +133,7 @@ int read_pick_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 		
 		read_integer_ctl_array_c(fp, buf, label_pick_spectr_ctl[1], pspec_ctl_c->idx_pick_layer_c);
 		
-		read_int2_ctl_array_c(fp, buf, label_pick_spectr_ctl[2], pspec_ctl_c->idx_pick_sph_c);
+		read_int2_ctl_list(fp, buf, label_pick_spectr_ctl[2], &pspec_ctl_c->idx_pick_sph_list);
 		read_integer_ctl_array_c(fp, buf, label_pick_spectr_ctl[3], pspec_ctl_c->idx_pick_sph_l_c);
 		read_integer_ctl_array_c(fp, buf, label_pick_spectr_ctl[4], pspec_ctl_c->idx_pick_sph_m_c);
 	};
@@ -152,9 +150,7 @@ int write_pick_spectr_control_c(FILE *fp, int level, const char *label,
 	write_integer_ctl_array_c(fp, level, (int) strlen(label_pick_spectr_ctl[1]),
 				label_pick_spectr_ctl[1], pspec_ctl_c->idx_pick_layer_c);
 	
-	if(pspec_ctl_c->idx_pick_sph_c->num > 0) fprintf(fp, "!\n");
-	write_int2_ctl_array_c(fp, level, (int) strlen(label_pick_spectr_ctl[2]),
-			label_pick_spectr_ctl[2], pspec_ctl_c->idx_pick_sph_c);
+	write_int2_ctl_list(fp, level, label_pick_spectr_ctl[2], &pspec_ctl_c->idx_pick_sph_list);
 	
 	if(pspec_ctl_c->idx_pick_sph_l_c->num > 0) fprintf(fp, "!\n");
 	write_integer_ctl_array_c(fp, level, (int) strlen(label_pick_spectr_ctl[3]),
@@ -181,18 +177,16 @@ void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
 	g_pwr->gauss_coefs_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_ctl_real_item(g_pwr->gauss_coefs_radius_c);
 	
-	g_pwr->idx_gauss_c = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
 	g_pwr->idx_gauss_l_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	g_pwr->idx_gauss_m_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
-	init_ctl_int2_array(g_pwr->idx_gauss_c);
+	init_int2_ctl_list(&g_pwr->idx_gauss_list);
 	init_ctl_int_array(g_pwr->idx_gauss_l_c);
 	init_ctl_int_array(g_pwr->idx_gauss_l_c);
 	
 	return;
 };
 void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
-	dealloc_ctl_int2_array(g_pwr->idx_gauss_c);
-	free(g_pwr->idx_gauss_c);
+	clear_int2_ctl_list(&g_pwr->idx_gauss_list);
 	dealloc_ctl_int_array(g_pwr->idx_gauss_l_c);
 	free(g_pwr->idx_gauss_l_c);
 	dealloc_ctl_int_array(g_pwr->idx_gauss_m_c);
@@ -211,7 +205,7 @@ int read_gauss_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 		
 		read_real_ctl_item_c(buf, label_gauss_spectr_ctl[1], g_pwr->gauss_coefs_radius_c);
 		
-		read_int2_ctl_array_c(fp, buf, label_gauss_spectr_ctl[2], g_pwr->idx_gauss_c);
+		read_int2_ctl_list(fp, buf, label_gauss_spectr_ctl[2], &g_pwr->idx_gauss_list);
 		read_integer_ctl_array_c(fp, buf, label_gauss_spectr_ctl[3], g_pwr->idx_gauss_l_c);
 		read_integer_ctl_array_c(fp, buf, label_gauss_spectr_ctl[4], g_pwr->idx_gauss_m_c);
 	};
@@ -226,9 +220,7 @@ int write_gauss_spectr_control_c(FILE *fp, int level, const char *label,
 	write_real_ctl_item_c(fp, level, g_pwr->maxlen, 
 				label_gauss_spectr_ctl[1], g_pwr->gauss_coefs_radius_c);
 	
-	if(g_pwr->idx_gauss_c->num > 0) fprintf(fp, "!\n");
-	write_int2_ctl_array_c(fp, level, (int) strlen(label_gauss_spectr_ctl[2]),
-			label_gauss_spectr_ctl[2], g_pwr->idx_gauss_c);
+	write_int2_ctl_list(fp, level, label_gauss_spectr_ctl[2], &g_pwr->idx_gauss_list);
 	
 	if(g_pwr->idx_gauss_l_c->num > 0) fprintf(fp, "!\n");
 	write_integer_ctl_array_c(fp, level, (int) strlen(label_gauss_spectr_ctl[3]),

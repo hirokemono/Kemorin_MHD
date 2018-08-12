@@ -8,6 +8,8 @@ OBJ_KEMO_CTL_C = \
  control_elements_IO_c.o \
  control_arrays_IO_c.o \
  \
+ t_control_int2_IO.o \
+ t_control_int_real_IO.o \
  t_control_chara_int_IO.o \
  t_control_chara_real_IO.o \
  t_control_chara2_IO.o \
@@ -105,6 +107,28 @@ module:
 	control_arrays_IO_c.o: \
 	'$$(KEMO_CTL_C_DIR)'/control_arrays_IO_c.c \
 	control_arrays_IO_c.h \
+	kemosrc_param_c.o \
+	skip_comment_c.o \
+	control_elements_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_int2_IO.o: \
+	'$$(KEMO_CTL_C_DIR)'/t_control_int2_IO.c \
+	t_control_int2_IO.h \
+	kemosrc_param_c.o \
+	skip_comment_c.o \
+	control_elements_IO_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	t_control_int_real_IO.o: \
+	'$$(KEMO_CTL_C_DIR)'/t_control_int_real_IO.c \
+	t_control_int_real_IO.h \
 	kemosrc_param_c.o \
 	skip_comment_c.o \
 	control_elements_IO_c.o \
@@ -283,6 +307,7 @@ module:
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	control_arrays_IO_c.o \
+	t_control_int2_IO.o \
 	t_ctl_data_4_volume_spectr_list.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -295,6 +320,7 @@ module:
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	control_arrays_IO_c.o \
+	t_control_int2_IO.o \
 	t_control_real3_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -410,6 +436,8 @@ module:
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	control_arrays_IO_c.o \
+	t_control_int2_IO.o \
+	t_control_int_real_IO.o \
 	t_control_chara_int_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
@@ -448,6 +476,7 @@ module:
 	kemosrc_param_c.o \
 	control_elements_IO_c.o \
 	control_arrays_IO_c.o \
+	t_control_int2_IO.o \
 	t_control_real3_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \

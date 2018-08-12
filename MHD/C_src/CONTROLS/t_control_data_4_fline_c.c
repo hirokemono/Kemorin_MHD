@@ -79,8 +79,7 @@ void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	init_ctl_int_item(fline_c->max_line_stepping_ctl);
 	
 	init_real3_ctl_list(&fline_c->seed_point_list);
-	fline_c->seed_surface_ctl = (struct int2_ctl_array *) malloc(sizeof(struct int2_ctl_array));
-	init_ctl_int2_array(fline_c->seed_surface_ctl);
+	init_int2_ctl_list(&fline_c->seed_surface_list);
 	
 	return;
 };
@@ -115,8 +114,7 @@ void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	free(fline_c->max_line_stepping_ctl);
 	
 	clear_real3_ctl_list(&fline_c->seed_point_list);
-	dealloc_ctl_int2_array(fline_c->seed_surface_ctl);
-	free(fline_c->seed_surface_ctl);
+	clear_int2_ctl_list(&fline_c->seed_surface_list);
 	
 	return;
 };
@@ -145,7 +143,7 @@ int read_fline_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_character_ctl_item_c(buf, label_fline_ctl[11], fline_c->start_surf_grp_ctl);
 		
 		read_real3_ctl_list(fp, buf, label_fline_ctl[12], &fline_c->seed_point_list);
-		read_int2_ctl_array_c(fp, buf, label_fline_ctl[13], fline_c->seed_surface_ctl);
+		read_int2_ctl_list(fp, buf, label_fline_ctl[13], &fline_c->seed_surface_list);
 	};
 	return 1;
 };
@@ -175,8 +173,7 @@ int write_fline_ctl_c(FILE *fp, int level, const char *label,
 	write_character_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[11], fline_c->start_surf_grp_ctl);
 	
 	write_real3_ctl_list(fp, level, label_fline_ctl[12], &fline_c->seed_point_list);
-	if(fline_c->seed_surface_ctl->num > 0) fprintf(fp, "!\n");
-	write_int2_ctl_array_c(fp, level, fline_c->maxlen, label_fline_ctl[13], fline_c->seed_surface_ctl);
+	write_int2_ctl_list(fp, level, label_fline_ctl[13], &fline_c->seed_surface_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
