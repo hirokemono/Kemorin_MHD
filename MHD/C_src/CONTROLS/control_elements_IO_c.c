@@ -306,36 +306,6 @@ void write_real_ctl_item_c(FILE *fp, int level, int maxlen,
 }
 
 
-void read_chara2_ctl_item_c(const char *buf, const char *label,
-			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item){
-	char header_chara[KCHARA_C];
-	
-	if(c1_item->iflag > 0) return;
-	
-	sscanf(buf, "%s", header_chara);
-	if(cmp_no_case_c(header_chara, label) > 0){
-		sscanf(buf, "%s %s %s", header_chara, c1_item->c_tbl, c2_item->c_tbl);
-		strip_cautation_marks(c1_item->c_tbl);
-		strip_cautation_marks(c2_item->c_tbl);
-		c1_item->iflag = 1;
-		c2_item->iflag = 1;
-	};
-	
-	return;
-}
-
-void write_chara2_ctl_item_c(FILE *fp, int level, int maxlen[2], const char *label,
-			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item){
-	
-    if( (c1_item->iflag * c2_item->iflag) == 0) return;
-	
-	write_space_4_parse_c(fp, level);
-	write_one_label_cont_c(fp, maxlen[0], label);
-	write_one_label_cont_c(fp, maxlen[1], c1_item->c_tbl);
-	write_one_label_w_lf_c(fp, c2_item->c_tbl);
-	return;
-}
-
 
 void read_int2_ctl_item_c(const char *buf, const char *label,
 			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item){

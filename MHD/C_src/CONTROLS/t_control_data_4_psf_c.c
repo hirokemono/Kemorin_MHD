@@ -193,16 +193,14 @@ void alloc_psf_field_ctl_c(struct psf_field_ctl_c *psf_fld_c){
 		};
 	};
 	
-	psf_fld_c->psf_out_field_ctl = (struct chara2_ctl_array *) malloc(sizeof(struct chara2_ctl_array));
-	init_ctl_chara2_array(psf_fld_c->psf_out_field_ctl);
+	init_chara2_ctl_list(&psf_fld_c->psf_out_field_list);
 	
 	return;
 };
 
 void dealloc_psf_field_ctl_c(struct psf_field_ctl_c *psf_fld_c){
 	
-	dealloc_ctl_chara2_array(psf_fld_c->psf_out_field_ctl);
-	free(psf_fld_c->psf_out_field_ctl);
+	clear_chara2_ctl_list(&psf_fld_c->psf_out_field_list);
 	
 	return;
 };
@@ -212,7 +210,7 @@ int read_psf_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara2_ctl_array_c(fp, buf, label_psf_field_ctl[ 0], psf_fld_c->psf_out_field_ctl);
+		read_chara2_ctl_list(fp, buf, label_psf_field_ctl[ 0], &psf_fld_c->psf_out_field_list);
 	};
 	return 1;
 };
@@ -221,7 +219,7 @@ int write_psf_field_ctl_c(FILE *fp, int level, const char *label,
 			struct psf_field_ctl_c *psf_fld_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara2_ctl_array_c(fp, level, psf_fld_c->maxlen, label_psf_field_ctl[ 0], psf_fld_c->psf_out_field_ctl);
+	write_chara2_ctl_list(fp, level, label_psf_field_ctl[ 0], &psf_fld_c->psf_out_field_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

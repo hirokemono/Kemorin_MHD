@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara2_IO.h"
 
 struct iso_define_ctl_c{
 	int maxlen;
@@ -32,7 +33,7 @@ struct iso_field_ctl_c{
 	struct chara_ctl_item *iso_result_type_ctl;
 	struct real_ctl_item *result_value_iso_ctl;
 	
-	struct chara2_ctl_array *iso_out_field_ctl;
+	struct chara2_ctl_list iso_out_field_list;
 };
 
 struct iso_ctl_c{

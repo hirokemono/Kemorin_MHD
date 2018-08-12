@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_chara2_IO.h"
 
 struct psf_define_ctl_c{
 	int maxlen;
@@ -34,7 +35,7 @@ struct psf_define_ctl_c{
 struct psf_field_ctl_c{
 	int maxlen;
 	
-	struct chara2_ctl_array *psf_out_field_ctl;
+	struct chara2_ctl_list psf_out_field_list;
 };
 
 struct psf_ctl_c{

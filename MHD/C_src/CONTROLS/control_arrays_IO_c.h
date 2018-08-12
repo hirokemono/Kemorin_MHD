@@ -32,15 +32,6 @@ struct int_ctl_array{
     struct int_ctl_item **i_array_item;
 };
 
-struct chara2_ctl_array{
-    int maxlen[2];
-    
-    int num;
-    int icou;
-    struct chara_ctl_item **c1_array_item;
-    struct chara_ctl_item **c2_array_item;
-};
-
 struct int2_ctl_array{
     int maxlen;
     
@@ -114,14 +105,6 @@ void read_integer_ctl_array_c(FILE *fp, char *buf, const char *label,
 			struct int_ctl_array *i_array);
 void write_integer_ctl_array_c(FILE *fp, int level, int maxlen,
 			const char *label, struct int_ctl_array *i_array);
-
-void init_ctl_chara2_array(struct chara2_ctl_array *c2_array);
-void alloc_ctl_chara2_array(struct chara2_ctl_array *c2_array);
-void dealloc_ctl_chara2_array(struct chara2_ctl_array *c2_array);
-void read_chara2_ctl_array_c(FILE *fp, char *buf, const char *label,
-			struct chara2_ctl_array *c2_array);
-void write_chara2_ctl_array_c(FILE *fp, int level, int maxlen,
-			const char *label, struct chara2_ctl_array *c2_array);
 
 void init_ctl_int2_array(struct int2_ctl_array *i2_array);
 void alloc_ctl_int2_array(struct int2_ctl_array *i2_array);

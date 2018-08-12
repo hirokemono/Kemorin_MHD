@@ -14,6 +14,9 @@
 struct maxlen_1{
     int mlen;
 };
+struct maxlen_2{
+    int mlen[2];
+};
 struct maxlen_3{
     int mlen[3];
 };
@@ -80,10 +83,6 @@ void read_real_ctl_item_c(const char *buf, const char *label,
 void write_real_ctl_item_c(FILE *fp, int level, int maxlen,
 			const char *label, struct real_ctl_item *r_item);
 
-void read_chara2_ctl_item_c(const char *buf, const char *label,
-			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item);
-void write_chara2_ctl_item_c(FILE *fp, int level, int maxlen[2], const char *label, 
-			struct chara_ctl_item *c1_item, struct chara_ctl_item *c2_item);
 
 void read_int2_ctl_item_c(const char *buf, const char *label,
 			struct int_ctl_item *i1_item, struct int_ctl_item *i2_item);
