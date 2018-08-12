@@ -215,35 +215,3 @@ void write_integer_ctl_item_c(FILE *fp, int level, int maxlen,
 	fprintf(fp, "%d\n", i_item->i_data);
 	return;
 }
-
-
-void init_ctl_real_item(struct real_ctl_item *r_item){
-	r_item->iflag = 0;
-	return;
-}
-
-void read_real_ctl_item_c(const char *buf, const char *label,
-			struct real_ctl_item *r_item){
-	char header_chara[KCHARA_C];
-	
-	if(r_item->iflag == 0){
-		sscanf(buf, "%s", header_chara);
-		if(cmp_no_case_c(header_chara, label) > 0){
-			sscanf(buf, "%s %lf", header_chara, &r_item->r_data);
-			r_item->iflag = 1;
-		};
-	};
-	
-	return;
-}
-
-void write_real_ctl_item_c(FILE *fp, int level, int maxlen,
-			const char *label, struct real_ctl_item *r_item){
-	
-	if(r_item->iflag == 0) return;
-	
-	write_space_4_parse_c(fp, level);
-	write_one_label_cont_c(fp, maxlen, label);
-	fprintf(fp, "%.12e\n", r_item->r_data);
-	return;
-}

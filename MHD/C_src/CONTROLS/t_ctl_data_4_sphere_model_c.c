@@ -174,12 +174,12 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	spctl_c->Max_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	spctl_c->fluid_core_size_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	spctl_c->ICB_to_CMB_ratio_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(spctl_c->Min_radius_c);
-	init_ctl_real_item(spctl_c->ICB_radius_c);
-	init_ctl_real_item(spctl_c->CMB_radius_c);
-	init_ctl_real_item(spctl_c->Max_radius_c);
-	init_ctl_real_item(spctl_c->fluid_core_size_c);
-	init_ctl_real_item(spctl_c->ICB_to_CMB_ratio_c);
+	init_real_ctl_item_c(spctl_c->Min_radius_c);
+	init_real_ctl_item_c(spctl_c->ICB_radius_c);
+	init_real_ctl_item_c(spctl_c->CMB_radius_c);
+	init_real_ctl_item_c(spctl_c->Max_radius_c);
+	init_real_ctl_item_c(spctl_c->fluid_core_size_c);
+	init_real_ctl_item_c(spctl_c->ICB_to_CMB_ratio_c);
 	
 	spctl_c->num_radial_layer_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	spctl_c->num_med_layer_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));

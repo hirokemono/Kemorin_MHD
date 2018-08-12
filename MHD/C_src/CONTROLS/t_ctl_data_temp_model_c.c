@@ -65,8 +65,8 @@ void alloc_reference_point_ctl_c(struct reference_point_ctl_c *ref_c){
 	ref_c->depth_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	ref_c->value_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	
-	init_ctl_real_item(ref_c->depth_c);
-	init_ctl_real_item(ref_c->value_c);
+	init_real_ctl_item_c(ref_c->depth_c);
+	init_real_ctl_item_c(ref_c->value_c);
 	
 	return;
 };
@@ -140,9 +140,9 @@ void alloc_takepiro_model_ctl_c(struct takepiro_model_ctl_c *takepiro_c){
 	takepiro_c->stratified_width_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	takepiro_c->stratified_outer_r_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	
-	init_ctl_real_item(takepiro_c->stratified_sigma_c);
-	init_ctl_real_item(takepiro_c->stratified_width_c);
-	init_ctl_real_item(takepiro_c->stratified_outer_r_c);
+	init_real_ctl_item_c(takepiro_c->stratified_sigma_c);
+	init_real_ctl_item_c(takepiro_c->stratified_width_c);
+	init_real_ctl_item_c(takepiro_c->stratified_outer_r_c);
 	
 	return;
 };

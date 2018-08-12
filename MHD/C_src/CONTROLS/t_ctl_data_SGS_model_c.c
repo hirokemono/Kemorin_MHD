@@ -497,15 +497,15 @@ void alloc_SGS_model_ctl_c(struct SGS_model_control_c *SGS_ctl_c){
 	SGS_ctl_c->SGS_mxwl_factor_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	SGS_ctl_c->SGS_uxb_factor_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	
-	init_ctl_real_item(SGS_ctl_c->stabilize_weight_c);
-	init_ctl_real_item(SGS_ctl_c->delta_to_shrink_dynamic_c);
-	init_ctl_real_item(SGS_ctl_c->delta_to_extend_dynamic_c);
-	init_ctl_real_item(SGS_ctl_c->clipping_limit_c);
-	init_ctl_real_item(SGS_ctl_c->SGS_hf_factor_c);
-	init_ctl_real_item(SGS_ctl_c->SGS_cf_factor_c);
-	init_ctl_real_item(SGS_ctl_c->SGS_mf_factor_c);
-	init_ctl_real_item(SGS_ctl_c->SGS_mxwl_factor_c);
-	init_ctl_real_item(SGS_ctl_c->SGS_uxb_factor_c);
+	init_real_ctl_item_c(SGS_ctl_c->stabilize_weight_c);
+	init_real_ctl_item_c(SGS_ctl_c->delta_to_shrink_dynamic_c);
+	init_real_ctl_item_c(SGS_ctl_c->delta_to_extend_dynamic_c);
+	init_real_ctl_item_c(SGS_ctl_c->clipping_limit_c);
+	init_real_ctl_item_c(SGS_ctl_c->SGS_hf_factor_c);
+	init_real_ctl_item_c(SGS_ctl_c->SGS_cf_factor_c);
+	init_real_ctl_item_c(SGS_ctl_c->SGS_mf_factor_c);
+	init_real_ctl_item_c(SGS_ctl_c->SGS_mxwl_factor_c);
+	init_real_ctl_item_c(SGS_ctl_c->SGS_uxb_factor_c);
 	
 	init_sph_filter_ctl_list(&SGS_ctl_c->sph_filter_list);
 	return;

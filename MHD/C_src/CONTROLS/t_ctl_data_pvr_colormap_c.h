@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
 #include "t_control_real2_IO.h"
 #include "t_control_real3_IO.h"

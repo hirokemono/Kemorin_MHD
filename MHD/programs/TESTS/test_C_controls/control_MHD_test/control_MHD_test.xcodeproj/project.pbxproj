@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1813DA1C21201CF2003AB1B9 /* t_control_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DA1B21201CF2003AB1B9 /* t_control_real_IO.c */; };
 		18636123211BCAAC00FFA949 /* main_control_MHD_test.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636122211BCAAC00FFA949 /* main_control_MHD_test.c */; };
 		1863612A211BCB1600FFA949 /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636124211BCB1400FFA949 /* control_elements_IO_c.c */; };
 		1863612B211BCB1600FFA949 /* control_arrays_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636126211BCB1400FFA949 /* control_arrays_IO_c.c */; };
@@ -75,6 +76,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1813DA1A21201CD6003AB1B9 /* t_control_real_IO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = t_control_real_IO.h; path = ../../../../../C_src/CONTROLS/t_control_real_IO.h; sourceTree = "<group>"; };
+		1813DA1B21201CF2003AB1B9 /* t_control_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_real_IO.c; path = ../../../../../C_src/CONTROLS/t_control_real_IO.c; sourceTree = "<group>"; };
 		18636118211BCA9E00FFA949 /* control_MHD_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = control_MHD_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		18636122211BCAAC00FFA949 /* main_control_MHD_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_control_MHD_test.c; path = ../../main_control_MHD_test.c; sourceTree = "<group>"; };
 		18636124211BCB1400FFA949 /* control_elements_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_c.c; path = ../../../../../C_src/CONTROLS/control_elements_IO_c.c; sourceTree = "<group>"; };
@@ -226,6 +229,8 @@
 				18636127211BCB1500FFA949 /* control_elements_IO_c.h */,
 				18812C5E211FFE4700BF714B /* t_control_chara_IO.c */,
 				18812C5D211FFE3C00BF714B /* t_control_chara_IO.h */,
+				1813DA1B21201CF2003AB1B9 /* t_control_real_IO.c */,
+				1813DA1A21201CD6003AB1B9 /* t_control_real_IO.h */,
 				18812C5A211FF57000BF714B /* t_control_int2_IO.c */,
 				18812C5C211FF57800BF714B /* t_control_int2_IO.h */,
 				18812C58211FF34400BF714B /* t_control_int_real_IO.c */,
@@ -397,6 +402,7 @@
 				18636179211BCB6F00FFA949 /* t_SGS_MHD_control_c.c in Sources */,
 				18636269211D030300FFA949 /* t_control_data_pvr_isosurf_list.c in Sources */,
 				18636193211BCB6F00FFA949 /* t_ctl_data_mhd_normalize_c.c in Sources */,
+				1813DA1C21201CF2003AB1B9 /* t_control_real_IO.c in Sources */,
 				18636178211BCB6F00FFA949 /* t_ctl_data_SGS_MHD_model_c.c in Sources */,
 				18812C41211FD0B300BF714B /* t_control_chara2_real_IO.c in Sources */,
 				1863618B211BCB6F00FFA949 /* t_control_data_LIC_pvr_c.c in Sources */,

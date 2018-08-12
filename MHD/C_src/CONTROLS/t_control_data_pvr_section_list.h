@@ -14,6 +14,7 @@
 #include "kemosrc_param_c.h"
 #include "control_elements_IO_c.h"
 #include "control_arrays_IO_c.h"
+#include "t_control_real_IO.h"
 #include "t_control_data_4_psf_c.h"
 
 struct pvr_section_ctl_c{

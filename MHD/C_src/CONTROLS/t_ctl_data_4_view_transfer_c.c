@@ -130,8 +130,8 @@ void alloc_streo_view_ctl_c(struct streo_view_ctl_c *streo_view_c){
 	
 	streo_view_c->focalpoint_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	streo_view_c->eye_separation_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(streo_view_c->focalpoint_ctl);
-	init_ctl_real_item(streo_view_c->eye_separation_ctl);
+	init_real_ctl_item_c(streo_view_c->focalpoint_ctl);
+	init_real_ctl_item_c(streo_view_c->eye_separation_ctl);
 	
 	return;
 };
@@ -183,10 +183,10 @@ void alloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c){
 	projection_c->perspective_xy_ratio_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	projection_c->perspective_near_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	projection_c->perspective_far_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(projection_c->perspective_angle_ctl);
-	init_ctl_real_item(projection_c->perspective_xy_ratio_ctl);
-	init_ctl_real_item(projection_c->perspective_near_ctl);
-	init_ctl_real_item(projection_c->perspective_far_ctl);
+	init_real_ctl_item_c(projection_c->perspective_angle_ctl);
+	init_real_ctl_item_c(projection_c->perspective_xy_ratio_ctl);
+	init_real_ctl_item_c(projection_c->perspective_near_ctl);
+	init_real_ctl_item_c(projection_c->perspective_far_ctl);
 	
 	return;
 };
@@ -251,8 +251,8 @@ void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 	
 	mat_c->view_rotation_deg_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	mat_c->scale_factor_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(mat_c->view_rotation_deg_ctl);
-	init_ctl_real_item(mat_c->scale_factor_ctl);
+	init_real_ctl_item_c(mat_c->view_rotation_deg_ctl);
+	init_real_ctl_item_c(mat_c->scale_factor_ctl);
 	
 	init_chara_real_ctl_list(&mat_c->scale_vector_list);
 	init_chara_real_ctl_list(&mat_c->viewpt_in_viewer_list);

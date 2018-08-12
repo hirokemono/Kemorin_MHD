@@ -80,18 +80,18 @@ void alloc_lic_ctl_c(struct lic_ctl_c *lic_c){
 	lic_c->LIC_trace_length_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	lic_c->LIC_trace_count_ctl = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	alloc_chara_ctl_item_c(lic_c->LIC_trace_length_def_ctl);
-	init_ctl_real_item(lic_c->LIC_trace_length_ctl);
+	init_real_ctl_item_c(lic_c->LIC_trace_length_ctl);
 	init_ctl_int_item(lic_c->LIC_trace_count_ctl);
 	
 	lic_c->normalization_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->normalization_value_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	alloc_chara_ctl_item_c(lic_c->normalization_type_ctl);
-	init_ctl_real_item(lic_c->normalization_value_ctl);
+	init_real_ctl_item_c(lic_c->normalization_value_ctl);
 	
 	lic_c->reflection_ref_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	lic_c->reflection_parameter_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	alloc_chara_ctl_item_c(lic_c->reflection_ref_type_ctl);
-	init_ctl_real_item(lic_c->reflection_parameter_ctl);
+	init_real_ctl_item_c(lic_c->reflection_parameter_ctl);
 	
 	init_lic_masking_ctl_list(&lic_c->lic_mask_list);
 	

@@ -40,9 +40,9 @@ void alloc_volume_spectr_control_c(struct volume_spectr_control_c *v_pwr_c){
     alloc_chara_ctl_item_c(v_pwr_c->volume_ave_file_c);
 	
 	v_pwr_c->inner_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(v_pwr_c->inner_radius_c);
+	init_real_ctl_item_c(v_pwr_c->inner_radius_c);
 	v_pwr_c->outer_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(v_pwr_c->outer_radius_c);
+	init_real_ctl_item_c(v_pwr_c->outer_radius_c);
 	
 	return;
 };

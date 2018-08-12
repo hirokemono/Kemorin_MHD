@@ -32,8 +32,8 @@ void alloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c){
 	
 	pvr_iso_c->isosurf_value_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	pvr_iso_c->opacity_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(pvr_iso_c->isosurf_value_ctl);
-	init_ctl_real_item(pvr_iso_c->opacity_ctl);
+	init_real_ctl_item_c(pvr_iso_c->isosurf_value_ctl);
+	init_real_ctl_item_c(pvr_iso_c->opacity_ctl);
 	
 	pvr_iso_c->isosurf_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(pvr_iso_c->isosurf_type_ctl);

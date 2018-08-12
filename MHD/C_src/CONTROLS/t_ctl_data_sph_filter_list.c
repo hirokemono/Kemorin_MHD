@@ -52,8 +52,8 @@ void alloc_sph_filter_ctl_c(struct sph_filter_ctl_c *sph_filter_c){
 	sph_filter_c->sphere_filter_width_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	sph_filter_c->radial_filter_width_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	
-	init_ctl_real_item(sph_filter_c->sphere_filter_width_c);
-	init_ctl_real_item(sph_filter_c->radial_filter_width_c);
+	init_real_ctl_item_c(sph_filter_c->sphere_filter_width_c);
+	init_real_ctl_item_c(sph_filter_c->radial_filter_width_c);
 	
 	return;
 };

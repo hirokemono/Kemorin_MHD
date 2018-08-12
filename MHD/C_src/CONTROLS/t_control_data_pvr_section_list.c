@@ -37,7 +37,7 @@ void alloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c){
 	alloc_psf_define_ctl_c(pvr_sect_c->psf_def_c);
 	
 	pvr_sect_c->opacity_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(pvr_sect_c->opacity_ctl);
+	init_real_ctl_item_c(pvr_sect_c->opacity_ctl);
 	
 	return;
 };

@@ -175,7 +175,7 @@ void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
 	g_pwr->gauss_coefs_prefix_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(g_pwr->gauss_coefs_prefix_c);
 	g_pwr->gauss_coefs_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(g_pwr->gauss_coefs_radius_c);
+	init_real_ctl_item_c(g_pwr->gauss_coefs_radius_c);
 	
 	g_pwr->idx_gauss_l_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
 	g_pwr->idx_gauss_m_c = (struct int_ctl_array *) malloc(sizeof(struct int_ctl_array));
@@ -334,9 +334,9 @@ void alloc_mid_equator_control_c(struct mid_equator_control_c *meq_ctl){
 	meq_ctl->nphi_mid_eq_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
 	init_ctl_int_item(meq_ctl->nphi_mid_eq_c);
 	meq_ctl->pick_s_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(meq_ctl->pick_s_c);
+	init_real_ctl_item_c(meq_ctl->pick_s_c);
 	meq_ctl->pick_z_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(meq_ctl->pick_z_c);
+	init_real_ctl_item_c(meq_ctl->pick_z_c);
 	
 	return;
 };

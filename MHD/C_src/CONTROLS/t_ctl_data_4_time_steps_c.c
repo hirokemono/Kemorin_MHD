@@ -81,7 +81,7 @@ void alloc_time_data_control_c(struct time_data_control_c *tctl){
     tctl->i_step_number_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_ctl_int_item(tctl->i_step_number_c);
     tctl->elapsed_time_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->elapsed_time_c);
+    init_real_ctl_item_c(tctl->elapsed_time_c);
     
     tctl->i_step_check_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_ctl_int_item(tctl->i_step_check_c);
@@ -108,9 +108,9 @@ void alloc_time_data_control_c(struct time_data_control_c *tctl){
     init_ctl_int_item(tctl->i_step_boundary_c);
     
     tctl->dt_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->dt_c);
+    init_real_ctl_item_c(tctl->dt_c);
     tctl->time_init_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->time_init_c);
+    init_real_ctl_item_c(tctl->time_init_c);
     tctl->i_diff_steps_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_ctl_int_item(tctl->i_diff_steps_c);
     
@@ -119,36 +119,36 @@ void alloc_time_data_control_c(struct time_data_control_c *tctl){
     tctl->end_rst_step_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));
     init_ctl_int_item(tctl->end_rst_step_c);
     tctl->min_delta_t_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->min_delta_t_c);
+    init_real_ctl_item_c(tctl->min_delta_t_c);
     tctl->max_delta_t_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->max_delta_t_c);
+    init_real_ctl_item_c(tctl->max_delta_t_c);
     tctl->min_eps_to_expand_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->min_eps_to_expand_c);
+    init_real_ctl_item_c(tctl->min_eps_to_expand_c);
     tctl->max_eps_to_shrink_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->max_eps_to_shrink_c);
+    init_real_ctl_item_c(tctl->max_eps_to_shrink_c);
     
     tctl->delta_t_check_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_check_c);
+    init_real_ctl_item_c(tctl->delta_t_check_c);
     tctl->delta_t_rst_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_rst_c);
+    init_real_ctl_item_c(tctl->delta_t_rst_c);
     tctl->delta_t_field_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_field_c);
+    init_real_ctl_item_c(tctl->delta_t_field_c);
     tctl->delta_t_psf_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_psf_c);
+    init_real_ctl_item_c(tctl->delta_t_psf_c);
     tctl->delta_t_iso_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_iso_c);
+    init_real_ctl_item_c(tctl->delta_t_iso_c);
     tctl->delta_t_pvr_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_pvr_c);
+    init_real_ctl_item_c(tctl->delta_t_pvr_c);
     tctl->delta_t_fline_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_fline_c);
+    init_real_ctl_item_c(tctl->delta_t_fline_c);
     tctl->delta_t_lic_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_lic_c);
+    init_real_ctl_item_c(tctl->delta_t_lic_c);
     tctl->delta_t_monitor_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_monitor_c);
+    init_real_ctl_item_c(tctl->delta_t_monitor_c);
     tctl->delta_t_sgs_coefs_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_sgs_coefs_c);
+    init_real_ctl_item_c(tctl->delta_t_sgs_coefs_c);
     tctl->delta_t_boundary_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    init_ctl_real_item(tctl->delta_t_boundary_c);
+    init_real_ctl_item_c(tctl->delta_t_boundary_c);
     
     return;
 };

@@ -78,7 +78,7 @@ void alloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	
 	psf_def_c->radius_psf_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	psf_def_c->psf_group_name_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-	init_ctl_real_item(psf_def_c->radius_psf_ctl);
+	init_real_ctl_item_c(psf_def_c->radius_psf_ctl);
 	alloc_chara_ctl_item_c(psf_def_c->psf_group_name_ctl);
 	
 	init_chara_ctl_list(&psf_def_c->psf_area_list);

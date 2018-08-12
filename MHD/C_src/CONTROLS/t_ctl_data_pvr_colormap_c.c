@@ -84,15 +84,15 @@ void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	alloc_chara_ctl_item_c(cmap_c->opacity_style_ctl);
 	
 	cmap_c->fix_opacity_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(cmap_c->fix_opacity_ctl);
+	init_real_ctl_item_c(cmap_c->fix_opacity_ctl);
 	
 	init_real2_ctl_list(&cmap_c->linear_opacity_list);
 	init_real3_ctl_list(&cmap_c->step_opacity_list);
 	
 	cmap_c->range_min_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	cmap_c->range_max_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(cmap_c->range_min_ctl);
-	init_ctl_real_item(cmap_c->range_max_ctl);
+	init_real_ctl_item_c(cmap_c->range_min_ctl);
+	init_real_ctl_item_c(cmap_c->range_max_ctl);
 	
 	return;
 };
@@ -199,9 +199,9 @@ void alloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
 	light_c->ambient_coef_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	light_c->diffuse_coef_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	light_c->specular_coef_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(light_c->ambient_coef_ctl);
-	init_ctl_real_item(light_c->diffuse_coef_ctl);
-	init_ctl_real_item(light_c->specular_coef_ctl);
+	init_real_ctl_item_c(light_c->ambient_coef_ctl);
+	init_real_ctl_item_c(light_c->diffuse_coef_ctl);
+	init_real_ctl_item_c(light_c->specular_coef_ctl);
 	
 	init_real3_ctl_list(&light_c->light_position_list);
 	

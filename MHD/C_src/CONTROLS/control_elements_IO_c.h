@@ -22,11 +22,6 @@ struct int_ctl_item{
 	int iflag;
 	int i_data;
 };
-struct real_ctl_item{
-	int iflag;
-	double r_data;
-};
-
 
 /* Prototypes */ 
 
@@ -60,11 +55,5 @@ void read_integer_ctl_item_c(const char *buf, const char *label,
 			struct int_ctl_item *i_item);
 void write_integer_ctl_item_c(FILE *fp, int level, int maxlen,
 			const char *label, struct int_ctl_item *i_item);
-
-void init_ctl_real_item(struct real_ctl_item *r_item);
-void read_real_ctl_item_c(const char *buf, const char *label,
-			struct real_ctl_item *r_item);
-void write_real_ctl_item_c(FILE *fp, int level, int maxlen,
-			const char *label, struct real_ctl_item *r_item);
 
 #endif

@@ -72,7 +72,7 @@ void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	alloc_chara_ctl_item_c(iso_def_c->isosurf_comp_ctl);
 	
 	iso_def_c->isosurf_value_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-	init_ctl_real_item(iso_def_c->isosurf_value_ctl);
+	init_real_ctl_item_c(iso_def_c->isosurf_value_ctl);
 	
 	init_chara_ctl_list(&iso_def_c->iso_area_list);
 	
