@@ -4,7 +4,7 @@
 #include "t_control_chara_IO.h"
 #include "t_SGS_MHD_control_c.h"
 
-void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c, struct chara_ctl_item *ptem_t);
+void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c);
 
 
 int iflag_read_mhd = 0;
@@ -17,12 +17,11 @@ GtkWidget *entry_3, *entry_4, *entry_5;
 double rtest = 2.5;
 int ntest = 66;
 char *ctest = "ahahahaha";
-struct chara_ctl_item *ptem_test;
 
 
 static void cb_New(GtkButton *button, gpointer data)
 {
-	draw_MHD_control_list(vbox_0, mhd_ctl, ptem_test);
+	draw_MHD_control_list(vbox_0, mhd_ctl);
 	gtk_widget_show_all(window);
 }
 
@@ -74,7 +73,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 		
 		g_free(read_file_name);
 		
-		draw_MHD_control_list(vbox_0, mhd_ctl, ptem_test);
+		draw_MHD_control_list(vbox_0, mhd_ctl);
 		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
@@ -150,7 +149,7 @@ static void cb3_entry(GtkEntry *entry, gpointer data)
 	};
 }
 
-void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c, struct chara_ctl_item *ptem_t){
+void draw_MHD_control_list(GtkWidget *vbox0, struct SGS_MHD_control_c *MHD_c){
 	GtkWidget *expander_Top;
 	GtkWidget *expander_MHD_ctl[NLBL_SGS_MHD_CTL];
 	
@@ -289,11 +288,6 @@ int main(int argc, char** argv)
 	scroll_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX(vbox_0), scroll_window, TRUE, TRUE, 0);
 	*/
-	
-			ptem_test = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
-			alloc_ctl_chara_item(ptem_test);
-			ptem_test->iflag = 111;
-			ptem_test->c_tbl = "gggg";
 	
 	draw_MHD_control_bottuns(vbox_0);
 	

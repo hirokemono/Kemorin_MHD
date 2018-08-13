@@ -183,7 +183,7 @@ void copy_to_real_ctl_list(int num, double *vector, struct real_ctl_list *head) 
 	int i;
 	
 	for(i=0;i<num;i++){
-		head = add_chara_real_ctl_list(head);
+		head = add_real_ctl_list(head);
 		copy_to_real_ctl_item(vector[i], head->r_item);
 	};
 	return;

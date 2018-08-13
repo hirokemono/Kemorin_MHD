@@ -467,6 +467,7 @@ module:
 	control_elements_IO_c.o \
 	t_control_chara_IO.o \
 	t_control_chara3_IO.o \
+	all_field_names_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

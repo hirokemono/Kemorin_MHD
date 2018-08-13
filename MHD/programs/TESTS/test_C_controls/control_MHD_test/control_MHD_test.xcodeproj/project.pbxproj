@@ -81,7 +81,7 @@
 		1813DA1D21207D1D003AB1B9 /* t_control_int_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_int_IO.h; path = ../../../../../C_src/CONTROLS/t_control_int_IO.h; sourceTree = "<group>"; };
 		1813DA1E21207D1D003AB1B9 /* t_control_int_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_int_IO.c; path = ../../../../../C_src/CONTROLS/t_control_int_IO.c; sourceTree = "<group>"; };
 		18636118211BCA9E00FFA949 /* control_MHD_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = control_MHD_test; sourceTree = BUILT_PRODUCTS_DIR; };
-		18636122211BCAAC00FFA949 /* main_control_MHD_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_control_MHD_test.c; path = ../../main_control_MHD_test.c; sourceTree = "<group>"; };
+		18636122211BCAAC00FFA949 /* main_control_MHD_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main_control_MHD_test.c; sourceTree = "<group>"; };
 		18636124211BCB1400FFA949 /* control_elements_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_c.c; path = ../../../../../C_src/CONTROLS/control_elements_IO_c.c; sourceTree = "<group>"; };
 		18636127211BCB1500FFA949 /* control_elements_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_elements_IO_c.h; path = ../../../../../C_src/CONTROLS/control_elements_IO_c.h; sourceTree = "<group>"; };
 		18636128211BCB1500FFA949 /* all_field_names_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = all_field_names_c.c; path = ../../../../../C_src/CONTROLS/all_field_names_c.c; sourceTree = "<group>"; };
@@ -200,6 +200,7 @@
 		1863610F211BCA9E00FFA949 = {
 			isa = PBXGroup;
 			children = (
+				18636122211BCAAC00FFA949 /* main_control_MHD_test.c */,
 				1863611A211BCA9E00FFA949 /* control_MHD_test */,
 				18636119211BCA9E00FFA949 /* Products */,
 			);
@@ -216,7 +217,6 @@
 		1863611A211BCA9E00FFA949 /* control_MHD_test */ = {
 			isa = PBXGroup;
 			children = (
-				18636122211BCAAC00FFA949 /* main_control_MHD_test.c */,
 				1863612D211BCB3200FFA949 /* kemosrc_param_c.c */,
 				1863612F211BCB3300FFA949 /* kemosrc_param_c.h */,
 				1863612E211BCB3300FFA949 /* skip_comment_c.c */,
