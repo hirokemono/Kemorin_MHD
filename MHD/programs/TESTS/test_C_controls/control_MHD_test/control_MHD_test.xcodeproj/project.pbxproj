@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1813DA1C21201CF2003AB1B9 /* t_control_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DA1B21201CF2003AB1B9 /* t_control_real_IO.c */; };
 		1813DA1F21207D1D003AB1B9 /* t_control_int_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DA1E21207D1D003AB1B9 /* t_control_int_IO.c */; };
+		1813DAF82121FCD0003AB1B9 /* t_control_chara_int2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DAF72121FCCF003AB1B9 /* t_control_chara_int2_IO.c */; };
 		18636123211BCAAC00FFA949 /* main_control_MHD_test.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636122211BCAAC00FFA949 /* main_control_MHD_test.c */; };
 		1863612A211BCB1600FFA949 /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636124211BCB1400FFA949 /* control_elements_IO_c.c */; };
 		1863612C211BCB1600FFA949 /* all_field_names_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18636128211BCB1500FFA949 /* all_field_names_c.c */; };
@@ -80,6 +81,8 @@
 		1813DA1B21201CF2003AB1B9 /* t_control_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_real_IO.c; path = ../../../../../C_src/CONTROLS/t_control_real_IO.c; sourceTree = "<group>"; };
 		1813DA1D21207D1D003AB1B9 /* t_control_int_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_int_IO.h; path = ../../../../../C_src/CONTROLS/t_control_int_IO.h; sourceTree = "<group>"; };
 		1813DA1E21207D1D003AB1B9 /* t_control_int_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_int_IO.c; path = ../../../../../C_src/CONTROLS/t_control_int_IO.c; sourceTree = "<group>"; };
+		1813DAF62121FCBB003AB1B9 /* t_control_chara_int2_IO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = t_control_chara_int2_IO.h; path = ../../../../../C_src/CONTROLS/t_control_chara_int2_IO.h; sourceTree = "<group>"; };
+		1813DAF72121FCCF003AB1B9 /* t_control_chara_int2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_int2_IO.c; path = ../../../../../C_src/CONTROLS/t_control_chara_int2_IO.c; sourceTree = "<group>"; };
 		18636118211BCA9E00FFA949 /* control_MHD_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = control_MHD_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		18636122211BCAAC00FFA949 /* main_control_MHD_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main_control_MHD_test.c; sourceTree = "<group>"; };
 		18636124211BCB1400FFA949 /* control_elements_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_c.c; path = ../../../../../C_src/CONTROLS/control_elements_IO_c.c; sourceTree = "<group>"; };
@@ -245,8 +248,10 @@
 				18812C51211FE90100BF714B /* t_control_real2_IO.h */,
 				18812C40211FD0B300BF714B /* t_control_chara2_real_IO.c */,
 				18812C3F211FD0B200BF714B /* t_control_chara2_real_IO.h */,
-				18812C44211FD24800BF714B /* t_control_chara3_IO.h */,
 				18812C42211FD23F00BF714B /* t_control_chara3_IO.c */,
+				18812C44211FD24800BF714B /* t_control_chara3_IO.h */,
+				1813DAF72121FCCF003AB1B9 /* t_control_chara_int2_IO.c */,
+				1813DAF62121FCBB003AB1B9 /* t_control_chara_int2_IO.h */,
 				18812C46211FD38000BF714B /* t_control_real3_IO.c */,
 				18812C45211FD37700BF714B /* t_control_real3_IO.h */,
 				18636146211BCB5800FFA949 /* t_control_data_4_fline_c.c */,
@@ -429,6 +434,7 @@
 				18636123211BCAAC00FFA949 /* main_control_MHD_test.c in Sources */,
 				18636196211BCB6F00FFA949 /* t_control_data_vizs_c.c in Sources */,
 				1863625D211D020600FFA949 /* t_control_data_lic_masking_list.c in Sources */,
+				1813DAF82121FCD0003AB1B9 /* t_control_chara_int2_IO.c in Sources */,
 				1863617D211BCB6F00FFA949 /* t_ctl_data_node_monitor_c.c in Sources */,
 				18636186211BCB6F00FFA949 /* t_ctl_data_MHD_boundary_c.c in Sources */,
 				18636188211BCB6F00FFA949 /* t_ctl_data_mhd_forces_c.c in Sources */,
