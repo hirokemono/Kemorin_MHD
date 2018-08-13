@@ -41,7 +41,8 @@ static void sum_selected_rows(GtkTreeSelection *selection, gpointer user_data)
 	gtk_label_set_text(label, buf);
 }
 
-static void add_model_data(GtkButton *button, gpointer user_data)
+/* Append new data at the end of list */
+static void append_model_data(GtkButton *button, gpointer user_data)
 {
 	static gint serial_num = 0;
 	GtkTreeView *tree_view = GTK_TREE_VIEW(user_data);
@@ -174,7 +175,7 @@ static GtkWidget *create_window(GtkWidget *tree_view, gint window_id)
 	/* データ追加ボタン */
 	button = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(add_model_data), tree_view);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(append_model_data), tree_view);
 
 	/* データ削除ボタン */
 	button = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
