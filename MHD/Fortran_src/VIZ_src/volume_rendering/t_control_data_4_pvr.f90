@@ -100,11 +100,11 @@
 !
 !>    Structure for modelview marices
         type(modeview_ctl) :: mat
-!>    STructure for colormap
-        type(pvr_colormap_ctl) :: color
+!>    Structure for lighting
+        type(pvr_light_ctl) :: light
 !
-!>    Structure for colorbar
-        type(pvr_colorbar_ctl) :: cbar_ctl
+!>    Structure for colormap and colorbar
+        type(pvr_colormap_bar_ctl) :: cmap_cbar_c
 !
 !>    Structure for image rotation
         type(pvr_movie_ctl) :: movie
@@ -197,11 +197,12 @@
       integer(kind = kint) :: i
 !
 !
-      call reset_pvr_colormap_flags(pvr%color)
-      call reset_pvr_misc_control_flags(pvr%cbar_ctl, pvr%movie)
+      call reset_pvr_light_flags(pvr%light)
+      call reset_pvr_movie_control_flags(pvr%movie)
 !
       call dealloc_view_transfer_ctl(pvr%mat)
-      call dealloc_pvr_color_crl(pvr%color)
+      call dealloc_pvr_light_crl(pvr%light)
+      call deallocate_pvr_cmap_cbar(pvr%cmap_cbar_c)
 !
       call dealloc_control_array_chara(pvr%pvr_area_ctl)
       call dealloc_control_array_c2_r(pvr%surf_enhanse_ctl)
@@ -260,6 +261,9 @@
 !
       if(right_begin_flag(hd_block) .eq. 0) return
       if (pvr%i_pvr_ctl.gt.0) return
+!
+      pvr%view_file_ctl = 'NO_FILE'
+      pvr%color_file_ctl = 'NO_FILE'
       do
         call load_ctl_label_and_line
 !
@@ -271,20 +275,22 @@
           call read_file_name_from_ctl_line(pvr%i_view_file,            &
      &        pvr%view_file_ctl)
         else if(right_begin_flag(hd_view_transform) .gt. 0) then
-          pvr%view_file_ctl = 'NO_FILE'
           call read_view_transfer_ctl(hd_view_transform, pvr%mat)
         end if
 !
-        if(right_file_flag(hd_colormap) .gt. 0                          &
-     &      .or. right_file_flag(hd_pvr_colordef) .gt. 0) then
+        if(right_file_flag(hd_pvr_colordef) .gt. 0) then
           call read_file_name_from_ctl_line(pvr%i_color_file,           &
      &        pvr%color_file_ctl)
-        else if(right_begin_flag(hd_colormap) .gt. 0) then
-          pvr%color_file_ctl = 'NO_FILE'
-          call read_pvr_colordef_ctl(hd_colormap, pvr%color)
-        else if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
-          pvr%color_file_ctl = 'NO_FILE'
-          call read_pvr_colordef_ctl(hd_pvr_colordef, pvr%color)
+        end if
+!
+        if(pvr%color_file_ctl .eq. 'NO_FILE') then
+          call read_pvr_colordef_ctl                                    &
+     &       (hd_pvr_colordef, pvr%cmap_cbar_c%color)
+          call read_pvr_colordef_ctl                                    &
+     &       (hd_colormap, pvr%cmap_cbar_c%color)
+!
+          call read_pvr_colorbar_ctl                                    &
+     &       (hd_pvr_colorbar, pvr%cmap_cbar_c%cbar_ctl)
         end if
 !
         call find_control_array_flag                                    &
@@ -297,8 +303,7 @@
 !
         call read_plot_area_ctl(hd_plot_area, pvr%i_plot_area,          &
      &      pvr%pvr_area_ctl, pvr%surf_enhanse_ctl)
-        call read_lighting_ctl(hd_pvr_lighting, pvr%color)
-        call read_pvr_colorbar_ctl(hd_pvr_colorbar, pvr%cbar_ctl)
+        call read_lighting_ctl(hd_pvr_lighting, pvr%light)
         call read_pvr_rotation_ctl(hd_pvr_rotation, pvr%movie)
 !
 !

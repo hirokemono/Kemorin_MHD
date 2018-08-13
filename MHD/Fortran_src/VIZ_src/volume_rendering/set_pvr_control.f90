@@ -38,9 +38,8 @@
       integer(kind = kint), parameter :: pvr_ctl_file_code = 11
 !
       character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
-      character(len=kchara) :: hd_colormap =      'colormap_ctl'
 !
-      private :: hd_view_transform, hd_colormap
+      private :: hd_view_transform
 !
       private :: read_control_pvr, set_each_pvr_control
 !
@@ -290,21 +289,17 @@
       write(*,*) 'Colormap control:', i_pvr,':  ',                      &
      &                 trim(pvr_ctl_type%color_file_ctl)
 !
-      open(ctl_file_code,                                               &
-     &     file=pvr_ctl_type%color_file_ctl,  status='old')
+      open(ctl_file_code, file=pvr_ctl_type%color_file_ctl,             &
+     &     status='old')
 !
-      call load_ctl_label_and_line
-!
-      if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
-        call read_pvr_colordef_ctl                                      &
-     &     (hd_pvr_colordef, pvr_ctl_type%color)
-      else if(right_begin_flag(hd_colormap) .gt. 0) then
-        call read_pvr_colordef_ctl                                      &
-     &     (hd_colormap, pvr_ctl_type%color)
-      else
-        call calypso_mpi_abort(ierr_PVR, 'Set correct colormap file')
-      end if
-!
+      do
+        call load_ctl_label_and_line
+        if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
+          call read_pvr_cmap_cbar                                       &
+     &       (hd_pvr_colordef, pvr_ctl_type%cmap_cbar_c)
+          exit
+        end if
+      end do
       close(ctl_file_code)
 !
       end subroutine read_control_colormap

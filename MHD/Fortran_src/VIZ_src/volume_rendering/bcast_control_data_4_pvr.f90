@@ -48,14 +48,15 @@
 !
       call MPI_BCAST(pvr%color_file_ctl, kchara,                        &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call bcast_pvr_colordef_ctl(pvr%color)
 !
       call bcast_pvr_isosurfs_ctl(pvr)
       call bcast_pvr_sections_ctl(pvr)
 !
-      call bcast_lighting_ctl(pvr%color)
-      call bcast_pvr_colorbar_ctl(pvr%cbar_ctl)
-      call bcast_pvr_rotation_ctl(pvr%movie)
+      call bcast_lighting_ctl(pvr%light)
+      call bcast_pvr_colorbar_ctl(pvr%cmap_cbar_c%cbar_ctl)
+      call bcast_pvr_colordef_ctl(pvr%cmap_cbar_c%color)
+!
+       call bcast_pvr_rotation_ctl(pvr%movie)
 !
       call bcast_ctl_array_c1(pvr%pvr_area_ctl)
       call bcast_ctl_array_c2r(pvr%surf_enhanse_ctl)
@@ -187,19 +188,19 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_lighting_ctl(color)
+      subroutine bcast_lighting_ctl(light)
 !
-      type(pvr_colormap_ctl), intent(inout) :: color
+      type(pvr_light_ctl), intent(inout) :: light
 !
 !
-      call MPI_BCAST(color%i_pvr_lighting,  ione,                       &
+      call MPI_BCAST(light%i_pvr_lighting,  ione,                       &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call bcast_ctl_array_r3(color%light_position_ctl)
+      call bcast_ctl_array_r3(light%light_position_ctl)
 !
-      call bcast_ctl_type_r1(color%ambient_coef_ctl )
-      call bcast_ctl_type_r1(color%diffuse_coef_ctl )
-      call bcast_ctl_type_r1(color%specular_coef_ctl)
+      call bcast_ctl_type_r1(light%ambient_coef_ctl )
+      call bcast_ctl_type_r1(light%diffuse_coef_ctl )
+      call bcast_ctl_type_r1(light%specular_coef_ctl)
 !
       end subroutine bcast_lighting_ctl
 !

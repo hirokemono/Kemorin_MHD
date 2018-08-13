@@ -3,9 +3,13 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!!      subroutine set_control_pvr_lighting(color, color_param)
+!!      subroutine set_control_pvr_lighting(light, color_param)
 !!      subroutine set_control_pvr_colormap(color, color_param)
 !!      subroutine set_control_pvr_colorbar(cbar_ctl, cbar_param)
+!!        type(pvr_light_ctl), intent(in) :: light
+!!        type(pvr_colormap_ctl), intent(in) :: color
+!!        type(pvr_colormap_parameter), intent(inout) :: color_param
+!!        type(pvr_colorbar_ctl), intent(in) :: cbar_ctl
 !
       module set_control_pvr_color
 !
@@ -17,7 +21,6 @@
 !
       use t_control_params_4_pvr
       use t_ctl_data_pvr_colormap
-      use t_control_data_pvr_misc
       use skip_comment_f
 !
       implicit  none
@@ -28,56 +31,56 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_pvr_lighting(color, color_param)
+      subroutine set_control_pvr_lighting(light, color_param)
 !
       use set_color_4_pvr
       use set_rgba_4_each_pixel
 !
-      type(pvr_colormap_ctl), intent(in) :: color
+      type(pvr_light_ctl), intent(in) :: light
 !
       type(pvr_colormap_parameter), intent(inout) :: color_param
 !
       integer(kind = kint) :: i
 !
 !
-      if(color%ambient_coef_ctl%iflag .gt. 0) then
+      if(light%ambient_coef_ctl%iflag .gt. 0) then
         color_param%pvr_lighting_real(1)                                &
-     &      = color%ambient_coef_ctl%realvalue
+     &      = light%ambient_coef_ctl%realvalue
       else
         color_param%pvr_lighting_real(1) = 0.5
       end if
 !
-      if(color%diffuse_coef_ctl%iflag .gt. 0) then
+      if(light%diffuse_coef_ctl%iflag .gt. 0) then
         color_param%pvr_lighting_real(2)                                &
-     &      = color%diffuse_coef_ctl%realvalue
+     &      = light%diffuse_coef_ctl%realvalue
       else
         color_param%pvr_lighting_real(2) = 0.7
       end if
 !
-      if(color%specular_coef_ctl%iflag .gt. 0) then
+      if(light%specular_coef_ctl%iflag .gt. 0) then
         color_param%pvr_lighting_real(3)                                &
-     &      = color%specular_coef_ctl%realvalue
+     &      = light%specular_coef_ctl%realvalue
       else
         color_param%pvr_lighting_real(3) = 0.8
       end if
 !
 !
-      if(color%light_position_ctl%num .gt. 0) then
-        color_param%num_pvr_lights = color%light_position_ctl%num
+      if(light%light_position_ctl%num .gt. 0) then
+        color_param%num_pvr_lights = light%light_position_ctl%num
       else
         color_param%num_pvr_lights = 1
       end if
 !
       call alloc_light_posi_in_view(color_param)
 !
-      if(color%light_position_ctl%num .gt. 0) then
+      if(light%light_position_ctl%num .gt. 0) then
         do i = 1, color_param%num_pvr_lights
           color_param%xyz_pvr_lights(1,i)                               &
-     &          = color%light_position_ctl%vec1(i)
+     &          = light%light_position_ctl%vec1(i)
           color_param%xyz_pvr_lights(2,i)                               &
-     &          = color%light_position_ctl%vec2(i)
+     &          = light%light_position_ctl%vec2(i)
           color_param%xyz_pvr_lights(3,i)                               &
-     &          = color%light_position_ctl%vec3(i)
+     &          = light%light_position_ctl%vec3(i)
         end do
         color_param%iflag_pvr_lights = 1
       else

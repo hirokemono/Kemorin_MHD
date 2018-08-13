@@ -14,9 +14,6 @@
 !!      subroutine read_pvr_isosurface_ctl(hd_pvr_isosurf, pvr_iso_ctl)
 !!        type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
 !!
-!!      subroutine read_pvr_colorbar_ctl(hd_pvr_colorbar, cbar_ctl)
-!!        type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
-!!
 !!      subroutine read_pvr_rotation_ctl(hd_pvr_rotation, movie)
 !!        type(pvr_movie_ctl), intent(inout) :: movie
 !!      subroutine read_plot_area_ctl(hd_plot_area, i_plot_area,        &
@@ -24,7 +21,7 @@
 !!        type(ctl_array_chara), intent(inout) :: pvr_area_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_enhanse_ctl
 !!
-!!      subroutine reset_pvr_misc_control_flags(cbar_ctl, movie)
+!!      subroutine reset_pvr_movie_control_flags(movie)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin plot_area_ctl
@@ -37,17 +34,6 @@
 !!      surface_enhanse_ctl   CMB   forward_surface   0.4
 !!    end array surface_enhanse_ctl
 !!  end  plot_area_ctl
-!!!
-!!  begin colorbar_ctl
-!!    colorbar_switch_ctl    ON
-!!    colorbar_scale_ctl     ON
-!!    iflag_zeromarker       ON
-!!    colorbar_range     0.0   1.0
-!!    font_size_ctl         3
-!!    num_grid_ctl     4
-!!!
-!!    axis_label_switch      ON
-!!  end colorbar_ctl
 !!!
 !!  array section_ctl  2
 !!    file section_ctl     ctl_psf_eq
@@ -103,21 +89,6 @@
       end type pvr_isosurf_ctl
 !
 !
-      type pvr_colorbar_ctl
-        type(read_character_item) :: colorbar_switch_ctl
-        type(read_character_item) :: colorbar_scale_ctl
-        type(read_character_item) :: zeromarker_flag_ctl
-        type(read_integer_item) ::   font_size_ctl
-        type(read_integer_item) ::   ngrid_cbar_ctl
-        type(read_real2_item) ::     cbar_range_ctl
-!
-        type(read_character_item) :: axis_switch_ctl
-!
-!     2nd level for volume rendering
-        integer (kind=kint) :: i_pvr_colorbar = 0
-      end type pvr_colorbar_ctl
-!
-!
       type pvr_movie_ctl
         type(read_character_item) :: rotation_axis_ctl
         type(read_integer_item) ::   num_frames_ctl
@@ -138,29 +109,14 @@
       character(len=kchara) :: hd_pvr_opacity =   'opacity_ctl'
       character(len=kchara) :: hd_iso_direction = 'surface_direction'
 !
-!     3rd level for colorbar
-!
-      character(len=kchara)                                             &
-     &                    :: hd_colorbar_switch = 'colorbar_switch_ctl'
-      character(len=kchara) :: hd_colorbar_scale = 'colorbar_scale_ctl'
-      character(len=kchara) :: hd_pvr_font_size = 'font_size_ctl'
-      character(len=kchara) :: hd_pvr_numgrid_cbar = 'num_grid_ctl'
-      character(len=kchara) :: hd_zeromarker_flag = 'iflag_zeromarker'
-      character(len=kchara) :: hd_cbar_range = 'colorbar_range'
-!
-      character(len=kchara)                                             &
-     &                    :: hd_axis_switch = 'axis_label_switch'
 !     3rd level for rotation
 !
       character(len=kchara) :: hd_movie_rot_axis =  'rotation_axis_ctl'
       character(len=kchara) :: hd_movie_rot_frame = 'num_frames_ctl'
 !
       private :: hd_plot_grp, hd_sf_enhanse, hd_isosurf_value
-      private :: hd_colorbar_switch, hd_pvr_opacity, hd_iso_direction
-      private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
-      private :: hd_colorbar_scale, hd_pvr_font_size, hd_cbar_range
+      private :: hd_pvr_opacity, hd_iso_direction
       private :: hd_movie_rot_axis, hd_movie_rot_frame
-      private :: hd_axis_switch
 !
 !  ---------------------------------------------------------------------
 !
@@ -260,46 +216,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_colorbar_ctl(hd_pvr_colorbar, cbar_ctl)
-!
-      character(len=kchara), intent(in) :: hd_pvr_colorbar
-      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
-!
-!
-      if(right_begin_flag(hd_pvr_colorbar) .eq. 0) return
-      if (cbar_ctl%i_pvr_colorbar.gt.0) return
-      do
-        call load_ctl_label_and_line
-!
-        cbar_ctl%i_pvr_colorbar                                         &
-     &      = find_control_end_flag(hd_pvr_colorbar)
-        if(cbar_ctl%i_pvr_colorbar .gt. 0) exit
-!
-!
-        call read_integer_ctl_type                                      &
-     &     (hd_pvr_font_size, cbar_ctl%font_size_ctl)
-        call read_integer_ctl_type(hd_pvr_numgrid_cbar,                 &
-     &      cbar_ctl%ngrid_cbar_ctl)
-!
-!
-        call read_chara_ctl_type(hd_colorbar_switch,                    &
-     &      cbar_ctl%colorbar_switch_ctl)
-        call read_chara_ctl_type(hd_colorbar_scale,                     &
-     &      cbar_ctl%colorbar_scale_ctl)
-        call read_chara_ctl_type(hd_zeromarker_flag,                    &
-     &      cbar_ctl%zeromarker_flag_ctl)
-!
-        call read_chara_ctl_type(hd_axis_switch,                        &
-     &      cbar_ctl%axis_switch_ctl)
-!!
-        call read_real2_ctl_type                                        &
-     &     (hd_cbar_range, cbar_ctl%cbar_range_ctl)
-      end do
-!
-      end subroutine read_pvr_colorbar_ctl
-!
-!  ---------------------------------------------------------------------
-!
       subroutine read_pvr_rotation_ctl(hd_pvr_rotation, movie)
 !
       character(len=kchara), intent(in) :: hd_pvr_rotation
@@ -352,26 +268,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine reset_pvr_misc_control_flags(cbar_ctl, movie)
+      subroutine reset_pvr_movie_control_flags(movie)
 !
-      type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
       type(pvr_movie_ctl), intent(inout) :: movie
 !
 !
       movie%num_frames_ctl%iflag =    0
       movie%rotation_axis_ctl%iflag = 0
 !
-      cbar_ctl%colorbar_switch_ctl%iflag = 0
-      cbar_ctl%colorbar_scale_ctl%iflag =  0
-      cbar_ctl%font_size_ctl%iflag =       0
-      cbar_ctl%ngrid_cbar_ctl%iflag =      0
-      cbar_ctl%zeromarker_flag_ctl%iflag = 0
-      cbar_ctl%cbar_range_ctl%iflag =      0
-!
       movie%i_pvr_rotation = 0
-      cbar_ctl%i_pvr_colorbar = 0
 !
-      end subroutine reset_pvr_misc_control_flags
+      end subroutine reset_pvr_movie_control_flags
 !
 !  ---------------------------------------------------------------------
 !

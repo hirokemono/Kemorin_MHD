@@ -272,11 +272,10 @@
       call set_control_pvr_movie(pvr%movie, view_param)
 !
 !    set colormap setting
-      call set_control_pvr_lighting(pvr%color, color_param)
-      call set_control_pvr_colormap(pvr%color, color_param)
-!
-!    set colorbar setting
-      call set_control_pvr_colorbar(pvr%cbar_ctl, cbar_param)
+      call set_control_pvr_lighting(pvr%light, color_param)
+      call set_control_pvr_colormap(pvr%cmap_cbar_c%color, color_param)
+      call set_control_pvr_colorbar                                     &
+     &   (pvr%cmap_cbar_c%cbar_ctl, cbar_param)
 !
       end subroutine set_control_pvr
 !

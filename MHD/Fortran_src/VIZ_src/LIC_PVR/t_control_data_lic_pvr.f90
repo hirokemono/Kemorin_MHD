@@ -136,6 +136,9 @@
 !
       if(right_begin_flag(hd_block) .eq. 0) return
       if (pvr%i_pvr_ctl.gt.0) return
+!
+      pvr%view_file_ctl = 'NO_FILE'
+      pvr%color_file_ctl = 'NO_FILE'
       do
         call load_ctl_label_and_line
 !
@@ -147,20 +150,22 @@
           call read_file_name_from_ctl_line(pvr%i_view_file,            &
      &        pvr%view_file_ctl)
         else if(right_begin_flag(hd_view_transform) .gt. 0) then
-          pvr%view_file_ctl = 'NO_FILE'
           call read_view_transfer_ctl(hd_view_transform, pvr%mat)
         end if
 !
-        if(right_file_flag(hd_colormap) .gt. 0                          &
-     &      .or. right_file_flag(hd_lic_colordef) .gt. 0) then
+        if(right_file_flag(hd_lic_colordef) .gt. 0) then
           call read_file_name_from_ctl_line(pvr%i_color_file,           &
      &        pvr%color_file_ctl)
-        else if(right_begin_flag(hd_colormap) .gt. 0) then
-          pvr%color_file_ctl = 'NO_FILE'
-          call read_pvr_colordef_ctl(hd_colormap, pvr%color)
-        else if(right_begin_flag(hd_lic_colordef) .gt. 0) then
-          pvr%color_file_ctl = 'NO_FILE'
-          call read_pvr_colordef_ctl(hd_lic_colordef, pvr%color)
+        end if
+!
+        if(pvr%color_file_ctl .eq. 'NO_FILE') then
+          call read_pvr_colordef_ctl                                    &
+     &       (hd_colormap, pvr%cmap_cbar_c%color)
+          call read_pvr_colordef_ctl                                    &
+     &       (hd_lic_colordef, pvr%cmap_cbar_c%color)
+!
+          call read_pvr_colorbar_ctl                                    &
+     &       (hd_pvr_colorbar, pvr%cmap_cbar_c%cbar_ctl)
         end if
 !
         call find_control_array_flag                                    &
@@ -173,8 +178,7 @@
 !
         call read_plot_area_ctl(hd_plot_area, pvr%i_plot_area,          &
      &      pvr%pvr_area_ctl, pvr%surf_enhanse_ctl)
-        call read_lighting_ctl(hd_pvr_lighting, pvr%color)
-        call read_pvr_colorbar_ctl(hd_pvr_colorbar, pvr%cbar_ctl)
+        call read_lighting_ctl(hd_pvr_lighting, pvr%light)
         call read_pvr_rotation_ctl(hd_pvr_rotation, pvr%movie)
 !
         call read_lic_control_data(hd_lic_ctl, lic_ctl)
