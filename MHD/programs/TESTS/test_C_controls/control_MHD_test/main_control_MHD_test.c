@@ -48,7 +48,7 @@ int main(int argc,char *argv[])
 	
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
 
-    load_field_from_ctl(&mhd_ctl->model_ctl->fld_ctl->field_list, all_fld_list);
+    load_field_w_qflag_from_ctl(mhd_ctl->model_ctl->fld_ctl, all_fld_list);
     
     write_SGS_MHD_control_file_c(file_name_2, mhd_ctl);
 

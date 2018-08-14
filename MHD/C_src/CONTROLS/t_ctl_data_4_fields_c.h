@@ -29,7 +29,6 @@ struct field_ctl_c{
 	struct chara_int2_ctl_list field_list;
 	
 	struct chara_ctl_list quad_phys_list;
-	struct chara_ctl_list linear_phys_list;
 };
 
 struct all_field_ctl_c{
@@ -40,6 +39,7 @@ struct all_field_ctl_c{
 	int iflag_use;
 	int iflag_viz;
 	int iflag_monitor;
+    int iflag_quad;
 };
 
 /* prototype */
@@ -55,19 +55,20 @@ int write_field_ctl_c(FILE *fp, int level, const char *label, struct field_ctl_c
 void alloc_all_field_ctl_c(struct all_field_ctl_c **all_fld_tbl);
 void dealloc_all_field_ctl_c(struct all_field_ctl_c **all_fld_tbl);
 
-void add_field_to_ctl(struct all_field_ctl_c *all_fld_tbl, 
-			struct chara_int2_ctl_list *field_list_head);
-void delete_field_in_ctl(struct all_field_ctl_c *all_fld_tbl, 
-			struct chara_int2_ctl_list *field_list_head);
-void update_field_flag_in_ctl(struct all_field_ctl_c *all_fld_tbl, 
-			struct chara_int2_ctl_list *field_list_head);
+void add_field_wqflag_to_ctl(struct all_field_ctl_c *all_fld_tbl, 
+			struct field_ctl_c *fld_ctl);
+void delete_field_wqflag_in_ctl(struct all_field_ctl_c *all_fld_tbl,
+			struct field_ctl_c *fld_ctl);
+void update_field_flag_wqflag_in_ctl(struct all_field_ctl_c *all_fld_tbl, 
+			struct field_ctl_c *fld_ctl);
 
-void load_field_from_ctl(struct chara_int2_ctl_list *field_list_head, 
+void load_field_w_qflag_from_ctl(struct field_ctl_c *fld_ctl, 
 			struct all_field_ctl_c **all_fld_tbl);
-void load_field_to_ctl(struct all_field_ctl_c **all_fld_tbl, 
-			struct chara_int2_ctl_list *field_list_head);
+void load_field_w_qflag_to_ctl(struct all_field_ctl_c **all_fld_tbl, 
+			struct field_ctl_c *fld_ctl);
 void reflesh_field_ctl_list(struct all_field_ctl_c **all_fld_tbl, 
-			struct chara_int2_ctl_list *field_list_head);
+			struct field_ctl_c *fld_ctl);
 
+void check_field_ctl_list(struct field_ctl_c *fld_ctl);
 
 #endif /* t_ctl_data_4_fields_c_h_ */
