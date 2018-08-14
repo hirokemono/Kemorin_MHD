@@ -1,11 +1,20 @@
-/*
-//  control_panel_4_field_GTK.c
-//  
-//
-//  Created by Hiroaki Matsui on 2018/08/14.
-*/
+#include <stdlib.h>
+#include <gtk/gtk.h>
 
-#include "control_panel_4_field_GTK.h"
+#include "t_ctl_data_4_fields_c.h"
+#include "t_SGS_MHD_control_c.h"
+
+struct all_field_ctl_c **all_fld_list;
+struct SGS_MHD_control_c *mhd_ctl;
+char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
+char buf[LENGTHBUF];      /* character buffer for reading line */
+
+static GtkWidget *main_window = NULL;
+
+struct field_views{
+	GtkWidget *used_tree_view;
+	GtkWidget *unused_field_tree_view;
+};
 
 enum {
 	COLUMN_FIELD_INDEX = 0,
@@ -17,21 +26,6 @@ enum {
 	COLUMN_QUADRATURE,
 };
 
-
-void init_field_views_GTK(struct field_ctl_c *fld_ctl_ref, struct field_views *fields_vws){
-	fields_vws->fld_ctl_gtk = fld_ctl_ref;
-    fields_vws->all_fld_ctl = (struct all_field_ctl_c **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_c *));
-    alloc_all_field_ctl_c(fields_vws->all_fld_ctl);
-	load_field_w_qflag_from_ctl(fields_vws->fld_ctl_gtk, fields_vws->all_fld_ctl);
-	return;
-}
-
-void dealloc_field_views_GTK(struct field_views *fields_vws){
-    dealloc_all_field_ctl_c(fields_vws->all_fld_ctl);
-    free(fields_vws->all_fld_ctl);
-    free(fields_vws);
-	return;
-}
 
 static void sum_selected_rows(GtkTreeSelection *selection, gpointer user_data)
 {
@@ -60,6 +54,12 @@ static void sum_selected_rows(GtkTreeSelection *selection, gpointer user_data)
 	
 	gtk_label_set_text(label, row_string);
 }
+
+static void cb_close_window(GtkButton *button, gpointer user_data){
+	GtkWidget *window = (GtkWidget *) user_data;
+	gtk_widget_destroy(window);
+	gtk_widget_show_all(main_window);
+};
 
 
 /* Append new data at the end of list */
@@ -112,8 +112,8 @@ static void unblock_changed_signal(GObject *instance)
 	}
 }
 
-static void transfer_model_data(int iflag_if_add, struct all_field_ctl_c **all_fld_ctl,
-			struct field_ctl_c *fld_ctl, GtkTreeView *tree_view_to_del, GtkTreeView *tree_view_to_add)
+static void transfer_model_data(int iflag_if_add, 
+			GtkTreeView *tree_view_to_del, GtkTreeView *tree_view_to_add)
 {
 	GtkTreeModel *model_to_del;
 	GtkTreeModel *child_model_to_del;
@@ -177,12 +177,12 @@ static void transfer_model_data(int iflag_if_add, struct all_field_ctl_c **all_f
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_QUADRATURE, &iflag_quad, -1);
         
         printf("To be moved: %d, %s: %s\n", index_field, field_name,
-               all_fld_ctl[index_field]->field_name);
+               all_fld_list[index_field]->field_name);
 		/* Delete */
 		gtk_list_store_remove(GTK_LIST_STORE(child_model_to_del), &iter);
 		
 		/* Add */
-		append_model_data(index_field, all_fld_ctl, child_model_to_add);
+		append_model_data(index_field, all_fld_list, child_model_to_add);
 		
 		gtk_tree_path_free(tree_path);
 		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
@@ -190,10 +190,10 @@ static void transfer_model_data(int iflag_if_add, struct all_field_ctl_c **all_f
 		/* Update control data */
 		if(iflag_if_add == 1){
 			printf("Add field list \n");
-			add_field_wqflag_to_ctl(all_fld_ctl[index_field], fld_ctl);
+			add_field_wqflag_to_ctl(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
 		} else {
 			printf("Delete field list \n");
-			delete_field_wqflag_in_ctl(all_fld_ctl[index_field], fld_ctl);
+			delete_field_wqflag_in_ctl(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
 		};
 		
 	}
@@ -202,16 +202,18 @@ static void transfer_model_data(int iflag_if_add, struct all_field_ctl_c **all_f
 	/* changedシグナルのブロックを解除する */
 	unblock_changed_signal(G_OBJECT(child_model_to_del));
 	unblock_changed_signal(G_OBJECT(child_model_to_add));
+    /*
+    check_field_ctl_list(mhd_ctl->model_ctl->fld_ctl);
+     */
 }
 
 static void remove_field_to_use(GtkButton *button, gpointer user_data)
 {
 	struct field_views *fields_vws = (struct field_views *) user_data;
 	
-	transfer_model_data(0, fields_vws->all_fld_ctl, fields_vws->fld_ctl_gtk,
-				fields_vws->used_tree_view, fields_vws->unused_field_tree_view);
+	transfer_model_data(0, fields_vws->used_tree_view, fields_vws->unused_field_tree_view);
     /*
-    check_field_ctl_listfields_vws->fld_ctl);
+    check_field_ctl_list(mhd_ctl->model_ctl->fld_ctl);
      */
 }
 
@@ -219,17 +221,16 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 {
 	struct field_views *fields_vws = (struct field_views *) user_data;
 	
-	transfer_model_data(0, fields_vws->all_fld_ctl, fields_vws->fld_ctl_gtk,
-				fields_vws->unused_field_tree_view, fields_vws->used_tree_view);
+	transfer_model_data(1, fields_vws->unused_field_tree_view, fields_vws->used_tree_view);
     /*
-    check_field_ctl_list(fields_vws->fld_ctl_gtk);
+    check_field_ctl_list(mhd_ctl->model_ctl->fld_ctl);
      */
 }
 
-static void format_entry_text_callback (GtkComboBox *combobox, gpointer user_data)
+void format_entry_text_callback (GtkComboBox *combobox, gpointer user_data)
 {
     GtkTreeView *tree_view = GTK_TREE_VIEW(user_data);
-    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(tree_view));  
+    GtkTreeModel *model = gtk_tree_view_get_model (tree_view);  
 	GtkTreeIter iter;
 	
     gchar *row_string;
@@ -244,17 +245,20 @@ static void format_entry_text_callback (GtkComboBox *combobox, gpointer user_dat
     gtk_tree_model_get(model, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
     gtk_tree_model_get(model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
     
-    printf("Selected field %d, %s\n", index_field, row_string);
+    printf("Selected field %d, %s: %s\n", index_field, row_string,
+				all_fld_list[index_field]->field_name);
 	
 	return;
 }
 
-void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
+static void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 {
 	GtkWidget *hbox;
 	GtkWidget *button;
 	GtkWidget *label;
 	GtkWidget *scrolled_window;
+	GtkWidget *combobox_field;
+	GtkWidget *combobox_comp;
 	
 	GtkTreeSelection *selection;
 	GtkTreeModel *model;
@@ -266,12 +270,17 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	GtkWidget *hbox_1, *vbox_1, *Frame_1;
 	GtkWidget *label_1;
 	GtkWidget *scrolled_window_1;
+	GtkWidget *hbox_11;
 	
 	GtkTreeSelection *selection_1;
 	GtkTreeModel *model_1;
 	GtkTreeModel *child_model_1;
 	gulong changed_handler_id_1;
 	GList *list_1;
+	
+	
+	
+    GtkCellRenderer *column;
 	
 	char *c_label;
 	
@@ -363,17 +372,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	list_1 = g_list_append(list_1, selection_1);
 	g_object_set_data(G_OBJECT(child_model_1), "selection_list", list_1);
 	
-};
-
-void add_field_combobox_vbox(struct field_views *fields_vws, GtkWidget *vbox)
-{
-	GtkTreeModel *model;
-	GtkWidget *hbox_11;
-	GtkWidget *combobox_field;
-	GtkWidget *combobox_comp;
-    GtkCellRenderer *column;
 	
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->used_tree_view));
 	
 	hbox_11 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	combobox_field = gtk_combo_box_new_with_model(model);
@@ -451,7 +450,7 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     
    
     printf("toggle_viz_switch %d, %s: %s\n", index_field, row_string,
-            fields_vws->all_fld_ctl[index_field]->field_name);
+            all_fld_list[index_field]->field_name);
     
     index_for_toggle = (index_for_toggle+ 1) % 2;
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
@@ -459,9 +458,8 @@ static void toggle_viz_switch(GtkTreeViewColumn *renderer,
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    fields_vws->all_fld_ctl[index_field]->iflag_viz = index_for_toggle;
-	update_field_flag_wqflag_in_ctl(fields_vws->all_fld_ctl[index_field],
-				fields_vws->fld_ctl_gtk);
+    all_fld_list[index_field]->iflag_viz = index_for_toggle;
+    update_field_flag_wqflag_in_ctl(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
 }
 static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, gpointer user_data){
 	struct field_views *fields_vws = (struct field_views *) user_data;
@@ -480,7 +478,7 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
 	gtk_tree_model_get(child_model, &iter, COLUMN_MONITOR_FLAG, &index_for_toggle, -1);
     
     printf("toggle_monitor_switch %d, %s: %s\n", index_field, row_string,
-           fields_vws->all_fld_ctl[index_field]->field_name);
+           all_fld_list[index_field]->field_name);
 	
     index_for_toggle = (index_for_toggle+ 1) % 2;
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
@@ -488,13 +486,11 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    fields_vws->all_fld_ctl[index_field]->iflag_monitor = index_for_toggle;
-	update_field_flag_wqflag_in_ctl(fields_vws->all_fld_ctl[index_field],
-				fields_vws->fld_ctl_gtk);
+    all_fld_list[index_field]->iflag_monitor = index_for_toggle;
+    update_field_flag_wqflag_in_ctl(all_fld_list[index_field], mhd_ctl->model_ctl->fld_ctl);
 }
 
-void create_field_tree_view(struct all_field_ctl_c **all_fld_ctl, 
-			struct field_views *fields_vws)
+static void create_field_tree_view(struct all_field_ctl_c **all_fld_ctl, struct field_views *fields_vws)
 {
 /*	GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
 	GtkTreeModel *model;
@@ -601,8 +597,7 @@ void create_field_tree_view(struct all_field_ctl_c **all_fld_ctl,
 	
 }
 
-void create_unused_field_tree_view(struct all_field_ctl_c **all_fld_ctl,
-			struct field_views *fields_vws)
+static void create_unused_field_tree_view(struct all_field_ctl_c **all_fld_ctl, struct field_views *fields_vws)
 {
 /*	GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
 	GtkTreeModel *model;
@@ -669,3 +664,78 @@ void create_unused_field_tree_view(struct all_field_ctl_c **all_fld_ctl,
 	
 }
 
+
+static void create_tree_view_window(GtkButton *button, gpointer user_data)
+{
+	static gint window_id = 0;
+	GtkWidget *window;
+	struct field_views *fields_vws;
+	GtkWidget *vbox;
+	
+	gchar *title;
+	
+    fields_vws = (struct field_views *) malloc(sizeof(struct field_views));
+	
+	fields_vws->used_tree_view = gtk_tree_view_new();
+	create_field_tree_view(all_fld_list, fields_vws);
+	/* ウィンドウ作成 */
+	
+	fields_vws->unused_field_tree_view = gtk_tree_view_new();
+	
+	create_unused_field_tree_view(all_fld_list, fields_vws);
+	
+	
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	title = g_strdup_printf("GtkTreeModelSort #%d", ++window_id);
+	gtk_window_set_title(GTK_WINDOW(window), title);
+	g_free(title);
+	
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	/* Close window bottun */
+	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(button), "clicked", 
+				G_CALLBACK(cb_close_window), window);
+	
+	add_field_selection_box(fields_vws, vbox);
+	gtk_container_add(GTK_CONTAINER(window), vbox);
+	
+	gtk_widget_show_all(window);
+};
+
+int main(int argc, char **argv)
+{
+	GtkWidget *hbox;
+	GtkWidget *button;
+
+	srand((unsigned)time(NULL));
+
+    all_fld_list = (struct all_field_ctl_c **) malloc(NUM_FIELD * sizeof(struct all_field_ctl_c *));
+    alloc_all_field_ctl_c(all_fld_list);
+	
+	mhd_ctl = (struct SGS_MHD_control_c *) malloc(sizeof(struct SGS_MHD_control_c));
+	alloc_SGS_MHD_control_c(mhd_ctl);
+	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
+    load_field_w_qflag_from_ctl(mhd_ctl->model_ctl->fld_ctl, all_fld_list);
+	
+	
+	gtk_init(&argc, &argv);
+
+	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title(GTK_WINDOW(main_window), "GtkTreeModelSort");
+	g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+	hbox = gtk_hbox_new(TRUE, 10);
+
+	button = gtk_button_new_with_label("Create Window");
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(create_tree_view_window), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+
+	gtk_container_add(GTK_CONTAINER(main_window), hbox);
+	gtk_container_set_border_width(GTK_CONTAINER(main_window), 10);
+	gtk_widget_show_all(main_window);
+
+	gtk_main();
+	return 0;
+}

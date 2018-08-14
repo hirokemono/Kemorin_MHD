@@ -388,7 +388,6 @@ void delete_field_wqflag_in_ctl(struct all_field_ctl_c *all_fld_tbl,
 
 void update_field_flag_wqflag_in_ctl(struct all_field_ctl_c *all_fld_tbl, 
 			struct field_ctl_c *fld_ctl){
-	int i;
 	
     update_field_flag_in_ctl(all_fld_tbl, &fld_ctl->field_list);
 	
