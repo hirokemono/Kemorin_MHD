@@ -512,7 +512,7 @@ static void toggle_monitor_switch(GtkTreeViewColumn *renderer, gchar *path_str, 
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
 	gtk_tree_model_get(child_model, &iter, COLUMN_MONITOR_FLAG, &index_for_toggle, -1);
     
-    printf("toggle_viz_switch %d, %s: %s\n", index_field, row_string,
+    printf("toggle_monitor_switch %d, %s: %s\n", index_field, row_string,
            all_fld_list[index_field]->field_name);
 	
     index_for_toggle = (index_for_toggle+ 1) % 2;
