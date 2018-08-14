@@ -42,17 +42,6 @@
 !!        quad_field_name_ctl  maxwell_tensor
 !!        quad_field_name_ctl  vecp_induction
 !!      end array quad_field_name_ctl
-!!
-!!      array linear_field_name_ctl    7
-!!        linear_field_name_ctl  velocity
-!!        linear_field_name_ctl  pressure
-!!        linear_field_name_ctl  vorticity
-!!        linear_field_name_ctl  temperature
-!!        linear_field_name_ctl  magnetic_field
-!!        linear_field_name_ctl  current_density
-!!        linear_field_name_ctl  magnetic_potential
-!!        linear_field_name_ctl  composition
-!!      end array linear_field_name_ctl
 !!    end phys_values_ctl
 !!
 !! ---------------------------------------------------------------------
@@ -80,12 +69,6 @@
 !!@n       quad_phys%num:   Number of field
 !!@n       quad_phys%c_tbl: Name list of field
         type(ctl_array_chara) :: quad_phys
-!
-!>        Structure for list of field on linear elements
-!!@n       linear_phys%icou:  Read flag for 'linear_field_name_ctl'
-!!@n       linear_phys%num:   Number of field
-!!@n       linear_phys%c_tbl: Name list of field
-        type(ctl_array_chara) :: linear_phys
       end type field_control
 !
 !   4th level for fields
@@ -97,11 +80,8 @@
 !
       character(len=kchara), parameter                                  &
      &      :: hd_quad_field =   'quad_field_name_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_linear_field = 'linear_field_name_ctl'
 !
-      private :: hd_field_list
-      private :: hd_quad_field, hd_linear_field
+      private :: hd_field_list, hd_quad_field
 !
 ! -----------------------------------------------------------------------
 !
@@ -115,7 +95,6 @@
 !
       call dealloc_control_array_c3(fld_ctl%field_ctl)
       call dealloc_control_array_chara(fld_ctl%quad_phys)
-      call dealloc_control_array_chara(fld_ctl%linear_phys)
 !
       end subroutine dealloc_phys_control
 !
@@ -143,10 +122,7 @@
         if(iflag .gt. 0) exit
 !
         call read_control_array_c3(hd_field_list, fld_ctl%field_ctl)
-!
         call read_control_array_c1(hd_quad_field, fld_ctl%quad_phys)
-        call read_control_array_c1                                      &
-     &     (hd_linear_field, fld_ctl%linear_phys)
       end do
 !
       end subroutine read_phys_data_control
@@ -176,8 +152,6 @@
 !
       call write_control_array_c1                                       &
      &   (id_file, level, hd_quad_field, fld_ctl%quad_phys)
-      call write_control_array_c1                                       &
-     &   (id_file, level, hd_linear_field, fld_ctl%linear_phys)
 !
       level =  write_end_flag_for_ctl(id_file, level, hd_block)
 !
