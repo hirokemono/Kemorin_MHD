@@ -12,7 +12,7 @@
 #include <gtk/gtk.h>
 
 #include "t_ctl_data_4_fields_c.h"
-#include "m_direction_labels_c.h"
+#include "tree_views_4_fixed_lists_GTK.h"
 
 #define COLUMN_FIELD_INDEX    0
 #define COLUMN_FIELD_NAME     1
