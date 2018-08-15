@@ -8,7 +8,7 @@
 #include "control_panel_4_field_GTK.h"
 
 
-static void sum_selected_rows(GtkTreeSelection *selection, gpointer user_data)
+static void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data)
 {
     GtkLabel *label;
     GtkTreeModel *model;
@@ -67,7 +67,7 @@ static void unblock_changed_signal(GObject *instance)
 		g_signal_handler_unblock(G_OBJECT(selection), handler_id);
 
 		/* changedシグナルをブロックしていた間の変更を反映させる */
-		sum_selected_rows(selection, NULL);
+		set_last_field_to_label(selection, NULL);
 	}
 }
 
@@ -178,7 +178,7 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 {
 	struct field_views *fields_vws = (struct field_views *) user_data;
 	
-	transfer_model_data(0, fields_vws->all_fld_tbl, fields_vws->fld_ctl_gtk,
+	transfer_model_data(1, fields_vws->all_fld_tbl, fields_vws->fld_ctl_gtk,
 				fields_vws->unused_field_tree_view, fields_vws->used_tree_view);
     /*
     check_field_ctl_list(fields_vws->fld_ctl_gtk);
@@ -282,9 +282,9 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 
 	/* Delete data bottun */
 	button = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+    g_signal_connect(G_OBJECT(button), "clicked", 
+                     G_CALLBACK(remove_field_to_use), fields_vws);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(button), "clicked", 
-				G_CALLBACK(remove_field_to_use), fields_vws);
 
 	/* ラベル */
 	label = gtk_label_new("");
@@ -305,7 +305,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	 */
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(fields_vws->used_tree_view));
 	changed_handler_id = g_signal_connect(G_OBJECT(selection), "changed",
-				G_CALLBACK(sum_selected_rows), NULL);
+				G_CALLBACK(set_last_field_to_label), NULL);
 	g_object_set_data(G_OBJECT(selection), "changed_handler_id", GUINT_TO_POINTER(changed_handler_id));
 	g_object_set_data(G_OBJECT(selection), "label", label);
 
@@ -337,9 +337,10 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	/* Add data bottun */
 	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	button = gtk_button_new_from_stock(GTK_STOCK_ADD);
-	gtk_box_pack_start(GTK_BOX(hbox_1), button, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(button), "clicked", 
 				G_CALLBACK(add_field_to_use), fields_vws);
+    gtk_box_pack_start(GTK_BOX(hbox_1), button, FALSE, TRUE, 0);
+
 	label_1 = gtk_label_new("");
 	gtk_box_pack_end(GTK_BOX(hbox_1), label_1, TRUE, TRUE, 0);
 
@@ -352,7 +353,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	
 	selection_1 = gtk_tree_view_get_selection(GTK_TREE_VIEW(fields_vws->unused_field_tree_view));
 	changed_handler_id_1 = g_signal_connect(G_OBJECT(selection_1), "changed", 
-				G_CALLBACK(sum_selected_rows), NULL);
+				G_CALLBACK(set_last_field_to_label), NULL);
 	g_object_set_data(G_OBJECT(selection_1), "changed_handler_id", GUINT_TO_POINTER(changed_handler_id_1));
 	g_object_set_data(G_OBJECT(selection_1), "label", label_1);
 
