@@ -314,6 +314,7 @@ const struct field_def field_props[NUM_FIELD] = {
 int get_field_properties(int index, char *name, char *math){
 	int j;
 	
+	if(index < -1 || index >= NUM_FIELD) return 0;
 	for (j = 0; j < NCHARA_FIELD;j++) {
 		name[j] = field_props[index].field_name[j];
 	};
