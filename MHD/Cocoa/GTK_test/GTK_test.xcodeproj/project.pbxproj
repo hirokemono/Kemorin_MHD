@@ -82,6 +82,7 @@
 		18812C27211F765A00BF714B /* kemosrc_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C25211F765900BF714B /* kemosrc_param_c.c */; };
 		18812C30211F773300BF714B /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C2C211F773200BF714B /* control_elements_IO_c.c */; };
 		18812C34211F864800BF714B /* control_elements_IO_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C33211F864800BF714B /* control_elements_IO_GTK.c */; };
+		18F5F37F2125EF7A004320C7 /* tree_view_chara_real_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F5F37E2125EF79004320C7 /* tree_view_chara_real_GTK.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -246,6 +247,8 @@
 		18812C2C211F773200BF714B /* control_elements_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_c.c; path = ../../C_src/CONTROLS/control_elements_IO_c.c; sourceTree = "<group>"; };
 		18812C2F211F773300BF714B /* control_elements_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_elements_IO_c.h; path = ../../C_src/CONTROLS/control_elements_IO_c.h; sourceTree = "<group>"; };
 		18812C33211F864800BF714B /* control_elements_IO_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_GTK.c; path = ../../C_src/GTK/control_elements_IO_GTK.c; sourceTree = "<group>"; };
+		18F5F37E2125EF79004320C7 /* tree_view_chara_real_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_chara_real_GTK.c; path = ../../C_src/GTK/tree_view_chara_real_GTK.c; sourceTree = "<group>"; };
+		18F5F3802125EF84004320C7 /* tree_view_chara_real_GTK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tree_view_chara_real_GTK.h; path = ../../C_src/GTK/tree_view_chara_real_GTK.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -439,6 +442,8 @@
 				1813DAE921210968003AB1B9 /* control_elements_IO_GTK.h */,
 				1843AA6A2124B4810073BCB1 /* control_panel_4_dimless_GTK.c */,
 				1843AA682124B4800073BCB1 /* control_panel_4_dimless_GTK.h */,
+				18F5F37E2125EF79004320C7 /* tree_view_chara_real_GTK.c */,
+				18F5F3802125EF84004320C7 /* tree_view_chara_real_GTK.h */,
 				1843AA692124B4800073BCB1 /* tree_view_4_force_GTK.c */,
 				1843AA6B2124B4810073BCB1 /* tree_view_4_force_GTK.h */,
 				1843AA752124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.c */,
@@ -545,6 +550,7 @@
 				18812C0E211F762300BF714B /* t_control_data_FLINE_ctl_list.c in Sources */,
 				18812C0D211F762300BF714B /* t_ctl_data_mhd_evo_scheme_c.c in Sources */,
 				1813DAFD212203AE003AB1B9 /* t_control_chara_int2_IO.c in Sources */,
+				18F5F37F2125EF7A004320C7 /* tree_view_chara_real_GTK.c in Sources */,
 				1813DAE621210809003AB1B9 /* t_control_real2_IO.c in Sources */,
 				1843AA7A2124CC6D0073BCB1 /* TreeView_test.c in Sources */,
 				1813DAE721210809003AB1B9 /* t_control_real3_IO.c in Sources */,
