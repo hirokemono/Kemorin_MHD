@@ -74,7 +74,6 @@ static void cb_add_thermal_buo_coef(GtkComboBox *combobox_add, gpointer user_dat
                                                            &mom_vws->mom_ctl_gtk->coef_4_termal_buo_list);
     write_chara_real_ctl_list(stdout, 0, "buoyancy coeffient added", 
                               &mom_vws->mom_ctl_gtk->coef_4_termal_buo_list);
-    
     return;
 }
 

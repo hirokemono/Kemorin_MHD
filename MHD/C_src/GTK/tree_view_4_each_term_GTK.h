@@ -18,7 +18,6 @@
 struct momentum_coefs_view{
     int index_coefs;
     GtkWidget *coefs_tree_view;
-    GtkWidget *new_coefs_tree_view;
     GtkWidget *dimless_tree_view;
     
     struct momentum_equation_ctl_c *mom_ctl_gtk;
