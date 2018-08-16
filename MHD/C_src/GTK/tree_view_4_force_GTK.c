@@ -169,7 +169,9 @@ void create_dimless_tree_view(struct dimless_views *dless_vws)
     GtkTreeSelection *selection;
     
     GtkListStore *child_model;
-    
+
+    GtkAdjustment *adjust;
+
     int i;
     
     /* Construct empty list storage */
@@ -215,14 +217,19 @@ void create_dimless_tree_view(struct dimless_views *dless_vws)
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(GTK_TREE_VIEW(dless_vws->dimless_tree_view), column);
     gtk_tree_view_column_set_title(column, "value");
-//    renderer = gtk_cell_renderer_spin_new();
-    renderer = gtk_cell_renderer_text_new();
+    adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
+                                100, 21474836);
+    renderer = gtk_cell_renderer_spin_new();
+    g_object_set(G_OBJECT(renderer), 
+                 "adjustment", adjust,
+                 "climb-rate", 0.5,
+                 "digits", 3, 
+                 "editable", TRUE, 
+                 "width", (gint)150, NULL);
 
-    g_object_set(G_OBJECT(renderer), "editable", TRUE, NULL);
     g_signal_connect(G_OBJECT(renderer), "edited", G_CALLBACK(value_edited_cb), dless_vws);
     gtk_tree_view_column_pack_start(column, renderer, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer, "text", COLUMN_FIELD_VALUE, NULL);
-    g_object_set(renderer, "width", (gint)150, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_VALUE));
