@@ -56,7 +56,7 @@ static void dimless_value_edited_cb(GtkCellRendererText *cell, gchar *path_str,
  
 }
 
-void create_dimless_tree_view(struct dimless_views *dless_vws)
+static void create_dimless_tree_view(struct dimless_views *dless_vws)
 {
     GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
     GtkCellRenderer *renderer_spin = gtk_cell_renderer_spin_new();

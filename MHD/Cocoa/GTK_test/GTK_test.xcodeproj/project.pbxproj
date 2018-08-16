@@ -83,6 +83,7 @@
 		18812C30211F773300BF714B /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C2C211F773200BF714B /* control_elements_IO_c.c */; };
 		18812C34211F864800BF714B /* control_elements_IO_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C33211F864800BF714B /* control_elements_IO_GTK.c */; };
 		18F5F37F2125EF7A004320C7 /* tree_view_chara_real_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F5F37E2125EF79004320C7 /* tree_view_chara_real_GTK.c */; };
+		18F5F38321260020004320C7 /* tree_view_4_each_term_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F5F38121260020004320C7 /* tree_view_4_each_term_GTK.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -249,6 +250,8 @@
 		18812C33211F864800BF714B /* control_elements_IO_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_GTK.c; path = ../../C_src/GTK/control_elements_IO_GTK.c; sourceTree = "<group>"; };
 		18F5F37E2125EF79004320C7 /* tree_view_chara_real_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_chara_real_GTK.c; path = ../../C_src/GTK/tree_view_chara_real_GTK.c; sourceTree = "<group>"; };
 		18F5F3802125EF84004320C7 /* tree_view_chara_real_GTK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tree_view_chara_real_GTK.h; path = ../../C_src/GTK/tree_view_chara_real_GTK.h; sourceTree = "<group>"; };
+		18F5F38121260020004320C7 /* tree_view_4_each_term_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_each_term_GTK.c; path = ../../C_src/GTK/tree_view_4_each_term_GTK.c; sourceTree = "<group>"; };
+		18F5F38221260020004320C7 /* tree_view_4_each_term_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_4_each_term_GTK.h; path = ../../C_src/GTK/tree_view_4_each_term_GTK.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -448,6 +451,8 @@
 				1843AA6B2124B4810073BCB1 /* tree_view_4_force_GTK.h */,
 				1843AA752124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.c */,
 				1843AA742124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.h */,
+				18F5F38121260020004320C7 /* tree_view_4_each_term_GTK.c */,
+				18F5F38221260020004320C7 /* tree_view_4_each_term_GTK.h */,
 			);
 			name = GTK_routines;
 			sourceTree = "<group>";
@@ -531,6 +536,7 @@
 				1813DAE421210809003AB1B9 /* t_control_int_IO.c in Sources */,
 				18812C34211F864800BF714B /* control_elements_IO_GTK.c in Sources */,
 				1813DAE521210809003AB1B9 /* t_control_real_IO.c in Sources */,
+				18F5F38321260020004320C7 /* tree_view_4_each_term_GTK.c in Sources */,
 				1813DAD1212107EB003AB1B9 /* t_control_chara2_real_IO.c in Sources */,
 				18812C0C211F762200BF714B /* t_ctl_data_mhd_forces_c.c in Sources */,
 				18812BFC211F762200BF714B /* t_ctl_data_mhd_evolution_c.c in Sources */,

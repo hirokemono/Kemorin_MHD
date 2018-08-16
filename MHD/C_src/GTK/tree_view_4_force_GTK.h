@@ -29,8 +29,6 @@ struct dimless_views{
 void init_dimless_views_GTK(struct mhd_model_control_c *model_ctl, struct dimless_views *dless_vws);
 void dealloc_dimless_views_GTK(struct dimless_views *dless_vws);
 
-void create_dimless_tree_view(struct dimless_views *dless_vws);
-
 void init_dimless_tree_view(struct dimless_views *dless_vws);
 void create_used_dimless_tree_views(struct dimless_views *dless_vws);
 

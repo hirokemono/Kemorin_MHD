@@ -44,5 +44,8 @@ void add_chara_real_list_box_w_addbottun(GtkTreeView *cr_tree_view,
 void add_chara_real_list_box_w_combobox(GtkTreeView *cr_tree_view, 
 			GtkWidget *button_add, GtkWidget *combobox_add, GtkWidget *button_delete, 
 			GtkWidget *vbox);
+void add_combobox_real_list_box_w_addbottun(GtkTreeView *cr_tree_view, 
+			GtkWidget *button_add, GtkWidget *button_delete, 
+			GtkWidget *vbox);
 
 #endif /* tree_view_chara_real_GTK_h_ */
