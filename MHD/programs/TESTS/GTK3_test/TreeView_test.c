@@ -33,9 +33,9 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
     
 
     coef_vws->mom_vws->coefs_tree_view = gtk_tree_view_new();
-    init_momentum_tree_view(coef_vws->mom_vws);
     coef_vws->mom_vws->new_coefs_tree_view = gtk_tree_view_new();
     coef_vws->mom_vws->dimless_tree_view = coef_vws->dless_vws->dimless_tree_view;
+    init_momentum_tree_view(coef_vws->mom_vws);
     
     
     /* ウィンドウ作成 */

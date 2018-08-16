@@ -231,6 +231,27 @@ int add_cr_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tr
     return index;
 }
 
+int add_cr_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeModel *tree_model,
+			GtkTreeView *tree_view_to_add, struct chara_real_ctl_list *cr_list_head)
+{
+    GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
+    GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
+      
+    GtkTreeIter iter;
+    
+    gchar *row_string;
+    gchar *math_string;
+    double value = 1.0;
+    
+    gtk_tree_model_get_iter(tree_model, &iter, path);  
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &math_string, -1);
+    
+    index = append_cr_item_to_tree(index, row_string, math_string, value, child_model_to_add);
+    append_chara_real_ctl_list(row_string, value, cr_list_head);
+    return index;
+}
+
 void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
 			struct chara_real_ctl_list *cr_list_head)
 {
@@ -390,6 +411,7 @@ void create_text_real_tree_view(GtkTreeView *cr_tree_view,
     gtk_tree_view_column_set_sort_indicator(column, TRUE);
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
+
 
 void add_chara_real_list_box_w_addbottun(GtkTreeView *cr_tree_view, 
 			GtkWidget *button_add, GtkWidget *button_delete, 

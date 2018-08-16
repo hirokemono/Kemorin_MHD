@@ -59,6 +59,25 @@ static void cb_delete_thermal_buo_coef_new(GtkButton *button, gpointer user_data
     
 }
 
+
+static void cb_add_thermal_buo_coef(GtkComboBox *combobox_add, gpointer user_data)
+{
+    struct momentum_coefs_view *mom_vws = (struct dimless_views *) user_data;
+    GtkTreeModel *model_comp = gtk_combo_box_get_model(combobox_add);  
+    
+    gint idx = gtk_combo_box_get_active(combobox_add);
+    if(idx < 0) return;
+    
+    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+    mom_vws->index_coefs = add_cr_list_from_combobox_GTK_w_one(mom_vws->index_coefs, 
+                                                           path, model_comp, mom_vws->coefs_tree_view,
+                                                           &mom_vws->mom_ctl_gtk->coef_4_termal_buo_list);
+    write_chara_real_ctl_list(stdout, 0, "buoyancy coeffient added", 
+                              &mom_vws->mom_ctl_gtk->coef_4_termal_buo_list);
+    
+    return;
+}
+
 static void cb_add_thermal_buo_coef_new(GtkButton *button, gpointer user_data)
 {
     struct momentum_coefs_view *mom_vws = (struct momentum_coefs_view *) user_data;
@@ -72,13 +91,13 @@ static void cb_add_thermal_buo_coef_new(GtkButton *button, gpointer user_data)
 }
 
 void init_momentum_tree_view(struct momentum_coefs_view *mom_vws){
-    GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
+    GtkCellRenderer *renderer_combobox = gtk_cell_renderer_combo_new();
     GtkCellRenderer *renderer_spin = gtk_cell_renderer_spin_new();
     
     create_text_real_tree_view(GTK_TREE_VIEW(mom_vws->coefs_tree_view),
-                               renderer_text, renderer_spin);
+                               renderer_combobox, renderer_spin);
     
-    g_signal_connect(G_OBJECT(renderer_text), "edited", 
+    g_signal_connect(G_OBJECT(renderer_combobox), "edited", 
                      G_CALLBACK(thermal_buo_name_edited_cb), mom_vws);
     g_signal_connect(G_OBJECT(renderer_spin), "edited", 
                      G_CALLBACK(thermal_buo_value_edited_cb), mom_vws);
@@ -90,15 +109,19 @@ void init_momentum_tree_view(struct momentum_coefs_view *mom_vws){
 
 void add_thermal_buo_selection_box(struct momentum_coefs_view *mom_vws, GtkWidget *vbox)
 {
+    GtkTreeModel *model_default =  gtk_tree_view_get_model(GTK_TREE_VIEW(mom_vws->dimless_tree_view));
     GtkWidget *button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
+    GtkWidget *combobox_add = gtk_combo_box_new_with_model(model_default);
     GtkWidget *button_delete = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
 	
-	add_chara_real_list_box_w_addbottun(mom_vws->coefs_tree_view,
-				button_add, button_delete, vbox);
+	add_chara_real_list_box_w_combobox(mom_vws->coefs_tree_view,
+				button_add, combobox_add, button_delete, vbox);
 	
     /* Add callbacks */
     g_signal_connect(G_OBJECT(button_add), "clicked", 
                      G_CALLBACK(cb_add_thermal_buo_coef_new), mom_vws);
+    g_signal_connect(G_OBJECT(combobox_add), "changed", 
+                     G_CALLBACK(cb_add_thermal_buo_coef), mom_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
                      G_CALLBACK(cb_delete_thermal_buo_coef_new), mom_vws);
 };

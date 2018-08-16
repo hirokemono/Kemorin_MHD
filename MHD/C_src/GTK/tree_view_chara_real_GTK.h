@@ -32,12 +32,15 @@ int add_cr_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add,
                                      struct chara_real_ctl_list *cr_list_head);
 int add_cr_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tree_model,
 			GtkTreeView *tree_view_to_add, struct chara_real_ctl_list *cr_list_head);
+int add_cr_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeModel *tree_model,
+			GtkTreeView *tree_view_to_add, struct chara_real_ctl_list *cr_list_head);
 void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
 			struct chara_real_ctl_list *cr_list_head);
 
 
 void create_text_real_tree_view(GtkTreeView *cr_tree_view,
 			GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_spin);
+
 void add_chara_real_list_box_w_addbottun(GtkTreeView *cr_tree_view, 
 			GtkWidget *button_add, GtkWidget *button_delete, 
 			GtkWidget *vbox);
