@@ -315,7 +315,6 @@ void alloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c){
 	};
 	
 	init_chara_real_ctl_list(&dless_ctl_c->dimless_list);
-	
 	return;
 };
 

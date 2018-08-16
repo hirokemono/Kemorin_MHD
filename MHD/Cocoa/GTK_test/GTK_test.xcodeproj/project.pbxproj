@@ -275,6 +275,7 @@
 		18812ADF211EB5B000BF714B = {
 			isa = PBXGroup;
 			children = (
+				18812AEA211EB5B000BF714B /* GTK_test */,
 				18812C32211F863700BF714B /* GTK_routines */,
 				18812B87211EC37400BF714B /* libgtk-3.a */,
 				18812B8B211EC6CC00BF714B /* libgdk-3.a */,
@@ -290,7 +291,6 @@
 				18812B89211EC39400BF714B /* libglib-2.0.a */,
 				18812B9F211EC79900BF714B /* libintl.a */,
 				18812BA9211F75DC00BF714B /* CONTROLS */,
-				18812AEA211EB5B000BF714B /* GTK_test */,
 				18812AE9211EB5B000BF714B /* Products */,
 			);
 			sourceTree = "<group>";

@@ -70,8 +70,8 @@ static void unblock_changed_signal(GObject *instance)
     }
 }
 
-static void delete_dless_data(struct dimless_ctl_c *dless_ctl_gtk,
-                                GtkTreeView *tree_view_to_del)
+static void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
+			struct chara_real_ctl_list *cr_list_head)
 {
     GtkTreeModel *model_to_del;
     GtkTreeModel *child_model_to_del;
@@ -133,7 +133,7 @@ static void delete_dless_data(struct dimless_ctl_c *dless_ctl_gtk,
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
         
         /* Update control data */
-        del_chara_real_ctl_list_by_c_tbl(field_name, &dless_ctl_gtk->dimless_list);
+        del_chara_real_ctl_list_by_c_tbl(field_name, cr_list_head);
     }
     g_list_free(reference_list);
     
@@ -145,10 +145,11 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 {
     struct dimless_views *dless_vws = (struct dimless_views *) user_data;
 
-    delete_dless_data(dless_vws->dless_ctl_gtk, dless_vws->dimless_tree_view);
-    /*
-     write_chara_real_ctl_list(stdout, 0, "Added list", &dless_vws->dless_ctl_gtk->dimless_list);
-     */
+	delete_cr_list_items_GTK(dless_vws->dimless_tree_view, 
+                             &dless_vws->dless_ctl_gtk->dimless_list);
+    write_chara_real_ctl_list(stdout, 0, "Added dimless list", 
+                              &dless_vws->dless_ctl_gtk->dimless_list);
+    
 }
 
 static void cb_set_dimless_name(GtkComboBox *combobox_field, gpointer user_data)
@@ -174,14 +175,12 @@ static void cb_set_dimless_name(GtkComboBox *combobox_field, gpointer user_data)
     return;
 }
 
-static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
+static int add_cr_list_items_GTK(int index, GtkTreePath *path, GtkTreeModel *tree_model,
+			GtkTreeView *tree_view_to_add, struct chara_real_ctl_list *cr_list_head)
 {
-    struct dimless_views *dless_vws = (struct dimless_views *) user_data;
-    GtkTreeModel *model_to_add = gtk_tree_view_get_model(dless_vws->dimless_tree_view);
+    GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
-    
-    GtkTreeModel *model_comp = gtk_combo_box_get_model(combobox_add);  
-
+      
     GtkTreeIter iter;
     
     gchar *row_string;
@@ -189,24 +188,33 @@ static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
     int index_comp;
     double value;
     
+    gtk_tree_model_get_iter(tree_model, &iter, path);  
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_INDEX, &index_comp, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &math_string, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_VALUE, &value, -1);
+    
+    index = append_dimless_item(index, row_string, math_string, value, child_model_to_add);
+    append_chara_real_ctl_list(row_string, value, cr_list_head);
+    return index;
+}
+
+
+static void cb_add_dimless_name(GtkComboBox *combobox_add, gpointer user_data)
+{
+    struct dimless_views *dless_vws = (struct dimless_views *) user_data;
+    GtkTreeModel *model_comp = gtk_combo_box_get_model(combobox_add);  
+	
     gint idx = gtk_combo_box_get_active(combobox_add);
     if(idx < 0) return;
     
     GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_comp, &iter, path);  
-    gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_INDEX, &index_comp, -1);
-    gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_MATH, &math_string, -1);
-    gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_VALUE, &value, -1);
+	dless_vws->index_dless = add_cr_list_items_GTK(dless_vws->index_dless, 
+				path, model_comp, dless_vws->dimless_tree_view,
+				&dless_vws->dless_ctl_gtk->dimless_list);
+    write_chara_real_ctl_list(stdout, 0, "Added list",
+                              &dless_vws->dless_ctl_gtk->dimless_list);
 
-    dless_vws->index_dless = append_dimless_item(dless_vws->index_dless,
-                         row_string, math_string, value, child_model_to_add);
-
-    append_chara_real_ctl_list(row_string, value, &dless_vws->dless_ctl_gtk->dimless_list);
-/*
-    write_chara_real_ctl_list(stdout, 0, "Added list", &dless_vws->dless_ctl_gtk->dimless_list);
-*/
     return;
 }
 

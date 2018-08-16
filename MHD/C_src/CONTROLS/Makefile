@@ -22,6 +22,7 @@ OBJ_KEMO_CTL_C = \
  t_control_real3_IO.o \
  \
  all_field_names_c.o \
+ m_direction_labels_c.o \
  \
  t_ctl_data_4_platforms_c.o \
  t_ctl_data_4_FEM_mesh_c.o \
@@ -94,6 +95,16 @@ module:
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
 	'$$(KEMO_CTL_C_DIR)'/all_field_names_c.c \
+	>> $(MAKENAME)
+	
+	@echo \
+	m_direction_labels_c.o: \
+	'$$(KEMO_CTL_C_DIR)'/m_direction_labels_c.c \
+	m_direction_labels_c.h \
+	kemosrc_param_c.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
+	'$$(KEMO_CTL_C_DIR)'/m_direction_labels_c.c \
 	>> $(MAKENAME)
 	
 	@echo \

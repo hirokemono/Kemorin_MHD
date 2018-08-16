@@ -59,10 +59,11 @@ int append_dimless_list(int index, struct chara_real_ctl_list *head, GtkWidget *
     };
     return index;
 }
-static void name_edited_cb(GtkCellRendererText *cell, gchar *path_str, gchar *new_text, gpointer user_data)
+
+static void name_edited_cb(gchar *path_str, gchar *new_text,
+			GtkTreeView *tree_view_to_edit, struct chara_real_ctl_list *cr_list_head)
 {
-    struct dimless_views *dless_vws = (struct dimless_views *) user_data;
-    GtkTreeModel *model = gtk_tree_view_get_model (dless_vws->dimless_tree_view);  
+    GtkTreeModel *model = gtk_tree_view_get_model (tree_view_to_edit);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
@@ -84,17 +85,12 @@ static void name_edited_cb(GtkCellRendererText *cell, gchar *path_str, gchar *ne
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    update_chara_real_ctl_list_by_c_tbl(old_text, new_text, old_value,
-                                        &dless_vws->dless_ctl_gtk->dimless_list);
-/*
-    write_chara_real_ctl_list(stdout, 0, "dimless_test", 
-                              &dless_vws->dless_ctl_gtk->dimless_list);
- */
+    update_chara_real_ctl_list_by_c_tbl(old_text, new_text, old_value, cr_list_head);
 }
-static void value_edited_cb(GtkCellRendererText *cell, gchar *path_str, gchar *new_text, gpointer user_data)
+static void value_edited_cb(gchar *path_str, gchar *new_text, 
+			GtkTreeView *tree_view_to_edit, struct chara_real_ctl_list *cr_list_head)
 {
-    struct dimless_views *dless_vws = (struct dimless_views *) user_data;
-    GtkTreeModel *model = gtk_tree_view_get_model (dless_vws->dimless_tree_view);  
+    GtkTreeModel *model = gtk_tree_view_get_model (tree_view_to_edit);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
@@ -117,12 +113,30 @@ static void value_edited_cb(GtkCellRendererText *cell, gchar *path_str, gchar *n
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    update_chara_real_ctl_list_by_c_tbl(old_text, old_text, new_value,
-                                        &dless_vws->dless_ctl_gtk->dimless_list);
-/*
+    update_chara_real_ctl_list_by_c_tbl(old_text, old_text, new_value, cr_list_head);
+ 
+}
+
+static void dimless_name_edited_cb(GtkCellRendererText *cell, gchar *path_str, 
+			gchar *new_text, gpointer user_data)
+{
+    struct dimless_views *dless_vws = (struct dimless_views *) user_data;
+	
+	name_edited_cb(path_str, new_text, dless_vws->dimless_tree_view, 
+				&dless_vws->dless_ctl_gtk->dimless_list);
+	write_chara_real_ctl_list(stdout, 0, "dimless_test", 
+                              &dless_vws->dless_ctl_gtk->dimless_list);
+ 
+}
+static void dimless_value_edited_cb(GtkCellRendererText *cell, gchar *path_str, gchar *new_text, gpointer user_data)
+{
+    struct dimless_views *dless_vws = (struct dimless_views *) user_data;
+	
+	value_edited_cb(path_str, new_text, dless_vws->dimless_tree_view,
+                    &dless_vws->dless_ctl_gtk->dimless_list);
     write_chara_real_ctl_list(stdout, 0, "dimless_test", 
                               &dless_vws->dless_ctl_gtk->dimless_list);
- */
+ 
 }
 static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
 {
@@ -203,7 +217,7 @@ void create_dimless_tree_view(struct dimless_views *dless_vws)
     gtk_tree_view_column_set_title(column, "Field name");
     renderer = gtk_cell_renderer_text_new();
     g_object_set(G_OBJECT(renderer), "editable", TRUE, NULL);
-    g_signal_connect(G_OBJECT(renderer), "edited", G_CALLBACK(name_edited_cb), dless_vws);
+    g_signal_connect(G_OBJECT(renderer), "edited", G_CALLBACK(dimless_name_edited_cb), dless_vws);
     gtk_tree_view_column_pack_start(column, renderer, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer, "text", COLUMN_FIELD_NAME, NULL);
     g_object_set(renderer, "width", (gint)150, NULL);
@@ -227,7 +241,7 @@ void create_dimless_tree_view(struct dimless_views *dless_vws)
                  "editable", TRUE, 
                  "width", (gint)150, NULL);
 
-    g_signal_connect(G_OBJECT(renderer), "edited", G_CALLBACK(value_edited_cb), dless_vws);
+    g_signal_connect(G_OBJECT(renderer), "edited", G_CALLBACK(dimless_value_edited_cb), dless_vws);
     gtk_tree_view_column_pack_start(column, renderer, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer, "text", COLUMN_FIELD_VALUE, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
@@ -262,4 +276,5 @@ void create_used_dimless_tree_views(struct dimless_views *dless_vws)
     create_fixed_constant_tree(dless_vws->default_dless_view);
     append_default_coefs_label(dless_vws->default_dless_view);
 }
+
 
