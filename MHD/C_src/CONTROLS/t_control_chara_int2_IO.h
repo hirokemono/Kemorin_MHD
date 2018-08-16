@@ -40,16 +40,36 @@ int read_chara_int2_ctl_item_c(char buf[LENGTHBUF], const char *label, struct ch
 int write_chara_int2_ctl_item_c(FILE *fp, int level, int maxlen[2], 
 			const char *label, struct chara_int2_ctl_item *ci2_item);
 
+void update_chara_int2_ctl_item_c(char *c_in, int i1_in, int i2_in,  
+                              struct chara_int2_ctl_item *ci2_item);
+void set_from_chara_int2_ctl_item_c( struct chara_int2_ctl_item *ci2_item,
+                              char *c_out, int *i1_out, int *i2_out);
+
 void init_chara_int2_ctl_list(struct chara_int2_ctl_list *head);
 void clear_chara_int2_ctl_list(struct chara_int2_ctl_list *head);
 struct chara_int2_ctl_list *add_chara_int2_ctl_list(struct chara_int2_ctl_list *current);
 void delete_chara_int2_ctl_list(struct chara_int2_ctl_list *current);
 int count_chara_int2_ctl_list(struct chara_int2_ctl_list *head);
-struct chara_int2_ctl_list *set_chara_int2_ctl_list_pointer(int index, struct chara_int2_ctl_list *head);
+struct chara_int2_ctl_list *find_ci2_ctl_list_item_by_index(int index, struct chara_int2_ctl_list *head);
+struct chara_int2_ctl_list *find_ci2_ctl_list_item_by_c_tbl(char *ref, struct chara_int2_ctl_list *head);
 
 int read_chara_int2_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara_int2_ctl_list *head);
 int write_chara_int2_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara_int2_ctl_list *head);
+
+void append_chara_int2_ctl_list(char *c_in, int i1_in, int i2_in,
+                      struct chara_int2_ctl_list *head);
+void del_chara_int2_ctl_list_by_index(int index, struct chara_int2_ctl_list *head);
+void update_chara_int2_ctl_list_by_index(int index, char *c_in, int i1_in, int i2_in,
+			struct chara_int2_ctl_list *head);
+void set_from_chara_int2_ctl_list_at_index(int index, struct chara_int2_ctl_list *head,
+			char *c_out, int *i1_out, int *i2_out);
+
+void del_chara_int2_ctl_list_by_c_tbl(char *ref, struct chara_int2_ctl_list *head);
+void update_chara_int2_ctl_list_by_c_tbl(char *ref, char *c_in, int i1_in, int i2_in,
+			struct chara_int2_ctl_list *head);
+void set_from_chara_int2_ctl_list_at_c_tbl(char *ref, struct chara_int2_ctl_list *head,
+			char *c_out, int *i1_out, int *i2_out);
 
 #endif /* t_control_chara_int2_IO_h_ */

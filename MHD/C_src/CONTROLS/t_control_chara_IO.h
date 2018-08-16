@@ -38,6 +38,9 @@ int read_chara_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_chara_ctl_item_c(FILE *fp, int level, int maxlen, 
 			const char *label, struct chara_ctl_item *c_item);
 
+void update_chara_ctl_item_c(char *c_in, struct chara_ctl_item *c_item);
+void set_from_chara_ctl_item_c( struct chara_ctl_item *c_item, char *c_out);
+
 int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item);
 void set_boolean_by_chara_ctl_item(int iflag, struct chara_ctl_item *c_item);
 
@@ -49,11 +52,19 @@ void clear_chara_ctl_list(struct chara_ctl_list *head);
 struct chara_ctl_list *add_chara_ctl_list(struct chara_ctl_list *current);
 void delete_chara_ctl_list(struct chara_ctl_list *current);
 int count_chara_ctl_list(struct chara_ctl_list *head);
-struct chara_ctl_list *set_chara_ctl_list_pointer(int index, struct chara_ctl_list *head);
+struct chara_ctl_list *find_c_ctl_list_item_by_index(int index, struct chara_ctl_list *head);
+struct chara_ctl_list *find_c_ctl_list_item_by_c_tbl(char *ref, struct chara_ctl_list *head);
 
 int read_chara_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara_ctl_list *head);
 int write_chara_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara_ctl_list *head);
+
+
+void append_chara_ctl_list(char *c_in, struct chara_ctl_list *head);
+void del_chara_ctl_list_by_index(int index, struct chara_ctl_list *head);
+void set_from_chara_ctl_list_at_index(int index, struct chara_ctl_list *head, char *c_out);
+
+void del_chara_ctl_list_by_c_tbl(char *ref, struct chara_ctl_list *head);
 
 #endif /* t_control_chara_IO_h_ */

@@ -41,6 +41,77 @@ void create_fixed_label_tree(GtkWidget *label_tree){
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
+void create_fixed_constant_tree(GtkWidget *label_tree)
+{
+    /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
+    GtkTreeModel *model;
+    GtkCellRenderer *renderer;
+    GtkTreeViewColumn *column;
+    GtkTreeSelection *selection;
+    
+    GtkListStore *child_model;
+    
+    int i;
+    
+    /* Construct empty list storage */
+    child_model = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
+                                     G_TYPE_DOUBLE);
+    g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
+    
+    /* ソート用のモデルを作成してツリービューにセットする */
+    model = gtk_tree_model_sort_new_with_model(child_model);
+    gtk_tree_view_set_model(GTK_TREE_VIEW(label_tree), model);
+    
+    /* First raw */
+    column = gtk_tree_view_column_new();
+    gtk_tree_view_append_column(GTK_TREE_VIEW(label_tree), column);
+    gtk_tree_view_column_set_title(column, "Index");
+    renderer = gtk_cell_renderer_text_new();
+    gtk_tree_view_column_pack_start(column, renderer, TRUE);
+    gtk_tree_view_column_set_attributes(column, renderer, "text", COLUMN_FIELD_INDEX, NULL);
+    g_object_set(renderer, "width", (gint)60, NULL);
+    gtk_tree_view_column_set_resizable(column, TRUE);
+    gtk_tree_view_column_set_clickable(column, TRUE);
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+    
+    /* Second row */
+    column = gtk_tree_view_column_new();
+    gtk_tree_view_append_column(GTK_TREE_VIEW(label_tree), column);
+    gtk_tree_view_column_set_title(column, "Field name");
+    renderer = gtk_cell_renderer_text_new();
+    gtk_tree_view_column_pack_start(column, renderer, TRUE);
+    gtk_tree_view_column_set_attributes(column, renderer, "text", COLUMN_FIELD_NAME, NULL);
+    g_object_set(renderer, "width", (gint)150, NULL);
+    gtk_tree_view_column_set_resizable(column, TRUE);
+    gtk_tree_view_column_set_clickable(column, TRUE);
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
+    
+    /* Second row */
+    column = gtk_tree_view_column_new();
+    gtk_tree_view_append_column(GTK_TREE_VIEW(label_tree), column);
+    gtk_tree_view_column_set_title(column, "value");
+    renderer = gtk_cell_renderer_spin_new();
+    gtk_tree_view_column_pack_start(column, renderer, TRUE);
+    gtk_tree_view_column_set_attributes(column, renderer, "text", COLUMN_FIELD_VALUE, NULL);
+    g_object_set(renderer, "width", (gint)150, NULL);
+    gtk_tree_view_column_set_resizable(column, TRUE);
+    gtk_tree_view_column_set_clickable(column, TRUE);
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_VALUE));
+    
+    
+    /* 選択モード */
+    selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(label_tree));
+    gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
+    
+    /* 1行毎に背景色を変更 */
+    gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(label_tree), TRUE);
+    
+    /* ソート */
+    column = gtk_tree_view_get_column(GTK_TREE_VIEW(label_tree), COLUMN_FIELD_INDEX);
+    gtk_tree_view_column_set_sort_order(column, GTK_SORT_ASCENDING);
+    gtk_tree_view_column_set_sort_indicator(column, TRUE);
+    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
+}
 
 void append_scalar_componnet_label(GtkWidget *label_tree){
     GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
@@ -148,22 +219,6 @@ void append_basic_force_label(GtkWidget *label_tree){
                            COLUMN_FIELD_INDEX, i,
                            COLUMN_FIELD_NAME, force_flag_def[i].flag_name,
                            COLUMN_FIELD_MATH, force_flag_def[i].flag_math,
-                           -1);
-    }
-    
-}
-
-void append_defaule_coefs_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
-    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
-    int i;
-    GtkTreeIter iter;
-    for(i=0;i<NUM_DEFAULT_COEF_DEF;i++){
-        gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
-        gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                           COLUMN_FIELD_INDEX, i,
-                           COLUMN_FIELD_NAME, default_coefs_def[i].flag_name,
-                           COLUMN_FIELD_MATH, default_coefs_def[i].flag_math,
                            -1);
     }
     

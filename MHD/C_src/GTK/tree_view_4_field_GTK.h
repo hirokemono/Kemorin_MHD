@@ -43,10 +43,8 @@ void dealloc_field_views_GTK(struct field_views *fields_vws);
 
 void append_model_data(int index_field, struct all_field_ctl_c **all_fld_tbl, GtkTreeModel *child_model);
 
-void create_field_tree_view(struct all_field_ctl_c **all_fld_tbl, 
-                            struct field_views *fields_vws);
-void create_unused_field_tree_view(struct all_field_ctl_c **all_fld_tbl, 
-                                   struct field_views *fields_vws);
+void create_field_tree_view(struct field_views *fields_vws);
+void create_unused_field_tree_view(struct field_views *fields_vws);
 void create_direction_label_tree(GtkWidget *label_tree);
 
 void create_direction_tree_views(struct field_views *fields_vws);

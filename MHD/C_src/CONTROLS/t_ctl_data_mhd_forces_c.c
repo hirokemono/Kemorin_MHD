@@ -7,11 +7,6 @@
 
 #include "t_ctl_data_mhd_forces_c.h"
 
-#define NLBL_FORCES_CTL      1
-#define NLBL_GRAVITY_CTL     2
-#define NLBL_CORIOLIS_CTL    1
-#define NLBL_MAGNETO_CV_CTL  2
-
 const char label_forces_ctl[NLBL_FORCES_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"force_ctl"}
 };

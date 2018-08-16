@@ -16,6 +16,12 @@
 #include "t_control_chara_IO.h"
 #include "t_control_chara_real_IO.h"
 
+#define NLBL_FORCES_CTL      1
+#define NLBL_GRAVITY_CTL     2
+#define NLBL_CORIOLIS_CTL    1
+#define NLBL_MAGNETO_CV_CTL  2
+
+
 struct forces_ctl_c{
 	int maxlen;
 	

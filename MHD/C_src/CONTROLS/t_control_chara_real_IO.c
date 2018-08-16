@@ -50,6 +50,21 @@ int write_chara_real_ctl_item_c(FILE *fp, int level, int maxlen[2],
 };
 
 
+void update_chara_real_ctl_item_c(char *c_in, double r_in,  
+                              struct chara_real_ctl_item *cr_item){
+	cr_item->iflag = 1;
+	sprintf(cr_item->c_tbl,"%s", c_in);
+	cr_item->r_data = r_in;
+    return;
+};
+void set_from_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item,
+                              char *c_out, double *r_out){
+	if(cr_item->iflag == 0) return;
+	sprintf(c_out,"%s", cr_item->c_tbl);
+	*r_out = cr_item->r_data;
+    return;
+};
+
 
 void init_chara_real_ctl_list(struct chara_real_ctl_list *head){
     int i;
@@ -126,15 +141,18 @@ int count_chara_real_ctl_list(struct chara_real_ctl_list *head){
     return num;
 };
 
-struct chara_real_ctl_list *set_chara_real_ctl_list_pointer(int index, struct chara_real_ctl_list *head){
-    int num = 0;
+struct chara_real_ctl_list *find_cr_ctl_list_item_by_index(int index, struct chara_real_ctl_list *head){
+    int i;
+    if(index < 0 || index > count_chara_real_ctl_list(head)) return NULL;
+    for(i=0;i<index;i++){head = head->_next;};
+    return head;
+};
+struct chara_real_ctl_list *find_cr_ctl_list_item_by_c_tbl(char *ref, struct chara_real_ctl_list *head){
     head = head->_next;
     while (head != NULL){
-        if(num == index) break;
+		if(cmp_no_case_c(head->cr_item->c_tbl, ref)) return head;
         head = head->_next;
-        num = num + 1;
     };
-    if(head == NULL) printf("array does not exist at index %d of %d.\n", index, num);
     return head;
 };
 
@@ -180,5 +198,55 @@ int write_chara_real_ctl_list(FILE *fp, int level, const char *label,
     }
     level = write_end_array_flag_for_ctl_c(fp, level, label);
     return level;
+};
+
+void append_chara_real_ctl_list(char *c_in, double r_in,
+                                struct chara_real_ctl_list *head){
+	int num = count_chara_real_ctl_list(head);
+	head = find_cr_ctl_list_item_by_index(num, head);
+	head = add_chara_real_ctl_list(head);
+	if(head !=NULL) update_chara_real_ctl_item_c(c_in, r_in, head->cr_item);
+    return;
+};
+void del_chara_real_ctl_list_by_index(int index, struct chara_real_ctl_list *head){
+	head = find_cr_ctl_list_item_by_index(index, head);
+	if(head !=NULL) delete_chara_real_ctl_list(head);
+	return;
+};
+
+void update_chara_real_ctl_list_by_index(int index, char *c_in, double r_in,
+			struct chara_real_ctl_list *head){
+	head = find_cr_ctl_list_item_by_index(index, head);
+	if(head !=NULL) update_chara_real_ctl_item_c(c_in, r_in, head->cr_item);
+	return;
+};
+
+void set_from_chara_real_ctl_list_at_index(int index, struct chara_real_ctl_list *head,
+			char *c_out, double *r_out){
+	head = find_cr_ctl_list_item_by_index(index, head);
+	if(head !=NULL) set_from_chara_real_ctl_item_c(head->cr_item, c_out, r_out);
+	return;
+};
+
+
+
+void del_chara_real_ctl_list_by_c_tbl(char *ref, struct chara_real_ctl_list *head){
+	head = find_cr_ctl_list_item_by_c_tbl(ref, head);
+	if(head != NULL) delete_chara_real_ctl_list(head);
+	return;
+};
+
+void update_chara_real_ctl_list_by_c_tbl(char *ref, char *c_in, double r_in,
+			struct chara_real_ctl_list *head){
+	head = find_cr_ctl_list_item_by_c_tbl(ref, head);
+	if(head != NULL) update_chara_real_ctl_item_c(c_in, r_in, head->cr_item);
+	return;
+};
+
+void set_from_chara_real_ctl_list_at_c_tbl(char *ref, struct chara_real_ctl_list *head,
+			char *c_out, double *r_out){
+	head = find_cr_ctl_list_item_by_c_tbl(ref, head);
+	if(head != NULL) set_from_chara_real_ctl_item_c(head->cr_item, c_out, r_out);
+	return;
 };
 

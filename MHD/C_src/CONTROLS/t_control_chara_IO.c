@@ -45,6 +45,17 @@ int write_chara_ctl_item_c(FILE *fp, int level, int maxlen,
     return level;
 };
 
+void update_chara_ctl_item_c(char *c_in, struct chara_ctl_item *c_item){
+	c_item->iflag = 1;
+	sprintf(c_item->c_tbl,"%s", c_in);
+    return;
+};
+void set_from_chara_ctl_item_c(struct chara_ctl_item *c_item, char *c_out){
+	if(c_item->iflag == 0) return;
+	sprintf(c_out,"%s", c_item->c_tbl);
+    return;
+};
+
 
 int find_boolean_from_chara_ctl_item(struct chara_ctl_item *c_item){
     int iflag = 0;
@@ -142,15 +153,18 @@ int count_chara_ctl_list(struct chara_ctl_list *head){
     return num;
 };
 
-struct chara_ctl_list *set_chara_ctl_list_pointer(int index, struct chara_ctl_list *head){
-    int num = 0;
+struct chara_ctl_list *find_c_ctl_list_item_by_index(int index, struct chara_ctl_list *head){
+    int i;
+    if(index < 0 || index > count_chara_ctl_list(head)) return NULL;
+    for(i=0;i<index;i++){head = head->_next;};
+    return head;
+};
+struct chara_ctl_list *find_c_ctl_list_item_by_c_tbl(char *ref, struct chara_ctl_list *head){
     head = head->_next;
     while (head != NULL){
-        if(num == index) break;
+		if(cmp_no_case_c(head->c_item->c_tbl, ref)) return head;
         head = head->_next;
-        num = num + 1;
     };
-    if(head == NULL) printf("array does not exist at index %d of %d.\n", index, num);
     return head;
 };
 
@@ -197,3 +211,33 @@ int write_chara_ctl_list(FILE *fp, int level, const char *label,
     return level;
 };
 
+
+void append_chara_ctl_list(char *c_in, struct chara_ctl_list *head){
+	int i;
+	for (i=0;i<count_chara_ctl_list(head);i++){
+		head = head->_next;
+		if(cmp_no_case_c(head->c_item->c_tbl, c_in)) return;
+	};
+	head = add_chara_ctl_list(head);
+	update_chara_ctl_item_c(c_in, head->c_item);
+    return;
+};
+
+void del_chara_ctl_list_by_index(int index, struct chara_ctl_list *head){
+	head = find_c_ctl_list_item_by_index(index, head);
+	if(head != NULL) delete_chara_ctl_list(head);
+	return;
+};
+
+void set_from_chara_ctl_list_at_index(int index, struct chara_ctl_list *head, char *c_out){
+	head = find_c_ctl_list_item_by_index(index, head);
+	if(head != NULL) set_from_chara_ctl_item_c(head->c_item, c_out);
+	return;
+};
+
+
+void del_chara_ctl_list_by_c_tbl(char *ref, struct chara_ctl_list *head){
+	head = find_c_ctl_list_item_by_c_tbl(ref, head);
+	if(head != NULL) delete_chara_ctl_list(head);
+	return;
+};

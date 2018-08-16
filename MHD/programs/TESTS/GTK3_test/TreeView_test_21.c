@@ -26,12 +26,10 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	
 	
 	fields_vws->used_tree_view = gtk_tree_view_new();
-	create_field_tree_view(fields_vws->all_fld_tbl, fields_vws);
-	/* ウィンドウ作成 */
-	
+	create_field_tree_view(fields_vws);
 	fields_vws->unused_field_tree_view = gtk_tree_view_new();
-	create_unused_field_tree_view(fields_vws->all_fld_tbl, fields_vws);
-
+	create_unused_field_tree_view(fields_vws);
+	
     fields_vws->scalar_label_view = gtk_tree_view_new();
     fields_vws->vector_label_view = gtk_tree_view_new();
     fields_vws->sym_tensor_label_view = gtk_tree_view_new();
@@ -40,6 +38,7 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
     create_direction_tree_views(fields_vws);
 	
 	
+	/* ウィンドウ作成 */
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	title = g_strdup_printf("GtkTreeModelSort #%d", ++window_id);
 	gtk_window_set_title(GTK_WINDOW(window), title);

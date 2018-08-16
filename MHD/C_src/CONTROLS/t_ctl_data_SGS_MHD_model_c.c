@@ -7,9 +7,6 @@
 
 #include "t_ctl_data_SGS_MHD_model_c.h"
 
-#define NLBL_MHD_MODEL_CTL  15
-#define NLBL_MHD_CONTROL_CTL  15
-
 const char label_mhd_model_ctl[NLBL_MHD_MODEL_CTL][KCHARA_C] = {
     /*[ 0]*/    {"phys_values_ctl"},
     /*[ 1]*/    {"time_evolution_ctl"},

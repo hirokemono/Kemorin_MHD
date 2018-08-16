@@ -220,60 +220,18 @@ static void add_field_to_ctl(struct all_field_ctl_c *all_fld_tbl,
 static void delete_field_in_ctl(struct all_field_ctl_c *all_fld_tbl,
 			struct chara_int2_ctl_list *field_list_head){
 	set_no_use_all_field_ctl_c(all_fld_tbl);
-	
-	field_list_head = field_list_head->_next;
-	while (field_list_head != NULL){
-		if(cmp_no_case_c(field_list_head->ci2_item->c_tbl, all_fld_tbl->field_name)){
-			delete_chara_int2_ctl_list(field_list_head);
-			break;
-		};
-		field_list_head = field_list_head->_next;
-	};
+	del_chara_int2_ctl_list_by_c_tbl(all_fld_tbl->field_name, field_list_head);
 	return;
 }
 
 static void update_field_flag_in_ctl(struct all_field_ctl_c *all_fld_tbl, 
 			struct chara_int2_ctl_list *field_list_head){
+	field_list_head = find_ci2_ctl_list_item_by_c_tbl(all_fld_tbl->field_name, field_list_head);
 	
-	field_list_head = field_list_head->_next;
-	while (field_list_head != NULL){
-		if(cmp_no_case_c(field_list_head->ci2_item->c_tbl, all_fld_tbl->field_name)){
-			field_list_head->ci2_item->i_data[0] = all_fld_tbl->iflag_viz;
-			field_list_head->ci2_item->i_data[1] = all_fld_tbl->iflag_monitor;
-			break;
-		};
-		field_list_head = field_list_head->_next;
-	};
+	field_list_head->ci2_item->i_data[0] = all_fld_tbl->iflag_viz;
+	field_list_head->ci2_item->i_data[1] = all_fld_tbl->iflag_monitor;
 	return;
 }
-
-
-static void delete_quad_field_list_from_ctl(struct all_field_ctl_c *all_fld_tbl, 
-			struct chara_ctl_list *quad_phys_head){
-	
-	quad_phys_head = quad_phys_head->_next;
-	while (quad_phys_head != NULL){
-		if(cmp_no_case_c(quad_phys_head->c_item->c_tbl, all_fld_tbl->field_name)){
-			delete_chara_ctl_list(quad_phys_head);
-			break;
-		};
-		quad_phys_head = quad_phys_head->_next;
-    };
-	return;
-};
-
-static void append_quad_field_list_to_ctl(struct all_field_ctl_c *all_fld_tbl, 
-			struct chara_ctl_list *quad_phys_head){
-	int i;
-	
-	for (i=0;i<count_chara_ctl_list(quad_phys_head);i++){
-		quad_phys_head = quad_phys_head->_next;
-		if(cmp_no_case_c(quad_phys_head->c_item->c_tbl, all_fld_tbl->field_name)) return;
-	};
-	quad_phys_head = add_chara_ctl_list(quad_phys_head);
-	sprintf(quad_phys_head->c_item->c_tbl, "%s", all_fld_tbl->field_name);
-	return;
-};
 
 
 static void load_field_from_ctl(struct chara_int2_ctl_list *field_list_head, 
@@ -381,7 +339,7 @@ void add_field_wqflag_to_ctl(struct all_field_ctl_c *all_fld_tbl,
 void delete_field_wqflag_in_ctl(struct all_field_ctl_c *all_fld_tbl,
 			struct field_ctl_c *fld_ctl){
 	set_no_use_all_field_ctl_c(all_fld_tbl);
-	delete_quad_field_list_from_ctl(all_fld_tbl, &fld_ctl->quad_phys_list);
+	del_chara_ctl_list_by_c_tbl(all_fld_tbl->field_name, &fld_ctl->quad_phys_list);
 	delete_field_in_ctl(all_fld_tbl, &fld_ctl->field_list);
 	return;
 }
@@ -392,9 +350,9 @@ void update_field_flag_wqflag_in_ctl(struct all_field_ctl_c *all_fld_tbl,
     update_field_flag_in_ctl(all_fld_tbl, &fld_ctl->field_list);
 	
 	if(all_fld_tbl->iflag_quad == 0){
-		delete_quad_field_list_from_ctl(all_fld_tbl, &fld_ctl->quad_phys_list);
+		del_chara_ctl_list_by_c_tbl(all_fld_tbl->field_name, &fld_ctl->quad_phys_list);
 	} else {
-		append_quad_field_list_to_ctl(all_fld_tbl, &fld_ctl->quad_phys_list);
+		append_chara_ctl_list(all_fld_tbl->field_name, &fld_ctl->quad_phys_list);
 	} 
 	
 	return;

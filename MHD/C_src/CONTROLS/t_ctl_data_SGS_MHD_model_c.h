@@ -24,6 +24,9 @@
 #include "t_ctl_data_4_time_steps_c.h"
 #include "t_ctl_data_mhd_evo_scheme_c.h"
 
+#define NLBL_MHD_MODEL_CTL  15
+#define NLBL_MHD_CONTROL_CTL  15
+
 struct mhd_model_control_c{
 	int maxlen;
 	

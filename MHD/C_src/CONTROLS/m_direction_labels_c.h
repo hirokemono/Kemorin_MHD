@@ -18,11 +18,22 @@
 #define NUM_XYZ_FLAG      3
 #define NTERM_PLANE       10
 
+#define NUM_TOTAL_FORCE 10
+#define NUM_BASIC_FORCE  4
+#define NUM_DEFAULT_COEF_DEF  6
+#define NUM_GRAVITY_DEF  3
+
 #define NCHARA_FLAG 30
 
 struct direction_flag_def{
 	char flag_name[NCHARA_FLAG];
 	char flag_math[KCHARA_C];
+};
+
+struct constant_flag_def{
+    char flag_name[NCHARA_FLAG];
+    char flag_math[KCHARA_C];
+    double value;
 };
 
 
@@ -32,6 +43,10 @@ extern const struct direction_flag_def sym_tensor_flags[NUM_SYM_TENSOR_FLAG];
 extern const struct direction_flag_def xyz_vector_flags[NUM_XYZ_FLAG];
 extern const struct direction_flag_def surface_equation_flags[NTERM_PLANE];
 
+extern const struct direction_flag_def force_flag_def[NUM_TOTAL_FORCE];
+extern const struct constant_flag_def default_coefs_def[NUM_DEFAULT_COEF_DEF];
+extern const struct direction_flag_def gravity_type_def[NUM_GRAVITY_DEF];
+
 /* prototypes */
 
 void get_scalar_flags(char *name, char *math);
@@ -39,5 +54,10 @@ void get_vector_flags(int index, char *name, char *math);
 void get_sym_tensor_flags(int index, char *name, char *math);
 void get_vector_direction_flags(int index, char *name, char *math);
 void get_surface_equation_flags(int index, char *name, char *math);
+
+void get_force_flag(int index, char *name, char *math);
+void get_basic_force_flag(int index, char *name, char *math);
+void get_default_const_flag(int index, char *name, char *math, double *value);
+void get_gravity_flag(int index, char *name, char *math);
 
 #endif /* m_direction_labels_c_h_ */

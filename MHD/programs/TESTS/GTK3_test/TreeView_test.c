@@ -1,5 +1,5 @@
 
-#include "control_panel_4_field_GTK.h"
+#include "control_panel_4_dimless_GTK.h"
 #include "t_SGS_MHD_control_c.h"
 
 struct SGS_MHD_control_c *mhd_ctl;
@@ -16,7 +16,7 @@ static void cb_close_window(GtkButton *button, gpointer user_data){
 
 static void create_tree_view_window(GtkButton *button, gpointer user_data)
 {
-	struct field_views *fields_vws = (struct field_views *) user_data;
+	struct dimless_views *dless_vws = (struct dimless_views *) user_data;
 	
 	static gint window_id = 0;
 	GtkWidget *window;
@@ -25,19 +25,12 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	gchar *title;
 	
 	
-	fields_vws->used_tree_view = gtk_tree_view_new();
-	create_field_tree_view(fields_vws->all_fld_tbl, fields_vws);
+	dless_vws->dimless_tree_view = gtk_tree_view_new();
+	init_dimless_tree_view(dless_vws);
 	/* ウィンドウ作成 */
-	
-	fields_vws->unused_field_tree_view = gtk_tree_view_new();
-	create_unused_field_tree_view(fields_vws->all_fld_tbl, fields_vws);
 
-    fields_vws->scalar_label_view = gtk_tree_view_new();
-    fields_vws->vector_label_view = gtk_tree_view_new();
-    fields_vws->sym_tensor_label_view = gtk_tree_view_new();
-    fields_vws->xyz_dir_label_view = gtk_tree_view_new();
-    fields_vws->surface_eq_view = gtk_tree_view_new();
-    create_direction_tree_views(fields_vws);
+    dless_vws->default_dless_view = gtk_tree_view_new();
+    create_used_dimless_tree_views(dless_vws);
 	
 	
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -53,9 +46,9 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	g_signal_connect(G_OBJECT(button), "clicked", 
 				G_CALLBACK(cb_close_window), window);
 	
-	add_field_selection_box(fields_vws, vbox);
+	add_dimless_selection_box(dless_vws, vbox);
 	
-	add_field_combobox_vbox(fields_vws, vbox);
+	add_dimless_combobox_vbox(dless_vws, vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	
 	
@@ -67,7 +60,7 @@ int main(int argc, char **argv)
 {
 	GtkWidget *hbox;
 	GtkWidget *button;
-	struct field_views *fields_vws;
+	struct dimless_views *dless_vws;
 
 	srand((unsigned)time(NULL));
 
@@ -75,8 +68,8 @@ int main(int argc, char **argv)
 	alloc_SGS_MHD_control_c(mhd_ctl);
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
 	
-	fields_vws = (struct field_views *) malloc(sizeof(struct field_views));
-	init_field_views_GTK(mhd_ctl->model_ctl->fld_ctl, fields_vws);
+	dless_vws = (struct dimless_views *) malloc(sizeof(struct dimless_views));
+	init_dimless_views_GTK(mhd_ctl->model_ctl, dless_vws);
 	
 	gtk_init(&argc, &argv);
 
@@ -87,7 +80,7 @@ int main(int argc, char **argv)
 	hbox = gtk_hbox_new(TRUE, 10);
 
 	button = gtk_button_new_with_label("Create Window");
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(create_tree_view_window), fields_vws);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(create_tree_view_window), dless_vws);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 
 	gtk_container_add(GTK_CONTAINER(main_window), hbox);

@@ -77,66 +77,112 @@ const struct direction_flag_def surface_equation_flags[NTERM_PLANE] = {
 			{"Const", "$$  C  $$"}
 };
 
-void get_scalar_flags(char *name, char *math){
+const struct direction_flag_def force_flag_def[NUM_TOTAL_FORCE] = {
+			{"Thermal_buoyancy", "$$  -\\alpha g T   $$"},
+			{"Composite_buoyancy", "$$  -\\alpha g C  $$"},
+			{"Coriolis", "$$  (- \\Omega \\times \bvec{u})  $$"},
+			{"Lorentz", "$$  \\bvec{J} \\times \\bvec{B}  $$"},
+			
+			{"Thermal_buoyancy_ele", "$$  -\\alpha g T  $$"},
+			{"Composite_buoyancy_ele", "$$  -\\alpha g C  $$"},
+			
+			{"Coriolis_node", "$$  (- \\Omega \\times \bvec{u})  $$"},
+			{"Coriolis_imp", "$$  (- \\Omega \\times \bvec{u})  $$"},
+			{"Coriolis_node_imp", "$$  (- \\Omega \\times \bvec{u})  $$"},
+			
+			{"Lorentz_full", "$$  \\bvec{J} \\times \\bvec{B}  $$"}
+};
+
+const struct constant_flag_def default_coefs_def[NUM_DEFAULT_COEF_DEF] = {
+			{"New_number", "$$ ...  $$", 1.0},
+			
+			{"Zero", "$$  0.0  $$", 00.},
+			{"One", "$$  1.0  $$", 1.0},
+			{"Two", "$$  2.0  $$", 2.0},
+			
+			{"Radial_parameter", "$$  1 / r_{o}  $$", 1.0},
+			{"Radial_35", "$$  13 / 20  $$", 0.65}
+};
+
+const struct direction_flag_def gravity_type_def[NUM_GRAVITY_DEF] = {
+			{"radial", "$$  -g_{0} \\bvec{r}  $$"},
+			{"constant_radial", "$$  -g_{0} \\hat{r}  $$"},
+			{"constant", "$$  \\bvec{g}  $$"}
+};
+
+static void get_flags(struct direction_flag_def flags, char *name, char *math){
 	int j;
 	
-	for (j = 0; j < NUM_SCALAR_FLAG;j++) {
-		name[j] = scalar_flags[0].flag_name[j];
+	for (j = 0; j < NCHARA_FLAG;j++) {
+		name[j] = flags.flag_name[j];
 	};
 	for (j = 0; j < KCHARA_C;j++) {
-		math[j] = scalar_flags[0].flag_math[j];
+		math[j] = flags.flag_math[j];
 	};
+    return;
+};
+
+static void get_constant_flags(struct constant_flag_def flags, 
+                               char *name, char *math, double *value){
+    int j;
+    
+    for (j = 0; j < NCHARA_FLAG;j++) {
+        name[j] = flags.flag_name[j];
+    };
+    for (j = 0; j < KCHARA_C;j++) {
+        math[j] = flags.flag_math[j];
+    };
+    *value = flags.value;
+    return;
+};
+
+void get_scalar_flags(char *name, char *math){
+	get_flags(scalar_flags[0], name, math);
     return;
 };
 
 void get_vector_flags(int index, char *name, char *math){
-	int j;
-	
 	if(index < -1 || index >= NUM_VECTOR_FLAG) return;
-	for (j = 0; j < NCHARA_FLAG;j++) {
-		name[j] = vector_flags[index].flag_name[j];
-	};
-	for (j = 0; j < KCHARA_C;j++) {
-		math[j] = vector_flags[index].flag_math[j];
-	};
+	get_flags(vector_flags[index], name, math);
     return;
 };
 
 void get_sym_tensor_flags(int index, char *name, char *math){
-	int j;
-	
 	if(index < -1 || index >= NUM_SYM_TENSOR_FLAG) return;
-	for (j = 0; j < NCHARA_FLAG;j++) {
-		name[j] = sym_tensor_flags[index].flag_name[j];
-	};
-	for (j = 0; j < KCHARA_C;j++) {
-		math[j] = sym_tensor_flags[index].flag_math[j];
-	};
+	get_flags(sym_tensor_flags[index], name, math);
     return;
 };
 
 void get_vector_direction_flags(int index, char *name, char *math){
-	int j;
-	
 	if(index < -1 || index >= NUM_XYZ_FLAG) return;
-	for (j = 0; j < NCHARA_FLAG;j++) {
-		name[j] = xyz_vector_flags[index].flag_name[j];
-	};
-	for (j = 0; j < KCHARA_C;j++) {
-		math[j] = xyz_vector_flags[index].flag_math[j];
-	};
+	get_flags(xyz_vector_flags[index], name, math);
     return;
 };
 
 void get_surface_equation_flags(int index, char *name, char *math){
-	int j;
-	
 	if(index < -1 || index >= NTERM_PLANE) return;
-	for (j = 0; j < NCHARA_FLAG;j++) {
-		name[j] = surface_equation_flags[index].flag_name[j];
-	};
-	for (j = 0; j < KCHARA_C;j++) {
-		math[j] = surface_equation_flags[index].flag_math[j];
-	};
+	get_flags(surface_equation_flags[index], name, math);
     return;
 };
+
+void get_force_flag(int index, char *name, char *math){
+	if(index < -1 || index >= NUM_TOTAL_FORCE) return;
+	get_flags(force_flag_def[index], name, math);
+    return;
+};
+void get_basic_force_flag(int index, char *name, char *math){
+	if(index < -1 || index >= NUM_BASIC_FORCE) return;
+	get_flags(force_flag_def[index], name, math);
+    return;
+};
+void get_default_const_flag(int index, char *name, char *math, double *value){
+	if(index < -1 || index >= NUM_DEFAULT_COEF_DEF) return;
+	get_constant_flags(default_coefs_def[index], name, math, value);
+    return;
+};
+void get_gravity_flag(int index, char *name, char *math){
+	if(index < -1 || index >= NUM_GRAVITY_DEF) return;
+	get_flags(gravity_type_def[index], name, math);
+    return;
+};
+

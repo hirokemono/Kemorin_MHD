@@ -141,7 +141,7 @@ static void transfer_model_data(int iflag_if_add, struct all_field_ctl_c **all_f
 		gtk_list_store_remove(GTK_LIST_STORE(child_model_to_del), &iter);
 		
 		/* Add */
-		append_model_data(index_field, all_fld_tbl, child_model_to_add);
+		append_model_data(index_field, all_fld_tbl[index_field], child_model_to_add);
 		
 		gtk_tree_path_free(tree_path);
 		gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
@@ -170,7 +170,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 	transfer_model_data(0, fields_vws->all_fld_tbl, fields_vws->fld_ctl_gtk,
 				fields_vws->used_tree_view, fields_vws->unused_field_tree_view);
     /*
-    check_field_ctl_listfields_vws->fld_ctl);
+    check_field_ctl_list(fields_vws->fld_ctl_gtk);
      */
 }
 
