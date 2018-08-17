@@ -53,7 +53,7 @@ void set_from_int2_ctl_item_c(struct int2_ctl_item *i2_item,
 			int *i1_out, int *i2_out){
 	if(i2_item->iflag == 0) return;
 	*i1_out = i2_item->i_data[0];
-	*i1_out = i2_item->i_data[1];
+	*i2_out = i2_item->i_data[1];
     return;
 };
 

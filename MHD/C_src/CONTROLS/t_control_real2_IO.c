@@ -52,7 +52,7 @@ void set_from_real2_ctl_item_c(struct real2_ctl_item *r2_item,
                               double *r1_out, double *r2_out){
 	if(r2_item->iflag == 0) return;
 	*r1_out = r2_item->r_data[0];
-	*r1_out = r2_item->r_data[1];
+	*r2_out = r2_item->r_data[1];
     return;
 };
 

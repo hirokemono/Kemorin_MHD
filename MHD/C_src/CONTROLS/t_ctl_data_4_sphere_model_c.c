@@ -166,7 +166,8 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	init_int_ctl_item_c(spctl_c->ngrid_elevation_c);
 	init_int_ctl_item_c(spctl_c->ngrid_azimuth_c);
 	
-	init_int_real_ctl_list(&spctl_c->radius_list);
+    spctl_c->radius_list = (struct int_real_clist *) malloc(sizeof(struct int_real_clist));
+	init_int_real_clist(spctl_c->radius_list);
     
     spctl_c->radial_grp_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
 	init_chara_int_clist(spctl_c->radial_grp_list);
@@ -215,7 +216,8 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	free(spctl_c->ngrid_elevation_c);
 	free(spctl_c->ngrid_azimuth_c);
 	
-	clear_int_real_ctl_list(&spctl_c->radius_list);
+	clear_int_real_clist(spctl_c->radius_list);
+    free(spctl_c->radius_list);
 	clear_chara_int_clist(spctl_c->radial_grp_list);
     free(spctl_c->radial_grp_list);
 	
@@ -256,7 +258,7 @@ int read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[ 1], spctl_c->ngrid_elevation_c);
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[ 2], spctl_c->ngrid_azimuth_c);
 		
-		read_int_real_ctl_list(fp, buf, label_sphere_data_ctl[ 0], &spctl_c->radius_list);
+		read_int_real_clist(fp, buf, label_sphere_data_ctl[ 0], spctl_c->radius_list);
 		
 		read_chara_ctl_item_c(buf, label_sphere_data_ctl[ 7], spctl_c->radial_grid_type_c);
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[ 8], spctl_c->num_fluid_grid_c);
@@ -292,7 +294,7 @@ int write_sphere_data_ctl_c(FILE *fp, int level,
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 1], spctl_c->ngrid_elevation_c);
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 2], spctl_c->ngrid_azimuth_c);
 	
-	write_int_real_ctl_list(fp, level, label_sphere_data_ctl[ 0], &spctl_c->radius_list);
+	write_int_real_clist(fp, level, label_sphere_data_ctl[ 0], spctl_c->radius_list);
 	
 	write_chara_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 7], spctl_c->radial_grid_type_c);
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[ 8], spctl_c->num_fluid_grid_c);

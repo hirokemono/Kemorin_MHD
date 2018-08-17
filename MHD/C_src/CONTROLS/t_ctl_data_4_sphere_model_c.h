@@ -44,7 +44,7 @@ struct sphere_data_ctl_c{
 	struct int_ctl_item *ngrid_elevation_c;
 	struct int_ctl_item *ngrid_azimuth_c;
 	
-	struct int_real_ctl_list radius_list;
+	struct int_real_clist  *radius_list;
 	struct chara_int_clist *radial_grp_list;
 	
 	struct chara_ctl_item *radial_grid_type_c;

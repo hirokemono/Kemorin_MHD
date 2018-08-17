@@ -30,6 +30,10 @@ struct int_real_ctl_list{
     struct int_real_ctl_list *_next;
 };
 
+struct int_real_clist{
+	struct int_real_ctl_list ir_item_head;
+};
+
 
 /* prototypes */
 
@@ -39,16 +43,40 @@ int read_int_real_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_int_real_ctl_item_c(FILE *fp, int level, int maxlen, 
 			const char *label, struct int_real_ctl_item *ir_item);
 
-void init_int_real_ctl_list(struct int_real_ctl_list *head);
-void clear_int_real_ctl_list(struct int_real_ctl_list *head);
-struct int_real_ctl_list *add_int_real_ctl_list(struct int_real_ctl_list *current);
-void delete_int_real_ctl_list(struct int_real_ctl_list *current);
-int count_int_real_ctl_list(struct int_real_ctl_list *head);
-struct int_real_ctl_list *set_int_real_ctl_list_pointer(int index, struct int_real_ctl_list *head);
+void update_int_real_ctl_item_c(int i1_in, double r2_in,  
+			struct int_real_ctl_item *ir_item);
+void set_from_int_real_ctl_item_c(struct int_real_ctl_item *ir_item,
+			int *i1_out, double *r2_out);
 
-int read_int_real_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
-                      struct int_real_ctl_list *head);
-int write_int_real_ctl_list(FILE *fp, int level, const char *label, 
-                       struct int_real_ctl_list *head);
+
+
+void init_int_real_clist(struct int_real_clist *ir_clst);
+void clear_int_real_clist(struct int_real_clist *ir_clst);
+int count_int_real_clist(struct int_real_clist *ir_clst);
+
+int read_int_real_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+                      struct int_real_clist *ir_clst);
+int write_int_real_clist(FILE *fp, int level, const char *label, 
+                       struct int_real_clist *ir_clst);
+
+
+void append_int_real_clist(int i1_in, double r2_in, struct int_real_clist *ir_clst);
+void del_int_real_clist_by_index(int index, struct int_real_clist *ir_clst);
+void update_int_real_clist_by_index(int index, int i1_in, double r2_in,
+			struct int_real_clist *ir_clst);
+void set_from_int_real_clist_at_index(int index, struct int_real_clist *ir_clst,
+			int *i1_out, double *r2_out);
+
+void del_int_real_clist_by_c_tbl(int iref_1, double ref_2,
+			struct int_real_clist *ir_clst);
+void update_int_real_clist_by_c_tbl(int iref_1, double ref_2, 
+			int i1_in, double r2_in, struct int_real_clist *ir_clst);
+void set_from_int_real_clist_at_c_tbl(int iref_1, double ref_2,
+			struct int_real_clist *ir_clst, int *i1_out, double *r2_out);
+
+void copy_from_int_real_clist(struct int_real_clist *ir_clst, int num,
+			int *iv1, double *v2);
+void copy_to_int_real_clist(int num, int *iv1, double *v2,
+			struct int_real_clist *ir_clst);
 
 #endif /* t_control_int_real_IO_h_ */
