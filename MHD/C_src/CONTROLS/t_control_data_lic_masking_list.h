@@ -22,7 +22,7 @@ struct lic_masking_ctl_c{
 	struct chara_ctl_item *field_name_ctl;
 	struct chara_ctl_item *component_ctl;
 	
-	struct real2_ctl_list mask_range_list;
+	struct real2_clist *mask_range_list;
 };
 
 struct lic_masking_ctl_list{

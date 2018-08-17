@@ -209,10 +209,8 @@ static void add_field_to_ctl(struct all_field_ctl_c *all_fld_tbl,
 		field_list_head = field_list_head->_next;
 	};
 	field_list_head = add_chara_int2_ctl_list(field_list_head);
-	sprintf(field_list_head->ci2_item->c_tbl, "%s", all_fld_tbl->field_name);
-	field_list_head->ci2_item->i_data[0] = 0;
-	field_list_head->ci2_item->i_data[1] = 0;
-	
+	update_chara_int2_ctl_item_c(all_fld_tbl->field_name, 0, 0,  
+				field_list_head->ci2_item);
 	return;
 }
 
@@ -262,10 +260,9 @@ static void load_field_to_ctl(struct all_field_ctl_c **all_fld_tbl,
 	for (i=0;i<NUM_FIELD;i++){
 		if(all_fld_tbl[i]->iflag_use > 0){
 			field_list_head = add_chara_int2_ctl_list(field_list_head);
-			
-			sprintf(field_list_head->ci2_item->c_tbl, "%s", all_fld_tbl[i]->field_name);
-			field_list_head->ci2_item->i_data[0] = all_fld_tbl[i]->iflag_viz;
-			field_list_head->ci2_item->i_data[1] = all_fld_tbl[i]->iflag_monitor;
+			update_chara_int2_ctl_item_c(all_fld_tbl[i]->field_name, 
+						all_fld_tbl[i]->iflag_viz, all_fld_tbl[i]->iflag_monitor, 
+						field_list_head->ci2_item);
 		};
 	};
 	return;

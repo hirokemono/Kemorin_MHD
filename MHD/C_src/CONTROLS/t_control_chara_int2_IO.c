@@ -209,7 +209,7 @@ int write_chara_int2_ctl_list(FILE *fp, int level, const char *label,
 };
 
 
-void append_chara_int2_ctl_list(char *c_in, int i1_in, int i2_in,
+static void append_chara_int2_ctl_list(char *c_in, int i1_in, int i2_in,
                       struct chara_int2_ctl_list *head){
 	int num = count_chara_int2_ctl_list(head);
 	head = find_ci2_ctl_list_item_by_index(num, head);
@@ -218,20 +218,20 @@ void append_chara_int2_ctl_list(char *c_in, int i1_in, int i2_in,
     return;
 };
 
-void del_chara_int2_ctl_list_by_index(int index, struct chara_int2_ctl_list *head){
+static void del_chara_int2_ctl_list_by_index(int index, struct chara_int2_ctl_list *head){
 	head = find_ci2_ctl_list_item_by_index(index, head);
 	if(head != NULL) delete_chara_int2_ctl_list(head);
 	return;
 };
 
-void update_chara_int2_ctl_list_by_index(int index, char *c_in, int i1_in, int i2_in,
+static void update_chara_int2_ctl_list_by_index(int index, char *c_in, int i1_in, int i2_in,
 			struct chara_int2_ctl_list *head){
 	head = find_ci2_ctl_list_item_by_index(index, head);
 	if(head != NULL) update_chara_int2_ctl_item_c(c_in, i1_in, i2_in, head->ci2_item);
 	return;
 };
 
-void set_from_chara_int2_ctl_list_at_index(int index, struct chara_int2_ctl_list *head,
+static void set_from_chara_int2_ctl_list_at_index(int index, struct chara_int2_ctl_list *head,
 			char *c_out, int *i1_out, int *i2_out){
 	head = find_ci2_ctl_list_item_by_index(index, head);
 	if(head != NULL) set_from_chara_int2_ctl_item_c(head->ci2_item, c_out, i1_out, i2_out);

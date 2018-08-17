@@ -95,7 +95,8 @@ void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	cmap_c->data_mapping_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(cmap_c->data_mapping_ctl);
 	
-	init_real2_ctl_list(&cmap_c->colortbl_list);
+    cmap_c->colortbl_list = (struct real2_clist *) malloc(sizeof(struct real2_clist));
+	init_real2_clist(cmap_c->colortbl_list);
 	
 	cmap_c->opacity_style_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(cmap_c->opacity_style_ctl);
@@ -103,7 +104,8 @@ void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	cmap_c->fix_opacity_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(cmap_c->fix_opacity_ctl);
 	
-	init_real2_ctl_list(&cmap_c->linear_opacity_list);
+    cmap_c->linear_opacity_list = (struct real2_clist *) malloc(sizeof(struct real2_clist));
+	init_real2_clist(cmap_c->linear_opacity_list);
 	init_real3_ctl_list(&cmap_c->step_opacity_list);
 	
 	cmap_c->range_min_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
@@ -131,13 +133,15 @@ void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	dealloc_chara_ctl_item_c(cmap_c->data_mapping_ctl);
 	free(cmap_c->data_mapping_ctl);
 	
-	clear_real2_ctl_list(&cmap_c->colortbl_list);
+	clear_real2_clist(cmap_c->colortbl_list);
+    free(cmap_c->colortbl_list);
 	
 	dealloc_chara_ctl_item_c(cmap_c->opacity_style_ctl);
 	free(cmap_c->opacity_style_ctl);
 	free(cmap_c->fix_opacity_ctl);
 	
-	clear_real2_ctl_list(&cmap_c->linear_opacity_list);
+	clear_real2_clist(cmap_c->linear_opacity_list);
+    free(cmap_c->linear_opacity_list);
 	clear_real3_ctl_list(&cmap_c->step_opacity_list);
 	
 	free(cmap_c->range_min_ctl);
@@ -162,12 +166,12 @@ int read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_chara_ctl_item_c(buf, label_colormap_ctl[ 5], cmap_c->data_mapping_ctl);
 		
-		read_real2_ctl_list(fp, buf, label_colormap_ctl[ 6], &cmap_c->colortbl_list);
+		read_real2_clist(fp, buf, label_colormap_ctl[ 6], cmap_c->colortbl_list);
 		
 		read_chara_ctl_item_c(buf, label_colormap_ctl[ 7], cmap_c->opacity_style_ctl);
 		read_real_ctl_item_c(buf, label_colormap_ctl[ 8], cmap_c->fix_opacity_ctl);
 		
-		read_real2_ctl_list(fp, buf, label_colormap_ctl[ 9], &cmap_c->linear_opacity_list);
+		read_real2_clist(fp, buf, label_colormap_ctl[ 9], cmap_c->linear_opacity_list);
 		read_real3_ctl_list(fp, buf, label_colormap_ctl[10], &cmap_c->step_opacity_list);
 		
 		read_real_ctl_item_c(buf, label_colormap_ctl[11], cmap_c->range_min_ctl);
@@ -189,13 +193,13 @@ int write_colormap_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_chara_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 5], cmap_c->data_mapping_ctl);
 	
-	write_real2_ctl_list(fp, level, label_colormap_ctl[ 6], &cmap_c->colortbl_list);
+	write_real2_clist(fp, level, label_colormap_ctl[ 6], cmap_c->colortbl_list);
 	
 	fprintf(fp, "!\n");
 	write_chara_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 7], cmap_c->opacity_style_ctl);
 	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 8], cmap_c->fix_opacity_ctl);
 	
-	write_real2_ctl_list(fp, level, label_colormap_ctl[ 9], &cmap_c->linear_opacity_list);
+	write_real2_clist(fp, level, label_colormap_ctl[ 9], cmap_c->linear_opacity_list);
 	write_real3_ctl_list(fp, level, label_colormap_ctl[10], &cmap_c->step_opacity_list);
 	
 	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[11], cmap_c->range_min_ctl);

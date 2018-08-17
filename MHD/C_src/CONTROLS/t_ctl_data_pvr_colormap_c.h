@@ -35,11 +35,11 @@ struct colormap_ctl_c{
 	struct chara_ctl_item *lic_opacity_comp_ctl;
 	
 	struct chara_ctl_item *data_mapping_ctl;
-	struct real2_ctl_list colortbl_list;
+	struct real2_clist *colortbl_list;
 	
 	struct chara_ctl_item *opacity_style_ctl;
 	struct real_ctl_item *fix_opacity_ctl;
-	struct real2_ctl_list linear_opacity_list;
+	struct real2_clist *linear_opacity_list;
 	struct real3_ctl_list step_opacity_list;
 	
 	struct real_ctl_item *range_min_ctl;

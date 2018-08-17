@@ -36,7 +36,8 @@ void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	alloc_chara_ctl_item_c(mask_ctl->field_name_ctl);
 	alloc_chara_ctl_item_c(mask_ctl->component_ctl);
 	
-	init_real2_ctl_list(&mask_ctl->mask_range_list);
+    mask_ctl->mask_range_list = (struct real2_clist *) malloc(sizeof(struct real2_clist));
+	init_real2_clist(mask_ctl->mask_range_list);
 	
 	return;
 };
@@ -48,7 +49,8 @@ void dealloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	free(mask_ctl->field_name_ctl);
 	free(mask_ctl->component_ctl);
 	
-	clear_real2_ctl_list(&mask_ctl->mask_range_list);
+	clear_real2_clist(mask_ctl->mask_range_list);
+    free(mask_ctl->mask_range_list);
 	
 	return;
 };
@@ -63,7 +65,7 @@ int read_lic_masking_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_ctl_item_c(buf, label_lic_masking_ctl[ 0], mask_ctl->field_name_ctl);
 		read_chara_ctl_item_c(buf, label_lic_masking_ctl[ 1], mask_ctl->component_ctl);
 		
-		read_real2_ctl_list(fp, buf, label_lic_masking_ctl[ 2], &mask_ctl->mask_range_list);
+		read_real2_clist(fp, buf, label_lic_masking_ctl[ 2], mask_ctl->mask_range_list);
 	};
 	return 1;
 };
@@ -76,7 +78,7 @@ int write_lic_masking_ctl_c(FILE *fp, int level, const char *label,
 	write_chara_ctl_item_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl[ 0], mask_ctl->field_name_ctl);
 	write_chara_ctl_item_c(fp, level, mask_ctl->maxlen, label_lic_masking_ctl[ 1], mask_ctl->component_ctl);
 	
-	write_real2_ctl_list(fp, level, label_lic_masking_ctl[ 2], &mask_ctl->mask_range_list);
+	write_real2_clist(fp, level, label_lic_masking_ctl[ 2], mask_ctl->mask_range_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
