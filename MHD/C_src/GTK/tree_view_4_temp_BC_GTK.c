@@ -20,7 +20,7 @@ static void thermal_bc_position_edited_cb(GtkCellRendererText *cell, gchar *path
     struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
 	
 	c2r_tree_2nd_text_edited(path_str, new_text, bc_vws->bc_tree_view, bc_vws->bc_T_gtk);
-	write_c2r_ctl_list(stdout, 0, "bounday location changed", bc_vws->bc_T_gtk);
+	write_c2r_clist(stdout, 0, "bounday location changed", bc_vws->bc_T_gtk);
  
 }
 static void thermal_bc_type_edited_cb(GtkCellRendererText *cell, gchar *path_str, 
@@ -29,7 +29,7 @@ static void thermal_bc_type_edited_cb(GtkCellRendererText *cell, gchar *path_str
     struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
 	
 	c2r_tree_1st_text_edited(path_str, new_text, bc_vws->bc_tree_view, bc_vws->bc_T_gtk);
-	write_c2r_ctl_list(stdout, 0, "BC type changed", bc_vws->bc_T_gtk);
+	write_c2r_clist(stdout, 0, "BC type changed", bc_vws->bc_T_gtk);
  
 }
 static void thermal_bc_value_edited_cb(GtkCellRendererText *cell, gchar *path_str,
@@ -38,7 +38,7 @@ static void thermal_bc_value_edited_cb(GtkCellRendererText *cell, gchar *path_st
     struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
 	
 	c2r_tree_value_edited(path_str, new_text, bc_vws->bc_tree_view, bc_vws->bc_T_gtk);
-    write_c2r_ctl_list(stdout, 0, "buoyancy changed", bc_vws->bc_T_gtk);
+    write_c2r_clist(stdout, 0, "buoyancy changed", bc_vws->bc_T_gtk);
  
 }
 
@@ -48,7 +48,7 @@ static void cb_delete_thermal_buo_coef_new(GtkButton *button, gpointer user_data
     struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
     
     delete_c2r_list_items_GTK(bc_vws->bc_tree_view, bc_vws->bc_T_gtk);
-    write_c2r_ctl_list(stdout, 0, "buoyancy coeffient deleted", bc_vws->bc_T_gtk);
+    write_c2r_clist(stdout, 0, "buoyancy coeffient deleted", bc_vws->bc_T_gtk);
     
 }
 
@@ -64,7 +64,7 @@ static void cb_add_thermal_bc_by_list(GtkComboBox *combobox_add, gpointer user_d
     GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
     bc_vws->index_bc = add_c2r_list_from_combobox_GTK_w_one(bc_vws->index_bc, path, model_comp, 
                                                             bc_vws->bc_tree_view, bc_vws->bc_T_gtk);
-    write_c2r_ctl_list(stdout, 0, "buoyancy coeffient added", bc_vws->bc_T_gtk);
+    write_c2r_clist(stdout, 0, "buoyancy coeffient added", bc_vws->bc_T_gtk);
     return;
 }
 
@@ -74,7 +74,7 @@ static void cb_add_thermal_bc(GtkButton *button, gpointer user_data)
     
     bc_vws->index_bc = add_c2r_list_by_bottun_GTK(bc_vws->index_bc, 
                                                   bc_vws->bc_tree_view, bc_vws->bc_T_gtk);
-    write_c2r_ctl_list(stdout, 0, "buoyancy coeffient added", bc_vws->bc_T_gtk);
+    write_c2r_clist(stdout, 0, "buoyancy coeffient added", bc_vws->bc_T_gtk);
     return;
 }
 
