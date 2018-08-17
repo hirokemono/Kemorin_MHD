@@ -38,24 +38,24 @@ int write_integer_ctl_item_c(FILE *fp, int level, int maxlen,
     return level;
 };
 
-int copy_from_int_ctl_item(struct int_ctl_item *i_item){
-	if(i_item->iflag == 0) return 0.0;
-	return i_item->i_data;
-};
-void copy_to_int_ctl_item(int index, struct int_ctl_item *i_item){
+void update_int_ctl_item_c(int index, struct int_ctl_item *i_item){
 	i_item->iflag = 1;
 	i_item->i_data = index;
 	return;
 };
+int set_from_int_ctl_item_c(struct int_ctl_item *i_item){
+	if(i_item->iflag == 0) return 0.0;
+	return i_item->i_data;
+};
 
 
-void init_int_ctl_list(struct int_ctl_list *head){
+static void init_int_ctl_list(struct int_ctl_list *head){
     head->_prev = NULL;
     head->_next = NULL;
     return;
 };
 
-void clear_int_ctl_list(struct int_ctl_list *head){
+static void clear_int_ctl_list(struct int_ctl_list *head){
     head = head->_next;
     while (head != NULL) {
         init_int_ctl_item_c(head->i_item);
@@ -66,7 +66,7 @@ void clear_int_ctl_list(struct int_ctl_list *head){
     return;
 };
 
-struct int_ctl_list *add_int_ctl_list(struct int_ctl_list *current){
+static struct int_ctl_list *add_int_ctl_list(struct int_ctl_list *current){
     struct int_ctl_list *added;
     struct int_ctl_list *old_next;
     
@@ -90,7 +90,7 @@ struct int_ctl_list *add_int_ctl_list(struct int_ctl_list *current){
     return added;
 };
 
-void delete_int_ctl_list(struct int_ctl_list *current){
+static void delete_int_ctl_list(struct int_ctl_list *current){
     struct int_ctl_list *old_prev = current->_prev;
     struct int_ctl_list *old_next = current->_next;
     
@@ -103,7 +103,7 @@ void delete_int_ctl_list(struct int_ctl_list *current){
     return;
 };
 
-int count_int_ctl_list(struct int_ctl_list *head){
+static int count_int_ctl_list(struct int_ctl_list *head){
     int num = 0;
     head = head->_next;
     while (head != NULL){
@@ -113,7 +113,7 @@ int count_int_ctl_list(struct int_ctl_list *head){
     return num;
 };
 
-struct int_ctl_list *set_int_ctl_list_pointer(int index, struct int_ctl_list *head){
+static struct int_ctl_list *find_i_ctl_list_item_by_index(int index, struct int_ctl_list *head){
     int num = 0;
     head = head->_next;
     while (head != NULL){
@@ -124,8 +124,18 @@ struct int_ctl_list *set_int_ctl_list_pointer(int index, struct int_ctl_list *he
     if(head == NULL) printf("array does not exist at index %d of %d.\n", index, num);
     return head;
 };
+static struct int_ctl_list *find_i_ctl_list_item_by_value(int iref,
+			struct int_ctl_list *head){
+    head = head->_next;
+    while (head != NULL){
+		if(head->i_item->i_data == iref) break;
+        head = head->_next;
+    };
+    if(head == NULL) printf("array item %d does not exist.\n", iref);
+    return head;
+};
 
-int read_int_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
+static int read_int_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct int_ctl_list *head){
     int iflag = 0;
     int icou = 0;
@@ -148,7 +158,7 @@ int read_int_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     return icou;
 };
 
-int write_int_ctl_list(FILE *fp, int level, const char *label, 
+static int write_int_ctl_list(FILE *fp, int level, const char *label, 
                        struct int_ctl_list *head){
     
     int num = count_int_ctl_list(head);
@@ -166,5 +176,136 @@ int write_int_ctl_list(FILE *fp, int level, const char *label,
     }
     level = write_end_array_flag_for_ctl_c(fp, level, label);
     return level;
+};
+
+
+void append_int_ctl_list(int i1_in, struct int_ctl_list *head){
+	int num = count_int_ctl_list(head);
+	head = find_i_ctl_list_item_by_index(num, head);
+	head = add_int_ctl_list(head);
+	update_int_ctl_item_c(i1_in, head->i_item);
+    return;
+};
+
+void del_int_ctl_list_by_index(int index, struct int_ctl_list *head){
+	head = find_i_ctl_list_item_by_index(index, head);
+	if(head != NULL) delete_int_ctl_list(head);
+	return;
+};
+
+void update_int_ctl_list_by_index(int index, int i1_in, struct int_ctl_list *head){
+	head = find_i_ctl_list_item_by_index(index, head);
+	if(head != NULL) update_int_ctl_item_c(i1_in, head->i_item);
+	return;
+};
+
+void set_from_int_ctl_list_at_index(int index, struct int_ctl_list *head, int *i1_out){
+	head = find_i_ctl_list_item_by_index(index, head);
+	if(head != NULL) *i1_out = set_from_int_ctl_item_c(head->i_item);
+	return;
+};
+
+
+void del_int_ctl_list_by_c_tbl(int iref, struct int_ctl_list *head){
+	head = find_i_ctl_list_item_by_value(iref, head);
+	if(head != NULL) delete_int_ctl_list(head);
+	return;
+};
+
+static void update_int_ctl_list_by_c_tbl(int iref,
+			int i1_in, struct int_ctl_list *head){
+	head = find_i_ctl_list_item_by_value(iref, head);
+	if(head != NULL) update_int_ctl_item_c(i1_in, head->i_item);
+	return;
+};
+
+static void set_from_int_ctl_list_at_c_tbl(int iref, struct int_ctl_list *head,
+			int *i1_out){
+	head = find_i_ctl_list_item_by_value(iref, head);
+	if(head != NULL) *i1_out = set_from_int_ctl_item_c(head->i_item);
+	return;
+};
+
+static void copy_from_int_ctl_list(struct int_ctl_list *head, int num, int *iv1){
+	int i;
+    head = head->_next;
+	for(i=0; i<num; i++){
+		if(head != NULL) break;
+        iv1[i] = set_from_int_ctl_item_c(head->i_item);
+	};
+	return;
+};
+static void copy_to_int_ctl_list(int num, int *iv1, struct int_ctl_list *head){
+	int i;
+	
+	for(i=0;i<num;i++){
+		head = add_int_ctl_list(head);
+		update_int_ctl_item_c(iv1[i], head->i_item);
+	};
+	return;
+};
+
+
+
+
+void init_int_clist(struct int_clist *i_clst){
+	init_int_ctl_list(&i_clst->i_item_head);
+	return;
+};
+
+void clear_int_clist(struct int_clist *i_clst){
+	clear_int_ctl_list(&i_clst->i_item_head);
+	return;
+};
+int count_int_clist(struct int_clist *i_clst){
+	return count_int_ctl_list(&i_clst->i_item_head);
+};
+
+int read_int_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+                      struct int_clist *i_clst){
+	return read_int_ctl_list(fp, buf, label, &i_clst->i_item_head);
+};
+int write_int_clist(FILE *fp, int level, const char *label, 
+                       struct int_clist *i_clst){
+	return write_int_ctl_list(fp, level, label, &i_clst->i_item_head);
+};
+
+void append_int_clist(int i1_in, struct int_clist *i_clst){
+	append_int_ctl_list(i1_in, &i_clst->i_item_head);
+	return;
+};
+void del_int_clist_by_index(int index, struct int_clist *i_clst){
+	del_int_ctl_list_by_index(index, &i_clst->i_item_head);
+	return;
+};
+void update_int_clist_by_index(int index, int i1_in, struct int_clist *i_clst){
+	update_int_ctl_list_by_index(index, i1_in, &i_clst->i_item_head);
+	return;
+};
+void set_from_int_clist_at_index(int index, struct int_clist *i_clst, int *i1_out){
+	set_from_int_ctl_list_at_index(index, &i_clst->i_item_head, i1_out);
+	return;
+};
+
+void del_int_clist_by_c_tbl(int iref, struct int_clist *i_clst){
+	del_int_ctl_list_by_c_tbl(iref, &i_clst->i_item_head);
+	return;
+};
+void update_int_clist_by_c_tbl(int iref, int i1_in, struct int_clist *i_clst){
+	update_int_ctl_list_by_c_tbl(iref, i1_in, &i_clst->i_item_head);
+	return;
+};
+void set_from_int_clist_at_c_tbl(int iref, struct int_clist *i_clst, int *i1_out){
+	set_from_int_ctl_list_at_c_tbl(iref, &i_clst->i_item_head, i1_out);
+	return;
+};
+
+void copy_from_int_clist(struct int_clist *i_clst, int num, int *iv1){
+	copy_from_int_ctl_list(&i_clst->i_item_head, num, iv1);
+	return;
+};
+void copy_to_int_clist(int num, int *iv1, struct int_clist *i_clst){
+	copy_to_int_ctl_list(num, iv1, &i_clst->i_item_head);
+	return;
 };
 

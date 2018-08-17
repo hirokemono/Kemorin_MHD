@@ -43,7 +43,7 @@ struct layering_ctl_c{
 	
 	struct chara_ctl_item *layering_grp_type_c;
 	struct chara_clist *layer_grp_name_list;
-	struct int_ctl_list igrp_stack_layer_list;
+	struct int_clist *igrp_stack_layer_list;
 	
 	struct int_ctl_item *num_layering_grp_c;
 	struct int_ctl_item *num_fl_layer_grp_c;

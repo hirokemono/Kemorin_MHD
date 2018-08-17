@@ -271,7 +271,8 @@ void alloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 	
     elayer_c->layer_grp_name_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(elayer_c->layer_grp_name_list);
-	init_int_ctl_list(&elayer_c->igrp_stack_layer_list);
+    elayer_c->igrp_stack_layer_list = (struct int_clist *) malloc(sizeof(struct int_clist));
+	init_int_clist(elayer_c->igrp_stack_layer_list);
 	
 	init_int_ctl_item_c(elayer_c->num_layering_grp_c);
 	init_int_ctl_item_c(elayer_c->num_fl_layer_grp_c);
@@ -289,7 +290,8 @@ void dealloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 	clear_chara_clist(elayer_c->layer_grp_name_list);
     free(elayer_c->layer_grp_name_list);
 	
-	clear_int_ctl_list(&elayer_c->igrp_stack_layer_list);
+	clear_int_clist(elayer_c->igrp_stack_layer_list);
+    free(elayer_c->igrp_stack_layer_list);
 	
 	free(elayer_c->layering_grp_type_c);
 	free(elayer_c->start_layering_grp_name_c);
@@ -311,7 +313,7 @@ int read_layering_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_ctl_item_c(buf, label_layering_ctl[ 0], elayer_c->layering_grp_type_c);
 		
 		read_chara_clist(fp, buf, label_layering_ctl[1], elayer_c->layer_grp_name_list);
-		read_int_ctl_list(fp, buf, label_layering_ctl[2], &elayer_c->igrp_stack_layer_list);
+		read_int_clist(fp, buf, label_layering_ctl[2], elayer_c->igrp_stack_layer_list);
 		
 		read_chara_ctl_item_c(buf, label_layering_ctl[ 4], elayer_c->start_layering_grp_name_c);
 		read_chara_ctl_item_c(buf, label_layering_ctl[ 6], elayer_c->start_fl_layer_grp_name_c);
@@ -330,7 +332,7 @@ int write_layering_ctl_c(FILE *fp, int level, const char *label, struct layering
 	
 	write_chara_clist(fp, level, label_layering_ctl[1], elayer_c->layer_grp_name_list);
 	
-	write_int_ctl_list(fp, level, label_layering_ctl[2], &elayer_c->igrp_stack_layer_list);
+	write_int_clist(fp, level, label_layering_ctl[2], elayer_c->igrp_stack_layer_list);
 	
 	write_integer_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 3], elayer_c->num_layering_grp_c);
 	write_chara_ctl_item_c(fp, level, elayer_c->maxlen, label_layering_ctl[ 4], elayer_c->start_layering_grp_name_c);
