@@ -95,7 +95,8 @@ void alloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
 		};
 	};
 	
-	init_chara_real_ctl_list(&g_ctl->gravity_vec_list);
+    g_ctl->gravity_vec_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
+	init_chara_real_clist(g_ctl->gravity_vec_list);
 	g_ctl->gravity_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(g_ctl->gravity_c);
 	
@@ -104,7 +105,8 @@ void alloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
 
 void dealloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
 	
-	clear_chara_real_ctl_list(&g_ctl->gravity_vec_list);
+	clear_chara_real_clist(g_ctl->gravity_vec_list);
+    free(g_ctl->gravity_vec_list);
 	
 	dealloc_chara_ctl_item_c(g_ctl->gravity_c);
 	free(g_ctl->gravity_c);
@@ -118,7 +120,7 @@ int read_gravity_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		skip_comment_read_line(fp, buf);
 		
 		read_chara_ctl_item_c(buf, label_gravity_ctl[ 0], g_ctl->gravity_c);
-		read_chara_real_ctl_list(fp, buf, label_gravity_ctl[ 1], &g_ctl->gravity_vec_list);
+		read_chara_real_clist(fp, buf, label_gravity_ctl[ 1], g_ctl->gravity_vec_list);
 	};
 	return 1;
 };
@@ -129,7 +131,7 @@ int write_gravity_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_chara_ctl_item_c(fp, level, g_ctl->maxlen, label_gravity_ctl[0], g_ctl->gravity_c);
 	
-	write_chara_real_ctl_list(fp, level, label_gravity_ctl[1], &g_ctl->gravity_vec_list);
+	write_chara_real_clist(fp, level, label_gravity_ctl[1], g_ctl->gravity_vec_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -146,14 +148,16 @@ void alloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){
 		};
 	};
 	
-	init_chara_real_ctl_list(&cor_ctl->system_rotation_list);
+    cor_ctl->system_rotation_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
+	init_chara_real_clist(cor_ctl->system_rotation_list);
 	
 	return;
 };
 
 void dealloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){
 	
-	clear_chara_real_ctl_list(&cor_ctl->system_rotation_list);
+	clear_chara_real_clist(cor_ctl->system_rotation_list);
+    free(cor_ctl->system_rotation_list);
 	
 	return;
 };
@@ -163,7 +167,7 @@ int read_coriolis_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_real_ctl_list(fp, buf, label_coriolis_ctl[ 0], &cor_ctl->system_rotation_list);
+		read_chara_real_clist(fp, buf, label_coriolis_ctl[ 0], cor_ctl->system_rotation_list);
 	};
 	return 1;
 };
@@ -172,7 +176,7 @@ int write_coriolis_ctl_c(FILE *fp, int level, const char *label,
                          struct coriolis_ctl_c *cor_ctl){
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_real_ctl_list(fp, level, label_coriolis_ctl[0], &cor_ctl->system_rotation_list);
+	write_chara_real_clist(fp, level, label_coriolis_ctl[0], cor_ctl->system_rotation_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -189,7 +193,8 @@ void alloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
 		};
 	};
 	
-	init_chara_real_ctl_list(&mcv_ctl->ext_magne_list);
+    mcv_ctl->ext_magne_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
+	init_chara_real_clist(mcv_ctl->ext_magne_list);
 	mcv_ctl->magneto_cv_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(mcv_ctl->magneto_cv_c);
 	
@@ -198,7 +203,8 @@ void alloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
 
 void dealloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
 	
-	clear_chara_real_ctl_list(&mcv_ctl->ext_magne_list);
+	clear_chara_real_clist(mcv_ctl->ext_magne_list);
+    free(mcv_ctl->ext_magne_list);
 	
 	dealloc_chara_ctl_item_c(mcv_ctl->magneto_cv_c);
 	free(mcv_ctl->magneto_cv_c);
@@ -212,7 +218,7 @@ int read_magneto_cv_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		skip_comment_read_line(fp, buf);
 		
 		read_chara_ctl_item_c(buf, label_magneto_cv_ctl[ 0], mcv_ctl->magneto_cv_c);
-		read_chara_real_ctl_list(fp, buf, label_magneto_cv_ctl[ 1], &mcv_ctl->ext_magne_list);
+		read_chara_real_clist(fp, buf, label_magneto_cv_ctl[ 1], mcv_ctl->ext_magne_list);
 	};
 	return 1;
 };
@@ -223,7 +229,7 @@ int write_magneto_cv_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_chara_ctl_item_c(fp, level, mcv_ctl->maxlen, label_magneto_cv_ctl[0], mcv_ctl->magneto_cv_c);
 	
-	write_chara_real_ctl_list(fp, level, label_magneto_cv_ctl[1], &mcv_ctl->ext_magne_list);
+	write_chara_real_clist(fp, level, label_magneto_cv_ctl[1], mcv_ctl->ext_magne_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
-#include "t_ctl_data_SGS_MHD_model_c.h"
+#include "t_control_chara_real_IO.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_chara_real_GTK.h"
 
@@ -21,12 +21,12 @@ struct dimless_views{
     
     GtkWidget *default_dless_view;
     
-    struct dimless_ctl_c *dless_ctl_gtk;
+    struct chara_real_clist *cr_clist;
 };
 
 /* prototypes */
 
-void init_dimless_views_GTK(struct mhd_model_control_c *model_ctl, struct dimless_views *dless_vws);
+void init_dimless_views_GTK(struct chara_real_clist *dless_clist, struct dimless_views *dless_vws);
 void dealloc_dimless_views_GTK(struct dimless_views *dless_vws);
 
 void init_dimless_tree_view(struct dimless_views *dless_vws);

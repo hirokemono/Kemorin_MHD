@@ -101,7 +101,7 @@ static void unblock_changed_signal(GObject *instance)
 
 
 void cr_tree_name_edited(gchar *path_str, gchar *new_text,
-			GtkTreeView *cr_tree_view, struct chara_real_ctl_list *cr_list_head)
+			GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist)
 {
     GtkTreeModel *model = gtk_tree_view_get_model (cr_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
@@ -125,11 +125,11 @@ void cr_tree_name_edited(gchar *path_str, gchar *new_text,
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    update_chara_real_ctl_list_by_c_tbl(old_text, new_text, old_value, cr_list_head);
+    update_chara_real_clist_by_c_tbl(old_text, new_text, old_value, cr_clist);
 }
 
 void cr_tree_value_edited(gchar *path_str, gchar *new_text, 
-			GtkTreeView *cr_tree_view, struct chara_real_ctl_list *cr_list_head)
+			GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist)
 {
     GtkTreeModel *model = gtk_tree_view_get_model (cr_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
@@ -154,7 +154,7 @@ void cr_tree_value_edited(gchar *path_str, gchar *new_text,
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    update_chara_real_ctl_list_by_c_tbl(old_text, old_text, new_value, cr_list_head);
+    update_chara_real_clist_by_c_tbl(old_text, old_text, new_value, cr_clist);
  
 }
 
@@ -194,7 +194,7 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
 }
 
 int add_cr_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add, 
-                                     struct chara_real_ctl_list *cr_list_head)
+                                     struct chara_real_clist *cr_clist)
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
@@ -204,13 +204,13 @@ int add_cr_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add,
     double value = 0.0;
     
     index = append_cr_item_to_tree(index, row_string, math_string, value, child_model_to_add);
-	append_chara_real_ctl_list(row_string, value, cr_list_head);
+	append_chara_real_clist(row_string, value, cr_clist);
 	
     return index;
 }
 
 int add_cr_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tree_model,
-			GtkTreeView *tree_view_to_add, struct chara_real_ctl_list *cr_list_head)
+			GtkTreeView *tree_view_to_add, struct chara_real_clist *cr_clist)
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
@@ -227,12 +227,12 @@ int add_cr_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tr
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_VALUE, &value, -1);
     
     index = append_cr_item_to_tree(index, row_string, math_string, value, child_model_to_add);
-    append_chara_real_ctl_list(row_string, value, cr_list_head);
+    append_chara_real_clist(row_string, value, cr_clist);
     return index;
 }
 
 int add_cr_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeModel *tree_model,
-			GtkTreeView *tree_view_to_add, struct chara_real_ctl_list *cr_list_head)
+			GtkTreeView *tree_view_to_add, struct chara_real_clist *cr_clist)
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
@@ -248,12 +248,12 @@ int add_cr_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMod
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &math_string, -1);
     
     index = append_cr_item_to_tree(index, row_string, math_string, value, child_model_to_add);
-    append_chara_real_ctl_list(row_string, value, cr_list_head);
+    append_chara_real_clist(row_string, value, cr_clist);
     return index;
 }
 
 void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
-			struct chara_real_ctl_list *cr_list_head)
+			struct chara_real_clist *cr_clist)
 {
     GtkTreeModel *model_to_del;
     GtkTreeModel *child_model_to_del;
@@ -315,7 +315,7 @@ void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
         
         /* Update control data */
-        del_chara_real_ctl_list_by_c_tbl(field_name, cr_list_head);
+        del_chara_real_clist_by_c_tbl(field_name, cr_clist);
     }
     g_list_free(reference_list);
     

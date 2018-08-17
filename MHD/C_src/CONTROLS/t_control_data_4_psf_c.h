@@ -23,10 +23,10 @@ struct psf_define_ctl_c{
 	
 	struct chara_ctl_item *section_method_ctl;
 	
-	struct chara_real_ctl_list psf_coefs_list;
-	struct chara_real_ctl_list psf_normal_list;
-	struct chara_real_ctl_list psf_center_list;
-	struct chara_real_ctl_list psf_axis_list;
+	struct chara_real_clist *psf_coefs_list;
+	struct chara_real_clist *psf_normal_list;
+	struct chara_real_clist *psf_center_list;
+	struct chara_real_clist *psf_axis_list;
 	
 	struct real_ctl_item *radius_psf_ctl;
 	struct chara_ctl_item *psf_group_name_ctl;

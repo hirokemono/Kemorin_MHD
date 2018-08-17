@@ -23,17 +23,17 @@ int append_cr_list_from_ctl(int index, struct chara_real_ctl_list *head,
 			GtkTreeView *cr_tree_view);
 
 void cr_tree_name_edited(gchar *path_str, gchar *new_text,
-			GtkTreeView *cr_tree_view, struct chara_real_ctl_list *cr_list_head);
+			GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist);
 void cr_tree_value_edited(gchar *path_str, gchar *new_text, 
-			GtkTreeView *cr_tree_view, struct chara_real_ctl_list *cr_list_head);
+			GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist);
 int add_cr_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add, 
-                                     struct chara_real_ctl_list *cr_list_head);
+                                     struct chara_real_clist *cr_clist);
 int add_cr_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tree_model,
-			GtkTreeView *tree_view_to_add, struct chara_real_ctl_list *cr_list_head);
+			GtkTreeView *tree_view_to_add, struct chara_real_clist *cr_clist);
 int add_cr_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeModel *tree_model,
-			GtkTreeView *tree_view_to_add, struct chara_real_ctl_list *cr_list_head);
+			GtkTreeView *tree_view_to_add, struct chara_real_clist *cr_clist);
 void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
-			struct chara_real_ctl_list *cr_list_head);
+			struct chara_real_clist *cr_clist);
 
 
 void create_text_real_tree_view(GtkTreeView *cr_tree_view,

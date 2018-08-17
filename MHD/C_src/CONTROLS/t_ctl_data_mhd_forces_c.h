@@ -32,20 +32,20 @@ struct gravity_ctl_c{
 	int maxlen;
 	
 	struct chara_ctl_item *gravity_c;
-	struct chara_real_ctl_list gravity_vec_list;
+	struct chara_real_clist *gravity_vec_list;
 };
 
 struct coriolis_ctl_c{
 	int maxlen;
 	
-	struct chara_real_ctl_list system_rotation_list;
+	struct chara_real_clist *system_rotation_list;
 };
 
 struct magneto_cv_ctl_c{
 	int maxlen;
 	
 	struct chara_ctl_item *magneto_cv_c;
-	struct chara_real_ctl_list ext_magne_list;
+	struct chara_real_clist *ext_magne_list;
 };
 
 /* prototype */

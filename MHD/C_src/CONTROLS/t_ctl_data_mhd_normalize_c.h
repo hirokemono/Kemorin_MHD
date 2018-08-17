@@ -19,38 +19,38 @@
 struct momentum_equation_ctl_c{
 	int maxlen;
 	
-	struct chara_real_ctl_list coef_4_viscous_list;
-	struct chara_real_ctl_list coef_4_intertia_list;
-	struct chara_real_ctl_list coef_4_grad_p_list;
+	struct chara_real_clist *coef_4_viscous_list;
+	struct chara_real_clist *coef_4_intertia_list;
+	struct chara_real_clist *coef_4_grad_p_list;
 	
-	struct chara_real_ctl_list coef_4_termal_buo_list;
-	struct chara_real_ctl_list coef_4_comp_buo_list;
-	struct chara_real_ctl_list coef_4_Coriolis_list;
-	struct chara_real_ctl_list coef_4_Lorentz_list;
+	struct chara_real_clist *coef_4_termal_buo_list;
+	struct chara_real_clist *coef_4_comp_buo_list;
+	struct chara_real_clist *coef_4_Coriolis_list;
+	struct chara_real_clist *coef_4_Lorentz_list;
 };
 
 struct induction_equation_ctl_c{
 	int maxlen;
 	
-	struct chara_real_ctl_list coef_4_magne_evo_list;
-	struct chara_real_ctl_list coef_4_mag_diffuse_list;
-	struct chara_real_ctl_list coef_4_mag_potential_list;
-	struct chara_real_ctl_list coef_4_induction_list;
+	struct chara_real_clist *coef_4_magne_evo_list;
+	struct chara_real_clist *coef_4_mag_diffuse_list;
+	struct chara_real_clist *coef_4_mag_potential_list;
+	struct chara_real_clist *coef_4_induction_list;
 };
 
 struct heat_equation_ctl_c{
 	int maxlen;
 	
-	struct chara_real_ctl_list coef_4_adv_flux_list;
-	struct chara_real_ctl_list coef_4_diffuse_list;
-	struct chara_real_ctl_list coef_4_source_list;
+	struct chara_real_clist *coef_4_adv_flux_list;
+	struct chara_real_clist *coef_4_diffuse_list;
+	struct chara_real_clist *coef_4_source_list;
 };
 
 
 struct dimless_ctl_c{
 	int maxlen;
 	
-	struct chara_real_ctl_list dimless_list;
+	struct chara_real_clist *dimless_list;
 };
 
 struct equations_ctl_c{

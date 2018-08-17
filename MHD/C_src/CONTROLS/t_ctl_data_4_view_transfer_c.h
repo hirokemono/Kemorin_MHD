@@ -46,16 +46,16 @@ struct modeview_ctl_c{
 	
 	struct chara2_real_clist *modelview_mat_ctl;
 	
-	struct chara_real_ctl_list lookpoint_list;
-	struct chara_real_ctl_list viewpoint_list;
-	struct chara_real_ctl_list up_dir_list;
-	struct chara_real_ctl_list view_rot_vec_list;
+	struct chara_real_clist *lookpoint_list;
+	struct chara_real_clist *viewpoint_list;
+	struct chara_real_clist *up_dir_list;
+	struct chara_real_clist *view_rot_vec_list;
 	
     struct real_ctl_item *view_rotation_deg_ctl;
     struct real_ctl_item *scale_factor_ctl;
 	
-	struct chara_real_ctl_list scale_vector_list;
-	struct chara_real_ctl_list viewpt_in_viewer_list;
+	struct chara_real_clist *scale_vector_list;
+	struct chara_real_clist *viewpt_in_viewer_list;
 	
 	int iflag_image_size_ctl;
 	struct image_size_ctl_c *img_size_c;

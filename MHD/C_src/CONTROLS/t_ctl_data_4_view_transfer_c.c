@@ -245,18 +245,24 @@ void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
     mat_c->modelview_mat_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
 	init_c2r_clist(mat_c->modelview_mat_ctl);
 	
-	init_chara_real_ctl_list(&mat_c->lookpoint_list);
-	init_chara_real_ctl_list(&mat_c->viewpoint_list);
-	init_chara_real_ctl_list(&mat_c->up_dir_list);
-	init_chara_real_ctl_list(&mat_c->view_rot_vec_list);
+    mat_c->lookpoint_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
+    mat_c->viewpoint_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
+    mat_c->up_dir_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
+    mat_c->view_rot_vec_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
+	init_chara_real_clist(mat_c->lookpoint_list);
+	init_chara_real_clist(mat_c->viewpoint_list);
+	init_chara_real_clist(mat_c->up_dir_list);
+	init_chara_real_clist(mat_c->view_rot_vec_list);
 	
 	mat_c->view_rotation_deg_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	mat_c->scale_factor_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(mat_c->view_rotation_deg_ctl);
 	init_real_ctl_item_c(mat_c->scale_factor_ctl);
 	
-	init_chara_real_ctl_list(&mat_c->scale_vector_list);
-	init_chara_real_ctl_list(&mat_c->viewpt_in_viewer_list);
+    mat_c->scale_vector_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
+    mat_c->viewpt_in_viewer_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
+	init_chara_real_clist(mat_c->scale_vector_list);
+	init_chara_real_clist(mat_c->viewpt_in_viewer_list);
 	
 	mat_c->iflag_image_size_ctl = 0;
 	mat_c->img_size_c = (struct image_size_ctl_c *) malloc(sizeof(struct image_size_ctl_c));
@@ -278,16 +284,22 @@ void dealloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 	clear_c2r_clist(mat_c->modelview_mat_ctl);
     free(mat_c->modelview_mat_ctl);
 	
-	clear_chara_real_ctl_list(&mat_c->lookpoint_list);
-	clear_chara_real_ctl_list(&mat_c->viewpoint_list);
-	clear_chara_real_ctl_list(&mat_c->up_dir_list);
-	clear_chara_real_ctl_list(&mat_c->view_rot_vec_list);
+	clear_chara_real_clist(mat_c->lookpoint_list);
+	clear_chara_real_clist(mat_c->viewpoint_list);
+	clear_chara_real_clist(mat_c->up_dir_list);
+	clear_chara_real_clist(mat_c->view_rot_vec_list);
+    free(mat_c->lookpoint_list);
+    free(mat_c->viewpoint_list);
+    free(mat_c->up_dir_list);
+    free(mat_c->view_rot_vec_list);
 	
 	free(mat_c->view_rotation_deg_ctl);
 	free(mat_c->scale_factor_ctl);
 	
-	clear_chara_real_ctl_list(&mat_c->scale_vector_list);
-	clear_chara_real_ctl_list(&mat_c->viewpt_in_viewer_list);
+	clear_chara_real_clist(mat_c->scale_vector_list);
+	clear_chara_real_clist(mat_c->viewpt_in_viewer_list);
+    free(mat_c->scale_vector_list);
+    free(mat_c->viewpt_in_viewer_list);
 	
 	dealloc_image_size_ctl_c(mat_c->img_size_c);
 	dealloc_streo_view_ctl_c(mat_c->streo_view_c);
@@ -308,16 +320,16 @@ int read_modeview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_real_ctl_list(fp, buf, label_modeview_ctl[ 0], &mat_c->lookpoint_list);
-		read_chara_real_ctl_list(fp, buf, label_modeview_ctl[ 1], &mat_c->viewpoint_list);
-		read_chara_real_ctl_list(fp, buf, label_modeview_ctl[ 2], &mat_c->up_dir_list);
-		read_chara_real_ctl_list(fp, buf, label_modeview_ctl[ 3], &mat_c->view_rot_vec_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 0], mat_c->lookpoint_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 1], mat_c->viewpoint_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 2], mat_c->up_dir_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 3], mat_c->view_rot_vec_list);
 		
 		read_real_ctl_item_c(buf, label_modeview_ctl[ 4], mat_c->view_rotation_deg_ctl);
 		read_real_ctl_item_c(buf, label_modeview_ctl[ 5], mat_c->scale_factor_ctl);
 		
-		read_chara_real_ctl_list(fp, buf, label_modeview_ctl[ 6], &mat_c->scale_vector_list);
-		read_chara_real_ctl_list(fp, buf, label_modeview_ctl[ 7], &mat_c->viewpt_in_viewer_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 6], mat_c->scale_vector_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 7], mat_c->viewpt_in_viewer_list);
 		
 		read_c2r_clist(fp, buf, label_modeview_ctl[ 8], mat_c->modelview_mat_ctl);
 		
@@ -345,20 +357,20 @@ int write_modeview_ctl_c(FILE *fp, int level, const char *label,
 		level = write_image_size_ctl_c(fp, level, label_modeview_ctl[ 9], mat_c->img_size_c);
 	};
 	
-	write_chara_real_ctl_list(fp, level, label_modeview_ctl[ 7], &mat_c->viewpt_in_viewer_list);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 7], mat_c->viewpt_in_viewer_list);
 	
 	write_real_ctl_item_c(fp, level, mat_c->maxlen, 
 				label_modeview_ctl[ 5], mat_c->scale_factor_ctl);
 	
-	write_chara_real_ctl_list(fp, level, label_modeview_ctl[ 0], &mat_c->lookpoint_list);
-	write_chara_real_ctl_list(fp, level, label_modeview_ctl[ 1], &mat_c->viewpoint_list);
-	write_chara_real_ctl_list(fp, level, label_modeview_ctl[ 2], &mat_c->up_dir_list);
-    write_chara_real_ctl_list(fp, level, label_modeview_ctl[ 3], &mat_c->view_rot_vec_list);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 0], mat_c->lookpoint_list);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 1], mat_c->viewpoint_list);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 2], mat_c->up_dir_list);
+    write_chara_real_clist(fp, level, label_modeview_ctl[ 3], mat_c->view_rot_vec_list);
 	
 	write_real_ctl_item_c(fp, level, mat_c->maxlen, 
 				label_modeview_ctl[ 4], mat_c->view_rotation_deg_ctl);
 	
-	write_chara_real_ctl_list(fp, level, label_modeview_ctl[ 6], &mat_c->scale_vector_list);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 6], mat_c->scale_vector_list);
 	
 	write_c2r_clist(fp, level, label_modeview_ctl[ 8], mat_c->modelview_mat_ctl);
 	

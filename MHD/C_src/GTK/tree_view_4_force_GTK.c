@@ -8,8 +8,8 @@
 #include "tree_view_4_force_GTK.h"
 
 
-void init_dimless_views_GTK(struct mhd_model_control_c *model_ctl, struct dimless_views *dless_vws){
-    dless_vws->dless_ctl_gtk = model_ctl->dless_ctl;
+void init_dimless_views_GTK(struct chara_real_clist *dless_clist, struct dimless_views *dless_vws){
+    dless_vws->cr_clist = dless_clist;
     return;
 }
 
@@ -39,9 +39,8 @@ static void dimless_name_edited_cb(GtkCellRendererText *cell, gchar *path_str,
     struct dimless_views *dless_vws = (struct dimless_views *) user_data;
 	
 	cr_tree_name_edited(path_str, new_text, dless_vws->dimless_tree_view, 
-				&dless_vws->dless_ctl_gtk->dimless_list);
-	write_chara_real_ctl_list(stdout, 0, "dimless_test", 
-                              &dless_vws->dless_ctl_gtk->dimless_list);
+				dless_vws->cr_clist);
+	write_chara_real_clist(stdout, 0, "dimless_test", dless_vws->cr_clist);
  
 }
 static void dimless_value_edited_cb(GtkCellRendererText *cell, gchar *path_str,
@@ -50,9 +49,8 @@ static void dimless_value_edited_cb(GtkCellRendererText *cell, gchar *path_str,
     struct dimless_views *dless_vws = (struct dimless_views *) user_data;
 	
 	cr_tree_value_edited(path_str, new_text, dless_vws->dimless_tree_view,
-                    &dless_vws->dless_ctl_gtk->dimless_list);
-    write_chara_real_ctl_list(stdout, 0, "dimless_test", 
-                              &dless_vws->dless_ctl_gtk->dimless_list);
+                    dless_vws->cr_clist);
+    write_chara_real_clist(stdout, 0, "dimless_test", dless_vws->cr_clist);
  
 }
 
@@ -72,7 +70,7 @@ static void create_dimless_tree_view(struct dimless_views *dless_vws)
 void init_dimless_tree_view(struct dimless_views *dless_vws){
     create_dimless_tree_view(dless_vws);
     dless_vws->index_dless = append_cr_list_from_ctl(dless_vws->index_dless, 
-				&dless_vws->dless_ctl_gtk->dimless_list, dless_vws->dimless_tree_view);
+				&dless_vws->cr_clist->cr_item_head, dless_vws->dimless_tree_view);
 }
 
 void create_used_dimless_tree_views(struct dimless_views *dless_vws)

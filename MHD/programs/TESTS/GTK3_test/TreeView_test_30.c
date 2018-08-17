@@ -69,7 +69,7 @@ int main(int argc, char **argv)
     read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
     
     dless_vws = (struct dimless_views *) malloc(sizeof(struct dimless_views));
-    init_dimless_views_GTK(mhd_ctl->model_ctl, dless_vws);
+    init_dimless_views_GTK(mhd_ctl->model_ctl->dless_ctl->dimless_list, dless_vws);
     
     gtk_init(&argc, &argv);
     
