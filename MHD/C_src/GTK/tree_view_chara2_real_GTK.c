@@ -108,8 +108,8 @@ void c2r_tree_1st_text_edited(gchar *path_str, gchar *new_text,
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    update_chara2_real_clist_by_c_tbl(first_string, new_text, second_string, 
-                                         old_value, c2r_clst);
+	update_chara2_real_clist_by_c_tbl(first_string, second_string, 
+				new_text, second_string, old_value, c2r_clst);
 }
 
 void c2r_tree_2nd_text_edited(gchar *path_str, gchar *new_text,
@@ -137,8 +137,8 @@ void c2r_tree_2nd_text_edited(gchar *path_str, gchar *new_text,
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-	update_chara2_real_clist_by_c_tbl(first_string, first_string,
-				new_text, old_value, c2r_clst);
+	update_chara2_real_clist_by_c_tbl(first_string, second_string, 
+				first_string, new_text, old_value, c2r_clst);
 }
 
 void c2r_tree_value_edited(gchar *path_str, gchar *new_text, 
@@ -167,7 +167,8 @@ void c2r_tree_value_edited(gchar *path_str, gchar *new_text,
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    update_chara2_real_clist_by_c_tbl(old_text, old_text, second_string, new_value, c2r_clst);
+	update_chara2_real_clist_by_c_tbl(old_text, second_string, 
+				old_text, second_string, new_value, c2r_clst);
     
 }
 
@@ -328,7 +329,7 @@ void delete_c2r_list_items_GTK(GtkTreeView *tree_view_to_del,
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
         
         /* Update control data */
-        del_chara2_real_clist_by_c_tbl(field_name, c2r_clst);
+        del_chara2_real_clist_by_c_tbl(field_name, field_math, c2r_clst);
     }
     g_list_free(reference_list);
     

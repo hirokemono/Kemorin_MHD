@@ -98,8 +98,8 @@ void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	free(fline_c->fline_color_field_ctl);
 	free(fline_c->fline_color_comp_ctl);
 	
-	clear_chara_clist(&fline_c->fline_area_grp_list);
-    free(&fline_c->fline_area_grp_list);
+	clear_chara_clist(fline_c->fline_area_grp_list);
+    free(fline_c->fline_area_grp_list);
 	
 	dealloc_chara_ctl_item_c(fline_c->starting_type_ctl);
 	dealloc_chara_ctl_item_c(fline_c->selection_type_ctl);

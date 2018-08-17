@@ -159,11 +159,12 @@ struct chara2_ctl_list *find_c2_ctl_list_item_by_index(int index, struct chara2_
     if(head == NULL) printf("array does not exist at index %d of %d.\n", index, num);
     return head;
 };
-static struct chara2_ctl_list *find_c2_ctl_list_item_by_c_tbl(char *ref,
+static struct chara2_ctl_list *find_c2_ctl_list_item_by_c_tbl(char *ref_1, char *ref_2,
 			struct chara2_ctl_list *head){
     head = head->_next;
     while (head != NULL){
-		if(cmp_no_case_c(head->c2_item->c1_tbl, ref)) return head;
+		if(cmp_no_case_c(head->c2_item->c1_tbl, ref_1) 
+					&& cmp_no_case_c(head->c2_item->c2_tbl, ref_2)) return head;
         head = head->_next;
     };
     return head;
@@ -242,22 +243,23 @@ static void set_from_chara2_ctl_list_at_index(int index, struct chara2_ctl_list 
 
 
 
-static void del_chara2_ctl_list_by_c_tbl(char *ref, struct chara2_ctl_list *head){
-	head = find_c2_ctl_list_item_by_c_tbl(ref, head);
+static void del_chara2_ctl_list_by_c_tbl(char *ref_1, char *ref_2,
+			struct chara2_ctl_list *head){
+	head = find_c2_ctl_list_item_by_c_tbl(ref_1, ref_2, head);
 	if(head != NULL) delete_chara2_ctl_list(head);
 	return;
 };
 
-static void update_chara2_ctl_list_by_c_tbl(char *ref, char *c1_in, char *c2_in,
-			struct chara2_ctl_list *head){
-	head = find_c2_ctl_list_item_by_c_tbl(ref, head);
+static void update_chara2_ctl_list_by_c_tbl(char *ref_1, char *ref_2,
+			char *c1_in, char *c2_in, struct chara2_ctl_list *head){
+	head = find_c2_ctl_list_item_by_c_tbl(ref_1, ref_2, head);
 	if(head != NULL) update_chara2_ctl_item_c(c1_in, c2_in, head->c2_item);
 	return;
 };
 
-static void set_from_chara2_ctl_list_at_c_tbl(char *ref, struct chara2_ctl_list *head,
-			char *c1_out, char *c2_out){
-	head = find_c2_ctl_list_item_by_c_tbl(ref, head);
+static void set_from_chara2_ctl_list_at_c_tbl(char *ref_1, char *ref_2, 
+			struct chara2_ctl_list *head, char *c1_out, char *c2_out){
+	head = find_c2_ctl_list_item_by_c_tbl(ref_1, ref_2, head);
 	if(head != NULL) set_from_chara2_ctl_item_c(head->c2_item, c1_out, c2_out);
 	return;
 };
@@ -300,14 +302,14 @@ void set_from_chara2_clist_at_index(int index, struct chara2_clist *c2_clst,
 			c1_out, c2_out);
 };
 
-void del_chara2_clist_by_c_tbl(char *ref, struct chara2_clist *c2_clst){
-	del_chara2_ctl_list_by_c_tbl(ref, &c2_clst->c2_item_head);
+void del_chara2_clist_by_c_tbl(char *ref_1, char *ref_2, struct chara2_clist *c2_clst){
+	del_chara2_ctl_list_by_c_tbl(ref_1, ref_2, &c2_clst->c2_item_head);
 };
-void update_chara2_clist_by_c_tbl(char *ref, char *c1_in, char *c2_in,
+void update_chara2_clist_by_c_tbl(char *ref_1, char *ref_2, char *c1_in, char *c2_in,
 			struct chara2_clist *c2_clst){
-	update_chara2_ctl_list_by_c_tbl(ref, c1_in, c2_in, &c2_clst->c2_item_head);
+	update_chara2_ctl_list_by_c_tbl(ref_1, ref_2, c1_in, c2_in, &c2_clst->c2_item_head);
 };
-void set_from_chara2_clist_at_c_tbl(char *ref, struct chara2_clist *c2_clst,
-			char *c1_out, char *c2_out){
-	set_from_chara2_ctl_list_at_c_tbl(ref, &c2_clst->c2_item_head, c1_out, c2_out);
+void set_from_chara2_clist_at_c_tbl(char *ref_1, char *ref_2,
+			struct chara2_clist *c2_clst, char *c1_out, char *c2_out){
+	set_from_chara2_ctl_list_at_c_tbl(ref_1, ref_2, &c2_clst->c2_item_head, c1_out, c2_out);
 };

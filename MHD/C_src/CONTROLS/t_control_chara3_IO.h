@@ -69,10 +69,11 @@ void update_chara3_clist_by_index(int index, char *c1_in, char *c2_in, char *c3_
 void set_from_chara3_clist_at_index(int index, struct chara3_clist *c3_clst,
 			char *c1_out, char *c2_out, char *c3_out);
 
-void del_chara3_clist_by_c_tbl(char *ref, struct chara3_clist *c3_clst);
-void update_chara3_clist_by_c_tbl(char *ref, char *c1_in, char *c2_in, char *c3_in,
+void del_chara3_clist_by_c_tbl(char *ref_1, char *ref_2, char *ref_3,
 			struct chara3_clist *c3_clst);
-void set_from_chara3_clist_at_c_tbl(char *ref, struct chara3_clist *c3_clst,
-			char *c1_out, char *c2_out, char *c3_out);
+void update_chara3_clist_by_c_tbl(char *ref_1, char *ref_2, char *ref_3,
+			char *c1_in, char *c2_in, char *c3_in, struct chara3_clist *c3_clst);
+void set_from_chara3_clist_at_c_tbl(char *ref_1, char *ref_2, char *ref_3,
+			struct chara3_clist *c3_clst, char *c1_out, char *c2_out, char *c3_out);
 
 #endif /* t_control_chara3_IO_h_ */
