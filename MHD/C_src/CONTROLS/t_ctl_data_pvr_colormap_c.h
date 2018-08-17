@@ -40,7 +40,7 @@ struct colormap_ctl_c{
 	struct chara_ctl_item *opacity_style_ctl;
 	struct real_ctl_item *fix_opacity_ctl;
 	struct real2_clist *linear_opacity_list;
-	struct real3_ctl_list step_opacity_list;
+	struct real3_clist *step_opacity_list;
 	
 	struct real_ctl_item *range_min_ctl;
 	struct real_ctl_item *range_max_ctl;
@@ -53,7 +53,7 @@ struct lighting_ctl_c{
 	struct real_ctl_item *diffuse_coef_ctl;
 	struct real_ctl_item *specular_coef_ctl;
 	
-	struct real3_ctl_list light_position_list;
+	struct real3_clist *light_position_list;
 };
 
 struct pvr_colorbar_ctl_c{

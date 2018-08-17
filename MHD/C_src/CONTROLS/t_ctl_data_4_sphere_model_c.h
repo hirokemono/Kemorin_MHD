@@ -60,8 +60,8 @@ struct sphere_data_ctl_c{
 	struct int_ctl_item *num_radial_layer_c;
 	struct int_ctl_item *num_med_layer_c;
 	
-	struct int2_ctl_list radial_layer_list;
-	struct int2_ctl_list med_layer_list;
+	struct int2_clist *radial_layer_list;
+	struct int2_clist *med_layer_list;
 };
 
 

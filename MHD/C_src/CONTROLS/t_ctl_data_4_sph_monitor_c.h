@@ -25,7 +25,7 @@ struct pick_spectr_control_c{
     struct chara_ctl_item *picked_mode_head_c;
 	
     struct int_ctl_list idx_pick_layer_list;
-    struct int2_ctl_list idx_pick_sph_list;
+    struct int2_clist   *idx_pick_sph_list;
     struct int_ctl_list idx_pick_sph_l_list;
     struct int_ctl_list idx_pick_sph_m_list;
 };
@@ -49,7 +49,7 @@ struct gauss_spectr_control_c{
 	struct chara_ctl_item *gauss_coefs_prefix_c;
     struct real_ctl_item *gauss_coefs_radius_c;
 	
-    struct int2_ctl_list  idx_gauss_list;
+    struct int2_clist  *idx_gauss_list;
     struct int_ctl_list idx_gauss_l_list;
     struct int_ctl_list idx_gauss_m_list;
 };

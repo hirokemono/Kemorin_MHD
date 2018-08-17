@@ -194,8 +194,10 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	init_int_ctl_item_c(spctl_c->num_radial_layer_c);
 	init_int_ctl_item_c(spctl_c->num_med_layer_c);
 	
-	init_int2_ctl_list(&spctl_c->radial_layer_list);
-	init_int2_ctl_list(&spctl_c->med_layer_list);
+    spctl_c->radial_layer_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
+    spctl_c->med_layer_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
+	init_int2_clist(spctl_c->radial_layer_list);
+	init_int2_clist(spctl_c->med_layer_list);
 	
 	return;
 };
@@ -231,8 +233,10 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	free(spctl_c->num_radial_layer_c);
 	free(spctl_c->num_med_layer_c);
 	
-	clear_int2_ctl_list(&spctl_c->radial_layer_list);
-	clear_int2_ctl_list(&spctl_c->med_layer_list);
+	clear_int2_clist(spctl_c->radial_layer_list);
+	clear_int2_clist(spctl_c->med_layer_list);
+    free(spctl_c->radial_layer_list);
+    free(spctl_c->med_layer_list);
 	
 	return;
 };
@@ -269,8 +273,8 @@ int read_sphere_data_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[16], spctl_c->num_radial_layer_c);
 		read_integer_ctl_item_c(buf, label_sphere_data_ctl[17], spctl_c->num_med_layer_c);
 		
-		read_int2_ctl_list(fp, buf, label_sphere_data_ctl[18], &spctl_c->radial_layer_list);
-		read_int2_ctl_list(fp, buf, label_sphere_data_ctl[19], &spctl_c->med_layer_list);
+		read_int2_clist(fp, buf, label_sphere_data_ctl[18], spctl_c->radial_layer_list);
+		read_int2_clist(fp, buf, label_sphere_data_ctl[19], spctl_c->med_layer_list);
 	};
 	return 1;
 };
@@ -305,8 +309,8 @@ int write_sphere_data_ctl_c(FILE *fp, int level,
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[16], spctl_c->num_radial_layer_c);
 	write_integer_ctl_item_c(fp, level, spctl_c->maxlen, label_sphere_data_ctl[17], spctl_c->num_med_layer_c);
 	
-	write_int2_ctl_list(fp, level, label_sphere_data_ctl[18], &spctl_c->radial_layer_list);
-	write_int2_ctl_list(fp, level, label_sphere_data_ctl[19], &spctl_c->med_layer_list);
+	write_int2_clist(fp, level, label_sphere_data_ctl[18], spctl_c->radial_layer_list);
+	write_int2_clist(fp, level, label_sphere_data_ctl[19], spctl_c->med_layer_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

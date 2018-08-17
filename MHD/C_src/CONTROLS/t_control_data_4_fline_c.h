@@ -38,8 +38,8 @@ struct fline_ctl_c{
 	struct int_ctl_item *num_fieldline_ctl;
 	struct int_ctl_item *max_line_stepping_ctl;
 	
-	struct real3_ctl_list seed_point_list;
-	struct int2_ctl_list seed_surface_list;
+	struct real3_clist *seed_point_list;
+	struct int2_clist *seed_surface_list;
 };
 
 /* prototypes */

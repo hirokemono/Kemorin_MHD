@@ -100,14 +100,17 @@ void alloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
     alloc_chara_ctl_item_c(pspec_ctl_c->picked_mode_head_c);
 		
     init_int_ctl_list(&pspec_ctl_c->idx_pick_layer_list);
-    init_int2_ctl_list(&pspec_ctl_c->idx_pick_sph_list);
+    pspec_ctl_c->idx_pick_sph_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
+    init_int2_clist(pspec_ctl_c->idx_pick_sph_list);
     init_int_ctl_list(&pspec_ctl_c->idx_pick_sph_l_list);
     init_int_ctl_list(&pspec_ctl_c->idx_pick_sph_m_list);
 	
 	return;
 };
 void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
-    clear_int2_ctl_list(&pspec_ctl_c->idx_pick_sph_list);
+    clear_int2_clist(pspec_ctl_c->idx_pick_sph_list);
+    free(pspec_ctl_c->idx_pick_sph_list);
+
     clear_int_ctl_list(&pspec_ctl_c->idx_pick_sph_l_list);
     clear_int_ctl_list(&pspec_ctl_c->idx_pick_sph_m_list);
     clear_int_ctl_list(&pspec_ctl_c->idx_pick_layer_list);
@@ -126,7 +129,7 @@ int read_pick_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 		
 		read_int_ctl_list(fp, buf, label_pick_spectr_ctl[1], &pspec_ctl_c->idx_pick_layer_list);
 		
-		read_int2_ctl_list(fp, buf, label_pick_spectr_ctl[2], &pspec_ctl_c->idx_pick_sph_list);
+		read_int2_clist(fp, buf, label_pick_spectr_ctl[2], pspec_ctl_c->idx_pick_sph_list);
 		read_int_ctl_list(fp, buf, label_pick_spectr_ctl[3], &pspec_ctl_c->idx_pick_sph_l_list);
 		read_int_ctl_list(fp, buf, label_pick_spectr_ctl[4], &pspec_ctl_c->idx_pick_sph_m_list);
 	};
@@ -141,7 +144,7 @@ int write_pick_spectr_control_c(FILE *fp, int level, const char *label,
 	
 	write_int_ctl_list(fp, level, label_pick_spectr_ctl[1], &pspec_ctl_c->idx_pick_layer_list);
 	
-	write_int2_ctl_list(fp, level, label_pick_spectr_ctl[2], &pspec_ctl_c->idx_pick_sph_list);
+	write_int2_clist(fp, level, label_pick_spectr_ctl[2], pspec_ctl_c->idx_pick_sph_list);
 	
 	write_int_ctl_list(fp, level, label_pick_spectr_ctl[3], &pspec_ctl_c->idx_pick_sph_l_list);
 	write_int_ctl_list(fp, level, label_pick_spectr_ctl[4], &pspec_ctl_c->idx_pick_sph_m_list);
@@ -164,15 +167,18 @@ void alloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
 	g_pwr->gauss_coefs_radius_c = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(g_pwr->gauss_coefs_radius_c);
 	
-	init_int2_ctl_list(&g_pwr->idx_gauss_list);
+    g_pwr->idx_gauss_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
+	init_int2_clist(g_pwr->idx_gauss_list);
 	init_int_ctl_list(&g_pwr->idx_gauss_l_list);
 	init_int_ctl_list(&g_pwr->idx_gauss_m_list);
 	
 	return;
 };
 void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
-	clear_int2_ctl_list(&g_pwr->idx_gauss_list);
-	clear_int_ctl_list(&g_pwr->idx_gauss_l_list);
+	clear_int2_clist(g_pwr->idx_gauss_list);
+    free(g_pwr->idx_gauss_list);
+
+    clear_int_ctl_list(&g_pwr->idx_gauss_l_list);
 	clear_int_ctl_list(&g_pwr->idx_gauss_m_list);
 	
 	dealloc_chara_ctl_item_c(g_pwr->gauss_coefs_prefix_c);
@@ -188,7 +194,7 @@ int read_gauss_spectr_control_c(FILE *fp, char buf[LENGTHBUF],
 		
 		read_real_ctl_item_c(buf, label_gauss_spectr_ctl[1], g_pwr->gauss_coefs_radius_c);
 		
-		read_int2_ctl_list(fp, buf, label_gauss_spectr_ctl[2], &g_pwr->idx_gauss_list);
+		read_int2_clist(fp, buf, label_gauss_spectr_ctl[2], g_pwr->idx_gauss_list);
 		read_int_ctl_list(fp, buf, label_gauss_spectr_ctl[3], &g_pwr->idx_gauss_l_list);
 		read_int_ctl_list(fp, buf, label_gauss_spectr_ctl[4], &g_pwr->idx_gauss_m_list);
 	};
@@ -203,7 +209,7 @@ int write_gauss_spectr_control_c(FILE *fp, int level, const char *label,
 	write_real_ctl_item_c(fp, level, g_pwr->maxlen, 
 				label_gauss_spectr_ctl[1], g_pwr->gauss_coefs_radius_c);
 	
-	write_int2_ctl_list(fp, level, label_gauss_spectr_ctl[2], &g_pwr->idx_gauss_list);
+	write_int2_clist(fp, level, label_gauss_spectr_ctl[2], g_pwr->idx_gauss_list);
 	
 	write_int_ctl_list(fp, level, label_gauss_spectr_ctl[3], &g_pwr->idx_gauss_l_list);
 	write_int_ctl_list(fp, level, label_gauss_spectr_ctl[4], &g_pwr->idx_gauss_m_list);

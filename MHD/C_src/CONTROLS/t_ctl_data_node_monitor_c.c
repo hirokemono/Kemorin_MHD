@@ -33,16 +33,20 @@ void alloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
 	
     nmtr_ctl->group_4_monitor_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
     init_chara_clist(nmtr_ctl->group_4_monitor_list);
-    init_real3_ctl_list(&nmtr_ctl->xx_4_monitor_list);
-    init_int2_ctl_list(&nmtr_ctl->node_4_monitor_list);
+    nmtr_ctl->xx_4_monitor_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
+    init_real3_clist(nmtr_ctl->xx_4_monitor_list);
+    nmtr_ctl->node_4_monitor_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
+    init_int2_clist(nmtr_ctl->node_4_monitor_list);
     return;
 };
 
 void dealloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
     clear_chara_clist(nmtr_ctl->group_4_monitor_list);
     free(nmtr_ctl->group_4_monitor_list);
-    clear_real3_ctl_list(&nmtr_ctl->xx_4_monitor_list);
-    clear_int2_ctl_list(&nmtr_ctl->node_4_monitor_list);
+    clear_real3_clist(nmtr_ctl->xx_4_monitor_list);
+    free(nmtr_ctl->xx_4_monitor_list);
+    clear_int2_clist(nmtr_ctl->node_4_monitor_list);
+    free(nmtr_ctl->node_4_monitor_list);
 	
     return;
 };
@@ -53,8 +57,8 @@ int read_node_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
 		skip_comment_read_line(fp, buf);
 		
 		read_chara_clist(fp, buf, label_node_monitor_ctl[0], nmtr_ctl->group_4_monitor_list);
-		read_real3_ctl_list(fp, buf, label_node_monitor_ctl[1], &nmtr_ctl->xx_4_monitor_list);
-		read_int2_ctl_list(fp, buf, label_node_monitor_ctl[2], &nmtr_ctl->node_4_monitor_list);
+		read_real3_clist(fp, buf, label_node_monitor_ctl[1], nmtr_ctl->xx_4_monitor_list);
+		read_int2_clist(fp, buf, label_node_monitor_ctl[2], nmtr_ctl->node_4_monitor_list);
 	};
 	return 1;
 };
@@ -65,8 +69,8 @@ int write_node_monitor_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_chara_clist(fp, level, label_node_monitor_ctl[0], nmtr_ctl->group_4_monitor_list);
 	
-	write_real3_ctl_list(fp, level, label_node_monitor_ctl[1], &nmtr_ctl->xx_4_monitor_list);
-	write_int2_ctl_list(fp, level, label_node_monitor_ctl[2], &nmtr_ctl->node_4_monitor_list);
+	write_real3_clist(fp, level, label_node_monitor_ctl[1], nmtr_ctl->xx_4_monitor_list);
+	write_int2_clist(fp, level, label_node_monitor_ctl[2], nmtr_ctl->node_4_monitor_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

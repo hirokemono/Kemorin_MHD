@@ -106,7 +106,8 @@ void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	
     cmap_c->linear_opacity_list = (struct real2_clist *) malloc(sizeof(struct real2_clist));
 	init_real2_clist(cmap_c->linear_opacity_list);
-	init_real3_ctl_list(&cmap_c->step_opacity_list);
+    cmap_c->step_opacity_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
+	init_real3_clist(cmap_c->step_opacity_list);
 	
 	cmap_c->range_min_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	cmap_c->range_max_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
@@ -142,7 +143,8 @@ void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	
 	clear_real2_clist(cmap_c->linear_opacity_list);
     free(cmap_c->linear_opacity_list);
-	clear_real3_ctl_list(&cmap_c->step_opacity_list);
+	clear_real3_clist(cmap_c->step_opacity_list);
+    free(cmap_c->step_opacity_list);
 	
 	free(cmap_c->range_min_ctl);
 	free(cmap_c->range_max_ctl);
@@ -172,7 +174,7 @@ int read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_real_ctl_item_c(buf, label_colormap_ctl[ 8], cmap_c->fix_opacity_ctl);
 		
 		read_real2_clist(fp, buf, label_colormap_ctl[ 9], cmap_c->linear_opacity_list);
-		read_real3_ctl_list(fp, buf, label_colormap_ctl[10], &cmap_c->step_opacity_list);
+		read_real3_clist(fp, buf, label_colormap_ctl[10], cmap_c->step_opacity_list);
 		
 		read_real_ctl_item_c(buf, label_colormap_ctl[11], cmap_c->range_min_ctl);
 		read_real_ctl_item_c(buf, label_colormap_ctl[12], cmap_c->range_max_ctl);
@@ -200,7 +202,7 @@ int write_colormap_ctl_c(FILE *fp, int level, const char *label,
 	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 8], cmap_c->fix_opacity_ctl);
 	
 	write_real2_clist(fp, level, label_colormap_ctl[ 9], cmap_c->linear_opacity_list);
-	write_real3_ctl_list(fp, level, label_colormap_ctl[10], &cmap_c->step_opacity_list);
+	write_real3_clist(fp, level, label_colormap_ctl[10], cmap_c->step_opacity_list);
 	
 	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[11], cmap_c->range_min_ctl);
 	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[12], cmap_c->range_max_ctl);
@@ -227,7 +229,8 @@ void alloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
 	init_real_ctl_item_c(light_c->diffuse_coef_ctl);
 	init_real_ctl_item_c(light_c->specular_coef_ctl);
 	
-	init_real3_ctl_list(&light_c->light_position_list);
+    light_c->light_position_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
+	init_real3_clist(light_c->light_position_list);
 	
 	return;
 };
@@ -238,7 +241,8 @@ void dealloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
 	free(light_c->diffuse_coef_ctl);
 	free(light_c->specular_coef_ctl);
 	
-	clear_real3_ctl_list(&light_c->light_position_list);	
+	clear_real3_clist(light_c->light_position_list);	
+    free(light_c->light_position_list);    
 	return;
 };
 
@@ -247,7 +251,7 @@ int read_lighting_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_real3_ctl_list(fp, buf, label_lighting_ctl[ 0], &light_c->light_position_list);
+		read_real3_clist(fp, buf, label_lighting_ctl[ 0], light_c->light_position_list);
 		
 		read_real_ctl_item_c(buf, label_lighting_ctl[ 1], light_c->ambient_coef_ctl);
 		read_real_ctl_item_c(buf, label_lighting_ctl[ 2], light_c->diffuse_coef_ctl);
@@ -260,7 +264,7 @@ int write_lighting_ctl_c(FILE *fp, int level, const char *label,
 			struct lighting_ctl_c *light_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_real3_ctl_list(fp, level, label_lighting_ctl[ 0], &light_c->light_position_list);
+	write_real3_clist(fp, level, label_lighting_ctl[ 0], light_c->light_position_list);
 	
 	write_real_ctl_item_c(fp, level, light_c->maxlen, label_lighting_ctl[ 1], light_c->ambient_coef_ctl);
 	write_real_ctl_item_c(fp, level, light_c->maxlen, label_lighting_ctl[ 2], light_c->diffuse_coef_ctl);

@@ -30,7 +30,7 @@ struct real2_ctl_list{
 };
 
 struct real2_clist{
-	struct real2_ctl_list r_item_head;
+	struct real2_ctl_list r2_item_head;
 };
 
 
@@ -46,9 +46,6 @@ void update_real2_ctl_item_c(double r1_in, double r2_in,
                               struct real2_ctl_item *r2_item);
 void set_from_real2_ctl_item_c(struct real2_ctl_item *r2_item,
                               double *r1_out, double *r2_out);
-
-int count_real2_ctl_list(struct real2_ctl_list *head);
-
 
 
 void init_real2_clist(struct real2_clist *r2_clst);
@@ -67,7 +64,7 @@ void update_real2_clist_by_index(int index, double r1_in, double r2_in,
 void set_from_real2_clist_at_index(int index, struct real2_clist *r2_clst,
 			double *r1_out, double *r2_out);
 
-void del_real2clist_by_c_tbl(double ref_1, double ref_2,
+void del_real2_clist_by_c_tbl(double ref_1, double ref_2,
 			struct real2_clist *r2_clst);
 void update_real2_clist_by_c_tbl(double ref_1, double ref_2, 
 			double r1_in, double r2_in, struct real2_clist *r2_clst);
