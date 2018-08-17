@@ -43,8 +43,7 @@ int read_chara3_ctl_item_c(char buf[LENGTHBUF], const char *label,
 };
 
 int write_chara3_ctl_item_c(FILE *fp, int level, int maxlen[3], 
-                           const char *label, struct chara3_ctl_item *c3_item){
-    
+			const char *label, struct chara3_ctl_item *c3_item){
 	if(c3_item->iflag == 0) return level;
 	write_space_4_parse_c(fp, level);
 	write_one_label_cont_c(fp, maxlen[0], label);
@@ -55,20 +54,31 @@ int write_chara3_ctl_item_c(FILE *fp, int level, int maxlen[3],
 };
 
 
+void update_chara3_ctl_item_c(char *c1_in, char *c2_in, char *c3_in,  
+			struct chara3_ctl_item *c3_item){
+	c3_item->iflag = 1;
+	sprintf(c3_item->c1_tbl,"%s", c1_in);
+	sprintf(c3_item->c2_tbl,"%s", c2_in);
+	sprintf(c3_item->c3_tbl,"%s", c3_in);
+    return;
+};
+void set_from_chara3_ctl_item_c(struct chara3_ctl_item *c3_item,
+                              char *c1_out, char *c2_out, char *c3_out){
+	if(c3_item->iflag == 0) return;
+	sprintf(c1_out,"%s", c3_item->c1_tbl);
+	sprintf(c2_out,"%s", c3_item->c2_tbl);
+	sprintf(c3_out,"%s", c3_item->c3_tbl);
+    return;
+};
 
-void init_chara3_ctl_list(struct chara3_ctl_list *head){
-    int i;
-    head->mlen3 = (struct maxlen_3 *) malloc(sizeof(struct maxlen_3));
-    for(i=0; i<3; i++) {head->mlen3->mlen[i] = 0;};
-	
+
+static void init_chara3_ctl_list(struct chara3_ctl_list *head){
     head->_prev = NULL;
     head->_next = NULL;
     return;
 };
 
-void clear_chara3_ctl_list(struct chara3_ctl_list *head){
-	free(head->mlen3);
-	
+static void clear_chara3_ctl_list(struct chara3_ctl_list *head){
     head = head->_next;
     while (head != NULL) {
         dealloc_chara3_ctl_item_c(head->c3_item);
@@ -79,7 +89,7 @@ void clear_chara3_ctl_list(struct chara3_ctl_list *head){
     return;
 };
 
-struct chara3_ctl_list *add_chara3_ctl_list(struct chara3_ctl_list *current){
+static struct chara3_ctl_list *add_chara3_ctl_list(struct chara3_ctl_list *current){
     struct chara3_ctl_list *added;
     struct chara3_ctl_list *old_next;
     
@@ -92,7 +102,6 @@ struct chara3_ctl_list *add_chara3_ctl_list(struct chara3_ctl_list *current){
         exit(0);
     }
 	alloc_chara3_ctl_item_c(added->c3_item);
-	added->mlen3 = current->mlen3;
     
     /* replace from  current -> p2　to current -> p1 -> p2 */
     old_next= current->_next;
@@ -104,7 +113,7 @@ struct chara3_ctl_list *add_chara3_ctl_list(struct chara3_ctl_list *current){
     return added;
 };
 
-void delete_chara3_ctl_list(struct chara3_ctl_list *current){
+static void delete_chara3_ctl_list(struct chara3_ctl_list *current){
     struct chara3_ctl_list *old_prev = current->_prev;
     struct chara3_ctl_list *old_next = current->_next;
     
@@ -117,15 +126,19 @@ void delete_chara3_ctl_list(struct chara3_ctl_list *current){
     return;
 };
 
-int count_chara3_ctl_list(struct chara3_ctl_list *head){
+static int count_maxlen_chara3_ctl_list(const char *label, 
+			struct chara3_ctl_list *head, int mlen3[3]){
     int num = 0;
+    mlen3[0] = (int) strlen(label);
+    mlen3[1] = 0;
+    mlen3[2] = 0;
     head = head->_next;
     while (head != NULL){
-        if((int) strlen(head->c3_item->c1_tbl) > head->mlen3->mlen[1]){
-            head->mlen3->mlen[1] = (int) strlen(head->c3_item->c1_tbl);
+        if((int) strlen(head->c3_item->c1_tbl) > mlen3[1]){
+            mlen3[1] = (int) strlen(head->c3_item->c1_tbl);
         };
-        if((int) strlen(head->c3_item->c2_tbl) > head->mlen3->mlen[2]){ 
-            head->mlen3->mlen[2] = (int) strlen(head->c3_item->c2_tbl);
+        if((int) strlen(head->c3_item->c2_tbl) > mlen3[2]){ 
+            mlen3[2] = (int) strlen(head->c3_item->c2_tbl);
         };
         
         head = head->_next;
@@ -134,7 +147,17 @@ int count_chara3_ctl_list(struct chara3_ctl_list *head){
     return num;
 };
 
-struct chara3_ctl_list *set_chara3_ctl_list_pointer(int index, struct chara3_ctl_list *head){
+static int count_chara3_ctl_list(struct chara3_ctl_list *head){
+    int num = 0;
+    head = head->_next;
+    while (head != NULL){
+        head = head->_next;
+		num = num + 1;
+    };
+    return num;
+};
+
+struct chara3_ctl_list *find_c3_ctl_list_item_by_index(int index, struct chara3_ctl_list *head){
     int num = 0;
     head = head->_next;
     while (head != NULL){
@@ -146,7 +169,17 @@ struct chara3_ctl_list *set_chara3_ctl_list_pointer(int index, struct chara3_ctl
     return head;
 };
 
-int read_chara3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
+static struct chara3_ctl_list *find_c3_ctl_list_item_by_c_tbl(char *ref,
+			struct chara3_ctl_list *head){
+    head = head->_next;
+    while (head != NULL){
+		if(cmp_no_case_c(head->c3_item->c1_tbl, ref)) return head;
+        head = head->_next;
+    };
+    return head;
+};
+
+static int read_chara3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara3_ctl_list *head){
     int iflag = 0;
     int icou = 0;
@@ -169,24 +202,127 @@ int read_chara3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     return icou;
 };
 
-int write_chara3_ctl_list(FILE *fp, int level, const char *label, 
+static int write_chara3_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara3_ctl_list *head){
-    
-    int num = count_chara3_ctl_list(head);
+    int mlen3[3];
+    int num = count_maxlen_chara3_ctl_list(label, head, mlen3);
     
     if(num == 0) return level;
     
     fprintf(fp, "!\n");
-    head->mlen3->mlen[0] = (int) strlen(label);
     level = write_array_flag_for_ctl_c(fp, level, label, num);
     head = head->_next;
     
     while (head != NULL) {    /* Go through null pointer*/
-        level = write_chara3_ctl_item_c(fp, level, head->mlen3->mlen,
+        level = write_chara3_ctl_item_c(fp, level, mlen3,
                                      label, head->c3_item);
         head = head->_next;
     }
     level = write_end_array_flag_for_ctl_c(fp, level, label);
     return level;
+};
+
+
+static void append_chara3_ctl_list(char *c1_in, char *c2_in, char *c3_in,
+                      struct chara3_ctl_list *head){
+	int num = count_chara3_ctl_list(head);
+	head = find_c3_ctl_list_item_by_index(num, head);
+	head = add_chara3_ctl_list(head);
+	if(head !=NULL) update_chara3_ctl_item_c(c1_in, c2_in, c3_in, head->c3_item);
+    return;
+};
+static void del_chara3_ctl_list_by_index(int index, struct chara3_ctl_list *head){
+	head = find_c3_ctl_list_item_by_index(index, head);
+	if(head !=NULL) delete_chara3_ctl_list(head);
+	return;
+};
+
+static void update_chara3_ctl_list_by_index(int index, char *c1_in, char *c2_in, char *c3_in,
+			struct chara3_ctl_list *head){
+	head = find_c3_ctl_list_item_by_index(index, head);
+	if(head !=NULL) update_chara3_ctl_item_c(c1_in, c2_in, c3_in, head->c3_item);
+	return;
+};
+
+static void set_from_chara3_ctl_list_at_index(int index, struct chara3_ctl_list *head,
+			char *c1_out, char *c2_out,  char *c3_out){
+	head = find_c3_ctl_list_item_by_index(index, head);
+	if(head !=NULL) set_from_chara3_ctl_item_c(head->c3_item, c1_out, c2_out, c3_out);
+	return;
+};
+
+
+
+static void del_chara3_ctl_list_by_c_tbl(char *ref, struct chara3_ctl_list *head){
+	head = find_c3_ctl_list_item_by_c_tbl(ref, head);
+	if(head != NULL) delete_chara3_ctl_list(head);
+	return;
+};
+
+static void update_chara3_ctl_list_by_c_tbl(char *ref, char *c1_in, char *c2_in, char *c3_in,
+			struct chara3_ctl_list *head){
+	head = find_c3_ctl_list_item_by_c_tbl(ref, head);
+	if(head != NULL) update_chara3_ctl_item_c(c1_in, c2_in, c3_in, head->c3_item);
+	return;
+};
+
+static void set_from_chara3_ctl_list_at_c_tbl(char *ref, struct chara3_ctl_list *head,
+			char *c1_out, char *c2_out, char *c3_out){
+	head = find_c3_ctl_list_item_by_c_tbl(ref, head);
+	if(head != NULL) set_from_chara3_ctl_item_c(head->c3_item, c1_out, c2_out, c3_out);
+	return;
+};
+
+
+
+void init_chara3_clist(struct chara3_clist *c3_clst){
+	init_chara3_ctl_list(&c3_clst->c3_item_head);
+};
+void clear_chara3_clist(struct chara3_clist *c3_clst){
+	clear_chara3_ctl_list(&c3_clst->c3_item_head);
+};
+int count_chara3_clist(struct chara3_clist *c3_clst){
+	 return count_chara3_ctl_list(&c3_clst->c3_item_head);
+};
+
+int read_chara3_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+                   struct chara3_clist *c3_clst){
+	 return read_chara3_ctl_list(fp, buf, label, &c3_clst->c3_item_head);
+};
+int write_chara3_clist(FILE *fp, int level, const char *label, 
+                    struct chara3_clist *c3_clst){
+	 return write_chara3_ctl_list(fp, level, label, &c3_clst->c3_item_head);
+};
+
+void append_chara3_clist(char *c1_in, char *c2_in, char *c3_in,
+                      struct chara3_clist *c3_clst){
+	append_chara3_ctl_list(c1_in, c2_in, c3_in, &c3_clst->c3_item_head);
+};
+void del_chara3_clist_by_index(int index, struct chara3_clist *c3_clst){
+	del_chara3_ctl_list_by_index(index, &c3_clst->c3_item_head);
+};
+void update_chara3_clist_by_index(int index, char *c1_in, char *c2_in, char *c3_in,
+			struct chara3_clist *c3_clst){
+	update_chara3_ctl_list_by_index(index, c1_in, c2_in, c3_in,
+			&c3_clst->c3_item_head);
+};
+void set_from_chara3_clist_at_index(int index, struct chara3_clist *c3_clst,
+			char *c1_out, char *c2_out, char *c3_out){
+	set_from_chara3_ctl_list_at_index(index, &c3_clst->c3_item_head,
+			c1_out, c2_out, c3_out);
+};
+
+void del_chara3_clist_by_c_tbl(char *ref, struct chara3_clist *c3_clst){
+	del_chara3_ctl_list_by_c_tbl(ref, &c3_clst->c3_item_head);
+};
+void update_chara3_clist_by_c_tbl(char *ref, char *c1_in, char *c2_in, char *c3_in,
+			struct chara3_clist *c3_clst){
+	update_chara3_ctl_list_by_c_tbl(ref, c1_in, c2_in, c3_in,
+			&c3_clst->c3_item_head);
+};
+void set_from_chara3_clist_at_c_tbl(char *ref, struct chara3_clist *c3_clst,
+			char *c1_out, char *c2_out, char *c3_out){
+	set_from_chara3_ctl_list_at_c_tbl(ref, &c3_clst->c3_item_head,
+			c1_out, c2_out, c3_out);
 };
 

@@ -27,9 +27,9 @@ struct sphere_domain_ctl_c{
 	struct int_ctl_item *num_radial_domain_c;
 	struct int_ctl_item *num_horiz_domain_c;
 	
-	struct chara_int_ctl_list ndomain_sph_grid_list;
-	struct chara_int_ctl_list ndomain_legendre_list;
-	struct chara_int_ctl_list ndomain_spectr_list;
+	struct chara_int_clist *ndomain_sph_grid_list;
+	struct chara_int_clist *ndomain_legendre_list;
+	struct chara_int_clist *ndomain_spectr_list;
 };
 
 struct sphere_data_ctl_c{
@@ -45,7 +45,7 @@ struct sphere_data_ctl_c{
 	struct int_ctl_item *ngrid_azimuth_c;
 	
 	struct int_real_ctl_list radius_list;
-	struct chara_int_ctl_list radial_grp_list;
+	struct chara_int_clist *radial_grp_list;
 	
 	struct chara_ctl_item *radial_grid_type_c;
 	struct int_ctl_item *num_fluid_grid_c;

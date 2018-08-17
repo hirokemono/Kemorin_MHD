@@ -31,6 +31,10 @@ struct chara_int_ctl_list{
     struct chara_int_ctl_list *_next;
 };
 
+struct chara_int_clist{
+	struct chara_int_ctl_list ci_item_head;
+};
+
 
 /* prototypes */
 
@@ -40,16 +44,32 @@ int read_chara_int_ctl_item_c(char buf[LENGTHBUF], const char *label, struct cha
 int write_chara_int_ctl_item_c(FILE *fp, int level, int maxlen[2], 
 			const char *label, struct chara_int_ctl_item *ci_item);
 
-void init_chara_int_ctl_list(struct chara_int_ctl_list *head);
-void clear_chara_int_ctl_list(struct chara_int_ctl_list *head);
-struct chara_int_ctl_list *add_chara_int_ctl_list(struct chara_int_ctl_list *current);
-void delete_chara_int_ctl_list(struct chara_int_ctl_list *current);
-int count_chara_int_ctl_list(struct chara_int_ctl_list *head);
-struct chara_int_ctl_list *set_chara_int_ctl_list_pointer(int index, struct chara_int_ctl_list *head);
+void update_chara_int_ctl_item_c(char *c_in, int i1_in,
+                              struct chara_int_ctl_item *ci_item);
+void set_from_chara_int_ctl_item_c( struct chara_int_ctl_item *ci_item,
+                              char *c_out, int *i1_out);
 
-int read_chara_int_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
-                      struct chara_int_ctl_list *head);
-int write_chara_int_ctl_list(FILE *fp, int level, const char *label, 
-                       struct chara_int_ctl_list *head);
+
+void init_chara_int_clist(struct chara_int_clist *ci_clst);
+void clear_chara_int_clist(struct chara_int_clist *ci_clst);
+int count_chara_int_clist(struct chara_int_clist *ci_clst);
+int read_chara_int_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+                      struct chara_int_clist *ci_clst);
+int write_chara_int_clist(FILE *fp, int level, const char *label, 
+                       struct chara_int_clist *ci_clst);
+
+void append_chara_int_clist(char *c_in, int i1_in,
+                      struct chara_int_clist *ci_clst);
+void del_chara_int_clist_by_index(int index, struct chara_int_clist *ci_clst);
+void update_chara_int_clist_by_index(int index, char *c_in, int i1_in,
+			struct chara_int_clist *ci_clst);
+void set_from_chara_int_clist_at_index(int index, struct chara_int_clist *ci_clst,
+			char *c_out, int *i1_out);
+
+void del_chara_int_clist_by_c_tbl(char *ref, struct chara_int_clist *ci_clst);
+void update_chara_int_clist_by_c_tbl(char *ref, char *c_in, int i1_in,
+			struct chara_int_clist *ci_clst);
+void set_from_chara_int_clist_at_c_tbl(char *ref, struct chara_int_clist *ci_clst,
+			char *c_out, int *i1_out);
 
 #endif /* t_control_chara_int_IO_h_ */
