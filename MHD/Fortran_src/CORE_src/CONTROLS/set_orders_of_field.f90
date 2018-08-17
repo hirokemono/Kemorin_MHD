@@ -54,6 +54,7 @@
               exit
             end if
           end do
+        end do
       end if
 !
       end subroutine s_set_orders_of_field

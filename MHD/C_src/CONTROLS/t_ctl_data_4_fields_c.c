@@ -120,15 +120,15 @@ static int read_field_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
 
 static int write_field_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara3_ctl_item *tmp_fld_item, struct chara_int2_ctl_list *head){
+	int mlen2[2];
 	int maxlen[3];
 	
-    int num = count_chara_int2_ctl_list(head);
+    int num = count_maxlen_chara_int2_ctl_list(label, head, mlen2);
+	maxlen[0] = mlen2[0];
+	maxlen[1] = mlen2[1];
+	maxlen[2] = (int) strlen("Viz_Off");
     
     if(num == 0) return level;
-    
-    maxlen[0] = (int) strlen(label);
-    maxlen[1] = head->mlen2->mlen[1];
-	maxlen[2] = (int) strlen("Viz_Off");
 	
     fprintf(fp, "!\n");
     level = write_array_flag_for_ctl_c(fp, level, label, num);

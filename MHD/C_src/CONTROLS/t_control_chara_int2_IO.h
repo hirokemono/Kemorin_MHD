@@ -31,6 +31,9 @@ struct chara_int2_ctl_list{
     struct chara_int2_ctl_list *_next;
 };
 
+struct chara_int2_clist{
+	struct chara_int2_ctl_list ci2_item_head;
+};
 
 /* prototypes */
 
@@ -70,6 +73,30 @@ void del_chara_int2_ctl_list_by_c_tbl(char *ref, struct chara_int2_ctl_list *hea
 void update_chara_int2_ctl_list_by_c_tbl(char *ref, char *c_in, int i1_in, int i2_in,
 			struct chara_int2_ctl_list *head);
 void set_from_chara_int2_ctl_list_at_c_tbl(char *ref, struct chara_int2_ctl_list *head,
+			char *c_out, int *i1_out, int *i2_out);
+
+
+void init_chara_int2_clist(struct chara_int2_clist *ci2_clst);
+void clear_chara_int2_clist(struct chara_int2_clist *ci2_clst);
+int count_chara_int2_clist(struct chara_int2_clist *ci2_clst);
+
+int read_chara_int2_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+                      struct chara_int2_clist *ci2_clst);
+int write_chara_int2_clist(FILE *fp, int level, const char *label, 
+                       struct chara_int2_clist *ci2_clst);
+
+void append_chara_int2_clist(char *c_in, int i1_in, int i2_in,
+                      struct chara_int2_clist *ci2_clst);
+void del_chara_int2_clist_by_index(int index, struct chara_int2_clist *ci2_clst);
+void update_chara_int2_clist_by_index(int index, char *c_in, int i1_in, int i2_in,
+			struct chara_int2_clist *ci2_clst);
+void set_from_chara_int2_clist_at_index(int index, struct chara_int2_clist *ci2_clst,
+			char *c_out, int *i1_out, int *i2_out);
+
+void del_chara_int2_clist_by_c_tbl(char *ref, struct chara_int2_clist *ci2_clst);
+void update_chara_int2_clist_by_c_tbl(char *ref, char *c_in, int i1_in, int i2_in,
+			struct chara_int2_clist *ci2_clst);
+void set_from_chara_int2_clist_at_c_tbl(char *ref, struct chara_int2_clist *ci2_clst,
 			char *c_out, int *i1_out, int *i2_out);
 
 #endif /* t_control_chara_int2_IO_h_ */
