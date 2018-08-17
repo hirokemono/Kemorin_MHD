@@ -64,7 +64,7 @@ int main(int argc, char **argv)
     read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
     
     bc_vws = (struct boundary_condition_view *) malloc(sizeof(struct boundary_condition_view));
-    init_temp_bc_views_GTK(mhd_ctl->model_ctl, bc_vws);
+    init_temp_bc_views_GTK(mhd_ctl->model_ctl->nbc_ctl->bc_T_ctl, bc_vws);
 
     gtk_init(&argc, &argv);
     

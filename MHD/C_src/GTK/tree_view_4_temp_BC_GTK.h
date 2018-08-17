@@ -10,7 +10,7 @@
 
 #include <gtk/gtk.h>
 
-#include "t_ctl_data_SGS_MHD_model_c.h"
+#include "t_control_chara2_real_IO.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_chara2_real_GTK.h"
 
@@ -20,12 +20,12 @@ struct boundary_condition_view{
     GtkTreeView *bc_tree_view;
     GtkTreeView *bc_type_tree_view;
     
-    struct MHD_boundary_ctl_c *bc_ctl_gtk;
+    struct chara2_real_clist *bc_T_gtk;
 };
 
 /* prototypes */
 
-void init_temp_bc_views_GTK(struct mhd_model_control_c *model_ctl,
+void init_temp_bc_views_GTK(struct chara2_real_clist *bc_T_ctl,
                                     struct boundary_condition_view *bc_vws);
 
 void init_bc_temp_tree_view(struct boundary_condition_view *bc_vws);

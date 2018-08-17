@@ -44,7 +44,7 @@ struct projection_mat_ctl_c{
 struct modeview_ctl_c{
 	int maxlen;
 	
-	struct chara2_real_ctl_list modelview_mat_ctl;
+	struct chara2_real_clist *modelview_mat_ctl;
 	
 	struct chara_real_ctl_list lookpoint_list;
 	struct chara_real_ctl_list viewpoint_list;

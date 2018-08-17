@@ -83,8 +83,8 @@ static void unblock_changed_signal(GObject *instance)
 }
 
 
-void c2r_tree_name_edited(gchar *path_str, gchar *new_text,
-                         GtkTreeView *c2r_tree_view, struct chara2_real_ctl_list *c2r_list_head)
+void c2r_tree_1st_text_edited(gchar *path_str, gchar *new_text,
+                         GtkTreeView *c2r_tree_view, struct chara2_real_clist *c2r_clst)
 {
     GtkTreeModel *model = gtk_tree_view_get_model (c2r_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
@@ -92,28 +92,28 @@ void c2r_tree_name_edited(gchar *path_str, gchar *new_text,
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
     GtkTreeIter iter;
     
-    gchar *old_text;
+    gchar *first_string;
     gchar *second_string;
     double old_value, new_value;
     
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_text, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &first_string, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &second_string, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value, -1);
     
-    printf("Change %s to %s\n", old_text, new_text);
+    printf("Change %s to %s\n", first_string, new_text);
     
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
                        COLUMN_FIELD_NAME, new_text, -1);
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    update_chara2_real_ctl_list_by_c_tbl(old_text, new_text, second_string, 
-                                         old_value, c2r_list_head);
+    update_chara2_real_clist_by_c_tbl(first_string, new_text, second_string, 
+                                         old_value, c2r_clst);
 }
 
-void c2r_tree_type_edited(gchar *path_str, gchar *new_text,
-                         GtkTreeView *c2r_tree_view, struct chara2_real_ctl_list *c2r_list_head)
+void c2r_tree_2nd_text_edited(gchar *path_str, gchar *new_text,
+                         GtkTreeView *c2r_tree_view, struct chara2_real_clist *c2r_clst)
 {
     GtkTreeModel *model = gtk_tree_view_get_model (c2r_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
@@ -121,12 +121,12 @@ void c2r_tree_type_edited(gchar *path_str, gchar *new_text,
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
     GtkTreeIter iter;
     
-    gchar *old_text;
+    gchar *first_string;
     gchar *second_string;
     double old_value, new_value;
     
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_text, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &first_string, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &second_string, -1);
     gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value, -1);
     
@@ -137,12 +137,12 @@ void c2r_tree_type_edited(gchar *path_str, gchar *new_text,
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    update_chara2_real_ctl_list_by_c_tbl(old_text, new_text, second_string, 
-                                         old_value, c2r_list_head);
+	update_chara2_real_clist_by_c_tbl(first_string, first_string,
+				new_text, old_value, c2r_clst);
 }
 
 void c2r_tree_value_edited(gchar *path_str, gchar *new_text, 
-                          GtkTreeView *c2r_tree_view, struct chara2_real_ctl_list *c2r_list_head)
+                          GtkTreeView *c2r_tree_view, struct chara2_real_clist *c2r_clst)
 {
     GtkTreeModel *model = gtk_tree_view_get_model (c2r_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
@@ -167,8 +167,7 @@ void c2r_tree_value_edited(gchar *path_str, gchar *new_text,
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    update_chara2_real_ctl_list_by_c_tbl(old_text, old_text, second_string, 
-                                         new_value, c2r_list_head);
+    update_chara2_real_clist_by_c_tbl(old_text, old_text, second_string, new_value, c2r_clst);
     
 }
 
@@ -208,7 +207,7 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
 }
 
 int add_c2r_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add, 
-                              struct chara2_real_ctl_list *c2r_list_head)
+                              struct chara2_real_clist *c2r_clst)
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
@@ -218,13 +217,13 @@ int add_c2r_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add,
     double value = 0.0;
     
     index = append_cr_item_to_tree(index, row_string, second_string, value, child_model_to_add);
-    append_chara2_real_ctl_list(row_string, second_string, value, c2r_list_head);
+    append_chara2_real_clist(row_string, second_string, value, c2r_clst);
     
     return index;
 }
 
 int add_c2r_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tree_model,
-                                  GtkTreeView *tree_view_to_add, struct chara2_real_ctl_list *c2r_list_head)
+                                  GtkTreeView *tree_view_to_add, struct chara2_real_clist *c2r_clst)
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
@@ -241,12 +240,12 @@ int add_c2r_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *t
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_VALUE, &value, -1);
     
     index = append_cr_item_to_tree(index, row_string, second_string, value, child_model_to_add);
-    append_chara2_real_ctl_list(row_string, second_string, value, c2r_list_head);
+    append_chara2_real_clist(row_string, second_string, value, c2r_clst);
     return index;
 }
 
 int add_c2r_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeModel *tree_model,
-                                        GtkTreeView *tree_view_to_add, struct chara2_real_ctl_list *c2r_list_head)
+                                        GtkTreeView *tree_view_to_add, struct chara2_real_clist *c2r_clst)
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
@@ -262,12 +261,12 @@ int add_c2r_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMo
     gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &second_string, -1);
     
     index = append_cr_item_to_tree(index, row_string, second_string, value, child_model_to_add);
-    append_chara2_real_ctl_list(row_string, second_string, value, c2r_list_head);
+    append_chara2_real_clist(row_string, second_string, value, c2r_clst);
     return index;
 }
 
 void delete_c2r_list_items_GTK(GtkTreeView *tree_view_to_del,
-                              struct chara2_real_ctl_list *c2r_list_head)
+                              struct chara2_real_clist *c2r_clst)
 {
     GtkTreeModel *model_to_del;
     GtkTreeModel *child_model_to_del;
@@ -329,7 +328,7 @@ void delete_c2r_list_items_GTK(GtkTreeView *tree_view_to_del,
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
         
         /* Update control data */
-        del_chara2_real_ctl_list_by_c_tbl(field_name, c2r_list_head);
+        del_chara2_real_clist_by_c_tbl(field_name, c2r_clst);
     }
     g_list_free(reference_list);
     

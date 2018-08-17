@@ -18,15 +18,15 @@
 struct MHD_boundary_ctl_c{
 	int maxlen;
 	
-	struct chara2_real_ctl_list bc_T_ctl;
-	struct chara2_real_ctl_list bc_U_ctl;
-	struct chara2_real_ctl_list bc_P_ctl;
-	struct chara2_real_ctl_list bc_C_ctl;
-	struct chara2_real_ctl_list bc_B_ctl;
-	struct chara2_real_ctl_list bc_MP_ctl;
-	struct chara2_real_ctl_list bc_A_ctl;
-	struct chara2_real_ctl_list bc_J_ctl;
-	struct chara2_real_ctl_list bc_infty_ctl;
+	struct chara2_real_clist *bc_T_ctl;
+	struct chara2_real_clist *bc_U_ctl;
+	struct chara2_real_clist *bc_P_ctl;
+	struct chara2_real_clist *bc_C_ctl;
+	struct chara2_real_clist *bc_B_ctl;
+	struct chara2_real_clist *bc_MP_ctl;
+	struct chara2_real_clist *bc_A_ctl;
+	struct chara2_real_clist *bc_J_ctl;
+	struct chara2_real_clist *bc_infty_ctl;
 };
 
 /* prototype */

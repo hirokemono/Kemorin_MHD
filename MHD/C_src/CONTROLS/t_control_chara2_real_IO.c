@@ -72,19 +72,13 @@ void set_from_chara2_real_ctl_item_c(struct chara2_real_ctl_item *c2r_item,
 
 
 
-void init_c2r_ctl_list(struct chara2_real_ctl_list *head){
-    int i;
-    head->mlen3 = (struct maxlen_3 *) malloc(sizeof(struct maxlen_3));
-    for(i=0; i<3; i++) {head->mlen3->mlen[i] = 0;};
-	
+static void init_c2r_ctl_list(struct chara2_real_ctl_list *head){
     head->_prev = NULL;
     head->_next = NULL;
     return;
 };
 
-void clear_c2r_ctl_list(struct chara2_real_ctl_list *head){
-	free(head->mlen3);
-	
+static void clear_c2r_ctl_list(struct chara2_real_ctl_list *head){
     head = head->_next;
     while (head != NULL) {
         dealloc_c2r_ctl_item_c(head->c2r_item);
@@ -108,7 +102,6 @@ struct chara2_real_ctl_list *add_c2r_ctl_list(struct chara2_real_ctl_list *curre
         exit(0);
     }
 	alloc_c2r_ctl_item_c(added->c2r_item);
-	added->mlen3 = current->mlen3;
     
     /* replace from  current -> p2　to current -> p1 -> p2 */
     old_next= current->_next;
@@ -133,17 +126,31 @@ void delete_c2r_ctl_list(struct chara2_real_ctl_list *current){
     return;
 };
 
+int count_maxlen_c2r_ctl_list(const char *label, 
+			struct chara2_real_ctl_list *head, int mlen3[3]){
+    int num = 0;
+    mlen3[0] = (int) strlen(label);
+    mlen3[1] = 0;
+    mlen3[2] = 0;
+    head = head->_next;
+    while (head != NULL){
+        if((int) strlen(head->c2r_item->c1_tbl) > mlen3[1]){
+            mlen3[1] = (int) strlen(head->c2r_item->c1_tbl);
+        };
+        if((int) strlen(head->c2r_item->c2_tbl) > mlen3[2]){ 
+            mlen3[2] = (int) strlen(head->c2r_item->c2_tbl);
+        };
+        
+        head = head->_next;
+		num = num + 1;
+    };
+    return num;
+};
+
 int count_c2r_ctl_list(struct chara2_real_ctl_list *head){
     int num = 0;
     head = head->_next;
     while (head != NULL){
-        if((int) strlen(head->c2r_item->c1_tbl) > head->mlen3->mlen[1]){
-            head->mlen3->mlen[1] = (int) strlen(head->c2r_item->c1_tbl);
-        };
-        if((int) strlen(head->c2r_item->c2_tbl) > head->mlen3->mlen[2]){ 
-            head->mlen3->mlen[2] = (int) strlen(head->c2r_item->c2_tbl);
-        };
-        
         head = head->_next;
 		num = num + 1;
     };
@@ -194,19 +201,17 @@ int read_c2r_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
 
 int write_c2r_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara2_real_ctl_list *head){
-    
-    int num = count_c2r_ctl_list(head);
+    int mlen3[3];
+    int num = count_maxlen_c2r_ctl_list(label, head, mlen3);
     
     if(num == 0) return level;
     
     fprintf(fp, "!\n");
-    head->mlen3->mlen[0] = (int) strlen(label);
     level = write_array_flag_for_ctl_c(fp, level, label, num);
     head = head->_next;
     
     while (head != NULL) {    /* Go through null pointer*/
-        level = write_c2r_ctl_item_c(fp, level, head->mlen3->mlen,
-                                     label, head->c2r_item);
+        level = write_c2r_ctl_item_c(fp, level, mlen3, label, head->c2r_item);
         head = head->_next;
     }
     level = write_end_array_flag_for_ctl_c(fp, level, label);
@@ -258,10 +263,63 @@ void update_chara2_real_ctl_list_by_c_tbl(char *ref, char *c1_in, char *c2_in, d
 	return;
 };
 
-void set_from_chara2_real_ctl_list_at_c_tbl(char *ref, struct chara2_real_ctl_list *head,
+static void set_from_chara2_real_ctl_list_at_c_tbl(char *ref, struct chara2_real_ctl_list *head,
 			char *c1_out, char *c2_out, double *r_out){
 	head = find_c2r_ctl_list_item_by_c_tbl(ref, head);
 	if(head != NULL) set_from_chara2_real_ctl_item_c(head->c2r_item, c1_out, c2_out, r_out);
 	return;
+};
+
+
+
+void init_c2r_clist(struct chara2_real_clist *c2r_clst){
+	init_c2r_ctl_list(&c2r_clst->c2r_item_head);
+};
+void clear_c2r_clist(struct chara2_real_clist *c2r_clst){
+	clear_c2r_ctl_list(&c2r_clst->c2r_item_head);
+};
+int count_c2r_clist(struct chara2_real_clist *c2r_clst){
+	 return count_c2r_ctl_list(&c2r_clst->c2r_item_head);
+};
+
+int read_c2r_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+                   struct chara2_real_clist *c2r_clst){
+	 return read_c2r_ctl_list(fp, buf, label, &c2r_clst->c2r_item_head);
+};
+int write_c2r_clist(FILE *fp, int level, const char *label, 
+                    struct chara2_real_clist *c2r_clst){
+	 return write_c2r_ctl_list(fp, level, label, &c2r_clst->c2r_item_head);
+};
+
+void append_chara2_real_clist(char *c1_in, char *c2_in, double r_in,
+                      struct chara2_real_clist *c2r_clst){
+	append_chara2_real_ctl_list(c1_in, c2_in, r_in, &c2r_clst->c2r_item_head);
+};
+void del_chara2_real_clist_by_index(int index, struct chara2_real_clist *c2r_clst){
+	del_chara2_real_ctl_list_by_index(index, &c2r_clst->c2r_item_head);
+};
+void update_chara2_real_clist_by_index(int index, char *c1_in, char *c2_in, double r_in,
+			struct chara2_real_clist *c2r_clst){
+	update_chara2_real_ctl_list_by_index(index, c1_in, c2_in, r_in,
+			&c2r_clst->c2r_item_head);
+};
+void set_from_chara2_real_clist_at_index(int index, struct chara2_real_clist *c2r_clst,
+			char *c1_out, char *c2_out, double *r_out){
+	set_from_chara2_real_ctl_list_at_index(index, &c2r_clst->c2r_item_head,
+			c1_out, c2_out, r_out);
+};
+
+void del_chara2_real_clist_by_c_tbl(char *ref, struct chara2_real_clist *c2r_clst){
+	del_chara2_real_ctl_list_by_c_tbl(ref, &c2r_clst->c2r_item_head);
+};
+void update_chara2_real_clist_by_c_tbl(char *ref, char *c1_in, char *c2_in, double r_in,
+			struct chara2_real_clist *c2r_clst){
+	update_chara2_real_ctl_list_by_c_tbl(ref, c1_in, c2_in, r_in,
+			&c2r_clst->c2r_item_head);
+};
+void set_from_chara2_real_clist_at_c_tbl(char *ref, struct chara2_real_clist *c2r_clst,
+			char *c1_out, char *c2_out, double *r_out){
+	set_from_chara2_real_ctl_list_at_c_tbl(ref, &c2r_clst->c2r_item_head,
+			c1_out, c2_out, r_out);
 };
 

@@ -26,20 +26,20 @@ int append_c2r_item_to_tree(int index, char *c1_tbl, char *c2_tbl, double r_data
 int append_c2r_list_from_ctl(int index, struct chara2_real_ctl_list *head, 
                             GtkTreeView *c2r_tree_view);
 
-void c2r_tree_name_edited(gchar *path_str, gchar *new_text,
-                         GtkTreeView *c2r_tree_view, struct chara2_real_ctl_list *c2r_list_head);
-void c2r_tree_type_edited(gchar *path_str, gchar *new_text,
-                         GtkTreeView *c2r_tree_view, struct chara2_real_ctl_list *c2r_list_head);
+void c2r_tree_1st_text_edited(gchar *path_str, gchar *new_text,
+                         GtkTreeView *c2r_tree_view, struct chara2_real_clist *c2r_clst);
+void c2r_tree_2nd_text_edited(gchar *path_str, gchar *new_text,
+                         GtkTreeView *c2r_tree_view, struct chara2_real_clist *c2r_clst);
 void c2r_tree_value_edited(gchar *path_str, gchar *new_text, 
-                          GtkTreeView *c2r_tree_view, struct chara2_real_ctl_list *c2r_list_head);
+                          GtkTreeView *c2r_tree_view, struct chara2_real_clist *c2r_clst);
 int add_c2r_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add, 
-                              struct chara2_real_ctl_list *c2r_list_head);
+                              struct chara2_real_clist *c2r_clst);
 int add_c2r_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tree_model,
-                                  GtkTreeView *tree_view_to_add, struct chara2_real_ctl_list *c2r_list_head);
+                                  GtkTreeView *tree_view_to_add, struct chara2_real_clist *c2r_clst);
 int add_c2r_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeModel *tree_model,
-                                        GtkTreeView *tree_view_to_add, struct chara2_real_ctl_list *c2r_list_head);
+                                        GtkTreeView *tree_view_to_add, struct chara2_real_clist *c2r_clst);
 void delete_c2r_list_items_GTK(GtkTreeView *tree_view_to_del,
-                              struct chara2_real_ctl_list *c2r_list_head);
+                              struct chara2_real_clist *c2r_clst);
 
 
 void create_text2_real_tree_view(GtkListStore *cbox_child_model, GtkTreeView *c2r_tree_view,

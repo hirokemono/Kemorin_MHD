@@ -126,6 +126,7 @@ int count_maxlen_chara_int2_ctl_list(const char *label,
 			struct chara_int2_ctl_list *head, int mlen2[2]){
 	int num = 0;
 	mlen2[0] = (int) strlen(label);
+	mlen2[1] = 0;
     head = head->_next;
     while (head != NULL){
         if((int) strlen(head->ci2_item->c_tbl) > mlen2[1]){
@@ -244,14 +245,14 @@ void del_chara_int2_ctl_list_by_c_tbl(char *ref, struct chara_int2_ctl_list *hea
 	return;
 };
 
-void update_chara_int2_ctl_list_by_c_tbl(char *ref, char *c_in, int i1_in, int i2_in,
+static void update_chara_int2_ctl_list_by_c_tbl(char *ref, char *c_in, int i1_in, int i2_in,
 			struct chara_int2_ctl_list *head){
 	head = find_ci2_ctl_list_item_by_c_tbl(ref, head);
 	if(head != NULL) update_chara_int2_ctl_item_c(c_in, i1_in, i2_in, head->ci2_item);
 	return;
 };
 
-void set_from_chara_int2_ctl_list_at_c_tbl(char *ref, struct chara_int2_ctl_list *head,
+static void set_from_chara_int2_ctl_list_at_c_tbl(char *ref, struct chara_int2_ctl_list *head,
 			char *c_out, int *i1_out, int *i2_out){
 	head = find_ci2_ctl_list_item_by_c_tbl(ref, head);
 	if(head != NULL) set_from_chara_int2_ctl_item_c(head->ci2_item, c_out, i1_out, i2_out);
