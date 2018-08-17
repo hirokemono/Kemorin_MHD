@@ -7,7 +7,8 @@
 !> @brief control data for parallel volume rendering
 !!
 !!@verbatim
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!      subroutine deallocate_cont_dat_pvr(pvr)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!      subroutine deallocate_cont_dat_pvr(pvr)
 !!
 !!      subroutine reset_pvr_update_flags(pvr)
 !!      subroutine read_pvr_ctl(hd_block, hd_pvr_colordef, pvr)

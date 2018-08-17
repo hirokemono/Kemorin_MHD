@@ -23,6 +23,9 @@
 #define NUM_DEFAULT_COEF_DEF  6
 #define NUM_GRAVITY_DEF  3
 
+#define NUM_BASIC_BC_TYPE_DEF  10
+#define NUM_BOUNDARY_TYPE_DEF  25
+
 #define NCHARA_FLAG 30
 
 struct direction_flag_def{
@@ -46,6 +49,8 @@ extern const struct direction_flag_def surface_equation_flags[NTERM_PLANE];
 extern const struct direction_flag_def force_flag_def[NUM_TOTAL_FORCE];
 extern const struct constant_flag_def default_coefs_def[NUM_DEFAULT_COEF_DEF];
 extern const struct direction_flag_def gravity_type_def[NUM_GRAVITY_DEF];
+
+extern const char boundary_type_def[NUM_BOUNDARY_TYPE_DEF][NCHARA_FLAG];
 
 /* prototypes */
 

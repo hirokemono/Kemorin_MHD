@@ -8,7 +8,7 @@
 #include "tree_view_4_each_term_GTK.h"
 
 
-static void init_momentum_views_GTK(struct mhd_model_control_c *model_ctl,
+void init_momentum_views_GTK(struct mhd_model_control_c *model_ctl,
                                     struct dimless_views *dless_vws, 
                                     struct momentum_coefs_view *mom_vws){
     mom_vws->mom_ctl_gtk = model_ctl->eqs_ctl->mom_ctl_c;
@@ -90,13 +90,13 @@ static void cb_add_thermal_buo_coef_new(GtkButton *button, gpointer user_data)
 }
 
 void init_momentum_tree_view(struct momentum_coefs_view *mom_vws){
-    GtkCellRenderer *renderer_combobox = gtk_cell_renderer_combo_new();
+    GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
     GtkCellRenderer *renderer_spin = gtk_cell_renderer_spin_new();
     
     create_text_real_tree_view(GTK_TREE_VIEW(mom_vws->coefs_tree_view),
-                               renderer_combobox, renderer_spin);
+                               renderer_text, renderer_spin);
     
-    g_signal_connect(G_OBJECT(renderer_combobox), "edited", 
+    g_signal_connect(G_OBJECT(renderer_text), "edited", 
                      G_CALLBACK(thermal_buo_name_edited_cb), mom_vws);
     g_signal_connect(G_OBJECT(renderer_spin), "edited", 
                      G_CALLBACK(thermal_buo_value_edited_cb), mom_vws);

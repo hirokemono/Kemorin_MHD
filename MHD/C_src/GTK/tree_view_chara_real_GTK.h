@@ -14,8 +14,6 @@
 #include "t_control_chara_real_IO.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 
-/*    struct dimless_ctl_c *dless_ctl_gtk;*/
-
 void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data);
 
 
@@ -46,9 +44,6 @@ void add_chara_real_list_box_w_addbottun(GtkTreeView *cr_tree_view,
 			GtkWidget *vbox);
 void add_chara_real_list_box_w_combobox(GtkTreeView *cr_tree_view, 
 			GtkWidget *button_add, GtkWidget *combobox_add, GtkWidget *button_delete, 
-			GtkWidget *vbox);
-void add_combobox_real_list_box_w_addbottun(GtkTreeView *cr_tree_view, 
-			GtkWidget *button_add, GtkWidget *button_delete, 
 			GtkWidget *vbox);
 
 #endif /* tree_view_chara_real_GTK_h_ */

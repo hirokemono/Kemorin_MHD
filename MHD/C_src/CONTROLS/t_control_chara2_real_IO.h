@@ -40,17 +40,38 @@ int read_c2r_ctl_item_c(char buf[LENGTHBUF], const char *label,
 int write_c2r_ctl_item_c(FILE *fp, int level, int maxlen[3], 
 			const char *label, struct chara2_real_ctl_item *c2r_item);
 
+void update_chara2_real_ctl_item_c(char *c1_in, char *c2_in, double r_in,  
+                              struct chara2_real_ctl_item *c2r_item);
+void set_from_chara2_real_ctl_item_c(struct chara2_real_ctl_item *c2r_item,
+                              char *c1_out, char *c2_out, double *r_out);
 
 void init_c2r_ctl_list(struct chara2_real_ctl_list *head);
 void clear_c2r_ctl_list(struct chara2_real_ctl_list *head);
 struct chara2_real_ctl_list *add_c2r_ctl_list(struct chara2_real_ctl_list *current);
 void delete_c2r_ctl_list(struct chara2_real_ctl_list *current);
 int count_c2r_ctl_list(struct chara2_real_ctl_list *head);
-struct chara2_real_ctl_list *set_c2r_ctl_list_pointer(int index, struct chara2_real_ctl_list *head);
+struct chara2_real_ctl_list *find_c2r_ctl_list_item_by_index(int index,
+			struct chara2_real_ctl_list *head);
+struct chara2_real_ctl_list *find_c2r_ctl_list_item_by_c_tbl(char *ref,
+			struct chara2_real_ctl_list *head);
 
 int read_c2r_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara2_real_ctl_list *head);
 int write_c2r_ctl_list(FILE *fp, int level, const char *label, 
                        struct chara2_real_ctl_list *head);
+
+void append_chara2_real_ctl_list(char *c1_in, char *c2_in, double r_in,
+                      struct chara2_real_ctl_list *head);
+void del_chara2_real_ctl_list_by_index(int index, struct chara2_real_ctl_list *head);
+void update_chara2_real_ctl_list_by_index(int index, char *c1_in, char *c2_in, double r_in,
+			struct chara2_real_ctl_list *head);
+void set_from_chara2_real_ctl_list_at_index(int index, struct chara2_real_ctl_list *head,
+			char *c1_out, char *c2_out, double *r_out);
+
+void del_chara2_real_ctl_list_by_c_tbl(char *ref, struct chara2_real_ctl_list *head);
+void update_chara2_real_ctl_list_by_c_tbl(char *ref, char *c1_in, char *c2_in, double r_in,
+			struct chara2_real_ctl_list *head);
+void set_from_chara2_real_ctl_list_at_c_tbl(char *ref, struct chara2_real_ctl_list *head,
+			char *c1_out, char *c2_out, double *r_out);
 
 #endif /* t_control_chara2_real_IO_h_ */

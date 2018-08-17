@@ -110,6 +110,38 @@ const struct direction_flag_def gravity_type_def[NUM_GRAVITY_DEF] = {
 			{"constant", "$$  \\bvec{g}  $$"}
 };
 
+const char boundary_type_def[NUM_BOUNDARY_TYPE_DEF][NCHARA_FLAG]
+= {
+			"fixed",
+			"fixed_file",
+			"fixed_flux",
+			"fixed_flux_file",
+			"free_slip_sph",
+			"rot_inner_core",
+			"insulator",
+			"sph_to_center",
+			"pseudo_vacuum",
+			"fix_at_center",
+			
+			"rot_x",
+			"rot_y",
+			"rot_z",
+			
+			"fixed_ctl",
+			"fix_ctl_x",
+			"fix_ctl_y",
+			"fix_ctl_z",
+			"fix_file_x",
+			"fix_file_y",
+			"fix_file_z",
+			"sgs",
+			"sgs_x",
+			"sgs_y",
+			"sgs_z",
+			"non_slip_sph"
+		};
+
+
 static void get_flags(struct direction_flag_def flags, char *name, char *math){
 	int j;
 	

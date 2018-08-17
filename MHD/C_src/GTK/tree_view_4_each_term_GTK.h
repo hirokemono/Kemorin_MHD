@@ -17,8 +17,8 @@
 
 struct momentum_coefs_view{
     int index_coefs;
-    GtkWidget *coefs_tree_view;
-    GtkWidget *dimless_tree_view;
+    GtkTreeView *coefs_tree_view;
+    GtkTreeView *dimless_tree_view;
     
     struct momentum_equation_ctl_c *mom_ctl_gtk;
 };
@@ -30,7 +30,7 @@ struct coefs_view{
 
 /* prototypes */
 
-static void init_momentum_views_GTK(struct mhd_model_control_c *model_ctl,
+void init_momentum_views_GTK(struct mhd_model_control_c *model_ctl,
                                     struct dimless_views *dless_vws, 
                                     struct momentum_coefs_view *mom_vws);
 
