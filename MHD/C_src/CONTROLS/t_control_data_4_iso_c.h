@@ -34,7 +34,7 @@ struct iso_field_ctl_c{
 	struct chara_ctl_item *iso_result_type_ctl;
 	struct real_ctl_item *result_value_iso_ctl;
 	
-	struct chara2_ctl_list iso_out_field_list;
+	struct chara2_clist *iso_out_field_list;
 };
 
 struct iso_ctl_c{

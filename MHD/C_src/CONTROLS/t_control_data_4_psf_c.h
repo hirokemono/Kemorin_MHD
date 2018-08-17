@@ -37,7 +37,7 @@ struct psf_define_ctl_c{
 struct psf_field_ctl_c{
 	int maxlen;
 	
-	struct chara2_ctl_list psf_out_field_list;
+	struct chara2_clist *psf_out_field_list;
 };
 
 struct psf_ctl_c{
