@@ -31,7 +31,7 @@ struct psf_define_ctl_c{
 	struct real_ctl_item *radius_psf_ctl;
 	struct chara_ctl_item *psf_group_name_ctl;
 	
-	struct chara_ctl_list psf_area_list;
+	struct chara_clist *psf_area_list;
 };
 
 struct psf_field_ctl_c{

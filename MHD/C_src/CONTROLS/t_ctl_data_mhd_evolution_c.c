@@ -40,12 +40,14 @@ void alloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl){
 		};
 	};
 	
-	init_chara_ctl_list(&evo_ctl->t_evo_field_list);	
+    evo_ctl->t_evo_field_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
+	init_chara_clist(evo_ctl->t_evo_field_list);	
 	return;
 };
 
 void dealloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl){
-	clear_chara_ctl_list(&evo_ctl->t_evo_field_list);	
+	clear_chara_clist(evo_ctl->t_evo_field_list);
+    free(evo_ctl->t_evo_field_list);
 	return;
 };
 
@@ -54,7 +56,7 @@ int read_mhd_evolution_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_ctl_list(fp, buf, label_mhd_evolution_ctl[ 0], &evo_ctl->t_evo_field_list);
+		read_chara_clist(fp, buf, label_mhd_evolution_ctl[ 0], evo_ctl->t_evo_field_list);
 	};
 	return 1;
 };
@@ -64,7 +66,7 @@ int write_mhd_evolution_ctl_c(FILE *fp, int level,
 
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_ctl_list(fp, level, label_mhd_evolution_ctl[0], &evo_ctl->t_evo_field_list);
+	write_chara_clist(fp, level, label_mhd_evolution_ctl[0], evo_ctl->t_evo_field_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -81,15 +83,19 @@ void alloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl){
 		};
 	};
 	
-	init_chara_ctl_list(&earea_ctl->evo_fluid_group_list);
-	init_chara_ctl_list(&earea_ctl->evo_conduct_group_list);
+    earea_ctl->evo_fluid_group_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
+    earea_ctl->evo_conduct_group_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
+	init_chara_clist(earea_ctl->evo_fluid_group_list);
+	init_chara_clist(earea_ctl->evo_conduct_group_list);
 	
 	return;
 };
 
 void dealloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl){
-	clear_chara_ctl_list(&earea_ctl->evo_fluid_group_list);
-	clear_chara_ctl_list(&earea_ctl->evo_conduct_group_list);
+	clear_chara_clist(earea_ctl->evo_fluid_group_list);
+	clear_chara_clist(earea_ctl->evo_conduct_group_list);
+    free(earea_ctl->evo_fluid_group_list);
+    free(earea_ctl->evo_conduct_group_list);
 	return;
 };
 
@@ -98,8 +104,8 @@ int read_mhd_evo_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_ctl_list(fp, buf, label_mhd_evo_area_ctl[ 0], &earea_ctl->evo_fluid_group_list);
-		read_chara_ctl_list(fp, buf, label_mhd_evo_area_ctl[ 1], &earea_ctl->evo_conduct_group_list);
+		read_chara_clist(fp, buf, label_mhd_evo_area_ctl[ 0], earea_ctl->evo_fluid_group_list);
+		read_chara_clist(fp, buf, label_mhd_evo_area_ctl[ 1], earea_ctl->evo_conduct_group_list);
 	};
 	return 1;
 };
@@ -109,8 +115,8 @@ int write_mhd_evo_area_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_ctl_list(fp, level, label_mhd_evo_area_ctl[0], &earea_ctl->evo_fluid_group_list);
-	write_chara_ctl_list(fp, level, label_mhd_evo_area_ctl[1], &earea_ctl->evo_conduct_group_list);
+	write_chara_clist(fp, level, label_mhd_evo_area_ctl[0], earea_ctl->evo_fluid_group_list);
+	write_chara_clist(fp, level, label_mhd_evo_area_ctl[1], earea_ctl->evo_conduct_group_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

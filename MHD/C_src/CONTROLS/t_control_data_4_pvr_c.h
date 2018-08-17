@@ -28,7 +28,7 @@
 struct pvr_plot_area_ctl_c{
 	int maxlen;
 	
-	struct chara_ctl_list pvr_area_list;
+	struct chara_clist *pvr_area_list;
 	struct chara2_real_clist *surf_enhanse_ctl;
 };
 

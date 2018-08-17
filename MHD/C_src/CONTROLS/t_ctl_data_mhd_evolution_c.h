@@ -19,14 +19,14 @@
 struct mhd_evolution_ctl_c{
 	int maxlen;
 	
-	struct chara_ctl_list t_evo_field_list;
+	struct chara_clist *t_evo_field_list;
 };
 
 struct mhd_evo_area_ctl_c{
 	int maxlen;
 	
-	struct chara_ctl_list evo_fluid_group_list;
-	struct chara_ctl_list evo_conduct_group_list;
+	struct chara_clist *evo_fluid_group_list;
+	struct chara_clist *evo_conduct_group_list;
 };
 
 

@@ -28,7 +28,7 @@ struct fline_ctl_c{
 	struct chara_ctl_item *fline_color_field_ctl;
 	struct chara_ctl_item *fline_color_comp_ctl;
 	
-    struct chara_ctl_list fline_area_grp_list;
+    struct chara_clist *fline_area_grp_list;
 	
 	struct chara_ctl_item *starting_type_ctl;
 	struct chara_ctl_item *selection_type_ctl;

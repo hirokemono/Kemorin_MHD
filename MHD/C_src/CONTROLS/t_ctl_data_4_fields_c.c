@@ -38,7 +38,6 @@ void alloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	alloc_chara3_ctl_item_c(fld_ctl->tmp_fld_item);
 	
 	init_chara_int2_ctl_list(&fld_ctl->field_list);
-	
 	init_chara_ctl_list(&fld_ctl->quad_phys_list);
 	
 	return;

@@ -61,7 +61,8 @@ void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	alloc_chara_ctl_item_c(fline_c->fline_color_field_ctl);
 	alloc_chara_ctl_item_c(fline_c->fline_color_comp_ctl);
 	
-	init_chara_ctl_list(&fline_c->fline_area_grp_list);
+    fline_c->fline_area_grp_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
+	init_chara_clist(fline_c->fline_area_grp_list);
 	
 	fline_c->starting_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	fline_c->selection_type_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
@@ -97,7 +98,8 @@ void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	free(fline_c->fline_color_field_ctl);
 	free(fline_c->fline_color_comp_ctl);
 	
-	clear_chara_ctl_list(&fline_c->fline_area_grp_list);
+	clear_chara_clist(&fline_c->fline_area_grp_list);
+    free(&fline_c->fline_area_grp_list);
 	
 	dealloc_chara_ctl_item_c(fline_c->starting_type_ctl);
 	dealloc_chara_ctl_item_c(fline_c->selection_type_ctl);
@@ -125,7 +127,7 @@ int read_fline_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_ctl_item_c(buf, label_fline_ctl[ 0], fline_c->fline_file_head_ctl);
 		read_chara_ctl_item_c(buf, label_fline_ctl[ 1], fline_c->fline_output_type_ctl);
 		
-		read_chara_ctl_list(fp, buf, label_fline_ctl[ 2], &fline_c->fline_area_grp_list);
+		read_chara_clist(fp, buf, label_fline_ctl[ 2], fline_c->fline_area_grp_list);
 		
 		read_chara_ctl_item_c(buf, label_fline_ctl[ 3], fline_c->fline_field_ctl);
 		read_chara_ctl_item_c(buf, label_fline_ctl[ 4], fline_c->fline_color_field_ctl);
@@ -154,7 +156,7 @@ int write_fline_ctl_c(FILE *fp, int level, const char *label,
 	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 0], fline_c->fline_file_head_ctl);
 	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 1], fline_c->fline_output_type_ctl);
 	
-	write_chara_ctl_list(fp, level, label_fline_ctl[ 2], &fline_c->fline_area_grp_list);
+	write_chara_clist(fp, level, label_fline_ctl[ 2], fline_c->fline_area_grp_list);
 	
 	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 3], fline_c->fline_field_ctl);
 	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 4], fline_c->fline_color_field_ctl);

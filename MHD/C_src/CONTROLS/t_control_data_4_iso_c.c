@@ -74,7 +74,8 @@ void alloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	iso_def_c->isosurf_value_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	init_real_ctl_item_c(iso_def_c->isosurf_value_ctl);
 	
-	init_chara_ctl_list(&iso_def_c->iso_area_list);
+    iso_def_c->iso_area_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
+	init_chara_clist(iso_def_c->iso_area_list);
 	
 	return;
 };
@@ -88,7 +89,8 @@ void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	
 	free(iso_def_c->isosurf_value_ctl);
 	
-	clear_chara_ctl_list(&iso_def_c->iso_area_list);
+	clear_chara_clist(iso_def_c->iso_area_list);
+    free(iso_def_c->iso_area_list);
 	return;
 };
 
@@ -98,7 +100,7 @@ int read_iso_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
     while(find_control_end_flag_c(buf, label) == 0){
         skip_comment_read_line(fp, buf);
         
-        read_chara_ctl_list(fp, buf, label_iso_define_ctl[ 5], &iso_def_c->iso_area_list);
+        read_chara_clist(fp, buf, label_iso_define_ctl[ 5], iso_def_c->iso_area_list);
     };
     return 1;
 };
@@ -115,7 +117,7 @@ int read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_real_ctl_item_c(buf, label_iso_define_ctl[ 2], iso_def_c->isosurf_value_ctl);
 		
-		read_chara_ctl_list(fp, buf, label_iso_define_ctl[ 3], &iso_def_c->iso_area_list);
+		read_chara_clist(fp, buf, label_iso_define_ctl[ 3], iso_def_c->iso_area_list);
         
         if(right_begin_flag_c(buf, label_iso_define_ctl[ 4]) > 0){
             iflag = read_iso_area_ctl_c(fp, buf, 
@@ -134,7 +136,7 @@ int write_iso_define_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_real_ctl_item_c(fp, level, iso_def_c->maxlen, label_iso_define_ctl[ 2], iso_def_c->isosurf_value_ctl);
 	
-	write_chara_ctl_list(fp, level, label_iso_define_ctl[ 3], &iso_def_c->iso_area_list);
+	write_chara_clist(fp, level, label_iso_define_ctl[ 3], iso_def_c->iso_area_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

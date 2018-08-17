@@ -25,7 +25,7 @@
 struct forces_ctl_c{
 	int maxlen;
 	
-	struct chara_ctl_list force_names_list;
+	struct chara_clist *force_names_list;
 };
 
 struct gravity_ctl_c{

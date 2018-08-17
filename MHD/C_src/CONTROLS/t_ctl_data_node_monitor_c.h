@@ -20,7 +20,7 @@
 struct node_monitor_ctl_c{
     int maxlen;
     
-    struct chara_ctl_list group_4_monitor_list;
+    struct chara_clist *group_4_monitor_list;
     struct real3_ctl_list xx_4_monitor_list;
     struct int2_ctl_list node_4_monitor_list;
 };

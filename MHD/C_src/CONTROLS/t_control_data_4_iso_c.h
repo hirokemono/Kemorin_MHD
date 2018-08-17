@@ -25,7 +25,7 @@ struct iso_define_ctl_c{
 	
 	struct real_ctl_item *isosurf_value_ctl;
 	
-	struct chara_ctl_list iso_area_list;
+	struct chara_clist *iso_area_list;
 };
 
 struct iso_field_ctl_c{
