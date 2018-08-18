@@ -75,7 +75,7 @@ static void clear_real3_ctl_list(struct real3_ctl_list *head){
     return;
 };
 
-static struct real3_ctl_list *add_real3_ctl_list(struct real3_ctl_list *current){
+static struct real3_ctl_list *add_real3_ctl_list_after(struct real3_ctl_list *current){
     struct real3_ctl_list *added;
     struct real3_ctl_list *old_next;
     
@@ -89,7 +89,7 @@ static struct real3_ctl_list *add_real3_ctl_list(struct real3_ctl_list *current)
     }
 	init_real3_ctl_item_c(added->r3_item);
     
-    /* replace from  current -> p2　to current -> p1 -> p2 */
+    /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
     current->_next = added;
     added->_next = old_next;
@@ -157,7 +157,7 @@ static int read_real3_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     
     skip_comment_read_line(fp, buf);
     while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
-        head = add_real3_ctl_list(head);
+        head = add_real3_ctl_list_after(head);
         iflag = read_real3_ctl_item_c(buf, label, head->r3_item);
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
@@ -193,7 +193,7 @@ void append_real3_ctl_list(double r1_in, double r2_in, double r3_in,
 			struct real3_ctl_list *head){
 	int num = count_real3_ctl_list(head);
 	head = find_r3_ctl_list_item_by_index(num, head);
-	head = add_real3_ctl_list(head);
+	head = add_real3_ctl_list_after(head);
 	update_real3_ctl_item_c(r1_in, r2_in, r3_in, head->r3_item);
     return;
 };
@@ -243,64 +243,64 @@ static void set_from_real3_ctl_list_at_c_tbl(double ref_1, double ref_2, double 
 
 
 void init_real3_clist(struct real3_clist *r3_clst){
-	init_real3_ctl_list(&r3_clst->r3_item_head);
-	return;
+    init_real3_ctl_list(&r3_clst->r3_item_head);
+    return;
 };
 
 void clear_real3_clist(struct real3_clist *r3_clst){
-	clear_real3_ctl_list(&r3_clst->r3_item_head);
-	return;
+    clear_real3_ctl_list(&r3_clst->r3_item_head);
+    return;
 };
 int count_real3_clist(struct real3_clist *r3_clst){
-	return count_real3_ctl_list(&r3_clst->r3_item_head);
+    return count_real3_ctl_list(&r3_clst->r3_item_head);
 };
 
 int read_real3_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct real3_clist *r3_clst){
-	return read_real3_ctl_list(fp, buf, label, &r3_clst->r3_item_head);
+    return read_real3_ctl_list(fp, buf, label, &r3_clst->r3_item_head);
 };
 int write_real3_clist(FILE *fp, int level, const char *label, 
                        struct real3_clist *r3_clst){
-	return write_real3_ctl_list(fp, level, label, &r3_clst->r3_item_head);
+    return write_real3_ctl_list(fp, level, label, &r3_clst->r3_item_head);
 };
 
 void append_real3_clist(double r1_in, double r2_in, double r3_in, 
-			struct real3_clist *r3_clst){
-	append_real3_ctl_list(r1_in, r2_in, r3_in, &r3_clst->r3_item_head);
-	return;
+            struct real3_clist *r3_clst){
+    append_real3_ctl_list(r1_in, r2_in, r3_in, &r3_clst->r3_item_head);
+    return;
 };
 void del_real3_clist_by_index(int index, struct real3_clist *r3_clst){
-	del_real3_ctl_list_by_index(index, &r3_clst->r3_item_head);
-	return;
+    del_real3_ctl_list_by_index(index, &r3_clst->r3_item_head);
+    return;
 };
 void update_real3_clist_by_index(int index, double r1_in, double r2_in, double r3_in, 
-			struct real3_clist *r3_clst){
-	update_real3_ctl_list_by_index(index, r1_in, r2_in, r3_in, &r3_clst->r3_item_head);
-	return;
+            struct real3_clist *r3_clst){
+    update_real3_ctl_list_by_index(index, r1_in, r2_in, r3_in, &r3_clst->r3_item_head);
+    return;
 };
 void set_from_real3_clist_at_index(int index, struct real3_clist *r3_clst,
-			double *r1_out, double *r2_out, double *r3_out){
-	set_from_real3_ctl_list_at_index(index, &r3_clst->r3_item_head,
-			r1_out, r2_out, r3_out);
-	return;
+            double *r1_out, double *r2_out, double *r3_out){
+    set_from_real3_ctl_list_at_index(index, &r3_clst->r3_item_head,
+            r1_out, r2_out, r3_out);
+    return;
 };
 
 void del_real3_clist_by_c_tbl(double ref_1, double ref_2, double ref_3, 
-			struct real3_clist *r3_clst){
-	del_real3_ctl_list_by_c_tbl(ref_1, ref_2, ref_3, &r3_clst->r3_item_head);
-	return;
+            struct real3_clist *r3_clst){
+    del_real3_ctl_list_by_c_tbl(ref_1, ref_2, ref_3, &r3_clst->r3_item_head);
+    return;
 };
 void update_real3_clist_by_c_tbl(double ref_1, double ref_2, double ref_3, 
-			double r1_in, double r2_in, double r3_in, struct real3_clist *r3_clst){
-	update_real3_ctl_list_by_c_tbl(ref_1, ref_2, ref_3, 
-			r1_in, r2_in, r3_in, &r3_clst->r3_item_head);
-	return;
+            double r1_in, double r2_in, double r3_in, struct real3_clist *r3_clst){
+    update_real3_ctl_list_by_c_tbl(ref_1, ref_2, ref_3, 
+            r1_in, r2_in, r3_in, &r3_clst->r3_item_head);
+    return;
 };
 void set_from_real3_clist_at_c_tbl(double ref_1, double ref_2, double ref_3, 
-			struct real3_clist *r3_clst, double *r1_out, double *r2_out, double *r3_out){
-	set_from_real3_ctl_list_at_c_tbl(ref_1, ref_2, ref_3, &r3_clst->r3_item_head,
-			r1_out, r2_out, r3_out);
-	return;
+            struct real3_clist *r3_clst, double *r1_out, double *r2_out, double *r3_out){
+    set_from_real3_ctl_list_at_c_tbl(ref_1, ref_2, ref_3, &r3_clst->r3_item_head,
+            r1_out, r2_out, r3_out);
+    return;
 };
 
 void copy_from_real3_ctl_list(struct real3_ctl_list *head, int num,
@@ -318,7 +318,7 @@ void copy_to_real3_ctl_list(int num, double *v1, double *v2, double *v3,
 	int i;
 	
 	for(i=0;i<num;i++){
-		head = add_real3_ctl_list(head);
+		head = add_real3_ctl_list_after(head);
 		update_real3_ctl_item_c(v1[i], v2[i], v3[i], head->r3_item);
 	};
 	return;

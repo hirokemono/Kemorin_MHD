@@ -25,7 +25,6 @@ struct chara_int_ctl_item{
 
 struct chara_int_ctl_list{
     struct chara_int_ctl_item *ci_item;
-    struct maxlen_2 *mlen2;
     
     struct chara_int_ctl_list *_prev;
     struct chara_int_ctl_list *_next;

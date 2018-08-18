@@ -48,7 +48,7 @@ void write_pvr_section_subfile_c(struct pvr_section_ctl_c *pvr_sect_c);
 
 void init_pvr_section_ctl_list(struct pvr_sect_ctl_list *head);
 void clear_pvr_section_ctl_list(struct pvr_sect_ctl_list *head);
-struct pvr_sect_ctl_list *add_pvr_section_ctl_list(struct pvr_sect_ctl_list *current);
+struct pvr_sect_ctl_list *add_pvr_section_ctl_list_after(struct pvr_sect_ctl_list *current);
 void delete_pvr_section_ctl_list(struct pvr_sect_ctl_list *current);
 int count_pvr_section_ctl_list(struct pvr_sect_ctl_list *head);
 struct pvr_sect_ctl_list *set_pvr_section_ctl_list_pointer(int index, struct pvr_sect_ctl_list *head);

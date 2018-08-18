@@ -42,7 +42,7 @@ void write_fieldline_ctl_file_c(struct fieldline_ctl_c *fldlines_c);
 
 void init_FLINE_ctl_list(struct FLINE_ctl_list *head);
 void clear_FLINE_ctl_list(struct FLINE_ctl_list *head);
-struct FLINE_ctl_list *add_FLINE_ctl_list(struct FLINE_ctl_list *current);
+struct FLINE_ctl_list *add_FLINE_ctl_list_after(struct FLINE_ctl_list *current);
 void delete_FLINE_ctl_list(struct FLINE_ctl_list *current);
 int count_FLINE_ctl_list(struct FLINE_ctl_list *head);
 struct FLINE_ctl_list *set_FLINE_ctl_list_pointer(int index, struct FLINE_ctl_list *head);

@@ -42,7 +42,7 @@ void write_volume_rendering_ctl_file_c(struct volume_rendering_ctl_c *v_render_c
 
 void init_PVR_ctl_list(struct PVR_ctl_list *head);
 void clear_PVR_ctl_list(struct PVR_ctl_list *head);
-struct PVR_ctl_list *add_PVR_ctl_list(struct PVR_ctl_list *current);
+struct PVR_ctl_list *add_PVR_ctl_list_after(struct PVR_ctl_list *current);
 void delete_PVR_ctl_list(struct PVR_ctl_list *current);
 int count_PVR_ctl_list(struct PVR_ctl_list *head);
 struct PVR_ctl_list *set_PVR_ctl_list_pointer(int index, struct PVR_ctl_list *head);

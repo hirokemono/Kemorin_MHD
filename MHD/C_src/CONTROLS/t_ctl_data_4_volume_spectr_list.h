@@ -45,7 +45,7 @@ int write_volume_spectr_control_c(FILE *fp, int level, const char *label,
 
 void init_sph_vol_spectr_list(struct volume_spectr_ctl_list *head);
 void clear_sph_vol_spectr_ctl_list(struct volume_spectr_ctl_list *head);
-struct volume_spectr_ctl_list *add_sph_vol_spectr_ctl_list(struct volume_spectr_ctl_list *current);
+struct volume_spectr_ctl_list *add_sph_vol_spectr_ctl_list_after(struct volume_spectr_ctl_list *current);
 void delete_vol_spectr_ctl_list(struct volume_spectr_ctl_list *current);
 int count_vol_spectr_ctl_list(struct volume_spectr_ctl_list *head);
 struct volume_spectr_ctl_list *set_sph_vol_spec_ctl_list_pointer(int index, struct volume_spectr_ctl_list *head);

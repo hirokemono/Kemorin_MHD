@@ -50,7 +50,7 @@ int write_sph_filter_ctl_c(FILE *fp, int level, const char *label,
 
 void init_sph_filter_ctl_list(struct sph_filter_ctl_list *head);
 void clear_sph_filter_ctl_list(struct sph_filter_ctl_list *head);
-struct sph_filter_ctl_list *add_sph_filter_ctl_list(struct sph_filter_ctl_list *current);
+struct sph_filter_ctl_list *add_sph_filter_ctl_list_after(struct sph_filter_ctl_list *current);
 void delete_sph_filter_ctl_list(struct sph_filter_ctl_list *current);
 int count_sph_filter_ctl_list(struct sph_filter_ctl_list *head);
 struct sph_filter_ctl_list *set_sph_filter_ctl_list_pointer(int index, struct sph_filter_ctl_list *head);

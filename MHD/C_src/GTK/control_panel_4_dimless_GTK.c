@@ -45,8 +45,12 @@ static void cb_deleta_dimless_lists(GtkButton *button, gpointer user_data)
 static void cb_add_dimless_new(GtkButton *button, gpointer user_data)
 {
     struct dimless_views *dless_vws = (struct dimless_views *) user_data;
-    
+/*
     dless_vws->index_dless = add_cr_list_by_bottun_GTK(dless_vws->index_dless, 
+                                                   dless_vws->dimless_tree_view,
+                                                   dless_vws->cr_clist);
+ */
+    dless_vws->index_dless = add_cr_list_items_GTK(dless_vws->index_dless, 
                                                    dless_vws->dimless_tree_view,
                                                    dless_vws->cr_clist);
     write_chara_real_clist(stdout, 0, "Added list", dless_vws->cr_clist);

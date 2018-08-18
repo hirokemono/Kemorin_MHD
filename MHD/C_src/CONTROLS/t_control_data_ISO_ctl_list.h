@@ -42,7 +42,7 @@ void write_isosurface_ctl_file_c(struct isosurface_ctl_c *isosurfs_c);
 
 void init_ISO_ctl_list(struct ISO_ctl_list *head);
 void clear_ISO_ctl_list(struct ISO_ctl_list *head);
-struct ISO_ctl_list *add_ISO_ctl_list(struct ISO_ctl_list *current);
+struct ISO_ctl_list *add_ISO_ctl_list_after(struct ISO_ctl_list *current);
 void delete_ISO_ctl_list(struct ISO_ctl_list *current);
 int count_ISO_ctl_list(struct ISO_ctl_list *head);
 struct ISO_ctl_list *set_ISO_ctl_list_pointer(int index, struct ISO_ctl_list *head);

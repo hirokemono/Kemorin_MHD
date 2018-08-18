@@ -42,7 +42,7 @@ void write_LIC_rendering_ctl_file_c(struct LIC_rendering_ctl_c *lic_render_c);
 
 void init_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head);
 void clear_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head);
-struct LIC_PVR_ctl_list *add_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *current);
+struct LIC_PVR_ctl_list *add_LIC_PVR_ctl_list_after(struct LIC_PVR_ctl_list *current);
 void delete_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *current);
 int count_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head);
 struct LIC_PVR_ctl_list *set_LIC_PVR_ctl_list_pointer(int index, struct LIC_PVR_ctl_list *head);

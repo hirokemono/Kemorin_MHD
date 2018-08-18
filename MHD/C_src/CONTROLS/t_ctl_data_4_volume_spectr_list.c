@@ -111,7 +111,7 @@ void clear_sph_vol_spectr_ctl_list(struct volume_spectr_ctl_list *head){
 	return;
 };
 
-struct volume_spectr_ctl_list *add_sph_vol_spectr_ctl_list(struct volume_spectr_ctl_list *current){
+struct volume_spectr_ctl_list *add_sph_vol_spectr_ctl_list_after(struct volume_spectr_ctl_list *current){
 	struct volume_spectr_ctl_list *added;
 	struct volume_spectr_ctl_list *old_next;
 	
@@ -125,7 +125,7 @@ struct volume_spectr_ctl_list *add_sph_vol_spectr_ctl_list(struct volume_spectr_
     }
 	alloc_volume_spectr_control_c(added->v_pwr_c);
 	
-	/* replace from  current -> p2　to current -> p1 -> p2 */
+	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
 	current->_next = added;
 	added->_next = old_next;		
@@ -183,7 +183,7 @@ int read_sph_vol_spectr_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *labe
 	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
 		if(right_begin_flag_c(buf, label) > 0){
-			head = add_sph_vol_spectr_ctl_list(head);
+			head = add_sph_vol_spectr_ctl_list_after(head);
 			iflag = read_volume_spectr_control_c(fp, buf, label, head->v_pwr_c);
 			icou = icou + iflag;
 		}

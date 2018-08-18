@@ -53,7 +53,7 @@ void copy_to_chara_ctl_item(const char *c_data, struct chara_ctl_item *c_item);
 
 void init_chara_ctl_list(struct chara_ctl_list *head);
 void clear_chara_ctl_list(struct chara_ctl_list *head);
-struct chara_ctl_list *add_chara_ctl_list(struct chara_ctl_list *current);
+struct chara_ctl_list *add_chara_ctl_list_after(struct chara_ctl_list *current);
 void delete_chara_ctl_list(struct chara_ctl_list *current);
 int count_chara_ctl_list(struct chara_ctl_list *head);
 struct chara_ctl_list *find_c_ctl_list_item_by_index(int index, struct chara_ctl_list *head);

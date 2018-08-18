@@ -44,7 +44,7 @@ int write_pvr_isosurf_ctl_c(FILE *fp, int level, const char *label,
 
 void init_pvr_iso_ctl_list(struct pvr_iso_ctl_list *head);
 void clear_pvr_iso_ctl_list(struct pvr_iso_ctl_list *head);
-struct pvr_iso_ctl_list *add_pvr_iso_ctl_list(struct pvr_iso_ctl_list *current);
+struct pvr_iso_ctl_list *add_pvr_iso_ctl_list_after(struct pvr_iso_ctl_list *current);
 void delete_pvr_iso_ctl_list(struct pvr_iso_ctl_list *current);
 int count_pvr_iso_ctl_list(struct pvr_iso_ctl_list *head);
 struct pvr_iso_ctl_list *set_pvr_iso_ctl_list_pointer(int index, struct pvr_iso_ctl_list *head);

@@ -49,7 +49,7 @@ void set_from_chara_int2_ctl_item_c( struct chara_int2_ctl_item *ci2_item,
 
 void init_chara_int2_ctl_list(struct chara_int2_ctl_list *head);
 void clear_chara_int2_ctl_list(struct chara_int2_ctl_list *head);
-struct chara_int2_ctl_list *add_chara_int2_ctl_list(struct chara_int2_ctl_list *current);
+struct chara_int2_ctl_list *add_chara_int2_ctl_list_after(struct chara_int2_ctl_list *current);
 void delete_chara_int2_ctl_list(struct chara_int2_ctl_list *current);
 
 int count_maxlen_chara_int2_ctl_list(const char *label, 

@@ -102,7 +102,7 @@ void clear_lic_masking_ctl_list(struct lic_masking_ctl_list *head){
 	return;
 };
 
-struct lic_masking_ctl_list *add_lic_masking_ctl_list(struct lic_masking_ctl_list *current){
+struct lic_masking_ctl_list *add_lic_masking_ctl_list_after(struct lic_masking_ctl_list *current){
 	struct lic_masking_ctl_list *added;
 	struct lic_masking_ctl_list *old_next;
 	
@@ -116,7 +116,7 @@ struct lic_masking_ctl_list *add_lic_masking_ctl_list(struct lic_masking_ctl_lis
     }
 	alloc_lic_masking_ctl_c(added->lic_mask_c);
 	
-	/* replace from  current -> p2　to current -> p1 -> p2 */
+	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
 	current->_next = added;
 	added->_next = old_next;		
@@ -174,7 +174,7 @@ int read_lic_masking_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
 	skip_comment_read_line(fp, buf);
 	while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
 		if(right_begin_flag_c(buf, label) > 0){
-			head = add_lic_masking_ctl_list(head);
+			head = add_lic_masking_ctl_list_after(head);
 			iflag = read_lic_masking_ctl_c(fp, buf, label, head->lic_mask_c);
 			icou = icou + iflag;
 		}

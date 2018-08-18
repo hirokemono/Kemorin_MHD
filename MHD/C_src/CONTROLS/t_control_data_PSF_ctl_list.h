@@ -42,7 +42,7 @@ void write_sectioning_ctl_file_c(struct sectioning_ctl_c *sections_c);
 
 void init_PSF_ctl_list(struct PSF_ctl_list *head);
 void clear_PSF_ctl_list(struct PSF_ctl_list *head);
-struct PSF_ctl_list *add_PSF_ctl_list(struct PSF_ctl_list *current);
+struct PSF_ctl_list *add_PSF_ctl_list_after(struct PSF_ctl_list *current);
 void delete_PSF_ctl_list(struct PSF_ctl_list *current);
 int count_PSF_ctl_list(struct PSF_ctl_list *head);
 struct PSF_ctl_list *set_PSF_ctl_list_pointer(int index, struct PSF_ctl_list *head);

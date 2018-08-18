@@ -106,7 +106,7 @@ void clear_chara_ctl_list(struct chara_ctl_list *head){
     return;
 };
 
-struct chara_ctl_list *add_chara_ctl_list(struct chara_ctl_list *current){
+struct chara_ctl_list *add_chara_ctl_list_after(struct chara_ctl_list *current){
     struct chara_ctl_list *added;
     struct chara_ctl_list *old_next;
     
@@ -120,7 +120,7 @@ struct chara_ctl_list *add_chara_ctl_list(struct chara_ctl_list *current){
     }
 	alloc_chara_ctl_item_c(added->c_item);
     
-    /* replace from  current -> p2　to current -> p1 -> p2 */
+    /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
     current->_next = added;
     added->_next = old_next;
@@ -179,7 +179,7 @@ int read_chara_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     
     skip_comment_read_line(fp, buf);
     while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
-        head = add_chara_ctl_list(head);
+        head = add_chara_ctl_list_after(head);
         iflag = read_chara_ctl_item_c(buf, label, head->c_item);
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
@@ -218,7 +218,7 @@ void append_chara_ctl_list(char *c_in, struct chara_ctl_list *head){
 		head = head->_next;
 		if(cmp_no_case_c(head->c_item->c_tbl, c_in)) return;
 	};
-	head = add_chara_ctl_list(head);
+	head = add_chara_ctl_list_after(head);
 	update_chara_ctl_item_c(c_in, head->c_item);
     return;
 };
@@ -262,51 +262,51 @@ static void set_from_chara_ctl_list_at_c_tbl(char *ref, struct chara_ctl_list *h
 
 
 void init_chara_clist(struct chara_clist *c_clst){
-	init_chara_ctl_list(&c_clst->c_item_head);
-	return;
+    init_chara_ctl_list(&c_clst->c_item_head);
+    return;
 };
 void clear_chara_clist(struct chara_clist *c_clst){
-	clear_chara_ctl_list(&c_clst->c_item_head);
-	return;
+    clear_chara_ctl_list(&c_clst->c_item_head);
+    return;
 };
 int count_chara_clist(struct chara_clist *c_clst){
-	return count_chara_ctl_list(&c_clst->c_item_head);
+    return count_chara_ctl_list(&c_clst->c_item_head);
 };
 int read_chara_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara_clist *c_clst){
-	return read_chara_ctl_list(fp, buf, label, &c_clst->c_item_head);
+    return read_chara_ctl_list(fp, buf, label, &c_clst->c_item_head);
 };
 int write_chara_clist(FILE *fp, int level, const char *label, 
                        struct chara_clist *c_clst){
-	return write_chara_ctl_list(fp, level, label, &c_clst->c_item_head);
+    return write_chara_ctl_list(fp, level, label, &c_clst->c_item_head);
 };
 
 void append_chara_clist(char *c_in, struct chara_clist *c_clst){
-	append_chara_ctl_list(c_in, &c_clst->c_item_head);
-	return;
+    append_chara_ctl_list(c_in, &c_clst->c_item_head);
+    return;
 };
 void del_chara_clist_by_index(int index, struct chara_clist *c_clst){
-	del_chara_ctl_list_by_index(index, &c_clst->c_item_head);
-	return;
+    del_chara_ctl_list_by_index(index, &c_clst->c_item_head);
+    return;
 };
 void update_chara_clist_by_index(int index, char *c_in, struct chara_clist *c_clst){
-	update_chara_ctl_list_by_index(index, c_in, &c_clst->c_item_head);
-	return;
+    update_chara_ctl_list_by_index(index, c_in, &c_clst->c_item_head);
+    return;
 };
 void set_from_chara_clist_at_index(int index, struct chara_clist *c_clst, char *c_out){
-	set_from_chara_ctl_list_at_index(index, &c_clst->c_item_head, c_out);
-	return;
+    set_from_chara_ctl_list_at_index(index, &c_clst->c_item_head, c_out);
+    return;
 };
 
 void del_chara_clist_by_c_tbl(char *ref, struct chara_clist *c_clst){
-	del_chara_ctl_list_by_c_tbl(ref, &c_clst->c_item_head);
-	return;
+    del_chara_ctl_list_by_c_tbl(ref, &c_clst->c_item_head);
+    return;
 };
 void update_chara_clist_by_c_tbl(char *ref, char *c_in, struct chara_clist *c_clst){
-	update_chara_ctl_list_by_c_tbl(ref, c_in, &c_clst->c_item_head);
-	return;
+    update_chara_ctl_list_by_c_tbl(ref, c_in, &c_clst->c_item_head);
+    return;
 };
 void set_from_chara_clist_at_c_tbl(char *ref, struct chara_clist *c_clst, char *c_out){
-	set_from_chara_ctl_list_at_c_tbl(ref, &c_clst->c_item_head, c_out);
-	return;
+    set_from_chara_ctl_list_at_c_tbl(ref, &c_clst->c_item_head, c_out);
+    return;
 };

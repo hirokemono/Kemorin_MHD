@@ -75,7 +75,7 @@ static void clear_real2_ctl_list(struct real2_ctl_list *head){
     return;
 };
 
-static struct real2_ctl_list *add_real2_ctl_list(struct real2_ctl_list *current){
+static struct real2_ctl_list *add_real2_ctl_list_after(struct real2_ctl_list *current){
     struct real2_ctl_list *added;
     struct real2_ctl_list *old_next;
     
@@ -89,7 +89,7 @@ static struct real2_ctl_list *add_real2_ctl_list(struct real2_ctl_list *current)
     }
 	init_real2_ctl_item_c(added->r2_item);
     
-    /* replace from  current -> p2　to current -> p1 -> p2 */
+    /* replace from  current -> next to current -> new -> next */
     old_next= current->_next;
     current->_next = added;
     added->_next = old_next;
@@ -155,7 +155,7 @@ static int read_real2_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     
     skip_comment_read_line(fp, buf);
     while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
-        head = add_real2_ctl_list(head);
+        head = add_real2_ctl_list_after(head);
         iflag = read_real2_ctl_item_c(buf, label, head->r2_item);
         icou = icou + iflag;
         skip_comment_read_line(fp, buf);
@@ -190,7 +190,7 @@ static int write_real2_ctl_list(FILE *fp, int level, const char *label,
 void append_real2_ctl_list(double r1_in, double r2_in, struct real2_ctl_list *head){
 	int num = count_real2_ctl_list(head);
 	head = find_r2_ctl_list_item_by_index(num, head);
-	head = add_real2_ctl_list(head);
+	head = add_real2_ctl_list_after(head);
 	update_real2_ctl_item_c(r1_in, r2_in, head->r2_item);
     return;
 };
@@ -251,7 +251,7 @@ static void copy_to_real2_ctl_list(int num, double *v1, double *v2,
 	int i;
 	
 	for(i=0;i<num;i++){
-		head = add_real2_ctl_list(head);
+		head = add_real2_ctl_list_after(head);
 		update_real2_ctl_item_c(v1[i], v2[i], head->r2_item);
 	};
 	return;
@@ -261,73 +261,82 @@ static void copy_to_real2_ctl_list(int num, double *v1, double *v2,
 
 
 void init_real2_clist(struct real2_clist *r2_clst){
-	init_real2_ctl_list(&r2_clst->r2_item_head);
-	return;
+    init_real2_ctl_list(&r2_clst->r2_item_head);
+    return;
 };
 
 void clear_real2_clist(struct real2_clist *r2_clst){
-	clear_real2_ctl_list(&r2_clst->r2_item_head);
-	return;
+    clear_real2_ctl_list(&r2_clst->r2_item_head);
+    return;
 };
 int count_real2_clist(struct real2_clist *r2_clst){
-	return count_real2_ctl_list(&r2_clst->r2_item_head);
+    return count_real2_ctl_list(&r2_clst->r2_item_head);
 };
 
 int read_real2_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct real2_clist *r2_clst){
-	return read_real2_ctl_list(fp, buf, label, &r2_clst->r2_item_head);
+    return read_real2_ctl_list(fp, buf, label, &r2_clst->r2_item_head);
 };
 int write_real2_clist(FILE *fp, int level, const char *label, 
                        struct real2_clist *r2_clst){
-	return write_real2_ctl_list(fp, level, label, &r2_clst->r2_item_head);
+    return write_real2_ctl_list(fp, level, label, &r2_clst->r2_item_head);
 };
 
 void append_real2_clist(double r1_in, double r2_in, struct real2_clist *r2_clst){
-	append_real2_ctl_list(r1_in, r2_in, &r2_clst->r2_item_head);
-	return;
+    append_real2_ctl_list(r1_in, r2_in, &r2_clst->r2_item_head);
+    return;
 };
 void del_real2_clist_by_index(int index, struct real2_clist *r2_clst){
-	del_real2_ctl_list_by_index(index, &r2_clst->r2_item_head);
-	return;
+    del_real2_ctl_list_by_index(index, &r2_clst->r2_item_head);
+    return;
 };
 void update_real2_clist_by_index(int index, double r1_in, double r2_in,
-			struct real2_clist *r2_clst){
-	update_real2_ctl_list_by_index(index, r1_in, r2_in, &r2_clst->r2_item_head);
-	return;
+            struct real2_clist *r2_clst){
+    update_real2_ctl_list_by_index(index, r1_in, r2_in, &r2_clst->r2_item_head);
+    return;
 };
 void set_from_real2_clist_at_index(int index, struct real2_clist *r2_clst,
-			double *r1_out, double *r2_out){
-	set_from_real2_ctl_list_at_index(index, &r2_clst->r2_item_head,
-			r1_out, r2_out);
-	return;
+            double *r1_out, double *r2_out){
+    set_from_real2_ctl_list_at_index(index, &r2_clst->r2_item_head,
+            r1_out, r2_out);
+    return;
 };
 
 void del_real2_clist_by_c_tbl(double ref_1, double ref_2,
-			struct real2_clist *r2_clst){
-	del_real2_ctl_list_by_c_tbl(ref_1, ref_2, &r2_clst->r2_item_head);
-	return;
+            struct real2_clist *r2_clst){
+    del_real2_ctl_list_by_c_tbl(ref_1, ref_2, &r2_clst->r2_item_head);
+    return;
 };
 void update_real2_clist_by_c_tbl(double ref_1, double ref_2, 
-			double r1_in, double r2_in, struct real2_clist *r2_clst){
-	update_real2_ctl_list_by_c_tbl(ref_1, ref_2,
-			r1_in, r2_in, &r2_clst->r2_item_head);
-	return;
+            double r1_in, double r2_in, struct real2_clist *r2_clst){
+    update_real2_ctl_list_by_c_tbl(ref_1, ref_2,
+            r1_in, r2_in, &r2_clst->r2_item_head);
+    return;
 };
 void set_from_real2_clist_at_c_tbl(double ref_1, double ref_2,
-			struct real2_clist *r2_clst, double *r1_out, double *r2_out){
-	set_from_real2_ctl_list_at_c_tbl(ref_1, ref_2, &r2_clst->r2_item_head,
-			r1_out, r2_out);
-	return;
+            struct real2_clist *r2_clst, double *r1_out, double *r2_out){
+    set_from_real2_ctl_list_at_c_tbl(ref_1, ref_2, &r2_clst->r2_item_head,
+            r1_out, r2_out);
+    return;
 };
 
 void copy_from_real2_clist(struct real2_clist *r2_clst, int num,
-			double *v1, double *v2){
-	copy_from_real2_ctl_list(&r2_clst->r2_item_head, num, v1, v2);
-	return;
+            double *v1, double *v2){
+    copy_from_real2_ctl_list(&r2_clst->r2_item_head, num, v1, v2);
+    return;
 };
 void copy_to_real2_clist(int num, double *v1, double *v2,
-			struct real2_clist *r2_clst){
-	copy_to_real2_ctl_list(num, v1, v2, &r2_clst->r2_item_head);
-	return;
+            struct real2_clist *r2_clst){
+    copy_to_real2_ctl_list(num, v1, v2, &r2_clst->r2_item_head);
+    return;
 };
+
+
+
+
+
+
+
+
+
 

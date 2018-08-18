@@ -68,6 +68,7 @@ void update_chara_real_clist_by_index(int index, char *c_in, double r_in,
 void set_from_chara_real_clist_at_index(int index, struct chara_real_clist *ci2_clst,
 			char *c_out, double *r_out);
 
+void add_chara_real_clist_by_c_tbl(char *ref, char *c_in, double r_in, struct chara_real_clist *ci2_clst);
 void del_chara_real_clist_by_c_tbl(char *ref, struct chara_real_clist *ci2_clst);
 void update_chara_real_clist_by_c_tbl(char *ref, char *c_in, double r_in,
 			struct chara_real_clist *ci2_clst);

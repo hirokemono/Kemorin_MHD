@@ -45,7 +45,7 @@ int write_lic_masking_ctl_c(FILE *fp, int level, const char *label,
 
 void init_lic_masking_ctl_list(struct lic_masking_ctl_list *head);
 void clear_lic_masking_ctl_list(struct lic_masking_ctl_list *head);
-struct lic_masking_ctl_list *add_lic_masking_ctl_list(struct lic_masking_ctl_list *current);
+struct lic_masking_ctl_list *add_lic_masking_ctl_list_after(struct lic_masking_ctl_list *current);
 void delete_lic_masking_ctl_list(struct lic_masking_ctl_list *current);
 int count_lic_masking_ctl_list(struct lic_masking_ctl_list *head);
 struct lic_masking_ctl_list *set_lic_masking_ctl_list_pointer(int index, struct lic_masking_ctl_list *head);

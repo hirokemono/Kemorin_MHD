@@ -103,7 +103,7 @@ static int read_field_ctl_list(FILE *fp, char buf[LENGTHBUF], const char *label,
     
     skip_comment_read_line(fp, buf);
     while(find_control_end_array_flag_c(buf, label, num_array, icou) == 0){
-        head = add_chara_int2_ctl_list(head);
+        head = add_chara_int2_ctl_list_after(head);
         iflag = read_chara3_ctl_item_c(buf, label, tmp_fld_item);
 		set_viz_flags_from_text(tmp_fld_item, head->ci2_item);
 		tmp_fld_item->iflag = 0;
@@ -208,7 +208,7 @@ static void add_field_to_ctl(struct all_field_ctl_c *all_fld_tbl,
 	for (i=0;i<count_chara_int2_ctl_list(field_list_head);i++){
 		field_list_head = field_list_head->_next;
 	};
-	field_list_head = add_chara_int2_ctl_list(field_list_head);
+	field_list_head = add_chara_int2_ctl_list_after(field_list_head);
 	update_chara_int2_ctl_item_c(all_fld_tbl->field_name, 0, 0,  
 				field_list_head->ci2_item);
 	return;
@@ -259,7 +259,7 @@ static void load_field_to_ctl(struct all_field_ctl_c **all_fld_tbl,
 	int i;
 	for (i=0;i<NUM_FIELD;i++){
 		if(all_fld_tbl[i]->iflag_use > 0){
-			field_list_head = add_chara_int2_ctl_list(field_list_head);
+			field_list_head = add_chara_int2_ctl_list_after(field_list_head);
 			update_chara_int2_ctl_item_c(all_fld_tbl[i]->field_name, 
 						all_fld_tbl[i]->iflag_viz, all_fld_tbl[i]->iflag_monitor, 
 						field_list_head->ci2_item);
@@ -307,7 +307,7 @@ static void load_quadrature_field_to_ctl(struct all_field_ctl_c **all_fld_tbl,
 	int i;
 	for (i=0;i<NUM_FIELD;i++){
 		if(all_fld_tbl[i]->iflag_quad > 0){
-			quad_phys_list = add_chara_ctl_list(quad_phys_list);
+			quad_phys_list = add_chara_ctl_list_after(quad_phys_list);
 			
 			sprintf(quad_phys_list->c_item->c_tbl, "%s", all_fld_tbl[i]->field_name);
 		};
