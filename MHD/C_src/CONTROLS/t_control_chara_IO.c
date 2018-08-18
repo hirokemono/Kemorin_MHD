@@ -106,6 +106,30 @@ void clear_chara_ctl_list(struct chara_ctl_list *head){
     return;
 };
 
+struct chara_ctl_list *add_chara_ctl_list_before(struct chara_ctl_list *current){
+    struct chara_ctl_list *added;
+    struct chara_ctl_list *old_prev;
+    
+    if ((added = (struct chara_ctl_list *) malloc(sizeof(struct chara_ctl_list))) == NULL) {
+        printf("malloc error\n");
+        exit(0);
+    }
+    if ((added->c_item = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item))) == NULL) {
+        printf("malloc error for c_item\n");
+        exit(0);
+    }
+	alloc_chara_ctl_item_c(added->c_item);
+    
+	/* replace from  prev -> current to prev -> new -> current */
+	old_prev = current->_prev;
+	current->_prev = added;
+	added->_prev = old_prev;
+	old_prev->_next = added;
+	added->_next = current;
+    
+    return added;
+};
+
 struct chara_ctl_list *add_chara_ctl_list_after(struct chara_ctl_list *current){
     struct chara_ctl_list *added;
     struct chara_ctl_list *old_next;
@@ -242,6 +266,22 @@ void set_from_chara_ctl_list_at_index(int index, struct chara_ctl_list *head, ch
 };
 
 
+static void add_chara_ctl_list_before_c_tbl(char *ref, char *c_in,
+			struct chara_ctl_list *head){
+	head = find_c_ctl_list_item_by_c_tbl(ref, head);
+	if(head == NULL) return;
+	head = add_chara_ctl_list_before(head);
+	update_chara_ctl_item_c(c_in, head->c_item);
+	return;
+};
+static void add_chara_ctl_list_after_c_tbl(char *ref, char *c_in,
+			struct chara_ctl_list *head){
+	head = find_c_ctl_list_item_by_c_tbl(ref, head);
+	if(head == NULL) return;
+	head = add_chara_ctl_list_after(head);
+	update_chara_ctl_item_c(c_in, head->c_item);
+	return;
+};
 void del_chara_ctl_list_by_c_tbl(char *ref, struct chara_ctl_list *head){
 	head = find_c_ctl_list_item_by_c_tbl(ref, head);
 	if(head != NULL) delete_chara_ctl_list(head);
@@ -298,6 +338,14 @@ void set_from_chara_clist_at_index(int index, struct chara_clist *c_clst, char *
     return;
 };
 
+void add_chara_clist_before_c_tbl(char *ref, char *c_in, struct chara_clist *c_clst){
+    add_chara_ctl_list_before_c_tbl(ref, c_in, &c_clst->c_item_head);
+    return;
+};
+void add_chara_clist_after_c_tbl(char *ref, char *c_in, struct chara_clist *c_clst){
+    add_chara_ctl_list_after_c_tbl(ref, c_in, &c_clst->c_item_head);
+    return;
+};
 void del_chara_clist_by_c_tbl(char *ref, struct chara_clist *c_clst){
     del_chara_ctl_list_by_c_tbl(ref, &c_clst->c_item_head);
     return;

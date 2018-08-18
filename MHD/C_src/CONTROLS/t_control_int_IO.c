@@ -66,6 +66,30 @@ static void clear_int_ctl_list(struct int_ctl_list *head){
     return;
 };
 
+static struct int_ctl_list *add_int_ctl_list_before(struct int_ctl_list *current){
+    struct int_ctl_list *added;
+    struct int_ctl_list *old_prev;
+    
+    if ((added = (struct int_ctl_list *) malloc(sizeof(struct int_ctl_list))) == NULL) {
+        printf("malloc error\n");
+        exit(0);
+    }
+    if ((added->i_item = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item))) == NULL) {
+        printf("malloc error for i_item\n");
+        exit(0);
+    }
+	init_int_ctl_item_c(added->i_item);
+    
+	/* replace from  prev -> current to prev -> new -> current */
+	old_prev = current->_prev;
+	current->_prev = added;
+	added->_prev = old_prev;
+	old_prev->_next = added;
+	added->_next = current;
+    
+    return added;
+};
+
 static struct int_ctl_list *add_int_ctl_list_after(struct int_ctl_list *current){
     struct int_ctl_list *added;
     struct int_ctl_list *old_next;
@@ -206,6 +230,22 @@ void set_from_int_ctl_list_at_index(int index, struct int_ctl_list *head, int *i
 };
 
 
+static void add_int_ctl_list_before_c_tbl(int iref,
+			int i1_in, struct int_ctl_list *head){
+	head = find_i_ctl_list_item_by_value(iref, head);
+	if(head == NULL) return;
+	head = add_int_ctl_list_before(head);
+	update_int_ctl_item_c(i1_in, head->i_item);
+	return;
+};
+static void add_int_ctl_list_after_c_tbl(int iref,
+			int i1_in, struct int_ctl_list *head){
+	head = find_i_ctl_list_item_by_value(iref, head);
+	if(head == NULL) return;
+	head = add_int_ctl_list_after(head);
+	update_int_ctl_item_c(i1_in, head->i_item);
+	return;
+};
 void del_int_ctl_list_by_c_tbl(int iref, struct int_ctl_list *head){
 	head = find_i_ctl_list_item_by_value(iref, head);
 	if(head != NULL) delete_int_ctl_list(head);
@@ -287,6 +327,14 @@ void set_from_int_clist_at_index(int index, struct int_clist *i_clst, int *i1_ou
     return;
 };
 
+void add_int_clist_before_c_tbl(int iref, int i1_in, struct int_clist *i_clst){
+    add_int_ctl_list_before_c_tbl(iref, i1_in, &i_clst->i_item_head);
+    return;
+};
+void add_int_clist_after_c_tbl(int iref, int i1_in, struct int_clist *i_clst){
+    add_int_ctl_list_after_c_tbl(iref, i1_in, &i_clst->i_item_head);
+    return;
+};
 void del_int_clist_by_c_tbl(int iref, struct int_clist *i_clst){
     del_int_ctl_list_by_c_tbl(iref, &i_clst->i_item_head);
     return;

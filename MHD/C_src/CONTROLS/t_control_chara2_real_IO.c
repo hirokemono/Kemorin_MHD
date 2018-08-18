@@ -89,6 +89,30 @@ static void clear_c2r_ctl_list(struct chara2_real_ctl_list *head){
     return;
 };
 
+static struct chara2_real_ctl_list *add_c2r_ctl_list_before(struct chara2_real_ctl_list *current){
+    struct chara2_real_ctl_list *added;
+    struct chara2_real_ctl_list *old_prev;
+    
+    if ((added = (struct chara2_real_ctl_list *) malloc(sizeof(struct chara2_real_ctl_list))) == NULL) {
+        printf("malloc error\n");
+        exit(0);
+    }
+    if ((added->c2r_item = (struct chara2_real_ctl_item *) malloc(sizeof(struct chara2_real_ctl_item))) == NULL) {
+        printf("malloc error for c2r_item\n");
+        exit(0);
+    }
+	alloc_c2r_ctl_item_c(added->c2r_item);
+    
+	/* replace from  prev -> current to prev -> new -> current */
+	old_prev = current->_prev;
+	current->_prev = added;
+	added->_prev = old_prev;
+	old_prev->_next = added;
+	added->_next = current;
+    
+    return added;
+};
+
 static struct chara2_real_ctl_list *add_c2r_ctl_list_after(struct chara2_real_ctl_list *current){
     struct chara2_real_ctl_list *added;
     struct chara2_real_ctl_list *old_next;
@@ -250,7 +274,22 @@ static void set_from_chara2_real_ctl_list_at_index(int index, struct chara2_real
 };
 
 
-
+static void add_chara2_real_ctl_list_before_c_tbl(char *ref_1, char *ref_2, 
+			char *c1_in, char *c2_in, double r_in, struct chara2_real_ctl_list *head){
+	head = find_c2r_ctl_list_item_by_c_tbl(ref_1, ref_2, head);
+	if(head == NULL) return;
+	head = add_c2r_ctl_list_before(head);
+	update_chara2_real_ctl_item_c(c1_in, c2_in, r_in, head->c2r_item);
+	return;
+};
+static void add_chara2_real_ctl_list_after_c_tbl(char *ref_1, char *ref_2, 
+			char *c1_in, char *c2_in, double r_in, struct chara2_real_ctl_list *head){
+	head = find_c2r_ctl_list_item_by_c_tbl(ref_1, ref_2, head);
+	if(head == NULL) return;
+	head = add_c2r_ctl_list_after(head);
+	update_chara2_real_ctl_item_c(c1_in, c2_in, r_in, head->c2r_item);
+	return;
+};
 static void del_chara2_real_ctl_list_by_c_tbl(char *ref_1, char *ref_2,
 			struct chara2_real_ctl_list *head){
 	head = find_c2r_ctl_list_item_by_c_tbl(ref_1, ref_2, head);
@@ -313,6 +352,18 @@ void set_from_chara2_real_clist_at_index(int index, struct chara2_real_clist *c2
             c1_out, c2_out, r_out);
 };
 
+void add_chara2_real_clist_before_c_tbl(char *ref_1, char *ref_2,
+            char *c1_in, char *c2_in, double r_in,
+            struct chara2_real_clist *c2r_clst){
+    add_chara2_real_ctl_list_before_c_tbl(ref_1, ref_2, c1_in, c2_in, r_in,
+            &c2r_clst->c2r_item_head);
+};
+void add_chara2_real_clist_after_c_tbl(char *ref_1, char *ref_2,
+            char *c1_in, char *c2_in, double r_in,
+            struct chara2_real_clist *c2r_clst){
+    add_chara2_real_ctl_list_after_c_tbl(ref_1, ref_2, c1_in, c2_in, r_in,
+            &c2r_clst->c2r_item_head);
+};
 void del_chara2_real_clist_by_c_tbl(char *ref_1, char *ref_2,
             struct chara2_real_clist *c2r_clst){
     del_chara2_real_ctl_list_by_c_tbl(ref_1, ref_2, &c2r_clst->c2r_item_head);

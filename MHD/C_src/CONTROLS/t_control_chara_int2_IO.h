@@ -83,6 +83,10 @@ void update_chara_int2_clist_by_index(int index, char *c_in, int i1_in, int i2_i
 void set_from_chara_int2_clist_at_index(int index, struct chara_int2_clist *ci2_clst,
 			char *c_out, int *i1_out, int *i2_out);
 
+void add_chara_int2_clist_before_c_tbl(char *ref, char *c_in, int i1_in, int i2_in,
+			struct chara_int2_clist *ci2_clst);
+void add_chara_int2_clist_after_c_tbl(char *ref, char *c_in, int i1_in, int i2_in,
+			struct chara_int2_clist *ci2_clst);
 void del_chara_int2_clist_by_c_tbl(char *ref, struct chara_int2_clist *ci2_clst);
 void update_chara_int2_clist_by_c_tbl(char *ref, char *c_in, int i1_in, int i2_in,
 			struct chara_int2_clist *ci2_clst);

@@ -75,6 +75,30 @@ static void clear_int_real_ctl_list(struct int_real_ctl_list *head){
     return;
 };
 
+static struct int_real_ctl_list *add_int_real_ctl_list_before(struct int_real_ctl_list *current){
+    struct int_real_ctl_list *added;
+    struct int_real_ctl_list *old_prev;
+    
+    if ((added = (struct int_real_ctl_list *) malloc(sizeof(struct int_real_ctl_list))) == NULL) {
+        printf("malloc error\n");
+        exit(0);
+    }
+    if ((added->ir_item = (struct int_real_ctl_item *) malloc(sizeof(struct int_real_ctl_item))) == NULL) {
+        printf("malloc error for ir_item\n");
+        exit(0);
+    }
+	init_int_real_ctl_item_c(added->ir_item);
+    
+	/* replace from  prev -> current to prev -> new -> current */
+	old_prev = current->_prev;
+	current->_prev = added;
+	added->_prev = old_prev;
+	old_prev->_next = added;
+	added->_next = current;
+    
+    return added;
+};
+
 static struct int_real_ctl_list *add_int_real_ctl_list_after(struct int_real_ctl_list *current){
     struct int_real_ctl_list *added;
     struct int_real_ctl_list *old_next;
@@ -188,7 +212,7 @@ static int write_int_real_ctl_list(FILE *fp, int level, const char *label,
 };
 
 
-void append_int_real_ctl_list(int i1_in, double r2_in, struct int_real_ctl_list *head){
+static void append_int_real_ctl_list(int i1_in, double r2_in, struct int_real_ctl_list *head){
 	int num = count_int_real_ctl_list(head);
 	head = find_ir_ctl_list_item_by_index(num, head);
 	head = add_int_real_ctl_list_after(head);
@@ -196,20 +220,20 @@ void append_int_real_ctl_list(int i1_in, double r2_in, struct int_real_ctl_list 
     return;
 };
 
-void del_int_real_ctl_list_by_index(int index, struct int_real_ctl_list *head){
+static void del_int_real_ctl_list_by_index(int index, struct int_real_ctl_list *head){
 	head = find_ir_ctl_list_item_by_index(index, head);
 	if(head != NULL) delete_int_real_ctl_list(head);
 	return;
 };
 
-void update_int_real_ctl_list_by_index(int index, int i1_in, double r2_in,
+static void update_int_real_ctl_list_by_index(int index, int i1_in, double r2_in,
 			struct int_real_ctl_list *head){
 	head = find_ir_ctl_list_item_by_index(index, head);
 	if(head != NULL) update_int_real_ctl_item_c(i1_in, r2_in, head->ir_item);
 	return;
 };
 
-void set_from_int_real_ctl_list_at_index(int index, struct int_real_ctl_list *head,
+static void set_from_int_real_ctl_list_at_index(int index, struct int_real_ctl_list *head,
 			int *i1_out, double *r2_out){
 	head = find_ir_ctl_list_item_by_index(index, head);
 	if(head != NULL) set_from_int_real_ctl_item_c(head->ir_item, i1_out, r2_out);
@@ -217,15 +241,31 @@ void set_from_int_real_ctl_list_at_index(int index, struct int_real_ctl_list *he
 };
 
 
-void del_int_real_ctl_list_by_c_tbl(double ref_1, double ref_2, struct int_real_ctl_list *head){
-	head = find_ir_ctl_list_item_by_value(ref_1, ref_2, head);
+static void add_int_real_ctl_list_before_c_tbl(int iref_1, double ref_2,
+			int i1_in, double r2_in, struct int_real_ctl_list *head){
+	head = find_ir_ctl_list_item_by_value(iref_1, ref_2, head);
+	if(head == NULL) return;
+	head = add_int_real_ctl_list_before(head);
+	update_int_real_ctl_item_c(i1_in, r2_in, head->ir_item);
+	return;
+};
+static void add_int_real_ctl_list_after_c_tbl(int iref_1, double ref_2,
+			int i1_in, double r2_in, struct int_real_ctl_list *head){
+	head = find_ir_ctl_list_item_by_value(iref_1, ref_2, head);
+	if(head == NULL) return;
+	head = add_int_real_ctl_list_after(head);
+	update_int_real_ctl_item_c(i1_in, r2_in, head->ir_item);
+	return;
+};
+static void del_int_real_ctl_list_by_c_tbl(int iref_1, double ref_2, struct int_real_ctl_list *head){
+	head = find_ir_ctl_list_item_by_value(iref_1, ref_2, head);
 	if(head != NULL) delete_int_real_ctl_list(head);
 	return;
 };
 
-static void update_int_real_ctl_list_by_c_tbl(double ref_1, double ref_2,
+static void update_int_real_ctl_list_by_c_tbl(int iref_1, double ref_2,
 			int i1_in, double r2_in, struct int_real_ctl_list *head){
-	head = find_ir_ctl_list_item_by_value(ref_1, ref_2, head);
+	head = find_ir_ctl_list_item_by_value(iref_1, ref_2, head);
 	if(head != NULL) update_int_real_ctl_item_c(i1_in, r2_in, head->ir_item);
 	return;
 };
@@ -303,6 +343,18 @@ void set_from_int_real_clist_at_index(int index, struct int_real_clist *ir_clst,
     return;
 };
 
+void add_int_real_clist_before_c_tbl(int iref_1, double ref_2, 
+            int i1_in, double r2_in, struct int_real_clist *ir_clst){
+    add_int_real_ctl_list_before_c_tbl(iref_1, ref_2,
+            i1_in, r2_in, &ir_clst->ir_item_head);
+    return;
+};
+void add_int_real_clist_after_c_tbl(int iref_1, double ref_2, 
+            int i1_in, double r2_in, struct int_real_clist *ir_clst){
+    add_int_real_ctl_list_after_c_tbl(iref_1, ref_2,
+            i1_in, r2_in, &ir_clst->ir_item_head);
+    return;
+};
 void del_int_real_clist_by_c_tbl(int iref_1, double ref_2,
             struct int_real_clist *ir_clst){
     del_int_real_ctl_list_by_c_tbl(iref_1, ref_2, &ir_clst->ir_item_head);

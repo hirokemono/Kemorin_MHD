@@ -97,7 +97,7 @@ static struct chara_real_ctl_list *add_chara_real_ctl_list_before(struct chara_r
     }
 	alloc_chara_real_ctl_item_c(added->cr_item);
     
-    /* replace from  current -> next to current -> new -> next */
+	/* replace from  prev -> current to prev -> new -> current */
 	old_prev = current->_prev;
 	current->_prev = added;
 	added->_prev = old_prev;

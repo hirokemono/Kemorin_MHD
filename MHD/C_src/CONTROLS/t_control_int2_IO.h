@@ -65,6 +65,10 @@ void update_int2_clist_by_index(int index, int i1_in, int i2_in,
 void set_from_int2_clist_at_index(int index, struct int2_clist *i2_clst,
 			int *i1_out, int *i2_out);
 
+void add_int2_clist_before_c_tbl(int iref_1, int iref_2, 
+			int i1_in, int i2_in, struct int2_clist *i2_clst);
+void add_int2_clist_after_c_tbl(int iref_1, int iref_2, 
+			int i1_in, int i2_in, struct int2_clist *i2_clst);
 void del_int2_clist_by_c_tbl(int iref_1, int iref_2,
 			struct int2_clist *i2_clst);
 void update_int2_clist_by_c_tbl(int iref_1, int iref_2, 

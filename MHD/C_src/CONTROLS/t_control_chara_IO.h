@@ -85,6 +85,8 @@ void del_chara_clist_by_index(int index, struct chara_clist *c_clst);
 void update_chara_clist_by_index(int index, char *c_in, struct chara_clist *c_clst);
 void set_from_chara_clist_at_index(int index, struct chara_clist *c_clst, char *c_out);
 
+void add_chara_clist_before_c_tbl(char *ref, char *c_in, struct chara_clist *c_clst);
+void add_chara_clist_after_c_tbl(char *ref, char *c_in, struct chara_clist *c_clst);
 void del_chara_clist_by_c_tbl(char *ref, struct chara_clist *c_clst);
 void update_chara_clist_by_c_tbl(char *ref, char *c_in, struct chara_clist *c_clst);
 void set_from_chara_clist_at_c_tbl(char *ref, struct chara_clist *c_clst, char *c_out);

@@ -82,6 +82,7 @@ static void clear_chara_int_ctl_list(struct chara_int_ctl_list *head){
     return;
 };
 
+
 static struct chara_int_ctl_list *add_chara_int_ctl_list_before(struct chara_int_ctl_list *current){
     struct chara_int_ctl_list *added;
     struct chara_int_ctl_list *old_prev;
@@ -102,7 +103,7 @@ static struct chara_int_ctl_list *add_chara_int_ctl_list_before(struct chara_int
 	added->_prev = old_prev;
 	old_prev->_next = added;
 	added->_next = current;
-	
+    
     return added;
 };
 
@@ -264,6 +265,22 @@ static void set_from_chara_int_ctl_list_at_index(int index, struct chara_int_ctl
 };
 
 
+static void add_chara_int_ctl_list_before_c_tbl(char *ref, char *c_in, int i1_in,
+			struct chara_int_ctl_list *head){
+	head = find_ci_ctl_list_item_by_c_tbl(ref, head);
+	if(head == NULL) return;
+	head = add_chara_int_ctl_list_before(head);
+	update_chara_int_ctl_item_c(c_in, i1_in, head->ci_item);
+	return;
+};
+static void add_chara_int_ctl_list_after_c_tbl(char *ref, char *c_in, int i1_in,
+			struct chara_int_ctl_list *head){
+	head = find_ci_ctl_list_item_by_c_tbl(ref, head);
+	if(head == NULL) return;
+	head = add_chara_int_ctl_list_after(head);
+	update_chara_int_ctl_item_c(c_in, i1_in, head->ci_item);
+	return;
+};
 static void del_chara_int_ctl_list_by_c_tbl(char *ref, struct chara_int_ctl_list *head){
 	head = find_ci_ctl_list_item_by_c_tbl(ref, head);
 	if(head != NULL) delete_chara_int_ctl_list(head);
@@ -328,6 +345,18 @@ void set_from_chara_int_clist_at_index(int index, struct chara_int_clist *ci_cls
     return;
 };
 
+void add_chara_int_clist_before_c_tbl(char *ref, char *c_in, int i1_in,
+            struct chara_int_clist *ci_clst){
+    add_chara_int_ctl_list_before_c_tbl(ref, c_in, i1_in,
+            &ci_clst->ci_item_head);
+    return;
+};
+void add_chara_int_clist_after_c_tbl(char *ref, char *c_in, int i1_in,
+            struct chara_int_clist *ci_clst){
+    add_chara_int_ctl_list_after_c_tbl(ref, c_in, i1_in,
+            &ci_clst->ci_item_head);
+    return;
+};
 void del_chara_int_clist_by_c_tbl(char *ref, struct chara_int_clist *ci_clst){
     del_chara_int_ctl_list_by_c_tbl(ref, &ci_clst->ci_item_head);
     return;

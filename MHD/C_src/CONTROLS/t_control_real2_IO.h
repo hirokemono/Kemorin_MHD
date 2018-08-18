@@ -64,6 +64,10 @@ void update_real2_clist_by_index(int index, double r1_in, double r2_in,
 void set_from_real2_clist_at_index(int index, struct real2_clist *r2_clst,
 			double *r1_out, double *r2_out);
 
+void add_real2_clist_before_c_tbl(double ref_1, double ref_2, 
+			struct real2_clist *r2_clst);
+void add_real2_clist_after_c_tbl(double ref_1, double ref_2, 
+			struct real2_clist *r2_clst);
 void del_real2_clist_by_c_tbl(double ref_1, double ref_2,
 			struct real2_clist *r2_clst);
 void update_real2_clist_by_c_tbl(double ref_1, double ref_2, 

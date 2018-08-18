@@ -75,6 +75,30 @@ static void clear_int2_ctl_list(struct int2_ctl_list *head){
     return;
 };
 
+static struct int2_ctl_list *add_int2_ctl_list_before(struct int2_ctl_list *current){
+    struct int2_ctl_list *added;
+    struct int2_ctl_list *old_prev;
+    
+    if ((added = (struct int2_ctl_list *) malloc(sizeof(struct int2_ctl_list))) == NULL) {
+        printf("malloc error\n");
+        exit(0);
+    }
+    if ((added->i2_item = (struct int2_ctl_item *) malloc(sizeof(struct int2_ctl_item))) == NULL) {
+        printf("malloc error for i2_item\n");
+        exit(0);
+    }
+	init_int2_ctl_item_c(added->i2_item);
+    
+	/* replace from  prev -> current to prev -> new -> current */
+	old_prev = current->_prev;
+	current->_prev = added;
+	added->_prev = old_prev;
+	old_prev->_next = added;
+	added->_next = current;
+    
+    return added;
+};
+
 static struct int2_ctl_list *add_int2_ctl_list_after(struct int2_ctl_list *current){
     struct int2_ctl_list *added;
     struct int2_ctl_list *old_next;
@@ -216,6 +240,22 @@ void set_from_int2_ctl_list_at_index(int index, struct int2_ctl_list *head,
 };
 
 
+static void add_int2_ctl_list_before_c_tbl(int iref_1, int iref_2,
+			int i1_in, int i2_in, struct int2_ctl_list *head){
+	head = find_i2_ctl_list_item_by_value(iref_1, iref_2, head);
+	if(head == NULL) return;
+	head = add_int2_ctl_list_before(head);
+	update_int2_ctl_item_c(i1_in, i2_in, head->i2_item);
+	return;
+};
+static void add_int2_ctl_list_after_c_tbl(int iref_1, int iref_2,
+			int i1_in, int i2_in, struct int2_ctl_list *head){
+	head = find_i2_ctl_list_item_by_value(iref_1, iref_2, head);
+	if(head == NULL) return;
+	head = add_int2_ctl_list_after(head);
+	update_int2_ctl_item_c(i1_in, i2_in, head->i2_item);
+	return;
+};
 void del_int2_ctl_list_by_c_tbl(int iref_1, int iref_2, struct int2_ctl_list *head){
 	head = find_i2_ctl_list_item_by_value(iref_1, iref_2, head);
 	if(head != NULL) delete_int2_ctl_list(head);
@@ -302,6 +342,18 @@ void set_from_int2_clist_at_index(int index, struct int2_clist *i2_clst,
     return;
 };
 
+void add_int2_clist_before_c_tbl(int iref_1, int iref_2, 
+            int i1_in, int i2_in, struct int2_clist *i2_clst){
+    add_int2_ctl_list_before_c_tbl(iref_1, iref_2,
+            i1_in, i2_in, &i2_clst->i2_item_head);
+    return;
+};
+void add_int2_clist_after_c_tbl(int iref_1, int iref_2, 
+            int i1_in, int i2_in, struct int2_clist *i2_clst){
+    add_int2_ctl_list_after_c_tbl(iref_1, iref_2,
+            i1_in, i2_in, &i2_clst->i2_item_head);
+    return;
+};
 void del_int2_clist_by_c_tbl(int iref_1, int iref_2,
             struct int2_clist *i2_clst){
     del_int2_ctl_list_by_c_tbl(iref_1, iref_2, &i2_clst->i2_item_head);
