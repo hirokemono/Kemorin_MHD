@@ -300,7 +300,7 @@ int add_cr_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
 	
 	GtkTreePath *tree_path;
 	GtkTreeIter iter;
-	cur = g_list_last(reference_list);
+	cur = g_list_first(reference_list);
 	tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
 	gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
 	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_NAME, &field_name, -1);
@@ -310,7 +310,7 @@ int add_cr_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
 		gchar row_string[30] = "new_number";
 		gchar math_string[30] = "$$    $$";
 		double value = 0.0;
-		add_chara_real_clist_by_c_tbl(field_name, row_string, value, cr_clist);
+		add_chara_real_clist_before_c_tbl(field_name, row_string, value, cr_clist);
 		
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
 		

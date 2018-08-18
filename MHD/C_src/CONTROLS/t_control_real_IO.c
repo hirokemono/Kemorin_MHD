@@ -248,7 +248,64 @@ static void copy_to_real_ctl_list(int num, double *v1, struct real_ctl_list *hea
 	return;
 };
 
+void init_real_clist(struct real_clist *r_clst){
+	init_real_ctl_list(&r_clst->r_item_head);
+	return;
+};
 
+void clear_real_clist(struct real_clist *r_clst){
+    clear_real_ctl_list(&r_clst->r_item_head);
+    return;
+};
+int count_real_clist(struct real_clist *r_clst){
+    return count_real_ctl_list(&r_clst->r_item_head);
+};
 
+int read_real_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
+                      struct real_clist *r_clst){
+    return read_real_ctl_list(fp, buf, label, &r_clst->r_item_head);
+};
+int write_real_clist(FILE *fp, int level, const char *label, 
+                       struct real_clist *r_clst){
+    return write_real_ctl_list(fp, level, label, &r_clst->r_item_head);
+};
 
+void append_real_clist(double r1_in, struct real_clist *r_clst){
+    append_real_ctl_list(r1_in, &r_clst->r_item_head);
+    return;
+};
+void del_real_clist_by_index(int index, struct real_clist *r_clst){
+    del_real_ctl_list_by_index(index, &r_clst->r_item_head);
+    return;
+};
+void update_real_clist_by_index(int index, double r1_in, struct real_clist *r_clst){
+    update_real_ctl_list_by_index(index, r1_in, &r_clst->r_item_head);
+    return;
+};
+void set_from_real_clist_at_index(int index, struct real_clist *r_clst, double *r1_out){
+    set_from_real_ctl_list_at_index(index, &r_clst->r_item_head, r1_out);
+    return;
+};
 
+void del_real_clist_by_c_tbl(double ref, struct real_clist *r_clst){
+    del_real_ctl_list_by_c_tbl(ref, &r_clst->r_item_head);
+    return;
+};
+void update_real_clist_by_c_tbl(double ref, double r1_in, struct real_clist *r_clst){
+    update_real_ctl_list_by_c_tbl(ref, r1_in, &r_clst->r_item_head);
+    return;
+};
+void set_from_real_clist_at_c_tbl(double ref, struct real_clist *r_clst, double *r1_out){
+    set_from_real_ctl_list_at_c_tbl(ref, &r_clst->r_item_head, r1_out);
+    return;
+};
+
+void copy_from_real_clist(struct real_clist *r_clst, int num, double *v1){
+    copy_from_real_ctl_list(&r_clst->r_item_head, num, v1);
+    return;
+};
+void copy_to_real_clist(int num, double *v1, struct real_clist *r_clst){
+    copy_to_real_ctl_list(num, v1, &r_clst->r_item_head);
+    return;
+};
+ 
