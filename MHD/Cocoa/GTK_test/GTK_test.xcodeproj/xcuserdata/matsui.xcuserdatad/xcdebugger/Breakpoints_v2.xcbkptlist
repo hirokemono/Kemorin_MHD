@@ -175,7 +175,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "101"
             endingLineNumber = "101"
-            landmarkName = "add_chara_real_ctl_list_after"
+            landmarkName = "add_chara_real_ctl_list_before"
             landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>

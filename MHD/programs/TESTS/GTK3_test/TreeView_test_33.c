@@ -1,5 +1,5 @@
 
-#include "tree_view_4_pvr_colormap.h"
+#include "tree_view_4_temp_BC_GTK.h"
 #include "t_SGS_MHD_control_c.h"
 
 struct SGS_MHD_control_c *mhd_ctl;
@@ -7,16 +7,6 @@ char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
 char buf[LENGTHBUF];      /* character buffer for reading line */
 
 static GtkWidget *main_window = NULL;
-
-void init_colormap_views(struct PVR_ctl_list *pvr1, struct colormap_view *color_vws){
-    color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
-    init_r2_clist_views(pvr1->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c->colortbl_list, 
-                        color_vws->cmap_vws);
-    color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
-    init_r2_clist_views(pvr1->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c->linear_opacity_list, 
-                        color_vws->opacity_vws);
-    return;
-}
 
 static void cb_close_window(GtkButton *button, gpointer user_data){
     GtkWidget *window = (GtkWidget *) user_data;
@@ -26,7 +16,7 @@ static void cb_close_window(GtkButton *button, gpointer user_data){
 
 static void create_tree_view_window(GtkButton *button, gpointer user_data)
 {
-    struct colormap_view *color_vws = (struct r2_clist_view *) user_data;
+    struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
     
     static gint window_id = 0;
     GtkWidget *window;
@@ -34,8 +24,8 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
     
     gchar *title;
     
-    create_real2_tree_view(color_vws->cmap_vws);
-    create_real2_tree_view(color_vws->opacity_vws);
+    bc_vws->bc_tree_view = gtk_tree_view_new();
+    init_bc_temp_tree_view(bc_vws);
     
     
     /* ウィンドウ作成 */
@@ -52,11 +42,10 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
     g_signal_connect(G_OBJECT(button), "clicked", 
                      G_CALLBACK(cb_close_window), window);
     
-    add_real2_list_box_w_addbottun(color_vws->cmap_vws, vbox);
+    add_bc_temp_selection_box(bc_vws, vbox);
+    
     gtk_container_add(GTK_CONTAINER(window), vbox);
-
-    add_real2_list_box_w_addbottun(color_vws->opacity_vws, vbox);
-    gtk_container_add(GTK_CONTAINER(window), vbox);
+    
     
     gtk_widget_show_all(window);
 };
@@ -66,7 +55,7 @@ int main(int argc, char **argv)
 {
     GtkWidget *hbox;
     GtkWidget *button;
-    struct colormap_view *color_vws;
+    struct boundary_condition_view *bc_vws;
     
     srand((unsigned)time(NULL));
     
@@ -74,8 +63,8 @@ int main(int argc, char **argv)
     alloc_SGS_MHD_control_c(mhd_ctl);
     read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
     
-    color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
-    init_colormap_views(&mhd_ctl->viz_c->pvr_ctl_list, color_vws);
+    bc_vws = (struct boundary_condition_view *) malloc(sizeof(struct boundary_condition_view));
+    init_temp_bc_views_GTK(mhd_ctl->model_ctl->nbc_ctl->bc_T_ctl, bc_vws);
 
     gtk_init(&argc, &argv);
     
@@ -86,7 +75,7 @@ int main(int argc, char **argv)
     hbox = gtk_hbox_new(TRUE, 10);
     
     button = gtk_button_new_with_label("Create Window");
-    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(create_tree_view_window), color_vws);
+    g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(create_tree_view_window), bc_vws);
     gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
     
     gtk_container_add(GTK_CONTAINER(main_window), hbox);

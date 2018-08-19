@@ -43,7 +43,7 @@ static void thermal_bc_value_edited_cb(GtkCellRendererText *cell, gchar *path_st
 }
 
 
-static void cb_delete_thermal_buo_coef_new(GtkButton *button, gpointer user_data)
+static void cb_delete_thermal_bc_by_list(GtkButton *button, gpointer user_data)
 {
     struct boundary_condition_view *bc_vws = (struct boundary_condition_view *) user_data;
     
@@ -120,6 +120,6 @@ void add_bc_temp_selection_box(struct boundary_condition_view *bc_vws, GtkWidget
     g_signal_connect(G_OBJECT(combobox_add), "changed", 
                      G_CALLBACK(cb_add_thermal_bc_by_list), bc_vws);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
-                     G_CALLBACK(cb_delete_thermal_buo_coef_new), bc_vws);
+                     G_CALLBACK(cb_delete_thermal_bc_by_list), bc_vws);
 };
 
