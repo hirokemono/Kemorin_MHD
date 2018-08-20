@@ -132,7 +132,7 @@ static gboolean cb_expose_event(GtkWidget *widget, cairo_t *cr, gpointer user_da
 		cairo_set_line_width(cr, 2.0);
     //角を丸くする
 		cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND);
-        cairo_set_source_rgb(cr, 1.0, 1.0, 1.0);
+        cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
         cairo_rectangle(cr, left, top, (2.0*width), height);
         cairo_stroke(cr);
     }
@@ -141,6 +141,7 @@ static gboolean cb_expose_event(GtkWidget *widget, cairo_t *cr, gpointer user_da
         cairo_select_font_face (cr, "Serif", CAIRO_FONT_SLANT_NORMAL,
                             CAIRO_FONT_WEIGHT_NORMAL);
         cairo_set_font_size(cr, 12);
+        cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
         top_s = top;
         height_s = 0.0;
         char *c_txt[10];
@@ -181,6 +182,7 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
     GtkWidget *window;
     GtkWidget *vbox;
     GtkWidget *hbox;
+    GtkWidget *scrolled_window;
     
     gchar *title;
     
@@ -195,29 +197,30 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
     g_free(title);
     
     
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    /* Close window bottun */
-    button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	
+	/* Close window bottun */
+	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
     gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
     g_signal_connect(G_OBJECT(button), "clicked", 
                      G_CALLBACK(cb_close_window), window);
-    /*
-    add_real2_list_box_w_addbottun(color_vws->cmap_vws, vbox);
-    gtk_container_add(GTK_CONTAINER(window), vbox);
-
+	
+	
+	add_real2_list_box_w_addbottun(color_vws->cmap_vws, vbox);
     add_real2_list_box_w_addbottun(color_vws->opacity_vws, vbox);
-    gtk_container_add(GTK_CONTAINER(window), vbox);
-    */
-
-/*    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);*/
-    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_set_app_paintable(window, TRUE);
-    gtk_widget_add_events (window, GDK_BUTTON_PRESS_MASK);
-    g_signal_connect(G_OBJECT(window), "draw", G_CALLBACK(cb_expose_event), color_vws);
-    g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-    gtk_container_add(GTK_CONTAINER(window), vbox);
-
-    
+    gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+	
+	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+                                   GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    gtk_widget_set_size_request(scrolled_window, 200, 200);
+    gtk_widget_set_app_paintable(scrolled_window, TRUE);
+    gtk_widget_add_events (scrolled_window, GDK_BUTTON_PRESS_MASK);
+    g_signal_connect(G_OBJECT(scrolled_window), "draw", G_CALLBACK(cb_expose_event), color_vws);
+    gtk_box_pack_start(GTK_BOX(hbox), scrolled_window, TRUE, TRUE, 0);
+	
+    gtk_container_add(GTK_CONTAINER(window), hbox);
     gtk_widget_show_all(window);
 };
 

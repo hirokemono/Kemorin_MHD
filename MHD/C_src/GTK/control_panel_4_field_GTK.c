@@ -264,6 +264,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	GtkWidget *expander;
 	GtkWidget *hbox_1, *vbox_1, *Frame_1;
 	GtkWidget *label_1;
+	GtkWidget *button_1;
 	GtkWidget *scrolled_window_1;
 	
 	GtkTreeSelection *selection_1;
@@ -315,37 +316,38 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	list = g_list_append(list, selection);
 	g_object_set_data(G_OBJECT(child_model), "selection_list", list);
 	
-	
 	get_label_MHD_control_head(c_label);
-	expander = gtk_expander_new_with_mnemonic("Field to add");
 	
-	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	Frame_1 = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
+	
+	/* Construct field panel */
 	
 	scrolled_window_1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window_1),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 //	gtk_widget_set_size_request(scrolled_window_1, 400, 300);
 	gtk_container_add(GTK_CONTAINER(scrolled_window_1), fields_vws->unused_field_tree_view);
+	
+	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window_1, TRUE, TRUE, 0);
-
 	
-	
+	Frame_1 = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
 	
 	/* Add data bottun */
 	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	button = gtk_button_new_from_stock(GTK_STOCK_ADD);
-	g_signal_connect(G_OBJECT(button), "clicked", 
+	button_1 = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	g_signal_connect(G_OBJECT(button_1), "clicked", 
 				G_CALLBACK(add_field_to_use), fields_vws);
-    gtk_box_pack_start(GTK_BOX(hbox_1), button, FALSE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_1), button_1, FALSE, TRUE, 0);
 
 	label_1 = gtk_label_new("");
 	gtk_box_pack_end(GTK_BOX(hbox_1), label_1, TRUE, TRUE, 0);
 
 	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
+	
+	expander = gtk_expander_new_with_mnemonic("Field to add");
 	gtk_container_add(GTK_CONTAINER(expander), hbox_1);
 	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
 	
