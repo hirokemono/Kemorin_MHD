@@ -45,6 +45,9 @@ void set_constant_opacitymap(struct colormap_params *cmap_s,
 			double val_min, double val_max, double opaciy);
 void set_full_opacitymap(struct colormap_params *cmap_s, double val_min, double val_max);
 
+void copy_colormap_from_ctl(struct colormap_ctl_c *cmap_c, 
+                            struct colormap_params *cmap_s);
+
 void check_colormap_control_file_s(struct colormap_params *cmap_s);
 void write_colormap_control_file_s(const char *file_name, struct colormap_params *cmap_s);
 void read_colormap_control_file_s(const char *file_name, struct colormap_params *cmap_s);

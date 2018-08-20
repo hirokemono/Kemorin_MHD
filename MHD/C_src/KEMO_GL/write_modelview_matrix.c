@@ -70,8 +70,8 @@ void copy_vector_to_ctl(double *vector, struct chara_real_ctl_list *head) {
 
 
 void copy_GL_stereo_params_to_ctl(struct view_element *view, struct streo_view_ctl_c *streo_view_c) {
-	copy_to_real_ctl_item(view->focal_length, streo_view_c->focalpoint_ctl);
-	copy_to_real_ctl_item(view->eye_separation, streo_view_c->eye_separation_ctl);
+	update_real_ctl_item_c(view->focal_length, streo_view_c->focalpoint_ctl);
+	update_real_ctl_item_c(view->eye_separation, streo_view_c->eye_separation_ctl);
 }
 
 
@@ -87,31 +87,31 @@ void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modeview_
 	lookat_in_view[2] = view->x_lookat[2];
 	
 	mat_c->iflag_image_size_ctl = 1;
-	copy_to_int_ctl_item(view->nx_window, mat_c->img_size_c->num_xpixel_ctl);
-	copy_to_int_ctl_item(view->ny_window, mat_c->img_size_c->num_ypixel_ctl);
+	update_int_ctl_item_c(view->nx_window, mat_c->img_size_c->num_xpixel_ctl);
+	update_int_ctl_item_c(view->ny_window, mat_c->img_size_c->num_ypixel_ctl);
 	
 	copy_vector_to_ctl(viewpt_in_view, &mat_c->viewpt_in_viewer_list);
 	
-	copy_to_real_ctl_item(view->iso_scale, mat_c->scale_factor_ctl);
+	update_real_ctl_item_c(view->iso_scale, mat_c->scale_factor_ctl);
 	
 	copy_vector_to_ctl(lookat_in_view, &mat_c->lookpoint_list);
 	
 	copy_vector_to_ctl(drotation, &mat_c->view_rot_vec_list);
-	copy_to_real_ctl_item(view->rotation[0], mat_c->view_rotation_deg_ctl);
+	update_real_ctl_item_c(view->rotation[0], mat_c->view_rotation_deg_ctl);
 	
     mat_c->iflag_projection_mat_ctl = 1;
-	copy_to_real_ctl_item(view->aperture, mat_c->projection_c->perspective_angle_ctl);
-	copy_to_real_ctl_item(view->aspect, mat_c->projection_c->perspective_xy_ratio_ctl);
-	copy_to_real_ctl_item(view->near, mat_c->projection_c->perspective_near_ctl);
-	copy_to_real_ctl_item(view->far, mat_c->projection_c->perspective_far_ctl);
+	update_real_ctl_item_c(view->aperture, mat_c->projection_c->perspective_angle_ctl);
+	update_real_ctl_item_c(view->aspect, mat_c->projection_c->perspective_xy_ratio_ctl);
+	update_real_ctl_item_c(view->near, mat_c->projection_c->perspective_near_ctl);
+	update_real_ctl_item_c(view->far, mat_c->projection_c->perspective_far_ctl);
 	
 	return;
 }
 
 
 void copy_GL_stereo_params_from_ctl(struct streo_view_ctl_c *streo_view_c, struct view_element *view) {
-	view->focal_length = copy_from_real_ctl_item(streo_view_c->focalpoint_ctl);
-	view->eye_separation = copy_from_real_ctl_item(streo_view_c->eye_separation_ctl);
+    set_from_real_ctl_item_c(streo_view_c->focalpoint_ctl, &view->focal_length);
+    set_from_real_ctl_item_c(streo_view_c->eye_separation_ctl, &view->eye_separation);
 	return;
 }
 
@@ -128,18 +128,18 @@ void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view
 	
 	copy_vector_from_ctl(&mat_c->viewpt_in_viewer_list, viewpt_in_view);
     
-    view->iso_scale = copy_from_real_ctl_item(mat_c->scale_factor_ctl);
+    set_from_real_ctl_item_c(mat_c->scale_factor_ctl, &view->iso_scale);
     
 	copy_vector_from_ctl(&mat_c->lookpoint_list, lookat_in_view);
 	
 	copy_vector_from_ctl(&mat_c->view_rot_vec_list, drotation);
-    view->rotation[0] = copy_from_real_ctl_item(mat_c->view_rotation_deg_ctl);
+    set_from_real_ctl_item_c(mat_c->view_rotation_deg_ctl, &view->rotation[0]);
 	
     if(mat_c->iflag_projection_mat_ctl > 0){
-        view->aperture = copy_from_real_ctl_item(mat_c->projection_c->perspective_angle_ctl);
-        view->aspect = copy_from_real_ctl_item(mat_c->projection_c->perspective_xy_ratio_ctl);
-        view->near = copy_from_real_ctl_item(mat_c->projection_c->perspective_near_ctl);
-        view->far = copy_from_real_ctl_item(mat_c->projection_c->perspective_far_ctl);
+        set_from_real_ctl_item_c(mat_c->projection_c->perspective_angle_ctl, &view->aperture);
+        set_from_real_ctl_item_c(mat_c->projection_c->perspective_xy_ratio_ctl, &view->aspect);
+        set_from_real_ctl_item_c(mat_c->projection_c->perspective_near_ctl, &view->near);
+        set_from_real_ctl_item_c(mat_c->projection_c->perspective_far_ctl, &view->far);
     };
 	
     for (i = 0; i < 3; i++) view->rotation[i+1] = drotation[i];

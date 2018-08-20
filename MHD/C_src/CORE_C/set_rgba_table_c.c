@@ -145,7 +145,7 @@ void copy_colormap_to_ctl(struct colormap_params *cmap_s,
 	}
 	copy_to_real2_clist(cmap_s->n_opacity_point, cmap_s->opacity_data, cmap_s->opacity_value,
 				cmap_c->linear_opacity_list);
-	copy_to_real_ctl_item(cmap_s->min_opacity, cmap_c->fix_opacity_ctl);
+	update_real_ctl_item_c(cmap_s->min_opacity, cmap_c->fix_opacity_ctl);
 	return;
 	}
 
@@ -157,16 +157,16 @@ void make_colorbar_for_ctl(struct colormap_params *cmap_s,
 	set_boolean_by_chara_ctl_item(1, cbar_c->zeromarker_flag_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->axis_switch_ctl);
 	
-	copy_to_real2_ctl_item(cmap_s->color_data[IZERO], cmap_s->color_data[cmap_s->n_color_point-1],
+	update_real2_ctl_item_c(cmap_s->color_data[IZERO], cmap_s->color_data[cmap_s->n_color_point-1],
 				cbar_c->cbar_range_ctl);
-	copy_to_int_ctl_item(1, cbar_c->font_size_ctl);
-	copy_to_int_ctl_item(3, cbar_c->ngrid_cbar_ctl);
+	update_int_ctl_item_c(1, cbar_c->font_size_ctl);
+	update_int_ctl_item_c(3, cbar_c->ngrid_cbar_ctl);
 
 	return;
 }
 
 
-static void copy_colormap_from_ctl(struct colormap_ctl_c *cmap_c, 
+void copy_colormap_from_ctl(struct colormap_ctl_c *cmap_c, 
 			struct colormap_params *cmap_s){
 	int num;
 	
@@ -186,7 +186,7 @@ static void copy_colormap_from_ctl(struct colormap_ctl_c *cmap_c,
 		return;
 	}
 	
-	num = count_real2_ctl_list(&cmap_c->colortbl_list);
+	num = count_real2_clist(cmap_c->colortbl_list);
 	realloc_color_index_list_s(cmap_s, num);
 	copy_from_real2_clist(cmap_c->colortbl_list, 
 				num, cmap_s->color_data, cmap_s->color_value);
@@ -196,11 +196,11 @@ static void copy_colormap_from_ctl(struct colormap_ctl_c *cmap_c,
 		return;
 	};
 	
-	num = count_real2_ctl_list(&cmap_c->linear_opacity_list);
+	num = count_real2_clist(cmap_c->linear_opacity_list);
 	realloc_opacity_index_list_s(cmap_s, num);
 	copy_from_real2_clist(cmap_c->linear_opacity_list, 
 				num, cmap_s->opacity_data, cmap_s->opacity_value);
-	cmap_s->min_opacity = copy_from_real_ctl_item(cmap_c->fix_opacity_ctl);
+    set_from_real_ctl_item_c(cmap_c->fix_opacity_ctl, &cmap_s->min_opacity);
 	
 	return;
 }
