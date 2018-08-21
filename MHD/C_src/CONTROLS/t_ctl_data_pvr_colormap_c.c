@@ -97,6 +97,8 @@ void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	
     cmap_c->colortbl_list = (struct real2_clist *) malloc(sizeof(struct real2_clist));
 	init_real2_clist(cmap_c->colortbl_list);
+    sprintf(cmap_c->colortbl_list->r1_name, "data");
+    sprintf(cmap_c->colortbl_list->r2_name, "color");
 	
 	cmap_c->opacity_style_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(cmap_c->opacity_style_ctl);
@@ -106,6 +108,9 @@ void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	
     cmap_c->linear_opacity_list = (struct real2_clist *) malloc(sizeof(struct real2_clist));
 	init_real2_clist(cmap_c->linear_opacity_list);
+    sprintf(cmap_c->linear_opacity_list->r1_name, "data");
+    sprintf(cmap_c->linear_opacity_list->r2_name, "opacity");
+
     cmap_c->step_opacity_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
 	init_real3_clist(cmap_c->step_opacity_list);
 	

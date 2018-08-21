@@ -319,11 +319,19 @@ static void copy_to_real2_ctl_list(int num, double *v1, double *v2,
 
 void init_real2_clist(struct real2_clist *r2_clst){
     init_real2_ctl_list(&r2_clst->r2_item_head);
+    
+    r2_clst->clist_name = (char *)calloc(32,sizeof(char));
+    r2_clst->r1_name = (char *)calloc(32,sizeof(char));
+    r2_clst->r2_name = (char *)calloc(32,sizeof(char));
+    
     return;
 };
 
 void clear_real2_clist(struct real2_clist *r2_clst){
     clear_real2_ctl_list(&r2_clst->r2_item_head);
+    free(r2_clst->clist_name);
+    free(r2_clst->r1_name);
+    free(r2_clst->r2_name);
     return;
 };
 int count_real2_clist(struct real2_clist *r2_clst){
@@ -332,6 +340,7 @@ int count_real2_clist(struct real2_clist *r2_clst){
 
 int read_real2_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct real2_clist *r2_clst){
+    sprintf(r2_clst->clist_name,"%s", label);
     return read_real2_ctl_list(fp, buf, label, &r2_clst->r2_item_head);
 };
 int write_real2_clist(FILE *fp, int level, const char *label, 

@@ -31,6 +31,10 @@ struct real2_ctl_list{
 
 struct real2_clist{
 	struct real2_ctl_list r2_item_head;
+
+    char *clist_name;
+    char *r1_name;
+    char *r2_name;
 };
 
 

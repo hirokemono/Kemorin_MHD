@@ -38,6 +38,8 @@ void alloc_lic_masking_ctl_c(struct lic_masking_ctl_c *mask_ctl){
 	
     mask_ctl->mask_range_list = (struct real2_clist *) malloc(sizeof(struct real2_clist));
 	init_real2_clist(mask_ctl->mask_range_list);
+    sprintf(mask_ctl->mask_range_list->r1_name, "data");
+    sprintf(mask_ctl->mask_range_list->r2_name, "mask_value");
 	
 	return;
 };
