@@ -387,15 +387,14 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
 
 
 
-static void r2_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
-			gchar *new_text, gpointer user_data)
-{
+void r2_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
+			gchar *new_text, gpointer user_data){
     struct r2_clist_view *r2_vws = (struct boundary_condition_view *) user_data;
     r2_tree_value1_edited(path_str, new_text, r2_vws->tree_view, r2_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value1 changed", r2_vws->r2_clist_gtk);
 };
 
-static void r2_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
+void r2_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data)
 {
     struct r2_clist_view *r2_vws = (struct boundary_condition_view *) user_data;
@@ -403,14 +402,14 @@ static void r2_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
     write_real2_clist(stdout, 0, "value2 changed", r2_vws->r2_clist_gtk);
 };
 
-static void add_r2_list_items_cb(GtkButton *button, gpointer user_data){
+void add_r2_list_items_cb(GtkButton *button, gpointer user_data){
     struct r2_clist_view *r2_vws = (struct r2_clist_view *) user_data;
 	r2_vws->index_bc = add_r2_list_items(r2_vws->index_bc, 
 				r2_vws->tree_view, r2_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns added", r2_vws->r2_clist_gtk);
 };
 
-static void delete_r2_list_items_cb(GtkButton *button, gpointer user_data){
+void delete_r2_list_items_cb(GtkButton *button, gpointer user_data){
     struct r2_clist_view *r2_vws = (struct r2_clist_view *) user_data;
 	delete_r2_list_items(r2_vws->tree_view, r2_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns deleted", r2_vws->r2_clist_gtk);
