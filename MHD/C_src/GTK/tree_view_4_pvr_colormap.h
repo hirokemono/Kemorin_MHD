@@ -23,6 +23,8 @@ struct colormap_view{
     int index_cmap;
     struct r2_clist_view *cmap_vws;
     struct r2_clist_view *opacity_vws;
+	
+    GtkWidget *scrolled_window;
 };
 
 /* prototypes */

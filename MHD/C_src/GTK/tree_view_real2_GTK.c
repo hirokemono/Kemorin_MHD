@@ -143,7 +143,7 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
     selection = gtk_tree_view_get_selection(r2_tree_view);
     list = gtk_tree_selection_get_selected_rows(selection, NULL);
     
-	if(g_list_first(list) == NULL) return;
+	if(g_list_first(list) == NULL) return index;
     /* 最初にパスからリファレンスを作成する */
     /* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
     reference_list = NULL;
@@ -162,10 +162,7 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
     }
     g_list_free(list);
     
-    /* GtkTreeSelectionのchangedシグナルを一時的にブロックする */
-    /*block_changed_signal(G_OBJECT(child_model_to_add));*/
-    
-    /* リファレンスをパスに戻して削除 */
+    /* Add */
 	
 	GtkTreePath *tree_path;
 	GtkTreeIter iter;
@@ -188,8 +185,6 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
 	
 	gtk_list_store_clear(child_model_to_add);
 	index = append_r2_list_from_ctl(index, &r2_clist->r2_item_head, r2_tree_view);
-    /* changedシグナルのブロックを解除する */
-	/*unblock_changed_signal(G_OBJECT(child_model_to_add));*/
 	return index;
 }
 
@@ -230,9 +225,8 @@ void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clis
     }
     g_list_free(list);
     
-    /* GtkTreeSelectionのchangedシグナルを一時的にブロックする */
-    /*(G_OBJECT(child_model_to_del));*/
-    /* リファレンスをパスに戻して削除 */
+	
+	/* リファレンスをパスに戻して削除 */
     for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
         GtkTreePath *tree_path;
         GtkTreeIter iter;
@@ -251,9 +245,6 @@ void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clis
         del_real2_clist_by_c_tbl(value1, value2, r2_clist);
     }
     g_list_free(reference_list);
-    
-    /* changedシグナルのブロックを解除する */
-    /*unblock_changed_signal(G_OBJECT(child_model_to_del));*/
 }
 
 void create_real2_tree_view(GtkTreeView *r2_tree_view, 
@@ -287,7 +278,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view,
                  "climb-rate", 0.5,
                  "digits", 3, 
                  "editable", TRUE, 
-                 "width", (gint)150, NULL);
+                 "width", (gint)100, NULL);
     
     gtk_tree_view_column_pack_start(column, renderer_spin1, TRUE);
     gtk_tree_view_column_set_attributes(column, renderer_spin1, "text", COLUMN_FIELD_INDEX, NULL);

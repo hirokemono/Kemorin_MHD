@@ -165,24 +165,27 @@ static gboolean cb_expose_event(GtkWidget *widget, cairo_t *cr, gpointer user_da
 void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	GtkWidget *expander, *Frame_1;
     GtkWidget *vbox_1, *hbox_1;
-    GtkWidget *scrolled_window;
 	
+    
     vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    init_real2_tree_view(color_vws->cmap_vws);
 	add_real2_list_box_w_addbottun(color_vws->cmap_vws, vbox_1);
+	
+	init_real2_tree_view(color_vws->opacity_vws);
 	add_real2_list_box_w_addbottun(color_vws->opacity_vws, vbox_1);
 	
 	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start(GTK_BOX(hbox_1), vbox_1, TRUE, TRUE, 0);
 	
-	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+	color_vws->scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(color_vws->scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 200, 200);
-    gtk_widget_set_app_paintable(scrolled_window, TRUE);
-    gtk_widget_add_events (scrolled_window, GDK_BUTTON_PRESS_MASK);
-	g_signal_connect(G_OBJECT(scrolled_window), "draw", 
+    gtk_widget_set_size_request(color_vws->scrolled_window, 200, 200);
+    gtk_widget_set_app_paintable(color_vws->scrolled_window, TRUE);
+    gtk_widget_add_events (color_vws->scrolled_window, GDK_BUTTON_PRESS_MASK);
+	g_signal_connect(G_OBJECT(color_vws->scrolled_window), "draw", 
 				G_CALLBACK(cb_expose_event), color_vws);
-    gtk_box_pack_start(GTK_BOX(hbox_1), scrolled_window, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_1), color_vws->scrolled_window, TRUE, TRUE, 0);
 	
     
 	Frame_1 = gtk_frame_new("");
