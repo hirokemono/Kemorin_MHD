@@ -37,8 +37,8 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
     
     gchar *title;
     
-    create_real2_tree_view(color_vws->cmap_vws);
-    create_real2_tree_view(color_vws->opacity_vws);
+    init_real2_tree_view(color_vws->cmap_vws);
+    init_real2_tree_view(color_vws->opacity_vws);
     
     
     /* ウィンドウ作成 */
