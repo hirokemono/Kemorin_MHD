@@ -39,38 +39,6 @@ int append_r2_list_from_ctl(int index, struct real2_ctl_list *head,
 }
 
 
-static void block_changed_signal(GObject *instance)
-{
-    GList *list;
-    GList *cur;
-    gulong handler_id;
-    GtkTreeSelection *selection;
-    
-    list = g_object_get_data(G_OBJECT(instance), "selection_list");
-    for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-        selection = cur->data;
-        handler_id = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(selection), "changed_handler_id"));
-        g_signal_handler_block(G_OBJECT(selection), handler_id);
-    }
-}
-
-static void unblock_changed_signal(GObject *instance)
-{
-    GList *list;
-    GList *cur;
-    gulong handler_id;
-    GtkTreeSelection *selection;
-    
-    list = g_object_get_data(G_OBJECT(instance), "selection_list");
-    for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-        selection = cur->data;
-        handler_id = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(selection), "changed_handler_id"));
-        g_signal_handler_unblock(G_OBJECT(selection), handler_id);
-        
-    }
-}
-
-
 void r2_tree_value1_edited(gchar *path_str, gchar *new_text,
 			 GtkTreeView *r2_tree_view, struct real2_clist *r2_clist){
 	GtkTreeModel *model = gtk_tree_view_get_model (r2_tree_view);  
@@ -164,7 +132,6 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
     GList *list;
     GList *reference_list;
     GList *cur;
-    
     gchar *field_name;
     double value1, value2;
     
@@ -176,6 +143,7 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
     selection = gtk_tree_view_get_selection(r2_tree_view);
     list = gtk_tree_selection_get_selected_rows(selection, NULL);
     
+	if(g_list_first(list) == NULL) return;
     /* 最初にパスからリファレンスを作成する */
     /* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
     reference_list = NULL;
@@ -195,7 +163,7 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
     g_list_free(list);
     
     /* GtkTreeSelectionのchangedシグナルを一時的にブロックする */
-    block_changed_signal(G_OBJECT(child_model_to_add));
+    /*block_changed_signal(G_OBJECT(child_model_to_add));*/
     
     /* リファレンスをパスに戻して削除 */
 	
@@ -221,7 +189,7 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
 	gtk_list_store_clear(child_model_to_add);
 	index = append_r2_list_from_ctl(index, &r2_clist->r2_item_head, r2_tree_view);
     /* changedシグナルのブロックを解除する */
-	unblock_changed_signal(G_OBJECT(child_model_to_add));
+	/*unblock_changed_signal(G_OBJECT(child_model_to_add));*/
 	return index;
 }
 
@@ -241,7 +209,8 @@ void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clis
     child_model_to_del = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_del));
     
     selection = gtk_tree_view_get_selection(r2_tree_view);
-    list = gtk_tree_selection_get_selected_rows(selection, NULL);
+	list = gtk_tree_selection_get_selected_rows(selection, NULL);
+	if(g_list_first(list) == NULL) return;
     
     /* 最初にパスからリファレンスを作成する */
     /* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
@@ -262,8 +231,7 @@ void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clis
     g_list_free(list);
     
     /* GtkTreeSelectionのchangedシグナルを一時的にブロックする */
-    block_changed_signal(G_OBJECT(child_model_to_del));
-    
+    /*(G_OBJECT(child_model_to_del));*/
     /* リファレンスをパスに戻して削除 */
     for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
         GtkTreePath *tree_path;
@@ -285,7 +253,7 @@ void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clis
     g_list_free(reference_list);
     
     /* changedシグナルのブロックを解除する */
-    unblock_changed_signal(G_OBJECT(child_model_to_del));
+    /*unblock_changed_signal(G_OBJECT(child_model_to_del));*/
 }
 
 void create_real2_tree_view(GtkTreeView *r2_tree_view, 
@@ -378,7 +346,6 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
     GtkTreeSelection *selection;
     GtkTreeModel *model;
     GtkTreeModel *child_model;
-    gulong changed_handler_id;
     GList *list;
     
     char *c_label;
@@ -416,7 +383,6 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
 	
 	
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(r2_tree_view));
-    g_object_set_data(G_OBJECT(selection), "changed_handler_id", GUINT_TO_POINTER(changed_handler_id));
     g_object_set_data(G_OBJECT(selection), "label", label);
     
     model = gtk_tree_view_get_model(GTK_TREE_VIEW(r2_tree_view));
