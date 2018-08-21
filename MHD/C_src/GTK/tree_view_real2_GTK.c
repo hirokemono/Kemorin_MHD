@@ -14,8 +14,7 @@ void init_r2_clist_views(struct real2_clist *r2_clist, struct r2_clist_view *cma
 
 /* Append new data at the end of list */
 int append_r2_item_to_tree(int index, double r1_data, double r2_data, 
-                           GtkTreeModel *child_model)
-{
+			GtkTreeModel *child_model){
     GtkTreeIter iter;
     
     gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
@@ -26,9 +25,8 @@ int append_r2_item_to_tree(int index, double r1_data, double r2_data,
     return index + 1;
 }
 
-static int append_r2_list_from_ctl(int index, struct real2_ctl_list *head, 
-                            GtkTreeView *r2_tree_view)
-{
+int append_r2_list_from_ctl(int index, struct real2_ctl_list *head, 
+			GtkTreeView *r2_tree_view){
     GtkTreeModel *model = gtk_tree_view_get_model (r2_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
