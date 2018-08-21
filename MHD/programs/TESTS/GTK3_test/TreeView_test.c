@@ -208,7 +208,7 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	
 	
 	add_real2_list_box_w_addbottun(color_vws->cmap_vws, vbox);
-    add_real2_list_box_w_addbottun(color_vws->opacity_vws, vbox);
+	add_real2_list_box_w_addbottun(color_vws->opacity_vws, vbox);
     gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 	
 	scrolled_window = gtk_scrolled_window_new(NULL, NULL);

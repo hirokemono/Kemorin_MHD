@@ -406,7 +406,8 @@ void create_real2_tree_view(struct r2_clist_view *r2_vws)
 }
 
 void add_real2_list_box_w_addbottun(struct r2_clist_view *r2_vws, GtkWidget *vbox){
-    GtkWidget *hbox;
+	GtkWidget *expander, *Frame_1;
+    GtkWidget *hbox_1, *vbox_1;
     
     GtkWidget *label;
     GtkWidget *scrolled_window;
@@ -423,22 +424,24 @@ void add_real2_list_box_w_addbottun(struct r2_clist_view *r2_vws, GtkWidget *vbo
     
     c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
-    hbox = gtk_hbox_new(FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     
     /* Pack bottuns */
     button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
-    gtk_box_pack_start(GTK_BOX(hbox), button_add, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox_1), button_add, FALSE, FALSE, 0);
     g_signal_connect(G_OBJECT(button_add), "clicked", 
                      G_CALLBACK(add_r2_list_items_cb), r2_vws);
 	
     button_delete = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
-	gtk_box_pack_start(GTK_BOX(hbox), button_delete, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_1), button_delete, FALSE, FALSE, 0);
     g_signal_connect(G_OBJECT(button_delete), "clicked", 
                      G_CALLBACK(delete_r2_list_items_cb), r2_vws);
     
     label = gtk_label_new("");
-    gtk_box_pack_end(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+    gtk_box_pack_end(GTK_BOX(hbox_1), label, TRUE, TRUE, 0);
+	
+	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_box_pack_start(GTK_BOX(vbox_1), hbox_1, FALSE, FALSE, 0);
     
     /* Delete data bottun */
     
@@ -447,9 +450,18 @@ void add_real2_list_box_w_addbottun(struct r2_clist_view *r2_vws, GtkWidget *vbo
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
     gtk_container_add(GTK_CONTAINER(scrolled_window), r2_vws->tree_view);
-    gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_1), scrolled_window, TRUE, TRUE, 0);
     
-    selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(r2_vws->tree_view));
+	Frame_1 = gtk_frame_new("");
+	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
+	gtk_container_add(GTK_BOX(Frame_1), vbox_1);
+	
+	expander = gtk_expander_new_with_mnemonic(r2_vws->r2_clist_gtk->clist_name);
+	gtk_container_add(GTK_CONTAINER(expander), Frame_1);
+	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
+	
+	
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(r2_vws->tree_view));
     g_object_set_data(G_OBJECT(selection), "changed_handler_id", GUINT_TO_POINTER(changed_handler_id));
     g_object_set_data(G_OBJECT(selection), "label", label);
     

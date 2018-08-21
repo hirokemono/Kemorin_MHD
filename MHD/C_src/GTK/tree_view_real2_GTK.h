@@ -29,7 +29,6 @@ int append_r2_item_to_tree(int index, double r1_data, double r2_data,
                            GtkTreeModel *child_model);
 
 void create_real2_tree_view(struct r2_clist_view *r2_vws);
-
 void add_real2_list_box_w_addbottun(struct r2_clist_view *r2_vws, GtkWidget *vbox);
 
 

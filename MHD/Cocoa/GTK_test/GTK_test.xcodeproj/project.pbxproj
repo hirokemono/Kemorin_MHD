@@ -30,7 +30,7 @@
 		187D27E1212B306D00007329 /* set_rgba_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27DF212B306C00007329 /* set_rgba_table_c.c */; };
 		187D27E4212B447F00007329 /* control_panel_4_field_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27E2212B447E00007329 /* control_panel_4_field_GTK.c */; };
 		187D27E7212B44C100007329 /* tree_view_4_field_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27E5212B44C100007329 /* tree_view_4_field_GTK.c */; };
-		187D27E9212B463900007329 /* TreeView_test_21.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27E8212B463800007329 /* TreeView_test_21.c */; };
+		187D27EB212B6F3000007329 /* TreeView_test.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27EA212B6F3000007329 /* TreeView_test.c */; };
 		18812B88211EC37400BF714B /* libgtk-3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B87211EC37400BF714B /* libgtk-3.a */; };
 		18812B8A211EC39400BF714B /* libglib-2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B89211EC39400BF714B /* libglib-2.0.a */; };
 		18812B8C211EC6CC00BF714B /* libgdk-3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B8B211EC6CC00BF714B /* libgdk-3.a */; };
@@ -168,7 +168,7 @@
 		187D27E3212B447E00007329 /* control_panel_4_field_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_panel_4_field_GTK.h; path = ../../C_src/GTK/control_panel_4_field_GTK.h; sourceTree = "<group>"; };
 		187D27E5212B44C100007329 /* tree_view_4_field_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_field_GTK.c; path = ../../C_src/GTK/tree_view_4_field_GTK.c; sourceTree = "<group>"; };
 		187D27E6212B44C100007329 /* tree_view_4_field_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_4_field_GTK.h; path = ../../C_src/GTK/tree_view_4_field_GTK.h; sourceTree = "<group>"; };
-		187D27E8212B463800007329 /* TreeView_test_21.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TreeView_test_21.c; path = ../../../programs/TESTS/GTK3_test/TreeView_test_21.c; sourceTree = "<group>"; };
+		187D27EA212B6F3000007329 /* TreeView_test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TreeView_test.c; path = ../../../programs/TESTS/GTK3_test/TreeView_test.c; sourceTree = "<group>"; };
 		18812AE8211EB5B000BF714B /* GTK_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GTK_test; sourceTree = BUILT_PRODUCTS_DIR; };
 		18812B87211EC37400BF714B /* libgtk-3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libgtk-3.a"; path = "../../../../../../../opt/local/lib/libgtk-3.a"; sourceTree = "<group>"; };
 		18812B89211EC39400BF714B /* libglib-2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libglib-2.0.a"; path = "../../../../../../../opt/local/lib/libglib-2.0.a"; sourceTree = "<group>"; };
@@ -342,7 +342,7 @@
 		18812AEA211EB5B000BF714B /* GTK_test */ = {
 			isa = PBXGroup;
 			children = (
-				187D27E8212B463800007329 /* TreeView_test_21.c */,
+				187D27EA212B6F3000007329 /* TreeView_test.c */,
 			);
 			path = GTK_test;
 			sourceTree = "<group>";
@@ -565,6 +565,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				187D27EB212B6F3000007329 /* TreeView_test.c in Sources */,
 				18812C21211F764400BF714B /* all_field_names_c.c in Sources */,
 				18812C10211F762300BF714B /* t_ctl_data_4_platforms_c.c in Sources */,
 				18812C30211F773300BF714B /* control_elements_IO_c.c in Sources */,
@@ -590,7 +591,6 @@
 				18F5F38321260020004320C7 /* tree_view_4_each_term_GTK.c in Sources */,
 				1813DAD1212107EB003AB1B9 /* t_control_chara2_real_IO.c in Sources */,
 				18812C0C211F762200BF714B /* t_ctl_data_mhd_forces_c.c in Sources */,
-				187D27E9212B463900007329 /* TreeView_test_21.c in Sources */,
 				18812BFC211F762200BF714B /* t_ctl_data_mhd_evolution_c.c in Sources */,
 				18812C02211F762200BF714B /* t_ctl_data_temp_model_c.c in Sources */,
 				18F5F386212625E1004320C7 /* tree_view_chara2_real_GTK.c in Sources */,
