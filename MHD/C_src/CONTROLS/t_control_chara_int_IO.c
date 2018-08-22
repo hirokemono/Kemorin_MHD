@@ -304,10 +304,18 @@ static void set_from_chara_int_ctl_list_at_c_tbl(char *ref, struct chara_int_ctl
 
 void init_chara_int_clist(struct chara_int_clist *ci_clst){
     init_chara_int_ctl_list(&ci_clst->ci_item_head);
+    
+    ci_clst->clist_name = (char *)calloc(32,sizeof(char));
+    ci_clst->c1_name = (char *)calloc(32,sizeof(char));
+    ci_clst->i1_name = (char *)calloc(32,sizeof(char));
     return;
 };
 void clear_chara_int_clist(struct chara_int_clist *ci_clst){
     clear_chara_int_ctl_list(&ci_clst->ci_item_head);
+	
+	free(ci_clst->clist_name);
+    free(ci_clst->c1_name);
+    free(ci_clst->i1_name);
     return;
 };
 int count_chara_int_clist(struct chara_int_clist *ci_clst){
@@ -316,6 +324,7 @@ int count_chara_int_clist(struct chara_int_clist *ci_clst){
 
 int read_chara_int_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
                       struct chara_int_clist *ci_clst){
+    sprintf(ci_clst->clist_name,"%s", label);
     return read_chara_int_ctl_list(fp, buf, label, &ci_clst->ci_item_head);
 };
 int write_chara_int_clist(FILE *fp, int level, const char *label, 

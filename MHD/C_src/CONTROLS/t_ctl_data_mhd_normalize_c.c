@@ -100,6 +100,12 @@ void alloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
 	init_chara_real_clist(mom_ctl_c->coef_4_viscous_list);
 	init_chara_real_clist(mom_ctl_c->coef_4_intertia_list);
 	init_chara_real_clist(mom_ctl_c->coef_4_grad_p_list);
+    sprintf(mom_ctl_c->coef_4_viscous_list->c1_name, "dimentionless number");
+    sprintf(mom_ctl_c->coef_4_intertia_list->c1_name, "dimentionless number");
+    sprintf(mom_ctl_c->coef_4_grad_p_list->c1_name, "dimentionless number");
+    sprintf(mom_ctl_c->coef_4_viscous_list->r1_name, "power");
+    sprintf(mom_ctl_c->coef_4_intertia_list->r1_name, "power");
+    sprintf(mom_ctl_c->coef_4_grad_p_list->r1_name, "power");
 	
     mom_ctl_c->coef_4_termal_buo_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
     mom_ctl_c->coef_4_comp_buo_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
@@ -109,6 +115,14 @@ void alloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
 	init_chara_real_clist(mom_ctl_c->coef_4_comp_buo_list);
 	init_chara_real_clist(mom_ctl_c->coef_4_Coriolis_list);
 	init_chara_real_clist(mom_ctl_c->coef_4_Lorentz_list);
+    sprintf(mom_ctl_c->coef_4_termal_buo_list->c1_name, "dimentionless number");
+    sprintf(mom_ctl_c->coef_4_comp_buo_list->c1_name, "dimentionless number");
+    sprintf(mom_ctl_c->coef_4_Coriolis_list->c1_name, "dimentionless number");
+    sprintf(mom_ctl_c->coef_4_Lorentz_list->c1_name, "dimentionless number");
+    sprintf(mom_ctl_c->coef_4_termal_buo_list->r1_name, "power");
+    sprintf(mom_ctl_c->coef_4_comp_buo_list->r1_name, "power");
+    sprintf(mom_ctl_c->coef_4_Coriolis_list->r1_name, "power");
+    sprintf(mom_ctl_c->coef_4_Lorentz_list->r1_name, "power");
 	
 	return;
 };
@@ -187,6 +201,14 @@ void alloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ctl_
 	init_chara_real_clist(induct_ctl_c->coef_4_mag_diffuse_list);
 	init_chara_real_clist(induct_ctl_c->coef_4_mag_potential_list);
 	init_chara_real_clist(induct_ctl_c->coef_4_induction_list);
+    sprintf(induct_ctl_c->coef_4_magne_evo_list->c1_name, "dimentionless number");
+    sprintf(induct_ctl_c->coef_4_mag_diffuse_list->c1_name, "dimentionless number");
+    sprintf(induct_ctl_c->coef_4_mag_potential_list->c1_name, "dimentionless number");
+    sprintf(induct_ctl_c->coef_4_induction_list->c1_name, "dimentionless number");
+    sprintf(induct_ctl_c->coef_4_magne_evo_list->r1_name, "power");
+    sprintf(induct_ctl_c->coef_4_mag_diffuse_list->r1_name, "power");
+    sprintf(induct_ctl_c->coef_4_mag_potential_list->r1_name, "power");
+    sprintf(induct_ctl_c->coef_4_induction_list->r1_name, "power");
 	
 	return;
 };
@@ -238,6 +260,12 @@ void alloc_scalar_advection_eq_ctl_c(struct heat_equation_ctl_c *scalar_ctl_c){
     init_chara_real_clist(scalar_ctl_c->coef_4_adv_flux_list);
     init_chara_real_clist(scalar_ctl_c->coef_4_diffuse_list);
     init_chara_real_clist(scalar_ctl_c->coef_4_source_list);
+    sprintf(scalar_ctl_c->coef_4_adv_flux_list->c1_name, "dimentionless number");
+    sprintf(scalar_ctl_c->coef_4_diffuse_list->c1_name, "dimentionless number");
+    sprintf(scalar_ctl_c->coef_4_source_list->c1_name, "dimentionless number");
+    sprintf(scalar_ctl_c->coef_4_adv_flux_list->r1_name, "power");
+    sprintf(scalar_ctl_c->coef_4_diffuse_list->r1_name, "power");
+    sprintf(scalar_ctl_c->coef_4_source_list->r1_name, "power");
     
     return;
 };
@@ -344,6 +372,8 @@ void alloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c){
 	
     dless_ctl_c->dimless_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
 	init_chara_real_clist(dless_ctl_c->dimless_list);
+    sprintf(dless_ctl_c->dimless_list->c1_name, "Name");
+    sprintf(dless_ctl_c->dimless_list->r1_name, "Value");
 	return;
 };
 

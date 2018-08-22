@@ -1,99 +1,60 @@
 /*
-//  tree_view_chara_real_GTK.c
+//  tree_view_chara_GTK.c
 //  
 //
-//  Created by Hiroaki Matsui on 2018/08/16.
+//  Created by Hiroaki Matsui on 2018/08/21.
 */
 
-#include "tree_view_chara_real_GTK.h"
+#include "tree_view_chara_GTK.h"
+
 
 /* Append new data at the end of list */
-int append_cr_item_to_tree(int index, char *c_tbl, char *c_math, double r_data, 
-			GtkTreeModel *child_model)
-{
+int append_c_item_to_tree(int index, char *c_tbl, GtkTreeModel *child_model){
     GtkTreeIter iter;
     
     gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_INDEX, index,
-                       COLUMN_FIELD_NAME,  c_tbl,
-                       COLUMN_FIELD_MATH,  c_math,
-                       COLUMN_FIELD_VALUE, r_data,
+                       COLUMN_FIELD_INDEX, c_tbl,
                        -1);
     return index + 1;
 }
 
-int append_cr_list_from_ctl(int index, struct chara_real_ctl_list *head, 
-			GtkTreeView *cr_tree_view)
+int append_c_list_from_ctl(int index, struct chara_ctl_list *head, 
+			GtkTreeView *c_tree_view)
 {
-    GtkTreeModel *model = gtk_tree_view_get_model (cr_tree_view);  
+    GtkTreeModel *model = gtk_tree_view_get_model (c_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
     while (head != NULL){
-        index = append_cr_item_to_tree(index, head->cr_item->c_tbl, head->cr_item->c_tbl, 
-                            head->cr_item->r_data, child_model);
+        index = append_c_item_to_tree(index, head->c_item->c_tbl, child_model);
         head = head->_next;
     };
     return index;
 }
 
 
-void cr_tree_name_edited(gchar *path_str, gchar *new_text,
-			GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist)
+void c_tree_name_edited(gchar *path_str, gchar *new_text,
+			GtkTreeView *c_tree_view, struct chara_clist *c_clist)
 {
-    GtkTreeModel *model = gtk_tree_view_get_model (cr_tree_view);  
+    GtkTreeModel *model = gtk_tree_view_get_model (c_tree_view);  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
     GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
     GtkTreeIter iter;
 
     gchar *old_text;
-    gchar *math_string;
-    double old_value, new_value;
 
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_text, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &math_string, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_text, -1);
     
     printf("Change %s to %s\n", old_text, new_text);
 
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_NAME, new_text, -1);
+                       COLUMN_FIELD_INDEX, new_text, -1);
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
-    update_chara_real_clist_by_c_tbl(old_text, new_text, old_value, cr_clist);
-}
-
-void cr_tree_value_edited(gchar *path_str, gchar *new_text, 
-			GtkTreeView *cr_tree_view, struct chara_real_clist *cr_clist)
-{
-    GtkTreeModel *model = gtk_tree_view_get_model (cr_tree_view);  
-    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
-    GtkTreePath *path = gtk_tree_path_new_from_string (path_str);  
-    GtkTreePath *child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), path);
-    GtkTreeIter iter;
-    
-    gchar *old_text;
-    gchar *math_string;
-    double old_value, new_value;
-    
-    sscanf(new_text, "%lf", &new_value);
-    gtk_tree_model_get_iter(child_model, &iter, child_path);  
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_text, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_MATH, &math_string, -1);
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_VALUE, &old_value, -1);
-    
-    printf("Change %lf to %lf\n", old_value, new_value);
-    
-    gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_VALUE, new_value, -1);
-    gtk_tree_path_free(child_path);  
-    gtk_tree_path_free(path);  
-    
-    update_chara_real_clist_by_c_tbl(old_text, old_text, new_value, cr_clist);
- 
+    update_chara_clist_by_c_tbl(old_text, new_text, c_clist);
 }
 
 static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
@@ -131,24 +92,22 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column_id, order);
 }
 
-int add_cr_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add, 
-                                     struct chara_real_clist *cr_clist)
+int add_c_list_by_bottun_GTK(int index, GtkTreeView *tree_view_to_add, 
+                                     struct chara_clist *c_clist)
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
         
-    gchar row_string[30] = "new_number";
-    gchar math_string[30] = "$$    $$";
-    double value = 0.0;
+    gchar row_string[30] = "new";
     
-    index = append_cr_item_to_tree(index, row_string, math_string, value, child_model_to_add);
-	append_chara_real_clist(row_string, value, cr_clist);
+    index = append_c_item_to_tree(index, row_string, child_model_to_add);
+	append_chara_clist(row_string, c_clist);
 	
     return index;
 }
 
-int add_cr_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tree_model,
-			GtkTreeView *tree_view_to_add, struct chara_real_clist *cr_clist)
+int add_c_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tree_model,
+			GtkTreeView *tree_view_to_add, struct chara_clist *c_clist)
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
@@ -156,21 +115,17 @@ int add_cr_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tr
     GtkTreeIter iter;
     
     gchar *row_string;
-    gchar *math_string;
-    double value;
     
     gtk_tree_model_get_iter(tree_model, &iter, path);  
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &math_string, -1);
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_VALUE, &value, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_INDEX, &row_string, -1);
     
-    index = append_cr_item_to_tree(index, row_string, math_string, value, child_model_to_add);
-    append_chara_real_clist(row_string, value, cr_clist);
+    index = append_c_item_to_tree(index, row_string, child_model_to_add);
+    append_chara_clist(row_string, c_clist);
     return index;
 }
 
-int add_cr_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeModel *tree_model,
-			GtkTreeView *tree_view_to_add, struct chara_real_clist *cr_clist)
+int add_c_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeModel *tree_model,
+			GtkTreeView *tree_view_to_add, struct chara_clist *c_clist)
 {
     GtkTreeModel *model_to_add = gtk_tree_view_get_model(tree_view_to_add);
     GtkTreeModel *child_model_to_add = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_to_add));
@@ -178,20 +133,17 @@ int add_cr_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMod
     GtkTreeIter iter;
     
     gchar *row_string;
-    gchar *math_string;
-    double value = 1.0;
     
     gtk_tree_model_get_iter(tree_model, &iter, path);  
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_MATH, &math_string, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_INDEX, &row_string, -1);
     
-    index = append_cr_item_to_tree(index, row_string, math_string, value, child_model_to_add);
-    append_chara_real_clist(row_string, value, cr_clist);
+    index = append_c_item_to_tree(index, row_string, child_model_to_add);
+    append_chara_clist(row_string, c_clist);
     return index;
 }
 
-int add_cr_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
-			struct chara_real_clist *cr_clist)
+int add_c_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
+			struct chara_clist *c_clist)
 {
     GtkTreeModel *model_to_add;
     GtkTreeModel *child_model_to_add;
@@ -200,10 +152,8 @@ int add_cr_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
     GList *reference_list;
     GList *cur;
     
-    gchar *field_name;
-    gchar *field_math;
+    gchar *old_strng;
     int index_field;
-    double value;
     
     /* 選択されている行のパスを取得する */
     /* パスはツリーモデルソートのもの */
@@ -241,14 +191,12 @@ int add_cr_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
 	cur = g_list_first(reference_list);
 	tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
 	gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
-	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_NAME, &field_name, -1);
+	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_INDEX, &old_strng, -1);
     for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
         
         /* Add */
 		gchar row_string[30] = "new_number";
-		gchar math_string[30] = "$$    $$";
-		double value = 0.0;
-		add_chara_real_clist_before_c_tbl(field_name, row_string, value, cr_clist);
+		add_chara_clist_before_c_tbl(old_strng, row_string, c_clist);
 		
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
 		
@@ -258,14 +206,14 @@ int add_cr_list_items_GTK(int index, GtkTreeView *tree_view_to_add,
     g_list_free(reference_list);
 	
 	gtk_list_store_clear(child_model_to_add);
-	append_cr_list_from_ctl(index, &cr_clist->cr_item_head, tree_view_to_add);
+	append_c_list_from_ctl(index, &c_clist->c_item_head, tree_view_to_add);
     /* changedシグナルのブロックを解除する */
 	unblock_changed_signal(G_OBJECT(child_model_to_add));
 	return index;
 }
 
-void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
-			struct chara_real_clist *cr_clist)
+void delete_c_list_items_GTK(GtkTreeView *tree_view_to_del,
+			struct chara_clist *c_clist)
 {
     GtkTreeModel *model_to_del;
     GtkTreeModel *child_model_to_del;
@@ -274,10 +222,8 @@ void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
     GList *reference_list;
     GList *cur;
     
-    gchar *field_name;
-    gchar *field_math;
+    gchar *old_strng;
     int index_field;
-    double value;
     
     /* 選択されている行のパスを取得する */
     /* パスはツリーモデルソートのもの */
@@ -314,12 +260,9 @@ void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
         GtkTreeIter iter;
         tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
         gtk_tree_model_get_iter(child_model_to_del, &iter, tree_path);
-        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_NAME, &field_name, -1);
-        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_MATH, &field_math, -1);
-        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_VALUE, &value, -1);
+        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_INDEX, &old_strng, -1);
         
-        printf("To be moved: %d, %s %lf\n", index_field, field_name, value);
+        printf("To be moved: %d, %s\n", index_field, old_strng);
         /* Delete */
         gtk_list_store_remove(GTK_LIST_STORE(child_model_to_del), &iter);
 
@@ -327,7 +270,7 @@ void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
         gtk_tree_row_reference_free((GtkTreeRowReference *)cur->data);
         
         /* Update control data */
-        del_chara_real_clist_by_c_tbl(field_name, cr_clist);
+        del_chara_real_clist_by_c_tbl(old_strng, c_clist);
     }
     g_list_free(reference_list);
     
@@ -335,8 +278,7 @@ void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
     unblock_changed_signal(G_OBJECT(child_model_to_del));
 }
 
-
-void create_text_real_tree_view(struct chara_real_clist *cr_clist, GtkTreeView *cr_tree_view,
+void create_text_tree_view(GtkTreeView *c_tree_view,
 			GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_spin)
 {
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
@@ -353,79 +295,44 @@ void create_text_real_tree_view(struct chara_real_clist *cr_clist, GtkTreeView *
     int i;
     
 	/* Construct empty list storage */
-    child_model = gtk_list_store_new(4, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
-                                     G_TYPE_DOUBLE);
+    child_model = gtk_list_store_new(1, G_TYPE_STRING);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* ソート用のモデルを作成してツリービューにセットする */
     model = gtk_tree_model_sort_new_with_model(child_model);
-    gtk_tree_view_set_model(GTK_TREE_VIEW(cr_tree_view), model);
+    gtk_tree_view_set_model(GTK_TREE_VIEW(c_tree_view), model);
     
     /* First raw */
     column = gtk_tree_view_column_new();
-    gtk_tree_view_append_column(cr_tree_view, column);
-    gtk_tree_view_column_set_title(column, "Index");
-    renderer = gtk_cell_renderer_text_new();
-    gtk_tree_view_column_pack_start(column, renderer, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer, "text", COLUMN_FIELD_INDEX, NULL);
-    g_object_set(renderer, "width", (gint)60, NULL);
+    gtk_tree_view_append_column(c_tree_view, column);
+    gtk_tree_view_column_set_title(column, "Field name");
+    g_object_set(G_OBJECT(renderer_text), "editable", TRUE, NULL);
+    gtk_tree_view_column_pack_start(column, renderer_text, TRUE);
+    gtk_tree_view_column_set_attributes(column, renderer_text, "text", COLUMN_FIELD_INDEX, NULL);
+    g_object_set(renderer_text, "width", (gint)150, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
     g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
     g_signal_connect(G_OBJECT(column), "clicked", 
-                     G_CALLBACK(column_clicked), cr_tree_view);
+                     G_CALLBACK(column_clicked), c_tree_view);
     
-    /* Second row */
-    column = gtk_tree_view_column_new();
-    gtk_tree_view_append_column(cr_tree_view, column);
-    gtk_tree_view_column_set_title(column, cr_clist->c1_name);
-    g_object_set(G_OBJECT(renderer_text), "editable", TRUE, NULL);
-    gtk_tree_view_column_pack_start(column, renderer_text, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_text, "text", COLUMN_FIELD_NAME, NULL);
-    g_object_set(renderer_text, "width", (gint)150, NULL);
-    gtk_tree_view_column_set_resizable(column, TRUE);
-    gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
-    g_signal_connect(G_OBJECT(column), "clicked", 
-                     G_CALLBACK(column_clicked), cr_tree_view);
-    
-    /* Third row */
-    column = gtk_tree_view_column_new();
-    gtk_tree_view_append_column(cr_tree_view, column);
-    gtk_tree_view_column_set_title(column, cr_clist->r1_name);
-    adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
-                                100, 21474836);
-    g_object_set(G_OBJECT(renderer_spin), 
-                 "adjustment", adjust,
-                 "climb-rate", 0.5,
-                 "digits", 3, 
-                 "editable", TRUE, 
-                 "width", (gint)150, NULL);
-
-    gtk_tree_view_column_pack_start(column, renderer_spin, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_spin, "text", COLUMN_FIELD_VALUE, NULL);
-    gtk_tree_view_column_set_resizable(column, TRUE);
-    gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_VALUE));
-    g_signal_connect(G_OBJECT(column), "clicked", 
-                     G_CALLBACK(column_clicked), cr_tree_view);
     
     /* 選択モード */
-    selection = gtk_tree_view_get_selection(cr_tree_view);
+    selection = gtk_tree_view_get_selection(c_tree_view);
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
     /* 1行毎に背景色を変更 */
-    gtk_tree_view_set_rules_hint(cr_tree_view, TRUE);
+    gtk_tree_view_set_rules_hint(c_tree_view, TRUE);
     
     /* ソート */
-    column = gtk_tree_view_get_column(cr_tree_view, COLUMN_FIELD_INDEX);
+    column = gtk_tree_view_get_column(c_tree_view, COLUMN_FIELD_INDEX);
     gtk_tree_view_column_set_sort_order(column, GTK_SORT_ASCENDING);
     gtk_tree_view_column_set_sort_indicator(column, TRUE);
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
 
-void add_chara_real_list_box_w_addbottun(GtkTreeView *cr_tree_view, 
+void add_chara_list_box_w_addbottun(GtkTreeView *c_tree_view, 
 			GtkWidget *button_add, GtkWidget *button_delete, 
 			GtkWidget *vbox)
 {
@@ -449,18 +356,19 @@ void add_chara_real_list_box_w_addbottun(GtkTreeView *cr_tree_view,
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), cr_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), c_tree_view);
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
-    add_sorting_shgnal_w_label(cr_tree_view, hbox);
+	add_sorting_shgnal_w_label(c_tree_view, hbox);
 };
 
-void add_chara_real_list_box_w_combobox(GtkTreeView *cr_tree_view, 
+void add_chara_list_box_w_combobox(GtkTreeView *c_tree_view, 
 			GtkWidget *button_add, GtkWidget *combobox_add, GtkWidget *button_delete, 
 			GtkWidget *vbox)
 {
     GtkWidget *hbox;
     GtkCellRenderer *column_add;
+    
     GtkWidget *scrolled_window;
     
     char *c_label;
@@ -480,16 +388,16 @@ void add_chara_real_list_box_w_combobox(GtkTreeView *cr_tree_view,
     column_add = gtk_cell_renderer_text_new();
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_add), column_add, TRUE);
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_add), column_add,
-                                   "text", COLUMN_FIELD_NAME, NULL);
+                                   "text", COLUMN_FIELD_INDEX, NULL);
 	
 	
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
-    gtk_container_add(GTK_CONTAINER(scrolled_window), cr_tree_view);
+    gtk_container_add(GTK_CONTAINER(scrolled_window), c_tree_view);
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
-    add_sorting_shgnal_w_label(cr_tree_view, hbox);
+	add_sorting_shgnal_w_label(c_tree_view, hbox);
 };
 

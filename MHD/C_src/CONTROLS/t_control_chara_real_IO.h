@@ -25,7 +25,6 @@ struct chara_real_ctl_item{
 
 struct chara_real_ctl_list{
     struct chara_real_ctl_item *cr_item;
-    struct maxlen_2 *mlen2;
     
     struct chara_real_ctl_list *_prev;
     struct chara_real_ctl_list *_next;
@@ -33,6 +32,10 @@ struct chara_real_ctl_list{
 
 struct chara_real_clist{
 	struct chara_real_ctl_list cr_item_head;
+
+    char *clist_name;
+    char *c1_name;
+    char *r1_name;
 };
 
 /* prototypes */
@@ -51,29 +54,29 @@ void set_from_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item,
 
 
 
-void init_chara_real_clist(struct chara_real_clist *ci2_clst);
-void clear_chara_real_clist(struct chara_real_clist *ci2_clst);
-int count_chara_real_clist(struct chara_real_clist *ci2_clst);
+void init_chara_real_clist(struct chara_real_clist *cr_clst);
+void clear_chara_real_clist(struct chara_real_clist *cr_clst);
+int count_chara_real_clist(struct chara_real_clist *cr_clst);
 
 int read_chara_real_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
-                      struct chara_real_clist *ci2_clst);
+                      struct chara_real_clist *cr_clst);
 int write_chara_real_clist(FILE *fp, int level, const char *label, 
-                       struct chara_real_clist *ci2_clst);
+                       struct chara_real_clist *cr_clst);
 
 void append_chara_real_clist(char *c_in, double r_in,
-                      struct chara_real_clist *ci2_clst);
-void del_chara_real_clist_by_index(int index, struct chara_real_clist *ci2_clst);
+                      struct chara_real_clist *cr_clst);
+void del_chara_real_clist_by_index(int index, struct chara_real_clist *cr_clst);
 void update_chara_real_clist_by_index(int index, char *c_in, double r_in,
-			struct chara_real_clist *ci2_clst);
-void set_from_chara_real_clist_at_index(int index, struct chara_real_clist *ci2_clst,
+			struct chara_real_clist *cr_clst);
+void set_from_chara_real_clist_at_index(int index, struct chara_real_clist *cr_clst,
 			char *c_out, double *r_out);
 
-void add_chara_real_clist_before_c_tbl(char *ref, char *c_in, double r_in, struct chara_real_clist *ci2_clst);
-void add_chara_real_clist_after_c_tbl(char *ref, char *c_in, double r_in, struct chara_real_clist *ci2_clst);
-void del_chara_real_clist_by_c_tbl(char *ref, struct chara_real_clist *ci2_clst);
+void add_chara_real_clist_before_c_tbl(char *ref, char *c_in, double r_in, struct chara_real_clist *cr_clst);
+void add_chara_real_clist_after_c_tbl(char *ref, char *c_in, double r_in, struct chara_real_clist *cr_clst);
+void del_chara_real_clist_by_c_tbl(char *ref, struct chara_real_clist *cr_clst);
 void update_chara_real_clist_by_c_tbl(char *ref, char *c_in, double r_in,
-			struct chara_real_clist *ci2_clst);
-void set_from_chara_real_clist_at_c_tbl(char *ref, struct chara_real_clist *ci2_clst,
+			struct chara_real_clist *cr_clst);
+void set_from_chara_real_clist_at_c_tbl(char *ref, struct chara_real_clist *cr_clst,
 			char *c_out, double *r_out);
 
 #endif /* t_control_chara_real_IO_h_ */

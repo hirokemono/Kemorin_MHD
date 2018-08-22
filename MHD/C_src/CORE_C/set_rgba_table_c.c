@@ -11,6 +11,13 @@ const char *label_bluered =   "blue_to_red";
 const char *label_grayscale = "grayscale";
 const char *label_sym_gray  = "symmetric_grayscale";
 
+const char color_labels[4][KCHARA_C] = {
+    "rainbow", 
+    "grayscale",
+    "blue_to_red",
+    "symmetric_grayscale"
+};
+
 struct pvr_colormap_bar_ctl_c *cmap_cbar_c0;
 
 void set_rgb_from_value_s(struct colormap_params *cmap_s,

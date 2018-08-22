@@ -17,7 +17,16 @@
 #define COLUMN_FIELD_MATH     2
 #define COLUMN_FIELD_VALUE    3
 
-void create_fixed_label_tree(GtkWidget *label_tree);
+void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data);
+void block_changed_signal(GObject *instance);
+void unblock_changed_signal(GObject *instance);
+
+void add_sorting_shgnal_w_label(GtkTreeView *tree_view, GtkWidget *hbox);
+
+
+
+void create_fixed_label_w_math_tree(GtkWidget *label_tree);
+void create_fixed_label_w_index_tree(GtkWidget *label_tree);
 void create_fixed_constant_tree(GtkWidget *label_tree);
 
 void append_scalar_componnet_label(GtkWidget *label_tree);

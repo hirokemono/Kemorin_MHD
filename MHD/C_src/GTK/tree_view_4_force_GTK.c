@@ -59,8 +59,9 @@ static void create_dimless_tree_view(struct dimless_views *dless_vws)
     GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
     GtkCellRenderer *renderer_spin = gtk_cell_renderer_spin_new();
 	
-	create_text_real_tree_view(GTK_TREE_VIEW(dless_vws->dimless_tree_view),
-				 renderer_text, renderer_spin);
+	create_text_real_tree_view(dless_vws->cr_clist, 
+                               GTK_TREE_VIEW(dless_vws->dimless_tree_view),
+                               renderer_text, renderer_spin);
 	
 	g_signal_connect(G_OBJECT(renderer_text), "edited", 
 				G_CALLBACK(dimless_name_edited_cb), dless_vws);

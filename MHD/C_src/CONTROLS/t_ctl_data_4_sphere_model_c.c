@@ -83,6 +83,12 @@ void alloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	init_chara_int_clist(sdctl_c->ndomain_sph_grid_list);
 	init_chara_int_clist(sdctl_c->ndomain_legendre_list);
 	init_chara_int_clist(sdctl_c->ndomain_spectr_list);
+    sprintf(sdctl_c->ndomain_sph_grid_list->c1_name, "Direction");
+    sprintf(sdctl_c->ndomain_legendre_list->c1_name, "Direction");
+    sprintf(sdctl_c->ndomain_spectr_list->c1_name, "Direction");
+    sprintf(sdctl_c->ndomain_sph_grid_list->i1_name, "Value");
+    sprintf(sdctl_c->ndomain_legendre_list->i1_name, "Value");
+    sprintf(sdctl_c->ndomain_spectr_list->i1_name, "Value");
 	
 	return;
 };
@@ -171,6 +177,8 @@ void alloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
     
     spctl_c->radial_grp_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
 	init_chara_int_clist(spctl_c->radial_grp_list);
+    sprintf(spctl_c->radial_grp_list->c1_name, "Name");
+    sprintf(spctl_c->radial_grp_list->i1_name, "Index");
 	
 	spctl_c->radial_grid_type_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	spctl_c->num_fluid_grid_c = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item));

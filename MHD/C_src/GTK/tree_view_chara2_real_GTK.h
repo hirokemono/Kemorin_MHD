@@ -17,10 +17,7 @@
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_chara_real_GTK.h"
 
-void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data);
 
-
-void append_combobox_item_to_tree(char *c_tbl, GtkTreeModel *child_model);
 int append_c2r_item_to_tree(int index, char *c1_tbl, char *c2_tbl, double r_data, 
                            GtkTreeModel *child_model);
 int append_c2r_list_from_ctl(int index, struct chara2_real_ctl_list *head, 

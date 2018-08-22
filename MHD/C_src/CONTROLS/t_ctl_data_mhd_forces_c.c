@@ -99,6 +99,9 @@ void alloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
 	
     g_ctl->gravity_vec_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
 	init_chara_real_clist(g_ctl->gravity_vec_list);
+    sprintf(g_ctl->gravity_vec_list->c1_name, "Direction");
+    sprintf(g_ctl->gravity_vec_list->r1_name, "Value");
+	
 	g_ctl->gravity_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(g_ctl->gravity_c);
 	
@@ -152,6 +155,8 @@ void alloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){
 	
     cor_ctl->system_rotation_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
 	init_chara_real_clist(cor_ctl->system_rotation_list);
+    sprintf(cor_ctl->system_rotation_list->c1_name, "Direction");
+    sprintf(cor_ctl->system_rotation_list->r1_name, "Value");
 	
 	return;
 };
@@ -197,6 +202,9 @@ void alloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
 	
     mcv_ctl->ext_magne_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
 	init_chara_real_clist(mcv_ctl->ext_magne_list);
+    sprintf(mcv_ctl->ext_magne_list->c1_name, "Direction");
+    sprintf(mcv_ctl->ext_magne_list->r1_name, "Value");
+	
 	mcv_ctl->magneto_cv_c = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));
 	alloc_chara_ctl_item_c(mcv_ctl->magneto_cv_c);
 	

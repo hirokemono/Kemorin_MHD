@@ -366,7 +366,7 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
     
 	Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
-	gtk_container_add(GTK_BOX(Frame_1), vbox_1);
+	gtk_container_add(Frame_1, vbox_1);
 	
 	expander = gtk_expander_new_with_mnemonic(r2_clist->clist_name);
 	gtk_container_add(GTK_CONTAINER(expander), Frame_1);

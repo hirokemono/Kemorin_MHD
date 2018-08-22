@@ -30,6 +30,8 @@ struct chara_ctl_list{
 
 struct chara_clist{
 	struct chara_ctl_list c_item_head;
+    
+    char *clist_name;
 };
 
 

@@ -11,6 +11,8 @@
 #include "t_ctl_data_pvr_colormap_c.h"
 
 
+extern const char color_labels[4][KCHARA_C];
+
 /* prototypes */
 
 

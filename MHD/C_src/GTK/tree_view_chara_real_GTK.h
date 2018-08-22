@@ -14,7 +14,7 @@
 #include "t_control_chara_real_IO.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 
-void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data);
+/* prototypes */
 
 
 int append_cr_item_to_tree(int index, char *c_tbl, char *c_math, double r_data, 
@@ -38,8 +38,8 @@ void delete_cr_list_items_GTK(GtkTreeView *tree_view_to_del,
 			struct chara_real_clist *cr_clist);
 
 
-void create_text_real_tree_view(GtkTreeView *cr_tree_view,
-			GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_spin);
+void create_text_real_tree_view(struct chara_real_clist *cr_clist, GtkTreeView *cr_tree_view,
+                                GtkCellRenderer *renderer_text, GtkCellRenderer *renderer_spin);
 
 void add_chara_real_list_box_w_addbottun(GtkTreeView *cr_tree_view, 
 			GtkWidget *button_add, GtkWidget *button_delete, 

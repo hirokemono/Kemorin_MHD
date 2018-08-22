@@ -7,69 +7,6 @@
 
 #include "control_panel_4_coefs_GTK.h"
 
-static void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data)
-{
-    GtkLabel *label;
-    GtkTreeModel *model;
-    GList *list;
-    GList *cur;
-    gchar *row_string;
-    GtkTreeIter iter;
-    
-    label = g_object_get_data(G_OBJECT(selection), "label");
-    
-    list = gtk_tree_selection_get_selected_rows(selection, &model);
-    if (list == NULL) {
-        gtk_label_set_text(label, "");
-        return;
-    }
-    
-    for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-        if (gtk_tree_model_get_iter(model, &iter, (GtkTreePath *)cur->data) == TRUE) {
-            gtk_tree_model_get(model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-        }
-        gtk_tree_path_free((GtkTreePath *)cur->data);
-    }
-    g_list_free(list);
-    
-    gtk_label_set_text(label, row_string);
-}
-
-
-
-static void block_changed_signal(GObject *instance)
-{
-    GList *list;
-    GList *cur;
-    gulong handler_id;
-    GtkTreeSelection *selection;
-    
-    list = g_object_get_data(G_OBJECT(instance), "selection_list");
-    for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-        selection = cur->data;
-        handler_id = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(selection), "changed_handler_id"));
-        g_signal_handler_block(G_OBJECT(selection), handler_id);
-    }
-}
-
-static void unblock_changed_signal(GObject *instance)
-{
-    GList *list;
-    GList *cur;
-    gulong handler_id;
-    GtkTreeSelection *selection;
-    
-    list = g_object_get_data(G_OBJECT(instance), "selection_list");
-    for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-        selection = cur->data;
-        handler_id = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(selection), "changed_handler_id"));
-        g_signal_handler_unblock(G_OBJECT(selection), handler_id);
-        
-        /* changedシグナルをブロックしていた間の変更を反映させる */
-        set_last_field_to_label(selection, NULL);
-    }
-}
-
 static void delete_dless_data(gpointer user_data)
 {
     struct coefs_view *coefs_vw = (struct coefs_view *) user_data;
@@ -221,14 +158,7 @@ void add_coefs_selection_box(struct coefs_view *coefs_vw, GtkWidget *vbox)
     GtkWidget *combobox_add;
     GtkCellRenderer *column_add;
     
-    GtkWidget *label;
     GtkWidget *scrolled_window;
-    
-    GtkTreeSelection *selection;
-    GtkTreeModel *model;
-    GtkTreeModel *child_model;
-    gulong changed_handler_id;
-    GList *list;
     
     char *c_label;
     
@@ -240,8 +170,7 @@ void add_coefs_selection_box(struct coefs_view *coefs_vw, GtkWidget *vbox)
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     
     /* Add data combocox */
-    label = gtk_label_new("Add: ");
-    gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+    gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("Add: "), TRUE, TRUE, 0);
     combobox_add = gtk_combo_box_new_with_model(model_comp);
     g_signal_connect(G_OBJECT(combobox_add), "changed", 
                      G_CALLBACK(cb_add_dimless_name), coefs_vw);
@@ -257,33 +186,13 @@ void add_coefs_selection_box(struct coefs_view *coefs_vw, GtkWidget *vbox)
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_add), column_add,
                                    "text", COLUMN_FIELD_NAME, NULL);
     
-    /* ラベル */
-    label = gtk_label_new("");
-    gtk_box_pack_end(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-    
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(scrolled_window, 400, 300);
     gtk_container_add(GTK_CONTAINER(scrolled_window), coefs_vw->coefs_tree_view);
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
-    
-    /*
-     * selectionにchangedシグナルハンドラを登録する。
-     * 後で同じchild_modelを使用しているselectionのchangedシグナルをブロック出来るように
-     * child_modelにselectionのリストを、selectionにシグナルハンドラIDを登録する。
-     * changedハンドラ内で使用するlabelも同様に登録しておく。
-     */
-    selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(coefs_vw->coefs_tree_view));
-    changed_handler_id = g_signal_connect(G_OBJECT(selection), "changed",
-                                          G_CALLBACK(set_last_field_to_label), NULL);
-    g_object_set_data(G_OBJECT(selection), "changed_handler_id", GUINT_TO_POINTER(changed_handler_id));
-    g_object_set_data(G_OBJECT(selection), "label", label);
-    
-    model = gtk_tree_view_get_model(GTK_TREE_VIEW(coefs_vw->coefs_tree_view));
-    child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
-    list = g_object_get_data(G_OBJECT(child_model), "selection_list");
-    list = g_list_append(list, selection);
-    g_object_set_data(G_OBJECT(child_model), "selection_list", list);
+	
+	add_sorting_shgnal_w_label(coefs_vw->coefs_tree_view, hbox)
 };
 

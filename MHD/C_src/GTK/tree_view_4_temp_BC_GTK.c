@@ -86,6 +86,7 @@ void init_bc_temp_tree_view(struct boundary_condition_view *bc_vws){
     GtkListStore *cbox_child_model = gtk_list_store_new(1, G_TYPE_STRING);
 	
     int i;
+    int index = 0;
     
 	create_cbox_text_real_tree_view(cbox_child_model, bc_vws->bc_tree_view,
                 renderer_cbox, renderer_text, renderer_spin);
@@ -100,7 +101,7 @@ void init_bc_temp_tree_view(struct boundary_condition_view *bc_vws){
     bc_vws->index_bc = append_c2r_list_from_ctl(bc_vws->index_bc, bc_vws->bc_T_gtk,
                                                 bc_vws->bc_tree_view);
     for(i=0;i<NUM_BASIC_BC_TYPE_DEF;i++){
-        append_combobox_item_to_tree(boundary_type_def[i], cbox_child_model);
+        index = append_c_item_to_tree(index, boundary_type_def[i], cbox_child_model);
     };
 }
 

@@ -8,69 +8,6 @@
 #include "control_panel_4_field_GTK.h"
 
 
-static void set_last_field_to_label(GtkTreeSelection *selection, gpointer user_data)
-{
-    GtkLabel *label;
-    GtkTreeModel *model;
-    GList *list;
-    GList *cur;
-    gchar *row_string;
-    GtkTreeIter iter;
-
-    label = g_object_get_data(G_OBJECT(selection), "label");
-
-    list = gtk_tree_selection_get_selected_rows(selection, &model);
-    if (list == NULL) {
-        gtk_label_set_text(label, "");
-        return;
-    }
-    
-    for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-        if (gtk_tree_model_get_iter(model, &iter, (GtkTreePath *)cur->data) == TRUE) {
-            gtk_tree_model_get(model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-        }
-        gtk_tree_path_free((GtkTreePath *)cur->data);
-    }
-    g_list_free(list);
-    
-    gtk_label_set_text(label, row_string);
-}
-
-
-
-static void block_changed_signal(GObject *instance)
-{
-	GList *list;
-	GList *cur;
-	gulong handler_id;
-	GtkTreeSelection *selection;
-
-	list = g_object_get_data(G_OBJECT(instance), "selection_list");
-	for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-		selection = cur->data;
-		handler_id = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(selection), "changed_handler_id"));
-		g_signal_handler_block(G_OBJECT(selection), handler_id);
-	}
-}
-
-static void unblock_changed_signal(GObject *instance)
-{
-	GList *list;
-	GList *cur;
-	gulong handler_id;
-	GtkTreeSelection *selection;
-	
-	list = g_object_get_data(G_OBJECT(instance), "selection_list");
-	for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-		selection = cur->data;
-		handler_id = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(selection), "changed_handler_id"));
-		g_signal_handler_unblock(G_OBJECT(selection), handler_id);
-
-		/* changedシグナルをブロックしていた間の変更を反映させる */
-		set_last_field_to_label(selection, NULL);
-	}
-}
-
 static void transfer_model_data(int iflag_if_add, struct all_field_ctl_c **all_fld_tbl,
 			struct field_ctl_c *fld_ctl, GtkTreeView *tree_view_to_del, GtkTreeView *tree_view_to_add)
 {
@@ -252,26 +189,12 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 {
 	GtkWidget *hbox;
 	GtkWidget *button;
-	GtkWidget *label;
 	GtkWidget *scrolled_window;
-	
-	GtkTreeSelection *selection;
-	GtkTreeModel *model;
-	GtkTreeModel *child_model;
-	gulong changed_handler_id;
-	GList *list;
 	
 	GtkWidget *expander;
 	GtkWidget *hbox_1, *vbox_1, *Frame_1;
-	GtkWidget *label_1;
 	GtkWidget *button_1;
 	GtkWidget *scrolled_window_1;
-	
-	GtkTreeSelection *selection_1;
-	GtkTreeModel *model_1;
-	GtkTreeModel *child_model_1;
-	gulong changed_handler_id_1;
-	GList *list_1;
 	
 	char *c_label;
 	
@@ -287,34 +210,15 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
                      G_CALLBACK(remove_field_to_use), fields_vws);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 
-	/* ラベル */
-	label = gtk_label_new("");
-	gtk_box_pack_end(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-
 	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(scrolled_window, 400, 300);
 	gtk_container_add(GTK_CONTAINER(scrolled_window), fields_vws->used_tree_view);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
-
-	/*
-	 * selectionにchangedシグナルハンドラを登録する。
-	 * 後で同じchild_modelを使用しているselectionのchangedシグナルをブロック出来るように
-	 * child_modelにselectionのリストを、selectionにシグナルハンドラIDを登録する。
-	 * changedハンドラ内で使用するlabelも同様に登録しておく。
-	 */
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(fields_vws->used_tree_view));
-	changed_handler_id = g_signal_connect(G_OBJECT(selection), "changed",
-				G_CALLBACK(set_last_field_to_label), NULL);
-	g_object_set_data(G_OBJECT(selection), "changed_handler_id", GUINT_TO_POINTER(changed_handler_id));
-	g_object_set_data(G_OBJECT(selection), "label", label);
-
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->used_tree_view));
-	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
-	list = g_object_get_data(G_OBJECT(child_model), "selection_list");
-	list = g_list_append(list, selection);
-	g_object_set_data(G_OBJECT(child_model), "selection_list", list);
+	
+	/* Set signals for sorting */
+	add_sorting_shgnal_w_label(fields_vws->used_tree_view, hbox);
 	
 	get_label_MHD_control_head(c_label);
 	
@@ -341,9 +245,6 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 				G_CALLBACK(add_field_to_use), fields_vws);
     gtk_box_pack_start(GTK_BOX(hbox_1), button_1, FALSE, TRUE, 0);
 
-	label_1 = gtk_label_new("");
-	gtk_box_pack_end(GTK_BOX(hbox_1), label_1, TRUE, TRUE, 0);
-
 	gtk_box_pack_start(GTK_BOX(hbox_1), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
 	
@@ -351,19 +252,8 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 	gtk_container_add(GTK_CONTAINER(expander), hbox_1);
 	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
 	
-	
-	
-	selection_1 = gtk_tree_view_get_selection(GTK_TREE_VIEW(fields_vws->unused_field_tree_view));
-	changed_handler_id_1 = g_signal_connect(G_OBJECT(selection_1), "changed", 
-				G_CALLBACK(set_last_field_to_label), NULL);
-	g_object_set_data(G_OBJECT(selection_1), "changed_handler_id", GUINT_TO_POINTER(changed_handler_id_1));
-	g_object_set_data(G_OBJECT(selection_1), "label", label_1);
-
-	model_1 = gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->unused_field_tree_view));
-	child_model_1 = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_1));
-	list_1 = g_object_get_data(G_OBJECT(child_model_1), "selection_list");
-	list_1 = g_list_append(list_1, selection_1);
-	g_object_set_data(G_OBJECT(child_model_1), "selection_list", list_1);
+	/* Set signals for sorting */
+	add_sorting_shgnal_w_label(fields_vws->unused_field_tree_view, hbox);
 	
 };
 

@@ -7,6 +7,10 @@
 
 #include "control_elements_IO_GTK.h"
 
+
+
+
+
 static void cb_toggle_ctl_item(GtkEntry *toggle, gpointer data)
 {
 	struct chara_ctl_item *ctl_item = (struct chara_ctl_item *) data;

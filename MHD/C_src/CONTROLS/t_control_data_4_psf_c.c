@@ -79,6 +79,14 @@ void alloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	init_chara_real_clist(psf_def_c->psf_normal_list);
 	init_chara_real_clist(psf_def_c->psf_center_list);
 	init_chara_real_clist(psf_def_c->psf_axis_list);
+    sprintf(psf_def_c->psf_coefs_list->c1_name, "Term");
+    sprintf(psf_def_c->psf_normal_list->c1_name, "Direction");
+    sprintf(psf_def_c->psf_center_list->c1_name, "Direction");
+    sprintf(psf_def_c->psf_axis_list->c1_name, "Direction");
+    sprintf(psf_def_c->psf_coefs_list->r1_name, "Value");
+    sprintf(psf_def_c->psf_normal_list->r1_name, "Value");
+    sprintf(psf_def_c->psf_center_list->r1_name, "Value");
+    sprintf(psf_def_c->psf_axis_list->r1_name, "Value");
 	
 	psf_def_c->radius_psf_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	psf_def_c->psf_group_name_ctl = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item));

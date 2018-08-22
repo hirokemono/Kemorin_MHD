@@ -303,6 +303,7 @@ static void set_from_chara_ctl_list_at_c_tbl(char *ref, struct chara_ctl_list *h
 
 void init_chara_clist(struct chara_clist *c_clst){
     init_chara_ctl_list(&c_clst->c_item_head);
+    c_clst->clist_name = (char *)calloc(32,sizeof(char));
     return;
 };
 void clear_chara_clist(struct chara_clist *c_clst){

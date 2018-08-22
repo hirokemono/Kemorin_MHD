@@ -318,19 +318,19 @@ void create_unused_field_tree_view(struct field_views *fields_vws)
 
 void create_direction_tree_views(struct field_views *fields_vws)
 {
-	create_fixed_label_tree(fields_vws->scalar_label_view);
+	create_fixed_label_w_math_tree(fields_vws->scalar_label_view);
     append_scalar_componnet_label(fields_vws->scalar_label_view);
 	
-	create_fixed_label_tree(fields_vws->vector_label_view);
+	create_fixed_label_w_math_tree(fields_vws->vector_label_view);
 	append_vector_componnet_label(fields_vws->vector_label_view);
 	
-	create_fixed_label_tree(fields_vws->sym_tensor_label_view);
+	create_fixed_label_w_math_tree(fields_vws->sym_tensor_label_view);
 	append_vector_componnet_label(fields_vws->sym_tensor_label_view);
 	
-	create_fixed_label_tree(fields_vws->xyz_dir_label_view);
+	create_fixed_label_w_math_tree(fields_vws->xyz_dir_label_view);
 	append_vector_componnet_label(fields_vws->xyz_dir_label_view);
 	
-	create_fixed_label_tree(fields_vws->surface_eq_view);
+	create_fixed_label_w_math_tree(fields_vws->surface_eq_view);
 	append_vector_componnet_label(fields_vws->surface_eq_view);
 	
 }

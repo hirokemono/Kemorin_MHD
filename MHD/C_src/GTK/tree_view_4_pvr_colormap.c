@@ -8,6 +8,8 @@
 #include "tree_view_4_pvr_colormap.h"
 
 void init_colormap_views(struct colormap_ctl_c *cmap_c, struct colormap_view *color_vws){
+	color_vws->index_cmap = RAINBOW_MODE;
+	color_vws->colormap_mode_gtk = cmap_c->colormap_mode_ctl;
     color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
     init_r2_clist_views(cmap_c->colortbl_list, color_vws->cmap_vws);
     color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
@@ -41,7 +43,7 @@ static void draw_colormap(cairo_t *cr, struct colormap_view *color_vws)
 	
 	struct colormap_params *cmap_s;
     cmap_s = (struct colormap_params *)calloc(4,sizeof(struct colormap_params));
-	alloc_color_index_list_s(cmap_s, RAINBOW_MODE, num_cmap);
+	alloc_color_index_list_s(cmap_s, color_vws->index_cmap, num_cmap);
 	alloc_opacity_index_list_s(cmap_s, num_omap);
 	
 	head = &color_vws->cmap_vws->r2_clist_gtk->r2_item_head;
@@ -324,12 +326,65 @@ void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
                      G_CALLBACK(delete_opacity_list_items_cb), color_vws);
 };
 
+static void set_color_mode_cb(GtkComboBox *combobox_cmap, gpointer user_data)
+{
+    struct colormap_view *color_vws = (struct colormap_view *) user_data;
+    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
+    GtkTreeIter iter;
+	cairo_t *cr;
+    
+    gchar *row_string;
+    int index_field;
+    int index_mode;
+    
+    gint idx = gtk_combo_box_get_active(combobox_cmap);
+    if(idx < 0) return;
+    
+    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+    
+    gtk_tree_model_get_iter(model_cmap, &iter, path);  
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
+    
+	/*printf("Selected mode %d, %s\n", index_mode, row_string); */
+	color_vws->index_cmap = index_mode;
+	sprintf(color_vws->colormap_mode_gtk->c_tbl, "%s", row_string);
+	
+	draw_colormap(cr, color_vws);
+	gtk_widget_queue_draw(color_vws->scrolled_window);
+    return;
+}
+
 void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	GtkWidget *expander, *Frame_1;
     GtkWidget *vbox_1, *hbox_1;
+	GtkWidget *combobox_cmap;
 	
-    
-    vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	GtkWidget *label_tree;
+    int index = 0;
+	
+	label_tree = gtk_tree_view_new();
+	create_fixed_label_w_index_tree(label_tree);
+    GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
+    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    index = append_ci_item_to_tree(index, &color_labels[RAINBOW_MODE][0], RAINBOW_MODE, child_model);
+	index = append_ci_item_to_tree(index, &color_labels[GRAYSCALE_MODE][0], GRAYSCALE_MODE, child_model);
+	index = append_ci_item_to_tree(index, &color_labels[RED_BLUE_MODE][0], RED_BLUE_MODE, child_model);
+	index = append_ci_item_to_tree(index, &color_labels[SYM_GRAY_MODE][0], SYM_GRAY_MODE, child_model);
+	
+	combobox_cmap = gtk_combo_box_new_with_model(child_model);
+	child_model = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_cmap), child_model, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_cmap), child_model,
+				"text", COLUMN_FIELD_NAME, NULL);
+    g_signal_connect(G_OBJECT(combobox_cmap), "changed", 
+                     G_CALLBACK(set_color_mode_cb), color_vws);
+	
+	
+	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_1), combobox_cmap, FALSE, FALSE, 0);
+	
 	add_colormap_list_box(color_vws, vbox_1);
 	add_opacity_list_box(color_vws, vbox_1);
 	
@@ -349,9 +404,11 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
     
 	Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
-	gtk_container_add(GTK_BOX(Frame_1), hbox_1);
+	gtk_container_add(Frame_1, hbox_1);
 	
 	expander = gtk_expander_new_with_mnemonic("Tako");
 	gtk_container_add(GTK_CONTAINER(expander), Frame_1);
 	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
 };
+
+
