@@ -314,7 +314,7 @@
       end do
 !
       write(id_file,'(2i4)') ione, ione
-      write(id_file,'(a)') 'color_data,'
+      write(id_file,'(a)') 'color col_line_l,'
       do i = 1, fline_lc%nnod_line_l
         write(id_file,'(i16,1pe16.7)') i, fline_lc%col_line_l(i)
       end do
