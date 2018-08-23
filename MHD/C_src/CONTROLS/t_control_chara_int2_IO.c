@@ -176,7 +176,7 @@ int count_chara_int2_ctl_list(struct chara_int2_ctl_list *head){
 struct chara_int2_ctl_list *find_ci2_ctl_list_item_by_index(int index, struct chara_int2_ctl_list *head){
     int i;
     if(index < 0 || index > count_chara_int2_ctl_list(head)) return NULL;
-    for(i=0;i<index;i++){head = head->_next;};
+    for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
 struct chara_int2_ctl_list *find_ci2_ctl_list_item_by_c_tbl(char *ref, struct chara_int2_ctl_list *head){
@@ -236,7 +236,7 @@ int write_chara_int2_ctl_list(FILE *fp, int level, const char *label,
 static void append_chara_int2_ctl_list(char *c_in, int i1_in, int i2_in,
                       struct chara_int2_ctl_list *head){
 	int num = count_chara_int2_ctl_list(head);
-	head = find_ci2_ctl_list_item_by_index(num, head);
+    if(num > 0) head = find_ci2_ctl_list_item_by_index(num-1, head);
 	head = add_chara_int2_ctl_list_after(head);
 	update_chara_int2_ctl_item_c(c_in, i1_in, i2_in, head->ci2_item);
     return;

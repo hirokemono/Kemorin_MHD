@@ -391,6 +391,7 @@ module:
 	'$$(KEMO_C_DIR)'/set_rgb_colors_c.c \
 	set_rgb_colors_c.h \
 	kemosrc_param_c.o \
+	t_control_real2_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -400,6 +401,8 @@ module:
 	'$$(KEMO_C_DIR)'/m_color_table_c.c \
 	m_color_table_c.h \
 	set_rgb_colors_c.o \
+	t_control_real_IO.o \
+	t_control_real2_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)
@@ -448,6 +451,7 @@ module:
 	m_color_table_c.o \
 	skip_comment_c.o \
 	t_ctl_data_pvr_colormap_c.o \
+	t_control_real2_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \
 	>> $(MAKENAME)

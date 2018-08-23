@@ -23,8 +23,7 @@ struct pvr_colormap_bar_ctl_c *cmap_cbar_c0;
 void set_rgb_from_value_s(struct colormap_params *cmap_s,
 			double value, double *red, double *green, double *blue){
 	double rnorm;
-	rnorm = color_normalize_linear_segment_c(cmap_s->n_color_point, 
-			cmap_s->color_data, cmap_s->color_value, value);
+	rnorm = color_normalize_linear_segment_c(cmap_s->colormap_clist, value);
 	
 	if(cmap_s->id_color_mode == GRAYSCALE_MODE){
 		color_grayscale_c(rnorm, red, green, blue);
@@ -48,34 +47,32 @@ void set_rgb_from_rgb(struct colormap_params *cmap_s,
 }
 
 double set_opacity_from_value_s(struct colormap_params *cmap_s,double value){
-	return color_normalize_linear_segment_c(cmap_s->n_opacity_point, cmap_s->opacity_data, 
-                                            cmap_s->opacity_value, value);
+	return color_normalize_linear_segment_c(cmap_s->opacitymap_clist, value);
 }
 
 void set_each_color_point_s(struct colormap_params *cmap_s, 
 			int i_point, double value, double color){
-	cmap_s->color_data[i_point] = value;
-	cmap_s->color_value[i_point] = color;
-	
+	update_real2_clist_by_index(i_point, value, color, cmap_s->colormap_clist);
 	return;
 }
 
 void set_each_opacity_point_s(struct colormap_params *cmap_s, 
 			int i_point, double value, double opacity){
-	int i;
-	cmap_s->opacity_data[i_point] = value;
-	cmap_s->opacity_value[i_point] = opacity;
+	struct real2_ctl_list *head_cmap;
+    update_real2_clist_by_index(i_point, value, opacity, cmap_s->opacitymap_clist);
 	
-	cmap_s->max_opacity = cmap_s->opacity_value[0];
-	cmap_s->min_opacity = cmap_s->opacity_value[0];
-	for (i=1; i<cmap_s->n_opacity_point; i++) {
-		if(cmap_s->opacity_value[i] > cmap_s->max_opacity){
-			cmap_s->max_opacity = cmap_s->opacity_value[i];
+    head_cmap = &cmap_s->opacitymap_clist->r2_item_head;
+    head_cmap = head_cmap->_next;
+    cmap_s->max_opacity = head_cmap->r2_item->r_data[1];
+	cmap_s->min_opacity = head_cmap->r2_item->r_data[1];
+    while (head_cmap != NULL){
+		if(head_cmap->r2_item->r_data[1] > cmap_s->max_opacity){
+			cmap_s->max_opacity = head_cmap->r2_item->r_data[1];
 		}
-		if(cmap_s->opacity_value[i] < cmap_s->min_opacity){
-			cmap_s->min_opacity = cmap_s->opacity_value[i];
+		if(head_cmap->r2_item->r_data[1] < cmap_s->min_opacity){
+			cmap_s->min_opacity = head_cmap->r2_item->r_data[1];
 		}
-		
+        head_cmap = head_cmap->_next;
 	}
 	return;
 }
@@ -88,35 +85,47 @@ void set_color_mode_id_s(struct colormap_params *cmap_s, int isel){
 double send_minimum_opacity_s(struct colormap_params *cmap_s){return cmap_s->min_opacity;}
 double send_maximum_opacity_s(struct colormap_params *cmap_s){return cmap_s->max_opacity;}
 int send_color_mode_id_s(struct colormap_params *cmap_s){return cmap_s->id_color_mode;}
-int send_color_table_num_s(struct colormap_params *cmap_s){return cmap_s->n_color_point;}
-int send_opacity_table_num_s(struct colormap_params *cmap_s){return cmap_s->n_opacity_point;}
+int send_color_table_num_s(struct colormap_params *cmap_s){
+    return count_real2_clist(cmap_s->colormap_clist);
+}
+int send_opacity_table_num_s(struct colormap_params *cmap_s){
+    return count_real2_clist(cmap_s->opacitymap_clist);
+}
 
 void send_color_table_items_s(struct colormap_params *cmap_s, 
 			int i_point, double *value, double *color){
-	*value =   cmap_s->color_data[i_point];
-	*color =   cmap_s->color_value[i_point];
+	set_from_real2_clist_at_index(i_point, cmap_s->colormap_clist, value, color);
 	return;
 }
 
 void send_opacity_table_items_s(struct colormap_params *cmap_s, 
 			int i_point, double *value, double *opacity){
-	*value =   cmap_s->opacity_data[i_point];
-	*opacity = cmap_s->opacity_value[i_point];
+	set_from_real2_clist_at_index(i_point, cmap_s->opacitymap_clist, value, opacity);
 	return;
 }
 
 void set_linear_colormap(struct colormap_params *cmap_s,
 			double val_min, double val_max){
-	realloc_color_index_list_s(cmap_s, ITWO);
-	set_each_color_point_s(cmap_s, IZERO, val_min, ZERO);
-	set_each_color_point_s(cmap_s, IONE,  val_max, ONE);
+	clear_real2_clist(cmap_s->colormap_clist);
+	init_real2_clist(cmap_s->colormap_clist);
+    sprintf(cmap_s->colormap_clist->r1_name, "data");
+    sprintf(cmap_s->colormap_clist->r2_name, "color");
+	
+	append_real2_clist(val_min, ZERO, cmap_s->colormap_clist);
+	append_real2_clist(val_max, ONE, cmap_s->colormap_clist);
+	cmap_s->cmap_min = val_min;
+	cmap_s->cmap_max = val_max;
 	return;
 }
 void set_constant_opacitymap(struct colormap_params *cmap_s,
 			double val_min, double val_max, double opaciy){
-	realloc_opacity_index_list_s(cmap_s, ITWO);
-	set_each_opacity_point_s(cmap_s, IZERO, val_min, opaciy);
-	set_each_opacity_point_s(cmap_s, IONE,  val_max, opaciy);
+	clear_real2_clist(cmap_s->opacitymap_clist);
+	init_real2_clist(cmap_s->opacitymap_clist);
+    sprintf(cmap_s->opacitymap_clist->r1_name, "data");
+    sprintf(cmap_s->opacitymap_clist->r2_name, "opacity");
+	
+	append_real2_clist(val_min, opaciy, cmap_s->opacitymap_clist);
+    append_real2_clist(val_max, opaciy, cmap_s->opacitymap_clist);
 	return;
 }
 void set_full_opacitymap(struct colormap_params *cmap_s,
@@ -128,7 +137,6 @@ void set_full_opacitymap(struct colormap_params *cmap_s,
 
 void copy_colormap_to_ctl(struct colormap_params *cmap_s, 
 			struct colormap_ctl_c *cmap_c){
-	int i;
 	double color;
 	
 	if(cmap_s->id_color_mode == RED_BLUE_MODE){
@@ -142,16 +150,10 @@ void copy_colormap_to_ctl(struct colormap_params *cmap_s,
 	};
 	copy_to_chara_ctl_item("colormap_list", cmap_c->data_mapping_ctl);
 	
-	copy_to_real2_clist(cmap_s->n_color_point, cmap_s->color_data, cmap_s->color_value,
-				cmap_c->colortbl_list);
+	dup_real2_clist(cmap_s->colormap_clist, cmap_c->colortbl_list);
 	
 	copy_to_chara_ctl_item("point_linear", cmap_c->opacity_style_ctl);
-	for(i=0; i<cmap_s->n_opacity_point; i++){
-		color = color_normalize_linear_segment_c(cmap_s->n_color_point, 
-					 cmap_s->color_data, cmap_s->color_value, cmap_s->opacity_data[i]);
-	}
-	copy_to_real2_clist(cmap_s->n_opacity_point, cmap_s->opacity_data, cmap_s->opacity_value,
-				cmap_c->linear_opacity_list);
+    dup_real2_clist(cmap_s->opacitymap_clist, cmap_c->colortbl_list);
 	update_real_ctl_item_c(cmap_s->min_opacity, cmap_c->fix_opacity_ctl);
 	return;
 	}
@@ -164,8 +166,7 @@ void make_colorbar_for_ctl(struct colormap_params *cmap_s,
 	set_boolean_by_chara_ctl_item(1, cbar_c->zeromarker_flag_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->axis_switch_ctl);
 	
-	update_real2_ctl_item_c(cmap_s->color_data[IZERO], cmap_s->color_data[cmap_s->n_color_point-1],
-				cbar_c->cbar_range_ctl);
+	update_real2_ctl_item_c(cmap_s->cmap_min, cmap_s->cmap_max, cbar_c->cbar_range_ctl);
 	update_int_ctl_item_c(1, cbar_c->font_size_ctl);
 	update_int_ctl_item_c(3, cbar_c->ngrid_cbar_ctl);
 
@@ -175,8 +176,6 @@ void make_colorbar_for_ctl(struct colormap_params *cmap_s,
 
 void copy_colormap_from_ctl(struct colormap_ctl_c *cmap_c, 
 			struct colormap_params *cmap_s){
-	int num;
-	
 	
 	if(compare_string(11, label_bluered, cmap_c->colormap_mode_ctl->c_tbl) > 0){
 		cmap_s->id_color_mode = RED_BLUE_MODE;
@@ -193,20 +192,13 @@ void copy_colormap_from_ctl(struct colormap_ctl_c *cmap_c,
 		return;
 	}
 	
-	num = count_real2_clist(cmap_c->colortbl_list);
-	realloc_color_index_list_s(cmap_s, num);
-	copy_from_real2_clist(cmap_c->colortbl_list, 
-				num, cmap_s->color_data, cmap_s->color_value);
+	dup_real2_clist(cmap_c->colortbl_list, cmap_s->colormap_clist);
 	
 	if(compare_string(12, "point_linear", cmap_c->opacity_style_ctl->c_tbl) == 0){
 		printf("Something Wrong in opacity_style_ctl\n)");
 		return;
 	};
-	
-	num = count_real2_clist(cmap_c->linear_opacity_list);
-	realloc_opacity_index_list_s(cmap_s, num);
-	copy_from_real2_clist(cmap_c->linear_opacity_list, 
-				num, cmap_s->opacity_data, cmap_s->opacity_value);
+    dup_real2_clist(cmap_c->colortbl_list, cmap_s->opacitymap_clist);
     set_from_real_ctl_item_c(cmap_c->fix_opacity_ctl, &cmap_s->min_opacity);
 	
 	return;

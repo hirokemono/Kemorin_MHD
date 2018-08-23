@@ -146,14 +146,9 @@ static int count_real3_ctl_list(struct real3_ctl_list *head){
 };
 
 static struct real3_ctl_list *find_r3_ctl_list_item_by_index(int index, struct real3_ctl_list *head){
-    int num = 0;
-    head = head->_next;
-    while (head != NULL){
-        if(num == index) break;
-        head = head->_next;
-        num = num + 1;
-    };
-    if(head == NULL) printf("array does not exist at index %d of %d.\n", index, num);
+    int i;
+    if(index < 0 || index > count_real3_ctl_list(head)) return NULL;
+    for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
 static struct real3_ctl_list *find_r3_ctl_list_item_by_value(double ref_1, double ref_2,
@@ -216,7 +211,7 @@ static int write_real3_ctl_list(FILE *fp, int level, const char *label,
 void append_real3_ctl_list(double r1_in, double r2_in, double r3_in, 
 			struct real3_ctl_list *head){
 	int num = count_real3_ctl_list(head);
-	head = find_r3_ctl_list_item_by_index(num, head);
+    if(num > 0) head = find_r3_ctl_list_item_by_index(num-1, head);
 	head = add_real3_ctl_list_after(head);
 	update_real3_ctl_item_c(r1_in, r2_in, r3_in, head->r3_item);
     return;

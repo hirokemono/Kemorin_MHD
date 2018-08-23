@@ -51,6 +51,8 @@ void update_real2_ctl_item_c(double r1_in, double r2_in,
 void set_from_real2_ctl_item_c(struct real2_ctl_item *r2_item,
                               double *r1_out, double *r2_out);
 
+struct real2_ctl_list *find_r2_between_item_by_value1(double ref_1,
+			struct real2_ctl_list *head);
 
 void init_real2_clist(struct real2_clist *r2_clst);
 void clear_real2_clist(struct real2_clist *r2_clst);
@@ -72,6 +74,8 @@ void add_real2_clist_before_c_tbl(double ref_1, double ref_2,
 			struct real2_clist *r2_clst);
 void add_real2_clist_after_c_tbl(double ref_1, double ref_2, 
 			struct real2_clist *r2_clst);
+void add_real2_clist_between_value1(double ref_1, double ref_2, 
+			struct real2_clist *r2_clst);
 void del_real2_clist_by_c_tbl(double ref_1, double ref_2,
 			struct real2_clist *r2_clst);
 void update_real2_clist_by_c_tbl(double ref_1, double ref_2, 
@@ -83,5 +87,7 @@ void copy_from_real2_clist(struct real2_clist *r2_clst, int num,
 			double *v1, double *v2);
 void copy_to_real2_clist(int num, double *v1, double *v2,
 			struct real2_clist *r2_clst);
+void dup_real2_clist(struct real2_clist *r2_src_clst,
+            struct real2_clist *r2_tgt_clst);
 
 #endif /* t_control_real2_IO_h_ */

@@ -20,25 +20,26 @@ double color_normalize_linear_c(double d_min, double d_max, double value){
 	return color_norm;
 }
 
-double color_normalize_linear_segment_c(int n_point, double *value_segment,
-			double *segment_color, double value){
+double color_normalize_linear_segment_c(struct real2_clist *colormap_clist, double value){
+	struct real2_ctl_list *current;
+	double segment_color[2];
+	double value_segment[2];
 	double color_norm;
-	int i;
 	
-	if (value < value_segment[0]){
-		color_norm = segment_color[0];
-	} else if (value >= value_segment[n_point-1]){
-		color_norm = segment_color[n_point-1];
-	} else {
-		for (i=0;i<n_point-1;i++){
-			if(value >= value_segment[i] && value <value_segment[i+1]){
-				color_norm = segment_color[i]
-						+ (segment_color[i+1] - segment_color[i])
-						 * (value - value_segment[i]) / (value_segment[i+1]-value_segment[i]);
-				break;
-			}
-		}
-	}
+	current = find_r2_between_item_by_value1(value, &colormap_clist->r2_item_head);
+	if(current->_prev == NULL){
+		color_norm = current->r2_item->r_data[1];
+	}else if(current->_next == NULL){
+		color_norm = current->r2_item->r_data[1];
+	}else{
+		value_segment[0] = current->r2_item->r_data[0];
+		segment_color[0] = current->r2_item->r_data[1];
+		value_segment[1] = current->_next->r2_item->r_data[0];
+		segment_color[1] = current->_next->r2_item->r_data[1];
+		
+		color_norm = segment_color[0] + (segment_color[1] - segment_color[0])
+					 * (value - value_segment[0]) / (value_segment[1]-value_segment[0]);
+	};
 	
 	return color_norm;
 }

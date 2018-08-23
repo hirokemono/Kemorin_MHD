@@ -883,13 +883,6 @@ void kemoview_set_fline_constant_opacity(double opacity){
                             kemo_sgl->fline_d->d_max[kemo_sgl->fline_m->icomp_draw_fline], opacity);
 }
 
-void kemoview_realloc_fline_colormap(int num){
-	realloc_color_index_list_s(kemo_sgl->fline_m->cmap_fline, num);
-}
-void kemoview_realloc_fline_opacitymap(int num){
-	realloc_opacity_index_list_s(kemo_sgl->fline_m->cmap_fline, num);
-}
-
 void kemoview_get_fline_rgb_at_value(double value, double *red, double *green, double *blue){
 	set_rgb_from_value_s(kemo_sgl->fline_m->cmap_fline, value, red, green, blue);
 }

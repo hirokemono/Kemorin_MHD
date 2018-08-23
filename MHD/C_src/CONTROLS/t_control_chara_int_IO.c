@@ -172,14 +172,9 @@ static int count_chara_int_ctl_list(struct chara_int_ctl_list *head){
 };
 
 static struct chara_int_ctl_list *find_ci_ctl_list_item_by_index(int index, struct chara_int_ctl_list *head){
-    int num = 0;
-    head = head->_next;
-    while (head != NULL){
-        if(num == index) break;
-        head = head->_next;
-        num = num + 1;
-    };
-    if(head == NULL) printf("array does not exist at index %d of %d.\n", index, num);
+    int i;
+    if(index < 0 || index > count_chara_int_ctl_list(head)) return NULL;
+    for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
 static struct chara_int_ctl_list *find_ci_ctl_list_item_by_c_tbl(char *ref, struct chara_int_ctl_list *head){
@@ -238,7 +233,7 @@ static int write_chara_int_ctl_list(FILE *fp, int level, const char *label,
 static void append_chara_int_ctl_list(char *c_in, int i1_in,
                       struct chara_int_ctl_list *head){
 	int num = count_chara_int_ctl_list(head);
-	head = find_ci_ctl_list_item_by_index(num, head);
+    if(num > 0) head = find_ci_ctl_list_item_by_index(num-1, head);
 	head = add_chara_int_ctl_list_after(head);
 	update_chara_int_ctl_item_c(c_in, i1_in, head->ci_item);
     return;

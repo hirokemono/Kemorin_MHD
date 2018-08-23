@@ -180,7 +180,7 @@ int count_chara_ctl_list(struct chara_ctl_list *head){
 struct chara_ctl_list *find_c_ctl_list_item_by_index(int index, struct chara_ctl_list *head){
     int i;
     if(index < 0 || index > count_chara_ctl_list(head)) return NULL;
-    for(i=0;i<index;i++){head = head->_next;};
+    for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
 struct chara_ctl_list *find_c_ctl_list_item_by_c_tbl(char *ref, struct chara_ctl_list *head){
@@ -237,11 +237,8 @@ int write_chara_ctl_list(FILE *fp, int level, const char *label,
 
 
 void append_chara_ctl_list(char *c_in, struct chara_ctl_list *head){
-	int i;
-	for (i=0;i<count_chara_ctl_list(head);i++){
-		head = head->_next;
-		if(cmp_no_case_c(head->c_item->c_tbl, c_in)) return;
-	};
+    int num = count_chara_ctl_list(head);
+    if(num > 0) head = find_c_ctl_list_item_by_index(num-1, head);
 	head = add_chara_ctl_list_after(head);
 	update_chara_ctl_item_c(c_in, head->c_item);
     return;

@@ -138,14 +138,9 @@ static int count_int_ctl_list(struct int_ctl_list *head){
 };
 
 static struct int_ctl_list *find_i_ctl_list_item_by_index(int index, struct int_ctl_list *head){
-    int num = 0;
-    head = head->_next;
-    while (head != NULL){
-        if(num == index) break;
-        head = head->_next;
-        num = num + 1;
-    };
-    if(head == NULL) printf("array does not exist at index %d of %d.\n", index, num);
+    int i;
+    if(index < 0 || index > count_int_ctl_list(head)) return NULL;
+    for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
 static struct int_ctl_list *find_i_ctl_list_item_by_value(int iref,
@@ -205,8 +200,8 @@ static int write_int_ctl_list(FILE *fp, int level, const char *label,
 
 void append_int_ctl_list(int i1_in, struct int_ctl_list *head){
 	int num = count_int_ctl_list(head);
-	head = find_i_ctl_list_item_by_index(num, head);
-	head = add_int_ctl_list_after(head);
+    if(num > 0) head = find_i_ctl_list_item_by_index(num-1, head);
+    head = add_int_ctl_list_after(head);
 	update_int_ctl_item_c(i1_in, head->i_item);
     return;
 };

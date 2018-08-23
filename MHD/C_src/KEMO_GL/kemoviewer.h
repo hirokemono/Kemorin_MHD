@@ -728,10 +728,7 @@ extern "C" {
     
     void kemoview_set_fline_linear_colormap(double minvalue, double maxvalue);
     void kemoview_set_fline_constant_opacity(double opacity);
-    
-    void kemoview_realloc_fline_colormap(int num);
-    void kemoview_realloc_fline_opacitymap(int num);
-    
+
     void kemoview_get_fline_rgb_at_value(double value, double *red, double *green, double *blue);
     double kemoview_get_fline_opacity_at_value(double value);
     

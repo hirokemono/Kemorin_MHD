@@ -84,9 +84,6 @@ double send_vector_thick(struct psf_menu_val *psf_menu);
 double send_psf_data_min(struct psf_data *psf_d, int icomp);
 double send_psf_data_max(struct psf_data *psf_d, int icomp);
 
-void realloc_PSF_color_index_list(struct psf_menu_val *psf_menu, int num);
-void realloc_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int num);
-
 void delete_PSF_color_index_list(struct psf_menu_val *psf_menu, int i_delete);
 void delete_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete);
 

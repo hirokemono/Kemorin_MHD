@@ -5,6 +5,8 @@
 #define M_COLOR_TABLE_C_
 
 #include "set_rgb_colors_c.h"
+#include "t_control_real_IO.h"
+#include "t_control_real2_IO.h"
 
 #define RAINBOW_MODE    0
 #define GRAYSCALE_MODE  1
@@ -13,14 +15,14 @@
 
 struct colormap_params{
 	int id_color_mode;
-	int n_color_point, nbuf_color_point;
-	double *color_data;
-	double *color_value;
 	
-	int n_opacity_point, nbuf_opacity_point;
+	struct real2_clist *colormap_clist;
+	struct real2_clist *opacitymap_clist;
+	
+	double cmap_min;
+	double cmap_max;
+	
 	double min_opacity, max_opacity;
-	double *opacity_data;
-	double *opacity_value;
     
     double *single_color;
 };
@@ -34,10 +36,6 @@ void alloc_opacity_index_list_s(struct colormap_params *cmap_s, int num);
 void dealloc_single_color_code(struct colormap_params *cmap_s);
 void dealloc_color_index_list_s(struct colormap_params *cmap_s);
 void dealloc_opacity_index_list_s(struct colormap_params *cmap_s);
-
-void realloc_color_index_list_s(struct colormap_params *cmap_s, int num);
-void realloc_opacity_index_list_s(struct colormap_params *cmap_s, int num);
-
 
 void delete_color_index_list_s(struct colormap_params *cmap_s, int i_delete);
 void delete_opacity_index_list_s(struct colormap_params *cmap_s, int i_delete);

@@ -182,14 +182,9 @@ static int count_chara3_ctl_list(struct chara3_ctl_list *head){
 };
 
 struct chara3_ctl_list *find_c3_ctl_list_item_by_index(int index, struct chara3_ctl_list *head){
-    int num = 0;
-    head = head->_next;
-    while (head != NULL){
-        if(num == index) break;
-        head = head->_next;
-        num = num + 1;
-    };
-    if(head == NULL) printf("array does not exist at index %d of %d.\n", index, num);
+    int i;
+    if(index < 0 || index > count_chara3_ctl_list(head)) return NULL;
+    for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
 
@@ -252,7 +247,7 @@ static int write_chara3_ctl_list(FILE *fp, int level, const char *label,
 static void append_chara3_ctl_list(char *c1_in, char *c2_in, char *c3_in,
                       struct chara3_ctl_list *head){
 	int num = count_chara3_ctl_list(head);
-	head = find_c3_ctl_list_item_by_index(num, head);
+    if(num > 0) head = find_c3_ctl_list_item_by_index(num-1, head);
 	head = add_chara3_ctl_list_after(head);
 	if(head !=NULL) update_chara3_ctl_item_c(c1_in, c2_in, c3_in, head->c3_item);
     return;

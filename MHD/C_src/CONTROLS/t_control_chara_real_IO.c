@@ -173,7 +173,7 @@ static int count_chara_real_ctl_list(struct chara_real_ctl_list *head){
 static struct chara_real_ctl_list *find_cr_ctl_list_item_by_index(int index, struct chara_real_ctl_list *head){
     int i;
     if(index < 0 || index > count_chara_real_ctl_list(head)) return NULL;
-    for(i=0;i<index;i++){head = head->_next;};
+    for(i=0;i<index+1;i++){head = head->_next;};
     return head;
 };
 static struct chara_real_ctl_list *find_cr_ctl_list_item_by_c_tbl(char *ref, struct chara_real_ctl_list *head){
@@ -233,7 +233,7 @@ static int write_chara_real_ctl_list(FILE *fp, int level, const char *label,
 static void append_chara_real_ctl_list(char *c_in, double r_in,
                                 struct chara_real_ctl_list *head){
 	int num = count_chara_real_ctl_list(head);
-	head = find_cr_ctl_list_item_by_index(num, head);
+	if(num > 0) head = find_cr_ctl_list_item_by_index(num-1, head);
 	head = add_chara_real_ctl_list_after(head);
 	if(head !=NULL) update_chara_real_ctl_item_c(c_in, r_in, head->cr_item);
     return;
