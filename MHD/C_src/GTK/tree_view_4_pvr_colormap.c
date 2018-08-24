@@ -17,7 +17,7 @@ void init_colormap_views(struct colormap_ctl_c *cmap_c, struct colormap_view *co
     return;
 }
 
-static void draw_colormap(int id_color_mode, double max_opacity, 
+static void draw_colormap(int id_color_mode, 
 			struct real2_clist *colormap_clist, struct real2_clist *opacitymap_clist,
 			cairo_t *cr, GdkWindow *window)
 { 
@@ -34,6 +34,7 @@ static void draw_colormap(int id_color_mode, double max_opacity,
     struct real2_ctl_list *head_ctl, *head_cmap;
     double d_bottom = 0.0;
     double d_current = 0.0;
+	double max_opacity = 0.0;
     double range;
     int i;
     int num_cmap = count_chara2_clist(colormap_clist);
@@ -47,12 +48,14 @@ static void draw_colormap(int id_color_mode, double max_opacity,
 		head_cmap = head_cmap->_next;
         i_point[i] = i;
         d_point[i] = head_cmap->r2_item->r_data[0];
-    }
+	}
+	
 	head_cmap = &opacitymap_clist->r2_item_head;
     for(i=0;i<num_omap;i++){
 		head_cmap = head_cmap->_next;
         i_point[i+num_cmap] = i;
-        d_point[i+num_cmap] = head_cmap->r2_item->r_data[0];
+		d_point[i+num_cmap] = head_cmap->r2_item->r_data[0];
+		if(head_cmap->r2_item->r_data[1] > max_opacity) max_opacity = head_cmap->r2_item->r_data[1];
     }
     quicksort_double_c(d_point, i_point, 0, (ntot-1));
 	
@@ -162,19 +165,9 @@ static void draw_colormap(int id_color_mode, double max_opacity,
 
 static void draw_colormap_by_ctl(cairo_t *cr, struct colormap_view *color_vws)
 { 
-    color_vws->cmap_s = (struct colormap_params *)calloc(4,sizeof(struct colormap_params));
-	alloc_color_index_list_s(color_vws->cmap_s, color_vws->index_cmap);
-	alloc_opacity_index_list_s(color_vws->cmap_s);
-	dup_real2_clist(color_vws->cmap_vws->r2_clist_gtk, color_vws->cmap_s->colormap_clist);
-	dup_real2_clist(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_s->opacitymap_clist);
-	
-	draw_colormap(color_vws->cmap_s->id_color_mode, color_vws->cmap_s->max_opacity, 
-				color_vws->cmap_s->colormap_clist, color_vws->cmap_s->opacitymap_clist,
+	draw_colormap(color_vws->index_cmap, 
+				color_vws->cmap_vws->r2_clist_gtk, color_vws->opacity_vws->r2_clist_gtk,
 				cr, gtk_widget_get_window(color_vws->scrolled_window));
-	
-    dealloc_color_index_list_s(color_vws->cmap_s);
-    dealloc_opacity_index_list_s(color_vws->cmap_s);
-    free(color_vws->cmap_s);
 };
 
 static gboolean cb_expose_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
