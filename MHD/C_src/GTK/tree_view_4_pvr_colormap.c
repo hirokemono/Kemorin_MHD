@@ -17,7 +17,9 @@ void init_colormap_views(struct colormap_ctl_c *cmap_c, struct colormap_view *co
     return;
 }
 
-static void draw_colormap(struct colormap_params *cmap_s, cairo_t *cr, GdkWindow *window)
+static void draw_colormap(int id_color_mode, double max_opacity, 
+			struct real2_clist *colormap_clist, struct real2_clist *opacitymap_clist,
+			cairo_t *cr, GdkWindow *window)
 { 
     float top =     50.0;
     float left =   100.0;
@@ -34,19 +36,19 @@ static void draw_colormap(struct colormap_params *cmap_s, cairo_t *cr, GdkWindow
     double d_current = 0.0;
     double range;
     int i;
-    int num_cmap = count_chara2_clist(cmap_s->colormap_clist);
-    int num_omap = count_chara2_clist(cmap_s->opacitymap_clist);
+    int num_cmap = count_chara2_clist(colormap_clist);
+    int num_omap = count_chara2_clist(opacitymap_clist);
     int ntot = num_cmap + num_omap;
 
     i_point = (int *) calloc(ntot, sizeof(int));
 	d_point = (double *) calloc(ntot, sizeof(double));
-	head_cmap = &cmap_s->colormap_clist->r2_item_head;
+	head_cmap = &colormap_clist->r2_item_head;
 	for(i=0;i<num_cmap;i++){
 		head_cmap = head_cmap->_next;
         i_point[i] = i;
         d_point[i] = head_cmap->r2_item->r_data[0];
     }
-	head_cmap = &cmap_s->opacitymap_clist->r2_item_head;
+	head_cmap = &opacitymap_clist->r2_item_head;
     for(i=0;i<num_omap;i++){
 		head_cmap = head_cmap->_next;
         i_point[i+num_cmap] = i;
@@ -69,14 +71,14 @@ static void draw_colormap(struct colormap_params *cmap_s, cairo_t *cr, GdkWindow
         pattern2 = cairo_pattern_create_linear((left+2*width), top, (left+2*width), (top+height));
         top_s = top;
         height_s = 1.0;
-        head_cmap = &cmap_s->colormap_clist->r2_item_head;
+        head_cmap = &colormap_clist->r2_item_head;
         d_bottom = head_cmap->_next->r2_item->r_data[0];
         range = d_point[ntot-1] - d_point[0];
         for(i=0;i<ntot-1;i++){
             d_current = d_point[i];
-			set_rgb_from_value_s(cmap_s->id_color_mode, cmap_s->colormap_clist,
+			set_rgb_from_value_s(id_color_mode, colormap_clist,
                                  d_current, &red1, &green1, &blue1);
-			o_point = color_normalize_linear_segment_c(cmap_s->opacitymap_clist, d_current) / cmap_s->max_opacity;
+			o_point = color_normalize_linear_segment_c(opacitymap_clist, d_current) / max_opacity;
 			
             height_s = 1.0 - (d_current - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
@@ -84,9 +86,9 @@ static void draw_colormap(struct colormap_params *cmap_s, cairo_t *cr, GdkWindow
         }
         for(i=1;i<10;i++){
             d_current = d_bottom + (double) i * range / 10.0;
-            set_rgb_from_value_s(cmap_s->id_color_mode, cmap_s->colormap_clist,
+            set_rgb_from_value_s(id_color_mode, colormap_clist,
                                  d_current, &red1, &green1, &blue1);
-            o_point = color_normalize_linear_segment_c(cmap_s->opacitymap_clist, d_current) / cmap_s->max_opacity;
+            o_point = color_normalize_linear_segment_c(opacitymap_clist, d_current) / max_opacity;
             
             height_s = 1.0 - (d_current - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
@@ -125,7 +127,7 @@ static void draw_colormap(struct colormap_params *cmap_s, cairo_t *cr, GdkWindow
         char *c_txt[10];
         cairo_move_to(cr, left-70, top_s-20);
         cairo_show_text(cr, "Color point");
-		head_cmap = &cmap_s->colormap_clist->r2_item_head;
+		head_cmap = &colormap_clist->r2_item_head;
 		d_bottom = head_cmap->_next->r2_item->r_data[0];
         range = d_point[ntot-1] - d_point[0];
         for(i=0;i<num_cmap;i++){
@@ -140,7 +142,7 @@ static void draw_colormap(struct colormap_params *cmap_s, cairo_t *cr, GdkWindow
         height_s = 0.0;
         cairo_move_to(cr, left+width+30, top_s-20);
         cairo_show_text(cr, "Opacity point");
-		head_cmap = &cmap_s->opacitymap_clist->r2_item_head;
+		head_cmap = &opacitymap_clist->r2_item_head;
 		d_bottom = head_cmap->_next->r2_item->r_data[0];
         for(i=0;i<num_omap;i++){
 			head_cmap = head_cmap->_next;
@@ -166,7 +168,9 @@ static void draw_colormap_by_ctl(cairo_t *cr, struct colormap_view *color_vws)
 	dup_real2_clist(color_vws->cmap_vws->r2_clist_gtk, color_vws->cmap_s->colormap_clist);
 	dup_real2_clist(color_vws->opacity_vws->r2_clist_gtk, color_vws->cmap_s->opacitymap_clist);
 	
-	draw_colormap(color_vws->cmap_s, cr, gtk_widget_get_window(color_vws->scrolled_window));
+	draw_colormap(color_vws->cmap_s->id_color_mode, color_vws->cmap_s->max_opacity, 
+				color_vws->cmap_s->colormap_clist, color_vws->cmap_s->opacitymap_clist,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
 	
     dealloc_color_index_list_s(color_vws->cmap_s);
     dealloc_opacity_index_list_s(color_vws->cmap_s);
