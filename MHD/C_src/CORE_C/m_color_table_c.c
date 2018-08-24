@@ -10,8 +10,9 @@ void alloc_single_color_code(struct colormap_params *cmap_s){
     return;
 }
 
-void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode){
-	cmap_s->id_color_mode = id_cmode;
+void alloc_color_index_list_s(struct colormap_params *cmap_s){
+	cmap_s->colormap_mode = (struct chara_ctl_item *)malloc(sizeof(struct chara_ctl_item));
+	alloc_chara_ctl_item_c(cmap_s->colormap_mode);
 	
 	cmap_s->colormap_clist = (struct real2_clist *)malloc(sizeof(struct real2_clist));
 	init_real2_clist(cmap_s->colormap_clist);
@@ -37,6 +38,9 @@ void dealloc_single_color_code(struct colormap_params *cmap_s){
 }
 
 void dealloc_color_index_list_s(struct colormap_params *cmap_s){
+	dealloc_chara_ctl_item_c(cmap_s->colormap_mode);
+	free(cmap_s->colormap_mode);
+	
 	clear_real2_clist(cmap_s->colormap_clist);
 	free(cmap_s->colormap_clist);
 	return;
@@ -54,9 +58,7 @@ void delete_color_index_list_s(struct colormap_params *cmap_s, int i_delete){
 	
 	int num = count_real2_clist(cmap_s->colormap_clist);
     if(num <= 2) return;
-	if(i_delete < 0 || i_delete >= num){
-		return;
-	} else {
+    if(i_delete >-1 && i_delete < num){
 		del_real2_clist_by_index(i_delete, cmap_s->colormap_clist);
 		
 		if(i_delete == 0){
@@ -67,7 +69,7 @@ void delete_color_index_list_s(struct colormap_params *cmap_s, int i_delete){
 						&cmap_s->cmap_max, &r2_clst);
 		};
 	};
-	return;
+    return;
 }
 
 void delete_opacity_index_list_s(struct colormap_params *cmap_s, int i_delete){
@@ -83,13 +85,14 @@ void delete_opacity_index_list_s(struct colormap_params *cmap_s, int i_delete){
 }
 
 void add_color_index_list_s(struct colormap_params *cmap_s, double add_value, double add_color){
-	add_real2_clist_between_value1(add_value, add_color, cmap_s->colormap_clist);
-	if(add_value < cmap_s->cmap_min) cmap_s->cmap_min = add_value;
-	if(add_value > cmap_s->cmap_max) cmap_s->cmap_max = add_value;
-	return;
+    add_real2_clist_between_value1(add_value, add_color, cmap_s->colormap_clist);
+    if(add_value < cmap_s->cmap_min) cmap_s->cmap_min = add_value;
+    if(add_value > cmap_s->cmap_max) cmap_s->cmap_max = add_value;
+    return;
 }
 
 void add_opacity_index_list_s(struct colormap_params *cmap_s, double add_value, double add_opacity){
     add_real2_clist_between_value1(add_value, add_opacity, cmap_s->opacitymap_clist);
 	return;
 }
+

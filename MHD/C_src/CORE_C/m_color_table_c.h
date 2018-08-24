@@ -5,7 +5,7 @@
 #define M_COLOR_TABLE_C_
 
 #include "set_rgb_colors_c.h"
-#include "t_control_real_IO.h"
+#include "t_control_chara_IO.h"
 #include "t_control_real2_IO.h"
 
 #define RAINBOW_MODE    0
@@ -14,8 +14,7 @@
 #define SYM_GRAY_MODE   3
 
 struct colormap_params{
-	int id_color_mode;
-	
+	struct chara_ctl_item *colormap_mode;
 	struct real2_clist *colormap_clist;
 	struct real2_clist *opacitymap_clist;
 	
@@ -30,7 +29,7 @@ struct colormap_params{
 /* prototypes */
 
 void alloc_single_color_code(struct colormap_params *cmap_s);
-void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode);
+void alloc_color_index_list_s(struct colormap_params *cmap_s);
 void alloc_opacity_index_list_s(struct colormap_params *cmap_s);
 
 void dealloc_single_color_code(struct colormap_params *cmap_s);

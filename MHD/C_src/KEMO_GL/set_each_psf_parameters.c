@@ -119,7 +119,7 @@ double send_vector_thick(struct psf_menu_val *psf_menu)        {return psf_menu-
 
 
 void set_PSF_color_mode_id(struct psf_menu_val *psf_menu, int isel){
-	set_color_mode_id_s(psf_menu->cmap_psf, isel);
+	set_color_mode_by_id(psf_menu->cmap_psf, isel);
 	return;
 }
 int send_PSF_color_mode_id(struct psf_menu_val *psf_menu){return send_color_mode_id_s(psf_menu->cmap_psf);};
@@ -128,21 +128,21 @@ double send_psf_data_min(struct psf_data *psf_d, int icomp){return psf_d->d_min[
 double send_psf_data_max(struct psf_data *psf_d, int icomp){return psf_d->d_max[icomp];};
 
 void delete_PSF_color_index_list(struct psf_menu_val *psf_menu, int i_delete){
-	delete_color_index_list_s(psf_menu->cmap_psf, i_delete);
+    delete_color_index_list_s(psf_menu->cmap_psf, i_delete);
 	return;
 }
 void delete_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete){
-	delete_opacity_index_list_s(psf_menu->cmap_psf, i_delete);
+    delete_opacity_index_list_s(psf_menu->cmap_psf, i_delete);
 	return;
 }
 
 void add_PSF_color_index_list(struct psf_menu_val *psf_menu, double add_value, double add_color){
-	add_color_index_list_s(psf_menu->cmap_psf, add_value, add_color);
+    add_color_index_list_s(psf_menu->cmap_psf, add_value, add_color);
 	return;
 }
 void add_PSF_opacity_index_list(struct psf_menu_val *psf_menu, double add_value, double add_opacity){
-	add_opacity_index_list_s(psf_menu->cmap_psf, add_value, add_opacity);
-	return;
+    add_opacity_index_list_s(psf_menu->cmap_psf, add_value, add_opacity);
+    return;
 }
 
 
@@ -171,7 +171,7 @@ void set_PSF_constant_opacity(struct psf_data *psf_d, struct psf_menu_val *psf_m
 
 void set_PSF_rgb_from_value(struct psf_menu_val *psf_menu,
                             double value, double *red, double *green, double *blue){
-	set_rgb_from_value_s(psf_menu->cmap_psf->id_color_mode, psf_menu->cmap_psf->colormap_clist, 
+	set_rgb_from_value_s(psf_menu->cmap_psf->colormap_mode->c_tbl, psf_menu->cmap_psf->colormap_clist, 
                          value, red, green, blue);
 	return;
 }

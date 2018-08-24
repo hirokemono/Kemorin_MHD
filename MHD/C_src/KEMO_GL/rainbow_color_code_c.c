@@ -141,7 +141,7 @@ void set_two_color_scale_g(double val, double *f_color){
 void set_rainbow_color_code(struct colormap_params *cmap_s, double val_pe,
 							double *f_color){
 	
-	set_rgb_from_value_s(cmap_s->id_color_mode->id_color_mode, cmap_s->id_color_mode->colormap_clist, 
+	set_rgb_from_value_s(cmap_s->colormap_mode->c_tbl, cmap_s->colormap_clist, 
 				val_pe, &f_color[0], &f_color[1], &f_color[2]);
 	f_color[3] = color_normalize_linear_segment_c(cmap_s->opacitymap_clist, val_pe);
 	return;

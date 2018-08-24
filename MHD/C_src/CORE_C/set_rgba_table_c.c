@@ -20,16 +20,16 @@ const char color_labels[4][KCHARA_C] = {
 
 struct pvr_colormap_bar_ctl_c *cmap_cbar_c0;
 
-void set_rgb_from_value_s(int id_color_mode, struct real2_clist *colormap_clist,
+void set_rgb_from_value_s(const char *color_mode_name, struct real2_clist *colormap_clist,
 			double value, double *red, double *green, double *blue){
 	double rnorm;
 	rnorm = color_normalize_linear_segment_c(colormap_clist, value);
 	
-	if(id_color_mode == GRAYSCALE_MODE){
+	if(cmp_no_case_c(color_mode_name, label_grayscale) > 0){
 		color_grayscale_c(rnorm, red, green, blue);
-	} else if(id_color_mode == SYM_GRAY_MODE){
+	} else if(cmp_no_case_c(color_mode_name, label_sym_gray) > 0){
 		color_sym_grayscale_c(rnorm, red, green, blue);
-	} else if(id_color_mode == RED_BLUE_MODE){
+	} else if(cmp_no_case_c(color_mode_name, label_bluered) > 0){
 		color_redblue_c(rnorm, red, green, blue);
 	} else {
         color_rainbow_c(rnorm, red, green, blue);
@@ -73,14 +73,34 @@ void set_each_opacity_point_s(struct colormap_params *cmap_s,
 	return;
 }
 
-void set_color_mode_id_s(struct colormap_params *cmap_s, int isel){
-	cmap_s->id_color_mode = isel;
+void set_color_mode_by_id(struct colormap_params *cmap_s, int isel){
+	if(isel == RED_BLUE_MODE){
+		copy_to_chara_ctl_item(label_bluered, cmap_s->colormap_mode);
+	} else if(isel == GRAYSCALE_MODE){
+		copy_to_chara_ctl_item(label_grayscale, cmap_s->colormap_mode);
+	} else if(isel == SYM_GRAY_MODE){
+		copy_to_chara_ctl_item(label_sym_gray, cmap_s->colormap_mode);
+	} else {
+		copy_to_chara_ctl_item(label_rainbow, cmap_s->colormap_mode);
+	};
 	return;
 }
 
 double send_minimum_opacity_s(struct colormap_params *cmap_s){return cmap_s->min_opacity;}
 double send_maximum_opacity_s(struct colormap_params *cmap_s){return cmap_s->max_opacity;}
-int send_color_mode_id_s(struct colormap_params *cmap_s){return cmap_s->id_color_mode;}
+int send_color_mode_id_s(struct colormap_params *cmap_s){
+	int isel;
+	if(cmp_no_case_c(cmap_s->colormap_mode->c_tbl, label_grayscale) > 0){
+		isel = GRAYSCALE_MODE;
+	} else if(cmp_no_case_c(cmap_s->colormap_mode->c_tbl, label_sym_gray) > 0){
+		isel = SYM_GRAY_MODE;
+	} else if(cmp_no_case_c(cmap_s->colormap_mode->c_tbl, label_bluered) > 0){
+		isel = RED_BLUE_MODE;
+	} else {
+		isel = RAINBOW_MODE;
+	}
+	return isel;
+}
 int send_color_table_num_s(struct colormap_params *cmap_s){
     return count_real2_clist(cmap_s->colormap_clist);
 }
@@ -135,15 +155,7 @@ void copy_colormap_to_ctl(struct colormap_params *cmap_s,
 			struct colormap_ctl_c *cmap_c){
 	double color;
 	
-	if(cmap_s->id_color_mode == RED_BLUE_MODE){
-		copy_to_chara_ctl_item(label_bluered, cmap_c->colormap_mode_ctl);
-	} else if(cmap_s->id_color_mode == GRAYSCALE_MODE){
-		copy_to_chara_ctl_item(label_grayscale, cmap_c->colormap_mode_ctl);
-	} else if(cmap_s->id_color_mode == SYM_GRAY_MODE){
-		copy_to_chara_ctl_item(label_sym_gray, cmap_c->colormap_mode_ctl);
-	} else {
-		copy_to_chara_ctl_item(label_rainbow, cmap_c->colormap_mode_ctl);
-	};
+	copy_to_chara_ctl_item(cmap_s->colormap_mode->c_tbl, cmap_c->colormap_mode_ctl);
 	copy_to_chara_ctl_item("colormap_list", cmap_c->data_mapping_ctl);
 	
 	dup_real2_clist(cmap_s->colormap_clist, cmap_c->colortbl_list);
@@ -173,14 +185,10 @@ void make_colorbar_for_ctl(struct colormap_params *cmap_s,
 void copy_colormap_from_ctl(struct colormap_ctl_c *cmap_c, 
 			struct colormap_params *cmap_s){
 	
-	if(compare_string(11, label_bluered, cmap_c->colormap_mode_ctl->c_tbl) > 0){
-		cmap_s->id_color_mode = RED_BLUE_MODE;
-	} else if(compare_string(9, label_grayscale, cmap_c->colormap_mode_ctl->c_tbl) > 0){
-		cmap_s->id_color_mode = GRAYSCALE_MODE;
-	} else if(compare_string(18, label_sym_gray, cmap_c->colormap_mode_ctl->c_tbl) > 0){
-		cmap_s->id_color_mode = SYM_GRAY_MODE;
-	} else {
-		cmap_s->id_color_mode = RAINBOW_MODE;
+	if(cmap_c->colormap_mode_ctl->iflag == 0){
+		copy_to_chara_ctl_item(label_rainbow, cmap_s->colormap_mode);
+	}else{
+		copy_to_chara_ctl_item(cmap_c->colormap_mode_ctl->c_tbl, cmap_s->colormap_mode);
 	};
    	
 	if(compare_string(13, "colormap_list", cmap_c->data_mapping_ctl->c_tbl) == 0){

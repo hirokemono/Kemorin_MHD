@@ -884,7 +884,7 @@ void kemoview_set_fline_constant_opacity(double opacity){
 }
 
 void kemoview_get_fline_rgb_at_value(double value, double *red, double *green, double *blue){
-	set_rgb_from_value_s(kemo_sgl->fline_m->cmap_fline->id_color_mode, 
+	set_rgb_from_value_s(kemo_sgl->fline_m->cmap_fline->colormap_mode->c_tbl, 
                          kemo_sgl->fline_m->cmap_fline->colormap_clist, 
                          value, red, green, blue);
 }
@@ -900,7 +900,7 @@ void kemoview_set_fline_opacity_data(int i_point, double value, double opacity){
 }
 
 void kemoview_set_fline_color_mode_id(int isel){
-	set_color_mode_id_s(kemo_sgl->fline_m->cmap_fline, isel);
+	set_color_mode_by_id(kemo_sgl->fline_m->cmap_fline, isel);
 }
 
 double kemoview_get_fline_min_color(){

@@ -9,13 +9,7 @@ char buf[LENGTHBUF];      /* character buffer for reading line */
 static GtkWidget *main_window = NULL;
 
 void init_second_colormap_views(struct PVR_ctl_list *pvr1, struct colormap_view *color_vws){
-	init_colormap_views(pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c, color_vws);
-    color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
-    init_r2_clist_views(pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c->colortbl_list, 
-                        color_vws->cmap_vws);
-    color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
-    init_r2_clist_views(pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c->linear_opacity_list, 
-                        color_vws->opacity_vws);
+	init_colormap_views_4_ctl(pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c, color_vws);
     return;
 }
 

@@ -401,7 +401,7 @@ module:
 	'$$(KEMO_C_DIR)'/m_color_table_c.c \
 	m_color_table_c.h \
 	set_rgb_colors_c.o \
-	t_control_real_IO.o \
+	t_control_chara_IO.o \
 	t_control_real2_IO.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE) $$<' \

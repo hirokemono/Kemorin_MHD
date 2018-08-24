@@ -6,19 +6,44 @@
 */
 
 #include "tree_view_4_pvr_colormap.h"
+#include "m_color_table_c.h"
 
-void init_colormap_views(struct colormap_ctl_c *cmap_c, struct colormap_view *color_vws){
-	color_vws->index_cmap = RAINBOW_MODE;
+void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c, 
+			struct colormap_view *color_vws){
 	color_vws->colormap_mode_gtk = cmap_c->colormap_mode_ctl;
     color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
-    init_r2_clist_views(cmap_c->colortbl_list, color_vws->cmap_vws);
     color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
+	
+    init_r2_clist_views(cmap_c->colortbl_list, color_vws->cmap_vws);
     init_r2_clist_views(cmap_c->linear_opacity_list, color_vws->opacity_vws);
     return;
 }
 
-static void draw_colormap(int id_color_mode, 
-			struct real2_clist *colormap_clist, struct real2_clist *opacitymap_clist,
+void init_colormap_views_4_viewer(struct colormap_params *cmap_s,
+			struct colormap_view *color_vws){
+	color_vws->colormap_mode_gtk = cmap_s->colormap_mode;
+    color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
+	color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
+	
+    init_r2_clist_views(cmap_s->colormap_clist, color_vws->cmap_vws);
+    init_r2_clist_views(cmap_s->opacitymap_clist, color_vws->opacity_vws);
+    return;
+}
+
+void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws){
+	gtk_widget_destroy(color_vws->scrolled_window);
+	
+	dealloc_chara_ctl_item_c(color_vws->colormap_mode_gtk);
+	clear_real2_clist(color_vws->cmap_vws);
+	clear_real2_clist(color_vws->opacity_vws);
+	free(color_vws->colormap_mode_gtk);
+	free(color_vws->cmap_vws);
+	free(color_vws->opacity_vws);
+    return;
+}
+
+static void draw_colormap(struct chara_ctl_item *colormap_mode, 
+			struct r2_clist_view *cmap_vws, struct r2_clist_view *opacity_vws,
 			cairo_t *cr, GdkWindow *window)
 { 
     float top =     50.0;
@@ -37,20 +62,20 @@ static void draw_colormap(int id_color_mode,
 	double max_opacity = 0.0;
     double range;
     int i;
-    int num_cmap = count_chara2_clist(colormap_clist);
-    int num_omap = count_chara2_clist(opacitymap_clist);
+    int num_cmap = count_chara2_clist(cmap_vws->r2_clist_gtk);
+    int num_omap = count_chara2_clist(opacity_vws->r2_clist_gtk);
     int ntot = num_cmap + num_omap;
 
     i_point = (int *) calloc(ntot, sizeof(int));
 	d_point = (double *) calloc(ntot, sizeof(double));
-	head_cmap = &colormap_clist->r2_item_head;
+	head_cmap = &cmap_vws->r2_clist_gtk->r2_item_head;
 	for(i=0;i<num_cmap;i++){
 		head_cmap = head_cmap->_next;
         i_point[i] = i;
         d_point[i] = head_cmap->r2_item->r_data[0];
 	}
 	
-	head_cmap = &opacitymap_clist->r2_item_head;
+	head_cmap = &opacity_vws->r2_clist_gtk->r2_item_head;
     for(i=0;i<num_omap;i++){
 		head_cmap = head_cmap->_next;
         i_point[i+num_cmap] = i;
@@ -74,14 +99,14 @@ static void draw_colormap(int id_color_mode,
         pattern2 = cairo_pattern_create_linear((left+2*width), top, (left+2*width), (top+height));
         top_s = top;
         height_s = 1.0;
-        head_cmap = &colormap_clist->r2_item_head;
+        head_cmap = &cmap_vws->r2_clist_gtk->r2_item_head;
         d_bottom = head_cmap->_next->r2_item->r_data[0];
         range = d_point[ntot-1] - d_point[0];
         for(i=0;i<ntot-1;i++){
             d_current = d_point[i];
-			set_rgb_from_value_s(id_color_mode, colormap_clist,
+			set_rgb_from_value_s(colormap_mode->c_tbl, cmap_vws->r2_clist_gtk,
                                  d_current, &red1, &green1, &blue1);
-			o_point = color_normalize_linear_segment_c(opacitymap_clist, d_current) / max_opacity;
+			o_point = color_normalize_linear_segment_c(opacity_vws->r2_clist_gtk, d_current) / max_opacity;
 			
             height_s = 1.0 - (d_current - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
@@ -89,9 +114,9 @@ static void draw_colormap(int id_color_mode,
         }
         for(i=1;i<10;i++){
             d_current = d_bottom + (double) i * range / 10.0;
-            set_rgb_from_value_s(id_color_mode, colormap_clist,
+            set_rgb_from_value_s(colormap_mode->c_tbl, cmap_vws->r2_clist_gtk,
                                  d_current, &red1, &green1, &blue1);
-            o_point = color_normalize_linear_segment_c(opacitymap_clist, d_current) / max_opacity;
+            o_point = color_normalize_linear_segment_c(opacity_vws->r2_clist_gtk, d_current) / max_opacity;
             
             height_s = 1.0 - (d_current - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
@@ -130,7 +155,7 @@ static void draw_colormap(int id_color_mode,
         char *c_txt[10];
         cairo_move_to(cr, left-70, top_s-20);
         cairo_show_text(cr, "Color point");
-		head_cmap = &colormap_clist->r2_item_head;
+		head_cmap = &cmap_vws->r2_clist_gtk->r2_item_head;
 		d_bottom = head_cmap->_next->r2_item->r_data[0];
         range = d_point[ntot-1] - d_point[0];
         for(i=0;i<num_cmap;i++){
@@ -145,7 +170,7 @@ static void draw_colormap(int id_color_mode,
         height_s = 0.0;
         cairo_move_to(cr, left+width+30, top_s-20);
         cairo_show_text(cr, "Opacity point");
-		head_cmap = &opacitymap_clist->r2_item_head;
+		head_cmap = &opacity_vws->r2_clist_gtk->r2_item_head;
 		d_bottom = head_cmap->_next->r2_item->r_data[0];
         for(i=0;i<num_omap;i++){
 			head_cmap = head_cmap->_next;
@@ -163,17 +188,11 @@ static void draw_colormap(int id_color_mode,
     return;
 };
 
-static void draw_colormap_by_ctl(cairo_t *cr, struct colormap_view *color_vws)
-{ 
-	draw_colormap(color_vws->index_cmap, 
-				color_vws->cmap_vws->r2_clist_gtk, color_vws->opacity_vws->r2_clist_gtk,
-				cr, gtk_widget_get_window(color_vws->scrolled_window));
-};
-
 static gboolean cb_expose_event(GtkWidget *widget, cairo_t *cr, gpointer user_data)
 { 
 	struct colormap_view *color_vws = (struct colormap_view *) user_data;
-	draw_colormap_by_ctl(cr, color_vws);
+	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
     return FALSE;
 }
 
@@ -185,7 +204,8 @@ void colormap_data_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 	r2_tree_value1_edited(path_str, new_text, 
 				color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value1 changed", color_vws->cmap_vws->r2_clist_gtk);
-	draw_colormap_by_ctl(cr, color_vws);
+	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
@@ -197,7 +217,8 @@ void colormap_color_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 	r2_tree_value2_edited(path_str, new_text, 
 				color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value2 changed", color_vws->cmap_vws->r2_clist_gtk);
-	draw_colormap_by_ctl(cr, color_vws);
+	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
@@ -208,7 +229,8 @@ void add_colormap_list_items_cb(GtkButton *button, gpointer user_data){
 	color_vws->cmap_vws->index_bc = add_r2_list_items(color_vws->cmap_vws->index_bc, 
 				color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns added", color_vws->cmap_vws->r2_clist_gtk);
-	draw_colormap_by_ctl(cr, color_vws);
+	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 void delete_colormap_list_items_cb(GtkButton *button, gpointer user_data){
@@ -217,7 +239,8 @@ void delete_colormap_list_items_cb(GtkButton *button, gpointer user_data){
 	
 	delete_r2_list_items(color_vws->cmap_vws->tree_view, color_vws->cmap_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns deleted", color_vws->cmap_vws->r2_clist_gtk);
-	draw_colormap_by_ctl(cr, color_vws);
+	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
@@ -229,7 +252,8 @@ void opacity_data_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 	r2_tree_value1_edited(path_str, new_text, 
 				color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value1 changed", color_vws->opacity_vws->r2_clist_gtk);
-	draw_colormap_by_ctl(cr, color_vws);
+	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
@@ -241,7 +265,8 @@ void opacity_color_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 	r2_tree_value2_edited(path_str, new_text, 
 				color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value2 changed", color_vws->opacity_vws->r2_clist_gtk);
-	draw_colormap_by_ctl(cr, color_vws);
+	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
@@ -252,7 +277,8 @@ void add_opacity_list_items_cb(GtkButton *button, gpointer user_data){
 	color_vws->opacity_vws->index_bc = add_r2_list_items(color_vws->opacity_vws->index_bc, 
 				color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns added", color_vws->opacity_vws->r2_clist_gtk);
-	draw_colormap_by_ctl(cr, color_vws);
+	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 void delete_opacity_list_items_cb(GtkButton *button, gpointer user_data){
@@ -261,7 +287,8 @@ void delete_opacity_list_items_cb(GtkButton *button, gpointer user_data){
 	
 	delete_r2_list_items(color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "columns deleted", color_vws->opacity_vws->r2_clist_gtk);
-	draw_colormap_by_ctl(cr, color_vws);
+	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
@@ -352,10 +379,10 @@ static void set_color_mode_cb(GtkComboBox *combobox_cmap, gpointer user_data)
     gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
     
 	/*printf("Selected mode %d, %s\n", index_mode, row_string); */
-	color_vws->index_cmap = index_mode;
 	sprintf(color_vws->colormap_mode_gtk->c_tbl, "%s", row_string);
 	
-	draw_colormap_by_ctl(cr, color_vws);
+	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+				cr, gtk_widget_get_window(color_vws->scrolled_window));
 	gtk_widget_queue_draw(color_vws->scrolled_window);
     return;
 }

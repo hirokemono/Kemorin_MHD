@@ -10,6 +10,7 @@
 
 #include <gtk/gtk.h>
 
+#include "t_control_chara_IO.h"
 #include "t_control_real2_IO.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_real2_GTK.h"
@@ -20,19 +21,21 @@
 #include "m_color_table_c.h"
 
 struct colormap_view{
-    int index_cmap;
 	struct chara_ctl_item *colormap_mode_gtk;
     struct r2_clist_view *cmap_vws;
     struct r2_clist_view *opacity_vws;
-	
-	struct colormap_params *cmap_s;
 	
     GtkWidget *scrolled_window;
 };
 
 /* prototypes */
 
-void init_colormap_views(struct colormap_ctl_c *cmap_c, struct colormap_view *color_vws);
+void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c, 
+			struct colormap_view *color_vws);
+void init_colormap_views_4_viewer(struct colormap_params *cmap_s, 
+			struct colormap_view *color_vws);
+void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws);
+
 void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox);
 
 

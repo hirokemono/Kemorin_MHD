@@ -17,7 +17,7 @@ extern const char color_labels[4][KCHARA_C];
 /* prototypes */
 
 
-void set_rgb_from_value_s(int id_color_mode, struct real2_clist *colormap_clist,
+void set_rgb_from_value_s(const char *color_mode_name, struct real2_clist *colormap_clist,
                           double value, double *red, double *green, double *blue);
 void set_rgb_from_rgb(struct colormap_params *cmap_s,
                       double red, double green, double blue);
@@ -27,7 +27,7 @@ void set_each_color_point_s(struct colormap_params *cmap_s,
 void set_each_opacity_point_s(struct colormap_params *cmap_s, 
 			int i_point, double value, double opacity);
 
-void set_color_mode_id_s(struct colormap_params *cmap_s, int isel);
+void set_color_mode_by_id(struct colormap_params *cmap_s, int isel);
 
 
 double send_minimum_opacity_s(struct colormap_params *cmap_s);
