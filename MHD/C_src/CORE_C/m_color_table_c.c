@@ -10,7 +10,7 @@ void alloc_single_color_code(struct colormap_params *cmap_s){
     return;
 }
 
-void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode, int num){
+void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode){
 	cmap_s->id_color_mode = id_cmode;
 	
 	cmap_s->colormap_clist = (struct real2_clist *)malloc(sizeof(struct real2_clist));
@@ -20,7 +20,7 @@ void alloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode, int 
 	return;
 }
 
-void alloc_opacity_index_list_s(struct colormap_params *cmap_s, int num){
+void alloc_opacity_index_list_s(struct colormap_params *cmap_s){
     cmap_s->opacitymap_clist = (struct real2_clist *)malloc(sizeof(struct real2_clist));
     init_real2_clist(cmap_s->opacitymap_clist);
     
