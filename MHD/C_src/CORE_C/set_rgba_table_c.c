@@ -20,16 +20,16 @@ const char color_labels[4][KCHARA_C] = {
 
 struct pvr_colormap_bar_ctl_c *cmap_cbar_c0;
 
-void set_rgb_from_value_s(struct colormap_params *cmap_s,
+void set_rgb_from_value_s(int id_color_mode, struct real2_clist *colormap_clist,
 			double value, double *red, double *green, double *blue){
 	double rnorm;
-	rnorm = color_normalize_linear_segment_c(cmap_s->colormap_clist, value);
+	rnorm = color_normalize_linear_segment_c(colormap_clist, value);
 	
-	if(cmap_s->id_color_mode == GRAYSCALE_MODE){
+	if(id_color_mode == GRAYSCALE_MODE){
 		color_grayscale_c(rnorm, red, green, blue);
-	} else if(cmap_s->id_color_mode == SYM_GRAY_MODE){
+	} else if(id_color_mode == SYM_GRAY_MODE){
 		color_sym_grayscale_c(rnorm, red, green, blue);
-	} else if(cmap_s->id_color_mode == RED_BLUE_MODE){
+	} else if(id_color_mode == RED_BLUE_MODE){
 		color_redblue_c(rnorm, red, green, blue);
 	} else {
         color_rainbow_c(rnorm, red, green, blue);
@@ -44,10 +44,6 @@ void set_rgb_from_rgb(struct colormap_params *cmap_s,
     cmap_s->single_color[1] = green;
     cmap_s->single_color[2] = blue;
     return;
-}
-
-double set_opacity_from_value_s(struct colormap_params *cmap_s,double value){
-	return color_normalize_linear_segment_c(cmap_s->opacitymap_clist, value);
 }
 
 void set_each_color_point_s(struct colormap_params *cmap_s, 

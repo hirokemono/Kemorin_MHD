@@ -884,11 +884,13 @@ void kemoview_set_fline_constant_opacity(double opacity){
 }
 
 void kemoview_get_fline_rgb_at_value(double value, double *red, double *green, double *blue){
-	set_rgb_from_value_s(kemo_sgl->fline_m->cmap_fline, value, red, green, blue);
+	set_rgb_from_value_s(kemo_sgl->fline_m->cmap_fline->id_color_mode, 
+                         kemo_sgl->fline_m->cmap_fline->colormap_clist, 
+                         value, red, green, blue);
 }
 
 double kemoview_get_fline_opacity_at_value(double value){
-	return set_opacity_from_value_s(kemo_sgl->fline_m->cmap_fline, value);
+	return color_normalize_linear_segment_c(kemo_sgl->fline_m->cmap_fline->opacitymap_clist, value);
 }
 void kemoview_set_fline_color_data(int i_point, double value, double color){
 	set_each_color_point_s(kemo_sgl->fline_m->cmap_fline, i_point, value, color);

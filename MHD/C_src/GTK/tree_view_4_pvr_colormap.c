@@ -74,8 +74,9 @@ static void draw_colormap(struct colormap_params *cmap_s, cairo_t *cr, GdkWindow
         range = d_point[ntot-1] - d_point[0];
         for(i=0;i<ntot-1;i++){
             d_current = d_point[i];
-			set_rgb_from_value_s(cmap_s, d_current, &red1, &green1, &blue1);
-			o_point = set_opacity_from_value_s(cmap_s, d_current) / cmap_s->max_opacity;
+			set_rgb_from_value_s(cmap_s->id_color_mode, cmap_s->colormap_clist,
+                                 d_current, &red1, &green1, &blue1);
+			o_point = color_normalize_linear_segment_c(cmap_s->opacitymap_clist, d_current) / cmap_s->max_opacity;
 			
             height_s = 1.0 - (d_current - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
@@ -83,8 +84,9 @@ static void draw_colormap(struct colormap_params *cmap_s, cairo_t *cr, GdkWindow
         }
         for(i=1;i<10;i++){
             d_current = d_bottom + (double) i * range / 10.0;
-            set_rgb_from_value_s(cmap_s, d_current, &red1, &green1, &blue1);
-            o_point = set_opacity_from_value_s(cmap_s, d_current) / cmap_s->max_opacity;
+            set_rgb_from_value_s(cmap_s->id_color_mode, cmap_s->colormap_clist,
+                                 d_current, &red1, &green1, &blue1);
+            o_point = color_normalize_linear_segment_c(cmap_s->opacitymap_clist, d_current) / cmap_s->max_opacity;
             
             height_s = 1.0 - (d_current - d_bottom) / range;
             cairo_pattern_add_color_stop_rgb(pattern1, height_s, red1, green1, blue1);
