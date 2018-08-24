@@ -84,8 +84,8 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	
 	iflag_zero = 0;
 	
-	psf_min = cmap_s->cmap_min;
-	psf_max = cmap_s->cmap_max;
+	psf_min = cmap_s->range_min->r_data;
+	psf_max = cmap_s->range_max->r_data;
 	if( (psf_min*psf_max) < ZERO ) iflag_zero = 1;
 	
 	yline_zero = ybar_min + (ybar_max-ybar_min) * (-psf_min) / (psf_max-psf_min);

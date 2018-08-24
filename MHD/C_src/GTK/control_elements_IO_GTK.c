@@ -7,11 +7,7 @@
 
 #include "control_elements_IO_GTK.h"
 
-
-
-
-
-static void cb_toggle_ctl_item(GtkEntry *toggle, gpointer data)
+static void cb_toggle_ctl_item(GtkToggleButton *toggle, gpointer data)
 {
 	struct chara_ctl_item *ctl_item = (struct chara_ctl_item *) data;
     gboolean status = gtk_toggle_button_get_active(toggle);
@@ -28,7 +24,7 @@ static void cb_toggle_ctl_item(GtkEntry *toggle, gpointer data)
 GtkWidget *make_toggle_hbox (const char *label, struct chara_ctl_item *ctl_item,
 			gboolean is_on, gboolean is_sensitive){
 	GtkWidget *hbox;
-	GtkWidget *toggle, *current;
+	GtkToggleButton *toggle;
     int iflag=0;
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);

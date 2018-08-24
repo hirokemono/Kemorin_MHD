@@ -15,7 +15,6 @@
 
 #include "t_control_chara2_real_IO.h"
 #include "tree_views_4_fixed_lists_GTK.h"
-#include "tree_view_chara_real_GTK.h"
 
 
 int append_c2r_item_to_tree(int index, char *c1_tbl, char *c2_tbl, double r_data, 

@@ -5,6 +5,10 @@
 TARGET_KEMOVIEW_GTK = kemoviewer_GTK
 
 MOD_KEMOVIEW_GTK = \
+tree_views_4_fixed_lists_GTK.o \
+tree_view_real2_GTK.o \
+tree_view_4_pvr_colormap.o \
+\
 kemo_mesh_viewer_gtk.o \
 kemoview_fileselector_gtk.o \
 kemoview_gtk_window_input.o \
@@ -17,6 +21,7 @@ kemoviewer_gtk.o \
 #
 
 dir_list:
+	@echo 'KEMO_GTKDIR =  $$(C_SRCDIR)/GTK'  >> $(MAKENAME)
 	@echo 'KEMOVIEW_GTKDIR =  $$(KEMOVIEWER_DIR)/kemoviewer_GTK'  >> $(MAKENAME)
 
 target_list:
@@ -55,6 +60,7 @@ module:
 	@echo \
 	kemo_mesh_viewer_gtk.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemo_mesh_viewer_gtk.c  \
+	kemo_mesh_viewer_gtk.h \
 	kemoview_fileselector_gtk.o \
 	kemoview_gtk_window_input.o \
 	kemoview_glut_routines.o \
@@ -68,6 +74,7 @@ module:
 	@echo \
 	kemoview_fileselector_gtk.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemoview_fileselector_gtk.c  \
+	kemoview_fileselector_gtk.h \
 	kemoview_glut_routines.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
@@ -77,7 +84,9 @@ module:
 	@echo \
 	kemoview_gtk_window_input.o:  \
 	'$$(KEMOVIEW_GTKDIR)'/kemoview_gtk_window_input.c  \
+	kemoview_gtk_window_input.h \
 	kemoview_glut_routines.o \
+	tree_view_4_pvr_colormap.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS_GL) $$(C_INCLUDE) $$(GTK3_CFLAGS)' \
 	'$$(KEMOVIEW_GTKDIR)'/kemoview_gtk_window_input.c \

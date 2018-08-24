@@ -25,11 +25,15 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
     
     static gint window_id = 0;
     GtkWidget *window;
-    GtkWidget *vbox, *vbox_1;
+    GtkWidget *vbox;
     GtkWidget *hbox;
-	GtkWidget *expander;
+    GtkWidget *scrolled_window;
     
     gchar *title;
+    
+    init_real2_tree_view(color_vws->cmap_vws);
+    init_real2_tree_view(color_vws->opacity_vws);
+    
     
     /* ウィンドウ作成 */
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -46,14 +50,9 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
     g_signal_connect(G_OBJECT(button), "clicked", 
                      G_CALLBACK(cb_close_window), window);
 	
-    vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	add_colormp_list_box(color_vws, vbox_1);
+	add_colormp_list_box(color_vws, vbox);
 	
-	expander = gtk_expander_new_with_mnemonic("Tako");
-	gtk_container_add(GTK_CONTAINER(expander), vbox_1);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
-	
-	gtk_container_add(GTK_CONTAINER(window), vbox);
+    gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_widget_show_all(window);
 };
 

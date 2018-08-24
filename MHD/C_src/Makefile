@@ -19,7 +19,8 @@ SUBDIRS = \
 CORE_C    \
 CONTROLS  \
 KEMO_GL   \
-KEMO_GLUT
+KEMO_GLUT \
+GTK
 
 ifdef OPENGL_LIBS
   OBJS_C+= \
@@ -30,6 +31,12 @@ ifdef OPENGL_LIBS
     KEMO_GLUT
 endif
 
+ifdef GTK3_LIBS
+  OBJS_C+= \
+    $$(OBJ_KEMO_GTK_C)
+  LIBDIRS+=   \
+    GTK
+endif
 
 #
 #  -------------------------------------------------------------------------

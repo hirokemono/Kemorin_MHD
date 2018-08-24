@@ -11,10 +11,11 @@
 #include <gtk/gtk.h>
 
 #include "t_control_chara_IO.h"
+#include "t_control_real_IO.h"
 #include "t_control_real2_IO.h"
+#include "t_ctl_data_pvr_colormap_c.h"
 #include "tree_views_4_fixed_lists_GTK.h"
 #include "tree_view_real2_GTK.h"
-#include "t_ctl_data_pvr_colormap_c.h"
 #include "quicksort_c.h"
 #include "set_rgb_colors_c.h"
 #include "set_rgba_table_c.h"

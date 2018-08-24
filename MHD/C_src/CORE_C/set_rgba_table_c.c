@@ -129,8 +129,8 @@ void set_linear_colormap(struct colormap_params *cmap_s,
 	
 	append_real2_clist(val_min, ZERO, cmap_s->colormap_clist);
 	append_real2_clist(val_max, ONE, cmap_s->colormap_clist);
-	cmap_s->cmap_min = val_min;
-	cmap_s->cmap_max = val_max;
+    update_real_ctl_item_c(val_min, cmap_s->range_min);
+    update_real_ctl_item_c(val_max, cmap_s->range_max);
 	return;
 }
 void set_constant_opacitymap(struct colormap_params *cmap_s,
@@ -174,7 +174,8 @@ void make_colorbar_for_ctl(struct colormap_params *cmap_s,
 	set_boolean_by_chara_ctl_item(1, cbar_c->zeromarker_flag_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->axis_switch_ctl);
 	
-	update_real2_ctl_item_c(cmap_s->cmap_min, cmap_s->cmap_max, cbar_c->cbar_range_ctl);
+	update_real2_ctl_item_c(cmap_s->range_min->r_data, cmap_s->range_max->r_data,
+                            cbar_c->cbar_range_ctl);
 	update_int_ctl_item_c(1, cbar_c->font_size_ctl);
 	update_int_ctl_item_c(3, cbar_c->ngrid_cbar_ctl);
 

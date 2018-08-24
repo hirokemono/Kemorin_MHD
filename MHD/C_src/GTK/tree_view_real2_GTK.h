@@ -39,8 +39,8 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
 			struct real2_clist *r2_clist);
 void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist);
 
-void create_real2_tree_view(GtkTreeView *r2_tree_view, 
-			GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2);
+void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist, 
+                            GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2);
 void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist, 
 			GtkWidget *button_add, GtkWidget *button_delete, GtkWidget *vbox);
 

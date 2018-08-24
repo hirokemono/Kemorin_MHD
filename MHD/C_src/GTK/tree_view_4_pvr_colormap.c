@@ -6,7 +6,6 @@
 */
 
 #include "tree_view_4_pvr_colormap.h"
-#include "m_color_table_c.h"
 
 void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c, 
 			struct colormap_view *color_vws){
@@ -21,22 +20,24 @@ void init_colormap_views_4_ctl(struct colormap_ctl_c *cmap_c,
 
 void init_colormap_views_4_viewer(struct colormap_params *cmap_s,
 			struct colormap_view *color_vws){
+    sprintf(cmap_s->colormap_clist->clist_name, "color map");
+    sprintf(cmap_s->colormap_clist->r1_name, "data");
+    sprintf(cmap_s->colormap_clist->r2_name, "color");
+    sprintf(cmap_s->opacitymap_clist->clist_name, "opacity map");
+    sprintf(cmap_s->opacitymap_clist->r1_name, "data");
+    sprintf(cmap_s->opacitymap_clist->r2_name, "opacity");
+    
 	color_vws->colormap_mode_gtk = cmap_s->colormap_mode;
     color_vws->cmap_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	color_vws->opacity_vws = (struct r2_clist_view *) malloc(sizeof(struct r2_clist_view));
 	
     init_r2_clist_views(cmap_s->colormap_clist, color_vws->cmap_vws);
     init_r2_clist_views(cmap_s->opacitymap_clist, color_vws->opacity_vws);
+    
     return;
 }
 
 void dealloc_colormap_views_4_viewer(struct colormap_view *color_vws){
-	gtk_widget_destroy(color_vws->scrolled_window);
-	
-	dealloc_chara_ctl_item_c(color_vws->colormap_mode_gtk);
-	clear_real2_clist(color_vws->cmap_vws);
-	clear_real2_clist(color_vws->opacity_vws);
-	free(color_vws->colormap_mode_gtk);
 	free(color_vws->cmap_vws);
 	free(color_vws->opacity_vws);
     return;
@@ -292,6 +293,36 @@ void delete_opacity_list_items_cb(GtkButton *button, gpointer user_data){
 	gtk_widget_queue_draw(color_vws->scrolled_window);
 };
 
+static void set_color_mode_cb(GtkComboBox *combobox_cmap, gpointer user_data)
+{
+    struct colormap_view *color_vws = (struct colormap_view *) user_data;
+    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
+    GtkTreeIter iter;
+    cairo_t *cr;
+    
+    gchar *row_string;
+    int index_field;
+    int index_mode;
+    
+    gint idx = gtk_combo_box_get_active(combobox_cmap);
+    if(idx < 0) return;
+    
+    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+    
+    gtk_tree_model_get_iter(model_cmap, &iter, path);  
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
+    
+    /*printf("Selected mode %d, %s\n", index_mode, row_string); */
+    sprintf(color_vws->colormap_mode_gtk->c_tbl, "%s", row_string);
+    
+    draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
+                  cr, gtk_widget_get_window(color_vws->scrolled_window));
+    gtk_widget_queue_draw(color_vws->scrolled_window);
+    return;
+}
+
 
 void add_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	GtkCellRenderer *renderer_spin1;
@@ -303,7 +334,9 @@ void add_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	renderer_spin1 = gtk_cell_renderer_spin_new();
 	renderer_spin2 = gtk_cell_renderer_spin_new();
 	
-	create_real2_tree_view(color_vws->cmap_vws->tree_view, renderer_spin1, renderer_spin2);
+	create_real2_tree_view(color_vws->cmap_vws->tree_view, 
+                           color_vws->cmap_vws->r2_clist_gtk, 
+                           renderer_spin1, renderer_spin2);
 	
     g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
                      G_CALLBACK(colormap_data_edited_cb), color_vws);
@@ -335,7 +368,9 @@ void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	renderer_spin1 = gtk_cell_renderer_spin_new();
 	renderer_spin2 = gtk_cell_renderer_spin_new();
 	
-	create_real2_tree_view(color_vws->opacity_vws->tree_view, renderer_spin1, renderer_spin2);
+	create_real2_tree_view(color_vws->opacity_vws->tree_view, 
+                           color_vws->opacity_vws->r2_clist_gtk, 
+                           renderer_spin1, renderer_spin2);
 	
     g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
                      G_CALLBACK(opacity_data_edited_cb), color_vws);
@@ -347,7 +382,6 @@ void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	
 	button_add = gtk_button_new_from_stock(GTK_STOCK_ADD);
     button_delete = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
-	
 	add_real2_list_box(color_vws->opacity_vws->tree_view, color_vws->opacity_vws->r2_clist_gtk,
 				button_add, button_delete, vbox);
 	
@@ -357,44 +391,17 @@ void add_opacity_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
                      G_CALLBACK(delete_opacity_list_items_cb), color_vws);
 };
 
-static void set_color_mode_cb(GtkComboBox *combobox_cmap, gpointer user_data)
-{
-    struct colormap_view *color_vws = (struct colormap_view *) user_data;
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox_cmap);
-    GtkTreeIter iter;
-	cairo_t *cr;
-    
-    gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox_cmap);
-    if(idx < 0) return;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
-    
-	/*printf("Selected mode %d, %s\n", index_mode, row_string); */
-	sprintf(color_vws->colormap_mode_gtk->c_tbl, "%s", row_string);
-	
-	draw_colormap(color_vws->colormap_mode_gtk, color_vws->cmap_vws, color_vws->opacity_vws,
-				cr, gtk_widget_get_window(color_vws->scrolled_window));
-	gtk_widget_queue_draw(color_vws->scrolled_window);
-    return;
-}
-
 void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
-	GtkWidget *expander, *Frame_1;
+	GtkWidget *Frame_1;
     GtkWidget *vbox_1, *hbox_1;
 	GtkWidget *combobox_cmap;
 	
 	GtkWidget *label_tree;
     int index = 0;
-	
+
+    init_real2_tree_view(color_vws->cmap_vws);
+    init_real2_tree_view(color_vws->opacity_vws);
+    
 	label_tree = gtk_tree_view_new();
 	create_fixed_label_w_index_tree(label_tree);
     GtkTreeModel *model = gtk_tree_view_get_model (label_tree);  
@@ -436,10 +443,7 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
 	Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
 	gtk_container_add(Frame_1, hbox_1);
-	
-	expander = gtk_expander_new_with_mnemonic("Tako");
-	gtk_container_add(GTK_CONTAINER(expander), Frame_1);
-	gtk_box_pack_start(GTK_BOX(vbox), expander, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), Frame_1, TRUE, TRUE, 0);
 };
 
 

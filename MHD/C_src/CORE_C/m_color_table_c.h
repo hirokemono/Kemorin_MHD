@@ -6,6 +6,7 @@
 
 #include "set_rgb_colors_c.h"
 #include "t_control_chara_IO.h"
+#include "t_control_real_IO.h"
 #include "t_control_real2_IO.h"
 
 #define RAINBOW_MODE    0
@@ -18,8 +19,8 @@ struct colormap_params{
 	struct real2_clist *colormap_clist;
 	struct real2_clist *opacitymap_clist;
 	
-	double cmap_min;
-	double cmap_max;
+	struct real_ctl_item *range_min;
+	struct real_ctl_item *range_max;
 	
 	double min_opacity, max_opacity;
     

@@ -247,7 +247,7 @@ void delete_r2_list_items(GtkTreeView *r2_tree_view, struct real2_clist *r2_clis
     g_list_free(reference_list);
 }
 
-void create_real2_tree_view(GtkTreeView *r2_tree_view, 
+void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist, 
 			GtkCellRenderer *renderer_spin1, GtkCellRenderer *renderer_spin2){
     /*    GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
     
@@ -269,7 +269,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view,
     /* First raw */
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r2_tree_view, column);
-    gtk_tree_view_column_set_title(column, "Value");
+    gtk_tree_view_column_set_title(column, r2_clist->r1_name);
     adjust = gtk_adjustment_new(2.5, -1.0e30, 1.0e30, 0.1,
                                 100, 21474836);
 	
@@ -291,7 +291,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view,
     /* Second row */
     column = gtk_tree_view_column_new();
     gtk_tree_view_append_column(r2_tree_view, column);
-    gtk_tree_view_column_set_title(column, "Color");
+    gtk_tree_view_column_set_title(column, r2_clist->r2_name);
 //    adjust = gtk_adjustment_new(0.5, 0.0, 1.0, 0.01,
 //                                100, 21474836);
 	adjust = gtk_adjustment_new(0.5, -1.0e30, 1.0e30, 0.1,
@@ -424,7 +424,8 @@ void init_real2_tree_view(struct r2_clist_view *r2_vws){
 	renderer_spin1 = gtk_cell_renderer_spin_new();
 	renderer_spin2 = gtk_cell_renderer_spin_new();
 	
-	create_real2_tree_view(r2_vws->tree_view, renderer_spin1, renderer_spin2);
+	create_real2_tree_view(r2_vws->tree_view, r2_vws->r2_clist_gtk, 
+                           renderer_spin1, renderer_spin2);
 	
     g_signal_connect(G_OBJECT(renderer_spin1), "edited", 
                      G_CALLBACK(r2_tree_value1_edited_cb), r2_vws);

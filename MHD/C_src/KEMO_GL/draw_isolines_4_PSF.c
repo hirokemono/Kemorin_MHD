@@ -9,8 +9,8 @@ static double white[4] =   {WHITE_R,WHITE_G,WHITE_B,WHITE_A};
 
 double cal_isoline_value(int j, struct psf_menu_val *psf_m){
 	double v_line, range_min, range_max;
-	range_min = psf_m->cmap_psf->cmap_min;
-	range_max = psf_m->cmap_psf->cmap_max;
+	range_min = psf_m->cmap_psf->range_min->r_data;
+	range_max = psf_m->cmap_psf->range_max->r_data;
 	
 	v_line = range_min + (range_max - range_min)
 			* ((double) j) / ((double) psf_m->n_isoline-1);
@@ -21,8 +21,8 @@ double cal_isoline_value(int j, struct psf_menu_val *psf_m){
 void find_start_positive_lines(struct psf_menu_val *psf_m){
     int j;
     double pre_value, current_value, range_min, range_max;
-    range_min = psf_m->cmap_psf->cmap_min;
-    range_max = psf_m->cmap_psf->cmap_max;
+    range_min = psf_m->cmap_psf->range_min->r_data;
+    range_max = psf_m->cmap_psf->range_max->r_data;
     
     if(range_min >= ZERO) psf_m->ist_positive_line = 1;
     else if(range_max <= ZERO){

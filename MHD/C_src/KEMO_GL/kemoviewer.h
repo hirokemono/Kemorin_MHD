@@ -675,6 +675,7 @@ extern "C" {
     void kemoview_set_PSF_single_color(double *rgba);
     void kemoview_set_PSF_constant_opacity(double opacity);
     
+    struct colormap_params * kemoview_get_psf_colormap_params();
     void kemoview_get_PSF_rgb_at_value(double value, double *red, double *green, double *blue);
     double kemoview_get_PSF_opacity_at_value(double value);
     void kemoview_set_PSF_color_data(int i_point, double value, double color);

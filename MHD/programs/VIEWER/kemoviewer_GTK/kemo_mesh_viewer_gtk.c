@@ -285,10 +285,6 @@ static void psf_colormap_handler(int sel){
 		draw_mesh_w_menu();
 	}
 	else if (sel == ADD_PSF_COLOR) {edit_psf_colormap_gtk(winid);}
-	else if (sel == ADD_PSF_OPACITY) {
-		edit_psf_opasitymap_gtk(winid);
-		draw_mesh_w_menu();
-	};
 	return;
 };
 
@@ -555,9 +551,7 @@ static void make_3rd_level_psf_menu(){
 
     if (iflag_solid > 0 || iflag_grid > 0) {
         glut_menu_id->ichoose_psf_color_menu = glutCreateMenu(psf_colormap_handler);
-        glutAddSubMenu("Colormap mode", glut_menu_id->ichoose_psf_colormode_menu);
 		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
-		glutAddMenuEntry("Edit Opacitiy map",  ADD_PSF_OPACITY);
 		glutAddMenuEntry("Save colormap file", WRITE_CMAP);
         glutAddMenuEntry("Read colormap file", READ_CMAP);
     };

@@ -332,6 +332,7 @@ makemake:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		OPENGL_LIBS='$(OPENGL_LIBS)' \
+		GTK3_LIBS='$(GTK3_LIBS)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		lib_tasks; \

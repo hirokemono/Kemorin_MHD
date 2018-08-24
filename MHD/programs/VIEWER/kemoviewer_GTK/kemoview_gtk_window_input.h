@@ -17,12 +17,12 @@
 #include <string.h>
 #include "kemoviewer.h"
 #include "kemoview_glut_routines.h"
+#include "tree_view_4_pvr_colormap.h"
 
 /*  prototypes */
 
 void set_psf_single_color_gtk();
 void edit_psf_colormap_gtk();
-void edit_psf_opasitymap_gtk();
 void set_psf_range_gtk();
 void set_fline_range_gtk();
 void set_fline_thick_gtk();
