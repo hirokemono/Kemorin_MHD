@@ -151,7 +151,7 @@
 - (IBAction) UpdateOpacityTables:(id)pID
 {
 	[self SetOpacityTables];
-	[_fillRectView UpdateColorbar];
+//	[_fillRectView UpdateColorbar];
 }
 
 

@@ -172,7 +172,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	return;
 }
 
-- (void) drawRect:(NSRect)rect
+- (void) drawRectforError:(NSRect)rect
 {		
 	// setup viewport and prespective
 	[self resizeGL]; // forces projection matrix update (does test for size changes)
@@ -201,7 +201,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	}
 	time = CFAbsoluteTimeGetCurrent (); //reset time in all cases
 	// if we have current messages
-	[self drawRect:[self bounds]]; // redraw now instead dirty to enable updates during live resize
+	[self drawRectforError:[self bounds]]; // redraw now instead dirty to enable updates during live resize
 }
 
 // ---------------------------------

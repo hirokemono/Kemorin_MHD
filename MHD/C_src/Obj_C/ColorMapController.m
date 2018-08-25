@@ -162,7 +162,7 @@
 - (IBAction)UpdateColorTables:(id)pID
 {
 	[self SetColorTables];
-	[_fillRectView UpdateColorbar];
+//	[_fillRectView UpdateColorbar];
 }
 
 - (IBAction)ChooseBackgroundColorAction: (id) sender;
