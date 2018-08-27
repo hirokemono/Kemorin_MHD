@@ -296,6 +296,12 @@ static void set_from_real3_ctl_list_at_c_tbl(double ref_1, double ref_2, double 
 
 void init_real3_clist(struct real3_clist *r3_clst){
     init_real3_ctl_list(&r3_clst->r3_item_head);
+
+    r3_clst->clist_name = (char *)calloc(32,sizeof(char));
+    r3_clst->r1_name = (char *)calloc(32,sizeof(char));
+    r3_clst->r2_name = (char *)calloc(32,sizeof(char));
+    r3_clst->r3_name = (char *)calloc(32,sizeof(char));
+    
     return;
 };
 

@@ -113,6 +113,9 @@ void alloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 
     cmap_c->step_opacity_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
 	init_real3_clist(cmap_c->step_opacity_list);
+    sprintf(cmap_c->step_opacity_list->r1_name, "lower_value");
+    sprintf(cmap_c->step_opacity_list->r2_name, "upper_value");
+    sprintf(cmap_c->step_opacity_list->r3_name, "opacity");
 	
 	cmap_c->range_min_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
 	cmap_c->range_max_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
@@ -236,6 +239,9 @@ void alloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
 	
     light_c->light_position_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
 	init_real3_clist(light_c->light_position_list);
+    sprintf(light_c->light_position_list->r1_name, "x");
+    sprintf(light_c->light_position_list->r2_name, "y");
+    sprintf(light_c->light_position_list->r3_name, "z");
 	
 	return;
 };

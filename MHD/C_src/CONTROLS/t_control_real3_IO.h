@@ -32,6 +32,11 @@ struct real3_ctl_list{
 
 struct real3_clist{
 	struct real3_ctl_list r3_item_head;
+
+    char *clist_name;
+    char *r1_name;
+    char *r2_name;
+    char *r3_name;
 };
 
 /* prototypes */

@@ -115,7 +115,7 @@ void create_fixed_label_w_math_tree(GtkWidget *label_tree){
     child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING);
     
     /* ソート用のモデルを作成してツリービューにセットする */
-    model = gtk_tree_model_sort_new_with_model(child_model);
+    model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(label_tree), model);
 }
 
@@ -131,7 +131,7 @@ void create_fixed_label_w_index_tree(GtkWidget *label_tree){
     child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_INT);
     
     /* ソート用のモデルを作成してツリービューにセットする */
-    model = gtk_tree_model_sort_new_with_model(child_model);
+    model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(label_tree), model);
 }
 
@@ -153,7 +153,7 @@ void create_fixed_constant_tree(GtkWidget *label_tree)
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* ソート用のモデルを作成してツリービューにセットする */
-    model = gtk_tree_model_sort_new_with_model(child_model);
+    model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(label_tree), model);
     
     /* First raw */
@@ -197,10 +197,7 @@ void create_fixed_constant_tree(GtkWidget *label_tree)
     selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(label_tree));
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
-    /* 1行毎に背景色を変更 */
-    gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(label_tree), TRUE);
-    
-    /* ソート */
+    /* sort */
     column = gtk_tree_view_get_column(GTK_TREE_VIEW(label_tree), COLUMN_FIELD_INDEX);
     gtk_tree_view_column_set_sort_order(column, GTK_SORT_ASCENDING);
     gtk_tree_view_column_set_sort_indicator(column, TRUE);

@@ -92,6 +92,7 @@
 		18812C34211F864800BF714B /* control_elements_IO_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C33211F864800BF714B /* control_elements_IO_GTK.c */; };
 		1881F759212B0ADA002B63DA /* quicksort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1881F757212B0ADA002B63DA /* quicksort_c.c */; };
 		1881F75C212B0EDB002B63DA /* set_rgb_colors_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1881F75A212B0EDB002B63DA /* set_rgb_colors_c.c */; };
+		189DF36A213462580055AD0F /* tree_view_real3_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 189DF368213462570055AD0F /* tree_view_real3_GTK.c */; };
 		18F5F37F2125EF7A004320C7 /* tree_view_chara_real_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F5F37E2125EF79004320C7 /* tree_view_chara_real_GTK.c */; };
 		18F5F38321260020004320C7 /* tree_view_4_each_term_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F5F38121260020004320C7 /* tree_view_4_each_term_GTK.c */; };
 		18F5F386212625E1004320C7 /* tree_view_chara2_real_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F5F384212625E1004320C7 /* tree_view_chara2_real_GTK.c */; };
@@ -280,6 +281,8 @@
 		1881F758212B0ADA002B63DA /* quicksort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quicksort_c.h; path = ../../C_src/CORE_C/quicksort_c.h; sourceTree = "<group>"; };
 		1881F75A212B0EDB002B63DA /* set_rgb_colors_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = set_rgb_colors_c.c; path = ../../C_src/CORE_C/set_rgb_colors_c.c; sourceTree = "<group>"; };
 		1881F75B212B0EDB002B63DA /* set_rgb_colors_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = set_rgb_colors_c.h; path = ../../C_src/CORE_C/set_rgb_colors_c.h; sourceTree = "<group>"; };
+		189DF368213462570055AD0F /* tree_view_real3_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_real3_GTK.c; path = ../../../C_src/GTK/tree_view_real3_GTK.c; sourceTree = "<group>"; };
+		189DF369213462580055AD0F /* tree_view_real3_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_real3_GTK.h; path = ../../../C_src/GTK/tree_view_real3_GTK.h; sourceTree = "<group>"; };
 		18F5F37E2125EF79004320C7 /* tree_view_chara_real_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_chara_real_GTK.c; path = ../../C_src/GTK/tree_view_chara_real_GTK.c; sourceTree = "<group>"; };
 		18F5F3802125EF84004320C7 /* tree_view_chara_real_GTK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tree_view_chara_real_GTK.h; path = ../../C_src/GTK/tree_view_chara_real_GTK.h; sourceTree = "<group>"; };
 		18F5F38121260020004320C7 /* tree_view_4_each_term_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_each_term_GTK.c; path = ../../C_src/GTK/tree_view_4_each_term_GTK.c; sourceTree = "<group>"; };
@@ -348,6 +351,8 @@
 		18812AEA211EB5B000BF714B /* GTK_test */ = {
 			isa = PBXGroup;
 			children = (
+				189DF368213462570055AD0F /* tree_view_real3_GTK.c */,
+				189DF369213462580055AD0F /* tree_view_real3_GTK.h */,
 				187D27F7212DFBC900007329 /* TreeView_test.c */,
 			);
 			path = GTK_test;
@@ -603,6 +608,7 @@
 				18812BFC211F762200BF714B /* t_ctl_data_mhd_evolution_c.c in Sources */,
 				18812C02211F762200BF714B /* t_ctl_data_temp_model_c.c in Sources */,
 				18F5F386212625E1004320C7 /* tree_view_chara2_real_GTK.c in Sources */,
+				189DF36A213462580055AD0F /* tree_view_real3_GTK.c in Sources */,
 				18812C12211F762300BF714B /* t_control_data_4_iso_c.c in Sources */,
 				18812C1E211F762300BF714B /* t_control_data_ISO_ctl_list.c in Sources */,
 				18812BFA211F762200BF714B /* t_ctl_data_sph_filter_list.c in Sources */,

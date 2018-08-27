@@ -132,7 +132,6 @@ int add_r2_list_items(int index, GtkTreeView *r2_tree_view,
     GList *list;
     GList *reference_list;
     GList *cur;
-    gchar *field_name;
     double value1, value2;
     
     /* 選択されている行のパスを取得する */
@@ -263,7 +262,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* ソート用のモデルを作成してツリービューにセットする */
-    model = gtk_tree_model_sort_new_with_model(child_model);
+    model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(r2_tree_view), model);
     
     /* First raw */
@@ -316,10 +315,7 @@ void create_real2_tree_view(GtkTreeView *r2_tree_view, struct real2_clist *r2_cl
     selection = gtk_tree_view_get_selection(r2_tree_view);
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
-    /* 1行毎に背景色を変更 */
-    gtk_tree_view_set_rules_hint(r2_tree_view, TRUE);
-    
-    /* ソート */
+    /* sort */
     column = gtk_tree_view_get_column(r2_tree_view, COLUMN_FIELD_INDEX);
     gtk_tree_view_column_set_sort_order(column, GTK_SORT_ASCENDING);
     gtk_tree_view_column_set_sort_indicator(column, TRUE);
@@ -366,7 +362,7 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
     
 	Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
-	gtk_container_add(Frame_1, vbox_1);
+	gtk_container_add(GTK_CONTAINER(Frame_1), vbox_1);
 	
 	expander = gtk_expander_new_with_mnemonic(r2_clist->clist_name);
 	gtk_container_add(GTK_CONTAINER(expander), Frame_1);
@@ -389,7 +385,7 @@ void add_real2_list_box(GtkTreeView *r2_tree_view, struct real2_clist *r2_clist,
 
 void r2_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data){
-    struct r2_clist_view *r2_vws = (struct boundary_condition_view *) user_data;
+    struct r2_clist_view *r2_vws = (struct r2_clist_view *) user_data;
     r2_tree_value1_edited(path_str, new_text, r2_vws->tree_view, r2_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value1 changed", r2_vws->r2_clist_gtk);
 };
@@ -397,7 +393,7 @@ void r2_tree_value1_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 void r2_tree_value2_edited_cb(GtkCellRendererText *cell, gchar *path_str,
 			gchar *new_text, gpointer user_data)
 {
-    struct r2_clist_view *r2_vws = (struct boundary_condition_view *) user_data;
+    struct r2_clist_view *r2_vws = (struct r2_clist_view *) user_data;
     r2_tree_value2_edited(path_str, new_text, r2_vws->tree_view, r2_vws->r2_clist_gtk);
     write_real2_clist(stdout, 0, "value2 changed", r2_vws->r2_clist_gtk);
 };

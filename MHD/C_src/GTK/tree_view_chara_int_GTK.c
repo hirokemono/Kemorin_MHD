@@ -345,7 +345,7 @@ void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* ソート用のモデルを作成してツリービューにセットする */
-    model = gtk_tree_model_sort_new_with_model(child_model);
+    model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
     gtk_tree_view_set_model(GTK_TREE_VIEW(ci_tree_view), model);
     
     /* First raw */
@@ -401,10 +401,7 @@ void create_text_int_tree_view(struct chara_int_clist *ci_clist, GtkTreeView *ci
     selection = gtk_tree_view_get_selection(ci_tree_view);
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
-    /* 1行毎に背景色を変更 */
-    gtk_tree_view_set_rules_hint(ci_tree_view, TRUE);
-    
-    /* ソート */
+    /* sort */
     column = gtk_tree_view_get_column(ci_tree_view, COLUMN_FIELD_INDEX);
     gtk_tree_view_column_set_sort_order(column, GTK_SORT_ASCENDING);
     gtk_tree_view_column_set_sort_indicator(column, TRUE);

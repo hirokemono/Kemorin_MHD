@@ -9,6 +9,7 @@ control_elements_IO_GTK.o \
 \
 tree_views_4_fixed_lists_GTK.o \
 tree_view_real2_GTK.o \
+tree_view_real3_GTK.o \
 tree_view_chara_GTK.o \
 tree_view_chara_int_GTK.o \
 tree_view_chara_real_GTK.o \
@@ -63,6 +64,16 @@ module:
 	'$$(KEMO_GTK_DIR)'/tree_view_real2_GTK.c \
 	tree_view_real2_GTK.h \
 	t_control_real2_IO.o \
+	tree_views_4_fixed_lists_GTK.o \
+	>> $(MAKENAME)
+	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \
+	>> $(MAKENAME)
+	
+	@echo \
+	tree_view_real3_GTK.o: \
+	'$$(KEMO_GTK_DIR)'/tree_view_real3_GTK.c \
+	tree_view_real3_GTK.h \
+	t_control_real3_IO.o \
 	tree_views_4_fixed_lists_GTK.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(GTK3_CFLAGS) $$(C_INCLUDE) $$<' \

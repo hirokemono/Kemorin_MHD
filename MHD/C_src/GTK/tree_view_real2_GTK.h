@@ -24,13 +24,13 @@ struct r2_clist_view{
 /* prototypes */
 
 void init_r2_clist_views(struct real2_clist *r2_clist, struct r2_clist_view *cmap_vws);
-int append_r2_item_to_tree(int index, double r1_data, double r2_data, 
+int append_r3_item_to_tree(int index, double r1_data, double r2_data, 
 			GtkTreeModel *child_model);
 int append_r2_list_from_ctl(int index, struct real2_ctl_list *head, 
 			GtkTreeView *r2_tree_view);
 
 
-void r2_tree_value1_edited(gchar *path_str, gchar *new_text,
+void r3_tree_value1_edited(gchar *path_str, gchar *new_text,
 			 GtkTreeView *r2_tree_view, struct real2_clist *r2_clist);
 void r2_tree_value2_edited(gchar *path_str, gchar *new_text,
 			 GtkTreeView *r2_tree_view, struct real2_clist *r2_clist);
@@ -52,7 +52,7 @@ void add_r2_list_items_cb(GtkButton *button, gpointer user_data);
 void delete_r2_list_items_cb(GtkButton *button, gpointer user_data);
 
 
-void int_real2_tree_view(struct r2_clist_view *r2_vws);
+void init_real2_tree_view(struct r2_clist_view *r2_vws);
 void add_real2_list_box_w_addbottun(struct r2_clist_view *r2_vws, GtkWidget *vbox);
 
 

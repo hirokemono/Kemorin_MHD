@@ -442,7 +442,7 @@ void add_colormp_list_box(struct colormap_view *color_vws, GtkWidget *vbox){
     
 	Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
-	gtk_container_add(Frame_1, hbox_1);
+	gtk_container_add(GTK_CONTAINER(Frame_1), hbox_1);
 	gtk_box_pack_start(GTK_BOX(vbox), Frame_1, TRUE, TRUE, 0);
 };
 

@@ -80,6 +80,10 @@ void alloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	
     fline_c->seed_point_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
 	init_real3_clist(fline_c->seed_point_list);
+    sprintf(fline_c->seed_point_list->r1_name, "x");
+    sprintf(fline_c->seed_point_list->r2_name, "y");
+    sprintf(fline_c->seed_point_list->r3_name, "z");
+
     fline_c->seed_surface_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
 	init_int2_clist(fline_c->seed_surface_list);
 	
