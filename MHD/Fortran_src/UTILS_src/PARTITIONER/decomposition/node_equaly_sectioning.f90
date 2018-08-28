@@ -53,6 +53,115 @@
       call deallocate_work_4_rcb
 !
       end subroutine equaly_bisection
+!   --------------------------------------------------------------------
+!
+      subroutine equaly_volume_bisection                                &
+      &          (nnod, inter_nod, xx, node_volume, tot_vol)
+!
+      integer(kind = kint), intent(in)  :: nnod, inter_nod
+      real(kind= kreal), intent(in) :: xx(nnod,3)
+      real(kind= kreal), intent(in) :: node_volume(nnod)
+      real(kind = kreal), intent(in) :: tot_vol
+!
+      real(kind = kreal), allocatable :: group_v(:)
+      integer(kind = kint) :: i, i_grp
+!
+      call allocate_work_4_rcb(nnod)
+
+      IGROUP_nod(1:nnod)= 0
+      IGROUP_nod(1:inter_nod)= 1
+
+      call s_sort_by_position_with_volume(                              &
+      &    inter_nod, ndivide_eb, node_volume, tot_vol,                 &
+      &    IGROUP_nod(1), xx(1,1), xx(1,2), xx(1,3), VAL, IS1)
+!
+!     ========= verify partition is equal volume =========
+      allocate(group_v(ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)))
+      group_v(:) = 0.0
+      do i = 1, nnod
+        i_grp = IGROUP_nod(i)
+        group_v(i_grp) = group_v(i_grp) + node_volume(i)
+      end do
+      do i = 1, ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
+        write(*,*) 'group id', i, 'volume: ', group_v(i)
+      end do
+!
+      call deallocate_work_4_rcb
+!
+      end subroutine equaly_volume_bisection
+!
+!   --------------------------------------------------------------------
+!
+      subroutine proportionally_bisection(nnod, inter_nod, xx, part_tbl)
+!
+      integer(kind = kint), intent(in)  :: nnod, inter_nod
+      real(kind= kreal), intent(in) :: xx(nnod,3)
+      real(kind = kreal), intent(inout) :: part_tbl(num_domain)
+!
+      integer(kind = kint) :: i, node_grp_cnt(num_domain)
+!
+!C
+!C +-----+
+!C | EB  |
+!C +-----+
+!C===
+      call allocate_work_4_rcb(nnod)
+
+      IGROUP_nod(1:nnod)= 0
+      IGROUP_nod(1:inter_nod)= 1
+
+      call s_sort_by_position_with_ratio(inter_nod, ndivide_eb, part_tbl,   &
+      &    IGROUP_nod(1), xx(1,1), xx(1,2), xx(1,3), VAL, IS1)
+! verify partition
+      node_grp_cnt(:) = 0
+      do i = 1, nnod
+        node_grp_cnt(IGROUP_nod(i)) = node_grp_cnt(IGROUP_nod(i)) + 1
+      end do
+      write(*,*) 'num of node in group ', node_grp_cnt(:)
+!
+      call deallocate_work_4_rcb
+!
+      end subroutine proportionally_bisection
+!
+!   --------------------------------------------------------------------
+!
+subroutine proportion_volume_bisection(nnod, inter_nod, xx,         &
+&         part_volume, n_volume)
+!
+integer(kind = kint), intent(in)  :: nnod, inter_nod
+real(kind= kreal), intent(in) :: xx(nnod,3)
+real(kind = kreal), intent(inout) :: part_volume(num_domain)
+real(kind = kreal), intent(in) :: n_volume(nnod)
+!
+integer(kind = kint) :: i, node_grp_cnt(num_domain)
+real(kind = kreal) :: volume_grp_cnt(num_domain)
+!
+!C
+!C +-----+
+!C | EB  |
+!C +-----+
+!C===
+call allocate_work_4_rcb(nnod)
+
+IGROUP_nod(1:nnod)= 0
+IGROUP_nod(1:inter_nod)= 1
+
+call s_sort_by_position_with_ratio_volume(inter_nod, ndivide_eb,    &
+&   part_volume, n_volume, IGROUP_nod(1), xx(1,1),                  &
+&   xx(1,2), xx(1,3), VAL, IS1)
+! verify partition
+node_grp_cnt(:) = 0
+volume_grp_cnt(:) = 0
+do i = 1, nnod
+  node_grp_cnt(IGROUP_nod(i)) = node_grp_cnt(IGROUP_nod(i)) + 1
+  volume_grp_cnt(IGROUP_nod(i)) = volume_grp_cnt(IGROUP_nod(i)) + n_volume(i)
+end do
+write(*,*) 'num of node in group ', node_grp_cnt(:)
+write(*,*) 'volume of node in group ', volume_grp_cnt(:)
+!
+call deallocate_work_4_rcb
+!
+end subroutine proportion_volume_bisection
 !
 !   --------------------------------------------------------------------
 !

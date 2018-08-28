@@ -303,7 +303,9 @@
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
-      deallocate(comm_tbl%item_import)
+      if(associated(comm_tbl%item_import)) then
+        deallocate(comm_tbl%item_import)
+      end if
 !
       end subroutine dealloc_import_item
 !
@@ -313,7 +315,9 @@
 !
       type(communication_table), intent(inout) :: comm_tbl
 !
-      deallocate(comm_tbl%item_export)
+      if(associated(comm_tbl%item_export)) then
+        deallocate(comm_tbl%item_export)
+      end if
 !
       end subroutine dealloc_export_item
 !

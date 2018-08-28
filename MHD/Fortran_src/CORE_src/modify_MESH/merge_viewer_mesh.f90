@@ -64,11 +64,16 @@
       type(merged_viewer_mesh), intent(inout) :: mgd_vmesh
 !
 !
+write(*,*) 'each mesh node:', vmesh(:)%nnod_viewer
+write(*,*) 'each mesh surface:', vmesh(:)%nsurf_viewer
       call count_merged_viewer_node(nprocs, vmesh, mgd_vmesh)
 !
       call alloc_nod_position_viewer(mgd_vmesh%view_mesh)
       call copy_2_merged_viewer_node(nprocs, vmesh, mgd_vmesh)
 !
+!
+write(*,*) 'each mesh node:', vmesh(:)%nnod_viewer
+write(*,*) 'merge mesh node:',mgd_vmesh%view_mesh%nnod_viewer
       call alloc_surf_type_viewer(mgd_vmesh%view_mesh)
       call alloc_surf_connect_viewer                                    &
      &   (vmesh(1)%nnod_v_surf, mgd_vmesh%view_mesh)

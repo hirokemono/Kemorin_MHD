@@ -102,7 +102,7 @@
           isf_org = isurf_orgs(i,2)
           if(iflag_debug .eq. 1) write(50+my_rank,*) "ele: ", iele, "local surf: ", isf_org
           if(iflag_debug .eq. 1) write(50+my_rank,*) "global surf: ", isurf, "surf of ele", isf_4_ele(iele, isf_org)
-          if(iele .le. izero .or. iele .gt. nsurf) then
+          if(iele .le. izero .or. iele .gt. nelem) then
             if(iflag_debug .eq. 1) write(50+my_rank,*) "invalid element, end----------------------"
             iflag_comm = -5
             return
@@ -289,12 +289,12 @@
           iflag_comm = -10
           return
         end if
-
-        if(interior_surf(isurf_start) .eq. izero) then
-          iflag_comm = 10
-          return
-        end if
-        isf_tgt = 0
+!
+!        if(interior_surf(isurf_start) .eq. izero) then
+!          iflag_comm = 10
+!          return
+!        end if
+!        isf_tgt = 0
 
         do i = 1, 2
           iele = iele_4_surf(isurf_start,i,1)
@@ -380,35 +380,38 @@
         k_area = k_area + k_value
         if(iflag_debug .eq. 1) write(50 + my_rank, *) "nv: ", n_v, "nv sum:", nv_sum, "kernel area: ", k_area, "lic_v: ", lic_v
 
-        if(interior_surf(isurf_end) .eq. izero) then
-          isurf_start = isurf_end
-          iflag_comm = 10
-          exit
-        else
-          isurf_start = isurf_end
-        end if
+!        if(interior_surf(isurf_end) .eq. izero) then
+!          isurf_start = isurf_end
+!          iflag_comm = 10
+!          exit
+!        else
+!          isurf_start = isurf_end
+!        end if
+!       will use exterior surface(surface in ghost layer ) to cal lic
+        isurf_start = isurf_end
 
         if(flag_lic_end(lic_p, len_sum, i_iter) .eq. ione) then
 !        if(len_sum .ge.max_line_len) then
           iflag_comm = 1
           exit
         end if
-        if(i_iter .gt. 500) then
-          write(*,*) 'iteration too large in 1: ', i_iter
+        if(i_iter .gt. 200) then
+          !write(*,*) 'iteration too large in 1: ', i_iter
           !write(*,*) 'total length: ', len_sum, 'kernel', k_value, 'step', step_len
           return
         end if
       end do
 
-      if(flag_lic_end(lic_p, len_sum, i_iter) .eq. izero) then
+!      if(flag_lic_end(lic_p, len_sum, i_iter) .eq. izero) then
+      if(flag_lic_end(lic_p, len_sum, i_iter) .eq. 2) then ! never enter this loop
         avg_stepsize = len_sum / i_iter
         if (avg_stepsize .lt. 0.005) then
           avg_stepsize = 0.005
         end if
         if(iflag_debug .eq. 1) write(50 + my_rank, *) "----dis is short for", i_iter, "iteration"
         do
-          if(i_iter .gt. 500) then
-            write(*,*) 'iteration too large in 2: ', i_iter
+          if(i_iter .gt. 200) then
+            !write(*,*) 'iteration too large in 2: ', i_iter
             !write(*,*) 'total length: ', len_sum, 'kernel', k_value, 'step', step_len
             return
           end if

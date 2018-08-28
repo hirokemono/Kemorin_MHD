@@ -15,3 +15,6 @@ MHD_project.xcworkspace/contents.xcworkspacedata
 MHD_project.xcworkspace/xcuserdata/liaoyangguang.xcuserdatad/UserInterfaceState.xcuserstate
 *.mod
 *.plist
+*.xcbkptlist
+
+*.xcbkptlist

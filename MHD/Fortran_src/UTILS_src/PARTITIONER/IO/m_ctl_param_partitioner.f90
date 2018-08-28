@@ -28,6 +28,7 @@
       integer(kind = kint), parameter :: iPART_RCB_SPH = 2
 !
       integer(kind = kint), parameter :: iPART_EQ_XYZ =  8
+      integer(kind = kint), parameter :: iPART_EQV_XYZ =  11
       integer(kind = kint), parameter :: iPART_EQ_SPH =  9
       integer(kind = kint), parameter :: iPART_LAYER_SPH = 10
 !
@@ -55,6 +56,9 @@
       integer(kind = kint) :: nele_grp_ordering
       integer(kind = kint), allocatable :: igrp_ele_ordering(:)
       character(len=kchara), allocatable :: ele_grp_ordering(:)
+!
+      integer(kind = kint) :: iflag_new_partition
+      integer(kind = kint) :: iflag_new_ghost_cell
 !
       character(len=kchara) :: finer_inter_file_head
 !

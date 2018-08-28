@@ -214,6 +214,211 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine set_domain_list_by_volume(nnod, nlevel_1st, nproc,     &
+      &           ncou, grp_volume, sort_item, node_volume, ig_item)
+!
+      use int_volume_of_single_domain
+!
+      integer(kind = kint), intent(in) :: nnod, nproc, nlevel_1st, ncou
+      integer(kind = kint), intent(in) :: sort_item(nnod)
+      real(kind = kreal), intent(in) :: node_volume(nnod)
+      real(kind = kreal), intent(in) :: grp_volume
+      integer(kind = kint), intent(inout) :: ig_item(nnod)
+!
+      integer(kind = kint) :: ii, ic, in, icou
+      real(kind = kreal) :: total_volume, fnode_volume
+!
+      ii = 1
+      icou= 0
+      total_volume = 0.0
+write(*,*) 'divided group volume: ', grp_volume
+      do icou = 1, ncou
+        in = sort_item(icou)
+        fnode_volume = node_volume(in)
+        total_volume = total_volume + fnode_volume
+        if(total_volume .gt. grp_volume) then
+          total_volume = 0.0
+          if(ii .lt. nproc) then
+            ii = ii + 1
+          end if
+        end if
+        ig_item(in) = ig_item(in) + (ii-1)*nlevel_1st
+      end do
+!
+      end subroutine set_domain_list_by_volume
+!
+!   --------------------------------------------------------------------
+!
+      subroutine set_domain_list_with_part_tbl                          &
+      &           (nnod, ncou, nlevel, nproc, part_tbl,                 &
+      &            sort_item, ig_item, tbl_size, order,                 &
+      &            group_id, domain_id)
+!
+      use m_ctl_param_partitioner
+!
+      integer(kind = kint), intent(in) :: nnod, nproc, nlevel, ncou
+      integer(kind = kint), intent(in) :: tbl_size, order
+      integer(kind = kint), intent(in) :: sort_item(nnod)
+      real(kind = kreal), intent(inout) :: part_tbl(num_domain)
+      integer(kind = kint), intent(inout) :: ig_item(nnod)
+      integer(kind = kint), intent(inout) :: group_id(num_domain)
+      integer(kind = kint), intent(inout) :: domain_id(num_domain)
+!
+      integer(kind = kint) :: ii, ic, icou, in
+      integer(kind = kint) :: istart, iend, igroup, iproc, ipt, ncnt
+      integer(kind = kint) :: num(nproc), tmp_i, iflag_debug
+      real(kind = kreal) :: ratio(nproc), tmp_r, sum_ratio
+!
+      ratio(1:nproc) = 0.0
+      iflag_debug = 0
+!     istart and iend indicate which partition ratio table we will use
+!     order is the group we will partition, order also eaqual to the first domain id
+!     which is the smallest num in this partition group
+      do istart = 1, num_domain
+        if(domain_id(istart) .eq. order) then
+          exit
+        end if
+      end do
+      iend = istart + tbl_size - 1
+
+
+      do ii = istart, iend
+        igroup = ii - istart
+        igroup = mod(igroup, nproc)+1
+        ratio(igroup) = ratio(igroup)+part_tbl(ii)
+        group_id(ii) = igroup
+      end do
+      ncnt = tbl_size / nproc
+      if(iflag_debug .gt. 0) write(*,*)'istart,iend,tbl_size,nproc,ncnt', istart,iend,tbl_size,nproc,ncnt
+      do ii = 1, tbl_size
+        do ic = istart, iend-ii
+          if(group_id(ic) .gt. group_id(ic+1)) then
+            tmp_i = group_id(ic)
+            group_id(ic) = group_id(ic+1)
+            group_id(ic+1) = tmp_i
+            tmp_r = part_tbl(ic)
+            part_tbl(ic) = part_tbl(ic+1)
+            part_tbl(ic+1) = tmp_r
+            tmp_i = domain_id(ic)
+            domain_id(ic) = domain_id(ic+1)
+            domain_id(ic+1) = tmp_i
+          end if
+        end do
+      end do
+
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'group: ', group_id(1:num_domain)
+        write(*,*) 'part_tbl ', part_tbl(1:num_domain)
+        write(*,*) 'domain id', domain_id(1:num_domain)
+        write(*,*) 'ratio ', ratio(:)
+      end if
+      sum_ratio = 0.0
+      do iproc = 1, nproc
+        sum_ratio = sum_ratio + ratio(iproc)
+      end do
+!write(*,*) 'sum ratio', sum_ratio
+      ratio(1:nproc) = ratio(1:nproc) / sum_ratio
+      num(:) = ratio(:) * ncou
+      num(nproc) = ncou
+      do ii = 1, nproc-1
+        num(nproc) = num(nproc) - num(ii)
+      end do
+      if(iflag_debug .gt. 0) write(*,*) 'num of node', ncou, 'node num ', num(:)
+      icou = 0
+      do ii = 1, nproc
+        do ic= 1, num(ii)
+          icou = icou+1
+          in= sort_item(icou)
+          ig_item(in)= ig_item(in) + (ii-1)*nlevel
+        end do
+      end do
+!
+      end subroutine set_domain_list_with_part_tbl
+!
+!   --------------------------------------------------------------------
+!
+subroutine set_domain_list_with_part_volume                          &
+&           (nnod, ncou, nlevel, nproc, part_volume, n_volume,       &
+&            sort_item, ig_item, tbl_size, order,                    &
+&            group_id, domain_id)
+!
+use m_ctl_param_partitioner
+!
+integer(kind = kint), intent(in) :: nnod, nproc, nlevel, ncou
+integer(kind = kint), intent(in) :: tbl_size, order
+integer(kind = kint), intent(in) :: sort_item(nnod)
+real(kind = kreal), intent(inout) :: part_volume(num_domain)
+real(kind = kreal), intent(in) :: n_volume(nnod)
+integer(kind = kint), intent(inout) :: ig_item(nnod)
+integer(kind = kint), intent(inout) :: group_id(num_domain)
+integer(kind = kint), intent(inout) :: domain_id(num_domain)
+!
+integer(kind = kint) :: ii, ic, icou, in
+integer(kind = kint) :: istart, iend, igroup, iproc, ipt, ncnt
+integer(kind = kint) :: tmp_i, iflag_debug
+real(kind = kreal) :: ratio_v(nproc), tmp_r, i_v, t_sum_v
+!
+ratio_v(1:nproc) = 0.0
+iflag_debug = 0
+!     istart and iend indicate which partition ratio table we will use
+!     order is the group we will partition, order also eaqual to the first domain id
+!     which is the smallest num in this partition group
+do istart = 1, num_domain
+  if(domain_id(istart) .eq. order) then
+    exit
+  end if
+end do
+iend = istart + tbl_size - 1
+
+
+do ii = istart, iend
+  igroup = ii - istart
+  igroup = mod(igroup, nproc)+1
+  ratio_v(igroup) = ratio_v(igroup)+part_volume(ii)
+  group_id(ii) = igroup
+end do
+ncnt = tbl_size / nproc
+if(iflag_debug .gt. 0) write(*,*)'istart,iend,tbl_size,nproc,ncnt', istart,iend,tbl_size,nproc,ncnt
+do ii = 1, tbl_size
+  do ic = istart, iend-ii
+    if(group_id(ic) .gt. group_id(ic+1)) then
+      tmp_i = group_id(ic)
+      group_id(ic) = group_id(ic+1)
+      group_id(ic+1) = tmp_i
+      tmp_r = part_volume(ic)
+      part_volume(ic) = part_volume(ic+1)
+      part_volume(ic+1) = tmp_r
+      tmp_i = domain_id(ic)
+      domain_id(ic) = domain_id(ic+1)
+      domain_id(ic+1) = tmp_i
+    end if
+  end do
+end do
+
+if(iflag_debug .gt. 0) then
+  write(*,*) 'group: ', group_id(1:num_domain)
+  write(*,*) 'part_tbl ', part_volume(1:num_domain)
+  write(*,*) 'domain id', domain_id(1:num_domain)
+  write(*,*) 'ratio ', ratio_v(:)
+end if
+
+t_sum_v = 0.0
+ii = 1
+do icou = 1, ncou
+  in = sort_item(icou)
+  i_v = n_volume(in)
+  t_sum_v = t_sum_v + i_v
+  if(t_sum_v .ge. ratio_v(ii) .and. ii .lt. nproc) then
+    t_sum_v = 0.0
+    ii = ii + 1
+  end if
+  ig_item(in)= ig_item(in) + (ii-1)*nlevel
+end do
+!
+end subroutine set_domain_list_with_part_volume
+!
+!   --------------------------------------------------------------------
+!
       subroutine set_domain_list_w_rev(nnod, nlevel, nproc, num, irest, &
      &           sort_item, ig_item)
 !

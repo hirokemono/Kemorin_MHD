@@ -64,7 +64,8 @@
      &      = part_ctl%ele_grp_ordering_ctl%c_tbl(1:nele_grp_ordering)
       end if
 !
-      call set_partition_method(part_ctl%part_method_ctl)
+      call set_partition_method(part_ctl%part_method_ctl,               &
+     &    part_ctl%new_part_method_ctl, part_ctl%selective_ghost_ctl)
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
      &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl)
@@ -196,14 +197,33 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_partition_method(part_method_ctl)
+      subroutine set_partition_method(part_method_ctl,                  &
+     &          new_part_method_ctl, selective_ghost_ctl)
 !
       use t_control_elements
       use m_ctl_param_partitioner
       use skip_comment_f
 !
       type(read_character_item), intent(in) :: part_method_ctl
+      type(read_character_item), intent(in) :: new_part_method_ctl
+      type(read_character_item), intent(in) :: selective_ghost_ctl
 !
+!
+      iflag_new_partition = 0
+      if(new_part_method_ctl%iflag .gt. 0) then
+        if( cmp_no_case(new_part_method_ctl%charavalue,'YES')) then
+          iflag_new_partition = 1
+        end if
+      end if
+      write(*,*) 'ifag_new_partition', iflag_new_partition
+
+      iflag_new_ghost_cell = 0
+      if(selective_ghost_ctl%iflag .gt. 0) then
+        if( cmp_no_case(selective_ghost_ctl%charavalue,'YES')) then
+          iflag_new_ghost_cell = 1
+        end if
+      end if
+      write(*,*) 'iflag_new_ghost_cell', iflag_new_ghost_cell
 !
       if (part_method_ctl%iflag .gt. 0) then
         if(     cmp_no_case(part_method_ctl%charavalue,'RCB_xyz')       &
@@ -216,6 +236,9 @@
         else if(cmp_no_case(part_method_ctl%charavalue,'ES')            &
      &     .or. cmp_no_case(part_method_ctl%charavalue,'ES_xyz')) then
             NTYP_div = iPART_EQ_XYZ
+!
+        else if(cmp_no_case(part_method_ctl%charavalue,'ES_vol')) then
+        NTYP_div = iPART_EQV_XYZ
 !
         else if(cmp_no_case(part_method_ctl%charavalue,'ES_sph')) then
             NTYP_div = iPART_EQ_SPH
@@ -374,6 +397,8 @@
       integer(kind = kint) :: i
 !
 !
+      if (NTYP_div .eq. iPART_EQ_XYZ                                    &
+     &  .or. NTYP_div .eq. iPART_EQV_XYZ) then
         if(ndomain_section_ctl%num .ne. 3)                              &
      &         stop 'number of subdomain should be 3 directions'
 !
@@ -387,6 +412,7 @@
      &          ) ndivide_eb(3) = ndomain_section_ctl%ivec(i)
         end do
         num_domain = ndivide_eb(1)*ndivide_eb(2)*ndivide_eb(3)
+      end if
 !
       end subroutine set_control_EQ_XYZ
 !

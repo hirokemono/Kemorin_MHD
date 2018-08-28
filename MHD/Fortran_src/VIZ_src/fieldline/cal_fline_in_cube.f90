@@ -15,9 +15,8 @@
       use m_precision
 !
       use m_constants
-      use calypso_mpi
+!      use calypso_mpi
       use m_geometry_constants
-      use calypso_mpi
 !
       implicit  none
 !
