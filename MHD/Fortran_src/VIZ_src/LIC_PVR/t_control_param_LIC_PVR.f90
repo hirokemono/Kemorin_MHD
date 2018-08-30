@@ -144,8 +144,14 @@
 !
       do i_lic = 1, num_lic
         if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
-        call set_pvr_file_control(pvr_ctl_type(i_lic),                  &
-     &      pvr_param(i_lic)%file, pvr_data(i_lic)%view)
+        call set_pvr_file_prefix                                        &
+     &     (pvr_ctl_type(i_lic), pvr_param(i_lic)%file%pvr_prefix)
+        call set_pvr_file_control                                       &
+     &     (pvr_ctl_type(i_lic), pvr_param(i_lic)%file)
+        call set_control_pvr_movie                                      &
+     &     (pvr_ctl_type(i_lic)%movie, pvr_data(i_lic)%view)
+        call set_pvr_stereo_control                                     &
+     &     (pvr_ctl_type(i_lic), pvr_data(i_lic)%view)
 !
         call set_control_lic_parameter                                  &
      &     (nod_fld%num_phys, nod_fld%phys_name,                        &

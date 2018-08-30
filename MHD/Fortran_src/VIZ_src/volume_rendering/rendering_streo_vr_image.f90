@@ -74,7 +74,7 @@
       call rendering_at_once(IFLAG_LEFT, istep_pvr,                     &
      &    node, ele, surf, group, pvr_param, pvr_data)
 !
-      if(pvr_param%file%iflag_anaglyph .gt. 0) then
+      if(pvr_data%view%iflag_anaglyph .gt. 0) then
         call store_left_eye_image(pvr_data%rgb)
       else
         call end_elapsed_time(71)
@@ -96,7 +96,7 @@
       call rendering_at_once(IFLAG_RIGHT, istep_pvr,                    &
      &    node, ele, surf, group, pvr_param, pvr_data)
 !
-      if(pvr_param%file%iflag_anaglyph .gt. 0) then
+      if(pvr_data%view%iflag_anaglyph .gt. 0) then
         call add_left_eye_image(pvr_data%rgb)
 !
         call end_elapsed_time(71)
@@ -153,7 +153,7 @@
         call rendering_at_once(IFLAG_LEFT, istep_pvr,                   &
      &      node, ele, surf, group, pvr_param, pvr_data)
 !
-        if(pvr_param%file%iflag_anaglyph .gt. 0) then
+        if(pvr_data%view%iflag_anaglyph .gt. 0) then
           call store_left_eye_image(pvr_data%rgb)
         else
           call end_elapsed_time(71)
@@ -174,7 +174,7 @@
         call rendering_at_once(IFLAG_RIGHT, istep_pvr,                  &
      &      node, ele, surf, group, pvr_param, pvr_data)
 !
-        if(pvr_param%file%iflag_anaglyph .gt. 0) then
+        if(pvr_data%view%iflag_anaglyph .gt. 0) then
           call add_left_eye_image(pvr_data%rgb)
 !
           call end_elapsed_time(71)

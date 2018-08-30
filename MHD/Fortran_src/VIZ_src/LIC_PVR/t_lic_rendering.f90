@@ -149,7 +149,7 @@
      &    lic%cflag_update)
 !
       call s_num_rendering_and_images                                   &
-     &   (lic_ctls%num_lic_ctl, lic_ctls%pvr_ctl_type,                  &
+     &   (nprocs, lic_ctls%num_lic_ctl, lic_ctls%pvr_ctl_type,          &
      &    lic%num_pvr, lic%num_lic_rendering, lic%lic_images)
 !
       call alloc_components_4_LIC(lic)

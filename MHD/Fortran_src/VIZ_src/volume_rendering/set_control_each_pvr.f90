@@ -6,6 +6,7 @@
 !>@brief Set each PVR parameters from control
 !!
 !!@verbatim
+!!      subroutine set_pvr_file_prefix(pvr_ctl, pvr_prefix)
 !!      subroutine set_pvr_file_control(pvr_ctl, file_param)
 !!      subroutine check_pvr_field_control                              &
 !!     &         (pvr_ctl, num_nod_phys, phys_nod_name)
@@ -23,6 +24,12 @@
 !!        type(viz_area_parameter), intent(inout) :: pvr_area
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !!        type(pvr_colorbar_parameter), intent(inout) :: cbar_param
+!!      subroutine set_control_pvr_movie(movie, view_param)
+!!        type(pvr_movie_ctl), intent(in) :: movie
+!!        type(pvr_view_parameter), intent(inout) :: view_param
+!!      subroutine set_pvr_stereo_control(pvr_ctl, view_param)
+!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl
+!!        type(pvr_view_parameter), intent(inout) :: view_param
 !!@endverbatim
 !
       module set_control_each_pvr
@@ -39,15 +46,29 @@
 !
       implicit  none
 !
-      private :: set_control_pvr_movie
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_file_control(pvr_ctl, file_param, view_param)
+      subroutine set_pvr_file_prefix(pvr_ctl, pvr_prefix)
+!
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl
+      character(len = kchara), intent(inout) :: pvr_prefix
+!
+!
+      if(pvr_ctl%file_head_ctl%iflag .gt. 0) then
+        pvr_prefix = pvr_ctl%file_head_ctl%charavalue
+      else 
+        pvr_prefix = 'pvr'
+      end if
+!
+      end subroutine set_pvr_file_prefix
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_pvr_file_control(pvr_ctl, file_param)
 !
       use t_control_params_4_pvr
       use set_area_4_viz
@@ -55,29 +76,18 @@
 !
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
       type(pvr_output_parameter), intent(inout) :: file_param
-      type(pvr_view_parameter), intent(inout) :: view_param
 !
       character(len = kchara) :: tmpchara
 !
 !
-      if(pvr_ctl%file_head_ctl%iflag .gt. 0) then
-        file_param%pvr_prefix = pvr_ctl%file_head_ctl%charavalue
-      else 
-        file_param%pvr_prefix = 'pvr'
-      end if
-!
       tmpchara = pvr_ctl%file_fmt_ctl%charavalue
-      if     (cmp_no_case(tmpchara, 'ucd')                              &
-     &   .or. cmp_no_case(tmpchara, 'udt')) then
-        file_param%id_pvr_file_type = 0
-      else if(cmp_no_case(tmpchara, 'png')) then
+      if(cmp_no_case(tmpchara, 'png')) then
         file_param%id_pvr_file_type = iflag_PNG
       else if(cmp_no_case(tmpchara, 'bmp')) then
         file_param%id_pvr_file_type = iflag_BMP
       else
         file_param%id_pvr_file_type = iflag_BMP
       end if
-!
 !
       tmpchara = pvr_ctl%transparent_ctl%charavalue
       if     (cmp_no_case(tmpchara, 'rgba')                             &
@@ -95,23 +105,7 @@
         file_param%iflag_monitoring = 1
       end if
 !
-!
-      call set_control_pvr_movie(pvr_ctl%movie, view_param)
-!
-      view_param%iflag_stereo_pvr = 0
-      file_param%iflag_anaglyph = 0
-      if(yes_flag(pvr_ctl%streo_ctl%charavalue)) then
-        view_param%iflag_stereo_pvr = 1
-!
-        if(yes_flag(pvr_ctl%anaglyph_ctl%charavalue)) then
-          file_param%iflag_anaglyph = 1
-        else
-        end if
-      end if
-!
-!
       if(iflag_debug .gt. 0) then
-        write(*,*) 'pvr_prefix: ', trim(file_param%pvr_prefix)
         write(*,*) 'id_pvr_file_type', file_param%id_pvr_file_type
         write(*,*) 'id_pvr_transparent', file_param%id_pvr_transparent
       end if
@@ -339,6 +333,31 @@
       end if
 !
       end subroutine set_control_pvr_movie
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_pvr_stereo_control(pvr_ctl, view_param)
+!
+      use t_control_params_4_pvr
+      use set_area_4_viz
+      use skip_comment_f
+!
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl
+      type(pvr_view_parameter), intent(inout) :: view_param
+!
+!
+      view_param%iflag_stereo_pvr = 0
+      view_param%iflag_anaglyph = 0
+      if(yes_flag(pvr_ctl%streo_ctl%charavalue)) then
+        view_param%iflag_stereo_pvr = 1
+!
+        if(yes_flag(pvr_ctl%anaglyph_ctl%charavalue)) then
+          view_param%iflag_anaglyph = 1
+        else
+        end if
+      end if
+!
+      end subroutine set_pvr_stereo_control
 !
 !  ---------------------------------------------------------------------
 !

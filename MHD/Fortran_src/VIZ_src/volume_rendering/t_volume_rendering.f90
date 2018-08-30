@@ -146,7 +146,7 @@
      &    pvr%cflag_update)
 !
       call s_num_rendering_and_images                                   &
-     &   (pvr_ctls%num_pvr_ctl, pvr_ctls%pvr_ctl_type,                  &
+     &   (nprocs, pvr_ctls%num_pvr_ctl, pvr_ctls%pvr_ctl_type,          &
      &    pvr%num_pvr, pvr%num_pvr_rendering, pvr%pvr_images)
 !
 !

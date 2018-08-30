@@ -44,8 +44,9 @@
         integer(kind = kint) :: id_pvr_transparent = 0
 !>    Monitoring mode flag
         integer(kind = kint) :: iflag_monitoring = 0
-!>    Flag to make an anaglyph
-        integer(kind = kint) :: iflag_anaglyph = 0
+!
+!>        MPI rank to putput each PVR image
+        integer(kind = kint) :: irank_image_file = 0
       end type pvr_output_parameter
 !
 !>  Structure for field parameter for PVR
@@ -130,6 +131,8 @@
 !
 !>    Defined flag for stereo view
         integer(kind = kint) :: iflag_stereo_pvr = 0
+!>    Flag to make an anaglyph
+        integer(kind = kint) :: iflag_anaglyph = 0
 !>    Perspective projection matrix for left eye
         real(kind = kreal) :: projection_left(4,4)
 !>    Perspective projection matrix for right eye
