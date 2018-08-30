@@ -7,10 +7,26 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine read_set_each_lic_controls                           &
-!!     &         (i_pvr, hd_pvr_ctl, hd_pvr_colordef, group,            &
-!!     &          nod_fld, fname_pvr_ctl, pvr_ctl_type, lic_ctl_type,   &
-!!     &          lic_fld, pvr_param, pvr_data)
+!!      subroutine read_lic_controls                                    &
+!!     &         (hd_pvr_ctl, hd_pvr_colordef, num_lic_ctl,             &
+!!     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type,            &
+!!     &          cflag_update)
+!!        integer(kind = kint), intent(in) :: num_lic_ctl
+!!        type(pvr_parameter_ctl), intent(inout)                        &
+!!     &                        :: pvr_ctl_type(num_lic_ctl)
+!!        type(lic_parameter_ctl), intent(inout)                        &
+!!     &                        :: lic_ctl_type(num_lic_ctl)
+!!      subroutine s_set_lic_controls                                   &
+!!     &       (group, nod_fld, num_lic, pvr_ctl_type, lic_ctl_type,    &
+!!     &        lic_fld, pvr_param, pvr_data)
+!!        integer(kind = kint), intent(in) :: num_lic
+!!        type(mesh_groups), intent(in) :: group
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
+!!        type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
+!!        type(LIC_field_params), intent(inout) :: lic_fld(num_lic)
+!!        type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
+!!        type(PVR_image_generator), intent(inout) :: pvr_data(num_lic)
 !!      subroutine flush_each_lic_control(lic_fld, pvr_data, pvr_param)
 !!        type(LIC_field_params), intent(inout) :: lic_fld
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
@@ -41,7 +57,7 @@
         type(viz_area_parameter) :: area_def
       end type LIC_field_params
 !
-      private :: set_each_lic_control, read_control_lic_pvr
+      private :: read_control_lic_pvr
 !
 !  ---------------------------------------------------------------------
 !
@@ -49,63 +65,61 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_set_each_lic_controls                             &
-     &         (i_pvr, hd_pvr_ctl, hd_pvr_colordef, group,              &
-     &          nod_fld, fname_pvr_ctl, pvr_ctl_type, lic_ctl_type,     &
-     &          lic_fld, pvr_param, pvr_data)
+      subroutine read_lic_controls                                      &
+     &         (hd_pvr_ctl, hd_pvr_colordef, num_lic_ctl,               &
+     &          fname_lic_ctl, pvr_ctl_type, lic_ctl_type,              &
+     &          cflag_update)
 !
-      use t_mesh_data
-      use t_phys_data
-      use t_rendering_vr_image
       use bcast_control_data_4_pvr
       use set_pvr_control
 !
-      type(mesh_groups), intent(in) :: group
-      type(phys_data), intent(in) :: nod_fld
-      integer(kind = kint), intent(in) :: i_pvr
+      integer(kind = kint), intent(in) :: num_lic_ctl
       character(len = kchara), intent(in)  :: hd_pvr_ctl
       character(len = kchara), intent(in) :: hd_pvr_colordef
-      character(len = kchara), intent(in)  :: fname_pvr_ctl
+      character(len = kchara), intent(in)                               &
+     &                         :: fname_lic_ctl(num_lic_ctl)
 !
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl_type
-      type(LIC_field_params), intent(inout) :: lic_fld
-      type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_image_generator), intent(inout) :: pvr_data
+      type(pvr_parameter_ctl), intent(inout)                            &
+     &                        :: pvr_ctl_type(num_lic_ctl)
+      type(lic_parameter_ctl), intent(inout)                            &
+     &                        :: lic_ctl_type(num_lic_ctl)
+      character(len=kchara), intent(inout) :: cflag_update
 !
-      integer(kind = kint) :: i_psf
+      integer(kind = kint) :: i_lic, i_psf
 !
+!
+      if(pvr_ctl_type(1)%updated_ctl%iflag .gt. 0) then
+        cflag_update = pvr_ctl_type(1)%updated_ctl%charavalue
+      end if
 !
       ctl_file_code = lic_ctl_file_code
-      call read_control_lic_pvr(i_pvr, hd_pvr_ctl, hd_pvr_colordef,     &
-     &    fname_pvr_ctl, pvr_ctl_type, lic_ctl_type)
-      call read_control_modelview(i_pvr, pvr_ctl_type)
-      call read_control_colormap                                        &
-     &   (hd_pvr_colordef, i_pvr, pvr_ctl_type)
+      do i_lic = 1, num_lic_ctl
+        call read_control_lic_pvr                                       &
+     &     (i_lic, hd_pvr_ctl, hd_pvr_colordef, fname_lic_ctl(i_lic),   &
+     &       pvr_ctl_type(i_lic), lic_ctl_type(i_lic))
+        call read_control_modelview(i_lic, pvr_ctl_type(i_lic))
+        call read_control_colormap                                      &
+     &     (hd_pvr_colordef, i_lic, pvr_ctl_type(i_lic))
 !
-      do i_psf = 1, pvr_ctl_type%num_pvr_sect_ctl
-        call read_control_pvr_section_def                               &
-     &     (pvr_ctl_type%pvr_sect_ctl(i_psf))
+        do i_psf = 1, pvr_ctl_type(i_lic)%num_pvr_sect_ctl
+          call read_control_pvr_section_def                             &
+     &       (pvr_ctl_type(i_lic)%pvr_sect_ctl(i_psf))
+        end do
+!
+        call bcast_vr_psf_ctl(pvr_ctl_type(i_lic))
+        call bcast_lic_control_data(lic_ctl_type(i_lic))
       end do
 !
-      call bcast_vr_psf_ctl(pvr_ctl_type)
-      call bcast_lic_control_data(lic_ctl_type)
-!
-      call set_each_lic_control(group%ele_grp, group%surf_grp,          &
-     &    nod_fld%num_phys, nod_fld%phys_name,                          &
-     &    pvr_ctl_type, lic_ctl_type, lic_fld, pvr_data, pvr_param)
-!
-      call dealloc_lic_count_data(pvr_ctl_type, lic_ctl_type)
-!
-      end subroutine read_set_each_lic_controls
+      end subroutine read_lic_controls
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_each_lic_control                                   &
-     &       (ele_grp, surf_grp, num_nod_phys, phys_nod_name,           &
-     &        pvr_ctl_type, lic_ctl_type, lic_fld, pvr_data, pvr_param)
+      subroutine s_set_lic_controls                                     &
+     &       (group, nod_fld, num_lic, pvr_ctl_type, lic_ctl_type,      &
+     &        lic_fld, pvr_param, pvr_data)
 !
       use m_error_IDs
+      use t_phys_data
       use t_group_data
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
@@ -115,51 +129,59 @@
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
 !
-      type(group_data), intent(in) :: ele_grp
-      type(surface_group_data), intent(in) :: surf_grp
+      integer(kind = kint), intent(in) :: num_lic
+      type(mesh_groups), intent(in) :: group
+      type(phys_data), intent(in) :: nod_fld
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
+      type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
 !
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      type(LIC_field_params), intent(inout) :: lic_fld(num_lic)
+      type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
+      type(PVR_image_generator), intent(inout) :: pvr_data(num_lic)
 !
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl_type
-      type(LIC_field_params), intent(inout) :: lic_fld
-      type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_image_generator), intent(inout) :: pvr_data
+      integer(kind = kint) :: i_lic
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
-      call set_pvr_file_control(pvr_ctl_type, pvr_param%file)
+      do i_lic = 1, num_lic
+        if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
+        call set_pvr_file_control(pvr_ctl_type(i_lic),                  &
+     &      pvr_param(i_lic)%file, pvr_data(i_lic)%view)
 !
-      call set_control_lic_parameter(num_nod_phys, phys_nod_name,       &
-     &    lic_ctl_type, lic_fld%lic_param)
+        call set_control_lic_parameter                                  &
+     &     (nod_fld%num_phys, nod_fld%phys_name,                        &
+     &      lic_ctl_type(i_lic), lic_fld(i_lic)%lic_param)
 !
-      if(lic_fld%lic_param%iflag_noise_type .eq. iflag_from_file) then
-        call load_noise_data(lic_fld%lic_param)
-      else
-        write(e_message,*)                                              &
-          'Currently, noise data is only loaded from file'
+        if(lic_fld(i_lic)%lic_param%iflag_noise_type                    &
+     &      .eq. iflag_from_file) then
+          call load_noise_data(lic_fld(i_lic)%lic_param)
+        else
+          write(e_message,*)                                            &
+            'Currently, noise data is only loaded from file'
           call calypso_mpi_abort(ierr_LIC, e_message)
-      end if
+        end if
 !
-      if(lic_fld%lic_param%iflag_kernel_type .eq. iflag_from_file) then
-        call load_kernel_data_from_file                                 &
-     &    (lic_fld%lic_param%kernel_image_prefix,                       &
-     &     lic_fld%lic_param%kernel_image)
-      end if
+        if(lic_fld(i_lic)%lic_param%iflag_kernel_type                   &
+     &      .eq. iflag_from_file) then
+          call load_kernel_data_from_file                               &
+     &       (lic_fld(i_lic)%lic_param%kernel_image_prefix,             &
+     &        lic_fld(i_lic)%lic_param%kernel_image)
+        end if
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
-      call set_control_pvr(pvr_ctl_type, ele_grp, surf_grp,             &
-     &    lic_fld%area_def, pvr_data%view, pvr_param%field,             &
-     &    pvr_data%color, pvr_param%colorbar)
+        if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
+        call set_control_pvr                                            &
+     &     (pvr_ctl_type(i_lic), group%ele_grp, group%surf_grp,         &
+     &      lic_fld(i_lic)%area_def, pvr_param(i_lic)%field,            &
+     &      pvr_data(i_lic)%color, pvr_param(i_lic)%colorbar)
 !
 !   set transfer matrix
 !
-      call s_set_pvr_modelview_matrix                                   &
-     &   (pvr_ctl_type%mat, pvr_data%view, pvr_data%screen)
+        call s_set_pvr_modelview_matrix (pvr_ctl_type(i_lic)%mat,       &
+     &      pvr_data(i_lic)%view, pvr_data(i_lic)%screen)
+      end do
 !
-      end subroutine set_each_lic_control
+      end subroutine s_set_lic_controls
 !
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine flush_each_lic_control(lic_fld, pvr_data, pvr_param)

@@ -1,25 +1,29 @@
-!set_control_each_pvr
-!      module set_control_each_pvr
+!>@file   set_control_each_pvr.f90
+!!@brief  module set_control_each_pvr
+!!
+!!@date  Programmed by H.Matsui in May. 2006
 !
-!        programmed by H.Matsui on May. 2006
-!
-!!      subroutine set_pvr_file_control(pvr, file_param)
+!>@brief Set each PVR parameters from control
+!!
+!!@verbatim
+!!      subroutine set_pvr_file_control(pvr_ctl, file_param)
 !!      subroutine check_pvr_field_control                              &
-!!     &         (pvr, num_nod_phys, phys_nod_name)
+!!     &         (pvr_ctl, num_nod_phys, phys_nod_name)
 !!
 !!      subroutine set_control_field_4_pvr(field_ctl, comp_ctl,         &
 !!     &          num_nod_phys, phys_nod_name, fld_param, icheck_ncomp)
-!!      subroutine set_control_pvr(pvr, ele_grp, surf_grp, pvr_area,    &
+!!      subroutine set_control_pvr(pvr_ctl, ele_grp, surf_grp, pvr_area,&
 !!     &          view_param, field_pvr, color_param, cbar_param)
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: surf_grp
-!!        type(pvr_parameter_ctl), intent(inout) :: pvr
+!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl
 !!        type(pvr_field_parameter), intent(inout) :: fld_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(pvr_projected_field), intent(inout) :: field_pvr
 !!        type(viz_area_parameter), intent(inout) :: pvr_area
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !!        type(pvr_colorbar_parameter), intent(inout) :: cbar_param
+!!@endverbatim
 !
       module set_control_each_pvr
 !
@@ -43,25 +47,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_file_control(pvr, file_param)
+      subroutine set_pvr_file_control(pvr_ctl, file_param, view_param)
 !
       use t_control_params_4_pvr
       use set_area_4_viz
       use skip_comment_f
 !
-      type(pvr_parameter_ctl), intent(in) :: pvr
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl
       type(pvr_output_parameter), intent(inout) :: file_param
+      type(pvr_view_parameter), intent(inout) :: view_param
 !
       character(len = kchara) :: tmpchara
 !
 !
-      if(pvr%file_head_ctl%iflag .gt. 0) then
-        file_param%pvr_prefix = pvr%file_head_ctl%charavalue
+      if(pvr_ctl%file_head_ctl%iflag .gt. 0) then
+        file_param%pvr_prefix = pvr_ctl%file_head_ctl%charavalue
       else 
         file_param%pvr_prefix = 'pvr'
       end if
 !
-      tmpchara = pvr%file_fmt_ctl%charavalue
+      tmpchara = pvr_ctl%file_fmt_ctl%charavalue
       if     (cmp_no_case(tmpchara, 'ucd')                              &
      &   .or. cmp_no_case(tmpchara, 'udt')) then
         file_param%id_pvr_file_type = 0
@@ -74,7 +79,7 @@
       end if
 !
 !
-      tmpchara = pvr%transparent_ctl%charavalue
+      tmpchara = pvr_ctl%transparent_ctl%charavalue
       if     (cmp_no_case(tmpchara, 'rgba')                             &
      &   .or. cmp_no_case(tmpchara, 'transparent')) then
         file_param%id_pvr_transparent = 1
@@ -86,13 +91,22 @@
       end if
 !
       file_param%iflag_monitoring = 0
-      if(yes_flag(pvr%monitoring_ctl%charavalue)) then
+      if(yes_flag(pvr_ctl%monitoring_ctl%charavalue)) then
         file_param%iflag_monitoring = 1
       end if
 !
+!
+      call set_control_pvr_movie(pvr_ctl%movie, view_param)
+!
+      view_param%iflag_stereo_pvr = 0
       file_param%iflag_anaglyph = 0
-      if(yes_flag(pvr%anaglyph_ctl%charavalue)) then
-        file_param%iflag_anaglyph = 1
+      if(yes_flag(pvr_ctl%streo_ctl%charavalue)) then
+        view_param%iflag_stereo_pvr = 1
+!
+        if(yes_flag(pvr_ctl%anaglyph_ctl%charavalue)) then
+          file_param%iflag_anaglyph = 1
+        else
+        end if
       end if
 !
 !
@@ -107,7 +121,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine check_pvr_field_control                                &
-     &         (pvr, num_nod_phys, phys_nod_name)
+     &         (pvr_ctl, num_nod_phys, phys_nod_name)
 !
       use t_control_params_4_pvr
       use skip_comment_f
@@ -115,13 +129,13 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      type(pvr_parameter_ctl), intent(in) :: pvr
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl
 !
       integer(kind = kint) :: num_field, num_phys_viz
       character(len = kchara) :: tmpfield(1)
 !
 !
-      tmpfield(1) = pvr%pvr_field_ctl%charavalue
+      tmpfield(1) = pvr_ctl%pvr_field_ctl%charavalue
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
      &    ione, tmpfield, num_field, num_phys_viz)
       if(num_field .eq. 0) then
@@ -165,8 +179,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_pvr(pvr, ele_grp, surf_grp, pvr_area,      &
-     &          view_param, field_pvr, color_param, cbar_param)
+      subroutine set_control_pvr(pvr_ctl, ele_grp, surf_grp, pvr_area,  &
+     &          field_pvr, color_param, cbar_param)
 !
       use t_group_data
       use t_control_params_4_pvr
@@ -181,9 +195,8 @@
 !
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: surf_grp
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl
 !
-      type(pvr_parameter_ctl), intent(inout) :: pvr
-      type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_projected_field), intent(inout) :: field_pvr
       type(viz_area_parameter), intent(inout) :: pvr_area
       type(pvr_colormap_parameter), intent(inout) :: color_param
@@ -193,13 +206,8 @@
       character(len = kchara) :: tmpchara
 !
 !
-      view_param%iflag_stereo_pvr = 0
-      if(yes_flag(pvr%streo_ctl%charavalue)) then
-        view_param%iflag_stereo_pvr = 1
-      end if
-!
       call count_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
-     &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
+     &    pvr_ctl%pvr_area_ctl%num, pvr_ctl%pvr_area_ctl%c_tbl,         &
      &    pvr_area%nele_grp_area_pvr)
 !
       if (pvr_area%nele_grp_area_pvr .le. 0) then
@@ -210,54 +218,58 @@
 !
 !
       call s_set_area_4_viz(ele_grp%num_grp, ele_grp%grp_name,          &
-     &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
+     &    pvr_ctl%pvr_area_ctl%num, pvr_ctl%pvr_area_ctl%c_tbl,         &
      &    pvr_area%nele_grp_area_pvr, pvr_area%id_ele_grp_area_pvr)
 !
 !
-      if (pvr%surf_enhanse_ctl%num .gt. 0) then
+      if (pvr_ctl%surf_enhanse_ctl%num .gt. 0) then
         call set_pvr_bc_enhanse_flag(surf_grp,                          &
-     &      pvr%surf_enhanse_ctl%num, pvr%surf_enhanse_ctl%c1_tbl,      &
-     &      pvr%surf_enhanse_ctl%c2_tbl, pvr%surf_enhanse_ctl%vect,     &
+     &      pvr_ctl%surf_enhanse_ctl%num,                               &
+     &      pvr_ctl%surf_enhanse_ctl%c1_tbl,                            &
+     &      pvr_ctl%surf_enhanse_ctl%c2_tbl,                            &
+     &      pvr_ctl%surf_enhanse_ctl%vect,                              &
      &      field_pvr%iflag_enhanse, field_pvr%enhansed_opacity)
       else
          field_pvr%iflag_enhanse = IFLAG_NONE
       end if
 !
 !
-      field_pvr%num_sections = pvr%num_pvr_sect_ctl
+      field_pvr%num_sections = pvr_ctl%num_pvr_sect_ctl
       if(field_pvr%num_sections .gt. 0) then
         call alloc_pvr_sections(field_pvr)
 !
         do i = 1, field_pvr%num_sections
           call s_set_coefs_of_sections                                  &
-     &       (pvr%pvr_sect_ctl(i)%psf_c, id_section_method,             &
+     &       (pvr_ctl%pvr_sect_ctl(i)%psf_c, id_section_method,         &
      &        field_pvr%coefs(1:10,i), ierr)
           if(ierr .gt. 0) call calypso_mpi_abort                        &
-     &         (ierr, 'Set section parameters for PVR')
+     &         (ierr, 'Set section parameters for pvr_ctl')
 !
-          if(pvr%pvr_sect_ctl(i)%opacity_ctl%iflag .gt. 0) then
+          if(pvr_ctl%pvr_sect_ctl(i)%opacity_ctl%iflag .gt. 0) then
             field_pvr%sect_opacity(i)                                   &
-     &        = pvr%pvr_sect_ctl(i)%opacity_ctl%realvalue
+     &        = pvr_ctl%pvr_sect_ctl(i)%opacity_ctl%realvalue
           end if
         end do
       end if
 !
 !
-      field_pvr%num_isosurf = pvr%num_pvr_iso_ctl
+      field_pvr%num_isosurf = pvr_ctl%num_pvr_iso_ctl
       if(field_pvr%num_isosurf .gt. 0) then
         call alloc_pvr_isosurfaces(field_pvr)
 !
         do i = 1, field_pvr%num_isosurf
-          if(pvr%pvr_iso_ctl(i)%isosurf_value_ctl%iflag .gt. 0) then
+          if(pvr_ctl%pvr_iso_ctl(i)%isosurf_value_ctl%iflag .gt. 0)     &
+     &     then
             field_pvr%iso_value(i)                                      &
-     &        = pvr%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
+     &        = pvr_ctl%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
           end if
-          if(pvr%pvr_iso_ctl(i)%opacity_ctl%iflag .gt. 0) then
+          if(pvr_ctl%pvr_iso_ctl(i)%opacity_ctl%iflag .gt. 0) then
             field_pvr%iso_opacity(i)                                    &
-     &        = pvr%pvr_iso_ctl(i)%opacity_ctl%realvalue
+     &        = pvr_ctl%pvr_iso_ctl(i)%opacity_ctl%realvalue
           end if
-          if(pvr%pvr_iso_ctl(i)%isosurf_type_ctl%iflag .gt. 0) then
-            tmpchara = pvr%pvr_iso_ctl(i)%isosurf_type_ctl%charavalue
+          if(pvr_ctl%pvr_iso_ctl(i)%isosurf_type_ctl%iflag .gt. 0) then
+            tmpchara                                                    &
+     &          = pvr_ctl%pvr_iso_ctl(i)%isosurf_type_ctl%charavalue
             if(cmp_no_case(tmpchara, LABEL_DECREASE)) then
               field_pvr%itype_isosurf(i) = IFLAG_SHOW_REVERSE
             else if(cmp_no_case(tmpchara, LABEL_DECREASE)) then
@@ -269,13 +281,12 @@
         end do
       end if
 !
-      call set_control_pvr_movie(pvr%movie, view_param)
-!
 !    set colormap setting
-      call set_control_pvr_lighting(pvr%light, color_param)
-      call set_control_pvr_colormap(pvr%cmap_cbar_c%color, color_param)
+      call set_control_pvr_lighting(pvr_ctl%light, color_param)
+      call set_control_pvr_colormap                                     &
+     &   (pvr_ctl%cmap_cbar_c%color, color_param)
       call set_control_pvr_colorbar                                     &
-     &   (pvr%cmap_cbar_c%cbar_ctl, cbar_param)
+     &   (pvr_ctl%cmap_cbar_c%cbar_ctl, cbar_param)
 !
       end subroutine set_control_pvr
 !

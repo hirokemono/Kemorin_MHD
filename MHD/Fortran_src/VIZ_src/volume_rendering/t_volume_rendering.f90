@@ -1,8 +1,11 @@
+!>@file   t_volume_rendering.f90
+!!@brief  module t_volume_rendering
+!!
+!!@date  Programmed by H.Matsui in May. 2006
 !
-!      module t_volume_rendering
-!
-!      Written by H. Matsui on July, 2006
-!
+!>@brief Main routines for volume renderings
+!!
+!!@verbatim
 !!      integer(kind = kint), function check_PVR_update(pvr_ctls, pvr)
 !!      subroutine PVR_initialize(femmesh, ele_mesh, nod_fld, pvr)
 !!      subroutine PVR_visualize                                        &
@@ -17,6 +20,7 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(volume_rendering_controls), intent(inout) :: pvr_ctls
 !!        type(volume_rendering_module), intent(inout) :: pvr
+!!@endverbatim
 !
       module t_volume_rendering
 !
@@ -39,6 +43,7 @@
       use t_pvr_image_array
       use t_geometries_in_pvr_screen
       use t_control_data_pvrs
+      use t_pvr_image_data
 !
       use each_volume_rendering
 !
@@ -55,12 +60,19 @@
         character(len=kchara) :: cflag_update
 !>        Number of volume rendering
         integer(kind = kint) :: num_pvr = 0
+!
+!>        Number of rendering for volume rendering
+        integer(kind = kint) :: num_pvr_rendering = 0
+!
 !>        Structure of PVR field parameters
         type(PVR_field_params), allocatable :: pvr_fld(:)
 !>        Structure of PVR control parameters
         type(PVR_control_params), allocatable :: pvr_param(:)
 !>        Structure of PVR image generation
         type(PVR_image_generator), allocatable :: pvr_data(:)
+!
+!>        Structure for PVR images
+        type(pvr_mul_image_data) :: pvr_images
       end type volume_rendering_module
 !
       private :: alloc_components_4_pvr
@@ -123,8 +135,20 @@
       integer(kind = kint) :: i_pvr
 !
 !
-      pvr%num_pvr = pvr_ctls%num_pvr_ctl
-      if(pvr%num_pvr .le. 0) return
+      if(pvr_ctls%num_pvr_ctl .le. 0) then
+        pvr%num_pvr = 0
+        return
+      end if
+!
+      call read_pvr_controls                                            &
+     &   (hd_pvr_ctl, hd_pvr_colordef, pvr_ctls%num_pvr_ctl,            &
+     &    pvr_ctls%fname_pvr_ctl, pvr_ctls%pvr_ctl_type,                &
+     &    pvr%cflag_update)
+!
+      call s_num_rendering_and_images                                   &
+     &   (pvr_ctls%num_pvr_ctl, pvr_ctls%pvr_ctl_type,                  &
+     &    pvr%num_pvr, pvr%num_pvr_rendering, pvr%pvr_images)
+!
 !
       call alloc_components_4_pvr(pvr)
 !
@@ -135,18 +159,12 @@
         call reset_pvr_view_parameteres(pvr%pvr_data(i_pvr)%view)
       end do
 !
-      if(pvr_ctls%pvr_ctl_type(1)%updated_ctl%iflag .gt. 0) then
-        pvr%cflag_update                                                &
-     &         = pvr_ctls%pvr_ctl_type(1)%updated_ctl%charavalue
-      end if
+      call s_set_pvr_controls(femmesh%group, nod_fld,                   &
+     &    pvr%num_pvr, pvr_ctls%pvr_ctl_type,                           &
+     &    pvr%pvr_fld, pvr%pvr_param, pvr%pvr_data)
 !
-      do i_pvr = 1, pvr%num_pvr
-        call read_set_each_pvr_controls                                 &
-     &     (i_pvr, hd_pvr_ctl, hd_pvr_colordef,                         &
-     &      femmesh%group, nod_fld, pvr_ctls%fname_pvr_ctl(i_pvr),      &
-     &      pvr_ctls%pvr_ctl_type(i_pvr), pvr%pvr_fld(i_pvr),           &
-     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))
-        call calypso_mpi_barrier
+      do i_pvr = 1, pvr_ctls%num_pvr_ctl
+        call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
       end do
 !
       call s_find_pvr_surf_domain                                       &
@@ -225,6 +243,8 @@
      &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))
       end do
       deallocate(pvr%pvr_fld, pvr%pvr_param, pvr%pvr_data)
+!
+      call dealloc_istack_pvr_image_4_merge(pvr%pvr_images)
 !
       end subroutine dealloc_pvr_data
 !

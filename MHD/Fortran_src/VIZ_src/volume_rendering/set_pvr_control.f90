@@ -1,18 +1,24 @@
+!>@file   set_pvr_control.f90
+!!@brief  module set_pvr_control
+!!
+!!@date  Programmed by H.Matsui in May. 2006
 !
-!      module set_pvr_control
-!
-!     Written by H. Matsui on May., 2006
-!
-!!      subroutine read_set_each_pvr_controls                           &
-!!     &         (i_pvr, hd_pvr_ctl, hd_pvr_colordef, group,            &
-!!     &          nod_fld, fname_pvr_ctl, pvr_ctl_type,                 &
-!!     &          pvr_fld, pvr_param, pvr_data)
+!>@brief Set PVR parameters from control files
+!!
+!!@verbatim
+!!      subroutine read_pvr_controls(hd_pvr_ctl, hd_pvr_colordef,       &
+!!     &          num_pvr_ctl, fname_pvr_ctl, pvr_ctl, cflag_update)
+!!        integer(kind = kint), intent(in) :: num_pvr_ctl
+!!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl(num_pvr_ctl)
+!!      subroutine s_set_pvr_controls(group, nod_fld,                   &
+!!     &          num_pvr, pvr_ctl_type, pvr_fld, pvr_param, pvr_data)
+!!        integer(kind = kint), intent(in) :: num_pvr
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-!!        type(PVR_field_params), intent(inout) :: pvr_fld
-!!        type(PVR_control_params), intent(inout) :: pvr_param
-!!        type(PVR_image_generator), intent(inout) :: pvr_data
+!!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_pvr)
+!!        type(PVR_field_params), intent(inout) :: pvr_fld(num_pvr)
+!!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
+!!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !!
 !!      subroutine read_control_pvr_update                              &
 !!     &         (hd_pvr_ctl, fname_pvr_ctl, pvr_ctl_type)
@@ -25,6 +31,7 @@
 !!      subroutine read_control_colormap                                &
 !!     &         (hd_pvr_colordef, i_pvr, pvr_ctl_type)
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
+!!@endverbatim
 !
       module set_pvr_control
 !
@@ -41,7 +48,7 @@
 !
       private :: hd_view_transform
 !
-      private :: read_control_pvr, set_each_pvr_control
+      private :: read_control_pvr
 !
 !  ---------------------------------------------------------------------
 !
@@ -49,60 +56,52 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_set_each_pvr_controls                             &
-     &         (i_pvr, hd_pvr_ctl, hd_pvr_colordef, group,              &
-     &          nod_fld, fname_pvr_ctl, pvr_ctl_type,                   &
-     &          pvr_fld, pvr_param, pvr_data)
+      subroutine read_pvr_controls(hd_pvr_ctl, hd_pvr_colordef,         &
+     &          num_pvr_ctl, fname_pvr_ctl, pvr_ctl, cflag_update)
 !
-      use t_mesh_data
-      use t_phys_data
-      use t_rendering_vr_image
       use bcast_control_data_4_pvr
 !
-      type(mesh_groups), intent(in) :: group
-      type(phys_data), intent(in) :: nod_fld
-      integer(kind = kint), intent(in) :: i_pvr
+      integer(kind = kint), intent(in) :: num_pvr_ctl
       character(len = kchara), intent(in)  :: hd_pvr_ctl
       character(len = kchara), intent(in) :: hd_pvr_colordef
-      character(len = kchara), intent(in)  :: fname_pvr_ctl
+      character(len = kchara), intent(in)                               &
+     &                        :: fname_pvr_ctl(num_pvr_ctl)
 !
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-      type(PVR_field_params), intent(inout) :: pvr_fld
-      type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_image_generator), intent(inout) :: pvr_data
+      character(len=kchara), intent(inout) :: cflag_update
+      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl(num_pvr_ctl)
 !
-      integer(kind = kint) :: i_psf
+      integer(kind = kint) :: i_pvr, i_psf
 !
+!
+      if(pvr_ctl(1)%updated_ctl%iflag .gt. 0) then
+        cflag_update = pvr_ctl(1)%updated_ctl%charavalue
+      end if
 !
       ctl_file_code = pvr_ctl_file_code
-      call read_control_pvr(i_pvr, hd_pvr_ctl, hd_pvr_colordef,         &
-     &    fname_pvr_ctl, pvr_ctl_type)
-      call read_control_modelview(i_pvr, pvr_ctl_type)
-      call read_control_colormap                                        &
-     &   (hd_pvr_colordef, i_pvr, pvr_ctl_type)
+      do i_pvr = 1, num_pvr_ctl
+        call read_control_pvr(i_pvr, hd_pvr_ctl, hd_pvr_colordef,       &
+     &    fname_pvr_ctl(i_pvr), pvr_ctl(i_pvr))
+        call read_control_modelview(i_pvr, pvr_ctl(i_pvr))
+        call read_control_colormap                                      &
+     &     (hd_pvr_colordef, i_pvr, pvr_ctl(i_pvr))
 !
-      do i_psf = 1, pvr_ctl_type%num_pvr_sect_ctl
-        call read_control_pvr_section_def                               &
-     &     (pvr_ctl_type%pvr_sect_ctl(i_psf))
+        do i_psf = 1, pvr_ctl(i_pvr)%num_pvr_sect_ctl
+          call read_control_pvr_section_def                             &
+     &     (pvr_ctl(i_pvr)%pvr_sect_ctl(i_psf))
+        end do
+!
+        call bcast_vr_psf_ctl(pvr_ctl(i_pvr))
       end do
 !
-      call bcast_vr_psf_ctl(pvr_ctl_type)
-!
-      call set_each_pvr_control(group%ele_grp, group%surf_grp,          &
-     &    nod_fld%num_phys, nod_fld%phys_name, pvr_ctl_type,            &
-     &    pvr_fld, pvr_data, pvr_param)
-!
-      call deallocate_cont_dat_pvr(pvr_ctl_type)
-!
-      end subroutine read_set_each_pvr_controls
+      end subroutine read_pvr_controls
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_each_pvr_control                                   &
-     &       (ele_grp, surf_grp, num_nod_phys, phys_nod_name,           &
-     &        pvr_ctl_type, pvr_fld, pvr_data, pvr_param)
+      subroutine s_set_pvr_controls(group, nod_fld,                     &
+     &          num_pvr, pvr_ctl_type, pvr_fld, pvr_param, pvr_data)
 !
       use t_group_data
+      use t_phys_data
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
       use t_control_data_pvr_misc
@@ -110,43 +109,49 @@
       use set_field_comp_for_viz
       use set_pvr_modelview_matrix
 !
-      type(group_data), intent(in) :: ele_grp
-      type(surface_group_data), intent(in) :: surf_grp
+      integer(kind = kint), intent(in) :: num_pvr
+      type(mesh_groups), intent(in) :: group
+      type(phys_data), intent(in) :: nod_fld
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_pvr)
 !
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      type(PVR_field_params), intent(inout) :: pvr_fld(num_pvr)
+      type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
+      type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !
-      type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
-      type(PVR_field_params), intent(inout) :: pvr_fld
-      type(PVR_control_params), intent(inout) :: pvr_param
-      type(PVR_image_generator), intent(inout) :: pvr_data
-!
+      integer(kind = kint) :: i_pvr
       integer(kind = kint) :: icheck_ncomp(1)
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
-      call set_pvr_file_control(pvr_ctl_type, pvr_param%file)
-      call check_pvr_field_control(pvr_ctl_type,                        &
-     &    num_nod_phys, phys_nod_name)
+      do i_pvr = 1, num_pvr
+        if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
+        call set_pvr_file_control(pvr_ctl_type(i_pvr),                  &
+     &      pvr_param(i_pvr)%file, pvr_data(i_pvr)%view)
+        call check_pvr_field_control(pvr_ctl_type(i_pvr),               &
+     &      nod_fld%num_phys, nod_fld%phys_name)
 !
-      call set_control_field_4_pvr                                      &
-     &   (pvr_ctl_type%pvr_field_ctl, pvr_ctl_type%pvr_comp_ctl,        &
-     &    num_nod_phys, phys_nod_name, pvr_fld%field_def, icheck_ncomp)
-      if (icheck_ncomp(1) .gt. 1)                                       &
+        call set_control_field_4_pvr                                    &
+     &     (pvr_ctl_type(i_pvr)%pvr_field_ctl,                          &
+     &      pvr_ctl_type(i_pvr)%pvr_comp_ctl,                           &
+     &      nod_fld%num_phys, nod_fld%phys_name,                        &
+     &      pvr_fld(i_pvr)%field_def, icheck_ncomp)
+        if (icheck_ncomp(1) .gt. 1)                                     &
      &     call calypso_MPI_abort(ierr_PVR, 'set scalar for rendering')
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
-      call set_control_pvr(pvr_ctl_type, ele_grp, surf_grp,             &
-     &    pvr_fld%area_def, pvr_data%view, pvr_param%field,             &
-     &    pvr_data%color, pvr_param%colorbar)
+        if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
+        call set_control_pvr                                            &
+     &     (pvr_ctl_type(i_pvr), group%ele_grp, group%surf_grp,         &
+     &      pvr_fld(i_pvr)%area_def, pvr_param(i_pvr)%field,            &
+     &       pvr_data(i_pvr)%color, pvr_param(i_pvr)%colorbar)
 !
 !   set transfer matrix
 !
-      call s_set_pvr_modelview_matrix                                   &
-     &   (pvr_ctl_type%mat, pvr_data%view, pvr_data%screen)
+        call s_set_pvr_modelview_matrix(pvr_ctl_type(i_pvr)%mat,        &
+     &      pvr_data(i_pvr)%view, pvr_data(i_pvr)%screen)
+      end do
 !
-      end subroutine set_each_pvr_control
+      end subroutine s_set_pvr_controls
 !
+!  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine flush_each_pvr_control(pvr_fld, pvr_data, pvr_param)

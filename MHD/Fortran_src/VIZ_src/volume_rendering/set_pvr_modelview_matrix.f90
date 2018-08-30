@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine s_set_pvr_modelview_matrix                           &
 !!     &         (mat, view_param, pvr_screen)
-!!        type(modeview_ctl), intent(inout) :: mat
+!!        type(modeview_ctl), intent(in) :: mat
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(pvr_projected_data), intent(inout) :: pvr_screen
 !!@endverbatim
@@ -43,7 +43,7 @@
       subroutine s_set_pvr_modelview_matrix                             &
      &         (mat, view_param, pvr_screen)
 !
-      type(modeview_ctl), intent(inout) :: mat
+      type(modeview_ctl), intent(in) :: mat
       type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_projected_data), intent(inout) :: pvr_screen
 !

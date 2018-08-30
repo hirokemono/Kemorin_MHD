@@ -46,6 +46,7 @@
       use t_geometries_in_pvr_screen
       use t_control_data_LIC_pvrs
       use t_volume_rendering
+      use t_pvr_image_data
 !
       use each_volume_rendering
 !
@@ -62,12 +63,19 @@
         character(len=kchara) :: cflag_update
 !>        Number of volume rendering
         integer(kind = kint) :: num_pvr = 0
+!
+!>        Number of rendering for LIC rendering
+        integer(kind = kint) :: num_lic_rendering = 0
+!
 !>        Structure of LIC field parameters
         type(LIC_field_params), allocatable :: lic_fld(:)
 !>        Structure of LIC control parameters
         type(PVR_control_params), allocatable :: pvr_param(:)
 !>        Structure of LIC image generation
         type(PVR_image_generator), allocatable :: pvr_data(:)
+!
+!>        Structure for LIC images
+        type(pvr_mul_image_data) :: lic_images
       end type lic_volume_rendering_module
 !
       private :: alloc_components_4_LIC
@@ -130,8 +138,19 @@
       integer(kind = kint) :: i_pvr
 !
 !
-      lic%num_pvr = lic_ctls%num_lic_ctl
-      if(lic%num_pvr .le. 0) return
+      if(lic%num_pvr .le. 0) then
+        lic%num_pvr = 0
+        return
+      end if
+!
+      call read_lic_controls(hd_lic_ctl, hd_pvr_colordef,               &
+     &    lic_ctls%num_lic_ctl, lic_ctls%fname_lic_ctl,                 &
+     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
+     &    lic%cflag_update)
+!
+      call s_num_rendering_and_images                                   &
+     &   (lic_ctls%num_lic_ctl, lic_ctls%pvr_ctl_type,                  &
+     &    lic%num_pvr, lic%num_lic_rendering, lic%lic_images)
 !
       call alloc_components_4_LIC(lic)
 !
@@ -142,19 +161,13 @@
         call reset_pvr_view_parameteres(lic%pvr_data(i_pvr)%view)
       end do
 !
-      if(lic_ctls%pvr_ctl_type(1)%updated_ctl%iflag .gt. 0) then
-        lic%cflag_update                                                &
-     &         = lic_ctls%pvr_ctl_type(1)%updated_ctl%charavalue
-      end if
+      call s_set_lic_controls(femmesh%group, nod_fld,                   &
+     &    lic%num_pvr, lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,    &
+     &    lic%lic_fld, lic%pvr_param, lic%pvr_data)
 !
-      do i_pvr = 1, lic%num_pvr
-        call read_set_each_lic_controls                                 &
-     &     (i_pvr, hd_lic_ctl, hd_pvr_colordef,                         &
-     &      femmesh%group, nod_fld, lic_ctls%fname_lic_ctl(i_pvr),      &
-     &      lic_ctls%pvr_ctl_type(i_pvr), lic_ctls%lic_ctl_type(i_pvr), &
-     &      lic%lic_fld(i_pvr), lic%pvr_param(i_pvr),                   &
-     &      lic%pvr_data(i_pvr))
-        call calypso_mpi_barrier
+      do i_pvr = 1, lic_ctls%num_lic_ctl
+        call dealloc_lic_count_data                                     &
+     &     (lic_ctls%pvr_ctl_type(i_pvr), lic_ctls%lic_ctl_type(i_pvr))
       end do
 !
       do i_pvr = 1, lic%num_pvr
@@ -240,6 +253,8 @@
      &      lic%pvr_param(i_pvr), lic%pvr_data(i_pvr))
       end do
       deallocate(lic%lic_fld, lic%pvr_param, lic%pvr_data)
+!
+      call dealloc_istack_pvr_image_4_merge(lic%lic_images)
 !
       end subroutine dealloc_LIC_data
 !
