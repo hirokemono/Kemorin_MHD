@@ -61,9 +61,6 @@
 !>        Number of volume rendering
         integer(kind = kint) :: num_pvr = 0
 !
-!>        Number of rendering for volume rendering
-        integer(kind = kint) :: num_pvr_rendering = 0
-!
 !>        Structure of PVR field parameters
         type(PVR_field_params), allocatable :: pvr_fld(:)
 !>        Structure of PVR control parameters
@@ -72,7 +69,7 @@
         type(PVR_image_generator), allocatable :: pvr_data(:)
 !
 !>        Structure for PVR images
-        type(pvr_mul_image_data) :: pvr_images
+        type(pvr_multi_rendering) :: pvr_images
       end type volume_rendering_module
 !
       private :: alloc_components_4_pvr
@@ -147,7 +144,7 @@
 !
       call s_num_rendering_and_images                                   &
      &   (nprocs, pvr_ctls%num_pvr_ctl, pvr_ctls%pvr_ctl_type,          &
-     &    pvr%num_pvr, pvr%num_pvr_rendering, pvr%pvr_images)
+     &    pvr%num_pvr, pvr%pvr_images)
 !
 !
       call alloc_components_4_pvr(pvr)
@@ -172,8 +169,8 @@
      &    pvr%pvr_fld, pvr%pvr_param, pvr%pvr_data)
 !
       do i_pvr = 1, pvr%num_pvr
-        call each_PVR_initialize                                        &
-     &     (i_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,          &
+        call each_PVR_initialize(i_pvr,                                 &
+     &      pvr%pvr_images%img(i_pvr)%file_param%irank_image_file,      &
      &      femmesh%mesh, femmesh%group, ele_mesh,                      &
      &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                  &
      &      pvr%pvr_data(i_pvr)%rgb)
@@ -208,8 +205,8 @@
       call start_elapsed_time(71)
       do i_pvr = 1, pvr%num_pvr
        if(pvr%pvr_data(i_pvr)%view%iflag_rotate_snap .le. 0) then
-         call each_PVR_rendering                                        &
-     &      (istep_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,     &
+         call each_PVR_rendering(istep_pvr,                             &
+     &       pvr%pvr_images%img(i_pvr)%file_param%irank_image_file,     &
      &       femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,      &
      &       pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr)%file,             &
      &       pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                 &
@@ -219,8 +216,8 @@
 !
       do i_pvr = 1, pvr%num_pvr
        if(pvr%pvr_data(i_pvr)%view%iflag_rotate_snap .gt. 0) then
-         call each_PVR_rendering_w_rot                                  &
-     &      (istep_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,     &
+         call each_PVR_rendering_w_rot(istep_pvr,                       &
+     &       pvr%pvr_images%img(i_pvr)%file_param%irank_image_file,     &
      &       femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,      &
      &       pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr)%file,             &
      &       pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                 &

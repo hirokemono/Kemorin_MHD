@@ -151,7 +151,8 @@
           if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
           call set_fixed_view_and_image                                 &
      &       (mesh%node, mesh%ele, ele_mesh%surf, group, pvr_param,     &
-     &        pvr_rgb, pvr_data%view%projection_mat, pvr_data)
+     &        pvr_rgb, pvr_data%view%projection_mat,                    &
+     &        pvr_data%start_pt, pvr_data%image, pvr_data)
         end if
       end if
 !
@@ -164,6 +165,7 @@
      &          pvr_fld, file_param, pvr_param, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
+      use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       integer(kind = kint), intent(in) :: irank_tgt
@@ -192,20 +194,77 @@
 !
       if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
-          call anaglyph_rendering_fixed_view(istep_pvr, irank_tgt,      &
-     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        pvr_param, file_param, pvr_data%view%projection_left,     &
-     &        pvr_data%view%projection_right, pvr_data, pvr_rgb)
-        else
+!
+!   Left eye
           call streo_rendering_fixed_view(istep_pvr, irank_tgt,         &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
      &        pvr_param, file_param, pvr_data%view%projection_left,     &
-     &        pvr_data%view%projection_right, pvr_data, pvr_rgb)
+     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb)
+          call store_left_eye_image(irank_tgt, pvr_rgb)
+!
+!   right eye
+          call streo_rendering_fixed_view(istep_pvr, irank_tgt,         &
+     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &        pvr_param, file_param, pvr_data%view%projection_right,    &
+     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb)
+          call add_left_eye_image(irank_tgt, pvr_rgb)
+!
+          call end_elapsed_time(71)
+          call start_elapsed_time(72)
+          call sel_write_pvr_image_file(file_param,                     &
+     &        iminus, istep_pvr, irank_tgt, IFLAG_NORMAL, pvr_rgb)
+          call calypso_mpi_barrier
+          call end_elapsed_time(72)
+          call start_elapsed_time(71)
+        else
+!
+!   Left eye
+          call streo_rendering_fixed_view(istep_pvr, irank_tgt,         &
+     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &        pvr_param, file_param, pvr_data%view%projection_left,     &
+     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb)
+!
+          call end_elapsed_time(71)
+          call start_elapsed_time(72)
+          call sel_write_pvr_image_file(file_param, iminus, istep_pvr,  &
+     &        irank_tgt, IFLAG_LEFT, pvr_rgb)
+          call calypso_mpi_barrier
+          call end_elapsed_time(72)
+          call start_elapsed_time(71)
+!
+!   right eye
+          call streo_rendering_fixed_view(istep_pvr, irank_tgt,         &
+     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &        pvr_param, file_param, pvr_data%view%projection_right,    &
+     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb)
+!
+          call end_elapsed_time(71)
+          call start_elapsed_time(72)
+          call sel_write_pvr_image_file(file_param, iminus, istep_pvr,  &
+     &        irank_tgt, IFLAG_RIGHT, pvr_rgb)
+          call calypso_mpi_barrier
+          call end_elapsed_time(72)
+          call start_elapsed_time(71)
         end if
       else
         call rendering_with_fixed_view                                  &
      &     (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf,   &
-     &      pvr_param, file_param, pvr_data, pvr_rgb)
+     &      pvr_param, file_param,                                      &
+     &      pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb)
+!
+        call end_elapsed_time(71)
+        call start_elapsed_time(72)
+        if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
+        call sel_write_pvr_image_file(file_param, iminus,               &
+     &      istep_pvr, irank_tgt, IFLAG_NORMAL, pvr_rgb)
+!
+        if(file_param%iflag_monitoring .gt. 0) then
+          call sel_write_pvr_image_file(file_param, iminus,             &
+     &      iminus, irank_tgt, IFLAG_NORMAL, pvr_rgb)
+        end if
+        call calypso_mpi_barrier
+        call end_elapsed_time(72)
+        call start_elapsed_time(71)
       end if
 !
       end subroutine each_PVR_rendering

@@ -64,9 +64,6 @@
 !>        Number of volume rendering
         integer(kind = kint) :: num_pvr = 0
 !
-!>        Number of rendering for LIC rendering
-        integer(kind = kint) :: num_lic_rendering = 0
-!
 !>        Structure of LIC field parameters
         type(LIC_field_params), allocatable :: lic_fld(:)
 !>        Structure of LIC control parameters
@@ -75,7 +72,7 @@
         type(PVR_image_generator), allocatable :: pvr_data(:)
 !
 !>        Structure for LIC images
-        type(pvr_mul_image_data) :: lic_images
+        type(pvr_multi_rendering) :: lic_images
       end type lic_volume_rendering_module
 !
       private :: alloc_components_4_LIC
@@ -150,7 +147,7 @@
 !
       call s_num_rendering_and_images                                   &
      &   (nprocs, lic_ctls%num_lic_ctl, lic_ctls%pvr_ctl_type,          &
-     &    lic%num_pvr, lic%num_lic_rendering, lic%lic_images)
+     &    lic%num_pvr, lic%lic_images)
 !
       call alloc_components_4_LIC(lic)
 !
@@ -181,8 +178,8 @@
      &    lic%lic_fld, lic%pvr_param, lic%pvr_data)
 !
       do i_lic = 1, lic%num_pvr
-        call each_PVR_initialize                                        &
-     &     (i_lic, lic%lic_images%img(i_lic)%irank_image_file,          &
+        call each_PVR_initialize(i_lic,                                 &
+     &      lic%lic_images%img(i_lic)%file_param%irank_image_file,      &
      &      femmesh%mesh, femmesh%group, ele_mesh,                      &
      &      lic%pvr_param(i_lic), lic%pvr_data(i_lic),                  &
      &      lic%pvr_data(i_lic)%rgb)
@@ -218,8 +215,8 @@
       call start_elapsed_time(76)
       do i_lic = 1, lic%num_pvr
         if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .le. 0) then
-          call s_each_LIC_rendering                                     &
-     &       (istep_pvr, lic%lic_images%img(i_lic)%irank_image_file,    &
+          call s_each_LIC_rendering(istep_pvr,                          &
+     &        lic%lic_images%img(i_lic)%file_param%irank_image_file,    &
      &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
      &        lic%lic_fld(i_lic), lic%pvr_param(i_lic)%file,            &
      &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
@@ -229,8 +226,8 @@
 !
       do i_lic = 1, lic%num_pvr
         if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .gt. 0) then
-          call s_each_LIC_rendering_w_rot                               &
-     &       (istep_pvr, lic%lic_images%img(i_lic)%irank_image_file,    &
+          call s_each_LIC_rendering_w_rot(istep_pvr,                    &
+     &        lic%lic_images%img(i_lic)%file_param%irank_image_file,    &
      &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
      &        lic%lic_fld(i_lic), lic%pvr_param(i_lic)%file,            &
      &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
