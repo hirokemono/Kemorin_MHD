@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine rendering_image                                      &
-!!     &         (istep_pvr, file_param, node, ele, surf, color_param,  &
-!!     &          cbar_param, field_pvr, pvr_screen, pvr_start,         &
-!!     &          pvr_img, pvr_rgb)
+!!     &         (istep_pvr, irank_tgt, file_param, node, ele, surf,    &
+!!     &          color_param, cbar_param, field_pvr, pvr_screen,       &
+!!     &          pvr_start, pvr_img, pvr_rgb)
 !!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -22,8 +22,8 @@
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
-!!      subroutine sel_write_pvr_image_file                             &
-!!     &       (file_param, i_rot, istep_pvr, isel_projection, pvr_rgb)
+!!      subroutine sel_write_pvr_image_file(file_param, i_rot,          &
+!!     &          istep_pvr, irank_tgt, isel_projection, pvr_rgb)
 !!      subroutine sel_write_pvr_local_img                              &
 !!     &        (file_param, index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -47,9 +47,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image                                        &
-     &         (istep_pvr, file_param, node, ele, surf, color_param,    &
-     &          cbar_param, field_pvr, pvr_screen, pvr_start,           &
-     &          pvr_img, pvr_rgb)
+     &         (istep_pvr, irank_tgt, file_param, node, ele, surf,      &
+     &          color_param, cbar_param, field_pvr, pvr_screen,         &
+     &          pvr_start, pvr_img, pvr_rgb)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -67,6 +67,7 @@
 !
       type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -79,9 +80,6 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_segmented_img), intent(inout) :: pvr_img
       type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-!>       MPI rank for image output
-      integer(kind = kint), parameter :: irank_tgt = 0
 !
       integer(kind = kint) :: i, j, k, ipix
 !
@@ -158,8 +156,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_image_file                               &
-     &        (file_param, i_rot, istep_pvr, isel_projection, pvr_rgb)
+      subroutine sel_write_pvr_image_file(file_param, i_rot,            &
+     &          istep_pvr, irank_tgt, isel_projection, pvr_rgb)
 !
       use t_pvr_image_array
       use t_control_params_4_pvr
@@ -167,6 +165,7 @@
       use set_parallel_file_name
       use convert_real_rgb_2_bite
 !
+      integer(kind = kint), intent(in) :: irank_tgt
       type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: i_rot, istep_pvr
       integer(kind = kint), intent(in) :: isel_projection
@@ -176,7 +175,8 @@
       character(len=kchara) :: tmpchara, img_head
 !
 !
-      if(my_rank .ne. 0) return
+      if(my_rank .ne. irank_tgt) return
+      write(*,*) 'output file from ', my_rank
 !
       if(isel_projection .eq. IFLAG_LEFT) then
         call add_left_label(file_param%pvr_prefix, img_head)

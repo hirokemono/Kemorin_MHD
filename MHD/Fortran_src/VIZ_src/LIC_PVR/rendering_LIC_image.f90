@@ -7,12 +7,13 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine lic_rendering_with_rotation(istep_pvr,               &
+!!      subroutine lic_rendering_with_rotation(istep_pvr, irank_tgt,    &
 !!     &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
-!!      subroutine lic_rendering_with_fixed_view(istep_pvr,             &
+!!      subroutine lic_rendering_with_fixed_view(istep_pvr, irank_tgt,  &
 !!     &          node, ele, surf, lic_p, pvr_param, pvr_data)
 !!
-!!      subroutine rendering_lic_at_once(isel_projection, istep_pvr,    &
+!!      subroutine rendering_lic_at_once                                &
+!!     &         (isel_projection, istep_pvr, irank_tgt,                &
 !!     &           node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -53,7 +54,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine lic_rendering_with_rotation(istep_pvr,                 &
+      subroutine lic_rendering_with_rotation(istep_pvr, irank_tgt,      &
      &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
@@ -61,6 +62,7 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -81,14 +83,15 @@
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
      &      pvr_data%screen)
 !
-        call rendering_lic_at_once(IFLAG_NORMAL, istep_pvr,             &
+        call rendering_lic_at_once(IFLAG_NORMAL, istep_pvr, irank_tgt,  &
      &       node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
         call end_elapsed_time(76)
         call start_elapsed_time(77)
         if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
         call sel_write_pvr_image_file                                   &
-     &   (pvr_param%file, i_rot, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
+     &   (pvr_param%file, i_rot, istep_pvr, irank_tgt,                  &
+     &    IFLAG_NORMAL, pvr_data%rgb)
         call calypso_mpi_barrier
         call end_elapsed_time(77)
         call start_elapsed_time(76)
@@ -102,7 +105,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine lic_rendering_with_fixed_view(istep_pvr,               &
+      subroutine lic_rendering_with_fixed_view(istep_pvr, irank_tgt,    &
      &          node, ele, surf, lic_p, pvr_param, pvr_data)
 !
       use composite_pvr_images
@@ -110,6 +113,7 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -123,7 +127,7 @@
      &   (pvr_data%start_pt_1, pvr_data%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
-      call rendering_image_4_lic(istep_pvr, pvr_param%file,             &
+      call rendering_image_4_lic(istep_pvr, irank_tgt, pvr_param%file,  &
      &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
      &    pvr_param%field, pvr_data%screen, pvr_data%start_pt,          &
      &    pvr_data%image, pvr_data%rgb)
@@ -132,11 +136,11 @@
       call start_elapsed_time(77)
       if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
       call sel_write_pvr_image_file(pvr_param%file, iminus,             &
-     &    istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
+     &    istep_pvr, irank_tgt, IFLAG_NORMAL, pvr_data%rgb)
 !
       if(pvr_param%file%iflag_monitoring .gt. 0) then
         call sel_write_pvr_image_file(pvr_param%file, iminus,           &
-     &      iminus, IFLAG_NORMAL, pvr_data%rgb)
+     &      iminus, irank_tgt, IFLAG_NORMAL, pvr_data%rgb)
       end if
       call calypso_mpi_barrier
       call end_elapsed_time(77)
@@ -147,8 +151,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_lic_at_once(isel_projection, istep_pvr,      &
-     &           node, ele, surf, group, lic_p, pvr_param, pvr_data)
+      subroutine rendering_lic_at_once                                  &
+     &         (isel_projection, istep_pvr, irank_tgt,                  &
+     &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
@@ -156,6 +161,7 @@
 !
       integer(kind = kint), intent(in) :: isel_projection
       integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -174,7 +180,7 @@
      &      pvr_data%start_pt, pvr_data%image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
-      call rendering_image_4_lic(istep_pvr, pvr_param%file,             &
+      call rendering_image_4_lic(istep_pvr, irank_tgt, pvr_param%file,  &
      &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
      &    pvr_param%field, pvr_data%screen, pvr_data%start_pt,          &
      &    pvr_data%image, pvr_data%rgb)

@@ -135,7 +135,7 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_lic
 !
 !
       if(lic%num_pvr .le. 0) then
@@ -154,36 +154,37 @@
 !
       call alloc_components_4_LIC(lic)
 !
-      do i_pvr = 1, lic%num_pvr
+      do i_lic = 1, lic%num_pvr
         call allocate_nod_data_4_pvr                                    &
      &     (femmesh%mesh%node%numnod, femmesh%mesh%ele%numele,          &
-     &      femmesh%group%surf_grp%num_grp, lic%pvr_param(i_pvr)%field)
-        call reset_pvr_view_parameteres(lic%pvr_data(i_pvr)%view)
+     &      femmesh%group%surf_grp%num_grp, lic%pvr_param(i_lic)%field)
+        call reset_pvr_view_parameteres(lic%pvr_data(i_lic)%view)
       end do
 !
       call s_set_lic_controls(femmesh%group, nod_fld,                   &
      &    lic%num_pvr, lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,    &
      &    lic%lic_fld, lic%pvr_param, lic%pvr_data)
 !
-      do i_pvr = 1, lic_ctls%num_lic_ctl
+      do i_lic = 1, lic_ctls%num_lic_ctl
         call dealloc_lic_count_data                                     &
-     &     (lic_ctls%pvr_ctl_type(i_pvr), lic_ctls%lic_ctl_type(i_pvr))
+     &     (lic_ctls%pvr_ctl_type(i_lic), lic_ctls%lic_ctl_type(i_lic))
       end do
 !
-      do i_pvr = 1, lic%num_pvr
+      do i_lic = 1, lic%num_pvr
         call alloc_nod_vector_4_lic(femmesh%mesh%node%numnod,          &
-     &      lic%lic_fld(i_pvr)%lic_param%num_masking,                  &
-     &      lic%pvr_param(i_pvr)%field)
+     &      lic%lic_fld(i_lic)%lic_param%num_masking,                  &
+     &      lic%pvr_param(i_lic)%field)
       end do
 !
       call find_lic_surf_domain                                         &
      &   (lic%num_pvr, femmesh%mesh, femmesh%group, ele_mesh,           &
      &    lic%lic_fld, lic%pvr_param, lic%pvr_data)
 !
-      do i_pvr = 1, lic%num_pvr
+      do i_lic = 1, lic%num_pvr
         call each_PVR_initialize                                        &
-     &     (i_pvr, femmesh%mesh, femmesh%group, ele_mesh,               &
-     &      lic%pvr_param(i_pvr), lic%pvr_data(i_pvr))
+     &     (i_lic, lic%lic_images%img(i_lic)%irank_image_file,          &
+     &      femmesh%mesh, femmesh%group, ele_mesh,                      &
+     &      lic%pvr_param(i_lic), lic%pvr_data(i_lic))
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -208,17 +209,18 @@
 !
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_lic
 !
 !
       if(lic%num_pvr.le.0 .or. istep_pvr.le.0) return
 !
       call start_elapsed_time(76)
-      do i_pvr = 1, lic%num_pvr
-        call s_each_LIC_rendering(istep_pvr,                            &
+      do i_lic = 1, lic%num_pvr
+        call s_each_LIC_rendering                                       &
+     &     (istep_pvr, lic%lic_images%img(i_lic)%irank_image_file,      &
      &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
-     &      lic%lic_fld(i_pvr), lic%pvr_param(i_pvr),                   &
-     &      lic%pvr_data(i_pvr))
+     &      lic%lic_fld(i_lic), lic%pvr_param(i_lic),                   &
+     &      lic%pvr_data(i_lic))
       end do
       call end_elapsed_time(76)
 !
@@ -244,13 +246,13 @@
 !
       use each_LIC_rendering
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_lic
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
 !
-      do i_pvr = 1, lic%num_pvr
-        call dealloc_each_lic_data(lic%lic_fld(i_pvr),                  &
-     &      lic%pvr_param(i_pvr), lic%pvr_data(i_pvr))
+      do i_lic = 1, lic%num_pvr
+        call dealloc_each_lic_data(lic%lic_fld(i_lic),                  &
+     &      lic%pvr_param(i_lic), lic%pvr_data(i_lic))
       end do
       deallocate(lic%lic_fld, lic%pvr_param, lic%pvr_data)
 !

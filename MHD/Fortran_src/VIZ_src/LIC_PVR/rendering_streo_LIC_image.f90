@@ -7,9 +7,9 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine streo_lic_rendering_fix_view(istep_pvr,              &
+!!      subroutine streo_lic_rendering_fix_view(istep_pvr, irank_tgt,   &
 !!     &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
-!!      subroutine streo_lic_rendering_with_rot(istep_pvr,              &
+!!      subroutine streo_lic_rendering_with_rot(istep_pvr, irank_tgt,   &
 !!     &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -50,7 +50,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine streo_lic_rendering_fix_view(istep_pvr,                &
+      subroutine streo_lic_rendering_fix_view(istep_pvr, irank_tgt,     &
      &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
@@ -59,6 +59,7 @@
       use rendering_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -75,17 +76,17 @@
 !
 !   Left eye
 !
-      call rendering_lic_at_once(IFLAG_LEFT, istep_pvr,                 &
+      call rendering_lic_at_once(IFLAG_LEFT, istep_pvr, irank_tgt,      &
      &    node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
       if(pvr_data%view%iflag_anaglyph .gt. 0) then
-        call store_left_eye_image(pvr_data%rgb)
+        call store_left_eye_image(irank_tgt, pvr_data%rgb)
       else
         call end_elapsed_time(76)
         call start_elapsed_time(77)
 !
         call sel_write_pvr_image_file(pvr_param%file,                   &
-     &     iminus, istep_pvr, IFLAG_LEFT, pvr_data%rgb)
+     &     iminus, istep_pvr, irank_tgt, IFLAG_LEFT, pvr_data%rgb)
 !
         call calypso_mpi_barrier
         call end_elapsed_time(77)
@@ -97,23 +98,23 @@
 !
 !   Right eye
 !
-      call rendering_lic_at_once(IFLAG_RIGHT, istep_pvr,                &
+      call rendering_lic_at_once(IFLAG_RIGHT, istep_pvr, irank_tgt,     &
      &    node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
       if(pvr_data%view%iflag_anaglyph .gt. 0) then
-        call add_left_eye_image(pvr_data%rgb)
+        call add_left_eye_image(irank_tgt, pvr_data%rgb)
 !
         call end_elapsed_time(76)
         call start_elapsed_time(77)
 !
         call sel_write_pvr_image_file(pvr_param%file,                   &
-     &      iminus, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
+     &      iminus, istep_pvr, irank_tgt, IFLAG_NORMAL, pvr_data%rgb)
       else
         call end_elapsed_time(76)
         call start_elapsed_time(77)
 !
         call sel_write_pvr_image_file(pvr_param%file,                   &
-     &      iminus, istep_pvr, IFLAG_RIGHT, pvr_data%rgb)
+     &      iminus, istep_pvr, irank_tgt, IFLAG_RIGHT, pvr_data%rgb)
       end if
       call calypso_mpi_barrier
       call end_elapsed_time(77)
@@ -127,7 +128,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine streo_lic_rendering_with_rot(istep_pvr,                &
+      subroutine streo_lic_rendering_with_rot(istep_pvr, irank_tgt,     &
      &          node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
@@ -135,6 +136,7 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -156,17 +158,17 @@
      &      pvr_data%screen)
 !
 !    Left eye
-        call rendering_lic_at_once(IFLAG_LEFT, istep_pvr,               &
+        call rendering_lic_at_once(IFLAG_LEFT, istep_pvr, irank_tgt,    &
      &      node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
-          call store_left_eye_image(pvr_data%rgb)
+          call store_left_eye_image(irank_tgt, pvr_data%rgb)
         else
           call end_elapsed_time(76)
           call start_elapsed_time(77)
 !
           call sel_write_pvr_image_file(pvr_param%file,                 &
-     &        i_rot, istep_pvr, IFLAG_LEFT, pvr_data%rgb)
+     &        i_rot, istep_pvr, irank_tgt, IFLAG_LEFT, pvr_data%rgb)
 !
           call calypso_mpi_barrier
           call end_elapsed_time(77)
@@ -177,22 +179,22 @@
         call deallocate_pvr_ray_start(pvr_data%start_pt)
 !
 !    Right eye
-        call rendering_lic_at_once(IFLAG_RIGHT, istep_pvr,              &
+        call rendering_lic_at_once(IFLAG_RIGHT, istep_pvr, irank_tgt,   &
      &      node, ele, surf, group, lic_p, pvr_param, pvr_data)
 !
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
-          call add_left_eye_image(pvr_data%rgb)
+          call add_left_eye_image(irank_tgt, pvr_data%rgb)
 !
           call end_elapsed_time(76)
           call start_elapsed_time(77)
           call sel_write_pvr_image_file(pvr_param%file,                 &
-     &        i_rot, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
+     &        i_rot, istep_pvr, irank_tgt, IFLAG_NORMAL, pvr_data%rgb)
         else
           call end_elapsed_time(76)
           call start_elapsed_time(77)
 !
           call sel_write_pvr_image_file(pvr_param%file,                 &
-     &        i_rot, istep_pvr, IFLAG_RIGHT, pvr_data%rgb)
+     &        i_rot, istep_pvr, irank_tgt, IFLAG_RIGHT, pvr_data%rgb)
         end if
         call calypso_mpi_barrier
         call end_elapsed_time(77)

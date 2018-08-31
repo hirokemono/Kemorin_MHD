@@ -16,7 +16,8 @@
 !!        type(pvr_field_parameter), intent(in) :: fld_params
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(pvr_projected_field), intent(inout) :: field_pvr
-!!      subroutine set_pixel_on_pvr_screen(view, pixel_xy, pvr_rgb)
+!!      subroutine set_pixel_on_pvr_screen                              &
+!!     &         (irank_tgt, view, pixel_xy, pvr_rgb)
 !!      subroutine flush_pixel_on_pvr_screen(pixel_xy, pvr_rgb)
 !!        type(pvr_view_parameter), intent(in) :: view
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
@@ -81,19 +82,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pixel_on_pvr_screen(view, pixel_xy, pvr_rgb)
+      subroutine set_pixel_on_pvr_screen                                &
+     &         (irank_tgt, view, pixel_xy, pvr_rgb)
 !
       use t_geometries_in_pvr_screen
       use t_pvr_image_array
       use set_projection_matrix
 !
+      integer(kind = kint), intent(in) :: irank_tgt
       type(pvr_view_parameter), intent(in) :: view
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       call allocate_pixel_position_pvr(view%n_pvr_pixel, pixel_xy)
-      call alloc_pvr_image_array_type(view%n_pvr_pixel,pvr_rgb)
+      call alloc_pvr_image_array_type                                   &
+     &   (irank_tgt, view%n_pvr_pixel,pvr_rgb)
 !
       call set_pixel_points_on_project                                  &
      &   (view%n_pvr_pixel(1), view%n_pvr_pixel(2),                     &

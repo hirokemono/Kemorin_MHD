@@ -7,16 +7,17 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_with_rotation(istep_pvr, node, ele, surf,  &
-!!     &          group, pvr_param, pvr_data)
+!!      subroutine rendering_with_rotation(istep_pvr, irank_tgt,        &
+!!     &          node, ele, surf, group, pvr_param, pvr_data)
 !!      subroutine set_fixed_view_and_image(node, ele, surf, group,     &
 !!     &          pvr_param, pvr_data)
-!!      subroutine rendering_with_fixed_view(istep_pvr, node, ele, surf,&
-!!     &          pvr_param, pvr_data)
+!!      subroutine rendering_with_fixed_view(istep_pvr, irank_tgt,      &
+!!     &          node, ele, surf, pvr_param, pvr_data)
 !!      subroutine flush_rendering_4_fixed_view(pvr_data)
 !!
-!!      subroutine rendering_at_once(isel_projection, istep_pvr,        &
-!!     &           node, ele, surf, group, pvr_param, pvr_data)
+!!      subroutine rendering_at_once                                    &
+!!     &         (isel_projection, istep_pvr, irank_tgt,                &
+!!     &          node, ele, surf, group, pvr_param, pvr_data)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -99,14 +100,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_rotation(istep_pvr, node, ele, surf,    &
-     &          group, pvr_param, pvr_data)
+      subroutine rendering_with_rotation(istep_pvr, irank_tgt,          &
+     &          node, ele, surf, group, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+     integer(kind = kint), intent(in) :: irank_tgt
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -122,18 +124,19 @@
       ist_rot = pvr_data%view%istart_rot
       ied_rot = pvr_data%view%iend_rot
       do i_rot = ist_rot, ied_rot
-        call cal_pvr_modelview_matrix                                   &
+        call cal_pvr_modelview_matrix                                    &
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
      &      pvr_data%screen)
 !
-        call rendering_at_once(IFLAG_NORMAL, istep_pvr,                 &
+        call rendering_at_once(IFLAG_NORMAL, istep_pvr, irank_tgt,      &
      &       node, ele, surf, group, pvr_param, pvr_data)
 !
         call end_elapsed_time(71)
         call start_elapsed_time(72)
         if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
         call sel_write_pvr_image_file                                   &
-     &   (pvr_param%file, i_rot, istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
+     &   (pvr_param%file, i_rot, istep_pvr, irank_tgt,                  &
+     &    IFLAG_NORMAL, pvr_data%rgb)
         call calypso_mpi_barrier
         call end_elapsed_time(72)
         call start_elapsed_time(71)
@@ -182,13 +185,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_fixed_view(istep_pvr, node, ele, surf,  &
-     &          pvr_param, pvr_data)
+      subroutine rendering_with_fixed_view(istep_pvr, irank_tgt,        &
+     &          node, ele, surf, pvr_param, pvr_data)
 !
       use composite_pvr_images
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -201,7 +205,7 @@
      &   (pvr_data%start_pt_1, pvr_data%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(istep_pvr, pvr_param%file,                   &
+      call rendering_image(istep_pvr, irank_tgt, pvr_param%file,        &
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
      &    pvr_param%field, pvr_data%screen, pvr_data%start_pt,          &
      &    pvr_data%image, pvr_data%rgb)
@@ -210,11 +214,11 @@
       call start_elapsed_time(72)
       if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
       call sel_write_pvr_image_file(pvr_param%file, iminus,             &
-     &    istep_pvr, IFLAG_NORMAL, pvr_data%rgb)
+     &    istep_pvr, irank_tgt, IFLAG_NORMAL, pvr_data%rgb)
 !
       if(pvr_param%file%iflag_monitoring .gt. 0) then
         call sel_write_pvr_image_file(pvr_param%file, iminus,           &
-     &      iminus, IFLAG_NORMAL, pvr_data%rgb)
+     &      iminus, irank_tgt, IFLAG_NORMAL, pvr_data%rgb)
       end if
       call calypso_mpi_barrier
       call end_elapsed_time(72)
@@ -238,14 +242,16 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_at_once(isel_projection, istep_pvr,          &
-     &           node, ele, surf, group, pvr_param, pvr_data)
+      subroutine rendering_at_once                                      &
+     &         (isel_projection, istep_pvr, irank_tgt,                  &
+     &          node, ele, surf, group, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: isel_projection
+      integer(kind = kint), intent(in) :: irank_tgt
       integer(kind = kint), intent(in) :: istep_pvr
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -264,7 +270,7 @@
      &      pvr_data%start_pt, pvr_data%image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(istep_pvr, pvr_param%file,                   &
+      call rendering_image(istep_pvr, irank_tgt, pvr_param%file,        &
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
      &    pvr_param%field, pvr_data%screen, pvr_data%start_pt,          &
      &    pvr_data%image, pvr_data%rgb)

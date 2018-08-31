@@ -173,7 +173,8 @@
 !
       do i_pvr = 1, pvr%num_pvr
         call each_PVR_initialize                                        &
-     &     (i_pvr, femmesh%mesh, femmesh%group, ele_mesh,               &
+     &     (i_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,          &
+     &      femmesh%mesh, femmesh%group, ele_mesh,                      &
      &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))
       end do
 !
@@ -205,7 +206,8 @@
 !
       call start_elapsed_time(71)
       do i_pvr = 1, pvr%num_pvr
-        call each_PVR_rendering(istep_pvr,                              &
+        call each_PVR_rendering                                         &
+     &     (istep_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,      &
      &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
      &      pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr),                   &
      &      pvr%pvr_data(i_pvr))

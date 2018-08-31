@@ -7,8 +7,8 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_image_4_lic(istep_pvr, file_param,         &
-!!     &          node, ele, surf, lic_p, color_param,                  &
+!!      subroutine rendering_image_4_lic(istep_pvr, irank_tgt,          &
+!!     &          file_param, node, ele, surf, lic_p, color_param,      &
 !!     &          cbar_param, field_pvr, pvr_screen, pvr_start,         &
 !!     &          pvr_img, pvr_rgb)
 !!        type(pvr_output_parameter), intent(in) :: file_param
@@ -40,8 +40,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image_4_lic(istep_pvr, file_param,           &
-     &          node, ele, surf, lic_p, color_param,                    &
+      subroutine rendering_image_4_lic(istep_pvr, irank_tgt,            &
+     &          file_param, node, ele, surf, lic_p, color_param,        &
      &          cbar_param, field_pvr, pvr_screen, pvr_start,           &
      &          pvr_img, pvr_rgb)
 !
@@ -63,6 +63,7 @@
 !
       type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -76,9 +77,6 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_segmented_img), intent(inout) :: pvr_img
       type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-!>       MPI rank for image output
-      integer(kind = kint), parameter :: irank_tgt = 0
 !
       integer(kind = kint) :: i, j, k, ipix
 !

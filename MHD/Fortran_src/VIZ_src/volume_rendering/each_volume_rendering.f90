@@ -12,10 +12,10 @@
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
 !!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !!
-!!      subroutine each_PVR_initialize                                  &
-!!     &         (i_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
-!!      subroutine each_PVR_rendering                                   &
-!!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
+!!      subroutine each_PVR_initialize(i_pvr, irank_tgt,                &
+!!     &          mesh, group, ele_mesh, pvr_param, pvr_data)
+!!      subroutine each_PVR_rendering(istep_pvr, irank_tgt,             &
+!!     &          mesh, group, ele_mesh, jacs, nod_fld,                 &
 !!     &          pvr_fld, pvr_param, pvr_data)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
@@ -98,8 +98,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_initialize                                    &
-     &         (i_pvr, mesh, group, ele_mesh, pvr_param, pvr_data)
+      subroutine each_PVR_initialize(i_pvr, irank_tgt,                  &
+     &          mesh, group, ele_mesh, pvr_param, pvr_data)
 !
       use t_control_data_pvr_misc
       use set_pvr_control
@@ -108,6 +108,7 @@
       use find_selected_domain_bd
 !
       integer(kind = kint), intent(in) :: i_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(element_geometry), intent(in) :: ele_mesh
@@ -121,7 +122,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_pixel_on_pvr_screen'
       call set_pixel_on_pvr_screen                                      &
-     &   (pvr_data%view, pvr_param%pixel, pvr_data%rgb)
+     &   (irank_tgt, pvr_data%view, pvr_param%pixel, pvr_data%rgb)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
       call set_pvr_projection_matrix(i_pvr, pvr_data%view)
@@ -148,13 +149,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine each_PVR_rendering                                     &
-     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
+      subroutine each_PVR_rendering(istep_pvr, irank_tgt,               &
+     &          mesh, group, ele_mesh, jacs, nod_fld,                   &
      &          pvr_fld, pvr_param, pvr_data)
 !
       use cal_pvr_modelview_mat
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
@@ -178,22 +180,22 @@
 !
       if(pvr_data%view%iflag_rotate_snap .gt. 0) then
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
-          call streo_rendering_with_rotation                            &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+          call streo_rendering_with_rotation(istep_pvr, irank_tgt,      &
+     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
      &        pvr_param, pvr_data)
         else
-          call rendering_with_rotation                                  &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
+          call rendering_with_rotation(istep_pvr, irank_tgt,            &
+     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
      &        pvr_param, pvr_data)
         end if
       else
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_rendering_fixed_view                               &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
+     &       (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf, &
      &        group, pvr_param, pvr_data)
         else
           call rendering_with_fixed_view                                &
-     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
+     &       (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf, &
      &        pvr_param, pvr_data)
         end if
       end if

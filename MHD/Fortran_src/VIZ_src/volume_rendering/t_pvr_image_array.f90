@@ -7,7 +7,8 @@
 !> @brief Structures for PVR Image data
 !!
 !!@verbatim
-!!      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_rgb)
+!!      subroutine alloc_pvr_image_array_type                           &
+!!     &         (irank_tgt, n_pvr_pixel, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!      subroutine alloc_pvr_subimage_flags(num_pixel_xy, pvr_img)
 !!      subroutine alloc_pvr_local_subimage(pvr_img)
@@ -17,8 +18,8 @@
 !!      subroutine dealloc_pvr_local_subimage(pvr_img)
 !!        type(pvr_segmented_img), intent(inout) :: pvr_img
 !!
-!!      subroutine store_left_eye_image(pvr_rgb)
-!!      subroutine add_left_eye_image(pvr_rgb)
+!!      subroutine store_left_eye_image(irank_tgt, pvr_rgb)
+!!      subroutine add_left_eye_image(irank_tgt, pvr_rgb)
 !!@endverbatim
 !
       module t_pvr_image_array
@@ -114,10 +115,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_rgb)
+      subroutine alloc_pvr_image_array_type                             &
+     &         (irank_tgt, n_pvr_pixel, pvr_rgb)
 !
       use t_control_params_4_pvr
 !
+      integer(kind = kint), intent(in) :: irank_tgt
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
@@ -126,7 +129,7 @@
       pvr_rgb%num_pixel_xy = n_pvr_pixel(1) * n_pvr_pixel(2)
 !
 !
-      if(my_rank .eq. 0) then
+      if(my_rank .eq. irank_tgt) then
         allocate(pvr_rgb%rgb_chara_gl(3,pvr_rgb%num_pixel_xy))
         allocate(pvr_rgb%rgba_chara_gl(4,pvr_rgb%num_pixel_xy))
 !
@@ -272,12 +275,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine store_left_eye_image(pvr_rgb)
+      subroutine store_left_eye_image(irank_tgt, pvr_rgb)
 !
+      integer(kind = kint), intent(in) :: irank_tgt
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      if(my_rank .ne. 0) return
+      if(my_rank .ne. irank_tgt) return
 !$omp parallel workshare
       pvr_rgb%rgba_left_gl(1,:) = pvr_rgb%rgba_real_gl(1,:)
 !      pvr_rgb%rgba_left_gl(2,:) = pvr_rgb%rgba_real_gl(2,:)
@@ -289,12 +293,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine add_left_eye_image(pvr_rgb)
+      subroutine add_left_eye_image(irank_tgt, pvr_rgb)
 !
+      integer(kind = kint), intent(in) :: irank_tgt
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      if(my_rank .ne. 0) return
+      if(my_rank .ne. irank_tgt) return
 !$omp parallel workshare
         pvr_rgb%rgba_real_gl(1,:) =  pvr_rgb%rgba_left_gl(1,:)
 !        pvr_rgb%rgba_real_gl(2,:) =  pvr_rgb%rgba_left_gl(2,:)
