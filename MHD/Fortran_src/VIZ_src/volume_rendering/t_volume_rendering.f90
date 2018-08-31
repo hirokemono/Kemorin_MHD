@@ -175,7 +175,8 @@
         call each_PVR_initialize                                        &
      &     (i_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,          &
      &      femmesh%mesh, femmesh%group, ele_mesh,                      &
-     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))
+     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                  &
+     &      pvr%pvr_data(i_pvr)%rgb)
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -210,7 +211,7 @@
      &     (istep_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,      &
      &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
      &      pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr),                   &
-     &      pvr%pvr_data(i_pvr))
+     &      pvr%pvr_data(i_pvr), pvr%pvr_data(i_pvr)%rgb)
       end do
       call end_elapsed_time(71)
 !
@@ -242,7 +243,8 @@
 !
       do i_pvr = 1, pvr%num_pvr
         call dealloc_each_pvr_data (pvr%pvr_fld(i_pvr),                 &
-     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr))
+     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                  &
+     &      pvr%pvr_data(i_pvr)%rgb)
       end do
       deallocate(pvr%pvr_fld, pvr%pvr_param, pvr%pvr_data)
 !

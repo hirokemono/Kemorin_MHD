@@ -17,7 +17,7 @@
 !!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !!      subroutine s_each_LIC_rendering(istep_pvr, irank_tgt,           &
 !!     &          mesh, group, ele_mesh, jacs, nod_fld,                 &
-!!     &          lic_fld, pvr_param, pvr_data)
+!!     &          lic_fld, pvr_param, pvr_data, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -29,10 +29,13 @@
 !!        type(LIC_field_params), intent(in) :: lic_fld
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
-!!      subroutine dealloc_each_lic_data(pvr_fld, pvr_param, pvr_data)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
+!!      subroutine dealloc_each_lic_data                                &
+!!     &         (lic_fld, pvr_param, pvr_data, pvr_rgb)
 !!        type(PVR_field_params), intent(inout) :: pvr_fld
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
 !
@@ -105,7 +108,7 @@
 !
       subroutine s_each_LIC_rendering(istep_pvr, irank_tgt,             &
      &          mesh, group, ele_mesh, jacs, nod_fld,                   &
-     &          lic_fld, pvr_param, pvr_data)
+     &          lic_fld, pvr_param, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use field_data_4_LIC
@@ -124,6 +127,7 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
@@ -139,21 +143,21 @@
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_lic_rendering_with_rot(istep_pvr, irank_tgt,       &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        lic_fld%lic_param, pvr_param, pvr_data)
+     &        lic_fld%lic_param, pvr_param, pvr_data, pvr_rgb)
         else
           call lic_rendering_with_rotation(istep_pvr, irank_tgt,        &
      &       mesh%node, mesh%ele, ele_mesh%surf, group,                 &
-     &        lic_fld%lic_param, pvr_param, pvr_data)
+     &        lic_fld%lic_param, pvr_param, pvr_data, pvr_rgb)
         end if
       else
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_lic_rendering_fix_view(istep_pvr, irank_tgt,       &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        lic_fld%lic_param, pvr_param, pvr_data)
+     &        lic_fld%lic_param, pvr_param, pvr_data, pvr_rgb)
         else
           call lic_rendering_with_fixed_view                            &
      &       (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf, &
-     &        lic_fld%lic_param, pvr_param, pvr_data)
+     &        lic_fld%lic_param, pvr_param, pvr_data, pvr_rgb)
         end if
       end if
 !
@@ -161,7 +165,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_each_lic_data(lic_fld, pvr_param, pvr_data)
+      subroutine dealloc_each_lic_data                                  &
+     &         (lic_fld, pvr_param, pvr_data, pvr_rgb)
 !
       use set_pvr_control
       use field_data_4_pvr
@@ -169,6 +174,7 @@
       type(LIC_field_params), intent(inout) :: lic_fld
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       if(pvr_data%view%iflag_rotate_snap .eq. 0                         &
@@ -176,7 +182,7 @@
           call flush_rendering_4_fixed_view(pvr_data)
       end if
       call flush_pixel_on_pvr_screen                                    &
-     &   (pvr_param%pixel, pvr_data%rgb)
+     &   (pvr_param%pixel, pvr_rgb)
 !
       call dealloc_projected_position(pvr_data%screen)
 !

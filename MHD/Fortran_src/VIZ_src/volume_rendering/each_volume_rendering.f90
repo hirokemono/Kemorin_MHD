@@ -13,10 +13,10 @@
 !!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !!
 !!      subroutine each_PVR_initialize(i_pvr, irank_tgt,                &
-!!     &          mesh, group, ele_mesh, pvr_param, pvr_data)
+!!     &          mesh, group, ele_mesh, pvr_param, pvr_data, pvr_rgb)
 !!      subroutine each_PVR_rendering(istep_pvr, irank_tgt,             &
 !!     &          mesh, group, ele_mesh, jacs, nod_fld,                 &
-!!     &          pvr_fld, pvr_param, pvr_data)
+!!     &          pvr_fld, pvr_param, pvr_data, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -27,7 +27,12 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
-!!      subroutine dealloc_each_pvr_data(pvr_fld, pvr_param, pvr_data)
+!!      subroutine dealloc_each_pvr_data                                &
+!!     &         (pvr_fld, pvr_param, pvr_data, pvr_rgb)
+!!        type(PVR_field_params), intent(inout) :: pvr_fld
+!!        type(PVR_control_params), intent(inout) :: pvr_param
+!!        type(PVR_image_generator), intent(inout) :: pvr_data
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       module each_volume_rendering
@@ -99,7 +104,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine each_PVR_initialize(i_pvr, irank_tgt,                  &
-     &          mesh, group, ele_mesh, pvr_param, pvr_data)
+     &          mesh, group, ele_mesh, pvr_param, pvr_data, pvr_rgb)
 !
       use t_control_data_pvr_misc
       use set_pvr_control
@@ -112,8 +117,10 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(element_geometry), intent(in) :: ele_mesh
+!
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
@@ -122,7 +129,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_pixel_on_pvr_screen'
       call set_pixel_on_pvr_screen                                      &
-     &   (irank_tgt, pvr_data%view, pvr_param%pixel, pvr_data%rgb)
+     &   (irank_tgt, pvr_data%view, pvr_param%pixel, pvr_rgb)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
       call set_pvr_projection_matrix(i_pvr, pvr_data%view)
@@ -141,7 +148,7 @@
           if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
           call set_fixed_view_and_image                                 &
      &       (mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        pvr_param, pvr_data)
+     &        pvr_param, pvr_rgb, pvr_data)
         end if
       end if
 !
@@ -151,7 +158,7 @@
 !
       subroutine each_PVR_rendering(istep_pvr, irank_tgt,               &
      &          mesh, group, ele_mesh, jacs, nod_fld,                   &
-     &          pvr_fld, pvr_param, pvr_data)
+     &          pvr_fld, pvr_param, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
 !
@@ -167,6 +174,7 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
@@ -182,21 +190,21 @@
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_rendering_with_rotation(istep_pvr, irank_tgt,      &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        pvr_param, pvr_data)
+     &        pvr_param, pvr_data, pvr_rgb)
         else
           call rendering_with_rotation(istep_pvr, irank_tgt,            &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        pvr_param, pvr_data)
+     &        pvr_param, pvr_data, pvr_rgb)
         end if
       else
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_rendering_fixed_view                               &
      &       (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf, &
-     &        group, pvr_param, pvr_data)
+     &        group, pvr_param, pvr_data, pvr_rgb)
         else
           call rendering_with_fixed_view                                &
      &       (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf, &
-     &        pvr_param, pvr_data)
+     &        pvr_param, pvr_data, pvr_rgb)
         end if
       end if
 !
@@ -204,21 +212,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_each_pvr_data(pvr_fld, pvr_param, pvr_data)
+      subroutine dealloc_each_pvr_data                                  &
+     &         (pvr_fld, pvr_param, pvr_data, pvr_rgb)
 !
       use set_pvr_control
 !
       type(PVR_field_params), intent(inout) :: pvr_fld
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
+      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       if(pvr_data%view%iflag_rotate_snap .eq. 0                         &
      &    .and. pvr_data%view%iflag_stereo_pvr .eq. 0) then
           call flush_rendering_4_fixed_view(pvr_data)
       end if
-      call flush_pixel_on_pvr_screen                                    &
-     &   (pvr_param%pixel, pvr_data%rgb)
+      call flush_pixel_on_pvr_screen(pvr_param%pixel, pvr_rgb)
 !
       call dealloc_projected_position(pvr_data%screen)
 !
