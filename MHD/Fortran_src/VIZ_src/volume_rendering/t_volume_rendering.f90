@@ -207,12 +207,25 @@
 !
       call start_elapsed_time(71)
       do i_pvr = 1, pvr%num_pvr
-        call each_PVR_rendering                                         &
-     &     (istep_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,      &
-     &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
-     &      pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr)%file,              &
-     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                  &
-     &      pvr%pvr_data(i_pvr)%rgb)
+       if(pvr%pvr_data(i_pvr)%view%iflag_rotate_snap .le. 0) then
+         call each_PVR_rendering                                        &
+     &      (istep_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,     &
+     &       femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,      &
+     &       pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr)%file,             &
+     &       pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                 &
+     &       pvr%pvr_data(i_pvr)%rgb)
+        end if
+      end do
+!
+      do i_pvr = 1, pvr%num_pvr
+       if(pvr%pvr_data(i_pvr)%view%iflag_rotate_snap .gt. 0) then
+         call each_PVR_rendering_w_rot                                  &
+     &      (istep_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,     &
+     &       femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,      &
+     &       pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr)%file,             &
+     &       pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                 &
+     &       pvr%pvr_data(i_pvr)%rgb)
+        end if
       end do
       call end_elapsed_time(71)
 !

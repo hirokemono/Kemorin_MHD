@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine axis_direction_in_screen                             &
-!!     &         (isel_projection, view_param, pvr_screen)
+!!     &         (modelview_mat, projection_mat, pvr_screen)
 !!      subroutine set_pvr_axislabel(iflag_axis, num_pixel, n_pvr_pixel,&
-!!     &          pvr_screen, cbar_param, rgba_gl)
+!!     &          pvr_screen, rgba_gl)
 !!@endverbatim
 !
       module pvr_axis_label
@@ -35,40 +35,29 @@
 !  ---------------------------------------------------------------------
 !
       subroutine axis_direction_in_screen                               &
-     &         (isel_projection, view_param, pvr_screen)
+     &         (modelview_mat, projection_mat, pvr_screen)
 !
-      use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
       use set_position_pvr_screen
 !
-      integer(kind = kint) :: isel_projection
-      type(pvr_view_parameter), intent(in) :: view_param
+      real(kind = kreal), intent(in) :: modelview_mat(4,4)
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
       type(pvr_projected_data), intent(inout) :: pvr_screen
 !
 !
-      call cal_position_pvr_modelview(view_param%modelview_mat,         &
+      call cal_position_pvr_modelview(modelview_mat,                    &
      &    ithree, axis_vect, pvr_screen%axis_view)
-!
       call find_draw_axis_order                                         &
      &   (pvr_screen%axis_view, pvr_screen%axis_order)
-!
-      if(isel_projection .eq. IFLAG_LEFT) then
-        call overwte_position_pvr_screen(view_param%projection_left,    &
+      call overwte_position_pvr_screen(projection_mat,                  &
      &      ithree, pvr_screen%axis_view)
-      else if(isel_projection .eq. IFLAG_RIGHT) then
-        call overwte_position_pvr_screen(view_param%projection_right,   &
-     &      ithree, pvr_screen%axis_view)
-      else
-        call overwte_position_pvr_screen(view_param%projection_mat,     &
-     &      ithree, pvr_screen%axis_view)
-      end if
 !
      end subroutine axis_direction_in_screen
 !
 !  ---------------------------------------------------------------------
 !
       subroutine set_pvr_axislabel(iflag_axis, num_pixel, n_pvr_pixel,  &
-     &          pvr_screen, cbar_param, rgba_gl)
+     &          pvr_screen, rgba_gl)
 !
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
@@ -79,7 +68,6 @@
       integer(kind = kint), intent(in) :: num_pixel
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
 !
-      type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(pvr_projected_data), intent(in) :: pvr_screen
 !
       real(kind = kreal), intent(inout)  :: rgba_gl(4,num_pixel)

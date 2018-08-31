@@ -17,6 +17,9 @@
 !!      subroutine each_PVR_rendering(istep_pvr, irank_tgt,             &
 !!     &          mesh, group, ele_mesh, jacs, nod_fld,                 &
 !!     &          pvr_fld, file_param, pvr_param, pvr_data, pvr_rgb)
+!!      subroutine each_PVR_rendering_w_rot(istep_pvr, irank_tgt,       &
+!!     &          mesh, group, ele_mesh, jacs, nod_fld,                 &
+!!     &          pvr_fld, file_param, pvr_param, pvr_data, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -147,8 +150,8 @@
         if(pvr_data%view%iflag_stereo_pvr .eq. 0) then
           if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
           call set_fixed_view_and_image                                 &
-     &       (mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        pvr_param, pvr_rgb, pvr_data)
+     &       (mesh%node, mesh%ele, ele_mesh%surf, group, pvr_param,     &
+     &        pvr_rgb, pvr_data%view%projection_mat, pvr_data)
         end if
       end if
 !
@@ -187,29 +190,86 @@
       call set_default_pvr_data_params                                  &
      &   (pvr_param%outline, pvr_data%color)
 !
-      if(pvr_data%view%iflag_rotate_snap .gt. 0) then
-        if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
-          call streo_rendering_with_rotation(istep_pvr, irank_tgt,      &
+      if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
+        if(pvr_data%view%iflag_anaglyph .gt. 0) then
+          call anaglyph_rendering_fixed_view(istep_pvr, irank_tgt,      &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        pvr_param, file_param, pvr_data, pvr_rgb)
+     &        pvr_param, file_param, pvr_data%view%projection_left,     &
+     &        pvr_data%view%projection_right, pvr_data, pvr_rgb)
         else
-          call rendering_with_rotation(istep_pvr, irank_tgt,            &
+          call streo_rendering_fixed_view(istep_pvr, irank_tgt,         &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        pvr_param, file_param, pvr_data, pvr_rgb)
+     &        pvr_param, file_param, pvr_data%view%projection_left,     &
+     &        pvr_data%view%projection_right, pvr_data, pvr_rgb)
         end if
       else
-        if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
-          call streo_rendering_fixed_view                               &
-     &       (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf, &
-     &        group, pvr_param, file_param, pvr_data, pvr_rgb)
-        else
-          call rendering_with_fixed_view                                &
-     &       (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf, &
-     &        pvr_param, file_param, pvr_data, pvr_rgb)
-        end if
+        call rendering_with_fixed_view                                  &
+     &     (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf,   &
+     &      pvr_param, file_param, pvr_data, pvr_rgb)
       end if
 !
       end subroutine each_PVR_rendering
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine each_PVR_rendering_w_rot(istep_pvr, irank_tgt,         &
+     &          mesh, group, ele_mesh, jacs, nod_fld,                   &
+     &          pvr_fld, file_param, pvr_param, pvr_data, pvr_rgb)
+!
+      use cal_pvr_modelview_mat
+!
+      integer(kind = kint), intent(in) :: istep_pvr
+      integer(kind = kint), intent(in) :: irank_tgt
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) :: group
+      type(element_geometry), intent(in) :: ele_mesh
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_type), intent(in) :: jacs
+      type(PVR_field_params), intent(in) :: pvr_fld
+      type(pvr_output_parameter), intent(in) :: file_param
+!
+      type(PVR_control_params), intent(inout) :: pvr_param
+      type(PVR_image_generator), intent(inout) :: pvr_data
+      type(pvr_image_type), intent(inout) :: pvr_rgb
+!
+!
+      if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
+      call cal_field_4_each_pvr                                         &
+     &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,        &
+     &    pvr_fld%field_def, pvr_param%field)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
+      call set_default_pvr_data_params                                  &
+     &   (pvr_param%outline, pvr_data%color)
+!
+      if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
+        if(pvr_data%view%iflag_anaglyph .gt. 0) then
+          call anaglyph_rendering_w_rotation(istep_pvr, irank_tgt,      &
+     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &        pvr_param, file_param, pvr_data%view%projection_left,     &
+     &        pvr_data%view%projection_right, pvr_data, pvr_rgb)
+        else
+          call rendering_with_rotation                                  &
+     &       (IFLAG_LEFT, istep_pvr, irank_tgt,                         &
+     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &        pvr_param, file_param, pvr_data%view%projection_left,     &
+     &        pvr_data, pvr_rgb)
+          call rendering_with_rotation                                  &
+     &       (IFLAG_RIGHT, istep_pvr, irank_tgt,                        &
+     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &        pvr_param, file_param, pvr_data%view%projection_right,    &
+     &        pvr_data, pvr_rgb)
+        end if
+      else
+        call rendering_with_rotation                                    &
+     &     (IFLAG_NORMAL, istep_pvr, irank_tgt,                         &
+     &      mesh%node, mesh%ele, ele_mesh%surf, group,                  &
+     &      pvr_param, file_param, pvr_data%view%projection_mat,        &
+     &      pvr_data, pvr_rgb)
+      end if
+!
+      end subroutine each_PVR_rendering_w_rot
 !
 !  ---------------------------------------------------------------------
 !

@@ -7,16 +7,12 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine lic_rendering_with_rotation                          &
-!!     &         (istep_pvr, irank_tgt, node, ele, surf, group, lic_p,  &
-!!     &          pvr_param, file_param, pvr_data, pvr_rgb)
 !!      subroutine lic_rendering_with_fixed_view(istep_pvr, irank_tgt,  &
 !!     &          node, ele, surf, lic_p, pvr_param, file_param,        &
 !!     &          pvr_data, pvr_rgb)
 !!
 !!      subroutine rendering_lic_at_once                                &
-!!     &         (isel_projection, istep_pvr, irank_tgt,                &
-!!     &          node, ele, surf, group, lic_p,                        &
+!!     &         (istep_pvr, irank_tgt, node, ele, surf, group, lic_p,  &
 !!     &          pvr_param, file_param, pvr_data, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -57,61 +53,6 @@
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine lic_rendering_with_rotation                            &
-     &         (istep_pvr, irank_tgt, node, ele, surf, group, lic_p,    &
-     &          pvr_param, file_param, pvr_data, pvr_rgb)
-!
-      use cal_pvr_modelview_mat
-      use composite_pvr_images
-      use write_PVR_image
-!
-      integer(kind = kint), intent(in) :: istep_pvr
-      integer(kind = kint), intent(in) :: irank_tgt
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(mesh_groups), intent(in) :: group
-      type(lic_parameters), intent(in) :: lic_p
-      type(PVR_control_params), intent(in) :: pvr_param
-      type(pvr_output_parameter), intent(in) :: file_param
-!
-      type(PVR_image_generator), intent(inout) :: pvr_data
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-!
-      integer(kind = kint) :: i_rot, ist_rot, ied_rot
-!
-      ist_rot = pvr_data%view%istart_rot
-      ied_rot = pvr_data%view%iend_rot
-      do i_rot = ist_rot, ied_rot
-        call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
-     &      pvr_data%screen)
-!
-        call rendering_lic_at_once                                      &
-     &     (IFLAG_NORMAL, istep_pvr, irank_tgt, node, ele, surf, group, &
-     &      lic_p, pvr_param, file_param, pvr_data, pvr_rgb)
-!
-        call end_elapsed_time(76)
-        call start_elapsed_time(77)
-        if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
-        call sel_write_pvr_image_file                                   &
-     &   (file_param, i_rot, istep_pvr, irank_tgt,                      &
-     &    IFLAG_NORMAL, pvr_rgb)
-        call calypso_mpi_barrier
-        call end_elapsed_time(77)
-        call start_elapsed_time(76)
-!
-        call dealloc_pvr_local_subimage(pvr_data%image)
-        call deallocate_pvr_ray_start(pvr_data%start_pt)
-      end do
-!
-      end subroutine lic_rendering_with_rotation
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine lic_rendering_with_fixed_view(istep_pvr, irank_tgt,    &
@@ -163,18 +104,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_lic_at_once                                  &
-     &         (isel_projection, istep_pvr, irank_tgt,                  &
-     &          node, ele, surf, group, lic_p,                          &
-     &          pvr_param, file_param, pvr_data, pvr_rgb)
+      subroutine rendering_lic_at_once(istep_pvr, irank_tgt,            &
+     &          node, ele, surf, group, lic_p, pvr_param, file_param,   &
+     &          projection_mat, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
       use write_LIC_image
 !
-      integer(kind = kint), intent(in) :: isel_projection
       integer(kind = kint), intent(in) :: istep_pvr
       integer(kind = kint), intent(in) :: irank_tgt
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -187,12 +127,13 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      call transfer_to_screen(isel_projection,                          &
-     &      node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
-     &      pvr_param%field, pvr_data%view, pvr_param%pixel,            &
-     &      pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
+      call transfer_to_screen                                           &
+     &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
+     &    pvr_param%field, pvr_data%view, projection_mat,               &
+     &    pvr_param%pixel, pvr_data%bound, pvr_data%screen,             &
+     &    pvr_data%start_pt)
       call set_subimages(pvr_rgb%num_pixel_xy,                          &
-     &      pvr_data%start_pt, pvr_data%image)
+     &    pvr_data%start_pt, pvr_data%image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, irank_tgt, file_param,      &

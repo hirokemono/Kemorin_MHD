@@ -7,20 +7,16 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_with_rotation(istep_pvr, irank_tgt,        &
-!!     &          node, ele, surf, group, pvr_param, file_param,        &
-!!     &          pvr_data, pvr_rgb)
 !!      subroutine set_fixed_view_and_image(node, ele, surf, group,     &
-!!     &          pvr_param, pvr_rgb, pvr_data)
+!!     &          pvr_param, pvr_rgb, projection_mat, pvr_data)
 !!      subroutine rendering_with_fixed_view(istep_pvr, irank_tgt,      &
 !!     &          node, ele, surf, pvr_param, file_param,               &
 !!     &          pvr_data, pvr_rgb)
 !!      subroutine flush_rendering_4_fixed_view(pvr_data)
 !!
-!!      subroutine rendering_at_once                                    &
-!!     &         (isel_projection, istep_pvr, irank_tgt,                &
+!!      subroutine rendering_at_once(istep_pvr, irank_tgt,              &
 !!     &          node, ele, surf, group, pvr_param, file_param,        &
-!!     &          pvr_data, pvr_rgb)
+!!     &          projection_mat, pvr_data, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -104,62 +100,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_rotation(istep_pvr, irank_tgt,          &
-     &          node, ele, surf, group, pvr_param, file_param,          &
-     &          pvr_data, pvr_rgb)
-!
-      use cal_pvr_modelview_mat
-      use composite_pvr_images
-      use write_PVR_image
-!
-      integer(kind = kint), intent(in) :: istep_pvr
-     integer(kind = kint), intent(in) :: irank_tgt
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(mesh_groups), intent(in) :: group
-      type(PVR_control_params), intent(in) :: pvr_param
-      type(pvr_output_parameter), intent(in) :: file_param
-!
-      type(PVR_image_generator), intent(inout) :: pvr_data
-      type(pvr_image_type), intent(inout) :: pvr_rgb
-!
-!
-      integer(kind = kint) :: i_rot, ist_rot, ied_rot
-!
-      ist_rot = pvr_data%view%istart_rot
-      ied_rot = pvr_data%view%iend_rot
-      do i_rot = ist_rot, ied_rot
-        call cal_pvr_modelview_matrix                                   &
-     &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
-     &      pvr_data%screen)
-!
-        call rendering_at_once(IFLAG_NORMAL, istep_pvr, irank_tgt,      &
-     &      node, ele, surf, group, pvr_param, file_param,              &
-     &      pvr_data, pvr_rgb)
-!
-        call end_elapsed_time(71)
-        call start_elapsed_time(72)
-        if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
-        call sel_write_pvr_image_file                                   &
-     &   (file_param, i_rot, istep_pvr, irank_tgt,                      &
-     &    IFLAG_NORMAL, pvr_rgb)
-        call calypso_mpi_barrier
-        call end_elapsed_time(72)
-        call start_elapsed_time(71)
-!
-        call dealloc_pvr_local_subimage(pvr_data%image)
-        call deallocate_pvr_ray_start(pvr_data%start_pt)
-      end do
-!
-      end subroutine rendering_with_rotation
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine set_fixed_view_and_image(node, ele, surf, group,       &
-     &          pvr_param, pvr_rgb, pvr_data)
+     &          pvr_param, pvr_rgb, projection_mat, pvr_data)
 !
       use cal_pvr_modelview_mat
 !
@@ -169,6 +111,7 @@
       type(mesh_groups), intent(in) :: group
       type(PVR_control_params), intent(in) :: pvr_param
       type(pvr_image_type), intent(in) :: pvr_rgb
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       type(PVR_image_generator), intent(inout) :: pvr_data
 !
@@ -177,11 +120,11 @@
      &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color,      &
      &    pvr_data%screen)
 !
-      call transfer_to_screen(IFLAG_NORMAL,                             &
-     &    node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
-     &    pvr_param%field, pvr_data%view, pvr_param%pixel,              &
-     &    pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
-!
+      call transfer_to_screen                                           &
+     &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
+     &    pvr_param%field, pvr_data%view, projection_mat,               &
+     &    pvr_param%pixel, pvr_data%bound, pvr_data%screen,             &
+     &    pvr_data%start_pt)
       call set_subimages                                                &
      &   (pvr_rgb%num_pixel_xy, pvr_data%start_pt, pvr_data%image)
 !
@@ -254,18 +197,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_at_once                                      &
-     &         (isel_projection, istep_pvr, irank_tgt,                  &
+      subroutine rendering_at_once(istep_pvr, irank_tgt,                &
      &          node, ele, surf, group, pvr_param, file_param,          &
-     &          pvr_data, pvr_rgb)
+     &          projection_mat, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
       use write_PVR_image
 !
-      integer(kind = kint), intent(in) :: isel_projection
       integer(kind = kint), intent(in) :: irank_tgt
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -277,12 +219,13 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      call transfer_to_screen(isel_projection,                          &
-     &      node, ele, surf, group%surf_grp, group%surf_grp_geom,       &
-     &      pvr_param%field, pvr_data%view, pvr_param%pixel,            &
-     &      pvr_data%bound, pvr_data%screen, pvr_data%start_pt)
+      call transfer_to_screen                                           &
+     &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
+     &    pvr_param%field, pvr_data%view, projection_mat,               &
+     &    pvr_param%pixel,  pvr_data%bound, pvr_data%screen,            &
+     &    pvr_data%start_pt)
       call set_subimages(pvr_rgb%num_pixel_xy,                          &
-     &      pvr_data%start_pt, pvr_data%image)
+     &    pvr_data%start_pt, pvr_data%image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, irank_tgt, file_param,            &

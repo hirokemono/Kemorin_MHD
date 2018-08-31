@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine transfer_to_screen                                   &
-!!     &        (isel_projection, node, ele, surf, surf_grp, surf_grp_v,&
-!!     &         field_pvr, view_param, pvr_bound,  pixel_xy,           &
-!!     &         pvr_screen, pvr_start)
+!!     &        (node, ele, surf, surf_grp, surf_grp_v,                 &
+!!     &         field_pvr, view_param, projection_mat, pixel_xy,       &
+!!     &         pvr_bound, pvr_screen, pvr_start)
 !!      subroutine set_subimages(num_pixel_xy, pvr_start, pvr_img)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -54,9 +54,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine transfer_to_screen                                     &
-     &        (isel_projection, node, ele, surf, surf_grp, surf_grp_v,  &
-     &         field_pvr, view_param, pixel_xy, pvr_bound,              &
-     &         pvr_screen, pvr_start)
+     &        (node, ele, surf, surf_grp, surf_grp_v,                   &
+     &         field_pvr, view_param, projection_mat, pixel_xy,         &
+     &         pvr_bound, pvr_screen, pvr_start)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -68,8 +68,6 @@
       use pvr_surface_enhancement
       use pvr_axis_label
 !
-      integer(kind = kint) :: isel_projection
-!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -78,6 +76,7 @@
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
       type(pvr_view_parameter), intent(in) :: view_param
       type(pvr_projected_field), intent(in) :: field_pvr
+      real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       type(pvr_projected_data), intent(inout) :: pvr_screen
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
@@ -91,7 +90,7 @@
      &    pvr_screen%arccos_sf)
 !
       call axis_direction_in_screen                                     &
-     &   (isel_projection, view_param, pvr_screen)
+     &   (view_param%modelview_mat, projection_mat, pvr_screen)
 !
       call cal_position_pvr_modelview(view_param%modelview_mat,         &
      &    node%numnod, node%xx, pvr_screen%x_nod_model)
@@ -103,16 +102,8 @@
      &    pvr_bound%screen_norm)
 !
 !
-      if(isel_projection .eq. IFLAG_LEFT) then
-        call overwte_position_pvr_screen(view_param%projection_left,    &
-     &      node%numnod, pvr_screen%x_nod_model)
-      else if(isel_projection .eq. IFLAG_RIGHT) then
-        call overwte_position_pvr_screen(view_param%projection_right,   &
-     &      node%numnod, pvr_screen%x_nod_model)
-      else
-        call overwte_position_pvr_screen(view_param%projection_mat,     &
-     &      node%numnod, pvr_screen%x_nod_model)
-      end if
+      call overwte_position_pvr_screen(projection_mat,                  &
+     &    node%numnod, pvr_screen%x_nod_model)
 !
       call set_pvr_domain_surface_data(view_param%n_pvr_pixel,          &
      &    node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,      &

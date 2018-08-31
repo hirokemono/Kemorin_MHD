@@ -217,12 +217,25 @@
 !
       call start_elapsed_time(76)
       do i_lic = 1, lic%num_pvr
-        call s_each_LIC_rendering                                       &
-     &     (istep_pvr, lic%lic_images%img(i_lic)%irank_image_file,      &
-     &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
-     &      lic%lic_fld(i_lic), lic%pvr_param(i_lic)%file,              &
-     &      lic%pvr_param(i_lic), lic%pvr_data(i_lic),                  &
-     &      lic%pvr_data(i_lic)%rgb)
+        if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .le. 0) then
+          call s_each_LIC_rendering                                     &
+     &       (istep_pvr, lic%lic_images%img(i_lic)%irank_image_file,    &
+     &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
+     &        lic%lic_fld(i_lic), lic%pvr_param(i_lic)%file,            &
+     &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
+     &        lic%pvr_data(i_lic)%rgb)
+        end if
+      end do
+!
+      do i_lic = 1, lic%num_pvr
+        if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .gt. 0) then
+          call s_each_LIC_rendering_w_rot                               &
+     &       (istep_pvr, lic%lic_images%img(i_lic)%irank_image_file,    &
+     &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
+     &        lic%lic_fld(i_lic), lic%pvr_param(i_lic)%file,            &
+     &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
+     &        lic%pvr_data(i_lic)%rgb)
+        end if
       end do
       call end_elapsed_time(76)
 !

@@ -148,7 +148,7 @@
      &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
         call set_pvr_axislabel(cbar_param%iflag_pvr_axis,               &
      &      pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                   &
-     &      pvr_screen, cbar_param, pvr_rgb%rgba_real_gl)
+     &      pvr_screen, pvr_rgb%rgba_real_gl)
       end if
 !
       end subroutine rendering_image
