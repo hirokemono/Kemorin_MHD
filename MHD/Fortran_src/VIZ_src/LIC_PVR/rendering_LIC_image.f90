@@ -76,11 +76,16 @@
       type(pvr_segmented_img), intent(inout)  :: image
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
+      type(pvr_ray_start_type) :: start_wk
+!
+!
+      call copy_item_pvr_ray_start                                      &
+     &   (pvr_data%start_save, start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic(istep_pvr, file_param,                 &
      &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
-     &    pvr_param%field, pvr_data%screen, start_pt, image, pvr_rgb)
+     &    pvr_param%field, pvr_data%screen, start_wk, image, pvr_rgb)
 !
       end subroutine lic_rendering_with_fixed_view
 !

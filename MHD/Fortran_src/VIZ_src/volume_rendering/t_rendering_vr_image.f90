@@ -85,6 +85,8 @@
 !>        Start point structure for volume rendering
         type(pvr_ray_start_type) :: start_pt
 !
+!>        Work area of  point structure for volume rendering
+        type(pvr_ray_start_type) :: start_save
 !>        Pixel data structure for volume rendering
         type(pvr_segmented_img) :: image
       end type PVR_image_generator
@@ -125,6 +127,11 @@
       call set_subimages                                                &
      &   (pvr_rgb%num_pixel_xy, start_pt, image)
 !
+      call allocate_item_pvr_ray_start                                  &
+     &   (pvr_data%start_pt%num_pvr_ray, pvr_data%start_save)
+      call copy_item_pvr_ray_start                                      &
+     &   (pvr_data%start_pt, pvr_data%start_save)
+!
       end subroutine set_fixed_view_and_image
 !
 !  ---------------------------------------------------------------------
@@ -148,6 +155,9 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
+      call copy_item_pvr_ray_start                                      &
+     &   (pvr_data%start_save, start_pt)
+!
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, file_param,                       &
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
@@ -164,6 +174,7 @@
 !
       call dealloc_pvr_local_subimage(pvr_data%image)
       call deallocate_pvr_ray_start(pvr_data%start_pt)
+      call deallocate_item_pvr_ray_start(pvr_data%start_save)
 !
       end subroutine flush_rendering_4_fixed_view
 !
