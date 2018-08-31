@@ -7,14 +7,14 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine streo_rendering_fixed_view(istep_pvr, irank_tgt,     &
+!!      subroutine streo_rendering_fixed_view(istep_pvr,                &
 !!     &          node, ele, surf, group, pvr_param, file_param,        &
 !!     &          projection_mat, start_pt, image, pvr_data, pvr_rgb)
 !!
-!!      subroutine rendering_with_rotation(istep_pvr, irank_tgt,        &
+!!      subroutine rendering_with_rotation(istep_pvr,                   &
 !!     &          node, ele, surf, group, pvr_param, file_param,        &
 !!     &          projection_mat, pvr_data, pvr_rgb)
-!!      subroutine anaglyph_rendering_w_rotation(istep_pvr, irank_tgt,  &
+!!      subroutine anaglyph_rendering_w_rotation(istep_pvr,             &
 !!     &          node, ele, surf, group, pvr_param, file_param,        &
 !!     &          projection_left, projection_right, pvr_data, pvr_rgb)
 !!        type(node_data), intent(in) :: node
@@ -58,7 +58,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine streo_rendering_fixed_view(istep_pvr, irank_tgt,       &
+      subroutine streo_rendering_fixed_view(istep_pvr,                  &
      &          node, ele, surf, group, pvr_param, file_param,          &
      &          projection_mat, start_pt, image, pvr_data, pvr_rgb)
 !
@@ -67,7 +67,6 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
-      integer(kind = kint), intent(in) :: irank_tgt
       real(kind = kreal), intent(in) :: projection_mat(4,4)
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -93,7 +92,7 @@
       call set_subimages(pvr_rgb%num_pixel_xy, start_pt, image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(istep_pvr, irank_tgt, file_param,            &
+      call rendering_image(istep_pvr, file_param,                       &
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
      &    pvr_param%field, pvr_data%screen, start_pt, image, pvr_rgb)
 !
@@ -105,7 +104,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_rotation(istep_pvr, irank_tgt,          &
+      subroutine rendering_with_rotation(istep_pvr,                     &
      &          node, ele, surf, group, pvr_param, file_param,          &
      &          projection_mat, pvr_data, pvr_rgb)
 !
@@ -114,7 +113,6 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
-      integer(kind = kint), intent(in) :: irank_tgt
       real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       type(node_data), intent(in) :: node
@@ -139,14 +137,14 @@
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
      &      pvr_data%screen)
 !
-        call rendering_at_once(istep_pvr, irank_tgt,                    &
-     &      node, ele, surf, group, pvr_param, file_param,              &
+        call rendering_at_once                                          &
+     &     (istep_pvr, node, ele, surf, group, pvr_param, file_param,   &
      &      projection_mat, start_pt, image, pvr_data, pvr_rgb)
 !
         call end_elapsed_time(71)
         call start_elapsed_time(72)
         call sel_write_pvr_image_file                                   &
-     &     (file_param, i_rot, istep_pvr, irank_tgt, pvr_rgb)
+     &     (file_param, i_rot, istep_pvr, pvr_rgb)
         call calypso_mpi_barrier
         call end_elapsed_time(72)
         call start_elapsed_time(71)
@@ -159,7 +157,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine anaglyph_rendering_w_rotation(istep_pvr, irank_tgt,    &
+      subroutine anaglyph_rendering_w_rotation(istep_pvr,               &
      &          node, ele, surf, group, pvr_param, file_param,          &
      &          projection_left, projection_right, pvr_data, pvr_rgb)
 !
@@ -167,7 +165,6 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
-      integer(kind = kint), intent(in) :: irank_tgt
       real(kind = kreal), intent(in) :: projection_left(4,4)
       real(kind = kreal), intent(in) :: projection_right(4,4)
 !
@@ -194,24 +191,24 @@
      &      pvr_data%screen)
 !
 !    Left eye
-        call rendering_at_once(istep_pvr, irank_tgt,                    &
+        call rendering_at_once(istep_pvr,                               &
      &      node, ele, surf, group, pvr_param, file_param,              &
      &      projection_left, start_pt, image, pvr_data, pvr_rgb)
-        call store_left_eye_image(irank_tgt, pvr_rgb)
+        call store_left_eye_image(file_param%irank_image_file, pvr_rgb)
 !
         call dealloc_pvr_local_subimage(image)
         call deallocate_pvr_ray_start(start_pt)
 !
 !    Right eye
-        call rendering_at_once(istep_pvr, irank_tgt,                    &
+        call rendering_at_once(istep_pvr,                               &
      &      node, ele, surf, group, pvr_param, file_param,              &
      &      projection_right, start_pt, image, pvr_data, pvr_rgb)
-        call add_left_eye_image(irank_tgt, pvr_rgb)
+        call add_left_eye_image(file_param%irank_image_file, pvr_rgb)
 !
         call end_elapsed_time(71)
         call start_elapsed_time(72)
         call sel_write_pvr_image_file                                   &
-     &     (file_param, i_rot, istep_pvr, irank_tgt, pvr_rgb)
+     &     (file_param, i_rot, istep_pvr, pvr_rgb)
         call calypso_mpi_barrier
         call end_elapsed_time(72)
         call start_elapsed_time(71)

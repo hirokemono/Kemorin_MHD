@@ -7,12 +7,11 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine lic_rendering_with_fixed_view(istep_pvr, irank_tgt,  &
+!!      subroutine lic_rendering_with_fixed_view(istep_pvr,             &
 !!     &          node, ele, surf, lic_p, pvr_param, file_param,        &
 !!     &          start_pt, image, pvr_data, pvr_rgb)
-!!
-!!      subroutine rendering_lic_at_once                                &
-!!     &         (istep_pvr, irank_tgt, node, ele, surf, group, lic_p,  &
+!!      subroutine rendering_lic_at_once(istep_pvr,                     &
+!!     &          node, ele, surf, group, lic_p, pvr_param, file_param, &
 !!     &          projection_mat, start_pt, image, pvr_data, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -57,7 +56,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine lic_rendering_with_fixed_view(istep_pvr, irank_tgt,    &
+      subroutine lic_rendering_with_fixed_view(istep_pvr,               &
      &          node, ele, surf, lic_p, pvr_param, file_param,          &
      &          start_pt, image, pvr_data, pvr_rgb)
 !
@@ -65,7 +64,6 @@
       use write_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
-      integer(kind = kint), intent(in) :: irank_tgt
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -80,7 +78,7 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
-      call rendering_image_4_lic(istep_pvr, irank_tgt, file_param,      &
+      call rendering_image_4_lic(istep_pvr, file_param,                 &
      &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
      &    pvr_param%field, pvr_data%screen, start_pt, image, pvr_rgb)
 !
@@ -89,7 +87,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_lic_at_once(istep_pvr, irank_tgt,            &
+      subroutine rendering_lic_at_once(istep_pvr,                       &
      &          node, ele, surf, group, lic_p, pvr_param, file_param,   &
      &          projection_mat, start_pt, image, pvr_data, pvr_rgb)
 !
@@ -98,7 +96,6 @@
       use write_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
-      integer(kind = kint), intent(in) :: irank_tgt
       real(kind = kreal), intent(in) :: projection_mat(4,4)
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -121,7 +118,7 @@
       call set_subimages(pvr_rgb%num_pixel_xy, start_pt, image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
-      call rendering_image_4_lic(istep_pvr, irank_tgt, file_param,      &
+      call rendering_image_4_lic(istep_pvr, file_param,                 &
      &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
      &    pvr_param%field, pvr_data%screen, start_pt, image, pvr_rgb)
 !

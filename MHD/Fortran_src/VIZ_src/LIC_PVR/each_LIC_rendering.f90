@@ -148,8 +148,7 @@
 !
 !   Left eye
           call streo_lic_rendering_fix_view                             &
-     &       (istep_pvr, file_param(1)%irank_image_file,                &
-     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_data%view%projection_left, pvr_data%start_pt,         &
      &        pvr_data%image, pvr_data, pvr_rgb(1))
@@ -158,8 +157,7 @@
 !
 !   Right eye
           call streo_lic_rendering_fix_view                             &
-     &       (istep_pvr, file_param(1)%irank_image_file,                &
-     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_data%view%projection_right, pvr_data%start_pt,        &
      &        pvr_data%image, pvr_data, pvr_rgb(1))
@@ -168,9 +166,8 @@
 !
           call end_elapsed_time(76)
           call start_elapsed_time(77)
-          call sel_write_pvr_image_file(file_param(1),                  &
-     &        iminus, istep_pvr, file_param(1)%irank_image_file,        &
-     &        pvr_rgb(1))
+          call sel_write_pvr_image_file                                 &
+     &       (file_param(1), iminus, istep_pvr, pvr_rgb(1))
           call calypso_mpi_barrier
           call end_elapsed_time(77)
           call start_elapsed_time(76)
@@ -178,53 +175,48 @@
 !
 !   Left eye
           call streo_lic_rendering_fix_view                             &
-     &       (istep_pvr, file_param(1)%irank_image_file,                &
-     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_data%view%projection_left, pvr_data%start_pt,         &
      &        pvr_data%image, pvr_data, pvr_rgb(1))
 !
           call end_elapsed_time(76)
           call start_elapsed_time(77)
-          call sel_write_pvr_image_file(file_param(1),                  &
-     &        iminus, istep_pvr, file_param(1)%irank_image_file,        &
-     &        pvr_rgb(1))
+          call sel_write_pvr_image_file                                 &
+     &       (file_param(1), iminus, istep_pvr, pvr_rgb(1))
           call calypso_mpi_barrier
           call end_elapsed_time(77)
           call start_elapsed_time(76)
 !
 !   Right eye
           call streo_lic_rendering_fix_view                             &
-     &       (istep_pvr, file_param(2)%irank_image_file,                &
-     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(2),              &
      &        pvr_data%view%projection_right, pvr_data%start_pt,        &
      &        pvr_data%image, pvr_data, pvr_rgb(2))
 !
           call end_elapsed_time(76)
           call start_elapsed_time(77)
-          call sel_write_pvr_image_file(file_param(2),                  &
-     &        iminus, istep_pvr, file_param(2)%irank_image_file,        &
-     &        pvr_rgb(2))
+          call sel_write_pvr_image_file                                 &
+     &       (file_param(2), iminus, istep_pvr, pvr_rgb(2))
           call calypso_mpi_barrier
           call end_elapsed_time(77)
           call start_elapsed_time(76)
         end if
       else
         call lic_rendering_with_fixed_view                              &
-     &     (istep_pvr, file_param(1)%irank_image_file,                  &
-     &      mesh%node, mesh%ele, ele_mesh%surf,                         &
+     &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,              &
      &      lic_fld%lic_param, pvr_param, file_param(1),                &
      &      pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
 !
         call end_elapsed_time(76)
         call start_elapsed_time(77)
-        call sel_write_pvr_image_file(file_param(1), iminus,            &
-     &      istep_pvr, file_param(1)%irank_image_file, pvr_rgb(1))
+        call sel_write_pvr_image_file                                   &
+     &     (file_param(1), iminus, istep_pvr, pvr_rgb(1))
 !
         if(file_param(1)%iflag_monitoring .gt. 0) then
-          call sel_write_pvr_image_file(file_param(1), iminus,          &
-     &        iminus, file_param(1)%irank_image_file, pvr_rgb(1))
+          call sel_write_pvr_image_file                                 &
+     &       (file_param(1), iminus, iminus, pvr_rgb(1))
         end if
         call calypso_mpi_barrier
         call end_elapsed_time(77)
@@ -271,27 +263,23 @@
       if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
           call anaglyph_lic_rendering_w_rot                             &
-     &       (istep_pvr, file_param(1)%irank_image_file,                &
-     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_data%view%projection_left,                            &
      &        pvr_data%view%projection_right, pvr_data, pvr_rgb(1))
         else
           call lic_rendering_with_rotation                              &
-     &       (istep_pvr, file_param(1)%irank_image_file,                &
-     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_data%view%projection_left, pvr_data, pvr_rgb(1))
           call lic_rendering_with_rotation                              &
-     &       (istep_pvr, file_param(2)%irank_image_file,                &
-     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(2),              &
      &        pvr_data%view%projection_right, pvr_data, pvr_rgb(2))
         end if
       else
         call lic_rendering_with_rotation                                &
-     &     (istep_pvr, file_param(1)%irank_image_file,                  &
-     &      mesh%node, mesh%ele, ele_mesh%surf, group,                  &
+     &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,       &
      &      lic_fld%lic_param, pvr_param, file_param(1),                &
      &      pvr_data%view%projection_mat, pvr_data, pvr_rgb(1))
       end if

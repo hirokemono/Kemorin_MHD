@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine rendering_image                                      &
-!!     &         (istep_pvr, irank_tgt, file_param, node, ele, surf,    &
+!!     &         (istep_pvr, file_param, node, ele, surf,               &
 !!     &          color_param, cbar_param, field_pvr, pvr_screen,       &
 !!     &          pvr_start, pvr_img, pvr_rgb)
 !!        type(pvr_output_parameter), intent(in) :: file_param
@@ -23,7 +23,7 @@
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
 !!      subroutine sel_write_pvr_image_file                             &
-!!     &         (file_param, i_rot, istep_pvr, irank_tgt, pvr_rgb)
+!!     &         (file_param, i_rot, istep_pvr, pvr_rgb)
 !!      subroutine sel_write_pvr_local_img                              &
 !!     &        (file_param, index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -47,7 +47,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image                                        &
-     &         (istep_pvr, irank_tgt, file_param, node, ele, surf,      &
+     &         (istep_pvr, file_param, node, ele, surf,                 &
      &          color_param, cbar_param, field_pvr, pvr_screen,         &
      &          pvr_start, pvr_img, pvr_rgb)
 !
@@ -67,7 +67,6 @@
 !
       type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: istep_pvr
-      integer(kind = kint), intent(in) :: irank_tgt
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -126,8 +125,8 @@
      &   (pvr_img%ntot_overlap, pvr_img%npixel_img_local,               &
      &    pvr_img%ip_closer, pvr_img%rgba_part, pvr_img%rgba_whole)
 !
-      call collect_segmented_images                                     &
-     &   (irank_tgt, pvr_img%npixel_img_local, pvr_img%istack_pixel,    &
+      call collect_segmented_images(file_param%irank_image_file,        &
+     &    pvr_img%npixel_img_local, pvr_img%istack_pixel,               &
      &    pvr_img%npixel_img, pvr_rgb%num_pixel_xy,                     &
      &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
      &    pvr_img%rgba_rank0, pvr_rgb%rgba_real_gl, pvr_img%COMM)
@@ -143,7 +142,7 @@
 !        end do
 !      end if
 !
-      if(my_rank .eq. irank_tgt) then
+      if(my_rank .eq. file_param%irank_image_file) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
      &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
         call set_pvr_axislabel(cbar_param%iflag_pvr_axis,               &
@@ -157,7 +156,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_write_pvr_image_file                               &
-     &         (file_param, i_rot, istep_pvr, irank_tgt, pvr_rgb)
+     &         (file_param, i_rot, istep_pvr, pvr_rgb)
 !
       use t_pvr_image_array
       use t_control_params_4_pvr
@@ -165,7 +164,6 @@
       use set_parallel_file_name
       use convert_real_rgb_2_bite
 !
-      integer(kind = kint), intent(in) :: irank_tgt
       type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: i_rot, istep_pvr
 !

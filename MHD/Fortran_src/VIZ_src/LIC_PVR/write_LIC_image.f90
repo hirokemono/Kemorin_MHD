@@ -7,7 +7,7 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_image_4_lic(istep_pvr, irank_tgt,          &
+!!      subroutine rendering_image_4_lic(istep_pvr,                     &
 !!     &          file_param, node, ele, surf, lic_p, color_param,      &
 !!     &          cbar_param, field_pvr, pvr_screen, pvr_start,         &
 !!     &          pvr_img, pvr_rgb)
@@ -40,7 +40,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image_4_lic(istep_pvr, irank_tgt,            &
+      subroutine rendering_image_4_lic(istep_pvr,                       &
      &          file_param, node, ele, surf, lic_p, color_param,        &
      &          cbar_param, field_pvr, pvr_screen, pvr_start,           &
      &          pvr_img, pvr_rgb)
@@ -63,7 +63,6 @@
 !
       type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: istep_pvr
-      integer(kind = kint), intent(in) :: irank_tgt
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -123,8 +122,8 @@
      &   (pvr_img%ntot_overlap, pvr_img%npixel_img_local,               &
      &    pvr_img%ip_closer, pvr_img%rgba_part, pvr_img%rgba_whole)
 !
-      call collect_segmented_images                                     &
-     &   (irank_tgt, pvr_img%npixel_img_local, pvr_img%istack_pixel,    &
+      call collect_segmented_images(file_param%irank_image_file,        &
+     &    pvr_img%npixel_img_local, pvr_img%istack_pixel,               &
      &    pvr_img%npixel_img, pvr_rgb%num_pixel_xy,                     &
      &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
      &    pvr_img%rgba_rank0, pvr_rgb%rgba_real_gl, pvr_img%COMM)
@@ -140,7 +139,7 @@
 !        end do
 !      end if
 !
-      if(my_rank .eq. irank_tgt) then
+      if(my_rank .eq. file_param%irank_image_file) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
      &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
         call set_pvr_axislabel(cbar_param%iflag_pvr_axis,               &
