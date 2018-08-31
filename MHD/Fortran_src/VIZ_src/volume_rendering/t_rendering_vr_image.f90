@@ -86,9 +86,6 @@
         type(pvr_ray_start_type) :: start_pt
 !
 !>        Pixel data structure for volume rendering
-        type(pvr_image_type) :: rgb
-!
-!>        Pixel data structure for volume rendering
         type(pvr_segmented_img) :: image
       end type PVR_image_generator
 !

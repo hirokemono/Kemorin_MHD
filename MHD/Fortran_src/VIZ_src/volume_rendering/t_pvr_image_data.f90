@@ -60,7 +60,7 @@
 !>        Structure for field parameter for PVR
         type(pvr_output_parameter), allocatable :: file_param(:)
 !>        Viewer coordinate information
-        type(pvr_image_type), allocatable :: rgb(:)
+        type(pvr_image_type), allocatable :: pvr_rgb(:)
       end type pvr_multi_rendering
 !
       private :: alloc_istack_pvr_image_4_merge
@@ -121,10 +121,16 @@
 !
       type(pvr_multi_rendering), intent(inout) :: pvr_images
 !
+      integer(kind = kint) :: i_pvr
+!
+!
       deallocate(pvr_images%istack_pvr_render)
       deallocate(pvr_images%istack_pvr_images)
 !
-      deallocate(pvr_images%file_param, pvr_images%rgb)
+      do i_pvr = 1, pvr_images%num_pvr_images
+        call dealloc_pvr_image_array_type(pvr_images%pvr_rgb(i_pvr))
+      end do
+      deallocate(pvr_images%file_param, pvr_images%pvr_rgb)
       deallocate(pvr_images%proj)
 !
       end subroutine dealloc_istack_pvr_image_4_merge
@@ -176,7 +182,7 @@
       allocate(pvr_images%proj(pvr_images%num_pvr_rendering))
 !
       allocate(pvr_images%file_param(pvr_images%num_pvr_images))
-      allocate(pvr_images%rgb(pvr_images%num_pvr_images))
+      allocate(pvr_images%pvr_rgb(pvr_images%num_pvr_images))
 !
       end subroutine alloc_istack_pvr_image_4_merge
 !

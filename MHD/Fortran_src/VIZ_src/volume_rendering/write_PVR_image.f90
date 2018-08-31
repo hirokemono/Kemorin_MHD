@@ -174,7 +174,7 @@
       character(len=kchara) :: tmpchara, img_head
 !
 !
-      if(my_rank .ne. irank_tgt) return
+      if(my_rank .ne. file_param%irank_image_file) return
       write(*,*) 'output file from ', my_rank
 !
       if(istep_pvr .ge. 0) then

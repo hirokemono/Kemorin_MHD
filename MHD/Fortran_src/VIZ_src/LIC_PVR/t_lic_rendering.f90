@@ -132,7 +132,7 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_lic
+      integer(kind = kint) :: i_lic, ist_img
 !
 !
       if(lic%num_pvr .le. 0) then
@@ -178,11 +178,11 @@
      &    lic%lic_fld, lic%pvr_param, lic%pvr_data)
 !
       do i_lic = 1, lic%num_pvr
+        ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
         call each_PVR_initialize(i_lic,                                 &
-     &      lic%lic_images%file_param(i_lic)%irank_image_file,          &
      &      femmesh%mesh, femmesh%group, ele_mesh,                      &
-     &      lic%pvr_param(i_lic), lic%pvr_data(i_lic),                  &
-     &      lic%pvr_data(i_lic)%rgb)
+     &      lic%lic_images%file_param(ist_img), lic%pvr_param(i_lic),   &
+     &      lic%pvr_data(i_lic), lic%lic_images%pvr_rgb(ist_img))
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -217,11 +217,10 @@
         if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .le. 0) then
           ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering(istep_pvr,                          &
-     &      lic%lic_images%file_param(i_lic)%irank_image_file,          &
-     &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
-     &      lic%lic_fld(i_lic), lic%lic_images%file_param(ist_img),     &
-     &      lic%pvr_param(i_lic), lic%pvr_data(i_lic),                  &
-     &      lic%pvr_data(i_lic)%rgb)
+     &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
+     &        lic%lic_fld(i_lic), lic%lic_images%file_param(ist_img),   &
+     &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
+     &        lic%lic_images%pvr_rgb(ist_img))
         end if
       end do
 !
@@ -229,11 +228,10 @@
         if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .gt. 0) then
           ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot(istep_pvr,                    &
-     &      lic%lic_images%file_param(i_lic)%irank_image_file,          &
-     &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
-     &      lic%lic_fld(i_lic), lic%lic_images%file_param(ist_img),     &
-     &      lic%pvr_param(i_lic), lic%pvr_data(i_lic),                  &
-     &      lic%pvr_data(i_lic)%rgb)
+     &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
+     &        lic%lic_fld(i_lic), lic%lic_images%file_param(ist_img),   &
+     &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
+     &        lic%lic_images%pvr_rgb(ist_img))
         end if
       end do
       call end_elapsed_time(76)
@@ -266,8 +264,7 @@
 !
       do i_lic = 1, lic%num_pvr
         call dealloc_each_lic_data(lic%lic_fld(i_lic),                  &
-     &      lic%pvr_param(i_lic), lic%pvr_data(i_lic),                  &
-     &      lic%pvr_data(i_lic)%rgb)
+     &      lic%pvr_param(i_lic), lic%pvr_data(i_lic))
       end do
       deallocate(lic%lic_fld, lic%pvr_param, lic%pvr_data)
 !

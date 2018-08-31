@@ -15,11 +15,11 @@
 !!        type(LIC_field_params), intent(in) :: lic_fld(num_pvr)
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_pvr)
 !!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
-!!      subroutine s_each_LIC_rendering(istep_pvr, irank_tgt,           &
-!!     &          mesh, group, ele_mesh, jacs, nod_fld,                 &
+!!      subroutine s_each_LIC_rendering                                 &
+!!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
 !!     &          lic_fld, file_param, pvr_param, pvr_data, pvr_rgb)
-!!      subroutine s_each_LIC_rendering_w_rot(istep_pvr, irank_tgt,     &
-!!     &          mesh, group, ele_mesh, jacs, nod_fld,                 &
+!!      subroutine s_each_LIC_rendering_w_rot                           &
+!!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
 !!     &          lic_fld, file_param, pvr_param, pvr_data, pvr_rgb)
 !
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -35,12 +35,10 @@
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
-!!      subroutine dealloc_each_lic_data                                &
-!!     &         (lic_fld, pvr_param, pvr_data, pvr_rgb)
+!!      subroutine dealloc_each_lic_data(lic_fld, pvr_param, pvr_data)
 !!        type(PVR_field_params), intent(inout) :: pvr_fld
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
-!!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
 !
@@ -111,8 +109,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_each_LIC_rendering(istep_pvr, irank_tgt,             &
-     &          mesh, group, ele_mesh, jacs, nod_fld,                   &
+      subroutine s_each_LIC_rendering                                   &
+     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
      &          lic_fld, file_param, pvr_param, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -122,7 +120,6 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
-      integer(kind = kint), intent(in) :: irank_tgt
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
@@ -134,7 +131,7 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
-      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
@@ -150,74 +147,84 @@
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
 !
 !   Left eye
-          call streo_lic_rendering_fix_view(istep_pvr, irank_tgt,       &
+          call streo_lic_rendering_fix_view                             &
+     &       (istep_pvr, file_param(1)%irank_image_file,                &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_data%view%projection_left, pvr_data%start_pt,         &
-     &        pvr_data%image, pvr_data, pvr_rgb)
-          call store_left_eye_image(irank_tgt, pvr_rgb)
+     &        pvr_data%image, pvr_data, pvr_rgb(1))
+          call store_left_eye_image                                     &
+     &      (file_param(1)%irank_image_file, pvr_rgb(1))
 !
 !   Right eye
-          call streo_lic_rendering_fix_view(istep_pvr, irank_tgt,       &
+          call streo_lic_rendering_fix_view                             &
+     &       (istep_pvr, file_param(1)%irank_image_file,                &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_data%view%projection_right, pvr_data%start_pt,        &
-     &        pvr_data%image, pvr_data, pvr_rgb)
-          call add_left_eye_image(irank_tgt, pvr_rgb)
+     &        pvr_data%image, pvr_data, pvr_rgb(1))
+          call add_left_eye_image                                       &
+     &       (file_param(1)%irank_image_file, pvr_rgb(1))
 !
           call end_elapsed_time(76)
           call start_elapsed_time(77)
           call sel_write_pvr_image_file(file_param(1),                  &
-     &        iminus, istep_pvr, irank_tgt, pvr_rgb)
+     &        iminus, istep_pvr, file_param(1)%irank_image_file,        &
+     &        pvr_rgb(1))
           call calypso_mpi_barrier
           call end_elapsed_time(77)
           call start_elapsed_time(76)
         else
 !
 !   Left eye
-          call streo_lic_rendering_fix_view(istep_pvr, irank_tgt,       &
+          call streo_lic_rendering_fix_view                             &
+     &       (istep_pvr, file_param(1)%irank_image_file,                &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_data%view%projection_left, pvr_data%start_pt,         &
-     &        pvr_data%image, pvr_data, pvr_rgb)
+     &        pvr_data%image, pvr_data, pvr_rgb(1))
 !
           call end_elapsed_time(76)
           call start_elapsed_time(77)
           call sel_write_pvr_image_file(file_param(1),                  &
-     &        iminus, istep_pvr, irank_tgt, pvr_rgb)
+     &        iminus, istep_pvr, file_param(1)%irank_image_file,        &
+     &        pvr_rgb(1))
           call calypso_mpi_barrier
           call end_elapsed_time(77)
           call start_elapsed_time(76)
 !
 !   Right eye
-          call streo_lic_rendering_fix_view(istep_pvr, irank_tgt,       &
+          call streo_lic_rendering_fix_view                             &
+     &       (istep_pvr, file_param(2)%irank_image_file,                &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
      &        lic_fld%lic_param, pvr_param, file_param(2),              &
      &        pvr_data%view%projection_right, pvr_data%start_pt,        &
-     &        pvr_data%image, pvr_data, pvr_rgb)
+     &        pvr_data%image, pvr_data, pvr_rgb(2))
 !
           call end_elapsed_time(76)
           call start_elapsed_time(77)
           call sel_write_pvr_image_file(file_param(2),                  &
-     &        iminus, istep_pvr, irank_tgt, pvr_rgb)
+     &        iminus, istep_pvr, file_param(2)%irank_image_file,        &
+     &        pvr_rgb(2))
           call calypso_mpi_barrier
           call end_elapsed_time(77)
           call start_elapsed_time(76)
         end if
       else
         call lic_rendering_with_fixed_view                              &
-     &     (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf,   &
+     &     (istep_pvr, file_param(1)%irank_image_file,                  &
+     &      mesh%node, mesh%ele, ele_mesh%surf,                         &
      &      lic_fld%lic_param, pvr_param, file_param(1),                &
-     &      pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb)
+     &      pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
 !
         call end_elapsed_time(76)
         call start_elapsed_time(77)
         call sel_write_pvr_image_file(file_param(1), iminus,            &
-     &      istep_pvr, irank_tgt, pvr_rgb)
+     &      istep_pvr, file_param(1)%irank_image_file, pvr_rgb(1))
 !
         if(file_param(1)%iflag_monitoring .gt. 0) then
           call sel_write_pvr_image_file(file_param(1), iminus,          &
-     &        iminus, irank_tgt, pvr_rgb)
+     &        iminus, file_param(1)%irank_image_file, pvr_rgb(1))
         end if
         call calypso_mpi_barrier
         call end_elapsed_time(77)
@@ -228,8 +235,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_each_LIC_rendering_w_rot(istep_pvr, irank_tgt,       &
-     &          mesh, group, ele_mesh, jacs, nod_fld,                   &
+      subroutine s_each_LIC_rendering_w_rot                             &
+     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
      &          lic_fld, file_param, pvr_param, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -238,7 +245,6 @@
       use rendering_streo_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
-      integer(kind = kint), intent(in) :: irank_tgt
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
@@ -250,7 +256,7 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
-      type(pvr_image_type), intent(inout) :: pvr_rgb
+      type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
@@ -264,34 +270,37 @@
 !
       if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
-          call anaglyph_lic_rendering_w_rot(istep_pvr, irank_tgt,       &
+          call anaglyph_lic_rendering_w_rot                             &
+     &       (istep_pvr, file_param(1)%irank_image_file,                &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_data%view%projection_left,                            &
-     &        pvr_data%view%projection_right, pvr_data, pvr_rgb)
+     &        pvr_data%view%projection_right, pvr_data, pvr_rgb(1))
         else
-          call lic_rendering_with_rotation(istep_pvr, irank_tgt,        &
+          call lic_rendering_with_rotation                              &
+     &       (istep_pvr, file_param(1)%irank_image_file,                &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_data%view%projection_left, pvr_data, pvr_rgb)
-          call lic_rendering_with_rotation(istep_pvr, irank_tgt,        &
+     &        pvr_data%view%projection_left, pvr_data, pvr_rgb(1))
+          call lic_rendering_with_rotation                              &
+     &       (istep_pvr, file_param(2)%irank_image_file,                &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
      &        lic_fld%lic_param, pvr_param, file_param(2),              &
-     &        pvr_data%view%projection_right, pvr_data, pvr_rgb)
+     &        pvr_data%view%projection_right, pvr_data, pvr_rgb(2))
         end if
       else
-        call lic_rendering_with_rotation(istep_pvr, irank_tgt,          &
+        call lic_rendering_with_rotation                                &
+     &     (istep_pvr, file_param(1)%irank_image_file,                  &
      &      mesh%node, mesh%ele, ele_mesh%surf, group,                  &
      &      lic_fld%lic_param, pvr_param, file_param(1),                &
-     &      pvr_data%view%projection_mat, pvr_data, pvr_rgb)
+     &      pvr_data%view%projection_mat, pvr_data, pvr_rgb(1))
       end if
 !
       end subroutine s_each_LIC_rendering_w_rot
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_each_lic_data                                  &
-     &         (lic_fld, pvr_param, pvr_data, pvr_rgb)
+      subroutine dealloc_each_lic_data(lic_fld, pvr_param, pvr_data)
 !
       use set_pvr_control
       use field_data_4_pvr
@@ -299,15 +308,13 @@
       type(LIC_field_params), intent(inout) :: lic_fld
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
-      type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
       if(pvr_data%view%iflag_rotate_snap .eq. 0                         &
      &    .and. pvr_data%view%iflag_stereo_pvr .eq. 0) then
           call flush_rendering_4_fixed_view(pvr_data)
       end if
-      call flush_pixel_on_pvr_screen                                    &
-     &   (pvr_param%pixel, pvr_rgb)
+      call deallocate_pixel_position_pvr(pvr_param%pixel)
 !
       call dealloc_projected_position(pvr_data%screen)
 !
