@@ -22,8 +22,8 @@
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
-!!      subroutine sel_write_pvr_image_file(file_param, i_rot,          &
-!!     &          istep_pvr, irank_tgt, isel_projection, pvr_rgb)
+!!      subroutine sel_write_pvr_image_file                             &
+!!     &         (file_param, i_rot, istep_pvr, irank_tgt, pvr_rgb)
 !!      subroutine sel_write_pvr_local_img                              &
 !!     &        (file_param, index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -156,8 +156,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_image_file(file_param, i_rot,            &
-     &          istep_pvr, irank_tgt, isel_projection, pvr_rgb)
+      subroutine sel_write_pvr_image_file                               &
+     &         (file_param, i_rot, istep_pvr, irank_tgt, pvr_rgb)
 !
       use t_pvr_image_array
       use t_control_params_4_pvr
@@ -168,7 +168,6 @@
       integer(kind = kint), intent(in) :: irank_tgt
       type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: i_rot, istep_pvr
-      integer(kind = kint), intent(in) :: isel_projection
 !
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
@@ -178,18 +177,10 @@
       if(my_rank .ne. irank_tgt) return
       write(*,*) 'output file from ', my_rank
 !
-      if(isel_projection .eq. IFLAG_LEFT) then
-        call add_left_label(file_param%pvr_prefix, img_head)
-      else if(isel_projection .eq. IFLAG_RIGHT) then
-        call add_right_label(file_param%pvr_prefix, img_head)
-      else
-        img_head = file_param%pvr_prefix
-      end if
-!
       if(istep_pvr .ge. 0) then
-        call add_int_suffix(istep_pvr, img_head, tmpchara)
+        call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
       else
-        tmpchara = img_head
+        tmpchara = file_param%pvr_prefix
       end if
 !
       if(i_rot .gt. 0) then

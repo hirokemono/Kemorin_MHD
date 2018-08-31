@@ -61,8 +61,6 @@
 !
 !>      Structure of PVR control parameters
       type PVR_control_params
-!>        Parameters for output files
-        type(pvr_output_parameter) :: file
 !>        Parameters for image pixels
         type(pvr_pixel_position_type) :: pixel
 !>        Structure for rough serch of subdomains

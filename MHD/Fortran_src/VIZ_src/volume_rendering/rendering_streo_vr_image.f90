@@ -11,8 +11,7 @@
 !!     &          node, ele, surf, group, pvr_param, file_param,        &
 !!     &          projection_mat, start_pt, image, pvr_data, pvr_rgb)
 !!
-!!      subroutine rendering_with_rotation                              &
-!!     &         (isel_projection, istep_pvr, irank_tgt,                &
+!!      subroutine rendering_with_rotation(istep_pvr, irank_tgt,        &
 !!     &          node, ele, surf, group, pvr_param, file_param,        &
 !!     &          projection_mat, pvr_data, pvr_rgb)
 !!      subroutine anaglyph_rendering_w_rotation(istep_pvr, irank_tgt,  &
@@ -106,8 +105,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_rotation                                &
-     &         (isel_projection, istep_pvr, irank_tgt,                  &
+      subroutine rendering_with_rotation(istep_pvr, irank_tgt,          &
      &          node, ele, surf, group, pvr_param, file_param,          &
      &          projection_mat, pvr_data, pvr_rgb)
 !
@@ -115,7 +113,6 @@
       use composite_pvr_images
       use write_PVR_image
 !
-      integer(kind = kint), intent(in) :: isel_projection
       integer(kind = kint), intent(in) :: istep_pvr
       integer(kind = kint), intent(in) :: irank_tgt
       real(kind = kreal), intent(in) :: projection_mat(4,4)
@@ -148,10 +145,8 @@
 !
         call end_elapsed_time(71)
         call start_elapsed_time(72)
-        if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
         call sel_write_pvr_image_file                                   &
-     &   (file_param, i_rot, istep_pvr, irank_tgt,                      &
-     &    isel_projection, pvr_rgb)
+     &     (file_param, i_rot, istep_pvr, irank_tgt, pvr_rgb)
         call calypso_mpi_barrier
         call end_elapsed_time(72)
         call start_elapsed_time(71)
@@ -215,8 +210,8 @@
 !
         call end_elapsed_time(71)
         call start_elapsed_time(72)
-        call sel_write_pvr_image_file(file_param,                       &
-     &      i_rot, istep_pvr, irank_tgt, IFLAG_NORMAL, pvr_rgb)
+        call sel_write_pvr_image_file                                   &
+     &     (file_param, i_rot, istep_pvr, irank_tgt, pvr_rgb)
         call calypso_mpi_barrier
         call end_elapsed_time(72)
         call start_elapsed_time(71)

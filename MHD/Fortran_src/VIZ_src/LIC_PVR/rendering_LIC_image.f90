@@ -63,7 +63,6 @@
 !
       use composite_pvr_images
       use write_LIC_image
-      use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       integer(kind = kint), intent(in) :: irank_tgt
@@ -84,20 +83,6 @@
       call rendering_image_4_lic(istep_pvr, irank_tgt, file_param,      &
      &    node, ele, surf, lic_p, pvr_data%color, pvr_param%colorbar,   &
      &    pvr_param%field, pvr_data%screen, start_pt, image, pvr_rgb)
-!
-      call end_elapsed_time(76)
-      call start_elapsed_time(77)
-      if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
-      call sel_write_pvr_image_file(file_param, iminus,                 &
-     &    istep_pvr, irank_tgt, IFLAG_NORMAL, pvr_rgb)
-!
-      if(file_param%iflag_monitoring .gt. 0) then
-        call sel_write_pvr_image_file(file_param, iminus,               &
-     &      iminus, irank_tgt, IFLAG_NORMAL, pvr_rgb)
-      end if
-      call calypso_mpi_barrier
-      call end_elapsed_time(77)
-      call start_elapsed_time(76)
 !
       end subroutine lic_rendering_with_fixed_view
 !

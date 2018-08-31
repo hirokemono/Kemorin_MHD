@@ -43,20 +43,10 @@
         type(pvr_segmented_img) :: image
       end type pvr_mul_projection_data
 !
-!>      Structure for each PVR image
-      type pvr_image_data
-!>        Structure for field parameter for PVR
-        type(pvr_output_parameter) :: file_param
-!>        Viewer coordinate information
-        type(pvr_image_type) :: rgb
-      end type pvr_image_data
-!
 !>  Structure for PVR images
       type pvr_multi_rendering
 !>        Number of rendering for volume rendering
         integer(kind = kint) :: num_pvr_rendering = 0
-!>        Number of image files for volume rendering
-        integer(kind = kint) :: num_pvr_images =    0
 !>        Number of rendreing for volume rendering
         integer(kind = kint), allocatable :: istack_pvr_render(:)
 !>        Number of image files for volume rendering
@@ -64,8 +54,13 @@
 !
 !>        Structure for projection data
         type(pvr_mul_projection_data), allocatable :: proj(:)
-!>        Structure for each PVR image
-        type(pvr_image_data), allocatable :: img(:)
+!
+!>        Number of image files for volume rendering
+        integer(kind = kint) :: num_pvr_images =    0
+!>        Structure for field parameter for PVR
+        type(pvr_output_parameter), allocatable :: file_param(:)
+!>        Viewer coordinate information
+        type(pvr_image_type), allocatable :: rgb(:)
       end type pvr_multi_rendering
 !
       private :: alloc_istack_pvr_image_4_merge
@@ -101,9 +96,10 @@
      &    pvr_images%istack_pvr_render, pvr_images%istack_pvr_images)
 !
       call set_rank_to_write_images(nprocs,                             &
-     &    pvr_images%num_pvr_images, pvr_images%img)
+     &    pvr_images%num_pvr_images, pvr_images%file_param)
       call set_pvr_file_parameters(num_pvr_ctl, pvr_ctl,                &
-     &    pvr_images%num_pvr_images, pvr_images%img)
+     &    pvr_images%istack_pvr_images, pvr_images%num_pvr_images,      &
+     &    pvr_images%file_param)
 !
       if(iflag_debug .eq. 0) return
       write(*,*) 'num_pvr', num_pvr
@@ -113,8 +109,8 @@
       write(*,*) 'istack_pvr_images', pvr_images%istack_pvr_images
       do i_pvr = 1, pvr_images%num_pvr_images
         write(*,*) 'irank_image_file',                                  &
-     &            pvr_images%img(i_pvr)%file_param%irank_image_file,    &
-     &            trim(pvr_images%img(i_pvr)%file_param%pvr_prefix)
+     &            pvr_images%file_param(i_pvr)%irank_image_file,    &
+     &            trim(pvr_images%file_param(i_pvr)%pvr_prefix)
       end do
 !
       end subroutine s_num_rendering_and_images
@@ -128,7 +124,7 @@
       deallocate(pvr_images%istack_pvr_render)
       deallocate(pvr_images%istack_pvr_images)
 !
-      deallocate(pvr_images%img)
+      deallocate(pvr_images%file_param, pvr_images%rgb)
       deallocate(pvr_images%proj)
 !
       end subroutine dealloc_istack_pvr_image_4_merge
@@ -178,7 +174,9 @@
       pvr_images%istack_pvr_images = 0
 !
       allocate(pvr_images%proj(pvr_images%num_pvr_rendering))
-      allocate(pvr_images%img(pvr_images%num_pvr_images))
+!
+      allocate(pvr_images%file_param(pvr_images%num_pvr_images))
+      allocate(pvr_images%rgb(pvr_images%num_pvr_images))
 !
       end subroutine alloc_istack_pvr_image_4_merge
 !
@@ -252,13 +250,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_rank_to_write_images(nprocs, num_pvr_images, img)
+      subroutine set_rank_to_write_images                               &
+     &         (nprocs, num_pvr_images, file_param)
 !
       use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(in) :: nprocs
       integer(kind = kint), intent(in) :: num_pvr_images
-      type(pvr_image_data), intent(inout) :: img(num_pvr_images)
+      type(pvr_output_parameter), intent(inout)                         &
+     &                           :: file_param(num_pvr_images)
 !
       integer(kind = kint) :: i_pvr, icou, nstep
 !
@@ -271,7 +271,7 @@
 !
       do i_pvr = 1, num_pvr_images
         icou = (i_pvr-1) * nstep
-        img(i_pvr)%file_param%irank_image_file = mod(icou, nprocs)
+        file_param(i_pvr)%irank_image_file = mod(icou, nprocs)
       end do
 !
       end subroutine set_rank_to_write_images
@@ -279,39 +279,43 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_pvr_file_parameters(num_pvr_ctl, pvr_ctls,         &
-     &          num_pvr_images, img)
+     &          istack_pvr_images, num_pvr_images, file_param)
 !
       use skip_comment_f
       use set_control_each_pvr
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: num_pvr_ctl
-      type(pvr_parameter_ctl), intent(in) :: pvr_ctls(num_pvr_ctl)
       integer(kind = kint), intent(in) :: num_pvr_images
+      integer(kind = kint), intent(inout)                               &
+     &              :: istack_pvr_images(0:num_pvr_ctl)
+      type(pvr_parameter_ctl), intent(in) :: pvr_ctls(num_pvr_ctl)
 !
-      type(pvr_image_data), intent(inout) :: img(num_pvr_images)
+      type(pvr_output_parameter), intent(inout)                         &
+     &                           :: file_param(num_pvr_images)
 !
-      integer(kind = kint) :: i_pvr, icou
+      integer(kind = kint) :: i_pvr, ist
       character(len=kchara) :: pvr_prefix
 !
 !
-      icou = 0
       do i_pvr = 1, num_pvr_ctl
-        icou = icou + 1
+        ist = istack_pvr_images(i_pvr-1) + 1
+!
         call set_pvr_file_prefix(pvr_ctls(i_pvr), pvr_prefix)
-        call set_pvr_file_control(pvr_ctls(i_pvr), img(icou)%file_param)
+        call set_pvr_file_control(pvr_ctls(i_pvr), file_param(ist))
         if(yes_flag(pvr_ctls(i_pvr)%streo_ctl%charavalue)) then
           if(yes_flag(pvr_ctls(i_pvr)%anaglyph_ctl%charavalue)) then
-            img(icou)%file_param%pvr_prefix = pvr_prefix
+            file_param(ist)%pvr_prefix = pvr_prefix
           else
-            call add_left_label(pvr_prefix, img(icou)%file_param%pvr_prefix)
-!
-            icou = icou + 1
-            call set_pvr_file_control(pvr_ctls(i_pvr), img(icou)%file_param)
-            call add_right_label(pvr_prefix, img(icou)%file_param%pvr_prefix)
+            call add_left_label                                         &
+     &         (pvr_prefix, file_param(ist)%pvr_prefix)
+            call add_right_label                                        &
+     &         (pvr_prefix, file_param(ist+1)%pvr_prefix)
+            call set_pvr_file_control                                   &
+     &         (pvr_ctls(i_pvr), file_param(ist+1))
           end if
         else
-          img(icou)%file_param%pvr_prefix = pvr_prefix
+          file_param(ist)%pvr_prefix = pvr_prefix
         end if
       end do
 !

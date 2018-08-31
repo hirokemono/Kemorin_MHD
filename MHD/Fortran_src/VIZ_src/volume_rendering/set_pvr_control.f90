@@ -123,11 +123,6 @@
 !
 !
       do i_pvr = 1, num_pvr
-        if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
-        call set_pvr_file_prefix                                        &
-     &     (pvr_ctl_type(i_pvr), pvr_param(i_pvr)%file%pvr_prefix)
-        call set_pvr_file_control                                       &
-     &     (pvr_ctl_type(i_pvr), pvr_param(i_pvr)%file)
         call set_control_pvr_movie                                      &
      &     (pvr_ctl_type(i_pvr)%movie, pvr_data(i_pvr)%view)
         call set_pvr_stereo_control                                     &
