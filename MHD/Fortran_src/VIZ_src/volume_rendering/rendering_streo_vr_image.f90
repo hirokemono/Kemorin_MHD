@@ -8,14 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine streo_rendering_fixed_view(istep_pvr, irank_tgt,     &
-!!     &          node, ele, surf, group, pvr_param, pvr_data, pvr_rgb)
+!!     &          node, ele, surf, group, pvr_param, file_param,        &
+!!     &          pvr_data, pvr_rgb)
 !!      subroutine streo_rendering_with_rotation(istep_pvr, irank_tgt,  &
-!!     &          node, ele, surf, group, pvr_param, pvr_data, pvr_rgb)
+!!     &          node, ele, surf, group, pvr_param, file_param,        &
+!!     &          pvr_data, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(mesh_groups), intent(in) :: group
 !!        type(PVR_control_params), intent(in) :: pvr_param
+!!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
@@ -50,7 +53,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine streo_rendering_fixed_view(istep_pvr, irank_tgt,       &
-     &          node, ele, surf, group, pvr_param, pvr_data, pvr_rgb)
+     &          node, ele, surf, group, pvr_param, file_param,          &
+     &          pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
@@ -63,6 +67,7 @@
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
       type(PVR_control_params), intent(in) :: pvr_param
+      type(pvr_output_parameter), intent(in) :: file_param
 !
       type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -75,7 +80,8 @@
 !   Left eye
 !
       call rendering_at_once(IFLAG_LEFT, istep_pvr, irank_tgt,          &
-     &    node, ele, surf, group, pvr_param, pvr_data, pvr_rgb)
+     &    node, ele, surf, group, pvr_param, file_param,                &
+     &    pvr_data, pvr_rgb)
 !
       if(pvr_data%view%iflag_anaglyph .gt. 0) then
         call store_left_eye_image(irank_tgt, pvr_rgb)
@@ -83,8 +89,8 @@
         call end_elapsed_time(71)
         call start_elapsed_time(72)
 !
-        call sel_write_pvr_image_file(pvr_param%file,                   &
-     &     iminus, istep_pvr, irank_tgt, IFLAG_LEFT, pvr_rgb)
+        call sel_write_pvr_image_file(file_param, iminus, istep_pvr,    &
+     &      irank_tgt, IFLAG_LEFT, pvr_rgb)
 !
         call calypso_mpi_barrier
         call end_elapsed_time(72)
@@ -97,7 +103,8 @@
 !   Right eye
 !
       call rendering_at_once(IFLAG_RIGHT, istep_pvr, irank_tgt,         &
-     &    node, ele, surf, group, pvr_param, pvr_data, pvr_rgb)
+     &    node, ele, surf, group, pvr_param, file_param,                &
+     &    pvr_data, pvr_rgb)
 !
       if(pvr_data%view%iflag_anaglyph .gt. 0) then
         call add_left_eye_image(irank_tgt, pvr_rgb)
@@ -105,13 +112,13 @@
         call end_elapsed_time(71)
         call start_elapsed_time(72)
 !
-        call sel_write_pvr_image_file(pvr_param%file,                   &
+        call sel_write_pvr_image_file(file_param,                       &
      &      iminus, istep_pvr, irank_tgt, IFLAG_NORMAL, pvr_rgb)
       else
         call end_elapsed_time(71)
         call start_elapsed_time(72)
 !
-        call sel_write_pvr_image_file(pvr_param%file,                   &
+        call sel_write_pvr_image_file(file_param,                       &
      &      iminus, istep_pvr, irank_tgt, IFLAG_RIGHT, pvr_rgb)
       end if
       call calypso_mpi_barrier
@@ -127,7 +134,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine streo_rendering_with_rotation(istep_pvr, irank_tgt,    &
-     &          node, ele, surf, group, pvr_param, pvr_data, pvr_rgb)
+     &          node, ele, surf, group, pvr_param, file_param,          &
+     &          pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
@@ -140,6 +148,7 @@
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
       type(PVR_control_params), intent(in) :: pvr_param
+      type(pvr_output_parameter), intent(in) :: file_param
 !
       type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -156,7 +165,8 @@
 !
 !    Left eye
         call rendering_at_once(IFLAG_LEFT, istep_pvr, irank_tgt,        &
-     &      node, ele, surf, group, pvr_param, pvr_data, pvr_rgb)
+     &      node, ele, surf, group, pvr_param, file_param,              &
+     &      pvr_data, pvr_rgb)
 !
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
           call store_left_eye_image(irank_tgt, pvr_rgb)
@@ -164,7 +174,7 @@
           call end_elapsed_time(71)
           call start_elapsed_time(72)
 !
-          call sel_write_pvr_image_file(pvr_param%file,                 &
+          call sel_write_pvr_image_file(file_param,                     &
      &        i_rot, istep_pvr, irank_tgt, IFLAG_LEFT, pvr_rgb)
 !
           call calypso_mpi_barrier
@@ -177,20 +187,21 @@
 !
 !    Right eye
         call rendering_at_once(IFLAG_RIGHT, istep_pvr, irank_tgt,       &
-     &      node, ele, surf, group, pvr_param, pvr_data, pvr_rgb)
+     &      node, ele, surf, group, pvr_param, file_param,              &
+     &      pvr_data, pvr_rgb)
 !
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
           call add_left_eye_image(irank_tgt, pvr_rgb)
 !
           call end_elapsed_time(71)
           call start_elapsed_time(72)
-          call sel_write_pvr_image_file(pvr_param%file,                 &
+          call sel_write_pvr_image_file(file_param,                     &
      &        i_rot, istep_pvr, irank_tgt, IFLAG_NORMAL, pvr_rgb)
         else
           call end_elapsed_time(71)
           call start_elapsed_time(72)
 !
-          call sel_write_pvr_image_file(pvr_param%file,                 &
+          call sel_write_pvr_image_file(file_param,                     &
      &        i_rot, istep_pvr, irank_tgt, IFLAG_RIGHT, pvr_rgb)
         end if
         call calypso_mpi_barrier

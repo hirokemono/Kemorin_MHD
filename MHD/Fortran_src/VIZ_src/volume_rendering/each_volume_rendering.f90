@@ -16,7 +16,7 @@
 !!     &          mesh, group, ele_mesh, pvr_param, pvr_data, pvr_rgb)
 !!      subroutine each_PVR_rendering(istep_pvr, irank_tgt,             &
 !!     &          mesh, group, ele_mesh, jacs, nod_fld,                 &
-!!     &          pvr_fld, pvr_param, pvr_data, pvr_rgb)
+!!     &          pvr_fld, file_param, pvr_param, pvr_data, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -158,7 +158,7 @@
 !
       subroutine each_PVR_rendering(istep_pvr, irank_tgt,               &
      &          mesh, group, ele_mesh, jacs, nod_fld,                   &
-     &          pvr_fld, pvr_param, pvr_data, pvr_rgb)
+     &          pvr_fld, file_param, pvr_param, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
 !
@@ -171,6 +171,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(PVR_field_params), intent(in) :: pvr_fld
+      type(pvr_output_parameter), intent(in) :: file_param
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
@@ -190,21 +191,21 @@
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_rendering_with_rotation(istep_pvr, irank_tgt,      &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        pvr_param, pvr_data, pvr_rgb)
+     &        pvr_param, file_param, pvr_data, pvr_rgb)
         else
           call rendering_with_rotation(istep_pvr, irank_tgt,            &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        pvr_param, pvr_data, pvr_rgb)
+     &        pvr_param, file_param, pvr_data, pvr_rgb)
         end if
       else
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_rendering_fixed_view                               &
      &       (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf, &
-     &        group, pvr_param, pvr_data, pvr_rgb)
+     &        group, pvr_param, file_param, pvr_data, pvr_rgb)
         else
           call rendering_with_fixed_view                                &
      &       (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf, &
-     &        pvr_param, pvr_data, pvr_rgb)
+     &        pvr_param, file_param, pvr_data, pvr_rgb)
         end if
       end if
 !

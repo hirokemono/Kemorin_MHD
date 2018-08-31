@@ -17,7 +17,7 @@
 !!        type(PVR_image_generator), intent(inout) :: pvr_data(num_pvr)
 !!      subroutine s_each_LIC_rendering(istep_pvr, irank_tgt,           &
 !!     &          mesh, group, ele_mesh, jacs, nod_fld,                 &
-!!     &          lic_fld, pvr_param, pvr_data, pvr_rgb)
+!!     &          lic_fld, file_param, pvr_param, pvr_data, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -27,6 +27,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(LIC_field_params), intent(in) :: lic_fld
+!!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -108,7 +109,7 @@
 !
       subroutine s_each_LIC_rendering(istep_pvr, irank_tgt,             &
      &          mesh, group, ele_mesh, jacs, nod_fld,                   &
-     &          lic_fld, pvr_param, pvr_data, pvr_rgb)
+     &          lic_fld, file_param, pvr_param, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use field_data_4_LIC
@@ -124,6 +125,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(LIC_field_params), intent(in) :: lic_fld
+      type(pvr_output_parameter), intent(in) :: file_param
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
@@ -143,21 +145,25 @@
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_lic_rendering_with_rot(istep_pvr, irank_tgt,       &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        lic_fld%lic_param, pvr_param, pvr_data, pvr_rgb)
+     &        lic_fld%lic_param, pvr_param, file_param,                 &
+     &        pvr_data, pvr_rgb)
         else
           call lic_rendering_with_rotation(istep_pvr, irank_tgt,        &
-     &       mesh%node, mesh%ele, ele_mesh%surf, group,                 &
-     &        lic_fld%lic_param, pvr_param, pvr_data, pvr_rgb)
+     &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
+     &        lic_fld%lic_param, pvr_param, file_param,                 &
+     &        pvr_data, pvr_rgb)
         end if
       else
         if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
           call streo_lic_rendering_fix_view(istep_pvr, irank_tgt,       &
      &        mesh%node, mesh%ele, ele_mesh%surf, group,                &
-     &        lic_fld%lic_param, pvr_param, pvr_data, pvr_rgb)
+     &        lic_fld%lic_param, pvr_param, file_param,                 &
+     &        pvr_data, pvr_rgb)
         else
           call lic_rendering_with_fixed_view                            &
      &       (istep_pvr, irank_tgt, mesh%node, mesh%ele, ele_mesh%surf, &
-     &        lic_fld%lic_param, pvr_param, pvr_data, pvr_rgb)
+     &        lic_fld%lic_param, pvr_param, file_param,                 &
+     &        pvr_data, pvr_rgb)
         end if
       end if
 !

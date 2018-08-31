@@ -210,8 +210,9 @@
         call each_PVR_rendering                                         &
      &     (istep_pvr, pvr%pvr_images%img(i_pvr)%irank_image_file,      &
      &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
-     &      pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr),                   &
-     &      pvr%pvr_data(i_pvr), pvr%pvr_data(i_pvr)%rgb)
+     &      pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr)%file,              &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                  &
+     &      pvr%pvr_data(i_pvr)%rgb)
       end do
       call end_elapsed_time(71)
 !

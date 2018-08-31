@@ -220,8 +220,9 @@
         call s_each_LIC_rendering                                       &
      &     (istep_pvr, lic%lic_images%img(i_lic)%irank_image_file,      &
      &      femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,       &
-     &      lic%lic_fld(i_lic), lic%pvr_param(i_lic),                   &
-     &      lic%pvr_data(i_lic), lic%pvr_data(i_lic)%rgb)
+     &      lic%lic_fld(i_lic), lic%pvr_param(i_lic)%file,              &
+     &      lic%pvr_param(i_lic), lic%pvr_data(i_lic),                  &
+     &      lic%pvr_data(i_lic)%rgb)
       end do
       call end_elapsed_time(76)
 !
