@@ -13,10 +13,11 @@
 !!
 !!      subroutine rendering_with_rotation(istep_pvr,                   &
 !!     &          node, ele, surf, group, pvr_param, file_param,        &
-!!     &          projection_mat, pvr_data, pvr_rgb)
+!!     &          projection_mat, start_pt, image, pvr_data, pvr_rgb)
 !!      subroutine anaglyph_rendering_w_rotation(istep_pvr,             &
 !!     &          node, ele, surf, group, pvr_param, file_param,        &
-!!     &          projection_left, projection_right, pvr_data, pvr_rgb)
+!!     &          projection_left, projection_right,                    &
+!!     &          start_pt, image, pvr_data, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -81,6 +82,9 @@
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
+      call dealloc_pvr_local_subimage(image)
+      call deallocate_pvr_ray_start(start_pt)
+!
       call cal_pvr_modelview_matrix                                     &
      &   (izero, pvr_param%outline, pvr_data%view, pvr_data%color,      &
      &    pvr_data%screen)
@@ -96,9 +100,6 @@
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
      &    pvr_param%field, pvr_data%screen, start_pt, image, pvr_rgb)
 !
-      call dealloc_pvr_local_subimage(image)
-      call deallocate_pvr_ray_start(start_pt)
-!
       end subroutine streo_rendering_fixed_view
 !
 !  ---------------------------------------------------------------------
@@ -106,7 +107,7 @@
 !
       subroutine rendering_with_rotation(istep_pvr,                     &
      &          node, ele, surf, group, pvr_param, file_param,          &
-     &          projection_mat, pvr_data, pvr_rgb)
+     &          projection_mat, start_pt, image, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
@@ -122,17 +123,20 @@
       type(PVR_control_params), intent(in) :: pvr_param
       type(pvr_output_parameter), intent(in) :: file_param
 !
+      type(pvr_ray_start_type), intent(inout) :: start_pt
+      type(pvr_segmented_img), intent(inout)  :: image
       type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
-      type(pvr_ray_start_type) :: start_pt
-      type(pvr_segmented_img)  :: image
       integer(kind = kint) :: i_rot, ist_rot, ied_rot
 !
 !
       ist_rot = pvr_data%view%istart_rot
       ied_rot = pvr_data%view%iend_rot
       do i_rot = ist_rot, ied_rot
+        call dealloc_pvr_local_subimage(image)
+        call deallocate_pvr_ray_start(start_pt)
+!
         call cal_pvr_modelview_matrix                                   &
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
      &      pvr_data%screen)
@@ -148,9 +152,6 @@
         call calypso_mpi_barrier
         call end_elapsed_time(72)
         call start_elapsed_time(71)
-!
-        call dealloc_pvr_local_subimage(image)
-        call deallocate_pvr_ray_start(start_pt)
       end do
 !
       end subroutine rendering_with_rotation
@@ -159,7 +160,8 @@
 !
       subroutine anaglyph_rendering_w_rotation(istep_pvr,               &
      &          node, ele, surf, group, pvr_param, file_param,          &
-     &          projection_left, projection_right, pvr_data, pvr_rgb)
+     &          projection_left, projection_right,                      &
+     &          start_pt, image, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
@@ -175,17 +177,20 @@
       type(PVR_control_params), intent(in) :: pvr_param
       type(pvr_output_parameter), intent(in) :: file_param
 !
+      type(pvr_ray_start_type), intent(inout) :: start_pt
+      type(pvr_segmented_img), intent(inout)  :: image
       type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       integer(kind = kint) :: i_rot, ist_rot, ied_rot
-      type(pvr_ray_start_type) :: start_pt
-      type(pvr_segmented_img)  :: image
 !
 !
       ist_rot = pvr_data%view%istart_rot
       ied_rot = pvr_data%view%iend_rot
       do i_rot = ist_rot, ied_rot
+        call dealloc_pvr_local_subimage(image)
+        call deallocate_pvr_ray_start(start_pt)
+!
         call cal_pvr_modelview_matrix                                   &
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color,    &
      &      pvr_data%screen)
@@ -196,10 +201,10 @@
      &      projection_left, start_pt, image, pvr_data, pvr_rgb)
         call store_left_eye_image(file_param%irank_image_file, pvr_rgb)
 !
+!    Right eye
         call dealloc_pvr_local_subimage(image)
         call deallocate_pvr_ray_start(start_pt)
 !
-!    Right eye
         call rendering_at_once(istep_pvr,                               &
      &      node, ele, surf, group, pvr_param, file_param,              &
      &      projection_right, start_pt, image, pvr_data, pvr_rgb)
@@ -212,9 +217,6 @@
         call calypso_mpi_barrier
         call end_elapsed_time(72)
         call start_elapsed_time(71)
-!
-        call dealloc_pvr_local_subimage(image)
-        call deallocate_pvr_ray_start(start_pt)
       end do
 !
       end subroutine anaglyph_rendering_w_rotation

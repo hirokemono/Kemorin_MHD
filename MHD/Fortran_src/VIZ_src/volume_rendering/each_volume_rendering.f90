@@ -129,15 +129,11 @@
      &      pvr_rgb(2))
       end if
 !
-      if(pvr_data%view%iflag_rotate_snap .eq. 0) then
-        if(pvr_data%view%iflag_stereo_pvr .eq. 0) then
-          if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
-          call set_fixed_view_and_image                                 &
-     &       (mesh%node, mesh%ele, ele_mesh%surf, group, pvr_param,     &
-     &        pvr_rgb(1), pvr_proj(1)%projection_mat,                   &
-     &        pvr_data%start_pt, pvr_data%image, pvr_data)
-        end if
-      end if
+      if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
+      call set_fixed_view_and_image                                     &
+     &   (mesh%node, mesh%ele, ele_mesh%surf, group, pvr_param,         &
+     &    pvr_rgb(1), pvr_proj(1)%projection_mat,                       &
+     &    pvr_data%start_pt, pvr_data%image, pvr_data)
 !
       end subroutine each_PVR_initialize
 !
@@ -293,22 +289,23 @@
           call anaglyph_rendering_w_rotation                            &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        pvr_param, file_param(1), pvr_proj(1)%projection_mat,     &
-     &        pvr_proj(2)%projection_mat, pvr_data, pvr_rgb(1))
+     &        pvr_proj(2)%projection_mat, pvr_data%start_pt,            &
+     &        pvr_data%image, pvr_data, pvr_rgb(1))
         else
           call rendering_with_rotation                                  &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        pvr_param, file_param(1), pvr_proj(1)%projection_mat,     &
-     &        pvr_data, pvr_rgb(1))
+     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
           call rendering_with_rotation                                  &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        pvr_param, file_param(2), pvr_proj(2)%projection_mat,     &
-     &        pvr_data, pvr_rgb(2))
+     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(2))
         end if
       else
         call rendering_with_rotation                                    &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,       &
      &      pvr_param, file_param(1), pvr_proj(1)%projection_mat,       &
-     &      pvr_data, pvr_rgb(1))
+     &      pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
       end if
 !
       end subroutine each_PVR_rendering_w_rot

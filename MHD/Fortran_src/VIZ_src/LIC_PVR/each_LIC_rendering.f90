@@ -231,22 +231,25 @@
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_proj(1)%projection_mat, pvr_proj(2)%projection_mat,   &
-     &        pvr_data, pvr_rgb(1))
+     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
         else
           call lic_rendering_with_rotation                              &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_proj(1)%projection_mat, pvr_data, pvr_rgb(1))
+     &        pvr_proj(1)%projection_mat, pvr_data%start_pt,            &
+     &        pvr_data%image, pvr_data, pvr_rgb(1))
           call lic_rendering_with_rotation                              &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
      &        lic_fld%lic_param, pvr_param, file_param(2),              &
-     &        pvr_proj(2)%projection_mat, pvr_data, pvr_rgb(2))
+     &        pvr_proj(2)%projection_mat, pvr_data%start_pt,            &
+     &        pvr_data%image, pvr_data, pvr_rgb(2))
         end if
       else
         call lic_rendering_with_rotation                                &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,       &
      &      lic_fld%lic_param, pvr_param, file_param(1),                &
-     &      pvr_proj(1)%projection_mat, pvr_data, pvr_rgb(1))
+     &      pvr_proj(1)%projection_mat, pvr_data%start_pt,              &
+     &      pvr_data%image, pvr_data, pvr_rgb(1))
       end if
 !
       end subroutine s_each_LIC_rendering_w_rot
