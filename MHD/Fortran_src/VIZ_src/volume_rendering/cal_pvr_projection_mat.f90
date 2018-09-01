@@ -9,9 +9,12 @@
 !!@verbatim
 !!      subroutine set_pvr_orthogonal_params(i_pvr, view_param)
 !!
-!!      subroutine set_pvr_projection_matrix(i_pvr, view_param)
-!!      subroutine set_pvr_projection_left_mat(i_pvr, view_param)
-!!      subroutine set_pvr_projection_right_mat(i_pvr, view_param)
+!!      subroutine set_pvr_projection_matrix                            &
+!!     &         (i_pvr, view_param, projection_mat)
+!!      subroutine set_pvr_projection_left_mat                          &
+!!     &          (i_pvr, view_param, projection_left)
+!!      subroutine set_pvr_projection_right_mat                         &
+!!     &          (i_pvr, view_param, projection_right)
 !!@endverbatim
 !
       module cal_pvr_projection_mat
@@ -58,24 +61,26 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_projection_matrix(i_pvr, view_param)
+      subroutine set_pvr_projection_matrix                              &
+     &         (i_pvr, view_param, projection_mat)
 !
       use set_projection_matrix
 !
       integer(kind = kint), intent(in) :: i_pvr
-      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_view_parameter), intent(in) :: view_param
+      real(kind = kreal), intent(inout) :: projection_mat(4,4)
 !
       integer(kind = kint) :: i
 !
 !
         call set_perspective_mat_by_angle(view_param%perspective_angle, &
      &    view_param%perspective_xy_ratio, view_param%perspective_near, &
-     &    view_param%perspective_far, view_param%projection_mat)
+     &    view_param%perspective_far, projection_mat)
 !
         if (iflag_debug .gt. 0) then
           write(*,*) 'projection_mat for PVR ', i_pvr
           do i = 1, 4
-            write(*,'(1p4e16.7)') view_param%projection_mat(i,1:4)
+            write(*,'(1p4e16.7)') projection_mat(i,1:4)
           end do
         end if
 !
@@ -83,12 +88,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_pvr_projection_left_mat(i_pvr, view_param)
+      subroutine set_pvr_projection_left_mat                            &
+     &          (i_pvr, view_param, projection_left)
 !
       use set_projection_matrix
 !
       integer(kind = kint), intent(in) :: i_pvr
-      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_view_parameter), intent(in) :: view_param
+      real(kind = kreal), intent(inout) :: projection_left(4,4)
 !
       integer(kind = kint) :: i
 !
@@ -115,12 +122,12 @@
 !
         call set_perspective_mat_by_area(view_left, view_right,         &
      &      view_bottom, view_top, view_near, view_far,                 &
-     &      view_param%projection_left)
+     &      projection_left)
 !
         if (iflag_debug .gt. 0) then
           write(*,*) 'projection_left for PVR ', i_pvr
           do i = 1, 4
-            write(*,'(1p4e16.7)') view_param%projection_left(i,1:4)
+            write(*,'(1p4e16.7)') projection_left(i,1:4)
           end do
         end if
 !
@@ -128,12 +135,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_pvr_projection_right_mat(i_pvr, view_param)
+      subroutine set_pvr_projection_right_mat                           &
+     &          (i_pvr, view_param, projection_right)
 !
       use set_projection_matrix
 !
       integer(kind = kint), intent(in) :: i_pvr
-      type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_view_parameter), intent(in) :: view_param
+      real(kind = kreal), intent(inout) :: projection_right(4,4)
 !
       integer(kind = kint) :: i
 !
@@ -160,12 +169,12 @@
 !
         call set_perspective_mat_by_area(view_left, view_right,         &
      &      view_bottom, view_top, view_near, view_far,                 &
-     &      view_param%projection_right)
+     &      projection_right)
 !
         if (iflag_debug .gt. 0) then
           write(*,*) 'projection_right for PVR ', i_pvr
           do i = 1, 4
-            write(*,'(1p4e16.7)') view_param%projection_right(i,1:4)
+            write(*,'(1p4e16.7)') projection_right(i,1:4)
           end do
         end if
 !

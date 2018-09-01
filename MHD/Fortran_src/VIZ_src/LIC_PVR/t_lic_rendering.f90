@@ -125,7 +125,6 @@
       use t_control_data_pvr_misc
       use set_pvr_control
       use each_LIC_rendering
-      use find_selected_domain_bd
       use find_pvr_surf_domain
 !
       type(mesh_data), intent(in) :: femmesh
@@ -134,7 +133,7 @@
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_lic, ist_img
+      integer(kind = kint) :: i_lic, ist_rdr, ist_img
 !
 !
       if(lic%num_pvr .le. 0) then
@@ -175,20 +174,20 @@
      &      lic%pvr_param(i_lic)%field)
       end do
 !
-      call allocate_imark_4_surface(ele_mesh%surf%numsurf)
       do i_lic = 1, lic%num_pvr
         call find_each_pvr_surf_domain                                  &
      &     (femmesh%mesh%ele, ele_mesh%surf, femmesh%group%ele_grp,     &
-     &      lic%lic_fld(i_lic)%area_def, lic%pvr_data(i_lic)%bound,     &
-     &      lic%pvr_param(i_lic)%field)
+     &      lic%lic_fld(i_lic)%area_def, lic%pvr_param(i_lic)%field,    &
+     &      lic%pvr_data(i_lic)%bound)
 !
+        ist_rdr = lic%lic_images%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
         call each_PVR_initialize(i_lic,                                 &
      &      femmesh%mesh, femmesh%group, ele_mesh,                      &
      &      lic%lic_images%file_param(ist_img), lic%pvr_param(i_lic),   &
-     &      lic%pvr_data(i_lic), lic%lic_images%pvr_rgb(ist_img))
+     &      lic%pvr_data(i_lic), lic%lic_images%pvr_proj(ist_rdr),      &
+     &      lic%lic_images%pvr_rgb(ist_img))
       end do
-      call deallocate_imark_4_surface
 !
 !      call check_surf_rng_pvr_domain(my_rank)
 !      call check_surf_norm_pvr_domain(my_rank)
@@ -212,7 +211,7 @@
 !
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
-      integer(kind = kint) :: i_lic, ist_img
+      integer(kind = kint) :: i_lic, ist_rdr, ist_img
 !
 !
       if(lic%num_pvr.le.0 .or. istep_pvr.le.0) return
@@ -220,22 +219,26 @@
       call start_elapsed_time(76)
       do i_lic = 1, lic%num_pvr
         if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .le. 0) then
+        ist_rdr = lic%lic_images%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering(istep_pvr,                          &
      &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
      &        lic%lic_fld(i_lic), lic%lic_images%file_param(ist_img),   &
      &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
+     &        lic%lic_images%pvr_proj(ist_rdr),                         &
      &        lic%lic_images%pvr_rgb(ist_img))
         end if
       end do
 !
       do i_lic = 1, lic%num_pvr
         if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .gt. 0) then
+        ist_rdr = lic%lic_images%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot(istep_pvr,                    &
      &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
      &        lic%lic_fld(i_lic), lic%lic_images%file_param(ist_img),   &
      &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
+     &        lic%lic_images%pvr_proj(ist_rdr),                         &
      &        lic%lic_images%pvr_rgb(ist_img))
         end if
       end do

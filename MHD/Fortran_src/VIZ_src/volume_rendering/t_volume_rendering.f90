@@ -122,7 +122,6 @@
       use t_control_data_pvr_misc
       use set_pvr_control
       use find_pvr_surf_domain
-      use find_selected_domain_bd
 !
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
@@ -130,7 +129,7 @@
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_pvr, ist_img
+      integer(kind = kint) :: i_pvr, ist_rdr, ist_img
 !
 !
       if(pvr_ctls%num_pvr_ctl .le. 0) then
@@ -165,20 +164,20 @@
         call deallocate_cont_dat_pvr(pvr_ctls%pvr_ctl_type(i_pvr))
       end do
 !
-      call allocate_imark_4_surface(ele_mesh%surf%numsurf)
       do i_pvr = 1, pvr%num_pvr
         call find_each_pvr_surf_domain                                  &
      &     (femmesh%mesh%ele, ele_mesh%surf, femmesh%group%ele_grp,     &
-     &      pvr%pvr_fld(i_pvr)%area_def, pvr%pvr_data(i_pvr)%bound,     &
-     &      pvr%pvr_param(i_pvr)%field)
+     &      pvr%pvr_fld(i_pvr)%area_def, pvr%pvr_param(i_pvr)%field,    &
+     &      pvr%pvr_data(i_pvr)%bound)
 !
+        ist_rdr = pvr%pvr_images%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_initialize                                        &
      &     (i_pvr, femmesh%mesh, femmesh%group, ele_mesh,               &
      &      pvr%pvr_images%file_param(ist_img), pvr%pvr_param(i_pvr),   &
-     &      pvr%pvr_data(i_pvr), pvr%pvr_images%pvr_rgb(ist_img))
+     &      pvr%pvr_data(i_pvr), pvr%pvr_images%pvr_proj(ist_rdr),      &
+     &      pvr%pvr_images%pvr_rgb(ist_img))
       end do
-      call deallocate_imark_4_surface
 !
 !      call check_surf_rng_pvr_domain(my_rank)
 !      call check_surf_norm_pvr_domain(my_rank)
@@ -201,7 +200,7 @@
 !
       type(volume_rendering_module), intent(inout) :: pvr
 !
-      integer(kind = kint) :: i_pvr, ist_img
+      integer(kind = kint) :: i_pvr, ist_rdr, ist_img
 !
 !
       if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
@@ -209,22 +208,26 @@
       call start_elapsed_time(71)
       do i_pvr = 1, pvr%num_pvr
         if(pvr%pvr_data(i_pvr)%view%iflag_rotate_snap .le. 0) then
+          ist_rdr = pvr%pvr_images%istack_pvr_render(i_pvr-1) + 1
           ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
           call each_PVR_rendering(istep_pvr,                            &
      &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
      &        pvr%pvr_fld(i_pvr), pvr%pvr_images%file_param(ist_img),   &
      &        pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                &
+     &        pvr%pvr_images%pvr_proj(ist_rdr),                         &
      &        pvr%pvr_images%pvr_rgb(ist_img))
         end if
       end do
 !
       do i_pvr = 1, pvr%num_pvr
         if(pvr%pvr_data(i_pvr)%view%iflag_rotate_snap .gt. 0) then
+          ist_rdr = pvr%pvr_images%istack_pvr_render(i_pvr-1) + 1
           ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
           call each_PVR_rendering_w_rot(istep_pvr,                      &
      &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
      &        pvr%pvr_fld(i_pvr), pvr%pvr_images%file_param(ist_img),   &
      &        pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                &
+     &        pvr%pvr_images%pvr_proj(ist_rdr),                         &
      &        pvr%pvr_images%pvr_rgb(ist_img))
         end if
       end do

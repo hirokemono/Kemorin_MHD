@@ -30,18 +30,9 @@
       use t_control_params_4_pvr
       use t_pvr_ray_startpoints
       use t_pvr_image_array
+      use t_rendering_vr_image
 !
       implicit none
-!
-!>      Structure for projection data
-      type pvr_mul_projection_data
-!>        Perspective projection matrix for left eye
-        real(kind = kreal) :: projection_left(4,4)
-!>        Start point structure for volume rendering
-        type(pvr_ray_start_type) :: start_pt
-!>        Pixel data structure for volume rendering
-        type(pvr_segmented_img) :: image
-      end type pvr_mul_projection_data
 !
 !>  Structure for PVR images
       type pvr_multi_rendering
@@ -53,7 +44,7 @@
         integer(kind = kint), allocatable :: istack_pvr_images(:)
 !
 !>        Structure for projection data
-        type(pvr_mul_projection_data), allocatable :: proj(:)
+        type(pvr_projection_data), allocatable :: pvr_proj(:)
 !
 !>        Number of image files for volume rendering
         integer(kind = kint) :: num_pvr_images =    0
@@ -131,7 +122,7 @@
         call dealloc_pvr_image_array_type(pvr_images%pvr_rgb(i_pvr))
       end do
       deallocate(pvr_images%file_param, pvr_images%pvr_rgb)
-      deallocate(pvr_images%proj)
+      deallocate(pvr_images%pvr_proj)
 !
       end subroutine dealloc_istack_pvr_image_4_merge
 !
@@ -179,7 +170,7 @@
       pvr_images%istack_pvr_render = 0
       pvr_images%istack_pvr_images = 0
 !
-      allocate(pvr_images%proj(pvr_images%num_pvr_rendering))
+      allocate(pvr_images%pvr_proj(pvr_images%num_pvr_rendering))
 !
       allocate(pvr_images%file_param(pvr_images%num_pvr_images))
       allocate(pvr_images%pvr_rgb(pvr_images%num_pvr_images))

@@ -4,13 +4,15 @@
 !      Written by H. Matsui on July, 2006
 !
 !!      subroutine each_PVR_initialize(i_pvr, mesh, group, ele_mesh,    &
-!!     &          file_param, pvr_param, pvr_data, pvr_rgb)
+!!     &          file_param, pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering                                   &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
-!!     &          pvr_fld, file_param, pvr_param, pvr_data, pvr_rgb)
+!!     &          pvr_fld, file_param, pvr_param, pvr_data,             &
+!!     &          pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering_w_rot                             &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
-!!     &          pvr_fld, file_param, pvr_param, pvr_data, pvr_rgb)
+!!     &          pvr_fld, file_param, pvr_param, pvr_data,             &
+!!     &          pvr_proj, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -21,6 +23,8 @@
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
+!!        type(pvr_projection_data), intent(inout) :: pvr_proj(2)
+!!        type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !!      subroutine dealloc_each_pvr_data(pvr_fld, pvr_param, pvr_data)
 !!        type(PVR_field_params), intent(inout) :: pvr_fld
 !!        type(PVR_control_params), intent(inout) :: pvr_param
@@ -63,13 +67,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine each_PVR_initialize(i_pvr, mesh, group, ele_mesh,      &
-     &          file_param, pvr_param, pvr_data, pvr_rgb)
+     &          file_param, pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !
       use t_control_data_pvr_misc
       use set_pvr_control
       use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
-      use find_selected_domain_bd
 !
       integer(kind = kint), intent(in) :: i_pvr
       type(mesh_geometry), intent(in) :: mesh
@@ -79,6 +82,7 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
+      type(pvr_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
@@ -88,14 +92,20 @@
 !
       call set_pixel_on_pvr_screen(pvr_data%view, pvr_param%pixel)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
-      call set_pvr_projection_matrix(i_pvr, pvr_data%view)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
-      call set_pvr_projection_left_mat(i_pvr, pvr_data%view)
-      if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
-      call set_pvr_projection_right_mat(i_pvr, pvr_data%view)
+      if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
+        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_left'
+        call set_pvr_projection_left_mat                                &
+     &     (i_pvr, pvr_data%view, pvr_proj(1)%projection_mat)
+        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_right'
+        call set_pvr_projection_right_mat                               &
+     &     (i_pvr, pvr_data%view, pvr_proj(2)%projection_mat)
+      else
+        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
+        call set_pvr_projection_matrix                                  &
+     &     (i_pvr, pvr_data%view, pvr_proj(1)%projection_mat)
 !        call set_pvr_orthogonal_params(i_pvr, pvr_data%view)
+      end if
 !
       call alloc_projected_position                                     &
      &   (mesh%node, ele_mesh%surf, pvr_data%screen)
@@ -115,7 +125,7 @@
           if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
           call set_fixed_view_and_image                                 &
      &       (mesh%node, mesh%ele, ele_mesh%surf, group, pvr_param,     &
-     &        pvr_rgb(1), pvr_data%view%projection_mat,                 &
+     &        pvr_rgb(1), pvr_proj(1)%projection_mat,                   &
      &        pvr_data%start_pt, pvr_data%image, pvr_data)
         end if
       end if
@@ -126,7 +136,8 @@
 !
       subroutine each_PVR_rendering                                     &
      &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
-     &          pvr_fld, file_param, pvr_param, pvr_data, pvr_rgb)
+     &          pvr_fld, file_param, pvr_param, pvr_data,               &
+     &          pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
@@ -143,6 +154,7 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
+      type(pvr_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
@@ -161,7 +173,7 @@
 !   Left eye
           call streo_rendering_fixed_view                               &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(1), pvr_data%view%projection_left,  &
+     &        pvr_param, file_param(1), pvr_proj(1)%projection_mat,     &
      &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
           call store_left_eye_image                                     &
      &       (file_param(1)%irank_image_file, pvr_rgb(1))
@@ -169,7 +181,7 @@
 !   right eye
           call streo_rendering_fixed_view                               &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(1), pvr_data%view%projection_right, &
+     &        pvr_param, file_param(1), pvr_proj(2)%projection_mat,     &
      &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
           call add_left_eye_image                                       &
      &       (file_param(1)%irank_image_file, pvr_rgb(1))
@@ -186,7 +198,7 @@
 !   Left eye
           call streo_rendering_fixed_view                               &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(1), pvr_data%view%projection_left,  &
+     &        pvr_param, file_param(1), pvr_proj(1)%projection_mat,     &
      &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
 !
           call end_elapsed_time(71)
@@ -200,7 +212,7 @@
 !   right eye
           call streo_rendering_fixed_view                               &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(2), pvr_data%view%projection_right, &
+     &        pvr_param, file_param(2), pvr_proj(2)%projection_mat,     &
      &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(2))
 !
           call end_elapsed_time(71)
@@ -237,7 +249,8 @@
 !
       subroutine each_PVR_rendering_w_rot                               &
      &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
-     &          pvr_fld, file_param, pvr_param, pvr_data, pvr_rgb)
+     &          pvr_fld, file_param, pvr_param, pvr_data,               &
+     &          pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
 !
@@ -253,6 +266,7 @@
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
+      type(pvr_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
@@ -269,22 +283,22 @@
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
           call anaglyph_rendering_w_rotation                            &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(1), pvr_data%view%projection_left,  &
-     &        pvr_data%view%projection_right, pvr_data, pvr_rgb(1))
+     &        pvr_param, file_param(1), pvr_proj(1)%projection_mat,     &
+     &        pvr_proj(2)%projection_mat, pvr_data, pvr_rgb(1))
         else
           call rendering_with_rotation                                  &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(1), pvr_data%view%projection_left,  &
+     &        pvr_param, file_param(1), pvr_proj(1)%projection_mat,     &
      &        pvr_data, pvr_rgb(1))
           call rendering_with_rotation                                  &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(2), pvr_data%view%projection_right, &
+     &        pvr_param, file_param(2), pvr_proj(2)%projection_mat,     &
      &        pvr_data, pvr_rgb(2))
         end if
       else
         call rendering_with_rotation                                    &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,       &
-     &      pvr_param, file_param(1), pvr_data%view%projection_mat,     &
+     &      pvr_param, file_param(1), pvr_proj(1)%projection_mat,       &
      &      pvr_data, pvr_rgb(1))
       end if
 !

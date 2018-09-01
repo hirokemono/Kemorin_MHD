@@ -87,8 +87,6 @@
         real(kind = kreal) :: perspective_near = zero
 !>    Farther distance for perspective view
         real(kind = kreal) :: perspective_far = zero
-!>    perspective projection matrix
-        real(kind = kreal) :: projection_mat(4,4)
 !
 !
 !>    Defined flag for modelview matrix
@@ -129,12 +127,6 @@
         integer(kind = kint) :: iflag_stereo_pvr = 0
 !>    Flag to make an anaglyph
         integer(kind = kint) :: iflag_anaglyph = 0
-!>    Perspective projection matrix for left eye
-        real(kind = kreal) :: projection_left(4,4)
-!>    Perspective projection matrix for right eye
-        real(kind = kreal) :: projection_right(4,4)
-!>    Original projection matrix for backup
-        real(kind = kreal) :: projection_saved(4,4)
 !
 !>    Focal length for streo view
         real(kind = kreal) :: focalLength = one
@@ -224,13 +216,8 @@
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
-        view_param%projection_mat(1:4,1:4) =   0.0d0
-!
         view_param%modelview_mat(1:4,1:4) =   0.0d0
         view_param%modelview_inv(1:4,1:4) =   0.0d0
-!
-        view_param%projection_left(1:4,1:4) =  0.0d0
-        view_param%projection_right(1:4,1:4) = 0.0d0
 !
       end subroutine reset_pvr_view_parameteres
 !

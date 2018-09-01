@@ -4,7 +4,7 @@
 !        programmed by H.Matsui on Aug., 2011
 !
 !!      subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,        &
-!!     &          pvr_area, pvr_bound, field_pvr)
+!!     &          pvr_area, field_pvr, pvr_bound)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(group_data), intent(in) :: ele_grp
@@ -29,6 +29,8 @@
 !
       implicit  none
 !
+      integer(kind = kint), allocatable, private :: imark_sf(:)
+!
       private :: range_on_screen_pvr_domains
       private :: range_on_pixel_pvr_domains
 !
@@ -39,7 +41,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine find_each_pvr_surf_domain(ele, surf, ele_grp,          &
-     &          pvr_area, pvr_bound, field_pvr)
+     &          pvr_area, field_pvr, pvr_bound)
 !
       use t_geometry_data
       use t_surface_data
@@ -56,31 +58,36 @@
       type(group_data), intent(in) :: ele_grp
 !
       type(viz_area_parameter), intent(in) :: pvr_area
-      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
       type(pvr_projected_field), intent(inout) :: field_pvr
+      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !
       integer(kind = kint) :: num_pvr_sf_local
 !
 !
-      call s_set_iflag_for_used_ele(ele%numele, ele%interior_ele,      &
-     &    ele_grp%num_grp, ele_grp%num_item,                           &
-     &    ele_grp%istack_grp, ele_grp%item_grp,                        &
-     &    pvr_area%nele_grp_area_pvr, pvr_area%id_ele_grp_area_pvr,    &
+      allocate(imark_sf(surf%numsurf))
+!$omp parallel workshare
+      imark_sf(1:surf%numsurf) = 0
+!$omp end parallel workshare
+!
+      call s_set_iflag_for_used_ele(ele%numele, ele%interior_ele,       &
+     &    ele_grp%num_grp, ele_grp%num_item,                            &
+     &    ele_grp%istack_grp, ele_grp%item_grp,                         &
+     &    pvr_area%nele_grp_area_pvr, pvr_area%id_ele_grp_area_pvr,     &
      &    field_pvr%iflag_used_ele)
 !
-      call mark_selected_domain_bd                                     &
-     &   (ele%numele, surf%numsurf, surf%isf_4_ele,                    &
-     &    field_pvr%iflag_used_ele)
-      call count_selected_domain_bd(surf%numsurf, num_pvr_sf_local)
+      call mark_selected_domain_bd                                      &
+     &   (ele%numele, surf%numsurf, surf%isf_4_ele,                     &
+     &    field_pvr%iflag_used_ele, imark_sf)
+      call count_selected_domain_bd                                     &
+     &   (surf%numsurf, imark_sf, num_pvr_sf_local)
 !
       call alloc_pvr_surf_domain_item(num_pvr_sf_local, pvr_bound)
 !
-      call mark_selected_domain_bd                                     &
-     &   (ele%numele, surf%numsurf, surf%isf_4_ele,                    &
-     &    field_pvr%iflag_used_ele)
-      call s_find_selected_domain_bd(ele%numele, surf%numsurf,         &
-     &    surf%iele_4_surf, field_pvr%iflag_used_ele,                  &
+      call s_find_selected_domain_bd(ele%numele, surf%numsurf,          &
+     &    surf%iele_4_surf, imark_sf, field_pvr%iflag_used_ele,         &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf)
+!
+      deallocate(imark_sf)
 !
       end subroutine find_each_pvr_surf_domain
 !
