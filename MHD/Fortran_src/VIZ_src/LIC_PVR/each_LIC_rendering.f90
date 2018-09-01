@@ -169,7 +169,7 @@
       else
         call lic_rendering_with_fixed_view                              &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,              &
-     &      lic_fld%lic_param, pvr_param, file_param(1),                &
+     &      lic_fld%lic_param, pvr_param, file_param(1), pvr_proj(1),   &
      &      pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
 !
         call end_elapsed_time(76)
@@ -271,8 +271,6 @@
           call flush_rendering_4_fixed_view(pvr_data)
       end if
       call deallocate_pixel_position_pvr(pvr_param%pixel)
-!
-      call dealloc_projected_position(pvr_data%screen)
 !
       call dealloc_nod_data_4_lic(pvr_param%field)
       call dealloc_nod_data_4_pvr(pvr_param%field)

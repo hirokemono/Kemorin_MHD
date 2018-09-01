@@ -122,7 +122,11 @@
       end if
 !
       call alloc_projected_position                                     &
-     &   (mesh%node, ele_mesh%surf, pvr_data%screen)
+     &   (mesh%node, ele_mesh%surf, pvr_proj(1)%screen)
+      if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
+        call alloc_projected_position                                   &
+     &     (mesh%node, ele_mesh%surf, pvr_proj(2)%screen)
+      end if
 !
       call alloc_pvr_image_array_type                                   &
      &   (file_param(1)%irank_image_file, pvr_data%view%n_pvr_pixel,    &
@@ -236,7 +240,7 @@
       else
         call rendering_with_fixed_view                                  &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,              &
-     &      pvr_param, file_param(1),                                   &
+     &      pvr_param, file_param(1), pvr_proj(1),                      &
      &      pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
 !
         call end_elapsed_time(71)
@@ -330,8 +334,6 @@
           call flush_rendering_4_fixed_view(pvr_data)
       end if
       call deallocate_pixel_position_pvr(pvr_param%pixel)
-!
-      call dealloc_projected_position(pvr_data%screen)
 !
       call dealloc_nod_data_4_pvr(pvr_param%field)
       call flush_each_pvr_control(pvr_fld, pvr_data, pvr_param)

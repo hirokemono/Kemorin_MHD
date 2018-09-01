@@ -91,13 +91,13 @@
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
      &    pvr_param%field, pvr_data%view, pvr_proj%projection_mat,      &
-     &    pvr_param%pixel, pvr_proj%bound, pvr_data%screen, start_pt)
+     &    pvr_param%pixel, pvr_proj%bound, pvr_proj%screen, start_pt)
       call set_subimages(pvr_rgb%num_pixel_xy, start_pt, image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, file_param,                       &
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
-     &    pvr_param%field, pvr_data%view, pvr_data%screen,              &
+     &    pvr_param%field, pvr_data%view, pvr_proj%screen,              &
      &    start_pt, image, pvr_rgb)
 !
       end subroutine streo_rendering_fixed_view

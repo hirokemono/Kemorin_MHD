@@ -11,7 +11,7 @@
 !!     &          pvr_param, pvr_rgb, start_pt, image, pvr_proj, pvr_data)
 !!      subroutine rendering_with_fixed_view                            &
 !!     &         (istep_pvr, node, ele, surf, pvr_param, file_param,    &
-!!     &          pvr_data, start_pt, image, pvr_rgb)
+!!     &          pvr_proj, start_pt, image, pvr_data, pvr_rgb)
 !!      subroutine flush_rendering_4_fixed_view(pvr_data)
 !!
 !!      subroutine rendering_at_once(istep_pvr, node, ele, surf, group, &
@@ -78,8 +78,6 @@
         type(pvr_view_parameter) :: view
 !>        color paramter for volume rendering
         type(pvr_colormap_parameter) :: color
-!>        Data on screen oordinate
-        type(pvr_projected_data) :: screen
 !>        Start point structure for volume rendering
         type(pvr_ray_start_type) :: start_pt
 !
@@ -136,7 +134,7 @@
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
      &    pvr_param%field, pvr_data%view, pvr_proj%projection_mat,      &
-     &    pvr_param%pixel, pvr_proj%bound, pvr_data%screen, start_pt)
+     &    pvr_param%pixel, pvr_proj%bound, pvr_proj%screen, start_pt)
       call set_subimages                                                &
      &   (pvr_rgb%num_pixel_xy, start_pt, image)
 !
@@ -151,7 +149,7 @@
 !
       subroutine rendering_with_fixed_view                              &
      &         (istep_pvr, node, ele, surf, pvr_param, file_param,      &
-     &          start_pt, image, pvr_data, pvr_rgb)
+     &          pvr_proj, start_pt, image, pvr_data, pvr_rgb)
 !
       use write_PVR_image
 !
@@ -161,6 +159,7 @@
       type(surface_data), intent(in) :: surf
       type(PVR_control_params), intent(in) :: pvr_param
       type(pvr_output_parameter), intent(in) :: file_param
+      type(pvr_projection_data), intent(in) :: pvr_proj
 !
       type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_ray_start_type), intent(inout) :: start_pt
@@ -174,7 +173,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, file_param,                       &
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
-     &    pvr_param%field, pvr_data%view, pvr_data%screen,              &
+     &    pvr_param%field, pvr_data%view, pvr_proj%screen,              &
      &    start_pt, image, pvr_rgb)
 !
       end subroutine rendering_with_fixed_view
@@ -221,14 +220,14 @@
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
      &    pvr_param%field, pvr_data%view, pvr_proj%projection_mat,      &
-     &    pvr_param%pixel,  pvr_proj%bound, pvr_data%screen,            &
+     &    pvr_param%pixel,  pvr_proj%bound, pvr_proj%screen,            &
      &    start_pt)
       call set_subimages(pvr_rgb%num_pixel_xy, start_pt, image)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image(istep_pvr, file_param,                       &
      &    node, ele, surf, pvr_data%color, pvr_param%colorbar,          &
-     &    pvr_param%field, pvr_data%view, pvr_data%screen,              &
+     &    pvr_param%field, pvr_data%view, pvr_proj%screen,              &
      &    start_pt, image, pvr_rgb)
 !
       end subroutine rendering_at_once
