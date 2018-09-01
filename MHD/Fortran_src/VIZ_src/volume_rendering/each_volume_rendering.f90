@@ -4,7 +4,8 @@
 !      Written by H. Matsui on July, 2006
 !
 !!      subroutine each_PVR_initialize(i_pvr, mesh, group, ele_mesh,    &
-!!     &          file_param, pvr_param, pvr_data, pvr_proj, pvr_rgb)
+!!     &          area_def, file_param, pvr_param, pvr_data,            &
+!!     &          pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering                                   &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
 !!     &          pvr_fld, file_param, pvr_param, pvr_data,             &
@@ -16,6 +17,7 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(element_geometry), intent(in) :: ele_mesh
+!!        type(viz_area_parameter), intent(in) :: area_def
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -67,17 +69,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine each_PVR_initialize(i_pvr, mesh, group, ele_mesh,      &
-     &          file_param, pvr_param, pvr_data, pvr_proj, pvr_rgb)
+     &          area_def, file_param, pvr_param, pvr_data,              &
+     &          pvr_proj, pvr_rgb)
 !
       use t_control_data_pvr_misc
       use set_pvr_control
       use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
+      use find_pvr_surf_domain
 !
       integer(kind = kint), intent(in) :: i_pvr
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(element_geometry), intent(in) :: ele_mesh
+      type(viz_area_parameter), intent(in) :: area_def
       type(pvr_output_parameter), intent(in) :: file_param(2)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
@@ -85,6 +90,10 @@
       type(pvr_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
+!
+      call find_each_pvr_surf_domain                                    &
+     &   (mesh%ele, ele_mesh%surf, group%ele_grp, area_def,             &
+     &    pvr_param%field, pvr_data%bound)
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
       call check_pvr_parameters(pvr_param%outline,                      &

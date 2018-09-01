@@ -125,7 +125,6 @@
       use t_control_data_pvr_misc
       use set_pvr_control
       use each_LIC_rendering
-      use find_pvr_surf_domain
 !
       type(mesh_data), intent(in) :: femmesh
       type(element_geometry), intent(in) :: ele_mesh
@@ -175,15 +174,11 @@
       end do
 !
       do i_lic = 1, lic%num_pvr
-        call find_each_pvr_surf_domain                                  &
-     &     (femmesh%mesh%ele, ele_mesh%surf, femmesh%group%ele_grp,     &
-     &      lic%lic_fld(i_lic)%area_def, lic%pvr_param(i_lic)%field,    &
-     &      lic%pvr_data(i_lic)%bound)
-!
         ist_rdr = lic%lic_images%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
-        call each_PVR_initialize(i_lic,                                 &
-     &      femmesh%mesh, femmesh%group, ele_mesh,                      &
+        call each_PVR_initialize                                        &
+     &     (i_lic, femmesh%mesh, femmesh%group, ele_mesh,               &
+     &      lic%lic_fld(i_lic)%area_def,                                &
      &      lic%lic_images%file_param(ist_img), lic%pvr_param(i_lic),   &
      &      lic%pvr_data(i_lic), lic%lic_images%pvr_proj(ist_rdr),      &
      &      lic%lic_images%pvr_rgb(ist_img))

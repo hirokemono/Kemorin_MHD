@@ -95,8 +95,15 @@
       type pvr_projection_data
 !>        perspective projection matrix
         real(kind = kreal) :: projection_mat(4,4)
+!
+!>        Domain boundary information
+        type(pvr_bounds_surf_ctl) :: bound
+!>        Data on screen oordinate
+        type(pvr_projected_data) :: screen
 !>        Start point structure for volume rendering
         type(pvr_ray_start_type) :: start_pt
+!>        Work area of  point structure for volume rendering
+        type(pvr_ray_start_type) :: start_save
 !>        Pixel data structure for volume rendering
         type(pvr_segmented_img) :: image
       end type pvr_projection_data
