@@ -213,17 +213,33 @@
 !
       call start_elapsed_time(76)
       do i_lic = 1, lic%num_pvr
-        if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .le. 0) then
         ist_rdr = lic%lic_images%istack_pvr_render(i_lic-1) + 1
-          ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
-          call s_each_LIC_rendering                                     &
+        ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
+        call s_each_LIC_rendering                                       &
      &       (istep_pvr, femmesh%mesh, ele_mesh, jacs, nod_fld,         &
      &        lic%lic_fld(i_lic), lic%lic_images%file_param(ist_img),   &
      &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
      &        lic%lic_images%pvr_proj(ist_rdr),                         &
      &        lic%lic_images%pvr_rgb(ist_img))
+      end do
+      call end_elapsed_time(76)
+!
+      call start_elapsed_time(77)
+      do i_lic = 1, lic%num_pvr
+        ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
+        if(lic%lic_images%file_param(ist_img)%iflag_monitoring .gt. 0)  &
+     &   then
+          call sel_write_pvr_image_file                                 &
+     &       (lic%lic_images%file_param(ist_img), iminus, iminus,       &
+     &        lic%lic_images%pvr_rgb(ist_img))
         end if
       end do
+      do i_lic = 1, lic%lic_images%num_pvr_images
+        call sel_write_pvr_image_file                                   &
+     &     (lic%lic_images%file_param(i_lic), iminus, istep_pvr,        &
+     &      lic%lic_images%pvr_rgb(i_lic))
+      end do
+      call end_elapsed_time(77)
 !
       do i_lic = 1, lic%num_pvr
         if(lic%pvr_data(i_lic)%view%iflag_rotate_snap .gt. 0) then

@@ -79,7 +79,6 @@
       use field_data_4_LIC
       use rendering_LIC_image
       use rendering_streo_LIC_image
-      use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
 !
@@ -123,14 +122,6 @@
      &        pvr_proj(2), pvr_data, pvr_rgb(1))
           call add_left_eye_image                                       &
      &       (file_param(1)%irank_image_file, pvr_rgb(1))
-!
-          call end_elapsed_time(76)
-          call start_elapsed_time(77)
-          call sel_write_pvr_image_file                                 &
-     &       (file_param(1), iminus, istep_pvr, pvr_rgb(1))
-          call calypso_mpi_barrier
-          call end_elapsed_time(77)
-          call start_elapsed_time(76)
         else
 !
 !   Left eye
@@ -139,46 +130,17 @@
      &        lic_fld%lic_param, pvr_param, file_param(1),              &
      &        pvr_proj(1), pvr_data, pvr_rgb(1))
 !
-          call end_elapsed_time(76)
-          call start_elapsed_time(77)
-          call sel_write_pvr_image_file                                 &
-     &       (file_param(1), iminus, istep_pvr, pvr_rgb(1))
-          call calypso_mpi_barrier
-          call end_elapsed_time(77)
-          call start_elapsed_time(76)
-!
 !   Right eye
           call lic_rendering_with_fixed_view                            &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
      &        lic_fld%lic_param, pvr_param, file_param(2),              &
      &        pvr_proj(2), pvr_data, pvr_rgb(2))
-!
-          call end_elapsed_time(76)
-          call start_elapsed_time(77)
-          call sel_write_pvr_image_file                                 &
-     &       (file_param(2), iminus, istep_pvr, pvr_rgb(2))
-          call calypso_mpi_barrier
-          call end_elapsed_time(77)
-          call start_elapsed_time(76)
         end if
       else
         call lic_rendering_with_fixed_view                              &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,              &
      &      lic_fld%lic_param, pvr_param, file_param(1), pvr_proj(1),   &
      &      pvr_data, pvr_rgb(1))
-!
-        call end_elapsed_time(76)
-        call start_elapsed_time(77)
-        call sel_write_pvr_image_file                                   &
-     &     (file_param(1), iminus, istep_pvr, pvr_rgb(1))
-!
-        if(file_param(1)%iflag_monitoring .gt. 0) then
-          call sel_write_pvr_image_file                                 &
-     &       (file_param(1), iminus, iminus, pvr_rgb(1))
-        end if
-        call calypso_mpi_barrier
-        call end_elapsed_time(77)
-        call start_elapsed_time(76)
       end if
 !
       end subroutine s_each_LIC_rendering

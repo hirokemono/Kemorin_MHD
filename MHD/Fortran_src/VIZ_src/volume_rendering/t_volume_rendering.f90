@@ -185,6 +185,7 @@
      &         (istep_pvr, femmesh, ele_mesh, jacs, nod_fld, pvr)
 !
       use cal_pvr_modelview_mat
+      use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
 !
@@ -202,18 +203,35 @@
 !
       call start_elapsed_time(71)
       do i_pvr = 1, pvr%num_pvr
-        if(pvr%pvr_data(i_pvr)%view%iflag_rotate_snap .le. 0) then
-          ist_rdr = pvr%pvr_images%istack_pvr_render(i_pvr-1) + 1
-          ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
-          call each_PVR_rendering                                       &
-     &       (istep_pvr, femmesh%mesh, ele_mesh, jacs, nod_fld,         &
-     &        pvr%pvr_fld(i_pvr), pvr%pvr_images%file_param(ist_img),   &
-     &        pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                &
-     &        pvr%pvr_images%pvr_proj(ist_rdr),                         &
+        ist_rdr = pvr%pvr_images%istack_pvr_render(i_pvr-1) + 1
+        ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
+        call each_PVR_rendering                                         &
+     &     (istep_pvr, femmesh%mesh, ele_mesh, jacs, nod_fld,           &
+     &      pvr%pvr_fld(i_pvr), pvr%pvr_images%file_param(ist_img),     &
+     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                  &
+     &      pvr%pvr_images%pvr_proj(ist_rdr),                           &
+     &      pvr%pvr_images%pvr_rgb(ist_img))
+      end do
+      call end_elapsed_time(71)
+!
+      call start_elapsed_time(72)
+      do i_pvr = 1, pvr%num_pvr
+        ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
+        if(pvr%pvr_images%file_param(ist_img)%iflag_monitoring .gt. 0)  &
+     &   then
+          call sel_write_pvr_image_file                                 &
+     &       (pvr%pvr_images%file_param(ist_img), iminus, iminus,       &
      &        pvr%pvr_images%pvr_rgb(ist_img))
         end if
       end do
+      do i_pvr = 1, pvr%pvr_images%num_pvr_images
+        call sel_write_pvr_image_file                                   &
+     &     (pvr%pvr_images%file_param(i_pvr), iminus, istep_pvr,        &
+     &      pvr%pvr_images%pvr_rgb(i_pvr))
+      end do
+      call end_elapsed_time(72)
 !
+      call start_elapsed_time(71)
       do i_pvr = 1, pvr%num_pvr
         if(pvr%pvr_data(i_pvr)%view%iflag_rotate_snap .gt. 0) then
           ist_rdr = pvr%pvr_images%istack_pvr_render(i_pvr-1) + 1
