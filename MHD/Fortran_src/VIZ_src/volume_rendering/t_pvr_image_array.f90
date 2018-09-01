@@ -7,8 +7,7 @@
 !> @brief Structures for PVR Image data
 !!
 !!@verbatim
-!!      subroutine alloc_pvr_image_array_type                           &
-!!     &         (irank_tgt, n_pvr_pixel, pvr_rgb)
+!!      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!      subroutine alloc_pvr_subimage_flags(num_pixel_xy, pvr_img)
 !!      subroutine alloc_pvr_local_subimage(pvr_img)
@@ -18,8 +17,8 @@
 !!      subroutine dealloc_pvr_local_subimage(pvr_img)
 !!        type(pvr_segmented_img), intent(inout) :: pvr_img
 !!
-!!      subroutine store_left_eye_image(irank_tgt, pvr_rgb)
-!!      subroutine add_left_eye_image(irank_tgt, pvr_rgb)
+!!      subroutine store_left_eye_image(pvr_rgb)
+!!      subroutine add_left_eye_image(pvr_rgb)
 !!@endverbatim
 !
       module t_pvr_image_array
@@ -34,6 +33,19 @@
 !
 !>  Structure for PVR images
       type pvr_image_type
+!>        File prefix for image file
+        character(len = kchara) :: pvr_prefix
+!
+!>        Transparent image flag
+        integer(kind = kint) :: id_pvr_transparent = 0
+!>        File format for image file
+        integer(kind = kint) :: id_pvr_file_type = 0
+!>        Monitoring mode flag
+        integer(kind = kint) :: iflag_monitoring = 0
+!
+!>        MPI rank to putput each PVR image
+        integer(kind = kint) :: irank_image_file = 0
+!
         integer(kind = kint) :: num_pixel_xy
 !>    Number of pixels in each direction
         integer(kind = kint) :: num_pixels(2)
@@ -115,12 +127,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_pvr_image_array_type                             &
-     &         (irank_tgt, n_pvr_pixel, pvr_rgb)
+      subroutine alloc_pvr_image_array_type(n_pvr_pixel, pvr_rgb)
 !
       use t_control_params_4_pvr
 !
-      integer(kind = kint), intent(in) :: irank_tgt
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
@@ -129,7 +139,7 @@
       pvr_rgb%num_pixel_xy = n_pvr_pixel(1) * n_pvr_pixel(2)
 !
 !
-      if(my_rank .eq. irank_tgt) then
+      if(my_rank .eq. pvr_rgb%irank_image_file) then
         allocate(pvr_rgb%rgb_chara_gl(3,pvr_rgb%num_pixel_xy))
         allocate(pvr_rgb%rgba_chara_gl(4,pvr_rgb%num_pixel_xy))
 !
@@ -275,13 +285,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine store_left_eye_image(irank_tgt, pvr_rgb)
+      subroutine store_left_eye_image(pvr_rgb)
 !
-      integer(kind = kint), intent(in) :: irank_tgt
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      if(my_rank .ne. irank_tgt) return
+      if(my_rank .ne. pvr_rgb%irank_image_file) return
 !$omp parallel workshare
       pvr_rgb%rgba_left_gl(1,:) = pvr_rgb%rgba_real_gl(1,:)
 !      pvr_rgb%rgba_left_gl(2,:) = pvr_rgb%rgba_real_gl(2,:)
@@ -293,13 +302,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine add_left_eye_image(irank_tgt, pvr_rgb)
+      subroutine add_left_eye_image(pvr_rgb)
 !
-      integer(kind = kint), intent(in) :: irank_tgt
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
 !
-      if(my_rank .ne. irank_tgt) return
+      if(my_rank .ne. pvr_rgb%irank_image_file) return
 !$omp parallel workshare
         pvr_rgb%rgba_real_gl(1,:) =  pvr_rgb%rgba_left_gl(1,:)
 !        pvr_rgb%rgba_real_gl(2,:) =  pvr_rgb%rgba_left_gl(2,:)

@@ -178,8 +178,7 @@
         ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
         call each_PVR_initialize                                        &
      &     (i_lic, femmesh%mesh, femmesh%group, ele_mesh,               &
-     &      lic%lic_fld(i_lic)%area_def,                                &
-     &      lic%lic_images%file_param(ist_img), lic%pvr_param(i_lic),   &
+     &      lic%lic_fld(i_lic)%area_def, lic%pvr_param(i_lic),          &
      &      lic%pvr_data(i_lic), lic%lic_images%pvr_proj(ist_rdr),      &
      &      lic%lic_images%pvr_rgb(ist_img))
       end do
@@ -196,6 +195,7 @@
 !
       use cal_pvr_modelview_mat
       use each_LIC_rendering
+      use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
 !
@@ -217,9 +217,8 @@
         ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
         call s_each_LIC_rendering                                       &
      &       (istep_pvr, femmesh%mesh, ele_mesh, jacs, nod_fld,         &
-     &        lic%lic_fld(i_lic), lic%lic_images%file_param(ist_img),   &
-     &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
-     &        lic%lic_images%pvr_proj(ist_rdr),                         &
+     &        lic%lic_fld(i_lic), lic%pvr_param(i_lic),                 &
+     &        lic%pvr_data(i_lic), lic%lic_images%pvr_proj(ist_rdr),    &
      &        lic%lic_images%pvr_rgb(ist_img))
       end do
       call end_elapsed_time(76)
@@ -227,17 +226,15 @@
       call start_elapsed_time(77)
       do i_lic = 1, lic%num_pvr
         ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
-        if(lic%lic_images%file_param(ist_img)%iflag_monitoring .gt. 0)  &
+        if(lic%lic_images%pvr_rgb(ist_img)%iflag_monitoring .gt. 0)     &
      &   then
           call sel_write_pvr_image_file                                 &
-     &       (lic%lic_images%file_param(ist_img), iminus, iminus,       &
-     &        lic%lic_images%pvr_rgb(ist_img))
+     &       (iminus, iminus, lic%lic_images%pvr_rgb(ist_img))
         end if
       end do
       do i_lic = 1, lic%lic_images%num_pvr_images
         call sel_write_pvr_image_file                                   &
-     &     (lic%lic_images%file_param(i_lic), iminus, istep_pvr,        &
-     &      lic%lic_images%pvr_rgb(i_lic))
+     &     (iminus, istep_pvr, lic%lic_images%pvr_rgb(i_lic))
       end do
       call end_elapsed_time(77)
 !
@@ -247,9 +244,8 @@
           ist_img = lic%lic_images%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot(istep_pvr,                    &
      &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
-     &        lic%lic_fld(i_lic), lic%lic_images%file_param(ist_img),   &
-     &        lic%pvr_param(i_lic), lic%pvr_data(i_lic),                &
-     &        lic%lic_images%pvr_proj(ist_rdr),                         &
+     &        lic%lic_fld(i_lic), lic%pvr_param(i_lic),                 &
+     &        lic%pvr_data(i_lic), lic%lic_images%pvr_proj(ist_rdr),    &
      &        lic%lic_images%pvr_rgb(ist_img))
         end if
       end do

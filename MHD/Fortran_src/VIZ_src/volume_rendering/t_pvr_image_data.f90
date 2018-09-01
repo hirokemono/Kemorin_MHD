@@ -15,10 +15,6 @@
 !!     &                     :: pvr_ctls(num_pvr_ctl)
 !!        type(PVR_image_generator), intent(inout)                      &
 !!     &                     :: pvr_data(num_pvr_ctl)
-!!
-!!      subroutine set_rank_to_write_images(nprocs, num_pvr_images, img)
-!!      subroutine set_pvr_file_parameters(num_pvr_ctl, pvr_ctls,       &
-!!     &          num_pvr_images, img)
 !!@endverbatim
 !
       module t_pvr_image_data
@@ -44,19 +40,18 @@
         integer(kind = kint), allocatable :: istack_pvr_images(:)
 !
 !>        Structure for projection data
-        type(pvr_projection_data), allocatable :: pvr_proj(:)
+        type(PVR_projection_data), allocatable :: pvr_proj(:)
 !
 !>        Number of image files for volume rendering
         integer(kind = kint) :: num_pvr_images =    0
-!>        Structure for field parameter for PVR
-        type(pvr_output_parameter), allocatable :: file_param(:)
-!>        Viewer coordinate information
+!>        Structure for PVR images
         type(pvr_image_type), allocatable :: pvr_rgb(:)
       end type pvr_multi_rendering
 !
       private :: alloc_istack_pvr_image_4_merge
       private :: count_num_rendering_and_images
       private :: set_num_rendering_and_images
+      private :: set_rank_to_write_images, set_pvr_file_parameters
 !
 !  ---------------------------------------------------------------------
 !
@@ -87,10 +82,10 @@
      &    pvr_images%istack_pvr_render, pvr_images%istack_pvr_images)
 !
       call set_rank_to_write_images(nprocs,                             &
-     &    pvr_images%num_pvr_images, pvr_images%file_param)
+     &    pvr_images%num_pvr_images, pvr_images%pvr_rgb)
       call set_pvr_file_parameters(num_pvr_ctl, pvr_ctl,                &
      &    pvr_images%istack_pvr_images, pvr_images%num_pvr_images,      &
-     &    pvr_images%file_param)
+     &    pvr_images%pvr_rgb)
 !
       if(iflag_debug .eq. 0) return
       write(*,*) 'num_pvr', num_pvr
@@ -100,8 +95,8 @@
       write(*,*) 'istack_pvr_images', pvr_images%istack_pvr_images
       do i_pvr = 1, pvr_images%num_pvr_images
         write(*,*) 'irank_image_file',                                  &
-     &            pvr_images%file_param(i_pvr)%irank_image_file,    &
-     &            trim(pvr_images%file_param(i_pvr)%pvr_prefix)
+     &            pvr_images%pvr_rgb(i_pvr)%irank_image_file,           &
+     &            trim(pvr_images%pvr_rgb(i_pvr)%pvr_prefix)
       end do
 !
       end subroutine s_num_rendering_and_images
@@ -121,7 +116,7 @@
       do i_pvr = 1, pvr_images%num_pvr_images
         call dealloc_pvr_image_array_type(pvr_images%pvr_rgb(i_pvr))
       end do
-      deallocate(pvr_images%file_param, pvr_images%pvr_rgb)
+      deallocate(pvr_images%pvr_rgb)
 !
 !
       do i_pvr = 1, pvr_images%num_pvr_rendering
@@ -176,8 +171,6 @@
       pvr_images%istack_pvr_images = 0
 !
       allocate(pvr_images%pvr_proj(pvr_images%num_pvr_rendering))
-!
-      allocate(pvr_images%file_param(pvr_images%num_pvr_images))
       allocate(pvr_images%pvr_rgb(pvr_images%num_pvr_images))
 !
       end subroutine alloc_istack_pvr_image_4_merge
@@ -253,14 +246,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_rank_to_write_images                               &
-     &         (nprocs, num_pvr_images, file_param)
+     &         (nprocs, num_pvr_images, pvr_rgb)
 !
       use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(in) :: nprocs
       integer(kind = kint), intent(in) :: num_pvr_images
-      type(pvr_output_parameter), intent(inout)                         &
-     &                           :: file_param(num_pvr_images)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
       integer(kind = kint) :: i_pvr, icou, nstep
 !
@@ -273,7 +265,7 @@
 !
       do i_pvr = 1, num_pvr_images
         icou = (i_pvr-1) * nstep
-        file_param(i_pvr)%irank_image_file = mod(icou, nprocs)
+        pvr_rgb(i_pvr)%irank_image_file = mod(icou, nprocs)
       end do
 !
       end subroutine set_rank_to_write_images
@@ -281,7 +273,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_pvr_file_parameters(num_pvr_ctl, pvr_ctls,         &
-     &          istack_pvr_images, num_pvr_images, file_param)
+     &          istack_pvr_images, num_pvr_images, pvr_rgb)
 !
       use skip_comment_f
       use set_control_each_pvr
@@ -293,8 +285,7 @@
      &              :: istack_pvr_images(0:num_pvr_ctl)
       type(pvr_parameter_ctl), intent(in) :: pvr_ctls(num_pvr_ctl)
 !
-      type(pvr_output_parameter), intent(inout)                         &
-     &                           :: file_param(num_pvr_images)
+      type(pvr_image_type), intent(inout) :: pvr_rgb(num_pvr_images)
 !
       integer(kind = kint) :: i_pvr, ist
       character(len=kchara) :: pvr_prefix
@@ -304,20 +295,20 @@
         ist = istack_pvr_images(i_pvr-1) + 1
 !
         call set_pvr_file_prefix(pvr_ctls(i_pvr), pvr_prefix)
-        call set_pvr_file_control(pvr_ctls(i_pvr), file_param(ist))
+        call set_pvr_file_control(pvr_ctls(i_pvr), pvr_rgb(ist))
         if(yes_flag(pvr_ctls(i_pvr)%streo_ctl%charavalue)) then
           if(yes_flag(pvr_ctls(i_pvr)%anaglyph_ctl%charavalue)) then
-            file_param(ist)%pvr_prefix = pvr_prefix
+            pvr_rgb(ist)%pvr_prefix = pvr_prefix
           else
             call add_left_label                                         &
-     &         (pvr_prefix, file_param(ist)%pvr_prefix)
+     &         (pvr_prefix, pvr_rgb(ist)%pvr_prefix)
             call add_right_label                                        &
-     &         (pvr_prefix, file_param(ist+1)%pvr_prefix)
+     &         (pvr_prefix, pvr_rgb(ist+1)%pvr_prefix)
             call set_pvr_file_control                                   &
-     &         (pvr_ctls(i_pvr), file_param(ist+1))
+     &         (pvr_ctls(i_pvr), pvr_rgb(ist+1))
           end if
         else
-          file_param(ist)%pvr_prefix = pvr_prefix
+          pvr_rgb(ist)%pvr_prefix = pvr_prefix
         end if
       end do
 !

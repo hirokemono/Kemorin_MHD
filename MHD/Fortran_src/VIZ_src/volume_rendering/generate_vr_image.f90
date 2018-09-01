@@ -17,7 +17,6 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: surf_grp
 !!        type (surface_node_grp_data), intent(in)  :: surf_nod_grp
-!!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(pvr_projected_field), intent(in) :: field_pvr

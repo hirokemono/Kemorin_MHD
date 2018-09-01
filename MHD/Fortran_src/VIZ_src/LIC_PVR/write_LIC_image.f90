@@ -7,11 +7,10 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine rendering_image_4_lic(istep_pvr,                     &
-!!     &          file_param, node, ele, surf, lic_p, color_param,      &
+!!      subroutine rendering_image_4_lic                                &
+!!     &         (istep_pvr,  node, ele, surf, lic_p, color_param,      &
 !!     &          cbar_param, field_pvr, view_param, pvr_screen,        &
 !!     &          pvr_start, pvr_img, pvr_rgb)
-!!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -41,8 +40,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_image_4_lic(istep_pvr,                       &
-     &          file_param, node, ele, surf, lic_p, color_param,        &
+      subroutine rendering_image_4_lic                                  &
+     &         (istep_pvr,  node, ele, surf, lic_p, color_param,        &
      &          cbar_param, field_pvr, view_param, pvr_screen,          &
      &          pvr_start, pvr_img, pvr_rgb)
 !
@@ -62,7 +61,6 @@
       use pvr_axis_label
       use write_PVR_image
 !
-      type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: istep_pvr
 !
       type(node_data), intent(in) :: node
@@ -108,8 +106,7 @@
             ipix = pvr_img%ipixel_small(k)
             pvr_rgb%rgba_real_lc(1:4,ipix) = pvr_img%rgba_lc(1:4,j,k)
           end do
-          call sel_write_pvr_local_img(file_param, j, istep_pvr,        &
-     &        pvr_rgb)
+          call sel_write_pvr_local_img(j, istep_pvr,  pvr_rgb)
         end do
       end if
 !
@@ -125,7 +122,7 @@
      &   (pvr_img%ntot_overlap, pvr_img%npixel_img_local,               &
      &    pvr_img%ip_closer, pvr_img%rgba_part, pvr_img%rgba_whole)
 !
-      call collect_segmented_images(file_param%irank_image_file,        &
+      call collect_segmented_images(pvr_rgb%irank_image_file,           &
      &    pvr_img%npixel_img_local, pvr_img%istack_pixel,               &
      &    pvr_img%npixel_img, pvr_rgb%num_pixel_xy,                     &
      &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
@@ -142,7 +139,7 @@
 !        end do
 !      end if
 !
-      if(my_rank .eq. file_param%irank_image_file) then
+      if(my_rank .eq. pvr_rgb%irank_image_file) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
      &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
         call set_pvr_axislabel(cbar_param%iflag_pvr_axis,               &

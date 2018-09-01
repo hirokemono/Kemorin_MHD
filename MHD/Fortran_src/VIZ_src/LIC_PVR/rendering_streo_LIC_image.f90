@@ -7,11 +7,11 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine lic_rendering_with_rotation(istep_pvr,               &
-!!     &          node, ele, surf, group, lic_p, pvr_param, file_param, &
+!!      subroutine lic_rendering_with_rotation                          &
+!!     &         (istep_pvr, node, ele, surf, group, lic_p, pvr_param,  &
 !!     &          pvr_proj, pvr_data, pvr_rgb)
-!!      subroutine anaglyph_lic_rendering_w_rot(istep_pvr,              &
-!!     &          node, ele, surf, group, lic_p, pvr_param, file_param, &
+!!      subroutine anaglyph_lic_rendering_w_rot                         &
+!!     &         (istep_pvr, node, ele, surf, group, lic_p, pvr_param,  &
 !!     &          pvr_proj, pvr_data, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -19,8 +19,7 @@
 !!        type(mesh_groups), intent(in) :: group
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(PVR_control_params), intent(in) :: pvr_param
-!!        type(pvr_output_parameter), intent(in) :: file_param
-!!        type(pvr_projection_data), intent(inout) :: pvr_proj(2)
+!!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
@@ -55,8 +54,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine lic_rendering_with_rotation(istep_pvr,                 &
-     &          node, ele, surf, group, lic_p, pvr_param, file_param,   &
+      subroutine lic_rendering_with_rotation                            &
+     &         (istep_pvr, node, ele, surf, group, lic_p, pvr_param,    &
      &          pvr_proj, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -73,9 +72,8 @@
       type(mesh_groups), intent(in) :: group
       type(lic_parameters), intent(in) :: lic_p
       type(PVR_control_params), intent(in) :: pvr_param
-      type(pvr_output_parameter), intent(in) :: file_param
 !
-      type(pvr_projection_data), intent(inout) :: pvr_proj
+      type(PVR_projection_data), intent(inout) :: pvr_proj
       type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
@@ -90,12 +88,11 @@
 !
         call rendering_lic_at_once                                      &
      &     (istep_pvr, node, ele, surf, group, lic_p,                   &
-     &      pvr_param, file_param, pvr_proj, pvr_data, pvr_rgb)
+     &      pvr_param, pvr_proj, pvr_data, pvr_rgb)
 !
         call end_elapsed_time(76)
         call start_elapsed_time(77)
-        call sel_write_pvr_image_file                                   &
-     &     (file_param, i_rot, istep_pvr, pvr_rgb)
+        call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
         call calypso_mpi_barrier
         call end_elapsed_time(77)
         call start_elapsed_time(76)
@@ -105,8 +102,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine anaglyph_lic_rendering_w_rot(istep_pvr,                &
-     &          node, ele, surf, group, lic_p, pvr_param, file_param,   &
+      subroutine anaglyph_lic_rendering_w_rot                           &
+     &         (istep_pvr, node, ele, surf, group, lic_p, pvr_param,    &
      &          pvr_proj, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -122,9 +119,8 @@
       type(mesh_groups), intent(in) :: group
       type(lic_parameters), intent(in) :: lic_p
       type(PVR_control_params), intent(in) :: pvr_param
-      type(pvr_output_parameter), intent(in) :: file_param
 !
-      type(pvr_projection_data), intent(inout) :: pvr_proj(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
@@ -138,21 +134,20 @@
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
 !
 !    Left eye
-        call rendering_lic_at_once(istep_pvr,                           &
-     &      node, ele, surf, group, lic_p, pvr_param, file_param,       &
+        call rendering_lic_at_once                                      &
+     &     (istep_pvr, node, ele, surf, group, lic_p, pvr_param,        &
      &      pvr_proj(1), pvr_data, pvr_rgb)
-        call store_left_eye_image(file_param%irank_image_file, pvr_rgb)
+        call store_left_eye_image(pvr_rgb)
 !
 !    Right eye
-        call rendering_lic_at_once(istep_pvr,                           &
-     &      node, ele, surf, group, lic_p, pvr_param, file_param,       &
+        call rendering_lic_at_once                                      &
+     &     (istep_pvr,  node, ele, surf, group, lic_p, pvr_param,       &
      &      pvr_proj(2), pvr_data, pvr_rgb)
-        call add_left_eye_image(file_param%irank_image_file, pvr_rgb)
+        call add_left_eye_image(pvr_rgb)
 !
         call end_elapsed_time(76)
         call start_elapsed_time(77)
-        call sel_write_pvr_image_file                                   &
-     &     (file_param, i_rot, istep_pvr, pvr_rgb)
+        call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
         call calypso_mpi_barrier
         call end_elapsed_time(77)
         call start_elapsed_time(76)

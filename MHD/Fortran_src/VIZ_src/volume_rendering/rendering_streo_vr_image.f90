@@ -9,17 +9,16 @@
 !!@verbatim
 !!      subroutine rendering_with_rotation                              &
 !!     &         (istep_pvr, node, ele, surf, group,                    &
-!!     &          pvr_param, file_param, pvr_proj, pvr_data, pvr_rgb)
+!!     &          pvr_param, pvr_proj, pvr_data, pvr_rgb)
 !!      subroutine anaglyph_rendering_w_rotation                        &
 !!     &         (istep_pvr,  node, ele, surf, group,                   &
-!!     &          pvr_param, file_param, pvr_proj, pvr_data, pvr_rgb)
+!!     &          pvr_param, pvr_proj, pvr_data, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(mesh_groups), intent(in) :: group
 !!        type(PVR_control_params), intent(in) :: pvr_param
-!!        type(pvr_output_parameter), intent(in) :: file_param
-!!        type(pvr_projection_data), intent(inout) :: pvr_proj(2)
+!!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
@@ -55,7 +54,7 @@
 !
       subroutine rendering_with_rotation                                &
      &         (istep_pvr, node, ele, surf, group,                      &
-     &          pvr_param, file_param, pvr_proj, pvr_data, pvr_rgb)
+     &          pvr_param, pvr_proj, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use composite_pvr_images
@@ -68,9 +67,8 @@
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
       type(PVR_control_params), intent(in) :: pvr_param
-      type(pvr_output_parameter), intent(in) :: file_param
 !
-      type(pvr_projection_data), intent(inout) :: pvr_proj
+      type(PVR_projection_data), intent(inout) :: pvr_proj
       type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
@@ -84,12 +82,11 @@
      &     (i_rot, pvr_param%outline, pvr_data%view, pvr_data%color)
 !
         call rendering_at_once(istep_pvr, node, ele, surf, group,       &
-     &      pvr_param, file_param, pvr_proj, pvr_data, pvr_rgb)
+     &      pvr_param, pvr_proj, pvr_data, pvr_rgb)
 !
         call end_elapsed_time(71)
         call start_elapsed_time(72)
-        call sel_write_pvr_image_file                                   &
-     &     (file_param, i_rot, istep_pvr, pvr_rgb)
+        call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
         call calypso_mpi_barrier
         call end_elapsed_time(72)
         call start_elapsed_time(71)
@@ -100,8 +97,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_rendering_w_rotation                          &
-     &         (istep_pvr,  node, ele, surf, group,                     &
-     &          pvr_param, file_param, pvr_proj, pvr_data, pvr_rgb)
+     &         (istep_pvr, node, ele, surf, group,                      &
+     &          pvr_param, pvr_proj, pvr_data, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
@@ -113,9 +110,8 @@
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
       type(PVR_control_params), intent(in) :: pvr_param
-      type(pvr_output_parameter), intent(in) :: file_param
 !
-      type(pvr_projection_data), intent(inout) :: pvr_proj(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(PVR_image_generator), intent(inout) :: pvr_data
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
@@ -130,18 +126,17 @@
 !
 !    Left eye
         call rendering_at_once(istep_pvr, node, ele, surf, group,       &
-     &      pvr_param, file_param,  pvr_proj(1), pvr_data, pvr_rgb)
-        call store_left_eye_image(file_param%irank_image_file, pvr_rgb)
+     &      pvr_param, pvr_proj(1), pvr_data, pvr_rgb)
+        call store_left_eye_image(pvr_rgb)
 !
 !    Right eye
         call rendering_at_once(istep_pvr, node, ele, surf, group,       &
-     &      pvr_param, file_param, pvr_proj(2), pvr_data, pvr_rgb)
-        call add_left_eye_image(file_param%irank_image_file, pvr_rgb)
+     &      pvr_param, pvr_proj(2), pvr_data, pvr_rgb)
+        call add_left_eye_image(pvr_rgb)
 !
         call end_elapsed_time(71)
         call start_elapsed_time(72)
-        call sel_write_pvr_image_file                                   &
-     &     (file_param, i_rot, istep_pvr, pvr_rgb)
+        call sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
         call calypso_mpi_barrier
         call end_elapsed_time(72)
         call start_elapsed_time(71)

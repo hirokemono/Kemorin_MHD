@@ -168,8 +168,7 @@
         ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_initialize                                        &
      &     (i_pvr, femmesh%mesh, femmesh%group, ele_mesh,               &
-     &      pvr%pvr_fld(i_pvr)%area_def,                                &
-     &      pvr%pvr_images%file_param(ist_img), pvr%pvr_param(i_pvr),   &
+     &      pvr%pvr_fld(i_pvr)%area_def,  pvr%pvr_param(i_pvr),         &
      &      pvr%pvr_data(i_pvr), pvr%pvr_images%pvr_proj(ist_rdr),      &
      &      pvr%pvr_images%pvr_rgb(ist_img))
       end do
@@ -207,9 +206,8 @@
         ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_rendering                                         &
      &     (istep_pvr, femmesh%mesh, ele_mesh, jacs, nod_fld,           &
-     &      pvr%pvr_fld(i_pvr), pvr%pvr_images%file_param(ist_img),     &
-     &      pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                  &
-     &      pvr%pvr_images%pvr_proj(ist_rdr),                           &
+     &      pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr),                   &
+     &      pvr%pvr_data(i_pvr), pvr%pvr_images%pvr_proj(ist_rdr),      &
      &      pvr%pvr_images%pvr_rgb(ist_img))
       end do
       call end_elapsed_time(71)
@@ -217,17 +215,15 @@
       call start_elapsed_time(72)
       do i_pvr = 1, pvr%num_pvr
         ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
-        if(pvr%pvr_images%file_param(ist_img)%iflag_monitoring .gt. 0)  &
+        if(pvr%pvr_images%pvr_rgb(ist_img)%iflag_monitoring .gt. 0)     &
      &   then
           call sel_write_pvr_image_file                                 &
-     &       (pvr%pvr_images%file_param(ist_img), iminus, iminus,       &
-     &        pvr%pvr_images%pvr_rgb(ist_img))
+     &       (iminus, iminus,  pvr%pvr_images%pvr_rgb(ist_img))
         end if
       end do
       do i_pvr = 1, pvr%pvr_images%num_pvr_images
         call sel_write_pvr_image_file                                   &
-     &     (pvr%pvr_images%file_param(i_pvr), iminus, istep_pvr,        &
-     &      pvr%pvr_images%pvr_rgb(i_pvr))
+     &     (iminus, istep_pvr, pvr%pvr_images%pvr_rgb(i_pvr))
       end do
       call end_elapsed_time(72)
 !
@@ -238,9 +234,8 @@
           ist_img = pvr%pvr_images%istack_pvr_images(i_pvr-1) + 1
           call each_PVR_rendering_w_rot(istep_pvr,                      &
      &        femmesh%mesh, femmesh%group, ele_mesh, jacs, nod_fld,     &
-     &        pvr%pvr_fld(i_pvr), pvr%pvr_images%file_param(ist_img),   &
-     &        pvr%pvr_param(i_pvr), pvr%pvr_data(i_pvr),                &
-     &        pvr%pvr_images%pvr_proj(ist_rdr),                         &
+     &        pvr%pvr_fld(i_pvr), pvr%pvr_param(i_pvr),                 &
+     &        pvr%pvr_data(i_pvr), pvr%pvr_images%pvr_proj(ist_rdr),    &
      &        pvr%pvr_images%pvr_rgb(ist_img))
         end if
       end do

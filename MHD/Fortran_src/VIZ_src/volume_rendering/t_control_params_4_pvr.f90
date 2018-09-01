@@ -31,21 +31,6 @@
       real(kind = kreal), parameter :: SMALL_NORM = -0.1d0
 !
 !>  Structure for field parameter for PVR
-      type pvr_output_parameter
-!>    File prefix for image file
-        character(len = kchara) :: pvr_prefix
-!>    File format for image file
-        integer(kind = kint) :: id_pvr_file_type
-!>    Transparent image flag
-        integer(kind = kint) :: id_pvr_transparent = 0
-!>    Monitoring mode flag
-        integer(kind = kint) :: iflag_monitoring = 0
-!
-!>        MPI rank to putput each PVR image
-        integer(kind = kint) :: irank_image_file = 0
-      end type pvr_output_parameter
-!
-!>  Structure for field parameter for PVR
       type pvr_field_parameter
 !>     Field type for PVR data
         integer(kind = kint) :: id_field =          0

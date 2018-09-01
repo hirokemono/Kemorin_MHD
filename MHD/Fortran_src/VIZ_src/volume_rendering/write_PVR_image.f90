@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine rendering_image                                      &
-!!     &         (istep_pvr, file_param, node, ele, surf, color_param,  &
+!!     &         (istep_pvr, node, ele, surf, color_param,              &
 !!     &          cbar_param, field_pvr, view_param, pvr_screen,        &
 !!     &          pvr_start, pvr_img, pvr_rgb)
-!!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -23,10 +22,8 @@
 !!        type(pvr_ray_start_type), intent(inout) :: pvr_start
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!
-!!      subroutine sel_write_pvr_image_file                             &
-!!     &         (file_param, i_rot, istep_pvr, pvr_rgb)
-!!      subroutine sel_write_pvr_local_img                              &
-!!     &        (file_param, index, istep_pvr, pvr_rgb)
+!!      subroutine sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
+!!      subroutine sel_write_pvr_local_img(index, istep_pvr, pvr_rgb)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
@@ -48,7 +45,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image                                        &
-     &         (istep_pvr, file_param, node, ele, surf, color_param,    &
+     &         (istep_pvr, node, ele, surf, color_param,                &
      &          cbar_param, field_pvr, view_param, pvr_screen,          &
      &          pvr_start, pvr_img, pvr_rgb)
 !
@@ -66,7 +63,6 @@
       use PVR_image_transfer
       use pvr_axis_label
 !
-      type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: istep_pvr
 !
       type(node_data), intent(in) :: node
@@ -111,8 +107,7 @@
             ipix = pvr_img%ipixel_small(k)
             pvr_rgb%rgba_real_lc(1:4,ipix) = pvr_img%rgba_lc(1:4,j,k)
           end do
-          call sel_write_pvr_local_img(file_param, j, istep_pvr,        &
-     &        pvr_rgb)
+          call sel_write_pvr_local_img(j, istep_pvr, pvr_rgb)
         end do
       end if
 !
@@ -128,7 +123,7 @@
      &   (pvr_img%ntot_overlap, pvr_img%npixel_img_local,               &
      &    pvr_img%ip_closer, pvr_img%rgba_part, pvr_img%rgba_whole)
 !
-      call collect_segmented_images(file_param%irank_image_file,        &
+      call collect_segmented_images(pvr_rgb%irank_image_file,           &
      &    pvr_img%npixel_img_local, pvr_img%istack_pixel,               &
      &    pvr_img%npixel_img, pvr_rgb%num_pixel_xy,                     &
      &    pvr_img%ipixel_small, pvr_img%rgba_whole,                     &
@@ -145,7 +140,7 @@
 !        end do
 !      end if
 !
-      if(my_rank .eq. file_param%irank_image_file) then
+      if(my_rank .eq. pvr_rgb%irank_image_file) then
         call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
      &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
         call set_pvr_axislabel(cbar_param%iflag_pvr_axis,               &
@@ -158,8 +153,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_image_file                               &
-     &         (file_param, i_rot, istep_pvr, pvr_rgb)
+      subroutine sel_write_pvr_image_file(i_rot, istep_pvr, pvr_rgb)
 !
       use t_pvr_image_array
       use t_control_params_4_pvr
@@ -167,21 +161,19 @@
       use set_parallel_file_name
       use convert_real_rgb_2_bite
 !
-      type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: i_rot, istep_pvr
-!
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       character(len=kchara) :: tmpchara, img_head
 !
 !
-      if(my_rank .ne. file_param%irank_image_file) return
+      if(my_rank .ne. pvr_rgb%irank_image_file) return
 !      write(*,*) 'output file from ', my_rank
 !
       if(istep_pvr .ge. 0) then
-        call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
+        call add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix, tmpchara)
       else
-        tmpchara = file_param%pvr_prefix
+        tmpchara = pvr_rgb%pvr_prefix
       end if
 !
       if(i_rot .gt. 0) then
@@ -190,16 +182,16 @@
         img_head = tmpchara
       end if
 !
-      if(file_param%id_pvr_transparent .eq. 1) then
+      if(pvr_rgb%id_pvr_transparent .eq. 1) then
           call cvt_double_rgba_to_char_rgba(pvr_rgb%num_pixel_xy,       &
      &        pvr_rgb%rgba_real_gl,  pvr_rgb%rgba_chara_gl)
-          call sel_rgba_image_file(file_param%id_pvr_file_type,         &
+          call sel_rgba_image_file(pvr_rgb%id_pvr_file_type,            &
      &        img_head, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),   &
      &        pvr_rgb%rgba_chara_gl)
       else
           call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,        &
      &        pvr_rgb%rgba_real_gl,  pvr_rgb%rgb_chara_gl)
-          call sel_output_image_file(file_param%id_pvr_file_type,       &
+          call sel_output_image_file(pvr_rgb%id_pvr_file_type,          &
      &        img_head, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),   &
      &        pvr_rgb%rgb_chara_gl)
       end if
@@ -208,8 +200,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_local_img                                &
-     &         (file_param, index, istep_pvr, pvr_rgb)
+      subroutine sel_write_pvr_local_img(index, istep_pvr, pvr_rgb)
 !
       use t_pvr_image_array
       use t_control_params_4_pvr
@@ -217,25 +208,23 @@
       use set_parallel_file_name
       use convert_real_rgb_2_bite
 !
-      type(pvr_output_parameter), intent(in) :: file_param
       integer(kind = kint), intent(in) :: index, istep_pvr
-!
       type(pvr_image_type), intent(inout) :: pvr_rgb
 !
       character(len=kchara) :: tmpchara, img_head
 !
 !
       if(istep_pvr .ge. 0) then
-        call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
+        call add_int_suffix(istep_pvr, pvr_rgb%pvr_prefix, tmpchara)
       else
-        tmpchara = file_param%pvr_prefix
+        tmpchara = pvr_rgb%pvr_prefix
       end if
       call add_int_suffix(index, tmpchara, img_head)
 !
       call cvt_double_rgba_to_char_rgb(pvr_rgb%num_pixel_xy,            &
      &    pvr_rgb%rgba_real_lc, pvr_rgb%rgb_chara_lc)
 !
-      call sel_output_image_file(file_param%id_pvr_file_type,           &
+      call sel_output_image_file(pvr_rgb%id_pvr_file_type,              &
      &    img_head, pvr_rgb%num_pixels(1), pvr_rgb%num_pixels(2),       &
      &    pvr_rgb%rgb_chara_lc)
 !

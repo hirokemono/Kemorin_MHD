@@ -9,12 +9,10 @@
 !!@verbatim
 !!      subroutine s_each_LIC_rendering                                 &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
-!!     &          lic_fld, file_param, pvr_param, pvr_data,             &
-!!     &          pvr_proj, pvr_rgb)
+!!     &          lic_fld, pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !!      subroutine s_each_LIC_rendering_w_rot                           &
 !!     &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,      &
-!!     &          lic_fld, file_param, pvr_param, pvr_data,             &
-!!     &          pvr_proj, pvr_rgb)
+!!     &          lic_fld, pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
@@ -25,7 +23,6 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(LIC_field_params), intent(in) :: lic_fld
-!!        type(pvr_output_parameter), intent(in) :: file_param
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_image_generator), intent(inout) :: pvr_data
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -72,8 +69,7 @@
 !
       subroutine s_each_LIC_rendering                                   &
      &         (istep_pvr, mesh, ele_mesh, jacs, nod_fld,               &
-     &          lic_fld, file_param, pvr_param, pvr_data,               &
-     &          pvr_proj, pvr_rgb)
+     &          lic_fld, pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use field_data_4_LIC
@@ -87,11 +83,10 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(LIC_field_params), intent(in) :: lic_fld
-      type(pvr_output_parameter), intent(in) :: file_param(2)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
-      type(pvr_projection_data), intent(inout) :: pvr_proj(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
@@ -110,36 +105,34 @@
 !   Left eye
           call lic_rendering_with_fixed_view                            &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
-     &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_proj(1), pvr_data, pvr_rgb(1))
-          call store_left_eye_image                                     &
-     &      (file_param(1)%irank_image_file, pvr_rgb(1))
+     &        lic_fld%lic_param, pvr_param, pvr_proj(1),                &
+     &        pvr_data, pvr_rgb(1))
+          call store_left_eye_image(pvr_rgb(1))
 !
 !   Right eye
           call lic_rendering_with_fixed_view                            &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
-     &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_proj(2), pvr_data, pvr_rgb(1))
-          call add_left_eye_image                                       &
-     &       (file_param(1)%irank_image_file, pvr_rgb(1))
+     &        lic_fld%lic_param, pvr_param, pvr_proj(2),                &
+     &        pvr_data, pvr_rgb(1))
+          call add_left_eye_image(pvr_rgb(1))
         else
 !
 !   Left eye
           call lic_rendering_with_fixed_view                            &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
-     &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_proj(1), pvr_data, pvr_rgb(1))
+     &        lic_fld%lic_param, pvr_param, pvr_proj(1),                &
+     &        pvr_data, pvr_rgb(1))
 !
 !   Right eye
           call lic_rendering_with_fixed_view                            &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,            &
-     &        lic_fld%lic_param, pvr_param, file_param(2),              &
-     &        pvr_proj(2), pvr_data, pvr_rgb(2))
+     &        lic_fld%lic_param, pvr_param, pvr_proj(2),                &
+     &        pvr_data, pvr_rgb(2))
         end if
       else
         call lic_rendering_with_fixed_view                              &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf,              &
-     &      lic_fld%lic_param, pvr_param, file_param(1), pvr_proj(1),   &
+     &      lic_fld%lic_param, pvr_param,  pvr_proj(1),                 &
      &      pvr_data, pvr_rgb(1))
       end if
 !
@@ -149,8 +142,7 @@
 !
       subroutine s_each_LIC_rendering_w_rot                             &
      &         (istep_pvr, mesh, group, ele_mesh, jacs, nod_fld,        &
-     &          lic_fld, file_param, pvr_param, pvr_data,               &
-     &          pvr_proj, pvr_rgb)
+     &          lic_fld, pvr_param, pvr_data, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use field_data_4_LIC
@@ -165,11 +157,10 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
       type(LIC_field_params), intent(in) :: lic_fld
-      type(pvr_output_parameter), intent(in) :: file_param(2)
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_image_generator), intent(inout) :: pvr_data
-      type(pvr_projection_data), intent(inout) :: pvr_proj(2)
+      type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
 !
 !
@@ -186,23 +177,23 @@
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
           call anaglyph_lic_rendering_w_rot                             &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_proj, pvr_data, pvr_rgb(1))
+     &        lic_fld%lic_param, pvr_param, pvr_proj, pvr_data,         &
+     &        pvr_rgb(1))
         else
           call lic_rendering_with_rotation                              &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        lic_fld%lic_param, pvr_param, file_param(1),              &
-     &        pvr_proj(1), pvr_data, pvr_rgb(1))
+     &        lic_fld%lic_param, pvr_param, pvr_proj(1),                &
+     &        pvr_data, pvr_rgb(1))
           call lic_rendering_with_rotation                              &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        lic_fld%lic_param, pvr_param, file_param(2),              &
-     &        pvr_proj(2), pvr_data, pvr_rgb(2))
+     &        lic_fld%lic_param, pvr_param, pvr_proj(2),                &
+     &        pvr_data, pvr_rgb(2))
         end if
       else
         call lic_rendering_with_rotation                                &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,       &
-     &      lic_fld%lic_param, pvr_param, file_param(1),                &
-     &      pvr_proj(1), pvr_data, pvr_rgb(1))
+     &      lic_fld%lic_param, pvr_param, pvr_proj(1),                  &
+     &      pvr_data, pvr_rgb(1))
       end if
 !
       end subroutine s_each_LIC_rendering_w_rot
