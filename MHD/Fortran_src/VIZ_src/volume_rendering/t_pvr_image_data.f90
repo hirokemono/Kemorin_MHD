@@ -122,6 +122,12 @@
         call dealloc_pvr_image_array_type(pvr_images%pvr_rgb(i_pvr))
       end do
       deallocate(pvr_images%file_param, pvr_images%pvr_rgb)
+!
+!
+      do i_pvr = 1, pvr_images%num_pvr_rendering
+        call dealloc_pvr_surf_domain_item                               &
+     &     (pvr_images%pvr_proj(i_pvr)%bound)
+      end do
       deallocate(pvr_images%pvr_proj)
 !
       end subroutine dealloc_istack_pvr_image_4_merge

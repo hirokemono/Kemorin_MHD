@@ -93,7 +93,12 @@
 !
       call find_each_pvr_surf_domain                                    &
      &   (mesh%ele, ele_mesh%surf, group%ele_grp, area_def,             &
-     &    pvr_param%field, pvr_data%bound)
+     &    pvr_param%field, pvr_proj(1)%bound)
+      if(pvr_data%view%iflag_stereo_pvr .gt. 0) then
+        call find_each_pvr_surf_domain                                  &
+     &     (mesh%ele, ele_mesh%surf, group%ele_grp, area_def,           &
+     &      pvr_param%field, pvr_proj(2)%bound)
+      end if
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
       call check_pvr_parameters(pvr_param%outline,                      &
@@ -132,8 +137,8 @@
       if(iflag_debug.gt.0) write(*,*) 'set_fixed_view_and_image'
       call set_fixed_view_and_image                                     &
      &   (mesh%node, mesh%ele, ele_mesh%surf, group, pvr_param,         &
-     &    pvr_rgb(1), pvr_proj(1)%projection_mat,                       &
-     &    pvr_data%start_pt, pvr_data%image, pvr_data)
+     &    pvr_rgb(1), pvr_data%start_pt, pvr_data%image,                &
+     &    pvr_proj(1), pvr_data)
 !
       end subroutine each_PVR_initialize
 !
@@ -178,16 +183,16 @@
 !   Left eye
           call streo_rendering_fixed_view                               &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(1), pvr_proj(1)%projection_mat,     &
-     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
+     &        pvr_param, file_param(1), pvr_data%start_pt,              &
+     &        pvr_data%image, pvr_proj(1), pvr_data, pvr_rgb(1))
           call store_left_eye_image                                     &
      &       (file_param(1)%irank_image_file, pvr_rgb(1))
 !
 !   right eye
           call streo_rendering_fixed_view                               &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(1), pvr_proj(2)%projection_mat,     &
-     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
+     &        pvr_param, file_param(1), pvr_data%start_pt,              &
+     &        pvr_data%image, pvr_proj(2), pvr_data, pvr_rgb(1))
           call add_left_eye_image                                       &
      &       (file_param(1)%irank_image_file, pvr_rgb(1))
 !
@@ -203,8 +208,8 @@
 !   Left eye
           call streo_rendering_fixed_view                               &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(1), pvr_proj(1)%projection_mat,     &
-     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
+     &        pvr_param, file_param(1), pvr_data%start_pt,              &
+     &        pvr_data%image, pvr_proj(1), pvr_data, pvr_rgb(1))
 !
           call end_elapsed_time(71)
           call start_elapsed_time(72)
@@ -217,8 +222,8 @@
 !   right eye
           call streo_rendering_fixed_view                               &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(2), pvr_proj(2)%projection_mat,     &
-     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(2))
+     &        pvr_param, file_param(2), pvr_data%start_pt,              &
+     &        pvr_data%image, pvr_proj(2), pvr_data, pvr_rgb(2))
 !
           call end_elapsed_time(71)
           call start_elapsed_time(72)
@@ -288,24 +293,23 @@
         if(pvr_data%view%iflag_anaglyph .gt. 0) then
           call anaglyph_rendering_w_rotation                            &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(1), pvr_proj(1)%projection_mat,     &
-     &        pvr_proj(2)%projection_mat, pvr_data%start_pt,            &
-     &        pvr_data%image, pvr_data, pvr_rgb(1))
+     &        pvr_param, file_param(1), pvr_data%start_pt,              &
+     &        pvr_data%image, pvr_proj, pvr_data, pvr_rgb(1))
         else
           call rendering_with_rotation                                  &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(1), pvr_proj(1)%projection_mat,     &
-     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
+     &        pvr_param, file_param(1), pvr_data%start_pt,              &
+     &        pvr_data%image, pvr_proj(1), pvr_data, pvr_rgb(1))
           call rendering_with_rotation                                  &
      &       (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,     &
-     &        pvr_param, file_param(2), pvr_proj(2)%projection_mat,     &
-     &        pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(2))
+     &        pvr_param, file_param(2), pvr_data%start_pt,              &
+     &        pvr_data%image, pvr_proj(2), pvr_data, pvr_rgb(2))
         end if
       else
         call rendering_with_rotation                                    &
      &     (istep_pvr, mesh%node, mesh%ele, ele_mesh%surf, group,       &
-     &      pvr_param, file_param(1), pvr_proj(1)%projection_mat,       &
-     &      pvr_data%start_pt, pvr_data%image, pvr_data, pvr_rgb(1))
+     &      pvr_param, file_param(1), pvr_data%start_pt,                &
+     &      pvr_data%image, pvr_proj(1), pvr_data, pvr_rgb(1))
       end if
 !
       end subroutine each_PVR_rendering_w_rot
@@ -329,7 +333,6 @@
 !
       call dealloc_projected_position(pvr_data%screen)
 !
-      call dealloc_pvr_surf_domain_item(pvr_data%bound)
       call dealloc_nod_data_4_pvr(pvr_param%field)
       call flush_each_pvr_control(pvr_fld, pvr_data, pvr_param)
 !
